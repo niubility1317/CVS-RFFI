@@ -1,0 +1,74 @@
+{
+  "status": "SOURCE_READOUT_DECIDED",
+  "source_qualified": false,
+  "checks": {
+    "fullV_clean_within_NoAs30_0p1pp": false,
+    "midlow_vs_As30_at_least_0p5pp": false,
+    "low_not_below_As30": true,
+    "allocation_midlow_vs_uniform_at_least_0p25pp": false,
+    "allocation_low_not_below_uniform": false
+  },
+  "rows": {
+    "MASS_UNIFORM": {
+      "fullV_AS_clean_vs_originalNOAS_pp": -0.15185185185184746,
+      "mid_low_mean_vs_originalAs30_pp": 0.4444444444444473,
+      "low_vs_originalAs30_pp": 0.4722222222222294,
+      "source_accuracies": [
+        [
+          0.8844444444444445,
+          0.7311111111111112,
+          0.605
+        ],
+        [
+          0.8955555555555555,
+          0.7333333333333333,
+          0.5861111111111111
+        ]
+      ]
+    },
+    "OBSERVATION_WEIGHTED": {
+      "fullV_AS_clean_vs_originalNOAS_pp": -0.14444444444444704,
+      "mid_low_mean_vs_originalAs30_pp": 0.4027777777777741,
+      "low_vs_originalAs30_pp": 0.36111111111112315,
+      "source_accuracies": [
+        [
+          0.8833333333333333,
+          0.7305555555555555,
+          0.6033333333333334
+        ],
+        [
+          0.8955555555555555,
+          0.7344444444444445,
+          0.5855555555555556
+        ]
+      ]
+    }
+  },
+  "allocation_vs_uniform_mid_low_pp": -0.04166666666667318,
+  "allocation_vs_uniform_low_pp": -0.11111111111110628,
+  "originalAs30_source_accuracies": [
+    [
+      0.8811111111111111,
+      0.7255555555555555,
+      0.6011111111111112
+    ],
+    [
+      0.8922222222222222,
+      0.7305555555555555,
+      0.5805555555555556
+    ]
+  ],
+  "candidate": "OBSERVATION_WEIGHTED",
+  "controls_not_promotion_candidates": [
+    "MASS_UNIFORM"
+  ],
+  "formal_scores_read": false,
+  "target_scores_read": false,
+  "formal_evaluation_always_required": true,
+  "target_feedback": false,
+  "model_seed_count": 1,
+  "NN": 0,
+  "E50_total_allowed_only_after_source_PASS": true,
+  "E50_requires_same_budget_controls": true,
+  "no_automatic_seed_extension": true
+}

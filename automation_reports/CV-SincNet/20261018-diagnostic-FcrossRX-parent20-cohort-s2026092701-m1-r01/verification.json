@@ -1,0 +1,64 @@
+{
+  "status": "ANALYZED_VERIFIED",
+  "source_only": true,
+  "training_epochs": 0,
+  "planned_NN": 12602,
+  "smoke_NN": 2,
+  "source_NN": 12600,
+  "tests": {
+    "status": "PASS",
+    "pure_toy": 7,
+    "unittest_wall_seconds": 0.024,
+    "process_wall_seconds": 0.391,
+    "compile_files": 4,
+    "NN": 0,
+    "CP": 0,
+    "IQ": 0
+  },
+  "review": {
+    "status": "PASS",
+    "reviewer": "u_quality66_p0p1",
+    "scope": "One independent newsource-readout P0/P1 review; no P66 candidate rereview",
+    "NN": 0,
+    "CP": 0,
+    "IQ": 0,
+    "remote": false
+  },
+  "preflight": {
+    "status": "VERIFIED",
+    "ordinary_account": true,
+    "parent_epoch": 20,
+    "parent_updates": 4440,
+    "parent_scratch": true,
+    "parent_ancestors": [],
+    "parent_target": false,
+    "own_root_collision": false,
+    "exact_parent_prediction_cache_in_stage20": false
+  },
+  "actual_readout_status": "SOURCE_READOUT_COMPLETE",
+  "actual_NN": 12602,
+  "observed_source_counter": 12602,
+  "observed_training_counter": 0,
+  "parent_key": "model",
+  "parent_clean_correct": 1765,
+  "all_parameters_frozen": true,
+  "model_state_unchanged": true,
+  "release": {
+    "status": "VERIFIED",
+    "one_archive_sha256": "ce67cf92789ca2737043f84273ed06c6df44c7b4e91f76c83c7d941eef45a1f4",
+    "local_remote_equal": true,
+    "compiled_files": 25
+  },
+  "poststate": {
+    "status": "VERIFIED_FROM_TERMINAL_ARTIFACTS",
+    "pid": 1435494,
+    "alive": false,
+    "assigned_GPU": 7,
+    "live_GPU_PID_snapshot": false,
+    "finished_before_first_check": true,
+    "log_bytes": 295,
+    "complete_validated": true,
+    "source_predictions_and_cohort_saved": true,
+    "no_automatic_retry": true
+  }
+}

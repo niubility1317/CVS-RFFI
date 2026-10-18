@@ -7,3 +7,4 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |P66：完整 practical U 教学的观测条件分配|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Uquality-e30-s2026092701-m2-r01/report.md)|
+|P66 实际 As20 学生父模型的源域正确集合读出|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-FcrossRX-parent20-cohort-s2026092701-m1-r01/report.md)|

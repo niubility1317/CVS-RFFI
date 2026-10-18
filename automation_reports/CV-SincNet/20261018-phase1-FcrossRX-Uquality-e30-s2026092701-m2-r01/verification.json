@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_FOCUSED_AND_P0P1_PASS",
+  "status": "ANALYZED_VERIFIED",
   "protocol_negatives": 35,
   "teaching_toy": 15,
   "flow_checks": 4,
@@ -87,7 +87,7 @@
     "source_IQ": 0,
     "updates": 0
   },
-  "actual_run_status": "RUNNING_FIRST_REAL_EPOCH_VERIFIED",
+  "actual_run_status": "ALL2ROWS_ALL7_SOURCEFAIL_ANALYZED",
   "local_tool_recovery": {
     "persistent_kernel_OOM_before_launch": true,
     "new_process_reconciled": true,
@@ -100,5 +100,30 @@
     "log_growth": true,
     "positive_extra_KL": true,
     "max_per_step_q_mass_difference": 0.0000033192336559295654
-  }
+  },
+  "no_technical_failure": true,
+  "source_decision_before_formal_scoring": true,
+  "source_qualified": false,
+  "actual_formal_stage_pass": false,
+  "E50_started": false,
+  "actual_new_remote_NN": 9839612,
+  "extra_parent_source_readout_NN": 12602,
+  "new_remote_including_parent": 9852214,
+  "full_log_analysis": {
+    "status": "PASS",
+    "new_epochs": 20,
+    "new_updates": 4440,
+    "all_sequences_and_ordinary_streams_match": true,
+    "all_U_prefixes_and_channels_match": true,
+    "confusion_recounts": 504,
+    "partition_reconciliations": 84
+  },
+  "figures": {
+    "PNG_visual_checks": 6,
+    "PDF_pairs": 6,
+    "local_report_links": 41,
+    "broken": []
+  },
+  "owned_pids_absent": true,
+  "parent_cohort_status": "ACTUAL_AS20_STUDENT_SOURCE_COHORT_COMPLETED"
 }

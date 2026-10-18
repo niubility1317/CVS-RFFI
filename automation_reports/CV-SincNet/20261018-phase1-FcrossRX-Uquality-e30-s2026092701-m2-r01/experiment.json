@@ -101,7 +101,7 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_U_quality_E30_20261018_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_u_quality66/runner.py",
     "stop_rule": "Wrongroles/provenance/runtime/nonfinite/outputcollision: stop only ownrun, preserveoutputs,noautomaticretry. SourceFAILstillall7. Onlypreregisteredweightedcandidate may sourcequalifyE50; uniformcontrolnevercherrypromoted; no threshold/q/coefficient/channel sweep.",
-    "status": "RUNNING"
+    "status": "ANALYZED"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
@@ -336,7 +336,8 @@
     "Sourceonlycandidatecriteria:fullVclean-NoAs30>=-.1pp,midlow-As30>=+.5pp,low-As30>=0,midlow-uniform>=+.25pp,low-uniform>=0. PASSmayjustifytotalE50withmatchingcontrols;FAILclosesroute,noformalscorepromotion.",
     "Otherchatreadreadonly:thisturnnormalizationstatsaudit;scenequotafullAsN0anddelayedAsalreadyclosed. No messaging/duplicatelaunch.",
     "Allformalpredictionsfrozen/all7thentruthlast,perrowauto. Noformalstatecausalclaim.",
-    "Onecodecommit,focusednegative,oneactualCPsmoke,oneP0P1review,onearchivecomparison/compile/preflight/postlaunch. Noextragates. Privateweights/IQ/rawlogs/runtime/outputexcludedGit."
+    "Onecodecommit,focusednegative,oneactualCPsmoke,oneP0P1review,onearchivecomparison/compile/preflight/postlaunch. Noextragates. Privateweights/IQ/rawlogs/runtime/outputexcludedGit.",
+    "Actual bothrows/all7/truth-last/full CPU analysisANALYZED missing[]. SourceFAIL beforeformal scoring,closednoE50. Mainformalclean85.097024/mid63.239881/low51.726786/urban64.347619%;clean-NoAs−.150595pp stageFAIL. AdditionalactualAs20student sourcecohortreadout12602NN separatelyregistered;no modelbudgetextension."
   ],
   "registered_at": "2026-10-18T11:33:00+00:00"
 }

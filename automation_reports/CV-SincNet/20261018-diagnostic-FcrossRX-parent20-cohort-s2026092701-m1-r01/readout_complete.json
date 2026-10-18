@@ -1,0 +1,81 @@
+{
+  "status": "SOURCE_READOUT_COMPLETE",
+  "run_id": "20261018-diagnostic-FcrossRX-parent20-cohort-s2026092701-m1-r01",
+  "release": "cvs_FcrossRX_parent20_cohort_20261018_r01",
+  "model_seed": 2026092701,
+  "checkpoint": "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth",
+  "checkpoint_run": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+  "checkpoint_row": "B01-s2026092701",
+  "checkpoint_stage": "stage20",
+  "checkpoint_key": "model",
+  "checkpoint_epoch": 20,
+  "checkpoint_optimizer_steps": 4440,
+  "checkpoint_selection": "final_only",
+  "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "source_role_counts": {
+    "L_s": 6300,
+    "U_s": 56700,
+    "V": 27000
+  },
+  "source_role": "V",
+  "source_unique_V": 1800,
+  "source_panel": "PROJECT/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic",
+  "source_observations": "PROJECT/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/observations/iq.npy",
+  "channel_draws": 2,
+  "scenes": [
+    "practical_low_suburban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "condition": "full",
+  "condition_index": 0,
+  "new_channel_calls": 0,
+  "NN": 12602,
+  "source_NN": 12600,
+  "smoke_NN": 2,
+  "training_updates": 0,
+  "head_fit_updates": 0,
+  "teacher_training_updates": 0,
+  "teacher_bank_created": false,
+  "U_truth_read": false,
+  "U_records_used": 0,
+  "target_access": false,
+  "formal_scores_read": false,
+  "query_access": false,
+  "model_state_unchanged": true,
+  "all_parameters_frozen": true,
+  "model_parameters": 900722,
+  "model_state_keys": 206,
+  "default_head_shape": [
+    6,
+    160
+  ],
+  "default_head_scale": 30,
+  "eval_counter": 12602,
+  "train_counter": 0,
+  "parent_clean_correct_count": 1765,
+  "clean_accuracy": 0.9805555555555555,
+  "source_accuracies": [
+    [
+      0.8733333333333333,
+      0.7127777777777777,
+      0.5811111111111111
+    ],
+    [
+      0.8822222222222222,
+      0.7261111111111112,
+      0.5705555555555556
+    ]
+  ],
+  "source_IQ_read_after_smoke": true,
+  "source_cache_used_only_role": "V",
+  "smoke_wall_seconds": 0.4218735508620739,
+  "source_wall_seconds": 1.4639052129350603,
+  "wall_seconds": 2.529965393943712,
+  "modules": {
+    "experiments.cvs_u_quality66.source": "PROJECT/releases/cvs_FcrossRX_parent20_cohort_20261018_r01/experiments/cvs_u_quality66/source.py",
+    "experiments.cvs_noise_shape_factorial43.model": "PROJECT/releases/cvs_FcrossRX_impulse_factorial_E30_20261018_r01/experiments/cvs_noise_shape_factorial43/model.py",
+    "leo_practical.channel": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+    "leo_practical.residual": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/residual.py"
+  }
+}
