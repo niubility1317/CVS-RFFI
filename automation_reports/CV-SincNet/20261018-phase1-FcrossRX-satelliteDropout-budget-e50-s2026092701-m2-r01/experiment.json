@@ -27,18 +27,18 @@
   "replaces_run_id": null,
   "authorization": "用户最新授权表现好的方案总计E50；AS_DET在正式反馈前固定的源条件PASS，本项必要AS_CE归因控制同扩20。两新模型各30+20=50，不是E70；新增40modelE/8880updates，不扩seed。",
   "code": {
-    "commit": null,
+    "commit": "e5c25a54461439e6c33c76ce92ec50def7242524",
     "checkout": "codex/phase1-urban-sigtime-20261014",
     "environment": "N607 existing ordinary Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;pinnedP43/SAT18;fullFP32/CENTER_UNITS;CPU2",
     "cwd": "PROJECT/releases/cvs_FcrossRX_satellite_dropout_budget_E50_20261018_r01",
-    "identity_status": "PENDING_ACTUAL_CODE_COMMIT"
+    "identity_status": "PUSHED_INDEPENDENT_GITHUB_COMPARE_IDENTICAL"
   },
   "data": {
     "dataset": "ManySig",
     "version": "Unchanged original7/63/30 source physical roles; existing VALIDATED_ONCE fixed formal IQ",
     "representation": "equalized1/native perpacketRMS center=false;float32 Bx2x256/fs25MHz;full residual/post_sync/EQoffG1/ref30/reflect;As fromraw,no extra ordinary PA/noise beforeAs;trainingfc2.462GHz/fixedformal2.45GHz unchanged",
-    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
-    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
     "label_map_ref": "Same original6TX map;no new or U truth",
     "source_receivers": [
       1,
@@ -72,7 +72,7 @@
     "split_id": 392005,
     "validation_ref": "ExistingPhase1 source handles and fixedformalmanifest;Phase2 p2capsule/splitN/A",
     "support_query_ref": "Phase1,no support;source/target disjoint fixedformalmanifest",
-    "leo_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/manifest.json"
+    "leo_config_ref": "PROJECT/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/manifest.json"
   },
   "permissions": {
     "regime": "source_only_training_then_frozen_target_prediction",
@@ -87,7 +87,7 @@
       "PROJECT/runs/20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01/AS_DET-s2026092701/source/final_ssdg.pth"
     ],
     "contract_check_ref": "Both SAT18 own20+10/source_contract role_ids and init/freeze/config/checkpoint identity, Utruthhidden/no target/finalonly/source origins;reuse unchanged VALIDATED_ONCE;realparent smoke afterpreflight",
-    "provenance_verdict": "METADATA_VERIFIED_BOTH_OWN20_PLUS_FINAL30_EXACT_ROLES_NO_TARGET_FIXEDFINAL;REAL_CP_SMOKE_LAUNCH_FIRST_STEP_PENDING",
+    "provenance_verdict": "VERIFIED_METADATA_EXACT_OWN20_TO30_PLUS_REAL_PARENT_CP_SMOKE4NN_STRICT_STUDENT_EMA_INITIALIZERS",
     "selection_rule": "Select sourcePASS SAT18 AS_DET, AS_CE necessarymechanismcontrol;fixedFINAL30 not target best. Newfinal20 cumulative50, no checkpoint ranking."
   },
   "execution": {
@@ -99,7 +99,21 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_satellite_dropout_budget_E50_20261018_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_satellite_budget62/runner.py",
     "stop_rule": "Onlyrunowned wrongprovenance/roles/nonfinite/outputconflict/systemictechnicalfailure;preserveall;noautomatictrainingretry;sourceFAIL stillall7;noE70/seedrescue",
-    "status": "LOCAL_VERIFIED"
+    "status": "RUNNING",
+    "dispatcher_pid": 1276889,
+    "rows": [
+      {
+        "row_id": "AS_CE-s2026092701",
+        "pid": 1276916,
+        "gpu": 2
+      },
+      {
+        "row_id": "AS_DET-s2026092701",
+        "pid": 1276994,
+        "gpu": 3
+      }
+    ],
+    "remote_compile": "PASS_20"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",

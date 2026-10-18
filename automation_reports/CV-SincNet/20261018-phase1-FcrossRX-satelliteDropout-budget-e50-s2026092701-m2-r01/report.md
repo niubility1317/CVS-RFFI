@@ -1,6 +1,6 @@
 # P62：源域通过 satelliteDropout 的匹配 E50 预算验证
 
-状态：LOCAL_DESIGN，未启动训练、未取得新 E50 结果。当前唯一实验是预算复制，不新增损失或 IQ 增强。P61 单侧间隔仅保留未发布、未测试草稿（0NN/CP/IQ/更新），本轮不启动。
+状态：VERIFIED_RUNNING，两条总E50续训已实际启动，尚无新的源／正式完成结果。当前唯一实验是预算复制，不新增损失或 IQ 增强。P61 单侧间隔仅保留未发布、未测试草稿（0NN/CP/IQ/更新），本轮不启动。
 
 ## 简短判断与唯一假设
 
@@ -54,3 +54,7 @@ CWD=PROJECT/releases/cvs_FcrossRX_satellite_dropout_budget_E50_20261018_r01；�
 预期产物与精确逐row矩阵见experiment.json；实际commit、检查、GPU/时间在证据返回后记录，未验证前不称启动/完成。
 
 本地执行证据：33项协议负例、4容量toy、4流程检查PASS；两模式实际F合成1536NN，CE/DET各768，satellite双前向maxdiff分别7.8440475/0，26次原Dropout调用均保留，DET旁路3391488个元素；ordinary logits和global RNG匹配，默认头/Sinc梯度非零finite。无真实IQ/CP/target/更新；异步合成未单独计时，不补造时长。两个本地namespace错误及一个toy配置拒绝均0NN，已修本地路由/fixture，不是真实run失败。18py compile及observer计数保存单文件compile通过。分析21项纯toy1.508秒PASS，另schema定向回归PASS，NN0。唯一P0/P1审查PASS：source schema、cap2、early/terminal source异常闭合三项修复已定向核实，无额外全审/NN。N607一次预检核实两own20+30 metadata/roles与固定参考句柄，普通账号、八GPU空闲、磁盘充足，0IQ/CP/NN；尚未执行真实父CP smoke或训练。
+
+实际发布：代码/config/分析提交e5c25a54461439e6c33c76ce92ec50def7242524已push，独立GitHub compare identical；单次release archive SHA本远端一致，远端20py编译PASS。复合真实自身FINAL30 checkpoint smoke4NN/2CP/0IQ/0更新PASS后直接训练，未重复远端合成。dispatcher1276889；AS_CE worker1276916/GPU2，AS_DET worker1276994/GPU3，PID/CWD/argv/CUDA及nvidia进程占用独立核实；日志64379→421510、31753→421346字节，均增长。两行初始化source_roles EXACT_MATCH/target_contact false，own FINAL30 EMA严格继承，AdamW空state/resetcos20/lr.0002/WD.0001；actual_channel configurations与各自原SAT18完全一致。审计保存六场景参数不等于训练采六场景，实际训练仍从原TRAIN_SCENES三场景均匀采样。
+
+自动源判定／clean+六practical预测／独立truth-last评分／八行CPU分析已由同一dispatcher衔接，尚未完成，不报告新准确率。已保存原live TX×RX×scene/state/lock计数供完成后分析，新两行各284160检查总量、无逐格门槛。P61草稿与其他健康任务未运行或修改。
