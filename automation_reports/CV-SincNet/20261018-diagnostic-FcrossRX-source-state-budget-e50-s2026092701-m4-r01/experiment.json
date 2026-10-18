@@ -1,0 +1,198 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-diagnostic-FcrossRX-source-state-budget-e50-s2026092701-m4-r01",
+  "group_id": "phase1-FcrossRX-source-state-budget-E50",
+  "display_name": "E30至E50默认头：已有源预测的物理状态配对分层",
+  "description": "零NN后处理：关联既有E30/E50源域logits与同physical IDs/draw的full practical状态/质量元数据，补充预算收益落点；不新增候选/训练/前向/正式访问或晋级条件。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "FcrossRX E50 source physics strata",
+    "zero-NN E30 E50 source state audit"
+  ],
+  "tags": [
+    "FcrossRX",
+    "source-only",
+    "E50",
+    "metadata-only",
+    "zeroNN",
+    "paired-budget",
+    "default-head"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+    "20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01",
+    "20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "活跃Phase1星地增强研发授权及好配方E50授权内的源域分析。只读既有V1800预测与物理元数据；0新训练/NN/IQ/CP/正式访问。当前其他owner健康E50四行不变，不重复启动。",
+  "code": {
+    "commit": "f6dcc1c786cca41de284b8981288977e37967245",
+    "checkout": "codex/phase1-urban-sigtime-20261014",
+    "environment": "N607 ordinary CVS-RFFI Python3.10 NumPy2.2.5 Matplotlib3.10.8;CPU2;CUDA hidden;no Torch/model imports",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_source_state_budget_E50_20261018_r01",
+    "identity_status": "PLANNED;actual implementation commit replaces before launch"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing VALIDATED_ONCE original7/63/30 roles and existing native-normalized source cache",
+    "representation": "Saved default-head source logits and pure physics metadata only;full residual/post_sync/EQoffG1;sourcepanel fc2.45GHz,fs25MHz,IQ256 inherited and not read",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "PROJECT/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/data_roles.json#physical_ids",
+    "label_map_ref": "original6TX mapping, class0..5",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all original6 source TX",
+    "roles": {
+      "L_s": "Original6300 unchanged;no values read",
+      "U_s": "Original56700 TXhidden;no values or labels read",
+      "V": "Existing fixed1800 fromoriginal27000;onlysaved source predictions/legal V labels/metadata,2fixed channel draws"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Existing VALIDATED_ONCE Phase1source roles reused;source V1800 metadata and ordered IDs matched;no data revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": "PROJECT/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/observations/actual_engine.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Forbidden;no formal file/IQ/checkpoint/model/predictor/scorer/training reader",
+    "external_method_exception": null,
+    "claim_scope": "Single-modelseed source-V posthoc full-observation association;not damage-removal causal effect,independent formal confirmation,candidate promotion or crossseed reproducibility"
+  },
+  "checkpoint": {
+    "initialization": "None;no checkpoint state loaded;reuse saved default-head source logits",
+    "sources": [],
+    "contract_check_ref": "Existing P43/P50 source logit origin;ordered source IDs/TX/RX/day and full-condition/draw checks",
+    "provenance_verdict": "NO_CHECKPOINT_LOAD;underlying frozen logit lineage already audited P43/P50;source puremetadata schema verified",
+    "selection_rule": "All4 logicalrows/all3 sourcepractical scenes/bothdraws/allfixed bins including emptycells;no model selection or promotion"
+  },
+  "execution": {
+    "host": "N607 ordinary nonprivileged account",
+    "launch_owner": "codex/root/source-state56",
+    "gpu_policy": "CPU2/CUDA hidden;no GPU/model/NN;no healthy process or output mutation",
+    "remote_run_root": "PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s2026092701-m4-r01",
+    "remote_log_root": "PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s2026092701-m4-r01/worker.log",
+    "local_artifact_root": "local_artifacts/cvs_FcrossRX_source_state_budget_E50_20261018_r01",
+    "launch_command": "CVS-RFFI/python -u analysis/cvs_budget50_source_states56_20261018.py --project PROJECT --out PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s2026092701-m4-r01/result --code-commit ACTUAL_CODE_COMMIT",
+    "stop_rule": "Source role/ordered ID/TX/RX/day/draw/full-condition mismatch,nonfinite logits/shape mismatch or technical failure preserves outputs and stops own analysis only;no auto retry/NN/IQ replay/effect-based rerun",
+    "status": "PLANNED_NOT_LAUNCHED"
+  },
+  "expected_artifacts": [
+    "result/source_strata.csv",
+    "result/source_confusions.json",
+    "result/paired_effects.csv",
+    "result/budget_interaction.csv",
+    "result/source_summary.json",
+    "result/report.json",
+    "result/practical_mid_urban_source_states.png",
+    "result/practical_mid_urban_source_states.pdf",
+    "result/practical_low_urban_source_states.png",
+    "result/practical_low_urban_source_states.pdf",
+    "worker.log",
+    "launch.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "raw_default_head_margin",
+      "margin_div_fixed30",
+      "fixed_NOAS30_clean_correct_retention",
+      "repairs",
+      "new_errors",
+      "net_repairs",
+      "budget_interaction",
+      "NN0",
+      "IQ0",
+      "CP0",
+      "updates0",
+      "wall_seconds"
+    ],
+    "dimensions": [
+      "fourlogicalmodels",
+      "source_scene",
+      "draw0/draw1/pooled",
+      "state",
+      "lock",
+      "state_lock",
+      "signal_to_added_noise_db",
+      "actual_waveform_quality_db",
+      "white_proxy_quality_db",
+      "waveform_minus_white_power_db",
+      "abs_output_frequency_hz",
+      "noise_coloration_dynamic_range_db",
+      "residual_kernel_energy_db",
+      "interior_count",
+      "AGC_limited"
+    ],
+    "prediction_ref": "Each own saved source_qualification/predictions.npz;fixed1800 orderedIDs;no new prediction",
+    "scorer_ref": "NumPy grouping saved source logits and legal V labels;formal truth/scorer forbidden"
+  },
+  "rows": [
+    {
+      "row_id": "D00-source-state-s2026092701",
+      "method": "Four fixed NOAS30/AS30/NOAS50/AS50 default-head saved source logit snapshots × full-state metadata;one CPU analysis row",
+      "purpose": "diagnostic",
+      "config_ref": "analysis/cvs_budget50_source_states56_20261018.py#fixed_source_inputs",
+      "resolved_config_ref": "PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s2026092701-m4-r01/result/report.json",
+      "data_overrides": {
+        "held_RX": null,
+        "extra_Ldev": false,
+        "all5sourceRX": true,
+        "only_existing_V_metadata": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 202610172401,
+        "augmentation": 202610172402,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "FixedsourceV1800/twodraws;one modelseed;RXsessions byRX/day/eq notTX;support/query inapplicable",
+      "k": null,
+      "scenario": "SourceV full low_suburban/mid_urban/low_urban;draw0/1/pooled;no counterfactual classification",
+      "optimizer": {
+        "name": "none",
+        "updates": 0
+      },
+      "lr": 0,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0newmodel-epochs/updates/NN/IQ/CP;reuse existing source prediction;CPU2 wall separate",
+      "output_root": "PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s2026092701-m4-r01/result",
+      "log_path": "PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s2026092701-m4-r01/worker.log",
+      "command": "CVS-RFFI/python -u analysis/cvs_budget50_source_states56_20261018.py --project PROJECT --out PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s2026092701-m4-r01/result --code-commit ACTUAL_CODE_COMMIT",
+      "expected_artifacts": [
+        "source_strata.csv",
+        "paired_effects.csv",
+        "budget_interaction.csv",
+        "report.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Posthoc source-only addendum;seed01 formal scores previously exposed but not inputs,not a predeclared source promotion criterion.",
+    "No P53 model metrics transplanted. Existing P43/P50 source logits grouped against same source physics.",
+    "Defaulthead fixedscale30 verified in ResidualPhysicalHead.scale float and classify;raw margin and /30 both reported.",
+    "All fixed bins disclosed before run;empty/smallcells/draws retained;two draws are not modelseeds.",
+    "No healthy job change or duplicate training. Actualcode commit and focusedchecks/review/release evidence completed before launch.",
+    "Fixed numeric bins beforerun: quality/addednoise[-inf,3,8,15,inf]dB;waveform-white[-inf,-3,-1,1,3,inf]dB;absCFO[0,100,1000,10000,inf]Hz;colour[-inf,1e-9,3,10,inf]dB;kernelenergy[-inf,-20,-10,0,inf]dB;interior[0,128,192,224,256,inf]counts;AGC bool;zero/small cells retained."
+  ],
+  "registered_at": "2026-10-18T04:50:18+00:00"
+}

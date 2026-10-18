@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "scope": "One independent P0/P1 review limited to source metadata alignment,source-only legality,correct paired statistics and next analysis executability",
+  "reviewer": "source_state56_p0p1",
+  "findings": [],
+  "local_fixture_tests": 10,
+  "fixture_status": "PASS",
+  "wall_seconds": 1.143,
+  "real_NPZ_IQ_CP_formal_reads": 0,
+  "files": [
+    "analysis/cvs_budget50_source_states56_20261018.py",
+    "analysis/check_budget50_source_states56.py"
+  ],
+  "no_extra_gate": true
+}

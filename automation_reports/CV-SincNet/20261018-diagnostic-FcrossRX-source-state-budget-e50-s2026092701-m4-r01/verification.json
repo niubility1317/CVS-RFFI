@@ -1,0 +1,20 @@
+{
+  "status": "LOCAL_VERIFIED_PRELAUNCH",
+  "local_fixture_tests": 10,
+  "fixture_status": "PASS",
+  "compile": "PASS",
+  "independent_review": "PASS_ONE_P0P1",
+  "N607_preflight": "VERIFIED",
+  "new_output_release_roots_absent": true,
+  "metadata_inputs_exist": true,
+  "CPU2": true,
+  "CUDA_hidden": true,
+  "NN": 0,
+  "IQ": 0,
+  "CP": 0,
+  "updates": 0,
+  "formal_files_read": false,
+  "stage_checkpoint_smoke": "NOT_APPLICABLE_NO_MODEL_OR_CHECKPOINT_CONSUMED",
+  "actual_launch_verified": false,
+  "source_result_status": "NOT_STARTED"
+}
