@@ -108,7 +108,10 @@
     "local_artifact_root": "local_artifacts/F_ownEMA_source_E50_20261018",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_practical_ema_source/runner.py",
     "stop_rule": "Only runowned protocol/source-role/parent/state/defaulthead/nonfinite/overwrite/unlaunchable technicalfailure;preserve outputs/no autoretry/no otherPID intervention.Scientificfail completes allsourcecells andcloses fixedreadout recipe.",
-    "status": "LOCAL_VERIFIED"
+    "status": "FAILED",
+    "release_commit": "20c591c43761b079e531571820eaf88d3f053034",
+    "pid": 1210290,
+    "alive": false
   },
   "expected_artifacts": [
     "smoke.json",
@@ -284,5 +287,12 @@
     "Source-only readout allfourcomplete onscientificfail,automaticformal=false;no decay/epoch/seed rescue or automaticbudgetextension.",
     "Originalall3E50 formal exposure retained asbenchmarkcontext;thisdecisionfollowscodepath/source-only hypothesis only,no formalvaluesusedforparameters/candidatepromotion."
   ],
-  "registered_at": "2026-10-18T05:34:59+00:00"
+  "registered_at": "2026-10-18T05:34:59+00:00",
+  "results": {
+    "status": "TECHNICAL_FAILURE_NO_COMPLETE_SCIENTIFIC_RESULT",
+    "failure": "Opaque sourceV ID compared againstdifferent nativecoordinate tuple;fullVcomplete/panelnotstarted",
+    "actual_NN": 108004,
+    "new_updates": 0,
+    "formal": false
+  }
 }

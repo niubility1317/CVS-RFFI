@@ -1,0 +1,22 @@
+{
+  "status": "LOCAL_VERIFIED_FIX_NOT_LAUNCHED",
+  "run_id": "20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r02",
+  "original_run": "20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r01",
+  "original_failure_preserved": true,
+  "old_protocol_negative_cases": 41,
+  "targeted_new_ID_positive_cases": 2,
+  "targeted_new_ID_negative_cases": 6,
+  "targeted_check": "PASS",
+  "emitted_remote_AST": 2,
+  "unique_original_review": "PASS",
+  "targeted_ID_fix_review": "PASS",
+  "CP": 0,
+  "IQ": 0,
+  "NN": 0,
+  "updates": 0,
+  "expected_readout_NN": 133204,
+  "original_failed_NN": 108004,
+  "expected_total_attempt_NN": 241208,
+  "source_only": true,
+  "formal": false
+}

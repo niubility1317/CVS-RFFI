@@ -3,8 +3,30 @@ import copy,json,tempfile
 from pathlib import Path
 import numpy as np
 from . import design as d
-from .protocol import check_roles,check_ids,check_state_pair,check_panel,decision
+from .protocol import check_roles,check_ids,check_state_pair,check_panel,check_panel_membership,decision
 from .metrics import metric,paired,summarize
+
+def check_panel_join():
+ """Actual upstream formats: opaque SHA24 IDs plus separate native five-tuples."""
+ import hashlib
+ n=27000;tx=np.arange(n)%6;rx=np.asarray(d.RX)[(np.arange(n)//6)%5];day=np.asarray(d.DAY)[(np.arange(n)//30)%3];sig=np.arange(n)//90
+ full=dict(ids=np.asarray([hashlib.sha256(f'{t}/{r}/{v}/1/{s}'.encode()).hexdigest()[:24] for t,r,v,s in zip(tx,rx,day,sig)]),TX=tx,RX=rx,day=day,
+  physical_ids=np.asarray([(1,int(r),int(v),int(s),i) for i,(r,v,s) in enumerate(zip(rx,day,sig))]))
+ chosen=np.arange(1799,-1,-1);panel={k:full[k][chosen].copy() for k in ('ids','TX','RX','day')}
+ check_panel_membership(panel,full)
+ assert panel['ids'].shape==(1800,) and full['physical_ids'].shape==(27000,5)
+ negatives=0
+ def bad(p):
+  nonlocal negatives
+  try:check_panel_membership(p,full)
+  except ValueError:negatives+=1
+  else:raise AssertionError('Wrong physical-ID representation or alignment accepted')
+ p={k:v.copy() for k,v in panel.items()};p['ids']=full['physical_ids'][chosen];bad(p)
+ p={k:v.copy() for k,v in panel.items()};p['ids'][0]='f'*24;bad(p)
+ p={k:v.copy() for k,v in panel.items()};p['ids'][0]=p['ids'][1];bad(p)
+ for key in ('TX','RX','day'):
+  p={k:v.copy() for k,v in panel.items()};p[key][0]+=1;bad(p)
+ return dict(status='PASS',canonical_opaque_join=True,native_tuple_kept_separate=True,reordered_panel_preserved=True,targeted_negatives=negatives,CP=0,IQ=0,NN=0)
 
 def run():
  negatives=0
@@ -71,6 +93,6 @@ def run():
   pv=dict(TX=y,RX=panel['RX'],day=panel['day'],**{label:dict(clean=correct,satellite=np.tile(correct,(2,3,1,1))) for label in d.LABELS})
   result=summarize(full,pv,Path(directory))
   assert result['fullV']['AS_EMA']['worst_RX_accuracy']==1 and result['paired_fullV']['AS_EMA_minus_AS_STUDENT']['net_repairs']==0
- return dict(status='PASS',protocol_negatives=negatives,synthetic_metric_recount=True,actual_CVS_NN=0,actual_IQ_reads=0,actual_checkpoint_reads=0,updates=0,target_access=False)
+ return dict(status='PASS',protocol_negatives=negatives,panel_join=check_panel_join(),synthetic_metric_recount=True,actual_CVS_NN=0,actual_IQ_reads=0,actual_checkpoint_reads=0,updates=0,target_access=False)
 
 if __name__=='__main__':print(json.dumps(run()))

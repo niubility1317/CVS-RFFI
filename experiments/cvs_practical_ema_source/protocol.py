@@ -27,6 +27,18 @@ def check_panel(a,b):
  if a['clean'].shape!=(1800,6) or a['satellite'].shape!=(2,3,1800,6):raise ValueError('Fixed V1800/two draws/three scene logits required')
  if not np.isfinite(a['clean']).all() or not np.isfinite(a['satellite']).all():raise ValueError('Finite panel logits required')
 
+def check_panel_membership(panel,full,count=1800):
+ """Join the panel/cache opaque IDs to full-V opaque IDs, not native tuples."""
+ import numpy as np
+ pids=np.asarray(panel['ids']);fids=np.asarray(full['ids'])
+ def opaque(ids):return ids.ndim==1 and all(isinstance(v,str) and len(v)==24 and all(c in '0123456789abcdef' for c in v) for v in ids.tolist())
+ if pids.shape!=(count,) or not opaque(pids) or not opaque(fids) or len(set(pids.tolist()))!=count or len(set(fids.tolist()))!=len(fids):raise ValueError('Unique canonical opaque source IDs required; native five-tuples are separate')
+ lookup={pid:i for i,pid in enumerate(fids.tolist())}
+ if not set(pids.tolist())<=set(lookup):raise ValueError('Original V1800 must be physical subset of fullV')
+ indices=np.asarray([lookup[pid] for pid in pids.tolist()],np.int64)
+ for key in ('TX','RX','day'):
+  if np.asarray(panel[key]).shape!=(count,) or not np.array_equal(np.asarray(panel[key]),np.asarray(full[key])[indices]):raise ValueError('Panel opaque-ID aligned '+key+' differs from fullV')
+
 def decision(fullv,panel):
  clean_delta=100*(fullv['AS_EMA']['accuracy']-fullv['NOAS_EMA']['accuracy'])
  clean_net=fullv['AS_EMA']['hits']-fullv['AS_STUDENT']['hits']

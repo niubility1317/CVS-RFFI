@@ -3,13 +3,13 @@ import json
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[2]
-RUN='20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r01'
-RELEASE='cvs_FcrossRX_ownEMA_source_E50_20261018_r01'
+RUN='20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r02'
+RELEASE='cvs_FcrossRX_ownEMA_source_E50_20261018_r02'
 PARENT_RUN='20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01'
 PARENT_RELEASE='cvs_FcrossRX_As_budget_E50_20261018_r01'
 PARENT_COMMIT='0f399c910324e21a8b1a60346d879be5c2964a9c'
 OWNER='codex/root/practical-ownEMA-source'
-LOCAL='local_artifacts/F_ownEMA_source_E50_20261018'
+LOCAL='local_artifacts/F_ownEMA_source_E50_20261018_r02'
 SEED=2026092701
 RX=(1,3,4,6,8)
 DAY=(1,2,3)

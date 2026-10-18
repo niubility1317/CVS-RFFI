@@ -44,4 +44,5 @@
 |固定 RX 响应的逐包归一化源归因：唯一行预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-RXresponse-order-sourceCells-manysig-m1-r01/report.md)|
 |全源 256 点：共同轻度径向幅度关系的 L→V 反证|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01/report.md)|
 |包内重复残差轻度收缩：固定源身份保护检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-repeatShrink-sourceV-s2026092701-m1-r01/report.md)|
-|完整practical E50：既有ownEMA与学生默认头源域匹配比较|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r01/report.md)|
+|完整 practical E50：既有 own EMA 的源域默认头匹配比较|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r01/report.md)|
+|完整practical E50：既有ownEMA与学生默认头源域匹配比较|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r02/report.md)|

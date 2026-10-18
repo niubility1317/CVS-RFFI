@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 import torch
 from . import design as d
-from .protocol import check_state_pair,check_roles,check_ids,check_panel,decision
+from .protocol import check_state_pair,check_roles,check_ids,check_panel,check_panel_membership,decision
 from .metrics import summarize
 
 def unchanged(model,saved):
@@ -80,7 +80,7 @@ def panel_v(models,rt,full,device,cost,out):
  from experiments.cvs_practical_budget50.channel import tensor_iq
  data,roles=panel(torch)
  result={k:np.asarray(data[n].tolist() if hasattr(data[n],'tolist') else data[n]) for k,n in [('ids','ids'),('TX','y'),('RX','rx'),('day','day')]}
- if result['ids'].shape!=(1800,5) or not set(map(tuple,result['ids'].tolist()))<=set(map(tuple,full['physical_ids'].tolist())):raise ValueError('Original V1800 must be physical subset of fullV')
+ check_panel_membership(result,full)
  cost['panel_clean_IQ_reads']+=1800
  for arm,base in zip(d.ARMS,('NOAS','AS')):
   path=d.assert_source_path(d.panel_predictions(rt,arm),[d.parent_source(rt,arm).parent/'source_qualification'])

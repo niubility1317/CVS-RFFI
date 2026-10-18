@@ -24,10 +24,15 @@ there is no automatic retry or formal prediction path.
 
 After the source-only preregistration and actual code/config commit, the root
 owner can release with `python -m experiments.cvs_practical_ema_source.publish`.
-It reads private `local_artifacts/F_ownEMA_source_E50_20261018/runtime.json`,
+It reads private `local_artifacts/F_ownEMA_source_E50_20261018_r02/runtime.json`,
 uses one ordinary-account preflight, one archive SHA transfer comparison,
 remote compile and focused checks, then starts one process on its fixed GPU.
 The owner independently checks the submitted PID/CWD/argv/GPU and log growth.
+
+The r02 repair joins the original panel's canonical opaque SHA24 IDs with
+`fullV_ids`, checking aligned TX/RX/day. `fullV_physical_ids` retains the
+separate native `(eq_i, rx_i, day_i, sig_i, base_index)` tuples. The r01
+technical failure and its completed inference cost remain separate artifacts.
 
 The source qualification has exactly three scientific criteria: AsEMA versus
 NoAsEMA full-V clean change ≥ −0.1 absolute pp; AsEMA versus own student full-V

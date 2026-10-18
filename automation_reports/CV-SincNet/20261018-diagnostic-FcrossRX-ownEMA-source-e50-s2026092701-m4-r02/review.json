@@ -1,0 +1,18 @@
+{
+  "status": "PASS_TARGETED_FIX",
+  "original_review": "20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r01/review.json",
+  "reviewer": "/root/augmentation_organization_history",
+  "scope": "One targeted re-review only:canonicalopaqueV1800/fullVjoin andmetadata alignment;not a secondfullreview",
+  "issue": "r01compared opaqueIDstrings to nativeauxiliarytuple",
+  "fixed": "Joinpanel.ids tofullV.ids,verifyTX/RX/day peroriginalorder;nativecoordinates preservedseparately",
+  "actual_targeted_positive_cases": [
+    "nativecoords+opaqueIDs coexist",
+    "shuffledpanel retainsmetadataalignment"
+  ],
+  "actual_targeted_negative_cases": 6,
+  "CP": 0,
+  "IQ": 0,
+  "NN": 0,
+  "residual_P0P1": [],
+  "new_parameters_or_scientific_thresholds": false
+}

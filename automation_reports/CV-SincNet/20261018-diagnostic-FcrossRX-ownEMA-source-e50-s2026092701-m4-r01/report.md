@@ -1,3 +1,5 @@
+**当前状态：FAILED（技术性 ID 格式映射），非科学负结果。** 原PID1210290已退出，smoke4NN通过，四条件fullV全部读完；连接固定V1800时误把既有opaque ID与本实现辅助native坐标元组比较，触发停止。实际 108004 NN、0训练更新、0目标访问；未形成完整配对结论。原输出保留，修复使用新r02，不覆盖或重启r01。
+
 # 完整 practical E50：既有 own EMA 的源域默认头匹配比较
 
 状态：LOCAL_VERIFIED，尚未远端启动。唯一 owner 为 codex/root/practical-ownEMA-source。本轮只有源域冻结读出，0 新训练轮数／更新／教师更新；不访问正式 IQ、预测、分数或 truth。
