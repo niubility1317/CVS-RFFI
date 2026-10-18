@@ -195,3 +195,14 @@ sceneBalance本地代码／分析已冻结：19py／47聚焦负例、全部2220�
 
 
 sceneBalance已实际启动：code/config/analysis 25747acec3171d78ef4e841c90255242b96fd7aa；一次普通preflight/source句柄roles匹配，单archive比较/compile VERIFIED，oneCP2＋6L768共770NN首步smokePASS直接训练。dispatcher1381372、B01worker1381800／GPU4；PID/CWD/argv/CUDA/nvidia/log增长核实。当前strictownAs20EMA、resetAdamWcos10、originalORD128／6L1.25／原U／配额21/21/22符合，0NN分析1383360 WAIT_SOURCE／truthclosed。最新4/10新增epoch，无新性能结论；原全部数据域／默认头／测试IQ未变，健康其他任务未动。
+
+
+## SceneBalance E30：阶段单seed通过，源规则失败关闭
+
+20261018-phase1-FcrossRX-sceneBalance-e30-s2026092701-m1-r01已完成own原As20+10，总E30/6660更新，全部source及clean＋六practical固定预测、独立truth-last评分与三条件378CM/63分区核对。actualcode25747acec3171d78ef4e841c90255242b96fd7aa，所有所属进程退出、无技术缺项。新增10model-epochs/2220updates/4352334NN含770smoke，原20父和两E30控制读出不重计；完整2220步/10轮、原14native字段与物理曝光已解析，每场景尾段47360、每epoch4736，extraNN0，原6L1.25/ORD128/oldU/默认头/全源RX保持。
+
+root先取回source并保存关闭决定：fullVclean BAL−NOAS30−.118519pp，two-drawmidlow BAL−AS30＋.041667pp，两个提前固定条件均FAIL，故不E50、不扫描配额/周期相位/seed救跑。该决定在首次读取新formal之前保存；科学失败仍完成all7。归因只针对固定分层分配，nominal1/3不等于原IID实际逐包/逐ID/尾段计数匹配，也不声称已隔离纯梯度方差。
+
+正式n1：BALclean85.395833%、midurban62.796429%、lowurban51.233929%、urbanmean63.940873%；相对匹配原NoAs30 clean＋.148214pp、mid/low＋27.663690/＋21.094048pp，本seed满足clean−.1pp阶段护栏。对原As30，clean仅＋.054762pp、mid/low各−.010119pp、urbanmean仅＋.001587pp，没有实质新增星地收益；单seed和微小涨幅不证明重复双提升。三个suburban81.376190/78.624405/75.802976%，与自身clean差4.019643/6.771429/9.592857pp，比原As扩大。low<60%，整体目标仍未完成。
+
+固定配方已关闭。当前本侧无已登记新候选或运行进程，E50授权保留给有合法源证据支持的配方；不由本次formalclean正差反向晋级、换父模型或选seed。原完整As继续作匹配参照。完整[最终报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-sceneBalance-e30-s2026092701-m1-r01/final_analysis.md)包括全七view、macroF1/最差RX、源两draw、错误修复/新增、成本与缺项，三组图95点核对通过。source inference wall未单记，不伪造；图和report不作为新的审批层。

@@ -1,9 +1,9 @@
 {
-  "status": "VERIFIED_RUNNING",
+  "status": "ANALYZED",
   "run_id": "20261018-phase1-FcrossRX-sceneBalance-e30-s2026092701-m1-r01",
   "registered": true,
   "launched": true,
-  "performance_results_available": false,
+  "performance_results_available": true,
   "implementation_checks": {
     "status": "PASS_LOCAL_ONLY",
     "package": "experiments/cvs_practical_scene_balance30",
@@ -25,7 +25,7 @@
       "emitted_native_info_keys": 14,
       "full6L_total_metric": true,
       "source_summary_native_JSON": true,
-      "real_Torch_or_checkpoint_smoke": "launcher first step pending770NN",
+      "real_Torch_or_checkpoint_smoke": "Localmock only;actual launcher770NN PASS recorded separately",
       "NN": 0,
       "CP": 0,
       "IQ": 0,
@@ -44,7 +44,7 @@
       "IQ": 0,
       "target": false
     },
-    "real_checkpoint_smoke": "PENDING launcher first step;oneown20 CP2NN plus one6L768NN,total770NN;PASScontinues training",
+    "real_checkpoint_smoke": "PASS_LAUNCHER_FIRST_STEP_SHARED770_NN",
     "new_model_rows": 1,
     "real_CP_reads": 0,
     "real_IQ_reads": 0,
@@ -299,10 +299,11 @@
     "NN": 0,
     "CP": 0,
     "IQ": 0,
-    "updates": 0
+    "updates": 0,
+    "observation_phase": "FIRST_RUNNING_STEP;finalcounts/completeaudits separately recorded"
   },
   "analysis": {
-    "status": "VERIFIED_WAIT_SOURCE",
+    "status": "ANALYZED",
     "pid": 1383360,
     "code_commit": "25747acec3171d78ef4e841c90255242b96fd7aa",
     "CWD_argv_CUDA": "VERIFIED",
@@ -314,9 +315,165 @@
     "CP": 0,
     "IQ": 0,
     "updates": 0,
-    "truth_opened": false
+    "truth_opened": true,
+    "all3x7_complete": true,
+    "independent_confusion_matrices": 378,
+    "partition_reconciliations": 63
   },
-  "observed_at_utc": "2026-10-18T10:46:44.600Z",
+  "observed_at_utc": "2026-10-18T11:02:50.576Z",
   "technical_missing_items": [],
-  "observed_new_epochs": 4
+  "observed_new_epochs": 4,
+  "training_complete": true,
+  "training_logs_status": "VERIFIED_COMPLETE_TRAINING_LOGS",
+  "training_counts": {
+    "steps": 2220,
+    "L_NN": 1704960,
+    "selected_packets": 142080,
+    "As_packets": 142080,
+    "U_forward_packets": 567000,
+    "U_selected": 8721,
+    "SupCon_valid_anchor_terms": 1136640,
+    "assignment_permutations": 2220
+  },
+  "actual_scene_balance": {
+    "mode": "step21_21_22",
+    "scene_counts": {
+      "practical_low_suburban": 47360,
+      "practical_mid_urban": 47360,
+      "practical_low_urban": 47360
+    },
+    "selected_packets": 142080,
+    "actual_As_packets": 142080,
+    "assignment_permutations": 2220,
+    "extra_scene_phase": "(cumulative_step-1)%3",
+    "assignment_namespace": "scene_balance_assignment_v1",
+    "pair_weights": [
+      0.5,
+      0.5,
+      0.25
+    ],
+    "SupCon": "ORD128",
+    "total_L_scale": 1.25,
+    "channel_calls": 2220,
+    "extra_NN": 0,
+    "new_losses": 0,
+    "global_RNG_used": false,
+    "sampler_changed": false,
+    "physical_ID_uniqueness_required": false,
+    "per_epoch_scene_counts": {
+      "1": {
+        "practical_low_urban": 4736,
+        "practical_low_suburban": 4736,
+        "practical_mid_urban": 4736
+      },
+      "2": {
+        "practical_low_suburban": 4736,
+        "practical_mid_urban": 4736,
+        "practical_low_urban": 4736
+      },
+      "3": {
+        "practical_low_suburban": 4736,
+        "practical_mid_urban": 4736,
+        "practical_low_urban": 4736
+      },
+      "4": {
+        "practical_mid_urban": 4736,
+        "practical_low_urban": 4736,
+        "practical_low_suburban": 4736
+      },
+      "5": {
+        "practical_mid_urban": 4736,
+        "practical_low_suburban": 4736,
+        "practical_low_urban": 4736
+      },
+      "6": {
+        "practical_low_urban": 4736,
+        "practical_low_suburban": 4736,
+        "practical_mid_urban": 4736
+      },
+      "7": {
+        "practical_low_suburban": 4736,
+        "practical_mid_urban": 4736,
+        "practical_low_urban": 4736
+      },
+      "8": {
+        "practical_mid_urban": 4736,
+        "practical_low_suburban": 4736,
+        "practical_low_urban": 4736
+      },
+      "9": {
+        "practical_mid_urban": 4736,
+        "practical_low_urban": 4736,
+        "practical_low_suburban": 4736
+      },
+      "10": {
+        "practical_low_urban": 4736,
+        "practical_mid_urban": 4736,
+        "practical_low_suburban": 4736
+      }
+    },
+    "sampler_repetitions": {
+      "batches_with_repeated_physical_ID": 0,
+      "repeated_input_positions": 0,
+      "maximum_repeated_positions_in_batch": 0
+    },
+    "per_physical_scene_equality_not_claimed": true
+  },
+  "all7_predictions_and_independent_scores": true,
+  "source_read_before_formal": true,
+  "source_decision": {
+    "fullV_clean_vs_NoAs30_pp": -0.1185185185185178,
+    "mid_low_mean_vs_original_As30_pp": 0.04166666666666208,
+    "clean_vs_NoAs30_within_absolute_0p1pp": false,
+    "mid_low_gain_at_least_0p5pp": false,
+    "source_criteria_pass": false,
+    "E50_source_eligible": false,
+    "fixed_recipe_closed": true,
+    "fullV_clean_vs_original_As30_pp": -0.01481481481481195,
+    "only_two_source_criteria": true,
+    "scientific_negative_skips_formal": false,
+    "target_scores_read": false,
+    "per_packet_protection_gate": false,
+    "automatic_extension": false
+  },
+  "formal_stage": {
+    "clean_delta_pp": 0.14821428571428572,
+    "clean_net_repairs": 249,
+    "clean_absolute_0p1pp_guard_met": true,
+    "clean_positive_observed": true,
+    "positive_below_0p1pp_is_micro_observation": false,
+    "midurban_gain_pp": 27.663690476190474,
+    "lowurban_gain_pp": 21.09404761904762,
+    "urban_mean_gain_pp": 28.37003968253968,
+    "repeatable_clean_gain_proven": false
+  },
+  "costs_summary": {
+    "new_model_epochs": 10,
+    "new_updates": 2220,
+    "new_total_NN": 4352334,
+    "new_shared_smoke_NN": 770,
+    "old_costs_not_recharged": true
+  },
+  "collection": {
+    "source": {
+      "status": "VERIFIED",
+      "files": 5,
+      "archive_SHA256": "eefa47d971d4a0b1781b356cf002cc6e79b144957427bf7971d6cd2c8e98217d"
+    },
+    "final": {
+      "status": "VERIFIED",
+      "files": 11,
+      "archive_SHA256": "2e9391c6d66a1e062e8288a5c266c07ab84179601da5412ba0952f775c1098ef"
+    }
+  },
+  "owned_processes_exited": true,
+  "fixed_recipe_closed": true,
+  "E50_launched": false,
+  "seed_extension_launched": false,
+  "figure_verification": {
+    "status": "VERIFIED",
+    "plotted_points": 95,
+    "maximum_error_pp": 1.4210854715202004e-14,
+    "n1_no_SD_CI": true
+  }
 }

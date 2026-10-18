@@ -1,6 +1,6 @@
 # Practical 批内三场景配额：E30 最小匹配实验
 
-状态：VERIFIED_RUNNING。20261018-phase1-FcrossRX-sceneBalance-e30-s2026092701-m1-r01 已实际发布并训练；源域及正式性能尚未完成。唯一 owner codex/root/practical-sceneBalance。代码提交将在发布前写入 experiment.json；矩阵以该文件唯一维护。
+状态：ANALYZED。20261018-phase1-FcrossRX-sceneBalance-e30-s2026092701-m1-r01 已完成训练、源分析和全部七环境独立评分，无技术缺项。源两规则失败，固定配方关闭，不扩E50；本seed正式clean阶段通过，但新增配额无实质星地收益。见[完整结果](final_analysis.md)。唯一 owner codex/root/practical-sceneBalance。代码提交将在发布前写入 experiment.json；矩阵以该文件唯一维护。
 
 当前最值得保留的是原完整 practical 与普通拼接监督。已关闭的 weighted、MIXED128、stepALT、每物理包六场 sceneCycle 等配方保持关闭。现有普通 As 本来逐包独立选择三场景，本项不把“批内多场景”称为新机制。历史 sceneCycle 是 held-RX1/L5040/8L 下同 PID 跨六次访问六场轮转；本项不改变物理包覆盖规则，不复活该失败路线。
 
@@ -47,3 +47,14 @@
 真实smoke配额为low_suburban22／midurban21／lowurban21，原ORD128/defaulthead/Sinc/backbone联合梯度有限且存在；0更新/真实IQ/query，不把梯度检查当识别收益。实际训练输出source roles匹配、target_contact=false、strict own20 EMA、empty resetAdamW／cos10／lr.0002／WD.0001；resolved21/21/22原位置分配／ORD128／原6L保持。最新观察已完成2/10新增epoch，无技术异常。
 
 零NN分析1383360实际CWD/argv/emptyCUDA已核实，WAIT_SOURCE／truth未开；单archive比较/remotecompile PASS，本地toy未远端重复。后续先source取回保存决定，正式3×7闭合后报告；当前无新性能结论。
+
+
+## 已完成结果
+
+源结果先取回并保存[source关闭决定](source_decision.json)：BAL fullVclean−原NoAs30为−.118519pp，两draw midlow−原As30为＋.041667pp，两固定条件均FAIL，先于root读取新formal关闭固定配额。没有E50或扩种子，正式结果不改该决定。
+
+三条件×七视图全部完成固定预测、独立评分和378CM/63分区重计数核对，完整2220步/10轮source日志解析，所有本run进程退出、无技术缺项。新增10model-epochs/2220更新/4352334NN含770smoke，原20父和两旧E30成本分列复用，不重复收费。
+
+正式BAL clean85.395833%、midurban62.796429%、lowurban51.233929%、urbanmean63.940873%。对匹配NoAs30，clean＋.148214pp、mid/low＋27.663690/＋21.094048pp，本seed满足clean−.1pp阶段护栏。对原As30，clean仅＋.054762pp、mid/low各−.010119pp、urbanmean仅＋.001587pp，不能把原完整As的星地收益归于配额，不宣称新增机制或训练配方有重复双提升。三suburban与自身clean差4.019643/6.771429/9.592857pp，比原As扩大；未获得suburban保护。
+
+完整accuracy/macroF1/最差RX/错误配对/源two-draw/成本和边界见[最终分析](final_analysis.md)、[汇总JSON](results.json)。[配对科研图](figures/scenebalance_single_seed_paired.png)区分原As和配额增量，n1无SD/CI。整体目标未完成；当前本侧无已登记新候选，后续只按合法源证据确定新假设，不据本次formal微差改配额、相位、seed或父模型。

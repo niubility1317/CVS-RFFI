@@ -1,0 +1,96 @@
+﻿figure,panel,series,view,x,y,value,unit,source,model_seed,model_seed_count,value_axis
+scenebalance_single_seed_absolute,A,NOAS30,clean,-0.23,85.24761904761905,85.24761904761905,percent,formal.summary.NOAS30.views.clean.accuracy *100,2026092701,1,y
+scenebalance_single_seed_absolute,A,NOAS30,practical_high,0.77,42.68511904761905,42.68511904761905,percent,formal.summary.NOAS30.views.practical_high.accuracy *100,2026092701,1,y
+scenebalance_single_seed_absolute,A,NOAS30,practical_mid,1.77,40.99523809523809,40.99523809523809,percent,formal.summary.NOAS30.views.practical_mid.accuracy *100,2026092701,1,y
+scenebalance_single_seed_absolute,A,NOAS30,practical_low_suburban,2.77,39.47261904761905,39.47261904761905,percent,formal.summary.NOAS30.views.practical_low_suburban.accuracy *100,2026092701,1,y
+scenebalance_single_seed_absolute,A,NOAS30,practical_high_urban,3.77,41.43988095238095,41.43988095238095,percent,formal.summary.NOAS30.views.practical_high_urban.accuracy *100,2026092701,1,y
+scenebalance_single_seed_absolute,A,NOAS30,practical_mid_urban,4.77,35.132738095238096,35.132738095238096,percent,formal.summary.NOAS30.views.practical_mid_urban.accuracy *100,2026092701,1,y
+scenebalance_single_seed_absolute,A,NOAS30,practical_low_urban,5.77,30.139880952380953,30.139880952380953,percent,formal.summary.NOAS30.views.practical_low_urban.accuracy *100,2026092701,1,y
+scenebalance_single_seed_absolute,A,NOAS30,urban_mean,6.77,35.57083333333333,35.57083333333333,percent,formal.summary.NOAS30.urban_mean_accuracy *100,2026092701,1,y
+scenebalance_single_seed_absolute,A,AS30,clean,0.0,85.34107142857142,85.34107142857142,percent,formal.summary.AS30.views.clean.accuracy *100,2026092701,1,y
+scenebalance_single_seed_absolute,A,AS30,practical_high,1.0,81.40535714285714,81.40535714285714,percent,formal.summary.AS30.views.practical_high.accuracy *100,2026092701,1,y
+scenebalance_single_seed_absolute,A,AS30,practical_mid,2.0,78.66130952380952,78.66130952380952,percent,formal.summary.AS30.views.practical_mid.accuracy *100,2026092701,1,y
+scenebalance_single_seed_absolute,A,AS30,practical_low_suburban,3.0,75.86190476190477,75.86190476190477,percent,formal.summary.AS30.views.practical_low_suburban.accuracy *100,2026092701,1,y
+scenebalance_single_seed_absolute,A,AS30,practical_high_urban,4.0,77.76726190476191,77.76726190476191,percent,formal.summary.AS30.views.practical_high_urban.accuracy *100,2026092701,1,y
+scenebalance_single_seed_absolute,A,AS30,practical_mid_urban,5.0,62.80654761904761,62.80654761904761,percent,formal.summary.AS30.views.practical_mid_urban.accuracy *100,2026092701,1,y
+scenebalance_single_seed_absolute,A,AS30,practical_low_urban,6.0,51.24404761904762,51.24404761904762,percent,formal.summary.AS30.views.practical_low_urban.accuracy *100,2026092701,1,y
+scenebalance_single_seed_absolute,A,AS30,urban_mean,7.0,63.93928571428572,63.93928571428572,percent,formal.summary.AS30.urban_mean_accuracy *100,2026092701,1,y
+scenebalance_single_seed_absolute,A,BAL_AS30,clean,0.23,85.39583333333334,85.39583333333334,percent,formal.summary.BAL_AS30.views.clean.accuracy *100,2026092701,1,y
+scenebalance_single_seed_absolute,A,BAL_AS30,practical_high,1.23,81.37619047619047,81.37619047619047,percent,formal.summary.BAL_AS30.views.practical_high.accuracy *100,2026092701,1,y
+scenebalance_single_seed_absolute,A,BAL_AS30,practical_mid,2.23,78.62440476190477,78.62440476190477,percent,formal.summary.BAL_AS30.views.practical_mid.accuracy *100,2026092701,1,y
+scenebalance_single_seed_absolute,A,BAL_AS30,practical_low_suburban,3.23,75.80297619047619,75.80297619047619,percent,formal.summary.BAL_AS30.views.practical_low_suburban.accuracy *100,2026092701,1,y
+scenebalance_single_seed_absolute,A,BAL_AS30,practical_high_urban,4.23,77.7922619047619,77.7922619047619,percent,formal.summary.BAL_AS30.views.practical_high_urban.accuracy *100,2026092701,1,y
+scenebalance_single_seed_absolute,A,BAL_AS30,practical_mid_urban,5.23,62.79642857142858,62.79642857142858,percent,formal.summary.BAL_AS30.views.practical_mid_urban.accuracy *100,2026092701,1,y
+scenebalance_single_seed_absolute,A,BAL_AS30,practical_low_urban,6.23,51.233928571428564,51.233928571428564,percent,formal.summary.BAL_AS30.views.practical_low_urban.accuracy *100,2026092701,1,y
+scenebalance_single_seed_absolute,A,BAL_AS30,urban_mean,7.23,63.940873015873024,63.940873015873024,percent,formal.summary.BAL_AS30.urban_mean_accuracy *100,2026092701,1,y
+scenebalance_single_seed_paired,A,AS30__NOAS30,clean,0.09345238095237107,0.0,0.09345238095237107,pp,formal.comparisons.AS30__NOAS30.clean accuracy delta;horizontal value is x,2026092701,1,x
+scenebalance_single_seed_paired,A,AS30__NOAS30,practical_high,38.720238095238095,1.0,38.720238095238095,pp,formal.comparisons.AS30__NOAS30.practical_high accuracy delta;horizontal value is x,2026092701,1,x
+scenebalance_single_seed_paired,A,AS30__NOAS30,practical_mid,37.66607142857143,2.0,37.66607142857143,pp,formal.comparisons.AS30__NOAS30.practical_mid accuracy delta;horizontal value is x,2026092701,1,x
+scenebalance_single_seed_paired,A,AS30__NOAS30,practical_low_suburban,36.38928571428572,3.0,36.38928571428572,pp,formal.comparisons.AS30__NOAS30.practical_low_suburban accuracy delta;horizontal value is x,2026092701,1,x
+scenebalance_single_seed_paired,A,AS30__NOAS30,practical_high_urban,36.327380952380956,4.0,36.327380952380956,pp,formal.comparisons.AS30__NOAS30.practical_high_urban accuracy delta;horizontal value is x,2026092701,1,x
+scenebalance_single_seed_paired,A,AS30__NOAS30,practical_mid_urban,27.673809523809517,5.0,27.673809523809517,pp,formal.comparisons.AS30__NOAS30.practical_mid_urban accuracy delta;horizontal value is x,2026092701,1,x
+scenebalance_single_seed_paired,A,AS30__NOAS30,practical_low_urban,21.104166666666668,6.0,21.104166666666668,pp,formal.comparisons.AS30__NOAS30.practical_low_urban accuracy delta;horizontal value is x,2026092701,1,x
+scenebalance_single_seed_paired,A,AS30__NOAS30,urban_mean,28.368452380952384,7.0,28.368452380952384,pp,formal.comparisons.AS30__NOAS30.urban_mean accuracy delta;horizontal value is x,2026092701,1,x
+scenebalance_single_seed_paired,B,BAL_AS30__NOAS30,clean,0.14821428571428896,0.0,0.14821428571428896,pp,formal.comparisons.BAL_AS30__NOAS30.clean accuracy delta;horizontal value is x,2026092701,1,x
+scenebalance_single_seed_paired,B,BAL_AS30__NOAS30,practical_high,38.691071428571426,1.0,38.691071428571426,pp,formal.comparisons.BAL_AS30__NOAS30.practical_high accuracy delta;horizontal value is x,2026092701,1,x
+scenebalance_single_seed_paired,B,BAL_AS30__NOAS30,practical_mid,37.62916666666668,2.0,37.62916666666668,pp,formal.comparisons.BAL_AS30__NOAS30.practical_mid accuracy delta;horizontal value is x,2026092701,1,x
+scenebalance_single_seed_paired,B,BAL_AS30__NOAS30,practical_low_suburban,36.33035714285714,3.0,36.33035714285714,pp,formal.comparisons.BAL_AS30__NOAS30.practical_low_suburban accuracy delta;horizontal value is x,2026092701,1,x
+scenebalance_single_seed_paired,B,BAL_AS30__NOAS30,practical_high_urban,36.35238095238095,4.0,36.35238095238095,pp,formal.comparisons.BAL_AS30__NOAS30.practical_high_urban accuracy delta;horizontal value is x,2026092701,1,x
+scenebalance_single_seed_paired,B,BAL_AS30__NOAS30,practical_mid_urban,27.66369047619048,5.0,27.66369047619048,pp,formal.comparisons.BAL_AS30__NOAS30.practical_mid_urban accuracy delta;horizontal value is x,2026092701,1,x
+scenebalance_single_seed_paired,B,BAL_AS30__NOAS30,practical_low_urban,21.09404761904761,6.0,21.09404761904761,pp,formal.comparisons.BAL_AS30__NOAS30.practical_low_urban accuracy delta;horizontal value is x,2026092701,1,x
+scenebalance_single_seed_paired,B,BAL_AS30__NOAS30,urban_mean,28.37003968253969,7.0,28.37003968253969,pp,formal.comparisons.BAL_AS30__NOAS30.urban_mean accuracy delta;horizontal value is x,2026092701,1,x
+scenebalance_single_seed_paired,C,BAL_AS30__AS30,clean,0.05476190476191789,0.0,0.05476190476191789,pp,formal.comparisons.BAL_AS30__AS30.clean accuracy delta;horizontal value is x,2026092701,1,x
+scenebalance_single_seed_paired,C,BAL_AS30__AS30,practical_high,-0.02916666666666856,1.0,-0.02916666666666856,pp,formal.comparisons.BAL_AS30__AS30.practical_high accuracy delta;horizontal value is x,2026092701,1,x
+scenebalance_single_seed_paired,C,BAL_AS30__AS30,practical_mid,-0.03690476190475067,2.0,-0.03690476190475067,pp,formal.comparisons.BAL_AS30__AS30.practical_mid accuracy delta;horizontal value is x,2026092701,1,x
+scenebalance_single_seed_paired,C,BAL_AS30__AS30,practical_low_suburban,-0.05892857142858077,3.0,-0.05892857142858077,pp,formal.comparisons.BAL_AS30__AS30.practical_low_suburban accuracy delta;horizontal value is x,2026092701,1,x
+scenebalance_single_seed_paired,C,BAL_AS30__AS30,practical_high_urban,0.024999999999991473,4.0,0.024999999999991473,pp,formal.comparisons.BAL_AS30__AS30.practical_high_urban accuracy delta;horizontal value is x,2026092701,1,x
+scenebalance_single_seed_paired,C,BAL_AS30__AS30,practical_mid_urban,-0.01011904761903537,5.0,-0.01011904761903537,pp,formal.comparisons.BAL_AS30__AS30.practical_mid_urban accuracy delta;horizontal value is x,2026092701,1,x
+scenebalance_single_seed_paired,C,BAL_AS30__AS30,practical_low_urban,-0.010119047619056687,6.0,-0.010119047619056687,pp,formal.comparisons.BAL_AS30__AS30.practical_low_urban accuracy delta;horizontal value is x,2026092701,1,x
+scenebalance_single_seed_paired,C,BAL_AS30__AS30,urban_mean,0.0015873015873069107,7.0,0.0015873015873069107,pp,formal.comparisons.BAL_AS30__AS30.urban_mean accuracy delta;horizontal value is x,2026092701,1,x
+scenebalance_single_seed_clean_and_quality,A,BAL_AS30__NOAS30,clean,0.0,0.14821428571428896,0.14821428571428896,pp,formal.comparisons.BAL_AS30__NOAS30.clean.accuracy_delta_pp,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,B,BAL_AS30__AS30,clean,0.0,0.05476190476191789,0.05476190476191789,pp,formal.comparisons.BAL_AS30__AS30.clean accuracy delta,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,B,BAL_AS30__AS30,practical_mid_urban,1.0,-0.01011904761903537,-0.01011904761903537,pp,formal.comparisons.BAL_AS30__AS30.practical_mid_urban accuracy delta,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,B,BAL_AS30__AS30,practical_low_urban,2.0,-0.010119047619056687,-0.010119047619056687,pp,formal.comparisons.BAL_AS30__AS30.practical_low_urban accuracy delta,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,B,BAL_AS30__AS30,urban_mean,3.0,0.0015873015873069107,0.0015873015873069107,pp,formal.comparisons.BAL_AS30__AS30.urban_mean accuracy delta,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,C,NOAS30,clean,-0.035,84.97963552844368,84.97963552844368,percent,formal.summary.NOAS30.views.clean.macro_f1 *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,C,NOAS30,practical_high,0.965,39.311416060035434,39.311416060035434,percent,formal.summary.NOAS30.views.practical_high.macro_f1 *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,C,NOAS30,practical_mid,1.965,37.95481297573205,37.95481297573205,percent,formal.summary.NOAS30.views.practical_mid.macro_f1 *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,C,NOAS30,practical_low_suburban,2.965,36.75873064140263,36.75873064140263,percent,formal.summary.NOAS30.views.practical_low_suburban.macro_f1 *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,C,NOAS30,practical_high_urban,3.965,38.48102959366482,38.48102959366482,percent,formal.summary.NOAS30.views.practical_high_urban.macro_f1 *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,C,NOAS30,practical_mid_urban,4.965,33.44660283927365,33.44660283927365,percent,formal.summary.NOAS30.views.practical_mid_urban.macro_f1 *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,C,NOAS30,practical_low_urban,5.965,29.184589471739926,29.184589471739926,percent,formal.summary.NOAS30.views.practical_low_urban.macro_f1 *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,C,AS30,clean,0.0,85.04447415646985,85.04447415646985,percent,formal.summary.AS30.views.clean.macro_f1 *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,C,AS30,practical_high,1.0,81.08423019202156,81.08423019202156,percent,formal.summary.AS30.views.practical_high.macro_f1 *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,C,AS30,practical_mid,2.0,78.35970572814207,78.35970572814207,percent,formal.summary.AS30.views.practical_mid.macro_f1 *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,C,AS30,practical_low_suburban,3.0,75.57274083648299,75.57274083648299,percent,formal.summary.AS30.views.practical_low_suburban.macro_f1 *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,C,AS30,practical_high_urban,4.0,77.4232076238516,77.4232076238516,percent,formal.summary.AS30.views.practical_high_urban.macro_f1 *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,C,AS30,practical_mid_urban,5.0,62.450463160239835,62.450463160239835,percent,formal.summary.AS30.views.practical_mid_urban.macro_f1 *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,C,AS30,practical_low_urban,6.0,50.88703513826375,50.88703513826375,percent,formal.summary.AS30.views.practical_low_urban.macro_f1 *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,C,BAL_AS30,clean,0.035,85.10407894969156,85.10407894969156,percent,formal.summary.BAL_AS30.views.clean.macro_f1 *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,C,BAL_AS30,practical_high,1.035,81.06100375226602,81.06100375226602,percent,formal.summary.BAL_AS30.views.practical_high.macro_f1 *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,C,BAL_AS30,practical_mid,2.035,78.31655632447917,78.31655632447917,percent,formal.summary.BAL_AS30.views.practical_mid.macro_f1 *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,C,BAL_AS30,practical_low_suburban,3.035,75.50240923338376,75.50240923338376,percent,formal.summary.BAL_AS30.views.practical_low_suburban.macro_f1 *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,C,BAL_AS30,practical_high_urban,4.035,77.44190648790872,77.44190648790872,percent,formal.summary.BAL_AS30.views.practical_high_urban.macro_f1 *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,C,BAL_AS30,practical_mid_urban,5.035,62.419160436611755,62.419160436611755,percent,formal.summary.BAL_AS30.views.practical_mid_urban.macro_f1 *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,C,BAL_AS30,practical_low_urban,6.035,50.87039690840268,50.87039690840268,percent,formal.summary.BAL_AS30.views.practical_low_urban.macro_f1 *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,D,NOAS30,clean,-0.035,78.45,78.45,percent,formal.summary.NOAS30.views.clean.worst_RX_accuracy *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,D,NOAS30,practical_high,0.965,34.30416666666667,34.30416666666667,percent,formal.summary.NOAS30.views.practical_high.worst_RX_accuracy *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,D,NOAS30,practical_mid,1.965,33.520833333333336,33.520833333333336,percent,formal.summary.NOAS30.views.practical_mid.worst_RX_accuracy *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,D,NOAS30,practical_low_suburban,2.965,32.05416666666667,32.05416666666667,percent,formal.summary.NOAS30.views.practical_low_suburban.worst_RX_accuracy *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,D,NOAS30,practical_high_urban,3.965,34.0,34.0,percent,formal.summary.NOAS30.views.practical_high_urban.worst_RX_accuracy *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,D,NOAS30,practical_mid_urban,4.965,29.495833333333334,29.495833333333334,percent,formal.summary.NOAS30.views.practical_mid_urban.worst_RX_accuracy *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,D,NOAS30,practical_low_urban,5.965,25.75,25.75,percent,formal.summary.NOAS30.views.practical_low_urban.worst_RX_accuracy *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,D,AS30,clean,0.0,78.3625,78.3625,percent,formal.summary.AS30.views.clean.worst_RX_accuracy *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,D,AS30,practical_high,1.0,71.90833333333333,71.90833333333333,percent,formal.summary.AS30.views.practical_high.worst_RX_accuracy *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,D,AS30,practical_mid,2.0,70.2125,70.2125,percent,formal.summary.AS30.views.practical_mid.worst_RX_accuracy *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,D,AS30,practical_low_suburban,3.0,67.74166666666666,67.74166666666666,percent,formal.summary.AS30.views.practical_low_suburban.worst_RX_accuracy *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,D,AS30,practical_high_urban,4.0,69.10833333333333,69.10833333333333,percent,formal.summary.AS30.views.practical_high_urban.worst_RX_accuracy *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,D,AS30,practical_mid_urban,5.0,56.458333333333336,56.458333333333336,percent,formal.summary.AS30.views.practical_mid_urban.worst_RX_accuracy *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,D,AS30,practical_low_urban,6.0,46.37916666666666,46.37916666666666,percent,formal.summary.AS30.views.practical_low_urban.worst_RX_accuracy *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,D,BAL_AS30,clean,0.035,78.65416666666667,78.65416666666667,percent,formal.summary.BAL_AS30.views.clean.worst_RX_accuracy *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,D,BAL_AS30,practical_high,1.035,71.72916666666667,71.72916666666667,percent,formal.summary.BAL_AS30.views.practical_high.worst_RX_accuracy *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,D,BAL_AS30,practical_mid,2.035,70.09583333333333,70.09583333333333,percent,formal.summary.BAL_AS30.views.practical_mid.worst_RX_accuracy *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,D,BAL_AS30,practical_low_suburban,3.035,67.5625,67.5625,percent,formal.summary.BAL_AS30.views.practical_low_suburban.worst_RX_accuracy *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,D,BAL_AS30,practical_high_urban,4.035,68.9875,68.9875,percent,formal.summary.BAL_AS30.views.practical_high_urban.worst_RX_accuracy *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,D,BAL_AS30,practical_mid_urban,5.035,56.391666666666666,56.391666666666666,percent,formal.summary.BAL_AS30.views.practical_mid_urban.worst_RX_accuracy *100,2026092701,1,y
+scenebalance_single_seed_clean_and_quality,D,BAL_AS30,practical_low_urban,6.035,46.4125,46.4125,percent,formal.summary.BAL_AS30.views.practical_low_urban.worst_RX_accuracy *100,2026092701,1,y

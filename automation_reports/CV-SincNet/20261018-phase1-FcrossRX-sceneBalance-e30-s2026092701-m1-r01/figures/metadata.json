@@ -1,0 +1,105 @@
+{
+  "run_id": "20261018-phase1-FcrossRX-sceneBalance-e30-s2026092701-m1-r01",
+  "model_seed": 2026092701,
+  "model_seed_count": 1,
+  "logical_conditions": [
+    "NOAS30",
+    "AS30",
+    "BAL_AS30"
+  ],
+  "views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "formal_packets_per_view": 168000,
+  "source_first": true,
+  "independent_formal_recount": "VERIFIED",
+  "trajectory": "E30=20+10;resetAdamW/cosine10 for final10",
+  "L_forwards_per_step": 6,
+  "L_packets_per_step": 768,
+  "L_loss_scale": 1.25,
+  "mechanism_extra_NN": 0,
+  "mechanism": "As64 scene counts21/21/22;extra scene rotates by cumulative step;private permutation assigns original64 positions;original ORD128 SupCon/physics unchanged",
+  "sampler_deduplicated": false,
+  "selected_actual_view": {
+    "NoAs": "raw64",
+    "As": "complete practical(raw64)"
+  },
+  "statistics": "One fixed model seed;descriptive values only;no SD,CI or repeatability claim",
+  "absolute_metric_unit": "percent",
+  "paired_change_unit": "absolute percentage points",
+  "maximum_coordinate_error_pp": 1.4210854715202004e-14,
+  "stage": {
+    "clean_delta_pp": 0.14821428571428572,
+    "clean_net_repairs": 249,
+    "clean_absolute_0p1pp_guard_met": true,
+    "clean_positive_observed": true,
+    "positive_below_0p1pp_is_micro_observation": false,
+    "midurban_gain_pp": 27.663690476190474,
+    "lowurban_gain_pp": 21.09404761904762,
+    "urban_mean_gain_pp": 28.37003968253968,
+    "repeatable_clean_gain_proven": false
+  },
+  "source_decision": {
+    "fullV_clean_vs_NoAs30_pp": -0.1185185185185178,
+    "mid_low_mean_vs_original_As30_pp": 0.04166666666666208,
+    "clean_vs_NoAs30_within_absolute_0p1pp": false,
+    "mid_low_gain_at_least_0p5pp": false,
+    "source_criteria_pass": false,
+    "E50_source_eligible": false,
+    "fixed_recipe_closed": true,
+    "fullV_clean_vs_original_As30_pp": -0.01481481481481195,
+    "only_two_source_criteria": true,
+    "scientific_negative_skips_formal": false,
+    "target_scores_read": false,
+    "per_packet_protection_gate": false,
+    "automatic_extension": false
+  },
+  "new_model_epochs": 10,
+  "new_updates": 2220,
+  "new_shared_smoke_NN": 770,
+  "new_total_model_NN": 4352334,
+  "figures_used_for_selection": false,
+  "plot_NN": 0,
+  "IQ_reads": 0,
+  "checkpoint_reads": 0,
+  "truth_reads": 0,
+  "raw_prediction_reads": 0,
+  "new_predictions": 0,
+  "new_scoring": 0,
+  "new_training_updates": 0,
+  "repeatable_joint_gain_proven": false,
+  "limitations": [
+    "n=1;no estimate of between-seed variation",
+    "Fixed already-exposed benchmark;no new independent blind-test claim",
+    "One originalNoAs30 readout is reused;there is no newNoAs row or factorial interaction",
+    "Aggregate coordinates only;no new physical prediction/error recount"
+  ],
+  "inputs": [
+    "source_summary.json",
+    "complete.json",
+    "formal_summary.json",
+    "costs.json",
+    "training_logs.json"
+  ],
+  "plotted_coordinate_count": 95,
+  "export_formats": [
+    "PNG",
+    "PDF"
+  ],
+  "PNG_dpi": 400,
+  "PDF_fonttype": 42,
+  "plot_files": [
+    "scenebalance_single_seed_absolute.png",
+    "scenebalance_single_seed_absolute.pdf",
+    "scenebalance_single_seed_paired.png",
+    "scenebalance_single_seed_paired.pdf",
+    "scenebalance_single_seed_clean_and_quality.png",
+    "scenebalance_single_seed_clean_and_quality.pdf"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "status": "SOURCE_READ_BEFORE_FORMAL",
+  "time_UTC": "2026-10-18T10:58:37.802Z",
+  "run_id": "20261018-phase1-FcrossRX-sceneBalance-e30-s2026092701-m1-r01",
+  "source_collection_archive_SHA256": "eefa47d971d4a0b1781b356cf002cc6e79b144957427bf7971d6cd2c8e98217d",
+  "source_decision": {
+    "fullV_clean_vs_NoAs30_pp": -0.1185185185185178,
+    "mid_low_mean_vs_original_As30_pp": 0.04166666666666208,
+    "clean_vs_NoAs30_within_absolute_0p1pp": false,
+    "mid_low_gain_at_least_0p5pp": false,
+    "source_criteria_pass": false,
+    "E50_source_eligible": false,
+    "fixed_recipe_closed": true,
+    "fullV_clean_vs_original_As30_pp": -0.01481481481481195,
+    "only_two_source_criteria": true,
+    "scientific_negative_skips_formal": false,
+    "target_scores_read": false,
+    "per_packet_protection_gate": false,
+    "automatic_extension": false
+  },
+  "root_read_new_formal_values": false,
+  "decision": "CLOSE_FIXED_WITHINSTEP_SCENE_QUOTA_NO_E50_NO_SEED_RESCUE",
+  "reason": "SourcefullVclean−NoAs30=-.1185185pp below−.1pp;two-drawmidlow−originalAs30=+.0416667pp below+.5pp. Bothfixedcriteriafail. Finishall7formalregardless.",
+  "future_training_authorized_by_this_record": false
+}

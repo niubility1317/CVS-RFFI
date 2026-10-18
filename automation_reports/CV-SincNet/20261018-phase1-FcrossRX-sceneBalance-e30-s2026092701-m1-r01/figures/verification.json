@@ -1,0 +1,54 @@
+{
+  "status": "VERIFIED_EXPORTED_COORDINATES",
+  "plotted_coordinates": 95,
+  "CSV_rows": 95,
+  "derived_scalar_coordinate_count": 98,
+  "maximum_export_error_vs_final_JSON_pp": 1.4210854715202004e-14,
+  "generator_maximum_formula_check_error_pp": 1.4210854715202004e-14,
+  "files": [
+    {
+      "name": "scenebalance_single_seed_absolute.pdf",
+      "bytes": 103165
+    },
+    {
+      "name": "scenebalance_single_seed_absolute.png",
+      "bytes": 360224
+    },
+    {
+      "name": "scenebalance_single_seed_clean_and_quality.pdf",
+      "bytes": 133333
+    },
+    {
+      "name": "scenebalance_single_seed_clean_and_quality.png",
+      "bytes": 723552
+    },
+    {
+      "name": "scenebalance_single_seed_paired.pdf",
+      "bytes": 104005
+    },
+    {
+      "name": "scenebalance_single_seed_paired.png",
+      "bytes": 481645
+    }
+  ],
+  "visual_inspection": "All three finalPNG figures inspected;no clipped text or data-covering overlaps;stagebound onlyBAL-NoAs clean;sourceFAIL/closed and n1 caveats explicit",
+  "model_seed_count": 1,
+  "SD_or_CI": false,
+  "extra_condition_or_interaction": false,
+  "source_recipe_closed": true,
+  "stage_clean_guard_met": true,
+  "limitations": [
+    "n=1;no estimate of between-seed variation",
+    "Fixed already-exposed benchmark;no new independent blind-test claim",
+    "One originalNoAs30 readout is reused;there is no newNoAs row or factorial interaction",
+    "Aggregate coordinates only;no new physical prediction/error recount"
+  ],
+  "NN": 0,
+  "IQ": 0,
+  "CP": 0,
+  "truth_reads": 0,
+  "raw_prediction_reads": 0,
+  "new_predictions": 0,
+  "new_scoring": 0,
+  "new_training_updates": 0
+}
