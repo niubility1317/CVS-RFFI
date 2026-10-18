@@ -153,7 +153,15 @@
     "qualification": "FAIL",
     "joint_goal_complete": false
   },
-  "next_source_hypothesis": null,
+  "next_source_hypothesis": {
+    "status": "READ_EXISTING_AS_COVERAGE_FIRST_NOT_A_TRAINING_CANDIDATE",
+    "hypothesis": "Unexpected TX/channel-condition exposure coupling within sourceRX in ordinary practical training",
+    "source_only": true,
+    "new_IQ": 0,
+    "new_training": 0,
+    "target_access": false,
+    "no_automatic_promotion": true
+  },
   "next_training_hypothesis": null,
   "source_commonphase_sensitivity_result": {
     "name": "Bounded common-phase sensitivity of current F+CROSS_RX default head",
@@ -2826,12 +2834,16 @@
     "reference": "https://github.com/WiSig-dataset/wisig-process-raw/blob/master/matlab_equalization/equalize_channel.m"
   },
   "active_Ag_hypothesis": {
-    "status": "IMPLEMENTED_SOURCE_DIAGNOSTIC_PENDING",
+    "status": "CLOSED_FIXED_IDENTITY_SENSITIVITY_SOURCE_RANKING_FAILED",
     "run_id": "20261018-diagnostic-F-identitySensitivity-sourceLtoV-s2026092701-m1-r01",
-    "hypothesis": "L-only defaulthead input sensitivity predicts identity-protective equal-energy localgain locations on independent sourceV",
+    "source_identity_protection_passed": true,
+    "source_ranking_passed": false,
+    "failed_condition": "CONCAT low/high newerror rate13/23=0.5652173913>0.5",
     "new_Ag_efficacy": false,
-    "no_training_or_target": true,
-    "report": "automation_reports/CV-SincNet/20261018-diagnostic-F-identitySensitivity-sourceLtoV-s2026092701-m1-r01/report.md"
+    "new_training_updates": 0,
+    "target_access": false,
+    "closed_fixed_scope": "L-only margingradient/maxcellscore/grid16/gain.1/step.01/original2parents/seed;norescue",
+    "report": "automation_reports/CV-SincNet/20261018-diagnostic-F-identitySensitivity-sourceLtoV-s2026092701-m1-r01/final_analysis.md"
   },
   "latest_completed_source_diagnostic": "20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01",
   "active_training_budget": {
@@ -4267,8 +4279,8 @@
     "full_B00_B10_B01_B11_missing": true,
     "cross_seed_missing": true
   },
-  "current_source_experiment": "20261018-diagnostic-F-identitySensitivity-sourceLtoV-s2026092701-m1-r01",
-  "latest_completed_source_experiment": "20261018-diagnostic-F-repeatShrink-sourceV-s2026092701-m1-r01",
+  "current_source_experiment": null,
+  "latest_completed_source_experiment": "20261018-diagnostic-F-identitySensitivity-sourceLtoV-s2026092701-m1-r01",
   "unitary_source_result": {
     "run_id": "20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01",
     "status": "ANALYZED_SOURCE_IDENTITY_PROTECTION_ONLY",
@@ -7586,5 +7598,84 @@
       },
       "CPU_bridge_timer_limitation": "Includes host waiting/CPU-GPU bridge;not isolated pure CPU kernel time"
     }
+  },
+  "latest_completed_source_analysis": "20261018-diagnostic-F-identitySensitivity-sourceLtoV-s2026092701-m1-r01",
+  "identity_sensitivity_source_result": {
+    "run_id": "20261018-diagnostic-F-identitySensitivity-sourceLtoV-s2026092701-m1-r01",
+    "execution_commit": "6faf8e5f0d571153ba41a282e87bedb6ae978cde",
+    "source_criteria_passed": false,
+    "conditions_failed": [
+      "CONCAT/low_over_high"
+    ],
+    "controls": {
+      "REPEAT": {
+        "uniform_new_errors": 87,
+        "low_new_errors": 13,
+        "high_new_errors": 32,
+        "uniform_error_opportunities": 56384,
+        "low_error_opportunities": 14096,
+        "high_error_opportunities": 14096,
+        "low_over_uniform": 0.5977011494252874,
+        "low_over_high": 0.40625
+      },
+      "CONCAT": {
+        "uniform_new_errors": 73,
+        "low_new_errors": 13,
+        "high_new_errors": 23,
+        "uniform_error_opportunities": 56128,
+        "low_error_opportunities": 14032,
+        "high_error_opportunities": 14032,
+        "low_over_uniform": 0.7123287671232876,
+        "low_over_high": 0.5652173913043478
+      }
+    },
+    "low_blocks": [
+      2,
+      4,
+      9,
+      11
+    ],
+    "high_blocks": [
+      5,
+      3,
+      14,
+      1
+    ],
+    "cost": {
+      "NN": 118984,
+      "CP": 2,
+      "source_cache_loads": 1,
+      "source_L_selected": 180,
+      "source_V_selected": 1800,
+      "input_gradient_packets": 182,
+      "input_backward_tensor_calls": 3,
+      "operator_applications": 57600,
+      "ordinary_generations": 0,
+      "teacher_NN": 0,
+      "updates": 0,
+      "head_fit_updates": 0,
+      "wall_seconds": 12.597604000009596
+    },
+    "independent_recount": {
+      "status": "VERIFIED",
+      "confusion_matrices": 6930,
+      "paired_views": 64,
+      "partition_reconciliations": 264,
+      "ranking_values": 1465,
+      "criteria": 200,
+      "max_absolute_error": 0,
+      "all33_view_log_lines_once": true,
+      "source_only": true,
+      "raw_IQ_reads": 0,
+      "CP_loads": 0,
+      "NN": 0,
+      "updates": 0,
+      "target_truth_reads": 0
+    },
+    "source_RX_holdout": null,
+    "IQ_points": 256,
+    "target_access": false,
+    "new_Ag_efficacy": false,
+    "joint_goal_complete": false
   }
 }

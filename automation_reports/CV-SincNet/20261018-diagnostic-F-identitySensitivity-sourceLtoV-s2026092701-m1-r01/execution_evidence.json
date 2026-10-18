@@ -1,0 +1,46 @@
+{
+  "status": "VERIFIED",
+  "execution_commit": "6faf8e5f0d571153ba41a282e87bedb6ae978cde",
+  "code_config_commit": "bafb990f51168c56b6e72ad793ce5572b29d318d",
+  "analysis_commit": "d76a977496340921f3bfd3f9a1300a225e7373eb",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "ordinary_account_preflight": "VERIFIED",
+  "CP_smoke": "PASS",
+  "dispatcher_pid": 1085510,
+  "worker_pid": 1085528,
+  "gpu": 2,
+  "worker_natural_exit": true,
+  "dispatcher_completion_status": "SOURCE_EXPERIMENT_COMPLETE",
+  "technical_failure": false,
+  "model_state_unchanged": true,
+  "all_views_complete": 66,
+  "all_view_log_lines": 33,
+  "log_growth_bytes": [
+    711,
+    795
+  ],
+  "postlaunch_observation": {
+    "CWD_matches": true,
+    "phase_observed": "same PID after exec into CPU independent source scorer",
+    "GPU_readout_process_snapshot_captured": false,
+    "worker_argv_and_GPU_env_differed_because_of_exec": true
+  },
+  "GPU_readout_artifact_evidence": "Worker requires reserved GPU before first CP and all real reads/smoke explicitly use cuda:0;2CP/4smoke and118984forward complete;instantaneous nvidia-smi readout phase not captured;no rerun for telemetry",
+  "updates": 0,
+  "target_access": false,
+  "final_post_state": {
+    "status": "VERIFIED",
+    "dispatcher_absent": true,
+    "worker_absent": true,
+    "dispatcher_returncode": 0,
+    "decision": "CLOSED_FIXED_IDENTITY_SENSITIVITY_SOURCE_RANKING_FAILED",
+    "analysis_wall_seconds": 0.9262701629195362,
+    "NN": 118984,
+    "updates": 0,
+    "target_access": false,
+    "prediction_complete": true,
+    "failure": false,
+    "release_commit": "6faf8e5f0d571153ba41a282e87bedb6ae978cde"
+  }
+}

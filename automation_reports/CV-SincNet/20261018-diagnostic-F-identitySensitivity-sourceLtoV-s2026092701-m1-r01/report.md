@@ -1,6 +1,6 @@
 # F 默认头输入敏感度：源 L 排序与源 V 等量扰动反证
 
-状态：已实现、待发布；没有新训练结果，没有 A_g 或 A_s 效能结论。Run：20261018-diagnostic-F-identitySensitivity-sourceLtoV-s2026092701-m1-r01。
+状态：ANALYZED；源反证正式完成，固定方案关闭；没有新训练结果，没有 A_g 或 A_s 效能结论。Run：20261018-diagnostic-F-identitySensitivity-sourceLtoV-s2026092701-m1-r01。
 
 用户最新约束保持 F＋跨 RX 同 TX 对比学习、E30、全部源 RX1/3/4/6/8、day1/2/3、原始 L6300/U56700 隐藏 TX/V27000、split392005，以及现有 256 点 IQ。没有原录制或更长上下文映射；本轮不提出切片扩展。诊断不留出训练 RX，不建立 L5580/dev720。
 
@@ -48,3 +48,5 @@ L 上高 4 平均分至少为低 4 的 1.5 倍且非零。全部数值检查满�
 预期私有产物：real_checkpoint_smoke.json、source_L_ranking.json、resolved_config.json、predictions.json、prediction_complete.json、worker 全日志。独立 CPU scorer 只在全部固定预测完成后读取保存的源标签/导数/logits，输出 result.json、completion.json、各 RX/TX/day/90 单元混淆矩阵和成对修复/新增错误。报告只入库汇总，不提交物理 ID、IQ、模型、logits 或本地/远端私有运行信息。最后对所有保存读出独立重算，不用局部日志替代完成证据。
 
 发布前验证：25 个负例及合成等步长/评分控制通过；一次独立 P0/P1 PASS。实际代码/配置 commit：bafb990f51168c56b6e72ad793ce5572b29d318d。未访问真实源 IQ、CP 或 target。
+
+完成与负结果见 [完整源域分析](final_analysis.md)、[汇总结果](result.json)、[独立重算](independent_recount.json) 和 [执行证据](execution_evidence.json)。唯一失败条件为 CONCAT/low_over_high=13/23>0.5；固定方案关闭。
