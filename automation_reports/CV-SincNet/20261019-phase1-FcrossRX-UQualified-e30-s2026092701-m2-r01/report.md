@@ -53,3 +53,6 @@ practical从raw生成，保留现有完整residual/post_sync、EQfalse/G=1、ref
 
 
 首epoch双行真实核实：R/Q均累计E21、222新增更新，LAs14208包、Uteacher/student各56700，UAs分别863/864，extraU NN0；无Utruth/target读取。数量差异来自各自teacher轨迹，不将其伪称精确同步剂量。
+
+
+最终执行状态：ANALYZED。两行新增E10/累计E30、共4440新增更新，源与七视图独立评分完整，504CM/84分区及终态独立核实VERIFIED、missing=[]。源两条件FAIL在正式读分前已固定，资格路由关闭、R不备用晋级，不E50。正式Q-N clean−0.475pp阶段FAIL；Q-C low＋0.499405/mid＋0.276190pp，同时clean−0.475595pp。全部宏F1/最差RX/分层/纠错/预算见[最终分析](final_analysis.md)。运行时状态语句保留当时记录，以最终产物为准。

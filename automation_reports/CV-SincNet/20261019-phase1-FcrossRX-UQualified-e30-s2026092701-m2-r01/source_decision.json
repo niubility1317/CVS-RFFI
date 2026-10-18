@@ -1,0 +1,27 @@
+{
+  "schema": "cvs_u_qualified30_source_decision/v1",
+  "run_id": "20261019-phase1-FcrossRX-UQualified-e30-s2026092701-m2-r01",
+  "actual_code_commit": "fe734e2b571767bae00b86fd0a19fdc784dadcdf",
+  "read_at_UTC": "2026-10-18T19:02:28.596Z",
+  "decision": {
+    "checks": {
+      "fullV_clean_vs_matchedNoAs_within_0p1pp": false,
+      "midlow_vs_Gaussian_control_gain_at_least_0p5pp": false
+    },
+    "source_criteria_pass": false,
+    "E50_source_eligible": false,
+    "fixed_recipe_closed": true,
+    "fullV_clean_Q_minus_N_pp": -0.18518518518517713,
+    "midlow_Q_minus_C_pp": 0.08333333333333526,
+    "only_two_fixed_source_criteria": true,
+    "Q_minus_R_not_promotion_gate": true,
+    "scientific_negative_skips_formal": false,
+    "target_scores_read": false,
+    "automatic_extension": false,
+    "channel_draws_are_not_model_seeds": true
+  },
+  "formal_results_read_before_decision": false,
+  "action": "CLOSE_QUALIFIED_ROUTING_NO_E50_FINISH_ALL7_FORMAL",
+  "R_not_alternate_promoted": true,
+  "model_seed_count": 1
+}

@@ -348,3 +348,12 @@ Run `20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02`，实际代码 
 
 
 UQualified现已实际VERIFIED_RUNNING：执行代码 `fe734e2b571767bae00b86fd0a19fdc784dadcdf`，首次只读路径预检失败0NN/无archive/run，修复POSIX序列化后单次archive比较/remotecompile VERIFIED；1570NN真实父/L/U smokePASS。dispatcher1712988，R1713028/GPU2、Q1713110/GPU3，strictownAs20EMA/fullroles/CWD/argv/CUDA/nvidia/loggrowth核实，首epoch二者222更新，UAs863/864、Ustudent/teacher各56700、extraNN0。sourceanalysis1714389仅phase source WAIT_SOURCE/truthclosed，正式phase尚未启动，无新性能/E50结论。[启动证据](../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-UQualified-e30-s2026092701-m2-r01/launch_verification.json)。
+
+
+## 2026-10-19 资格对应U路由：完整负结果
+
+`20261019-phase1-FcrossRX-UQualified-e30-s2026092701-m2-r01`两行ownAs20+10/累计E30已ANALYZED，actualcode `fe734e2b571767bae00b86fd0a19fdc784dadcdf`，原N/C固定读出复用；504CM/84分区独立复计VERIFIED，missing=[]，driver/worker自然退出。源先判两FAIL：Q-NfullVclean−.185185pp、Q-Cmidlow＋.083333pp，关闭固定资格路由、R不备用晋级、不E50；该决定先于新formal读取。
+
+Q clean84.814286%、midurban63.088095%、lowurban51.776190%、urbanmean64.227183%；Q-C分别−.475595/＋.276190/＋.499405/＋.264683pp。Q-Nclean−.475000pp不满足−.1pp阶段要求，Q-Rlow＋.491667pp同时clean−.565476pp。low在7RX/4day同向提高但仅1模型seed；部分high/mid宏F1下降、clean分层损伤与suburbangap来自clean下降的部分均保留，不宣称重复双提升或60%。
+
+R/Q实际As8713/8668次，资格As189/8668，非空调用1950/1948；资格公式/损失/NN未改，同数量规则不是未来精确剂量相等。实际新增4440updates、8704698NN含1570smoke，父/旧N-C复用不重计，首次只读预检路径失败0NN。完整[最终分析](../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-UQualified-e30-s2026092701-m2-r01/final_analysis.md)、全七Acc/F1/最差RX/纠错/RXdayTX/资格曝光/epoch曲线/成本均已保存。当前总研究目标未完成。
