@@ -1,0 +1,340 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01",
+  "group_id": "phase1-FcrossRX-Asweight-fixed-three-seed-budget50",
+  "display_name": "固定As监督权重：02/03匹配E30与E50复现",
+  "description": "Conditional source-qualified fixed02/03;eachownoriginal20+weighted10+weighted20 total50;newfour trajectories/eightfrozenstages,old16conditionsreuse,24logical total;no mechanism/physics/head/U changes.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "F Asweight.375 fixed3seed E30 E50"
+  ],
+  "tags": [
+    "F",
+    "CROSS_RX",
+    "As_supervision_weight",
+    "E20plus10plus20",
+    "E50",
+    "fixed02_03",
+    "source_supported_replication",
+    "matched6L",
+    "all5RX",
+    "L6300",
+    "U_truth_hidden"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01",
+    "20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Source01fixedtwo-criterionPASS:As50-ownAs30fullVclean+.162962963pp AND midlow+2.361111111pp;rootfixed02/03replicationbeforeanynewE50formalmetricsread.Userauthorizespromisingrecipes totalE50;originalfixed3seedscompleted,no targetfeedback/newseedselection.",
+  "code": {
+    "commit": "bc4c90c5f8cdb8a3e5fd328760f2e9d4a89583ce",
+    "checkout": "codex/cvs-iq-timing-e20-20261016",
+    "environment": "ExistingordinaryN607 CVSRFFI/PyTorch FP32 CPU2,noinstall/admin",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_AsWeight_E50_s0203_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original full-source physical roles,split392005;reuse fixed source/cache and formal received views",
+    "representation": "Existing IQ256,equalized index1,sample rate25MHz;no longer context;fixed full practical residual/post_sync/noEQ formal IQ",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract.role_ids L_s/U_s/V;fixed formal received_views manifest and opaque168000 physical IDs,unchanged",
+    "label_map_ref": "Original map [14-10,14-7,20-15,20-19,6-15,8-20]",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "All six registered originalTX,unchanged source/target registered-class map",
+    "roles": {
+      "L_s": "6300 full original visibleTX across cumulative50epochs,noLdev/noRXholdout",
+      "U_s": "56700 originalTXhidden;oldU/ownEMA only,7+10+20 cumulativeUepochs,total37,no newU objective",
+      "V": "27000 source validation only,never training/EMA/state updates;fixed existing V1800 two-draw source panel"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "SameVALIDATED_ONCEall5sourceRX/day/physicalL6300 U56700hidden V27000;noLdev/noRXholdout",
+    "support_query_ref": null,
+    "leo_config_ref": "Originalfullpractical trainprior equal1/3low_suburban/midurban/lowurban;source fixedV1800two draws;formalclean+all6practical unchanged"
+  },
+  "permissions": {
+    "regime": "source_train_then_frozen_truthlast",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Fixedsinglemodelseed/defaultjointhead;supervisionweightorganizationonly.No newphysicalenhancement/DG/extraheadclaim;actualidentificationmetrics establishvalue."
+  },
+  "checkpoint": {
+    "initialization": "STRICT_EACH_OWN_ORIGINAL20_THEN_NEW_WEIGHTED30_THEN_NEW_WEIGHTED50_STUDENT_OWNEMA",
+    "sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r02/B00-s2026092702/stage20/final_ssdg.pth",
+      "PROJECT/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r02/B01-s2026092702/stage20/final_ssdg.pth",
+      "PROJECT/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r02/B00-s2026092703/stage20/final_ssdg.pth",
+      "PROJECT/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r02/B01-s2026092703/stage20/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Successfulreplicate49r02 stage20 actual20/4440 scratchroles/IDs andtrueFfactoryseed;newown30native10/2220+cum30/6660 thenstrictownstudentEMA;allsource physicalrolesunchanged",
+    "provenance_verdict": "Sameownoriginal20successfulr02actual20/4440scratchL6300UhiddenV27000/rolesEXACT_MATCH;fixedseed01sourcePASS beforeformalread;strictactualparents checked in single releasepreflight+realCPsmoke,no oldoriginal30/50initializer",
+    "selection_rule": "Fixed02/03 botharms,unconditional weighted30+50,finalonly;no middle source/formal value selection"
+  },
+  "execution": {
+    "host": "N607 ordinaryexistingaccount",
+    "launch_owner": "codex/root/practical-Asweight-replicate50",
+    "gpu_policy": "Sharedallownermax3perGPU/free>=12000MB/CPU2/nohealthyjobmutation",
+    "remote_run_root": "PROJECT/runs/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01",
+    "remote_log_root": "PROJECT/runs/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01/logs",
+    "local_artifact_root": "local_artifacts/F_As_weight_E50_s0203_20261018",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_practical_as_weight_replicate50/runner.py",
+    "stop_rule": "Runowned data/parent/head/nonfinite/cost/systemtechnicalfailures only,preserve/noautomaticretry;allreleasedfixed stages complete even scientificnegative",
+    "status": "PLANNED"
+  },
+  "expected_artifacts": [
+    "Actualsource01two-criteria PASS recorded before any new E50formalread;notargetfeedback",
+    "Fourstrictoriginal20students/ownEMA/noRXholdout/L6300UhiddenV27000/actualFfactoryseeds02/03",
+    "3080sharedsmokeNN=4actual20CP8+4truefactory6L3072,0updates,noquery;not fakeown30CP",
+    "Fourtrajectories nestedweighted30/source thenweighted50/source;new10/2220 plus20/4440each,total50/11100",
+    "All8newstage sourcefullV27000native+fixedV1800two draws/all7fixedpredictions/independenttruthlastscore",
+    "26640newsteps/120newmodelEpoch fullyparsed;actualordinary/channel/seed/physicalviews/head/costtelemetry",
+    "24logical3seedx2weightx2Asx2budget;all24x7predscorecompletebeforetruthrecount/F1/worstRX/errors/RXdayTX/gaps/interactions",
+    "Allseedpairedresults/pairedmean+sampleSDddof1/allseedandmeanstageguard;no n1stableclaim",
+    "Native/studentteacher/train/eval/source/formal/smoke/parentnewcumcosts/nodoublecountold20ormiddle30;zeroNNanalysis",
+    "Same-rowreport/registry/Git/actualmissingandnegativepreserved"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macroF1",
+      "worstRX",
+      "urban3mean",
+      "paired_delta_pp",
+      "pairedmean_sampleSDddof1",
+      "repair_newerror_net",
+      "RXdayTX",
+      "suburban_selfclean_gap",
+      "weightxAsxbudget_interaction",
+      "actualstudentteacherNN_updates_wall"
+    ],
+    "dimensions": [
+      "modelseed2026092701/02/03",
+      "original/weighted",
+      "NoAs/As",
+      "E30/E50",
+      "clean+all6practical",
+      "sourcefullVnative/V1800two draws",
+      "RX/day/TX",
+      "parent20/new10/new20/cumulative50"
+    ],
+    "prediction_ref": "PROJECT/runs/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01/{B00orB01}-s{seed}/weighted{30or50}/prediction",
+    "scorer_ref": "Eachstageall7fixedprediction thenindependentexecscoring;24logicalaggregateafterallpredscorecomplete"
+  },
+  "rows": [
+    {
+      "row_id": "B00-s2026092702",
+      "method": "F/CROSS_RX/Asweight.375/NoAsraw64/fixedown20plus10plus20totalE50",
+      "purpose": "Fixedmatchedreplication_two_intermediate_and_final_frozenreadouts",
+      "config_ref": "experiments/cvs_practical_as_weight_replicate50/design.py",
+      "resolved_config_ref": "PROJECT/runs/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01/B00-s2026092702/weighted{30or50}/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "True nativeandFfactoryseed matchesmodel;originaltrainchannel/validation/receiver seeds unchanged20261016421/422/423;legacyseed01recipe notactualfactory;no seedselection",
+      "k": null,
+      "scenario": "NoAs actualselectedraw64,As0;formalall7",
+      "optimizer": "Eachnewstage resetAdamW lr2e-4WD1e-4cos10then20min1e-6;ownEMA/ordinaryoriginal20epoch13",
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Originalown20reused+newweighted10/2220+newweighted20/4440=total50/11100;new30/6660pertrajectory,4total120modelepoch/26640updates;6L1.25/.125.375 groups",
+      "output_root": "PROJECT/runs/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01/B00-s2026092702",
+      "log_path": "PROJECT/runs/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01/logs/B00-s2026092702.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_practical_as_weight_replicate50/runner.py",
+      "expected_artifacts": [
+        "Actualsource01two-criteria PASS recorded before any new E50formalread;notargetfeedback",
+        "Fourstrictoriginal20students/ownEMA/noRXholdout/L6300UhiddenV27000/actualFfactoryseeds02/03",
+        "3080sharedsmokeNN=4actual20CP8+4truefactory6L3072,0updates,noquery;not fakeown30CP",
+        "Fourtrajectories nestedweighted30/source thenweighted50/source;new10/2220 plus20/4440each,total50/11100",
+        "All8newstage sourcefullV27000native+fixedV1800two draws/all7fixedpredictions/independenttruthlastscore",
+        "26640newsteps/120newmodelEpoch fullyparsed;actualordinary/channel/seed/physicalviews/head/costtelemetry",
+        "24logical3seedx2weightx2Asx2budget;all24x7predscorecompletebeforetruthrecount/F1/worstRX/errors/RXdayTX/gaps/interactions",
+        "Allseedpairedresults/pairedmean+sampleSDddof1/allseedandmeanstageguard;no n1stableclaim",
+        "Native/studentteacher/train/eval/source/formal/smoke/parentnewcumcosts/nodoublecountold20ormiddle30;zeroNNanalysis",
+        "Same-rowreport/registry/Git/actualmissingandnegativepreserved"
+      ]
+    },
+    {
+      "row_id": "B01-s2026092702",
+      "method": "F/CROSS_RX/Asweight.375/Asraw64/fixedown20plus10plus20totalE50",
+      "purpose": "Fixedmatchedreplication_two_intermediate_and_final_frozenreadouts",
+      "config_ref": "experiments/cvs_practical_as_weight_replicate50/design.py",
+      "resolved_config_ref": "PROJECT/runs/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01/B01-s2026092702/weighted{30or50}/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "True nativeandFfactoryseed matchesmodel;originaltrainchannel/validation/receiver seeds unchanged20261016421/422/423;legacyseed01recipe notactualfactory;no seedselection",
+      "k": null,
+      "scenario": "Uniformfullpractical low_suburban/midurban/lowurban As64 eachstep;formalall7",
+      "optimizer": "Eachnewstage resetAdamW lr2e-4WD1e-4cos10then20min1e-6;ownEMA/ordinaryoriginal20epoch13",
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Originalown20reused+newweighted10/2220+newweighted20/4440=total50/11100;new30/6660pertrajectory,4total120modelepoch/26640updates;6L1.25/.125.375 groups",
+      "output_root": "PROJECT/runs/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01/B01-s2026092702",
+      "log_path": "PROJECT/runs/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01/logs/B01-s2026092702.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_practical_as_weight_replicate50/runner.py",
+      "expected_artifacts": [
+        "Actualsource01two-criteria PASS recorded before any new E50formalread;notargetfeedback",
+        "Fourstrictoriginal20students/ownEMA/noRXholdout/L6300UhiddenV27000/actualFfactoryseeds02/03",
+        "3080sharedsmokeNN=4actual20CP8+4truefactory6L3072,0updates,noquery;not fakeown30CP",
+        "Fourtrajectories nestedweighted30/source thenweighted50/source;new10/2220 plus20/4440each,total50/11100",
+        "All8newstage sourcefullV27000native+fixedV1800two draws/all7fixedpredictions/independenttruthlastscore",
+        "26640newsteps/120newmodelEpoch fullyparsed;actualordinary/channel/seed/physicalviews/head/costtelemetry",
+        "24logical3seedx2weightx2Asx2budget;all24x7predscorecompletebeforetruthrecount/F1/worstRX/errors/RXdayTX/gaps/interactions",
+        "Allseedpairedresults/pairedmean+sampleSDddof1/allseedandmeanstageguard;no n1stableclaim",
+        "Native/studentteacher/train/eval/source/formal/smoke/parentnewcumcosts/nodoublecountold20ormiddle30;zeroNNanalysis",
+        "Same-rowreport/registry/Git/actualmissingandnegativepreserved"
+      ]
+    },
+    {
+      "row_id": "B00-s2026092703",
+      "method": "F/CROSS_RX/Asweight.375/NoAsraw64/fixedown20plus10plus20totalE50",
+      "purpose": "Fixedmatchedreplication_two_intermediate_and_final_frozenreadouts",
+      "config_ref": "experiments/cvs_practical_as_weight_replicate50/design.py",
+      "resolved_config_ref": "PROJECT/runs/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01/B00-s2026092703/weighted{30or50}/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "True nativeandFfactoryseed matchesmodel;originaltrainchannel/validation/receiver seeds unchanged20261016421/422/423;legacyseed01recipe notactualfactory;no seedselection",
+      "k": null,
+      "scenario": "NoAs actualselectedraw64,As0;formalall7",
+      "optimizer": "Eachnewstage resetAdamW lr2e-4WD1e-4cos10then20min1e-6;ownEMA/ordinaryoriginal20epoch13",
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Originalown20reused+newweighted10/2220+newweighted20/4440=total50/11100;new30/6660pertrajectory,4total120modelepoch/26640updates;6L1.25/.125.375 groups",
+      "output_root": "PROJECT/runs/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01/B00-s2026092703",
+      "log_path": "PROJECT/runs/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01/logs/B00-s2026092703.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_practical_as_weight_replicate50/runner.py",
+      "expected_artifacts": [
+        "Actualsource01two-criteria PASS recorded before any new E50formalread;notargetfeedback",
+        "Fourstrictoriginal20students/ownEMA/noRXholdout/L6300UhiddenV27000/actualFfactoryseeds02/03",
+        "3080sharedsmokeNN=4actual20CP8+4truefactory6L3072,0updates,noquery;not fakeown30CP",
+        "Fourtrajectories nestedweighted30/source thenweighted50/source;new10/2220 plus20/4440each,total50/11100",
+        "All8newstage sourcefullV27000native+fixedV1800two draws/all7fixedpredictions/independenttruthlastscore",
+        "26640newsteps/120newmodelEpoch fullyparsed;actualordinary/channel/seed/physicalviews/head/costtelemetry",
+        "24logical3seedx2weightx2Asx2budget;all24x7predscorecompletebeforetruthrecount/F1/worstRX/errors/RXdayTX/gaps/interactions",
+        "Allseedpairedresults/pairedmean+sampleSDddof1/allseedandmeanstageguard;no n1stableclaim",
+        "Native/studentteacher/train/eval/source/formal/smoke/parentnewcumcosts/nodoublecountold20ormiddle30;zeroNNanalysis",
+        "Same-rowreport/registry/Git/actualmissingandnegativepreserved"
+      ]
+    },
+    {
+      "row_id": "B01-s2026092703",
+      "method": "F/CROSS_RX/Asweight.375/Asraw64/fixedown20plus10plus20totalE50",
+      "purpose": "Fixedmatchedreplication_two_intermediate_and_final_frozenreadouts",
+      "config_ref": "experiments/cvs_practical_as_weight_replicate50/design.py",
+      "resolved_config_ref": "PROJECT/runs/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01/B01-s2026092703/weighted{30or50}/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "True nativeandFfactoryseed matchesmodel;originaltrainchannel/validation/receiver seeds unchanged20261016421/422/423;legacyseed01recipe notactualfactory;no seedselection",
+      "k": null,
+      "scenario": "Uniformfullpractical low_suburban/midurban/lowurban As64 eachstep;formalall7",
+      "optimizer": "Eachnewstage resetAdamW lr2e-4WD1e-4cos10then20min1e-6;ownEMA/ordinaryoriginal20epoch13",
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Originalown20reused+newweighted10/2220+newweighted20/4440=total50/11100;new30/6660pertrajectory,4total120modelepoch/26640updates;6L1.25/.125.375 groups",
+      "output_root": "PROJECT/runs/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01/B01-s2026092703",
+      "log_path": "PROJECT/runs/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01/logs/B01-s2026092703.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_practical_as_weight_replicate50/runner.py",
+      "expected_artifacts": [
+        "Actualsource01two-criteria PASS recorded before any new E50formalread;notargetfeedback",
+        "Fourstrictoriginal20students/ownEMA/noRXholdout/L6300UhiddenV27000/actualFfactoryseeds02/03",
+        "3080sharedsmokeNN=4actual20CP8+4truefactory6L3072,0updates,noquery;not fakeown30CP",
+        "Fourtrajectories nestedweighted30/source thenweighted50/source;new10/2220 plus20/4440each,total50/11100",
+        "All8newstage sourcefullV27000native+fixedV1800two draws/all7fixedpredictions/independenttruthlastscore",
+        "26640newsteps/120newmodelEpoch fullyparsed;actualordinary/channel/seed/physicalviews/head/costtelemetry",
+        "24logical3seedx2weightx2Asx2budget;all24x7predscorecompletebeforetruthrecount/F1/worstRX/errors/RXdayTX/gaps/interactions",
+        "Allseedpairedresults/pairedmean+sampleSDddof1/allseedandmeanstageguard;no n1stableclaim",
+        "Native/studentteacher/train/eval/source/formal/smoke/parentnewcumcosts/nodoublecountold20ormiddle30;zeroNNanalysis",
+        "Same-rowreport/registry/Git/actualmissingandnegativepreserved"
+      ]
+    }
+  ],
+  "notes": [
+    "Source01two-criteriaPASS;rootfixed02/03beforeanynewE50formalmetricread;all8newstagefixedregardlessscientificvalues",
+    "Once source01two-criterionPASS,allfixed02/03stages unconditional excepttechnicalstop;30values neverdetermine50continuation",
+    "Sameobjective6L1.25/.5primary/.125mixedordinary/.375selected/.25raw/.1crossRX;NoAsraw64factor preserved,notordinary",
+    "Original20factoryseedactual02/03 byP49 full.SEEDscope;ownnew30studentEMA parentfor50;old30/50outputs readoutonly",
+    "Allsource5RX/day/L6300UhiddenV27000 IQ256,defaultheadjointtraining/NoExplicitCFO unchanged",
+    "All24logical/fixed3modelseeds/2source drawsnotmodelreplications;fullVF1notfabricated;historicalbenchmarkexposure disclosed",
+    "No budget beyondtotalE50,no newmechanism,noweight/lr/scene/seedrescue;no furtherautomaticcandidatepromotion",
+    "Onlyoneglobaldispatcherlaunch;rowcommandfieldnamesmatrixentrypoint,actualworkerrow/budget/GPUargvassignedandrecordedbydispatcher.No manualrowlaunch."
+  ],
+  "source_qualification": {
+    "source_run": "20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01",
+    "criteria": {
+      "newAs50_minus_ownAs30_fullV_clean_pp": 0.16296296296296475,
+      "newAs50_minus_ownAs30_mid_low_mean_pp": 2.361111111111114,
+      "clean_nonnegative": true,
+      "mid_low_gain_at_least_0p5pp": true,
+      "source_criteria_pass": true,
+      "fixed_02_03_source_eligible": true,
+      "automatic_multiseed_authorized": false,
+      "fixed_recipe_closed": false,
+      "only_two_source_criteria": true,
+      "scientific_negative_skips_formal": false,
+      "target_scores_read": false
+    },
+    "formal_metrics_read": false,
+    "decision_ref": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01/source_decision.json"
+  },
+  "registered_at": "2026-10-18T08:11:06+00:00"
+}

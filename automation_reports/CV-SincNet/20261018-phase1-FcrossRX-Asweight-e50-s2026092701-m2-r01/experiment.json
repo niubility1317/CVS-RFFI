@@ -105,7 +105,7 @@
     "local_artifact_root": "local_artifacts/F_As_weight_E50_20261018",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_practical_as_weight50/runner.py",
     "stop_rule": "Onlyrunownillegaldata/parent/head/nonfinite/cost/immutableoutput/unlaunchablesystemtechnicalfailure;preserveoutputs/noautomaticretry.Sourcefailurestillfixedall7formal.",
-    "status": "RUNNING",
+    "status": "ANALYZED",
     "actual_dispatcher_pid": 1276091,
     "actual_workers": [
       {
@@ -118,7 +118,8 @@
         "pid": 1276263,
         "gpu": 1
       }
-    ]
+    ],
+    "terminal_evidence": "AllownPIDsexited,bothnew20/4440tot50/11100,all7predscoreandanalysiscomplete,statusANALYZED,no failure"
   },
   "expected_artifacts": [
     "strictownweighted30studentEMA andoriginalsourcecontract/ancestry,actualconfigs/modules/physicalconditions",
@@ -294,5 +295,42 @@
       "head": "defaultjointcos",
       "actual_row_path_from_original_registry": true
     }
-  ]
+  ],
+  "result_summary": {
+    "model_seed_count": 1,
+    "stage": {
+      "clean_delta_pp": -0.04285714285714286,
+      "clean_net_repairs": -72,
+      "clean_absolute_0p1pp_guard_met": true,
+      "clean_positive_observed": false,
+      "positive_below_0p1pp_is_micro_observation": false,
+      "midurban_gain_pp": 30.59642857142857,
+      "lowurban_gain_pp": 23.39702380952381,
+      "urban_mean_gain_pp": 31.291666666666668,
+      "repeatable_clean_gain_proven": false
+    },
+    "accuracy_pct": {
+      "clean": 85.24880952380953,
+      "midurban": 64.48333333333333,
+      "lowurban": 53.24285714285714,
+      "urbanmean": 65.50833333333334
+    },
+    "vs_own_weighted30_pp": {
+      "clean": 0.3958333333333333,
+      "mid": 1.0714285714285714,
+      "low": 1.280952380952381
+    },
+    "vs_original_As50_pp": {
+      "clean": -0.4119047619047619,
+      "mid": 0.5815476190476191,
+      "low": 0.8553571428571428
+    },
+    "source_criteria_pass": true,
+    "fixed02_03_source_eligible": true,
+    "replication_decision_before_formal": true,
+    "all8logical7views_complete": true,
+    "technical_missing_items": [],
+    "repeatable_clean_positive_proven": false,
+    "goal_complete": false
+  }
 }

@@ -188,72 +188,47 @@
     "automatic_seed_extension": false
   },
   "next_training_hypothesis": {
-    "run_id": "20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01",
-    "status": "RUNNING_VERIFIED",
-    "hypothesis": "OnlyextendownweightedFINAL30+20 total50;fixed.125/.375mixedCEKLgroupmeans,same6L1.25/IQ/RNG/As64/U/phys/head;matchedNoAs",
-    "model_seed": 2026092701,
-    "new_rows": 2,
+    "run_id": "20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01",
+    "status": "PREREGISTERED_READY_TO_RELEASE",
+    "hypothesis": "FixedsameweightedAsrecipe20+10+20total50 repeatonoriginalfixed02/03;no newmechanismorIQ,matchedNoAs",
+    "model_seeds": [
+      2026092702,
+      2026092703
+    ],
+    "new_trajectories": 4,
+    "new_stages": 8,
+    "new_epochs_each": 30,
     "total_epochs_each": 50,
-    "new_epochs_each": 20,
-    "new_updates_each": 4440,
+    "total_new_model_epochs": 120,
+    "total_new_updates": 26640,
     "source_basis": {
-      "fullV_clean_vs_original_As30_pp": -0.0592592592592589,
-      "mid_low_mean_vs_original_As30_pp": 0.7777777777777772,
-      "clean_vs_original_As30_within_absolute_0p1pp": true,
+      "newAs50_minus_ownAs30_fullV_clean_pp": 0.16296296296296475,
+      "newAs50_minus_ownAs30_mid_low_mean_pp": 2.361111111111114,
+      "clean_nonnegative": true,
       "mid_low_gain_at_least_0p5pp": true,
       "source_criteria_pass": true,
-      "E50_source_eligible": true,
+      "fixed_02_03_source_eligible": true,
+      "automatic_multiseed_authorized": false,
       "fixed_recipe_closed": false,
-      "weighted_NoAs_vs_original_NoAs_fullV_clean_pp": 0.018518518518517713,
-      "weighted_NoAs_vs_original_NoAs_mid_low_mean_pp": -0.33333333333332993,
-      "fullV_clean_interaction_pp": -0.07777777777777661,
-      "mid_low_mean_interaction_pp": 1.1111111111111072,
+      "only_two_source_criteria": true,
       "scientific_negative_skips_formal": false,
-      "target_scores_read": false,
-      "per_packet_protection_gate": false
+      "target_scores_read": false
     },
-    "source_decision_fixed_before_formal": true,
+    "decision_before_formal": true,
     "formal_feedback": false,
-    "source_future_seed_rule": {
-      "fullVAs50_minus_ownAs30_clean_pp_min": 0,
-      "two_draw_midlowAs50_minus_ownAs30_pp_min": 0.5
-    },
-    "formal_stage": "weightedAs50-weightedNoAs50clean>=-.1absolutepp",
+    "midstage_continuation_unconditional": true,
     "source_RX_holdout": null,
-    "parent_release": "cvs_FcrossRX_AsWeight_E30_20261018_r01",
-    "parent_commit": "3befd47c8041d81f9430eda53562d0821624ff04",
-    "parent": "EachownWEIGHT_FINAL30studentEMA",
-    "optimizer": "resetAdamWcos20lr2e-4WD1e-4min1e-6",
-    "trajectory": "20+10+20,notcontinuouscos50",
-    "channel_epoch": [
-      31,
-      50
-    ],
-    "channel_step": [
-      6661,
-      11100
-    ],
-    "ordinary_schedule_args_epochs": 20,
-    "ordinary_frozen_epoch": 13,
     "NoAs_selected_actual_view": "raw.clone()",
-    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01/report.md",
+    "true_F_factory_seed": "Mustsame02/03asnativeandrow",
+    "parent": "Eachownoriginal20successfulreplicate49r02/strictownEMA",
+    "original_parent_commit": "63b7c8cd7bb4139a2d800e6f4c4a7f1f2163fd47",
+    "algorithm_weight30_commit": "3befd47c8041d81f9430eda53562d0821624ff04",
+    "algorithm_weight50_commit": "64176e7ff1aa5cd2477a504f8b442bb7966079dc",
+    "formal_stage": "EachweightedAs50-weightedNoAs50clean>=-.1absolutepp;reportallseedandmean separately",
+    "old_outputs_reused": true,
+    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01/report.md",
     "technical_missing_items": [],
-    "repeatable_clean_positive_proven": false,
-    "code_commit": "64176e7ff1aa5cd2477a504f8b442bb7966079dc",
-    "dispatcher_pid": 1276091,
-    "workers": [
-      {
-        "row_id": "B00-s2026092701",
-        "pid": 1276185,
-        "gpu": 0
-      },
-      {
-        "row_id": "B01-s2026092701",
-        "pid": 1276263,
-        "gpu": 1
-      }
-    ],
-    "analysis_pid": 1277501
+    "repeatable_clean_positive_proven": false
   },
   "source_commonphase_sensitivity_result": {
     "name": "Bounded common-phase sensitivity of current F+CROSS_RX default head",
@@ -2280,7 +2255,7 @@
       "joint_goal_complete": false
     }
   },
-  "latest_completed_experiment": "20261018-phase1-FcrossRX-stepALT-e30-s2026092701-m1-r01",
+  "latest_completed_experiment": "20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01",
   "source_PSD_positive_affine": {
     "run_id": "20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01",
     "execution_commit": "1091fc97568605cd1115b6fa14754f781df197cc",
@@ -2410,7 +2385,7 @@
     "new_analysis_NN": 0,
     "new_analysis_updates": 0
   },
-  "current_experiment": "20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01",
+  "current_experiment": "20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01",
   "active_As_hypothesis": {
     "run_id": "20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01",
     "status": "COMPLETED_SOURCE_BUDGET_SUPPORTED_FORMAL_STAGE_FAILED",
@@ -4091,7 +4066,7 @@
     "updates": 0,
     "target_access": false
   },
-  "latest_completed_training_experiment": "20261018-phase1-FcrossRX-stepALT-e30-s2026092701-m1-r01",
+  "latest_completed_training_experiment": "20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01",
   "antithetic_source_result": {
     "run_id": "20261017-diagnostic-F-antitheticNoise-sourceL-s2026092701-m1-r02",
     "status": "ANALYZED_SOURCE_ONLY",
@@ -4397,59 +4372,34 @@
   "current_evidence_gap": {
     "practical_primary": true,
     "stage_clean_delta_pp_min": -0.1,
-    "latest_completed_candidate": "20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01",
-    "model_seed_count": 3,
-    "multi_seed_E50_missing": false,
-    "formal_clean_paired_mean_pp": -0.1501984126984127,
-    "formal_clean_paired_sample_SD_pp": 0.955701119898084,
-    "formal_low_accuracy_pct": 51.92658730158731,
-    "formal_mid_accuracy_pct": 62.98948412698414,
-    "mean_stage_pass": false,
-    "all_seeds_stage_pass": false,
+    "latest_completed_weighted_candidate": "20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01",
+    "model_seed_count": 1,
+    "formal_clean_paired_delta_pp": -0.04285714285714286,
+    "single_seed_stage_pass": true,
+    "clean_positive_observed": false,
+    "formal_low_accuracy_pct": 53.24285714285714,
+    "formal_mid_accuracy_pct": 64.48333333333333,
     "repeatable_clean_and_practical_gain": false,
-    "technical_missing_items": [],
+    "multi_seed_weighted_missing": true,
+    "replication_run": "20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01",
+    "replication_status": "REGISTERED_NOT_LAUNCHED",
+    "pending_model_seeds": [
+      2026092702,
+      2026092703
+    ],
+    "next_concrete_candidate": "20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01",
     "mandatory_Ag_factorial": false,
-    "running_replication_run": null,
-    "pending_model_seeds": [],
-    "new_E50_formal_results": "ALL_COMPLETE",
-    "next_concrete_candidate": "20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01",
-    "no_additional_approval_gate": true,
-    "last_source_candidate": {
-      "run_id": "20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r03",
-      "source_pass": false,
-      "source_only": true,
-      "formal_metrics_unchanged": true,
-      "repeatable_double_improvement": false
-    },
-    "latest_training_candidate": {
-      "stage": {
-        "clean_delta_pp": -0.3267857142857143,
-        "clean_net_repairs": -549,
-        "clean_absolute_0p1pp_guard_met": false,
-        "clean_positive_observed": false,
-        "positive_below_0p1pp_is_micro_observation": false,
-        "midurban_gain_pp": 28.67440476190476,
-        "lowurban_gain_pp": 22.092261904761905,
-        "urban_mean_gain_pp": 29.291666666666668,
-        "repeatable_clean_gain_proven": false
-      },
-      "model_seed_count": 1,
-      "source_criteria_pass": true,
-      "E50_source_eligible": true,
-      "formal_stage_pass": false,
-      "increment_vs_original_As30_pp": {
-        "clean": -0.4880952380952381,
-        "mid": 0.6053571428571428,
-        "low": 0.7178571428571429,
-        "urban_mean": 0.5327380952380952
-      },
-      "all7views_complete": true,
-      "source_decision_before_formal": true,
-      "technical_missing_items": [],
-      "repeatable_clean_positive_proven": false,
-      "goal_complete": false,
-      "run_id": "20261018-phase1-FcrossRX-Asweight-e30-s2026092701-m2-r01",
-      "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e30-s2026092701-m2-r01/final_analysis.md"
+    "technical_missing_items": [],
+    "source_promotion_before_formal": true,
+    "formal_feedback": false,
+    "previous_original_E50_three_seed": {
+      "run_id": "20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01",
+      "model_seed_count": 3,
+      "clean_paired_mean_pp": -0.1501984126984127,
+      "clean_paired_sample_SD_pp": 0.955701119898084,
+      "stage_pass": false,
+      "repeatable_dual": false,
+      "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01/final_analysis.md"
     }
   },
   "current_source_experiment": null,
@@ -4490,7 +4440,7 @@
     "target_access": false,
     "automatic_training": false
   },
-  "current_training_experiment": "20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01",
+  "current_training_experiment": "20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01",
   "batch_stratification_release": {
     "run_id": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
     "status": "ANALYZED_VERIFIED",
@@ -6336,72 +6286,47 @@
     "joint_goal_complete": false
   },
   "active_training_hypothesis": {
-    "run_id": "20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01",
-    "status": "RUNNING_VERIFIED",
-    "hypothesis": "OnlyextendownweightedFINAL30+20 total50;fixed.125/.375mixedCEKLgroupmeans,same6L1.25/IQ/RNG/As64/U/phys/head;matchedNoAs",
-    "model_seed": 2026092701,
-    "new_rows": 2,
+    "run_id": "20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01",
+    "status": "PREREGISTERED_READY_TO_RELEASE",
+    "hypothesis": "FixedsameweightedAsrecipe20+10+20total50 repeatonoriginalfixed02/03;no newmechanismorIQ,matchedNoAs",
+    "model_seeds": [
+      2026092702,
+      2026092703
+    ],
+    "new_trajectories": 4,
+    "new_stages": 8,
+    "new_epochs_each": 30,
     "total_epochs_each": 50,
-    "new_epochs_each": 20,
-    "new_updates_each": 4440,
+    "total_new_model_epochs": 120,
+    "total_new_updates": 26640,
     "source_basis": {
-      "fullV_clean_vs_original_As30_pp": -0.0592592592592589,
-      "mid_low_mean_vs_original_As30_pp": 0.7777777777777772,
-      "clean_vs_original_As30_within_absolute_0p1pp": true,
+      "newAs50_minus_ownAs30_fullV_clean_pp": 0.16296296296296475,
+      "newAs50_minus_ownAs30_mid_low_mean_pp": 2.361111111111114,
+      "clean_nonnegative": true,
       "mid_low_gain_at_least_0p5pp": true,
       "source_criteria_pass": true,
-      "E50_source_eligible": true,
+      "fixed_02_03_source_eligible": true,
+      "automatic_multiseed_authorized": false,
       "fixed_recipe_closed": false,
-      "weighted_NoAs_vs_original_NoAs_fullV_clean_pp": 0.018518518518517713,
-      "weighted_NoAs_vs_original_NoAs_mid_low_mean_pp": -0.33333333333332993,
-      "fullV_clean_interaction_pp": -0.07777777777777661,
-      "mid_low_mean_interaction_pp": 1.1111111111111072,
+      "only_two_source_criteria": true,
       "scientific_negative_skips_formal": false,
-      "target_scores_read": false,
-      "per_packet_protection_gate": false
+      "target_scores_read": false
     },
-    "source_decision_fixed_before_formal": true,
+    "decision_before_formal": true,
     "formal_feedback": false,
-    "source_future_seed_rule": {
-      "fullVAs50_minus_ownAs30_clean_pp_min": 0,
-      "two_draw_midlowAs50_minus_ownAs30_pp_min": 0.5
-    },
-    "formal_stage": "weightedAs50-weightedNoAs50clean>=-.1absolutepp",
+    "midstage_continuation_unconditional": true,
     "source_RX_holdout": null,
-    "parent_release": "cvs_FcrossRX_AsWeight_E30_20261018_r01",
-    "parent_commit": "3befd47c8041d81f9430eda53562d0821624ff04",
-    "parent": "EachownWEIGHT_FINAL30studentEMA",
-    "optimizer": "resetAdamWcos20lr2e-4WD1e-4min1e-6",
-    "trajectory": "20+10+20,notcontinuouscos50",
-    "channel_epoch": [
-      31,
-      50
-    ],
-    "channel_step": [
-      6661,
-      11100
-    ],
-    "ordinary_schedule_args_epochs": 20,
-    "ordinary_frozen_epoch": 13,
     "NoAs_selected_actual_view": "raw.clone()",
-    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01/report.md",
+    "true_F_factory_seed": "Mustsame02/03asnativeandrow",
+    "parent": "Eachownoriginal20successfulreplicate49r02/strictownEMA",
+    "original_parent_commit": "63b7c8cd7bb4139a2d800e6f4c4a7f1f2163fd47",
+    "algorithm_weight30_commit": "3befd47c8041d81f9430eda53562d0821624ff04",
+    "algorithm_weight50_commit": "64176e7ff1aa5cd2477a504f8b442bb7966079dc",
+    "formal_stage": "EachweightedAs50-weightedNoAs50clean>=-.1absolutepp;reportallseedandmean separately",
+    "old_outputs_reused": true,
+    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01/report.md",
     "technical_missing_items": [],
-    "repeatable_clean_positive_proven": false,
-    "code_commit": "64176e7ff1aa5cd2477a504f8b442bb7966079dc",
-    "dispatcher_pid": 1276091,
-    "workers": [
-      {
-        "row_id": "B00-s2026092701",
-        "pid": 1276185,
-        "gpu": 0
-      },
-      {
-        "row_id": "B01-s2026092701",
-        "pid": 1276263,
-        "gpu": 1
-      }
-    ],
-    "analysis_pid": 1277501
+    "repeatable_clean_positive_proven": false
   },
   "carrier_gate_release": {
     "run_id": "20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01",
@@ -8384,5 +8309,58 @@
     "goal_complete": false,
     "run_id": "20261018-phase1-FcrossRX-Asweight-e30-s2026092701-m2-r01",
     "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e30-s2026092701-m2-r01/final_analysis.md"
+  },
+  "original_As_E50_three_seed_reference": {
+    "run_id": "20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01",
+    "model_seed_count": 3,
+    "clean_paired_mean_pp": -0.1501984126984127,
+    "clean_paired_sample_SD_pp": 0.955701119898084,
+    "stage_pass": false,
+    "repeatable_dual": false,
+    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01/final_analysis.md"
+  },
+  "As_supervision_weight_E50_result": {
+    "run_id": "20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01",
+    "status": "ANALYZED",
+    "model_seed_count": 1,
+    "stage": {
+      "clean_delta_pp": -0.04285714285714286,
+      "clean_net_repairs": -72,
+      "clean_absolute_0p1pp_guard_met": true,
+      "clean_positive_observed": false,
+      "positive_below_0p1pp_is_micro_observation": false,
+      "midurban_gain_pp": 30.59642857142857,
+      "lowurban_gain_pp": 23.39702380952381,
+      "urban_mean_gain_pp": 31.291666666666668,
+      "repeatable_clean_gain_proven": false
+    },
+    "accuracy_pct": {
+      "clean": 85.24880952380953,
+      "midurban": 64.48333333333333,
+      "lowurban": 53.24285714285714,
+      "urbanmean": 65.50833333333334
+    },
+    "vs_own_weighted30_pp": {
+      "clean": 0.3958333333333333,
+      "mid": 1.0714285714285714,
+      "low": 1.280952380952381
+    },
+    "vs_original_As50_pp": {
+      "clean": -0.4119047619047619,
+      "mid": 0.5815476190476191,
+      "low": 0.8553571428571428
+    },
+    "source_criteria_pass": true,
+    "fixed02_03_source_eligible": true,
+    "replication_decision_before_formal": true,
+    "all8logical7views_complete": true,
+    "technical_missing_items": [],
+    "repeatable_clean_positive_proven": false,
+    "goal_complete": false,
+    "training_code_commit": "64176e7ff1aa5cd2477a504f8b442bb7966079dc",
+    "analysis_code_commit": "64176e7ff1aa5cd2477a504f8b442bb7966079dc",
+    "new_NN": 14922588,
+    "source_decision_before_formal": true,
+    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01/final_analysis.md"
   }
 }

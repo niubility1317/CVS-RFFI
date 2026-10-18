@@ -1,0 +1,53 @@
+{
+  "run_id": "20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01",
+  "status": "FIXED_SOURCE_PASS_REPLICATE02_03_DECIDED_BEFORE_FORMAL_METRICS_READ",
+  "source_only": true,
+  "new_E50_formal_metrics_read": false,
+  "target_feedback": false,
+  "decision": {
+    "newAs50_minus_ownAs30_fullV_clean_pp": 0.16296296296296475,
+    "newAs50_minus_ownAs30_mid_low_mean_pp": 2.361111111111114,
+    "clean_nonnegative": true,
+    "mid_low_gain_at_least_0p5pp": true,
+    "source_criteria_pass": true,
+    "fixed_02_03_source_eligible": true,
+    "automatic_multiseed_authorized": false,
+    "fixed_recipe_closed": false,
+    "only_two_source_criteria": true,
+    "scientific_negative_skips_formal": false,
+    "target_scores_read": false
+  },
+  "extension": {
+    "run_id": "20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01",
+    "model_seeds": [
+      2026092702,
+      2026092703
+    ],
+    "new_trajectories": 4,
+    "parent": "Eachownoriginal20studentandownEMA",
+    "new_stages": [
+      {
+        "budget": 30,
+        "new_epochs": 10,
+        "updates": 2220
+      },
+      {
+        "budget": 50,
+        "new_epochs": 20,
+        "updates": 4440
+      }
+    ],
+    "total_epochs_each": 50,
+    "trajectory": "20+10+20",
+    "new_epochs_each": 30,
+    "total_new_model_epochs": 120,
+    "total_new_updates": 26640,
+    "all_middle_and_final_stages_unconditional": true,
+    "midstage_metrics_never_select_continuation": true,
+    "weights_data_head_U_physics_unchanged": true,
+    "source_basis_only": true,
+    "formal_scores_used": false,
+    "original_fixed_three_seed_set_completed_by_reusing01": true,
+    "automatic_flag_context": "Analysis only marks scientific eligibility and never launches;root now registers fixed02/03 within prior user-authorized totalE50 scope"
+  }
+}

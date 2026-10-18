@@ -125,3 +125,12 @@ Asweight当前已实际启动：训练／分析代码`3befd47c8041d81f9430eda535
 未来固定02／03扩种支持只看As50−ownAs30源fullVclean≥0pp且midlow均值≥＋.5pp。任一失败放弃固定配方扩种，仍完成本行all7正式；不扫权重／epoch／seed救跑。目标stage仍相对同预算匹配NoAs clean≥−.1pp。下一项唯一假设是更多预算能否缓解当前clean—星地矛盾；不从已见正式分数重新选择路线或承诺60%。[E30完成报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e30-s2026092701-m2-r01/final_analysis.md)；[E50预登记](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01/report.md)。
 
 Asweight E50已实际启动：训练／分析代码`64176e7ff1aa5cd2477a504f8b442bb7966079dc`；dispatcher1276091，NoAs1276185／GPU0、As1276263／GPU1，真实双父＋两6L共1540NN smokePASS后训练，source roles／ownEMA／resetAdamWcos20／实际physics匹配。PID／CWD／argv／GPU／日志增长独立VERIFIED；0NN分析1277501已核实WAIT_SOURCE／truth未开，将自动闭合all7。新增段每条20轮，尚无E50成绩。
+
+
+## 加权E50单seed完成：阶段通过，源支持固定02／03
+
+`20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01`已完成两ownweighted30+20及全部七视图独立评分，代码`64176e7ff1aa5cd2477a504f8b442bb7966079dc`，0NN分析完整、1008CM／168分区合并核对，所有进程正常退出／无技术缺项。新段共40model-epochs／8880updates／14922588NN含1540smoke；每条累计50轮／11100updates。真实source fullVclean对自身weighted30＋.162963pp、两draw midlow＋2.361111pp通过固定资格，root先保存决定并登记02／03，随后才首次读取新formal指标，正式结果不作扩种反馈。
+
+单seed weightedAs50：clean85.248810%、mid64.483333%、low53.242857%、urban均值65.508333%；对匹配weightedNoAs50 clean−.042857pp，本seed满足−.1pp阶段要求，仍非clean正收益／重复双提升。对自身weighted30 clean＋.395833、mid＋1.071429、low＋1.280952pp；对原As50 clean−.411905、mid＋.581548、low＋.855357pp，取舍仍在。clean／mid／low三因子交互＋.011905／−.269048／−.100000pp，不能把预算增益写成新权重独有协同。high／mid／lowsuburban为82.282143／79.757738／77.213690%，相对自身clean差2.966667／5.491071／8.035119pp，绝对值较自身30提高，仍未接近最初2pp探索建议。完整F1／最差RX／错误及成本见[完成报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01/final_analysis.md)。
+
+现已登记`20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01`，代码/分析准备完成但尚未发布。固定02／03各NoAs／As四轨迹均为原own20＋新weighted10＋新weighted20，总50，新增120model-epochs／26640updates，不重训seed01或旧20／30／50。nested weighted30/weighted50各自source／固定all7pred／独立score，中间数值不决定是否继续50；真实factoryseed同行02／03，ordinary始终ownoriginal20args epoch13，offset20/4440、30/6660。24logical＝3seed×original/weighted×NoAs/As×30/50；只新8stage读出，旧16条件复用。172聚焦负例／8native绑定／8预测路径／19py2AST与9分析检查PASS，唯一新适配P0/P1=0/0，真实3080NN烟测在launcher首步。当前无扩种成绩，不保证60%或重复双提升；保持同一假设，不变权重、数据、默认头、U或物理条件。[源决定](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01/source_decision.json)／[复现预登记](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01/report.md)。

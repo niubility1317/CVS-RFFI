@@ -1,3 +1,5 @@
+当前状态VERIFIED / ANALYZED，八逻辑全部七视图独立评分及分析完整。单seed clean阶段通过（−.042857pp），无重复双提升；固定02／03按已保存源决定登记，正式分数不反馈。实际结果见[最终报告](<E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01/final_analysis.md>)。下文保留启动过程历史。
+
 # As 权重配方：源证据支持的匹配总 E50 验证
 
 状态：VERIFIED_RUNNING，两条匹配续训已实际启动；性能结果尚未完成。run_id `20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01`。

@@ -1,0 +1,175 @@
+{
+  "status": "LOCAL_READY_SOURCE_QUALIFIED_REGISTERED_UNLAUNCHED",
+  "run_id": "20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01",
+  "source_basis": {
+    "run_id": "20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01",
+    "status": "FIXED_SOURCE_PASS_REPLICATE02_03_DECIDED_BEFORE_FORMAL_METRICS_READ",
+    "source_only": true,
+    "new_E50_formal_metrics_read": false,
+    "target_feedback": false,
+    "decision": {
+      "newAs50_minus_ownAs30_fullV_clean_pp": 0.16296296296296475,
+      "newAs50_minus_ownAs30_mid_low_mean_pp": 2.361111111111114,
+      "clean_nonnegative": true,
+      "mid_low_gain_at_least_0p5pp": true,
+      "source_criteria_pass": true,
+      "fixed_02_03_source_eligible": true,
+      "automatic_multiseed_authorized": false,
+      "fixed_recipe_closed": false,
+      "only_two_source_criteria": true,
+      "scientific_negative_skips_formal": false,
+      "target_scores_read": false
+    },
+    "extension": {
+      "run_id": "20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01",
+      "model_seeds": [
+        2026092702,
+        2026092703
+      ],
+      "new_trajectories": 4,
+      "parent": "Eachownoriginal20studentandownEMA",
+      "new_stages": [
+        {
+          "budget": 30,
+          "new_epochs": 10,
+          "updates": 2220
+        },
+        {
+          "budget": 50,
+          "new_epochs": 20,
+          "updates": 4440
+        }
+      ],
+      "total_epochs_each": 50,
+      "trajectory": "20+10+20",
+      "new_epochs_each": 30,
+      "total_new_model_epochs": 120,
+      "total_new_updates": 26640,
+      "all_middle_and_final_stages_unconditional": true,
+      "midstage_metrics_never_select_continuation": true,
+      "weights_data_head_U_physics_unchanged": true,
+      "source_basis_only": true,
+      "formal_scores_used": false,
+      "original_fixed_three_seed_set_completed_by_reusing01": true,
+      "automatic_flag_context": "Analysis only marks scientific eligibility and never launches;root now registers fixed02/03 within prior user-authorized totalE50 scope"
+    }
+  },
+  "model_seeds": [
+    2026092702,
+    2026092703
+  ],
+  "new_trajectories": 4,
+  "new_stages": 8,
+  "total_epochs_each": 50,
+  "new_epochs_each": 30,
+  "total_new_updates": 26640,
+  "smoke_expected_NN": 3080,
+  "real_smoke_pending": true,
+  "training_started": false,
+  "technical_missing_items": [],
+  "implementation_checks": {
+    "status": "PASS",
+    "conditional_preparation_only": true,
+    "registered": false,
+    "launched": false,
+    "focused": {
+      "status": "PASS",
+      "protocol_negatives": 172,
+      "new_trajectories": 4,
+      "new_stage_rows": 8,
+      "true_seed_arguments": 8,
+      "staged_prediction_paths": 8,
+      "new_model_epochs": 120,
+      "new_updates": 26640,
+      "conditional_source_rule": true,
+      "intermediate_scientific_scores_never_select_continuation": true,
+      "NN": 0,
+      "CP": 0,
+      "IQ": 0,
+      "updates": 0,
+      "remote_actions": 0,
+      "target": false
+    },
+    "AST": {
+      "status": "PASS",
+      "package_Python_files": 19,
+      "emitted_remote_AST": [
+        "PASS",
+        "PASS"
+      ],
+      "network_calls": 0,
+      "CP": 0,
+      "IQ": 0,
+      "target": false
+    },
+    "real_smoke_NN_if_launched": 3080,
+    "real_stage50_synthetic_smoke": false,
+    "real_stage50_parent": "strict own newweighted30 in normal execution",
+    "Torch_local": false,
+    "NN": 0,
+    "CP": 0,
+    "IQ": 0,
+    "updates": 0,
+    "remote_actions": 0,
+    "formal_scores_read": false
+  },
+  "analysis_local_checks": {
+    "status": "PASS",
+    "focused_synthetic_checks": 9,
+    "wall_seconds": 19.282,
+    "evidence": "stepalt_analysis executed final focused suite and producerinterface checks;reported READY",
+    "actual_factory_seed_negative": true,
+    "logical_conditions": 24,
+    "prediction_views_each": 7,
+    "new_stage_updates": 26640,
+    "old_audits_reused": true,
+    "intermediate30_parent_not_double_counted": true,
+    "NN": 0,
+    "CP": 0,
+    "IQ": 0,
+    "updates": 0,
+    "formal_values_read": false
+  },
+  "unique_new_adapter_review": {
+    "schema": "CVS_UNIQUE_P0P1_REVIEW_v1",
+    "candidate": "20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01",
+    "reviewer": "/root/stepalt_p0p1",
+    "reviewed_at_utc": "2026-10-18T08:03:20.648Z",
+    "status": "PASS",
+    "P0": 0,
+    "P1": 0,
+    "findings": [],
+    "scope": "New conditional02/03 replication adapter only:seed factory,parent/stage/paths,source-only qualification guard,publishing and legal predictions;unchanged30/50 losses not re-reviewed",
+    "checks_reviewed": {
+      "fixed02_03_four_trajectories_eight_stage_rows": true,
+      "actual_native_seed_and_fixed_originalreplication_F_factory_interface": true,
+      "own_original20_02_03_ancestry": true,
+      "weighted50_parent_is_own_new_weighted30_student_and_EMA": true,
+      "ordinary_augmentation_original20_args_epoch13": true,
+      "stage_offsets20_4440_and30_6660": true,
+      "nested_weighted30_weighted50_source_qualification_prediction_scoring_paths": true,
+      "score30_completion_unconditionally_exec50_same_PID": true,
+      "no_intermediate_scientific_score_control": true,
+      "source01_fixed_eligibility_guard_before_release": true,
+      "fullseven_predictions_per_stage_before_independent_exec_truth": true,
+      "immutable_new_output_roots_and_dynamic_capacity3_free12000": true,
+      "smoke4_actual_original20_CP_and4_seed_6L_probes3080NN": true,
+      "stage50_real_own30_strictload_not_claimed_as_preflight_CP_smoke": true
+    },
+    "evidence_reused": "implementation_checks.json PASS:172 focused negatives,8 native seed arguments,8 staged prediction preflight paths,19 Python AST,2 emitted remote AST;unchanged math helper not rerun",
+    "execution": {
+      "remote_actions": 0,
+      "formal_metrics_read": false,
+      "IQ_reads": 0,
+      "checkpoint_reads": 0,
+      "NN": 0,
+      "training_updates": 0,
+      "code_edits": 0,
+      "tests_rerun": false,
+      "registration_or_launch": false
+    },
+    "remaining_execution_verification": "This is conditional local preparation only. Actual source01 eligibility must PASS before registration/release;launcher smoke,own30 strictload for actual50 and post-launch process/GPU/log evidence remain runtime verification."
+  },
+  "formal_metrics_read_for_promotion": false,
+  "goal_complete": false
+}
