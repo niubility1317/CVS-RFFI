@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "shadow_fixture_records": 6,
+  "negative_cases": 12,
+  "cases": [
+    {
+      "mode": "NATIVE",
+      "records": 2
+    },
+    {
+      "mode": "IID",
+      "records": 2
+    },
+    {
+      "mode": "LHS",
+      "records": 2
+    },
+    {
+      "source_integer_boundary": "PASS",
+      "low_each_draw_correct_gain": 9
+    },
+    {
+      "one_bad_low_draw": "CLOSED"
+    }
+  ],
+  "IQ": 0,
+  "CP": 0,
+  "NN": 0,
+  "updates": 0,
+  "raw_truth_reads": 0,
+  "target_access": false
+}
