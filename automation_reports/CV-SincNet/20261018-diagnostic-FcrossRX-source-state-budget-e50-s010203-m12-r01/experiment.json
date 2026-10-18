@@ -1,0 +1,310 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-diagnostic-FcrossRX-source-state-budget-e50-s010203-m12-r01",
+  "group_id": "phase1-FcrossRX-source-state-budget-E50-three-seeds",
+  "display_name": "E30至E50三种子：既有源预测的物理状态配对复现",
+  "description": "0NN source-only CPU后处理复用3seed×4冻结预测快照；按每seed自己的NoAs30clean正确集合统计状态/质量预算效应，报告全部逐seed与配对mean/sampleSD，不读formal。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "FcrossRX E50 source physics strata",
+    "zero-NN E30 E50 source state audit"
+  ],
+  "tags": [
+    "FcrossRX",
+    "source-only",
+    "E50",
+    "metadata-only",
+    "zeroNN",
+    "paired-budget",
+    "default-head"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+    "20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01",
+    "20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01",
+    "20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r02",
+    "20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "原定3seed E50预算复现的配套只读源域归因；仅保存source logits和同物理metadata，0新训练/NN/IQ/CP/formal。禁止改变健康E50四行或重复预测/评分。",
+  "code": {
+    "commit": "f06be3a3b5fd7e451040280a2b9b4a540f73b6d6",
+    "checkout": "codex/phase1-urban-sigtime-20261014",
+    "environment": "N607 ordinary CVS-RFFI Python3.10 NumPy2.2.5 Matplotlib3.10.8;CPU2;CUDA hidden;no Torch/model imports",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_source_state_budget_E50_s010203_20261018_r01",
+    "identity_status": "PLANNED_ACTUAL_WRAPPER_COMMIT_BEFORE_LAUNCH"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing VALIDATED_ONCE original7/63/30 roles and existing native-normalized source cache",
+    "representation": "Saved default-head source logits and pure physics metadata only;full residual/post_sync/EQoffG1;sourcepanel fc2.45GHz,fs25MHz,IQ256 inherited and not read",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "PROJECT/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/data_roles.json#physical_ids",
+    "label_map_ref": "original6TX mapping, class0..5",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all original6 source TX",
+    "roles": {
+      "L_s": "Original6300 unchanged;no values read",
+      "U_s": "Original56700 TXhidden;no values or labels read",
+      "V": "Existing fixed1800 fromoriginal27000;onlysaved source predictions/legal V labels/metadata,2fixed channel draws"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Existing VALIDATED_ONCE Phase1source roles reused;source V1800 metadata and ordered IDs matched;no data revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": "PROJECT/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/observations/actual_engine.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Forbidden;no formal file/IQ/checkpoint/model/predictor/scorer/training reader",
+    "external_method_exception": null,
+    "claim_scope": "All3originalmodelseeds source-V posthoc full-observation associations;draws not modelseeds;no physicalcausal or formalreproducibility claim;no promotion"
+  },
+  "checkpoint": {
+    "initialization": "None;no checkpoint state loaded;reuse saved default-head source logits",
+    "sources": [],
+    "contract_check_ref": "Existing P43/P50 source logit origin;ordered source IDs/TX/RX/day and full-condition/draw checks",
+    "provenance_verdict": "NO_CHECKPOINT_LOAD;underlying frozen logit lineage already audited P43/P50;source puremetadata schema verified",
+    "selection_rule": "All12 fixed logical source snapshots across original3modelseeds;no checkpoint loading/modelselection/seed omission"
+  },
+  "execution": {
+    "host": "N607 ordinary nonprivileged account",
+    "launch_owner": "codex/root/source-state58",
+    "gpu_policy": "CPU2/CUDA hidden;no GPU/model/NN;no healthy process or output mutation",
+    "remote_run_root": "PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s010203-m12-r01",
+    "remote_log_root": "PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s010203-m12-r01/worker.log",
+    "local_artifact_root": "local_artifacts/cvs_FcrossRX_source_state_budget_E50_s010203_20261018_r01",
+    "launch_command": "CVS-RFFI/python -u analysis/cvs_budget50_source_states58_20261018.py --project PROJECT --out PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s010203-m12-r01/result --code-commit ACTUAL_CODE_COMMIT",
+    "stop_rule": "Source role/ordered ID/TX/RX/day/draw/full-condition mismatch,nonfinite logits/shape mismatch or technical failure preserves outputs and stops own analysis only;no auto retry/NN/IQ replay/effect-based rerun",
+    "status": "PLANNED_NOT_LAUNCHED"
+  },
+  "expected_artifacts": [
+    "result/report.json",
+    "result/all_seed_overall.csv",
+    "result/all_seed_paired_effects.csv",
+    "result/all_seed_budget_interaction.csv",
+    "result/three_seed_paired_summary.csv",
+    "result/three_seed_paired_summary.json",
+    "result/three_seed_state_budget_deltas.png",
+    "result/three_seed_state_budget_deltas.pdf",
+    "result/s2026092701/source_strata.csv",
+    "result/s2026092701/source_confusions.json",
+    "result/s2026092701/paired_effects.csv",
+    "result/s2026092701/budget_interaction.csv",
+    "result/s2026092701/source_summary.json",
+    "result/s2026092701/report.json",
+    "result/s2026092701/practical_mid_urban_source_states.png",
+    "result/s2026092701/practical_mid_urban_source_states.pdf",
+    "result/s2026092701/practical_low_urban_source_states.png",
+    "result/s2026092701/practical_low_urban_source_states.pdf",
+    "result/s2026092702/source_strata.csv",
+    "result/s2026092702/source_confusions.json",
+    "result/s2026092702/paired_effects.csv",
+    "result/s2026092702/budget_interaction.csv",
+    "result/s2026092702/source_summary.json",
+    "result/s2026092702/report.json",
+    "result/s2026092702/practical_mid_urban_source_states.png",
+    "result/s2026092702/practical_mid_urban_source_states.pdf",
+    "result/s2026092702/practical_low_urban_source_states.png",
+    "result/s2026092702/practical_low_urban_source_states.pdf",
+    "result/s2026092703/source_strata.csv",
+    "result/s2026092703/source_confusions.json",
+    "result/s2026092703/paired_effects.csv",
+    "result/s2026092703/budget_interaction.csv",
+    "result/s2026092703/source_summary.json",
+    "result/s2026092703/report.json",
+    "result/s2026092703/practical_mid_urban_source_states.png",
+    "result/s2026092703/practical_mid_urban_source_states.pdf",
+    "result/s2026092703/practical_low_urban_source_states.png",
+    "result/s2026092703/practical_low_urban_source_states.pdf",
+    "worker.log",
+    "launch.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "raw_default_head_margin",
+      "margin_div_fixed30",
+      "fixed_NOAS30_clean_correct_retention",
+      "repairs",
+      "new_errors",
+      "net_repairs",
+      "budget_interaction",
+      "NN0",
+      "IQ0",
+      "CP0",
+      "updates0",
+      "wall_seconds"
+    ],
+    "dimensions": [
+      "fourlogicalmodels",
+      "source_scene",
+      "draw0/draw1/pooled",
+      "state",
+      "lock",
+      "state_lock",
+      "signal_to_added_noise_db",
+      "actual_waveform_quality_db",
+      "white_proxy_quality_db",
+      "waveform_minus_white_power_db",
+      "abs_output_frequency_hz",
+      "noise_coloration_dynamic_range_db",
+      "residual_kernel_energy_db",
+      "interior_count",
+      "AGC_limited"
+    ],
+    "prediction_ref": "Each own saved source_qualification/predictions.npz;fixed1800 orderedIDs;no new prediction",
+    "scorer_ref": "NumPy grouping saved source logits and legal V labels;formal truth/scorer forbidden"
+  },
+  "rows": [
+    {
+      "row_id": "D00-source-state-s2026092701",
+      "method": "Four own NOAS30/AS30/NOAS50/AS50 savedsource logits × same full physicalmetadata;modelseed2026092701",
+      "purpose": "diagnostic",
+      "config_ref": "analysis/cvs_budget50_source_states58_20261018.py#source_mapping",
+      "resolved_config_ref": "PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s010203-m12-r01/result/report.json",
+      "data_overrides": {
+        "held_RX": null,
+        "extra_Ldev": false,
+        "all5sourceRX": true,
+        "only_existing_V_metadata": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 202610172401,
+        "augmentation": 202610172402,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "FixedsourceV1800/twodraws;one modelseed;RXsessions byRX/day/eq notTX;support/query inapplicable",
+      "k": null,
+      "scenario": "SourceV full low_suburban/mid_urban/low_urban;draw0/1/pooled;no counterfactual classification",
+      "optimizer": {
+        "name": "none",
+        "updates": 0
+      },
+      "lr": 0,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0newmodel-epochs/updates/NN/IQ/CP;reuse existing source prediction;CPU2 wall separate",
+      "output_root": "PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s010203-m12-r01/result/s2026092701",
+      "log_path": "PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s010203-m12-r01/worker.log",
+      "command": "CVS-RFFI/python -u analysis/cvs_budget50_source_states58_20261018.py --project PROJECT --out PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s010203-m12-r01/result --code-commit ACTUAL_CODE_COMMIT",
+      "expected_artifacts": [
+        "source_strata.csv",
+        "paired_effects.csv",
+        "budget_interaction.csv",
+        "report.json"
+      ]
+    },
+    {
+      "row_id": "D00-source-state-s2026092702",
+      "method": "Four own NOAS30/AS30/NOAS50/AS50 savedsource logits × same full physicalmetadata;modelseed2026092702",
+      "purpose": "diagnostic",
+      "config_ref": "analysis/cvs_budget50_source_states58_20261018.py#source_mapping",
+      "resolved_config_ref": "PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s010203-m12-r01/result/report.json",
+      "data_overrides": {
+        "held_RX": null,
+        "extra_Ldev": false,
+        "all5sourceRX": true,
+        "only_existing_V_metadata": true
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 202610172401,
+        "augmentation": 202610172402,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "FixedsourceV1800/twodraws;one modelseed;RXsessions byRX/day/eq notTX;support/query inapplicable",
+      "k": null,
+      "scenario": "SourceV full low_suburban/mid_urban/low_urban;draw0/1/pooled;no counterfactual classification",
+      "optimizer": {
+        "name": "none",
+        "updates": 0
+      },
+      "lr": 0,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0newmodel-epochs/updates/NN/IQ/CP;reuse existing source prediction;CPU2 wall separate",
+      "output_root": "PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s010203-m12-r01/result/s2026092702",
+      "log_path": "PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s010203-m12-r01/worker.log",
+      "command": "CVS-RFFI/python -u analysis/cvs_budget50_source_states58_20261018.py --project PROJECT --out PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s010203-m12-r01/result --code-commit ACTUAL_CODE_COMMIT",
+      "expected_artifacts": [
+        "source_strata.csv",
+        "paired_effects.csv",
+        "budget_interaction.csv",
+        "report.json"
+      ]
+    },
+    {
+      "row_id": "D00-source-state-s2026092703",
+      "method": "Four own NOAS30/AS30/NOAS50/AS50 savedsource logits × same full physicalmetadata;modelseed2026092703",
+      "purpose": "diagnostic",
+      "config_ref": "analysis/cvs_budget50_source_states58_20261018.py#source_mapping",
+      "resolved_config_ref": "PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s010203-m12-r01/result/report.json",
+      "data_overrides": {
+        "held_RX": null,
+        "extra_Ldev": false,
+        "all5sourceRX": true,
+        "only_existing_V_metadata": true
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 202610172401,
+        "augmentation": 202610172402,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "FixedsourceV1800/twodraws;one modelseed;RXsessions byRX/day/eq notTX;support/query inapplicable",
+      "k": null,
+      "scenario": "SourceV full low_suburban/mid_urban/low_urban;draw0/1/pooled;no counterfactual classification",
+      "optimizer": {
+        "name": "none",
+        "updates": 0
+      },
+      "lr": 0,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0newmodel-epochs/updates/NN/IQ/CP;reuse existing source prediction;CPU2 wall separate",
+      "output_root": "PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s010203-m12-r01/result/s2026092703",
+      "log_path": "PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s010203-m12-r01/worker.log",
+      "command": "CVS-RFFI/python -u analysis/cvs_budget50_source_states58_20261018.py --project PROJECT --out PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s010203-m12-r01/result --code-commit ACTUAL_CODE_COMMIT",
+      "expected_artifacts": [
+        "source_strata.csv",
+        "paired_effects.csv",
+        "budget_interaction.csv",
+        "report.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No new training/model/IQ/CP/NN/formal prediction or scoring. Source0NN scope explicitly excludes formal files even when they exist in originalowner analysisroot.",
+    "Originalmodelseeds01/02/03 fixed;complete all3beforeaggregate;eachseed ownNoAs30fixedclean cohort;report sampleSD acrossmodelseeds,not across2draws.",
+    "Unchanged56physicalfunctions and fixedbins reused;onlynewseed/run/source-summary mapping and aggregation reviewed/tested. No full rereview or newold-code test cycle.",
+    "Source source_summary status SOURCE_ANALYZED,target_scores_readfalse;seed01 armkeys NOAS30 etc;new02/03 ownerkeys NOAS30-sSEED etc. Do not synthesize missingF1 or skip unavailable seed.",
+    "New owner summary readiness checked only after all4real tails finish;this sourceCPU job is not a gate and never delays their train/predict/score.",
+    "Posthoc sourceassociation only;no new candidate/parameter/selection/seedbudget based on formal scores;technicalmissing and emptycells retained."
+  ],
+  "registered_at": "2026-10-18T05:14:58+00:00"
+}

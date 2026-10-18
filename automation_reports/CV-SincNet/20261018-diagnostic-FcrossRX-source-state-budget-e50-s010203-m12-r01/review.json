@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "scope": "One independent P0/P1 review for new58 seed/run/sourcekey binding and three-model paired aggregation only;unchanged56 not rereviewed",
+  "reviewer": "source_state56_p0p1",
+  "findings": [],
+  "local_wrapper_fixture_tests": 6,
+  "fixture_status": "PASS",
+  "fixture_wall_seconds": 0.007,
+  "real_data_reads": 0,
+  "remote_actions": 0,
+  "files": [
+    "analysis/cvs_budget50_source_states58_20261018.py",
+    "analysis/check_budget50_source_states58.py"
+  ]
+}
