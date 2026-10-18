@@ -1,5 +1,5 @@
 {
-  "status": "SUBMITTED",
+  "status": "VERIFIED_ANALYZED",
   "run_id": "20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01",
   "training_code_commit": "33a7046ee6e15898f30eca05f7bbc2c3249ce7e3",
   "training_dispatcher_pid": 1217210,
@@ -23,7 +23,7 @@
   "source_and_formal_separated": true,
   "target_feedback": false,
   "no_automatic_extension": true,
-  "output_root": "PROJECT/runs/20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01/analysis_r01",
+  "output_root": "PROJECT/runs/20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01/analysis_r02",
   "analysis_files": [
     "analysis/cvs_urban_prior59_analysis_20261018.py",
     "analysis/check_urban_prior59_analysis.py"
@@ -37,7 +37,11 @@
     "NN": 0,
     "checkpoint_reads": 0
   },
-  "code_commit": "94f0ba7756dd6b7704f1dd0e203187f4f2cd93e3",
+  "code_commit": "a4cea81447f015a54585c3e5a7e561bab193dfe7",
   "source_recovery_commit": "81f7b178b34cefda2710a1d60df7180058a2537c",
-  "source_result": "FAIL_no_E50"
+  "source_result": "FAIL_no_E50",
+  "actual_analysis_wall_seconds": 20.07303503411822,
+  "all3rows_all7_fixed_before_truth": true,
+  "model_seed_count": 1,
+  "figures_visually_checked": 4
 }

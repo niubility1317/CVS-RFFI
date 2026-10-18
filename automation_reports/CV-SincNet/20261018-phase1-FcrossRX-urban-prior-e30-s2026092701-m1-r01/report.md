@@ -1,6 +1,6 @@
 # P59：完整 practical 的 urban 场景重点分配
 
-**VERIFIED_RUNNING，已在 GPU0 启动新增 E10。** dispatcher1217210／worker1217341 的 PID、CWD、argv、GPU 和日志增长已独立核实；9项定向检查、13文件编译和一次P0／P1审查通过（P0=0／P1=0）。真实As20无query烟测2NN＋实际六前向合成烟测768NN通过后已直接训练，没有新性能结果。当前目标是固定 practical 星地识别优先，匹配 clean 下降不超过 0.1 个绝对百分点，最终仍需可重复双提升及 low urban>60%。常规总 E30，本次不扩 E50。
+**VERIFIED_ANALYZED。** 已完成新增 E10、固定全部七视图独立评分和完整分析；源晋级FAIL，不延E50。本段后续保留原发布审计，最终结果见 [final_analysis.md](<E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01/final_analysis.md>)。原启动记录： dispatcher1217210／worker1217341 的 PID、CWD、argv、GPU 和日志增长已独立核实；9项定向检查、13文件编译和一次P0／P1审查通过（P0=0／P1=0）。真实As20无query烟测2NN＋实际六前向合成烟测768NN通过后已直接训练，没有新性能结果。当前目标是固定 practical 星地识别优先，匹配 clean 下降不超过 0.1 个绝对百分点，最终仍需可重复双提升及 low urban>60%。常规总 E30，本次不扩 E50。
 
 唯一假设：在完整 practical 的总样本量、clean 槽位和物理条件不变时，增加 urban 场景的训练份额能提高 low／mid urban，且不引入超过阶段要求的 clean 代价。仅在原 As E20 父模型的 E21–30，将 low suburban／mid urban／low urban 的先验从各 1/3 改为 .2／.4／.4。它是固定混合 `(1−.4)*nominal+.4*(0,.5,.5)`，不是自适应课程。
 

@@ -97,11 +97,12 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_urban_prior_E30_20261018_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_urban_prior59/runner.py",
     "stop_rule": "Wrongroles/provenance/parent/runtime/shape/nonfinite/outputcollision/budget ortechnicalfailure:preserve ownoutputs andstop ownrunonly;no automaticretry/targetselection/healthyprocessmutation;scientific negative completesfixedall7 andclosesextension",
-    "status": "RUNNING",
+    "status": "ANALYZED",
     "gpu": 0,
     "dispatcher_pid": 1217210,
     "worker_pid": 1217341,
-    "remote_compile": "PASS_13"
+    "remote_compile": "PASS_13",
+    "terminal_status": "VERIFIED_TRAINED_ALL7_SCORED_ANALYZED"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
@@ -233,7 +234,22 @@
     "PlainlateAsalreadyfullsource4Lnegative (shadowLHS AS_NATIVE sourceclean-.4444pp);notrepeated. SceneCycle heldRX1/8Lchangedsix-sceneorderuniformmarginal;notthis3sceneprior.",
     "Beforeformalstore source-onlyscientificextensiondecision: nativefullVfinalclean >= reusedNoAs30 nativefullVclean-.1absolutepp; sourceV1800pooledmidlowmean >= reusedAs30+.5pp andlow>=reusedAs30. FAILstillcompletesfrozenall7single-rowformalclosure,noextension. Thesearelimitedsourceperformancechecks,noreplacementforformal0.1ppstagecriterion.",
     "Formalstage:matchedclean>=NoAs30-.1pp;report all7andurbanlow/midmean/F1/worstRX/repairs. Finaljointgoalneedsreproduciblepositivecleanandpractical,low>60;neitherpresumed. Noformalfeedback intohyperparameters,seed/promotionorretry.",
-    "Actual codecommit,command/environmentpaths/GPU andartifactnames finalizedonceimplementation andoneP0P1/focusedtests complete;noextraapproval orpublicationgate."
+    "Actual codecommit,command/environmentpaths/GPU andartifactnames finalizedonceimplementation andoneP0P1/focusedtests complete;noextraapproval orpublicationgate.",
+    "Actual source-decision JSON write failed aftersource readout,scientificvaluescomputedbeforeformal;strictsamecriteria restored0NN beforecurrentformalread.Originalfailurepreserved;sourceFAIL meansnoE50/seed expansion. FirstCPU reportJSONscalarfailure retainedr01;fixedr02ANALYZEDmissing0/NN0. See final_analysis.md."
   ],
-  "registered_at": "2026-10-18T05:41:28+00:00"
+  "registered_at": "2026-10-18T05:41:28+00:00",
+  "result_summary": {
+    "model_seed_count": 1,
+    "clean_accuracy_pct": 85.34583333333333,
+    "clean_vs_NoAs30_pp": 0.09821428571428203,
+    "low_urban_pct": 51.46488095238095,
+    "mid_urban_pct": 63.00416666666667,
+    "urban3_mean_pct": 64.1218253968254,
+    "urban3_vs_As30_pp": 0.1825396825396841,
+    "formal_clean_stage_pass": true,
+    "source_promotion_pass": false,
+    "E50_launched": false,
+    "crossseed_confirmed": false,
+    "goal_complete": false
+  }
 }

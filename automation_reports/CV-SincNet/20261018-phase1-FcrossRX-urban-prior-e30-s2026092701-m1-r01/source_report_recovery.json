@@ -1,5 +1,5 @@
 {
-  "status": "FIX_VERIFIED_NOT_EXECUTED",
+  "status": "VERIFIED",
   "run_id": "20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01",
   "training_unchanged": true,
   "training_complete": true,
@@ -28,5 +28,52 @@
     "IQ": 0,
     "CP": 0,
     "NN": 0
-  }
+  },
+  "recovery_code_commit": "81f7b178b34cefda2710a1d60df7180058a2537c",
+  "source_decision": {
+    "status": "SOURCE_READOUT_DECIDED",
+    "checks": {
+      "fullV_clean_within_0p1pp": false,
+      "mid_low_mean_gain_at_least_0p5pp": false,
+      "low_not_below_originalAs30": true
+    },
+    "source_qualified": false,
+    "fullV_clean_vs_NoAs30_pp": -0.10740740740740051,
+    "mid_low_mean_vs_As30_pp": 0.027777777777771018,
+    "low_vs_As30_pp": 0.11111111111110628,
+    "source_accuracies": [
+      [
+        0.8788888888888889,
+        0.725,
+        0.6011111111111112
+      ],
+      [
+        0.8922222222222222,
+        0.73,
+        0.5827777777777777
+      ]
+    ],
+    "originalAs30_source_accuracies": [
+      [
+        0.8811111111111111,
+        0.7255555555555555,
+        0.6011111111111112
+      ],
+      [
+        0.8922222222222222,
+        0.7305555555555555,
+        0.5805555555555556
+      ]
+    ],
+    "formal_scores_read": false,
+    "formal_evaluation_always_required": true,
+    "no_automatic_budget_or_seed_extension": true,
+    "target_feedback": false,
+    "model_seed_count": 1,
+    "NN": 0
+  },
+  "original_failure_preserved": true,
+  "source_qualification_rerun": false,
+  "training_rerun": false,
+  "formal_rerun": false
 }

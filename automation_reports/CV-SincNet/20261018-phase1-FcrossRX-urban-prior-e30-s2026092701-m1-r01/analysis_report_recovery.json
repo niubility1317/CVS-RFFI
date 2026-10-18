@@ -1,6 +1,6 @@
 {
-  "status": "FIX_VERIFIED_READY_FOR_CPU_R02",
-  "failed_output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01/analysis_r01",
+  "status": "VERIFIED_ANALYZED_R02",
+  "failed_output_root": "PROJECT/runs/20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01/analysis_r01",
   "diagnosis": "NumPy bool in formal summary JSON;all prediction gates and metric/CM recounts completed;report stopped beforecosts/plots",
   "original_outputs_preserved": true,
   "fix": "Explicit np.generic.item JSON boundary withallow_nanFalse;historic source writefailure marked recovered only fromactual0NN recovery metadata",
@@ -16,5 +16,7 @@
   "IQ": 0,
   "CP": 0,
   "updates": 0,
-  "proposed_new_output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01/analysis_r02"
+  "proposed_new_output_root": "PROJECT/runs/20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01/analysis_r02",
+  "actual_analysis_wall_seconds": 20.07303503411822,
+  "unfinished_components": []
 }
