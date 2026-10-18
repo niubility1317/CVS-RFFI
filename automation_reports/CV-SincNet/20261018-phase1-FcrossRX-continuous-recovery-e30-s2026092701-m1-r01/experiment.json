@@ -1,0 +1,209 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-phase1-FcrossRX-continuous-recovery-e30-s2026092701-m1-r01",
+  "group_id": "FcrossRX-continuous30-trajectory",
+  "display_name": "连续 E30：单 As 技术补跑，复用完整 No-As",
+  "description": "Explicitly authorized one scratch AsE30 after old E20 guard failure;unchanged recipe/data/defaulthead;reuse fixed continuousNoAs and original staged source reference;not a new mechanism or target-based rerun",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "P52-recovery",
+    "single-As-continuous30"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "all5RX",
+    "E30",
+    "single_continuous_trajectory",
+    "matched_NoAs_As",
+    "default_head",
+    "truth_last",
+    "technical-recovery",
+    "single-new-As",
+    "reused-matched-NoAs",
+    "clean-0.1pp-report-only"
+  ],
+  "comparison_group_id": "singlecos30-vs-staged20plus10-s2701",
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-continuous-e30-s2026092701-m2-r01",
+    "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Human explicitly approved one extra scratch As E30;reuse completed matching NoAs;preserve failed20 cost. Subsequent human permits totalE50 only for source-supported good recipes with matched NoAs;current run fixedE30.",
+  "code": {
+    "commit": "6f94261642df1fbeba1aa69bae3350259b59aa17",
+    "checkout": "codex/phase1-urban-sigtime-20261014",
+    "environment": "N607 ordinary CVS-RFFI original Python3.10/PyTorch2.1/NumPy2.2.5;FP32 pinnedP43 runtime",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_continuous_recovery_E30_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing VALIDATED_ONCE fixed source and fixed formal IQ",
+    "representation": "eq1/25MHz/IQ256/original RMS centerfalse",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#/role_ids",
+    "label_map_ref": "original6TX",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original6TX mapping",
+    "roles": {
+      "L_s": 6300,
+      "U_s": "56700 TX hidden",
+      "V": 27000
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "NOT_APPLICABLE_PHASE1_FIXEDIQ",
+    "split_id": 392005,
+    "validation_ref": "sourceV27000 unchanged/no persistent update",
+    "support_query_ref": "Phase1 final only;no Phase2 support/query",
+    "leo_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/manifest.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Only frozen checkpoint final prediction all7views perrow;independent truth after complete;no targetfeedback",
+    "external_method_exception": null,
+    "claim_scope": "Fixed full-practical adaptation and clean absolute0.1pp reporting;single seed;no newAg/crossseed/goal-complete claim"
+  },
+  "checkpoint": {
+    "initialization": "New B01 scratchE30 only;no parent/checkpoint initializer. Old B00 weights not loaded into training;existing source/prediction/scoring read-only reused.",
+    "sources": [],
+    "contract_check_ref": "Existing EXACT_MATCH SOURCE roles;own scratch initialization/final30/6660updates/defaulthead args verified before freeze inference",
+    "provenance_verdict": "SCRATCH_ONLY_EXACT_SOURCE_CONTRACT",
+    "selection_rule": "FixedFINAL30 no bestepoch/no target selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/continuous52-technical-recovery",
+    "gpu_policy": "All-owner max3process/GPU,free>=12000MB;prefer distinct freeGPU;healthy jobs untouched",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-continuous-recovery-e30-s2026092701-m1-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-continuous-recovery-e30-s2026092701-m1-r01/logs;dispatcher /home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-continuous-recovery-e30-s2026092701-m1-r01-launch",
+    "local_artifact_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_continuous_recovery_E30_20261018_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_continuous_recovery_E30_20261018_r01/experiments/cvs_continuous52/runner.py",
+    "stop_rule": "Owned role/config/CP mismatch,nonfinite,outputcollision,unlaunchable/illegalprediction => preserve/noauto retry;dispatcher ceases unlaunched rows aftertechnicalfailure,healthy runningrows finish;scientificfail never stops registered formal test"
+  },
+  "expected_artifacts": [
+    "7protocolnegativechecks",
+    "real_checkpoint_smoke.json 2NN noquery",
+    "synthetic_smoke.json 1536NN no realIQ",
+    "launch.json/queue_state.json",
+    "perrow source full30logs/checkpoints/args/roles/trainingsequence/results",
+    "perrow source_qualification",
+    "perrow all7 frozenprediction then independentCPU scoring",
+    "perrow complete.json",
+    "source_matrix_decision.json",
+    "final_scores.json",
+    "complete.json or failure.json",
+    "subsequent independent curves/paired metrics/publicreport/Git"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macroF1",
+      "worstRX",
+      "urban3mean",
+      "lowurban",
+      "clean/suburban gap",
+      "source2draw/state/quality/margins",
+      "source fixedC0-clean-correct retention",
+      "full30train/gradient/oldgate telemetry",
+      "continuousAs effect and historicalstaged contrast",
+      "realcost"
+    ],
+    "dimensions": [
+      "singlemodelseed2026092701",
+      "B00/B01",
+      "clean+6practical",
+      "RX/day/TX",
+      "existing source state/lock/quality"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-continuous-recovery-e30-s2026092701-m1-r01/B01-s2026092701/prediction;reused matched control /home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-continuous-e30-s2026092701-m2-r01/B00-s2026092701/prediction",
+    "scorer_ref": "Existing evaluate.score unchanged;CPU exec after all7 new predictions;old control scores read-only reused",
+    "control_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-continuous-e30-s2026092701-m2-r01/B00-s2026092701",
+    "clean_tolerance_pp": 0.1,
+    "clean_tolerance_is_absolute": true,
+    "cohort_note": "four-style source/target comparison uses fixed STAGED_B00 FINAL30 clean-correct cohort;also report matched continuousNoAs cohort where available;not a shared pretrainedparent",
+    "future_E50": "Source criteria fixed before formal score access;no automatic schedule change in this E30 run;preregister matched total50 before any extension"
+  },
+  "rows": [
+    {
+      "row_id": "B01-s2026092701",
+      "method": "Continuous30 originalfullAs cleanretain",
+      "purpose": "Only newly trained row,technical recovery from scratch;matched NoAs originalR01 read-only",
+      "config_ref": "experiments/cvs_continuous52/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-continuous-recovery-e30-s2026092701-m1-r01/B01-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "source_RX_holdout": null,
+        "L_dev": null,
+        "defaulthead": "unchanged cosine30 jointlytrained"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092701,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261016422
+      },
+      "seed_notes": "model controls nativeinit/dropout/ordinary/sampler and actualF localprojections;physicalroleIDs fixed by sortedsplit;namedtrainAs20261016421/validation20261016422/receiver20261016423 fixed;no newAg/support;formalreceivedIQ alreadyfixed",
+      "k": null,
+      "scenario": "Original low_suburban/mid_urban/low_urban fullAs;all7finalviews",
+      "optimizer": "One original AdamW WD1e-4,singlecos30,minlr1e-6;no restart",
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "scratchE30=13L17U/6660updates/6Lperstep1.25;new30/6660,reusedcontrol30/6660,failedoldAs20/4440 separately;no As weight initializer",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-continuous-recovery-e30-s2026092701-m1-r01/B01-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-continuous-recovery-e30-s2026092701-m1-r01/logs/B01-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_continuous_recovery_E30_20261018_r01/experiments/cvs_continuous52/runner.py",
+      "expected_artifacts": [
+        "7protocolnegativechecks",
+        "real_checkpoint_smoke.json 2NN noquery",
+        "synthetic_smoke.json 1536NN no realIQ",
+        "launch.json/queue_state.json",
+        "perrow source full30logs/checkpoints/args/roles/trainingsequence/results",
+        "perrow source_qualification",
+        "perrow all7 frozenprediction then independentCPU scoring",
+        "perrow complete.json",
+        "source_matrix_decision.json",
+        "final_scores.json",
+        "complete.json or failure.json",
+        "subsequent independent curves/paired metrics/publicreport/Git"
+      ]
+    }
+  ],
+  "notes": [
+    "One launch owner;only B01 training/predict/score permitted;B00 execution rejected",
+    "Old failure root and saved control artifacts immutable;do not copy or relabel control config/run_id",
+    "Exact old control config verified;new As differs from failed config only run_id/output_root/launch_owner",
+    "Original source criteria unchanged;sourcefail still executes fixed formal7;0.1pp is reporting only",
+    "Actual total completed modelE after successful recovery80=30control+20failed+30new;successful updates17760;failed partialNN remainsUNKNOWN",
+    "14stdlib checks and actual E30hook validation1536syntheticNN/0updates/0realIQ/0CP;launcher realCP2+twoF1536 first then immediate authorized training",
+    "Prior single candidate P0/P1 and targeted guard/NoAs fix re-review retained;no duplicate runner/full review",
+    "No E50 extension based on formal scores;conditional budget permission is not a claim source eligibility has passed"
+  ]
+}
