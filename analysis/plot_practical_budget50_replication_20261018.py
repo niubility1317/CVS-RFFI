@@ -196,11 +196,13 @@ def matched_figure(deltas):
                        label="Stage bound: -0.1 pp", zorder=2)
             ax.legend(loc="lower left", fontsize=8)
         for x, value in enumerate((*y, mean)):
-            ax.annotate(f"{value:+.3f}", (x, value), xytext=(0, 8),
-                        textcoords="offset points", ha="center", fontsize=9)
-        ax.set_xticks(range(4), ("Seed 01", "Seed 02", "Seed 03", "Mean +/- SD"))
+            offset = (9, 8) if x == 3 else (0, 8)
+            alignment = "left" if x == 3 else "center"
+            ax.annotate(f"{value:+.3f}", (x, value), xytext=offset,
+                        textcoords="offset points", ha=alignment, fontsize=9)
+        ax.set_xticks(range(4), ("Seed 01", "Seed 02", "Seed 03", "Mean\n+/- SD"))
         ax.tick_params(axis="x", labelsize=9)
-        ax.set_xlim(-.45, 3.55)
+        ax.set_xlim(-.45, 3.9)
         ax.set_ylim(*delta_limits([*y, mean - sd, mean + sd], view == "clean"))
         ax.set_title(chr(ord("a") + index) + "  " + title, loc="left", fontweight="bold")
         ax.set_ylabel("As - NoAs accuracy (absolute pp)")

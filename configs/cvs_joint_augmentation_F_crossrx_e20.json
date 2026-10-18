@@ -2180,7 +2180,7 @@
       "joint_goal_complete": false
     }
   },
-  "latest_completed_experiment": "20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01",
+  "latest_completed_experiment": "20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01",
   "source_PSD_positive_affine": {
     "run_id": "20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01",
     "execution_commit": "1091fc97568605cd1115b6fa14754f781df197cc",
@@ -2310,21 +2310,24 @@
     "new_analysis_NN": 0,
     "new_analysis_updates": 0
   },
-  "current_experiment": "20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01",
+  "current_experiment": null,
   "active_As_hypothesis": {
     "run_id": "20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01",
-    "status": "RUNNING_VERIFIED",
-    "hypothesis": "Fixed originalAs ownFINAL30+20 E50 source-supported budget replication in original seeds02/03;no new mechanism",
+    "status": "COMPLETED_SOURCE_BUDGET_SUPPORTED_FORMAL_STAGE_FAILED",
+    "hypothesis": "FixedoriginalAs ownFINAL30+20 source-supported budget replication;urban gain repeated,clean guard unmet",
     "model_seeds": [
+      2026092701,
       2026092702,
       2026092703
     ],
-    "new_models": 4,
-    "reused_E50_seed01_rows": 2,
-    "reused_E30_rows": 6,
-    "epochs_total_each": 50,
-    "epochs_new_each": 20,
-    "source_basis": {
+    "total_epochs_each": 50,
+    "source_RX_holdout": null,
+    "IQ_points": 256,
+    "new_mechanism": false,
+    "new_training_launch": false,
+    "technical_missing_items": [],
+    "repeatable_double_improvement": false,
+    "source_replication_basis": {
       "target_scores_used": false,
       "source_budget_fullV_clean_pp": 0.1185185185185178,
       "source_budget_midurban_pp": 1.9722222222222197,
@@ -2337,123 +2340,9 @@
       ],
       "source_evidence": "Prior seed01 E50 analysis_auto_r01/source_summary.json"
     },
-    "stage_clean_delta_pp_min": -0.1,
-    "default_head_joint_training": true,
-    "source_RX_holdout": null,
-    "IQ_points": 256,
-    "implementation_commit": "4ea924316d6a5fe84278c81e3db78706ff674f21",
-    "execution_commit": "7bbb5536cb72c9b95c7c2045ba660e1e72e234e7",
-    "workers": [
-      {
-        "row_id": "B00-s2026092702",
-        "pid": 1174919,
-        "gpu": 0,
-        "alive": true,
-        "phase": "worker",
-        "cwd_matches": true,
-        "argv_matches": true,
-        "GPU_env_matches": true,
-        "GPU_observed": true,
-        "log_growth_bytes": 10287,
-        "new_completed_epochs": 2,
-        "cumulative_epochs": 32,
-        "new_updates": 444,
-        "cumulative_updates": 7104,
-        "new_segment_L_NN": 340992,
-        "new_segment_As_packets": 0,
-        "extra_U_NN": 0,
-        "U_As": 0,
-        "existing_U_only": true,
-        "U_truth_read": false,
-        "target_access": false,
-        "source_complete": false,
-        "prediction_complete": false,
-        "scoring_complete": false
-      },
-      {
-        "row_id": "B01-s2026092702",
-        "pid": 1174997,
-        "gpu": 1,
-        "alive": true,
-        "phase": "worker",
-        "cwd_matches": true,
-        "argv_matches": true,
-        "GPU_env_matches": true,
-        "GPU_observed": true,
-        "log_growth_bytes": 5144,
-        "new_completed_epochs": 1,
-        "cumulative_epochs": 31,
-        "new_updates": 222,
-        "cumulative_updates": 6882,
-        "new_segment_L_NN": 170496,
-        "new_segment_As_packets": 14208,
-        "extra_U_NN": 0,
-        "U_As": 0,
-        "existing_U_only": true,
-        "U_truth_read": false,
-        "target_access": false,
-        "source_complete": false,
-        "prediction_complete": false,
-        "scoring_complete": false
-      },
-      {
-        "row_id": "B00-s2026092703",
-        "pid": 1175080,
-        "gpu": 2,
-        "alive": true,
-        "phase": "worker",
-        "cwd_matches": true,
-        "argv_matches": true,
-        "GPU_env_matches": true,
-        "GPU_observed": true,
-        "log_growth_bytes": 10284,
-        "new_completed_epochs": 2,
-        "cumulative_epochs": 32,
-        "new_updates": 444,
-        "cumulative_updates": 7104,
-        "new_segment_L_NN": 340992,
-        "new_segment_As_packets": 0,
-        "extra_U_NN": 0,
-        "U_As": 0,
-        "existing_U_only": true,
-        "U_truth_read": false,
-        "target_access": false,
-        "source_complete": false,
-        "prediction_complete": false,
-        "scoring_complete": false
-      },
-      {
-        "row_id": "B01-s2026092703",
-        "pid": 1175233,
-        "gpu": 3,
-        "alive": true,
-        "phase": "worker",
-        "cwd_matches": true,
-        "argv_matches": true,
-        "GPU_env_matches": true,
-        "GPU_observed": true,
-        "log_growth_bytes": 11743,
-        "new_completed_epochs": 1,
-        "cumulative_epochs": 31,
-        "new_updates": 222,
-        "cumulative_updates": 6882,
-        "new_segment_L_NN": 170496,
-        "new_segment_As_packets": 14208,
-        "extra_U_NN": 0,
-        "U_As": 0,
-        "existing_U_only": true,
-        "U_truth_read": false,
-        "target_access": false,
-        "source_complete": false,
-        "prediction_complete": false,
-        "scoring_complete": false
-      }
-    ],
-    "formal_new_scores_read": false,
     "formal_feedback": false,
     "automatic_further_seed_extension": false,
-    "repeatability_proven": false,
-    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01/report.md"
+    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01/final_analysis.md"
   },
   "practical_finite_power_E30_result": {
     "run_id": "20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01",
@@ -4101,7 +3990,7 @@
     "updates": 0,
     "target_access": false
   },
-  "latest_completed_training_experiment": "20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01",
+  "latest_completed_training_experiment": "20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01",
   "antithetic_source_result": {
     "run_id": "20261017-diagnostic-F-antitheticNoise-sourceL-s2026092701-m1-r02",
     "status": "ANALYZED_SOURCE_ONLY",
@@ -4404,31 +4293,30 @@
     "no_rescue": true
   },
   "latest_completed_analysis": {
-    "run_id": "20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01",
-    "status": "ANALYZED_NEGATIVE_FIXED_AG_CLOSED",
-    "report": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01/final_analysis.md"
+    "run_id": "20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01",
+    "status": "ANALYZED_VERIFIED_STAGE_FAILED",
+    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01/final_analysis.md"
   },
   "current_evidence_gap": {
     "practical_primary": true,
     "stage_clean_delta_pp_min": -0.1,
-    "latest_completed_candidate": "20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01",
-    "latest_candidate_source_clean_delta_pp": -0.07407407407408195,
-    "latest_candidate_source_budget_midlow_gain_pp": 1.8055555555555491,
-    "latest_candidate_formal_stage_pass": true,
-    "latest_candidate_formal_clean_delta_pp": 0.36547619047619045,
-    "latest_candidate_formal_low_accuracy_pct": 52.3875,
-    "latest_candidate_formal_mid_accuracy_pct": 63.901785714285715,
-    "model_seed_count": 1,
-    "multi_seed_E50_missing": true,
+    "latest_completed_candidate": "20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01",
+    "model_seed_count": 3,
+    "multi_seed_E50_missing": false,
+    "formal_clean_paired_mean_pp": -0.1501984126984127,
+    "formal_clean_paired_sample_SD_pp": 0.955701119898084,
+    "formal_low_accuracy_pct": 51.92658730158731,
+    "formal_mid_accuracy_pct": 62.98948412698414,
+    "mean_stage_pass": false,
+    "all_seeds_stage_pass": false,
     "repeatable_clean_and_practical_gain": false,
     "technical_missing_items": [],
     "mandatory_Ag_factorial": false,
-    "running_replication_run": "20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01",
-    "pending_model_seeds": [
-      2026092702,
-      2026092703
-    ],
-    "new_E50_formal_results": "NOT_AVAILABLE"
+    "running_replication_run": null,
+    "pending_model_seeds": [],
+    "new_E50_formal_results": "ALL_COMPLETE",
+    "next_concrete_candidate": "NOT_SELECTED_SOURCE_EVIDENCE_INSUFFICIENT",
+    "no_additional_approval_gate": true
   },
   "current_source_experiment": null,
   "latest_completed_source_experiment": "20261018-diagnostic-F-identitySensitivity-sourceLtoV-s2026092701-m1-r01",
@@ -4468,7 +4356,7 @@
     "target_access": false,
     "automatic_training": false
   },
-  "current_training_experiment": "20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01",
+  "current_training_experiment": null,
   "batch_stratification_release": {
     "run_id": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
     "status": "ANALYZED_VERIFIED",
@@ -6315,147 +6203,20 @@
   },
   "active_training_hypothesis": {
     "run_id": "20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01",
-    "status": "RUNNING_VERIFIED",
-    "hypothesis": "Fixed originalAs ownFINAL30+20 E50 source-supported budget replication in original seeds02/03;no new mechanism",
+    "status": "COMPLETED_SOURCE_BUDGET_SUPPORTED_FORMAL_STAGE_FAILED",
+    "hypothesis": "FixedoriginalAs ownFINAL30+20 source-supported budget replication;urban gain repeated,clean guard unmet",
     "model_seeds": [
+      2026092701,
       2026092702,
       2026092703
     ],
-    "new_models": 4,
-    "reused_E50_seed01_rows": 2,
-    "reused_E30_rows": 6,
-    "epochs_total_each": 50,
-    "epochs_new_each": 20,
-    "source_basis": {
-      "target_scores_used": false,
-      "source_budget_fullV_clean_pp": 0.1185185185185178,
-      "source_budget_midurban_pp": 1.9722222222222197,
-      "source_budget_lowurban_pp": 1.6388888888888897,
-      "source_As50_minus_NoAs50_fullV_clean_pp": -0.07407407407408195,
-      "modelseed_order": [
-        2026092701,
-        2026092702,
-        2026092703
-      ],
-      "source_evidence": "Prior seed01 E50 analysis_auto_r01/source_summary.json"
-    },
-    "stage_clean_delta_pp_min": -0.1,
-    "default_head_joint_training": true,
+    "total_epochs_each": 50,
     "source_RX_holdout": null,
     "IQ_points": 256,
-    "implementation_commit": "4ea924316d6a5fe84278c81e3db78706ff674f21",
-    "execution_commit": "7bbb5536cb72c9b95c7c2045ba660e1e72e234e7",
-    "workers": [
-      {
-        "row_id": "B00-s2026092702",
-        "pid": 1174919,
-        "gpu": 0,
-        "alive": true,
-        "phase": "worker",
-        "cwd_matches": true,
-        "argv_matches": true,
-        "GPU_env_matches": true,
-        "GPU_observed": true,
-        "log_growth_bytes": 10287,
-        "new_completed_epochs": 2,
-        "cumulative_epochs": 32,
-        "new_updates": 444,
-        "cumulative_updates": 7104,
-        "new_segment_L_NN": 340992,
-        "new_segment_As_packets": 0,
-        "extra_U_NN": 0,
-        "U_As": 0,
-        "existing_U_only": true,
-        "U_truth_read": false,
-        "target_access": false,
-        "source_complete": false,
-        "prediction_complete": false,
-        "scoring_complete": false
-      },
-      {
-        "row_id": "B01-s2026092702",
-        "pid": 1174997,
-        "gpu": 1,
-        "alive": true,
-        "phase": "worker",
-        "cwd_matches": true,
-        "argv_matches": true,
-        "GPU_env_matches": true,
-        "GPU_observed": true,
-        "log_growth_bytes": 5144,
-        "new_completed_epochs": 1,
-        "cumulative_epochs": 31,
-        "new_updates": 222,
-        "cumulative_updates": 6882,
-        "new_segment_L_NN": 170496,
-        "new_segment_As_packets": 14208,
-        "extra_U_NN": 0,
-        "U_As": 0,
-        "existing_U_only": true,
-        "U_truth_read": false,
-        "target_access": false,
-        "source_complete": false,
-        "prediction_complete": false,
-        "scoring_complete": false
-      },
-      {
-        "row_id": "B00-s2026092703",
-        "pid": 1175080,
-        "gpu": 2,
-        "alive": true,
-        "phase": "worker",
-        "cwd_matches": true,
-        "argv_matches": true,
-        "GPU_env_matches": true,
-        "GPU_observed": true,
-        "log_growth_bytes": 10284,
-        "new_completed_epochs": 2,
-        "cumulative_epochs": 32,
-        "new_updates": 444,
-        "cumulative_updates": 7104,
-        "new_segment_L_NN": 340992,
-        "new_segment_As_packets": 0,
-        "extra_U_NN": 0,
-        "U_As": 0,
-        "existing_U_only": true,
-        "U_truth_read": false,
-        "target_access": false,
-        "source_complete": false,
-        "prediction_complete": false,
-        "scoring_complete": false
-      },
-      {
-        "row_id": "B01-s2026092703",
-        "pid": 1175233,
-        "gpu": 3,
-        "alive": true,
-        "phase": "worker",
-        "cwd_matches": true,
-        "argv_matches": true,
-        "GPU_env_matches": true,
-        "GPU_observed": true,
-        "log_growth_bytes": 11743,
-        "new_completed_epochs": 1,
-        "cumulative_epochs": 31,
-        "new_updates": 222,
-        "cumulative_updates": 6882,
-        "new_segment_L_NN": 170496,
-        "new_segment_As_packets": 14208,
-        "extra_U_NN": 0,
-        "U_As": 0,
-        "existing_U_only": true,
-        "U_truth_read": false,
-        "target_access": false,
-        "source_complete": false,
-        "prediction_complete": false,
-        "scoring_complete": false
-      }
-    ],
-    "formal_new_scores_read": false,
-    "formal_feedback": false,
-    "automatic_further_seed_extension": false,
-    "repeatability_proven": false,
-    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01/report.md"
+    "new_mechanism": false,
+    "new_training_launch": false,
+    "technical_missing_items": [],
+    "repeatable_double_improvement": false
   },
   "carrier_gate_release": {
     "run_id": "20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01",
@@ -8164,7 +7925,7 @@
   },
   "next_fixed_replication": {
     "run_id": "20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01",
-    "status": "RUNNING_VERIFIED",
+    "status": "ANALYZED_VERIFIED_STAGE_FAILED",
     "owner": "codex/root/practical-budget50-replication",
     "model_seeds": [
       2026092702,
@@ -8193,6 +7954,126 @@
     "code_commit": "4ea924316d6a5fe84278c81e3db78706ff674f21",
     "unique_P0P1": "PASS",
     "release_commit": "7bbb5536cb72c9b95c7c2045ba660e1e72e234e7",
+    "analysis_commit": "5f3a0fc9c128944994f40d4f4858a5f8e7730b40",
+    "model_seed_count": 3,
+    "technical_missing_items": [],
+    "final_report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01/final_analysis.md"
+  },
+  "practical_E50_three_seed_result": {
+    "run_id": "20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01",
+    "status": "ANALYZED_VERIFIED_STAGE_FAILED",
+    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01/final_analysis.md",
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "model_seed_count": 3,
+    "trajectory": "Each own FINAL30+20;20+10+20 resetAdamW/cosine20,not continuous cosine50",
+    "As50_minus_NoAs50_pp": {
+      "clean": {
+        "values": [
+          0.36547619047619045,
+          0.4369047619047619,
+          -1.2529761904761905
+        ],
+        "mean": -0.1501984126984127,
+        "sample_SD": 0.955701119898084
+      },
+      "practical_mid_urban": {
+        "values": [
+          29.864880952380954,
+          19.767857142857142,
+          24.083333333333332
+        ],
+        "mean": 24.57202380952381,
+        "sample_SD": 5.066220113522718
+      },
+      "practical_low_urban": {
+        "values": [
+          22.508928571428573,
+          16.35892857142857,
+          18.617857142857144
+        ],
+        "mean": 19.161904761904765,
+        "sample_SD": 3.110886667630877
+      },
+      "urban_mean": {
+        "values": [
+          30.707738095238096,
+          20.204166666666666,
+          24.52876984126984
+        ],
+        "mean": 25.146891534391532,
+        "sample_SD": 5.278996970012981
+      }
+    },
+    "As50_minus_As30_pp": {
+      "clean": {
+        "values": [
+          0.3196428571428571,
+          -0.1375,
+          -0.23511904761904762
+        ],
+        "mean": -0.01765873015873017,
+        "sample_SD": 0.2961615103480535
+      },
+      "practical_mid_urban": {
+        "values": [
+          1.0952380952380953,
+          0.981547619047619,
+          0.7857142857142857
+        ],
+        "mean": 0.9541666666666666,
+        "sample_SD": 0.15656798708707628
+      },
+      "practical_low_urban": {
+        "values": [
+          1.1434523809523809,
+          1.2553571428571428,
+          1.0714285714285714
+        ],
+        "mean": 1.1567460317460316,
+        "sample_SD": 0.09268209487547434
+      },
+      "urban_mean": {
+        "values": [
+          1.0716269841269843,
+          0.9652777777777777,
+          0.65
+        ],
+        "mean": 0.8956349206349207,
+        "sample_SD": 0.21927134810382629
+      }
+    },
+    "source_fullV_clean_matching_pp": {
+      "values": [
+        -0.07407407407408195,
+        -0.037037037037035425,
+        -0.09629629629629433
+      ],
+      "mean": -0.06913580246913724,
+      "sample_SD": 0.029936680624647882
+    },
+    "source_midlow_budget_pp": {
+      "values": [
+        1.8055555555555491,
+        2.111111111111108,
+        2.041666666666664
+      ],
+      "mean": 1.9861111111111072,
+      "sample_SD": 0.16017448048154076
+    },
+    "mean_clean_stage_pass": false,
+    "all_seeds_clean_stage_pass": false,
+    "repeatable_double_improvement": false,
+    "new_model_epochs": 80,
+    "new_updates": 17760,
+    "new_total_NN": 29845170,
+    "technical_missing_items": [],
+    "target_feedback": false,
+    "automatic_further_seed_extension": false,
+    "execution_commit": "7bbb5536cb72c9b95c7c2045ba660e1e72e234e7",
     "analysis_commit": "5f3a0fc9c128944994f40d4f4858a5f8e7730b40"
   }
 }

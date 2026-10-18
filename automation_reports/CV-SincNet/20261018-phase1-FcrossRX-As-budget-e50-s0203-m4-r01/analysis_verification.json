@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_WAIT_SOURCE",
+  "status": "VERIFIED_ANALYZED",
   "training_run": "20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01",
   "analysis_release": "cvs_F_practical_budget50_replication_analysis_20261018_r01",
   "output_name": "analysis_auto_r01",
@@ -31,25 +31,67 @@
   "remote_compile": "PASS",
   "remote_unit_tests": "PASS_7",
   "pid": 1177231,
-  "alive": true,
+  "alive": false,
   "cwd_matches": true,
   "argv_matches": true,
   "CUDA_hidden": true,
   "CPU2": true,
   "observed_state": {
-    "status": "WAIT_SOURCE",
-    "live_owned_PIDs": [
-      1174889,
-      1174919,
-      1174997,
-      1175080,
-      1175233
-    ],
-    "observation_unknown": false,
-    "truth_opened": false,
-    "NN": 0
+    "status": "ANALYZED",
+    "NN": 0,
+    "truth_opened": true
   },
   "failure": null,
-  "observed_at": "2026-10-18T04:46:56.376Z",
-  "formal_scores_read": false
+  "observed_at": "2026-10-18T05:24:22.791Z",
+  "formal_scores_read": true,
+  "initial_launch_observation": {
+    "observed_at": "2026-10-18T04:46:56.376Z",
+    "pid": 1177231,
+    "alive": true,
+    "state": {
+      "status": "WAIT_SOURCE",
+      "live_owned_PIDs": [
+        1174889,
+        1174919,
+        1174997,
+        1175080,
+        1175233
+      ],
+      "observation_unknown": false,
+      "truth_opened": false,
+      "NN": 0
+    }
+  },
+  "complete": {
+    "status": "ANALYZED",
+    "training_run": "20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01",
+    "analysis_code_commit": "5f3a0fc9c128944994f40d4f4858a5f8e7730b40",
+    "source_complete": true,
+    "formal_complete": true,
+    "log_records_complete": true,
+    "model_seed_count": 3,
+    "new_model_rows": 4,
+    "reused_model_rows": 8,
+    "NN": 0,
+    "IQ": 0,
+    "CP": 0,
+    "updates": 0,
+    "training_processes_untouched": true,
+    "pipeline_wall_including_wait_seconds": 2097.3042743050028,
+    "fixed_three_seed_consistent_double_improvement": false,
+    "goal_complete": false
+  },
+  "collection": {
+    "status": "VERIFIED",
+    "files": 11,
+    "archive_SHA256": "a8850417ce00879ab91c06e7ef283ce2b1ad3db1a7a53a8066f3bb9dbac45b8c",
+    "one_transfer_comparison": true,
+    "raw_IQ_or_CP_or_predictions_collected": false
+  },
+  "independent_formal_confusion_matrices": 1512,
+  "partition_reconciliations": 252,
+  "new_training_log_steps": 17760,
+  "new_training_epochs": 80,
+  "technical_missing_items": [],
+  "fixed_three_seed_consistent_double_improvement": false
 }

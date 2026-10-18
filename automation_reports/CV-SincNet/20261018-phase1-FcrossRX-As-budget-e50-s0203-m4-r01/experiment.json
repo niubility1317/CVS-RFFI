@@ -173,11 +173,53 @@
     "local_artifact_root": "local_artifacts/F_As_budget_E50_s0203_20261018",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_practical_budget50_replication/runner.py;local publish CVS-RFFI/python -m experiments.cvs_practical_budget50_replication.publish",
     "stop_rule": "Run-owned source/data/parent/defaulthead/config mismatch,nonfinite,output collision,unlaunchable or illegal prediction => preserve outputs and stop unlaunched own rows;healthy already running rows finish;no automatic retry,no source-scientific-failure skip of fixed formal closure;never stop other owners",
-    "status": "RUNNING",
+    "status": "ANALYZED",
     "release_commit": "7bbb5536cb72c9b95c7c2045ba660e1e72e234e7",
-    "observed_at": "2026-10-18T04:46:56.376Z",
+    "observed_at": "2026-10-18T05:24:22.791Z",
     "dispatcher_pid": 1174889,
     "workers": [
+      {
+        "row_id": "B00-s2026092702",
+        "pid": 1174919,
+        "alive": false,
+        "source_complete": true,
+        "prediction_complete": true,
+        "scoring_complete": true,
+        "cumulative_epochs": 50,
+        "cumulative_updates": 11100
+      },
+      {
+        "row_id": "B01-s2026092702",
+        "pid": 1174997,
+        "alive": false,
+        "source_complete": true,
+        "prediction_complete": true,
+        "scoring_complete": true,
+        "cumulative_epochs": 50,
+        "cumulative_updates": 11100
+      },
+      {
+        "row_id": "B00-s2026092703",
+        "pid": 1175080,
+        "alive": false,
+        "source_complete": true,
+        "prediction_complete": true,
+        "scoring_complete": true,
+        "cumulative_epochs": 50,
+        "cumulative_updates": 11100
+      },
+      {
+        "row_id": "B01-s2026092703",
+        "pid": 1175233,
+        "alive": false,
+        "source_complete": true,
+        "prediction_complete": true,
+        "scoring_complete": true,
+        "cumulative_epochs": 50,
+        "cumulative_updates": 11100
+      }
+    ],
+    "launch_workers": [
       {
         "row_id": "B00-s2026092702",
         "pid": 1174919,
@@ -282,7 +324,11 @@
         "prediction_complete": false,
         "scoring_complete": false
       }
-    ]
+    ],
+    "failure": null,
+    "complete_training_rows": 4,
+    "formal_logical_rows": 12,
+    "final_analysis_commit": "5f3a0fc9c128944994f40d4f4858a5f8e7730b40"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
@@ -1880,7 +1926,8 @@
     "Original01 E50 run and01/02/03 E30 histories retained unchanged;new E50only02/03 rows,all plannedseeds reported pairedmean/sampleSD with no omission. No furtherautomaticseedextension.",
     "New4rows80modelepochs/17760updates;expected perrow native6271922/source12600/formal1176002=7460524NN;new four29842096NN+shared3074NN (realCP2+fourrealFsynthetic3072)=29845170NN,actual costs later verified. Parent and seed01 histories separate.",
     "Local implementation frozen:96protocol negatives+4 native seed positive cases PASS;13 Python AST/compile and2 emitted remote AST PASS,all0NN/CP/IQ/target. Unique limited P0/P1 of new fourrow binding is in progress;no full rereview of unchanged mechanism.",
-    "Actual training release7bbb5536cb72c9b95c7c2045ba660e1e72e234e7 observed running;all four GPU/CWD/argv match/loggrow,NoAs E32/AsE31. Source/U hidden rules unchanged,no newformal results."
+    "Actual training release7bbb5536cb72c9b95c7c2045ba660e1e72e234e7 observed running;all four GPU/CWD/argv match/loggrow,NoAs E32/AsE31. Source/U hidden rules unchanged,no newformal results.",
+    "All four new rows completed FINAL50/source/all7prediction/independent score;all12 logicalrow analysis complete1512CM/252partitions and17760newsteps;mean clean -.150198pp fails stage,only02of03 positive. All fixedseeds retained,no selective rerun/furtherextension;results.json/final_analysis.md authoritative final outcome."
   ],
   "registered_at": "2026-10-18T04:34:01+00:00",
   "source_replication_basis": {
@@ -1895,5 +1942,21 @@
       2026092703
     ],
     "source_evidence": "Prior seed01 E50 analysis_auto_r01/source_summary.json"
+  },
+  "results": {
+    "file": "results.json",
+    "report": "final_analysis.md",
+    "status": "ANALYZED_VERIFIED",
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "technical_missing_items": [],
+    "mean_clean_delta_pp": -0.1501984126984127,
+    "stage_clean_pass": false,
+    "fixed_three_seed_consistent_double_improvement": false,
+    "target_feedback": false,
+    "automatic_further_seed_extension": false
   }
 }
