@@ -30,3 +30,10 @@ P68机制读出补充：实际SAT18 AS_CE20没有已核实源预测缓存，P43 
 P68 最终：源 fullVclean 对NoAs −0.029630pp PASS，midlow 对同父SAME ＋0.069444pp 未达＋0.5pp，SOURCE_FAIL，不延长 E50。主比较 INDEP−SAME urban＋0.114286pp、mid＋0.087500pp、low＋0.075595pp、clean＋0.019643pp，仅单seed微增。对同预算NoAs urban＋28.302778pp、clean−0.013690pp，满足0.1pp阶段目标；对原As urban−0.065675pp且父KL历史不同。正式low51.245833%，未达60%；无可重复clean＋星地双提升证据。504个混淆矩阵／84分区独立重数，missing=[]。实际父clean正确1767源集合low保持60.016978%不是正式low准确率。
 
 [P68 最终分析](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-fullAsPair6-e30-s2026092701-m1-r01/final_analysis.md)。整体目标 ACTIVE；允许给源合格方案总计 E50，不以本轮正式微增晋级。
+
+
+## P69：保留原AdamW状态的匹配续训
+
+20261018-phase1-FcrossRX-optimizerKeep-e30-s2026092701-m2-r01 固定P43对应own20 student/EMA，新增NoAs_KEEP/As_KEEP各10轮，总E30；原RESET对应NoAs30/As30预测与评分复用。唯一改变是保留全模型AdamW m/v/step，新cos10/LR/WD/CENTER_UNITS hooks计数及原U/6L/loss保持。不是continuous30/viewMoment，也不重开已做RXpopulation。源判据只两项：AS_KEEP fullVclean−NOAS_KEEP≥−.1pp，pooledmidlow−原AS30≥＋.5pp；任一FAIL关闭固定方案，所有已训行仍自动七视图独立truth-last。源PASS才可后续独立总E50，不自动扩seed。当前PLANNED，尚无新性能。
+
+[P69 预登记](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-optimizerKeep-e30-s2026092701-m2-r01/report.md)。

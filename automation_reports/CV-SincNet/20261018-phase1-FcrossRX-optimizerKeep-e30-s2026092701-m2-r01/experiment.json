@@ -1,0 +1,291 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-phase1-FcrossRX-optimizerKeep-e30-s2026092701-m2-r01",
+  "group_id": "phase1-FcrossRX-fullAs-optimizer-state-continuity",
+  "display_name": "完整practical续训：保留AdamW状态的匹配E30",
+  "description": "固定same own20 student/EMA、原cos10/LR/U/6L，KEEP全模型AdamW moments/step vs既有RESET；NoAs/As两条新增与两个已完成对应控制，拒绝把continuous30当纯moment消融",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "P69",
+    "optimizerKeep69",
+    "NOAS_KEEP",
+    "AS_KEEP"
+  ],
+  "tags": [
+    "phase1",
+    "F",
+    "fullsource",
+    "default-head",
+    "E30",
+    "practical",
+    "optimizer-state",
+    "single-seed"
+  ],
+  "comparison_group_id": "P43-original6L-optimizer-KEEPxAs",
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Latest user: satellite-first, clean drop<=0.1 absolutepp, fullsource/noheldRX, fixedF+CROSS_RX/defaulthead, E30; good source-qualified recipes may totalE50; active goal authorizes implementation/matched trials/all7 independent scoring. No extra heads/targetfeedback/healthy-task mutation.",
+  "code": {
+    "commit": null,
+    "checkout": "code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 existing ordinary CVS-RFFI Python3.10.19 Torch2.1.0+cu121 NumPy2.2.5; FP32 CPU2",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_optimizer_keep_E30_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Unchanged original7/63/30 source physical roles; existing VALIDATED_ONCE fixed formal IQ",
+    "representation": "equalized1/native perpacketRMS center=false;float32 Bx2x256/fs25MHz;full residual/post_sync/EQoffG1/ref30/reflect;As fromraw,no extra ordinary PA/noise beforeAs;trainingfc2.462GHz/fixedformal2.45GHz unchanged",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "Same original6TX map;no new or U truth",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      "fixedmanifest7unseenRX;nevertrain"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original6registeredTX;formalmanifest classmappingunchanged",
+    "roles": {
+      "L_s": 6300,
+      "U_s_hidden": 56700,
+      "V": 27000
+    },
+    "train_ratio": "7/63/30 wholepool;10% labeled trainingpool;noheldRX/Ldev",
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "ExistingPhase1 source handles and fixedformalmanifest;Phase2 p2capsule/splitN/A",
+    "support_query_ref": "Phase1,no support;source/target disjoint fixedformalmanifest",
+    "leo_config_ref": "PROJECT/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/manifest.json"
+  },
+  "permissions": {
+    "regime": "source_only_training_then_frozen_target_prediction",
+    "query_use": "Frozen defaulthead all7 fixed received IQ predictions;truthlast independent perrow only afterall7complete;formal scores never candidate/seed/parameter/promotion feedback",
+    "external_method_exception": null,
+    "claim_scope": "Pure optimizer-state effect from same P43 parent and same6L/cos10; report KEEPxAs interaction and matchedAs-vs-NoAs recipe effect separately. No changed IQ law/Ag/extra-head/true-satellite/repeatable-gain claim."
+  },
+  "checkpoint": {
+    "initialization": "strict corresponding P43 own20 student+ownEMA+AdamW optimizer; preserve moments and perparam step, reset cos10/newgroup hyperparams/Sinc hook counters",
+    "sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B00-s2026092701/stage20/final_ssdg.pth",
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
+    ],
+    "contract_check_ref": "runtime parent_initialization/optimizer_initialization and existing P43 source reports",
+    "provenance_verdict": "Source metadata verified; exact actual optimizer tensor/group state validated in launch smoke before training; no targetselected parent",
+    "selection_rule": "source-only scratch20 FINAL20/final_only; newtail fixedFINAL30/final_only"
+  },
+  "execution": {
+    "host": "N607 ordinary nonprivileged account",
+    "launch_owner": "codex/root/optimizer-keep69",
+    "gpu_policy": "2 new tailrows; max2 total GPU processes inclotherowners/free>=12000MB; protecthealthy runs",
+    "remote_run_root": "PROJECT/runs/20261018-phase1-FcrossRX-optimizerKeep-e30-s2026092701-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261018-phase1-FcrossRX-optimizerKeep-e30-s2026092701-m2-r01/logs",
+    "local_artifact_root": "local_artifacts/cvs_FcrossRX_optimizer_keep_E30_20261018_r01",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_optimizer_continuity69/runner.py",
+    "stop_rule": "Wrongrole/provenance/optimizerstate-order-shape-finite/oldLRoverwrite/nativecode/nonfinite/outputcollision or illegalpredictions stop only ownrun; preserve output, noautomaticretry. ScientificFAIL stillall7; no threshold/seed rescue.",
+    "status": "PLANNED"
+  },
+  "expected_artifacts": [
+    "real_checkpoint_smoke.json",
+    "ROW/source/resolved_config.json",
+    "ROW/source/actual_modules.json",
+    "ROW/source/optimizer_initialization.json",
+    "ROW/source/source_contract.json",
+    "ROW/source/initialization.json",
+    "ROW/source/EMA_initialization.json",
+    "ROW/source/step_metrics.jsonl.gz",
+    "ROW/source/training_sequence.jsonl.gz",
+    "ROW/source/epoch_metrics.jsonl",
+    "ROW/source/final_ssdg.pth",
+    "ROW/source/completion.json",
+    "ROW/source/source_frozen.json",
+    "ROW/source_qualification/complete.json",
+    "source_matrix_decision.json",
+    "ROW/prediction/all7fixed",
+    "ROW/scoring/scores.json",
+    "ROW/scoring/complete.json",
+    "analysis_r01/complete.json",
+    "analysis_r01/full curves pairedstrata margins/errors/costs PNG_PDF"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "worst_RX",
+      "urban_mean",
+      "pairedclean_pp",
+      "pairedrepair_newerror",
+      "optimizerKEEPxAs interaction",
+      "source_margin_over30",
+      "fixedclean_correct_retention",
+      "actualNN/updates/wall"
+    ],
+    "dimensions": [
+      "NOAS_KEEP",
+      "AS_KEEP",
+      "reusedP43NOAS_RESET/AS_RESET",
+      "modelseed2026092701",
+      "all7formalviews",
+      "source1800x2draw",
+      "RX",
+      "TX",
+      "day",
+      "state/lock/addednoise",
+      "optimizer initialization/epoch/final"
+    ],
+    "prediction_ref": "PROJECT/runs/20261018-phase1-FcrossRX-optimizerKeep-e30-s2026092701-m2-r01/ROW/prediction; corresponding P43 all7 references reused",
+    "scorer_ref": "Separate CPU scorer only after each row all7 fixed; final CPU analysis validates all4 logical rows all7 before truth joins"
+  },
+  "rows": [
+    {
+      "row_id": "B00-s2026092701",
+      "method": "NOAS_KEEP fullmodel AdamW moments",
+      "purpose": "Matched optimizerKEEPxAs; original P43 B00 FINAL30 RESET prediction/scoring reused",
+      "config_ref": "experiments/cvs_optimizer_continuity69/design.py#config",
+      "resolved_config_ref": "PROJECT/runs/20261018-phase1-FcrossRX-optimizerKeep-e30-s2026092701-m2-r01/B00-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "held_source_RX": null,
+        "L": 6300,
+        "U_hidden": 56700,
+        "V": 27000,
+        "new_Ag": false,
+        "all5sourceRX": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Physicaltrain20261016421/hardware20261016423; ordinary/dropout inherit originalmodel RNG. Two source draws notmodelseeds; support/evaluation seedN/A fixedformalIQ; no U truth.",
+      "k": null,
+      "scenario": "As-off corresponding original P43 identitycontrol",
+      "optimizer": {
+        "name": "AdamW",
+        "state": "KEEP corresponding own20 exp_avg/exp_avg_sq/step; preserve newgroup hyperparams and originalCENTER_UNITS freshhooks",
+        "lr_schedule": "new cos10 sameasRESET; no schedulerinherit",
+        "teacher": "ownEMA exactsameparent/nativeU updates",
+        "temporal": "nativebatch_neighbor unchanged"
+      },
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "One new10/2220updates perrow; own20/4440 reused, total30/6660. 3162962native+12600source+1176002formal each; actualCPsmoke shared<=8pendingimplementation. No newhead/loss/extraNN.",
+      "output_root": "PROJECT/runs/20261018-phase1-FcrossRX-optimizerKeep-e30-s2026092701-m2-r01/B00-s2026092701",
+      "log_path": "PROJECT/runs/20261018-phase1-FcrossRX-optimizerKeep-e30-s2026092701-m2-r01/logs/B00-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_optimizer_continuity69/runner.py",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "ROW/source/resolved_config.json",
+        "ROW/source/actual_modules.json",
+        "ROW/source/optimizer_initialization.json",
+        "ROW/source/source_contract.json",
+        "ROW/source/initialization.json",
+        "ROW/source/EMA_initialization.json",
+        "ROW/source/step_metrics.jsonl.gz",
+        "ROW/source/training_sequence.jsonl.gz",
+        "ROW/source/epoch_metrics.jsonl",
+        "ROW/source/final_ssdg.pth",
+        "ROW/source/completion.json",
+        "ROW/source/source_frozen.json",
+        "ROW/source_qualification/complete.json",
+        "source_matrix_decision.json",
+        "ROW/prediction/all7fixed",
+        "ROW/scoring/scores.json",
+        "ROW/scoring/complete.json",
+        "analysis_r01/complete.json",
+        "analysis_r01/full curves pairedstrata margins/errors/costs PNG_PDF"
+      ]
+    },
+    {
+      "row_id": "B01-s2026092701",
+      "method": "AS_KEEP fullpractical original6L plus fullmodel AdamW moments",
+      "purpose": "Matched optimizerKEEPxAs; original P43 B01 FINAL30 RESET prediction/scoring reused",
+      "config_ref": "experiments/cvs_optimizer_continuity69/design.py#config",
+      "resolved_config_ref": "PROJECT/runs/20261018-phase1-FcrossRX-optimizerKeep-e30-s2026092701-m2-r01/B01-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "held_source_RX": null,
+        "L": 6300,
+        "U_hidden": 56700,
+        "V": 27000,
+        "new_Ag": false,
+        "all5sourceRX": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Physicaltrain20261016421/hardware20261016423; ordinary/dropout inherit originalmodel RNG. Two source draws notmodelseeds; support/evaluation seedN/A fixedformalIQ; no U truth.",
+      "k": null,
+      "scenario": "Originalfullresidual lowSub/midUrban/lowUrban nominal1/3; EQoffG1;cleanordinary sharefixed",
+      "optimizer": {
+        "name": "AdamW",
+        "state": "KEEP corresponding own20 exp_avg/exp_avg_sq/step; preserve newgroup hyperparams and originalCENTER_UNITS freshhooks",
+        "lr_schedule": "new cos10 sameasRESET; no schedulerinherit",
+        "teacher": "ownEMA exactsameparent/nativeU updates",
+        "temporal": "nativebatch_neighbor unchanged"
+      },
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "One new10/2220updates perrow; own20/4440 reused, total30/6660. 3162962native+12600source+1176002formal each; actualCPsmoke shared<=8pendingimplementation. No newhead/loss/extraNN.",
+      "output_root": "PROJECT/runs/20261018-phase1-FcrossRX-optimizerKeep-e30-s2026092701-m2-r01/B01-s2026092701",
+      "log_path": "PROJECT/runs/20261018-phase1-FcrossRX-optimizerKeep-e30-s2026092701-m2-r01/logs/B01-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_optimizer_continuity69/runner.py",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "ROW/source/resolved_config.json",
+        "ROW/source/actual_modules.json",
+        "ROW/source/optimizer_initialization.json",
+        "ROW/source/source_contract.json",
+        "ROW/source/initialization.json",
+        "ROW/source/EMA_initialization.json",
+        "ROW/source/step_metrics.jsonl.gz",
+        "ROW/source/training_sequence.jsonl.gz",
+        "ROW/source/epoch_metrics.jsonl",
+        "ROW/source/final_ssdg.pth",
+        "ROW/source/completion.json",
+        "ROW/source/source_frozen.json",
+        "ROW/source_qualification/complete.json",
+        "source_matrix_decision.json",
+        "ROW/prediction/all7fixed",
+        "ROW/scoring/scores.json",
+        "ROW/scoring/complete.json",
+        "analysis_r01/complete.json",
+        "analysis_r01/full curves pairedstrata margins/errors/costs PNG_PDF"
+      ]
+    }
+  ],
+  "notes": [
+    "No SOURCE-qualified unextended E50 recipe found; existing budgetlines complete.",
+    "Not RXpopulation, calibrationrefresh, genericoptimizer sweep, viewMoment or continuous30.",
+    "Only two sourcequalification checks: AS_KEEP fullVclean−matchedNOAS_KEEP >=−.1pp and pooledmidlow−originalAS30>=+.5pp; scientificFAIL closes fixedrecipe, all7 stillrequired.",
+    "Source decision fixed before owner reads newformal; only PASS allows later separate totalE50 run.",
+    "Modelseed1, no repeatabledualgainclaim; low60 and cleanpositive remain unachieved until measured.",
+    "Existing oldNoAs/As reset refs not retrained/repredicted/rescored; sameparentcases isolateoptimizer, factorial interaction reported."
+  ],
+  "registered_at": "2026-10-18T14:52:25+00:00"
+}
