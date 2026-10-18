@@ -1,6 +1,6 @@
 # 固定 As 权重配方：02／03 的匹配 E30＋E50 复现
 
-状态：VERIFIED_RUNNING。四条新增 weighted30 阶段已完成训练和七视图评分，均已严格加载自己的新 FINAL30，继续固定 weighted50；E50 和完整 24 条件配对重算尚未完成。run_id `20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01`。当前seed01源结果已通过固定资格：weightedAs50−ownweightedAs30 fullVclean＋.162963pp（要求≥0），两draw mid／low均值＋2.361111pp（要求≥＋.5）。root已在读取新E50正式指标前保存[source决定](<E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01/source_decision.json>)并固定02／03。analysis只给科学资格、不自动启动；本登记由root依既有表现好配方总E50授权执行，不新增种子筛选。
+状态：VERIFIED_ANALYZED。四条新增轨迹的中间 E30 和最终 E50 已完成训练、源域读出、七视图预测与独立评分；完整 24 条件三种子重计数及成本分析已完成。当前固定 .375 配方未达到 clean 阶段要求，不追加预算或选择性重跑；研究总目标仍未完成。
 
 唯一假设与seed01相同：保持原完整practical及.375selected监督份额，延长至总E50能否在固定种子重复星地收益并减小clean代价。四轨迹B00/B01×2026092702/03，各复用自己的原FINAL20 student与EMA，再weighted10＋weighted20，总50轮／11100更新，轨迹20＋10＋20，非连续cos50。新增共120model-epochs／26640updates，不能把旧父20或中间30重复计费；seed01和所有旧30／50训练与预测不重跑。
 
@@ -25,7 +25,7 @@
 实际执行代码`094a5e9e063b52c99b646c33c2b357a388ece5b8`，远端分支OID独立一致。唯一发布preflight核实普通账号、当前源资格及四original20父元信息/角色；singlearchive传输比较／19py编译VERIFIED，首次真实3080NN烟测PASS后立即训练。dispatcher1303723；B00-s2026092702 worker1303753／GPU0、B01-s2026092702 1303830／GPU1、B00-s2026092703 1304318／GPU2、B01-s2026092703 1304399／GPU3。actualPID／CWD／argv／CUDA／nvidia／日志增长VERIFIED，全GPU compute进程各1，符合总cap3。四行source_roles EXACT_MATCH、target_contact=false、ownEMA严格恢复，实际Ffactoryseed分别02／03与native同一；实际physics同各自原row，ordinary仍原20参数epoch13。每行首记录6L／As0或64／group.125/.375，总L误差<1e−7；未额外拟合头。0NN分析1305922已核实WAIT_SOURCE，truth未开；单archive比较／compile＋9checksPASS。新中间30与最终50尚未完成，当前快照不代表性能结论。
 
 
-## E30 三种子部分读出与实际 E50 转段
+## E30 三种子部分读出与实际 E50 转段（中间记录）
 
 四条新增中间段各完成 10 轮／2220 更新，累计 E30／6660，全部 clean＋六 practical 预测与独立 truth-last 评分完成。同一四个 PID 无条件进入各自 weighted50：真实 own30 student／EMA、factory seed02／03、reset AdamW 空状态／cos20、6L、As0或64、.125/.375 均已从实际元信息核实。该观察不加载 IQ／checkpoint、不产生模型前向或更新，不是额外发布门槛。
 
@@ -34,3 +34,12 @@
 这是已有独立 scorer 汇总，不替代完整 24 条件的独立 truth 重计数；逐包修复／新增错误及完整训练成本仍待最终流程。全部 50 阶段已在上述正式读出前固定并运行，本读出不反馈候选、种子、权重或续训安排。唯一待检验假设仍是 E50 能否保留 urban 收益并恢复 clean；若完整三 seed 的匹配 clean 仍不能达到 −.1 pp 阶段范围，就关闭本固定加权配方作为双提升候选，不扫权重／种子救跑。
 
 [三种子 E30 部分报告](partial_E30.md)；[部分汇总 JSON](partial_E30.json)。E50 未结束，当前不报告 E50 扩种性能或重复双提升。
+
+
+## 完整 E50 收尾
+
+四条新增轨迹均完成own20＋weighted10＋weighted20，总E50／11100更新；8个新增冻结阶段全部source／all7prediction／独立score完成，dispatcher及所有worker、分析进程正常退出，failure为空。分析完整重计24×7条件的3024个混淆矩阵／504次分区合并；新增120model-epochs／26640updates／47251432NN（含共享smoke3080），parent／复用旧结果不重计。源与正式汇总分阶段单次归档比较VERIFIED；分析0NN／IQ／CP／更新。
+
+weightedAs50−matchedweightedNoAs50 clean为−.672817±.976447pp，01／02／03分别−.042857／−.177976／−1.797619pp，1个通过、2个失败，均值与全部seed口径都不满足−.1pp阶段要求。weightedAs50−ownweightedAs30 low／midurban＋1.199603±.076713／＋.995437±.083559pp，clean−.171825±.492087pp；预算urban收益三seed一致，clean恢复未重复。新增权重对原As50 low／mid＋.746627±.095732／＋.572421±.057687pp，clean−.542262±.112959pp，三个seedclean均降低。没有重复双提升；lowurban均值52.673214%，未达到最初60%愿望。
+
+当前固定配方作为双提升候选关闭，不延长E50／扫描权重／挑seed救跑，不改正式IQ或信道。源fullV预算clean＋.132099pp、midlow＋2.375pp的重复正方向如实保留，不能替代跨RX正式判断。完整七场、F1、最差RX、逐seed／分层／修复与新增错误、二／三因子交互及实际成本见[最终报告](final_analysis.md)和[公开汇总](results.json)。中间E30记录保留，不再是未完成项；技术缺项为空，研究目标未完成。

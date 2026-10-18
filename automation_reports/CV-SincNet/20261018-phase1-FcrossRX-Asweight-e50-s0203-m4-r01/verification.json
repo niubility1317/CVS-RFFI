@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_RUNNING",
+  "status": "VERIFIED_ANALYZED",
   "run_id": "20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01",
   "source_basis": {
     "run_id": "20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01",
@@ -172,8 +172,8 @@
   },
   "formal_metrics_read_for_promotion": false,
   "goal_complete": false,
-  "training_complete": false,
-  "performance_results_available": "PARTIAL_E30_NATIVE_SCORER_ONLY",
+  "training_complete": true,
+  "performance_results_available": true,
   "code_commit": "094a5e9e063b52c99b646c33c2b357a388ece5b8",
   "remote_branch_OID": "INDEPENDENTLY_VERIFIED_IDENTICAL",
   "N607_preflight": "VERIFIED_ONCE_ORDINARY_SOURCE_ELIGIBILITY_AND_FOUR_ORIGINAL20_ROLES_METADATA",
@@ -272,7 +272,7 @@
     "SSDG.train_ssdg": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py"
   },
   "analysis": {
-    "status": "VERIFIED_WAIT_SOURCE",
+    "status": "VERIFIED_ANALYZED_EXITED",
     "pid": 1305922,
     "code_commit": "094a5e9e063b52c99b646c33c2b357a388ece5b8",
     "CWD_argv_CUDA": "VERIFIED",
@@ -282,9 +282,10 @@
     "CP": 0,
     "IQ": 0,
     "updates": 0,
-    "truth_opened": false
+    "truth_opened": true,
+    "final_complete": true
   },
-  "observed_at_utc": "2026-10-18T08:48:08.257Z",
+  "observed_at_utc": "2026-10-18T09:20:19.392Z",
   "weighted30_all_four_new_stages": {
     "epochs_each": 10,
     "updates_each": 2220,
@@ -390,8 +391,8 @@
     "observation_only": true
   },
   "training_target_contact_scope": "target_contact=false describes source-only model training/initialization; legal frozen E30 evaluation has completed and never selects E50 continuation",
-  "final_E50_complete": false,
-  "final_full24_recount_complete": false,
+  "final_E50_complete": true,
+  "final_full24_recount_complete": true,
   "partial_E30": {
     "status": "TWELVE_E30_CONDITIONS_NATIVE_SCORER_READOUT",
     "source": "Existing independent per-stage scorer JSON; no new scoring/truth/rawpred/IQ/CP/model execution",
@@ -415,5 +416,171 @@
     "repair_new_errors_pending": true,
     "selection_feedback": false,
     "E50_unconditional_continuation": true
+  },
+  "all_new_stages": {
+    "stage_rows": 8,
+    "model_trajectories": 4,
+    "new_updates": 26640,
+    "new_model_epochs": 120,
+    "source": true,
+    "seven_view_prediction": true,
+    "independent_score": true
+  },
+  "formal_complete": {
+    "conditions": 24,
+    "seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "independent_confusion_matrices": 3024,
+    "partition_reconciliations": 504,
+    "accuracy_stage": {
+      "30": {
+        "clean_paired_pp": {
+          "values": [
+            -0.3267857142857143,
+            -0.5053571428571428,
+            -1.2273809523809525
+          ],
+          "mean": -0.6865079365079364,
+          "sample_SD": 0.4768434263468345,
+          "minimum": -1.2273809523809525,
+          "maximum": -0.3267857142857143,
+          "model_seed_count": 3
+        },
+        "mean_clean_stage_within_0p1pp": false,
+        "all_seeds_clean_stage_within_0p1pp": false,
+        "all_seeds_clean_positive": false,
+        "all_seeds_midlow_positive": true,
+        "mean_clean_positive": false,
+        "mean_clean_at_least_0p1pp": false,
+        "fixed_three_seed_consistent_double_improvement_observation": false,
+        "scope": "These fixed three model seeds;no seed selection,universal or independent-blind-test claim"
+      },
+      "50": {
+        "clean_paired_pp": {
+          "values": [
+            -0.04285714285714286,
+            -0.17797619047619048,
+            -1.7976190476190477
+          ],
+          "mean": -0.6728174603174604,
+          "sample_SD": 0.9764467457851951,
+          "minimum": -1.7976190476190477,
+          "maximum": -0.04285714285714286,
+          "model_seed_count": 3
+        },
+        "mean_clean_stage_within_0p1pp": false,
+        "all_seeds_clean_stage_within_0p1pp": false,
+        "all_seeds_clean_positive": false,
+        "all_seeds_midlow_positive": true,
+        "mean_clean_positive": false,
+        "mean_clean_at_least_0p1pp": false,
+        "fixed_three_seed_consistent_double_improvement_observation": false,
+        "scope": "These fixed three model seeds;no seed selection,universal or independent-blind-test claim"
+      }
+    },
+    "all_processes_exited": true,
+    "technical_missing_items": []
+  },
+  "final_costs": {
+    "new_total_NN": 47251432,
+    "shared_smoke_NN": 3080,
+    "analysis_NN": 0,
+    "analysis_IQ": 0,
+    "analysis_CP": 0,
+    "analysis_updates": 0,
+    "full_logs_complete": true
+  },
+  "final_collection": {
+    "status": "VERIFIED",
+    "stage": "final",
+    "training_run": "20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01",
+    "output_name": "analysis_auto_r01",
+    "export_id": "weighted02-03-final-r01",
+    "model_NN": 0,
+    "IQ_reads": 0,
+    "checkpoint_reads": 0,
+    "target_truth_reads": 0,
+    "training_processes_untouched": true,
+    "automatic_retry": false,
+    "started_at": 1792315075.8283155,
+    "finished_at": 1792315078.000462,
+    "source_complete": true,
+    "formal_complete": true,
+    "filenames": [
+      "source_complete.json",
+      "source_summary.json",
+      "source_confusions.json",
+      "source_metrics.csv",
+      "training_logs.json",
+      "formal_summary.json",
+      "formal_confusions.json",
+      "formal_metrics.csv",
+      "final_report.md",
+      "costs.json",
+      "complete.json"
+    ],
+    "file_count": 11,
+    "archive_SHA256": "e2a2b2bab08756d80d3ee7e11ba5a8cd72a8ffe32b6fcdda148a78ead253be8d",
+    "source_only": false,
+    "formal_results_collected": true
+  },
+  "source_collection": {
+    "status": "VERIFIED",
+    "stage": "source",
+    "training_run": "20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01",
+    "output_name": "analysis_auto_r01",
+    "export_id": "weighted02-03-source-r01",
+    "model_NN": 0,
+    "IQ_reads": 0,
+    "checkpoint_reads": 0,
+    "target_truth_reads": 0,
+    "training_processes_untouched": true,
+    "automatic_retry": false,
+    "started_at": 1792315042.4276936,
+    "finished_at": 1792315043.7029555,
+    "source_complete": true,
+    "formal_complete": false,
+    "filenames": [
+      "source_complete.json",
+      "source_summary.json",
+      "source_confusions.json",
+      "source_metrics.csv",
+      "training_logs.json"
+    ],
+    "file_count": 5,
+    "archive_SHA256": "254110a0df88055295e447ae2e6bee2a1007ab8136d24e81a7ec2c3f99d5d636",
+    "source_only": true,
+    "formal_results_collected": false
+  },
+  "source_read_before_formal_collection": true,
+  "fixed_recipe_status": "CLOSED_STAGE_FAILED_NO_MORE_BUDGET_OR_SEED_RESCUE",
+  "next_candidate_registered": false,
+  "figures": {
+    "status": "VERIFIED_RENDERED_AND_VIEWED",
+    "groups": 3,
+    "formats": [
+      "PNG",
+      "PDF"
+    ],
+    "coordinates": 1120,
+    "maximum_coordinate_error_absolute_pp": 2.731148640577885e-14,
+    "SD_not_CI": true,
+    "model_seeds": 3,
+    "NN": 0,
+    "IQ": 0,
+    "CP": 0,
+    "updates": 0
   }
 }

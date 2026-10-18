@@ -145,3 +145,17 @@ Asweight E50已实际启动：训练／分析代码`64176e7ff1aa5cd2477a504f8b44
 12个E30逻辑条件的现有独立scorer汇总：weightedAs−matchedweightedNoAs clean逐seed−.326786／−.505357／−1.227381pp，配对均值−.686508±.476843pp，全部seed及均值均不通过−.1pp阶段要求。weightedAs−originalAs clean−.388095±.089660pp，mid／lowurban＋.531151±.121889／＋.703770±.105766pp，urbanmean＋.490675±.130200pp；n=3表明该固定E30配方存在clean—urban取舍，未获得重复双提升。报告全部seed，不挑最好值。
 
 本部分只读现有独立scorer，未读truth／IQ／checkpoint／rawpred，未增加预测／评分／训练。完整24条件重计数、逐包错误和E50结果仍待固定全部阶段完成。当前唯一假设仍是增加预算能否恢复clean并保留urban收益；本读出不改变已运行E50轨迹或发起新候选。[部分报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01/partial_E30.md)。
+
+
+## Asweight E50三种子：完整负结果与预算收益
+
+固定02／03四轨迹已全部完成新10＋20及所有8新阶段source／clean＋六practical独立评分，所有本run进程正常退出。完整24条件×7视图独立重算3024CM／504分区，新增120model-epochs／26640updates／47251432NN含3080smoke；旧20/30/50不重复训练或计为新增。源先取回，随后正式取回，单次归档比较分别VERIFIED，无技术缺项。实际训练／分析代码094a5e9e063b52c99b646c33c2b357a388ece5b8。
+
+weightedAs50对匹配weightedNoAs50 clean逐seed−.042857／−.177976／−1.797619pp，配对均值−.672817±.976447pp，仅01通过，均值及全seed阶段均FAIL。对自身weightedAs30，low／midurban＋1.199603±.076713／＋.995437±.083559pp、urbanmean＋.878571±.144700pp，clean−.171825±.492087pp；urban预算收益可重复，clean恢复不可重复。对原As50，low／midurban＋.746627±.095732／＋.572421±.057687pp，clean−.542262±.112959pp，不能把完整As原有收益全归给权重机制。
+
+加权As50绝对均值clean84.021627%、midurban63.561905%、lowurban52.673214%、urbanmean64.536442%。suburban三场80.779960／78.424008／76.132341%，与自身clean差3.241667／5.597619／7.889286pp；不能用clean下降造成的差距缩小冒称保护成功。源fullV As50−ownAs30 clean＋.132099±.028288pp、midlow＋2.375000±.077330pp虽重复，不代表跨RXclean同向。正式目标、源判断和计算成本分别报告。
+
+本固定.375配方作为双提升候选关闭，不再加预算、扫权重、挑seed或救跑；研究目标保持未完成。当前本侧无在训／预测／评分进程。下一项只读核对历史“保持clean绝对监督量”的真实代码、源证据和前向／总尺度控制，尚无新候选登记或训练；不依据本次formal设计参数。完整[最终报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01/final_analysis.md)。
+
+
+只读历史核对已完成首部分：旧additiveAs虽有8L／重复raw及总尺度控制，但使用heldRX1／L5040，跨seed源确认失败；cleanretain37为4L比例比较，不是当前6L的加性保留；HQ的BRIDGE_CE仍有joint anchor，并非真正无一致性控制。当前不据此重启加性路线。P41也曾把完整practical selected64加入现有SupCon（SAT192／DUP192／ORD128），不增前向，固定源晋级失败；不能将“让As进入SupCon”包装成完全新机制。后续只读区分其192 anchor／重复物理样本权重与当前128 anchor的真实调用，尚未选定或登记新候选。
