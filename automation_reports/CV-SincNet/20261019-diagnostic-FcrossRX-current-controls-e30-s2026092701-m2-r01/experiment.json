@@ -1,0 +1,260 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-diagnostic-FcrossRX-current-controls-e30-s2026092701-m2-r01",
+  "group_id": "phase1-FcrossRX-current-controlled-residual79",
+  "display_name": "当前P43完整源E30：固定默认头十一条件退化诊断",
+  "description": "Frozen currentP43 NOAS30/AS30 fixedFINAL30 defaultheads on originalV1800/two draws/three scenes/eleven cached controls; distinguish fixed receiver state from recomputed-state total effects. No training, new channel, fitted head or target.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [
+    "P79",
+    "current-controls79"
+  ],
+  "tags": [
+    "phase1",
+    "F",
+    "CROSS_RX",
+    "fullsource",
+    "default-head",
+    "E30",
+    "source-only",
+    "controlled-residual",
+    "no-training"
+  ],
+  "comparison_group_id": "P43-original-final30-controlled-source",
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active user goal permits source-only frozen default-head diagnostic and necessary implementation. Latest satellite-first/clean0.1/fullsource/noheldRX/fixedF+CROSS_RX/defaulthead/E30 applies; this launch adds0trainingepochs or targetaccess. Stored mandatoryAg/E20 goal fields superseded by latest explicit steering.",
+  "code": {
+    "commit": null,
+    "starting_commit": "f2f19130831ed2c6db220062deec913c6df66798",
+    "checkout": "code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "Existing ordinaryN607 CVS-RFFI Python3.10/Torch2.1/NumPy2.2/FP32,CPU2;no installs",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_current_controls_E30_20261019_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original fullsource physical roles split392005;reuseVALIDATED_ONCEfixedsourcepanel",
+    "representation": "Existing cached normalizedsourceIQ2x256,fs25MHz;originalP24 fullpractical residual/post_sync/noEQ/ref30/reflect and ten controlledsource-only observations;no IQ regeneration",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Same originalrole_ids;P24balancedV1800 fixedIDs/source5RX/day1-3,20perTX_RX_day",
+    "label_map_ref": "OriginalsixTX map [14-10,14-7,20-15,20-19,6-15,8-20]",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "OriginalsixregisteredTX;no classspecificrules",
+    "roles": {
+      "L_s": "Historicalparents6300visibleTX;no trainingthislaunch;existingcachemaydeserializeunusedL",
+      "U_s": "Historical56700TXhidden;no U IQ/truth or pseudo labels consumedthislaunch",
+      "V": "Original27000;fixedbalancedV1800 only read forcurrentdiagnostic,neverstateupdated"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "ReuseoriginalVALIDATED_ONCErolehandles/sourcecache;no revalidation or rolechange;noLdev/noRXholdout",
+    "support_query_ref": null,
+    "leo_config_ref": "PROJECT/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/observations/actual_engine.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none;no targetIQ/truth/prediction/scorer importedoropened",
+    "external_method_exception": null,
+    "claim_scope": "CurrentP43source-onlydefaulthead controlled effects and As-vs-NoAs interaction;no new trainingperformance/targetcausality/Agvalue/repeatablegainclaim"
+  },
+  "checkpoint": {
+    "initialization": "FrozenstrictP43ownFINAL30students/defaultheads;ownE20+10provenancechecked;notEMA/P78/LRaw",
+    "sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B00-s2026092701/source/final_ssdg.pth",
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "P43 source own20scratch andfinal30 frozen metadata/init/source_contract.role_ids plusstrictstate/defaultheadruntimecheck;realCPsmokefirst",
+    "provenance_verdict": "OriginalP43samefullsource/fixedfinal/sourceonlyancestrypreviouslyverified;actualruntimehandlesandrealCPsmokecheckedbeforeIQ",
+    "selection_rule": "Both fixedFINAL30students, no candidate selection/promotion;descriptiveonly;no automatictraining/formal/E50/seedextension"
+  },
+  "execution": {
+    "host": "N607 ordinary nonprivileged account",
+    "launch_owner": "codex/root/current-controls79",
+    "gpu_policy": "One sequentialsourceprobeprocess;max2totalprocesses/GPU includingallowners;existingcapacitylock/free4GB;CPU2",
+    "remote_run_root": "PROJECT/runs/20261019-diagnostic-FcrossRX-current-controls-e30-s2026092701-m2-r01",
+    "remote_log_root": "PROJECT/releases/cvs_FcrossRX_current_controls_E30_20261019_r01/source_controls79.stdout.log",
+    "local_artifact_root": "local_artifacts/cvs_FcrossRX_current_controls_E30_20261019_r01",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_controlled_revisit79/runner.py --project PROJECT --device cuda:0",
+    "stop_rule": "Own wrongsource/parent/head/shape/budget/nonfinite/stateupdate/queryaccess/outputcollision/unlaunchable only;preserveartifacts,noautomaticretry,neverstophealthyothers",
+    "status": "LOCAL_VERIFIED"
+  },
+  "expected_artifacts": [
+    "resolved_config.json",
+    "checkpoint_noquery_smoke.json",
+    "data_roles.json",
+    "actual_modules.json",
+    "NOAS30/predictions.npz",
+    "AS30/predictions.npz",
+    "LABEL/branch_metrics.npz",
+    "LABEL/result.json",
+    "completion.json",
+    "analysis/condition_metrics.csv",
+    "analysis/control_effects.csv",
+    "analysis/As_training_effects.csv",
+    "analysis/summary.json",
+    "analysis/fourPNG_and_fourPDF"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "CM",
+      "margin_over30",
+      "fixedNoAs30_clean_correct_retention",
+      "ownclean_correct_retention",
+      "pairedrepairnewerrors",
+      "fixed_vs_total_effect",
+      "As_minus_NoAs",
+      "training_change_in_control_gain",
+      "branchcosine_norm",
+      "staticexistinggates",
+      "evalCEgradnorm_cosine",
+      "NN_cost_wall"
+    ],
+    "dimensions": [
+      "model2026092701",
+      "NOAS30",
+      "AS30",
+      "draw0",
+      "draw1",
+      "lowSuburban",
+      "midUrban",
+      "lowUrban",
+      "all11conditions",
+      "fullstate",
+      "fulllock",
+      "full_addednoisebin",
+      "RX",
+      "TX",
+      "day"
+    ],
+    "prediction_ref": "PROJECT/runs/20261019-diagnostic-FcrossRX-current-controls-e30-s2026092701-m2-r01/LABEL/predictions.npz sourceonly",
+    "scorer_ref": "SourceTXlabels only;analysis reads frozenlogitsandcachedphysics,no truth connector",
+    "scientific_decision": "Descriptive diagnostic, no performance gate orcandidatepromotion;effects are nonadditive;two draws are not modelseeds"
+  },
+  "rows": [
+    {
+      "row_id": "NOAS30",
+      "method": "FrozenoriginalP43FINAL30student/defaultcos30",
+      "purpose": "matchedNoAsdiagnosis",
+      "config_ref": "experiments/cvs_controlled_revisit79/design.py",
+      "resolved_config_ref": "PROJECT/runs/20261019-diagnostic-FcrossRX-current-controls-e30-s2026092701-m2-r01/resolved_config.json",
+      "data_overrides": {
+        "V_panel": 1800,
+        "draws": 2,
+        "source_RX": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "held_RX": null,
+        "U_truth_used": false
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 202610172401,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "model2026092701;split392005originalroles;data202610172401cachedpanel;augmentationnullnNewAugDraw;supportnullPhase1NA;evaluation202610172402cachedchannelnamedstream/twodraws,receiverseed2026092701. No newrandomdraw ormodelseed.",
+      "k": null,
+      "scenario": [
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "121232newNN=120600sourceprediction+630readonlyevalCEgradientforward+2realCPsmoke;0training/headfit/update/newchannel;historicalown20+10 E30/6660/native7960684 perparent disclosedseparately",
+      "output_root": "PROJECT/runs/20261019-diagnostic-FcrossRX-current-controls-e30-s2026092701-m2-r01/NOAS30",
+      "log_path": "PROJECT/releases/cvs_FcrossRX_current_controls_E30_20261019_r01/source_controls79.stdout.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_controlled_revisit79/runner.py --project PROJECT --device cuda:0",
+      "expected_artifacts": [
+        "predictions.npz",
+        "branch_metrics.npz",
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "AS30",
+      "method": "FrozenoriginalP43FINAL30student/defaultcos30",
+      "purpose": "currentcompleteAsdiagnosis",
+      "config_ref": "experiments/cvs_controlled_revisit79/design.py",
+      "resolved_config_ref": "PROJECT/runs/20261019-diagnostic-FcrossRX-current-controls-e30-s2026092701-m2-r01/resolved_config.json",
+      "data_overrides": {
+        "V_panel": 1800,
+        "draws": 2,
+        "source_RX": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "held_RX": null,
+        "U_truth_used": false
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 202610172401,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "model2026092701;split392005originalroles;data202610172401cachedpanel;augmentationnullnNewAugDraw;supportnullPhase1NA;evaluation202610172402cachedchannelnamedstream/twodraws,receiverseed2026092701. No newrandomdraw ormodelseed.",
+      "k": null,
+      "scenario": [
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "121232newNN=120600sourceprediction+630readonlyevalCEgradientforward+2realCPsmoke;0training/headfit/update/newchannel;historicalown20+10 E30/6660/native7960684 perparent disclosedseparately",
+      "output_root": "PROJECT/runs/20261019-diagnostic-FcrossRX-current-controls-e30-s2026092701-m2-r01/AS30",
+      "log_path": "PROJECT/releases/cvs_FcrossRX_current_controls_E30_20261019_r01/source_controls79.stdout.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_controlled_revisit79/runner.py --project PROJECT --device cuda:0",
+      "expected_artifacts": [
+        "predictions.npz",
+        "branch_metrics.npz",
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "P78ordinaryAWGN/MPbypassfailedsource/directAsgainnegligible;closednotrescued.",
+    "ExistingEMAnegativeP29/E50 meansnovelP43E30EMAreadoutnotlaunchedmerelybychangingepoch.",
+    "QualityRisk/qualityStrat/boundedRisk/UPractical/UQualified/propContrastalreadyhavesourcenegativeresults;notrerunningattachmentroutes.",
+    "Precisediagnosticgap:previous11controlsP24P33usedolderCPs;P74currentP43onlymidlowfull/no-noise-fixedandbranchswap. This is currentCPcontrolcoverage,not a newlyuntriedtrainingmechanism.",
+    "Controlsfull/no_noise-fixedtotal/flatH-fixedtotal/no_carrier-fixedtotal/no_RXIQ-fixedtotal/actualpowerquality/edgeboundary reuseoriginalcache;state-strataalwaysfullnotcontrolreclassified.",
+    "No extra scientificgatefromproxy;readoutschangingnotdeploymentchanges;total effect includesreceiverfeedback;componentgainscannotbesummed.",
+    "REJECTED_EXTRA_GATE:separatecreativeplanapproval/reporthash/repeatedreviewisoutsideuserexclusiveeightgate;authorizedsourceworkcontinues."
+  ],
+  "registered_at": "2026-10-18T23:23:29+00:00"
+}

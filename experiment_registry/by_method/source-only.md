@@ -8,3 +8,4 @@
 |实际 AS_CE20 父模型的源域正确集合读出|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-FcrossRX-ASCE20cohort-sourceV-s2026092701-m1-r01/report.md)|
 |冻结默认头：固定接收状态去噪的四贡献归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-FcrossRX-branchNoise-sourceV-s2026092701-m2-r01/report.md)|
 |冻结默认头：固定接收状态去噪的四贡献归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-FcrossRX-branchNoise-sourceV-s2026092701-m2-r02/report.md)|
+|P79：当前P43基座的受控 practical 退化诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-FcrossRX-current-controls-e30-s2026092701-m2-r01/report.md)|
