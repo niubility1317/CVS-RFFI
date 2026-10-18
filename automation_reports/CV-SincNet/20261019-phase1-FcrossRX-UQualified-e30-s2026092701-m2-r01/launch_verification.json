@@ -1,0 +1,129 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "run_id": "20261019-phase1-FcrossRX-UQualified-e30-s2026092701-m2-r01",
+  "actual_training_analysis_code_commit": "fe734e2b571767bae00b86fd0a19fdc784dadcdf",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "ordinary_account_preflight": "VERIFIED",
+  "initial_readonly_preflight_failure_preserved": true,
+  "initial_failed_NN": 0,
+  "real_checkpoint_synthetic_smoke": {
+    "status": "PASS",
+    "NN": 1570,
+    "real_checkpoint_NN": 2,
+    "U_As_in_actual_smoke": 0,
+    "note": "Actual synthetic teacher masks empty;nonNN route toys covered nonempty/all/last/zero. Real first epoch records verify propagation."
+  },
+  "dispatcher": {
+    "pid": 1712988,
+    "alive": true,
+    "CWD_correct": true,
+    "argv_correct": true,
+    "cuda": [
+      "CUDA_VISIBLE_DEVICES="
+    ],
+    "mode": "dispatcher"
+  },
+  "rows": {
+    "R01-s2026092701": {
+      "process": {
+        "pid": 1713028,
+        "alive": true,
+        "CWD_correct": true,
+        "argv_correct": true,
+        "cuda": [
+          "CUDA_VISIBLE_DEVICES=2"
+        ],
+        "mode": "worker"
+      },
+      "gpu": 2,
+      "actual_training": {
+        "epoch": 1,
+        "cumulative_epoch": 21,
+        "steps": 222,
+        "cumulative_steps": 4662,
+        "L_NN": 170496,
+        "L_As": 14208,
+        "U_NN": 56700,
+        "teacher_NN": 56700,
+        "U_As": 863,
+        "U_selected_slots": 863,
+        "extra_U_NN": 0,
+        "U_truth_read": false,
+        "target_access": false
+      },
+      "actual_source_roles": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "strict_original_As20_parent_and_ownEMA": true,
+      "common_teacher_only_rules": true,
+      "U_route": "COUNT_RANDOM"
+    },
+    "Q01-s2026092701": {
+      "process": {
+        "pid": 1713110,
+        "alive": true,
+        "CWD_correct": true,
+        "argv_correct": true,
+        "cuda": [
+          "CUDA_VISIBLE_DEVICES=3"
+        ],
+        "mode": "worker"
+      },
+      "gpu": 3,
+      "actual_training": {
+        "epoch": 1,
+        "cumulative_epoch": 21,
+        "steps": 222,
+        "cumulative_steps": 4662,
+        "L_NN": 170496,
+        "L_As": 14208,
+        "U_NN": 56700,
+        "teacher_NN": 56700,
+        "U_As": 864,
+        "U_selected_slots": 864,
+        "extra_U_NN": 0,
+        "U_truth_read": false,
+        "target_access": false
+      },
+      "actual_source_roles": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "strict_original_As20_parent_and_ownEMA": true,
+      "common_teacher_only_rules": true,
+      "U_route": "QUALIFIED_PRACTICAL"
+    }
+  },
+  "log_growth": true,
+  "GPU_worker_membership": {
+    "R01-s2026092701": true,
+    "Q01-s2026092701": true
+  },
+  "source_analysis": {
+    "pid": 1714389,
+    "alive": true,
+    "CWD_correct": true,
+    "phase": "source",
+    "truth_argument_absent": true,
+    "state": {
+      "status": "WAIT_SOURCE",
+      "live_owned_PIDs": [
+        1712988,
+        1713028,
+        1713110
+      ],
+      "observation_unknown": false,
+      "truth_opened": false,
+      "NN": 0
+    }
+  },
+  "formal_analysis_launched": false,
+  "performance_available": false,
+  "E50_started": false,
+  "observed_at_UTC": "2026-10-18T18:43:12.872Z",
+  "first_epoch_verified_at_UTC": "2026-10-18T18:44:34.572Z"
+}

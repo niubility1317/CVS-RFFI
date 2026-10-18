@@ -47,3 +47,9 @@ practical从raw生成，保留现有完整residual/post_sync、EQfalse/G=1、ref
 
 
 只读预检技术失败保留：初始提交93f402572的comparator config带Windows分隔符，远端未找到对应元数据路径而退出。独立poststate确认release/archive/run均不存在，0NN/CP/IQ/更新/worker，尚未发生传输。仅统一路径为POSIX，6项定点边界PASS；科学配置、源判据和预算未变。修复后才首次传输/启动，实际执行以新release_commit.txt为准。
+
+
+实际发布：训练与分析代码 fe734e2b571767bae00b86fd0a19fdc784dadcdf，singlearchive compare/compile VERIFIED；1570NN actual真实父＋L/U smokePASS后直接训练。dispatcher1712988，R1713028/GPU2、Q1713110/GPU3，CWD/cmdline/CUDA/nvidia/loggrowth独立核实；actualnativeArgs全L6300 hiddenU56700 V27000、strictownAs20EMA/commonteacher-only符合。R首epoch真实As863、Uteacher/student各56700、extraNN0，Q仍健康运行。Sourceanalysis1714389仅phase source，WAIT_SOURCE、trutharg不存在、NN0；formalphase未启动，尚无识别结果或E50晋级结论。launch_verification.json为本次观察时刻记录，后续以完整训练/评分产物更新。
+
+
+首epoch双行真实核实：R/Q均累计E21、222新增更新，LAs14208包、Uteacher/student各56700，UAs分别863/864，extraU NN0；无Utruth/target读取。数量差异来自各自teacher轨迹，不将其伪称精确同步剂量。

@@ -345,3 +345,6 @@ Run `20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02`，实际代码 
 新run `20261019-phase1-FcrossRX-UQualified-e30-s2026092701-m2-r01` 只检验已有teacher资格与practical学生输入对应的价值；原四分之一固定配方保持关闭。R随机选k=自身当步资格数，Q选全部资格位，原Gaussian先整批生成，资格/CE/entropy/L6/默认头/U真值隐藏不变。两新ownAs20+10,totalE30；复用旧UPractical N/C冻结源与all7读出，4逻辑模型/6配对。两个源条件固定Q-Cmidlow≥+.5pp、Q-NfullVclean≥−.1pp；FAIL关闭、不扫比例/门槛/seed救跑，R不备用晋级，正式仍all7。额外As量/非空调用数动态计数，不能将同k规则称作未来计数完全相同。
 
 路由61项聚焦负例/39正例、真实native接口和20py/2emitted AST PASS；真实1570NN parent/L/U smoke为launcher首步待执行。当前未训练/未评分，预计新两尾段4440更新、8704698NN含sharedsmoke，旧770不重复收费。详情见[预登记](../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-UQualified-e30-s2026092701-m2-r01/report.md)。
+
+
+UQualified现已实际VERIFIED_RUNNING：执行代码 `fe734e2b571767bae00b86fd0a19fdc784dadcdf`，首次只读路径预检失败0NN/无archive/run，修复POSIX序列化后单次archive比较/remotecompile VERIFIED；1570NN真实父/L/U smokePASS。dispatcher1712988，R1713028/GPU2、Q1713110/GPU3，strictownAs20EMA/fullroles/CWD/argv/CUDA/nvidia/loggrowth核实，首epoch二者222更新，UAs863/864、Ustudent/teacher各56700、extraNN0。sourceanalysis1714389仅phase source WAIT_SOURCE/truthclosed，正式phase尚未启动，无新性能/E50结论。[启动证据](../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-UQualified-e30-s2026092701-m2-r01/launch_verification.json)。
