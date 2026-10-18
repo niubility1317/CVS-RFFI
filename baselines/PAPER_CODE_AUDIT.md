@@ -1,5 +1,7 @@
 # Baselines 论文-代码一致性审计报告
 
+> **2026-10-19 来源更正**：本文历史 RIEI 条目的 `arXiv:2309.02801v2` 引用无效；`2309.02801` 实际对应 *3D Trajectory Reconstruction of Drones using a Single Camera*，并非 RFFI 论文。SPAWC 2023 论文与 `arXiv:2411.03636` 扩展论文应分别绑定，不能混用标题、验收表和 epoch 统计窗口。本文历史“完全一致”标签不构成论文效果已复现的证据。原审计内容保留；当前证据和缺口见 [2026-10-19 WiSig 域泛化复现核查](../docs/RFFI_DG_REPRODUCTION_AUDIT_20261019.md)。
+
 > 审计日期: 2026-06-04
 > 审计范围: `baselines/` 下所有方法的模型、损失函数、训练策略、超参数
 > 参考论文:
