@@ -3,9 +3,9 @@ import json
 from copy import deepcopy
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
-RUN='20261019-phase1-FcrossRX-splitAdam-e30-s2026092701-m3-r01'
-RELEASE='cvs_FcrossRX_splitAdam_E30_20261019_r01'
-OWNER='codex/root/splitAdam30';LOCAL='local_artifacts/F_splitAdam_E30_20261019_r01'
+RUN='20261019-phase1-FcrossRX-splitAdam-e30-s2026092701-m3-r02'
+RELEASE='cvs_FcrossRX_splitAdam_E30_20261019_r02'
+OWNER='codex/root/splitAdam30';LOCAL='local_artifacts/F_splitAdam_E30_20261019_r02'
 REFERENCE_RUN='20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01'
 REFERENCE_COMMIT='19aedc3604fed9c193237dd92366164178af0983'
 REFERENCE_RELEASE='cvs_FcrossRX_impulse_factorial_E30_20261018_r01'

@@ -7,7 +7,7 @@ def remote(script,runtime):
  if r.returncode:raise RuntimeError(r.stderr.decode('utf8',errors='replace'))
  return json.loads(r.stdout)
 def main():
- package='experiments/cvs_split_adam30';local=d.ROOT/'local_artifacts/F_splitAdam_E30_20261019_r01';runtime=d.read(local/'runtime.json')
+ package='experiments/cvs_split_adam30';local=d.ROOT/'local_artifacts/F_splitAdam_E30_20261019_r02';runtime=d.read(local/'runtime.json')
  if runtime['run_id']!=d.RUN or runtime['reference_commit']!=d.REFERENCE_COMMIT:raise ValueError('Private runtime for another run/reference')
  if subprocess.check_output(['git','status','--porcelain','--',package],cwd=d.ROOT,text=True).strip():raise ValueError('Commit actual splitAdam code/config before release')
  commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=d.ROOT,text=True).strip();project=runtime['project'];release=project+'/releases/'+d.RELEASE

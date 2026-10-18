@@ -9,3 +9,5 @@
 独立不可变release PROJECT/releases/cvs_FcrossRX_splitAdam_clipdiag_20261019_r01，run PROJECT/runs/20261019-diagnostic-FcrossRX-splitAdam-firstclip-s2026092701-m1-r01，唯一owner codex/root/splitAdam-clipdiag。命令 CVS-RFFI/python -u experiments/cvs_split_adam30/diagnose_first.py。实际辅助代码commit随发布保存；原训练依赖仍固定37cce29。输出diagnostic.json、原source初始化/角色metadata和stdout；无final model或性能指标。
 
 意外异常保留原产物、停止，不盲目重试。根因确认后只修该问题，针对性回归及原P0/P1问题定点复审；真实E30需另建r02，不复用失败输出。
+
+已完成 VERIFIED：helper ae7160a37a8ac6d571f35dbd2e9442d6973a4b73，源PID1756923/CWD与artifact匹配，进程自然结束。1282NN、4VJP、0optimizer/EMA更新，参数与原父模型完全一致。相同total VJP重复求导也有1个坐标不通过旧判据；唯一失败参数为Sinc band_coordinate。生产分量和相对实际backward全向量误差8.0512e-7，实际clip相对预期缩放误差1.7351e-10。判定为逐坐标近零比较误拦；不会据此修改训练梯度或科学超参数。

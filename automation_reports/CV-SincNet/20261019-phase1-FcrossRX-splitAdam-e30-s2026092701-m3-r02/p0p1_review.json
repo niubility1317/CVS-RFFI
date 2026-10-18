@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "P0": 0,
+  "P1": 0,
+  "initial_candidate_review_count": 1,
+  "targeted_rereview_count": 1,
+  "scope": "Only R01 numerical component-sum falsepositive;no fullrepeat review",
+  "original_code": "37cce29bb9bf65e372b681242705a1837728b3f2",
+  "diagnostic_helper_code": "ae7160a37a8ac6d571f35dbd2e9442d6973a4b73",
+  "root_cause_evidence": "20261019-diagnostic-FcrossRX-splitAdam-firstclip-s2026092701-m1-r01",
+  "checks": 61,
+  "targeted_regressions": 12,
+  "gradient_loss_clip_Adam_weights_unchanged": true,
+  "actual_Torch": "R02launcherfirststep",
+  "NN": 0,
+  "CP": 0,
+  "IQ": 0,
+  "remote": false
+}

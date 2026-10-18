@@ -59,6 +59,24 @@ def _clip_factor(max_norm, total_norm):
     return min(1., limit / (norm + 1e-6))
 
 
+def _rms_comparison(error_rms, reference_rms, expected_rms, scale=1.):
+    """Same tolerances, applied to one parameter's RMS instead of each entry.
+
+    GPU re-evaluation may change nearly zero entries even in a repeated total
+    VJP. Unit conversion divides BOTH the discrepancy and absolute bound;
+    Sinc therefore gets exactly the same stored-coordinate acceptance bound.
+    """
+    error = _finite_number(error_rms, 'component RMS error', nonnegative=True)
+    reference = _finite_number(reference_rms, 'actual gradient RMS', nonnegative=True)
+    expected = _finite_number(expected_rms, 'component sum RMS', nonnegative=True)
+    scale = _finite_number(scale, 'gradient coordinate scale', positive=True)
+    bound = 5e-7 + 5e-4 * max(reference, expected)
+    return dict(error_rms=error, reference_rms=reference, expected_rms=expected,
+                bound=bound, error_bound_ratio=error / bound,
+                coordinate_scale=scale, physical_error_rms=error / scale,
+                physical_bound=bound / scale, within_bound=error <= bound)
+
+
 def initialize(model, mode):
     if hasattr(model, '_sa_mode'):
         raise ValueError('One split-moment initialization per model')
@@ -69,6 +87,7 @@ def initialize(model, mode):
     model._sa_records = []
     model._sa_step_record = None
     model._sa_optimizer = None
+    model._sa_last_comparison = None
     return model
 
 
@@ -168,15 +187,18 @@ def after_clip(model, parameters, max_norm, total_norm):
             tuple((n, id(p)) for n, p in named) or step != model._sa_steps + 1:
         raise ValueError('Stale or different original parameter set')
     factor = _clip_factor(max_norm, total_norm)
+    _finite_tensors((p.grad for _, p in named), 'actual clipped total gradient')
     clipped = []
-    errors = []
-    consistent = []
-    for (_, p), r, a in zip(named, rest, satellite):
+    comparisons = []
+    comparison_names = []
+    none_consistent = []
+    for (name, p), r, a in zip(named, rest, satellite):
         _gradient_ok(p, p.grad)
         cr = None if r is None else r.mul(factor)
         ca = None if a is None else a.mul(factor)
         if p.grad is None:
-            consistent.extend((g == 0).all() for g in (cr, ca) if g is not None)
+            # Preserve exact None-versus-zero semantics; RMS never relaxes it.
+            none_consistent.extend((g == 0).all() for g in (cr, ca) if g is not None)
         else:
             if cr is None and ca is None:
                 raise ValueError('Native active parameter absent from both VJPs')
@@ -185,12 +207,36 @@ def after_clip(model, parameters, max_norm, total_norm):
                 expected.add_(cr)
             if ca is not None:
                 expected.add_(ca)
-            consistent.append(torch.isclose(expected, p.grad, rtol=5e-4, atol=5e-7).all())
-            errors.append((expected - p.grad).abs().max())
+            actual64 = p.grad.detach().double()
+            expected64 = expected.double()
+            error64 = expected64 - actual64
+            # The old pointwise test is retained solely as telemetry. All
+            # reductions below inspect gradients without changing either one.
+            old_failures = (~torch.isclose(expected, p.grad, rtol=5e-4, atol=5e-7)).sum()
+            comparisons.append(torch.stack((error64.abs().max(), error64.square().mean().sqrt(),
+                actual64.square().mean().sqrt(), expected64.square().mean().sqrt(), old_failures.double())))
+            comparison_names.append(name)
         clipped.append((cr, ca))
-    if consistent and not bool(torch.stack(consistent).all()):
-        raise ValueError('Component sum differs from actual clipped total gradient/active mask')
-    max_error = float(torch.stack(errors).max()) if errors else 0.
+    if none_consistent and not bool(torch.stack(none_consistent).all()):
+        raise ValueError('Native backward omitted a nonzero component/active mask')
+    rows = []
+    values = torch.stack(comparisons).cpu().tolist() if comparisons else []
+    for name, (maximum, error, reference, expected, old_failures) in zip(comparison_names, values):
+        comparison = _rms_comparison(error, reference, expected, 25000. if name in QNAMES else 1.)
+        rows.append(dict(parameter=name, max_abs_error=maximum,
+                         old_pointwise_failure_coordinates=int(old_failures), **comparison))
+    worst = max(rows, key=lambda value: value['error_bound_ratio']) if rows else None
+    model._sa_last_comparison = dict(rule='per_parameter_RMS', rtol=5e-4, atol_stored=5e-7,
+        parameters=len(rows), old_pointwise_nonblocking=True,
+        old_pointwise_failure_coordinates=sum(value['old_pointwise_failure_coordinates'] for value in rows),
+        old_pointwise_failure_parameters=sum(value['old_pointwise_failure_coordinates'] > 0 for value in rows),
+        max_error_rms=max((value['error_rms'] for value in rows), default=0.),
+        max_bound=max((value['bound'] for value in rows), default=5e-7),
+        max_error_bound_ratio=worst['error_bound_ratio'] if worst else 0., worst_parameter=worst,
+        old_pointwise_failures=[value for value in rows if value['old_pointwise_failure_coordinates']])
+    if any(not value['within_bound'] for value in rows):
+        raise ValueError('Component sum differs from actual clipped total gradient (parameter RMS)')
+    max_error = max((value['max_abs_error'] for value in rows), default=0.)
     selected = set(QNAMES) | {'id_backbone.encoder.core.id_backbone.cls_head.weight'}
     if not any(n in selected for n, _ in named):
         selected = {named[0][0]}
@@ -324,6 +370,7 @@ def attach_optimizer(optimizer, model, *, amp=False):
         model._sa_step_record = dict(step=step, mode=model._sa_mode, extra_VJP_calls=2,
             clip_factor=factor, physical_global_norm=model._sa_last_norm,
             capture_host_enqueue_seconds=elapsed, component_sum_max_abs_error=error,
+            component_sum_comparison=model._sa_last_comparison,
             rest_active_parameters=sum(r is not None for r, a in components),
             as_active_parameters=sum(a is not None for r, a in components),
             native_active_parameters=sum(p.grad is not None for _, p in named),
@@ -353,6 +400,7 @@ def attach_optimizer(optimizer, model, *, amp=False):
         model._sa_records.append(record)
         model._sa_ready = None
         model._sa_step_record = None
+        model._sa_last_comparison = None
 
     optimizer.register_step_pre_hook(pre)
     optimizer.register_step_post_hook(post)

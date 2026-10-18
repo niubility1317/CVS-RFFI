@@ -10,7 +10,7 @@ from pathlib import Path
 def _actual_helpers():
     source = Path(__file__).with_name('core.py').read_text(encoding='utf-8')
     tree = ast.parse(source)
-    keep = {'_mode', '_finite_number', '_hyperparameters', '_clip_factor'}
+    keep = {'_mode', '_finite_number', '_hyperparameters', '_clip_factor', '_rms_comparison'}
     nodes = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name in keep]
     namespace = {'math': math, 'MODES': ('MEASURE', 'SPLIT')}
     exec(compile(ast.Module(body=nodes, type_ignores=[]), 'actual_core_pure_helpers', 'exec'), namespace)
@@ -120,6 +120,44 @@ def run():
     check('actual_clip_interface', [a.arg for a in functions['after_clip'].args.args] == ['model', 'parameters', 'max_norm', 'total_norm'])
     check('actual_attach_interface', [a.arg for a in functions['attach_optimizer'].args.args] == ['optimizer', 'model'])
     check('actual_two_vjp_calls', sum(isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute) and n.func.attr == 'grad' for n in ast.walk(functions['capture'])) == 2)
+    # Regression for the independently observed 24-coordinate Sinc discrepancy:
+    # one nearly zero coordinate can fail the old pointwise test although the
+    # parameter RMS error is below the unchanged absolute/relative bound.
+    reference_rms = .00042367766
+    reference = [0.] + [reference_rms * math.sqrt(24. / 23.)] * 23
+    expected = list(reference)
+    expected[0] = 7.958e-7
+
+    def compare_vectors(expected, reference, scale=1.):
+        count = len(reference)
+        error = math.sqrt(sum((a - b) ** 2 for a, b in zip(expected, reference)) / count)
+        actual = math.sqrt(sum(v ** 2 for v in reference) / count)
+        predicted = math.sqrt(sum(v ** 2 for v in expected) / count)
+        old_failures = sum(abs(a - b) > 5e-7 + 5e-4 * abs(b) for a, b in zip(expected, reference))
+        return helper['_rms_comparison'](error, actual, predicted, scale), old_failures
+
+    observed, old_failures = compare_vectors(expected, reference, 25000.)
+    check('sinc_nearzero_regression_old_pointwise_fails_once', old_failures == 1)
+    check('sinc_nearzero_regression_rms_passes_same_tolerances', observed['within_bound'])
+    check('sinc_nearzero_regression_error_rms_matches_observation', math.isclose(observed['error_rms'], 1.624419947755711e-7, rel_tol=1e-12))
+    stored, _ = compare_vectors(expected, reference)
+    check('sinc_stored_physical_acceptance_equivalent', observed['within_bound'] == stored['within_bound'] and
+          math.isclose(observed['error_bound_ratio'], stored['error_bound_ratio']) and
+          math.isclose(observed['physical_bound'], observed['bound'] / 25000.) and
+          math.isclose(observed['physical_error_rms'], observed['error_rms'] / 25000.))
+    scale_error, _ = compare_vectors([v * 25000. for v in reference], reference, 25000.)
+    check('sinc_scale25000_error_still_fails', not scale_error['within_bound'])
+    omitted_as, _ = compare_vectors([v * .75 for v in reference], reference, 25000.)
+    check('omitted_nonzero_branch_still_fails', not omitted_as['within_bound'])
+    spurious_head, _ = compare_vectors([.02] + [0.] * 959, [0.] * 960)
+    check('large_spurious_default_head_gradient_still_fails', not spurious_head['within_bound'])
+    for values in ((float('nan'), 1., 1.), (0., float('inf'), 0.), (0., 0., -1.)):
+        rejects('reject_nonfinite_or_negative_rms_' + str(values), lambda v=values: helper['_rms_comparison'](*v))
+    # None guards remain exact, and the original pointwise call remains present
+    # only for reporting its failed-coordinate count.
+    after_source = ast.unparse(functions['after_clip'])
+    check('actual_none_guard_remains_exact', '(g == 0).all()' in after_source and 'none_consistent' in after_source)
+    check('actual_old_pointwise_retained_as_telemetry', 'old_pointwise_nonblocking=True' in after_source and 'old_pointwise_failure_coordinates' in after_source)
     return dict(status='PASS', checks=len(done), names=done,
                 scope='pure_python_math_and_actual_pure_helpers; actual_Torch_smoke_required')
 

@@ -614,3 +614,4 @@
 
 - [ordinary／As 分离 Adam 状态 r01](../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-splitAdam-e30-s2026092701-m3-r01/report.md)
 - [ordinary／As 分离 Adam 状态 r01](../automation_reports/CV-SincNet/20261019-diagnostic-FcrossRX-splitAdam-firstclip-s2026092701-m1-r01/report.md)
+- [ordinary／As 分离 Adam 状态 r02](../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-splitAdam-e30-s2026092701-m3-r02/report.md)
