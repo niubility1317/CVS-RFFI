@@ -13,3 +13,4 @@
 |F 默认头输入敏感度：源 L 排序与源 V 等量扰动反证|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-identitySensitivity-sourceLtoV-s2026092701-m1-r01/report.md)|
 |星地优先 E30：satellite 随机子网络扰动|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01/report.md)|
 |原完整 practical 配方：E30 至 E50 匹配预算验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01/report.md)|
+|原完整 practical E50：固定02／03种子的匹配复现|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01/report.md)|

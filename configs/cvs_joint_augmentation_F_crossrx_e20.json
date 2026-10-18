@@ -7962,5 +7962,34 @@
     "target_feedback": false,
     "automatic_seed_extension": false,
     "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01/final_analysis.md"
+  },
+  "next_fixed_replication": {
+    "run_id": "20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01",
+    "status": "PLANNED_NOT_LAUNCHED",
+    "owner": "codex/root/practical-budget50-replication",
+    "model_seeds": [
+      2026092702,
+      2026092703
+    ],
+    "new_rows": 4,
+    "epochs_total_each": 50,
+    "epochs_new_each": 20,
+    "matched_NoAs": true,
+    "no_new_mechanism": true,
+    "source_basis": {
+      "target_scores_used": false,
+      "source_budget_fullV_clean_pp": 0.1185185185185178,
+      "source_budget_midurban_pp": 1.9722222222222197,
+      "source_budget_lowurban_pp": 1.6388888888888897,
+      "source_As50_minus_NoAs50_fullV_clean_pp": -0.07407407407408195,
+      "modelseed_order": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "source_evidence": "Prior seed01 E50 analysis_auto_r01/source_summary.json"
+    },
+    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01/report.md",
+    "automatic_further_seed_extension": false
   }
 }

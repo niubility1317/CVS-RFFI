@@ -9,3 +9,4 @@
 |冻结源域伪目标健康与浅中层 RX 探针|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-source-pseudotarget-health-manysig-m3-r01/report.md)|
 |六方向源机制诊断：冻结 CE30 三主种子|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-source-six-direction-mechanisms-manysig-m3-r01/report.md)|
 |原完整 practical 配方：E30 至 E50 匹配预算验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01/report.md)|
+|原完整 practical E50：固定02／03种子的匹配复现|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01/report.md)|

@@ -573,3 +573,5 @@
 - [星地优先 satellite dropout E30 r01](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01/report.md)
 
 - [原完整practical E50匹配预算 r01](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01/report.md)
+
+- [原完整practical E50固定02/03复现 r01](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01/report.md)
