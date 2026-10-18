@@ -1,8 +1,8 @@
 {
-  "status": "IMPLEMENTED_PENDING_COMMIT_RELEASE",
+  "status": "VERIFIED_WAIT_SOURCE",
   "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-continuous-recovery-e30-s2026092701-m1-r01/analysis_auto_r01",
   "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_continuous_recovery_analysis_20261018_r01",
-  "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_continuous_recovery_analysis_20261018_r01/cvs_continuous53_pipeline_20261018.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-continuous-recovery-e30-s2026092701-m1-r01/analysis_auto_r01 --truth /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --code-commit CODE_COMMIT",
+  "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_continuous_recovery_analysis_20261018_r01/cvs_continuous53_pipeline_20261018.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-continuous-recovery-e30-s2026092701-m1-r01/analysis_auto_r01 --truth /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --code-commit d51c6068e4d94a83a26914a92fc107bc3f4850fc",
   "CPU_threads": 2,
   "GPU": "none",
   "launch_owner": "codex/root/continuous52-technical-recovery",
@@ -31,5 +31,10 @@
   "new_rows": 1,
   "reused_rows": 3,
   "failed_attempt_separate": true,
-  "tests": "11 focused synthetic checks PASS (0.010 s),4 AST PASS;zero real IQ/CP/truth/NN"
+  "tests": "11 focused synthetic checks PASS (0.010 s),4 AST PASS;zero real IQ/CP/truth/NN",
+  "code_commit": "d51c6068e4d94a83a26914a92fc107bc3f4850fc",
+  "pid": 1139252,
+  "remote_compile": "PASS",
+  "archive_transport": "VERIFIED_ONE_COMPARISON",
+  "remote_tests": "11 PASS in0.008s"
 }

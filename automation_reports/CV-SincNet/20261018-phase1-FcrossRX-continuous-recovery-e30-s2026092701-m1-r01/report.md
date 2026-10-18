@@ -23,3 +23,5 @@
 用户另允许表现好的方案总预算E50：仅合法源域资格支持后、正式分数不回流地另行预登记匹配延长；当前仍固定E30，不热改。若后续30＋20，明确父/增量/总成本与重置策略，不冒称scratchE50。当前连续As尚无新准确率，也无跨seed双提升证据。另一对话已实现固定原As与NoAs的E30+20匹配延长（run20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01，code115dc1c9），本owner复用其结果，不重复启动E50。
 
 独立后处理计划：新CPU-only release cvs_FcrossRX_continuous_recovery_analysis_20261018_r01；输出本run/analysis_auto_r01。复用旧NoAs与P43两行，对新As完整30轮日志、源状态/质量/覆盖与固定七视图保存预测做四行配对分析；先源分析、再等全部正式prediction/scoring completion，最后独立truth-last读取保存预测评分。0新IQ/CP/模型前向/训练更新。原失败run和其analysis_auto_r01不改。代码与命令随后记录到同报告；技术失败保存而不自动重试。
+
+后处理实际代码 `d51c6068e4d94a83a26914a92fc107bc3f4850fc` 已提交并独立核对远端分支 OID。单归档传输比较、远端compile/import PASS，11项合成检查远端PASS（0.008s）。CPU分析PID1139252已独立核验CWD/argv/start_ticks/GPUdisabled；当前WAIT_SOURCE，观察到本run dispatcher和唯一As worker，0NN/IQ/CP/updates，尚无正式结果。完整命令及路径见analysis_plan.json。

@@ -1,0 +1,32 @@
+{
+  "status": "VERIFIED_WAIT_SOURCE",
+  "code_commit": "d51c6068e4d94a83a26914a92fc107bc3f4850fc",
+  "pid": 1139252,
+  "expected_cwd": true,
+  "expected_argv": true,
+  "expected_start_ticks": true,
+  "GPU_disabled": true,
+  "read_at": 1792294865.6350532,
+  "state": {
+    "status": "WAIT_SOURCE",
+    "live_owned_PIDs": [
+      1130384,
+      1130449
+    ],
+    "observation_unknown": false,
+    "metadata_files_expected": 9,
+    "updated_at": 1792294851.370777,
+    "NN": 0,
+    "target_scores_read": false
+  },
+  "failure": null,
+  "complete": null,
+  "remote_compile": "PASS",
+  "archive_transport": "VERIFIED_ONE_COMPARISON",
+  "remote_tests": 11,
+  "new_NN": 0,
+  "new_IQ_reads": 0,
+  "new_checkpoint_reads": 0,
+  "training_updates": 0,
+  "target_scores_read": false
+}
