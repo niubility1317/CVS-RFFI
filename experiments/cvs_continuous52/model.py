@@ -3,6 +3,7 @@ from contextlib import contextmanager
 import importlib.util
 from .runner import REFERENCE
 from . import design as d
+from .channel import Practical
 s=importlib.util.spec_from_file_location(__package__+'._model_impl',REFERENCE/'experiments/cvs_noise_shape_factorial43/model.py');impl=importlib.util.module_from_spec(s);s.loader.exec_module(impl)
 classifier,source_domain_count=impl.classifier,impl.source_domain_count
 @contextmanager
@@ -18,10 +19,12 @@ def factory_seed(c):
 
 def install(m,c):
  with factory_seed(c):m=impl.install(m,c)
+ if c['As']:m._full_channel=Practical()
  m._replication_factory_seed=c['model_seed'];return m
 
 def build(c,device='cpu'):
  with factory_seed(c):m=impl.build(c,device)
+ if c['As']:m._full_channel=Practical()
  m._replication_factory_seed=c['model_seed'];return m
 
 def own_model(c,device='cpu'):

@@ -41,4 +41,21 @@ class Checks(unittest.TestCase):
   import ast
   from pathlib import Path
   s=(Path(__file__).parent/'dispatch.py').read_text();ast.parse(s);self.assertNotIn('for segment in (20,30)',s);self.assertIn("execute('predict',row)",s);self.assertIn('formal_evaluation_still_required=True',s)
+ def test_continuous_channel_budget_boundaries(self):
+  import ast
+  from pathlib import Path
+  tree=ast.parse((Path(__file__).parent/'channel.py').read_text())
+  klass=next(x for x in tree.body if isinstance(x,ast.ClassDef) and x.name=='Practical');apply=next(x for x in klass.body if isinstance(x,ast.FunctionDef) and x.name=='apply');guard=compile(ast.Expression(apply.body[0].test),'<continuous channel guard>','eval')
+  x=SimpleNamespace(ndim=3,shape=(64,2,256));torch=SimpleNamespace(isfinite=lambda _:SimpleNamespace(all=lambda:True))
+  for epoch,step in [(1,1),(20,4440),(21,4441),(30,6660)]:self.assertFalse(eval(guard,{'epoch':epoch,'step':step,'x':x,'torch':torch}))
+  for epoch,step in [(0,1),(31,6660),(30,0),(30,6661)]:self.assertTrue(eval(guard,{'epoch':epoch,'step':step,'x':x,'torch':torch}))
+ def test_owned_channel_installed_for_training_and_prediction(self):
+  import ast
+  from pathlib import Path
+  tree=ast.parse((Path(__file__).parent/'model.py').read_text())
+  for name in ('install','build'):
+   fn=next(x for x in tree.body if isinstance(x,ast.FunctionDef) and x.name==name)
+   found=[x for x in ast.walk(fn) if isinstance(x,ast.Assign) and any(isinstance(t,ast.Attribute) and t.attr=='_full_channel' for t in x.targets)]
+   self.assertEqual(len(found),1);self.assertEqual(ast.unparse(found[0].value),'Practical()')
+   guarded=[x for x in fn.body if isinstance(x,ast.If) and ast.unparse(x.test)=="c['As']" and found[0] in x.body];self.assertEqual(len(guarded),1)
 if __name__=='__main__':unittest.main()
