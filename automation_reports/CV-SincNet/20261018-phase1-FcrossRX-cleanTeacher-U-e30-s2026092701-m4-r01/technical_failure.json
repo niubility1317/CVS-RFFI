@@ -59,11 +59,14 @@
   "actual_cost": {
     "new_training_epochs": 0,
     "optimizer_updates": 0,
-    "training_NN": 0,
     "remote_checkpoint_smoke_NN": 6,
     "local_real_F_synthetic_NN": 6656,
     "local_toy_NN": 0,
-    "training_wall_seconds": null
+    "training_wall_seconds": null,
+    "gradient_training_forward_NN": 0,
+    "initialization_eval_NN_reconstructed": 296,
+    "total_remote_NN_reconstructed": 302,
+    "reconstruction_basis": "Full original traceback and pinned smoke source,37 completed two-packet evals per worker plus shared6; not runtimecounter"
   },
   "formal_predictions": 0,
   "truth_scoring": 0,

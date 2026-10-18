@@ -41,3 +41,7 @@ FROZEN_NOAS20−FROZEN_AS20检验固定同龄训练来源；FROZEN_AS20−EVOLVI
 实际发布：代码603843ae58912b68ed9a8ff48fdd418c64a24231已提交推送，并经独立remote branch OID比对一致。唯一archive本地/remote SHA比较PASS、23py compile PASS、真实2CP/6NN no-query smoke PASS。四个own worker已核实CWD/argv/GPU、教师strict初始化及日志，均越过r01故障位置；尚无完成epoch/正式结果。原r01 remote额外6NN单列。
 
 首轮运行验证：四行均已完成新增E1（累计E21），每行222个真实更新，日志均继续增长；U TX隐藏、原U保留、学生900722参数/206statekeys不变。三种教学臂的q与weightedKL由实际进程日志保存，ZERO保持额外loss0；这只证明新增监督实际执行，不代表识别收益。后续按原计划收尾至E30及逐row七环境truth-last，不由首轮代理值提前晋级。
+
+源判定已在任何formal成绩读取前固定：FROZEN_NOAS20主候选FAIL，6项中3项未通过。fullVclean−NoAs30=−0.170370pp（超−0.1）；midlow−As30=+0.750000pp；low−As30=+0.750000pp；FC−FAmidlow=0.000000pp（未达+.5）；FC−ZEROmidlow=+.694444pp；FC−FAlow=−.083333pp。据此关闭本次固定clean教师来源路线，不追加E50/seed或调teacher年龄/q/系数。所有row仍完成原七环境正式评价；后续正式成绩不改变此源判定。此时未读取formal分数。
+
+最终成本更正：0优化更新不等于0前向。完整r01四份栈各37次已完成的两包初始eval，固定pinned源码line100–103可核对；共296初始化evalNN，另加6独立smoke，r01合计重建302NN。r02成功成本20,815,702NN不变，两次新增合计20,816,004NN，含已知历史39,114,576NN；本地6656NN共享一次，不重复。此处是完整栈/固定源码重建，不是runtimecounter，也无新前向。科学指标与源FAIL不变。

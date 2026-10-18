@@ -88,11 +88,14 @@
     "run_owned_processes_alive": 0,
     "new_training_epochs": 0,
     "optimizer_updates": 0,
-    "training_NN": 0,
     "formal_predictions": 0,
     "truth_scores": 0,
     "all_outputs_preserved": true,
-    "automatic_retry": false
+    "automatic_retry": false,
+    "gradient_training_forward_NN": 0,
+    "initialization_eval_NN_reconstructed": 296,
+    "total_remote_NN_reconstructed": 302,
+    "initialization_cost_correction": "initialization_cost_correction.json"
   },
   "constructor_fix": {
     "status": "PASS",

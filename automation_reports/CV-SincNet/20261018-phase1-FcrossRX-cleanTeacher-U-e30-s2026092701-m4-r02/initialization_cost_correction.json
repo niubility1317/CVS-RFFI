@@ -1,0 +1,51 @@
+{
+  "status": "VERIFIED_RECONSTRUCTED_INITIALIZATION_NN",
+  "run_id": "20261018-phase1-FcrossRX-cleanTeacher-U-e30-s2026092701-m4-r01",
+  "evidence": "Four preserved full 103672-byte failure logs plus actual pinned backend source lines91–104; no new inference",
+  "rows": [
+    {
+      "arm": "ZERO_KL",
+      "completed_checked_model_line103_frames": 37,
+      "packets_per_completed_smoke": 2,
+      "reconstructed_initialization_eval_NN": 74
+    },
+    {
+      "arm": "EVOLVING_AS_EMA",
+      "completed_checked_model_line103_frames": 37,
+      "packets_per_completed_smoke": 2,
+      "reconstructed_initialization_eval_NN": 74
+    },
+    {
+      "arm": "FROZEN_AS20_EMA",
+      "completed_checked_model_line103_frames": 37,
+      "packets_per_completed_smoke": 2,
+      "reconstructed_initialization_eval_NN": 74
+    },
+    {
+      "arm": "FROZEN_NOAS20_EMA",
+      "completed_checked_model_line103_frames": 37,
+      "packets_per_completed_smoke": 2,
+      "reconstructed_initialization_eval_NN": 74
+    }
+  ],
+  "stack_compression_only": "pure runtime builder recursion, never checked_model frames",
+  "failure_tail": "runtime builder reentry before any additional forward",
+  "initialization_eval_NN_reconstructed": 296,
+  "separate_shared_checkpoint_smoke_NN": 6,
+  "total_failed_remote_NN_reconstructed": 302,
+  "optimizer_updates": 0,
+  "completed_training_epochs": 0,
+  "L_U_training_forward_NN": 0,
+  "real_IQ": 0,
+  "formal_predictions": 0,
+  "reconstruction_not_runtime_counter": true,
+  "costs": {
+    "successful_r02_remote_NN": 20815702,
+    "total_new_remote_NN_with_failed_r01": 20816004,
+    "known_unique_remote_NN_with_history": 39114576,
+    "shared_local_real_F_NN_once": 6656,
+    "historical_shared_smoke_unallocated": true
+  },
+  "previous_6_NN_readout_was_shared_smoke_only": true,
+  "no_retraining_or_reprediction": true
+}

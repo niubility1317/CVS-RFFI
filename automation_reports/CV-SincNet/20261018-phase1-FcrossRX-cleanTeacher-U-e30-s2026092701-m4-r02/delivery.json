@@ -1,0 +1,99 @@
+{
+  "status": "ANALYZED",
+  "run_id": "20261018-phase1-FcrossRX-cleanTeacher-U-e30-s2026092701-m4-r02",
+  "code_commit": "603843ae58912b68ed9a8ff48fdd418c64a24231",
+  "model_seed": 2026092701,
+  "new_model_rows": 4,
+  "reused_model_rows": 2,
+  "formal_views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "all_rows_all_views_complete": true,
+  "missing": [],
+  "formal_head": "Strict final_ssdg.pth model state; existing default cosine30 head jointly trained with backbone",
+  "source_decision": {
+    "source_qualified": false,
+    "formal_scores_read_when_decided": false,
+    "checks": {
+      "fullV_clean_within_NOAS30_0p1pp": false,
+      "midlow_gain_vs_As30_at_least_0p5pp": true,
+      "low_not_below_As30": true,
+      "midlow_gain_vs_frozenAs20_at_least_0p5pp": false,
+      "midlow_gain_vs_ZERO_at_least_0p5pp": true,
+      "low_not_below_frozenAs20": false
+    }
+  },
+  "primary_formal": {
+    "clean_accuracy_percent": 85.09821428571429,
+    "mid_urban_accuracy_percent": 63.49761904761905,
+    "low_urban_accuracy_percent": 52.04107142857143,
+    "urban_mean_percent": 64.6031746031746,
+    "clean_vs_NoAs_pp": -0.14940476190475893,
+    "urban_vs_As_pp": 0.6638888888888899,
+    "clean_stage_within_0p1pp": false,
+    "low_urban_above60": false
+  },
+  "reproducible_dual_gain": false,
+  "crossseed_confirmed": false,
+  "no_E50_or_seed_expansion_for_this_route": true,
+  "cost": {
+    "new_model_epochs": 40,
+    "new_updates": 8880,
+    "current_run_remote_NN": 20815702,
+    "prior_failed_r01_remote_NN": 302,
+    "total_new_remote_NN_including_failure": 20816004,
+    "local_real_F_NN_shared_once": 6656,
+    "constructor_fix_toy_NN": 0,
+    "unique_total_model_epochs_with_history": 100,
+    "unique_total_updates_with_history": 22200,
+    "unique_total_remote_NN_known_including_failure": 39114576,
+    "historical_shared_smoke_unallocated": true,
+    "row_native_wall_seconds": {
+      "ZERO_KL": 1636.5241301059723,
+      "EVOLVING_AS_EMA": 1674.3203377723694,
+      "FROZEN_AS20_EMA": 1700.8933057785034,
+      "FROZEN_NOAS20_EMA": 1611.3964376449585
+    },
+    "batch_artifact_elapsed_seconds": 1824.828845024109,
+    "batch_elapsed_basis": "analysis complete mtime minus one-shot dispatcher metadata mtime; includes queue/init/train/source/predict/score/analysis",
+    "CPU_analysis_seconds": 54.282938602147624,
+    "prior_failed_r01_breakdown": {
+      "shared_smoke_NN": 6,
+      "reconstructed_initialization_eval_NN": 296,
+      "basis": "37 completed two-packet smoke evals per row in full stack,4rows;not runtimecounter"
+    }
+  },
+  "artifact_local_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_clean_teacher_U_E30_20261018_r02/retrieved_r01",
+  "figures": {
+    "pairs": 5,
+    "PNGs_visually_checked": 5,
+    "PDFs_exist": 5,
+    "layouts_readable": true,
+    "no_missing_or_blank_chart": true
+  },
+  "terminal": {
+    "owned_processes_alive": 0,
+    "remote_analysis_status": "ANALYZED"
+  },
+  "limitations": [
+    "One model seed; two source channel draws are not two seeds",
+    "Actual As20 parent formal clean-correct cohort unavailable; retention uses fixed NoAs30 cohort143216 with explicit label",
+    "Formal propagation/lock/quality state labels unavailable; source stratum associations are not formal physics causal attribution",
+    "No isolated per-loss/backbone gradient trajectory",
+    "Budget exhausted does not prove convergence"
+  ],
+  "goal_complete": false,
+  "teachers": "Frozen reference initializations use audited original E20 ema_model states; native U continues own EMA",
+  "source_metric_identity": {
+    "full_V_completion": "student: strict payload model state",
+    "source_panel": "student: own_model model state",
+    "formal": "student: own_model model state",
+    "native_epoch_VAL_curve": "not explicitly identified in pinned native logs; kept as logged source V accuracy"
+  }
+}

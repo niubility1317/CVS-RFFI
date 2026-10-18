@@ -104,7 +104,7 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_clean_teacher_U_E30_20261018_r02",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_clean_teacher65/runner.py",
     "stop_rule": "Only wrongroles/provenance/runtime/nonfinite/outputcollision/preregisteredtechnicalfailure stopownrun,preserveoutputs,noautomaticretry. ScientificsourceFAIL stillall7;fixedFCcandidateonly,no coefficient/teacherage/q sweep,E50orseed rescue.",
-    "status": "DRAFT"
+    "status": "ANALYZED"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
@@ -491,7 +491,8 @@
     "ExtraAsUandtwoevalteachers allrowsincludingZERO;privateRNGrestored. Student/deploy900722params206keys,external2frozenteachers2x900722referenceparameterscostreported,notregistered.",
     "Minimalworkflow:onecodecommit/negative+actualF/oneP0P1/oneactualCPnoquerysmoke/archivecomparison/compile/post-state/truthlast. ExtraapprovalsandhashchainsREJECTED_EXTRA_GATE.",
     "Weights/IQ/rawlogs/predictions/private runtime detailsremainlocal/remote notGit.",
-    "r01 failed before first update due nested teacher builder recursion. r02 uses cloned existing architecture then strict audited EMA loads; scientific matrix/seed/epochs/data/selection unchanged. Prior failed remote6NN disclosed separately; shared local realF6656NN not rerun/double counted. Same fingerprint after this fix stops; no blind restart."
+    "r01 failed before first update due nested teacher builder recursion. r02 uses cloned existing architecture then strict audited EMA loads; scientific matrix/seed/epochs/data/selection unchanged. Prior failed remote6NN disclosed separately; shared local realF6656NN not rerun/double counted. Same fingerprint after this fix stops; no blind restart.",
+    "Final actual source eligibility FAIL before formal read. All4 new rows/7views and independent truth-last complete,analysisANALYZED missing[]. NoE50/seed extension. Primary formal clean85.098214%,mid63.497619%,low52.041071%,urban64.603175%;clean−NoAs−.149405pp=>stageFAIL. r01 completed initialization evalNN reconstructed302 (296+shared6),not runtimecounter. Newremote20,816,004 inclfailure; sharedlocal6656once. One seed,no reproducibledual gain."
   ],
   "registered_at": "2026-10-18T10:26:27+00:00"
 }

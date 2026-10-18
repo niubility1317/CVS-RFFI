@@ -1,6 +1,6 @@
 # P65 总 E50 续训准备（只读核查，尚未晋级或启动）
 
-用户已授权对源域证据支持的好方案使用总 E50。当前 E30 四行健康运行；本记录不改变其科学条件，不依据正式成绩晋级，也不是新增门槛。只读核查 0 NN／IQ／checkpoint／更新／远端操作。
+用户已授权对源域证据支持的好方案使用总 E50。核查时 E30 四行健康运行；本记录不改变其科学条件，不依据正式成绩晋级，也不是新增门槛。只读核查 0 NN／IQ／checkpoint／更新／远端操作。
 
 可复用 `experiments/cvs_practical_budget50/source.py:15–33`（cvs_iq_timing_20261016 worktree）及本 worktree `experiments/cvs_satellite_budget62/source.py:15–33`，最终调用 `experiments/cvs_crossview_supcon41/source.py:63–163`。语义为严格加载本行 FINAL30 学生和自身 EMA，再重置 AdamW、cosine20、时序缓存；新增20轮/4440更新，累计50轮/11100更新，不恢复原optimizer/scaler/RNG轨迹。pure_game专用 xuc_fusion/resume 不适用。
 
@@ -15,3 +15,5 @@
 另已核对教师复制与成本实现：P43 Observer.initialize无encoder替换/闭包；full计数通过绑定MethodType写各clone自身整数，forward_identity_only调用self.id_backbone。临时特征hooks在finally移除。冻结bank手动计量；原EMA独立捕获counter offset，P65最终仅减一次extra学生再加frozen计数。未发现共享原student前向或双计数问题；未为此重复跑NN。
 
 本次没有实现E50、增加seed或启动实验。最终矩阵在源结果返回后按必要匹配对照固定。
+
+最终状态：r02全部四行E30及七环境评分已完成。主候选源域判定FAIL（clean超0.1pp损失且未优于同龄冻结As教师），本次路线关闭，未实现或启动E50、未扩种子。本页只保留接口复用知识，不是待执行实验。
