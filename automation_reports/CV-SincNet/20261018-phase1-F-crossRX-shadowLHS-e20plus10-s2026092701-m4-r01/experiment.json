@@ -513,7 +513,76 @@
       },
       "analysis_status": "COMPLETE",
       "result_ref": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/result.json",
-      "status": "ARTIFACTS_COMPLETE"
+      "status": "ANALYZED",
+      "result": {
+        "summary": {
+          "clean": {
+            "accuracy": 0.8526785714285714,
+            "macro_F1": 0.8499133456866792,
+            "correct": 143250,
+            "count": 168000,
+            "worst_RX_accuracy": 0.765125
+          },
+          "practical_high": {
+            "accuracy": 0.45632738095238096,
+            "macro_F1": 0.410573497648097,
+            "correct": 76663,
+            "count": 168000,
+            "worst_RX_accuracy": 0.39145833333333335
+          },
+          "practical_mid": {
+            "accuracy": 0.4383392857142857,
+            "macro_F1": 0.3985264592249114,
+            "correct": 73641,
+            "count": 168000,
+            "worst_RX_accuracy": 0.38108333333333333
+          },
+          "practical_low_suburban": {
+            "accuracy": 0.4183392857142857,
+            "macro_F1": 0.383902118285305,
+            "correct": 70281,
+            "count": 168000,
+            "worst_RX_accuracy": 0.3652916666666667
+          },
+          "practical_high_urban": {
+            "accuracy": 0.444,
+            "macro_F1": 0.4039791594182744,
+            "correct": 74592,
+            "count": 168000,
+            "worst_RX_accuracy": 0.38475
+          },
+          "practical_mid_urban": {
+            "accuracy": 0.3692916666666667,
+            "macro_F1": 0.34732452968670113,
+            "correct": 62041,
+            "count": 168000,
+            "worst_RX_accuracy": 0.3245416666666667
+          },
+          "practical_low_urban": {
+            "accuracy": 0.3140952380952381,
+            "macro_F1": 0.3020297368160894,
+            "correct": 52768,
+            "count": 168000,
+            "worst_RX_accuracy": 0.2811666666666667
+          }
+        },
+        "suburban_clean_gap_pp": {
+          "practical_high": 39.63511904761904,
+          "practical_mid": 41.43392857142857,
+          "practical_low_suburban": 43.433928571428574
+        },
+        "source_RX_holdout": null,
+        "IQ_points": 256,
+        "epochs_parent": 20,
+        "epochs_new": 10,
+        "epochs_cumulative": 30,
+        "updates_new": 2220,
+        "NN_training": 1703640,
+        "teacher_eval_NN": 567000,
+        "head_fit_updates": 0,
+        "truth_last": true,
+        "new_IQ_Ag": false
+      }
     },
     {
       "row_id": "AS_NATIVE-s2026092701",
@@ -887,7 +956,76 @@
       },
       "analysis_status": "COMPLETE",
       "result_ref": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/result.json",
-      "status": "RUNNING"
+      "status": "ANALYZED",
+      "result": {
+        "summary": {
+          "clean": {
+            "accuracy": 0.838125,
+            "macro_F1": 0.8343594048703039,
+            "correct": 140805,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7387916666666666
+          },
+          "practical_high": {
+            "accuracy": 0.8112916666666666,
+            "macro_F1": 0.8068401241217488,
+            "correct": 136297,
+            "count": 168000,
+            "worst_RX_accuracy": 0.717
+          },
+          "practical_mid": {
+            "accuracy": 0.7851309523809524,
+            "macro_F1": 0.7808500278852759,
+            "correct": 131902,
+            "count": 168000,
+            "worst_RX_accuracy": 0.6989583333333333
+          },
+          "practical_low_suburban": {
+            "accuracy": 0.7614880952380952,
+            "macro_F1": 0.7572644117292623,
+            "correct": 127930,
+            "count": 168000,
+            "worst_RX_accuracy": 0.682625
+          },
+          "practical_high_urban": {
+            "accuracy": 0.7747738095238095,
+            "macro_F1": 0.7703983168177992,
+            "correct": 130162,
+            "count": 168000,
+            "worst_RX_accuracy": 0.6869166666666666
+          },
+          "practical_mid_urban": {
+            "accuracy": 0.6309345238095239,
+            "macro_F1": 0.6263345029551926,
+            "correct": 105997,
+            "count": 168000,
+            "worst_RX_accuracy": 0.56425
+          },
+          "practical_low_urban": {
+            "accuracy": 0.5174940476190476,
+            "macro_F1": 0.5111346447385491,
+            "correct": 86939,
+            "count": 168000,
+            "worst_RX_accuracy": 0.47008333333333335
+          }
+        },
+        "suburban_clean_gap_pp": {
+          "practical_high": 2.6833333333333376,
+          "practical_mid": 5.299404761904758,
+          "practical_low_suburban": 7.663690476190476
+        },
+        "source_RX_holdout": null,
+        "IQ_points": 256,
+        "epochs_parent": 20,
+        "epochs_new": 10,
+        "epochs_cumulative": 30,
+        "updates_new": 2220,
+        "NN_training": 1703640,
+        "teacher_eval_NN": 567000,
+        "head_fit_updates": 0,
+        "truth_last": true,
+        "new_IQ_Ag": false
+      }
     },
     {
       "row_id": "AS_IID-s2026092701",
@@ -1267,7 +1405,76 @@
       },
       "analysis_status": "COMPLETE",
       "result_ref": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/result.json",
-      "status": "RUNNING"
+      "status": "ANALYZED",
+      "result": {
+        "summary": {
+          "clean": {
+            "accuracy": 0.8358809523809524,
+            "macro_F1": 0.8319312171210794,
+            "correct": 140428,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7279583333333334
+          },
+          "practical_high": {
+            "accuracy": 0.8101130952380953,
+            "macro_F1": 0.8055836115288786,
+            "correct": 136099,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7187083333333333
+          },
+          "practical_mid": {
+            "accuracy": 0.7840595238095238,
+            "macro_F1": 0.7797255315565464,
+            "correct": 131722,
+            "count": 168000,
+            "worst_RX_accuracy": 0.70075
+          },
+          "practical_low_suburban": {
+            "accuracy": 0.7602738095238095,
+            "macro_F1": 0.7560072545473325,
+            "correct": 127726,
+            "count": 168000,
+            "worst_RX_accuracy": 0.6839166666666666
+          },
+          "practical_high_urban": {
+            "accuracy": 0.7737559523809524,
+            "macro_F1": 0.7693172927082793,
+            "correct": 129991,
+            "count": 168000,
+            "worst_RX_accuracy": 0.6889583333333333
+          },
+          "practical_mid_urban": {
+            "accuracy": 0.6300654761904761,
+            "macro_F1": 0.6253185488965071,
+            "correct": 105851,
+            "count": 168000,
+            "worst_RX_accuracy": 0.5652916666666666
+          },
+          "practical_low_urban": {
+            "accuracy": 0.5171785714285714,
+            "macro_F1": 0.5106539095566176,
+            "correct": 86886,
+            "count": 168000,
+            "worst_RX_accuracy": 0.47
+          }
+        },
+        "suburban_clean_gap_pp": {
+          "practical_high": 2.576785714285712,
+          "practical_mid": 5.182142857142857,
+          "practical_low_suburban": 7.560714285714287
+        },
+        "source_RX_holdout": null,
+        "IQ_points": 256,
+        "epochs_parent": 20,
+        "epochs_new": 10,
+        "epochs_cumulative": 30,
+        "updates_new": 2220,
+        "NN_training": 1703640,
+        "teacher_eval_NN": 567000,
+        "head_fit_updates": 0,
+        "truth_last": true,
+        "new_IQ_Ag": false
+      }
     },
     {
       "row_id": "AS_LHS-s2026092701",
@@ -1647,7 +1854,76 @@
       },
       "analysis_status": "COMPLETE",
       "result_ref": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/result.json",
-      "status": "RUNNING"
+      "status": "ANALYZED",
+      "result": {
+        "summary": {
+          "clean": {
+            "accuracy": 0.8360892857142858,
+            "macro_F1": 0.8321218288609633,
+            "correct": 140463,
+            "count": 168000,
+            "worst_RX_accuracy": 0.72975
+          },
+          "practical_high": {
+            "accuracy": 0.8110833333333334,
+            "macro_F1": 0.8065522857695581,
+            "correct": 136262,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7185833333333334
+          },
+          "practical_mid": {
+            "accuracy": 0.7848035714285714,
+            "macro_F1": 0.78045283694527,
+            "correct": 131847,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7003333333333334
+          },
+          "practical_low_suburban": {
+            "accuracy": 0.7610595238095238,
+            "macro_F1": 0.7567191876745542,
+            "correct": 127858,
+            "count": 168000,
+            "worst_RX_accuracy": 0.6840416666666667
+          },
+          "practical_high_urban": {
+            "accuracy": 0.7743511904761905,
+            "macro_F1": 0.7698892711992399,
+            "correct": 130091,
+            "count": 168000,
+            "worst_RX_accuracy": 0.688375
+          },
+          "practical_mid_urban": {
+            "accuracy": 0.6304880952380952,
+            "macro_F1": 0.6257967565421694,
+            "correct": 105922,
+            "count": 168000,
+            "worst_RX_accuracy": 0.5649166666666666
+          },
+          "practical_low_urban": {
+            "accuracy": 0.5172678571428572,
+            "macro_F1": 0.510837257142843,
+            "correct": 86901,
+            "count": 168000,
+            "worst_RX_accuracy": 0.47029166666666666
+          }
+        },
+        "suburban_clean_gap_pp": {
+          "practical_high": 2.500595238095238,
+          "practical_mid": 5.128571428571438,
+          "practical_low_suburban": 7.502976190476196
+        },
+        "source_RX_holdout": null,
+        "IQ_points": 256,
+        "epochs_parent": 20,
+        "epochs_new": 10,
+        "epochs_cumulative": 30,
+        "updates_new": 2220,
+        "NN_training": 1703640,
+        "teacher_eval_NN": 567000,
+        "head_fit_updates": 0,
+        "truth_last": true,
+        "new_IQ_Ag": false
+      }
     }
   ],
   "notes": [
@@ -1671,5 +1947,16 @@
     "joint_goal_complete": false
   },
   "registered_at": "2026-10-18T00:17:27+00:00",
-  "status": "RUNNING"
+  "status": "ANALYZED",
+  "result": {
+    "source_decision": "CLOSED_FIXED_SHADOW_LHS_SOURCE_FAILED",
+    "source_pass": false,
+    "source_verdict_before_formal_numeric_read": true,
+    "all4_E30_default_head_sevenview_scored": true,
+    "LHS_vs_NATIVE_all7_accuracy_negative": true,
+    "new_Ag": false,
+    "joint_goal_complete": false,
+    "formal_decisions": 4704000,
+    "independent_recount": "VERIFIED"
+  }
 }

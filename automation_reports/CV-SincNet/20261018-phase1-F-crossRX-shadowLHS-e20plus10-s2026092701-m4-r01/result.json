@@ -1,0 +1,872 @@
+{
+  "status": "ANALYZED_VERIFIED",
+  "run_id": "20261018-phase1-F-crossRX-shadowLHS-e20plus10-s2026092701-m4-r01",
+  "source_decision": "CLOSED_FIXED_SHADOW_LHS_SOURCE_FAILED",
+  "source_conditions": {
+    "AS_NATIVE_clean": true,
+    "AS_NATIVE_midurban": false,
+    "AS_NATIVE_lowurban": false,
+    "AS_NATIVE_suburban": true,
+    "AS_IID_clean": true,
+    "AS_IID_midurban": false,
+    "AS_IID_lowurban": false,
+    "AS_IID_suburban": true,
+    "joint_clean": false
+  },
+  "source_comparisons": {
+    "AS_NATIVE": {
+      "delta_pp": {
+        "clean": 0,
+        "practical_high": -0.027777777777771018,
+        "practical_mid": 0.16666666666667052,
+        "practical_low_suburban": 0.05555555555555314,
+        "practical_high_urban": -0.08333333333333526,
+        "practical_mid_urban": -0.33333333333334103,
+        "practical_low_urban": 0.24999999999999467
+      },
+      "urban_draw_delta_pp": {
+        "practical_mid_urban": [
+          -0.4444444444444444,
+          -0.2222222222222222
+        ],
+        "practical_low_urban": [
+          0.4444444444444444,
+          0.05555555555555555
+        ]
+      },
+      "suburban_draw_delta_pp": {
+        "practical_high": [
+          -0.1111111111111111,
+          0.05555555555555555
+        ],
+        "practical_mid": [
+          0.05555555555555555,
+          0.2777777777777778
+        ],
+        "practical_low_suburban": [
+          0.05555555555555555,
+          0.05555555555555555
+        ]
+      }
+    },
+    "AS_IID": {
+      "delta_pp": {
+        "clean": 0,
+        "practical_high": -0.027777777777771018,
+        "practical_mid": -0.02777777777778212,
+        "practical_low_suburban": 0.05555555555555314,
+        "practical_high_urban": 0,
+        "practical_mid_urban": -0.02777777777778212,
+        "practical_low_urban": 0.3055555555555589
+      },
+      "urban_draw_delta_pp": {
+        "practical_mid_urban": [
+          -0.05555555555555555,
+          0
+        ],
+        "practical_low_urban": [
+          0.4444444444444444,
+          0.16666666666666666
+        ]
+      },
+      "suburban_draw_delta_pp": {
+        "practical_high": [
+          0,
+          -0.05555555555555555
+        ],
+        "practical_mid": [
+          -0.05555555555555555,
+          0
+        ],
+        "practical_low_suburban": [
+          0,
+          0.1111111111111111
+        ]
+      }
+    }
+  },
+  "summary": {
+    "NOAS": {
+      "clean": {
+        "accuracy": 0.8526785714285714,
+        "macro_F1": 0.8499133456866792,
+        "correct": 143250,
+        "count": 168000,
+        "worst_RX_accuracy": 0.765125
+      },
+      "practical_high": {
+        "accuracy": 0.45632738095238096,
+        "macro_F1": 0.410573497648097,
+        "correct": 76663,
+        "count": 168000,
+        "worst_RX_accuracy": 0.39145833333333335
+      },
+      "practical_mid": {
+        "accuracy": 0.4383392857142857,
+        "macro_F1": 0.3985264592249114,
+        "correct": 73641,
+        "count": 168000,
+        "worst_RX_accuracy": 0.38108333333333333
+      },
+      "practical_low_suburban": {
+        "accuracy": 0.4183392857142857,
+        "macro_F1": 0.383902118285305,
+        "correct": 70281,
+        "count": 168000,
+        "worst_RX_accuracy": 0.3652916666666667
+      },
+      "practical_high_urban": {
+        "accuracy": 0.444,
+        "macro_F1": 0.4039791594182744,
+        "correct": 74592,
+        "count": 168000,
+        "worst_RX_accuracy": 0.38475
+      },
+      "practical_mid_urban": {
+        "accuracy": 0.3692916666666667,
+        "macro_F1": 0.34732452968670113,
+        "correct": 62041,
+        "count": 168000,
+        "worst_RX_accuracy": 0.3245416666666667
+      },
+      "practical_low_urban": {
+        "accuracy": 0.3140952380952381,
+        "macro_F1": 0.3020297368160894,
+        "correct": 52768,
+        "count": 168000,
+        "worst_RX_accuracy": 0.2811666666666667
+      }
+    },
+    "AS_NATIVE": {
+      "clean": {
+        "accuracy": 0.838125,
+        "macro_F1": 0.8343594048703039,
+        "correct": 140805,
+        "count": 168000,
+        "worst_RX_accuracy": 0.7387916666666666
+      },
+      "practical_high": {
+        "accuracy": 0.8112916666666666,
+        "macro_F1": 0.8068401241217488,
+        "correct": 136297,
+        "count": 168000,
+        "worst_RX_accuracy": 0.717
+      },
+      "practical_mid": {
+        "accuracy": 0.7851309523809524,
+        "macro_F1": 0.7808500278852759,
+        "correct": 131902,
+        "count": 168000,
+        "worst_RX_accuracy": 0.6989583333333333
+      },
+      "practical_low_suburban": {
+        "accuracy": 0.7614880952380952,
+        "macro_F1": 0.7572644117292623,
+        "correct": 127930,
+        "count": 168000,
+        "worst_RX_accuracy": 0.682625
+      },
+      "practical_high_urban": {
+        "accuracy": 0.7747738095238095,
+        "macro_F1": 0.7703983168177992,
+        "correct": 130162,
+        "count": 168000,
+        "worst_RX_accuracy": 0.6869166666666666
+      },
+      "practical_mid_urban": {
+        "accuracy": 0.6309345238095239,
+        "macro_F1": 0.6263345029551926,
+        "correct": 105997,
+        "count": 168000,
+        "worst_RX_accuracy": 0.56425
+      },
+      "practical_low_urban": {
+        "accuracy": 0.5174940476190476,
+        "macro_F1": 0.5111346447385491,
+        "correct": 86939,
+        "count": 168000,
+        "worst_RX_accuracy": 0.47008333333333335
+      }
+    },
+    "AS_IID": {
+      "clean": {
+        "accuracy": 0.8358809523809524,
+        "macro_F1": 0.8319312171210794,
+        "correct": 140428,
+        "count": 168000,
+        "worst_RX_accuracy": 0.7279583333333334
+      },
+      "practical_high": {
+        "accuracy": 0.8101130952380953,
+        "macro_F1": 0.8055836115288786,
+        "correct": 136099,
+        "count": 168000,
+        "worst_RX_accuracy": 0.7187083333333333
+      },
+      "practical_mid": {
+        "accuracy": 0.7840595238095238,
+        "macro_F1": 0.7797255315565464,
+        "correct": 131722,
+        "count": 168000,
+        "worst_RX_accuracy": 0.70075
+      },
+      "practical_low_suburban": {
+        "accuracy": 0.7602738095238095,
+        "macro_F1": 0.7560072545473325,
+        "correct": 127726,
+        "count": 168000,
+        "worst_RX_accuracy": 0.6839166666666666
+      },
+      "practical_high_urban": {
+        "accuracy": 0.7737559523809524,
+        "macro_F1": 0.7693172927082793,
+        "correct": 129991,
+        "count": 168000,
+        "worst_RX_accuracy": 0.6889583333333333
+      },
+      "practical_mid_urban": {
+        "accuracy": 0.6300654761904761,
+        "macro_F1": 0.6253185488965071,
+        "correct": 105851,
+        "count": 168000,
+        "worst_RX_accuracy": 0.5652916666666666
+      },
+      "practical_low_urban": {
+        "accuracy": 0.5171785714285714,
+        "macro_F1": 0.5106539095566176,
+        "correct": 86886,
+        "count": 168000,
+        "worst_RX_accuracy": 0.47
+      }
+    },
+    "AS_LHS": {
+      "clean": {
+        "accuracy": 0.8360892857142858,
+        "macro_F1": 0.8321218288609633,
+        "correct": 140463,
+        "count": 168000,
+        "worst_RX_accuracy": 0.72975
+      },
+      "practical_high": {
+        "accuracy": 0.8110833333333334,
+        "macro_F1": 0.8065522857695581,
+        "correct": 136262,
+        "count": 168000,
+        "worst_RX_accuracy": 0.7185833333333334
+      },
+      "practical_mid": {
+        "accuracy": 0.7848035714285714,
+        "macro_F1": 0.78045283694527,
+        "correct": 131847,
+        "count": 168000,
+        "worst_RX_accuracy": 0.7003333333333334
+      },
+      "practical_low_suburban": {
+        "accuracy": 0.7610595238095238,
+        "macro_F1": 0.7567191876745542,
+        "correct": 127858,
+        "count": 168000,
+        "worst_RX_accuracy": 0.6840416666666667
+      },
+      "practical_high_urban": {
+        "accuracy": 0.7743511904761905,
+        "macro_F1": 0.7698892711992399,
+        "correct": 130091,
+        "count": 168000,
+        "worst_RX_accuracy": 0.688375
+      },
+      "practical_mid_urban": {
+        "accuracy": 0.6304880952380952,
+        "macro_F1": 0.6257967565421694,
+        "correct": 105922,
+        "count": 168000,
+        "worst_RX_accuracy": 0.5649166666666666
+      },
+      "practical_low_urban": {
+        "accuracy": 0.5172678571428572,
+        "macro_F1": 0.510837257142843,
+        "correct": 86901,
+        "count": 168000,
+        "worst_RX_accuracy": 0.47029166666666666
+      }
+    }
+  },
+  "paired": {
+    "AS_NATIVE__NOAS": {
+      "clean": {
+        "repairs": 2378,
+        "new_errors": 4823,
+        "delta_accuracy_pp": -1.4553571428571428,
+        "joint_clean_and_scene_delta_pp": -1.4553571428571428,
+        "shared_clean_count": 138427,
+        "repairs_when_both_clean_correct": 0,
+        "new_errors_when_both_clean_correct": 0
+      },
+      "practical_high": {
+        "repairs": 63147,
+        "new_errors": 3513,
+        "delta_accuracy_pp": 35.496428571428574,
+        "joint_clean_and_scene_delta_pp": 33.42916666666667,
+        "shared_clean_count": 138427,
+        "repairs_when_both_clean_correct": 57910,
+        "new_errors_when_both_clean_correct": 1775
+      },
+      "practical_mid": {
+        "repairs": 62335,
+        "new_errors": 4074,
+        "delta_accuracy_pp": 34.67916666666667,
+        "joint_clean_and_scene_delta_pp": 32.53154761904762,
+        "shared_clean_count": 138427,
+        "repairs_when_both_clean_correct": 57043,
+        "new_errors_when_both_clean_correct": 2387
+      },
+      "practical_low_suburban": {
+        "repairs": 61964,
+        "new_errors": 4315,
+        "delta_accuracy_pp": 34.31488095238095,
+        "joint_clean_and_scene_delta_pp": 32.054761904761904,
+        "shared_clean_count": 138427,
+        "repairs_when_both_clean_correct": 56580,
+        "new_errors_when_both_clean_correct": 2709
+      },
+      "practical_high_urban": {
+        "repairs": 59889,
+        "new_errors": 4319,
+        "delta_accuracy_pp": 33.07738095238095,
+        "joint_clean_and_scene_delta_pp": 31.151190476190475,
+        "shared_clean_count": 138427,
+        "repairs_when_both_clean_correct": 54891,
+        "new_errors_when_both_clean_correct": 2580
+      },
+      "practical_mid_urban": {
+        "repairs": 50619,
+        "new_errors": 6663,
+        "delta_accuracy_pp": 26.164285714285715,
+        "joint_clean_and_scene_delta_pp": 24.22738095238095,
+        "shared_clean_count": 138427,
+        "repairs_when_both_clean_correct": 45829,
+        "new_errors_when_both_clean_correct": 5135
+      },
+      "practical_low_urban": {
+        "repairs": 42668,
+        "new_errors": 8497,
+        "delta_accuracy_pp": 20.339880952380952,
+        "joint_clean_and_scene_delta_pp": 18.582738095238096,
+        "shared_clean_count": 138427,
+        "repairs_when_both_clean_correct": 38280,
+        "new_errors_when_both_clean_correct": 6920
+      }
+    },
+    "AS_IID__AS_NATIVE": {
+      "clean": {
+        "repairs": 245,
+        "new_errors": 622,
+        "delta_accuracy_pp": -0.2244047619047619,
+        "joint_clean_and_scene_delta_pp": -0.2244047619047619,
+        "shared_clean_count": 140183,
+        "repairs_when_both_clean_correct": 0,
+        "new_errors_when_both_clean_correct": 0
+      },
+      "practical_high": {
+        "repairs": 416,
+        "new_errors": 614,
+        "delta_accuracy_pp": -0.11785714285714285,
+        "joint_clean_and_scene_delta_pp": -0.11666666666666667,
+        "shared_clean_count": 140183,
+        "repairs_when_both_clean_correct": 302,
+        "new_errors_when_both_clean_correct": 427
+      },
+      "practical_mid": {
+        "repairs": 481,
+        "new_errors": 661,
+        "delta_accuracy_pp": -0.10714285714285714,
+        "joint_clean_and_scene_delta_pp": -0.12261904761904761,
+        "shared_clean_count": 140183,
+        "repairs_when_both_clean_correct": 372,
+        "new_errors_when_both_clean_correct": 470
+      },
+      "practical_low_suburban": {
+        "repairs": 527,
+        "new_errors": 731,
+        "delta_accuracy_pp": -0.12142857142857143,
+        "joint_clean_and_scene_delta_pp": -0.15476190476190477,
+        "shared_clean_count": 140183,
+        "repairs_when_both_clean_correct": 396,
+        "new_errors_when_both_clean_correct": 550
+      },
+      "practical_high_urban": {
+        "repairs": 474,
+        "new_errors": 645,
+        "delta_accuracy_pp": -0.10178571428571428,
+        "joint_clean_and_scene_delta_pp": -0.1255952380952381,
+        "shared_clean_count": 140183,
+        "repairs_when_both_clean_correct": 341,
+        "new_errors_when_both_clean_correct": 467
+      },
+      "practical_mid_urban": {
+        "repairs": 731,
+        "new_errors": 877,
+        "delta_accuracy_pp": -0.0869047619047619,
+        "joint_clean_and_scene_delta_pp": -0.11547619047619048,
+        "shared_clean_count": 140183,
+        "repairs_when_both_clean_correct": 580,
+        "new_errors_when_both_clean_correct": 681
+      },
+      "practical_low_urban": {
+        "repairs": 952,
+        "new_errors": 1005,
+        "delta_accuracy_pp": -0.03154761904761905,
+        "joint_clean_and_scene_delta_pp": -0.044642857142857144,
+        "shared_clean_count": 140183,
+        "repairs_when_both_clean_correct": 777,
+        "new_errors_when_both_clean_correct": 788
+      }
+    },
+    "AS_LHS__AS_NATIVE": {
+      "clean": {
+        "repairs": 279,
+        "new_errors": 621,
+        "delta_accuracy_pp": -0.20357142857142857,
+        "joint_clean_and_scene_delta_pp": -0.20357142857142857,
+        "shared_clean_count": 140184,
+        "repairs_when_both_clean_correct": 0,
+        "new_errors_when_both_clean_correct": 0
+      },
+      "practical_high": {
+        "repairs": 448,
+        "new_errors": 483,
+        "delta_accuracy_pp": -0.020833333333333332,
+        "joint_clean_and_scene_delta_pp": -0.030357142857142857,
+        "shared_clean_count": 140184,
+        "repairs_when_both_clean_correct": 318,
+        "new_errors_when_both_clean_correct": 332
+      },
+      "practical_mid": {
+        "repairs": 491,
+        "new_errors": 546,
+        "delta_accuracy_pp": -0.03273809523809524,
+        "joint_clean_and_scene_delta_pp": -0.05654761904761905,
+        "shared_clean_count": 140184,
+        "repairs_when_both_clean_correct": 353,
+        "new_errors_when_both_clean_correct": 385
+      },
+      "practical_low_suburban": {
+        "repairs": 538,
+        "new_errors": 610,
+        "delta_accuracy_pp": -0.04285714285714286,
+        "joint_clean_and_scene_delta_pp": -0.0625,
+        "shared_clean_count": 140184,
+        "repairs_when_both_clean_correct": 407,
+        "new_errors_when_both_clean_correct": 452
+      },
+      "practical_high_urban": {
+        "repairs": 490,
+        "new_errors": 561,
+        "delta_accuracy_pp": -0.042261904761904764,
+        "joint_clean_and_scene_delta_pp": -0.04642857142857143,
+        "shared_clean_count": 140184,
+        "repairs_when_both_clean_correct": 352,
+        "new_errors_when_both_clean_correct": 397
+      },
+      "practical_mid_urban": {
+        "repairs": 710,
+        "new_errors": 785,
+        "delta_accuracy_pp": -0.044642857142857144,
+        "joint_clean_and_scene_delta_pp": -0.08333333333333333,
+        "shared_clean_count": 140184,
+        "repairs_when_both_clean_correct": 555,
+        "new_errors_when_both_clean_correct": 630
+      },
+      "practical_low_urban": {
+        "repairs": 886,
+        "new_errors": 924,
+        "delta_accuracy_pp": -0.02261904761904762,
+        "joint_clean_and_scene_delta_pp": -0.06130952380952381,
+        "shared_clean_count": 140184,
+        "repairs_when_both_clean_correct": 704,
+        "new_errors_when_both_clean_correct": 743
+      }
+    },
+    "AS_LHS__AS_IID": {
+      "clean": {
+        "repairs": 241,
+        "new_errors": 206,
+        "delta_accuracy_pp": 0.020833333333333332,
+        "joint_clean_and_scene_delta_pp": 0.020833333333333332,
+        "shared_clean_count": 140222,
+        "repairs_when_both_clean_correct": 0,
+        "new_errors_when_both_clean_correct": 0
+      },
+      "practical_high": {
+        "repairs": 394,
+        "new_errors": 231,
+        "delta_accuracy_pp": 0.09702380952380953,
+        "joint_clean_and_scene_delta_pp": 0.08630952380952381,
+        "shared_clean_count": 140222,
+        "repairs_when_both_clean_correct": 268,
+        "new_errors_when_both_clean_correct": 157
+      },
+      "practical_mid": {
+        "repairs": 426,
+        "new_errors": 301,
+        "delta_accuracy_pp": 0.0744047619047619,
+        "joint_clean_and_scene_delta_pp": 0.06607142857142857,
+        "shared_clean_count": 140222,
+        "repairs_when_both_clean_correct": 300,
+        "new_errors_when_both_clean_correct": 233
+      },
+      "practical_low_suburban": {
+        "repairs": 420,
+        "new_errors": 288,
+        "delta_accuracy_pp": 0.07857142857142857,
+        "joint_clean_and_scene_delta_pp": 0.09226190476190477,
+        "shared_clean_count": 140222,
+        "repairs_when_both_clean_correct": 315,
+        "new_errors_when_both_clean_correct": 208
+      },
+      "practical_high_urban": {
+        "repairs": 377,
+        "new_errors": 277,
+        "delta_accuracy_pp": 0.05952380952380952,
+        "joint_clean_and_scene_delta_pp": 0.07916666666666666,
+        "shared_clean_count": 140222,
+        "repairs_when_both_clean_correct": 278,
+        "new_errors_when_both_clean_correct": 197
+      },
+      "practical_mid_urban": {
+        "repairs": 525,
+        "new_errors": 454,
+        "delta_accuracy_pp": 0.042261904761904764,
+        "joint_clean_and_scene_delta_pp": 0.03214285714285714,
+        "shared_clean_count": 140222,
+        "repairs_when_both_clean_correct": 396,
+        "new_errors_when_both_clean_correct": 370
+      },
+      "practical_low_urban": {
+        "repairs": 605,
+        "new_errors": 590,
+        "delta_accuracy_pp": 0.008928571428571428,
+        "joint_clean_and_scene_delta_pp": -0.016666666666666666,
+        "shared_clean_count": 140222,
+        "repairs_when_both_clean_correct": 482,
+        "new_errors_when_both_clean_correct": 513
+      }
+    },
+    "AS_LHS__NOAS": {
+      "clean": {
+        "repairs": 2273,
+        "new_errors": 5060,
+        "delta_accuracy_pp": -1.6589285714285715,
+        "joint_clean_and_scene_delta_pp": -1.6589285714285715,
+        "shared_clean_count": 138190,
+        "repairs_when_both_clean_correct": 0,
+        "new_errors_when_both_clean_correct": 0
+      },
+      "practical_high": {
+        "repairs": 63096,
+        "new_errors": 3497,
+        "delta_accuracy_pp": 35.47559523809524,
+        "joint_clean_and_scene_delta_pp": 33.398809523809526,
+        "shared_clean_count": 138190,
+        "repairs_when_both_clean_correct": 57847,
+        "new_errors_when_both_clean_correct": 1749
+      },
+      "practical_mid": {
+        "repairs": 62259,
+        "new_errors": 4053,
+        "delta_accuracy_pp": 34.64642857142857,
+        "joint_clean_and_scene_delta_pp": 32.475,
+        "shared_clean_count": 138190,
+        "repairs_when_both_clean_correct": 56938,
+        "new_errors_when_both_clean_correct": 2367
+      },
+      "practical_low_suburban": {
+        "repairs": 61900,
+        "new_errors": 4323,
+        "delta_accuracy_pp": 34.27202380952381,
+        "joint_clean_and_scene_delta_pp": 31.992261904761904,
+        "shared_clean_count": 138190,
+        "repairs_when_both_clean_correct": 56492,
+        "new_errors_when_both_clean_correct": 2698
+      },
+      "practical_high_urban": {
+        "repairs": 59795,
+        "new_errors": 4296,
+        "delta_accuracy_pp": 33.03511904761905,
+        "joint_clean_and_scene_delta_pp": 31.104761904761904,
+        "shared_clean_count": 138190,
+        "repairs_when_both_clean_correct": 54806,
+        "new_errors_when_both_clean_correct": 2566
+      },
+      "practical_mid_urban": {
+        "repairs": 50568,
+        "new_errors": 6687,
+        "delta_accuracy_pp": 26.119642857142857,
+        "joint_clean_and_scene_delta_pp": 24.14404761904762,
+        "shared_clean_count": 138190,
+        "repairs_when_both_clean_correct": 45737,
+        "new_errors_when_both_clean_correct": 5164
+      },
+      "practical_low_urban": {
+        "repairs": 42628,
+        "new_errors": 8495,
+        "delta_accuracy_pp": 20.317261904761907,
+        "joint_clean_and_scene_delta_pp": 18.521428571428572,
+        "shared_clean_count": 138190,
+        "repairs_when_both_clean_correct": 38218,
+        "new_errors_when_both_clean_correct": 6919
+      }
+    }
+  },
+  "suburban_gaps_pp": {
+    "NOAS": {
+      "practical_high": 39.63511904761904,
+      "practical_mid": 41.43392857142857,
+      "practical_low_suburban": 43.433928571428574
+    },
+    "AS_NATIVE": {
+      "practical_high": 2.6833333333333376,
+      "practical_mid": 5.299404761904758,
+      "practical_low_suburban": 7.663690476190476
+    },
+    "AS_IID": {
+      "practical_high": 2.576785714285712,
+      "practical_mid": 5.182142857142857,
+      "practical_low_suburban": 7.560714285714287
+    },
+    "AS_LHS": {
+      "practical_high": 2.500595238095238,
+      "practical_mid": 5.128571428571438,
+      "practical_low_suburban": 7.502976190476196
+    }
+  },
+  "cost": {
+    "NOAS": {
+      "training": {
+        "actual_steps": 2220,
+        "parent_steps": 4440,
+        "cumulative_steps": 6660,
+        "parent_epochs": 20,
+        "new_epochs": 10,
+        "cumulative_epochs": 30,
+        "L_forward_packets": 1136640,
+        "student_train_forward_packets": 1703640,
+        "student_eval_forward_packets": 324002,
+        "teacher_train_forward_packets": 0,
+        "teacher_eval_forward_packets": 567000,
+        "SupCon_applied": 2220,
+        "SupCon_layer_forward_terms": 8880,
+        "As_training_observations": 0,
+        "Ag_training_observations": 0,
+        "source_RX_holdout": null,
+        "head_fit_updates": 0,
+        "U_truth_read": false,
+        "target_access": false,
+        "elapsed_seconds": 754.3127052783966,
+        "optimizer_reset": true,
+        "own_parent_EMA_restored": true,
+        "one_shared_NoAs20_parent": true,
+        "new_IQ_Ag": false
+      },
+      "additional_VJP_calls": 0,
+      "prediction_NN": 1176002,
+      "prediction_wall_seconds": 53.14180606394075,
+      "scorer_CPU_wall_seconds": 3.2641762760467827,
+      "source_qualification": {
+        "CP": 1,
+        "NN": 23400,
+        "physical_channel_calls": 21600,
+        "cache_loads": 1,
+        "wall_seconds": 37.150698500918224
+      },
+      "new_real_NN": 3794044
+    },
+    "AS_NATIVE": {
+      "training": {
+        "actual_steps": 2220,
+        "parent_steps": 4440,
+        "cumulative_steps": 6660,
+        "parent_epochs": 20,
+        "new_epochs": 10,
+        "cumulative_epochs": 30,
+        "L_forward_packets": 1136640,
+        "student_train_forward_packets": 1703640,
+        "student_eval_forward_packets": 324002,
+        "teacher_train_forward_packets": 0,
+        "teacher_eval_forward_packets": 567000,
+        "SupCon_applied": 2220,
+        "SupCon_layer_forward_terms": 8880,
+        "As_training_observations": 284160,
+        "Ag_training_observations": 0,
+        "source_RX_holdout": null,
+        "head_fit_updates": 0,
+        "U_truth_read": false,
+        "target_access": false,
+        "elapsed_seconds": 1259.1421971321106,
+        "optimizer_reset": true,
+        "own_parent_EMA_restored": true,
+        "one_shared_NoAs20_parent": true,
+        "new_IQ_Ag": false
+      },
+      "additional_VJP_calls": 0,
+      "prediction_NN": 1176002,
+      "prediction_wall_seconds": 43.57315552094951,
+      "scorer_CPU_wall_seconds": 3.2609052408952266,
+      "source_qualification": {
+        "CP": 1,
+        "NN": 23400,
+        "physical_channel_calls": 21600,
+        "cache_loads": 1,
+        "wall_seconds": 34.423807671060786
+      },
+      "new_real_NN": 3794044
+    },
+    "AS_IID": {
+      "training": {
+        "actual_steps": 2220,
+        "parent_steps": 4440,
+        "cumulative_steps": 6660,
+        "parent_epochs": 20,
+        "new_epochs": 10,
+        "cumulative_epochs": 30,
+        "L_forward_packets": 1136640,
+        "student_train_forward_packets": 1703640,
+        "student_eval_forward_packets": 324002,
+        "teacher_train_forward_packets": 0,
+        "teacher_eval_forward_packets": 567000,
+        "SupCon_applied": 2220,
+        "SupCon_layer_forward_terms": 8880,
+        "As_training_observations": 284160,
+        "Ag_training_observations": 0,
+        "source_RX_holdout": null,
+        "head_fit_updates": 0,
+        "U_truth_read": false,
+        "target_access": false,
+        "elapsed_seconds": 1227.2419102191925,
+        "optimizer_reset": true,
+        "own_parent_EMA_restored": true,
+        "one_shared_NoAs20_parent": true,
+        "new_IQ_Ag": false
+      },
+      "additional_VJP_calls": 0,
+      "prediction_NN": 1176002,
+      "prediction_wall_seconds": 42.80919719301164,
+      "scorer_CPU_wall_seconds": 3.3628107679542154,
+      "source_qualification": {
+        "CP": 1,
+        "NN": 23400,
+        "physical_channel_calls": 21600,
+        "cache_loads": 1,
+        "wall_seconds": 33.56373751303181
+      },
+      "new_real_NN": 3794044
+    },
+    "AS_LHS": {
+      "training": {
+        "actual_steps": 2220,
+        "parent_steps": 4440,
+        "cumulative_steps": 6660,
+        "parent_epochs": 20,
+        "new_epochs": 10,
+        "cumulative_epochs": 30,
+        "L_forward_packets": 1136640,
+        "student_train_forward_packets": 1703640,
+        "student_eval_forward_packets": 324002,
+        "teacher_train_forward_packets": 0,
+        "teacher_eval_forward_packets": 567000,
+        "SupCon_applied": 2220,
+        "SupCon_layer_forward_terms": 8880,
+        "As_training_observations": 284160,
+        "Ag_training_observations": 0,
+        "source_RX_holdout": null,
+        "head_fit_updates": 0,
+        "U_truth_read": false,
+        "target_access": false,
+        "elapsed_seconds": 1235.2327947616577,
+        "optimizer_reset": true,
+        "own_parent_EMA_restored": true,
+        "one_shared_NoAs20_parent": true,
+        "new_IQ_Ag": false
+      },
+      "additional_VJP_calls": 0,
+      "prediction_NN": 1176002,
+      "prediction_wall_seconds": 43.22014645393938,
+      "scorer_CPU_wall_seconds": 3.2482520930934697,
+      "source_qualification": {
+        "CP": 1,
+        "NN": 23400,
+        "physical_channel_calls": 21600,
+        "cache_loads": 1,
+        "wall_seconds": 33.76341214380227
+      },
+      "new_real_NN": 3794044
+    }
+  },
+  "parent_cost": {
+    "REPEAT": {
+      "epochs": 20,
+      "updates": 4440,
+      "NN": {
+        "student_train_forward_packets": 2670180,
+        "student_eval_forward_packets": 594002,
+        "teacher_train_forward_packets": 0,
+        "teacher_eval_forward_packets": 396900
+      },
+      "NN_total": 3661082
+    }
+  },
+  "actual_total_cost": {
+    "unique_parent_model_epochs": 20,
+    "new_model_epochs": 40,
+    "unique_total_model_epochs": 60,
+    "cumulative_epochs_each": 30,
+    "unique_parent_updates": 4440,
+    "new_updates": 8880,
+    "unique_total_updates": 13320,
+    "extra_VJP_calls": 0,
+    "new_training_qualification_prediction_NN": 15176176,
+    "real_parent_checkpoint_smoke_NN": 2,
+    "local_checks_model_NN": 0,
+    "remote_synthetic_checks_model_NN": 0,
+    "unique_parent_training_NN": 3661082,
+    "As_training_observations": 852480,
+    "analysis_IQ": 0,
+    "analysis_CP": 0,
+    "analysis_NN": 0,
+    "analysis_updates": 0,
+    "new_actual_NN": 15176178,
+    "actual_NN_including_unique_parent": 18837260,
+    "source_qualification_physical_observations": 86400,
+    "remote_synthetic_physical_channel_calls": 670,
+    "local_synthetic_physical_channel_calls": 858
+  },
+  "target_requirements": {
+    "clean_net_positive": false,
+    "lowurban_above60": false,
+    "each_suburban_gap_at_most2pp": false,
+    "source_qualified": false,
+    "new_IQ_Ag_proved": false,
+    "cross_seed_proved": false,
+    "joint_goal_complete": false
+  },
+  "CM_recounts": 504,
+  "partition_recounts": 84,
+  "paired_comparisons": 35,
+  "max_metric_error": 0,
+  "new_Ag": false,
+  "Ag_As_interaction": "NOT_DEFINED_NO_NEW_AG",
+  "single_seed_only": true,
+  "joint_goal_complete": false,
+  "target_feedback": false,
+  "execution_commit": "0a9e6541efc3a806cf3dc20e08b4c4ec9dc22ba3",
+  "recount_commit": "d7b047a5ce8189c6b86ce8d0cf6a11eb83095b30",
+  "report_commit": "e1a4cb561dc682c04e754f5a0019b1d701521538",
+  "model_seed": 2026092701,
+  "split_id": 392005,
+  "source_RX_holdout": null,
+  "IQ_points": 256,
+  "all_seven_LHS_vs_NATIVE_accuracy_deltas_negative": true,
+  "fixed_recipe_closed": true,
+  "automatic_seed_expansion": false,
+  "closure": "Fixed independentLooShadow-only/conditional(scene,state)LHS/128Lbatch/commonNoAs20parent/seed2026092701/cumulativeE30 closed by frozen sourcecriteria beforeformalnumericread;no variable/group/bin/seed/parent/budget rescue"
+}

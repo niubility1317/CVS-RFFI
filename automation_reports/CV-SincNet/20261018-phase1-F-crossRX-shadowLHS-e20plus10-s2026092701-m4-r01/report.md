@@ -1,6 +1,8 @@
 # 完整 practical 的阴影初值分层抽样：匹配四行 E30
 
-状态：RUNNING。四行均已开始实际更新，未完成训练或取得识别增益。
+状态：ANALYZED／VERIFIED。四行E30及七视图独立评分全部完成；源固定判据失败，AS_LHS相对原As七视图accuracy均下降，固定路线关闭，完整联合目标未达成。
+
+最终结果见 [完整同row分析](final_analysis.md)、[全部成本与配对](result.json)、[独立完成核实](completion_verification.json)。以下原预登记与中途快照保留为历史，不表示任务仍在运行。
 
 ## 唯一假设和依据
 
