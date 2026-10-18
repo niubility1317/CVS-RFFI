@@ -1,0 +1,97 @@
+{
+  "status": "SOURCE_READOUT_DECIDED",
+  "source_qualified": false,
+  "candidate": "AS_PROBMEAN_CE",
+  "rows": {
+    "NOAS30": {
+      "fullV_clean": 0.9835925925925926,
+      "source_accuracies": [
+        [
+          0.5,
+          0.42944444444444446,
+          0.3566666666666667
+        ],
+        [
+          0.49722222222222223,
+          0.44166666666666665,
+          0.35555555555555557
+        ]
+      ],
+      "midlow": 0.39583333333333337,
+      "low": 0.35611111111111116
+    },
+    "AS30": {
+      "fullV_clean": 0.9825555555555555,
+      "source_accuracies": [
+        [
+          0.8811111111111111,
+          0.7255555555555555,
+          0.6011111111111112
+        ],
+        [
+          0.8922222222222222,
+          0.7305555555555555,
+          0.5805555555555556
+        ]
+      ],
+      "midlow": 0.6594444444444445,
+      "low": 0.5908333333333333
+    },
+    "AS_MEAN_CE": {
+      "fullV_clean": 0.9824074074074074,
+      "source_accuracies": [
+        [
+          0.88,
+          0.7266666666666667,
+          0.5994444444444444
+        ],
+        [
+          0.8933333333333333,
+          0.7311111111111112,
+          0.5805555555555556
+        ]
+      ],
+      "midlow": 0.6594444444444445,
+      "low": 0.5900000000000001
+    },
+    "AS_PROBMEAN_CE": {
+      "fullV_clean": 0.9826296296296296,
+      "source_accuracies": [
+        [
+          0.8822222222222222,
+          0.7244444444444444,
+          0.6005555555555555
+        ],
+        [
+          0.8933333333333333,
+          0.7311111111111112,
+          0.5816666666666667
+        ]
+      ],
+      "midlow": 0.6594444444444444,
+      "low": 0.5911111111111111
+    }
+  },
+  "effects": {
+    "fullV_clean_probmean_vs_NoAs_pp": -0.09629629629629433,
+    "fullV_clean_probmean_vs_mean_pp": 0.022222222222223476,
+    "pooled_midlow_probmean_vs_mean_pp": -1.1102230246251565e-14,
+    "low_probmean_vs_mean_pp": 0.11111111111110628,
+    "pooled_midlow_mean_vs_originalAs30_pp": 0
+  },
+  "checks": {
+    "clean_within_NoAs_0p1pp": true,
+    "midlow_vs_mean_at_least_0p5pp": false
+  },
+  "formal_scores_read": false,
+  "target_scores_read": false,
+  "formal_evaluation_always_required": true,
+  "target_feedback": false,
+  "model_seed_count": 1,
+  "NN": 0,
+  "E50_total_allowed_only_after_source_PASS": true,
+  "E50_requires_same_budget_controls": true,
+  "no_automatic_seed_extension": true,
+  "As_CE_aggregation_only": true,
+  "Dropout_KL_unchanged": true
+}
