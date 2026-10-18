@@ -1,0 +1,171 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-diagnostic-FcrossRX-ASCE20cohort-sourceV-s2026092701-m1-r01",
+  "group_id": "phase1-fixed-ASCE20-actual-parent-cohort",
+  "display_name": "实际 AS_CE20 父模型的源域正确集合读出",
+  "description": "Read-only exact AS_CE20 student/default-head on existing V1800 two-draw source cache;12602NN,no training/no target,no role change. Mechanism-only supplement toP68,never promotion or new gate.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [
+    "P68 actual parent cohort"
+  ],
+  "tags": [
+    "Phase1",
+    "F",
+    "fullsource",
+    "default-head",
+    "source-only",
+    "parent-cohort",
+    "single-seed"
+  ],
+  "comparison_group_id": "phase1-FcrossRX-same-parent-ASCE20-view-allocation",
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Original task explicitly requests frozen actual-parent clean-correct satellite retention and source-only diagnostics; keep current E30 healthy training unchanged. No U truth/target access or new training.",
+  "code": {
+    "commit": null,
+    "checkout": "codex/phase1-urban-sigtime-20261014",
+    "environment": "Existing ordinary N607 Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5; pinned P43 runtime; full FP32/CENTER_UNITS; CPU2",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_ASCE20_cohort_sourceV_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Unchanged original7/63/30 source physical roles; existing VALIDATED_ONCE fixed formal IQ",
+    "representation": "equalized1/native perpacketRMS center=false;float32 Bx2x256/fs25MHz;full residual/post_sync/EQoffG1/ref30/reflect;As fromraw,no extra ordinary PA/noise beforeAs;trainingfc2.462GHz/fixedformal2.45GHz unchanged",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "Same original6TX map;no new or U truth",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      "fixedmanifest7unseenRX;nevertrain"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original6registeredTX;formalmanifest classmappingunchanged",
+    "roles": {
+      "L_s": "6300 parent training only,not readout training",
+      "U_s": "56700 TX hidden;not iterated or supervised",
+      "V": "existing fixed1800 source panel of27000,read-only"
+    },
+    "train_ratio": "7/63/30 wholepool;10% labeled trainingpool;noheldRX/Ldev",
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "ExistingPhase1 source handles and fixedformalmanifest;Phase2 p2capsule/splitN/A",
+    "support_query_ref": "Source-only no target/support/query",
+    "leo_config_ref": "Existing P68 PANEL observations index0 full practical;0 new physicalchannelcalls"
+  },
+  "permissions": {
+    "regime": "source_only_frozen_parent_readout",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Actual SAT18 AS_CE20 defaulthead clean-correct subset retention only;no generalization proof,model selection,head fitting,or formal accuracy"
+  },
+  "checkpoint": {
+    "initialization": "Read-only exact AS_CE20 cp model;not teacher/EMA forward or student continuation",
+    "sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01/AS_CE-s2026092701/stage20/final_ssdg.pth"
+    ],
+    "contract_check_ref": "SAT18 stage20 completion/initialization/source_frozen/source_contract/actual_native_args/EMA/optimizer/result and full training-log audit; full original source roles EXACT_MATCH/source-only/final_only/4440; previous verification reused.",
+    "provenance_verdict": "VERIFIED_SOURCE_ONLY_ASCE20; one actual checkpoint no-query smoke is launcher first step, no source revalidation.",
+    "selection_rule": "Pre-existing fixed scratch20/final_only4440;never chosen or changed by this readout"
+  },
+  "execution": {
+    "host": "N607 ordinary nonprivileged account",
+    "launch_owner": "codex/root/ASCE20-source-cohort68",
+    "gpu_policy": "GPU1 if free>=12000MB,total processes<=2 includingothers;P68 GPU0 untouched",
+    "remote_run_root": "PROJECT/runs/20261018-diagnostic-FcrossRX-ASCE20cohort-sourceV-s2026092701-m1-r01",
+    "remote_log_root": "PROJECT/runs/20261018-diagnostic-FcrossRX-ASCE20cohort-sourceV-s2026092701-m1-r01.launch.log",
+    "local_artifact_root": "local_artifacts/cvs_FcrossRX_ASCE20_cohort_sourceV_20261018_r01",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_asce_parent68/runner.py --device cuda:0",
+    "stop_rule": "Wrong exact source parent or cached V handles,nonfinite,state update,wrong count or output collision abort only own readout,preserve,no fallback/retry;never stop or change P68",
+    "status": "PLANNED"
+  },
+  "expected_artifacts": [
+    "real_checkpoint_smoke.json",
+    "predictions.npz",
+    "parent_cohort_metrics.json",
+    "parent_cohort_metrics.csv",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "parent_clean_correct_count",
+      "per_scene_draw_satellite_retention",
+      "default_head_accuracy",
+      "actual_NN",
+      "wall_seconds",
+      "state_unchanged"
+    ],
+    "dimensions": [
+      "fixedASCE20student",
+      "sourceV1800",
+      "clean",
+      "lowSub/midUrban/lowUrban",
+      "2draw_not2seed"
+    ],
+    "prediction_ref": "PROJECT/runs/20261018-diagnostic-FcrossRX-ASCE20cohort-sourceV-s2026092701-m1-r01/predictions.npz",
+    "scorer_ref": "Source Vlabels alreadylegal,no formal truth or training;pure array cohort stats"
+  },
+  "rows": [
+    {
+      "row_id": "ASCE20-s2026092701",
+      "method": "Frozen actual AS_CE20 source-only default-head readout",
+      "purpose": "Nonblocking mechanism evidence only",
+      "config_ref": "experiments/cvs_asce_parent68/readout.py",
+      "resolved_config_ref": "PROJECT/runs/20261018-diagnostic-FcrossRX-ASCE20cohort-sourceV-s2026092701-m1-r01/complete.json",
+      "data_overrides": {
+        "source_V_only": true,
+        "formal": false,
+        "training_updates": 0
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model refers to frozen parent,not new initialization; cached source two-draw observations alreadyfixed,not modelseeds;no new augmentation/support/formal seed.",
+      "k": null,
+      "scenario": "Source cached clean+3full practical×2draw;no newchannel/noformal",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "12602student-evalNN=2zerosmoke+1800clean+2*3*1800satellite;0teacher/train/update;parent20 trainingcostexistingseparate;newsource readout extra to P68 expected4352336NN -> combined4364938.",
+      "output_root": "PROJECT/runs/20261018-diagnostic-FcrossRX-ASCE20cohort-sourceV-s2026092701-m1-r01",
+      "log_path": "PROJECT/runs/20261018-diagnostic-FcrossRX-ASCE20cohort-sourceV-s2026092701-m1-r01.launch.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_asce_parent68/runner.py --device cuda:0",
+      "expected_artifacts": [
+        "predictions.npz",
+        "complete.json",
+        "parent_cohort_metrics.json",
+        "parent_cohort_metrics.csv"
+      ]
+    }
+  ],
+  "notes": [
+    "P43 As20 cached predictions are a different parent and are never substituted.",
+    "The existing committed parent_cohort66 tool is hardcoded to P43 and cannot be silently redirected.",
+    "This source-only no-training supplement does not alter P68 immutable code/output/source criteria,does not require formal7,and is not a second review of unchanged P68."
+  ],
+  "registered_at": "2026-10-18T14:10:56+00:00"
+}

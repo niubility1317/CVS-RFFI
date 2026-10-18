@@ -11,3 +11,4 @@
 |P66：完整 practical U 教学的观测条件分配|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Uquality-e30-s2026092701-m2-r01/report.md)|
 |P67：同物理样本跨轮确认与完整 practical 的匹配 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-temporalBank-e30-s2026092701-m2-r01/report.md)|
 |P68：固定六次前向内的独立完整 practical 配对 CE|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-fullAsPair6-e30-s2026092701-m1-r01/report.md)|
+|实际 AS_CE20 父模型的源域正确集合读出|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-FcrossRX-ASCE20cohort-sourceV-s2026092701-m1-r01/report.md)|

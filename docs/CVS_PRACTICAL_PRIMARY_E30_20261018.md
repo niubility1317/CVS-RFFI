@@ -22,3 +22,6 @@
 源晋级两项：fullVclean对原NoAs30≥−.1pp；pooledmidlow对max(原As30,SAME_CE6)≥＋.5pp；任一FAIL关闭固定方式，仍评分全部七视图。合格才允许总计E50，正式不晋级；当前已VERIFIED_RUNNING：772NN真实父与合成6L smoke通过，GPU0进程/CWD/argv/日志增长核实，累计E21已完成，尚无冻结后新性能。新tail预期2220更新/4352336remoteNN含772smoke，旧控制不重训/推理/评分。
 
 [P68预登记](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-fullAsPair6-e30-s2026092701-m1-r01/report.md)。
+
+
+P68机制读出补充：实际SAT18 AS_CE20没有已核实源预测缓存，P43 As20不同父不可替代。独立source-only诊断 20261018-diagnostic-FcrossRX-ASCE20cohort-sourceV-s2026092701-m1-r01只补默认头在原V1800＋两draw三practical上的12602NN（含2NNCPsmoke），0训练/teacher/信道新生成/target；不写健康P68代码/root，不参与source晋级。新增成本单列，主P68expected4352336NN＋该诊断12602＝4364938NN，非新训练预算。唯一新诊断P0/P1及7puretoy/4compile通过，尚未远端读出。

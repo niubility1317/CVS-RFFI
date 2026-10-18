@@ -1,0 +1,24 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "pure_toy_tests": 7,
+  "compile_files": 4,
+  "local_NN": 0,
+  "local_IQ": 0,
+  "local_checkpoint_reads": 0,
+  "independent_P0P1": {
+    "status": "PASS",
+    "reviewer": "u_quality66_p0p1",
+    "reviews": 1,
+    "scope": "New source-only actual-ASCE20 diagnostic only; no second review of unchanged/running P68",
+    "issues": [],
+    "NN": 0,
+    "IQ": 0,
+    "checkpoint_reads": 0,
+    "remote_actions": 0
+  },
+  "expected_remote_NN": 12602,
+  "source_only": true,
+  "new_training": false,
+  "healthy_P68_untouched": true,
+  "goal_complete": false
+}
