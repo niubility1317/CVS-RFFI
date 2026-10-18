@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "scope": "Onecandidate P0/P1 only;one targetedrecheck ofregistrationarchiveinput",
+  "reviewer": "unitary_p0p1_review",
+  "initial_finding": "publishconsumes GitHEAD experiment.json;must beinactualcommit",
+  "resolution": "Exact worktreemirror13763bytesandconfig matchindependently verifiedinGitindex;includedinsamecode/configcommit",
+  "operator_or_physics_changed": false,
+  "extra_full_review": false,
+  "no_real_IQ_CP_or_remote_access": true
+}

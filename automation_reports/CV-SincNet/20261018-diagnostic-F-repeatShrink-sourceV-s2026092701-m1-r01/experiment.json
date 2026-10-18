@@ -1,0 +1,289 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-diagnostic-F-repeatShrink-sourceV-s2026092701-m1-r01",
+  "group_id": "F_crossRX_repeat_residual_contraction_guard",
+  "display_name": "F＋跨 RX：包内重复残差收缩的源 V 身份保护",
+  "description": "固定四周期均值保持残差收缩10%；原2个全源E20默认头×raw/ordinary×0/.1；0训练与target，不拟合RX/TX变换",
+  "kind": "diagnostic",
+  "stage": "diagnostic",
+  "aliases": [
+    "单包重复残差轻度收缩"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "IQ_repeat_residual_contraction",
+    "source_V",
+    "default_head",
+    "full_source",
+    "source_only"
+  ],
+  "comparison_group_id": "F_fullsource20_raw_ordinary_repeat_shrink_guard",
+  "parent_run_ids": [
+    "20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active joint Ag/As research;only existing256 IQ/fullsource V validation;no held trainingRX,0newtraining/target/teacher/headfit",
+  "code": {
+    "commit": "HEAD_ON_RELEASE",
+    "checkout": "codex/cvs-iq-timing-e20-20261016",
+    "environment": "N607 ordinary account/existing pinned fullsource F runtime/FP32/CPU2/one shared GPU",
+    "cwd": "PROJECT/releases/cvs_F_repeat_shrink_source_20261018_r01",
+    "entrypoint": "experiments/cvs_repeat_shrink18/runner.py"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing validated exact original L6300 source cache;all sourceRX",
+    "representation": "NativeEQ1/RMS IQ256 at25MHz;originalV raw/once-generated ordinary;fourcycle residualcontraction,nooutsideIQ/noaddednoise/noRMSrenorm",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract role_ids.L_s/U_s/V;originalV1800subset fromall90TX/RX/daycells",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "Original6300 unchanged,not consumed",
+      "U_s": "Original56700 hiddenTX,not consumed",
+      "V": "Original27000;first20 opaqueID-sorted each90TX/RX/daycells=1800;inference/score only"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Reuse existing exact source handles and native_role_comparison;no data rebuild",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "Phase1 original fullsource V readout only",
+    "L_s": "unchanged,no new access",
+    "U_s": "hiddenTX,not used",
+    "V": "1800 from original27000,eval only,no optimizer/EMA/prototype/calibration fit",
+    "query_use": "none;no target loading or source classification-head fit",
+    "separate_head_training": false
+  },
+  "checkpoint": {
+    "initialization": "Read-only original fullsource REPEAT andCONCAT fixed-final20",
+    "checkpoint_sources": [
+      "PROJECT/runs/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/REPEAT-s2026092701/source/final_ssdg.pth",
+      "PROJECT/runs/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/CONCAT-s2026092701/source/final_ssdg.pth"
+    ],
+    "parent_run_ids": [
+      "20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02"
+    ],
+    "selection": "fixed source-final20 before target scoring;exact L/U/V physicalroles and own scratch provenance;EMA not used"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/F-repeat-shrink-source",
+    "gpu_policy": "shared-capacity all-owner max3/GPU andfree12GB;CPU2;one worker/two readouts",
+    "remote_run_root": "PROJECT/runs/20261018-diagnostic-F-repeatShrink-sourceV-s2026092701-m1-r01",
+    "remote_log_root": "PROJECT/runs/20261018-diagnostic-F-repeatShrink-sourceV-s2026092701-m1-r01",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261018-diagnostic-F-repeatShrink-sourceV-s2026092701-m1-r01",
+    "launch_command": "CVS-RFFI/bin/python -u experiments/cvs_repeat_shrink18/runner.py",
+    "stop_rule": "All1800V/all90cells/all8views;0updates. Scope/parent/nonfinite/outputcollision technicalfail preserves,no auto retry. Any fixed source conditionfail closes window/period/taper/bound/seed/parent. No automatictraining or target."
+  },
+  "expected_artifacts": [
+    "real_checkpoint_smoke.json 2CP/4NN/noquery",
+    "resolved_config.json exactroles/actualE13 ordinary",
+    "predictions.json allfixed source logits/IDs private",
+    "prediction_complete.json NN/numerics/state/cost",
+    "result.json all840CM/paired/conditions",
+    "completion.json anddispatcher_complete.json"
+  ],
+  "metrics_plan": {
+    "primary": "Default-head identity accuracy,macroF1,CM,paired repairs/newerrors andcorrect retention forbothfixed20 models/raw/ordinary",
+    "fixed_criteria": {
+      "each_readout_base_endpoint_min_accuracy_delta_pp": -0.5,
+      "each_RX_min_accuracy_delta_pp": -1,
+      "each_TX_min_accuracy_delta_pp": -1,
+      "each_readout_base_endpoint_correct_retention_min": 0.995,
+      "max_energy_increase_relative": 1e-06,
+      "max_cycle_mean_change_relative": 1e-06,
+      "max_total_relative_change": 0.100001,
+      "outside_unchanged": true,
+      "cycle_boundaries_unchanged": true
+    },
+    "operator": "Mean preservation,contractionbound,energy nonincrease,outside/boundaryidentity;independent dense80x80 projector check",
+    "cost": "2existing fixed20 CP;14404NN including4smoke;1800ordinary;7200operatorapplications including3600nonzero;0newtraining/teacher/headfit/target",
+    "scope": "Necessary source identity protection only;not DG,Ag/As efficacy or joint success",
+    "no_target_feedback": true,
+    "no_automatic_seed_extension": true
+  },
+  "rows": [
+    {
+      "row_id": "REPEAT_SHRINK-s2026092701",
+      "method": "F_crossRX_repeat_residual_contraction_guard",
+      "purpose": "Fixed nofit ownpacket contraction10percent identityprotection;2originaldefaultheads,raw/ordinary",
+      "config_ref": "configs/cvs_repeat_shrink_source_20261018.json",
+      "resolved_config_ref": "PROJECT/runs/20261018-diagnostic-F-repeatShrink-sourceV-s2026092701-m1-r01/resolved_config.json",
+      "data_overrides": {
+        "source_L_parent": 6300,
+        "source_V_role": 27000,
+        "source_V_diagnostic": 1800,
+        "all_source_RX": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_RX_holdout": null
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261018101,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": {
+        "model": "Both originalfixedsource-final20 sameseed01,not targetranked",
+        "split": "Original392005rolesunchanged",
+        "data": "Deterministicfirst20opaqueIDsorted V per90cells",
+        "augmentation": "Privateoldordinary20261018101 fixedPython/Torch;operatorendpointsdeterministic",
+        "support": "NA sourceonly",
+        "evaluation": "No evaluationRNG/source all8fixedviews"
+      },
+      "k": null,
+      "scenario": "sourceV raw/ordinary × strength0/.1 × original REPEAT/CONCAT20",
+      "optimizer": "none",
+      "lr": 0,
+      "epochs": 0,
+      "fl_rounds": 0,
+      "budget_ref": "experiment.json#metrics_plan/cost",
+      "output_root": "PROJECT/runs/20261018-diagnostic-F-repeatShrink-sourceV-s2026092701-m1-r01",
+      "log_path": "PROJECT/runs/20261018-diagnostic-F-repeatShrink-sourceV-s2026092701-m1-r01/worker.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_repeat_shrink18/runner.py --worker",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json 2CP/4NN/noquery",
+        "resolved_config.json exactroles/actualE13 ordinary",
+        "predictions.json allfixed source logits/IDs private",
+        "prediction_complete.json NN/numerics/state/cost",
+        "result.json all840CM/paired/conditions",
+        "completion.json anddispatcher_complete.json"
+      ],
+      "config": {
+        "run_id": "20261018-diagnostic-F-repeatShrink-sourceV-s2026092701-m1-r01",
+        "launch_owner": "codex/root/F-repeat-shrink-source",
+        "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "preparation": "PROJECT/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+        "models": [
+          {
+            "arm": "REPEAT",
+            "row": "REPEAT-s2026092701",
+            "source": "PROJECT/runs/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/REPEAT-s2026092701/source",
+            "epoch": 20,
+            "selection": "original fixed source-final20;not target-ranked",
+            "parent_updates": 4440
+          },
+          {
+            "arm": "CONCAT",
+            "row": "CONCAT-s2026092701",
+            "source": "PROJECT/runs/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/CONCAT-s2026092701/source",
+            "epoch": 20,
+            "selection": "original fixed source-final20;not target-ranked",
+            "parent_updates": 4440
+          }
+        ],
+        "source_RX": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_RX_holdout": null,
+        "L6300_unchanged": true,
+        "U_used": false,
+        "U_TX_hidden": true,
+        "V_role_count": 27000,
+        "V_selected": 1800,
+        "per_cell": 20,
+        "selection": "first20 opaqueID-sorted V per6TXx5RXx3day;all90cells kept;no trainingdomainholdout",
+        "model_seed": 2026092701,
+        "split_seed": 392005,
+        "ordinary_seed": 20261018101,
+        "base_views": [
+          "raw",
+          "ordinary"
+        ],
+        "ordinary": "exact native parentargs/E13 schedule;one generated IQ reused across models/strength0and.1",
+        "operator": {
+          "kind": "own-packet four-cycle residual contraction;proper complex linear;not denoising ground truth",
+          "strength_values": [
+            0,
+            0.1
+          ],
+          "max_strength": 0.1,
+          "window": [
+            80,
+            160
+          ],
+          "period": 20,
+          "cycles": 4,
+          "taper": "same sin(pi*t/19)^2 for t0..19 in each cycle;endpoints exactly0",
+          "equation": "x_W - strength*w*(x_W - mean_cycle(x_W))",
+          "boundary": "outside80:160 and each20point cycle first/last sample bitwise unchanged;no wrap/padding/outsideIQ",
+          "normalization": "no extra RMS normalization;fixed cycle mean retained,nonperiodic component contracted",
+          "new_noise": false,
+          "CFO_estimated": false,
+          "TX_IQ_or_PA_added": false,
+          "labels_used_by_operator": false,
+          "physical_RX_replacement": false
+        },
+        "criteria": {
+          "each_readout_base_endpoint_min_accuracy_delta_pp": -0.5,
+          "each_RX_min_accuracy_delta_pp": -1,
+          "each_TX_min_accuracy_delta_pp": -1,
+          "each_readout_base_endpoint_correct_retention_min": 0.995,
+          "max_energy_increase_relative": 1e-06,
+          "max_cycle_mean_change_relative": 1e-06,
+          "max_total_relative_change": 0.100001,
+          "outside_unchanged": true,
+          "cycle_boundaries_unchanged": true
+        },
+        "expected_NN": 14404,
+        "real_checkpoint_smoke_NN": 4,
+        "real_checkpoint_loads": 2,
+        "source_cache_loads": 1,
+        "ordinary_generations": 1800,
+        "operator_applications": 7200,
+        "nonzero_operator_applications": 3600,
+        "training_updates": 0,
+        "teacher_NN": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "formal_test_changed": false,
+        "automatic_training": false,
+        "on_fail": "Close fixed period20/window80:160/taper/strength.1;no range/window/taper/seed/parent rescue",
+        "on_pass": "Necessary source protection only;no Ag/DG/As/joint efficacy;separate matched E30 training still required",
+        "old_negative_scope": "Residual-covariance RX attribution,periodic-projector RX attribution,cycle permutation,unitary phase,external donor coherent mix remain closed;this operator fits no RX profile and introduces no donor",
+        "device": "one shared-capacity GPU",
+        "threads": 2
+      },
+      "status": "PLANNED"
+    }
+  ],
+  "notes": [
+    "Uses only existing256 IQ;no reliable original/longcontext map exists peruser. FullL6300/U56700hiddenTX/V27000 andall5trainingRX remain unchanged.",
+    "Window80:160/period20 nominalmotivation fromWiSig originalpaper resampling25Msps and10STF cycles8us;not guarantee that everypacket is perfectlyperiodic. No packet qualityfilter.",
+    "P is samepacket fourcyclemean;D is phasewise taper repeated acrosscycles. DP=PD,so I-.1D(I-P) preservesPx and contracts residual. Nonperiodic residual may contain TX evidence;sourcehead guardtestsnecessary condition.",
+    "Oldcyclecov andsignalprojector sharedRX attribution failuresremainclosed;this nofit,noRXprofile,noTXconditionedsynthesis operator does notrescue oldstatisticalestimator or claimtrue RXreplacement. Oldcyclepermutation/unitary/externalcoherentmix remainclosed.",
+    "No As applied inthis guard. Existingordinary generatedonceatparentE13 actualschedule,sharedbyallreadouts/strengths. OldPA/CFOetc actualvaluesrecorded,notdeclared labelpreserving.",
+    "Baseline F+crossRX sameTX,defaultcos jointlytrained remains,latestbudgetE30. Existingfixed20 CP are frozen diagnosticreadouts,not newE20 trainingauthorization. Necessary internalcompensation unchanged."
+  ],
+  "status": "PLANNED",
+  "registered_at": "2026-10-18T00:59:10+00:00"
+}

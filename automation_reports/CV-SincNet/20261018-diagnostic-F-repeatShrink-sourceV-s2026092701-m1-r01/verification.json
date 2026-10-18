@@ -1,0 +1,40 @@
+{
+  "status": "PASS",
+  "protocol_negatives": 21,
+  "synthetic_input_packets": 18,
+  "synthetic_errors": {
+    "<class 'numpy.float64'>": {
+      "dense_error": 4.440892098500626e-16,
+      "strength": 0.1,
+      "max_energy_increase_relative": 0,
+      "max_cycle_mean_change_relative": 3.9378609235569694e-17,
+      "max_relative_change": 0.031013216761585534,
+      "mean_relative_change": 0.011563182620980375,
+      "outside_unchanged": true,
+      "cycle_boundaries_unchanged": true
+    },
+    "<class 'numpy.float32'>": {
+      "dense_error": 9.785423804586912e-8,
+      "strength": 0.1,
+      "max_energy_increase_relative": 0,
+      "max_cycle_mean_change_relative": 6.403083200223105e-9,
+      "max_relative_change": 0.02955346099162781,
+      "mean_relative_change": 0.012306401355512971,
+      "outside_unchanged": true,
+      "cycle_boundaries_unchanged": true
+    }
+  },
+  "dense_eigenvalue_range": [
+    0.9006819348298631,
+    1.000000000000001
+  ],
+  "cycle_mean_preserved": true,
+  "outside_and_cycle_boundaries_unchanged": true,
+  "complex_linear": true,
+  "identity_at_zero": true,
+  "global_RNG_unchanged": true,
+  "real_IQ": 0,
+  "CP": 0,
+  "NN": 0,
+  "updates": 0
+}
