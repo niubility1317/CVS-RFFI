@@ -29,7 +29,7 @@
   "replaces_run_id": null,
   "authorization": "Latest user: satellite-first, clean drop<=0.1 absolutepp, fullsource/noheldRX, fixedF+CROSS_RX/defaulthead, E30; good source-qualified recipes may totalE50; active goal authorizes implementation/matched trials/all7 independent scoring. No extra heads/targetfeedback/healthy-task mutation.",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "833c2b5694914a2923c491701b8b7d47cf624205",
     "checkout": "code/worktrees/phase1_urban_sigtime_20261014",
     "environment": "N607 existing ordinary CVS-RFFI Python3.10.19 Torch2.1.0+cu121 NumPy2.2.5; FP32 CPU2",
     "cwd": "PROJECT/releases/cvs_FcrossRX_rawAsMask_E30_20261019_r01"
@@ -99,7 +99,7 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_rawAsMask_E30_20261019_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_raw_as_mask72/runner.py",
     "stop_rule": "Wrong data roles/parent/pool/current raw-As physical ID y domain/origin step mismatch, wrong mask p/module/call count, nonfinite, outputcollision or budget discrepancy stops own failed row, preserves outputs, no automatic retry. Healthy peers finish; sourceFAIL still all7.",
-    "status": "PREREGISTERED"
+    "status": "ANALYZED"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
@@ -292,7 +292,8 @@
     "Two private mask arms match perview marginals and randomstreams. Global originalDropoutcalls still execute; replacementuses pre-dropoutinput*private scaledmask, never double dropout. RD A/B independent, U/EMA/eval unmodified.",
     "P70 originalpool generated from exact P43 rawL sequence beforeupdates; everycurrent64pack fullphysicalkey/y/domain origin verified, each observationoneuse. 0newsimulation, 0quality weighting.",
     "Source2rules: fullVcleanS-NoAs>=-.1pp and pooledmidlowS-I>=+.5pp. Fail closesfixedrecipe/noE50/seed rescue; all7 stillautomatic.",
-    "Onlymodelseed1; totalE50onlylater sourcequalified goodrecipe withmatchedcontrols. No formalfeedback."
+    "Onlymodelseed1; totalE50onlylater sourcequalified goodrecipe withmatchedcontrols. No formalfeedback.",
+    "Completed actualGPU E10 tails/all7 independent truth-last/source-before-formal decision. Source both rulesFAIL, fixedmaskcandidateclosed/noE50. Single modelseed, no repeatabledual gain; final_analysis.md actual evidence."
   ],
   "registered_at": "2026-10-18T17:41:41+00:00"
 }

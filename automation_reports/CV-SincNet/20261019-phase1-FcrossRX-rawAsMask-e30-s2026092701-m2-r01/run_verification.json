@@ -1,0 +1,22 @@
+{
+  "status": "VERIFIED",
+  "source_decision_closed_before_formal_read": true,
+  "real_checkpoint_smoke": "PASS",
+  "smoke_NN": 4,
+  "remote_compile": 24,
+  "updates_each": 2220,
+  "analysis": "ANALYZED",
+  "missing": [],
+  "process_alive": {
+    "driver": false,
+    "I1": false,
+    "S1": false
+  },
+  "pipeline_elapsed_seconds": 1034.5685834884644,
+  "PNGs_viewed": 4,
+  "PDFs_nonempty_and_header_valid": 4,
+  "independent_confusion_recounts": 504,
+  "partition_reconciliations": 84,
+  "archive_compare": "VERIFIED",
+  "code_commit": "833c2b5694914a2923c491701b8b7d47cf624205"
+}

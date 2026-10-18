@@ -24,6 +24,9 @@ N607既有普通非特权CVS-RFFI环境，CPU2/FP32。CWD=PROJECT/releases/cvs_F
 
 技术停止限当前行的输入/父源/物理配对/输出冲突/错误mask范围或call数/非数值/预算/法律prediction错误；保留partial，不自动重试或重模拟，已健康同伴继续，不碰其他owner进程。发布按一Git代码/config提交、一次独立P0/P1、一归档一次SHA比较/compile、一次启动PID/CWD/argv/GPU/log增长；不加hash/receipt/报告审批。
 
-预期完整产物含resolved config/真实模块与源契约/初始化、完整step与epoch序列、mask_steps与ordered_steps、frozen CP、固定源panel/两规则决定、all7prediction/独立scores、accuracy/macroF1/最差RX/RXdayTX/净纠错/normalized margin/parentAs20 clean正确集合保持、实际成本和四组PNG/PDF。代码起点7c9271cb1f1375b4064830aa136131820d552c2b；实际代码/config提交待本地实现检查与唯一审查通过后记录。
+预期完整产物含resolved config/真实模块与源契约/初始化、完整step与epoch序列、mask_steps与ordered_steps、frozen CP、固定源panel/两规则决定、all7prediction/独立scores、accuracy/macroF1/最差RX/RXdayTX/净纠错/normalized margin/parentAs20 clean正确集合保持、实际成本和四组PNG/PDF。代码起点7c9271cb1f1375b4064830aa136131820d552c2b；实际代码/config提交833c2b5694914a2923c491701b8b7d47cf624205（本地检查与唯一审查通过后发布）。
 
 状态：PREREGISTERED，代码与分析实现完成；20协议负例、8mask CPU toy、2原序池/实际六前向hook toy、8分析CPU toy、21py语法PASS，唯一独立P0/P1审查PASS。0真实CVSNN/CP/IQ/新模拟；本地未测CUDA，真实父CP smoke4与实际GPU训练仍待launcher执行。尚无P72性能结果。
+
+
+执行收尾：ANALYZED；两行新增E10/共4440更新、totalE30/all7评分及完整分析完成，missing=[]。真实父CP smoke4NN、archive比较、remote compile24、PID/CWD/argv/GPU/log增长和终态独立回读均VERIFIED。源两条件FAIL已先于正式读分关闭候选，不扩E50；正式负增量与所有成本详见[最终分析](final_analysis.md)、[源机制读出](mechanism_readout.md)、analysis_summary.json。原预登记的“待执行”段落作为当时状态保留，不代表最终缺项。

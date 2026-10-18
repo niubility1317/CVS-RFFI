@@ -1,0 +1,97 @@
+{
+  "status": "SOURCE_READOUT_DECIDED",
+  "source_qualified": false,
+  "candidate": "MASK_SHARED",
+  "rows": {
+    "NOAS30": {
+      "fullV_clean": 0.9835925925925926,
+      "source_accuracies": [
+        [
+          0.5,
+          0.42944444444444446,
+          0.3566666666666667
+        ],
+        [
+          0.49722222222222223,
+          0.44166666666666665,
+          0.35555555555555557
+        ]
+      ],
+      "midlow": 0.39583333333333337,
+      "low": 0.35611111111111116
+    },
+    "AS30": {
+      "fullV_clean": 0.9825555555555555,
+      "source_accuracies": [
+        [
+          0.8811111111111111,
+          0.7255555555555555,
+          0.6011111111111112
+        ],
+        [
+          0.8922222222222222,
+          0.7305555555555555,
+          0.5805555555555556
+        ]
+      ],
+      "midlow": 0.6594444444444445,
+      "low": 0.5908333333333333
+    },
+    "MASK_INDEPENDENT": {
+      "fullV_clean": 0.9823703703703703,
+      "source_accuracies": [
+        [
+          0.8811111111111111,
+          0.7272222222222222,
+          0.6
+        ],
+        [
+          0.8933333333333333,
+          0.7327777777777778,
+          0.5811111111111111
+        ]
+      ],
+      "midlow": 0.6602777777777777,
+      "low": 0.5905555555555555
+    },
+    "MASK_SHARED": {
+      "fullV_clean": 0.9824074074074074,
+      "source_accuracies": [
+        [
+          0.8816666666666667,
+          0.7261111111111112,
+          0.6005555555555555
+        ],
+        [
+          0.8933333333333333,
+          0.7322222222222222,
+          0.5811111111111111
+        ]
+      ],
+      "midlow": 0.6599999999999999,
+      "low": 0.5908333333333333
+    }
+  },
+  "effects": {
+    "fullV_clean_shared_vs_NoAs_pp": -0.1185185185185178,
+    "fullV_clean_shared_vs_independent_pp": 0.003703703703705763,
+    "pooled_midlow_shared_vs_independent_pp": -0.02777777777778212,
+    "low_shared_vs_independent_pp": 0.02777777777778212,
+    "pooled_midlow_independent_vs_originalAs30_pp": 0.08333333333332416
+  },
+  "checks": {
+    "clean_within_NoAs_0p1pp": false,
+    "midlow_vs_independent_at_least_0p5pp": false
+  },
+  "formal_scores_read": false,
+  "target_scores_read": false,
+  "formal_evaluation_always_required": true,
+  "target_feedback": false,
+  "model_seed_count": 1,
+  "NN": 0,
+  "E50_total_allowed_only_after_source_PASS": true,
+  "E50_requires_same_budget_controls": true,
+  "no_automatic_seed_extension": true,
+  "mask_correlation_only": true,
+  "per_view_mask_marginals_unchanged": true
+}
