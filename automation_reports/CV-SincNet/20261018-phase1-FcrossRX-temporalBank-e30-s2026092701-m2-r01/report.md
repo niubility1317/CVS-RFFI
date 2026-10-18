@@ -1,6 +1,6 @@
 # P67：同物理样本跨轮确认与完整 practical 的匹配 E30
 
-状态：LOCAL_IMPLEMENTING，尚未启动，不存在新性能结果。
+当前状态：ANALYZED。两条 E30 尾段及 clean＋六种固定 practical 独立评分完成；以下设计与判据保留为运行前预登记记录。源四项条件均 FAIL，不延长 E50。
 
 本轮唯一假设：原 U 时间确认从批内不同样本的邻近同预测，改为同一物理样本跨轮稳定预测，能否在保留完整 practical 监督时减轻 clean 代价，并提高 mid／low urban。动机是 P66 原 U 最终通过率约 1.5%；通过率不是准确率，也不是必须提升的代理目标。原教师已经直接读取 raw U，没有“弱教师增强可旁路”的事实。无新损失、门控条件、额外教师或前向。
 
@@ -65,3 +65,13 @@ python -u experiments/cvs_temporal_bank67/runner.py
 ## 实际启动核验
 
 状态 VERIFIED_RUNNING：真实 own20 student／EMA 合成检查 8 NN PASS，随后两行均在 GPU2／3 完成累计 E21／222 新更新。PID／CWD／argv／GPU 与日志增长独立核验，首个本地 epoch 时间确认均为0；来源角色 EXACT_MATCH。真实 native 参数相对各自原 E30 只差 output_dir、run_id 和 pseudo_temporal_mode；没有新教师或前向。详见 launch_verification.json、runtime_configuration.json。尚无新正式性能结果。
+
+
+## 先行源域关闭决定
+
+四项预登记条件全部 FAIL，固定方案关闭，不扩 E50，不改阈值／streak／窗口／缓存热身／seed 救跑。AS_BANK fullV clean−matched NOAS_BANK 为−0.118519pp，对原NOAS30为−0.111111pp；midlow−原AS30仅＋0.069444pp，low−原AS30为−0.055556pp。源 midlow 四格交互约0。源决定已在主owner读取任何新正式分数前保存，详见 source_matrix_decision.json／source_closure.json。全部正式评价仍按固定计划完成，不能用随后正式成绩反向改变这一决定。
+
+
+## 最终收尾
+
+两新行均累计 E30／6660 更新，所有七视图完成。固定源判据全 FAIL，正式阶段单 seed clean ＋0.041071pp 不改变先行源关闭，不扩 E50。新增规则相对原 As30：clean −0.086310pp、mid urban ＋0.023214pp、low urban −0.017262pp、urban 均值 ＋0.012103pp，没有新增有效 urban 收益证据。全部结果、配对错误、机制覆盖、曲线及成本见 [最终分析](final_analysis.md)；机器可读交付见 [delivery.json](delivery.json)。本轮技术缺项 0，整体目标仍 ACTIVE。

@@ -1,0 +1,42 @@
+{
+  "status": "VERIFIED",
+  "manual_png_visual_inspection": true,
+  "figures": [
+    {
+      "name": "training_curves.png",
+      "bytes": 180738
+    },
+    {
+      "name": "training_curves.pdf",
+      "bytes": 21330
+    },
+    {
+      "name": "bank_acceptance.png",
+      "bytes": 137951
+    },
+    {
+      "name": "bank_acceptance.pdf",
+      "bytes": 19271
+    },
+    {
+      "name": "source_quality.png",
+      "bytes": 68790
+    },
+    {
+      "name": "source_quality.pdf",
+      "bytes": 18621
+    },
+    {
+      "name": "formal_paired.png",
+      "bytes": 131862
+    },
+    {
+      "name": "formal_paired.pdf",
+      "bytes": 18777
+    }
+  ],
+  "report_local_links": 19,
+  "missing_links": [],
+  "model_seed_count": 1,
+  "scope": "Artifact existence, nonblank/readable PNGs, paired pp units and single-seed limitation; no new training, selection, NN, or review gate."
+}

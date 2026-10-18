@@ -1,11 +1,11 @@
 {
-  "status": "VERIFIED_RUNNING",
+  "status": "VERIFIED_ANALYZED",
   "new_run": "20261018-phase1-FcrossRX-temporalBank-e30-s2026092701-m2-r01",
   "local_checks": {
     "status": "PASS",
     "protocol_negatives": 28,
     "native_temporal_toy_calls": 10,
-    "source": "Independent implementation worker successful test, original output requested separately",
+    "source": "Successful original output retained in local_artifacts/cvs_FcrossRX_temporal_bank_E30_20261018_r01/worker_checks_actual.json",
     "real_IQ": 0,
     "checkpoint_reads": 0,
     "CVS_NN": 0,
@@ -24,7 +24,7 @@
   "source_data_handles_reused": true,
   "checkpoint_provenance": "existing corresponding P43 exact roles/source-only fixed20",
   "N607_preflight": "VERIFIED_ordinary_direct8GPU_noCompute_at_preflight",
-  "new_training_started": false,
+  "new_training_started": true,
   "goal_complete": false,
   "independent_P0P1": {
     "status": "PASS",
@@ -34,7 +34,20 @@
     "reviews": 1
   },
   "training_started": true,
-  "performance_results_available": false,
+  "performance_results_available": true,
   "actual_code_commit": "71b3c3e340005d93433c4d4b3f51d26f4d464d60",
-  "launch_verification": "launch_verification.json"
+  "launch_verification": "launch_verification.json",
+  "source_decision": "FAIL_ALL4_CLOSED_NO_E50",
+  "source_closed_before_owner_formal_read": true,
+  "E50_launched": false,
+  "owned_processes_exited": true,
+  "technical_missing": [],
+  "all4conditions_all7_complete": true,
+  "independent_truth_last": true,
+  "metadata_coverage_tests": 2,
+  "coverage_code": "296c9242fefb387e3d1289e733f1415ded289e29",
+  "coverage_evidence": "coverage_reuse.json",
+  "parent_cohort_evidence": "parent_cohort_summary.json",
+  "formal_stage_single_seed_clean_within_0p1pp": true,
+  "reproducible_dual_gain": false
 }

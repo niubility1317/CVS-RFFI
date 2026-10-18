@@ -1,0 +1,122 @@
+{
+  "status": "REUSED_MATCHED_DETERMINISTIC_L_STREAM",
+  "nonblocking": true,
+  "candidate_run": "20261018-phase1-FcrossRX-temporalBank-e30-s2026092701-m2-r01",
+  "candidate_row": "B01-s2026092701",
+  "fixed_reference_run": "20261018-phase1-FcrossRX-Uquality-e30-s2026092701-m2-r01",
+  "fixed_reference_row": "MASS_UNIFORM-s2026092701",
+  "missing": [],
+  "reused_evidence": {
+    "reference_result": "PROJECT/runs/20261018-phase1-FcrossRX-Uquality-e30-s2026092701-m2-r01/MASS_UNIFORM-s2026092701/source/result.json",
+    "key": "TX_RX_scene_state_lock",
+    "copied_joint_cells": 515,
+    "copied_joint_count": 142080,
+    "complete_ordered_L_sequence": {
+      "steps": 2220,
+      "physical_L_visits": 284160,
+      "selected_As_visits": 142080,
+      "physical_key_order": [
+        "eq_i",
+        "rx_i",
+        "day_i",
+        "sig_i",
+        "base_index"
+      ],
+      "exact_ordered_ID_match": true,
+      "label_semantics": "Reused from identical validated labeled source handle/roles/class mapping; never inferred from IDs",
+      "U_records_decoded": 0
+    },
+    "source_roles_equal": true,
+    "actual_data_args_equal": [
+      "dataset",
+      "dataset_dir",
+      "wisig_pkl",
+      "wisig_equalized",
+      "wisig_domain",
+      "wisig_out_len",
+      "wisig_train_days",
+      "wisig_train_rxs",
+      "wisig_split_strategy",
+      "wisig_cap_strategy",
+      "wisig_guard_gap",
+      "wisig_max_day123_per_combo",
+      "wisig_max_train_per_combo",
+      "wisig_max_val_per_combo",
+      "wisig_max_test_per_combo",
+      "split_mode",
+      "phase1_source_role_protocol",
+      "labeled_ratio",
+      "unlabeled_ratio",
+      "source_val_ratio",
+      "seed",
+      "num_classes",
+      "sample_rate_hz"
+    ],
+    "fixed_class_mapping": [
+      "14-10",
+      "14-7",
+      "20-15",
+      "20-19",
+      "6-15",
+      "8-20"
+    ],
+    "label_mapping_basis": "Same validated labeled dataset and common pinned native class encoding; no new label reads",
+    "corresponding_parent": "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20",
+    "actual_channel_config_equal": true,
+    "actual_state_lock_strata_equal": true,
+    "actual_hardware_sessions_equal": true,
+    "TX_marginals_reconcile": true,
+    "actual_selected_RX_day_reconcile": true,
+    "shared_runtime": {
+      "current": {
+        "reference": "PROJECT/releases/cvs_FcrossRX_impulse_factorial_E30_20261018_r01",
+        "commit": "19aedc3604fed9c193237dd92366164178af0983",
+        "runner": "PROJECT/releases/cvs_FcrossRX_temporal_bank_E30_20261018_r01/experiments/cvs_temporal_bank67/runner.py"
+      },
+      "reference": {
+        "reference": "PROJECT/releases/cvs_FcrossRX_impulse_factorial_E30_20261018_r01",
+        "commit": "19aedc3604fed9c193237dd92366164178af0983",
+        "runner": "PROJECT/releases/cvs_FcrossRX_U_quality_E30_20261018_r01/experiments/cvs_u_quality66/runner.py"
+      }
+    },
+    "deterministic_namespace": "FcrossRX/train/e{local_epoch+20}/step{local_step+4440}/L_S",
+    "namespace_source": "Shared pinned P43 dependency experiments/cvs_clock_factorial30/channel.py:Practical.apply",
+    "pid_order": [
+      "eq_i",
+      "rx_i",
+      "day_i",
+      "sig_i",
+      "base_index"
+    ],
+    "selection": "(batch_position+local_step)%2 != 0;64 of128;4440 offset is even",
+    "ordinary_before_satellite": false,
+    "input_source": "Same raw labeled IQ before ordinary, same native crop/pad/RMS processing"
+  },
+  "direct_coverage_available": true,
+  "NN": 0,
+  "IQ_reads": 0,
+  "checkpoint_reads": 0,
+  "physical_channel_calls": 0,
+  "updates": 0,
+  "target_access": false,
+  "formal_files_read": false,
+  "U_truth_read": false,
+  "candidate_promotion_changed": false,
+  "scientific_goal_claimed": false,
+  "direct_observation": {
+    "path": "PROJECT/runs/20261018-phase1-FcrossRX-temporalBank-e30-s2026092701-m2-r01/B01-s2026092701/source/result.json",
+    "key": "L_channel.strata",
+    "dimensions": [
+      "RX",
+      "day",
+      "scene",
+      "state",
+      "lock"
+    ],
+    "cells": 268,
+    "count": 142080
+  },
+  "wording": "P67 directly observed the RX/day/scene/state/lock coverage. The TX joint counts below are reused from fixed P66 MASS_UNIFORM after matching the complete ordered labeled stream, validated source/label semantics and deterministic channel context; they were not directly serialized by P67. No physical replay or inference of TX from U or physical-ID values was performed.",
+  "joint_counts_directly_serialized_by_P67": false,
+  "wall_seconds": 1.0566362030804157
+}

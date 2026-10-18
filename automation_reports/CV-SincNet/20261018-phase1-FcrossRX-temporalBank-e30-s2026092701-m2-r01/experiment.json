@@ -100,7 +100,7 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_temporal_bank_E30_20261018_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_temporal_bank67/runner.py",
     "stop_rule": "Wrongroles/provenance/runtime/nonfinite/outputcollision or incorrect bank semantics: stop only ownrun,preserve,noautomaticretry. ScientificFAIL stillall7; no seed/mode/threshold rescue.",
-    "status": "RUNNING"
+    "status": "ANALYZED"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
@@ -202,7 +202,7 @@
         "name": "AdamW",
         "state": "reset afterstrictstudentEMA parentload",
         "lr_schedule": "cosine10 original",
-        "teacher": "ownEMA initializedexactfromP43AS20;originalupdatesonly",
+        "teacher": "ownEMA initialized exactly from corresponding P43 NoAs20; original updates only",
         "temporal_cache": "reset empty physical epoch bank;minstreak2"
       },
       "lr": 0.0002,
@@ -275,7 +275,7 @@
         "name": "AdamW",
         "state": "reset afterstrictstudentEMA parentload",
         "lr_schedule": "cosine10 original",
-        "teacher": "ownEMA initializedexactfromP43AS20;originalupdatesonly",
+        "teacher": "ownEMA initialized exactly from corresponding P43 As20; original updates only",
         "temporal_cache": "reset empty physical epoch bank;minstreak2"
       },
       "lr": 0.0002,
@@ -327,7 +327,8 @@
     "Native U accepted ~1.5% in P66 is motivation/coverage, not proof that increasing acceptance improves accuracy.",
     "Source extension requires AS_BANK clean within-.1pp of both matchedNOAS_BANK and originalNOAS30;midlow vsoriginalAS30>=+.5pp;low>=0. Allfour mustpass.",
     "No new Ag requirement or heldsourceRX;no U truth;fixedformalall7aftereachrow.",
-    "VERIFIED_RUNNING:GPU2/3;both cumulativeE21/222newupdates;strictown20+EMA;firstbankepoch0passes;actualnativeargsdifferenceonlytemporalmodeplusrun/output;8NNsmokePASS;no extraNN."
+    "VERIFIED_RUNNING:GPU2/3;both cumulativeE21/222newupdates;strictown20+EMA;firstbankepoch0passes;actualnativeargsdifferenceonlytemporalmodeplusrun/output;8NNsmokePASS;no extraNN.",
+    "ANALYZED: both new own20+10 tails/all7 prediction/truth-last/full CPU analysis complete. Source qualification failed all4 fixed criteria before owner formal metric read; no E50 or rescue. Formal AS_BANK matched clean +0.041071pp, urban +28.405159pp; incremental vs original AS30 urban +0.012103pp/low -0.017262pp/clean -0.086310pp. Single modelseed; no reproducible dual gain. Goal remains active."
   ],
   "registered_at": "2026-10-18T12:51:24+00:00"
 }
