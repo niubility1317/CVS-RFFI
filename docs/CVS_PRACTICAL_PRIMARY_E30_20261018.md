@@ -223,3 +223,14 @@ root先取回source并保存关闭决定：fullVclean BAL−NOAS30−.118519pp�
 
 
 tailNoU已实际启动：代码 17cc611299091815ea71f744a32dcac96818ca4b；dispatcher1417383，B00/B01worker1417411/1417493在GPU0/1。单次普通preflight/归档比较/compile VERIFIED，1540NN真实双父＋两6L首步smokePASS后训练。source roles/strictown20学生、父EMA验证但子不构建、actualNoU/NoEMA、原6L1.25/ORD128/defaulthead核实；PID/CWD/argv/CUDA/nvidia/log增长VERIFIED。0NN分析1419028 WAIT_SOURCE，truthclosed，尚无新结果或E50扩展。
+
+
+## tailNoU E30：全部完成，源规则关闭
+
+20261018-phase1-FcrossRX-tailNoU-e30-s2026092701-m2-r01已完成两条own原20+10，总E30/6660更新，全部source及clean＋六practical固定预测/独立truth-last评分；四逻辑条件504CM/84分区独立核对。代码/配置/分析17cc611299091815ea71f744a32dcac96818ca4b，所有所属PID结束，无技术缺项。新增20model-epochs/4440updates/6436668NN含1540smoke；两尾段真实U/teacher/EMA均0，childEMA=None，原6L1.25/ORD128/defaulthead/Asraw64保留，父20U7历史不改。去U改变RNG/计算，不能归为纯伪标签loss效应。
+
+主线程先保存源决定：fullVclean新As−新NoAs−.133333pp、two-drawmidlow新As−原As＋.097222pp，两固定条件均FAIL，故关闭固定tailNoU，不扩E50/扫U/phase/seed。正式不反向改判。
+
+正式n1：新As clean85.330357%、midurban63.033333%、lowurban51.437500%、urbanmean64.140675%；相对匹配新NoAs clean＋.216071pp、mid＋28.002381、low＋21.278571pp，本seed通过−.1pp阶段界限。相对原As，仅mid＋.226786、low＋.193452、urbanmean＋.201389、clean−.010714pp。新NoAs自身clean下降.133333pp，不能将整个相对差扩大归为As改善。三个suburban81.641667/78.769048/76.018452%，距自身clean3.688690/6.561310/9.311905pp；不接近最初2pp探索建议，也不能把clean下降贡献算作保护。
+
+本轮支持“去U末段有n1小幅星地增量且clean对原As基本不变”的描述，不支持源晋级、稳定双提升或“U普遍有害”的结论。原完整As继续作匹配参照；当前无本侧训练/预测/评分进程，也无已登记下一候选。研究目标仍未完成，不由本次formal微差选择新机制。完整[最终报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-tailNoU-e30-s2026092701-m2-r01/final_analysis.md)含全7/F1/最差RX/错误修复新增/交互/成本及缺项。

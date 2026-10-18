@@ -1,5 +1,5 @@
 {
-  "status": "RUNNING_VERIFIED",
+  "status": "ANALYZED_VERIFIED",
   "run_id": "20261018-phase1-FcrossRX-tailNoU-e30-s2026092701-m2-r01",
   "local_checks": {
     "status": "PASS",
@@ -373,5 +373,115 @@
       "NN": 0
     }
   },
-  "technical_failure": null
+  "technical_failure": null,
+  "source_collection": {
+    "status": "VERIFIED",
+    "file_count": 5,
+    "archive_SHA256": "afd1c87fc543bd3e4d02c20c570da511f5eecfa4e698c967c9e696de75aa72b0"
+  },
+  "source_decision_before_root_formal_read": {
+    "status": "SOURCE_DECISION_SAVED_BEFORE_ROOT_FORMAL_READ",
+    "run_id": "20261018-phase1-FcrossRX-tailNoU-e30-s2026092701-m2-r01",
+    "observed_at": "2026-10-18T11:55:19.817Z",
+    "decision": {
+      "fullV_clean_vs_matched_NoAs_pp": -0.13333333333332975,
+      "mid_low_mean_vs_original_As30_pp": 0.09722222222221522,
+      "clean_vs_matched_NoAs_within_absolute_0p1pp": false,
+      "mid_low_gain_at_least_0p5pp": false,
+      "source_criteria_pass": false,
+      "E50_source_eligible": false,
+      "fixed_recipe_closed": true,
+      "fullV_clean_vs_original_As30_pp": -0.05555555555555314,
+      "fullV_clean_vs_original_NoAs30_pp": -0.159259259259259,
+      "fullV_clean_interaction_pp": -0.0296296296296239,
+      "mid_low_mean_interaction_pp": 0.6944444444444364,
+      "only_two_source_criteria": true,
+      "scientific_negative_skips_formal": false,
+      "target_scores_read": false,
+      "automatic_extension": false
+    },
+    "source_archive_SHA256": "afd1c87fc543bd3e4d02c20c570da511f5eecfa4e698c967c9e696de75aa72b0",
+    "formal_scores_read": false,
+    "new_budget_started": false
+  },
+  "final_collection": {
+    "status": "VERIFIED",
+    "file_count": 11,
+    "archive_SHA256": "cfb82f90eda8d4cb43c137d72680b3f15f37cfbe5309f3a83ee601e3e8538697",
+    "model_NN": 0
+  },
+  "final_completion": {
+    "status": "ANALYZED",
+    "training_run": "20261018-phase1-FcrossRX-tailNoU-e30-s2026092701-m2-r01",
+    "analysis_code_commit": "17cc611299091815ea71f744a32dcac96818ca4b",
+    "source_complete": true,
+    "formal_complete": true,
+    "log_records_complete": true,
+    "model_seed_count": 1,
+    "new_model_rows": 2,
+    "reused_model_rows": 2,
+    "NN": 0,
+    "IQ": 0,
+    "CP": 0,
+    "updates": 0,
+    "training_processes_untouched": true,
+    "pipeline_wall_including_wait_seconds": 844.9387418490369,
+    "repeatable_clean_positive_proven": false,
+    "goal_complete": false
+  },
+  "final_processes": {
+    "dispatcher_alive": false,
+    "rows": {
+      "B00-s2026092701": {
+        "alive": false,
+        "complete": {
+          "status": "TRAINED_AND_SCORED",
+          "row_id": "B00-s2026092701"
+        },
+        "all7prediction": true,
+        "independent_scoring": true,
+        "updates": 2220,
+        "U_packets": 0,
+        "teacher_train_NN": 0,
+        "teacher_eval_NN": 0,
+        "EMA_updates": 0
+      },
+      "B01-s2026092701": {
+        "alive": false,
+        "complete": {
+          "status": "TRAINED_AND_SCORED",
+          "row_id": "B01-s2026092701"
+        },
+        "all7prediction": true,
+        "independent_scoring": true,
+        "updates": 2220,
+        "U_packets": 0,
+        "teacher_train_NN": 0,
+        "teacher_eval_NN": 0,
+        "EMA_updates": 0
+      }
+    },
+    "analysis_alive": false,
+    "analysis_complete": "ANALYZED",
+    "failure": null
+  },
+  "metric_recount": {
+    "independent_confusion_matrices": 504,
+    "partition_reconciliations": 84,
+    "independent_recount": "VERIFIED"
+  },
+  "cost_summary": {
+    "new_model_epochs": 20,
+    "new_updates": 4440,
+    "new_total_NN": 6436668,
+    "smoke_NN": 1540,
+    "teacher_tail_NN": 0
+  },
+  "scientific_status": {
+    "fixed_recipe_closed": true,
+    "E50_source_eligible": false,
+    "single_seed_clean_guard_pass": true,
+    "repeatable_dual_gain_proven": false,
+    "goal_complete": false
+  }
 }

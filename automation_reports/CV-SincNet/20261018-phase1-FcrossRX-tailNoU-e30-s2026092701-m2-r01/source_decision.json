@@ -1,0 +1,25 @@
+{
+  "status": "SOURCE_DECISION_SAVED_BEFORE_ROOT_FORMAL_READ",
+  "run_id": "20261018-phase1-FcrossRX-tailNoU-e30-s2026092701-m2-r01",
+  "observed_at": "2026-10-18T11:55:19.817Z",
+  "decision": {
+    "fullV_clean_vs_matched_NoAs_pp": -0.13333333333332975,
+    "mid_low_mean_vs_original_As30_pp": 0.09722222222221522,
+    "clean_vs_matched_NoAs_within_absolute_0p1pp": false,
+    "mid_low_gain_at_least_0p5pp": false,
+    "source_criteria_pass": false,
+    "E50_source_eligible": false,
+    "fixed_recipe_closed": true,
+    "fullV_clean_vs_original_As30_pp": -0.05555555555555314,
+    "fullV_clean_vs_original_NoAs30_pp": -0.159259259259259,
+    "fullV_clean_interaction_pp": -0.0296296296296239,
+    "mid_low_mean_interaction_pp": 0.6944444444444364,
+    "only_two_source_criteria": true,
+    "scientific_negative_skips_formal": false,
+    "target_scores_read": false,
+    "automatic_extension": false
+  },
+  "source_archive_SHA256": "afd1c87fc543bd3e4d02c20c570da511f5eecfa4e698c967c9e696de75aa72b0",
+  "formal_scores_read": false,
+  "new_budget_started": false
+}

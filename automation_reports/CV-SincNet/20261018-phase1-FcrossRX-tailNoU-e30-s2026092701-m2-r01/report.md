@@ -1,6 +1,6 @@
 # 末段 NoU × 完整 practical：单种子 E30 最小比较
 
-状态：PLANNED；已登记、实现中，未发布或训练。实际代码 commit 在冻结实现后填写，不将准备写成运行。
+状态：ANALYZED／VERIFIED。两新行总E30与全部clean＋六practical独立评分完整，代码 17cc611299091815ea71f744a32dcac96818ca4b。固定源双条件失败关闭，不E50；正式n1的clean阶段护栏通过，不等于重复双提升。完整指标与成本见[最终分析](final_analysis.md)和[精简结果](results.json)。以下保留预登记及实际过程记录。
 
 唯一假设：原 F＋CROSS_RX 的有标签完整 practical 已在前20轮建立适应后，末10轮移除原 U 伪标签训练，能否提高固定 practical low/mid urban，同时让 clean 对匹配 NoAs 的下降不超过0.1个绝对百分点。现有尾段 U 目标标量约占原As总目标0.481%；这不是梯度归因或识别收益，也不预判去U有效。
 
@@ -46,3 +46,5 @@
 本地实现109项聚焦负例/19py+2remoteAST、分析4AST/10toy PASS；唯一合并审查P0=0/P1=0。真实1540NN烟测及远端发布尚未执行，无新增识别成绩。
 
 已实际启动：代码 17cc611299091815ea71f744a32dcac96818ca4b；dispatcher1417383，B00worker1417411/GPU0、B01worker1417493/GPU1。一次普通preflight/归档比较/编译VERIFIED；1540NN首步真实smokePASS直接训练；PID/CWD/argv/CUDA/nvidia/loggrowth和actualuseU/EMAfalse核实。两行各已完成新增1/10轮，0NN分析1419028 WAIT_SOURCE/truthclosed。无新性能结果，预算仍总E30。
+
+最终：新增2×10model-epochs/4440updates/6436668NN含1540smoke；四逻辑条件×7完整，504CM/84分区独立复算，所有本run进程结束。源先保存FAIL（clean−.133333pp，midlow＋.097222pp），随后root读取正式。新As clean85.330357%，相对匹配新NoAs＋.216071pp；low51.437500%、mid63.033333%、urbanmean64.140675%。对原As增量low＋.193452、mid＋.226786、clean−.010714pp；n1不能证明重复clean/星地双提升。固定配方不扩E50/扫U/换seed，既定全部评分无缺项。source inference wall未单记，计数完整并明确度量边界。
