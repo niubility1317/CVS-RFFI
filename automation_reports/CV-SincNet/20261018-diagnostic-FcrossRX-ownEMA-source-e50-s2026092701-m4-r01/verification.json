@@ -1,0 +1,17 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "run_id": "20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r01",
+  "local_protocol_negative_cases": 41,
+  "synthetic_metric_recount": "PASS",
+  "AST_python_files": 8,
+  "AST_emitted_remote_scripts": 2,
+  "local_checkpoint_reads": 0,
+  "local_IQ_reads": 0,
+  "local_NN": 0,
+  "local_updates": 0,
+  "independent_P0P1": "PASS",
+  "actual_real_checkpoint_smoke": "PENDING_LAUNCHER_FIRST_STEP",
+  "source_readout": "NOT_STARTED",
+  "formal": false,
+  "expected_source_NN": 133204
+}

@@ -70,3 +70,9 @@ clean 配对逐种子：+0.365476／+0.436905／−1.252976 pp；两个通过、
 本轮唯一预算假设已得到 urban 增益支持，但“更多预算足以实现 clean 基本不降／重复双提升”未通过。现有源摘要不足以支持一个独立新机制，不强造新候选，也不继续超出 E50。下一候选仍聚焦完整 practical 的简单训练组织；在明确改变哪个源域可观察原因后，再固定一个主要变化、同预算同 seed NoAs／原 As 对照和放弃条件，正式分数不参与参数、候选、seed 或选择性重跑。当前最终研究目标未完成。
 
 完整逐种子、六场、F1、最差 RX、错误修复和新错及预算交互见 [E50 最终报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01/final_analysis.md)。
+
+## 下一项已固定的源域最小比较
+
+现已登记 `20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r01`：仅固定01已有E50的NoAs／As，各比较student与ownEMA完整状态。代码核实原正式与source均为student；本次不新增EMA、训练、头或部署分支。历史SIGTIME／BASE_SSL clean-only E20的EMA曾多错3个，保留负结果；当前F／CROSS_RX／As50训练来源改变，不能用旧CE下降证明本次有效。
+
+full V27000四条件逐ID读出，原V1800与两次固定三场practical观测保持，学生panel预测复用。固定源判定：AsEMA−NoAsEMA clean≥−.1绝对pp；AsEMA−AsStudent fullV净修复≥0；mid／low等权合并净修复>0。逐场／draw／RX／F1／错误配对全部报告，不设每cell涨分或预测保持门槛。差分交互只作归因，不把通用EMA收益写成As独有收益。负结果完整收尾后关闭固定读出，不扫描衰减／epoch／seed救跑。预期新增133204次前向，0训练更新；本轮source-only，暂不访问formal。单种子source通过也不证明最终重复双提升。
