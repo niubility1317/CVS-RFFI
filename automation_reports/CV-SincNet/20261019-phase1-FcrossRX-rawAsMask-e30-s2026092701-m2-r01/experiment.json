@@ -1,0 +1,298 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-FcrossRX-rawAsMask-e30-s2026092701-m2-r01",
+  "group_id": "phase1-FcrossRX-base160-rawAs-mask-correlation",
+  "display_name": "完整practical下raw与As的base160掩码相关性：匹配E30",
+  "description": "As64与同物理raw64仅原fuse.2 p=.45由独立改同mask；保留RD两次独立/原globalRNG/所有损失与前向，原序nominal池复用不加权",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "P72",
+    "rawAsMask72",
+    "MASK_SHARED",
+    "MASK_INDEPENDENT"
+  ],
+  "tags": [
+    "phase1",
+    "F",
+    "fullsource",
+    "default-head",
+    "E30",
+    "practical",
+    "dropout-correlation",
+    "single-seed"
+  ],
+  "comparison_group_id": "P72-private-independent-versus-rawAs-identical",
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Latest user: satellite-first, clean drop<=0.1 absolutepp, fullsource/noheldRX, fixedF+CROSS_RX/defaulthead, E30; good source-qualified recipes may totalE50; active goal authorizes implementation/matched trials/all7 independent scoring. No extra heads/targetfeedback/healthy-task mutation.",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 existing ordinary CVS-RFFI Python3.10.19 Torch2.1.0+cu121 NumPy2.2.5; FP32 CPU2",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_rawAsMask_E30_20261019_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Unchanged original7/63/30 source physical roles; existing VALIDATED_ONCE fixed formal IQ",
+    "representation": "equalized1/native perpacketRMS center=false;float32 Bx2x256/fs25MHz;full residual/post_sync/EQoffG1/ref30/reflect;As fromraw,no extra ordinary PA/noise beforeAs;trainingfc2.462GHz/fixedformal2.45GHz unchanged",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "Same original6TX map;no new or U truth",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      "fixedmanifest7unseenRX;nevertrain"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original6registeredTX;formalmanifest classmappingunchanged",
+    "roles": {
+      "L_s": 6300,
+      "U_s_hidden": 56700,
+      "V": 27000
+    },
+    "train_ratio": "7/63/30 wholepool;10% labeled trainingpool;noheldRX/Ldev",
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "ExistingPhase1 source handles and fixedformalmanifest;Phase2 p2capsule/splitN/A",
+    "support_query_ref": "Phase1,no support;source/target disjoint fixedformalmanifest",
+    "leo_config_ref": "PROJECT/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/manifest.json"
+  },
+  "permissions": {
+    "regime": "source_only_training_then_frozen_target_prediction",
+    "query_use": "Frozen defaulthead all7 fixed received IQ predictions;truthlast independent perrow only afterall7complete;formal scores never candidate/seed/parameter/promotion feedback",
+    "external_method_exception": null,
+    "claim_scope": "Only stochastic correlation of existing base160 fuse.2 raw/As masks; no added physical/identity information, risk change, losses or modules. PA/reference/SIG residuals added later, not entire joint160 coupling. No targetfeedback."
+  },
+  "checkpoint": {
+    "initialization": "strict original P43 scratchAs20 student/ownEMA, not P70 final; fresh AdamW/cos10/CENTER_UNITS",
+    "sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Same previously verified original P43 As20 fullsource/final-only provenance and exact runtime roles",
+    "provenance_verdict": "Exact original source-only parent reused; strict real-checkpoint load first launcher step",
+    "selection_rule": "Original source-only FINAL20; new fixed FINAL30/final_only"
+  },
+  "execution": {
+    "host": "N607 ordinary nonprivileged account",
+    "launch_owner": "codex/root/raw-as-mask72",
+    "gpu_policy": "1new row,max2 total GPU processes inclotherowners,free>=12000MB; protect healthy runs",
+    "remote_run_root": "PROJECT/runs/20261019-phase1-FcrossRX-rawAsMask-e30-s2026092701-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261019-phase1-FcrossRX-rawAsMask-e30-s2026092701-m2-r01/logs",
+    "local_artifact_root": "local_artifacts/cvs_FcrossRX_rawAsMask_E30_20261019_r01",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_raw_as_mask72/runner.py",
+    "stop_rule": "Wrong data roles/parent/pool/current raw-As physical ID y domain/origin step mismatch, wrong mask p/module/call count, nonfinite, outputcollision or budget discrepancy stops own failed row, preserves outputs, no automatic retry. Healthy peers finish; sourceFAIL still all7.",
+    "status": "PREREGISTERED"
+  },
+  "expected_artifacts": [
+    "real_checkpoint_smoke.json",
+    "ROW/source/resolved_config.json",
+    "ROW/source/actual_modules.json",
+    "ROW/source/source_contract.json",
+    "ROW/source/initialization.json",
+    "ROW/source/EMA_initialization.json",
+    "ROW/source/mask_initialization.json",
+    "ROW/source/mask_steps.jsonl.gz",
+    "ROW/source/ordered_steps.jsonl.gz",
+    "ROW/source/ordered_pool_final.json",
+    "ROW/source/step_metrics.jsonl.gz",
+    "ROW/source/training_sequence.jsonl.gz",
+    "ROW/source/metrics_epoch.jsonl",
+    "ROW/source/final_ssdg.pth",
+    "ROW/source/source_frozen.json",
+    "ROW/source/completion.json",
+    "ROW/source_qualification/complete.json",
+    "source_matrix_decision.json",
+    "ROW/prediction/all7fixed",
+    "ROW/scoring/scores.json",
+    "analysis_r01/complete.json",
+    "analysis_r01/fullcurves source_strata paired_errors costs mask_PNG_PDF"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "worst_RX",
+      "urban_mean",
+      "pairedclean_pp",
+      "pairedrepair_newerror",
+      "source_margin_over30",
+      "fixedparentclean_retention",
+      "mask keep/pair overlap/scope/globalRNG accounting",
+      "actualNN/updates/wall"
+    ],
+    "dimensions": [
+      "MASK_INDEPENDENT",
+      "MASK_SHARED",
+      "reusedP43NOAS30/AS30",
+      "seed2026092701",
+      "all7formalviews",
+      "source1800x2draw",
+      "RX",
+      "TX",
+      "day",
+      "state/lock/addednoise",
+      "maskpair"
+    ],
+    "prediction_ref": "PROJECT/runs/20261019-phase1-FcrossRX-rawAsMask-e30-s2026092701-m2-r01/I1-s2026092701,prediction and S1-s2026092701/prediction; P43refs reused",
+    "scorer_ref": "Separate CPU scorer only after each row all7 fixed; final CPU analysis validates all4 logical rows all7 before truth joins"
+  },
+  "rows": [
+    {
+      "row_id": "I1-s2026092701",
+      "method": "MASK_INDEPENDENT",
+      "purpose": "Isolate raw-As IDENTICAL versus independent private mask correlation at existing fuse.2, same As20/pool/original order/all objectives/NN",
+      "config_ref": "experiments/cvs_raw_as_mask72/design.py#config",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-FcrossRX-rawAsMask-e30-s2026092701-m2-r01/I1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "held_source_RX": null,
+        "L": 6300,
+        "U_hidden": 56700,
+        "V": 27000,
+        "new_Ag": false,
+        "all5sourceRX": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original physicaltrain20261016421/hardware20261016423; reuse source-only P70 original-order nominal observation pool. Private maskseed20261019072 shared arms keyed cumulative step/RDrop pair/role, no TX; formalIQ unchanged, source2draw not modelseeds. Global native RNG original draws preserved.",
+      "k": null,
+      "scenario": "Original full residual lowSub/midUrban/lowUrban, nominal original64pack order; no quality weighting/rejection/regeneration",
+      "optimizer": {
+        "name": "AdamW",
+        "state": "RESET sameP43As20+10",
+        "lr_schedule": "newcos10 originalCENTER_UNITS",
+        "teacher": "ownEMA sameP43As20 originalU rules",
+        "temporal": "batch_neighbor unchanged"
+      },
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Each ownAs20+10 total30/6660, two new10/4440updates; eachnative3162962+source12600+formal1176002,sharedrealCPsmoke4=8703132newNN. No new physicalsimulation or extraNN frommask. No maskseed/p/site scan.",
+      "output_root": "PROJECT/runs/20261019-phase1-FcrossRX-rawAsMask-e30-s2026092701-m2-r01/I1-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-FcrossRX-rawAsMask-e30-s2026092701-m2-r01/logs/I1-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_raw_as_mask72/runner.py",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "ROW/source/resolved_config.json",
+        "ROW/source/actual_modules.json",
+        "ROW/source/source_contract.json",
+        "ROW/source/initialization.json",
+        "ROW/source/EMA_initialization.json",
+        "ROW/source/mask_initialization.json",
+        "ROW/source/mask_steps.jsonl.gz",
+        "ROW/source/ordered_steps.jsonl.gz",
+        "ROW/source/ordered_pool_final.json",
+        "ROW/source/step_metrics.jsonl.gz",
+        "ROW/source/training_sequence.jsonl.gz",
+        "ROW/source/metrics_epoch.jsonl",
+        "ROW/source/final_ssdg.pth",
+        "ROW/source/source_frozen.json",
+        "ROW/source/completion.json",
+        "ROW/source_qualification/complete.json",
+        "source_matrix_decision.json",
+        "ROW/prediction/all7fixed",
+        "ROW/scoring/scores.json",
+        "analysis_r01/complete.json",
+        "analysis_r01/fullcurves source_strata paired_errors costs mask_PNG_PDF"
+      ]
+    },
+    {
+      "row_id": "S1-s2026092701",
+      "method": "MASK_SHARED",
+      "purpose": "Isolate raw-As IDENTICAL versus independent private mask correlation at existing fuse.2, same As20/pool/original order/all objectives/NN",
+      "config_ref": "experiments/cvs_raw_as_mask72/design.py#config",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-FcrossRX-rawAsMask-e30-s2026092701-m2-r01/S1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "held_source_RX": null,
+        "L": 6300,
+        "U_hidden": 56700,
+        "V": 27000,
+        "new_Ag": false,
+        "all5sourceRX": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original physicaltrain20261016421/hardware20261016423; reuse source-only P70 original-order nominal observation pool. Private maskseed20261019072 shared arms keyed cumulative step/RDrop pair/role, no TX; formalIQ unchanged, source2draw not modelseeds. Global native RNG original draws preserved.",
+      "k": null,
+      "scenario": "Original full residual lowSub/midUrban/lowUrban, nominal original64pack order; no quality weighting/rejection/regeneration",
+      "optimizer": {
+        "name": "AdamW",
+        "state": "RESET sameP43As20+10",
+        "lr_schedule": "newcos10 originalCENTER_UNITS",
+        "teacher": "ownEMA sameP43As20 originalU rules",
+        "temporal": "batch_neighbor unchanged"
+      },
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Each ownAs20+10 total30/6660, two new10/4440updates; eachnative3162962+source12600+formal1176002,sharedrealCPsmoke4=8703132newNN. No new physicalsimulation or extraNN frommask. No maskseed/p/site scan.",
+      "output_root": "PROJECT/runs/20261019-phase1-FcrossRX-rawAsMask-e30-s2026092701-m2-r01/S1-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-FcrossRX-rawAsMask-e30-s2026092701-m2-r01/logs/S1-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_raw_as_mask72/runner.py",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "ROW/source/resolved_config.json",
+        "ROW/source/actual_modules.json",
+        "ROW/source/source_contract.json",
+        "ROW/source/initialization.json",
+        "ROW/source/EMA_initialization.json",
+        "ROW/source/mask_initialization.json",
+        "ROW/source/mask_steps.jsonl.gz",
+        "ROW/source/ordered_steps.jsonl.gz",
+        "ROW/source/ordered_pool_final.json",
+        "ROW/source/step_metrics.jsonl.gz",
+        "ROW/source/training_sequence.jsonl.gz",
+        "ROW/source/metrics_epoch.jsonl",
+        "ROW/source/final_ssdg.pth",
+        "ROW/source/source_frozen.json",
+        "ROW/source/completion.json",
+        "ROW/source_qualification/complete.json",
+        "source_matrix_decision.json",
+        "ROW/prediction/all7fixed",
+        "ROW/scoring/scores.json",
+        "analysis_r01/complete.json",
+        "analysis_r01/fullcurves source_strata paired_errors costs mask_PNG_PDF"
+      ]
+    }
+  ],
+  "notes": [
+    "Latest satellite-first target, clean<=.1 absolutepp vs matchedNoAs, eventual repeatable cleanpositive+lowurban>60 remain unproven.",
+    "P71 fixed risk sourceFAIL closed; do not load P70/P71 trainedmodel or stack risk/U/other mechanisms. U practical three-row route active in referencedchat, not duplicated.",
+    "PROP_GROUP already trained and closed; ANTITHETIC priorordinary-As13encoder dropout includes thislayer. New critical contrast only thisbase160 layer, rawpair, IDENTICALpositive correlation; no new physicalinformation.",
+    "Fused base160 lies before PA/reference/SIG_TIME addition; do not call entirejointmask or force feature equality. Existing p=.45 and sameIQ KL remain.",
+    "Two private mask arms match perview marginals and randomstreams. Global originalDropoutcalls still execute; replacementuses pre-dropoutinput*private scaledmask, never double dropout. RD A/B independent, U/EMA/eval unmodified.",
+    "P70 originalpool generated from exact P43 rawL sequence beforeupdates; everycurrent64pack fullphysicalkey/y/domain origin verified, each observationoneuse. 0newsimulation, 0quality weighting.",
+    "Source2rules: fullVcleanS-NoAs>=-.1pp and pooledmidlowS-I>=+.5pp. Fail closesfixedrecipe/noE50/seed rescue; all7 stillautomatic.",
+    "Onlymodelseed1; totalE50onlylater sourcequalified goodrecipe withmatchedcontrols. No formalfeedback."
+  ],
+  "registered_at": "2026-10-18T17:41:41+00:00"
+}
