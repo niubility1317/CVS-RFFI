@@ -1,0 +1,164 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-diagnostic-FcrossRX-ampm-LtoV-manysig-m1-r01",
+  "group_id": "phase1-F-crossRX-AMPM-LtoV-source",
+  "display_name": "全源 RX：幅度相关相位函数的跨 TX/day 源检验",
+  "description": "L-only bounded amplitude dependent phase functional translation predicts V RX differences;identity/additive/TXconditional controls;no IQ views/model/training/target",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "F_CROSS_RX",
+    "all5RX",
+    "AMPM",
+    "source_L_to_V",
+    "zero_NN",
+    "no_target"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active joint Ag+As goal;latest E30 allsource fixedF/defaulthead;source-only premise falsification",
+  "code": {
+    "commit": null,
+    "checkout": "codex/phase1-urban-sigtime-20261014",
+    "environment": "N607 ordinary CVS-RFFI Python NumPy/Torch, CPU2 CUDA hidden;no model",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_ampm_source_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing VALIDATED_ONCE source carrier",
+    "representation": "eq1 IQ256/25MHz/RMS centerfalse,adjacent nonlinear phase coherence",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#/role_ids",
+    "label_map_ref": "Original sixTX mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "All6TX",
+    "roles": {
+      "L_s": 6300,
+      "U_s": "56700 TX hidden unused",
+      "V": 27000
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "NOT_APPLICABLE_NO_PHASE2",
+    "split_id": 392005,
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701/source_cache.pt#validation",
+    "support_query_ref": "NOT_APPLICABLE_NO_QUERY",
+    "leo_config_ref": "NOT_APPLICABLE_NO_CHANNEL"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "NO_TARGET_OR_QUERY",
+    "external_method_exception": null,
+    "claim_scope": "Source nonlinear phase relation only;not physical RX identification/identity preservation/recognition improvement"
+  },
+  "checkpoint": {
+    "initialization": "NONE_NO_MODEL",
+    "sources": [],
+    "contract_check_ref": "reuse unchanged source carrier role_ids",
+    "provenance_verdict": "NOT_APPLICABLE_NO_MODEL_CHECKPOINT",
+    "selection_rule": "No checkpoint selected"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/ampm-source48",
+    "gpu_policy": "CPU2 CUDA hidden;no interference with healthy runs",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-ampm-LtoV-manysig-m1-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-ampm-LtoV-manysig-m1-r01-launch",
+    "local_artifact_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_ampm_source_20261018",
+    "launch_command": "CVS-RFFI/bin/python -u -m experiments.cvs_ampm_source48.run",
+    "stop_rule": "Owned input role mismatch/nonfinite/outputcollision/exception => preserve no automaticretry;scientific FAIL closes fixed AMPM premise/no strength/feature rescue"
+  },
+  "expected_artifacts": [
+    "checks.json",
+    "active.json",
+    "resolved_config.json",
+    "observations.npz private derived only",
+    "result.json",
+    "completion.json or failure.json",
+    "independent_analysis/independent_recount.json",
+    "independent_analysis/source_RX.csv",
+    "independent_analysis/source_folds.csv",
+    "independent_analysis/source_ampm_effects.png/pdf"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "shared/identity/additive/TXconditional SSE",
+      "18folds improving",
+      "fiveRX SSE",
+      "boundaryfits",
+      "L fitted beta",
+      "realcost"
+    ],
+    "dimensions": [
+      "L/V",
+      "6TX",
+      "5RX",
+      "3day",
+      "18 statistical TX/day folds"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-ampm-LtoV-manysig-m1-r01/observations.npz",
+    "scorer_ref": "experiments/cvs_ampm_source48/recount.py source-only no truthscorer"
+  },
+  "rows": [
+    {
+      "row_id": "AMPM_TRANSLATION_L_TO_V",
+      "method": "Bounded scalar amplitude dependent phase functional translation",
+      "purpose": "single fixed source falsification",
+      "config_ref": "experiments/cvs_ampm_source48/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-ampm-LtoV-manysig-m1-r01/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only existing split392005;all computations deterministic,no model/augmentation/support/evaluation random streams",
+      "k": null,
+      "scenario": "Source clean only no generated channel",
+      "optimizer": "none,closed finite21point L-only readout fit",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "33,300 source packets;90 cells/role;72 fits;0 NN/train;subsequent model capE30 unaffected",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-ampm-LtoV-manysig-m1-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-ampm-LtoV-manysig-m1-r01-launch/stdout.log",
+      "command": "CVS-RFFI/bin/python -u -m experiments.cvs_ampm_source48.run",
+      "expected_artifacts": [
+        "checks.json",
+        "active.json",
+        "resolved_config.json",
+        "observations.npz private derived only",
+        "result.json",
+        "completion.json or failure.json",
+        "independent_analysis/independent_recount.json",
+        "independent_analysis/source_RX.csv",
+        "independent_analysis/source_folds.csv",
+        "independent_analysis/source_ampm_effects.png/pdf"
+      ]
+    }
+  ],
+  "notes": [
+    "V only read-only prediction validation;no backprop/EMA/prototypes/normalization state",
+    "all5RX retained;TX/day statistical folds are not training-domain holdout",
+    "No extra checkpoint smoke since no model machinery consumed",
+    "Ordinary data preprocessing preserved;no new IQ training transformation"
+  ],
+  "registered_at": "2026-10-18T00:05:25+00:00"
+}
