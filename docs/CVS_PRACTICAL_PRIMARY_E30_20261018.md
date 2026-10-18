@@ -329,3 +329,12 @@ UPractical R01实际preflight技术失败：冻结native不存在假定模块tru
 
 
 UPractical R02已实际VERIFIED_RUNNING：训练/分析代码 fa9b272aa400ed3403e8f550c50a6957ec0f8588，fresh2356NN无query真实父/3L+U hook smoke PASS；三worker N1679880 GPU2、C1679964 GPU3、S1680115 GPU4，strictown20/全L6300 U56700hidden V27000/commonteacher-only/defaulthead/6L与PID/CWD/argv/CUDA/nvidia/loggrowth核实。最新N完成cumE22/444updates，C/S cumE21/222updates，S首轮UAs14175、teacher/studentU各56700且extraU NN0；无failure。源analysis1681190 source-only WAIT_SOURCE/truthclosed，all7/scorer自动收尾，owner先源后formal读取，E50未启动／新性能未评分。旧failed770仍单列，原R01产物保留。
+
+
+## 2026-10-19 U practical E30 固定配方完成
+
+Run `20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02`，实际代码 `fa9b272aa400ed3403e8f550c50a6957ec0f8588`。匹配 N/C/S 三行各 own20+10、totalE30，保持 full L6300/U56700 hiddenTX/V27000、全部源 RX/day 与默认头；没有训练 RX 留出。三行原 U 资格共同去学生 strong agreement，N/C Gaussian，S 仅把已有四分之一 U 学生槽位改为完整 practical(rawU)，无新 NN/loss/头。源固定两条件在正式读分前均 FAIL（S−C midlow−0.069444pp，fullV clean S−matchedN−0.137037pp），固定配方关闭、不 E50。
+
+正式 all7 已完成且独立复计 630CM/105 分区。S clean85.138690%，相对 matchedN−0.150595pp，阶段限制 FAIL；S−C clean−0.151190、midurban−0.040476、lowurban+0.083929、urbanmean−0.032738pp，low绝对51.360714%。单模型种子，未获可重复双提升。三行新尾段合计6660更新；有效训练/读出/smoke13057048样本前向，旧首步失败770另列，候选整尝试13057818。S额外141750传播，candidate native1388.747s/control1158.070s；前向不增加不代表零成本。
+
+完整结果：[最终分析](../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02/final_analysis.md)，源决定、全部F1/最差RX/分层/纠错/成本均保留。健康训练自然退出，未重启或热改；实际状态ANALYZED/VERIFIED，未达总研究目标。

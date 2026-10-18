@@ -1,0 +1,110 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02",
+  "code_commit": "fa9b272aa400ed3403e8f550c50a6957ec0f8588",
+  "actual_training": {
+    "N01-s2026092701": {
+      "epoch": 10,
+      "cumulative_epoch": 30,
+      "steps": 2220,
+      "cumulative_steps": 6660,
+      "L_NN": 1704960,
+      "L_As": 0,
+      "U_NN": 567000,
+      "teacher_NN": 567000,
+      "U_As": 0,
+      "U_selected_slots": 141750,
+      "extra_U_NN": 0,
+      "U_truth_read": false,
+      "target_access": false
+    },
+    "C01-s2026092701": {
+      "epoch": 10,
+      "cumulative_epoch": 30,
+      "steps": 2220,
+      "cumulative_steps": 6660,
+      "L_NN": 1704960,
+      "L_As": 142080,
+      "U_NN": 567000,
+      "teacher_NN": 567000,
+      "U_As": 0,
+      "U_selected_slots": 141750,
+      "extra_U_NN": 0,
+      "U_truth_read": false,
+      "target_access": false
+    },
+    "S01-s2026092701": {
+      "epoch": 10,
+      "cumulative_epoch": 30,
+      "steps": 2220,
+      "cumulative_steps": 6660,
+      "L_NN": 1704960,
+      "L_As": 142080,
+      "U_NN": 567000,
+      "teacher_NN": 567000,
+      "U_As": 141750,
+      "U_selected_slots": 141750,
+      "extra_U_NN": 0,
+      "U_truth_read": false,
+      "target_access": false
+    }
+  },
+  "rows_complete": {
+    "N01-s2026092701": {
+      "source": true,
+      "source_panel": true,
+      "prediction": true,
+      "scoring": true,
+      "worker_alive": false
+    },
+    "C01-s2026092701": {
+      "source": true,
+      "source_panel": true,
+      "prediction": true,
+      "scoring": true,
+      "worker_alive": false
+    },
+    "S01-s2026092701": {
+      "source": true,
+      "source_panel": true,
+      "prediction": true,
+      "scoring": true,
+      "worker_alive": false
+    }
+  },
+  "dispatcher_alive": false,
+  "source_decision_saved_before_formal_read": true,
+  "source_criteria_pass": false,
+  "fixed_recipe_closed": true,
+  "E50_started": false,
+  "smoke_status": "PASS",
+  "smoke_NN": 2356,
+  "real_checkpoint_NN": 4,
+  "independent_confusion_matrices": 630,
+  "partition_reconciliations": 105,
+  "independent_recount": "VERIFIED",
+  "analysis": {
+    "status": "ANALYZED",
+    "training_run": "20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02",
+    "analysis_code_commit": "fa9b272aa400ed3403e8f550c50a6957ec0f8588",
+    "source_complete": true,
+    "formal_complete": true,
+    "log_records_complete": true,
+    "model_seed_count": 1,
+    "new_model_rows": 3,
+    "reused_model_rows": 2,
+    "NN": 0,
+    "IQ": 0,
+    "CP": 0,
+    "updates": 0,
+    "training_processes_untouched": true,
+    "final_wall_including_wait_seconds": 20.633864264003932,
+    "repeatable_clean_positive_proven": false,
+    "goal_complete": false
+  },
+  "model_seed_count": 1,
+  "formal_stage_guard_met": false,
+  "repeatable_dual_gain_proven": false,
+  "missing": [],
+  "collected_at_UTC": "2026-10-18T18:19:24.984Z"
+}

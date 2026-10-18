@@ -106,7 +106,7 @@
     "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_u_practical30/runner.py",
     "stop_rule": "Only own systemic technical/protocol/data-role/parent/head/nonfinite/output/prediction-closing failure;preserve outputs,no blindretry. Scientificnegative does not stop same-row fixed all7 closure.",
-    "status": "RUNNING"
+    "status": "ANALYZED"
   },
   "expected_artifacts": [
     "synthetic_smoke.json",
@@ -173,7 +173,7 @@
       "seed_notes": "Model2026092701 andsplit392005 fixed. Original native model seed also controls DataLoader/ordinary torch RNG;no separate data seed. L channel original seed vector and U independently named private RNG fixed in resolved config,not a single augmentation scalar. Evaluation reuses fixed received arrays/sourcepanel,not resampled;support not applicable. Matching formulas/budget do not guarantee equal training trajectories.",
       "k": null,
       "scenario": "No L or U satellite augmentation;GaussianU commonteacher-only eligibility;fixed clean+sixpractical test",
-      "optimizer": "OriginalresetAdamW lr2e-4 WD1e-4 cos10 min1e-6;strictownAs20student+EMA",
+      "optimizer": "OriginalresetAdamW lr2e-4 WD1e-4 cos10 min1e-6;strictownNoAs20student+EMA",
       "lr": 0.0002,
       "epochs": 10,
       "fl_rounds": null,
@@ -286,7 +286,8 @@
     "Frozen launcher smoke expected2356NN=two uniqueparents4 + three actualL probes2304 + three nativeU teacher24/student24. Fullthree-tail/readouts expected13054692 plus2356=13057048;actual counters and any failedattempts supersede estimate.",
     "Technicalreplacement of20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m2-r01:only native logginghook binding fixed against actualfrozen source;scientificN/C/S recipes and sourcecriteria unchanged. Old770NN separatelycharged,no updates/realIQ/prop/workers.",
     "Valid newrun expected13057048NN includes2356smoke;chain knowncost13057818 adds failed770,actual counters supersede estimates.",
-    "Actual2356NN noquery/sourcehook smoke PASS;all3 workers actualGPU2/3/4 alive/CWD/cmdline/CUDA/nvidia/loggrowth VERIFIED. Commonteacheronly flags/strictown20/fullL6300U56700hiddenV27000 rolehandles readbackmatches. Sourceanalysis1681190 WAIT_SOURCE/truthclosed;formal phase notlaunched,performancepending. FailedR01770 separatelypreserved."
+    "Actual2356NN noquery/sourcehook smoke PASS;all3 workers actualGPU2/3/4 alive/CWD/cmdline/CUDA/nvidia/loggrowth VERIFIED. Commonteacheronly flags/strictown20/fullL6300U56700hiddenV27000 rolehandles readbackmatches. Sourceanalysis1681190 WAIT_SOURCE/truthclosed;formal phase notlaunched,performancepending. FailedR01770 separatelypreserved.",
+    "All three E10 tails/totalE30 and all7 independent truth-last complete;630CM/105partitions verified. Source both criteria FAIL saved before formal read; fixed quarter U recipe closed/noE50. Formal S-N clean -0.150595pp, stage FAIL; S-C low +0.083929,mid -0.040476,urbanmean -0.032738pp. n1 no repeatabledual gain; costs include failed R01 770NN separately."
   ],
   "comparators": [
     {

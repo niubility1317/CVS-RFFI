@@ -51,3 +51,6 @@ L 路径按各自对应原 P43 配方保持6L／768 packets per update：N 的 s
 
 
 R02实际发布：代码 fa9b272aa400ed3403e8f550c50a6957ec0f8588，单次ordinary preflight/archive comparison/compile VERIFIED；2356NN真实父＋三行实际L/U smoke PASS直接训练。dispatcher1679756，N1679880/GPU2、C1679964/GPU3、S1680115/GPU4，CWD/argv/CUDA/nvidia/log增长独立核实，actualargs三行teacher-only均False、own20父/源6300/56700/27000一致。源analysis1681190仅phase source，WAIT_SOURCE/truthclosed，随后owner先保存源决定再显式phase final；训练row各自all7预测＋separate scorer自动接续。0新性能结论、不宣称阶段或最终目标完成，E50未启动。
+
+
+最终执行状态：ANALYZED。三行新增尾段各 E10／2220 更新，累计 E30；source／七视图 prediction／独立 truth-last／完整分析已完成，缺项 0。源两判据 FAIL 在 owner 读取正式分数前已保存，固定四分之一 U 配方关闭、不扩 E50。正式 clean S−匹配 N=−0.150595 pp，阶段限制未满足。完整结果、纠错、F1/最差 RX、分层、实际成本和技术失败成本见[最终分析](final_analysis.md)。训练与分析代码 fa9b272aa400ed3403e8f550c50a6957ec0f8588，真实烟测与终态 VERIFIED。上述 RUNNING／待执行语句保留当时记录，不代表当前状态。
