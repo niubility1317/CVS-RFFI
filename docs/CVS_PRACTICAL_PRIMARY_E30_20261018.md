@@ -104,3 +104,11 @@ full V27000四条件逐ID读出，原V1800与两次固定三场practical观测�
 全部2220步／10轮及418行native日志已解析；6L／总尺度1.25，142080As，6300L物理ID全覆盖，次数11至36（不声称逐ID与原配方相同）；4440条L／U物理序列与2220个ordinary MSE记录对原尾段均零差异。新增4353102NN含smoke1538，父20原生4797722NN及旧对照不重计。独立378CM／63分区合并核对PASS，取回11汇总文件，无技术缺项。r01只读分析曾误映射新版totalL字段，保留0NN失败；r02基于真实首末记录修复，8项定点检查PASS，未重训／重复预测／评分。所有本侧进程已退出。
 
 当前无已登记的新候选。原完整As继续作为有源域和正式星地收益的匹配参照，E50三seed的clean负结果保持；下一机制只根据合法源结果及未检验的关键假设确定，不用本次正式微差选seed／参数／方向。完整[本行报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-stepALT-e30-s2026092701-m1-r01/final_analysis.md)。研究目标仍未完成。
+
+## 下一项唯一假设：现有As的监督份额
+
+已登记`20261018-phase1-FcrossRX-Asweight-e30-s2026092701-m2-r01`，实现中，尚未启动。保持原As64／全部IQ和6L／总尺度1.25，仅将mixed槽ordinary／selected权重.25/.25改为.125/.375；.5primaryordinary、.25raw、原CROSS_RX和U保持。As行的selected是As(raw)，NoAs行selected实际是raw.clone（保留原代码路径），所以新增各自own20+10两行，与原两E30复用组成4逻辑条件。有效clean权重1.0→.875、As.25→.375是明确监督转移，不能冒称clean总份额不变。与peer普通PA旁路不同，不改物理信道或普通增强。
+
+本轮源E50推进规则提前固定为：newAs fullV clean对原As≥−.1pp，源mid／low两draw等权对原As≥+.5pp；其余源结果及NoAs控制、交互完整报告，不加额外门槛。此增量规则不追溯改写旧stepALT关闭决定。任一失败关闭固定.375权重，不扫权重/seed救跑；科学负结果仍全部正式收尾。正式stage依旧newAs对匹配newNoAs clean≥−.1pp，并另报原NoAs。全部原数据／默认头／来源边界、预算和原测试IQ不变。
+
+发布前按真实调用纠正文案：原P43 B00的NoAs.apply输入raw[mask]并返回raw.clone，不是配置文案所暗示的ordinary。新两行均保留原IQ／RNG；NoAs权重为ordinary.75/raw.5→ordinary.625/raw.625，As因子为selected raw→As(raw)。原代码／历史结果／健康任务不改。
