@@ -36,3 +36,5 @@ As50相对NoAs50，clean修复4153包、新增错误3539包，净修复614包；
 实际信道口径另经原始元数据核实：训练 `source/actual_channel.json` 的fc为2.462GHz；固定正式 `received_views/manifest.json` 六场景以及固定源面板 `observations/actual_engine.json` 的fc均为2.45GHz，fs均25MHz。源面板EQ=false、post_sync、reference_snr_db=30。这纠正了引用报告“训练／正式2.462GHz”的文字；没有修改信道、IQ或运行配置，也不据此推断性能原因。
 
 保存读出：[独立评分汇总](<E:/type10-7/local_artifacts/cvs_FcrossRX_continuous_recovery_E30_20261018_r01/E50_automatic_summary_observed.json>)；[先于正式读出的源域汇总](<E:/type10-7/local_artifacts/cvs_FcrossRX_continuous_recovery_E30_20261018_r01/E50_source_before_formal_summary.json>)；[原owner登记与报告](<E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01/report.md>)。
+
+后续状态：原定 02／03 匹配复制已完成。请以 [三种子完整读出](<E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-continuous-recovery-e30-s2026092701-m1-r01/E50_three_seed_readout.md>) 判断重复性；本页保留单种子阶段历史，已不代表当前全部种子状态。
