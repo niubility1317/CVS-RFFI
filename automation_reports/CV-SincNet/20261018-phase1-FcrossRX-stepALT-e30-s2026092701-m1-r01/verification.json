@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_VERIFIED_UNIQUE_P0P1_PASS",
+  "status": "VERIFIED_RUNNING",
   "run_id": "20261018-phase1-FcrossRX-stepALT-e30-s2026092701-m1-r01",
   "focused_checks": "PASS33NEGATIVE_AND_ACTUAL_MIXEDVIEW_MOCK128_0",
   "local_execution": {
@@ -10,19 +10,57 @@
   },
   "static_compile": "PASS18PY_AND_2REMOTE_AST",
   "training_started": false,
-  "real_checkpoint_smoke": "LAUNCHER_FIRST_PENDING",
+  "real_checkpoint_smoke": {
+    "status": "PASS",
+    "NN": 2,
+    "query": 0,
+    "updates": 0
+  },
   "new_E30_epochs": 10,
   "total_epochs": 30,
   "E50_extension": "NOT_STARTED_ONLY_SOURCE_SUPPORTED",
-  "technical_missing_items": [
-    "actualcodecommit",
-    "remote_release_and_run"
-  ],
+  "technical_missing_items": [],
   "unique_independent_review": {
     "agent": "stepalt_p0p1",
     "P0": 0,
     "P1": 0,
     "status": "PASS",
     "scope": "Directnextrealrunwrongunauthorizeddestructiveunlaunchableorillegalpredictiononly"
-  }
+  },
+  "training_code_commit": "cc9a2dac5e2667dab9d730dd8b618e8e635fc5ca",
+  "remote_branch_OID": "IDENTICAL",
+  "single_archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED18PY",
+  "N607_preflight": "VERIFIED_ONCE_ORDINARY_ACCOUNT_PARENT_ROLES_FIXED_RELEASE_GPU_CAPACITY",
+  "dispatcher_pid": 1233511,
+  "worker_pid": 1233539,
+  "gpu": 0,
+  "postlaunch": "VERIFIED_PID_CWD_ARGV_CUDA_NVIDIASMI_LOG_GROWTH",
+  "log_growth": {
+    "earlier_step_log_bytes": 129190,
+    "later_step_log_bytes": 226761
+  },
+  "two_L_steps_smoke": {
+    "status": "PASS",
+    "NN": 1536,
+    "As": [
+      128,
+      0
+    ],
+    "LNN_each_step": 768,
+    "head_Sinc_joint_gradient": true,
+    "ORD128_scalar_and_gradients_exact": true
+  },
+  "actual_physics_matches_original": true,
+  "source_roles": "EXACT_MATCH",
+  "target_contact": false,
+  "own_EMA": "STRICT_OWN_STAGE20",
+  "optimizer": {
+    "reset": true,
+    "state_entries": 0,
+    "lr": 0.0002,
+    "weight_decay": 0.0001,
+    "schedule": "cosine10"
+  },
+  "performance_results_available": false
 }

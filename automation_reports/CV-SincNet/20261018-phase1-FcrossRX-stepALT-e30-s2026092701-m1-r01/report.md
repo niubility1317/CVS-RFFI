@@ -1,6 +1,6 @@
 # 完整 practical：末 10 轮按训练步骤分配增强
 
-状态：已登记、实现中，尚未启动。固定单种子 2026092701、E20＋10＝总 E30。执行代码提交在发布前记录；当前登记中的提交为规划父提交。
+状态：VERIFIED_RUNNING，GPU 0 训练中。固定单种子 2026092701、E20＋10＝总 E30。执行代码提交在发布前记录；当前登记中的提交为规划父提交。
 
 唯一假设：在每步前向成本、损失尺度、clean 稳定监督和末段 As 总数相同时，将 mixed 视图的增强集中到相邻两个更新中的第一个，可能改变 clean 与 urban 识别的权衡。该假设没有正结果保证。模型没有活动 BatchNorm；本次不作 BatchNorm 解释，也不宣称每个物理 ID 的增强次数一致。
 
@@ -23,3 +23,5 @@
 用户允许有合法源证据的方案进一步研究总 E50；当前候选仅授权执行预登记 E30。源域通过后才考虑单独固定 E50 计划并保留匹配对照，不依据正式分数扩训，也不把 E50 解释为额外 50 轮。
 
 本地验证已完成：33 个协议负例、真实 mixed_view 的两步 mock、18 个 Python 文件与两段远端脚本 AST 均 PASS（0 NN／CP／IQ／更新）。唯一独立 P0／P1 审查 PASS（P0=0、P1=0），覆盖实际 P43／P41 调用、来源、增强份额、U、资源和自动七视图收尾；真实 checkpoint 烟测由启动器首步执行，尚未将静态通过写成训练完成。
+
+实际训练代码 `cc9a2dac5e2667dab9d730dd8b618e8e635fc5ca` 已提交、push 并独立核对远端 OID 一致。单次 N607 普通账户预检、发布归档 SHA 比较和远端编译通过。dispatcher 1233511／worker 1233539 的 PID、CWD、argv、CUDA_VISIBLE_DEVICES 和 nvidia-smi 占用均核实；step 日志由129190增至226761字节，未见本run failure。真实原As20无query烟测2NN、双步1536NN通过后已经直接训练；ORD128实际loss／gradient与原公式精确一致。初始化source_roles=EXACT_MATCH、target_contact=false、严格ownEMA，优化器为空state／resetcosine10。实际信道配置与原As30完全一致。此状态不代表训练／评分完成，没有新性能结果。

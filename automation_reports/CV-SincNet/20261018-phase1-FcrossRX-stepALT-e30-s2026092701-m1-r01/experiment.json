@@ -30,10 +30,11 @@
   "replaces_run_id": null,
   "authorization": "Currentuser practical-primary active research:augmentations/trainingorganization,defaultE30,promisingtotalE50 only.NoextraDG gate/newhead/RXholdout.Currenthealthyotherchat urbanprior .2/.4/.4 unchanged;thisroute prior1/3each/step organizationonly.",
   "code": {
-    "commit": "0c6584ddae37f6ae5657eb0fe1111cd9599e0a68",
+    "commit": "cc9a2dac5e2667dab9d730dd8b618e8e635fc5ca",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "ExistingordinaryN607 CVSRFFI Python/PyTorch originalP43FP32;CPU2;no install/admin;actualimplementationcommitfixedbeforelaunch",
-    "cwd": "PROJECT/releases/cvs_FcrossRX_stepALT_E30_20261018_r01"
+    "cwd": "PROJECT/releases/cvs_FcrossRX_stepALT_E30_20261018_r01",
+    "identity_status": "ACTUAL_TRAINING_RELEASE_COMMIT_REMOTE_OID_VERIFIED"
   },
   "data": {
     "dataset": "ManySig",
@@ -94,7 +95,7 @@
       "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
     ],
     "contract_check_ref": "ReuseP43source.parent_payload originalB01 stage20 strictsourcecontract/roleids/scratchlineage/20epoch4440updates/studentownEMA;newcompletion ownfreshroot/10epoch2220cum30",
-    "provenance_verdict": "KnownoriginalAs20 allL6300/Uhidden/full5RX/V27000 fromscratchfixed20;no targetused forweights/selection.Sameprefix asoriginalAs30control.",
+    "provenance_verdict": "VERIFIED_LIVE_EXACT_SOURCE_ROLES_NO_TARGET_CONTACT_STRICT_OWN_STAGE20_STUDENT_EMA;REALCP_NOQUERY_PASS",
     "selection_rule": "Originalfixedseed01 order;fixedFINAL30only,noepoch/seed/period/startphase tuning;sourceonly evidence foranyfutureextension;formalneverfeedsback"
   },
   "execution": {
@@ -106,7 +107,10 @@
     "local_artifact_root": "local_artifacts/F_As_stepALT_E30_20261018",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_practical_step_alternate30/runner.py",
     "stop_rule": "Onlyrunownedwrongdata/parent/head/nonfinite/costcontract/immutableoutput/unauthorizedprediction/unlaunchablesystemfailure.Preserveoutputs/noautomaticretry;lowperformancedoesnotstopsource orformal.Separateownerfornewrow.",
-    "status": "PLANNED"
+    "status": "RUNNING",
+    "dispatcher_pid": 1233511,
+    "worker_pid": 1233539,
+    "gpu": 0
   },
   "expected_artifacts": [
     "one realcheckpoint noquery twoLstep synthetic smoke128/0+defaulthead/Sinc/backbone gradient,0updates",
