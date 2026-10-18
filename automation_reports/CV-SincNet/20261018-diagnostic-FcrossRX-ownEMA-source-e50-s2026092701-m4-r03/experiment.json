@@ -29,11 +29,11 @@
   "replaces_run_id": "20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r02",
   "authorization": "Current active CVS practical-primary research;user permits source-grounded simple mechanisms within E30/default and promisingrecipe totalE50.No newtraining or budgetextension;no sourceRX holdout;latest01/02/03 fixed As results fully preserved.",
   "code": {
-    "commit": "71855d0007c45b3f2a3d1314e036eb333c0d408f",
+    "commit": "649487724adda1b69243f9efd441f2c05160f781",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "Ordinary N607 existingCVS Python/PyTorch runtime CPU2;no install/admin;actualnewcode commit fixedbefore release",
     "cwd": "PROJECT/releases/cvs_FcrossRX_ownEMA_source_E50_20261018_r03",
-    "identity_status": "ACTUAL_OBSERVATION_LAYOUT_FIX_TO_BE_COMMITTED",
+    "identity_status": "ACTUAL_EXECUTED_COMMIT",
     "implementation_status": "ACTUAL_HEADER_COMPLETION_INPUT_FIX_CHECKS_AND_SCOPED_REVIEW_PASS"
   },
   "data": {
@@ -108,7 +108,10 @@
     "local_artifact_root": "local_artifacts/F_ownEMA_source_E50_20261018_r03",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_practical_ema_source/runner.py",
     "stop_rule": "Only runowned protocol/source-role/parent/state/defaulthead/nonfinite/overwrite/unlaunchable technicalfailure;preserve outputs/no autoretry/no otherPID intervention.Scientificfail completes allsourcecells andcloses fixedreadout recipe.",
-    "status": "LOCAL_VERIFIED"
+    "status": "ANALYZED",
+    "release_commit": "649487724adda1b69243f9efd441f2c05160f781",
+    "pid": 1218189,
+    "alive": false
   },
   "expected_artifacts": [
     "smoke.json",
@@ -287,5 +290,21 @@
     "Technicalreplacementr01:panel IDs are existingopaque24 strings,same asfullV.ids;native5coordinate tuples were wronglycompared.r02joinscanonicalIDs+TXRXday,retainsVboundary.Allcandidate/parent/threshold/budget unchanged.Failedr01cost108004NN6CP27000Vpackets/0updates/0target preserved;fullVredo only due technicalfailure,notselective scientificrerun.",
     "r02canonicalIDjoinPASS,fixedcacheheaderactual[2,3,11,1800,2,256],oldsourcequalfullviewusescondition0.Adapterincorrectlyrequiredconditionaxis1.Fixedactual11layoutbeforemodelreadout;no databyte/role/parameter change.Prior twoattempts216008NN0updates0target preserved."
   ],
-  "registered_at": "2026-10-18T05:34:59+00:00"
+  "registered_at": "2026-10-18T05:34:59+00:00",
+  "results": {
+    "status": "ANALYZED_SCIENTIFIC_NEGATIVE_FIXED_EMA_CLOSED",
+    "source_pass": false,
+    "conditions": {
+      "matched_EMA_fullV_clean_within_0p1pp": true,
+      "AS_EMA_fullV_clean_net_repair_nonnegative": false,
+      "AS_EMA_midlow_equal_weight_net_repair_positive": false
+    },
+    "source_fullV_clean_delta_EMA_vs_NoAsEMA_pp": -0.06666666666666667,
+    "source_AsEMA_vs_student_clean_net": -2,
+    "source_AsEMA_vs_student_midlow_net": -11,
+    "formal": false,
+    "new_NN_all_attempts": 349212,
+    "report": "final_analysis.md",
+    "technical_missing_items": []
+  }
 }

@@ -1,3 +1,5 @@
+**已完成：SOURCE_ANALYZED／VERIFIED，科学负结果，固定EMA读出关闭。** fullV AsEMA相对student净−2包，mid／low合并净−11包，未改善原As；不扩种子、不测试formal、不调衰减系数救跑。完整真实结果及两次技术失败成本见[final_analysis.md](final_analysis.md)。以下为原预登记与技术修复历史，PLANNED字样不代表当前状态。
+
 **r03：原科学矩阵的源输入适配修复，尚未启动。** 两次技术失败保留，合计216008NN／0更新／0target。已实际读取缓存header，形状[2,3,11,1800,2,256]；full视图仍使用原index0。修复将输入metadata／shape检查前移，避免未确认输入即执行fullV。原阈值、固定EMA、原checkpoint／角色／信道均不改变。
 
 # 完整 practical E50：既有 own EMA 的源域默认头匹配比较
@@ -28,4 +30,4 @@
 
 实现已完成：8个Python文件、2段实际remote脚本AST通过，41个协议负例和合成指标重算PASS（0CP／IQ／NN／更新）；唯一P0/P1审查PASS。资源阈值已按登记对齐12000MB并在本次审查中定点读回。真实父smoke与源读出仍待launcher执行，不将本地检查写成远端结果。输出为源域 logits（远端保留）、summary／CM／F1／最差RX／RXdayTX／配对错误／成本与报告，不含正式预测或分数。
 
-实际metadata/header已0NN读回并与修复消费字段一致；定向11轴正例、8负例、检查先于NN的顺序测试及原问题定点复核PASS。input_validation.json记录消费结果，不建新的权限/审批层。
+实际metadata/header已0NN读回并与修复消费字段一致；定向11条件布局正例、8负例、检查先于NN的顺序测试及原问题定点复核PASS。input_validation.json记录消费结果，不建新的权限/审批层。

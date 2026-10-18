@@ -80,3 +80,9 @@ full V27000四条件逐ID读出，原V1800与两次固定三场practical观测�
 原ownEMA source r01已按技术停止规则保留：真实smoke4NN PASS、四fullV完成后，适配代码混用了opaque ID和native辅助元组；108004NN／0更新／0target，无完整科学结果。r02按既有opaque ID与TX／RX／day严格连接，定向正负例和唯一原问题定点复核PASS；科学矩阵、来源与阈值均不改。当前源实验为`20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r02`。
 
 既有源缓存实际含11个条件，r02误写轴长度1而停止，追加108004NN／0更新／0target。已实际0NN核对header/completion；r03固定原11轴结构与index0full，前移输入检查，定向测试及该问题定点复核PASS。两失败合计216008NN保留，不作科学负结果；当前修复run `20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r03`，原科学矩阵不变。
+
+## 既有ownEMA源比较：已完成负结果
+
+`20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r03`已完整完成四条件源读出，实际代码`649487724adda1b69243f9efd441f2c05160f781`。AsEMA−AsStudent：fullV clean修复5／新错7，净−2（−0.007407pp）；mid urban净−4（−0.111111pp），low urban净−7（−0.194444pp），两场均值−0.152778pp。AsEMA−NoAsEMA的fullV clean−0.066667pp在源阶段范围内，但EMA没有改善原As。固定候选关闭，不扩种／不访问formal／不调衰减或epoch救跑；单seed微小负值不外推EMA全局无效。
+
+成功r03新增133204NN／6CP／0训练更新，两个技术失败另216008NN／12CP，路线总349212NN／18CP／0更新；fullV学生命中与原native完全一致，120CM／16分区合并核对PASS，全部源输出完整，无技术缺项。没有新formal结果；E50三seed正式clean−0.150198pp及未取得重复双提升的结论保持。详见[源比较最终报告](../automation_reports/CV-SincNet/20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r03/final_analysis.md)。当前无本侧在训或源读出进程，后续继续以增强训练组织为研究范围，不从本次负结果捏造新的物理退化归因。
