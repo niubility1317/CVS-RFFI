@@ -182,3 +182,13 @@ root在新formal前先取回source并保存决定：newAs−originalAs fullVclea
 clean／mid／low交互−.758929／＋.018452／＋.030357pp，urbanmean交互＋.000198pp，不支持星地协同。新As三suburban81.250595／78.505357／75.793452%，与自身clean差3.242857／5.988095／8.700000pp；不能把clean降低造成的差距缩小算作保护。完整macroF1／最差RX／逐RX-day-TX／修复与新增错误、全部训练日志解析和成本见[最终报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01/final_analysis.md)。
 
 本次唯一假设已否定；当前本侧没有在训／预测／评分进程，也没有登记新的候选。E50授权保留给有源证据支持的配方，不为已关闭机制增加预算。已完成的加权E50三种子证明更多预算的urban收益可重复，但clean代价未满足阶段要求；整体“星地增强同时改善clean”的可重复目标仍未完成。后续只据合法源证据与未检验的关键假设确定新路线，不由本次formal微差推导或挑选方向。
+
+
+## 下一项：As64批内三场景配额
+
+20261018-phase1-FcrossRX-sceneBalance-e30-s2026092701-m1-r01已登记PLANNED，实现中，尚未发布。当前原As本来逐pid IID三scene，本项仅把每步64包scene counts改为21/21/22、cumstep轮换extra、private RNG打乱原64位置；不改物理依赖、损失、ORD128 SupCon／6L1.25／oldU／全源RX／IQ256／默认头。旧sceneCycle是每PID跨6次访问六场覆盖，heldRX1/L5040/8L且源失败，本项不是该周期救跑。仅新增own原As20+10一行，总E30；原NoAs30与As30冻结读出复用，operator对NoAs恒等且无globalRNG或NN改变。
+
+源双条件固定BAL fullVclean−NOAS30≥−.1pp且two-drawmidlow BAL−AS30≥+.5pp；失败关闭配方不扩E50/扫参数/换seed，所有row仍自动all7评分。源通过只支持未来预算内E50资格，先保存source决定，正式不作反馈。唯一假设是减少每step场景混合权重采样方差可否改善practical；当前无性能证据。完整[最小报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-sceneBalance-e30-s2026092701-m1-r01/report.md)。
+
+
+sceneBalance本地代码／分析已冻结：19py／47聚焦负例、全部2220配额／私有RNG／重复PID／实际下游mock／2remoteAST及4analysisAST／9toy PASS，唯一合并P0/P1=0/0。当前没有训练或性能结果；真实770NN烟测由launcher首步执行。nominal1/3不等于与原IID实际每包／逐ID／尾段次数匹配，不把固定分层效果直接称纯梯度方差证据。

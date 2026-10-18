@@ -1,0 +1,227 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-phase1-FcrossRX-sceneBalance-e30-s2026092701-m1-r01",
+  "group_id": "phase1-FcrossRX-practical-withinbatch-scene-balance",
+  "display_name": "F+CROSS_RX practical三场景批内配额 E30 单种子",
+  "description": "Only exact21/21/22 scene counts in originalAs64;extra scene rotates by cumulative step and private permutation maps scene to original positions. Original already IID perpacketmultiscene;newhypothesis reduces perstep mixture-count variance,not new sceneheterogeneity.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "sceneBalance30",
+    "within_step_scene_quota"
+  ],
+  "tags": [
+    "CVS",
+    "Phase1",
+    "F",
+    "CROSS_RX",
+    "As",
+    "scene_balance",
+    "E30",
+    "L6300",
+    "all_source_RX",
+    "default_cosine_head"
+  ],
+  "comparison_group_id": "phase1-FcrossRX-practical-withinbatch-scene-balance",
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Latest user: practical-primary,totalE30,current full training domains/defaulthead/data/fixed formal IQ. Source-supported good recipes may later totalE50. This launch adds one ownAs20+10,total30;no newE50 or teacher training.",
+  "code": {
+    "commit": null,
+    "checkout": "E:/type10-7/code/worktrees/cvs_iq_timing_20261016",
+    "environment": "N607 existingCVS-RFFI/PyTorch fullFP32,CPU2,ordinary account;no installations",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_sceneBalance_E30_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original full-source physical roles,split392005;reuse fixed source/cache and formal received views",
+    "representation": "Existing source IQ256,dataset equalized index1,Fs25MHz;practical residual/post_sync propagation receiver EQ=false/reference_snr_db30,complete original dependency graph;fixed received IQ untouched",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract.role_ids L_s/U_s/V;fixed formal received_views manifest and opaque168000 physical IDs,unchanged",
+    "label_map_ref": "Original map [14-10,14-7,20-15,20-19,6-15,8-20]",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "All six registered originalTX,unchanged source/target registered-class map",
+    "roles": {
+      "L_s": "6300 full original visibleTX across cumulative30epochs;noLdev,no trainingRXholdout",
+      "U_s": "56700 originalTXhidden;oldU/ownEMA only,7+10 cumulativeUepochs,total17;no newU objective",
+      "V": "27000 source validation only,never training/EMA/state updates;fixed existing V1800 two-draw source panel"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "SameVALIDATED_ONCEall5sourceRX/day/physicalL6300 U56700hidden V27000;noLdev/noRXholdout",
+    "support_query_ref": null,
+    "leo_config_ref": "experiments/cvs_practical_scene_balance30/reference_config.json actual originalP43;allthree train scenes1/3 overthree steps;perstep21/21/22 rotated;allphysical residual dependencies/received views unchanged"
+  },
+  "permissions": {
+    "regime": "source_train_then_frozen_truthlast",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Singlefixedseed defaulthead identification;only withinstep scene-count organization. No claim of novel multi-scene augmentation,provenDG,repeatableclean gain or in-orbit validation."
+  },
+  "checkpoint": {
+    "initialization": "STRICT_ORIGINAL_OWN_AS20_STUDENT_AND_EMA_THEN_E10",
+    "sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Reuse originalP43 metadata/physicalrole audit and original source.parent_payload;current same handles checked once atpreflight before realCP smoke;no datarevalidation",
+    "provenance_verdict": "MATCHED_FULL_SOURCE_PRIOR_AUDIT_REUSED;scratch original20/4440/ownEMA/defaulthead/source-onlyfixedFINAL20;currenthandlespreflightpending",
+    "selection_rule": "FixedFINAL30;futureE50eligibility:fullVclean candidate−originalNOAS30>=−.1pp AND paneltwo-drawmidlow candidate−originalAS30>=+.5pp. Fail closesfixedrecipe butall7formalstillrequired;noautomaticextension."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/practical-sceneBalance",
+    "gpu_policy": "EachGPUallownerscomputeprocesses<=3;free>=12000MB;CPU2;dynamiccapacityqueue;healthyjobsuntouched",
+    "remote_run_root": "PROJECT/runs/20261018-phase1-FcrossRX-sceneBalance-e30-s2026092701-m1-r01",
+    "remote_log_root": "PROJECT/runs/20261018-phase1-FcrossRX-sceneBalance-e30-s2026092701-m1-r01/logs",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-sceneBalance-e30-s2026092701-m1-r01",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_practical_scene_balance30/runner.py",
+    "stop_rule": "Only owned systemic technical/protocol/data-role/parent/head/numerical/output/prediction-closing failure;preserve artifacts,no automaticretry. Scientificnegative never stops fixed same-row formal closure."
+  },
+  "expected_artifacts": [
+    "source/final_ssdg.pth",
+    "source/completion.json",
+    "source/source_frozen.json",
+    "source/initialization.json",
+    "source/resolved_config.json",
+    "source/reference_steps.jsonl.gz",
+    "source/shape_steps.jsonl.gz",
+    "source_qualification/complete.json",
+    "prediction/complete.json",
+    "scoring/complete.json",
+    "analysis_auto_r01/source_complete.json",
+    "analysis_auto_r01/source_summary.json",
+    "analysis_auto_r01/training_logs.json",
+    "analysis_auto_r01/formal_summary.json",
+    "analysis_auto_r01/costs.json",
+    "analysis_auto_r01/complete.json",
+    "source/scene_balance_steps.jsonl.gz",
+    "source/training_sequence.jsonl.gz"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macroF1",
+      "worstRX",
+      "paired_delta_pp",
+      "urban3mean",
+      "repairs/new_errors/net",
+      "RX/day/TX",
+      "suburban_selfclean_gap",
+      "actualNN/studentteacher/update/exposure/wall",
+      "perstepscenecountsandlongrunmarginal"
+    ],
+    "dimensions": [
+      "fixedseed2026092701",
+      "NOAS30",
+      "AS30",
+      "BAL_AS30",
+      "sourcefullV27000/fixedV1800twodraw",
+      "clean+sixfixedpractical",
+      "RX/day/TX",
+      "ownparent20/new10/cumulative30"
+    ],
+    "prediction_ref": "PROJECT/runs/20261018-phase1-FcrossRX-sceneBalance-e30-s2026092701-m1-r01/{row}/prediction",
+    "scorer_ref": "Existing independenttruthlast scorer afternewrowall7frozenpred;zeroNN3logicalrecount afterall3x7prediction+independentscore;expected378CM/63partition"
+  },
+  "rows": [
+    {
+      "row_id": "B01-s2026092701",
+      "method": "OriginalP43 fullAs64 with fixedscene21/21/22 cyclicextra/privatepositionpermutation;ORD128SupCon and6L/1.25 unchanged",
+      "purpose": "primary",
+      "config_ref": "experiments/cvs_practical_scene_balance30/design.py",
+      "resolved_config_ref": "PROJECT/runs/20261018-phase1-FcrossRX-sceneBalance-e30-s2026092701-m1-r01/B01-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixedoriginalseed/loader/ordinary/dropout streams;split392005;originaltrainchannel20261016421/val20261016422/receiver20261016423;source/formalfixedobservations unchanged;data/support null notapplicable;fullresolvedactualseedsrecorded,no seedselection.",
+      "k": null,
+      "scenario": "Train originalclean+completepractical3scene strictcounts;fixedclean+sixpracticaltest",
+      "optimizer": "ResetAdamW lr2e-4 WD1e-4 cosine10 min1e-6,sameoriginaltail;strictownoriginal20student/EMA",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "OwnoriginalAs20/4440+new10/2220=total30/6660;6L768/step and1704960LNN,newAs142080;noextraNN,loss,branch,head orteacher;NoAs30/As30 frozenreadoutsreused",
+      "output_root": "PROJECT/runs/20261018-phase1-FcrossRX-sceneBalance-e30-s2026092701-m1-r01/B01-s2026092701",
+      "log_path": "PROJECT/runs/20261018-phase1-FcrossRX-sceneBalance-e30-s2026092701-m1-r01/logs/B01-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_practical_scene_balance30/runner.py --mode worker --row B01-s2026092701",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Original already perpacket IID3scene;exactwithinstepquota changes only samplingdependence/countvariance,not geometry/amplitudes/loss weights.",
+    "Historical sceneCycle is heldRX1/L5040/8L perID sixscene cycle,sourcefailedandclosed;not revived.",
+    "Scene assignment uses private step-key RNG and original64positions,not TX/trueU/confidence/uniquePID or datasetresampling;duplicates preserved if originalsampler emits them.",
+    "OnlyoriginalAs20source-matchedstudentandownEMAloaded;no weighted/MIX/unknown/target-selectedcheckpoint. OriginalNoAs30 andAs30 are readoutcontrols,not initializers.",
+    "NoAs is unchanged identityoperator,doesnot consume globalRNG or addNN;its exact originalE30 readout/cost reused rather than retrained.",
+    "SupCon ORD128/time_down+t2.pool/tau.2/lambda.1;original6L total1.25=.5ordinary+.5mixed+.25raw;Asraw64,oldUanddefaultjointcosineheadunchanged.",
+    "No formalresultsfor design/promotion/seed/parameters/rerun. n1ormicrogain doesnot prove stabledual gain.",
+    "AllsourceRX retained,L6300/U56700hidden/V27000,IQ256,NoExplicitCFO/internalcompensation,fixedformalIQ/channel/SNR/packets unchanged.",
+    "Onlysourcefixedtwo-rule decision,oneindependentP0P1,onecodecommit,focusednegatives,launchfirst770NNnoquerysmoke,singlearchivecompare/compile/poststate/truthlast;noextraapprovalorhashlayers.",
+    "Localcode/analysisfrozen;47focused/19py2AST and4analysisAST9tests PASS;uniqueP0P1=0/0;actualcodecommit/770NNlaunchsmoke/releasepending;notrunning.",
+    "Implementation47focusednegatives/19Python2remoteAST and analysis4AST/9syntheticchecks PASS;no realCP/IQ/NN/remote. Unique P0P1 and actual770NN smoke pending.",
+    "Nominal scene1/3 preserved;not packetwise/perID/realizedIID-tail exposure matched. This fixed allocation effect doesnot isolate pure gradient variance."
+  ],
+  "comparators": [
+    {
+      "label": "NOAS30",
+      "run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+      "row_id": "B00-s2026092701",
+      "reused": true,
+      "epochs": 30,
+      "head": "defaultjointcos",
+      "SupCon": "ORD128"
+    },
+    {
+      "label": "AS30",
+      "run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+      "row_id": "B01-s2026092701",
+      "reused": true,
+      "epochs": 30,
+      "head": "defaultjointcos",
+      "SupCon": "ORD128"
+    }
+  ],
+  "registered_at": "2026-10-18T10:25:15+00:00"
+}
