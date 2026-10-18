@@ -1,0 +1,92 @@
+{
+  "status": "DRAFT_NOT_LAUNCHED",
+  "additional_training_budget": "PENDING_USER_REPLY",
+  "technical_reason": "Original As aborted after E20 because wrapper rejected E21; no trained resumable checkpoint",
+  "model_seed": 2026092701,
+  "proposed_run_id": "20261018-phase1-FcrossRX-continuous-recovery-e30-s2026092701-m1-r01",
+  "proposed_release": "cvs_FcrossRX_continuous_recovery_E30_20261018_r01",
+  "new_training_rows": [
+    "B01-s2026092701"
+  ],
+  "control_reused": {
+    "run_id": "20261018-phase1-FcrossRX-continuous-e30-s2026092701-m2-r01",
+    "row_id": "B00-s2026092701",
+    "epochs": 30,
+    "updates": 6660,
+    "default_head": "jointly trained existing cosine head",
+    "initializes_new_As": false
+  },
+  "new_training": {
+    "scratch": true,
+    "epochs": 30,
+    "label_epochs": 13,
+    "pseudo_epochs": 17,
+    "updates": 6660,
+    "L_NN_per_step": 768,
+    "L_NN": 5114880,
+    "optimizer": "AdamW",
+    "initial_lr": 0.0002,
+    "min_lr": 0.000001,
+    "weight_decay": 0.0001,
+    "schedule": "one continuous cosine30",
+    "parent": null,
+    "checkpoint_initializers": [],
+    "new_Ag": false
+  },
+  "already_incurred": {
+    "complete_control_epochs": 30,
+    "failed_As_complete_epochs": 20,
+    "complete_control_updates": 6660,
+    "failed_As_updates": 4440,
+    "failed_As_has_final_checkpoint": false,
+    "failed_As_total_NN": "UNKNOWN;preserve known lower bound"
+  },
+  "total_actual_cost_if_approved": {
+    "completed_model_epochs": 80,
+    "successful_updates": 17760,
+    "comparison_pair_epochs": 60,
+    "failed_extra_epochs": 20,
+    "NN": "report actual;do not infer from epochs"
+  },
+  "frozen_recipe_invariants": [
+    "original full L6300/U56700 TX-hidden/V27000 and all5source RX",
+    "fixed CVS F+crossRXsameTX SupCon/defaultcos30;normal joint training",
+    "ordinary .5RD + mixed .5RD + raw .25RD;total L1.25;6L forwards",
+    "all valid labeled As receives CE;no new crossview alignment or pseudo-label gates",
+    "original complete practical physics,named stream/session rules,train three scenes",
+    "original U views/gating/EMA;13L17U;no new U satellite",
+    "fixed FINAL30 and old source qualification criteria;new0.1pp reporting only",
+    "original fixed7 formal IQ views,all predictions then independent truthlast"
+  ],
+  "intended_entrypoint": "new immutable release: experiments/cvs_continuous52/runner.py default dispatcher;not executed",
+  "production_changes_after_budget_reply": [
+    "design.py:train_rows B01,row_root reusedB00/newB01,newrunidentity",
+    "dispatch.py:onlyB01 launch and explicitCLI,reusedcontrol readiness",
+    "report.py:row_root routing,new/reused/failed cost accounting",
+    "publish.py:newrelease and run root"
+  ],
+  "validation": {
+    "final_hook_step": 6660,
+    "final_hook_epoch": 30,
+    "synthetic_rows": 2,
+    "synthetic_NN": 1536,
+    "checkpoint_reads": 0,
+    "real_IQ_reads": 0,
+    "optimizer_updates": 0
+  },
+  "control_provenance": {
+    "status": "MATCHED_CONTROL_VERIFIED",
+    "same_source_role_ids": true,
+    "role_counts": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "epochs": 30,
+    "updates": 6660,
+    "scratch_only": true,
+    "selection": "final_only",
+    "checkpoint_initializes_new_As": false,
+    "truthlast_complete": true
+  }
+}

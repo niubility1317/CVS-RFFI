@@ -64,4 +64,13 @@ class Checks(unittest.TestCase):
   tree=ast.parse((Path(__file__).parent/'channel.py').read_text())
   imports=[x for x in tree.body if isinstance(x,ast.ImportFrom) and x.module=='experiments.cvs_crossview_supcon41.channel']
   self.assertEqual([a.name for x in imports for a in x.names],['tensor_iq'])
+ def test_smoke_cost_follows_actual_rows(self):
+  import ast
+  from pathlib import Path
+  tree=ast.parse((Path(__file__).parent/'preflight.py').read_text())
+  fn=next(x for x in tree.body if isinstance(x,ast.FunctionDef) and x.name=='smoke_counts');ns={}
+  exec(compile(ast.Module(body=[fn],type_ignores=[]),'<actual smoke counts>','exec'),ns)
+  for row_count,expected in [(1,770),(2,1538)]:
+   counts=ns['smoke_counts']([dict(NN=768) for _ in range(row_count)],2)
+   self.assertEqual(counts,dict(rows=row_count,NN=768*row_count,real_checkpoint_NN=2,total_NN=expected))
 if __name__=='__main__':unittest.main()
