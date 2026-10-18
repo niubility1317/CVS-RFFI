@@ -1,0 +1,162 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-diagnostic-FcrossRX-iqskew-LtoV-manysig-m1-r01",
+  "group_id": "FcrossRX-IQskew-source-LtoV",
+  "display_name": "I/Q相对时差：完整源L拟合到V的跨TX/day检验",
+  "description": "ZeroNN necessary source crossspectral phase-law falsification;all5RX kept;no newIQ views or physical hardware identification claim.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "fullsource",
+    "IQskew_premise",
+    "LtoV",
+    "0NN",
+    "no_target",
+    "no_RX_holdout"
+  ],
+  "comparison_group_id": "source-IQ-phase-law",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active jointAg+As goal;fixedF/defaulthead/full5RX;newsource-premise diagnostic only,not newtraining or reopening scalarSRO/staticRXMIX",
+  "code": {
+    "commit": "PENDING_FIRST_GIT_COMMIT",
+    "checkout": "codex/phase1-urban-sigtime-20261014",
+    "environment": "N607 ordinary CVS-RFFI Python NumPy/Torch, CPU2 CUDA hidden;no model or installation",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_iqskew_source_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing VALIDATED_ONCE source carrier",
+    "representation": "Existing RMScenterfalse EQ1 IQ256/25MHz;fixed127positive rFFT crossspectrum statistic;no IQ augmentation/deployment normalization",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#/role_ids",
+    "label_map_ref": "Original sixTX mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "All6TX",
+    "roles": {
+      "L_s": "6300/90cells70;all5RX fitting;fixed parity halves for identifiability",
+      "U_s": "56700 hidden/notused",
+      "V": "27000/90cells300;read-only fixedsource predictions"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "NOT_APPLICABLE_NO_PHASE2",
+    "split_id": 392005,
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701/source_cache.pt#validation",
+    "support_query_ref": "NOT_APPLICABLE_NO_QUERY",
+    "leo_config_ref": "NOT_APPLICABLE_NO_CHANNEL"
+  },
+  "permissions": {
+    "regime": "Source_only_LtoV_statistical_falsification",
+    "L_s": "6300 legalvisible labels;physics parameter fits only",
+    "U_s": "No usage/no label access",
+    "V": "27000 read-only evaluation;no fitted weights or parameter updates;RX1 reference observable is input to heldgroup prediction,not paired packets",
+    "query_use": "Forbidden;no query/IQ/truth or Phase1 model",
+    "claim_scope": "Necessary source phase-law evidence only,not identified hardware/finitewindow physicaldelay/identitygain or Agsuccess",
+    "separate_head_training": false
+  },
+  "checkpoint": {
+    "initialization": "NONE_NO_MODEL",
+    "sources": [],
+    "contract_check_ref": "Reuse original unchanged VALIDATED_ONCE source carrier handles and exactL/V roleIDs",
+    "provenance_verdict": "NOT_APPLICABLE_NO_MODEL_CHECKPOINT",
+    "selection_rule": "No checkpoint selected;cache derived model state ignored"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/iqskew-source50",
+    "gpu_policy": "No GPU allocated;CUDA hidden;CPU2;no other process changes",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-iqskew-LtoV-manysig-m1-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-iqskew-LtoV-manysig-m1-r01-launch",
+    "local_artifact_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_iqskew_source_20261018",
+    "launch_command": "CVS-RFFI/bin/python -u -m experiments.cvs_iqskew_source50.run",
+    "stop_rule": "Owned role/config mismatch/nonfinite/collision or numerical-recount failure preserves outputs;no auto retry. ScientificFAIL naturally completes and closes fixedphase-law;no bins/bound/RX/reference/seed rescue."
+  },
+  "expected_artifacts": [
+    "9syntheticchecks/noCPsmokeapplicable",
+    "resolved sourceconfig/roles and activePID",
+    "L/V derivedperiodograms private observations.npz",
+    "Lsplit coherentpower,72fits,18fold/5RX sourceSSE/result",
+    "independent numericalrecount/CSV/PNG/PDF,completion/failure",
+    "curated report/registry/Git"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "L crosshalf coherentpower",
+      "shared/identity/additive/TXconditional V_SSE",
+      "18fold improvements",
+      "5RX risk",
+      "boundary fits",
+      "relative phase-law fitted delays",
+      "realcost"
+    ],
+    "dimensions": [
+      "L/V",
+      "6TX",
+      "5RX",
+      "3day",
+      "127fixedpositivefrequencybins",
+      "18heldTX/day statisticalfolds"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-iqskew-LtoV-manysig-m1-r01/observations.npz",
+    "scorer_ref": "experiments/cvs_iqskew_source50/recount.py sourceonly,no truthscorer"
+  },
+  "rows": [
+    {
+      "row_id": "IQ_SKEW_PHASE_L_TO_V",
+      "method": "IQ_SKEW_PHASE_SOURCE_STATISTIC",
+      "purpose": "Falsify one commonRXrelative-delay phase law against arbitraryadditive andTXconditional RXcontrasts",
+      "config_ref": "experiments/cvs_iqskew_source50/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-iqskew-LtoV-manysig-m1-r01/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No model/random augment seed;reuse fixed physicalsource roles/order;synthetictests2050 only.18TX/day folds are statistical,not models.",
+      "k": null,
+      "scenario": "Source clean only no generated channel",
+      "optimizer": "NONE_NO_MODEL",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": 0,
+      "budget_ref": "33300 sourceIQpackets used;0NN/CP/train/teacher/head/target;72physicalstatistic fits",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-iqskew-LtoV-manysig-m1-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-iqskew-LtoV-manysig-m1-r01-launch/stdout.log",
+      "command": "CVS-RFFI/bin/python -u -m experiments.cvs_iqskew_source50.run",
+      "expected_artifacts": [
+        "9syntheticchecks/noCPsmokeapplicable",
+        "resolved sourceconfig/roles and activePID",
+        "L/V derivedperiodograms private observations.npz",
+        "Lsplit coherentpower,72fits,18fold/5RX sourceSSE/result",
+        "independent numericalrecount/CSV/PNG/PDF,completion/failure",
+        "curated report/registry/Git"
+      ]
+    }
+  ],
+  "notes": [
+    "Currentruntime ordinary already includes Wienerphase noise;not proposed again.",
+    "Existing scalarSRO and memoryless RXMIX source/training failures remain closed.",
+    "No periodic/reflect IQ is generated;finite256 crossspectrum signature is a necessary statisticalmodel,not exact physical delay identification.",
+    "PASS would only support a separately preregistered finitewindow/defaulthead identity test before E30 IQtraining;not automatic neural promotion.",
+    "Original sourcecache may deserialize otherderivedstate;only originalL/V datafields used,no inherited network state.",
+    "No testmetric or targetstate used to set this design."
+  ]
+}

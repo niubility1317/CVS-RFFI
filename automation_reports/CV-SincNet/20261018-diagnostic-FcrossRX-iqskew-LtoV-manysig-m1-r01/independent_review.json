@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "scope": "One candidate G0 direct P0/P1 only",
+  "reviewer": "cleanretain37_p0p1",
+  "findings": [],
+  "verified": [
+    "phase sign",
+    "heldTX/day isolation",
+    "V reference statistic scope",
+    "L disjoint parity halves",
+    "independent recount",
+    "isolated package marker"
+  ],
+  "reviewer_real_IQ_access": false,
+  "reviewer_CP_or_target_access": false,
+  "reviewer_remote_actions": false,
+  "unit_tests": 9,
+  "synthetic_recount_values": 16916400,
+  "synthetic_plotting": "MOCKED_ONLY",
+  "extra_reviews_required": false
+}
