@@ -1,0 +1,165 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "d14450bf1b0d12cc281df1f4d0e79e8760e48282",
+  "remote_branch_matches": true,
+  "release_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "independent_P0": 0,
+  "independent_P1": 0,
+  "first_step_smoke": {
+    "status": "PASS",
+    "total_NN": 1540,
+    "real_checkpoint_NN": 4,
+    "real_IQ": 0,
+    "target_query": 0,
+    "updates": 0,
+    "synthetic_ordinary_generation_packets": 512,
+    "records": [
+      {
+        "row_id": "B00-s2026092701",
+        "NN": 768,
+        "As_IQ": 0,
+        "selected64": 64,
+        "cumulative_epoch": 21,
+        "cumulative_step": 4441,
+        "full_ordinary_slot_SupCon": true,
+        "actual_anchor_input": "raw128",
+        "ordinary_raw_MSE": 0,
+        "discardedordinary_MSE": 1.960821509361267,
+        "ordinary_factory_calls": 1,
+        "wrapped_L_calls": 1,
+        "synthetic_ordinary_generation_packets": 256,
+        "same_call_Python_Torch_NumPy_RNG": true,
+        "U_strong_native_unwrapped": true,
+        "original_U_and_EMA_enabled": true,
+        "extra_NN": 0,
+        "head_joint_gradient": true,
+        "Sinc_joint_gradient": true,
+        "backbone_joint_gradient": true,
+        "optimizer_updates": 0
+      },
+      {
+        "row_id": "B01-s2026092701",
+        "NN": 768,
+        "As_IQ": 64,
+        "selected64": 64,
+        "cumulative_epoch": 21,
+        "cumulative_step": 4441,
+        "full_ordinary_slot_SupCon": true,
+        "actual_anchor_input": "raw128",
+        "ordinary_raw_MSE": 0,
+        "discardedordinary_MSE": 1.9582509994506836,
+        "ordinary_factory_calls": 1,
+        "wrapped_L_calls": 1,
+        "synthetic_ordinary_generation_packets": 256,
+        "same_call_Python_Torch_NumPy_RNG": true,
+        "U_strong_native_unwrapped": true,
+        "original_U_and_EMA_enabled": true,
+        "extra_NN": 0,
+        "head_joint_gradient": true,
+        "Sinc_joint_gradient": true,
+        "backbone_joint_gradient": true,
+        "optimizer_updates": 0
+      }
+    ]
+  },
+  "dispatcher": {
+    "pid": 1444556,
+    "alive": true,
+    "CWD_correct": true,
+    "argv_correct": true,
+    "cuda": [
+      "CUDA_VISIBLE_DEVICES="
+    ],
+    "mode": "dispatcher"
+  },
+  "rows": {
+    "B00-s2026092701": {
+      "process": {
+        "pid": 1444640,
+        "alive": true,
+        "CWD_correct": true,
+        "argv_correct": true,
+        "cuda": [
+          "CUDA_VISIBLE_DEVICES=0"
+        ],
+        "mode": "worker"
+      },
+      "GPU": 0,
+      "source_roles_equal": true,
+      "own_source_only_checkpoint": true,
+      "target_contact": false,
+      "actual_native_flags": {
+        "epochs": 10,
+        "label_epochs": 0,
+        "pseudo_epochs": 10,
+        "use_aug": true,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "lambda_u": 0.16,
+        "lambda_ent": 0.01
+      }
+    },
+    "B01-s2026092701": {
+      "process": {
+        "pid": 1444720,
+        "alive": true,
+        "CWD_correct": true,
+        "argv_correct": true,
+        "cuda": [
+          "CUDA_VISIBLE_DEVICES=1"
+        ],
+        "mode": "worker"
+      },
+      "GPU": 1,
+      "source_roles_equal": true,
+      "own_source_only_checkpoint": true,
+      "target_contact": false,
+      "actual_native_flags": {
+        "epochs": 10,
+        "label_epochs": 0,
+        "pseudo_epochs": 10,
+        "use_aug": true,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "lambda_u": 0.16,
+        "lambda_ent": 0.01
+      }
+    }
+  },
+  "global_GPU_counts": {
+    "0": 1,
+    "1": 1,
+    "2": 0,
+    "3": 0,
+    "4": 0,
+    "5": 0,
+    "6": 0,
+    "7": 0
+  },
+  "cap3": true,
+  "log_growth": true,
+  "analysis_process": {
+    "pid": 1445589,
+    "alive": true,
+    "CWD_correct": true,
+    "argv_correct": true,
+    "cuda": [
+      "CUDA_VISIBLE_DEVICES="
+    ],
+    "mode": "dispatcher"
+  },
+  "analysis_state": {
+    "status": "WAIT_SOURCE",
+    "live_owned_PIDs": [
+      1444556,
+      1444640,
+      1444720
+    ],
+    "observation_unknown": false,
+    "truth_opened": false,
+    "NN": 0
+  },
+  "performance": "PENDING",
+  "source_decision": "PENDING"
+}

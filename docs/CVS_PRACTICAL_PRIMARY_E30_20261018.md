@@ -241,3 +241,6 @@ tailNoU已实际启动：代码 17cc611299091815ea71f744a32dcac96818ca4b；dispa
 20261018-phase1-FcrossRX-LRaw-e30-s2026092701-m2-r01已登记PLANNED，实现中，未启动。仅新增两条原P43 own20student+EMA+10，总E30，旧NoAs30/As30读出复用。唯一变量为L专属ordinary输出改precallrawclone；原oldaug仍执行一次作RNG/成本控制但输出弃用，Uweak/strong/EMA原规则保持。原6L1.25/Asraw64/ORD128（实际anchor输入raw）/defaulthead/全源RX和IQ256保持，前20ordinary历史不改。PA-only历史已做，本项旁路整链输出及其归一化尾部；原As本来raw，不称修复重复损伤。
 
 源规则仅newAs fullVclean−newNoAs≥−.1pp且twodrawmidlownewAs−oldAs≥+.5pp；失败关闭固定方案，不E50/扫开关/seed，全部all7仍自动评分。局部call RNG可验证，整个训练轨迹不假定相同，原aug计算并未省掉。RXpopulation/calibration-refresh已有actualE30，不重开。详见[预登记](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-LRaw-e30-s2026092701-m2-r01/report.md)。
+
+
+LRaw已实际启动：代码 d14450bf1b0d12cc281df1f4d0e79e8760e48282；双own20+10 worker1444640/1444720在GPU0/1，首步1540NN真实烟测PASS，原U/EMA/ordinary factory实际开关与源物理角色匹配。自动all7/独立truth-last及0NN分析1445589已接通；性能尚未产生，source先读规则不变。

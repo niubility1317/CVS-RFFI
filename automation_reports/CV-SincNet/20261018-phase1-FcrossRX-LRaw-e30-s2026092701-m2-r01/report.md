@@ -37,3 +37,8 @@
 仅本run数据/父来源/数值/默认头/输出冲突/非法预测或系统技术失败停止新调度并保留产物，健康行可收尾，不自动重试；不以性能早停。一个普通preflight、一次release归档比较/远端compile、launcher首步smoke及一次PID/CWD/argv/GPU/log增长核实；一次直接P0/P1审查及必要问题定点复核，不加报告形式审批、seal或多层hash。
 
 预期每row source checkpoint/completion/source_frozen/initialization/actualargs/ordinaryactual/EMA和optimizer说明、完整10epoch/2220step/原loss分解/实际L/U序列/包装输出记录、source、七view predictions/score/complete；0NN分析4logic/504CM/84分区、源决定/同row报告/成本/登记。数据/权重/原prediction/log/私有runtime不入Git。既有暴露基准背景保留，不声称新盲测或真实在轨验证。
+
+
+## 实际启动
+
+代码 d14450bf1b0d12cc281df1f4d0e79e8760e48282；真实首步烟测1540NN PASS，synthetic ordinary生成512包、0 realIQ/query/更新。双worker PID1444640/1444720、GPU0/1；dispatcher1444556。独立PID/CWD/argv/GPU/log增长和源角色/strictownparent/U/EMA实际开关VERIFIED。0NN分析1445589等待source，正式结果未读。源判据仍固定，不提前解释性能。
