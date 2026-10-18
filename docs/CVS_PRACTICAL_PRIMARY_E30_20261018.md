@@ -206,3 +206,10 @@ root先取回source并保存关闭决定：fullVclean BAL−NOAS30−.118519pp�
 正式n1：BALclean85.395833%、midurban62.796429%、lowurban51.233929%、urbanmean63.940873%；相对匹配原NoAs30 clean＋.148214pp、mid/low＋27.663690/＋21.094048pp，本seed满足clean−.1pp阶段护栏。对原As30，clean仅＋.054762pp、mid/low各−.010119pp、urbanmean仅＋.001587pp，没有实质新增星地收益；单seed和微小涨幅不证明重复双提升。三个suburban81.376190/78.624405/75.802976%，与自身clean差4.019643/6.771429/9.592857pp，比原As扩大。low<60%，整体目标仍未完成。
 
 固定配方已关闭。当前本侧无已登记新候选或运行进程，E50授权保留给有合法源证据支持的配方；不由本次formalclean正差反向晋级、换父模型或选seed。原完整As继续作匹配参照。完整[最终报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-sceneBalance-e30-s2026092701-m1-r01/final_analysis.md)包括全七view、macroF1/最差RX、源两draw、错误修复/新增、成本与缺项，三组图95点核对通过。source inference wall未单记，不伪造；图和report不作为新的审批层。
+
+
+## 本轮去重：N0 与延迟 As 均已有匹配训练
+
+本轮核对实际发布源码、登记和源统计：完整 practical 内 0.5/1.5N0 随机化已有匹配 E30 训练并按原判据关闭；NoAs20→As10 也在全 5 RX/L6300 的 carrierGate AS_BATCH 与 shadowLHS AS_NATIVE 中完成，源 V1800 clean 对匹配 NoAs 为−.500000/−.444444pp。其4L/As128与当前6L/As64不同，不据此泛化为所有延迟As无效，也不把接口/剂量差异包装成新关键假设重开。N0源输入失败与后续独立训练关闭的依据分开记录。
+
+原完整As及固定加权As的E50三seed已完成；相对ownAs30的low/mid urban分别＋1.156746/＋.954167pp与＋1.199603/＋.995437pp，但相对匹配NoAs50的clean为−.150198pp与−.672817pp，均未满足−.1pp阶段要求。更多预算的urban收益可重复，clean与星地双提升仍无重复证据。本轮0新增更新/NN/CP/IQ/远端执行/正式预测评分，无新候选登记；E50不超过总50轮，失败配方不加预算救跑。完整[去重与预算边界](../analysis/cvs_practical_route_dedup_20261018.md)。
