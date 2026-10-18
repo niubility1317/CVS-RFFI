@@ -281,3 +281,5 @@ E50实际新增14922588NN（smoke1540）、40modelE/8880更新；每行native627
 近邻CE_T2/CE_HALF已actual全5RX/6L E30且sourceFAIL，但两者仍LS=.01；新q熵与温度/整体权重梯度不同。本次不重开AsPairCE删KL、LRaw/NoU/weight/sceneBalance/stepALT/MIXcontrast等。另一对话最新在查同NN双独立完整As观测，本侧不重复。时间相关性审计显示scatter名义10.2us内约.0302度、重复收缩等已按各自源判据关闭，不重命名重开。
 
 source固定newAs fullVclean−原NoAs30>=−.1pp且two-drawV1800 midlownewAs−原As30>=+.5pp；fail关固定.05/noepsscan/noE50，all7仍自动独立评分。通用label-smoothing文献仅作动机不替代CVS识别收益。最小[预登记](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-AsLS-e30-s2026092701-m1-r01/report.md)已固定；当前无新性能结果，目标保持未完成。
+
+AsLS E30单行已于2026-10-18发布运行：code 306cd273a4af76cda62e02b45e19e6db9ae765e9，r02传输/编译VERIFIED、770NN首步smoke PASS；r01远端检查路径错误发生于0真实CP/NN/updates且原release保留，修复不改配方/run。源决定先于本轮正式分数读取，all7自动收尾，源失败不扩E50。

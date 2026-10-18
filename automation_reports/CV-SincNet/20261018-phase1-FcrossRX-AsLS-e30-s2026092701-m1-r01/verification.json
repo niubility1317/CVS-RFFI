@@ -1,0 +1,179 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "run_id": "20261018-phase1-FcrossRX-AsLS-e30-s2026092701-m1-r01",
+  "training_release": "cvs_FcrossRX_AsLS_E30_20261018_r02",
+  "release_commit": "306cd273a4af76cda62e02b45e19e6db9ae765e9",
+  "first_release_failure_preserved": true,
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "dispatcher": {
+    "pid": 1523734,
+    "alive": true,
+    "CWD_correct": true,
+    "argv_correct": true,
+    "cuda": [
+      "CUDA_VISIBLE_DEVICES="
+    ],
+    "mode": "dispatcher"
+  },
+  "worker": {
+    "pid": 1523764,
+    "alive": true,
+    "CWD_correct": true,
+    "argv_correct": true,
+    "cuda": [
+      "CUDA_VISIBLE_DEVICES=1"
+    ],
+    "mode": "worker"
+  },
+  "log_growth": true,
+  "smoke": {
+    "status": "PASS",
+    "records": [
+      {
+        "row_id": "B01-s2026092701",
+        "NN": 768,
+        "As_IQ": 64,
+        "selected64": 64,
+        "cumulative_epoch": 21,
+        "cumulative_step": 4441,
+        "full_ordinary_SupCon": true,
+        "selected_CE_epsilon": 0.05,
+        "native_CE_epsilon": 0.01,
+        "extra_CE_operator_calls": 4,
+        "extra_CE_logit_packets": 256,
+        "CE_operator_cpu_wall_seconds": 0.0006621000356972218,
+        "scalarization_cpu_wall_seconds": 0.00011653406545519829,
+        "extra_NN": 0,
+        "mixed_KL_unchanged": true,
+        "common_raw_U_unchanged": true,
+        "same_IQ_each_RDpair": true,
+        "head_joint_gradient": true,
+        "Sinc_joint_gradient": true,
+        "backbone_joint_gradient": true,
+        "optimizer_updates": 0
+      }
+    ],
+    "NN": 768,
+    "real_checkpoint_NN": 2,
+    "total_NN": 770,
+    "real_IQ": 0,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0,
+    "target_access": false
+  },
+  "runtime": {
+    "status": "OBSERVED_RUNTIME_METADATA",
+    "rows": {
+      "B01-s2026092701": {
+        "GPU_actual_matches_assignment": true,
+        "source_roles_equal": true,
+        "target_contact": false,
+        "own_source_only_checkpoint": true,
+        "EMA": {
+          "origin": "strict own stage20 EMA",
+          "extra_teacher": false,
+          "optimizer_segment_counters_reset": true,
+          "temporal_cache_reset": true
+        },
+        "optimizer": {
+          "state_entries": 0,
+          "reset": true,
+          "schedule": "cosine10",
+          "lr": 0.0002,
+          "weight_decay": 0.0001
+        },
+        "resolved_AsLS": {
+          "old_epsilon": 0.01,
+          "epsilon": 0.05,
+          "native_label_smoothing": 0.01,
+          "selected_packets_per_step": 64,
+          "selected_positions": "original alternating mask (position+local_step)%2!=0",
+          "scope": "only CE targets of existing mixed selectedAs64 two passes",
+          "mixed_CE_normalization": "mean across128 then mean across2passes;original outer.5",
+          "delta_formula": ".25*(sum_selected(CE05_pass0-CE01_pass0)+sum_selected(CE05_pass1-CE01_pass1))/128",
+          "selected_total_CE_weight": 0.25,
+          "mixed_KL_unchanged": true,
+          "common_raw_U_SupCon_unchanged": true,
+          "same_IQ_within_RDpair": true,
+          "confidence_filter": false,
+          "all_six_classes_same_formula": true,
+          "extra_NN": 0,
+          "extra_CE_operator_calls_per_step": 4,
+          "extra_CE_logit_packets_per_step": 256,
+          "baseline_mixed_CE_operator_widths": [
+            128,
+            128
+          ],
+          "extra_CE_operator_widths": [
+            64,
+            64,
+            64,
+            64
+          ],
+          "actual_mixed_CE_operator_widths": [
+            128,
+            128,
+            64,
+            64,
+            64,
+            64
+          ],
+          "explicit_CUDA_synchronize": false,
+          "new_losses": 0,
+          "new_U_views": 0,
+          "formal_test_changed": false
+        },
+        "resolved_crossview": {
+          "mode": "ORD128",
+          "ordinary_anchors": 128,
+          "additional_anchors": 0,
+          "additional_view": "none",
+          "positive": "sameTX differentphysicalRX",
+          "same_physical_positive": false,
+          "default_head_unchanged": true,
+          "new_losses": 0,
+          "new_forward_packets": 0,
+          "temperature": 0.2,
+          "max_coefficient": 0.1,
+          "schedule": "same original cumulativeE21..30/full0.1",
+          "normalization": "descriptor moments detached across actual anchor set;L2 eps1e-4;mean bothdepths and two corresponding RDrop forwards"
+        },
+        "actual_native_flags": {
+          "epochs": 10,
+          "label_epochs": 0,
+          "pseudo_epochs": 10,
+          "label_smoothing": 0.01,
+          "use_aug": true,
+          "use_unlabeled": true,
+          "use_ema_teacher": true,
+          "lambda_u": 0.16,
+          "lambda_ent": 0.01
+        }
+      }
+    },
+    "GPU_global_counts": {
+      "0": 1,
+      "1": 1,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0
+    },
+    "cap3": true,
+    "NN": 0,
+    "CP": 0,
+    "IQ": 0,
+    "updates": 0
+  },
+  "analysis": {
+    "status": "SUBMITTED",
+    "pid": 1524320,
+    "archive_transfer": "VERIFIED",
+    "remote_compile": "PASS",
+    "NN": 0
+  },
+  "formal_scores_read": false
+}
