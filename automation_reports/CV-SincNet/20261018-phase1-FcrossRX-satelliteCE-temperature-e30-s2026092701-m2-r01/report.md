@@ -1,6 +1,6 @@
 # 完整 practical：satellite CE 训练温度与减半权重对照
 
-当前状态：已登记，待代码检查和发布。不是实验结果。
+当前状态：ANALYZED；两条新增 E30 及全部七视图评分、完整日志/图表交付完成。源域四项 FAIL，关闭固定候选。以下保留原预登记，最终结果见 [final_analysis.md](final_analysis.md)。
 
 最值得保留的是完整 nominal practical IQ 路径、明确的 clean 监督份额和默认分类头联合训练。当前矛盾是完整受损观测带来显著适应能力，但提高 As 剂量或额外约束未稳定兼顾 clean。课程、单侧间隔与 dropout 视图预算的源域失败均保持关闭，不微调救援。另一对话正在完成 Asweight E50 三种子，本矩阵不重复它的工作。
 

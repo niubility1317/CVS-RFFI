@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_VERIFIED_P0P1_PASS",
+  "status": "VERIFIED_TRAINED_SCORED_ANALYZED",
   "focused": {
     "protocol_negative": 37,
     "objective_tensor": 12,
@@ -56,5 +56,28 @@
     "P2": "total_L_loss_scale1.25 is nominal slot recipe; HALF effective CE coefficient sum1.125 while KL coefficients unchanged; exact formula disclosed"
   },
   "query_access": false,
-  "formal_results_read_for_design": false
+  "formal_results_read_for_design": false,
+  "remote": {
+    "archive_SHA256": "d961deb46fcb8abe33b201577fd03df9a4b4f979df152e01df6f6ab7178f5bf2",
+    "archive_SHA_comparisons": 1,
+    "compile_python_files": 22,
+    "realCP_smoke": {
+      "status": "PASS",
+      "NN": 2,
+      "CP": 1,
+      "source_IQ": 0,
+      "query": false,
+      "updates": 0
+    },
+    "postlaunch_PID_CWD_argv_GPU_log_growth": true,
+    "all_owned_processes_naturally_exited": true,
+    "automatic_seven_views_per_row": true,
+    "source_decision_before_owner_formal_score_read": true,
+    "all4rows_all7_before_final_truth_join": true,
+    "independent_truth_last": true,
+    "confusion_recounts": 504,
+    "partition_reconciliations": 84,
+    "missing": [],
+    "five_PNG_PDF_pairs_visually_inspected": true
+  }
 }

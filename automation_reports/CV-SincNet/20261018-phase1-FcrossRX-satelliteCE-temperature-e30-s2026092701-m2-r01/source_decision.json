@@ -1,0 +1,67 @@
+{
+  "status": "SOURCE_READOUT_DECIDED",
+  "checks": {
+    "fullV_AS_clean_within_original_NOAS_0p1pp": false,
+    "mid_low_mean_gain_at_least_0p5pp": false,
+    "low_not_below_originalAs30": false,
+    "mid_low_gain_beyond_half_CE_at_least_0p5pp": false
+  },
+  "source_qualified": false,
+  "rows": {
+    "CE_HALF": {
+      "fullV_AS_clean_vs_originalNOAS_pp": -0.09629629629629433,
+      "mid_low_mean_vs_originalAs30_pp": -1.1805555555555625,
+      "low_vs_originalAs30_pp": -1.5555555555555545,
+      "source_accuracies": [
+        [
+          0.8705555555555555,
+          0.7205555555555555,
+          0.5861111111111111
+        ],
+        [
+          0.8838888888888888,
+          0.7194444444444444,
+          0.5644444444444444
+        ]
+      ]
+    },
+    "CE_T2": {
+      "fullV_AS_clean_vs_originalNOAS_pp": -0.1481481481481417,
+      "mid_low_mean_vs_originalAs30_pp": -0.8055555555555705,
+      "low_vs_originalAs30_pp": -1.1388888888888893,
+      "source_accuracies": [
+        [
+          0.8738888888888889,
+          0.7194444444444444,
+          0.5916666666666667
+        ],
+        [
+          0.8883333333333333,
+          0.7272222222222222,
+          0.5672222222222222
+        ]
+      ]
+    }
+  },
+  "t2_vs_half_mid_low_pp": 0.374999999999992,
+  "originalAs30_source_accuracies": [
+    [
+      0.8811111111111111,
+      0.7255555555555555,
+      0.6011111111111112
+    ],
+    [
+      0.8922222222222222,
+      0.7305555555555555,
+      0.5805555555555556
+    ]
+  ],
+  "control_not_promotion_candidate": "CE_HALF",
+  "formal_scores_read": false,
+  "target_scores_read": false,
+  "formal_evaluation_always_required": true,
+  "no_automatic_budget_or_seed_extension": true,
+  "target_feedback": false,
+  "model_seed_count": 1,
+  "NN": 0
+}
