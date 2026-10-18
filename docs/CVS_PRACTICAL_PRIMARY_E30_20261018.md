@@ -123,3 +123,5 @@ Asweight当前已实际启动：训练／分析代码`3befd47c8041d81f9430eda535
 据此已固定下一项`20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01`：只增加预算，matchedNoAs／As各ownweightedFINAL30 student＋ownEMA追加20轮，总50，resetAdamWcos20；.375权重／IQ256／全5源RX／L6300U隐藏V27000／默认头／原完整practical三场／6L1.25／U不变。ordinary仍原20参数epoch13，SupCon＋30，channel31至50／step6661至11100。只新训两行，其余原／加权30和原50六个冻结结果复用，形成weight×As×budget八条件。唯一审查P0/P1=0/0，68聚焦负例与AST PASS；真实烟测与发布待执行。
 
 未来固定02／03扩种支持只看As50−ownAs30源fullVclean≥0pp且midlow均值≥＋.5pp。任一失败放弃固定配方扩种，仍完成本行all7正式；不扫权重／epoch／seed救跑。目标stage仍相对同预算匹配NoAs clean≥−.1pp。下一项唯一假设是更多预算能否缓解当前clean—星地矛盾；不从已见正式分数重新选择路线或承诺60%。[E30完成报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e30-s2026092701-m2-r01/final_analysis.md)；[E50预登记](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01/report.md)。
+
+Asweight E50已实际启动：训练／分析代码`64176e7ff1aa5cd2477a504f8b442bb7966079dc`；dispatcher1276091，NoAs1276185／GPU0、As1276263／GPU1，真实双父＋两6L共1540NN smokePASS后训练，source roles／ownEMA／resetAdamWcos20／实际physics匹配。PID／CWD／argv／GPU／日志增长独立VERIFIED；0NN分析1277501已核实WAIT_SOURCE／truth未开，将自动闭合all7。新增段每条20轮，尚无E50成绩。

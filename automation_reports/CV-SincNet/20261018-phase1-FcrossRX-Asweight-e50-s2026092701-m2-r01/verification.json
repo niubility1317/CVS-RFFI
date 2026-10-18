@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_READY_UNLAUNCHED",
+  "status": "VERIFIED_RUNNING",
   "run_id": "20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01",
   "implementation_checks": {
     "status": "PASS",
@@ -101,7 +101,7 @@
     "target_scores_read": false,
     "per_packet_protection_gate": false
   },
-  "training_started": false,
+  "training_started": true,
   "real_smoke": "PENDING_LAUNCHER_FIRSTSTEP1540NN",
   "model_seed_count": 1,
   "new_model_rows": 2,
@@ -109,5 +109,63 @@
   "total_epochs_each": 50,
   "each_new_updates": 4440,
   "technical_missing_items": [],
-  "goal_complete": false
+  "goal_complete": false,
+  "training_complete": false,
+  "code_commit": "64176e7ff1aa5cd2477a504f8b442bb7966079dc",
+  "remote_branch_OID": "INDEPENDENTLY_VERIFIED_IDENTICAL",
+  "single_archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED19PY",
+  "N607_preflight": "VERIFIED_ORDINARY_PARENT_ROLES_CAPACITY_ONCE",
+  "dispatcher_pid": 1276091,
+  "workers": [
+    {
+      "row_id": "B00-s2026092701",
+      "pid": 1276185,
+      "gpu": 0
+    },
+    {
+      "row_id": "B01-s2026092701",
+      "pid": 1276263,
+      "gpu": 1
+    }
+  ],
+  "postlaunch": "VERIFIED_PID_CWD_ARGV_CUDA_NVIDIASMI_LOG_GROWTH",
+  "shared_smoke": {
+    "status": "PASS",
+    "NN": 1540,
+    "real_parent_CP_NN": 4,
+    "full6L_synthetic_NN": 1536,
+    "optimizer_updates": 0,
+    "query": false
+  },
+  "source_roles": "BOTH_EXACT_MATCH",
+  "own_EMA": "EACH_STRICT_OWN_WEIGHTED30",
+  "channel_offset": [
+    31,
+    50,
+    6661,
+    11100
+  ],
+  "runtime_firststep_groupweights": ".125/.375 CE_and_KL,6L,As0/64,totalerror<2e-8",
+  "runtime_ordinary_source": "Original20scratchargs_epoch13",
+  "actual_physics_matches_original": true,
+  "analysis": {
+    "status": "VERIFIED_WAIT_SOURCE",
+    "pid": 1277501,
+    "code_commit": "64176e7ff1aa5cd2477a504f8b442bb7966079dc",
+    "CWD_argv_CUDA": "VERIFIED",
+    "remote_compile": "PASS",
+    "focused_checks": 10,
+    "NN": 0,
+    "IQ": 0,
+    "CP": 0,
+    "updates": 0,
+    "truth_opened": false
+  },
+  "progress": {
+    "B00_tail_epochs_complete": 1,
+    "B01_tail_epochs_complete": 0,
+    "total_each": 20
+  },
+  "performance_results_available": false
 }

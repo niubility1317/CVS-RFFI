@@ -189,7 +189,7 @@
   },
   "next_training_hypothesis": {
     "run_id": "20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01",
-    "status": "PREREGISTERED_READY_TO_RELEASE",
+    "status": "RUNNING_VERIFIED",
     "hypothesis": "OnlyextendownweightedFINAL30+20 total50;fixed.125/.375mixedCEKLgroupmeans,same6L1.25/IQ/RNG/As64/U/phys/head;matchedNoAs",
     "model_seed": 2026092701,
     "new_rows": 2,
@@ -238,7 +238,22 @@
     "NoAs_selected_actual_view": "raw.clone()",
     "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01/report.md",
     "technical_missing_items": [],
-    "repeatable_clean_positive_proven": false
+    "repeatable_clean_positive_proven": false,
+    "code_commit": "64176e7ff1aa5cd2477a504f8b442bb7966079dc",
+    "dispatcher_pid": 1276091,
+    "workers": [
+      {
+        "row_id": "B00-s2026092701",
+        "pid": 1276185,
+        "gpu": 0
+      },
+      {
+        "row_id": "B01-s2026092701",
+        "pid": 1276263,
+        "gpu": 1
+      }
+    ],
+    "analysis_pid": 1277501
   },
   "source_commonphase_sensitivity_result": {
     "name": "Bounded common-phase sensitivity of current F+CROSS_RX default head",
@@ -6322,7 +6337,7 @@
   },
   "active_training_hypothesis": {
     "run_id": "20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01",
-    "status": "PREREGISTERED_READY_TO_RELEASE",
+    "status": "RUNNING_VERIFIED",
     "hypothesis": "OnlyextendownweightedFINAL30+20 total50;fixed.125/.375mixedCEKLgroupmeans,same6L1.25/IQ/RNG/As64/U/phys/head;matchedNoAs",
     "model_seed": 2026092701,
     "new_rows": 2,
@@ -6371,7 +6386,22 @@
     "NoAs_selected_actual_view": "raw.clone()",
     "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01/report.md",
     "technical_missing_items": [],
-    "repeatable_clean_positive_proven": false
+    "repeatable_clean_positive_proven": false,
+    "code_commit": "64176e7ff1aa5cd2477a504f8b442bb7966079dc",
+    "dispatcher_pid": 1276091,
+    "workers": [
+      {
+        "row_id": "B00-s2026092701",
+        "pid": 1276185,
+        "gpu": 0
+      },
+      {
+        "row_id": "B01-s2026092701",
+        "pid": 1276263,
+        "gpu": 1
+      }
+    ],
+    "analysis_pid": 1277501
   },
   "carrier_gate_release": {
     "run_id": "20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01",

@@ -1,6 +1,6 @@
 # As 权重配方：源证据支持的匹配总 E50 验证
 
-状态：PLANNED，尚未发布或训练。run_id `20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01`。
+状态：VERIFIED_RUNNING，两条匹配续训已实际启动；性能结果尚未完成。run_id `20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01`。
 
 唯一假设：已固定.375 As监督份额后，再追加20轮能否改善mid／low urban并保持clean。新增B00/B01两条均为各自weighted FINAL30 student＋ownEMA继续训练20轮，总50轮／11100更新，轨迹20＋10＋20，追加段resetAdamW lr2e−4／WD1e−4／cos20 min1e−6；不是连续cos50或追加50。
 
@@ -19,3 +19,5 @@
 必要核查：68聚焦负例、19py与两段remoteAST已PASS；唯一P0/P1审查PASS，P0=0／P1=0。launcher首步两个真实父checkpoint4NN及两实际6L1536NN共1540NN、0更新、无query，PASS即训练；一次N607 preflight／单release归档本远端SHA比较／remotecompile和启动后PID/CWD/argv/GPU/log增长。停止仅限本run非法数据／父/head错误／非有限／成本或系统技术错误，保留产物且不自动重试；科学负结果不是技术停跑理由。
 
 成本分别记录父30／增量20／累计50、student／teacher、train／eval／source／formal／smoke与实际墙钟；不把并行时长相加当历时。预期所有source／prediction／独立score／日志／0NN分析／报告与登记闭合。精确矩阵、路径和输入见[experiment.json](<E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01/experiment.json>)。
+
+实际发布代码 `64176e7ff1aa5cd2477a504f8b442bb7966079dc`，远端分支OID独立一致。单archive传输比较与19py远端编译VERIFIED。dispatcher 1276091；NoAs worker1276185／GPU0，As worker1276263／GPU1；PID／CWD／argv／CUDA／nvidia／log增长独立VERIFIED。首步真实双父4NN＋两行6L1536NN共1540NN smoke PASS、0更新、无query后正常训练。source roles EXACT_MATCH、ownweighted30EMA严格恢复，resetAdamWcos20空optimizer，实际physics同原row。首记录6L／As0或64／groupweights.125/.375／total误差<2e−8；ordinary来源仍原20参数epoch13。0NN分析1277501在WAIT_SOURCE，CWD／argv／空CUDA已核实，truth未开；analysis单archive比较VERIFIED／compile＋10checksPASS。新增段进度属于历史快照，不等于训练或评分完成。

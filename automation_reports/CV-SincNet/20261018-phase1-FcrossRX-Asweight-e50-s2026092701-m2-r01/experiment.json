@@ -28,7 +28,7 @@
   "replaces_run_id": null,
   "authorization": "Latesthuman permits promising source-supported recipes totalE50.Source30 incrementalclean-.059259pp/midlow+.777778pp meets preregisteredtwo criteria;decisionfixedbeforeanynewformalread.Onlybudgetextension,twonewrows,total50not+50,healthyjobsuntouched.",
   "code": {
-    "commit": "RELEASE_HEAD_RECORDED_AT_PUBLICATION",
+    "commit": "64176e7ff1aa5cd2477a504f8b442bb7966079dc",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "ExistingordinaryN607CVSRFFI/PyTorchFP32 CPU2,noinstall/admin;actualimplementationcommitfixedbeforelaunch",
     "cwd": "PROJECT/releases/cvs_FcrossRX_AsWeight_E50_20261018_r01"
@@ -105,7 +105,20 @@
     "local_artifact_root": "local_artifacts/F_As_weight_E50_20261018",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_practical_as_weight50/runner.py",
     "stop_rule": "Onlyrunownillegaldata/parent/head/nonfinite/cost/immutableoutput/unlaunchablesystemtechnicalfailure;preserveoutputs/noautomaticretry.Sourcefailurestillfixedall7formal.",
-    "status": "PLANNED"
+    "status": "RUNNING",
+    "actual_dispatcher_pid": 1276091,
+    "actual_workers": [
+      {
+        "row_id": "B00-s2026092701",
+        "pid": 1276185,
+        "gpu": 0
+      },
+      {
+        "row_id": "B01-s2026092701",
+        "pid": 1276263,
+        "gpu": 1
+      }
+    ]
   },
   "expected_artifacts": [
     "strictownweighted30studentEMA andoriginalsourcecontract/ancestry,actualconfigs/modules/physicalconditions",
