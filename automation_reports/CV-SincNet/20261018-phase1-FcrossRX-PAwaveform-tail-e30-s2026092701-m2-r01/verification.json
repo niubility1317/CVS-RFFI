@@ -72,5 +72,44 @@
   "source_roles": "EXACT_MATCH",
   "target_contact": false,
   "optimizer": "RESET_EMPTY_ADAMW_COS10_LR0002_WD0001",
-  "source_and_formal_results_available": false
+  "source_and_formal_results_available": false,
+  "analysis": {
+    "status": "VERIFIED_WAIT_EXISTING_RUN",
+    "pid": 1252827,
+    "watcher_code_commit": "6dfe7e67eb8da11e4abb1ce17507ab45230414e8",
+    "analysis_code_commit": "23f794296a11e1a4f25837e78b60f36bc700b99e",
+    "CWD_argv_CUDA": "VERIFIED",
+    "truth_opened": false,
+    "NN": 0,
+    "IQ": 0,
+    "CP": 0,
+    "updates": 0,
+    "output": "PROJECT/runs/20261018-phase1-FcrossRX-PAwaveform-tail-e30-s2026092701-m2-r01/analysis_r01"
+  },
+  "progress": {
+    "rows": [
+      {
+        "row_id": "NOAS_PAOFF-s2026092701",
+        "pid": 1249382,
+        "alive": true,
+        "epochs_complete": 4,
+        "source_complete": false,
+        "prediction_complete": false,
+        "scoring_complete": false
+      },
+      {
+        "row_id": "AS_PAOFF-s2026092701",
+        "pid": 1249461,
+        "alive": true,
+        "epochs_complete": 3,
+        "source_complete": false,
+        "prediction_complete": false,
+        "scoring_complete": false
+      }
+    ],
+    "dispatcher_alive": true,
+    "source_decision": false,
+    "formal_results_available": false,
+    "failure": null
+  }
 }

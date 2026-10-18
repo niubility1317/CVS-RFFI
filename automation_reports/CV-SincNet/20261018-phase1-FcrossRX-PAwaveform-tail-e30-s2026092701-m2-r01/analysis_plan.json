@@ -1,5 +1,5 @@
 {
-  "status": "READY_AUTOMATIC_POSTPROCESS_NOT_YET_LAUNCHED",
+  "status": "VERIFIED_WAIT_EXISTING_RUN",
   "run_id": "20261018-phase1-FcrossRX-PAwaveform-tail-e30-s2026092701-m2-r01",
   "training_and_analysis_code_commit": "23f794296a11e1a4f25837e78b60f36bc700b99e",
   "scope": "Existingfourlogicalrows;no newtraining/prediction/scorer/model/IQ/CP",
@@ -18,5 +18,10 @@
   "analysis_toy_checks": 19,
   "analysis_toy_status": "PASS",
   "source_fail_still_all7": true,
-  "no_E50_without_source_evidence": true
+  "no_E50_without_source_evidence": true,
+  "watcher_pid": 1252827,
+  "watcher_code_commit": "6dfe7e67eb8da11e4abb1ce17507ab45230414e8",
+  "truth_opened": false,
+  "poststate": "VERIFIED_CWD_ARGV_EMPTYCUDA_ORIGINAL_DISPATCHER_LIVE",
+  "archive_transfer_and_compile": "VERIFIED"
 }
