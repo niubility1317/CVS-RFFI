@@ -1,6 +1,6 @@
 # 星地优先 E30：satellite 随机子网络扰动
 
-状态：IMPLEMENTED／待发布。Run 20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01；不宣称已有新成绩。
+状态：VERIFIED_RUNNING／训练中；独立分析 VERIFIED_WAIT_SOURCE。Run 20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01；不宣称已有新成绩。
 
 用户最新目标覆盖旧 Ag＋As 必须联合及独立跨 RX 泛化门槛。优先提高固定 practical，重点 mid/low urban，报告全部六种。阶段 clean 相对同预算同seed无As对照不低于 −0.1 个绝对百分点；最终要求通过As训练获得可重复clean正收益。阶段保持不等于最终完成。模型、默认头、NoExplicitCFO及内部补偿、全L6300/U56700隐藏/V27000、全部RX1/3/4/6/8与day1/2/3、split392005、IQ256、正式receivedIQ和信道固定。每模型E30，无新增结构或预算。
 
@@ -10,7 +10,7 @@
 
 唯一新假设：在完整As输入已受传播/噪声/补偿影响时，特征dropout继续丢弃随机子网络，可能损害弱身份证据。只在satellite包移除这种模型扰动，而ordinary/raw/U保持原dropout，可能以更小clean代价保留或改善As适应。该假设不要求增强前后原预测、置信度、间隔、分支或门控一致。
 
-旧AsPairCE源RX1/E20已失败，只去除As KL不作为新候选复活。这里AS_CE仅为必要归因控制。旧dropoutCoupling仅改跨视图mask相关性，边际丢弃概率保持；本次AS_DET直接绕过实际As行的dropout输出，检验的是不同关键假设。另一对话正在运行连续E30轨迹对照；本轮仍own20+10，不重复其轨迹路线，不修改健康任务。原覆盖耦合待检验解释让位于本次新方向，未启动新覆盖实验。
+旧AsPairCE源RX1/E20已失败，只去除As KL不作为新候选复活。这里AS_CE仅为必要归因控制。旧dropoutCoupling仅改跨视图mask相关性，边际丢弃概率保持；本次AS_DET直接绕过实际As行的dropout输出，检验的是不同关键假设。另一对话研究连续E30轨迹；最新只读状态为NoAs已完成FINAL30及七视图评分、As在E21因旧E20包装器拒绝而技术终止（实际E20/4440更新，无可续训权重），其从零单As补跑尚未获新增预算答复，当前没有完整配对结果。本轮仍own20+10，不重复其轨迹路线，不修改其他任务。原覆盖耦合待检验解释让位于本次新方向，未启动新覆盖实验。
 
 ## 矩阵与实际机制
 
@@ -45,3 +45,5 @@
 source全部冻结后，独立CPU程序只读完整两段原生日志/metadata/已保存source logits，0新IQ/CP/NN/更新，核对全部4行×6660steps、物理L/U序列、原U隐藏/ownEMA offset、6L成本和satellite dropout/KL代数，再独立固定source资格。Source27000clean取原生冻结指标，不伪称有全27000逐包重算；V1800×两draw原预测完整argmax/F1/RX/day/TX/状态/质量分层重算。全部4行七视图预测/评分完成后才读正式truth，复算全部CM和六组成对修复/新增错误、固定NOAS clean正确集合保持率、宏F1、最差RX、urban均值；0.1pp用整数net×1000≥−N，single seed无论正负不称可重复双提升。源/正式state不混用，新增噪声比不称总SNR。
 
 单一CPU分析owner，CUDA隐藏/2threads；新不可覆盖release PROJECT/releases/cvs_F_satellite_dropout_analysis_20261018_r01；output PROJECT/runs/20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01/analysis_auto_r01（源/正式图分目录保留），日志output-launch。命令 CVS-RFFI/bin/python -u analysis/cvs_satellite_dropout_pipeline_20261018.py --project PROJECT --output ANALYSIS_ROOT --truth EXISTING_TRUTH --code-commit ANALYSIS_COMMIT。等待只依据本run真实PID/CWD/cmdline和完结metadata，观察失败不当作进程终止，完整产物不要求PID仍活；不操作训练进程、不自动重跑失败。完整日志解析、指标/等待13tests、11个独立日志用例、合成图12files以及发布3AST/9file模拟已通过，后者全部网络动作MOCKED；一次全日志suite工具观察超时结论UNKNOWN，不纳入PASS。真实source/final统计与图尚未产生，当前不是ANALYZED。
+
+独立分析实际发布：代码 commit `579f91dd4946e90b74fdb8bafa52ae88a48c5fb7`；单 archive 本地/远端 SHA 一致，remote compile/import 与 13 个聚焦测试 PASS，0 IQ/CP/NN/更新。分析 PID 1108786 的 CWD/argv/CUDA 隐藏已由独立进程观察核实，状态 WAIT_SOURCE，仅等候本 run 三个真实训练句柄，不操作训练。最新两行均 E13/30、2886 累计更新，GPU 实际在用，source 和正式尚未完成；真实统计与图仍未生成。分析启动/等待成功不等于实验结果成功。

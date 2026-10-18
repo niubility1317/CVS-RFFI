@@ -97,28 +97,50 @@
     {
       "row": "AS_CE-s2026092701",
       "pid": 1099342,
-      "gpu": 1,
       "alive": true,
+      "gpu": 1,
+      "GPU_observed": true,
       "cwd_matches": true,
       "argv_matches": true,
       "GPU_env_matches": true,
-      "GPU_observed": true,
-      "log_bytes_at_first_observation": 6460,
-      "log_bytes_now": 6460,
-      "progress": null
+      "log_bytes": 73527,
+      "progress": {
+        "epoch": 13,
+        "cumulative_epoch": 13,
+        "steps": 2886,
+        "cumulative_steps": 2886,
+        "L_NN": 2216448,
+        "L_As": 184704,
+        "extra_U_NN": 0,
+        "U_As": 0,
+        "existing_U_only": true,
+        "U_truth_read": false,
+        "target_access": false
+      }
     },
     {
       "row": "AS_DET-s2026092701",
       "pid": 1099419,
-      "gpu": 2,
       "alive": true,
+      "gpu": 2,
+      "GPU_observed": true,
       "cwd_matches": true,
       "argv_matches": true,
       "GPU_env_matches": true,
-      "GPU_observed": true,
-      "log_bytes_at_first_observation": 6468,
-      "log_bytes_now": 6468,
-      "progress": null
+      "log_bytes": 73561,
+      "progress": {
+        "epoch": 13,
+        "cumulative_epoch": 13,
+        "steps": 2886,
+        "cumulative_steps": 2886,
+        "L_NN": 2216448,
+        "L_As": 184704,
+        "extra_U_NN": 0,
+        "U_As": 0,
+        "existing_U_only": true,
+        "U_truth_read": false,
+        "target_access": false
+      }
     }
   ],
   "source_data": {
@@ -141,5 +163,6 @@
   "formal_scores_read": false,
   "new_recipe_stage_clean_tested": false,
   "new_recipe_repeatable_clean_gain_proven": false,
-  "known_technical_failure": false
+  "known_technical_failure": false,
+  "latest_observed_UTC": "2026-10-18T02:53:20.776Z"
 }
