@@ -14,8 +14,8 @@ from pathlib import Path, PurePosixPath
 
 RUN = '20261018-phase1-FcrossRX-stepALT-e30-s2026092701-m1-r01'
 TRAINING_RELEASE = 'cvs_FcrossRX_stepALT_E30_20261018_r01'
-RELEASE = 'cvs_F_stepalt30_analysis_20261018_r01'
-OUTPUT = 'analysis_auto_r01'
+RELEASE = 'cvs_F_stepalt30_analysis_20261018_r02'
+OUTPUT = 'analysis_auto_r02'
 FILES = (
     'cvs_stepalt30_analysis_20261018.py',
     'cvs_stepalt30_publish_analysis_20261018.py',

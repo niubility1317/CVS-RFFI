@@ -53,7 +53,7 @@ def log_fixture(project):
   ep=(i-1)//222+1;on=i%2==1;As=128 if on else 0;before=.5*.23+.5*.34+.1*.05;total=before+.25*.45;ids=[physical('L',((i-1)*128+j)%6300) for j in range(128)]
   refs.append(dict(step=i,cumulative_step=4440+i,L_forwards=6,As_packets=As,Ag_packets=0,extra_control_packets=128,Ag_mode='NONE',ordinary_redraws=0,same_IQ_each_pair=True,all_satellite_L_supervised=True,common_RD=.23,common_CE=.2,common_KL=.03,extra_RD=.34,extra_CE=.3,extra_KL=.04,SupCon_weight=.1,SupCon=.05,total_L=total,base_L_before_shape=before,ordinary_raw_MSE=.01,mixed_ordinary_MSE=.1 if on else 0.,scene_counts={'practical_low_urban':128} if on else {},state_counts={'LOS':128} if on else {},crossview_mode='ORD128',new_losses=0,extra_U_NN=0,stepALT=dict(cumulative_epoch=20+ep,cumulative_step=4440+i,on=on,As_packets=As,L_NN=768,L_loss_scale=1.25),SupCon_details=[dict(phase=p,level=l,mode='ORD128',total_anchors=128,ordinary_anchors=128,additional_anchors=0,same_RX_positive_pairs=0,true_satellite_anchors=0,valid_anchors=128) for p in ('first','second') for l in ('time_down','t2.pool')]))
   shapes.append(dict(step=i,cumulative_step=4440+i,mode='NONE',NN=256,packets=128,applied=0,weight=.25,new_boundary_samples=0,same_IQ_each_pair=True,relative_noise_RMS=0.,noise_peak_fraction_mean=0.,SNR_added_db=None,shape_RD=.45,shape_CE=.4,shape_KL=.05))
-  steps.append(dict(step=i,epoch=ep,metrics={'concat/L_forwards':6,'concat/As_packets':As,'concat/total_L':before,'shape/RD':.45,'train/loss':total+.1,'train/pseudo_total':124 if i%222==0 else 256,'train/pseudo_selected':100,'train/pseudo_truth_available':0}));units.append(dict(step=i,cumulative_step=4440+i,physical_clip_calls=i));exposures.append(dict(step=i,physical_ids=ids,TX=[0]*128,RX=[z[1] for z in ids],day=[z[2] for z in ids],on=on,As_packets=As,scenes=['practical_low_urban']*As,sample_ids=list(range(As))))
+  steps.append(dict(step=i,epoch=ep,metrics={'concat/L_forwards':6,'concat/As_packets':As,'concat/total_L':total,'concat/common_CE':.2,'concat/common_KL':.03,'concat/SupCon':.05,'concat/SupCon_weight':.1,'train/loss':total+.1,'train/pseudo_total':124 if i%222==0 else 256,'train/pseudo_selected':100,'train/pseudo_truth_available':0}));units.append(dict(step=i,cumulative_step=4440+i,physical_clip_calls=i));exposures.append(dict(step=i,physical_ids=ids,TX=[0]*128,RX=[z[1] for z in ids],day=[z[2] for z in ids],on=on,As_packets=As,scenes=['practical_low_urban']*As,sample_ids=list(range(As))))
  from collections import Counter
  cells=Counter()
  for e in exposures:
@@ -70,6 +70,15 @@ def log_fixture(project):
  jl(b/'training_sequence.jsonl.gz',sequence());path=root.parent/'logs'/(root.name+'.log');path.parent.mkdir(exist_ok=True);path.write_text('All10 epochs complete\n',encoding='utf8');return root
 
 class StepALTChecks(unittest.TestCase):
+ def test_full6L_native_metric_regression_first_and_last(self):
+  cases=[{"r":{"total_L":0.6398011445999146,"base_L_before_shape":0.6111404895782471,"common_CE":0.14773008227348328,"common_KL":0.014372509904205799,"SupCon":1.4763140678405762,"SupCon_weight":0.1},"s":{"shape_RD":0.11464251577854156},"m":{"concat/total_L":0.6398011445999146,"concat/common_CE":0.14773008227348328,"concat/common_KL":0.014372509904205799,"concat/SupCon":1.4763140678405762,"concat/SupCon_weight":0.1}},{"r":{"total_L":0.2503602206707001,"base_L_before_shape":0.22055493295192719,"common_CE":0.10797309130430222,"common_KL":0.014339239336550236,"SupCon":0.994891881942749,"SupCon_weight":0.1},"s":{"shape_RD":0.11922114342451096},"m":{"concat/total_L":0.2503602206707001,"concat/common_CE":0.10797309130430222,"concat/common_KL":0.014339239336550236,"concat/SupCon":0.994891881942749,"concat/SupCon_weight":0.1}}]
+  for q in cases:
+   self.assertLess(m.check_native_L(q['r'],q['s'],q['m']),3e-5)
+   broken=dict(q['m']);broken['concat/total_L']=q['r']['base_L_before_shape']
+   with self.assertRaises(ValueError):m.check_native_L(q['r'],q['s'],broken)
+   broken_shape=dict(q['s']);broken_shape['shape_RD']+=.01
+   with self.assertRaises(ValueError):m.check_native_L(q['r'],broken_shape,q['m'])
+
  def test_source_fixed_scientific_conditions(self):
   q={a:dict(full_V_clean=.98,mid_low_mean=.6) for a in m.CONDITIONS};self.assertFalse(m.source_conditions(q)['source_criteria_pass'])
   q['AS30_STEPALT']=dict(full_V_clean=.979,mid_low_mean=.6001);self.assertTrue(m.source_conditions(q)['source_criteria_pass'])

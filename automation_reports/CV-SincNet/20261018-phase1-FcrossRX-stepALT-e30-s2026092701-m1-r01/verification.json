@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_RUNNING",
+  "status": "E30_TRAINED_SCORED_ANALYSIS_REPAIR_PENDING",
   "run_id": "20261018-phase1-FcrossRX-stepALT-e30-s2026092701-m1-r01",
   "focused_checks": "PASS33NEGATIVE_AND_ACTUAL_MIXEDVIEW_MOCK128_0",
   "local_execution": {
@@ -64,7 +64,7 @@
   },
   "performance_results_available": false,
   "analysis": {
-    "status": "VERIFIED_WAIT_SOURCE",
+    "status": "FAILED_R01_PRESERVED_READONLY_INTERFACE_REPAIR_READY",
     "pid": 1235749,
     "code_commit": "b93b30b7f99f59046a368c3083b33ba4dcb61cc3",
     "remote_compile": "PASS",
@@ -74,17 +74,48 @@
     "CP": 0,
     "IQ": 0,
     "updates": 0,
-    "truth_opened": false
+    "truth_opened": false,
+    "error": "WrongfulltotalversusbaseLmapping;no shape/RD telemetry field",
+    "repair": {
+      "targeted_checks": 8,
+      "status": "PASS",
+      "tolerance_changed": false,
+      "NN": 0,
+      "IQ": 0,
+      "CP": 0,
+      "updates": 0,
+      "old_output_preserved": true
+    }
   },
   "progress": {
-    "tail_epochs_completed": 1,
+    "tail_epochs_completed": 10,
     "tail_epochs_total": 10,
-    "cumulative_epochs_completed": 21,
-    "first_tail_epoch_time_s": 108.94294166564941,
-    "step_log_bytes": 841755,
-    "source_complete": false,
-    "prediction_complete": false,
-    "scoring_complete": false,
+    "cumulative_epochs_completed": 30,
+    "source_complete": true,
+    "prediction_complete": true,
+    "scoring_complete": true,
     "failure": null
+  },
+  "source_decision": {
+    "status": "FIXED_SOURCE_CRITERIA_FAILED_RECIPE_CLOSED_NO_E50",
+    "run_id": "20261018-phase1-FcrossRX-stepALT-e30-s2026092701-m1-r01",
+    "model_seed": 2026092701,
+    "source_only": true,
+    "target_scores_read": false,
+    "fullV_clean_candidate_minus_NoAs30_pp": -0.1481481481481417,
+    "fullV_clean_candidate_minus_As30_pp": -0.04444444444443585,
+    "midurban_candidate_minus_As30_pp": 0,
+    "lowurban_candidate_minus_As30_pp": 0.2222222222222222,
+    "midlowmean_candidate_minus_As30_pp": 0.11111111111110628,
+    "checks": {
+      "clean_ge_minus0p1pp": false,
+      "midlow_gt0pp": true
+    },
+    "fixed_scientific_criteria_changed": false,
+    "formal_still_required": true,
+    "repeatable_gain_proven": false,
+    "automatic_E50_extension": false,
+    "analysis_r01_status": "FAILED_READONLY_LOSS_TELEMETRY_SCHEMA_MISMATCH_0NN_NO_TRAIN_MUTATION",
+    "selected_model": "unchanged_fixedFINAL30"
   }
 }

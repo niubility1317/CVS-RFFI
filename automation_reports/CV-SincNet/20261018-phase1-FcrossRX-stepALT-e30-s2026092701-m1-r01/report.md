@@ -27,3 +27,9 @@
 实际训练代码 `cc9a2dac5e2667dab9d730dd8b618e8e635fc5ca` 已提交、push 并独立核对远端 OID 一致。单次 N607 普通账户预检、发布归档 SHA 比较和远端编译通过。dispatcher 1233511／worker 1233539 的 PID、CWD、argv、CUDA_VISIBLE_DEVICES 和 nvidia-smi 占用均核实；step 日志由129190增至226761字节，未见本run failure。真实原As20无query烟测2NN、双步1536NN通过后已经直接训练；ORD128实际loss／gradient与原公式精确一致。初始化source_roles=EXACT_MATCH、target_contact=false、严格ownEMA，优化器为空state／resetcosine10。实际信道配置与原As30完全一致。此状态不代表训练／评分完成，没有新性能结果。
 
 同一行只读后处理已发布并独立核实 PID1235749、分析 CWD／argv／空 CUDA；代码 `b93b30b7f99f59046a368c3083b33ba4dcb61cc3`，7 项 focused synthetic checks与远端编译通过，WAIT_SOURCE／truth_opened=false。它不读取IQ／checkpoint、不执行模型或更新，等待原dispatcher／worker真实句柄；源结果完成后先保存源结论，全部三逻辑条件×七视图已固定预测并独立评分后才核对truth。新增训练已完成第1／10轮（累计21／30），首轮108.943s，日志841755字节，无本run failure；尚无完整源／正式结果。
+
+固定 E30 已完成并冻结。预登记源判定失败：full V clean 相对NoAs30−0.148148pp（界限−0.1），相对原As30−0.044444pp；源mid／low相对原As30为0／+0.222222pp，等权均值+0.111111pp。固定128/0配方关闭，不扩至E50、不扫描周期/相位/seed。此决定只依据已生成源结果、早于读取正式分数，正式七视图仍继续。
+
+只读分析r01已正常以错误退出并保留全部产物：它把新版concat/total_L（含.25raw）误作旧版base_L_before_shape比较，且假设不存在的shape/RD字段。真实首／末记录均证明concat/total_L=完整total_L，独立shape_steps保留raw损失。只修正后处理接口并使用新analysis r02根，不重训／重复预测／评分，不改阈值或容差；分析新增NN=0。
+
+后处理定点修复就绪：真实首末标量与错误total／raw贡献的负测通过，共8项focused checks PASS；保留原容差、CE＋KL、完整L尺度、raw监督／cost／曝光检查。只将concat总L映射至完整reference total，并用差分对账.25raw；新release／output为r02，原r01保留。原训练／预测／评分进程现已退出，七视图完成文件存在，无run failure，尚待重新运行独立完整汇总。

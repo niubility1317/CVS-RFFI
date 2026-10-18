@@ -1,0 +1,22 @@
+{
+  "status": "FIXED_SOURCE_CRITERIA_FAILED_RECIPE_CLOSED_NO_E50",
+  "run_id": "20261018-phase1-FcrossRX-stepALT-e30-s2026092701-m1-r01",
+  "model_seed": 2026092701,
+  "source_only": true,
+  "target_scores_read": false,
+  "fullV_clean_candidate_minus_NoAs30_pp": -0.1481481481481417,
+  "fullV_clean_candidate_minus_As30_pp": -0.04444444444443585,
+  "midurban_candidate_minus_As30_pp": 0,
+  "lowurban_candidate_minus_As30_pp": 0.2222222222222222,
+  "midlowmean_candidate_minus_As30_pp": 0.11111111111110628,
+  "checks": {
+    "clean_ge_minus0p1pp": false,
+    "midlow_gt0pp": true
+  },
+  "fixed_scientific_criteria_changed": false,
+  "formal_still_required": true,
+  "repeatable_gain_proven": false,
+  "automatic_E50_extension": false,
+  "analysis_r01_status": "FAILED_READONLY_LOSS_TELEMETRY_SCHEMA_MISMATCH_0NN_NO_TRAIN_MUTATION",
+  "selected_model": "unchanged_fixedFINAL30"
+}

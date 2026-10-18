@@ -96,6 +96,12 @@ def exposure_summary(counts,all_ids):
  values=np.asarray([counts[x] for x in all_ids],int)
  return dict(unique_physical_packets=len(counts),all_L_physical_packets=len(all_ids),unexposed_L_packets=int((values==0).sum()),minimum=int(values.min()),maximum=int(values.max()),mean=float(values.mean()),exposure_count_histogram={str(k):int(v) for k,v in sorted(Counter(values.tolist()).items())},per_ID_matched_to_original_not_assumed=True)
 
+def check_native_L(r,s,m):
+ """The stepALT hook emits full 6L total; raw RD lives in shape_steps only."""
+ errors=[logs._near(m['concat/'+key],r[key],'Actual stepALT6L '+key+' telemetry differs') for key in ('total_L','common_CE','common_KL','SupCon','SupCon_weight')]
+ errors.append(logs._near(m['concat/total_L']-r['base_L_before_shape'],.25*s['shape_RD'],'Actual stepALT raw contribution differs'))
+ return max(errors)
+
 def parse_new_logs(root):
  b=root/'source';done=read(b/'completion.json');result=read(b/'result.json');cfg=done['config']
  if (done['epoch'],done['optimizer_steps'],cfg['updates'],result['optimizer_steps'])!=(10,2220,2220,2220) or result.get('cumulative_epochs',30)!=30 or result.get('cumulative_optimizer_steps',6660)!=6660:raise ValueError('Fixed local10/cumulative30 budget differs')
@@ -115,7 +121,7 @@ def parse_new_logs(root):
   logs._near(r['SupCon_weight'],.1,'Full original crossRX contrast differs',1e-12);valid=logs.relation(r,True)
   total=.5*r['common_RD']+.5*r['extra_RD']+.1*r['SupCon']+.25*s['shape_RD'];maxerr=max(maxerr,logs._near(total,r['total_L'],'Full1.25L reduction differs'),logs._near(r['total_L'],r['base_L_before_shape']+.25*s['shape_RD'],'Raw control reduction differs'))
   if m['concat/L_forwards']!=6 or m['concat/As_packets']!=As or any(m.get(k) or 0 for k in ('train/pseudo_truth_available','train/skipped_nonfinite_loss','train/skipped_nonfinite_grad')):raise ValueError('Original U truth/numerics differ')
-  logs._near(m['concat/total_L'],r['base_L_before_shape'],'Actual stepALT6L telemetry differs');logs._near(m['shape/RD'],s['shape_RD'],'Raw control telemetry differs');logs.finite(m['train/loss'],'native loss')
+  maxerr=max(maxerr,check_native_L(r,s,m));logs.finite(m['train/loss'],'native loss')
   number=m['train/pseudo_total'];selected=m['train/pseudo_selected']
   if int(number)!=number or number!=(124 if i%222==0 else 256) or not 0<=selected<=number:raise ValueError('Actual original U packet counts differ')
   if sum(r['scene_counts'].values())!=As or sum(r['state_counts'].values())!=As or set(r['scene_counts'])-set(SOURCE_SCENES):raise ValueError('Actual complete channel exposure differs')
