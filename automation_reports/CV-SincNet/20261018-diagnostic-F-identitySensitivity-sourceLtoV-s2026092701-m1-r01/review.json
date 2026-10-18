@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "scope": "One independent P0/P1 for this candidate",
+  "reviewer": "unitary_p0p1_review",
+  "findings": [],
+  "checked": [
+    "L-only ranking frozen before V",
+    "V equal-step controls",
+    "118984 NN plan",
+    "frozen default head/parameter state",
+    "source role permissions",
+    "independent recount/scoring",
+    "release dependencies"
+  ],
+  "real_IQ": 0,
+  "CP": 0,
+  "remote_access": false
+}

@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "protocol_negatives": 25,
+  "synthetic_transformed_packets": 448,
+  "numerics": {
+    "<class 'numpy.float64'>": {
+      "max_across32_view_relative_step_spread": 2.949029909160572e-17,
+      "max_gain": 0.1
+    },
+    "<class 'numpy.float32'>": {
+      "max_across32_view_relative_step_spread": 7.3769605216100764e-9,
+      "max_gain": 0.09999999999999999
+    }
+  },
+  "independent_L_ranking": true,
+  "energy_equal_all32views": true,
+  "source_criteria_positive_and_failure_controls": true,
+  "real_IQ": 0,
+  "CP": 0,
+  "NN": 0,
+  "updates": 0
+}

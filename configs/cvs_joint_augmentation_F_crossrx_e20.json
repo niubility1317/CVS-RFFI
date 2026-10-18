@@ -2,7 +2,7 @@
   "schema": "joint_augmentation_active_baseline_v1",
   "status": "ACTIVE_JOINT_GOAL_UNACHIEVED",
   "source_experiment": "20261017-phase1-F-crossRX-spectralIQ-firsttrain-e20plus10-s2026092701-m2-r01",
-  "authorization": "Latest explicit userE30/F+CROSS_RX/full5sourceRX/L6300U56700V27000/256IQ. Current fixed conditionalshadowLHS organization uses common matching NoAs20+10;no sourceRXholdout or newU rules.",
+  "authorization": "Latest explicit user E30/F+CROSS_RX/full5sourceRX/L6300U56700hiddenV27000/256IQ;current source-only sensitivity diagnostic adds0training,0target;no sourceRXholdout.",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
   "applies_to": [
     "B00",
@@ -2826,18 +2826,12 @@
     "reference": "https://github.com/WiSig-dataset/wisig-process-raw/blob/master/matlab_equalization/equalize_channel.m"
   },
   "active_Ag_hypothesis": {
-    "status": "CLOSED_FIXED_REPEAT_SHRINK_SOURCE_GAIN_FAILED",
-    "run_id": "20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01",
-    "source_guard_passed": true,
-    "source_training_gain_pp": 0,
-    "source_training_correct_each": 26532,
-    "source_training_V_each": 27000,
-    "source_RX_protected": true,
+    "status": "IMPLEMENTED_SOURCE_DIAGNOSTIC_PENDING",
+    "run_id": "20261018-diagnostic-F-identitySensitivity-sourceLtoV-s2026092701-m1-r01",
+    "hypothesis": "L-only defaulthead input sensitivity predicts identity-protective equal-energy localgain locations on independent sourceV",
     "new_Ag_efficacy": false,
-    "all_source_RX_retained": true,
-    "IQ_points": 256,
-    "no_rescue": "fixedwindow80:160/period20/taper/Uniform0to.1/parent/seed/E30",
-    "decision_before_primary_formal_metric_read": true
+    "no_training_or_target": true,
+    "report": "automation_reports/CV-SincNet/20261018-diagnostic-F-identitySensitivity-sourceLtoV-s2026092701-m1-r01/report.md"
   },
   "latest_completed_source_diagnostic": "20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01",
   "active_training_budget": {
@@ -4273,7 +4267,7 @@
     "full_B00_B10_B01_B11_missing": true,
     "cross_seed_missing": true
   },
-  "current_source_experiment": null,
+  "current_source_experiment": "20261018-diagnostic-F-identitySensitivity-sourceLtoV-s2026092701-m1-r01",
   "latest_completed_source_experiment": "20261018-diagnostic-F-repeatShrink-sourceV-s2026092701-m1-r01",
   "unitary_source_result": {
     "run_id": "20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01",
