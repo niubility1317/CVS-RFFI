@@ -1,3 +1,5 @@
+> ANALYZED／VERIFIED：四个新增E30模型、七视图独立评分及三seed独立分析/状态覆盖已全部完成。真实As的urban收益跨3seed重现，clean未稳定保持；lowurban三seed均低于60%。完整结果见[final_analysis.md](final_analysis.md)。此前RUNNING/准备/预登记段落为历史执行记录，不代表当前状态。
+
 > RUNNING／VERIFIED：实际代码 `63b7c8cd7bb4139a2d800e6f4c4a7f1f2163fd47` 的r02已通过完整bootstrap导入及3074NN真实CP/四F合成检查，四row在GPU4/5/6/7独立运行；原数据角色、native seed和实际F工厂seed均已核对。B00两行已完成首epoch222更新，B01两行优化日志已增长。尚无训练完成或新正式结果，不把初始化检查当作跨seed收益。
 
 > 技术替代r02：首轮导入前失败，未开始训练。此次仅修复顶层包标记阻断legacy namespace，加入原bootstrap纯导入验证；数据、四行、seed、目标和E30预算不变。保留r01，无原地热改。
