@@ -1,15 +1,16 @@
-"""One owner per row: train FINAL30, all seven predictions, independent scorer."""
+"""Recover only As FINAL30; reuse the frozen matched control without execution."""
 import argparse,json,os,subprocess,sys,time,traceback
 from pathlib import Path
 from . import design as d
 from experiments.cvs_receiver_residual_capacity4.control import lock
 from experiments.cvs_multi_state_action.dispatch import capacity
 def execute(mode,row):
+ if row not in {r['row_id'] for r in d.train_rows()}:raise ValueError('Reused control cannot be executed')
  env=dict(os.environ)
  if mode=='score':env['CUDA_VISIBLE_DEVICES']=''
  os.execve(sys.executable,[sys.executable,'-u',str(d.ROOT/'experiments/cvs_continuous52/runner.py'),'--mode',mode,'--row',row],env)
 def worker(row):
- c=d.config(next(r for r in d.rows() if r['row_id']==row))
+ c=d.config(next(r for r in d.train_rows() if r['row_id']==row))
  with lock(d.BASE/(row+'.owner.lock'),nonblocking=True):
   gpu=int(os.environ['CUDA_VISIBLE_DEVICES'])
   with lock(Path(d.PROJECT)/'runs/receiver_residual_capacity4.lock'):
@@ -38,7 +39,7 @@ def dispatch():
   smoke()
  except BaseException as error:
   d.write(d.BASE/'failure.json',dict(status='PREFLIGHT_FAILED',error=repr(error),preserve_outputs=True,no_automatic_retry=True));raise
- pending=d.rows();active={};receipts=[];completed=[];failed=[]
+ pending=d.train_rows();active={};receipts=[];completed=[];failed=[]
  while pending or active:
   for row,child in list(active.items()):
    code=child.poll()
@@ -47,7 +48,7 @@ def dispatch():
    if code or not done.is_file() or d.read(done).get('status')!='TRAINED_AND_SCORED':failed.append(dict(row_id=row,exit_code=code))
    else:completed.append(row)
    del active[row]
-  if not (d.BASE/'source_matrix_decision.json').exists() and all((d.BASE/r['row_id']/'source_qualification/complete.json').is_file() for r in d.rows()):
+  if not (d.BASE/'source_matrix_decision.json').exists() and all((d.row_root(r)/'source_qualification/complete.json').is_file() for r in d.rows()):
    from .report import source_decision
    source_decision()
   if pending and not failed:
@@ -70,10 +71,10 @@ def dispatch():
   d.write(d.BASE/'failure.json',dict(status='FAILED',rows=failed,unlaunched=pending,healthy_rows_preserved=True,no_automatic_retry=True));raise RuntimeError('Technical failure preserved; no scientific retuning')
  from .report import collect
  result=collect()
- d.write(d.BASE/'complete.json',dict(status=result['status'],rows=completed,model_seed_count=1,historical_same_seed_split_reference=True,seven_views_per_row=True,crossseed_confirmed=False,goal_complete=False))
+ d.write(d.BASE/'complete.json',dict(status=result['status'],rows=[r['row_id'] for r in d.rows()],newly_completed_rows=completed,reused_control_rows=[r['row_id'] for r in d.rows() if r not in d.train_rows()],model_seed_count=1,historical_same_seed_split_reference=True,seven_views_per_row=True,new_model_epochs=30,new_updates=6660,reused_model_epochs=30,reused_updates=6660,failed_original_As_epochs=20,failed_original_As_updates=4440,crossseed_confirmed=False,goal_complete=False))
 def main():
  p=argparse.ArgumentParser();p.add_argument('--mode',choices=['worker','predict','score']);p.add_argument('--row');a=p.parse_args()
- if a.mode is not None and a.row not in {r['row_id'] for r in d.rows()}:raise ValueError('Only registered rows permitted')
+ if a.mode is not None and a.row not in {r['row_id'] for r in d.train_rows()}:raise ValueError('Only registered rows permitted')
  if a.mode=='worker':worker(a.row)
  elif a.mode=='predict':
   from .evaluate import predict

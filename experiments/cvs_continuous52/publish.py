@@ -4,7 +4,7 @@ from pathlib import Path
 def main():
  p=argparse.ArgumentParser();p.add_argument('--stage',choices=['transfer','launch'],required=True);p.add_argument('--commit',required=True);p.add_argument('--source-root',type=Path,required=True);p.add_argument('--artifact-root',type=Path,required=True);p.add_argument('--project-root',required=True);p.add_argument('--ssh-config',required=True);a=p.parse_args()
  O=a.artifact_root;W=a.source_root;P=a.project_root
- release='cvs_FcrossRX_continuous_E30_20261018_r01';run='20261018-phase1-FcrossRX-continuous-e30-s2026092701-m2-r01'
+ release='cvs_FcrossRX_continuous_recovery_E30_20261018_r01';run='20261018-phase1-FcrossRX-continuous-recovery-e30-s2026092701-m1-r01'
  R=P+'/releases/'+release;B=P+'/runs/'+run;L=B+'-launch';archive=O/(release+'.tar.gz')
  env=dict(os.environ,SystemRoot='C:/Windows',windir='C:/Windows',PATHEXT='.COM;.EXE;.BAT;.CMD')
  ssh=['C:/Program Files/Git/usr/bin/ssh.exe','-F',a.ssh_config,'-o','BatchMode=yes','-o','ConnectTimeout=10','-T','N607','python3 -']
