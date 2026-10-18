@@ -1,0 +1,53 @@
+{
+  "status": "VERIFIED",
+  "code": "3a984b391e60a3065165d4975f9bcb90fde6d1fe",
+  "dispatcher_PID": 1761803,
+  "dispatcher_alive": true,
+  "dispatcher_CWD_argv": true,
+  "rows": {
+    "N01-s2026092701": {
+      "pid": 1762013,
+      "alive": true,
+      "CWD_correct": true,
+      "argv_correct": true,
+      "mode": "worker",
+      "GPU": 2,
+      "CUDA_matches": true,
+      "GPU_process_observed": true,
+      "epoch": 0
+    },
+    "C01-s2026092701": {
+      "pid": 1762156,
+      "alive": true,
+      "CWD_correct": true,
+      "argv_correct": true,
+      "mode": "worker",
+      "GPU": 3,
+      "CUDA_matches": true,
+      "GPU_process_observed": true,
+      "epoch": 0
+    },
+    "S01-s2026092701": {
+      "pid": 1762335,
+      "alive": true,
+      "CWD_correct": true,
+      "argv_correct": true,
+      "mode": "worker",
+      "GPU": 4,
+      "CUDA_matches": true,
+      "GPU_process_observed": true,
+      "epoch": 0
+    }
+  },
+  "log_growth": true,
+  "failure": null,
+  "real_checkpoint_smoke": "PASS",
+  "synthetic_smoke": "PASS",
+  "shared_smoke_NN": 2358,
+  "smoke_VJP_calls": 6,
+  "core_math_checks": 61,
+  "actual_Torch_checks": 28,
+  "actual_Torch_state_roundtrip_max_error": 0,
+  "training_status": "RUNNING",
+  "formal_results_read": false
+}

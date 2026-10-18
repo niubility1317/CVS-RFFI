@@ -35,3 +35,5 @@ R01三行因逐坐标梯度相等检查误拦退出：N01已成功16次更新，
 报告七视图准确率、macro F1、最差 RX、RX/day/TX 分层、修复／新增错误、urban 三场景均值、suburban 绝对差距、完整成本和未完成项。只有一个模型 seed2026092701；两次信道 draw 不当作额外 seed。不足 0.1 个百分点的微增和单 seed 双涨均不能宣称稳定双提升。
 
 预期产物：experiment.json／events.jsonl、源与配置 metadata、final checkpoint、逐步完整日志、source_matrix_decision、固定 predictions、独立 scores、automatic_summary、最终分析和同 row 判定。
+
+实际 r02 代码 3a984b391e60a3065165d4975f9bcb90fde6d1fe，archive transfer／remote compile VERIFIED；CPU realparent synthetic smoke2358NN／6VJP、actualTorch28检查及61core检查通过。dispatcher1761803与三行worker的PID/CWD/argv/GPU及日志增长独立核实，状态RUNNING；未完成epoch，未读取正式分数。

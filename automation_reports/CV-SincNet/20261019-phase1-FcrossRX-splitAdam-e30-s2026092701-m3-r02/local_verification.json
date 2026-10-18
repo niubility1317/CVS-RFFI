@@ -7,9 +7,12 @@
   "emitted_remote_AST": 2,
   "root_report_math_truth_closure": "PASS",
   "same_training_gradients_loss_clip_Adam": true,
-  "actual_Torch": "LAUNCHER_FIRST_STEP_PENDING",
+  "actual_Torch": "PASS28 in real launcher",
   "new_NN": 0,
   "CP": 0,
   "IQ": 0,
-  "updates": 0
+  "updates": 0,
+  "log_analysis_fixture_checks": 10,
+  "log_analysis_NN": 0,
+  "real_checkpoint_synthetic_smoke_NN": 2358
 }
