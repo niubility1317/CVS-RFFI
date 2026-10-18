@@ -1,0 +1,40 @@
+{
+  "status": "READY_NOT_LAUNCHED",
+  "run_id": "20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01",
+  "training_code_commit": "33a7046ee6e15898f30eca05f7bbc2c3249ce7e3",
+  "training_dispatcher_pid": 1217210,
+  "training_worker_pid": 1217341,
+  "scope": "Same registered row plus originalfixedAs30/NoAs30 outputs;no newtraining/prediction/scoring/model/IQ/CP",
+  "source_inputs": [
+    "newsource/completion.json final_source_metrics student27000",
+    "new+originalV1800predictionNPZs",
+    "originalpurephysicsmetadata fullcondition",
+    "newcomplete2220step/10epoch logs"
+  ],
+  "formal_gate": "All3logicalrowscomplete7fixedpredictions andindependentscores;validfrozenconfigs/IDs/logits before anytruthread",
+  "formal_inputs": "Existingfixedpredictions/logits pluslegaltruth-side mapping only aftergate;do not rescore/predict original rows",
+  "source_decision": "Read existing source_matrix_decision.json;sourcequalifiedboolandchecks kept;FAIL permits fixedformalclosure/noextension;never redecide or modifycriteria",
+  "outputs": "Actualpairedmetrics/strata/errors/defaultheadmargin/cost/fullcurves/plots/negatives/missing",
+  "NN": 0,
+  "IQ": 0,
+  "CP": 0,
+  "updates": 0,
+  "extra_review": "NONBLOCKING_no_second_candidate_review",
+  "source_and_formal_separated": true,
+  "target_feedback": false,
+  "no_automatic_extension": true,
+  "output_root": "PROJECT/runs/20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01/analysis_r01",
+  "analysis_files": [
+    "analysis/cvs_urban_prior59_analysis_20261018.py",
+    "analysis/check_urban_prior59_analysis.py"
+  ],
+  "toy_checks": {
+    "tests": 11,
+    "status": "PASS",
+    "wall_seconds": 0.579,
+    "source": "implementation_worker_report",
+    "real_data_reads": 0,
+    "NN": 0,
+    "checkpoint_reads": 0
+  }
+}
