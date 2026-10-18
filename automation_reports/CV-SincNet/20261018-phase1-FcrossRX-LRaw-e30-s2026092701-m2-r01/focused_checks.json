@@ -1,0 +1,88 @@
+{
+  "implementation": {
+    "status": "PASS",
+    "package": "experiments/cvs_lraw_tail30",
+    "files": [
+      "augmentation.py",
+      "channel.py",
+      "checks.py",
+      "check_emitted.py",
+      "design.py",
+      "dispatch.py",
+      "evaluate.py",
+      "model.py",
+      "observer.py",
+      "preflight.py",
+      "protocol.py",
+      "publish.py",
+      "qualification.py",
+      "quality.py",
+      "README.md",
+      "reference_config.json",
+      "report.py",
+      "runner.py",
+      "runtime.example.json",
+      "schema.py",
+      "source.py",
+      "__init__.py"
+    ],
+    "package_file_count": 22,
+    "focused": {
+      "status": "PASS",
+      "protocol_negatives": 111,
+      "actual_make_args_U_EMA_ordinary_preserved": true,
+      "actual_wrapper_factory_and_mutating_input_clone_mock": true,
+      "wrapper_same_call_Python_NumPy_and_rng_double_endstates": true,
+      "identity_discard_zero_MSE_accepted": true,
+      "actual_model_hook14keys": true,
+      "actual_native_ordinary_L_only_callsites": true,
+      "U_strong_function_not_ordinary": true,
+      "original_P43_ORD128_6L_delegated": true,
+      "total_L_scale": 1.25,
+      "source_summary_native_JSON": true,
+      "real_Torch_and_checkpoint_smoke": "launcher first step pending1540NN;actual samecall Torch RNG pending",
+      "NN": 0,
+      "CP": 0,
+      "IQ": 0,
+      "updates": 0,
+      "target": false
+    },
+    "AST": {
+      "status": "PASS",
+      "package_Python_files": 19,
+      "emitted_remote_AST": [
+        "PASS",
+        "PASS"
+      ],
+      "network_calls": 0,
+      "CP": 0,
+      "IQ": 0,
+      "target": false
+    },
+    "actual_phase_fields": {
+      "label_epochs": 0,
+      "pseudo_epochs": 10,
+      "use_aug": true,
+      "use_unlabeled": true,
+      "use_ema_teacher": true
+    },
+    "real_checkpoint_smoke": "PENDING launcher first step1540NN;actual same-call Torch RNG not run locally",
+    "NN": 0,
+    "IQ": 0,
+    "CP": 0,
+    "remote": false
+  },
+  "analysis": {
+    "status": "PASS",
+    "AST_files": 4,
+    "focused_returncode": 0,
+    "wall_seconds": 9.259080899995752,
+    "NN": 0,
+    "checkpoint_reads": 0,
+    "IQ_reads": 0,
+    "updates": 0,
+    "remote_calls": 0,
+    "real_source_or_formal_reads": 0
+  },
+  "actual_remote_smoke": "PENDING launcher first step1540NN"
+}

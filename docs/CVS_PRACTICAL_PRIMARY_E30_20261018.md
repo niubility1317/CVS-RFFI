@@ -234,3 +234,10 @@ tailNoU已实际启动：代码 17cc611299091815ea71f744a32dcac96818ca4b；dispa
 正式n1：新As clean85.330357%、midurban63.033333%、lowurban51.437500%、urbanmean64.140675%；相对匹配新NoAs clean＋.216071pp、mid＋28.002381、low＋21.278571pp，本seed通过−.1pp阶段界限。相对原As，仅mid＋.226786、low＋.193452、urbanmean＋.201389、clean−.010714pp。新NoAs自身clean下降.133333pp，不能将整个相对差扩大归为As改善。三个suburban81.641667/78.769048/76.018452%，距自身clean3.688690/6.561310/9.311905pp；不接近最初2pp探索建议，也不能把clean下降贡献算作保护。
 
 本轮支持“去U末段有n1小幅星地增量且clean对原As基本不变”的描述，不支持源晋级、稳定双提升或“U普遍有害”的结论。原完整As继续作匹配参照；当前无本侧训练/预测/评分进程，也无已登记下一候选。研究目标仍未完成，不由本次formal微差选择新机制。完整[最终报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-tailNoU-e30-s2026092701-m2-r01/final_analysis.md)含全7/F1/最差RX/错误修复新增/交互/成本及缺项。
+
+
+## 下一项已登记：L ordinary 输入换 raw
+
+20261018-phase1-FcrossRX-LRaw-e30-s2026092701-m2-r01已登记PLANNED，实现中，未启动。仅新增两条原P43 own20student+EMA+10，总E30，旧NoAs30/As30读出复用。唯一变量为L专属ordinary输出改precallrawclone；原oldaug仍执行一次作RNG/成本控制但输出弃用，Uweak/strong/EMA原规则保持。原6L1.25/Asraw64/ORD128（实际anchor输入raw）/defaulthead/全源RX和IQ256保持，前20ordinary历史不改。PA-only历史已做，本项旁路整链输出及其归一化尾部；原As本来raw，不称修复重复损伤。
+
+源规则仅newAs fullVclean−newNoAs≥−.1pp且twodrawmidlownewAs−oldAs≥+.5pp；失败关闭固定方案，不E50/扫开关/seed，全部all7仍自动评分。局部call RNG可验证，整个训练轨迹不假定相同，原aug计算并未省掉。RXpopulation/calibration-refresh已有actualE30，不重开。详见[预登记](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-LRaw-e30-s2026092701-m2-r01/report.md)。

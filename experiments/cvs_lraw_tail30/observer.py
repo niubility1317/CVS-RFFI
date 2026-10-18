@@ -1,0 +1,75 @@
+"""Record complete original and added training costs; never consult target."""
+from contextlib import contextmanager
+import gzip,json,sys
+from pathlib import Path
+from types import SimpleNamespace
+import torch
+from . import design as d
+from .source import parent_payload
+from .protocol import check_checkpoint
+from experiments.cvs_fullsource_concat20.source import RecordingLoader
+from experiments.cvs_rdrop_sinc_units.optimizer import native_scope
+from experiments.cvs_fullsource_concat20 import supcon
+from .augmentation import ordinary_factory
+
+class Observer:
+ def __init__(self,c):self.c=c;self.optimizer=None;self.out=Path(c['output_root']);self.parent=parent_payload(c);self.ordinary_records=[]
+ def data(self,native,ctx,out):
+  self.out.mkdir(parents=True,exist_ok=True)
+  if ctx['num_domains']!=15:raise ValueError('All original RX/day domains required')
+  self.sequence=gzip.open(self.out/'training_sequence.jsonl.gz','xt',encoding='utf8',compresslevel=3)
+  for key,role in [('train_loader','L'),('unlabeled_loader','U')]:ctx[key]=RecordingLoader(ctx[key],role,self.sequence)
+ def initialize(self,m,c,out):
+  self.model=m;m._lraw_ordinary_records=self.ordinary_records;self.initial_head=m.id_backbone.encoder.core.id_backbone.cls_head.weight.detach().clone()
+  if sum(p.numel() for p in m.parameters())!=900722 or len(m.state_dict())!=206:raise ValueError('Fixed original F shape differs')
+  if self.parent is not None and any(not torch.equal(v.detach().cpu(),self.parent['model'][k]) for k,v in m.state_dict().items()):raise ValueError('Own parent strict state differs before training')
+  d.write(self.out/'actual_modules.json',{k:str(v.__file__) for k,v in sys.modules.items() if k in ['SSDG.train_ssdg','DataAugmentation','leo_practical.channel','leo_practical.residual']})
+  d.write(self.out/'actual_channel.json',m._full_channel.audit())
+ def optimizer_created(self,opt):
+  if opt.state:raise ValueError('Each original segment resets AdamW state')
+  d.write(self.out/'optimizer_initialization.json',dict(state_entries=0,reset=True,schedule='cosine'+str(self.c['epochs']),lr=opt.param_groups[0]['lr'],weight_decay=opt.param_groups[0]['weight_decay']))
+ @contextmanager
+ def native_scope(self,native):
+  orig=native.deepcopy;aug=native.configure_augmentor_for_epoch;schedule=supcon.schedule;terminal=native._resolve_phase1_terminal_status;factory=native.make_augmentor
+  self.ordinary_factory=ordinary_factory(factory,self.ordinary_records);native.make_augmentor=self.ordinary_factory
+  def copied(v,*args,**kw):
+   result=orig(v,*args,**kw)
+   if v is getattr(self,'model',None):
+    if self.parent is not None:result.load_state_dict(self.parent['ema_model'],strict=True)
+    self.teacher=result;e=result.id_backbone.encoder;self.teacher_offset=dict(train=e._full_train_packets,eval=e._full_eval_packets)
+    d.write(self.out/'EMA_initialization.json',dict(origin='own scratch student' if self.parent is None else 'strict own stage20 EMA',extra_teacher=False,optimizer_segment_counters_reset=True,temporal_cache_reset=True))
+   return result
+  def terminal_status(**kw):kw['mechanism_gates_required']=False;return terminal(**kw)
+  native.deepcopy=copied;native._resolve_phase1_terminal_status=terminal_status
+  if self.parent is not None:
+   parent_args=SimpleNamespace(**self.parent['args']);parent_aug_base=native.build_aug_base_cfg(parent_args);native.configure_augmentor_for_epoch=lambda obj,cfg,epoch,args:aug(obj,parent_aug_base,13,parent_args);supcon.schedule=lambda epoch:schedule(int(epoch)+20)
+  try:
+   with native_scope(self,'CENTER_UNITS'):yield
+  finally:
+   native.deepcopy=orig;native.configure_augmentor_for_epoch=aug;supcon.schedule=schedule;native._resolve_phase1_terminal_status=terminal;native.make_augmentor=factory
+   if hasattr(self,'sequence'):self.sequence.close()
+ def epoch(self,m,ctx,rows,out,device):
+  ep=len(rows);n=ep*222;expected_U=ep*56700 if self.c['segment']==30 else max(0,ep-13)*56700;sup=n if self.c['segment']==30 else max(0,ep-5)*222
+  e=m.id_backbone.encoder;t=self.teacher.id_backbone.encoder
+  if e._full_train_packets!=n*768+expected_U or t._full_train_packets-self.teacher_offset['train']!=0 or t._full_eval_packets-self.teacher_offset['eval']!=expected_U:raise ValueError('Original complete U student/ownEMA teacher packet cost differs')
+  if m._full_channel.calls!=n or len(m._lraw_records)!=n or len(self.ordinary_records)!=n or self.ordinary_factory.calls!=1 or m._feature_l_steps!=n or m._full_calls!=n or m._full_L_packets!=n*512 or m._full_channel.packets!=(n*64 if self.c['As'] else 0) or m._shape_NN!=n*256 or len(m._shape_records)!=n or m._supcon_calls!=n or m._supcon_applied!=sup or self.optimizer._sinc_unit_steps!=n or self.optimizer._sinc_physical_clip_calls!=n or m._supcon_handles or m._supcon_pending is not None:raise ValueError('Real L/U/SupCon/Sinc budget differs')
+  d.write(out/'reference_progress.json',dict(epoch=ep,cumulative_epoch=ep+self.c['epoch_offset'],steps=n,cumulative_steps=n+self.c['step_offset'],L_NN=m._full_L_packets+m._shape_NN,L_As=m._full_channel.packets,extra_U_NN=0,U_As=0,existing_U_only=True,U_steps=n,U_packets=expected_U,U_student_NN=expected_U,teacher_train_NN=t._full_train_packets-self.teacher_offset['train'],teacher_eval_NN=t._full_eval_packets-self.teacher_offset['eval'],U_truth_read=False,target_access=False))
+ def finish(self):
+  m=self.model;done=d.read(self.out/'completion.json');cp=torch.load(self.out/'final_ssdg.pth',map_location='cpu',weights_only=False);steps=self.c['updates']
+  check_checkpoint(cp,run=d.RUN,row=self.c['row_id'],epoch=10,updates=steps,baseline=self.c['parent_source']+'/final_ssdg.pth')
+  if cp['a1_ema_successful_updates']!=steps or done['optimizer_steps']!=steps or len(m._full_records)!=steps or torch.equal(self.initial_head,m.id_backbone.encoder.core.id_backbone.cls_head.weight.detach()):raise ValueError('Default head must jointly train through fixed budget')
+  for name,records in [('reference_steps',m._full_records),('unit_steps',self.optimizer._sinc_unit_lr_records),('shape_steps',m._shape_records),('lraw_steps',m._lraw_records),('ordinary_draw_steps',self.ordinary_records)]:
+   with gzip.open(self.out/(name+'.jsonl.gz'),'xt',encoding='utf8',compresslevel=3) as f:
+    for r in records:f.write(json.dumps(dict(r,cumulative_step=r['step'] if name=='U_steps' else self.c['step_offset']+r['step']),allow_nan=False)+'\n')
+  e=m.id_backbone.encoder;t=self.teacher.id_backbone.encoder
+  result=dict(status='SEGMENT_TRAINED',config=self.c,segment_epochs=self.c['epochs'],optimizer_steps=steps,L_NN=m._full_L_packets+m._shape_NN,L_As=m._full_channel.packets,Ag_mode=self.c['Ag_mode'],Ag_packets=m._shape_packets,Ag_control_NN=m._shape_NN,total_L_loss_scale=1.25,extra_U_NN=0,U_As=0,student_train_NN=e._full_train_packets,student_eval_NN=e._full_eval_packets,teacher_train_NN=t._full_train_packets-self.teacher_offset['train'],teacher_eval_NN=t._full_eval_packets-self.teacher_offset['eval'],teacher_counter_offset=self.teacher_offset,source_qualification=None,U_source_qualified=None,U_steps=steps,U_packets=567000,U_student_NN=567000,L_channel=m._full_channel.summary(),U_channel=None,source_RX=list(d.RX),source_RX_holdout=None,U_truth_read=False,target_access=False,head_fit_updates=0,wall_seconds=done['elapsed_seconds'])
+  n=sys.modules['SSDG.train_ssdg'];a=SimpleNamespace(**self.parent['args']);d.write(self.out/'ordinary_augmentation_actual.json',dict(base=n.build_aug_base_cfg(a),schedule_frozen_at=13,args={k:v for k,v in self.parent['args'].items() if k.startswith('aug_')},schedule_args_epochs=self.parent['args']['epochs'],source='strict own original20 checkpoint args',no_ordinary_before_practical=True,RDrop_same_IQ=True,use_aug=True,full_native_aug_computation=True,returned_input='pre-call raw clone',ordinary_calls=steps,ordinary_packets=steps*128,U_augmentor_wrapped=False,actual_ORD128_anchor_input='raw128',whole_training_RNG_matched=False))
+  if m._full_channel.calls!=steps or len(m._lraw_records)!=steps or len(self.ordinary_records)!=steps or self.ordinary_factory.calls!=1 or m._full_channel.packets!=(142080 if self.c['As'] else 0):raise ValueError('Original selected64/one ordinary call budget differs')
+  if any(r['returned_raw_MSE']!=0. or r['full_native_draws']!=1 or r['count']!=128 for r in self.ordinary_records) or any(r['ordinary_raw_MSE']!=0. for r in m._full_records):raise ValueError('Only raw returned for all existing ordinary L slots')
+  result.update(parent_epochs=20,parent_optimizer_steps=4440,cumulative_epochs=30,cumulative_optimizer_steps=6660,EMA_local_successful_updates=cp['a1_ema_successful_updates'],EMA_cumulative_updates=4440+cp['a1_ema_successful_updates'],parent_EMA_restored=True,lraw=dict(mode='ordinary_draw_discard_return_raw',ordinary_factory_calls=self.ordinary_factory.calls,ordinary_calls=steps,ordinary_packets=steps*128,full_native_draws=steps,returned_raw_MSE_max=max(r['returned_raw_MSE'] for r in self.ordinary_records),used_ordinary_raw_MSE_max=max(r['ordinary_raw_MSE'] for r in m._full_records),discardedordinary_MSE_mean=sum(r['discardedordinary_MSE'] for r in self.ordinary_records)/steps,discardedordinary_MSE_max=max(r['discardedordinary_MSE'] for r in self.ordinary_records),discardedordinary_changed_packets=sum(r['discardedordinary_changed_packets'] for r in self.ordinary_records),U_augmentor_wrapped=False,U_weak_strong_unchanged=True,parent_ordinary_epochs=20,whole_trajectory_NoAug=False,full_native_aug_computation=True,whole_training_RNG_matched=False,pair_weights=[.5,.5,.25],SupCon='ORD128;actual raw128 input',total_L_scale=1.25,extra_NN=0,new_losses=0),coverage=[dict(TX=k[0],RX=k[1],scene=k[2],state=k[3],lock=k[4],count=v) for k,v in sorted(m._full_coverage.items())])
+  d.write(self.out/'result.json',result);return result
+
+def train(c):
+ from . import model
+ from .source import segment_train
+ o=Observer(c);segment_train(c,design=d,model_api=model,observer=o);return o.finish()
