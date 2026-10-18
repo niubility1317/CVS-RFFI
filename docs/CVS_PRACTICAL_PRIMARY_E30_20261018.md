@@ -86,3 +86,9 @@ full V27000四条件逐ID读出，原V1800与两次固定三场practical观测�
 `20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r03`已完整完成四条件源读出，实际代码`649487724adda1b69243f9efd441f2c05160f781`。AsEMA−AsStudent：fullV clean修复5／新错7，净−2（−0.007407pp）；mid urban净−4（−0.111111pp），low urban净−7（−0.194444pp），两场均值−0.152778pp。AsEMA−NoAsEMA的fullV clean−0.066667pp在源阶段范围内，但EMA没有改善原As。固定候选关闭，不扩种／不访问formal／不调衰减或epoch救跑；单seed微小负值不外推EMA全局无效。
 
 成功r03新增133204NN／6CP／0训练更新，两个技术失败另216008NN／12CP，路线总349212NN／18CP／0更新；fullV学生命中与原native完全一致，120CM／16分区合并核对PASS，全部源输出完整，无技术缺项。没有新formal结果；E50三seed正式clean−0.150198pp及未取得重复双提升的结论保持。详见[源比较最终报告](../automation_reports/CV-SincNet/20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r03/final_analysis.md)。当前无本侧在训或源读出进程，后续继续以增强训练组织为研究范围，不从本次负结果捏造新的物理退化归因。
+
+## 当前唯一训练假设：等量 As 的步骤分配
+
+已登记 `20261018-phase1-FcrossRX-stepALT-e30-s2026092701-m1-r01`，实现中，尚未发布。固定原 As20＋10＝总 E30，复用原 As30／NoAs30；唯一变化为末段 mixed128 按累计奇偶 step 分别使用128／0个As，替代每步64。每步6L／总尺度1.25、末段142080As、原U规则、uniform三场与全部源RX保持。按物理ID的As次数不相同，报告实际曝光，不解释为纯梯度时机效应。另一对话的.2／.4／.4场景prior路线不重复。
+
+源支持固定为fullV clean相对NoAs30≥−.1绝对pp，mid／low均值相对原As30>0；不通过则关闭固定方案，正式七视图仍自动收尾。通过只支持继续研究，不等于目标性能通过。用户最新授权允许表现有源证据的方案总E50，当前不追加；后续扩展需固定匹配预算对照，正式分数不作依据。

@@ -187,7 +187,21 @@
     "midlow_EMA_vs_student_net": -11,
     "automatic_seed_extension": false
   },
-  "next_training_hypothesis": null,
+  "next_training_hypothesis": {
+    "run_id": "20261018-phase1-FcrossRX-stepALT-e30-s2026092701-m1-r01",
+    "status": "REGISTERED_IMPLEMENTING_NOT_LAUNCHED",
+    "hypothesis": "FixedAs20+10;onlymixedslotAs128/0alternatingstepsinstead64eachstep,totalAs142080/L6perstep/scale1.25/prior1/3 unchanged",
+    "model_seed": 2026092701,
+    "total_epochs": 30,
+    "new_epochs": 10,
+    "new_updates": 2220,
+    "controls": "ReusefixedoriginalAs30andNoAs30",
+    "formal_feedback": false,
+    "source_RX_holdout": null,
+    "source_support": "fullVcleanVsNoAs>=-.1pp andmidlowVsoriginalAs>0;sourcefailstillautomaticformal",
+    "automatic_E50_extension": false,
+    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-stepALT-e30-s2026092701-m1-r01/report.md"
+  },
   "source_commonphase_sensitivity_result": {
     "name": "Bounded common-phase sensitivity of current F+CROSS_RX default head",
     "status": "ANALYZED_SOURCE_SENSITIVITY_PASS_NOT_AG_EFFICACY",
@@ -2343,7 +2357,7 @@
     "new_analysis_NN": 0,
     "new_analysis_updates": 0
   },
-  "current_experiment": null,
+  "current_experiment": "20261018-phase1-FcrossRX-stepALT-e30-s2026092701-m1-r01",
   "active_As_hypothesis": {
     "run_id": "20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01",
     "status": "COMPLETED_SOURCE_BUDGET_SUPPORTED_FORMAL_STAGE_FAILED",
@@ -2903,10 +2917,11 @@
     "report": "automation_reports/CV-SincNet/20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r03/final_analysis.md"
   },
   "active_training_budget": {
-    "each_total_epochs": 50,
-    "parent_epochs": 30,
-    "new_epochs": 20,
     "default_research_epochs": 30,
+    "each_total_epochs": 30,
+    "parent_epochs": 20,
+    "new_epochs": 10,
+    "new_model_rows": 1,
     "source_RX_holdout": null,
     "L": 6300,
     "U": 56700,
@@ -2915,17 +2930,11 @@
     "promising_recipe_extension": {
       "total_epochs": 50,
       "additional_after_fixed_E30": 20,
-      "status": "RUNNING_VERIFIED",
-      "run_id": "20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01",
-      "authorization": "Existing user source-supported promising recipe E50 plus full original fixedseed replication;matched NoAs required",
-      "model_seeds": [
-        2026092702,
-        2026092703
-      ],
+      "authorization": "Latestuser permits promising source-supported recipes totalE50;no formalfeedback",
+      "status": "AVAILABLE_NOT_LAUNCHED",
       "matched_NoAs_required": true,
       "source_only_candidate_selection": true
-    },
-    "new_model_rows": 4
+    }
   },
   "mmse_receiver_mix_E30_result": {
     "schema": "F_MMSE_RECEIVER_MIX_E30_CLOSED_V1",
@@ -4354,7 +4363,7 @@
     "running_replication_run": null,
     "pending_model_seeds": [],
     "new_E50_formal_results": "ALL_COMPLETE",
-    "next_concrete_candidate": "NOT_SELECTED_SOURCE_EVIDENCE_INSUFFICIENT",
+    "next_concrete_candidate": "20261018-phase1-FcrossRX-stepALT-e30-s2026092701-m1-r01",
     "no_additional_approval_gate": true,
     "last_source_candidate": {
       "run_id": "20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r03",
@@ -4402,7 +4411,7 @@
     "target_access": false,
     "automatic_training": false
   },
-  "current_training_experiment": null,
+  "current_training_experiment": "20261018-phase1-FcrossRX-stepALT-e30-s2026092701-m1-r01",
   "batch_stratification_release": {
     "run_id": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
     "status": "ANALYZED_VERIFIED",
@@ -6248,21 +6257,19 @@
     "joint_goal_complete": false
   },
   "active_training_hypothesis": {
-    "run_id": "20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01",
-    "status": "COMPLETED_SOURCE_BUDGET_SUPPORTED_FORMAL_STAGE_FAILED",
-    "hypothesis": "FixedoriginalAs ownFINAL30+20 source-supported budget replication;urban gain repeated,clean guard unmet",
-    "model_seeds": [
-      2026092701,
-      2026092702,
-      2026092703
-    ],
-    "total_epochs_each": 50,
+    "run_id": "20261018-phase1-FcrossRX-stepALT-e30-s2026092701-m1-r01",
+    "status": "REGISTERED_IMPLEMENTING_NOT_LAUNCHED",
+    "hypothesis": "FixedAs20+10;onlymixedslotAs128/0alternatingstepsinstead64eachstep,totalAs142080/L6perstep/scale1.25/prior1/3 unchanged",
+    "model_seed": 2026092701,
+    "total_epochs": 30,
+    "new_epochs": 10,
+    "new_updates": 2220,
+    "controls": "ReusefixedoriginalAs30andNoAs30",
+    "formal_feedback": false,
     "source_RX_holdout": null,
-    "IQ_points": 256,
-    "new_mechanism": false,
-    "new_training_launch": false,
-    "technical_missing_items": [],
-    "repeatable_double_improvement": false
+    "source_support": "fullVcleanVsNoAs>=-.1pp andmidlowVsoriginalAs>0;sourcefailstillautomaticformal",
+    "automatic_E50_extension": false,
+    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-stepALT-e30-s2026092701-m1-r01/report.md"
   },
   "carrier_gate_release": {
     "run_id": "20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01",
