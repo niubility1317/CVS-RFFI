@@ -27,3 +27,5 @@
 后处理实际代码 `d51c6068e4d94a83a26914a92fc107bc3f4850fc` 已提交并独立核对远端分支 OID。单归档传输比较、远端compile/import PASS，11项合成检查远端PASS（0.008s）。CPU分析PID1139252已独立核验CWD/argv/start_ticks/GPUdisabled；当前WAIT_SOURCE，观察到本run dispatcher和唯一As worker，0NN/IQ/CP/updates，尚无正式结果。完整命令及路径见analysis_plan.json。
 
 本地最终报告收集器已实现：analysis/cvs_continuous53_collect_20261018.py，纯stdlib，仅消费完成后的source/final/coverage保存元数据，0新IQ/CP/truth/预测读取/NN/更新。合成fixture验证−.100绝对pp边界、主要配对80E与四行含失败140E成本、缺图不造链接及拒绝覆盖；PASS0.036s，AST1PASS。真实报告尚未生成，不预填分数或图片路径。
+
+Source-only闭合决定先于新formal分数：固定连续30资格FAIL（source_decision_summary.md）。源Vclean98.255556% vs NoAs98.333333%，差−.077778pp；mid/low两draw较stagedAs−.222222/−.055556/+ .277778/0pp，四格均值0，未达每格+1pp。最新0.1pp报告口径不追溯修改旧source门槛。此固定路线关闭，不扩种子/预算；仍完成全部注册正式测试。其他owner原As E50不受影响。
