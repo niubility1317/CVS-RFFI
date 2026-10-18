@@ -272,3 +272,12 @@ suburban三个accuracy80.645833/78.381548/76.017857%，距自身clean2.492262/4.
 E50实际新增14922588NN（smoke1540）、40modelE/8880更新；每行native6271922=学生train4543920＋eval594002＋教师eval1134000；source12600、formal1176002。两native墙钟1596.744385/2191.173243秒，source预测wall未单列记录。连同本段LRaw30共60modelE/13320更新/23627256新增NN（含两smoke3080），旧父与旧读出复用不重计。ordinary每行4440次/568320包仍计算并弃用、usedrawMSE0，不作省算力声明。
 
 两个worker、dispatcher及0NNanalysis均已自然退出，未停止/重跑健康任务、未扩seed/超过E50。当前单seed预算矩阵收尾，最终可重复星地与clean双收益仍未证明；不把sourcePASS或匹配弱NoAs的阶段PASS当最终完成。
+
+
+## 下一项：As 专属标签平滑 E30
+
+20261018-phase1-FcrossRX-AsLS-e30-s2026092701-m1-r01已登记PLANNED，实现中，未启动。当前actual原CE本来LS=.01，不能称hard/onehot。本项唯一因素是mixed128内selected64 As两CE的q改eps=.05，普通64/raw/common/U全仍.01，128均值/RD两pass均值/外mixed.5、As.25份额、原KL/SupCon/6L1.25不变。全LAs全6类同公式监督，无预测/质量gate、不新抽As、不加forward/head/branch。父仅原P43 ownB01As20student+EMA+10，总30/6660；只一新B01，oldAs30直接方法控制、oldNoAs30阶段控制复用，NoAs无算子无需重训。
+
+近邻CE_T2/CE_HALF已actual全5RX/6L E30且sourceFAIL，但两者仍LS=.01；新q熵与温度/整体权重梯度不同。本次不重开AsPairCE删KL、LRaw/NoU/weight/sceneBalance/stepALT/MIXcontrast等。另一对话最新在查同NN双独立完整As观测，本侧不重复。时间相关性审计显示scatter名义10.2us内约.0302度、重复收缩等已按各自源判据关闭，不重命名重开。
+
+source固定newAs fullVclean−原NoAs30>=−.1pp且two-drawV1800 midlownewAs−原As30>=+.5pp；fail关固定.05/noepsscan/noE50，all7仍自动独立评分。通用label-smoothing文献仅作动机不替代CVS识别收益。最小[预登记](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-AsLS-e30-s2026092701-m1-r01/report.md)已固定；当前无新性能结果，目标保持未完成。

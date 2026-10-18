@@ -1,0 +1,80 @@
+{
+  "schema": "candidate_p0p1_review_v1",
+  "candidate": "AsLS E30",
+  "run_id": "20261018-phase1-FcrossRX-AsLS-e30-s2026092701-m1-r01",
+  "review_date": "2026-10-18",
+  "reviewer": "/root/lraw_p0p1",
+  "review_kind": "single_independent_combined_candidate_review",
+  "status": "PASS",
+  "blocking_severities": ["P0", "P1"],
+  "findings": [],
+  "conclusion": "No P0/P1 defect found that directly makes the next registered real run wrong, unauthorized, destructive, unlaunchable, or unable to produce legal predictions.",
+  "scope": {
+    "workspace": "E:/type10-7/code/worktrees/cvs_iq_timing_20261016",
+    "package": "experiments/cvs_satellite_ls30",
+    "package_file_count": 22,
+    "package_python_file_count": 19,
+    "package_files": [
+      "__init__.py", "channel.py", "check_emitted.py", "checks.py",
+      "design.py", "dispatch.py", "evaluate.py", "model.py", "observer.py",
+      "preflight.py", "protocol.py", "publish.py", "qualification.py",
+      "quality.py", "README.md", "reference_config.json", "report.py",
+      "runner.py", "runtime.example.json", "schema.py", "smoothing.py", "source.py"
+    ],
+    "analysis_files": [
+      "analysis/cvs_satls30_analysis_20261018.py",
+      "analysis/cvs_satls30_check_20261018.py",
+      "analysis/cvs_satls30_publish_analysis_20261018.py",
+      "analysis/cvs_satls30_collect_20261018.py"
+    ],
+    "minimal_report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-AsLS-e30-s2026092701-m1-r01/report.md",
+    "direct_dependency_semantics": [
+      "Original cvs_sigtime_rdrop_legacy.model.terms keeps smoothing==0.01 and returns both CE01 scalar means.",
+      "Original P41/P43 hook forward ordering, same-IQ RD pairs, ORD128 relation membership, selected raw64 practical input, shape raw control, and strict own20 source loader were checked.",
+      "Original P43 observer ordinary augmentation scheduling and strict own stage20 EMA restoration were checked.",
+      "Unchanged seven-view evaluator, source qualification, and shared zero-model metric/log helper semantics were checked."
+    ]
+  },
+  "reviewed_behavior": [
+    "Only B01-s2026092701 is new; strict original P43 ownAs20 student and ownEMA continue for local10/2220, cumulative30/6660.",
+    "Native/global label smoothing remains0.01; only the two selectedAs64 mixed CE evaluations use0.05 through delta=.25*(selected CE05-minus-CE01 sums across both passes)/128.",
+    "Common CE/RD, mixed symmetric KL, raw control, native U/student/teacher/EMA paths, and default cosine-head joint training remain intact.",
+    "The six original L forwards remain768 neural packets per update and total L scale1.25. Extra objective work is four CE operators of width64 per update:256 logit packets,8880 operators and568320 logit packets over2220 updates; zero additional neural forwards.",
+    "Original ordinary scheduling is frozen13 with own20 arguments; channel and SupCon retain cumulative+20/+4440. Native information contains the actual14 declared fields.",
+    "Source promotion compares newAs minus originalNoAs fullV clean at least-0.1pp AND newAs minus originalAs V1800 two-draw mid/low mean at least+0.5pp. Failure still finishes all7 formal views and does not automatically extend budget.",
+    "One immutable run root and one queued B01 worker preserve row ownership, output protection, all-owner GPU cap3 and automatic train-to-predict-to-separate-exec truth-last scoring.",
+    "Analysis uses the correct AsLS runner wait path, saves source analysis before formal truth access, reuses the two old audits, and requires all3 logical rows times7 views before378 confusion matrices and63 partition reconciliations.",
+    "Analysis release dependencies and single-archive aggregate collection paths match this candidate and do not add model, checkpoint, or IQ work."
+  ],
+  "evidence_read": [
+    "local_artifacts/F_AsLS_E30_20261018/implementation_checks.json",
+    "local_artifacts/F_AsLS_E30_20261018/analysis_prepare/analysis_local_checks.json",
+    "local_artifacts/F_AsLS_E30_20261018/analysis_prepare/targeted_cost_check.json"
+  ],
+  "existing_check_evidence": {
+    "implementation_protocol_negatives": 41,
+    "implementation_numpy_gradient_max_error": 3.651449429549914e-14,
+    "implementation_ast": "PASS",
+    "analysis_local_checks": "PASS",
+    "final_targeted_cost_checks": "PASS",
+    "checks_repeated_by_reviewer": false
+  },
+  "reviewer_execution": {
+    "git_calls": 0,
+    "remote_calls": 0,
+    "neural_packets": 0,
+    "checkpoint_reads": 0,
+    "IQ_reads": 0,
+    "training_updates": 0,
+    "new_formal_results_read": false,
+    "code_modified": false,
+    "only_output_written": "local_artifacts/F_AsLS_E30_20261018/review.json"
+  },
+  "pending_runtime_verification": [
+    "Actual Torch synthetic-logit loss/gradient check in the published runtime.",
+    "Launcher first-step ownAs20 no-query2NN plus actual6L768NN smoke, total770NN; PASS continues directly to training.",
+    "Actual training, frozen source readout, all7 predictions, independent scoring, and post-launch process/GPU/log evidence."
+  ],
+  "runtime_or_performance_success_claimed": false,
+  "extra_blocking_gates_added": false
+}

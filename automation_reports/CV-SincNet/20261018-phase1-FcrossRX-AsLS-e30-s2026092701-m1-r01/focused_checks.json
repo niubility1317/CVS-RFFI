@@ -1,0 +1,92 @@
+{
+  "status": "LOCAL_FOCUSED_PASS_REMOTE_SMOKE_PENDING",
+  "protocol_negatives": 41,
+  "numpy_gradient_max_error": 3.651449429549914e-14,
+  "AST": {
+    "status": "PASS",
+    "Python_files": 19,
+    "embedded_remote_scripts": 2
+  },
+  "analysis": {
+    "status": "PASS",
+    "AST_files": 4,
+    "focused_returncode": 0,
+    "wall_seconds": 8.606431899999734,
+    "NN": 0,
+    "checkpoint_reads": 0,
+    "IQ_reads": 0,
+    "updates": 0,
+    "remote_calls": 0,
+    "real_source_or_formal_reads": 0,
+    "final_cost_schema": {
+      "extra_CE_operator_calls_per_step": 4,
+      "extra_CE_operator_widths": [
+        64,
+        64,
+        64,
+        64
+      ],
+      "baseline_mixed_CE_operator_widths": [
+        128,
+        128
+      ],
+      "actual_mixed_CE_operator_widths": [
+        128,
+        128,
+        64,
+        64,
+        64,
+        64
+      ],
+      "extra_CE_logit_packets_per_step": 256,
+      "extra_CE_operator_calls_total": 8880,
+      "extra_CE_logit_packets_total": 568320
+    },
+    "initial_cost_fixture_superseded_by": "targeted_cost_check.json",
+    "final_targeted_cost_check": {
+      "status": "PASS",
+      "AST_files": 4,
+      "targeted_tests": 2,
+      "wall_seconds": 8.256678299978375,
+      "extra_CE_operator_widths": [
+        64,
+        64,
+        64,
+        64
+      ],
+      "extra_CE_logit_packets_per_step": 256,
+      "extra_CE_logit_packets_total": 568320,
+      "extra_CE_operator_calls_total": 8880,
+      "NN": 0,
+      "CP": 0,
+      "IQ": 0,
+      "updates": 0,
+      "remote_calls": 0,
+      "real_source_or_formal_reads": 0
+    }
+  },
+  "targeted": {
+    "status": "PASS",
+    "AST_files": 4,
+    "targeted_tests": 2,
+    "wall_seconds": 8.256678299978375,
+    "extra_CE_operator_widths": [
+      64,
+      64,
+      64,
+      64
+    ],
+    "extra_CE_logit_packets_per_step": 256,
+    "extra_CE_logit_packets_total": 568320,
+    "extra_CE_operator_calls_total": 8880,
+    "NN": 0,
+    "CP": 0,
+    "IQ": 0,
+    "updates": 0,
+    "remote_calls": 0,
+    "real_source_or_formal_reads": 0
+  },
+  "real_checkpoint_smoke": "PENDING_770_NN_launcher_first",
+  "new_training": false,
+  "formal_results_read": false
+}
