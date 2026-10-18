@@ -1,0 +1,40 @@
+{
+  "status": "ANALYZED",
+  "technical_execution": "VERIFIED",
+  "scientific_decision": "SOURCE_FAIL_FIXED_IQ_SKEW_PHASE_LAW_CLOSED",
+  "source_qualified": false,
+  "code_commit": "6c3cd4c3856df0b8aa64ac6a3eda233ad3070bc4",
+  "criteria": {
+    "nonzero_RX_difference": true,
+    "split_coherent_power": true,
+    "shared_beats_identity_20percent": false,
+    "shared_beats_additive_10percent": false,
+    "improves_15_of_18_folds": false,
+    "all_RX_no_worse_additive": false,
+    "within_TXconditional_5percent": false,
+    "bounded_interior_fits": true
+  },
+  "SSE": {
+    "shared": 2300.9357330416597,
+    "identity": 2302.146968309848,
+    "additive": 1792.5239508705158,
+    "TXconditional": 576.7424377049864
+  },
+  "folds_improving_additive": 0,
+  "fold_count": 18,
+  "boundary_fits": 0,
+  "fit_count": 72,
+  "independent_recount": "PASS",
+  "all_fit_indices_match": true,
+  "source_packets_used": 33300,
+  "NN": 0,
+  "training_updates": 0,
+  "new_IQ_views": 0,
+  "target_access": false,
+  "wall_seconds": 11.043917174916714,
+  "source_wall_seconds": 3.2416228889487684,
+  "review": "PASS_ONE_P0P1",
+  "actual_plot_inspected": true,
+  "report": "E:/type10-7/automation_reports/CV-SincNet/20261018-diagnostic-FcrossRX-iqskew-LtoV-manysig-m1-r01/final_analysis.md",
+  "goal_achieved": false
+}

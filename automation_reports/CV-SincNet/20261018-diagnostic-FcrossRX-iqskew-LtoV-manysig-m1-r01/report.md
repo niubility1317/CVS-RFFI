@@ -19,3 +19,7 @@ PLANNED／LOCAL_VERIFIED，尚未读取真实新源IQ或获得成绩。固定F/C
 Run 20261018-diagnostic-FcrossRX-iqskew-LtoV-manysig-m1-r01；owner codex/root/iqskew-source50；CWD /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_iqskew_source_20261018_r01；独占输出 /home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-iqskew-LtoV-manysig-m1-r01；CPU2/CUDA隐藏；命令`CVS-RFFI/bin/python -u -m experiments.cvs_iqskew_source50.run`。一次直接P0/P1后写实际代码commit，普通账户preflight、一个archive一次SHA对比及remotecompile，然后launcher首步9项synthetic checks PASS立即继续。停止规则仅所属角色/config/非有限/输出碰撞或无法执行/复算不一致，保留失败不自动重发，不触碰其他健康任务。scientificFAIL正常完成并报告。
 
 预期私有L/V周期图特征、sourceconfig、72参数/18fold/5RX风险、独立复算两张CSV/一个三panelPNG/PDF、完整成本/终态；正式识别成绩和跨seed提升本阶段均不存在。当前代码commit将在发布前由实际Git填入，尚无N607执行。
+
+实现 commit：`6c3cd4c3856df0b8aa64ac6a3eda233ad3070bc4`。9 项单元测试、完整规模合成复算、模拟发布检查及单次独立 P0/P1 审查均 PASS；尚未读取真实源 IQ 或启动远端。
+
+真实源域实验已完成：技术 VERIFIED，科学假设 FAIL（3 PASS/5 FAIL），固定路线关闭；未进行网络训练或目标测试。完整统计、独立复算、成本和图表见 [final_analysis.md](final_analysis.md)。
