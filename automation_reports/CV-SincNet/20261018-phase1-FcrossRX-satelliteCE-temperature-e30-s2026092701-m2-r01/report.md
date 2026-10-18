@@ -25,3 +25,5 @@
 最小流程仅执行一次聚焦 P0/P1、必要负例与真实父权重 no-query smoke、一个 archive SHA 比较和远端编译。额外设计审批／文档哈希为 REJECTED_EXTRA_GATE，不作为发布条件。
 
 本地验证已完成：37 协议负例、12 目标张量检查、4 流程检查与分析 12 toy 检查通过。两 arm 实际 F 共 1536NN／4.2500s，默认头及 Sinc 梯度有限非零。唯一独立 P0/P1 审查 PASS，无阻塞项。1.25 为原槽权重口径；HALF 有效 CE 系数和变为 1.125，原 KL 系数不变，这正是标量减弱控制，不能称总实际梯度相等。
+
+发布已 VERIFIED：代码 commit 90fe8ac0e2577ce0038a8e5a7855a4d2d9c5efc6；archive 单次 SHA 比较 PASS，22 个 Python 文件远端编译 PASS。dispatcher 1340924，CE_HALF 1341087/GPU0、CE_T2 1341161/GPU1，独立核实 PID/CWD/argv/GPU 及日志增长。真实 ownAs20 checkpoint smoke 2NN、1CP、0IQ、0更新 PASS。两行均完成新增段第 1 轮，尚无冻结性能结果。实际导入文件和运行信道值见 actual_runtime.json。

@@ -30,11 +30,11 @@
   "replaces_run_id": null,
   "authorization": "Active goal/latest satellite-first instruction authorizes ordinary totalE30 minimal matched experiment; source-supported good recipe may later totalE50, not automatic; no heldRX or extra model seed.",
   "code": {
-    "commit": null,
+    "commit": "90fe8ac0e2577ce0038a8e5a7855a4d2d9c5efc6",
     "checkout": "codex/phase1-urban-sigtime-20261014",
     "environment": "Existing ordinary N607 Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5; pinned P43 runtime; full FP32/CENTER_UNITS; CPU2",
     "cwd": "PROJECT/releases/cvs_FcrossRX_satellite_CE_temperature_E30_20261018_r01",
-    "identity_status": "PENDING_CODE_COMMIT"
+    "identity_status": "PUSHED_INDEPENDENT_GITHUB_COMPARE_IDENTICAL"
   },
   "data": {
     "dataset": "ManySig",
@@ -89,7 +89,7 @@
       "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
     ],
     "contract_check_ref": "OriginalP43 source.parent_payload on original B01config30 beforeload:role_ids exact,L6300/U56700hidden/V27000,all5RX/3day,scratch/noancestors/notarget,ownrunrow/E20/4440/final_only/EMA;newrun ownfinalreader",
-    "provenance_verdict": "EXISTING_P43_SOURCE_PROVENANCE; exact parent loader and one actualCP noquerysmoke at launch",
+    "provenance_verdict": "VERIFIED_OWN_P43_AS20_EXACT_ROLES_STUDENT_EMA_AND_ONE_REAL_CP_NOQUERY_SMOKE",
     "selection_rule": "ParentB01 andoriginalfixedseed chosenbeforetraining fromsource As reference,not bestformalrow;fixedFINAL10 cumulative30,sourceV nocheckpoint ranking;source decision stored beforeformal"
   },
   "execution": {
@@ -101,7 +101,24 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_satellite_CE_temperature_E30_20261018_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_satellite_ce64/runner.py",
     "stop_rule": "Only wrongroles/provenance/runtime/nonfinite/outputcollision or preregistered technicalfailure stop ownrun and preserve; no automatic retries. SourceFAIL still all7; no temperature/weight sweep or test-driven expansion.",
-    "status": "DRAFT"
+    "status": "RUNNING",
+    "dispatcher_pid": 1340924,
+    "workers": {
+      "CE_HALF-s2026092701": {
+        "pid": 1341087,
+        "gpu": 0,
+        "CWD_argv_correct": true,
+        "initial_log_bytes": 29118
+      },
+      "CE_T2-s2026092701": {
+        "pid": 1341161,
+        "gpu": 1,
+        "CWD_argv_correct": true,
+        "initial_log_bytes": 29096
+      }
+    },
+    "remote_compile": "PASS_22PY",
+    "archive_transfer": "VERIFIED_SINGLE_ARCHIVE_SHA_COMPARISON"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",

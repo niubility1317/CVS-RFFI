@@ -1,0 +1,50 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "code_commit": "90fe8ac0e2577ce0038a8e5a7855a4d2d9c5efc6",
+  "dispatcher_pid": 1340924,
+  "rows": {
+    "CE_HALF-s2026092701": {
+      "pid": 1341087,
+      "gpu": 0,
+      "CWD_argv_correct": true,
+      "initial_log_bytes": 29118
+    },
+    "CE_T2-s2026092701": {
+      "pid": 1341161,
+      "gpu": 1,
+      "CWD_argv_correct": true,
+      "initial_log_bytes": 29096
+    }
+  },
+  "archive_SHA256": "d961deb46fcb8abe33b201577fd03df9a4b4f979df152e01df6f6ab7178f5bf2",
+  "archive_SHA_comparisons": 1,
+  "remote_compile_python_files": 22,
+  "real_checkpoint_smoke": {
+    "status": "PASS",
+    "NN": 2,
+    "CP": 1,
+    "IQ": 0,
+    "query": false,
+    "updates": 0
+  },
+  "owner": "codex/root/satellite-ce64",
+  "output_root": "PROJECT/runs/20261018-phase1-FcrossRX-satelliteCE-temperature-e30-s2026092701-m2-r01",
+  "first_observed_at": 1792315501.1025553,
+  "log_growth": {
+    "CE_HALF-s2026092701": {
+      "bytes": 34310,
+      "delta_from_initial": 5192,
+      "epochs": 1,
+      "alive": true,
+      "CWD_argv_correct": true
+    },
+    "CE_T2-s2026092701": {
+      "bytes": 34284,
+      "delta_from_initial": 5188,
+      "epochs": 1,
+      "alive": true,
+      "CWD_argv_correct": true
+    }
+  },
+  "verified_at": 1792315600.6189685
+}

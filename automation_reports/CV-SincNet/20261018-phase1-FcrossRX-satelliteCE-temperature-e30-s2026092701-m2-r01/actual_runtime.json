@@ -1,0 +1,129 @@
+{
+  "status": "VERIFIED_ACTUAL_RUNTIME",
+  "rows": {
+    "CE_HALF": {
+      "modules": {
+        "experiments.cvs_satellite_ce64.objective": "PROJECT/releases/cvs_FcrossRX_satellite_CE_temperature_E30_20261018_r01/experiments/cvs_satellite_ce64/objective.py",
+        "experiments.cvs_noise_shape_factorial43.model": "PROJECT/releases/cvs_FcrossRX_impulse_factorial_E30_20261018_r01/experiments/cvs_noise_shape_factorial43/model.py",
+        "leo_practical.channel": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+        "leo_practical.residual": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/residual.py",
+        "DataAugmentation": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/DataAugmentation.py",
+        "SSDG.train_ssdg": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py"
+      },
+      "objective": {
+        "temperature": 1,
+        "weight": 0.5,
+        "smoothing": 0.01
+      },
+      "train_scenarios": {
+        "practical_low_suburban": {
+          "fs_hz": 25000000,
+          "fc_hz": 2462000000,
+          "processing_route": "residual",
+          "mode": "post_sync",
+          "equalization_enabled": false,
+          "quality_adaptation_enabled": true,
+          "iq_compensation_enabled": true,
+          "phase_tracking_enabled": true,
+          "reference_snr_db": 30,
+          "boundary": "reflect"
+        },
+        "practical_mid_urban": {
+          "fs_hz": 25000000,
+          "fc_hz": 2462000000,
+          "processing_route": "residual",
+          "mode": "post_sync",
+          "equalization_enabled": false,
+          "quality_adaptation_enabled": true,
+          "iq_compensation_enabled": true,
+          "phase_tracking_enabled": true,
+          "reference_snr_db": 30,
+          "boundary": "reflect"
+        },
+        "practical_low_urban": {
+          "fs_hz": 25000000,
+          "fc_hz": 2462000000,
+          "processing_route": "residual",
+          "mode": "post_sync",
+          "equalization_enabled": false,
+          "quality_adaptation_enabled": true,
+          "iq_compensation_enabled": true,
+          "phase_tracking_enabled": true,
+          "reference_snr_db": 30,
+          "boundary": "reflect"
+        }
+      },
+      "EQ_off_means_G1": true,
+      "ordinary_before_satellite": false,
+      "source_RX": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ]
+    },
+    "CE_T2": {
+      "modules": {
+        "experiments.cvs_satellite_ce64.objective": "PROJECT/releases/cvs_FcrossRX_satellite_CE_temperature_E30_20261018_r01/experiments/cvs_satellite_ce64/objective.py",
+        "experiments.cvs_noise_shape_factorial43.model": "PROJECT/releases/cvs_FcrossRX_impulse_factorial_E30_20261018_r01/experiments/cvs_noise_shape_factorial43/model.py",
+        "leo_practical.channel": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+        "leo_practical.residual": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/residual.py",
+        "DataAugmentation": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/DataAugmentation.py",
+        "SSDG.train_ssdg": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py"
+      },
+      "objective": {
+        "temperature": 2,
+        "weight": 1,
+        "smoothing": 0.01
+      },
+      "train_scenarios": {
+        "practical_low_suburban": {
+          "fs_hz": 25000000,
+          "fc_hz": 2462000000,
+          "processing_route": "residual",
+          "mode": "post_sync",
+          "equalization_enabled": false,
+          "quality_adaptation_enabled": true,
+          "iq_compensation_enabled": true,
+          "phase_tracking_enabled": true,
+          "reference_snr_db": 30,
+          "boundary": "reflect"
+        },
+        "practical_mid_urban": {
+          "fs_hz": 25000000,
+          "fc_hz": 2462000000,
+          "processing_route": "residual",
+          "mode": "post_sync",
+          "equalization_enabled": false,
+          "quality_adaptation_enabled": true,
+          "iq_compensation_enabled": true,
+          "phase_tracking_enabled": true,
+          "reference_snr_db": 30,
+          "boundary": "reflect"
+        },
+        "practical_low_urban": {
+          "fs_hz": 25000000,
+          "fc_hz": 2462000000,
+          "processing_route": "residual",
+          "mode": "post_sync",
+          "equalization_enabled": false,
+          "quality_adaptation_enabled": true,
+          "iq_compensation_enabled": true,
+          "phase_tracking_enabled": true,
+          "reference_snr_db": 30,
+          "boundary": "reflect"
+        }
+      },
+      "EQ_off_means_G1": true,
+      "ordinary_before_satellite": false,
+      "source_RX": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ]
+    }
+  }
+}
