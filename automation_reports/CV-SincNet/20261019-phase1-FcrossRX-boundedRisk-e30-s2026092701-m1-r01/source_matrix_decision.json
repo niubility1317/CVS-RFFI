@@ -1,0 +1,97 @@
+{
+  "status": "SOURCE_READOUT_DECIDED",
+  "source_qualified": false,
+  "candidate": "BOUNDED_RISK",
+  "rows": {
+    "NOAS30": {
+      "fullV_clean": 0.9835925925925926,
+      "source_accuracies": [
+        [
+          0.5,
+          0.42944444444444446,
+          0.3566666666666667
+        ],
+        [
+          0.49722222222222223,
+          0.44166666666666665,
+          0.35555555555555557
+        ]
+      ],
+      "midlow": 0.39583333333333337,
+      "low": 0.35611111111111116
+    },
+    "AS30": {
+      "fullV_clean": 0.9825555555555555,
+      "source_accuracies": [
+        [
+          0.8811111111111111,
+          0.7255555555555555,
+          0.6011111111111112
+        ],
+        [
+          0.8922222222222222,
+          0.7305555555555555,
+          0.5805555555555556
+        ]
+      ],
+      "midlow": 0.6594444444444445,
+      "low": 0.5908333333333333
+    },
+    "QUALITY_STRAT": {
+      "fullV_clean": 0.9823333333333333,
+      "source_accuracies": [
+        [
+          0.8805555555555555,
+          0.7244444444444444,
+          0.6033333333333334
+        ],
+        [
+          0.8933333333333333,
+          0.7294444444444445,
+          0.5788888888888889
+        ]
+      ],
+      "midlow": 0.6590277777777778,
+      "low": 0.5911111111111111
+    },
+    "BOUNDED_RISK": {
+      "fullV_clean": 0.9822592592592593,
+      "source_accuracies": [
+        [
+          0.8761111111111111,
+          0.7272222222222222,
+          0.6005555555555555
+        ],
+        [
+          0.8905555555555555,
+          0.7288888888888889,
+          0.5783333333333334
+        ]
+      ],
+      "midlow": 0.65875,
+      "low": 0.5894444444444444
+    }
+  },
+  "effects": {
+    "fullV_clean_M3_vs_NoAs_pp": -0.13333333333332975,
+    "fullV_clean_M3_vs_M2_pp": -0.007407407407400424,
+    "pooled_midlow_M3_vs_M2_pp": -0.02777777777778212,
+    "low_M3_vs_M2_pp": -0.16666666666667052,
+    "pooled_midlow_M2_vs_originalAs30_pp": -0.04166666666667318
+  },
+  "checks": {
+    "clean_within_NoAs_0p1pp": false,
+    "midlow_vs_nominal_M2_at_least_0p5pp": false
+  },
+  "formal_scores_read": false,
+  "target_scores_read": false,
+  "formal_evaluation_always_required": true,
+  "target_feedback": false,
+  "model_seed_count": 1,
+  "NN": 0,
+  "E50_total_allowed_only_after_source_PASS": true,
+  "E50_requires_same_budget_controls": true,
+  "no_automatic_seed_extension": true,
+  "risk_change_only": true,
+  "finite_nominal_pool_not_population_exact": true
+}

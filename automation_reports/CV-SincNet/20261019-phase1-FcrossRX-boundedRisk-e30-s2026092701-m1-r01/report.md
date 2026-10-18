@@ -26,4 +26,4 @@ AsCE总系数仍.25，仅内部采用sum pi_g meanCE_g；原sameIQ RDrop KL仍�
 
 技术停止：数据角色/父来源/标签domain/数值/readonlypool/π支持/预算或输出冲突错误，仅停止自己失败行并保留产物，不修改其他健康实验，不自动重试。源低性能不是技术故障。代码/config只由本地Git版本发布，一归档一次SHA传输比较/一次远端compile/一次PID-CWD-argv-GPU-log增长核对。
 
-状态：已登记、实现和聚焦检查中；尚无P71训练或性能结果。
+状态：ANALYZED，missing=[]。代码/config提交e4983676ecdcb88eab465f7f197a43c457a04a15。全部固定训练、源判定、all7预测、独立评分和CPU分析已完成。源两条件FAIL，正式单seed M3−M2 clean +0.106548／mid +0.236905／low +0.322024个百分点；不扩E50。完整交付见[final_analysis.md](final_analysis.md)。

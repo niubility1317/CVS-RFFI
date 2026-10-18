@@ -28,7 +28,7 @@
   "replaces_run_id": null,
   "authorization": "Latest user: satellite-first, clean drop<=0.1 absolutepp, fullsource/noheldRX, fixedF+CROSS_RX/defaulthead, E30; good source-qualified recipes may totalE50; active goal authorizes implementation/matched trials/all7 independent scoring. No extra heads/targetfeedback/healthy-task mutation.",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "e4983676ecdcb88eab465f7f197a43c457a04a15",
     "checkout": "code/worktrees/phase1_urban_sigtime_20261014",
     "environment": "N607 existing ordinary CVS-RFFI Python3.10.19 Torch2.1.0+cu121 NumPy2.2.5; FP32 CPU2",
     "cwd": "PROJECT/releases/cvs_FcrossRX_bounded_risk_E30_20261019_r01"
@@ -98,7 +98,7 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_bounded_risk_E30_20261019_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_bounded_risk71/runner.py",
     "stop_rule": "Wrongroles/provenance/outputcollision/nonfinite/labeldomainmismatch/invalidpi or positivepi on emptygroup or mismatched P70 readonlypool stops ownrun; preserve all,no automaticretry or regeneration. SourceFAIL stillall7. Formalfeedback prohibited.",
-    "status": "PREREGISTERED"
+    "status": "ANALYZED"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
@@ -112,7 +112,7 @@
     "ROW/source/risk_final.json",
     "ROW/source/step_metrics.jsonl.gz",
     "ROW/source/training_sequence.jsonl.gz",
-    "ROW/source/epoch_metrics.jsonl",
+    "ROW/source/metrics_epoch.jsonl",
     "ROW/source/final_ssdg.pth",
     "ROW/source/source_frozen.json",
     "ROW/source/completion.json",
@@ -204,7 +204,7 @@
         "ROW/source/risk_final.json",
         "ROW/source/step_metrics.jsonl.gz",
         "ROW/source/training_sequence.jsonl.gz",
-        "ROW/source/epoch_metrics.jsonl",
+        "ROW/source/metrics_epoch.jsonl",
         "ROW/source/final_ssdg.pth",
         "ROW/source/source_frozen.json",
         "ROW/source/completion.json",
@@ -224,7 +224,8 @@
     "M3 intentionally changes optimizedrisk, not unbiasednominal. AsCEtotal.25 andKL.25 unchanged, KL remainsnominalunweighted.",
     "Only2sourceconditions: fullVcleanM3-NoAs>=-.1pp and pooledmidlowM3-M2>=+.5pp. Failureclosesfixedrecipe withoutparameter/seedrescue; all7formalstillrequired.",
     "Another referencedchat is running nominalIID/stratifiedquality estimate, no pi riskmixture; do not duplicate or mutate.",
-    "No newresults at registration; modelseed1 only; E50notautomatic, only later source-qualified goodrecipe within userauthorization."
+    "No newresults at registration; modelseed1 only; E50notautomatic, only later source-qualified goodrecipe within userauthorization.",
+    "Actual terminal: all7 scored/fullCPU ANALYZED missing[]; source rule FAIL before owner formal read; no E50/seed scan. One seed formal stage clean +0.113690pp vsNoAs; M3-M2 low +0.322024pp andclean+.106548pp, not reproducible proof."
   ],
   "registered_at": "2026-10-18T16:50:52+00:00"
 }

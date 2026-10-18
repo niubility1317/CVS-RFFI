@@ -1,0 +1,81 @@
+{
+  "status": "ANALYZED",
+  "missing": [],
+  "code_commit": "e4983676ecdcb88eab465f7f197a43c457a04a15",
+  "model_seed_count": 1,
+  "source_qualified": false,
+  "stage": {
+    "control": "NOAS30",
+    "clean_delta_pp": 0.11369047619047556,
+    "mid_urban_delta_pp": 27.880357142857143,
+    "low_urban_delta_pp": 21.502380952380957,
+    "urban_mean_delta_pp": 28.556349206349207,
+    "clean_within_0p1pp": true,
+    "single_seed_observed_dual_gain": true,
+    "reproducible_dual_gain": false
+  },
+  "formal_primary": {
+    "new": "BOUNDED_RISK",
+    "control": "QUALITY_STRAT",
+    "effects": {
+      "clean": {
+        "accuracy_delta_pp": 0.10654761904762555,
+        "macro_f1_delta_pp": 0.11361931747317922,
+        "worst_RX_delta_pp": 0.2958333333333396,
+        "satellite_retention_delta_pp": 0.06493687856106156
+      },
+      "practical_high": {
+        "accuracy_delta_pp": 0.011904761904757422,
+        "macro_f1_delta_pp": 0.011606386912776934,
+        "worst_RX_delta_pp": 0.10000000000000009,
+        "satellite_retention_delta_pp": 0.02024913417494334
+      },
+      "practical_mid": {
+        "accuracy_delta_pp": 0.040476190476190776,
+        "macro_f1_delta_pp": 0.04423359661621662,
+        "worst_RX_delta_pp": 0.1374999999999904,
+        "satellite_retention_delta_pp": 0.0460842363981695
+      },
+      "practical_low_suburban": {
+        "accuracy_delta_pp": 0.07440476190476719,
+        "macro_f1_delta_pp": 0.08011368215361525,
+        "worst_RX_delta_pp": 0.17500000000000293,
+        "satellite_retention_delta_pp": 0.07541056865154605
+      },
+      "practical_high_urban": {
+        "accuracy_delta_pp": 0.07083333333333108,
+        "macro_f1_delta_pp": 0.07106418486978461,
+        "worst_RX_delta_pp": 0.15416666666666634,
+        "satellite_retention_delta_pp": 0.08728075075410402
+      },
+      "practical_mid_urban": {
+        "accuracy_delta_pp": 0.23690476190476595,
+        "macro_f1_delta_pp": 0.2309865641241582,
+        "worst_RX_delta_pp": 0.22083333333333677,
+        "satellite_retention_delta_pp": 0.2555580382080147
+      },
+      "practical_low_urban": {
+        "accuracy_delta_pp": 0.32202380952381926,
+        "macro_f1_delta_pp": 0.2850014058843886,
+        "worst_RX_delta_pp": 0.2874999999999961,
+        "satellite_retention_delta_pp": 0.34702826499832806
+      },
+      "urban_accuracy_mean_delta_pp": 0.20992063492063875
+    }
+  },
+  "independent_confusion_recounts": 504,
+  "partition_reconciliations": 84,
+  "training": {
+    "updates": 2220,
+    "total_epochs": 30,
+    "same_M2_pool_order": true,
+    "new_simulations": 0,
+    "U_truth_read": false
+  },
+  "new_NN": 4351568,
+  "reproducible_dual_gain": false,
+  "E50": false,
+  "target_feedback": false,
+  "all_four_PNG_visually_inspected": true,
+  "all_four_PDF_present": true
+}
