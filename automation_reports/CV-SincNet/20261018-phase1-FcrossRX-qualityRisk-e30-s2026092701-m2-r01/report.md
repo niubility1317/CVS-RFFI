@@ -1,6 +1,6 @@
 # 完整 practical：按实际退化条件分层的有限风险 E30
 
-技术恢复中：r02真实770NN检查PASS且252000条完整bank观测已生成；完成记录角色字段名错误，尚无训练/识别结果。R03仅修复现有bank完成记录，0新增NN/传播，缓存不改写。r01失败258NN保留。唯一假设是：保持同一个有限 complete-As proposal bank 的名义风险和 As 总系数，通过每批覆盖四个实际质量组，改善低质量身份识别。先检验抽样组织，不加入困难风险强化、U 路由、公共传播、Dropout 或新损失。
+ANALYZED（单模型seed）：两条原As20＋10全部完成，四逻辑×7预测/独立truth-last与504CM/84partition重计完成。固定分层源hard条件失败并在正式读取前关闭，不M3/E50。训练/评分技术缺项0；bank计时与source预测wall缺失明确披露。
 
 ## 固定矩阵与风险
 
@@ -36,7 +36,7 @@ I 与 S 对同一有限经验风险无偏（在 clipping/AdamW 之前的梯度�
 
 新两条各 10modelE/2220updates，共20modelE/4440。预计每 tail native3162962NN=学生train2271960＋eval324002＋teacher567000，source12600/formal1176002，共4351564；共享一次真实首步 smoke770（2真实父读出＋768实际6L hook），总新增8703898NN，以实数为准。原20与旧30读出单列复用，不重复收费。bank252000次完整传播、simulation墙钟、516MB＋metadata/IO/copy、采样与逐包 CE/KL 计算另外记录，不把零新增 NN 说成零成本。完整2220步日志和全bank/实际曝光分开保留。
 
-实际 code/config commit=e878c7395c6bf1aabd99506d8f9b3f6ecd1ef4f4。唯一 owner codex/root/practical-qualityRisk；不可变 output=PROJECT/runs/20261018-phase1-FcrossRX-qualityRisk-e30-s2026092701-m2-r01；CWD=PROJECT/releases/cvs_FcrossRX_qualityRisk_E30_20261018_r02；N607 普通账号、现有 CVS-RFFI/PyTorch fullFP32、CPU2、无安装。发布 verified native Python -m experiments.cvs_quality_risk30.publish；worker CVS-RFFI/python -u experiments/cvs_quality_risk30/runner.py --mode worker --row {I01,S01}-s2026092701。private runtime 不入 Git。每 GPU 全 owner compute≤3/free≥12000MB，动态队列，不动健康任务。
+实际 code/config commit=88e379d2a02123984f0f3073136320b7d430719f。唯一 owner codex/root/practical-qualityRisk；不可变 output=PROJECT/runs/20261018-phase1-FcrossRX-qualityRisk-e30-s2026092701-m2-r01；CWD=PROJECT/releases/cvs_FcrossRX_qualityRisk_E30_20261018_r03；N607 普通账号、现有 CVS-RFFI/PyTorch fullFP32、CPU2、无安装。发布 verified native Python -m experiments.cvs_quality_risk30.publish；worker CVS-RFFI/python -u experiments/cvs_quality_risk30/runner.py --mode worker --row {I01,S01}-s2026092701。private runtime 不入 Git。每 GPU 全 owner compute≤3/free≥12000MB，动态队列，不动健康任务。
 
 聚焦 protocol-negative/权重公式检查、一次独立 P0/P1 合并审查；launcher 首步真实 CP no-query smoke PASS 直接训练。一次 preflight、单 archive 比较/远端 compile、一次 post PID/CWD/cmdline/GPU/log 增长。只因 owned 系统性技术、角色、父、头、数值、输出或无法合法预测失败停止，保留产物，不科学负结果中止。无额外审批、签名、逐文件哈希链。
 

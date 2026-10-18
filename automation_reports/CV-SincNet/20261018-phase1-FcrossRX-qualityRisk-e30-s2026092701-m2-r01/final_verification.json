@@ -1,0 +1,75 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261018-phase1-FcrossRX-qualityRisk-e30-s2026092701-m2-r01",
+  "training_code_commit": "88e379d2a02123984f0f3073136320b7d430719f",
+  "analysis_code_commit": "88e379d2a02123984f0f3073136320b7d430719f",
+  "release": "cvs_FcrossRX_qualityRisk_E30_20261018_r03",
+  "analysis_release": "cvs_F_qualityrisk30_analysis_20261018_r02",
+  "model_seed_count": 1,
+  "seed": 2026092701,
+  "source_read_before_formal": "2026-10-18T16:55:57.434Z",
+  "source_archive_SHA256": "c046fd2515d25eaa743f9e1b31b888f3c78faf0803044159d6b9d59e5d0cd66b",
+  "final_archive_SHA256": "d41fb2b390a5f058af76f89f14fac7996c16f14a793643000bfec57b7e441e5f",
+  "source_criteria_pass": false,
+  "fixed_stage1_closed": true,
+  "M3_launched": false,
+  "E50_launched": false,
+  "registered_rows_trained": 2,
+  "old_controls_reused": 2,
+  "views_per_row": 7,
+  "samples_per_view": 168000,
+  "independent_confusion_matrices": 504,
+  "partition_reconciliations": 84,
+  "public_metric_cells_exact": 84,
+  "full_training_logs": {
+    "steps_per_new_row": 2220,
+    "epochs_per_new_row": 10,
+    "all_steps_analyzed": true
+  },
+  "actual_cost": {
+    "new_model_epochs": 20,
+    "new_updates": 4440,
+    "student_train_NN": 4543920,
+    "teacher_eval_NN": 1134000,
+    "native_student_eval_NN": 648004,
+    "source_readout_NN": 25200,
+    "formal_prediction_NN": 2352004,
+    "valid_smoke_NN": 770,
+    "failed_R01_NN": 258,
+    "total_new_NN": 8704156,
+    "propagation_simulations": 252000,
+    "bank_simulations_repeated": 0,
+    "analysis_NN": 0,
+    "head_fit_updates": 0
+  },
+  "material_missing_costs": [
+    "five bank perf_counter timings lost atR02 metadataexception,keptnull",
+    "original bank API call counter unavailable,keptnull",
+    "sourceprediction wallnot separatelyrecorded"
+  ],
+  "required_training_prediction_scoring_missing": [],
+  "processes": {
+    "dispatcher_terminal": true,
+    "I01_terminal": true,
+    "S01_terminal": true,
+    "analysis_terminal": true,
+    "failure": null,
+    "healthy_external_jobs_untouched": true
+  },
+  "clean_guard": {
+    "comparison": "BANK_STRAT30 minus corresponding originalNOAS30",
+    "delta_absolute_pp": 0.0005952380952380953,
+    "net_correct_samples": 1,
+    "passed_single_seed_point": true,
+    "repeatable_dual_gain": false
+  },
+  "new_source_hard_gain_pp": -0.5266614374041662,
+  "goal_complete": false,
+  "public_artifacts": {
+    "rawIDs": false,
+    "rawvectors": false,
+    "confusion_matrices": false,
+    "private_runtime": false,
+    "aggregation_bank_strata": 2683
+  }
+}
