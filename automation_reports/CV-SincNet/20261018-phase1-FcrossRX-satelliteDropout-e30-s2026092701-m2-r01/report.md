@@ -35,3 +35,5 @@
 私有产物包括每段checkpoint/完整原生日志、reference_steps/shape_steps/satellite_subnetwork_steps、L/U出现序列、模块/增强实参、source27000和固定1800panel、逐row7view预测/独立评分。自动汇总为SCORED_COMPLETE_PENDING_FULL_LOG_ANALYSIS；最终报告还需全日志成本核对、准确率/F1/最差RX/urban均值、成对修复/新错及source与正式阶段判定。输出不进Git，入库只保留配置和汇总。实际execution Git commit在release_commit/submit及报告记录。阶段0.1pp、最终正收益与可重复证据分别判定。
 
 发布前P1修复：新增行baseline_reuse误标为True会触发既有backend禁止重训reference；已修为两新行两段均False，历史NoAs/As-RD只在logical_rows复用。同步登记配置并加入该负例；本地11负例PASS，Torch仍待远端。
+
+实际代码/config commit：e781e8a4f0a1011dfc6d8ee7984f04378d91cdd3；一次P0/P1及该P1定点复核PASS。11本地权限负例/compile/2远端AST通过；本地Torch不可用如实保留，Torch作用域和真实F smoke由远端执行。

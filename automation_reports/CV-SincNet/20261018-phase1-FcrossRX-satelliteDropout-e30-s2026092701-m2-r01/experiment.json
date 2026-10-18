@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "Latest user practical-primary request:stageclean absolute delta>=-0.1pp vs matchedNoAs;finalrepeatablecleanpositive;no mandatoryAg;fixedmodel/data/test/health/E30. New single-seed2rows,2frozencontrols reused.",
   "code": {
-    "commit": null,
+    "commit": "e781e8a4f0a1011dfc6d8ee7984f04378d91cdd3",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "N607 ordinary existing P43 pinned F runtime;FP32/CPU2;one sharedGPU perworker",
     "cwd": "PROJECT/releases/cvs_F_satellite_dropout_E30_20261018_r01"
@@ -922,5 +922,6 @@
     "Sourcequalification aftertrainingonly:fullVclean>=NoAs-.1pp;retainmidlowgain>=5pp;meaningfulurban>=.5orclean>=.1 improvement vsAS_RD andAS_CE withothermetric>=-.1pp. No additionalallRX/perpacketgates;allstratareported.",
     "Single-seed research;no claimstablejointimprovement;two historicalE30controlscostedseparately;E30eachnewmodel noextensions"
   ],
-  "registered_at": "2026-10-18T02:29:51+00:00"
+  "registered_at": "2026-10-18T02:29:51+00:00",
+  "status": "LOCAL_VERIFIED"
 }
