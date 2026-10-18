@@ -163,8 +163,8 @@ def collect(runtime_path, local_root, stage, export_id, command=subprocess.run):
         raise FileExistsError('Local collection root already exists; no overwrite')
     runtime = json.loads(runtime_path.read_text(encoding='utf-8-sig'))
     config = dict(user=runtime['user'], host=runtime['host'],
-                  source=runtime['project'] + '/runs/' + RUN + '/analysis_auto_r01',
-                  exports=runtime['project'] + '/runs/' + RUN + '/analysis_auto_r01-exports',
+                  source=runtime['project'] + '/runs/' + RUN + '/analysis_auto_r02',
+                  exports=runtime['project'] + '/runs/' + RUN + '/analysis_auto_r02-exports',
                   stage=stage, export_id=export_id)
     # Store no private account, absolute remote path, command or runtime payload.
     local_root.mkdir(parents=True)

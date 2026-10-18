@@ -56,10 +56,10 @@ def fixture(project,arm):
         dump(b/'initialization.json',init);dump(b/'source_contract.json',json.loads(contract.read_text()))
         dump(b/'source_frozen.json',dict(config=cfg,selection='final_only',target_access=False))
         dump(b/'completion.json',dict(config=cfg,epoch=epochs,optimizer_steps=steps,target_access=False,target_evaluated=False,head_fit_updates=0,native_disabled_probe_calls=1,native_fitted_probes_disabled=True,elapsed_seconds=100.))
-        args=dict(epochs=epochs,label_epochs=labels,pseudo_epochs=epochs-labels,baseline_ckpt=parents[0] if offset else '',teacher_ckpt='',freeze_backbone=False,candidate_id=row.name,output_dir=str(b))
+        args=dict(run_id=m.RUN if new else m.REFERENCE,epochs=epochs,label_epochs=labels,pseudo_epochs=epochs-labels,baseline_ckpt=parents[0] if offset else '',teacher_ckpt='',freeze_backbone=False,candidate_id=row.name,output_dir=str(b))
         dump(b/'actual_native_args.json',{'args':args})
         dump(b/'optimizer_initialization.json',dict(state_entries=0,reset=True,schedule='cosine'+str(epochs)))
-        dump(b/'EMA_initialization.json',dict(origin=init['teacher_origin'],extra_teacher=False,optimizer_segment_counters_reset=True,temporal_cache_reset=True))
+        dump(b/'EMA_initialization.json',dict(origin='own scratch student' if not offset else 'strict own stage20 EMA',extra_teacher=False,optimizer_segment_counters_reset=True,temporal_cache_reset=True))
         dump(b/'ordinary_augmentation_actual.json',dict(base={'enabled':True},args={'aug_enabled':True},schedule_frozen_at=13,no_ordinary_before_practical=True,RDrop_same_IQ=True))
         result=dict(status='SEGMENT_TRAINED',config=cfg,optimizer_steps=steps,L_NN=steps*768,L_As=steps*(64 if sat else 0),Ag_packets=0,Ag_control_NN=steps*256,total_L_loss_scale=1.25,extra_U_NN=0,U_As=0,U_truth_read=False,target_access=False,head_fit_updates=0,source_RX=list(m.RX),source_RX_holdout=None,
                     student_train_NN=steps*768+nu,student_eval_NN=epochs*27000+54002,teacher_train_NN=0,teacher_eval_NN=nu,teacher_counter_offset={'train':0,'eval':2})
@@ -149,6 +149,21 @@ class CompleteLogs(unittest.TestCase):
         def body():
             with self.assertRaisesRegex(ValueError,'budget|epoch/update'):self.segment('source')
         self.mutate_json('source/completion.json','optimizer_steps',2219,body)
+    def test_native_EMA_parent_description_levels(self):
+        # Actual producer uses parent in initialization and stage20 in EMA.
+        result,_=self.segment('source')
+        self.assertEqual(result['teacher_counter_offset'],{'train':0,'eval':2})
+        path=self.row/'source/EMA_initialization.json';old=path.read_text(encoding='utf8')
+        for origin in ('strict own parent EMA','strict another stage20 EMA','own scratch student'):
+            value=json.loads(old);value['origin']=origin;dump(path,value)
+            try:
+                with self.subTest(origin=origin),self.assertRaisesRegex(ValueError,'EMA scope'):self.segment('source')
+            finally:path.write_text(old,encoding='utf8')
+        initpath=self.row/'source/initialization.json';oldinit=initpath.read_text(encoding='utf8');value=json.loads(oldinit)
+        value['teacher_origin']='strict own stage20 EMA';dump(initpath,value)
+        try:
+            with self.assertRaisesRegex(ValueError,'inheritance'):self.segment('source')
+        finally:initpath.write_text(oldinit,encoding='utf8')
     def test_teacher_offset_not_double_charged(self):
         path=self.row/'source/result.json';old=path.read_text();v=json.loads(old);v['teacher_counter_offset']['eval']=4;dump(path,v)
         try:
@@ -173,6 +188,62 @@ class CompleteLogs(unittest.TestCase):
         self.assertEqual(m.public_values(value),{'config':['<private-path>','<private-path>','<private-path>','safe metadata']})
     def test_nonfinite_nested_value_rejected(self):
         with self.assertRaises(ValueError):m.scan_numbers([{'q':[float('nan')]}])
+
+
+class NativeArgAlignment(unittest.TestCase):
+    def test_registered_run_identity_is_not_a_training_parameter_change(self):
+        baseline={'run_id':m.REFERENCE,'candidate_id':'B00','lr':.001}
+        current={'run_id':m.RUN,'candidate_id':'AS_DET','lr':.001}
+        self.assertEqual(m.native_arg_differences(current,baseline,'AS_DET'),['candidate_id','run_id'])
+        for a,b,arm in [
+            (dict(current,run_id=m.REFERENCE),baseline,'AS_DET'),
+            (current,dict(baseline,run_id=m.RUN),'AS_DET'),
+            (dict(current,lr=.002),baseline,'AS_DET'),
+            (dict(current,unregistered_flag=True),baseline,'AS_DET'),
+        ]:
+            with self.subTest(a=a,b=b,arm=arm),self.assertRaises(ValueError):m.native_arg_differences(a,b,arm)
+        self.assertEqual(m.native_arg_differences(baseline,baseline,'B01'),[])
+
+
+class NativeEpochAlignment(unittest.TestCase):
+    """Regression for real E13->E14 U telemetry schema expansion/contraction."""
+    def setUp(self):
+        self.temp=tempfile.TemporaryDirectory(prefix='native_dynamic_columns_')
+        self.path=Path(self.temp.name)
+        self.values=[
+            {'epoch':1,'val_tx_acc':98.,'train_u_dm_accept_valid_domain_selected':0},
+            {'epoch':2,'val_tx_acc':98.1,'train_u_dm_accept_active_classes':6,'train_u_dm_accept_inactive_reason_code':0},
+        ]
+        self.fields=list(dict.fromkeys(k for row in self.values for k in row))
+        for name in ('metrics_epoch','epoch_metrics'):
+            jl(self.path/(name+'.jsonl'),self.values)
+            self.write_csv(name,self.values,self.fields)
+    def tearDown(self):self.temp.cleanup()
+    def write_csv(self,name,rows,fields):
+        with (self.path/(name+'.csv')).open('w',encoding='utf8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields);w.writeheader();w.writerows(rows)
+    def test_dynamic_union_blank_cells_match_official_writer(self):
+        rows,info=m.native_epochs(self.path,2)
+        self.assertEqual(rows,self.values)
+        self.assertTrue(info['metrics_epoch']['all_values_equal'])
+        self.assertEqual(info['metrics_epoch']['records'],2)
+        self.assertEqual(info['metrics_epoch']['CSV_schema_union_fields'],5)
+        self.assertEqual(info['metrics_epoch']['CSV_missing_JSON_blank_cells'],3)
+    def test_absent_field_cannot_contain_nonblank_CSV_value(self):
+        rows=copy.deepcopy(self.values);rows[0]['train_u_dm_accept_active_classes']=0
+        self.write_csv('metrics_epoch',rows,self.fields)
+        with self.assertRaisesRegex(ValueError,'missing JSON|absent JSON'):m.native_epochs(self.path,2)
+    def test_unknown_or_missing_column_is_rejected(self):
+        for fields in (self.fields+['unknown_column'],self.fields[:-1]):
+            rows=[{k:v for k,v in r.items() if k in fields} for r in self.values]
+            self.write_csv('metrics_epoch',rows,fields)
+            with self.subTest(fields=fields),self.assertRaisesRegex(ValueError,'schema|field'):m.native_epochs(self.path,2)
+    def test_actual_value_and_full_count_still_checked(self):
+        rows=copy.deepcopy(self.values);rows[1]['val_tx_acc']=97.
+        self.write_csv('metrics_epoch',rows,self.fields)
+        with self.assertRaisesRegex(ValueError,'value mismatch'):m.native_epochs(self.path,2)
+        self.write_csv('metrics_epoch',self.values+[self.values[-1]],self.fields)
+        with self.assertRaisesRegex(ValueError,'count'):m.native_epochs(self.path,2)
 
 
 if __name__=='__main__':unittest.main(verbosity=2)

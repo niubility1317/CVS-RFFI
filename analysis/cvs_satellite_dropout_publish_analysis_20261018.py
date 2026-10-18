@@ -2,7 +2,7 @@
 import argparse,hashlib,io,json,subprocess,tarfile
 from pathlib import Path
 RUN='20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01'
-RELEASE='cvs_F_satellite_dropout_analysis_20261018_r01'
+RELEASE='cvs_F_satellite_dropout_analysis_20261018_r02'
 FILES=['cvs_satellite_dropout_results_20261018.py','cvs_satellite_dropout_logs_20261018.py','cvs_satellite_dropout_figures_20261018.py','cvs_satellite_dropout_pipeline_20261018.py','check_satellite_dropout_results_20261018.py','check_satellite_dropout_logs_20261018.py','check_satellite_dropout_pipeline_20261018.py','cvs_satellite_dropout_publish_analysis_20261018.py']
 
 def remote(script,rt):
@@ -11,7 +11,7 @@ def remote(script,rt):
  return json.loads(r.stdout)
 def main():
  p=argparse.ArgumentParser();p.add_argument('--stage',choices=['transfer','launch'],required=True);p.add_argument('--runtime',type=Path,required=True);p.add_argument('--source-root',type=Path,required=True);p.add_argument('--artifact-root',type=Path,required=True);p.add_argument('--commit',required=True);args=p.parse_args();rt=json.loads(args.runtime.read_text(encoding='utf8'));root=args.source_root;local=args.artifact_root;local.mkdir(parents=True,exist_ok=True)
- c=dict(project=rt['project'],release=rt['project']+'/releases/'+RELEASE,archive=rt['project']+'/releases/'+RELEASE+'.tar.gz',output=rt['project']+'/runs/'+RUN+'/analysis_auto_r01',launch=rt['project']+'/runs/'+RUN+'/analysis_auto_r01-launch',python=rt['python'],user=rt['user'],host=rt['host'],commit=args.commit,truth=rt['project']+'/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json')
+ c=dict(project=rt['project'],release=rt['project']+'/releases/'+RELEASE,archive=rt['project']+'/releases/'+RELEASE+'.tar.gz',output=rt['project']+'/runs/'+RUN+'/analysis_auto_r02',launch=rt['project']+'/runs/'+RUN+'/analysis_auto_r02-launch',python=rt['python'],user=rt['user'],host=rt['host'],commit=args.commit,truth=rt['project']+'/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json')
  if args.stage=='transfer':
   script=r'''
 import json,os,subprocess

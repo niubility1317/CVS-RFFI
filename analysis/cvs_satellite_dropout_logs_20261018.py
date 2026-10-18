@@ -151,13 +151,28 @@ def native_epochs(b, count):
         if not path.is_file():
             raise IncompleteTrainingLogs('Missing native CSV: ' + path.name)
         with path.open(encoding='utf-8-sig', newline='') as stream:
-            actual = list(csv.DictReader(stream))
+            reader = csv.DictReader(stream)
+            actual = list(reader)
+            header = reader.fieldnames or []
         if len(actual) < count:
             raise IncompleteTrainingLogs('Native CSV is a prefix')
-        # Native CSV serializes list/dict fields as JSON; compact fields use str.
-        for x, y in zip_longest(values, actual):
-            if x is None or y is None or set(x) != set(y):
-                raise ValueError('Native CSV/JSONL field/count mismatch')
+        if len(actual) != count:
+            raise ValueError('Native CSV/JSONL row count mismatch')
+        # IncrementalTelemetry keeps the union of fields seen across epochs and
+        # rewrites earlier CSV rows with DictWriter's empty missing-field value.
+        # JSONL preserves each epoch's actual keys. Verify the exact union first;
+        # only genuinely absent JSON fields may correspond to blank CSV cells.
+        union = set().union(*(set(row) for row in values))
+        if len(header) != len(set(header)) or set(header) != union:
+            raise ValueError('Native CSV/JSONL schema union field mismatch')
+        missing_blank_cells = 0
+        for x, y in zip(values, actual):
+            if set(y) != union:
+                raise ValueError('Native CSV/JSONL field mismatch')
+            for k in union-set(x):
+                if y[k] != '':
+                    raise ValueError('CSV value for absent JSON epoch field: ' + k)
+                missing_blank_cells += 1
             for k, v in x.items():
                 text = '' if v is None else str(v)
                 if isinstance(v, (list, dict, tuple)):
@@ -169,7 +184,7 @@ def native_epochs(b, count):
                     same = y[k] == text
                 if not same:
                     raise ValueError('Native CSV/JSONL value mismatch: ' + k)
-        reports[name] = dict(records=count, CSV_records=count, all_values_equal=True, **scan_numbers(values))
+        reports[name] = dict(records=count, CSV_records=count, all_values_equal=True, CSV_schema_union_fields=len(union), CSV_missing_JSON_blank_cells=missing_blank_cells, **scan_numbers(values))
     if compact != [{k: v for k, v in row.items() if not isinstance(v, (list, dict, tuple))} for row in full]:
         raise ValueError('Compact observer/native epoch telemetry differs')
     return compact, reports
@@ -223,7 +238,11 @@ def parse_segment(row, arm, stage, epochs, labels, offset, canonical_contract):
     if opt['state_entries'] or not opt['reset'] or opt['schedule'] != 'cosine'+str(epochs):
         raise ValueError('Native optimizer reset/schedule differs')
     ema = read(b/'EMA_initialization.json')
-    if (ema['origin'] != init['teacher_origin'] or ema['extra_teacher'] or not ema['optimizer_segment_counters_reset'] or not ema['temporal_cache_reset']):
+    # The native initializer describes the generic own parent; the observer
+    # records the concrete stage20 EMA loaded for this fixed +10 segment.
+    # Their exact producer strings differ. Parent paths are checked above.
+    expected_ema_origin = 'own scratch student' if offset == 0 else 'strict own stage20 EMA'
+    if (ema['origin'] != expected_ema_origin or ema['extra_teacher'] or not ema['optimizer_segment_counters_reset'] or not ema['temporal_cache_reset']):
         raise ValueError('Original EMA scope differs')
     ordinary = read(b/'ordinary_augmentation_actual.json')
     if ordinary['schedule_frozen_at'] != 13 or not ordinary['no_ordinary_before_practical'] or not ordinary['RDrop_same_IQ']:
@@ -361,6 +380,16 @@ def parse_segment(row, arm, stage, epochs, labels, offset, canonical_contract):
                 satellite_inventory=inventory,scope_restoration_evidence='Producer finish asserts engine inactive; final flag not serialized' if new else None), dict(ordinary=ordinary_stream,channel=channel_stream,args=a)
 
 
+def native_arg_differences(a, b, arm):
+    expected_run = RUN if arm in ('AS_CE','AS_DET') else REFERENCE
+    if arm not in ARMS or a.get('run_id') != expected_run or b.get('run_id') != REFERENCE:
+        raise ValueError('Actual native run identity differs from registered row')
+    keys = sorted(k for k in set(a)|set(b) if a.get(k)!=b.get(k))
+    if set(keys)-{'candidate_id','output_dir','baseline_ckpt','run_id'}:
+        raise ValueError('Matched native training arguments differ')
+    return keys
+
+
 def compare_streams(pa, pb):
     n = mismatch = 0
     for a,b in zip_longest(records(pa),records(pb)):
@@ -406,8 +435,8 @@ def run(project):
             seq = compare_streams(roots[arm]/stage/'training_sequence.jsonl.gz',roots['B00']/stage/'training_sequence.jsonl.gz')
             a,b = private[arm][stage],private['B00'][stage]
             ordinary_mismatch = sum(x!=y for x,y in zip_longest(a['ordinary'],b['ordinary']))
-            keys = sorted(k for k in set(a['args'])|set(b['args']) if a['args'].get(k)!=b['args'].get(k))
-            if not seq['all_equal'] or ordinary_mismatch or set(keys)-{'candidate_id','output_dir','baseline_ckpt'}:
+            keys = native_arg_differences(a['args'],b['args'],arm)
+            if not seq['all_equal'] or ordinary_mismatch:
                 raise ValueError('Matched physical/ordinary/native argument streams differ')
             # Parents differ only by the row whose own scratch model was trained.
             if stage=='source' and (a['args']['baseline_ckpt'] != str(roots[arm]/'stage20/final_ssdg.pth') or b['args']['baseline_ckpt']!=str(roots['B00']/'stage20/final_ssdg.pth')):
