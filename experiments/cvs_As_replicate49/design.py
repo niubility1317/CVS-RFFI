@@ -4,7 +4,7 @@ from .adapter import SEEDS,ARMS,adapt,apply_args
 ROOT=Path(__file__).resolve().parents[2]
 PROJECT=old.PROJECT;SOURCE=old.SOURCE;RX=FIT=old.RX;STEPS=old.STEPS;UPDATES=old.UPDATES
 FULL_FP32_POLICY=old.FULL_FP32_POLICY;CLASSES=old.CLASSES;SCENES=old.SCENES;VIEWS=old.VIEWS;FORMAL_VIEWS=old.FORMAL_VIEWS;TRUTH=old.TRUTH;PANEL=old.PANEL;SOURCE_CACHE=old.SOURCE_CACHE
-RUN='20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r01';RELEASE='cvs_FcrossRX_As_replication_E30_s0203_20261018_r01';OWNER='codex/root/As-seed-replication49';BASE=Path(PROJECT)/'runs'/RUN
+RUN='20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r02';RELEASE='cvs_FcrossRX_As_replication_E30_s0203_20261018_r02';OWNER='codex/root/As-seed-replication49';BASE=Path(PROJECT)/'runs'/RUN
 REFERENCE=Path(PROJECT)/'runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01'
 read,write=old.read,old.write
 def rows():return [dict(arm=a,row_id=a+'-s'+str(s),model_seed=s) for s in SEEDS for a in ARMS]

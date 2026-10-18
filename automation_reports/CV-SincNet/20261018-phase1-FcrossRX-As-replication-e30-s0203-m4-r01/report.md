@@ -1,3 +1,5 @@
+> FAILED／VERIFIED：r01在Python包导入阶段退出，未创建run根、未启动任何训练row，0IQ/CP/NN/更新/target。新增顶层experiments/__init__.py阻断legacy namespace；失败release和日志保留。修复仅删除该marker并增加真实bootstrap导入检查，后继为 `20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r02`；不覆盖或重启r01。
+
 # clean 保留式 As：补齐模型 seed02/03 的 E30 基线确认
 
 本轮补齐联合目标中的跨 seed As 基线证据，不提出新 Ag，不扩展已失败的 BG/WHITE/HardLCE/Tukey/AMPM 等候选。已有 P43 的 As 独立源域适应判据通过，新增 Ag 判据失败的结论保持；固定使用 P43 B00/B01 的学习规则及成本作为唯一参照，不根据其正式分数挑选配方。代码基于已发布commit19aedc3604fed9c193237dd92366164178af0983，仅增加真正的02/03模型随机性、独占输出与聚合。

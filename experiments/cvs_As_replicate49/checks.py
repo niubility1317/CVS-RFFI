@@ -23,4 +23,29 @@ class Checks(unittest.TestCase):
    c=adapt(self.ref(seg),self.row(),seg,'r','/out','o');a=SimpleNamespace(seed=1,epochs=20 if seg==20 else 10,label_epochs=13 if seg==20 else 0,pseudo_epochs=7 if seg==20 else 10,teacher_ckpt='');apply_args(a,c);self.assertEqual(a.seed,2026092702)
    a.epochs=200
    with self.assertRaises(ValueError):apply_args(a,c)
+ def test_namespace_bootstrap_regression(self):
+  import tempfile,subprocess,sys,os
+  from pathlib import Path
+  with tempfile.TemporaryDirectory() as td:
+   p=Path(td);old=p/'old';(old/'experiments/legacy').mkdir(parents=True);(old/'experiments/legacy/design.py').write_text('VALUE=7')
+   for marker in (True,False):
+    root=p/('regular' if marker else 'namespace');(root/'experiments').mkdir(parents=True)
+    if marker:(root/'experiments/__init__.py').write_text('')
+    code="import experiments,sys;sys.path.insert(0,sys.argv[1]);from experiments.legacy.design import VALUE;print(VALUE)"
+    r=subprocess.run([sys.executable,'-c',code,str(old)],cwd=root,env=dict(os.environ,PYTHONPATH=str(root)),capture_output=True)
+    if marker:self.assertNotEqual(r.returncode,0);self.assertIn(b'ModuleNotFoundError',r.stderr)
+    else:self.assertEqual(r.returncode,0);self.assertEqual(r.stdout.strip(),b'7')
+ def test_real_publish_archive_preserves_namespace(self):
+  import tempfile,sys,types,tarfile,ast
+  from pathlib import Path
+  from unittest.mock import patch
+  from . import publish
+  with tempfile.TemporaryDirectory() as td:
+   def fake(args,**kw):
+    if 'input' in kw:ast.parse(kw['input'].decode());return types.SimpleNamespace(returncode=0,stdout=b'{"status":"VERIFIED"}',stderr=b'')
+    return types.SimpleNamespace(returncode=0)
+   args=['p','--stage','transfer','--commit','synthetic','--source-root',str(Path(__file__).resolve().parents[2]),'--artifact-root',td,'--project-root','/mock/project','--ssh-config','mock']
+   with patch.object(sys,'argv',args),patch.object(publish.subprocess,'run',side_effect=fake):publish.main()
+   archives=list(Path(td).glob('*.tar.gz'));self.assertEqual(len(archives),1)
+   with tarfile.open(archives[0]) as t:self.assertNotIn('experiments/__init__.py',t.getnames())
 if __name__=='__main__':unittest.main()
