@@ -58,3 +58,5 @@ CWD=PROJECT/releases/cvs_FcrossRX_satellite_dropout_budget_E50_20261018_r01；�
 实际发布：代码/config/分析提交e5c25a54461439e6c33c76ce92ec50def7242524已push，独立GitHub compare identical；单次release archive SHA本远端一致，远端20py编译PASS。复合真实自身FINAL30 checkpoint smoke4NN/2CP/0IQ/0更新PASS后直接训练，未重复远端合成。dispatcher1276889；AS_CE worker1276916/GPU2，AS_DET worker1276994/GPU3，PID/CWD/argv/CUDA及nvidia进程占用独立核实；日志64379→421510、31753→421346字节，均增长。两行初始化source_roles EXACT_MATCH/target_contact false，own FINAL30 EMA严格继承，AdamW空state/resetcos20/lr.0002/WD.0001；actual_channel configurations与各自原SAT18完全一致。审计保存六场景参数不等于训练采六场景，实际训练仍从原TRAIN_SCENES三场景均匀采样。
 
 自动源判定／clean+六practical预测／独立truth-last评分／八行CPU分析已由同一dispatcher衔接，尚未完成，不报告新准确率。已保存原live TX×RX×scene/state/lock计数供完成后分析，新两行各284160检查总量、无逐格门槛。P61草稿与其他健康任务未运行或修改。
+
+持续监控：两条原worker日志正常增长，最新各完成追加10轮（累计E40），原dispatcher/worker存活，failure为空；源读出/正式预测/评分尚未开始。本轮未改配方、未重启，未启动额外训练或诊断前向；原续训的前向持续发生，按完成后的实际成本计。已补充[E30源域背景](<E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-satelliteDropout-budget-e50-s2026092701-m2-r01/E30_source_context.md>)，明确mid正收益与low负分层，未读取正式结果或用于改变已启动的E50。

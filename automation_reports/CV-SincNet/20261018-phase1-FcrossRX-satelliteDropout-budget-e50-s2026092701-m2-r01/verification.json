@@ -325,7 +325,7 @@
         "CWD_ARGV_CUDA_verified": true,
         "step_log_bytes_from": 64379,
         "to": 421510,
-        "epochs_complete": 0,
+        "epochs_complete": 10,
         "source_roles": "EXACT_MATCH",
         "target_contact": false,
         "optimizer": {
@@ -334,7 +334,13 @@
           "schedule": "cosine20",
           "lr": 0.0002,
           "weight_decay": 0.0001
-        }
+        },
+        "cumulative_epochs": 40,
+        "latest_step_log_bytes": 4691490,
+        "source_complete": false,
+        "source_panel_complete": false,
+        "seven_view_predictions_complete": false,
+        "independent_scoring_complete": false
       },
       {
         "row_id": "AS_DET-s2026092701",
@@ -344,7 +350,7 @@
         "CWD_ARGV_CUDA_verified": true,
         "step_log_bytes_from": 31753,
         "to": 421346,
-        "epochs_complete": 0,
+        "epochs_complete": 10,
         "source_roles": "EXACT_MATCH",
         "target_contact": false,
         "optimizer": {
@@ -353,10 +359,17 @@
           "schedule": "cosine20",
           "lr": 0.0002,
           "weight_decay": 0.0001
-        }
+        },
+        "cumulative_epochs": 40,
+        "latest_step_log_bytes": 4691153,
+        "source_complete": false,
+        "source_panel_complete": false,
+        "seven_view_predictions_complete": false,
+        "independent_scoring_complete": false
       }
     ],
-    "failure": null
+    "failure": null,
+    "observed_at_utc": "2026-10-18T07:51:01.306Z"
   },
   "actual_channels": [
     {
@@ -401,5 +414,19 @@
     }
   ],
   "source_and_formal_results_available": false,
-  "healthy_other_runs_untouched": true
+  "healthy_other_runs_untouched": true,
+  "source_decision_available": false,
+  "formal_scores_read_in_monitor": false,
+  "E30_source_context": {
+    "report": "E30_source_context.md",
+    "source_only": true,
+    "NN": 0,
+    "IQ": 0,
+    "CP": 0,
+    "updates": 0,
+    "seed_count": 1,
+    "source_panel_physical": 1800,
+    "channel_draws": 2,
+    "new_E50_results": false
+  }
 }
