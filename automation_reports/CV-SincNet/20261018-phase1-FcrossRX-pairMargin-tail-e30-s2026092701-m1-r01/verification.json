@@ -1,0 +1,202 @@
+{
+  "status": "LOCAL_VERIFIED_READY",
+  "run_id": "20261018-phase1-FcrossRX-pairMargin-tail-e30-s2026092701-m1-r01",
+  "source_only_design": true,
+  "historical_retest": true,
+  "new_rows": 1,
+  "model_seed_count": 1,
+  "parent_epochs": 20,
+  "new_epochs": 10,
+  "total_epochs": 30,
+  "new_updates": 2220,
+  "total_updates": 6660,
+  "local_F_synthetic": {
+    "status": "PASS",
+    "NN": 768,
+    "real_IQ": 0,
+    "CP": 0,
+    "updates": 0,
+    "wall_inside_script_seconds": 1.822532499995,
+    "process_wall_seconds": 3.988,
+    "extra_forward": 0,
+    "default_head_and_Sinc_finite_nonzero_gradient": true,
+    "penalty_changes_global_RNG": false,
+    "ordinary_raw_inputs_changed": false
+  },
+  "preflight": {
+    "status": "PREFLIGHT_VERIFIED",
+    "ordinary_account": true,
+    "new_roots_absent": true,
+    "pinned_runtime": true,
+    "ownAs20_provenance_and_roles": true,
+    "checkpoint_not_loaded": true,
+    "ownEMA_load_remains_smoke_and_train_guarded": true,
+    "references": [
+      {
+        "arm": "B00",
+        "all7_complete": true,
+        "same_roles": true,
+        "re_prediction": false,
+        "re_scoring": false
+      },
+      {
+        "arm": "B01",
+        "all7_complete": true,
+        "same_roles": true,
+        "re_prediction": false,
+        "re_scoring": false
+      }
+    ],
+    "fixed_formal_handles": true,
+    "existing_VALIDATED_ONCE_reused": true,
+    "Python": "3.10.19",
+    "Torch": "2.1.0+cu121",
+    "NumPy": "2.2.5",
+    "disk_free_GB": 3700.0313568115234,
+    "GPUs": [
+      {
+        "index": 0,
+        "free_mb": 20171,
+        "GPU_PIDs": [
+          1303753
+        ],
+        "eligible": true
+      },
+      {
+        "index": 1,
+        "free_mb": 20171,
+        "GPU_PIDs": [
+          1303830
+        ],
+        "eligible": true
+      },
+      {
+        "index": 2,
+        "free_mb": 20171,
+        "GPU_PIDs": [
+          1304318
+        ],
+        "eligible": true
+      },
+      {
+        "index": 3,
+        "free_mb": 20171,
+        "GPU_PIDs": [
+          1304399
+        ],
+        "eligible": true
+      },
+      {
+        "index": 4,
+        "free_mb": 24124,
+        "GPU_PIDs": [],
+        "eligible": true
+      },
+      {
+        "index": 5,
+        "free_mb": 24124,
+        "GPU_PIDs": [],
+        "eligible": true
+      },
+      {
+        "index": 6,
+        "free_mb": 24124,
+        "GPU_PIDs": [],
+        "eligible": true
+      },
+      {
+        "index": 7,
+        "free_mb": 24124,
+        "GPU_PIDs": [],
+        "eligible": true
+      }
+    ],
+    "IQ_reads": 0,
+    "CP_reads": 0,
+    "NN": 0
+  },
+  "remote_model_training": "NOT_STARTED",
+  "remote_NN": 0,
+  "remote_IQ": 0,
+  "remote_CP": 0,
+  "source_and_formal_results_available": false,
+  "E50": false,
+  "seed_extension": false,
+  "previous_goal_turn": "PROGRESS",
+  "healthy_other_runs_untouched": true,
+  "other_chat_read": "01a1427e-49c0-7840-a84d-5bb38d5a8164",
+  "other_chat_route_not_duplicated": "Asweight .125/.375 E50 and02/03 replication",
+  "REJECTED_EXTRA_GATE": "Generic design approval/spec hash/repeated fullreview not part of project minimal whitelist; existing authorization used.",
+  "local_verification_record": "local_artifacts/cvs_FcrossRX_pair_margin_tail_E30_20261018_r01/local_verification_record.json",
+  "implementation": {
+    "protocol_negatives": 27,
+    "margin_math_stopgrad_scale_q_gradient": true,
+    "capture_RNG_ordinary_and_exception_restore": true,
+    "flow_checks": 4,
+    "all7_truth_gate": true,
+    "source_failure_still_all7": true,
+    "cap2_actual": true,
+    "compile_py_files": 19,
+    "local_F_synthetic_NN": 768,
+    "local_F_probe_wall_seconds": 1.8225324999948498,
+    "local_F_process_wall_seconds": 3.988,
+    "real_IQ": 0,
+    "CP": 0,
+    "updates": 0,
+    "zero_NN_red_test_fixed": "Draft final_metadata accepted head_fit_updates=1; corrected and negative check now rejects",
+    "remote_synthetic_repeat": false
+  },
+  "analysis": {
+    "status": "CODE_COMPLETE_12_TOY_PASS_REVIEW_PASS_AUTO_EXEC_AFTER_ROW",
+    "pure_toy_checks": 12,
+    "toy_wall_seconds": 1.02,
+    "py_compile": "PASS_2PY",
+    "NN": 0,
+    "IQ": 0,
+    "CP": 0,
+    "truth_reads": 0,
+    "optimizer_updates": 0,
+    "full2220step_fixture": true,
+    "source_partial_supported": true,
+    "all3_logical_rows_all7_before_truth": true,
+    "shared_parent_costs_deduplicated": true,
+    "figure_pairs_planned": 5,
+    "real_execution_started": false
+  },
+  "review": {
+    "status": "PASS",
+    "run_id": "20261018-phase1-FcrossRX-pairMargin-tail-e30-s2026092701-m1-r01",
+    "reviewer": "/root/e50_source_states55",
+    "review_kind": "One independent limited P0/P1 correctness review",
+    "reviewed_at_utc": "2026-10-18T08:33:05.152Z",
+    "scope": [
+      "experiments/cvs_pair_margin61/**",
+      "analysis/cvs_pair_margin61_analysis_20261018.py",
+      "analysis/check_pair_margin61_analysis.py"
+    ],
+    "open_P0": 0,
+    "open_P1": 0,
+    "findings": [],
+    "checked": [
+      "Own P43 B01 As20 student and ownEMA plus10,all sourceRX/physicalroles/defaulthead",
+      "Actual five hook forward order ordinary1/mixed0/mixed1/raw0/raw1; same masked64 physical packets and true labels",
+      "Original6L/CE/ordinary/raw/U retained; normalized30 detached clean-reference one-sided urbanq only extra penalty",
+      "Source scientific FAIL still all7; separate truth-last scorer; source-first all3-row/all7 gate then CPUanalysis",
+      "Single owner/immutable roots/cap2 including reservations andothers/no reference retraining/prediction/scoring"
+    ],
+    "verification": {
+      "analysis_toy_checks": 12,
+      "wall_seconds": 1.04,
+      "NN": 0,
+      "IQ": 0,
+      "CP": 0,
+      "truth_reads": 0,
+      "optimizer_updates": 0,
+      "remote": false,
+      "actual_F_synthetic_repeated": false,
+      "reused_implementer_F_NN": 768
+    },
+    "code_edits": 0,
+    "targeted_rereview_required": false
+  }
+}
