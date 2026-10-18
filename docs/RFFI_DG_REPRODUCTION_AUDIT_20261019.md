@@ -50,13 +50,15 @@ IB-RFF 的出版信息和方法由 [IEEE 官方页面](https://ieeexplore.ieee.o
 
 RIEI-FD 和 DRIFT 的上述均值与标准差来自[既有独立评分汇总](COMPARISON_RESULTS_20260927.md)，是模型种子间统计。不是原论文指标的同条件复算，不计算跨协议的“复现差距”。本次还读回这两个 CE 首种子的远端 `resolved_config.json`，确认实际使用 RX 索引 `1,3,4,6,8`、源 day 索引 `1,2,3`、`L_s/U_s/V=0.07/0.63/0.30`、200 轮、batch 128，并从第 80 轮开始 clean/星地拼接 CE。该核对不冒充全部 40 行配置复审。
 
+后续进一步找回并完整复算 7 月的原协议历史记录，共 25 个实验、5,000 条 epoch、71 份日志。RIEI short-stem 的完整 12 行 last10 均值 **72.7648%**，论文均值 73.2958%；但逐行 MAE **3.1400 个百分点**、±2SD 命中 **7/12**，未通过原定门槛。DRIFT mean 修改版五种子 final **72.7548% ±5.9345%**，确实达到相对 v2 73.54% 的历史 ±2 个百分点均值门槛；但负 MSE 比论文平方 L2 公式多除以 256，且仅一个 RX 组合，不能无条件称严格论文复现。历史后续 RIEI seed42 完整确认被用户停止，不能以唯一入口固化冒充完成。[逐行结果、公式差异与证据层级](RIEI_DRIFT_ORIGINAL_HISTORY_AUDIT_20261019.md)另报，原历史产物保留。
+
 后三项初次核查确为 `SOURCE_TRAINING_COMPLETE_AWAITING_SOURCE_REVIEW`、`target_scored=false`；后续在新的独占补测run中完成全部预测及独立评分，旧source-only产物不改写。已取回10800条冻结预测与真值侧文件，独立重算准确率、F1、混淆矩阵及逐RX/day，逐值一致。[补测结果与边界](EXISTING_ORIGINAL_MODELS_RESULTS_20261019.md)单列DIFL的不同任务；旧登记的RUNNING及源V分数不作为目标证据。
 
 ### 原论文验收参照与版本问题
 
-[RIEI 扩展论文 arXiv:2411.03636](https://arxiv.org/html/2411.03636)的 Table III 指定每行训练/测试 RX，并采用最后 5 个 epoch 的统计。例如 `1-1,8-8 → 1-19` 为 79.43% ± 1.66%；这不能替代其他 RX 组合的验收值。历史项目还引用 SPAWC 2023 的另一标题及 last10 规则，必须先固定版本再选验收表。
+[RIEI 扩展论文 arXiv:2411.03636](https://arxiv.org/html/2411.03636)的 Table III 指定每行训练/测试 RX，并采用最后 5 个 epoch 的统计。例如 `1-1,8-8 → 1-19` 为 79.43% ± 1.66%；这不能替代其他 RX 组合的验收值。本地已找到真正的 [SPAWC 2023 正文](../baselines/Receiver-Agnostic_Radio_Frequency_Fingerprint_Identification_via_Feature_Disentanglement.pdf)，DOI `10.1109/SPAWC53906.2023.10304544`，其规则为 last10。上述历史 short-stem 结果明确绑定会议版，不混用两个版本的统计窗口。
 
-[DRIFT arXiv:2510.09405](https://arxiv.org/html/2510.09405)的 Table I 采用 Day1、指定源 RX 组合、每 TX/RX 800 个训练包、未见 RX 每 TX/RX 200 个测试包，并报告 5 个随机种子的最终轮均值。例如源 `1-1,14-7` 对应 68.66%。对比本项目分数前，必须先恢复同一行的数据和统计口径。
+[DRIFT arXiv:2510.09405v2](https://arxiv.org/html/2510.09405v2)的 Table I 采用 Day1、指定源 RX 组合、每 TX/RX 800 个训练包、未见 RX 每 TX/RX 200 个测试包，batch256，并报告 5 个随机种子的最终轮均值。例如源 `1-1,14-7` 对应 68.66%，三源 `1-1,14-7,7-7` 对应 73.54%。本地 v1 正文则为 batch64、最后5轮平均，三源参照75.62%。对比前须固定版本、同一行与完整目标RX集合。
 
 旧[论文代码审计](../baselines/PAPER_CODE_AUDIT.md)把 `arXiv:2309.02801v2` 写为 RIEI 来源，但[该编号实际对应无人机轨迹重建论文](https://arxiv.org/abs/2309.02801)。这是确定的引用错误，历史审计中的“完全一致”标签不能作为已达论文效果的证据。保留原文，并在文件开头追加本次更正。
 
@@ -75,7 +77,7 @@ DIFL 的旧修复将返回特征从 256 维 fc2 前移至已有 512 维 fc1，�
 
 目前尚未取得两篇新候选的完整实验表；TFMix 的真实轮数与最终权重规则仍是影响正确性的缺项。用户确认没有全文。本次继续检索了 IEEE、作者仓库、公开网页和 OpenAlex，仍未获得可访问全文；这不等于证明公开全文不存在。不能以另一篇 WaveMLP 论文中重跑 TFMix 的 80.95% 作为 TFMix 原论文的复现目标，也不能以作者仓库日志当成本项目实验结果。
 
-IB-RFF 可先独立开展明确标注的“作者代码与公开日志复现”：固定提交的四折作者日志给出 ManySig CR/CRD 算术平均 94.62%/93.57%，ManyRx 为 90.68%/89.1875%。这些值是本次从作者日志中的 `Test Accuracy` 复算的单 seed 四折均值，不是已核对的论文表值，也不是本项目新结果；可用于技术对照，不能代替论文效果验收。若 TFMix 的预算无法核准，候补是 [Avoiding Shortcuts 的作者代码](https://github.com/BeechburgPieStar/SDG-for-Channel-Robust-SEI)：README 明确给出 WiSig 200 轮、模型 S、主增强深度 2、辅助深度 1 和两个对比损失权重 1/100；候补还需核对其 WiSig 子集、原文和目标日志，不能凭 README 即认定论文效果可复现。WiSR 是 CSI 手势识别，不能作为 RFFI/WiSig 论文凑数。
+IB-RFF 固定提交的四折作者日志给出 ManySig CR/CRD 算术平均 94.62%/93.57%，ManyRx 为 90.68%/89.1875%。这些作者参照是从 `Test Accuracy` 复算的单 seed 四折均值，不能代替论文效果验收。本次实际已完成 ManySig CRD 四折，见第5节。第二篇已采用 [Avoiding Shortcuts 的作者代码](https://github.com/BeechburgPieStar/SDG-for-Channel-Robust-SEI)，核对了作者 WiSig 子集、200轮命令及目标日志，并完成真实复现，见第6节；原文实验表仍未取得。WiSR 是 CSI 手势识别，不能作为 RFFI/WiSig 论文凑数。
 
 ## 4 本次交付与当前状态
 
@@ -85,7 +87,7 @@ IB-RFF 初次检查因缺少 timm 而失败；本次只在任务目录补充隔�
 
 原始只读回收证据与合成检查产物保留在 `local_artifacts/rffi_dg_research_20261019/`，包括 `existing_remote_evidence.json` 和 `synthetic_smoke*.json`；数据、权重和原始日志不进入 Git。下载的源码位于该目录的 `upstream/IB-RFF` 与 `upstream/TFMix`。
 
-初次筛选阶段没有启动真实训练；后续已完成下述 IB-RFF 四折。整体目标尚未完成，TFMix 不按其 1 轮默认值发布“论文复现”，旧训练和旧预测保持。
+初次筛选阶段没有启动真实训练；后续已完成下述 IB-RFF 四折、SDG 200轮以及三个历史模型的独立补测。整体目标尚未完成，TFMix 不按其 1 轮默认值发布“论文复现”，旧训练和旧预测保持。
 
 ## 5 IB-RFF 四折真实复现
 
@@ -107,6 +109,6 @@ r01在首个source smoke因NumPy2导出模块名与作者NumPy1.24不兼容而�
 
 ## 7 严格论文效果的剩余证据缺口
 
-本次在浏览器直接核查IEEE官方正文：IB-RFF文档11653216、SDG文档10847785均显示继续阅读需要登录且文档要求订阅。IB-RFF官方Figures页面也明确要求登录才能查看，未取得实验表。公共网页、作者仓库、机构公开页面及本地文件名查找仍未定位可核准全文；不把“没有找到”写成证明全文不存在。
+本次在浏览器直接核查IEEE官方正文：IB-RFF文档11653216、SDG文档10847785均显示继续阅读需要登录且文档要求订阅。IB-RFF官方Figures页面也明确要求登录才能查看，未取得实验表。公共网页、作者仓库、机构公开页面及本地文件名查找仍未定位可核准全文。又对本地相关资料库219份PDF检查元数据与首页，218份可读、1份损坏，未匹配IB-RFF、SDG、TFMix或DIFL全文标题；不把该有界查找写成证明全文不存在。
 
-因此当前可证明两篇作者代码/数据例程达到其公开日志效果；严格“达到论文表效果”仍保持未验证。TFMix预算与最终选模口径未核准，DIFL精确特征位置和完整匹配矩阵、RIEI-FD/DRIFT原协议对照也不能由现有CVS分数替代。整体目标保持进行，不以日志参照偷偷缩小原目标。
+因此当前可证明两篇作者代码/数据例程达到其公开日志效果；严格“达到论文表效果”仍保持未验证。TFMix预算与最终选模口径未核准；DIFL精确特征位置和完整匹配矩阵尚缺证据。RIEI原协议历史逐行验收未通过；DRIFT修改版达到历史均值门槛，原公式与完整表效果仍未证明，不能由CVS分数替代。整体目标保持进行，不以日志参照缩小原目标。
