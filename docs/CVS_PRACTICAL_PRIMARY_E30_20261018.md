@@ -24,4 +24,4 @@
 [P68预登记](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-fullAsPair6-e30-s2026092701-m1-r01/report.md)。
 
 
-P68机制读出补充：实际SAT18 AS_CE20没有已核实源预测缓存，P43 As20不同父不可替代。独立source-only诊断 20261018-diagnostic-FcrossRX-ASCE20cohort-sourceV-s2026092701-m1-r01只补默认头在原V1800＋两draw三practical上的12602NN（含2NNCPsmoke），0训练/teacher/信道新生成/target；不写健康P68代码/root，不参与source晋级。新增成本单列，主P68expected4352336NN＋该诊断12602＝4364938NN，非新训练预算。唯一新诊断P0/P1及7puretoy/4compile通过，尚未远端读出。
+P68机制读出补充：实际SAT18 AS_CE20没有已核实源预测缓存，P43 As20不同父不可替代。独立source-only诊断 20261018-diagnostic-FcrossRX-ASCE20cohort-sourceV-s2026092701-m1-r01只补默认头在原V1800＋两draw三practical上的12602NN（含2NNCPsmoke），0训练/teacher/信道新生成/target；不写健康P68代码/root，不参与source晋级。新增成本单列，主P68expected4352336NN＋该诊断12602＝4364938NN，非新训练预算。唯一新诊断P0/P1及7puretoy/4compile通过，实际12602NN/0更新source读出与独立NPZ重数完成：父clean正确1767/1800，pooled3534观察中lowSub3171、mid2584、low2073；非正式测试准确率。短任务首次实时/proc观察前已结束，实时PID/CWD/GPU快照不可用，已披露，不重跑。

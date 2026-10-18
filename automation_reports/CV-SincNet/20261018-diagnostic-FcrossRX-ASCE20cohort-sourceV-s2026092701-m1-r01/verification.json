@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_VERIFIED",
+  "status": "VERIFIED_SOURCE_READOUT_COMPLETE",
   "pure_toy_tests": 7,
   "compile_files": 4,
   "local_NN": 0,
@@ -20,5 +20,16 @@
   "source_only": true,
   "new_training": false,
   "healthy_P68_untouched": true,
-  "goal_complete": false
+  "goal_complete": false,
+  "actual_code_commit": "54fe00dce90ae24fa80ce0ed427348e18a825051",
+  "actual_NN": 12602,
+  "teacher_NN": 0,
+  "updates": 0,
+  "model_state_unchanged": true,
+  "parent_correct_count": 1767,
+  "independent_NPZ_recount": "PASS",
+  "owned_process_exited": true,
+  "live_process_snapshot_available": false,
+  "live_snapshot_note": "The 2.686s readout had exited before first postlaunch /proc observation; completion+actual counters+source arrays verified. Do not claim a live PID/CWD/GPU snapshot.",
+  "formal_access": false
 }

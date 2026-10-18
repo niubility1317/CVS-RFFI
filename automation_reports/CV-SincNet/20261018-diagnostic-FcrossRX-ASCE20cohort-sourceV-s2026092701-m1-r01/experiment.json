@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "Original task explicitly requests frozen actual-parent clean-correct satellite retention and source-only diagnostics; keep current E30 healthy training unchanged. No U truth/target access or new training.",
   "code": {
-    "commit": null,
+    "commit": "54fe00dce90ae24fa80ce0ed427348e18a825051",
     "checkout": "codex/phase1-urban-sigtime-20261014",
     "environment": "Existing ordinary N607 Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5; pinned P43 runtime; full FP32/CENTER_UNITS; CPU2",
     "cwd": "PROJECT/releases/cvs_FcrossRX_ASCE20_cohort_sourceV_20261018_r01"
@@ -95,7 +95,7 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_ASCE20_cohort_sourceV_20261018_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_asce_parent68/runner.py --device cuda:0",
     "stop_rule": "Wrong exact source parent or cached V handles,nonfinite,state update,wrong count or output collision abort only own readout,preserve,no fallback/retry;never stop or change P68",
-    "status": "PLANNED"
+    "status": "ANALYZED"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
@@ -165,7 +165,8 @@
   "notes": [
     "P43 As20 cached predictions are a different parent and are never substituted.",
     "The existing committed parent_cohort66 tool is hardcoded to P43 and cannot be silently redirected.",
-    "This source-only no-training supplement does not alter P68 immutable code/output/source criteria,does not require formal7,and is not a second review of unchanged P68."
+    "This source-only no-training supplement does not alter P68 immutable code/output/source criteria,does not require formal7,and is not a second review of unchanged P68.",
+    "SOURCE_READOUT_COMPLETE VERIFIED12602NN/0updates/0teacher/no newchannel,no target. actualASCE20 clean-correct1767/1800. Retention on3534 observations:lowSub3171/mid2584/low2073;independentNPZrecountPASS. Short readout ended before firstlivePID snapshot; no liveGPU/CWD snapshot claim. P68 unchanged."
   ],
   "registered_at": "2026-10-18T14:10:56+00:00"
 }
