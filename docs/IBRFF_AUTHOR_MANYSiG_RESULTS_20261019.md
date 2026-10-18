@@ -51,6 +51,6 @@ run_id：`20261019-phase1-ibrff-author-manysig-s2023-r02`。N607 普通账户，
 
 达到四折补全预登记的 92.57% 均值下限。将全部预测合并后计算的 Macro-F1 为 93.9045%，与“先算各折再取平均”的 93.9002% 口径分别保留。以上是同一个 model seed2023 的折间结果，不是多 seed 稳定性实验。
 
-新增 run 分别为 `20261019-phase1-ibrff-author-manysig-f1-s2023-r01`、`20261019-phase1-ibrff-author-manysig-f2-s2023-r01`、`20261019-phase1-ibrff-author-manysig-f3-s2023-r01`，GPU2/3/4 各一个任务。各折最终源 NLL 选择的 stage1/stage2 epoch 分别为 18/3、30/63、26/61。逐 RX/day、完整成本及独立复算证据位于私有 `local_artifacts/rffi_dg_research_20261019/ibrff_author_fourfold_verified.json` 和对应 run 的 `retrieved/`。
+新增 run 分别为 `20261019-phase1-ibrff-author-manysig-f1-s2023-r01`、`20261019-phase1-ibrff-author-manysig-f2-s2023-r01`、`20261019-phase1-ibrff-author-manysig-f3-s2023-r01`，GPU2/3/4 各一个任务。各折最终源 NLL 选择的 stage1/stage2 epoch 分别为 18/3、30/63、26/61。逐 RX/day、完整成本及独立复算证据位于私有 `local_artifacts/rffi_dg_research_20261019/ibrff_author_fourfold_verified_v2.json` 和对应 run 的 `retrieved/`。
 
 精度边界：本次复用旧 exporter 转为 float32 的 IQ，再按作者逐样本运算顺序归一化；未宣称从原始 pickle 到训练张量的全流程逐位一致。单步更新一致性检查是在相同 float32 输入下进行。公开每折 alpha 的最初选择过程及全文表格仍未核准，当前 `paper_effect_verified=false`。完整目标仍包含第二篇论文的真实复现及历史方法的论文效果核验。

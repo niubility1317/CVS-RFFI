@@ -1,5 +1,7 @@
 # SDG 作者代码复现
 
+本次完整200轮与全部目标日评分已完成，逐日准确率及200轮公开loss打印值与作者日志一致，见[结果报告](../../docs/SDG_AUTHOR_WISIG_RESULTS_20261019.md)。严格论文表验收仍未核准。
+
 论文：*Avoiding Shortcuts: Enhancing Channel-Robust Specific Emitter Identification via Single-Source Domain Generalization*，IEEE TWC 2025，DOI `10.1109/TWC.2025.3528568`。
 
 作者代码：https://github.com/BeechburgPieStar/SDG-for-Channel-Robust-SEI ，固定提交 `0090f4ba1d5cf76a4200a5be4830a9b08eb39699`，使用 `2TWC_Version`，按作者非商业许可证作学术复现。`prepare_source.py` 只原样提取五个 Python 文件，不加载作者权重。数据使用作者 README 公开的 Google Drive 四个 `rx_1-1_date{1,2,3,4}.pkl`，6 TX，每类 1000 包、256 点，保留原始 float64 归一化及原标签顺序；均衡与否在作者发布资料中未说明。
