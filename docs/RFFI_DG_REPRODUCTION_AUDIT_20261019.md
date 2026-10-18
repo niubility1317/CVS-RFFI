@@ -2,7 +2,7 @@
 
 核查日期：2026-10-19。范围是训练时不使用目标域数据的 RFFI 域泛化，以及已有 Phase1 对比方法能否声称达到原论文效果。
 
-**当前实际推进 IB-RFF 和 SDG（Avoiding Shortcuts）。IB-RFF 四折作者日志复现均值已达 93.91%，高于作者日志 93.57%；SDG 已取得作者数据、固定配方并完成本地验证。**TFMix 保留为候补，公开训练预算仍不完整。已有 RIEI-FD、DRIFT、DIFL、ASKNet、WaveMLP 均没有足以认定“达到原论文效果”的匹配证据：前两项已有 CVS 条件的目标结果，后三项原实现源训练完成但尚未评分。
+**当前实际推进 IB-RFF 和 SDG（Avoiding Shortcuts）。IB-RFF 四折作者日志复现均值93.91%，高于作者日志93.57%；SDG已启动作者200轮配方。**TFMix保留为候补，公开训练预算仍不完整。历史三个冻结模型已补齐目标评分：ASKNet93.83%、WaveMLP90.44%、DIFL82.28%，独立复算一致；完整论文效果仍未获得同条件矩阵证据。RIEI-FD、DRIFT已有的CVS结果也不能替代原论文协议。
 
 ## 1 初筛候选与当前选择
 
@@ -44,13 +44,13 @@ IB-RFF 的出版信息和方法由 [IEEE 官方页面](https://ieeexplore.ieee.o
 |---|---|---|---|
 | RIEI-FD-CE，`20260927-phase1-baselines-final-clean-satellite-m5-r01` | 4 个新模型种子 clean 67.29% ± 1.49% | CVS 少标签划分、源日/RX、星地拼接训练及第 200 轮权重，与论文原表不同；历史引用版本混乱 | 不能判为已达到，也不能据此判原论文方法无效 |
 | DRIFT-CE，同一最终评估 run | 4 个新模型种子 clean 63.94% ± 10.54% | 5 个源 RX、多个源日、7% 有标签和星地拼接；与 DRIFT Day1 全监督、指定 RX 组合和 5 种子协议不同 | 当前 CVS 移植表现较弱，原论文效果未验证 |
-| DIFL，`20260930-phase1-three-original-manysig-m3-r01` | 教师和学生各 100 轮；checkpoint 存在；`target_scored=false` | 仅一折一 seed；取特征位置修复尚未与论文逐项确认 | 源训练完成，论文效果未验证 |
-| ASKNet，同上原实现 run | 早停于第 41 轮；checkpoint 存在；`target_scored=false` | 仅一折一 seed，没有原表目标成绩 | 源训练完成，论文效果未验证 |
-| WaveMLP，同上原实现 run | 早停于第 39 轮；checkpoint 存在；`target_scored=false` | 仅一折一 seed；未完成 ManySig/ManyRx 原表评估 | 源训练完成，论文效果未验证 |
+| DIFL，父run `20260930-phase1-three-original-manysig-m3-r01`，新补测 `20261019-phase1-existing-original-eval-m3-r01` | 教师/学生各100轮的冻结原头；equalized day1目标准确率82.2778%、Macro-F1 82.5758% | 仅一个9:3 RX划分/seed；fc1特征取点尚未与全文确认 | 目标评分VERIFIED；论文效果未验证 |
+| ASKNet，同一父run和补测run | 实际41轮；raw CRD round0准确率93.8333%、Macro-F1 93.9307%；作者本折日志93.47% | 仅一折一seed，没有完整原表矩阵 | 本折接近作者日志；完整论文效果未验证 |
+| WaveMLP，同一父run和补测run | 实际39轮；raw CRD round0准确率90.4444%、Macro-F1 90.4943% | 不能用本折直接对比论文ManySig四折均值93.13%；ManyRx未测 | 目标评分VERIFIED；论文效果未验证 |
 
 RIEI-FD 和 DRIFT 的上述均值与标准差来自[既有独立评分汇总](COMPARISON_RESULTS_20260927.md)，是模型种子间统计。不是原论文指标的同条件复算，不计算跨协议的“复现差距”。本次还读回这两个 CE 首种子的远端 `resolved_config.json`，确认实际使用 RX 索引 `1,3,4,6,8`、源 day 索引 `1,2,3`、`L_s/U_s/V=0.07/0.63/0.30`、200 轮、batch 128，并从第 80 轮开始 clean/星地拼接 CE。该核对不冒充全部 40 行配置复审。
 
-后三项于本次 N607 只读核查中均返回 `SOURCE_TRAINING_COMPLETE_AWAITING_SOURCE_REVIEW`，完成记录明确写有 `target_scored=false`，且权重实际存在。旧登记的 RUNNING 不能当作实时状态。读取完整可用 epoch 元数据用于核对轮数，没有依据 loss 或源 V 分数推断泛化能力。
+后三项初次核查确为 `SOURCE_TRAINING_COMPLETE_AWAITING_SOURCE_REVIEW`、`target_scored=false`；后续在新的独占补测run中完成全部预测及独立评分，旧source-only产物不改写。已取回10800条冻结预测与真值侧文件，独立重算准确率、F1、混淆矩阵及逐RX/day，逐值一致。[补测结果与边界](EXISTING_ORIGINAL_MODELS_RESULTS_20261019.md)单列DIFL的不同任务；旧登记的RUNNING及源V分数不作为目标证据。
 
 ### 原论文验收参照与版本问题
 
@@ -101,4 +101,4 @@ r01在首个source smoke因NumPy2导出模块名与作者NumPy1.24不兼容而�
 
 这是day1训练、day2/3/4测试的单源跨天DG，非IB-RFF的跨接收机任务，不横向混排准确率。公开命令固定S模型、200轮、主/辅助增强深度2/1及类别/域损失权重1/100；原训练、验证、增强、对比损失、分类头及torchsummary前向均直接保留。源划分3780/1620/600与作者函数逐数组一致的合成检查通过，全部7种增强及原训练更新检查通过，独立审查无P0/P1。
 
-作者目标日志day2/3/4为99.2167%、83.2667%、97.25%，均值93.2444%；首次预测前固定工程均值下限92.2444%，完整报告各域。源holdout99.5%单列。当前是发布前验证完成，尚无本项目真实目标成绩；方案见[SDG预登记](SDG_AUTHOR_WISIG_PREREG_20261019.md)。全文表仍未核准，后续按实际证据更新。
+作者目标日志day2/3/4为99.2167%、83.2667%、97.25%，均值93.2444%；首次预测前固定工程均值下限92.2444%，完整报告各域。源holdout99.5%单列。当前真实source checkpoint烟测PASS，GPU1固定200轮训练运行中，尚无本项目真实目标成绩；方案见[SDG预登记](SDG_AUTHOR_WISIG_PREREG_20261019.md)。全文表仍未核准，后续按实际证据更新。
