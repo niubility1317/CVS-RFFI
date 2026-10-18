@@ -1,0 +1,34 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "actual_code_commit": "71b3c3e340005d93433c4d4b3f51d26f4d464d60",
+  "release_archive_SHA256": "0ef1f08f4edbbbedc08002362601f48bd817ea1f741e6cb857976bb738eb3699",
+  "remote_compile": "PASS_19PY",
+  "real_checkpoint_smoke_NN": 8,
+  "smoke_status": "PASS",
+  "rows": [
+    {
+      "row_id": "B00-s2026092701",
+      "gpu": 2,
+      "PID_CWD_cmdline_verified": true,
+      "CUDA_PID_verified": true,
+      "log_growth": true,
+      "cumulative_epoch": 21,
+      "updates": 222,
+      "first_local_epoch_temporal_pass": 0
+    },
+    {
+      "row_id": "B01-s2026092701",
+      "gpu": 3,
+      "PID_CWD_cmdline_verified": true,
+      "CUDA_PID_verified": true,
+      "log_growth": true,
+      "cumulative_epoch": 21,
+      "updates": 222,
+      "first_local_epoch_temporal_pass": 0
+    }
+  ],
+  "source_only_runtime_audit": true,
+  "performance_results_available": false,
+  "healthy_other_jobs_untouched": true,
+  "observed_at": "2026-10-18T13:03:29.586Z"
+}

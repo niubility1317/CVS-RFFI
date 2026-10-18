@@ -57,3 +57,11 @@ python -u experiments/cvs_temporal_bank67/runner.py
 环境／CWD：既有普通 N607 CVS-RFFI Python3.10.19／Torch2.1.0+cu121／NumPy2.2.5，PROJECT/releases/cvs_FcrossRX_temporal_bank_E30_20261018_r01。不可覆盖输出 PROJECT/runs/20261018-phase1-FcrossRX-temporalBank-e30-s2026092701-m2-r01；本地 local_artifacts/cvs_FcrossRX_temporal_bank_E30_20261018_r01。精确可执行路径及实际启动读回保留私有运行记录。实际代码提交写入 experiment.json 和 release_commit.txt，单归档 SHA 仅比较一次，远端 compile 一次。
 
 停止仅限本 run 的错误角色／来源、非有限数、输出碰撞、模式未生效、错误 bank 语义、无法合法预测等系统缺陷；保留 partial、不自动重试、不按低分停训练。正常行即使另一行技术失败仍按固定计划收尾。源／正式失败、完整成本与缺项全部保留。整体低 urban>60%、clean 可重复正收益及 suburban 接近 clean 仍未完成。
+
+
+实际 code/config commit：`71b3c3e340005d93433c4d4b3f51d26f4d464d60`，已推送并独立核对 GitHub branch identical。聚焦28负例／10native toy／8分析测试及18文件compile PASS，一次限定P0/P1审查PASS，无额外gate。
+
+
+## 实际启动核验
+
+状态 VERIFIED_RUNNING：真实 own20 student／EMA 合成检查 8 NN PASS，随后两行均在 GPU2／3 完成累计 E21／222 新更新。PID／CWD／argv／GPU 与日志增长独立核验，首个本地 epoch 时间确认均为0；来源角色 EXACT_MATCH。真实 native 参数相对各自原 E30 只差 output_dir、run_id 和 pseudo_temporal_mode；没有新教师或前向。详见 launch_verification.json、runtime_configuration.json。尚无新正式性能结果。

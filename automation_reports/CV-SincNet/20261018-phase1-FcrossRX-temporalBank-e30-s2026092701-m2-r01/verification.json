@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_VERIFIED",
+  "status": "VERIFIED_RUNNING",
   "new_run": "20261018-phase1-FcrossRX-temporalBank-e30-s2026092701-m2-r01",
   "local_checks": {
     "status": "PASS",
@@ -32,5 +32,9 @@
     "scope": "Direct next-run source/provenance/training/bank/default-head/all7/truth-last launch defects",
     "issues": [],
     "reviews": 1
-  }
+  },
+  "training_started": true,
+  "performance_results_available": false,
+  "actual_code_commit": "71b3c3e340005d93433c4d4b3f51d26f4d464d60",
+  "launch_verification": "launch_verification.json"
 }
