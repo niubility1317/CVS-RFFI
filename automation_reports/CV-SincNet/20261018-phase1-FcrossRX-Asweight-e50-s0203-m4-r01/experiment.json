@@ -30,7 +30,7 @@
   "replaces_run_id": null,
   "authorization": "Source01fixedtwo-criterionPASS:As50-ownAs30fullVclean+.162962963pp AND midlow+2.361111111pp;rootfixed02/03replicationbeforeanynewE50formalmetricsread.Userauthorizespromisingrecipes totalE50;originalfixed3seedscompleted,no targetfeedback/newseedselection.",
   "code": {
-    "commit": "bc4c90c5f8cdb8a3e5fd328760f2e9d4a89583ce",
+    "commit": "094a5e9e063b52c99b646c33c2b357a388ece5b8",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "ExistingordinaryN607 CVSRFFI/PyTorch FP32 CPU2,noinstall/admin",
     "cwd": "PROJECT/releases/cvs_FcrossRX_AsWeight_E50_s0203_20261018_r01"
@@ -109,7 +109,34 @@
     "local_artifact_root": "local_artifacts/F_As_weight_E50_s0203_20261018",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_practical_as_weight_replicate50/runner.py",
     "stop_rule": "Runowned data/parent/head/nonfinite/cost/systemtechnicalfailures only,preserve/noautomaticretry;allreleasedfixed stages complete even scientificnegative",
-    "status": "PLANNED"
+    "status": "RUNNING",
+    "actual_dispatcher_pid": 1303723,
+    "actual_workers": [
+      {
+        "row_id": "B00-s2026092702",
+        "pid": 1303753,
+        "gpu": 0,
+        "first_stage": 30
+      },
+      {
+        "row_id": "B01-s2026092702",
+        "pid": 1303830,
+        "gpu": 1,
+        "first_stage": 30
+      },
+      {
+        "row_id": "B00-s2026092703",
+        "pid": 1304318,
+        "gpu": 2,
+        "first_stage": 30
+      },
+      {
+        "row_id": "B01-s2026092703",
+        "pid": 1304399,
+        "gpu": 3,
+        "first_stage": 30
+      }
+    ]
   },
   "expected_artifacts": [
     "Actualsource01two-criteria PASS recorded before any new E50formalread;notargetfeedback",

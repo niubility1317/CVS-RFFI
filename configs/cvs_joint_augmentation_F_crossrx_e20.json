@@ -189,7 +189,7 @@
   },
   "next_training_hypothesis": {
     "run_id": "20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01",
-    "status": "PREREGISTERED_READY_TO_RELEASE",
+    "status": "RUNNING_VERIFIED",
     "hypothesis": "FixedsameweightedAsrecipe20+10+20total50 repeatonoriginalfixed02/03;no newmechanismorIQ,matchedNoAs",
     "model_seeds": [
       2026092702,
@@ -228,7 +228,36 @@
     "old_outputs_reused": true,
     "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01/report.md",
     "technical_missing_items": [],
-    "repeatable_clean_positive_proven": false
+    "repeatable_clean_positive_proven": false,
+    "code_commit": "094a5e9e063b52c99b646c33c2b357a388ece5b8",
+    "dispatcher_pid": 1303723,
+    "workers": [
+      {
+        "row_id": "B00-s2026092702",
+        "pid": 1303753,
+        "gpu": 0,
+        "first_stage": 30
+      },
+      {
+        "row_id": "B01-s2026092702",
+        "pid": 1303830,
+        "gpu": 1,
+        "first_stage": 30
+      },
+      {
+        "row_id": "B00-s2026092703",
+        "pid": 1304318,
+        "gpu": 2,
+        "first_stage": 30
+      },
+      {
+        "row_id": "B01-s2026092703",
+        "pid": 1304399,
+        "gpu": 3,
+        "first_stage": 30
+      }
+    ],
+    "analysis_pid": 1305922
   },
   "source_commonphase_sensitivity_result": {
     "name": "Bounded common-phase sensitivity of current F+CROSS_RX default head",
@@ -4382,7 +4411,7 @@
     "repeatable_clean_and_practical_gain": false,
     "multi_seed_weighted_missing": true,
     "replication_run": "20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01",
-    "replication_status": "REGISTERED_NOT_LAUNCHED",
+    "replication_status": "RUNNING_VERIFIED",
     "pending_model_seeds": [
       2026092702,
       2026092703
@@ -6287,7 +6316,7 @@
   },
   "active_training_hypothesis": {
     "run_id": "20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01",
-    "status": "PREREGISTERED_READY_TO_RELEASE",
+    "status": "RUNNING_VERIFIED",
     "hypothesis": "FixedsameweightedAsrecipe20+10+20total50 repeatonoriginalfixed02/03;no newmechanismorIQ,matchedNoAs",
     "model_seeds": [
       2026092702,
@@ -6326,7 +6355,36 @@
     "old_outputs_reused": true,
     "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01/report.md",
     "technical_missing_items": [],
-    "repeatable_clean_positive_proven": false
+    "repeatable_clean_positive_proven": false,
+    "code_commit": "094a5e9e063b52c99b646c33c2b357a388ece5b8",
+    "dispatcher_pid": 1303723,
+    "workers": [
+      {
+        "row_id": "B00-s2026092702",
+        "pid": 1303753,
+        "gpu": 0,
+        "first_stage": 30
+      },
+      {
+        "row_id": "B01-s2026092702",
+        "pid": 1303830,
+        "gpu": 1,
+        "first_stage": 30
+      },
+      {
+        "row_id": "B00-s2026092703",
+        "pid": 1304318,
+        "gpu": 2,
+        "first_stage": 30
+      },
+      {
+        "row_id": "B01-s2026092703",
+        "pid": 1304399,
+        "gpu": 3,
+        "first_stage": 30
+      }
+    ],
+    "analysis_pid": 1305922
   },
   "carrier_gate_release": {
     "run_id": "20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01",

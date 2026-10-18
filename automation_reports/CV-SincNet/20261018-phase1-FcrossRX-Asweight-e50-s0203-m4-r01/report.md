@@ -1,6 +1,6 @@
 # 固定 As 权重配方：02／03 的匹配 E30＋E50 复现
 
-状态：PLANNED，已登记，尚未发布／训练。run_id `20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01`。当前seed01源结果已通过固定资格：weightedAs50−ownweightedAs30 fullVclean＋.162963pp（要求≥0），两draw mid／low均值＋2.361111pp（要求≥＋.5）。root已在读取新E50正式指标前保存[source决定](<E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01/source_decision.json>)并固定02／03。analysis只给科学资格、不自动启动；本登记由root依既有表现好配方总E50授权执行，不新增种子筛选。
+状态：VERIFIED_RUNNING，已发布并实际启动四条固定轨迹；无扩种性能结果。run_id `20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01`。当前seed01源结果已通过固定资格：weightedAs50−ownweightedAs30 fullVclean＋.162963pp（要求≥0），两draw mid／low均值＋2.361111pp（要求≥＋.5）。root已在读取新E50正式指标前保存[source决定](<E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01/source_decision.json>)并固定02／03。analysis只给科学资格、不自动启动；本登记由root依既有表现好配方总E50授权执行，不新增种子筛选。
 
 唯一假设与seed01相同：保持原完整practical及.375selected监督份额，延长至总E50能否在固定种子重复星地收益并减小clean代价。四轨迹B00/B01×2026092702/03，各复用自己的原FINAL20 student与EMA，再weighted10＋weighted20，总50轮／11100更新，轨迹20＋10＋20，非连续cos50。新增共120model-epochs／26640updates，不能把旧父20或中间30重复计费；seed01和所有旧30／50训练与预测不重跑。
 
@@ -21,3 +21,5 @@
 停止仅限本run数据／父／头／数值／成本／不可变输出或不可启动系统技术错误，保留输出、不自动重试，不改变科学配方／预算／seed救跑。各stage全部真实step26640、L/U曝光、As／NoAs数、原始组损失与物理配置／工厂seed记录，parent/new/student/teacher/train/eval/source/formal/smoke/wall分别计费。source／prediction／score／零NN分析／报告登记与Git全部闭合。历史基准已暴露，结果不宣称新独立盲测；尚无本扩种结果，不保证60%或最终双提升。
 
 完整矩阵与路径：[experiment.json](<E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01/experiment.json>)。
+
+实际执行代码`094a5e9e063b52c99b646c33c2b357a388ece5b8`，远端分支OID独立一致。唯一发布preflight核实普通账号、当前源资格及四original20父元信息/角色；singlearchive传输比较／19py编译VERIFIED，首次真实3080NN烟测PASS后立即训练。dispatcher1303723；B00-s2026092702 worker1303753／GPU0、B01-s2026092702 1303830／GPU1、B00-s2026092703 1304318／GPU2、B01-s2026092703 1304399／GPU3。actualPID／CWD／argv／CUDA／nvidia／日志增长VERIFIED，全GPU compute进程各1，符合总cap3。四行source_roles EXACT_MATCH、target_contact=false、ownEMA严格恢复，实际Ffactoryseed分别02／03与native同一；实际physics同各自原row，ordinary仍原20参数epoch13。每行首记录6L／As0或64／group.125/.375，总L误差<1e−7；未额外拟合头。0NN分析1305922已核实WAIT_SOURCE，truth未开；单archive比较／compile＋9checksPASS。新中间30与最终50尚未完成，当前快照不代表性能结论。
