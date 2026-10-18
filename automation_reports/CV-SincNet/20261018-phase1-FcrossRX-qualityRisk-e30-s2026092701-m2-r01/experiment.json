@@ -1,0 +1,277 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-phase1-FcrossRX-qualityRisk-e30-s2026092701-m2-r01",
+  "group_id": "20261018-phase1-FcrossRX-qualityRisk-e30-s2026092701-m2-r01",
+  "display_name": "完整practical质量四分箱风险：同缓存IID与名义风险分层匹配E30",
+  "description": "Shared sourceL-only complete-engine proposalbank252000 views. NewmatchedIID andfourbinstratified twoownAs20+10 tails;weights preserve samefinitebank nominalrisk,As.25/L1.25/6L768 unchanged. Original liveAs30 and ownNoAs30 frozen references reused;nohardrisk/Uroute/sharedprop added.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "qualityRisk E30",
+    "finitebank nominalrisk stratification"
+  ],
+  "tags": [
+    "CVS",
+    "Phase1",
+    "F",
+    "CROSS_RX",
+    "As",
+    "E30",
+    "L6300",
+    "all_source_RX",
+    "default_cosine_head",
+    "quality_risk",
+    "finite_bank",
+    "importance_weighting"
+  ],
+  "comparison_group_id": "phase1-FcrossRX-practical-qualityRisk",
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Latestuserqualitystratifiedrisk priority,totalE30;two strictsameownAs20+10/2220updates each,total30/6660. SharedsourceLbank252000 fullengine CPU simulations;no new NN forward perstep. Goodsource supportedrecipes may later totalE50 butnotautomaticallyhere.",
+  "code": {
+    "commit": null,
+    "checkout": "E:/type10-7/code/worktrees/cvs_iq_timing_20261016",
+    "environment": "N607 existingCVS-RFFI/PyTorch fullFP32,CPU2,ordinary account;no installations",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_qualityRisk_E30_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original full-source physical roles,split392005;reuse fixed source/cache and formal received views",
+    "representation": "Existing source IQ256,dataset equalized index1,Fs25MHz;practical residual/post_sync propagation receiver EQ=false/reference_snr_db30,complete original dependency graph;fixed received IQ untouched",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract.role_ids L_s/U_s/V;fixed formal received_views manifest and opaque168000 physical IDs,unchanged",
+    "label_map_ref": "Original map [14-10,14-7,20-15,20-19,6-15,8-20]",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "All six registered originalTX,unchanged source/target registered-class map",
+    "roles": {
+      "L_s": "6300 fullsource visibleTX/all5RX/cumulative30epochs,noLdev/noRXholdout",
+      "U_s": "56700 TXhidden;original7+10=17Uepochs,weakteacher/strongstudent/ownEMA unchanged",
+      "V": "27000 source validation only,never training/EMA/state updates;fixed existing V1800 two-draw source panel"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "SameVALIDATED_ONCEall5sourceRX/day/physicalL6300 U56700hidden V27000;noLdev/noRXholdout",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalP43 reference_config:3sceneIID/fullphysicaldependencies/refSNR30/Asalreadyraw;no IQ/channel change"
+  },
+  "permissions": {
+    "regime": "source_train_then_frozen_truthlast",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Single seed paired finite-bank stratification;IIDvsstratified estimates samefiniteempiricalrisk beforeclipping/AdamW. Doesnotclaimidenticaloriginalonlinefiniteexposure,continuousrisk,orUtrajectories. No targetphysicscausal attribution."
+  },
+  "checkpoint": {
+    "initialization": "STRICT_CORRESPONDING_ORIGINAL_AS20_STUDENT_AND_OWN_EMA_PLUS10",
+    "sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Reuse verified originalP43 full-source rolemetadata/ancestry andminimalcurrenthandles preflight,no datarevalidation",
+    "provenance_verdict": "MatchedfullL6300 all5RX/ownFINAL20 scratch4440/sourcefixed selection;originalreleasecommit19aedc3604fed9c193237dd92366164178af0983,currentrealCPsmoke pending",
+    "selection_rule": "FixedFINAL30. SourceevidenceM3eligible iffS-I fixedsource<8dB mid/lowequal-sceneaccuracy>=+.5pp,>=8dB accuracy>=−.2pp,fullV S−originalliveAs>=−.1pp;all7formalregardless. FAILclosesfixedstratification,noM3/E50/threshold/bin/parent/seedrescue. Sourceproxydoesnotpredictformalclean."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/practical-qualityRisk",
+    "gpu_policy": "EachGPUallownerscomputeprocesses<=3;free>=12000MB;CPU2;dynamiccapacityqueue;healthyjobsuntouched",
+    "remote_run_root": "PROJECT/runs/20261018-phase1-FcrossRX-qualityRisk-e30-s2026092701-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261018-phase1-FcrossRX-qualityRisk-e30-s2026092701-m2-r01/logs",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-qualityRisk-e30-s2026092701-m2-r01",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_quality_risk30/runner.py",
+    "stop_rule": "Only owned systemic technical/protocol/data-role/parent/head/numerical/output/prediction-closing failure;preserve artifacts,no automaticretry. Scientificnegative never stops fixed same-row formal closure."
+  },
+  "expected_artifacts": [
+    "source/final_ssdg.pth",
+    "source/completion.json",
+    "source/source_frozen.json",
+    "source/initialization.json",
+    "source/resolved_config.json",
+    "source/reference_steps.jsonl.gz",
+    "source/shape_steps.jsonl.gz",
+    "source_qualification/complete.json",
+    "prediction/complete.json",
+    "scoring/complete.json",
+    "analysis_auto_r01/source_complete.json",
+    "analysis_auto_r01/source_summary.json",
+    "analysis_auto_r01/training_logs.json",
+    "analysis_auto_r01/formal_summary.json",
+    "analysis_auto_r01/costs.json",
+    "analysis_auto_r01/complete.json",
+    "source/actual_native_args.json",
+    "source/EMA_initialization.json",
+    "source/optimizer_initialization.json",
+    "proposal_bank/complete.json",
+    "proposal_bank/iq.npy",
+    "proposal_bank/metadata.npz",
+    "proposal_bank/physics.jsonl.gz",
+    "source/bank_steps.jsonl.gz",
+    "source/bank_exposure.npz",
+    "source/result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macroF1",
+      "worstRX",
+      "paired_delta_pp",
+      "urban3mean",
+      "repairs/new_errors/net",
+      "RX/day/TX",
+      "suburban_selfclean_gap",
+      "source_actual_addednoise4bins/state/lock",
+      "source_trueclass_margin_if_saved_logits",
+      "bank_counts/nominal_p/physical_exposure",
+      "weighted_CE_KL/weightsum",
+      "actualNN/studentteacher/updates/views/wall",
+      "simulation_calls/wall/storage/IO/sampling_cost"
+    ],
+    "dimensions": [
+      "seed2026092701",
+      "NOAS30",
+      "AS30",
+      "BANK_IID30",
+      "BANK_STRAT30",
+      "fullV27000/fixedV1800two_draw",
+      "clean+sixfixedpractical",
+      "RX/day/TX",
+      "old20/new10/total30"
+    ],
+    "prediction_ref": "PROJECT/runs/20261018-phase1-FcrossRX-qualityRisk-e30-s2026092701-m2-r01/{row}/prediction",
+    "scorer_ref": "Eachnewrowall7predfrozen beforeseparatetruthlastscorer;0NN4logical504CM/84partition recount. OriginalNoAs30comesownNoAs20 trajectory,notAsparent."
+  },
+  "rows": [
+    {
+      "row_id": "I01-s2026092701",
+      "method": "BANK_IID:uniform64withreplacement fromsharedcompleteAsbank,w1,original6L1.25",
+      "purpose": "primary",
+      "config_ref": "experiments/cvs_quality_risk30/design.py",
+      "resolved_config_ref": "PROJECT/runs/20261018-phase1-FcrossRX-qualityRisk-e30-s2026092701-m2-r01/I01-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Originalmodel/split/ordinaryaugmentationseed unchanged;bankandselector private namedRNG,no globalconsumption. SourceL-only bank40equalcompleteviews perphysicalL. Notwholetrajectoryidentical.",
+      "k": null,
+      "scenario": "Originalclean + optionalcompletepractical3sceneIID;fixedall7test",
+      "optimizer": "OriginalresetAdamW lr2e-4 WD1e-4 cos10 min1e-6;strictownAs20student+EMA",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "EachstrictsameoriginalAs20+new10=total30/6660;new2220updates/768LNNstep/originalUteacher;two newtails20modelE,8,703,898NN incl770sharedsmoke expected;shared252000simulationsseparate. OriginalNoAs30/As30reused.",
+      "output_root": "PROJECT/runs/20261018-phase1-FcrossRX-qualityRisk-e30-s2026092701-m2-r01/I01-s2026092701",
+      "log_path": "PROJECT/runs/20261018-phase1-FcrossRX-qualityRisk-e30-s2026092701-m2-r01/logs/I01-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_quality_risk30/runner.py --mode worker --row I01-s2026092701",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "S01-s2026092701",
+      "method": "BANK_STRAT:16peractualqualitybin withreplacement,w=4N_g/N,no clipping/selfnormalization,original6L1.25",
+      "purpose": "primary",
+      "config_ref": "experiments/cvs_quality_risk30/design.py",
+      "resolved_config_ref": "PROJECT/runs/20261018-phase1-FcrossRX-qualityRisk-e30-s2026092701-m2-r01/S01-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Originalmodel/split/ordinaryaugmentationseed unchanged;bankandselector private namedRNG,no globalconsumption. SourceL-only bank40equalcompleteviews perphysicalL. Notwholetrajectoryidentical.",
+      "k": null,
+      "scenario": "Originalclean + optionalcompletepractical3sceneIID;fixedall7test",
+      "optimizer": "OriginalresetAdamW lr2e-4 WD1e-4 cos10 min1e-6;strictownAs20student+EMA",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "EachstrictsameoriginalAs20+new10=total30/6660;new2220updates/768LNNstep/originalUteacher;two newtails20modelE,8,703,898NN incl770sharedsmoke expected;shared252000simulationsseparate. OriginalNoAs30/As30reused.",
+      "output_root": "PROJECT/runs/20261018-phase1-FcrossRX-qualityRisk-e30-s2026092701-m2-r01/S01-s2026092701",
+      "log_path": "PROJECT/runs/20261018-phase1-FcrossRX-qualityRisk-e30-s2026092701-m2-r01/logs/S01-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_quality_risk30/runner.py --mode worker --row S01-s2026092701",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Priority1 only:4actualaddednoiseratio bins <3/[3,8)/[8,15)/>=15dB;not true totalSNR. No independent assignments ofstate/quality/lock,engine dependency graphunchanged.",
+    "Immutable sharedbank:all6300L equally40completeproposals from4replicas x10epochcontexts21..30;252000float32IQ(2,256)=516096000bytes plusmetadata. No rejection/qualityretry/no hardpack deletion,noUtruth/target/Vtraining.",
+    "Finitebankuniformnominal p_g=N_g/N. I01sample64uniform,w1. S0116eachbinuniformwithreplacement,w4p_g. Asweightsumexact64;applysamework tobothCEandKL;no perbatchrenormalization/clipping.",
+    "Samefixedbank objectivebetweenI/S beforeclipping/AdamW,not exactcontinuouslyregeneratedoriginalAsrisk. LiveAs30separatereference separatesbank/globalresampling effect.",
+    "Originalalternating64slots;bankpacketownL labels/domain/RX/day/PID replacemixedslots consistently. Currentordinary128/raw128/SupConORD128 unchanged;bankmixednotcrosssamplestandardized,noBN.",
+    "GlobalLS.01,As.25,L1.25,6L768,teacher/Urules/ownEMA/rawtopracticalallretained;RDrop pairusesidenticalgeneratedIQ. No newloss,gate,branch,head orNN.",
+    "BothstrictoriginalP43 B01ownAs20FINALstudent+ownEMAresetAdamWcos10;NoAs30ownNoAs20trajectoryreused,notclaimsameparent.",
+    "History:oldrecoverablecurriculumchangedriskandfiltered3-15dB/lockedstateswithoutIS,sourceFAIL;notreopened. SceneBalance/N0/LHS/Asweight/Uquality actualclosedroutesdistinct. ContinuousE30recovery nowcomplete/sourceFAIL,nottechnicalincomplete.",
+    "Firststage only;M3boundedhardriskseparateconditionalexperimentafterpreregisteredsourceevidence,notcombinednow. NoUroute/commonprop/Dropout launch.",
+    "Sourceeligibilityusesactualsourcepanel hard/easyaccuracy andfullVobviousprotection only;doesnotpredictformalcrossRX. Formalquality/stateunknown,no causalstratumclaim.",
+    "Scientificnegative stillcompleteall7/independenttruthlast,sourcereadbeforeformal,no targetfeedback/promotion/seeds/rescue. Stageformalclean>=−.1absolutepp vsownNoAs;repeatabledualnotn1micro.",
+    "PLANNED implementation/review/codecommit/releasepending;no newperformance."
+  ],
+  "comparators": [
+    {
+      "label": "NOAS30",
+      "run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+      "row_id": "B00-s2026092701",
+      "reused": true,
+      "epochs": 30,
+      "head": "defaultjointcos",
+      "SupCon": "ORD128"
+    },
+    {
+      "label": "AS30",
+      "run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+      "row_id": "B01-s2026092701",
+      "reused": true,
+      "epochs": 30,
+      "head": "defaultjointcos",
+      "SupCon": "ORD128"
+    }
+  ],
+  "registered_at": "2026-10-18T15:50:59+00:00"
+}

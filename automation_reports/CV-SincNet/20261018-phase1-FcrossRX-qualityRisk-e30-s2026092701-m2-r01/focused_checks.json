@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "scope": "local focused NumPy/static only;real Torch/checkpoint smoke remains launcher first step",
+  "local_NN": 0,
+  "checkpoint_reads": 0,
+  "IQ_reads": 0,
+  "target_access": false,
+  "results": {
+    "protocol_negatives": 35,
+    "sampling_negatives": 5,
+    "finite_bank_expected_loss_gradient": "PASS",
+    "gradient_max_finite_difference_error": 3.4458405018256144e-9,
+    "private_NumPy_Python_RNG": "PASS",
+    "actual_AST_mixed_label_domain_boundary": "PASS",
+    "source_summary_native_JSON": "PASS",
+    "empty_bank_bin_fatal_and_no_overwrite": "PASS",
+    "native_info_keys": 15,
+    "Python_AST_files": 20,
+    "emitted_remote_AST_scripts": 2,
+    "local_Torch": "NOT_AVAILABLE_LOCAL",
+    "legacy_smoothing_source_check": "PASS"
+  },
+  "real_checkpoint_smoke": {
+    "pending": true,
+    "total_NN": 770,
+    "real_parent_readout_NN": 2,
+    "synthetic_L_hook_NN": 768,
+    "extra_CE_operator_calls": 4,
+    "extra_CE_logit_packets": 512
+  },
+  "remote_preflight": "PENDING",
+  "independent_P0_P1": "PASS"
+}

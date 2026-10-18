@@ -298,3 +298,12 @@ AsAlloc E30已实际启动：代码 93693c8e4250074777a1d638f1f78fa20e1082e4，s
 AsAlloc E30已ANALYZED：single新ownAs20+10/2220，总E30/6660，全部3logical×7独立truth-last与378CM/63partition完成。source先读保存FAIL：fullV clean−oldNoAs−.114815pp、midlow−oldAs−.013889pp，固定TX×RX waterfill64关闭/noE50/no分组父种子扫描，不由formal微增晋级。正式clean85.281548%、mid62.822024%、low51.322619%、urbanmean63.970635%；对原As clean−.059524pp、mid＋.015476pp、low＋.078571pp、urban＋.031349pp；对原NoAs clean＋.033929pp仅n1阶段PASS微观察，无重复双提升证据。
 
 完整2220步配额/补集/14native/U/EMA解析，全部6300L均As曝光11至37次，14.208万As包；固定物理角色、原完整practical/LS.01/6L1.25/defaulthead/原U均保持。旧parity曝光是新轨迹反事实，非旧run重放；不能称纯variance效应。新增4352334NN含770smoke，native1057.827593秒，selector1.662100秒包含hook2.582119秒不可相加，source预测wall未单列。worker/dispatcher/analysis均自然退出，无技术缺项；保留原As参照，目标仍未完成。完整[报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01/final_analysis.md)。
+
+
+## 新优先级：实际退化条件的分层风险
+
+按用户附件先做质量分层，U practical 预算路由和公共传播 TX 训练分别后续独立研究。Dropout 共享候选未登记/实现/启动，已搁置。最新核对连续 E30 修复现已训练评分完成且源原判据失败，不能沿用旧技术未完成说法。
+
+20261018-phase1-FcrossRX-qualityRisk-e30-s2026092701-m2-r01 已登记 PLANNED：两个相同原P43 ownAs20student/EMA＋10，总 E30。共享仅 L6300×40 的完整原引擎 proposal bank252000；I01 均匀抽64，S01 四组各16、w=4N_g/N；As.25/L1.25/6L768/LS.01/原U/defaulthead保持。两者保持同一有限bank经验风险，不冒称精确连续在线风险；原liveAs30/自身NoAs30另作冻结参照。无留出RX，mixed真实bank标签/域/PID须一起替换。
+
+源下一阶段资格固定hard<8dB的mid/low等场景accuracy S−I≥+.5pp、easy≥8dB≥−.2pp、fullVclean S−oldliveAs≥−.1pp。仅在第一阶段有实际证据后另登困难风险M3；失败关固定bin/配额/父/seed路线、不E50，所有all7仍独立评分。源微差不作为正式跨RXclean的精确预测。预计新增20modelE/4440updates/8703898NN含一次共享770smoke，252000模拟另计成本。当前尚无新性能结果。[最小预登记](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-qualityRisk-e30-s2026092701-m2-r01/report.md)。
