@@ -43,11 +43,13 @@ def config(runtime):
 
 def contract(conf):
     rx=conf['rx_author_order']
-    if conf['round'] != 0 or len(rx)!=12 or len(set(rx))!=12:
-        raise ValueError('Only preregistered author ManySig round0 is implemented')
+    fold=conf['round']
+    if type(fold) is not int or fold not in range(4) or len(rx)!=12 or len(set(rx))!=12:
+        raise ValueError('Expected one of the four registered author ManySig folds')
+    target=rx[fold*3:(fold+1)*3]
     return {'dataset':'ManySig','export_run':conf['data_export_run'],
-            'representation':conf['representation'],'source_rx':rx[3:],
-            'target_rx':rx[:3],'source_days':conf['train_days'],
+            'representation':conf['representation'],'source_rx':[r for r in rx if r not in target],
+            'target_rx':target,'source_days':conf['train_days'],
             'packet_rows':list(range(*conf['packet_rows'])),
             'tx_indices':list(range(6)),'validation_fraction':conf['validation_fraction'],
             'split_seed':conf['split_seed'],'physical_id':'ManySig:TX:RX:day:packet_row'}
@@ -96,8 +98,11 @@ def source_data(runtime,conf):
     # This function never constructs or opens a target path.
     ct=contract(conf)
     physical=read_json(runtime['physical_roles'])
-    if physical['rx_author_order']!=conf['rx_author_order'] or physical['source']!=ct['source_rx'] or physical['target']!=ct['target_rx']:
-        raise ValueError('Existing export does not match the registered physical roles')
+    # The reusable export contains all 12 RX and all four days. Its historical
+    # fold0 roles are not the roles of every new fold; derive those from the
+    # fixed author split above, without inheriting any old model state.
+    if physical['rx_author_order']!=conf['rx_author_order']:
+        raise ValueError('Existing export does not match the registered receiver order')
     if physical['asknet_wavemlp']['packet_rows']!=ct['packet_rows']:
         raise ValueError('Packet IDs differ from the reused export')
     xs,ys=[],[]
