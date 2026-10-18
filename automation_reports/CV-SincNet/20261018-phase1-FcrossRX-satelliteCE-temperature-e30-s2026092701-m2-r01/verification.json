@@ -27,11 +27,13 @@
   "analysis": {
     "toy_tests": 12,
     "status": "PASS",
-    "process_wall_seconds": 3.384,
+    "process_wall_seconds": 5.5373,
     "NN": 0,
     "IQ": 0,
     "CP": 0,
-    "updates": 0
+    "updates": 0,
+    "unittest_wall_seconds": 3.384,
+    "actual_command": "E:/type10-7/local_envs/ssr-gpu/python.exe analysis/cvs_satellite_ce64_analysis_checks_20261018.py"
   },
   "remote_preflight": {
     "status": "VERIFIED",

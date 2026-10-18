@@ -1,0 +1,70 @@
+{
+  "status": "LOCAL_VERIFIED_P0P1_PASS",
+  "focused": {
+    "protocol_negatives": 59,
+    "teaching_toy": 8,
+    "flow_checks": 4,
+    "status": "PASS",
+    "actual_evidence": "local_artifacts/cvs_FcrossRX_clean_teacher_U_E30_20261018_r01/local_verification.json"
+  },
+  "actualF": {
+    "NN": 6656,
+    "per_arm_NN": 1664,
+    "function_wall_seconds": 12.0459777,
+    "process_wall_seconds": null,
+    "real_IQ": 0,
+    "CP": 0,
+    "updates": 0,
+    "student_parameters": 900722,
+    "student_state_keys": 206,
+    "head_scale": 30,
+    "head_shape": [
+      6,
+      160
+    ],
+    "native_U_mask256_preserved": true,
+    "extra_prefix128": true,
+    "teacher_external_frozen": true,
+    "original_default_head_and_Sinc_gradients_finite": true,
+    "extra_KL_gradient_actual_synthetic_zero_due_to_q0": true,
+    "positive_extra_gradient_verified_only_by_toy": true
+  },
+  "analysis": {
+    "initial_toy_tests": 12,
+    "unittest_wall_seconds": 3.444,
+    "process_wall_seconds": 3.7366142999962904,
+    "targeted_fix_tests": 1,
+    "targeted_fix_unittest_wall_seconds": 0.251,
+    "targeted_fix_process_wall_seconds": 0.5548487000050955,
+    "NN": 0,
+    "IQ": 0,
+    "CP": 0,
+    "truth": 0,
+    "updates": 0,
+    "commands_and_stdout": "local_artifacts/cvs_FcrossRX_clean_teacher_U_E30_20261018_r01/analysis_checks_execution.json and analysis_metadata_fix_execution.json"
+  },
+  "review": {
+    "status": "PASS",
+    "reviewer": "clean_teacher65_dedup",
+    "one_full_P0P1_review": true,
+    "P1_found": 1,
+    "P1": "analysis rejected new dual checkpoint source list",
+    "fix": "new4 rows exactAs20+NoAs20 teacherprovenance; reusedrefs singleownparent unchanged",
+    "one_targeted_rereview": true,
+    "reviewer_targeted_tests": 1,
+    "reviewer_unittest_wall_seconds": 0.199,
+    "reviewer_process_wall_seconds": 0.628,
+    "NN": 0,
+    "IQ": 0,
+    "CP": 0,
+    "remote": false
+  },
+  "preflight": {
+    "status": "VERIFIED",
+    "ordinary_account": true,
+    "direct": true,
+    "GPUs_visible": 8,
+    "no_admin": true
+  },
+  "formal_read_for_design": false
+}
