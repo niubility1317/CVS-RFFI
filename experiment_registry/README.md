@@ -569,3 +569,5 @@
 - [重复残差增强 E30 独立检验 r01](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01/report.md)
 
 - [默认头输入敏感度源域反证 r01](../automation_reports/CV-SincNet/20261018-diagnostic-F-identitySensitivity-sourceLtoV-s2026092701-m1-r01/report.md)
+
+- [星地优先 satellite dropout E30 r01](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01/report.md)

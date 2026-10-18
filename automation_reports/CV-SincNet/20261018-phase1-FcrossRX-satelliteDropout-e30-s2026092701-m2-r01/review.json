@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "scope": "One independent P0/P1 review;one targeted recheck of directP1",
+  "reviewer": "unitary_p0p1_review",
+  "initial_P1": "Newrows baseline_reuse=True wouldrefusebackendtraining",
+  "fix": "All4newrowsegment configs baseline_reuse=False;registration aligned;historicalcontrolsreusedTrue",
+  "targeted_recheck": "PASS",
+  "other_P0_P1": [],
+  "real_IQ": 0,
+  "CP": 0,
+  "remote_access": false,
+  "Torch_tests_not_run_by_reviewer": true
+}
