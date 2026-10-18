@@ -136,3 +136,12 @@ Asweight E50已实际启动：训练／分析代码`64176e7ff1aa5cd2477a504f8b44
 现已登记`20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01`，代码/分析准备完成但尚未发布。固定02／03各NoAs／As四轨迹均为原own20＋新weighted10＋新weighted20，总50，新增120model-epochs／26640updates，不重训seed01或旧20／30／50。nested weighted30/weighted50各自source／固定all7pred／独立score，中间数值不决定是否继续50；真实factoryseed同行02／03，ordinary始终ownoriginal20args epoch13，offset20/4440、30/6660。24logical＝3seed×original/weighted×NoAs/As×30/50；只新8stage读出，旧16条件复用。172聚焦负例／8native绑定／8预测路径／19py2AST与9分析检查PASS，唯一新适配P0/P1=0/0，真实3080NN烟测在launcher首步。当前无扩种成绩，不保证60%或重复双提升；保持同一假设，不变权重、数据、默认头、U或物理条件。[源决定](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01/source_decision.json)／[复现预登记](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01/report.md)。
 
 固定02／03已实际启动：代码`094a5e9e063b52c99b646c33c2b357a388ece5b8`；dispatcher1303723，四worker1303753／1303830／1304318／1304399分别GPU0至3。四源角色／ownEMA／actualFfactoryseed／physics匹配，3080NN真实烟测PASS后进入weighted30；PID/CWD/argv/CUDA/nvidia/log增长独立VERIFIED，全GPU compute进程各1。0NN分析1305922 WAIT_SOURCE／truth未开。后续weighted50各自从新30无条件继续，当前无扩种性能结果。
+
+
+## 固定02／03：E30中间读出完成，E50继续
+
+四条weighted30中间段已完成各10轮／2220更新与全部七视图独立评分；同PID已严格从自己的新30 student／EMA进入固定20轮50段。实际factoryseed02／03、empty resetAdamW／cos20、6L／As0或64／.125.375核实，无技术异常。中间数值不决定续训。
+
+12个E30逻辑条件的现有独立scorer汇总：weightedAs−matchedweightedNoAs clean逐seed−.326786／−.505357／−1.227381pp，配对均值−.686508±.476843pp，全部seed及均值均不通过−.1pp阶段要求。weightedAs−originalAs clean−.388095±.089660pp，mid／lowurban＋.531151±.121889／＋.703770±.105766pp，urbanmean＋.490675±.130200pp；n=3表明该固定E30配方存在clean—urban取舍，未获得重复双提升。报告全部seed，不挑最好值。
+
+本部分只读现有独立scorer，未读truth／IQ／checkpoint／rawpred，未增加预测／评分／训练。完整24条件重计数、逐包错误和E50结果仍待固定全部阶段完成。当前唯一假设仍是增加预算能否恢复clean并保留urban收益；本读出不改变已运行E50轨迹或发起新候选。[部分报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s0203-m4-r01/partial_E30.md)。

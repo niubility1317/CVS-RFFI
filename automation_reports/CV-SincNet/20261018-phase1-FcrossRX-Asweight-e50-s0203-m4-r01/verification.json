@@ -173,7 +173,7 @@
   "formal_metrics_read_for_promotion": false,
   "goal_complete": false,
   "training_complete": false,
-  "performance_results_available": false,
+  "performance_results_available": "PARTIAL_E30_NATIVE_SCORER_ONLY",
   "code_commit": "094a5e9e063b52c99b646c33c2b357a388ece5b8",
   "remote_branch_OID": "INDEPENDENTLY_VERIFIED_IDENTICAL",
   "N607_preflight": "VERIFIED_ONCE_ORDINARY_SOURCE_ELIGIBILITY_AND_FOUR_ORIGINAL20_ROLES_METADATA",
@@ -283,5 +283,137 @@
     "IQ": 0,
     "updates": 0,
     "truth_opened": false
+  },
+  "observed_at_utc": "2026-10-18T08:48:08.257Z",
+  "weighted30_all_four_new_stages": {
+    "epochs_each": 10,
+    "updates_each": 2220,
+    "all7_prediction_complete": true,
+    "all7_independent_scoring_complete": true
+  },
+  "own30_to50_transition": {
+    "rows": {
+      "B00-s2026092702": {
+        "status": "VERIFIED_OWN30_TO50_STARTED",
+        "checks": {
+          "own_weighted30_parent": true,
+          "actual_init_own30": true,
+          "source_roles_exact": true,
+          "target_contact_false": true,
+          "factory_seed_actual": true,
+          "local30_budget": true,
+          "cumulative30_budget": true,
+          "fixed50_budget": true,
+          "all7_stage30_predscore": true,
+          "optimizer_reset_cos20": true
+        },
+        "first_step": {
+          "native_step": 1,
+          "L_forwards": 6,
+          "As_packets": 0,
+          "ordinary_weight": 0.125,
+          "selected_weight": 0.375
+        }
+      },
+      "B01-s2026092702": {
+        "status": "VERIFIED_OWN30_TO50_STARTED",
+        "checks": {
+          "own_weighted30_parent": true,
+          "actual_init_own30": true,
+          "source_roles_exact": true,
+          "target_contact_false": true,
+          "factory_seed_actual": true,
+          "local30_budget": true,
+          "cumulative30_budget": true,
+          "fixed50_budget": true,
+          "all7_stage30_predscore": true,
+          "optimizer_reset_cos20": true
+        },
+        "first_step": {
+          "native_step": 1,
+          "L_forwards": 6,
+          "As_packets": 64,
+          "ordinary_weight": 0.125,
+          "selected_weight": 0.375
+        }
+      },
+      "B00-s2026092703": {
+        "status": "VERIFIED_OWN30_TO50_STARTED",
+        "checks": {
+          "own_weighted30_parent": true,
+          "actual_init_own30": true,
+          "source_roles_exact": true,
+          "target_contact_false": true,
+          "factory_seed_actual": true,
+          "local30_budget": true,
+          "cumulative30_budget": true,
+          "fixed50_budget": true,
+          "all7_stage30_predscore": true,
+          "optimizer_reset_cos20": true
+        },
+        "first_step": {
+          "native_step": 1,
+          "L_forwards": 6,
+          "As_packets": 0,
+          "ordinary_weight": 0.125,
+          "selected_weight": 0.375
+        }
+      },
+      "B01-s2026092703": {
+        "status": "VERIFIED_OWN30_TO50_STARTED",
+        "checks": {
+          "own_weighted30_parent": true,
+          "actual_init_own30": true,
+          "source_roles_exact": true,
+          "target_contact_false": true,
+          "factory_seed_actual": true,
+          "local30_budget": true,
+          "cumulative30_budget": true,
+          "fixed50_budget": true,
+          "all7_stage30_predscore": true,
+          "optimizer_reset_cos20": true
+        },
+        "first_step": {
+          "native_step": 1,
+          "L_forwards": 6,
+          "As_packets": 64,
+          "ordinary_weight": 0.125,
+          "selected_weight": 0.375
+        }
+      }
+    },
+    "NN": 0,
+    "IQ_reads": 0,
+    "checkpoint_reads": 0,
+    "updates": 0,
+    "process_mutations": 0,
+    "observation_only": true
+  },
+  "training_target_contact_scope": "target_contact=false describes source-only model training/initialization; legal frozen E30 evaluation has completed and never selects E50 continuation",
+  "final_E50_complete": false,
+  "final_full24_recount_complete": false,
+  "partial_E30": {
+    "status": "TWELVE_E30_CONDITIONS_NATIVE_SCORER_READOUT",
+    "source": "Existing independent per-stage scorer JSON; no new scoring/truth/rawpred/IQ/CP/model execution",
+    "n_model_seeds": 3,
+    "weightedAs_minus_matched_weightedNoAs_clean_pp": -0.686507936507937,
+    "paired_sample_SD_pp": 0.476843,
+    "clean_each_seed_pp": [
+      -0.32678571428571557,
+      -0.5053571428571435,
+      -1.227380952380952
+    ],
+    "stage_all_seeds_pass": false,
+    "stage_mean_pass": false,
+    "weightedAs_minus_originalAs": {
+      "clean_pp": -0.388095238095238,
+      "mid_urban_pp": 0.531150793650794,
+      "low_urban_pp": 0.703769841269841,
+      "urban_mean_pp": 0.490674603174603
+    },
+    "full24_recount_pending": true,
+    "repair_new_errors_pending": true,
+    "selection_feedback": false,
+    "E50_unconditional_continuation": true
   }
 }
