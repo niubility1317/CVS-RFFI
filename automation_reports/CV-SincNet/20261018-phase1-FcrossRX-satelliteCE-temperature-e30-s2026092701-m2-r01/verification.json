@@ -1,0 +1,60 @@
+{
+  "status": "LOCAL_VERIFIED_P0P1_PASS",
+  "focused": {
+    "protocol_negative": 37,
+    "objective_tensor": 12,
+    "flow": 4,
+    "status": "PASS",
+    "actual_local_evidence": "local_artifacts/cvs_FcrossRX_satellite_CE_temperature_E30_20261018_r01/local_verification.json"
+  },
+  "actualF": {
+    "NN": 1536,
+    "per_arm_NN": 768,
+    "function_wall_seconds": 4.2500185,
+    "process_wall_seconds": 7.4796193,
+    "parameters": 900722,
+    "state_keys": 206,
+    "head_scale": 30,
+    "head_shape": [
+      6,
+      160
+    ],
+    "source_IQ": 0,
+    "checkpoints": 0,
+    "updates": 0,
+    "finite_nonzero_head_and_Sinc_gradients": true
+  },
+  "analysis": {
+    "toy_tests": 12,
+    "status": "PASS",
+    "process_wall_seconds": 3.384,
+    "NN": 0,
+    "IQ": 0,
+    "CP": 0,
+    "updates": 0
+  },
+  "remote_preflight": {
+    "status": "VERIFIED",
+    "ordinary_account": true,
+    "direct": true,
+    "output_roots_absent": true,
+    "pinned_P43_commit": "19aedc3604fed9c193237dd92366164178af0983",
+    "free_GB": 3696.04642868042,
+    "active_GPU_processes": 0,
+    "local_initial_failure": "wrapper omitted PATH, no SSH; explicit native environment recovered",
+    "no_admin": true
+  },
+  "review": {
+    "status": "PASS",
+    "reviewer": "ce_objective64_dedup",
+    "scope": "one independent P0/P1; objective/provenance/pipeline/truth-last/analysis",
+    "blocking_findings": 0,
+    "remote": false,
+    "NN": 0,
+    "IQ": 0,
+    "CP": 0,
+    "P2": "total_L_loss_scale1.25 is nominal slot recipe; HALF effective CE coefficient sum1.125 while KL coefficients unchanged; exact formula disclosed"
+  },
+  "query_access": false,
+  "formal_results_read_for_design": false
+}
