@@ -19,4 +19,4 @@
 |P73：完整 practical 的两随机子网 CE 聚合|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-AsMarginal-e30-s2026092701-m2-r01/report.md)|
 |冻结默认头：固定接收状态去噪的四贡献归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-FcrossRX-branchNoise-sourceV-s2026092701-m2-r01/report.md)|
 |冻结默认头：固定接收状态去噪的四贡献归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-FcrossRX-branchNoise-sourceV-s2026092701-m2-r02/report.md)|
-|完整practical：固定非噪声实现的两CE噪声重采样E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-noiseResample6-e30-s2026092701-m2-r01/report.md)|
+|P75 实验完成|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-noiseResample6-e30-s2026092701-m2-r01/report.md)|

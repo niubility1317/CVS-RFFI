@@ -6,4 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|完整practical：固定非噪声实现的两CE噪声重采样E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-noiseResample6-e30-s2026092701-m2-r01/report.md)|
+|P75 实验完成|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-noiseResample6-e30-s2026092701-m2-r01/report.md)|

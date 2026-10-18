@@ -100,7 +100,7 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_noise_resample6_E30_20261019_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_noise_resample75/runner.py",
     "stop_rule": "Own wrongroles/parent/defaulthead/native-noise scope/nonfinite/budget/outputcollision or unlaunchable failure preserves ownrow and stops;noautomaticretry;healthy peers finish;scientificFAIL still all7;no healthy otherowner mutation",
-    "status": "RUNNING"
+    "status": "ANALYZED"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
