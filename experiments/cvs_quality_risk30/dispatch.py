@@ -25,10 +25,15 @@ def worker(row):
  except Exception as error:
   d.write(d.BASE/row/'source_qualification_failure.json',dict(status='SOURCE_READOUT_FAILED',message=str(error),traceback=traceback.format_exc(),formal_evaluation_still_required=True,no_automatic_retry=True))
  execute('predict',row)
-def dispatch():
- if d.BASE.exists():raise FileExistsError('Reconcile own existing run; never duplicate or overwrite')
- d.BASE.mkdir();(d.BASE/'logs').mkdir()
- d.write(d.BASE/'dispatcher.json',dict(pid=os.getpid(),cwd=os.getcwd(),argv=sys.argv,owner=d.OWNER))
+def dispatch(recover=False):
+ recovery=None
+ if recover:
+  from .recovery import prepare_run
+  recovery=prepare_run()
+ else:
+  if d.BASE.exists():raise FileExistsError('Reconcile own existing run; never duplicate or overwrite')
+  d.BASE.mkdir();(d.BASE/'logs').mkdir()
+ d.write(d.BASE/'dispatcher.json',dict(pid=os.getpid(),cwd=os.getcwd(),argv=sys.argv,owner=d.OWNER,technical_recovery=recovery))
  from .preflight import smoke
  try:
   smoke()
@@ -70,7 +75,7 @@ def dispatch():
  result=collect()
  d.write(d.BASE/'complete.json',dict(status=result['status'],rows=completed,model_seed_count=1,seven_views_per_row=True,crossseed_confirmed=False,goal_complete=False))
 def main():
- p=argparse.ArgumentParser();p.add_argument('--mode',choices=['worker','predict','score']);p.add_argument('--row');a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--mode',choices=['worker','predict','score']);p.add_argument('--row');p.add_argument('--recover-preflight-r01',action='store_true');a=p.parse_args()
  if a.mode is not None and a.row not in {r['row_id'] for r in d.rows()}:raise ValueError('Only registered rows permitted')
  if a.mode=='worker':worker(a.row)
  elif a.mode=='predict':
@@ -79,4 +84,4 @@ def main():
  elif a.mode=='score':
   from .evaluate import score
   score(a.row);d.write(d.BASE/a.row/'complete.json',dict(status='TRAINED_AND_SCORED',row_id=a.row))
- else:dispatch()
+ else:dispatch(recover=a.recover_preflight_r01)

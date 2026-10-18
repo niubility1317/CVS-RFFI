@@ -307,3 +307,5 @@ AsAlloc E30已ANALYZED：single新ownAs20+10/2220，总E30/6660，全部3logical
 20261018-phase1-FcrossRX-qualityRisk-e30-s2026092701-m2-r01 已登记 PLANNED：两个相同原P43 ownAs20student/EMA＋10，总 E30。共享仅 L6300×40 的完整原引擎 proposal bank252000；I01 均匀抽64，S01 四组各16、w=4N_g/N；As.25/L1.25/6L768/LS.01/原U/defaulthead保持。两者保持同一有限bank经验风险，不冒称精确连续在线风险；原liveAs30/自身NoAs30另作冻结参照。无留出RX，mixed真实bank标签/域/PID须一起替换。
 
 源下一阶段资格固定hard<8dB的mid/low等场景accuracy S−I≥+.5pp、easy≥8dB≥−.2pp、fullVclean S−oldliveAs≥−.1pp。仅在第一阶段有实际证据后另登困难风险M3；失败关固定bin/配额/父/seed路线、不E50，所有all7仍独立评分。源微差不作为正式跨RXclean的精确预测。预计新增20modelE/4440updates/8703898NN含一次共享770smoke，252000模拟另计成本。当前尚无新性能结果。[最小预登记](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-qualityRisk-e30-s2026092701-m2-r01/report.md)。
+
+qualityRisk r01 发布/编译已VERIFIED，但首步合成hook在NumPy array身份边界失败，未进入训练或bank生成。独立poststate只有dispatcher/failure、旧进程已退出；已执行CP2＋ordinary256=258NN、0updates/realIQ/propagation。保留旧release及failure，固定同候选r02使用既有bytebuffer桥接、已知失败目录的限定恢复；不改变科学变量/种子/父或E30，额外258单列（全候选预计8704156NN）。恢复真实smoke仍fresh770，当前无新性能结果。

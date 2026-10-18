@@ -49,6 +49,7 @@ class Sampler:
 def _prepare_bank():
  """Dispatcher-only CPU generation after synthetic smoke,before spawning either row."""
  import gc,torch
+ from .channel import tensor_iq
  from experiments.cvs_phase1_stack.runtime import installed
  from cvsrffi.xuc_fusion.native import role_ids_from_native
  from experiments.cvs_clock_factorial30.channel import Practical
@@ -62,7 +63,7 @@ def _prepare_bank():
   if len(ds)!=6300 or ctx['num_domains']!=15:raise ValueError('Complete all5RX L6300 required')
   raw=np.empty((6300,2,256),np.float32);tx=np.empty(6300,np.int64);dom=np.empty(6300,np.int64);ids=np.empty((6300,5),np.int64)
   for i in range(6300):
-   x,y,domain,m=ds[i];raw[i]=x.numpy();tx[i]=int(y);dom[i]=int(ctx['domain_label_map'][int(domain)]);ids[i]=[int(m[k]) for k in FIELDS]
+   x,y,domain,m=ds[i];raw[i]=x.tolist();tx[i]=int(y);dom[i]=int(ctx['domain_label_map'][int(domain)]);ids[i]=[int(m[k]) for k in FIELDS]
   if set(tx.tolist())!=set(range(6)) or set(ids[:,1].tolist())!=set(d.RX) or set(ids[:,2].tolist())!={1,2,3} or set(ids[:,0].tolist())!={1} or not np.isfinite(raw).all() or len(set(map(tuple,ids.tolist())))!=6300:raise ValueError('Exact visible L raw/physical contract differs')
   del ds,ctx
  gc.collect();raw_cache_seconds=time.perf_counter()-cache_started
@@ -73,8 +74,8 @@ def _prepare_bank():
   for context in d.bank_contexts():
    epoch=context['cumulative_epoch'];step=context['cumulative_step'];rep=context['replica']
    for begin in range(0,6300,64):
-    end=min(6300,begin+64);count=end-begin;metadata={k:torch.from_numpy(ids[begin:end,j].copy()) for j,k in enumerate(FIELDS)};tic=time.perf_counter();out,observed=channel.apply(torch.from_numpy(raw[begin:end].copy()),metadata,epoch=epoch,step=step);simulation_seconds+=time.perf_counter()-tic
-    ratios=np.asarray([o['signal_to_added_noise_db'] for o in observed],np.float64);quality=np.asarray([o['quality_snr_db'] for o in observed],np.float64);bb=bins(ratios);sl=slice(offset,offset+count);tic=time.perf_counter();iq[sl]=out.numpy();copy_seconds+=time.perf_counter()-tic
+    end=min(6300,begin+64);count=end-begin;metadata={k:torch.tensor(ids[begin:end,j].tolist(),dtype=torch.long) for j,k in enumerate(FIELDS)};tic=time.perf_counter();out,observed=channel.apply(tensor_iq(raw[begin:end],'cpu'),metadata,epoch=epoch,step=step);simulation_seconds+=time.perf_counter()-tic
+    ratios=np.asarray([o['signal_to_added_noise_db'] for o in observed],np.float64);quality=np.asarray([o['quality_snr_db'] for o in observed],np.float64);bb=bins(ratios);sl=slice(offset,offset+count);tic=time.perf_counter();iq[sl]=out.tolist();copy_seconds+=time.perf_counter()-tic
     tic=time.perf_counter();arrays['TX'][sl]=tx[begin:end];arrays['RX'][sl]=ids[begin:end,1];arrays['day'][sl]=ids[begin:end,2];arrays['domain'][sl]=dom[begin:end];arrays['sample_ids'][sl]=ids[begin:end];arrays['bin'][sl]=bb;arrays['scene'][sl]=[o['scene'] for o in observed];arrays['state'][sl]=[o['state_end'] for o in observed];arrays['lock'][sl]=[o['receiver_lock_status'] for o in observed];arrays['signal_to_added_noise_db'][sl]=ratios;arrays['quality_snr_db'][sl]=quality;arrays['cumulative_epoch'][sl]=epoch;arrays['replica'][sl]=rep;arrays['context_step'][sl]=step;arrays['source_L_index'][sl]=np.arange(begin,end)
     for j,o in enumerate(observed):stream.write(json.dumps(dict(bank_index=offset+j,TX=int(tx[begin+j]),domain=int(dom[begin+j]),source_L_index=begin+j,bin=int(bb[j]),replica=rep,cumulative_epoch=epoch,context_step=step,physics=o),allow_nan=False)+'\n')
     metadata_seconds+=time.perf_counter()-tic;offset+=count

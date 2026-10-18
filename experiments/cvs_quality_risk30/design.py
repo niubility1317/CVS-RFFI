@@ -4,7 +4,7 @@ from copy import deepcopy
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 RUN='20261018-phase1-FcrossRX-qualityRisk-e30-s2026092701-m2-r01'
-RELEASE='cvs_FcrossRX_qualityRisk_E30_20261018_r01'
+RELEASE='cvs_FcrossRX_qualityRisk_E30_20261018_r02'
 OWNER='codex/root/practical-qualityRisk';LOCAL='local_artifacts/F_qualityRisk_E30_20261018'
 REFERENCE_RUN='20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01'
 REFERENCE_COMMIT='19aedc3604fed9c193237dd92366164178af0983'

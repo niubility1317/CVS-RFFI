@@ -84,6 +84,38 @@ def torch_checks():
  gn=torch.autograd.grad(new[0],(a,b),retain_graph=True);go=torch.autograd.grad(old[0],(a,b));assert all(torch.allclose(x,z,atol=1e-7,rtol=1e-5) for x,z in zip(gn,go))
  return dict(status='PASS',actual_helper_allones_recovers_old_loss_gradient=True,Torch_sampling_RNG_unchanged=True,NN=0,synthetic_CE_operator_calls=4,synthetic_CE_logit_packets=512)
 
+def interop_recovery_checks():
+ """Direct r01 boundary/recovery regression only;no CP/IQ/NN/network access."""
+ from types import SimpleNamespace
+ from .recovery import validate_layout,HISTORY
+ class Tensor(np.ndarray):
+  def to(self,*args,**kw):return self
+ calls=[]
+ def frombuffer(data,dtype):calls.append(('bytes',len(data),dtype));return np.frombuffer(data,dtype=np.float32).view(Tensor)
+ fake=SimpleNamespace(frombuffer=frombuffer,float32=np.float32)
+ tree=ast.parse(Path(__file__).with_name('channel.py').read_text(encoding='utf8'));fn=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='tensor_iq');env=dict(np=np,torch=fake);exec(compile(ast.fix_missing_locations(ast.Module(body=[fn],type_ignores=[])),'actual_byte_IQ_bridge','exec'),env)
+ original=np.asarray([0.,-0.,1.,-1.,np.finfo(np.float32).tiny,123.5],np.float32);array=np.tile(original,((64*2*256+5)//6))[:64*2*256].reshape(64,2,256);noncontiguous=array[:,:,::-1];out=env['tensor_iq'](noncontiguous,'cpu')
+ assert out.shape==(64,2,256) and out.dtype==np.float32 and out.tobytes()==np.ascontiguousarray(noncontiguous).tobytes() and calls==[('bytes',64*2*256*4,np.float32)]
+ for name in ('model.py','bank.py'):
+  text=Path(__file__).with_name(name).read_text(encoding='utf8');assert 'from_numpy' not in text and '.numpy()' not in text
+ modeltext=Path(__file__).with_name('model.py').read_text(encoding='utf8');banktext=Path(__file__).with_name('bank.py').read_text(encoding='utf8')
+ assert "bmeta['TX'].tolist(),device=labels.device,dtype=torch.long" in modeltext and "bmeta['domain'].tolist(),device=domains.device,dtype=torch.long" in modeltext and "bmeta['RX'].tolist(),device=domains.device,dtype=torch.long" in modeltext and "ids[begin:end,j].tolist(),dtype=torch.long" in banktext and 'raw[i]=x.tolist()' in banktext and 'iq[sl]=out.tolist()' in banktext
+ prior='PROJECT/releases/cvs_FcrossRX_qualityRisk_E30_20261018_r01';failure=dict(status='PREFLIGHT_FAILED',error="TypeError('expected np.ndarray (got numpy.ndarray)')",preserve_outputs=True,no_automatic_retry=True);dispatcher=dict(pid=1596070,cwd=prior,argv=[prior+'/experiments/cvs_quality_risk30/runner.py'],owner='codex/root/practical-qualityRisk');names=['dispatcher.json','failure.json','logs'];cost=validate_layout(names,[],failure,dispatcher,prior,False);assert cost['actual_NN']==258 and cost['optimizer_updates']==0 and cost['real_IQ']==0 and not cost['bank_generated'] and HISTORY=='technical_history/r01' and d.RELEASE.endswith('_r02')
+ negative=0
+ def bad(f):
+  nonlocal negative
+  try:f()
+  except ValueError:negative+=1
+  else:raise AssertionError('Unsafe recovery accepted')
+ for extra in ('proposal_bank','real_checkpoint_smoke.json','I01-s2026092701','launch.json','technical_history'):bad(lambda extra=extra:validate_layout(names+[extra],[],failure,dispatcher,prior))
+ bad(lambda:validate_layout(names,['worker.log'],failure,dispatcher,prior));bad(lambda:validate_layout(names,[],failure,dispatcher,prior,True))
+ for key,value in [('status','TRAIN_FAILED'),('error','other'),('preserve_outputs',False)]:
+  f=dict(failure);f[key]=value;bad(lambda f=f:validate_layout(names,[],f,dispatcher,prior))
+ for key,value in [('pid',999),('cwd','otherrelease'),('argv',['other']),('owner','other')]:
+  p=dict(dispatcher);p[key]=value;bad(lambda p=p:validate_layout(names,[],failure,p,prior))
+ for f in Path(__file__).parent.glob('*.py'):ast.parse(f.read_text(encoding='utf8'),filename=str(f))
+ return dict(status='PASS',targeted_negatives=negative,actual_IQ_byte_bridge_bitwise_float32=True,noncontiguous_input=True,metadata_explicit_long_lists=True,no_candidate_from_numpy_or_numpy_method=True,known_failure_NN=258,recovery_history=HISTORY,zero_updates_only=True,old_outputs_preserved=True,release=d.RELEASE,NN=0,CP=0,IQ=0,network_calls=0)
+
 def run():
  negative=0
  def bad(f):

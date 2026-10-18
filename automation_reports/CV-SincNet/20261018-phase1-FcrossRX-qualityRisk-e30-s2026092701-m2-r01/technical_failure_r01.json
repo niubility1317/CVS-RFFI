@@ -1,0 +1,34 @@
+{
+  "status": "FAILED",
+  "failed_layer": "launcher_first_real_checkpoint_synthetic_hook",
+  "release": "cvs_FcrossRX_qualityRisk_E30_20261018_r01",
+  "code_commit": "de347afa6f2670e73a7ec92b39f4a487340a9af8",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "dispatcher_pid": 1596070,
+  "dispatcher_terminal": true,
+  "error_type": "NumPy_array_identity_boundary",
+  "failure_location": "model.base_hook:torch.from_numpy(iq)",
+  "actual_cost": {
+    "real_parent_forward_packets": 2,
+    "synthetic_ordinary_forward_packets": 256,
+    "total_forward_packets": 258,
+    "optimizer_updates": 0,
+    "real_IQ": 0,
+    "propagation_bank_simulations": 0,
+    "worker_rows": 0
+  },
+  "poststate": {
+    "files": [
+      "dispatcher.json",
+      "failure.json"
+    ],
+    "workers_started": false,
+    "bank_exists": false,
+    "smoke_completion_exists": false,
+    "checkpoint_outputs": 0
+  },
+  "artifacts_preserved": true,
+  "scientific_recipe_changed": false,
+  "recovery": "TARGETED_FIX_PENDING_R02,no automatic retry"
+}

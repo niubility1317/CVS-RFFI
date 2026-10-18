@@ -29,5 +29,15 @@
     "extra_CE_logit_packets": 512
   },
   "remote_preflight": "PENDING",
-  "independent_P0_P1": "PASS"
+  "independent_P0_P1": "PASS",
+  "technical_recovery_r02": {
+    "status": "PASS",
+    "targeted_negative_cases": 14,
+    "float32_bridge_bitwise": "PASS_including_noncontiguous_negativezero_tiny",
+    "Python_AST_files": 21,
+    "emitted_AST_scripts": 2,
+    "actual_launcher_smoke": "PENDING fresh770NN",
+    "R01_failed_NN": 258,
+    "scientific_changes": false
+  }
 }

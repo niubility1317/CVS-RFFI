@@ -10,6 +10,7 @@ from .protocol import check_checkpoint,check_source_metadata
 from .schema import CONCAT_FIELDS,BANK_FIELDS
 from .bank import Sampler,FIELDS
 from .losses import weighted_terms
+from .channel import tensor_iq
 from experiments.cvs_noise_shape_factorial43 import model as original,noise
 from experiments.cvs_crossview_supcon41 import model as p41
 capture_forward=p41.capture_forward;terms=p41.terms;relations=p41.relations;supcon=p41.supcon
@@ -28,8 +29,8 @@ def base_hook(self,*,model,labeled_output,labels,extra,domains,optimizer_step,id
  first_maps=pending['first'] if weight else {};supcon.clear(self)
  second,second_maps=capture_forward(self,ordinary,domains,weight>0);common,ce,kl,_,_=terms(first,second,labels,1.)
  raw=labeled_inputs.detach();view=ordinary.clone();smask=(torch.arange(128,device=labels.device)+step).remainder(2)!=0
- iq,bmeta,bank=self._full_channel.draw(epoch,step);copy_start=time.perf_counter();satellite=torch.from_numpy(iq).to(device=raw.device,dtype=raw.dtype);bank_y=torch.as_tensor(bmeta['TX'],device=labels.device,dtype=torch.long);bank_domains=torch.as_tensor(bmeta['domain'],device=domains.device,dtype=torch.long)
- if satellite.shape!=(64,2,256) or bank_y.shape!=(64,) or not torch.isfinite(satellite).all() or not bool(((bank_y>=0)&(bank_y<6)).all()) or not bool(((bank_domains>=0)&(bank_domains<15)).all()) or not torch.equal(torch.tensor(supcon.RX_BY_DOMAIN,device=domains.device)[bank_domains],torch.as_tensor(bmeta['RX'],device=domains.device)):raise ValueError('Bank IQ/own true labels/RXdomain metadata must match')
+ iq,bmeta,bank=self._full_channel.draw(epoch,step);copy_start=time.perf_counter();satellite=tensor_iq(iq,raw.device).to(dtype=raw.dtype);bank_y=torch.tensor(bmeta['TX'].tolist(),device=labels.device,dtype=torch.long);bank_domains=torch.tensor(bmeta['domain'].tolist(),device=domains.device,dtype=torch.long)
+ if satellite.shape!=(64,2,256) or bank_y.shape!=(64,) or not torch.isfinite(satellite).all() or not bool(((bank_y>=0)&(bank_y<6)).all()) or not bool(((bank_domains>=0)&(bank_domains<15)).all()) or not torch.equal(torch.tensor(supcon.RX_BY_DOMAIN,device=domains.device)[bank_domains],torch.tensor(bmeta['RX'].tolist(),device=domains.device,dtype=torch.long)):raise ValueError('Bank IQ/own true labels/RXdomain metadata must match')
  mixed_y=labels.clone();mixed_y[smask]=bank_y;mixed_domains=domains.clone();mixed_domains[smask]=bank_domains;view[smask]=satellite;weights=torch.ones(128,device=labels.device,dtype=first.dtype);weights[smask]=torch.as_tensor(bank['weights'],device=labels.device,dtype=first.dtype);bank['cache_transfer_cpu_wall_seconds']=time.perf_counter()-copy_start
  for y,r,s,t,l in zip(bmeta['TX'],bmeta['RX'],bmeta['scene'],bmeta['state'],bmeta['lock']):self._full_coverage[(int(y),int(r),str(s),str(t),str(l))]+=1
  z0,sat0=capture_forward(self,view,mixed_domains,weight>0);z1,sat1=capture_forward(self,view,mixed_domains,weight>0);extra_loss,extra_ce,extra_kl,per,loss_seconds=weighted_terms(z0,z1,mixed_y,weights)

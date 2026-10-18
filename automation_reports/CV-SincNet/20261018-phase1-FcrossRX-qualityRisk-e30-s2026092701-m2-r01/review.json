@@ -27,5 +27,13 @@
     "IQ": 0,
     "NN": 0,
     "updates": 0
+  },
+  "targeted_technical_fix_review": {
+    "status": "PASS",
+    "scope": "OnlyR01numpyinteropandboundedR02recovery",
+    "unchanged_full_review_repeated": false,
+    "findings_unresolved": 0,
+    "fresh_smoke_NN": 770,
+    "failed_R01_NN": 258
   }
 }
