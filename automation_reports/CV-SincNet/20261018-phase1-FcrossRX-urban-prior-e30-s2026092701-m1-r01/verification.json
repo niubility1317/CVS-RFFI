@@ -1,0 +1,23 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "new_training_epochs": 0,
+  "real_NN": 0,
+  "remote_mutations": 0,
+  "code_commit_pending": true,
+  "local_checks": {
+    "status": "PASS",
+    "directed_cases": 9,
+    "wall_seconds": 2.911,
+    "NN": 768,
+    "source_IQ": 0,
+    "checkpoint_reads": 0,
+    "optimizer_updates": 0,
+    "scope": "sampler oldequal parity,2000namedstreams/boundary buckets,weights/support/state/no-filter,actual6LsameIQ/defaulthead/Sinc,strictparent/newfinal/sourceFAILstillall7"
+  },
+  "local_compile": "PASS_13_FILES",
+  "review": "PASS_ONE_INDEPENDENT_P0P1",
+  "independent_review_cases": 9,
+  "independent_review_wall_seconds": 2.894,
+  "local_synthetic_NN_total": 1536,
+  "local_synthetic_NN_note": "worker768+independentreviewer768;no actualdata/CP/updates"
+}

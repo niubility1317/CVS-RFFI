@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "candidate": "P59 constant urban scene prior tail",
+  "run_id": "20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01",
+  "reviewer": "/root/source_state56_p0p1",
+  "review_kind": "one independent limited P0/P1",
+  "reviewed_at_utc": "2026-10-18T05:50:06.085Z",
+  "scope": "New experiments/cvs_urban_prior59 package; existing modules inspected only for consumed interfaces. Defects limited to wrong, unauthorized, destructive, unlaunchable next run or invalid legal predictions.",
+  "findings": [],
+  "P0": 0,
+  "P1": 0,
+  "checked": [
+    "Exact P43 B01 scratchAs20 parent config/run/row, 20 epochs/4440 updates, own EMA and source physical roles remain validated through original parent reader.",
+    "New10 cumulative E30/6660 clock, reset optimizer/cos10, original six L forwards/RDrop/SupCon/raw clean and original U preserved.",
+    "Only full-physics scene probabilities change to 0.2/0.4/0.4; equal-prior parity and private RNG verified; no state/lock rejection.",
+    "New package final reader uses own run/row and source contract; inherited qualification/evaluate import this new design and final reader.",
+    "Source decision uses full V27000 clean versus original NoAs30 and fixed V1800 mid/low versus original As30 before formal exec; source failure cannot skip all7.",
+    "Immutable new output and one row owner; total GPU cap includes other owners; prediction and independent scoring use separate exec with all7 verified before truth."
+  ],
+  "verification": {
+    "command": "E:/type10-7/local_envs/ssr-gpu/python.exe -X utf8 experiments/cvs_urban_prior59/checks.py --dependencies E:/type10-7/code/worktrees/cvs_iq_timing_20261016",
+    "cwd": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "status": "PASS",
+    "tests": 9,
+    "elapsed_test_seconds": 2.894,
+    "real_IQ": 0,
+    "checkpoint_reads": 0,
+    "target_access": false,
+    "optimizer_updates": 0,
+    "note": "Existing Torch/NumPy bridge initialization warning appeared; candidate uses the tested list/frombuffer bridge and all nine checks passed."
+  },
+  "source_edits": 0,
+  "remote_access": false,
+  "real_data_access": false,
+  "launch_performed": false,
+  "unchanged_module_broad_rereview": false
+}

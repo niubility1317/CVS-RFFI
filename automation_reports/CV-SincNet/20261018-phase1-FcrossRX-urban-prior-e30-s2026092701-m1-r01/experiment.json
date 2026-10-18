@@ -1,0 +1,235 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01",
+  "group_id": "phase1-FcrossRX-fixed-fullAs-urban-scene-prior",
+  "display_name": "完整 practical：固定 urban 场景重点分配 E30",
+  "description": "仅将E21..30三场景分配从1/3均匀改为.2/.4/.4；保留完整信道、全部状态、6L前向及clean槽位；同AS20父模型对照原AS30/NOAS30。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "P59 urban prior",
+    "full As bounded nominal scene mixture"
+  ],
+  "tags": [
+    "FcrossRX",
+    "all5RX",
+    "E30",
+    "full-practical",
+    "scene-prior",
+    "6L",
+    "default-head"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "最新用户授权在正常E30内研究完整practical及训练组织、匹配对照、自动clean+六practical；全部源RX，无新结构/头/数据权限；好配方总E50仅后续源证据支持后另登记，本run不扩。",
+  "code": {
+    "commit": "b7d41a4dac3b9da8a1edf2928cbe0383c7c6b7de",
+    "checkout": "codex/phase1-urban-sigtime-20261014",
+    "environment": "N607 ordinary CVS-RFFI Python3.10/Torch existing environment;CPU2 perworker;fullFP32/CENTER_UNITS unchanged",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_urban_prior_E30_20261018_r01",
+    "identity_status": "PLANNED_NEXT_ACTUAL_CODE_COMMIT_RECORDED_BEFORE_LAUNCH"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Unchanged original7/63/30 source physical roles; existing VALIDATED_ONCE fixed formal IQ",
+    "representation": "equalized1/native perpacketRMS center=false;float32 Bx2x256/fs25MHz;full residual/post_sync/EQoffG1/ref30/reflect;As fromraw,no extra ordinary PA/noise beforeAs;trainingfc2.462GHz/fixedformal2.45GHz unchanged",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "Same original6TX map;no new or U truth",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      "fixedmanifest7unseenRX;nevertrain"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original6registeredTX;formalmanifest classmappingunchanged",
+    "roles": {
+      "L_s": 6300,
+      "U_s_hidden": 56700,
+      "V": 27000
+    },
+    "train_ratio": "7/63/30 wholepool;10% labeled trainingpool;noheldRX/Ldev",
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "ExistingPhase1 source handles and fixedformalmanifest;Phase2 p2capsule/splitN/A",
+    "support_query_ref": "Phase1,no support;source/target disjoint fixedformalmanifest",
+    "leo_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/manifest.json"
+  },
+  "permissions": {
+    "regime": "source_only_training_then_frozen_target_prediction",
+    "query_use": "Frozen defaulthead all7 fixed received IQ predictions;truthlast independent perrow only afterall7complete;formal scores never candidate/seed/parameter/promotion feedback",
+    "external_method_exception": null,
+    "claim_scope": "One fixed modelseed;fullAs scene allocation only;source state association not physicalcausality;no newAg proof or repeatable double-gain claim fromone seed"
+  },
+  "checkpoint": {
+    "initialization": "StrictP43B01 own scratchAs20 student+ownEMA;resetAdamW/cos10/temporalcache;newE10 cumulativeE30,never loadFINAL30/50 for training",
+    "sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
+    ],
+    "contract_check_ref": "OriginalP43 source.parent_payload on original B01config30 beforeload:role_ids exact,L6300/U56700hidden/V27000,all5RX/3day,scratch/noancestors/notarget,ownrunrow/E20/4440/final_only/EMA;newrun ownfinalreader",
+    "provenance_verdict": "EXISTING_COMPLETE_P43_SOURCE_AUDIT_COMPATIBLE;live artifact existence and realCP noquerysmoke pending;no fallback if absent",
+    "selection_rule": "ParentB01 andoriginalfixedseed chosenbeforetraining fromsource As reference,not bestformalrow;fixedFINAL10 cumulative30,sourceV nocheckpoint ranking;source decision stored beforeformal"
+  },
+  "execution": {
+    "host": "N607 ordinary nonprivileged account",
+    "launch_owner": "codex/root/urban-prior59",
+    "gpu_policy": "One trainingworker chosen by live dispatcher capacity;max2 totalGPU PIDs counting otherowners,free>=12000MB;never stop unrelatedwork",
+    "remote_run_root": "PROJECT/runs/20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01",
+    "remote_log_root": "PROJECT/runs/20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01/logs",
+    "local_artifact_root": "local_artifacts/cvs_FcrossRX_urban_prior_E30_20261018_r01",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_urban_prior59/runner.py",
+    "stop_rule": "Wrongroles/provenance/parent/runtime/shape/nonfinite/outputcollision/budget ortechnicalfailure:preserve ownoutputs andstop ownrunonly;no automaticretry/targetselection/healthyprocessmutation;scientific negative completesfixedall7 andclosesextension",
+    "status": "LOCAL_VERIFIED_REVIEW_RUNNING"
+  },
+  "expected_artifacts": [
+    "real_checkpoint_smoke.json",
+    "synthetic_smoke.json",
+    "ROW/source/resolved_config.json",
+    "ROW/source/actual_modules.json",
+    "ROW/source/actual_channel.json",
+    "ROW/source/source_contract.json",
+    "ROW/source/initialization.json",
+    "ROW/source/EMA_initialization.json",
+    "ROW/source/optimizer_initialization.json",
+    "ROW/source/step_metrics.jsonl.gz",
+    "ROW/source/training_sequence.jsonl.gz",
+    "ROW/source/epoch_metrics.jsonl",
+    "ROW/source/completion.json",
+    "ROW/source/source_frozen.json",
+    "ROW/source_qualification/predictions.npz",
+    "ROW/source_qualification/complete.json",
+    "source_decision.json",
+    "ROW/prediction/all7fixed predictions andcompletion",
+    "ROW/scoring/scores.json",
+    "ROW/scoring/complete.json",
+    "complete.json",
+    "same-row fulltrainingcurves/coverage/state/source-formalmetrics/pairedrepairs/costs/negativeandmissing"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macroF1",
+      "worstRX",
+      "cleanpaired_delta_pp",
+      "lowurban",
+      "midurban",
+      "urban3mean",
+      "all6practical",
+      "suburban_clean_gap",
+      "sameIDrepairs/newerrors",
+      "fixedNoAs30clean_correct_retention",
+      "default_head_margin_div_fixed30",
+      "actualscene/state/lock/TX/RX/daycoverage",
+      "student/teacherNN",
+      "epochs/updates/wall",
+      "completeepochandstepcurves"
+    ],
+    "dimensions": [
+      "ownnewrow",
+      "reusedNOAS30/AS30",
+      "fixedseed2026092701",
+      "all7formalviews",
+      "source1800x2draws",
+      "RX",
+      "TX",
+      "day",
+      "sourcefullstate/lock/quality"
+    ],
+    "prediction_ref": "PROJECT/runs/20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01/URBAN-s2026092701/prediction;reusedoriginalB00/B01 fixedformalpredictions unchanged",
+    "scorer_ref": "runner separate exec mode score,loaded unchanged P43 evaluate source under new candidate namespace;all7predictionpreflight beforetruth"
+  },
+  "rows": [
+    {
+      "row_id": "URBAN-s2026092701",
+      "method": "F+CROSSRX current6Lfullcleanretain/originalU;P43AS20+new10 with boundedsceneprior (.2,.4,.4),nonewloss/filter/head",
+      "purpose": "single-seed-simple-training-organization",
+      "config_ref": "experiments/cvs_urban_prior59/design.py#config",
+      "resolved_config_ref": "PROJECT/runs/20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01/URBAN-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "held_source_RX": null,
+        "L": 6300,
+        "U_hidden": 56700,
+        "V": 27000,
+        "new_Ag": false,
+        "all5sourceRX": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 202610185301,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "SameP43originalmodel/split/data/ordinarynamedstreams. OriginalAgseed202610185301 inherited butAgNONE no newAg. Original As namedscene stream couplesoldcategoricalbucketwithprivate withinbucketU;physicseed remainsconditioned onchosen scene/physicalID/epoch/step. Hardwaresession byRX/day/eq notTX. FormalIQfixed no newevalseed;sourcefixed2draws reused,no modelseed inflation.",
+      "k": null,
+      "scenario": "E21..30:low_suburban.2/mid_urban.4/low_urban.4;allstatesnominal within scenes. Fixedformalclean+all6practical unchanged.",
+      "optimizer": {
+        "name": "AdamW",
+        "state": "reset afterstrictstudentEMA parentload",
+        "lr_schedule": "cosine10 original",
+        "teacher": "ownEMA initializedexactfromP43AS20;originalupdatesonly",
+        "temporal_cache": "reset"
+      },
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "New10E/2220updates/1704960LNN/142080generatedAs;reuseparent20E/4440updates/3409920LNN/284160As;total30/6660. ExpectednewUstudent/teacher567000each;sourcequalification12600 andformal7x168000+2samplefrontests countedseparately. Actualnativeeval/smoke/wall logged,notpreclaimed.",
+      "output_root": "PROJECT/runs/20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01/URBAN-s2026092701",
+      "log_path": "PROJECT/runs/20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01/logs/URBAN-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_urban_prior59/runner.py",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "synthetic_smoke.json",
+        "ROW/source/resolved_config.json",
+        "ROW/source/actual_modules.json",
+        "ROW/source/actual_channel.json",
+        "ROW/source/source_contract.json",
+        "ROW/source/initialization.json",
+        "ROW/source/EMA_initialization.json",
+        "ROW/source/optimizer_initialization.json",
+        "ROW/source/step_metrics.jsonl.gz",
+        "ROW/source/training_sequence.jsonl.gz",
+        "ROW/source/epoch_metrics.jsonl",
+        "ROW/source/completion.json",
+        "ROW/source/source_frozen.json",
+        "ROW/source_qualification/predictions.npz",
+        "ROW/source_qualification/complete.json",
+        "source_decision.json",
+        "ROW/prediction/all7fixed predictions andcompletion",
+        "ROW/scoring/scores.json",
+        "ROW/scoring/complete.json",
+        "complete.json",
+        "same-row fulltrainingcurves/coverage/state/source-formalmetrics/pairedrepairs/costs/negativeandmissing"
+      ]
+    }
+  ],
+  "notes": [
+    "Only new training row; matched originalP43B00/B01 cumulative30 defaulthead outputs/source/logs reused,not retrained/rescored. Samebudget/data/seed/NN,scientific mechanismcomparedmainlytooriginalAs30,overallcosttoNoAs30.",
+    "Priorp=(1-.4)*(1/3,1/3,1/3)+.4*(0,.5,.5)=(.2,.4,.4);within-scenephysicaljointlaw unchanged. Thisisfixedsceneprior,noadaptiveeta/qualitylockfilter/rejection/proposal/curriculum/loss. AllAslabeledCE andoriginalsameIQ-RDrop remain.",
+    "SourceP58 supportsrecoverabilityinBLOCKED/unlocked aswellasdegraded. OldheldRX6recoverablecourse excludedunlockedandused4L;negativeclosedunchanged. Newfixedallstatepriorisnotrescanningeta/quality/proposals orchangingtestphysics.",
+    "PlainlateAsalreadyfullsource4Lnegative (shadowLHS AS_NATIVE sourceclean-.4444pp);notrepeated. SceneCycle heldRX1/8Lchangedsix-sceneorderuniformmarginal;notthis3sceneprior.",
+    "Beforeformalstore source-onlyscientificextensiondecision: nativefullVfinalclean >= reusedNoAs30 nativefullVclean-.1absolutepp; sourceV1800pooledmidlowmean >= reusedAs30+.5pp andlow>=reusedAs30. FAILstillcompletesfrozenall7single-rowformalclosure,noextension. Thesearelimitedsourceperformancechecks,noreplacementforformal0.1ppstagecriterion.",
+    "Formalstage:matchedclean>=NoAs30-.1pp;report all7andurbanlow/midmean/F1/worstRX/repairs. Finaljointgoalneedsreproduciblepositivecleanandpractical,low>60;neitherpresumed. Noformalfeedback intohyperparameters,seed/promotionorretry.",
+    "Actual codecommit,command/environmentpaths/GPU andartifactnames finalizedonceimplementation andoneP0P1/focusedtests complete;noextraapproval orpublicationgate."
+  ],
+  "registered_at": "2026-10-18T05:41:28+00:00"
+}
