@@ -1,0 +1,57 @@
+{
+  "status": "VERIFIED_FIRST_REAL_EPOCH",
+  "code_commit": "668a3f8bf39c9b1eaf4d4f0f76df40b3cc0f4fe0",
+  "model_seed_count": 1,
+  "total_student_epochs": 30,
+  "completed_local_epochs": 1,
+  "cumulative_epochs": 21,
+  "updates_each": 222,
+  "cumulative_updates_each": 4662,
+  "rows": [
+    {
+      "arm": "MASS_UNIFORM",
+      "steps": 222,
+      "packets": 28412,
+      "q_mass": 17452.132413801097,
+      "mass_match": {
+        "q_teacher_mass_sum": 22446.98180794716,
+        "observation_weighted_mass_sum": 17452.132440176312,
+        "mass_uniform_mass_sum": 17452.132413801097,
+        "difference_sum": 0.000026375215384177864,
+        "max_absolute_difference": 0.0000033192336559295654,
+        "uniform_multiplier_step_mean": 0.7775113350463541
+      },
+      "KL_step_mean": 0.39813518349651816,
+      "weighted_KL_step_mean": 0.012740326437025188,
+      "extra_student_NN": 28412,
+      "extra_frozen_teacher_NN": 28412,
+      "log_bytes": 46506,
+      "log_growth_since_initial_postcheck": 5172
+    },
+    {
+      "arm": "OBSERVATION_WEIGHTED",
+      "steps": 222,
+      "packets": 28412,
+      "q_mass": 17452.132440176312,
+      "mass_match": {
+        "q_teacher_mass_sum": 22446.98180794716,
+        "observation_weighted_mass_sum": 17452.132440176312,
+        "mass_uniform_mass_sum": 17452.132413801097,
+        "difference_sum": 0.000026375215384177864,
+        "max_absolute_difference": 0.0000033192336559295654,
+        "uniform_multiplier_step_mean": 0.7775113350463541
+      },
+      "KL_step_mean": 0.25406994999529003,
+      "weighted_KL_step_mean": 0.008130238789997928,
+      "extra_student_NN": 28412,
+      "extra_frozen_teacher_NN": 28412,
+      "log_bytes": 46618,
+      "log_growth_since_initial_postcheck": 5188
+    }
+  ],
+  "same_frozen_teacher_confidence_mass": true,
+  "all_original_L_As_CE_retained": true,
+  "native_U_masks_unchanged": true,
+  "formal_results_available": false,
+  "technical_failure": false
+}

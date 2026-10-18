@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_PROCESSES_REALCP_SMOKE_PASS",
+  "status": "VERIFIED_PID_CWD_CMDLINE_GPU_AND_FIRST_EPOCH_LOG_GROWTH",
   "code_commit": "668a3f8bf39c9b1eaf4d4f0f76df40b3cc0f4fe0",
   "dispatcher": {
     "pid": 1419113,
@@ -36,7 +36,7 @@
     "OBSERVATION_WEIGHTED-s2026092701.log": 41430
   },
   "three_second_log_delta_zero": true,
-  "first_epoch_growth_verification_pending": true,
+  "first_epoch_growth_verification_pending": false,
   "real_checkpoint_smoke": {
     "status": "PASS",
     "NN": 4,
@@ -53,5 +53,10 @@
     "pending": [],
     "failures": []
   },
-  "no_other_process_mutation": true
+  "no_other_process_mutation": true,
+  "first_epoch_evidence": "first_epoch_verification.json",
+  "first_epoch_log_growth_bytes": {
+    "MASS_UNIFORM": 5172,
+    "OBSERVATION_WEIGHTED": 5188
+  }
 }

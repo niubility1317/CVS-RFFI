@@ -87,11 +87,18 @@
     "source_IQ": 0,
     "updates": 0
   },
-  "actual_run_status": "RUNNING_FIRST_EPOCH_PENDING",
+  "actual_run_status": "RUNNING_FIRST_REAL_EPOCH_VERIFIED",
   "local_tool_recovery": {
     "persistent_kernel_OOM_before_launch": true,
     "new_process_reconciled": true,
     "repeated_NN_or_CP": false,
     "unrelated_files_preserved": true
+  },
+  "first_epoch": {
+    "status": "PASS",
+    "updates_each": 222,
+    "log_growth": true,
+    "positive_extra_KL": true,
+    "max_per_step_q_mass_difference": 0.0000033192336559295654
   }
 }
