@@ -85,4 +85,12 @@ IB-RFF 初次检查因缺少 timm 而失败；本次只在任务目录补充隔�
 
 原始只读回收证据与合成检查产物保留在 `local_artifacts/rffi_dg_research_20261019/`，包括 `existing_remote_evidence.json` 和 `synthetic_smoke*.json`；数据、权重和原始日志不进入 Git。下载的源码位于该目录的 `upstream/IB-RFF` 与 `upstream/TFMix`。
 
-本次没有启动新的真实 WiSig 训练或目标评分，未改变旧训练或旧预测。整体目标尚未完成；已完成的是候选筛选、代码可运行性检查和历史证据核查。后续可先做 IB-RFF 作者代码复现，同时核准论文预算与验收表；TFMix 不按其 1 轮默认值发布“论文复现”。真实训练仍须按既有最小流程登记、适配、启动和评分。
+初次筛选阶段没有启动真实训练；后续已完成下述IB-RFF首行。整体目标尚未完成，TFMix不按其1轮默认值发布“论文复现”，旧训练和旧预测保持。
+
+## 5 IB-RFF 首行真实复现进展
+
+[r02 实验报告](../automation_reports/CV-SincNet/20261019-phase1-ibrff-author-manysig-s2023-r02/report.md)：ManySig clean CRD、round0、model seed2023、3个未见RX的day3/4、3600条query，原分类头，两阶段实际45+59轮。冻结预测后独立truth-last评分，准确率95.2778%、Macro-F1 95.3074%；本地对冻结prediction重新计算，结果与远端一致，状态VERIFIED。
+
+作者本行公开日志参照为95.89%，差值−0.6122个百分点，达到首次目标预测前固定的94.89%下限。该结果支持“本行接近作者代码日志”，不支持“完整论文效果已复现”：尚缺其余3折、完整论文表核准和第二篇方法的真实复现。数据是原作者全监督源70/30，不能作为CVS弱标注或卫星场景指标。
+
+r01在首个source smoke因NumPy2导出模块名与作者NumPy1.24不兼容而失败，未正式训练或访问target。旧产物保留，r02只修复反序列化模块名；本地同一源块6TX数组逐值一致回归及定点复审通过。代码与配置commit为`aaebd70187598165c7d937bfdf7de575a2723c1c`。
