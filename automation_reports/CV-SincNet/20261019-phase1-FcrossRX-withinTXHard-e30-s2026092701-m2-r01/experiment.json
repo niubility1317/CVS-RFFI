@@ -111,7 +111,7 @@
     "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261019-phase1-FcrossRX-withinTXHard-e30-s2026092701-m2-r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_as_hardrisk30/runner.py",
     "stop_rule": "Only own systemic protocol/role/parent/head/nonfinite/output/prediction technicalfailure;preserve/reconcile. Scientificnegative finishesall7,no automaticrestart. Never touchhealthyotherjobs.",
-    "status": "RUNNING"
+    "status": "ANALYZED"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
@@ -241,11 +241,35 @@
     "OriginalP43NoAs30/As30both fixedFINAL30 alreadyall7scored reused,0retraining/repred/scoring;matching6L/raw/oldU/data/seed/cost",
     "As-onlylabelSmoothing05,hardLCE,CEtemperature,probmeanCE,and quality-conditionedtargetentropy are distinct closedobjectives;this changes only weight association withinTX",
     "One modelseed only;source2draw notmodelseeds;formalfeedback forbidden",
-    "REJECTED_EXTRA_GATE: generic brainstorm designapproval/spec rituals conflict withcurrentuser authorization andexclusive minimalworkflow;single reportcontainsdesign;proceed authorized boundedhookchange"
+    "REJECTED_EXTRA_GATE: generic brainstorm designapproval/spec rituals conflict withcurrentuser authorization andexclusive minimalworkflow;single reportcontainsdesign;proceed authorized boundedhookchange",
+    "ANALYZED:sourceFAIL observed/saved beforeformal,noE50/gamma/topfraction/seedrescue;formalstagecleanPASS +.055952pp vsNoAs,mechanismclean-.0375/mid+.277976/low+.336310/urban+.259722pp vsAs. Singlemodelseednotrepeatablegain."
   ],
   "comparators": [
     "OriginalP43 B00/NoAs30",
     "OriginalP43 B01/As30"
   ],
-  "registered_at": "2026-10-18T23:29:33+00:00"
+  "registered_at": "2026-10-18T23:29:33+00:00",
+  "actual_results": {
+    "model_seed_count": 1,
+    "all7_complete": true,
+    "technical_missing": [],
+    "source_qualified": false,
+    "fixed_recipe_closed": true,
+    "E50_extension": false,
+    "stage_clean_0p1pp": true,
+    "clean_vs_NoAs_pp": 0.055952380952380955,
+    "clean_vs_originalAs_pp": -0.0375,
+    "low_vs_originalAs_pp": 0.33630952380952384,
+    "mid_vs_originalAs_pp": 0.2779761904761905,
+    "urbanmean_vs_originalAs_pp": 0.2597222222222251,
+    "low_accuracy": 0.5158035714285715,
+    "repeatable_dual_gain_proven": false,
+    "new_model_epochs": 20,
+    "new_updates": 4440,
+    "new_total_NN": 8704668,
+    "analysis_ref": "final_analysis.md",
+    "results_ref": "results_summary.json",
+    "source_decision_ref": "source_decision.json",
+    "goal_complete": false
+  }
 }

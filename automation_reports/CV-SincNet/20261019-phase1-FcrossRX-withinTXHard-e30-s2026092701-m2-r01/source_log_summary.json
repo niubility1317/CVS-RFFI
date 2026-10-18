@@ -1,0 +1,2504 @@
+{
+  "status": "SOURCE_LOGS_COMPLETE",
+  "rows": {
+    "H01": {
+      "stream_records": {
+        "reference_steps": 2220,
+        "shape_steps": 2220,
+        "unit_steps": 2220,
+        "hardrisk_steps": 2220,
+        "step_metrics": 2220
+      },
+      "epoch_records": 10,
+      "observational_checks": {
+        "ordered_step": {
+          "match": 2220
+        },
+        "mode": {
+          "match": 2220
+        },
+        "64_As_all_supervised": {
+          "match": 2220
+        },
+        "weight_bounds": {
+          "match": 2220
+        },
+        "total_weight64": {
+          "match": 2220
+        },
+        "perTX_mass": {
+          "match": 2220
+        },
+        "CEonly": {
+          "match": 2220
+        },
+        "no_new_NN_VJP": {
+          "match": 2220
+        },
+        "same_IQ": {
+          "match": 2220
+        },
+        "rank_detached": {
+          "match": 2220
+        },
+        "ordinary_KL_unchanged": {
+          "match": 2220
+        },
+        "sixL_ORD128": {
+          "match": 2220
+        },
+        "U_truth_hidden": {
+          "match": 2220
+        },
+        "EMA_successful_counter": {
+          "match": 2220
+        },
+        "finite_native_total": {
+          "match": 2220
+        },
+        "native_gradient_surgery_off": {
+          "match": 2220
+        }
+      },
+      "roles": {
+        "L": {
+          "batches": 2220,
+          "physical_packets": 284160,
+          "batch_histogram": {
+            "128": 2220
+          }
+        },
+        "U": {
+          "batches": 2220,
+          "physical_packets": 567000,
+          "batch_histogram": {
+            "124": 10,
+            "256": 2210
+          }
+        }
+      },
+      "cost": {
+        "optimizer_steps": 2220,
+        "L_NN": 1704960,
+        "L_As": 142080,
+        "U_steps": 2220,
+        "U_packets": 567000,
+        "U_student_NN": 567000,
+        "student_train_NN": 2271960,
+        "student_eval_NN": 324002,
+        "teacher_train_NN": 0,
+        "teacher_eval_NN": 567000,
+        "wall_seconds": 1181.1358201503754,
+        "EMA_local_successful_updates": 2220,
+        "EMA_cumulative_updates": 6660
+      },
+      "risk_compute": {
+        "mode": "HARD",
+        "gamma": 0.25,
+        "top_fraction": 0.5,
+        "extra_NN": 0,
+        "extra_VJP": 0,
+        "extra_CE_operator_calls": 4440,
+        "extra_CE_logit_packets": 284160,
+        "CE_operator_cpu_wall_seconds": 6.919435370480642,
+        "scalarization_cpu_wall_seconds": 0.6071770675480366,
+        "class_mass_preserved": true,
+        "all64_supervised": true,
+        "KL_unchanged": true
+      },
+      "epochs": [
+        {
+          "local_epoch": 1,
+          "cumulative_epoch": 21,
+          "steps": 222,
+          "native": {
+            "train/loss": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.6569541653802803,
+              "min": 0.3844284117221832,
+              "max": 1.8446004390716553,
+              "sum": 145.84382471442223
+            },
+            "train/loss_labeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.2577331850791837,
+              "min": 0.08709517866373062,
+              "max": 1.7019214630126953,
+              "sum": 57.21676708757877
+            },
+            "train/loss_unlabeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.014994952663982986,
+              "min": 0,
+              "max": 0.20605520904064178,
+              "sum": 3.328879491404223
+            },
+            "train/loss_entropy": {
+              "count": 0,
+              "nonfinite_or_missing": 222,
+              "mean": null,
+              "min": null,
+              "max": null,
+              "sum": 0
+            },
+            "train/pseudo_selected": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 3.891891891891892,
+              "min": 0,
+              "max": 13,
+              "sum": 864
+            },
+            "train/pseudo_total": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 255.40540540540542,
+              "min": 124,
+              "max": 256,
+              "sum": 56700
+            }
+          },
+          "risk": {
+            "selected_CE_old": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7600305624104835,
+              "min": 0.47929778695106506,
+              "max": 1.0587239265441895,
+              "sum": 168.72678485512733
+            },
+            "selected_CE_new": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.8939107998802855,
+              "min": 0.5672447383403778,
+              "max": 1.2445314526557922,
+              "sum": 198.44819757342339
+            },
+            "loss_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.03347006044140807,
+              "min": 0.020910251885652542,
+              "max": 0.047677017748355865,
+              "sum": 7.430353417992592
+            },
+            "mixed_CE_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.06694012088281615,
+              "min": 0.041820503771305084,
+              "max": 0.09535403549671173,
+              "sum": 14.860706835985184
+            },
+            "weight_min": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.75,
+              "min": 0.75,
+              "max": 0.75,
+              "sum": 166.5
+            },
+            "weight_max": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 1.2482772952801473,
+              "min": 1.2142857313156128,
+              "max": 1.25,
+              "sum": 277.1175595521927
+            },
+            "weight_sum": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 63.99999998281668,
+              "min": 63.999996185302734,
+              "max": 64.00000762939453,
+              "sum": 14207.999996185303
+            }
+          }
+        },
+        {
+          "local_epoch": 2,
+          "cumulative_epoch": 22,
+          "steps": 222,
+          "native": {
+            "train/loss": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.6703520560855264,
+              "min": 0.3798830211162567,
+              "max": 1.6963615417480469,
+              "sum": 148.81815645098686
+            },
+            "train/loss_labeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.2842312033648963,
+              "min": 0.0843123346567154,
+              "max": 1.6296606063842773,
+              "sum": 63.09932714700699
+            },
+            "train/loss_unlabeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.013711100102948688,
+              "min": 0,
+              "max": 0.16993367671966553,
+              "sum": 3.0438642228546087
+            },
+            "train/loss_entropy": {
+              "count": 0,
+              "nonfinite_or_missing": 222,
+              "mean": null,
+              "min": null,
+              "max": null,
+              "sum": 0
+            },
+            "train/pseudo_selected": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 3.9144144144144146,
+              "min": 0,
+              "max": 10,
+              "sum": 869
+            },
+            "train/pseudo_total": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 255.40540540540542,
+              "min": 124,
+              "max": 256,
+              "sum": 56700
+            }
+          },
+          "risk": {
+            "selected_CE_old": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7424848534770914,
+              "min": 0.41819289326667786,
+              "max": 1.0695680379867554,
+              "sum": 164.8316374719143
+            },
+            "selected_CE_new": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.8740947352604823,
+              "min": 0.49568209052085876,
+              "max": 1.2625014185905457,
+              "sum": 194.04903122782707
+            },
+            "loss_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.03290247103316827,
+              "min": 0.019372297450900078,
+              "max": 0.048233337700366974,
+              "sum": 7.304348569363356
+            },
+            "mixed_CE_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.06580494206633654,
+              "min": 0.038744594901800156,
+              "max": 0.09646667540073395,
+              "sum": 14.608697138726711
+            },
+            "weight_min": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.75,
+              "min": 0.75,
+              "max": 0.75,
+              "sum": 166.5
+            },
+            "weight_max": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 1.2494481087804914,
+              "min": 1.2142857313156128,
+              "max": 1.25,
+              "sum": 277.3774801492691
+            },
+            "weight_sum": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 63.99999982816679,
+              "min": 63.999996185302734,
+              "max": 64.00000762939453,
+              "sum": 14207.999961853027
+            }
+          }
+        },
+        {
+          "local_epoch": 3,
+          "cumulative_epoch": 23,
+          "steps": 222,
+          "native": {
+            "train/loss": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.6484287868480425,
+              "min": 0.4013688564300537,
+              "max": 1.8288763761520386,
+              "sum": 143.95119068026543
+            },
+            "train/loss_labeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.2707608655967691,
+              "min": 0.09166431427001953,
+              "max": 1.6357576847076416,
+              "sum": 60.10891216248274
+            },
+            "train/loss_unlabeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.010909638905883054,
+              "min": 0,
+              "max": 0.103840172290802,
+              "sum": 2.421939837106038
+            },
+            "train/loss_entropy": {
+              "count": 0,
+              "nonfinite_or_missing": 222,
+              "mean": null,
+              "min": null,
+              "max": null,
+              "sum": 0
+            },
+            "train/pseudo_selected": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 4.292792792792793,
+              "min": 0,
+              "max": 16,
+              "sum": 953
+            },
+            "train/pseudo_total": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 255.40540540540542,
+              "min": 124,
+              "max": 256,
+              "sum": 56700
+            }
+          },
+          "risk": {
+            "selected_CE_old": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7471595973716126,
+              "min": 0.47625932097435,
+              "max": 1.0311273336410522,
+              "sum": 165.869430616498
+            },
+            "selected_CE_new": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.8786575343157794,
+              "min": 0.5633395910263062,
+              "max": 1.192035734653473,
+              "sum": 195.06197261810303
+            },
+            "loss_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.0328744838584785,
+              "min": 0.020878653973340988,
+              "max": 0.046615760773420334,
+              "sum": 7.298135416582227
+            },
+            "mixed_CE_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.065748967716957,
+              "min": 0.041757307946681976,
+              "max": 0.09323152154684067,
+              "sum": 14.596270833164454
+            },
+            "weight_min": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.75,
+              "min": 0.75,
+              "max": 0.75,
+              "sum": 166.5
+            },
+            "weight_max": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 1.2491308273495854,
+              "min": 1.2142857313156128,
+              "max": 1.25,
+              "sum": 277.30704367160797
+            },
+            "weight_sum": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 63.99999986253343,
+              "min": 63.999996185302734,
+              "max": 64.00000762939453,
+              "sum": 14207.999969482422
+            }
+          }
+        },
+        {
+          "local_epoch": 4,
+          "cumulative_epoch": 24,
+          "steps": 222,
+          "native": {
+            "train/loss": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.6413221169967909,
+              "min": 0.38660335540771484,
+              "max": 1.5049432516098022,
+              "sum": 142.37350997328758
+            },
+            "train/loss_labeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.25641866467960245,
+              "min": 0.088290736079216,
+              "max": 1.3370424509048462,
+              "sum": 56.924943558871746
+            },
+            "train/loss_unlabeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.011949693370371352,
+              "min": 0,
+              "max": 0.21071754395961761,
+              "sum": 2.65283192822244
+            },
+            "train/loss_entropy": {
+              "count": 0,
+              "nonfinite_or_missing": 222,
+              "mean": null,
+              "min": null,
+              "max": null,
+              "sum": 0
+            },
+            "train/pseudo_selected": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 3.6531531531531534,
+              "min": 0,
+              "max": 11,
+              "sum": 811
+            },
+            "train/pseudo_total": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 255.40540540540542,
+              "min": 124,
+              "max": 256,
+              "sum": 56700
+            }
+          },
+          "risk": {
+            "selected_CE_old": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7431960538835138,
+              "min": 0.495997354388237,
+              "max": 1.0396744012832642,
+              "sum": 164.98952396214008
+            },
+            "selected_CE_new": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.8772344352962734,
+              "min": 0.584430605173111,
+              "max": 1.1965035796165466,
+              "sum": 194.7460446357727
+            },
+            "loss_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.03350959494206551,
+              "min": 0.021723121404647827,
+              "max": 0.04839447885751724,
+              "sum": 7.439130077138543
+            },
+            "mixed_CE_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.06701918988413103,
+              "min": 0.043446242809295654,
+              "max": 0.09678895771503448,
+              "sum": 14.878260154277086
+            },
+            "weight_min": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.75,
+              "min": 0.75,
+              "max": 0.75,
+              "sum": 166.5
+            },
+            "weight_max": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 1.2491790899285324,
+              "min": 1.2142857313156128,
+              "max": 1.25,
+              "sum": 277.3177579641342
+            },
+            "weight_sum": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 63.999999931266714,
+              "min": 63.999996185302734,
+              "max": 64,
+              "sum": 14207.999984741211
+            }
+          }
+        },
+        {
+          "local_epoch": 5,
+          "cumulative_epoch": 25,
+          "steps": 222,
+          "native": {
+            "train/loss": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.6002814498570588,
+              "min": 0.36179855465888977,
+              "max": 1.614458441734314,
+              "sum": 133.26248186826706
+            },
+            "train/loss_labeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.2275594099013655,
+              "min": 0.08591248840093613,
+              "max": 1.4217652082443237,
+              "sum": 50.51818899810314
+            },
+            "train/loss_unlabeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.011188501484145678,
+              "min": 0,
+              "max": 0.14524173736572266,
+              "sum": 2.4838473294803407
+            },
+            "train/loss_entropy": {
+              "count": 0,
+              "nonfinite_or_missing": 222,
+              "mean": null,
+              "min": null,
+              "max": null,
+              "sum": 0
+            },
+            "train/pseudo_selected": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 3.981981981981982,
+              "min": 0,
+              "max": 12,
+              "sum": 884
+            },
+            "train/pseudo_total": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 255.40540540540542,
+              "min": 124,
+              "max": 256,
+              "sum": 56700
+            }
+          },
+          "risk": {
+            "selected_CE_old": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7360091292643333,
+              "min": 0.44798293709754944,
+              "max": 1.0509799718856812,
+              "sum": 163.39402669668198
+            },
+            "selected_CE_new": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.8677864794258598,
+              "min": 0.5235890746116638,
+              "max": 1.227702260017395,
+              "sum": 192.6485984325409
+            },
+            "loss_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.03294433778370017,
+              "min": 0.018901541829109192,
+              "max": 0.04653984308242798,
+              "sum": 7.313642987981439
+            },
+            "mixed_CE_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.06588867556740034,
+              "min": 0.037803083658218384,
+              "max": 0.09307968616485596,
+              "sum": 14.627285975962877
+            },
+            "weight_min": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.75,
+              "min": 0.75,
+              "max": 0.75,
+              "sum": 166.5
+            },
+            "weight_max": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 1.2490271523192122,
+              "min": 1.2083333730697632,
+              "max": 1.25,
+              "sum": 277.2840278148651
+            },
+            "weight_sum": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 64,
+              "min": 63.999996185302734,
+              "max": 64.00000762939453,
+              "sum": 14208
+            }
+          }
+        },
+        {
+          "local_epoch": 6,
+          "cumulative_epoch": 26,
+          "steps": 222,
+          "native": {
+            "train/loss": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.5874150812894374,
+              "min": 0.3660024106502533,
+              "max": 1.580087423324585,
+              "sum": 130.4061480462551
+            },
+            "train/loss_labeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.22126577952289367,
+              "min": 0.07934676110744476,
+              "max": 1.4325202703475952,
+              "sum": 49.121003054082394
+            },
+            "train/loss_unlabeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.008374810158243604,
+              "min": 0,
+              "max": 0.10879625380039215,
+              "sum": 1.8592078551300801
+            },
+            "train/loss_entropy": {
+              "count": 0,
+              "nonfinite_or_missing": 222,
+              "mean": null,
+              "min": null,
+              "max": null,
+              "sum": 0
+            },
+            "train/pseudo_selected": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 4.0225225225225225,
+              "min": 0,
+              "max": 12,
+              "sum": 893
+            },
+            "train/pseudo_total": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 255.40540540540542,
+              "min": 124,
+              "max": 256,
+              "sum": 56700
+            }
+          },
+          "risk": {
+            "selected_CE_old": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7206074166539553,
+              "min": 0.45775212347507477,
+              "max": 1.011147379875183,
+              "sum": 159.97484649717808
+            },
+            "selected_CE_new": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.8505377875523524,
+              "min": 0.539296954870224,
+              "max": 1.1569887399673462,
+              "sum": 188.81938883662224
+            },
+            "loss_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.032482592783331335,
+              "min": 0.019997309893369675,
+              "max": 0.043552741408348083,
+              "sum": 7.211135597899556
+            },
+            "mixed_CE_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.06496518556666267,
+              "min": 0.03999461978673935,
+              "max": 0.08710548281669617,
+              "sum": 14.422271195799112
+            },
+            "weight_min": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.75,
+              "min": 0.75,
+              "max": 0.75,
+              "sum": 166.5
+            },
+            "weight_max": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 1.2497139997310467,
+              "min": 1.2142857313156128,
+              "max": 1.25,
+              "sum": 277.43650794029236
+            },
+            "weight_sum": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 63.999999931266714,
+              "min": 63.999996185302734,
+              "max": 64.00000762939453,
+              "sum": 14207.999984741211
+            }
+          }
+        },
+        {
+          "local_epoch": 7,
+          "cumulative_epoch": 27,
+          "steps": 222,
+          "native": {
+            "train/loss": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.6084335745723398,
+              "min": 0.36821335554122925,
+              "max": 1.4053269624710083,
+              "sum": 135.07225355505943
+            },
+            "train/loss_labeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.23796256688666773,
+              "min": 0.08365420252084732,
+              "max": 1.227338433265686,
+              "sum": 52.82768984884024
+            },
+            "train/loss_unlabeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.008667610515683034,
+              "min": 0,
+              "max": 0.06959965080022812,
+              "sum": 1.9242095344816335
+            },
+            "train/loss_entropy": {
+              "count": 0,
+              "nonfinite_or_missing": 222,
+              "mean": null,
+              "min": null,
+              "max": null,
+              "sum": 0
+            },
+            "train/pseudo_selected": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 3.8063063063063063,
+              "min": 0,
+              "max": 12,
+              "sum": 845
+            },
+            "train/pseudo_total": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 255.40540540540542,
+              "min": 124,
+              "max": 256,
+              "sum": 56700
+            }
+          },
+          "risk": {
+            "selected_CE_old": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7317672824268943,
+              "min": 0.381220743060112,
+              "max": 1.0359057188034058,
+              "sum": 162.45233669877052
+            },
+            "selected_CE_new": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.863511208881129,
+              "min": 0.43961018323898315,
+              "max": 1.1712115406990051,
+              "sum": 191.69948837161064
+            },
+            "loss_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.03293598123180034,
+              "min": 0.014597362838685513,
+              "max": 0.04676004499197006,
+              "sum": 7.311787833459675
+            },
+            "mixed_CE_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.06587196246360068,
+              "min": 0.029194725677371025,
+              "max": 0.09352008998394012,
+              "sum": 14.62357566691935
+            },
+            "weight_min": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.75,
+              "min": 0.75,
+              "max": 0.75,
+              "sum": 166.5
+            },
+            "weight_max": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 1.2490865867417138,
+              "min": 1.21875,
+              "max": 1.25,
+              "sum": 277.29722225666046
+            },
+            "weight_sum": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 63.99999987971675,
+              "min": 63.999996185302734,
+              "max": 64,
+              "sum": 14207.99997329712
+            }
+          }
+        },
+        {
+          "local_epoch": 8,
+          "cumulative_epoch": 28,
+          "steps": 222,
+          "native": {
+            "train/loss": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.5939765289291605,
+              "min": 0.372387558221817,
+              "max": 1.622523307800293,
+              "sum": 131.86278942227364
+            },
+            "train/loss_labeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.23318266576609095,
+              "min": 0.08146804571151733,
+              "max": 1.3963112831115723,
+              "sum": 51.76655180007219
+            },
+            "train/loss_unlabeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.010463382832460559,
+              "min": 0,
+              "max": 0.24914133548736572,
+              "sum": 2.322870988806244
+            },
+            "train/loss_entropy": {
+              "count": 0,
+              "nonfinite_or_missing": 222,
+              "mean": null,
+              "min": null,
+              "max": null,
+              "sum": 0
+            },
+            "train/pseudo_selected": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 3.873873873873874,
+              "min": 0,
+              "max": 13,
+              "sum": 860
+            },
+            "train/pseudo_total": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 255.40540540540542,
+              "min": 124,
+              "max": 256,
+              "sum": 56700
+            }
+          },
+          "risk": {
+            "selected_CE_old": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7233089339491483,
+              "min": 0.49040186405181885,
+              "max": 1.0912848114967346,
+              "sum": 160.57458333671093
+            },
+            "selected_CE_new": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.8525462400268864,
+              "min": 0.5854957401752472,
+              "max": 1.2608398795127869,
+              "sum": 189.26526528596878
+            },
+            "loss_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.03230932710675506,
+              "min": 0.02192821353673935,
+              "max": 0.044220685958862305,
+              "sum": 7.172670617699623
+            },
+            "mixed_CE_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.06461865421351012,
+              "min": 0.0438564270734787,
+              "max": 0.08844137191772461,
+              "sum": 14.345341235399246
+            },
+            "weight_min": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.75,
+              "min": 0.75,
+              "max": 0.75,
+              "sum": 166.5
+            },
+            "weight_max": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 1.248527545649726,
+              "min": 1.2142857313156128,
+              "max": 1.25,
+              "sum": 277.1731151342392
+            },
+            "weight_sum": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 63.999999931266714,
+              "min": 63.999996185302734,
+              "max": 64.00000762939453,
+              "sum": 14207.999984741211
+            }
+          }
+        },
+        {
+          "local_epoch": 9,
+          "cumulative_epoch": 29,
+          "steps": 222,
+          "native": {
+            "train/loss": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.6064208049226452,
+              "min": 0.3215061128139496,
+              "max": 1.6329783201217651,
+              "sum": 134.62541869282722
+            },
+            "train/loss_labeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.24194242915994413,
+              "min": 0.08236650377511978,
+              "max": 1.420391321182251,
+              "sum": 53.711219273507595
+            },
+            "train/loss_unlabeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.007476505569233727,
+              "min": 0,
+              "max": 0.05852525308728218,
+              "sum": 1.6597842363698874
+            },
+            "train/loss_entropy": {
+              "count": 0,
+              "nonfinite_or_missing": 222,
+              "mean": null,
+              "min": null,
+              "max": null,
+              "sum": 0
+            },
+            "train/pseudo_selected": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 3.873873873873874,
+              "min": 0,
+              "max": 14,
+              "sum": 860
+            },
+            "train/pseudo_total": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 255.40540540540542,
+              "min": 124,
+              "max": 256,
+              "sum": 56700
+            }
+          },
+          "risk": {
+            "selected_CE_old": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7063354016827034,
+              "min": 0.32131311297416687,
+              "max": 0.9896429777145386,
+              "sum": 156.80645917356014
+            },
+            "selected_CE_new": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.8337640947586781,
+              "min": 0.371701717376709,
+              "max": 1.1512827277183533,
+              "sum": 185.09562903642654
+            },
+            "loss_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.03185717315991988,
+              "min": 0.012597156688570976,
+              "max": 0.043189637362957,
+              "sum": 7.0722924415022135
+            },
+            "mixed_CE_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.06371434631983976,
+              "min": 0.025194313377141953,
+              "max": 0.086379274725914,
+              "sum": 14.144584883004427
+            },
+            "weight_min": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.75,
+              "min": 0.75,
+              "max": 0.75,
+              "sum": 166.5
+            },
+            "weight_max": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 1.2485230769123044,
+              "min": 1.2142857313156128,
+              "max": 1.25,
+              "sum": 277.17212307453156
+            },
+            "weight_sum": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 63.99999989690007,
+              "min": 63.999996185302734,
+              "max": 64.00000762939453,
+              "sum": 14207.999977111816
+            }
+          }
+        },
+        {
+          "local_epoch": 10,
+          "cumulative_epoch": 30,
+          "steps": 222,
+          "native": {
+            "train/loss": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.6361717985825496,
+              "min": 0.3611510097980499,
+              "max": 1.713538646697998,
+              "sum": 141.230139285326
+            },
+            "train/loss_labeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.2730832708043021,
+              "min": 0.08552643656730652,
+              "max": 1.5887196063995361,
+              "sum": 60.62448611855507
+            },
+            "train/loss_unlabeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.009077167042493317,
+              "min": 0,
+              "max": 0.15155939757823944,
+              "sum": 2.0151310834335163
+            },
+            "train/loss_entropy": {
+              "count": 0,
+              "nonfinite_or_missing": 222,
+              "mean": null,
+              "min": null,
+              "max": null,
+              "sum": 0
+            },
+            "train/pseudo_selected": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 3.945945945945946,
+              "min": 0,
+              "max": 12,
+              "sum": 876
+            },
+            "train/pseudo_total": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 255.40540540540542,
+              "min": 124,
+              "max": 256,
+              "sum": 56700
+            }
+          },
+          "risk": {
+            "selected_CE_old": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7204796445665059,
+              "min": 0.42940500378608704,
+              "max": 0.9995526075363159,
+              "sum": 159.9464810937643
+            },
+            "selected_CE_new": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.848267099207586,
+              "min": 0.5039635598659515,
+              "max": 1.1760077476501465,
+              "sum": 188.3152960240841
+            },
+            "loss_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.03194686402105265,
+              "min": 0.018639635294675827,
+              "max": 0.04411379620432854,
+              "sum": 7.092203812673688
+            },
+            "mixed_CE_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.0638937280421053,
+              "min": 0.037279270589351654,
+              "max": 0.08822759240865707,
+              "sum": 14.184407625347376
+            },
+            "weight_min": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.75,
+              "min": 0.75,
+              "max": 0.75,
+              "sum": 166.5
+            },
+            "weight_max": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 1.2489900615838196,
+              "min": 1.2142857313156128,
+              "max": 1.25,
+              "sum": 277.27579367160797
+            },
+            "weight_sum": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 63.99999998281668,
+              "min": 63.999996185302734,
+              "max": 64.00000762939453,
+              "sum": 14207.999996185303
+            }
+          }
+        }
+      ],
+      "stdout": {
+        "lines": 414,
+        "tracebacks": 0,
+        "OOM": 0
+      },
+      "all_streams_complete": true,
+      "sample_IDs_exported": false
+    },
+    "R01": {
+      "stream_records": {
+        "reference_steps": 2220,
+        "shape_steps": 2220,
+        "unit_steps": 2220,
+        "hardrisk_steps": 2220,
+        "step_metrics": 2220
+      },
+      "epoch_records": 10,
+      "observational_checks": {
+        "ordered_step": {
+          "match": 2220
+        },
+        "mode": {
+          "match": 2220
+        },
+        "64_As_all_supervised": {
+          "match": 2220
+        },
+        "weight_bounds": {
+          "match": 2220
+        },
+        "total_weight64": {
+          "match": 2220
+        },
+        "perTX_mass": {
+          "match": 2220
+        },
+        "CEonly": {
+          "match": 2220
+        },
+        "no_new_NN_VJP": {
+          "match": 2220
+        },
+        "same_IQ": {
+          "match": 2220
+        },
+        "rank_detached": {
+          "match": 2220
+        },
+        "ordinary_KL_unchanged": {
+          "match": 2220
+        },
+        "sixL_ORD128": {
+          "match": 2220
+        },
+        "U_truth_hidden": {
+          "match": 2220
+        },
+        "EMA_successful_counter": {
+          "match": 2220
+        },
+        "finite_native_total": {
+          "match": 2220
+        },
+        "native_gradient_surgery_off": {
+          "match": 2220
+        }
+      },
+      "roles": {
+        "L": {
+          "batches": 2220,
+          "physical_packets": 284160,
+          "batch_histogram": {
+            "128": 2220
+          }
+        },
+        "U": {
+          "batches": 2220,
+          "physical_packets": 567000,
+          "batch_histogram": {
+            "124": 10,
+            "256": 2210
+          }
+        }
+      },
+      "cost": {
+        "optimizer_steps": 2220,
+        "L_NN": 1704960,
+        "L_As": 142080,
+        "U_steps": 2220,
+        "U_packets": 567000,
+        "U_student_NN": 567000,
+        "student_train_NN": 2271960,
+        "student_eval_NN": 324002,
+        "teacher_train_NN": 0,
+        "teacher_eval_NN": 567000,
+        "wall_seconds": 1178.1231744289398,
+        "EMA_local_successful_updates": 2220,
+        "EMA_cumulative_updates": 6660
+      },
+      "risk_compute": {
+        "mode": "SHUFFLE",
+        "gamma": 0.25,
+        "top_fraction": 0.5,
+        "extra_NN": 0,
+        "extra_VJP": 0,
+        "extra_CE_operator_calls": 4440,
+        "extra_CE_logit_packets": 284160,
+        "CE_operator_cpu_wall_seconds": 7.561058426974341,
+        "scalarization_cpu_wall_seconds": 0.6074165301397443,
+        "class_mass_preserved": true,
+        "all64_supervised": true,
+        "KL_unchanged": true
+      },
+      "epochs": [
+        {
+          "local_epoch": 1,
+          "cumulative_epoch": 21,
+          "steps": 222,
+          "native": {
+            "train/loss": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.6227403003890235,
+              "min": 0.3657973110675812,
+              "max": 1.8155958652496338,
+              "sum": 138.24834668636322
+            },
+            "train/loss_labeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.2570913518938395,
+              "min": 0.08726084232330322,
+              "max": 1.704688549041748,
+              "sum": 57.07428012043238
+            },
+            "train/loss_unlabeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.01469425886603563,
+              "min": 0,
+              "max": 0.20382972061634064,
+              "sum": 3.26212546825991
+            },
+            "train/loss_entropy": {
+              "count": 0,
+              "nonfinite_or_missing": 222,
+              "mean": null,
+              "min": null,
+              "max": null,
+              "sum": 0
+            },
+            "train/pseudo_selected": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 3.891891891891892,
+              "min": 0,
+              "max": 13,
+              "sum": 864
+            },
+            "train/pseudo_total": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 255.40540540540542,
+              "min": 124,
+              "max": 256,
+              "sum": 56700
+            }
+          },
+          "risk": {
+            "selected_CE_old": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7619129981812056,
+              "min": 0.4794532060623169,
+              "max": 1.0667956471443176,
+              "sum": 169.14468559622765
+            },
+            "selected_CE_new": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7587482904394468,
+              "min": 0.49378015100955963,
+              "max": 1.0629141926765442,
+              "sum": 168.44212047755718
+            },
+            "loss_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": -0.0007911776769318962,
+              "min": -0.016063429415225983,
+              "max": 0.01319983508437872,
+              "sum": -0.17564144427888095
+            },
+            "mixed_CE_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": -0.0015823553538637924,
+              "min": -0.032126858830451965,
+              "max": 0.02639967016875744,
+              "sum": -0.3512828885577619
+            },
+            "weight_min": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.75,
+              "min": 0.75,
+              "max": 0.75,
+              "sum": 166.5
+            },
+            "weight_max": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 1.2482772952801473,
+              "min": 1.2142857313156128,
+              "max": 1.25,
+              "sum": 277.1175595521927
+            },
+            "weight_sum": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 63.99999986253343,
+              "min": 63.999996185302734,
+              "max": 64.00000762939453,
+              "sum": 14207.999969482422
+            }
+          }
+        },
+        {
+          "local_epoch": 2,
+          "cumulative_epoch": 22,
+          "steps": 222,
+          "native": {
+            "train/loss": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.6365649191377399,
+              "min": 0.3584928512573242,
+              "max": 1.6739528179168701,
+              "sum": 141.31741204857826
+            },
+            "train/loss_labeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.2826577978091197,
+              "min": 0.08382740616798401,
+              "max": 1.6131807565689087,
+              "sum": 62.75003111362457
+            },
+            "train/loss_unlabeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.013401850224483071,
+              "min": 0,
+              "max": 0.22233960032463074,
+              "sum": 2.9752107498352416
+            },
+            "train/loss_entropy": {
+              "count": 0,
+              "nonfinite_or_missing": 222,
+              "mean": null,
+              "min": null,
+              "max": null,
+              "sum": 0
+            },
+            "train/pseudo_selected": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 3.9144144144144146,
+              "min": 0,
+              "max": 10,
+              "sum": 869
+            },
+            "train/pseudo_total": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 255.40540540540542,
+              "min": 124,
+              "max": 256,
+              "sum": 56700
+            }
+          },
+          "risk": {
+            "selected_CE_old": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7469233185187116,
+              "min": 0.4192727953195572,
+              "max": 1.080899953842163,
+              "sum": 165.81697671115398
+            },
+            "selected_CE_new": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7437414584664611,
+              "min": 0.40120449662208557,
+              "max": 1.0397722125053406,
+              "sum": 165.11060377955437
+            },
+            "loss_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": -0.0007954653482810754,
+              "min": -0.021524205803871155,
+              "max": 0.01712595298886299,
+              "sum": -0.17659330731839873
+            },
+            "mixed_CE_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": -0.0015909306965621508,
+              "min": -0.04304841160774231,
+              "max": 0.03425190597772598,
+              "sum": -0.35318661463679746
+            },
+            "weight_min": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.75,
+              "min": 0.75,
+              "max": 0.75,
+              "sum": 166.5
+            },
+            "weight_max": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 1.2494481087804914,
+              "min": 1.2142857313156128,
+              "max": 1.25,
+              "sum": 277.3774801492691
+            },
+            "weight_sum": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 63.99999998281668,
+              "min": 63.999996185302734,
+              "max": 64.00000762939453,
+              "sum": 14207.999996185303
+            }
+          }
+        },
+        {
+          "local_epoch": 3,
+          "cumulative_epoch": 23,
+          "steps": 222,
+          "native": {
+            "train/loss": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.6154955695341299,
+              "min": 0.37910738587379456,
+              "max": 1.8121176958084106,
+              "sum": 136.64001643657684
+            },
+            "train/loss_labeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.2700354550872837,
+              "min": 0.09150096774101257,
+              "max": 1.6387345790863037,
+              "sum": 59.947871029376984
+            },
+            "train/loss_unlabeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.010877832690902004,
+              "min": 0,
+              "max": 0.10970437526702881,
+              "sum": 2.414878857380245
+            },
+            "train/loss_entropy": {
+              "count": 0,
+              "nonfinite_or_missing": 222,
+              "mean": null,
+              "min": null,
+              "max": null,
+              "sum": 0
+            },
+            "train/pseudo_selected": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 4.306306306306307,
+              "min": 0,
+              "max": 16,
+              "sum": 956
+            },
+            "train/pseudo_total": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 255.40540540540542,
+              "min": 124,
+              "max": 256,
+              "sum": 56700
+            }
+          },
+          "risk": {
+            "selected_CE_old": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7526366124684746,
+              "min": 0.47434648871421814,
+              "max": 1.0407522916793823,
+              "sum": 167.08532796800137
+            },
+            "selected_CE_new": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7489989209953729,
+              "min": 0.45981332659721375,
+              "max": 1.0366137623786926,
+              "sum": 166.2777604609728
+            },
+            "loss_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": -0.000909422365382213,
+              "min": -0.019853785634040833,
+              "max": 0.017629332840442657,
+              "sum": -0.2018917651148513
+            },
+            "mixed_CE_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": -0.001818844730764426,
+              "min": -0.039707571268081665,
+              "max": 0.035258665680885315,
+              "sum": -0.4037835302297026
+            },
+            "weight_min": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.75,
+              "min": 0.75,
+              "max": 0.75,
+              "sum": 166.5
+            },
+            "weight_max": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 1.2491308273495854,
+              "min": 1.2142857313156128,
+              "max": 1.25,
+              "sum": 277.30704367160797
+            },
+            "weight_sum": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 64,
+              "min": 63.999996185302734,
+              "max": 64.00000762939453,
+              "sum": 14208
+            }
+          }
+        },
+        {
+          "local_epoch": 4,
+          "cumulative_epoch": 24,
+          "steps": 222,
+          "native": {
+            "train/loss": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.6083440816885716,
+              "min": 0.36128297448158264,
+              "max": 1.472212791442871,
+              "sum": 135.0523861348629
+            },
+            "train/loss_labeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.25540236340047,
+              "min": 0.08780230581760406,
+              "max": 1.3471276760101318,
+              "sum": 56.69932467490435
+            },
+            "train/loss_unlabeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.011666976883724282,
+              "min": 0,
+              "max": 0.19895757734775543,
+              "sum": 2.5900688681867905
+            },
+            "train/loss_entropy": {
+              "count": 0,
+              "nonfinite_or_missing": 222,
+              "mean": null,
+              "min": null,
+              "max": null,
+              "sum": 0
+            },
+            "train/pseudo_selected": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 3.6531531531531534,
+              "min": 0,
+              "max": 11,
+              "sum": 811
+            },
+            "train/pseudo_total": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 255.40540540540542,
+              "min": 124,
+              "max": 256,
+              "sum": 56700
+            }
+          },
+          "risk": {
+            "selected_CE_old": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7484316514419006,
+              "min": 0.4962593615055084,
+              "max": 1.0568965673446655,
+              "sum": 166.15182662010193
+            },
+            "selected_CE_new": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.747955168219837,
+              "min": 0.49183177947998047,
+              "max": 1.0078606009483337,
+              "sum": 166.0460473448038
+            },
+            "loss_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": -0.00011912006376151767,
+              "min": -0.018965721130371094,
+              "max": 0.018248461186885834,
+              "sum": -0.026444654155056924
+            },
+            "mixed_CE_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": -0.00023824012752303534,
+              "min": -0.03793144226074219,
+              "max": 0.03649692237377167,
+              "sum": -0.05288930831011385
+            },
+            "weight_min": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.75,
+              "min": 0.75,
+              "max": 0.75,
+              "sum": 166.5
+            },
+            "weight_max": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 1.2491790899285324,
+              "min": 1.2142857313156128,
+              "max": 1.25,
+              "sum": 277.3177579641342
+            },
+            "weight_sum": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 63.99999994845004,
+              "min": 63.999996185302734,
+              "max": 64.00000762939453,
+              "sum": 14207.999988555908
+            }
+          }
+        },
+        {
+          "local_epoch": 5,
+          "cumulative_epoch": 25,
+          "steps": 222,
+          "native": {
+            "train/loss": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.5678666635408057,
+              "min": 0.33373531699180603,
+              "max": 1.5769696235656738,
+              "sum": 126.06639930605888
+            },
+            "train/loss_labeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.22632135041393675,
+              "min": 0.0858190655708313,
+              "max": 1.428417444229126,
+              "sum": 50.24333979189396
+            },
+            "train/loss_unlabeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.010933129368011676,
+              "min": 0,
+              "max": 0.14680740237236023,
+              "sum": 2.427154719698592
+            },
+            "train/loss_entropy": {
+              "count": 0,
+              "nonfinite_or_missing": 222,
+              "mean": null,
+              "min": null,
+              "max": null,
+              "sum": 0
+            },
+            "train/pseudo_selected": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 3.981981981981982,
+              "min": 0,
+              "max": 12,
+              "sum": 884
+            },
+            "train/pseudo_total": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 255.40540540540542,
+              "min": 124,
+              "max": 256,
+              "sum": 56700
+            }
+          },
+          "risk": {
+            "selected_CE_old": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7421225759762902,
+              "min": 0.44976823031902313,
+              "max": 1.068100929260254,
+              "sum": 164.7512118667364
+            },
+            "selected_CE_new": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7420625283911422,
+              "min": 0.41618406772613525,
+              "max": 1.081878900527954,
+              "sum": 164.73788130283356
+            },
+            "loss_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": -0.000015011987531440215,
+              "min": -0.01687793806195259,
+              "max": 0.016034739091992378,
+              "sum": -0.0033326612319797277
+            },
+            "mixed_CE_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": -0.00003002397506288043,
+              "min": -0.03375587612390518,
+              "max": 0.032069478183984756,
+              "sum": -0.0066653224639594555
+            },
+            "weight_min": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.75,
+              "min": 0.75,
+              "max": 0.75,
+              "sum": 166.5
+            },
+            "weight_max": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 1.2490271523192122,
+              "min": 1.2083333730697632,
+              "max": 1.25,
+              "sum": 277.2840278148651
+            },
+            "weight_sum": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 63.99999996563336,
+              "min": 63.999996185302734,
+              "max": 64.00000762939453,
+              "sum": 14207.999992370605
+            }
+          }
+        },
+        {
+          "local_epoch": 6,
+          "cumulative_epoch": 26,
+          "steps": 222,
+          "native": {
+            "train/loss": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.5559108074720915,
+              "min": 0.346197247505188,
+              "max": 1.575673222541809,
+              "sum": 123.41219925880432
+            },
+            "train/loss_labeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.22054585985638,
+              "min": 0.07896818965673447,
+              "max": 1.460944652557373,
+              "sum": 48.96118088811636
+            },
+            "train/loss_unlabeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.008161386162035275,
+              "min": 0,
+              "max": 0.08413837105035782,
+              "sum": 1.8118277279718313
+            },
+            "train/loss_entropy": {
+              "count": 0,
+              "nonfinite_or_missing": 222,
+              "mean": null,
+              "min": null,
+              "max": null,
+              "sum": 0
+            },
+            "train/pseudo_selected": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 4.027027027027027,
+              "min": 0,
+              "max": 12,
+              "sum": 894
+            },
+            "train/pseudo_total": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 255.40540540540542,
+              "min": 124,
+              "max": 256,
+              "sum": 56700
+            }
+          },
+          "risk": {
+            "selected_CE_old": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7268177289012316,
+              "min": 0.46006248891353607,
+              "max": 1.021922767162323,
+              "sum": 161.35353581607342
+            },
+            "selected_CE_new": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.726712158000147,
+              "min": 0.4625447392463684,
+              "max": 1.0399250984191895,
+              "sum": 161.33009907603264
+            },
+            "loss_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": -0.00002639196752276909,
+              "min": -0.015550419688224792,
+              "max": 0.019226856529712677,
+              "sum": -0.0058590167900547385
+            },
+            "mixed_CE_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": -0.00005278393504553818,
+              "min": -0.031100839376449585,
+              "max": 0.038453713059425354,
+              "sum": -0.011718033580109477
+            },
+            "weight_min": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.75,
+              "min": 0.75,
+              "max": 0.75,
+              "sum": 166.5
+            },
+            "weight_max": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 1.2497139997310467,
+              "min": 1.2142857313156128,
+              "max": 1.25,
+              "sum": 277.43650794029236
+            },
+            "weight_sum": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 63.99999987971675,
+              "min": 63.999996185302734,
+              "max": 64,
+              "sum": 14207.99997329712
+            }
+          }
+        },
+        {
+          "local_epoch": 7,
+          "cumulative_epoch": 27,
+          "steps": 222,
+          "native": {
+            "train/loss": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.5753014404494483,
+              "min": 0.34388843178749084,
+              "max": 1.3851433992385864,
+              "sum": 127.71691977977753
+            },
+            "train/loss_labeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.2369404413007401,
+              "min": 0.08302034437656403,
+              "max": 1.2274363040924072,
+              "sum": 52.600777968764305
+            },
+            "train/loss_unlabeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.008539592275901505,
+              "min": 0,
+              "max": 0.07962855696678162,
+              "sum": 1.895789485250134
+            },
+            "train/loss_entropy": {
+              "count": 0,
+              "nonfinite_or_missing": 222,
+              "mean": null,
+              "min": null,
+              "max": null,
+              "sum": 0
+            },
+            "train/pseudo_selected": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 3.81981981981982,
+              "min": 0,
+              "max": 12,
+              "sum": 848
+            },
+            "train/pseudo_total": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 255.40540540540542,
+              "min": 124,
+              "max": 256,
+              "sum": 56700
+            }
+          },
+          "risk": {
+            "selected_CE_old": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.738354257031067,
+              "min": 0.3803335130214691,
+              "max": 1.0506117343902588,
+              "sum": 163.91464506089687
+            },
+            "selected_CE_new": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7351501716284065,
+              "min": 0.3744770586490631,
+              "max": 1.047187626361847,
+              "sum": 163.20333810150623
+            },
+            "loss_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": -0.0008010207578384628,
+              "min": -0.02315416932106018,
+              "max": 0.014321204274892807,
+              "sum": -0.17782660824013874
+            },
+            "mixed_CE_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": -0.0016020415156769257,
+              "min": -0.04630833864212036,
+              "max": 0.028642408549785614,
+              "sum": -0.3556532164802775
+            },
+            "weight_min": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.75,
+              "min": 0.75,
+              "max": 0.75,
+              "sum": 166.5
+            },
+            "weight_max": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 1.2490865867417138,
+              "min": 1.21875,
+              "max": 1.25,
+              "sum": 277.29722225666046
+            },
+            "weight_sum": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 63.999999931266714,
+              "min": 63.999996185302734,
+              "max": 64.00000762939453,
+              "sum": 14207.999984741211
+            }
+          }
+        },
+        {
+          "local_epoch": 8,
+          "cumulative_epoch": 28,
+          "steps": 222,
+          "native": {
+            "train/loss": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.5625694246442469,
+              "min": 0.34657466411590576,
+              "max": 1.591896653175354,
+              "sum": 124.8904122710228
+            },
+            "train/loss_labeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.23190747218223307,
+              "min": 0.08144448697566986,
+              "max": 1.3956074714660645,
+              "sum": 51.48345882445574
+            },
+            "train/loss_unlabeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.009864634771696041,
+              "min": 0,
+              "max": 0.21358193457126617,
+              "sum": 2.189948919316521
+            },
+            "train/loss_entropy": {
+              "count": 0,
+              "nonfinite_or_missing": 222,
+              "mean": null,
+              "min": null,
+              "max": null,
+              "sum": 0
+            },
+            "train/pseudo_selected": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 3.869369369369369,
+              "min": 0,
+              "max": 13,
+              "sum": 859
+            },
+            "train/pseudo_total": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 255.40540540540542,
+              "min": 124,
+              "max": 256,
+              "sum": 56700
+            }
+          },
+          "risk": {
+            "selected_CE_old": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.72978599658152,
+              "min": 0.4939206838607788,
+              "max": 1.1044419407844543,
+              "sum": 162.01249124109745
+            },
+            "selected_CE_new": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7316085621043369,
+              "min": 0.4783974587917328,
+              "max": 1.1462135910987854,
+              "sum": 162.41710078716278
+            },
+            "loss_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.0004556417636424387,
+              "min": -0.02010999619960785,
+              "max": 0.018235130235552788,
+              "sum": 0.10115247152862139
+            },
+            "mixed_CE_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.0009112835272848774,
+              "min": -0.0402199923992157,
+              "max": 0.036470260471105576,
+              "sum": 0.20230494305724278
+            },
+            "weight_min": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.75,
+              "min": 0.75,
+              "max": 0.75,
+              "sum": 166.5
+            },
+            "weight_max": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 1.248527545649726,
+              "min": 1.2142857313156128,
+              "max": 1.25,
+              "sum": 277.1731151342392
+            },
+            "weight_sum": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 63.99999987971675,
+              "min": 63.999996185302734,
+              "max": 64,
+              "sum": 14207.99997329712
+            }
+          }
+        },
+        {
+          "local_epoch": 9,
+          "cumulative_epoch": 29,
+          "steps": 222,
+          "native": {
+            "train/loss": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.5746932370705647,
+              "min": 0.30678868293762207,
+              "max": 1.6070892810821533,
+              "sum": 127.58189862966537
+            },
+            "train/loss_labeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.240657645336411,
+              "min": 0.08198621869087219,
+              "max": 1.4191807508468628,
+              "sum": 53.42599726468325
+            },
+            "train/loss_unlabeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.007402842062596769,
+              "min": 0,
+              "max": 0.05896736681461334,
+              "sum": 1.6434309378964826
+            },
+            "train/loss_entropy": {
+              "count": 0,
+              "nonfinite_or_missing": 222,
+              "mean": null,
+              "min": null,
+              "max": null,
+              "sum": 0
+            },
+            "train/pseudo_selected": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 3.8828828828828827,
+              "min": 0,
+              "max": 14,
+              "sum": 862
+            },
+            "train/pseudo_total": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 255.40540540540542,
+              "min": 124,
+              "max": 256,
+              "sum": 56700
+            }
+          },
+          "risk": {
+            "selected_CE_old": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7122368990435256,
+              "min": 0.318669930100441,
+              "max": 1.0062431693077087,
+              "sum": 158.1165915876627
+            },
+            "selected_CE_new": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7123946426016791,
+              "min": 0.3213280439376831,
+              "max": 1.045320987701416,
+              "sum": 158.15161065757275
+            },
+            "loss_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.000039436011197599204,
+              "min": -0.014031820930540562,
+              "max": 0.0189156886190176,
+              "sum": 0.008754794485867023
+            },
+            "mixed_CE_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.00007887202239519841,
+              "min": -0.028063641861081123,
+              "max": 0.0378313772380352,
+              "sum": 0.017509588971734047
+            },
+            "weight_min": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.75,
+              "min": 0.75,
+              "max": 0.75,
+              "sum": 166.5
+            },
+            "weight_max": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 1.2485230769123044,
+              "min": 1.2142857313156128,
+              "max": 1.25,
+              "sum": 277.17212307453156
+            },
+            "weight_sum": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 63.99999989690007,
+              "min": 63.999996185302734,
+              "max": 64.00000762939453,
+              "sum": 14207.999977111816
+            }
+          }
+        },
+        {
+          "local_epoch": 10,
+          "cumulative_epoch": 30,
+          "steps": 222,
+          "native": {
+            "train/loss": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.6045203359277399,
+              "min": 0.3482968509197235,
+              "max": 1.6894415616989136,
+              "sum": 134.20351457595825
+            },
+            "train/loss_labeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.2718619932798115,
+              "min": 0.08506163209676743,
+              "max": 1.5866832733154297,
+              "sum": 60.35336250811815
+            },
+            "train/loss_unlabeled": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.008825370091693225,
+              "min": 0,
+              "max": 0.1400768756866455,
+              "sum": 1.9592321603558958
+            },
+            "train/loss_entropy": {
+              "count": 0,
+              "nonfinite_or_missing": 222,
+              "mean": null,
+              "min": null,
+              "max": null,
+              "sum": 0
+            },
+            "train/pseudo_selected": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 3.954954954954955,
+              "min": 0,
+              "max": 12,
+              "sum": 878
+            },
+            "train/pseudo_total": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 255.40540540540542,
+              "min": 124,
+              "max": 256,
+              "sum": 56700
+            }
+          },
+          "risk": {
+            "selected_CE_old": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7268688600208308,
+              "min": 0.4310822933912277,
+              "max": 1.0091318488121033,
+              "sum": 161.36488692462444
+            },
+            "selected_CE_new": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.7259903747487713,
+              "min": 0.39750008285045624,
+              "max": 0.9901994168758392,
+              "sum": 161.16986319422722
+            },
+            "loss_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": -0.00021962135393583626,
+              "min": -0.01706961914896965,
+              "max": 0.01583462581038475,
+              "sum": -0.04875594057375565
+            },
+            "mixed_CE_delta": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": -0.0004392427078716725,
+              "min": -0.0341392382979393,
+              "max": 0.0316692516207695,
+              "sum": -0.0975118811475113
+            },
+            "weight_min": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 0.75,
+              "min": 0.75,
+              "max": 0.75,
+              "sum": 166.5
+            },
+            "weight_max": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 1.2489900615838196,
+              "min": 1.2142857313156128,
+              "max": 1.25,
+              "sum": 277.27579367160797
+            },
+            "weight_sum": {
+              "count": 222,
+              "nonfinite_or_missing": 0,
+              "mean": 64.00000003436664,
+              "min": 63.999996185302734,
+              "max": 64.00000762939453,
+              "sum": 14208.000007629395
+            }
+          }
+        }
+      ],
+      "stdout": {
+        "lines": 415,
+        "tracebacks": 0,
+        "OOM": 0
+      },
+      "all_streams_complete": true,
+      "sample_IDs_exported": false
+    }
+  },
+  "source_physical_sequence_equal": true,
+  "As_physical_sequence_equal": true,
+  "model_seed_count": 1,
+  "NN": 0,
+  "CP": 0,
+  "IQ": 0,
+  "truth_reads": 0,
+  "updates": 0,
+  "observational_only": true
+}

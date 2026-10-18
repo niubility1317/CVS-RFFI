@@ -1,6 +1,6 @@
 # 完整 practical：类内有界困难 CE 与相同权重随机控制 E30
 
-状态：PLANNED，尚未启动。run 20261019-phase1-FcrossRX-withinTXHard-e30-s2026092701-m2-r01。实际代码提交在发布时固定于release_commit.txt；起点95cde0db8。
+状态：ANALYZED，两条新增E30尾段与全部七环境独立评分均完成。run 20261019-phase1-FcrossRX-withinTXHard-e30-s2026092701-m2-r01。实际代码提交在发布时固定于release_commit.txt；起点95cde0db8。
 
 唯一假设：固定物理质量分组的负结果，尚未直接检验按当前模型在同一TX内的实际CE排序分配少量As监督是否有价值。当前原配方保留完整practical、raw→As路径、clean/raw份额、同IQ RDrop、ORD128 CROSS_RX与原U／自身EMA；本轮只改变As64的两次CE权重，不新增损失、网络或分类头，不改变KL。
 
@@ -40,4 +40,7 @@ N607普通账户，现有CVS-RFFI/PyTorch，CPU2；每GPU所有owner合计最多
 
 预期：真实父模型smoke、逐步reference／shape／unit／hardrisk／native日志和training_sequence、source完整结果及fixedFINAL30、source_matrix_decision、各行all7prediction／independent scores、automatic_summary、最终报告和登记。目标仍ACTIVE。
 
-实际发布代码 8d7628f3fed309a068f50ee403afcf4ac736d367；单归档传输比较与远端编译VERIFIED。真实父模型／默认头及两条synthetic hook检查PASS1540NN／0更新。dispatcher1895346，H01 PID1895457 GPU0，R01 PID1895535 GPU1；PID/CWD/argv/CUDA／实际GPU进程和log增长独立核实。状态RUNNING；未完成训练，未读取新正式分数。
+实际发布代码 8d7628f3fed309a068f50ee403afcf4ac736d367；单归档传输比较与远端编译VERIFIED。真实父模型／默认头及两条synthetic hook检查PASS1540NN／0更新。dispatcher1895346，H01 PID1895457 GPU0，R01 PID1895535 GPU1；PID/CWD/argv/CUDA／实际GPU进程和log增长独立核实。启动时状态RUNNING；当时未完成训练、未读取新正式分数。
+
+
+最终结果：HARD相对原As low+0.336310pp、mid+0.277976pp、urban均值+0.259722pp、clean−0.0375pp；相对匹配NoAs clean+0.055952pp，满足本种子0.1pp阶段要求。源预定条件FAIL已先保存，不扩E50/种子，不调gamma或top比例。low51.580357%，suburban gap3.741071/6.441071/9.247619pp，未达最终目标；单seed无可重复双提升证据。实际新增20模型轮/4440更新/8704668NN，技术缺项0。完整结果见 [最终分析](final_analysis.md)、results_summary.json、source_decision.json。
