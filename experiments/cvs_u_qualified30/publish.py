@@ -40,7 +40,7 @@ if (comparator_release/'release_commit.txt').read_text().strip()!=c['comparator_
 def resolve(v):
  if isinstance(v,dict):return {k:resolve(x) for k,x in v.items()}
  if isinstance(v,list):return [resolve(x) for x in v]
- return v.replace('PROJECT',c['project']) if isinstance(v,str) else v
+ return v.replace('PROJECT',c['project']).replace(chr(92),'/') if isinstance(v,str) else v
 for expected in c['comparator_configs']:
  expected=resolve(expected);out=Path(expected['output_root']);done=original.read(out/'completion.json');frozen=original.read(out/'source_frozen.json');init=original.read(out/'initialization.json');contract=original.read(out/'source_contract.json')
  if done['config']!=expected or frozen['config']!=expected or done['epoch']!=10 or done['optimizer_steps']!=2220 or done['target_access'] or init['target_contact'] or contract['role_ids']!=roles or frozen['selection']!='final_only':raise ValueError('Matched teacher-only N/C source/data lineage differs')

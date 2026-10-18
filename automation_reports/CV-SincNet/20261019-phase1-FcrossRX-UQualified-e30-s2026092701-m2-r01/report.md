@@ -44,3 +44,6 @@ practical从raw生成，保留现有完整residual/post_sync、EQfalse/G=1、ref
 
 
 实现已就绪：路由61聚焦负例/39正例、实际冻结native边界、20py/2emitted AST、analysis7fixtures/完整4440步及动态成本检查PASS。唯一独立P0/P1检查发现并修复archive依赖包bootstrap路径问题，唯一该点定向复核PASS，剩余P0/P1=0；不重复全审。真实1570NN烟测和训练仍待发布，不把本地检查当作模型成绩。
+
+
+只读预检技术失败保留：初始提交93f402572的comparator config带Windows分隔符，远端未找到对应元数据路径而退出。独立poststate确认release/archive/run均不存在，0NN/CP/IQ/更新/worker，尚未发生传输。仅统一路径为POSIX，6项定点边界PASS；科学配置、源判据和预算未变。修复后才首次传输/启动，实际执行以新release_commit.txt为准。
