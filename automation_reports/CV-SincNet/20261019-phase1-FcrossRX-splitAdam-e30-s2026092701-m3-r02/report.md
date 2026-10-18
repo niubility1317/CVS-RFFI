@@ -1,6 +1,6 @@
 # F＋跨 RX：ordinary／As 分离 Adam 状态 E30
 
-状态：PLANNED；技术修复 r02，未训练、未评分。
+状态：FAILED；N01已完成E30与七环境评分，C01／S01训练中技术失败，未形成候选性能结论。
 
 R01三行因逐坐标梯度相等检查误拦退出：N01已成功16次更新，C01/S01为0。原产物保留；失败成本26684NN/44VJP/16更新，独立诊断1282NN/4VJP/0更新。诊断证实重复同一total-loss VJP也有Sinc近零坐标误差，真实clip正确。r02只将断言改为原容差下的逐参数RMS范数检查，记录旧逐点失败而不阻断；不改变梯度、loss、clip或Adam配方。若同指纹再次出现，停止盲目重发。
 
@@ -37,3 +37,6 @@ R01三行因逐坐标梯度相等检查误拦退出：N01已成功16次更新，
 预期产物：experiment.json／events.jsonl、源与配置 metadata、final checkpoint、逐步完整日志、source_matrix_decision、固定 predictions、独立 scores、automatic_summary、最终分析和同 row 判定。
 
 实际 r02 代码 3a984b391e60a3065165d4975f9bcb90fde6d1fe，archive transfer／remote compile VERIFIED；CPU realparent synthetic smoke2358NN／6VJP、actualTorch28检查及61core检查通过。dispatcher1761803与三行worker的PID/CWD/argv/GPU及日志增长独立核实，状态RUNNING；未完成epoch，未读取正式分数。
+
+
+最终：C01／S01分别成功1645／2181更新后在RMS梯度检查退出，N01完成2220更新和七环境独立truth-last。按既定规则不重发R03，不扩E50；科学收益与clean0.1pp约束均无法判定。详见 [最终分析](final_analysis.md)、technical_failure.json、source_log_summary.json。

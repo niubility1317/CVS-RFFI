@@ -113,7 +113,7 @@
     "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261019-phase1-FcrossRX-splitAdam-e30-s2026092701-m3-r02",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_split_adam30/runner.py",
     "stop_rule": "Only exactowned systemic protocol/data-role/parent/head/nonfinite/output/predictionclosing technicalfailure;preserve/reconcile,no blindretry. Scientificnegative completesall7. No healthyjob hotedit/stop.",
-    "status": "PLANNED"
+    "status": "FAILED"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
@@ -286,9 +286,26 @@
     "R01 FAILED beforeepoch completion,N01=16updates,C01/S01=0;newNN26684/VJP44 preserved separate",
     "Zero-updateC01GPUdiagnostic DONE1282NN/4VJP:repeatedSAMEgTotal tripscoordinatecheck;oneSincnearzero coordinate;physicalclipcorrect",
     "One root-cause numericalassertion fix only;R02 strictoriginal20 parents,not failedchildstates;no scientificretune or newrandomseed",
-    "Ifsame systemicfingerprint recurs afterthissinglefix,preserve andstop blindrestart"
+    "Ifsame systemicfingerprint recurs afterthissinglefix,preserve andstop blindrestart",
+    "R02 FAILED same gradientRMS assertion C01step1646/S01step2182,successful1645/2181;N01FINAL30all7complete. NoR03/noE50;scientificcomparisonNOT_ASSESSABLE. R01firstbatchdiagnosisdoesnotexplainR02latefailure."
   ],
   "comparators": [],
   "replaces_run_id": "20261019-phase1-FcrossRX-splitAdam-e30-s2026092701-m3-r01",
-  "registered_at": "2026-10-18T19:46:15+00:00"
+  "registered_at": "2026-10-18T19:46:15+00:00",
+  "actual_results": {
+    "status": "TECHNICAL_FAILURE",
+    "NoAs_all7_complete": true,
+    "AsMeasure_final_missing": true,
+    "AsSplit_final_missing": true,
+    "source_qualified": false,
+    "stage_clean_0p1pp": null,
+    "repeatable_dual_gain_proven": false,
+    "E50_extension": false,
+    "R03_restart": false,
+    "successful_new_updates": 6046,
+    "new_total_NN": 9767942,
+    "whole_route_including_R01_and_diagnostic_NN": 9795908,
+    "analysis_ref": "final_analysis.md",
+    "results_ref": "technical_failure.json"
+  }
 }
