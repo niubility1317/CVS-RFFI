@@ -1,0 +1,42 @@
+{
+  "run_id": "20261018-phase1-FcrossRX-Asweight-e30-s2026092701-m2-r01",
+  "status": "SOURCE_PREDECLARED_PASS_E50_FIXED_BEFORE_FORMAL_READ",
+  "source_only": true,
+  "target_scores_read": false,
+  "decision": {
+    "fullV_clean_vs_original_As30_pp": -0.0592592592592589,
+    "mid_low_mean_vs_original_As30_pp": 0.7777777777777772,
+    "clean_vs_original_As30_within_absolute_0p1pp": true,
+    "mid_low_gain_at_least_0p5pp": true,
+    "source_criteria_pass": true,
+    "E50_source_eligible": true,
+    "fixed_recipe_closed": false,
+    "weighted_NoAs_vs_original_NoAs_fullV_clean_pp": 0.018518518518517713,
+    "weighted_NoAs_vs_original_NoAs_mid_low_mean_pp": -0.33333333333332993,
+    "fullV_clean_interaction_pp": -0.07777777777777661,
+    "mid_low_mean_interaction_pp": 1.1111111111111072,
+    "scientific_negative_skips_formal": false,
+    "target_scores_read": false,
+    "per_packet_protection_gate": false
+  },
+  "extension": {
+    "run_id": "20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01",
+    "rows": [
+      "B00-s2026092701",
+      "B01-s2026092701"
+    ],
+    "model_seed": 2026092701,
+    "parent": "EachownWEIGHT_FINAL30 studentandownEMA",
+    "additional_epochs_each": 20,
+    "total_epochs_each": 50,
+    "weights_unchanged": true,
+    "new_mechanism": false,
+    "matched_NoAs_required": true,
+    "source_basis_only": true,
+    "formal_scores_used": false,
+    "optimizer": "resetAdamW lr2e-4WD1e-4cos20min1e-6 sameoriginalE50tail",
+    "cumulative_channel": "e31..50/step6661..11100",
+    "source_future_seed_rule": "SourceAs50-ownAs30clean>=0pp AND midlowmean>=+.5pp;onlythenfuturefixed02/03 mayberegistered;noformalfeedback",
+    "automatic_weight_or_seed_sweep": false
+  }
+}

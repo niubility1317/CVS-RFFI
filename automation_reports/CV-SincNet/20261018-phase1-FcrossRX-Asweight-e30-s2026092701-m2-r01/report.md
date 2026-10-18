@@ -1,3 +1,5 @@
+当前状态：VERIFIED / ANALYZED；两条训练、全部七视图预测与独立评分及完整分析已完成。源预登记通过，正式clean阶段失败；单seed，不证明重复双提升。实际结果见[最终报告](<E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e30-s2026092701-m2-r01/final_analysis.md>)。下文保留启动和过程历史。
+
 # 完整 practical 的监督份额：固定 E30 因子对照
 
 状态：VERIFIED_RUNNING，两条尾段均已启动，无新性能结果。Run 20261018-phase1-FcrossRX-Asweight-e30-s2026092701-m2-r01。固定 seed2026092701、split392005、全部源RX[1,3,4,6,8]／day[1,2,3]，L6300／U56700（TX隐藏）／V27000，IQ256，无RX留出或Ldev。F／三路SIG_TIME／统一Sinc／joint160／默认cos头联合训练，NoExplicitCFO与内部补偿保持。
@@ -37,3 +39,5 @@ As行selected64为原真实As(raw64)；实际NoAs.apply(raw[mask])返回raw.clon
 实际训练／分析代码 `3befd47c8041d81f9430eda53562d0821624ff04` 已提交push且独立远端OID一致。一次N607普通账户preflight、单归档SHA比较、远端19py编译及66focused检查PASS；dispatcher1259300与B00 worker1259736 GPU0／B01 worker1259814 GPU2的PID／CWD／argv／CUDA／nvidia占用及日志增长已独立核实。真实两parent4NN＋双方实际6L1536NN共1540NN通过，grouped等权还原原loss／CE／KL／gradient（float64 atol1e-12），默认head／Sinc／backbone联合梯度通过，然后已直接训练。
 
 双方初始化source_roles=EXACT_MATCH、target_contact=false，student与各自ownEMA严格stage20恢复；optimizer空state/resetcos10/lr.0002/WD.0001，实际物理配置分别与原对应P43 row一致。B00／B01均已完成新段第1／10轮；当前没有failure，不把启动／smoke通过当性能成功。只读分析PID1260826 CWD／argv／空CUDA已核实，8focused检查与compile PASS，WAIT_SOURCE／truth_opened=false／0NN，自动等待双方源结果后再核对全部四逻辑条件×七视图。
+
+源推进判定已完成且在读取正式成绩前固定：fullV newAs−原As −0.059259pp，mid／low均值 +0.777778pp，分别满足≥−0.1与≥+0.5，两项PASS。加权NoAs对原NoAs源clean+0.018519pp／midlow−0.333333pp，源交互clean−0.077778pp／midlow+1.111111pp，全部保留；不能把交互中NoAs退化误作纯As提升。依据该source-only条件，固定后续ownFINAL30+20、两行总E50，权重／数据／物理条件不改，不用正式分数决定扩训。此源通过不等于最终matchedNoAs clean阶段通过或可重复双提升。

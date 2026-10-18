@@ -106,7 +106,7 @@
     "local_artifact_root": "local_artifacts/F_As_weight_E30_20261018",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_practical_as_weight30/runner.py",
     "stop_rule": "Onlyrunownedillegaldata/parent/head/nonfinite/costcontract/outputcollision/unlaunchablesystemtechnicalfailure;preserveoutputs,noautomaticretry.Lowperformance/sourcecriterialfailuredoesnotstopfixedE30orall7formal.",
-    "status": "RUNNING",
+    "status": "ANALYZED",
     "dispatcher_pid": 1259300,
     "workers": [
       {
@@ -263,5 +263,33 @@
       "epochs": 30,
       "head": "defaultjointcos"
     }
-  ]
+  ],
+  "result_summary": {
+    "stage": {
+      "clean_delta_pp": -0.3267857142857143,
+      "clean_net_repairs": -549,
+      "clean_absolute_0p1pp_guard_met": false,
+      "clean_positive_observed": false,
+      "positive_below_0p1pp_is_micro_observation": false,
+      "midurban_gain_pp": 28.67440476190476,
+      "lowurban_gain_pp": 22.092261904761905,
+      "urban_mean_gain_pp": 29.291666666666668,
+      "repeatable_clean_gain_proven": false
+    },
+    "model_seed_count": 1,
+    "source_criteria_pass": true,
+    "E50_source_eligible": true,
+    "formal_stage_pass": false,
+    "increment_vs_original_As30_pp": {
+      "clean": -0.4880952380952381,
+      "mid": 0.6053571428571428,
+      "low": 0.7178571428571429,
+      "urban_mean": 0.5327380952380952
+    },
+    "all7views_complete": true,
+    "source_decision_before_formal": true,
+    "technical_missing_items": [],
+    "repeatable_clean_positive_proven": false,
+    "goal_complete": false
+  }
 }

@@ -114,3 +114,12 @@ full V27000四条件逐ID读出，原V1800与两次固定三场practical观测�
 发布前按真实调用纠正文案：原P43 B00的NoAs.apply输入raw[mask]并返回raw.clone，不是配置文案所暗示的ordinary。新两行均保留原IQ／RNG；NoAs权重为ordinary.75/raw.5→ordinary.625/raw.625，As因子为selected raw→As(raw)。原代码／历史结果／健康任务不改。
 
 Asweight当前已实际启动：训练／分析代码`3befd47c8041d81f9430eda53562d0821624ff04`；dispatcher1259300，B00 worker1259736 GPU0、B01 worker1259814 GPU2，actualPID／CWD／argv／GPU／日志增长VERIFIED。双父真实CP4NN＋两行6L1536NN共1540NN smokePASS后正常训练；source roles均EXACT_MATCH、target_contact=false、各自ownEMA严格恢复，物理配置与原row一致。两新尾段均完成1／10轮；0NN分析1260826处于已核实WAIT_SOURCE，truth未开，无新性能结果。
+
+
+## As监督权重E30：完整评分及源支持E50
+
+两新行已完成own20+10／总E30及全部七视图独立评分，0NN分析完成，无技术缺项。单seed weightedAs30相对原As30：clean−.488095pp、mid＋.605357pp、low＋.717857pp、urban均值＋.532738pp；相对匹配weightedNoAs30 clean−.326786pp，未满足−.1pp阶段界限。最差RX／F1／分层／错误修复和新增／成本完整保存，未证明重复双提升。sourcefullVclean对原As−.059259pp、两drawmidlow＋.777778pp符合预先固定的增量条件；source决定已在首次读新formal前保存，不能追溯改判或把source通过当正式通过。
+
+据此已固定下一项`20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01`：只增加预算，matchedNoAs／As各ownweightedFINAL30 student＋ownEMA追加20轮，总50，resetAdamWcos20；.375权重／IQ256／全5源RX／L6300U隐藏V27000／默认头／原完整practical三场／6L1.25／U不变。ordinary仍原20参数epoch13，SupCon＋30，channel31至50／step6661至11100。只新训两行，其余原／加权30和原50六个冻结结果复用，形成weight×As×budget八条件。唯一审查P0/P1=0/0，68聚焦负例与AST PASS；真实烟测与发布待执行。
+
+未来固定02／03扩种支持只看As50−ownAs30源fullVclean≥0pp且midlow均值≥＋.5pp。任一失败放弃固定配方扩种，仍完成本行all7正式；不扫权重／epoch／seed救跑。目标stage仍相对同预算匹配NoAs clean≥−.1pp。下一项唯一假设是更多预算能否缓解当前clean—星地矛盾；不从已见正式分数重新选择路线或承诺60%。[E30完成报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e30-s2026092701-m2-r01/final_analysis.md)；[E50预登记](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-Asweight-e50-s2026092701-m2-r01/report.md)。
