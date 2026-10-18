@@ -46,3 +46,5 @@ L 上高 4 平均分至少为低 4 的 1.5 倍且非零。全部数值检查满�
 发布前执行窄范围负例/数值测试和一次独立 P0/P1 检查；一份 archive/一次本地远端 SHA 比较/一次远端 compile。smoke 是 worker 首步并立即继续，不设 token。启动后独立核实 PID/CWD/命令/GPU/日志增长。只停止本 run 的系统性技术失败；数据权限、parent、非有限数、输出冲突或实际预算不符时保留产物、失败不自动重跑；科学判据失败正常完成并关闭固定假设。健康旧任务不动。
 
 预期私有产物：real_checkpoint_smoke.json、source_L_ranking.json、resolved_config.json、predictions.json、prediction_complete.json、worker 全日志。独立 CPU scorer 只在全部固定预测完成后读取保存的源标签/导数/logits，输出 result.json、completion.json、各 RX/TX/day/90 单元混淆矩阵和成对修复/新增错误。报告只入库汇总，不提交物理 ID、IQ、模型、logits 或本地/远端私有运行信息。最后对所有保存读出独立重算，不用局部日志替代完成证据。
+
+发布前验证：25 个负例及合成等步长/评分控制通过；一次独立 P0/P1 PASS。实际代码/配置 commit：bafb990f51168c56b6e72ad793ce5572b29d318d。未访问真实源 IQ、CP 或 target。
