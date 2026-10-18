@@ -1,5 +1,5 @@
 """Immutable CPU analysis owner;waits on actual run handles,never changes training."""
-import argparse,json,os,sys,time,traceback
+import argparse,json,os,re,sys,time,traceback
 from pathlib import Path
 import numpy as np
 import cvs_satellite_dropout_results_20261018 as a
@@ -60,10 +60,14 @@ def render_report(source,formal,logs):
  lines += ['', '完整V27000 clean来自原生冻结期指标，未保存每包完整V预测，不能声称从每包预测独立重算该值。固定源V1800/两draw的raw和三practical logits均独立重算，两个draw仍是1800唯一物理包。低urban状态/锁定及新增噪声比分层见source_metrics.csv和source_confusions.json，稀有/单例不删；source面板fc2.45GHz、训练/正式2.462GHz的既有差异保留披露。signal_to_added_noise_db不是总SNR，正式receivedIQ未保存逐包物理标签，源分层改善不是特定损伤的因果证明。','', '## 完整训练、验证与成本','', '全6660步/30epoch、两段原U/ownEMA、监督尺度、satellite-only作用、L/U出现序列及匹配随机流的核对见training_logs.json。未新增teacher、headfit或模型NN用于独立分析。新增与复用模型成本分列，不能把历史控制视为免费；两段optimizer重置和own20父成本计入各模型E30。实际训练/验证、教师和预测NN与wall分别列于costs.json。','',f"正式独立重算{formal['independent_confusion_matrices']}个矩阵、{formal['partition_reconciliations']}次分区合并，源矩阵{len(source['metrics'])}个；全部logits/argmax/原scorer一致。source独立决定完成后才读取固定正式truth，原receivedIQ/SNR/信道/困难样本均未改。",'', '未完成：跨模型seed复现、稳定clean正收益，以及任何尚未达到的阶段指标。本实验不建立新Ag或Ag×As交互，也不作真实在轨验证声明。']
  return '\n'.join(lines)+'\n'
 
-def main():
- p=argparse.ArgumentParser();p.add_argument('--project',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--truth',type=Path,required=True);p.add_argument('--code-commit',required=True);args=p.parse_args();root=args.project/'runs'/a.RUN;out=args.output
- if out.parent!=root or out.name!='analysis_auto_r01':raise ValueError('Only own immutable analysis root')
+def validate_output(project,output):
+ root=Path(project)/'runs'/a.RUN;out=Path(output)
+ if out.parent!=root or re.fullmatch(r'analysis_auto_r[0-9]{2}',out.name) is None:raise ValueError('Only own immutable analysis root')
  if out.exists():raise FileExistsError('Reconcile existing analysis owner;no relaunch')
+ return out
+
+def main():
+ p=argparse.ArgumentParser();p.add_argument('--project',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--truth',type=Path,required=True);p.add_argument('--code-commit',required=True);args=p.parse_args();out=validate_output(args.project,args.output)
  out.mkdir();started=time.perf_counter();a.write(out/'active.json',dict(pid=os.getpid(),cwd=os.getcwd(),argv=sys.argv,analysis_code_commit=args.code_commit,training_run=a.RUN,NN=0,IQ=0,checkpoint=0,updates=0,truth_opened=False))
  try:
   wait_until(args.project,'SOURCE',out);logs=log_analysis(args.project);a.write(out/'training_logs.json',logs);source=a.source_analysis(args.project);a.write(out/'source_summary.json',{k:v for k,v in source.items() if k!='metrics'});a.write(out/'source_confusions.json',source['metrics']);a.write_csv(out/'source_metrics.csv',[{k:v for k,v in r.items() if k!='confusion'} for r in source['metrics']]);a.write(out/'source_complete.json',dict(status='SOURCE_ANALYZED',source_decision=source['decision'],NN=0,target_scores_read=False));plot(out/'source_figures',source,logs=logs);print('SOURCE_ANALYSIS_COMPLETE',flush=True)

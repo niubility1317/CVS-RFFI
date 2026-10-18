@@ -2,8 +2,13 @@
 import argparse,hashlib,io,json,subprocess,tarfile
 from pathlib import Path
 RUN='20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01'
-RELEASE='cvs_F_satellite_dropout_analysis_20261018_r02'
+RELEASE='cvs_F_satellite_dropout_analysis_20261018_r03'
+OUTPUT='analysis_auto_r03'
 FILES=['cvs_satellite_dropout_results_20261018.py','cvs_satellite_dropout_logs_20261018.py','cvs_satellite_dropout_figures_20261018.py','cvs_satellite_dropout_pipeline_20261018.py','check_satellite_dropout_results_20261018.py','check_satellite_dropout_logs_20261018.py','check_satellite_dropout_pipeline_20261018.py','cvs_satellite_dropout_publish_analysis_20261018.py']
+
+def analysis_config(rt,commit):
+ output=rt['project']+'/runs/'+RUN+'/'+OUTPUT
+ return dict(project=rt['project'],release=rt['project']+'/releases/'+RELEASE,archive=rt['project']+'/releases/'+RELEASE+'.tar.gz',output=output,launch=output+'-launch',python=rt['python'],user=rt['user'],host=rt['host'],commit=commit,truth=rt['project']+'/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json')
 
 def remote(script,rt):
  r=subprocess.run(['ssh','-F',rt['ssh_config'],'-o','BatchMode=yes','-o','ConnectTimeout=10','-T','N607',rt['python']+' -'],input=script.encode('utf8'),capture_output=True,timeout=55)
@@ -11,7 +16,7 @@ def remote(script,rt):
  return json.loads(r.stdout)
 def main():
  p=argparse.ArgumentParser();p.add_argument('--stage',choices=['transfer','launch'],required=True);p.add_argument('--runtime',type=Path,required=True);p.add_argument('--source-root',type=Path,required=True);p.add_argument('--artifact-root',type=Path,required=True);p.add_argument('--commit',required=True);args=p.parse_args();rt=json.loads(args.runtime.read_text(encoding='utf8'));root=args.source_root;local=args.artifact_root;local.mkdir(parents=True,exist_ok=True)
- c=dict(project=rt['project'],release=rt['project']+'/releases/'+RELEASE,archive=rt['project']+'/releases/'+RELEASE+'.tar.gz',output=rt['project']+'/runs/'+RUN+'/analysis_auto_r02',launch=rt['project']+'/runs/'+RUN+'/analysis_auto_r02-launch',python=rt['python'],user=rt['user'],host=rt['host'],commit=args.commit,truth=rt['project']+'/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json')
+ c=analysis_config(rt,args.commit)
  if args.stage=='transfer':
   script=r'''
 import json,os,subprocess
@@ -31,7 +36,7 @@ print(json.dumps(dict(status='VERIFIED',ordinary_account=True,training_processes
    data=(args.commit+'\n').encode();info=tarfile.TarInfo('release_commit.txt');info.size=len(data);target.addfile(info,io.BytesIO(data))
   c['sha256']=hashlib.sha256(archive.read_bytes()).hexdigest();subprocess.run(['scp','-F',rt['ssh_config'],'-o','BatchMode=yes','-o','ConnectTimeout=10',str(archive),'N607:'+c['archive']],capture_output=True,check=True,timeout=55)
   script=r'''
-import hashlib,json,os,subprocess,tarfile
+import hashlib,json,os,re,subprocess,tarfile
 from pathlib import Path
 c=CONFIG;release=Path(c['release'])
 if release.exists() or Path(c['output']).exists() or Path(c['launch']).exists():raise FileExistsError('Existing mutation;reconcile')
@@ -44,7 +49,9 @@ with tarfile.open(c['archive']) as source:
 env=dict(os.environ,CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2');cwd=release/'analysis'
 subprocess.run([c['python'],'-m','compileall','-q',str(cwd)],cwd=cwd,env=env,check=True)
 with (release/'checks.stdout.log').open('x') as out,(release/'checks.stderr.log').open('x') as err:subprocess.run([c['python'],'-m','unittest','check_satellite_dropout_results_20261018','check_satellite_dropout_pipeline_20261018'],cwd=cwd,env=env,stdout=out,stderr=err,check=True)
-result=dict(status='TRANSFER_VERIFIED',commit=c['commit'],archive_SHA256=c['sha256'],remote_compile='PASS',remote_imports='PASS',remote_unit_tests='PASS_13',IQ=0,CP=0,NN=0,updates=0,target_truth_read=False)
+checks=re.search(r'Ran (\d+) tests?',(release/'checks.stderr.log').read_text())
+if checks is None:raise ValueError('Missing unittest result count')
+result=dict(status='TRANSFER_VERIFIED',commit=c['commit'],archive_SHA256=c['sha256'],remote_compile='PASS',remote_imports='PASS',remote_unit_tests='PASS_'+checks.group(1),IQ=0,CP=0,NN=0,updates=0,target_truth_read=False)
 (release/'transfer.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
 '''
   result=remote(script.replace('CONFIG',repr(c)),rt);(local/'transfer.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf8');print(json.dumps(result))
