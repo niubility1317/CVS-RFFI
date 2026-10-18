@@ -47,3 +47,8 @@
 预期产物：resolved_config/actual_native_args、initialization/EMA/optimizer/source_contract、final_ssdg/checkpoint/source_frozen/completion、reference/unit/shape/lraw/ordinary_draw两完整日志流、source_qualification、每row7prediction/scoring/complete；0NNanalysis source_summary/training_logs/formal_summary/costs/complete，完整报告与登记。分析仅新4440全日志，旧audit复用；8×7重计预期1008CM/168partition。source/final按5/11文件单archive取回。
 
 不得把PLANNED、smokePASS、sourcePASS或训练完成写成正式性能成功。
+
+
+## 实际启动
+
+代码 1cf3bf1c9232110b4199e01628b682b74a47d3a9；transfer/remotecompile VERIFIED，双真实父4NN+actualfactory1536NN首步PASS，syntheticordinary生成512包、0 realIQ/query/更新。dispatcher1465885，双worker1465929/1466063在GPU0/1，0NNanalysis1466559 WAIT_SOURCE。PID/CWD/argv/GPU/loggrowth、ownLRaw30CP/EMA/数据角色/实际20U轮开关均VERIFIED。私有观察器沿用旧脚本名的期望已改正，实际任务未改动。当前无E50正式结果。

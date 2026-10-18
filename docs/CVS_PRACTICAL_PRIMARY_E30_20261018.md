@@ -256,3 +256,6 @@ LRaw30已ANALYZED，代码 d14450bf1b0d12cc281df1f4d0e79e8760e48282，两条各2
 
 
 LRaw E50下一项固定矩阵已登记PLANNED：20261018-phase1-FcrossRX-LRaw-e50-s2026092701-m2-r01。sourcePASS决定和登记早于E30formal读取；两条strictownLRaw30student+EMA+20，总50/11100，原ordinarydraw-discard/raw返回、U/EMA/6L1.25/Asraw64不改。原NoAs50/As50为 20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01，实际releasecommit0f399c910324e21a8b1a60346d879be5c2964a9c。source50仅描述预算变化、无新晋级gate；完整8逻辑all7/13paired及成本分开报告。新增代码本地100focusednegative/19AST与analysis9synthetic/targeted20epochPASS；唯一合并P0/P1进行中，尚未启动50。详见[预登记](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-LRaw-e50-s2026092701-m2-r01/report.md)。
+
+
+LRaw50已实际启动：代码 1cf3bf1c9232110b4199e01628b682b74a47d3a9；dispatcher1465885，双worker1465929/1466063在GPU0/1，总E50固定计划。1540NN首步smoke PASS、源角色/strictownLRaw30CP/EMA/20轮U实际开关及PID/CWD/argv/GPU/log增长VERIFIED；analysis1466559 WAIT_SOURCE。当前无50性能结果，计划不受已报告30formal改变。
