@@ -2313,7 +2313,7 @@
   "current_experiment": "20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01",
   "active_As_hypothesis": {
     "run_id": "20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01",
-    "status": "IMPLEMENTED_PENDING_RELEASE",
+    "status": "RUNNING_VERIFIED",
     "hypothesis": "Bypass existing featuredropout onlyactualsatellite rows at same RNG/NN;AS_CE stochastic attributioncontrol",
     "new_models": 2,
     "reused_control_models": 2,
@@ -2322,7 +2322,23 @@
     "IQ_points": 256,
     "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01/report.md",
     "stage_clean_pp_min": -0.1,
-    "final_repeatable_clean_positive": false
+    "final_repeatable_clean_positive": false,
+    "execution_commit": "735e171fc064094f227fe6807d75836a0b3b0e3a",
+    "remote_checks": "PASS",
+    "real_CP_noquery_smoke": "PASS",
+    "workers": [
+      {
+        "row": "AS_CE-s2026092701",
+        "gpu": 1,
+        "progress": 0
+      },
+      {
+        "row": "AS_DET-s2026092701",
+        "gpu": 2,
+        "progress": 0
+      }
+    ],
+    "formal_scores_read": false
   },
   "practical_finite_power_E30_result": {
     "run_id": "20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01",

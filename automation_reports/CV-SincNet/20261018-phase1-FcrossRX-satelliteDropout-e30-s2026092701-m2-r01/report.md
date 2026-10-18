@@ -37,3 +37,5 @@
 发布前P1修复：新增行baseline_reuse误标为True会触发既有backend禁止重训reference；已修为两新行两段均False，历史NoAs/As-RD只在logical_rows复用。同步登记配置并加入该负例；本地11负例PASS，Torch仍待远端。
 
 实际代码/config commit：e781e8a4f0a1011dfc6d8ee7984f04378d91cdd3；一次P0/P1及该P1定点复核PASS。11本地权限负例/compile/2远端AST通过；本地Torch不可用如实保留，Torch作用域和真实F smoke由远端执行。
+
+真实发布与启动：execution commit `735e171fc064094f227fe6807d75836a0b3b0e3a`；archive传输/compile VERIFIED。远端13负例与Torch RNG/ordinary/raw/梯度/eval/恢复PASS；真实CP smoke2NN、两真实F合成1536NN、0更新PASS。两新worker PID/CWD/argv/GPU环境及nvidia-smi独立观察一致；原完整6300/56700/27000角色、scratch/13L7U实际日志已核实。训练最新进度见execution_verification.json。训练/冻结/正式预测/评分尚未完成，不能判定0.1pp阶段目标或重复clean收益。

@@ -5,9 +5,25 @@
   "real_IQ": 0,
   "CP": 0,
   "target": false,
-  "remote_Torch_checks_required": true,
+  "remote_Torch_checks_required": false,
   "publish_AST": true,
   "emitted_remote_AST": 2,
   "compile": true,
-  "targeted_fix": "Newmodels baseline_reuse=False forbothsegments;reusedcontrolsseparate"
+  "targeted_fix": "Newmodels baseline_reuse=False forbothsegments;reusedcontrolsseparate",
+  "remote_Torch_checks": {
+    "status": "PASS",
+    "protocol_negatives": 13,
+    "global_RNG_matched": true,
+    "ordinary_and_raw_unmodified": true,
+    "satellite_direct_gradient": true,
+    "exception_scope_restored": true,
+    "evaluation_unchanged": true,
+    "CVS_NN": 0,
+    "real_IQ": 0,
+    "CP": 0,
+    "updates": 0,
+    "target": false
+  },
+  "real_checkpoint_smoke": "PASS_2NN_NO_QUERY",
+  "real_F_synthetic_smoke": "PASS_1536NN_0UPDATES"
 }
