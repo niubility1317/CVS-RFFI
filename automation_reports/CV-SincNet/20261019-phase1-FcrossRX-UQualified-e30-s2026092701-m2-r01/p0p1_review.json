@@ -1,0 +1,69 @@
+{
+  "schema": "cvs_u_qualified30_independent_p0p1_review/v1",
+  "run_id": "20261019-phase1-FcrossRX-UQualified-e30-s2026092701-m2-r01",
+  "reviewer": "root/u_eligibility_history",
+  "review_type": "single_independent_P0_P1",
+  "status": "PASS",
+  "P0_count": 0,
+  "P1_count": 0,
+  "initial_P1_count": 1,
+  "resolved_P1_count": 1,
+  "targeted_re_review_count": 1,
+  "findings": [
+    {
+      "id": "P1_BOOTSTRAP_MISSING_BUNDLED_PARENT_PACKAGE",
+      "priority": "P1",
+      "status": "RESOLVED_TARGETED_PASS",
+      "file": "experiments/cvs_u_qualified30/runner.py",
+      "line": 11,
+      "trigger": "Execute the real release runner after the pinned P43 bootstrap has imported the original experiments package.",
+      "problem": "The new runner explicitly registers only experiments.cvs_u_qualified30. Its design imports experiments.cvs_u_practical30, which is bundled in the new archive but is absent from the pinned original experiments package path. The recursive P43 bootstrap reaches cvs_fullsource_concat20.runner.bootstrap, prepends the older original release and imports experiments.cvs_feature_sequence50.source. Python subsequently resolves children through that already loaded experiments package path. Bundling the old U package alone does not add it to that path, so the first new design import raises ModuleNotFoundError before the real checkpoint smoke.",
+      "evidence": [
+        "experiments/cvs_u_qualified30/runner.py:10-11 registers the new package only",
+        "experiments/cvs_u_qualified30/design.py:4 imports experiments.cvs_u_practical30.design",
+        "experiments/cvs_u_qualified30/publish.py bundles new and old U packages",
+        "experiments/cvs_fullsource_concat20/runner.py:8-13 prepends original paths and executes a source module that imports the experiments hierarchy",
+        "The old UPractical runner explicitly registered its own package; that registration is not called by the new runner"
+      ],
+      "minimum_fix": "After the pinned P43 bootstrap and before importing the new dispatcher or design, explicitly register both experiments.cvs_u_practical30 and experiments.cvs_u_qualified30 with their paths in the new immutable archive. Keep the old package source unchanged.",
+      "targeted_verification": "Confirmed runner.py now explicitly registers cvs_u_practical30 followed by cvs_u_qualified30 immediately after parent bootstrap and before the dispatcher/design import. Inspected the actual AST-based bootstrap_targeted_check.py and its PASS output: both archive package paths are the new release and the pinned parent path is retained; NN/CP/IQ/remote are zero. No full review or full test suite was repeated.",
+      "resolution_evidence": [
+        "experiments/cvs_u_qualified30/runner.py:11-12",
+        "local_artifacts/F_UQualified_E30_20261019_r01/bootstrap_targeted_check.py",
+        "local_artifacts/F_UQualified_E30_20261019_r01/bootstrap_targeted_check.json"
+      ]
+    }
+  ],
+  "reviewed_boundaries": [
+    "Original ownAs20 student and matching EMA provenance and strict loading; same total E30 and original default cosine head",
+    "R uses its own existing teacher-qualified count for uniform private routing; Q uses the exact pre-student confidence AND temporal mask",
+    "Zero and full qualification, last U batch124, nonempty channel call accounting, raw input and Gaussian full draw preservation",
+    "Native threshold and temporal return values, one teacher and student U forward, unchanged selected-mean CE and all-U entropy, None feature adjustment",
+    "Full source L6300/hiddenU56700/V27000 and original source RX/day; no target-derived routing input",
+    "Immutable output root, ordinary account, all-owner GPU capacity, original runtime dependency and the single two-package training archive",
+    "Fixed source readout, all seven unchanged formal arrays, separate exec scorer only after complete predictions",
+    "Explicit source and final analysis invocations; source-only existing N/C audit reuse and actual producer fields",
+    "Two new rows, four logical conditions, six paired comparisons,504CM/84partitions, two source promotion conditions and actual1570NN smoke accounting",
+    "Aggregate publisher and collector dependencies, immutable paths, source/final truth separation and no training process mutation"
+  ],
+  "supporting_evidence_inspected": [
+    "local_artifacts/F_UQualified_E30_20261019_r01/focused_router_checks.json:43 protocol negatives,18 routing negatives,39 mock positives and exact frozen native AST boundary PASS",
+    "local_artifacts/F_UQualified_E30_20261019_r01/emitted_router_checks.json:20 package Python files and2 emitted remote AST payloads PASS",
+    "local_artifacts/F_UQualified_E30_20261019_r01/analysis_prepare/analysis_local_checks.json:7 focused fixtures PASS including4440 complete synthetic step streams;2 cost-scope targeted tests PASS",
+    "local_artifacts/F_UQualified_E30_20261019_r01/analysis_prepare/helper_checks.json:staged publish/collect mocks and source/final single-archive roundtrips PASS",
+    "Saved new reference_config.json equals the old U package saved original-parent configuration",
+    "Actual previous source-only aggregate contains MATCHED_NOAS30 and UTEACHER30 row/parent20/cost fields consumed by the new analysis"
+  ],
+  "limits": {
+    "scope": "Only defects directly making the next authorized real run wrong, unauthorized, destructive, unlaunchable or unable to produce legal predictions",
+    "P2_blocks_release": false,
+    "full_test_suite_repeated": false,
+    "NN": 0,
+    "IQ_reads": 0,
+    "checkpoint_reads": 0,
+    "remote_calls": 0,
+    "source_edits": 0,
+    "target_scores_used": false,
+    "success_claim": "No release, smoke, training or performance completion is claimed by this review"
+  }
+}

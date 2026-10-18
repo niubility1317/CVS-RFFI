@@ -338,3 +338,10 @@ Run `20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02`，实际代码 
 正式 all7 已完成且独立复计 630CM/105 分区。S clean85.138690%，相对 matchedN−0.150595pp，阶段限制 FAIL；S−C clean−0.151190、midurban−0.040476、lowurban+0.083929、urbanmean−0.032738pp，low绝对51.360714%。单模型种子，未获可重复双提升。三行新尾段合计6660更新；有效训练/读出/smoke13057048样本前向，旧首步失败770另列，候选整尝试13057818。S额外141750传播，candidate native1388.747s/control1158.070s；前向不增加不代表零成本。
 
 完整结果：[最终分析](../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02/final_analysis.md)，源决定、全部F1/最差RX/分层/纠错/成本均保留。健康训练自然退出，未重启或热改；实际状态ANALYZED/VERIFIED，未达总研究目标。
+
+
+## 2026-10-19 资格对应 U practical：已登记、未启动
+
+新run `20261019-phase1-FcrossRX-UQualified-e30-s2026092701-m2-r01` 只检验已有teacher资格与practical学生输入对应的价值；原四分之一固定配方保持关闭。R随机选k=自身当步资格数，Q选全部资格位，原Gaussian先整批生成，资格/CE/entropy/L6/默认头/U真值隐藏不变。两新ownAs20+10,totalE30；复用旧UPractical N/C冻结源与all7读出，4逻辑模型/6配对。两个源条件固定Q-Cmidlow≥+.5pp、Q-NfullVclean≥−.1pp；FAIL关闭、不扫比例/门槛/seed救跑，R不备用晋级，正式仍all7。额外As量/非空调用数动态计数，不能将同k规则称作未来计数完全相同。
+
+路由61项聚焦负例/39正例、真实native接口和20py/2emitted AST PASS；真实1570NN parent/L/U smoke为launcher首步待执行。当前未训练/未评分，预计新两尾段4440更新、8704698NN含sharedsmoke，旧770不重复收费。详情见[预登记](../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-UQualified-e30-s2026092701-m2-r01/report.md)。

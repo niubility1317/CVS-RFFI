@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "synthetic_only": true,
+  "public_files_AST": 2,
+  "embedded_publisher_AST": 3,
+  "embedded_collector_AST": 1,
+  "config_phase_checks": 2,
+  "rejected_invalid_configs": 4,
+  "mocked_launch_phases": 2,
+  "source_truth_argument": false,
+  "formal_launch_explicit": true,
+  "source_public_files": 5,
+  "final_public_files": 11,
+  "single_archive_roundtrips": 2,
+  "old_u_practical_script_dependencies": 0,
+  "remote_operations": 0,
+  "NN": 0,
+  "CP": 0,
+  "IQ": 0,
+  "real_source_or_formal_reads": 0,
+  "files_owned": [
+    "cvs_u_qualified30_publish_analysis_20261019.py",
+    "cvs_u_qualified30_collect_20261019.py"
+  ]
+}

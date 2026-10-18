@@ -1,0 +1,255 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-FcrossRX-UQualified-e30-s2026092701-m2-r01",
+  "group_id": "FcrossRX_U_qualified_route_E30",
+  "display_name": "已有教师资格的U星地路由与同数量规则随机控制",
+  "description": "Test whether existing teacher-qualified U slots benefit from completepractical without extraNN,against same current qualified-count random routing and reused matched GaussianU As/NoAs controls.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "UQualified30",
+    "qualified-versus-count-random"
+  ],
+  "tags": [
+    "Phase1",
+    "FcrossRX",
+    "SIG_TIME_X3",
+    "fullsource",
+    "defaultcos",
+    "E30",
+    "U_qualified_practical",
+    "one_seed",
+    "same_count_rule_control"
+  ],
+  "comparison_group_id": "FcrossRX_UQualified_E30_seed01",
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+    "20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02"
+  ],
+  "authorization": "Current userE30 augmentation research;full practical primary;prior fixedquarter U closed. New keyhypothesis uses existing teacher-qualified slots, matched currentqualified-count random control, no addedteacher/student NN or qualifierchanges;two originalAs20+10 rows,existing N/C reused. Good source-supported candidates may future totalE50,not automatic.",
+  "code": {
+    "commit": "PENDING_SINGLE_ACTUAL_CODE_CONFIG_COMMIT",
+    "checkout": "E:/type10-7/code/worktrees/cvs_iq_timing_20261016",
+    "environment": "N607 existingCVS-RFFI PyTorch/fullFP32/CPU2/ordinary account;no installation",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_UQualified_E30_20261019_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original full-source physical roles,split392005;reuse fixed source/cache and formal received views",
+    "representation": "Existing source IQ256,dataset equalized index1,Fs25MHz;practical residual/post_sync propagation receiver EQ=false/reference_snr_db30,complete original dependency graph;fixed received IQ untouched",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract.role_ids L_s/U_s/V;fixed formal received_views manifest and opaque168000 physical IDs,unchanged",
+    "label_map_ref": "Original map [14-10,14-7,20-15,20-19,6-15,8-20]",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "All six registered originalTX,unchanged source/target registered-class map",
+    "roles": {
+      "L_s": "6300 fullsource visibleTX/all5RX/cumulative30epochs,noLdev/noRXholdout",
+      "U_s": "56700 TX hidden. All three new tails retain raw ownEMA/conf quantile .86 clip .92-.97/original batch_neighbor(window2,minconf .8), common strong agreement disabled. S existing 1/4 student slots complete rawU practical; C Gaussian std .015. All-U entropy .01 and accepted-mean pseudoCE lambda .16 remain.",
+      "V": "27000 source validation only,never training/EMA/state updates;fixed existing V1800 two-draw source panel"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "SameVALIDATED_ONCEall5sourceRX/day/physicalL6300 U56700hidden V27000;noLdev/noRXholdout",
+    "support_query_ref": null,
+    "leo_config_ref": "Original P43 complete training practical, independent U namespace/RNG and channel counters; per-packet physical dependencies intact, no sequential practical, no ordinary augmentation before practical. No modified formal IQ."
+  },
+  "permissions": {
+    "regime": "source_train_then_frozen_truthlast",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Two new R/Q routing rows,common currentteacher-only eligibility(original threshold+batchneighbor,strong/domainFalse,no selectionhook). R samples uniform positions k=own currentqualificationcount;Q allqualifiedpositions. Same count rule is not equal future physicalcounts after ownEMA trajectories diverge. CE denominator/weights andallUentropy unchanged;Q-C is whole route effect,Q-R doesnot isolate countfree causalphysics. No Utruth or fitteddiagnostichead."
+  },
+  "checkpoint": {
+    "initialization": "BOTH_STRICT_ORIGINAL_OWN_AS20_STUDENT_AND_OWN_EMA_PLUS10_RESET_OPTIMIZER",
+    "sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Reuse validated source handles and strict P43 full-source provenance,actualarchive19aedc3604fed9c193237dd92366164178af0983;matching currentN/C controls codefa9 read-only, no datarevalidation",
+    "provenance_verdict": "Original ownAs20 scratch/source-fixed FINAL20 fullL6300 hiddenU56700 V27000;source defaulthead/ownEMA strict load atrealnoquery smoke",
+    "selection_rule": "fixedFINAL30. Q-C fixedsource two-drawmidlow>=+.5pp andQ-N fullVclean>=-.1pp onlyfutureE50/seed eligibility;failure closes qualifiedroute,no ratio/threshold/teacher/parent/seed rescue,all7 stillscored;Q-R attribution reportednot extra sourcegate."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/practical-UQualified",
+    "gpu_policy": "CPU2;eachGPU allowners totalcomputePIDs<=3 andfree>=12000MB;ordinaryaccount;do nottouchhealthyjobs",
+    "remote_run_root": "PROJECT/runs/20261019-phase1-FcrossRX-UQualified-e30-s2026092701-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261019-phase1-FcrossRX-UQualified-e30-s2026092701-m2-r01/logs",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261019-phase1-FcrossRX-UQualified-e30-s2026092701-m2-r01",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_u_qualified30/runner.py",
+    "stop_rule": "Only exactowned systemic protocol/data-role/parent/head/nonfinite/output/predictionclosing technicalfailure;preserve/reconcile,no blindretry. Scientificnegative completesall7. No healthyjob hotedit/stop.",
+    "status": "PREREGISTERED"
+  },
+  "expected_artifacts": [
+    "real_checkpoint_smoke.json",
+    "synthetic_smoke.json",
+    "source_matrix_decision.json",
+    "automatic_summary.json",
+    "complete.json",
+    "analysis_auto_r01/source_complete.json",
+    "analysis_auto_r01/complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macroF1",
+      "worstRX",
+      "paired_delta_absolute_pp",
+      "urban3mean",
+      "repairs/new_errors/net",
+      "RX/day/TX",
+      "suburban_selfclean_gap",
+      "source_actual_addednoise4bins/state/lock",
+      "U_teacher_qualifier/selected_count/denominator/pseudo_label_RX_day_coverage",
+      "U_route_selected/count/rawIDs_private/CE_entropy",
+      "actualNN/studentteacher/updates/views/wall",
+      "U_simulation_calls/packets/wall"
+    ],
+    "dimensions": [
+      "seed2026092701",
+      "MATCHED_NOAS30",
+      "UTEACHER30",
+      "URANDOM30",
+      "UQUALIFIED30",
+      "fullV27000/fixedV1800two_draw",
+      "clean+sixfixedpractical",
+      "RX/day/TX",
+      "own20+10/total30"
+    ],
+    "prediction_ref": "PROJECT/runs/20261019-phase1-FcrossRX-UQualified-e30-s2026092701-m2-r01/{row}/prediction",
+    "scorer_ref": "Eachnewrow all7 predictions frozen before separateexec scorer;then independent4logical504CM/84partitions/6pairs. ExistingN/C scoredpredictions reused,main Q-C route/Q-R count-rule attribution/stageQ-Nclean."
+  },
+  "rows": [
+    {
+      "row_id": "R01-s2026092701",
+      "method": "COUNT_RANDOM",
+      "purpose": "Privateuniformpositions k=own current teacherqualifiedcount;unselectedoriginalGaussian",
+      "config_ref": "experiments/cvs_u_qualified30/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-FcrossRX-UQualified-e30-s2026092701-m2-r01/R01-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model2026092701 andsplit392005 fixed. Original native model seed also controls DataLoader/ordinary torch RNG;no separate data seed. L channel original seed vector and U independently named private RNG fixed in resolved config,not a single augmentation scalar. Evaluation reuses fixed received arrays/sourcepanel,not resampled;support not applicable. Matching formulas/budget do not guarantee equal training trajectories.",
+      "k": null,
+      "scenario": "OriginalLAs64/step;Uroute COUNT_RANDOM;fixedclean+sixpractical",
+      "optimizer": "ResetAdamW lr2e-4 WD1e-4 cos10 min1e-6;strict originalownAs20 student+EMA",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "ownAs20+10 totalE30/6660updates;new2220;6L768/step +nativeUstudent/teacher567000each;dynamicAsphysicalsimulation notextraNN;oldN/Creadouts reused",
+      "output_root": "PROJECT/runs/20261019-phase1-FcrossRX-UQualified-e30-s2026092701-m2-r01/R01-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-FcrossRX-UQualified-e30-s2026092701-m2-r01/logs/R01-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_u_qualified30/runner.py --mode worker --row R01-s2026092701",
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/source_frozen.json",
+        "source/result.json",
+        "source/u_steps.jsonl.gz",
+        "source/training_sequence.jsonl.gz",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "prediction/predictions.npz",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ]
+    },
+    {
+      "row_id": "Q01-s2026092701",
+      "method": "QUALIFIED_PRACTICAL",
+      "purpose": "All current teacher-qualified nativeU positions full practical;unqualifiedremainoriginalGaussian",
+      "config_ref": "experiments/cvs_u_qualified30/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-FcrossRX-UQualified-e30-s2026092701-m2-r01/Q01-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model2026092701 andsplit392005 fixed. Original native model seed also controls DataLoader/ordinary torch RNG;no separate data seed. L channel original seed vector and U independently named private RNG fixed in resolved config,not a single augmentation scalar. Evaluation reuses fixed received arrays/sourcepanel,not resampled;support not applicable. Matching formulas/budget do not guarantee equal training trajectories.",
+      "k": null,
+      "scenario": "OriginalLAs64/step;Uroute QUALIFIED_PRACTICAL;fixedclean+sixpractical",
+      "optimizer": "ResetAdamW lr2e-4 WD1e-4 cos10 min1e-6;strict originalownAs20 student+EMA",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "ownAs20+10 totalE30/6660updates;new2220;6L768/step +nativeUstudent/teacher567000each;dynamicAsphysicalsimulation notextraNN;oldN/Creadouts reused",
+      "output_root": "PROJECT/runs/20261019-phase1-FcrossRX-UQualified-e30-s2026092701-m2-r01/Q01-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-FcrossRX-UQualified-e30-s2026092701-m2-r01/logs/Q01-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_u_qualified30/runner.py --mode worker --row Q01-s2026092701",
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/source_frozen.json",
+        "source/result.json",
+        "source/u_steps.jsonl.gz",
+        "source/training_sequence.jsonl.gz",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "prediction/predictions.npz",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Prior fixedquarterU run closed;new key assumption aligns existing identity eligibility with practicalinput,not a newconfidencethreshold/temporal gate or ratio sweep. Same-count-rule R controls reducedAsdosage as farasoneownteacherpolicy allows;actualcounts andCE/entropyexposure separatelyreport.",
+    "Currentexact native featurehook is model._source_unlabeled_feature_hook;returns(None,{}) no addedloss;teacher threshold andtemporal return unchanged,domain/strongFalse common. OriginalP43 strongagreementTrue isnot retained in either currentcontrol ornewrows.",
+    "One shared real As20 parent2NN +two syntheticL1536 +twoUteacher/student32 =>1570smokeNN. Newtwo-tail/readouts expected8703128;total8704698,actualcounterssupersede. PriorUrun failed770 historicalnot charged again.",
+    "Sourcepanel fixedV1800/two draws,2.45GHz versus originaltrain/formal2.462GHz disclosed;drawsnotmodelseeds. No targetphysics标签/目标反馈."
+  ],
+  "comparators": [
+    {
+      "arm": "MATCHED_NOAS30",
+      "run_id": "20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02",
+      "row_id": "N01-s2026092701",
+      "code_commit": "fa9b272aa400ed3403e8f550c50a6957ec0f8588",
+      "reuse": "all frozen source/trainaudit/predictions/scoring;no modelreload orqueries;not initialization",
+      "output_root": "PROJECT/runs/20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02/N01-s2026092701"
+    },
+    {
+      "arm": "UTEACHER30",
+      "run_id": "20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02",
+      "row_id": "C01-s2026092701",
+      "code_commit": "fa9b272aa400ed3403e8f550c50a6957ec0f8588",
+      "reuse": "all frozen source/trainaudit/predictions/scoring;no modelreload orqueries;not initialization",
+      "output_root": "PROJECT/runs/20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02/C01-s2026092701"
+    }
+  ],
+  "registered_at": "2026-10-18T18:31:30+00:00"
+}
