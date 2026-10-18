@@ -1,0 +1,19 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "new_analysis_files": 5,
+  "unit_tests": 10,
+  "unit_seconds": 0.616,
+  "synthetic_complete_steps": 6660,
+  "truth_last_negative": "PASS_LAST_ROW_INCOMPLETE",
+  "seeds_and_trajectory_interaction_distinguished": true,
+  "new_vs_reused_costs_distinguished": true,
+  "Python_AST": 8,
+  "emitted_remote_AST": 2,
+  "mock_archive_members": 8,
+  "IQ_reads": 0,
+  "checkpoint_reads": 0,
+  "NN": 0,
+  "real_target_access": false,
+  "real_analysis_not_started": true,
+  "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-continuous-e30-s2026092701-m2-r01/analysis_auto_r01"
+}

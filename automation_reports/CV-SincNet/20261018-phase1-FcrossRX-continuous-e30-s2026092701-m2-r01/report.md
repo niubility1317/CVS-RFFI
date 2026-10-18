@@ -31,3 +31,7 @@ run：`20261018-phase1-FcrossRX-continuous-e30-s2026092701-m2-r01`；owner：cod
 发布及启动 VERIFIED：单包SHA/compile/bootstrap PASS，实际checkpoint2NN无query及两行合成1536NN PASS；两行分别GPU0/1，独立PID/CWD/cmdline/startticks/GPU及日志证据已保存在本地产物。原生实际13L17U、scratch、cosine30已确认，状态RUNNING；尚无训练完成或正式准确率。
 
 首轮实际执行已核实：两行各E1/30、222更新、170496 L前向；B01生成并消费14208 fullAs IQ、B00为0。loss/grad有限，原PID存活、GPU0/1各一进程、日志6390→11527字节，无failure。actual_modules确认leo_practical与DataAugmentation来自固定旧release/adv3b02_xuc/code；actual_channel保持residual/post_sync、EQoff G1、reference30、quality/phase/IQ/AGC/reflect，不改变正式receivedIQ。以上仅运行健康，不是新正式准确率。
+
+独立分析预登记补充（训练中，不改变任何活动模型文件）：仅CPU读取已保存日志/metadata/logits，0新增IQ/CP/NN/更新；四行 STAGED_B00/STAGED_B01/CONT_B00/CONT_B01，同一个seed，不称四seed，也不把trajectory×As差异之差叫Ag×As。旧两行复用P43原产物和既有P49完整源日志复算，新增两行完整6660步逐条复算。先独立源判据/分层与curves，再启动source-only纯metadata覆盖重放；全部四行七视图prediction/scoring完成才允许独立truth复算。覆盖与final互不阻塞。
+
+分析owner唯一，CPU/CUDA隐藏；新不可覆盖release：`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_continuous_analysis_20261018_r01`；output：`/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-continuous-e30-s2026092701-m2-r01/analysis_auto_r01`，日志为output-launch；命令为`CVS-RFFI/bin/python -u cvs_continuous52_pipeline_20261018.py --output ANALYSIS_ROOT --truth EXISTING_TRUTH --code-commit ANALYSIS_COMMIT`。主分析等待只依据原run已验证PID/CWD/cmdline，读取暂时未知不当作终止；已完成metadata不要求PID存活。技术失败保存原产物/不自动重启，不操作训练进程。10项本地统计/完整6660步/成本/truth-last/存活语义测试PASS；8AST/2远端脚本AST/8成员模拟发布PASS。实际源/正式分析结果尚未产生，图表路径不作为已生成结果声明。
