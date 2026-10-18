@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "reviewer": "cleanretain37_p0p1",
+  "scope": "One candidate P0/P1 only",
+  "findings": [],
+  "verified": [
+    "gain sign",
+    "heldTX/day isolation",
+    "independent recount advanced indexing",
+    "source roles",
+    "release isolation"
+  ],
+  "unit_tests": 7,
+  "synthetic_values": 16916400,
+  "fit_indices_match": 72,
+  "synthetic_plot_only_mocked": true,
+  "real_statistics_reads": 0,
+  "remote_actions": 0,
+  "extra_reviews": false
+}

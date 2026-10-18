@@ -1,0 +1,162 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-diagnostic-FcrossRX-iqband-LtoV-manysig-m1-r01",
+  "group_id": "FcrossRX-IQband-source-LtoV",
+  "display_name": "I/Q频率相关增益差：完整源统计L到V检验",
+  "description": "Reuse existing fullsource periodogram statistics;fixed quadratic differential I/Q gain law;0IQ/CP/NN/training/target.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "fullsource",
+    "IQband_premise",
+    "LtoV",
+    "reused_derived_statistics",
+    "0NN",
+    "no_target",
+    "no_RX_holdout"
+  ],
+  "comparison_group_id": "source-IQ-band-gain-law",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active Ag+As goal;fixedF/defaulthead/full5RX/E30modelbudget;new source premise only,no new training",
+  "code": {
+    "commit": "PENDING_FIRST_GIT_COMMIT",
+    "checkout": "codex/phase1-urban-sigtime-20261014",
+    "environment": "N607 ordinary CVS-RFFI Python NumPy/Torch, CPU2 CUDA hidden;no model or installation",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_iqband_source_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing VALIDATED_ONCE source carrier",
+    "representation": "Existing EQ1 RMScenterfalse IQ256/25MHz derived periodograms;127positive rFFT bins;no new IQ reads or views",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#/role_ids",
+    "label_map_ref": "Original sixTX mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "All6TX",
+    "roles": {
+      "L_s": "6300 derived source records/90cells70;fixed parity halves",
+      "U_s": "56700 hidden/notused",
+      "V": "27000 derived source records/90cells300;evaluation only"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "NOT_APPLICABLE_NO_PHASE2",
+    "split_id": 392005,
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-iqskew-LtoV-manysig-m1-r01/observations.npz#V_features",
+    "support_query_ref": "NOT_APPLICABLE_NO_QUERY",
+    "leo_config_ref": "NOT_APPLICABLE_NO_CHANNEL"
+  },
+  "permissions": {
+    "regime": "Source_only_reused_derived_periodograms",
+    "L_s": "Visible L metadata/statistics for physics parameter fits only",
+    "U_s": "No usage/no label access",
+    "V": "Read-only fixed evaluation;no V parameter fit or reference input",
+    "query_use": "Forbidden;no query/IQ/truth or Phase1 model",
+    "claim_scope": "Necessary sharedRX differential I/Q gain law only,not identified hardware or valid IQaugmentation or accuracy",
+    "separate_head_training": false
+  },
+  "checkpoint": {
+    "initialization": "NONE_NO_MODEL",
+    "sources": [],
+    "contract_check_ref": "Reuse P50 unchanged source_roles EXACT_MATCH periodograms;all90cells,unique/disjointL/V,metadata and finite product checked",
+    "provenance_verdict": "NOT_APPLICABLE_NO_MODEL_CHECKPOINT",
+    "selection_rule": "No checkpoint loaded or selected;no sourcecarrier deserialization"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/iqband-source51",
+    "gpu_policy": "No GPU allocated;CUDA hidden;CPU2;no other process changes",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-iqband-LtoV-manysig-m1-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-iqband-LtoV-manysig-m1-r01-launch",
+    "local_artifact_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_iqband_source_20261018",
+    "launch_command": "CVS-RFFI/bin/python -u -m experiments.cvs_iqband_source51.run",
+    "stop_rule": "Owned source-role/config mismatch/nonfinite/collision/recount failure preserves outputs,no auto retry;scientificFAIL closes fixedquadratic law,no basis/window/bin/cap/RX/seed/threshold rescue"
+  },
+  "expected_artifacts": [
+    "7unitchecks/noCPsmokeN_A",
+    "resolvedsourceconfig/activePID",
+    "L/V/Lhalves centered logPSD ratios/fits private NPZ",
+    "main result/72fits/18folds/5RXrisk",
+    "independent originalstatistics recount/CSV/PNG/PDF",
+    "completion/failure/public report/Git"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "splitRXcontrast power dB2",
+      "shared/identity/additive/TXconditional SSE",
+      "18fold/5RX risk",
+      "boundaryfits",
+      "fixedcoefficient values",
+      "actualcost"
+    ],
+    "dimensions": [
+      "L/V",
+      "6TX",
+      "5RX",
+      "3day",
+      "127fixedpositivefrequencybins",
+      "18heldTX/day statisticalfolds"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-iqband-LtoV-manysig-m1-r01/fitted_statistics.npz",
+    "scorer_ref": "experiments/cvs_iqband_source51/recount.py sourceonly"
+  },
+  "rows": [
+    {
+      "row_id": "IQ_BAND_GAIN_L_TO_V",
+      "method": "IQ_BAND_GAIN_SOURCE_STATISTIC",
+      "purpose": "Falsify fixed quadratic differential I/Q frequency gain law on heldTX/day",
+      "config_ref": "experiments/cvs_iqband_source51/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-iqband-LtoV-manysig-m1-r01/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No model/augment seed;fixed originalsource order;18 statisticalfolds are not modelseeds",
+      "k": null,
+      "scenario": "Source clean only no generated channel",
+      "optimizer": "NONE_NO_MODEL",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": 0,
+      "budget_ref": "33300 existing derived source records;0IQ/CP/NN/train/teacher/head/target;72statisticalfits",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-iqband-LtoV-manysig-m1-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-iqband-LtoV-manysig-m1-r01-launch/stdout.log",
+      "command": "CVS-RFFI/bin/python -u -m experiments.cvs_iqband_source51.run",
+      "expected_artifacts": [
+        "7unitchecks/noCPsmokeN_A",
+        "resolvedsourceconfig/activePID",
+        "L/V/Lhalves centered logPSD ratios/fits private NPZ",
+        "main result/72fits/18folds/5RXrisk",
+        "independent originalstatistics recount/CSV/PNG/PDF",
+        "completion/failure/public report/Git"
+      ]
+    }
+  ],
+  "notes": [
+    "Old scalarSRO/staticRXMIX/commoncomplexFIR/IQrelative-delay failures remain closed.",
+    "Frequency dependent I/Q gain mismatch is a possible receiver mechanism,not proved on this dataset.",
+    "Mean logratio removes constant I/Q gain;fixed quadratic shape does not fit arbitrary RXresponse.",
+    "PASS only supports a separately preregistered finitewindow/defaulthead identity test;not automatic E30training.",
+    "No U or target data used;all5sourceRX retained;no targetaccuracy to choose law/bound.",
+    "No new direct IQ or checkpoint reads;reuse immutable P50 periodogram statistics."
+  ]
+}
