@@ -1,6 +1,6 @@
 # P69：保留 AdamW 状态的匹配 E30
 
-状态：PLANNED，尚未训练；不预告识别收益。起点 commit 0ba6945f52f0709f7246f6d0e39a26364752ef53；实际代码 commit 在冻结提交后写入 experiment.json。
+状态：VERIFIED_RUNNING。两新行已实际完成累计E21，尚无冻结后新性能结果。起点 commit 0ba6945f52f0709f7246f6d0e39a26364752ef53；实际代码 commit 在冻结提交后写入 experiment.json。
 
 最值得保留的是完整 practical 有标签 CE 和稳定 clean 监督份额。P68 以及原时间确认没有通过源晋级；RXpopulation／校准刷新、时机、场景安排和比例方向已做，不重复改名启动。另一对话正研究 common_channel，排除。全部已源合格的原 As／Asweight／LRaw／SAT18 路线已做 E50，没有待补的合格 E50。
 
@@ -44,3 +44,6 @@ CWD=PROJECT/releases/cvs_FcrossRX_optimizer_keep_E30_20261018_r01；command=CVS-
 
 
 发布前实际验证：23项协议/配置负例＋40项纯张量optimizer检查PASS（命令墙钟2.857731s）；18核心Python compile PASS（.3836804s）；8项纯CPU分析toy＋compile PASS。local真实CVSNN/IQ/CP均0。唯一独立P0/P1审查PASS，无阻塞缺陷。一次普通账户direct N607预检VERIFIED：8GPU空闲、父输入两份齐、run/release不存在、diskfree3932.54GB；真实父moments与8NN smoke仍待发布首步。
+
+
+实际代码 d2ddf0d48a48b7c9f8416e8c4219185155faf298 已提交、推送并由独立GitHub compare核实identical。一次发布归档SHA e432bfef1c3ca3042fa9b759f8bdb8231c4551af543afc247edb40026fc6f2cb 比较VERIFIED，22个Python文件远端compile PASS。首步两个真正父student／ownEMA／AdamW加载smoke PASS8NN、0更新；两父74个已有state均step4440，m/v逐项相等，新bodyLR.0002／SincgroupLR.2和新计数0正确。两新行GPU1/2所属PID/CWD/argv/GPU计算及日志增长已独立核实，E21后旧state步数4662、新段Sinc步数222。实际nativeargs仅output_dir/run_id变化，数据角色EXACT_MATCH，原batch_neighbor不变。Windows SCP客户端首次未产生远端文件，核对目录为空后改用既有验证客户端，归档比对成功；无训练失败或重跑。

@@ -1,0 +1,66 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "run_id": "20261018-phase1-FcrossRX-optimizerKeep-e30-s2026092701-m2-r01",
+  "actual_code_commit": "d2ddf0d48a48b7c9f8416e8c4219185155faf298",
+  "release_archive": {
+    "sha256": "e432bfef1c3ca3042fa9b759f8bdb8231c4551af543afc247edb40026fc6f2cb",
+    "bytes": 83059,
+    "python_files": 22,
+    "remote_compile": "PASS",
+    "independent_remote_compare": "identical"
+  },
+  "dispatcher_pid": 1558466,
+  "workers": [
+    {
+      "row_id": "B00-s2026092701",
+      "pid": 1558557,
+      "gpu": 1,
+      "live": true,
+      "cwd": "PROJECT/releases/cvs_FcrossRX_optimizer_keep_E30_20261018_r01",
+      "command": "CVS-RFFI/python -u experiments/cvs_optimizer_continuity69/runner.py --mode worker --row B00-s2026092701",
+      "log_bytes_initial": 6698,
+      "log_bytes_verified": 11861,
+      "completed_cumulative_epoch": 21,
+      "actual_GPU_compute_process": true
+    },
+    {
+      "row_id": "B01-s2026092701",
+      "pid": 1559046,
+      "gpu": 2,
+      "live": true,
+      "cwd": "PROJECT/releases/cvs_FcrossRX_optimizer_keep_E30_20261018_r01",
+      "command": "CVS-RFFI/python -u experiments/cvs_optimizer_continuity69/runner.py --mode worker --row B01-s2026092701",
+      "log_bytes_initial": 6698,
+      "log_bytes_verified": 11862,
+      "completed_cumulative_epoch": 21,
+      "actual_GPU_compute_process": true
+    }
+  ],
+  "actual_smoke": {
+    "status": "PASS",
+    "NN": 8,
+    "updates": 0,
+    "state_entries_each": 74,
+    "inherited_steps_each": 4440,
+    "fresh_body_LR": 0.0002,
+    "fresh_Sinc_group_LR": 0.2,
+    "fresh_Sinc_counters_zero": true
+  },
+  "native_args_scientific_match": true,
+  "changed_native_arg_keys": [
+    "output_dir",
+    "run_id"
+  ],
+  "role_ids": "EXACT_MATCH",
+  "native_U_temporal_mode": "batch_neighbor",
+  "optimizer_state_steps_afterE21": 4662,
+  "new_segment_steps_afterE21": 222,
+  "launch_log_growth": true,
+  "source_and_formal_results_available": false,
+  "known_transfer_attempt": {
+    "Windows_SCP_client": "FAILED/no remote archive created",
+    "reconciled_archive_absent": true,
+    "project_verified_SCP_route": "VERIFIED via independent archive compare; no experiment retry"
+  },
+  "healthy_other_tasks_untouched": true
+}

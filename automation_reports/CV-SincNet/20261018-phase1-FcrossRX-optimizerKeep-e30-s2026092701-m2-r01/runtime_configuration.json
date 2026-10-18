@@ -1,0 +1,76 @@
+{
+  "time": 1792335895.6780624,
+  "rows": [
+    {
+      "arm": "B00",
+      "source_exists": true,
+      "native_args_changed_keys": [
+        "output_dir",
+        "run_id"
+      ],
+      "only_identity_args_changed": true,
+      "U_temporal_mode": "batch_neighbor",
+      "LR": 0.0002,
+      "WD": 0.0001,
+      "modules": {
+        "leo_practical.channel": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+        "leo_practical.residual": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/residual.py",
+        "DataAugmentation": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/DataAugmentation.py",
+        "SSDG.train_ssdg": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py"
+      },
+      "role_ids_equal": true,
+      "optimizer": {
+        "state_entries": 74,
+        "reset": false,
+        "parent_state_loaded": true,
+        "schedule": "cosine10",
+        "lr": 0.0002,
+        "weight_decay": 0.0001,
+        "parent_optimizer_steps": 4440,
+        "fresh_sinc_unit_steps": 0,
+        "fresh_sinc_physical_clip_calls": 0
+      },
+      "completed_tail_epochs": 0
+    },
+    {
+      "arm": "B01",
+      "source_exists": true,
+      "native_args_changed_keys": [
+        "output_dir",
+        "run_id"
+      ],
+      "only_identity_args_changed": true,
+      "U_temporal_mode": "batch_neighbor",
+      "LR": 0.0002,
+      "WD": 0.0001,
+      "modules": {
+        "leo_practical.channel": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+        "leo_practical.residual": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/residual.py",
+        "DataAugmentation": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/DataAugmentation.py",
+        "SSDG.train_ssdg": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py"
+      },
+      "role_ids_equal": true,
+      "optimizer": {
+        "state_entries": 74,
+        "reset": false,
+        "parent_state_loaded": true,
+        "schedule": "cosine10",
+        "lr": 0.0002,
+        "weight_decay": 0.0001,
+        "parent_optimizer_steps": 4440,
+        "fresh_sinc_unit_steps": 0,
+        "fresh_sinc_physical_clip_calls": 0
+      },
+      "completed_tail_epochs": 0
+    }
+  ],
+  "owned_gpu_processes": [
+    "1558557, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 2834",
+    "1559046, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 2832"
+  ],
+  "log_bytes": {
+    "B00-s2026092701": 6698,
+    "B01-s2026092701": 6698
+  },
+  "failure": false
+}
