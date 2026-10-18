@@ -22,20 +22,92 @@
       3
     ],
     "log_bytes": [
-      41826,
-      41922,
-      41922,
-      41946
+      47000,
+      47111,
+      47112,
+      47139
     ],
     "four_teacher_initializations_complete": true,
     "failures": [],
     "logs_nonshrinking": true,
     "log_growth_confirmed_rows": [
+      "ZERO_KL-s2026092701",
+      "EVOLVING_AS_EMA-s2026092701",
+      "FROZEN_AS20_EMA-s2026092701",
       "FROZEN_NOAS20_EMA-s2026092701"
+    ],
+    "logs_grew": true,
+    "completed_new_epochs_per_row": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "completed_new_updates_per_row": [
+      222,
+      222,
+      222,
+      222
     ]
   },
   "prior_failed_run": "20261018-phase1-FcrossRX-cleanTeacher-U-e30-s2026092701-m4-r01",
   "prior_extra_remote_smoke_NN": 6,
   "shared_local_real_F_NN": 6656,
-  "no_new_local_real_F_NN": true
+  "no_new_local_real_F_NN": true,
+  "actual_teaching_health_after_first_epoch": {
+    "rows": [
+      {
+        "row": "EVOLVING_AS_EMA-s2026092701",
+        "steps": 222,
+        "q_mean": 0.7944725261646879,
+        "positive_q_fraction": 0.9028931437420809,
+        "KL_step_mean": 0.5156508661336727,
+        "weighted_KL_step_mean": 0.016500828485633875,
+        "extra_student_NN": 28412,
+        "extra_frozen_teacher_NN": 56824,
+        "U_TX_truth_read": false,
+        "student_state_keys": 206,
+        "student_parameters": 900722
+      },
+      {
+        "row": "FROZEN_AS20_EMA-s2026092701",
+        "steps": 222,
+        "q_mean": 0.7900528583529297,
+        "positive_q_fraction": 0.9010629311558497,
+        "KL_step_mean": 0.5122258413482357,
+        "weighted_KL_step_mean": 0.016391227651085402,
+        "extra_student_NN": 28412,
+        "extra_frozen_teacher_NN": 56824,
+        "U_TX_truth_read": false,
+        "student_state_keys": 206,
+        "student_parameters": 900722
+      },
+      {
+        "row": "FROZEN_NOAS20_EMA-s2026092701",
+        "steps": 222,
+        "q_mean": 0.8347791974920128,
+        "positive_q_fraction": 0.9234478389412925,
+        "KL_step_mean": 0.5533900271664869,
+        "weighted_KL_step_mean": 0.017708481679595,
+        "extra_student_NN": 28412,
+        "extra_frozen_teacher_NN": 56824,
+        "U_TX_truth_read": false,
+        "student_state_keys": 206,
+        "student_parameters": 900722
+      },
+      {
+        "row": "ZERO_KL-s2026092701",
+        "steps": 222,
+        "q_mean": 0.7945039986255017,
+        "positive_q_fraction": 0.9028579473461917,
+        "KL_step_mean": 0.5182624533101245,
+        "weighted_KL_step_mean": 0,
+        "extra_student_NN": 28412,
+        "extra_frozen_teacher_NN": 56824,
+        "U_TX_truth_read": false,
+        "student_state_keys": 206,
+        "student_parameters": 900722
+      }
+    ]
+  }
 }

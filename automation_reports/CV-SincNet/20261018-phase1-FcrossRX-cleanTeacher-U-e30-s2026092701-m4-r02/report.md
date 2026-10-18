@@ -39,3 +39,5 @@ FROZEN_NOAS20−FROZEN_AS20检验固定同龄训练来源；FROZEN_AS20−EVOLVI
 用户最新允许源域证据支持的好方案总E50；当前没有晋级证据，先完成原E30匹配实验。总E50不是追加50轮，正式结果不回流晋级。
 
 实际发布：代码603843ae58912b68ed9a8ff48fdd418c64a24231已提交推送，并经独立remote branch OID比对一致。唯一archive本地/remote SHA比较PASS、23py compile PASS、真实2CP/6NN no-query smoke PASS。四个own worker已核实CWD/argv/GPU、教师strict初始化及日志，均越过r01故障位置；尚无完成epoch/正式结果。原r01 remote额外6NN单列。
+
+首轮运行验证：四行均已完成新增E1（累计E21），每行222个真实更新，日志均继续增长；U TX隐藏、原U保留、学生900722参数/206statekeys不变。三种教学臂的q与weightedKL由实际进程日志保存，ZERO保持额外loss0；这只证明新增监督实际执行，不代表识别收益。后续按原计划收尾至E30及逐row七环境truth-last，不由首轮代理值提前晋级。
