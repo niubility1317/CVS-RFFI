@@ -1,0 +1,44 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "run_id": "20261018-phase1-FcrossRX-continuous-e30-s2026092701-m2-r01",
+  "code_commit": "04ac1098c8c23ec7dab655a1a1317e7363ad580c",
+  "rows": [
+    "B00-s2026092701",
+    "B01-s2026092701"
+  ],
+  "GPU": [
+    0,
+    1
+  ],
+  "real_checkpoint_smoke": "PASS_2NN_NO_QUERY",
+  "synthetic_smoke": "PASS_1536NN",
+  "matched_default_head_and_Sinc_gradients": true,
+  "actual_epochs": 30,
+  "actual_label_epochs": 13,
+  "actual_pseudo_epochs": 17,
+  "actual_optimizer_schedule": "cosine30",
+  "source_roles": "L6300_U56700_V27000_no_RX_holdout",
+  "NN_training_result": "NOT_COMPLETE",
+  "new_Ag": false,
+  "formal_prediction_complete": false,
+  "goal_achieved": false,
+  "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_continuous_E30_20261018/postlaunch_first.json",
+  "first_epoch_verified": {
+    "B00": {
+      "epoch": 1,
+      "updates": 222,
+      "L_identity_NN": 170496,
+      "As_IQ": 0
+    },
+    "B01": {
+      "epoch": 1,
+      "updates": 222,
+      "L_identity_NN": 170496,
+      "As_IQ": 14208
+    },
+    "finite_loss_and_gradients": true,
+    "workers_observed_live": true,
+    "logs_grew": true,
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_continuous_E30_20261018/first_epoch_health.json"
+  }
+}

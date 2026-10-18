@@ -25,3 +25,9 @@ run：`20261018-phase1-FcrossRX-continuous-e30-s2026092701-m2-r01`；owner：cod
 技术stop仅本run输入/角色/来源不匹配、非有限loss/grad、输出碰撞、不可启动或非法prediction：保存产物，不自动重试；dispatcher停止未启动行，健康运行行自然完成。科学FAIL不停止已登记正式测试。交付实际source/result、完整训练/sequence、预测/独立分数、source固定判定、逐row汇总、独立图表/曲线、负结果、未完成项及Git。当前无新准确率，整体clean正增、lowurban>60%、suburban接近clean、新Ag及跨seed目标均未完成。
 
 本地14源文件AST PASS；单次独立P0/P1审查PASS，7项本地检查由审查者独立执行通过。实际checkpoint和1536NN合成smoke仍在launcher首步，未提前冒称通过。
+
+实际代码/config commit：`04ac1098c8c23ec7dab655a1a1317e7363ad580c`。
+
+发布及启动 VERIFIED：单包SHA/compile/bootstrap PASS，实际checkpoint2NN无query及两行合成1536NN PASS；两行分别GPU0/1，独立PID/CWD/cmdline/startticks/GPU及日志证据已保存在本地产物。原生实际13L17U、scratch、cosine30已确认，状态RUNNING；尚无训练完成或正式准确率。
+
+首轮实际执行已核实：两行各E1/30、222更新、170496 L前向；B01生成并消费14208 fullAs IQ、B00为0。loss/grad有限，原PID存活、GPU0/1各一进程、日志6390→11527字节，无failure。actual_modules确认leo_practical与DataAugmentation来自固定旧release/adv3b02_xuc/code；actual_channel保持residual/post_sync、EQoff G1、reference30、quality/phase/IQ/AGC/reflect，不改变正式receivedIQ。以上仅运行健康，不是新正式准确率。
