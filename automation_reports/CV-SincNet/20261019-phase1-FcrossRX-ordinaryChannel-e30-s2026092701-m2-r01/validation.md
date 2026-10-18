@@ -11,3 +11,5 @@
 分析实际14项CPU fixtures PASS（suite5.714秒/process6.1426361秒，chunk3e23ac），另新增最终报告链1项PASS（suite.312秒/process.7288701秒，chunkb6068d），均exit0且NN/IQ/CP/updates0，原合并输出保存在analysis_checks_actual.json，未为证据重跑。
 
 本候选唯一持续独立P0/P1审查PASS，未解决直接问题0。两处直接缺陷（最终报告interaction键、旧runner进程匹配）在同次审查内修复并定点确认；分析改显式source/final，源决定先保存、owner观察后才final连接truth。审查及证据在local_artifacts/.../p0p1_review.md；不要求提交后重复审查。源panel频率未经本轮独立核实，不给出猜测值；训练2.462GHz、固定正式2.45GHz分别记录，原manifest六景fs25MHz/ref30/residual/EQfalse已只读核实，不改信道。
+
+实际launcher首步真实CP1540NN smoke PASS，两原语真实执行后旁路且其余ordinary仍保留，头/Sinc/骨干梯度有限非零；无realIQ/query/update。单归档比较、25py remotecompile及两worker所属PID/CWD/argv/CUDA/实际GPU已独立核实；随后两row首epoch各222更新、日志6714→11879/11882字节，确认实际训练日志增长，未见Traceback。原始私有证据留local_artifacts，不提交。

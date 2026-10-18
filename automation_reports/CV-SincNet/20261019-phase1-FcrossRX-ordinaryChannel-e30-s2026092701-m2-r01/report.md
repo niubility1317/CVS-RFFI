@@ -25,3 +25,9 @@
 预期产物：actual_modules／resolved_config／严格父与自身 EMA 初始化；完整2220步的原目标、普通原语旁路与影子、U透传、物理覆盖和epoch日志；固定FINAL30与冻结记录；源分层与source决定；all7预测、独立评分；全部四条曲线、默认头margin/30、固定NoAs正确集合保持率、RX/day/TX和state/lock/新增噪声比分层、配对纠错、交互、实际成本及PNG/PDF。P43真实父clean正确缓存未确认时不混用SAT18集合，不新增诊断头或为了补表重推理。
 
 REJECTED_EXTRA_GATE：通用技能的单独设计审批、规格文件和重复审查不在项目八项白名单内；用户已授权本目标内必要实现与实验，沿当前最小流程执行。
+
+实际代码提交 5d6514b00b96614a1bd8e2b276e286bf3bed37e6，独立远端OID一致；聚焦检查和唯一P0/P1均PASS，真实训练待发布首步smoke。
+
+实际发布：代码 5d6514b00b96614a1bd8e2b276e286bf3bed37e6，92355byte单归档比较与25文件remote compile均VERIFIED。真实CP/默认头/自身EMA＋两图smoke1540NN PASS，sourceIQ0/queryfalse/updates0；强制原语门仅用于合成smoke并恢复。两row PID/CWD/argv/CUDA/actualGPU0/1独立核实，source_rolesEXACT_MATCH/scratchfalse/targetcontactfalse。训练进行中，无源晋级或正式成绩结论。
+
+首轮已观察：两row均完成尾段1/10、各222更新，日志增长且无技术failure。actual_modules打印证实leo_practical/DataAugmentation/SSDG均来自固定r02的experiments/adv3b02_xuc/code，非仓库顶层code。

@@ -44,4 +44,4 @@
 |P75 实验完成|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-noiseResample6-e30-s2026092701-m2-r01/report.md)|
 |P76：共享传播与环境内 TX 判别的匹配四格 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-propContrast-e30-s2026092701-m4-r01/report.md)|
 |P77：物理新增噪声与 As 目标熵的匹配 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-qualityEntropy-e30-s2026092701-m2-r01/report.md)|
-|完整 practical：L普通视图仅旁路AWGN与多径的匹配E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-ordinaryChannel-e30-s2026092701-m2-r01/report.md)|
+|P78：保留完整 practical，仅移除 L 普通视图的 AWGN／多径|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-ordinaryChannel-e30-s2026092701-m2-r01/report.md)|
