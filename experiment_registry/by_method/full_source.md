@@ -26,4 +26,4 @@
 |原完整 practical 的 L 批次组成：三行 E30 检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01/report.md)|
 |F＋跨 RX 同 TX：L-only SAM E30 完整匹配结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01/report.md)|
 |完整 practical 的阴影初值分层抽样：匹配四行 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-shadowLHS-e20plus10-s2026092701-m4-r01/report.md)|
-|F＋跨 RX：包内重复残差收缩的源 V 身份保护|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-repeatShrink-sourceV-s2026092701-m1-r01/report.md)|
+|包内重复残差轻度收缩：固定源身份保护检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-repeatShrink-sourceV-s2026092701-m1-r01/report.md)|

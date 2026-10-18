@@ -1,0 +1,41 @@
+{
+  "status": "VERIFIED_SOURCE_ONLY",
+  "execution_commit": "46b54cc90cef31d38abe1a22126e360bd53cdcaf",
+  "preflight": {
+    "status": "VERIFIED",
+    "ordinary_account": true,
+    "existing_source_cache_present": true,
+    "CPU_threads": 2,
+    "GPU": "none",
+    "checkpoint_or_target_access": false
+  },
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "remote_checks": "PASS",
+  "dispatcher_pid": 1047550,
+  "worker_pid": 1047574,
+  "worker_gpu": "0",
+  "worker_owner": "codex/root/F-repeat-shrink-source",
+  "dispatcher_CWD_argv_observed_on_release": true,
+  "first_readout": "worker naturally finished beforeindependentprocess/loggrowthsample;no reruntoobtaintelemetry",
+  "independent_worker_live": false,
+  "log_bytes": 378,
+  "full_stdout_lines": 10,
+  "stdout_complete_views": 8,
+  "real_checkpoint_smoke": {
+    "status": "PASS",
+    "CP": 2,
+    "NN": 4,
+    "IQ": 0,
+    "query_read": false,
+    "updates": 0
+  },
+  "prediction_complete": "SOURCE_PREDICTIONS_COMPLETE",
+  "NN": 14404,
+  "wall_seconds": 3.765076050069183,
+  "source_criteria_passed": true,
+  "independent_recount": "848CM/36conditions maxerror0",
+  "new_Ag_efficacy": false,
+  "target_access": false,
+  "updates": 0
+}

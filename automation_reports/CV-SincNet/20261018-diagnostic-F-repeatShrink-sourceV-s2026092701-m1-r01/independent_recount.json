@@ -1,0 +1,58 @@
+{
+  "status": "VERIFIED",
+  "compared_strata_CM": 840,
+  "compared_summary_CM": 8,
+  "paired": [
+    {
+      "arm": "REPEAT",
+      "base": "raw",
+      "accuracy0": 0.9788888888888889,
+      "accuracy1": 0.9777777777777777,
+      "delta_accuracy_pp": -0.1111111111111111,
+      "correct_retention": 0.9982973893303064,
+      "repairs": 1,
+      "new_errors": 3
+    },
+    {
+      "arm": "REPEAT",
+      "base": "ordinary",
+      "accuracy0": 0.8277777777777777,
+      "accuracy1": 0.8288888888888889,
+      "delta_accuracy_pp": 0.1111111111111111,
+      "correct_retention": 0.9993288590604027,
+      "repairs": 3,
+      "new_errors": 1
+    },
+    {
+      "arm": "CONCAT",
+      "base": "raw",
+      "accuracy0": 0.9744444444444444,
+      "accuracy1": 0.9744444444444444,
+      "delta_accuracy_pp": 0.0,
+      "correct_retention": 0.999429874572406,
+      "repairs": 1,
+      "new_errors": 1
+    },
+    {
+      "arm": "CONCAT",
+      "base": "ordinary",
+      "accuracy0": 0.7883333333333333,
+      "accuracy1": 0.7872222222222223,
+      "delta_accuracy_pp": -0.1111111111111111,
+      "correct_retention": 0.9978858350951374,
+      "repairs": 1,
+      "new_errors": 3
+    }
+  ],
+  "criteria_count": 36,
+  "failed_criteria": [],
+  "all_conditions_passed": true,
+  "max_error": 0.0,
+  "model_state_unchanged": true,
+  "NN": 0,
+  "IQ_reads": 0,
+  "checkpoint_reads": 0,
+  "updates": 0,
+  "teacher_NN": 0,
+  "target_access": false
+}

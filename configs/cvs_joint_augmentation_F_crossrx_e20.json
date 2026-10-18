@@ -2826,20 +2826,36 @@
     "reference": "https://github.com/WiSig-dataset/wisig-process-raw/blob/master/matlab_equalization/equalize_channel.m"
   },
   "active_Ag_hypothesis": {
-    "status": "FIXED_SOURCE_IDENTITY_GUARD_PENDING",
+    "status": "SOURCE_IDENTITY_PROTECTION_PASSED_NO_TRAINED_EFFICACY",
     "run_id": "20261018-diagnostic-F-repeatShrink-sourceV-s2026092701-m1-r01",
-    "operator": "ownpacket fourcycle mean-preserving residualcontraction,lambda.1,window80:160,period20,taperends0",
-    "new_Ag_efficacy": false,
-    "latest_closed_source": {
-      "status": "NO_NEW_VALIDATED_IQ_OPERATOR",
-      "IQ_points": 256,
-      "raw_context_mapping_available": false,
-      "latest_closed_source_hypothesis": "20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01",
-      "context": "Fixed mild radial relation fails additive/TXconditional/mildrange/perRX controls;not an IQ operator or identity result;all training RX retained"
+    "operator": {
+      "kind": "own-packet four-cycle residual contraction;proper complex linear;not denoising ground truth",
+      "strength_values": [
+        0,
+        0.1
+      ],
+      "max_strength": 0.1,
+      "window": [
+        80,
+        160
+      ],
+      "period": 20,
+      "cycles": 4,
+      "taper": "same sin(pi*t/19)^2 for t0..19 in each cycle;endpoints exactly0",
+      "equation": "x_W - strength*w*(x_W - mean_cycle(x_W))",
+      "boundary": "outside80:160 and each20point cycle first/last sample bitwise unchanged;no wrap/padding/outsideIQ",
+      "normalization": "no extra RMS normalization;fixed cycle mean retained,nonperiodic component contracted",
+      "new_noise": false,
+      "CFO_estimated": false,
+      "TX_IQ_or_PA_added": false,
+      "labels_used_by_operator": false,
+      "physical_RX_replacement": false
     },
-    "training_budget": "E30 unchanged;thisguard0updates",
+    "new_Ag_efficacy": false,
+    "training_budget": "E30 unchanged;guard0updates",
     "all_source_RX_retained": true,
-    "IQ_length": 256
+    "IQ_length": 256,
+    "next_minimum": "matched B00/B10 training before Ag+As"
   },
   "latest_completed_source_diagnostic": "20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01",
   "active_training_budget": {
@@ -4276,8 +4292,8 @@
     "source_RX_holdout": null,
     "reason": "Fixed shadowLHS fails source urban/jointclean and allformalconditions;smaller sub-clean gap accompanies lowerclean and sub accuracies;no newIQAg/crossseed proof"
   },
-  "current_source_experiment": "20261018-diagnostic-F-repeatShrink-sourceV-s2026092701-m1-r01",
-  "latest_completed_source_experiment": "20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01",
+  "current_source_experiment": null,
+  "latest_completed_source_experiment": "20261018-diagnostic-F-repeatShrink-sourceV-s2026092701-m1-r01",
   "unitary_source_result": {
     "run_id": "20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01",
     "status": "ANALYZED_SOURCE_IDENTITY_PROTECTION_ONLY",

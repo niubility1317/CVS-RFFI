@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "Active joint Ag/As research;only existing256 IQ/fullsource V validation;no held trainingRX,0newtraining/target/teacher/headfit",
   "code": {
-    "commit": "HEAD_ON_RELEASE",
+    "commit": "46b54cc90cef31d38abe1a22126e360bd53cdcaf",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "N607 ordinary account/existing pinned fullsource F runtime/FP32/CPU2/one shared GPU",
     "cwd": "PROJECT/releases/cvs_F_repeat_shrink_source_20261018_r01",
@@ -108,8 +108,8 @@
       "each_RX_min_accuracy_delta_pp": -1,
       "each_TX_min_accuracy_delta_pp": -1,
       "each_readout_base_endpoint_correct_retention_min": 0.995,
-      "max_energy_increase_relative": 1e-06,
-      "max_cycle_mean_change_relative": 1e-06,
+      "max_energy_increase_relative": 0.000001,
+      "max_cycle_mean_change_relative": 0.000001,
       "max_total_relative_change": 0.100001,
       "outside_unchanged": true,
       "cycle_boundaries_unchanged": true
@@ -248,8 +248,8 @@
           "each_RX_min_accuracy_delta_pp": -1,
           "each_TX_min_accuracy_delta_pp": -1,
           "each_readout_base_endpoint_correct_retention_min": 0.995,
-          "max_energy_increase_relative": 1e-06,
-          "max_cycle_mean_change_relative": 1e-06,
+          "max_energy_increase_relative": 0.000001,
+          "max_cycle_mean_change_relative": 0.000001,
           "max_total_relative_change": 0.100001,
           "outside_unchanged": true,
           "cycle_boundaries_unchanged": true
@@ -273,7 +273,7 @@
         "device": "one shared-capacity GPU",
         "threads": 2
       },
-      "status": "PLANNED"
+      "status": "ANALYZED"
     }
   ],
   "notes": [
@@ -284,6 +284,19 @@
     "No As applied inthis guard. Existingordinary generatedonceatparentE13 actualschedule,sharedbyallreadouts/strengths. OldPA/CFOetc actualvaluesrecorded,notdeclared labelpreserving.",
     "Baseline F+crossRX sameTX,defaultcos jointlytrained remains,latestbudgetE30. Existingfixed20 CP are frozen diagnosticreadouts,not newE20 trainingauthorization. Necessary internalcompensation unchanged."
   ],
-  "status": "PLANNED",
-  "registered_at": "2026-10-18T00:59:10+00:00"
+  "status": "ANALYZED",
+  "registered_at": "2026-10-18T00:59:10+00:00",
+  "analysis": {
+    "scope": "SOURCE_IDENTITY_PROTECTION_ONLY",
+    "scientific_pass": true,
+    "new_Ag_efficacy": false,
+    "joint_goal_complete": false,
+    "formal_target_scored": false,
+    "evidence": [
+      "report.md",
+      "result.json",
+      "independent_recount.json",
+      "execution_evidence.json"
+    ]
+  }
 }

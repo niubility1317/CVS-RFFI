@@ -24,7 +24,7 @@ def run(directory):
   for key,logits in views.items():
    a=np.asarray(logits);assert a.shape==(1800,6) and np.isfinite(a).all();outputs[(arm,key)]=a.argmax(1)
  for v in result['strata']:
-  q=outputs[(v['arm'],v['base']+'/'+str(v['strength']))];dimension=v['dimension'];s=v['stratum']
+  q=outputs[(v['arm'],v['base']+'/'+str(float(v['strength'])))];dimension=v['dimension'];s=v['stratum']
   if dimension=='overall':mask=np.ones(n,dtype=bool)
   elif dimension=='RX':mask=rx==int(s)
   elif dimension=='TX':mask=y==int(s)
@@ -50,7 +50,7 @@ def run(directory):
     criteria[key+'/'+dim]=all(change>=-1. for change in differences.values())
    paired.append(dict(arm=arm,base=base,accuracy0=float(before.mean()),accuracy1=float(after.mean()),delta_accuracy_pp=delta,correct_retention=float(retention),repairs=repairs,new_errors=new))
  for v in done['numerics']:
-  key=v['base']+'/'+str(v['strength']);criteria[key+'/max_energy_increase_relative']=v['max_energy_increase_relative']<=1e-6;criteria[key+'/max_cycle_mean_change_relative']=v['max_cycle_mean_change_relative']<=1e-6;criteria[key+'/max_relative_change']=v['max_relative_change']<=.100001
+  key=v['base']+'/'+str(float(v['strength']));criteria[key+'/max_energy_increase_relative']=v['max_energy_increase_relative']<=1e-6;criteria[key+'/max_cycle_mean_change_relative']=v['max_cycle_mean_change_relative']<=1e-6;criteria[key+'/max_relative_change']=v['max_relative_change']<=.100001
   for field in ('outside_unchanged','cycle_boundaries_unchanged'):criteria[key+'/'+field]=v[field] is True
  assert result['criteria']==criteria and result['source_criteria_passed']==all(criteria.values())
  assert (result['decision']=='SOURCE_PROTECTION_ONLY_NOT_DG_EFFICACY')==all(criteria.values())
