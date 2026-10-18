@@ -1,5 +1,6 @@
 """Complete B00/B10 readout;all logs/CM/paired records,no IQ/CP/rawtruth access."""
 import argparse,csv,json,math,time
+import numpy as np
 from pathlib import Path
 from analysis import cvs_view_pcgrad_source_logs_20261018 as logs
 RUN='20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01'
@@ -31,6 +32,8 @@ def source(project):
    reference,refinfo=logs.jsonl(S/'reference_steps.jsonl.gz',True);draws=[];CPU=0.;maximum=0.;loss_error=0.
    for step,q in enumerate(reference,1):
     op=q['operator'];values=op['lambda_values']
+    expected_draw=np.random.default_rng(np.random.SeedSequence([20261018104,20+(step-1)//222+1,4440+step])).uniform(0.,.1,128).tolist()
+    if values!=expected_draw:raise ValueError('Actual lambda differs from declared cumulative RNG stream')
     if (q['step'],q['epoch'],q['cumulative_step'],q['L_forwards'],q['Ag_packets'],q['As_packets'])!=(step,(step-1)//222+1,4440+step,6,128 if enabled else 0,0) or q['supervised_view_weights']!=[.5,.25,.25] or q['total_L_scale']!=1. or not q['same_IQ_each_pair'] or q['ordinary_redraws'] or len(values)!=128 or op['enabled']!=enabled or any(not math.isfinite(v) or not 0<=v<.1 for v in values):raise ValueError('Actual view slots/weights/private draws differ')
     if abs(op['applied_lambda_mean']-(sum(values)/128 if enabled else 0.))>1e-15 or not math.isfinite(op['CPU_bridge_operator_seconds']) or op['CPU_bridge_operator_seconds']<0 or not 0<=op['max_relative_change']<=.100001 or (not enabled and op['max_relative_change']!=0):raise ValueError('Operator actual amplitude/cost/identity differs')
     expected=.5*q['common_RD']+.25*q['anchor_RD']+.25*q['slot_RD']+q['SupCon_weight']*q['SupCon'];loss_error=max(loss_error,abs(q['total_L']-expected));CPU+=op['CPU_bridge_operator_seconds'];maximum=max(maximum,op['max_relative_change']);draws.append(values)
