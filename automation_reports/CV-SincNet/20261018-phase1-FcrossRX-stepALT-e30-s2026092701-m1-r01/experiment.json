@@ -107,10 +107,15 @@
     "local_artifact_root": "local_artifacts/F_As_stepALT_E30_20261018",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_practical_step_alternate30/runner.py",
     "stop_rule": "Onlyrunownedwrongdata/parent/head/nonfinite/costcontract/immutableoutput/unauthorizedprediction/unlaunchablesystemfailure.Preserveoutputs/noautomaticretry;lowperformancedoesnotstopsource orformal.Separateownerfornewrow.",
-    "status": "RUNNING",
+    "status": "ANALYZED",
     "dispatcher_pid": 1233511,
     "worker_pid": 1233539,
-    "gpu": 0
+    "gpu": 0,
+    "analysis_code_commit": "2e08d8ddabd28ca4bad350485a7a98915c006046",
+    "scientific_verdict": "FIXED_SOURCE_CRITERIA_FAILED_CLOSED_NO_E50;FORMAL_STAGE_SINGLESEED_PASS_NO_NEW_MECHANISM_INCREMENT",
+    "processes_active": false,
+    "analysis_pid_r01": 1235749,
+    "analysis_pid_r02": 1245938
   },
   "expected_artifacts": [
     "one realcheckpoint noquery twoLstep synthetic smoke128/0+defaulthead/Sinc/backbone gradient,0updates",
@@ -215,5 +220,69 @@
       "head": "defaultjointcos",
       "same_stage20_parent": true
     }
-  ]
+  ],
+  "results": {
+    "run_id": "20261018-phase1-FcrossRX-stepALT-e30-s2026092701-m1-r01",
+    "status": "ANALYZED_FIXED_SOURCE_FAILED_NO_NEW_MECHANISM_SUPPORT",
+    "model_seed": 2026092701,
+    "model_seed_count": 1,
+    "total_epochs": 30,
+    "parent_epochs": 20,
+    "new_epochs": 10,
+    "new_updates": 2220,
+    "training_code_commit": "cc9a2dac5e2667dab9d730dd8b618e8e635fc5ca",
+    "analysis_code_commit": "2e08d8ddabd28ca4bad350485a7a98915c006046",
+    "all7views_complete": true,
+    "source_criteria_pass": false,
+    "formal_stage_single_seed_pass": true,
+    "clean_delta_pp_vs_NoAs30": -0.005952380952380952,
+    "mid_delta_pp_vs_NoAs30": 27.613690476190477,
+    "low_delta_pp_vs_NoAs30": 21.127380952380953,
+    "urbanmean_delta_pp_vs_NoAs30": 28.331944444444446,
+    "candidate_minus_original_As30": {
+      "clean": {
+        "accuracy_delta_pp": -0.0994047619047619,
+        "macro_F1_delta_pp": -0.09796171793383657,
+        "worst_RX_delta_pp": 0.10000000000000009
+      },
+      "practical_high": {
+        "accuracy_delta_pp": -0.09345238095238095,
+        "macro_F1_delta_pp": -0.08390076169970673,
+        "worst_RX_delta_pp": -0.5291666666666583
+      },
+      "practical_mid": {
+        "accuracy_delta_pp": -0.0869047619047619,
+        "macro_F1_delta_pp": -0.07692003418098281,
+        "worst_RX_delta_pp": -0.47916666666666385
+      },
+      "practical_low_suburban": {
+        "accuracy_delta_pp": -0.09583333333333334,
+        "macro_F1_delta_pp": -0.08911959820233628,
+        "worst_RX_delta_pp": -0.41250000000000453
+      },
+      "practical_high_urban": {
+        "accuracy_delta_pp": -0.07261904761904762,
+        "macro_F1_delta_pp": -0.06748329497536787,
+        "worst_RX_delta_pp": -0.5375000000000019
+      },
+      "practical_mid_urban": {
+        "accuracy_delta_pp": -0.06011904761904762,
+        "macro_F1_delta_pp": -0.061329652962116565,
+        "worst_RX_delta_pp": -0.37083333333333135
+      },
+      "practical_low_urban": {
+        "accuracy_delta_pp": 0.023214285714285715,
+        "macro_F1_delta_pp": 0.01755725701161337,
+        "worst_RX_delta_pp": -0.14166666666666772
+      },
+      "urban_mean_accuracy_delta_pp": -0.03650793650793651
+    },
+    "E50_extension": false,
+    "repeatable_clean_positive_proven": false,
+    "new_NN": 4353102,
+    "parent20_native_NN_reused": 4797722,
+    "technical_missing_items": [],
+    "target_feedback": false,
+    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-stepALT-e30-s2026092701-m1-r01/final_analysis.md"
+  }
 }

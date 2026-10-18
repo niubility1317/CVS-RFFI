@@ -94,3 +94,13 @@ full V27000四条件逐ID读出，原V1800与两次固定三场practical观测�
 源支持固定为fullV clean相对NoAs30≥−.1绝对pp，mid／low均值相对原As30>0；不通过则关闭固定方案，正式七视图仍自动收尾。通过只支持继续研究，不等于目标性能通过。用户最新授权允许表现有源证据的方案总E50，当前不追加；后续扩展需固定匹配预算对照，正式分数不作依据。
 
 当前执行状态已更新：代码 `cc9a2dac5e2667dab9d730dd8b618e8e635fc5ca` 的唯一新增 E10 已在 GPU0 开始；真实As20烟测2NN＋128/0双步1536NN PASS，PID1233511／1233539、CWD／argv／GPU和日志增长独立VERIFIED。实际source_roles匹配、ownEMA严格恢复、信道与原As30一致。尚未训练／评分完成，不作新增性能结论。
+
+## stepALT E30：完整收尾，固定配方关闭
+
+`20261018-phase1-FcrossRX-stepALT-e30-s2026092701-m1-r01` 已完成一条新增E10（共2220更新、总E30／6660）及两个旧E30逻辑对照复用，全部clean＋六practical固定预测与独立评分。训练代码`cc9a2dac5e2667dab9d730dd8b618e8e635fc5ca`，零前向分析r02代码`2e08d8ddabd28ca4bad350485a7a98915c006046`。源判定在读取正式分数前已失败：fullV clean对NoAs−0.148148pp、mid／low对原As均值+0.111111pp，因此不E50／不扩种／不扫周期相位救跑。
+
+正式n=1：candidate对NoAs clean−0.005952pp、mid+27.613690pp、low+21.127381pp、urban均值+28.331944pp；本seed clean阶段界限通过。新增机制对原完整As：clean−0.099405pp、mid−0.060119pp、low仅+0.023214pp、urban均值−0.036508pp，未获得新增收益，不能把完整As原有收益归给stepALT。low最差RX仍下降0.141667pp，suburban绝对值均略低于原As，不能以clean下降导致的小差距缩小宣称保护。无重复clean＋星地提升证据。
+
+全部2220步／10轮及418行native日志已解析；6L／总尺度1.25，142080As，6300L物理ID全覆盖，次数11至36（不声称逐ID与原配方相同）；4440条L／U物理序列与2220个ordinary MSE记录对原尾段均零差异。新增4353102NN含smoke1538，父20原生4797722NN及旧对照不重计。独立378CM／63分区合并核对PASS，取回11汇总文件，无技术缺项。r01只读分析曾误映射新版totalL字段，保留0NN失败；r02基于真实首末记录修复，8项定点检查PASS，未重训／重复预测／评分。所有本侧进程已退出。
+
+当前无已登记的新候选。原完整As继续作为有源域和正式星地收益的匹配参照，E50三seed的clean负结果保持；下一机制只根据合法源结果及未检验的关键假设确定，不用本次正式微差选seed／参数／方向。完整[本行报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-stepALT-e30-s2026092701-m1-r01/final_analysis.md)。研究目标仍未完成。

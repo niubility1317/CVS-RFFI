@@ -33,3 +33,5 @@
 只读分析r01已正常以错误退出并保留全部产物：它把新版concat/total_L（含.25raw）误作旧版base_L_before_shape比较，且假设不存在的shape/RD字段。真实首／末记录均证明concat/total_L=完整total_L，独立shape_steps保留raw损失。只修正后处理接口并使用新analysis r02根，不重训／重复预测／评分，不改阈值或容差；分析新增NN=0。
 
 后处理定点修复就绪：真实首末标量与错误total／raw贡献的负测通过，共8项focused checks PASS；保留原容差、CE＋KL、完整L尺度、raw监督／cost／曝光检查。只将concat总L映射至完整reference total，并用差分对账.25raw；新release／output为r02，原r01保留。原训练／预测／评分进程现已退出，七视图完成文件存在，无run failure，尚待重新运行独立完整汇总。
+
+本行已完成完整收尾，最终为VERIFIED_ANALYZED，详见[final_analysis.md](final_analysis.md)及[results.json](results.json)。源固定条件失败、方案关闭不E50；正式单seed相对NoAs clean−0.005952pp通过阶段界限，但相对原As clean−0.099405／mid−0.060119／low+0.023214／urban均值−0.036508pp，没有新增机制收益和重复双提升证据。r02完整核对378CM／63分区合并；本次新增4353102NN。原run完成文件保留其SCORED_COMPLETE_PENDING_FULL_LOG_ANALYSIS状态，独立analysis_auto_r02/complete.json现为ANALYZED，全文日志已完成，不回写旧产物。所有本run进程已退出，无技术缺项。

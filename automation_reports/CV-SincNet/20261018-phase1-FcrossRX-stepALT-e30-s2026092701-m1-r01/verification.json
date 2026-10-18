@@ -1,5 +1,5 @@
 {
-  "status": "E30_TRAINED_SCORED_ANALYSIS_REPAIR_PENDING",
+  "status": "VERIFIED_ANALYZED_FIXED_CANDIDATE_CLOSED",
   "run_id": "20261018-phase1-FcrossRX-stepALT-e30-s2026092701-m1-r01",
   "focused_checks": "PASS33NEGATIVE_AND_ACTUAL_MIXEDVIEW_MOCK128_0",
   "local_execution": {
@@ -9,7 +9,7 @@
     "updates": 0
   },
   "static_compile": "PASS18PY_AND_2REMOTE_AST",
-  "training_started": false,
+  "training_started": true,
   "real_checkpoint_smoke": {
     "status": "PASS",
     "NN": 2,
@@ -18,7 +18,7 @@
   },
   "new_E30_epochs": 10,
   "total_epochs": 30,
-  "E50_extension": "NOT_STARTED_ONLY_SOURCE_SUPPORTED",
+  "E50_extension": false,
   "technical_missing_items": [],
   "unique_independent_review": {
     "agent": "stepalt_p0p1",
@@ -62,38 +62,34 @@
     "weight_decay": 0.0001,
     "schedule": "cosine10"
   },
-  "performance_results_available": false,
+  "performance_results_available": true,
   "analysis": {
-    "status": "FAILED_R01_PRESERVED_READONLY_INTERFACE_REPAIR_READY",
-    "pid": 1235749,
-    "code_commit": "b93b30b7f99f59046a368c3083b33ba4dcb61cc3",
-    "remote_compile": "PASS",
-    "focused_synthetic_checks": 7,
-    "CWD_argv_CUDA": "VERIFIED",
+    "status": "ANALYZED_R02_VERIFIED",
+    "pid": 1245938,
+    "alive": false,
+    "code_commit": "2e08d8ddabd28ca4bad350485a7a98915c006046",
+    "source_complete": true,
+    "formal_complete": true,
+    "full_log_records_complete": true,
     "NN": 0,
     "CP": 0,
     "IQ": 0,
     "updates": 0,
-    "truth_opened": false,
-    "error": "WrongfulltotalversusbaseLmapping;no shape/RD telemetry field",
-    "repair": {
-      "targeted_checks": 8,
-      "status": "PASS",
-      "tolerance_changed": false,
-      "NN": 0,
-      "IQ": 0,
-      "CP": 0,
-      "updates": 0,
-      "old_output_preserved": true
-    }
+    "focused_checks": 8,
+    "stderr_bytes": 0,
+    "failed_r01_preserved": true,
+    "failed_r01_NN": 0,
+    "interface_fix_only": true
   },
   "progress": {
     "tail_epochs_completed": 10,
-    "tail_epochs_total": 10,
     "cumulative_epochs_completed": 30,
+    "new_updates": 2220,
+    "cumulative_updates": 6660,
     "source_complete": true,
     "prediction_complete": true,
     "scoring_complete": true,
+    "all_original_PIDs_exited": true,
     "failure": null
   },
   "source_decision": {
@@ -117,5 +113,80 @@
     "automatic_E50_extension": false,
     "analysis_r01_status": "FAILED_READONLY_LOSS_TELEMETRY_SCHEMA_MISMATCH_0NN_NO_TRAIN_MUTATION",
     "selected_model": "unchanged_fixedFINAL30"
-  }
+  },
+  "independent_recount": {
+    "status": "VERIFIED",
+    "logical_conditions": 3,
+    "views_each": 7,
+    "samples_each": 168000,
+    "CM": 378,
+    "partition_merges": 63
+  },
+  "source_criteria_pass": false,
+  "formal_stage_single_seed_pass": true,
+  "new_mechanism_supported": false,
+  "repeatable_clean_positive_proven": false,
+  "costs": {
+    "rows": {
+      "NOAS30_ORIGINAL": {
+        "native_NN": 7960684,
+        "student_train_NN": 6078780,
+        "student_eval_NN": 918004,
+        "teacher_train_NN": 0,
+        "teacher_eval_NN": 963900,
+        "source_readout_NN": 12600,
+        "formal_prediction_NN": 1176002,
+        "segment_and_own_readouts_NN": 9149286,
+        "reused": true
+      },
+      "AS30_ORIGINAL": {
+        "native_NN": 7960684,
+        "student_train_NN": 6078780,
+        "student_eval_NN": 918004,
+        "teacher_train_NN": 0,
+        "teacher_eval_NN": 963900,
+        "source_readout_NN": 12600,
+        "formal_prediction_NN": 1176002,
+        "segment_and_own_readouts_NN": 9149286,
+        "reused": true
+      },
+      "AS30_STEPALT": {
+        "native_NN": 3162962,
+        "student_train_NN": 2271960,
+        "student_eval_NN": 324002,
+        "teacher_train_NN": 0,
+        "teacher_eval_NN": 567000,
+        "source_readout_NN": 12600,
+        "formal_prediction_NN": 1176002,
+        "segment_and_own_readouts_NN": 4351564,
+        "reused": false
+      }
+    },
+    "new_model_epochs": 10,
+    "new_updates": 2220,
+    "new_training_and_readouts_NN": 4351564,
+    "new_shared_smoke_NN": 1538,
+    "new_total_NN": 4353102,
+    "parent20_native_NN_reused": 4797722,
+    "cumulative_candidate_native_NN": 7960684,
+    "cumulative_candidate_epochs": 30,
+    "cumulative_candidate_updates": 6660,
+    "old_two_E30_training_and_readouts_NN_reused": 18298572,
+    "old_costs_not_recharged": true,
+    "analysis_NN": 0,
+    "analysis_IQ_reads": 0,
+    "analysis_checkpoint_reads": 0,
+    "analysis_updates": 0,
+    "wall_scope": "Actual model-seconds;not speed evidence"
+  },
+  "aggregate_collection": {
+    "status": "VERIFIED",
+    "files": 11,
+    "single_archive_SHA256": "13c978a5ca3247fe75e68690dec32b577e789090444e57e353b7d266cc6d38fd"
+  },
+  "goal_complete": false,
+  "training_complete": true,
+  "formal_prediction_complete": true,
+  "independent_scoring_complete": true,
+  "all_live_processes_finished": true
 }

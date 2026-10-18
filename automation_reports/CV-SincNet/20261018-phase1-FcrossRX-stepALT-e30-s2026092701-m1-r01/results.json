@@ -1,0 +1,2114 @@
+{
+  "schema": "cvs_stepALT_E30_curated_results_v1",
+  "run_id": "20261018-phase1-FcrossRX-stepALT-e30-s2026092701-m1-r01",
+  "training_code_commit": "cc9a2dac5e2667dab9d730dd8b618e8e635fc5ca",
+  "analysis_code_commit": "2e08d8ddabd28ca4bad350485a7a98915c006046",
+  "model_seed": 2026092701,
+  "model_seed_count": 1,
+  "split_id": 392005,
+  "logical_conditions": [
+    "NOAS30_ORIGINAL",
+    "AS30_ORIGINAL",
+    "AS30_STEPALT"
+  ],
+  "all_views_per_condition": 7,
+  "physical_samples_per_view": 168000,
+  "formal_summary": {
+    "NOAS30_ORIGINAL": {
+      "views": {
+        "clean": {
+          "arm": "NOAS30_ORIGINAL",
+          "row_id": "B00-s2026092701",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 143216,
+          "accuracy": 0.8524761904761905,
+          "macro_f1": 0.8497963552844369,
+          "confusion": [
+            [
+              27069,
+              108,
+              196,
+              431,
+              124,
+              72
+            ],
+            [
+              603,
+              17532,
+              82,
+              9662,
+              60,
+              61
+            ],
+            [
+              939,
+              349,
+              21667,
+              42,
+              108,
+              4895
+            ],
+            [
+              1995,
+              4017,
+              476,
+              21384,
+              20,
+              108
+            ],
+            [
+              9,
+              18,
+              13,
+              11,
+              27931,
+              18
+            ],
+            [
+              14,
+              124,
+              179,
+              7,
+              43,
+              27633
+            ]
+          ],
+          "worst_RX_accuracy": 0.7845
+        },
+        "practical_high": {
+          "arm": "NOAS30_ORIGINAL",
+          "row_id": "B00-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_high",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 71711,
+          "accuracy": 0.42685119047619047,
+          "macro_f1": 0.39311416060035437,
+          "confusion": [
+            [
+              13370,
+              62,
+              9464,
+              3674,
+              1154,
+              276
+            ],
+            [
+              3609,
+              1019,
+              9052,
+              11850,
+              2038,
+              432
+            ],
+            [
+              397,
+              582,
+              19340,
+              311,
+              4549,
+              2821
+            ],
+            [
+              4776,
+              905,
+              9861,
+              11346,
+              386,
+              726
+            ],
+            [
+              5040,
+              143,
+              13760,
+              4403,
+              4131,
+              523
+            ],
+            [
+              48,
+              545,
+              1351,
+              26,
+              3525,
+              22505
+            ]
+          ],
+          "worst_RX_accuracy": 0.3430416666666667
+        },
+        "practical_mid": {
+          "arm": "NOAS30_ORIGINAL",
+          "row_id": "B00-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_mid",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 68872,
+          "accuracy": 0.40995238095238096,
+          "macro_f1": 0.37954812975732044,
+          "confusion": [
+            [
+              12998,
+              175,
+              9225,
+              3782,
+              1429,
+              391
+            ],
+            [
+              4202,
+              1199,
+              9236,
+              10470,
+              2381,
+              512
+            ],
+            [
+              699,
+              708,
+              18454,
+              405,
+              4662,
+              3072
+            ],
+            [
+              5333,
+              1043,
+              10066,
+              9979,
+              754,
+              825
+            ],
+            [
+              5476,
+              272,
+              13238,
+              4089,
+              4296,
+              629
+            ],
+            [
+              181,
+              614,
+              1567,
+              75,
+              3617,
+              21946
+            ]
+          ],
+          "worst_RX_accuracy": 0.33520833333333333
+        },
+        "practical_low_suburban": {
+          "arm": "NOAS30_ORIGINAL",
+          "row_id": "B00-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_low_suburban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 66314,
+          "accuracy": 0.39472619047619045,
+          "macro_f1": 0.3675873064140263,
+          "confusion": [
+            [
+              12315,
+              351,
+              9261,
+              3693,
+              1845,
+              535
+            ],
+            [
+              4760,
+              1395,
+              9233,
+              9280,
+              2695,
+              637
+            ],
+            [
+              922,
+              824,
+              17753,
+              515,
+              4802,
+              3184
+            ],
+            [
+              5688,
+              1118,
+              10228,
+              8914,
+              1172,
+              880
+            ],
+            [
+              5646,
+              385,
+              12879,
+              3784,
+              4539,
+              767
+            ],
+            [
+              358,
+              671,
+              1654,
+              151,
+              3768,
+              21398
+            ]
+          ],
+          "worst_RX_accuracy": 0.32054166666666667
+        },
+        "practical_high_urban": {
+          "arm": "NOAS30_ORIGINAL",
+          "row_id": "B00-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_high_urban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 69619,
+          "accuracy": 0.41439880952380953,
+          "macro_f1": 0.38481029593664823,
+          "confusion": [
+            [
+              12988,
+              249,
+              9080,
+              3468,
+              1740,
+              475
+            ],
+            [
+              3722,
+              1182,
+              8712,
+              11287,
+              2515,
+              582
+            ],
+            [
+              787,
+              769,
+              18275,
+              444,
+              4796,
+              2929
+            ],
+            [
+              4915,
+              1119,
+              9482,
+              10616,
+              945,
+              923
+            ],
+            [
+              5051,
+              353,
+              13015,
+              4261,
+              4599,
+              721
+            ],
+            [
+              238,
+              651,
+              1501,
+              95,
+              3556,
+              21959
+            ]
+          ],
+          "worst_RX_accuracy": 0.34
+        },
+        "practical_mid_urban": {
+          "arm": "NOAS30_ORIGINAL",
+          "row_id": "B00-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_mid_urban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 59023,
+          "accuracy": 0.351327380952381,
+          "macro_f1": 0.33446602839273654,
+          "confusion": [
+            [
+              10762,
+              1087,
+              8001,
+              3243,
+              3592,
+              1315
+            ],
+            [
+              4908,
+              1922,
+              7889,
+              7775,
+              4174,
+              1332
+            ],
+            [
+              2290,
+              1386,
+              14202,
+              1080,
+              5341,
+              3701
+            ],
+            [
+              5666,
+              1792,
+              8497,
+              7304,
+              3101,
+              1640
+            ],
+            [
+              5518,
+              1107,
+              10349,
+              3611,
+              5948,
+              1467
+            ],
+            [
+              1218,
+              1191,
+              2085,
+              465,
+              4156,
+              18885
+            ]
+          ],
+          "worst_RX_accuracy": 0.2949583333333333
+        },
+        "practical_low_urban": {
+          "arm": "NOAS30_ORIGINAL",
+          "row_id": "B00-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_low_urban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 50635,
+          "accuracy": 0.30139880952380954,
+          "macro_f1": 0.29184589471739925,
+          "confusion": [
+            [
+              9464,
+              1750,
+              7239,
+              3050,
+              4664,
+              1833
+            ],
+            [
+              5964,
+              2451,
+              7079,
+              5621,
+              5040,
+              1845
+            ],
+            [
+              3556,
+              1998,
+              11394,
+              1536,
+              5586,
+              3930
+            ],
+            [
+              6199,
+              2323,
+              7736,
+              5481,
+              4270,
+              1991
+            ],
+            [
+              5984,
+              1771,
+              8889,
+              2995,
+              6366,
+              1995
+            ],
+            [
+              2518,
+              1754,
+              2790,
+              902,
+              4557,
+              15479
+            ]
+          ],
+          "worst_RX_accuracy": 0.2575
+        }
+      },
+      "urban_mean_accuracy": 0.35570833333333335,
+      "prediction_NN": 1176002,
+      "prediction_wall_seconds": 48.08935279189609,
+      "reused": true
+    },
+    "AS30_ORIGINAL": {
+      "views": {
+        "clean": {
+          "arm": "AS30_ORIGINAL",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 143373,
+          "accuracy": 0.8534107142857142,
+          "macro_f1": 0.8504447415646985,
+          "confusion": [
+            [
+              27006,
+              107,
+              348,
+              337,
+              75,
+              127
+            ],
+            [
+              496,
+              17433,
+              93,
+              9852,
+              55,
+              71
+            ],
+            [
+              719,
+              388,
+              22271,
+              31,
+              74,
+              4517
+            ],
+            [
+              2194,
+              3235,
+              1328,
+              21046,
+              13,
+              184
+            ],
+            [
+              10,
+              15,
+              6,
+              10,
+              27949,
+              10
+            ],
+            [
+              10,
+              24,
+              253,
+              6,
+              39,
+              27668
+            ]
+          ],
+          "worst_RX_accuracy": 0.783625
+        },
+        "practical_high": {
+          "arm": "AS30_ORIGINAL",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_high",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 136761,
+          "accuracy": 0.8140535714285714,
+          "macro_f1": 0.8108423019202157,
+          "confusion": [
+            [
+              24376,
+              389,
+              839,
+              2158,
+              197,
+              41
+            ],
+            [
+              1320,
+              14207,
+              81,
+              12147,
+              214,
+              31
+            ],
+            [
+              408,
+              213,
+              22921,
+              143,
+              491,
+              3824
+            ],
+            [
+              3308,
+              3483,
+              524,
+              20502,
+              84,
+              99
+            ],
+            [
+              85,
+              230,
+              51,
+              208,
+              27382,
+              44
+            ],
+            [
+              20,
+              35,
+              81,
+              9,
+              482,
+              27373
+            ]
+          ],
+          "worst_RX_accuracy": 0.7190833333333333
+        },
+        "practical_mid": {
+          "arm": "AS30_ORIGINAL",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_mid",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 132151,
+          "accuracy": 0.7866130952380952,
+          "macro_f1": 0.7835970572814207,
+          "confusion": [
+            [
+              23533,
+              682,
+              896,
+              2476,
+              343,
+              70
+            ],
+            [
+              1917,
+              14067,
+              196,
+              11313,
+              454,
+              53
+            ],
+            [
+              673,
+              444,
+              22060,
+              250,
+              596,
+              3977
+            ],
+            [
+              3915,
+              3976,
+              647,
+              19033,
+              297,
+              132
+            ],
+            [
+              292,
+              604,
+              157,
+              471,
+              26363,
+              113
+            ],
+            [
+              71,
+              93,
+              127,
+              22,
+              592,
+              27095
+            ]
+          ],
+          "worst_RX_accuracy": 0.702125
+        },
+        "practical_low_suburban": {
+          "arm": "AS30_ORIGINAL",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_low_suburban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 127448,
+          "accuracy": 0.7586190476190476,
+          "macro_f1": 0.7557274083648299,
+          "confusion": [
+            [
+              22572,
+              982,
+              1079,
+              2675,
+              535,
+              157
+            ],
+            [
+              2465,
+              13947,
+              295,
+              10517,
+              652,
+              124
+            ],
+            [
+              933,
+              669,
+              21183,
+              373,
+              737,
+              4105
+            ],
+            [
+              4360,
+              4700,
+              769,
+              17507,
+              470,
+              194
+            ],
+            [
+              507,
+              875,
+              285,
+              693,
+              25449,
+              191
+            ],
+            [
+              112,
+              190,
+              196,
+              47,
+              665,
+              26790
+            ]
+          ],
+          "worst_RX_accuracy": 0.6774166666666667
+        },
+        "practical_high_urban": {
+          "arm": "AS30_ORIGINAL",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_high_urban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 130649,
+          "accuracy": 0.7776726190476191,
+          "macro_f1": 0.774232076238516,
+          "confusion": [
+            [
+              23149,
+              784,
+              964,
+              2354,
+              664,
+              85
+            ],
+            [
+              1824,
+              13702,
+              241,
+              11568,
+              593,
+              72
+            ],
+            [
+              745,
+              560,
+              21719,
+              242,
+              850,
+              3884
+            ],
+            [
+              3722,
+              3713,
+              716,
+              19222,
+              478,
+              149
+            ],
+            [
+              628,
+              717,
+              242,
+              495,
+              25802,
+              116
+            ],
+            [
+              86,
+              139,
+              133,
+              14,
+              573,
+              27055
+            ]
+          ],
+          "worst_RX_accuracy": 0.6910833333333334
+        },
+        "practical_mid_urban": {
+          "arm": "AS30_ORIGINAL",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_mid_urban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 105515,
+          "accuracy": 0.6280654761904761,
+          "macro_f1": 0.6245046316023983,
+          "confusion": [
+            [
+              18181,
+              2573,
+              1749,
+              2896,
+              2092,
+              509
+            ],
+            [
+              3743,
+              12089,
+              1088,
+              8612,
+              2079,
+              389
+            ],
+            [
+              2159,
+              2051,
+              16786,
+              773,
+              1800,
+              4431
+            ],
+            [
+              5068,
+              5061,
+              1641,
+              13626,
+              2028,
+              576
+            ],
+            [
+              2378,
+              2544,
+              1231,
+              1621,
+              19584,
+              642
+            ],
+            [
+              396,
+              645,
+              423,
+              115,
+              1172,
+              25249
+            ]
+          ],
+          "worst_RX_accuracy": 0.5645833333333333
+        },
+        "practical_low_urban": {
+          "arm": "AS30_ORIGINAL",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_low_urban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 86090,
+          "accuracy": 0.5124404761904762,
+          "macro_f1": 0.5088703513826375,
+          "confusion": [
+            [
+              14538,
+              3954,
+              2332,
+              3142,
+              2927,
+              1107
+            ],
+            [
+              4683,
+              10618,
+              1815,
+              6850,
+              3045,
+              989
+            ],
+            [
+              2941,
+              3311,
+              13097,
+              1264,
+              2513,
+              4874
+            ],
+            [
+              5530,
+              6193,
+              2315,
+              9897,
+              2891,
+              1174
+            ],
+            [
+              3310,
+              3863,
+              2096,
+              2240,
+              15281,
+              1210
+            ],
+            [
+              891,
+              1446,
+              823,
+              377,
+              1804,
+              22659
+            ]
+          ],
+          "worst_RX_accuracy": 0.46379166666666666
+        }
+      },
+      "urban_mean_accuracy": 0.6393928571428571,
+      "prediction_NN": 1176002,
+      "prediction_wall_seconds": 49.649732606019825,
+      "reused": true
+    },
+    "AS30_STEPALT": {
+      "views": {
+        "clean": {
+          "arm": "AS30_STEPALT",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 143206,
+          "accuracy": 0.8524166666666667,
+          "macro_f1": 0.8494651243853601,
+          "confusion": [
+            [
+              27007,
+              115,
+              354,
+              324,
+              74,
+              126
+            ],
+            [
+              479,
+              17422,
+              88,
+              9882,
+              55,
+              74
+            ],
+            [
+              707,
+              398,
+              22157,
+              29,
+              76,
+              4633
+            ],
+            [
+              2239,
+              3383,
+              1189,
+              21003,
+              13,
+              173
+            ],
+            [
+              9,
+              18,
+              7,
+              11,
+              27944,
+              11
+            ],
+            [
+              10,
+              30,
+              246,
+              6,
+              35,
+              27673
+            ]
+          ],
+          "worst_RX_accuracy": 0.784625
+        },
+        "practical_high": {
+          "arm": "AS30_STEPALT",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_high",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 136604,
+          "accuracy": 0.8131190476190476,
+          "macro_f1": 0.8100032943032186,
+          "confusion": [
+            [
+              24278,
+              387,
+              864,
+              2238,
+              194,
+              39
+            ],
+            [
+              1316,
+              14164,
+              79,
+              12212,
+              198,
+              31
+            ],
+            [
+              428,
+              214,
+              22828,
+              154,
+              470,
+              3906
+            ],
+            [
+              3251,
+              3509,
+              499,
+              20561,
+              79,
+              101
+            ],
+            [
+              85,
+              237,
+              50,
+              221,
+              27360,
+              47
+            ],
+            [
+              19,
+              39,
+              76,
+              8,
+              445,
+              27413
+            ]
+          ],
+          "worst_RX_accuracy": 0.7137916666666667
+        },
+        "practical_mid": {
+          "arm": "AS30_STEPALT",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_mid",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 132005,
+          "accuracy": 0.7857440476190476,
+          "macro_f1": 0.7828278569396109,
+          "confusion": [
+            [
+              23430,
+              669,
+              915,
+              2561,
+              356,
+              69
+            ],
+            [
+              1874,
+              14018,
+              200,
+              11406,
+              444,
+              58
+            ],
+            [
+              677,
+              445,
+              21973,
+              263,
+              595,
+              4047
+            ],
+            [
+              3845,
+              4004,
+              615,
+              19102,
+              293,
+              141
+            ],
+            [
+              282,
+              620,
+              165,
+              502,
+              26321,
+              110
+            ],
+            [
+              61,
+              95,
+              116,
+              21,
+              546,
+              27161
+            ]
+          ],
+          "worst_RX_accuracy": 0.6973333333333334
+        },
+        "practical_low_suburban": {
+          "arm": "AS30_STEPALT",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_low_suburban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 127287,
+          "accuracy": 0.7576607142857142,
+          "macro_f1": 0.7548362123828065,
+          "confusion": [
+            [
+              22430,
+              987,
+              1119,
+              2761,
+              544,
+              159
+            ],
+            [
+              2396,
+              13850,
+              293,
+              10676,
+              654,
+              131
+            ],
+            [
+              883,
+              683,
+              21101,
+              395,
+              747,
+              4191
+            ],
+            [
+              4260,
+              4674,
+              758,
+              17641,
+              465,
+              202
+            ],
+            [
+              474,
+              892,
+              299,
+              734,
+              25399,
+              202
+            ],
+            [
+              98,
+              193,
+              182,
+              50,
+              611,
+              26866
+            ]
+          ],
+          "worst_RX_accuracy": 0.6732916666666666
+        },
+        "practical_high_urban": {
+          "arm": "AS30_STEPALT",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_high_urban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 130527,
+          "accuracy": 0.7769464285714286,
+          "macro_f1": 0.7735572432887623,
+          "confusion": [
+            [
+              23044,
+              784,
+              978,
+              2437,
+              669,
+              88
+            ],
+            [
+              1804,
+              13665,
+              238,
+              11626,
+              592,
+              75
+            ],
+            [
+              759,
+              563,
+              21628,
+              252,
+              827,
+              3971
+            ],
+            [
+              3643,
+              3728,
+              702,
+              19294,
+              483,
+              150
+            ],
+            [
+              596,
+              736,
+              246,
+              507,
+              25793,
+              122
+            ],
+            [
+              83,
+              141,
+              125,
+              15,
+              533,
+              27103
+            ]
+          ],
+          "worst_RX_accuracy": 0.6857083333333334
+        },
+        "practical_mid_urban": {
+          "arm": "AS30_STEPALT",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_mid_urban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 105414,
+          "accuracy": 0.6274642857142857,
+          "macro_f1": 0.6238913350727772,
+          "confusion": [
+            [
+              17961,
+              2630,
+              1815,
+              2961,
+              2101,
+              532
+            ],
+            [
+              3605,
+              12072,
+              1109,
+              8717,
+              2107,
+              390
+            ],
+            [
+              2055,
+              2066,
+              16772,
+              804,
+              1781,
+              4522
+            ],
+            [
+              4908,
+              5091,
+              1668,
+              13735,
+              2013,
+              585
+            ],
+            [
+              2245,
+              2581,
+              1263,
+              1680,
+              19564,
+              667
+            ],
+            [
+              359,
+              645,
+              434,
+              129,
+              1123,
+              25310
+            ]
+          ],
+          "worst_RX_accuracy": 0.560875
+        },
+        "practical_low_urban": {
+          "arm": "AS30_STEPALT",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_low_urban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 86129,
+          "accuracy": 0.5126726190476191,
+          "macro_f1": 0.5090459239527536,
+          "confusion": [
+            [
+              14280,
+              3983,
+              2427,
+              3275,
+              2890,
+              1145
+            ],
+            [
+              4448,
+              10620,
+              1861,
+              6993,
+              3034,
+              1044
+            ],
+            [
+              2772,
+              3353,
+              13136,
+              1326,
+              2474,
+              4939
+            ],
+            [
+              5306,
+              6208,
+              2349,
+              10054,
+              2875,
+              1208
+            ],
+            [
+              3093,
+              3937,
+              2154,
+              2338,
+              15234,
+              1244
+            ],
+            [
+              817,
+              1429,
+              846,
+              411,
+              1692,
+              22805
+            ]
+          ],
+          "worst_RX_accuracy": 0.462375
+        }
+      },
+      "urban_mean_accuracy": 0.6390277777777778,
+      "prediction_NN": 1176002,
+      "prediction_wall_seconds": 48.6719552599825,
+      "reused": false
+    }
+  },
+  "formal_comparisons": {
+    "AS30_STEPALT__NOAS30_ORIGINAL": {
+      "clean": {
+        "accuracy_delta_pp": -0.005952380952380952,
+        "macro_F1_delta_pp": -0.033123089907671766,
+        "worst_RX_delta_pp": 0.012500000000004174
+      },
+      "practical_high": {
+        "accuracy_delta_pp": 38.62678571428572,
+        "macro_F1_delta_pp": 41.68891337028642,
+        "worst_RX_delta_pp": 37.075
+      },
+      "practical_mid": {
+        "accuracy_delta_pp": 37.579166666666666,
+        "macro_F1_delta_pp": 40.32797271822904,
+        "worst_RX_delta_pp": 36.212500000000006
+      },
+      "practical_low_suburban": {
+        "accuracy_delta_pp": 36.29345238095238,
+        "macro_F1_delta_pp": 38.72489059687802,
+        "worst_RX_delta_pp": 35.275
+      },
+      "practical_high_urban": {
+        "accuracy_delta_pp": 36.25476190476191,
+        "macro_F1_delta_pp": 38.874694735211406,
+        "worst_RX_delta_pp": 34.57083333333333
+      },
+      "practical_mid_urban": {
+        "accuracy_delta_pp": 27.613690476190477,
+        "macro_F1_delta_pp": 28.942530668004064,
+        "worst_RX_delta_pp": 26.59166666666667
+      },
+      "practical_low_urban": {
+        "accuracy_delta_pp": 21.127380952380953,
+        "macro_F1_delta_pp": 21.720002923535436,
+        "worst_RX_delta_pp": 20.487499999999997
+      },
+      "urban_mean_accuracy_delta_pp": 28.331944444444446
+    },
+    "AS30_STEPALT__AS30_ORIGINAL": {
+      "clean": {
+        "accuracy_delta_pp": -0.0994047619047619,
+        "macro_F1_delta_pp": -0.09796171793383657,
+        "worst_RX_delta_pp": 0.10000000000000009
+      },
+      "practical_high": {
+        "accuracy_delta_pp": -0.09345238095238095,
+        "macro_F1_delta_pp": -0.08390076169970673,
+        "worst_RX_delta_pp": -0.5291666666666583
+      },
+      "practical_mid": {
+        "accuracy_delta_pp": -0.0869047619047619,
+        "macro_F1_delta_pp": -0.07692003418098281,
+        "worst_RX_delta_pp": -0.47916666666666385
+      },
+      "practical_low_suburban": {
+        "accuracy_delta_pp": -0.09583333333333334,
+        "macro_F1_delta_pp": -0.08911959820233628,
+        "worst_RX_delta_pp": -0.41250000000000453
+      },
+      "practical_high_urban": {
+        "accuracy_delta_pp": -0.07261904761904762,
+        "macro_F1_delta_pp": -0.06748329497536787,
+        "worst_RX_delta_pp": -0.5375000000000019
+      },
+      "practical_mid_urban": {
+        "accuracy_delta_pp": -0.06011904761904762,
+        "macro_F1_delta_pp": -0.061329652962116565,
+        "worst_RX_delta_pp": -0.37083333333333135
+      },
+      "practical_low_urban": {
+        "accuracy_delta_pp": 0.023214285714285715,
+        "macro_F1_delta_pp": 0.01755725701161337,
+        "worst_RX_delta_pp": -0.14166666666666772
+      },
+      "urban_mean_accuracy_delta_pp": -0.03650793650793651
+    },
+    "AS30_ORIGINAL__NOAS30_ORIGINAL": {
+      "clean": {
+        "accuracy_delta_pp": 0.09345238095238095,
+        "macro_F1_delta_pp": 0.0648386280261648,
+        "worst_RX_delta_pp": -0.08749999999999591
+      },
+      "practical_high": {
+        "accuracy_delta_pp": 38.720238095238095,
+        "macro_F1_delta_pp": 41.77281413198613,
+        "worst_RX_delta_pp": 37.60416666666666
+      },
+      "practical_mid": {
+        "accuracy_delta_pp": 37.66607142857143,
+        "macro_F1_delta_pp": 40.40489275241003,
+        "worst_RX_delta_pp": 36.69166666666667
+      },
+      "practical_low_suburban": {
+        "accuracy_delta_pp": 36.38928571428571,
+        "macro_F1_delta_pp": 38.81401019508036,
+        "worst_RX_delta_pp": 35.6875
+      },
+      "practical_high_urban": {
+        "accuracy_delta_pp": 36.32738095238095,
+        "macro_F1_delta_pp": 38.942178030186774,
+        "worst_RX_delta_pp": 35.108333333333334
+      },
+      "practical_mid_urban": {
+        "accuracy_delta_pp": 27.673809523809524,
+        "macro_F1_delta_pp": 29.00386032096618,
+        "worst_RX_delta_pp": 26.9625
+      },
+      "practical_low_urban": {
+        "accuracy_delta_pp": 21.104166666666668,
+        "macro_F1_delta_pp": 21.702445666523822,
+        "worst_RX_delta_pp": 20.629166666666666
+      },
+      "urban_mean_accuracy_delta_pp": 28.36845238095238
+    }
+  },
+  "formal_stage": {
+    "clean_delta_pp": -0.005952380952380952,
+    "clean_net_repairs": -10,
+    "clean_absolute_0p1pp_guard_met": true,
+    "clean_positive_observed": false,
+    "positive_below_0p1pp_is_micro_observation": false,
+    "midurban_gain_pp": 27.613690476190477,
+    "lowurban_gain_pp": 21.127380952380953,
+    "urban_mean_gain_pp": 28.331944444444446,
+    "repeatable_clean_gain_proven": false
+  },
+  "paired_errors": {
+    "AS30_STEPALT__NOAS30_ORIGINAL": {
+      "clean": {
+        "count": 168000,
+        "control_correct": 143216,
+        "new_correct": 143206,
+        "repairs": 3744,
+        "new_errors": 3754,
+        "net_repairs": -10,
+        "accuracy_delta_pp": -0.005952380952380952,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 1,
+        "new_retention": 0.973787844933527,
+        "cohort_repairs": 0,
+        "cohort_new_errors": 3754
+      },
+      "practical_high": {
+        "count": 168000,
+        "control_correct": 71711,
+        "new_correct": 136604,
+        "repairs": 68387,
+        "new_errors": 3494,
+        "net_repairs": 64893,
+        "accuracy_delta_pp": 38.62678571428572,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.47255893196290916,
+        "new_retention": 0.9000809965366998,
+        "cohort_repairs": 63608,
+        "cohort_new_errors": 2380
+      },
+      "practical_mid": {
+        "count": 168000,
+        "control_correct": 68872,
+        "new_correct": 132005,
+        "repairs": 67181,
+        "new_errors": 4048,
+        "net_repairs": 63133,
+        "accuracy_delta_pp": 37.579166666666666,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.452742710311697,
+        "new_retention": 0.8669352586303206,
+        "cohort_repairs": 62258,
+        "cohort_new_errors": 2939
+      },
+      "practical_low_suburban": {
+        "count": 168000,
+        "control_correct": 66314,
+        "new_correct": 127287,
+        "repairs": 65483,
+        "new_errors": 4510,
+        "net_repairs": 60973,
+        "accuracy_delta_pp": 36.29345238095238,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.4348955423974975,
+        "new_retention": 0.8339989945257513,
+        "cohort_repairs": 60575,
+        "cohort_new_errors": 3417
+      },
+      "practical_high_urban": {
+        "count": 168000,
+        "control_correct": 69619,
+        "new_correct": 130527,
+        "repairs": 65087,
+        "new_errors": 4179,
+        "net_repairs": 60908,
+        "accuracy_delta_pp": 36.25476190476191,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.45797257289688303,
+        "new_retention": 0.858695955759133,
+        "cohort_repairs": 60440,
+        "cohort_new_errors": 3050
+      },
+      "practical_mid_urban": {
+        "count": 168000,
+        "control_correct": 59023,
+        "new_correct": 105414,
+        "repairs": 53229,
+        "new_errors": 6838,
+        "net_repairs": 46391,
+        "accuracy_delta_pp": 27.613690476190477,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.3861928834767065,
+        "new_retention": 0.6873394034186124,
+        "cohort_repairs": 48829,
+        "cohort_new_errors": 5700
+      },
+      "practical_low_urban": {
+        "count": 168000,
+        "control_correct": 50635,
+        "new_correct": 86129,
+        "repairs": 44414,
+        "new_errors": 8920,
+        "net_repairs": 35494,
+        "accuracy_delta_pp": 21.127380952380953,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.32807088593453243,
+        "new_retention": 0.5564112948273936,
+        "cohort_repairs": 40380,
+        "cohort_new_errors": 7678
+      }
+    },
+    "AS30_STEPALT__AS30_ORIGINAL": {
+      "clean": {
+        "count": 168000,
+        "control_correct": 143373,
+        "new_correct": 143206,
+        "repairs": 292,
+        "new_errors": 459,
+        "net_repairs": -167,
+        "accuracy_delta_pp": -0.0994047619047619,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.9740880907161211,
+        "new_retention": 0.973787844933527,
+        "cohort_repairs": 165,
+        "cohort_new_errors": 208
+      },
+      "practical_high": {
+        "count": 168000,
+        "control_correct": 136761,
+        "new_correct": 136604,
+        "repairs": 512,
+        "new_errors": 669,
+        "net_repairs": -157,
+        "accuracy_delta_pp": -0.09345238095238095,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.9011004357055078,
+        "new_retention": 0.9000809965366998,
+        "cohort_repairs": 380,
+        "cohort_new_errors": 526
+      },
+      "practical_mid": {
+        "count": 168000,
+        "control_correct": 132151,
+        "new_correct": 132005,
+        "repairs": 618,
+        "new_errors": 764,
+        "net_repairs": -146,
+        "accuracy_delta_pp": -0.0869047619047619,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.8677242766171378,
+        "new_retention": 0.8669352586303206,
+        "cohort_repairs": 479,
+        "cohort_new_errors": 592
+      },
+      "practical_low_suburban": {
+        "count": 168000,
+        "control_correct": 127448,
+        "new_correct": 127287,
+        "repairs": 760,
+        "new_errors": 921,
+        "net_repairs": -161,
+        "accuracy_delta_pp": -0.09583333333333334,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.8345645737906379,
+        "new_retention": 0.8339989945257513,
+        "cohort_repairs": 624,
+        "cohort_new_errors": 705
+      },
+      "practical_high_urban": {
+        "count": 168000,
+        "control_correct": 130649,
+        "new_correct": 130527,
+        "repairs": 634,
+        "new_errors": 756,
+        "net_repairs": -122,
+        "accuracy_delta_pp": -0.07261904761904762,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.8593243771645627,
+        "new_retention": 0.858695955759133,
+        "cohort_repairs": 492,
+        "cohort_new_errors": 582
+      },
+      "practical_mid_urban": {
+        "count": 168000,
+        "control_correct": 105515,
+        "new_correct": 105414,
+        "repairs": 1059,
+        "new_errors": 1160,
+        "net_repairs": -101,
+        "accuracy_delta_pp": -0.06011904761904762,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.6878211931627751,
+        "new_retention": 0.6873394034186124,
+        "cohort_repairs": 893,
+        "cohort_new_errors": 962
+      },
+      "practical_low_urban": {
+        "count": 168000,
+        "control_correct": 86090,
+        "new_correct": 86129,
+        "repairs": 1396,
+        "new_errors": 1357,
+        "net_repairs": 39,
+        "accuracy_delta_pp": 0.023214285714285715,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.5563275053066696,
+        "new_retention": 0.5564112948273936,
+        "cohort_repairs": 1171,
+        "cohort_new_errors": 1159
+      }
+    },
+    "AS30_ORIGINAL__NOAS30_ORIGINAL": {
+      "clean": {
+        "count": 168000,
+        "control_correct": 143216,
+        "new_correct": 143373,
+        "repairs": 3868,
+        "new_errors": 3711,
+        "net_repairs": 157,
+        "accuracy_delta_pp": 0.09345238095238095,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 1,
+        "new_retention": 0.9740880907161211,
+        "cohort_repairs": 0,
+        "cohort_new_errors": 3711
+      },
+      "practical_high": {
+        "count": 168000,
+        "control_correct": 71711,
+        "new_correct": 136761,
+        "repairs": 68469,
+        "new_errors": 3419,
+        "net_repairs": 65050,
+        "accuracy_delta_pp": 38.720238095238095,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.47255893196290916,
+        "new_retention": 0.9011004357055078,
+        "cohort_repairs": 63687,
+        "cohort_new_errors": 2313
+      },
+      "practical_mid": {
+        "count": 168000,
+        "control_correct": 68872,
+        "new_correct": 132151,
+        "repairs": 67279,
+        "new_errors": 4000,
+        "net_repairs": 63279,
+        "accuracy_delta_pp": 37.66607142857143,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.452742710311697,
+        "new_retention": 0.8677242766171378,
+        "cohort_repairs": 62322,
+        "cohort_new_errors": 2890
+      },
+      "practical_low_suburban": {
+        "count": 168000,
+        "control_correct": 66314,
+        "new_correct": 127448,
+        "repairs": 65618,
+        "new_errors": 4484,
+        "net_repairs": 61134,
+        "accuracy_delta_pp": 36.38928571428571,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.4348955423974975,
+        "new_retention": 0.8345645737906379,
+        "cohort_repairs": 60641,
+        "cohort_new_errors": 3402
+      },
+      "practical_high_urban": {
+        "count": 168000,
+        "control_correct": 69619,
+        "new_correct": 130649,
+        "repairs": 65141,
+        "new_errors": 4111,
+        "net_repairs": 61030,
+        "accuracy_delta_pp": 36.32738095238095,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.45797257289688303,
+        "new_retention": 0.8593243771645627,
+        "cohort_repairs": 60471,
+        "cohort_new_errors": 2991
+      },
+      "practical_mid_urban": {
+        "count": 168000,
+        "control_correct": 59023,
+        "new_correct": 105515,
+        "repairs": 53261,
+        "new_errors": 6769,
+        "net_repairs": 46492,
+        "accuracy_delta_pp": 27.673809523809524,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.3861928834767065,
+        "new_retention": 0.6878211931627751,
+        "cohort_repairs": 48838,
+        "cohort_new_errors": 5640
+      },
+      "practical_low_urban": {
+        "count": 168000,
+        "control_correct": 50635,
+        "new_correct": 86090,
+        "repairs": 44297,
+        "new_errors": 8842,
+        "net_repairs": 35455,
+        "accuracy_delta_pp": 21.104166666666668,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.32807088593453243,
+        "new_retention": 0.5563275053066696,
+        "cohort_repairs": 40294,
+        "cohort_new_errors": 7604
+      }
+    }
+  },
+  "suburban_selfclean_gaps_pp": {
+    "NOAS30_ORIGINAL": {
+      "practical_high": 42.5625,
+      "practical_mid": 44.25238095238095,
+      "practical_low_suburban": 45.775000000000006
+    },
+    "AS30_ORIGINAL": {
+      "practical_high": 3.935714285714287,
+      "practical_mid": 6.6797619047619055,
+      "practical_low_suburban": 9.47916666666666
+    },
+    "AS30_STEPALT": {
+      "practical_high": 3.929761904761908,
+      "practical_mid": 6.6672619047619115,
+      "practical_low_suburban": 9.475595238095247
+    }
+  },
+  "source_summary": {
+    "NOAS30_ORIGINAL": {
+      "full_V_clean": 0.9835925925925926,
+      "full_V_RX_accuracy": {
+        "1": 0.9948148148148148,
+        "3": 0.9561111111111111,
+        "4": 0.9838888888888889,
+        "6": 0.9962962962962963,
+        "8": 0.9868518518518519
+      },
+      "panel": {
+        "clean": {
+          "accuracy": 0.9844444444444445,
+          "macro_F1": 0.984414688915647,
+          "worst_RX": 0.9555555555555556
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.4986111111111111,
+          "macro_F1": 0.46937084017858793,
+          "worst_RX": 0.41805555555555557
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.43555555555555553,
+          "macro_F1": 0.4159534611090652,
+          "worst_RX": 0.3611111111111111
+        },
+        "practical_low_urban": {
+          "accuracy": 0.3561111111111111,
+          "macro_F1": 0.34525218651445266,
+          "worst_RX": 0.30277777777777776
+        }
+      },
+      "mid_low_mean": 0.3958333333333333,
+      "mid_low_by_draw_accuracy": [
+        [
+          0.42944444444444446,
+          0.3566666666666667
+        ],
+        [
+          0.44166666666666665,
+          0.35555555555555557
+        ]
+      ],
+      "source_readout_NN": 12600
+    },
+    "AS30_ORIGINAL": {
+      "full_V_clean": 0.9825555555555555,
+      "full_V_RX_accuracy": {
+        "1": 0.9940740740740741,
+        "3": 0.9533333333333334,
+        "4": 0.9855555555555555,
+        "6": 0.9962962962962963,
+        "8": 0.9835185185185186
+      },
+      "panel": {
+        "clean": {
+          "accuracy": 0.9833333333333333,
+          "macro_F1": 0.9832994960773108,
+          "worst_RX": 0.9583333333333334
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.8866666666666667,
+          "macro_F1": 0.8857159855990914,
+          "worst_RX": 0.8236111111111111
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.7280555555555556,
+          "macro_F1": 0.7271982603405204,
+          "worst_RX": 0.6847222222222222
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5908333333333333,
+          "macro_F1": 0.5874439367923495,
+          "worst_RX": 0.5555555555555556
+        }
+      },
+      "mid_low_mean": 0.6594444444444445,
+      "mid_low_by_draw_accuracy": [
+        [
+          0.7255555555555555,
+          0.6011111111111112
+        ],
+        [
+          0.7305555555555555,
+          0.5805555555555556
+        ]
+      ],
+      "source_readout_NN": 12600
+    },
+    "AS30_STEPALT": {
+      "full_V_clean": 0.9821111111111112,
+      "full_V_RX_accuracy": {
+        "1": 0.9940740740740741,
+        "3": 0.952037037037037,
+        "4": 0.9855555555555555,
+        "6": 0.9964814814814815,
+        "8": 0.9824074074074074
+      },
+      "panel": {
+        "clean": {
+          "accuracy": 0.9827777777777778,
+          "macro_F1": 0.982745546873327,
+          "worst_RX": 0.9555555555555556
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.8875,
+          "macro_F1": 0.8866755373657772,
+          "worst_RX": 0.8208333333333333
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.7280555555555556,
+          "macro_F1": 0.7271978408316243,
+          "worst_RX": 0.6833333333333333
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5930555555555556,
+          "macro_F1": 0.5897922707374034,
+          "worst_RX": 0.5625
+        }
+      },
+      "mid_low_mean": 0.6605555555555556,
+      "mid_low_by_draw_accuracy": [
+        [
+          0.725,
+          0.6022222222222222
+        ],
+        [
+          0.7311111111111112,
+          0.5838888888888889
+        ]
+      ],
+      "source_readout_NN": 12600
+    }
+  },
+  "source_fixed_decision": {
+    "fullV_clean_vs_NoAs30_pp": -0.1481481481481417,
+    "mid_low_mean_vs_original_As30_pp": 0.11111111111110628,
+    "clean_within_absolute_0p1pp": false,
+    "mid_low_mean_strict_positive": true,
+    "source_criteria_pass": false,
+    "fixed_recipe_closed": true,
+    "scientific_negative_skips_formal": false,
+    "target_scores_read": false,
+    "per_packet_protection_gate": false
+  },
+  "training_counts": {
+    "steps": 2220,
+    "L_NN": 1704960,
+    "As_packets": 142080,
+    "U_forward_packets": 567000,
+    "U_selected": 8703,
+    "SupCon_valid_anchor_terms": 1136640
+  },
+  "step_alternation": {
+    "first_step_As128": true,
+    "on_steps": 1110,
+    "off_steps": 1110,
+    "per_epoch_As_packets": {
+      "1": 14208,
+      "2": 14208,
+      "3": 14208,
+      "4": 14208,
+      "5": 14208,
+      "6": 14208,
+      "7": 14208,
+      "8": 14208,
+      "9": 14208,
+      "10": 14208
+    }
+  },
+  "exposure": {
+    "TX": {
+      "0": 23743,
+      "1": 23733,
+      "2": 23724,
+      "3": 23981,
+      "4": 23372,
+      "5": 23527
+    },
+    "RX": {
+      "1": 28382,
+      "3": 28360,
+      "4": 28316,
+      "6": 28515,
+      "8": 28507
+    },
+    "day": {
+      "1": 47477,
+      "2": 47281,
+      "3": 47322
+    },
+    "scenes": {
+      "practical_mid_urban": 47051,
+      "practical_low_urban": 47426,
+      "practical_low_suburban": 47603
+    },
+    "physical": {
+      "unique_physical_packets": 6300,
+      "all_L_physical_packets": 6300,
+      "unexposed_L_packets": 0,
+      "minimum": 11,
+      "maximum": 36,
+      "mean": 22.552380952380954,
+      "exposure_count_histogram": {
+        "11": 3,
+        "12": 3,
+        "13": 15,
+        "14": 28,
+        "15": 71,
+        "16": 128,
+        "17": 201,
+        "18": 326,
+        "19": 413,
+        "20": 555,
+        "21": 660,
+        "22": 713,
+        "23": 723,
+        "24": 652,
+        "25": 580,
+        "26": 427,
+        "27": 328,
+        "28": 202,
+        "29": 140,
+        "30": 70,
+        "31": 29,
+        "32": 15,
+        "33": 12,
+        "34": 4,
+        "35": 1,
+        "36": 1
+      },
+      "per_ID_matched_to_original_not_assumed": true
+    }
+  },
+  "costs": {
+    "rows": {
+      "NOAS30_ORIGINAL": {
+        "native_NN": 7960684,
+        "student_train_NN": 6078780,
+        "student_eval_NN": 918004,
+        "teacher_train_NN": 0,
+        "teacher_eval_NN": 963900,
+        "source_readout_NN": 12600,
+        "formal_prediction_NN": 1176002,
+        "segment_and_own_readouts_NN": 9149286,
+        "reused": true
+      },
+      "AS30_ORIGINAL": {
+        "native_NN": 7960684,
+        "student_train_NN": 6078780,
+        "student_eval_NN": 918004,
+        "teacher_train_NN": 0,
+        "teacher_eval_NN": 963900,
+        "source_readout_NN": 12600,
+        "formal_prediction_NN": 1176002,
+        "segment_and_own_readouts_NN": 9149286,
+        "reused": true
+      },
+      "AS30_STEPALT": {
+        "native_NN": 3162962,
+        "student_train_NN": 2271960,
+        "student_eval_NN": 324002,
+        "teacher_train_NN": 0,
+        "teacher_eval_NN": 567000,
+        "source_readout_NN": 12600,
+        "formal_prediction_NN": 1176002,
+        "segment_and_own_readouts_NN": 4351564,
+        "reused": false
+      }
+    },
+    "new_model_epochs": 10,
+    "new_updates": 2220,
+    "new_training_and_readouts_NN": 4351564,
+    "new_shared_smoke_NN": 1538,
+    "new_total_NN": 4353102,
+    "parent20_native_NN_reused": 4797722,
+    "cumulative_candidate_native_NN": 7960684,
+    "cumulative_candidate_epochs": 30,
+    "cumulative_candidate_updates": 6660,
+    "old_two_E30_training_and_readouts_NN_reused": 18298572,
+    "old_costs_not_recharged": true,
+    "analysis_NN": 0,
+    "analysis_IQ_reads": 0,
+    "analysis_checkpoint_reads": 0,
+    "analysis_updates": 0,
+    "wall_scope": "Actual model-seconds;not speed evidence"
+  },
+  "independent_recount": {
+    "status": "VERIFIED",
+    "CM": 378,
+    "partition_merges": 63
+  },
+  "formal_feedback": false,
+  "fixed_recipe_closed": true,
+  "E50_extension": false,
+  "repeatable_clean_positive_proven": false,
+  "technical_missing_items": [],
+  "goal_complete": false,
+  "units": {
+    "accuracy_and_F1": "fraction0to1",
+    "accuracy_delta_pp": "absolute percentage points",
+    "NN": "model forward samples;student/teacher separated"
+  }
+}
