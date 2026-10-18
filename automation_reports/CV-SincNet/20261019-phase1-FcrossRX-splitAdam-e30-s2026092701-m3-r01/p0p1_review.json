@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "P0": 0,
+  "P1": 0,
+  "scope": "Only defects directly making next realrun wrong/unauthorized/destructive/unlaunchable/illegalprediction",
+  "reviewer": "independent dc_p0p1_review",
+  "review_count": 1,
+  "targeted_rereview_count": 0,
+  "checked": [
+    "parent row mapping/strictown20",
+    "actual P41 terms order/.25RD64",
+    "nativefullL+Uprobe",
+    "sharedphysicalclip/Sincdecay/oneAdamstep/EMA",
+    "state_dict",
+    "three rows/all7/independent scorer",
+    "release bootstrap/immutable archive"
+  ],
+  "actual_Torch": "launcher first step pending",
+  "NN": 0,
+  "CP": 0,
+  "IQ": 0,
+  "remote": false
+}

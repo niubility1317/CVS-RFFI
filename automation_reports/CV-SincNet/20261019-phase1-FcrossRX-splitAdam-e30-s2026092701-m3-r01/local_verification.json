@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "protocol_negatives": 96,
+  "core_math_checks": 49,
+  "package_python_AST": 20,
+  "emitted_remote_AST": 2,
+  "root_report_math_and_prediction_closure": "PASS",
+  "actual_Torch": "LAUNCHER_FIRST_STEP_PENDING",
+  "real_checkpoint_synthetic_smoke": "LAUNCHER_FIRST_STEP_PENDING",
+  "NN": 0,
+  "CP": 0,
+  "IQ": 0,
+  "training_updates": 0,
+  "target_access": false
+}

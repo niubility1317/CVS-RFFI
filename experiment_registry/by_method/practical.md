@@ -32,3 +32,4 @@
 |固定 N0 先验训练：首个 E30 反证|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-N0prior-e20plus10-s2026092701-m1-r01/report.md)|
 |固定平滑 IQ 滤波首次训练 E30：最终结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-spectralIQ-firsttrain-e20plus10-s2026092701-m2-r01/report.md)|
 |完整 practical 的阴影初值分层抽样：匹配四行 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-shadowLHS-e20plus10-s2026092701-m4-r01/report.md)|
+|F＋跨 RX：ordinary／As 分离 Adam 状态 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-splitAdam-e30-s2026092701-m3-r01/report.md)|
