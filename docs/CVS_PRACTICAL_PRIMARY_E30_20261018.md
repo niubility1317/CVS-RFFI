@@ -292,3 +292,5 @@ AsLS .01→.05 E30已完成唯一新行及全部七视图评分/完整日志：s
 20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01已登记PLANNED，独立实现中，尚无训练结果。限定历史去重没有发现直接相同selector实训；整批batchStratify曾改整个L128/4L，sceneBalance改既定64场景，共享propgroup20已sourceFAIL关闭，三者不重开。本项只替换原alternating smask：在原L128可见标签×RX格内按可行waterfill无放回选64，不补缺格/补样、不换loader或留出RX；primaryordinary128/ORD128保持，mixedordinary64补集随选择改变，各physical位置仍一个mixed视图，总6L768/1.25/As.25/LS.01/KL/U/EMA不变。
 
 单新own原P43As20student+EMA+10，总30/6660，旧AS30/NOAS30复用。source固定fullVnewAs−oldNoAs≥−.1pp且twodrawmidlownewAs−oldAs≥+.5pp，失败关固定selector/noE50/no分组父种子扫描，all7仍自动完成。privateRNG不消费旧globalstream，但实际As曝光/补集与整体参数轨迹可能改变，不称纯方差或所有U决策相同。预期新增4352334NN含770真实首步smoke，以实计数为准；selectorCPU单列。完整[最小报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01/report.md)。
+
+AsAlloc E30已实际启动：代码 93693c8e4250074777a1d638f1f78fa20e1082e4，singlearchive传输/compile VERIFIED，770NN真实首步smoke PASS直接训练；dispatcher1556022/worker1556050 GPU0，PID/CWD/argv/GPU/log增长和actual satellite_allocation/全源角色/strictownAs20EMA/phase0-10/原LS.01与U规则核实。0NNanalysis1556587 WAIT_SOURCE流程已接通，尚无新识别结果；源失败仍all7、不扩E50。

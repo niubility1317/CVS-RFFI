@@ -1,6 +1,6 @@
 # 完整 practical：As64 的 TX×RX 分层分配 E30
 
-PLANNED：实现和本地聚焦检查已完成，唯一合并P0/P1 PASS，尚未提交、发布或训练，没有本候选性能结果。
+RUNNING：唯一P0/P1 PASS，代码已提交/remoteOID一致；传输/远端compile VERIFIED，770NN真实首步smoke PASS即训练。worker PID/CWD/argv/GPU/loggrowth和实际原U/EMA/父/全源角色已核验。尚无本候选性能结果。
 
 唯一假设：只在既有 L128 内均衡哪些样本进入 As64，能否在主要 clean 监督和每个物理位置权重稳定的条件下，提高完整 practical 识别。原位置交替选择不保证 TX×RX 配额。本项不增加信道损伤、视图、损失、门控、分类头或部署分支。
 
@@ -40,7 +40,7 @@ PLANNED：实现和本地聚焦检查已完成，唯一合并P0/P1 PASS，尚未
 
 ## 发布和技术停止
 
-代码/config身份待一次Git commit回填。一个不可变run/outputroot/launchowner codex/root/practical-AsAlloc；N607普通账号、现有CVS-RFFI/PyTorch fullFP32、CPU2，无安装/管理员操作。CWD=PROJECT/releases/cvs_FcrossRX_AsAlloc_E30_20261018_r01；output=PROJECT/runs/20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01；发布命令 verified native Python -m experiments.cvs_satellite_allocation30.publish；worker CVS-RFFI/python -u experiments/cvs_satellite_allocation30/runner.py --mode worker --row B01-s2026092701。private runtime不入Git。
+实际代码/config commit=93693c8e4250074777a1d638f1f78fa20e1082e4。一个不可变run/outputroot/launchowner codex/root/practical-AsAlloc；N607普通账号、现有CVS-RFFI/PyTorch fullFP32、CPU2，无安装/管理员操作。CWD=PROJECT/releases/cvs_FcrossRX_AsAlloc_E30_20261018_r01；output=PROJECT/runs/20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01；发布命令 verified native Python -m experiments.cvs_satellite_allocation30.publish；worker CVS-RFFI/python -u experiments/cvs_satellite_allocation30/runner.py --mode worker --row B01-s2026092701。private runtime不入Git。
 
 每GPU全部owner compute≤3/free≥12000MB，动态容量队列，不动健康旧任务。一次聚焦protocol/selector/RNG/实际调用检查、一次独立合并P0/P1；launcher首步真实CP no-query smoke PASS即训练；一次preflight、单archive本地远端SHA比较/compile、一次postPID/CWD/argv/GPU/loggrowth核验。仅owned系统性技术/角色/父/head/数值/输出/无法合法预测失败停止保留产物，科学负结果不阻止all7。无额外审批、签名或逐文件hash链。
 
