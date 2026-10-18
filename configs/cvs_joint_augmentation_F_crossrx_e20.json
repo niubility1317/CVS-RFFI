@@ -2868,7 +2868,15 @@
     "L": 6300,
     "U": 56700,
     "V": 27000,
-    "IQ_points": 256
+    "IQ_points": 256,
+    "promising_recipe_extension": {
+      "total_epochs": 50,
+      "additional_after_fixed_E30": 20,
+      "authorization": "2026-10-18 user: 对于表现好的，可以跑E50更多预算，看看有没有提升",
+      "status": "AUTHORIZED_NOT_LAUNCHED",
+      "matched_NoAs_required": true,
+      "source_only_candidate_selection": true
+    }
   },
   "mmse_receiver_mix_E30_result": {
     "schema": "F_MMSE_RECEIVER_MIX_E30_CLOSED_V1",
@@ -7704,6 +7712,14 @@
     "perpacket_identity_or_allfeature_equivalence_gate": false,
     "method_scope": "Augmentation andtrainingorganization;fixedF/defaulthead/data/test",
     "epochs_each_model": 30,
-    "goal_document": "docs/CVS_PRACTICAL_PRIMARY_E30_20261018.md"
+    "goal_document": "docs/CVS_PRACTICAL_PRIMARY_E30_20261018.md",
+    "promising_recipe_total_epochs_authorized": 50,
+    "extension_candidate_selection": "Legal source evidence only; matched NoAs, fixed original seed order; no target-driven extension",
+    "extension_from_fixed_E30": {
+      "additional_epochs": 20,
+      "total_epochs": 50,
+      "trajectory": "20+10+20, new AdamW/cosine20; not continuous cosine50",
+      "current_healthy_E30_unchanged": true
+    }
   }
 }

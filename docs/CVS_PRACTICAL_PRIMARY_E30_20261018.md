@@ -1,11 +1,15 @@
-# 星地识别优先：E30 活动目标
+# 星地识别优先：E30 探索与有源域证据配方的 E50 扩展
 
 2026-10-18 用户最新指令覆盖此前必须构造 Ag＋As、先独立证明额外跨 RX 泛化的安排。当前阶段不另设 low>60% 或 suburban距clean≤2pp门槛；后者原为探索建议。历史结果与原判据保留，不追溯翻案。当前主目标是提高固定六种practical识别，重点mid/lowurban；阶段clean相对同预算同seed同角色无As对照下降≤0.1个绝对百分点，最终通过As训练获得可重复clean正收益。阶段保持不等于最终完成；跨RX/day分层继续报告，单seed或<0.1pp上涨仅初步观察。
 
-固定F＋CROSS_RX、默认cosine头随骨干联合训练、NoExplicitCFO及内部补偿、原L6300/U56700TX隐藏/V27000、全部源RX1/3/4/6/8和day1/2/3、split392005、原IQ256、原正式receivedIQ/信道。预算仍每模型E30，不主动扩展结构、epoch或U规则。目标不参与设计、选模、晋级或救跑；source检查聚焦标签/数值/明显损伤，不加逐包预测或全特征一致门槛。
+固定F＋CROSS_RX、默认cosine头随骨干联合训练、NoExplicitCFO及内部补偿、原L6300/U56700TX隐藏/V27000、全部源RX1/3/4/6/8和day1/2/3、split392005、原IQ256、原正式receivedIQ/信道。常规探索每模型 E30。2026-10-18 用户新增授权：对表现好的配方可提高到总 E50；候选继续按合法源域证据确定，必须保留同种子、同数据、同总预算的无 As 对照。当前健康 E30 按原计划完成，不热改；网络结构和 U 规则保持。目标不参与设计、选模、晋级或救跑；source检查聚焦标签/数值/明显损伤，不加逐包预测或全特征一致门槛。
 
 当前最有价值参照：P43 clean保留式fullAs，三seed low+17.2849±3.4169pp、mid+21.9448±5.1968pp、urban均值+22.3079±5.5014pp，clean−0.3210±0.5189pp，未满足阶段0.1pp。各seedclean+.0935/−.1536/−.9030pp，不能称稳定双提升；完整逐seed/六practical/F1/RX/成本见既有As-replication-r02报告。原始普通拼接的收益仍保留，不把不同研究增益相加。
 
-下一唯一训练假设：完整As外的featuredropout可能进一步破坏弱身份。新run 20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01 新AS_CE/AS_DET两行scratchown20+10，复用P43 B00/B01同seed01固定E30参照，6L/step和原U不变。AS_CE仅作去satelliteKL的匹配归因控制，旧AsPairCE失败保持关闭；AS_DET只在实际交替64As行绕过dropout输出但完整生成原mask，测试的是模型扰动而非跨视图mask相关性。另一对话正在连续E30轨迹试验，本轮不重复、不改健康任务。
+下一唯一训练假设：完整As外的featuredropout可能进一步破坏弱身份。新run 20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01 新AS_CE/AS_DET两行scratchown20+10，复用P43 B00/B01同seed01固定E30参照，6L/step和原U不变。AS_CE仅作去satelliteKL的匹配归因控制，旧AsPairCE失败保持关闭；AS_DET只在实际交替64As行绕过dropout输出但完整生成原mask，测试的是模型扰动而非跨视图mask相关性。另一对话的连续 E30 路线目前只有 NoAs 完整收尾，As 在 E21 因旧 E20 包装器失败，尚无匹配 E30 结论；本轮不重复、不改其他任务。
 
 详细矩阵、source数值判据、放弃条件、单次发布/自动七视图truth-last与成本在该run的report.md。独立source判据只决定后续保留；正式冻结后报告clean/六practical及paired变化、urban均值、macroF1、worstRX、修复/新错、全部seed/波动/成本/未完成。正式分数不回流研发。新模型尚未训练完成；不能预告提高或阶段达标。
+
+用户最新 E50 授权落实：总预算为 50 轮，不是 E30 后追加 50 轮。优先从各自合法、固定 FINAL30 的 student／EMA 对称追加 20 轮，明确标为 20＋10＋20，总 50 轮；优化器和新增 cosine20 重置如实披露，不称连续 cosine50。无 As 与 As 使用相同续训安排、数据角色和默认联合分类头，父训练／增量／累计成本及额外评估分别记录。
+
+E50 候选在新预登记中根据源域真实识别证据固定；不按正式分数挑种子，不延长已冻结 E30 行。当前 satellite dropout 候选仍执行原 source 判据，失败则关闭，不借 E50 救跑。原完整 As 是否作为预算扩展参照，先核实三种子的现有 source 结果和匹配父权重来源，再发布匹配最小矩阵。当前 E50 尚未启动，亦无 E50 性能结论。
