@@ -1,6 +1,6 @@
 # P68：固定六次前向内的独立完整 practical 配对 CE
 
-状态：LOCAL_IMPLEMENTING。只新增一条 own AS_CE20＋10，总 E30；尚未启动，没有新性能结果。
+状态：VERIFIED_RUNNING。只新增一条 own AS_CE20＋10，总 E30；已完成累计 E21，尚无冻结后的性能结果。以下保留运行前设计与判据。
 
 最值得保留的是完整 practical 真实标签监督及稳定 clean 份额。原普通配方已显示星地适应收益，但新增损失／更高 U 接受覆盖等不能替代识别增量。P67 已完成全部评分，新增时间确认没有提高 low urban；另一对话的 LRaw、tailNoU 已实际训练，不重开。E50 是符合源证据的好方案的总预算，不是追加50轮。
 
@@ -45,3 +45,6 @@ IQ2×256／25MHz，practical之前原逐包RMS／center=false，内部CENTER_UNI
 只对错误角色／来源／runtime、非有限值、输出碰撞或错误As配对／session／CE预算语义触发所属run技术停止；保留产物，不自动重试。科学低性能不停止。一个commit、聚焦负例、唯一P0/P1、单归档比对／compile、一次启动后PID/CWD/argv/GPU/log增长核实按现有最小流程执行，不增加gate。
 
 训练冻结后逐row自动固定七视图预测，再独立truth-last。报告全部accuracy／macroF1／最差RX／跨RX-day／错误修复新增、源state／lock／新增噪声区间、默认头间隔／固定集合保持、view0/view1/combined物理覆盖、完整可用训练曲线、实际NN／更新／墙钟和缺项。只有seed2026092701，不宣称稳定双提升或一定达到low60%。
+
+
+实际代码 f520ae98791a80775b6b5923183fcffba7e91c73 已提交／推送并独立核实远端 identical。单归档SHA ca5482c667f9e39ccd9626c1b52536f8cb996184b6345295120f09ea7409e8b1、远端17个Python文件编译均VERIFIED；一次真实AS_CE20 student／ownEMA及合成6L反传smoke PASS772NN，0真实IQ／0更新。GPU0的所属PID/CWD/argv、实际计算进程和日志增长均VERIFIED。实际native args相对同父SAME只有run_id/candidate_id/output_dir差异；完整角色EXACT_MATCH，ownEMA严格恢复，原pinned leo_practical真实__file__已保存。

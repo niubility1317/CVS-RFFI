@@ -19,6 +19,6 @@
 
 20261018-phase1-FcrossRX-fullAsPair6-e30-s2026092701-m1-r01只新增INDEP_CE6一条own SAT18 AS_CE20＋10，总E30/6660；既有SAT18 AS_CE30作同父SAME_CE6控制直接复用。P43原As30前20轮KL历史不同，仅作整配方参照，不把全部差异归给独立信道。旧10L/heldRX MC2的真实负结果保留；本次关键改变是现有6L预算内的观测分配，不增加前向或跨IQ KL。原raw/ordinary KL、dropout、SupCon、U/EMA、1.25L尺度保持，硬件session相同，两个As各从same raw独立完整生成。
 
-源晋级两项：fullVclean对原NoAs30≥−.1pp；pooledmidlow对max(原As30,SAME_CE6)≥＋.5pp；任一FAIL关闭固定方式，仍评分全部七视图。合格才允许总计E50，正式不晋级；当前本地实现/检查与唯一P0/P1 review均通过，未启动、无新性能。新tail预期2220更新/4352336remoteNN含772smoke，旧控制不重训/推理/评分。
+源晋级两项：fullVclean对原NoAs30≥−.1pp；pooledmidlow对max(原As30,SAME_CE6)≥＋.5pp；任一FAIL关闭固定方式，仍评分全部七视图。合格才允许总计E50，正式不晋级；当前已VERIFIED_RUNNING：772NN真实父与合成6L smoke通过，GPU0进程/CWD/argv/日志增长核实，累计E21已完成，尚无冻结后新性能。新tail预期2220更新/4352336remoteNN含772smoke，旧控制不重训/推理/评分。
 
 [P68预登记](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-fullAsPair6-e30-s2026092701-m1-r01/report.md)。

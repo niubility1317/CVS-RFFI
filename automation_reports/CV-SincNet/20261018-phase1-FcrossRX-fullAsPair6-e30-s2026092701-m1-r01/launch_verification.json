@@ -1,0 +1,33 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261018-phase1-FcrossRX-fullAsPair6-e30-s2026092701-m1-r01",
+  "actual_code_commit": "f520ae98791a80775b6b5923183fcffba7e91c73",
+  "archive_SHA256": "ca5482c667f9e39ccd9626c1b52536f8cb996184b6345295120f09ea7409e8b1",
+  "remote_compile_files": 17,
+  "N607_preflight": "VERIFIED_ordinary_direct8GPU_original_runtime_and_outputs_absent",
+  "smoke": {
+    "status": "PASS",
+    "NN": 772,
+    "source_IQ": 0,
+    "optimizer_updates": 0,
+    "head_joint_gradient": true,
+    "Sinc_joint_gradient": true
+  },
+  "one_new_worker": {
+    "gpu": 0,
+    "pid": 1517641,
+    "cwd_correct": true,
+    "argv_correct": true,
+    "compute_visible": true,
+    "completed_added_epochs": 1,
+    "cumulative_epoch": 21
+  },
+  "log_growth_verified": true,
+  "physical_records_written_bytes": 14408051,
+  "source_contract": "EXACT_MATCH_L6300_U56700hidden_V27000",
+  "same_parent_SAME_control": true,
+  "unrelated_experiments_untouched": true,
+  "formal_scores_read": false,
+  "new_training_started": true,
+  "new_performance_claim": false
+}
