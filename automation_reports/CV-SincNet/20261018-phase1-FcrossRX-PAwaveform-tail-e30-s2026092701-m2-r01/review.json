@@ -1,0 +1,39 @@
+{
+  "status": "PASS",
+  "run_id": "20261018-phase1-FcrossRX-PAwaveform-tail-e30-s2026092701-m2-r01",
+  "candidate": "P60 ordinary L PA waveform shadow bypass tails",
+  "reviewer": "/root/source_state56_p0p1",
+  "review_kind": "one independent limited P0/P1 correctness review",
+  "reviewed_at_utc": "2026-10-18T06:39:57.698Z",
+  "scope": "Only defects causing the next actual run to be wrong, unauthorized, destructive, unlaunchable, overwrite outputs, kill healthy work, or fail to produce legal predictions; new package only and consumed existing interfaces as needed.",
+  "P0": 0,
+  "P1": 0,
+  "findings": [],
+  "checked": [
+    "Corresponding original P43 B00/B01 scratch20 student and own EMA; exact parent source roles/run/config; new10 cumulative30/6660 and own new final readers.",
+    "Wrapper changes only native ordinary L128 return to captured non-PA prefix, executes original simulate_pa on a disposable clone and consumes all native draws.",
+    "Actual ordinary call requests no PA strength metadata, so zero shadow PA strength introduces no extra loss consumer. Python/NumPy/Torch CPU poststates and in-place PA protection are covered by focused checks.",
+    "Native make_augmentor and configure_augmentor_for_epoch scopes restore; inherited parent E13 schedule retained.",
+    "Both arms retain original six L forwards, loss scale1.25, same-IQ RDrop pairs, cross-RX SupCon, raw control slots, original U and nominal full-physics As without P59 scene-prior override.",
+    "Fixed source decision consumes only source files before dispatcher formal collection. Scientific source failure still executes each all7 prediction and independent truth-last scoring.",
+    "Immutable output root, row ownership, cap2 reservations including other-owner GPU PIDs, and row failure preservation without stopping the other healthy row."
+  ],
+  "verification": {
+    "status": "PASS",
+    "tests": 11,
+    "command": "E:/type10-7/local_envs/ssr-gpu/python.exe -X utf8 experiments/cvs_pa_waveform60/checks.py --dependencies E:/type10-7/code/worktrees/cvs_iq_timing_20261016",
+    "cwd": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "test_seconds": 4.34,
+    "new_reviewer_synthetic_NN": 1536,
+    "real_IQ_reads": 0,
+    "checkpoint_reads": 0,
+    "target_access": false,
+    "optimizer_updates": 0,
+    "training": false,
+    "remote_access": false,
+    "note": "Known Torch/NumPy initialization warning appeared; candidate tested list/frombuffer bridge and all 11 checks passed."
+  },
+  "source_edits": 0,
+  "launch_performed": false,
+  "additional_reviews_required": false
+}

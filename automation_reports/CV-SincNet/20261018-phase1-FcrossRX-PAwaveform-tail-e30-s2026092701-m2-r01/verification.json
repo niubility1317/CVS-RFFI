@@ -1,0 +1,40 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "run_id": "20261018-phase1-FcrossRX-PAwaveform-tail-e30-s2026092701-m2-r01",
+  "candidate": "Tail ordinaryPA waveform bypass by fullAs interaction",
+  "implementation": {
+    "focused_tests": 11,
+    "latest_test_seconds": 4.338,
+    "actual_synthetic_NN_successful_total": 3072,
+    "actual_synthetic_NN_failed_toy_assertion": 768,
+    "actual_synthetic_NN_total": 3840,
+    "real_IQ": 0,
+    "CP": 0,
+    "target": 0,
+    "updates": 0,
+    "compile": "PASS_13"
+  },
+  "review": {
+    "status": "PASS",
+    "P0": 0,
+    "P1": 0,
+    "focused_tests": 11,
+    "seconds": 4.34,
+    "actual_synthetic_NN": 1536,
+    "count": 1
+  },
+  "analysis_checks": {
+    "tests": 19,
+    "status": "PASS",
+    "seconds": 0.893,
+    "NN": 0,
+    "realdata": 0
+  },
+  "total_local_synthetic_NN": 5376,
+  "scientific_result": null,
+  "remote_preflight": "VERIFIED_ONCE_ORDINARY_TWO_PARENT_METADATA_AND_REUSED_HANDLES_ROOTS_ABSENT_GPUS_AVAILABLE",
+  "remote_real_CP_smoke": "PENDING_FIRST_LAUNCH_STEP_4NN_TWO_SOURCES_CPU",
+  "remote_model_training": "NOT_LAUNCHED",
+  "source_extension_criteria_fixed": true,
+  "no_extra_review": true
+}
