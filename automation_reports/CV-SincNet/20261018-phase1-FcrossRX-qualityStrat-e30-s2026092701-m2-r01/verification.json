@@ -51,12 +51,24 @@
     "status": "VERIFIED",
     "ordinary_nonroot": true,
     "direct": true,
-    "project_exists": true
+    "project_exists": true,
+    "inputs_present": true,
+    "run_release_absent": true
   },
   "source_FAIL_still_all7": true,
   "formal_target_feedback": false,
   "E50_launched": false,
   "M3_launched": false,
   "results_available": false,
-  "goal_complete": false
+  "goal_complete": false,
+  "actual_code_commit": "000a34f52dc4240c8d078254ada17e7761a27a84",
+  "archive_transfer": {
+    "status": "VERIFIED",
+    "sha256": "10b1f16f83fc3961b35e364d7a55ade78516bbe04c4ca45d0f5862da1740fb63",
+    "bytes": 102386
+  },
+  "remote_compile": {
+    "status": "PASS",
+    "python_files": 23
+  }
 }

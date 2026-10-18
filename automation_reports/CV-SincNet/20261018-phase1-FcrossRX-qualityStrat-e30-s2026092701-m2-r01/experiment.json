@@ -29,7 +29,7 @@
   "replaces_run_id": null,
   "authorization": "Latest user: satellite-first, clean drop<=0.1 absolutepp, fullsource/noheldRX, fixedF+CROSS_RX/defaulthead, E30; good source-qualified recipes may totalE50; active goal authorizes implementation/matched trials/all7 independent scoring. No extra heads/targetfeedback/healthy-task mutation.",
   "code": {
-    "commit": "PENDING_CODE_COMMIT",
+    "commit": "000a34f52dc4240c8d078254ada17e7761a27a84",
     "checkout": "code/worktrees/phase1_urban_sigtime_20261014",
     "environment": "N607 existing ordinary CVS-RFFI Python3.10.19 Torch2.1.0+cu121 NumPy2.2.5; FP32 CPU2",
     "cwd": "PROJECT/releases/cvs_FcrossRX_quality_strat_E30_20261018_r01"
@@ -99,7 +99,7 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_quality_strat_E30_20261018_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_quality_risk70/runner.py",
     "stop_rule": "Wrongroles/provenance/outputcollision/nativecode/nonfinite/labeldomainmismatch or any positive mass quality bin N_g<2220 stops own run; preserve immutable pool/artifacts,no automaticretry. SourceFAIL stillall7, formalfeedback prohibited.",
-    "status": "PREREGISTERED"
+    "status": "READY_TO_LAUNCH"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
