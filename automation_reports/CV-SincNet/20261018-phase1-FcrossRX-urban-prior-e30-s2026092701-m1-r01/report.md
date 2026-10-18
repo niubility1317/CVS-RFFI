@@ -1,6 +1,6 @@
 # P59：完整 practical 的 urban 场景重点分配
 
-LOCAL_VERIFIED，9 项定向检查与 13 文件语法检查通过；一次限定 P0／P1 审查通过（P0=0／P1=0），尚未发布／启动，没有新性能结果。当前目标是固定 practical 星地识别优先，匹配 clean 下降不超过 0.1 个绝对百分点，最终仍需可重复双提升及 low urban>60%。常规总 E30，本次不扩 E50。
+**VERIFIED_RUNNING，已在 GPU0 启动新增 E10。** dispatcher1217210／worker1217341 的 PID、CWD、argv、GPU 和日志增长已独立核实；9项定向检查、13文件编译和一次P0／P1审查通过（P0=0／P1=0）。真实As20无query烟测2NN＋实际六前向合成烟测768NN通过后已直接训练，没有新性能结果。当前目标是固定 practical 星地识别优先，匹配 clean 下降不超过 0.1 个绝对百分点，最终仍需可重复双提升及 low urban>60%。常规总 E30，本次不扩 E50。
 
 唯一假设：在完整 practical 的总样本量、clean 槽位和物理条件不变时，增加 urban 场景的训练份额能提高 low／mid urban，且不引入超过阶段要求的 clean 代价。仅在原 As E20 父模型的 E21–30，将 low suburban／mid urban／low urban 的先验从各 1/3 改为 .2／.4／.4。它是固定混合 `(1−.4)*nominal+.4*(0,.5,.5)`，不是自适应课程。
 
@@ -33,3 +33,7 @@ LOCAL_VERIFIED，9 项定向检查与 13 文件语法检查通过；一次限定
 run=`20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01`；owner=`codex/root/urban-prior59`；预定 CWD=`PROJECT/releases/cvs_FcrossRX_urban_prior_E30_20261018_r01`；命令、环境、GPU、实际代码commit、焦点检查／一次P0P1／一次真实CP noquery smoke／预检／单归档比较／远端compile及启动后状态在发布前后按生命周期补齐，不建立额外审批。唯一矩阵、六类seed、输入输出与逐行预算以 [experiment.json](<E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01/experiment.json>) 为准。
 
 本地实际验证：实现者和独立审查者各运行同一9项检查，均PASS，各含768个合成网络样本前向，共1536；真实IQ／checkpoint／optimizer更新为0。只进行一次独立审查，不重复旧模块审查。
+
+实际发布：代码提交 `33a7046ee6e15898f30eca05f7bbc2c3249ce7e3` 已push且独立GitHub compare identical。一次N607普通账户预检PASS；单个归档SHA比较VERIFIED（`ef8677631a820c5186c8748e83b0c3941500f8d4cc81909fc61d2292d01ca495`）；远端13文件compile PASS。未远端改源码、未覆盖旧输出／模型、未修改健康其他任务。
+
+运行值已与原As30的actual_channel.json逐配置比较一致；唯一差别为新场景先验。真正 leo_practical __file__ 为 `PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/{channel,residual}.py`，不是根code/。fs25MHz、训练fc2.462GHz、residual/post_sync、EQ=false即G=1、reference_snr_db30、quality_adaptation／phase_tracking／IQcompensation均true、reflect；归一化位置保持。原生学生和ownEMA从精确B01 As20严格加载，source_roles=EXACT_MATCH、target_contact=false，优化器state_entries0、cosine10／lr.0002／WD.0001，temporalcache重置。详细私有后状态位于 local_artifacts/cvs_FcrossRX_urban_prior_E30_20261018_r01/postlaunch.json 与 runtime_audit.json；不把启动PASS当成训练或性能完成。

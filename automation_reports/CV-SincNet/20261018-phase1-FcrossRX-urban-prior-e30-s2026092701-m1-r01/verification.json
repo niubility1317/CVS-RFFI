@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_VERIFIED",
+  "status": "VERIFIED_RUNNING",
   "new_training_epochs": 0,
   "real_NN": 0,
   "remote_mutations": 0,
@@ -19,5 +19,36 @@
   "independent_review_cases": 9,
   "independent_review_wall_seconds": 2.894,
   "local_synthetic_NN_total": 1536,
-  "local_synthetic_NN_note": "worker768+independentreviewer768;no actualdata/CP/updates"
+  "local_synthetic_NN_note": "worker768+independentreviewer768;no actualdata/CP/updates",
+  "code_commit": "33a7046ee6e15898f30eca05f7bbc2c3249ce7e3",
+  "remote_OID": "IDENTICAL",
+  "N607_preflight": "VERIFIED_ONCE_ORDINARY_EXACTPARENT_ROLES_NEWWRITEROOTS_CAPACITY",
+  "archive_SHA256": "ef8677631a820c5186c8748e83b0c3941500f8d4cc81909fc61d2292d01ca495",
+  "archive_comparisons": 1,
+  "release_transfer": "VERIFIED",
+  "remote_compile": "PASS_13_FILES",
+  "real_checkpoint_noquery_smoke": {
+    "status": "PASS",
+    "NN": 2
+  },
+  "synthetic_actual6L_smoke": {
+    "status": "PASS",
+    "NN": 768,
+    "As_generated": 64
+  },
+  "remote_smoke_NN": 770,
+  "pid": 1217210,
+  "worker_pid": 1217341,
+  "gpu": 0,
+  "postlaunch": "VERIFIED_PID_CWD_ARGV_GPU_LOG_GROWTH",
+  "log_growth": true,
+  "actual_physics_matches_original": true,
+  "actual_module_implementation": "experiments/adv3b02_xuc/code/leo_practical under pinned evidence_responsibility release;notrootcode",
+  "actual_scene_probabilities": [
+    0.2,
+    0.4,
+    0.4
+  ],
+  "IQ_futures_test_modified": false,
+  "final_metrics_available": false
 }

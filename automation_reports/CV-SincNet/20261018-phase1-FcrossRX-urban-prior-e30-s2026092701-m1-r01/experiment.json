@@ -26,11 +26,11 @@
   "replaces_run_id": null,
   "authorization": "最新用户授权在正常E30内研究完整practical及训练组织、匹配对照、自动clean+六practical；全部源RX，无新结构/头/数据权限；好配方总E50仅后续源证据支持后另登记，本run不扩。",
   "code": {
-    "commit": "b7d41a4dac3b9da8a1edf2928cbe0383c7c6b7de",
+    "commit": "33a7046ee6e15898f30eca05f7bbc2c3249ce7e3",
     "checkout": "codex/phase1-urban-sigtime-20261014",
     "environment": "N607 ordinary CVS-RFFI Python3.10/Torch existing environment;CPU2 perworker;fullFP32/CENTER_UNITS unchanged",
     "cwd": "PROJECT/releases/cvs_FcrossRX_urban_prior_E30_20261018_r01",
-    "identity_status": "PLANNED_NEXT_ACTUAL_CODE_COMMIT_RECORDED_BEFORE_LAUNCH"
+    "identity_status": "ACTUAL_RELEASE_CODE_COMMIT_INDEPENDENT_REMOTE_OID_IDENTICAL"
   },
   "data": {
     "dataset": "ManySig",
@@ -85,7 +85,7 @@
       "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
     ],
     "contract_check_ref": "OriginalP43 source.parent_payload on original B01config30 beforeload:role_ids exact,L6300/U56700hidden/V27000,all5RX/3day,scratch/noancestors/notarget,ownrunrow/E20/4440/final_only/EMA;newrun ownfinalreader",
-    "provenance_verdict": "EXISTING_COMPLETE_P43_SOURCE_AUDIT_COMPATIBLE;live artifact existence and realCP noquerysmoke pending;no fallback if absent",
+    "provenance_verdict": "VERIFIED_LIVE_AS20_METADATA_EXACTROLES_AND_REAL_CP_NOQUERY_SMOKE_PASS;STRICT_OWN_EMA_PRESENT;TRAIN_INITIALIZATION_EXACT",
     "selection_rule": "ParentB01 andoriginalfixedseed chosenbeforetraining fromsource As reference,not bestformalrow;fixedFINAL10 cumulative30,sourceV nocheckpoint ranking;source decision stored beforeformal"
   },
   "execution": {
@@ -97,7 +97,11 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_urban_prior_E30_20261018_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_urban_prior59/runner.py",
     "stop_rule": "Wrongroles/provenance/parent/runtime/shape/nonfinite/outputcollision/budget ortechnicalfailure:preserve ownoutputs andstop ownrunonly;no automaticretry/targetselection/healthyprocessmutation;scientific negative completesfixedall7 andclosesextension",
-    "status": "LOCAL_VERIFIED_REVIEW_RUNNING"
+    "status": "RUNNING",
+    "gpu": 0,
+    "dispatcher_pid": 1217210,
+    "worker_pid": 1217341,
+    "remote_compile": "PASS_13"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
