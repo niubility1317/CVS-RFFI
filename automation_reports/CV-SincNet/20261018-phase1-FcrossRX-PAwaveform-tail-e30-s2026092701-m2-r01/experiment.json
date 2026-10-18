@@ -99,7 +99,7 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_PA_waveform_tail_E30_20261018_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_pa_waveform60/runner.py",
     "stop_rule": "Wrongrole/provenance/runtime/nonfinite/outputconflict/systemictechnicalfailure stopsownedrunonly,preserveartifacts,no automatictrainingretry;scientificFAIL stillall7/noE50/seedexpansion",
-    "status": "RUNNING",
+    "status": "ANALYZED",
     "dispatcher_pid": 1249294,
     "rows": [
       {
@@ -113,7 +113,8 @@
         "gpu": 1
       }
     ],
-    "remote_compile": "PASS_15"
+    "remote_compile": "PASS_15",
+    "terminal_evidence": "analysis_r01/complete.json ANALYZED missing=[]; both new rows 30 totalE/6660updates, all7 PREDICTIONS_COMPLETE and independent SCORED_COMPLETE; owned dispatcher/workers/analysis exited"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
@@ -328,5 +329,29 @@
     "FormalreportnewASvsnewNOASmatchedstageclean-.1pp andsatgains;alsooriginalNoAs/As toattributePAeffect andinteraction. One seed/microcleanpositivenotstabledualclaim. No target-basedselection/seed/retry/expansion.",
     "Actualsyntheticdual6Lchecks arelocalonly;remote firstsmoke iscompoundreal2parents/4NN/CPU thenimmediatetraining. No remote synthetic_smoke artifact required. PA actualfiles fromproducerPA_waveform_actual/PA_shadow_progress/PA_shadow_steps."
   ],
-  "registered_at": "2026-10-18T06:31:33+00:00"
+  "registered_at": "2026-10-18T06:31:33+00:00",
+  "result_summary": {
+    "model_seed": 2026092701,
+    "model_seed_count": 1,
+    "source_qualified": false,
+    "source_checks": {
+      "clean": false,
+      "midlow": false,
+      "low": false
+    },
+    "source_clean_delta_pp": -0.11111111111111738,
+    "source_midlow_delta_vs_As30_pp": -0.09722222222223742,
+    "source_low_delta_vs_As30_pp": -0.22222222222221255,
+    "matched_formal_clean_delta_pp": 0.3178571428571364,
+    "matched_formal_urban_delta_pp": 28.228968253968254,
+    "stage_clean_within_0p1pp": true,
+    "incremental_PA_vs_As30_urban_delta_pp": -0.08888888888888649,
+    "formal_low_urban_accuracy": 0.5115059523809524,
+    "reproducible_dual_gain": false,
+    "goal_complete": false,
+    "E50_extension": false,
+    "formal_feedback": false,
+    "missing": [],
+    "evidence": "E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-PAwaveform-tail-e30-s2026092701-m2-r01/final_analysis.md"
+  }
 }

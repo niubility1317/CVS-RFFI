@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_RUNNING",
+  "status": "VERIFIED_ANALYZED",
   "run_id": "20261018-phase1-FcrossRX-PAwaveform-tail-e30-s2026092701-m2-r01",
   "candidate": "Tail ordinaryPA waveform bypass by fullAs interaction",
   "implementation": {
@@ -31,7 +31,30 @@
     "realdata": 0
   },
   "total_local_synthetic_NN": 5376,
-  "scientific_result": null,
+  "scientific_result": {
+    "model_seed": 2026092701,
+    "model_seed_count": 1,
+    "source_qualified": false,
+    "source_checks": {
+      "clean": false,
+      "midlow": false,
+      "low": false
+    },
+    "source_clean_delta_pp": -0.11111111111111738,
+    "source_midlow_delta_vs_As30_pp": -0.09722222222223742,
+    "source_low_delta_vs_As30_pp": -0.22222222222221255,
+    "matched_formal_clean_delta_pp": 0.3178571428571364,
+    "matched_formal_urban_delta_pp": 28.228968253968254,
+    "stage_clean_within_0p1pp": true,
+    "incremental_PA_vs_As30_urban_delta_pp": -0.08888888888888649,
+    "formal_low_urban_accuracy": 0.5115059523809524,
+    "reproducible_dual_gain": false,
+    "goal_complete": false,
+    "E50_extension": false,
+    "formal_feedback": false,
+    "missing": [],
+    "evidence": "E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-PAwaveform-tail-e30-s2026092701-m2-r01/final_analysis.md"
+  },
   "remote_preflight": "VERIFIED_ONCE_ORDINARY_TWO_PARENT_METADATA_AND_REUSED_HANDLES_ROOTS_ABSENT_GPUS_AVAILABLE",
   "remote_real_CP_smoke": {
     "status": "PASS",
@@ -41,7 +64,7 @@
     "query": false,
     "updates": 0
   },
-  "remote_model_training": "RUNNING",
+  "remote_model_training": "COMPLETE_BOTH_OWN20_PLUS10_TOTAL30",
   "source_extension_criteria_fixed": true,
   "no_extra_review": true,
   "training_code_commit": "23f794296a11e1a4f25837e78b60f36bc700b99e",
@@ -72,44 +95,208 @@
   "source_roles": "EXACT_MATCH",
   "target_contact": false,
   "optimizer": "RESET_EMPTY_ADAMW_COS10_LR0002_WD0001",
-  "source_and_formal_results_available": false,
+  "source_and_formal_results_available": true,
   "analysis": {
-    "status": "VERIFIED_WAIT_EXISTING_RUN",
+    "status": "VERIFIED_ANALYZED",
     "pid": 1252827,
     "watcher_code_commit": "6dfe7e67eb8da11e4abb1ce17507ab45230414e8",
     "analysis_code_commit": "23f794296a11e1a4f25837e78b60f36bc700b99e",
     "CWD_argv_CUDA": "VERIFIED",
-    "truth_opened": false,
+    "truth_opened": true,
     "NN": 0,
     "IQ": 0,
     "CP": 0,
     "updates": 0,
-    "output": "PROJECT/runs/20261018-phase1-FcrossRX-PAwaveform-tail-e30-s2026092701-m2-r01/analysis_r01"
+    "output": "PROJECT/runs/20261018-phase1-FcrossRX-PAwaveform-tail-e30-s2026092701-m2-r01/analysis_r01",
+    "truth_gate": "ALL_FOUR_FROZEN_ROWS_ALL7_VERIFIED_BEFORE_TRUTH",
+    "missing": [],
+    "wall_seconds": 28.18888835492544,
+    "confusion_recounts": 504,
+    "partition_reconciliations": 84,
+    "five_figures_visually_inspected": true,
+    "completion_evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_PA_waveform_tail_E30_20261018_r01/retrieved_r01/analysis_r01/complete.json",
+    "no_new_predictor_or_scorer": true
   },
   "progress": {
+    "dispatcher_alive": false,
+    "worker_pids_alive": false,
+    "analysis_alive": false,
+    "new_rows": 2,
+    "each_new_epochs": 10,
+    "each_new_updates": 2220,
+    "source_complete": true,
+    "seven_view_predictions_complete": true,
+    "independent_scoring_complete": true,
+    "source_decision": true,
+    "source_qualified": false,
+    "formal_results_read": true,
+    "failure": null
+  },
+  "NOAS_PAOFF_terminal": {
+    "trained_epochs": 30,
+    "new_epochs": 10,
+    "new_updates": 2220,
+    "L_NN": 1704960,
+    "L_As": 0,
+    "source_qualification": "SOURCE_READOUT_COMPLETE",
+    "seven_view_predictions": "PREDICTIONS_COMPLETE",
+    "independent_truthlast_scoring": "SCORED_COMPLETE",
+    "PA_shadow_selected": 10192,
+    "PA_shadow_changed": 10178,
+    "PA_actual_injected": 0,
+    "head_fit_updates": 0,
+    "U_truth_read": false
+  },
+  "progress_historical": {
     "rows": [
       {
-        "row_id": "NOAS_PAOFF-s2026092701",
-        "pid": 1249382,
-        "alive": true,
-        "epochs_complete": 4,
-        "source_complete": false,
-        "prediction_complete": false,
-        "scoring_complete": false
+        "row": "NOAS_PAOFF-s2026092701",
+        "alive": false,
+        "epochs": 10,
+        "step_bytes": 4605229,
+        "source_complete": true,
+        "prediction_complete": true,
+        "scoring_complete": true
       },
       {
-        "row_id": "AS_PAOFF-s2026092701",
-        "pid": 1249461,
+        "row": "AS_PAOFF-s2026092701",
         "alive": true,
-        "epochs_complete": 3,
+        "epochs": 8,
+        "step_bytes": 3912165,
         "source_complete": false,
         "prediction_complete": false,
         "scoring_complete": false
       }
     ],
     "dispatcher_alive": true,
+    "analysis_alive": true,
     "source_decision": false,
-    "formal_results_available": false,
+    "formal_results_read": false,
     "failure": null
-  }
+  },
+  "NN_costs": {
+    "new_rows": {
+      "NOAS_PAOFF": {
+        "new10": {
+          "student_train_NN": 2271960,
+          "student_eval_NN": 324002,
+          "teacher_train_NN": 0,
+          "teacher_eval_NN": 567000,
+          "native_NN": 3162962,
+          "wall_seconds": 829.3581557273865
+        },
+        "inherited20": {
+          "student_train_NN": 3806820,
+          "student_eval_NN": 594002,
+          "teacher_train_NN": 0,
+          "teacher_eval_NN": 396900,
+          "native_NN": 4797722,
+          "wall_seconds": 1329.3940694332123
+        },
+        "source_readout_NN": 12600,
+        "formal_prediction_NN": 1176002,
+        "formal_prediction_wall_seconds": 48.40031409193762,
+        "new_remote_NN_known": 4351564,
+        "new_remote_NN_complete": true,
+        "candidate_lifetime_NN_known": 9149286
+      },
+      "AS_PAOFF": {
+        "new10": {
+          "student_train_NN": 2271960,
+          "student_eval_NN": 324002,
+          "teacher_train_NN": 0,
+          "teacher_eval_NN": 567000,
+          "native_NN": 3162962,
+          "wall_seconds": 1114.9029848575592
+        },
+        "inherited20": {
+          "student_train_NN": 3806820,
+          "student_eval_NN": 594002,
+          "teacher_train_NN": 0,
+          "teacher_eval_NN": 396900,
+          "native_NN": 4797722,
+          "wall_seconds": 1810.2493114471436
+        },
+        "source_readout_NN": 12600,
+        "formal_prediction_NN": 1176002,
+        "formal_prediction_wall_seconds": 47.6890097882133,
+        "new_remote_NN_known": 4351564,
+        "new_remote_NN_complete": true,
+        "candidate_lifetime_NN_known": 9149286
+      }
+    },
+    "new_model_rows": 2,
+    "new_model_epochs": 20,
+    "new_updates": 4440,
+    "new_L_NN": 3409920,
+    "new_As_generated": 142080,
+    "parent_epochs_per_row": 20,
+    "parent_updates_per_row": 4440,
+    "candidate_cumulative_epochs_per_row": 30,
+    "candidate_cumulative_updates_per_row": 6660,
+    "new_source_readout_NN": 25200,
+    "new_formal_prediction_NN": 2352004,
+    "new_remote_smoke_NN": 4,
+    "new_total_remote_NN_known": 8703132,
+    "new_total_remote_NN_complete": true,
+    "historical_references": {
+      "NOAS30": {
+        "stage20": {
+          "student_train_NN": 3806820,
+          "student_eval_NN": 594002,
+          "teacher_train_NN": 0,
+          "teacher_eval_NN": 396900,
+          "native_NN": 4797722,
+          "wall_seconds": 1329.3940694332123
+        },
+        "source": {
+          "student_train_NN": 2271960,
+          "student_eval_NN": 324002,
+          "teacher_train_NN": 0,
+          "teacher_eval_NN": 567000,
+          "native_NN": 3162962,
+          "wall_seconds": 816.7961094379425
+        },
+        "source_readout_NN": 12600,
+        "formal_prediction_NN": 1176002
+      },
+      "AS30": {
+        "stage20": {
+          "student_train_NN": 3806820,
+          "student_eval_NN": 594002,
+          "teacher_train_NN": 0,
+          "teacher_eval_NN": 396900,
+          "native_NN": 4797722,
+          "wall_seconds": 1810.2493114471436
+        },
+        "source": {
+          "student_train_NN": 2271960,
+          "student_eval_NN": 324002,
+          "teacher_train_NN": 0,
+          "teacher_eval_NN": 567000,
+          "native_NN": 3162962,
+          "wall_seconds": 1050.6598069667816
+        },
+        "source_readout_NN": 12600,
+        "formal_prediction_NN": 1176002
+      }
+    },
+    "historical_reference_NN_known": 18298572,
+    "historical_reference_model_epochs": 60,
+    "historical_reference_updates": 13320,
+    "unique_total_model_epochs_including_reused": 80,
+    "unique_total_updates_including_reused": 17760,
+    "unique_total_remote_NN_known": 27001704,
+    "shared_own_As20_and_NoAs20_parents_counted_once": true,
+    "historical_shared_sixrow_smoke_NN_unallocated": true,
+    "local_synthetic_NN_known": 5376,
+    "local_synthetic_successful_NN": 4608,
+    "local_synthetic_failed_NN": 768,
+    "local_synthetic_scope": "Implementation plus one independent reviewer; separate from remote run; failed toy assertion768 retained",
+    "reference_reprediction": 0,
+    "reference_rescoring": 0,
+    "analysis_NN": 0,
+    "budget_exhaustion_is_not_convergence": true
+  },
+  "source_extension_decision_read_before_formal": true
 }

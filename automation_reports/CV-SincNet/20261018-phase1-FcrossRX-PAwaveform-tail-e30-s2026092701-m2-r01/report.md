@@ -1,6 +1,6 @@
 # P60：完整As适应期停止普通PA波形注入
 
-状态：VERIFIED_RUNNING，GPU0／1 两条新尾段已实际启动；无完整源／正式性能结果。P59已完整结束并按源规则关闭，不延E50。
+状态：VERIFIED / ANALYZED。两新尾段及各clean＋六practical独立truth-last评分、完整分析已完成；source三项FAIL，不扩E50。实际结果、成本、负结果与图见[完成报告](<E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-PAwaveform-tail-e30-s2026092701-m2-r01/final_analysis.md>)。下文原启动/进度描述保留为历史，不代表当前状态。P59仍按源规则关闭。
 
 唯一假设：从原E20父模型继续E21–30时，普通L的PA波形扰动可能与完整practical训练形成不利交互；停止继续注入该波形、保留其他原配方，可能改善clean—urban权衡。实际PA开启不证明标签破坏，本项不预先宣称有效。
 
