@@ -1,0 +1,90 @@
+{
+  "status": "VERIFIED",
+  "decision": "CLOSED_FIXED_RADIAL_QUANTILE_HYPOTHESIS",
+  "source_pass": false,
+  "conditions": {
+    "nonzero_identity_error": true,
+    "shared_vs_identity": true,
+    "shared_vs_additive": false,
+    "positive_folds": true,
+    "each_nonreference_RX": false,
+    "not_worse_TXconditional": false,
+    "common_slope_mild": false,
+    "valid_log_shape": true
+  },
+  "SSE": {
+    "shared": 2.8761916884189587,
+    "identity": 11.170726420423744,
+    "additive": 1.0610124786474224,
+    "TXconditional": 1.5693060443140678
+  },
+  "per_RX_SSE": {
+    "3": {
+      "shared": 1.2901999946001017,
+      "identity": 5.276623019516147,
+      "additive": 0.3692301159587983,
+      "TXconditional": 0.5853652039109213
+    },
+    "4": {
+      "shared": 0.13371171103169244,
+      "identity": 0.10962842718391876,
+      "additive": 0.13550166068468691,
+      "TXconditional": 0.12548797435127926
+    },
+    "6": {
+      "shared": 0.2080765044368803,
+      "identity": 0.21133048778095723,
+      "additive": 0.2049530868230253,
+      "TXconditional": 0.24587448930146
+    },
+    "8": {
+      "shared": 1.244203478350284,
+      "identity": 5.573144485942721,
+      "additive": 0.35132761518091193,
+      "TXconditional": 0.6125783767504072
+    }
+  },
+  "positive_folds": 16,
+  "baseline_RMS": 0.16080473565862466,
+  "slopes": {
+    "minimum": 0.9448780414341916,
+    "maximum": 1.8553681931369603
+  },
+  "source_counts": {
+    "L_s": {
+      "packets": 6300,
+      "cells": 90,
+      "quantile_values": 37800,
+      "all_cell_counts_equal": true
+    },
+    "V": {
+      "packets": 27000,
+      "cells": 90,
+      "quantile_values": 162000,
+      "all_cell_counts_equal": true
+    }
+  },
+  "packet_quantile_values": 199800,
+  "cell_quantile_values": 1080,
+  "scalar_fits": 144,
+  "additive_vectors": 72,
+  "prediction_coordinates": 1728,
+  "reference_RX_excluded_from_positive_domain_count": true,
+  "max_array_error": 6.661338147750939e-16,
+  "max_metric_error": 4.440892098500626e-16,
+  "quality": {
+    "max_floor_fraction_each_cell": 0,
+    "zero_RMS_packets": 0
+  },
+  "IQ_reads": 0,
+  "CP": 0,
+  "NN": 0,
+  "updates": 0,
+  "U_used": false,
+  "target_access": false,
+  "label_preservation_proved": false,
+  "Ag_proved": false,
+  "joint_goal_complete": false,
+  "scope": "Full savedquantile/cell/fit/prediction recount;not independent rawIQ quantile replay",
+  "wall_seconds": 0.6611189900431782
+}

@@ -21,10 +21,11 @@
   "replaces_run_id": null,
   "authorization": "Active jointAg+As research in this thread;latest F+CROSS_RX/all5RX/256IQ/E30;source-only falsification,no training or target in this row",
   "code": {
-    "commit": "PENDING_ACTUAL_GIT_COMMIT_PINNED_BY_PUBLISH",
+    "commit": "00a2b54f5cdf7b55698a1001ad8dd7bea77cf650",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "Existing ordinaryN607 CVS-RFFI Python/PyTorch/NumPy,CPU2,noGPU",
-    "cwd": "PROJECT/releases/cvs_F_radial_quantile_source_20261018_r01"
+    "cwd": "PROJECT/releases/cvs_F_radial_quantile_source_20261018_r01",
+    "recovery_commit": "0c7a9e2957a7351aac785c9931fc2465627ec547"
   },
   "data": {
     "dataset": "ManySig",
@@ -197,7 +198,7 @@
           0.9
         ],
         "center_quantile": 0.5,
-        "relative_amplitude_floor": 1e-06,
+        "relative_amplitude_floor": 0.000001,
         "observable": "Perpacket log(max(abs(z)/RMS,1e-6)) quantiles minus median,all256samples;mean of70/300 packets perTX/RX/day;no slicing,phase estimation,filtering or sample selection",
         "mathematical_probe": "For positive powerlaw g_a(z)=abs(z)^(a-1)*z followed by RMS,the unfloored centeredlogquantiles scale exactly by a;this is a probe family,not identified RX hardware or assumed labelpreservation",
         "fit": "L-only scalar a_RX throughorigin from other5TX/other2days,all5RX retained;18heldTX/day statistical folds;referenceRX1",
@@ -245,6 +246,27 @@
           "V is existing source validation;no new independent blind hardware test"
         ],
         "REJECTED_EXTRA_GATE": "Generic designapproval is superseded by explicit existing research authorization and minimalprojectworkflow;no extra approval or seal"
+      },
+      "status": "ANALYZED",
+      "result": {
+        "decision": "CLOSED_FIXED_RADIAL_QUANTILE_HYPOTHESIS",
+        "source_pass": false,
+        "SSE": {
+          "shared": 2.8761916884189587,
+          "identity": 11.170726420423744,
+          "additive": 1.0610124786474224,
+          "TXconditional": 1.5693060443140678
+        },
+        "positive_folds": 16,
+        "slopes_outside_mild": 39,
+        "slopes_total": 72,
+        "source_only": true,
+        "identity_accuracy_measured": false,
+        "NN": 0,
+        "CP": 0,
+        "updates": 0,
+        "target_access": false,
+        "joint_goal_complete": false
       }
     }
   ],
@@ -257,5 +279,19 @@
     "Existing sharedlinearRX/FIR/spectral-amplitude-donor/coherentmix families stayclosed",
     "REJECTED_EXTRA_GATE:generic extra designapproval/seal/review workflows do not supersede explicit projectminimalworkflow"
   ],
-  "registered_at": "2026-10-17T23:55:20+00:00"
+  "registered_at": "2026-10-17T23:55:20+00:00",
+  "status": "ANALYZED",
+  "technical_recovery": {
+    "original_failed_layer": "JSON serialization",
+    "original_failure_preserved": true,
+    "original_process_exited": true,
+    "from_saved_statistics_only": true,
+    "new_IQ_reads": 0,
+    "new_cache_loads": 0,
+    "new_NN": 0,
+    "new_updates": 0,
+    "immutable_child": "json_recovery_v1",
+    "recovery_commit": "0c7a9e2957a7351aac785c9931fc2465627ec547",
+    "recount": "VERIFIED"
+  }
 }

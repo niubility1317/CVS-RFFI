@@ -2828,9 +2828,10 @@
     "status": "NO_NEW_VALIDATED_IQ_OPERATOR",
     "IQ_points": 256,
     "raw_context_mapping_available": false,
-    "context": "Existing256 only;sharedRX/order recipes and carrierorganization failed;the latter is not newIQAg"
+    "latest_closed_source_hypothesis": "20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01",
+    "context": "Fixed mild radial relation fails additive/TXconditional/mildrange/perRX controls;not an IQ operator or identity result;all training RX retained"
   },
-  "latest_completed_source_diagnostic": "20261018-diagnostic-F-RXresponse-order-sourceCells-manysig-m1-r01",
+  "latest_completed_source_diagnostic": "20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01",
   "active_training_budget": {
     "each_total_epochs": 30,
     "parent_epochs": 20,
@@ -4262,7 +4263,7 @@
     "reason": "Jointgoal unachieved;no source-qualified newIQAg,lowurbanbelow60,cleannetnegative;do not resize probability/components or use formalmetricsto rescue"
   },
   "current_source_experiment": null,
-  "latest_completed_source_experiment": "20261018-diagnostic-F-RXresponse-order-sourceCells-manysig-m1-r01",
+  "latest_completed_source_experiment": "20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01",
   "unitary_source_result": {
     "run_id": "20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01",
     "status": "ANALYZED_SOURCE_IDENTITY_PROTECTION_ONLY",
@@ -4511,7 +4512,7 @@
     "Ag_efficacy": false,
     "joint_goal_complete": false
   },
-  "latest_research_note": "automation_reports/CV-SincNet/20261018-diagnostic-F-RXresponse-order-sourceCells-manysig-m1-r01/source_analysis.md",
+  "latest_research_note": "automation_reports/CV-SincNet/20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01/source_analysis.md",
   "amplitude_donor_route_check": {
     "status": "NOT_INDEPENDENT_SUPPORTED_NEW_ROUTE_NO_LAUNCH",
     "hypothesis": "Preserve anchor Fourier phase and borrow same-visibleTX crossRX donor amplitude",
@@ -6776,5 +6777,46 @@
     "joint_goal_complete": false,
     "target_feedback": false,
     "closure": "Fixedtwo-carrier sharedbatch-vs-packet correlation/probability/range/commonNoAs20parent/seed/E30 recipe closed;no component/scale/probability/parent/seed/budget rescue"
+  },
+  "radial_quantile_source_result": {
+    "run_id": "20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01",
+    "status": "ANALYZED_VERIFIED_SOURCE_ONLY_FIXED_HYPOTHESIS_CLOSED",
+    "execution_commit": "00a2b54f5cdf7b55698a1001ad8dd7bea77cf650",
+    "recovery_commit": "0c7a9e2957a7351aac785c9931fc2465627ec547",
+    "SSE": {
+      "shared": 2.8761916884189587,
+      "identity": 11.170726420423744,
+      "additive": 1.0610124786474224,
+      "TXconditional": 1.5693060443140678
+    },
+    "conditions": {
+      "nonzero_identity_error": true,
+      "shared_vs_identity": true,
+      "shared_vs_additive": false,
+      "positive_folds": true,
+      "each_nonreference_RX": false,
+      "not_worse_TXconditional": false,
+      "common_slope_mild": false,
+      "valid_log_shape": true
+    },
+    "positive_folds": 16,
+    "slopes": {
+      "minimum": 0.9448780414341916,
+      "maximum": 1.8553681931369603
+    },
+    "slopes_outside_mild": 39,
+    "source_RX_holdout": null,
+    "IQ_points": 256,
+    "source_L": 6300,
+    "source_V": 27000,
+    "new_IQ_views": 0,
+    "NN": 0,
+    "CP": 0,
+    "updates": 0,
+    "target_access": false,
+    "original_failure_preserved": true,
+    "saved_statistics_recovery": true,
+    "identity_accuracy_measured": false,
+    "joint_goal_complete": false
   }
 }

@@ -8,4 +8,4 @@
 |共享输入响应：已存源矩阵单项预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01/report.md)|
 |固定 RX 响应的逐包归一化源归因：唯一行预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-RXresponse-order-sourceCells-manysig-m1-r01/report.md)|
 |载波增强随机开关的相关性 × 普通 practical：E30 四组预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/report.md)|
-|全源256点：共同轻度径向幅度关系的L→V反证|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01/report.md)|
+|全源 256 点：共同轻度径向幅度关系的 L→V 反证|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01/report.md)|

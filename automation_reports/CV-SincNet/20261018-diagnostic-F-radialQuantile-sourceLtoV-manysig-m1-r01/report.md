@@ -1,6 +1,6 @@
 # 全源 256 点：共同轻度径向幅度关系的 L→V 反证
 
-状态：PLANNED。仅源统计；尚无真实源结果、IQ 增强或身份识别结论。
+状态：ANALYZED_SOURCE_ONLY_SCIENTIFIC_NEGATIVE。原 JSON 故障已从保存统计恢复；源检验失败，固定假设关闭。无 IQ 增强或身份识别结论。
 
 ## 固定问题与权限
 
@@ -53,3 +53,5 @@ REJECTED_EXTRA_GATE：泛化设计审批、seal 或重复报告审查不适用�
 首次执行的数学/权限 smoke PASS，33,300 源包统计及全部拟合数组已保存；在写 result.json 时，nonzero_identity_error 为 NumPy bool，标准 JSON 拒绝序列化，原进程已退出。独立原始产物证实失败层为汇总保存，不是源输入、统计或权限错误。原 failure.json、日志及全部数组保留，不覆盖原发布、不重新读 IQ、不重跑训练。
 
 最小修复：core/recount 中该比较显式转 Python bool；新增完整正负结果 JSON 序列化回归。原失败复现后，修复验证 PASS。恢复仅消费原保存的统计，原全部 fitted_readout 值必须在 1e−12 内复现；另存不可覆盖 json_recovery_v1 子目录，再由独立 recount 全量复算。原 scientific 阈值、范围、数据及方法不变。原 source_cache 加载 1 次；恢复增加原 IQ/缓存/CP/NN/训练/target 均为 0。
+
+最终结果见 [源检验完整分析](source_analysis.md)。

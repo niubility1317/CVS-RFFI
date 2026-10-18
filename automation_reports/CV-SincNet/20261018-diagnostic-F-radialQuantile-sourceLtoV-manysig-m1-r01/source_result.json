@@ -1,0 +1,275 @@
+{
+  "decision": "CLOSED_FIXED_RADIAL_QUANTILE_HYPOTHESIS",
+  "source_pass": false,
+  "conditions": {
+    "nonzero_identity_error": true,
+    "shared_vs_identity": true,
+    "shared_vs_additive": false,
+    "positive_folds": true,
+    "each_nonreference_RX": false,
+    "not_worse_TXconditional": false,
+    "common_slope_mild": false,
+    "valid_log_shape": true
+  },
+  "SSE": {
+    "shared": 2.8761916884189582,
+    "identity": 11.170726420423744,
+    "additive": 1.0610124786474224,
+    "TXconditional": 1.5693060443140678
+  },
+  "baseline_RMS": 0.16080473565862466,
+  "shared_relative_identity_gain": 0.742524202977495,
+  "shared_relative_additive_gain": -1.7107991152804578,
+  "positive_folds": 16,
+  "folds": [
+    {
+      "TX": 0,
+      "day": 1,
+      "SSE": {
+        "shared": 0.10476462992067767,
+        "identity": 0.7758495757132028,
+        "additive": 0.037452822301846204,
+        "TXconditional": 0.0639880228323462
+      }
+    },
+    {
+      "TX": 0,
+      "day": 2,
+      "SSE": {
+        "shared": 0.11806673105544768,
+        "identity": 0.708616856378003,
+        "additive": 0.038915600309451,
+        "TXconditional": 0.05834084971158271
+      }
+    },
+    {
+      "TX": 0,
+      "day": 3,
+      "SSE": {
+        "shared": 0.07181934343581832,
+        "identity": 0.744210643590733,
+        "additive": 0.02749824366658351,
+        "TXconditional": 0.0330086908214033
+      }
+    },
+    {
+      "TX": 1,
+      "day": 1,
+      "SSE": {
+        "shared": 0.10419812903599614,
+        "identity": 0.39981736428604103,
+        "additive": 0.11015038707438331,
+        "TXconditional": 0.2582787971822865
+      }
+    },
+    {
+      "TX": 1,
+      "day": 2,
+      "SSE": {
+        "shared": 0.05674927892879514,
+        "identity": 0.6356197209644976,
+        "additive": 0.017027699453415715,
+        "TXconditional": 0.058643118007271886
+      }
+    },
+    {
+      "TX": 1,
+      "day": 3,
+      "SSE": {
+        "shared": 0.11099108516774196,
+        "identity": 0.7376241523394722,
+        "additive": 0.03575997830647786,
+        "TXconditional": 0.1683680002225772
+      }
+    },
+    {
+      "TX": 2,
+      "day": 1,
+      "SSE": {
+        "shared": 0.05067902102581044,
+        "identity": 0.5389847580154012,
+        "additive": 0.015951926173585065,
+        "TXconditional": 0.04706591865558063
+      }
+    },
+    {
+      "TX": 2,
+      "day": 2,
+      "SSE": {
+        "shared": 0.11166497515471593,
+        "identity": 0.6739662673121862,
+        "additive": 0.06283221030803797,
+        "TXconditional": 0.07522962583587897
+      }
+    },
+    {
+      "TX": 2,
+      "day": 3,
+      "SSE": {
+        "shared": 0.05121341190999302,
+        "identity": 0.533144690045114,
+        "additive": 0.02448464500945801,
+        "TXconditional": 0.049940799662511026
+      }
+    },
+    {
+      "TX": 3,
+      "day": 1,
+      "SSE": {
+        "shared": 0.08069666042844446,
+        "identity": 0.6477465383409856,
+        "additive": 0.015466020791529894,
+        "TXconditional": 0.06518896550970689
+      }
+    },
+    {
+      "TX": 3,
+      "day": 2,
+      "SSE": {
+        "shared": 0.10143803569103858,
+        "identity": 0.6364722223379091,
+        "additive": 0.016661251726809774,
+        "TXconditional": 0.07471657055496075
+      }
+    },
+    {
+      "TX": 3,
+      "day": 3,
+      "SSE": {
+        "shared": 0.0849592364848563,
+        "identity": 0.6281755348340652,
+        "additive": 0.010387122582246564,
+        "TXconditional": 0.08275082872909645
+      }
+    },
+    {
+      "TX": 4,
+      "day": 1,
+      "SSE": {
+        "shared": 0.18932238774570956,
+        "identity": 0.9059235592723063,
+        "additive": 0.06130561993673079,
+        "TXconditional": 0.0914261845412569
+      }
+    },
+    {
+      "TX": 4,
+      "day": 2,
+      "SSE": {
+        "shared": 0.265317787357106,
+        "identity": 0.9594864297257966,
+        "additive": 0.11361374284595828,
+        "TXconditional": 0.10311383467203021
+      }
+    },
+    {
+      "TX": 4,
+      "day": 3,
+      "SSE": {
+        "shared": 0.1497660715515858,
+        "identity": 0.7828470563596424,
+        "additive": 0.048525206523870365,
+        "TXconditional": 0.09950479975599263
+      }
+    },
+    {
+      "TX": 5,
+      "day": 1,
+      "SSE": {
+        "shared": 0.4633683306064087,
+        "identity": 0.2387624418463436,
+        "additive": 0.16409646267271608,
+        "TXconditional": 0.04388560632935854
+      }
+    },
+    {
+      "TX": 5,
+      "day": 2,
+      "SSE": {
+        "shared": 0.1194441916728455,
+        "identity": 0.40146873184531623,
+        "additive": 0.04507958523510648,
+        "TXconditional": 0.09399378328666677
+      }
+    },
+    {
+      "TX": 5,
+      "day": 3,
+      "SSE": {
+        "shared": 0.6417323812459672,
+        "identity": 0.2220098772167277,
+        "additive": 0.21580395372921551,
+        "TXconditional": 0.10186164800356026
+      }
+    }
+  ],
+  "per_RX_SSE": {
+    "3": {
+      "shared": 1.2901999946001017,
+      "identity": 5.276623019516147,
+      "additive": 0.3692301159587983,
+      "TXconditional": 0.5853652039109215
+    },
+    "4": {
+      "shared": 0.1337117110316925,
+      "identity": 0.10962842718391876,
+      "additive": 0.13550166068468691,
+      "TXconditional": 0.12548797435127923
+    },
+    "6": {
+      "shared": 0.2080765044368804,
+      "identity": 0.21133048778095723,
+      "additive": 0.2049530868230253,
+      "TXconditional": 0.24587448930146008
+    },
+    "8": {
+      "shared": 1.2442034783502838,
+      "identity": 5.573144485942721,
+      "additive": 0.35132761518091193,
+      "TXconditional": 0.6125783767504072
+    }
+  },
+  "reference_RX": {
+    "RX": 1,
+    "descriptive_only": true,
+    "prediction_error": 0,
+    "not_counted_as_positive_domain": true
+  },
+  "slope_min": 0.9448780414341914,
+  "slope_max": 1.8553681931369603,
+  "L_only_scalar_fits": 144,
+  "L_only_additive_vectors": 72,
+  "predicted_nonreference_cells": 72,
+  "predicted_nonreference_coordinates": 432,
+  "source_RX_holdout": null,
+  "IQ_operator_implemented": false,
+  "label_preservation_proved": false,
+  "Ag_proved": false,
+  "automatic_training": false,
+  "joint_goal_complete": false,
+  "status": "SOURCE_RADIAL_QUANTILE_READOUT_RECOVERED",
+  "run_id": "20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01",
+  "max_floor_fraction_each_cell": 0,
+  "zero_RMS_packets": 0,
+  "source_L_unique": 6300,
+  "source_V_unique": 27000,
+  "all_source_RX": [
+    1,
+    3,
+    4,
+    6,
+    8
+  ],
+  "L_V_physical_disjoint": true,
+  "U_used": false,
+  "U_truth_read": false,
+  "V_updates": 0,
+  "head_fit_updates": 0,
+  "CP": 0,
+  "NN": 0,
+  "updates": 0,
+  "teacher_NN": 0,
+  "target_access": false,
+  "original_failure_preserved": true,
+  "recovery_commit": "0c7a9e2957a7351aac785c9931fc2465627ec547"
+}
