@@ -1,6 +1,6 @@
 # P62：源域通过 satelliteDropout 的匹配 E50 预算验证
 
-状态：VERIFIED_RUNNING，两条总E50续训已实际启动，尚无新的源／正式完成结果。当前唯一实验是预算复制，不新增损失或 IQ 增强。P61 单侧间隔仅保留未发布、未测试草稿（0NN/CP/IQ/更新），本轮不启动。
+状态：**ANALYZED／VERIFIED，missing=[]**。两条总 E50 续训、clean＋六 practical 预测、独立 truth-last 评分和全量分析已完成。预登记源判据 FAIL，关闭本配方扩展；不追加种子或 E70。完整逐行结果、成本、曲线与负结果见 [最终分析](final_analysis.md)。下文预登记和运行阶段记录保留其当时口径。
 
 ## 简短判断与唯一假设
 
@@ -60,3 +60,6 @@ CWD=PROJECT/releases/cvs_FcrossRX_satellite_dropout_budget_E50_20261018_r01；�
 自动源判定／clean+六practical预测／独立truth-last评分／八行CPU分析已由同一dispatcher衔接，尚未完成，不报告新准确率。已保存原live TX×RX×scene/state/lock计数供完成后分析，新两行各284160检查总量、无逐格门槛。P61草稿与其他健康任务未运行或修改。
 
 持续监控：两条原worker日志正常增长，最新各完成追加10轮（累计E40），原dispatcher/worker存活，failure为空；源读出/正式预测/评分尚未开始。本轮未改配方、未重启，未启动额外训练或诊断前向；原续训的前向持续发生，按完成后的实际成本计。已补充[E30源域背景](<E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-satelliteDropout-budget-e50-s2026092701-m2-r01/E30_source_context.md>)，明确mid正收益与low负分层，未读取正式结果或用于改变已启动的E50。
+
+
+收尾：DET50正式clean85.358333%、mid urban62.995238%、low urban52.027381%、urban均值63.774603%；相对自身DET30 low+1.420833pp，但相对同预算CE50 urban−.903175pp、RD50−1.236310pp。相对NoAs50 clean+.063095pp，单seed阶段约束通过，尚无跨seed稳定双提升。原源判定未重算；新两行各20轮/4440更新全部完成，新增远端14921052NN，本地1536NN另列，CPU分析65.657922秒/0NN，全部五图已实际查看。原进程自然退出。详细数据与缺项见final_analysis.md。

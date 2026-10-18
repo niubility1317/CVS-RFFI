@@ -1,7 +1,6 @@
 {
-  "status": "VERIFIED_RUNNING",
+  "status": "VERIFIED_ANALYZED",
   "run_id": "20261018-phase1-FcrossRX-satelliteDropout-budget-e50-s2026092701-m2-r01",
-  "source_supported": true,
   "source_support": {
     "conditions": {
       "stage_clean": true,
@@ -25,7 +24,7 @@
   "parent_epochs_per_row": 30,
   "total_epochs_per_row": 50,
   "local_NN": 1536,
-  "remote_NN": null,
+  "remote_NN": 14921052,
   "remote_IQ": null,
   "remote_CP": 2,
   "preflight": {
@@ -221,11 +220,18 @@
     "CP": 0,
     "updates": 0,
     "source_schema_targeted_fix": true,
-    "full_real_run_analysis": "NOT_YET_EXECUTED",
-    "status": "CODE_COMPLETE_AUTO_EXEC_AFTER_ALL8_LOGICAL_ROWS_ALL7",
-    "real_execution_started": false,
+    "full_real_run_analysis": "ANALYZED",
+    "status": "ANALYZED",
+    "real_execution_started": true,
     "coverage_existing_counter_saved": true,
-    "coverage_targeted_test": "PASS_1_0NN"
+    "coverage_targeted_test": "PASS_1_0NN",
+    "missing": [],
+    "independent_confusion_recounts": 1008,
+    "partition_reconciliations": 168,
+    "all8_rows_all7_verified_before_truth": true,
+    "wall_seconds": 65.6579220648855,
+    "figures_generated_and_visually_checked": 5,
+    "local_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_satellite_dropout_budget_E50_20261018_r01/retrieved_r01/analysis_r01"
   },
   "E70": false,
   "seed_extension": false,
@@ -273,7 +279,7 @@
     ],
     "remote_training_failed": false
   },
-  "remote_model_training": "RUNNING_TWO_OWN30_PLUS20_TOTAL50",
+  "remote_model_training": "COMPLETED_OWN30_PLUS20_TOTAL50_BOTH_ROWS",
   "remote_real_CP_smoke": {
     "status": "PASS",
     "records": [
@@ -312,8 +318,104 @@
   "single_release_archive_SHA": "f807fb00f49304c62bdffa08e6931a3e63b5bf0cddca6c723f672ddced5dd0bb",
   "single_release_archive_comparison": "VERIFIED_ONCE",
   "remote_compile": "PASS_20PY",
-  "remote_partial_cost_scope": "Preflight NN0/IQ0/CP0, launch realCPsmoke4NN/2CP/IQ0; ongoing source training cost will be reported after completion, not zero.",
+  "remote_partial_cost_scope": "Final new remote NN14921052 plus separate local synthetic NN1536; analysis NN0. Full accounting and historical exclusions in final_analysis.md.",
   "progress": {
+    "status": "COMPLETED_NATURALLY",
+    "dispatcher_pid": 1276889,
+    "dispatcher_alive": false,
+    "rows": [
+      {
+        "row_id": "AS_CE-s2026092701",
+        "pid": 1276916,
+        "gpu": 2,
+        "alive": false,
+        "epochs_complete": 20,
+        "cumulative_epochs": 50,
+        "updates": 4440,
+        "cumulative_updates": 11100,
+        "source_complete": true,
+        "source_panel_complete": true,
+        "seven_view_predictions_complete": true,
+        "independent_scoring_complete": true
+      },
+      {
+        "row_id": "AS_DET-s2026092701",
+        "pid": 1276994,
+        "gpu": 3,
+        "alive": false,
+        "epochs_complete": 20,
+        "cumulative_epochs": 50,
+        "updates": 4440,
+        "cumulative_updates": 11100,
+        "source_complete": true,
+        "source_panel_complete": true,
+        "seven_view_predictions_complete": true,
+        "independent_scoring_complete": true
+      }
+    ],
+    "failure": null,
+    "final_analysis": "E:/type10-7/local_artifacts/cvs_FcrossRX_satellite_dropout_budget_E50_20261018_r01/retrieved_r01/analysis_r01/complete.json",
+    "verified_at_utc": "2026-10-18T08:18:57.252Z"
+  },
+  "actual_channels": [
+    {
+      "row": "AS_CE-s2026092701",
+      "channel_configurations_exact_original": true,
+      "scenes": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "ordinary_before_satellite": false,
+      "formal_test_changed": false,
+      "EMA": {
+        "origin": "strict own FINAL30 EMA",
+        "extra_teacher": false,
+        "optimizer_segment_counters_reset": true,
+        "temporal_cache_reset": true
+      }
+    },
+    {
+      "row": "AS_DET-s2026092701",
+      "channel_configurations_exact_original": true,
+      "scenes": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "ordinary_before_satellite": false,
+      "formal_test_changed": false,
+      "EMA": {
+        "origin": "strict own FINAL30 EMA",
+        "extra_teacher": false,
+        "optimizer_segment_counters_reset": true,
+        "temporal_cache_reset": true
+      }
+    }
+  ],
+  "source_and_formal_results_available": true,
+  "healthy_other_runs_untouched": true,
+  "source_decision_available": true,
+  "formal_scores_read_in_monitor": false,
+  "E30_source_context": {
+    "report": "E30_source_context.md",
+    "source_only": true,
+    "NN": 0,
+    "IQ": 0,
+    "CP": 0,
+    "updates": 0,
+    "seed_count": 1,
+    "source_panel_physical": 1800,
+    "channel_draws": 2,
+    "new_E50_results": false
+  },
+  "progress_E40_snapshot": {
     "dispatcher_pid": 1276889,
     "dispatcher_alive": true,
     "rows": [
@@ -371,62 +473,32 @@
     "failure": null,
     "observed_at_utc": "2026-10-18T07:51:01.306Z"
   },
-  "actual_channels": [
-    {
-      "row": "AS_CE-s2026092701",
-      "channel_configurations_exact_original": true,
-      "scenes": [
-        "practical_high",
-        "practical_mid",
-        "practical_low_suburban",
-        "practical_high_urban",
-        "practical_mid_urban",
-        "practical_low_urban"
-      ],
-      "ordinary_before_satellite": false,
-      "formal_test_changed": false,
-      "EMA": {
-        "origin": "strict own FINAL30 EMA",
-        "extra_teacher": false,
-        "optimizer_segment_counters_reset": true,
-        "temporal_cache_reset": true
-      }
+  "source_supported_E30": true,
+  "source_supported_note": "Historical E30 source PASS justified fixed E50 launch; final E50 source_qualified=false is preserved and does not trigger seed/E70 rescue.",
+  "remote_IQ_note": "Training reads authorized source IQ and formal prediction reads fixed IQ; unique byte/physical access count not tallied. The real-checkpoint launch smoke alone has IQ0.",
+  "remote_CP_note": "remote_CP=2 refers to two real-parent startup smoke check points, not a complete count of all training/evaluation checkpoint opens.",
+  "final_source_decision": {
+    "status": "SOURCE_BUDGET_READOUT_COMPLETE",
+    "checks": {
+      "DET50_clean_vs_NoAs50_within_0p1pp": true,
+      "DET50_midlow_vs_CE50_at_least_0p5pp": false,
+      "DET50_low_not_below_CE50": true
     },
-    {
-      "row": "AS_DET-s2026092701",
-      "channel_configurations_exact_original": true,
-      "scenes": [
-        "practical_high",
-        "practical_mid",
-        "practical_low_suburban",
-        "practical_high_urban",
-        "practical_mid_urban",
-        "practical_low_urban"
-      ],
-      "ordinary_before_satellite": false,
-      "formal_test_changed": false,
-      "EMA": {
-        "origin": "strict own FINAL30 EMA",
-        "extra_teacher": false,
-        "optimizer_segment_counters_reset": true,
-        "temporal_cache_reset": true
-      }
-    }
-  ],
-  "source_and_formal_results_available": false,
-  "healthy_other_runs_untouched": true,
-  "source_decision_available": false,
-  "formal_scores_read_in_monitor": false,
-  "E30_source_context": {
-    "report": "E30_source_context.md",
-    "source_only": true,
-    "NN": 0,
-    "IQ": 0,
-    "CP": 0,
-    "updates": 0,
-    "seed_count": 1,
-    "source_panel_physical": 1800,
-    "channel_draws": 2,
-    "new_E50_results": false
-  }
+    "qualified": false,
+    "recomputed": false,
+    "read_before_new_formal": true
+  },
+  "final_formal": {
+    "clean_delta_vs_NoAs50_pp": 0.06309523809524542,
+    "within_0p1pp": true,
+    "DET50_mid_urban": 0.6299523809523809,
+    "DET50_low_urban": 0.5202738095238095,
+    "urban_delta_vs_NoAs50_pp": 29.47142857142857,
+    "urban_delta_vs_RD50_pp": -1.2363095238095276,
+    "model_seeds": 1,
+    "reproducible_dual_gain": false,
+    "formal_scores_read_after_source_decision": true
+  },
+  "final_report": "final_analysis.md",
+  "final_verified_at_utc": "2026-10-18T08:18:57.252Z"
 }

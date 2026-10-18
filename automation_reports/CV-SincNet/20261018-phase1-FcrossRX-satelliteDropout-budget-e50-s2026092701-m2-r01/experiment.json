@@ -99,7 +99,7 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_satellite_dropout_budget_E50_20261018_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_satellite_budget62/runner.py",
     "stop_rule": "Onlyrunowned wrongprovenance/roles/nonfinite/outputconflict/systemictechnicalfailure;preserveall;noautomatictrainingretry;sourceFAIL stillall7;noE70/seedrescue",
-    "status": "RUNNING",
+    "status": "ANALYZED",
     "dispatcher_pid": 1276889,
     "rows": [
       {
@@ -113,7 +113,14 @@
         "gpu": 3
       }
     ],
-    "remote_compile": "PASS_20"
+    "remote_compile": "PASS_20",
+    "completed_at_utc": "2026-10-18T08:18:57.252Z",
+    "result_report": "final_analysis.md",
+    "analysis_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_satellite_dropout_budget_E50_20261018_r01/retrieved_r01/analysis_r01",
+    "analysis_status": "ANALYZED",
+    "source_qualified": false,
+    "new_seed_extension": false,
+    "E70": false
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
@@ -323,5 +330,75 @@
     "All8logicalrows twoepochsbudget by4recipes;same50 comparison primary;old30 reference onlybudgetattribution. Modelseed1 no stabledualclaim.",
     "P61 margin61 remainsunpublished/untested0NN drafts;no training/CP/IQ/pred/scoring. We prioritizesource-supportedE50 instead ofparallelnewconstraint. Noextraapproval/designSHAgate;REJECTED_EXTRA_GATE genericbrainstormingdesignapproval (overriddenbycurrentauthorizedminimalprotocol)."
   ],
-  "registered_at": "2026-10-18T07:21:48+00:00"
+  "registered_at": "2026-10-18T07:21:48+00:00",
+  "results": {
+    "model_seed_count": 1,
+    "all8_logical_rows_all7_complete": true,
+    "missing": [],
+    "source_qualified": false,
+    "source_clean_delta_pp": -0.033333333333340764,
+    "source_midlow_vs_CE_pp": 0.1388888888888995,
+    "formal_DET50": {
+      "clean": {
+        "accuracy": 0.8535833333333334,
+        "macro_f1": 0.850894813702268,
+        "worst_RX": 0.7662083333333334,
+        "mean_margin_over30": 0.1439024657011032,
+        "satellite_retention": 0.9750935649648084
+      },
+      "practical_high": {
+        "accuracy": 0.7956845238095238,
+        "macro_f1": 0.7917047606275217,
+        "worst_RX": 0.7052083333333333,
+        "mean_margin_over30": 0.09387640655040741,
+        "satellite_retention": 0.8840841805384874
+      },
+      "practical_mid": {
+        "accuracy": 0.7724464285714285,
+        "macro_f1": 0.7686713045461344,
+        "worst_RX": 0.686375,
+        "mean_margin_over30": 0.08526088297367096,
+        "satellite_retention": 0.8556516031728298
+      },
+      "practical_low_suburban": {
+        "accuracy": 0.7471488095238096,
+        "macro_f1": 0.7432669076845739,
+        "worst_RX": 0.6610416666666666,
+        "mean_margin_over30": 0.0766654834151268,
+        "satellite_retention": 0.8259831303764943
+      },
+      "practical_high_urban": {
+        "accuracy": 0.7630119047619047,
+        "macro_f1": 0.7589682500129066,
+        "worst_RX": 0.6756666666666666,
+        "mean_margin_over30": 0.08588223904371262,
+        "satellite_retention": 0.8467629315160318
+      },
+      "practical_mid_urban": {
+        "accuracy": 0.6299523809523809,
+        "macro_f1": 0.6253082389422909,
+        "worst_RX": 0.562625,
+        "mean_margin_over30": 0.052389033138751984,
+        "satellite_retention": 0.6928066696458496
+      },
+      "practical_low_urban": {
+        "accuracy": 0.5202738095238095,
+        "macro_f1": 0.5151277012940816,
+        "worst_RX": 0.46808333333333335,
+        "mean_margin_over30": 0.028665555641055107,
+        "satellite_retention": 0.5678695117863926
+      }
+    },
+    "formal_clean_delta_vs_NoAs50_pp": 0.06309523809524542,
+    "formal_stage_clean_within_0p1pp": true,
+    "formal_urban_delta_vs_NoAs50_pp": 29.47142857142857,
+    "formal_urban_delta_vs_RD50_pp": -1.2363095238095276,
+    "reproducible_dual_gain": false,
+    "target_feedback": false,
+    "new_model_epochs": 40,
+    "new_updates": 8880,
+    "new_remote_NN": 14921052,
+    "local_verification_NN": 1536,
+    "cost_and_figures": "final_analysis.md"
+  }
 }
