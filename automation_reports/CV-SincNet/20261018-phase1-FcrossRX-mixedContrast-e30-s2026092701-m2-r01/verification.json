@@ -1,9 +1,9 @@
 {
-  "status": "LOCAL_VERIFIED",
+  "status": "VERIFIED_RUNNING",
   "run_id": "20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01",
   "registered": true,
-  "launched": false,
-  "training_started": false,
+  "launched": true,
+  "training_started": true,
   "performance_results_available": false,
   "implementation_checks": {
     "status": "PASS_LOCAL_ONLY",
@@ -42,9 +42,9 @@
   },
   "analysis_checks_pending": false,
   "unique_P0P1_pending": false,
-  "real_checkpoint_smoke_pending": true,
+  "real_checkpoint_smoke_pending": false,
   "expected_smoke_NN": 1540,
-  "source_roles": "REUSE_PRIOR_MATCHED_FULL_SOURCE_AUDIT;current_handle_preflight_pending",
+  "source_roles": "BOTH_EXACT_MATCH_ACTUAL_TRAINING_OUTPUT",
   "data_revalidation": false,
   "model_seed": 2026092701,
   "new_rows": 2,
@@ -205,5 +205,236 @@
     },
     "remaining_execution_verification": "No remote actions or success claim. Actual implementation commit is fixed by root next. Launcher must execute actual ownCP4NN plus two6L1536NN noquery smoke(total1540),PASS immediately trains;postlaunch PID/CWD/argv/GPU/log-growth remains actual runtime evidence."
   },
-  "actual_code_commit_pending": true
+  "actual_code_commit_pending": false,
+  "code_commit": "6849fbf648895c055398e6db159844dba0de3187",
+  "remote_branch_OID": "INDEPENDENTLY_VERIFIED_IDENTICAL",
+  "real_checkpoint_smoke": {
+    "status": "PASS",
+    "real_own20_checkpoints": 2,
+    "NN": 4,
+    "real_IQ": 0,
+    "target_query": false,
+    "optimizer_updates": 0
+  },
+  "synthetic_smoke": {
+    "status": "PASS",
+    "NN": 1536,
+    "total_with_real_CP_NN": 1540,
+    "optimizer_updates": 0,
+    "real_IQ": 0,
+    "records": [
+      {
+        "row_id": "B00-s2026092701",
+        "NN": 768,
+        "As_IQ": 0,
+        "selected64": 64,
+        "cumulative_epoch": 21,
+        "cumulative_step": 4441,
+        "mixed128_SupCon": true,
+        "anchors_per_input_position": 1,
+        "map_terms": 4,
+        "ordinary_maps_SupCon_gradient": false,
+        "mixed_maps_SupCon_gradient": true,
+        "head_joint_gradient": true,
+        "Sinc_joint_gradient": true,
+        "backbone_joint_gradient": true,
+        "optimizer_updates": 0
+      },
+      {
+        "row_id": "B01-s2026092701",
+        "NN": 768,
+        "As_IQ": 64,
+        "selected64": 64,
+        "cumulative_epoch": 21,
+        "cumulative_step": 4441,
+        "mixed128_SupCon": true,
+        "anchors_per_input_position": 1,
+        "map_terms": 4,
+        "ordinary_maps_SupCon_gradient": false,
+        "mixed_maps_SupCon_gradient": true,
+        "head_joint_gradient": true,
+        "Sinc_joint_gradient": true,
+        "backbone_joint_gradient": true,
+        "optimizer_updates": 0
+      }
+    ]
+  },
+  "N607_preflight": "VERIFIED_ONCE_ORDINARY_ACCOUNT_SOURCE_ROLE_PARENT_AND_FROZEN_CONTROL_HANDLES",
+  "archive_transfer": "VERIFIED_ONCE",
+  "remote_compile": "VERIFIED",
+  "dispatcher_pid": 1353621,
+  "workers": [
+    {
+      "row_id": "B00-s2026092701",
+      "pid": 1353649,
+      "gpu": 0
+    },
+    {
+      "row_id": "B01-s2026092701",
+      "pid": 1353729,
+      "gpu": 1
+    }
+  ],
+  "postlaunch": "VERIFIED_PID_CWD_ARGV_CUDA_NVIDIA_LOG_GROWTH",
+  "runtime_audit": {
+    "status": "OBSERVED_RUNTIME_METADATA",
+    "rows": {
+      "B00-s2026092701": {
+        "GPU_actual_matches_assignment": true,
+        "init_keys": [
+          "scratch_only",
+          "checkpoint_sources",
+          "ancestors",
+          "source_roles",
+          "target_contact",
+          "teacher_origin",
+          "seed"
+        ],
+        "source_roles_equal": true,
+        "target_contact": false,
+        "checkpoint_sources": [
+          "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B00-s2026092701/stage20/final_ssdg.pth"
+        ],
+        "EMA": {
+          "origin": "strict own stage20 EMA",
+          "extra_teacher": false,
+          "optimizer_segment_counters_reset": true,
+          "temporal_cache_reset": true
+        },
+        "optimizer": {
+          "state_entries": 0,
+          "reset": true,
+          "schedule": "cosine10",
+          "lr": 0.0002,
+          "weight_decay": 0.0001
+        },
+        "resolved_config_present": true,
+        "resolved_mode": {
+          "mode": "MIXED128",
+          "ordinary_anchors": 64,
+          "additional_anchors": 0,
+          "additional_view": "replace ordinary128 by existing mixed128,never concatenate",
+          "positive": "sameTX differentphysicalRX",
+          "same_physical_positive": false,
+          "default_head_unchanged": true,
+          "new_losses": 0,
+          "new_forward_packets": 0,
+          "temperature": 0.2,
+          "max_coefficient": 0.1,
+          "schedule": "same original cumulativeE21..30/full0.1",
+          "normalization": "descriptor moments detached across actual anchor set;L2 eps1e-4;mean bothdepths and two corresponding RDrop forwards",
+          "total_anchors": 128,
+          "anchors_per_physical_input": 1,
+          "used_pass_maps": "corresponding existing mixed first/second RD pass",
+          "raw_pair_maps_used": 0
+        },
+        "first_step_metrics": {
+          "concat/L_forwards": 6,
+          "concat/As_packets": 0,
+          "contrast/physical_inputs": 128,
+          "contrast/anchors_per_term": 128,
+          "contrast/anchors_per_physical_input": 1,
+          "contrast/map_terms": 4,
+          "contrast/raw_maps_used": 0,
+          "contrast/extra_NN": 0,
+          "contrast/true_As_anchors_per_term": 0
+        },
+        "contrast_first_keys": null
+      },
+      "B01-s2026092701": {
+        "GPU_actual_matches_assignment": true,
+        "init_keys": [
+          "scratch_only",
+          "checkpoint_sources",
+          "ancestors",
+          "source_roles",
+          "target_contact",
+          "teacher_origin",
+          "seed"
+        ],
+        "source_roles_equal": true,
+        "target_contact": false,
+        "checkpoint_sources": [
+          "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
+        ],
+        "EMA": {
+          "origin": "strict own stage20 EMA",
+          "extra_teacher": false,
+          "optimizer_segment_counters_reset": true,
+          "temporal_cache_reset": true
+        },
+        "optimizer": {
+          "state_entries": 0,
+          "reset": true,
+          "schedule": "cosine10",
+          "lr": 0.0002,
+          "weight_decay": 0.0001
+        },
+        "resolved_config_present": true,
+        "resolved_mode": {
+          "mode": "MIXED128",
+          "ordinary_anchors": 64,
+          "additional_anchors": 0,
+          "additional_view": "replace ordinary128 by existing mixed128,never concatenate",
+          "positive": "sameTX differentphysicalRX",
+          "same_physical_positive": false,
+          "default_head_unchanged": true,
+          "new_losses": 0,
+          "new_forward_packets": 0,
+          "temperature": 0.2,
+          "max_coefficient": 0.1,
+          "schedule": "same original cumulativeE21..30/full0.1",
+          "normalization": "descriptor moments detached across actual anchor set;L2 eps1e-4;mean bothdepths and two corresponding RDrop forwards",
+          "total_anchors": 128,
+          "anchors_per_physical_input": 1,
+          "used_pass_maps": "corresponding existing mixed first/second RD pass",
+          "raw_pair_maps_used": 0
+        },
+        "first_step_metrics": {
+          "concat/L_forwards": 6,
+          "concat/As_packets": 64,
+          "contrast/physical_inputs": 128,
+          "contrast/anchors_per_term": 128,
+          "contrast/anchors_per_physical_input": 1,
+          "contrast/map_terms": 4,
+          "contrast/raw_maps_used": 0,
+          "contrast/extra_NN": 0,
+          "contrast/true_As_anchors_per_term": 64
+        },
+        "contrast_first_keys": null
+      }
+    },
+    "GPU_global_counts": {
+      "0": 1,
+      "1": 1,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0
+    },
+    "cap3": true,
+    "NN": 0,
+    "CP": 0,
+    "IQ": 0,
+    "updates": 0
+  },
+  "analysis": {
+    "status": "VERIFIED_WAIT_SOURCE",
+    "pid": 1355032,
+    "code_commit": "6849fbf648895c055398e6db159844dba0de3187",
+    "CWD_argv_CUDA": "VERIFIED",
+    "archive_transfer": "VERIFIED_ONCE",
+    "archive_SHA256": "04b8743b54bf21f1ee17a9f85c0d329861dc1ec12d3e09fb80a8cff006ceaa88",
+    "remote_compile": "PASS",
+    "remote_tests_not_repeated": true,
+    "NN": 0,
+    "CP": 0,
+    "IQ": 0,
+    "updates": 0,
+    "truth_opened": false
+  },
+  "technical_missing_items": [],
+  "observed_at_utc": "2026-10-18T09:56:42.009Z"
 }

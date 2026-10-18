@@ -166,3 +166,6 @@ weightedAs50对匹配weightedNoAs50 clean逐seed−.042857／−.177976／−1.7
 20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01已登记PLANNED，尚未远端启动。唯一变量将原CROSS_RX SupCon的ORD128 maps替换为已生成MIX128，原L batch每位置一次、不追加SAT192的64positions，原sampler重复如存在保持。P41 SAT192已源失败，不宣称广义As进入SupCon全新；本次明确固定128positions／当前6L，与旧192／4L区别。不新加loss／层／branch／NN，原P43 .5ordinary+.5mixed+.25raw总L1.25／原U、all5RX/L6300/默认cos/IQ256保持。新NoAs／As01各own原20+10=总E30，原两E30复用。
 
 Source资格固定newAs−originalAs fullVclean≥−.1pp且两drawmidlowmean≥+.5pp；无额外cell门槛。失败关闭固定候选、不E50／扫参数救跑，仍自动all7正式收尾。正式stage仍newAs−matchednewNoAs clean≥−.1pp；单seed不证明重复双提升。实现73聚焦负例和AST已PASS，analysis接口检查与唯一P0/P1／真实CP烟测／发布待完成；不把准备写成启动。完整矩阵和命令见[预登记](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01/report.md)。
+
+
+mixedContrast当前已实际启动：代码／训练／分析提交 6849fbf648895c055398e6db159844dba0de3187，一次普通preflight的源父／控制句柄与roles匹配，单archive比较／compile VERIFIED，1540NN首步CP＋真实模型梯度烟测PASS后训练。dispatcher1353621；B00 worker1353649／GPU0、B01 worker1353729／GPU1，PID／CWD／argv／nvidia／log增长核实。实际own20 EMA、empty resetAdamW cos10、6L／128原batch位置／128anchors／4mixed map terms／rawmaps0／extraNN0／As0或64均符合。原sampler重复如存在保持，不强制物理ID全unique。0NN分析1355032已核实WAIT_SOURCE／truthclosed。现在没有新性能结果或额外E50授权执行；既定所有row自动all7正式闭合。

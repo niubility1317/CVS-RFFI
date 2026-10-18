@@ -1,6 +1,6 @@
 # 固定128个对比位置的practical训练：E30最小对照
 
-状态：PLANNED，本地实现与检查进行中，尚未远端发布、训练或读取新性能。运行`20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01`，唯一owner `codex/root/practical-mixedContrast30`。本报告与experiment.json维护唯一预登记，代码提交将在本地实现冻结后回填；不把准备状态写成已启动。
+状态：VERIFIED_RUNNING。运行 20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01，唯一owner codex/root/practical-mixedContrast30。代码、配置、分析提交 6849fbf648895c055398e6db159844dba0de3187 已发布并实际训练；尚无新性能结果。
 
 唯一假设：在既有CROSS_RX SupCon中，用已有mixed128 maps替换ordinary128 maps，保持原L batch的128个位置各一次，不人工追加selected64 positions，能否改善完整practical的low／mid urban，而不增加clean代价。原sampler若已有重复物理ID保持不变，不新增去重／重采样要求。P41 ORD128／DUP192／SAT192已有合法source负结果：SAT−ORD两draw×midlow为−.389／−.389／+.278／+.333pp，旧预定晋级失败。它使用192 anchors／4L，本次关键差异是固定128 positions、当前P43六L及既有raw监督；不能把广义As进入SupCon说成未试或预期必然有效。加性As、cleanretain37与HQ的历史负结果及契约差异继续保留，不借本次重启这些路线。
 
@@ -27,3 +27,14 @@ F＋CROSS_RX／SIG_TIME×3／统一Sinc／真实joint160／默认cosine6×160sca
 已读取引用对话《开发 CVS Phase1 星地增强训练》的最新活动：其当前研究satellite CE温度T2及等比例减权HALF控制；本项只改existing SupCon的输入maps，CE温度／监督系数不改，不重复该实验。没有向另一任务发送消息或干预其健康进程。
 
 本地实现已冻结：19py／73聚焦负例与两发布脚本AST PASS；analysis4文件／9focused tests PASS；唯一合并P0/P1审查为0／0。未远端／NN／CP／IQ／更新；真实1540NN首步烟测和发布后PID／GPU核实待执行，不能冒称训练已经开始。
+
+实际代码／配置已固定提交`6849fbf648895c055398e6db159844dba0de3187`，远端分支OID已独立核对一致。本次唯一preflight／release archive比较／remotecompile／真实首步烟测按此版本执行。
+
+
+## 已实际发布并训练
+
+一次普通N607 preflight核实own20与冻结30控制metadata／source roles EXACT_MATCH；release archive单次比较与compile VERIFIED。1540NN真实首步smoke PASS后直接训练。dispatcher1353621（CPU）；B00-s2026092701 worker1353649／GPU0，B01-s2026092701 worker1353729／GPU1。PID／CWD／argv／CUDA与nvidia实际GPU分配／log增长独立VERIFIED，全GPU总进程cap3符合，健康旧任务未动。
+
+实际训练输出source_roles均匹配、target_contact=false、strict own20 EMA，optimizer为空resetAdamW／cos10／lr.0002／WD.0001。首步actual6L、128原位置／128anchors／4mixed map terms、rawpairmaps0、extraSupConNN0、trueAs0或64，未改原sampler。contrast_steps在段末统一保存，当前未落盘不代表缺少应有最终产物；当前没有新性能结论。
+
+0NN分析1355032已核实CWD／argv／emptyCUDA，WAIT_SOURCE／truth未开，将按既定4×7冻结预测和独立评分闭合。分析单archive比较／compile PASS，未重复本地synthetic tests。
