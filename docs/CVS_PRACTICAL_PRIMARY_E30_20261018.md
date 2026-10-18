@@ -33,3 +33,9 @@ run `20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01` 已完成训练�
 As50 clean85.660714%、mid urban63.901786%、low urban52.387500%、urban均值65.010913%。三个suburban与clean差距3.421429／6.104167／8.884524 pp；平均准确率较As30均上升，但low suburban最差RX下降0.116667 pp。新增两行40model-epochs／8880更新，全部新增训练／读出＋sharedsmoke实测14,922,586 NN；历史E30两行18,298,572 NN另列。训练是20+10+20/resetcos20，非连续cos50。
 
 本次技术交付完整，但只有seed2026092701，尚无可重复双提升证据。下一唯一未检验命题是固定预算收益在原定其他模型种子能否复现；当前run仍automatic_seed_extension=false，未启动额外种子。多种子须保持原顺序、参数／数据／默认头／固定FINAL50及匹配NoAs，不挑最好seed或据正式分数救跑。原E30三种子负clean均值保留，目标继续active。
+
+## 固定02／03复现：已登记待发布
+
+已登记新run `20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01`，唯一owner `codex/root/practical-budget50-replication`。只包含原定seed02/03各B00 NoAs与B01完整As，共4新row；各自合法FINAL30+20，总E50，固定参数、全部原数据与默认头/U/physics不变。依据仅为01的源域预算收益；不按formal分数选seed/调参数，01旧预测及所有E30历史原样复用。新实现提交 `4ea924316d6a5fe84278c81e3db78706ff674f21`、96负例/4seed正例/13py AST+compile/2emittedAST和唯一P0/P1均PASS。尚未远端发布或训练。
+
+本轮新增80model-epochs/17760更新，预期29,845,170NN含shared3074，实际学生/教师/读出/父训练成本分列。逐行source→固定七视图预测→独立truthlast评分，正式分数不回流其他row。全部3seed逐seed/配对mean与sampleSD保留；每seed与mean阶段clean按−.1pp判定。只有三seedclean及low/mid都为正且clean配对mean≥.1pp时才称本固定三seed一致双提升，否则报告实际不一致/均值观察，不选择性补种。详细矩阵/命令/路径/停止规则在该run report.md。

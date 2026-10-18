@@ -32,12 +32,12 @@
   "replaces_run_id": null,
   "authorization": "用户已授权有源域依据的好配方总E50，并要求匹配预算/种子及可重复结果。固定扩展原定02/03各NoAs/As共4行，从各自固定FINAL30追加20，不重跑01，不增加新seed或新配方。原seed01 budget源证据支持保留；正式分数不作为选择依据。",
   "code": {
-    "commit": "7aaedf561ab4786dd4759499e81c24c4a917ea19",
+    "commit": "4ea924316d6a5fe84278c81e3db78706ff674f21",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "N607 ordinary nonprivileged CVS-RFFI Python3.10/PyTorch2.1/NumPy2.2.5;FP32 pinned P43 runtime;CPU threads2;private executable path retained in private runtime",
     "cwd": "PROJECT/releases/cvs_FcrossRX_As_budget_E50_s0203_20261018_r01",
-    "identity_status": "Actual implementation commit replaced after review/freeze before remote",
-    "implementation_status": "LOCAL_IMPLEMENTED_PENDING_UNIQUE_P0P1_AND_COMMIT"
+    "identity_status": "ACTUAL_COMMITTED_CODE_AND_CONFIGURATION",
+    "implementation_status": "LOCAL_VERIFIED_UNIQUE_REVIEW_PASS"
   },
   "data": {
     "dataset": "ManySig",
@@ -173,7 +173,7 @@
     "local_artifact_root": "local_artifacts/F_As_budget_E50_s0203_20261018",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_practical_budget50_replication/runner.py;local publish CVS-RFFI/python -m experiments.cvs_practical_budget50_replication.publish",
     "stop_rule": "Run-owned source/data/parent/defaulthead/config mismatch,nonfinite,output collision,unlaunchable or illegal prediction => preserve outputs and stop unlaunched own rows;healthy already running rows finish;no automatic retry,no source-scientific-failure skip of fixed formal closure;never stop other owners",
-    "status": "PLANNED_NOT_LAUNCHED"
+    "status": "LOCAL_VERIFIED_NOT_LAUNCHED"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",

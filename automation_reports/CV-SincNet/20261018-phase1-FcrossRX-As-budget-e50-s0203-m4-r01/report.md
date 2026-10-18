@@ -1,6 +1,6 @@
 # 原完整 practical E50：固定02／03种子的匹配复现
 
-状态：**PLANNED，未远端发布或启动。** 唯一owner为codex/root/practical-budget50-replication；本run登记四行，防止与另一对话重复启动。实现提交、真实父权重检查与实际GPU在发布前补齐，不把当前HEAD当成尚未完成实现的身份。
+状态：**LOCAL_VERIFIED，未远端发布或启动。** 唯一owner为codex/root/practical-budget50-replication；本run登记四行，防止与另一对话重复启动。实际实现提交为 `4ea924316d6a5fe84278c81e3db78706ff674f21`，分支codex/cvs-iq-timing-e20-20261016。真实父权重/F检查由launcher首步执行，GPU按剩余容量分配，未把本地验证当成远端运行。
 
 唯一假设：在原配方保持不变时，各自固定FINAL30+20的预算收益可在原定seed02/03复现。依据是01的合法源域预算结果：fullV clean+0.118519pp、mid/low+1.972222/+1.638889pp，两场均值+1.805556pp；As50−NoAs50 fullV clean−0.074074pp。小V1800 clean配对−0.166667pp保留，不能与全V混为同一口径。正式成绩不参与本次候选、种子或参数选择。
 
