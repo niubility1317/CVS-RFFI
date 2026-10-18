@@ -1,6 +1,6 @@
 # 完整 practical 的监督份额：固定 E30 因子对照
 
-状态：PLANNED，实现中；尚未启动，无新性能结果。Run 20261018-phase1-FcrossRX-Asweight-e30-s2026092701-m2-r01。固定 seed2026092701、split392005、全部源RX[1,3,4,6,8]／day[1,2,3]，L6300／U56700（TX隐藏）／V27000，IQ256，无RX留出或Ldev。F／三路SIG_TIME／统一Sinc／joint160／默认cos头联合训练，NoExplicitCFO与内部补偿保持。
+状态：VERIFIED_RUNNING，两条尾段均已启动，无新性能结果。Run 20261018-phase1-FcrossRX-Asweight-e30-s2026092701-m2-r01。固定 seed2026092701、split392005、全部源RX[1,3,4,6,8]／day[1,2,3]，L6300／U56700（TX隐藏）／V27000，IQ256，无RX留出或Ldev。F／三路SIG_TIME／统一Sinc／joint160／默认cos头联合训练，NoExplicitCFO与内部补偿保持。
 
 唯一假设：当前完整As配方只给现有As64平均0.25的L监督份额；在不增加物理损伤、样本、视图或前向的条件下，将mixed槽内0.125重复ordinary份额转给已有As，可能改善practical识别。它是监督组织消融，不是新IQ物理增强、Ag／DG有效性证明。历史cleanretain37的4L配方源urban弱于其50%As监督对照，但输入／前向／阶段也不同，不能证明权重因果；本次才固定其余因素独立检验。该历史“50%As”不指E50预算。已关闭stepALT不重做。另一对话正做普通PA旁路，本次普通PA／CFO／相位／噪声均保持。
 
@@ -33,3 +33,7 @@ As行selected64为原真实As(raw64)；实际NoAs.apply(raw[mask])返回raw.clon
 发布前调用路径纠正：NoAs selected实际raw64已在报告、spec及分析语义修正，模型仍保留既有NoAs.apply(raw)和原RNG／IQ。不存在对旧健康任务、原NoAs代码或历史结果的热修改；本轮仍是只改组权重的独立因子。
 
 本地实现已冻结并验证：66协议／标签／头负例、分组CE/KL标量及gradient mock、.25/.25还原原公式、实际hook21指标与schema、源结果原生JSON类型均PASS；19py及两段远端AST PASS。本候选唯一独立P0/P1审查PASS（P0=0，P1=0）。四条件只读分析8项synthetic与21字段接口检查PASS，不执行模型、不读正式分数；真实双方CP＋6L smoke仍由launcher首步实际执行，通过立即训练。
+
+实际训练／分析代码 `3befd47c8041d81f9430eda53562d0821624ff04` 已提交push且独立远端OID一致。一次N607普通账户preflight、单归档SHA比较、远端19py编译及66focused检查PASS；dispatcher1259300与B00 worker1259736 GPU0／B01 worker1259814 GPU2的PID／CWD／argv／CUDA／nvidia占用及日志增长已独立核实。真实两parent4NN＋双方实际6L1536NN共1540NN通过，grouped等权还原原loss／CE／KL／gradient（float64 atol1e-12），默认head／Sinc／backbone联合梯度通过，然后已直接训练。
+
+双方初始化source_roles=EXACT_MATCH、target_contact=false，student与各自ownEMA严格stage20恢复；optimizer空state/resetcos10/lr.0002/WD.0001，实际物理配置分别与原对应P43 row一致。B00／B01均已完成新段第1／10轮；当前没有failure，不把启动／smoke通过当性能成功。只读分析PID1260826 CWD／argv／空CUDA已核实，8focused检查与compile PASS，WAIT_SOURCE／truth_opened=false／0NN，自动等待双方源结果后再核对全部四逻辑条件×七视图。

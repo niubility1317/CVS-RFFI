@@ -112,3 +112,5 @@ full V27000四条件逐ID读出，原V1800与两次固定三场practical观测�
 本轮源E50推进规则提前固定为：newAs fullV clean对原As≥−.1pp，源mid／low两draw等权对原As≥+.5pp；其余源结果及NoAs控制、交互完整报告，不加额外门槛。此增量规则不追溯改写旧stepALT关闭决定。任一失败关闭固定.375权重，不扫权重/seed救跑；科学负结果仍全部正式收尾。正式stage依旧newAs对匹配newNoAs clean≥−.1pp，并另报原NoAs。全部原数据／默认头／来源边界、预算和原测试IQ不变。
 
 发布前按真实调用纠正文案：原P43 B00的NoAs.apply输入raw[mask]并返回raw.clone，不是配置文案所暗示的ordinary。新两行均保留原IQ／RNG；NoAs权重为ordinary.75/raw.5→ordinary.625/raw.625，As因子为selected raw→As(raw)。原代码／历史结果／健康任务不改。
+
+Asweight当前已实际启动：训练／分析代码`3befd47c8041d81f9430eda53562d0821624ff04`；dispatcher1259300，B00 worker1259736 GPU0、B01 worker1259814 GPU2，actualPID／CWD／argv／GPU／日志增长VERIFIED。双父真实CP4NN＋两行6L1536NN共1540NN smokePASS后正常训练；source roles均EXACT_MATCH、target_contact=false、各自ownEMA严格恢复，物理配置与原row一致。两新尾段均完成1／10轮；0NN分析1260826处于已核实WAIT_SOURCE，truth未开，无新性能结果。

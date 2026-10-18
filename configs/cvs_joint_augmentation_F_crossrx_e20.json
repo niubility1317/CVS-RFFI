@@ -189,7 +189,7 @@
   },
   "next_training_hypothesis": {
     "run_id": "20261018-phase1-FcrossRX-Asweight-e30-s2026092701-m2-r01",
-    "status": "REGISTERED_IMPLEMENTING_NOT_LAUNCHED",
+    "status": "RUNNING_VERIFIED",
     "hypothesis": "OnlymixedCE+KLmeans .125ordinary64+.375selected64 instead.25/.25;primary.5raw.25/6L/1.25/As64/IQ/RNG unchanged;matchedweightedNoAs added",
     "model_seed": 2026092701,
     "new_rows": 2,
@@ -209,7 +209,22 @@
     "NoAs_selected_actual_view": "raw.clone() originalNoAs.apply(raw[mask]);notordinary",
     "NoAs_weight_transfer": "ordinary.75/raw.5 -> ordinary.625/raw.625",
     "As_factor": "selectedraw -> As(raw)",
-    "IQ_paths_changed": false
+    "IQ_paths_changed": false,
+    "code_commit": "3befd47c8041d81f9430eda53562d0821624ff04",
+    "dispatcher_pid": 1259300,
+    "workers": [
+      {
+        "row_id": "B00-s2026092701",
+        "pid": 1259736,
+        "gpu": 0
+      },
+      {
+        "row_id": "B01-s2026092701",
+        "pid": 1259814,
+        "gpu": 2
+      }
+    ],
+    "analysis_pid": 1260826
   },
   "source_commonphase_sensitivity_result": {
     "name": "Bounded common-phase sensitivity of current F+CROSS_RX default head",
@@ -2936,7 +2951,7 @@
     "U": 56700,
     "V": 27000,
     "IQ_points": 256,
-    "status": "REGISTERED_NOT_LAUNCHED",
+    "status": "RUNNING_VERIFIED_E30_TWO_NEW_TAILS",
     "promising_recipe_extension": {
       "total_epochs": 50,
       "additional_after_fixed_E30": 20,
@@ -6327,7 +6342,7 @@
   },
   "active_training_hypothesis": {
     "run_id": "20261018-phase1-FcrossRX-Asweight-e30-s2026092701-m2-r01",
-    "status": "REGISTERED_IMPLEMENTING_NOT_LAUNCHED",
+    "status": "RUNNING_VERIFIED",
     "hypothesis": "OnlymixedCE+KLmeans .125ordinary64+.375selected64 instead.25/.25;primary.5raw.25/6L/1.25/As64/IQ/RNG unchanged;matchedweightedNoAs added",
     "model_seed": 2026092701,
     "new_rows": 2,
@@ -6347,7 +6362,22 @@
     "NoAs_selected_actual_view": "raw.clone() originalNoAs.apply(raw[mask]);notordinary",
     "NoAs_weight_transfer": "ordinary.75/raw.5 -> ordinary.625/raw.625",
     "As_factor": "selectedraw -> As(raw)",
-    "IQ_paths_changed": false
+    "IQ_paths_changed": false,
+    "code_commit": "3befd47c8041d81f9430eda53562d0821624ff04",
+    "dispatcher_pid": 1259300,
+    "workers": [
+      {
+        "row_id": "B00-s2026092701",
+        "pid": 1259736,
+        "gpu": 0
+      },
+      {
+        "row_id": "B01-s2026092701",
+        "pid": 1259814,
+        "gpu": 2
+      }
+    ],
+    "analysis_pid": 1260826
   },
   "carrier_gate_release": {
     "run_id": "20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01",

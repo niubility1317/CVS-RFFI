@@ -28,10 +28,11 @@
   "replaces_run_id": null,
   "authorization": "Currenthuman practical-primary research authorizes simple attributable augmentation/trainingorganization atdefaulttotalE30;source-supportedpromising totalE50 available.OnlyexistingAs supervision share changes;no Agrequirement/newloss/head/heldRX.Healthy peerPA-bypassjobs untouched.",
   "code": {
-    "commit": "7247938bbb8a136cce62c475a9f5e51bfb44cbaf",
+    "commit": "3befd47c8041d81f9430eda53562d0821624ff04",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "ExistingordinaryN607CVSRFFI/PyTorchFP32 CPU2;noinstall/admin;actualimplementationcommitfixedbeforelaunch",
-    "cwd": "PROJECT/releases/cvs_FcrossRX_AsWeight_E30_20261018_r01"
+    "cwd": "PROJECT/releases/cvs_FcrossRX_AsWeight_E30_20261018_r01",
+    "identity_status": "ACTUAL_RELEASE_COMMIT_REMOTE_OID_VERIFIED"
   },
   "data": {
     "dataset": "ManySig",
@@ -93,7 +94,7 @@
       "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
     ],
     "contract_check_ref": "ReuseverifiedoriginalP43source.parent_payload foreachspecificrow;actualstage20configs/roles/scratchlineage20epoch4440steps/studentownEMA strictly checked;newownfinal local10/cumulative30",
-    "provenance_verdict": "OriginalfullsourceL6300/Uhidden/V27000 all5RX/3day ownfixed20 fromscratch;no targetusedforweights/selection.ParentAs state not interchangeable withNoAs.",
+    "provenance_verdict": "VERIFIED_LIVE_BOTH_SOURCE_ROLESEXACT_TARGETCONTACTFALSE_STRICTOWN_STAGE20_STUDENT_EMA_AND_NOQUERY_SMOKE",
     "selection_rule": "Fixedseed01/FINAL30only,one .375 weight notgrid;sourceonlyfixedincrementalcriteriabeforeformalread;noepoch/seed/weightrescue"
   },
   "execution": {
@@ -105,7 +106,21 @@
     "local_artifact_root": "local_artifacts/F_As_weight_E30_20261018",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_practical_as_weight30/runner.py",
     "stop_rule": "Onlyrunownedillegaldata/parent/head/nonfinite/costcontract/outputcollision/unlaunchablesystemtechnicalfailure;preserveoutputs,noautomaticretry.Lowperformance/sourcecriterialfailuredoesnotstopfixedE30orall7formal.",
-    "status": "PLANNED"
+    "status": "RUNNING",
+    "dispatcher_pid": 1259300,
+    "workers": [
+      {
+        "row_id": "B00-s2026092701",
+        "pid": 1259736,
+        "gpu": 0
+      },
+      {
+        "row_id": "B01-s2026092701",
+        "pid": 1259814,
+        "gpu": 2
+      }
+    ],
+    "analysis_pid": 1260826
   },
   "expected_artifacts": [
     "strictbothownstage20studentEMA/roles/actualmoduleargs+realCP4NNnoquery+two6Lsynthetic1536NN0updates",
