@@ -1,0 +1,260 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-phase1-FcrossRX-fullAsPair6-e30-s2026092701-m1-r01",
+  "group_id": "phase1-FcrossRX-fixed6L-independent-full-As",
+  "display_name": "固定六次前向内的独立完整 practical 配对 CE",
+  "description": "One INDEP_CE6 ownAS_CE20+10; reuse exact SAT18 SAME_CE6 E30 plus original P43 NoAs/As. Only second mixed forward As64 receives a new full physical draw; common As-only KL off, same clean/U/CE/NN.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "P68",
+    "INDEP_CE6"
+  ],
+  "tags": [
+    "Phase1",
+    "F",
+    "CROSS_RX",
+    "default-head",
+    "fullsource",
+    "practical",
+    "independent-full-As",
+    "fixed-six-forward",
+    "E30",
+    "single-seed"
+  ],
+  "comparison_group_id": "phase1-FcrossRX-same-parent-ASCE20-view-allocation",
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active CVS practical-primary research; current totalE30 and source-qualified totalE50 allowed. No held source RX, no U truth, no structural/head change; automatic all7 truth-last.",
+  "code": {
+    "commit": null,
+    "checkout": "codex/phase1-urban-sigtime-20261014",
+    "environment": "Existing ordinary N607 Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5; pinned P43 runtime; full FP32/CENTER_UNITS; CPU2",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_full_As_pair6_E30_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Unchanged original7/63/30 source physical roles; existing VALIDATED_ONCE fixed formal IQ",
+    "representation": "equalized1/native perpacketRMS center=false;float32 Bx2x256/fs25MHz;full residual/post_sync/EQoffG1/ref30/reflect;As fromraw,no extra ordinary PA/noise beforeAs;trainingfc2.462GHz/fixedformal2.45GHz unchanged",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "Same original6TX map;no new or U truth",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      "fixedmanifest7unseenRX;nevertrain"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original6registeredTX;formalmanifest classmappingunchanged",
+    "roles": {
+      "L_s": 6300,
+      "U_s_hidden": 56700,
+      "V": 27000
+    },
+    "train_ratio": "7/63/30 wholepool;10% labeled trainingpool;noheldRX/Ldev",
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "ExistingPhase1 source handles and fixedformalmanifest;Phase2 p2capsule/splitN/A",
+    "support_query_ref": "Phase1,no support;source/target disjoint fixedformalmanifest",
+    "leo_config_ref": "PROJECT/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/manifest.json"
+  },
+  "permissions": {
+    "regime": "source_only_training_then_frozen_target_prediction",
+    "query_use": "Frozen defaulthead all7 fixed received IQ predictions;truthlast independent perrow only afterall7complete;formal scores never candidate/seed/parameter/promotion feedback",
+    "external_method_exception": null,
+    "claim_scope": "Primary independent-vs-same full-As comparison uses same AS_CE20 parent and same6L/CE. Original P43 AS30 has a different first20 KL history. No Ag efficacy, new algorithm, true satellite, or repeatable gain claim."
+  },
+  "checkpoint": {
+    "initialization": "Strict SAT18 AS_CE own scratch20 student+ownEMA; reset AdamW/cos10. Reused SAME_CE6 E30 used identical own20; P43 controls not initialization.",
+    "sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01/AS_CE-s2026092701/stage20/final_ssdg.pth"
+    ],
+    "contract_check_ref": "SAT18 stage20 completion/initialization/source_frozen/source_contract/actual_native_args/EMA/optimizer/result and full training-log audit; full original source roles EXACT_MATCH/source-only/final_only/4440; previous verification reused.",
+    "provenance_verdict": "VERIFIED_SOURCE_ONLY_ASCE20; one actual checkpoint no-query smoke is launcher first step, no source revalidation.",
+    "selection_rule": "Fixed cumulativeE30 student/model at6660 updates. No target or best-epoch selection; own EMA remains original Uteacher."
+  },
+  "execution": {
+    "host": "N607 ordinary nonprivileged account",
+    "launch_owner": "codex/root/full-As-pair68",
+    "gpu_policy": "Two rows; cap2 totalGPU PIDs inclotherowners,free>=12000MB; protecthealthyotherexperiments",
+    "remote_run_root": "PROJECT/runs/20261018-phase1-FcrossRX-fullAsPair6-e30-s2026092701-m1-r01",
+    "remote_log_root": "PROJECT/runs/20261018-phase1-FcrossRX-fullAsPair6-e30-s2026092701-m1-r01/logs",
+    "local_artifact_root": "local_artifacts/cvs_FcrossRX_full_As_pair6_E30_20261018_r01",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_full_channel_pair68/runner.py",
+    "stop_rule": "Wrong roles/provenance/native code, nonfinite, output collision or incorrect same-session/full-draw/CE-budget semantics stop only this run; preserve outputs, no automatic retry. Scientific failure stillall7; no threshold/mode/seed rescue.",
+    "status": "PLANNED"
+  },
+  "expected_artifacts": [
+    "real_checkpoint_smoke.json",
+    "ROW/source/resolved_config.json",
+    "ROW/source/actual_modules.json",
+    "ROW/source/actual_channel.json",
+    "ROW/source/source_contract.json",
+    "ROW/source/initialization.json",
+    "ROW/source/EMA_initialization.json",
+    "ROW/source/optimizer_initialization.json",
+    "ROW/source/step_metrics.jsonl.gz",
+    "ROW/source/training_sequence.jsonl.gz",
+    "ROW/source/epoch_metrics.jsonl",
+    "ROW/source/completion.json",
+    "ROW/source/source_frozen.json",
+    "ROW/source_qualification/predictions.npz",
+    "ROW/source_qualification/complete.json",
+    "source_matrix_decision.json",
+    "ROW/prediction/all7fixed predictions andcompletion",
+    "ROW/scoring/scores.json",
+    "ROW/scoring/complete.json",
+    "complete.json",
+    "same-row fulltrainingcurves/coverage/state/source-formalmetrics/pairedrepairs/costs/negativeandmissing",
+    "analysis_r01/complete.json",
+    "analysis_r01/source_summary.json",
+    "analysis_r01/formal_summary.json",
+    "analysis_r01/costs.json",
+    "analysis_r01/PNG_PDF_curves_and_strata",
+    "ROW/source/full_as_pair_steps.jsonl.gz",
+    "ROW/source/full_as_pair_physics.jsonl.gz",
+    "ROW/source/full_as_pair_progress.json",
+    "analysis_r01/physical_view_coverage",
+    "analysis_r01/primary_same_parent_pairs"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macroF1",
+      "worstRX",
+      "cleanpaired_delta_pp",
+      "lowurban",
+      "midurban",
+      "urban3mean",
+      "all6practical",
+      "suburban_clean_gap",
+      "sameIDrepairs/newerrors",
+      "fixedNoAs30clean_correct_retention",
+      "default_head_margin_div_fixed30",
+      "source_state/lock/noise",
+      "TX/RX/day/scene/state/lock_per_view_coverage",
+      "all_training_curves",
+      "student/teacherNN",
+      "physical_channel_calls",
+      "epochs/updates/wall",
+      "same_parent_INDEP_minus_SAME",
+      "originalAs_difference_with_parent_history_boundary"
+    ],
+    "dimensions": [
+      "INDEP_CE6",
+      "reusedSAT18SAME_CE6",
+      "reusedP43NOAS30/AS30",
+      "modelseed2026092701",
+      "all7formalviews",
+      "source1800x2draw",
+      "RX",
+      "TX",
+      "day",
+      "state/lock/addednoise",
+      "training_As_view0/view1"
+    ],
+    "prediction_ref": "PROJECT/runs/20261018-phase1-FcrossRX-fullAsPair6-e30-s2026092701-m1-r01/B01-s2026092701/prediction; old all7 references reused",
+    "scorer_ref": "Separate CPU scorer after newrow all7; final CPU analysis validates all4 logical rows all7 before truth joins"
+  },
+  "rows": [
+    {
+      "row_id": "B01-s2026092701",
+      "method": "INDEP_CE6 independent complete practical in existing second As forward",
+      "purpose": "Primary; one new tail, fixed same-parent SAME_CE6 reference",
+      "config_ref": "experiments/cvs_full_channel_pair68/design.py#config",
+      "resolved_config_ref": "PROJECT/runs/20261018-phase1-FcrossRX-fullAsPair6-e30-s2026092701-m1-r01/B01-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "held_source_RX": null,
+        "L": 6300,
+        "U_hidden": 56700,
+        "V": 27000,
+        "new_Ag": false,
+        "all5sourceRX": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model2026092701/split and data392005; primary physical channel train seed20261016421, RX hardware seed20261016423; ordinary/Dropout inherit original model RNG, no single scalar controls all streams. A1 appends a new namespace to the same stable hardware session; U truth hidden; source two draws are not model seeds; fixed formal received IQ/support N/A.",
+      "k": null,
+      "scenario": "full residual nominal lowSub/midUrban/lowUrban each1/3;64 same physical L perview;two independent complete physical draws with same RX hardware session;U unchanged/no AsU",
+      "optimizer": {
+        "name": "AdamW",
+        "state": "reset after strict own AS_CE20 student+EMA load",
+        "lr_schedule": "cosine10 original",
+        "teacher": "own AS_CE20 EMA, native original updates and U rules",
+        "temporal": "native original batch_neighbor, no P67 bank"
+      },
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "One new10/2220 updates; own20/4440 reused; total30/6660. Expected native3162962+source12600+formal1176002+single smoke772=4352336 newremoteNN; local0. Additional complete-channel draws, not extra NN. Three old E30 references not retrained or repredicted.",
+      "output_root": "PROJECT/runs/20261018-phase1-FcrossRX-fullAsPair6-e30-s2026092701-m1-r01/B01-s2026092701",
+      "log_path": "PROJECT/runs/20261018-phase1-FcrossRX-fullAsPair6-e30-s2026092701-m1-r01/logs/B01-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_full_channel_pair68/runner.py",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "ROW/source/resolved_config.json",
+        "ROW/source/actual_modules.json",
+        "ROW/source/actual_channel.json",
+        "ROW/source/source_contract.json",
+        "ROW/source/initialization.json",
+        "ROW/source/EMA_initialization.json",
+        "ROW/source/optimizer_initialization.json",
+        "ROW/source/step_metrics.jsonl.gz",
+        "ROW/source/training_sequence.jsonl.gz",
+        "ROW/source/epoch_metrics.jsonl",
+        "ROW/source/completion.json",
+        "ROW/source/source_frozen.json",
+        "ROW/source_qualification/predictions.npz",
+        "ROW/source_qualification/complete.json",
+        "source_matrix_decision.json",
+        "ROW/prediction/all7fixed predictions andcompletion",
+        "ROW/scoring/scores.json",
+        "ROW/scoring/complete.json",
+        "complete.json",
+        "same-row fulltrainingcurves/coverage/state/source-formalmetrics/pairedrepairs/costs/negativeandmissing",
+        "analysis_r01/complete.json",
+        "analysis_r01/source_summary.json",
+        "analysis_r01/formal_summary.json",
+        "analysis_r01/costs.json",
+        "analysis_r01/PNG_PDF_curves_and_strata",
+        "ROW/source/full_as_pair_steps.jsonl.gz",
+        "ROW/source/full_as_pair_physics.jsonl.gz",
+        "ROW/source/full_as_pair_progress.json",
+        "analysis_r01/physical_view_coverage",
+        "analysis_r01/primary_same_parent_pairs"
+      ]
+    }
+  ],
+  "notes": [
+    "Original MC2 really trained independent full As but10L/heldRX1 and failed; new key hypothesis is within existing6L budget and no cross-IQ KL, not new independent sampling algorithm.",
+    "SAT18 AS_CE20 had AsKLoff throughout first20; it is different from P43 fullKL As20. The SAME control is SAT18 AS_CE30 with the exact same parent, not P43.",
+    "Two source-only continuation conditions: candidate fullVclean minus original NoAs30 >= -.1 absolutepp; candidate pooledmidlow minus max(originalAs30,SAME_CE6) >= +.5pp. Otherwise close fixed recipe, still all7, no E50.",
+    "At most totalE50 if qualified, with same-budget SAME and NoAs controls; no automatic seed extension. Formal single-seed positives below .1pp remain preliminary.",
+    "No generic Ag or extra DG qualification; no held RX; all labels legitimate L, all satellite CE, Utruth never read.",
+    "Source-only qualification is saved before owner reads newformal metrics; no target feedback or selective rerun."
+  ],
+  "registered_at": "2026-10-18T13:50:54+00:00"
+}

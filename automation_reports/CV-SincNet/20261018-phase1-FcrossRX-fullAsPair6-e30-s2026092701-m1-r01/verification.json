@@ -1,0 +1,59 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "run_id": "20261018-phase1-FcrossRX-fullAsPair6-e30-s2026092701-m1-r01",
+  "goal_complete": false,
+  "new_training_started": false,
+  "performance_results_available": false,
+  "local_CVS_NN": 0,
+  "local_IQ": 0,
+  "local_checkpoint_reads": 0,
+  "focused_checks": {
+    "status": "PASS",
+    "protocol_negatives": 32,
+    "As_CE_gradient": true,
+    "As_KL_gradient_absent": true,
+    "ordinary_raw_KL_preserved": true,
+    "hardware_object_reuse": true,
+    "named_fullchannel_independence": true,
+    "scope_restoration": true,
+    "successful_output": "local_artifacts/cvs_FcrossRX_full_As_pair6_E30_20261018_r01/worker_checks_actual.json"
+  },
+  "analysis_checks": {
+    "status": "PASS",
+    "tests": 8,
+    "targeted_after_metadata_alignment": 1,
+    "output": "local_artifacts/cvs_FcrossRX_full_As_pair6_E30_20261018_r01/analysis_checks_actual.json"
+  },
+  "compile": {
+    "status": "PASS",
+    "python_files": 18
+  },
+  "known_local_attempts": [
+    "W-first dependency path ImportError before toy; corrected to existing OW-first route, no code/NN/IQ/CP"
+  ],
+  "checkpoint_provenance": "Reused verified SAT18 AS_CE scratch20/fullsource/final_only/source-only student+ownEMA; actual772NN smoke pending launcher first step",
+  "reused_controls": [
+    "P43 NOAS30",
+    "P43 AS30",
+    "SAT18 AS_CE30 SAME_CE6"
+  ],
+  "new_model_rows": 1,
+  "primary_same_parent_control": true,
+  "originalAs30_has_different_parent_KL_history": true,
+  "expected_new_remote_NN": 4352336,
+  "E50_only_after_source_PASS": true,
+  "E50_launched": false,
+  "formal_target_feedback": false,
+  "independent_P0P1": {
+    "status": "PASS",
+    "reviewer": "u_quality66_p0p1",
+    "reviews": 1,
+    "scope": "Only defects that directly make next real source/physical-pair/default-head/budget/all7/truth-last run wrong, unauthorized, destructive, unlaunchable or unable to produce legal predictions.",
+    "issues": [],
+    "actual_NN": 0,
+    "CP_reads": 0,
+    "IQ_reads": 0,
+    "remote_actions": 0,
+    "report_only_review": false
+  }
+}
