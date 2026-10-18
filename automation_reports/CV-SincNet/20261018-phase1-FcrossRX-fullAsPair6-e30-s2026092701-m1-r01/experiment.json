@@ -94,13 +94,13 @@
   "execution": {
     "host": "N607 ordinary nonprivileged account",
     "launch_owner": "codex/root/full-As-pair68",
-    "gpu_policy": "Two rows; cap2 totalGPU PIDs inclotherowners,free>=12000MB; protecthealthyotherexperiments",
+    "gpu_policy": "One new training row; cap2 totalGPU PIDs inclotherowners, free>=12000MB; protect healthy other experiments",
     "remote_run_root": "PROJECT/runs/20261018-phase1-FcrossRX-fullAsPair6-e30-s2026092701-m1-r01",
     "remote_log_root": "PROJECT/runs/20261018-phase1-FcrossRX-fullAsPair6-e30-s2026092701-m1-r01/logs",
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_full_As_pair6_E30_20261018_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_full_channel_pair68/runner.py",
     "stop_rule": "Wrong roles/provenance/native code, nonfinite, output collision or incorrect same-session/full-draw/CE-budget semantics stop only this run; preserve outputs, no automatic retry. Scientific failure stillall7; no threshold/mode/seed rescue.",
-    "status": "RUNNING"
+    "status": "ANALYZED"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
@@ -256,7 +256,8 @@
     "At most totalE50 if qualified, with same-budget SAME and NoAs controls; no automatic seed extension. Formal single-seed positives below .1pp remain preliminary.",
     "No generic Ag or extra DG qualification; no held RX; all labels legitimate L, all satellite CE, Utruth never read.",
     "Source-only qualification is saved before owner reads newformal metrics; no target feedback or selective rerun.",
-    "VERIFIED_RUNNING GPU0;realAS_CE20 student+ownEMA772NNsmokePASS;actualargsdifferenceonlyrun/candidate/output;rolesEXACT;firstnewE21 complete and logs/physicalrecords grow;nativebatchneighborUunchanged. No new performance yet."
+    "VERIFIED_RUNNING GPU0;realAS_CE20 student+ownEMA772NNsmokePASS;actualargsdifferenceonlyrun/candidate/output;rolesEXACT;firstnewE21 complete and logs/physicalrecords grow;nativebatchneighborUunchanged. No new performance yet.",
+    "2026-10-18: all7 formal and full CPU analysis complete; sourceFAIL fixed before owner formal read, noE50. Same-parent primary urban+.114286pp/clean+.019643pp; versus NoAs urban+28.302778pp/clean-.013690pp. One modelseed, no repeatable dualgain. Additional actual AS_CE20 source-only parent readout12602NN, totalnew4364938NN."
   ],
   "registered_at": "2026-10-18T13:50:54+00:00"
 }

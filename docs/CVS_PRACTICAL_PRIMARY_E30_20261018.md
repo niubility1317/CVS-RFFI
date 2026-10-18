@@ -19,9 +19,14 @@
 
 20261018-phase1-FcrossRX-fullAsPair6-e30-s2026092701-m1-r01只新增INDEP_CE6一条own SAT18 AS_CE20＋10，总E30/6660；既有SAT18 AS_CE30作同父SAME_CE6控制直接复用。P43原As30前20轮KL历史不同，仅作整配方参照，不把全部差异归给独立信道。旧10L/heldRX MC2的真实负结果保留；本次关键改变是现有6L预算内的观测分配，不增加前向或跨IQ KL。原raw/ordinary KL、dropout、SupCon、U/EMA、1.25L尺度保持，硬件session相同，两个As各从same raw独立完整生成。
 
-源晋级两项：fullVclean对原NoAs30≥−.1pp；pooledmidlow对max(原As30,SAME_CE6)≥＋.5pp；任一FAIL关闭固定方式，仍评分全部七视图。合格才允许总计E50，正式不晋级；当前已VERIFIED_RUNNING：772NN真实父与合成6L smoke通过，GPU0进程/CWD/argv/日志增长核实，累计E21已完成，尚无冻结后新性能。新tail预期2220更新/4352336remoteNN含772smoke，旧控制不重训/推理/评分。
+源晋级两项：fullVclean对原NoAs30≥−.1pp；pooledmidlow对max(原As30,SAME_CE6)≥＋.5pp；任一FAIL关闭固定方式，仍评分全部七视图。合格才允许总计E50，正式不晋级；当前 ANALYZED：772NN 真实父与合成6L smoke、GPU0所属进程/CWD/argv/日志增长均已核实，E30与七固定视图／独立truth-last／完整CPU分析完成。新增尾段2220更新／4352336remoteNN（含smoke）；实际父source-only诊断另12602NN，合计4364938NN。旧控制不重训／推理／评分。
 
 [P68预登记](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-fullAsPair6-e30-s2026092701-m1-r01/report.md)。
 
 
 P68机制读出补充：实际SAT18 AS_CE20没有已核实源预测缓存，P43 As20不同父不可替代。独立source-only诊断 20261018-diagnostic-FcrossRX-ASCE20cohort-sourceV-s2026092701-m1-r01只补默认头在原V1800＋两draw三practical上的12602NN（含2NNCPsmoke），0训练/teacher/信道新生成/target；不写健康P68代码/root，不参与source晋级。新增成本单列，主P68expected4352336NN＋该诊断12602＝4364938NN，非新训练预算。唯一新诊断P0/P1及7puretoy/4compile通过，实际12602NN/0更新source读出与独立NPZ重数完成：父clean正确1767/1800，pooled3534观察中lowSub3171、mid2584、low2073；非正式测试准确率。短任务首次实时/proc观察前已结束，实时PID/CWD/GPU快照不可用，已披露，不重跑。
+
+
+P68 最终：源 fullVclean 对NoAs −0.029630pp PASS，midlow 对同父SAME ＋0.069444pp 未达＋0.5pp，SOURCE_FAIL，不延长 E50。主比较 INDEP−SAME urban＋0.114286pp、mid＋0.087500pp、low＋0.075595pp、clean＋0.019643pp，仅单seed微增。对同预算NoAs urban＋28.302778pp、clean−0.013690pp，满足0.1pp阶段目标；对原As urban−0.065675pp且父KL历史不同。正式low51.245833%，未达60%；无可重复clean＋星地双提升证据。504个混淆矩阵／84分区独立重数，missing=[]。实际父clean正确1767源集合low保持60.016978%不是正式low准确率。
+
+[P68 最终分析](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-fullAsPair6-e30-s2026092701-m1-r01/final_analysis.md)。整体目标 ACTIVE；允许给源合格方案总计 E50，不以本轮正式微增晋级。

@@ -1,0 +1,27 @@
+{
+  "status": "SOURCE_FIXED_RECIPE_CLOSED",
+  "candidate": "INDEP_CE6",
+  "source_qualified": false,
+  "owner_formal_metrics_read": false,
+  "source_owner_first_read": "2026-10-18T14:24:10.052Z",
+  "checks": {
+    "fullV_clean_vs_NoAs30_at_least_minus0p1pp": true,
+    "midlow_vs_best_fixed_reference_at_least_plus0p5pp": false
+  },
+  "effects": {
+    "fullV_clean_vs_NoAs30_pp": -0.0296296296296239,
+    "fullV_clean_vs_same_CE6_pp": 0,
+    "midlow_vs_same_CE6_pp": 0.0694444444444442,
+    "midlow_vs_original_As30_pp": 0.31944444444443887,
+    "midlow_vs_best_fixed_reference_pp": 0.0694444444444442,
+    "low_vs_same_CE6_pp": -0.027777777777771018,
+    "low_vs_original_As30_pp": 0.22222222222222365
+  },
+  "E50_launched": false,
+  "no_automatic_seed_extension": true,
+  "no_threshold_or_view_pair_rescue": true,
+  "formal_evaluation_still_required": true,
+  "formal_all7_complete_by_status_only": true,
+  "parent_cohort_not_used_for_qualification": true,
+  "goal_complete": false
+}

@@ -1,9 +1,9 @@
 {
-  "status": "VERIFIED_RUNNING",
+  "status": "VERIFIED_ANALYZED",
   "run_id": "20261018-phase1-FcrossRX-fullAsPair6-e30-s2026092701-m1-r01",
   "goal_complete": false,
   "new_training_started": true,
-  "performance_results_available": false,
+  "performance_results_available": true,
   "local_CVS_NN": 0,
   "local_IQ": 0,
   "local_checkpoint_reads": 0,
@@ -60,5 +60,29 @@
   "N607_preflight": "VERIFIED_ordinary_direct8GPU_original_runtime_and_outputs_absent",
   "launch_verification": "launch_verification.json",
   "real_checkpoint_smoke_NN": 772,
-  "real_checkpoint_smoke_PASS": true
+  "real_checkpoint_smoke_PASS": true,
+  "source_decision": "FAIL_MIDLOW_THRESHOLD_NO_E50",
+  "source_closed_before_owner_formal_read": true,
+  "actual_new_remote_NN": 4364938,
+  "main_new_remote_NN": 4352336,
+  "actual_parent_source_diagnostic_NN": 12602,
+  "all4_rows_all7_verified_before_truth": true,
+  "formal_independent_CM_recounts": 504,
+  "partition_reconciliations": 84,
+  "missing": [],
+  "source_qualified": false,
+  "source_fixed_recipe_closed": true,
+  "model_seed_count": 1,
+  "reproducible_dual_gain": false,
+  "formal_stage_within0p1pp": true,
+  "all_owned_PIDs_absent": {
+    "1517499": false,
+    "1517641": false,
+    "1529458": false
+  },
+  "main_pipeline_failure": false,
+  "actual_parent_diagnostic": "../20261018-diagnostic-FcrossRX-ASCE20cohort-sourceV-s2026092701-m1-r01/verification.json",
+  "parent_diagnostic_live_snapshot_limitation": "2.686s task completed before first /proc observation; live PID/CWD/GPU snapshot unavailable; terminal/artifact readback VERIFIED; not rerun",
+  "figures": "figure_verification.json",
+  "delivery": "delivery.json"
 }

@@ -1,6 +1,6 @@
 # P68：固定六次前向内的独立完整 practical 配对 CE
 
-状态：VERIFIED_RUNNING。只新增一条 own AS_CE20＋10，总 E30；已完成累计 E21，尚无冻结后的性能结果。以下保留运行前设计与判据。
+状态：ANALYZED。全部七环境和同 row 分析已完成，missing=[]。源域 SOURCE_FAIL，不延长 E50；整体目标 ACTIVE。最终结论见 [final_analysis.md](final_analysis.md)，以下设计和判据保留为运行前记录。
 
 最值得保留的是完整 practical 真实标签监督及稳定 clean 份额。原普通配方已显示星地适应收益，但新增损失／更高 U 接受覆盖等不能替代识别增量。P67 已完成全部评分，新增时间确认没有提高 low urban；另一对话的 LRaw、tailNoU 已实际训练，不重开。E50 是符合源证据的好方案的总预算，不是追加50轮。
 
@@ -48,3 +48,9 @@ IQ2×256／25MHz，practical之前原逐包RMS／center=false，内部CENTER_UNI
 
 
 实际代码 f520ae98791a80775b6b5923183fcffba7e91c73 已提交／推送并独立核实远端 identical。单归档SHA ca5482c667f9e39ccd9626c1b52536f8cb996184b6345295120f09ea7409e8b1、远端17个Python文件编译均VERIFIED；一次真实AS_CE20 student／ownEMA及合成6L反传smoke PASS772NN，0真实IQ／0更新。GPU0的所属PID/CWD/argv、实际计算进程和日志增长均VERIFIED。实际native args相对同父SAME只有run_id/candidate_id/output_dir差异；完整角色EXACT_MATCH，ownEMA严格恢复，原pinned leo_practical真实__file__已保存。
+
+
+源规则已固定关闭（先于主owner正式指标读取）：fullVclean对原NoAs −0.029630pp PASS；pooledmidlow对同父SAME＋0.069444pp，未达＋.5pp，FAIL；low对SAME−0.027778pp。对原As的midlow＋.319444pp含前20KL历史差，不能归为独立完整信道收益。两条件任一FAIL即无E50，不扫seed/namespace/剂量救跑；正式七视图已经按状态完成，等待完整CPU分析。实际父cohort独立source诊断没有参与该决定。
+
+
+最终交付：同父 INDEP−SAME 的 urban＋0.114286pp、clean＋0.019643pp；对同预算 NoAs 的 urban＋28.302778pp、clean−0.013690pp，正式单 seed 满足0.1pp阶段要求。相对原As urban−0.065675pp；正式low51.245833%，没有达到60%或可重复双提升。所有七视图已完成；详细F1／最差RX／分层／成本及缺项见 final_analysis.md、delivery.json。实际父source-only诊断另12602NN，本轮新增总4364938NN；未启动E50／扩seed。

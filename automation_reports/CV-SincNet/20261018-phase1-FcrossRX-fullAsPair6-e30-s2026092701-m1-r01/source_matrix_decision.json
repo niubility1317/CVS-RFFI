@@ -1,0 +1,99 @@
+{
+  "status": "SOURCE_READOUT_DECIDED",
+  "source_qualified": false,
+  "candidate": "INDEP_CE6",
+  "rows": {
+    "NOAS30": {
+      "fullV_clean": 0.9835925925925926,
+      "source_accuracies": [
+        [
+          0.5,
+          0.42944444444444446,
+          0.3566666666666667
+        ],
+        [
+          0.49722222222222223,
+          0.44166666666666665,
+          0.35555555555555557
+        ]
+      ],
+      "midlow": 0.39583333333333337,
+      "low": 0.35611111111111116
+    },
+    "AS30": {
+      "fullV_clean": 0.9825555555555555,
+      "source_accuracies": [
+        [
+          0.8811111111111111,
+          0.7255555555555555,
+          0.6011111111111112
+        ],
+        [
+          0.8922222222222222,
+          0.7305555555555555,
+          0.5805555555555556
+        ]
+      ],
+      "midlow": 0.6594444444444445,
+      "low": 0.5908333333333333
+    },
+    "SAME_CE6": {
+      "fullV_clean": 0.9832962962962963,
+      "source_accuracies": [
+        [
+          0.8888888888888888,
+          0.7294444444444445,
+          0.6055555555555555
+        ],
+        [
+          0.8933333333333333,
+          0.7316666666666667,
+          0.5811111111111111
+        ]
+      ],
+      "midlow": 0.6619444444444444,
+      "low": 0.5933333333333333
+    },
+    "INDEP_CE6": {
+      "fullV_clean": 0.9832962962962963,
+      "source_accuracies": [
+        [
+          0.8922222222222222,
+          0.7316666666666667,
+          0.6044444444444445
+        ],
+        [
+          0.8955555555555555,
+          0.7327777777777778,
+          0.5816666666666667
+        ]
+      ],
+      "midlow": 0.6626388888888889,
+      "low": 0.5930555555555556
+    }
+  },
+  "checks": {
+    "fullV_clean_vs_NoAs30_at_least_minus0p1pp": true,
+    "midlow_vs_best_fixed_reference_at_least_plus0p5pp": false
+  },
+  "effects": {
+    "fullV_clean_vs_NoAs30_pp": -0.0296296296296239,
+    "fullV_clean_vs_same_CE6_pp": 0,
+    "midlow_vs_same_CE6_pp": 0.0694444444444442,
+    "midlow_vs_original_As30_pp": 0.31944444444443887,
+    "midlow_vs_best_fixed_reference_pp": 0.0694444444444442,
+    "low_vs_same_CE6_pp": -0.027777777777771018,
+    "low_vs_original_As30_pp": 0.22222222222222365
+  },
+  "primary_same_parent_comparison": "INDEP_CE6 minus SAME_CE6; both own SAT18 AS_CE20 plus10",
+  "original_As30_parent_history": "Original P43 fullKL20 differs from AS_CE20; not pure channel-view attribution",
+  "formal_scores_read": false,
+  "target_scores_read": false,
+  "formal_evaluation_always_required": true,
+  "target_feedback": false,
+  "model_seed_count": 1,
+  "NN": 0,
+  "E50_total_allowed_only_after_source_PASS": true,
+  "E50_requires_same_budget_controls": true,
+  "no_automatic_seed_extension": true
+}
