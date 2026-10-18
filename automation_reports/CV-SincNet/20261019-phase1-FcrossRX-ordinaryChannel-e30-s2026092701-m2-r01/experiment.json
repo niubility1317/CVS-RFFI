@@ -94,7 +94,7 @@
       "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
     ],
     "contract_check_ref": "Reuse originalP43 source_roles/physicalIDs/full ancestry/fixedFINAL20 audit; unchanged source handles at preflight; strictly load ownparent and ownEMA; no LRaw trained checkpoint used",
-    "provenance_verdict": "Prior P43 fullsource sourceonly/finalonly parent provenance reused; actual matching handles and realCPsmoke pending launch",
+    "provenance_verdict": "VERIFIED corresponding originalP43 fullsource/source-only fixedFINAL20 student and ownEMA; source rolehandles EXACT_MATCH; realCP smoke PASS; no target-trained ancestry",
     "selection_rule": "FixedFINAL30 only; sourceFAIL stillall7. NewAs fullVclean−newNoAs>=−.1absolutepp AND two fixed drawmidlow−originalAs>=+.5pp; no rescue/seed/E50 onFAIL"
   },
   "execution": {
@@ -106,7 +106,7 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_ordinaryChannel_E30_20261019_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_ordinary_channel78/runner.py",
     "stop_rule": "Only own wrongroles/parent/defaulthead/budget/nonfinite/outputcollision/U wrapper leakage/illegal predictions or systemic technical failure; preserve artifacts,no automatic retry,no unrelated-process intervention. PerformanceFAIL stillall7.",
-    "status": "RUNNING"
+    "status": "ANALYZED"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
@@ -238,7 +238,19 @@
         "analysis_r01/source_complete.json",
         "analysis_r01/complete.json",
         "analysis_r01/fullcurves_all7_metrics_paired_errors_source_strata_costs_PNG_PDF"
-      ]
+      ],
+      "status": "ANALYZED",
+      "actual_results": {
+        "training": "COMPLETE",
+        "cumulative_epochs": 30,
+        "cumulative_updates": 6660,
+        "new_epochs": 10,
+        "new_updates": 2220,
+        "formal_views_complete": 7,
+        "independent_truth_last": "COMPLETE",
+        "model_seed": 2026092701,
+        "technical_missing": []
+      }
     },
     {
       "row_id": "B01-s2026092701",
@@ -302,7 +314,19 @@
         "analysis_r01/source_complete.json",
         "analysis_r01/complete.json",
         "analysis_r01/fullcurves_all7_metrics_paired_errors_source_strata_costs_PNG_PDF"
-      ]
+      ],
+      "status": "ANALYZED",
+      "actual_results": {
+        "training": "COMPLETE",
+        "cumulative_epochs": 30,
+        "cumulative_updates": 6660,
+        "new_epochs": 10,
+        "new_updates": 2220,
+        "formal_views_complete": 7,
+        "independent_truth_last": "COMPLETE",
+        "model_seed": 2026092701,
+        "technical_missing": []
+      }
     }
   ],
   "notes": [
@@ -313,7 +337,8 @@
     "OriginalP43 references sameown20+10 budgets; bothnewparents exactly correspondingP43 fixedE20; LRaw d14450bf only immutable runtime dependency, never its trainedweights.",
     "REJECTED_EXTRA_GATE: generic skill design-approval/spec ritual is outside project eight-gate whitelist and already authorized execution; no separate approval or report/signature/hashes gate.",
     "NCE andparameteraveraging considered atdedup only; not selected/implemented in this matrix. No newformal scores used to choosebypass orpromotion.",
-    "Actual code 5d6514b00b96614a1bd8e2b276e286bf3bed37e6 pushOID independently VERIFIED; single archive92355byte SHA comparison/25remotecompilePASS; launcher realCP/defaulthead/ownEMA smoke1540NN PASS/sourceIQ0/queryfalse/updates0. Both ownrows PID/CWD/argv/CUDA andactualGPU0/1 observed; source_rolesEXACT_MATCH/scratchfalse/targetcontactfalse; no formalreadout yet."
+    "Actual code 5d6514b00b96614a1bd8e2b276e286bf3bed37e6 pushOID independently VERIFIED; single archive92355byte SHA comparison/25remotecompilePASS; launcher realCP/defaulthead/ownEMA smoke1540NN PASS/sourceIQ0/queryfalse/updates0. Both ownrows PID/CWD/argv/CUDA andactualGPU0/1 observed; source_rolesEXACT_MATCH/scratchfalse/targetcontactfalse; no formalreadout yet.",
+    "ANALYZED:sourceFAIL observed before formal read;noE50/noadditionalmodelseed;all7complete. DirectnewAs−originalAsurbanmean+.007540pp/clean−.075pp. MatchednewNoAscleanweakened−.171429pp;do notclaim stabledualgain."
   ],
   "comparators": [
     {
@@ -335,5 +360,61 @@
       "SupCon": "ORD128"
     }
   ],
-  "registered_at": "2026-10-18T22:32:11+00:00"
+  "registered_at": "2026-10-18T22:32:11+00:00",
+  "actual_results": {
+    "model_seed": 2026092701,
+    "model_seed_count": 1,
+    "source_qualified": false,
+    "fixed_recipe_closed": true,
+    "E50_extension": false,
+    "all7_complete": true,
+    "technical_missing": [],
+    "new_model_epochs": 20,
+    "new_updates": 4440,
+    "new_total_sample_forwards": 8704668,
+    "clean_guard_vs_matched_NoAs_pass": true,
+    "clean_vs_matched_NoAs_pp": 0.18988095238095237,
+    "increment_vs_original_As": {
+      "clean": {
+        "accuracy_delta_pp": -0.075,
+        "macro_F1_delta_pp": -0.09333402987290462,
+        "worst_RX_delta_pp": 0.30000000000000027
+      },
+      "practical_high": {
+        "accuracy_delta_pp": 0.004761904761904762,
+        "macro_F1_delta_pp": -0.004299766904503066,
+        "worst_RX_delta_pp": 0.35000000000000586
+      },
+      "practical_mid": {
+        "accuracy_delta_pp": 0.007738095238095238,
+        "macro_F1_delta_pp": -0.0019524897067357827,
+        "worst_RX_delta_pp": 0.20000000000000018
+      },
+      "practical_low_suburban": {
+        "accuracy_delta_pp": 0.0625,
+        "macro_F1_delta_pp": 0.060055692692351226,
+        "worst_RX_delta_pp": 0.16666666666667052
+      },
+      "practical_high_urban": {
+        "accuracy_delta_pp": -0.034523809523809526,
+        "macro_F1_delta_pp": -0.03808372088859313,
+        "worst_RX_delta_pp": 0.07499999999999174
+      },
+      "practical_mid_urban": {
+        "accuracy_delta_pp": -0.002380952380952381,
+        "macro_F1_delta_pp": 0.01916113894494531,
+        "worst_RX_delta_pp": 0.1291666666666691
+      },
+      "practical_low_urban": {
+        "accuracy_delta_pp": 0.05952380952380952,
+        "macro_F1_delta_pp": 0.08193538273597589,
+        "worst_RX_delta_pp": 0.15833333333333255
+      },
+      "urban_mean_accuracy_delta_pp": 0.007539682539682538
+    },
+    "repeatable_dual_gain_proven": false,
+    "goal_complete": false,
+    "analysis_ref": "final_analysis.md",
+    "results_ref": "results_summary.json"
+  }
 }

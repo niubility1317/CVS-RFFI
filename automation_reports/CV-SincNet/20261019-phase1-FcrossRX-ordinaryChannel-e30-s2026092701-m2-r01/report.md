@@ -1,6 +1,6 @@
 # P78：保留完整 practical，仅移除 L 普通视图的 AWGN／多径
 
-状态：REGISTERED，实际训练尚未启动；代码提交在本地实现、聚焦检查及唯一独立 P0/P1 检查完成后固定。起点 ca91644d9e13efdfb9fb7f343f9041743772af96。
+状态：ANALYZED。下列方案在运行前固定；两条新行现已完成训练、all7独立truth-last评分及分析。起点 ca91644d9e13efdfb9fb7f343f9041743772af96。
 
 唯一假设：由完整 practical 承担真实传播损伤后，L ordinary 中的通用 AWGN／multipath 是否仍有价值。只在末 E10 旁路这两种原语，保留相位、时移、增益、PA、原 RDrop／SupCon、U／自身 EMA、默认 cosine 头与网络结构。普通原语完整执行后返回其输入，保留同调用随机抽样和模拟成本，不宣称整条训练轨迹 RNG 逐位一致。As 仍从 raw 独立生成；原实现没有把 ordinary 损伤再串进 As，本次不修复一个不存在的重复叠加问题。
 
@@ -26,8 +26,5 @@
 
 REJECTED_EXTRA_GATE：通用技能的单独设计审批、规格文件和重复审查不在项目八项白名单内；用户已授权本目标内必要实现与实验，沿当前最小流程执行。
 
-实际代码提交 5d6514b00b96614a1bd8e2b276e286bf3bed37e6，独立远端OID一致；聚焦检查和唯一P0/P1均PASS，真实训练待发布首步smoke。
 
-实际发布：代码 5d6514b00b96614a1bd8e2b276e286bf3bed37e6，92355byte单归档比较与25文件remote compile均VERIFIED。真实CP/默认头/自身EMA＋两图smoke1540NN PASS，sourceIQ0/queryfalse/updates0；强制原语门仅用于合成smoke并恢复。两row PID/CWD/argv/CUDA/actualGPU0/1独立核实，source_rolesEXACT_MATCH/scratchfalse/targetcontactfalse。训练进行中，无源晋级或正式成绩结论。
-
-首轮已观察：两row均完成尾段1/10、各222更新，日志增长且无技术failure。actual_modules打印证实leo_practical/DataAugmentation/SSDG均来自固定r02的experiments/adv3b02_xuc/code，非仓库顶层code。
+实际代码提交 5d6514b00b96614a1bd8e2b276e286bf3bed37e6；发布、真实CPsmoke、训练、逐row七环境评分和聚合复核均完成。源资格FAIL已在读取新正式成绩前保存并观察，不扩E50或模型种子。新增20模型轮/4440更新/8704668样本前向；实际启动至分析完成21.466205分钟。详细负结果、配对归因、全部指标和实际图路径见 [最终分析](final_analysis.md)，机器可读汇总见 results_summary.json。目标仍ACTIVE，未宣称双提升。
