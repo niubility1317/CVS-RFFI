@@ -1,0 +1,95 @@
+{
+  "status": "SOURCE_READOUT_DECIDED",
+  "source_qualified": false,
+  "candidate": "AS_KEEP",
+  "rows": {
+    "NOAS30": {
+      "fullV_clean": 0.9835925925925926,
+      "source_accuracies": [
+        [
+          0.5,
+          0.42944444444444446,
+          0.3566666666666667
+        ],
+        [
+          0.49722222222222223,
+          0.44166666666666665,
+          0.35555555555555557
+        ]
+      ],
+      "midlow": 0.39583333333333337,
+      "low": 0.35611111111111116
+    },
+    "AS30": {
+      "fullV_clean": 0.9825555555555555,
+      "source_accuracies": [
+        [
+          0.8811111111111111,
+          0.7255555555555555,
+          0.6011111111111112
+        ],
+        [
+          0.8922222222222222,
+          0.7305555555555555,
+          0.5805555555555556
+        ]
+      ],
+      "midlow": 0.6594444444444445,
+      "low": 0.5908333333333333
+    },
+    "NOAS_KEEP": {
+      "fullV_clean": 0.9837037037037037,
+      "source_accuracies": [
+        [
+          0.49944444444444447,
+          0.42833333333333334,
+          0.35555555555555557
+        ],
+        [
+          0.4955555555555556,
+          0.44055555555555553,
+          0.35833333333333334
+        ]
+      ],
+      "midlow": 0.39569444444444446,
+      "low": 0.35694444444444445
+    },
+    "AS_KEEP": {
+      "fullV_clean": 0.9824074074074074,
+      "source_accuracies": [
+        [
+          0.8827777777777778,
+          0.7261111111111112,
+          0.6027777777777777
+        ],
+        [
+          0.8927777777777778,
+          0.7316666666666667,
+          0.5811111111111111
+        ]
+      ],
+      "midlow": 0.6604166666666667,
+      "low": 0.5919444444444444
+    }
+  },
+  "checks": {
+    "clean_within_matchedNoAs_KEEP_0p1pp": false,
+    "midlow_vs_originalAs30_at_least_0p5pp": false
+  },
+  "effects": {
+    "fullV_clean_vs_matchedNoAs_KEEP_pp": -0.1296296296296351,
+    "fullV_clean_vs_originalNoAs30_pp": -0.1185185185185178,
+    "midlow_vs_originalAs30_pp": 0.09722222222221522,
+    "low_vs_originalAs30_pp": 0.11111111111110628,
+    "midlow_interaction_pp": 0.11111111111110628
+  },
+  "formal_scores_read": false,
+  "target_scores_read": false,
+  "formal_evaluation_always_required": true,
+  "target_feedback": false,
+  "model_seed_count": 1,
+  "NN": 0,
+  "E50_total_allowed_only_after_source_PASS": true,
+  "E50_requires_same_budget_controls": true,
+  "no_automatic_seed_extension": true
+}

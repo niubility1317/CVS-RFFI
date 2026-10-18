@@ -1,9 +1,9 @@
 {
-  "status": "VERIFIED_RUNNING",
+  "status": "VERIFIED_ANALYZED",
   "run_id": "20261018-phase1-FcrossRX-optimizerKeep-e30-s2026092701-m2-r01",
   "goal_complete": false,
   "new_training_started": true,
-  "performance_results_available": false,
+  "performance_results_available": true,
   "model_seed_count": 1,
   "local_CVS_NN": 0,
   "local_IQ": 0,
@@ -66,5 +66,31 @@
   "E50_only_after_source_PASS": true,
   "actual_code_commit": "d2ddf0d48a48b7c9f8416e8c4219185155faf298",
   "real_checkpoint_smoke_PASS": true,
-  "launch_verification": "launch_verification.json"
+  "launch_verification": "launch_verification.json",
+  "source_decision": "source_matrix_decision.json",
+  "source_closed_before_owner_formal_read": true,
+  "source_qualified": false,
+  "actual_new_remote_NN": 8703136,
+  "actual_new_updates": 4440,
+  "all4_rows_all7_verified_before_truth": true,
+  "formal_independent_CM_recounts": 504,
+  "partition_reconciliations": 84,
+  "missing": [],
+  "reproducible_dual_gain": false,
+  "formal_stage_within0p1pp": true,
+  "formal_clean_gain_vs_matchedNoAs_pp": 0.07559523809523849,
+  "all_owned_PIDs_absent": true,
+  "main_pipeline_failure": false,
+  "source_fixed_recipe_closed": true,
+  "optional_parent_cohort_unavailable": {
+    "NoAs20_own_parent_cohort": true,
+    "formal_parent20_cohort": true
+  },
+  "figures": "figure_verification.json",
+  "delivery": "delivery.json",
+  "owned_PID_live": {
+    "1558466": false,
+    "1558557": false,
+    "1559046": false
+  }
 }

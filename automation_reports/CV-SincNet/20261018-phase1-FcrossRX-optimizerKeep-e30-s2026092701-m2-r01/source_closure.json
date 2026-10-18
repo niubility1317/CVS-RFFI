@@ -1,0 +1,21 @@
+{
+  "status": "SOURCE_FIXED_RECIPE_CLOSED",
+  "source_qualified": false,
+  "owner_formal_metrics_read": false,
+  "owner_source_first_read": "2026-10-18T15:23:27.925Z",
+  "checks": {
+    "clean_within_matchedNoAs_KEEP_0p1pp": false,
+    "midlow_vs_originalAs30_at_least_0p5pp": false
+  },
+  "effects": {
+    "fullV_clean_vs_matchedNoAs_KEEP_pp": -0.1296296296296351,
+    "fullV_clean_vs_originalNoAs30_pp": -0.1185185185185178,
+    "midlow_vs_originalAs30_pp": 0.09722222222221522,
+    "low_vs_originalAs30_pp": 0.11111111111110628,
+    "midlow_interaction_pp": 0.11111111111110628
+  },
+  "E50_launched": false,
+  "no_threshold_or_moment_subset_or_seed_rescue": true,
+  "formal_all7_still_required": true,
+  "goal_complete": false
+}

@@ -100,7 +100,7 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_optimizer_keep_E30_20261018_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_optimizer_continuity69/runner.py",
     "stop_rule": "Wrongrole/provenance/optimizerstate-order-shape-finite/oldLRoverwrite/nativecode/nonfinite/outputcollision or illegalpredictions stop only ownrun; preserve output, noautomaticretry. ScientificFAIL stillall7; no threshold/seed rescue.",
-    "status": "RUNNING"
+    "status": "ANALYZED"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
@@ -285,7 +285,8 @@
     "Only two sourcequalification checks: AS_KEEP fullVclean−matchedNOAS_KEEP >=−.1pp and pooledmidlow−originalAS30>=+.5pp; scientificFAIL closes fixedrecipe, all7 stillrequired.",
     "Source decision fixed before owner reads newformal; only PASS allows later separate totalE50 run.",
     "Modelseed1, no repeatabledualgainclaim; low60 and cleanpositive remain unachieved until measured.",
-    "Existing oldNoAs/As reset refs not retrained/repredicted/rescored; sameparentcases isolateoptimizer, factorial interaction reported."
+    "Existing oldNoAs/As reset refs not retrained/repredicted/rescored; sameparentcases isolateoptimizer, factorial interaction reported.",
+    "All4 logicalrows all7 complete; source2criteriaFAIL/noE50. AS_KEEP−AS30 urban+.006151pp/low−.022024pp/clean+.007143pp. AS_KEEP−matchedNOAS_KEEP urban+28.532143pp/clean+.075595pp; n1micro preliminary, no reproducible dualgain. Actualnew8703136NN/4440updates; mainenvelope1185.216s. OverallgoalACTIVE."
   ],
   "registered_at": "2026-10-18T14:52:25+00:00"
 }

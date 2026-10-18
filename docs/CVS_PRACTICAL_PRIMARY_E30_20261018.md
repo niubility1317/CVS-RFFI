@@ -34,6 +34,11 @@ P68 最终：源 fullVclean 对NoAs −0.029630pp PASS，midlow 对同父SAME �
 
 ## P69：保留原AdamW状态的匹配续训
 
-20261018-phase1-FcrossRX-optimizerKeep-e30-s2026092701-m2-r01 固定P43对应own20 student/EMA，新增NoAs_KEEP/As_KEEP各10轮，总E30；原RESET对应NoAs30/As30预测与评分复用。唯一改变是保留全模型AdamW m/v/step，新cos10/LR/WD/CENTER_UNITS hooks计数及原U/6L/loss保持。不是continuous30/viewMoment，也不重开已做RXpopulation。源判据只两项：AS_KEEP fullVclean−NOAS_KEEP≥−.1pp，pooledmidlow−原AS30≥＋.5pp；任一FAIL关闭固定方案，所有已训行仍自动七视图独立truth-last。源PASS才可后续独立总E50，不自动扩seed。当前PLANNED，尚无新性能。
+20261018-phase1-FcrossRX-optimizerKeep-e30-s2026092701-m2-r01 固定P43对应own20 student/EMA，新增NoAs_KEEP/As_KEEP各10轮，总E30；原RESET对应NoAs30/As30预测与评分复用。唯一改变是保留全模型AdamW m/v/step，新cos10/LR/WD/CENTER_UNITS hooks计数及原U/6L/loss保持。不是continuous30/viewMoment，也不重开已做RXpopulation。源判据只两项：AS_KEEP fullVclean−NOAS_KEEP≥−.1pp，pooledmidlow−原AS30≥＋.5pp；任一FAIL关闭固定方案，所有已训行仍自动七视图独立truth-last。源PASS才可后续独立总E50，不自动扩seed。当前ANALYZED，全部四条件七视图已齐。
 
 [P69 预登记](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-optimizerKeep-e30-s2026092701-m2-r01/report.md)。
+
+
+P69 最终：source fullVclean−matchedNoAs−0.129630pp、midlow−原As＋0.097222pp，两项FAIL，不扩E50。正式AS_KEEP对原As urban＋0.006151pp/low−0.022024pp/clean＋0.007143pp；对matchedNOAS_KEEP urban＋28.532143pp/clean＋0.075595pp。只有seed01微增，不能宣称可重复clean＋星地双提升；low51.222024%。实际8703136NN/4440新更新，source→all7truthlast→CPU分析完整，整体目标ACTIVE。[P69最终分析](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-optimizerKeep-e30-s2026092701-m2-r01/final_analysis.md)。
+
+用户最新方向：优先名义目标不变的退化质量分层抽样，再独立比较固定As总权重下的有界困难风险；U practical路由后续单独验证，公共传播条件已由另一对话推进，不重复。实现前区分batch分层与风险重加权，不将有限proposal/回退造成的分布改变误称为无偏名义风险；保留全部物理支持、clean份额、原头、前向和正式测试。旧连续E30的技术失败及已授权完成的补跑都保留，采用真实补跑配对结果。
