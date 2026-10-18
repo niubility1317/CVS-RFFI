@@ -220,3 +220,6 @@ root先取回source并保存关闭决定：fullVclean BAL−NOAS30−.118519pp�
 20261018-phase1-FcrossRX-tailNoU-e30-s2026092701-m2-r01已登记PLANNED，实现中未发布。仅新增NoAs/As各own原20+10，总E30；末段真实U/EMA/教师/学生U前向关闭，保留父20的原U历史、原6L1.25/ORD128/Asraw64/普通aug父epoch13与全部源RX/默认头。原NoAs30/As30冻结读出复用，共4逻辑条件。nativephase字段0/10保留，但实际U消费0；global RNG和前向成本变化如实报告，不说纯伪标签loss归因或全程NoSSL。
 
 唯一假设：末段真实标签监督能否保留clean并改善practical。源资格固定新As fullVclean−新NoAs≥−.1pp且two-drawmidlow新As−原As≥+.5pp；失败关闭固定方案不扩E50/扫U/seed，all7正式仍自动收尾。当前F只有GN/LN，无BNrunningstats；连续scratch6L E30也已有源失败关闭，不重开两路线。详见[预登记](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-tailNoU-e30-s2026092701-m2-r01/report.md)。
+
+
+tailNoU已实际启动：代码 17cc611299091815ea71f744a32dcac96818ca4b；dispatcher1417383，B00/B01worker1417411/1417493在GPU0/1。单次普通preflight/归档比较/compile VERIFIED，1540NN真实双父＋两6L首步smokePASS后训练。source roles/strictown20学生、父EMA验证但子不构建、actualNoU/NoEMA、原6L1.25/ORD128/defaulthead核实；PID/CWD/argv/CUDA/nvidia/log增长VERIFIED。0NN分析1419028 WAIT_SOURCE，truthclosed，尚无新结果或E50扩展。

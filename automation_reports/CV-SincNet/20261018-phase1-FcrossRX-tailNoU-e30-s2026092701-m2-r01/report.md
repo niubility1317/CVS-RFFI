@@ -44,3 +44,5 @@
 预期每新row含source checkpoint/completion/source_frozen/initialization/resolved args/optimizer/teacher初始化说明、完整10epoch/2220step/原损失分解/L物理曝光/零U计数，固定source、全部7prediction及独立score/complete；0NN同row分析覆盖4logic/504CM/84partitions、成本/源决定/正式报告及登记。数据、权重、原始prediction/log与私有runtime不入Git。当前没有性能结果。
 
 本地实现109项聚焦负例/19py+2remoteAST、分析4AST/10toy PASS；唯一合并审查P0=0/P1=0。真实1540NN烟测及远端发布尚未执行，无新增识别成绩。
+
+已实际启动：代码 17cc611299091815ea71f744a32dcac96818ca4b；dispatcher1417383，B00worker1417411/GPU0、B01worker1417493/GPU1。一次普通preflight/归档比较/编译VERIFIED；1540NN首步真实smokePASS直接训练；PID/CWD/argv/CUDA/nvidia/loggrowth和actualuseU/EMAfalse核实。两行各已完成新增1/10轮，0NN分析1419028 WAIT_SOURCE/truthclosed。无新性能结果，预算仍总E30。

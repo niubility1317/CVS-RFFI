@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_VERIFIED_READY_FOR_LAUNCHER_SMOKE",
+  "status": "RUNNING_VERIFIED",
   "run_id": "20261018-phase1-FcrossRX-tailNoU-e30-s2026092701-m2-r01",
   "local_checks": {
     "status": "PASS",
@@ -92,9 +92,13 @@
       "Real1540NN smoke pending launcherfirststep;PASS directlycontinues training"
     ]
   },
-  "real_checkpoint_smoke": "PENDING_LAUNCHER_FIRST_STEP_1540NN",
+  "real_checkpoint_smoke": {
+    "status": "PASS",
+    "NN": 4,
+    "target_query": false
+  },
   "remote_release": "NOT_ATTEMPTED",
-  "training_started": false,
+  "training_started": true,
   "analysis_local_checks": {
     "status": "PASS",
     "AST_files": 4,
@@ -109,5 +113,265 @@
     "remote_calls": 0,
     "real_scores_read": false,
     "producer_schema": "original ORD128/full6L concat7 + no_u7;none child EMA;2220steps pernewrow,L-only source sequence"
-  }
+  },
+  "code_commit": "17cc611299091815ea71f744a32dcac96818ca4b",
+  "training_release": {
+    "status": "OBSERVED",
+    "pid": 1417383,
+    "archive_transfer": "VERIFIED",
+    "remote_compile": "VERIFIED"
+  },
+  "preflight": {
+    "status": "VERIFIED",
+    "ordinary_account": true,
+    "parents_own20_and_frozen_controls_metadata": "EXACT_MATCH",
+    "source_roles": "EXACT_MATCH"
+  },
+  "synthetic_smoke": {
+    "status": "PASS",
+    "total_NN": 1540
+  },
+  "post_launch": {
+    "dispatcher": {
+      "pid": 1417383,
+      "alive": true,
+      "CWD_correct": true,
+      "argv_correct": true,
+      "cuda": [
+        "CUDA_VISIBLE_DEVICES="
+      ],
+      "mode": "dispatcher"
+    },
+    "rows": {
+      "B00-s2026092701": {
+        "process": {
+          "pid": 1417411,
+          "alive": true,
+          "CWD_correct": true,
+          "argv_correct": true,
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=0"
+          ],
+          "mode": "worker"
+        },
+        "gpu": 0,
+        "epochs_complete": 1,
+        "source_complete": false,
+        "source_panel_complete": false,
+        "prediction_complete": false,
+        "scoring_complete": false,
+        "complete": null
+      },
+      "B01-s2026092701": {
+        "process": {
+          "pid": 1417493,
+          "alive": true,
+          "CWD_correct": true,
+          "argv_correct": true,
+          "cuda": [
+            "CUDA_VISIBLE_DEVICES=1"
+          ],
+          "mode": "worker"
+        },
+        "gpu": 1,
+        "epochs_complete": 1,
+        "source_complete": false,
+        "source_panel_complete": false,
+        "prediction_complete": false,
+        "scoring_complete": false,
+        "complete": null
+      }
+    },
+    "log_growth": true,
+    "GPU_global_counts": {
+      "0": 1,
+      "1": 1,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0
+    },
+    "cap3": true,
+    "runtime_actual": {
+      "B00-s2026092701": {
+        "GPU_actual_matches_assignment": true,
+        "source_roles_equal": true,
+        "target_contact": false,
+        "own_source_only_checkpoint": true,
+        "EMA": {
+          "origin": "disabled in child;own20 EMA provenance verified",
+          "parent_EMA_verified": true,
+          "parent_EMA_restored_in_child": false,
+          "teacher_constructed": false,
+          "teacher_forwards": 0,
+          "EMA_updates": 0,
+          "child_ema_model": null,
+          "optimizer_segment_counters_reset": true,
+          "temporal_cache_reset": true
+        },
+        "optimizer": {
+          "state_entries": 0,
+          "reset": true,
+          "schedule": "cosine10",
+          "lr": 0.0002,
+          "weight_decay": 0.0001
+        },
+        "resolved_tail_no_u": {
+          "parent_U_epochs": 7,
+          "parent_EMA_verified": true,
+          "parent_EMA_restored_in_child": false,
+          "native_label_epochs": 0,
+          "native_pseudo_epochs": 10,
+          "use_unlabeled": false,
+          "use_ema_teacher": false,
+          "U_loader_role_handle_retained": true,
+          "U_loader_iteration": false,
+          "U_packets": 0,
+          "U_student_NN": 0,
+          "teacher_train_NN": 0,
+          "teacher_eval_NN": 0,
+          "EMA_updates": 0,
+          "child_ema_model": null,
+          "step_budget": "222 from unchanged Uloader length only;L loader is restarted as before",
+          "L_forwards": 6,
+          "total_L_scale": 1.25,
+          "RNG_trajectory_matched": false,
+          "pure_pseudo_loss_isolated": false,
+          "whole_trajectory_NoU": false,
+          "new_losses": 0,
+          "new_parameters": 0,
+          "formal_test_changed": false
+        },
+        "resolved_crossview": {
+          "mode": "ORD128",
+          "ordinary_anchors": 128,
+          "additional_anchors": 0,
+          "additional_view": "none",
+          "positive": "sameTX differentphysicalRX",
+          "same_physical_positive": false,
+          "default_head_unchanged": true,
+          "new_losses": 0,
+          "new_forward_packets": 0,
+          "temperature": 0.2,
+          "max_coefficient": 0.1,
+          "schedule": "same original cumulativeE21..30/full0.1",
+          "normalization": "descriptor moments detached across actual anchor set;L2 eps1e-4;mean bothdepths and two corresponding RDrop forwards"
+        },
+        "actual_native_flags": {
+          "epochs": 10,
+          "label_epochs": 0,
+          "pseudo_epochs": 10,
+          "use_unlabeled": false,
+          "use_ema_teacher": false,
+          "lambda_u": 0,
+          "lambda_ent": 0
+        }
+      },
+      "B01-s2026092701": {
+        "GPU_actual_matches_assignment": true,
+        "source_roles_equal": true,
+        "target_contact": false,
+        "own_source_only_checkpoint": true,
+        "EMA": {
+          "origin": "disabled in child;own20 EMA provenance verified",
+          "parent_EMA_verified": true,
+          "parent_EMA_restored_in_child": false,
+          "teacher_constructed": false,
+          "teacher_forwards": 0,
+          "EMA_updates": 0,
+          "child_ema_model": null,
+          "optimizer_segment_counters_reset": true,
+          "temporal_cache_reset": true
+        },
+        "optimizer": {
+          "state_entries": 0,
+          "reset": true,
+          "schedule": "cosine10",
+          "lr": 0.0002,
+          "weight_decay": 0.0001
+        },
+        "resolved_tail_no_u": {
+          "parent_U_epochs": 7,
+          "parent_EMA_verified": true,
+          "parent_EMA_restored_in_child": false,
+          "native_label_epochs": 0,
+          "native_pseudo_epochs": 10,
+          "use_unlabeled": false,
+          "use_ema_teacher": false,
+          "U_loader_role_handle_retained": true,
+          "U_loader_iteration": false,
+          "U_packets": 0,
+          "U_student_NN": 0,
+          "teacher_train_NN": 0,
+          "teacher_eval_NN": 0,
+          "EMA_updates": 0,
+          "child_ema_model": null,
+          "step_budget": "222 from unchanged Uloader length only;L loader is restarted as before",
+          "L_forwards": 6,
+          "total_L_scale": 1.25,
+          "RNG_trajectory_matched": false,
+          "pure_pseudo_loss_isolated": false,
+          "whole_trajectory_NoU": false,
+          "new_losses": 0,
+          "new_parameters": 0,
+          "formal_test_changed": false
+        },
+        "resolved_crossview": {
+          "mode": "ORD128",
+          "ordinary_anchors": 128,
+          "additional_anchors": 0,
+          "additional_view": "none",
+          "positive": "sameTX differentphysicalRX",
+          "same_physical_positive": false,
+          "default_head_unchanged": true,
+          "new_losses": 0,
+          "new_forward_packets": 0,
+          "temperature": 0.2,
+          "max_coefficient": 0.1,
+          "schedule": "same original cumulativeE21..30/full0.1",
+          "normalization": "descriptor moments detached across actual anchor set;L2 eps1e-4;mean bothdepths and two corresponding RDrop forwards"
+        },
+        "actual_native_flags": {
+          "epochs": 10,
+          "label_epochs": 0,
+          "pseudo_epochs": 10,
+          "use_unlabeled": false,
+          "use_ema_teacher": false,
+          "lambda_u": 0,
+          "lambda_ent": 0
+        }
+      }
+    }
+  },
+  "analysis_release": {
+    "status": "TRANSFER_VERIFIED",
+    "archive_SHA256": "130bec2491652e11655b73c74fb5b8caf80e26fd0bd54c9fbc3f10159c4604fe",
+    "remote_compile": "PASS",
+    "remote_unit_tests": "NOT_REPEATED_LOCAL_FOCUSED_CHECKS",
+    "pid": 1419028,
+    "process": {
+      "pid": 1419028,
+      "alive": true,
+      "CWD_correct": true,
+      "argv_correct": true,
+      "cuda": [
+        "CUDA_VISIBLE_DEVICES="
+      ],
+      "mode": "dispatcher"
+    },
+    "state": {
+      "status": "WAIT_SOURCE",
+      "live_owned_PIDs": [
+        1417383,
+        1417411,
+        1417493
+      ],
+      "observation_unknown": false,
+      "truth_opened": false,
+      "NN": 0
+    }
+  },
+  "technical_failure": null
 }
