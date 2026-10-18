@@ -1,6 +1,6 @@
 # P77：物理新增噪声与 As 目标熵的匹配 E30
 
-状态：RUNNING，两行已启动；尚无源域晋级或正式性能结论。起点 9507a915615683c960ed23ea7ac657dbce86da69。实际代码身份由发布前 Git commit 与 release_commit.txt 固定。
+状态：ANALYZED；两条新增行及全部七环境、独立评分、分析均完成。源域唯一候选 Q 为 FAIL，关闭本固定方案，不扩 E50/种子。完整结果见 [最终分析](final_analysis.md)。起点 9507a915615683c960ed23ea7ac657dbce86da69，代码 cf49ff220dc926bac704f15b7f34a79d1ef60c27。
 
 唯一假设：在固定 As 预算内，按原引擎实际新增噪声占比放松目标分布，比同一组平滑系数随机分配更有利于 low/mid urban 并保持 clean。不是宣称已过度自信或梯度反向；P40 默认头硬类间隔梯度并未反向，现有源错误多数不确定。固定 AsLS=.05 已失败，不能直接扩展同一全局参数。本轮变化是物理对应关系，待真实训练检验。
 
@@ -27,3 +27,5 @@
 补充：已定位精确SAT18 AS_CE20的合法源预测缓存（20261018-diagnostic-FcrossRX-ASCE20cohort-sourceV-s2026092701-m1-r01），固定父clean正确1767/1800，可在同ID源预测上0NN复算真实父集合保持率；不改变晋级，不新增网络读出。原NoAs正确集合仍分别保留。
 
 实际代码 cf49ff220dc926bac704f15b7f34a79d1ef60c27，远端OID独立一致；139095byte单归档比较和25文件remote compile VERIFIED。真实父/ownEMA＋两图smoke1540NN PASS：128 native process、sourceIQ0/targetqueryfalse/optimizer0，epsilon同多重集且新CE实际生效，state不变/defaulthead与Sinc梯度有限非零。两worker的PID/CWD/argv/CUDA/实际GPU0/1已核实，来源EXACT_MATCH/scratchfalse/targetcontactfalse。运行期原始证据在local_artifacts，不发布私有运行细节。
+
+收尾：R/Q 全部完成；Q 相对 C00 的 low/mid/urban 均值为 −0.081548/−0.088095/−0.066667 个百分点，clean +0.007738。相对整配方 NoAs30 clean −0.039881 个百分点，单种子满足 0.1 保持线；没有新增星地机制收益或可重复双提升。详细指标、实际成本、图表及科学缺项见 final_analysis.md。

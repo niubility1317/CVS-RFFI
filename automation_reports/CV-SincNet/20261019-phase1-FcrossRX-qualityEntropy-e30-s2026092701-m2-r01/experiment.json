@@ -82,7 +82,7 @@
     "regime": "source_only_training_then_frozen_target_prediction",
     "query_use": "Each row all7 fixed predictions then separate exec truthlast scorer;formal scores never tune/select/promote/rescue",
     "external_method_exception": null,
-    "claim_scope": "Single four-cell interaction;sharedH at input and optional As-only environment-conditional supervised contrast;noDG prerequisite,0extraNN/head/deploymentparams;not noise-pair or SAT192 rerun"
+    "claim_scope": "Single-seed matched physical-quality conditional As label-smoothing Q versus exact-multiset permutation R, with same-parent C00 and whole-recipe NoAs30/As30 reused; source FAIL; no mechanism increment or repeatable dual-gain claim"
   },
   "checkpoint": {
     "initialization": "Strict same SAT18 AS_CE20 student and ownEMA;fresh AdamW/cos10/CENTER_UNITS;not originalP43As20",
@@ -102,7 +102,7 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_qualityEntropy_E30_20261019_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_quality_entropy77/runner.py",
     "stop_rule": "Own wrongroles/parent/head/nonfinite/budget/outputcollision/epsilon-multiset-or-physical-metadata failure preserves own row;no auto retry;healthy peers finish;sourceFAIL stillall7;otherowner untouched",
-    "status": "RUNNING"
+    "status": "ANALYZED"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
@@ -296,7 +296,28 @@
     "P76C00 fixed reference shares exactSAT18parent/common-scene/Hindependent physical streams;P43NoAs/As refs differparenthistory and are onlywhole-recipe totalE30 context.",
     "Source decision saved before owner formal read. CandidateQ only;R cannot become fallback after sourceFAIL;all7 automatic irrespectiveFAIL;no epsilon/seed/E50 rescue.",
     "Native ratio None is legitimate if signal or addednoise power is zero:use measured addednoise power evidence for epsilon bound;no labeled sample rejection;JSON keeps original null and boundary tags.",
-    "Actual code cf49ff220dc926bac704f15b7f34a79d1ef60c27;single archive SHA comparison/25remotecompile VERIFIED. Real parent/ownEMA+two graphs smoke1540PASS;physical128/sourceIQ0/targetqueryfalse/optimizer0. New epsilon CE active, exact epsilon multiset;R/Q ownGPU0/1 live, source_rolesEXACT_MATCH, scratchfalse,targetcontactfalse."
+    "Actual code cf49ff220dc926bac704f15b7f34a79d1ef60c27;single archive SHA comparison/25remotecompile VERIFIED. Real parent/ownEMA+two graphs smoke1540PASS;physical128/sourceIQ0/targetqueryfalse/optimizer0. New epsilon CE active, exact epsilon multiset;R/Q ownGPU0/1 live, source_rolesEXACT_MATCH, scratchfalse,targetcontactfalse.",
+    "ANALYZED: both new rows all7 and independent truth-last scoring complete; source FAIL preserved before owner formal read; Q−C00 urban−0.066667pp, clean+0.007738pp; Q−NoAs clean−0.039881pp passes single-seed0.1 guard, no repeatable dual gain; exact SAT18 parent cohort reused with0newNN."
   ],
-  "registered_at": "2026-10-18T21:38:19+00:00"
+  "registered_at": "2026-10-18T21:38:19+00:00",
+  "actual_results": {
+    "status": "ANALYZED",
+    "technical_missing": [],
+    "model_seed_count": 1,
+    "source_qualified": false,
+    "clean_stage_guard_single_seed": true,
+    "new_mechanism_gain": false,
+    "reproducible_dual_gain": false,
+    "final_analysis_ref": "final_analysis.md",
+    "formal_low_urban_Q": 0.5118511904761904,
+    "formal_mid_urban_Q": 0.6270297619047619,
+    "urban_mean_Q": 0.6385277777777777,
+    "clean_delta_vs_NoAs30_pp": -0.039880952380955126,
+    "urban_delta_vs_C00_pp": -0.06666666666667043,
+    "new_model_epochs": 20,
+    "new_updates": 4440,
+    "new_total_NN": 8704668,
+    "elapsed_launch_to_analysis_seconds": 1602.1894273757935,
+    "no_E50_or_seed_extension": true
+  }
 }
