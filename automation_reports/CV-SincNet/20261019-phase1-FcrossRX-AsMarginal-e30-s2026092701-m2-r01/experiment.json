@@ -1,0 +1,300 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-FcrossRX-AsMarginal-e30-s2026092701-m2-r01",
+  "group_id": "phase1-FcrossRX-As-two-mask-CE-aggregation",
+  "display_name": "完整practical：两随机子网概率边缘化CE的匹配E30",
+  "description": "仅As mean(CE)换为CE(mean probability)，原LS.01/KL.25/Dropout/6L/普通rawU保持；原序完整信道池复用",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "P73",
+    "AsMarginal73",
+    "AS_MEAN_CE",
+    "AS_PROBMEAN_CE"
+  ],
+  "tags": [
+    "phase1",
+    "F",
+    "fullsource",
+    "default-head",
+    "E30",
+    "practical",
+    "probability-marginal-CE",
+    "single-seed"
+  ],
+  "comparison_group_id": "P73-As-CE-of-probability-mean-versus-mean-CE",
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Latest user: satellite-first, clean drop<=0.1 absolutepp, fullsource/noheldRX, fixedF+CROSS_RX/defaulthead, E30; good source-qualified recipes may totalE50; active goal authorizes implementation/matched trials/all7 independent scoring. No extra heads/targetfeedback/healthy-task mutation.",
+  "code": {
+    "commit": "PENDING_ACTUAL_CODE_COMMIT",
+    "checkout": "code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 existing ordinary CVS-RFFI Python3.10.19 Torch2.1.0+cu121 NumPy2.2.5; FP32 CPU2",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_AsMarginal_E30_20261019_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Unchanged original7/63/30 source physical roles; existing VALIDATED_ONCE fixed formal IQ",
+    "representation": "equalized1/native perpacketRMS center=false;float32 Bx2x256/fs25MHz;full residual/post_sync/EQoffG1/ref30/reflect;As fromraw,no extra ordinary PA/noise beforeAs;trainingfc2.462GHz/fixedformal2.45GHz unchanged",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "Same original6TX map;no new or U truth",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      "fixedmanifest7unseenRX;nevertrain"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original6registeredTX;formalmanifest classmappingunchanged",
+    "roles": {
+      "L_s": 6300,
+      "U_s_hidden": 56700,
+      "V": 27000
+    },
+    "train_ratio": "7/63/30 wholepool;10% labeled trainingpool;noheldRX/Ldev",
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "ExistingPhase1 source handles and fixedformalmanifest;Phase2 p2capsule/splitN/A",
+    "support_query_ref": "Phase1,no support;source/target disjoint fixedformalmanifest",
+    "leo_config_ref": "PROJECT/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/manifest.json"
+  },
+  "permissions": {
+    "regime": "source_only_training_then_frozen_target_prediction",
+    "query_use": "Frozen defaulthead all7 fixed received IQ predictions;truthlast independent perrow only afterall7complete;formal scores never candidate/seed/parameter/promotion feedback",
+    "external_method_exception": null,
+    "claim_scope": "Only training CE aggregation of two native stochastic outputs for same labeled As IQ; no new physical/identity information, no mean-logit or inference ensemble, fixed default head"
+  },
+  "checkpoint": {
+    "initialization": "strict original P43 scratchAs20 student/ownEMA, not P70 final; fresh AdamW/cos10/CENTER_UNITS",
+    "sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Same previously verified original P43 As20 fullsource/final-only provenance and exact runtime roles",
+    "provenance_verdict": "Exact original source-only parent reused; strict real-checkpoint load first launcher step",
+    "selection_rule": "Original source-only FINAL20; new fixed FINAL30/final_only"
+  },
+  "execution": {
+    "host": "N607 ordinary nonprivileged account",
+    "launch_owner": "codex/root/as-marginal73",
+    "gpu_policy": "1new row,max2 total GPU processes inclotherowners,free>=12000MB; protect healthy runs",
+    "remote_run_root": "PROJECT/runs/20261019-phase1-FcrossRX-AsMarginal-e30-s2026092701-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261019-phase1-FcrossRX-AsMarginal-e30-s2026092701-m2-r01/logs",
+    "local_artifact_root": "local_artifacts/cvs_FcrossRX_AsMarginal_E30_20261019_r01",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_as_marginal73/runner.py",
+    "stop_rule": "Wrong roles/parent/As raw physical key label domain origin/calls/CE aggregation or KL and sixL budget/nonfinite/outputcollision stops own failedrow,preserves partial,no automaticretry;healthy peersfinish,sourceFAIL stillall7",
+    "status": "PREREGISTERED"
+  },
+  "expected_artifacts": [
+    "real_checkpoint_smoke.json",
+    "ROW/source/resolved_config.json",
+    "ROW/source/actual_modules.json",
+    "ROW/source/source_contract.json",
+    "ROW/source/initialization.json",
+    "ROW/source/EMA_initialization.json",
+    "ROW/source/marginal_initialization.json",
+    "ROW/source/marginal_steps.jsonl.gz",
+    "ROW/source/ordered_steps.jsonl.gz",
+    "ROW/source/ordered_pool_final.json",
+    "ROW/source/step_metrics.jsonl.gz",
+    "ROW/source/training_sequence.jsonl.gz",
+    "ROW/source/metrics_epoch.jsonl",
+    "ROW/source/final_ssdg.pth",
+    "ROW/source/source_frozen.json",
+    "ROW/source/completion.json",
+    "ROW/source_qualification/complete.json",
+    "source_matrix_decision.json",
+    "ROW/prediction/all7fixed",
+    "ROW/scoring/scores.json",
+    "analysis_r01/complete.json",
+    "analysis_r01/fullcurves source_strata paired_errors costs Jensen_gap_PNG_PDF",
+    "ROW/source/marginal_training_actual.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "worst_RX",
+      "urban_mean",
+      "pairedclean_pp",
+      "pairedrepair_newerror",
+      "source_margin_over30",
+      "fixedparentclean_retention",
+      "actualNN/updates/wall",
+      "actual_As_mean_CE_probmean_CE_Jensen_gap_dropout_disagreement_by_quality"
+    ],
+    "dimensions": [
+      "AS_MEAN_CE",
+      "AS_PROBMEAN_CE",
+      "reusedP43NOAS30/AS30",
+      "seed2026092701",
+      "all7formalviews",
+      "source1800x2draw",
+      "RX",
+      "TX",
+      "day",
+      "state/lock/addednoise",
+      "As two native dropout outputs"
+    ],
+    "prediction_ref": "PROJECT/runs/20261019-phase1-FcrossRX-AsMarginal-e30-s2026092701-m2-r01/C1-s2026092701,prediction and P1-s2026092701/prediction; P43refs reused",
+    "scorer_ref": "Separate CPU scorer only after each row all7 fixed; final CPU analysis validates all4 logical rows all7 before truth joins"
+  },
+  "rows": [
+    {
+      "row_id": "C1-s2026092701",
+      "method": "AS_MEAN_CE",
+      "purpose": "Only As two-mask CE aggregation differs, same parent/pool/original order/KL/nativeDropout/6L/U/defaulthead",
+      "config_ref": "experiments/cvs_as_marginal73/design.py#config",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-FcrossRX-AsMarginal-e30-s2026092701-m2-r01/C1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "held_source_RX": null,
+        "L": 6300,
+        "U_hidden": 56700,
+        "V": 27000,
+        "new_Ag": false,
+        "all5sourceRX": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original model2026092701/split392005/physicaltrain20261016421/hardware20261016423. NativeDropout/globalRNG preserved, no newprivate maskseed. Originalorder142080Asobservations;source2drawnotmodelseed;fixedformalIQunchanged.",
+      "k": null,
+      "scenario": "Original full residual lowSub/midUrban/lowUrban, nominal original64pack order; no quality weighting/rejection/regeneration",
+      "optimizer": {
+        "name": "AdamW",
+        "state": "RESET sameP43As20+10",
+        "lr_schedule": "newcos10 originalCENTER_UNITS",
+        "teacher": "ownEMA sameP43As20 originalU rules",
+        "temporal": "batch_neighbor unchanged"
+      },
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "EachsameAs20+10 total30/6660;two new10/4440updates,eachnative3162962/source12600/formal1176002 +sharedCPsmoke4=8703132newNN;0newphysicalsimulation/extraNN",
+      "output_root": "PROJECT/runs/20261019-phase1-FcrossRX-AsMarginal-e30-s2026092701-m2-r01/C1-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-FcrossRX-AsMarginal-e30-s2026092701-m2-r01/logs/C1-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_as_marginal73/runner.py",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "ROW/source/resolved_config.json",
+        "ROW/source/actual_modules.json",
+        "ROW/source/source_contract.json",
+        "ROW/source/initialization.json",
+        "ROW/source/EMA_initialization.json",
+        "ROW/source/marginal_initialization.json",
+        "ROW/source/marginal_steps.jsonl.gz",
+        "ROW/source/ordered_steps.jsonl.gz",
+        "ROW/source/ordered_pool_final.json",
+        "ROW/source/step_metrics.jsonl.gz",
+        "ROW/source/training_sequence.jsonl.gz",
+        "ROW/source/metrics_epoch.jsonl",
+        "ROW/source/final_ssdg.pth",
+        "ROW/source/source_frozen.json",
+        "ROW/source/completion.json",
+        "ROW/source_qualification/complete.json",
+        "source_matrix_decision.json",
+        "ROW/prediction/all7fixed",
+        "ROW/scoring/scores.json",
+        "analysis_r01/complete.json",
+        "analysis_r01/fullcurves source_strata paired_errors costs Jensen_gap_PNG_PDF",
+        "ROW/source/marginal_training_actual.json"
+      ]
+    },
+    {
+      "row_id": "P1-s2026092701",
+      "method": "AS_PROBMEAN_CE",
+      "purpose": "Only As two-mask CE aggregation differs, same parent/pool/original order/KL/nativeDropout/6L/U/defaulthead",
+      "config_ref": "experiments/cvs_as_marginal73/design.py#config",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-FcrossRX-AsMarginal-e30-s2026092701-m2-r01/P1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "held_source_RX": null,
+        "L": 6300,
+        "U_hidden": 56700,
+        "V": 27000,
+        "new_Ag": false,
+        "all5sourceRX": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original model2026092701/split392005/physicaltrain20261016421/hardware20261016423. NativeDropout/globalRNG preserved, no newprivate maskseed. Originalorder142080Asobservations;source2drawnotmodelseed;fixedformalIQunchanged.",
+      "k": null,
+      "scenario": "Original full residual lowSub/midUrban/lowUrban, nominal original64pack order; no quality weighting/rejection/regeneration",
+      "optimizer": {
+        "name": "AdamW",
+        "state": "RESET sameP43As20+10",
+        "lr_schedule": "newcos10 originalCENTER_UNITS",
+        "teacher": "ownEMA sameP43As20 originalU rules",
+        "temporal": "batch_neighbor unchanged"
+      },
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "EachsameAs20+10 total30/6660;two new10/4440updates,eachnative3162962/source12600/formal1176002 +sharedCPsmoke4=8703132newNN;0newphysicalsimulation/extraNN",
+      "output_root": "PROJECT/runs/20261019-phase1-FcrossRX-AsMarginal-e30-s2026092701-m2-r01/P1-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-FcrossRX-AsMarginal-e30-s2026092701-m2-r01/logs/P1-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_as_marginal73/runner.py",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "ROW/source/resolved_config.json",
+        "ROW/source/actual_modules.json",
+        "ROW/source/source_contract.json",
+        "ROW/source/initialization.json",
+        "ROW/source/EMA_initialization.json",
+        "ROW/source/marginal_initialization.json",
+        "ROW/source/marginal_steps.jsonl.gz",
+        "ROW/source/ordered_steps.jsonl.gz",
+        "ROW/source/ordered_pool_final.json",
+        "ROW/source/step_metrics.jsonl.gz",
+        "ROW/source/training_sequence.jsonl.gz",
+        "ROW/source/metrics_epoch.jsonl",
+        "ROW/source/final_ssdg.pth",
+        "ROW/source/source_frozen.json",
+        "ROW/source/completion.json",
+        "ROW/source_qualification/complete.json",
+        "source_matrix_decision.json",
+        "ROW/prediction/all7fixed",
+        "ROW/scoring/scores.json",
+        "analysis_r01/complete.json",
+        "analysis_r01/fullcurves source_strata paired_errors costs Jensen_gap_PNG_PDF",
+        "ROW/source/marginal_training_actual.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Latest user overrides older storedgoal: satelliteprimary, clean drop<=.1absolutepp, no mandatoryAg/DG gate, allfullsourceRX, fixedF+CROSS_RX/defaulthead, totalE30.",
+    "P72masknegativeclosed;P70/P71risknegativeclosed;UPracticalthree-rowroutealreadyownedbyotherchatnotduplicated.",
+    "Untrained exact hypothesis: native two stochastic As outputs currently meanCE; only replace by CE of probability mean, notmeanlogits/temperature/weight/DET/KLoff/viewcoupling.",
+    "No addedalignment/gates/parameters/NN. OriginalLS.01/KL.25/nativeDropout/marginal perview masking and CEcoef.25 remain;alllegalLAs supervised.",
+    "Log Jensen gap and two-mask disagreement by existingquality groups from actual training logits, notproxyselection or claims of identitygain.",
+    "Source promotion onlyfullVcleanP-NoAs>=-.1pp andpooledmidlowP-C>=+.5pp;FAILclosesfixedrecipe,nosmoothing/temperature/mixratio/seedscan/E50. All7automaticregardless.",
+    "Onlymodelseed1; no repeatabledualgain claim."
+  ],
+  "registered_at": "2026-10-18T18:23:39+00:00"
+}
