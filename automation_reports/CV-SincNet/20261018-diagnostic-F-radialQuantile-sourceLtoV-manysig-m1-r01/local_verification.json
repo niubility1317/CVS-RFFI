@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "synthetic_IQ": 37,
+  "real_IQ": 0,
+  "CP": 0,
+  "NN": 0,
+  "updates": 0,
+  "powerlaw_max_error": 4.440892098500626e-16,
+  "negative_cases": 9,
+  "shared_relation_pass": true,
+  "additive_only_rejected": true,
+  "TXconditional_only_rejected": true,
+  "large_exponent_rejected": true,
+  "floor_contamination_rejected": true,
+  "V_poison_fit_unchanged": true,
+  "compile_all_package": "PASS"
+}

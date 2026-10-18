@@ -1,0 +1,261 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01",
+  "group_id": "phase1-F-crossRX-radial-quantile-source-LtoV",
+  "display_name": "全源256点：共同轻度径向幅度关系的L→V反证",
+  "description": "L-only shared scalar radial powerlaw predicts V amplitude centeredlogquantile shapes across TX/day,with identity/additive/TXconditional controls;source rationale only,no IQ augmentation or model",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "F_CROSS_RX",
+    "all5RX",
+    "radial_powerlaw",
+    "source_L_to_V",
+    "source_only",
+    "zero_NN",
+    "no_new_IQ_views"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active jointAg+As research in this thread;latest F+CROSS_RX/all5RX/256IQ/E30;source-only falsification,no training or target in this row",
+  "code": {
+    "commit": "PENDING_ACTUAL_GIT_COMMIT_PINNED_BY_PUBLISH",
+    "checkout": "codex/cvs-iq-timing-e20-20261016",
+    "environment": "Existing ordinaryN607 CVS-RFFI Python/PyTorch/NumPy,CPU2,noGPU",
+    "cwd": "PROJECT/releases/cvs_F_radial_quantile_source_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing VALIDATED_ONCE source carrier",
+    "representation": "eq1/25Msps/existing256IQ;passive amplitude statistics only",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#/role_ids",
+    "label_map_ref": "Original sixTX native mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "All6originalsourceTX",
+    "roles": {
+      "L_s": 6300,
+      "U_s": "56700 hiddenTX;unused",
+      "V": 27000
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "NOT_APPLICABLE_SOURCE_ONLY_NO_PHASE2_DATA",
+    "split_id": 392005,
+    "validation_ref": "PROJECT/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701/source_cache.pt#validation",
+    "support_query_ref": "NOT_APPLICABLE_NO_SUPPORT_OR_QUERY",
+    "leo_config_ref": "NOT_APPLICABLE_NO_CHANNEL_GENERATION"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "No target/query inputs at all",
+    "external_method_exception": null,
+    "claim_scope": "Source distribution relation only;no causalRX identification or labelpreserving IQ augmentation/recognition claim"
+  },
+  "checkpoint": {
+    "initialization": "none/no network or weights",
+    "sources": [],
+    "contract_check_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "provenance_verdict": "NOT_APPLICABLE_NO_CHECKPOINT",
+    "selection_rule": "No model/checkpoint selection"
+  },
+  "execution": {
+    "host": "N607 ordinaryaccount",
+    "launch_owner": "codex/root/F-radial-quantile-source-20261018",
+    "gpu_policy": "CPU2/noGPU;no oldprocess intervention",
+    "remote_run_root": "PROJECT/runs/20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_radial_quantile_source_20261018_r01/source_radial_quantile.stdout.log",
+    "local_artifact_root": "WORKTREE/local_artifacts/F_radial_quantile_source_20261018",
+    "launch_command": "CVS-RFFI/bin/python -u -m experiments.cvs_radial_quantile18.run",
+    "stop_rule": "Owned missing/mismatchedsource roles,nonfinite,outputcollision or exception => preserve/no automaticretry;scientificFAIL closesfixedquestion/no rescue"
+  },
+  "expected_artifacts": [
+    "resolved_config.json",
+    "checks.json",
+    "active.json",
+    "source_ids.json private",
+    "observations.npz private",
+    "cell_quantiles.npz private",
+    "fitted_readout.npz private",
+    "result.json",
+    "completion.json or failure.json",
+    "independent aggregate recount/report/Git delivery"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "SSE shared/identity/additive/TXconditional",
+      "positive18folds",
+      "each4nonreferenceRX",
+      "sharedslope min/max",
+      "floorfraction/zeroRMS"
+    ],
+    "dimensions": [
+      "L/V",
+      "6TX",
+      "5RX",
+      "3day",
+      "18statisticalTX/dayfolds"
+    ],
+    "prediction_ref": "PROJECT/runs/20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01/fitted_readout.npz",
+    "scorer_ref": "experiments/cvs_radial_quantile18/recount.py;sourceonly/no truthscorer needed"
+  },
+  "rows": [
+    {
+      "row_id": "RADIAL_POWERLAW_L_TO_V",
+      "method": "Sharedradial source-only statistic with three fixed controls",
+      "purpose": "single fixed source falsification",
+      "config_ref": "experiments/cvs_radial_quantile18/design.py",
+      "resolved_config_ref": "PROJECT/runs/20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No model/augmentation/support/evaluation randomness;data seednull because allfixedsourcephysicalIDs used;originalsplit392005 retained;syntheticchecks use2026101841 only",
+      "k": null,
+      "scenario": "source clean amplitude distribution,no practical generation",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0NN/CP/update/teacher/IQviews;33300originalsourceIQ stats;144scalarfits+72additivevectors",
+      "output_root": "PROJECT/runs/20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01",
+      "log_path": "PROJECT/releases/cvs_F_radial_quantile_source_20261018_r01/source_radial_quantile.stdout.log",
+      "command": "CVS-RFFI/bin/python -u -m experiments.cvs_radial_quantile18.run",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "checks.json",
+        "active.json",
+        "source_ids.json private",
+        "observations.npz private",
+        "cell_quantiles.npz private",
+        "fitted_readout.npz private",
+        "result.json",
+        "completion.json or failure.json",
+        "independent aggregate recount/report/Git delivery"
+      ],
+      "config": {
+        "run_id": "20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01",
+        "launch_owner": "codex/root/F-radial-quantile-source-20261018",
+        "output_root": "PROJECT/runs/20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01",
+        "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "preparation": "PROJECT/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+        "RX": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "reference_RX": 1,
+        "days": [
+          1,
+          2,
+          3
+        ],
+        "TX": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "source_RX_holdout": null,
+        "L": 6300,
+        "V": 27000,
+        "L_per_cell": 70,
+        "V_per_cell": 300,
+        "IQ_points": 256,
+        "CPU_threads": 2,
+        "GPU": "none",
+        "batch": 256,
+        "quantiles": [
+          0.1,
+          0.2,
+          0.3,
+          0.7,
+          0.8,
+          0.9
+        ],
+        "center_quantile": 0.5,
+        "relative_amplitude_floor": 1e-06,
+        "observable": "Perpacket log(max(abs(z)/RMS,1e-6)) quantiles minus median,all256samples;mean of70/300 packets perTX/RX/day;no slicing,phase estimation,filtering or sample selection",
+        "mathematical_probe": "For positive powerlaw g_a(z)=abs(z)^(a-1)*z followed by RMS,the unfloored centeredlogquantiles scale exactly by a;this is a probe family,not identified RX hardware or assumed labelpreservation",
+        "fit": "L-only scalar a_RX throughorigin from other5TX/other2days,all5RX retained;18heldTX/day statistical folds;referenceRX1",
+        "evaluation": "Predict V targetRX shape from sameTX/day referenceRX1 V shape;V only input for readout,never coefficient fit or persistent update",
+        "controls": [
+          "identitya1",
+          "L-only classshared sixdim additive offset",
+          "sameTX/other2days scalar slope"
+        ],
+        "criteria": {
+          "min_baseline_RMS": 0.01,
+          "min_shared_vs_identity_SSE_reduction": 0.2,
+          "min_shared_vs_additive_SSE_reduction": 0.1,
+          "min_positive_folds": 15,
+          "max_each_nonreference_RX_SSE_increase": 0,
+          "max_shared_to_TXconditional_SSE_ratio": 1.05,
+          "min_slope": 0.9,
+          "max_slope": 1.1,
+          "max_floor_fraction_each_cell": 0.01,
+          "max_zero_RMS_packets": 0,
+          "SSE_tolerance": 1e-20
+        },
+        "on_fail": "Close fixed all256/quantiles/reference/powerlaw/mildrange/source question;no exponent/window/quantile/reference/RX/threshold rescue and no automatic training",
+        "on_pass": "Only evidence for a common mild radial observation relation;separate actualboundedIQ identityguard/defaulthead and matched E30 recognition still required",
+        "distinction": "Time-amplitude orderstatistics and nonlinear radial companding,not old spectralPSD affine/FIR/complexresponse,temporalenvelopeDCT or sameTX donor interpolation",
+        "source_only": true,
+        "IQ_modified_for_training": false,
+        "IQ_views_generated": 0,
+        "network_constructed": false,
+        "checkpoint_loads": 0,
+        "NN": 0,
+        "teacher_NN": 0,
+        "optimizer_steps": 0,
+        "head_fit_updates": 0,
+        "U_used": false,
+        "U_truth_read": false,
+        "target_access": false,
+        "V_updates": 0,
+        "automatic_training": false,
+        "future_training": "UnchangedF+CROSS_RX/all5RX/L6300/U56700TXhidden/V27000/256IQ/defaultcos joint/E30;no trained model in this row",
+        "limitations": [
+          "Unpaired distribution transfer cannot identify physical RX nonlinearity or separate TX/channel/equalization/noise",
+          "Powerlaw can alter PA identity;no label-preserving augmentation claim or training before separate realIQ guard",
+          "Unused U/features deserialize in existing cache but are never consumed",
+          "V is existing source validation;no new independent blind hardware test"
+        ],
+        "REJECTED_EXTRA_GATE": "Generic designapproval is superseded by explicit existing research authorization and minimalprojectworkflow;no extra approval or seal"
+      }
+    }
+  ],
+  "notes": [
+    "All5RX retained;referenceRX1 is observedinput,not a held training domain",
+    "L6300 and V27000 roles unchanged;no L5580/dev720",
+    "Vonlyreadout inputs,never fitcoefficients or persistentstate",
+    "PA/radial transforms are not assumed labelpreserving;no newIQview orautomatictraining",
+    "SourcePASS is not newAg/As or jointgoalcompletion",
+    "Existing sharedlinearRX/FIR/spectral-amplitude-donor/coherentmix families stayclosed",
+    "REJECTED_EXTRA_GATE:generic extra designapproval/seal/review workflows do not supersede explicit projectminimalworkflow"
+  ],
+  "registered_at": "2026-10-17T23:55:20+00:00"
+}
