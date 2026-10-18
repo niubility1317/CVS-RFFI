@@ -70,4 +70,30 @@ class Checks(unittest.TestCase):
  def test_empty_small_cells_and_scale30_margin(self):
   q=a.logit_metric(np.asarray([],int),np.empty((0,6)),np.asarray([],bool));self.assertTrue(q['empty_cell']);self.assertTrue(q['small_cell']);self.assertIsNone(q['accuracy']);self.assertIsNone(q['satellite_retention'])
   z=np.zeros((1,6));z[0,0]=15.;q=a.logit_metric(np.asarray([0]),z,np.asarray([True]));self.assertEqual(q['mean_margin_over30'],.5)
+ def test_json_numpy_scalars_roundtrip_without_losing_boolean_type(self):
+  with tempfile.TemporaryDirectory() as td:
+   p=Path(td)/'scalar.json';a.write(p,{'flag':np.bool_(True),'integer':np.int64(3),'single':np.float32(.25),'double':np.float64(.5),'nested':[np.bool_(False)]});q=a.read(p)
+   self.assertIs(q['flag'],True);self.assertIs(q['nested'][0],False);self.assertIs(type(q['integer']),int);self.assertEqual(q['integer'],3);self.assertEqual(q['single'],.25);self.assertEqual(q['double'],.5)
+ def test_json_nan_is_rejected_after_numpy_scalar_conversion(self):
+  for value in (float('nan'),np.float32('nan'),np.float64('nan')):
+   with tempfile.TemporaryDirectory() as td:
+    with self.assertRaises(ValueError):a.write(Path(td)/'nan.json',{'value':value})
+ def test_json_unknown_types_remain_rejected(self):
+  class Unknown:pass
+  for value in (Unknown(),np.asarray([1,2]),{1,2}):
+   with tempfile.TemporaryDirectory() as td:
+    with self.assertRaises(TypeError):a.write(Path(td)/'unknown.json',{'value':value})
+ def recovery_fixture(self):
+  decision=dict(status='SOURCE_READOUT_DECIDED',source_qualified=False,checks={'scientific_threshold':False},formal_scores_read=False,target_feedback=False,model_seed_count=1,NN=0)
+  failure={'status':'SOURCE_READOUT_FAILED','message':'historical scalar serialization'}
+  recovery=dict(status='VERIFIED',criteria_unchanged=True,source_decision=decision.copy(),original_failure_preserved=True,formal_scores_read=False,NN=0,IQ_reads=0,checkpoint_reads=0,updates=0,source_qualification_rerun=False,training_rerun=False,formal_rerun=False)
+  return decision,failure,recovery
+ def test_verified_source_report_recovery_preserves_scientific_failure(self):
+  decision,failure,recovery=self.recovery_fixture();q=a.source_recovery_state(decision,failure,recovery)
+  self.assertTrue(q['verified']);self.assertFalse(q['unresolved']);self.assertIs(q['historical_failure'],failure);self.assertFalse(decision['source_qualified']);self.assertEqual(decision,recovery['source_decision'])
+ def test_invalid_source_recovery_cannot_clear_original_failure(self):
+  for key,value in [('status','UNKNOWN'),('criteria_unchanged',False),('source_decision',{'retuned':True}),('NN',1),('original_failure_preserved',False),('formal_scores_read',True),('source_qualification_rerun',True),('training_rerun',True),('formal_rerun',True)]:
+   decision,failure,recovery=self.recovery_fixture();recovery[key]=value;q=a.source_recovery_state(decision,failure,recovery)
+   self.assertFalse(q['verified']);self.assertTrue(q['unresolved']);self.assertIs(q['historical_failure'],failure)
+  decision,failure,recovery=self.recovery_fixture();self.assertTrue(a.source_recovery_state(decision,failure,None)['unresolved'])
 if __name__=='__main__':unittest.main()

@@ -1,5 +1,5 @@
 {
-  "status": "READY_NOT_LAUNCHED",
+  "status": "SUBMITTED",
   "run_id": "20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01",
   "training_code_commit": "33a7046ee6e15898f30eca05f7bbc2c3249ce7e3",
   "training_dispatcher_pid": 1217210,
@@ -36,5 +36,8 @@
     "real_data_reads": 0,
     "NN": 0,
     "checkpoint_reads": 0
-  }
+  },
+  "code_commit": "94f0ba7756dd6b7704f1dd0e203187f4f2cd93e3",
+  "source_recovery_commit": "81f7b178b34cefda2710a1d60df7180058a2537c",
+  "source_result": "FAIL_no_E50"
 }

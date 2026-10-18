@@ -1,0 +1,20 @@
+{
+  "status": "FIX_VERIFIED_READY_FOR_CPU_R02",
+  "failed_output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01/analysis_r01",
+  "diagnosis": "NumPy bool in formal summary JSON;all prediction gates and metric/CM recounts completed;report stopped beforecosts/plots",
+  "original_outputs_preserved": true,
+  "fix": "Explicit np.generic.item JSON boundary withallow_nanFalse;historic source writefailure marked recovered only fromactual0NN recovery metadata",
+  "scientific_thresholds_unchanged": true,
+  "formal_scores_used_for_selection": false,
+  "tests": 5,
+  "test_status": "PASS",
+  "test_wall_seconds": 0.013,
+  "new_training": 0,
+  "new_predictions": 0,
+  "new_scoring": 0,
+  "NN": 0,
+  "IQ": 0,
+  "CP": 0,
+  "updates": 0,
+  "proposed_new_output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01/analysis_r02"
+}

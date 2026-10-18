@@ -21,8 +21,11 @@ TARGET_DAYS=('2021_03_01','2021_03_08','2021_03_15','2021_03_23')
 COUNTERS=('student_train_NN','student_eval_NN','teacher_train_NN','teacher_eval_NN')
 
 def read(path):return json.loads(Path(path).read_text(encoding='utf-8-sig'))
+def json_scalar(value):
+ if isinstance(value,np.generic):return value.item()
+ raise TypeError('Unsupported JSON value type: '+type(value).__name__)
 def write(path,obj):
- with Path(path).open('x',encoding='utf-8') as f:json.dump(obj,f,indent=2,ensure_ascii=False,allow_nan=False);f.write('\n')
+ with Path(path).open('x',encoding='utf-8') as f:json.dump(obj,f,indent=2,ensure_ascii=False,allow_nan=False,default=json_scalar);f.write('\n')
 def csv_write(path,rows):
  rows=list(rows)
  if not rows:return
@@ -117,6 +120,13 @@ def logit_metric(y,z,cohort):
 def reconcile_partitions(overall,parts):
  cm=np.asarray(overall['confusion']);require(parts,'Partition cannot be empty');require(np.array_equal(sum((np.asarray(x['confusion']) for x in parts),np.zeros((6,6),int)),cm),'Partition confusion/count does not reconcile');return True
 
+def source_recovery_state(decision,failure,recovery):
+ """Reconcile the existing zero-NN report repair; never recalculate criteria."""
+ r=recovery or {};d=decision or {}
+ checks=dict(status_verified=r.get('status')=='VERIFIED',criteria_unchanged=r.get('criteria_unchanged') is True,source_decision_exact_match=decision is not None and r.get('source_decision')==decision,original_failure_preserved=r.get('original_failure_preserved') is True,zero_cost=all(type(r.get(k)) is int and r[k]==0 for k in ('NN','IQ_reads','checkpoint_reads','updates')),formal_scores_not_read=r.get('formal_scores_read') is False,no_rerun=all(r.get(k) is False for k in ('source_qualification_rerun','training_rerun','formal_rerun')),source_only_decision=d.get('status')=='SOURCE_READOUT_DECIDED' and d.get('formal_scores_read') is False and d.get('target_feedback') is False and d.get('NN')==0 and d.get('model_seed_count')==1)
+ verified=failure is not None and all(checks.values())
+ return dict(verified=verified,checks=checks,historical_failure=failure,unresolved=failure is not None and not verified)
+
 def source_analysis(project,specs,out):
  panel=Path(project)/'runs'/PANEL_RUN/'diagnostic';role=read(panel/'data_roles.json');ids=np.asarray(role['physical_ids']);n=1800
  require(role.get('role')=='V' and role.get('counts')=={'L_s':6300,'U_s':56700,'V':27000} and role.get('held_RX') is None and role.get('target_access') is False and role.get('U_truth_used') is False and role.get('updates')==0 and role.get('V_panel')==n and ids.shape==(n,) and len(set(ids.tolist()))==n,'Exact legal source V panel required')
@@ -151,9 +161,10 @@ def source_analysis(project,specs,out):
      p=paired(y[mask],zz[control][mask].argmax(1),zz['URBAN'][mask].argmax(1),cc[mask]);p.update(new='URBAN',control=control,**context,mean_margin_over30_delta=current['URBAN']['mean_margin_over30']-current[control]['mean_margin_over30'] if mask.any() else None);effects.append(p)
  decision_path=Path(project)/'runs'/RUN/'source_matrix_decision.json';decision=read(decision_path) if decision_path.is_file() else None
  failure_path=Path(project)/'runs'/RUN/'URBAN-s2026092701/source_qualification_failure.json';stored_failure=read(failure_path) if failure_path.is_file() else None
+ recovery_path=Path(project)/'runs'/RUN/'source_report_recovery.json';stored_recovery=read(recovery_path) if recovery_path.is_file() else None;recovery=source_recovery_state(decision,stored_failure,stored_recovery)
  if decision is not None:require(decision.get('formal_scores_read') is False and decision.get('target_feedback') is False and decision.get('model_seed_count')==1,'Stored source-only decision flags differ')
  csv_write(out/'source_strata.csv',({k:v for k,v in r.items() if k!='confusion'} for r in records));write(out/'source_confusions.json',records);csv_write(out/'source_paired_effects.csv',effects)
- summary=dict(status='SOURCE_ANALYZED' if decision is not None and stored_failure is None else 'SOURCE_ANALYZED_WITH_STORED_DECISION_PARTIAL',stored_source_qualification_failure=stored_failure,health_V27000=health,readout={k:{a:v for a,v in q.items() if a!='config'} for k,q in qproof.items()},stored_source_decision=decision,source_decision_recomputed=False,source_unique_physical=1800,channel_draws=2,model_seed_count=1,fixed_NOAS30_clean_correct_count=int(cohort.sum()),source_high_urban_available=False,total_SNR_known=False,physical_causality_identified=False,formal_scores_read=False,NN=0,IQ_reads=0,checkpoint_reads=0)
+ summary=dict(status='SOURCE_ANALYZED' if decision is not None and not recovery['unresolved'] else 'SOURCE_ANALYZED_WITH_STORED_DECISION_PARTIAL',stored_source_qualification_failure=stored_failure,source_qualification_failure_is_historical=recovery['verified'],source_report_recovery_verified=recovery['verified'],source_report_recovery_checks=recovery['checks'],stored_source_report_recovery=stored_recovery,health_V27000=health,readout={k:{a:v for a,v in q.items() if a!='config'} for k,q in qproof.items()},stored_source_decision=decision,source_decision_recomputed=False,source_unique_physical=1800,channel_draws=2,model_seed_count=1,fixed_NOAS30_clean_correct_count=int(cohort.sum()),source_high_urban_available=False,total_SNR_known=False,physical_causality_identified=False,formal_scores_read=False,NN=0,IQ_reads=0,checkpoint_reads=0)
  write(out/'source_summary.json',summary);return summary,records
 
 def parse_tail(folder):
@@ -299,6 +310,7 @@ def report(out,result):
   a=rows['NOAS30'][v];b=rows['AS30'][v];n=rows['URBAN'][v];text.append(f"| {v} | {100*a['accuracy']:.6f} | {100*b['accuracy']:.6f} | {100*n['accuracy']:.6f} | {100*(n['accuracy']-b['accuracy']):+.6f} | {100*(n['accuracy']-a['accuracy']):+.6f} | {100*n['macro_f1']:.6f} | {100*n['worst_RX']:.6f} |")
  text += ['',f"Clean versus same-budget NoAs30: {formal['stage_clean_delta_pp']:+.6f} absolute pp; stage ≤0.1 pp cost criterion: {formal['stage_clean_within_0p1pp']}.",f"Urban three-scene mean versus NoAs30: {formal['urban_mean_vs_NoAs30_pp']:+.6f} pp.",'','This single model seed cannot establish reproducible dual improvement. Budget exhaustion is not convergence. Formal per-packet channel state labels are unavailable; source state associations are not physical counterfactual effects.','', 'Source decision is read unchanged from the pre-existing source_matrix_decision.json; no target-based promotion, re-selection or re-run.']
  if source:text += ['', 'Stored source decision: '+json.dumps(source['stored_source_decision'],ensure_ascii=False), 'Source full V27000 health, the V1800 panel, and repeated channel draws are separate scopes; full-condition physics only.']
+ if source and source.get('source_report_recovery_verified'):text += ['', 'The original source-report failure journal is preserved as historical. The existing VERIFIED zero-NN report recovery exactly matches the stored source decision, preserves the original criteria and scientific failure result, and reruns neither training, source qualification nor formal evaluation.']
  text += ['', 'Cost: new10/2220; shared original As20 parent20/4440; candidate cumulative30/6660. Original two E30 reference models are historical60/13320; all unique training represented here is70/15540 because the shared As20 parent is counted once.',f"New native NN: {cost['new10']['native_NN']}; source readout NN: {cost['new_source_readout_NN']}; formal prediction NN: {cost['new_formal_prediction_NN']}; remote smoke NN: {sum(cost['new_remote_smoke_NN'].values())}; local synthetic1536 separately. New native wall: {cost['new10']['wall_seconds']:.3f} s; formal prediction wall: {cost['new_formal_prediction_wall_seconds']:.3f} s. Source readout wall time is not stored separately.",'', 'Missing/partial components: '+json.dumps(result['missing'],ensure_ascii=False),'', 'Artifacts:']
  text += ['- '+str(p) for p in result.get('figures',[])];text += ['','Full accuracy/F1/CM, RX/day/TX partitions, repaired/new errors, fixed NoAs30 clean-correct cohort, margins/30, recorded training curves and actual training coverage are in the accompanying JSON/CSV files.','No model inference, optimizer update, head fitting, IQ/checkpoint read, re-prediction or scorer process was executed by this analysis.']
  (out/'final_report.md').write_text('\n'.join(text)+'\n',encoding='utf-8')
