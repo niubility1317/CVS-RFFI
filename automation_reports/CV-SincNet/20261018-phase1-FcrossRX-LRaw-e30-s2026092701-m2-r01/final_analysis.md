@@ -211,3 +211,6 @@ source_summary.wall_seconds属于离线分析处理耗时，不能当作source�
 
 
 E50执行决定：源判据两项PASS已于读取本次formal前保存，随后先登记 20261018-phase1-FcrossRX-LRaw-e50-s2026092701-m2-r01 两条own30+20；本次formal仅如实报告，不回流决定或参数。E50当前PLANNED，实现中，尚无50结果。
+
+
+补充完整分层[错误解释](error_analysis.md)：oldAs→newAs clean少正确1661包，oldNoAs→newNoAs少4249包，二者相对差扩大2588包；这是配对准确率的算术分解，不能作为因果份额。NoAs在7/7RX及4/4日期下降；As下降主要集中于TX1/2。mid/lowurban净修复169/594包，但mid最差RX下降.466667pp。解释仅来自已完成读出，不反馈固定E50计划。

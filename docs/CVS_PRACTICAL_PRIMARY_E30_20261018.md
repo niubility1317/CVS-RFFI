@@ -259,3 +259,16 @@ LRaw E50下一项固定矩阵已登记PLANNED：20261018-phase1-FcrossRX-LRaw-e5
 
 
 LRaw50已实际启动：代码 1cf3bf1c9232110b4199e01628b682b74a47d3a9；dispatcher1465885，双worker1465929/1466063在GPU0/1，总E50固定计划。1540NN首步smoke PASS、源角色/strictownLRaw30CP/EMA/20轮U实际开关及PID/CWD/argv/GPU/log增长VERIFIED；analysis1466559 WAIT_SOURCE。当前无50性能结果，计划不受已报告30formal改变。
+
+
+## LRaw E50 已完成：预算未解决 clean 代价
+
+20261018-phase1-FcrossRX-LRaw-e50-s2026092701-m2-r01已ANALYZED；训练代码 1cf3bf1c9232110b4199e01628b682b74a47d3a9。两新行各追加20/4440，总E50/11100；全部all7/独立truth-last和20轮全日志完成，8逻辑新2旧6重计1008CM/168partition，无技术缺项。source先读归档90b0de366386f865d59a1585447eeeb580ef8d35b18cc0ba6940abe088a5fd53，formal取回a8f62e3aea6d00d34330cbba9738199cc2aca1e9952819773f16be84bbaa21eb；E50资格早于E30formal读取已按source固定，本次source无新晋级gate。源As50−own30 clean＋.148148pp、midlow＋2.083333pp，没有在本次正式clean复现。
+
+正式n1新As50 clean83.138095%、midurban63.342262%、lowurban52.470833%、urbanmean64.374802%。相对own30 clean−1.214286pp、mid＋.435119、low＋.873214、urbanmean＋.350992pp；相对原As50 clean−2.522619、mid−.559524、low仅＋.083333、urbanmean−.636111pp，低于.1pp的局部微增不当稳定改进。newNoAs50 clean82.573810%，newAs50−匹配newNoAs50＋.564286pp、net948包，点估计通过−.1pp阶段界限；对原NoAs50却−2.157143pp，不能将弱化NoAs对照写成原基线clean保护或重复双提升。
+
+suburban三个accuracy80.645833/78.381548/76.017857%，距自身clean2.492262/4.756548/7.120238pp，差缩小有clean下降贡献；low未达60%。F1/最差RX/13配对错误/三阶交互/RXdayTX都在[完整报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-LRaw-e50-s2026092701-m2-r01/final_analysis.md)，E30补充[错误解释](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-LRaw-e30-s2026092701-m2-r01/error_analysis.md)已保留，无额外NN/评分。
+
+E50实际新增14922588NN（smoke1540）、40modelE/8880更新；每行native6271922=学生train4543920＋eval594002＋教师eval1134000；source12600、formal1176002。两native墙钟1596.744385/2191.173243秒，source预测wall未单列记录。连同本段LRaw30共60modelE/13320更新/23627256新增NN（含两smoke3080），旧父与旧读出复用不重计。ordinary每行4440次/568320包仍计算并弃用、usedrawMSE0，不作省算力声明。
+
+两个worker、dispatcher及0NNanalysis均已自然退出，未停止/重跑健康任务、未扩seed/超过E50。当前单seed预算矩阵收尾，最终可重复星地与clean双收益仍未证明；不把sourcePASS或匹配弱NoAs的阶段PASS当最终完成。
