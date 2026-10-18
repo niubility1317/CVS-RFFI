@@ -1,0 +1,5 @@
+# P75 发布前验证
+
+协议6组检查通过，含22个契约/继承负例、5个source阈值fixture及缺prediction时truth关闭。channel4项合成检查通过；模型纯CPU真实P68/P18 hook/Engine/terms接线通过（C损失/梯度/Torch RNG与原AS_CE一致，N只替换已有第二As槽，含3个错误恢复负例），依赖采用窄映射，未声明已验证完整native模型工厂。analysis10项CPU fixture和19个Python文件AST通过。实际原始输出与墙钟在local_artifacts，本地NN/IQ/checkpoint读取与真实channel调用均0。
+
+唯一一次独立P0/P1检查PASS。本地W+OW完整旧factory导入因历史影子package缺model不可用；不修改旧模块或增加本地runtime修复门槛。固定远端release的真实checkpoint/ownEMA与两条sixL合成图由launcher首步验证，PASS即继续训练；失败保留停止。
