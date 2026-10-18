@@ -21,3 +21,5 @@
 停止只针对run-owned角色/来源/实际native噪声链/非有限/预算/输出碰撞等技术错误；保留失败产物，不自动重试，健康peer完成。科学负结果不停止已授权评分。
 
 预期产物由experiment.json列出：实际模块__file__/resolvedargs/来源、完整epoch/step/physical记录、final权重与sourcefreeze、source决定、all7预测和独立评分、五logicalrow分析、训练曲线/状态质量分层/pairederrors/真实成本图表。一个modelseed，两source draw不算跨seed。最终仍需回答正式星地增益、clean代价、是否满足.1pp与是否有可重复双提升，不把单seed微涨或源oracle当成功。
+
+实际运行代码commit：ecdefc9bb562535bcc8087b5d59e38af25ab817a；本地HEAD与远端分支OID独立比较一致。已验证发布包一次传输SHA相同与23Python远端compile。真实parent/ownEMA及两sixL合成图smoke PASS1540NN，native快照192，PASS自动继续。

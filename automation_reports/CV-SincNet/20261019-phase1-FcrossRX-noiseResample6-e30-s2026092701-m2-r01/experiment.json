@@ -29,7 +29,7 @@
   "replaces_run_id": null,
   "authorization": "Latest user: satellite-first, clean drop<=0.1 absolutepp, fullsource/noheldRX, fixedF+CROSS_RX/defaulthead, E30; good source-qualified recipes may totalE50; active goal authorizes implementation/matched trials/all7 independent scoring. No extra heads/targetfeedback/healthy-task mutation.",
   "code": {
-    "commit": "PENDING_ACTUAL_CODE_COMMIT",
+    "commit": "ecdefc9bb562535bcc8087b5d59e38af25ab817a",
     "starting_commit": "7b476dc78c348a8dd9c87e1dcc04d1349b0eeeeb",
     "checkout": "code/worktrees/phase1_urban_sigtime_20261014",
     "environment": "N607 existing ordinary CVS-RFFI Python3.10/Torch2.1/NumPy2.2; full FP32 CENTER_UNITS CPU2",
@@ -100,7 +100,7 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_noise_resample6_E30_20261019_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_noise_resample75/runner.py",
     "stop_rule": "Own wrongroles/parent/defaulthead/native-noise scope/nonfinite/budget/outputcollision or unlaunchable failure preserves ownrow and stops;noautomaticretry;healthy peers finish;scientificFAIL still all7;no healthy otherowner mutation",
-    "status": "PREREGISTERED"
+    "status": "RUNNING"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
