@@ -1,0 +1,340 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r01",
+  "group_id": "phase1-F-crossRX-matchedAs-baseline-seed-replication",
+  "display_name": "完整源 E30：clean保留式 As 与无As对照补齐02/03",
+  "description": "Replicate existing source-qualified As-only baseline and its matched noAs control at two additional model seeds;no newAg/no failedcandidate extension;reuse originalseed01 pair for all3 summary",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "F_CROSS_RX",
+    "all5RX",
+    "E30",
+    "matched_baseline",
+    "As_replication",
+    "s0203",
+    "default_head",
+    "truth_last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active user jointAg+As goal requires cross-seed evidence;three original model seeds/ latest E30 fullsource fixedF. As independent source criteria passed in P43;extend only B00/B01 controls,not failedBG/WHITE/HardLCE/etc",
+  "code": {
+    "commit": null,
+    "checkout": "codex/phase1-urban-sigtime-20261014",
+    "environment": "N607 ordinary CVS-RFFI original Python3.10/PyTorch2.1/NumPy2.2.5;FP32 pinnedP43 runtime",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_As_replication_E30_s0203_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing VALIDATED_ONCE fixed source and fixed formal IQ",
+    "representation": "eq1/25MHz/IQ256/original RMS centerfalse",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#/role_ids",
+    "label_map_ref": "original6TX",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original6TX mapping",
+    "roles": {
+      "L_s": 6300,
+      "U_s": "56700 TX hidden",
+      "V": 27000
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "NOT_APPLICABLE_PHASE1_FIXEDIQ",
+    "split_id": 392005,
+    "validation_ref": "sourceV27000 unchanged/no persistent update",
+    "support_query_ref": "Phase1 final only;no Phase2 support/query",
+    "leo_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/manifest.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Only frozen checkpoint final prediction all7views perrow;independent truth after complete;no targetfeedback",
+    "external_method_exception": null,
+    "claim_scope": "Reproducibility of existing As adaptation and clean maintenance;not newAg or jointgoal achievement"
+  },
+  "checkpoint": {
+    "initialization": "Each newrow own scratch20 then strictly own student+EMA10;no external traininginitializer",
+    "sources": [],
+    "contract_check_ref": "Each ownstage20 completion/config/roleIDs/initialization/checkpoint attrs before tail;source and ancestors exact",
+    "provenance_verdict": "SCRATCH_ONLY then OWN_STAGE20_EXACT_CONTRACT",
+    "selection_rule": "FixedFINAL30 no targetselection/no sourcebestepoch"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/As-seed-replication49",
+    "gpu_policy": "All-owner max3process/GPU,free>=12000MB;prefer distinct freeGPU;healthy jobs untouched",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r01/logs;dispatcher /home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r01-launch",
+    "local_artifact_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_As_replication_E30_s0203_20261018",
+    "launch_command": "CVS-RFFI/bin/python -u experiments/cvs_As_replicate49/runner.py",
+    "stop_rule": "Owned role/config/CP mismatch,nonfinite,outputcollision,unlaunchable/illegalprediction => preserve/noauto retry;dispatcher ceases unlaunched rows aftertechnicalfailure,healthy runningrows finish;scientificfail never stops registered formal test"
+  },
+  "expected_artifacts": [
+    "real_checkpoint_smoke.json",
+    "synthetic_smoke.json",
+    "launch.json",
+    "queue_state.json",
+    "perrow stage20/source fulltraining logs/checkpoints/args/roles/results",
+    "perrow source_qualification",
+    "perrow all7 frozenprediction",
+    "perrow independent scoring",
+    "perrow complete.json",
+    "source_matrix_decision.json",
+    "results.json",
+    "per_row_seed.csv",
+    "paired_seed_effects.csv",
+    "complete.json or failure.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro-F1",
+      "worstRX",
+      "urban3mean",
+      "lowurban",
+      "clean/suburban gaps",
+      "source state/quality/defaulthead margins/fixedclean-correct retention",
+      "paired As effect perseed and mean/SD",
+      "actualcost"
+    ],
+    "dimensions": [
+      "modelseed",
+      "B00/B01",
+      "clean+6practical",
+      "RX/day/TX",
+      "source state/lock/quality"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r01/<row>/prediction",
+    "scorer_ref": "Pinned P43 evaluate.score in independent CPU exec stage;truthlast preflight unchanged"
+  },
+  "rows": [
+    {
+      "row_id": "B00-s2026092702",
+      "method": "No newAg/no As matched rawslot control",
+      "purpose": "baseline replication",
+      "config_ref": "experiments/cvs_As_replicate49/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r01/B00-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "source_RX_holdout": null,
+        "L_dev": null,
+        "defaulthead": "unchanged cosine30 jointlytrained"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092702,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261016422
+      },
+      "seed_notes": "model controls nativeinit/dropout/ordinary/sampler and actualF localprojections;physicalroleIDs fixed by sortedsplit;namedtrainAs20261016421/validation20261016422/receiver20261016423 fixed;no newAg/support;formalreceivedIQ alreadyfixed",
+      "k": null,
+      "scenario": "No As;all7 finalviews",
+      "optimizer": "original resetAdamW persegment WD1e-4",
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "own20(13L+7U)+own10(10U),6660updates,6Lforward768/step,Lcoefficient1.25;originalUonly",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r01/B00-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r01/logs/B00-s2026092702.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_As_replicate49/runner.py --mode worker --row B00-s2026092702",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "synthetic_smoke.json",
+        "launch.json",
+        "queue_state.json",
+        "perrow stage20/source fulltraining logs/checkpoints/args/roles/results",
+        "perrow source_qualification",
+        "perrow all7 frozenprediction",
+        "perrow independent scoring",
+        "perrow complete.json",
+        "source_matrix_decision.json",
+        "results.json",
+        "per_row_seed.csv",
+        "paired_seed_effects.csv",
+        "complete.json or failure.json"
+      ]
+    },
+    {
+      "row_id": "B01-s2026092702",
+      "method": "Original full practical rawview;fixed clean share",
+      "purpose": "baseline replication",
+      "config_ref": "experiments/cvs_As_replicate49/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r01/B01-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "source_RX_holdout": null,
+        "L_dev": null,
+        "defaulthead": "unchanged cosine30 jointlytrained"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092702,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261016422
+      },
+      "seed_notes": "model controls nativeinit/dropout/ordinary/sampler and actualF localprojections;physicalroleIDs fixed by sortedsplit;namedtrainAs20261016421/validation20261016422/receiver20261016423 fixed;no newAg/support;formalreceivedIQ alreadyfixed",
+      "k": null,
+      "scenario": "Train low_suburban/mid_urban/low_urban originalphysics;all7 finalviews",
+      "optimizer": "original resetAdamW persegment WD1e-4",
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "own20(13L+7U)+own10(10U),6660updates,6Lforward768/step,Lcoefficient1.25;originalUonly",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r01/B01-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r01/logs/B01-s2026092702.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_As_replicate49/runner.py --mode worker --row B01-s2026092702",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "synthetic_smoke.json",
+        "launch.json",
+        "queue_state.json",
+        "perrow stage20/source fulltraining logs/checkpoints/args/roles/results",
+        "perrow source_qualification",
+        "perrow all7 frozenprediction",
+        "perrow independent scoring",
+        "perrow complete.json",
+        "source_matrix_decision.json",
+        "results.json",
+        "per_row_seed.csv",
+        "paired_seed_effects.csv",
+        "complete.json or failure.json"
+      ]
+    },
+    {
+      "row_id": "B00-s2026092703",
+      "method": "No newAg/no As matched rawslot control",
+      "purpose": "baseline replication",
+      "config_ref": "experiments/cvs_As_replicate49/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r01/B00-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "source_RX_holdout": null,
+        "L_dev": null,
+        "defaulthead": "unchanged cosine30 jointlytrained"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092703,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261016422
+      },
+      "seed_notes": "model controls nativeinit/dropout/ordinary/sampler and actualF localprojections;physicalroleIDs fixed by sortedsplit;namedtrainAs20261016421/validation20261016422/receiver20261016423 fixed;no newAg/support;formalreceivedIQ alreadyfixed",
+      "k": null,
+      "scenario": "No As;all7 finalviews",
+      "optimizer": "original resetAdamW persegment WD1e-4",
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "own20(13L+7U)+own10(10U),6660updates,6Lforward768/step,Lcoefficient1.25;originalUonly",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r01/B00-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r01/logs/B00-s2026092703.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_As_replicate49/runner.py --mode worker --row B00-s2026092703",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "synthetic_smoke.json",
+        "launch.json",
+        "queue_state.json",
+        "perrow stage20/source fulltraining logs/checkpoints/args/roles/results",
+        "perrow source_qualification",
+        "perrow all7 frozenprediction",
+        "perrow independent scoring",
+        "perrow complete.json",
+        "source_matrix_decision.json",
+        "results.json",
+        "per_row_seed.csv",
+        "paired_seed_effects.csv",
+        "complete.json or failure.json"
+      ]
+    },
+    {
+      "row_id": "B01-s2026092703",
+      "method": "Original full practical rawview;fixed clean share",
+      "purpose": "baseline replication",
+      "config_ref": "experiments/cvs_As_replicate49/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r01/B01-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "source_RX_holdout": null,
+        "L_dev": null,
+        "defaulthead": "unchanged cosine30 jointlytrained"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092703,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261016422
+      },
+      "seed_notes": "model controls nativeinit/dropout/ordinary/sampler and actualF localprojections;physicalroleIDs fixed by sortedsplit;namedtrainAs20261016421/validation20261016422/receiver20261016423 fixed;no newAg/support;formalreceivedIQ alreadyfixed",
+      "k": null,
+      "scenario": "Train low_suburban/mid_urban/low_urban originalphysics;all7 finalviews",
+      "optimizer": "original resetAdamW persegment WD1e-4",
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "own20(13L+7U)+own10(10U),6660updates,6Lforward768/step,Lcoefficient1.25;originalUonly",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r01/B01-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r01/logs/B01-s2026092703.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_As_replicate49/runner.py --mode worker --row B01-s2026092703",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "synthetic_smoke.json",
+        "launch.json",
+        "queue_state.json",
+        "perrow stage20/source fulltraining logs/checkpoints/args/roles/results",
+        "perrow source_qualification",
+        "perrow all7 frozenprediction",
+        "perrow independent scoring",
+        "perrow complete.json",
+        "source_matrix_decision.json",
+        "results.json",
+        "per_row_seed.csv",
+        "paired_seed_effects.csv",
+        "complete.json or failure.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Runadds4models/120modelE/26640updates;reuses2seed01 models/60modelE separately",
+    "sourcebaselineAs criteria alreadypassed;failedBG/WHITE etc stayclosed",
+    "No reranking,tuning,pickingbestseed or target-driven reruns",
+    "Original code had hardcodedF factoryseed01;newrow factory actually matches02/03,smoke proves samewithinseed/differentbetween seeds",
+    "Physicalroles checked EXACT_MATCH;nomaxcap orsplit changes permitted",
+    "Source criterion each seed mid/low bothdraws>=5pp vsB00,clean decline<=.5pp andeachsourceRX decline<=1pp;all fixed rows still autoall7 score",
+    "Future Ag and joint gain/lowurban>60/suburban<=2 remain separate unmetobjective"
+  ],
+  "registered_at": "2026-10-18T00:18:41+00:00"
+}
