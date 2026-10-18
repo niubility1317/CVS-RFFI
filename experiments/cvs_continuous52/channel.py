@@ -4,6 +4,7 @@ from dataclasses import asdict
 import math
 import numpy as np
 import torch
+from experiments.cvs_crossview_supcon41.channel import tensor_iq
 from experiments.cvs_fullsource_concat20 import design as d
 
 def serial(v):

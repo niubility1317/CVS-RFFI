@@ -58,4 +58,10 @@ class Checks(unittest.TestCase):
    found=[x for x in ast.walk(fn) if isinstance(x,ast.Assign) and any(isinstance(t,ast.Attribute) and t.attr=='_full_channel' for t in x.targets)]
    self.assertEqual(len(found),1);self.assertEqual(ast.unparse(found[0].value),'Practical()')
    guarded=[x for x in fn.body if isinstance(x,ast.If) and ast.unparse(x.test)=="c['As']" and found[0] in x.body];self.assertEqual(len(guarded),1)
+ def test_original_prediction_array_bridge_remains_exported(self):
+  import ast
+  from pathlib import Path
+  tree=ast.parse((Path(__file__).parent/'channel.py').read_text())
+  imports=[x for x in tree.body if isinstance(x,ast.ImportFrom) and x.module=='experiments.cvs_crossview_supcon41.channel']
+  self.assertEqual([a.name for x in imports for a in x.names],['tensor_iq'])
 if __name__=='__main__':unittest.main()
