@@ -39,3 +39,9 @@
 实际代码/config commit：e781e8a4f0a1011dfc6d8ee7984f04378d91cdd3；一次P0/P1及该P1定点复核PASS。11本地权限负例/compile/2远端AST通过；本地Torch不可用如实保留，Torch作用域和真实F smoke由远端执行。
 
 真实发布与启动：execution commit `735e171fc064094f227fe6807d75836a0b3b0e3a`；archive传输/compile VERIFIED。远端13负例与Torch RNG/ordinary/raw/梯度/eval/恢复PASS；真实CP smoke2NN、两真实F合成1536NN、0更新PASS。两新worker PID/CWD/argv/GPU环境及nvidia-smi独立观察一致；原完整6300/56700/27000角色、scratch/13L7U实际日志已核实。训练最新进度见execution_verification.json。训练/冻结/正式预测/评分尚未完成，不能判定0.1pp阶段目标或重复clean收益。
+
+## 独立分析补充预登记（原训练继续，不修改配方）
+
+source全部冻结后，独立CPU程序只读完整两段原生日志/metadata/已保存source logits，0新IQ/CP/NN/更新，核对全部4行×6660steps、物理L/U序列、原U隐藏/ownEMA offset、6L成本和satellite dropout/KL代数，再独立固定source资格。Source27000clean取原生冻结指标，不伪称有全27000逐包重算；V1800×两draw原预测完整argmax/F1/RX/day/TX/状态/质量分层重算。全部4行七视图预测/评分完成后才读正式truth，复算全部CM和六组成对修复/新增错误、固定NOAS clean正确集合保持率、宏F1、最差RX、urban均值；0.1pp用整数net×1000≥−N，single seed无论正负不称可重复双提升。源/正式state不混用，新增噪声比不称总SNR。
+
+单一CPU分析owner，CUDA隐藏/2threads；新不可覆盖release PROJECT/releases/cvs_F_satellite_dropout_analysis_20261018_r01；output PROJECT/runs/20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01/analysis_auto_r01（源/正式图分目录保留），日志output-launch。命令 CVS-RFFI/bin/python -u analysis/cvs_satellite_dropout_pipeline_20261018.py --project PROJECT --output ANALYSIS_ROOT --truth EXISTING_TRUTH --code-commit ANALYSIS_COMMIT。等待只依据本run真实PID/CWD/cmdline和完结metadata，观察失败不当作进程终止，完整产物不要求PID仍活；不操作训练进程、不自动重跑失败。完整日志解析、指标/等待13tests、11个独立日志用例、合成图12files以及发布3AST/9file模拟已通过，后者全部网络动作MOCKED；一次全日志suite工具观察超时结论UNKNOWN，不纳入PASS。真实source/final统计与图尚未产生，当前不是ANALYZED。

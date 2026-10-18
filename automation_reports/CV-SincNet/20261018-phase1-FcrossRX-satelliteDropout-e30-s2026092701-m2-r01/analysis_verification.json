@@ -1,0 +1,41 @@
+{
+  "status": "LOCAL_VERIFIED_ANALYSIS_NOT_STARTED",
+  "new_analysis_code_files": 8,
+  "score_and_wait_tests": {
+    "status": "PASS",
+    "cases": 13,
+    "seconds": 0.489,
+    "real_data": false
+  },
+  "full_training_log_tests": {
+    "status": "PASS_OBSERVED_INDIVIDUAL_CASES",
+    "cases": 11,
+    "scope": "9case suite+fourrow26640step integration+privacyredactionisolatedcase",
+    "single_final_11case_suite_not_claimed": true,
+    "one_tool_observation_timeout": "UNKNOWN_not_PASS",
+    "evidence": "local_artifacts/F_satellite_dropout_E30_20261018/log_checks_verification.json"
+  },
+  "figures": {
+    "synthetic": "PASS",
+    "created_files": 12,
+    "PNG_PDF": true,
+    "viewed_synthetic_images": 2,
+    "real_figures_not_produced": true
+  },
+  "publish_mock": {
+    "status": "PASS",
+    "emitted_remote_AST": 3,
+    "archive_files": 9,
+    "exact_commit_newline": true,
+    "network_effects": "MOCKED"
+  },
+  "Python_compile": "PASS",
+  "source_IQ_reads": 0,
+  "checkpoint_reads": 0,
+  "CVS_NN": 0,
+  "updates": 0,
+  "real_source_analysis_complete": false,
+  "real_formal_analysis_complete": false,
+  "real_target_truth_read": false,
+  "output": "PROJECT/runs/20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01/analysis_auto_r01"
+}
