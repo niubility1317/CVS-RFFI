@@ -14,6 +14,7 @@
 - `timm.layers.trunc_normal_` 改用同公式的 `torch.nn.init.trunc_normal_`，避免安装共享依赖。配对 seed 的初始化张量和 RNG 状态完全相同；模型、分类头及损失保留。
 - checkpoint 保存 state_dict 和本次数据契约，不保存完整 Python 对象。第二阶段严格核对契约、父阶段和 seed。
 - 增加零功率/非有限输入的明确失败处理、阶段和 epoch 元数据、预测真值隔离、自动独立评分及输出防冲突。
+- 复用的导出由 NumPy2 保存，作者 NumPy1.24 环境不能识别 `numpy._core` 模块名。仅在反序列化时映射到 `numpy.core`；同一合法源块的 6 个 TX 数组在修复后与 NumPy2 读回的 dtype、shape 和全部数值完全相同，不重导数据或修改 IQ。
 - 去除当前 PyTorch 不兼容的 scheduler `verbose` 参数，仅影响打印。作者原 HSIC 仍保留 CPU kernel 计算及其梯度传递，没有更换近似公式。
 
 ## 验证
@@ -23,3 +24,5 @@
 2026-10-19：8 项聚焦检查通过；本候选一次独立 P0/P1 审查完成，无 P0/P1。验证记录位于任务的 `local_artifacts/rffi_dg_research_20261019/ibrff_pilot_local_verification.json`。合成验证不证明真实准确率。
 
 实际启动登记位于 `automation_reports/CV-SincNet/20261019-phase1-ibrff-author-manysig-s2023-r01/`。机器路径和 PID 等运行细节保留在该 run 的私有 runtime/evidence 引用中，不提交数据、权重、预测或原始日志。
+
+r01 在真实 source smoke 的 NumPy 模块兼容层失败，未开始正式训练或 target。按同一配方发布 r02，原失败根保留。`verify_numpy_export.py` 复现原失败并验证模块名兼容修复；本次仅对该问题做一次定点 P0/P1 复审，无 P0/P1。

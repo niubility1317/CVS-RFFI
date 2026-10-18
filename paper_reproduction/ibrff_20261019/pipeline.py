@@ -21,6 +21,13 @@ import torch.nn.functional as F
 from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader, TensorDataset
 
+class NumpyExportUnpickler(pickle.Unpickler):
+    """Read NumPy2-created arrays with the author's NumPy1 environment."""
+    def find_class(self,module,name):
+        if module.startswith('numpy._core.'):
+            module='numpy.core.'+module[len('numpy._core.'):]
+        return super().find_class(module,name)
+
 def read_json(path):
     return json.loads(Path(path).read_text(encoding='utf-8-sig'))
 
@@ -67,7 +74,7 @@ def model(runtime,conf):
 def read_block(data_root,rx,day):
     path=Path(data_root)/'ManySig/non_equalized'/f'date{day}'/f'rx_{rx}_data.pkl'
     with path.open('rb') as handle:
-        payload=pickle.load(handle)
+        payload=NumpyExportUnpickler(handle).load()
     blocks=[]
     for tx in range(6):
         raw=np.asarray(payload['data'][tx])[:100]
