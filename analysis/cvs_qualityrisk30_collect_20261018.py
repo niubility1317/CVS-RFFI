@@ -15,7 +15,7 @@ import time
 from pathlib import Path, PurePosixPath
 
 RUN = '20261018-phase1-FcrossRX-qualityRisk-e30-s2026092701-m2-r01'
-OUTPUT = 'analysis_auto_r01'
+OUTPUT = 'analysis_auto_r02'
 SOURCE_FILES = ('source_complete.json', 'source_summary.json',
                 'source_confusions.json', 'source_metrics.csv', 'training_logs.json')
 FINAL_FILES = ('formal_summary.json', 'formal_confusions.json',

@@ -35,5 +35,17 @@
     "findings_unresolved": 0,
     "fresh_smoke_NN": 770,
     "failed_R01_NN": 258
+  },
+  "targeted_metadata_closure_review": {
+    "status": "PASS",
+    "scope": "OnlyR02rolekey/bankclosure/boundedR03recovery",
+    "source_role_key": "L_s",
+    "existing_bank_files_untouched": true,
+    "IQ_read_scope": "header_only",
+    "reused_valid_smoke_NN": 770,
+    "new_NN": 0,
+    "new_simulations": 0,
+    "missing_timers": 5,
+    "unchanged_full_review_repeated": false
   }
 }

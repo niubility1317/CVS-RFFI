@@ -116,6 +116,34 @@ def interop_recovery_checks():
  for f in Path(__file__).parent.glob('*.py'):ast.parse(f.read_text(encoding='utf8'),filename=str(f))
  return dict(status='PASS',targeted_negatives=negative,actual_IQ_byte_bridge_bitwise_float32=True,noncontiguous_input=True,metadata_explicit_long_lists=True,no_candidate_from_numpy_or_numpy_method=True,known_failure_NN=258,recovery_history=HISTORY,zero_updates_only=True,old_outputs_preserved=True,release=d.RELEASE,NN=0,CP=0,IQ=0,network_calls=0)
 
+def bank_closure_checks():
+ """Actual L_s-role fixture plus header/closedmetadata recovery;zero IQ payload/NN."""
+ import io
+ from .closure import source_L_role_ids,read_iq_header,validate_metadata,count_physics,TIMERS
+ from .recovery import validate_bank_layout
+ roles={'L_s':list(range(6300)),'U_s':list(range(56700)),'V':list(range(27000))};assert source_L_role_ids({'role_ids':roles})==roles['L_s'];negative=0
+ def bad(f):
+  nonlocal negative
+  try:f()
+  except (ValueError,KeyError):negative+=1
+  else:raise AssertionError('Invalid bank metadata closure accepted')
+ bad(lambda:source_L_role_ids({'role_ids':{'L':roles['L_s'],'U_s':roles['U_s'],'V':roles['V']}}));bad(lambda:source_L_role_ids({'role_ids':dict(roles,L_s=roles['L_s'][:-1])}))
+ stream=io.BytesIO();np.lib.format.write_array_header_1_0(stream,dict(descr=np.lib.format.dtype_to_descr(np.dtype('float32')),fortran_order=False,shape=(252000,2,256)));header_bytes=len(stream.getvalue());stream.seek(0);header=read_iq_header(stream,header_bytes+516096000);assert header['payload_read'] is False and stream.tell()==header_bytes
+ stream.seek(0);bad(lambda:read_iq_header(stream,header_bytes+516096001))
+ physical=np.arange(6300);idx=np.tile(physical,40);rx=np.asarray(d.RX)[(physical//6)%5];day=(physical//30)%3+1;domain=((physical//6)%5)*3+day-1;ids=np.stack((np.ones(6300,int),rx,day,physical+1000,physical),1);groups=idx%4
+ a=dict(TX=np.tile(physical%6,40),RX=np.tile(rx,40),day=np.tile(day,40),domain=np.tile(domain,40),sample_ids=np.tile(ids,(40,1)),source_L_index=idx,bin=groups,scene=np.asarray(d.TRAIN_SCENES)[idx%3],state=np.asarray(['LOS','PARTIAL','BLOCKED'])[idx%3],lock=np.asarray(['locked','degraded','unlocked'])[idx%3],signal_to_added_noise_db=np.asarray([0.,5.,10.,20.])[groups],quality_snr_db=np.asarray([0.,5.,10.,20.])[groups],cumulative_epoch=np.repeat([c['cumulative_epoch'] for c in d.bank_contexts()],6300),replica=np.repeat([c['replica'] for c in d.bank_contexts()],6300),context_step=np.repeat([c['cumulative_step'] for c in d.bank_contexts()],6300))
+ assert validate_metadata(a).tolist()==[63000]*4
+ a['bin'][0]=1;bad(lambda:validate_metadata(a));a['bin'][0]=0;a['TX'][6300]=5;bad(lambda:validate_metadata(a));a['TX'][6300]=0;a['context_step'][0]=1;bad(lambda:validate_metadata(a));a['context_step'][0]=4441
+ def physics(n):
+  for i in range(n):yield json.dumps(dict(bank_index=i,physics=dict(session_id='session'+str(i%15),receiver={'same':i%15})))+'\n'
+ count,sessions=count_physics(physics(252000));assert count==252000 and len(sessions)==15;bad(lambda:count_physics(physics(1)))
+ names=['real_checkpoint_smoke.json','synthetic_smoke.json','dispatcher.json','failure.json','logs','proposal_bank','technical_history','analysis_auto_r01','analysis_auto_r01-launch'];files=['iq.npy','metadata.npz','physics.jsonl.gz'];prior='PROJECT/releases/cvs_FcrossRX_qualityRisk_E30_20261018_r02';failure=dict(status='PREFLIGHT_FAILED',error="KeyError('L')",preserve_outputs=True,no_automatic_retry=True);dispatcher=dict(pid=1602594,cwd=prior,argv=[prior+'/experiments/cvs_quality_risk30/runner.py','--recover-preflight-r01'],owner='codex/root/practical-qualityRisk');smoke=dict(status='PASS',total_NN=770,actual_L_NN=768,real_checkpoint_NN=2,real_IQ=0,optimizer_updates=0);real=dict(status='PASS',NN=2);cost=dict(total_NN=258,real_parent_forward_packets=2,synthetic_ordinary_forward_packets=256,optimizer_updates=0,real_IQ=0,propagation_simulations=0)
+ assert validate_bank_layout(names,[],files,failure,dispatcher,smoke,real,cost,prior)['additional_NN']==0
+ bad(lambda:validate_bank_layout(names+['I01-s2026092701'],[],files,failure,dispatcher,smoke,real,cost,prior));bad(lambda:validate_bank_layout(names,[],files+['complete.json'],failure,dispatcher,smoke,real,cost,prior));bad(lambda:validate_bank_layout(names,[],files,failure,dispatcher,smoke,real,cost,prior,True));bad(lambda:validate_bank_layout(names,[],files,failure,dict(dispatcher,pid=1),smoke,real,cost,prior));bad(lambda:validate_bank_layout(names,[],files,failure,dispatcher,dict(smoke,total_NN=0),real,cost,prior));bad(lambda:validate_bank_layout(names,[],files,dict(failure,error='other'),dispatcher,smoke,real,cost,prior))
+ text=Path(__file__).with_name('closure.py').read_text(encoding='utf8');bank=Path(__file__).with_name('bank.py').read_text(encoding='utf8');assert "['role_ids']['L_s']" in bank and "['role_ids']['L']" not in bank and 'np.load(d.BANK/\'iq.npy\'' not in text and 'torch' not in text and '.process(' not in text and '**{k:None for k in TIMERS}' in text and len(TIMERS)==5
+ for f in Path(__file__).parent.glob('*.py'):ast.parse(f.read_text(encoding='utf8'),filename=str(f))
+ return dict(status='PASS',targeted_negatives=negative,actual_source_role_keys=['L_s','U_s','V'],role_counts={k:len(v) for k,v in roles.items()},synthetic_metadata_rows=252000,synthetic_closed_physics_rows=count,IQ_header_only=True,IQ_payload_reads=0,bank_generation_repeated=False,NN=0,CP=0,IQ=0,timers_unavailable_explicit_null=list(TIMERS),existing_PASS770_reused=True,release=d.RELEASE)
+
 def run():
  negative=0
  def bad(f):

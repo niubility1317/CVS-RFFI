@@ -12,9 +12,9 @@ def bootstrap():
  return here
 if __name__=='__main__':
  bootstrap()
- if sys.argv[1:] in (['--checks'],['--interop-recovery-checks']):
-  from experiments.cvs_quality_risk30.checks import run,interop_recovery_checks
-  print(json.dumps(run() if sys.argv[1:]==['--checks'] else interop_recovery_checks()))
+ if sys.argv[1:] in (['--checks'],['--interop-recovery-checks'],['--bank-closure-checks']):
+  from experiments.cvs_quality_risk30.checks import run,interop_recovery_checks,bank_closure_checks
+  print(json.dumps(run() if sys.argv[1:]==['--checks'] else bank_closure_checks() if sys.argv[1:]==['--bank-closure-checks'] else interop_recovery_checks()))
  else:
   from experiments.cvs_quality_risk30.dispatch import main
   main()

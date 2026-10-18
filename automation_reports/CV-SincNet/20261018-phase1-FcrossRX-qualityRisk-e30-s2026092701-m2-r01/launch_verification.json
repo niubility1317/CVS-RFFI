@@ -1,0 +1,36 @@
+{
+  "status": "VERIFIED",
+  "release": "cvs_FcrossRX_qualityRisk_E30_20261018_r02",
+  "code_commit": "e878c7395c6bf1aabd99506d8f9b3f6ecd1ef4f4",
+  "local_remote_branch_OID": "VERIFIED",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "dispatcher": {
+    "pid": 1602594,
+    "CWD_correct": true,
+    "argv_correct": true,
+    "CPU_only": true
+  },
+  "smoke": {
+    "status": "PASS",
+    "fresh_total_NN": 770,
+    "actual_L_hook_NN": 768,
+    "real_parent_NN": 2,
+    "optimizer_updates": 0,
+    "target_access": false
+  },
+  "technical_failure_history": {
+    "r01_NN": 258,
+    "preserved": true
+  },
+  "bank": "BUILDING_SOURCE_L_ONLY",
+  "workers": "QUEUED_UNTIL_SHARED_BANK_COMPLETE",
+  "analysis": {
+    "pid": 1603581,
+    "code_commit": "e878c7395c6bf1aabd99506d8f9b3f6ecd1ef4f4",
+    "state": "SUBMITTED_WAIT_SOURCE",
+    "NN": 0,
+    "truth_join": "after_registered_predictions_complete"
+  },
+  "goal_complete": false
+}

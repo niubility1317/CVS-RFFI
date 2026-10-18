@@ -25,9 +25,12 @@ def worker(row):
  except Exception as error:
   d.write(d.BASE/row/'source_qualification_failure.json',dict(status='SOURCE_READOUT_FAILED',message=str(error),traceback=traceback.format_exc(),formal_evaluation_still_required=True,no_automatic_retry=True))
  execute('predict',row)
-def dispatch(recover=False):
+def dispatch(recover=False,recover_bank=False):
  recovery=None
- if recover:
+ if recover_bank:
+  from .recovery import prepare_bank_recovery
+  recovery=prepare_bank_recovery()
+ elif recover:
   from .recovery import prepare_run
   recovery=prepare_run()
  else:
@@ -36,9 +39,13 @@ def dispatch(recover=False):
  d.write(d.BASE/'dispatcher.json',dict(pid=os.getpid(),cwd=os.getcwd(),argv=sys.argv,owner=d.OWNER,technical_recovery=recovery))
  from .preflight import smoke
  try:
-  smoke()
-  from .bank import prepare_bank
-  prepare_bank()
+  if recover_bank:
+   from .closure import finalize_existing_bank
+   finalize_existing_bank()
+  else:
+   smoke()
+   from .bank import prepare_bank
+   prepare_bank()
  except BaseException as error:
   d.write(d.BASE/'failure.json',dict(status='PREFLIGHT_FAILED',error=repr(error),preserve_outputs=True,no_automatic_retry=True));raise
  pending=d.rows();active={};receipts=[];completed=[];failed=[]
@@ -75,7 +82,8 @@ def dispatch(recover=False):
  result=collect()
  d.write(d.BASE/'complete.json',dict(status=result['status'],rows=completed,model_seed_count=1,seven_views_per_row=True,crossseed_confirmed=False,goal_complete=False))
 def main():
- p=argparse.ArgumentParser();p.add_argument('--mode',choices=['worker','predict','score']);p.add_argument('--row');p.add_argument('--recover-preflight-r01',action='store_true');a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--mode',choices=['worker','predict','score']);p.add_argument('--row');p.add_argument('--recover-preflight-r01',action='store_true');p.add_argument('--recover-bank-metadata-r02',action='store_true');a=p.parse_args()
+ if a.recover_preflight_r01 and a.recover_bank_metadata_r02:raise ValueError('One bounded recovery mode only')
  if a.mode is not None and a.row not in {r['row_id'] for r in d.rows()}:raise ValueError('Only registered rows permitted')
  if a.mode=='worker':worker(a.row)
  elif a.mode=='predict':
@@ -84,4 +92,4 @@ def main():
  elif a.mode=='score':
   from .evaluate import score
   score(a.row);d.write(d.BASE/a.row/'complete.json',dict(status='TRAINED_AND_SCORED',row_id=a.row))
- else:dispatch(recover=a.recover_preflight_r01)
+ else:dispatch(recover=a.recover_preflight_r01,recover_bank=a.recover_bank_metadata_r02)

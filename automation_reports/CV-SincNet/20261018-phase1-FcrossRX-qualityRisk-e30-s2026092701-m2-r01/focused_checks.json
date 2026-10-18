@@ -39,5 +39,21 @@
     "actual_launcher_smoke": "PENDING fresh770NN",
     "R01_failed_NN": 258,
     "scientific_changes": false
+  },
+  "technical_recovery_r03": {
+    "status": "PASS",
+    "targeted_negative_cases": 13,
+    "metadata_fixture_rows": 252000,
+    "role_counts": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "Python_AST_files": 22,
+    "emitted_AST_scripts": 2,
+    "metadata_key_evidence": "Existinggeneratedphysics has nestedreceiver/session_id",
+    "bank_IQ_payload_reads": 0,
+    "existing_bank_files_rewritten": 0,
+    "NN": 0
   }
 }

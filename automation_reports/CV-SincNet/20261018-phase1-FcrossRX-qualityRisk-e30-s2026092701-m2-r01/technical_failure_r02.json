@@ -1,0 +1,32 @@
+{
+  "status": "FAILED",
+  "release": "cvs_FcrossRX_qualityRisk_E30_20261018_r02",
+  "code_commit": "e878c7395c6bf1aabd99506d8f9b3f6ecd1ef4f4",
+  "failed_layer": "bank_completion_metadata_only",
+  "error": "KeyError('L')",
+  "actual_role_keys": [
+    "L_s",
+    "U_s",
+    "V"
+  ],
+  "role_counts": {
+    "L_s": 6300,
+    "U_s": 56700,
+    "V": 27000
+  },
+  "bank": {
+    "generated_contexts": 40,
+    "observations": 252000,
+    "IQ_file_bytes": 516096128,
+    "metadata_file_bytes": 95007756,
+    "physics_file_bytes": 96046910,
+    "completion_record": false,
+    "bytes_preserved": true
+  },
+  "valid_shared_smoke_NN": 770,
+  "training_updates": 0,
+  "worker_rows": 0,
+  "new_extra_NN_due_to_this_failure": 0,
+  "missing_cost_fields": "raw_cache/simulation/copy/metadata and totalwall perf_counter values lost at exception;must remain null",
+  "recovery": "R03 zeroNN metadata closure ofexistingbank,no resimulation or numerical change"
+}
