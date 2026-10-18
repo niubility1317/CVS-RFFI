@@ -6,4 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|完整practical：两随机子网概率边缘化CE的匹配E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-AsMarginal-e30-s2026092701-m2-r01/report.md)|
+|P73：完整 practical 的两随机子网 CE 聚合|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-AsMarginal-e30-s2026092701-m2-r01/report.md)|

@@ -1,6 +1,6 @@
 # P73：完整 practical 的两随机子网 CE 聚合
 
-状态：PREREGISTERED，尚无新训练或性能结果。起点99e0030044cebc88568446a7418eb24302640ad1，实际代码/config提交在发布前写入experiment.json。逐row矩阵仅维护于experiment.json。
+状态：VERIFIED_RUNNING，两个新E10尾段各已完成4轮；尚无冻结后新性能结果。起点99e0030044cebc88568446a7418eb24302640ad1，实际代码/config提交cb5d8abdd7159ca5a3dad7bbf62f6b37a4c9d6fd，推送独立读回VERIFIED。逐row矩阵仅维护于experiment.json。
 
 上一轮P72同父E30完整训练与all7已完成，源两个条件FAIL，新增raw-As共享mask关闭。P70/P71固定质量组/有界风险、既有As时机/权重/跨view对比/状态保留均有实际结果，不重新命名原样复试。另一对话“审计并设计 CVS 联合增强”独立三行UPractical已完成E30训练、正在源后正式收尾，本侧不重复、不干扰。
 
@@ -30,3 +30,6 @@ As复用P70之前生成的nominal142080观测，按原64*(step−1):64*step顺�
 
 
 发布前实际验证：20协议负例、6概率聚合CPU检查、1复用实际P70hook的六前向接线toy、8CPU分析检查、21新增py语法PASS；一次独立P0/P1审查PASS，无未解决直接P0/P1。本地实际CVS NN/IQ/CP/信道模拟均0，真实父CP smoke4和GPU训练待launcher首步，无性能结果。
+
+
+实际发布收尾：归档一次本地/远端比较及24py编译VERIFIED，真实父student/ownEMA严格noquery smoke4NN PASS。C1/P1在GPU0/1正常运行，PID/CWD/argv/GPU/log增长独立核实，当前各完成4/10新增epoch（累计E24），没有技术failure。实际模块、L6300/U56700hidden/V27000、parent、CE聚合模式与原AsCE/KL各.25已读回。launch_verification.json含聚合证据，原进程/配置读数保留local_artifacts/cvs_FcrossRX_AsMarginal_E30_20261019_r01，未访问正式性能；源决定与all7评分仍待训练冻结自动收尾，不宣称已完成实验或联合目标。

@@ -9,8 +9,8 @@
   "IQ_reads": 0,
   "checkpoint_reads": 0,
   "new_channel_calls": 0,
-  "real_checkpoint_smoke": "Pending first launcher step4NN",
-  "GPU_training": "Pending",
+  "real_checkpoint_smoke": "PASS4NN verified remote; launch_verification.json",
+  "GPU_training": "VERIFIED_RUNNING; both rows 4/10 new epochs complete, no performance result",
   "known_local_runtime_warning": "Torch NumPy ABI warning; executed tests do not use tensor-numpy bridge",
   "independent_P0P1": "PASS; one static independent review, no unresolved direct P0/P1"
 }

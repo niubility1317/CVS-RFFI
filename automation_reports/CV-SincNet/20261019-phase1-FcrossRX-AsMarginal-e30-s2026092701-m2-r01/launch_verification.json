@@ -1,0 +1,96 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "run_id": "20261019-phase1-FcrossRX-AsMarginal-e30-s2026092701-m2-r01",
+  "code_commit": "cb5d8abdd7159ca5a3dad7bbf62f6b37a4c9d6fd",
+  "archive_transfer_and_compile": "VERIFIED",
+  "preflight": "VERIFIED",
+  "real_parent_noquery_smoke": {
+    "status": "PASS",
+    "NN": 4,
+    "strict_student": true,
+    "strict_ownEMA": true,
+    "source_IQ": 0,
+    "target_query": false,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0
+  },
+  "driver": {
+    "alive": true,
+    "CWD_correct": true,
+    "argv_correct": true
+  },
+  "rows": [
+    {
+      "row": "C1-s2026092701",
+      "GPU": 0,
+      "process_alive": true,
+      "CWD_correct": true,
+      "argv_correct": true,
+      "GPU_PID_present": true,
+      "log_growth": true,
+      "log_bytes": 27287,
+      "new_epochs_complete": 4,
+      "cumulative_completed_epochs": 24,
+      "model_seed": 2026092701
+    },
+    {
+      "row": "P1-s2026092701",
+      "GPU": 1,
+      "process_alive": true,
+      "CWD_correct": true,
+      "argv_correct": true,
+      "GPU_PID_present": true,
+      "log_growth": true,
+      "log_bytes": 27283,
+      "new_epochs_complete": 4,
+      "cumulative_completed_epochs": 24,
+      "model_seed": 2026092701
+    }
+  ],
+  "actual_runtime": {
+    "C1-s2026092701": {
+      "mode": "MEAN_CE",
+      "roles": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "parent": "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20",
+      "NN_extra": 0,
+      "As_CE_coefficient": 0.25,
+      "As_KL_coefficient": 0.25,
+      "new_channel_calls": 0,
+      "original_order": true,
+      "module_files": {
+        "leo_practical.channel": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+        "leo_practical.residual": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/residual.py",
+        "SSDG.train_ssdg": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py"
+      }
+    },
+    "P1-s2026092701": {
+      "mode": "PROBABILITY_MEAN_CE",
+      "roles": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "parent": "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20",
+      "NN_extra": 0,
+      "As_CE_coefficient": 0.25,
+      "As_KL_coefficient": 0.25,
+      "new_channel_calls": 0,
+      "original_order": true,
+      "module_files": {
+        "leo_practical.channel": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+        "leo_practical.residual": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/residual.py",
+        "SSDG.train_ssdg": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py"
+      }
+    }
+  },
+  "full_private_evidence": "local_artifacts/cvs_FcrossRX_AsMarginal_E30_20261019_r01/launch_verification_full.json and latest_progress.json and actual_runtime.json",
+  "source_decision_available": false,
+  "formal_metrics_read": false,
+  "performance_results_available": false,
+  "E50": false,
+  "goal_complete": false
+}
