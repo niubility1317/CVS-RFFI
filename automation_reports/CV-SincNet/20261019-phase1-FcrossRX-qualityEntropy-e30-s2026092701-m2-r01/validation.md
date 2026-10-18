@@ -7,3 +7,5 @@
 证据原路径：local_artifacts/cvs_FcrossRX_qualityEntropy_E30_20261019_r01/{protocol_checks,core_model_checks_actual,analysis_checks_actual,syntax_checks}.json。N607 ordinary只读preflight通过，项目路径存在、当时8GPU空闲；实际启动仍按共享容量锁检查，不干预其他owner。
 
 同一次独立P0/P1审查发现preflight读错nested entropy字段，已定点修正；同一次最终P0/P1 PASS已保存于local_artifacts/cvs_FcrossRX_qualityEntropy_E30_20261019_r01/p0p1_review.md，无未解决直接P0/P1。真实CP/defaulthead/ownEMA smoke1540将在发布launcher首步执行，PASS立即训练，当前尚未启动。
+
+实际发布首步真实CP/defaulthead/ownEMA smoke1540 PASS；不是toy证据替代，As CE新计算已活跃，Q/R系数多重集匹配。两worker实际GPU与来源独立核实，训练仍进行。
