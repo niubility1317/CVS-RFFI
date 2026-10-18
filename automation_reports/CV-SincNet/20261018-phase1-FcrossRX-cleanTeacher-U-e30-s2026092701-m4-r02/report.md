@@ -18,7 +18,7 @@ FROZEN_NOAS20−FROZEN_AS20检验固定同龄训练来源；FROZEN_AS20−EVOLVI
 
 数据L6300/U56700隐藏/V27000，RX1/3/4/6/8、day1/2/3、sixTX、split392005，无heldRX/Ldev。现有VALIDATED_ONCE源/固定正式IQ复用，不重验数据。25MHz/IQ256/RMS center=false，完整residual/post_sync、EQfalse⇒G1、质量适配/相位跟踪/IQ补偿开启、ref30dB、reflect；训练fc2.462GHz、正式2.45GHz保持。训练lowSub/midUrban/lowUrban各1/3，L/U流独立，RX/day硬件session稳定且不由TX定义。
 
-同一普通N607环境Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5，fullFP32/CENTER_UNITS/CPU2；CWD=PROJECT/releases/cvs_FcrossRX_clean_teacher_U_E30_20261018_r02；命令CVS-RFFI/python -u experiments/cvs_clean_teacher65/runner.py。代码 commit：FIX_COMMIT_PENDING。owner codex/root/clean-teacher65，独占PROJECT/runs/20261018-phase1-FcrossRX-cleanTeacher-U-e30-s2026092701-m4-r02。总GPU进程上限2计入所有owner，free≥12000MB；资源不足等待，不触碰其他任务。
+同一普通N607环境Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5，fullFP32/CENTER_UNITS/CPU2；CWD=PROJECT/releases/cvs_FcrossRX_clean_teacher_U_E30_20261018_r02；命令CVS-RFFI/python -u experiments/cvs_clean_teacher65/runner.py。代码 commit：603843ae58912b68ed9a8ff48fdd418c64a24231。owner codex/root/clean-teacher65，独占PROJECT/runs/20261018-phase1-FcrossRX-cleanTeacher-U-e30-s2026092701-m4-r02。总GPU进程上限2计入所有owner，free≥12000MB；资源不足等待，不触碰其他任务。
 
 停止规则仅本run协议/来源/数值/无法运行/输出冲突等技术失败，保留产物，不自动补跑。source科学FAIL不会停止评价。每row全部七预测完整后独立CPU scorer读truth；最后6logicalrows×7在truthjoin前验证。原As30/NoAs30不重新训练、预测或评分。
 
@@ -37,3 +37,5 @@ FROZEN_NOAS20−FROZEN_AS20检验固定同龄训练来源；FROZEN_AS20−EVOLVI
 依据现有cvs-experiment-workflow技术恢复与docs/workflows/n607约定，以新不可变r02完成原4行/同seed/同协议/同E30，无需把自行写入的noautomaticretry升级为额外用户许可。不是原地自动重启；同指纹修复后再次发生则停止盲重试。没有科学结果、选模或预算扩展。r01失败额外remote6NN在最终成本单列，local6656NN为共享验证一次，不双计。
 
 用户最新允许源域证据支持的好方案总E50；当前没有晋级证据，先完成原E30匹配实验。总E50不是追加50轮，正式结果不回流晋级。
+
+实际发布：代码603843ae58912b68ed9a8ff48fdd418c64a24231已提交推送，并经独立remote branch OID比对一致。唯一archive本地/remote SHA比较PASS、23py compile PASS、真实2CP/6NN no-query smoke PASS。四个own worker已核实CWD/argv/GPU、教师strict初始化及日志，均越过r01故障位置；尚无完成epoch/正式结果。原r01 remote额外6NN单列。

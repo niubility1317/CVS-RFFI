@@ -1,0 +1,41 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "code_commit": "603843ae58912b68ed9a8ff48fdd418c64a24231",
+  "one_archive_local_remote_equal": true,
+  "archive_sha256": "d8e4a99f61508daaebd197cdcb0f3635938e8700b2ac4e699d91a74dfe185d19",
+  "remote_compiled_python_files": 23,
+  "real_checkpoint_smoke": {
+    "status": "PASS",
+    "NN": 6,
+    "real_checkpoints": 2,
+    "deployment_state_keys": 206,
+    "deployment_parameters": 900722
+  },
+  "postlaunch": {
+    "four_owned_workers": 4,
+    "alive": true,
+    "cwd_and_argv_match": true,
+    "gpu_assignment": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "log_bytes": [
+      41826,
+      41922,
+      41922,
+      41946
+    ],
+    "four_teacher_initializations_complete": true,
+    "failures": [],
+    "logs_nonshrinking": true,
+    "log_growth_confirmed_rows": [
+      "FROZEN_NOAS20_EMA-s2026092701"
+    ]
+  },
+  "prior_failed_run": "20261018-phase1-FcrossRX-cleanTeacher-U-e30-s2026092701-m4-r01",
+  "prior_extra_remote_smoke_NN": 6,
+  "shared_local_real_F_NN": 6656,
+  "no_new_local_real_F_NN": true
+}
