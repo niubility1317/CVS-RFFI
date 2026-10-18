@@ -20,8 +20,16 @@
 
 轨迹为 20＋10＋20，总 E50；新增段重置 AdamW／cosine20，不称连续 cosine50。记录父训练／新增／累计成本，以及学生／教师、额外前向与读出成本。无新 Ag、分支、头、损失或门控；不是 dropout 方案的救跑。若追加预算没有源域 practical 正收益，或 clean 明显受损，则预算假设不获支持；全部固定正式评分仍按计划完成，不调参救跑或自动扩种。
 
-run `20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01` 已实际启动，执行提交 `0f399c910324e21a8b1a60346d879be5c2964a9c`。独立核实 dispatcher 1143533 和两 worker 的 PID／CWD／argv／GPU／日志增长；观察时 NoAs 累计 E35、As 累计 E33，无 failure，U 真值未读、target_access=false。远端 30 项负例、真实父 checkpoint 2 NN smoke、双真实 F 合成 1,536 NN 均 PASS。预登记、命令、路径、停止规则、实际证据见该 run 的 report.md／execution_verification.json。
+run `20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01` 已完成训练、源读出、七视图预测、独立评分和完整分析。执行提交 `0f399c910324e21a8b1a60346d879be5c2964a9c`；独立分析提交 `ab16c3848794124f8c7fdee6013e01b2a46aae73`。原训练／分析PID正常退出，无failure。504正式CM、600源CM、84分区合并验证；8880新增step与40个新增epoch全日志完成，匹配物理序列及普通增强MSE mismatch均0。详见该run的final_analysis.md与analysis_verification.json。
 
-两个 row 固定 FINAL50，分别自动完成 source 读出与 clean＋六 practical 全部预测，再独立 truth-last 评分。报告各自 E50−E30、As50−NoAs50 以及预算交互，准确率／宏 F1／最差 RX／修复和新增错误／全部种子与成本。源或正式结果不反向修改本轮配方。当前 E50 未完成，无性能结论，无阶段通过或稳定双提升证据。
+两个 row 固定 FINAL50，分别自动完成 source 读出与 clean＋六 practical 全部预测，再独立 truth-last 评分。报告各自 E50−E30、As50−NoAs50 以及预算交互，准确率／宏 F1／最差 RX／修复和新增错误／全部种子与成本。源或正式结果不反向修改本轮配方。E50 单种子正式 As−NoAs clean +0.365476 pp、mid／low +29.864881／+22.508929 pp、urban均值+30.707738 pp，本种子阶段通过。相对As自己的E30，clean／mid／low分别+0.319643／+1.095238／+1.143452 pp；NoAs自身新增预算clean+0.047619 pp、mid／low−1.095833／−0.261310 pp，不能把全部匹配差值归给新增预算。
 
 另一对话已放弃重复 E50 实现并复用本侧；它运行的是连续 cosine30 的单 As 技术补跑，与本次 20＋10＋20 不同。健康任务不修改。automatic_seed_extension=false。
+
+## E50 已完成结果与尚未解决的问题
+
+源 full V27000 As50−NoAs50 clean −0.074074 pp；As50−As30 full V clean +0.118519 pp、V1800两draw mid／low +1.972222／+1.638889 pp，源两场均值+1.805556 pp、预算交互+1.472222 pp。固定预算假设获得该种子源域身份性能支持；不以正式分数作为晋级或调参依据。V1800 clean As50−NoAs50 −0.166667 pp 单列，不将panel与全V混为同一口径。
+
+As50 clean85.660714%、mid urban63.901786%、low urban52.387500%、urban均值65.010913%。三个suburban与clean差距3.421429／6.104167／8.884524 pp；平均准确率较As30均上升，但low suburban最差RX下降0.116667 pp。新增两行40model-epochs／8880更新，全部新增训练／读出＋sharedsmoke实测14,922,586 NN；历史E30两行18,298,572 NN另列。训练是20+10+20/resetcos20，非连续cos50。
+
+本次技术交付完整，但只有seed2026092701，尚无可重复双提升证据。下一唯一未检验命题是固定预算收益在原定其他模型种子能否复现；当前run仍automatic_seed_extension=false，未启动额外种子。多种子须保持原顺序、参数／数据／默认头／固定FINAL50及匹配NoAs，不挑最好seed或据正式分数救跑。原E30三种子负clean均值保留，目标继续active。

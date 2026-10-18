@@ -128,60 +128,32 @@
     "local_artifact_root": "local_artifacts/F_As_budget_E50_20261018",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_practical_budget50/runner.py;local publish: CVS-RFFI/python -m experiments.cvs_practical_budget50.publish",
     "stop_rule": "Run-owned source/data/parent/defaulthead/config mismatch,nonfinite,output collision,unlaunchable or illegal prediction => preserve outputs and stop unlaunched own rows;healthy already running rows finish;no automatic retry,no source-scientific-failure skip of fixed formal closure;never stop other owners",
-    "status": "RUNNING",
+    "status": "ANALYZED",
     "release_commit": "0f399c910324e21a8b1a60346d879be5c2964a9c",
-    "last_observed_at": "2026-10-18T03:56:37.970Z",
+    "last_observed_at": "2026-10-18T04:27:23.610Z",
     "dispatcher_pid": 1143533,
     "workers": [
       {
         "row_id": "B00-s2026092701",
         "pid": 1143555,
         "gpu": 1,
-        "alive": true,
-        "phase": "worker",
-        "cwd_matches": true,
-        "argv_matches": true,
-        "GPU_env_matches": true,
-        "GPU_observed": true,
-        "log_growth_bytes_from_first_observation": 25774,
-        "completed_new_epochs": 5,
-        "cumulative_epochs": 35,
-        "new_updates": 1110,
-        "cumulative_updates": 7770,
-        "new_segment_L_NN": 852480,
-        "new_segment_L_As": 0,
-        "extra_U_NN": 0,
-        "U_As": 0,
-        "U_truth_read": false,
-        "target_access": false,
-        "source_complete": false,
-        "predictions_complete": false,
-        "scoring_complete": false
+        "alive": false,
+        "cumulative_epochs": 50,
+        "cumulative_updates": 11100,
+        "source_complete": true,
+        "prediction_complete": true,
+        "scoring_complete": true
       },
       {
         "row_id": "B01-s2026092701",
         "pid": 1143703,
         "gpu": 2,
-        "alive": true,
-        "phase": "worker",
-        "cwd_matches": true,
-        "argv_matches": true,
-        "GPU_env_matches": true,
-        "GPU_observed": true,
-        "log_growth_bytes_from_first_observation": 15466,
-        "completed_new_epochs": 3,
-        "cumulative_epochs": 33,
-        "new_updates": 666,
-        "cumulative_updates": 7326,
-        "new_segment_L_NN": 511488,
-        "new_segment_L_As": 42624,
-        "extra_U_NN": 0,
-        "U_As": 0,
-        "U_truth_read": false,
-        "target_access": false,
-        "source_complete": false,
-        "predictions_complete": false,
-        "scoring_complete": false
+        "alive": false,
+        "cumulative_epochs": 50,
+        "cumulative_updates": 11100,
+        "source_complete": true,
+        "prediction_complete": true,
+        "scoring_complete": true
       }
     ]
   },
@@ -996,5 +968,257 @@
     "Registration codecommit is actual implementation identity115dc1c9e5d7d392e820d6230bbf66aaae08f8bc;release_commit records final code+registration HEAD. No design/config/member hashes or extra review.",
     "Actual release0f399c910324e21a8b1a60346d879be5c2964a9c running independently verified;remote30negatives+2NNCP+1536NNsynthetic PASS;new E50 scores not available."
   ],
-  "registered_at": "2026-10-18T03:39:59+00:00"
+  "registered_at": "2026-10-18T03:39:59+00:00",
+  "results": {
+    "status": "ANALYZED",
+    "model_seeds": [
+      2026092701
+    ],
+    "new_training_rows": 2,
+    "reused_E30_rows": 2,
+    "accuracy_pct": {
+      "NOAS30": {
+        "accuracy_pct": {
+          "clean": 85.24761904761905,
+          "practical_high": 42.68511904761905,
+          "practical_mid": 40.99523809523809,
+          "practical_low_suburban": 39.47261904761905,
+          "practical_high_urban": 41.43988095238095,
+          "practical_mid_urban": 35.132738095238096,
+          "practical_low_urban": 30.139880952380953
+        },
+        "urban_mean_accuracy_pct": 35.57083333333333
+      },
+      "AS30": {
+        "accuracy_pct": {
+          "clean": 85.34107142857142,
+          "practical_high": 81.40535714285714,
+          "practical_mid": 78.66130952380952,
+          "practical_low_suburban": 75.86190476190477,
+          "practical_high_urban": 77.76726190476191,
+          "practical_mid_urban": 62.80654761904761,
+          "practical_low_urban": 51.24404761904762
+        },
+        "urban_mean_accuracy_pct": 63.93928571428571
+      },
+      "NOAS50": {
+        "accuracy_pct": {
+          "clean": 85.29523809523809,
+          "practical_high": 39.95238095238095,
+          "practical_mid": 39.14047619047619,
+          "practical_low_suburban": 38.218452380952385,
+          "practical_high_urban": 38.99404761904762,
+          "practical_mid_urban": 34.036904761904765,
+          "practical_low_urban": 29.878571428571426
+        },
+        "urban_mean_accuracy_pct": 34.303174603174604
+      },
+      "AS50": {
+        "accuracy_pct": {
+          "clean": 85.66071428571429,
+          "practical_high": 82.23928571428571,
+          "practical_mid": 79.55654761904762,
+          "practical_low_suburban": 76.77619047619048,
+          "practical_high_urban": 78.74345238095238,
+          "practical_mid_urban": 63.90178571428572,
+          "practical_low_urban": 52.387499999999996
+        },
+        "urban_mean_accuracy_pct": 65.0109126984127
+      }
+    },
+    "stage": {
+      "clean_delta_pp": 0.36547619047619045,
+      "clean_absolute_0p1pp_guard_met": true,
+      "clean_net_repairs": 614,
+      "clean_positive_observed": true,
+      "positive_below_0p1pp_is_micro_observation": false,
+      "midurban_gain_pp": 29.864880952380954,
+      "lowurban_gain_pp": 22.508928571428573,
+      "urban_mean_gain_pp": 30.707738095238096,
+      "repeatable_clean_gain_proven": false
+    },
+    "comparisons": {
+      "AS50__NOAS50": {
+        "clean": {
+          "accuracy_delta_pp": 0.36547619047619045,
+          "macro_F1_delta_pp": 0.37158555414391614,
+          "worst_RX_delta_pp": 1.5458333333333352
+        },
+        "practical_high": {
+          "accuracy_delta_pp": 42.286904761904765,
+          "macro_F1_delta_pp": 47.86334928802095,
+          "worst_RX_delta_pp": 39.06666666666667
+        },
+        "practical_mid": {
+          "accuracy_delta_pp": 40.41607142857143,
+          "macro_F1_delta_pp": 45.254318706277445,
+          "worst_RX_delta_pp": 38.083333333333336
+        },
+        "practical_low_suburban": {
+          "accuracy_delta_pp": 38.55773809523809,
+          "macro_F1_delta_pp": 42.773401175643315,
+          "worst_RX_delta_pp": 36.38333333333333
+        },
+        "practical_high_urban": {
+          "accuracy_delta_pp": 39.74940476190476,
+          "macro_F1_delta_pp": 44.71075559646291,
+          "worst_RX_delta_pp": 36.94166666666667
+        },
+        "practical_mid_urban": {
+          "accuracy_delta_pp": 29.864880952380954,
+          "macro_F1_delta_pp": 32.7335081547756,
+          "worst_RX_delta_pp": 28.579166666666662
+        },
+        "practical_low_urban": {
+          "accuracy_delta_pp": 22.508928571428573,
+          "macro_F1_delta_pp": 24.006106630555095,
+          "worst_RX_delta_pp": 21.3875
+        },
+        "urban_mean_accuracy_delta_pp": 30.707738095238096
+      },
+      "AS30__NOAS30": {
+        "clean": {
+          "accuracy_delta_pp": 0.09345238095238095,
+          "macro_F1_delta_pp": 0.0648386280261648,
+          "worst_RX_delta_pp": -0.08749999999999591
+        },
+        "practical_high": {
+          "accuracy_delta_pp": 38.720238095238095,
+          "macro_F1_delta_pp": 41.77281413198613,
+          "worst_RX_delta_pp": 37.60416666666666
+        },
+        "practical_mid": {
+          "accuracy_delta_pp": 37.66607142857143,
+          "macro_F1_delta_pp": 40.40489275241003,
+          "worst_RX_delta_pp": 36.69166666666667
+        },
+        "practical_low_suburban": {
+          "accuracy_delta_pp": 36.38928571428571,
+          "macro_F1_delta_pp": 38.81401019508036,
+          "worst_RX_delta_pp": 35.6875
+        },
+        "practical_high_urban": {
+          "accuracy_delta_pp": 36.32738095238095,
+          "macro_F1_delta_pp": 38.942178030186774,
+          "worst_RX_delta_pp": 35.108333333333334
+        },
+        "practical_mid_urban": {
+          "accuracy_delta_pp": 27.673809523809524,
+          "macro_F1_delta_pp": 29.00386032096618,
+          "worst_RX_delta_pp": 26.9625
+        },
+        "practical_low_urban": {
+          "accuracy_delta_pp": 21.104166666666668,
+          "macro_F1_delta_pp": 21.702445666523822,
+          "worst_RX_delta_pp": 20.629166666666666
+        },
+        "urban_mean_accuracy_delta_pp": 28.36845238095238
+      },
+      "AS50__AS30": {
+        "clean": {
+          "accuracy_delta_pp": 0.3196428571428571,
+          "macro_F1_delta_pp": 0.33657271805925815,
+          "worst_RX_delta_pp": 0.6624999999999992
+        },
+        "practical_high": {
+          "accuracy_delta_pp": 0.8339285714285715,
+          "macro_F1_delta_pp": 0.9469775285483539,
+          "worst_RX_delta_pp": 0.37083333333334245
+        },
+        "practical_mid": {
+          "accuracy_delta_pp": 0.8952380952380953,
+          "macro_F1_delta_pp": 0.9823963081663889,
+          "worst_RX_delta_pp": 0.07500000000000284
+        },
+        "practical_low_suburban": {
+          "accuracy_delta_pp": 0.9142857142857143,
+          "macro_F1_delta_pp": 0.9512107388041757,
+          "worst_RX_delta_pp": -0.11666666666666492
+        },
+        "practical_high_urban": {
+          "accuracy_delta_pp": 0.9761904761904762,
+          "macro_F1_delta_pp": 1.097800807816085,
+          "worst_RX_delta_pp": 0.6000000000000005
+        },
+        "practical_mid_urban": {
+          "accuracy_delta_pp": 1.0952380952380953,
+          "macro_F1_delta_pp": 1.0858844818475877,
+          "worst_RX_delta_pp": 0.7874999999999965
+        },
+        "practical_low_urban": {
+          "accuracy_delta_pp": 1.1434523809523809,
+          "macro_F1_delta_pp": 0.9616490179032988,
+          "worst_RX_delta_pp": 0.854166666666667
+        },
+        "urban_mean_accuracy_delta_pp": 1.0716269841269843
+      },
+      "NOAS50__NOAS30": {
+        "clean": {
+          "accuracy_delta_pp": 0.047619047619047616,
+          "macro_F1_delta_pp": 0.029825791941506807,
+          "worst_RX_delta_pp": -0.9708333333333319
+        },
+        "practical_high": {
+          "accuracy_delta_pp": -2.732738095238095,
+          "macro_F1_delta_pp": -5.143557627486467,
+          "worst_RX_delta_pp": -1.0916666666666686
+        },
+        "practical_mid": {
+          "accuracy_delta_pp": -1.8547619047619048,
+          "macro_F1_delta_pp": -3.867029645701031,
+          "worst_RX_delta_pp": -1.316666666666666
+        },
+        "practical_low_suburban": {
+          "accuracy_delta_pp": -1.2541666666666667,
+          "macro_F1_delta_pp": -3.0081802417587844,
+          "worst_RX_delta_pp": -0.8124999999999993
+        },
+        "practical_high_urban": {
+          "accuracy_delta_pp": -2.4458333333333333,
+          "macro_F1_delta_pp": -4.670776758460049,
+          "worst_RX_delta_pp": -1.2333333333333363
+        },
+        "practical_mid_urban": {
+          "accuracy_delta_pp": -1.0958333333333334,
+          "macro_F1_delta_pp": -2.643763351961831,
+          "worst_RX_delta_pp": -0.8291666666666642
+        },
+        "practical_low_urban": {
+          "accuracy_delta_pp": -0.2613095238095238,
+          "macro_F1_delta_pp": -1.3420119461279745,
+          "worst_RX_delta_pp": 0.09583333333333388
+        },
+        "urban_mean_accuracy_delta_pp": -1.2676587301587303
+      }
+    },
+    "budget_interaction_pp": {
+      "clean": 0.2720238095238095,
+      "practical_high": 3.56666666666667,
+      "practical_mid": 2.75,
+      "practical_low_suburban": 2.168452380952381,
+      "practical_high_urban": 3.4220238095238145,
+      "practical_mid_urban": 2.19107142857143,
+      "practical_low_urban": 1.404761904761905,
+      "urban_mean": 2.3392857142857153
+    },
+    "source_budget": {
+      "fullV_As50_minus_NoAs50_clean_pp": -0.07407407407408195,
+      "fullV_As50_minus_As30_clean_pp": 0.1185185185185178,
+      "As50_minus_As30_midurban_pp": 1.9722222222222197,
+      "As50_minus_As30_lowurban_pp": 1.6388888888888897,
+      "As50_minus_As30_midlowmean_pp": 1.8055555555555491,
+      "midlow_budget_interaction_pp": 1.4722222222222137
+    },
+    "new_total_NN_including_shared_smoke": 14922586,
+    "parent_training_and_readouts_NN": 18298572,
+    "new_model_epochs": 40,
+    "new_updates": 8880,
+    "repeated_clean_gain_proven": false,
+    "target_feedback": false,
+    "technical_missing_items": [],
+    "scientific_missing_items": [
+      "Other fixed modelseeds at E50"
+    ],
+    "report": "final_analysis.md"
+  }
 }

@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_WAITING_SOURCE",
+  "status": "ANALYZED_VERIFIED",
   "training_run": "20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01",
   "analysis_release": "cvs_F_practical_budget50_analysis_20261018_r01",
   "output_name": "analysis_auto_r01",
@@ -32,20 +32,56 @@
   "CUDA_hidden": true,
   "CPU2": true,
   "observed_state": {
-    "status": "WAIT_SOURCE",
-    "live_owned_PIDs": [
-      1143533,
-      1143555,
-      1143703
-    ],
-    "observation_unknown": false,
-    "truth_opened": false,
-    "NN": 0
+    "status": "ANALYZED",
+    "NN": 0,
+    "truth_opened": true
   },
-  "observed_at": "2026-10-18T04:03:44.841Z",
+  "observed_at": "2026-10-18T04:27:53.186Z",
   "failure": null,
   "stdout_bytes": 0,
   "stderr_bytes": 0,
   "evidence": "Private launch.json and independent postlaunch.json,immutable analysis_auto_r01;one archive SHA comparison;no rehash/member receipts",
-  "formal_scores_read": false
+  "formal_scores_read": true,
+  "alive": false,
+  "complete": {
+    "status": "ANALYZED",
+    "training_run": "20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01",
+    "analysis_code_commit": "ab16c3848794124f8c7fdee6013e01b2a46aae73",
+    "source_complete": true,
+    "formal_complete": true,
+    "log_records_complete": true,
+    "model_seed_count": 1,
+    "new_model_rows": 2,
+    "reused_model_rows": 2,
+    "NN": 0,
+    "IQ": 0,
+    "CP": 0,
+    "updates": 0,
+    "training_processes_untouched": true,
+    "pipeline_wall_including_wait_seconds": 1299.683211790165,
+    "repeatable_clean_positive_proven": false,
+    "goal_complete": false
+  },
+  "all4_rows_7views_fixed_before_truth": true,
+  "source_and_full_logs_first": true,
+  "independent_formal_CM": 504,
+  "partition_reconciliations": 84,
+  "new_step_records": 8880,
+  "new_epoch_records": 40,
+  "physical_stream_mismatch": 0,
+  "ordinary_MSE_mismatch": 0,
+  "collection": {
+    "status": "VERIFIED",
+    "file_count": 11,
+    "archive_SHA256": "c9ec3ca193837febd2d635d219bb5069c923beed056911754269f94d176f12fc",
+    "stage": "final",
+    "NN": 0,
+    "IQ_reads": 0,
+    "CP_reads": 0,
+    "truth_reads": 0
+  },
+  "source_CM": 600,
+  "technical_missing_items": [],
+  "model_seed_count": 1,
+  "repeatability_proven": false
 }

@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_RUNNING",
+  "status": "ANALYZED",
   "code_commit": "115dc1c9e5d7d392e820d6230bbf66aaae08f8bc",
   "evidence_date": "2026-10-18",
   "local_implementation_checks": {
@@ -25,11 +25,11 @@
   "remote_preflight": "VERIFIED",
   "remote_transfer": "VERIFIED_ONE_ARCHIVE_SHA_COMPARISON",
   "remote_compile": "PASS",
-  "actual_training": "RUNNING_VERIFIED",
-  "frozen_source": "NOT_COMPLETE",
-  "formal_predictions": "NOT_STARTED",
-  "independent_truth_last_scoring": "NOT_STARTED",
-  "analysis": "IMPLEMENTING_ZERO_NN_POSTPROCESS",
+  "actual_training": "VERIFIED_COMPLETE_E50_BOTH_ROWS",
+  "frozen_source": "COMPLETE",
+  "formal_predictions": "COMPLETE_ALL7_PERROW",
+  "independent_truth_last_scoring": "COMPLETE",
+  "analysis": "ANALYZED_VERIFIED",
   "formal_scores_read_for_E50_selection": false,
   "target_feedback": false,
   "automatic_seed_extension": false,
@@ -45,5 +45,8 @@
     "status": "PASS"
   },
   "execution_evidence": "execution_verification.json",
-  "last_observed_at": "2026-10-18T03:56:37.970Z"
+  "last_observed_at": "2026-10-18T04:27:53.186Z",
+  "model_seed_count": 1,
+  "repeatability_proven": false,
+  "technical_missing_items": []
 }

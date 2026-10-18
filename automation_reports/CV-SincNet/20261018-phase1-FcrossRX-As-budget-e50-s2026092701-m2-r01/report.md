@@ -1,6 +1,6 @@
 # 原完整 practical 配方：E30 至 E50 匹配预算验证
 
-当前状态：**已在 N607 启动并独立核实运行。** 实际训练 release 提交为 `0f399c910324e21a8b1a60346d879be5c2964a9c`；实现提交为 `115dc1c9e5d7d392e820d6230bbf66aaae08f8bc`。一次独立 P0/P1 审查 PASS，远端 30 项协议负例、真实父 checkpoint 的 2 NN 无 query smoke、两行真实 F 的 1,536 NN 合成检查均 PASS。E50 训练和正式结果尚未完成。
+当前状态：**ANALYZED，训练、源读出、七视图冻结预测、独立评分和完整分析全部完成。** 单种子 As50 相对 NoAs50：clean +0.365476 pp、mid／low urban +29.864881／+22.508929 pp。本种子阶段 clean 要求通过；未证明可重复双提升。完整六场、F1／最差RX、配对错误、预算交互、源结果与成本见 [final_analysis.md](final_analysis.md)。
 
 本次依据用户 2026-10-18 的明确授权“对于表现好的，可以跑 E50 更多预算，看看有没有提升”，研究原完整 As 的预算收益。唯一假设是：在其余配方保持不变时，原完整 As 各自固定 FINAL30 追加 20 轮，可进一步改善 low／mid urban，并在累计 E50 的匹配 NoAs 对照下控制 clean 代价。此处不新增 Ag、结构、损失或门控，不是 satelliteDropout 候选的救跑，也不依赖该候选的分析恢复。
 
@@ -76,7 +76,7 @@ source 报告 full V27000 clean 及各源 RX 准确率；固定 V1800 两 draw �
 
 发布器拒绝覆盖既存 release／archive／run；一次 N607 preflight、一次 archive 本地／远端 SHA 比较、一次远端编译。launcher 首步真实 no-query smoke PASS 后直接继续。启动后独立核对 PID／CWD／argv／GPU／日志增长。仅遇本 run 的契约／父权重／头／数值／输出冲突／非法预测／不能运行等系统性技术错误时保留现场并停止尚未启动的本 run 行，不自动重跑，不停止其他健康任务。
 
-预期产物为父权重来源／args／完整日志与 checkpoint／source_frozen、源 panel 读出、全部七视图不可变预测、独立评分、成本与配对分析。自动汇总只到 SCORED_COMPLETE_PENDING_FULL_LOG_ANALYSIS；完成独立全日志与逐包配对分析后才可写 ANALYZED。当前已有实际训练日志及初始化产物；FINAL50、源读出、正式预测及评分尚未完成。
+预期产物为父权重来源／args／完整日志与 checkpoint／source_frozen、源 panel 读出、全部七视图不可变预测、独立评分、成本与配对分析。自动汇总只到 SCORED_COMPLETE_PENDING_FULL_LOG_ANALYSIS；完成独立全日志与逐包配对分析后才可写 ANALYZED。启动观察时已有实际训练日志及初始化产物，当时 FINAL50／源读出／正式评分尚未完成；现均已完成，见最终交付。
 
 ## 实际运行证据
 
@@ -95,4 +95,8 @@ source 报告 full V27000 clean 及各源 RX 准确率；固定 V1800 两 draw �
 
 源 V1800 两 draw 独立重算仅核对已有 source_matrix_decision，不增加科学晋级门槛；源结果为负仍执行已登记正式收尾。全部四逻辑行×七视图预测固定且独立评分完成后，分析才连接正式 truth，复核 CM／accuracy／F1／最差 RX、RX／day／TX 分区、四组配对修复和新增错误、预算交互与实测成本。源全 V27000 仅引用冻结原生指标，不虚构逐包重算。
 
-新增分析 0 NN／0 IQ／0 checkpoint／0 更新，CUDA 隐藏、CPU 2 线程，不修改模型／训练／预测／评分。真实任务全部终止而必要产物缺失时记录准确缺项并退出，不无限等待、不自动重试。仅收集公开汇总 JSON／CSV／Markdown，可选图；私有 IDs／NPZ／IQ／权重／原始日志不进入 Git。合成检查 9 项最终一次整套 PASS（7.868 s），四文件编译与 diff 检查 PASS；实际分析 release 提交 `ab16c3848794124f8c7fdee6013e01b2a46aae73` 已发布；一次 archive SHA 比较、远端编译和 9 项检查均 PASS。独立核实 PID 1152061 存活，CWD／argv 一致、CUDA 隐藏／CPU2，目前 WAIT_SOURCE、truth_opened=false、failure=null。详见 analysis_verification.json。
+新增分析 0 NN／0 IQ／0 checkpoint／0 更新，CUDA 隐藏、CPU 2 线程，不修改模型／训练／预测／评分。真实任务全部终止而必要产物缺失时记录准确缺项并退出，不无限等待、不自动重试。仅收集公开汇总 JSON／CSV／Markdown，可选图；私有 IDs／NPZ／IQ／权重／原始日志不进入 Git。合成检查 9 项最终一次整套 PASS（7.868 s），四文件编译与 diff 检查 PASS；实际分析 release 提交 `ab16c3848794124f8c7fdee6013e01b2a46aae73` 已发布；一次 archive SHA 比较、远端编译和 9 项检查均 PASS。独立核实 PID 1152061 存活，CWD／argv 一致、CUDA 隐藏／CPU2，启动观察时为 WAIT_SOURCE、truth_opened=false、failure=null；现已 ANALYZED，全部完成后正常退出。详见 analysis_verification.json。
+
+## 最终交付
+
+完整结果见 [final_analysis.md](final_analysis.md)。全部原PID正常结束，训练／评分／独立分析无技术缺项。源 full V clean 配对−0.074074 pp，As源 mid／low 自身E50−E30 +1.972222／+1.638889 pp；这些源结果与正式结果分别报告。原As E50−E30 formal clean +0.319643 pp、mid／low +1.095238／+1.143452 pp；不能把As50−NoAs50的全部收益归因于新追加20轮。只有seed01，不作稳定结论、不按正式分数救跑或自动扩种。
