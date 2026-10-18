@@ -68,3 +68,7 @@ NOAS/AS_NATIVE/AS_IID/AS_LHS 分别在 GPU0/1/2/3，owned PID/CWD/argv/CUDA/CPU2
 ## 终态分析准备
 
 已实现独立全量复算、报告及标准结果图程序，未改运行中的训练包。复算覆盖原生CSV/JSONL/observer全部epoch、2220step、L/U物理出现、原损失尺度/前向成本，以及各As全部2220×128阴影记录与原L序列、条件组/概率区间/逆CDF/native状态计数；正式分数必须等待已冻结源矩阵及完整七视图评分后读取。12项合成反例通过，能拒绝错包、错误z、缺记录与单个lowurban draw不足却宣称通过；0原IQ/CP/NN/更新/truth。程序已编译，真实终态分析尚未执行，不把合成验证称为科学结果。
+
+## 首行完整源训练已完成
+
+NOAS行已完成E30/累计6660更新、新增2220更新，全部七视图预测后进入原CPU独立score进程（同PID、预登记--score参数、CUDA隐藏、CWD匹配）。主分析未读取正式分数；三条As仍运行，不停止或改配方。独立完整读取NOAS全部2220step/10epoch/4440LU记录/reference/Sincunit及stdout；CSV/JSONL/observer各10轮、每轮680字段全部一致。实际L曝光284160、U567000，唯一L6300/U56700，5RX/3day全部保留，Utruth始终0；原监督尺度最大复算差1.3560056677519583e−7。没有As视图或额外头训练。该结果仅证明对照训练与成本完整，不证明新As或联合收益。[单行完整源分析](NOAS_source_analysis.json)。
