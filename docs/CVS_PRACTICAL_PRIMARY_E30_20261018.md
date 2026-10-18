@@ -244,3 +244,12 @@ tailNoU已实际启动：代码 17cc611299091815ea71f744a32dcac96818ca4b；dispa
 
 
 LRaw已实际启动：代码 d14450bf1b0d12cc281df1f4d0e79e8760e48282；双own20+10 worker1444640/1444720在GPU0/1，首步1540NN真实烟测PASS，原U/EMA/ordinary factory实际开关与源物理角色匹配。自动all7/独立truth-last及0NN分析1445589已接通；性能尚未产生，source先读规则不变。
+
+
+## LRaw E30 完成与源域支持的 E50 延长
+
+LRaw30已ANALYZED，代码 d14450bf1b0d12cc281df1f4d0e79e8760e48282，两条各2220新增更新、全部all7与4逻辑独立重计504CM/84partition完成，无技术缺项。source先读归档2188eb7864e49d75940239842b4ae463e1c9af7c3c059aedf9002d40e96307f2；newAs−newNoAs fullVclean−.029630pp、midlownewAs−oldAs＋1.138889pp，两固定规则PASS。先保存源决定并登记 20261018-phase1-FcrossRX-LRaw-e50-s2026092701-m2-r01 两条own30+20，再读取formal；新50不改参数/seed，不由formal救跑。
+
+正式n1新As clean84.352381%、midurban62.907143%、lowurban51.597619%、urbanmean64.023810%；对匹配newNoAs clean＋1.633929pp（stage界限n1PASS）、mid＋29.510119、low＋23.147024pp。但newNoAs自身clean对oldNoAs下降2.529167pp，新As对oldAs clean−.988690pp，mid＋.100595、low＋.353571、urbanmean＋.084524pp；不能将stage相对差写成clean保护/重复双提升。六practical变化与F1/最差RX/逐RXdayTX/错误/交互/自clean差在完整报告中保留。
+
+本次新增8704668NN含1540smoke，20modelE/4440newupdates；每新tail学生2271960NN、教师567000NN、nativeeval324002NN，原ordinary计算284160输出/row仍执行并丢弃。父20和旧30成本复用不重复收费，source预测wall未单独保存如实披露。E50已PLANNED实现中，当前无该50训练/评分结果。完整[报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-LRaw-e30-s2026092701-m2-r01/final_analysis.md)。

@@ -1,0 +1,6623 @@
+{
+  "run_id": "20261018-phase1-FcrossRX-LRaw-e30-s2026092701-m2-r01",
+  "model_seed": 2026092701,
+  "model_seed_count": 1,
+  "conditions": [
+    "NOAS30",
+    "AS30",
+    "LRAW_NOAS30",
+    "LRAW_AS30"
+  ],
+  "views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "formal_summary": {
+    "NOAS30": {
+      "views": {
+        "clean": {
+          "arm": "NOAS30",
+          "row_id": "B00-s2026092701",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 143216,
+          "accuracy": 0.8524761904761905,
+          "macro_f1": 0.8497963552844369,
+          "worst_RX_accuracy": 0.7845
+        },
+        "practical_high": {
+          "arm": "NOAS30",
+          "row_id": "B00-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_high",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 71711,
+          "accuracy": 0.42685119047619047,
+          "macro_f1": 0.39311416060035437,
+          "worst_RX_accuracy": 0.3430416666666667
+        },
+        "practical_mid": {
+          "arm": "NOAS30",
+          "row_id": "B00-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_mid",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 68872,
+          "accuracy": 0.40995238095238096,
+          "macro_f1": 0.37954812975732044,
+          "worst_RX_accuracy": 0.33520833333333333
+        },
+        "practical_low_suburban": {
+          "arm": "NOAS30",
+          "row_id": "B00-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_low_suburban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 66314,
+          "accuracy": 0.39472619047619045,
+          "macro_f1": 0.3675873064140263,
+          "worst_RX_accuracy": 0.32054166666666667
+        },
+        "practical_high_urban": {
+          "arm": "NOAS30",
+          "row_id": "B00-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_high_urban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 69619,
+          "accuracy": 0.41439880952380953,
+          "macro_f1": 0.38481029593664823,
+          "worst_RX_accuracy": 0.34
+        },
+        "practical_mid_urban": {
+          "arm": "NOAS30",
+          "row_id": "B00-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_mid_urban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 59023,
+          "accuracy": 0.351327380952381,
+          "macro_f1": 0.33446602839273654,
+          "worst_RX_accuracy": 0.2949583333333333
+        },
+        "practical_low_urban": {
+          "arm": "NOAS30",
+          "row_id": "B00-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_low_urban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 50635,
+          "accuracy": 0.30139880952380954,
+          "macro_f1": 0.29184589471739925,
+          "worst_RX_accuracy": 0.2575
+        }
+      },
+      "urban_mean_accuracy": 0.35570833333333335,
+      "prediction_NN": 1176002,
+      "prediction_wall_seconds": 48.08935279189609,
+      "reused": true
+    },
+    "AS30": {
+      "views": {
+        "clean": {
+          "arm": "AS30",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 143373,
+          "accuracy": 0.8534107142857142,
+          "macro_f1": 0.8504447415646985,
+          "worst_RX_accuracy": 0.783625
+        },
+        "practical_high": {
+          "arm": "AS30",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_high",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 136761,
+          "accuracy": 0.8140535714285714,
+          "macro_f1": 0.8108423019202157,
+          "worst_RX_accuracy": 0.7190833333333333
+        },
+        "practical_mid": {
+          "arm": "AS30",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_mid",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 132151,
+          "accuracy": 0.7866130952380952,
+          "macro_f1": 0.7835970572814207,
+          "worst_RX_accuracy": 0.702125
+        },
+        "practical_low_suburban": {
+          "arm": "AS30",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_low_suburban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 127448,
+          "accuracy": 0.7586190476190476,
+          "macro_f1": 0.7557274083648299,
+          "worst_RX_accuracy": 0.6774166666666667
+        },
+        "practical_high_urban": {
+          "arm": "AS30",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_high_urban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 130649,
+          "accuracy": 0.7776726190476191,
+          "macro_f1": 0.774232076238516,
+          "worst_RX_accuracy": 0.6910833333333334
+        },
+        "practical_mid_urban": {
+          "arm": "AS30",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_mid_urban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 105515,
+          "accuracy": 0.6280654761904761,
+          "macro_f1": 0.6245046316023983,
+          "worst_RX_accuracy": 0.5645833333333333
+        },
+        "practical_low_urban": {
+          "arm": "AS30",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_low_urban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 86090,
+          "accuracy": 0.5124404761904762,
+          "macro_f1": 0.5088703513826375,
+          "worst_RX_accuracy": 0.46379166666666666
+        }
+      },
+      "urban_mean_accuracy": 0.6393928571428571,
+      "prediction_NN": 1176002,
+      "prediction_wall_seconds": 49.649732606019825,
+      "reused": true
+    },
+    "LRAW_NOAS30": {
+      "views": {
+        "clean": {
+          "arm": "LRAW_NOAS30",
+          "row_id": "B00-s2026092701",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 138967,
+          "accuracy": 0.8271845238095238,
+          "macro_f1": 0.8233747487371957,
+          "worst_RX_accuracy": 0.7505
+        },
+        "practical_high": {
+          "arm": "LRAW_NOAS30",
+          "row_id": "B00-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_high",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 69533,
+          "accuracy": 0.41388690476190476,
+          "macro_f1": 0.37473264534432266,
+          "worst_RX_accuracy": 0.30070833333333336
+        },
+        "practical_mid": {
+          "arm": "LRAW_NOAS30",
+          "row_id": "B00-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_mid",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 66627,
+          "accuracy": 0.3965892857142857,
+          "macro_f1": 0.3640980089214003,
+          "worst_RX_accuracy": 0.29370833333333335
+        },
+        "practical_low_suburban": {
+          "arm": "LRAW_NOAS30",
+          "row_id": "B00-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_low_suburban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 63634,
+          "accuracy": 0.3787738095238095,
+          "macro_f1": 0.3511804042346555,
+          "worst_RX_accuracy": 0.2848333333333333
+        },
+        "practical_high_urban": {
+          "arm": "LRAW_NOAS30",
+          "row_id": "B00-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_high_urban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 67169,
+          "accuracy": 0.3998154761904762,
+          "macro_f1": 0.3663071979916806,
+          "worst_RX_accuracy": 0.2974583333333333
+        },
+        "practical_mid_urban": {
+          "arm": "LRAW_NOAS30",
+          "row_id": "B00-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_mid_urban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 56107,
+          "accuracy": 0.33397023809523807,
+          "macro_f1": 0.31932658856744095,
+          "worst_RX_accuracy": 0.259625
+        },
+        "practical_low_urban": {
+          "arm": "LRAW_NOAS30",
+          "row_id": "B00-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_low_urban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 47797,
+          "accuracy": 0.2845059523809524,
+          "macro_f1": 0.2792400707472002,
+          "worst_RX_accuracy": 0.22520833333333334
+        }
+      },
+      "urban_mean_accuracy": 0.3394305555555555,
+      "prediction_NN": 1176002,
+      "prediction_wall_seconds": 48.29190647392534,
+      "reused": false
+    },
+    "LRAW_AS30": {
+      "views": {
+        "clean": {
+          "arm": "LRAW_AS30",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "clean",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 141712,
+          "accuracy": 0.8435238095238096,
+          "macro_f1": 0.839620344147197,
+          "worst_RX_accuracy": 0.7709166666666667
+        },
+        "practical_high": {
+          "arm": "LRAW_AS30",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_high",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 136282,
+          "accuracy": 0.811202380952381,
+          "macro_f1": 0.8079968036350769,
+          "worst_RX_accuracy": 0.7025416666666666
+        },
+        "practical_mid": {
+          "arm": "LRAW_AS30",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_mid",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 132007,
+          "accuracy": 0.7857559523809524,
+          "macro_f1": 0.7828231255389588,
+          "worst_RX_accuracy": 0.69
+        },
+        "practical_low_suburban": {
+          "arm": "LRAW_AS30",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_low_suburban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 127624,
+          "accuracy": 0.7596666666666667,
+          "macro_f1": 0.7570086850192191,
+          "worst_RX_accuracy": 0.66775
+        },
+        "practical_high_urban": {
+          "arm": "LRAW_AS30",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_high_urban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 130312,
+          "accuracy": 0.7756666666666666,
+          "macro_f1": 0.7726055222355322,
+          "worst_RX_accuracy": 0.676875
+        },
+        "practical_mid_urban": {
+          "arm": "LRAW_AS30",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_mid_urban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 105684,
+          "accuracy": 0.6290714285714286,
+          "macro_f1": 0.626721247956108,
+          "worst_RX_accuracy": 0.5599166666666666
+        },
+        "practical_low_urban": {
+          "arm": "LRAW_AS30",
+          "row_id": "B01-s2026092701",
+          "model_seed": 2026092701,
+          "view": "practical_low_urban",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "count": 168000,
+          "correct": 86684,
+          "accuracy": 0.5159761904761905,
+          "macro_f1": 0.5127545928208699,
+          "worst_RX_accuracy": 0.46458333333333335
+        }
+      },
+      "urban_mean_accuracy": 0.6402380952380953,
+      "prediction_NN": 1176002,
+      "prediction_wall_seconds": 47.518481956096366,
+      "reused": false
+    }
+  },
+  "stage": {
+    "clean_delta_pp": 1.6339285714285714,
+    "clean_net_repairs": 2745,
+    "clean_absolute_0p1pp_guard_met": true,
+    "clean_positive_observed": true,
+    "positive_below_0p1pp_is_micro_observation": false,
+    "midurban_gain_pp": 29.510119047619046,
+    "lowurban_gain_pp": 23.14702380952381,
+    "urban_mean_gain_pp": 30.08075396825397,
+    "repeatable_clean_gain_proven": false
+  },
+  "comparisons": {
+    "LRAW_AS30__LRAW_NOAS30": {
+      "clean": {
+        "accuracy_delta_pp": 1.6339285714285714,
+        "macro_F1_delta_pp": 1.6245595410001257,
+        "worst_RX_delta_pp": 2.041666666666675
+      },
+      "practical_high": {
+        "accuracy_delta_pp": 39.73154761904762,
+        "macro_F1_delta_pp": 43.32641582907542,
+        "worst_RX_delta_pp": 40.18333333333332
+      },
+      "practical_mid": {
+        "accuracy_delta_pp": 38.916666666666664,
+        "macro_F1_delta_pp": 41.87251166175585,
+        "worst_RX_delta_pp": 39.62916666666666
+      },
+      "practical_low_suburban": {
+        "accuracy_delta_pp": 38.089285714285715,
+        "macro_F1_delta_pp": 40.58282807845636,
+        "worst_RX_delta_pp": 38.291666666666664
+      },
+      "practical_high_urban": {
+        "accuracy_delta_pp": 37.585119047619045,
+        "macro_F1_delta_pp": 40.629832424385164,
+        "worst_RX_delta_pp": 37.94166666666667
+      },
+      "practical_mid_urban": {
+        "accuracy_delta_pp": 29.510119047619046,
+        "macro_F1_delta_pp": 30.7394659388667,
+        "worst_RX_delta_pp": 30.02916666666666
+      },
+      "practical_low_urban": {
+        "accuracy_delta_pp": 23.14702380952381,
+        "macro_F1_delta_pp": 23.351452207366968,
+        "worst_RX_delta_pp": 23.9375
+      },
+      "urban_mean_accuracy_delta_pp": 30.08075396825397
+    },
+    "LRAW_AS30__AS30": {
+      "clean": {
+        "accuracy_delta_pp": -0.9886904761904762,
+        "macro_F1_delta_pp": -1.082439741750152,
+        "worst_RX_delta_pp": -1.2708333333333321
+      },
+      "practical_high": {
+        "accuracy_delta_pp": -0.2851190476190476,
+        "macro_F1_delta_pp": -0.28454982851388033,
+        "worst_RX_delta_pp": -1.6541666666666677
+      },
+      "practical_mid": {
+        "accuracy_delta_pp": -0.08571428571428572,
+        "macro_F1_delta_pp": -0.07739317424618752,
+        "worst_RX_delta_pp": -1.2125000000000052
+      },
+      "practical_low_suburban": {
+        "accuracy_delta_pp": 0.10476190476190476,
+        "macro_F1_delta_pp": 0.12812766543892629,
+        "worst_RX_delta_pp": -0.9666666666666712
+      },
+      "practical_high_urban": {
+        "accuracy_delta_pp": -0.2005952380952381,
+        "macro_F1_delta_pp": -0.16265540029837267,
+        "worst_RX_delta_pp": -1.4208333333333378
+      },
+      "practical_mid_urban": {
+        "accuracy_delta_pp": 0.1005952380952381,
+        "macro_F1_delta_pp": 0.22166163537096217,
+        "worst_RX_delta_pp": -0.4666666666666708
+      },
+      "practical_low_urban": {
+        "accuracy_delta_pp": 0.3535714285714286,
+        "macro_F1_delta_pp": 0.38842414382324053,
+        "worst_RX_delta_pp": 0.07916666666666905
+      },
+      "urban_mean_accuracy_delta_pp": 0.08452380952380951
+    },
+    "LRAW_NOAS30__NOAS30": {
+      "clean": {
+        "accuracy_delta_pp": -2.529166666666667,
+        "macro_F1_delta_pp": -2.6421606547241128,
+        "worst_RX_delta_pp": -3.400000000000003
+      },
+      "practical_high": {
+        "accuracy_delta_pp": -1.2964285714285715,
+        "macro_F1_delta_pp": -1.838151525603171,
+        "worst_RX_delta_pp": -4.233333333333333
+      },
+      "practical_mid": {
+        "accuracy_delta_pp": -1.3363095238095237,
+        "macro_F1_delta_pp": -1.5450120835920123,
+        "worst_RX_delta_pp": -4.149999999999999
+      },
+      "practical_low_suburban": {
+        "accuracy_delta_pp": -1.5952380952380953,
+        "macro_F1_delta_pp": -1.6406902179370797,
+        "worst_RX_delta_pp": -3.570833333333334
+      },
+      "practical_high_urban": {
+        "accuracy_delta_pp": -1.4583333333333333,
+        "macro_F1_delta_pp": -1.8503097944967628,
+        "worst_RX_delta_pp": -4.25416666666667
+      },
+      "practical_mid_urban": {
+        "accuracy_delta_pp": -1.7357142857142858,
+        "macro_F1_delta_pp": -1.5139439825295586,
+        "worst_RX_delta_pp": -3.5333333333333328
+      },
+      "practical_low_urban": {
+        "accuracy_delta_pp": -1.6892857142857143,
+        "macro_F1_delta_pp": -1.2605823970199048,
+        "worst_RX_delta_pp": -3.229166666666666
+      },
+      "urban_mean_accuracy_delta_pp": -1.6277777777777775
+    },
+    "AS30__NOAS30": {
+      "clean": {
+        "accuracy_delta_pp": 0.09345238095238095,
+        "macro_F1_delta_pp": 0.0648386280261648,
+        "worst_RX_delta_pp": -0.08749999999999591
+      },
+      "practical_high": {
+        "accuracy_delta_pp": 38.720238095238095,
+        "macro_F1_delta_pp": 41.77281413198613,
+        "worst_RX_delta_pp": 37.60416666666666
+      },
+      "practical_mid": {
+        "accuracy_delta_pp": 37.66607142857143,
+        "macro_F1_delta_pp": 40.40489275241003,
+        "worst_RX_delta_pp": 36.69166666666667
+      },
+      "practical_low_suburban": {
+        "accuracy_delta_pp": 36.38928571428571,
+        "macro_F1_delta_pp": 38.81401019508036,
+        "worst_RX_delta_pp": 35.6875
+      },
+      "practical_high_urban": {
+        "accuracy_delta_pp": 36.32738095238095,
+        "macro_F1_delta_pp": 38.942178030186774,
+        "worst_RX_delta_pp": 35.108333333333334
+      },
+      "practical_mid_urban": {
+        "accuracy_delta_pp": 27.673809523809524,
+        "macro_F1_delta_pp": 29.00386032096618,
+        "worst_RX_delta_pp": 26.9625
+      },
+      "practical_low_urban": {
+        "accuracy_delta_pp": 21.104166666666668,
+        "macro_F1_delta_pp": 21.702445666523822,
+        "worst_RX_delta_pp": 20.629166666666666
+      },
+      "urban_mean_accuracy_delta_pp": 28.36845238095238
+    },
+    "LRAW_AS30__NOAS30": {
+      "clean": {
+        "accuracy_delta_pp": -0.8952380952380953,
+        "macro_F1_delta_pp": -1.017601113723987,
+        "worst_RX_delta_pp": -1.358333333333328
+      },
+      "practical_high": {
+        "accuracy_delta_pp": 38.43511904761905,
+        "macro_F1_delta_pp": 41.48826430347225,
+        "worst_RX_delta_pp": 35.949999999999996
+      },
+      "practical_mid": {
+        "accuracy_delta_pp": 37.580357142857146,
+        "macro_F1_delta_pp": 40.32749957816384,
+        "worst_RX_delta_pp": 35.479166666666664
+      },
+      "practical_low_suburban": {
+        "accuracy_delta_pp": 36.49404761904762,
+        "macro_F1_delta_pp": 38.94213786051928,
+        "worst_RX_delta_pp": 34.72083333333333
+      },
+      "practical_high_urban": {
+        "accuracy_delta_pp": 36.12678571428572,
+        "macro_F1_delta_pp": 38.779522629888405,
+        "worst_RX_delta_pp": 33.6875
+      },
+      "practical_mid_urban": {
+        "accuracy_delta_pp": 27.774404761904762,
+        "macro_F1_delta_pp": 29.22552195633714,
+        "worst_RX_delta_pp": 26.49583333333333
+      },
+      "practical_low_urban": {
+        "accuracy_delta_pp": 21.457738095238096,
+        "macro_F1_delta_pp": 22.090869810347062,
+        "worst_RX_delta_pp": 20.708333333333336
+      },
+      "urban_mean_accuracy_delta_pp": 28.452976190476193
+    }
+  },
+  "paired": {
+    "LRAW_AS30__LRAW_NOAS30": {
+      "clean": {
+        "count": 168000,
+        "control_correct": 138967,
+        "new_correct": 141712,
+        "repairs": 6724,
+        "new_errors": 3979,
+        "net_repairs": 2745,
+        "accuracy_delta_pp": 1.6339285714285714,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.9587336610434588,
+        "new_retention": 0.960863311361859,
+        "cohort_repairs": 3475,
+        "cohort_new_errors": 3170
+      },
+      "practical_high": {
+        "count": 168000,
+        "control_correct": 69533,
+        "new_correct": 136282,
+        "repairs": 71136,
+        "new_errors": 4387,
+        "net_repairs": 66749,
+        "accuracy_delta_pp": 39.73154761904762,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.4522050608870517,
+        "new_retention": 0.9001089263769412,
+        "cohort_repairs": 66681,
+        "cohort_new_errors": 2534
+      },
+      "practical_mid": {
+        "count": 168000,
+        "control_correct": 66627,
+        "new_correct": 132007,
+        "repairs": 70438,
+        "new_errors": 5058,
+        "net_repairs": 65380,
+        "accuracy_delta_pp": 38.916666666666664,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.4324377164562619,
+        "new_retention": 0.8687157859457044,
+        "cohort_repairs": 65717,
+        "cohort_new_errors": 3235
+      },
+      "practical_low_suburban": {
+        "count": 168000,
+        "control_correct": 63634,
+        "new_correct": 127624,
+        "repairs": 69702,
+        "new_errors": 5712,
+        "net_repairs": 63990,
+        "accuracy_delta_pp": 38.089285714285715,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.4118743715785946,
+        "new_retention": 0.8373016981342867,
+        "cohort_repairs": 64837,
+        "cohort_new_errors": 3909
+      },
+      "practical_high_urban": {
+        "count": 168000,
+        "control_correct": 67169,
+        "new_correct": 130312,
+        "repairs": 68269,
+        "new_errors": 5126,
+        "net_repairs": 63143,
+        "accuracy_delta_pp": 37.585119047619045,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.43619427996871857,
+        "new_retention": 0.8589333594011842,
+        "cohort_repairs": 63837,
+        "cohort_new_errors": 3294
+      },
+      "practical_mid_urban": {
+        "count": 168000,
+        "control_correct": 56107,
+        "new_correct": 105684,
+        "repairs": 57793,
+        "new_errors": 8216,
+        "net_repairs": 49577,
+        "accuracy_delta_pp": 29.510119047619046,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.3628505194950285,
+        "new_retention": 0.6892735448553234,
+        "cohort_repairs": 53283,
+        "cohort_new_errors": 6534
+      },
+      "practical_low_urban": {
+        "count": 168000,
+        "control_correct": 47797,
+        "new_correct": 86684,
+        "repairs": 49377,
+        "new_errors": 10490,
+        "net_repairs": 38887,
+        "accuracy_delta_pp": 23.14702380952381,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.3060901016646185,
+        "new_retention": 0.5599723494581611,
+        "cohort_repairs": 45157,
+        "cohort_new_errors": 8797
+      }
+    },
+    "LRAW_AS30__AS30": {
+      "clean": {
+        "count": 168000,
+        "control_correct": 143373,
+        "new_correct": 141712,
+        "repairs": 1719,
+        "new_errors": 3380,
+        "net_repairs": -1661,
+        "accuracy_delta_pp": -0.9886904761904762,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.9740880907161211,
+        "new_retention": 0.960863311361859,
+        "cohort_repairs": 687,
+        "cohort_new_errors": 2581
+      },
+      "practical_high": {
+        "count": 168000,
+        "control_correct": 136761,
+        "new_correct": 136282,
+        "repairs": 1964,
+        "new_errors": 2443,
+        "net_repairs": -479,
+        "accuracy_delta_pp": -0.2851190476190476,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.9011004357055078,
+        "new_retention": 0.9001089263769412,
+        "cohort_repairs": 1584,
+        "cohort_new_errors": 1726
+      },
+      "practical_mid": {
+        "count": 168000,
+        "control_correct": 132151,
+        "new_correct": 132007,
+        "repairs": 2670,
+        "new_errors": 2814,
+        "net_repairs": -144,
+        "accuracy_delta_pp": -0.08571428571428572,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.8677242766171378,
+        "new_retention": 0.8687157859457044,
+        "cohort_repairs": 2184,
+        "cohort_new_errors": 2042
+      },
+      "practical_low_suburban": {
+        "count": 168000,
+        "control_correct": 127448,
+        "new_correct": 127624,
+        "repairs": 3200,
+        "new_errors": 3024,
+        "net_repairs": 176,
+        "accuracy_delta_pp": 0.10476190476190476,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.8345645737906379,
+        "new_retention": 0.8373016981342867,
+        "cohort_repairs": 2672,
+        "cohort_new_errors": 2280
+      },
+      "practical_high_urban": {
+        "count": 168000,
+        "control_correct": 130649,
+        "new_correct": 130312,
+        "repairs": 2505,
+        "new_errors": 2842,
+        "net_repairs": -337,
+        "accuracy_delta_pp": -0.2005952380952381,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.8593243771645627,
+        "new_retention": 0.8589333594011842,
+        "cohort_repairs": 2036,
+        "cohort_new_errors": 2092
+      },
+      "practical_mid_urban": {
+        "count": 168000,
+        "control_correct": 105515,
+        "new_correct": 105684,
+        "repairs": 4695,
+        "new_errors": 4526,
+        "net_repairs": 169,
+        "accuracy_delta_pp": 0.1005952380952381,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.6878211931627751,
+        "new_retention": 0.6892735448553234,
+        "cohort_repairs": 3941,
+        "cohort_new_errors": 3733
+      },
+      "practical_low_urban": {
+        "count": 168000,
+        "control_correct": 86090,
+        "new_correct": 86684,
+        "repairs": 5983,
+        "new_errors": 5389,
+        "net_repairs": 594,
+        "accuracy_delta_pp": 0.3535714285714286,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.5563275053066696,
+        "new_retention": 0.5599723494581611,
+        "cohort_repairs": 5094,
+        "cohort_new_errors": 4572
+      }
+    },
+    "LRAW_NOAS30__NOAS30": {
+      "clean": {
+        "count": 168000,
+        "control_correct": 143216,
+        "new_correct": 138967,
+        "repairs": 1661,
+        "new_errors": 5910,
+        "net_repairs": -4249,
+        "accuracy_delta_pp": -2.529166666666667,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 1.0,
+        "new_retention": 0.9587336610434588,
+        "cohort_repairs": 0,
+        "cohort_new_errors": 5910
+      },
+      "practical_high": {
+        "count": 168000,
+        "control_correct": 71711,
+        "new_correct": 69533,
+        "repairs": 13213,
+        "new_errors": 15391,
+        "net_repairs": -2178,
+        "accuracy_delta_pp": -1.2964285714285715,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.47255893196290916,
+        "new_retention": 0.4522050608870517,
+        "cohort_repairs": 12042,
+        "cohort_new_errors": 14957
+      },
+      "practical_mid": {
+        "count": 168000,
+        "control_correct": 68872,
+        "new_correct": 66627,
+        "repairs": 13204,
+        "new_errors": 15449,
+        "net_repairs": -2245,
+        "accuracy_delta_pp": -1.3363095238095237,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.452742710311697,
+        "new_retention": 0.4324377164562619,
+        "cohort_repairs": 11996,
+        "cohort_new_errors": 14904
+      },
+      "practical_low_suburban": {
+        "count": 168000,
+        "control_correct": 66314,
+        "new_correct": 63634,
+        "repairs": 12725,
+        "new_errors": 15405,
+        "net_repairs": -2680,
+        "accuracy_delta_pp": -1.5952380952380953,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.4348955423974975,
+        "new_retention": 0.4118743715785946,
+        "cohort_repairs": 11541,
+        "cohort_new_errors": 14838
+      },
+      "practical_high_urban": {
+        "count": 168000,
+        "control_correct": 69619,
+        "new_correct": 67169,
+        "repairs": 12990,
+        "new_errors": 15440,
+        "net_repairs": -2450,
+        "accuracy_delta_pp": -1.4583333333333333,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.45797257289688303,
+        "new_retention": 0.43619427996871857,
+        "cohort_repairs": 11824,
+        "cohort_new_errors": 14943
+      },
+      "practical_mid_urban": {
+        "count": 168000,
+        "control_correct": 59023,
+        "new_correct": 56107,
+        "repairs": 11721,
+        "new_errors": 14637,
+        "net_repairs": -2916,
+        "accuracy_delta_pp": -1.7357142857142858,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.3861928834767065,
+        "new_retention": 0.3628505194950285,
+        "cohort_repairs": 10529,
+        "cohort_new_errors": 13872
+      },
+      "practical_low_urban": {
+        "count": 168000,
+        "control_correct": 50635,
+        "new_correct": 47797,
+        "repairs": 10828,
+        "new_errors": 13666,
+        "net_repairs": -2838,
+        "accuracy_delta_pp": -1.6892857142857143,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.32807088593453243,
+        "new_retention": 0.3060901016646185,
+        "cohort_repairs": 9683,
+        "cohort_new_errors": 12831
+      }
+    },
+    "AS30__NOAS30": {
+      "clean": {
+        "count": 168000,
+        "control_correct": 143216,
+        "new_correct": 143373,
+        "repairs": 3868,
+        "new_errors": 3711,
+        "net_repairs": 157,
+        "accuracy_delta_pp": 0.09345238095238095,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 1.0,
+        "new_retention": 0.9740880907161211,
+        "cohort_repairs": 0,
+        "cohort_new_errors": 3711
+      },
+      "practical_high": {
+        "count": 168000,
+        "control_correct": 71711,
+        "new_correct": 136761,
+        "repairs": 68469,
+        "new_errors": 3419,
+        "net_repairs": 65050,
+        "accuracy_delta_pp": 38.720238095238095,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.47255893196290916,
+        "new_retention": 0.9011004357055078,
+        "cohort_repairs": 63687,
+        "cohort_new_errors": 2313
+      },
+      "practical_mid": {
+        "count": 168000,
+        "control_correct": 68872,
+        "new_correct": 132151,
+        "repairs": 67279,
+        "new_errors": 4000,
+        "net_repairs": 63279,
+        "accuracy_delta_pp": 37.66607142857143,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.452742710311697,
+        "new_retention": 0.8677242766171378,
+        "cohort_repairs": 62322,
+        "cohort_new_errors": 2890
+      },
+      "practical_low_suburban": {
+        "count": 168000,
+        "control_correct": 66314,
+        "new_correct": 127448,
+        "repairs": 65618,
+        "new_errors": 4484,
+        "net_repairs": 61134,
+        "accuracy_delta_pp": 36.38928571428571,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.4348955423974975,
+        "new_retention": 0.8345645737906379,
+        "cohort_repairs": 60641,
+        "cohort_new_errors": 3402
+      },
+      "practical_high_urban": {
+        "count": 168000,
+        "control_correct": 69619,
+        "new_correct": 130649,
+        "repairs": 65141,
+        "new_errors": 4111,
+        "net_repairs": 61030,
+        "accuracy_delta_pp": 36.32738095238095,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.45797257289688303,
+        "new_retention": 0.8593243771645627,
+        "cohort_repairs": 60471,
+        "cohort_new_errors": 2991
+      },
+      "practical_mid_urban": {
+        "count": 168000,
+        "control_correct": 59023,
+        "new_correct": 105515,
+        "repairs": 53261,
+        "new_errors": 6769,
+        "net_repairs": 46492,
+        "accuracy_delta_pp": 27.673809523809524,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.3861928834767065,
+        "new_retention": 0.6878211931627751,
+        "cohort_repairs": 48838,
+        "cohort_new_errors": 5640
+      },
+      "practical_low_urban": {
+        "count": 168000,
+        "control_correct": 50635,
+        "new_correct": 86090,
+        "repairs": 44297,
+        "new_errors": 8842,
+        "net_repairs": 35455,
+        "accuracy_delta_pp": 21.104166666666668,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.32807088593453243,
+        "new_retention": 0.5563275053066696,
+        "cohort_repairs": 40294,
+        "cohort_new_errors": 7604
+      }
+    },
+    "LRAW_AS30__NOAS30": {
+      "clean": {
+        "count": 168000,
+        "control_correct": 143216,
+        "new_correct": 141712,
+        "repairs": 4101,
+        "new_errors": 5605,
+        "net_repairs": -1504,
+        "accuracy_delta_pp": -0.8952380952380953,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 1.0,
+        "new_retention": 0.960863311361859,
+        "cohort_repairs": 0,
+        "cohort_new_errors": 5605
+      },
+      "practical_high": {
+        "count": 168000,
+        "control_correct": 71711,
+        "new_correct": 136282,
+        "repairs": 68205,
+        "new_errors": 3634,
+        "net_repairs": 64571,
+        "accuracy_delta_pp": 38.43511904761905,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.47255893196290916,
+        "new_retention": 0.9001089263769412,
+        "cohort_repairs": 63692,
+        "cohort_new_errors": 2460
+      },
+      "practical_mid": {
+        "count": 168000,
+        "control_correct": 68872,
+        "new_correct": 132007,
+        "repairs": 67447,
+        "new_errors": 4312,
+        "net_repairs": 63135,
+        "accuracy_delta_pp": 37.580357142857146,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.452742710311697,
+        "new_retention": 0.8687157859457044,
+        "cohort_repairs": 62713,
+        "cohort_new_errors": 3139
+      },
+      "practical_low_suburban": {
+        "count": 168000,
+        "control_correct": 66314,
+        "new_correct": 127624,
+        "repairs": 66238,
+        "new_errors": 4928,
+        "net_repairs": 61310,
+        "accuracy_delta_pp": 36.49404761904762,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.4348955423974975,
+        "new_retention": 0.8373016981342867,
+        "cohort_repairs": 61401,
+        "cohort_new_errors": 3770
+      },
+      "practical_high_urban": {
+        "count": 168000,
+        "control_correct": 69619,
+        "new_correct": 130312,
+        "repairs": 65190,
+        "new_errors": 4497,
+        "net_repairs": 60693,
+        "accuracy_delta_pp": 36.12678571428572,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.45797257289688303,
+        "new_retention": 0.8589333594011842,
+        "cohort_repairs": 60730,
+        "cohort_new_errors": 3306
+      },
+      "practical_mid_urban": {
+        "count": 168000,
+        "control_correct": 59023,
+        "new_correct": 105684,
+        "repairs": 54465,
+        "new_errors": 7804,
+        "net_repairs": 46661,
+        "accuracy_delta_pp": 27.774404761904762,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.3861928834767065,
+        "new_retention": 0.6892735448553234,
+        "cohort_repairs": 49992,
+        "cohort_new_errors": 6586
+      },
+      "practical_low_urban": {
+        "count": 168000,
+        "control_correct": 50635,
+        "new_correct": 86684,
+        "repairs": 46249,
+        "new_errors": 10200,
+        "net_repairs": 36049,
+        "accuracy_delta_pp": 21.457738095238096,
+        "fixed_NOAS_clean_correct_count": 143216,
+        "control_retention": 0.32807088593453243,
+        "new_retention": 0.5599723494581611,
+        "cohort_repairs": 42078,
+        "cohort_new_errors": 8866
+      }
+    }
+  },
+  "lraw_interaction_pp": {
+    "clean": 1.5404761904761906,
+    "practical_high": 1.011309523809524,
+    "practical_mid": 1.250595238095238,
+    "practical_low_suburban": 1.7000000000000002,
+    "practical_high_urban": 1.2577380952380952,
+    "practical_mid_urban": 1.836309523809524,
+    "practical_low_urban": 2.0428571428571427,
+    "urban_mean": 1.712301587301587
+  },
+  "suburban_selfclean_gaps_pp": {
+    "NOAS30": {
+      "practical_high": 42.5625,
+      "practical_mid": 44.25238095238095,
+      "practical_low_suburban": 45.775000000000006
+    },
+    "AS30": {
+      "practical_high": 3.935714285714287,
+      "practical_mid": 6.6797619047619055,
+      "practical_low_suburban": 9.47916666666666
+    },
+    "LRAW_NOAS30": {
+      "practical_high": 41.3297619047619,
+      "practical_mid": 43.05952380952381,
+      "practical_low_suburban": 44.841071428571425
+    },
+    "LRAW_AS30": {
+      "practical_high": 3.232142857142861,
+      "practical_mid": 5.776785714285715,
+      "practical_low_suburban": 8.385714285714286
+    }
+  },
+  "suburban_increment_vs_oldAs": {
+    "practical_high": {
+      "clean_delta_pp": -0.9886904761904762,
+      "suburban_delta_pp": -0.2851190476190476,
+      "selfclean_gap_delta_pp": -0.7035714285714256
+    },
+    "practical_mid": {
+      "clean_delta_pp": -0.9886904761904762,
+      "suburban_delta_pp": -0.08571428571428572,
+      "selfclean_gap_delta_pp": -0.9029761904761902
+    },
+    "practical_low_suburban": {
+      "clean_delta_pp": -0.9886904761904762,
+      "suburban_delta_pp": 0.10476190476190476,
+      "selfclean_gap_delta_pp": -1.0934523809523746
+    }
+  },
+  "source": {
+    "summary": {
+      "NOAS30": {
+        "full_V_clean": 0.9835925925925926,
+        "full_V_RX_accuracy": {
+          "1": 0.9948148148148148,
+          "3": 0.9561111111111111,
+          "4": 0.9838888888888889,
+          "6": 0.9962962962962963,
+          "8": 0.9868518518518519
+        },
+        "panel": {
+          "clean": {
+            "accuracy": 0.9844444444444445,
+            "macro_F1": 0.984414688915647,
+            "worst_RX": 0.9555555555555556
+          },
+          "practical_low_suburban": {
+            "accuracy": 0.4986111111111111,
+            "macro_F1": 0.46937084017858793,
+            "worst_RX": 0.41805555555555557
+          },
+          "practical_mid_urban": {
+            "accuracy": 0.43555555555555553,
+            "macro_F1": 0.4159534611090652,
+            "worst_RX": 0.3611111111111111
+          },
+          "practical_low_urban": {
+            "accuracy": 0.3561111111111111,
+            "macro_F1": 0.34525218651445266,
+            "worst_RX": 0.30277777777777776
+          }
+        },
+        "mid_low_mean": 0.3958333333333333,
+        "mid_low_by_draw_accuracy": [
+          [
+            0.42944444444444446,
+            0.3566666666666667
+          ],
+          [
+            0.44166666666666665,
+            0.35555555555555557
+          ]
+        ],
+        "source_readout_NN": 12600
+      },
+      "AS30": {
+        "full_V_clean": 0.9825555555555555,
+        "full_V_RX_accuracy": {
+          "1": 0.9940740740740741,
+          "3": 0.9533333333333334,
+          "4": 0.9855555555555555,
+          "6": 0.9962962962962963,
+          "8": 0.9835185185185186
+        },
+        "panel": {
+          "clean": {
+            "accuracy": 0.9833333333333333,
+            "macro_F1": 0.9832994960773108,
+            "worst_RX": 0.9583333333333334
+          },
+          "practical_low_suburban": {
+            "accuracy": 0.8866666666666667,
+            "macro_F1": 0.8857159855990914,
+            "worst_RX": 0.8236111111111111
+          },
+          "practical_mid_urban": {
+            "accuracy": 0.7280555555555556,
+            "macro_F1": 0.7271982603405204,
+            "worst_RX": 0.6847222222222222
+          },
+          "practical_low_urban": {
+            "accuracy": 0.5908333333333333,
+            "macro_F1": 0.5874439367923495,
+            "worst_RX": 0.5555555555555556
+          }
+        },
+        "mid_low_mean": 0.6594444444444445,
+        "mid_low_by_draw_accuracy": [
+          [
+            0.7255555555555555,
+            0.6011111111111112
+          ],
+          [
+            0.7305555555555555,
+            0.5805555555555556
+          ]
+        ],
+        "source_readout_NN": 12600
+      },
+      "LRAW_NOAS30": {
+        "full_V_clean": 0.9834814814814815,
+        "full_V_RX_accuracy": {
+          "1": 0.9948148148148148,
+          "3": 0.9538888888888889,
+          "4": 0.9842592592592593,
+          "6": 0.997037037037037,
+          "8": 0.9874074074074074
+        },
+        "panel": {
+          "clean": {
+            "accuracy": 0.9855555555555555,
+            "macro_F1": 0.9855362209504975,
+            "worst_RX": 0.9555555555555556
+          },
+          "practical_low_suburban": {
+            "accuracy": 0.5094444444444445,
+            "macro_F1": 0.4768945518661924,
+            "worst_RX": 0.41944444444444445
+          },
+          "practical_mid_urban": {
+            "accuracy": 0.43527777777777776,
+            "macro_F1": 0.41539631704371943,
+            "worst_RX": 0.35694444444444445
+          },
+          "practical_low_urban": {
+            "accuracy": 0.35888888888888887,
+            "macro_F1": 0.35106053451983504,
+            "worst_RX": 0.30277777777777776
+          }
+        },
+        "mid_low_mean": 0.39708333333333334,
+        "mid_low_by_draw_accuracy": [
+          [
+            0.43166666666666664,
+            0.36444444444444446
+          ],
+          [
+            0.4388888888888889,
+            0.35333333333333333
+          ]
+        ],
+        "source_readout_NN": 12600
+      },
+      "LRAW_AS30": {
+        "full_V_clean": 0.9831851851851852,
+        "full_V_RX_accuracy": {
+          "1": 0.9948148148148148,
+          "3": 0.9537037037037037,
+          "4": 0.9855555555555555,
+          "6": 0.9964814814814815,
+          "8": 0.9853703703703703
+        },
+        "panel": {
+          "clean": {
+            "accuracy": 0.9833333333333333,
+            "macro_F1": 0.9833000103492912,
+            "worst_RX": 0.9583333333333334
+          },
+          "practical_low_suburban": {
+            "accuracy": 0.8955555555555555,
+            "macro_F1": 0.8946850901609785,
+            "worst_RX": 0.8458333333333333
+          },
+          "practical_mid_urban": {
+            "accuracy": 0.7377777777777778,
+            "macro_F1": 0.7373932437079267,
+            "worst_RX": 0.6930555555555555
+          },
+          "practical_low_urban": {
+            "accuracy": 0.6038888888888889,
+            "macro_F1": 0.6008621281488988,
+            "worst_RX": 0.5736111111111111
+          }
+        },
+        "mid_low_mean": 0.6708333333333334,
+        "mid_low_by_draw_accuracy": [
+          [
+            0.7355555555555555,
+            0.6083333333333333
+          ],
+          [
+            0.74,
+            0.5994444444444444
+          ]
+        ],
+        "source_readout_NN": 12600
+      }
+    },
+    "decision": {
+      "fullV_clean_vs_matched_NoAs_pp": -0.029629629629635,
+      "mid_low_mean_vs_original_As30_pp": 1.1388888888888893,
+      "clean_vs_matched_NoAs_within_absolute_0p1pp": true,
+      "mid_low_gain_at_least_0p5pp": true,
+      "source_criteria_pass": true,
+      "E50_source_eligible": true,
+      "fixed_recipe_closed": false,
+      "fullV_clean_vs_original_As30_pp": 0.06296296296296466,
+      "fullV_clean_vs_original_NoAs30_pp": -0.04074074074074119,
+      "fullV_clean_interaction_pp": 0.07407407407407085,
+      "mid_low_mean_interaction_pp": 1.0138888888888864,
+      "only_two_source_criteria": true,
+      "scientific_negative_skips_formal": false,
+      "target_scores_read": false,
+      "automatic_extension": false
+    },
+    "paired": {
+      "LRAW_AS30__LRAW_NOAS30": {
+        "clean": {
+          "count": 1800,
+          "control_correct": 1774,
+          "new_correct": 1770,
+          "repairs": 4,
+          "new_errors": 8,
+          "net_repairs": -4,
+          "accuracy_delta_pp": -0.2222222222222222,
+          "fixed_NOAS_clean_correct_count": 1772,
+          "control_retention": 0.9988713318284425,
+          "new_retention": 0.9960496613995485,
+          "cohort_repairs": 2,
+          "cohort_new_errors": 7
+        },
+        "practical_low_suburban": {
+          "count": 3600,
+          "control_correct": 1834,
+          "new_correct": 3224,
+          "repairs": 1466,
+          "new_errors": 76,
+          "net_repairs": 1390,
+          "accuracy_delta_pp": 38.611111111111114,
+          "fixed_NOAS_clean_correct_count": 3544,
+          "control_retention": 0.5118510158013544,
+          "new_retention": 0.9057562076749436,
+          "cohort_repairs": 1456,
+          "cohort_new_errors": 60
+        },
+        "practical_mid_urban": {
+          "count": 3600,
+          "control_correct": 1567,
+          "new_correct": 2656,
+          "repairs": 1217,
+          "new_errors": 128,
+          "net_repairs": 1089,
+          "accuracy_delta_pp": 30.25,
+          "fixed_NOAS_clean_correct_count": 3544,
+          "control_retention": 0.4367945823927765,
+          "new_retention": 0.7460496613995485,
+          "cohort_repairs": 1208,
+          "cohort_new_errors": 112
+        },
+        "practical_low_urban": {
+          "count": 3600,
+          "control_correct": 1292,
+          "new_correct": 2174,
+          "repairs": 1049,
+          "new_errors": 167,
+          "net_repairs": 882,
+          "accuracy_delta_pp": 24.5,
+          "fixed_NOAS_clean_correct_count": 3544,
+          "control_retention": 0.3603273137697517,
+          "new_retention": 0.608352144469526,
+          "cohort_repairs": 1040,
+          "cohort_new_errors": 161
+        }
+      },
+      "LRAW_AS30__AS30": {
+        "clean": {
+          "count": 1800,
+          "control_correct": 1770,
+          "new_correct": 1770,
+          "repairs": 2,
+          "new_errors": 2,
+          "net_repairs": 0,
+          "accuracy_delta_pp": 0.0,
+          "fixed_NOAS_clean_correct_count": 1772,
+          "control_retention": 0.9971783295711061,
+          "new_retention": 0.9960496613995485,
+          "cohort_repairs": 0,
+          "cohort_new_errors": 2
+        },
+        "practical_low_suburban": {
+          "count": 3600,
+          "control_correct": 3192,
+          "new_correct": 3224,
+          "repairs": 62,
+          "new_errors": 30,
+          "net_repairs": 32,
+          "accuracy_delta_pp": 0.8888888888888888,
+          "fixed_NOAS_clean_correct_count": 3544,
+          "control_retention": 0.8970090293453724,
+          "new_retention": 0.9057562076749436,
+          "cohort_repairs": 58,
+          "cohort_new_errors": 27
+        },
+        "practical_mid_urban": {
+          "count": 3600,
+          "control_correct": 2621,
+          "new_correct": 2656,
+          "repairs": 108,
+          "new_errors": 73,
+          "net_repairs": 35,
+          "accuracy_delta_pp": 0.9722222222222222,
+          "fixed_NOAS_clean_correct_count": 3544,
+          "control_retention": 0.7367381489841986,
+          "new_retention": 0.7460496613995485,
+          "cohort_repairs": 105,
+          "cohort_new_errors": 72
+        },
+        "practical_low_urban": {
+          "count": 3600,
+          "control_correct": 2127,
+          "new_correct": 2174,
+          "repairs": 135,
+          "new_errors": 88,
+          "net_repairs": 47,
+          "accuracy_delta_pp": 1.3055555555555556,
+          "fixed_NOAS_clean_correct_count": 3544,
+          "control_retention": 0.5959367945823928,
+          "new_retention": 0.608352144469526,
+          "cohort_repairs": 130,
+          "cohort_new_errors": 86
+        }
+      },
+      "LRAW_NOAS30__NOAS30": {
+        "clean": {
+          "count": 1800,
+          "control_correct": 1772,
+          "new_correct": 1774,
+          "repairs": 4,
+          "new_errors": 2,
+          "net_repairs": 2,
+          "accuracy_delta_pp": 0.1111111111111111,
+          "fixed_NOAS_clean_correct_count": 1772,
+          "control_retention": 1.0,
+          "new_retention": 0.9988713318284425,
+          "cohort_repairs": 0,
+          "cohort_new_errors": 2
+        },
+        "practical_low_suburban": {
+          "count": 3600,
+          "control_correct": 1795,
+          "new_correct": 1834,
+          "repairs": 349,
+          "new_errors": 310,
+          "net_repairs": 39,
+          "accuracy_delta_pp": 1.0833333333333333,
+          "fixed_NOAS_clean_correct_count": 3544,
+          "control_retention": 0.5011286681715575,
+          "new_retention": 0.5118510158013544,
+          "cohort_repairs": 346,
+          "cohort_new_errors": 308
+        },
+        "practical_mid_urban": {
+          "count": 3600,
+          "control_correct": 1568,
+          "new_correct": 1567,
+          "repairs": 314,
+          "new_errors": 315,
+          "net_repairs": -1,
+          "accuracy_delta_pp": -0.027777777777777776,
+          "fixed_NOAS_clean_correct_count": 3544,
+          "control_retention": 0.43876975169300225,
+          "new_retention": 0.4367945823927765,
+          "cohort_repairs": 305,
+          "cohort_new_errors": 312
+        },
+        "practical_low_urban": {
+          "count": 3600,
+          "control_correct": 1282,
+          "new_correct": 1292,
+          "repairs": 288,
+          "new_errors": 278,
+          "net_repairs": 10,
+          "accuracy_delta_pp": 0.2777777777777778,
+          "fixed_NOAS_clean_correct_count": 3544,
+          "control_retention": 0.3577878103837472,
+          "new_retention": 0.3603273137697517,
+          "cohort_repairs": 285,
+          "cohort_new_errors": 276
+        }
+      },
+      "AS30__NOAS30": {
+        "clean": {
+          "count": 1800,
+          "control_correct": 1772,
+          "new_correct": 1770,
+          "repairs": 3,
+          "new_errors": 5,
+          "net_repairs": -2,
+          "accuracy_delta_pp": -0.1111111111111111,
+          "fixed_NOAS_clean_correct_count": 1772,
+          "control_retention": 1.0,
+          "new_retention": 0.9971783295711061,
+          "cohort_repairs": 0,
+          "cohort_new_errors": 5
+        },
+        "practical_low_suburban": {
+          "count": 3600,
+          "control_correct": 1795,
+          "new_correct": 3192,
+          "repairs": 1470,
+          "new_errors": 73,
+          "net_repairs": 1397,
+          "accuracy_delta_pp": 38.80555555555556,
+          "fixed_NOAS_clean_correct_count": 3544,
+          "control_retention": 0.5011286681715575,
+          "new_retention": 0.8970090293453724,
+          "cohort_repairs": 1461,
+          "cohort_new_errors": 58
+        },
+        "practical_mid_urban": {
+          "count": 3600,
+          "control_correct": 1568,
+          "new_correct": 2621,
+          "repairs": 1167,
+          "new_errors": 114,
+          "net_repairs": 1053,
+          "accuracy_delta_pp": 29.25,
+          "fixed_NOAS_clean_correct_count": 3544,
+          "control_retention": 0.43876975169300225,
+          "new_retention": 0.7367381489841986,
+          "cohort_repairs": 1159,
+          "cohort_new_errors": 103
+        },
+        "practical_low_urban": {
+          "count": 3600,
+          "control_correct": 1282,
+          "new_correct": 2127,
+          "repairs": 981,
+          "new_errors": 136,
+          "net_repairs": 845,
+          "accuracy_delta_pp": 23.47222222222222,
+          "fixed_NOAS_clean_correct_count": 3544,
+          "control_retention": 0.3577878103837472,
+          "new_retention": 0.5959367945823928,
+          "cohort_repairs": 976,
+          "cohort_new_errors": 132
+        }
+      },
+      "LRAW_AS30__NOAS30": {
+        "clean": {
+          "count": 1800,
+          "control_correct": 1772,
+          "new_correct": 1770,
+          "repairs": 5,
+          "new_errors": 7,
+          "net_repairs": -2,
+          "accuracy_delta_pp": -0.1111111111111111,
+          "fixed_NOAS_clean_correct_count": 1772,
+          "control_retention": 1.0,
+          "new_retention": 0.9960496613995485,
+          "cohort_repairs": 0,
+          "cohort_new_errors": 7
+        },
+        "practical_low_suburban": {
+          "count": 3600,
+          "control_correct": 1795,
+          "new_correct": 3224,
+          "repairs": 1494,
+          "new_errors": 65,
+          "net_repairs": 1429,
+          "accuracy_delta_pp": 39.69444444444444,
+          "fixed_NOAS_clean_correct_count": 3544,
+          "control_retention": 0.5011286681715575,
+          "new_retention": 0.9057562076749436,
+          "cohort_repairs": 1485,
+          "cohort_new_errors": 51
+        },
+        "practical_mid_urban": {
+          "count": 3600,
+          "control_correct": 1568,
+          "new_correct": 2656,
+          "repairs": 1213,
+          "new_errors": 125,
+          "net_repairs": 1088,
+          "accuracy_delta_pp": 30.22222222222222,
+          "fixed_NOAS_clean_correct_count": 3544,
+          "control_retention": 0.43876975169300225,
+          "new_retention": 0.7460496613995485,
+          "cohort_repairs": 1203,
+          "cohort_new_errors": 114
+        },
+        "practical_low_urban": {
+          "count": 3600,
+          "control_correct": 1282,
+          "new_correct": 2174,
+          "repairs": 1052,
+          "new_errors": 160,
+          "net_repairs": 892,
+          "accuracy_delta_pp": 24.77777777777778,
+          "fixed_NOAS_clean_correct_count": 3544,
+          "control_retention": 0.3577878103837472,
+          "new_retention": 0.608352144469526,
+          "cohort_repairs": 1044,
+          "cohort_new_errors": 156
+        }
+      }
+    },
+    "source_unique_V": 1800,
+    "channel_draws": 2,
+    "fullV_metrics_from_native_not_individual_prediction_recount": true,
+    "source_panel_fc_hz": 2450000000,
+    "training_formal_fc_hz": 2462000000
+  },
+  "training_summary": {
+    "new_model_rows": 2,
+    "new_model_epochs": 20,
+    "new_updates": 4440,
+    "new_tail_rows": {
+      "LRAW_NOAS30": {
+        "cost": {
+          "student_train_NN": 2271960,
+          "student_eval_NN": 324002,
+          "teacher_train_NN": 0,
+          "teacher_eval_NN": 567000,
+          "native_training_and_validation_NN": 3162962,
+          "wall_seconds": 815.3644180297852,
+          "local_epochs": 10,
+          "local_updates": 2220,
+          "parent_epochs": 20,
+          "parent_updates": 4440,
+          "cumulative_epochs": 30,
+          "cumulative_updates": 6660,
+          "L_NN": 1704960,
+          "selected_packets": 142080,
+          "As_packets": 0,
+          "ordinary_augmentation_computation_retained": true
+        },
+        "counts": {
+          "steps": 2220,
+          "L_NN": 1704960,
+          "selected_packets": 142080,
+          "As_packets": 0,
+          "U_forward_packets": 567000,
+          "U_selected": 9110,
+          "SupCon_valid_anchor_terms": 1136640,
+          "ordinary_calls": 2220,
+          "ordinary_packets": 284160,
+          "full_native_draws": 2220,
+          "discardedordinary_changed_packets": 155228
+        },
+        "physical_loader_packets": {
+          "L": 284160,
+          "U": 567000
+        },
+        "unique_physical": {
+          "L": 6300,
+          "U": 56700
+        },
+        "lraw": {
+          "mode": "ordinary_draw_discard_return_raw",
+          "ordinary_factory_calls": 1,
+          "ordinary_calls": 2220,
+          "ordinary_packets": 284160,
+          "full_native_draws": 2220,
+          "returned_raw_MSE_max": 0.0,
+          "used_ordinary_raw_MSE_max": 0.0,
+          "discardedordinary_MSE_mean": 0.22721488606302417,
+          "discardedordinary_MSE_max": 2.6144626140594482,
+          "discardedordinary_changed_packets": 155228,
+          "U_augmentor_wrapped": false,
+          "U_weak_strong_unchanged": true,
+          "parent_ordinary_epochs": 20,
+          "whole_trajectory_NoAug": false,
+          "full_native_aug_computation": true,
+          "whole_training_RNG_matched": false,
+          "pair_weights": [
+            0.5,
+            0.5,
+            0.25
+          ],
+          "SupCon": "ORD128;actual raw128 input",
+          "total_L_scale": 1.25,
+          "extra_NN": 0,
+          "new_losses": 0,
+          "sampler_repetitions": {
+            "batches_with_repeated_physical_ID": 0,
+            "repeated_input_positions": 0,
+            "maximum_repeated_positions_in_batch": 0
+          },
+          "actual_anchor_input": "raw128 in existing ORD128 slot",
+          "full_training_RNG_equivalence_not_claimed": true
+        },
+        "EMA": {
+          "initialization": {
+            "origin": "strict own stage20 EMA",
+            "extra_teacher": false,
+            "optimizer_segment_counters_reset": true,
+            "temporal_cache_reset": true
+          },
+          "local_updates": 2220,
+          "cumulative_updates": 6660,
+          "parent_restored": true
+        },
+        "selected_exposure": {
+          "TX": {
+            "0": 23624,
+            "1": 23643,
+            "2": 23692,
+            "3": 23655,
+            "4": 23741,
+            "5": 23725
+          },
+          "RX": {
+            "6": 28560,
+            "1": 28538,
+            "3": 28501,
+            "4": 28258,
+            "8": 28223
+          },
+          "day": {
+            "1": 47478,
+            "2": 47455,
+            "3": 47147
+          },
+          "physical": {
+            "unique_physical_packets": 6300,
+            "all_L_physical_packets": 6300,
+            "unexposed_L_packets": 0,
+            "minimum": 12,
+            "maximum": 34,
+            "mean": 22.552380952380954,
+            "exposure_count_histogram": {
+              "12": 8,
+              "13": 15,
+              "14": 30,
+              "15": 69,
+              "16": 106,
+              "17": 192,
+              "18": 293,
+              "19": 452,
+              "20": 564,
+              "21": 665,
+              "22": 717,
+              "23": 754,
+              "24": 637,
+              "25": 583,
+              "26": 465,
+              "27": 295,
+              "28": 198,
+              "29": 132,
+              "30": 59,
+              "31": 42,
+              "32": 10,
+              "33": 7,
+              "34": 7
+            },
+            "per_ID_matched_to_original_not_assumed": true
+          },
+          "actual_As_packets": 0,
+          "selected_actual_view": "raw",
+          "identity_control_selected_packets": 142080,
+          "scene_counts_are_identity_control_not_As": true,
+          "coverage": [
+            {
+              "TX": 0,
+              "RX": 1,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4753
+            },
+            {
+              "TX": 0,
+              "RX": 3,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4733
+            },
+            {
+              "TX": 0,
+              "RX": 4,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4705
+            },
+            {
+              "TX": 0,
+              "RX": 6,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4780
+            },
+            {
+              "TX": 0,
+              "RX": 8,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4653
+            },
+            {
+              "TX": 1,
+              "RX": 1,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4811
+            },
+            {
+              "TX": 1,
+              "RX": 3,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4707
+            },
+            {
+              "TX": 1,
+              "RX": 4,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4684
+            },
+            {
+              "TX": 1,
+              "RX": 6,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4746
+            },
+            {
+              "TX": 1,
+              "RX": 8,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4695
+            },
+            {
+              "TX": 2,
+              "RX": 1,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4731
+            },
+            {
+              "TX": 2,
+              "RX": 3,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4787
+            },
+            {
+              "TX": 2,
+              "RX": 4,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4706
+            },
+            {
+              "TX": 2,
+              "RX": 6,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4792
+            },
+            {
+              "TX": 2,
+              "RX": 8,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4676
+            },
+            {
+              "TX": 3,
+              "RX": 1,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4770
+            },
+            {
+              "TX": 3,
+              "RX": 3,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4735
+            },
+            {
+              "TX": 3,
+              "RX": 4,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4678
+            },
+            {
+              "TX": 3,
+              "RX": 6,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4771
+            },
+            {
+              "TX": 3,
+              "RX": 8,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4701
+            },
+            {
+              "TX": 4,
+              "RX": 1,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4754
+            },
+            {
+              "TX": 4,
+              "RX": 3,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4730
+            },
+            {
+              "TX": 4,
+              "RX": 4,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4764
+            },
+            {
+              "TX": 4,
+              "RX": 6,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4755
+            },
+            {
+              "TX": 4,
+              "RX": 8,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4738
+            },
+            {
+              "TX": 5,
+              "RX": 1,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4719
+            },
+            {
+              "TX": 5,
+              "RX": 3,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4809
+            },
+            {
+              "TX": 5,
+              "RX": 4,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4721
+            },
+            {
+              "TX": 5,
+              "RX": 6,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4716
+            },
+            {
+              "TX": 5,
+              "RX": 8,
+              "scene": "NONE",
+              "state": "NOT_APPLICABLE",
+              "lock": "NOT_APPLICABLE",
+              "count": 4760
+            }
+          ],
+          "per_physical_scene_joint_not_recorded": true,
+          "TX_RX_day_joint_not_recorded": true
+        },
+        "maximum_L_decomposition_error": 3.129243852928454e-08
+      },
+      "LRAW_AS30": {
+        "cost": {
+          "student_train_NN": 2271960,
+          "student_eval_NN": 324002,
+          "teacher_train_NN": 0,
+          "teacher_eval_NN": 567000,
+          "native_training_and_validation_NN": 3162962,
+          "wall_seconds": 1044.7780175209045,
+          "local_epochs": 10,
+          "local_updates": 2220,
+          "parent_epochs": 20,
+          "parent_updates": 4440,
+          "cumulative_epochs": 30,
+          "cumulative_updates": 6660,
+          "L_NN": 1704960,
+          "selected_packets": 142080,
+          "As_packets": 142080,
+          "ordinary_augmentation_computation_retained": true
+        },
+        "counts": {
+          "steps": 2220,
+          "L_NN": 1704960,
+          "selected_packets": 142080,
+          "As_packets": 142080,
+          "U_forward_packets": 567000,
+          "U_selected": 8845,
+          "SupCon_valid_anchor_terms": 1136640,
+          "ordinary_calls": 2220,
+          "ordinary_packets": 284160,
+          "full_native_draws": 2220,
+          "discardedordinary_changed_packets": 155228
+        },
+        "physical_loader_packets": {
+          "L": 284160,
+          "U": 567000
+        },
+        "unique_physical": {
+          "L": 6300,
+          "U": 56700
+        },
+        "lraw": {
+          "mode": "ordinary_draw_discard_return_raw",
+          "ordinary_factory_calls": 1,
+          "ordinary_calls": 2220,
+          "ordinary_packets": 284160,
+          "full_native_draws": 2220,
+          "returned_raw_MSE_max": 0.0,
+          "used_ordinary_raw_MSE_max": 0.0,
+          "discardedordinary_MSE_mean": 0.22721488606302417,
+          "discardedordinary_MSE_max": 2.6144626140594482,
+          "discardedordinary_changed_packets": 155228,
+          "U_augmentor_wrapped": false,
+          "U_weak_strong_unchanged": true,
+          "parent_ordinary_epochs": 20,
+          "whole_trajectory_NoAug": false,
+          "full_native_aug_computation": true,
+          "whole_training_RNG_matched": false,
+          "pair_weights": [
+            0.5,
+            0.5,
+            0.25
+          ],
+          "SupCon": "ORD128;actual raw128 input",
+          "total_L_scale": 1.25,
+          "extra_NN": 0,
+          "new_losses": 0,
+          "sampler_repetitions": {
+            "batches_with_repeated_physical_ID": 0,
+            "repeated_input_positions": 0,
+            "maximum_repeated_positions_in_batch": 0
+          },
+          "actual_anchor_input": "raw128 in existing ORD128 slot",
+          "full_training_RNG_equivalence_not_claimed": true
+        },
+        "EMA": {
+          "initialization": {
+            "origin": "strict own stage20 EMA",
+            "extra_teacher": false,
+            "optimizer_segment_counters_reset": true,
+            "temporal_cache_reset": true
+          },
+          "local_updates": 2220,
+          "cumulative_updates": 6660,
+          "parent_restored": true
+        },
+        "selected_exposure": {
+          "TX": {
+            "0": 23624,
+            "1": 23643,
+            "2": 23692,
+            "3": 23655,
+            "4": 23741,
+            "5": 23725
+          },
+          "RX": {
+            "6": 28560,
+            "1": 28538,
+            "3": 28501,
+            "4": 28258,
+            "8": 28223
+          },
+          "day": {
+            "1": 47478,
+            "2": 47455,
+            "3": 47147
+          },
+          "physical": {
+            "unique_physical_packets": 6300,
+            "all_L_physical_packets": 6300,
+            "unexposed_L_packets": 0,
+            "minimum": 12,
+            "maximum": 34,
+            "mean": 22.552380952380954,
+            "exposure_count_histogram": {
+              "12": 8,
+              "13": 15,
+              "14": 30,
+              "15": 69,
+              "16": 106,
+              "17": 192,
+              "18": 293,
+              "19": 452,
+              "20": 564,
+              "21": 665,
+              "22": 717,
+              "23": 754,
+              "24": 637,
+              "25": 583,
+              "26": 465,
+              "27": 295,
+              "28": 198,
+              "29": 132,
+              "30": 59,
+              "31": 42,
+              "32": 10,
+              "33": 7,
+              "34": 7
+            },
+            "per_ID_matched_to_original_not_assumed": true
+          },
+          "actual_As_packets": 142080,
+          "selected_actual_view": "As_raw",
+          "identity_control_selected_packets": 0,
+          "scene_counts_are_identity_control_not_As": false,
+          "coverage": [
+            {
+              "TX": 0,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 15
+            },
+            {
+              "TX": 0,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 79
+            },
+            {
+              "TX": 0,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1096
+            },
+            {
+              "TX": 0,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 151
+            },
+            {
+              "TX": 0,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 202
+            },
+            {
+              "TX": 0,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 2
+            },
+            {
+              "TX": 0,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 170
+            },
+            {
+              "TX": 0,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 745
+            },
+            {
+              "TX": 0,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 488
+            },
+            {
+              "TX": 0,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 106
+            },
+            {
+              "TX": 0,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 138
+            },
+            {
+              "TX": 0,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 0,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 287
+            },
+            {
+              "TX": 0,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 309
+            },
+            {
+              "TX": 0,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 817
+            },
+            {
+              "TX": 0,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 19
+            },
+            {
+              "TX": 0,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 127
+            },
+            {
+              "TX": 0,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 0,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 25
+            },
+            {
+              "TX": 0,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 75
+            },
+            {
+              "TX": 0,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1158
+            },
+            {
+              "TX": 0,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 156
+            },
+            {
+              "TX": 0,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 225
+            },
+            {
+              "TX": 0,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 0,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 173
+            },
+            {
+              "TX": 0,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 695
+            },
+            {
+              "TX": 0,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 478
+            },
+            {
+              "TX": 0,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 84
+            },
+            {
+              "TX": 0,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 140
+            },
+            {
+              "TX": 0,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 288
+            },
+            {
+              "TX": 0,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "locked",
+              "count": 1
+            },
+            {
+              "TX": 0,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 297
+            },
+            {
+              "TX": 0,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 786
+            },
+            {
+              "TX": 0,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 31
+            },
+            {
+              "TX": 0,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 119
+            },
+            {
+              "TX": 0,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 0,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 20
+            },
+            {
+              "TX": 0,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 63
+            },
+            {
+              "TX": 0,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1083
+            },
+            {
+              "TX": 0,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 154
+            },
+            {
+              "TX": 0,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 219
+            },
+            {
+              "TX": 0,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 195
+            },
+            {
+              "TX": 0,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 672
+            },
+            {
+              "TX": 0,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 465
+            },
+            {
+              "TX": 0,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 103
+            },
+            {
+              "TX": 0,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 131
+            },
+            {
+              "TX": 0,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 303
+            },
+            {
+              "TX": 0,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 309
+            },
+            {
+              "TX": 0,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 827
+            },
+            {
+              "TX": 0,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 32
+            },
+            {
+              "TX": 0,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 128
+            },
+            {
+              "TX": 0,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 0,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 22
+            },
+            {
+              "TX": 0,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 74
+            },
+            {
+              "TX": 0,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1106
+            },
+            {
+              "TX": 0,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 183
+            },
+            {
+              "TX": 0,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 237
+            },
+            {
+              "TX": 0,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 0,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 173
+            },
+            {
+              "TX": 0,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 685
+            },
+            {
+              "TX": 0,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 487
+            },
+            {
+              "TX": 0,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 75
+            },
+            {
+              "TX": 0,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 113
+            },
+            {
+              "TX": 0,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 0,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 302
+            },
+            {
+              "TX": 0,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 326
+            },
+            {
+              "TX": 0,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 845
+            },
+            {
+              "TX": 0,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 28
+            },
+            {
+              "TX": 0,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 122
+            },
+            {
+              "TX": 0,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 16
+            },
+            {
+              "TX": 0,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 66
+            },
+            {
+              "TX": 0,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1080
+            },
+            {
+              "TX": 0,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 169
+            },
+            {
+              "TX": 0,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 229
+            },
+            {
+              "TX": 0,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 198
+            },
+            {
+              "TX": 0,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 679
+            },
+            {
+              "TX": 0,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 450
+            },
+            {
+              "TX": 0,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 74
+            },
+            {
+              "TX": 0,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 133
+            },
+            {
+              "TX": 0,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 295
+            },
+            {
+              "TX": 0,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 282
+            },
+            {
+              "TX": 0,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 817
+            },
+            {
+              "TX": 0,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 33
+            },
+            {
+              "TX": 0,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 132
+            },
+            {
+              "TX": 1,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 22
+            },
+            {
+              "TX": 1,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 60
+            },
+            {
+              "TX": 1,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1105
+            },
+            {
+              "TX": 1,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 165
+            },
+            {
+              "TX": 1,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 219
+            },
+            {
+              "TX": 1,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 3
+            },
+            {
+              "TX": 1,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 193
+            },
+            {
+              "TX": 1,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 669
+            },
+            {
+              "TX": 1,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 489
+            },
+            {
+              "TX": 1,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 86
+            },
+            {
+              "TX": 1,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 152
+            },
+            {
+              "TX": 1,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 3
+            },
+            {
+              "TX": 1,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 326
+            },
+            {
+              "TX": 1,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 338
+            },
+            {
+              "TX": 1,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 817
+            },
+            {
+              "TX": 1,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 32
+            },
+            {
+              "TX": 1,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 132
+            },
+            {
+              "TX": 1,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 14
+            },
+            {
+              "TX": 1,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 77
+            },
+            {
+              "TX": 1,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1106
+            },
+            {
+              "TX": 1,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 144
+            },
+            {
+              "TX": 1,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 231
+            },
+            {
+              "TX": 1,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 180
+            },
+            {
+              "TX": 1,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 710
+            },
+            {
+              "TX": 1,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 465
+            },
+            {
+              "TX": 1,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 92
+            },
+            {
+              "TX": 1,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 144
+            },
+            {
+              "TX": 1,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 1,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 334
+            },
+            {
+              "TX": 1,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "locked",
+              "count": 1
+            },
+            {
+              "TX": 1,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 284
+            },
+            {
+              "TX": 1,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 773
+            },
+            {
+              "TX": 1,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 28
+            },
+            {
+              "TX": 1,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 123
+            },
+            {
+              "TX": 1,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 25
+            },
+            {
+              "TX": 1,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 58
+            },
+            {
+              "TX": 1,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1082
+            },
+            {
+              "TX": 1,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 168
+            },
+            {
+              "TX": 1,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 208
+            },
+            {
+              "TX": 1,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 2
+            },
+            {
+              "TX": 1,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 197
+            },
+            {
+              "TX": 1,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 693
+            },
+            {
+              "TX": 1,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 462
+            },
+            {
+              "TX": 1,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 95
+            },
+            {
+              "TX": 1,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 119
+            },
+            {
+              "TX": 1,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 3
+            },
+            {
+              "TX": 1,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 308
+            },
+            {
+              "TX": 1,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 284
+            },
+            {
+              "TX": 1,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 825
+            },
+            {
+              "TX": 1,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 29
+            },
+            {
+              "TX": 1,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 126
+            },
+            {
+              "TX": 1,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 29
+            },
+            {
+              "TX": 1,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 68
+            },
+            {
+              "TX": 1,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1081
+            },
+            {
+              "TX": 1,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 157
+            },
+            {
+              "TX": 1,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 213
+            },
+            {
+              "TX": 1,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 2
+            },
+            {
+              "TX": 1,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 186
+            },
+            {
+              "TX": 1,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 691
+            },
+            {
+              "TX": 1,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 457
+            },
+            {
+              "TX": 1,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 98
+            },
+            {
+              "TX": 1,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 130
+            },
+            {
+              "TX": 1,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 2
+            },
+            {
+              "TX": 1,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 315
+            },
+            {
+              "TX": 1,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 334
+            },
+            {
+              "TX": 1,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 823
+            },
+            {
+              "TX": 1,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 27
+            },
+            {
+              "TX": 1,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 133
+            },
+            {
+              "TX": 1,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 22
+            },
+            {
+              "TX": 1,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 74
+            },
+            {
+              "TX": 1,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1125
+            },
+            {
+              "TX": 1,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 172
+            },
+            {
+              "TX": 1,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 198
+            },
+            {
+              "TX": 1,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 4
+            },
+            {
+              "TX": 1,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 199
+            },
+            {
+              "TX": 1,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 691
+            },
+            {
+              "TX": 1,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 480
+            },
+            {
+              "TX": 1,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 77
+            },
+            {
+              "TX": 1,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 112
+            },
+            {
+              "TX": 1,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 309
+            },
+            {
+              "TX": 1,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 313
+            },
+            {
+              "TX": 1,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 774
+            },
+            {
+              "TX": 1,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 34
+            },
+            {
+              "TX": 1,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 111
+            },
+            {
+              "TX": 2,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 21
+            },
+            {
+              "TX": 2,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 89
+            },
+            {
+              "TX": 2,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1079
+            },
+            {
+              "TX": 2,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 182
+            },
+            {
+              "TX": 2,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 200
+            },
+            {
+              "TX": 2,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 4
+            },
+            {
+              "TX": 2,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 203
+            },
+            {
+              "TX": 2,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 683
+            },
+            {
+              "TX": 2,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 467
+            },
+            {
+              "TX": 2,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 93
+            },
+            {
+              "TX": 2,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 148
+            },
+            {
+              "TX": 2,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 2,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 298
+            },
+            {
+              "TX": 2,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 278
+            },
+            {
+              "TX": 2,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 829
+            },
+            {
+              "TX": 2,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 28
+            },
+            {
+              "TX": 2,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 128
+            },
+            {
+              "TX": 2,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 16
+            },
+            {
+              "TX": 2,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 75
+            },
+            {
+              "TX": 2,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1157
+            },
+            {
+              "TX": 2,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 171
+            },
+            {
+              "TX": 2,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 220
+            },
+            {
+              "TX": 2,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 2,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 209
+            },
+            {
+              "TX": 2,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 662
+            },
+            {
+              "TX": 2,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 480
+            },
+            {
+              "TX": 2,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 95
+            },
+            {
+              "TX": 2,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 131
+            },
+            {
+              "TX": 2,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 3
+            },
+            {
+              "TX": 2,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 304
+            },
+            {
+              "TX": 2,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 274
+            },
+            {
+              "TX": 2,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 847
+            },
+            {
+              "TX": 2,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 30
+            },
+            {
+              "TX": 2,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 112
+            },
+            {
+              "TX": 2,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 18
+            },
+            {
+              "TX": 2,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 67
+            },
+            {
+              "TX": 2,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1118
+            },
+            {
+              "TX": 2,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 162
+            },
+            {
+              "TX": 2,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 200
+            },
+            {
+              "TX": 2,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 3
+            },
+            {
+              "TX": 2,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 191
+            },
+            {
+              "TX": 2,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 638
+            },
+            {
+              "TX": 2,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 508
+            },
+            {
+              "TX": 2,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 94
+            },
+            {
+              "TX": 2,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 127
+            },
+            {
+              "TX": 2,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 303
+            },
+            {
+              "TX": 2,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 300
+            },
+            {
+              "TX": 2,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 809
+            },
+            {
+              "TX": 2,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 28
+            },
+            {
+              "TX": 2,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 139
+            },
+            {
+              "TX": 2,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 2,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 24
+            },
+            {
+              "TX": 2,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 64
+            },
+            {
+              "TX": 2,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1070
+            },
+            {
+              "TX": 2,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 201
+            },
+            {
+              "TX": 2,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 209
+            },
+            {
+              "TX": 2,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 6
+            },
+            {
+              "TX": 2,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 196
+            },
+            {
+              "TX": 2,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 711
+            },
+            {
+              "TX": 2,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 508
+            },
+            {
+              "TX": 2,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 107
+            },
+            {
+              "TX": 2,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 145
+            },
+            {
+              "TX": 2,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 2,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 289
+            },
+            {
+              "TX": 2,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "locked",
+              "count": 1
+            },
+            {
+              "TX": 2,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 295
+            },
+            {
+              "TX": 2,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 823
+            },
+            {
+              "TX": 2,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 23
+            },
+            {
+              "TX": 2,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 118
+            },
+            {
+              "TX": 2,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 2,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 19
+            },
+            {
+              "TX": 2,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 56
+            },
+            {
+              "TX": 2,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1088
+            },
+            {
+              "TX": 2,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 179
+            },
+            {
+              "TX": 2,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 228
+            },
+            {
+              "TX": 2,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 2
+            },
+            {
+              "TX": 2,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 200
+            },
+            {
+              "TX": 2,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 699
+            },
+            {
+              "TX": 2,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 450
+            },
+            {
+              "TX": 2,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 92
+            },
+            {
+              "TX": 2,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 129
+            },
+            {
+              "TX": 2,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 2
+            },
+            {
+              "TX": 2,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 269
+            },
+            {
+              "TX": 2,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 295
+            },
+            {
+              "TX": 2,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 819
+            },
+            {
+              "TX": 2,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 28
+            },
+            {
+              "TX": 2,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 121
+            },
+            {
+              "TX": 3,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 16
+            },
+            {
+              "TX": 3,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 86
+            },
+            {
+              "TX": 3,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1116
+            },
+            {
+              "TX": 3,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 189
+            },
+            {
+              "TX": 3,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 214
+            },
+            {
+              "TX": 3,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 2
+            },
+            {
+              "TX": 3,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 220
+            },
+            {
+              "TX": 3,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 699
+            },
+            {
+              "TX": 3,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 489
+            },
+            {
+              "TX": 3,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 91
+            },
+            {
+              "TX": 3,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 114
+            },
+            {
+              "TX": 3,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 263
+            },
+            {
+              "TX": 3,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 321
+            },
+            {
+              "TX": 3,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 798
+            },
+            {
+              "TX": 3,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 21
+            },
+            {
+              "TX": 3,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 130
+            },
+            {
+              "TX": 3,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 3,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 27
+            },
+            {
+              "TX": 3,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 76
+            },
+            {
+              "TX": 3,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1085
+            },
+            {
+              "TX": 3,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 166
+            },
+            {
+              "TX": 3,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 194
+            },
+            {
+              "TX": 3,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 3
+            },
+            {
+              "TX": 3,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 207
+            },
+            {
+              "TX": 3,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 737
+            },
+            {
+              "TX": 3,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 455
+            },
+            {
+              "TX": 3,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 86
+            },
+            {
+              "TX": 3,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 119
+            },
+            {
+              "TX": 3,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 2
+            },
+            {
+              "TX": 3,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 287
+            },
+            {
+              "TX": 3,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "locked",
+              "count": 1
+            },
+            {
+              "TX": 3,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 319
+            },
+            {
+              "TX": 3,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 810
+            },
+            {
+              "TX": 3,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 30
+            },
+            {
+              "TX": 3,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 131
+            },
+            {
+              "TX": 3,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 21
+            },
+            {
+              "TX": 3,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 65
+            },
+            {
+              "TX": 3,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1115
+            },
+            {
+              "TX": 3,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 152
+            },
+            {
+              "TX": 3,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 222
+            },
+            {
+              "TX": 3,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 4
+            },
+            {
+              "TX": 3,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 211
+            },
+            {
+              "TX": 3,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 662
+            },
+            {
+              "TX": 3,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 477
+            },
+            {
+              "TX": 3,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 80
+            },
+            {
+              "TX": 3,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 116
+            },
+            {
+              "TX": 3,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 2
+            },
+            {
+              "TX": 3,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 279
+            },
+            {
+              "TX": 3,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "locked",
+              "count": 1
+            },
+            {
+              "TX": 3,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 314
+            },
+            {
+              "TX": 3,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 787
+            },
+            {
+              "TX": 3,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 17
+            },
+            {
+              "TX": 3,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 153
+            },
+            {
+              "TX": 3,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 24
+            },
+            {
+              "TX": 3,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 56
+            },
+            {
+              "TX": 3,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1126
+            },
+            {
+              "TX": 3,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 141
+            },
+            {
+              "TX": 3,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 255
+            },
+            {
+              "TX": 3,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 2
+            },
+            {
+              "TX": 3,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 186
+            },
+            {
+              "TX": 3,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 680
+            },
+            {
+              "TX": 3,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 480
+            },
+            {
+              "TX": 3,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 96
+            },
+            {
+              "TX": 3,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 118
+            },
+            {
+              "TX": 3,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 307
+            },
+            {
+              "TX": 3,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 292
+            },
+            {
+              "TX": 3,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 833
+            },
+            {
+              "TX": 3,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 28
+            },
+            {
+              "TX": 3,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 147
+            },
+            {
+              "TX": 3,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 15
+            },
+            {
+              "TX": 3,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 73
+            },
+            {
+              "TX": 3,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1129
+            },
+            {
+              "TX": 3,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 159
+            },
+            {
+              "TX": 3,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 206
+            },
+            {
+              "TX": 3,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 3,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 214
+            },
+            {
+              "TX": 3,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 658
+            },
+            {
+              "TX": 3,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 444
+            },
+            {
+              "TX": 3,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 90
+            },
+            {
+              "TX": 3,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 135
+            },
+            {
+              "TX": 3,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 2
+            },
+            {
+              "TX": 3,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 313
+            },
+            {
+              "TX": 3,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 299
+            },
+            {
+              "TX": 3,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 774
+            },
+            {
+              "TX": 3,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 36
+            },
+            {
+              "TX": 3,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 152
+            },
+            {
+              "TX": 3,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 4,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 26
+            },
+            {
+              "TX": 4,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 79
+            },
+            {
+              "TX": 4,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1140
+            },
+            {
+              "TX": 4,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 171
+            },
+            {
+              "TX": 4,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 212
+            },
+            {
+              "TX": 4,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 3
+            },
+            {
+              "TX": 4,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 203
+            },
+            {
+              "TX": 4,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 669
+            },
+            {
+              "TX": 4,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 455
+            },
+            {
+              "TX": 4,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 95
+            },
+            {
+              "TX": 4,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 140
+            },
+            {
+              "TX": 4,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 2
+            },
+            {
+              "TX": 4,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 314
+            },
+            {
+              "TX": 4,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 306
+            },
+            {
+              "TX": 4,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 791
+            },
+            {
+              "TX": 4,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 32
+            },
+            {
+              "TX": 4,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 115
+            },
+            {
+              "TX": 4,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 4,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 28
+            },
+            {
+              "TX": 4,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 71
+            },
+            {
+              "TX": 4,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1074
+            },
+            {
+              "TX": 4,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 159
+            },
+            {
+              "TX": 4,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 197
+            },
+            {
+              "TX": 4,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 3
+            },
+            {
+              "TX": 4,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 199
+            },
+            {
+              "TX": 4,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 739
+            },
+            {
+              "TX": 4,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 470
+            },
+            {
+              "TX": 4,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 96
+            },
+            {
+              "TX": 4,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 152
+            },
+            {
+              "TX": 4,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 4,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 295
+            },
+            {
+              "TX": 4,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 299
+            },
+            {
+              "TX": 4,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 799
+            },
+            {
+              "TX": 4,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 23
+            },
+            {
+              "TX": 4,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 124
+            },
+            {
+              "TX": 4,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 4,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 14
+            },
+            {
+              "TX": 4,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 80
+            },
+            {
+              "TX": 4,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1124
+            },
+            {
+              "TX": 4,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 159
+            },
+            {
+              "TX": 4,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 240
+            },
+            {
+              "TX": 4,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 3
+            },
+            {
+              "TX": 4,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 204
+            },
+            {
+              "TX": 4,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 676
+            },
+            {
+              "TX": 4,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 449
+            },
+            {
+              "TX": 4,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 97
+            },
+            {
+              "TX": 4,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 152
+            },
+            {
+              "TX": 4,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 4,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 313
+            },
+            {
+              "TX": 4,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 281
+            },
+            {
+              "TX": 4,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 824
+            },
+            {
+              "TX": 4,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 33
+            },
+            {
+              "TX": 4,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 114
+            },
+            {
+              "TX": 4,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 19
+            },
+            {
+              "TX": 4,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 60
+            },
+            {
+              "TX": 4,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1136
+            },
+            {
+              "TX": 4,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 150
+            },
+            {
+              "TX": 4,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 233
+            },
+            {
+              "TX": 4,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 3
+            },
+            {
+              "TX": 4,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 198
+            },
+            {
+              "TX": 4,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 666
+            },
+            {
+              "TX": 4,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 502
+            },
+            {
+              "TX": 4,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 82
+            },
+            {
+              "TX": 4,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 133
+            },
+            {
+              "TX": 4,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 2
+            },
+            {
+              "TX": 4,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 284
+            },
+            {
+              "TX": 4,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 310
+            },
+            {
+              "TX": 4,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 839
+            },
+            {
+              "TX": 4,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 13
+            },
+            {
+              "TX": 4,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 124
+            },
+            {
+              "TX": 4,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 4,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 24
+            },
+            {
+              "TX": 4,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 79
+            },
+            {
+              "TX": 4,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1135
+            },
+            {
+              "TX": 4,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 145
+            },
+            {
+              "TX": 4,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 245
+            },
+            {
+              "TX": 4,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 4,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 171
+            },
+            {
+              "TX": 4,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 697
+            },
+            {
+              "TX": 4,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 446
+            },
+            {
+              "TX": 4,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 88
+            },
+            {
+              "TX": 4,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 128
+            },
+            {
+              "TX": 4,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 4,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 289
+            },
+            {
+              "TX": 4,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 320
+            },
+            {
+              "TX": 4,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 793
+            },
+            {
+              "TX": 4,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 36
+            },
+            {
+              "TX": 4,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 140
+            },
+            {
+              "TX": 5,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 22
+            },
+            {
+              "TX": 5,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 72
+            },
+            {
+              "TX": 5,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1112
+            },
+            {
+              "TX": 5,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 150
+            },
+            {
+              "TX": 5,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 212
+            },
+            {
+              "TX": 5,
+              "RX": 1,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 5,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 203
+            },
+            {
+              "TX": 5,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 720
+            },
+            {
+              "TX": 5,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 473
+            },
+            {
+              "TX": 5,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 78
+            },
+            {
+              "TX": 5,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 133
+            },
+            {
+              "TX": 5,
+              "RX": 1,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 2
+            },
+            {
+              "TX": 5,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 284
+            },
+            {
+              "TX": 5,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 304
+            },
+            {
+              "TX": 5,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 814
+            },
+            {
+              "TX": 5,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 27
+            },
+            {
+              "TX": 5,
+              "RX": 1,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 112
+            },
+            {
+              "TX": 5,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 33
+            },
+            {
+              "TX": 5,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 65
+            },
+            {
+              "TX": 5,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1097
+            },
+            {
+              "TX": 5,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 161
+            },
+            {
+              "TX": 5,
+              "RX": 3,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 222
+            },
+            {
+              "TX": 5,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 202
+            },
+            {
+              "TX": 5,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 700
+            },
+            {
+              "TX": 5,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 503
+            },
+            {
+              "TX": 5,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 100
+            },
+            {
+              "TX": 5,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 134
+            },
+            {
+              "TX": 5,
+              "RX": 3,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 2
+            },
+            {
+              "TX": 5,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 285
+            },
+            {
+              "TX": 5,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 315
+            },
+            {
+              "TX": 5,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 825
+            },
+            {
+              "TX": 5,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 24
+            },
+            {
+              "TX": 5,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 140
+            },
+            {
+              "TX": 5,
+              "RX": 3,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 5,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 22
+            },
+            {
+              "TX": 5,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 78
+            },
+            {
+              "TX": 5,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1119
+            },
+            {
+              "TX": 5,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 158
+            },
+            {
+              "TX": 5,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 196
+            },
+            {
+              "TX": 5,
+              "RX": 4,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 4
+            },
+            {
+              "TX": 5,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 175
+            },
+            {
+              "TX": 5,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 734
+            },
+            {
+              "TX": 5,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 472
+            },
+            {
+              "TX": 5,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 81
+            },
+            {
+              "TX": 5,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 116
+            },
+            {
+              "TX": 5,
+              "RX": 4,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 5,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 291
+            },
+            {
+              "TX": 5,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 305
+            },
+            {
+              "TX": 5,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 815
+            },
+            {
+              "TX": 5,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 34
+            },
+            {
+              "TX": 5,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 119
+            },
+            {
+              "TX": 5,
+              "RX": 4,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 5,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 23
+            },
+            {
+              "TX": 5,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 63
+            },
+            {
+              "TX": 5,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1150
+            },
+            {
+              "TX": 5,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 168
+            },
+            {
+              "TX": 5,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 195
+            },
+            {
+              "TX": 5,
+              "RX": 6,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 5,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 180
+            },
+            {
+              "TX": 5,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 673
+            },
+            {
+              "TX": 5,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 483
+            },
+            {
+              "TX": 5,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 85
+            },
+            {
+              "TX": 5,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 127
+            },
+            {
+              "TX": 5,
+              "RX": 6,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 5,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 304
+            },
+            {
+              "TX": 5,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 299
+            },
+            {
+              "TX": 5,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 827
+            },
+            {
+              "TX": 5,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 23
+            },
+            {
+              "TX": 5,
+              "RX": 6,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 114
+            },
+            {
+              "TX": 5,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 17
+            },
+            {
+              "TX": 5,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 84
+            },
+            {
+              "TX": 5,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 1111
+            },
+            {
+              "TX": 5,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 152
+            },
+            {
+              "TX": 5,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 213
+            },
+            {
+              "TX": 5,
+              "RX": 8,
+              "scene": "practical_low_suburban",
+              "state": "PARTIAL",
+              "lock": "unlocked",
+              "count": 1
+            },
+            {
+              "TX": 5,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 209
+            },
+            {
+              "TX": 5,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 705
+            },
+            {
+              "TX": 5,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 439
+            },
+            {
+              "TX": 5,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 102
+            },
+            {
+              "TX": 5,
+              "RX": 8,
+              "scene": "practical_low_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 121
+            },
+            {
+              "TX": 5,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "degraded",
+              "count": 299
+            },
+            {
+              "TX": 5,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "BLOCKED",
+              "lock": "unlocked",
+              "count": 316
+            },
+            {
+              "TX": 5,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "LOS",
+              "lock": "locked",
+              "count": 838
+            },
+            {
+              "TX": 5,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "degraded",
+              "count": 25
+            },
+            {
+              "TX": 5,
+              "RX": 8,
+              "scene": "practical_mid_urban",
+              "state": "PARTIAL",
+              "lock": "locked",
+              "count": 128
+            }
+          ],
+          "per_physical_scene_joint_not_recorded": true,
+          "TX_RX_day_joint_not_recorded": true
+        },
+        "maximum_L_decomposition_error": 4.321336743995374e-08
+      }
+    },
+    "parent20": {
+      "LRAW_NOAS30": {
+        "cost": {
+          "student_train_NN": 3806820,
+          "student_eval_NN": 594002,
+          "teacher_train_NN": 0,
+          "teacher_eval_NN": 396900,
+          "native_training_and_validation_NN": 4797722
+        },
+        "epochs": 20,
+        "updates": 4440,
+        "wall_seconds": 1329.3940694332123,
+        "reused": true
+      },
+      "LRAW_AS30": {
+        "cost": {
+          "student_train_NN": 3806820,
+          "student_eval_NN": 594002,
+          "teacher_train_NN": 0,
+          "teacher_eval_NN": 396900,
+          "native_training_and_validation_NN": 4797722
+        },
+        "epochs": 20,
+        "updates": 4440,
+        "wall_seconds": 1810.2493114471436,
+        "reused": true
+      }
+    },
+    "reference_comparability": {
+      "LRAW_NOAS30": {
+        "reference_condition": "NOAS30",
+        "reference_audit_reused": true,
+        "old_step_logs_rescanned": false,
+        "old_tail_four_counters": {
+          "student_train_NN": 2271960,
+          "student_eval_NN": 324002,
+          "teacher_train_NN": 0,
+          "teacher_eval_NN": 567000,
+          "native_training_and_validation_NN": 3162962
+        },
+        "new_tail_four_counters": {
+          "student_train_NN": 2271960,
+          "student_eval_NN": 324002,
+          "teacher_train_NN": 0,
+          "teacher_eval_NN": 567000,
+          "native_training_and_validation_NN": 3162962,
+          "wall_seconds": 815.3644180297852,
+          "local_epochs": 10,
+          "local_updates": 2220,
+          "parent_epochs": 20,
+          "parent_updates": 4440,
+          "cumulative_epochs": 30,
+          "cumulative_updates": 6660,
+          "L_NN": 1704960,
+          "selected_packets": 142080,
+          "As_packets": 0,
+          "ordinary_augmentation_computation_retained": true
+        },
+        "four_counters_equal": true,
+        "available_epoch_mean_comparisons": {
+          "ordinary_raw_MSE": {
+            "record_count": 10,
+            "records_different": 10,
+            "maximum_absolute_difference": 0.2580695794884066
+          },
+          "common_CE": {
+            "record_count": 10,
+            "records_different": 10,
+            "maximum_absolute_difference": 0.18030444908517979
+          },
+          "common_KL": {
+            "record_count": 10,
+            "records_different": 10,
+            "maximum_absolute_difference": 0.021249826269660578
+          },
+          "extra_CE": {
+            "record_count": 10,
+            "records_different": 10,
+            "maximum_absolute_difference": 0.09696575663648209
+          },
+          "extra_KL": {
+            "record_count": 10,
+            "records_different": 10,
+            "maximum_absolute_difference": 0.012380503148452992
+          },
+          "SupCon": {
+            "record_count": 10,
+            "records_different": 10,
+            "maximum_absolute_difference": 0.5219445384300507
+          }
+        },
+        "different_actual_arg_keys": [
+          "output_dir",
+          "run_id"
+        ],
+        "old_per_step_physical_IQ_equality_not_claimed": true,
+        "U_rule_unchanged_by_recipe": true
+      },
+      "LRAW_AS30": {
+        "reference_condition": "AS30",
+        "reference_audit_reused": true,
+        "old_step_logs_rescanned": false,
+        "old_tail_four_counters": {
+          "student_train_NN": 2271960,
+          "student_eval_NN": 324002,
+          "teacher_train_NN": 0,
+          "teacher_eval_NN": 567000,
+          "native_training_and_validation_NN": 3162962
+        },
+        "new_tail_four_counters": {
+          "student_train_NN": 2271960,
+          "student_eval_NN": 324002,
+          "teacher_train_NN": 0,
+          "teacher_eval_NN": 567000,
+          "native_training_and_validation_NN": 3162962,
+          "wall_seconds": 1044.7780175209045,
+          "local_epochs": 10,
+          "local_updates": 2220,
+          "parent_epochs": 20,
+          "parent_updates": 4440,
+          "cumulative_epochs": 30,
+          "cumulative_updates": 6660,
+          "L_NN": 1704960,
+          "selected_packets": 142080,
+          "As_packets": 142080,
+          "ordinary_augmentation_computation_retained": true
+        },
+        "four_counters_equal": true,
+        "available_epoch_mean_comparisons": {
+          "ordinary_raw_MSE": {
+            "record_count": 10,
+            "records_different": 10,
+            "maximum_absolute_difference": 0.2580695794884066
+          },
+          "common_CE": {
+            "record_count": 10,
+            "records_different": 10,
+            "maximum_absolute_difference": 0.17950980932460175
+          },
+          "common_KL": {
+            "record_count": 10,
+            "records_different": 10,
+            "maximum_absolute_difference": 0.015310665475087122
+          },
+          "extra_CE": {
+            "record_count": 10,
+            "records_different": 10,
+            "maximum_absolute_difference": 0.09931564868033471
+          },
+          "extra_KL": {
+            "record_count": 10,
+            "records_different": 10,
+            "maximum_absolute_difference": 0.00877877621416439
+          },
+          "SupCon": {
+            "record_count": 10,
+            "records_different": 10,
+            "maximum_absolute_difference": 0.5099014500239947
+          }
+        },
+        "different_actual_arg_keys": [
+          "output_dir",
+          "run_id"
+        ],
+        "old_per_step_physical_IQ_equality_not_claimed": true,
+        "U_rule_unchanged_by_recipe": true
+      },
+      "between_new_rows_only": {
+        "physical_sequence": {
+          "records": 4440,
+          "mismatch": 0,
+          "all_equal": true
+        },
+        "ordinary_MSE_records_different": 0,
+        "maximum_ordinary_MSE_difference": 0.0,
+        "comparison_is_new_NoAs_vs_new_As_not_old_reference": true
+      }
+    }
+  },
+  "costs": {
+    "rows": {
+      "NOAS30": {
+        "native_NN": 7960684,
+        "student_train_NN": 6078780,
+        "student_eval_NN": 918004,
+        "teacher_train_NN": 0,
+        "teacher_eval_NN": 963900,
+        "source_readout_NN": 12600,
+        "formal_prediction_NN": 1176002,
+        "segment_and_own_readouts_NN": 9149286,
+        "native_wall_seconds": 2146.190178871155,
+        "formal_prediction_wall_seconds": 48.08935279189609,
+        "reused": true
+      },
+      "AS30": {
+        "native_NN": 7960684,
+        "student_train_NN": 6078780,
+        "student_eval_NN": 918004,
+        "teacher_train_NN": 0,
+        "teacher_eval_NN": 963900,
+        "source_readout_NN": 12600,
+        "formal_prediction_NN": 1176002,
+        "segment_and_own_readouts_NN": 9149286,
+        "native_wall_seconds": 2860.909118413925,
+        "formal_prediction_wall_seconds": 49.649732606019825,
+        "reused": true
+      },
+      "LRAW_NOAS30": {
+        "native_NN": 3162962,
+        "student_train_NN": 2271960,
+        "student_eval_NN": 324002,
+        "teacher_train_NN": 0,
+        "teacher_eval_NN": 567000,
+        "source_readout_NN": 12600,
+        "formal_prediction_NN": 1176002,
+        "segment_and_own_readouts_NN": 4351564,
+        "native_wall_seconds": 815.3644180297852,
+        "formal_prediction_wall_seconds": 48.29190647392534,
+        "reused": false
+      },
+      "LRAW_AS30": {
+        "native_NN": 3162962,
+        "student_train_NN": 2271960,
+        "student_eval_NN": 324002,
+        "teacher_train_NN": 0,
+        "teacher_eval_NN": 567000,
+        "source_readout_NN": 12600,
+        "formal_prediction_NN": 1176002,
+        "segment_and_own_readouts_NN": 4351564,
+        "native_wall_seconds": 1044.7780175209045,
+        "formal_prediction_wall_seconds": 47.518481956096366,
+        "reused": false
+      }
+    },
+    "new_model_epochs": 20,
+    "new_updates": 4440,
+    "new_training_and_readouts_NN": 8703128,
+    "new_shared_smoke_NN": 1540,
+    "new_total_NN": 8704668,
+    "parent20_native_NN_reused": {
+      "LRAW_NOAS30": 4797722,
+      "LRAW_AS30": 4797722
+    },
+    "cumulative_candidate_native_NN": {
+      "LRAW_NOAS30": 7960684,
+      "LRAW_AS30": 7960684
+    },
+    "cumulative_candidate_epochs_each": 30,
+    "cumulative_candidate_updates_each": 6660,
+    "old_two_E30_training_and_readouts_NN_reused": 18298572,
+    "old_costs_not_recharged": true,
+    "analysis_NN": 0,
+    "analysis_IQ_reads": 0,
+    "analysis_checkpoint_reads": 0,
+    "analysis_updates": 0,
+    "wall_scope": "Actual model-seconds;not speed evidence"
+  },
+  "completion": {
+    "status": "ANALYZED",
+    "independent_confusion_matrices": 504,
+    "partition_reconciliations": 84,
+    "upstream_report_available": true,
+    "missing": []
+  },
+  "limitations": {
+    "single_model_seed": true,
+    "repeatable_dual_gain_proven": false,
+    "whole_trajectory_NoAug": false,
+    "parent_ordinary_epochs": 20,
+    "parent_U_epochs": 7,
+    "U_weak_strong_unchanged": true,
+    "teacher_unchanged": true,
+    "EMA_unchanged": true,
+    "full_native_ordinary_computation_retained": true,
+    "ordinary_output_discarded": true,
+    "actual_ordinary_slot_and_ORD128_input": "raw128",
+    "whole_training_RNG_equivalence_proven": false,
+    "source_prediction_wall_may_be_unrecorded": true,
+    "target_feedback": false
+  },
+  "curation_cost": {
+    "NN": 0,
+    "CP": 0,
+    "IQ": 0,
+    "updates": 0,
+    "new_predictions": 0,
+    "new_scores": 0,
+    "remote_calls": 0
+  }
+}
