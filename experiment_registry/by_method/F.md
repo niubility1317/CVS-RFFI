@@ -19,3 +19,4 @@
 |冻结默认头：固定接收状态去噪的四贡献归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-FcrossRX-branchNoise-sourceV-s2026092701-m2-r02/report.md)|
 |P75 实验完成|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-noiseResample6-e30-s2026092701-m2-r01/report.md)|
 |P76：共享传播与环境内 TX 判别的匹配四格 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-propContrast-e30-s2026092701-m4-r01/report.md)|
+|P77：物理新增噪声与 As 目标熵的匹配 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-qualityEntropy-e30-s2026092701-m2-r01/report.md)|
