@@ -1,0 +1,303 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-phase1-FcrossRX-qualityStrat-e30-s2026092701-m2-r01",
+  "group_id": "phase1-FcrossRX-fullAs-quality-stratified-risk",
+  "display_name": "完整 practical 固定质量组风险：同池随机与分层 E30",
+  "description": "同一原P43 As20父＋RESET10，固定fullAs总CE .25/原KL .25及6L、clean/U/SupCon；有限nominal训练池随机CE控制对四质量组固定p_g估计",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "P70",
+    "qualityRisk70",
+    "POOL_RANDOM",
+    "QUALITY_STRAT"
+  ],
+  "tags": [
+    "phase1",
+    "F",
+    "fullsource",
+    "default-head",
+    "E30",
+    "practical",
+    "quality-stratified-risk",
+    "single-seed"
+  ],
+  "comparison_group_id": "P43-original6L-finiteNominalPool-qualityRisk",
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Latest user: satellite-first, clean drop<=0.1 absolutepp, fullsource/noheldRX, fixedF+CROSS_RX/defaulthead, E30; good source-qualified recipes may totalE50; active goal authorizes implementation/matched trials/all7 independent scoring. No extra heads/targetfeedback/healthy-task mutation.",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 existing ordinary CVS-RFFI Python3.10.19 Torch2.1.0+cu121 NumPy2.2.5; FP32 CPU2",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_quality_strat_E30_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Unchanged original7/63/30 source physical roles; existing VALIDATED_ONCE fixed formal IQ",
+    "representation": "equalized1/native perpacketRMS center=false;float32 Bx2x256/fs25MHz;full residual/post_sync/EQoffG1/ref30/reflect;As fromraw,no extra ordinary PA/noise beforeAs;trainingfc2.462GHz/fixedformal2.45GHz unchanged",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "Same original6TX map;no new or U truth",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      "fixedmanifest7unseenRX;nevertrain"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original6registeredTX;formalmanifest classmappingunchanged",
+    "roles": {
+      "L_s": 6300,
+      "U_s_hidden": 56700,
+      "V": 27000
+    },
+    "train_ratio": "7/63/30 wholepool;10% labeled trainingpool;noheldRX/Ldev",
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "ExistingPhase1 source handles and fixedformalmanifest;Phase2 p2capsule/splitN/A",
+    "support_query_ref": "Phase1,no support;source/target disjoint fixedformalmanifest",
+    "leo_config_ref": "PROJECT/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/manifest.json"
+  },
+  "permissions": {
+    "regime": "source_only_training_then_frozen_target_prediction",
+    "query_use": "Frozen defaulthead all7 fixed received IQ predictions;truthlast independent perrow only afterall7complete;formal scores never candidate/seed/parameter/promotion feedback",
+    "external_method_exception": null,
+    "claim_scope": "Finite nominal training-pool risk estimator, not exact continuous-population or conditional unbiased gradient; M2 includes stratification+fixed-p risk estimation. No extra deployment heads/Ag/true satellite/repeatability claim."
+  },
+  "checkpoint": {
+    "initialization": "strict same original P43 scratchAs20 student and ownEMA; fresh AdamW/cos10/CENTER_UNITS",
+    "sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Source metadata/protocol runtime same role IDs and original own parent final-only",
+    "provenance_verdict": "Exact source-only legal original parent reused; strict checkpoint load before training",
+    "selection_rule": "Original source-only fixedFINAL20; new fixedFINAL30/final_only"
+  },
+  "execution": {
+    "host": "N607 ordinary nonprivileged account",
+    "launch_owner": "codex/root/quality-risk70",
+    "gpu_policy": "2new rows,max2 total GPU processes including other owners,free>=12000MB; protect healthy runs",
+    "remote_run_root": "PROJECT/runs/20261018-phase1-FcrossRX-qualityStrat-e30-s2026092701-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261018-phase1-FcrossRX-qualityStrat-e30-s2026092701-m2-r01/logs",
+    "local_artifact_root": "local_artifacts/cvs_FcrossRX_quality_strat_E30_20261018_r01",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_quality_risk70/runner.py",
+    "stop_rule": "Wrongroles/provenance/outputcollision/nativecode/nonfinite/labeldomainmismatch or any positive mass quality bin N_g<2220 stops own run; preserve immutable pool/artifacts,no automaticretry. SourceFAIL stillall7, formalfeedback prohibited.",
+    "status": "PREREGISTERED"
+  },
+  "expected_artifacts": [
+    "real_checkpoint_smoke.json",
+    "ROW/source/resolved_config.json",
+    "ROW/source/actual_modules.json",
+    "ROW/source/source_contract.json",
+    "ROW/source/initialization.json",
+    "ROW/source/EMA_initialization.json",
+    "ROW/source/step_metrics.jsonl.gz",
+    "ROW/source/training_sequence.jsonl.gz",
+    "ROW/source/epoch_metrics.jsonl",
+    "ROW/source/final_ssdg.pth",
+    "ROW/source/completion.json",
+    "ROW/source/source_frozen.json",
+    "ROW/source_qualification/complete.json",
+    "source_matrix_decision.json",
+    "ROW/prediction/all7fixed",
+    "ROW/scoring/scores.json",
+    "ROW/scoring/complete.json",
+    "analysis_r01/complete.json",
+    "analysis_r01/full curves pairedstrata margins/errors/costs PNG_PDF",
+    "nominal_pool/complete.json",
+    "ROW/source/quality_pool_initialization.json",
+    "ROW/source/quality_steps.jsonl.gz",
+    "ROW/source/quality_pool_final.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "worst_RX",
+      "urban_mean",
+      "pairedclean_pp",
+      "pairedrepair_newerror",
+      "source_margin_over30",
+      "fixedclean_correct_retention",
+      "actualNN/updates/wall",
+      "quality_batch_count_variance",
+      "actual_generation_count",
+      "one_use_coverage",
+      "finite_pool_weights"
+    ],
+    "dimensions": [
+      "POOL_RANDOM",
+      "QUALITY_STRAT",
+      "reusedP43NOAS30/AS30",
+      "modelseed2026092701",
+      "all7formalviews",
+      "source1800x2draw",
+      "RX",
+      "TX",
+      "day",
+      "state/lock/addednoise",
+      "nominal_pool/groupcounts"
+    ],
+    "prediction_ref": "PROJECT/runs/20261018-phase1-FcrossRX-qualityStrat-e30-s2026092701-m2-r01/ROW/prediction; original P43 formal artifacts reused",
+    "scorer_ref": "Separate CPU scorer only after each row all7 fixed; final CPU analysis validates all4 logical rows all7 before truth joins"
+  },
+  "rows": [
+    {
+      "row_id": "M1-s2026092701",
+      "method": "POOL_RANDOM random one-use empirical CE",
+      "purpose": "Required same-pool/control for new buffering and As order; original As30 remains recipe reference",
+      "config_ref": "experiments/cvs_quality_risk70/design.py#config",
+      "resolved_config_ref": "PROJECT/runs/20261018-phase1-FcrossRX-qualityStrat-e30-s2026092701-m2-r01/M1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "held_source_RX": null,
+        "L": 6300,
+        "U_hidden": 56700,
+        "V": 27000,
+        "new_Ag": false,
+        "all5sourceRX": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original physicaltrain20261016421/hardware20261016423. Pool allocation20261018070 fixed per source config. Four quality bins are not model seeds; source two draws are not seeds. FormalfixedIQ no new sample seed.",
+      "k": null,
+      "scenario": "Full residual original train lowSub/midUrban/lowUrban nominal1/3; actual added-noise bins<3/3-8/8-15/>=15dB,EQoffG1",
+      "optimizer": {
+        "name": "AdamW",
+        "state": "RESET same ownAs20+10",
+        "lr_schedule": "newcos10, originalCENTER_UNITS",
+        "teacher": "same ownEMA/nativeU unchanged",
+        "temporal": "batch_neighbor unchanged"
+      },
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "New10/2220 each, sharedAs20/4440 reused. Native3162962+source12600+formal1176002 NN each; shared realCP smoke4NN. Shared nominalpool142080 generated once; no extra proposals or training NN. Totalnew8703132NN/4440updates.",
+      "output_root": "PROJECT/runs/20261018-phase1-FcrossRX-qualityStrat-e30-s2026092701-m2-r01/M1-s2026092701",
+      "log_path": "PROJECT/runs/20261018-phase1-FcrossRX-qualityStrat-e30-s2026092701-m2-r01/logs/M1-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_quality_risk70/runner.py",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "ROW/source/resolved_config.json",
+        "ROW/source/actual_modules.json",
+        "ROW/source/source_contract.json",
+        "ROW/source/initialization.json",
+        "ROW/source/EMA_initialization.json",
+        "ROW/source/step_metrics.jsonl.gz",
+        "ROW/source/training_sequence.jsonl.gz",
+        "ROW/source/epoch_metrics.jsonl",
+        "ROW/source/final_ssdg.pth",
+        "ROW/source/completion.json",
+        "ROW/source/source_frozen.json",
+        "ROW/source_qualification/complete.json",
+        "source_matrix_decision.json",
+        "ROW/prediction/all7fixed",
+        "ROW/scoring/scores.json",
+        "ROW/scoring/complete.json",
+        "analysis_r01/complete.json",
+        "analysis_r01/full curves pairedstrata margins/errors/costs PNG_PDF",
+        "nominal_pool/complete.json",
+        "ROW/source/quality_pool_initialization.json",
+        "ROW/source/quality_steps.jsonl.gz",
+        "ROW/source/quality_pool_final.json"
+      ]
+    },
+    {
+      "row_id": "M2-s2026092701",
+      "method": "QUALITY_STRAT fixed p_g group risk",
+      "purpose": "Only quality stratification and fixed nominal group CE estimator versus M1",
+      "config_ref": "experiments/cvs_quality_risk70/design.py#config",
+      "resolved_config_ref": "PROJECT/runs/20261018-phase1-FcrossRX-qualityStrat-e30-s2026092701-m2-r01/M2-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "held_source_RX": null,
+        "L": 6300,
+        "U_hidden": 56700,
+        "V": 27000,
+        "new_Ag": false,
+        "all5sourceRX": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original physicaltrain20261016421/hardware20261016423. Pool allocation20261018070 fixed per source config. Four quality bins are not model seeds; source two draws are not seeds. FormalfixedIQ no new sample seed.",
+      "k": null,
+      "scenario": "Full residual original train lowSub/midUrban/lowUrban nominal1/3; actual added-noise bins<3/3-8/8-15/>=15dB,EQoffG1",
+      "optimizer": {
+        "name": "AdamW",
+        "state": "RESET same ownAs20+10",
+        "lr_schedule": "newcos10, originalCENTER_UNITS",
+        "teacher": "same ownEMA/nativeU unchanged",
+        "temporal": "batch_neighbor unchanged"
+      },
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "New10/2220 each, sharedAs20/4440 reused. Native3162962+source12600+formal1176002 NN each; shared realCP smoke4NN. Shared nominalpool142080 generated once; no extra proposals or training NN. Totalnew8703132NN/4440updates.",
+      "output_root": "PROJECT/runs/20261018-phase1-FcrossRX-qualityStrat-e30-s2026092701-m2-r01/M2-s2026092701",
+      "log_path": "PROJECT/runs/20261018-phase1-FcrossRX-qualityStrat-e30-s2026092701-m2-r01/logs/M2-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_quality_risk70/runner.py",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "ROW/source/resolved_config.json",
+        "ROW/source/actual_modules.json",
+        "ROW/source/source_contract.json",
+        "ROW/source/initialization.json",
+        "ROW/source/EMA_initialization.json",
+        "ROW/source/step_metrics.jsonl.gz",
+        "ROW/source/training_sequence.jsonl.gz",
+        "ROW/source/epoch_metrics.jsonl",
+        "ROW/source/final_ssdg.pth",
+        "ROW/source/completion.json",
+        "ROW/source/source_frozen.json",
+        "ROW/source_qualification/complete.json",
+        "source_matrix_decision.json",
+        "ROW/prediction/all7fixed",
+        "ROW/scoring/scores.json",
+        "ROW/scoring/complete.json",
+        "analysis_r01/complete.json",
+        "analysis_r01/full curves pairedstrata margins/errors/costs PNG_PDF",
+        "nominal_pool/complete.json",
+        "ROW/source/quality_pool_initialization.json",
+        "ROW/source/quality_steps.jsonl.gz",
+        "ROW/source/quality_pool_final.json"
+      ]
+    }
+  ],
+  "notes": [
+    "User attachment 20261018: prioritize quality risk, U-routing later, common propagation other chat no duplicate.",
+    "M0/oldM1 are original NoAs30/As30 references; new POOL_RANDOM is necessary matching finite-pool control. M3 is not launched.",
+    "p_g=N_g/142080 fixed from the nominal training pool before updates, not V/target. All positive mass groups must contain >=2220 observations. No silent sparse-group fallback.",
+    "At fixed theta, random within-group allocation estimates finite-pool group means without bias; realized one-use weights differ slightly underfloor/ceil, no trajectory-conditional/population-exact unbiasedness claim.",
+    "Only source two comparisons: fullVclean M2-NoAs>=-.1pp and pooledmidlow M2-M1>=+.5pp. No formal feedback or selection retry. SourceFAIL stillall7.",
+    "Actual channel refresh uses142080 unique original epoch/view named draws once, but pool is globally reordered across update epochs; no repeated frozen observation bank.",
+    "Current healthy tasks untouched; P69 negative closed, no optimizer rescue, no new Ag/alignment/head/U rule."
+  ],
+  "registered_at": "2026-10-18T15:55:45+00:00"
+}

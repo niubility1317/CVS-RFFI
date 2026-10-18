@@ -1,0 +1,62 @@
+{
+  "status": "VERIFIED_READY_TO_RELEASE",
+  "run_id": "20261018-phase1-FcrossRX-qualityStrat-e30-s2026092701-m2-r01",
+  "local_CVS_NN": 0,
+  "local_IQ": 0,
+  "local_checkpoint_reads": 0,
+  "focused_checks": {
+    "status": "PASS",
+    "protocol_negatives": 19,
+    "pool_loss_checks": 12,
+    "additional_hook_boundary_zero_checks": 4,
+    "evidence": "local_artifacts/cvs_FcrossRX_quality_strat_E30_20261018_r01/worker_checks_actual.json + core_hook_checks_actual.json"
+  },
+  "analysis_checks": {
+    "status": "PASS",
+    "toy_checks": 9,
+    "final_zero_group_targeted_check": "PASS",
+    "evidence": "local_artifacts/cvs_FcrossRX_quality_strat_E30_20261018_r01/analysis_checks_actual.json"
+  },
+  "compile": {
+    "status": "PASS",
+    "core_plus_analysis_files": 20
+  },
+  "independent_P0P1": {
+    "status": "PASS",
+    "run_id": "20261018-phase1-FcrossRX-qualityStrat-e30-s2026092701-m2-r01",
+    "reviewer": "quality70_p0p1",
+    "scope": "One independent direct next-run P0/P1 review only",
+    "issues": [],
+    "checked": [
+      "same legal P43As20/defaulthead/ownEMA/reset10",
+      "nominal pool cumulative epoch/step streams",
+      "one-use pack IQ/y/domain/physical metadata",
+      "fixed p_g CE gradient correction and unchanged KL",
+      "ORD128 ordinary-only SupCon",
+      "EMA deepcopy/lifecycle",
+      "NN/update budget",
+      "all7 fixed predictions before independenttruthlast"
+    ],
+    "reviewer_NN": 0,
+    "reviewer_remote_calls": 0,
+    "extra_gate": false
+  },
+  "new_model_rows": 2,
+  "reused_reference_rows": 2,
+  "expected_new_remote_NN": 8703132,
+  "new_updates": 4440,
+  "shared_nominal_pool_generation": 142080,
+  "realCP_smoke_NN": 4,
+  "N607_preflight": {
+    "status": "VERIFIED",
+    "ordinary_nonroot": true,
+    "direct": true,
+    "project_exists": true
+  },
+  "source_FAIL_still_all7": true,
+  "formal_target_feedback": false,
+  "E50_launched": false,
+  "M3_launched": false,
+  "results_available": false,
+  "goal_complete": false
+}
