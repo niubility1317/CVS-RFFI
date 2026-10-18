@@ -1,6 +1,6 @@
 # 原完整 practical 配方：E30 至 E50 匹配预算验证
 
-当前状态：**仅完成实现与最小预登记，尚未远端发布或训练。** 实际代码提交为 `115dc1c9e5d7d392e820d6230bbf66aaae08f8bc`，分支为 `codex/cvs-iq-timing-e20-20261016`。唯一一次独立 P0/P1 审查 PASS；远端真实 checkpoint smoke、双真实 F 合成前向与训练尚未执行。登记结构 VALID 不证明科学有效性或运行成功。
+当前状态：**已在 N607 启动并独立核实运行。** 实际训练 release 提交为 `0f399c910324e21a8b1a60346d879be5c2964a9c`；实现提交为 `115dc1c9e5d7d392e820d6230bbf66aaae08f8bc`。一次独立 P0/P1 审查 PASS，远端 30 项协议负例、真实父 checkpoint 的 2 NN 无 query smoke、两行真实 F 的 1,536 NN 合成检查均 PASS。E50 训练和正式结果尚未完成。
 
 本次依据用户 2026-10-18 的明确授权“对于表现好的，可以跑 E50 更多预算，看看有没有提升”，研究原完整 As 的预算收益。唯一假设是：在其余配方保持不变时，原完整 As 各自固定 FINAL30 追加 20 轮，可进一步改善 low／mid urban，并在累计 E50 的匹配 NoAs 对照下控制 clean 代价。此处不新增 Ag、结构、损失或门控，不是 satelliteDropout 候选的救跑，也不依赖该候选的分析恢复。
 
@@ -76,4 +76,15 @@ source 报告 full V27000 clean 及各源 RX 准确率；固定 V1800 两 draw �
 
 发布器拒绝覆盖既存 release／archive／run；一次 N607 preflight、一次 archive 本地／远端 SHA 比较、一次远端编译。launcher 首步真实 no-query smoke PASS 后直接继续。启动后独立核对 PID／CWD／argv／GPU／日志增长。仅遇本 run 的契约／父权重／头／数值／输出冲突／非法预测／不能运行等系统性技术错误时保留现场并停止尚未启动的本 run 行，不自动重跑，不停止其他健康任务。
 
-预期产物为父权重来源／args／完整日志与 checkpoint／source_frozen、源 panel 读出、全部七视图不可变预测、独立评分、成本与配对分析。自动汇总只到 SCORED_COMPLETE_PENDING_FULL_LOG_ANALYSIS；完成独立全日志与逐包配对分析后才可写 ANALYZED。当前这些训练与评分产物均尚未产生。
+预期产物为父权重来源／args／完整日志与 checkpoint／source_frozen、源 panel 读出、全部七视图不可变预测、独立评分、成本与配对分析。自动汇总只到 SCORED_COMPLETE_PENDING_FULL_LOG_ANALYSIS；完成独立全日志与逐包配对分析后才可写 ANALYZED。当前已有实际训练日志及初始化产物；FINAL50、源读出、正式预测及评分尚未完成。
+
+## 实际运行证据
+
+独立观察时间：2026-10-18T03:56:37.970Z。dispatcher PID 1143533 存活；两行 CWD／argv／GPU 环境与登记一致，GPU 进程可见，日志相对初次观察持续增长。
+
+| row | worker PID | GPU | 累计轮数 | 新段更新 | 累计更新 | 日志增长 |
+|---|---:|---:|---:|---:|---:|---:|
+| B00-s2026092701 | 1143555 | 1 | 35／50 | 1110／4440 | 7770／11100 | +25774 bytes |
+| B01-s2026092701 | 1143703 | 2 | 33／50 | 666／4440 | 7326／11100 | +15466 bytes |
+
+两行均为原有 U 规则，extra_U_NN=0、U_As=0、U_truth_read=false、target_access=false；未出现 failure。新段 L_NN 和 As 计数只包含本次追加段，不能冒充累计 E50 成本。普通账户 preflight、一次 release archive SHA 比较与远端编译已完成；不为报告补值重新做哈希。详见 execution_verification.json。

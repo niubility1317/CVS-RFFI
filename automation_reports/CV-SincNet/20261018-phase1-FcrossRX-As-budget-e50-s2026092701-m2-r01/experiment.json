@@ -116,7 +116,7 @@
       }
     ],
     "contract_check_ref": "experiments/cvs_practical_budget50/source.py parent_payload/ancestor_payload and protocol.py;reuse same original physical role_ids",
-    "provenance_verdict": "Static path/protocol checks implemented;actual CP metadata and finite defaulthead/state validation deferred to launcher first no-query smoke. Fixed original P43 lineage has same fullsource contract and source-only fixed epoch selection;historical independent final target evaluation is not training contamination and is not candidate/seed selection evidence.",
+    "provenance_verdict": "VERIFIED own fixed FINAL30 student/EMA and own scratch20 ancestor;source contracts/default head/finite states checked by actual initialization",
     "selection_rule": "Fixed FINAL50 for both rows,no best source/target epoch,teacher own EMA only;default cosine jointly trained"
   },
   "execution": {
@@ -127,7 +127,63 @@
     "remote_log_root": "PROJECT/runs/20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01/logs;dispatcher PROJECT/releases/cvs_FcrossRX_As_budget_E50_20261018_r01/practical_budget50.stdout.log",
     "local_artifact_root": "local_artifacts/F_As_budget_E50_20261018",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_practical_budget50/runner.py;local publish: CVS-RFFI/python -m experiments.cvs_practical_budget50.publish",
-    "stop_rule": "Run-owned source/data/parent/defaulthead/config mismatch,nonfinite,output collision,unlaunchable or illegal prediction => preserve outputs and stop unlaunched own rows;healthy already running rows finish;no automatic retry,no source-scientific-failure skip of fixed formal closure;never stop other owners"
+    "stop_rule": "Run-owned source/data/parent/defaulthead/config mismatch,nonfinite,output collision,unlaunchable or illegal prediction => preserve outputs and stop unlaunched own rows;healthy already running rows finish;no automatic retry,no source-scientific-failure skip of fixed formal closure;never stop other owners",
+    "status": "RUNNING",
+    "release_commit": "0f399c910324e21a8b1a60346d879be5c2964a9c",
+    "last_observed_at": "2026-10-18T03:56:37.970Z",
+    "dispatcher_pid": 1143533,
+    "workers": [
+      {
+        "row_id": "B00-s2026092701",
+        "pid": 1143555,
+        "gpu": 1,
+        "alive": true,
+        "phase": "worker",
+        "cwd_matches": true,
+        "argv_matches": true,
+        "GPU_env_matches": true,
+        "GPU_observed": true,
+        "log_growth_bytes_from_first_observation": 25774,
+        "completed_new_epochs": 5,
+        "cumulative_epochs": 35,
+        "new_updates": 1110,
+        "cumulative_updates": 7770,
+        "new_segment_L_NN": 852480,
+        "new_segment_L_As": 0,
+        "extra_U_NN": 0,
+        "U_As": 0,
+        "U_truth_read": false,
+        "target_access": false,
+        "source_complete": false,
+        "predictions_complete": false,
+        "scoring_complete": false
+      },
+      {
+        "row_id": "B01-s2026092701",
+        "pid": 1143703,
+        "gpu": 2,
+        "alive": true,
+        "phase": "worker",
+        "cwd_matches": true,
+        "argv_matches": true,
+        "GPU_env_matches": true,
+        "GPU_observed": true,
+        "log_growth_bytes_from_first_observation": 15466,
+        "completed_new_epochs": 3,
+        "cumulative_epochs": 33,
+        "new_updates": 666,
+        "cumulative_updates": 7326,
+        "new_segment_L_NN": 511488,
+        "new_segment_L_As": 42624,
+        "extra_U_NN": 0,
+        "U_As": 0,
+        "U_truth_read": false,
+        "target_access": false,
+        "source_complete": false,
+        "predictions_complete": false,
+        "scoring_complete": false
+      }
+    ]
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
@@ -216,7 +272,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/practical-budget50",
         "label_epochs": 0,
         "pseudo_epochs": 20,
@@ -254,7 +310,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "OriginalP43 .5ordinaryRD+.5mixedRD+.25rawRD+CROSS_RX;ownFINAL30 student/EMA+20U,resetAdamW/cos20;full satellite KL/dropout retained",
@@ -500,7 +556,7 @@
           "lr": 0.0002,
           "weight_decay": 0.0001,
           "lr_schedule": "cosine20",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "EMA": "strict own FINAL30 EMA;localcounter0..4440,cumulative6660..11100;startup_averageFalse",
           "ordinary_augmentation": "freeze nativeepoch13 using own scratch20 args/epochs20;not FINAL30 args/epochs10",
           "no_new_U": true
@@ -591,7 +647,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/practical-budget50",
         "label_epochs": 0,
         "pseudo_epochs": 20,
@@ -629,7 +685,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "OriginalP43 .5ordinaryRD+.5mixedRD+.25rawRD+CROSS_RX;ownFINAL30 student/EMA+20U,resetAdamW/cos20;full satellite KL/dropout retained",
@@ -875,7 +931,7 @@
           "lr": 0.0002,
           "weight_decay": 0.0001,
           "lr_schedule": "cosine20",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "EMA": "strict own FINAL30 EMA;localcounter0..4440,cumulative6660..11100;startup_averageFalse",
           "ordinary_augmentation": "freeze nativeepoch13 using own scratch20 args/epochs20;not FINAL30 args/epochs10",
           "no_new_U": true
@@ -937,7 +993,8 @@
     "New2models40modelepochs/8880updates/14921048NN plus1538sharedsmoke;parent2models60modelepochs/13320updates/18298572NN separate;cumulative100modelepochs/22200updates/33219620NN plus sharedsmokes;no extrahead/diagnostic fit.",
     "Expected new perrow nativeNN6271922=studenttrain4543920+studenteval594002+teachertrain0+teachereval1134000;frozen source12600/formal1176002 separate;actual logged costs required.",
     "Only aggregate metadata/report/config enters Git;rawIQ/IDs/checkpoints/predictionarrays/logs/private paths stay outsideGit. Public PROJECT/CVS-RFFI/python aliases map via private runtime.",
-    "Registration codecommit is actual implementation identity115dc1c9e5d7d392e820d6230bbf66aaae08f8bc;release_commit records final code+registration HEAD. No design/config/member hashes or extra review."
+    "Registration codecommit is actual implementation identity115dc1c9e5d7d392e820d6230bbf66aaae08f8bc;release_commit records final code+registration HEAD. No design/config/member hashes or extra review.",
+    "Actual release0f399c910324e21a8b1a60346d879be5c2964a9c running independently verified;remote30negatives+2NNCP+1536NNsynthetic PASS;new E50 scores not available."
   ],
   "registered_at": "2026-10-18T03:39:59+00:00"
 }

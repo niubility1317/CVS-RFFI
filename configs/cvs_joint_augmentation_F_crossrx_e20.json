@@ -2310,35 +2310,81 @@
     "new_analysis_NN": 0,
     "new_analysis_updates": 0
   },
-  "current_experiment": "20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01",
+  "current_experiment": "20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01",
   "active_As_hypothesis": {
-    "run_id": "20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01",
+    "run_id": "20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01",
     "status": "RUNNING_VERIFIED",
-    "hypothesis": "Bypass existing featuredropout onlyactualsatellite rows at same RNG/NN;AS_CE stochastic attributioncontrol",
+    "hypothesis": "Original complete practical As fixed FINAL30+20 versus matched own NoAs FINAL30+20;budget effect only",
     "new_models": 2,
-    "reused_control_models": 2,
-    "E30_each": true,
+    "reused_E30_controls": 2,
+    "model_seed": 2026092701,
+    "total_epochs_each": 50,
+    "new_epochs_each": 20,
+    "trajectory": "20+10+20 with reset AdamW/cosine20",
     "source_RX_holdout": null,
     "IQ_points": 256,
-    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01/report.md",
+    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01/report.md",
     "stage_clean_pp_min": -0.1,
     "final_repeatable_clean_positive": false,
-    "execution_commit": "735e171fc064094f227fe6807d75836a0b3b0e3a",
+    "implementation_commit": "115dc1c9e5d7d392e820d6230bbf66aaae08f8bc",
+    "execution_commit": "0f399c910324e21a8b1a60346d879be5c2964a9c",
     "remote_checks": "PASS",
     "real_CP_noquery_smoke": "PASS",
+    "source_only_selection": true,
+    "automatic_seed_extension": false,
     "workers": [
       {
-        "row": "AS_CE-s2026092701",
+        "row_id": "B00-s2026092701",
+        "pid": 1143555,
         "gpu": 1,
-        "progress": 0
+        "alive": true,
+        "phase": "worker",
+        "cwd_matches": true,
+        "argv_matches": true,
+        "GPU_env_matches": true,
+        "GPU_observed": true,
+        "log_growth_bytes_from_first_observation": 25774,
+        "completed_new_epochs": 5,
+        "cumulative_epochs": 35,
+        "new_updates": 1110,
+        "cumulative_updates": 7770,
+        "new_segment_L_NN": 852480,
+        "new_segment_L_As": 0,
+        "extra_U_NN": 0,
+        "U_As": 0,
+        "U_truth_read": false,
+        "target_access": false,
+        "source_complete": false,
+        "predictions_complete": false,
+        "scoring_complete": false
       },
       {
-        "row": "AS_DET-s2026092701",
+        "row_id": "B01-s2026092701",
+        "pid": 1143703,
         "gpu": 2,
-        "progress": 0
+        "alive": true,
+        "phase": "worker",
+        "cwd_matches": true,
+        "argv_matches": true,
+        "GPU_env_matches": true,
+        "GPU_observed": true,
+        "log_growth_bytes_from_first_observation": 15466,
+        "completed_new_epochs": 3,
+        "cumulative_epochs": 33,
+        "new_updates": 666,
+        "cumulative_updates": 7326,
+        "new_segment_L_NN": 511488,
+        "new_segment_L_As": 42624,
+        "extra_U_NN": 0,
+        "U_As": 0,
+        "U_truth_read": false,
+        "target_access": false,
+        "source_complete": false,
+        "predictions_complete": false,
+        "scoring_complete": false
       }
     ],
-    "formal_scores_read": false
+    "formal_E50_scores_read": false
   },
   "practical_finite_power_E30_result": {
     "run_id": "20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01",
@@ -2861,9 +2907,10 @@
   },
   "latest_completed_source_diagnostic": "20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01",
   "active_training_budget": {
-    "each_total_epochs": 30,
-    "parent_epochs": 20,
-    "new_epochs": 10,
+    "each_total_epochs": 50,
+    "parent_epochs": 30,
+    "new_epochs": 20,
+    "default_research_epochs": 30,
     "source_RX_holdout": null,
     "L": 6300,
     "U": 56700,
@@ -2873,7 +2920,8 @@
       "total_epochs": 50,
       "additional_after_fixed_E30": 20,
       "authorization": "2026-10-18 user: 对于表现好的，可以跑E50更多预算，看看有没有提升",
-      "status": "AUTHORIZED_NOT_LAUNCHED",
+      "status": "RUNNING_VERIFIED",
+      "run_id": "20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01",
       "matched_NoAs_required": true,
       "source_only_candidate_selection": true
     }
@@ -4287,19 +4335,17 @@
     "report": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01/final_analysis.md"
   },
   "current_evidence_gap": {
-    "new_Ag_validated": false,
-    "new_As_qualified": false,
-    "joint_goal_complete": false,
-    "latest_candidate": "20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01",
-    "clean_net_gain_pp": -0.024404761904761905,
-    "lowurban_accuracy": 0.30423214285714284,
-    "each_suburban_gap_pp": {
-      "practical_high": 41.795238095238105,
-      "practical_mid": 43.44821428571429,
-      "practical_low_suburban": 45.26845238095238
-    },
-    "full_B00_B10_B01_B11_missing": true,
-    "cross_seed_missing": true
+    "practical_primary": true,
+    "stage_clean_delta_pp_min": -0.1,
+    "E50_results": "NOT_AVAILABLE",
+    "repeatable_clean_and_practical_gain": false,
+    "latest_completed_candidate": "20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01",
+    "latest_candidate_source_pass": true,
+    "latest_candidate_formal_stage_pass": false,
+    "current_budget_experiment": "20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01",
+    "model_seed_count": 1,
+    "multi_seed_E50_missing": true,
+    "mandatory_Ag_factorial": false
   },
   "current_source_experiment": null,
   "latest_completed_source_experiment": "20261018-diagnostic-F-identitySensitivity-sourceLtoV-s2026092701-m1-r01",
@@ -4339,7 +4385,7 @@
     "target_access": false,
     "automatic_training": false
   },
-  "current_training_experiment": "20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01",
+  "current_training_experiment": "20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01",
   "batch_stratification_release": {
     "run_id": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
     "status": "ANALYZED_VERIFIED",
@@ -6184,7 +6230,81 @@
     "identity_accuracy_measured": false,
     "joint_goal_complete": false
   },
-  "active_training_hypothesis": null,
+  "active_training_hypothesis": {
+    "run_id": "20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01",
+    "status": "RUNNING_VERIFIED",
+    "hypothesis": "Original complete practical As fixed FINAL30+20 versus matched own NoAs FINAL30+20;budget effect only",
+    "new_models": 2,
+    "reused_E30_controls": 2,
+    "model_seed": 2026092701,
+    "total_epochs_each": 50,
+    "new_epochs_each": 20,
+    "trajectory": "20+10+20 with reset AdamW/cosine20",
+    "source_RX_holdout": null,
+    "IQ_points": 256,
+    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01/report.md",
+    "stage_clean_pp_min": -0.1,
+    "final_repeatable_clean_positive": false,
+    "implementation_commit": "115dc1c9e5d7d392e820d6230bbf66aaae08f8bc",
+    "execution_commit": "0f399c910324e21a8b1a60346d879be5c2964a9c",
+    "remote_checks": "PASS",
+    "real_CP_noquery_smoke": "PASS",
+    "source_only_selection": true,
+    "automatic_seed_extension": false,
+    "workers": [
+      {
+        "row_id": "B00-s2026092701",
+        "pid": 1143555,
+        "gpu": 1,
+        "alive": true,
+        "phase": "worker",
+        "cwd_matches": true,
+        "argv_matches": true,
+        "GPU_env_matches": true,
+        "GPU_observed": true,
+        "log_growth_bytes_from_first_observation": 25774,
+        "completed_new_epochs": 5,
+        "cumulative_epochs": 35,
+        "new_updates": 1110,
+        "cumulative_updates": 7770,
+        "new_segment_L_NN": 852480,
+        "new_segment_L_As": 0,
+        "extra_U_NN": 0,
+        "U_As": 0,
+        "U_truth_read": false,
+        "target_access": false,
+        "source_complete": false,
+        "predictions_complete": false,
+        "scoring_complete": false
+      },
+      {
+        "row_id": "B01-s2026092701",
+        "pid": 1143703,
+        "gpu": 2,
+        "alive": true,
+        "phase": "worker",
+        "cwd_matches": true,
+        "argv_matches": true,
+        "GPU_env_matches": true,
+        "GPU_observed": true,
+        "log_growth_bytes_from_first_observation": 15466,
+        "completed_new_epochs": 3,
+        "cumulative_epochs": 33,
+        "new_updates": 666,
+        "cumulative_updates": 7326,
+        "new_segment_L_NN": 511488,
+        "new_segment_L_As": 42624,
+        "extra_U_NN": 0,
+        "U_As": 0,
+        "U_truth_read": false,
+        "target_access": false,
+        "source_complete": false,
+        "predictions_complete": false,
+        "scoring_complete": false
+      }
+    ],
+    "formal_E50_scores_read": false
+  },
   "carrier_gate_release": {
     "run_id": "20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01",
     "status": "ANALYZED_VERIFIED",
@@ -7721,5 +7841,48 @@
       "trajectory": "20+10+20, new AdamW/cosine20; not continuous cosine50",
       "current_healthy_E30_unchanged": true
     }
+  },
+  "latest_completed_practical_candidate": {
+    "run_id": "20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01",
+    "status": "ANALYZED",
+    "new_rows": [
+      "AS_CE",
+      "AS_DET"
+    ],
+    "source_preregistered_conditions": "ALL_FOUR_PASS",
+    "formal_AS_DET_vs_NoAs": {
+      "clean_delta_pp": -0.1261904761904762,
+      "low_urban_delta_pp": 20.46666666666667,
+      "mid_urban_delta_pp": 26.50535714285714,
+      "urban_mean_delta_pp": 27.1170634920635,
+      "stage_clean_pass": false
+    },
+    "formal_AS_DET_vs_original_As": {
+      "clean_delta_pp": -0.21964285714285714,
+      "low_urban_delta_pp": -0.6375,
+      "mid_urban_delta_pp": -1.16845238095238,
+      "urban_mean_delta_pp": -1.25138888888889
+    },
+    "model_seeds": [
+      2026092701
+    ],
+    "repeatability_proven": false,
+    "scope": "Source pass did not predict formal gain;single-seed actual no added benefit;no target-driven rescue or general hypothesis closure",
+    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01/final_analysis.md"
+  },
+  "historical_evidence_gap_before_priority_override": {
+    "new_Ag_validated": false,
+    "new_As_qualified": false,
+    "joint_goal_complete": false,
+    "latest_candidate": "20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01",
+    "clean_net_gain_pp": -0.024404761904761905,
+    "lowurban_accuracy": 0.30423214285714284,
+    "each_suburban_gap_pp": {
+      "practical_high": 41.795238095238105,
+      "practical_mid": 43.44821428571429,
+      "practical_low_suburban": 45.26845238095238
+    },
+    "full_B00_B10_B01_B11_missing": true,
+    "cross_seed_missing": true
   }
 }

@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_PREREGISTERED_NOT_LAUNCHED",
+  "status": "VERIFIED_RUNNING",
   "code_commit": "115dc1c9e5d7d392e820d6230bbf66aaae08f8bc",
   "evidence_date": "2026-10-18",
   "local_implementation_checks": {
@@ -13,7 +13,8 @@
   "local_Torch": {
     "available": false,
     "real_checkpoint_smoke": "NOT_EXECUTED",
-    "real_F_synthetic": "NOT_EXECUTED"
+    "real_F_synthetic": "NOT_EXECUTED",
+    "note": "Local Torch unavailable;required checks completed on actual remote runtime"
   },
   "registration": {
     "tool": "tools/experiment_registry.py validate registry_spec.json --launch-ready",
@@ -21,25 +22,28 @@
     "errors": [],
     "scope": "Field structure only;not scientific validity,model/data validation or remote launch proof"
   },
-  "expected_remote_first_step": {
+  "remote_preflight": "VERIFIED",
+  "remote_transfer": "VERIFIED_ONE_ARCHIVE_SHA_COMPARISON",
+  "remote_compile": "PASS",
+  "actual_training": "RUNNING_VERIFIED",
+  "frozen_source": "NOT_COMPLETE",
+  "formal_predictions": "NOT_STARTED",
+  "independent_truth_last_scoring": "NOT_STARTED",
+  "analysis": "IMPLEMENTING_ZERO_NN_POSTPROCESS",
+  "formal_scores_read_for_E50_selection": false,
+  "target_feedback": false,
+  "automatic_seed_extension": false,
+  "goal_complete": false,
+  "release_commit": "0f399c910324e21a8b1a60346d879be5c2964a9c",
+  "remote_first_step": {
     "real_checkpoint_noquery_NN": 2,
     "real_F_two_arm_synthetic_NN": 1536,
     "total_shared_NN": 1538,
     "updates": 0,
     "source_IQ": 0,
     "target_query": false,
-    "status": "NOT_EXECUTED"
+    "status": "PASS"
   },
-  "remote_preflight": "NOT_EXECUTED",
-  "remote_transfer": "NOT_EXECUTED",
-  "remote_compile": "NOT_EXECUTED",
-  "actual_training": "NOT_STARTED",
-  "frozen_source": "NOT_STARTED",
-  "formal_predictions": "NOT_STARTED",
-  "independent_truth_last_scoring": "NOT_STARTED",
-  "analysis": "NOT_STARTED",
-  "formal_scores_read_for_E50_selection": false,
-  "target_feedback": false,
-  "automatic_seed_extension": false,
-  "goal_complete": false
+  "execution_evidence": "execution_verification.json",
+  "last_observed_at": "2026-10-18T03:56:37.970Z"
 }
