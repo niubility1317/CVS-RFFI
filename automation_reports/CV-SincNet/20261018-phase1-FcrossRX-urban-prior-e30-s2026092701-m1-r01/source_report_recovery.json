@@ -1,0 +1,32 @@
+{
+  "status": "FIX_VERIFIED_NOT_EXECUTED",
+  "run_id": "20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01",
+  "training_unchanged": true,
+  "training_complete": true,
+  "formal_predictions_and_independent_scores_complete": true,
+  "formal_scores_read_by_current_analysis": false,
+  "diagnosis": "numpy.bool_ comparisons in source_decision.checks cannot be serialized by stdlib JSON; qualifier predictions already complete",
+  "action": "Cast existing source comparisons to builtin bool, rerun only source_decision from unchanged saved source inputs, preserve original failure, no source/model inference or training/prediction/scorer relaunch",
+  "criteria_unchanged": true,
+  "NN": 0,
+  "IQ": 0,
+  "CP": 0,
+  "updates": 0,
+  "new_budget": 0,
+  "source_observation": {
+    "fullV_clean_vs_NoAs30_pp": -0.10740740740740051,
+    "mid_low_vs_As30_pp": 0.027777777777771018,
+    "low_vs_As30_pp": 0.11111111111110628
+  },
+  "focused_check": {
+    "tests": 4,
+    "status": "PASS",
+    "wall_seconds": 0.009,
+    "original_failure_reproduced": true,
+    "real_numpy_comparisons": true,
+    "criteria_unchanged": true,
+    "IQ": 0,
+    "CP": 0,
+    "NN": 0
+  }
+}
