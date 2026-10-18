@@ -30,11 +30,11 @@
   "replaces_run_id": null,
   "authorization": "Active goal and latest satellite-first instruction authorize implementation and matched experiments; current ordinary totalE30; one same-contract ownAs20+10 candidate, no held source RX; E50 permitted only later source-supported good recipes and not automatic here.",
   "code": {
-    "commit": null,
+    "commit": "5bc8ccff40c7e1873c261eb37f8b9b444283871e",
     "checkout": "codex/phase1-urban-sigtime-20261014",
     "environment": "Existing ordinary N607 Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5; pinned P43 runtime; full FP32/CENTER_UNITS; CPU2",
     "cwd": "PROJECT/releases/cvs_FcrossRX_pair_margin_tail_E30_20261018_r01",
-    "identity_status": "Actual code/config commit will be recorded immediately after this commit and before transfer/launch"
+    "identity_status": "PUSHED_INDEPENDENT_GITHUB_COMPARE_IDENTICAL"
   },
   "data": {
     "dataset": "ManySig",
@@ -89,7 +89,7 @@
       "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
     ],
     "contract_check_ref": "OriginalP43 source.parent_payload on original B01config30 beforeload:role_ids exact,L6300/U56700hidden/V27000,all5RX/3day,scratch/noancestors/notarget,ownrunrow/E20/4440/final_only/EMA;newrun ownfinalreader",
-    "provenance_verdict": "VERIFIED_PREFLIGHT_OWN_AS20_SCRATCH_FINALONLY_EXACT_PHYSICAL_ROLES;REAL_CP_NOQUERY_SMOKE_REMAINS_FIRST_LAUNCH_STEP",
+    "provenance_verdict": "VERIFIED_PREFLIGHT_OWN_AS20_EXACT_PHYSICAL_ROLES_AND_REAL_CP_NOQUERY_SMOKE_PASS_STRICT_OWN_EMA_TRAIN_INITIALIZATION",
     "selection_rule": "ParentB01 andoriginalfixedseed chosenbeforetraining fromsource As reference,not bestformalrow;fixedFINAL10 cumulative30,sourceV nocheckpoint ranking;source decision stored beforeformal"
   },
   "execution": {
@@ -101,7 +101,11 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_pair_margin_tail_E30_20261018_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_pair_margin61/runner.py",
     "stop_rule": "Only wrongroles/provenance/runtime/nonfinite/outputcollision or preregistered technicalfailure stop own run and preserve;no automatic retries. SourceFAIL still all7;no coefficient/rho/q sweep/seed/E50 rescue.",
-    "status": "READY"
+    "status": "RUNNING",
+    "dispatcher_pid": 1312196,
+    "worker_pid": 1312286,
+    "gpu": 0,
+    "remote_compile": "PASS_21PY"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
