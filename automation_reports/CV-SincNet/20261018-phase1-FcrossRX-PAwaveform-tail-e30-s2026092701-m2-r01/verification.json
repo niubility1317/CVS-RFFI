@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_VERIFIED",
+  "status": "VERIFIED_RUNNING",
   "run_id": "20261018-phase1-FcrossRX-PAwaveform-tail-e30-s2026092701-m2-r01",
   "candidate": "Tail ordinaryPA waveform bypass by fullAs interaction",
   "implementation": {
@@ -33,8 +33,44 @@
   "total_local_synthetic_NN": 5376,
   "scientific_result": null,
   "remote_preflight": "VERIFIED_ONCE_ORDINARY_TWO_PARENT_METADATA_AND_REUSED_HANDLES_ROOTS_ABSENT_GPUS_AVAILABLE",
-  "remote_real_CP_smoke": "PENDING_FIRST_LAUNCH_STEP_4NN_TWO_SOURCES_CPU",
-  "remote_model_training": "NOT_LAUNCHED",
+  "remote_real_CP_smoke": {
+    "status": "PASS",
+    "NN": 4,
+    "checkpoint_reads": 2,
+    "IQ": 0,
+    "query": false,
+    "updates": 0
+  },
+  "remote_model_training": "RUNNING",
   "source_extension_criteria_fixed": true,
-  "no_extra_review": true
+  "no_extra_review": true,
+  "training_code_commit": "23f794296a11e1a4f25837e78b60f36bc700b99e",
+  "remote_branch_OID": "INDEPENDENT_COMPARE_IDENTICAL",
+  "single_archive_SHA": "14ffc3d84237c66f0ea82725045fcd7792fd258d6e26e8eaeb393184b9527354",
+  "remote_compile": "PASS_15PY",
+  "dispatcher_pid": 1249294,
+  "rows": [
+    {
+      "row_id": "NOAS_PAOFF-s2026092701",
+      "pid": 1249382,
+      "gpu": 0,
+      "PID_CWD_ARGV_CUDA": "VERIFIED",
+      "step_log_growth_from": 193700,
+      "to": 452520
+    },
+    {
+      "row_id": "AS_PAOFF-s2026092701",
+      "pid": 1249461,
+      "gpu": 1,
+      "PID_CWD_ARGV_CUDA": "VERIFIED",
+      "step_log_growth_from": 162128,
+      "to": 356638
+    }
+  ],
+  "runtime_channel_configurations_original_match": true,
+  "actual_PA_shadow_implementation_imported": true,
+  "source_roles": "EXACT_MATCH",
+  "target_contact": false,
+  "optimizer": "RESET_EMPTY_ADAMW_COS10_LR0002_WD0001",
+  "source_and_formal_results_available": false
 }

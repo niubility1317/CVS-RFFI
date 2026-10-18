@@ -27,11 +27,11 @@
   "replaces_run_id": null,
   "authorization": "当前授权固定网络默认头/全源数据/每模型总E30的增强训练机制研究；本项新增两条必要匹配E10尾段，共20modelE/4440updates，复用各自原E20；好方案总E50只有源证据支持后登记，不在本run扩训。",
   "code": {
-    "commit": null,
+    "commit": "23f794296a11e1a4f25837e78b60f36bc700b99e",
     "checkout": "codex/phase1-urban-sigtime-20261014",
     "environment": "N607 existing ordinary CVS-RFFI Python3.10/Torch2.1/NumPy2.2.5;fullFP32,CENTER_UNITS unchanged;CPU2 perworker",
     "cwd": "PROJECT/releases/cvs_FcrossRX_PA_waveform_tail_E30_20261018_r01",
-    "identity_status": "PENDING_IMPLEMENTATION_COMMIT"
+    "identity_status": "ACTUAL_RELEASE_CODE_COMMIT_INDEPENDENT_REMOTE_OID_IDENTICAL"
   },
   "data": {
     "dataset": "ManySig",
@@ -87,7 +87,7 @@
       "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
     ],
     "contract_check_ref": "OriginalP43 parent_payload on corresponding originalconfig30;reuse unchanged VALIDATED_ONCE roles;all5RX/3day/L6300U56700hiddenV27000/scratch/noancestors/no target/final20+strictEMA;newownfinalreader",
-    "provenance_verdict": "P43_PROVENANCE_PREVIOUSLY_VERIFIED_SAME_CONTRACT;NEW_INITIALIZATION_PREFLIGHT_PENDING",
+    "provenance_verdict": "VERIFIED_LIVE_METADATA_EXACT_ROLES_BOTH_SCRATCH20_AND_REALCP_SMOKE4NN_STRICT_OWN_EMA_TRAIN_INIT",
     "selection_rule": "OriginalB00/B01 exactseed fixedparent20 chosenfromsource matchingreference,notformalbestmodel;final10 cumulative30;no checkpoint ranking;source extension decision consumesonlysavedsourcefiles"
   },
   "execution": {
@@ -99,7 +99,21 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_PA_waveform_tail_E30_20261018_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_pa_waveform60/runner.py",
     "stop_rule": "Wrongrole/provenance/runtime/nonfinite/outputconflict/systemictechnicalfailure stopsownedrunonly,preserveartifacts,no automatictrainingretry;scientificFAIL stillall7/noE50/seedexpansion",
-    "status": "PLANNED"
+    "status": "RUNNING",
+    "dispatcher_pid": 1249294,
+    "rows": [
+      {
+        "row_id": "NOAS_PAOFF-s2026092701",
+        "pid": 1249382,
+        "gpu": 0
+      },
+      {
+        "row_id": "AS_PAOFF-s2026092701",
+        "pid": 1249461,
+        "gpu": 1
+      }
+    ],
+    "remote_compile": "PASS_15"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",

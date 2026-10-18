@@ -1,6 +1,6 @@
 # P60：完整As适应期停止普通PA波形注入
 
-状态：已登记、实现中，未启动；无新性能结果。P59已完整结束并按源规则关闭，不延E50。
+状态：VERIFIED_RUNNING，GPU0／1 两条新尾段已实际启动；无完整源／正式性能结果。P59已完整结束并按源规则关闭，不延E50。
 
 唯一假设：从原E20父模型继续E21–30时，普通L的PA波形扰动可能与完整practical训练形成不利交互；停止继续注入该波形、保留其他原配方，可能改善clean—urban权衡。实际PA开启不证明标签破坏，本项不预先宣称有效。
 
@@ -50,3 +50,5 @@ run=20261018-phase1-FcrossRX-PAwaveform-tail-e30-s2026092701-m2-r01；owner=code
 历史证据：[旧PA-bypass](<E:/type10-7/automation_reports/CV-SincNet/20261016-phase1-F-crossRX-PAbypass-sourceRX1-e20-s2026092701-m2-r01/report.md>)；[当前普通PA审计](<E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01/ordinary_augmentation_audit.md>)；[P59结果](<E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-urban-prior-e30-s2026092701-m1-r01/final_analysis.md>)。
 
 本地实际验证：11项focused检查PASS4.338s、13文件compile；实现者累计合成NN3840（成功3072＋一次错误toy断言768），唯一独立审查另1536NN，P0/P1=0/0、11项PASS4.340s；合计5376。原NoAs控制mixed为半ordinary/半raw，已修正测试断言而非训练实现。分析19项toy PASS.893s，NN0。真实IQ/CP/target/optimizer均0。一次普通N607预检已核实两个父20metadata/roles/参考all7完成、固定句柄复用、新root缺省及资源；尚未执行真实CP smoke或训练。
+
+实际发布：代码提交23f794296a11e1a4f25837e78b60f36bc700b99e已push且独立GitHub compare identical；单次归档SHA比较VERIFIED、远端15py compilePASS。真实两来源无query smoke4NN/2CP/0IQ/0更新PASS后已直接训练；dispatcher1249294、NOAS worker1249382/GPU0、AS worker1249461/GPU1的PID/CWD/argv/CUDA/nvidia占用独立核实。两步日志由193700→452520、162128→356638字节，均增长；实际信道configurations与各自原控制完全一致，source_roles EXACT_MATCH/target_contact false，AdamW空state/resetcos10/lr.0002/WD.0001。当前普通PA原开关true/p_pa.14保留，新shadow实现__file__与真实leo_practical路径已核实；这不代表关闭失败，也不代表性能成功。尚无完整源/正式结果。
