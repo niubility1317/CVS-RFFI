@@ -1,0 +1,154 @@
+{
+  "status": "LOCAL_FOCUSED_PASS_REMOTE_770NN_SMOKE_PENDING",
+  "implementation": {
+    "protocol_negatives": 41,
+    "allocation_negatives": 9,
+    "focused": {
+      "status": "PASS",
+      "protocol_negatives": 41,
+      "allocation_negatives": 9,
+      "full30cells": true,
+      "missing_singleton_singlecell": true,
+      "feasible_quota_q_le_available_sum64": true,
+      "original128_positions_withoutreplacement": true,
+      "class_rename_exact_equivariance": true,
+      "carried_priority_core_permutation_equivariance": true,
+      "priority_tie_rule": "originalposition tie-break;permutation check usesdistinct generatedpriorities",
+      "global_NumPy_Python_RNG_unchanged": true,
+      "Torch_RNG": "NOT_AVAILABLE_LOCAL;remote focused check tests CPU andavailableCUDA state;selector hasnoTorch API/import",
+      "actual_model_mask_subset_source_mock": true,
+      "one_channel_call64": true,
+      "repeated_PID_preserved_not_rejected": true,
+      "source_summary_native_JSON": true,
+      "legacy_smoothing_source": "actual importspec resolved locally;missing legacy inthinrelease NONBLOCKING"
+    },
+    "AST": {
+      "status": "PASS",
+      "Python_files": 19,
+      "embedded_remote_scripts": 2
+    },
+    "implementation": {
+      "only_original_smask_replaced": true,
+      "original_P43_CE_KL_unchanged": true,
+      "native_global_smoothing": 0.01,
+      "extra_CE_operator_calls": 0,
+      "extra_model_NN": 0,
+      "L_NN_per_step": 768,
+      "L_forwards": 6,
+      "total_L_scale": 1.25,
+      "channel_original_untouched": true,
+      "source_roles": "all5RX L6300/U56700hidden/V27000 IQ256",
+      "ordinary": "ownoriginal20args frozen13",
+      "parent": "strict ownoriginalB01 AsFINAL20 student+EMA",
+      "tail_epochs": 10,
+      "tail_updates": 2220,
+      "total_epochs": 30,
+      "total_updates": 6660,
+      "U_student_NN": 567000,
+      "teacher_eval_NN": 567000,
+      "EMA_local_updates": 2220,
+      "CPU_selector_and_hook_wall_recorded": true,
+      "hook_wall_includes_selector_wall_not_additive": true,
+      "no_common_U_trajectory_claim": true,
+      "no_pure_gradient_variance_claim": true
+    },
+    "producer": {
+      "native_info_keys": 14,
+      "config_and_result_key": "satellite_allocation",
+      "streams": [
+        "reference_steps",
+        "shape_steps",
+        "unit_steps",
+        "allocation_steps",
+        "training_sequence"
+      ],
+      "allocation_all128_fields": [
+        "TX",
+        "RX",
+        "day",
+        "sample_ids"
+      ],
+      "allocation_actual64_fields": [
+        "scene",
+        "state",
+        "lock",
+        "selected_sample_ids"
+      ],
+      "oldmask_exposure": "counterfactual within currenttrajectory,not claimed oldrun actual exposure"
+    },
+    "launcher_smoke": {
+      "real_own20_checkpoint_noquery_NN": 2,
+      "actual_synthetic6L_NN": 768,
+      "total_NN": 770,
+      "synthetic_actual_probe_cells": 30,
+      "repeated_PID_occurrences": 1,
+      "optimizer_updates": 0,
+      "continues_immediately_on_PASS": true,
+      "second_model_probe": false
+    }
+  },
+  "analysis": {
+    "status": "READY_LOCAL_SYNTHETIC_VERIFIED",
+    "run_id": "20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01",
+    "training_release": "cvs_FcrossRX_AsAlloc_E30_20261018_r01",
+    "analysis_release": "cvs_F_satalloc30_analysis_20261018_r01",
+    "files": [
+      "analysis/cvs_satalloc30_analysis_20261018.py",
+      "analysis/cvs_satalloc30_check_20261018.py",
+      "analysis/cvs_satalloc30_publish_analysis_20261018.py",
+      "analysis/cvs_satalloc30_collect_20261018.py"
+    ],
+    "checks": {
+      "focused_unittest_tests": 9,
+      "passed": 9,
+      "wall_seconds": 23.441,
+      "AST_files": 4,
+      "emitted_publisher_scripts_AST": 3,
+      "full_synthetic_tail_steps": 2220,
+      "epochs": 10,
+      "synthetic_formal_conditions": 3,
+      "synthetic_formal_views": 7,
+      "synthetic_CM": 378,
+      "synthetic_partitions": 63
+    },
+    "producer_interface": {
+      "package": "experiments/cvs_satellite_allocation30",
+      "stream": "source/allocation_steps.jsonl.gz",
+      "native_prefix": "allocation/",
+      "native_fields": [
+        "selected_packets",
+        "active_cells",
+        "quota_min",
+        "quota_max",
+        "changed_positions",
+        "allocation_cpu_wall_seconds",
+        "extra_NN"
+      ],
+      "metadata": "TX/RX/day/sample_ids full128; selected/ordinary/old parity positions64; scene/state/lock actualselected64",
+      "timer": "selector is included in hook CPUwall; do not add both; notCUDAevent",
+      "source_rules": "newAs-fullVclean minus originalNoAs>=-0.1pp AND two-drawmidlow newAs-originalAs>=+0.5pp",
+      "target_gate": "all3x7 predictions plus independent scores complete before truth recount"
+    },
+    "limits": {
+      "real_NN": 0,
+      "checkpoint_reads": 0,
+      "IQ_reads": 0,
+      "updates": 0,
+      "SSH": 0,
+      "Git": 0,
+      "new_source_scores_read": false,
+      "new_formal_scores_read": false,
+      "actual_run_not_started_by_analysis": true,
+      "old_step_streams_rescanned": false,
+      "perphysical_IQ_equality_not_claimed": true,
+      "pure_variance_isolation_not_claimed": true,
+      "source_pass_automatic_extension": false
+    },
+    "evidence_scope": "Existing local command output; not a new review or gate"
+  },
+  "new_real_NN": 0,
+  "new_CP": 0,
+  "new_IQ": 0,
+  "new_updates": 0,
+  "new_source_or_formal_read": false
+}

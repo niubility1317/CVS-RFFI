@@ -285,3 +285,10 @@ source固定newAs fullVclean−原NoAs30>=−.1pp且two-drawV1800 midlownewAs−
 AsLS E30单行已于2026-10-18发布运行：code 306cd273a4af76cda62e02b45e19e6db9ae765e9，r02传输/编译VERIFIED、770NN首步smoke PASS；r01远端检查路径错误发生于0真实CP/NN/updates且原release保留，修复不改配方/run。源决定先于本轮正式分数读取，all7自动收尾，源失败不扩E50。
 
 AsLS .01→.05 E30已完成唯一新行及全部七视图评分/完整日志：source双规则FAIL（fullV−NoAs−.107407pp，midlow−As−.138889pp），在新正式读取前关闭，无E50。正式newAs clean85.423810%/mid62.435714%/low50.901786%/urbanmean63.604762%；相对原As clean＋.082738pp、mid−.370833pp、low−.342262pp、urban−.334524pp且六practical全降。相对原NoAs clean＋.176190pp，阶段clean约束PASS，但n1微增不能称可重复双提升。新增4352334NN含770smoke，10modelE/2220updates；技术及评分缺项0（source预测wall未单列）。保留原As，本固定.05路线关闭、不扫参/种子/更换父救跑。
+
+
+## 下一项：As64的TX×RX分层分配
+
+20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01已登记PLANNED，独立实现中，尚无训练结果。限定历史去重没有发现直接相同selector实训；整批batchStratify曾改整个L128/4L，sceneBalance改既定64场景，共享propgroup20已sourceFAIL关闭，三者不重开。本项只替换原alternating smask：在原L128可见标签×RX格内按可行waterfill无放回选64，不补缺格/补样、不换loader或留出RX；primaryordinary128/ORD128保持，mixedordinary64补集随选择改变，各physical位置仍一个mixed视图，总6L768/1.25/As.25/LS.01/KL/U/EMA不变。
+
+单新own原P43As20student+EMA+10，总30/6660，旧AS30/NOAS30复用。source固定fullVnewAs−oldNoAs≥−.1pp且twodrawmidlownewAs−oldAs≥+.5pp，失败关固定selector/noE50/no分组父种子扫描，all7仍自动完成。privateRNG不消费旧globalstream，但实际As曝光/补集与整体参数轨迹可能改变，不称纯方差或所有U决策相同。预期新增4352334NN含770真实首步smoke，以实计数为准；selectorCPU单列。完整[最小报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01/report.md)。

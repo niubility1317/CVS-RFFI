@@ -26,3 +26,4 @@
 |L 普通增强输出换 raw：完整 practical 的匹配 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-LRaw-e30-s2026092701-m2-r01/report.md)|
 |LRaw 固定配方总 E50 匹配延长预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-LRaw-e50-s2026092701-m2-r01/report.md)|
 |完整 practical 的 As 专属标签平滑 E30 预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-AsLS-e30-s2026092701-m1-r01/report.md)|
+|完整practical的As64按TX×RX分层分配：原As20＋10匹配E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01/report.md)|

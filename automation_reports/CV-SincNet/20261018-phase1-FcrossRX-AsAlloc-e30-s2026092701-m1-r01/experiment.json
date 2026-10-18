@@ -1,0 +1,232 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01",
+  "group_id": "20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01",
+  "display_name": "完整practical的As64按TX×RX分层分配：原As20＋10匹配E30",
+  "description": "Only As64 mask selection within unchanged L128 uses available TX×RX waterfill without replacement;ordinary primary128/SupCon unchanged,mixed ordinary64 is complement,one mixed view per physical position. Fixed64/fullpractical/6L1.25/globalLS.01/U/EMA unchanged. One newownAs20+10;two original frozen controls reused.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "AsAlloc TX_RX E30",
+    "As64 stratified assignment"
+  ],
+  "tags": [
+    "CVS",
+    "Phase1",
+    "F",
+    "CROSS_RX",
+    "As",
+    "E30",
+    "L6300",
+    "all_source_RX",
+    "default_cosine_head",
+    "As_view_allocation",
+    "TX_RX_stratification"
+  ],
+  "comparison_group_id": "phase1-FcrossRX-practical-AsAlloc",
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Latest user practical-primary totalE30;source-supported goodrecipes may later totalE50. This launch onlyone strictownAs20+10/2220newupdates,total30/6660. No new seed/budget/structure/head orforward.",
+  "code": {
+    "commit": null,
+    "checkout": "E:/type10-7/code/worktrees/cvs_iq_timing_20261016",
+    "environment": "N607 existingCVS-RFFI/PyTorch fullFP32,CPU2,ordinary account;no installations",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_AsAlloc_E30_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original full-source physical roles,split392005;reuse fixed source/cache and formal received views",
+    "representation": "Existing source IQ256,dataset equalized index1,Fs25MHz;practical residual/post_sync propagation receiver EQ=false/reference_snr_db30,complete original dependency graph;fixed received IQ untouched",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract.role_ids L_s/U_s/V;fixed formal received_views manifest and opaque168000 physical IDs,unchanged",
+    "label_map_ref": "Original map [14-10,14-7,20-15,20-19,6-15,8-20]",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "All six registered originalTX,unchanged source/target registered-class map",
+    "roles": {
+      "L_s": "6300 fullsource visibleTX/all5RX/cumulative30epochs,noLdev/noRXholdout",
+      "U_s": "56700 TXhidden;original7+10=17Uepochs,weakteacher/strongstudent/ownEMA unchanged",
+      "V": "27000 source validation only,never training/EMA/state updates;fixed existing V1800 two-draw source panel"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "SameVALIDATED_ONCEall5sourceRX/day/physicalL6300 U56700hidden V27000;noLdev/noRXholdout",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalP43 reference_config:3sceneIID/fullphysicaldependencies/refSNR30/Asalreadyraw;no IQ/channel change"
+  },
+  "permissions": {
+    "regime": "source_train_then_frozen_truthlast",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Single seed source-labeled As view allocation,not confidence gate/class-specific rule/newIQAg;formal not selection feedback. All TX and RX follow same feasible quota algorithm."
+  },
+  "checkpoint": {
+    "initialization": "STRICT_CORRESPONDING_ORIGINAL_AS20_STUDENT_AND_OWN_EMA_PLUS10",
+    "sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Reuse verified originalP43 full-source rolemetadata/ancestry andminimalcurrenthandles preflight,no datarevalidation",
+    "provenance_verdict": "MatchedfullL6300 all5RX/ownFINAL20 scratch4440/sourcefixed selection;originalreleasecommit19aedc3604fed9c193237dd92366164178af0983,currentrealCPsmoke pending",
+    "selection_rule": "FixedFINAL30. E50 eligible iffnewAsfullVclean−originalNoAs30>=−.1absolutepp ANDtwo-drawmidlownewAs−originalAs30>=+.5pp. Fail closes fixed TX×RX allocation,no group/seed/parent rescue;all7 formal still required."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/practical-AsAlloc",
+    "gpu_policy": "EachGPUallownerscomputeprocesses<=3;free>=12000MB;CPU2;dynamiccapacityqueue;healthyjobsuntouched",
+    "remote_run_root": "PROJECT/runs/20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01",
+    "remote_log_root": "PROJECT/runs/20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01/logs",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_satellite_allocation30/runner.py",
+    "stop_rule": "Only owned systemic technical/protocol/data-role/parent/head/numerical/output/prediction-closing failure;preserve artifacts,no automaticretry. Scientificnegative never stops fixed same-row formal closure."
+  },
+  "expected_artifacts": [
+    "source/final_ssdg.pth",
+    "source/completion.json",
+    "source/source_frozen.json",
+    "source/initialization.json",
+    "source/resolved_config.json",
+    "source/reference_steps.jsonl.gz",
+    "source/shape_steps.jsonl.gz",
+    "source_qualification/complete.json",
+    "prediction/complete.json",
+    "scoring/complete.json",
+    "analysis_auto_r01/source_complete.json",
+    "analysis_auto_r01/source_summary.json",
+    "analysis_auto_r01/training_logs.json",
+    "analysis_auto_r01/formal_summary.json",
+    "analysis_auto_r01/costs.json",
+    "analysis_auto_r01/complete.json",
+    "source/actual_native_args.json",
+    "source/EMA_initialization.json",
+    "source/optimizer_initialization.json",
+    "source/allocation_steps.jsonl.gz"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macroF1",
+      "worstRX",
+      "paired_delta_pp",
+      "urban3mean",
+      "repairs/new_errors/net",
+      "RX/day/TX",
+      "suburban_selfclean_gap",
+      "actualNN/studentteacher/updates/views/wall",
+      "available_L_strata_and_As_quota_counts",
+      "selector_CPU_wall",
+      "full6L_L1p25_native"
+    ],
+    "dimensions": [
+      "seed2026092701",
+      "NOAS30",
+      "AS30",
+      "ALLOC_AS30",
+      "fullV27000/fixedV1800two_draw",
+      "clean+sixfixedpractical",
+      "RX/day/TX",
+      "old20/new10/total30"
+    ],
+    "prediction_ref": "PROJECT/runs/20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01/{row}/prediction",
+    "scorer_ref": "Eachnewrowall7predfrozen beforeseparatetruthlastscorer;0NN3logical378CM/63partition recount.NoAs has no satellite assignment operator;frozen unchanged control reused."
+  },
+  "rows": [
+    {
+      "row_id": "B01-s2026092701",
+      "method": "OriginalP43 fullAs64;onlyTX×RX-feasible-mask-allocation,mixedordinarycomplement,primaryordinary/ORD128/globalLS.01/KL/U/EMA/6L1.25/defaultcos unchanged",
+      "purpose": "primary",
+      "config_ref": "experiments/cvs_satellite_allocation30/design.py",
+      "resolved_config_ref": "PROJECT/runs/20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01/B01-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original model/split/augmentation seed unchanged;private selector generator keyed by registeredseed/cumulativeepoch+step,no global RNG consumption;not claiming whole training RNG trajectory identical.",
+      "k": null,
+      "scenario": "Originalclean + optionalcompletepractical3sceneIID;fixedall7test",
+      "optimizer": "OriginalresetAdamW lr2e-4 WD1e-4 cos10 min1e-6;strictownAs20student+EMA",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "One ownAs20+new10=total30/6660;new10modelE/2220updates,768LNN/step+originalUteacher;selectorCPUtime recorded,no extra modelNN;originalNoAs30/As30 readouts reused",
+      "output_root": "PROJECT/runs/20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01/B01-s2026092701",
+      "log_path": "PROJECT/runs/20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01/logs/B01-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_satellite_allocation30/runner.py --mode worker --row B01-s2026092701",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Only replace alternating smask of128 positions by feasible TX×RX allocation of64,without replacement. All original128 remain;missing/undersized cells are not replenished.",
+    "Primaryordinary128 andORD128 input unchanged;different64 selected As andtheir ordinary64 complement change together. Each physical position still has exactlyone mixed view,constant view/loss scale.",
+    "Same formula all six classes/allsourceRX;only visibleL TXlabels andexisting RX metadata. No confidence,quality,loss orprediction filtering,U TXneverread.",
+    "Private selector RNG,fulloriginalordinaryaugmentation,raw64 practical propagation/noise/quality/receiver/AGC,globalLS.01/RDropSameIQ/SupCon/KL/oldU/EMA unchanged.",
+    "No reordering wholeL loader,no resampling extra samples,no extraNN/teacher/Asview,no scene quota orsharednuisance.",
+    "Historydedup:wholeL128 batchStratify/full5RX4L is distinct;sceneBalance changes scene ofexisting64;sharedpropgroup sourcefailed is not reopened. Narrowsearch foundno direct As64-only stratified selector trial;not claiming exhaustiveabsence.",
+    "Originalown20args/frozen13/channel+20/4440/SupCon+20/strictownEMA/resetAdamWcos10 retained.",
+    "Only one newB01;oldAS30 direct control andNOAS30 stagecontrol reused. Source conditions fixed before new formal;fail closes allocation/noE50/no group/parent/seed scan;all7 still auto.",
+    "Peer independenttwoAs route already sourceFAIL,not duplicated.",
+    "Actualclass/RX exposure andcomplement change reported;do not claim only variance changed orwhole trajectory identical.",
+    "No trainingRXholdout/fullL6300/Uhidden/V27000/IQ256/defaultjointhead/NoExplicitCFO preserved.",
+    "PLANNED implementation/review/commit/release pending;no newperformance results."
+  ],
+  "comparators": [
+    {
+      "label": "NOAS30",
+      "run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+      "row_id": "B00-s2026092701",
+      "reused": true,
+      "epochs": 30,
+      "head": "defaultjointcos",
+      "SupCon": "ORD128"
+    },
+    {
+      "label": "AS30",
+      "run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+      "row_id": "B01-s2026092701",
+      "reused": true,
+      "epochs": 30,
+      "head": "defaultjointcos",
+      "SupCon": "ORD128"
+    }
+  ],
+  "registered_at": "2026-10-18T14:44:44+00:00"
+}

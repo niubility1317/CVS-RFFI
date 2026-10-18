@@ -1,0 +1,74 @@
+{
+  "schema": "candidate_p0p1_review_v1",
+  "candidate": "AsAlloc E30",
+  "run_id": "20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01",
+  "reviewer": "/root/lraw_p0p1",
+  "review_date": "2026-10-18",
+  "review_kind": "single_independent_combined_candidate_review",
+  "status": "PASS",
+  "blocking_severities": ["P0", "P1"],
+  "findings": [],
+  "scope": {
+    "workspace": "E:/type10-7/code/worktrees/cvs_iq_timing_20261016",
+    "package": "experiments/cvs_satellite_allocation30",
+    "package_file_count": 22,
+    "package_python_file_count": 19,
+    "package_files": [
+      "__init__.py", "allocation.py", "channel.py", "check_emitted.py", "checks.py",
+      "design.py", "dispatch.py", "evaluate.py", "model.py", "observer.py",
+      "preflight.py", "protocol.py", "publish.py", "qualification.py", "quality.py",
+      "README.md", "reference_config.json", "report.py", "runner.py",
+      "runtime.example.json", "schema.py", "source.py"
+    ],
+    "analysis_files": [
+      "analysis/cvs_satalloc30_analysis_20261018.py",
+      "analysis/cvs_satalloc30_check_20261018.py",
+      "analysis/cvs_satalloc30_publish_analysis_20261018.py",
+      "analysis/cvs_satalloc30_collect_20261018.py"
+    ],
+    "minimal_report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01/report.md",
+    "direct_dependencies": "Necessary original P41/P43 hook, own20 loader, original .01 terms, ordinary/EMA observer and shared source/evaluation/analysis helper semantics; saved P43 reference configuration matches the established original reference."
+  },
+  "reviewed_behavior": [
+    {"location": "allocation.py:12-41", "result": "Private per-step NumPy Generator priorities and feasible waterfill choose64 distinct existing positions, never exceed cell availability, preserve missing/saturated cells, and do not resample or deduplicate physical packets. Group order derives from priorities rather than numeric class IDs. Carried-priority core permutation and class-rename semantics match the declared scope."},
+    {"location": "model.py:29-50", "result": "The actual bool128 selector mask slices raw IQ and matching tensor metadata, writes satellite IQ back to those same mixed128 positions, and leaves the ordinary complement at original positions. Returned channel sample IDs are checked against selected original positions. Labels and domains are not reordered."},
+    {"location": "model.py:17-64", "result": "Primary ordinary128 and original ORD128 anchors remain; all CE uses original .01 terms and symmetric KL is retained. Original six L forwards,768NN/update and total L scale1.25 remain, with no smoothing delta, extra CE, extra NN, head or U selector path."},
+    {"location": "source.py / observer.py / design.py", "result": "Single B01 seed2026092701 strictly loads original ownAs20 student and ownEMA, trains local10/2220 and reports cumulative30/6660. Original ordinary frozen13, channel/SupCon cumulative+20/+4440, reset optimizer/cos10, default-head joint training and original hiddenU/student/teacher/EMA paths remain."},
+    {"location": "checks.py / preflight.py", "result": "The legacy static source check retains find_spec and absent-file nonblocking handling. Actual old .01 terms, six-forward joint-gradient routing and metadata are exercised by the registered first-step parent2NN plus actual6L768NN smoke; PASS proceeds to training."},
+    {"location": "dispatch.py / publish.py / report.py / evaluate.py", "result": "One registered new row, immutable run root, exclusive owner, all-owner GPU cap3 and12GB free-memory allocation remain. Both predeclared source rules use their correct frozen controls; failure does not skip all7 predictions or trigger E50. Same-row separate-exec scoring opens truth only after all7 predictions complete."},
+    {"location": "analysis/cvs_satalloc30_analysis_20261018.py", "result": "Complete2220-step allocation availability/quotas/priorities/rounds, full128 metadata, selected64/complement64 and oldmask exposure are reconciled with actual L/U streams. Selector time is included in hook time and is not added twice. Correct AsAlloc runner handles govern missing-artifact waits. Source analysis is saved before formal truth recount; all3logical times7 views are required for378 confusion matrices and63 partition reconciliations."},
+    {"location": "analysis publisher and collector", "result": "Release names, dependency files, output root and single-archive aggregate collection point to this candidate and reuse old controls without new model work. Existing output rejection prevents duplicate/overwrite recovery."
+    }
+  ],
+  "evidence_read": [
+    "local_artifacts/F_AsAlloc_E30_20261018/implementation_checks.json",
+    "local_artifacts/F_AsAlloc_E30_20261018/analysis_prepare/analysis_local_checks.json"
+  ],
+  "existing_checks": {
+    "implementation_protocol_negatives": 41,
+    "selector_negatives": 9,
+    "actual_mask_metadata_boundary_mock": "PASS",
+    "implementation_AST": "19Python plus2 emitted scripts PASS",
+    "analysis_focused_tests": "9 PASS;2220 synthetic steps;378CM/63partitions",
+    "checks_repeated_by_reviewer": false
+  },
+  "reviewer_execution": {
+    "Git": 0,
+    "SSH": 0,
+    "real_NN": 0,
+    "checkpoint_reads": 0,
+    "IQ_reads": 0,
+    "training_updates": 0,
+    "new_source_or_formal_scores_read": false,
+    "code_modified": false,
+    "only_output_written": "local_artifacts/F_AsAlloc_E30_20261018/review.json"
+  },
+  "pending_runtime_verification": [
+    "Published-runtime Torch RNG focused check.",
+    "Launcher real ownAs20 no-query and actual6L joint-gradient smoke, total770NN.",
+    "Post-launch process/GPU/log evidence, actual training, source readout, all7 fixed predictions, independent scoring and final analysis."
+  ],
+  "conclusion": "No P0/P1 defect found that directly makes this registered real run wrong, unauthorized, destructive, unlaunchable, or unable to produce legal predictions.",
+  "runtime_or_performance_success_claimed": false,
+  "extra_blocking_gates_added": false
+}
