@@ -1,6 +1,6 @@
 # P76：共享传播与环境内 TX 判别的匹配四格 E30
 
-当前状态：PLANNED；没有启动真实训练，没有新性能结果。实际代码 commit 在发布前固定于 Git 和 release_commit.txt，起点为 3e82dbc9d9db95d8370028e6d6f627e89af9c4ce。
+当前状态：ANALYZED；四行E30与全部七环境完成，源FAIL，固定候选关闭。最终结果见 [final_analysis.md](final_analysis.md)。实际代码 commit 在发布前固定于 Git 和 release_commit.txt，起点为 3e82dbc9d9db95d8370028e6d6f627e89af9c4ce。
 
 最有价值的基础仍是完整 practical residual 与 ordinary/raw 监督保留。P75 同父纯噪声重抽未过源判据，固定候选关闭；不据其正式微涨扩 E50。P20 已检验公共传播、P41/SAT192 与 mixedContrast 已检验 As 对比，均不能重新命名后原样启动。它们没有检验本轮的环境条件对比交互：P20 对比只看 ordinary；P41 混合集合或 mixed128 没有公共 H，也未限定同环境负对。
 
@@ -37,4 +37,4 @@ group=(RX,day,eq)，不读TX，按cumulative epoch/step刷新；四格共用相�
 
 另一对话splitAdam r02实际两As行已因相同component-gradient检查退出，NoAs完成，源矩阵未闭合；这是技术失败，不是科学负结果。本轮只读核实，没有修改或重启该owner产物。
 
-实际发布代码 32355ff0e6d73a7305e2fb8ce332651c9d1a7cbe，单archive传输和25文件远端compile VERIFIED，3076NN真实CP/四格图smoke PASS（source IQ0/target queryfalse/optimizer0）。合成标签与As parity相关，ON smoke额外As项为0，不据此称新aux已激活；实际source首批ON均61/64有效anchor、502正pair/238负pair，第1epoch平均加权As loss C01=0.0498677631、C11=0.0569158431，平均有效anchor62.225/64，确认真实训练使用新增项。OFF stats0为未计算而非无pair。四行GPU0/1/2/3的PID/CWD/argv/CUDA/实际GPU进程/日志增长已独立核实，均E21完成，角色EXACT_MATCH且target_contactfalse。尚无源域判据或正式性能结论。
+实际发布代码 32355ff0e6d73a7305e2fb8ce332651c9d1a7cbe，单archive传输和25文件远端compile VERIFIED，3076NN真实CP/四格图smoke PASS（source IQ0/target queryfalse/optimizer0）。合成标签与As parity相关，ON smoke额外As项为0，不据此称新aux已激活；实际source首批ON均61/64有效anchor、502正pair/238负pair，第1epoch平均加权As loss C01=0.0498677631、C11=0.0569158431，平均有效anchor62.225/64，确认真实训练使用新增项。OFF stats0为未计算而非无pair。四行GPU0/1/2/3的PID/CWD/argv/CUDA/实际GPU进程/日志增长已独立核实，均E21完成，角色EXACT_MATCH且target_contactfalse。以上为发布后首epoch核验；最终源判据FAIL，完整正式结果和缺项见final_analysis.md。

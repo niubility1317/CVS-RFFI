@@ -4,8 +4,10 @@
 
 原输出位于 local_artifacts/cvs_FcrossRX_propContrast_E30_20261019_r01/{protocol_checks,core_channel_checks_actual,core_model_checks_actual,analysis_checks_actual,syntax_checks}.json。Torch2.1/NumPy2 ABI warning在本地已知环境出现，相关检查exit0且不用失效的numpy桥；真实native图仅在发布launcher首步验证3076NN，不把toy检查写成实际CVS验证。
 
-一次N607普通账号只读preflight通过：project存在，GPU容量可用。独立P0/P1审查进行中，尚未启动训练。
+一次N607普通账号只读preflight通过：project存在，GPU容量可用。发布前preflight完成；随后一次独立P0/P1 PASS并启动。
 
 唯一一次连续独立P0/P1审查PASS，覆盖18核心＋2分析文件，记录local_artifacts/cvs_FcrossRX_propContrast_E30_20261019_r01/p0p1_review.md。没有真实NN/IQ/CP或远端访问。
 
 实际realCP smoke PASS3076NN，四图默认头/Sinc梯度有限且非零；合成图ON aux为零的fixture限制如report。真实训练首批pair和第1epoch非零As损失另由只读记录核实，未额外NN或重跑smoke。
+
+最终四行E30／全部七环境／独立评分／完整分析ANALYZED，技术缺项0。结果独立重计756 CM、42 worstRX、126分区、1764配对、98总体配对摘要吻合；4 PNG已目视、4 PDF头有效。源FAIL、固定候选关闭；不是科学成功。
