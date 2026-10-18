@@ -1,6 +1,6 @@
 # 完整源 E30：重复残差 IQ 增强的独立价值
 
-状态：RUNNING／VERIFIED，两行已进入累计 E30 训练；尚无训练完成或正式识别结果。唯一配置与逐行矩阵在 [experiment.json](experiment.json)。
+状态：两行已完成训练、七视图预测和独立评分；源判据失败关闭，正式数值尚待本轮独立复算。唯一配置与逐行矩阵在 [experiment.json](experiment.json)。
 
 源前置检查 20261018-diagnostic-F-repeatShrink-sourceV-s2026092701-m1-r01 已通过全部36必要条件，848混淆矩阵独立复算误差0。它只证明固定轻度算子在两个原默认头下通过源保护，不能证明已提取域无关身份。本轮只检验 Ag 的独立训练价值，避免先把尚无收益证据的Ag叠进As。本对话与“开发 CVS Phase1 星地增强训练”的As扩种子方向不同，不合并不同实验增益或父权重。
 
@@ -34,3 +34,7 @@ F＋跨RX同TX、三SIG_TIME、统一Sinc、joint160、默认6×160 cosine/scale
 执行commit a0461e0de33484561ab28db440c046510b02a0e6已提交、push并独立核对远端OID。普通账户预检、单archive传输比对、远端compile与20项协议负例通过；真实hook合成检验通过6前向/同IQ对/raw锚点/1.0损失尺度/同lambda抽样，1536合成前向包单位及2次合成反向单列，0真实数据/CP。dispatcher真父1CP/2合成NN noquery检查PASS后直接训练。
 
 两行实际worker已独立核对PID/CWD/argv/GPU，日志自首次读回均增长。最近核实均完成新增第1轮/累计第21轮、222新更新/4662累计更新；每行L前向170496，恰为222×128×6。B00新增Ag0包，B10为28416包。无failure；健康旧任务未干预。精确运行证据见[启动核实](launch_evidence.json)。当前不能报告Ag训练收益、完成的正式指标或联合成功；继续至固定E30后自动七视图与独立评分，不延长预算。
+
+## 冻结源判定
+
+完整源V两行均26532/27000（98.266667%），B10−B00为0pp，未达固定+.5pp；各RX保护通过。因此关闭固定[80,160)/period20/taper/Uniform0至.1/父seed/E30，不换强度、窗口、seed或父权重救跑，不因稍后target值重排。全部source2220步/10轮、L6300/U56700、857实际args、680字段nativeCSV/JSONL、284160私有lambda及L/U序列/NN成本完全复算；只有candidate_id/output_dir不同。见[source_decision.md](source_decision.md)和[source_analysis.json](source_analysis.json)。本结论在本轮正式target数值读取前保存，不以源保护或普通增强健康检查替代泛化成功。

@@ -2826,47 +2826,18 @@
     "reference": "https://github.com/WiSig-dataset/wisig-process-raw/blob/master/matlab_equalization/equalize_channel.m"
   },
   "active_Ag_hypothesis": {
-    "status": "E30_B00_B10_RUNNING_NO_TRAINED_EFFICACY",
+    "status": "CLOSED_FIXED_REPEAT_SHRINK_SOURCE_GAIN_FAILED",
     "run_id": "20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01",
-    "source_identity_guard": "20261018-diagnostic-F-repeatShrink-sourceV-s2026092701-m1-r01",
     "source_guard_passed": true,
+    "source_training_gain_pp": 0,
+    "source_training_correct_each": 26532,
+    "source_training_V_each": 27000,
+    "source_RX_protected": true,
     "new_Ag_efficacy": false,
-    "operator": {
-      "kind": "own-packet four-cycle residual contraction;proper complex linear;not denoising ground truth",
-      "strength_values": [
-        0,
-        0.1
-      ],
-      "max_strength": 0.1,
-      "window": [
-        80,
-        160
-      ],
-      "period": 20,
-      "cycles": 4,
-      "taper": "same sin(pi*t/19)^2 for t0..19 in each cycle;endpoints exactly0",
-      "equation": "x_W - strength*w*(x_W - mean_cycle(x_W))",
-      "boundary": "outside80:160 and each20point cycle first/last sample bitwise unchanged;no wrap/padding/outsideIQ",
-      "normalization": "no extra RMS normalization;fixed cycle mean retained,nonperiodic component contracted",
-      "new_noise": false,
-      "CFO_estimated": false,
-      "TX_IQ_or_PA_added": false,
-      "labels_used_by_operator": false,
-      "physical_RX_replacement": false
-    },
-    "training_views": "matched6Lforwards/.5ordinary+.25raw+.25slot,totalLscale1",
     "all_source_RX_retained": true,
-    "IQ_length": 256,
-    "budget": "commonNoAs20plus10 each,cumulativeE30",
-    "source_falsification": {
-      "source": "Full originalV27000 clean finaldefaulthead;reuses native finalsourceevaluation;all5RX",
-      "minimum_fullV_clean_gain_pp": 0.5,
-      "minimum_each_RX_gain_pp": -0.25,
-      "on_fail": "Close fixedcontraction/window/period/taper/Uniform0to.1/parent/seed/E30;no amplitude/window/seed/parent/budget rescue",
-      "on_pass": "Only independent Ag sourcequalification;formal frozenB00/B10 still required,no targetfeedback;Ag+As separate later",
-      "exploratory_each_suburban_clean_gap_pp": 2
-    },
-    "As_training_this_stage": false
+    "IQ_points": 256,
+    "no_rescue": "fixedwindow80:160/period20/taper/Uniform0to.1/parent/seed/E30",
+    "decision_before_primary_formal_metric_read": true
   },
   "latest_completed_source_diagnostic": "20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01",
   "active_training_budget": {
@@ -3980,7 +3951,7 @@
     "updates": 0,
     "target_access": false
   },
-  "latest_completed_training_experiment": "20261018-phase1-F-crossRX-shadowLHS-e20plus10-s2026092701-m4-r01",
+  "latest_completed_training_experiment": "20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01",
   "antithetic_source_result": {
     "run_id": "20261017-diagnostic-F-antitheticNoise-sourceL-s2026092701-m1-r02",
     "status": "ANALYZED_SOURCE_ONLY",
@@ -4341,7 +4312,7 @@
     "target_access": false,
     "automatic_training": false
   },
-  "current_training_experiment": "20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01",
+  "current_training_experiment": null,
   "batch_stratification_release": {
     "run_id": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
     "status": "ANALYZED_VERIFIED",
@@ -7565,7 +7536,7 @@
   "repeat_shrink_E30_release": {
     "run_id": "20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01",
     "execution_commit": "a0461e0de33484561ab28db440c046510b02a0e6",
-    "status": "VERIFIED_RUNNING",
+    "status": "SOURCE_FAILED_FORMAL_ARTIFACTS_COMPLETE_PENDING_RECOUNT",
     "rows": 2,
     "common_parent_epochs": 20,
     "new_epochs_each": 10,
