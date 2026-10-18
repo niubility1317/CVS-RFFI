@@ -28,11 +28,11 @@
   "replaces_run_id": null,
   "authorization": "活跃Phase1星地增强研发授权及好配方E50授权内的源域分析。只读既有V1800预测与物理元数据；0新训练/NN/IQ/CP/正式访问。当前其他owner健康E50四行不变，不重复启动。",
   "code": {
-    "commit": "f6dcc1c786cca41de284b8981288977e37967245",
+    "commit": "a5d6ba378b5f20b3d443126cb6e8d0b3793b1bc3",
     "checkout": "codex/phase1-urban-sigtime-20261014",
     "environment": "N607 ordinary CVS-RFFI Python3.10 NumPy2.2.5 Matplotlib3.10.8;CPU2;CUDA hidden;no Torch/model imports",
     "cwd": "PROJECT/releases/cvs_FcrossRX_source_state_budget_E50_20261018_r01",
-    "identity_status": "PLANNED;actual implementation commit replaces before launch"
+    "identity_status": "ACTUAL_COMMITTED_ANALYSIS_CODE"
   },
   "data": {
     "dataset": "ManySig",
@@ -88,9 +88,11 @@
     "remote_run_root": "PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s2026092701-m4-r01",
     "remote_log_root": "PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s2026092701-m4-r01/worker.log",
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_source_state_budget_E50_20261018_r01",
-    "launch_command": "CVS-RFFI/python -u analysis/cvs_budget50_source_states56_20261018.py --project PROJECT --out PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s2026092701-m4-r01/result --code-commit ACTUAL_CODE_COMMIT",
+    "launch_command": "CVS-RFFI/python -u analysis/cvs_budget50_source_states56_20261018.py --project PROJECT --out PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s2026092701-m4-r01/result --code-commit a5d6ba378b5f20b3d443126cb6e8d0b3793b1bc3",
     "stop_rule": "Source role/ordered ID/TX/RX/day/draw/full-condition mismatch,nonfinite logits/shape mismatch or technical failure preserves outputs and stops own analysis only;no auto retry/NN/IQ replay/effect-based rerun",
-    "status": "PLANNED_NOT_LAUNCHED"
+    "status": "SOURCE_ANALYZED",
+    "worker_pid": 1182435,
+    "worker_wall_seconds": 6.211520527023822
   },
   "expected_artifacts": [
     "result/source_strata.csv",
@@ -177,7 +179,7 @@
       "budget_ref": "0newmodel-epochs/updates/NN/IQ/CP;reuse existing source prediction;CPU2 wall separate",
       "output_root": "PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s2026092701-m4-r01/result",
       "log_path": "PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s2026092701-m4-r01/worker.log",
-      "command": "CVS-RFFI/python -u analysis/cvs_budget50_source_states56_20261018.py --project PROJECT --out PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s2026092701-m4-r01/result --code-commit ACTUAL_CODE_COMMIT",
+      "command": "CVS-RFFI/python -u analysis/cvs_budget50_source_states56_20261018.py --project PROJECT --out PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s2026092701-m4-r01/result --code-commit a5d6ba378b5f20b3d443126cb6e8d0b3793b1bc3",
       "expected_artifacts": [
         "source_strata.csv",
         "paired_effects.csv",
@@ -194,5 +196,20 @@
     "No healthy job change or duplicate training. Actualcode commit and focusedchecks/review/release evidence completed before launch.",
     "Fixed numeric bins beforerun: quality/addednoise[-inf,3,8,15,inf]dB;waveform-white[-inf,-3,-1,1,3,inf]dB;absCFO[0,100,1000,10000,inf]Hz;colour[-inf,1e-9,3,10,inf]dB;kernelenergy[-inf,-20,-10,0,inf]dB;interior[0,128,192,224,256,inf]counts;AGC bool;zero/small cells retained."
   ],
-  "registered_at": "2026-10-18T04:50:18+00:00"
+  "registered_at": "2026-10-18T04:50:18+00:00",
+  "result_summary": {
+    "status": "SOURCE_STATE_ANALYZED",
+    "source_strata": 2904,
+    "paired_strata": 2904,
+    "interaction_strata": 726,
+    "model_seed_count": 1,
+    "source_unique_V": 1800,
+    "channel_draws": 2,
+    "NN": 0,
+    "IQ": 0,
+    "CP": 0,
+    "updates": 0,
+    "formal_files_read": false,
+    "no_promotion": true
+  }
 }

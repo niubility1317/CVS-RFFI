@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_VERIFIED_PRELAUNCH",
+  "status": "SOURCE_ANALYSIS_VERIFIED",
   "local_fixture_tests": 10,
   "fixture_status": "PASS",
   "compile": "PASS",
@@ -15,6 +15,30 @@
   "updates": 0,
   "formal_files_read": false,
   "stage_checkpoint_smoke": "NOT_APPLICABLE_NO_MODEL_OR_CHECKPOINT_CONSUMED",
-  "actual_launch_verified": false,
-  "source_result_status": "NOT_STARTED"
+  "actual_launch_verified": true,
+  "source_result_status": "COMPLETE",
+  "code_commit": "a5d6ba378b5f20b3d443126cb6e8d0b3793b1bc3",
+  "release_transfer": "VERIFIED_ONE_ARCHIVE_SHA_COMPARISON",
+  "archive_SHA256": "ab611f36e10fde1762978aa06099674741e29b5a0d75c0383ccdf118102b2dc3",
+  "remote_compile": "PASS",
+  "remote_fixture": "PASS_10",
+  "pid": 1182435,
+  "alive": false,
+  "observed_terminal_status": "SOURCE_STATE_ANALYZED",
+  "terminal_report": "PROJECT/runs/20261018-diagnostic-FcrossRX-source-state-budget-e50-s2026092701-m4-r01/result/report.json",
+  "terminal_wall_seconds": 6.211520527023822,
+  "source_logit_accuracy_F1_reconciliations": 32,
+  "aligned_physical_records": 10800,
+  "source_strata": 2904,
+  "paired_strata": 2904,
+  "interaction_strata": 726,
+  "source_only": true,
+  "no_promotion": true,
+  "model_seed_count": 1,
+  "plot_visual_inspection": "PASS_BOTH_ACTUAL_PNG",
+  "technical_missing_items": [],
+  "scientific_missing_items": [
+    "E50 model-seed02/03 still running under other unique owner",
+    "No E50 counterfactual damage-removal classification;full-observation association only"
+  ]
 }
