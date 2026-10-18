@@ -1,6 +1,6 @@
 # 固定128个对比位置的practical训练：E30最小对照
 
-状态：VERIFIED_RUNNING。运行 20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01，唯一owner codex/root/practical-mixedContrast30。代码、配置、分析提交 6849fbf648895c055398e6db159844dba0de3187 已发布并实际训练；尚无新性能结果。
+状态：ANALYZED。运行 20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01，唯一owner codex/root/practical-mixedContrast30。代码、配置、分析提交 6849fbf648895c055398e6db159844dba0de3187；两条新E30轨迹及四逻辑条件×七视图分析全部完成，无技术缺项。固定源规则失败，配方关闭，不扩E50。正式clean下降.665476pp，未满足.1pp阶段要求。详见[完整结果](final_analysis.md)及[机器可读汇总](results.json)。
 
 唯一假设：在既有CROSS_RX SupCon中，用已有mixed128 maps替换ordinary128 maps，保持原L batch的128个位置各一次，不人工追加selected64 positions，能否改善完整practical的low／mid urban，而不增加clean代价。原sampler若已有重复物理ID保持不变，不新增去重／重采样要求。P41 ORD128／DUP192／SAT192已有合法source负结果：SAT−ORD两draw×midlow为−.389／−.389／+.278／+.333pp，旧预定晋级失败。它使用192 anchors／4L，本次关键差异是固定128 positions、当前P43六L及既有raw监督；不能把广义As进入SupCon说成未试或预期必然有效。加性As、cleanretain37与HQ的历史负结果及契约差异继续保留，不借本次重启这些路线。
 
@@ -24,9 +24,9 @@ F＋CROSS_RX／SIG_TIME×3／统一Sinc／真实joint160／默认cosine6×160sca
 
 实际新增更新、完整epoch／step、L/U曝光与mask、学生train/eval、teachertrain/eval、source／formal／smokeNN、wall与继承父成本分列。预期无额外SupCon前向，是否匹配由真实计数报告；旧20及旧E30不重复收费。单seed、已暴露基准与地面practical代理的边界保留，当前不承诺lowurban>60%或双提升。
 
-已读取引用对话《开发 CVS Phase1 星地增强训练》的最新活动：其当前研究satellite CE温度T2及等比例减权HALF控制；本项只改existing SupCon的输入maps，CE温度／监督系数不改，不重复该实验。没有向另一任务发送消息或干预其健康进程。
+预登记时已读取引用对话《开发 CVS Phase1 星地增强训练》，其当时研究satellite CE温度T2及等比例减权HALF控制；本项只改existing SupCon的输入maps，CE温度／监督系数不改，不重复该实验。没有向另一任务发送消息或干预其健康进程。
 
-本地实现已冻结：19py／73聚焦负例与两发布脚本AST PASS；analysis4文件／9focused tests PASS；唯一合并P0/P1审查为0／0。未远端／NN／CP／IQ／更新；真实1540NN首步烟测和发布后PID／GPU核实待执行，不能冒称训练已经开始。
+发布前记录：本地实现已冻结，19py／73聚焦负例与两发布脚本AST PASS；analysis4文件／9focused tests PASS；唯一合并P0/P1审查为0／0。未远端／NN／CP／IQ／更新；真实1540NN首步烟测和发布后PID／GPU核实待执行，不能冒称训练已经开始。
 
 实际代码／配置已固定提交`6849fbf648895c055398e6db159844dba0de3187`，远端分支OID已独立核对一致。本次唯一preflight／release archive比较／remotecompile／真实首步烟测按此版本执行。
 
@@ -38,3 +38,16 @@ F＋CROSS_RX／SIG_TIME×3／统一Sinc／真实joint160／默认cosine6×160sca
 实际训练输出source_roles均匹配、target_contact=false、strict own20 EMA，optimizer为空resetAdamW／cos10／lr.0002／WD.0001。首步actual6L、128原位置／128anchors／4mixed map terms、rawpairmaps0、extraSupConNN0、trueAs0或64，未改原sampler。contrast_steps在段末统一保存，当前未落盘不代表缺少应有最终产物；当前没有新性能结论。
 
 0NN分析1355032已核实CWD／argv／emptyCUDA，WAIT_SOURCE／truth未开，将按既定4×7冻结预测和独立评分闭合。分析单archive比较／compile PASS，未重复本地synthetic tests。
+
+
+## 完成状态与结论
+
+两条新轨迹各完成10个新增epoch／2220更新，总E30／6660更新；全部source及七视图独立truth-last评分完成。4逻辑条件×7视图独立重计数504CM、84分区均核对通过，所有本run进程正常退出。新增20model-epochs／4440updates／8704668NN（含1540smoke），原父20和旧E30控制另列。没有训练RX留出、数据/默认头/测试IQ变更或新增模型前向。
+
+源结果先取回并保存[source关闭决定](source_decision.json)：newAs相对originalAs fullVclean＋.033333pp、midlow均值＋.069444pp，后者未达预登记＋.5pp，故在读取新正式数值前已关闭固定配方，不扩E50、不扫描或换seed救跑。正式科学负结果仍完整交付。
+
+正式n=1，MIXED_AS30相对匹配MIXED_NOAS30的clean−.665476pp、mid／lowurban＋27.692262／＋21.134524pp，clean阶段FAIL；相对原完整AS30，clean−.847619pp，六practical均略低，未获得新增机制收益。原完整As的大幅星地收益不能归给mixed128。本次唯一假设已否定；无重复clean正收益证据，整体研究目标未完成。
+
+完整accuracy／macroF1／最差RX／修复与新增错误／RX-day-TX／交互／suburban差距／成本／限制在[最终分析](final_analysis.md)。科研图：[绝对表现](figures/mixedcontrast_single_seed_absolute.png)、[配对变化与交互](figures/mixedcontrast_single_seed_paired.png)、[clean护栏及F1/最差RX](figures/mixedcontrast_single_seed_clean_and_quality.png)。三图130导出点与原汇总逐值核对，最大误差1.42e−14pp，n=1无SD/CI。
+
+本轮收尾时另一对话转向U教师来源；本路线不重复该实验或干预其任务。当前本侧无已登记新候选，无在训或评分进程；E50授权只用于合法源证据支持的配方。已关闭机制不因正式微差重新启动。

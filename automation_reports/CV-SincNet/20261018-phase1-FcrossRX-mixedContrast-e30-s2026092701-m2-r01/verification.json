@@ -1,10 +1,10 @@
 {
-  "status": "VERIFIED_RUNNING",
+  "status": "ANALYZED",
   "run_id": "20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01",
   "registered": true,
   "launched": true,
   "training_started": true,
-  "performance_results_available": false,
+  "performance_results_available": true,
   "implementation_checks": {
     "status": "PASS_LOCAL_ONLY",
     "focused": {
@@ -16,7 +16,7 @@
       "emitted_native_info_keys": 14,
       "full6L_total_metric": true,
       "source_summary_native_JSON": true,
-      "real_Torch_or_checkpoint_smoke": "launcher first step pending",
+      "real_Torch_or_checkpoint_smoke": "Local mock only;actual launch smoke PASS recorded separately",
       "NN": 0,
       "CP": 0,
       "IQ": 0,
@@ -35,7 +35,7 @@
       "IQ": 0,
       "target": false
     },
-    "real_checkpoint_smoke": "PENDING launcher first step;1540NN;PASS continues training",
+    "real_checkpoint_smoke": "PASS_LAUNCHER_FIRST_STEP_SHARED_1540_NN",
     "remote_calls": 0,
     "launches": 0,
     "formal_reads": 0
@@ -86,7 +86,7 @@
     "updates": 0,
     "remote_calls": 0,
     "new_formal_scores_read": false,
-    "readiness": "LOCAL_CODE_READY_NOT_REGISTERED_OR_PUBLISHED",
+    "readiness": "LOCAL_CODE_CHECK_SNAPSHOT;subsequently published and complete as recorded in analysis",
     "producer_interface": {
       "package": "experiments/cvs_practical_mixed_contrast30",
       "training_run": "20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01",
@@ -418,10 +418,11 @@
     "NN": 0,
     "CP": 0,
     "IQ": 0,
-    "updates": 0
+    "updates": 0,
+    "observation_phase": "FIRST_STEP_DURING_RUNNING;final complete contrast telemetry recorded in training_counts"
   },
   "analysis": {
-    "status": "VERIFIED_WAIT_SOURCE",
+    "status": "ANALYZED",
     "pid": 1355032,
     "code_commit": "6849fbf648895c055398e6db159844dba0de3187",
     "CWD_argv_CUDA": "VERIFIED",
@@ -433,8 +434,99 @@
     "CP": 0,
     "IQ": 0,
     "updates": 0,
-    "truth_opened": false
+    "truth_opened": true,
+    "independent_confusion_matrices": 504,
+    "partition_reconciliations": 84,
+    "all4x7_complete": true
   },
   "technical_missing_items": [],
-  "observed_at_utc": "2026-10-18T09:56:42.009Z"
+  "observed_at_utc": "2026-10-18T10:10:53.878Z",
+  "training_complete": true,
+  "training_logs_status": "VERIFIED_COMPLETE_TRAINING_LOGS",
+  "training_counts": {
+    "MIXED_NOAS30": {
+      "steps": 2220,
+      "As_packets": 0,
+      "selected_packets": 142080,
+      "unique_L_selected": 6300,
+      "unexposed_L": 0,
+      "mode": "MIXED128",
+      "anchors_per_term": 128,
+      "additional_anchors": 0,
+      "extra_SupCon_NN": 0,
+      "maximum_L_decomposition_error": 1.0728836064011205e-7,
+      "nonfinite_native_metrics": 0
+    },
+    "MIXED_AS30": {
+      "steps": 2220,
+      "As_packets": 142080,
+      "selected_packets": 142080,
+      "unique_L_selected": 6300,
+      "unexposed_L": 0,
+      "mode": "MIXED128",
+      "anchors_per_term": 128,
+      "additional_anchors": 0,
+      "extra_SupCon_NN": 0,
+      "maximum_L_decomposition_error": 1.3113021846145045e-7,
+      "nonfinite_native_metrics": 0
+    }
+  },
+  "all7_predictions_and_independent_scores": true,
+  "source_read_before_formal": true,
+  "source_decision": {
+    "fullV_clean_vs_original_As30_pp": 0.033333333333340764,
+    "mid_low_mean_vs_original_As30_pp": 0.0694444444444331,
+    "clean_vs_original_As30_within_absolute_0p1pp": true,
+    "mid_low_gain_at_least_0p5pp": false,
+    "source_criteria_pass": false,
+    "E50_source_eligible": false,
+    "fixed_recipe_closed": true,
+    "mixed_NoAs_vs_original_NoAs_fullV_clean_pp": -0.003703703703705763,
+    "mixed_NoAs_vs_original_NoAs_mid_low_mean_pp": -0.16666666666666496,
+    "fullV_clean_interaction_pp": 0.03703703703704653,
+    "mid_low_mean_interaction_pp": 0.23611111111109806,
+    "only_two_source_criteria": true,
+    "scientific_negative_skips_formal": false,
+    "target_scores_read": false,
+    "per_packet_protection_gate": false,
+    "automatic_extension": false
+  },
+  "formal_stage": {
+    "clean_delta_pp": -0.6654761904761904,
+    "clean_net_repairs": -1118,
+    "clean_absolute_0p1pp_guard_met": false,
+    "clean_positive_observed": false,
+    "positive_below_0p1pp_is_micro_observation": false,
+    "midurban_gain_pp": 27.692261904761907,
+    "lowurban_gain_pp": 21.13452380952381,
+    "urban_mean_gain_pp": 28.368650793650797,
+    "repeatable_clean_gain_proven": false
+  },
+  "costs_summary": {
+    "new_total_NN": 8704668,
+    "new_shared_smoke_NN": 1540,
+    "new_model_epochs": 20,
+    "new_updates": 4440,
+    "old_costs_not_recharged": true
+  },
+  "collection": {
+    "source": {
+      "status": "VERIFIED",
+      "files": 5,
+      "archive_SHA256": "dbc44609192a0594660f16b574c66f43c71c69366737563816791f616d23ba83"
+    },
+    "final": {
+      "status": "VERIFIED",
+      "files": 11,
+      "archive_SHA256": "7d4f9c91db02df947fca03e3c4c5ec7f1d013f6dcda98333cf6d6b9d1975c7fd"
+    }
+  },
+  "owned_processes_exited": true,
+  "fixed_recipe_closed": true,
+  "figure_verification": {
+    "status": "VERIFIED",
+    "plotted_points": 130,
+    "maximum_error_pp": 1.4210854715202004e-14,
+    "single_seed_no_SD_CI": true
+  }
 }

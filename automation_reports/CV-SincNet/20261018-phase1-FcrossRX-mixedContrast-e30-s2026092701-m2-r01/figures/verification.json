@@ -1,0 +1,53 @@
+{
+  "status": "VERIFIED_EXPORTED_COORDINATES",
+  "plotted_coordinates": 130,
+  "CSV_rows": 130,
+  "derived_scalar_coordinate_count": 136,
+  "maximum_export_error_vs_final_JSON_pp": 1.4210854715202004e-14,
+  "generator_maximum_formula_check_error_pp": 1.4210854715202004e-14,
+  "files": [
+    {
+      "name": "mixedcontrast_single_seed_absolute.pdf",
+      "bytes": 125865
+    },
+    {
+      "name": "mixedcontrast_single_seed_absolute.png",
+      "bytes": 356514
+    },
+    {
+      "name": "mixedcontrast_single_seed_clean_and_quality.pdf",
+      "bytes": 110874
+    },
+    {
+      "name": "mixedcontrast_single_seed_clean_and_quality.png",
+      "bytes": 800263
+    },
+    {
+      "name": "mixedcontrast_single_seed_paired.pdf",
+      "bytes": 130444
+    },
+    {
+      "name": "mixedcontrast_single_seed_paired.png",
+      "bytes": 645772
+    }
+  ],
+  "visual_inspection": "All three initial PNGs inspected;final paired and clean-quality PNGs inspected after spacing/negative-status caption fixes;no clipping or data-covering overlap found",
+  "model_seed_count": 1,
+  "SD_or_CI": false,
+  "source_recipe_closed": true,
+  "stage_clean_guard_met": false,
+  "limitations": [
+    "n=1;no estimate of between-seed variation",
+    "Fixed already-exposed benchmark;no new independent blind-test claim",
+    "NoAs change shown separately;difference expansion is not pure As improvement",
+    "Aggregate coordinates only;no new physical prediction/error recount"
+  ],
+  "NN": 0,
+  "IQ": 0,
+  "CP": 0,
+  "truth_reads": 0,
+  "raw_prediction_reads": 0,
+  "new_predictions": 0,
+  "new_scoring": 0,
+  "new_training_updates": 0
+}

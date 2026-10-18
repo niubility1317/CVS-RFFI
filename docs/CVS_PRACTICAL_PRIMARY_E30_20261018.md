@@ -169,3 +169,16 @@ Source资格固定newAs−originalAs fullVclean≥−.1pp且两drawmidlowmean≥
 
 
 mixedContrast当前已实际启动：代码／训练／分析提交 6849fbf648895c055398e6db159844dba0de3187，一次普通preflight的源父／控制句柄与roles匹配，单archive比较／compile VERIFIED，1540NN首步CP＋真实模型梯度烟测PASS后训练。dispatcher1353621；B00 worker1353649／GPU0、B01 worker1353729／GPU1，PID／CWD／argv／nvidia／log增长核实。实际own20 EMA、empty resetAdamW cos10、6L／128原batch位置／128anchors／4mixed map terms／rawmaps0／extraNN0／As0或64均符合。原sampler重复如存在保持，不强制物理ID全unique。0NN分析1355032已核实WAIT_SOURCE／truthclosed。现在没有新性能结果或额外E50授权执行；既定所有row自动all7正式闭合。
+
+
+## mixedContrast E30：完整负结果，固定视图替换关闭
+
+20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01已完成两条own原20+10轨迹，总E30／6660更新，全部source及clean＋六practical冻结预测与独立truth-last评分。代码／配置／分析提交6849fbf648895c055398e6db159844dba0de3187。四逻辑条件×七视图完成504CM／84分区核对，所有本run进程正常退出，无技术缺项；新增20model-epochs／4440updates／8704668样本前向（含1540smoke），原20及原E30控制成本分别保留、不重计。
+
+root在新formal前先取回source并保存决定：newAs−originalAs fullVclean＋.033333pp通过clean护栏，但两drawmidlow均值仅＋.069444pp，未达预登记＋.5pp。固定MIXED128配方据此关闭，不扩E50／不扫mask、权重或种子救跑；该决定先于正式读取，正式结果不用于改判。科学负结果仍完成全部正式收尾。
+
+正式n=1：MIXED_AS30 clean84.493452%、midurban62.749405%、lowurban51.187500%、urbanmean63.853968%。对匹配MIXED_NOAS30 clean−.665476pp、mid＋27.692262pp、low＋21.134524pp、urbanmean＋28.368651pp，clean−.1pp阶段界限FAIL。对原完整AS30 clean−.847619pp、mid−.057143pp、low−.056548pp、urbanmean−.085317pp，六practical绝对准确率均略低，没有新增机制收益；不能把完整As原有收益归给视图替换。原AS30在本seed对原NOAS30 clean＋.093452pp仅为不足.1pp的微小观察，不能证明重复双提升。
+
+clean／mid／low交互−.758929／＋.018452／＋.030357pp，urbanmean交互＋.000198pp，不支持星地协同。新As三suburban81.250595／78.505357／75.793452%，与自身clean差3.242857／5.988095／8.700000pp；不能把clean降低造成的差距缩小算作保护。完整macroF1／最差RX／逐RX-day-TX／修复与新增错误、全部训练日志解析和成本见[最终报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01/final_analysis.md)。
+
+本次唯一假设已否定；当前本侧没有在训／预测／评分进程，也没有登记新的候选。E50授权保留给有源证据支持的配方，不为已关闭机制增加预算。已完成的加权E50三种子证明更多预算的urban收益可重复，但clean代价未满足阶段要求；整体“星地增强同时改善clean”的可重复目标仍未完成。后续只据合法源证据与未检验的关键假设确定新路线，不由本次formal微差推导或挑选方向。
