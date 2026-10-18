@@ -13,3 +13,11 @@
 同次独立P0/P1发现arm/label接口P1已定点修复：准确区分label=NOAS30/AS30、父arm=B00/B01，并核真实provenance。真实emitted schema新增定向case（2合法行+12负例）PASS，.005秒suite/.217秒process/exit0，仅该受影响case执行；完整证据见analysis_checks_actual.json。分析NN/IQ/CP/更新/远端访问均0。
 
 本候选唯一持续独立P0/P1审查PASS、未解决0；arm/label直接P1已在同次审查定点确认，未重复全审。覆盖父链/真实smoke先于IQ/五helper接口/630梯度计数/242464总NN/固定fullphysics分层/no truth与晋级/单归档cap2，原证据p0p1_review.md留local_artifacts。
+
+实际发布：单归档传输比较VERIFIED，13py远端compile PASS；所属PID/CWD/argv/CUDA和实际GPU0/378MiB独立核实，日志7220→8668字节。两个真实CP/defaulthead/五分支synthetic smoke4NN PASS，sourceIQ之前完成。
+
+源读出独立终态VERIFIED：两个模型各121232NN（120600预测+630eval CE梯度+2smoke），合计242464NN；241200预测/1260梯度前向/4synthetic。0训练/optimizer/EMA/headfit更新、0新信道、0U真值/query/formal访问，state_unchanged=true，所属源进程已缺失。源阶段墙钟31.294900302秒。后续同源聚合分析在独立CPU进程运行，不把它计为训练。
+
+实际源聚合分析ANALYZED_SOURCE_ONLY；4PNG已查看，4PDF头均%PDF-1.4，27份aggregate-only导出2798390byte一次传输比较VERIFIED，无IQ/CP/原始logits下载。分析本身0NN/IQ/CP/更新；提交至完成23.223122597秒，源启动至分析完成105.893837690秒；两个所属进程均缺失。
+
+只读补充元数据工具 9c5badb0cf9c22b923c1b311ae7db00fd8039a1f 已提交且独立推送VERIFIED，协议2/4/5合成形状256/600及畸形输入拒绝检查PASS，.226秒，0真实IQ/CP/NN；实际ManySig元数据17,298个opcode，576个(1000,256,2)候选形状，576×4096000byte载荷经seek跳过，未执行pickle反序列化或构造数值波形。原目录无sidecar。当前文件不能提供更长单记录上下文，不拼相邻packet，不新增训练。该检查不触发数据重验证或另建receipt。

@@ -28,7 +28,7 @@
   "replaces_run_id": null,
   "authorization": "Active user goal permits source-only frozen default-head diagnostic and necessary implementation. Latest satellite-first/clean0.1/fullsource/noheldRX/fixedF+CROSS_RX/defaulthead/E30 applies; this launch adds0trainingepochs or targetaccess. Stored mandatoryAg/E20 goal fields superseded by latest explicit steering.",
   "code": {
-    "commit": null,
+    "commit": "308f4ca53bf87cb23c47cbcd43ec5b1da2ae8b56",
     "starting_commit": "f2f19130831ed2c6db220062deec913c6df66798",
     "checkout": "code/worktrees/phase1_urban_sigtime_20261014",
     "environment": "Existing ordinaryN607 CVS-RFFI Python3.10/Torch2.1/NumPy2.2/FP32,CPU2;no installs",
@@ -81,7 +81,7 @@
       "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/source/final_ssdg.pth"
     ],
     "contract_check_ref": "P43 source own20scratch andfinal30 frozen metadata/init/source_contract.role_ids plusstrictstate/defaultheadruntimecheck;realCPsmokefirst",
-    "provenance_verdict": "OriginalP43samefullsource/fixedfinal/sourceonlyancestrypreviouslyverified;actualruntimehandlesandrealCPsmokecheckedbeforeIQ",
+    "provenance_verdict": "VERIFIED current corresponding P43 own20scratch/ownFINAL30 model/defaulthead,physicalsource handles EXACT_MATCH,final_only,no target ancestry;real2finalCP4NNsmoke before IQ PASS",
     "selection_rule": "Both fixedFINAL30students, no candidate selection/promotion;descriptiveonly;no automatictraining/formal/E50/seedextension"
   },
   "execution": {
@@ -93,7 +93,8 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_current_controls_E30_20261019_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_controlled_revisit79/runner.py --project PROJECT --device cuda:0",
     "stop_rule": "Own wrongsource/parent/head/shape/budget/nonfinite/stateupdate/queryaccess/outputcollision/unlaunchable only;preserveartifacts,noautomaticretry,neverstophealthyothers",
-    "status": "LOCAL_VERIFIED"
+    "status": "ANALYZED",
+    "result_scope": "SOURCE_ONLY_NO_TRAINING_OR_TARGET"
   },
   "expected_artifacts": [
     "resolved_config.json",
@@ -196,7 +197,17 @@
         "predictions.npz",
         "branch_metrics.npz",
         "result.json"
-      ]
+      ],
+      "status": "ANALYZED",
+      "actual_results": {
+        "NN": 121232,
+        "prediction_NN": 120600,
+        "evalCE_gradient_forward_NN": 630,
+        "synthetic_smoke_NN": 2,
+        "training_updates": 0,
+        "target_access": false,
+        "state_unchanged": true
+      }
     },
     {
       "row_id": "AS30",
@@ -244,7 +255,17 @@
         "predictions.npz",
         "branch_metrics.npz",
         "result.json"
-      ]
+      ],
+      "status": "ANALYZED",
+      "actual_results": {
+        "NN": 121232,
+        "prediction_NN": 120600,
+        "evalCE_gradient_forward_NN": 630,
+        "synthetic_smoke_NN": 2,
+        "training_updates": 0,
+        "target_access": false,
+        "state_unchanged": true
+      }
     }
   ],
   "notes": [
@@ -254,7 +275,40 @@
     "Precisediagnosticgap:previous11controlsP24P33usedolderCPs;P74currentP43onlymidlowfull/no-noise-fixedandbranchswap. This is currentCPcontrolcoverage,not a newlyuntriedtrainingmechanism.",
     "Controlsfull/no_noise-fixedtotal/flatH-fixedtotal/no_carrier-fixedtotal/no_RXIQ-fixedtotal/actualpowerquality/edgeboundary reuseoriginalcache;state-strataalwaysfullnotcontrolreclassified.",
     "No extra scientificgatefromproxy;readoutschangingnotdeploymentchanges;total effect includesreceiverfeedback;componentgainscannotbesummed.",
-    "REJECTED_EXTRA_GATE:separatecreativeplanapproval/reporthash/repeatedreviewisoutsideuserexclusiveeightgate;authorizedsourceworkcontinues."
+    "REJECTED_EXTRA_GATE:separatecreativeplanapproval/reporthash/repeatedreviewisoutsideuserexclusiveeightgate;authorizedsourceworkcontinues.",
+    "ANALYZED_SOURCE_ONLY:noise-largest-single-release,butlow59.083→68.139fixed/70.167total remainsfarbelowclean98.333;edgeinputhurtsnotrepair;no candidate/training/formalpromotion.",
+    "P77isphysicalqualityconditionaltrue/uniformsoft-targetlabel-smoothing,NOTCEscalarreweight;alreadyfailedsource.Donotrenameasnew.",
+    "Originalcompactrecord metadata actual256points confirmed withoutnumericpayloads;realprehistorycandidateclosed,norawIQunpicklingornewdataauthority."
   ],
-  "registered_at": "2026-10-18T23:23:29+00:00"
+  "registered_at": "2026-10-18T23:23:29+00:00",
+  "actual_results": {
+    "scope": "source_only_descriptive",
+    "NN": 242464,
+    "prediction_NN": 241200,
+    "evalCE_gradient_forward_NN": 1260,
+    "synthetic_smoke_NN": 4,
+    "new_training_epochs": 0,
+    "training_updates": 0,
+    "source_unique_V": 1800,
+    "channel_draws": 2,
+    "model_seed_count": 1,
+    "source_probe_wall_seconds": 31.294900302076712,
+    "analysis_elapsed_seconds": 23.223122596740723,
+    "elapsed_launch_to_analysis_complete_seconds": 105.8938376903534,
+    "all_declared_source_conditions_complete": true,
+    "formal_access": false,
+    "source_promotion": false,
+    "repeatable_dual_gain_proven": false,
+    "technical_missing": [],
+    "report": "final_analysis.md",
+    "results": "results_summary.json"
+  },
+  "metadata_tool": {
+    "commit": "9c5badb0cf9c22b923c1b311ae7db00fd8039a1f",
+    "path": "tools/source_record_shapes.py",
+    "purpose": "Read-only opcode metadata;skip large numerical payloads,do not unpickle",
+    "result": "576 arrays(1000,256,2);no longer record context in supplied compact file;no adjacentpacket time continuity inferred",
+    "NN": 0,
+    "training_updates": 0
+  }
 }

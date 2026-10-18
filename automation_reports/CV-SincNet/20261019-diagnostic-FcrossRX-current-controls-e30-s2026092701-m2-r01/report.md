@@ -1,6 +1,6 @@
 # P79：当前P43基座的受控 practical 退化诊断
 
-状态：REGISTERED，尚未启动。起点 f2f19130831ed2c6db220062deec913c6df66798。本轮明确仅源域冻结诊断，新增训练0轮/0更新，不是新的增强性能实验。
+状态：ANALYZED_SOURCE_ONLY，预登记源条件已全部读出与分析。下述方案是运行前固定记录；最终结果见 [最终分析](final_analysis.md)。起点 f2f19130831ed2c6db220062deec913c6df66798。本轮明确仅源域冻结诊断，新增训练0轮/0更新，不是新的增强性能实验。
 
 最近已完成P78两行匹配E30与all7评分，原As相比新增urban均值仅+.007540pp、clean−.075pp，固定候选已关闭。进一步去重表明EMA读出、名义质量风险、有界困难风险、U practical预算路由及公共传播TX单元均有既有源负结果，不按附件名称重复启动。
 
@@ -23,3 +23,7 @@
 产物：每模型predictions/branch_metrics/result；source角色/actualmodules/实际缓存引擎/config/CPsmoke/complete；逐draw×scene×condition/RX/day/TX/状态/噪声比accuracy、宏F1、CM、margin、纠错、固定正确集合保持率、固定与总效应、As−NoAs及控制效果交互；4PNG/4PDF和实际成本/缺项。只读完整现有聚合，不重新评分formal。
 
 REJECTED_EXTRA_GATE：通用技能单独设计审批、报告hash/签名和重复审查不在用户八项最小流程内；不为这些停工。保留一次聚焦负例、一次独立P0/P1、一次preflight、单归档传输比较、远端compile与启动后所属进程读回。
+
+实际发布：代码 308f4ca53bf87cb23c47cbcd43ec5b1da2ae8b56 已独立核实推送。单归档传输VERIFIED、13py远端compile PASS；实际所属进程PID/CWD/argv/CUDA/实际GPU0及378MiB已独立观察。两个真实CP/defaulthead/fivebranch smoke 4NN PASS，IQ打开前完成，4次ownE20/FINAL30 CP反序列化但不应用EMA；0训练/query。该段为启动时观察；随后两模型源读出和分析已完成。
+
+最终：新增242464NN/0训练/0formal访问，源probe31.294900302秒，完整源分析105.893837690秒elapsed，4PNG/4PDF已核实。原记录真实上下文元数据补查为256点，候选关闭。无新增正式提升或跨seed双收益证据，目标ACTIVE。详细数字和负证据见final_analysis.md/results_summary.json。

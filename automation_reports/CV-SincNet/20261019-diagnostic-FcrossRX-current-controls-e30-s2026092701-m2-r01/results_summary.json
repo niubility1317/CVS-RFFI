@@ -1,0 +1,1190 @@
+{
+  "schema": "current_controls79_curated_results_v1",
+  "run_id": "20261019-diagnostic-FcrossRX-current-controls-e30-s2026092701-m2-r01",
+  "status": "ANALYZED_SOURCE_ONLY",
+  "code_commit": "308f4ca53bf87cb23c47cbcd43ec5b1da2ae8b56",
+  "model_seed": 2026092701,
+  "model_seed_count": 1,
+  "source_unique_V": 1800,
+  "channel_draws": 2,
+  "scenes": [
+    "practical_low_suburban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "conditions": [
+    "full",
+    "no_noise/fixed",
+    "no_noise/total",
+    "flat_H/fixed",
+    "flat_H/total",
+    "no_carrier/fixed",
+    "no_carrier/total",
+    "no_RX_IQ/fixed",
+    "no_RX_IQ/total",
+    "actual_power_quality",
+    "edge_boundary"
+  ],
+  "overall_metrics": [
+    {
+      "label": "NOAS30",
+      "scene": "clean",
+      "condition": "clean",
+      "count": 1800,
+      "accuracy": 0.9844444444444445,
+      "macro_f1": 0.984414688915647,
+      "mean_margin_over30": 0.23938876390457153,
+      "fixed_NOAS30_clean_retention": 1,
+      "own_model_clean_retention": 1
+    },
+    {
+      "label": "AS30",
+      "scene": "clean",
+      "condition": "clean",
+      "count": 1800,
+      "accuracy": 0.9833333333333333,
+      "macro_f1": 0.9832994960773108,
+      "mean_margin_over30": 0.2383028268814087,
+      "fixed_NOAS30_clean_retention": 0.9971783295711061,
+      "own_model_clean_retention": 1
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_low_suburban",
+      "condition": "full",
+      "count": 3600,
+      "accuracy": 0.4986111111111111,
+      "macro_f1": 0.46937084017858793,
+      "mean_margin_over30": 0.0073762754909694195,
+      "fixed_NOAS30_clean_retention": 0.5011286681715575,
+      "own_model_clean_retention": 0.5011286681715575
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_low_suburban",
+      "condition": "no_noise/fixed",
+      "count": 3600,
+      "accuracy": 0.5213888888888889,
+      "macro_f1": 0.4855441077437017,
+      "mean_margin_over30": 0.012012789025902748,
+      "fixed_NOAS30_clean_retention": 0.5242663656884876,
+      "own_model_clean_retention": 0.5242663656884876
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_low_suburban",
+      "condition": "no_noise/total",
+      "count": 3600,
+      "accuracy": 0.5244444444444445,
+      "macro_f1": 0.48788788038860886,
+      "mean_margin_over30": 0.012356837280094624,
+      "fixed_NOAS30_clean_retention": 0.5273702031602708,
+      "own_model_clean_retention": 0.5273702031602708
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_low_suburban",
+      "condition": "flat_H/fixed",
+      "count": 3600,
+      "accuracy": 0.5038888888888889,
+      "macro_f1": 0.47304802773907345,
+      "mean_margin_over30": 0.010857648216187954,
+      "fixed_NOAS30_clean_retention": 0.5067720090293454,
+      "own_model_clean_retention": 0.5067720090293454
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_low_suburban",
+      "condition": "flat_H/total",
+      "count": 3600,
+      "accuracy": 0.5038888888888889,
+      "macro_f1": 0.47383054505197575,
+      "mean_margin_over30": 0.010917733423411846,
+      "fixed_NOAS30_clean_retention": 0.5070541760722348,
+      "own_model_clean_retention": 0.5070541760722348
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_low_suburban",
+      "condition": "no_carrier/fixed",
+      "count": 3600,
+      "accuracy": 0.5002777777777778,
+      "macro_f1": 0.4705070228901807,
+      "mean_margin_over30": 0.00764525355771184,
+      "fixed_NOAS30_clean_retention": 0.5031038374717833,
+      "own_model_clean_retention": 0.5031038374717833
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_low_suburban",
+      "condition": "no_carrier/total",
+      "count": 3600,
+      "accuracy": 0.5002777777777778,
+      "macro_f1": 0.4705070228901807,
+      "mean_margin_over30": 0.007646305486559868,
+      "fixed_NOAS30_clean_retention": 0.5031038374717833,
+      "own_model_clean_retention": 0.5031038374717833
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_low_suburban",
+      "condition": "no_RX_IQ/fixed",
+      "count": 3600,
+      "accuracy": 0.49805555555555553,
+      "macro_f1": 0.4689222009798593,
+      "mean_margin_over30": 0.007356562651693821,
+      "fixed_NOAS30_clean_retention": 0.5008465011286681,
+      "own_model_clean_retention": 0.5008465011286681
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_low_suburban",
+      "condition": "no_RX_IQ/total",
+      "count": 3600,
+      "accuracy": 0.49805555555555553,
+      "macro_f1": 0.4689222009798593,
+      "mean_margin_over30": 0.007357295136898756,
+      "fixed_NOAS30_clean_retention": 0.5008465011286681,
+      "own_model_clean_retention": 0.5008465011286681
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_low_suburban",
+      "condition": "actual_power_quality",
+      "count": 3600,
+      "accuracy": 0.49777777777777776,
+      "macro_f1": 0.4685300947651312,
+      "mean_margin_over30": 0.007362790405750275,
+      "fixed_NOAS30_clean_retention": 0.5002821670428894,
+      "own_model_clean_retention": 0.5002821670428894
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_low_suburban",
+      "condition": "edge_boundary",
+      "count": 3600,
+      "accuracy": 0.3963888888888889,
+      "macro_f1": 0.3700724984611699,
+      "mean_margin_over30": -0.014809221029281616,
+      "fixed_NOAS30_clean_retention": 0.39672686230248305,
+      "own_model_clean_retention": 0.39672686230248305
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_low_suburban",
+      "condition": "full",
+      "count": 3600,
+      "accuracy": 0.8866666666666667,
+      "macro_f1": 0.8857159855990914,
+      "mean_margin_over30": 0.1387452930212021,
+      "fixed_NOAS30_clean_retention": 0.8970090293453724,
+      "own_model_clean_retention": 0.8985875706214689
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_low_suburban",
+      "condition": "no_noise/fixed",
+      "count": 3600,
+      "accuracy": 0.9141666666666667,
+      "macro_f1": 0.9135196381036628,
+      "mean_margin_over30": 0.15417207777500153,
+      "fixed_NOAS30_clean_retention": 0.9252257336343115,
+      "own_model_clean_retention": 0.926271186440678
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_low_suburban",
+      "condition": "no_noise/total",
+      "count": 3600,
+      "accuracy": 0.9147222222222222,
+      "macro_f1": 0.9141614661518306,
+      "mean_margin_over30": 0.1551368534564972,
+      "fixed_NOAS30_clean_retention": 0.9255079006772009,
+      "own_model_clean_retention": 0.9265536723163842
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_low_suburban",
+      "condition": "flat_H/fixed",
+      "count": 3600,
+      "accuracy": 0.8983333333333333,
+      "macro_f1": 0.8976586922933733,
+      "mean_margin_over30": 0.14457301795482635,
+      "fixed_NOAS30_clean_retention": 0.9082957110609481,
+      "own_model_clean_retention": 0.9098870056497175
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_low_suburban",
+      "condition": "flat_H/total",
+      "count": 3600,
+      "accuracy": 0.8994444444444445,
+      "macro_f1": 0.8987348475040132,
+      "mean_margin_over30": 0.14467988908290863,
+      "fixed_NOAS30_clean_retention": 0.9094243792325056,
+      "own_model_clean_retention": 0.9110169491525424
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_low_suburban",
+      "condition": "no_carrier/fixed",
+      "count": 3600,
+      "accuracy": 0.8894444444444445,
+      "macro_f1": 0.8884344317326957,
+      "mean_margin_over30": 0.13934992253780365,
+      "fixed_NOAS30_clean_retention": 0.8998306997742663,
+      "own_model_clean_retention": 0.9011299435028248
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_low_suburban",
+      "condition": "no_carrier/total",
+      "count": 3600,
+      "accuracy": 0.8894444444444445,
+      "macro_f1": 0.8884344317326957,
+      "mean_margin_over30": 0.13935135304927826,
+      "fixed_NOAS30_clean_retention": 0.8998306997742663,
+      "own_model_clean_retention": 0.9011299435028248
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_low_suburban",
+      "condition": "no_RX_IQ/fixed",
+      "count": 3600,
+      "accuracy": 0.8866666666666667,
+      "macro_f1": 0.8857493332034175,
+      "mean_margin_over30": 0.13878688216209412,
+      "fixed_NOAS30_clean_retention": 0.8967268623024831,
+      "own_model_clean_retention": 0.8983050847457628
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_low_suburban",
+      "condition": "no_RX_IQ/total",
+      "count": 3600,
+      "accuracy": 0.8866666666666667,
+      "macro_f1": 0.8857493332034175,
+      "mean_margin_over30": 0.13878823816776276,
+      "fixed_NOAS30_clean_retention": 0.8967268623024831,
+      "own_model_clean_retention": 0.8983050847457628
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_low_suburban",
+      "condition": "actual_power_quality",
+      "count": 3600,
+      "accuracy": 0.8866666666666667,
+      "macro_f1": 0.8857352904408472,
+      "mean_margin_over30": 0.13875027000904083,
+      "fixed_NOAS30_clean_retention": 0.8970090293453724,
+      "own_model_clean_retention": 0.8985875706214689
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_low_suburban",
+      "condition": "edge_boundary",
+      "count": 3600,
+      "accuracy": 0.7469444444444444,
+      "macro_f1": 0.7476807097605024,
+      "mean_margin_over30": 0.06184803321957588,
+      "fixed_NOAS30_clean_retention": 0.7547968397291196,
+      "own_model_clean_retention": 0.7559322033898305
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_mid_urban",
+      "condition": "full",
+      "count": 3600,
+      "accuracy": 0.43555555555555553,
+      "macro_f1": 0.4159534611090652,
+      "mean_margin_over30": -0.007191127166152,
+      "fixed_NOAS30_clean_retention": 0.43876975169300225,
+      "own_model_clean_retention": 0.43876975169300225
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_mid_urban",
+      "condition": "no_noise/fixed",
+      "count": 3600,
+      "accuracy": 0.47555555555555556,
+      "macro_f1": 0.4517102594320766,
+      "mean_margin_over30": -0.0008209721418097615,
+      "fixed_NOAS30_clean_retention": 0.4791196388261851,
+      "own_model_clean_retention": 0.4791196388261851
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_mid_urban",
+      "condition": "no_noise/total",
+      "count": 3600,
+      "accuracy": 0.4752777777777778,
+      "macro_f1": 0.44981853050207654,
+      "mean_margin_over30": -0.0019210843602195382,
+      "fixed_NOAS30_clean_retention": 0.4785553047404063,
+      "own_model_clean_retention": 0.4785553047404063
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_mid_urban",
+      "condition": "flat_H/fixed",
+      "count": 3600,
+      "accuracy": 0.45694444444444443,
+      "macro_f1": 0.4401626290841773,
+      "mean_margin_over30": -0.0013454646104946733,
+      "fixed_NOAS30_clean_retention": 0.4590857787810384,
+      "own_model_clean_retention": 0.4590857787810384
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_mid_urban",
+      "condition": "flat_H/total",
+      "count": 3600,
+      "accuracy": 0.45944444444444443,
+      "macro_f1": 0.44216104917910154,
+      "mean_margin_over30": -0.0012575953733175993,
+      "fixed_NOAS30_clean_retention": 0.4616252821670429,
+      "own_model_clean_retention": 0.4616252821670429
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_mid_urban",
+      "condition": "no_carrier/fixed",
+      "count": 3600,
+      "accuracy": 0.43277777777777776,
+      "macro_f1": 0.412373971906801,
+      "mean_margin_over30": -0.008030613884329796,
+      "fixed_NOAS30_clean_retention": 0.435665914221219,
+      "own_model_clean_retention": 0.435665914221219
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_mid_urban",
+      "condition": "no_carrier/total",
+      "count": 3600,
+      "accuracy": 0.43277777777777776,
+      "macro_f1": 0.412373971906801,
+      "mean_margin_over30": -0.008030178025364876,
+      "fixed_NOAS30_clean_retention": 0.435665914221219,
+      "own_model_clean_retention": 0.435665914221219
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_mid_urban",
+      "condition": "no_RX_IQ/fixed",
+      "count": 3600,
+      "accuracy": 0.4361111111111111,
+      "macro_f1": 0.41674506488030155,
+      "mean_margin_over30": -0.007178113330155611,
+      "fixed_NOAS30_clean_retention": 0.439334085778781,
+      "own_model_clean_retention": 0.439334085778781
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_mid_urban",
+      "condition": "no_RX_IQ/total",
+      "count": 3600,
+      "accuracy": 0.4361111111111111,
+      "macro_f1": 0.41674633235432806,
+      "mean_margin_over30": -0.007177671883255243,
+      "fixed_NOAS30_clean_retention": 0.439334085778781,
+      "own_model_clean_retention": 0.439334085778781
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_mid_urban",
+      "condition": "actual_power_quality",
+      "count": 3600,
+      "accuracy": 0.4336111111111111,
+      "macro_f1": 0.41394586231320457,
+      "mean_margin_over30": -0.007257833611220121,
+      "fixed_NOAS30_clean_retention": 0.4365124153498871,
+      "own_model_clean_retention": 0.4365124153498871
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_mid_urban",
+      "condition": "edge_boundary",
+      "count": 3600,
+      "accuracy": 0.34555555555555556,
+      "macro_f1": 0.3298671898479904,
+      "mean_margin_over30": -0.02590036205947399,
+      "fixed_NOAS30_clean_retention": 0.3459367945823928,
+      "own_model_clean_retention": 0.3459367945823928
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_mid_urban",
+      "condition": "full",
+      "count": 3600,
+      "accuracy": 0.7280555555555556,
+      "macro_f1": 0.7271982603405204,
+      "mean_margin_over30": 0.09874234348535538,
+      "fixed_NOAS30_clean_retention": 0.7367381489841986,
+      "own_model_clean_retention": 0.7375706214689266
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_mid_urban",
+      "condition": "no_noise/fixed",
+      "count": 3600,
+      "accuracy": 0.7808333333333334,
+      "macro_f1": 0.7784893208005981,
+      "mean_margin_over30": 0.10896435379981995,
+      "fixed_NOAS30_clean_retention": 0.7895033860045146,
+      "own_model_clean_retention": 0.7903954802259887
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_mid_urban",
+      "condition": "no_noise/total",
+      "count": 3600,
+      "accuracy": 0.7836111111111111,
+      "macro_f1": 0.78230001374622,
+      "mean_margin_over30": 0.10978007316589355,
+      "fixed_NOAS30_clean_retention": 0.7914785553047404,
+      "own_model_clean_retention": 0.7923728813559322
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_mid_urban",
+      "condition": "flat_H/fixed",
+      "count": 3600,
+      "accuracy": 0.7616666666666667,
+      "macro_f1": 0.7604701363196882,
+      "mean_margin_over30": 0.10457342863082886,
+      "fixed_NOAS30_clean_retention": 0.7703160270880361,
+      "own_model_clean_retention": 0.7714689265536723
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_mid_urban",
+      "condition": "flat_H/total",
+      "count": 3600,
+      "accuracy": 0.7611111111111111,
+      "macro_f1": 0.7598174492568676,
+      "mean_margin_over30": 0.10464181005954742,
+      "fixed_NOAS30_clean_retention": 0.7694695259593679,
+      "own_model_clean_retention": 0.7703389830508475
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_mid_urban",
+      "condition": "no_carrier/fixed",
+      "count": 3600,
+      "accuracy": 0.7288888888888889,
+      "macro_f1": 0.7277641027211771,
+      "mean_margin_over30": 0.09883245825767517,
+      "fixed_NOAS30_clean_retention": 0.7364559819413092,
+      "own_model_clean_retention": 0.7372881355932204
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_mid_urban",
+      "condition": "no_carrier/total",
+      "count": 3600,
+      "accuracy": 0.7288888888888889,
+      "macro_f1": 0.7277641027211771,
+      "mean_margin_over30": 0.09883344918489456,
+      "fixed_NOAS30_clean_retention": 0.7364559819413092,
+      "own_model_clean_retention": 0.7372881355932204
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_mid_urban",
+      "condition": "no_RX_IQ/fixed",
+      "count": 3600,
+      "accuracy": 0.7280555555555556,
+      "macro_f1": 0.7272343171584144,
+      "mean_margin_over30": 0.09876596927642822,
+      "fixed_NOAS30_clean_retention": 0.7364559819413092,
+      "own_model_clean_retention": 0.7372881355932204
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_mid_urban",
+      "condition": "no_RX_IQ/total",
+      "count": 3600,
+      "accuracy": 0.7280555555555556,
+      "macro_f1": 0.7272343171584144,
+      "mean_margin_over30": 0.09876671433448792,
+      "fixed_NOAS30_clean_retention": 0.7364559819413092,
+      "own_model_clean_retention": 0.7372881355932204
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_mid_urban",
+      "condition": "actual_power_quality",
+      "count": 3600,
+      "accuracy": 0.7244444444444444,
+      "macro_f1": 0.7236725792324035,
+      "mean_margin_over30": 0.09868999570608139,
+      "fixed_NOAS30_clean_retention": 0.7330699774266366,
+      "own_model_clean_retention": 0.7338983050847457
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_mid_urban",
+      "condition": "edge_boundary",
+      "count": 3600,
+      "accuracy": 0.6191666666666666,
+      "macro_f1": 0.6209754610946435,
+      "mean_margin_over30": 0.04077492654323578,
+      "fixed_NOAS30_clean_retention": 0.623589164785553,
+      "own_model_clean_retention": 0.6248587570621469
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_low_urban",
+      "condition": "full",
+      "count": 3600,
+      "accuracy": 0.3561111111111111,
+      "macro_f1": 0.34525218651445266,
+      "mean_margin_over30": -0.023095889016985893,
+      "fixed_NOAS30_clean_retention": 0.3577878103837472,
+      "own_model_clean_retention": 0.3577878103837472
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_low_urban",
+      "condition": "no_noise/fixed",
+      "count": 3600,
+      "accuracy": 0.41333333333333333,
+      "macro_f1": 0.39787882450663975,
+      "mean_margin_over30": -0.010393621399998665,
+      "fixed_NOAS30_clean_retention": 0.4164785553047404,
+      "own_model_clean_retention": 0.4164785553047404
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_low_urban",
+      "condition": "no_noise/total",
+      "count": 3600,
+      "accuracy": 0.4325,
+      "macro_f1": 0.41671978312552244,
+      "mean_margin_over30": -0.010180305689573288,
+      "fixed_NOAS30_clean_retention": 0.435665914221219,
+      "own_model_clean_retention": 0.435665914221219
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_low_urban",
+      "condition": "flat_H/fixed",
+      "count": 3600,
+      "accuracy": 0.37472222222222223,
+      "macro_f1": 0.36577443082075206,
+      "mean_margin_over30": -0.018076464533805847,
+      "fixed_NOAS30_clean_retention": 0.3766930022573363,
+      "own_model_clean_retention": 0.3766930022573363
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_low_urban",
+      "condition": "flat_H/total",
+      "count": 3600,
+      "accuracy": 0.37527777777777777,
+      "macro_f1": 0.36621024375727146,
+      "mean_margin_over30": -0.018064279109239578,
+      "fixed_NOAS30_clean_retention": 0.37697516930022573,
+      "own_model_clean_retention": 0.37697516930022573
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_low_urban",
+      "condition": "no_carrier/fixed",
+      "count": 3600,
+      "accuracy": 0.3611111111111111,
+      "macro_f1": 0.35168746569374765,
+      "mean_margin_over30": -0.022914834320545197,
+      "fixed_NOAS30_clean_retention": 0.36202031602708806,
+      "own_model_clean_retention": 0.36202031602708806
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_low_urban",
+      "condition": "no_carrier/total",
+      "count": 3600,
+      "accuracy": 0.3611111111111111,
+      "macro_f1": 0.3516895015306756,
+      "mean_margin_over30": -0.02291456237435341,
+      "fixed_NOAS30_clean_retention": 0.36202031602708806,
+      "own_model_clean_retention": 0.36202031602708806
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_low_urban",
+      "condition": "no_RX_IQ/fixed",
+      "count": 3600,
+      "accuracy": 0.3575,
+      "macro_f1": 0.34692460180836493,
+      "mean_margin_over30": -0.02308562397956848,
+      "fixed_NOAS30_clean_retention": 0.35919864559819414,
+      "own_model_clean_retention": 0.35919864559819414
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_low_urban",
+      "condition": "no_RX_IQ/total",
+      "count": 3600,
+      "accuracy": 0.3575,
+      "macro_f1": 0.34692460180836493,
+      "mean_margin_over30": -0.023085298016667366,
+      "fixed_NOAS30_clean_retention": 0.35919864559819414,
+      "own_model_clean_retention": 0.35919864559819414
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_low_urban",
+      "condition": "actual_power_quality",
+      "count": 3600,
+      "accuracy": 0.35388888888888886,
+      "macro_f1": 0.34306794842021393,
+      "mean_margin_over30": -0.023357849568128586,
+      "fixed_NOAS30_clean_retention": 0.35553047404063204,
+      "own_model_clean_retention": 0.35553047404063204
+    },
+    {
+      "label": "NOAS30",
+      "scene": "practical_low_urban",
+      "condition": "edge_boundary",
+      "count": 3600,
+      "accuracy": 0.3038888888888889,
+      "macro_f1": 0.2940431411320177,
+      "mean_margin_over30": -0.03562717139720917,
+      "fixed_NOAS30_clean_retention": 0.304176072234763,
+      "own_model_clean_retention": 0.304176072234763
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_low_urban",
+      "condition": "full",
+      "count": 3600,
+      "accuracy": 0.5908333333333333,
+      "macro_f1": 0.5874439367923495,
+      "mean_margin_over30": 0.05735163018107414,
+      "fixed_NOAS30_clean_retention": 0.5959367945823928,
+      "own_model_clean_retention": 0.597457627118644
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_low_urban",
+      "condition": "no_noise/fixed",
+      "count": 3600,
+      "accuracy": 0.6813888888888889,
+      "macro_f1": 0.6766560665346742,
+      "mean_margin_over30": 0.07487380504608154,
+      "fixed_NOAS30_clean_retention": 0.6884875846501128,
+      "own_model_clean_retention": 0.6901129943502825
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_low_urban",
+      "condition": "no_noise/total",
+      "count": 3600,
+      "accuracy": 0.7016666666666667,
+      "macro_f1": 0.6992965552168436,
+      "mean_margin_over30": 0.07771989703178406,
+      "fixed_NOAS30_clean_retention": 0.7093679458239278,
+      "own_model_clean_retention": 0.7098870056497175
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_low_urban",
+      "condition": "flat_H/fixed",
+      "count": 3600,
+      "accuracy": 0.6072222222222222,
+      "macro_f1": 0.6069834621360529,
+      "mean_margin_over30": 0.061740681529045105,
+      "fixed_NOAS30_clean_retention": 0.6128668171557562,
+      "own_model_clean_retention": 0.6135593220338983
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_low_urban",
+      "condition": "flat_H/total",
+      "count": 3600,
+      "accuracy": 0.6091666666666666,
+      "macro_f1": 0.608456852006679,
+      "mean_margin_over30": 0.06180490553379059,
+      "fixed_NOAS30_clean_retention": 0.6151241534988713,
+      "own_model_clean_retention": 0.615819209039548
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_low_urban",
+      "condition": "no_carrier/fixed",
+      "count": 3600,
+      "accuracy": 0.5938888888888889,
+      "macro_f1": 0.5912678865408986,
+      "mean_margin_over30": 0.05727396160364151,
+      "fixed_NOAS30_clean_retention": 0.5996049661399548,
+      "own_model_clean_retention": 0.6005649717514124
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_low_urban",
+      "condition": "no_carrier/total",
+      "count": 3600,
+      "accuracy": 0.5941666666666666,
+      "macro_f1": 0.5915342772316291,
+      "mean_margin_over30": 0.057274848222732544,
+      "fixed_NOAS30_clean_retention": 0.5998871331828443,
+      "own_model_clean_retention": 0.6008474576271187
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_low_urban",
+      "condition": "no_RX_IQ/fixed",
+      "count": 3600,
+      "accuracy": 0.5911111111111111,
+      "macro_f1": 0.5876571194522596,
+      "mean_margin_over30": 0.05735199153423309,
+      "fixed_NOAS30_clean_retention": 0.5962189616252822,
+      "own_model_clean_retention": 0.5977401129943503
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_low_urban",
+      "condition": "no_RX_IQ/total",
+      "count": 3600,
+      "accuracy": 0.5908333333333333,
+      "macro_f1": 0.5873825321171081,
+      "mean_margin_over30": 0.05735260248184204,
+      "fixed_NOAS30_clean_retention": 0.5959367945823928,
+      "own_model_clean_retention": 0.597457627118644
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_low_urban",
+      "condition": "actual_power_quality",
+      "count": 3600,
+      "accuracy": 0.5911111111111111,
+      "macro_f1": 0.5879655463778023,
+      "mean_margin_over30": 0.05730307102203369,
+      "fixed_NOAS30_clean_retention": 0.5962189616252822,
+      "own_model_clean_retention": 0.5977401129943503
+    },
+    {
+      "label": "AS30",
+      "scene": "practical_low_urban",
+      "condition": "edge_boundary",
+      "count": 3600,
+      "accuracy": 0.5108333333333334,
+      "macro_f1": 0.5100106342067963,
+      "mean_margin_over30": 0.020340198650956154,
+      "fixed_NOAS30_clean_retention": 0.5138261851015802,
+      "own_model_clean_retention": 0.5146892655367231
+    }
+  ],
+  "As_control_effects": [
+    {
+      "scene": "practical_low_suburban",
+      "condition": "no_noise/fixed",
+      "count": 3600,
+      "repairs": 154,
+      "new_errors": 55,
+      "net_repairs": 99,
+      "accuracy_delta_pp": 2.75
+    },
+    {
+      "scene": "practical_low_suburban",
+      "condition": "no_noise/total",
+      "count": 3600,
+      "repairs": 154,
+      "new_errors": 53,
+      "net_repairs": 101,
+      "accuracy_delta_pp": 2.8055555555555554
+    },
+    {
+      "scene": "practical_low_suburban",
+      "condition": "flat_H/fixed",
+      "count": 3600,
+      "repairs": 89,
+      "new_errors": 47,
+      "net_repairs": 42,
+      "accuracy_delta_pp": 1.1666666666666667
+    },
+    {
+      "scene": "practical_low_suburban",
+      "condition": "flat_H/total",
+      "count": 3600,
+      "repairs": 91,
+      "new_errors": 45,
+      "net_repairs": 46,
+      "accuracy_delta_pp": 1.2777777777777777
+    },
+    {
+      "scene": "practical_low_suburban",
+      "condition": "no_carrier/fixed",
+      "count": 3600,
+      "repairs": 35,
+      "new_errors": 25,
+      "net_repairs": 10,
+      "accuracy_delta_pp": 0.2777777777777778
+    },
+    {
+      "scene": "practical_low_suburban",
+      "condition": "no_carrier/total",
+      "count": 3600,
+      "repairs": 35,
+      "new_errors": 25,
+      "net_repairs": 10,
+      "accuracy_delta_pp": 0.2777777777777778
+    },
+    {
+      "scene": "practical_low_suburban",
+      "condition": "no_RX_IQ/fixed",
+      "count": 3600,
+      "repairs": 3,
+      "new_errors": 3,
+      "net_repairs": 0,
+      "accuracy_delta_pp": 0
+    },
+    {
+      "scene": "practical_low_suburban",
+      "condition": "no_RX_IQ/total",
+      "count": 3600,
+      "repairs": 3,
+      "new_errors": 3,
+      "net_repairs": 0,
+      "accuracy_delta_pp": 0
+    },
+    {
+      "scene": "practical_low_suburban",
+      "condition": "actual_power_quality",
+      "count": 3600,
+      "repairs": 1,
+      "new_errors": 1,
+      "net_repairs": 0,
+      "accuracy_delta_pp": 0
+    },
+    {
+      "scene": "practical_low_suburban",
+      "condition": "edge_boundary",
+      "count": 3600,
+      "repairs": 88,
+      "new_errors": 591,
+      "net_repairs": -503,
+      "accuracy_delta_pp": -13.972222222222221
+    },
+    {
+      "scene": "practical_mid_urban",
+      "condition": "no_noise/fixed",
+      "count": 3600,
+      "repairs": 328,
+      "new_errors": 138,
+      "net_repairs": 190,
+      "accuracy_delta_pp": 5.277777777777778
+    },
+    {
+      "scene": "practical_mid_urban",
+      "condition": "no_noise/total",
+      "count": 3600,
+      "repairs": 343,
+      "new_errors": 143,
+      "net_repairs": 200,
+      "accuracy_delta_pp": 5.555555555555555
+    },
+    {
+      "scene": "practical_mid_urban",
+      "condition": "flat_H/fixed",
+      "count": 3600,
+      "repairs": 259,
+      "new_errors": 138,
+      "net_repairs": 121,
+      "accuracy_delta_pp": 3.361111111111111
+    },
+    {
+      "scene": "practical_mid_urban",
+      "condition": "flat_H/total",
+      "count": 3600,
+      "repairs": 260,
+      "new_errors": 141,
+      "net_repairs": 119,
+      "accuracy_delta_pp": 3.3055555555555554
+    },
+    {
+      "scene": "practical_mid_urban",
+      "condition": "no_carrier/fixed",
+      "count": 3600,
+      "repairs": 90,
+      "new_errors": 87,
+      "net_repairs": 3,
+      "accuracy_delta_pp": 0.08333333333333333
+    },
+    {
+      "scene": "practical_mid_urban",
+      "condition": "no_carrier/total",
+      "count": 3600,
+      "repairs": 90,
+      "new_errors": 87,
+      "net_repairs": 3,
+      "accuracy_delta_pp": 0.08333333333333333
+    },
+    {
+      "scene": "practical_mid_urban",
+      "condition": "no_RX_IQ/fixed",
+      "count": 3600,
+      "repairs": 5,
+      "new_errors": 5,
+      "net_repairs": 0,
+      "accuracy_delta_pp": 0
+    },
+    {
+      "scene": "practical_mid_urban",
+      "condition": "no_RX_IQ/total",
+      "count": 3600,
+      "repairs": 5,
+      "new_errors": 5,
+      "net_repairs": 0,
+      "accuracy_delta_pp": 0
+    },
+    {
+      "scene": "practical_mid_urban",
+      "condition": "actual_power_quality",
+      "count": 3600,
+      "repairs": 2,
+      "new_errors": 15,
+      "net_repairs": -13,
+      "accuracy_delta_pp": -0.3611111111111111
+    },
+    {
+      "scene": "practical_mid_urban",
+      "condition": "edge_boundary",
+      "count": 3600,
+      "repairs": 139,
+      "new_errors": 531,
+      "net_repairs": -392,
+      "accuracy_delta_pp": -10.88888888888889
+    },
+    {
+      "scene": "practical_low_urban",
+      "condition": "no_noise/fixed",
+      "count": 3600,
+      "repairs": 539,
+      "new_errors": 213,
+      "net_repairs": 326,
+      "accuracy_delta_pp": 9.055555555555555
+    },
+    {
+      "scene": "practical_low_urban",
+      "condition": "no_noise/total",
+      "count": 3600,
+      "repairs": 605,
+      "new_errors": 206,
+      "net_repairs": 399,
+      "accuracy_delta_pp": 11.083333333333334
+    },
+    {
+      "scene": "practical_low_urban",
+      "condition": "flat_H/fixed",
+      "count": 3600,
+      "repairs": 285,
+      "new_errors": 226,
+      "net_repairs": 59,
+      "accuracy_delta_pp": 1.6388888888888888
+    },
+    {
+      "scene": "practical_low_urban",
+      "condition": "flat_H/total",
+      "count": 3600,
+      "repairs": 291,
+      "new_errors": 225,
+      "net_repairs": 66,
+      "accuracy_delta_pp": 1.8333333333333333
+    },
+    {
+      "scene": "practical_low_urban",
+      "condition": "no_carrier/fixed",
+      "count": 3600,
+      "repairs": 173,
+      "new_errors": 162,
+      "net_repairs": 11,
+      "accuracy_delta_pp": 0.3055555555555556
+    },
+    {
+      "scene": "practical_low_urban",
+      "condition": "no_carrier/total",
+      "count": 3600,
+      "repairs": 174,
+      "new_errors": 162,
+      "net_repairs": 12,
+      "accuracy_delta_pp": 0.3333333333333333
+    },
+    {
+      "scene": "practical_low_urban",
+      "condition": "no_RX_IQ/fixed",
+      "count": 3600,
+      "repairs": 2,
+      "new_errors": 1,
+      "net_repairs": 1,
+      "accuracy_delta_pp": 0.027777777777777776
+    },
+    {
+      "scene": "practical_low_urban",
+      "condition": "no_RX_IQ/total",
+      "count": 3600,
+      "repairs": 1,
+      "new_errors": 1,
+      "net_repairs": 0,
+      "accuracy_delta_pp": 0
+    },
+    {
+      "scene": "practical_low_urban",
+      "condition": "actual_power_quality",
+      "count": 3600,
+      "repairs": 8,
+      "new_errors": 7,
+      "net_repairs": 1,
+      "accuracy_delta_pp": 0.027777777777777776
+    },
+    {
+      "scene": "practical_low_urban",
+      "condition": "edge_boundary",
+      "count": 3600,
+      "repairs": 186,
+      "new_errors": 474,
+      "net_repairs": -288,
+      "accuracy_delta_pp": -8
+    },
+    {
+      "scene": "midlow_pooled",
+      "condition": "no_noise/fixed",
+      "count": 7200,
+      "repairs": 867,
+      "new_errors": 351,
+      "net_repairs": 516,
+      "accuracy_delta_pp": 7.166666666666667
+    },
+    {
+      "scene": "midlow_pooled",
+      "condition": "no_noise/total",
+      "count": 7200,
+      "repairs": 948,
+      "new_errors": 349,
+      "net_repairs": 599,
+      "accuracy_delta_pp": 8.319444444444445
+    },
+    {
+      "scene": "midlow_pooled",
+      "condition": "flat_H/fixed",
+      "count": 7200,
+      "repairs": 544,
+      "new_errors": 364,
+      "net_repairs": 180,
+      "accuracy_delta_pp": 2.5
+    },
+    {
+      "scene": "midlow_pooled",
+      "condition": "flat_H/total",
+      "count": 7200,
+      "repairs": 551,
+      "new_errors": 366,
+      "net_repairs": 185,
+      "accuracy_delta_pp": 2.5694444444444446
+    },
+    {
+      "scene": "midlow_pooled",
+      "condition": "no_carrier/fixed",
+      "count": 7200,
+      "repairs": 263,
+      "new_errors": 249,
+      "net_repairs": 14,
+      "accuracy_delta_pp": 0.19444444444444445
+    },
+    {
+      "scene": "midlow_pooled",
+      "condition": "no_carrier/total",
+      "count": 7200,
+      "repairs": 264,
+      "new_errors": 249,
+      "net_repairs": 15,
+      "accuracy_delta_pp": 0.20833333333333334
+    },
+    {
+      "scene": "midlow_pooled",
+      "condition": "no_RX_IQ/fixed",
+      "count": 7200,
+      "repairs": 7,
+      "new_errors": 6,
+      "net_repairs": 1,
+      "accuracy_delta_pp": 0.013888888888888888
+    },
+    {
+      "scene": "midlow_pooled",
+      "condition": "no_RX_IQ/total",
+      "count": 7200,
+      "repairs": 6,
+      "new_errors": 6,
+      "net_repairs": 0,
+      "accuracy_delta_pp": 0
+    },
+    {
+      "scene": "midlow_pooled",
+      "condition": "actual_power_quality",
+      "count": 7200,
+      "repairs": 10,
+      "new_errors": 22,
+      "net_repairs": -12,
+      "accuracy_delta_pp": -0.16666666666666666
+    },
+    {
+      "scene": "midlow_pooled",
+      "condition": "edge_boundary",
+      "count": 7200,
+      "repairs": 325,
+      "new_errors": 1005,
+      "net_repairs": -680,
+      "accuracy_delta_pp": -9.444444444444445
+    }
+  ],
+  "new_NN": 242464,
+  "new_prediction_NN": 241200,
+  "new_evalCEgradient_forward_NN": 1260,
+  "new_smoke_NN": 4,
+  "new_training_epochs": 0,
+  "new_optimizer_updates": 0,
+  "new_headfit_updates": 0,
+  "source_probe_wall_seconds": 31.294900302076712,
+  "analysis_elapsed_seconds": 23.223122596740723,
+  "elapsed_launch_to_analysis_complete_seconds": 105.8938376903534,
+  "source_probe_state_unchanged": true,
+  "new_IQ_generated": 0,
+  "new_channel_draws": 0,
+  "formal_access": false,
+  "formal_performance_gain_measured": false,
+  "stage_clean0p1_goal_newly_verified": false,
+  "repeatable_dual_gain_proven": false,
+  "diagnostic_complete": true,
+  "technical_missing": [],
+  "scientific_missing": [
+    "current formal per-packet-state causality",
+    "additional model seeds",
+    "new augmentation-training improvement"
+  ],
+  "goal_status": "ACTIVE",
+  "source_record_metadata": {
+    "tool_commit": "9c5badb0cf9c22b923c1b311ae7db00fd8039a1f",
+    "status": "METADATA_INSPECTED",
+    "shape_tuple_candidates": [
+      {
+        "shape": [
+          1000,
+          256,
+          2
+        ],
+        "count": 576
+      }
+    ],
+    "skipped_numeric_payload_bytes": 2359296000,
+    "unpickling_executed": false,
+    "numeric_arrays_constructed": false,
+    "longer_record_context_available_in_supplied_file": false,
+    "adjacent_packet_continuity_proven": false
+  },
+  "full_draw_and_strata_tables": "Local artifact analysis_r01/condition_metrics.csv,control_effects.csv,As_training_effects.csv;not versioned raw experiment outputs",
+  "cohorts": {
+    "fixed_NoAs30_clean_correct_unique": 1772,
+    "own_As30_clean_correct_unique": 1770,
+    "are_not_E20_parents": true
+  }
+}
