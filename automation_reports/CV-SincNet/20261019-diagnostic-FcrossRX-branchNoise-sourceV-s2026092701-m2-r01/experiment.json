@@ -93,7 +93,7 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_branch_noise_sourceV_20261019_r01",
     "launch_command": "CUDA_VISIBLE_DEVICES= CVS-RFFI/python -u experiments/cvs_branch_noise74/runner.py",
     "stop_rule": "Any sourceID/roles/physics/fixed-state/decomposition/logitparity/state-mutation/nonfinite/count/outputcollision failure preserves own outputs and exits; no automaticretry, no other-owner process changes",
-    "status": "PREREGISTERED"
+    "status": "FAILED"
   },
   "expected_artifacts": [
     "resolved_config.json",
