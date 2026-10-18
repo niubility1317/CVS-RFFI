@@ -326,3 +326,6 @@ UPractical 发布前矩阵补正：同runID保留m2初名/alias actual_m3，实�
 
 
 UPractical R01实际preflight技术失败：冻结native不存在假定模块trusted-pseudo hook，已独立核实dispatcher1671149退出／0worker；770NN=NoAs父2＋合成N L768，0updates/realIQ/prop，非科学负例。原root保留。新技术替代 20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02 已登记，仍N/C/S三行完全相同科学矩阵和预算；只接入实际native model._source_unlabeled_feature_hook读取pseudo_loss/entropy并return(None,{})。新commit/release/实际首步smoke待发布；oldfailed770独立计入总成本，不追加科学预算。
+
+
+UPractical R02已实际VERIFIED_RUNNING：训练/分析代码 fa9b272aa400ed3403e8f550c50a6957ec0f8588，fresh2356NN无query真实父/3L+U hook smoke PASS；三worker N1679880 GPU2、C1679964 GPU3、S1680115 GPU4，strictown20/全L6300 U56700hidden V27000/commonteacher-only/defaulthead/6L与PID/CWD/argv/CUDA/nvidia/loggrowth核实。最新N完成cumE22/444updates，C/S cumE21/222updates，S首轮UAs14175、teacher/studentU各56700且extraU NN0；无failure。源analysis1681190 source-only WAIT_SOURCE/truthclosed，all7/scorer自动收尾，owner先源后formal读取，E50未启动／新性能未评分。旧failed770仍单列，原R01产物保留。

@@ -1,6 +1,6 @@
 # U 学生 practical 视图预算重分配：E30 最小匹配实验
 
-状态：PLANNED，R02技术替代尚未发布，无新性能结果。run 20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02。唯一 owner codex/root/practical-UPractical。
+状态：VERIFIED_RUNNING。R02首步2356NN烟测PASS，N/C/S三行均已实际启动，尚无冻结后新性能结果。run 20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02。唯一 owner codex/root/practical-UPractical。
 
 上一轮 nominal 质量分层已完成，源 hard 组 S−I −0.526661 pp，固定方案关闭；另一对话正在运行有界困难风险 M3，本轮不叠加其权重或 bank。历史 Uurban39 是额外 U forward＋qKL；P67 是 epochbank 资格＋Gaussian strong；P68 是第二 L As。本次精确组合未见已实训证据。
 
@@ -48,3 +48,6 @@ L 路径按各自对应原 P43 配方保持6L／768 packets per update：N 的 s
 
 
 技术替代边界：R01首步因冻结runtime不存在模块trusted伪标签hook退出，770NN、0更新／真实IQ／propagation／workers；原输出完整保留，详见原run technical_failure_r01.json。R02仅将日志接入修正为真实native现成model._source_unlabeled_feature_hook，接收实际pseudo_loss／entropy_loss，return(None,{})，不添加loss或autograd节点。物理增强、U资格、比率、父模型、source阈值／预算／seed不变。源面板数据复用不重验证，唯一该接口定向复核，首步新smoke预期2356NN按实际计数；新training+readouts13057048NN与旧failed770NN分开，预计整候选13057818NN。
+
+
+R02实际发布：代码 fa9b272aa400ed3403e8f550c50a6957ec0f8588，单次ordinary preflight/archive comparison/compile VERIFIED；2356NN真实父＋三行实际L/U smoke PASS直接训练。dispatcher1679756，N1679880/GPU2、C1679964/GPU3、S1680115/GPU4，CWD/argv/CUDA/nvidia/log增长独立核实，actualargs三行teacher-only均False、own20父/源6300/56700/27000一致。源analysis1681190仅phase source，WAIT_SOURCE/truthclosed，随后owner先保存源决定再显式phase final；训练row各自all7预测＋separate scorer自动接续。0新性能结论、不宣称阶段或最终目标完成，E50未启动。
