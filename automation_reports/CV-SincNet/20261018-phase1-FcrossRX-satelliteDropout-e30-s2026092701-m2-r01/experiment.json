@@ -924,13 +924,24 @@
     "VERIFIED oncearchive/compile;13remoteToynegatives/RNG/gradient/scopePASS;realCP2NN+2realFsynthetic1536NNPASS;bothnewworkersGPU/CWD/cmdline/log independently observed;trainingnotcomplete;0newformalresults"
   ],
   "registered_at": "2026-10-18T02:29:51+00:00",
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "analysis_execution": {
-    "status": "VERIFIED_WAIT_SOURCE",
-    "code_commit": "579f91dd4946e90b74fdb8bafa52ae88a48c5fb7",
-    "release": "PROJECT/releases/cvs_F_satellite_dropout_analysis_20261018_r01",
-    "output": "PROJECT/runs/20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01/analysis_auto_r01",
+    "status": "VERIFIED_ANALYZED_R03",
+    "code_commit": "95bd405f041e7017776fce83a7c20291424dc20a",
+    "output": "PROJECT/runs/20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01/analysis_auto_r03",
     "NN": 0,
-    "truth_opened": false
+    "formal_truth_read_only_after_all_fixed_predictions": true
+  },
+  "execution_phase": "COMPLETE_SINGLE_SEED_SOURCE_PASS_FORMAL_STAGE_FAIL",
+  "result_summary": {
+    "source_qualified": true,
+    "clean_delta_pp": -0.1261904761904762,
+    "lowurban_delta_pp": 20.466666666666665,
+    "midurban_delta_pp": 26.505357142857143,
+    "urban_mean_delta_pp": 27.117063492063494,
+    "stage_pass": false,
+    "repeatable_clean_positive_proven": false,
+    "model_seed_count": 1,
+    "goal_complete": false
   }
 }

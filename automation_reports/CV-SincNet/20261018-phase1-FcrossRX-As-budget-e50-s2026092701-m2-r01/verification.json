@@ -1,0 +1,45 @@
+{
+  "status": "LOCAL_PREREGISTERED_NOT_LAUNCHED",
+  "code_commit": "115dc1c9e5d7d392e820d6230bbf66aaae08f8bc",
+  "evidence_date": "2026-10-18",
+  "local_implementation_checks": {
+    "status": "PASS",
+    "protocol_negative_cases": 30,
+    "AST_checks": 17,
+    "compile": "PASS",
+    "emitted_remote_AST": 2,
+    "evidence_type": "Observed PASS tool returns reported by implementation agent and confirmed by parent;no invented independent log path"
+  },
+  "local_Torch": {
+    "available": false,
+    "real_checkpoint_smoke": "NOT_EXECUTED",
+    "real_F_synthetic": "NOT_EXECUTED"
+  },
+  "registration": {
+    "tool": "tools/experiment_registry.py validate registry_spec.json --launch-ready",
+    "status": "VALID",
+    "errors": [],
+    "scope": "Field structure only;not scientific validity,model/data validation or remote launch proof"
+  },
+  "expected_remote_first_step": {
+    "real_checkpoint_noquery_NN": 2,
+    "real_F_two_arm_synthetic_NN": 1536,
+    "total_shared_NN": 1538,
+    "updates": 0,
+    "source_IQ": 0,
+    "target_query": false,
+    "status": "NOT_EXECUTED"
+  },
+  "remote_preflight": "NOT_EXECUTED",
+  "remote_transfer": "NOT_EXECUTED",
+  "remote_compile": "NOT_EXECUTED",
+  "actual_training": "NOT_STARTED",
+  "frozen_source": "NOT_STARTED",
+  "formal_predictions": "NOT_STARTED",
+  "independent_truth_last_scoring": "NOT_STARTED",
+  "analysis": "NOT_STARTED",
+  "formal_scores_read_for_E50_selection": false,
+  "target_feedback": false,
+  "automatic_seed_extension": false,
+  "goal_complete": false
+}

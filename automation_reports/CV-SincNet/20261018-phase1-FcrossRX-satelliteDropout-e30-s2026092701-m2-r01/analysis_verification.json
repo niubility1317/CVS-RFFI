@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_WAIT_SOURCE",
+  "status": "VERIFIED_ANALYZED_R03",
   "new_analysis_code_files": 8,
   "score_and_wait_tests": {
     "status": "PASS",
@@ -34,11 +34,11 @@
   "checkpoint_reads": 0,
   "CVS_NN": 0,
   "updates": 0,
-  "real_source_analysis_complete": false,
-  "real_formal_analysis_complete": false,
-  "real_target_truth_read": false,
-  "output": "PROJECT/runs/20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01/analysis_auto_r01",
-  "analysis_code_commit": "579f91dd4946e90b74fdb8bafa52ae88a48c5fb7",
+  "real_source_analysis_complete": true,
+  "real_formal_analysis_complete": true,
+  "real_target_truth_read": true,
+  "output": "PROJECT/runs/20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01/analysis_auto_r03",
+  "analysis_code_commit": "95bd405f041e7017776fce83a7c20291424dc20a",
   "transfer": {
     "status": "TRANSFER_VERIFIED",
     "archive_SHA256": "fd9965dd1c790db48ad3a0067b43813bf08aef56de8c8caabe5a4074b3966557",
@@ -73,60 +73,48 @@
     {
       "row": "AS_CE-s2026092701",
       "pid": 1099342,
-      "phase": "worker",
-      "alive": true,
-      "gpu": 1,
-      "GPU_observed": true,
-      "cwd_matches": true,
-      "argv_matches": true,
-      "GPU_env_matches": true,
-      "log_bytes": 121761,
+      "alive": false,
+      "phase": "COMPLETE",
       "progress": {
-        "epoch": 1,
-        "cumulative_epoch": 21,
-        "steps": 222,
-        "cumulative_steps": 4662,
-        "L_NN": 170496,
-        "L_As": 14208,
+        "epoch": 10,
+        "cumulative_epoch": 30,
+        "steps": 2220,
+        "cumulative_steps": 6660,
+        "L_NN": 1704960,
+        "L_As": 142080,
         "extra_U_NN": 0,
         "U_As": 0,
         "existing_U_only": true,
         "U_truth_read": false,
         "target_access": false
       },
-      "progress_L_NN_scope": "current_segment_only",
-      "source_complete": false,
-      "prediction_complete": false,
-      "scoring_complete": false
+      "source_complete": true,
+      "prediction_complete": true,
+      "scoring_complete": true,
+      "exit_expected_after_completion": true
     },
     {
       "row": "AS_DET-s2026092701",
       "pid": 1099419,
-      "phase": "worker",
-      "alive": true,
-      "gpu": 2,
-      "GPU_observed": true,
-      "cwd_matches": true,
-      "argv_matches": true,
-      "GPU_env_matches": true,
-      "log_bytes": 121826,
+      "alive": false,
+      "phase": "COMPLETE",
       "progress": {
-        "epoch": 1,
-        "cumulative_epoch": 21,
-        "steps": 222,
-        "cumulative_steps": 4662,
-        "L_NN": 170496,
-        "L_As": 14208,
+        "epoch": 10,
+        "cumulative_epoch": 30,
+        "steps": 2220,
+        "cumulative_steps": 6660,
+        "L_NN": 1704960,
+        "L_As": 142080,
         "extra_U_NN": 0,
         "U_As": 0,
         "existing_U_only": true,
         "U_truth_read": false,
         "target_access": false
       },
-      "progress_L_NN_scope": "current_segment_only",
-      "source_complete": false,
-      "prediction_complete": false,
-      "scoring_complete": false
+      "source_complete": true,
+      "prediction_complete": true,
+      "scoring_complete": true,
+      "exit_expected_after_completion": true
     }
   ],
   "observed_UTC": "2026-10-18T03:07:27.075Z",
@@ -149,6 +137,162 @@
     "IQ": 0,
     "CP": 0,
     "NN": 0,
-    "target_truth_reads": 0
-  }
+    "target_truth_reads": 0,
+    "analysis_output": "analysis_auto_r03"
+  },
+  "failed_attempt": {
+    "output": "PROJECT/runs/20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01/analysis_auto_r01",
+    "pid": 1108786,
+    "alive": false,
+    "failure_type": "ValueError",
+    "error": "Native CSV/JSONL field/count mismatch",
+    "truth_opened": false,
+    "NN": 0,
+    "preserved": true
+  },
+  "recovery": {
+    "root_causes": [
+      "Native CSV union schema with legitimate absent JSON keys and empty cells",
+      "Distinct exact native initialization and EMA origin descriptions",
+      "Validated registered run identity differs between reused P43 controls and new rows"
+    ],
+    "targeted_regressions": {
+      "status": "PASS",
+      "cases": 6,
+      "seconds": 7.254
+    },
+    "real_source_log_recount": {
+      "status": "VERIFIED",
+      "rows": 4,
+      "segments": 8,
+      "updates": 26640,
+      "model_epochs": 120,
+      "seconds": 44.3,
+      "each_native_NN": 7960684,
+      "new_rows_native_NN": 15921368,
+      "reused_rows_native_NN": 15921368,
+      "physical_L_U_sequence_mismatches": 0,
+      "ordinary_MSE_mismatches": 0,
+      "As_scene_state_mismatches": 0,
+      "IQ": 0,
+      "CP": 0,
+      "NN": 0,
+      "updates_generated": 0,
+      "target_scores_read": false,
+      "raw_truth_read": false
+    },
+    "new_output": "PROJECT/runs/20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01/analysis_auto_r03",
+    "new_release": "PROJECT/releases/cvs_F_satellite_dropout_analysis_20261018_r03",
+    "failed_r01_untouched": true,
+    "real_relaunch": true,
+    "entry_output_checks": {
+      "status": "PASS",
+      "cases": 5,
+      "publisher_to_pipeline_integration": true,
+      "existing_output_preserved": true
+    }
+  },
+  "failed_attempt_r02": {
+    "pid": 1135066,
+    "alive": false,
+    "output_created": false,
+    "stdout_bytes": 0,
+    "error": "Only own immutable analysis root: legacy r01-only entry guard",
+    "NN": 0,
+    "truth_opened": false,
+    "preserved": true
+  },
+  "final_completion": {
+    "status": "ANALYZED",
+    "training_run": "20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01",
+    "analysis_code_commit": "95bd405f041e7017776fce83a7c20291424dc20a",
+    "source_complete": true,
+    "formal_complete": true,
+    "log_records_complete": true,
+    "model_seed_count": 1,
+    "new_model_rows": 2,
+    "reused_model_rows": 2,
+    "NN": 0,
+    "IQ": 0,
+    "CP": 0,
+    "updates": 0,
+    "training_processes_untouched": true,
+    "pipeline_wall_including_wait_seconds": 60.70372616802342,
+    "repeatable_clean_positive_proven": false,
+    "goal_complete": false
+  },
+  "collection": {
+    "status": "VERIFIED",
+    "public_files": 29,
+    "manifest": true,
+    "archive_SHA256": "66d09f80a80adb27399e217acb954e2592f9c9a6663277116f5338ae368e8f97",
+    "IQ": 0,
+    "CP": 0,
+    "model_NN": 0,
+    "raw_truth_reads": 0
+  },
+  "actual_figures_viewed": [
+    "satellite_dropout_formal_views.png",
+    "satellite_dropout_formal_paired_deltas.png"
+  ],
+  "source_decision": {
+    "conditions": {
+      "stage_clean": true,
+      "retained_As_gain": true,
+      "useful_vs_original": true,
+      "dropout_attribution": true
+    },
+    "passed": true,
+    "paired": {
+      "DET_minus_NOAS_clean_pp": -0.007407407407400424,
+      "DET_minus_RD_clean_pp": 0.09629629629630543,
+      "DET_minus_CE_clean_pp": 0.022222222222223476,
+      "DET_minus_RD_midlow_pp": 1.0138888888888573,
+      "DET_minus_CE_midlow_pp": 0.7638888888888715
+    }
+  },
+  "formal_stage": {
+    "AS_RD": {
+      "clean_delta_pp": 0.09345238095238095,
+      "clean_absolute_0p1pp_guard_met": true,
+      "clean_net_repairs": 157,
+      "clean_positive_observed": true,
+      "positive_below_0p1pp_is_micro_observation": true,
+      "midurban_gain_pp": 27.673809523809524,
+      "lowurban_gain_pp": 21.104166666666668,
+      "urban_mean_gain_pp": 28.36845238095238,
+      "repeatable_clean_gain_proven": false
+    },
+    "AS_CE": {
+      "clean_delta_pp": -0.03333333333333333,
+      "clean_absolute_0p1pp_guard_met": true,
+      "clean_net_repairs": -56,
+      "clean_positive_observed": false,
+      "positive_below_0p1pp_is_micro_observation": false,
+      "midurban_gain_pp": 27.52202380952381,
+      "lowurban_gain_pp": 21.03035714285714,
+      "urban_mean_gain_pp": 28.188492063492063,
+      "repeatable_clean_gain_proven": false
+    },
+    "AS_DET": {
+      "clean_delta_pp": -0.1261904761904762,
+      "clean_absolute_0p1pp_guard_met": false,
+      "clean_net_repairs": -212,
+      "clean_positive_observed": false,
+      "positive_below_0p1pp_is_micro_observation": false,
+      "midurban_gain_pp": 26.505357142857143,
+      "lowurban_gain_pp": 20.466666666666665,
+      "urban_mean_gain_pp": 27.117063492063494,
+      "repeatable_clean_gain_proven": false
+    }
+  },
+  "independent_recount": {
+    "formal_CM": 504,
+    "partition_reconciliations": 84,
+    "source_CM": 952,
+    "CSV_rows_formal": 504,
+    "source": 952
+  },
+  "target_feedback": false,
+  "goal_complete": false
 }

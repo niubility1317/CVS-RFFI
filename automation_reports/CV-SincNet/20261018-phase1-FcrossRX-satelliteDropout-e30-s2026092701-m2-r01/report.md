@@ -1,6 +1,6 @@
 # 星地优先 E30：satellite 随机子网络扰动
 
-状态：VERIFIED_RUNNING／训练中；独立分析 VERIFIED_WAIT_SOURCE。Run 20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01；不宣称已有新成绩。
+状态：ANALYZED；四行单种子完整匹配，source判据PASS，AS_DET正式clean阶段约束FAIL，未验证新增机制收益。Run 20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01；不宣称已有新成绩。
 
 用户最新目标覆盖旧 Ag＋As 必须联合及独立跨 RX 泛化门槛。优先提高固定 practical，重点 mid/low urban，报告全部六种。阶段 clean 相对同预算同seed无As对照不低于 −0.1 个绝对百分点；最终要求通过As训练获得可重复clean正收益。阶段保持不等于最终完成。模型、默认头、NoExplicitCFO及内部补偿、全L6300/U56700隐藏/V27000、全部RX1/3/4/6/8与day1/2/3、split392005、IQ256、正式receivedIQ和信道固定。每模型E30，无新增结构或预算。
 
@@ -49,3 +49,9 @@ source全部冻结后，独立CPU程序只读完整两段原生日志/metadata/�
 独立分析实际发布：代码 commit `579f91dd4946e90b74fdb8bafa52ae88a48c5fb7`；单 archive 本地/远端 SHA 一致，remote compile/import 与 13 个聚焦测试 PASS，0 IQ/CP/NN/更新。分析 PID 1108786 的 CWD/argv/CUDA 隐藏已由独立进程观察核实，状态 WAIT_SOURCE，仅等候本 run 三个真实训练句柄，不操作训练。最新两行均 E13/30、2886 累计更新，GPU 实际在用，source 和正式尚未完成；真实统计与图仍未生成。分析启动/等待成功不等于实验结果成功。
 
 E20→30 实际衔接：两新行均已完成 E21/30、累计 4662 更新，沿各自本轮 scratch20 parent 进入 source10；原 U 规则保持，U TX truth/U As/target access 均为 0，worker PID/CWD/argv/GPU 和日志增长继续核实。progress 的 L_NN/L_As 是当前 segment 计数，完整累计成本由最终两段日志独立核对。只读分析仍 WAIT_SOURCE、truth unopened、NN0。公开汇总 collector 已提交为 `50e9860874185583c9d3ac069706ecf1a10ddcc1` 并核实 remote；10 项合成/mock 检查 PASS，真实回收尚未执行。不得将这些运行/交付检查当作 clean 或 practical 收益证据。
+
+只读分析技术恢复预登记：两新行均 FINAL30/6660 更新，所有 source/prediction/scoring completion 已存在，原 worker 正常退出，无训练失败。analysis_auto_r01 因原生 CSV 动态字段并集解析失败停止，NN0、truth 未打开，失败原件保留。已依据真实 producer 修复三项元数据格式对应，6 个定向回归与真实四行八段共 26640 步/120 model-epochs 完整源日志重算 VERIFIED，L/U/ordinary/As scene-state 配对全一致，每行 native7960684NN，新/复用各15921368NN单列；不修改任何训练/模型/原日志/预测/评分。代码 commit `115dc1c9e5d7d392e820d6230bbf66aaae08f8bc`。新不可覆盖 release cvs_F_satellite_dropout_analysis_20261018_r02、output analysis_auto_r02，命令沿前述 CPU pipeline，仅换新 output/code commit；仍 source 分析先于 formal truth，0 新模型NN，无需重训重测。r02 尚未启动，性能结论仍待完整独立汇总。
+
+r02 启动即因旧入口只接受 r01 目录而退出，PID1135066 已终止，stdout0、output 未创建，未读取结果。该可避免遗漏已修正并加入5项实际publisher-config→pipeline入口集成/不可覆盖回归，AST及mock发布PASS；等待/source-first/truth规则不变。新code `95bd405f041e7017776fce83a7c20291424dc20a`，唯一恢复目录 release cvs_F_satellite_dropout_analysis_20261018_r03、output analysis_auto_r03、launch其-launch，仍CPU2/零CVS前向。旧r01/r02均保留，现报告后续以r03为准。
+
+完整结论见 [final_analysis.md](final_analysis.md)：r03独立完整重算/原scorer一致、29公开汇总文件回收及两实际图检查VERIFIED。AS_DET相对NoAs clean−.126190pp、mid+26.505357pp、low+20.466667pp；相对原As clean−.219643pp、mid−1.168452pp、low−.637500pp；本seed没有新增机制收益。source四条件PASS不替代正式识别收益。只有一个模型种子，阶段clean不达标、无可重复clean正收益，目标未完成。原模型/预测/评分与所有失败分析尝试均保留，分析不增加模型NN。
