@@ -81,4 +81,25 @@ class Checks(unittest.TestCase):
   with patch.object(coverage,'read',return_value=dict(status='SOURCE_ANALYZED',formal_scores_read=False,model_seed_count=3)),patch.object(a,'source_complete',side_effect=guard),patch.object(coverage.importlib.util,'spec_from_file_location') as load:
    with self.assertRaises(ValueError):coverage.run(Path('/unused-output'),Path('/synthetic-source'))
    load.assert_not_called()
+ def test_waiter_completed_metadata_does_not_require_live_handles(self):
+  import cvs_As_seed_replication49_pipeline_20261018 as pipeline
+  with tempfile.TemporaryDirectory() as td,patch.object(pipeline,'write') as writer:
+   pipeline.wait_until('SOURCE',[],Path(td),ready=lambda p:True,probe=lambda:(_ for _ in ()).throw(AssertionError('must not probe terminal completed run')))
+   writer.assert_not_called()
+ def test_waiter_never_treats_live_or_unknown_as_terminal(self):
+  import cvs_As_seed_replication49_pipeline_20261018 as pipeline
+  class EndWait(Exception):pass
+  for handles in [([123],False),([],True)]:
+   with tempfile.TemporaryDirectory() as td:
+    with self.assertRaises(EndWait):pipeline.wait_until('SOURCE',[],Path(td),ready=lambda p:False,probe=lambda:handles,failure=lambda:None,sleep=lambda _:(_ for _ in ()).throw(EndWait()))
+    state=pipeline.read(Path(td)/'state.json');self.assertFalse(state['target_scores_read']);self.assertEqual(state['status'],'WAIT_SOURCE')
+ def test_waiter_reports_verified_missing_owned_handles(self):
+  import cvs_As_seed_replication49_pipeline_20261018 as pipeline
+  with tempfile.TemporaryDirectory() as td:
+   with self.assertRaises(pipeline.IncompleteRun):pipeline.wait_until('SOURCE',[],Path(td),ready=lambda p:False,probe=lambda:([],False),failure=lambda:None,sleep=lambda _:None)
+ def test_source_and_coverage_commands_never_receive_truth(self):
+  import cvs_As_seed_replication49_pipeline_20261018 as pipeline
+  for stage in ('source','coverage'):
+   args=pipeline.command(stage,Path('/synthetic-out'),Path('/closed-truth'));self.assertNotIn('--truth',args);self.assertNotIn('/closed-truth',args)
+  self.assertIn('--truth',pipeline.command('final',Path('/synthetic-out'),Path('/closed-truth')))
 if __name__=='__main__':unittest.main()

@@ -1,12 +1,14 @@
 {
-  "status": "LOCAL_VERIFIED_NOT_EXECUTED_ON_REAL_RUN",
+  "status": "LOCAL_VERIFIED_READY_TO_RELEASE",
   "run_id": "20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r02",
   "files": [
     "analysis/cvs_As_seed_replication49_results_20261018.py",
     "analysis/cvs_As_seed_replication49_coverage_20261018.py",
+    "analysis/cvs_As_seed_replication49_pipeline_20261018.py",
+    "analysis/cvs_As_seed_replication49_publish_analysis_20261018.py",
     "analysis/check_As_seed_replication49_analysis.py"
   ],
-  "focused_tests": 12,
+  "focused_tests": 16,
   "tests_read_real_IQ": false,
   "tests_read_real_checkpoints": false,
   "tests_read_target_truth": false,
@@ -14,5 +16,20 @@
   "source_stage": "Full6rows/180epochs/sourcepanel/state-quality/cohort then source-only decision before new formal score read",
   "formal_stage": "All6rows frozen all7predictions/scoring complete then independent confusion/F1/worstRX/pairedseed/cohort and cost recount",
   "coverage": "Source L metadata only;no U label decoding or waveform generation",
-  "new_training_release_unchanged": true
+  "new_training_release_unchanged": true,
+  "publisher_check": "PASS: mocked transport;both remote scripts AST;exact seven-source flat archive",
+  "analysis_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_As_replication_analysis_20261018_r01",
+  "expected_analysis_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r02/analysis_auto_r01",
+  "owner": "independent one-shot CPU analysis;training untouched",
+  "launch_command": "CVS-RFFI/bin/python -u cvs_As_seed_replication49_pipeline_20261018.py --output <owned analysis_auto_r01> --truth <original truth.json> --code-commit <actual analysis commit>",
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "",
+    "OMP_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": "2",
+    "OPENBLAS_NUM_THREADS": "2"
+  },
+  "stop_rule": "Only verified owned training technical failure/missing completed metadata after all owned handles absent, analysis inconsistency or output collision;UNKNOWN observations wait;no training stop or retry",
+  "new_training_updates": 0,
+  "new_model_NN": 0,
+  "real_analysis_executed": false
 }

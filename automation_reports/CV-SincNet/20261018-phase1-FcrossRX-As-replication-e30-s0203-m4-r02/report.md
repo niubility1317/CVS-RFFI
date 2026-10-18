@@ -46,4 +46,13 @@ runner先加载原已发布P43运行环境，然后以新包名复用原source/e
 
 ## 独立分析准备
 
-新增独立分析器 `analysis/cvs_As_seed_replication49_results_20261018.py`、源训练覆盖复算 `analysis/cvs_As_seed_replication49_coverage_20261018.py`，12项聚焦测试通过。当前仅LOCAL_VERIFIED，未对真实当前run执行，没有新指标或图。source模式必须全部六个源模型完成，只读训练完整日志/源V派生预测与状态，拒绝truth参数；final模式先核对全部六行的七视图冻结/评分完成及已保存的source-only决定，再独立连接truth。种子标签以已核实row替换旧reader历史展示常量；三seed配对mean/样本SD、每seed固定B00 clean正确集合、宏F1/最差RX/urban均值、clean/suburban差距及新4模型/复用2模型成本分开报告。覆盖复算只解码L，逐batch比对原状态汇总，不读取IQ、不解封U、不生成新信道波形。命令见脚本帮助，真实执行时填独占analysis输出；未执行不编造产物路径。原训练release/配置保持不变，不热补丁。
+新增独立分析器 `analysis/cvs_As_seed_replication49_results_20261018.py`、源训练覆盖复算 `analysis/cvs_As_seed_replication49_coverage_20261018.py`，16项聚焦测试通过。当前仅LOCAL_VERIFIED，未对真实当前run执行，没有新指标或图。source模式必须全部六个源模型完成，只读训练完整日志/源V派生预测与状态，拒绝truth参数；final模式先核对全部六行的七视图冻结/评分完成及已保存的source-only决定，再独立连接truth。种子标签以已核实row替换旧reader历史展示常量；三seed配对mean/样本SD、每seed固定B00 clean正确集合、宏F1/最差RX/urban均值、clean/suburban差距及新4模型/复用2模型成本分开报告。覆盖复算只解码L，逐batch比对原状态汇总，不读取IQ、不解封U、不生成新信道波形。命令见脚本帮助，真实执行时填独占analysis输出；未执行不编造产物路径。原训练release/配置保持不变，不热补丁。
+
+
+## 自动独立分析预登记
+
+新增单独的CPU等待程序和发布器，不改原训练release。analysis release为 /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_As_replication_analysis_20261018_r01，独占预期输出为 /home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r02/analysis_auto_r01，当前尚未发布或产生真实分析结果。16项本地合成测试覆盖完成元数据优先、观测UNKNOWN继续等候、已核实全部所属进程消失且缺产物时失败、source/coverage命令不带truth参数；发布器两段远程脚本AST和七源码平铺archive的模拟传输检查通过。
+
+唯一分析owner命令为 `CVS-RFFI/bin/python -u cvs_As_seed_replication49_pipeline_20261018.py --output <analysis_auto_r01> --truth <原truth.json> --code-commit <实际分析commit>`；CWD为上述analysis release，CUDA隐藏、OMP/MKL/OpenBLAS各2线程。不读取IQ或checkpoint，不新增模型前向或更新。先等待六个源模型及source-only决定，完成独立source复算；源覆盖单独CPU子进程工作。全部六行的7视图prediction/scoring/completion齐备后才执行final truth-last复算。
+
+每15秒只读所属元数据和精确所属PID/CWD/argv，每60秒写等待摘要。完成产物优先于已经退出的训练进程；UNKNOWN不触发重训。只有所属技术失败、全部所属句柄已核实消失且必要产物缺失、分析不一致或输出碰撞时保留分析失败；不停止、重启或修改训练。源状态覆盖失败只列机制缺项，不阻断正式复算。单独完成普通账户preflight、一个archive的一次SHA对比及remotecompile/import，启动后核对分析PID/CWD/argv/CPU/log/state；分析commit与模型训练commit分别记录。
