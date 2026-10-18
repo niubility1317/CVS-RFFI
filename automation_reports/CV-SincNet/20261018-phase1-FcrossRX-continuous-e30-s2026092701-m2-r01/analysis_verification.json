@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_VERIFIED",
+  "status": "VERIFIED_WAIT_SOURCE",
   "new_analysis_files": 5,
   "unit_tests": 10,
   "unit_seconds": 0.616,
@@ -14,6 +14,25 @@
   "checkpoint_reads": 0,
   "NN": 0,
   "real_target_access": false,
-  "real_analysis_not_started": true,
-  "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-continuous-e30-s2026092701-m2-r01/analysis_auto_r01"
+  "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-continuous-e30-s2026092701-m2-r01/analysis_auto_r01",
+  "analysis_code_commit": "866eb2f3f256c3ef9c888cad9a1b0dd93361d7e7",
+  "training_code_commit": "04ac1098c8c23ec7dab655a1a1317e7363ad580c",
+  "remote_compile": "PASS",
+  "remote_imports": "PASS",
+  "remote_unit_tests": "PASS_10",
+  "remote_unit_seconds": 0.611,
+  "analysis_process_started": true,
+  "real_source_analysis_complete": false,
+  "real_formal_analysis_complete": false,
+  "real_coverage_complete": false,
+  "current_NN": 0,
+  "current_target_scores_read": false,
+  "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_continuous_E30_20261018/analysis_pipeline_publish_r01/postlaunch_verification.json",
+  "training_snapshot": {
+    "B00_epoch": 14,
+    "B01_epoch": 10,
+    "workers_live": true,
+    "known_technical_failure": false,
+    "U_TX_truth_available": 0
+  }
 }
