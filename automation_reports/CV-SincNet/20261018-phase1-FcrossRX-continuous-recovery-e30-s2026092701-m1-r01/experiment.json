@@ -205,5 +205,23 @@
     "14stdlib checks and actual E30hook validation1536syntheticNN/0updates/0realIQ/0CP;launcher realCP2+twoF1536 first then immediate authorized training",
     "Prior single candidate P0/P1 and targeted guard/NoAs fix re-review retained;no duplicate runner/full review",
     "No E50 extension based on formal scores;conditional budget permission is not a claim source eligibility has passed"
-  ]
+  ],
+  "completion_status": "ANALYZED",
+  "result_summary": {
+    "model_seed": 2026092701,
+    "new_models": 1,
+    "reused_reference_models": 3,
+    "clean_delta_pp": -0.11785714285714732,
+    "low_urban_delta_pp": 20.955357142857146,
+    "mid_urban_delta_pp": 27.244642857142864,
+    "urban3_mean_delta_pp": 27.86964285714286,
+    "clean_tolerance_pp": 0.1,
+    "clean_tolerance_pass": false,
+    "source_qualified": false,
+    "crossseed_confirmed": false,
+    "goal_complete": false
+  },
+  "analysis_result_ref": "final_analysis.md",
+  "analysis_code_commit": "d51c6068e4d94a83a26914a92fc107bc3f4850fc",
+  "report_collector_commit": "9a3675742cdd5057bf0adf842f508d08143e95fb"
 }

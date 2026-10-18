@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_WAIT_SOURCE",
+  "status": "VERIFIED_ANALYZED",
   "code_commit": "d51c6068e4d94a83a26914a92fc107bc3f4850fc",
   "pid": 1139252,
   "expected_cwd": true,
@@ -7,7 +7,45 @@
   "expected_start_ticks": true,
   "GPU_disabled": true,
   "read_at": 1792294865.6350532,
-  "state": {
+  "failure": null,
+  "complete": null,
+  "remote_compile": "PASS",
+  "archive_transport": "VERIFIED_ONE_COMPARISON",
+  "remote_tests": 11,
+  "new_NN": 0,
+  "new_IQ_reads": 0,
+  "new_checkpoint_reads": 0,
+  "training_updates": 0,
+  "target_scores_read": true,
+  "pipeline": {
+    "status": "ANALYZED",
+    "coverage_exit_code": 0,
+    "source_and_final_complete": true,
+    "model_seed_count": 1,
+    "NN": 0,
+    "IQ_reads": 0,
+    "checkpoint_reads": 0,
+    "training_updates": 0,
+    "analysis_code_commit": "d51c6068e4d94a83a26914a92fc107bc3f4850fc",
+    "pipeline_wall_including_wait_seconds": 2271.1304263889324,
+    "goal_complete": false
+  },
+  "final_confusions": 504,
+  "source_confusions": 952,
+  "source_qualified": false,
+  "stage_clean_0_1pp_pass": false,
+  "head": "checkpoint default cosine30;no fitted diagnostic head",
+  "plot_inspection": [
+    "formal_accuracy.png",
+    "full_training_curves.png",
+    "source_lowurban_states.png"
+  ],
+  "collector_commit": "9a3675742cdd5057bf0adf842f508d08143e95fb",
+  "collector_execution": "PASS_REAL_COMPLETED_ARTIFACTS",
+  "retrieved": "E:/type10-7/local_artifacts/cvs_FcrossRX_continuous_recovery_E30_20261018_r01/analysis_publish_r01/retrieved",
+  "complete_before_truth_final": true,
+  "analysis_PID_absent_after_complete": true,
+  "launch_source_wait_snapshot": {
     "status": "WAIT_SOURCE",
     "live_owned_PIDs": [
       1130384,
@@ -19,14 +57,45 @@
     "NN": 0,
     "target_scores_read": false
   },
-  "failure": null,
-  "complete": null,
-  "remote_compile": "PASS",
-  "archive_transport": "VERIFIED_ONE_COMPARISON",
-  "remote_tests": 11,
-  "new_NN": 0,
-  "new_IQ_reads": 0,
-  "new_checkpoint_reads": 0,
-  "training_updates": 0,
-  "target_scores_read": false
+  "source_stage_target_scores_read": false,
+  "all_prediction_rows_complete_before_truth": true,
+  "report_collector_actual_completed_inputs": "PASS",
+  "execution_terminal": {
+    "read_at": 1792297272.6364677,
+    "registered_root_complete": {
+      "status": "MATRIX_SCORED",
+      "rows": [
+        "B00-s2026092701",
+        "B01-s2026092701"
+      ],
+      "newly_completed_rows": [
+        "B01-s2026092701"
+      ],
+      "reused_control_rows": [
+        "B00-s2026092701"
+      ],
+      "model_seed_count": 1,
+      "historical_same_seed_split_reference": true,
+      "seven_views_per_row": true,
+      "new_model_epochs": 30,
+      "new_updates": 6660,
+      "reused_model_epochs": 30,
+      "reused_updates": 6660,
+      "failed_original_As_epochs": 20,
+      "failed_original_As_updates": 4440,
+      "crossseed_confirmed": false,
+      "goal_complete": false
+    },
+    "new_row_complete": {
+      "status": "TRAINED_AND_SCORED",
+      "row_id": "B01-s2026092701"
+    },
+    "owned_handles": {
+      "1130384": false,
+      "1130449": false,
+      "1139252": false
+    },
+    "root_failure": false,
+    "source_selection_frozen": "SOURCE_CRITERIA_FAIL_FIXED_CONTINUOUS_ROUTE_CLOSED"
+  }
 }
