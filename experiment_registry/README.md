@@ -389,3 +389,5 @@
 本轮记录：[困难样本与 RX 分组加权](by_method/hardness_frozenF.md)。
 
 本轮记录：[一致伪身份与跨 RX 特征](by_method/consensus_identity.md)。
+
+本轮记录：[冻结原F特征反馈纠错结构](by_method/semantic_feedback_frozenF.md)。
