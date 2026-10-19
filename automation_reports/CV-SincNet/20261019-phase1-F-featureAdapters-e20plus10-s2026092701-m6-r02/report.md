@@ -1,6 +1,6 @@
 # 纯 F：浅中层 LoRA 与时序残差特征适配
 
-状态：RUNNING / VERIFIED，r02真实父CP smoke通过，共享观察生成/后续六行训练执行中；未完成正式评分。原双信道 E20 两行继续独立执行，不热改、不重启、不覆盖。
+状态：ANALYZED / VERIFIED，六行训练、全七景预测、独立truth-last评分及完整回放已完成；总体性能目标未完成。下文保留事前方案与运行记录。
 
 ## 当前授权与固定范围
 
@@ -39,17 +39,17 @@ LORA 在 t1/t2 pointwise 层加入 r=8、alpha=8 的线性 BA 增量，B零、A�
 | A07 | 九 | FULL共同头规则，原W固定且不另训头 | model.py/optimizer.py | verified | 参数集合/逐项W不变 | 用户新附件的明确例外 |
 | A08 | 八 | clean/As/keep三项，parent错时真值优先 | loss.py/train.py | verified | 解析公式/父detach/As全正CE | 用户选择L-only已确认 |
 | A09 | 八 | 同clean输入，有限保持强度、无全特征强制相等 | loss.py/train.py | verified | 初始KL0/非零纠错梯度 | tau1、lambda1固定 |
-| A10 | 七、九 | 同一父、三空间×NoAs/As、同E20+10预算 | design.py/experiment.json | implemented | 六行显式配置/2220步 | NoAs第二槽raw，两CE总尺度匹配 |
-| A11 | 九 | 完全相同训练观察与源诊断，L/U/V不越权 | data.py/bank.py | implemented | 全ID序列与流消费/既有角色 | 不按模型重抽信道 |
-| A12 | 九 | 区分训练实际As、同L新信道、V新观测 | diagnose.py | implemented | 保存首次训练IQ/完整读出 | L1800，非69样本全L结论 |
+| A10 | 七、九 | 同一父、三空间×NoAs/As、同E20+10预算 | design.py/experiment.json | verified | 六行显式配置/2220步 | NoAs第二槽raw，两CE总尺度匹配 |
+| A11 | 九 | 完全相同训练观察与源诊断，L/U/V不越权 | data.py/bank.py | verified | 全ID序列与流消费/既有角色 | 不按模型重抽信道 |
+| A12 | 九 | 区分训练实际As、同L新信道、V新观测 | diagnose.py | verified | 保存首次训练IQ/完整读出 | L1800，非69样本全L结论 |
 | A13 | 九 | 新模块进入实际joint160和默认头预测 | model.py/checks.py/evaluate.py | verified | 零出→启用→抹除的实际输出变化 | teacher无部署依赖 |
-| A14 | 九 | source决定后才读正式数值，不以目标调参 | report.py/dispatch.py | implemented | predeclared source decision/scorer order | 已暴露benchmark如实标注 |
-| A15 | 九 | 七环境、F1、最差RX、修复/新增错、成本 | evaluate.py/analysis/final_report | implemented | 全预测/独立CM与配对重计 | n1标准差N/A |
-| A16 | 九 | E20父成本+新增E10，源支持才可总E50 | design.py/report | implemented | 实际epoch/update/optimizer/flow记录 | 原父optimizer/EMA不恢复 |
+| A14 | 九 | source决定后才读正式数值，不以目标调参 | report.py/dispatch.py | verified | predeclared source decision/scorer order | 已暴露benchmark如实标注 |
+| A15 | 九 | 七环境、F1、最差RX、修复/新增错、成本 | evaluate.py/analysis/final_report | verified | 全预测/独立CM与配对重计 | n1标准差N/A |
+| A16 | 九 | E20父成本+新增E10，源支持才可总E50 | design.py/report | verified | 实际epoch/update/optimizer/flow记录 | 原父optimizer/EMA不恢复 |
 | A17 | 五、七 | 先比较LoRA/TEMP/FULL再考虑raw旁路 | 无本轮raw模块 | deferred | 本轮实际拟合/泛化结果后判断 | 附件明确条件式第二阶段 |
 | A18 | 七 | 放开原W的独立消融 | 无本轮unfreeze行 | deferred | 首轮统一固定W后再判断 | 不是漏做当前矩阵 |
-| A19 | 执行 | 单commit/聚焦负测/真实CP smoke/一次独审/唯一owner | checks.py/publish.py/dispatch.py | implemented | 最小八项流程实际证据 | 不加SHA/审批链 |
-| A20 | 本次用户回复 | 新增阶段仅L三项，U隐藏且不使用 | design.py/data.py/train.py | implemented | 实际batch角色/无U分支 | 原健康任务U不修改 |
+| A19 | 执行 | 单commit/聚焦负测/真实CP smoke/一次独审/唯一owner | checks.py/publish.py/dispatch.py | verified | 最小八项流程实际证据 | 不加SHA/审批链 |
+| A20 | 本次用户回复 | 新增阶段仅L三项，U隐藏且不使用 | design.py/data.py/train.py | verified | 实际batch角色/无U分支 | 原健康任务U不修改 |
 
 研究依据仅为 [LoRA](https://arxiv.org/abs/2106.09685)、[残差适配器](https://arxiv.org/abs/1705.08045)、[Learning without Forgetting](https://arxiv.org/abs/1606.09282) 的机制原则，已读取主源，不借用图像/LLM结果保证RFFI收益。当前数学结构计划严格对应附件提出的适配公式，新增预算、共同eval/autograd、L-only及NoAs槽位均在本报告显式固定。
 
@@ -71,3 +71,5 @@ LORA 在 t1/t2 pointwise 层加入 r=8、alpha=8 的线性 BA 增量，B零、A�
 启动证据见launch_evidence.json：单归档传输、远端compile、普通账号调度器PID/CWD/argv及日志增长VERIFIED；真实B0父8NN无query smoke PASS。共享观察逐步生成，没有据此声称六行已训练完成。
 
 源端完整回放与固定决定已保存，见source_closure.md。正式预测按固定流程继续。
+
+完整六行结果见final_report.md、results_summary.json与validation.json；目标未据n1自动标完成。
