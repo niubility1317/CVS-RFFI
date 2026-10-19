@@ -10,3 +10,4 @@
 |十三模型八种子：端到端推理时延、内存显存与FP32模型存储实测|managed_run|[打开](../../automation_reports/CV-SincNet/20261012-phase1-standard-ce-deployment-m104-r02/report.md)|
 |十三种网络纯CE E200追加四种子：CVS为残差融合版本|managed_run|[打开](../../automation_reports/CV-SincNet/20261012-phase1-standard-ce-seed-extension-manysig-m52-r01/report.md)|
 |PAMF八种子原源域验证集发射机召回率诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-pamf-source-class-manysig-m8-r01/report.md)|
+|PAMF八种子原源域验证集发射机召回率诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-pamf-source-class-manysig-m8-r02/report.md)|

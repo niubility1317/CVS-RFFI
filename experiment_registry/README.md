@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-19T07:14:51+00:00
+更新：2026-10-19T07:16:59+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|126|
+|managed_run|127|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -66,11 +66,11 @@
 |[zf](by_method/zf.md)|5|
 |[mmse](by_method/mmse.md)|5|
 |[relative_cfo](by_method/relative_cfo.md)|5|
+|[eight_seeds](by_method/eight_seeds.md)|5|
 |[final200](by_method/final200.md)|4|
 |[mirror_relation](by_method/mirror_relation.md)|4|
 |[fixed_comparison](by_method/fixed_comparison.md)|4|
 |[auto_after_parent](by_method/auto_after_parent.md)|4|
-|[eight_seeds](by_method/eight_seeds.md)|4|
 |[receiver_agnostic](by_method/receiver_agnostic.md)|4|
 |[shot](by_method/shot.md)|4|
 |[four_seeds](by_method/four_seeds.md)|3|
@@ -119,6 +119,9 @@
 |[synthetic_no_query](by_method/synthetic_no_query.md)|2|
 |[FP32](by_method/FP32.md)|2|
 |[RTX3090](by_method/RTX3090.md)|2|
+|[PAMF](by_method/PAMF.md)|2|
+|[source_V](by_method/source_V.md)|2|
+|[default_head](by_method/default_head.md)|2|
 |[three_seed](by_method/three_seed.md)|2|
 |[nm fdu](by_method/nm_fdu.md)|2|
 |[protonet](by_method/protonet.md)|2|
@@ -204,9 +207,6 @@
 |[batch_size](by_method/batch_size.md)|1|
 |[fixed_completed14](by_method/fixed_completed14.md)|1|
 |[partial_multiseed](by_method/partial_multiseed.md)|1|
-|[PAMF](by_method/PAMF.md)|1|
-|[source_V](by_method/source_V.md)|1|
-|[default_head](by_method/default_head.md)|1|
 |[ecrs](by_method/ecrs.md)|1|
 |[fedcvs](by_method/fedcvs.md)|1|
 

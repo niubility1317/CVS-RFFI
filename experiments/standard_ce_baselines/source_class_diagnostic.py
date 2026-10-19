@@ -71,7 +71,7 @@ def main():
                 or payload['classes'] != CLASSES or payload['source_contract'] != contract
                 or payload['selection'] != 'fixed_last_epoch' or payload['initialization'] != init):
             raise ValueError('Checkpoint metadata/provenance mismatch')
-        model = build('residual_fusion', seed).to(device)
+        model = build('residual_fusion').to(device)
         model.load_state_dict(payload['model'], strict=True)
         model.eval()
         before = {k: v.clone() for k, v in model.state_dict().items()}

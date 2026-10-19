@@ -1,0 +1,416 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-pamf-source-class-manysig-m8-r02",
+  "group_id": "phase1-pamf-frozen-source-class",
+  "display_name": "PAMF八种子原源域验证集发射机召回率诊断",
+  "description": "Frozen historical residual_fusion E200 checkpoints, original default head and original source V; CPU-only no adaptation/training/target access.",
+  "kind": "diagnostic",
+  "stage": "Phase1 source diagnostic",
+  "aliases": [],
+  "tags": [
+    "PAMF",
+    "source_V",
+    "eight_seeds",
+    "default_head"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261010-phase1-standard-ce-baselines-manysig-m56-r01",
+    "20261012-phase1-standard-ce-seed-extension-manysig-m52-r01"
+  ],
+  "replaces_run_id": "20261019-phase1-pamf-source-class-manysig-m8-r01",
+  "authorization": "2026-10-19用户询问源域14-7和20-19准确率，补做原V冻结推理。",
+  "code": {
+    "commit": "CURRENT_GIT_COMMIT",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_source_class_20261019_r02"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "version": "historical fixed source contract",
+    "representation": "equalized=1, center256, unit RMS, original default-head six-class logits",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids.V",
+    "label_map_ref": "each row/source_contract.json#classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "ManySig.tx_list: all6; actual physical class strings exported at runtime",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Reuse verified original source contract and parent scratch provenance; exact source V only",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "Frozen source V diagnostic",
+    "query_use": "No target IQ or target truth; V labels legal for diagnostics",
+    "external_method_exception": null,
+    "claim_scope": "Original source V per-TX recall; no independent target evaluation or tuning"
+  },
+  "checkpoint": {
+    "initialization": "Frozen source-trained E200 checkpoints, exact architecture load",
+    "sources": [
+      "20261010-phase1-standard-ce-baselines-manysig-m56-r01",
+      "20261012-phase1-standard-ce-seed-extension-manysig-m52-r01"
+    ],
+    "provenance_verdict": "Parent scratch/E200/default-head evidence previously verified; exact checkpoint metadata and source physical contract checked before inference",
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "selection_rule": "All8 historical fixed E200 checkpoints; no selection or retraining"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/pamf-source-class-20261019",
+    "gpu_policy": "CPU only, four threads, one sequential worker; no GPU process",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-pamf-source-class-manysig-m8-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_source_class_20261019_r02",
+    "local_artifact_root": "local_artifacts/pamf_source_class_20261019_r02",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/pamf_source_class_20261019_r02/source_class_diagnostic.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-pamf-source-class-manysig-m8-r02",
+    "stop_rule": "Any metadata, smoke, coverage, nonfinite or mutation mismatch stops; preserve all outputs; no score-based rerun"
+  },
+  "expected_artifacts": [
+    "results.json",
+    "8 seed JSONs",
+    "8 source prediction CSVs",
+    "source_split/source_contract.json",
+    "diagnostic.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source_V per-TX recall",
+      "source_V overall accuracy",
+      "source_V six-class confusion"
+    ],
+    "dimensions": [
+      "model_seed",
+      "TX",
+      "true_class",
+      "predicted_class"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-pamf-source-class-manysig-m8-r02/predictions-sSEED.csv",
+    "scorer_ref": "Same source-V diagnostic; no target truth-side scorer involved"
+  },
+  "rows": [
+    {
+      "row_id": "residual_fusion-s2026092701",
+      "method": "residual_fusion",
+      "purpose": "source_V_per_class_diagnostic",
+      "gpu": null,
+      "config_ref": "experiments/standard_ce_baselines/source_class_diagnostic.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/residual_fusion-s2026092701/source/resolved_config.json",
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/residual_fusion-s2026092701/source/last.pt",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model/split inherited; deterministic center crop and frozen CPU inference; no random views/support/augmentation",
+      "k": null,
+      "scenario": "source_clean_V",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One frozen pass over original V: 27000 packets, 4500 per TX",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-pamf-source-class-manysig-m8-r02/seed-2026092701.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_source_class_20261019_r02/diagnostic.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/pamf_source_class_20261019_r02/source_class_diagnostic.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-pamf-source-class-manysig-m8-r02",
+      "expected_artifacts": [
+        "seed-2026092701.json",
+        "predictions-s2026092701.csv"
+      ]
+    },
+    {
+      "row_id": "residual_fusion-s2026092702",
+      "method": "residual_fusion",
+      "purpose": "source_V_per_class_diagnostic",
+      "gpu": null,
+      "config_ref": "experiments/standard_ce_baselines/source_class_diagnostic.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/residual_fusion-s2026092702/source/resolved_config.json",
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/residual_fusion-s2026092702/source/last.pt",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model/split inherited; deterministic center crop and frozen CPU inference; no random views/support/augmentation",
+      "k": null,
+      "scenario": "source_clean_V",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One frozen pass over original V: 27000 packets, 4500 per TX",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-pamf-source-class-manysig-m8-r02/seed-2026092702.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_source_class_20261019_r02/diagnostic.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/pamf_source_class_20261019_r02/source_class_diagnostic.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-pamf-source-class-manysig-m8-r02",
+      "expected_artifacts": [
+        "seed-2026092702.json",
+        "predictions-s2026092702.csv"
+      ]
+    },
+    {
+      "row_id": "residual_fusion-s2026092703",
+      "method": "residual_fusion",
+      "purpose": "source_V_per_class_diagnostic",
+      "gpu": null,
+      "config_ref": "experiments/standard_ce_baselines/source_class_diagnostic.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/residual_fusion-s2026092703/source/resolved_config.json",
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/residual_fusion-s2026092703/source/last.pt",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model/split inherited; deterministic center crop and frozen CPU inference; no random views/support/augmentation",
+      "k": null,
+      "scenario": "source_clean_V",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One frozen pass over original V: 27000 packets, 4500 per TX",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-pamf-source-class-manysig-m8-r02/seed-2026092703.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_source_class_20261019_r02/diagnostic.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/pamf_source_class_20261019_r02/source_class_diagnostic.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-pamf-source-class-manysig-m8-r02",
+      "expected_artifacts": [
+        "seed-2026092703.json",
+        "predictions-s2026092703.csv"
+      ]
+    },
+    {
+      "row_id": "residual_fusion-s2026092704",
+      "method": "residual_fusion",
+      "purpose": "source_V_per_class_diagnostic",
+      "gpu": null,
+      "config_ref": "experiments/standard_ce_baselines/source_class_diagnostic.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/residual_fusion-s2026092704/source/resolved_config.json",
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-standard-ce-baselines-manysig-m56-r01/residual_fusion-s2026092704/source/last.pt",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092704,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model/split inherited; deterministic center crop and frozen CPU inference; no random views/support/augmentation",
+      "k": null,
+      "scenario": "source_clean_V",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One frozen pass over original V: 27000 packets, 4500 per TX",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-pamf-source-class-manysig-m8-r02/seed-2026092704.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_source_class_20261019_r02/diagnostic.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/pamf_source_class_20261019_r02/source_class_diagnostic.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-pamf-source-class-manysig-m8-r02",
+      "expected_artifacts": [
+        "seed-2026092704.json",
+        "predictions-s2026092704.csv"
+      ]
+    },
+    {
+      "row_id": "residual_fusion-s2026092705",
+      "method": "residual_fusion",
+      "purpose": "source_V_per_class_diagnostic",
+      "gpu": null,
+      "config_ref": "experiments/standard_ce_baselines/source_class_diagnostic.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-standard-ce-seed-extension-manysig-m52-r01/residual_fusion-s2026092705/source/resolved_config.json",
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-standard-ce-seed-extension-manysig-m52-r01/residual_fusion-s2026092705/source/last.pt",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092705,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model/split inherited; deterministic center crop and frozen CPU inference; no random views/support/augmentation",
+      "k": null,
+      "scenario": "source_clean_V",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One frozen pass over original V: 27000 packets, 4500 per TX",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-pamf-source-class-manysig-m8-r02/seed-2026092705.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_source_class_20261019_r02/diagnostic.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/pamf_source_class_20261019_r02/source_class_diagnostic.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-pamf-source-class-manysig-m8-r02",
+      "expected_artifacts": [
+        "seed-2026092705.json",
+        "predictions-s2026092705.csv"
+      ]
+    },
+    {
+      "row_id": "residual_fusion-s2026092706",
+      "method": "residual_fusion",
+      "purpose": "source_V_per_class_diagnostic",
+      "gpu": null,
+      "config_ref": "experiments/standard_ce_baselines/source_class_diagnostic.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-standard-ce-seed-extension-manysig-m52-r01/residual_fusion-s2026092706/source/resolved_config.json",
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-standard-ce-seed-extension-manysig-m52-r01/residual_fusion-s2026092706/source/last.pt",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092706,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model/split inherited; deterministic center crop and frozen CPU inference; no random views/support/augmentation",
+      "k": null,
+      "scenario": "source_clean_V",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One frozen pass over original V: 27000 packets, 4500 per TX",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-pamf-source-class-manysig-m8-r02/seed-2026092706.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_source_class_20261019_r02/diagnostic.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/pamf_source_class_20261019_r02/source_class_diagnostic.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-pamf-source-class-manysig-m8-r02",
+      "expected_artifacts": [
+        "seed-2026092706.json",
+        "predictions-s2026092706.csv"
+      ]
+    },
+    {
+      "row_id": "residual_fusion-s2026092707",
+      "method": "residual_fusion",
+      "purpose": "source_V_per_class_diagnostic",
+      "gpu": null,
+      "config_ref": "experiments/standard_ce_baselines/source_class_diagnostic.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-standard-ce-seed-extension-manysig-m52-r01/residual_fusion-s2026092707/source/resolved_config.json",
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-standard-ce-seed-extension-manysig-m52-r01/residual_fusion-s2026092707/source/last.pt",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092707,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model/split inherited; deterministic center crop and frozen CPU inference; no random views/support/augmentation",
+      "k": null,
+      "scenario": "source_clean_V",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One frozen pass over original V: 27000 packets, 4500 per TX",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-pamf-source-class-manysig-m8-r02/seed-2026092707.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_source_class_20261019_r02/diagnostic.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/pamf_source_class_20261019_r02/source_class_diagnostic.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-pamf-source-class-manysig-m8-r02",
+      "expected_artifacts": [
+        "seed-2026092707.json",
+        "predictions-s2026092707.csv"
+      ]
+    },
+    {
+      "row_id": "residual_fusion-s2026092708",
+      "method": "residual_fusion",
+      "purpose": "source_V_per_class_diagnostic",
+      "gpu": null,
+      "config_ref": "experiments/standard_ce_baselines/source_class_diagnostic.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-standard-ce-seed-extension-manysig-m52-r01/residual_fusion-s2026092708/source/resolved_config.json",
+      "checkpoint_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261012-phase1-standard-ce-seed-extension-manysig-m52-r01/residual_fusion-s2026092708/source/last.pt",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092708,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model/split inherited; deterministic center crop and frozen CPU inference; no random views/support/augmentation",
+      "k": null,
+      "scenario": "source_clean_V",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "One frozen pass over original V: 27000 packets, 4500 per TX",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-pamf-source-class-manysig-m8-r02/seed-2026092708.json",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/pamf_source_class_20261019_r02/diagnostic.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/pamf_source_class_20261019_r02/source_class_diagnostic.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261019-phase1-pamf-source-class-manysig-m8-r02",
+      "expected_artifacts": [
+        "seed-2026092708.json",
+        "predictions-s2026092708.csv"
+      ]
+    }
+  ],
+  "notes": [
+    "One fresh worker per checkpoint; eval/no_grad; FP32/TF32off; 2 CPU threads; no training/optimization/export graph transformation.",
+    "E2E includes CPU contiguous/byte-buffer input, H2D, whole model including FFT, finite check, argmax, D2H labels and list construction. Excludes RF acquisition/synchronization front-end, filesystem, network and batching/queue wait.",
+    "Memory is measured separately after warmup/cache clearing. GPU allocated/reserved includes resident model plus inference workspace. CPU RSS sampling interval1ms; total process baseline includes Python/PyTorch/CUDA runtime; narrow spikes may be missed.",
+    "FP32 storage is actual uncompressed torch.save(state_dict) byte length incl buffers/serialization metadata, excluding optimizer, source checkpoint config, code and training history. In-memory serialized output is not a saved deployable model package.",
+    "Percentiles are per-checkpoint request distributions; final network percentile must pool equal-count request trials, not average percentiles. Across8-seed mean SD reported separately.",
+    "Existing historical RTX3090 timing/resources and accuracy preserved separately; new metrics do not replace or rescore them."
+  ],
+  "status": "PLANNED",
+  "registered_at": "2026-10-19T07:16:58+00:00",
+  "analysis_completion": {
+    "location": "local",
+    "models": 104,
+    "profiles": 208,
+    "timed_requests": 41600,
+    "actual_seed_count_per_model": 8,
+    "missing_rows": 0,
+    "source_data_root": "E:\\type10-7\\exports\\paper_figures\\20261012-standard-ce-deployment-r02-source",
+    "workbook": "E:\\type10-7\\outputs\\01a0fd26-2621-7662-a9bd-9ff19509e812\\standard_ce_clean_results_deployment.xlsx",
+    "measurement_hardware": {
+      "cpu_model": "Intel(R) Xeon(R) Gold 6248R CPU @ 3.00GHz",
+      "kernel": "6.8.0-142-generic",
+      "driver": "580.173.02"
+    },
+    "verification_ref": "local_artifacts/standard_ce_deployment_20261012_r02/excel_verification.json"
+  }
+}

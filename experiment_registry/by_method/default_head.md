@@ -7,3 +7,4 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |PAMF八种子原源域验证集发射机召回率诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-pamf-source-class-manysig-m8-r01/report.md)|
+|PAMF八种子原源域验证集发射机召回率诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-pamf-source-class-manysig-m8-r02/report.md)|
