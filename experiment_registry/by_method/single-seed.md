@@ -25,3 +25,4 @@
 |As 分类温度解耦：同初始化完整 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r01/report.md)|
 |As 分类温度解耦：同初始化完整 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r02/report.md)|
 |同一受损 As 的 CSIL 类别知识迁移|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-sameAsKD-e30-s2026092701-m2-r01/report.md)|
+|纯 F E20：同轮首次 As 重访|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-F-epochReplay-e20-s2026092701-m1-r01/report.md)|
