@@ -1,0 +1,58 @@
+{
+  "state": "VERIFIED",
+  "run_id": "20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01",
+  "execution_commit": "31467086c3ced30237f3ac86e91eae68645425d7",
+  "remote_commit_verified": true,
+  "controller_pid": 49436,
+  "local_compile": "PASS",
+  "GPU": 0,
+  "max_total_GPU_workers": 3,
+  "source_workers": [
+    {
+      "row_id": "BASE-s2026092701",
+      "pid": 33788,
+      "immutable_release_CWD": true,
+      "argv_scope_verified": true,
+      "initial_checkpoint_exists": true,
+      "epochs": 50,
+      "ema": true,
+      "concat_satellite": false,
+      "satellite_mode": "disabled",
+      "eval_satellite": false,
+      "log_bytes": 7283
+    },
+    {
+      "row_id": "WEIGHT-s2026092701",
+      "pid": 33212,
+      "immutable_release_CWD": true,
+      "argv_scope_verified": true,
+      "initial_checkpoint_exists": true,
+      "epochs": 50,
+      "ema": true,
+      "concat_satellite": false,
+      "satellite_mode": "disabled",
+      "eval_satellite": false,
+      "log_bytes": 7299
+    },
+    {
+      "row_id": "GEOMETRY-s2026092701",
+      "pid": 31288,
+      "immutable_release_CWD": true,
+      "argv_scope_verified": true,
+      "initial_checkpoint_exists": true,
+      "epochs": 50,
+      "ema": true,
+      "concat_satellite": false,
+      "satellite_mode": "disabled",
+      "eval_satellite": false,
+      "log_bytes": 7315
+    }
+  ],
+  "observed_utc": "2026-10-19T10:35:08.853Z",
+  "observation": "Independent CIM PID/parent/argv and GPU0 counters; initial source checkpoints and log growth from0 to>7kB; no performance result yet",
+  "actual_GPU_dedicated_MiB_per_worker": 965.53125,
+  "training_enhancement": "ordinary only; satellite disabled",
+  "test_views": [
+    "clean"
+  ]
+}

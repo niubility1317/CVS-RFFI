@@ -1,6 +1,6 @@
 # 原 F＋跨 RX 同 TX 对比学习：弱发射机特征优化
 
-当前状态：PLANNED，尚未启动正式训练。历史 85.1139% 为原三种子方法结果；本次实际增益以同 run 的本机 BASE 配对比较。
+当前状态：RUNNING，已核实本机 BASE／WEIGHT／GEOMETRY 三行真实进程、GPU0 占用及日志增长，BOTH 排队。历史 85.1139% 为原三种子方法结果；本次实际增益以同 run 的本机 BASE 配对比较。
 
 固定原配方从零训练 50 轮（33L＋17U），保留三路 SIG_TIME、统一 Sinc 物理更新、旧门控、ownEMA、cos、RDrop alpha=1、LS0.01、普通增强和默认分类头联合训练。训练关闭星地信道增强，冻结后只测 clean。两次 RDrop 前向复用同一实际增强 IQ。无历史权重继承。
 
@@ -22,3 +22,5 @@
 实现与运行配置身份为 Git commit，实际执行 commit 写入不可变 release_commit.txt。命令、CWD、占位路径、矩阵与预期产物见 [experiment.json](experiment.json)。正式输出在本机新不可覆盖 run root；训练、预测、评分和实际成本逐行保留。
 
 验证已通过：[实际网络与协议负例检查](checks.json)、[原生 L/U/EMA/Sinc 合成后端检查](backend_checks.json)、[独立 P0/P1 检查](review.json)。合成检查没有训练数据／目标读取，其权重不被正式训练继承。尚无本轮性能结果，不能据此宣称提升。
+
+执行提交：`31467086c3ced30237f3ac86e91eae68645425d7`，已推送并独立核对远端一致。不可变本机 release 编译通过。启动证据见 [launch_verified.json](launch_verified.json)；首次观察三行各约 965.5 MiB 专用显存，初始 checkpoint 已生成，正式性能尚待训练与 clean truth-last。
