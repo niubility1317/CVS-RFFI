@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "synthetic_NN": 44,
+  "real_checkpoint_loads": 0,
+  "synthetic_checkpoint_schema_replays": 3,
+  "real_IQ": 0,
+  "target_access": false,
+  "protocol_negatives": 9,
+  "physical_FULL_joint_W_oracle": true,
+  "actual_same_W_and_joint160_updated": true,
+  "actual_checkpoint_expression_factory_and_predictions_replayed": true,
+  "trainable_parameters": {
+    "FULL": 232193,
+    "LORA": 3264,
+    "TEMP": 3344
+  },
+  "total_parameters": {
+    "FULL": 900722,
+    "LORA": 903026,
+    "TEMP": 903106
+  },
+  "source_rule_flow_checks": "PASS/0NN"
+}

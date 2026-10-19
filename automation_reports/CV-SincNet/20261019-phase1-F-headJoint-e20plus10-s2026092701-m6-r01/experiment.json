@@ -1,0 +1,497 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01",
+  "group_id": "phase1-F-feature-head-joint",
+  "display_name": "纯F：原默认头与浅中层特征联合训练E30",
+  "description": "同B0 E20父/同实际bank/同L-only三项/同E10预算，唯一改变原默认W与特征联合更新；复用固定W六行，自动七环境独立评分",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "F",
+    "feature_adaptation",
+    "head_joint",
+    "same_original_default_head",
+    "E20plus10",
+    "L_only",
+    "matched_frozen_W",
+    "LoRA",
+    "temporal_residual",
+    "single_seed"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "New attachment section7.3 explicitly authorizes independent joint-original-head comparison after fixed-head phase; user confirmed new E10 L-only three terms. Original feature/default-head/source roles retained; no head-only training or head replacement.",
+  "code": {
+    "commit": null,
+    "checkout": "E:\\type10-7\\code\\worktrees\\phase1_sameiq_experts_20261019",
+    "environment": "N607 ordinary account; pinned featureAdapters R02 runtime d53c53982d3bd98dc817a41b90f4adab0556b099; existing Torch2.1/FP32/TF32off/CPU2;no install",
+    "cwd": "PROJECT/releases/cvs_F_featureHeadJoint_E30_20261019_r01"
+  },
+  "data": {
+    "dataset": "existing immutable ManySig equalized1",
+    "version": "same source contract reused",
+    "representation": "equalized1/center256/unitRMS; exact saved residual post_sync/noeq full observation",
+    "contract_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json",
+    "physical_ids_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json#role_ids",
+    "label_map_ref": "design.CLASSES and native class_mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "protocol.CLASSES",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing V27000/V1800 and frozen R02 actual-first L1800/newL channel panel; same source roles; Phase2 capsule not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": "PROJECT/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/observations/actual_engine.json"
+  },
+  "permissions": {
+    "regime": "phase1_source_L_feature_and_default_head_joint_training",
+    "query_use": "no target training/tuning/selection; all row predictions before independent truth; all six source readouts decide before new scores",
+    "external_method_exception": null,
+    "claim_scope": "Default head original W jointly trained with actual features. Exposed benchmark/model-seed n1; not fresh independent blind or reproducible gain."
+  },
+  "checkpoint": {
+    "initialization": "strict original pureF B0 source scratch FINAL20, identical original W; same private zero-output adapter initialization",
+    "sources": [
+      {
+        "run_id": "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01",
+        "row_id": "B0-s2026092701",
+        "checkpoint": "source/final_ssdg.pth",
+        "role": "common E20 initialization and independent frozen clean reference"
+      }
+    ],
+    "contract_check_ref": "Existing strict parent own_model verifies scratch ancestry/source roles/final-only before load; R02 actual bank/controls are data dependencies, never E30 model initialization",
+    "provenance_verdict": "Verified common source-only E20 parent; old target-scored E30 variants not used as initial states",
+    "selection_rule": "fixed FINAL30 after all2220 new steps; no best epoch or target selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/F-feature-head-joint",
+    "gpu_policy": "all owners cap2/GPU,free>=12000MB,shared CUDA-init lock,healthy tasks unchanged",
+    "remote_run_root": "PROJECT/runs/20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01",
+    "remote_log_root": "PROJECT/runs/20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01/logs",
+    "local_artifact_root": "local_artifacts/F_featureHeadJoint_E30_20261019",
+    "launch_command": [
+      "CVS-RFFI/python",
+      "-u",
+      "experiments/cvs_feature_head_joint30/runner.py"
+    ],
+    "stop_rule": "Owned systemic numerical/protocol/source/head-only/interface/output/prediction failure;preserve artifacts/healthy rows;no automatic retry. Low source score does not cancel declared all7 completion."
+  },
+  "expected_artifacts": [
+    "checkpoint_smoke.json",
+    "observation_bank_reuse.json",
+    "launch.json",
+    "queue_state.json",
+    "source_matrix_decision.json",
+    "perrow source/initialization/final/defaulthead/steps/readout",
+    "all7 predictions/independent scores",
+    "analysis.json",
+    "complete.json or failure.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "worst_RX",
+      "joint_minus_frozen_W",
+      "As_specific_head_effect_difference_in_differences",
+      "repair/damage",
+      "actual feature and same W updates",
+      "LactualAs/newL/V",
+      "budget/wall"
+    ],
+    "dimensions": [
+      "FULL/LORA/TEMP each As/NoAs",
+      "six frozenW controls reused",
+      "seven fixed views",
+      "RX/day/TX",
+      "one model seed"
+    ],
+    "prediction_ref": "perrow 7x168000 fixed decisions/logits; no new parent/control predictions",
+    "scorer_ref": "separate CPU exec independent truth-last and CM recount; source decision fixed first"
+  },
+  "rows": [
+    {
+      "row_id": "FULL_NoAs_JOINT-s2026092701",
+      "method": "FULL_NoAs_original_W_joint",
+      "purpose": "same feature space FULL with original W jointly trained, two-clean-CE matched NoAs",
+      "config_ref": "configs/FULL_NoAs_JOINT-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01/FULL_NoAs_JOINT-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261017431
+      },
+      "seed_notes": "Same parent/model2026092701,adapter private20261019641,exact R02 L indices/actual IQ stream20261019643 and original complete channel/receiver keys;no redraw. No new evaluation observations. Not independent model seeds.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "same reset AdamW2e-4/wd1e-4/cos10/globalclip5; W same group/lr as other ordinary features; FULL CENTER_UNITS unchanged",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "same parent20+new10,total30/2220updates;568320 studentNN+284160 frozen-parentNN;source initial/final50400each;1176002 formalNN;0 new channel simulations;0 U/EMA;W960 existing parameters added to joint optimizer only",
+      "output_root": "PROJECT/runs/20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01/FULL_NoAs_JOINT-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01/logs/FULL_NoAs_JOINT-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_feature_head_joint30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "FULL_NoAs_JOINT-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/initialization.json",
+        "source/source_contract.json",
+        "source/step_metrics.jsonl.gz",
+        "source/initial_source_readout/complete.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ],
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "FULL_As_JOINT-s2026092701",
+      "method": "FULL_As_original_W_joint",
+      "purpose": "same feature space FULL with original W jointly trained, complete As",
+      "config_ref": "configs/FULL_As_JOINT-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01/FULL_As_JOINT-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261017431
+      },
+      "seed_notes": "Same parent/model2026092701,adapter private20261019641,exact R02 L indices/actual IQ stream20261019643 and original complete channel/receiver keys;no redraw. No new evaluation observations. Not independent model seeds.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "same reset AdamW2e-4/wd1e-4/cos10/globalclip5; W same group/lr as other ordinary features; FULL CENTER_UNITS unchanged",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "same parent20+new10,total30/2220updates;568320 studentNN+284160 frozen-parentNN;source initial/final50400each;1176002 formalNN;0 new channel simulations;0 U/EMA;W960 existing parameters added to joint optimizer only",
+      "output_root": "PROJECT/runs/20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01/FULL_As_JOINT-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01/logs/FULL_As_JOINT-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_feature_head_joint30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "FULL_As_JOINT-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/initialization.json",
+        "source/source_contract.json",
+        "source/step_metrics.jsonl.gz",
+        "source/initial_source_readout/complete.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ],
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "LORA_NoAs_JOINT-s2026092701",
+      "method": "LORA_NoAs_original_W_joint",
+      "purpose": "same feature space LORA with original W jointly trained, two-clean-CE matched NoAs",
+      "config_ref": "configs/LORA_NoAs_JOINT-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01/LORA_NoAs_JOINT-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261017431
+      },
+      "seed_notes": "Same parent/model2026092701,adapter private20261019641,exact R02 L indices/actual IQ stream20261019643 and original complete channel/receiver keys;no redraw. No new evaluation observations. Not independent model seeds.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "same reset AdamW2e-4/wd1e-4/cos10/globalclip5; W same group/lr as other ordinary features; FULL CENTER_UNITS unchanged",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "same parent20+new10,total30/2220updates;568320 studentNN+284160 frozen-parentNN;source initial/final50400each;1176002 formalNN;0 new channel simulations;0 U/EMA;W960 existing parameters added to joint optimizer only",
+      "output_root": "PROJECT/runs/20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01/LORA_NoAs_JOINT-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01/logs/LORA_NoAs_JOINT-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_feature_head_joint30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "LORA_NoAs_JOINT-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/initialization.json",
+        "source/source_contract.json",
+        "source/step_metrics.jsonl.gz",
+        "source/initial_source_readout/complete.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ],
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "LORA_As_JOINT-s2026092701",
+      "method": "LORA_As_original_W_joint",
+      "purpose": "same feature space LORA with original W jointly trained, complete As",
+      "config_ref": "configs/LORA_As_JOINT-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01/LORA_As_JOINT-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261017431
+      },
+      "seed_notes": "Same parent/model2026092701,adapter private20261019641,exact R02 L indices/actual IQ stream20261019643 and original complete channel/receiver keys;no redraw. No new evaluation observations. Not independent model seeds.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "same reset AdamW2e-4/wd1e-4/cos10/globalclip5; W same group/lr as other ordinary features; FULL CENTER_UNITS unchanged",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "same parent20+new10,total30/2220updates;568320 studentNN+284160 frozen-parentNN;source initial/final50400each;1176002 formalNN;0 new channel simulations;0 U/EMA;W960 existing parameters added to joint optimizer only",
+      "output_root": "PROJECT/runs/20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01/LORA_As_JOINT-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01/logs/LORA_As_JOINT-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_feature_head_joint30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "LORA_As_JOINT-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/initialization.json",
+        "source/source_contract.json",
+        "source/step_metrics.jsonl.gz",
+        "source/initial_source_readout/complete.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ],
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "TEMP_NoAs_JOINT-s2026092701",
+      "method": "TEMP_NoAs_original_W_joint",
+      "purpose": "same feature space TEMP with original W jointly trained, two-clean-CE matched NoAs",
+      "config_ref": "configs/TEMP_NoAs_JOINT-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01/TEMP_NoAs_JOINT-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261017431
+      },
+      "seed_notes": "Same parent/model2026092701,adapter private20261019641,exact R02 L indices/actual IQ stream20261019643 and original complete channel/receiver keys;no redraw. No new evaluation observations. Not independent model seeds.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "same reset AdamW2e-4/wd1e-4/cos10/globalclip5; W same group/lr as other ordinary features; FULL CENTER_UNITS unchanged",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "same parent20+new10,total30/2220updates;568320 studentNN+284160 frozen-parentNN;source initial/final50400each;1176002 formalNN;0 new channel simulations;0 U/EMA;W960 existing parameters added to joint optimizer only",
+      "output_root": "PROJECT/runs/20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01/TEMP_NoAs_JOINT-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01/logs/TEMP_NoAs_JOINT-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_feature_head_joint30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "TEMP_NoAs_JOINT-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/initialization.json",
+        "source/source_contract.json",
+        "source/step_metrics.jsonl.gz",
+        "source/initial_source_readout/complete.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ],
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "TEMP_As_JOINT-s2026092701",
+      "method": "TEMP_As_original_W_joint",
+      "purpose": "same feature space TEMP with original W jointly trained, complete As",
+      "config_ref": "configs/TEMP_As_JOINT-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01/TEMP_As_JOINT-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261017431
+      },
+      "seed_notes": "Same parent/model2026092701,adapter private20261019641,exact R02 L indices/actual IQ stream20261019643 and original complete channel/receiver keys;no redraw. No new evaluation observations. Not independent model seeds.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "same reset AdamW2e-4/wd1e-4/cos10/globalclip5; W same group/lr as other ordinary features; FULL CENTER_UNITS unchanged",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "same parent20+new10,total30/2220updates;568320 studentNN+284160 frozen-parentNN;source initial/final50400each;1176002 formalNN;0 new channel simulations;0 U/EMA;W960 existing parameters added to joint optimizer only",
+      "output_root": "PROJECT/runs/20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01/TEMP_As_JOINT-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01/logs/TEMP_As_JOINT-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_feature_head_joint30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "TEMP_As_JOINT-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/initialization.json",
+        "source/source_contract.json",
+        "source/step_metrics.jsonl.gz",
+        "source/initial_source_readout/complete.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ],
+      "weight_decay": 0.0001
+    }
+  ],
+  "notes": [
+    "Direct implementation of user attachment section7.3 deferred independent head rule, not frozen-head recipe rank/lambda/seed rescue.",
+    "Same original W object/initial values; joint single optimizer with features, no head-only stage/new head.",
+    "W enters the common global clip5 norm, an inherent part of the trainable-set change; no claim equal actual gradient norm.",
+    "Frozen controls source/metrics reused, never re-trained/re-predicted/re-scored.",
+    "Same source bank R02 complete observations/actual-first/newL and all indices reused without data revalidation or extra hash chains.",
+    "Source criteria require increment over same frozen As and FULL joint/frozen controls; known As-NoAs large gain is not sufficient.",
+    "New E10 remains L-only per explicit user answer, no U/EMA.",
+    "No automatic E50; source qualified follow-up at most20 with matched frozenW/FULL/NoAs and explicit seam rules. Raw bypass conditional and not implemented here."
+  ],
+  "registered_at": "2026-10-19T09:21:52+00:00"
+}
