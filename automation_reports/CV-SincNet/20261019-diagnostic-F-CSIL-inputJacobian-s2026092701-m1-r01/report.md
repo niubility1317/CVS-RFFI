@@ -25,3 +25,6 @@
 launcher首步一次两真实checkpoint的合成无query smoke，共4NN，包含实际二阶路径，PASS立即继续源诊断，不需token/receipt。一个不可覆盖run/release、一归档本远端一次比较、一远端compile、一次独立限定P0/P1审查；source/protocol/非有限/接口/输出错误保留失败证据，无自动重试。独立PID/CWD/argv/GPU/日志增长后才记VERIFIED。
 
 预期NN=10804：student5402/teacher5402，其中source base3600、中心差分7200、真实CP synthetic smoke4。新增optimizer/head-fit/EMA更新均0；既有student20轮和teacher200轮不写作免费训练。输出resolved_config、allocation、checkpoint_smoke、data_roles、source_derivatives.npz、20批batch_geometry、source_decision、complete/failure及stdout。原始IQ/derivatives/CP/日志/私有路径不入Git，只交付源端指标及证据边界。
+
+
+状态：ANALYZED / VERIFIED。完整源观测与20批几何已独立重算，固定真类导数对齐标准FAIL，关闭本配方且不启动E20。0权重/EMA/优化器更新，无目标访问。详见 [完整源诊断](final_analysis.md)。总体研发目标仍在进行。
