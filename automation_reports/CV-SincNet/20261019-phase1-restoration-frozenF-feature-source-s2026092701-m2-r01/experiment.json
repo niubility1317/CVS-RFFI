@@ -1,0 +1,251 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-restoration-frozenF-feature-source-s2026092701-m2-r01",
+  "group_id": "phase1-restoration-frozenF-feature",
+  "display_name": "冻结F50特征引导的匹配残差恢复",
+  "description": "同R03父权重、同追加20轮、同clean保持项，比较仅波形重建与额外冻结F50特征一致性；0TX标签/目标训练。",
+  "kind": "comparison",
+  "stage": "Phase1-source-perceptual-refinement",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "frozenF_feature",
+    "matched_control",
+    "FcrossRX50",
+    "source_only",
+    "truth_last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02",
+    "20261019-phase1-restoration-residual-refinement-selfsup-m3-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "持续独立优化恢复网络；不向另一个对话发送消息；性能最终以目标测试识别结果为准。本run仅源域机制研究，目标视图待用户澄清。",
+  "code": {
+    "commit": "d896e0552f1f17e7b421fb7d94d45af9256899b4",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python3.10/Torch2.1+cu121/NumPy2;CPU2;FP32;no package changes",
+    "cwd": "releases/pamf_feature_refine_20261019_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original validated source7/63/30 physical split,unchanged",
+    "representation": "Original63000L/U clean and20epoch cached R02 IQ;eachphysical record observed->clean plusclean->clean",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/train/physical_ids.npy",
+    "label_map_ref": "source_cache/manifest.json#class_id_to_tx;TX labels never used to fit quality network",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original all6TX;qualitytargets are augmentation0/1,not TX",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/validation",
+    "support_query_ref": null,
+    "leo_config_ref": "R02 existing20epoch matchedfull/residual post_sync/noEQ observations;no regeneration",
+    "new_physical_exposures": {
+      "L_s": 126000,
+      "U_s": 1134000
+    },
+    "unique_training_records": 63000,
+    "actual_training_labels": "Source paired synthetic reconstruction;0TXtruth;guided arm borrows source-supervised F50 feature knowledge",
+    "IQ_examples_per_arm": 2520000,
+    "clean_reference": "Original sourceL/U IQ only;V1800 used afterfinalcheckpoint freeze",
+    "augmentation": "Reuse original R02 route q<.15clean,.15<=q<.75residual,otherwise full;never read ungeneratedq<.15damagedslots"
+  },
+  "permissions": {
+    "regime": "Recognizer-guided synthetic self-supervised source restoration,matched waveformcontrol",
+    "query_use": "No target/query IQ or truth in this run",
+    "external_method_exception": null,
+    "claim_scope": "Source-only mechanism development;not fullylabel-free pretraining,not target improvement evidence"
+  },
+  "checkpoint": {
+    "initialization": "Strict same originalR03 forbotharms;resetoptimizer,trainonly correction +20E",
+    "sources": [
+      "R03 source-frozen residual_deterministic/final.pt,originalR02 E20coarse andR03 E20correction",
+      "OriginalF50 CROSS_RX-s2026092701 defaulthead,supervisedsource knowledge,frozenfeatureprior"
+    ],
+    "contract_check_ref": "OriginalR03 source lineage and native-equivalent F50/source-role evidence reused;R02 cache handles preflight verified",
+    "provenance_verdict": "Verified same original source7/63/30 and63000L/U;R03 andF50 no targettraining/defaultheadrefit",
+    "selection_rule": "Fixed last20 forbotharms;V never updates gradient/EMA/normalization/checkpointselection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/feature-refine",
+    "gpu_policy": "waveform_control GPU0,frozenF_feature GPU1,one own worker each;shared capacity lock,allowner<2/free>=12GB;CPUscore1",
+    "remote_run_root": "runs/20261019-phase1-restoration-frozenF-feature-source-s2026092701-m2-r01",
+    "remote_log_root": "logs/20261019-phase1-restoration-frozenF-feature-source-s2026092701-m2-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/feature_refine_20261019_r01",
+    "launch_command": "python -u -m experiments.pamf_feature_refine.runner run --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-cache ../../runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache --parent-restoration ../../runs/20261019-phase1-restoration-residual-refinement-selfsup-m3-r03 --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --output ../../runs/20261019-phase1-restoration-frozenF-feature-source-s2026092701-m2-r01 --expected-commit d896e0552f1f17e7b421fb7d94d45af9256899b4",
+    "stop_rule": "Illegal input/parent/code,collision,nonfinite,budget/predcoverage failure:preserveoutputs,abort,noautoretry",
+    "CPU_generation_workers": 0
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "workers.json",
+    "<arm>/resolved_config.json",
+    "<arm>/gpu_ready.json",
+    "<arm>/training.jsonl",
+    "<arm>/training_complete.json",
+    "<arm>/final.pt",
+    "<arm>/prediction/<7views>.npz",
+    "<arm>/prediction/<7views>_parent_R03.npy",
+    "<arm>/prediction/<7views>_refined.npy",
+    "<arm>/prediction/complete.json",
+    "<arm>/summary.json",
+    "<arm>/complete.json",
+    "source_decision.json",
+    "complete.json",
+    "frozenF_feature/source_reference_features.npy",
+    "frozenF_feature/feature_cache_complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "waveform/feature/cleanreconstruction losses",
+      "actualL/Uexposure/routes",
+      "originalF50defaulthead accuracy/MacroF1",
+      "repair/damage/net",
+      "perTX/RX/dayconfusion",
+      "rawIQNMSE",
+      "walltime/VRAM"
+    ],
+    "dimensions": [
+      "identity/parentR03/refined",
+      "waveformcontrol/frozenFfeature",
+      "clean+sixpractical source",
+      "TX",
+      "RX",
+      "day",
+      "20epochs"
+    ],
+    "prediction_ref": "runs/20261019-phase1-restoration-frozenF-feature-source-s2026092701-m2-r01/<arm>/prediction",
+    "scorer_ref": "pamf_feature_refine.evaluation.score,independentCPU aftereacharmall7predictions",
+    "source_rule": "Guidedlowurbanaccuracy>=matchedcontrol+.5pp;guidedcleanaccuracy drop vsidentity<=.1pp;mean6practicalNMSE<=1.05matchedcontrol",
+    "next_stage": "Target performance unmeasured here;no target feedback. Target clean-only vs clean+sixpractical pending userclarification."
+  },
+  "rows": [
+    {
+      "row_id": "waveform_control",
+      "method": "R03 correction refinement;pairedIQNMSE+.1logpower +equalcleanidentity",
+      "purpose": "matched_source_mechanism_falsification",
+      "config_ref": "experiments/pamf_feature_refine/design.py#configuration",
+      "resolved_config_ref": "runs/20261019-phase1-restoration-frozenF-feature-source-s2026092701-m2-r01/waveform_control/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101951,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": 2026101903
+      },
+      "seed_notes": "Botharms samephysical shuffle andexisting20epoch R02augmentation;modelseed reference,strictsameR03init;no newchannel draw;support null",
+      "k": null,
+      "scenario": "clean+six fixedsourcepractical views",
+      "optimizer": "AdamW reset",
+      "lr": 3e-05,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "20newcorrectionepochs/4940updates;parentcorrection20+new20=40,coarse20 separately;compositeinheritance60componentepochs;F50 remains50frozen",
+      "output_root": "runs/20261019-phase1-restoration-frozenF-feature-source-s2026092701-m2-r01/waveform_control",
+      "log_path": "runs/20261019-phase1-restoration-frozenF-feature-source-s2026092701-m2-r01/logs/waveform_control.log",
+      "command": "python -u -m experiments.pamf_feature_refine.runner run --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-cache ../../runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache --parent-restoration ../../runs/20261019-phase1-restoration-residual-refinement-selfsup-m3-r03 --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --output ../../runs/20261019-phase1-restoration-frozenF-feature-source-s2026092701-m2-r01 --expected-commit d896e0552f1f17e7b421fb7d94d45af9256899b4",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "workers.json",
+        "<arm>/resolved_config.json",
+        "<arm>/gpu_ready.json",
+        "<arm>/training.jsonl",
+        "<arm>/training_complete.json",
+        "<arm>/final.pt",
+        "<arm>/prediction/<7views>.npz",
+        "<arm>/prediction/<7views>_parent_R03.npy",
+        "<arm>/prediction/<7views>_refined.npy",
+        "<arm>/prediction/complete.json",
+        "<arm>/summary.json",
+        "<arm>/complete.json",
+        "source_decision.json",
+        "complete.json",
+        "frozenF_feature/source_reference_features.npy",
+        "frozenF_feature/feature_cache_complete.json"
+      ]
+    },
+    {
+      "row_id": "frozenF_feature",
+      "method": "R03 correction refinement;pairedIQNMSE+.1logpower +equalcleanidentity +1.0frozenFfeaturecos",
+      "purpose": "matched_source_mechanism_falsification",
+      "config_ref": "experiments/pamf_feature_refine/design.py#configuration",
+      "resolved_config_ref": "runs/20261019-phase1-restoration-frozenF-feature-source-s2026092701-m2-r01/frozenF_feature/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101951,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": 2026101903
+      },
+      "seed_notes": "Botharms samephysical shuffle andexisting20epoch R02augmentation;modelseed reference,strictsameR03init;no newchannel draw;support null",
+      "k": null,
+      "scenario": "clean+six fixedsourcepractical views",
+      "optimizer": "AdamW reset",
+      "lr": 3e-05,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "20newcorrectionepochs/4940updates;parentcorrection20+new20=40,coarse20 separately;compositeinheritance60componentepochs;F50 remains50frozen",
+      "output_root": "runs/20261019-phase1-restoration-frozenF-feature-source-s2026092701-m2-r01/frozenF_feature",
+      "log_path": "runs/20261019-phase1-restoration-frozenF-feature-source-s2026092701-m2-r01/logs/frozenF_feature.log",
+      "command": "python -u -m experiments.pamf_feature_refine.runner run --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-cache ../../runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache --parent-restoration ../../runs/20261019-phase1-restoration-residual-refinement-selfsup-m3-r03 --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --output ../../runs/20261019-phase1-restoration-frozenF-feature-source-s2026092701-m2-r01 --expected-commit d896e0552f1f17e7b421fb7d94d45af9256899b4",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "workers.json",
+        "<arm>/resolved_config.json",
+        "<arm>/gpu_ready.json",
+        "<arm>/training.jsonl",
+        "<arm>/training_complete.json",
+        "<arm>/final.pt",
+        "<arm>/prediction/<7views>.npz",
+        "<arm>/prediction/<7views>_parent_R03.npy",
+        "<arm>/prediction/<7views>_refined.npy",
+        "<arm>/prediction/complete.json",
+        "<arm>/summary.json",
+        "<arm>/complete.json",
+        "source_decision.json",
+        "complete.json",
+        "frozenF_feature/source_reference_features.npy",
+        "frozenF_feature/feature_cache_complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source hypothesis grounded in pairedwaveform loss not explicitly preserving fixedrecognitionfeatures;no targetscore used to choose lambda/schedule/architecture.",
+    "All63000physical source records supplytwo correlated IQexamples perepoch;nominal totalroute clean57.5%,residual30%,full12.5%,actualcountsreported.",
+    "Guided F50 features derive source-supervised knowledge;0newTXlabels doesnot mean entirelylabel-free system. No TX logits/CE/KL used in loss.",
+    "Only correction parameters update;coarse,F50,originaldefaulthead remainfrozen. F50 still original50=33L+17U oldgate/ownEMA/cos/RDrop1/ordinaryaug/LS.01.",
+    "Perindividual trainablecomponent:correction40,coarse20,F50frozen50;compositerestorer inheritedoptimizationcost60componentepochs,not hidden.",
+    "One candidate review completed,no P0/P1;12focused tests including cacheempty-slot and allviewtruthorder negatives.",
+    "No messages tootherchat;no changes/stops ofotherowner jobs oroutputs;useidleGPU0/1 only."
+  ],
+  "registered_at": "2026-10-19T13:32:51+00:00"
+}
