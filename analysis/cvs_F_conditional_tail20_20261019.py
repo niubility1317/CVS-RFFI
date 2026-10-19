@@ -99,7 +99,7 @@ for a,p in paths.items():
  with np.load(p/'prediction/predictions.npz',allow_pickle=False) as f:
   for record in score_rows:
    dimension=record['dimension'];value=record['stratum'];pred=f[record['view']]
-   mask=np.ones(len(y),bool) if dimension=='overall' else rx==int(value) if dimension=='receiver' else day==int(value) if dimension=='day' else y==int(value) if dimension=='transmitter' else None
+   mask=np.ones(len(y),bool) if dimension=='overall' else rx==value if dimension=='receiver' else day==value if dimension=='day' else y==int(value) if dimension=='transmitter' else None
    if mask is None or not mask.any():raise ValueError('Unknown or empty registered scoring stratum')
    cm=np.bincount(y[mask]*6+pred[mask],minlength=36).reshape(6,6);acc=float(np.trace(cm)/cm.sum());denom=cm.sum(0)+cm.sum(1);f1=float(np.divide(2*np.diag(cm),denom,out=np.zeros(6),where=denom>0).mean())
    if abs(acc-record['accuracy'])>1e-12 or abs(f1-record['macro_f1'])>1e-12:raise ValueError('Independent full confusion-matrix metrics differ')

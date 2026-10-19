@@ -1,6 +1,6 @@
 # 纯 F：逐包双完整信道条件尾风险 E20
 
-状态：RUNNING / VERIFIED，已发布并核实两行实际训练；尚未训练完成或读取新正式分数。主目标仍为 low urban>60%、clean 相对同预算 NoAs 可重复正收益、逐 suburban 接近自身 clean。本轮是单 seed E20 机制比较，不能据源观察或单 seed 微增声称完成。
+状态：ANALYZED / VERIFIED，两新行固定 E20、七环境预测与独立评分及完整重计完成。源条件 FAIL，固定配方关闭、不扩 E50。总体目标仍未完成。完整结果见 [final_analysis.md](final_analysis.md)。下文保留事前固定方案与运行记录。
 
 ## 唯一问题及既有源证据
 

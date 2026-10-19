@@ -60,7 +60,7 @@ y,rx,day=truth_arrays(read(Path(c['truth'])),ids);confusion={}
 for arm in arms:
  audit=[]
  for record in score_rows[arm]:
-  dim,v=record['dimension'],record['stratum'];mask=np.ones(len(y),bool) if dim=='overall' else rx==int(v) if dim=='receiver' else day==int(v) if dim=='day' else y==int(v) if dim=='transmitter' else None
+  dim,v=record['dimension'],record['stratum'];mask=np.ones(len(y),bool) if dim=='overall' else rx==v if dim=='receiver' else day==v if dim=='day' else y==int(v) if dim=='transmitter' else None
   if mask is None or not mask.any():raise ValueError('Unknown scoring stratum')
   p=predictions[arm][record['view']][mask];cm=np.bincount(y[mask]*6+p,minlength=36).reshape(6,6);acc=float(np.trace(cm)/cm.sum());den=cm.sum(0)+cm.sum(1);f1=float(np.divide(2*np.diag(cm),den,out=np.zeros(6),where=den>0).mean())
   if abs(acc-record['accuracy'])>1e-12 or abs(f1-record['macro_f1'])>1e-12:raise ValueError('Independent full confusion recount differs')
@@ -69,7 +69,7 @@ for arm in arms:
 for key,records in summary['paired_comparisons'].items():
  a,b=key.split('_minus_')
  for r in records:
-  dim,v=r['dimension'],r['stratum'];mask=np.ones(len(y),bool) if dim=='overall' else rx==int(v) if dim=='receiver' else day==int(v) if dim=='day' else y==int(v);pa=predictions[a][r['view']][mask];pb=predictions[b][r['view']][mask];t=y[mask]
+  dim,v=r['dimension'],r['stratum'];mask=np.ones(len(y),bool) if dim=='overall' else rx==v if dim=='receiver' else day==v if dim=='day' else y==int(v);pa=predictions[a][r['view']][mask];pb=predictions[b][r['view']][mask];t=y[mask]
   if int(((pa==t)&(pb!=t)).sum())!=r['repair'] or int(((pa!=t)&(pb==t)).sum())!=r['damage']:raise ValueError('Independent paired repair/damage differs')
 result.update(status='ANALYZED',formal_scores_read=True,summary=summary,confusion_recount=confusion,all_formal_confusions_recounted=sum(len(v) for v in confusion.values()),all_paired_strata_recounted=sum(len(v) for v in summary['paired_comparisons'].values()))
 print(json.dumps(result))
