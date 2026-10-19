@@ -1,0 +1,380 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01",
+  "group_id": "phase1-F-nontrue-CSIL",
+  "display_name": "纯 F 从零 E20：同 As 非真类 CSIL 迁移与双参照",
+  "description": "只传递其余五类的相对关系，移除真类置信监督；B0/C0/B1/M四行，默认头联合训练，原U与全数据契约。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "F",
+    "scratchE20",
+    "NoAs",
+    "As",
+    "nontrue-only",
+    "CSIL",
+    "default-head",
+    "truth-last"
+  ],
+  "comparison_group_id": "pureF-original-fullsource-scratch20",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Current user goal attachment 5d300dd6: pure F E20 research; source-qualified cumulative E50 allowed, unique mechanism distinct from peer chats.",
+  "code": {
+    "commit": null,
+    "checkout": "E:\\type10-7\\code\\worktrees\\phase1_sameiq_experts_20261019",
+    "environment": "N607 existing Python3.10/Torch2.1/NumPy2.2; FP32/TF32off/CPU2",
+    "cwd": "PROJECT/releases/cvs_F_nontrue_CSIL_E20_20261019_r01"
+  },
+  "data": {
+    "dataset": "existing immutable ManySig equalized1",
+    "version": "same source contract reused",
+    "representation": "equalized1/center256/unitRMS; exact saved residual post_sync/noeq full observation",
+    "contract_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json",
+    "physical_ids_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json#role_ids",
+    "label_map_ref": "design.CLASSES and native class_mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "protocol.CLASSES",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing sourceV27000 + fixed cached balancedV1800/two full physical draws; Phase2 capsule not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": "PROJECT/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/observations/actual_engine.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Fixed seven-view predictions after final20; source matrix decision before separate exec truth-side scoring",
+    "external_method_exception": null,
+    "claim_scope": "Single model seed exploratory experiment; fixed exposed benchmark; no new blind-test claim"
+  },
+  "checkpoint": {
+    "initialization": "Same-seed scratch F/default joint head; ownEMA from own scratch",
+    "sources": [
+      "Frozen CSIL last.pt only as training teacher (C0/B1 shadow); historical200epochs/9800updates"
+    ],
+    "contract_check_ref": "Teacher source_contract/initialization/completion/resolved_config + last.pt; previous same-IQ source qualification",
+    "provenance_verdict": "Teacher JSON exact same role_ids VERIFIED; checkpoint payload checked before first teacher forward",
+    "selection_rule": "Student fixedfinal20; teacher fixedlast200 scratch; no source/target-best weight"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/F-nontrue",
+    "gpu_policy": "global all-owner max2/GPU, free>=12000MB; no healthy task intervention",
+    "remote_run_root": "PROJECT/runs/20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01",
+    "remote_log_root": "PROJECT/runs/20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01/logs",
+    "local_artifact_root": "local_artifacts/F_nontrue_E20_20261019",
+    "launch_command": [
+      "CVS-RFFI/python",
+      "-u",
+      "experiments/cvs_F_nontrue20/runner.py"
+    ],
+    "stop_rule": "Protocol/provenance/numerical/unlaunchable/output/prediction/truth-order technical failures only; preserve failed artifacts; no performance stop/retry",
+    "launch_readback_ref": "local_artifacts/F_nontrue_E20_20261019/latest.json"
+  },
+  "expected_artifacts": [
+    "eachrow/source/final_ssdg.pth and ownEMA",
+    "eachrow/source/training_result.json",
+    "eachrow/source/mechanism_steps.jsonl.gz",
+    "eachrow/source/unit_steps.jsonl.gz",
+    "eachrow/source/training_sequence.jsonl.gz",
+    "eachrow/source_qualification/predictions.npz",
+    "eachrow/prediction all7 scores and predictions",
+    "eachrow/scoring/scores.json",
+    "source_matrix_decision.json",
+    "analysis.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "worstRX",
+      "paired repairs/damage",
+      "source clean/midlow",
+      "complete losses and budget",
+      "actual joint160 and body/head updates"
+    ],
+    "dimensions": [
+      "row",
+      "seed",
+      "clean+6practical",
+      "RX",
+      "day",
+      "TX"
+    ],
+    "prediction_ref": "eachrow/prediction (all seven frozen before truth)",
+    "scorer_ref": "Independent exec evaluate.score after all7 and source matrix decision; report.collect"
+  },
+  "rows": [
+    {
+      "row_id": "B0-s2026092701",
+      "method": "pure_F_B0",
+      "purpose": "reference",
+      "config_ref": "configs/B0-s2026092701.json",
+      "resolved_config_ref": "PROJECT\\runs\\20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01\\B0-s2026092701\\source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "model2026092701; split/data392005; training channel20261016421, validation20261016422, receiver20261016423; source panel selection202610172401, cached draw seed202610172402; official fixed received arrays reused; support not applicable. Native ordinary/U seeds inherited from original parent args. No parent checkpoint; same initialization all4. No support seed applicable.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "scratch AdamW/cos20/CENTER_UNITS physical clip5",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "Scratch20/4440updates;1 studentL128 perstep; frozenCSIL 0 perstep; U13+7 native/ownEMA",
+      "output_root": "PROJECT\\runs\\20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01\\B0-s2026092701\\source",
+      "log_path": "PROJECT/runs/20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01/logs/B0-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_F_nontrue20/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "B0-s2026092701"
+      ],
+      "expected_artifacts": [
+        "eachrow/source/final_ssdg.pth and ownEMA",
+        "eachrow/source/training_result.json",
+        "eachrow/source/mechanism_steps.jsonl.gz",
+        "eachrow/source/unit_steps.jsonl.gz",
+        "eachrow/source/training_sequence.jsonl.gz",
+        "eachrow/source_qualification/predictions.npz",
+        "eachrow/prediction all7 scores and predictions",
+        "eachrow/scoring/scores.json",
+        "source_matrix_decision.json",
+        "analysis.json",
+        "complete.json"
+      ],
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "C0-s2026092701",
+      "method": "pure_F_C0",
+      "purpose": "matched_control",
+      "config_ref": "configs/C0-s2026092701.json",
+      "resolved_config_ref": "PROJECT\\runs\\20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01\\C0-s2026092701\\source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "model2026092701; split/data392005; training channel20261016421, validation20261016422, receiver20261016423; source panel selection202610172401, cached draw seed202610172402; official fixed received arrays reused; support not applicable. Native ordinary/U seeds inherited from original parent args. No parent checkpoint; same initialization all4. No support seed applicable.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "scratch AdamW/cos20/CENTER_UNITS physical clip5",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "Scratch20/4440updates;2 studentL128 perstep; frozenCSIL 128 perstep; U13+7 native/ownEMA",
+      "output_root": "PROJECT\\runs\\20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01\\C0-s2026092701\\source",
+      "log_path": "PROJECT/runs/20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01/logs/C0-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_F_nontrue20/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "C0-s2026092701"
+      ],
+      "expected_artifacts": [
+        "eachrow/source/final_ssdg.pth and ownEMA",
+        "eachrow/source/training_result.json",
+        "eachrow/source/mechanism_steps.jsonl.gz",
+        "eachrow/source/unit_steps.jsonl.gz",
+        "eachrow/source/training_sequence.jsonl.gz",
+        "eachrow/source_qualification/predictions.npz",
+        "eachrow/prediction all7 scores and predictions",
+        "eachrow/scoring/scores.json",
+        "source_matrix_decision.json",
+        "analysis.json",
+        "complete.json"
+      ],
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "B1-s2026092701",
+      "method": "pure_F_B1",
+      "purpose": "reference",
+      "config_ref": "configs/B1-s2026092701.json",
+      "resolved_config_ref": "PROJECT\\runs\\20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01\\B1-s2026092701\\source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "model2026092701; split/data392005; training channel20261016421, validation20261016422, receiver20261016423; source panel selection202610172401, cached draw seed202610172402; official fixed received arrays reused; support not applicable. Native ordinary/U seeds inherited from original parent args. No parent checkpoint; same initialization all4. No support seed applicable.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "scratch AdamW/cos20/CENTER_UNITS physical clip5",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "Scratch20/4440updates;2 studentL128 perstep; frozenCSIL 128 perstep; U13+7 native/ownEMA",
+      "output_root": "PROJECT\\runs\\20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01\\B1-s2026092701\\source",
+      "log_path": "PROJECT/runs/20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01/logs/B1-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_F_nontrue20/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "B1-s2026092701"
+      ],
+      "expected_artifacts": [
+        "eachrow/source/final_ssdg.pth and ownEMA",
+        "eachrow/source/training_result.json",
+        "eachrow/source/mechanism_steps.jsonl.gz",
+        "eachrow/source/unit_steps.jsonl.gz",
+        "eachrow/source/training_sequence.jsonl.gz",
+        "eachrow/source_qualification/predictions.npz",
+        "eachrow/prediction all7 scores and predictions",
+        "eachrow/scoring/scores.json",
+        "source_matrix_decision.json",
+        "analysis.json",
+        "complete.json"
+      ],
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "M-s2026092701",
+      "method": "pure_F_M",
+      "purpose": "candidate",
+      "config_ref": "configs/M-s2026092701.json",
+      "resolved_config_ref": "PROJECT\\runs\\20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01\\M-s2026092701\\source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "model2026092701; split/data392005; training channel20261016421, validation20261016422, receiver20261016423; source panel selection202610172401, cached draw seed202610172402; official fixed received arrays reused; support not applicable. Native ordinary/U seeds inherited from original parent args. No parent checkpoint; same initialization all4. No support seed applicable.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "scratch AdamW/cos20/CENTER_UNITS physical clip5",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "Scratch20/4440updates;2 studentL128 perstep; frozenCSIL 128 perstep; U13+7 native/ownEMA",
+      "output_root": "PROJECT\\runs\\20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01\\M-s2026092701\\source",
+      "log_path": "PROJECT/runs/20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01/logs/M-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_F_nontrue20/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "M-s2026092701"
+      ],
+      "expected_artifacts": [
+        "eachrow/source/final_ssdg.pth and ownEMA",
+        "eachrow/source/training_result.json",
+        "eachrow/source/mechanism_steps.jsonl.gz",
+        "eachrow/source/unit_steps.jsonl.gz",
+        "eachrow/source/training_sequence.jsonl.gz",
+        "eachrow/source_qualification/predictions.npz",
+        "eachrow/prediction all7 scores and predictions",
+        "eachrow/scoring/scores.json",
+        "source_matrix_decision.json",
+        "analysis.json",
+        "complete.json"
+      ],
+      "weight_decay": 0.0001
+    }
+  ],
+  "notes": [
+    "F exactlySIG_TIME_X3/CENTER_25K/CENTER_UNITS; no CROSS_RX/RDrop. Original default cosine6x160/scale30 joint, NoExplicitCFO.",
+    "B0 CEordinary1; C0 .5ordinary+.5raw; B1 .5ordinary+.5fullAs; M B1+.5*6*mean128(teacherCorrect*KL(nontrue_teacher||nontrue_student/6)). CEtemp1/.01 for every L. No auxiliary gradient to true student logit.",
+    "C0/B1/M all compute same fullAs128 + frozenCSIL128; C0 uses raw extra student slot, As teacher shadow. B0 original oneforward cost disclosed; no equalcost claim againstB0.",
+    "Source promotion: M-B1 two-draw midlow >=.5pp and M-B0 fullVclean>=-.2pp; decision before formal scores. Only eligible E50 continuation subsequently locks state rules/matched controls. Fail closes fixed recipe.",
+    "Historical externalteacher200epochs/9800updates disclosed separately. Closed fullposteriorKD and self-subnetwork margin-envelope are different auxiliary targets; no retuning of either.",
+    "Target fixed168000 x7; all results kept, one model seed cannot establish repeatability."
+  ],
+  "registered_at": "2026-10-19T03:58:34+00:00"
+}
