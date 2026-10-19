@@ -1,0 +1,20 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01",
+  "analysis_commit": "f5c7108dd2d5978e2bb2180523d49812d278408c",
+  "pid": 33696,
+  "execution_CWD_matches_immutable_release": true,
+  "actual_CIM_PID_and_command_seen": true,
+  "source_checkpoint_smokes": 3,
+  "all_3_smokes_PASS": true,
+  "full_sourceV_per_model": 27000,
+  "model_forward_examples": 81000,
+  "model_state_unchanged": true,
+  "GPU_policy": "GPU0, one diagnostic worker; active training preserved; original controller observed owner-inclusive 2 workers",
+  "log_growth": "empty -> 3 SOURCE_GEOMETRY_COMPLETE + SOURCE_GEOMETRY_ALL_COMPLETE",
+  "target_reads": 0,
+  "head_fit_updates": 0,
+  "optimizer_updates": 0,
+  "NVML": "Unavailable on this host; existing driver uses native CIM GPU counters",
+  "completion": "All3 complete, process naturally exited; no restart"
+}

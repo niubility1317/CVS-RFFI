@@ -32,3 +32,7 @@
 源域扩种子决定已固定，见 [source_expansion.json](source_expansion.json) 和 [frozen_matrix.json](frozen_matrix.json)。组合弱两类平均 recall 相对匹配 BASE 增加 0.2000 个百分点，达到原先含等号的门槛；WEIGHT 的 0.1222 和 GEOMETRY 的 0.1111 个百分点未达扩种子门槛。此处均为源 V 证据，不是目标性能增益。最终保留 BASE／BOTH 各 3 种子、WEIGHT／GEOMETRY 各 1 种子，全部 8 行自动 clean 预测和独立 truth-last；未扩展的单种子条件不冒充三种子估计。
 
 首种子四行各 50 轮、11100 更新，完整执行证据见 [source_firstseed_complete.json](source_firstseed_complete.json)。第四组来源与真实最终 checkpoint 预测入口核对也已通过。新增 BASE-02、BOTH-02、BASE-03 的实际进程、参数、GPU0 和日志增长已核实；BOTH-03 排队。模型参数、数据、增强、默认头和单模型预算均未改变。
+
+## 已完成7行的部分目标结果
+
+截至部分评分记录，7/8行已独立clean评分，BOTH-s2026092703仍健康运行。详见partial_target_results_r01.md/json；全量50轮/11100步日志解析见partial_full_training_logs_r01.json。七行均无星地执行、U真值读取、非有限更新或训练异常。每行U曝光963900，实际接受率约1.55%至1.59%，不是大比例利用U。不得将部分矩阵标为最终三种子结论或据此改变源域扩展。
