@@ -1,0 +1,1542 @@
+{
+  "status": "SOURCE_REPLAY_VERIFIED",
+  "run_id": "20261019-phase1-F-rawCoAdapt-e20plus10-s2026092701-m4-r01",
+  "decision": {
+    "status": "SOURCE_DECISION_FIXED",
+    "timestamp": 1792406970.3637989,
+    "criteria": {
+      "RAW": {
+        "urban_minus_FULL_As_pp": 0.05555555555555314,
+        "fullVclean_minus_FULL_As_pp": 0.014814814814823052,
+        "As_minus_own_NoAs_fullVclean_pp": 0.029629629629635,
+        "NoAs_minus_FULL_NoAs_urban_pp": 0.02777777777778212,
+        "As_specific_vs_FULL_urban_interaction_pp": 0.027777777777771018,
+        "qualified": false
+      },
+      "PAIR": {
+        "urban_minus_FULL_As_pp": 0.09722222222221522,
+        "fullVclean_minus_FULL_As_pp": 0.02592592592592924,
+        "As_minus_own_NoAs_fullVclean_pp": 0.04074074074074119,
+        "NoAs_minus_FULL_NoAs_urban_pp": 0.1250000000000029,
+        "As_specific_vs_FULL_urban_interaction_pp": -0.02777777777778767,
+        "qualified": false
+      }
+    },
+    "preferred": null,
+    "eligible": [],
+    "new_readouts": {
+      "RAW_NoAs": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 1.0,
+        "L_actual_training_As_accuracy": 0.5416666666666666,
+        "L_new_midlow_accuracies": [
+          [
+            0.5422222222222223,
+            0.425
+          ],
+          [
+            0.52,
+            0.4111111111111111
+          ]
+        ],
+        "V_clean_accuracy": 0.9838888888888889,
+        "source_accuracies": [
+          [
+            0.6411111111111111,
+            0.5122222222222222,
+            0.43555555555555553
+          ],
+          [
+            0.6322222222222222,
+            0.5355555555555556,
+            0.4088888888888889
+          ]
+        ],
+        "full_V_clean_accuracy": 0.9826296296296296,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "RAW_As": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9988888888888889,
+        "L_actual_training_As_accuracy": 0.7966666666666666,
+        "L_new_midlow_accuracies": [
+          [
+            0.7727777777777778,
+            0.6377777777777778
+          ],
+          [
+            0.775,
+            0.6255555555555555
+          ]
+        ],
+        "V_clean_accuracy": 0.9838888888888889,
+        "source_accuracies": [
+          [
+            0.9072222222222223,
+            0.7638888888888888,
+            0.6333333333333333
+          ],
+          [
+            0.9144444444444444,
+            0.7616666666666667,
+            0.6283333333333333
+          ]
+        ],
+        "full_V_clean_accuracy": 0.982925925925926,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "PAIR_NoAs": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 1.0,
+        "L_actual_training_As_accuracy": 0.54,
+        "L_new_midlow_accuracies": [
+          [
+            0.5388888888888889,
+            0.4255555555555556
+          ],
+          [
+            0.5216666666666666,
+            0.41388888888888886
+          ]
+        ],
+        "V_clean_accuracy": 0.9838888888888889,
+        "source_accuracies": [
+          [
+            0.6494444444444445,
+            0.5066666666666667,
+            0.43666666666666665
+          ],
+          [
+            0.635,
+            0.5366666666666666,
+            0.4161111111111111
+          ]
+        ],
+        "full_V_clean_accuracy": 0.9826296296296296,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "PAIR_As": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9994444444444445,
+        "L_actual_training_As_accuracy": 0.7983333333333333,
+        "L_new_midlow_accuracies": [
+          [
+            0.7722222222222223,
+            0.6394444444444445
+          ],
+          [
+            0.7727777777777778,
+            0.6277777777777778
+          ]
+        ],
+        "V_clean_accuracy": 0.9833333333333333,
+        "source_accuracies": [
+          [
+            0.9077777777777778,
+            0.7622222222222222,
+            0.6327777777777778
+          ],
+          [
+            0.9133333333333333,
+            0.7666666666666667,
+            0.6272222222222222
+          ]
+        ],
+        "full_V_clean_accuracy": 0.983037037037037,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      }
+    },
+    "control_readouts": {
+      "FULL_NoAs": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 1.0,
+        "L_actual_training_As_accuracy": 0.5372222222222223,
+        "L_new_midlow_accuracies": [
+          [
+            0.5355555555555556,
+            0.42277777777777775
+          ],
+          [
+            0.5194444444444445,
+            0.4072222222222222
+          ]
+        ],
+        "V_clean_accuracy": 0.9833333333333333,
+        "source_accuracies": [
+          [
+            0.6433333333333333,
+            0.5083333333333333,
+            0.43277777777777776
+          ],
+          [
+            0.6305555555555555,
+            0.5372222222222223,
+            0.4127777777777778
+          ]
+        ],
+        "full_V_clean_accuracy": 0.9826666666666667,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "FULL_As": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9994444444444445,
+        "L_actual_training_As_accuracy": 0.7955555555555556,
+        "L_new_midlow_accuracies": [
+          [
+            0.7722222222222223,
+            0.635
+          ],
+          [
+            0.7761111111111111,
+            0.6288888888888889
+          ]
+        ],
+        "V_clean_accuracy": 0.9827777777777778,
+        "source_accuracies": [
+          [
+            0.9083333333333333,
+            0.7594444444444445,
+            0.6305555555555555
+          ],
+          [
+            0.9133333333333333,
+            0.7688888888888888,
+            0.6261111111111111
+          ]
+        ],
+        "full_V_clean_accuracy": 0.9827777777777778,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "TEMP_NoAs": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9994444444444445,
+        "L_actual_training_As_accuracy": 0.5461111111111111,
+        "L_new_midlow_accuracies": [
+          [
+            0.5427777777777778,
+            0.4222222222222222
+          ],
+          [
+            0.5283333333333333,
+            0.4066666666666667
+          ]
+        ],
+        "V_clean_accuracy": 0.9827777777777778,
+        "source_accuracies": [
+          [
+            0.6533333333333333,
+            0.5133333333333333,
+            0.44166666666666665
+          ],
+          [
+            0.6333333333333333,
+            0.5361111111111111,
+            0.42333333333333334
+          ]
+        ],
+        "full_V_clean_accuracy": 0.9822962962962963,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "TEMP_As": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9961111111111111,
+        "L_actual_training_As_accuracy": 0.6938888888888889,
+        "L_new_midlow_accuracies": [
+          [
+            0.6711111111111111,
+            0.5355555555555556
+          ],
+          [
+            0.6733333333333333,
+            0.5261111111111111
+          ]
+        ],
+        "V_clean_accuracy": 0.9833333333333333,
+        "source_accuracies": [
+          [
+            0.8166666666666667,
+            0.6638888888888889,
+            0.5305555555555556
+          ],
+          [
+            0.8394444444444444,
+            0.6816666666666666,
+            0.5222222222222223
+          ]
+        ],
+        "full_V_clean_accuracy": 0.9807777777777777,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      }
+    },
+    "RAW_minus_PAIR_As_urban_pp": -0.04166666666666208,
+    "RAW_PAIR_As_specific_urban_interaction_pp": 0.05555555555555869,
+    "formal_scores_read": false,
+    "automatic_extension": false,
+    "current_cumulative_epochs": 30,
+    "max_cumulative_epochs": 50,
+    "model_seed_count": 1,
+    "goal_complete": false,
+    "decision": "CLOSE_FIXED_ORIGINALF_RAW2252_JOINT_K5_WIDTH12_E10;no kernel/rank/lambda/seed rescue"
+  },
+  "source": {
+    "RAW_NoAs": {
+      "initial": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9988888888888889,
+        "L_actual_training_As_accuracy": 0.5444444444444444,
+        "L_new_midlow_accuracies": [
+          [
+            0.5311111111111111,
+            0.42277777777777775
+          ],
+          [
+            0.5222222222222223,
+            0.4022222222222222
+          ]
+        ],
+        "V_clean_accuracy": 0.9816666666666667,
+        "source_accuracies": [
+          [
+            0.6333333333333333,
+            0.5183333333333333,
+            0.4388888888888889
+          ],
+          [
+            0.6205555555555555,
+            0.5372222222222223,
+            0.4161111111111111
+          ]
+        ],
+        "full_V_clean_accuracy": 0.9805555555555555,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "final": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 1.0,
+        "L_actual_training_As_accuracy": 0.5416666666666666,
+        "L_new_midlow_accuracies": [
+          [
+            0.5422222222222223,
+            0.425
+          ],
+          [
+            0.52,
+            0.4111111111111111
+          ]
+        ],
+        "V_clean_accuracy": 0.9838888888888889,
+        "source_accuracies": [
+          [
+            0.6411111111111111,
+            0.5122222222222222,
+            0.43555555555555553
+          ],
+          [
+            0.6322222222222222,
+            0.5355555555555556,
+            0.4088888888888889
+          ]
+        ],
+        "full_V_clean_accuracy": 0.9826296296296296,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "actual_training_As_by_scene": {
+        "practical_low_suburban": {
+          "count": 610,
+          "initial_accuracy": 0.6229508196721312,
+          "final_accuracy": 0.6081967213114754,
+          "repair": 19,
+          "damage": 28
+        },
+        "practical_low_urban": {
+          "count": 592,
+          "initial_accuracy": 0.44594594594594594,
+          "final_accuracy": 0.44932432432432434,
+          "repair": 25,
+          "damage": 23
+        },
+        "practical_mid_urban": {
+          "count": 598,
+          "initial_accuracy": 0.5618729096989966,
+          "final_accuracy": 0.5652173913043478,
+          "repair": 23,
+          "damage": 21
+        }
+      }
+    },
+    "RAW_As": {
+      "initial": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9988888888888889,
+        "L_actual_training_As_accuracy": 0.5444444444444444,
+        "L_new_midlow_accuracies": [
+          [
+            0.5311111111111111,
+            0.42277777777777775
+          ],
+          [
+            0.5222222222222223,
+            0.4022222222222222
+          ]
+        ],
+        "V_clean_accuracy": 0.9816666666666667,
+        "source_accuracies": [
+          [
+            0.6333333333333333,
+            0.5183333333333333,
+            0.4388888888888889
+          ],
+          [
+            0.6205555555555555,
+            0.5372222222222223,
+            0.4161111111111111
+          ]
+        ],
+        "full_V_clean_accuracy": 0.9805555555555555,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "final": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9988888888888889,
+        "L_actual_training_As_accuracy": 0.7966666666666666,
+        "L_new_midlow_accuracies": [
+          [
+            0.7727777777777778,
+            0.6377777777777778
+          ],
+          [
+            0.775,
+            0.6255555555555555
+          ]
+        ],
+        "V_clean_accuracy": 0.9838888888888889,
+        "source_accuracies": [
+          [
+            0.9072222222222223,
+            0.7638888888888888,
+            0.6333333333333333
+          ],
+          [
+            0.9144444444444444,
+            0.7616666666666667,
+            0.6283333333333333
+          ]
+        ],
+        "full_V_clean_accuracy": 0.982925925925926,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "actual_training_As_by_scene": {
+        "practical_low_suburban": {
+          "count": 610,
+          "initial_accuracy": 0.6229508196721312,
+          "final_accuracy": 0.9459016393442623,
+          "repair": 200,
+          "damage": 3
+        },
+        "practical_low_urban": {
+          "count": 592,
+          "initial_accuracy": 0.44594594594594594,
+          "final_accuracy": 0.6655405405405406,
+          "repair": 161,
+          "damage": 31
+        },
+        "practical_mid_urban": {
+          "count": 598,
+          "initial_accuracy": 0.5618729096989966,
+          "final_accuracy": 0.774247491638796,
+          "repair": 144,
+          "damage": 17
+        }
+      }
+    },
+    "PAIR_NoAs": {
+      "initial": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9988888888888889,
+        "L_actual_training_As_accuracy": 0.5444444444444444,
+        "L_new_midlow_accuracies": [
+          [
+            0.5311111111111111,
+            0.42277777777777775
+          ],
+          [
+            0.5222222222222223,
+            0.4022222222222222
+          ]
+        ],
+        "V_clean_accuracy": 0.9816666666666667,
+        "source_accuracies": [
+          [
+            0.6333333333333333,
+            0.5183333333333333,
+            0.4388888888888889
+          ],
+          [
+            0.6205555555555555,
+            0.5372222222222223,
+            0.4161111111111111
+          ]
+        ],
+        "full_V_clean_accuracy": 0.9805555555555555,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "final": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 1.0,
+        "L_actual_training_As_accuracy": 0.54,
+        "L_new_midlow_accuracies": [
+          [
+            0.5388888888888889,
+            0.4255555555555556
+          ],
+          [
+            0.5216666666666666,
+            0.41388888888888886
+          ]
+        ],
+        "V_clean_accuracy": 0.9838888888888889,
+        "source_accuracies": [
+          [
+            0.6494444444444445,
+            0.5066666666666667,
+            0.43666666666666665
+          ],
+          [
+            0.635,
+            0.5366666666666666,
+            0.4161111111111111
+          ]
+        ],
+        "full_V_clean_accuracy": 0.9826296296296296,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "actual_training_As_by_scene": {
+        "practical_low_suburban": {
+          "count": 610,
+          "initial_accuracy": 0.6229508196721312,
+          "final_accuracy": 0.6032786885245902,
+          "repair": 21,
+          "damage": 33
+        },
+        "practical_low_urban": {
+          "count": 592,
+          "initial_accuracy": 0.44594594594594594,
+          "final_accuracy": 0.4527027027027027,
+          "repair": 24,
+          "damage": 20
+        },
+        "practical_mid_urban": {
+          "count": 598,
+          "initial_accuracy": 0.5618729096989966,
+          "final_accuracy": 0.5618729096989966,
+          "repair": 22,
+          "damage": 22
+        }
+      }
+    },
+    "PAIR_As": {
+      "initial": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9988888888888889,
+        "L_actual_training_As_accuracy": 0.5444444444444444,
+        "L_new_midlow_accuracies": [
+          [
+            0.5311111111111111,
+            0.42277777777777775
+          ],
+          [
+            0.5222222222222223,
+            0.4022222222222222
+          ]
+        ],
+        "V_clean_accuracy": 0.9816666666666667,
+        "source_accuracies": [
+          [
+            0.6333333333333333,
+            0.5183333333333333,
+            0.4388888888888889
+          ],
+          [
+            0.6205555555555555,
+            0.5372222222222223,
+            0.4161111111111111
+          ]
+        ],
+        "full_V_clean_accuracy": 0.9805555555555555,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "final": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9994444444444445,
+        "L_actual_training_As_accuracy": 0.7983333333333333,
+        "L_new_midlow_accuracies": [
+          [
+            0.7722222222222223,
+            0.6394444444444445
+          ],
+          [
+            0.7727777777777778,
+            0.6277777777777778
+          ]
+        ],
+        "V_clean_accuracy": 0.9833333333333333,
+        "source_accuracies": [
+          [
+            0.9077777777777778,
+            0.7622222222222222,
+            0.6327777777777778
+          ],
+          [
+            0.9133333333333333,
+            0.7666666666666667,
+            0.6272222222222222
+          ]
+        ],
+        "full_V_clean_accuracy": 0.983037037037037,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "actual_training_As_by_scene": {
+        "practical_low_suburban": {
+          "count": 610,
+          "initial_accuracy": 0.6229508196721312,
+          "final_accuracy": 0.9459016393442623,
+          "repair": 200,
+          "damage": 3
+        },
+        "practical_low_urban": {
+          "count": 592,
+          "initial_accuracy": 0.44594594594594594,
+          "final_accuracy": 0.6655405405405406,
+          "repair": 160,
+          "damage": 30
+        },
+        "practical_mid_urban": {
+          "count": 598,
+          "initial_accuracy": 0.5618729096989966,
+          "final_accuracy": 0.7792642140468228,
+          "repair": 146,
+          "damage": 16
+        }
+      }
+    }
+  },
+  "source_parent_error_redistribution": {
+    "RAW_NoAs": {
+      "L_clean": {
+        "count": 1800,
+        "repair": 2,
+        "damage": 0,
+        "initial_accuracy": 0.9988888888888889,
+        "final_accuracy": 1.0
+      },
+      "L_actual_training_As": {
+        "count": 1800,
+        "repair": 67,
+        "damage": 72,
+        "initial_accuracy": 0.5444444444444444,
+        "final_accuracy": 0.5416666666666666
+      },
+      "L_new": {
+        "count": 7200,
+        "repair": 330,
+        "damage": 294,
+        "initial_accuracy": 0.46958333333333335,
+        "final_accuracy": 0.47458333333333336
+      },
+      "V_clean": {
+        "count": 1800,
+        "repair": 6,
+        "damage": 2,
+        "initial_accuracy": 0.9816666666666667,
+        "final_accuracy": 0.9838888888888889
+      },
+      "V_satellite": {
+        "count": 10800,
+        "repair": 477,
+        "damage": 475,
+        "initial_accuracy": 0.5274074074074074,
+        "final_accuracy": 0.5275925925925926
+      },
+      "V_full_clean": {
+        "count": 27000,
+        "repair": 92,
+        "damage": 36,
+        "initial_accuracy": 0.9805555555555555,
+        "final_accuracy": 0.9826296296296296
+      }
+    },
+    "RAW_As": {
+      "L_clean": {
+        "count": 1800,
+        "repair": 2,
+        "damage": 2,
+        "initial_accuracy": 0.9988888888888889,
+        "final_accuracy": 0.9988888888888889
+      },
+      "L_actual_training_As": {
+        "count": 1800,
+        "repair": 505,
+        "damage": 51,
+        "initial_accuracy": 0.5444444444444444,
+        "final_accuracy": 0.7966666666666666
+      },
+      "L_new": {
+        "count": 7200,
+        "repair": 1986,
+        "damage": 307,
+        "initial_accuracy": 0.46958333333333335,
+        "final_accuracy": 0.7027777777777777
+      },
+      "V_clean": {
+        "count": 1800,
+        "repair": 8,
+        "damage": 4,
+        "initial_accuracy": 0.9816666666666667,
+        "final_accuracy": 0.9838888888888889
+      },
+      "V_satellite": {
+        "count": 10800,
+        "repair": 2923,
+        "damage": 323,
+        "initial_accuracy": 0.5274074074074074,
+        "final_accuracy": 0.7681481481481481
+      },
+      "V_full_clean": {
+        "count": 27000,
+        "repair": 151,
+        "damage": 87,
+        "initial_accuracy": 0.9805555555555555,
+        "final_accuracy": 0.982925925925926
+      }
+    },
+    "PAIR_NoAs": {
+      "L_clean": {
+        "count": 1800,
+        "repair": 2,
+        "damage": 0,
+        "initial_accuracy": 0.9988888888888889,
+        "final_accuracy": 1.0
+      },
+      "L_actual_training_As": {
+        "count": 1800,
+        "repair": 67,
+        "damage": 75,
+        "initial_accuracy": 0.5444444444444444,
+        "final_accuracy": 0.54
+      },
+      "L_new": {
+        "count": 7200,
+        "repair": 327,
+        "damage": 288,
+        "initial_accuracy": 0.46958333333333335,
+        "final_accuracy": 0.475
+      },
+      "V_clean": {
+        "count": 1800,
+        "repair": 6,
+        "damage": 2,
+        "initial_accuracy": 0.9816666666666667,
+        "final_accuracy": 0.9838888888888889
+      },
+      "V_satellite": {
+        "count": 10800,
+        "repair": 489,
+        "damage": 460,
+        "initial_accuracy": 0.5274074074074074,
+        "final_accuracy": 0.5300925925925926
+      },
+      "V_full_clean": {
+        "count": 27000,
+        "repair": 92,
+        "damage": 36,
+        "initial_accuracy": 0.9805555555555555,
+        "final_accuracy": 0.9826296296296296
+      }
+    },
+    "PAIR_As": {
+      "L_clean": {
+        "count": 1800,
+        "repair": 2,
+        "damage": 1,
+        "initial_accuracy": 0.9988888888888889,
+        "final_accuracy": 0.9994444444444445
+      },
+      "L_actual_training_As": {
+        "count": 1800,
+        "repair": 506,
+        "damage": 49,
+        "initial_accuracy": 0.5444444444444444,
+        "final_accuracy": 0.7983333333333333
+      },
+      "L_new": {
+        "count": 7200,
+        "repair": 1997,
+        "damage": 316,
+        "initial_accuracy": 0.46958333333333335,
+        "final_accuracy": 0.7030555555555555
+      },
+      "V_clean": {
+        "count": 1800,
+        "repair": 8,
+        "damage": 5,
+        "initial_accuracy": 0.9816666666666667,
+        "final_accuracy": 0.9833333333333333
+      },
+      "V_satellite": {
+        "count": 10800,
+        "repair": 2923,
+        "damage": 321,
+        "initial_accuracy": 0.5274074074074074,
+        "final_accuracy": 0.7683333333333333
+      },
+      "V_full_clean": {
+        "count": 27000,
+        "repair": 154,
+        "damage": 87,
+        "initial_accuracy": 0.9805555555555555,
+        "final_accuracy": 0.983037037037037
+      }
+    }
+  },
+  "states": {
+    "RAW_NoAs": {
+      "changed_parameters": [
+        "id_backbone.encoder.response_gain",
+        "id_backbone.encoder.core.id_backbone.sinc.low_coordinate",
+        "id_backbone.encoder.core.id_backbone.sinc.band_coordinate",
+        "id_backbone.encoder.core.id_backbone.time_fuse.0.weight",
+        "id_backbone.encoder.core.id_backbone.time_fuse.1.weight",
+        "id_backbone.encoder.core.id_backbone.time_fuse.1.bias",
+        "id_backbone.encoder.core.id_backbone.t1.dw.weight",
+        "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+        "id_backbone.encoder.core.id_backbone.t1.norm.weight",
+        "id_backbone.encoder.core.id_backbone.t1.norm.bias",
+        "id_backbone.encoder.core.id_backbone.t2.dw.weight",
+        "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+        "id_backbone.encoder.core.id_backbone.t2.norm.weight",
+        "id_backbone.encoder.core.id_backbone.t2.norm.bias",
+        "id_backbone.encoder.core.id_backbone.t3.dw.weight",
+        "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+        "id_backbone.encoder.core.id_backbone.t3.norm.weight",
+        "id_backbone.encoder.core.id_backbone.t3.norm.bias",
+        "id_backbone.encoder.core.id_backbone.t_proj.weight",
+        "id_backbone.encoder.core.id_backbone.t_proj.bias",
+        "id_backbone.encoder.core.id_backbone.f1.dw.weight",
+        "id_backbone.encoder.core.id_backbone.f1.pw.weight",
+        "id_backbone.encoder.core.id_backbone.f1.norm.weight",
+        "id_backbone.encoder.core.id_backbone.f1.norm.bias",
+        "id_backbone.encoder.core.id_backbone.f2.dw.weight",
+        "id_backbone.encoder.core.id_backbone.f2.pw.weight",
+        "id_backbone.encoder.core.id_backbone.f2.norm.weight",
+        "id_backbone.encoder.core.id_backbone.f2.norm.bias",
+        "id_backbone.encoder.core.id_backbone.f3.dw.weight",
+        "id_backbone.encoder.core.id_backbone.f3.pw.weight",
+        "id_backbone.encoder.core.id_backbone.f3.norm.weight",
+        "id_backbone.encoder.core.id_backbone.f3.norm.bias",
+        "id_backbone.encoder.core.id_backbone.f_proj.weight",
+        "id_backbone.encoder.core.id_backbone.f_proj.bias",
+        "id_backbone.encoder.core.id_backbone.freq_gate.conv.weight",
+        "id_backbone.encoder.core.id_backbone.freq_gate.conv.bias",
+        "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.weight",
+        "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.bias",
+        "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.weight",
+        "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.bias",
+        "id_backbone.encoder.core.id_backbone.pa_gate.net.weight",
+        "id_backbone.encoder.core.id_backbone.pa_gate.net.bias",
+        "id_backbone.encoder.core.id_backbone.pa_b1.conv.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b1.norm.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b1.norm.bias",
+        "id_backbone.encoder.core.id_backbone.pa_b2.conv.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b2.norm.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b2.norm.bias",
+        "id_backbone.encoder.core.id_backbone.pa_b3.conv.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b3.norm.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b3.norm.bias",
+        "id_backbone.encoder.core.id_backbone.pa_proj.0.weight",
+        "id_backbone.encoder.core.id_backbone.pa_proj.0.bias",
+        "id_backbone.encoder.core.id_backbone.fuse.0.weight",
+        "id_backbone.encoder.core.id_backbone.fuse.0.bias",
+        "id_backbone.encoder.core.id_backbone.cls_head.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.down.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.mix.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.temporal.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B1.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B2.weight",
+        "id_backbone.encoder.response_projection.0.weight",
+        "id_backbone.encoder.response_projection.0.bias",
+        "id_backbone.encoder.response_projection.2.weight",
+        "id_backbone.encoder.response_projection.2.bias",
+        "id_backbone.encoder.response_projection.3.weight",
+        "id_backbone.encoder.response_projection.3.bias",
+        "id_backbone.encoder.sequence_pool.gain_raw",
+        "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+        "id_backbone.encoder.sequence_pool.views.1.local_projection.weight",
+        "id_backbone.encoder.sequence_pool.views.2.local_projection.weight",
+        "id_backbone.encoder.sequence_pool.output_projection.weight",
+        "id_backbone.encoder.sequence_pool.output_norm.weight",
+        "id_backbone.encoder.sequence_pool.output_norm.bias"
+      ],
+      "all_unused_native_F_state_bit_equal": true,
+      "original_shallow_middle_Sinc_jointly_changed": true,
+      "physical_CENTER_UNITS_steps_verified": 2220,
+      "original_W_jointly_changed": true,
+      "both_feature_projections_changed": true,
+      "all_raw_encoder_parameters_have_nonzero_gradients": true,
+      "gradient_squared_sum": {
+        "id_backbone.encoder.core.id_backbone.raw_temporal.down.weight": 2.4371247266496802e-06,
+        "id_backbone.encoder.core.id_backbone.f1.dw.weight": 0.12475334656697967,
+        "id_backbone.encoder.core.id_backbone.t2.norm.weight": 0.36151399777607196,
+        "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.weight": 0.019333281636265465,
+        "id_backbone.encoder.core.id_backbone.pa_b2.norm.weight": 0.5621083983968944,
+        "id_backbone.encoder.sequence_pool.output_norm.bias": 0.007413042750576249,
+        "id_backbone.encoder.core.id_backbone.time_fuse.0.weight": 55.19262248009727,
+        "id_backbone.encoder.core.id_backbone.f2.pw.weight": 0.45943755599788716,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.mix.weight": 1.1564954020069473e-06,
+        "id_backbone.encoder.core.id_backbone.f2.norm.bias": 0.0664844253857435,
+        "id_backbone.encoder.core.id_backbone.pa_gate.net.bias": 0.0031641875018028898,
+        "id_backbone.encoder.response_gain": 0.7428892477120144,
+        "id_backbone.encoder.core.id_backbone.pa_gate.net.weight": 0.02116560532984546,
+        "id_backbone.encoder.core.id_backbone.f_proj.weight": 2.138766268289828,
+        "id_backbone.encoder.core.id_backbone.f_proj.bias": 0.3443744605965122,
+        "id_backbone.encoder.core.id_backbone.pa_b3.conv.weight": 14.457892747919345,
+        "id_backbone.encoder.core.id_backbone.pa_b3.norm.bias": 0.3545667185680479,
+        "id_backbone.encoder.core.id_backbone.t3.norm.weight": 0.13826389358169955,
+        "id_backbone.encoder.core.id_backbone.f3.dw.weight": 0.14427712507474943,
+        "id_backbone.encoder.core.id_backbone.t3.dw.weight": 0.31346046941387584,
+        "id_backbone.encoder.core.id_backbone.t1.norm.bias": 0.6692749513268836,
+        "id_backbone.encoder.core.id_backbone.pa_b1.conv.weight": 6.870142956970426,
+        "id_backbone.encoder.sequence_pool.views.0.local_projection.weight": 9.632560623007407,
+        "id_backbone.encoder.sequence_pool.views.2.local_projection.weight": 12.863950602636805,
+        "id_backbone.encoder.response_projection.0.weight": 25.03572413284155,
+        "id_backbone.encoder.core.id_backbone.t2.pw.weight": 15.423561170698122,
+        "id_backbone.encoder.sequence_pool.gain_raw": 0.03677164967364899,
+        "id_backbone.encoder.core.id_backbone.f3.norm.bias": 0.16241886413107487,
+        "id_backbone.encoder.core.id_backbone.pa_proj.0.bias": 0.34021943389328513,
+        "id_backbone.encoder.response_projection.3.weight": 0.005175595928669674,
+        "id_backbone.encoder.core.id_backbone.f1.norm.bias": 0.045538799219376536,
+        "id_backbone.encoder.core.id_backbone.pa_b1.norm.weight": 0.8589848903155293,
+        "id_backbone.encoder.core.id_backbone.f3.norm.weight": 0.09177964533718708,
+        "id_backbone.encoder.core.id_backbone.pa_b3.norm.weight": 0.1964226746324922,
+        "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.bias": 0.17618866763052665,
+        "id_backbone.encoder.core.id_backbone.cls_head.weight": 34.92254815487195,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.temporal.weight": 7.751628459374779e-07,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B2.weight": 0.0011513495570656396,
+        "id_backbone.encoder.response_projection.2.weight": 12.87276104347518,
+        "id_backbone.encoder.core.id_backbone.pa_b2.norm.bias": 1.4323500301674557,
+        "id_backbone.encoder.core.id_backbone.f2.norm.weight": 0.05985162856857684,
+        "id_backbone.encoder.core.id_backbone.t_proj.weight": 7.416183339084455,
+        "id_backbone.encoder.core.id_backbone.freq_gate.conv.weight": 0.3404533953754658,
+        "id_backbone.encoder.core.id_backbone.fuse.0.bias": 0.5234787635830571,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B1.weight": 0.006085413974923237,
+        "id_backbone.encoder.response_projection.2.bias": 14.879576872143844,
+        "id_backbone.encoder.response_projection.0.bias": 5.683448137331922,
+        "id_backbone.encoder.response_projection.3.bias": 0.00497790346237198,
+        "id_backbone.encoder.sequence_pool.output_norm.weight": 0.006204515860288806,
+        "id_backbone.encoder.core.id_backbone.f1.norm.weight": 0.05072221109128394,
+        "id_backbone.encoder.core.id_backbone.pa_b1.norm.bias": 2.081179399887631,
+        "id_backbone.encoder.core.id_backbone.time_fuse.1.bias": 1.4531194562608505,
+        "id_backbone.encoder.core.id_backbone.pa_b2.conv.weight": 31.246159728335897,
+        "id_backbone.encoder.core.id_backbone.freq_gate.conv.bias": 0.0015901942541186012,
+        "id_backbone.encoder.core.id_backbone.t3.norm.bias": 0.21136178445330955,
+        "id_backbone.encoder.core.id_backbone.sinc.low_coordinate": 0.005714731861239053,
+        "id_backbone.encoder.sequence_pool.output_projection.weight": 14.439499782251232,
+        "id_backbone.encoder.core.id_backbone.f1.pw.weight": 0.09166329334611945,
+        "id_backbone.encoder.core.id_backbone.fuse.0.weight": 28.93954259723796,
+        "id_backbone.encoder.core.id_backbone.f3.pw.weight": 1.2982502977476855,
+        "id_backbone.encoder.core.id_backbone.f2.dw.weight": 0.14238381117066723,
+        "id_backbone.encoder.core.id_backbone.pa_proj.0.weight": 1.6601190127435785,
+        "id_backbone.encoder.core.id_backbone.t3.pw.weight": 5.37219190646033,
+        "id_backbone.encoder.core.id_backbone.t1.pw.weight": 18.794193516490395,
+        "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.bias": 0.35877531184191636,
+        "id_backbone.encoder.core.id_backbone.sinc.band_coordinate": 0.0016249175039129427,
+        "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.weight": 0.3258462737667216,
+        "id_backbone.encoder.core.id_backbone.t2.norm.bias": 0.42382516733956166,
+        "id_backbone.encoder.sequence_pool.views.1.local_projection.weight": 11.809141303325532,
+        "id_backbone.encoder.core.id_backbone.t1.norm.weight": 0.5748311529908037,
+        "id_backbone.encoder.core.id_backbone.t1.dw.weight": 2.6959594617678135,
+        "id_backbone.encoder.core.id_backbone.time_fuse.1.weight": 1.0745982425027805,
+        "id_backbone.encoder.core.id_backbone.t2.dw.weight": 1.5044312298384739,
+        "id_backbone.encoder.core.id_backbone.t_proj.bias": 0.38046527080658876
+      },
+      "total_parameters": 902974,
+      "trainable_parameters": 234445
+    },
+    "RAW_As": {
+      "changed_parameters": [
+        "id_backbone.encoder.response_gain",
+        "id_backbone.encoder.core.id_backbone.sinc.low_coordinate",
+        "id_backbone.encoder.core.id_backbone.sinc.band_coordinate",
+        "id_backbone.encoder.core.id_backbone.time_fuse.0.weight",
+        "id_backbone.encoder.core.id_backbone.time_fuse.1.weight",
+        "id_backbone.encoder.core.id_backbone.time_fuse.1.bias",
+        "id_backbone.encoder.core.id_backbone.t1.dw.weight",
+        "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+        "id_backbone.encoder.core.id_backbone.t1.norm.weight",
+        "id_backbone.encoder.core.id_backbone.t1.norm.bias",
+        "id_backbone.encoder.core.id_backbone.t2.dw.weight",
+        "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+        "id_backbone.encoder.core.id_backbone.t2.norm.weight",
+        "id_backbone.encoder.core.id_backbone.t2.norm.bias",
+        "id_backbone.encoder.core.id_backbone.t3.dw.weight",
+        "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+        "id_backbone.encoder.core.id_backbone.t3.norm.weight",
+        "id_backbone.encoder.core.id_backbone.t3.norm.bias",
+        "id_backbone.encoder.core.id_backbone.t_proj.weight",
+        "id_backbone.encoder.core.id_backbone.t_proj.bias",
+        "id_backbone.encoder.core.id_backbone.f1.dw.weight",
+        "id_backbone.encoder.core.id_backbone.f1.pw.weight",
+        "id_backbone.encoder.core.id_backbone.f1.norm.weight",
+        "id_backbone.encoder.core.id_backbone.f1.norm.bias",
+        "id_backbone.encoder.core.id_backbone.f2.dw.weight",
+        "id_backbone.encoder.core.id_backbone.f2.pw.weight",
+        "id_backbone.encoder.core.id_backbone.f2.norm.weight",
+        "id_backbone.encoder.core.id_backbone.f2.norm.bias",
+        "id_backbone.encoder.core.id_backbone.f3.dw.weight",
+        "id_backbone.encoder.core.id_backbone.f3.pw.weight",
+        "id_backbone.encoder.core.id_backbone.f3.norm.weight",
+        "id_backbone.encoder.core.id_backbone.f3.norm.bias",
+        "id_backbone.encoder.core.id_backbone.f_proj.weight",
+        "id_backbone.encoder.core.id_backbone.f_proj.bias",
+        "id_backbone.encoder.core.id_backbone.freq_gate.conv.weight",
+        "id_backbone.encoder.core.id_backbone.freq_gate.conv.bias",
+        "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.weight",
+        "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.bias",
+        "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.weight",
+        "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.bias",
+        "id_backbone.encoder.core.id_backbone.pa_gate.net.weight",
+        "id_backbone.encoder.core.id_backbone.pa_gate.net.bias",
+        "id_backbone.encoder.core.id_backbone.pa_b1.conv.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b1.norm.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b1.norm.bias",
+        "id_backbone.encoder.core.id_backbone.pa_b2.conv.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b2.norm.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b2.norm.bias",
+        "id_backbone.encoder.core.id_backbone.pa_b3.conv.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b3.norm.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b3.norm.bias",
+        "id_backbone.encoder.core.id_backbone.pa_proj.0.weight",
+        "id_backbone.encoder.core.id_backbone.pa_proj.0.bias",
+        "id_backbone.encoder.core.id_backbone.fuse.0.weight",
+        "id_backbone.encoder.core.id_backbone.fuse.0.bias",
+        "id_backbone.encoder.core.id_backbone.cls_head.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.down.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.mix.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.temporal.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B1.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B2.weight",
+        "id_backbone.encoder.response_projection.0.weight",
+        "id_backbone.encoder.response_projection.0.bias",
+        "id_backbone.encoder.response_projection.2.weight",
+        "id_backbone.encoder.response_projection.2.bias",
+        "id_backbone.encoder.response_projection.3.weight",
+        "id_backbone.encoder.response_projection.3.bias",
+        "id_backbone.encoder.sequence_pool.gain_raw",
+        "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+        "id_backbone.encoder.sequence_pool.views.1.local_projection.weight",
+        "id_backbone.encoder.sequence_pool.views.2.local_projection.weight",
+        "id_backbone.encoder.sequence_pool.output_projection.weight",
+        "id_backbone.encoder.sequence_pool.output_norm.weight",
+        "id_backbone.encoder.sequence_pool.output_norm.bias"
+      ],
+      "all_unused_native_F_state_bit_equal": true,
+      "original_shallow_middle_Sinc_jointly_changed": true,
+      "physical_CENTER_UNITS_steps_verified": 2220,
+      "original_W_jointly_changed": true,
+      "both_feature_projections_changed": true,
+      "all_raw_encoder_parameters_have_nonzero_gradients": true,
+      "gradient_squared_sum": {
+        "id_backbone.encoder.core.id_backbone.raw_temporal.down.weight": 0.006306101139579523,
+        "id_backbone.encoder.core.id_backbone.f1.dw.weight": 4.6274024634331,
+        "id_backbone.encoder.core.id_backbone.t2.norm.weight": 30.73039177886676,
+        "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.weight": 7.251140041043982,
+        "id_backbone.encoder.core.id_backbone.pa_b2.norm.weight": 33.14160466467729,
+        "id_backbone.encoder.sequence_pool.output_norm.bias": 0.5643599791546876,
+        "id_backbone.encoder.core.id_backbone.time_fuse.0.weight": 1520.5919161066413,
+        "id_backbone.encoder.core.id_backbone.f2.pw.weight": 28.572897375095636,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.mix.weight": 0.0038077015993961405,
+        "id_backbone.encoder.core.id_backbone.f2.norm.bias": 3.985000363914878,
+        "id_backbone.encoder.core.id_backbone.pa_gate.net.bias": 0.13768614257423906,
+        "id_backbone.encoder.response_gain": 68.8296823874116,
+        "id_backbone.encoder.core.id_backbone.pa_gate.net.weight": 0.8755656398698193,
+        "id_backbone.encoder.core.id_backbone.f_proj.weight": 192.0529493186623,
+        "id_backbone.encoder.core.id_backbone.f_proj.bias": 31.045679933507927,
+        "id_backbone.encoder.core.id_backbone.pa_b3.conv.weight": 822.709552615881,
+        "id_backbone.encoder.core.id_backbone.pa_b3.norm.bias": 20.61091066658264,
+        "id_backbone.encoder.core.id_backbone.t3.norm.weight": 17.415564317430835,
+        "id_backbone.encoder.core.id_backbone.f3.dw.weight": 10.447749742219457,
+        "id_backbone.encoder.core.id_backbone.t3.dw.weight": 45.404596203705296,
+        "id_backbone.encoder.core.id_backbone.t1.norm.bias": 45.63939407316502,
+        "id_backbone.encoder.core.id_backbone.pa_b1.conv.weight": 305.7574871722609,
+        "id_backbone.encoder.sequence_pool.views.0.local_projection.weight": 282.5081685539335,
+        "id_backbone.encoder.sequence_pool.views.2.local_projection.weight": 416.30596105381846,
+        "id_backbone.encoder.response_projection.0.weight": 116.88137059379369,
+        "id_backbone.encoder.core.id_backbone.t2.pw.weight": 1002.2095911987126,
+        "id_backbone.encoder.sequence_pool.gain_raw": 1.9591974995855708,
+        "id_backbone.encoder.core.id_backbone.f3.norm.bias": 12.536004863621201,
+        "id_backbone.encoder.core.id_backbone.pa_proj.0.bias": 20.854622207640205,
+        "id_backbone.encoder.response_projection.3.weight": 0.3457389592549589,
+        "id_backbone.encoder.core.id_backbone.f1.norm.bias": 2.56192957352323,
+        "id_backbone.encoder.core.id_backbone.pa_b1.norm.weight": 42.68799230339937,
+        "id_backbone.encoder.core.id_backbone.f3.norm.weight": 7.70587814389728,
+        "id_backbone.encoder.core.id_backbone.pa_b3.norm.weight": 11.594982420559973,
+        "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.bias": 15.155384969315492,
+        "id_backbone.encoder.core.id_backbone.cls_head.weight": 3223.3048661202192,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.temporal.weight": 0.00297226800209896,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B2.weight": 0.22279765200164547,
+        "id_backbone.encoder.response_projection.2.weight": 75.50601426139474,
+        "id_backbone.encoder.core.id_backbone.pa_b2.norm.bias": 87.8432057853206,
+        "id_backbone.encoder.core.id_backbone.f2.norm.weight": 3.5922807570750592,
+        "id_backbone.encoder.core.id_backbone.t_proj.weight": 779.9423398934305,
+        "id_backbone.encoder.core.id_backbone.freq_gate.conv.weight": 35.76791980213602,
+        "id_backbone.encoder.core.id_backbone.fuse.0.bias": 53.28206669748761,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B1.weight": 0.9003816598633421,
+        "id_backbone.encoder.response_projection.2.bias": 56.03255907999119,
+        "id_backbone.encoder.response_projection.0.bias": 18.842525978572667,
+        "id_backbone.encoder.response_projection.3.bias": 0.30378747020449737,
+        "id_backbone.encoder.sequence_pool.output_norm.weight": 0.29980806475396093,
+        "id_backbone.encoder.core.id_backbone.f1.norm.weight": 2.926452814739605,
+        "id_backbone.encoder.core.id_backbone.pa_b1.norm.bias": 129.40738260140643,
+        "id_backbone.encoder.core.id_backbone.time_fuse.1.bias": 52.198961747810245,
+        "id_backbone.encoder.core.id_backbone.pa_b2.conv.weight": 1545.2135036177933,
+        "id_backbone.encoder.core.id_backbone.freq_gate.conv.bias": 0.15269501879087058,
+        "id_backbone.encoder.core.id_backbone.t3.norm.bias": 25.780056461051572,
+        "id_backbone.encoder.core.id_backbone.sinc.low_coordinate": 0.19404469471101038,
+        "id_backbone.encoder.sequence_pool.output_projection.weight": 436.01526779308915,
+        "id_backbone.encoder.core.id_backbone.f1.pw.weight": 5.141408892406616,
+        "id_backbone.encoder.core.id_backbone.fuse.0.weight": 3218.1223204284906,
+        "id_backbone.encoder.core.id_backbone.f3.pw.weight": 91.61680459231138,
+        "id_backbone.encoder.core.id_backbone.f2.dw.weight": 8.620303751667961,
+        "id_backbone.encoder.core.id_backbone.pa_proj.0.weight": 114.3685823357664,
+        "id_backbone.encoder.core.id_backbone.t3.pw.weight": 686.8533477373421,
+        "id_backbone.encoder.core.id_backbone.t1.pw.weight": 791.0173807740211,
+        "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.bias": 22.599383361899527,
+        "id_backbone.encoder.core.id_backbone.sinc.band_coordinate": 0.05686178601217762,
+        "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.weight": 29.01610533913481,
+        "id_backbone.encoder.core.id_backbone.t2.norm.bias": 40.252999716904014,
+        "id_backbone.encoder.sequence_pool.views.1.local_projection.weight": 371.1606770195067,
+        "id_backbone.encoder.core.id_backbone.t1.norm.weight": 36.13106950809015,
+        "id_backbone.encoder.core.id_backbone.t1.dw.weight": 104.3434030637145,
+        "id_backbone.encoder.core.id_backbone.time_fuse.1.weight": 40.5858089143876,
+        "id_backbone.encoder.core.id_backbone.t2.dw.weight": 95.4528640282806,
+        "id_backbone.encoder.core.id_backbone.t_proj.bias": 40.33801372209564
+      },
+      "total_parameters": 902974,
+      "trainable_parameters": 234445
+    },
+    "PAIR_NoAs": {
+      "changed_parameters": [
+        "id_backbone.encoder.response_gain",
+        "id_backbone.encoder.core.id_backbone.sinc.low_coordinate",
+        "id_backbone.encoder.core.id_backbone.sinc.band_coordinate",
+        "id_backbone.encoder.core.id_backbone.time_fuse.0.weight",
+        "id_backbone.encoder.core.id_backbone.time_fuse.1.weight",
+        "id_backbone.encoder.core.id_backbone.time_fuse.1.bias",
+        "id_backbone.encoder.core.id_backbone.t1.dw.weight",
+        "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+        "id_backbone.encoder.core.id_backbone.t1.norm.weight",
+        "id_backbone.encoder.core.id_backbone.t1.norm.bias",
+        "id_backbone.encoder.core.id_backbone.t2.dw.weight",
+        "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+        "id_backbone.encoder.core.id_backbone.t2.norm.weight",
+        "id_backbone.encoder.core.id_backbone.t2.norm.bias",
+        "id_backbone.encoder.core.id_backbone.t3.dw.weight",
+        "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+        "id_backbone.encoder.core.id_backbone.t3.norm.weight",
+        "id_backbone.encoder.core.id_backbone.t3.norm.bias",
+        "id_backbone.encoder.core.id_backbone.t_proj.weight",
+        "id_backbone.encoder.core.id_backbone.t_proj.bias",
+        "id_backbone.encoder.core.id_backbone.f1.dw.weight",
+        "id_backbone.encoder.core.id_backbone.f1.pw.weight",
+        "id_backbone.encoder.core.id_backbone.f1.norm.weight",
+        "id_backbone.encoder.core.id_backbone.f1.norm.bias",
+        "id_backbone.encoder.core.id_backbone.f2.dw.weight",
+        "id_backbone.encoder.core.id_backbone.f2.pw.weight",
+        "id_backbone.encoder.core.id_backbone.f2.norm.weight",
+        "id_backbone.encoder.core.id_backbone.f2.norm.bias",
+        "id_backbone.encoder.core.id_backbone.f3.dw.weight",
+        "id_backbone.encoder.core.id_backbone.f3.pw.weight",
+        "id_backbone.encoder.core.id_backbone.f3.norm.weight",
+        "id_backbone.encoder.core.id_backbone.f3.norm.bias",
+        "id_backbone.encoder.core.id_backbone.f_proj.weight",
+        "id_backbone.encoder.core.id_backbone.f_proj.bias",
+        "id_backbone.encoder.core.id_backbone.freq_gate.conv.weight",
+        "id_backbone.encoder.core.id_backbone.freq_gate.conv.bias",
+        "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.weight",
+        "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.bias",
+        "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.weight",
+        "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.bias",
+        "id_backbone.encoder.core.id_backbone.pa_gate.net.weight",
+        "id_backbone.encoder.core.id_backbone.pa_gate.net.bias",
+        "id_backbone.encoder.core.id_backbone.pa_b1.conv.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b1.norm.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b1.norm.bias",
+        "id_backbone.encoder.core.id_backbone.pa_b2.conv.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b2.norm.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b2.norm.bias",
+        "id_backbone.encoder.core.id_backbone.pa_b3.conv.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b3.norm.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b3.norm.bias",
+        "id_backbone.encoder.core.id_backbone.pa_proj.0.weight",
+        "id_backbone.encoder.core.id_backbone.pa_proj.0.bias",
+        "id_backbone.encoder.core.id_backbone.fuse.0.weight",
+        "id_backbone.encoder.core.id_backbone.fuse.0.bias",
+        "id_backbone.encoder.core.id_backbone.cls_head.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.down.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.mix.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.temporal.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B1.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B2.weight",
+        "id_backbone.encoder.response_projection.0.weight",
+        "id_backbone.encoder.response_projection.0.bias",
+        "id_backbone.encoder.response_projection.2.weight",
+        "id_backbone.encoder.response_projection.2.bias",
+        "id_backbone.encoder.response_projection.3.weight",
+        "id_backbone.encoder.response_projection.3.bias",
+        "id_backbone.encoder.sequence_pool.gain_raw",
+        "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+        "id_backbone.encoder.sequence_pool.views.1.local_projection.weight",
+        "id_backbone.encoder.sequence_pool.views.2.local_projection.weight",
+        "id_backbone.encoder.sequence_pool.output_projection.weight",
+        "id_backbone.encoder.sequence_pool.output_norm.weight",
+        "id_backbone.encoder.sequence_pool.output_norm.bias"
+      ],
+      "all_unused_native_F_state_bit_equal": true,
+      "original_shallow_middle_Sinc_jointly_changed": true,
+      "physical_CENTER_UNITS_steps_verified": 2220,
+      "original_W_jointly_changed": true,
+      "both_feature_projections_changed": true,
+      "all_raw_encoder_parameters_have_nonzero_gradients": true,
+      "gradient_squared_sum": {
+        "id_backbone.encoder.core.id_backbone.raw_temporal.down.weight": 2.0503584002402268e-06,
+        "id_backbone.encoder.core.id_backbone.f1.dw.weight": 0.12667136274284374,
+        "id_backbone.encoder.core.id_backbone.t2.norm.weight": 0.38784980381905143,
+        "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.weight": 0.020545972256259315,
+        "id_backbone.encoder.core.id_backbone.pa_b2.norm.weight": 0.5825360205690728,
+        "id_backbone.encoder.sequence_pool.output_norm.bias": 0.007742104990008769,
+        "id_backbone.encoder.core.id_backbone.time_fuse.0.weight": 58.52787438109863,
+        "id_backbone.encoder.core.id_backbone.f2.pw.weight": 0.4717862295079769,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.mix.weight": 8.505160808853227e-07,
+        "id_backbone.encoder.core.id_backbone.f2.norm.bias": 0.06898689772551814,
+        "id_backbone.encoder.core.id_backbone.pa_gate.net.bias": 0.00321776929109141,
+        "id_backbone.encoder.response_gain": 0.7699821703842531,
+        "id_backbone.encoder.core.id_backbone.pa_gate.net.weight": 0.021589196786112375,
+        "id_backbone.encoder.core.id_backbone.f_proj.weight": 2.2726165207402005,
+        "id_backbone.encoder.core.id_backbone.f_proj.bias": 0.3663283219701654,
+        "id_backbone.encoder.core.id_backbone.pa_b3.conv.weight": 14.998745325651043,
+        "id_backbone.encoder.core.id_backbone.pa_b3.norm.bias": 0.37095436251976466,
+        "id_backbone.encoder.core.id_backbone.t3.norm.weight": 0.14953357546900747,
+        "id_backbone.encoder.core.id_backbone.f3.dw.weight": 0.15606625688688425,
+        "id_backbone.encoder.core.id_backbone.t3.dw.weight": 0.3393960110372909,
+        "id_backbone.encoder.core.id_backbone.t1.norm.bias": 0.7274701108364212,
+        "id_backbone.encoder.core.id_backbone.pa_b1.conv.weight": 7.053117153294181,
+        "id_backbone.encoder.sequence_pool.views.0.local_projection.weight": 10.085727241930044,
+        "id_backbone.encoder.sequence_pool.views.2.local_projection.weight": 13.36542108500771,
+        "id_backbone.encoder.response_projection.0.weight": 25.478378725636503,
+        "id_backbone.encoder.core.id_backbone.t2.pw.weight": 16.41917130154593,
+        "id_backbone.encoder.sequence_pool.gain_raw": 0.03786003817980621,
+        "id_backbone.encoder.core.id_backbone.f3.norm.bias": 0.1746136238110676,
+        "id_backbone.encoder.core.id_backbone.pa_proj.0.bias": 0.35865051080685184,
+        "id_backbone.encoder.response_projection.3.weight": 0.005411422720212444,
+        "id_backbone.encoder.core.id_backbone.f1.norm.bias": 0.04626351921669292,
+        "id_backbone.encoder.core.id_backbone.pa_b1.norm.weight": 0.8897423239582629,
+        "id_backbone.encoder.core.id_backbone.f3.norm.weight": 0.09822062351488192,
+        "id_backbone.encoder.core.id_backbone.pa_b3.norm.weight": 0.20415815536918025,
+        "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.bias": 0.18662869149181205,
+        "id_backbone.encoder.core.id_backbone.cls_head.weight": 36.25476260587175,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.temporal.weight": 5.164412973527926e-07,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B2.weight": 0.0009272464391889557,
+        "id_backbone.encoder.response_projection.2.weight": 13.034057109681044,
+        "id_backbone.encoder.core.id_backbone.pa_b2.norm.bias": 1.4936577422570885,
+        "id_backbone.encoder.core.id_backbone.f2.norm.weight": 0.06234069442239232,
+        "id_backbone.encoder.core.id_backbone.t_proj.weight": 7.870991085083915,
+        "id_backbone.encoder.core.id_backbone.freq_gate.conv.weight": 0.35176314762659544,
+        "id_backbone.encoder.core.id_backbone.fuse.0.bias": 0.5537486267425606,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B1.weight": 0.004345487999001696,
+        "id_backbone.encoder.response_projection.2.bias": 15.057859912877461,
+        "id_backbone.encoder.response_projection.0.bias": 5.771546235748559,
+        "id_backbone.encoder.response_projection.3.bias": 0.005194936728064231,
+        "id_backbone.encoder.sequence_pool.output_norm.weight": 0.006392264750459176,
+        "id_backbone.encoder.core.id_backbone.f1.norm.weight": 0.052362968221757455,
+        "id_backbone.encoder.core.id_backbone.pa_b1.norm.bias": 2.168401147530041,
+        "id_backbone.encoder.core.id_backbone.time_fuse.1.bias": 1.5716891883128312,
+        "id_backbone.encoder.core.id_backbone.pa_b2.conv.weight": 32.282440878278976,
+        "id_backbone.encoder.core.id_backbone.freq_gate.conv.bias": 0.001576176109950907,
+        "id_backbone.encoder.core.id_backbone.t3.norm.bias": 0.2279830697411107,
+        "id_backbone.encoder.core.id_backbone.sinc.low_coordinate": 0.0059932817008693795,
+        "id_backbone.encoder.sequence_pool.output_projection.weight": 15.161111925101523,
+        "id_backbone.encoder.core.id_backbone.f1.pw.weight": 0.09480807407305569,
+        "id_backbone.encoder.core.id_backbone.fuse.0.weight": 30.57794140857186,
+        "id_backbone.encoder.core.id_backbone.f3.pw.weight": 1.3708274551388229,
+        "id_backbone.encoder.core.id_backbone.f2.dw.weight": 0.14638209561143256,
+        "id_backbone.encoder.core.id_backbone.pa_proj.0.weight": 1.7369614961482824,
+        "id_backbone.encoder.core.id_backbone.t3.pw.weight": 5.783423231250822,
+        "id_backbone.encoder.core.id_backbone.t1.pw.weight": 19.975208557422775,
+        "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.bias": 0.37798611288191175,
+        "id_backbone.encoder.core.id_backbone.sinc.band_coordinate": 0.0017287298405196522,
+        "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.weight": 0.3391901016746619,
+        "id_backbone.encoder.core.id_backbone.t2.norm.bias": 0.45952015862224016,
+        "id_backbone.encoder.sequence_pool.views.1.local_projection.weight": 12.328483693115004,
+        "id_backbone.encoder.core.id_backbone.t1.norm.weight": 0.6158709158883582,
+        "id_backbone.encoder.core.id_backbone.t1.dw.weight": 2.8826106233487963,
+        "id_backbone.encoder.core.id_backbone.time_fuse.1.weight": 1.1449336841251352,
+        "id_backbone.encoder.core.id_backbone.t2.dw.weight": 1.6080610333692391,
+        "id_backbone.encoder.core.id_backbone.t_proj.bias": 0.40387994990857123
+      },
+      "total_parameters": 902974,
+      "trainable_parameters": 234445
+    },
+    "PAIR_As": {
+      "changed_parameters": [
+        "id_backbone.encoder.response_gain",
+        "id_backbone.encoder.core.id_backbone.sinc.low_coordinate",
+        "id_backbone.encoder.core.id_backbone.sinc.band_coordinate",
+        "id_backbone.encoder.core.id_backbone.time_fuse.0.weight",
+        "id_backbone.encoder.core.id_backbone.time_fuse.1.weight",
+        "id_backbone.encoder.core.id_backbone.time_fuse.1.bias",
+        "id_backbone.encoder.core.id_backbone.t1.dw.weight",
+        "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+        "id_backbone.encoder.core.id_backbone.t1.norm.weight",
+        "id_backbone.encoder.core.id_backbone.t1.norm.bias",
+        "id_backbone.encoder.core.id_backbone.t2.dw.weight",
+        "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+        "id_backbone.encoder.core.id_backbone.t2.norm.weight",
+        "id_backbone.encoder.core.id_backbone.t2.norm.bias",
+        "id_backbone.encoder.core.id_backbone.t3.dw.weight",
+        "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+        "id_backbone.encoder.core.id_backbone.t3.norm.weight",
+        "id_backbone.encoder.core.id_backbone.t3.norm.bias",
+        "id_backbone.encoder.core.id_backbone.t_proj.weight",
+        "id_backbone.encoder.core.id_backbone.t_proj.bias",
+        "id_backbone.encoder.core.id_backbone.f1.dw.weight",
+        "id_backbone.encoder.core.id_backbone.f1.pw.weight",
+        "id_backbone.encoder.core.id_backbone.f1.norm.weight",
+        "id_backbone.encoder.core.id_backbone.f1.norm.bias",
+        "id_backbone.encoder.core.id_backbone.f2.dw.weight",
+        "id_backbone.encoder.core.id_backbone.f2.pw.weight",
+        "id_backbone.encoder.core.id_backbone.f2.norm.weight",
+        "id_backbone.encoder.core.id_backbone.f2.norm.bias",
+        "id_backbone.encoder.core.id_backbone.f3.dw.weight",
+        "id_backbone.encoder.core.id_backbone.f3.pw.weight",
+        "id_backbone.encoder.core.id_backbone.f3.norm.weight",
+        "id_backbone.encoder.core.id_backbone.f3.norm.bias",
+        "id_backbone.encoder.core.id_backbone.f_proj.weight",
+        "id_backbone.encoder.core.id_backbone.f_proj.bias",
+        "id_backbone.encoder.core.id_backbone.freq_gate.conv.weight",
+        "id_backbone.encoder.core.id_backbone.freq_gate.conv.bias",
+        "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.weight",
+        "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.bias",
+        "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.weight",
+        "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.bias",
+        "id_backbone.encoder.core.id_backbone.pa_gate.net.weight",
+        "id_backbone.encoder.core.id_backbone.pa_gate.net.bias",
+        "id_backbone.encoder.core.id_backbone.pa_b1.conv.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b1.norm.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b1.norm.bias",
+        "id_backbone.encoder.core.id_backbone.pa_b2.conv.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b2.norm.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b2.norm.bias",
+        "id_backbone.encoder.core.id_backbone.pa_b3.conv.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b3.norm.weight",
+        "id_backbone.encoder.core.id_backbone.pa_b3.norm.bias",
+        "id_backbone.encoder.core.id_backbone.pa_proj.0.weight",
+        "id_backbone.encoder.core.id_backbone.pa_proj.0.bias",
+        "id_backbone.encoder.core.id_backbone.fuse.0.weight",
+        "id_backbone.encoder.core.id_backbone.fuse.0.bias",
+        "id_backbone.encoder.core.id_backbone.cls_head.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.down.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.mix.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.temporal.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B1.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B2.weight",
+        "id_backbone.encoder.response_projection.0.weight",
+        "id_backbone.encoder.response_projection.0.bias",
+        "id_backbone.encoder.response_projection.2.weight",
+        "id_backbone.encoder.response_projection.2.bias",
+        "id_backbone.encoder.response_projection.3.weight",
+        "id_backbone.encoder.response_projection.3.bias",
+        "id_backbone.encoder.sequence_pool.gain_raw",
+        "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+        "id_backbone.encoder.sequence_pool.views.1.local_projection.weight",
+        "id_backbone.encoder.sequence_pool.views.2.local_projection.weight",
+        "id_backbone.encoder.sequence_pool.output_projection.weight",
+        "id_backbone.encoder.sequence_pool.output_norm.weight",
+        "id_backbone.encoder.sequence_pool.output_norm.bias"
+      ],
+      "all_unused_native_F_state_bit_equal": true,
+      "original_shallow_middle_Sinc_jointly_changed": true,
+      "physical_CENTER_UNITS_steps_verified": 2220,
+      "original_W_jointly_changed": true,
+      "both_feature_projections_changed": true,
+      "all_raw_encoder_parameters_have_nonzero_gradients": true,
+      "gradient_squared_sum": {
+        "id_backbone.encoder.core.id_backbone.raw_temporal.down.weight": 0.005645680660379071,
+        "id_backbone.encoder.core.id_backbone.f1.dw.weight": 4.605976871811436,
+        "id_backbone.encoder.core.id_backbone.t2.norm.weight": 31.395486963912845,
+        "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.weight": 7.326624330482446,
+        "id_backbone.encoder.core.id_backbone.pa_b2.norm.weight": 33.07509264315013,
+        "id_backbone.encoder.sequence_pool.output_norm.bias": 0.5583914119765723,
+        "id_backbone.encoder.core.id_backbone.time_fuse.0.weight": 1525.4079359471798,
+        "id_backbone.encoder.core.id_backbone.f2.pw.weight": 29.153728552395478,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.mix.weight": 0.0034045166870785293,
+        "id_backbone.encoder.core.id_backbone.f2.norm.bias": 4.0688317514941446,
+        "id_backbone.encoder.core.id_backbone.pa_gate.net.bias": 0.13667805277304979,
+        "id_backbone.encoder.response_gain": 68.31902096606791,
+        "id_backbone.encoder.core.id_backbone.pa_gate.net.weight": 0.8703379844591836,
+        "id_backbone.encoder.core.id_backbone.f_proj.weight": 195.18334900494665,
+        "id_backbone.encoder.core.id_backbone.f_proj.bias": 31.57380974770058,
+        "id_backbone.encoder.core.id_backbone.pa_b3.conv.weight": 818.187344763428,
+        "id_backbone.encoder.core.id_backbone.pa_b3.norm.bias": 20.474806111713406,
+        "id_backbone.encoder.core.id_backbone.t3.norm.weight": 17.78251802935847,
+        "id_backbone.encoder.core.id_backbone.f3.dw.weight": 10.535869464685675,
+        "id_backbone.encoder.core.id_backbone.t3.dw.weight": 46.675389538984746,
+        "id_backbone.encoder.core.id_backbone.t1.norm.bias": 46.09879000170622,
+        "id_backbone.encoder.core.id_backbone.pa_b1.conv.weight": 305.13885512948036,
+        "id_backbone.encoder.sequence_pool.views.0.local_projection.weight": 280.28827517852187,
+        "id_backbone.encoder.sequence_pool.views.2.local_projection.weight": 414.11707432568073,
+        "id_backbone.encoder.response_projection.0.weight": 116.44813259132206,
+        "id_backbone.encoder.core.id_backbone.t2.pw.weight": 1011.7029932439327,
+        "id_backbone.encoder.sequence_pool.gain_raw": 1.9440702886786312,
+        "id_backbone.encoder.core.id_backbone.f3.norm.bias": 12.73972116742516,
+        "id_backbone.encoder.core.id_backbone.pa_proj.0.bias": 20.68301683932077,
+        "id_backbone.encoder.response_projection.3.weight": 0.34278379651732394,
+        "id_backbone.encoder.core.id_backbone.f1.norm.bias": 2.619053590853582,
+        "id_backbone.encoder.core.id_backbone.pa_b1.norm.weight": 42.5795245267218,
+        "id_backbone.encoder.core.id_backbone.f3.norm.weight": 7.839424852354568,
+        "id_backbone.encoder.core.id_backbone.pa_b3.norm.weight": 11.497796101437416,
+        "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.bias": 15.377480256487615,
+        "id_backbone.encoder.core.id_backbone.cls_head.weight": 3203.382566794753,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.temporal.weight": 0.0026811485752198383,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B2.weight": 0.24629613260458427,
+        "id_backbone.encoder.response_projection.2.weight": 75.05469029210508,
+        "id_backbone.encoder.core.id_backbone.pa_b2.norm.bias": 87.66841877420666,
+        "id_backbone.encoder.core.id_backbone.f2.norm.weight": 3.6424104996112874,
+        "id_backbone.encoder.core.id_backbone.t_proj.weight": 797.072130959481,
+        "id_backbone.encoder.core.id_backbone.freq_gate.conv.weight": 35.988461046188604,
+        "id_backbone.encoder.core.id_backbone.fuse.0.bias": 54.522483038017526,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B1.weight": 0.8454408638463065,
+        "id_backbone.encoder.response_projection.2.bias": 55.62621475837659,
+        "id_backbone.encoder.response_projection.0.bias": 18.74765777718858,
+        "id_backbone.encoder.response_projection.3.bias": 0.30149500945617547,
+        "id_backbone.encoder.sequence_pool.output_norm.weight": 0.29735486570098146,
+        "id_backbone.encoder.core.id_backbone.f1.norm.weight": 2.978542050172109,
+        "id_backbone.encoder.core.id_backbone.pa_b1.norm.bias": 129.255237763864,
+        "id_backbone.encoder.core.id_backbone.time_fuse.1.bias": 52.695682476623915,
+        "id_backbone.encoder.core.id_backbone.pa_b2.conv.weight": 1542.2596508674324,
+        "id_backbone.encoder.core.id_backbone.freq_gate.conv.bias": 0.15367180199176925,
+        "id_backbone.encoder.core.id_backbone.t3.norm.bias": 26.33034883782966,
+        "id_backbone.encoder.core.id_backbone.sinc.low_coordinate": 0.19532521367636946,
+        "id_backbone.encoder.sequence_pool.output_projection.weight": 430.8442080281675,
+        "id_backbone.encoder.core.id_backbone.f1.pw.weight": 5.212859740800923,
+        "id_backbone.encoder.core.id_backbone.fuse.0.weight": 3293.2080879956484,
+        "id_backbone.encoder.core.id_backbone.f3.pw.weight": 93.59698634501547,
+        "id_backbone.encoder.core.id_backbone.f2.dw.weight": 8.771018516155891,
+        "id_backbone.encoder.core.id_backbone.pa_proj.0.weight": 112.99508445709944,
+        "id_backbone.encoder.core.id_backbone.t3.pw.weight": 704.0313572417945,
+        "id_backbone.encoder.core.id_backbone.t1.pw.weight": 795.49366382882,
+        "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.bias": 22.410360593901714,
+        "id_backbone.encoder.core.id_backbone.sinc.band_coordinate": 0.05716840501440856,
+        "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.weight": 28.752369285037275,
+        "id_backbone.encoder.core.id_backbone.t2.norm.bias": 40.961670573218726,
+        "id_backbone.encoder.sequence_pool.views.1.local_projection.weight": 368.0129499658942,
+        "id_backbone.encoder.core.id_backbone.t1.norm.weight": 36.50487059133593,
+        "id_backbone.encoder.core.id_backbone.t1.dw.weight": 105.07323192479089,
+        "id_backbone.encoder.core.id_backbone.time_fuse.1.weight": 41.04378031392116,
+        "id_backbone.encoder.core.id_backbone.t2.dw.weight": 96.95553142903373,
+        "id_backbone.encoder.core.id_backbone.t_proj.bias": 41.131487367791124
+      },
+      "total_parameters": 902974,
+      "trainable_parameters": 234445
+    }
+  },
+  "initial_logits_max_abs_difference": {
+    "RAW_NoAs": 0.0,
+    "RAW_As": 0.0,
+    "PAIR_NoAs": 0.0,
+    "PAIR_As": 0.0
+  },
+  "source_criterion_independently_recomputed": true,
+  "all_new_updates_replayed": 8880,
+  "new_physical_simulations": 0,
+  "formal_scores_read": false,
+  "goal_complete": false
+}

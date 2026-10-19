@@ -1,0 +1,63 @@
+{
+  "status": "VERIFIED",
+  "NN": 10,
+  "physical_L_samples": 1,
+  "observations": [
+    "same saved raw L",
+    "same saved first actual training As"
+  ],
+  "fit_updates": 0,
+  "query_read": false,
+  "formal_scores_read": false,
+  "new_physical_simulations": 0,
+  "rows": {
+    "RAW_NoAs": {
+      "joint160_shape": [
+        2,
+        160
+      ],
+      "clean_and_actual_As_joint_L2_change": [
+        4.363663673400879,
+        4.326642990112305
+      ],
+      "features_changed": true,
+      "default_head_from_checkpoint": true
+    },
+    "RAW_As": {
+      "joint160_shape": [
+        2,
+        160
+      ],
+      "clean_and_actual_As_joint_L2_change": [
+        6.09977912902832,
+        6.529689311981201
+      ],
+      "features_changed": true,
+      "default_head_from_checkpoint": true
+    },
+    "PAIR_NoAs": {
+      "joint160_shape": [
+        2,
+        160
+      ],
+      "clean_and_actual_As_joint_L2_change": [
+        4.208905220031738,
+        4.233983993530273
+      ],
+      "features_changed": true,
+      "default_head_from_checkpoint": true
+    },
+    "PAIR_As": {
+      "joint160_shape": [
+        2,
+        160
+      ],
+      "clean_and_actual_As_joint_L2_change": [
+        6.131032943725586,
+        6.570321559906006
+      ],
+      "features_changed": true,
+      "default_head_from_checkpoint": true
+    }
+  }
+}

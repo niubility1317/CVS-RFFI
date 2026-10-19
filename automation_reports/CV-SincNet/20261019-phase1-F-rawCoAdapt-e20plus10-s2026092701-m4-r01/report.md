@@ -56,3 +56,5 @@ RAW与PAIR分别判断：源V mid/low urban两draw均值相对普通FULL_As至�
 唯一一次独立P0/P1审查PASS，15文件/2个发布内嵌脚本/4行配置及参数MAC、0NN源flow核对通过；无新增模型/CP/IQ/target/remote，见review.json。代码/config commit 5bbd30bde89f6e00c8fc108d4ce76e8a2293ceb5 已本地提交；push/OID状态 VERIFIED，见git_delivery.json。命令 CVS-RFFI/python -u experiments/cvs_raw_coadapt30/runner.py，CWD=PROJECT/releases/cvs_F_rawCoAdapt_E30_20261019_r01，普通账号既有Torch2.1/FP32/TF32off/CPU2；首步真实B0 checkpoint6NN无query smoke通过即继续复用bank并启动四行。逐行路径、资源、停止条件和产物见experiment.json。REJECTED_EXTRA_GATE：不把暂不可达的远端Git OID追加为实验发布门槛；交付仍继续推送/独立核实。
 
 启动证据见launch_evidence.json：单归档传输与远端compile VERIFIED；四行复用既有实际As bank，新增物理模拟0。没有据运行状态声称性能目标已完成。
+
+源端完整回放及固定决定见source_closure.md；本分析未读取正式分数。
