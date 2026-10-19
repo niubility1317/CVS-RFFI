@@ -1,0 +1,46 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "689546e29d3b83b53337dba7a6045beb82d1c7df",
+  "main_training_live": true,
+  "rows": [
+    {
+      "row": "MEAN_WEAK_RX-s2026092701",
+      "step_records": 1262,
+      "first_active_step": 1111,
+      "first_active_epoch": 6,
+      "last_step": 1262,
+      "last_epoch": 6,
+      "actual_applied_calls": 152,
+      "latest_loss": 1.2325410842895508,
+      "latest_weight": 0.010000000000000002,
+      "latest_available_anchor_objectives": 84,
+      "latest_selected_anchor_objectives": 84,
+      "latest_valid_RX_level_cells": 20,
+      "extra_model_forwards": 0,
+      "head_direct_aux_gradient": 0,
+      "U_truth_available": 0,
+      "satellite_training_active": 0
+    },
+    {
+      "row": "TAIL_WEAK_RX-s2026092701",
+      "step_records": 1268,
+      "first_active_step": 1111,
+      "first_active_epoch": 6,
+      "last_step": 1268,
+      "last_epoch": 6,
+      "actual_applied_calls": 158,
+      "latest_loss": 1.110525369644165,
+      "latest_weight": 0.010000000000000002,
+      "latest_available_anchor_objectives": 78,
+      "latest_selected_anchor_objectives": 44,
+      "latest_valid_RX_level_cells": 20,
+      "extra_model_forwards": 0,
+      "head_direct_aux_gradient": 0,
+      "U_truth_available": 0,
+      "satellite_training_active": 0
+    }
+  ],
+  "count_note": "Selected/available counts are loss anchors across two feature levels, not unique physical IQ packets; upper half uses ceil independently within each observed weakTX/RX cell.",
+  "new_target_access": false,
+  "performance_result_available": false
+}
