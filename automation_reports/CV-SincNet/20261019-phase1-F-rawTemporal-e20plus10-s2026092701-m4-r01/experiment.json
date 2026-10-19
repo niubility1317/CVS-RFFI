@@ -1,0 +1,384 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-F-rawTemporal-e20plus10-s2026092701-m4-r01",
+  "group_id": "phase1-F-raw-temporal",
+  "display_name": "纯F低容量raw时间补充：完整IQ与成对平滑输入因果比较",
+  "description": "同合法B0E20父、同L-only三项/实际As/新增E10；新增2252特征参数，RAW/PAIR严格同架构同初始化；原W联合，复用FULL/TEMP同预算控制，自动七景独立评分",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "F",
+    "raw_IQ_feature_bypass",
+    "PAIR_input_control",
+    "L_only",
+    "E20plus10",
+    "same_default_W",
+    "single_seed"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User attachment section7.4 conditionally requests low-capacity raw feature pathway after shallow/middle limitation;completed source-only prepool diagnostic supports removed reproducible TX variation. User explicitly selected L-only three losses. Same default head jointly trains with features, no head-only/replacement. Fixed4row bounded causal test, not a parameter sweep.",
+  "code": {
+    "commit": null,
+    "checkout": "E:\\type10-7\\code\\worktrees\\phase1_sameiq_experts_20261019",
+    "environment": "N607 ordinary account;pinned headJoint release931af701470e781122494398dc58c3e027597550;Torch2.1/FP32/TF32off/CPU2;no install",
+    "cwd": "PROJECT/releases/cvs_F_rawTemporal_E30_20261019_r01"
+  },
+  "data": {
+    "dataset": "existing immutable ManySig equalized1",
+    "version": "same source contract reused",
+    "representation": "equalized1/center256/unitRMS; exact saved residual post_sync/noeq full observation",
+    "contract_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json",
+    "physical_ids_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json#role_ids",
+    "label_map_ref": "design.CLASSES and native class_mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "protocol.CLASSES",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing source V27000/V1800 and exact R02 L1800 actual-first/newL panel;no new simulations or revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": "PROJECT/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/observations/actual_engine.json"
+  },
+  "permissions": {
+    "regime": "phase1_source_L_supplemental_feature_and_original_W_joint",
+    "query_use": "no target fitting/tuning/selection;all row7view predictions fixed before separate truth scorer;4row source decision fixed first",
+    "external_method_exception": null,
+    "claim_scope": "Actual default head and joint160;source evidence motivates hypothesis,not unique-information proof;exposed benchmark/n1,not independent blind or reproducible gain"
+  },
+  "checkpoint": {
+    "initialization": "strict original pureF B0 source scratch FINAL20;normal raw encoder/private seed20261019901;zero B1/B2;identical original W and initial function across all4",
+    "sources": [
+      {
+        "run_id": "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01",
+        "row_id": "B0-s2026092701",
+        "checkpoint": "source/final_ssdg.pth",
+        "role": "common E20 initialization and frozen clean reference"
+      }
+    ],
+    "contract_check_ref": "Existing strict parent own_model/source roles/scratch ancestry/final-only;no E30 method weight is an initializer",
+    "provenance_verdict": "Matching unchanged source L6300/U56700/V27000 roles;original source-fixed parent reused,not target-selected",
+    "selection_rule": "fixed FINAL30 after new2220 updates;no best epoch or target choice"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/F-raw-temporal",
+    "gpu_policy": "all-owner cap2/GPU,free>=12000MB,shared CUDA-init lock;healthy work unchanged",
+    "remote_run_root": "PROJECT/runs/20261019-phase1-F-rawTemporal-e20plus10-s2026092701-m4-r01",
+    "remote_log_root": "PROJECT/runs/20261019-phase1-F-rawTemporal-e20plus10-s2026092701-m4-r01/logs",
+    "local_artifact_root": "local_artifacts/F_rawTemporal_E30_20261019",
+    "launch_command": [
+      "CVS-RFFI/python",
+      "-u",
+      "experiments/cvs_raw_temporal30/runner.py"
+    ],
+    "stop_rule": "Owned systemic technical/numerical/protocol/source/input/cache/head-only/output/prediction failure;preserve partial and healthy rows;no automatic retry. Scientific failure does not cancel declared7view completion."
+  },
+  "expected_artifacts": [
+    "checkpoint_smoke.json",
+    "observation_bank_reuse.json",
+    "launch.json",
+    "queue_state.json",
+    "perrow source config/initial/final/steps/default-head/readouts",
+    "source_matrix_decision.json",
+    "all7 prediction/independent score",
+    "analysis.json",
+    "complete.json or failure.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "worst_RX",
+      "RAW_minus_PAIR",
+      "RAW_PAIR_As_interaction",
+      "new_minus_FULL/TEMP",
+      "repair/damage",
+      "LactualAs/newL/V",
+      "actualjoint160/encoder/W updates",
+      "budget/wall"
+    ],
+    "dimensions": [
+      "4 new RAW/PAIR xAs/NoAs",
+      "4 reused FULL/TEMP joint controls",
+      "7fixed views",
+      "RX/day/TX",
+      "model-seed n1"
+    ],
+    "prediction_ref": "new each7x168000;all4 legacy controls reused,no new old predictions",
+    "scorer_ref": "separate CPU exec independent truth-last and CM/paired recount after source decision"
+  },
+  "rows": [
+    {
+      "row_id": "RAW_NoAs-s2026092701",
+      "method": "RAW_NoAs_raw_temporal_feature",
+      "purpose": "same supplemental encoder, RAW input and two-raw-CE matched NoAs",
+      "config_ref": "configs/RAW_NoAs-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-rawTemporal-e20plus10-s2026092701-m4-r01/RAW_NoAs-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261017431
+      },
+      "seed_notes": "Original model/parent2026092701 and split392005;raw encoder private20261019901;exact existing R02 L indices/As stream and actual bank reused;no new source/formal observation draw;one model seed",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "reset AdamW2e-4/min1e-6/cos10/wd1e-4/globalclip5;2252raw feature parameters plus same originalW960;originalF frozen",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "parent20+new10,total30/2220updates;568320student+284160frozenparentNN;source50400initial+50400final;1176002formalNN;0newAs/U/EMA;new3212trainable902974total;RAW/PAIR equal convolutionMAC214528",
+      "output_root": "PROJECT/runs/20261019-phase1-F-rawTemporal-e20plus10-s2026092701-m4-r01/RAW_NoAs-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-rawTemporal-e20plus10-s2026092701-m4-r01/logs/RAW_NoAs-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_raw_temporal30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "RAW_NoAs-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/initialization.json",
+        "source/source_contract.json",
+        "source/step_metrics.jsonl.gz",
+        "source/initial_source_readout/complete.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ],
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "RAW_As-s2026092701",
+      "method": "RAW_As_raw_temporal_feature",
+      "purpose": "same supplemental encoder, RAW input and complete As",
+      "config_ref": "configs/RAW_As-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-rawTemporal-e20plus10-s2026092701-m4-r01/RAW_As-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261017431
+      },
+      "seed_notes": "Original model/parent2026092701 and split392005;raw encoder private20261019901;exact existing R02 L indices/As stream and actual bank reused;no new source/formal observation draw;one model seed",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "reset AdamW2e-4/min1e-6/cos10/wd1e-4/globalclip5;2252raw feature parameters plus same originalW960;originalF frozen",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "parent20+new10,total30/2220updates;568320student+284160frozenparentNN;source50400initial+50400final;1176002formalNN;0newAs/U/EMA;new3212trainable902974total;RAW/PAIR equal convolutionMAC214528",
+      "output_root": "PROJECT/runs/20261019-phase1-F-rawTemporal-e20plus10-s2026092701-m4-r01/RAW_As-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-rawTemporal-e20plus10-s2026092701-m4-r01/logs/RAW_As-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_raw_temporal30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "RAW_As-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/initialization.json",
+        "source/source_contract.json",
+        "source/step_metrics.jsonl.gz",
+        "source/initial_source_readout/complete.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ],
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "PAIR_NoAs-s2026092701",
+      "method": "PAIR_NoAs_raw_temporal_feature",
+      "purpose": "same supplemental encoder, PAIR input and two-raw-CE matched NoAs",
+      "config_ref": "configs/PAIR_NoAs-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-rawTemporal-e20plus10-s2026092701-m4-r01/PAIR_NoAs-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261017431
+      },
+      "seed_notes": "Original model/parent2026092701 and split392005;raw encoder private20261019901;exact existing R02 L indices/As stream and actual bank reused;no new source/formal observation draw;one model seed",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "reset AdamW2e-4/min1e-6/cos10/wd1e-4/globalclip5;2252raw feature parameters plus same originalW960;originalF frozen",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "parent20+new10,total30/2220updates;568320student+284160frozenparentNN;source50400initial+50400final;1176002formalNN;0newAs/U/EMA;new3212trainable902974total;RAW/PAIR equal convolutionMAC214528",
+      "output_root": "PROJECT/runs/20261019-phase1-F-rawTemporal-e20plus10-s2026092701-m4-r01/PAIR_NoAs-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-rawTemporal-e20plus10-s2026092701-m4-r01/logs/PAIR_NoAs-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_raw_temporal30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "PAIR_NoAs-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/initialization.json",
+        "source/source_contract.json",
+        "source/step_metrics.jsonl.gz",
+        "source/initial_source_readout/complete.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ],
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "PAIR_As-s2026092701",
+      "method": "PAIR_As_raw_temporal_feature",
+      "purpose": "same supplemental encoder, PAIR input and complete As",
+      "config_ref": "configs/PAIR_As-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-rawTemporal-e20plus10-s2026092701-m4-r01/PAIR_As-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261017431
+      },
+      "seed_notes": "Original model/parent2026092701 and split392005;raw encoder private20261019901;exact existing R02 L indices/As stream and actual bank reused;no new source/formal observation draw;one model seed",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "reset AdamW2e-4/min1e-6/cos10/wd1e-4/globalclip5;2252raw feature parameters plus same originalW960;originalF frozen",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "parent20+new10,total30/2220updates;568320student+284160frozenparentNN;source50400initial+50400final;1176002formalNN;0newAs/U/EMA;new3212trainable902974total;RAW/PAIR equal convolutionMAC214528",
+      "output_root": "PROJECT/runs/20261019-phase1-F-rawTemporal-e20plus10-s2026092701-m4-r01/PAIR_As-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-rawTemporal-e20plus10-s2026092701-m4-r01/logs/PAIR_As-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_raw_temporal30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "PAIR_As-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/initialization.json",
+        "source/source_contract.json",
+        "source/step_metrics.jsonl.gz",
+        "source/initial_source_readout/complete.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ],
+      "weight_decay": 0.0001
+    }
+  ],
+  "notes": [
+    "Actual new input access differs from closed t1/t2-only adapter,not a rank/kernel/lambda rescue.",
+    "RAW/PAIR share all2252new parameters and private initial state;native F always full original IQ.",
+    "PAIR raw averaging is not identical to nonlinear time_fuse m/d decomposition;no unique-information claim.",
+    "Same original W joins new features;no classifier replacement/head-only/diagnostic fit.",
+    "Same actual R02 bank/indices/diagnostics and existing FULL/TEMP E30 controls reused;no new physical simulations.",
+    "Partial adapter convolutionMAC matched within0.95% toTEMP;complete model runtime measured,not presumed.",
+    "Local Node direct-python lacks username env;TORCHINDUCTOR_CACHE_DIR scoped to private local test directory,not a scientific recipe change.",
+    "No autoE50;only fixed source evidence can support future matched maximum+20.",
+    "Old healthy tasks unchanged;all failed scientific/technical outcomes preserved."
+  ],
+  "registered_at": "2026-10-19T10:07:55+00:00"
+}

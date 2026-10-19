@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "synthetic_NN": 34,
+  "protocol_negatives": 7,
+  "real_checkpoint_loads": 0,
+  "real_IQ": 0,
+  "target_access": false,
+  "actual_original_native_and_supplement_inputs": true,
+  "shared_initial_state": true,
+  "encoder_and_both_feature_projections_and_W_gradients": true,
+  "actualjoint160_changed": true,
+  "frozen_native_state_equal": true,
+  "deepcopy_prediction_joint_equal": true,
+  "actual_train_checkpoint_expression_and_loader_replayed": true,
+  "adapter_parameters": 2252,
+  "adapter_convolution_MAC": 214528,
+  "trainable_parameters": 3212,
+  "total_parameters": 902974,
+  "source_flow_checks": "PASS/0NN",
+  "parent_and_global_RNG_unchanged": true
+}
