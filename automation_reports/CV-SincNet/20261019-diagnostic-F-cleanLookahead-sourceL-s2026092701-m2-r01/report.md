@@ -40,3 +40,6 @@ raw clean 不经过 ordinary 随机增强，不能冒充 ordinary 更新；As �
 固定源反证规则：分别对B0和B1，lookahead−joint的响应mid/low均值CE须低于−1e-6，raw CE差不大于+1e-6，且至少4/6批urban CE改善。数值1e-6只区分浮点近零，不是有意义识别提升门槛。PASS仅支持另行冻结E20假设，不自动训练或延长；FAIL关闭本次fresh-Adam raw-lookahead理由，不扫步长、inner状态或seed。所有源单步变化均不是历史未见RX、正式识别增量或多种子证据。
 
 实际入口 `CVS-RFFI/python -u experiments/cvs_clean_lookahead/runner.py`，N607普通账户既有FP32/TF32off/CPU2；CWD `PROJECT/releases/cvs_F_cleanLookahead_source_20261019_r01`；不可覆盖输出 `PROJECT/runs/20261019-diagnostic-F-cleanLookahead-sourceL-s2026092701-m2-r01`，每arm的responses/complete独占子目录。唯一owner `codex/root/F-clean-lookahead`；每GPU含其他owner最多2进程、空闲至少12000MB，CUDA init在共享capacity锁内。只实际来源/权限/非有限/接口/预算/输出错误停止自身并保留，不自动重试或干预健康旧任务。精确row/seed/config及预期产物由experiment.json维护。
+
+
+唯一独立P0/P1审查PASS，无会直接使本次源诊断错误、越权、覆盖或不可运行的缺陷。审查核对完整9文件/登记/配置与成本，新增NN0/未修改文件/未操作远端。实际code/config commit `0740b3e010e4c0cad39642767ee3690d96fb40ff`，发布前已完成本地聚焦验证；远端尚未启动，不以本地PASS冒充真实源证据。
