@@ -1,1 +1,2 @@
 {"at": "2026-10-19T06:41:42+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T06:44:55+00:00", "status": "QUEUED", "note": "包传输MATCH、远端编译PASS、33项真实源checkpoint无query smoke PASS。GPU2/3实际训练PID/CWD/argv/卡号/日志增长核实；监督与PL行均有实际星地增强，PL行实际读取隐藏TX标签的U。性能仍2行运行、未完成219；成本仅等待、未测96。", "evidence": ["local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/postlaunch_verified.json"], "row_id": null}

@@ -47,3 +47,11 @@ RIEI/DRIFT E100（用户指定实现预算，阶段按比例缩放）；IB-RFF �
 ## 技术恢复边界
 
 r02零GPU训练行，训练前数值错误原因未确定，诊断重放33项PASS。此run保持原219行所有科学配置不变，只增加异常定位后进行一次技术恢复。实际启动仍先执行真实源checkpoint无query smoke，失败则停止；不跳过finite检查，不调整模型、损失、seed或学习率。物理GPU2、3，总数两卡。
+
+## 实际发布核实（2026-10-19T14:44:55+08:00）
+
+VERIFIED：代码commit `cb9e19fbbbfee31704064be0ad4f6ec96d29b966`，远端分支OID独立核对一致；一次发布包传输MATCH、远端编译PASS，启动第一步33项真实源checkpoint无query联合目标与严格重载smoke全部通过。
+
+实际训练位于物理GPU2、3，每卡一行，PID/CWD/argv与启动登记一致，完整源epoch记录及日志均持续增长。当前首批IB-RFF CE监督与CE＋PL配对行都记录了实际卫星增强样本，PL行同时记录U曝光；U缓存明确不导出TX标签，阈值0.95、默认头联合训练已核实。当前只是开始运行，未声称219性能行或96成本行完成；r02首次数值失败原因仍未确定，记录保留。
+
+性能run：`20261019-phase1-external-dg-concat-pl-m219-r03`；成本run：`20261019-phase1-external-dg-concat-pl-cost-m96-r03`。实际私有运行路径、PID及日志证据位于本run runtime/release_result/postlaunch_verified 引用，不将私有运行配置或原始日志提交Git。成本队列等待全部性能行完成及进程实际退出。

@@ -21,7 +21,7 @@
   "replaces_run_id": "20261019-phase1-external-dg-concat-pl-cost-m96-r02",
   "authorization": "用户要求星地测试统一默认拼接增强；半监督只用普通置信度PL并保留监督对照；明确允许撤下未开始GPU的旧扩展并重发，正在训练和历史产物保留。启用时点授权Agent自行判断。用户进一步要求改用另两张空闲卡，当前为物理GPU2、3；此前等待队列零GPU行保留。",
   "code": {
-    "commit": "publisher records actual Git commit in package.json/release_commit.txt",
+    "commit": "cb9e19fbbbfee31704064be0ad4f6ec96d29b966",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 existing SDG-SEI Py3.8/torch1.11 + existing isolated NumPy1.23.5; no shared install",
     "cwd": "local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/runtime.json#/release_root"
@@ -69,7 +69,8 @@
     "local_artifact_root": "local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019",
     "runtime_ref": "local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/cost_runtime.json",
     "gpu_policy": "physical2/3 only, one own row worker per card; wait for foreign workloads; no extra GPU for cost queue",
-    "stop_rule": "wait upstream actual exit and219 complete; then one fixed idle GPU2/3, first technical/contended measurement failure preserves outputs and stops unstarted rows"
+    "stop_rule": "wait upstream actual exit and219 complete; then one fixed idle GPU2/3, first technical/contended measurement failure preserves outputs and stops unstarted rows",
+    "postlaunch_evidence_ref": "local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/postlaunch_verified.json"
   },
   "expected_artifacts": [
     "state.json",
