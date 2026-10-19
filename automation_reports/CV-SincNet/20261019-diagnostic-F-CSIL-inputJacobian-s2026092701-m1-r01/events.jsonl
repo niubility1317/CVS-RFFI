@@ -1,1 +1,2 @@
 {"at": "2026-10-19T05:04:49+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"event": "CODE_READY", "code_commit": "9ba9d52afe179db13bafab3295efc336bfba7d76", "review": "PASS; no P0/P1; one independent review", "checks": "five protocol-negative cases, mathematical gradients, local actual F double backward PASS", "status": "PLANNED"}
