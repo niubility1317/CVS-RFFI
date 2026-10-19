@@ -383,3 +383,5 @@
 本轮记录：[原默认头决策约束强度消融](by_method/identity_priority.md)。
 
 本轮记录：[原 F 最终特征与中间层匹配消融](by_method/layerwise_frozenF.md)。
+
+本轮记录：[固定 IQ 平均源验证](by_method/iqmean_frozenF.md)。
