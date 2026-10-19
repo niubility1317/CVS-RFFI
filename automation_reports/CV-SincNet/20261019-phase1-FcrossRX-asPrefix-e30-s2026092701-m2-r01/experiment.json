@@ -31,7 +31,8 @@
     "starting_commit": "2467287bec9a9d9d078fafd30df526ce3bade930",
     "checkout": "code/worktrees/phase1_urban_sigtime_20261014",
     "environment": "Existing N607 ordinary CVS-RFFI Python3.10/Torch2.1/NumPy2.2/fullFP32/CPU2; no installs",
-    "cwd": "PROJECT/releases/cvs_FcrossRX_asPrefix_E30_20261019_r01"
+    "cwd": "PROJECT/releases/cvs_FcrossRX_asPrefix_E30_20261019_r01",
+    "source_strata_tool_commit": "eff2547bd6cb29338ca10b521f0672e80691d0f5"
   },
   "data": {
     "dataset": "ManySig",
@@ -104,7 +105,7 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_asPrefix_E30_20261019_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_as_prefix81/runner.py",
     "stop_rule": "Own wrongroles/parent/defaulthead/budget/nonfinite/outputcollision/illegal prediction or systemictechnicalfailure only;preserveall,noautomaticretry;performanceFAIL stillall7",
-    "status": "RUNNING",
+    "status": "ANALYZED",
     "launch_evidence": "local_artifacts/cvs_FcrossRX_asPrefix_E30_20261019_r01/actual_GPU_modules_log_growth.json"
   },
   "expected_artifacts": [
@@ -216,7 +217,22 @@
         "analysis_r01/fullcurves_all7_metrics_paired_errors_source_strata_costs_PNG_PDF",
         "ROW/source/mask_steps.jsonl.gz"
       ],
-      "status": "RUNNING"
+      "status": "ANALYZED",
+      "actual_results": {
+        "training": "COMPLETE",
+        "cumulative_epochs": 30,
+        "cumulative_updates": 6660,
+        "new_epochs": 10,
+        "new_updates": 2220,
+        "formal_views_complete": 7,
+        "independent_truth_last": "COMPLETE",
+        "model_seed": 2026092701,
+        "analysis": "COMPLETE",
+        "source_strata": "COMPLETE",
+        "technical_missing": [
+          "source_readout_separate_wall_time_not_recorded"
+        ]
+      }
     },
     {
       "row_id": "PREFIX-s2026092701",
@@ -279,7 +295,22 @@
         "analysis_r01/fullcurves_all7_metrics_paired_errors_source_strata_costs_PNG_PDF",
         "ROW/source/mask_steps.jsonl.gz"
       ],
-      "status": "RUNNING"
+      "status": "ANALYZED",
+      "actual_results": {
+        "training": "COMPLETE",
+        "cumulative_epochs": 30,
+        "cumulative_updates": 6660,
+        "new_epochs": 10,
+        "new_updates": 2220,
+        "formal_views_complete": 7,
+        "independent_truth_last": "COMPLETE",
+        "model_seed": 2026092701,
+        "analysis": "COMPLETE",
+        "source_strata": "COMPLETE",
+        "technical_missing": [
+          "source_readout_separate_wall_time_not_recorded"
+        ]
+      }
     }
   ],
   "notes": [
@@ -304,5 +335,35 @@
       "reused": true
     }
   ],
-  "registered_at": "2026-10-19T00:03:11+00:00"
+  "registered_at": "2026-10-19T00:03:11+00:00",
+  "actual_results": {
+    "model_seed": 2026092701,
+    "model_seed_count": 1,
+    "source_qualified": false,
+    "fixed_recipe_closed": true,
+    "E50_extension": false,
+    "all7_complete": true,
+    "new_model_epochs": 20,
+    "new_updates": 4440,
+    "new_total_sample_forwards": 8704668,
+    "clean_guard_vs_matched_NoAs_pass": true,
+    "clean_vs_matched_NoAs_pp": -0.09761904761904762,
+    "increment_vs_original_As": {
+      "clean": -0.19107142857142856,
+      "practical_high": -1.5267857142857142,
+      "practical_mid": -1.4880952380952381,
+      "practical_low_suburban": -1.3446428571428573,
+      "practical_high_urban": -1.4494047619047619,
+      "practical_mid_urban": -1.4208333333333334,
+      "practical_low_urban": -1.0773809523809523,
+      "urban_mean": -1.3158730158730159
+    },
+    "repeatable_dual_gain_proven": false,
+    "goal_complete": false,
+    "analysis_ref": "final_analysis.md",
+    "results_ref": "results_summary.json",
+    "technical_missing": [
+      "source_readout_separate_wall_time_not_recorded"
+    ]
+  }
 }
