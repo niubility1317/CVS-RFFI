@@ -2,6 +2,8 @@
 
 状态：RUNNING（2026-10-19 12:04 HKT 独立读回）。一个 seed 的四行固定矩阵。代码/config commit 为 a276b957ce85b939e75cac19f6cc9e5191c44398，发布commit为 1e7cc414f73f093dfbdccee0e4ba7cf90c7a5324；Git远端OID已独立比较相同。归档传输、远端compile、checks均VERIFIED；唯一P0/P1审查PASS。四行分别位于GPU3/4/6/7，PID/CWD/argv/GPU与逐步日志增长均VERIFIED。此时B0已E4、其余三行已E1；尚无终轮、正式预测或评分结果。不将本报告 SHA 作为门槛。
 
+12:18 HKT 更新：B0 已完成自身从零 E20/4440 更新并固定终轮；源 V27000 clean=98.0556%、最差源 RX=94.8148%，不能冒充正式未见RX成绩。真实特征为2×160；变化参数项包括Sinc2、signature7、time17、frequency18、PA15以及默认分类权重1，说明并非只调整融合/头。B0共568320个训练L前向包。七视图各168000包的预测已固定，NN=1176002（含2个synthetic smoke），参数冻结、独立头拟合0，truth未读。其余三行此时已E10，源矩阵决策与正式评分均未发生；全run保持RUNNING。私有独立读回见 local_artifacts/F_nontrue_E20_20261019/source_artifacts.json。
+
 本轮遵守用户最新目标附件：F 仅为三路 SIG_TIME_X3、CENTER_25K 和 CENTER_UNITS。默认 cosine 6×160、scale30，NoExplicitCFO，骨干和默认头联合训练。无 CROSS_RX、RDrop、附加部署分支或拟合诊断头。所有学生从零训练累计 E20；不会复用旧 FcrossRX E20/E30 学生权重。
 
 唯一假设：完整后验蒸馏可能施加不必要的真类置信压力，本轮只测试删除该内容、保留其余五类相对关系是否带来识别增量。先前同物理 V1800、同两次完整信道观测中 CSIL 的源 mid/low 为 86.6667%/78.1944%，PAMF 为 72.8056%/59.0833%。这是迁移假设的依据，不是纯 F 的结果或公平上界。
