@@ -1,6 +1,6 @@
 # R21：按实际推理终点训练的确定性条件恢复器
 
-状态：SOURCE_HYPOTHESIS_FIXED，尚未实现或发布。总目标保持原定义：冻结原 F50/defaulthead 后，正式 low urban≥70%，其余五受损场景各距原始 raw clean≤5 pp；一份恢复 IQ 一致供给原 PAMF 的 FFT/PA/统计/时间分支。恢复训练完整合法 L/U、0 TX标签、0 F权重/输出、0 target；模拟配对 clean 监督须明确披露。
+状态：LOCAL_VERIFIED，已实现并完成本地检查，尚未发布。总目标保持原定义：冻结原 F50/defaulthead 后，正式 low urban≥70%，其余五受损场景各距原始 raw clean≤5 pp；一份恢复 IQ 一致供给原 PAMF 的 FFT/PA/统计/时间分支。恢复训练完整合法 L/U、0 TX标签、0 F权重/输出、0 target；模拟配对 clean 监督须明确披露。
 
 R20 源域负结果及同批128条源V诊断支持检验训练／推理路径差异：含clean端点的路径点误差很小，而自由运行16步没有改善粗恢复。这不是所有流匹配方法无效的证明，也尚未确定唯一失败原因。R21只使用这些源证据提出假设，不根据R19正式分数调整方案。
 
@@ -20,13 +20,13 @@ N607普通账户、新不可覆盖root/release、Git实际代码commit、一次�
 
 |ID|要求|当前状态|
 |---|---|---|
-|A21-01|匹配完整初值、四步部署路径与零起点|pending|
-|A21-02|仅训练目标不同，终点梯度经过四步和6CG|pending|
+|A21-01|匹配完整初值、四步部署路径与零起点|verified：本地检查|
+|A21-02|仅训练目标不同，终点梯度经过四步和6CG|verified：本地梯度及 clean 隔离检查|
 |A21-03|全L/U、scratch、原R07来源、0TX/F/target|pending|
-|A21-04|五个固定源参考、排序、选定行target隔离|pending|
+|A21-04|五个固定源参考、排序、选定行target隔离|verified：正负路径检查|
 |A21-05|真实checkpoint/默认F入口、发布与资源保护|pending|
 |A21-06|E20/4940、完整源七视图及固定三draw|pending|
 |A21-07|有条件正式七视图、配对身份与完整交付|pending|
 |A21-08|多seed、独立物理族、新oracle及逐细节真实性|deferred|
 
-当前0 verified、7 pending、1 deferred。此文是直接可实现的实验设计，不增加项目最小流程以外的审批或发布前门槛。
+当前 3 verified、4 pending、1 deferred。30 项聚焦检查、编译及入口帮助通过；一次独立 P0/P1 审查 PASS，无阻断问题。真实 checkpoint 入口在远端发布后的首步执行，PASS 后立即继续。训练随机流为 202610202100，主预测为 202610202101，三 draw 为 202610202102/103/104。本地验证不代表源资格或正式目标已经达成。
