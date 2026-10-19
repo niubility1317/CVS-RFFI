@@ -1,0 +1,82 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01",
+  "execution_commit": "294e79315fd628c97dca7e312d7e9b0bb3c5a0b6",
+  "actual_model_rows": 2,
+  "model_seeds": [
+    2026092701
+  ],
+  "conditional_seeds_started": [],
+  "controller_live": false,
+  "controller_terminal_artifact": "ARTIFACTS_COMPLETE",
+  "rows": [
+    {
+      "row_id": "RANDOM_WEAK-s2026092701",
+      "role_exit_codes": {
+        "source": 0,
+        "predict": 0,
+        "score": 0
+      },
+      "default_head_joint": true,
+      "native_fitted_probes_disabled": true,
+      "disabled_probe_calls": 1,
+      "head_fit_updates": 0,
+      "prediction_count": 168000,
+      "prediction_views": [
+        "clean"
+      ],
+      "prediction_truth_read": false,
+      "query_fit": false,
+      "independent_CPU_score": true,
+      "truth_last": true,
+      "source_and_prediction_commit_match": true
+    },
+    {
+      "row_id": "SALIENCY_WEAK-s2026092701",
+      "role_exit_codes": {
+        "source": 0,
+        "predict": 0,
+        "score": 0
+      },
+      "default_head_joint": true,
+      "native_fitted_probes_disabled": true,
+      "disabled_probe_calls": 1,
+      "head_fit_updates": 0,
+      "prediction_count": 168000,
+      "prediction_views": [
+        "clean"
+      ],
+      "prediction_truth_read": false,
+      "query_fit": false,
+      "independent_CPU_score": true,
+      "truth_last": true,
+      "source_and_prediction_commit_match": true
+    }
+  ],
+  "aggregate_metric_recomputation": [
+    {
+      "row_id": "RANDOM_WEAK-s2026092701",
+      "count": 168000,
+      "classes": 6,
+      "class_count_each": 28000,
+      "accuracy": 0.8497619047619047,
+      "macro_f1": 0.8468116713273184,
+      "worst_RX": 0.7572083333333334,
+      "worst_day": 0.8199285714285715,
+      "all_from_existing_independent_score": true
+    },
+    {
+      "row_id": "SALIENCY_WEAK-s2026092701",
+      "count": 168000,
+      "classes": 6,
+      "class_count_each": 28000,
+      "accuracy": 0.8487559523809524,
+      "macro_f1": 0.8457854174232455,
+      "worst_RX": 0.7517083333333333,
+      "worst_day": 0.8188095238095238,
+      "all_from_existing_independent_score": true
+    }
+  ],
+  "all_training_logs_parsed": true,
+  "raw_IQ_or_weights_uploaded": false
+}

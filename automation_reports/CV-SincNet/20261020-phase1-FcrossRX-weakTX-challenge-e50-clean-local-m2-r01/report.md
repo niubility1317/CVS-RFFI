@@ -1,5 +1,7 @@
 # F＋跨 RX 同 TX：弱发射机特征挑战
 
+**ANALYZED／VERIFIED：两臂首种子均完整训练并完成clean独立评分，均未改善弱类，不扩种子。** 匹配BASE85.1393%，RANDOM84.9762%，SALIENCY84.8756%；弱类分别−.5107／−.9839个百分点。完整结果见results.md、results_summary.json和conclusion.json。以下保留原预登记及阶段证据；原“尚无本轮目标结果”等描述只对应登记时点。
+
 状态 LOCAL_VERIFIED，尚无本轮目标域结果。历史85.1139%是原F+CROSS_RX三seed方法锚点，实际新机制配对使用已完成的本机BASE三seed，不重复训练或预测。
 
 原50轮＝33L＋17U、每轮222更新、RDrop alpha1、LS.01、普通增强、旧门控＋ownEMA＋cos和统一物理Sinc全部保留。关闭星地信道训练，只测试clean168000。默认分类头随原主目标正常联合训练，禁止另训头；新辅助只更新部署特征。

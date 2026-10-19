@@ -1,0 +1,87 @@
+{
+  "status": "ANALYZED",
+  "run_id": "20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01",
+  "execution_commit": "294e79315fd628c97dca7e312d7e9b0bb3c5a0b6",
+  "method_baseline": "Original F+CROSS_RX50 plus RDrop; unified physical Sinc; ordinaryAug/LS.01; oldgate-ownEMA-cos; defaultheadjoint; no satellite; clean only",
+  "historical_method_mean_percent": 85.11388888888888,
+  "matched_local_BASE_seed01_percent": 85.13928571428572,
+  "source_fixed_weak_TX": [
+    "14-7",
+    "20-19"
+  ],
+  "actual_candidate_models": 2,
+  "actual_seeds_per_arm": 1,
+  "seed_SD_available": false,
+  "weak_TX_objective_achieved": false,
+  "overall_positive_arms": [],
+  "weak_positive_arms": [],
+  "source_expanded_arms": [],
+  "conditional_rows_not_started": 4,
+  "source_decision_before_target": true,
+  "decision": "Do not adopt either challenge arm. Both fail fixed source expansion and both actual clean weak TX recalls decline. No target-driven drop-fraction/weight scan or seed rerun.",
+  "paired": [
+    {
+      "treatment": "RANDOM_WEAK",
+      "model_seed": 2026092701,
+      "accuracy_pp": -0.1630952380952455,
+      "macro_f1_pp": -0.18301406704556156,
+      "per_TX_pp": [
+        0.028571428571422253,
+        -0.28214285714285303,
+        0.017857142857147235,
+        -0.7392857142857201,
+        -0.02142857142857224,
+        0.017857142857136132
+      ],
+      "weak_TX_mean_pp": -0.5107142857142866,
+      "other_TX_mean_pp": 0.010714285714283345,
+      "worst_RX_pp": -0.679166666666664,
+      "worst_day_pp": -0.39285714285713924
+    },
+    {
+      "treatment": "SALIENCY_WEAK",
+      "model_seed": 2026092701,
+      "accuracy_pp": -0.26369047619048125,
+      "macro_f1_pp": -0.28563945745284647,
+      "per_TX_pp": [
+        -0.10000000000000009,
+        -0.16785714285714182,
+        0.6535714285714311,
+        -1.8000000000000016,
+        -0.17142857142856682,
+        0.003571428571425006
+      ],
+      "weak_TX_mean_pp": -0.9839285714285717,
+      "other_TX_mean_pp": 0.09642857142857231,
+      "worst_RX_pp": -1.22916666666667,
+      "worst_day_pp": -0.5047619047619079
+    }
+  ],
+  "saliency_minus_random": [
+    {
+      "model_seed": 2026092701,
+      "accuracy_pp": -0.10059523809523574,
+      "macro_f1_pp": -0.10262539040728491,
+      "weak_TX_mean_pp": -0.47321428571428514,
+      "other_TX_mean_pp": 0.08571428571428896,
+      "worst_RX_pp": -0.550000000000006,
+      "worst_day_pp": -0.11190476190476861,
+      "per_TX_pp": [
+        -0.12857142857142234,
+        0.11428571428571122,
+        0.6357142857142839,
+        -1.0607142857142815,
+        -0.14999999999999458,
+        -0.014285714285711126
+      ]
+    }
+  ],
+  "interpretation": "This bounded n1 matrix does not support deleting dominant shallow/mid weak-class channels as an effective addition to this strong F baseline. It does not establish a universal failure of RSC or a precise causal operator; main trajectories are not bitwise paired and SD is unavailable.",
+  "all_negatives_retained": true,
+  "head_fit_updates": 0,
+  "satellite_training": false,
+  "test_views": [
+    "clean"
+  ],
+  "active_goal": "Unmet. Continue independent source-grounded training-mechanism research on original F+CROSS_RX; no completion claim."
+}
