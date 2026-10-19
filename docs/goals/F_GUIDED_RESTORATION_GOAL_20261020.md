@@ -15,17 +15,17 @@
 
 同一不可变 168000 条物理样本，三套原 F 默认头分别 argmax 后取准确率均值；一个恢复器训练种子，不是三个恢复器种子。以下为已经完整评分的候选，不按单场景拼接为一个模型。
 
-| 场景 | 原 R03 恢复 | correction-only 特征约束 | joint 弱决策约束 | 目标口径 |
-|---|---:|---:|---:|---:|
-| clean | 84.743056% | 84.915873% | 85.016071% | 报告相对原 clean 的差值 |
-| high | 77.575000% | 77.159921% | 77.025794% | ≥83.113889%（暂定） |
-| mid | 76.491071% | 76.233333% | 76.102183% | ≥83.113889%（暂定） |
-| low-suburban | 75.284127% | 75.170437% | 75.080159% | ≥83.113889%（暂定） |
-| high-urban | 76.330952% | 76.224008% | 76.009127% | ≥83.113889%（暂定） |
-| mid-urban | 70.116865% | 71.210317% | 70.841071% | ≥83.113889%（暂定） |
-| low-urban | 63.392460% | **65.309127%** | 65.209325% | ≥70% |
+| 场景 | 原 R03 恢复 | correction-only 特征约束 | joint 弱决策约束 |同RX统计混合|跨RX统计混合| 目标口径 |
+|---|---:|---:|---:|---:|---:|---:|
+| clean | 84.743056% | 84.915873% | 85.016071% |85.054365%|85.064286%| 报告相对原 clean 的差值 |
+| high | 77.575000% | 77.159921% | 77.025794% |77.175794%|77.473413%| ≥83.113889%（暂定） |
+| mid | 76.491071% | 76.233333% | 76.102183% |76.173413%|76.464683%| ≥83.113889%（暂定） |
+| low-suburban | 75.284127% | 75.170437% | 75.080159% |75.121627%|75.457540%| ≥83.113889%（暂定） |
+| high-urban | 76.330952% | 76.224008% | 76.009127% |76.094246%|76.372024%| ≥83.113889%（暂定） |
+| mid-urban | 70.116865% | 71.210317% | 70.841071% |70.747222%|70.975397%| ≥83.113889%（暂定） |
+| low-urban | 63.392460% | **65.309127%** | 65.209325% |64.968056%|65.132937%| ≥70% |
 
-low-urban 最好已测值距 70% 仍差 4.690873 个百分点，其他五种环境也未接近原 clean。joint 候选的 low-urban IQ NMSE 从输入的 1.987855 降至 0.078199，但这没有超过特征约束候选的识别率；波形与识别两项不能互相替代。
+low-urban 最好已测值为 65.309127%，距 70% 仍差 4.690873 个百分点；完整双判据见本轮结果，未按单环境拼接模型。joint 候选的 low-urban IQ NMSE 从输入的 1.987855 降至 0.078199，但这没有超过特征约束候选的识别率；波形与识别两项不能互相替代。
 
 证据入口：
 
@@ -95,9 +95,9 @@ IQ摘要/冻结F语义条件E10两臂现均已完成，方法commit `1c869980ae9
 - [一致伪身份与跨 RX 特征匹配实验](../../automation_reports/CV-SincNet/20261020-phase1-restoration-consensus-identity-source-s2026092701-m2-r01/report.md)
 - [IQ摘要与冻结F语义条件的恢复结构对比](../../automation_reports/CV-SincNet/20261020-phase1-restoration-semantic-feedback-source-s2026092701-m2-r01/report.md)
 
-## 当前固定比较（两臂实际训练中）
+## 当前固定比较（完整源与目标结果已返回）
 
-最新IQ摘要/语义FiLM两臂的源low/mid均下降，未创建target目录；完整源负结果已保存，方法`1c869980ae9059e613ec29915d2b92db7444ed20`，结果`fb7c289d4186be9ba369c31f36232527858c9da7`。本轮不是因为波形界限而漏选识别候选：两臂波形与clean保持通过，但城市识别均不改善。
+本轮开始前的IQ摘要/语义FiLM两臂源low/mid均下降，未创建target目录；完整源负结果已保存，方法`1c869980ae9059e613ec29915d2b92db7444ed20`，结果`fb7c289d4186be9ba369c31f36232527858c9da7`。本轮不是因为波形界限而漏选识别候选：两臂波形与clean保持通过，但城市识别均不改善。
 
 下一方向检验源接收机统计依赖：训练时在纠错器浅层和中层混合特征均值/标准差，候选配对仅来自三原头在source clean上一致且各置信度≥0.9的同伪身份、不同源RX记录；不读取L/U TX真值，不保证伪身份等于真实TX。无候选则跳过，不退回跨身份混合。拟定层位为原corrector encoder第0/2层，概率0.5、Beta(0.1,0.1)、epsilon1e-6；每条observed与配对clean使用相同物理配对/系数，但donor保持对应半批，不从clean半向observed半输入特征。均值/标准差停止梯度，逐条记录有效配对/实际混合、层位、L/U曝光。推断关闭混合，仅当前IQ，恢复网络原参数结构和三个原F/defaulthead保持。
 
@@ -107,7 +107,7 @@ IQ摘要/冻结F语义条件E10两臂现均已完成，方法commit `1c869980ae9
 
 实现时保持逐行训练结束自动测试：控制器确认该source worker实际退出后再在同一卡启动该row target，避免源worker残留CUDA上下文与新预测worker并占；其他健康行不等待整批、也不因已出分行而变化。原R03/F来源、VALIDATED_ONCE数据、不可覆盖输出、唯一owner和最小发布流程保持。r01首步真实smoke因Torch2.1/NumPy2索引兼容错误退出，尚未启动训练worker或访问目标；失败产物保留。r02修复为显式long Tensor index_select，科学配方和固定双行目标矩阵保持，使用新的不可覆盖run/release，不重复全审。完整实现为`experiments/pamf_style_generalization`，run ID `20261020-phase1-restoration-style-generalization-source-s2026092701-m2-r02`。46项聚焦检查通过，涵盖同伪身份配对、同/跨RX匹配有效曝光和系数、半批隔离、统计停止梯度、真实浅/中层接线、推断原Core路径与逐帧独立、checkpoint预算/来源/权限拒绝、固定双行无源分数筛选以及全七视图/三F/有限IQ后truth。单次独立P0/P1审查发现进度文件独占创建会令第二次轮询失败，已修复并通过连续source→target→complete回归及该问题唯一一次定点复核；无未决P0/P1。
 
-新两臂均2140840参数，jointE10/2470、相同原posterior03三F基础损失、原数据顺序/路由，mixseed2026102051；float32系数舍入为1的尝试单独记录并跳过无效混合，所有原基础记录保留。一次N607普通账号预检VERIFIED，GPU4/5各24124MB空闲无PID，空间≥8GB，新run/release不存在，原R03与source-only伪身份来源核实，其他owner保持。固定GPU4同RX、GPU5跨RX，每卡一条本run训练/预测进程，CPU scorer全run最多一个。真实原R03/三F/source Ls四条、两RX的no-query smoke已PASS，0V/0TX真值/0target/0optimizer更新；两臂已在GPU4/5实际训练，PID/CWD/命令/GPU/持续日志增长、两层混合应用和donor RX矩阵均核实，原F/defaulthead冻结。方法commit`99aa5bb976112f1469aacfefa2f1ee40f4fe537a`。每行固定最终E10后自动完整目标测试，source V仅诊断，新的源V/目标成绩尚未产生，用户目标保持未达成。完整命令、环境/CWD、矩阵、路径、资源、停止规则与产物见[本轮最小登记](../../automation_reports/CV-SincNet/20261020-phase1-restoration-style-generalization-source-s2026092701-m2-r02/report.md)。
+新两臂均2140840参数，jointE10/2470、相同原posterior03三F基础损失、原数据顺序/路由，mixseed2026102051；float32系数舍入为1的尝试单独记录并跳过无效混合，所有原基础记录保留。一次N607普通账号预检VERIFIED，GPU4/5各24124MB空闲无PID，空间≥8GB，新run/release不存在，原R03与source-only伪身份来源核实，其他owner保持。固定GPU4同RX、GPU5跨RX，每卡一条本run训练/预测进程，CPU scorer全run最多一个。真实原R03/三F/source Ls四条、两RX的no-query smoke已PASS，0V/0TX真值/0target/0optimizer更新；两臂已在GPU4/5实际训练，PID/CWD/命令/GPU/持续日志增长、两层混合应用和donor RX矩阵均核实，原F/defaulthead冻结。方法commit`99aa5bb976112f1469aacfefa2f1ee40f4fe537a`。两行已完整完成source V与目标七视图/三F独立truth-last评分，实际训练、目标预测、评分及controller均已退出；本轮仍未达到用户完整目标。完整命令、环境/CWD、矩阵、路径、资源、停止规则与产物见[本轮最小登记](../../automation_reports/CV-SincNet/20261020-phase1-restoration-style-generalization-source-s2026092701-m2-r02/report.md)。
 
 ## 固定边界
 
@@ -116,3 +116,8 @@ IQ摘要/冻结F语义条件E10两臂现均已完成，方法commit `1c869980ae9
 此前 E10 消融从原 R03 coarse20/correction20 独立分叉，合计60组件epoch。本轮已完成的中间层实验直接使用原 R02 coarse20＋全新 correction，新增联合30轮，不继承 R03 correction20 或已测试的精修权重。两轮实验计算预算不同，不宣称等成本增益；匹配仅限本轮两臂内部，额外中间层参考前向耗时和显存按实际记录。原20轮配对缓存按1..20再1..10使用，不生成新IQ。
 
 已完成的两批 E10 worker 均已退出。中间层实验曾使用 N607 普通账号、GPU4/5 每卡一条本 run worker，获取时计入其他 owner 且空闲显存至少 18 GB，源 CPU scorer 最多一个；原健康任务未改。两臂均已完成并退出，因源规则未通过，没有启动目标 worker。后续资源由新 run 预登记固定。科学选择只使用源证据，目标预测全部固定后独立 CPU 接入 truth；practical 推断不读取 paired clean、其他视图、目标真值或更新状态。确切 commit、命令、路径、停止规则和产物均在对应最小报告内，不另增审批、签名或哈希链。
+
+
+## 统计混合固定矩阵的实际结论
+
+同 RX 统计混合：目标low urban 64.968056%，clean 85.054365%。跨 RX 统计混合：目标low urban 65.132937%，clean 85.064286%。两臂均完成预登记E10/2470、原168000目标clean+六practical和三原头独立truth-last评分，实际source/target/controller均已退出。source V未作候选筛选，未修改/重排/选择性重跑任何行。完整逐环境/逐F/波形/净纠错/成本结果见[本轮报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-style-generalization-source-s2026092701-m2-r02/report.md)。本轮仍未达到用户完整目标，不由波形或训练检查推断性能。
