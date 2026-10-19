@@ -1,1 +1,2 @@
 {"at": "2026-10-19T05:17:09+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"event": "CODE_READY", "status": "PLANNED", "code_commit": "3f7062ff5a8be5074a280b410a45ec8be9213021", "review": "One independent P0/P1 PASS; no defects", "checks": "formula/positive all-CE/detached weights/missing groups/permutation/bounds/5 protocol negatives and actual twoF native hook/same initialization/body+defaulthead gradients/joint160 PASS"}
