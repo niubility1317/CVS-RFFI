@@ -1,0 +1,2657 @@
+{
+  "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+  "run_id": "20261019-phase1-F-prepool-source-s2026092701-r02",
+  "rows": {
+    "B0_FINAL20": {
+      "views": {
+        "raw": {
+          "count": 1800,
+          "default_head_accuracy": 0.9988888888888889,
+          "pooled": {
+            "cross_half_TX_scatter_sum": 13.21115859522449,
+            "total_scatter_sum": 20.201167360316457,
+            "ratio": 0.6539799586620292,
+            "positive_RX_day_count": 15,
+            "strata": [
+              {
+                "RX": 1,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.8461469763682098,
+                "total_scatter": 1.2352084255247109,
+                "ratio": 0.6850236436889349
+              },
+              {
+                "RX": 1,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.9713454182169686,
+                "total_scatter": 1.3362753297442085,
+                "ratio": 0.7269051494072744
+              },
+              {
+                "RX": 1,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 1.2796399326827135,
+                "total_scatter": 1.6411415459381857,
+                "ratio": 0.7797255123117282
+              },
+              {
+                "RX": 3,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.41462857100493417,
+                "total_scatter": 1.429997598928137,
+                "ratio": 0.2899505365014049
+              },
+              {
+                "RX": 3,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.4671168857406112,
+                "total_scatter": 1.295716341751519,
+                "ratio": 0.36050860106400573
+              },
+              {
+                "RX": 3,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.3408931052411803,
+                "total_scatter": 1.0164941736506201,
+                "ratio": 0.3353615928922667
+              },
+              {
+                "RX": 4,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.749247368856973,
+                "total_scatter": 1.0634224220441437,
+                "ratio": 0.704562320039055
+              },
+              {
+                "RX": 4,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.8686466315292316,
+                "total_scatter": 1.1546445025346443,
+                "ratio": 0.7523065580985334
+              },
+              {
+                "RX": 4,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.8626670882990671,
+                "total_scatter": 1.0955159822572027,
+                "ratio": 0.7874527640588379
+              },
+              {
+                "RX": 6,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 1.068257768745068,
+                "total_scatter": 1.4254881089728164,
+                "ratio": 0.7493978813438418
+              },
+              {
+                "RX": 6,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.8382590166483234,
+                "total_scatter": 1.1986316389762819,
+                "ratio": 0.6993466461174487
+              },
+              {
+                "RX": 6,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.6184712193798007,
+                "total_scatter": 1.1395415261140378,
+                "ratio": 0.5427368860254314
+              },
+              {
+                "RX": 8,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 1.4034823112609234,
+                "total_scatter": 1.7456374831350443,
+                "ratio": 0.8039941424380772
+              },
+              {
+                "RX": 8,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 1.2755106625607253,
+                "total_scatter": 1.6219818408428242,
+                "ratio": 0.7863902236401961
+              },
+              {
+                "RX": 8,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 1.2068456386897608,
+                "total_scatter": 1.8014704399020816,
+                "ratio": 0.6699225321484368
+              }
+            ]
+          },
+          "removed": {
+            "cross_half_TX_scatter_sum": 0.20217735335124853,
+            "total_scatter_sum": 0.3267816741300408,
+            "ratio": 0.6186924462318327,
+            "positive_RX_day_count": 15,
+            "strata": [
+              {
+                "RX": 1,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.013852863251735353,
+                "total_scatter": 0.019467789999850275,
+                "ratio": 0.7115786256088593
+              },
+              {
+                "RX": 1,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.01264072271899129,
+                "total_scatter": 0.016468526431836848,
+                "ratio": 0.7675685357345832
+              },
+              {
+                "RX": 1,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.022200829775658026,
+                "total_scatter": 0.026553552686924366,
+                "ratio": 0.8360775688817816
+              },
+              {
+                "RX": 3,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.004965363442412105,
+                "total_scatter": 0.02229592516907646,
+                "ratio": 0.22270273176637953
+              },
+              {
+                "RX": 3,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0036986751851414636,
+                "total_scatter": 0.017666532720930758,
+                "ratio": 0.20936056008089174
+              },
+              {
+                "RX": 3,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0026035087857786124,
+                "total_scatter": 0.01764019044824537,
+                "ratio": 0.14758960757351558
+              },
+              {
+                "RX": 4,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.007652976020025005,
+                "total_scatter": 0.011948666143498573,
+                "ratio": 0.6404878944742373
+              },
+              {
+                "RX": 4,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.01046156215670664,
+                "total_scatter": 0.014147569710371084,
+                "ratio": 0.7394600182841041
+              },
+              {
+                "RX": 4,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.01118200056890096,
+                "total_scatter": 0.01438790141259918,
+                "ratio": 0.777180788791694
+              },
+              {
+                "RX": 6,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.02649841200378666,
+                "total_scatter": 0.032167370841368365,
+                "ratio": 0.8237667956906436
+              },
+              {
+                "RX": 6,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.012354269046033409,
+                "total_scatter": 0.017742589126544014,
+                "ratio": 0.6963058749723655
+              },
+              {
+                "RX": 6,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.012076223473473926,
+                "total_scatter": 0.018822379322026104,
+                "ratio": 0.6415885721388171
+              },
+              {
+                "RX": 8,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.02218830835649133,
+                "total_scatter": 0.03747337008987921,
+                "ratio": 0.5921086975436975
+              },
+              {
+                "RX": 8,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.020261240815722406,
+                "total_scatter": 0.02933878309738986,
+                "ratio": 0.6905958147093346
+              },
+              {
+                "RX": 8,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.019540397750391337,
+                "total_scatter": 0.030660526929500338,
+                "ratio": 0.6373144791451821
+              }
+            ]
+          }
+        },
+        "mid_draw0": {
+          "count": 1800,
+          "default_head_accuracy": 0.5311111111111111,
+          "pooled": {
+            "cross_half_TX_scatter_sum": 5.319239899657056,
+            "total_scatter_sum": 42.101812804988235,
+            "ratio": 0.12634230084807252,
+            "positive_RX_day_count": 15,
+            "strata": [
+              {
+                "RX": 1,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.2671013481288121,
+                "total_scatter": 2.8160716298099433,
+                "ratio": 0.09484891836605688
+              },
+              {
+                "RX": 1,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.5095132263389183,
+                "total_scatter": 2.6870735334332445,
+                "ratio": 0.18961640610107114
+              },
+              {
+                "RX": 1,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.5560129106191027,
+                "total_scatter": 2.7899654275773482,
+                "ratio": 0.1992902510988868
+              },
+              {
+                "RX": 3,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.10438190464523632,
+                "total_scatter": 3.254544998424046,
+                "ratio": 0.03207265676024801
+              },
+              {
+                "RX": 3,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.3023466084979965,
+                "total_scatter": 2.6218619150965687,
+                "ratio": 0.11531751796580043
+              },
+              {
+                "RX": 3,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.13462913156814396,
+                "total_scatter": 2.277266786184948,
+                "ratio": 0.059118734961082456
+              },
+              {
+                "RX": 4,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.21311886806647676,
+                "total_scatter": 2.252658356324722,
+                "ratio": 0.09460771868406465
+              },
+              {
+                "RX": 4,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.2387258362179888,
+                "total_scatter": 2.466797272919298,
+                "ratio": 0.09677562029062563
+              },
+              {
+                "RX": 4,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.4157860459388824,
+                "total_scatter": 2.401740201574533,
+                "ratio": 0.17311866023906392
+              },
+              {
+                "RX": 6,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.48315671679674604,
+                "total_scatter": 2.971555850729094,
+                "ratio": 0.16259385354584532
+              },
+              {
+                "RX": 6,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.2570020166340496,
+                "total_scatter": 2.991369155527506,
+                "ratio": 0.08591451047061731
+              },
+              {
+                "RX": 6,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.07526312893834626,
+                "total_scatter": 3.059601779128994,
+                "ratio": 0.024598995023389
+              },
+              {
+                "RX": 8,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.7022327781527888,
+                "total_scatter": 3.5428361713986507,
+                "ratio": 0.19821203809025112
+              },
+              {
+                "RX": 8,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.5025079900831688,
+                "total_scatter": 2.8556448623634525,
+                "ratio": 0.17597005730862203
+              },
+              {
+                "RX": 8,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.5574613890303989,
+                "total_scatter": 3.1128248644958862,
+                "ratio": 0.17908536885215298
+              }
+            ]
+          },
+          "removed": {
+            "cross_half_TX_scatter_sum": 0.1251407503905161,
+            "total_scatter_sum": 0.5524345959677365,
+            "ratio": 0.22652591149056966,
+            "positive_RX_day_count": 15,
+            "strata": [
+              {
+                "RX": 1,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0056404989484864915,
+                "total_scatter": 0.0347485772971047,
+                "ratio": 0.16232316219048387
+              },
+              {
+                "RX": 1,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.006253315877768765,
+                "total_scatter": 0.03410960576599621,
+                "ratio": 0.18333005431574592
+              },
+              {
+                "RX": 1,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.016554316431683955,
+                "total_scatter": 0.04338356872657825,
+                "ratio": 0.3815803290876395
+              },
+              {
+                "RX": 3,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.001317031870650304,
+                "total_scatter": 0.03315017828552725,
+                "ratio": 0.03972925452486316
+              },
+              {
+                "RX": 3,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.002262085295637644,
+                "total_scatter": 0.028380237877942506,
+                "ratio": 0.07970635430775465
+              },
+              {
+                "RX": 3,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0010711994570594024,
+                "total_scatter": 0.027568952138620414,
+                "ratio": 0.03885528371456655
+              },
+              {
+                "RX": 4,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.004810603353670458,
+                "total_scatter": 0.030956787863864854,
+                "ratio": 0.15539736793188946
+              },
+              {
+                "RX": 4,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.00611237332472078,
+                "total_scatter": 0.03343075606483624,
+                "ratio": 0.18283682585180927
+              },
+              {
+                "RX": 4,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.007780934487496551,
+                "total_scatter": 0.030228923888746703,
+                "ratio": 0.25740031355840465
+              },
+              {
+                "RX": 6,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0198736541046147,
+                "total_scatter": 0.04925474308566483,
+                "ratio": 0.4034871133131289
+              },
+              {
+                "RX": 6,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.004989767874842946,
+                "total_scatter": 0.0390679849584467,
+                "ratio": 0.12772012378294245
+              },
+              {
+                "RX": 6,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.005968432171093139,
+                "total_scatter": 0.04006196487494088,
+                "ratio": 0.14898001607570793
+              },
+              {
+                "RX": 8,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.015406711873862387,
+                "total_scatter": 0.043475868707843965,
+                "ratio": 0.35437387064982767
+              },
+              {
+                "RX": 8,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.010969690883241448,
+                "total_scatter": 0.03912494664674733,
+                "ratio": 0.280375868171399
+              },
+              {
+                "RX": 8,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.01613013443568712,
+                "total_scatter": 0.04549149978487551,
+                "ratio": 0.3545746900402233
+              }
+            ]
+          }
+        },
+        "low_draw0": {
+          "count": 1800,
+          "default_head_accuracy": 0.42277777777777775,
+          "pooled": {
+            "cross_half_TX_scatter_sum": 3.3338223868738606,
+            "total_scatter_sum": 53.87827434754832,
+            "ratio": 0.06187693327682762,
+            "positive_RX_day_count": 14,
+            "strata": [
+              {
+                "RX": 1,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.22807866014536726,
+                "total_scatter": 3.2526038149991714,
+                "ratio": 0.0701218694676546
+              },
+              {
+                "RX": 1,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.21374214396205793,
+                "total_scatter": 3.839762917624388,
+                "ratio": 0.055665453453125555
+              },
+              {
+                "RX": 1,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.22583668587078445,
+                "total_scatter": 3.591724575628347,
+                "ratio": 0.06287694980934776
+              },
+              {
+                "RX": 3,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": -0.06689769653273268,
+                "total_scatter": 3.7832730928507634,
+                "ratio": -0.017682492088437654
+              },
+              {
+                "RX": 3,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.21490414061774019,
+                "total_scatter": 3.2717116652018703,
+                "ratio": 0.06568553791077436
+              },
+              {
+                "RX": 3,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.12566287504262363,
+                "total_scatter": 3.4561762376091494,
+                "ratio": 0.036358931490586374
+              },
+              {
+                "RX": 4,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.11790608400618112,
+                "total_scatter": 3.595503365276741,
+                "ratio": 0.03279265015987714
+              },
+              {
+                "RX": 4,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.18632727713432096,
+                "total_scatter": 3.5448609586773134,
+                "ratio": 0.052562647535785115
+              },
+              {
+                "RX": 4,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.11310488943411501,
+                "total_scatter": 3.273418211130112,
+                "ratio": 0.03455253259407596
+              },
+              {
+                "RX": 6,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.3208774575905515,
+                "total_scatter": 3.9596703141152063,
+                "ratio": 0.08103640761371114
+              },
+              {
+                "RX": 6,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.08197089634062373,
+                "total_scatter": 3.7953431173115604,
+                "ratio": 0.021597756462843336
+              },
+              {
+                "RX": 6,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.10866966725330861,
+                "total_scatter": 3.6186020927096547,
+                "ratio": 0.030030841874613353
+              },
+              {
+                "RX": 8,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.5156011175376741,
+                "total_scatter": 3.803365836916654,
+                "ratio": 0.13556442888903533
+              },
+              {
+                "RX": 8,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.4173388112748122,
+                "total_scatter": 3.365608253594603,
+                "ratio": 0.12400100660232154
+              },
+              {
+                "RX": 8,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.5306993771964327,
+                "total_scatter": 3.726649893902784,
+                "ratio": 0.1424065561041074
+              }
+            ]
+          },
+          "removed": {
+            "cross_half_TX_scatter_sum": 0.07816801059804952,
+            "total_scatter_sum": 0.5781393985771126,
+            "ratio": 0.13520616444828473,
+            "positive_RX_day_count": 15,
+            "strata": [
+              {
+                "RX": 1,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.006257069887696525,
+                "total_scatter": 0.03667728103448465,
+                "ratio": 0.1705979754009986
+              },
+              {
+                "RX": 1,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0014826822942494227,
+                "total_scatter": 0.04018461094473329,
+                "ratio": 0.03689676867317655
+              },
+              {
+                "RX": 1,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.007698324114804614,
+                "total_scatter": 0.042472884399813636,
+                "ratio": 0.18125267976474876
+              },
+              {
+                "RX": 3,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.000865566345927835,
+                "total_scatter": 0.03366625039733961,
+                "ratio": 0.025710209355427185
+              },
+              {
+                "RX": 3,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0016225251705642492,
+                "total_scatter": 0.031274526104112764,
+                "ratio": 0.05188008813188311
+              },
+              {
+                "RX": 3,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0007697505619849047,
+                "total_scatter": 0.032375858505271894,
+                "ratio": 0.023775448668320657
+              },
+              {
+                "RX": 4,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.00209229431944667,
+                "total_scatter": 0.03725551934705005,
+                "ratio": 0.05616065367271121
+              },
+              {
+                "RX": 4,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0034346142597567464,
+                "total_scatter": 0.03544102761042722,
+                "ratio": 0.0969106849132737
+              },
+              {
+                "RX": 4,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0019434621853426856,
+                "total_scatter": 0.034755540386055155,
+                "ratio": 0.05591805403556477
+              },
+              {
+                "RX": 6,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.013673465265109541,
+                "total_scatter": 0.05158853149947674,
+                "ratio": 0.26504854601740757
+              },
+              {
+                "RX": 6,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.00314784616862475,
+                "total_scatter": 0.03943771027789309,
+                "ratio": 0.07981817774013324
+              },
+              {
+                "RX": 6,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0014297388995475576,
+                "total_scatter": 0.04039113328308905,
+                "ratio": 0.03539734548983701
+              },
+              {
+                "RX": 8,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.01216098764861133,
+                "total_scatter": 0.042508613375359536,
+                "ratio": 0.28608290609781556
+              },
+              {
+                "RX": 8,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.008607368501151813,
+                "total_scatter": 0.037849052327397055,
+                "ratio": 0.22741305189618619
+              },
+              {
+                "RX": 8,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.012982314975230872,
+                "total_scatter": 0.04226085908460887,
+                "ratio": 0.3071947720996269
+              }
+            ]
+          }
+        },
+        "mid_draw1": {
+          "count": 1800,
+          "default_head_accuracy": 0.5222222222222223,
+          "pooled": {
+            "cross_half_TX_scatter_sum": 4.816126365675304,
+            "total_scatter_sum": 42.86041320152266,
+            "ratio": 0.11236770730675565,
+            "positive_RX_day_count": 15,
+            "strata": [
+              {
+                "RX": 1,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.2502963729518452,
+                "total_scatter": 2.7473067695419227,
+                "ratio": 0.09110608823403396
+              },
+              {
+                "RX": 1,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.4018979540450985,
+                "total_scatter": 2.6778687726149215,
+                "ratio": 0.15008127289697162
+              },
+              {
+                "RX": 1,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.5266086609481525,
+                "total_scatter": 2.7414245348524946,
+                "ratio": 0.19209307214305182
+              },
+              {
+                "RX": 3,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.15850841132211732,
+                "total_scatter": 3.1573505299990483,
+                "ratio": 0.05020298184065267
+              },
+              {
+                "RX": 3,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.07857916477716814,
+                "total_scatter": 3.2122247316123587,
+                "ratio": 0.024462536510552847
+              },
+              {
+                "RX": 3,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.19657667066600934,
+                "total_scatter": 3.072564807620246,
+                "ratio": 0.0639780388613711
+              },
+              {
+                "RX": 4,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.23993428346577536,
+                "total_scatter": 2.5744883816277726,
+                "ratio": 0.09319687949575133
+              },
+              {
+                "RX": 4,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.20242059877091578,
+                "total_scatter": 2.3944328326709763,
+                "ratio": 0.08453801501924643
+              },
+              {
+                "RX": 4,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.2589246037525146,
+                "total_scatter": 2.500996235494164,
+                "ratio": 0.10352858596020817
+              },
+              {
+                "RX": 6,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.3168739491179508,
+                "total_scatter": 2.8044195100398173,
+                "ratio": 0.11299092307108212
+              },
+              {
+                "RX": 6,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.2151518803571141,
+                "total_scatter": 2.781295009203528,
+                "ratio": 0.07735672758379075
+              },
+              {
+                "RX": 6,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.22924286779651026,
+                "total_scatter": 2.669756564625122,
+                "ratio": 0.08586658080891348
+              },
+              {
+                "RX": 8,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.7591438358862236,
+                "total_scatter": 2.981797920634207,
+                "ratio": 0.2545926505055578
+              },
+              {
+                "RX": 8,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.3913745263519994,
+                "total_scatter": 2.953424538203125,
+                "ratio": 0.13251549897059947
+              },
+              {
+                "RX": 8,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.5905925854659094,
+                "total_scatter": 3.591062062782959,
+                "ratio": 0.16446181523474393
+              }
+            ]
+          },
+          "removed": {
+            "cross_half_TX_scatter_sum": 0.12146048617811127,
+            "total_scatter_sum": 0.5589395121773502,
+            "ratio": 0.21730524239548152,
+            "positive_RX_day_count": 15,
+            "strata": [
+              {
+                "RX": 1,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0037684661299001135,
+                "total_scatter": 0.03663048005484142,
+                "ratio": 0.10287787995838832
+              },
+              {
+                "RX": 1,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0074658564566607395,
+                "total_scatter": 0.03567404651811448,
+                "ratio": 0.20927977578517046
+              },
+              {
+                "RX": 1,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.015938008176279845,
+                "total_scatter": 0.04261859552028972,
+                "ratio": 0.3739684046765954
+              },
+              {
+                "RX": 3,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.002525555484552076,
+                "total_scatter": 0.03314753204940138,
+                "ratio": 0.07619135810135481
+              },
+              {
+                "RX": 3,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.001400481914005897,
+                "total_scatter": 0.03172479402053398,
+                "ratio": 0.044144712589762776
+              },
+              {
+                "RX": 3,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.00124598426999866,
+                "total_scatter": 0.030844720928479664,
+                "ratio": 0.040395381526963765
+              },
+              {
+                "RX": 4,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0037437122630831986,
+                "total_scatter": 0.03278749586218179,
+                "ratio": 0.11418109753850776
+              },
+              {
+                "RX": 4,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.005322156246809221,
+                "total_scatter": 0.032214860257990564,
+                "ratio": 0.16520811216274375
+              },
+              {
+                "RX": 4,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.006637575710323138,
+                "total_scatter": 0.03175768088761139,
+                "ratio": 0.20900694020489521
+              },
+              {
+                "RX": 6,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.016001915253883597,
+                "total_scatter": 0.048560825376612694,
+                "ratio": 0.32952313165562985
+              },
+              {
+                "RX": 6,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.007620798717753028,
+                "total_scatter": 0.03743344932506106,
+                "ratio": 0.2035825940478061
+              },
+              {
+                "RX": 6,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.006414004951324398,
+                "total_scatter": 0.03642520406897955,
+                "ratio": 0.17608700116485268
+              },
+              {
+                "RX": 8,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.016919667347678306,
+                "total_scatter": 0.045524650263462,
+                "ratio": 0.37165946909553743
+              },
+              {
+                "RX": 8,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.011361331117179593,
+                "total_scatter": 0.03917045761236409,
+                "ratio": 0.29004846534122203
+              },
+              {
+                "RX": 8,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.015094972138679488,
+                "total_scatter": 0.044424719431426424,
+                "ratio": 0.3397876752374305
+              }
+            ]
+          }
+        },
+        "low_draw1": {
+          "count": 1800,
+          "default_head_accuracy": 0.4022222222222222,
+          "pooled": {
+            "cross_half_TX_scatter_sum": 3.2641114932822224,
+            "total_scatter_sum": 53.27194403456148,
+            "ratio": 0.06127261830663717,
+            "positive_RX_day_count": 14,
+            "strata": [
+              {
+                "RX": 1,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.2373586262164921,
+                "total_scatter": 3.971003109239152,
+                "ratio": 0.05977296408160462
+              },
+              {
+                "RX": 1,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.30853595366814596,
+                "total_scatter": 3.250942527002591,
+                "ratio": 0.09490661588306204
+              },
+              {
+                "RX": 1,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.33602026820272995,
+                "total_scatter": 3.7054192195008238,
+                "ratio": 0.09068346880545328
+              },
+              {
+                "RX": 3,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.07510215710461773,
+                "total_scatter": 3.878735704886801,
+                "ratio": 0.01936253532562089
+              },
+              {
+                "RX": 3,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.014072675635076998,
+                "total_scatter": 3.6833641283871623,
+                "ratio": 0.00382060397630006
+              },
+              {
+                "RX": 3,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": -0.03506263993374176,
+                "total_scatter": 3.6003365997101118,
+                "ratio": -0.009738711635063482
+              },
+              {
+                "RX": 4,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.02336800690473315,
+                "total_scatter": 3.511962282558033,
+                "ratio": 0.006653831967612257
+              },
+              {
+                "RX": 4,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.16375012413678855,
+                "total_scatter": 3.0721942023085846,
+                "ratio": 0.05330070736209949
+              },
+              {
+                "RX": 4,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.1403680106068211,
+                "total_scatter": 3.505858024336693,
+                "ratio": 0.04003813321373123
+              },
+              {
+                "RX": 6,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.32048334723412264,
+                "total_scatter": 3.386565680155684,
+                "ratio": 0.09463373148557677
+              },
+              {
+                "RX": 6,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.28289879584407984,
+                "total_scatter": 3.6505847137034677,
+                "ratio": 0.07749410519967989
+              },
+              {
+                "RX": 6,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.15821329556612296,
+                "total_scatter": 3.2981383270655997,
+                "ratio": 0.047970485127252854
+              },
+              {
+                "RX": 8,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.431232867608985,
+                "total_scatter": 3.912000862249771,
+                "ratio": 0.11023332631910138
+              },
+              {
+                "RX": 8,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.4580458836864345,
+                "total_scatter": 3.6898502805343716,
+                "ratio": 0.12413671256604465
+              },
+              {
+                "RX": 8,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.3497241208008135,
+                "total_scatter": 3.154988372922628,
+                "ratio": 0.11084799037685393
+              }
+            ]
+          },
+          "removed": {
+            "cross_half_TX_scatter_sum": 0.07971900679491867,
+            "total_scatter_sum": 0.5780650275160991,
+            "ratio": 0.13790664198708769,
+            "positive_RX_day_count": 14,
+            "strata": [
+              {
+                "RX": 1,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0031427099773841207,
+                "total_scatter": 0.03857275540139196,
+                "ratio": 0.0814748634024395
+              },
+              {
+                "RX": 1,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0044541689845443875,
+                "total_scatter": 0.03621838753129311,
+                "ratio": 0.12298087485799673
+              },
+              {
+                "RX": 1,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.00931626193803625,
+                "total_scatter": 0.04331006250589852,
+                "ratio": 0.21510617623254277
+              },
+              {
+                "RX": 3,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 7.733852600467551e-05,
+                "total_scatter": 0.03338833907594229,
+                "ratio": 0.0023163334309253252
+              },
+              {
+                "RX": 3,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 6.316909023458897e-05,
+                "total_scatter": 0.03154488639249998,
+                "ratio": 0.0020025144312964737
+              },
+              {
+                "RX": 3,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": -0.00018965244733851522,
+                "total_scatter": 0.033303815286770025,
+                "ratio": -0.005694616238574169
+              },
+              {
+                "RX": 4,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0024016310284378185,
+                "total_scatter": 0.03902387991546351,
+                "ratio": 0.06154259990652939
+              },
+              {
+                "RX": 4,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0038755413243732315,
+                "total_scatter": 0.03609048205821334,
+                "ratio": 0.10738402768137176
+              },
+              {
+                "RX": 4,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0024030729627927093,
+                "total_scatter": 0.03596230444291586,
+                "ratio": 0.06682199597657001
+              },
+              {
+                "RX": 6,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.01232366892328398,
+                "total_scatter": 0.05041985427381015,
+                "ratio": 0.24442095481591522
+              },
+              {
+                "RX": 6,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.006080077126906357,
+                "total_scatter": 0.040464325248700604,
+                "ratio": 0.1502577168786869
+              },
+              {
+                "RX": 6,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0046574119908321466,
+                "total_scatter": 0.04007044308899653,
+                "ratio": 0.11623060869299663
+              },
+              {
+                "RX": 8,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.011311629274837823,
+                "total_scatter": 0.04081524057946183,
+                "ratio": 0.27714229082677067
+              },
+              {
+                "RX": 8,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.011592483578427334,
+                "total_scatter": 0.041692662122545125,
+                "ratio": 0.2780461354171661
+              },
+              {
+                "RX": 8,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.008209494516161764,
+                "total_scatter": 0.03718758959219627,
+                "ratio": 0.22075898454801995
+              }
+            ]
+          }
+        }
+      },
+      "pool_reconstruction_max_abs_error": 4.76837158203125e-07,
+      "actual_prepool_shape": [
+        48,
+        256
+      ],
+      "actual_t1_input_shape": [
+        48,
+        128
+      ],
+      "fit_updates": 0,
+      "parameters_unchanged": true,
+      "head": "original checkpoint default cosine head"
+    },
+    "FULL_As_JOINT_FINAL30": {
+      "views": {
+        "raw": {
+          "count": 1800,
+          "default_head_accuracy": 0.9994444444444445,
+          "pooled": {
+            "cross_half_TX_scatter_sum": 10.443599596394549,
+            "total_scatter_sum": 16.05364178814203,
+            "ratio": 0.6505439534666009,
+            "positive_RX_day_count": 15,
+            "strata": [
+              {
+                "RX": 1,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.6856932021998968,
+                "total_scatter": 1.0214904207839248,
+                "ratio": 0.671267383666382
+              },
+              {
+                "RX": 1,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.7517494756496707,
+                "total_scatter": 1.0718934013442942,
+                "ratio": 0.7013285786691836
+              },
+              {
+                "RX": 1,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 1.0590017365696844,
+                "total_scatter": 1.3748576086859736,
+                "ratio": 0.7702628474972256
+              },
+              {
+                "RX": 3,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.30637726786301606,
+                "total_scatter": 1.12425646337686,
+                "ratio": 0.2725154605229215
+              },
+              {
+                "RX": 3,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.3544673000395273,
+                "total_scatter": 1.0296830050774821,
+                "ratio": 0.34424895651536386
+              },
+              {
+                "RX": 3,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.24467449191014143,
+                "total_scatter": 0.7687860618193397,
+                "ratio": 0.31826083231935404
+              },
+              {
+                "RX": 4,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.5778123712393759,
+                "total_scatter": 0.8262012239152001,
+                "ratio": 0.6993603428729386
+              },
+              {
+                "RX": 4,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.6371086864237322,
+                "total_scatter": 0.8649671018473674,
+                "ratio": 0.7365698476427798
+              },
+              {
+                "RX": 4,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.6469033119234155,
+                "total_scatter": 0.824651067441028,
+                "ratio": 0.7844570115343682
+              },
+              {
+                "RX": 6,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.8451030244164244,
+                "total_scatter": 1.1162725698652016,
+                "ratio": 0.7570758676964328
+              },
+              {
+                "RX": 6,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.6380658342833901,
+                "total_scatter": 0.9280224396851657,
+                "ratio": 0.6875543165743447
+              },
+              {
+                "RX": 6,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.5385342850954115,
+                "total_scatter": 0.9318702404349231,
+                "ratio": 0.5779069464049699
+              },
+              {
+                "RX": 8,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 1.1656627363401588,
+                "total_scatter": 1.4407617606003174,
+                "ratio": 0.8090600182603861
+              },
+              {
+                "RX": 8,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.9706170926443342,
+                "total_scatter": 1.245329249840824,
+                "ratio": 0.7794060026843479
+              },
+              {
+                "RX": 8,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 1.0218287797963685,
+                "total_scatter": 1.4845991734241295,
+                "ratio": 0.6882859684204109
+              }
+            ]
+          },
+          "removed": {
+            "cross_half_TX_scatter_sum": 0.20848842827968025,
+            "total_scatter_sum": 0.3478427703641004,
+            "ratio": 0.5993754823808682,
+            "positive_RX_day_count": 15,
+            "strata": [
+              {
+                "RX": 1,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.013304680951556515,
+                "total_scatter": 0.019247354750070066,
+                "ratio": 0.6912472453653966
+              },
+              {
+                "RX": 1,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.011471101747641191,
+                "total_scatter": 0.015554390584338459,
+                "ratio": 0.7374832003506017
+              },
+              {
+                "RX": 1,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.022242690747303548,
+                "total_scatter": 0.02684327699935335,
+                "ratio": 0.8286130917562476
+              },
+              {
+                "RX": 3,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.004178768778429446,
+                "total_scatter": 0.023922632352508227,
+                "ratio": 0.17467846835807402
+              },
+              {
+                "RX": 3,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0036591912979971677,
+                "total_scatter": 0.01970018018996239,
+                "ratio": 0.18574405222250678
+              },
+              {
+                "RX": 3,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.002385654885221454,
+                "total_scatter": 0.01881929334867836,
+                "ratio": 0.12676644340575058
+              },
+              {
+                "RX": 4,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.00774090192098009,
+                "total_scatter": 0.011967596894101,
+                "ratio": 0.6468217462100257
+              },
+              {
+                "RX": 4,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.010039906198909104,
+                "total_scatter": 0.013565931747219666,
+                "ratio": 0.7400823169382951
+              },
+              {
+                "RX": 4,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.010573164966492257,
+                "total_scatter": 0.013639509690959195,
+                "ratio": 0.7751865870589592
+              },
+              {
+                "RX": 6,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.029033733612965674,
+                "total_scatter": 0.03571409652646765,
+                "ratio": 0.8129488475635617
+              },
+              {
+                "RX": 6,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.012160667746410841,
+                "total_scatter": 0.018221441429915514,
+                "ratio": 0.66738231402735
+              },
+              {
+                "RX": 6,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.013406950548430214,
+                "total_scatter": 0.021231322889039287,
+                "ratio": 0.6314703336432973
+              },
+              {
+                "RX": 8,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.02392819936276322,
+                "total_scatter": 0.04167701316467453,
+                "ratio": 0.5741342180212852
+              },
+              {
+                "RX": 8,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.02297576954385891,
+                "total_scatter": 0.033652038465244206,
+                "ratio": 0.6827452538302624
+              },
+              {
+                "RX": 8,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.02138704597072064,
+                "total_scatter": 0.03408669133156843,
+                "ratio": 0.6274309748248763
+              }
+            ]
+          }
+        },
+        "mid_draw0": {
+          "count": 1800,
+          "default_head_accuracy": 0.7722222222222223,
+          "pooled": {
+            "cross_half_TX_scatter_sum": 4.450085531649213,
+            "total_scatter_sum": 34.79662488992012,
+            "ratio": 0.12788842440113535,
+            "positive_RX_day_count": 15,
+            "strata": [
+              {
+                "RX": 1,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.22815978408725326,
+                "total_scatter": 2.3618628985788974,
+                "ratio": 0.09660162079032364
+              },
+              {
+                "RX": 1,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.4150244730567458,
+                "total_scatter": 2.2421142070042936,
+                "ratio": 0.1851040735392615
+              },
+              {
+                "RX": 1,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.49548979246894603,
+                "total_scatter": 2.386879714640921,
+                "ratio": 0.20758892433064513
+              },
+              {
+                "RX": 3,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.07532276911290288,
+                "total_scatter": 2.728874225284374,
+                "ratio": 0.027602140258059547
+              },
+              {
+                "RX": 3,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.2256833418248482,
+                "total_scatter": 2.1299945513286906,
+                "ratio": 0.10595489161419072
+              },
+              {
+                "RX": 3,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.10450143447818415,
+                "total_scatter": 1.8432208386577105,
+                "ratio": 0.05669501574986819
+              },
+              {
+                "RX": 4,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.16420208678335424,
+                "total_scatter": 1.8456709219664529,
+                "ratio": 0.08896606910207301
+              },
+              {
+                "RX": 4,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.22302055556335112,
+                "total_scatter": 2.0431495798067596,
+                "ratio": 0.10915527564283586
+              },
+              {
+                "RX": 4,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.3510899538902971,
+                "total_scatter": 2.029983807021575,
+                "ratio": 0.17295209581273555
+              },
+              {
+                "RX": 6,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.42649013753082615,
+                "total_scatter": 2.4587823197846506,
+                "ratio": 0.1734558338487564
+              },
+              {
+                "RX": 6,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.21391026199082672,
+                "total_scatter": 2.45897910225635,
+                "ratio": 0.0869914924427554
+              },
+              {
+                "RX": 6,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.08898279036400387,
+                "total_scatter": 2.493220951398544,
+                "ratio": 0.035689893554797056
+              },
+              {
+                "RX": 8,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.5955911406216546,
+                "total_scatter": 2.8709122697057636,
+                "ratio": 0.2074571023665227
+              },
+              {
+                "RX": 8,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.3642649369217394,
+                "total_scatter": 2.286532841319199,
+                "ratio": 0.1593088585211745
+              },
+              {
+                "RX": 8,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.47835207295428056,
+                "total_scatter": 2.6164466611659374,
+                "ratio": 0.18282508107431394
+              }
+            ]
+          },
+          "removed": {
+            "cross_half_TX_scatter_sum": 0.13209312661605838,
+            "total_scatter_sum": 0.5866409027312972,
+            "ratio": 0.22516862701024756,
+            "positive_RX_day_count": 15,
+            "strata": [
+              {
+                "RX": 1,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.005945401509913164,
+                "total_scatter": 0.03698009111366621,
+                "ratio": 0.16077303572992027
+              },
+              {
+                "RX": 1,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.00629187009132048,
+                "total_scatter": 0.035878149045812956,
+                "ratio": 0.17536774495491295
+              },
+              {
+                "RX": 1,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.017332318139232503,
+                "total_scatter": 0.04570535266779466,
+                "ratio": 0.37921856254366826
+              },
+              {
+                "RX": 3,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0013593685787646878,
+                "total_scatter": 0.036132265320855936,
+                "ratio": 0.03762201364053544
+              },
+              {
+                "RX": 3,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0023420252427634723,
+                "total_scatter": 0.03047395097426935,
+                "ratio": 0.07685335074342539
+              },
+              {
+                "RX": 3,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0009469949053324899,
+                "total_scatter": 0.029734434691007672,
+                "ratio": 0.03184842473628333
+              },
+              {
+                "RX": 4,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.004656312254211872,
+                "total_scatter": 0.032036443024637117,
+                "ratio": 0.1453442334603442
+              },
+              {
+                "RX": 4,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0063361737223385966,
+                "total_scatter": 0.03455302461485508,
+                "ratio": 0.18337537141725477
+              },
+              {
+                "RX": 4,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.007679897977048975,
+                "total_scatter": 0.030795273510605604,
+                "ratio": 0.24938560699595963
+              },
+              {
+                "RX": 6,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.021840584363442498,
+                "total_scatter": 0.052593466415001164,
+                "ratio": 0.41527181705621397
+              },
+              {
+                "RX": 6,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.004635021319990599,
+                "total_scatter": 0.04036627225151782,
+                "ratio": 0.1148241108594395
+              },
+              {
+                "RX": 6,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.00696783252393723,
+                "total_scatter": 0.04281365071075978,
+                "ratio": 0.1627479182051181
+              },
+              {
+                "RX": 8,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.016343180391134308,
+                "total_scatter": 0.04665521197292567,
+                "ratio": 0.3502969914833602
+              },
+              {
+                "RX": 8,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.012469764010403688,
+                "total_scatter": 0.04281942565944059,
+                "ratio": 0.29121745138714683
+              },
+              {
+                "RX": 8,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.01694638158622382,
+                "total_scatter": 0.04910389075814754,
+                "ratio": 0.3451128072455643
+              }
+            ]
+          }
+        },
+        "low_draw0": {
+          "count": 1800,
+          "default_head_accuracy": 0.635,
+          "pooled": {
+            "cross_half_TX_scatter_sum": 2.741434564385043,
+            "total_scatter_sum": 44.524780703549396,
+            "ratio": 0.06157098409170836,
+            "positive_RX_day_count": 14,
+            "strata": [
+              {
+                "RX": 1,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.18582056926592075,
+                "total_scatter": 2.725045745334191,
+                "ratio": 0.06818988987031933
+              },
+              {
+                "RX": 1,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.16546337562639601,
+                "total_scatter": 3.1571201155737723,
+                "ratio": 0.05240959151670568
+              },
+              {
+                "RX": 1,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.21314773002631868,
+                "total_scatter": 3.0603350464827233,
+                "ratio": 0.06964849494871214
+              },
+              {
+                "RX": 3,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": -0.047129409056408,
+                "total_scatter": 3.126055034269327,
+                "ratio": -0.015076320966762462
+              },
+              {
+                "RX": 3,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.16388296652002002,
+                "total_scatter": 2.7415773034559012,
+                "ratio": 0.059776890592666124
+              },
+              {
+                "RX": 3,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.10709727453914981,
+                "total_scatter": 2.836292887708352,
+                "ratio": 0.0377595963390373
+              },
+              {
+                "RX": 4,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.10070580446571666,
+                "total_scatter": 2.947741863948801,
+                "ratio": 0.03416371212736075
+              },
+              {
+                "RX": 4,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.15070642272212872,
+                "total_scatter": 2.8920823551014596,
+                "ratio": 0.05211000387187856
+              },
+              {
+                "RX": 4,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.07818690981647397,
+                "total_scatter": 2.6941693526744217,
+                "ratio": 0.02902078510352742
+              },
+              {
+                "RX": 6,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.28322390495400246,
+                "total_scatter": 3.3182502456064267,
+                "ratio": 0.08535338928370723
+              },
+              {
+                "RX": 6,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.07309340817306116,
+                "total_scatter": 3.169570445882092,
+                "ratio": 0.02306098237003193
+              },
+              {
+                "RX": 6,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0843439140511555,
+                "total_scatter": 2.9706752568576444,
+                "ratio": 0.028392169038487833
+              },
+              {
+                "RX": 8,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.4044420827914334,
+                "total_scatter": 3.080233926992744,
+                "ratio": 0.13130239208367311
+              },
+              {
+                "RX": 8,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.3116329883041072,
+                "total_scatter": 2.733763064700658,
+                "ratio": 0.11399414686957533
+              },
+              {
+                "RX": 8,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.46681662218556674,
+                "total_scatter": 3.071868058960872,
+                "ratio": 0.15196506269982113
+              }
+            ]
+          },
+          "removed": {
+            "cross_half_TX_scatter_sum": 0.08539867004248865,
+            "total_scatter_sum": 0.6215235022939394,
+            "ratio": 0.13740215732357092,
+            "positive_RX_day_count": 15,
+            "strata": [
+              {
+                "RX": 1,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.006329191172417835,
+                "total_scatter": 0.039527990794824684,
+                "ratio": 0.16011922298986425
+              },
+              {
+                "RX": 1,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0013049307901433565,
+                "total_scatter": 0.042614335500327956,
+                "ratio": 0.03062187348042336
+              },
+              {
+                "RX": 1,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.008331309392057137,
+                "total_scatter": 0.04545658094065248,
+                "ratio": 0.18328059919276343
+              },
+              {
+                "RX": 3,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0007539648244628694,
+                "total_scatter": 0.037496885816782594,
+                "ratio": 0.020107398468952722
+              },
+              {
+                "RX": 3,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0017094900975298704,
+                "total_scatter": 0.03469413774854598,
+                "ratio": 0.04927316856581958
+              },
+              {
+                "RX": 3,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0007740231382705317,
+                "total_scatter": 0.03446080868999255,
+                "ratio": 0.022460968494198708
+              },
+              {
+                "RX": 4,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.002076825624665853,
+                "total_scatter": 0.038679472869578325,
+                "ratio": 0.053693224612150564
+              },
+              {
+                "RX": 4,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0032932839263843127,
+                "total_scatter": 0.037212211671872386,
+                "ratio": 0.08850008581654954
+              },
+              {
+                "RX": 4,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0017263413519022486,
+                "total_scatter": 0.03662368865652589,
+                "ratio": 0.04713728778367156
+              },
+              {
+                "RX": 6,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.01614964781363087,
+                "total_scatter": 0.055513534773424626,
+                "ratio": 0.2909137002272464
+              },
+              {
+                "RX": 6,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.003321252907110201,
+                "total_scatter": 0.04183479349745779,
+                "ratio": 0.07938972872692741
+              },
+              {
+                "RX": 6,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.002026939860014516,
+                "total_scatter": 0.042466439281520676,
+                "ratio": 0.047730393560369476
+              },
+              {
+                "RX": 8,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.013418812697267017,
+                "total_scatter": 0.0467762386753871,
+                "ratio": 0.28687241807511515
+              },
+              {
+                "RX": 8,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.00995973850385049,
+                "total_scatter": 0.04203077569256434,
+                "ratio": 0.2369629953227931
+              },
+              {
+                "RX": 8,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.014222917942781533,
+                "total_scatter": 0.04613560768448207,
+                "ratio": 0.3082850461199296
+              }
+            ]
+          }
+        },
+        "mid_draw1": {
+          "count": 1800,
+          "default_head_accuracy": 0.7761111111111111,
+          "pooled": {
+            "cross_half_TX_scatter_sum": 3.970032637129132,
+            "total_scatter_sum": 35.40133485793671,
+            "ratio": 0.11214358591450346,
+            "positive_RX_day_count": 15,
+            "strata": [
+              {
+                "RX": 1,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.22086195019924112,
+                "total_scatter": 2.25330335028038,
+                "ratio": 0.09801696259483177
+              },
+              {
+                "RX": 1,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.3248367829999227,
+                "total_scatter": 2.19963322954567,
+                "ratio": 0.147677703099174
+              },
+              {
+                "RX": 1,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.4653727660349977,
+                "total_scatter": 2.3029807382982113,
+                "ratio": 0.20207410261663117
+              },
+              {
+                "RX": 3,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.13394021788814722,
+                "total_scatter": 2.646564231599793,
+                "ratio": 0.05060909396753358
+              },
+              {
+                "RX": 3,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0506139917421885,
+                "total_scatter": 2.64584392356354,
+                "ratio": 0.019129621097989533
+              },
+              {
+                "RX": 3,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.1490444246973455,
+                "total_scatter": 2.5187777115855616,
+                "ratio": 0.059173314108581086
+              },
+              {
+                "RX": 4,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.168336260193199,
+                "total_scatter": 2.0888906435805503,
+                "ratio": 0.08058643984572365
+              },
+              {
+                "RX": 4,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.1526077216341483,
+                "total_scatter": 1.9862151882264107,
+                "ratio": 0.07683342798844431
+              },
+              {
+                "RX": 4,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.21496963768138266,
+                "total_scatter": 2.075307872359323,
+                "ratio": 0.10358445633273365
+              },
+              {
+                "RX": 6,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.2649408034046244,
+                "total_scatter": 2.321310590017501,
+                "ratio": 0.11413414669453041
+              },
+              {
+                "RX": 6,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.1772205194368199,
+                "total_scatter": 2.271131205325085,
+                "ratio": 0.07803182793723841
+              },
+              {
+                "RX": 6,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.20549320699987408,
+                "total_scatter": 2.190858758689943,
+                "ratio": 0.09379573474775336
+              },
+              {
+                "RX": 8,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.6568604369450198,
+                "total_scatter": 2.48288554787008,
+                "ratio": 0.2645552621257558
+              },
+              {
+                "RX": 8,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.2729365634973739,
+                "total_scatter": 2.3983134830237316,
+                "ratio": 0.11380353962454588
+              },
+              {
+                "RX": 8,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.5119973537748469,
+                "total_scatter": 3.0193183839709308,
+                "ratio": 0.16957382053279224
+              }
+            ]
+          },
+          "removed": {
+            "cross_half_TX_scatter_sum": 0.12885236368229985,
+            "total_scatter_sum": 0.5950969517261931,
+            "ratio": 0.21652331323247212,
+            "positive_RX_day_count": 15,
+            "strata": [
+              {
+                "RX": 1,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.003754237341680741,
+                "total_scatter": 0.03856315927388347,
+                "ratio": 0.09735295064954033
+              },
+              {
+                "RX": 1,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0072363211715946495,
+                "total_scatter": 0.03711402058556523,
+                "ratio": 0.19497540437343708
+              },
+              {
+                "RX": 1,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.01677304353352375,
+                "total_scatter": 0.044582645008991915,
+                "ratio": 0.37622360741810584
+              },
+              {
+                "RX": 3,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0025591784600567835,
+                "total_scatter": 0.03611054125711615,
+                "ratio": 0.07087067573523166
+              },
+              {
+                "RX": 3,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0014385400614579632,
+                "total_scatter": 0.035110692137450314,
+                "ratio": 0.04097156660502187
+              },
+              {
+                "RX": 3,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0012849303250460008,
+                "total_scatter": 0.03307143529102577,
+                "ratio": 0.03885317688025104
+              },
+              {
+                "RX": 4,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.003788053855917983,
+                "total_scatter": 0.03356805009136643,
+                "ratio": 0.11284700319522746
+              },
+              {
+                "RX": 4,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.005356670025445945,
+                "total_scatter": 0.0333783559253219,
+                "ratio": 0.1604833394859392
+              },
+              {
+                "RX": 4,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.006643044995111182,
+                "total_scatter": 0.03284460953517259,
+                "ratio": 0.20225678091856403
+              },
+              {
+                "RX": 6,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.018275154287345722,
+                "total_scatter": 0.05193785367308274,
+                "ratio": 0.35186579719633243
+              },
+              {
+                "RX": 6,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.006987169082574963,
+                "total_scatter": 0.03829668933691532,
+                "ratio": 0.18244838401317953
+              },
+              {
+                "RX": 6,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.007742310614745865,
+                "total_scatter": 0.03887918153584052,
+                "ratio": 0.19913769551986754
+              },
+              {
+                "RX": 8,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.018180141273782383,
+                "total_scatter": 0.050158637739182166,
+                "ratio": 0.3624528514573412
+              },
+              {
+                "RX": 8,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.012731384234267987,
+                "total_scatter": 0.04326770724356792,
+                "ratio": 0.29424679617523775
+              },
+              {
+                "RX": 8,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.016102184419747933,
+                "total_scatter": 0.04821337309171082,
+                "ratio": 0.3339775540931056
+              }
+            ]
+          }
+        },
+        "low_draw1": {
+          "count": 1800,
+          "default_head_accuracy": 0.6288888888888889,
+          "pooled": {
+            "cross_half_TX_scatter_sum": 2.748649129114659,
+            "total_scatter_sum": 43.82629594000603,
+            "ratio": 0.06271689336642308,
+            "positive_RX_day_count": 14,
+            "strata": [
+              {
+                "RX": 1,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.2148698309914686,
+                "total_scatter": 3.340571116140822,
+                "ratio": 0.06432128624751324
+              },
+              {
+                "RX": 1,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.2646592451971899,
+                "total_scatter": 2.6989050984605485,
+                "ratio": 0.09806170856031624
+              },
+              {
+                "RX": 1,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.29872416470864255,
+                "total_scatter": 3.0485267754830896,
+                "ratio": 0.09798968049454142
+              },
+              {
+                "RX": 3,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.05413445060796449,
+                "total_scatter": 3.250301142915457,
+                "ratio": 0.01665521077207232
+              },
+              {
+                "RX": 3,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.010229581624660039,
+                "total_scatter": 3.0278347420706746,
+                "ratio": 0.003378513854314333
+              },
+              {
+                "RX": 3,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": -0.038740924127172845,
+                "total_scatter": 2.9183549371711255,
+                "ratio": -0.013274918562416511
+              },
+              {
+                "RX": 4,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.037538243758264034,
+                "total_scatter": 2.847202104591163,
+                "ratio": 0.013184256817502685
+              },
+              {
+                "RX": 4,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.13665593240481752,
+                "total_scatter": 2.541315909103668,
+                "ratio": 0.053773689416290085
+              },
+              {
+                "RX": 4,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.12496911685867344,
+                "total_scatter": 2.9099971458634206,
+                "ratio": 0.04294475581748176
+              },
+              {
+                "RX": 6,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.2710213374792694,
+                "total_scatter": 2.8067521469790067,
+                "ratio": 0.09656048104246681
+              },
+              {
+                "RX": 6,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.2382391140698532,
+                "total_scatter": 2.97241967252574,
+                "ratio": 0.08014989144094024
+              },
+              {
+                "RX": 6,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.1539674391512497,
+                "total_scatter": 2.7143457273575224,
+                "ratio": 0.056723591839990296
+              },
+              {
+                "RX": 8,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.35190273309204084,
+                "total_scatter": 3.1710717386643084,
+                "ratio": 0.11097280733240879
+              },
+              {
+                "RX": 8,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.3405696995044256,
+                "total_scatter": 2.952144991644738,
+                "ratio": 0.11536347315877697
+              },
+              {
+                "RX": 8,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.28990916379331194,
+                "total_scatter": 2.626552691034741,
+                "ratio": 0.11037629847779716
+              }
+            ]
+          },
+          "removed": {
+            "cross_half_TX_scatter_sum": 0.08701151814572115,
+            "total_scatter_sum": 0.6218554793974891,
+            "ratio": 0.13992241128119662,
+            "positive_RX_day_count": 14,
+            "strata": [
+              {
+                "RX": 1,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0033521019038663304,
+                "total_scatter": 0.04201728178915621,
+                "ratio": 0.07977912328282594
+              },
+              {
+                "RX": 1,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0045399045212192,
+                "total_scatter": 0.03891432602453648,
+                "ratio": 0.11666409225118464
+              },
+              {
+                "RX": 1,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.010150726062210581,
+                "total_scatter": 0.046220385438059626,
+                "ratio": 0.21961578134854942
+              },
+              {
+                "RX": 3,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 9.797625747709662e-05,
+                "total_scatter": 0.036556208336202614,
+                "ratio": 0.002680153712223706
+              },
+              {
+                "RX": 3,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": -4.7195764442074946e-05,
+                "total_scatter": 0.03534856000737722,
+                "ratio": -0.0013351538063283263
+              },
+              {
+                "RX": 3,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 5.9539591258661335e-06,
+                "total_scatter": 0.035707007729145965,
+                "ratio": 0.00016674483538440534
+              },
+              {
+                "RX": 4,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0026099175669822964,
+                "total_scatter": 0.040780876056035385,
+                "ratio": 0.06399856548927767
+              },
+              {
+                "RX": 4,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.0033623058302637942,
+                "total_scatter": 0.037564812284690885,
+                "ratio": 0.08950679174920471
+              },
+              {
+                "RX": 4,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.002637493171231625,
+                "total_scatter": 0.037918557626172196,
+                "ratio": 0.06955679056239131
+              },
+              {
+                "RX": 6,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.014206002976481835,
+                "total_scatter": 0.055167314192935225,
+                "ratio": 0.2575076054418663
+              },
+              {
+                "RX": 6,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.005868308092283266,
+                "total_scatter": 0.042206011598703096,
+                "ratio": 0.13903962658399088
+              },
+              {
+                "RX": 6,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.005522037653433801,
+                "total_scatter": 0.0430012143305006,
+                "ratio": 0.128415853817343
+              },
+              {
+                "RX": 8,
+                "day": 1,
+                "count": 120,
+                "cross_half_TX_scatter": 0.012532630100991517,
+                "total_scatter": 0.04423611296979026,
+                "ratio": 0.28331219132093055
+              },
+              {
+                "RX": 8,
+                "day": 2,
+                "count": 120,
+                "cross_half_TX_scatter": 0.013194911312022004,
+                "total_scatter": 0.045106026674545045,
+                "ratio": 0.2925310049414831
+              },
+              {
+                "RX": 8,
+                "day": 3,
+                "count": 120,
+                "cross_half_TX_scatter": 0.008978444502574007,
+                "total_scatter": 0.041110784339638454,
+                "ratio": 0.21839633193077063
+              }
+            ]
+          }
+        }
+      },
+      "pool_reconstruction_max_abs_error": 4.76837158203125e-07,
+      "actual_prepool_shape": [
+        48,
+        256
+      ],
+      "actual_t1_input_shape": [
+        48,
+        128
+      ],
+      "fit_updates": 0,
+      "parameters_unchanged": true,
+      "head": "original checkpoint default cosine head"
+    }
+  },
+  "NN": 18000,
+  "model_seed_count": 1,
+  "fit_updates": 0,
+  "new_physical_simulations": 0,
+  "U_used": false,
+  "V_used": false,
+  "target_access": false,
+  "formal_scores_read": false,
+  "backend_flags": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "supports_local_removed_TX_variation": true,
+  "interpretation": "Local reproducible TX-related variation removed by first time pooling; does not establish unique necessary identity information or raw-bypass performance",
+  "wall_seconds": 14.580195571063086,
+  "goal_complete": false
+}

@@ -1,6 +1,6 @@
 # 首次时间池化的信息诊断
 
-状态：LOCAL_VERIFIED，尚未发布。上一目标轮为progress：六行联合W实验训练/七景独立评分与完整重计完成，源规则全部FAIL；最终性能目标仍未达到。
+状态：ANALYZED / VERIFIED，18000NN源诊断和300分层独立重计完成；无训练/无target，最终性能目标仍未完成。
 
 本轮只做合法源L的不拟合参数诊断。共同B0 FINAL20及既定FULL_As_JOINT FINAL30均按原严格来源加载；后者依据已固定源比较作为全量适应参照，不依据正式成绩选择。二者不续训，不替换或拟合分类头。U始终隐藏且不读取，V不参与本诊断，目标IQ/truth不可访问，不增加正式预测。
 
@@ -16,15 +16,17 @@
 
 | ID | 来源 | 要求 | 目标 | 状态 | 验证 | 说明 |
 |---|---|---|---|---|---|---|
-| P01 | 目标三/七、附件九 | 仅合法源L/来源严格/无头拟合 | runner | pending | 既有own_model及source bank | 不用目标 |
-| P02 | 附件三/七 | 实际首次pool前后与可逆分解 | probe | pending | 真模型hook/reconstruction | 不宣称必要信息丢失 |
+| P01 | 目标三/七、附件九 | 仅合法源L/来源严格/无头拟合 | runner | verified | 既有own_model及source bank | 不用目标 |
+| P02 | 附件三/七 | 实际首次pool前后与可逆分解 | probe | verified | 真模型hook/reconstruction | 不宣称必要信息丢失 |
 | P03 | 目标七 | 无参数散布、固定两半、逐RX/day | scatter | verified | 解析小例与负测 | 非分类器 |
-| P04 | 目标二/八 | 一行CPU/固定18000NN/无新模拟 | runner/publish | pending | 实际计数/后态 | 无新模型和正式测试 |
-| P05 | 最小流程 | 一次review/commit/单归档/后态 | publish/report | pending | 实际证据 | 不增加额外gate |
-| P06 | 目标一/八 | 完整结果/负结果/Git/边界 | report | pending | 完整读回 | 总体目标保持未完成 |
+| P04 | 目标二/八 | 一行CPU/固定18000NN/无新模拟 | runner/publish | verified | 实际计数/后态 | 无新模型和正式测试 |
+| P05 | 最小流程 | 一次review/commit/单归档/后态 | publish/report | verified | 实际证据 | 不增加额外gate |
+| P06 | 目标一/八 | 完整结果/负结果/Git/边界 | report | verified | 完整读回 | 总体目标保持未完成 |
 
 本地解析小例、常量零散布、负散布保留、四项负测及真实pool模块hook检查PASS；0完整模型NN/0真实CP/0IQ/0target。所有模块及发布内嵌脚本语法通过。
 
 r02仅修复直接脚本目录中的statistics.py遮蔽标准库：改名scatter.py并调整两处导入。本地同指纹先FAIL、后PASS，独立subprocess median回归及原检查PASS。r01在首个模型前向前终止，0NN/0拟合/0target，failure.json保留；本轮科学内容、两份固定模型、全部IQ/种子/划分/描述子/18000NN均不变。
 
 初始唯一一次独立P0/P1审查见r01/review.json；本轮仅对已复现的stdlib遮蔽修复做一次定向复查PASS，未进行全量重复审查。检查及边界见review.json。代码/config commit 86a5a7cb0816555f043df2a3ec717635d444cd84 已push，远端OID独立一致；命令 CVS-RFFI/python -u experiments/cvs_prepool_source/runner.py，CWD=PROJECT/releases/cvs_F_prepool_source_20261019_r02，CPU2/FP32/无GPU。真实首步及完整诊断待返回。
+
+完整结果见final_report.md、results_summary.json与validation.json。r02真实模型诊断完成；运行中进程身份采样未捕获，已如实标UNKNOWN，未重复诊断。

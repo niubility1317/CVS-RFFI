@@ -1,0 +1,19 @@
+{
+  "status": "VERIFIED",
+  "evidence_scope": "immutable complete/source results,all descriptors independently recounted,known run-owned PID absent",
+  "code_commit": "86a5a7cb0816555f043df2a3ec717635d444cd84",
+  "release_commit": "49e2379c21d03f5d082336a2a5400d904393ba70",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "process_terminal": true,
+  "PID": 2302653,
+  "live_identity_sampling": "UNKNOWN:14second diagnostic completed before first independent poll;not repeated",
+  "CPU_threads_requested": 2,
+  "GPU_used": false,
+  "NN": 18000,
+  "fit_updates": 0,
+  "target_access": false,
+  "source_statistics_recomputed": 300,
+  "new_physical_simulations": 0,
+  "goal_complete": false
+}
