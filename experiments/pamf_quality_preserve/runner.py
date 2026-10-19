@@ -195,10 +195,10 @@ def train(args):
 
 
 @torch.no_grad()
-def predict(args):
+def predict(args,gate_checkpoint=None,selector=select_iq):
     reference=args.parent_cache/'validation'
     ids,_,_=source_reference(reference,args.source_cache)
-    gate,item=load_checkpoint(args.output/'final.pt','cuda:0')
+    gate,item=load_checkpoint(args.output/'final.pt' if gate_checkpoint is None else gate_checkpoint,'cuda:0')
     if item['epoch']!=20 or item['updates']!=4940:raise ValueError('Fixed final quality gate required')
     gate.requires_grad_(False)
     parent=load_restorer(args.restorer_checkpoint).to('cuda:0')
@@ -214,7 +214,7 @@ def predict(args):
         decisions={k:[] for k in READOUTS};preserved=[];changes=[];scores=[]
         for offset in range(0,len(ids),64):
             y=array_tensor(observed[offset:offset+64],'cuda:0')
-            logits=gate(y);restored=parent(y);output,keep=select_iq(y,restored,logits)
+            logits=gate(y);restored=parent(y);output,keep=selector(y,restored,logits)
             if not torch.isfinite(restored).all():raise FloatingPointError('Nonfinite R03 output')
             for name,value in zip(READOUTS,(y,restored,output)):
                 identity=reader(value)
