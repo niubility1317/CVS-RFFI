@@ -3,3 +3,5 @@
 {"at": "2026-10-19T11:42:40+00:00", "status": "LANDED", "note": "单归档比较、远端compile/import通过；method a173cc5固定，复用原R02候选审查。", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-19T11:42:40+00:00", "status": "RUNNING", "note": "独立PID/CWD/argv/GPU4与日志增长核实；源2样本smoke PASS、clean168000预测完成，未读truth。", "evidence": ["report.md"], "row_id": "tf_unet_mixed"}
 {"at": "2026-10-19T11:42:40+00:00", "status": "RUNNING", "note": "完整正式七视图预测进行中，无训练/适配/头更新。", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-10-19T11:57:57+00:00", "status": "ANALYZED", "note": "168000原观测×7视图独立truth-last完成，0更新；lowurban平均收益及clean/两个TX损害同时保留。", "evidence": ["report.md", "results/summary.json"], "row_id": "tf_unet_mixed"}
+{"at": "2026-10-19T11:57:57+00:00", "status": "ANALYZED", "note": "本行完整正式确认完成，技术VERIFIED，最终身份目标仍active；R05保持原冻结运行。", "evidence": ["report.md", "results/summary.json"], "row_id": null}

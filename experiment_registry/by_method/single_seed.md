@@ -7,5 +7,5 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |修复后首批5个E200模型：立即执行clean及六星地场景独立测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261008-evaluation-reference-repair-completed5-manysig-m5-r01/report.md)|
-|冻结复时频恢复器的完整正式观测确认|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-restoration-formal-frozen-coarse-s2026092701-r04/report.md)|
+|复时频粗恢复器的完整正式观测结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-restoration-formal-frozen-coarse-s2026092701-r04/report.md)|
 |冻结确定性残差恢复器的完整正式观测确认|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/report.md)|

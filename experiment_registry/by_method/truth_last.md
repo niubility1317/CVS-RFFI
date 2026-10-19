@@ -22,7 +22,7 @@
 |纯CE正常遍历：batch256/512/1024/2048速度与泛化对照|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/report.md)|
 |星地观测恢复器：七网络与冻结 F 身份保真验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/report.md)|
 |接收观测恢复第二轮结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/report.md)|
-|冻结复时频恢复器的完整正式观测确认|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-restoration-formal-frozen-coarse-s2026092701-r04/report.md)|
+|复时频粗恢复器的完整正式观测结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-restoration-formal-frozen-coarse-s2026092701-r04/report.md)|
 |冻结确定性残差恢复器的完整正式观测确认|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/report.md)|
 |冻结粗恢复后的残差修正结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-restoration-residual-refinement-selfsup-m3-r03/report.md)|
 |恢复器自监督校核与独立评分恢复|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-restoration-unlabeled-confirmation-s2026092701-r01/report.md)|

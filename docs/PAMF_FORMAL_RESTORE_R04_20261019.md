@@ -1,6 +1,6 @@
 # 冻结复时频恢复器的正式固定观测确认
 
-状态：RUNNING / VERIFIED，待发布。5项新增与23项回归、compileall、正式入口help通过；未启动或取得本轮分数。R02复时频候选在原source-only规则A/B共同选中并通过源资格后，已完成1200条配对面板；本轮按既有源资格进入正式固定输入确认，不按目标成绩选择网络或参数。R03独立三行继续其原配置；本轮结果在R03源决策冻结前不回收为研发反馈。
+状态：R04 ANALYZED / VERIFIED，R05 RUNNING / VERIFIED。R04 原 168000 条样本七视图预测与独立评分完成，低仰角城区有平均身份读出收益，clean 与两个 TX 仍受损；R05 按既定源选择继续独立确认。最终身份目标未完成，正式结果不回流调参或重排。
 
 固定候选为R02 `tf_unet_mixed`，父方法commit `7efdba92932a86bf4b0492a565d35377564a26da`，源最终E20/4940、全L/U且0TX训练。只评估原冻结cleanF及AsF/default heads；训练/适配/分类头拟合均为0。源角色、继承核对及已有候选P0/P1结论直接复用，不追加runner review或数据重验证。
 
@@ -15,8 +15,8 @@
 |ID|要求|文件|状态|证据/边界|
 |---|---|---|---|---|
 |R04-01|复用正式固定输入与原物理ID，不读取标签|formal/reference|verified|元数据/原文件存在已读回；窄测试验证原字节绑定与仅ids访问|
-|R04-02|固定源选中权重、F/default heads、0更新|formal/runner|implemented|来源/源资格负测通过，原候选审查复用；实际源smoke待启动|
-|R04-03|全七视图完成后独立评分|原predict_row+formal/runner|implemented|默认预测/scorer复用；CLI池参数接线及负向检查通过|
+|R04-02|固定源选中权重、F/default heads、0更新|formal/runner|verified|实际源2样本复合checkpoint与原默认头smoke PASS，TX/目标读取0|
+|R04-03|全七视图完成后独立评分|原predict_row+formal/runner|verified|R04原168000×7预测固定后独立CPU truth-last评分完成；R05按原计划运行|
 |R04-04|有界且显式标注参考池的特征诊断|feature_diagnostic/score_row|verified|完整池数学对照/标签置换/无其他TX/非法cap测试通过，默认分支保留|
-|R04-05|资源/输出/提交与运行状态可核实|experiment/发布|implemented|单次资源/路径预检通过；GPU4空闲约24GB，待发布|
+|R04-05|资源/输出/提交与运行状态可核实|experiment/发布|verified|单归档比较、compile/import、PID/CWD/argv/GPU4与日志增长已核实|
 |R04-06|多seed和独立物理族最终证明|后续冻结扩展|deferred|本轮只有原单seed；R03结果不依据本轮分数调参|
