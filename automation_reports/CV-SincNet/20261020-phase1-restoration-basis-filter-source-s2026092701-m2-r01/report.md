@@ -1,6 +1,6 @@
 # 末端时域与频域有界残差滤波
 
-状态：PLANNED。目标仍为完整目标测试集 low urban ≥70%，其余五 practical 接近原 F clean 85.113889%（Agent 暂采用≤2个百分点口径）。分别报告同物理 clean 的波形差距和接入三套冻结原 F/defaultheads 后的真实 TX 识别、修复/损坏/净修复。当前已测最好 low urban 为65.309127%，不把新结构、源域分数或波形代替目标成绩。
+状态：RUNNING / VERIFIED。目标仍为完整目标测试集 low urban ≥70%，其余五 practical 接近原 F clean 85.113889%（Agent 暂采用≤2个百分点口径）。分别报告同物理 clean 的波形差距和接入三套冻结原 F/defaultheads 后的真实 TX 识别、修复/损坏/净修复。当前已测最好 low urban 为65.309127%，不把新结构、源域分数或波形代替目标成绩。
 
 源域依据：对已有1800条source V的固定预测做事后误差分解，没有新增模型前向、训练更新或目标访问。low urban原R03 NMSE0.068199，posterior03与两种时间注意力约0.07486至0.07490；误差分布在多个有效频带，且精修对各频带普遍增加误差，不能断言某一个频带是原因。原coarse已有频谱校正，不能把本轮称为首次加入FFT。完整聚合分解在source_error_profile.json，不含原IQ或逐样本数据。本轮只检验新增末端滤波器的基底，配置不根据目标成绩调整。
 
@@ -17,3 +17,15 @@ source V原1800条、原F1、七视图仅诊断，无早停、资格/NMSE gate�
 46项聚焦检查PASS；单次独立P0/P1审查PASS，无确定P0/P1；审查者独立复跑46项聚焦检查通过。launcher首步实际原R03/三F/source Ls四条（RX1/3各2条）no-query smoke：初始完整IQ逐点等于R03、初值匹配、coarse/correction/filter.out及原头到IQ梯度有效、F无梯度、新checkpoint往返；0V/0TX/0target/0optimizer，PASS立即训练，无smoke令牌。一次N607普通账号预检VERIFIED，原R03合法、前序完整、新run/release不存在、GPU4/5各24124MB空闲无PID、空间≥8GB，其他owner保持。GPU4 time/GPU5 frequency，每卡一条本run worker且计入allowner<2，source≥18GB/target≥12GB；CPU2线程/scorer最多1。实际source进程退出后同卡接续target，不等待另一行。
 
 停止规则：非法来源/权限/代码、冲突、非有限/OOM、预算/新模块未执行或预测失败时保留产物，技术失败该行、无自动重试，健康行继续；不停止/重启/热改其他任务。一个代码配置commit、不可覆盖root、一次归档本地/远端SHA比较、远端compile/import，随后核实PID/CWD/命令/GPU/日志增长。命令、环境/CWD、路径、矩阵、资源和预期产物见experiment.json；原IQ、权重、逐样本预测、日志和私有运行状态不进Git。另一用户对话只读确认当前为解析观测量损失/展开结构路线，未发消息或改动其任务。
+
+
+## 实际发布与首轮核验
+
+方法commit `c68588016e6960e48ef3b320c8e5daeefc8f16ac`已推送并独立核实远端OID。一次发布归档本地/远端比较、远端compile/import及真实原R03/三F/四Ls no-query smoke均PASS；初始完整IQ逐点等于R03、两臂初值相同、coarse/correction/filter.out及原头到IQ梯度有效、F无梯度、新checkpoint往返一致，0V/0TX/0target/0optimizer更新。两臂实际2351468参数，新filter210628；烟测8条IQ的系数位置2048，time无额外FFT/frequency共24次256点变换。PASS立即训练。
+
+两条实际source worker的PID/CWD/完整命令/GPU4/5及持续日志增长已核实，三F参考缓存各63000条。新filter.encoder已有实际非零梯度，独立于AdamW decay参数变化：
+
+- time_basis：1/10轮、247/2470步，filter调用247次、IQ126000条、系数位置32256000、额外FFT0次；encoder非零梯度246步、输出权重范数0.00205451、encoder delta0.04005143。
+- frequency_basis：1/10轮、247/2470步，filter调用247次、IQ126000条、系数位置32256000、额外FFT378000次；encoder非零梯度246步、输出权重范数0.00431857、encoder delta0.02758108。
+
+首轮核验时尚无新源V或目标准确率。新模块实际参与不代表性能有效；两行固定E10后各自自动完整目标测试，source V不作资格筛选，用户完整目标仍未达成。后续最终状态与结果以末尾完整结果节为准。

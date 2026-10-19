@@ -141,7 +141,7 @@ Run ID `20261020-phase1-restoration-temporal-context-source-s2026092701-m2-r01`�
 窄窗注意力：目标low urban 64.903968%，clean 85.078571%。全窗注意力：目标low urban 65.126190%，clean 85.058730%。两行均完成原预登记E10/2470、168000物理目标clean+六practical及三原头独立truth-last评分。没有source分数筛选、目标反馈或选择性重跑，全部负结果保留。[完整逐环境/逐F/波形/净纠错/成本结果](../../automation_reports/CV-SincNet/20261020-phase1-restoration-temporal-context-source-s2026092701-m2-r01/report.md)。本轮仍未达到用户完整目标，不由新增结构/训练检查推断性能。
 
 
-## 当前末端滤波固定比较（实现完成，待发布）
+## 当前末端滤波固定比较（两臂实际训练中）
 
 对已有1800条source V固定IQ预测做事后误差分解（无新模型前向/更新/目标访问）：low urban原R03 NMSE0.068199，posterior03及两种时间注意力约0.07486至0.07490，多个有效频带均存在残差且精修普遍增加误差。该证据不证明某一频带是原因；原coarse已含频谱分支，本轮比较新增末端滤波的基底，不称首次FFT或已证明频率信息不足。候选依据source证据提出，不按目标成绩调整参数。
 
@@ -149,6 +149,6 @@ Run ID `20261020-phase1-restoration-temporal-context-source-s2026092701-m2-r01`�
 
 原posterior03三F冻结损失、原63000L/U与R02缓存1..10、顺序/路由/seed保持；joint E10/2470，旧LR3e-5/新filter2e-4、warm247/cos至.1、WD1e-4/clip1/FP32。原coarse/correction各累计30轮、60组件epoch、串行继承50pass，新filter另10轮，0L/U TX真值/F更新/新头拟合。记录新模块实际调用/IQ/系数位置/FFT和非零encoder梯度步数，区分学习与AdamW decay。推断单帧IQ、一次coarse/correction/filter，无运行F条件、信道oracle、RX/场景/clean/其他帧/迭代/状态更新。
 
-46项聚焦检查及唯一一次独立P0/P1审查PASS，审查者复跑46项通过。一次N607普通账号预检VERIFIED：原R03合法、前序完整、新root不存在、GPU4/5各24124MB空闲无PID、空间≥8GB，保留其他owner。GPU4time/GPU5frequency，每卡一条本run worker，source≥18GB/target≥12GB/allowner<2/CPU scorer最多1。launcher首步真实R03/三F/四Ls no-query smoke，PASS立即训练；源V只诊断，固定最终E10两行都自动完整168000目标clean+六practical/三原默认头，各行七视图固定后独立CPU连接truth和pairedclean；实际source进程退出后同卡target，不作源筛选或目标反馈。尚无本轮新性能结果，用户完整目标仍未达成。
+46项聚焦检查及唯一一次独立P0/P1审查PASS，审查者复跑46项通过。一次N607普通账号预检VERIFIED：原R03合法、前序完整、新root不存在、GPU4/5各24124MB空闲无PID、空间≥8GB，保留其他owner。GPU4time/GPU5frequency，每卡一条本run worker，source≥18GB/target≥12GB/allowner<2/CPU scorer最多1。launcher首步真实R03/三F/四Ls no-query smoke，PASS立即训练；源V只诊断，固定最终E10两行都自动完整168000目标clean+六practical/三原默认头，各行七视图固定后独立CPU连接truth和pairedclean；实际source进程退出后同卡target，不作源筛选或目标反馈。方法commit`c68588016e6960e48ef3b320c8e5daeefc8f16ac`已实际发布，归档比较/编译、真实R03/三F/四Ls smoke均PASS；两条训练worker的PID/CWD/命令/GPU/持续日志增长及实际encoder非零梯度/滤波曝光已核实。当前尚无本轮新源V或目标准确率，用户完整目标仍未达成。
 
 Run ID `20261020-phase1-restoration-basis-filter-source-s2026092701-m2-r01`；[最小登记与方法](../../automation_reports/CV-SincNet/20261020-phase1-restoration-basis-filter-source-s2026092701-m2-r01/report.md)含命令、环境/CWD、矩阵、路径、资源、停止规则和预期产物，source_error_profile.json只含聚合误差。另一用户对话只读确认采用解析观测量损失/展开结构路线，未发消息或改动其文件/任务。

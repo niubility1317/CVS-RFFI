@@ -1,1 +1,4 @@
 {"at": "2026-10-19T22:06:11+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T22:10:15+00:00", "status": "RUNNING", "note": "VERIFIED realR03/3Fsmoke,PID/CWD/cmd/GPU/loggrowth and actual nonzeroencoder gradients/filter exposures;0target", "evidence": ["report.md", "experiment.json"], "row_id": "time_basis"}
+{"at": "2026-10-19T22:10:15+00:00", "status": "RUNNING", "note": "VERIFIED realR03/3Fsmoke,PID/CWD/cmd/GPU/loggrowth and actual nonzeroencoder gradients/filter exposures;0target", "evidence": ["report.md", "experiment.json"], "row_id": "frequency_basis"}
+{"at": "2026-10-19T22:10:15+00:00", "status": "RUNNING", "note": "Both time/frequency basis fixed rows live;source diagnosis then automatic same-row target", "evidence": ["report.md", "experiment.json"], "row_id": null}
