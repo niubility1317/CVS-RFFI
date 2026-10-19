@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "ordinary_aug": true,
+  "satellite_train_stages": [
+    {
+      "scenario": "clean_duplicate",
+      "applied": false,
+      "probability": 0.3,
+      "virtual_epoch": 1
+    },
+    {
+      "scenario": "clean_duplicate",
+      "applied": false,
+      "probability": 0.6,
+      "virtual_epoch": 51
+    },
+    {
+      "scenario": "leo_clear_weak",
+      "applied": true,
+      "probability": 0.8,
+      "virtual_epoch": 91
+    },
+    {
+      "scenario": "clean_duplicate",
+      "applied": false,
+      "probability": 0.8,
+      "virtual_epoch": 191
+    }
+  ],
+  "practical_scenarios": [
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "source_expansion_logic": true,
+  "target_IQ_reads": 0,
+  "truth_reads": 0,
+  "optimizer_updates": 0,
+  "practical_execution": "reference; buffered IO; optional unavailable FAST disabled"
+}
