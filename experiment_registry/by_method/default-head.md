@@ -29,3 +29,4 @@
 |同 As 蒸馏三模型种子确认|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-sameAsKD-confirm-e30-m6-r01/report.md)|
 |同 As 蒸馏三模型种子确认|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-sameAsKD-confirm-e30-m6-r02/report.md)|
 |同一受损 As 的 CSIL 类别知识迁移|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-sameAsKD-e30-s2026092701-m2-r01/report.md)|
+|纯 F 冻结 E20：训练命名流与新信道源拟合诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-F-observedChannel-e20-s2026092701-m4-r01/report.md)|

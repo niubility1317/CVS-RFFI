@@ -1,0 +1,19 @@
+{
+  "run_id": "20261019-diagnostic-F-observedChannel-e20-s2026092701-m4-r01",
+  "source_only": true,
+  "training_updates": 0,
+  "seed": 2026092701,
+  "selection": "B1 E20 L steps4219..4440,first2 unique IDs/cell(TX,RX,day),max180",
+  "new_namespace_prefix": "F/observedChannel/20261019/new/draw",
+  "scenes": [
+    "practical_low_suburban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "source_runs": [
+    "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01",
+    "20261019-phase1-F-sceneRisk-e20-s2026092701-m2-r01"
+  ],
+  "formal_read": false,
+  "V_predictions_reuse": true
+}

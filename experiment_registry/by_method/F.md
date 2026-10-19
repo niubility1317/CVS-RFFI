@@ -23,3 +23,4 @@
 |P78：保留完整 practical，仅移除 L 普通视图的 AWGN／多径|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-ordinaryChannel-e30-s2026092701-m2-r01/report.md)|
 |P79：当前P43基座的受控 practical 退化诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-FcrossRX-current-controls-e30-s2026092701-m2-r01/report.md)|
 |完整 As 后前缀屏蔽（预登记）|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-asPrefix-e30-s2026092701-m2-r01/report.md)|
+|纯 F 冻结 E20：训练命名流与新信道源拟合诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-F-observedChannel-e20-s2026092701-m4-r01/report.md)|
