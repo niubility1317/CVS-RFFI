@@ -1,6 +1,6 @@
 # R23：coarse 与三步恢复先验的无 TX 标签联合训练
 
-状态：LOCAL_VERIFIED，尚未发布。持续目标为原冻结 F50 seed2026092701/defaulthead 下，正式 low urban ≥70%；其他五个受损场景分别 ≥79.6761904762%（原始 raw clean 84.6761904762%−5 个百分点）。restored clean 损伤单列。源域证据不能代替正式结果。
+状态：RUNNING，真实入口与两条 GPU worker 已核实。持续目标为原冻结 F50 seed2026092701/defaulthead 下，正式 low urban ≥70%；其他五个受损场景分别 ≥79.6761904762%（原始 raw clean 84.6761904762%−5 个百分点）。restored clean 损伤单列。源域证据不能代替正式结果。
 
 R22 的源域配对结果为：解析约束相对 IQ 控制 low urban +0.5556 pp、mid urban +0.1667 pp，但 mean6 IQ NMSE 增加 2.0001%，没有通过固定五参考资格。R17/R18/R19/R22 均固定 R07 coarse 和接收作用估计权重。R14 已知作用诊断不构成整个模型理论上界，亦没有支持单独追求作用估计精度。本轮检验另一个明确问题：在固定接收作用估计权重时，允许 coarse 适应最终三步恢复目标，是否改善源域观测与身份保真。历史 F 引导联合训练属于另一权限路线，不能混作本轮 0 F 训练对照。
 
@@ -21,13 +21,13 @@ prior AdamW 2e-4→2e-5、coarse 2e-5→2e-6；共同 warm247/cos、WD1e-4、FP3
 |J23-01|报告接收链逆问题|同完整初值/部署，仅 coarse 梯度权限变化|models.py/design.py|verified|初值/输出/逐包测试 PASS|严格实现本轮对照；非首次联合网络研究|
 |J23-02|无监督首先正确|全 LU、0TX/F/target、clean仅训练目标|training.py/runtime.py|pending|负测/完整训练记录|模拟配对自监督，非无 clean 训练|
 |J23-03|可达梯度|三 prior 和 joint coarse 真正更新，estimator不更新|models.py/training.py|implemented|真实梯度/优化器一步/完整更新计数|joint 包含固定估计器输入导数|
-|J23-04|数据与继承权限|只继承原 R02/R07、schema隔离|runtime.py|implemented|来源负测/真实checkpoint入口|不重验未变数据|
+|J23-04|数据与继承权限|只继承原 R02/R07、schema隔离|runtime.py|verified|来源负测/真实checkpoint入口|不重验未变数据|
 |J23-05|两阶段三层验收|五参考固定源选择及条件正式隔离|evaluation.py/controller.py|implemented|负测/全部预测后truth|无资格0target|
-|J23-06|资源与最小发布|登记/commit/smoke/一次review/队列与退出|runner.py/controller.py/登记|pending|实际运行证据|不增加其他门槛|
+|J23-06|资源与最小发布|登记/commit/smoke/一次review/队列与退出|runner.py/controller.py/登记|verified|实际运行证据|不增加其他门槛|
 |J23-07|全场景身份保真|源及条件正式、逐组指标、成本/Git交付|report/summary|pending|独立评分与报告|不以NMSE代替TX归属|
 |J23-08|逐细节归属|多seed、独立物理族、逐细节真实性|后续研究|deferred|尚无合格候选|当前不得宣称完成|
 
-当前1 verified、3 implemented、3 pending、1 deferred、0 blocked。29项聚焦检查（含真实64抽头/CG反传）、compile/help及一次独立P0/P1 PASS。实际完整训练、真实checkpoint入口和远端发布尚待执行。最高剩余风险为 coarse 漂移、跨 RX 泛化与逐细节身份真实性。
+当前3 verified、2 implemented、2 pending、1 deferred、0 blocked。29项聚焦检查、compile/help、一次独立P0/P1及实际checkpoint入口、发布与两条worker运行证据均通过；完整训练/源评估/条件正式结果仍待返回。最高剩余风险为 coarse 漂移、跨 RX 泛化与逐细节身份真实性。
 
 实际参数：{"prior_only": {"total": 4665073, "groups": {"prior": 2507526}}, "joint_coarse": {"total": 4665073, "groups": {"prior": 2507526, "coarse": 1305958}}}。参数统计仅构造恢复器，未读取训练好的 F/TX/target。
 非阻断记录：REJECTED_EXTRA_GATE——通用全仓库测试要求由项目聚焦负测协议覆盖，未添加全面测试或重复 review 门槛。

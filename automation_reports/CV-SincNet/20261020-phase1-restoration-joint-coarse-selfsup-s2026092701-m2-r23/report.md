@@ -37,3 +37,6 @@ prior AdamW 2e-4→2e-5、coarse 2e-5→2e-6；共同 warm247/cos、WD1e-4、FP3
 
 
 完整矩阵、命令、环境/CWD、路径、GPU和停止规则见[登记](experiment.json)。
+
+
+发布后状态：VERIFIED。单归档传输比对、远端编译和真实两条源样本 checkpoint/defaultF 入口通过。共同完整初值及输出一致；三步 prior 梯度有限非零，只有 joint 行 coarse 收到梯度，估计器无参数梯度。两条真实 GPU worker 的 PID/CWD/argv/GPU 和日志增长已核实，实际更新计数与分组 LR 符合登记；本 run 每卡一条，没有干预其他 owner。完整全LU训练、源七视图及有条件正式确认继续自动执行，当前尚无效果结论。
