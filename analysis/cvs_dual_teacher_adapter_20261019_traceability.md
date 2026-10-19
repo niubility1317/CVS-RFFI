@@ -39,3 +39,12 @@
 - S3末次已见118/180，Ts154/180；low同场景已见S3为28/59、Ts42/59。clean真实joint160中位漂移S3=.242783、S1=.111271；零输出eval一致为0，Dropout-only T4²KL=.885004而720/720全对。
 - 用户条件“局部修正不足后再考虑rawIQ补充编码器”已有源证据支持；仅完成4256参数/356352卷积MAC/当前输入同IQ的可行性核对，NOT_IMPLEMENTED/NOT_LAUNCHED。LoRA的S3有效前置条件未成立，本轮不混featurekeep。
 - 完整结果：[final_analysis.md](../automation_reports/CV-SincNet/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/final_analysis.md)。旧配方SOURCE_FAIL保持，未扩seed/E50或新target读出。
+
+## raw IQ 补充路径实现（新候选）
+
+- Run `20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01`：独立新root，4新row（NOAS_ADAPTER/S1/S2/S3），相同合法B0E20+10累计E30；旧6row产物复用，不加载旧失败S3权重。
+- 用户条件raw路径：20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01的同IQ源证据已满足局部拟合不足/Ts额外知识前置；仅改变特征输入通路，未重扫权重/温度/seed。
+- 已实现当前received2×256→两级16通道卷积GN/GELU→两个零B投影，在t1/t2原GN前注入；4256参数/8新键/卷积MAC356352，原206状态与defaultcos30头保留。无跨forwardclean缓存、oracle部署输入、新头或旧localadapter叠加。
+- 实际F合成验证零输出joint/logits逐值相同，原状态保持，两个B有梯度；本地aggregate68负例与源决定/元数据10负例通过，0真实CP/IQ/remote。真实CPsmoke为launch首步，PASS继续。
+- 训练raw/As正确数取已有logits，标注stochastic读出；全4固定FINAL30自动7view预测，源3条件固定后独立truthlast。标准LoRA/featurekeep暂不混入。
+- 当前状态：实现和本地验证完成，唯一独立P0/P1审查PASS，准备远端启动。最小预登记：[report.md](../automation_reports/CV-SincNet/20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01/report.md)。

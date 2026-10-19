@@ -1,0 +1,404 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01",
+  "group_id": "phase1-F-rawIQ-dualTeacher-input-path",
+  "display_name": "raw IQ补充特征通路：同父E20再适配10轮",
+  "description": "在已确认Ts同IQ优势且局部adapter拟合不足后，单独替换为直接读取当前receivedIQ的补充编码器；保留相近参数/计算的旧local对照与原FT对照。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "F",
+    "E30",
+    "raw-IQ-supplement",
+    "dual-teacher",
+    "default-head",
+    "source-first",
+    "single-seed"
+  ],
+  "comparison_group_id": "same-B0E20-own-parent-10epoch-head-frozen",
+  "parent_run_ids": [
+    "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "本chat明确c29星地目标＋adf48c条件raw补充通路；源诊断已证明局部adapter不充分，用户已固定学生追加10轮累计E30。本任务具体纯F/原U/七视图指令优先其他并行对话AGENTS默认，不混入CROSSRX/RDrop/E50clean-only或ordinaryPL。",
+  "code": {
+    "commit": null,
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 existing Python3.10/Torch2.1;CPU2 FP32/TF32off",
+    "cwd": "PROJECT/releases/cvs_F_rawIQ_dualTeacher_E30_20261019_r01"
+  },
+  "data": {
+    "dataset": "existing immutable ManySig equalized1",
+    "version": "same source contract reused",
+    "representation": "equalized1/center256/unitRMS; exact saved residual post_sync/noeq full observation",
+    "contract_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json",
+    "physical_ids_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json#role_ids",
+    "label_map_ref": "design.CLASSES and native class_mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "protocol.CLASSES",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing sourceV27000 + fixed cached balancedV1800/two full physical draws; Phase2 capsule not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": "PROJECT/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/observations/actual_engine.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Each fixed FINAL30 all7singlepacket predictions;all source matrix criteria fixed before independent CPU truth-last. Source decisions never load prior target scores.",
+    "external_method_exception": null,
+    "claim_scope": "single modelseed cumulativeE30 exploratory; old exposed benchmark; no fresh blindtest or repeatableclean benefit claim"
+  },
+  "checkpoint": {
+    "initialization": "Eachnewrow strict own cleanF B0FINAL20 only;zero-outputrawmodule4256 installedafterloadingF206. No inheritoldlocalS3 orteacherparameters into student.",
+    "sources": [
+      {
+        "role": "student,ownEMA,cleanTeacher",
+        "run_id": "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01",
+        "row": "B0-s2026092701",
+        "checkpoint": "PROJECT/runs/20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01/B0-s2026092701/source/final_ssdg.pth"
+      },
+      {
+        "role": "satelliteTeacher eval only;not inherited student",
+        "run_id": "20260930-phase1-native-baselines-practical-manysig-m5-r01",
+        "row": "csil-s2026092701",
+        "checkpoint": "PROJECT/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092701/last.pt"
+      }
+    ],
+    "contract_check_ref": "Existing own B0 provenance plus sameIQ inspection/payload role_ids_exact and old teacher strict load;source contract unchanged",
+    "provenance_verdict": "VERIFIED same legal parent and teachers;strict load first;realCPsmoke before train",
+    "selection_rule": "Fixedseed2026092701 and FINAL20Tc/last200Ts;4new FINAL30, no sourcebest/targetselection."
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/F-rawIQ-dualTeacher30",
+    "gpu_policy": "GPU4/6/7 candidates;max1 thisrunworker/GPU,all-ownercap2/free>=12000MB;sharedlock;CPU2FP32TF32off;nohealthyjobintervention",
+    "remote_run_root": "PROJECT/runs/20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01",
+    "remote_log_root": "PROJECT/runs/20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/F_rawIQ_dualTeacher_E30_20261019",
+    "launch_command": [
+      "CVS-RFFI/python",
+      "-u",
+      "PROJECT/releases/cvs_F_rawIQ_dualTeacher_E30_20261019_r01/experiments/cvs_raw_iq_adapter30/runner.py",
+      "--mode",
+      "dispatch"
+    ],
+    "stop_rule": "Only registered run-owned systemic technical failure:roles/provenance/nonfinite/frozenW/F/view/teacher/U truth/budget/output inconsistency.Preserve artifacts,no automatic restart,no healthy-task stop.",
+    "launch_readback_ref": "local_artifacts/F_rawIQ_dualTeacher_E30_20261019/postlaunch.json"
+  },
+  "expected_artifacts": [
+    "source/final_ssdg.pth with phase1_lineage",
+    "source/initialization.json",
+    "source/completion.json",
+    "source/resolved_config.json",
+    "source/training_result.json",
+    "source/complete step and L/U sequence logs",
+    "source_qualification/complete.json and predictions.npz",
+    "source_matrix_decision.json before formal score read",
+    "prediction/predictions.npz plus complete all7",
+    "scoring/scores.json plus truth-last complete",
+    "report.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro F1",
+      "worst RX",
+      "paired corrected/new errors",
+      "fixed parent B0 clean-correct retention",
+      "per suburban absolute/gap",
+      "actual L/U/EMA/Tc/Ts forward counts",
+      "adapter and frozen F/head state",
+      "actual wallclock",
+      "actual training stochastic raw/As correct/n fromexistinglogits",
+      "raw path onlychangedstates4256",
+      "same currentIQ twofeaturetaps",
+      "same budgetoldlocal/FT comparison"
+    ],
+    "dimensions": [
+      "row",
+      "seed",
+      "clean+6practical",
+      "RX",
+      "day",
+      "TX"
+    ],
+    "prediction_ref": "PROJECT/runs/20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01/<row>/prediction/predictions.npz",
+    "scorer_ref": "independent CPU truth-last after all7 frozen and source decision fixed"
+  },
+  "rows": [
+    {
+      "row_id": "NOAS_ADAPTER-s2026092701",
+      "method": "Current-IQ raw encoder NoAs cleanKD",
+      "purpose": "structure-matchedNoAs",
+      "config_ref": "configs/NOAS_ADAPTER-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01/NOAS_ADAPTER-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "Same fixed model seed,split/data392005,legacychannel seed/receiver session unchanged. Adapter private initialization seed fixed.Same role-specific newsegment sampler reset;support not applicable. Two source draws are not model seeds.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "ResetAdamW4256rawfeatureparams only;alloriginalF/defaulthead frozen;noSincupdates",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "sameB0E20/4440 +new10/2220=cumulative30/6660;old local4768/convMAC433152 vsnew4256/356352;Ustudent/ownEMA567000each;eachTc/Ts284160;LNNNoAs284160/As568320. Historicalteachersseparate,0newteachertrain.",
+      "output_root": "PROJECT/runs/20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01/NOAS_ADAPTER-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01/logs/NOAS_ADAPTER-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_rawIQ_dualTeacher_E30_20261019_r01/experiments/cvs_raw_iq_adapter30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "NOAS_ADAPTER-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/final_ssdg.pth with phase1_lineage",
+        "source/initialization.json",
+        "source/completion.json",
+        "source/resolved_config.json",
+        "source/training_result.json",
+        "source/complete step and L/U sequence logs",
+        "source_qualification/complete.json and predictions.npz",
+        "source_matrix_decision.json before formal score read",
+        "prediction/predictions.npz plus complete all7",
+        "scoring/scores.json plus truth-last complete",
+        "report.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "S1-s2026092701",
+      "method": "Current-IQ raw encoder raw+As CE",
+      "purpose": "mechanismcontrol",
+      "config_ref": "configs/S1-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01/S1-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "Same fixed model seed,split/data392005,legacychannel seed/receiver session unchanged. Adapter private initialization seed fixed.Same role-specific newsegment sampler reset;support not applicable. Two source draws are not model seeds.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "ResetAdamW4256rawfeatureparams only;alloriginalF/defaulthead frozen;noSincupdates",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "sameB0E20/4440 +new10/2220=cumulative30/6660;old local4768/convMAC433152 vsnew4256/356352;Ustudent/ownEMA567000each;eachTc/Ts284160;LNNNoAs284160/As568320. Historicalteachersseparate,0newteachertrain.",
+      "output_root": "PROJECT/runs/20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01/S1-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01/logs/S1-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_rawIQ_dualTeacher_E30_20261019_r01/experiments/cvs_raw_iq_adapter30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "S1-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/final_ssdg.pth with phase1_lineage",
+        "source/initialization.json",
+        "source/completion.json",
+        "source/resolved_config.json",
+        "source/training_result.json",
+        "source/complete step and L/U sequence logs",
+        "source_qualification/complete.json and predictions.npz",
+        "source_matrix_decision.json before formal score read",
+        "prediction/predictions.npz plus complete all7",
+        "scoring/scores.json plus truth-last complete",
+        "report.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "S2-s2026092701",
+      "method": "Current-IQ raw encoder raw+As CE+cleanKD",
+      "purpose": "mechanismcontrol",
+      "config_ref": "configs/S2-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01/S2-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "Same fixed model seed,split/data392005,legacychannel seed/receiver session unchanged. Adapter private initialization seed fixed.Same role-specific newsegment sampler reset;support not applicable. Two source draws are not model seeds.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "ResetAdamW4256rawfeatureparams only;alloriginalF/defaulthead frozen;noSincupdates",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "sameB0E20/4440 +new10/2220=cumulative30/6660;old local4768/convMAC433152 vsnew4256/356352;Ustudent/ownEMA567000each;eachTc/Ts284160;LNNNoAs284160/As568320. Historicalteachersseparate,0newteachertrain.",
+      "output_root": "PROJECT/runs/20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01/S2-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01/logs/S2-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_rawIQ_dualTeacher_E30_20261019_r01/experiments/cvs_raw_iq_adapter30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "S2-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/final_ssdg.pth with phase1_lineage",
+        "source/initialization.json",
+        "source/completion.json",
+        "source/resolved_config.json",
+        "source/training_result.json",
+        "source/complete step and L/U sequence logs",
+        "source_qualification/complete.json and predictions.npz",
+        "source_matrix_decision.json before formal score read",
+        "prediction/predictions.npz plus complete all7",
+        "scoring/scores.json plus truth-last complete",
+        "report.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "S3-s2026092701",
+      "method": "Current-IQ raw encoder raw+As CE+dualKD",
+      "purpose": "primary",
+      "config_ref": "configs/S3-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01/S3-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "Same fixed model seed,split/data392005,legacychannel seed/receiver session unchanged. Adapter private initialization seed fixed.Same role-specific newsegment sampler reset;support not applicable. Two source draws are not model seeds.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "ResetAdamW4256rawfeatureparams only;alloriginalF/defaulthead frozen;noSincupdates",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "sameB0E20/4440 +new10/2220=cumulative30/6660;old local4768/convMAC433152 vsnew4256/356352;Ustudent/ownEMA567000each;eachTc/Ts284160;LNNNoAs284160/As568320. Historicalteachersseparate,0newteachertrain.",
+      "output_root": "PROJECT/runs/20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01/S3-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01/logs/S3-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_rawIQ_dualTeacher_E30_20261019_r01/experiments/cvs_raw_iq_adapter30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "S3-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/final_ssdg.pth with phase1_lineage",
+        "source/initialization.json",
+        "source/completion.json",
+        "source/resolved_config.json",
+        "source/training_result.json",
+        "source/complete step and L/U sequence logs",
+        "source_qualification/complete.json and predictions.npz",
+        "source_matrix_decision.json before formal score read",
+        "prediction/predictions.npz plus complete all7",
+        "scoring/scores.json plus truth-last complete",
+        "report.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Only structuralhypothesis changes:currentreceivedIQ feedforward convsupplement versuslocalhiddenh residual. 4256 params/356352convMAC vs4768/433152. BothoriginalF/ref/PA/SIG_TIME/head preserved.Noextrahead ororacle/cleanbranch inAs forward.NoLoRA/featurekeep/qualitygate/IQreconstruction.",
+    "Main expected repair:oldS3 seenAs118/180 vsTs154/180,low28/59vs42/59;legal source-only run 20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01 completed. This motivates input path,not target-basedtuning. Oldrecipe remainsclosed;newcandidate has inspectable mechanismdifference.",
+    "Fixed4newrows NOAS_ADAPTER/S1/S2/S3;reuse old 20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02 all6 matchedcontrols withouttraining/NN/pred/score repeats. Both oldordinaryNoAsFT and structureNoAs reported,no weaker substitution.",
+    "PrimaryS3 sourcepass=midlow(newS3-newS2)>=.5pp AND midlow(newS3-oldlocalS3)>=.5pp AND fullVclean(newS3-maxnewNoAs/oldNoAsFT/oldNoAsAdapter)>=-.2pp.Fixedbeforeanynewtargetscore.No automaticE50/seedexpansion.",
+    "Trainingrecipe retains originaluserexplicitU/ownEMA/batchneighbor/strong/confidence,CE.5/.5orNoAsraw1;KD.25/.25,T4correctteacher/all128 masks. Globaldefaults recordedinotherconversation AGENTS do not silently change this specificcontrolledstudy.",
+    "B0 parent20/ownEMA20 strictload;newoptimizer/LR/sampler resetandnewraw8keys sameinitialization asownEMA;local2220updates/cumulative6660,newcosine10notcontinuous30. Channelnamespacecumulative21..30 freshperstep.",
+    "AllrowFINAL30 automaticclean+6practical singlepacketprediction/independenttruthlast;sourcequal fixedsameV27000clean plusV1800x3scenesx2draws. Before newsource decision oldonlysourcequalificationmetadata isread;oldtargetreports only afterdecision tocompare.",
+    "FirstrealCPnoquerysmoke continues immediately;one independentP0/P1 review;onecodeconfigcommit/immutablearchive/SHAtransfer/remotecompile/preflight/postlaunch.Inheritedteacherlegacycostseparate.Newdatahash/seal/designapproval notneeded.",
+    "Uniformparent/headtrainingrulesfixoriginalF/defaulthead whiletrainnewrawfeatures peruseradf.0newclassifier/probehead. NoexplicitCFO retained;newpathcurrentreceivedIQonly,scene/RX/truthnotdeploymentinputs."
+  ],
+  "registered_at": "2026-10-19T10:12:49+00:00"
+}
