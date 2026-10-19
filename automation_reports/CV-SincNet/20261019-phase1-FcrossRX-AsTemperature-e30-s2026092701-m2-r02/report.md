@@ -31,3 +31,5 @@ r01 T1在历史factory导入缺少paper_reproduction，已本地同指纹复现F
 源域同观测诊断已完成（45000NN/0更新）。V1800×2draw lowurban：PAMF59.0833%、CSIL77.4444%、MoPC78.3056%；CSIL对PAMF净修复661/3600，其中教师对而PAMF错835、反向174。BLOCKED低urban为32.7943%/61.4452%/62.9611%。低新增噪声比<3dB为27.3292%/53.7711%/56.5217%。不同模型seed及E30/E200预算差异已披露，这证明同观测下存在可供研究的专家优势，不证明蒸馏有效。
 
 PAMF新信道的L/V lowurban为59.5278%/58.7222%，mid为74.0000%/73.1667%；相差分别.8056/.8333pp。这里是见过的物理样本在新信道下的表现，未测已消费的训练信道，不能笼统宣称优化欠拟合或物理上限。源报告见source_comparison.json。T1/T6仍按固定预算训练，未读取其正式测试指标。
+
+日志字段解释：temperature_steps中的As_native_NLL实际为原尺度label_smoothing=.01的CE；不是逐步hard-label NLL。As_mean_logit_gradient_norm实际记录30×(两次平均softmax−平滑真值)的逐样本余弦梯度代理，不含batch均值/外层.25权重或其他目标的参数梯度。两种温度损失不可直接横比，分析按此语义解释，不更改健康训练。

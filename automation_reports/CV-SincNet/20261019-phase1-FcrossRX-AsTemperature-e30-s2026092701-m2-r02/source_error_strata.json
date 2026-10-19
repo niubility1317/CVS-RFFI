@@ -1,0 +1,487 @@
+{
+  "results": [
+    {
+      "method": "PAMF",
+      "scene": "practical_mid_urban",
+      "dimension": "channel_draw",
+      "stratum": "0",
+      "n": 1800,
+      "accuracy": 0.7255555555555555,
+      "repairs": 0,
+      "new_errors": 0
+    },
+    {
+      "method": "PAMF",
+      "scene": "practical_mid_urban",
+      "dimension": "channel_draw",
+      "stratum": "1",
+      "n": 1800,
+      "accuracy": 0.7305555555555555,
+      "repairs": 0,
+      "new_errors": 0
+    },
+    {
+      "method": "PAMF",
+      "scene": "practical_mid_urban",
+      "dimension": "TX",
+      "stratum": "0",
+      "n": 600,
+      "accuracy": 0.7083333333333334,
+      "repairs": 0,
+      "new_errors": 0
+    },
+    {
+      "method": "PAMF",
+      "scene": "practical_mid_urban",
+      "dimension": "TX",
+      "stratum": "1",
+      "n": 600,
+      "accuracy": 0.6883333333333334,
+      "repairs": 0,
+      "new_errors": 0
+    },
+    {
+      "method": "PAMF",
+      "scene": "practical_mid_urban",
+      "dimension": "TX",
+      "stratum": "2",
+      "n": 600,
+      "accuracy": 0.7583333333333333,
+      "repairs": 0,
+      "new_errors": 0
+    },
+    {
+      "method": "PAMF",
+      "scene": "practical_mid_urban",
+      "dimension": "TX",
+      "stratum": "3",
+      "n": 600,
+      "accuracy": 0.595,
+      "repairs": 0,
+      "new_errors": 0
+    },
+    {
+      "method": "PAMF",
+      "scene": "practical_mid_urban",
+      "dimension": "TX",
+      "stratum": "4",
+      "n": 600,
+      "accuracy": 0.7166666666666667,
+      "repairs": 0,
+      "new_errors": 0
+    },
+    {
+      "method": "PAMF",
+      "scene": "practical_mid_urban",
+      "dimension": "TX",
+      "stratum": "5",
+      "n": 600,
+      "accuracy": 0.9016666666666666,
+      "repairs": 0,
+      "new_errors": 0
+    },
+    {
+      "method": "PAMF",
+      "scene": "practical_low_urban",
+      "dimension": "channel_draw",
+      "stratum": "0",
+      "n": 1800,
+      "accuracy": 0.6011111111111112,
+      "repairs": 0,
+      "new_errors": 0
+    },
+    {
+      "method": "PAMF",
+      "scene": "practical_low_urban",
+      "dimension": "channel_draw",
+      "stratum": "1",
+      "n": 1800,
+      "accuracy": 0.5805555555555556,
+      "repairs": 0,
+      "new_errors": 0
+    },
+    {
+      "method": "PAMF",
+      "scene": "practical_low_urban",
+      "dimension": "TX",
+      "stratum": "0",
+      "n": 600,
+      "accuracy": 0.5216666666666666,
+      "repairs": 0,
+      "new_errors": 0
+    },
+    {
+      "method": "PAMF",
+      "scene": "practical_low_urban",
+      "dimension": "TX",
+      "stratum": "1",
+      "n": 600,
+      "accuracy": 0.565,
+      "repairs": 0,
+      "new_errors": 0
+    },
+    {
+      "method": "PAMF",
+      "scene": "practical_low_urban",
+      "dimension": "TX",
+      "stratum": "2",
+      "n": 600,
+      "accuracy": 0.6166666666666667,
+      "repairs": 0,
+      "new_errors": 0
+    },
+    {
+      "method": "PAMF",
+      "scene": "practical_low_urban",
+      "dimension": "TX",
+      "stratum": "3",
+      "n": 600,
+      "accuracy": 0.425,
+      "repairs": 0,
+      "new_errors": 0
+    },
+    {
+      "method": "PAMF",
+      "scene": "practical_low_urban",
+      "dimension": "TX",
+      "stratum": "4",
+      "n": 600,
+      "accuracy": 0.58,
+      "repairs": 0,
+      "new_errors": 0
+    },
+    {
+      "method": "PAMF",
+      "scene": "practical_low_urban",
+      "dimension": "TX",
+      "stratum": "5",
+      "n": 600,
+      "accuracy": 0.8366666666666667,
+      "repairs": 0,
+      "new_errors": 0
+    },
+    {
+      "method": "csil",
+      "scene": "practical_mid_urban",
+      "dimension": "channel_draw",
+      "stratum": "0",
+      "n": 1800,
+      "accuracy": 0.8583333333333333,
+      "repairs": 302,
+      "new_errors": 63
+    },
+    {
+      "method": "csil",
+      "scene": "practical_mid_urban",
+      "dimension": "channel_draw",
+      "stratum": "1",
+      "n": 1800,
+      "accuracy": 0.8705555555555555,
+      "repairs": 307,
+      "new_errors": 55
+    },
+    {
+      "method": "csil",
+      "scene": "practical_mid_urban",
+      "dimension": "TX",
+      "stratum": "0",
+      "n": 600,
+      "accuracy": 0.8566666666666667,
+      "repairs": 111,
+      "new_errors": 22
+    },
+    {
+      "method": "csil",
+      "scene": "practical_mid_urban",
+      "dimension": "TX",
+      "stratum": "1",
+      "n": 600,
+      "accuracy": 0.7416666666666667,
+      "repairs": 83,
+      "new_errors": 51
+    },
+    {
+      "method": "csil",
+      "scene": "practical_mid_urban",
+      "dimension": "TX",
+      "stratum": "2",
+      "n": 600,
+      "accuracy": 0.945,
+      "repairs": 118,
+      "new_errors": 6
+    },
+    {
+      "method": "csil",
+      "scene": "practical_mid_urban",
+      "dimension": "TX",
+      "stratum": "3",
+      "n": 600,
+      "accuracy": 0.7433333333333333,
+      "repairs": 115,
+      "new_errors": 26
+    },
+    {
+      "method": "csil",
+      "scene": "practical_mid_urban",
+      "dimension": "TX",
+      "stratum": "4",
+      "n": 600,
+      "accuracy": 0.92,
+      "repairs": 130,
+      "new_errors": 8
+    },
+    {
+      "method": "csil",
+      "scene": "practical_mid_urban",
+      "dimension": "TX",
+      "stratum": "5",
+      "n": 600,
+      "accuracy": 0.98,
+      "repairs": 52,
+      "new_errors": 5
+    },
+    {
+      "method": "csil",
+      "scene": "practical_low_urban",
+      "dimension": "channel_draw",
+      "stratum": "0",
+      "n": 1800,
+      "accuracy": 0.7788888888888889,
+      "repairs": 403,
+      "new_errors": 83
+    },
+    {
+      "method": "csil",
+      "scene": "practical_low_urban",
+      "dimension": "channel_draw",
+      "stratum": "1",
+      "n": 1800,
+      "accuracy": 0.77,
+      "repairs": 432,
+      "new_errors": 91
+    },
+    {
+      "method": "csil",
+      "scene": "practical_low_urban",
+      "dimension": "TX",
+      "stratum": "0",
+      "n": 600,
+      "accuracy": 0.7883333333333333,
+      "repairs": 189,
+      "new_errors": 29
+    },
+    {
+      "method": "csil",
+      "scene": "practical_low_urban",
+      "dimension": "TX",
+      "stratum": "1",
+      "n": 600,
+      "accuracy": 0.6333333333333333,
+      "repairs": 105,
+      "new_errors": 64
+    },
+    {
+      "method": "csil",
+      "scene": "practical_low_urban",
+      "dimension": "TX",
+      "stratum": "2",
+      "n": 600,
+      "accuracy": 0.875,
+      "repairs": 165,
+      "new_errors": 10
+    },
+    {
+      "method": "csil",
+      "scene": "practical_low_urban",
+      "dimension": "TX",
+      "stratum": "3",
+      "n": 600,
+      "accuracy": 0.53,
+      "repairs": 111,
+      "new_errors": 48
+    },
+    {
+      "method": "csil",
+      "scene": "practical_low_urban",
+      "dimension": "TX",
+      "stratum": "4",
+      "n": 600,
+      "accuracy": 0.8483333333333334,
+      "repairs": 179,
+      "new_errors": 18
+    },
+    {
+      "method": "csil",
+      "scene": "practical_low_urban",
+      "dimension": "TX",
+      "stratum": "5",
+      "n": 600,
+      "accuracy": 0.9716666666666667,
+      "repairs": 86,
+      "new_errors": 5
+    },
+    {
+      "method": "mopc_hr",
+      "scene": "practical_mid_urban",
+      "dimension": "channel_draw",
+      "stratum": "0",
+      "n": 1800,
+      "accuracy": 0.8633333333333333,
+      "repairs": 308,
+      "new_errors": 60
+    },
+    {
+      "method": "mopc_hr",
+      "scene": "practical_mid_urban",
+      "dimension": "channel_draw",
+      "stratum": "1",
+      "n": 1800,
+      "accuracy": 0.8688888888888889,
+      "repairs": 308,
+      "new_errors": 59
+    },
+    {
+      "method": "mopc_hr",
+      "scene": "practical_mid_urban",
+      "dimension": "TX",
+      "stratum": "0",
+      "n": 600,
+      "accuracy": 0.8083333333333333,
+      "repairs": 88,
+      "new_errors": 28
+    },
+    {
+      "method": "mopc_hr",
+      "scene": "practical_mid_urban",
+      "dimension": "TX",
+      "stratum": "1",
+      "n": 600,
+      "accuracy": 0.7316666666666667,
+      "repairs": 78,
+      "new_errors": 52
+    },
+    {
+      "method": "mopc_hr",
+      "scene": "practical_mid_urban",
+      "dimension": "TX",
+      "stratum": "2",
+      "n": 600,
+      "accuracy": 0.9583333333333334,
+      "repairs": 124,
+      "new_errors": 4
+    },
+    {
+      "method": "mopc_hr",
+      "scene": "practical_mid_urban",
+      "dimension": "TX",
+      "stratum": "3",
+      "n": 600,
+      "accuracy": 0.81,
+      "repairs": 144,
+      "new_errors": 15
+    },
+    {
+      "method": "mopc_hr",
+      "scene": "practical_mid_urban",
+      "dimension": "TX",
+      "stratum": "4",
+      "n": 600,
+      "accuracy": 0.9183333333333333,
+      "repairs": 133,
+      "new_errors": 12
+    },
+    {
+      "method": "mopc_hr",
+      "scene": "practical_mid_urban",
+      "dimension": "TX",
+      "stratum": "5",
+      "n": 600,
+      "accuracy": 0.97,
+      "repairs": 49,
+      "new_errors": 8
+    },
+    {
+      "method": "mopc_hr",
+      "scene": "practical_low_urban",
+      "dimension": "channel_draw",
+      "stratum": "0",
+      "n": 1800,
+      "accuracy": 0.7761111111111111,
+      "repairs": 406,
+      "new_errors": 91
+    },
+    {
+      "method": "mopc_hr",
+      "scene": "practical_low_urban",
+      "dimension": "channel_draw",
+      "stratum": "1",
+      "n": 1800,
+      "accuracy": 0.79,
+      "repairs": 462,
+      "new_errors": 85
+    },
+    {
+      "method": "mopc_hr",
+      "scene": "practical_low_urban",
+      "dimension": "TX",
+      "stratum": "0",
+      "n": 600,
+      "accuracy": 0.735,
+      "repairs": 157,
+      "new_errors": 29
+    },
+    {
+      "method": "mopc_hr",
+      "scene": "practical_low_urban",
+      "dimension": "TX",
+      "stratum": "1",
+      "n": 600,
+      "accuracy": 0.6083333333333333,
+      "repairs": 96,
+      "new_errors": 70
+    },
+    {
+      "method": "mopc_hr",
+      "scene": "practical_low_urban",
+      "dimension": "TX",
+      "stratum": "2",
+      "n": 600,
+      "accuracy": 0.935,
+      "repairs": 198,
+      "new_errors": 7
+    },
+    {
+      "method": "mopc_hr",
+      "scene": "practical_low_urban",
+      "dimension": "TX",
+      "stratum": "3",
+      "n": 600,
+      "accuracy": 0.6316666666666667,
+      "repairs": 157,
+      "new_errors": 33
+    },
+    {
+      "method": "mopc_hr",
+      "scene": "practical_low_urban",
+      "dimension": "TX",
+      "stratum": "4",
+      "n": 600,
+      "accuracy": 0.8266666666666667,
+      "repairs": 173,
+      "new_errors": 25
+    },
+    {
+      "method": "mopc_hr",
+      "scene": "practical_low_urban",
+      "dimension": "TX",
+      "stratum": "5",
+      "n": 600,
+      "accuracy": 0.9616666666666667,
+      "repairs": 87,
+      "new_errors": 12
+    }
+  ],
+  "newNN": 0,
+  "updates": 0,
+  "target_access": false
+}
