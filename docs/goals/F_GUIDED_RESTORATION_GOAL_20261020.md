@@ -15,15 +15,15 @@
 
 同一不可变 168000 条物理样本，三套原 F 默认头分别 argmax 后取准确率均值；一个恢复器训练种子，不是三个恢复器种子。以下为已经完整评分的候选，不按单场景拼接为一个模型。
 
-| 场景 | 原 R03 恢复 | correction-only 特征约束 | joint 弱决策约束 |同RX统计混合|跨RX统计混合|窄窗注意力|全窗注意力| 目标口径 |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| clean | 84.743056% | 84.915873% | 85.016071% |85.054365%|85.064286%|85.078571%|85.058730%| 报告相对原 clean 的差值 |
-| high | 77.575000% | 77.159921% | 77.025794% |77.175794%|77.473413%|77.253770%|77.267262%| ≥83.113889%（暂定） |
-| mid | 76.491071% | 76.233333% | 76.102183% |76.173413%|76.464683%|76.239087%|76.258333%| ≥83.113889%（暂定） |
-| low-suburban | 75.284127% | 75.170437% | 75.080159% |75.121627%|75.457540%|75.175397%|75.194841%| ≥83.113889%（暂定） |
-| high-urban | 76.330952% | 76.224008% | 76.009127% |76.094246%|76.372024%|76.137698%|76.227183%| ≥83.113889%（暂定） |
-| mid-urban | 70.116865% | 71.210317% | 70.841071% |70.747222%|70.975397%|70.675992%|70.845238%| ≥83.113889%（暂定） |
-| low-urban | 63.392460% | **65.309127%** | 65.209325% |64.968056%|65.132937%|64.903968%|65.126190%| ≥70% |
+| 场景 | 原 R03 恢复 | correction-only 特征约束 | joint 弱决策约束 |同RX统计混合|跨RX统计混合|窄窗注意力|全窗注意力|时域滤波|频域滤波| 目标口径 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| clean | 84.743056% | 84.915873% | 85.016071% |85.054365%|85.064286%|85.078571%|85.058730%|85.089484%|85.006151%| 报告相对原 clean 的差值 |
+| high | 77.575000% | 77.159921% | 77.025794% |77.175794%|77.473413%|77.253770%|77.267262%|77.335119%|77.207738%| ≥83.113889%（暂定） |
+| mid | 76.491071% | 76.233333% | 76.102183% |76.173413%|76.464683%|76.239087%|76.258333%|76.328968%|76.183532%| ≥83.113889%（暂定） |
+| low-suburban | 75.284127% | 75.170437% | 75.080159% |75.121627%|75.457540%|75.175397%|75.194841%|75.257143%|75.156548%| ≥83.113889%（暂定） |
+| high-urban | 76.330952% | 76.224008% | 76.009127% |76.094246%|76.372024%|76.137698%|76.227183%|76.225198%|76.126786%| ≥83.113889%（暂定） |
+| mid-urban | 70.116865% | 71.210317% | 70.841071% |70.747222%|70.975397%|70.675992%|70.845238%|70.741865%|70.698810%| ≥83.113889%（暂定） |
+| low-urban | 63.392460% | **65.309127%** | 65.209325% |64.968056%|65.132937%|64.903968%|65.126190%|64.973016%|64.939087%| ≥70% |
 
 low-urban 最好已测值为 65.309127%，距 70% 仍差 4.690873 个百分点；完整双判据见本轮结果，未按单环境拼接模型。joint 候选的 low-urban IQ NMSE 从输入的 1.987855 降至 0.078199，但这没有超过特征约束候选的识别率；波形与识别两项不能互相替代。
 
@@ -141,7 +141,7 @@ Run ID `20261020-phase1-restoration-temporal-context-source-s2026092701-m2-r01`�
 窄窗注意力：目标low urban 64.903968%，clean 85.078571%。全窗注意力：目标low urban 65.126190%，clean 85.058730%。两行均完成原预登记E10/2470、168000物理目标clean+六practical及三原头独立truth-last评分。没有source分数筛选、目标反馈或选择性重跑，全部负结果保留。[完整逐环境/逐F/波形/净纠错/成本结果](../../automation_reports/CV-SincNet/20261020-phase1-restoration-temporal-context-source-s2026092701-m2-r01/report.md)。本轮仍未达到用户完整目标，不由新增结构/训练检查推断性能。
 
 
-## 当前末端滤波固定比较（两臂实际训练中）
+## 末端滤波固定比较（完整源与目标结果已返回）
 
 对已有1800条source V固定IQ预测做事后误差分解（无新模型前向/更新/目标访问）：low urban原R03 NMSE0.068199，posterior03及两种时间注意力约0.07486至0.07490，多个有效频带均存在残差且精修普遍增加误差。该证据不证明某一频带是原因；原coarse已含频谱分支，本轮比较新增末端滤波的基底，不称首次FFT或已证明频率信息不足。候选依据source证据提出，不按目标成绩调整参数。
 
@@ -149,7 +149,7 @@ Run ID `20261020-phase1-restoration-temporal-context-source-s2026092701-m2-r01`�
 
 原posterior03三F冻结损失、原63000L/U与R02缓存1..10、顺序/路由/seed保持；joint E10/2470，旧LR3e-5/新filter2e-4、warm247/cos至.1、WD1e-4/clip1/FP32。原coarse/correction各累计30轮、60组件epoch、串行继承50pass，新filter另10轮，0L/U TX真值/F更新/新头拟合。记录新模块实际调用/IQ/系数位置/FFT和非零encoder梯度步数，区分学习与AdamW decay。推断单帧IQ、一次coarse/correction/filter，无运行F条件、信道oracle、RX/场景/clean/其他帧/迭代/状态更新。
 
-46项聚焦检查及唯一一次独立P0/P1审查PASS，审查者复跑46项通过。一次N607普通账号预检VERIFIED：原R03合法、前序完整、新root不存在、GPU4/5各24124MB空闲无PID、空间≥8GB，保留其他owner。GPU4time/GPU5frequency，每卡一条本run worker，source≥18GB/target≥12GB/allowner<2/CPU scorer最多1。launcher首步真实R03/三F/四Ls no-query smoke，PASS立即训练；源V只诊断，固定最终E10两行都自动完整168000目标clean+六practical/三原默认头，各行七视图固定后独立CPU连接truth和pairedclean；实际source进程退出后同卡target，不作源筛选或目标反馈。方法commit`c68588016e6960e48ef3b320c8e5daeefc8f16ac`已实际发布，归档比较/编译、真实R03/三F/四Ls smoke均PASS；两条训练worker的PID/CWD/命令/GPU/持续日志增长及实际encoder非零梯度/滤波曝光已核实。当前尚无本轮新源V或目标准确率，用户完整目标仍未达成。
+46项聚焦检查及唯一一次独立P0/P1审查PASS，审查者复跑46项通过。一次N607普通账号预检VERIFIED：原R03合法、前序完整、新root不存在、GPU4/5各24124MB空闲无PID、空间≥8GB，保留其他owner。GPU4time/GPU5frequency，每卡一条本run worker，source≥18GB/target≥12GB/allowner<2/CPU scorer最多1。launcher首步真实R03/三F/四Ls no-query smoke，PASS立即训练；源V只诊断，固定最终E10两行都自动完整168000目标clean+六practical/三原默认头，各行七视图固定后独立CPU连接truth和pairedclean；实际source进程退出后同卡target，不作源筛选或目标反馈。方法commit`c68588016e6960e48ef3b320c8e5daeefc8f16ac`已实际发布，归档比较/编译、真实R03/三F/四Ls smoke均PASS；两条训练worker的PID/CWD/命令/GPU/持续日志增长及实际encoder非零梯度/滤波曝光已核实。两臂已完整完成source V及目标七视图/三F独立truth-last评分，实际所有source/target/controller进程均已退出；本轮仍未达到用户完整目标。
 
 Run ID `20261020-phase1-restoration-basis-filter-source-s2026092701-m2-r01`；[最小登记与方法](../../automation_reports/CV-SincNet/20261020-phase1-restoration-basis-filter-source-s2026092701-m2-r01/report.md)含命令、环境/CWD、矩阵、路径、资源、停止规则和预期产物，source_error_profile.json只含聚合误差。另一用户对话只读确认采用解析观测量损失/展开结构路线，未发消息或改动其文件/任务。
 
@@ -161,3 +161,8 @@ source误差分解显示精修在多个有效频带增加波形误差，末端ti
 这是单向IQ输出空间投影，借鉴[梯度投影论文](https://arxiv.org/abs/2001.06782)，不称完整参数空间PCGrad，也不保证共享Jacobian/AdamW后的参数步或最终波形收益。44项聚焦检查及一次独立P0/P1审查PASS；源Ls实际R03/三F no-query smoke为launcher首步，PASS立即训练。原R03 coarse20/corr20+jointE10/2470，每组件累计30轮、60组件epoch、串行50pass，0L/U TX真值/F更新/新头拟合。sourceV只诊断，两行固定最终E10自动完整168000目标七视图/三原头，七视图固定后独立CPU truth/pairedclean；不以source或目标成绩改参数/预算/顺序/选择性重跑。
 
 一次N607普通账号预检VERIFIED：GPU6/7各24124MB空闲无PID、原R03合法、新root不存在，前一basis在GPU4/5的实际target PID/CWD/cmd LIVE并保留。新GPU6scalar/GPU7projection各一worker，重叠期间本owner最多4GPUworkers、每卡1且allowner<2；新sourceCPUscorer等前basis完成再执行，全run独立scorer最多1。方法commit`9f2d8f65e507809de396af5fdb89f11b749759b1`已实际发布，归档比较/编译、真实R03/三F/四Ls smoke均PASS；GPU6/7两条source worker的PID/CWD/cmd/GPU/日志增长和实际gradient conflict/merge计数已核实。尚无新源V或目标准确率，用户70%/近clean完整目标仍未达成。[最小登记与方法](../../automation_reports/CV-SincNet/20261020-phase1-restoration-gradient-projection-source-s2026092701-m2-r01/report.md)含命令、环境/CWD、矩阵、路径、资源、停止规则和产物；另一用户对话未被发送指令或改动。
+
+
+## 末端滤波固定矩阵的实际结论
+
+时域滤波：目标low urban 64.973016%，clean 85.089484%。频域滤波：目标low urban 64.939087%，clean 85.006151%。两行均完成原预登记E10/2470、168000物理目标clean+六practical及三原头独立truth-last评分。没有source分数筛选、目标反馈或选择性重跑，全部负结果保留。[完整逐环境/逐F/波形/净纠错/成本结果](../../automation_reports/CV-SincNet/20261020-phase1-restoration-basis-filter-source-s2026092701-m2-r01/report.md)。本轮仍未达到用户完整目标，不由新增结构/训练检查推断性能。
