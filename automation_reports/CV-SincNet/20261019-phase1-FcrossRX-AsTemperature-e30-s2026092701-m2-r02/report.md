@@ -33,3 +33,5 @@ r01 T1在历史factory导入缺少paper_reproduction，已本地同指纹复现F
 PAMF新信道的L/V lowurban为59.5278%/58.7222%，mid为74.0000%/73.1667%；相差分别.8056/.8333pp。这里是见过的物理样本在新信道下的表现，未测已消费的训练信道，不能笼统宣称优化欠拟合或物理上限。源报告见source_comparison.json。T1/T6仍按固定预算训练，未读取其正式测试指标。
 
 日志字段解释：temperature_steps中的As_native_NLL实际为原尺度label_smoothing=.01的CE；不是逐步hard-label NLL。As_mean_logit_gradient_norm实际记录30×(两次平均softmax−平滑真值)的逐样本余弦梯度代理，不含batch均值/外层.25权重或其他目标的参数梯度。两种温度损失不可直接横比，分析按此语义解释，不更改健康训练。
+
+温度两行E30/6660更新及全部七环境评分已完成。源门槛FAIL：T6−T1 midlow+1.5000pp，fullVclean−.3185185pp；固定T6关闭，不扩种子或改温度。实际两段完整结构化日志和stdout均已读取，原生CSV/JSON、L/U物理序列核对通过。正式指标继续等待KD源决定保存后统一读取。

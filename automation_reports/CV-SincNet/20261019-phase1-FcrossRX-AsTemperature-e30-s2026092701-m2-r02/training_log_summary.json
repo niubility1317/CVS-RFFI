@@ -1,0 +1,996 @@
+{
+  "physical_sequences_equal": {
+    "stage20": true,
+    "source": true
+  },
+  "status": "COMPLETE_TRAINING_LOGS",
+  "rows": {
+    "T1": {
+      "segments": {
+        "stage20": {
+          "physical_role_counts": {
+            "L": {
+              "batches": 4440,
+              "packets": 568320
+            },
+            "U": {
+              "batches": 1554,
+              "packets": 396900
+            }
+          },
+          "native_epoch_records": 20,
+          "csv_records": {
+            "metrics_epoch.csv": 20,
+            "epoch_metrics.csv": 20
+          },
+          "sameAsKD": null,
+          "parsed_streams": {
+            "step_metrics": 4440,
+            "reference_steps": 4440,
+            "shape_steps": 4440,
+            "temperature_steps": 4440,
+            "unit_steps": 4440
+          },
+          "epoch_records": 20,
+          "expected_epochs": 20,
+          "expected_updates": 4440,
+          "checks": "PASS",
+          "errors": [],
+          "cost": {
+            "status": "SEGMENT_TRAINED",
+            "segment_epochs": 20,
+            "optimizer_steps": 4440,
+            "L_NN": 3409920,
+            "L_As": 284160,
+            "Ag_mode": "NONE",
+            "Ag_packets": 0,
+            "Ag_control_NN": 1136640,
+            "total_L_loss_scale": 1.25,
+            "extra_U_NN": 0,
+            "U_As": 0,
+            "student_train_NN": 3806820,
+            "student_eval_NN": 594002,
+            "teacher_train_NN": 0,
+            "teacher_eval_NN": 396900,
+            "source_qualification": null,
+            "U_source_qualified": null,
+            "U_channel": null,
+            "source_RX_holdout": null,
+            "U_truth_read": false,
+            "target_access": false,
+            "head_fit_updates": 0,
+            "wall_seconds": 1957.5613856315613,
+            "U_steps_legacy_raw": 0,
+            "actual_U_student_NN": 396900,
+            "actual_U_batches": 1554
+          },
+          "extra_temperature_NN": 0
+        },
+        "source": {
+          "physical_role_counts": {
+            "L": {
+              "batches": 2220,
+              "packets": 284160
+            },
+            "U": {
+              "batches": 2220,
+              "packets": 567000
+            }
+          },
+          "native_epoch_records": 10,
+          "csv_records": {
+            "metrics_epoch.csv": 10,
+            "epoch_metrics.csv": 10
+          },
+          "sameAsKD": null,
+          "parsed_streams": {
+            "step_metrics": 2220,
+            "reference_steps": 2220,
+            "shape_steps": 2220,
+            "temperature_steps": 2220,
+            "unit_steps": 2220
+          },
+          "epoch_records": 10,
+          "expected_epochs": 10,
+          "expected_updates": 2220,
+          "checks": "PASS",
+          "errors": [],
+          "cost": {
+            "status": "SEGMENT_TRAINED",
+            "segment_epochs": 10,
+            "optimizer_steps": 2220,
+            "L_NN": 1704960,
+            "L_As": 142080,
+            "Ag_mode": "NONE",
+            "Ag_packets": 0,
+            "Ag_control_NN": 568320,
+            "total_L_loss_scale": 1.25,
+            "extra_U_NN": 0,
+            "U_As": 0,
+            "student_train_NN": 2271960,
+            "student_eval_NN": 324002,
+            "teacher_train_NN": 0,
+            "teacher_eval_NN": 567000,
+            "source_qualification": null,
+            "U_source_qualified": null,
+            "U_channel": null,
+            "source_RX_holdout": null,
+            "U_truth_read": false,
+            "target_access": false,
+            "head_fit_updates": 0,
+            "wall_seconds": 1164.3111352920532,
+            "U_steps_legacy_raw": 0,
+            "actual_U_student_NN": 567000,
+            "actual_U_batches": 2220
+          },
+          "extra_temperature_NN": 0
+        }
+      },
+      "epochs": [
+        {
+          "epoch": 1,
+          "steps": 222,
+          "native_loss": 1.9228234398472417,
+          "As_compensated_CE": 1.675945766337283,
+          "As_native_NLL": 1.6759457684851982,
+          "As_per_example_cosine_gradient_proxy": 24.655484062057358,
+          "ordinary_CE": 1.2070614322348758,
+          "mixed_CE": 1.4438593803762316,
+          "raw_CE": 1.1611001494231525,
+          "U_selected": 0
+        },
+        {
+          "epoch": 2,
+          "steps": 222,
+          "native_loss": 0.8337481078263875,
+          "As_compensated_CE": 1.128644704281747,
+          "As_native_NLL": 1.128644703744768,
+          "As_per_example_cosine_gradient_proxy": 19.137312429445284,
+          "ordinary_CE": 0.495689665479166,
+          "mixed_CE": 0.8138833991042128,
+          "raw_CE": 0.38474308303347576,
+          "U_selected": 0
+        },
+        {
+          "epoch": 3,
+          "steps": 222,
+          "native_loss": 0.6286418123825176,
+          "As_compensated_CE": 1.0107528626381814,
+          "As_native_NLL": 1.0107528615642238,
+          "As_per_example_cosine_gradient_proxy": 16.94409265604105,
+          "ordinary_CE": 0.34212839428905967,
+          "mixed_CE": 0.6766279401542904,
+          "raw_CE": 0.2456903722774875,
+          "U_selected": 0
+        },
+        {
+          "epoch": 4,
+          "steps": 222,
+          "native_loss": 0.5357250020847665,
+          "As_compensated_CE": 0.9326502154539297,
+          "As_native_NLL": 0.932650213574504,
+          "As_per_example_cosine_gradient_proxy": 15.543263246347239,
+          "ordinary_CE": 0.27663084978724384,
+          "mixed_CE": 0.6056130916417182,
+          "raw_CE": 0.19214366477083517,
+          "U_selected": 0
+        },
+        {
+          "epoch": 5,
+          "steps": 222,
+          "native_loss": 0.48641589324216583,
+          "As_compensated_CE": 0.8888331981929573,
+          "As_native_NLL": 0.8888331979244679,
+          "As_per_example_cosine_gradient_proxy": 14.665729707425779,
+          "ordinary_CE": 0.2446081655787992,
+          "mixed_CE": 0.5669564645032625,
+          "raw_CE": 0.16285649609861072,
+          "U_selected": 0
+        },
+        {
+          "epoch": 6,
+          "steps": 222,
+          "native_loss": 0.5050752146823986,
+          "As_compensated_CE": 0.8580319116244445,
+          "As_native_NLL": 0.8580319116244445,
+          "As_per_example_cosine_gradient_proxy": 14.185739173545494,
+          "ordinary_CE": 0.26226291198048507,
+          "mixed_CE": 0.5598196474550007,
+          "raw_CE": 0.14714025098595535,
+          "U_selected": 0
+        },
+        {
+          "epoch": 7,
+          "steps": 222,
+          "native_loss": 0.4906085133552551,
+          "As_compensated_CE": 0.8246238552503757,
+          "As_native_NLL": 0.8246238569955568,
+          "As_per_example_cosine_gradient_proxy": 13.56075551917961,
+          "ordinary_CE": 0.23641590643170718,
+          "mixed_CE": 0.5306342054863233,
+          "raw_CE": 0.13602351115362063,
+          "U_selected": 0
+        },
+        {
+          "epoch": 8,
+          "steps": 222,
+          "native_loss": 0.5004513227456325,
+          "As_compensated_CE": 0.8171623843210237,
+          "As_native_NLL": 0.8171623835155556,
+          "As_per_example_cosine_gradient_proxy": 13.396583222054147,
+          "ordinary_CE": 0.23411344216616303,
+          "mixed_CE": 0.5245567220556844,
+          "raw_CE": 0.12983135764931772,
+          "U_selected": 0
+        },
+        {
+          "epoch": 9,
+          "steps": 222,
+          "native_loss": 0.5143928016359741,
+          "As_compensated_CE": 0.8278959319666699,
+          "As_native_NLL": 0.8278959314296911,
+          "As_per_example_cosine_gradient_proxy": 13.411706151189032,
+          "ordinary_CE": 0.22970558796916996,
+          "mixed_CE": 0.5277171669242618,
+          "raw_CE": 0.12426086672925735,
+          "U_selected": 0
+        },
+        {
+          "epoch": 10,
+          "steps": 222,
+          "native_loss": 0.5318791830056423,
+          "As_compensated_CE": 0.7912165991089366,
+          "As_native_NLL": 0.7912165992431812,
+          "As_per_example_cosine_gradient_proxy": 12.802014222016206,
+          "ordinary_CE": 0.243048543429321,
+          "mixed_CE": 0.5178030323874843,
+          "raw_CE": 0.12099310816139788,
+          "U_selected": 0
+        },
+        {
+          "epoch": 11,
+          "steps": 222,
+          "native_loss": 0.5673905672790768,
+          "As_compensated_CE": 0.7938472215119783,
+          "As_native_NLL": 0.793847221646223,
+          "As_per_example_cosine_gradient_proxy": 12.906510430413324,
+          "ordinary_CE": 0.26451767447429736,
+          "mixed_CE": 0.5310813779229516,
+          "raw_CE": 0.12086938425630063,
+          "U_selected": 0
+        },
+        {
+          "epoch": 12,
+          "steps": 222,
+          "native_loss": 0.5743942301015597,
+          "As_compensated_CE": 0.786204767119777,
+          "As_native_NLL": 0.7862047644348832,
+          "As_per_example_cosine_gradient_proxy": 12.689195229126527,
+          "ordinary_CE": 0.2617090819655238,
+          "mixed_CE": 0.5236612344915802,
+          "raw_CE": 0.1183577519547832,
+          "U_selected": 0
+        },
+        {
+          "epoch": 13,
+          "steps": 222,
+          "native_loss": 0.6037326448404037,
+          "As_compensated_CE": 0.7824695083472106,
+          "As_native_NLL": 0.7824695099581469,
+          "As_per_example_cosine_gradient_proxy": 12.658949594239932,
+          "ordinary_CE": 0.27658973664448067,
+          "mixed_CE": 0.5270923138470263,
+          "raw_CE": 0.11616229416953551,
+          "U_selected": 0
+        },
+        {
+          "epoch": 14,
+          "steps": 222,
+          "native_loss": 0.6015232228212528,
+          "As_compensated_CE": 0.773642682948628,
+          "As_native_NLL": 0.7736426799952447,
+          "As_per_example_cosine_gradient_proxy": 12.421505534971082,
+          "ordinary_CE": 0.261742399955118,
+          "mixed_CE": 0.5161280061479088,
+          "raw_CE": 0.11462418916257652,
+          "U_selected": 3.734234234234234
+        },
+        {
+          "epoch": 15,
+          "steps": 222,
+          "native_loss": 0.6195527256072104,
+          "As_compensated_CE": 0.7731230284448143,
+          "As_native_NLL": 0.7731230319351763,
+          "As_per_example_cosine_gradient_proxy": 12.462201210829589,
+          "ordinary_CE": 0.2567766819249939,
+          "mixed_CE": 0.5138704772736575,
+          "raw_CE": 0.11424647325331026,
+          "U_selected": 3.9279279279279278
+        },
+        {
+          "epoch": 16,
+          "steps": 222,
+          "native_loss": 0.6191529853118433,
+          "As_compensated_CE": 0.7891995614176398,
+          "As_native_NLL": 0.7891995600751929,
+          "As_per_example_cosine_gradient_proxy": 12.626649560155096,
+          "ordinary_CE": 0.2525679980580871,
+          "mixed_CE": 0.5224650061882294,
+          "raw_CE": 0.11344460998703768,
+          "U_selected": 3.6126126126126126
+        },
+        {
+          "epoch": 17,
+          "steps": 222,
+          "native_loss": 0.6049410161134359,
+          "As_compensated_CE": 0.7734801251072068,
+          "As_native_NLL": 0.7734801237647598,
+          "As_per_example_cosine_gradient_proxy": 12.443531908430495,
+          "ordinary_CE": 0.24520963645196175,
+          "mixed_CE": 0.5094845707083607,
+          "raw_CE": 0.1118039742179282,
+          "U_selected": 3.990990990990991
+        },
+        {
+          "epoch": 18,
+          "steps": 222,
+          "native_loss": 0.5980735464139028,
+          "As_compensated_CE": 0.7582756624565469,
+          "As_native_NLL": 0.758275663262015,
+          "As_per_example_cosine_gradient_proxy": 12.30312552538004,
+          "ordinary_CE": 0.24241596782529676,
+          "mixed_CE": 0.5002525295760181,
+          "raw_CE": 0.11239368226882573,
+          "U_selected": 3.7027027027027026
+        },
+        {
+          "epoch": 19,
+          "steps": 222,
+          "native_loss": 0.6440174874958692,
+          "As_compensated_CE": 0.7765504817167918,
+          "As_native_NLL": 0.7765504821195258,
+          "As_per_example_cosine_gradient_proxy": 12.535605516519633,
+          "ordinary_CE": 0.28947319587071735,
+          "mixed_CE": 0.5312944437200958,
+          "raw_CE": 0.11226163452138772,
+          "U_selected": 4.193693693693693
+        },
+        {
+          "epoch": 20,
+          "steps": 222,
+          "native_loss": 0.6144690590130316,
+          "As_compensated_CE": 0.7753228107551197,
+          "As_native_NLL": 0.7753228091441833,
+          "As_per_example_cosine_gradient_proxy": 12.457973033458263,
+          "ordinary_CE": 0.2561998841864569,
+          "mixed_CE": 0.5152386398734273,
+          "raw_CE": 0.11221023437541884,
+          "U_selected": 3.779279279279279
+        },
+        {
+          "epoch": 21,
+          "steps": 222,
+          "native_loss": 0.611322281999631,
+          "As_compensated_CE": 0.7708908656427452,
+          "As_native_NLL": 0.7708908685961285,
+          "As_per_example_cosine_gradient_proxy": 12.372246385694623,
+          "ordinary_CE": 0.25367896987108496,
+          "mixed_CE": 0.5138661778187966,
+          "raw_CE": 0.11536011760970494,
+          "U_selected": 3.954954954954955
+        },
+        {
+          "epoch": 22,
+          "steps": 222,
+          "native_loss": 0.626230454122698,
+          "As_compensated_CE": 0.7565365094053853,
+          "As_native_NLL": 0.7565365083314277,
+          "As_per_example_cosine_gradient_proxy": 12.08079371366415,
+          "ordinary_CE": 0.27916230214340193,
+          "mixed_CE": 0.5198213731920397,
+          "raw_CE": 0.11379858905130678,
+          "U_selected": 3.972972972972973
+        },
+        {
+          "epoch": 23,
+          "steps": 222,
+          "native_loss": 0.6048674359246418,
+          "As_compensated_CE": 0.7589276423593899,
+          "As_native_NLL": 0.7589276414196771,
+          "As_per_example_cosine_gradient_proxy": 12.182441784454896,
+          "ordinary_CE": 0.2658618768458968,
+          "mixed_CE": 0.5130221873253316,
+          "raw_CE": 0.11274846696907335,
+          "U_selected": 4.351351351351352
+        },
+        {
+          "epoch": 24,
+          "steps": 222,
+          "native_loss": 0.5957304172150724,
+          "As_compensated_CE": 0.7540202202560665,
+          "As_native_NLL": 0.7540202181081515,
+          "As_per_example_cosine_gradient_proxy": 11.930789870184821,
+          "ordinary_CE": 0.251513490067409,
+          "mixed_CE": 0.504807704069593,
+          "raw_CE": 0.10934538464691188,
+          "U_selected": 3.7027027027027026
+        },
+        {
+          "epoch": 25,
+          "steps": 222,
+          "native_loss": 0.556145835164431,
+          "As_compensated_CE": 0.7474153227097279,
+          "As_native_NLL": 0.7474153205618128,
+          "As_per_example_cosine_gradient_proxy": 11.896449488562507,
+          "ordinary_CE": 0.22315723663783288,
+          "mixed_CE": 0.48530613691420166,
+          "raw_CE": 0.10592911355533041,
+          "U_selected": 3.990990990990991
+        },
+        {
+          "epoch": 26,
+          "steps": 222,
+          "native_loss": 0.5452074703869519,
+          "As_compensated_CE": 0.7327664899933446,
+          "As_native_NLL": 0.7327664912015468,
+          "As_per_example_cosine_gradient_proxy": 11.719521733017656,
+          "ordinary_CE": 0.2158594547963894,
+          "mixed_CE": 0.4752503205258567,
+          "raw_CE": 0.10502064026690819,
+          "U_selected": 4.054054054054054
+        },
+        {
+          "epoch": 27,
+          "steps": 222,
+          "native_loss": 0.5650784863276525,
+          "As_compensated_CE": 0.7432420357122077,
+          "As_native_NLL": 0.7432420355779631,
+          "As_per_example_cosine_gradient_proxy": 11.811165463817012,
+          "ordinary_CE": 0.23168949735862715,
+          "mixed_CE": 0.4867165139666549,
+          "raw_CE": 0.10328017668546857,
+          "U_selected": 3.8513513513513513
+        },
+        {
+          "epoch": 28,
+          "steps": 222,
+          "native_loss": 0.5501657112224682,
+          "As_compensated_CE": 0.7346494391157821,
+          "As_native_NLL": 0.7346494377733351,
+          "As_per_example_cosine_gradient_proxy": 11.752803171003187,
+          "ordinary_CE": 0.22707153829905363,
+          "mixed_CE": 0.48102689098130474,
+          "raw_CE": 0.1027958489081881,
+          "U_selected": 3.900900900900901
+        },
+        {
+          "epoch": 29,
+          "steps": 222,
+          "native_loss": 0.5641020741817113,
+          "As_compensated_CE": 0.7185606808812769,
+          "As_native_NLL": 0.7185606808812769,
+          "As_per_example_cosine_gradient_proxy": 11.50419404055621,
+          "ordinary_CE": 0.23631755272681648,
+          "mixed_CE": 0.47758238997545327,
+          "raw_CE": 0.10130157858670295,
+          "U_selected": 3.9144144144144146
+        },
+        {
+          "epoch": 30,
+          "steps": 222,
+          "native_loss": 0.5931152443628054,
+          "As_compensated_CE": 0.7323349279326361,
+          "As_native_NLL": 0.732334925381987,
+          "As_per_example_cosine_gradient_proxy": 11.678191116264275,
+          "ordinary_CE": 0.26687478898344813,
+          "mixed_CE": 0.4992095281680425,
+          "raw_CE": 0.10207551828510053,
+          "U_selected": 3.9774774774774775
+        }
+      ],
+      "full_stdout": {
+        "lines": 1219,
+        "tracebacks": 0,
+        "OOM": 0
+      },
+      "complete": true
+    },
+    "T6": {
+      "segments": {
+        "stage20": {
+          "physical_role_counts": {
+            "L": {
+              "batches": 4440,
+              "packets": 568320
+            },
+            "U": {
+              "batches": 1554,
+              "packets": 396900
+            }
+          },
+          "native_epoch_records": 20,
+          "csv_records": {
+            "metrics_epoch.csv": 20,
+            "epoch_metrics.csv": 20
+          },
+          "sameAsKD": null,
+          "parsed_streams": {
+            "step_metrics": 4440,
+            "reference_steps": 4440,
+            "shape_steps": 4440,
+            "temperature_steps": 4440,
+            "unit_steps": 4440
+          },
+          "epoch_records": 20,
+          "expected_epochs": 20,
+          "expected_updates": 4440,
+          "checks": "PASS",
+          "errors": [],
+          "cost": {
+            "status": "SEGMENT_TRAINED",
+            "segment_epochs": 20,
+            "optimizer_steps": 4440,
+            "L_NN": 3409920,
+            "L_As": 284160,
+            "Ag_mode": "NONE",
+            "Ag_packets": 0,
+            "Ag_control_NN": 1136640,
+            "total_L_loss_scale": 1.25,
+            "extra_U_NN": 0,
+            "U_As": 0,
+            "student_train_NN": 3806820,
+            "student_eval_NN": 594002,
+            "teacher_train_NN": 0,
+            "teacher_eval_NN": 396900,
+            "source_qualification": null,
+            "U_source_qualified": null,
+            "U_channel": null,
+            "source_RX_holdout": null,
+            "U_truth_read": false,
+            "target_access": false,
+            "head_fit_updates": 0,
+            "wall_seconds": 1950.6402614116669,
+            "U_steps_legacy_raw": 0,
+            "actual_U_student_NN": 396900,
+            "actual_U_batches": 1554
+          },
+          "extra_temperature_NN": 0
+        },
+        "source": {
+          "physical_role_counts": {
+            "L": {
+              "batches": 2220,
+              "packets": 284160
+            },
+            "U": {
+              "batches": 2220,
+              "packets": 567000
+            }
+          },
+          "native_epoch_records": 10,
+          "csv_records": {
+            "metrics_epoch.csv": 10,
+            "epoch_metrics.csv": 10
+          },
+          "sameAsKD": null,
+          "parsed_streams": {
+            "step_metrics": 2220,
+            "reference_steps": 2220,
+            "shape_steps": 2220,
+            "temperature_steps": 2220,
+            "unit_steps": 2220
+          },
+          "epoch_records": 10,
+          "expected_epochs": 10,
+          "expected_updates": 2220,
+          "checks": "PASS",
+          "errors": [],
+          "cost": {
+            "status": "SEGMENT_TRAINED",
+            "segment_epochs": 10,
+            "optimizer_steps": 2220,
+            "L_NN": 1704960,
+            "L_As": 142080,
+            "Ag_mode": "NONE",
+            "Ag_packets": 0,
+            "Ag_control_NN": 568320,
+            "total_L_loss_scale": 1.25,
+            "extra_U_NN": 0,
+            "U_As": 0,
+            "student_train_NN": 2271960,
+            "student_eval_NN": 324002,
+            "teacher_train_NN": 0,
+            "teacher_eval_NN": 567000,
+            "source_qualification": null,
+            "U_source_qualified": null,
+            "U_channel": null,
+            "source_RX_holdout": null,
+            "U_truth_read": false,
+            "target_access": false,
+            "head_fit_updates": 0,
+            "wall_seconds": 1129.6813683509827,
+            "U_steps_legacy_raw": 0,
+            "actual_U_student_NN": 567000,
+            "actual_U_batches": 2220
+          },
+          "extra_temperature_NN": 0
+        }
+      },
+      "epochs": [
+        {
+          "epoch": 1,
+          "steps": 222,
+          "native_loss": 4.050304943376833,
+          "As_compensated_CE": 10.207305620382497,
+          "As_native_NLL": 1.7282936701903473,
+          "As_per_example_cosine_gradient_proxy": 26.49870556324452,
+          "ordinary_CE": 1.19328404090426,
+          "mixed_CE": 5.702924848676802,
+          "raw_CE": 1.1399914433021803,
+          "U_selected": 0
+        },
+        {
+          "epoch": 2,
+          "steps": 222,
+          "native_loss": 2.737334097827877,
+          "As_compensated_CE": 8.64154204377183,
+          "As_native_NLL": 1.3099710076778859,
+          "As_per_example_cosine_gradient_proxy": 24.398382453231125,
+          "ordinary_CE": 0.5110204401719678,
+          "mixed_CE": 4.5795315310761735,
+          "raw_CE": 0.36310919756824905,
+          "U_selected": 0
+        },
+        {
+          "epoch": 3,
+          "steps": 222,
+          "native_loss": 2.303744840729344,
+          "As_compensated_CE": 7.458371705837078,
+          "As_native_NLL": 1.334763172510508,
+          "As_per_example_cosine_gradient_proxy": 22.200045628590626,
+          "ordinary_CE": 0.3894972172272098,
+          "mixed_CE": 3.9247790038048684,
+          "raw_CE": 0.25626963007825987,
+          "U_selected": 0
+        },
+        {
+          "epoch": 4,
+          "steps": 222,
+          "native_loss": 2.065393567085266,
+          "As_compensated_CE": 6.764820882865974,
+          "As_native_NLL": 1.2899079596674121,
+          "As_per_example_cosine_gradient_proxy": 20.645879290125393,
+          "ordinary_CE": 0.3291415750711888,
+          "mixed_CE": 3.5489702944283015,
+          "raw_CE": 0.21707262561933413,
+          "U_selected": 0
+        },
+        {
+          "epoch": 5,
+          "steps": 222,
+          "native_loss": 1.9154009362598796,
+          "As_compensated_CE": 6.30771221556105,
+          "As_native_NLL": 1.2499623948389345,
+          "As_per_example_cosine_gradient_proxy": 19.48652965958054,
+          "ordinary_CE": 0.3001118107019244,
+          "mixed_CE": 3.3062477036639377,
+          "raw_CE": 0.19497473625180958,
+          "U_selected": 0
+        },
+        {
+          "epoch": 6,
+          "steps": 222,
+          "native_loss": 1.8654793613665812,
+          "As_compensated_CE": 5.988093094782786,
+          "As_native_NLL": 1.2271704552946865,
+          "As_per_example_cosine_gradient_proxy": 18.579680296751828,
+          "ordinary_CE": 0.32390034802862117,
+          "mixed_CE": 3.1567032186834663,
+          "raw_CE": 0.18020354567078856,
+          "U_selected": 0
+        },
+        {
+          "epoch": 7,
+          "steps": 222,
+          "native_loss": 1.7904960470156626,
+          "As_compensated_CE": 5.713831585806769,
+          "As_native_NLL": 1.2219505167759217,
+          "As_per_example_cosine_gradient_proxy": 17.757169478648418,
+          "ordinary_CE": 0.2995396821617006,
+          "mixed_CE": 3.0077507646234185,
+          "raw_CE": 0.17284899580854554,
+          "U_selected": 0
+        },
+        {
+          "epoch": 8,
+          "steps": 222,
+          "native_loss": 1.7713930821633554,
+          "As_compensated_CE": 5.611443889033687,
+          "As_native_NLL": 1.232938773191727,
+          "As_per_example_cosine_gradient_proxy": 17.398945460448395,
+          "ordinary_CE": 0.28837065868549516,
+          "mixed_CE": 2.9475684294829496,
+          "raw_CE": 0.16464416437723614,
+          "U_selected": 0
+        },
+        {
+          "epoch": 9,
+          "steps": 222,
+          "native_loss": 1.7614018229750898,
+          "As_compensated_CE": 5.5337667980709595,
+          "As_native_NLL": 1.2424785900223363,
+          "As_per_example_cosine_gradient_proxy": 17.073821235347438,
+          "ordinary_CE": 0.2800032756551429,
+          "mixed_CE": 2.9056193227166527,
+          "raw_CE": 0.15941079809993236,
+          "U_selected": 0
+        },
+        {
+          "epoch": 10,
+          "steps": 222,
+          "native_loss": 1.7313681975141302,
+          "As_compensated_CE": 5.300191054473052,
+          "As_native_NLL": 1.2237514407785088,
+          "As_per_example_cosine_gradient_proxy": 16.411350129960894,
+          "ordinary_CE": 0.29606254479369604,
+          "mixed_CE": 2.798925499658327,
+          "raw_CE": 0.1532746326883097,
+          "U_selected": 0
+        },
+        {
+          "epoch": 11,
+          "steps": 222,
+          "native_loss": 1.7641598464132429,
+          "As_compensated_CE": 5.282536007262565,
+          "As_native_NLL": 1.212866728370254,
+          "As_per_example_cosine_gradient_proxy": 16.343547382870234,
+          "ordinary_CE": 0.3156150998631576,
+          "mixed_CE": 2.8011959554912806,
+          "raw_CE": 0.15272823979591463,
+          "U_selected": 0
+        },
+        {
+          "epoch": 12,
+          "steps": 222,
+          "native_loss": 1.7401662764248547,
+          "As_compensated_CE": 5.151028503168811,
+          "As_native_NLL": 1.2001873923314583,
+          "As_per_example_cosine_gradient_proxy": 15.939173715608614,
+          "ordinary_CE": 0.31668204203382266,
+          "mixed_CE": 2.731962699073929,
+          "raw_CE": 0.14881381926101608,
+          "U_selected": 0
+        },
+        {
+          "epoch": 13,
+          "steps": 222,
+          "native_loss": 1.7645228327931584,
+          "As_compensated_CE": 5.132341591087547,
+          "As_native_NLL": 1.1966873960452036,
+          "As_per_example_cosine_gradient_proxy": 15.835732893900829,
+          "ordinary_CE": 0.328647623056764,
+          "mixed_CE": 2.72611071988269,
+          "raw_CE": 0.14539118382979083,
+          "U_selected": 0
+        },
+        {
+          "epoch": 14,
+          "steps": 222,
+          "native_loss": 1.7427756104383383,
+          "As_compensated_CE": 5.047910150106962,
+          "As_native_NLL": 1.2083329091200958,
+          "As_per_example_cosine_gradient_proxy": 15.578851558066702,
+          "ordinary_CE": 0.31305416837871614,
+          "mixed_CE": 2.6785378321871027,
+          "raw_CE": 0.1439121340040688,
+          "U_selected": 3.918918918918919
+        },
+        {
+          "epoch": 15,
+          "steps": 222,
+          "native_loss": 1.7626398297043535,
+          "As_compensated_CE": 5.040362105713235,
+          "As_native_NLL": 1.201661722348617,
+          "As_per_example_cosine_gradient_proxy": 15.531879884702665,
+          "ordinary_CE": 0.3099988833204046,
+          "mixed_CE": 2.6748217059685304,
+          "raw_CE": 0.14398476860678946,
+          "U_selected": 4.072072072072072
+        },
+        {
+          "epoch": 16,
+          "steps": 222,
+          "native_loss": 1.7562294376863015,
+          "As_compensated_CE": 5.067885701720779,
+          "As_native_NLL": 1.2115824662887298,
+          "As_per_example_cosine_gradient_proxy": 15.544613262554547,
+          "ordinary_CE": 0.29628511464542095,
+          "mixed_CE": 2.6832430507685685,
+          "raw_CE": 0.1434224603680877,
+          "U_selected": 3.72972972972973
+        },
+        {
+          "epoch": 17,
+          "steps": 222,
+          "native_loss": 1.7299260062140387,
+          "As_compensated_CE": 4.998348823538771,
+          "As_native_NLL": 1.195215766762828,
+          "As_per_example_cosine_gradient_proxy": 15.417895596306604,
+          "ordinary_CE": 0.29334911073113346,
+          "mixed_CE": 2.6444063492723413,
+          "raw_CE": 0.1398362886865397,
+          "U_selected": 4.072072072072072
+        },
+        {
+          "epoch": 18,
+          "steps": 222,
+          "native_loss": 1.7135513204712052,
+          "As_compensated_CE": 4.9427269600533155,
+          "As_native_NLL": 1.1667663930235683,
+          "As_per_example_cosine_gradient_proxy": 15.287730796917065,
+          "ordinary_CE": 0.29007158364664326,
+          "mixed_CE": 2.6159224257812843,
+          "raw_CE": 0.14156562593337652,
+          "U_selected": 3.7567567567567566
+        },
+        {
+          "epoch": 19,
+          "steps": 222,
+          "native_loss": 1.781733670213201,
+          "As_compensated_CE": 5.017293131029284,
+          "As_native_NLL": 1.2131917162521466,
+          "As_per_example_cosine_gradient_proxy": 15.458618585053864,
+          "ordinary_CE": 0.34554726408945546,
+          "mixed_CE": 2.6781971443880788,
+          "raw_CE": 0.14085139898029533,
+          "U_selected": 4.256756756756757
+        },
+        {
+          "epoch": 20,
+          "steps": 222,
+          "native_loss": 1.7483432088886295,
+          "As_compensated_CE": 5.006847390183458,
+          "As_native_NLL": 1.2020239352105975,
+          "As_per_example_cosine_gradient_proxy": 15.404713832580292,
+          "ordinary_CE": 0.30973187891078424,
+          "mixed_CE": 2.657471477448403,
+          "raw_CE": 0.14122770693119582,
+          "U_selected": 3.824324324324324
+        },
+        {
+          "epoch": 21,
+          "steps": 222,
+          "native_loss": 1.730989586125623,
+          "As_compensated_CE": 4.953203160483558,
+          "As_native_NLL": 1.2281601820980106,
+          "As_per_example_cosine_gradient_proxy": 15.236326518359485,
+          "ordinary_CE": 0.30319338493250514,
+          "mixed_CE": 2.629896566674516,
+          "raw_CE": 0.14550693665404577,
+          "U_selected": 3.9774774774774775
+        },
+        {
+          "epoch": 22,
+          "steps": 222,
+          "native_loss": 1.7105772221410596,
+          "As_compensated_CE": 4.771157313037563,
+          "As_native_NLL": 1.2137080087318077,
+          "As_per_example_cosine_gradient_proxy": 14.645500982129896,
+          "ordinary_CE": 0.3322518814925675,
+          "mixed_CE": 2.555360582497743,
+          "raw_CE": 0.14433695677969907,
+          "U_selected": 3.9594594594594597
+        },
+        {
+          "epoch": 23,
+          "steps": 222,
+          "native_loss": 1.6853212451075648,
+          "As_compensated_CE": 4.744390392088675,
+          "As_native_NLL": 1.23715948924288,
+          "As_per_example_cosine_gradient_proxy": 14.485517488943565,
+          "ordinary_CE": 0.32539467570615244,
+          "mixed_CE": 2.537410897177619,
+          "raw_CE": 0.13863976652155052,
+          "U_selected": 4.36936936936937
+        },
+        {
+          "epoch": 24,
+          "steps": 222,
+          "native_loss": 1.6531689322746552,
+          "As_compensated_CE": 4.674579701982103,
+          "As_native_NLL": 1.2627197318785899,
+          "As_per_example_cosine_gradient_proxy": 14.160521881000415,
+          "ordinary_CE": 0.30227101597565786,
+          "mixed_CE": 2.48933792919726,
+          "raw_CE": 0.13618641282926808,
+          "U_selected": 3.765765765765766
+        },
+        {
+          "epoch": 25,
+          "steps": 222,
+          "native_loss": 1.5999117418452427,
+          "As_compensated_CE": 4.635587414105733,
+          "As_native_NLL": 1.2657905433092032,
+          "As_per_example_cosine_gradient_proxy": 13.96073141183939,
+          "ordinary_CE": 0.26589460738070375,
+          "mixed_CE": 2.4520271651379697,
+          "raw_CE": 0.1315452898139352,
+          "U_selected": 4.004504504504505
+        },
+        {
+          "epoch": 26,
+          "steps": 222,
+          "native_loss": 1.5679749765911617,
+          "As_compensated_CE": 4.520891803878921,
+          "As_native_NLL": 1.2317526853299356,
+          "As_per_example_cosine_gradient_proxy": 13.646093450151048,
+          "ordinary_CE": 0.26287976407387237,
+          "mixed_CE": 2.3922382034696974,
+          "raw_CE": 0.12986190251267707,
+          "U_selected": 4.04054054054054
+        },
+        {
+          "epoch": 27,
+          "steps": 222,
+          "native_loss": 1.5890504358051059,
+          "As_compensated_CE": 4.52799268348797,
+          "As_native_NLL": 1.270700091982747,
+          "As_per_example_cosine_gradient_proxy": 13.597676762589463,
+          "ordinary_CE": 0.28222615489954345,
+          "mixed_CE": 2.4025248439462334,
+          "raw_CE": 0.1280779123037785,
+          "U_selected": 3.828828828828829
+        },
+        {
+          "epoch": 28,
+          "steps": 222,
+          "native_loss": 1.5647711560532853,
+          "As_compensated_CE": 4.495817454011591,
+          "As_native_NLL": 1.2726562514498427,
+          "As_per_example_cosine_gradient_proxy": 13.497196420892939,
+          "ordinary_CE": 0.2730072341725096,
+          "mixed_CE": 2.384120945994918,
+          "raw_CE": 0.12790886050946004,
+          "U_selected": 3.869369369369369
+        },
+        {
+          "epoch": 29,
+          "steps": 222,
+          "native_loss": 1.5652668556651554,
+          "As_compensated_CE": 4.427283107697427,
+          "As_native_NLL": 1.23549945827003,
+          "As_per_example_cosine_gradient_proxy": 13.322381131283871,
+          "ordinary_CE": 0.2813614018865534,
+          "mixed_CE": 2.355463129443091,
+          "raw_CE": 0.1240928596271588,
+          "U_selected": 3.918918918918919
+        },
+        {
+          "epoch": 30,
+          "steps": 222,
+          "native_loss": 1.6105471366160624,
+          "As_compensated_CE": 4.47042499576603,
+          "As_native_NLL": 1.2495957078697446,
+          "As_per_example_cosine_gradient_proxy": 13.417692755793666,
+          "ordinary_CE": 0.32153608485519347,
+          "mixed_CE": 2.3961951566172077,
+          "raw_CE": 0.12502479929107804,
+          "U_selected": 3.9144144144144146
+        }
+      ],
+      "full_stdout": {
+        "lines": 1218,
+        "tracebacks": 0,
+        "OOM": 0
+      },
+      "complete": true
+    }
+  },
+  "full_structured_scan": true,
+  "sampled": false,
+  "model_seed_count": 1,
+  "new_NN": 0,
+  "checkpoint_reads": 0,
+  "IQ_reads": 0,
+  "truth_reads": 0
+}

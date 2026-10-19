@@ -1,0 +1,12 @@
+{
+  "status": "VERIFIED",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "real_checkpoint_no_query_smoke": "PASS",
+  "synthetic_total_NN": 6402,
+  "real_workers": 4,
+  "PID_CWD_command_GPU_log_growth": "VERIFIED",
+  "initialization_same_seed_T1_KD_all206": "VERIFIED",
+  "different_seed_changed_tensors": 93,
+  "healthy_other_jobs_preserved": true
+}

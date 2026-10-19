@@ -1,0 +1,90 @@
+{
+  "groups": [
+    {
+      "scene": "practical_mid_urban",
+      "cohort": "all",
+      "n": 3600,
+      "T1_correct": 2627,
+      "KD_correct": 2657,
+      "repairs": 78,
+      "new_errors": 48,
+      "delta_pp": 0.8333333333333304
+    },
+    {
+      "scene": "practical_mid_urban",
+      "cohort": "teacher_correct_originalPAMF_wrong",
+      "n": 609,
+      "T1_correct": 45,
+      "KD_correct": 77,
+      "repairs": 48,
+      "new_errors": 16,
+      "delta_pp": 5.254515599343186
+    },
+    {
+      "scene": "practical_mid_urban",
+      "cohort": "teacher_wrong_originalPAMF_correct",
+      "n": 118,
+      "T1_correct": 102,
+      "KD_correct": 105,
+      "repairs": 7,
+      "new_errors": 4,
+      "delta_pp": 2.5423728813559254
+    },
+    {
+      "scene": "practical_mid_urban",
+      "cohort": "teacher_correct_T1_wrong",
+      "n": 602,
+      "T1_correct": 0,
+      "KD_correct": 63,
+      "repairs": 63,
+      "new_errors": 0,
+      "delta_pp": 10.465116279069768
+    },
+    {
+      "scene": "practical_low_urban",
+      "cohort": "all",
+      "n": 3600,
+      "T1_correct": 2133,
+      "KD_correct": 2159,
+      "repairs": 95,
+      "new_errors": 69,
+      "delta_pp": 0.7222222222222241
+    },
+    {
+      "scene": "practical_low_urban",
+      "cohort": "teacher_correct_originalPAMF_wrong",
+      "n": 835,
+      "T1_correct": 62,
+      "KD_correct": 106,
+      "repairs": 60,
+      "new_errors": 16,
+      "delta_pp": 5.26946107784431
+    },
+    {
+      "scene": "practical_low_urban",
+      "cohort": "teacher_wrong_originalPAMF_correct",
+      "n": 174,
+      "T1_correct": 147,
+      "KD_correct": 134,
+      "repairs": 4,
+      "new_errors": 17,
+      "delta_pp": -7.471264367816099
+    },
+    {
+      "scene": "practical_low_urban",
+      "cohort": "teacher_correct_T1_wrong",
+      "n": 822,
+      "T1_correct": 0,
+      "KD_correct": 70,
+      "repairs": 70,
+      "new_errors": 0,
+      "delta_pp": 8.51581508515815
+    }
+  ],
+  "NN": 0,
+  "updates": 0,
+  "head_fit_updates": 0,
+  "target_access": false,
+  "source_cohort_posthoc": true,
+  "not_training_or_selection": true
+}

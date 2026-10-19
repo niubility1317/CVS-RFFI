@@ -1,19 +1,28 @@
 {
+  "physical_sequences_equal": {
+    "stage20": true
+  },
   "status": "PARTIAL_TRAINING_LOGS",
   "rows": {
     "T1": {
-      "segments": {},
-      "epochs": [],
-      "full_stdout": {
-        "lines": 722,
-        "tracebacks": 0,
-        "OOM": 0
-      },
-      "complete": false
-    },
-    "T6": {
       "segments": {
         "stage20": {
+          "physical_role_counts": {
+            "L": {
+              "batches": 4440,
+              "packets": 568320
+            },
+            "U": {
+              "batches": 1554,
+              "packets": 396900
+            }
+          },
+          "native_epoch_records": 20,
+          "csv_records": {
+            "metrics_epoch.csv": 20,
+            "epoch_metrics.csv": 20
+          },
+          "sameAsKD": null,
           "parsed_streams": {
             "step_metrics": 4440,
             "reference_steps": 4440,
@@ -44,13 +53,326 @@
             "teacher_eval_NN": 396900,
             "source_qualification": null,
             "U_source_qualified": null,
-            "U_steps": 0,
             "U_channel": null,
             "source_RX_holdout": null,
             "U_truth_read": false,
             "target_access": false,
             "head_fit_updates": 0,
-            "wall_seconds": 1950.6402614116669
+            "wall_seconds": 1957.5613856315613,
+            "U_steps_legacy_raw": 0,
+            "actual_U_student_NN": 396900,
+            "actual_U_batches": 1554
+          },
+          "extra_temperature_NN": 0
+        }
+      },
+      "epochs": [
+        {
+          "epoch": 1,
+          "steps": 222,
+          "native_loss": 1.9228234398472417,
+          "As_compensated_CE": 1.675945766337283,
+          "As_native_NLL": 1.6759457684851982,
+          "As_per_example_cosine_gradient_proxy": 24.655484062057358,
+          "ordinary_CE": 1.2070614322348758,
+          "mixed_CE": 1.4438593803762316,
+          "raw_CE": 1.1611001494231525,
+          "U_selected": 0
+        },
+        {
+          "epoch": 2,
+          "steps": 222,
+          "native_loss": 0.8337481078263875,
+          "As_compensated_CE": 1.128644704281747,
+          "As_native_NLL": 1.128644703744768,
+          "As_per_example_cosine_gradient_proxy": 19.137312429445284,
+          "ordinary_CE": 0.495689665479166,
+          "mixed_CE": 0.8138833991042128,
+          "raw_CE": 0.38474308303347576,
+          "U_selected": 0
+        },
+        {
+          "epoch": 3,
+          "steps": 222,
+          "native_loss": 0.6286418123825176,
+          "As_compensated_CE": 1.0107528626381814,
+          "As_native_NLL": 1.0107528615642238,
+          "As_per_example_cosine_gradient_proxy": 16.94409265604105,
+          "ordinary_CE": 0.34212839428905967,
+          "mixed_CE": 0.6766279401542904,
+          "raw_CE": 0.2456903722774875,
+          "U_selected": 0
+        },
+        {
+          "epoch": 4,
+          "steps": 222,
+          "native_loss": 0.5357250020847665,
+          "As_compensated_CE": 0.9326502154539297,
+          "As_native_NLL": 0.932650213574504,
+          "As_per_example_cosine_gradient_proxy": 15.543263246347239,
+          "ordinary_CE": 0.27663084978724384,
+          "mixed_CE": 0.6056130916417182,
+          "raw_CE": 0.19214366477083517,
+          "U_selected": 0
+        },
+        {
+          "epoch": 5,
+          "steps": 222,
+          "native_loss": 0.48641589324216583,
+          "As_compensated_CE": 0.8888331981929573,
+          "As_native_NLL": 0.8888331979244679,
+          "As_per_example_cosine_gradient_proxy": 14.665729707425779,
+          "ordinary_CE": 0.2446081655787992,
+          "mixed_CE": 0.5669564645032625,
+          "raw_CE": 0.16285649609861072,
+          "U_selected": 0
+        },
+        {
+          "epoch": 6,
+          "steps": 222,
+          "native_loss": 0.5050752146823986,
+          "As_compensated_CE": 0.8580319116244445,
+          "As_native_NLL": 0.8580319116244445,
+          "As_per_example_cosine_gradient_proxy": 14.185739173545494,
+          "ordinary_CE": 0.26226291198048507,
+          "mixed_CE": 0.5598196474550007,
+          "raw_CE": 0.14714025098595535,
+          "U_selected": 0
+        },
+        {
+          "epoch": 7,
+          "steps": 222,
+          "native_loss": 0.4906085133552551,
+          "As_compensated_CE": 0.8246238552503757,
+          "As_native_NLL": 0.8246238569955568,
+          "As_per_example_cosine_gradient_proxy": 13.56075551917961,
+          "ordinary_CE": 0.23641590643170718,
+          "mixed_CE": 0.5306342054863233,
+          "raw_CE": 0.13602351115362063,
+          "U_selected": 0
+        },
+        {
+          "epoch": 8,
+          "steps": 222,
+          "native_loss": 0.5004513227456325,
+          "As_compensated_CE": 0.8171623843210237,
+          "As_native_NLL": 0.8171623835155556,
+          "As_per_example_cosine_gradient_proxy": 13.396583222054147,
+          "ordinary_CE": 0.23411344216616303,
+          "mixed_CE": 0.5245567220556844,
+          "raw_CE": 0.12983135764931772,
+          "U_selected": 0
+        },
+        {
+          "epoch": 9,
+          "steps": 222,
+          "native_loss": 0.5143928016359741,
+          "As_compensated_CE": 0.8278959319666699,
+          "As_native_NLL": 0.8278959314296911,
+          "As_per_example_cosine_gradient_proxy": 13.411706151189032,
+          "ordinary_CE": 0.22970558796916996,
+          "mixed_CE": 0.5277171669242618,
+          "raw_CE": 0.12426086672925735,
+          "U_selected": 0
+        },
+        {
+          "epoch": 10,
+          "steps": 222,
+          "native_loss": 0.5318791830056423,
+          "As_compensated_CE": 0.7912165991089366,
+          "As_native_NLL": 0.7912165992431812,
+          "As_per_example_cosine_gradient_proxy": 12.802014222016206,
+          "ordinary_CE": 0.243048543429321,
+          "mixed_CE": 0.5178030323874843,
+          "raw_CE": 0.12099310816139788,
+          "U_selected": 0
+        },
+        {
+          "epoch": 11,
+          "steps": 222,
+          "native_loss": 0.5673905672790768,
+          "As_compensated_CE": 0.7938472215119783,
+          "As_native_NLL": 0.793847221646223,
+          "As_per_example_cosine_gradient_proxy": 12.906510430413324,
+          "ordinary_CE": 0.26451767447429736,
+          "mixed_CE": 0.5310813779229516,
+          "raw_CE": 0.12086938425630063,
+          "U_selected": 0
+        },
+        {
+          "epoch": 12,
+          "steps": 222,
+          "native_loss": 0.5743942301015597,
+          "As_compensated_CE": 0.786204767119777,
+          "As_native_NLL": 0.7862047644348832,
+          "As_per_example_cosine_gradient_proxy": 12.689195229126527,
+          "ordinary_CE": 0.2617090819655238,
+          "mixed_CE": 0.5236612344915802,
+          "raw_CE": 0.1183577519547832,
+          "U_selected": 0
+        },
+        {
+          "epoch": 13,
+          "steps": 222,
+          "native_loss": 0.6037326448404037,
+          "As_compensated_CE": 0.7824695083472106,
+          "As_native_NLL": 0.7824695099581469,
+          "As_per_example_cosine_gradient_proxy": 12.658949594239932,
+          "ordinary_CE": 0.27658973664448067,
+          "mixed_CE": 0.5270923138470263,
+          "raw_CE": 0.11616229416953551,
+          "U_selected": 0
+        },
+        {
+          "epoch": 14,
+          "steps": 222,
+          "native_loss": 0.6015232228212528,
+          "As_compensated_CE": 0.773642682948628,
+          "As_native_NLL": 0.7736426799952447,
+          "As_per_example_cosine_gradient_proxy": 12.421505534971082,
+          "ordinary_CE": 0.261742399955118,
+          "mixed_CE": 0.5161280061479088,
+          "raw_CE": 0.11462418916257652,
+          "U_selected": 3.734234234234234
+        },
+        {
+          "epoch": 15,
+          "steps": 222,
+          "native_loss": 0.6195527256072104,
+          "As_compensated_CE": 0.7731230284448143,
+          "As_native_NLL": 0.7731230319351763,
+          "As_per_example_cosine_gradient_proxy": 12.462201210829589,
+          "ordinary_CE": 0.2567766819249939,
+          "mixed_CE": 0.5138704772736575,
+          "raw_CE": 0.11424647325331026,
+          "U_selected": 3.9279279279279278
+        },
+        {
+          "epoch": 16,
+          "steps": 222,
+          "native_loss": 0.6191529853118433,
+          "As_compensated_CE": 0.7891995614176398,
+          "As_native_NLL": 0.7891995600751929,
+          "As_per_example_cosine_gradient_proxy": 12.626649560155096,
+          "ordinary_CE": 0.2525679980580871,
+          "mixed_CE": 0.5224650061882294,
+          "raw_CE": 0.11344460998703768,
+          "U_selected": 3.6126126126126126
+        },
+        {
+          "epoch": 17,
+          "steps": 222,
+          "native_loss": 0.6049410161134359,
+          "As_compensated_CE": 0.7734801251072068,
+          "As_native_NLL": 0.7734801237647598,
+          "As_per_example_cosine_gradient_proxy": 12.443531908430495,
+          "ordinary_CE": 0.24520963645196175,
+          "mixed_CE": 0.5094845707083607,
+          "raw_CE": 0.1118039742179282,
+          "U_selected": 3.990990990990991
+        },
+        {
+          "epoch": 18,
+          "steps": 222,
+          "native_loss": 0.5980735464139028,
+          "As_compensated_CE": 0.7582756624565469,
+          "As_native_NLL": 0.758275663262015,
+          "As_per_example_cosine_gradient_proxy": 12.30312552538004,
+          "ordinary_CE": 0.24241596782529676,
+          "mixed_CE": 0.5002525295760181,
+          "raw_CE": 0.11239368226882573,
+          "U_selected": 3.7027027027027026
+        },
+        {
+          "epoch": 19,
+          "steps": 222,
+          "native_loss": 0.6440174874958692,
+          "As_compensated_CE": 0.7765504817167918,
+          "As_native_NLL": 0.7765504821195258,
+          "As_per_example_cosine_gradient_proxy": 12.535605516519633,
+          "ordinary_CE": 0.28947319587071735,
+          "mixed_CE": 0.5312944437200958,
+          "raw_CE": 0.11226163452138772,
+          "U_selected": 4.193693693693693
+        },
+        {
+          "epoch": 20,
+          "steps": 222,
+          "native_loss": 0.6144690590130316,
+          "As_compensated_CE": 0.7753228107551197,
+          "As_native_NLL": 0.7753228091441833,
+          "As_per_example_cosine_gradient_proxy": 12.457973033458263,
+          "ordinary_CE": 0.2561998841864569,
+          "mixed_CE": 0.5152386398734273,
+          "raw_CE": 0.11221023437541884,
+          "U_selected": 3.779279279279279
+        }
+      ],
+      "full_stdout": {
+        "lines": 820,
+        "tracebacks": 0,
+        "OOM": 0
+      },
+      "complete": false
+    },
+    "T6": {
+      "segments": {
+        "stage20": {
+          "physical_role_counts": {
+            "L": {
+              "batches": 4440,
+              "packets": 568320
+            },
+            "U": {
+              "batches": 1554,
+              "packets": 396900
+            }
+          },
+          "native_epoch_records": 20,
+          "csv_records": {
+            "metrics_epoch.csv": 20,
+            "epoch_metrics.csv": 20
+          },
+          "sameAsKD": null,
+          "parsed_streams": {
+            "step_metrics": 4440,
+            "reference_steps": 4440,
+            "shape_steps": 4440,
+            "temperature_steps": 4440,
+            "unit_steps": 4440
+          },
+          "epoch_records": 20,
+          "expected_epochs": 20,
+          "expected_updates": 4440,
+          "checks": "PASS",
+          "errors": [],
+          "cost": {
+            "status": "SEGMENT_TRAINED",
+            "segment_epochs": 20,
+            "optimizer_steps": 4440,
+            "L_NN": 3409920,
+            "L_As": 284160,
+            "Ag_mode": "NONE",
+            "Ag_packets": 0,
+            "Ag_control_NN": 1136640,
+            "total_L_loss_scale": 1.25,
+            "extra_U_NN": 0,
+            "U_As": 0,
+            "student_train_NN": 3806820,
+            "student_eval_NN": 594002,
+            "teacher_train_NN": 0,
+            "teacher_eval_NN": 396900,
+            "source_qualification": null,
+            "U_source_qualified": null,
+            "U_channel": null,
+            "source_RX_holdout": null,
+            "U_truth_read": false,
+            "target_access": false,
+            "head_fit_updates": 0,
+            "wall_seconds": 1950.6402614116669,
+            "U_steps_legacy_raw": 0,
+            "actual_U_student_NN": 396900,
+            "actual_U_batches": 1554
           },
           "extra_temperature_NN": 0
         }
@@ -298,7 +620,7 @@
         }
       ],
       "full_stdout": {
-        "lines": 819,
+        "lines": 897,
         "tracebacks": 0,
         "OOM": 0
       },
