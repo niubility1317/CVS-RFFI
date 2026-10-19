@@ -105,3 +105,9 @@ VERIFIED：seed 2026092702 的 CE 监督与 CE＋PL 均完成 E200，默认头�
 按源验证 NLL 冻结，监督／PL 选中 epoch 分别为 77／55；两行均实际训练满 200 轮。监督不读取 U，PL 真值隐藏，阈值 0.95、权重 1、U/L=1，没有 EMA 或另训头。PL 的正负差如实保留，不据此关闭机制、调阈值或重跑。完整 SDG 监督/PL 两行已在物理 GPU2、3 接续，整体 18/219 行完成，96 成本尚未测量。
 
 逐行独立复算与完整曲线证据：`local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/verified_rows/`；配对汇总：`local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/sdg_ce_seed02_pair_summary.json`。
+
+## SDG第二个完整四条件配对
+
+[SDG第二seed增强与PL结果](sdg_seed02_aug_pl_analysis.md)：4行七视图独立复算通过，只有seed2026092702。报告保留全部四条件的原始配对差，具体数字、实际早停轮数和全部场景在子报告；不据分数调整后续矩阵。整体仍RUNNING，219行与96成本未全部完成。
+
+最新实际进度：**20/219 行完成并独立复算**。SDG 第二 seed 四条件共1176个分层CM一致；clean完整−CE为监督−3.5292、PL+2.9994个百分点，PL−监督在CE为−4.1786、完整SDG为+2.3500个百分点。所有负差保留；第三模型seed CE监督/PL已在GPU2、3接续，三seed家族结论和96行成本尚未完成。
