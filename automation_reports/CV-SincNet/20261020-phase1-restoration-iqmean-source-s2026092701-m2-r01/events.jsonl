@@ -1,1 +1,4 @@
 {"at": "2026-10-19T18:27:22+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T18:33:35+00:00", "status": "ANALYZED", "note": "VERIFIED live launch,actual no-querysmoke,all7source predictions/scoring;notqualified,no target", "evidence": ["report.md", "results/summary.json"], "row_id": "mean_final"}
+{"at": "2026-10-19T18:33:35+00:00", "status": "ANALYZED", "note": "VERIFIED live launch,actual no-querysmoke,all7source predictions/scoring;notqualified,no target", "evidence": ["report.md", "results/summary.json"], "row_id": "mean_layerwise"}
+{"at": "2026-10-19T18:33:35+00:00", "status": "ANALYZED", "note": "Both fixed IQ compositions failed source urban criterion;0 target,posthoc source group diagnosis", "evidence": ["report.md", "results/summary.json", "results/source_groups.json"], "row_id": null}
