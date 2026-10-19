@@ -1,0 +1,34 @@
+{
+  "verification": "VERIFIED",
+  "observed_HK": "2026-10-19 22:38",
+  "run_id": "20261019-phase1-F-selected-eight-e30-s0203-m16-r01",
+  "status": "TECHNICAL_PARTIAL",
+  "active_owned_processes": 0,
+  "new_scored_rows": 0,
+  "three_seed_groups_complete": 0,
+  "training_complete_rows": [
+    "AS_PAOFF-s2026092702",
+    "B0-s2026092702",
+    "URAW-s2026092702",
+    "H01-s2026092702",
+    "ORD128-s2026092702"
+  ],
+  "saved_final_checkpoints": 6,
+  "training_closeout_incomplete": [
+    "B01-s2026092702"
+  ],
+  "pending_never_started": 10,
+  "causes": [
+    "evaluate.observations incorrectly compares manifest.classes (six TX names) to integer6;five frozen models stopped before target IQ prediction",
+    "Clock B01 native post-training status HELDOUT_EVAL_INCOMPLETE/exit7;checkpoint exists but source closure is absent"
+  ],
+  "all_existing_outputs_preserved": true,
+  "automatic_retry": false,
+  "repair_or_relaunch_performed_during_status_check": false,
+  "previous_CE_HALF": {
+    "status": "ANALYZED",
+    "n": 3,
+    "clean_mean": 0.8488392857142857,
+    "sample_SD": 0.008085487387444067
+  }
+}

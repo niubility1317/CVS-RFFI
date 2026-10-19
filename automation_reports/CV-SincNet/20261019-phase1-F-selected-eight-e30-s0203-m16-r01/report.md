@@ -1,6 +1,6 @@
 # 用户指定八个历史增强配置补齐三种子
 
-状态：RUNNING（VERIFIED）。新增 16 条最终模型行，首批 6 行训练，10 行排队。
+状态：TECHNICAL_PARTIAL（VERIFIED，2026-10-19 22:38 香港时间）。队列因技术错误退出，当前无本 run 活动进程；0 条新增独立评分，0 组凑齐三种子。
 
 用户指定 8 个配置补齐模型 seed2026092701/02/03；seed01 复用历史封存结果，仅训练 02、03。逐行矩阵以 experiment.json 为准。
 
@@ -31,4 +31,8 @@
 
 启动读回：9 项真实 checkpoint 烟测 PASS（18 个合成前向，0 source IQ，0 target query）；GPU 4、6 各 3 个实际训练进程，PID/CWD/argv/GPU 对应，日志增长已读回。归档传输一次 SHA 比对通过，远端编译通过。执行 commit：9a8f3a164c5c9e53ba718dfa5da9c0cf9c473972。
 
-GitHub 443 连接失败，push 为 FAILED，未能读取远端分支 OID；本地提交保留。训练与自动 clean 测试仍在执行，当前没有新增最终指标，不标记实验完成。
+GitHub 443 连接失败，push 为 FAILED，未能读取远端分支 OID；本地提交保留。上次发布时任务处于训练阶段；最新状态以下方核查为准。
+
+最新核查：PAOFF、B0、URAW、H01、ORD128 的 seed02 已完成训练并冻结，但预测入口将 manifest 的 6 个 TX 名称列表与整数 6 比较，错误拒绝数据句柄，未完成 target 预测/评分。半份 As 的 seed02 已保存最终权重，但原 native 收尾返回 HELDOUT_EVAL_INCOMPLETE/exit7，缺少 source 完成闭环。6 条权重均保留，10 条未启动；当前本 run 无 GPU 进程。
+
+本轮仅只读检查运行状态并更新登记，没有修复、重启、重训或重测。此前 CE_HALF 的三种子 clean 结果仍完整：84.883929% ± 0.808549%（样本标准差，n=3），该结果属于独立的 CE_HALF 批次。
