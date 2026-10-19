@@ -387,3 +387,5 @@
 本轮记录：[固定 IQ 平均源验证](by_method/iqmean_frozenF.md)。
 
 本轮记录：[困难样本与 RX 分组加权](by_method/hardness_frozenF.md)。
+
+本轮记录：[一致伪身份与跨 RX 特征](by_method/consensus_identity.md)。
