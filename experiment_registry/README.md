@@ -363,3 +363,9 @@
 本轮新增：[恢复器小改变量保留](by_method/change_preserve.md)，源诊断已完成，完整 clean 保持条件未通过。
 
 本轮新增：[模拟自监督输入质量门](by_method/synthetic_quality_gate.md)，源诊断完成，clean 保持条件未通过。
+
+本轮记录：[双判据源诊断](by_method/consensus_preserve.md)。
+
+本轮记录：[完整目标 clean 对照](by_method/consensus_target_clean.md)。
+
+本轮记录：[冻结 F50 特征引导训练](by_method/frozenF_feature.md)。
