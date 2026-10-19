@@ -2,3 +2,6 @@
 {"at": "2026-10-19T16:35:35+00:00", "status": "RUNNING", "note": "VERIFIED realjointgradients/Ffrozen/checkpointsmoke;actualPID/CWD/cmd/GPU/loggrowth;E10active;0target", "evidence": ["report.md", "experiment.json"], "row_id": "posterior03"}
 {"at": "2026-10-19T16:35:35+00:00", "status": "RUNNING", "note": "VERIFIED realjointgradients/Ffrozen/checkpointsmoke;actualPID/CWD/cmd/GPU/loggrowth;E10active;0target", "evidence": ["report.md", "experiment.json"], "row_id": "posterior10"}
 {"at": "2026-10-19T16:35:35+00:00", "status": "RUNNING", "note": "Bothjointarmsactive,sourcechoicebeforeautomaticselectedtarget", "evidence": ["report.md", "experiment.json"], "row_id": null}
+{"at": "2026-10-19T16:54:24+00:00", "status": "ANALYZED", "note": "Source complete; no target access", "evidence": ["report.md", "results/summary.json"], "row_id": "posterior03"}
+{"at": "2026-10-19T16:54:24+00:00", "status": "ANALYZED", "note": "Source complete; no target access", "evidence": ["report.md", "results/summary.json"], "row_id": "posterior10"}
+{"at": "2026-10-19T16:54:24+00:00", "status": "ANALYZED", "note": "Sourcequalified=False;selected=None;wholegoalnotclaimedcomplete", "evidence": ["report.md", "results/summary.json"], "row_id": null}
