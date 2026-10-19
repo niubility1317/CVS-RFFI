@@ -65,6 +65,8 @@ post-hoc 源决策分析（代码 `9771481bb49a6cb814759500affa22a2d23b4831`，2
 
 三臂均未通过固定源规则，没有创建目标目录或新增目标 IQ/truth 访问。源负结果完整保留，不能称为目标负收益，也不能从源指标推断目标改善。实际目标最好值仍为 65.309127%，用户完整目标未达成。
 
+后续一致伪身份/跨 RX 特征的匹配 E10 两臂已在 N607 GPU4/5 实际运行，方法 commit `623b3f3cb93f56fe77bf680e71570def9170ed2e`。29 项检查、一次独立 P0/P1 审查、真实原 R03/三 F no-query smoke 及两 worker PID/CWD/命令/GPU/日志增长均通过。三原头一致且各置信度≥0.9的源记录为59402/63000（L/U6074/53328），只是伪身份接受率；两个新臂只差额外0.3其他RX同伪身份特征cosine，默认头及F冻结，无L/U TX真值、新拟合头或推断bank/RX依赖。按用户low优先的研究顺序，本轮预先固定low源增益≥0.5个百分点、mid不下降、其余/clean/波形界限保持，全部两臂冻结后只测试选定合格者；不追认旧失败，实际70%/近clean目标不变。当前仍在训练，没有新源V或目标成绩。
+
 已完成行的 post-hoc 源分析发现：三 teacher 平均使整体与 tail NMSE 略低，但在原 clean 可识别样本中，六视图错误决策由 410 增至 419（10638 个重复视图决策，只有 1773 个物理样本）。错误组在 prefix 和 tail 均有较大误差；这是关联诊断，不是“只有 tail 导致错误”的因果证据，不改已冻结的选择或正在运行的配方。
 
 - [三 teacher 平均/最差项源结果及分段分析](../../automation_reports/CV-SincNet/20261020-phase1-restoration-multireader-source-s2026092701-m2-r01/report.md)
@@ -72,6 +74,7 @@ post-hoc 源决策分析（代码 `9771481bb49a6cb814759500affa22a2d23b4831`，2
 - [coarse20＋全新修正器 joint30 的最终特征/中间层匹配实验](../../automation_reports/CV-SincNet/20261020-phase1-restoration-layerwise50-source-s2026092701-m2-r01/report.md)
 - [固定 IQ 平均源结果及分组诊断](../../automation_reports/CV-SincNet/20261020-phase1-restoration-iqmean-source-s2026092701-m2-r01/report.md)
 - [困难样本与 RX 分组加权的匹配实验](../../automation_reports/CV-SincNet/20261020-phase1-restoration-hardness-source-s2026092701-m3-r01/report.md)
+- [一致伪身份与跨 RX 特征匹配实验](../../automation_reports/CV-SincNet/20261020-phase1-restoration-consensus-identity-source-s2026092701-m2-r01/report.md)
 
 ## 固定边界
 

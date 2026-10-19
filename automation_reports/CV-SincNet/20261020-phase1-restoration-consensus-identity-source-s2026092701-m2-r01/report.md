@@ -1,6 +1,6 @@
 # 冻结原 F 的一致伪身份与跨 RX 特征恢复
 
-状态：PLANNED。用户目标仍为目标 low-urban ≥70%，其余五 practical 接近原 clean 85.113889%（Agent 暂按差距≤2个百分点解释）。分别报告同条 clean 的 IQ 差距、恢复器接入原基座/default head 后的真实 TX 识别和净纠错，不能用源分数或 NMSE 替代目标成绩。
+状态：RUNNING / VERIFIED。用户目标仍为目标 low-urban ≥70%，其余五 practical 接近原 clean 85.113889%（Agent 暂按差距≤2个百分点解释）。分别报告同条 clean 的 IQ 差距、恢复器接入原基座/default head 后的真实 TX 识别和净纠错，不能用源分数或 NMSE 替代目标成绩。
 
 前序 observed 均值、top25% 困难样本和 RX 加权均未通过其固定源规则，没有新增目标访问。困难组相对 posterior03 源 low/mid 为 +0.388889/−0.388889 个百分点，波形误差也增加；它说明单纯重加权尚未同时保住身份与波形。本轮改为源 clean 的高置信一致身份约束，直接从合法原 R03 独立分叉，不继承失败精修或按目标成绩挑出的权重。
 
@@ -19,3 +19,15 @@ crossrx 臂额外 0.3×cosine：每套教师在自己的160维坐标中，按伪
 29项聚焦检查已 PASS，一次独立 P0/P1 候选审查在发布前完成。launcher 首步用实际源 L_s、小范围多 RX 参考、原 R03/三原 F 验证一致原头 CE/原 posterior/跨 RX 特征到 IQ 的有限非零梯度、两个恢复组件更新归属、F 无梯度、新 checkpoint 往返；0 V、0 TX真值、0 target、0 optimizer update，PASS立即训练。测试只服务下一次实际运行，不增加签名、哈希链或重复审查。
 
 N607 普通账号的一次预检已 VERIFIED：原 R03 来源、既有 source control/前序完成；GPU4/5 各24124MB空闲无PID。固定 native GPU4、crossrx GPU5，每卡一条本run worker、计入其他owner且获取时空闲≥18GB/总进程<2；CPU2线程、独立scorer最多1。两source worker退出后，选定臂在对应卡获取空闲≥12GB再做target。其他健康进程不变。代码/配置一个Git commit，一个不可覆盖 run root，一个发布归档本地/远端SHA比较及远端compile。启动后核实真实PID/CWD/完整命令/GPU/日志增长；来源/权限/代码错误、输出冲突、非有限/OOM、预算/预测缺失依预登记技术停止规则保存产物、不自动重试、不停止或热改健康其他行。命令、环境/CWD、路径、GPU和产物见experiment.json。原始 IQ、预测、权重、bank和日志不进Git，仅提交方法、登记和派生汇总。未向另一对话发指令。
+
+
+## 实际启动与首轮证据
+
+方法 commit `623b3f3cb93f56fe77bf680e71570def9170ed2e` 已推送并独立核实远端 OID 一致。29 项聚焦检查、一次独立 P0/P1 审查 PASS；一次发布归档比较、远端 compile/import、真实原 R03＋三 F no-query smoke 均 PASS。smoke 只用160条实际 L_s 参考、其中2条实际 IQ 验证原 posterior/一致 native CE/其他 RX cosine 到 IQ 的有限非零梯度、两恢复组件梯度、F 完全冻结及新 checkpoint 往返；0V/0TX真值/0target/0optimizer update，PASS 立即训练。
+
+已核实两条 worker 的实际 PID/CWD/完整命令与物理 GPU4/5 对应，日志从0增长到完整首轮。两组源 bank 均63000条，其中59402条满足三原头一致且各≥0.9，接受率94.288889%，L/U接受6074/53328；这不是正确率，也未读取TX真值。全部30个源 RX/伪类组合都有其他 RX 支持。两臂 bank 统计一致，推断不使用 bank/RX。
+
+- consensus_native：1/10轮、247/2470步，observed63000、一致原头CE曝光59402、跨RX特征曝光0。
+- consensus_crossrx：1/10轮、247/2470步，observed63000、一致原头CE曝光59402、跨RX特征曝光59402。
+
+实际执行与固定配方一致；原基础损失仍覆盖全部 L/U 及 clean 配对，未通过伪身份的记录没有被删除。当前没有新源 V 或目标成绩，运行/接受率不证明用户目标达成。
