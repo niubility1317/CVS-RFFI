@@ -50,3 +50,12 @@
 - 当前状态：ANALYZED；四组均完成10轮/2220步及七视图独立truth-last。源规则先固定FAIL（S3-S2 +0.402778pp；相对旧localS3 +1pp；clean相对最佳NoAs -0.874074pp），固定rawIQ16/GN8双教师配方关闭。S3正式clean83.677976%、lowurban42.700595%，1seed不代表可重复收益；目标仍未完成。全部F206/defaulthead保持，新增8状态已更新；完整训练日志无计数矛盾。运行commit6ea2f71f6。最小预登记：[report.md](../automation_reports/CV-SincNet/20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01/report.md)。
 
 - rawIQ 本轮完整结果：[final_analysis.md](../automation_reports/CV-SincNet/20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01/final_analysis.md)。不因正式分数重排候选、延长、换seed或修改KD系数；后续仅依据合法源证据判断机制。
+
+
+## 追加：raw IQ 冻结源拟合诊断
+
+- Run `20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01`：ANALYZED / VERIFIED。4321真实源包前向、900物理信道包、180合法L，0optimizer/EMA/headfit/newV/target。四raw FINAL30状态保持；TC/TS复用旧源产物0新NN，未重做Dropout-only或INIT_ZERO。
+- S3末次已见124/180（旧local118/180），Ts154/180；同场景low seen32/59，fresh67/118，Ts42/59及96/118。当前4256参数路径仍有冻结受损拟合缺口，不能仅归因未知RX或记忆旧信道。
+- S3/S2 raw均180/180并保留TC正确集；normalized joint160漂移中位.210498/.159514，支持表征与logit变化，不能宣称该L180 clean accuracy下降或已证明梯度冲突。
+- 用户§7.3的clean函数保持机制可依据源漂移独立研究；若设计后续特征keep，应避免把学生train Dropout随机扰动误当确定clean函数变化。尚未实现/训练新keep机制；原KD权重/温度/raw固定配方不救援。
+- 结果：[final_analysis.md](../automation_reports/CV-SincNet/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01/final_analysis.md)。目标仍未完成；raw4组完整七视图已保存，不据正式分数选择后续方案。

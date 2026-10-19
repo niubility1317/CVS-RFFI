@@ -27,3 +27,8 @@ TC、TS 使用旧 `20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m
 GPU4/6/7 中依共享锁选择一张，所有 owner 总进程上限2、free≥12000 MB，当前 run 仅1进程；不停止、重启或热改其他健康任务。只有输入/继承权限、状态或形状不匹配、非有限值、输出冲突、固定预算或持久参数意外改变等本 run 技术失败才停止自身；保留产物，不自动重试。
 
 预期产物为 execution.json、source_smoke.json、source_panel.json、根目录四份 <ARM>_readout.json、analysis/NPZ 内复用控制读出、source predictions.npz、analysis.json、complete.json、最终解释和登记。保存 post-launch PID/CWD/argv/GPU/log-growth；唯一发布包作一次本地/远端 SHA 比较、远端 compile 和 preflight。一个独立 P0/P1 审核只针对直接影响本次合法读出的缺陷，不增审批或重复 unchanged 审核。
+
+
+## 实际完成
+
+ANALYZED / VERIFIED：4321真实源包、900信道包、0更新/0V/0target。四模型参数和持久状态保持。S3末次已见124/180，对比Ts154/180；同场景low已见32/59、新low67/118，不能仅用记忆旧信道解释困难。S3 raw180/180，TC正确集全保留；normalized joint160中位漂移.210498，高于S2的.159514，但不能把该180面板描述成clean分类受损。详细同场景比较、配对和成本见 [最终诊断报告](final_analysis.md)。冻结读出不能证明梯度冲突；已关闭raw配方不重开。

@@ -143,7 +143,14 @@
     ],
     "stop_rule": "Only technical failure:legality/provenance/shape/nonfinite/checkpoint,state-persistent mutation,budget,output conflict;preserve all artifacts,no auto retry/healthy-job stop.",
     "code_commit": "d94bb9c949bdf53c96efa8acc16c1695fcb44f21",
-    "readout_layout": "Four <ARM>_readout.json at run root; reused TC/TS embedded in analysis.json and predictions.npz"
+    "readout_layout": "Four <ARM>_readout.json at run root; reused TC/TS embedded in analysis.json and predictions.npz",
+    "status": "ANALYZED",
+    "release_commit": "069bb52daf5547cfc22fb8b83c311385d93011fc",
+    "actual_pid": 2363317,
+    "actual_GPU": 4,
+    "postlaunch_status": "VERIFIED exactPID/CWD/argvinitially;quickterminal4321NN/sourceSmokePASS/all4registeredstatesunchanged;liveNVIDIApresence samplemissed before quickcompletion,notasserted",
+    "postlaunch_ref": "local_artifacts/F_rawIQAdapter_sourceFit_E30_20261019/postlaunch02.json",
+    "final_analysis_ref": "final_analysis.md"
   },
   "expected_artifacts": [
     "execution.json",
@@ -204,7 +211,7 @@
       "epochs": 0,
       "fl_rounds": null,
       "budget_ref": "Reuse oldsourceFit predictions0NN;no teacherload/forward",
-      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/models/TC",
       "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
       "command": [
         "CVS-RFFI/python",
@@ -218,7 +225,9 @@
       "expected_artifacts": [
         "analysis.json reused teacher row",
         "predictions.npz TC_logits"
-      ]
+      ],
+      "output_kind": "existing_readout_directory_reused",
+      "result_status": "ANALYZED"
     },
     {
       "row_id": "NOAS_ADAPTER-readout",
@@ -250,7 +259,7 @@
       "epochs": 0,
       "fl_rounds": null,
       "budget_ref": "1080 actualsourcepacketforwards (180x6);launchersmoke1 separately;4newtotal4321",
-      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01/NOAS_ADAPTER_readout.json",
       "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
       "command": [
         "CVS-RFFI/python",
@@ -264,7 +273,9 @@
       "expected_artifacts": [
         "NOAS_ADAPTER_readout.json",
         "predictions.npz NOAS_ADAPTER_logits andjoint"
-      ]
+      ],
+      "output_kind": "single_file_readout",
+      "result_status": "ANALYZED"
     },
     {
       "row_id": "S1-readout",
@@ -296,7 +307,7 @@
       "epochs": 0,
       "fl_rounds": null,
       "budget_ref": "1080 actualsourcepacketforwards (180x6);launchersmoke1 separately;4newtotal4321",
-      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01/S1_readout.json",
       "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
       "command": [
         "CVS-RFFI/python",
@@ -310,7 +321,9 @@
       "expected_artifacts": [
         "S1_readout.json",
         "predictions.npz S1_logits andjoint"
-      ]
+      ],
+      "output_kind": "single_file_readout",
+      "result_status": "ANALYZED"
     },
     {
       "row_id": "S2-readout",
@@ -342,7 +355,7 @@
       "epochs": 0,
       "fl_rounds": null,
       "budget_ref": "1080 actualsourcepacketforwards (180x6);launchersmoke1 separately;4newtotal4321",
-      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01/S2_readout.json",
       "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
       "command": [
         "CVS-RFFI/python",
@@ -356,7 +369,9 @@
       "expected_artifacts": [
         "S2_readout.json",
         "predictions.npz S2_logits andjoint"
-      ]
+      ],
+      "output_kind": "single_file_readout",
+      "result_status": "ANALYZED"
     },
     {
       "row_id": "S3-readout",
@@ -388,7 +403,7 @@
       "epochs": 0,
       "fl_rounds": null,
       "budget_ref": "1080 actualsourcepacketforwards (180x6);launchersmoke1 separately;4newtotal4321",
-      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01/S3_readout.json",
       "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
       "command": [
         "CVS-RFFI/python",
@@ -402,7 +417,9 @@
       "expected_artifacts": [
         "S3_readout.json",
         "predictions.npz S3_logits andjoint"
-      ]
+      ],
+      "output_kind": "single_file_readout",
+      "result_status": "ANALYZED"
     },
     {
       "row_id": "TS-readout",
@@ -434,7 +451,7 @@
       "epochs": 0,
       "fl_rounds": null,
       "budget_ref": "Reuse oldsourceFit predictions0NN;no teacherload/forward",
-      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/models/TS",
       "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
       "command": [
         "CVS-RFFI/python",
@@ -448,7 +465,9 @@
       "expected_artifacts": [
         "analysis.json reused teacher row",
         "predictions.npz TS_logits"
-      ]
+      ],
+      "output_kind": "existing_readout_directory_reused",
+      "result_status": "ANALYZED"
     }
   ],
   "notes": [
@@ -460,5 +479,38 @@
     "Currentdirecthuman pureF/star-ground/E20+10 controlledstudy overrides unrelatedconversation CROSS_RX/defaultrecipe entries. No headfit or replacement;unchanged default6x160cos30head used.",
     "Runoutput immutable newroot. Oneowner/ordinaryaccount/GPU4/6/7cap2sharedlock/free12GB/CPU2FP32;firstsmokePASScontinues. No currenthealthyotherownerintervention."
   ],
-  "registered_at": "2026-10-19T11:07:56+00:00"
+  "registered_at": "2026-10-19T11:07:56+00:00",
+  "result_summary": {
+    "status": "SOURCE_ONLY_ZERO_UPDATE_COMPLETE",
+    "NN_packets": 4321,
+    "generated_channel_packets": 900,
+    "source_raw_reads": 180,
+    "reused_teacher_NN": 0,
+    "optimizer_updates": 0,
+    "EMA_updates": 0,
+    "head_fit_updates": 0,
+    "new_V_NN": 0,
+    "target_access": false,
+    "registered_state_unchanged": {
+      "NOAS_ADAPTER": true,
+      "S1": true,
+      "S2": true,
+      "S3": true
+    },
+    "S3_seen_As": {
+      "correct": 124,
+      "n": 180
+    },
+    "TS_seen_As": {
+      "correct": 154,
+      "n": 180
+    },
+    "S3_fresh_low": {
+      "correct": 195,
+      "n": 360
+    },
+    "model_seed_count": 1,
+    "goal_complete": false,
+    "source_diagnostic_only": true
+  }
 }
