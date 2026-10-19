@@ -1,0 +1,60 @@
+# PAMF Phase1 四种域泛化方法与自身CE：两GPU三种子
+
+- run_id：`20261019-phase1-pamf-dg-nativebudget-m24-r01`
+- group_id：`phase1-pamf-four-dg-nativebudget`；类别：`comparison`；阶段：`Phase1`
+- 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
+- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+
+## 目的与对照
+
+固定当前弱标签物理划分，四方法按各自配方及用户E100覆盖，从零训练与七视图truth-last评分。
+
+本次固定 4 方法×full/自身骨干 CE×3 模型种子，共 24 行；唯一矩阵在 experiment.json，matrix.json 是发布用配置。模型种子为 2026092701/02/03，物理数据划分 seed392005 不变。PAMF 复用历史对应三个种子的 E200 clean 结果，训练成本单列，不复用作者全监督权重。
+
+| 方法 | 训练预算 | 优化与冻结 | 依据 |
+|---|---|---|---|
+| RIEI-FD | E100，batch64 | SGD1e-4、momentum0、恒定 LR；full 按分类与解耦交替，固定末轮 | 用户明确 E100；原论文未披露总轮数；学习率/λ来自原文，short_stem1d 为历史项目实现选择 |
+| DRIFT v2 | E100，batch256 | Adam1e-4、恒定 LR；原式负平方 L2 和，固定末轮 | 用户明确 E100；batch/LR/λ和公式来自 v2 |
+| IB-RFF | 两阶段各最多 E200，batch128 | Adam1e-3；每阶段源 V NLL 降 LR、patience10 早停和选模；stage2 重置优化器 | 固定作者公开 ManySig 配方；α0/0.04，CE 对照为 0/0 |
+| SDG TWC | E200，batch32 | Adam1e-3，源 V 最小 NLL；full 保留作者增强和对比目标 | 固定作者 WiSig S 配方；增强深度2/1、λ1/100 |
+
+RIEI/DRIFT 由历史 E200 改为 E100，所有轮次安排按 1/2 解释；本次原恒定 LR 配方没有 warmup、milestone 或阶段启用节点，因此不凭空添加日程。IB-RFF 每阶段 patience5 的降 LR 与 patience10 的早停保持原值，不压成 E100。论文未披露轮数的两项不冒称“论文推荐 E100”。
+
+CE 对照仅训练身份 CE，不计算 RX 诊断、域损失、原生 DG 增强或昂贵零权重分支；默认身份头与骨干联合训练。完整方法所必需的 RX 分类/对抗分支是算法训练组成，不是冻结后的额外诊断探针。SDG 移植到固定多 RX 源池；RIEI/DRIFT 保持本项目 equalized1/unit-RMS 输入。以上适配及非等计算量均在结果中披露，不称严格原论文完整表复现。
+
+## 数据、seed与模型来源
+
+实际数据契约、权限例外、完整seed角色、checkpoint来源和选择规则见experiment.json。
+逐行配置通过config_ref/resolved_config_ref定位；待补项必须在对应生命周期补齐。
+
+## 执行与存储
+
+命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
+实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
+
+仅物理 GPU0、GPU1；每卡一条本队列 row。队列等待外部 GPU 工作负载，不借用 GPU2 至 GPU7，不停止或热改任何其他任务。source/predict/scorer 为独立进程，训练和预测占用同一 row 的 GPU 槽；scorer 禁用 CUDA。CPU 数学库各限 2 线程。
+
+旧 source_contract 直接复用，源角色为 RX1/3/4/6/8、day1/2/3，L_s6300/U_s56700/V27000；U_s 不导出不参与训练。source cache 只导出已有 L_s/V，物理 ID 按现有契约匹配，不新建数据校验链。数据代码复用不可变 SIG_TIME 发布及其 Git 提交 6408f29，外部模型/损失源码复用已固定的作者发布；这些路径及实际解释器保存在 local_artifacts/phase1_dg_nativebudget_20261019/runtime.json，不将私有运行位置或大产物提交 Git。
+
+launcher 首先保存并重新加载真实 L_s batch 产生的模型 checkpoint，完成默认头无 query smoke，PASS 后直接进入队列。每 row 完成全部七视图 prediction 后独立 scorer 才连接原 truth；不因其他 row 未完成而等待，也不按已得成绩改变矩阵。七视图使用已有 VALIDATED_ONCE、168000 个物理包的 fixed received views，不重新生成信道。输出 root 不可覆盖。
+
+只因数据/模型契约错误、输出碰撞、非有限源损失/梯度、无法启动或生成合法预测、错误 truth 连接等技术故障失败；两行技术失败后暂停未开始行，已健康运行行继续。低性能不停止、不扩种子、不选择性重跑。失败目录完整保留。
+
+预期每行保留各训练阶段 epochs.jsonl、checkpoint、source freeze、七视图匿名预测、逐 RX/TX score。最终 summary.json/final_report.md 自动生成实际种子数、模型种子样本 SD、最差 RX 和 full−CE 配对差；未完成三种子明确标缺。代码提交以本次 package.json 和 release_commit.txt 读回为准。
+
+## 结果与覆盖
+
+尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+
+## 交接
+
+记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 发布前验证
+
+LOCAL_VERIFIED。24 行种子/方法预算检查、source 配置拒绝 truth/resume/teacher/target 输入、错误预算拒绝、prediction 不完整时 truth 保持关闭、四方法默认头 CE 梯度与实际更新、严格 checkpoint 往返及错误 source contract 拒绝均通过。另核对 DRIFT 原式在 256 维常数差上的负平方距离为 −256；SDG 原生两视图、两个对比项梯度和身份种子未被作者模块导入时的 seed2023 覆盖，检查通过。原生增强在隔离 NumPy1.23.5 下检查，未修改共享环境。
+
+一次独立 P0/P1 正确性审查 PASS，无待修直接缺陷。选定 sixscene manifest 已读回为 VALIDATED_ONCE、168000 个物理包、完整六场景、固定六类和 source/target 互斥；旧三场景 capsule 仅供应相同的 clean IQ/原始 ID，二者不混淆。尚未发布，尚无本次性能结果。
+
+发布依赖核对发现 Git 内 RIEI 通用 trainer 带有未打包的卫星增强 import；本次发布改用独立 source-only 交替更新 helper，未改动其他任务的共享 trainer。新旧 source-only 更新后全模型张量逐元素一致检查通过，该单一 P1 的定点独立复审 PASS。未扩大为重复全量审查。
