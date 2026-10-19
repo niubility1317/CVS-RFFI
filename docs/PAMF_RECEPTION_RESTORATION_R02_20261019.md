@@ -1,6 +1,6 @@
 # 接收观测恢复第二轮：设计与报告核对
 
-状态：LOCAL_VERIFIED，尚未发布训练。12项聚焦检查通过，独立P0/P1复核无阻断问题。保持原目标：单独、无 TX 标签训练的星地恢复器输出同一份 IQ，直接接现有冻结 F 与原默认头，证明身份细节属于对应输入，而不是仅降低波形误差。
+状态：RUNNING / VERIFIED，N607六行源训练及独立评分进行中。12项聚焦检查通过，独立P0/P1复核无阻断问题。保持原目标：单独、无 TX 标签训练的星地恢复器输出同一份 IQ，直接接现有冻结 F 与原默认头，证明身份细节属于对应输入，而不是仅降低波形误差。
 
 依据：用户先后提供的《接收链逆问题》与《六类恢复器、两阶段训练、三层验收》报告。采用报告提出的比较顺序；其建议参数不是已证明的最佳配置。原七网络 run 与所有负结果保持。
 
@@ -37,15 +37,15 @@ L/U的lag16/32/64/128复相干均值最高约0.14，不支持重复前导码/周
 
 |ID|要求|实现/产物|状态|验证与边界|
 |---|---|---|---|---|
-|R02-01|全L/U无TX配对恢复|原IQSource＋新data.py|implemented|源角色复用；不读label文件|
+|R02-01|全L/U无TX配对恢复|原IQSource＋新data.py|verified|20epoch缓存与前三行真实曝光完成；0 TX读取|
 |R02-02|full/residual共享latent且不串接|data.shared_pair|verified|原生引擎同seed/RX/state；跨epoch变化测试|
 |R02-03|同U-Net三种route、同曝光|六行矩阵与route_array/runner|verified|实际训练函数使用同一向量路由；曝光与LR窄测试通过|
 |R02-04|深度适度的U-Net、线性IQ、零输出初始化|models.ReceptionUNet|verified|256→128→64→32；初始严格恒等、幅值不剪裁|
 |R02-05|复时频、正确-k共轭镜像、有界增益|models.ComplexTFUNet|verified|FFT(x*)=conj(FFT(x)[-k])测试；幅度gain1/4至4|
-|R02-06|单恢复IQ供全部原PAMF分支|原views/frozen接口＋checkpoint_loader|verified|实际七视图接线测试通过；新模型真实F运行待发布|
+|R02-06|单恢复IQ供全部原PAMF分支|原views/frozen接口＋checkpoint_loader|verified|实际七视图接线与前三行真实冻结F读出通过|
 |R02-07|扩散多尺度条件、每步条件、复用编码|models.MultiscaleDiffusion|verified|完整16步；条件编码每次推理一次；无状态更新|
 |R02-08|流匹配目标和推理起点一致|models.MultiscaleFlow|verified|sigma0.02/16Euler；两生成模型条件编码梯度测试通过|
-|R02-09|新信道流、route/scene元数据不进模型|新cache与runner|pending|不输入模拟器truth或route标签|
+|R02-09|新信道流、route/scene元数据不进模型|新cache与runner|verified|20个epoch原生缓存完成；模拟器truth/route不输入R|
 |R02-10|基本两类恢复损失、warmup和实际预算|新runner/design|verified|固定IQ＋log-power；端点LR与有限梯度测试通过|
 |R02-11|shuffle条件与完整采样分开诊断|新source预测诊断|pending|固定source V置换，禁止目标选择|
 |R02-12|source资格/选模冻结→逐行预测→truth-last|新controller，复用独立scorer|implemented|无TX选择字段与错路线checkpoint负向测试；原truth路径显式传入|
@@ -59,4 +59,4 @@ L/U的lag16/32/64/128复相干均值最高约0.14，不支持重复前导码/周
 |R02-20|未训练接收设置或独立信道族验证|后续冻结候选验证|pending|不把换参数冒充独立物理来源；不宣称真实在轨|
 |R02-21|低质量身份保持、随机性、多seed最终证明|最终验收|pending|固定单次主采样；禁止真值best-of-N；未通过则目标保持active|
 
-本文件是工作设计与追踪，不是训练已启动或已有效的证明。发布前以最小experiment.json固定commit、命令、输出root、GPU、停止规则和预期产物；只执行项目最小流程，不增加设计审批、签名链或重复审查。
+本文件是工作设计与追踪；实时训练与效果证据见对应run报告，不以本表代替评分证据。发布前以最小experiment.json固定commit、命令、输出root、GPU、停止规则和预期产物；只执行项目最小流程，不增加设计审批、签名链或重复审查。

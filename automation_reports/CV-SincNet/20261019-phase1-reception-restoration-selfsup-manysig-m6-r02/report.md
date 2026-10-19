@@ -1,6 +1,6 @@
 # 接收观测恢复第二轮
 
-状态：RUNNING / VERIFIED（源信道缓存阶段）；方法代码`7efdba92932a86bf4b0492a565d35377564a26da`。12项聚焦检查、实际原生full/residual配对/旧residual重放、条件训练梯度与完整采样检查通过；一次独立P0/P1复核无阻断问题。
+状态：RUNNING / VERIFIED（六行源训练与独立评分阶段）；方法代码`7efdba92932a86bf4b0492a565d35377564a26da`。12项聚焦检查、实际原生full/residual配对/旧residual重放、条件训练梯度与完整采样检查通过；一次独立P0/P1复核无阻断问题。
 
 本轮落实用户两份新报告。固定六行、数据/seed/命令/成本/输出/停止规则唯一维护于[experiment.json](experiment.json)，详尽设计和逐项状态见[设计追踪](../../../docs/PAMF_RECEPTION_RESTORATION_R02_20261019.md)。
 
@@ -20,6 +20,18 @@
 
 方法commit`7efdba92932a86bf4b0492a565d35377564a26da`已推送，远端分支OID独立读回一致。新release和run独占，单个代码归档传输比较通过，远端compile/import通过。实际环境Python3.10.19、Torch2.1.0+cu121、NumPy2.2.5，未改包。数据与F权重复用既有路径，不重复传输或验证。
 
-独立进程证据确认controller存活、父进程为init、CWD与完整argv匹配本run；16个数据worker运行，F的两个真实源样本no-query检查PASS。控制器日志从606增长到5554字节，12个epoch缓存完整，第13个正在生成；各epoch使用新的共享latent全/残余观测。当前GPU模型训练尚未开始，尚无新版识别收益结论。其他owner任务保持。
+独立进程证据确认controller存活、CWD与完整argv匹配本run。20个epoch共享full/residual源缓存已全部生成，6300 L_s与56700 U_s、0 TX标签/目标读取；F真实源样本与前三个R真实checkpoint往返检查PASS。前三行均完成E20/4940更新、126000 L及1134000 U曝光与双路源独立评分；其余复时频、扩散、流模型已自动启动。GPU0/1/5各一条本run worker；其他owner任务保持。
 
 这不是训练/评分完成状态。后续以相同controller继续，禁止因观察超时重启或重新生成已完成缓存。实际运行证据保存在本地私有产物目录；数据、权重、原始日志、账号路径和进程完整快照不提交。
+
+## 首批源域结果（中期）
+
+仅本run source V的1800条固定样本、原residual/post_sync/noEQ面板。原AsF默认头clean为98.7778%、low urban为59.9444%；所有R在完全冻结后读出，不重新训练或替换头。三行全20轮训练记录和完整stdout均已解析，无技术错误标记，训练TX标签读取为0。
+
+|行|AsF clean（%）|AsF low urban（%）|low urban变化（百分点）|low urban NMSE|
+|---|---:|---:|---:|---:|
+|unet_residual|98.6667|64.3333|+4.3889|0.120908|
+|unet_full|98.6111|64.7222|+4.7778|0.122031|
+|unet_mixed|98.6111|64.0556|+4.1111|0.121703|
+
+三行出现源身份正向信号，clean损失0.1111至0.1667个百分点。完整六行结束前不冻结候选，不依据此中期结果改变活动训练或矩阵。标签身份诊断不等于无标签波形选模；尚无本run目标分数、跨接收机结论或最终>60%证明。完整中期汇总见[源结果](results/source_interim.json)。

@@ -8,3 +8,10 @@
 {"at": "2026-10-19T10:31:10+00:00", "status": "QUEUED", "note": "等待同一16CPU源信道缓存准备完成；本行尚未开始GPU训练。", "evidence": ["experiment.json"], "row_id": "tf_unet_mixed"}
 {"at": "2026-10-19T10:31:10+00:00", "status": "QUEUED", "note": "等待同一16CPU源信道缓存准备完成；本行尚未开始GPU训练。", "evidence": ["experiment.json"], "row_id": "diffusion_mixed"}
 {"at": "2026-10-19T10:31:10+00:00", "status": "QUEUED", "note": "等待同一16CPU源信道缓存准备完成；本行尚未开始GPU训练。", "evidence": ["experiment.json"], "row_id": "flow_mixed"}
+{"at": "2026-10-19T10:41:35+00:00", "status": "RUNNING", "note": "20轮源缓存完成；前三行E20与双路源评分完成，后三行GPU训练已启动，未读取本run目标分数。", "evidence": ["report.md", "results/source_interim.json"], "row_id": null}
+{"at": "2026-10-19T10:41:35+00:00", "status": "TRAINING_COMPLETE", "note": "E20/4940更新及双路源预测/独立评分完成；等待预登记六行汇总冻结选择。", "evidence": ["results/source_interim.json"], "row_id": "unet_residual"}
+{"at": "2026-10-19T10:41:35+00:00", "status": "TRAINING_COMPLETE", "note": "E20/4940更新及双路源预测/独立评分完成；等待预登记六行汇总冻结选择。", "evidence": ["results/source_interim.json"], "row_id": "unet_full"}
+{"at": "2026-10-19T10:41:35+00:00", "status": "TRAINING_COMPLETE", "note": "E20/4940更新及双路源预测/独立评分完成；等待预登记六行汇总冻结选择。", "evidence": ["results/source_interim.json"], "row_id": "unet_mixed"}
+{"at": "2026-10-19T10:41:35+00:00", "status": "RUNNING", "note": "自动队列启动；真实PID/CWD/argv/GPU已读回。", "evidence": ["report.md"], "row_id": "tf_unet_mixed"}
+{"at": "2026-10-19T10:41:35+00:00", "status": "RUNNING", "note": "自动队列启动；真实PID/CWD/argv/GPU已读回。", "evidence": ["report.md"], "row_id": "diffusion_mixed"}
+{"at": "2026-10-19T10:41:35+00:00", "status": "RUNNING", "note": "自动队列启动；真实PID/CWD/argv/GPU已读回。", "evidence": ["report.md"], "row_id": "flow_mixed"}
