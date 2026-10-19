@@ -1,0 +1,211 @@
+{
+  "schema": "F_sceneRisk20_v1",
+  "run_id": "20261019-phase1-F-sceneRisk-e20-s2026092701-m2-r01",
+  "stage": "repair",
+  "arm": "BALANCED",
+  "model_seed": 2026092701,
+  "row_id": "BALANCED-s2026092701",
+  "features": [
+    "ema",
+    "pseudo",
+    "twostage"
+  ],
+  "variant": "reference_response",
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "output_root": "PROJECT\\runs\\20261019-phase1-F-sceneRisk-e20-s2026092701-m2-r01\\BALANCED-s2026092701\\source",
+  "epochs": 20,
+  "steps_per_epoch": 222,
+  "model_initialization": "same-seed scratch F",
+  "checkpoint_sources": [],
+  "numerical_policy": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "method": "cvs_legacy_no_sat",
+  "target_access": false,
+  "pseudo_domain_gate": false,
+  "temporal_mode": "batch_neighbor",
+  "temporal_min_streak": 2,
+  "lr_schedule": "cosine",
+  "lr_min": 1e-06,
+  "launch_owner": "codex/root/F-sceneRisk20",
+  "label_epochs": 13,
+  "pseudo_epochs": 7,
+  "updates": 4440,
+  "legacy_reference_config": {
+    "schema": "legacy_no_sat_v1",
+    "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+    "stage": "repair",
+    "arm": "legacy_cosine_no_sat",
+    "model_seed": 2026092701,
+    "row_id": "legacy_cosine_no_sat-s2026092701",
+    "features": [
+      "ema",
+      "pseudo",
+      "twostage"
+    ],
+    "variant": "reference_response",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+    "epochs": 200,
+    "steps_per_epoch": 222,
+    "model_initialization": "scratch",
+    "checkpoint_sources": [],
+    "numerical_policy": {
+      "cudnn_allow_tf32": false,
+      "cuda_matmul_allow_tf32": false,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": false,
+      "matmul_precision": "highest"
+    },
+    "method": "cvs_legacy_no_sat",
+    "target_access": false,
+    "pseudo_domain_gate": false,
+    "temporal_mode": "batch_neighbor",
+    "temporal_min_streak": 2,
+    "lr_schedule": "cosine",
+    "lr_min": 1e-06
+  },
+  "source_falsification": {
+    "first_seed": 2026092701,
+    "per_budget_independent": true,
+    "final_L_CE_max": 0.5,
+    "V_mean_drop_max": 0.01,
+    "V_worst_RX_drop_max": 0.02,
+    "minimum_positive_KL_call_fraction": 0.01,
+    "selection": "Per budget, first seed all3 full source; RDrop healthy and V no lower than ORIGINAL/TWO_CE within1pp mean/2pp worstRX; finite complete signal, no target metrics. PASS releases6 remaining rows of that budget; FAIL preserves first3 and other budget continues"
+  },
+  "training_recipe": "pure F ORIGINAL; scratch20=13L+7U; .5 ordinary CE +.5 scene risk CE; BALANCED",
+  "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+  "explicit_CFO_identity_feature": false,
+  "feature_extractor": {
+    "arm": "SIG_TIME",
+    "layer": "t2",
+    "local_dimension": 6,
+    "local_projection": "learned 1x1 then tanh; shared across controls",
+    "windows": 4,
+    "random_directions": 14,
+    "random_direction_seed": 2026101307,
+    "random_direction_scales": [
+      0.5,
+      1.0,
+      2.0
+    ],
+    "descriptor_width": 28,
+    "output_embedding": 160,
+    "parameter_matched": true,
+    "intrinsic_descriptor_rank_matched": false,
+    "classifier_changed": false,
+    "gain_initial": 0.05,
+    "gain_bound": 0.2,
+    "time_coordinate": true,
+    "per_packet": true
+  },
+  "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+  "test_views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "checkpoint_selection": "final_only",
+  "goal": {
+    "primary": "E50_RDROP",
+    "clean_three_seed_mean": 0.84,
+    "E20_budget_comparison": true,
+    "legacy_SIGTIME_recipe": true,
+    "goal_completed": false,
+    "target_feedback": false
+  },
+  "budget_authorization": "User explicitly asks original SIG_TIME plus organically combined RDrop published for verification; prior full E50 three-seed and E20 comparison retained. Fixed18 scratch models, no old weights inherited.",
+  "cost_claim": "21 new scratch50 backbones and3 reused same-seed scratch50 references; no extra head optimization",
+  "baseline_reference": "Fresh same-recipe ORIGINAL; historical83.0393% is unpaired context only",
+  "baseline_reuse": false,
+  "readouts": [
+    "NATIVE_HEAD"
+  ],
+  "separate_head_training": false,
+  "mode": "ORIGINAL",
+  "head_fit_updates": 0,
+  "training_mechanism": {
+    "mode": "ORIGINAL",
+    "alpha": 0.0,
+    "CROSS_RX": false,
+    "RDrop": false,
+    "L_forwards_per_sample": 2,
+    "ordinary_CE_weight": 0.5,
+    "extra_CE_weight": 0.5,
+    "extra_input": "complete practical(raw)",
+    "CE_temperature": 1.0,
+    "CE_smoothing": 0.01,
+    "nontrue_weight": 0.0,
+    "KD_multiplier": 6.0,
+    "student_KD_temperature": 6.0,
+    "teacher_target": null,
+    "teacher_correct_mask": false,
+    "normalization": "all128 per-sample CE; group means; all present groups retain positive weight",
+    "teacher_packets_per_step": 0,
+    "teacher_shadow": false,
+    "physical_shadow": false,
+    "U": "original hidden TX gate+ownEMA unchanged",
+    "new_deploy_parameters": 0,
+    "scene_risk": {
+      "groups": [
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "mode": "BALANCED",
+      "eta": 0.01,
+      "uniform_mixture": 0.5,
+      "initial_logq": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "update": "logq += .01 * detached current group CE; absent group increment0; subtract logsumexp; apply updated q",
+      "present_normalization": "q normalized over present groups; half uniform over present groups",
+      "clean_V_for_weights": false,
+      "teacher_or_student_confidence_filter": false
+    }
+  },
+  "native_scratch_only": true,
+  "As": true,
+  "source_promotion": {
+    "RISK_minus_BALANCED_midlow_min_pp": 0.5,
+    "RISK_minus_B1_midlow_min_pp": 0.5,
+    "RISK_minus_B0_fullVclean_min_pp": -0.2,
+    "automatic_extension": false,
+    "max_cumulative_epochs": 50,
+    "decision_before_formal_scores": true,
+    "on_fail": "close fixed bounded scene-risk recipe; no eta/mixture/seed rescue"
+  },
+  "data_contract": {
+    "L": 6300,
+    "U": 56700,
+    "V": 27000,
+    "RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "days": [
+      1,
+      2,
+      3
+    ],
+    "split": 392005,
+    "U_TX_hidden": true,
+    "source_RX_holdout": null
+  }
+}

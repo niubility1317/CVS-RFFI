@@ -1,6 +1,6 @@
 # 纯 F 冻结 E20：训练命名流与新信道拟合诊断
 
-状态：PLANNED，尚未运行，没有新性能结果。运行 20261019-diagnostic-F-observedChannel-e20-s2026092701-m4-r01。这是零更新源诊断，不是新的训练候选，不改变场景风险实验的固定晋级规则，也不把本诊断作为额外发布门槛。
+状态：ANALYZED / VERIFIED。完整结果见 [final_analysis.md](final_analysis.md)；下文保留原预登记。
 
 固定问题：普通 As 的源 urban 误差，来自训练期观测未拟合，还是来自新信道及新物理样本泛化？四个 checkpoint 均为同 seed 2026092701 的纯 F 自身 FINAL20：从 20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01 复用 B0/B1，从 20261019-phase1-F-sceneRisk-e20-s2026092701-m2-r01 读取 BALANCED/RISK。严格校验自身 scratch20、原数据角色和默认头，不使用目标成绩选择权重。B0 没有看过这些 As，仅作参照。
 
@@ -12,8 +12,12 @@
 
 代码：analysis/cvs_pure_F_observed_fit_20261019.py；代码/config commit 在实际提交后记入登记。普通 N607 既有 FP32/TF32off 环境、CPU2；CWD PROJECT/releases/cvs_F_sceneRisk_E20_20261019_r01（新诊断脚本位于独立发布目录）；GPU5 单进程，含其他 owner 每GPU最多2实验进程、至少12000MB空闲。唯一 owner codex/root/F-observedChannel20，不干预健康任务。
 
-命令：CVS-RFFI/python -u analysis/cvs_pure_F_observed_fit_20261019.py --project PROJECT --output PROJECT/runs/20261019-diagnostic-F-observedChannel-e20-s2026092701-m4-r01。首次创建不可覆盖输出根；保存 config、selected_L、source predictions、各模型及聚合分析、complete/failure 和日志。只在所有自身 FINAL20 及完整源日志可用后执行。角色/来源/非有限值/状态改变/流或接口/输出错误即技术停止并保留现场，不自动重启；无源阈值救援或新晋级规则。
+命令：CVS-RFFI/python -u PROJECT/releases/cvs_F_observedChannel_E20_20261019_r01/analysis/cvs_pure_F_observed_fit_20261019.py --project PROJECT --output PROJECT/runs/20261019-diagnostic-F-observedChannel-e20-s2026092701-m4-r01。首次创建不可覆盖输出根；保存 config、selected_L、source predictions、各模型及聚合分析、complete/failure 和日志。只在所有自身 FINAL20 及完整源日志可用后执行。角色/来源/非有限值/状态改变/流或接口/输出错误即技术停止并保留现场，不自动重启；无源阈值救援或新晋级规则。
 
 发布前完成窄范围协议负测、真实 checkpoint 无 query 源 smoke、一次 P0/P1 审查、一次归档传输比较及远端编译；启动后以实际 PID/CWD/argv/GPU/日志验证。相同代码不重复审查，不增加签名或文件哈希门槛。
 
 本地验证：py_compile PASS；E20按序cell上限与step/slot保留、非法role ID/metadata/base_index在IQ读取前拒绝、hard CE与smoothing0.01及配对计数均PASS。一次独立P0/P1审查PASS，覆盖source-only构建、自身FINAL20、L成员校验、训练流/新draw配对、冻结状态与GPU共享容量锁。尚未进行远端模型读出。
+
+发布准备 VERIFIED：代码/config commit `6864ce18aae696f551feadf953efeaa901e97a5c`；GitHub分支相对该commit为identical（ahead=0、behind=0），独立核实远端版本。单归档传输比较及远端编译产物已通过。诊断尚未启动；日志为 PROJECT/releases/cvs_F_observedChannel_E20_20261019_r01/run.log，源输出根仍由脚本首次独占创建。
+
+实际完成180个合法L、四冻结FINAL20、5761源前向包，0更新/0目标访问，V无新增前向。首步真实CP smoke PASS，state完全未变；活动PID快照前已结束，该层UNKNOWN，完成产物VERIFIED。

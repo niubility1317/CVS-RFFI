@@ -1,0 +1,274 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-F-sceneRisk-e20-s2026092701-m2-r01",
+  "group_id": "phase1-F-bounded-scene-risk",
+  "display_name": "纯 F E20：场景等权 CE 与有界动态场景风险",
+  "description": "三个完整As场景的训练CE风险重分配；固定ordinary份额，所有合法As真实监督；不用外部教师或额外前向。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "F",
+    "scene-risk",
+    "GroupDRO-adaptation",
+    "scratchE20",
+    "default-head",
+    "source-only-promotion",
+    "seven-views"
+  ],
+  "comparison_group_id": "F-native-original-pure20-double-reference-scene-risk",
+  "parent_run_ids": [
+    "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active fixed F E20 research goal: continue distinct augmentation route; own E20+30 only source qualified; no repeated closed recipe.",
+  "code": {
+    "commit": "3f7062ff5a8be5074a280b410a45ec8be9213021",
+    "checkout": "E:\\type10-7\\code\\worktrees\\phase1_sameiq_experts_20261019",
+    "environment": "N607 existing Python3.10/Torch2.1/NumPy2.2; FP32/TF32off/CPU2",
+    "cwd": "PROJECT/releases/cvs_F_sceneRisk_E20_20261019_r01"
+  },
+  "data": {
+    "dataset": "existing immutable ManySig equalized1",
+    "version": "same source contract reused",
+    "representation": "equalized1/center256/unitRMS; exact saved residual post_sync/noeq full observation",
+    "contract_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json",
+    "physical_ids_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json#role_ids",
+    "label_map_ref": "design.CLASSES and native class_mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "protocol.CLASSES",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing sourceV27000 + fixed cached balancedV1800/two full physical draws; Phase2 capsule not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": "PROJECT/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/observations/actual_engine.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Fixed seven-view predictions after final20; source matrix decision before separate exec truth-side scoring",
+    "external_method_exception": null,
+    "claim_scope": "Single model seed exploratory experiment; fixed exposed benchmark; no new blind-test claim"
+  },
+  "checkpoint": {
+    "initialization": "same seed scratch; no inherited weight; reference predictions reused only",
+    "sources": [],
+    "contract_check_ref": "Native source role equality before first train forward; existing fixed VALIDATED_ONCE handles; own payload checks before every readout",
+    "provenance_verdict": "Scratch with no checkpoint sources or ancestors; reference lineage matched existing pureF run",
+    "selection_rule": "fixed FINAL20 all rows; source qualification before scores only controls E50 eligibility"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/F-sceneRisk20",
+    "gpu_policy": "all-owner cap2/GPU; free>=12000MB; CUDA init inside shared capacity lock; no intervention on other jobs",
+    "remote_run_root": "PROJECT/runs/20261019-phase1-F-sceneRisk-e20-s2026092701-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261019-phase1-F-sceneRisk-e20-s2026092701-m2-r01/logs",
+    "local_artifact_root": "local_artifacts/F_sceneRisk_E20_20261019",
+    "launch_command": [
+      "CVS-RFFI/python",
+      "-u",
+      "experiments/cvs_scene_risk20/runner.py"
+    ],
+    "stop_rule": "Protocol/role/provenance/nonfinite/budget/interface/output technical failure only; keep outputs; no automatic restart; scientific source FAIL closes recipe/extension but healthy registered training and auto scoring continue",
+    "launch_readback_ref": "local_artifacts/F_sceneRisk_E20_20261019/postlaunch_evidence.json"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "queue_state.json",
+    "<row>/source/final_ssdg.pth",
+    "<row>/source/completion.json",
+    "<row>/source/training_result.json",
+    "<row>/source/scene_risk_state.json",
+    "<row>/source/mechanism_steps.jsonl.gz",
+    "<row>/source/training_sequence.jsonl.gz",
+    "<row>/source_qualification/predictions.npz",
+    "source_matrix_decision.json",
+    "<row>/prediction/complete.json",
+    "<row>/scoring/scores.json",
+    "analysis.json",
+    "complete.json or failure.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "worstRX",
+      "paired repairs/damage",
+      "source clean/midlow",
+      "complete losses and budget",
+      "actual joint160 and body/head updates"
+    ],
+    "dimensions": [
+      "row",
+      "seed",
+      "clean+6practical",
+      "RX",
+      "day",
+      "TX"
+    ],
+    "prediction_ref": "eachrow/prediction (all seven frozen before truth)",
+    "scorer_ref": "Independent exec evaluate.score after all7 and source matrix decision; report.collect"
+  },
+  "rows": [
+    {
+      "row_id": "BALANCED-s2026092701",
+      "method": "BALANCED bounded scene CE",
+      "purpose": "matched CE-only control",
+      "config_ref": "configs/BALANCED.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-sceneRisk-e20-s2026092701-m2-r01/BALANCED-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "Same original model/split/L/U streams and fullphysical channel seeds as existing pureF B0/B1. No new seed sweep; support/FL inapplicable.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "scratch AdamW/cos20/CENTER_UNITS physical clip5",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "scratch E20/4440 updates;2L128 per step;568320 fullAs;originalU396900/ownEMA4440;no externalteacher;all7 fixedformal views",
+      "output_root": "PROJECT/runs/20261019-phase1-F-sceneRisk-e20-s2026092701-m2-r01/BALANCED-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-sceneRisk-e20-s2026092701-m2-r01/logs/BALANCED-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_scene_risk20/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "BALANCED-s2026092701"
+      ],
+      "expected_artifacts": [
+        "launch.json",
+        "queue_state.json",
+        "<row>/source/final_ssdg.pth",
+        "<row>/source/completion.json",
+        "<row>/source/training_result.json",
+        "<row>/source/scene_risk_state.json",
+        "<row>/source/mechanism_steps.jsonl.gz",
+        "<row>/source/training_sequence.jsonl.gz",
+        "<row>/source_qualification/predictions.npz",
+        "source_matrix_decision.json",
+        "<row>/prediction/complete.json",
+        "<row>/scoring/scores.json",
+        "analysis.json",
+        "complete.json or failure.json"
+      ],
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "RISK-s2026092701",
+      "method": "RISK bounded scene CE",
+      "purpose": "candidate",
+      "config_ref": "configs/RISK.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-sceneRisk-e20-s2026092701-m2-r01/RISK-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "Same original model/split/L/U streams and fullphysical channel seeds as existing pureF B0/B1. No new seed sweep; support/FL inapplicable.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "scratch AdamW/cos20/CENTER_UNITS physical clip5",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "scratch E20/4440 updates;2L128 per step;568320 fullAs;originalU396900/ownEMA4440;no externalteacher;all7 fixedformal views",
+      "output_root": "PROJECT/runs/20261019-phase1-F-sceneRisk-e20-s2026092701-m2-r01/RISK-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-sceneRisk-e20-s2026092701-m2-r01/logs/RISK-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_scene_risk20/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "RISK-s2026092701"
+      ],
+      "expected_artifacts": [
+        "launch.json",
+        "queue_state.json",
+        "<row>/source/final_ssdg.pth",
+        "<row>/source/completion.json",
+        "<row>/source/training_result.json",
+        "<row>/source/scene_risk_state.json",
+        "<row>/source/mechanism_steps.jsonl.gz",
+        "<row>/source/training_sequence.jsonl.gz",
+        "<row>/source_qualification/predictions.npz",
+        "source_matrix_decision.json",
+        "<row>/prediction/complete.json",
+        "<row>/scoring/scores.json",
+        "analysis.json",
+        "complete.json or failure.json"
+      ],
+      "weight_decay": 0.0001
+    }
+  ],
+  "notes": [
+    "B0/B1 original pure F E20 matched controls reused from 20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01; never retrain/predict/rescore them. Their prior external teacher was eval-only shadow; no student gradient/state/RNG change; separately report that extra historical compute.",
+    "Logical matrix B0 ordinaryNoAs, B1 ordinaryAs packetmean, BALANCED per-scene mean As, RISK .5uniform+.5DRO groupmean. New RISK-vsBALANCED isolates adaptive weights with identical forwards.",
+    "Source permission: fullV27000 health/clean criterion; existing1800 two physical draws source criterion, not weight fitting/epoch selection. L alone updates risk states.",
+    "Historical RX GroupDRO failed target generalization; current propagation-scene risk differs but is not presumed effective. Fixed E20 scientific test, no eta/mixture scan.",
+    "Source promotion fixed before new scores: RISK minus BALANCED and B1 midlow>=.5pp each; RISK minus B0 fullVclean>=-.2pp. Failure closes fixed recipe; no adjusted grouping/eta/mixture/seed rescue.",
+    "REJECTED_EXTRA_GATE: generic brainstorming design-approval/spec process is superseded by user authorized autonomous research and exhaustive minimal workflow; method/matrix/stop rule live here and report, no extra approval requested."
+  ],
+  "registered_at": "2026-10-19T05:17:09+00:00"
+}
