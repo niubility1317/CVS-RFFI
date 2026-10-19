@@ -37,3 +37,5 @@
 本地actual-F检查PASS：44合成NN、9负测，0真实CP/IQ/target，3个直接执行train.py最终checkpoint字典并由own_model重建的合成schema；默认预测及joint160逐位回放。source比较/clean限制/FULL控制/失败分支的0NN检查通过。见local_checks.json，真实CP首步smoke与远端执行待返回。
 
 唯一一次独立P0/P1审查PASS，14文件语法/6行配置通过；无额外模型/CP/IQ/target或远端操作。真实CP首步smoke和发布执行待返回。
+
+代码/config commit f4fe173d83245e5ac8a7769d14cacbdf8260dc5a 已push且远端OID独立核实。命令 CVS-RFFI/python -u experiments/cvs_feature_head_joint30/runner.py，CWD=PROJECT/releases/cvs_F_featureHeadJoint_E30_20261019_r01，普通N607既有Torch2.1/FP32/TF32off/CPU2；输出=PROJECT/runs/20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01，所有owner每GPU最多2、free≥12000MB，默认首步真实CP8NN通过即继续复用bank和六行训练。逐row配置/路径/stop rule/预期产物见experiment.json。
