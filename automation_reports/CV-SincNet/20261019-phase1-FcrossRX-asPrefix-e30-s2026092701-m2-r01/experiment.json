@@ -1,0 +1,307 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-FcrossRX-asPrefix-e30-s2026092701-m2-r01",
+  "group_id": "phase1-FcrossRX-postAs-erasure-position",
+  "display_name": "完整As后前缀屏蔽对比等长随机非参考区段",
+  "description": "Only hypothesis:reduce reliance on synthetic FIR prefix after complete native residual+AGC;random same-length erasure controls generic information loss. No claimed repair/equivalent energy.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "AsPrefix81"
+  ],
+  "tags": [
+    "phase1",
+    "F",
+    "fullsource",
+    "E30",
+    "practical",
+    "default-head",
+    "single-seed",
+    "post-As",
+    "IQ-erasure"
+  ],
+  "comparison_group_id": "originalP43-own20plus10",
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Current goal permits new minimal matched full practical enhancement research,E30;E50 only source-qualified.No held trainingRX.No stopping healthy peers.",
+  "code": {
+    "commit": null,
+    "starting_commit": "2467287bec9a9d9d078fafd30df526ce3bade930",
+    "checkout": "code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "Existing N607 ordinary CVS-RFFI Python3.10/Torch2.1/NumPy2.2/fullFP32/CPU2; no installs",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_asPrefix_E30_20261019_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original full-source physical roles,split392005;reuse fixed source/cache and formal received views",
+    "representation": "Existing source IQ256,dataset equalized index1,Fs25MHz;practical residual/post_sync propagation receiver EQ=false/reference_snr_db30,complete original dependency graph;fixed received IQ untouched",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract.role_ids L_s/U_s/V;fixed formal received_views manifest and opaque168000 physical IDs,unchanged",
+    "label_map_ref": "Original map [14-10,14-7,20-15,20-19,6-15,8-20]",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "All six registered originalTX,unchanged source/target registered-class map",
+    "roles": {
+      "L_s": "6300 full original visibleTX across cumulative30epochs;noLdev,no trainingRXholdout",
+      "U_s": "56700 originalTXhidden;originalU/ownEMA unchanged7+10Uepochs=17;weakteacher/strongstudent usesoriginalcode;notdisabledornewUviews",
+      "V": "27000 source validation only,never training/EMA/state updates;fixed existing V1800 two-draw source panel"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "SameVALIDATED_ONCEall5sourceRX/day/physicalL6300 U56700hidden V27000;noLdev/noRXholdout",
+    "support_query_ref": null,
+    "leo_config_ref": "experiments/cvs_lraw_tail30/reference_config.json;originalP43 train3sceneIID/refSNR30/allphysical dependencies unchanged;As alreadyusesraw,no duplicationfixclaim"
+  },
+  "permissions": {
+    "regime": "source_only_training_then_frozen_target_prediction",
+    "query_use": "Each newrow all7 fixed predictions before separate exec scorer; owner observes saved source decision before reading new formal summary; no targetfeedback",
+    "external_method_exception": null,
+    "claim_scope": "Single-seed post-As IQ erasure POSITION increment;both new tails same As20 parent;NoAs readout retains ownNoAs20 ancestry;no structural/head/target-condition changes"
+  },
+  "checkpoint": {
+    "initialization": "STRICT_ORIGINAL_P43_AS20_STUDENT_AND_OWN_EMA_PLUS10;freshAdamW/cos10",
+    "sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Original P43 B01 source_roles/physicalIDs/full ancestry/fixedFINAL20;strictstudent/ownEMA. Original NoAs30/As30 readouts retain ownparents. No LRaw/P78 state used.",
+    "provenance_verdict": "Existing original As20 fixedFINAL source-only lineage verified;exacthandles+strictCP smoke checked before training",
+    "selection_rule": "FixedFINAL30 only;source: PREFIX fullV clean-NoAs>=-.1pp,midlow-As>=+.5pp,midlow-RANDOM>=+.25pp;all7formal regardless;no automaticextension/retry"
+  },
+  "execution": {
+    "host": "N607 ordinary nonprivileged account",
+    "launch_owner": "codex/root/as-prefix81",
+    "gpu_policy": "At most2 total processes/GPU including allowners; shared capacity lock; sufficient memory checked; preserve healthy peers",
+    "remote_run_root": "PROJECT/runs/20261019-phase1-FcrossRX-asPrefix-e30-s2026092701-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261019-phase1-FcrossRX-asPrefix-e30-s2026092701-m2-r01/logs",
+    "local_artifact_root": "local_artifacts/cvs_FcrossRX_asPrefix_E30_20261019_r01",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_as_prefix81/runner.py",
+    "stop_rule": "Own wrongroles/parent/defaulthead/budget/nonfinite/outputcollision/illegal prediction or systemictechnicalfailure only;preserveall,noautomaticretry;performanceFAIL stillall7",
+    "status": "REGISTERED"
+  },
+  "expected_artifacts": [
+    "real_checkpoint_smoke.json",
+    "synthetic_smoke.json",
+    "ROW/source/actual_modules.json",
+    "ROW/source/resolved_config.json",
+    "ROW/source/initialization.json",
+    "ROW/source/EMA_initialization.json",
+    "ROW/source/reference_steps.jsonl.gz",
+    "ROW/source/shape_steps.jsonl.gz",
+    "ROW/source/training_sequence.jsonl.gz",
+    "ROW/source/metrics_epoch.jsonl",
+    "ROW/source/final_ssdg.pth",
+    "ROW/source/source_frozen.json",
+    "ROW/source/completion.json",
+    "ROW/source_qualification/complete.json",
+    "source_matrix_decision.json",
+    "ROW/prediction/complete.json",
+    "ROW/scoring/scores.json",
+    "analysis_r01/source_complete.json",
+    "analysis_r01/complete.json",
+    "analysis_r01/fullcurves_all7_metrics_paired_errors_source_strata_costs_PNG_PDF",
+    "ROW/source/mask_steps.jsonl.gz"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_F1",
+      "worst_RX",
+      "urban_mean",
+      "paired_absolute_pp",
+      "repair",
+      "new_errors",
+      "retention",
+      "cost"
+    ],
+    "dimensions": [
+      "view",
+      "RX",
+      "day",
+      "TX",
+      "source_draw",
+      "source_quality",
+      "model_seed"
+    ],
+    "prediction_ref": "PROJECT/runs/20261019-phase1-FcrossRX-asPrefix-e30-s2026092701-m2-r01/ROW/prediction",
+    "scorer_ref": "experiments/cvs_as_prefix81/evaluate.py::score"
+  },
+  "rows": [
+    {
+      "row_id": "RANDOM-s2026092701",
+      "method": "RANDOM30",
+      "purpose": "equal-length reference-preserving generic erasure control",
+      "config_ref": "experiments/cvs_as_prefix81/design.py",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-FcrossRX-asPrefix-e30-s2026092701-m2-r01/RANDOM-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "held_source_RX": null,
+        "L": 6300,
+        "U_hidden": 56700,
+        "V": 27000,
+        "new_Ag": false,
+        "all5sourceRX": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original model/split/channel streams retained;separate mask namespace uses RX/day/eq/sig and cumulativeepoch/step,notTX label;enable sameR/P;support/eval/data null meanings inherited fixedIQ Phase1.",
+      "k": null,
+      "scenario": "Complete original lowSub/midUrban/lowUrban;postAGC erasure p.5,L=allocatedK-1=61;formal all7 unmasked",
+      "optimizer": {
+        "name": "AdamW",
+        "state": "RESET ownoriginal20+10",
+        "lr_schedule": "cos10 originalCENTER_UNITS",
+        "teacher": "strict ownEMA originalU batch_neighbor unchanged"
+      },
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Both reuse originalAs20+ownEMA;newE10/2220each,cumulativeE30/6660. NoAs30/As30 reuseonly;new20modelepochs4440updates. Original6L768/U/EMA unchanged;extraNN0. SharedrealCP/syntheticNN1540 separately.",
+      "output_root": "PROJECT/runs/20261019-phase1-FcrossRX-asPrefix-e30-s2026092701-m2-r01/RANDOM-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-FcrossRX-asPrefix-e30-s2026092701-m2-r01/logs/RANDOM-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_as_prefix81/runner.py",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "synthetic_smoke.json",
+        "ROW/source/actual_modules.json",
+        "ROW/source/resolved_config.json",
+        "ROW/source/initialization.json",
+        "ROW/source/EMA_initialization.json",
+        "ROW/source/reference_steps.jsonl.gz",
+        "ROW/source/shape_steps.jsonl.gz",
+        "ROW/source/training_sequence.jsonl.gz",
+        "ROW/source/metrics_epoch.jsonl",
+        "ROW/source/final_ssdg.pth",
+        "ROW/source/source_frozen.json",
+        "ROW/source/completion.json",
+        "ROW/source_qualification/complete.json",
+        "source_matrix_decision.json",
+        "ROW/prediction/complete.json",
+        "ROW/scoring/scores.json",
+        "analysis_r01/source_complete.json",
+        "analysis_r01/complete.json",
+        "analysis_r01/fullcurves_all7_metrics_paired_errors_source_strata_costs_PNG_PDF",
+        "ROW/source/mask_steps.jsonl.gz"
+      ],
+      "status": "REGISTERED"
+    },
+    {
+      "row_id": "PREFIX-s2026092701",
+      "method": "PREFIX30",
+      "purpose": "unique position candidate",
+      "config_ref": "experiments/cvs_as_prefix81/design.py",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-FcrossRX-asPrefix-e30-s2026092701-m2-r01/PREFIX-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "held_source_RX": null,
+        "L": 6300,
+        "U_hidden": 56700,
+        "V": 27000,
+        "new_Ag": false,
+        "all5sourceRX": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original model/split/channel streams retained;separate mask namespace uses RX/day/eq/sig and cumulativeepoch/step,notTX label;enable sameR/P;support/eval/data null meanings inherited fixedIQ Phase1.",
+      "k": null,
+      "scenario": "Complete original lowSub/midUrban/lowUrban;postAGC erasure p.5,L=allocatedK-1=61;formal all7 unmasked",
+      "optimizer": {
+        "name": "AdamW",
+        "state": "RESET ownoriginal20+10",
+        "lr_schedule": "cos10 originalCENTER_UNITS",
+        "teacher": "strict ownEMA originalU batch_neighbor unchanged"
+      },
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Both reuse originalAs20+ownEMA;newE10/2220each,cumulativeE30/6660. NoAs30/As30 reuseonly;new20modelepochs4440updates. Original6L768/U/EMA unchanged;extraNN0. SharedrealCP/syntheticNN1540 separately.",
+      "output_root": "PROJECT/runs/20261019-phase1-FcrossRX-asPrefix-e30-s2026092701-m2-r01/PREFIX-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-FcrossRX-asPrefix-e30-s2026092701-m2-r01/logs/PREFIX-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_as_prefix81/runner.py",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "synthetic_smoke.json",
+        "ROW/source/actual_modules.json",
+        "ROW/source/resolved_config.json",
+        "ROW/source/initialization.json",
+        "ROW/source/EMA_initialization.json",
+        "ROW/source/reference_steps.jsonl.gz",
+        "ROW/source/shape_steps.jsonl.gz",
+        "ROW/source/training_sequence.jsonl.gz",
+        "ROW/source/metrics_epoch.jsonl",
+        "ROW/source/final_ssdg.pth",
+        "ROW/source/source_frozen.json",
+        "ROW/source/completion.json",
+        "ROW/source_qualification/complete.json",
+        "source_matrix_decision.json",
+        "ROW/prediction/complete.json",
+        "ROW/scoring/scores.json",
+        "analysis_r01/source_complete.json",
+        "analysis_r01/complete.json",
+        "analysis_r01/fullcurves_all7_metrics_paired_errors_source_strata_costs_PNG_PDF",
+        "ROW/source/mask_steps.jsonl.gz"
+      ],
+      "status": "REGISTERED"
+    }
+  ],
+  "notes": [
+    "No new NoAs training:As-only mask is absent in NoAs;existing NoAs30 is samebudget/sameseed/datarole but ownNoAs parent.",
+    "P79 fixed-AGC edge sensitivity is source rationale only,not proofprefix is spurious ormask helps. Prefix erasure may remove usefulidentity/create new discontinuity.",
+    "Mask61 of256 p.5 perpacket;reference80:160 unchanged directly,GroupNorm/globalpower still affected;removedenergy measured not matched.",
+    "All fixed raw/ordinary/U/SupCon/RDrop rules retained;mask once before existing sameIQ As pair;no confidencefilter/noTXtruthU/noeffectformal."
+  ],
+  "comparators": [
+    {
+      "arm": "NOAS30",
+      "run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+      "row_id": "B00-s2026092701",
+      "role": "samebudget/sameseed original ownNoAs20+10",
+      "reused": true
+    },
+    {
+      "arm": "AS30",
+      "run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+      "row_id": "B01-s2026092701",
+      "role": "sameAs20parent/E10 originalrecipe",
+      "reused": true
+    }
+  ],
+  "registered_at": "2026-10-19T00:03:11+00:00"
+}
