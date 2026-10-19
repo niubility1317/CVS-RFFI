@@ -1,1 +1,2 @@
 {"at": "2026-10-19T07:52:05+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"status": "LOCAL_VERIFIED", "event": "CODE_READY", "code_commit": "1e3cdcca4481c2f30c864e452ab5f69c8db46aea", "review": "One independent P0/P1 PASS; no direct next-run defects; no added NN or remote actions", "checks": "Exact two-draw objective/gradients/11 negatives/4440 disjoint keys; actual 768 synthetic NN shared hook both modes/defaulthead-body-Sinc joint update; second RNG restore PASS"}

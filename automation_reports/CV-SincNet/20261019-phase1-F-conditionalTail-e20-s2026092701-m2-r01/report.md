@@ -43,3 +43,5 @@ N607普通账号既有环境，FP32/TF32off/CPU2，无安装。唯一owner codex
 一次限定P0/P1独立审查；代码/config commit后发布一次不可覆盖release/run，一次普通preflight/单archive比对/compile。真实CP无query smoke是launcher首步，PASS立即继续。启动后核对PID/CWD/argv/GPU/日志增长。只实际数据/头/非有限/接口/输出/合法预测等所属系统技术故障停止自身并保留产物，不科学低分停止，不自动重试。没有额外审批/数据重验/文件哈希链。
 
 预期首步smoke、launch/queue、每行source完整state/config/init/ownEMA/原生step/sequence/units/mechanism/两draw统计、source_qualification、源决定、all7 prediction/separate score、analysis/complete。IQ、权重、原始日志、机器状态与私有runtime不入Git。
+
+实际 code/config commit `1e3cdcca4481c2f30c864e452ab5f69c8db46aea`。唯一独立限定 P0/P1 审查 PASS，无直接使本次运行错误、越权、覆盖、不可启动或无法合法预测的问题。发布前完整本地检查已完成；尚未以此宣称远端训练或识别收益。
