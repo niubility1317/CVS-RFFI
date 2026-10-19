@@ -90,3 +90,9 @@ def restore_and_read(received):
 加载器严格检查原来源、数据角色和checkpoint配置，不替换分类头，不拟合参数。现有 CPU完整1800源V诊断及本次N607正式读出已覆盖这两个实际模型的复合前向。这里的 source_cache 仅供既有 Phase1 契约核对，不能把该示例当作 Phase2/星上部署访问source的许可。
 
 当前最高风险是严重退化中的不可辨识细节和恢复不确定性；后续机制只能由合法源证据研发，目标结果不得回流调参、选模或选择性重跑。多seed、独立物理族与真实在轨身份验证仍未完成。
+
+## 本轮验证与追踪
+
+在已验证的本机 Phase1 Python 中实际分别执行 `python -X utf8 -m pytest -q tests/test_pamf_action_restore.py`（11项通过）及 `python -X utf8 -m pytest -q tests/test_pamf_formal_f50.py`（最终8项通过）。N607实际执行compile、模块入口、真实源checkpoint smoke、R07完整E20源评分及R09完整原F50独立truth-last评分，原进程均已退出且产物完成。
+
+[R07追踪](PAMF_ACTION_RESTORE_R07_20261019.md)为7项已验证、1项延期；[R08/R09追踪](PAMF_FORMAL_F50_R08_20261019.md)为5项已验证、1项延期。合计12项已验证、2项延期、0项功能需求拒绝或阻断。R07属于条件性物理近似且未通过源科学标准；这些执行验证不等于最终逐细节身份真实性已证明。
