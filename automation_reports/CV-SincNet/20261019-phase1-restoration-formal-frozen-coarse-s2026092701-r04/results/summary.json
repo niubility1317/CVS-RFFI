@@ -13,6 +13,120 @@
   "original_formal_IQ_reused": true,
   "auxiliary_feature_reference_cap": 512,
   "goal_complete": false,
+  "fixed_comparison": {
+    "clean": {
+      "cleanF": {
+        "coarse_accuracy": 81.08630952380952,
+        "corrected_accuracy": 81.39166666666667,
+        "incremental_accuracy_pp": 0.3053571428571473,
+        "raw_baseline_accuracy_difference_pp": 0.0,
+        "direct_coarse_vs_corrected_repair_counts_not_computed": true
+      },
+      "AsF": {
+        "coarse_accuracy": 84.53154761904761,
+        "corrected_accuracy": 84.75297619047619,
+        "incremental_accuracy_pp": 0.22142857142857508,
+        "raw_baseline_accuracy_difference_pp": 0.0,
+        "direct_coarse_vs_corrected_repair_counts_not_computed": true
+      }
+    },
+    "practical_high": {
+      "cleanF": {
+        "coarse_accuracy": 74.73630952380952,
+        "corrected_accuracy": 74.21785714285714,
+        "incremental_accuracy_pp": -0.5184523809523824,
+        "raw_baseline_accuracy_difference_pp": 0.0,
+        "direct_coarse_vs_corrected_repair_counts_not_computed": true
+      },
+      "AsF": {
+        "coarse_accuracy": 79.21845238095237,
+        "corrected_accuracy": 78.68511904761904,
+        "incremental_accuracy_pp": -0.5333333333333314,
+        "raw_baseline_accuracy_difference_pp": 0.0,
+        "direct_coarse_vs_corrected_repair_counts_not_computed": true
+      }
+    },
+    "practical_mid": {
+      "cleanF": {
+        "coarse_accuracy": 73.52559523809525,
+        "corrected_accuracy": 73.12261904761905,
+        "incremental_accuracy_pp": -0.4029761904761955,
+        "raw_baseline_accuracy_difference_pp": 0.0,
+        "direct_coarse_vs_corrected_repair_counts_not_computed": true
+      },
+      "AsF": {
+        "coarse_accuracy": 78.03869047619048,
+        "corrected_accuracy": 77.57440476190476,
+        "incremental_accuracy_pp": -0.4642857142857224,
+        "raw_baseline_accuracy_difference_pp": 0.0,
+        "direct_coarse_vs_corrected_repair_counts_not_computed": true
+      }
+    },
+    "practical_low_suburban": {
+      "cleanF": {
+        "coarse_accuracy": 72.05833333333334,
+        "corrected_accuracy": 71.7,
+        "incremental_accuracy_pp": -0.3583333333333343,
+        "raw_baseline_accuracy_difference_pp": 0.0,
+        "direct_coarse_vs_corrected_repair_counts_not_computed": true
+      },
+      "AsF": {
+        "coarse_accuracy": 76.70595238095238,
+        "corrected_accuracy": 76.2797619047619,
+        "incremental_accuracy_pp": -0.42619047619048445,
+        "raw_baseline_accuracy_difference_pp": 0.0,
+        "direct_coarse_vs_corrected_repair_counts_not_computed": true
+      }
+    },
+    "practical_high_urban": {
+      "cleanF": {
+        "coarse_accuracy": 73.36666666666667,
+        "corrected_accuracy": 72.99880952380953,
+        "incremental_accuracy_pp": -0.3678571428571473,
+        "raw_baseline_accuracy_difference_pp": 0.0,
+        "direct_coarse_vs_corrected_repair_counts_not_computed": true
+      },
+      "AsF": {
+        "coarse_accuracy": 77.91666666666667,
+        "corrected_accuracy": 77.45833333333333,
+        "incremental_accuracy_pp": -0.4583333333333428,
+        "raw_baseline_accuracy_difference_pp": 0.0,
+        "direct_coarse_vs_corrected_repair_counts_not_computed": true
+      }
+    },
+    "practical_mid_urban": {
+      "cleanF": {
+        "coarse_accuracy": 66.53214285714286,
+        "corrected_accuracy": 66.6392857142857,
+        "incremental_accuracy_pp": 0.10714285714284699,
+        "raw_baseline_accuracy_difference_pp": 0.0,
+        "direct_coarse_vs_corrected_repair_counts_not_computed": true
+      },
+      "AsF": {
+        "coarse_accuracy": 70.94345238095238,
+        "corrected_accuracy": 71.22678571428571,
+        "incremental_accuracy_pp": 0.28333333333333144,
+        "raw_baseline_accuracy_difference_pp": 0.0,
+        "direct_coarse_vs_corrected_repair_counts_not_computed": true
+      }
+    },
+    "practical_low_urban": {
+      "cleanF": {
+        "coarse_accuracy": 59.39345238095238,
+        "corrected_accuracy": 59.86488095238095,
+        "incremental_accuracy_pp": 0.471428571428568,
+        "raw_baseline_accuracy_difference_pp": 0.0,
+        "direct_coarse_vs_corrected_repair_counts_not_computed": true
+      },
+      "AsF": {
+        "coarse_accuracy": 63.61369047619048,
+        "corrected_accuracy": 64.39464285714286,
+        "incremental_accuracy_pp": 0.7809523809523782,
+        "raw_baseline_accuracy_difference_pp": 0.0,
+        "direct_coarse_vs_corrected_repair_counts_not_computed": true
+      }
+    }
+  },
   "run": "20261019-phase1-restoration-formal-frozen-coarse-s2026092701-r04",
   "row": {
     "run": "20261019-phase1-restoration-formal-frozen-coarse-s2026092701-r04",
@@ -19174,6 +19288,16 @@
       }
     }
   },
+  "paired_control_summary": {
+    "r04": {
+      "run": "20261019-phase1-restoration-formal-frozen-coarse-s2026092701-r04",
+      "candidate": "tf_unet_mixed"
+    },
+    "r05": {
+      "run": "20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05",
+      "candidate": "residual_deterministic"
+    }
+  },
   "technical_status": "VERIFIED",
-  "scientific_status": "LIMITED_FORMAL_IDENTITY_GAIN; CLEAN_AND_TX_FAILURES_REMAIN"
+  "scientific_status": "FROZEN_FORMAL_EVIDENCE_WITH_EXPLICIT_FAILURE_CASES; FULL_IDENTITY_PROOF_PENDING"
 }

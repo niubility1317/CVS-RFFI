@@ -3,3 +3,5 @@
 {"at": "2026-10-19T11:49:07+00:00", "status": "LANDED", "note": "单归档比较及远端compile/import通过，method9522a4e固定，复用R03不变候选原审查。", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-19T11:49:07+00:00", "status": "RUNNING", "note": "独立PID/CWD/argv/GPU0与日志增长核实；源2样本smokePASS、clean168000预测完成。", "evidence": ["report.md"], "row_id": "residual_deterministic"}
 {"at": "2026-10-19T11:49:07+00:00", "status": "RUNNING", "note": "完整正式七视图预测进行中，训练/适配/头更新均0。", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-10-19T12:07:18+00:00", "status": "ANALYZED", "note": "168000条原观测七视图预测完成后独立truth-last评分；冻结R/F/default heads，0更新，负场景和TX分层保留。", "evidence": ["report.md", "results/summary.json"], "row_id": "residual_deterministic"}
+{"at": "2026-10-19T12:07:18+00:00", "status": "ANALYZED", "note": "完整正式面板完成，技术VERIFIED；单seed/同引擎及负例边界保留，最终身份目标未完成。", "evidence": ["report.md", "results/summary.json"], "row_id": null}

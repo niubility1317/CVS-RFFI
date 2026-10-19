@@ -1,6 +1,6 @@
 # 冻结复时频恢复器的正式固定观测确认
 
-状态：R04 ANALYZED / VERIFIED，R05 RUNNING / VERIFIED。R04 原 168000 条样本七视图预测与独立评分完成，低仰角城区有平均身份读出收益，clean 与两个 TX 仍受损；R05 按既定源选择继续独立确认。最终身份目标未完成，正式结果不回流调参或重排。
+状态：R04 与 R05 均 ANALYZED / VERIFIED。两固定源选中恢复器的原 168000 条物理样本七视图预测与独立 truth-last 评分完成，原 F/default heads 全冻结、0 更新。最终身份忠实证明仍待多 seed 和独立物理族。
 
 固定候选为R02 `tf_unet_mixed`，父方法commit `7efdba92932a86bf4b0492a565d35377564a26da`，源最终E20/4940、全L/U且0TX训练。只评估原冻结cleanF及AsF/default heads；训练/适配/分类头拟合均为0。源角色、继承核对及已有候选P0/P1结论直接复用，不追加runner review或数据重验证。
 
@@ -16,7 +16,13 @@
 |---|---|---|---|---|
 |R04-01|复用正式固定输入与原物理ID，不读取标签|formal/reference|verified|元数据/原文件存在已读回；窄测试验证原字节绑定与仅ids访问|
 |R04-02|固定源选中权重、F/default heads、0更新|formal/runner|verified|实际源2样本复合checkpoint与原默认头smoke PASS，TX/目标读取0|
-|R04-03|全七视图完成后独立评分|原predict_row+formal/runner|verified|R04原168000×7预测固定后独立CPU truth-last评分完成；R05按原计划运行|
+|R04-03|全七视图完成后独立评分|原predict_row+formal/runner|verified|R04/R05各168000×7预测固定后独立CPU评分完成；0TX预测读取/0状态更新|
 |R04-04|有界且显式标注参考池的特征诊断|feature_diagnostic/score_row|verified|完整池数学对照/标签置换/无其他TX/非法cap测试通过，默认分支保留|
 |R04-05|资源/输出/提交与运行状态可核实|experiment/发布|verified|单归档比较、compile/import、PID/CWD/argv/GPU4与日志增长已核实|
 |R04-06|多seed和独立物理族最终证明|后续冻结扩展|deferred|本轮只有原单seed；R03结果不依据本轮分数调参|
+
+R05 固定计划使用 R03 源 A/B 同选且合格的确定性修正，继承 R03 既有独立审查；新增源冻结与训练契约负测后共29项通过。与 R04 共享原正式输入，独立GPU0，不按正式分数改型、调参或重排。R04 code a173cc5，R05 code 9522a4e，各自实际冻结于 experiment.json。
+
+报告口径：本恢复研究同时保留 clean、郊区三档和城区三档，不以 urban 单项或六场景均值替代郊区明细。
+
+|R04-07|用户新增：报告郊区数据|report/summary/figure|verified|高、中、低仰角郊区分别列原F/恢复准确率、变化、恢复宏F1及修复/损坏；cleanF与AsF分开|
