@@ -1,0 +1,270 @@
+{
+  "status": "ARTIFACTS_COMPLETE",
+  "run_id": "20261019-phase1-FcrossRX-RXmargin-e50-clean-local-m1-r01",
+  "reference_run": "20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01",
+  "records": [
+    {
+      "row_id": "RX_MARGIN-s2026092701",
+      "model_seed": 2026092701,
+      "RX_MARGIN": {
+        "count": 168000,
+        "accuracy": 0.8544761904761905,
+        "macro_f1": 0.8520384474020889,
+        "confusion": [
+          [
+            27086,
+            149,
+            214,
+            338,
+            86,
+            127
+          ],
+          [
+            648,
+            18278,
+            84,
+            8879,
+            71,
+            40
+          ],
+          [
+            454,
+            232,
+            21742,
+            42,
+            106,
+            5424
+          ],
+          [
+            2021,
+            4728,
+            382,
+            20743,
+            21,
+            105
+          ],
+          [
+            6,
+            17,
+            12,
+            9,
+            27949,
+            7
+          ],
+          [
+            16,
+            39,
+            140,
+            6,
+            45,
+            27754
+          ]
+        ],
+        "per_TX_recall": [
+          0.9673571428571428,
+          0.6527857142857143,
+          0.7765,
+          0.7408214285714285,
+          0.9981785714285715,
+          0.9912142857142857
+        ],
+        "receiver_accuracy": {
+          "1-1": 0.8212916666666666,
+          "14-7": 0.76325,
+          "2-1": 0.9206666666666666,
+          "20-1": 0.8425833333333334,
+          "7-14": 0.9137083333333333,
+          "7-7": 0.8878333333333334,
+          "8-8": 0.832
+        },
+        "day_accuracy": {
+          "2021_03_01": 0.8255,
+          "2021_03_08": 0.8682857142857143,
+          "2021_03_15": 0.8356666666666667,
+          "2021_03_23": 0.888452380952381
+        },
+        "worst_RX": 0.76325,
+        "worst_day": 0.8255
+      },
+      "reused_BASE": {
+        "count": 168000,
+        "accuracy": 0.8513928571428572,
+        "macro_f1": 0.848641811997774,
+        "confusion": [
+          [
+            27043,
+            141,
+            201,
+            332,
+            121,
+            162
+          ],
+          [
+            573,
+            18460,
+            107,
+            8726,
+            60,
+            74
+          ],
+          [
+            712,
+            309,
+            21268,
+            45,
+            114,
+            5552
+          ],
+          [
+            1935,
+            4493,
+            857,
+            20572,
+            27,
+            116
+          ],
+          [
+            8,
+            23,
+            12,
+            10,
+            27932,
+            15
+          ],
+          [
+            21,
+            39,
+            138,
+            4,
+            39,
+            27759
+          ]
+        ],
+        "per_TX_recall": [
+          0.9658214285714286,
+          0.6592857142857143,
+          0.7595714285714286,
+          0.7347142857142858,
+          0.9975714285714286,
+          0.9913928571428572
+        ],
+        "receiver_accuracy": {
+          "1-1": 0.80575,
+          "14-7": 0.764,
+          "2-1": 0.924125,
+          "20-1": 0.8407083333333333,
+          "7-14": 0.9156666666666666,
+          "7-7": 0.8860416666666666,
+          "8-8": 0.8234583333333333
+        },
+        "day_accuracy": {
+          "2021_03_01": 0.8238571428571428,
+          "2021_03_08": 0.8675,
+          "2021_03_15": 0.8291904761904761,
+          "2021_03_23": 0.8850238095238095
+        },
+        "worst_RX": 0.764,
+        "worst_day": 0.8238571428571428
+      }
+    }
+  ],
+  "paired": [
+    {
+      "model_seed": 2026092701,
+      "accuracy_pp": 0.3083333333333327,
+      "macro_f1_pp": 0.3396635404314896,
+      "per_TX_pp": [
+        0.1535714285714196,
+        -0.649999999999995,
+        1.6928571428571404,
+        0.6107142857142756,
+        0.060714285714291716,
+        -0.017857142857147235
+      ],
+      "weak_TX_mean_pp": -0.019642857142859738,
+      "other_TX_mean_pp": 0.4723214285714261,
+      "worst_RX_pp": -0.07500000000000284,
+      "worst_day_pp": 0.1642857142857168
+    }
+  ],
+  "paired_summary": {
+    "accuracy_pp": {
+      "n": 1,
+      "mean": 0.3083333333333327,
+      "sample_SD": null
+    },
+    "macro_f1_pp": {
+      "n": 1,
+      "mean": 0.3396635404314896,
+      "sample_SD": null
+    },
+    "weak_TX_mean_pp": {
+      "n": 1,
+      "mean": -0.019642857142859738,
+      "sample_SD": null
+    },
+    "other_TX_mean_pp": {
+      "n": 1,
+      "mean": 0.4723214285714261,
+      "sample_SD": null
+    },
+    "worst_RX_pp": {
+      "n": 1,
+      "mean": -0.07500000000000284,
+      "sample_SD": null
+    },
+    "worst_day_pp": {
+      "n": 1,
+      "mean": 0.1642857142857168,
+      "sample_SD": null
+    }
+  },
+  "positive_seeds": {
+    "overall": 1,
+    "weak": 0
+  },
+  "cost": [
+    {
+      "row_id": "RX_MARGIN-s2026092701",
+      "epochs": 50,
+      "optimizer_steps": 11100,
+      "source_seconds": 4049.1408784389496,
+      "prediction_seconds": 28.36404090002179,
+      "peak_cuda_MiB": 1972.05126953125,
+      "source_packet_reads": {
+        "L_s": 1420800,
+        "U_s": 963900,
+        "V": 2754000
+      },
+      "registered_U_exposure": 963900,
+      "satellite_examples": 0,
+      "head_fit_updates": 0,
+      "BASE_training_reused": true
+    }
+  ],
+  "source_expansion": {
+    "status": "SOURCE_EXPANSION_FIXED",
+    "weak_indices": [
+      1,
+      3
+    ],
+    "PASS": false,
+    "weak_TX_gain_pp": 0.06666666666667043,
+    "overall_pp": 0.018518518518517713,
+    "worst_RX_pp": 0.0,
+    "per_TX_pp": [
+      -0.04444444444444695,
+      0.022222222222223476,
+      0.04444444444444695,
+      0.11111111111111738,
+      -0.022222222222223476,
+      0.0
+    ],
+    "criterion": "weak2>=+0.2pp; overall>=-0.2pp; worstRX>=-0.5pp; anyTX>=-1pp vs prior-fixed same-seed local BASE",
+    "target_access": false
+  },
+  "head_fit_updates": 0,
+  "target_feedback": false,
+  "truth_last": true,
+  "limitation": "Exposed exploratory Phase1 benchmark. Candidate and source promotion fixed before new candidate target access. All negative results retained. No Phase2 or satellite deployment claim."
+}
