@@ -1,6 +1,6 @@
 # 纯 F E20：同轮首次 As 重访
 
-状态：PLANNED。逐行矩阵、seed、预算、命令与路径以 experiment.json 为准；只有一行新增E20，B0/B1完整读出复用。
+状态：RUNNING / VERIFIED。单行E20已启动；完整矩阵、seed、预算、命令与路径以experiment.json为准，B0/B1完整读出复用。尚无新终轮性能结果。
 
 唯一假设：当前B1的low urban训练命名流重建45/69、同L新信道89/138、源V新观测2237/3600，困难已在训练期出现。当前每次遇见同一L都刷新As，可能缺少对同一受损观测跨优化更新的重复学习。本轮只检验epoch内重访首次As、下一epoch再刷新；不从已见正式分数选择候选，不预判有效或物理上限。whole-raw、sceneRisk、nontrue、PCGrad、旧独立view固定方案不重启。
 
@@ -23,3 +23,9 @@ loss为0.5×mean128 ordinary CE＋0.5×mean128 used-As CE（T1，smoothing0.01�
 本地验证已PASS：12文件编译、23缓存协议负例和225合成apply、ordinary实际IQ/RNG不变、两个隐藏U拒绝、全128样本0.5/0.5 CE梯度、6固定config负例及B1原生参数仅run/candidate/output三项差异。尚未运行真实信道或模型训练，真实CP smoke留作launcher首步。
 
 唯一一次独立P0/P1直接缺陷审查 PASS：缓存跨step/跨epoch、完整fresh shadow、真实ordinary/usedAs、原U/EMA/Sinc/4440预算、CP不含cache、eval无replay、共享GPU容量与all7独立评分路径均未见直接缺陷。预检VERIFIED：新run/release/archive不存在，原rawAs依赖commit3d4e188匹配，B0/B1源/资格/七视图预测评分均完整，GPU4空闲24124 MB。
+
+实际代码/config commit `39db239b9f7ac479a84080ff1b0f5ae363feb76c` 已保留。GitHub推送层FAILED（TCP443连接失败），独立读回远端仍为9e82f0fd6；未声称已同步，不改写历史。按最小流程本地Git代码身份已具备，归档发布与模型训练不依赖GitHub连接；后续继续交付时再核对并推送。
+
+启动 VERIFIED：dispatcher2186915；唯一worker2187003/GPU4，CWD与argv匹配，CUDA_VISIBLE_DEVICES4/CPU2，NVML有该PID，日志6412→11554字节。首步真实scratch checkpoint smoke PASS且query_read=false；206初始state条目与原B0/B1逐张量相等，scratch_only=true、sources/ancestors空、target_contact=false。
+
+首epoch真实222更新：ordinary与usedAs各28416包；freshAs完整生成28416；缓存覆盖6300个合法L、命中22116，命中均实际替换IQ（fresh-used MSE0.573414），222步encoder firstordinary/secondusedAs witness通过；无RDrop/CROSS_RX或Utruth/target访问。尚无终轮或正式性能结论。后续仍按原20轮→源规则→七视图独立评分自动继续。
