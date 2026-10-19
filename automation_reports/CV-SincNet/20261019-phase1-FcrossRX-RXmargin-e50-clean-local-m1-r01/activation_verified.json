@@ -1,0 +1,20 @@
+{
+  "status": "ACTIVATED_IN_NATIVE_TRAINING",
+  "run_id": "20261019-phase1-FcrossRX-RXmargin-e50-clean-local-m1-r01",
+  "execution_commit": "ee1a615b6876aeaac80309169e90cb5f6015e1b5",
+  "first_active_step": 1111,
+  "expected_first_step": 1111,
+  "first_active_epoch": 6,
+  "parsed_available_steps": 1543,
+  "active_steps": 433,
+  "last_active": {
+    "step": 1543,
+    "weight": 0.020000000000000004,
+    "loss": 0.669219970703125
+  },
+  "all_available_train_losses_finite": true,
+  "U_truth_read": false,
+  "satellite_active": false,
+  "head_direct_aux_gradient": false,
+  "limitation": "Live prefix execution proof only; no target performance or complete-log claim"
+}

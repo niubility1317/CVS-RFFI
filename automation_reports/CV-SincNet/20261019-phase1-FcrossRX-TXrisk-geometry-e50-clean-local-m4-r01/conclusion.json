@@ -1,0 +1,266 @@
+{
+  "status": "ANALYZED",
+  "run_id": "20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01",
+  "actual_rows": 8,
+  "BASE_n": 3,
+  "BOTH_n": 3,
+  "BASE_accuracy_percent": 84.76170634920635,
+  "BOTH_accuracy_percent": 84.78869047619048,
+  "overall_paired": {
+    "n": 3,
+    "mean": 0.026984126984127183,
+    "sample_SD": 0.016965155923107798
+  },
+  "weak_mean_paired": {
+    "n": 3,
+    "mean": 0.04761904761904634,
+    "sample_SD": 0.8941282618503088
+  },
+  "overall_positive_pairs": 3,
+  "weak_mean_positive_pairs": 1,
+  "per_TX_paired": [
+    {
+      "TX": "14-10",
+      "mean_pp": 0.2642857142857095,
+      "sample_SD_pp": 0.5055937104039178,
+      "positive_seeds": 2,
+      "values": [
+        0.7607142857142812,
+        -0.2500000000000058,
+        0.28214285714285303
+      ]
+    },
+    {
+      "TX": "14-7",
+      "mean_pp": -1.0595238095238102,
+      "sample_SD_pp": 1.801807246555938,
+      "positive_seeds": 1,
+      "values": [
+        -1.5107142857142875,
+        0.924999999999998,
+        -2.592857142857141
+      ]
+    },
+    {
+      "TX": "20-15",
+      "mean_pp": -0.4761904761904745,
+      "sample_SD_pp": 0.5269803917920789,
+      "positive_seeds": 1,
+      "values": [
+        -0.40357142857142536,
+        -1.0357142857142843,
+        0.01071428571428612
+      ]
+    },
+    {
+      "TX": "20-19",
+      "mean_pp": 1.1547619047619029,
+      "sample_SD_pp": 0.01797579627445313,
+      "positive_seeds": 3,
+      "values": [
+        1.1714285714285677,
+        1.1357142857142843,
+        1.1571428571428566
+      ]
+    },
+    {
+      "TX": "6-15",
+      "mean_pp": 0.5178571428571402,
+      "sample_SD_pp": 0.6978374028499178,
+      "positive_seeds": 3,
+      "values": [
+        0.06428571428571672,
+        0.16785714285714182,
+        1.3214285714285623
+      ]
+    },
+    {
+      "TX": "8-20",
+      "mean_pp": -0.23928571428571596,
+      "sample_SD_pp": 0.4731704831479388,
+      "positive_seeds": 1,
+      "values": [
+        -0.02142857142857224,
+        -0.7821428571428646,
+        0.08571428571428896
+      ]
+    }
+  ],
+  "verdict": "Does not satisfy the active goal of improving weak transmitters together: average overall gain tiny and weak14-7 declines in2/3 seeds, despite20-19 gains in3/3. Do not promote WEIGHT/GEO from target scores or modify healthy RX_MARGIN.",
+  "source_promotion": "Original source gate unchanged and fixed before target; only BOTH expanded",
+  "frozen_target_policy": "All8 final50 default-head clean predictions and independent CPU truth-last scores complete; no target feedback or selective rerun",
+  "full_log_checks": [
+    {
+      "row_id": "BASE-s2026092701",
+      "epochs": 50,
+      "steps": 11100,
+      "U_seen": 963900,
+      "U_selected": 15127,
+      "U_acceptance": 0.01569353667392883,
+      "satellite": 0,
+      "U_truth": 0,
+      "nonfinite": 0,
+      "markers": {
+        "FutureWarning": 3,
+        "UserWarning": 0,
+        "RuntimeWarning": 0,
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "MemoryError": 0,
+        "Fatal Python": 0,
+        "killed": 0
+      }
+    },
+    {
+      "row_id": "WEIGHT-s2026092701",
+      "epochs": 50,
+      "steps": 11100,
+      "U_seen": 963900,
+      "U_selected": 15126,
+      "U_acceptance": 0.015692499221910988,
+      "satellite": 0,
+      "U_truth": 0,
+      "nonfinite": 0,
+      "markers": {
+        "FutureWarning": 3,
+        "UserWarning": 0,
+        "RuntimeWarning": 0,
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "MemoryError": 0,
+        "Fatal Python": 0,
+        "killed": 0
+      }
+    },
+    {
+      "row_id": "GEOMETRY-s2026092701",
+      "epochs": 50,
+      "steps": 11100,
+      "U_seen": 963900,
+      "U_selected": 14900,
+      "U_acceptance": 0.015458035065878202,
+      "satellite": 0,
+      "U_truth": 0,
+      "nonfinite": 0,
+      "markers": {
+        "FutureWarning": 3,
+        "UserWarning": 0,
+        "RuntimeWarning": 0,
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "MemoryError": 0,
+        "Fatal Python": 0,
+        "killed": 0
+      }
+    },
+    {
+      "row_id": "BOTH-s2026092701",
+      "epochs": 50,
+      "steps": 11100,
+      "U_seen": 963900,
+      "U_selected": 14922,
+      "U_acceptance": 0.015480859010270775,
+      "satellite": 0,
+      "U_truth": 0,
+      "nonfinite": 0,
+      "markers": {
+        "FutureWarning": 3,
+        "UserWarning": 0,
+        "RuntimeWarning": 0,
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "MemoryError": 0,
+        "Fatal Python": 0,
+        "killed": 0
+      }
+    },
+    {
+      "row_id": "BASE-s2026092702",
+      "epochs": 50,
+      "steps": 11100,
+      "U_seen": 963900,
+      "U_selected": 15320,
+      "U_acceptance": 0.015893764913372757,
+      "satellite": 0,
+      "U_truth": 0,
+      "nonfinite": 0,
+      "markers": {
+        "FutureWarning": 3,
+        "UserWarning": 0,
+        "RuntimeWarning": 0,
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "MemoryError": 0,
+        "Fatal Python": 0,
+        "killed": 0
+      }
+    },
+    {
+      "row_id": "BOTH-s2026092702",
+      "epochs": 50,
+      "steps": 11100,
+      "U_seen": 963900,
+      "U_selected": 15242,
+      "U_acceptance": 0.015812843655980912,
+      "satellite": 0,
+      "U_truth": 0,
+      "nonfinite": 0,
+      "markers": {
+        "FutureWarning": 3,
+        "UserWarning": 0,
+        "RuntimeWarning": 0,
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "MemoryError": 0,
+        "Fatal Python": 0,
+        "killed": 0
+      }
+    },
+    {
+      "row_id": "BASE-s2026092703",
+      "epochs": 50,
+      "steps": 11100,
+      "U_seen": 963900,
+      "U_selected": 15126,
+      "U_acceptance": 0.015692499221910988,
+      "satellite": 0,
+      "U_truth": 0,
+      "nonfinite": 0,
+      "markers": {
+        "FutureWarning": 3,
+        "UserWarning": 0,
+        "RuntimeWarning": 0,
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "MemoryError": 0,
+        "Fatal Python": 0,
+        "killed": 0
+      }
+    },
+    {
+      "row_id": "BOTH-s2026092703",
+      "epochs": 50,
+      "steps": 11100,
+      "U_seen": 963900,
+      "U_selected": 14784,
+      "U_acceptance": 0.015337690631808279,
+      "satellite": 0,
+      "U_truth": 0,
+      "nonfinite": 0,
+      "markers": {
+        "FutureWarning": 3,
+        "UserWarning": 0,
+        "RuntimeWarning": 0,
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "MemoryError": 0,
+        "Fatal Python": 0,
+        "killed": 0
+      }
+    }
+  ],
+  "negative_results_preserved": true,
+  "goal_complete": false,
+  "next_candidate_run": "20261019-phase1-FcrossRX-RXmargin-e50-clean-local-m1-r01",
+  "next_candidate_frozen_before_final_target": true
+}
