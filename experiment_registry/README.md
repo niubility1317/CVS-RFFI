@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-12T06:43:43+00:00
+更新：2026-10-19T07:14:51+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|122|
+|managed_run|126|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -26,11 +26,11 @@
 |[phase1](by_method/phase1.md)|123|
 |[phase2](by_method/phase2.md)|118|
 |[stage2](by_method/stage2.md)|67|
+|[ce_only](by_method/ce_only.md)|61|
 |[clean_only](by_method/clean_only.md)|60|
-|[ce_only](by_method/ce_only.md)|60|
 |[qknn](by_method/qknn.md)|56|
 |[performance_priority](by_method/performance_priority.md)|48|
-|[no_augmentation](by_method/no_augmentation.md)|42|
+|[no_augmentation](by_method/no_augmentation.md)|43|
 |[source_selection](by_method/source_selection.md)|35|
 |[fasttrust](by_method/fasttrust.md)|26|
 |[source](by_method/source.md)|23|
@@ -70,8 +70,10 @@
 |[mirror_relation](by_method/mirror_relation.md)|4|
 |[fixed_comparison](by_method/fixed_comparison.md)|4|
 |[auto_after_parent](by_method/auto_after_parent.md)|4|
+|[eight_seeds](by_method/eight_seeds.md)|4|
 |[receiver_agnostic](by_method/receiver_agnostic.md)|4|
 |[shot](by_method/shot.md)|4|
+|[four_seeds](by_method/four_seeds.md)|3|
 |[architecture](by_method/architecture.md)|3|
 |[identity_only](by_method/identity_only.md)|3|
 |[no_target_access](by_method/no_target_access.md)|3|
@@ -86,13 +88,15 @@
 |[pure_ce](by_method/pure_ce.md)|3|
 |[batch_sweep](by_method/batch_sweep.md)|3|
 |[single_pass](by_method/single_pass.md)|3|
+|[standard_architecture](by_method/standard_architecture.md)|3|
+|[full_width](by_method/full_width.md)|3|
+|[automatic_row_test](by_method/automatic_row_test.md)|3|
 |[smoke](by_method/smoke.md)|3|
 |[evaluation](by_method/evaluation.md)|2|
 |[true256](by_method/true256.md)|2|
 |[final_eval](by_method/final_eval.md)|2|
 |[source_scratch](by_method/source_scratch.md)|2|
 |[native_methods](by_method/native_methods.md)|2|
-|[four_seeds](by_method/four_seeds.md)|2|
 |[cvs_identity_ce](by_method/cvs_identity_ce.md)|2|
 |[cvcnn_matched](by_method/cvcnn_matched.md)|2|
 |[ablation](by_method/ablation.md)|2|
@@ -111,9 +115,10 @@
 |[synthetic](by_method/synthetic.md)|2|
 |[sequential_source_selection](by_method/sequential_source_selection.md)|2|
 |[completed_snapshot](by_method/completed_snapshot.md)|2|
-|[standard_architecture](by_method/standard_architecture.md)|2|
-|[full_width](by_method/full_width.md)|2|
-|[automatic_row_test](by_method/automatic_row_test.md)|2|
+|[deployment](by_method/deployment.md)|2|
+|[synthetic_no_query](by_method/synthetic_no_query.md)|2|
+|[FP32](by_method/FP32.md)|2|
+|[RTX3090](by_method/RTX3090.md)|2|
 |[three_seed](by_method/three_seed.md)|2|
 |[nm fdu](by_method/nm_fdu.md)|2|
 |[protonet](by_method/protonet.md)|2|
@@ -199,7 +204,9 @@
 |[batch_size](by_method/batch_size.md)|1|
 |[fixed_completed14](by_method/fixed_completed14.md)|1|
 |[partial_multiseed](by_method/partial_multiseed.md)|1|
-|[eight_seeds](by_method/eight_seeds.md)|1|
+|[PAMF](by_method/PAMF.md)|1|
+|[source_V](by_method/source_V.md)|1|
+|[default_head](by_method/default_head.md)|1|
 |[ecrs](by_method/ecrs.md)|1|
 |[fedcvs](by_method/fedcvs.md)|1|
 
@@ -325,5 +332,5 @@
 |纯CE正常遍历：batch256/512/1024/2048速度与泛化对照|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-ce-singlepass-batch-manysig-m4-r02/report.md)|
 |纯CE正常遍历：batch256/512/1024/2048速度与泛化对照|managed_run|[打开](../automation_reports/CV-SincNet/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/report.md)|
 |常用网络纯CE：完整clean测试结果|managed_run|[打开](../automation_reports/CV-SincNet/20261010-phase1-standard-ce-baselines-manysig-m56-r01/report.md)|
-|十三种网络纯CE E200追加四种子：CVS为残差融合版本|managed_run|[打开](../automation_reports/CV-SincNet/20261012-phase1-standard-ce-seed-extension-manysig-m52-r01/report.md)|
-|原生DAOT＋RC4与仅动力博弈三seed对照|managed_run|[打开](../automation_reports/CV-SincNet/phase1_daot_rc4_pure_game_m3_20260917_r1/report.md)|
+|十三模型八种子：端到端推理时延、内存显存与FP32模型存储实测|managed_run|[打开](../automation_reports/CV-SincNet/20261012-phase1-standard-ce-deployment-m104-r01/report.md)|
+|十三模型八种子：端到端推理时延、内存显存与FP32模型存储实测|managed_run|[打开](../automation_reports/CV-SincNet/20261012-phase1-standard-ce-deployment-m104-r02/report.md)|

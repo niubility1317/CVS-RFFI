@@ -8,3 +8,4 @@
 |---|---|---|
 |常用网络纯CE：完整clean测试结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261010-phase1-standard-ce-baselines-manysig-m56-r01/report.md)|
 |十三种网络纯CE E200追加四种子：CVS为残差融合版本|managed_run|[打开](../../automation_reports/CV-SincNet/20261012-phase1-standard-ce-seed-extension-manysig-m52-r01/report.md)|
+|新 CVS SIG_TIME：纯 CE E200 八种子 clean 对比|managed_run|[打开](../../automation_reports/CV-SincNet/20261014-phase1-sigtime-purece-e200-clean-manysig-m8-r01/report.md)|
