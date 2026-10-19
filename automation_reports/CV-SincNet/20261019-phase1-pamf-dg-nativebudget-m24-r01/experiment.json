@@ -21,7 +21,7 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-19要求设计并运行，仅两个GPU、三种子；RIEI/DRIFT明确E100并按比例调整训练安排。",
   "code": {
-    "commit": "release_commit.txt; resolved by publisher into local package.json and actual release",
+    "commit": "ac5163f6cb59b49a657c3ee02089f8e556ae2279",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "existing N607 SDG-SEI + existing task-local NumPy1.23.5; no shared environment mutation",
     "cwd": "local_artifacts/phase1_dg_nativebudget_20261019/runtime.json#/release_root"
@@ -107,10 +107,22 @@
     "completion.json"
   ],
   "metrics_plan": {
-    "metric_names": [],
-    "dimensions": [],
-    "prediction_ref": null,
-    "scorer_ref": null
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "worst_rx_accuracy",
+      "paired_full_minus_ce"
+    ],
+    "dimensions": [
+      "method",
+      "variant",
+      "model_seed",
+      "view",
+      "receiver",
+      "TX"
+    ],
+    "prediction_ref": "ROW/prediction/",
+    "scorer_ref": "pipeline.py score (separate process, CUDA disabled)"
   },
   "rows": [
     {

@@ -3,7 +3,7 @@
 - run_id：`20261019-phase1-pamf-dg-nativebudget-m24-r01`
 - group_id：`phase1-pamf-four-dg-nativebudget`；类别：`comparison`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING（实际状态按 events.jsonl 及独立证据更新）
 
 ## 目的与对照
 
@@ -55,6 +55,16 @@ launcher 首先保存并重新加载真实 L_s batch 产生的模型 checkpoint�
 
 LOCAL_VERIFIED。24 行种子/方法预算检查、source 配置拒绝 truth/resume/teacher/target 输入、错误预算拒绝、prediction 不完整时 truth 保持关闭、四方法默认头 CE 梯度与实际更新、严格 checkpoint 往返及错误 source contract 拒绝均通过。另核对 DRIFT 原式在 256 维常数差上的负平方距离为 −256；SDG 原生两视图、两个对比项梯度和身份种子未被作者模块导入时的 seed2023 覆盖，检查通过。原生增强在隔离 NumPy1.23.5 下检查，未修改共享环境。
 
-一次独立 P0/P1 正确性审查 PASS，无待修直接缺陷。选定 sixscene manifest 已读回为 VALIDATED_ONCE、168000 个物理包、完整六场景、固定六类和 source/target 互斥；旧三场景 capsule 仅供应相同的 clean IQ/原始 ID，二者不混淆。尚未发布，尚无本次性能结果。
+一次独立 P0/P1 正确性审查 PASS，无待修直接缺陷。选定 sixscene manifest 已读回为 VALIDATED_ONCE、168000 个物理包、完整六场景、固定六类和 source/target 互斥；旧三场景 capsule 仅供应相同的 clean IQ/原始 ID，二者不混淆。已发布并开始首行训练，尚无本次性能结果。
 
 发布依赖核对发现 Git 内 RIEI 通用 trainer 带有未打包的卫星增强 import；本次发布改用独立 source-only 交替更新 helper，未改动其他任务的共享 trainer。新旧 source-only 更新后全模型张量逐元素一致检查通过，该单一 P1 的定点独立复审 PASS。未扩大为重复全量审查。
+
+## 远端执行读回
+
+VERIFIED：代码提交 ac5163f6cb59b49a657c3ee02089f8e556ae2279 已推送，远端分支 OID 与本地一致。一次发布归档传输 SHA 比较和远端 compile 通过。dispatcher PID2008297 的实际 CWD/argv 对应该不可变发布；源缓存完成，L_s6300/V27000，未导出 U_s。
+
+真实 L_s batch 的八个 full/CE 默认头 checkpoint 往返 smoke 全部 PASS，未访问 query，检查权重已丢弃。首行 ibrff-full-s2026092701 在物理 GPU0 正式训练；GPU1 出现其他 owner 的健康任务，队列等待空闲，不借用 GPU2 至 GPU7，不干扰其进程。
+
+独立证据保存在 local_artifacts/phase1_dg_nativebudget_20261019/postlaunch_third.json。本次尚无冻结后的测试结果，不作性能结论；所有行完成后自动生成同 row 七视图评分、三种子统计和 full−CE 配对差。
+
+首行训练日志已从 0 增长至 10296 字节，stage1 已到 E27，损失和默认头源 V 输出有限，实际训练子进程为 PID2008921，GPU 暴露值为 0。证据：local_artifacts/phase1_dg_nativebudget_20261019/postlaunch_training.json；确认 RUNNING，不等同于矩阵完成。
