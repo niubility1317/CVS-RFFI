@@ -1,0 +1,20 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261019-phase1-FcrossRX-TXgeometry-e20-local-m4-r04",
+  "execution_commit": "4679f66babb40c17b96285c7393225787ed13c08",
+  "local_compile": "VERIFIED",
+  "real_checkpoint_no_query_smoke": "PASS",
+  "live_worker_PID_argv": "MATCH",
+  "live_controller_worker_chain": "direct base Python; no venv redirector processes",
+  "CWD": "immutable local release matches",
+  "GPU": "RTX5070Ti physical0; actual CUDA training",
+  "parameters": 900722,
+  "source_role_match": "EXACT_MATCH",
+  "completed_epochs": 5,
+  "recorded_optimizer_steps": 1110,
+  "finite_training_metrics": true,
+  "log_bytes": 1201,
+  "target_access": false,
+  "truth_access": false,
+  "scientific_recipe_changed": false
+}
