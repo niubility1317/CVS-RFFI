@@ -1,0 +1,69 @@
+{
+  "status": "PARTIAL_SOURCE_ONLY",
+  "run_id": "20261019-phase1-FcrossRX-TXgeometry-e20-local-m4-r04",
+  "commit": "4679f66babb40c17b96285c7393225787ed13c08",
+  "model_seed": 2026092701,
+  "head_fit_updates": 0,
+  "truth_access": false,
+  "target_access": false,
+  "weak_indices_from_prior_source_risk": [
+    3,
+    1
+  ],
+  "rows": [
+    {
+      "row_id": "BASE-s2026092701",
+      "epoch": 20,
+      "optimizer_steps": 4440,
+      "sourceV": {
+        "count": 27000,
+        "accuracy": 0.9788518518518519,
+        "recall": [
+          0.9828888888888889,
+          0.9766666666666667,
+          0.9906666666666667,
+          0.9442222222222222,
+          0.9864444444444445,
+          0.9922222222222222
+        ],
+        "worst_RX": 0.9444444444444444
+      },
+      "seconds": 694.3887834000052,
+      "peak_cuda_MiB": 595.384765625
+    },
+    {
+      "row_id": "WEIGHT-s2026092701",
+      "epoch": 20,
+      "optimizer_steps": 4440,
+      "sourceV": {
+        "count": 27000,
+        "accuracy": 0.9784074074074074,
+        "recall": [
+          0.9813333333333333,
+          0.9766666666666667,
+          0.9902222222222222,
+          0.9437777777777778,
+          0.9862222222222222,
+          0.9922222222222222
+        ],
+        "worst_RX": 0.9425925925925925
+      },
+      "seconds": 674.59626630001,
+      "peak_cuda_MiB": 595.38671875
+    }
+  ],
+  "WEIGHT_minus_BASE": {
+    "weak_TX_mean_pp": -0.022222222222212373,
+    "accuracy_pp": -0.04444444444444695,
+    "worst_RX_pp": -0.18518518518518823,
+    "per_TX_recall_pp": [
+      -0.15555555555556433,
+      0,
+      -0.04444444444444695,
+      -0.04444444444443585,
+      -0.022222222222223476,
+      0
+    ]
+  },
+  "limitation": "Only2/4 initial source rows frozen; does not replace the final four-arm source-only expansion gate or target-domain scoring"
+}
