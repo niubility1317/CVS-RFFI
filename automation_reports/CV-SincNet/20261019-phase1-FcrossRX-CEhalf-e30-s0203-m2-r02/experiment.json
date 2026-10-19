@@ -28,7 +28,7 @@
   "replaces_run_id": "20261019-phase1-FcrossRX-CEhalf-e30-s0203-m2-r01",
   "authorization": "2026-10-19 user: CE_HALF跑完整三种子. Complete02/03, reuse01; current chat clean-only scope, exact historical training recipe. This explicit replication overrides generic new-exploration/no-satellite/ordinaryPL defaults for this run. User explicitly permits free GPU4/6 in current reply. r01 failed before first training update due resource contention; bounded technical fix only, unchanged scientific recipe.",
   "code": {
-    "commit": "PENDING_ACTUAL_CODE_COMMIT",
+    "commit": "c487f1f2a983a05e457516c901aa68391748bf76",
     "checkout": "codex/ce-half-three-seeds-20261019",
     "environment": "Existing ordinary N607 CVS-RFFI Python3.10/Torch2.1 FP32 CPU2; pinned original P43 runtime and P49 actual factory seed",
     "cwd": "PROJECT/releases/cvs_FcrossRX_CEhalf_E30_s0203_20261019_r02",
@@ -100,7 +100,15 @@
     "local_artifact_root": "local_artifacts/ce_half_three_seeds_20261019",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_ce_half_replicate/runner.py",
     "stop_rule": "Only input/provenance/protocol/nonfinite/output collision/unlaunchable technical failure; preserve all outputs, finish healthy active rows, do not launch pending rows after technical failure; no automatic retry or scientific early stop.",
-    "status": "REGISTERED"
+    "status": "RUNNING",
+    "workers": {
+      "modelseed2026092702": {
+        "GPU": 4
+      },
+      "modelseed2026092703": {
+        "GPU": 6
+      }
+    }
   },
   "expected_artifacts": [
     "dispatcher.json",

@@ -1,6 +1,6 @@
 # CE_HALF 补齐三种子：固定 E30，仅 clean
 
-状态：LOCAL_VERIFIED，尚未启动。
+状态：RUNNING；seed02／03 已在用户授权的 GPU 4／6 完成首轮，等待固定 E10 和 clean 自动评分。
 
 用户于 2026-10-19 明确要求“CE_HALF跑完整三种子”。复用 seed2026092701 的完整旧结果；仅补02/03各一条 CE_HALF，分别从原 P49 对应 B01 scratch20 的 student／ownEMA 追加10轮，总E30／6660更新。新增20模型轮／4440更新，不重训父模型、seed01或原As／NoAs控制。旧 source gate 不抑制用户明确指定的固定复现。
 
@@ -21,3 +21,7 @@ CE_HALF 保持原 .5 satellite CE，两次 logits 分别计算后平均，原全
 报告三个seed的clean accuracy／macroF1／最差RX、均值±样本SD、对对应As30和NoAs30的配对差，完整解析两条E10日志并记录实际成本。全部固定seed均保留。用户是在看到seed01 clean85.808333%后指定该复现；不能宣称新的独立盲测，不用新分数修改配方或选择性重跑。精确矩阵及artifact路径由experiment.json唯一维护。
 
 用户已明确允许GPU4/6。本r02只修复worker启动时资源争用应等待而不应消耗run的问题，原方法不改；r01没有训练更新或目标访问。容量回归修复前FAIL、修复后PASS；35项协议检查与原CE_HALF值/梯度一致性PASS；原P0/P1审查的资源问题定点复核PASS。
+
+实际发布 VERIFIED：代码 c487f1f2a983a05e457516c901aa68391748bf76 远端分支OID独立一致，单归档传输比较和compile通过，两个真实父default头smoke共4NN通过后立即续训。seed02／03分别进入GPU4／6，每卡本任务1 worker；实际PID/CWD/argv及NVML独立核实，原2/3上的其他任务未动。
+
+首轮运行证据 VERIFIED：两行各完成222次optimizer更新，日志由28438增至33584字节；累计epoch21／4662更新，无U真值或target访问。实际配置和方法不变。

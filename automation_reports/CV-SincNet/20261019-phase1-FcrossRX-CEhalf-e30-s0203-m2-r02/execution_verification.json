@@ -1,0 +1,54 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "code_commit": "c487f1f2a983a05e457516c901aa68391748bf76",
+  "archive_transfer": "VERIFIED_SINGLE_ARCHIVE_SHA_COMPARISON",
+  "remote_compile": "PASS",
+  "real_checkpoint_smoke": {
+    "status": "PASS",
+    "model_seeds": [
+      2026092702,
+      2026092703
+    ],
+    "NN": 4,
+    "source_IQ": 0,
+    "target_query": false,
+    "optimizer_updates": 0
+  },
+  "workers": [
+    {
+      "row_id": "CE_HALF-s2026092702",
+      "GPU": 4,
+      "PID_CWD_cmdline": "VERIFIED",
+      "CUDA_process": "VERIFIED",
+      "initial_log_bytes": 28438,
+      "observed_log_bytes": 33584,
+      "log_growth": "VERIFIED",
+      "completed_incremental_epochs": 1,
+      "completed_incremental_optimizer_updates": 222,
+      "target_access": false,
+      "U_truth_read": false
+    },
+    {
+      "row_id": "CE_HALF-s2026092703",
+      "GPU": 6,
+      "PID_CWD_cmdline": "VERIFIED",
+      "CUDA_process": "VERIFIED",
+      "initial_log_bytes": 28438,
+      "observed_log_bytes": 33584,
+      "log_growth": "VERIFIED",
+      "completed_incremental_epochs": 1,
+      "completed_incremental_optimizer_updates": 222,
+      "target_access": false,
+      "U_truth_read": false
+    }
+  ],
+  "user_authorized_GPU": [
+    4,
+    6
+  ],
+  "training_recipe_changed": false,
+  "original_run_preserved": "20261019-phase1-FcrossRX-CEhalf-e30-s0203-m2-r01",
+  "prediction_scope": [
+    "clean"
+  ]
+}
