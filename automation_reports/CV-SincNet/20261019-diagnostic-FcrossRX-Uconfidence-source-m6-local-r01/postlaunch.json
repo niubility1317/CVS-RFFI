@@ -1,0 +1,29 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261019-diagnostic-FcrossRX-Uconfidence-source-m6-local-r01",
+  "code_commit": "1731331222408750cda918c36d946c0395aa1440",
+  "pid": 49048,
+  "CIM_PID_and_cmdline_seen": true,
+  "CWD_matches_release": true,
+  "reference_commit": "31467086c3ced30237f3ac86e91eae68645425d7",
+  "sourceU_role": "U_s",
+  "U_truth_read": false,
+  "head_fit_updates": 0,
+  "optimizer_updates": 0,
+  "EMA_updates": 0,
+  "target_reads": 0,
+  "compile": "PASS",
+  "actual_GPU0_allocations": [
+    {
+      "Name": "pid_49048_luid_0x00000000_0x0000C10F_phys_0",
+      "DedicatedUsage": 423129088
+    },
+    {
+      "Name": "pid_46604_luid_0x00000000_0x0000C10F_phys_0",
+      "DedicatedUsage": 3432566784
+    }
+  ],
+  "healthy_margin_PID46604_preserved": true,
+  "log_grew_from_empty_to_snapshot_completion": true,
+  "all_complete_when_observed": false
+}

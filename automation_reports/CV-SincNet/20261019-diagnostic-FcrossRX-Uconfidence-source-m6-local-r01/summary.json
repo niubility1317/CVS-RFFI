@@ -1,0 +1,673 @@
+{
+  "status": "ANALYZED",
+  "run_id": "20261019-diagnostic-FcrossRX-Uconfidence-source-m6-local-r01",
+  "code_commit": "1731331222408750cda918c36d946c0395aa1440",
+  "aggregates": [
+    {
+      "treatment": "BASE",
+      "snapshot_role": "student",
+      "global_confidence": {
+        "n": 3,
+        "mean": 0.9830334533618732,
+        "sample_SD": 0.0004787330807917583
+      },
+      "tail95_fraction": {
+        "n": 3,
+        "mean": 0.9400235155790712,
+        "sample_SD": 0.002344441023600079
+      },
+      "per_predicted_TX": [
+        {
+          "TX": "14-10",
+          "predicted_count": {
+            "n": 3,
+            "mean": 9455,
+            "sample_SD": 4.358898943540674
+          },
+          "prediction_fraction": {
+            "n": 3,
+            "mean": 0.1667548500881834,
+            "sample_SD": 0.00007687652457743935
+          },
+          "mean_confidence": {
+            "n": 3,
+            "mean": 0.9820973958276497,
+            "sample_SD": 0.0008938439328626459
+          },
+          "conditional_tail95_fraction": {
+            "n": 3,
+            "mean": 0.9405948154299876,
+            "sample_SD": 0.003694414086086192
+          }
+        },
+        {
+          "TX": "14-7",
+          "predicted_count": {
+            "n": 3,
+            "mean": 9502,
+            "sample_SD": 74.32361670424818
+          },
+          "prediction_fraction": {
+            "n": 3,
+            "mean": 0.1675837742504409,
+            "sample_SD": 0.0013108221640960884
+          },
+          "mean_confidence": {
+            "n": 3,
+            "mean": 0.9750856317025941,
+            "sample_SD": 0.0005940974018285764
+          },
+          "conditional_tail95_fraction": {
+            "n": 3,
+            "mean": 0.9021058668128435,
+            "sample_SD": 0.005586110668507646
+          }
+        },
+        {
+          "TX": "20-15",
+          "predicted_count": {
+            "n": 3,
+            "mean": 9500.333333333334,
+            "sample_SD": 16.19670748434179
+          },
+          "prediction_fraction": {
+            "n": 3,
+            "mean": 0.167554379776602,
+            "sample_SD": 0.0002856562166550581
+          },
+          "mean_confidence": {
+            "n": 3,
+            "mean": 0.9912347805880102,
+            "sample_SD": 0.0009188623501149224
+          },
+          "conditional_tail95_fraction": {
+            "n": 3,
+            "mean": 0.9760011354504505,
+            "sample_SD": 0.0018992884794863216
+          }
+        },
+        {
+          "TX": "20-19",
+          "predicted_count": {
+            "n": 3,
+            "mean": 9328,
+            "sample_SD": 64.21059102671458
+          },
+          "prediction_fraction": {
+            "n": 3,
+            "mean": 0.16451499118165788,
+            "sample_SD": 0.001132461922869754
+          },
+          "mean_confidence": {
+            "n": 3,
+            "mean": 0.9694878152251176,
+            "sample_SD": 0.0010870516389890799
+          },
+          "conditional_tail95_fraction": {
+            "n": 3,
+            "mean": 0.8798257682216453,
+            "sample_SD": 0.00952505149292644
+          }
+        },
+        {
+          "TX": "6-15",
+          "predicted_count": {
+            "n": 3,
+            "mean": 9475.666666666666,
+            "sample_SD": 14.0118997046558
+          },
+          "prediction_fraction": {
+            "n": 3,
+            "mean": 0.16711934156378602,
+            "sample_SD": 0.00024712345158123885
+          },
+          "mean_confidence": {
+            "n": 3,
+            "mean": 0.9853164606798687,
+            "sample_SD": 0.002539911929823444
+          },
+          "conditional_tail95_fraction": {
+            "n": 3,
+            "mean": 0.9526584027607646,
+            "sample_SD": 0.007978774817147387
+          }
+        },
+        {
+          "TX": "8-20",
+          "predicted_count": {
+            "n": 3,
+            "mean": 9439,
+            "sample_SD": 7
+          },
+          "prediction_fraction": {
+            "n": 3,
+            "mean": 0.16647266313932982,
+            "sample_SD": 0.0001234567901234468
+          },
+          "mean_confidence": {
+            "n": 3,
+            "mean": 0.9948149990340505,
+            "sample_SD": 0.0005610423616298708
+          },
+          "conditional_tail95_fraction": {
+            "n": 3,
+            "mean": 0.988170405783899,
+            "sample_SD": 0.001613048196467437
+          }
+        }
+      ]
+    },
+    {
+      "treatment": "BASE",
+      "snapshot_role": "ownEMA",
+      "global_confidence": {
+        "n": 3,
+        "mean": 0.9829299576333487,
+        "sample_SD": 0.00047074884567493817
+      },
+      "tail95_fraction": {
+        "n": 3,
+        "mean": 0.9396766607877719,
+        "sample_SD": 0.002347888082951604
+      },
+      "per_predicted_TX": [
+        {
+          "TX": "14-10",
+          "predicted_count": {
+            "n": 3,
+            "mean": 9454.333333333334,
+            "sample_SD": 8.144527815247077
+          },
+          "prediction_fraction": {
+            "n": 3,
+            "mean": 0.16674309229864784,
+            "sample_SD": 0.000143642465877378
+          },
+          "mean_confidence": {
+            "n": 3,
+            "mean": 0.9818719422774733,
+            "sample_SD": 0.0008119448239086039
+          },
+          "conditional_tail95_fraction": {
+            "n": 3,
+            "mean": 0.9394617202796555,
+            "sample_SD": 0.0037409455997329537
+          }
+        },
+        {
+          "TX": "14-7",
+          "predicted_count": {
+            "n": 3,
+            "mean": 9498,
+            "sample_SD": 70.50531894828929
+          },
+          "prediction_fraction": {
+            "n": 3,
+            "mean": 0.1675132275132275,
+            "sample_SD": 0.001243480051998045
+          },
+          "mean_confidence": {
+            "n": 3,
+            "mean": 0.9750096433309707,
+            "sample_SD": 0.0007552381380585403
+          },
+          "conditional_tail95_fraction": {
+            "n": 3,
+            "mean": 0.9016106402167138,
+            "sample_SD": 0.0055840502876656345
+          }
+        },
+        {
+          "TX": "20-15",
+          "predicted_count": {
+            "n": 3,
+            "mean": 9501.333333333334,
+            "sample_SD": 18.77054430040145
+          },
+          "prediction_fraction": {
+            "n": 3,
+            "mean": 0.16757201646090536,
+            "sample_SD": 0.00033105016402823863
+          },
+          "mean_confidence": {
+            "n": 3,
+            "mean": 0.9911576670009078,
+            "sample_SD": 0.0009540380266092086
+          },
+          "conditional_tail95_fraction": {
+            "n": 3,
+            "mean": 0.9757229754307176,
+            "sample_SD": 0.001915029875875488
+          }
+        },
+        {
+          "TX": "20-19",
+          "predicted_count": {
+            "n": 3,
+            "mean": 9333,
+            "sample_SD": 60.654760736483
+          },
+          "prediction_fraction": {
+            "n": 3,
+            "mean": 0.1646031746031746,
+            "sample_SD": 0.0010697488666046445
+          },
+          "mean_confidence": {
+            "n": 3,
+            "mean": 0.969384582820306,
+            "sample_SD": 0.000887635594578499
+          },
+          "conditional_tail95_fraction": {
+            "n": 3,
+            "mean": 0.880110604046311,
+            "sample_SD": 0.008445493680478464
+          }
+        },
+        {
+          "TX": "6-15",
+          "predicted_count": {
+            "n": 3,
+            "mean": 9473.333333333334,
+            "sample_SD": 13.012814197295423
+          },
+          "prediction_fraction": {
+            "n": 3,
+            "mean": 0.16707818930041152,
+            "sample_SD": 0.00022950289589587005
+          },
+          "mean_confidence": {
+            "n": 3,
+            "mean": 0.985256475729491,
+            "sample_SD": 0.002490328952819246
+          },
+          "conditional_tail95_fraction": {
+            "n": 3,
+            "mean": 0.9524346573714338,
+            "sample_SD": 0.007997601687747333
+          }
+        },
+        {
+          "TX": "8-20",
+          "predicted_count": {
+            "n": 3,
+            "mean": 9440,
+            "sample_SD": 7
+          },
+          "prediction_fraction": {
+            "n": 3,
+            "mean": 0.16649029982363314,
+            "sample_SD": 0.0001234567901234468
+          },
+          "mean_confidence": {
+            "n": 3,
+            "mean": 0.9947387305958856,
+            "sample_SD": 0.0005579971443700762
+          },
+          "conditional_tail95_fraction": {
+            "n": 3,
+            "mean": 0.9879598205581696,
+            "sample_SD": 0.0016366744828735789
+          }
+        }
+      ]
+    },
+    {
+      "treatment": "BOTH",
+      "snapshot_role": "student",
+      "global_confidence": {
+        "n": 3,
+        "mean": 0.9813765517895114,
+        "sample_SD": 0.0012907425772086224
+      },
+      "tail95_fraction": {
+        "n": 3,
+        "mean": 0.9331040564373897,
+        "sample_SD": 0.007038694424971281
+      },
+      "per_predicted_TX": [
+        {
+          "TX": "14-10",
+          "predicted_count": {
+            "n": 3,
+            "mean": 9451.333333333334,
+            "sample_SD": 9.865765724632494
+          },
+          "prediction_fraction": {
+            "n": 3,
+            "mean": 0.1666901822457378,
+            "sample_SD": 0.00017399939549615347
+          },
+          "mean_confidence": {
+            "n": 3,
+            "mean": 0.9804739270408785,
+            "sample_SD": 0.001331849758650057
+          },
+          "conditional_tail95_fraction": {
+            "n": 3,
+            "mean": 0.9349956637082536,
+            "sample_SD": 0.007973040975285882
+          }
+        },
+        {
+          "TX": "14-7",
+          "predicted_count": {
+            "n": 3,
+            "mean": 9512,
+            "sample_SD": 67.35725647619564
+          },
+          "prediction_fraction": {
+            "n": 3,
+            "mean": 0.16776014109347445,
+            "sample_SD": 0.0011879586680105148
+          },
+          "mean_confidence": {
+            "n": 3,
+            "mean": 0.9708048533051724,
+            "sample_SD": 0.00281809701280744
+          },
+          "conditional_tail95_fraction": {
+            "n": 3,
+            "mean": 0.8809622564600986,
+            "sample_SD": 0.017135254189167986
+          }
+        },
+        {
+          "TX": "20-15",
+          "predicted_count": {
+            "n": 3,
+            "mean": 9489.333333333334,
+            "sample_SD": 11.372481406154654
+          },
+          "prediction_fraction": {
+            "n": 3,
+            "mean": 0.16736037624926514,
+            "sample_SD": 0.00020057286430606939
+          },
+          "mean_confidence": {
+            "n": 3,
+            "mean": 0.9904899210955795,
+            "sample_SD": 0.00069912277817767
+          },
+          "conditional_tail95_fraction": {
+            "n": 3,
+            "mean": 0.9759384087078206,
+            "sample_SD": 0.003322756407022925
+          }
+        },
+        {
+          "TX": "20-19",
+          "predicted_count": {
+            "n": 3,
+            "mean": 9328.333333333334,
+            "sample_SD": 60.05275458572515
+          },
+          "prediction_fraction": {
+            "n": 3,
+            "mean": 0.16452087007642563,
+            "sample_SD": 0.0010591314741750493
+          },
+          "mean_confidence": {
+            "n": 3,
+            "mean": 0.9657758769096989,
+            "sample_SD": 0.002817361744277245
+          },
+          "conditional_tail95_fraction": {
+            "n": 3,
+            "mean": 0.8594665879260973,
+            "sample_SD": 0.011662311333100469
+          }
+        },
+        {
+          "TX": "6-15",
+          "predicted_count": {
+            "n": 3,
+            "mean": 9474,
+            "sample_SD": 22.715633383201094
+          },
+          "prediction_fraction": {
+            "n": 3,
+            "mean": 0.1670899470899471,
+            "sample_SD": 0.0004006284547301747
+          },
+          "mean_confidence": {
+            "n": 3,
+            "mean": 0.9868244099746087,
+            "sample_SD": 0.0015599016646120983
+          },
+          "conditional_tail95_fraction": {
+            "n": 3,
+            "mean": 0.9592622558660161,
+            "sample_SD": 0.0037147210693107753
+          }
+        },
+        {
+          "TX": "8-20",
+          "predicted_count": {
+            "n": 3,
+            "mean": 9445,
+            "sample_SD": 5.5677643628300215
+          },
+          "prediction_fraction": {
+            "n": 3,
+            "mean": 0.1665784832451499,
+            "sample_SD": 0.00009819690234266929
+          },
+          "mean_confidence": {
+            "n": 3,
+            "mean": 0.9937191721348396,
+            "sample_SD": 0.0005543870585776827
+          },
+          "conditional_tail95_fraction": {
+            "n": 3,
+            "mean": 0.9871539556049188,
+            "sample_SD": 0.001337132000272898
+          }
+        }
+      ]
+    },
+    {
+      "treatment": "BOTH",
+      "snapshot_role": "ownEMA",
+      "global_confidence": {
+        "n": 3,
+        "mean": 0.9812571477669256,
+        "sample_SD": 0.0013158891921673304
+      },
+      "tail95_fraction": {
+        "n": 3,
+        "mean": 0.9325631981187538,
+        "sample_SD": 0.00706657579176216
+      },
+      "per_predicted_TX": [
+        {
+          "TX": "14-10",
+          "predicted_count": {
+            "n": 3,
+            "mean": 9451.333333333334,
+            "sample_SD": 10.598742063723098
+          },
+          "prediction_fraction": {
+            "n": 3,
+            "mean": 0.1666901822457378,
+            "sample_SD": 0.00018692666779052185
+          },
+          "mean_confidence": {
+            "n": 3,
+            "mean": 0.9801529716903484,
+            "sample_SD": 0.0013411138901148493
+          },
+          "conditional_tail95_fraction": {
+            "n": 3,
+            "mean": 0.9342893317434471,
+            "sample_SD": 0.007786244802797858
+          }
+        },
+        {
+          "TX": "14-7",
+          "predicted_count": {
+            "n": 3,
+            "mean": 9511.333333333334,
+            "sample_SD": 62.002688113769175
+          },
+          "prediction_fraction": {
+            "n": 3,
+            "mean": 0.16774838330393885,
+            "sample_SD": 0.001093521836221685
+          },
+          "mean_confidence": {
+            "n": 3,
+            "mean": 0.9706250151136847,
+            "sample_SD": 0.003006137829297798
+          },
+          "conditional_tail95_fraction": {
+            "n": 3,
+            "mean": 0.8800065696826384,
+            "sample_SD": 0.017703357258666567
+          }
+        },
+        {
+          "TX": "20-15",
+          "predicted_count": {
+            "n": 3,
+            "mean": 9490.333333333334,
+            "sample_SD": 11.930353445448855
+          },
+          "prediction_fraction": {
+            "n": 3,
+            "mean": 0.1673780129335685,
+            "sample_SD": 0.00021041187734476767
+          },
+          "mean_confidence": {
+            "n": 3,
+            "mean": 0.9904789239951937,
+            "sample_SD": 0.0006876299305920516
+          },
+          "conditional_tail95_fraction": {
+            "n": 3,
+            "mean": 0.9756946944400391,
+            "sample_SD": 0.0033814627549101166
+          }
+        },
+        {
+          "TX": "20-19",
+          "predicted_count": {
+            "n": 3,
+            "mean": 9329.333333333334,
+            "sample_SD": 53.15386470740705
+          },
+          "prediction_fraction": {
+            "n": 3,
+            "mean": 0.16453850676072898,
+            "sample_SD": 0.0009374579313475689
+          },
+          "mean_confidence": {
+            "n": 3,
+            "mean": 0.9656221796552358,
+            "sample_SD": 0.0028130596686411348
+          },
+          "conditional_tail95_fraction": {
+            "n": 3,
+            "mean": 0.8587060038983049,
+            "sample_SD": 0.0109902666904826
+          }
+        },
+        {
+          "TX": "6-15",
+          "predicted_count": {
+            "n": 3,
+            "mean": 9473,
+            "sample_SD": 23.515952032609693
+          },
+          "prediction_fraction": {
+            "n": 3,
+            "mean": 0.16707231040564374,
+            "sample_SD": 0.00041474342209187883
+          },
+          "mean_confidence": {
+            "n": 3,
+            "mean": 0.9867352521533617,
+            "sample_SD": 0.0015790967335251504
+          },
+          "conditional_tail95_fraction": {
+            "n": 3,
+            "mean": 0.9587303708991414,
+            "sample_SD": 0.0037048088735948965
+          }
+        },
+        {
+          "TX": "8-20",
+          "predicted_count": {
+            "n": 3,
+            "mean": 9444.666666666666,
+            "sample_SD": 5.131601439446884
+          },
+          "prediction_fraction": {
+            "n": 3,
+            "mean": 0.16657260435038213,
+            "sample_SD": 0.00009050443455813362
+          },
+          "mean_confidence": {
+            "n": 3,
+            "mean": 0.9937585235124441,
+            "sample_SD": 0.0005781477498498937
+          },
+          "conditional_tail95_fraction": {
+            "n": 3,
+            "mean": 0.9871181856955245,
+            "sample_SD": 0.0013623148839685087
+          }
+        }
+      ]
+    }
+  ],
+  "student_EMA_agreement": [
+    {
+      "row_id": "BASE-s2026092701",
+      "count": 56700,
+      "argmax_agreement": 0.999647266313933,
+      "U_truth_read": false
+    },
+    {
+      "row_id": "BOTH-s2026092701",
+      "count": 56700,
+      "argmax_agreement": 0.9996649029982363,
+      "U_truth_read": false
+    },
+    {
+      "row_id": "BASE-s2026092702",
+      "count": 56700,
+      "argmax_agreement": 0.9997354497354497,
+      "U_truth_read": false
+    },
+    {
+      "row_id": "BOTH-s2026092702",
+      "count": 56700,
+      "argmax_agreement": 0.9996825396825397,
+      "U_truth_read": false
+    },
+    {
+      "row_id": "BASE-s2026092703",
+      "count": 56700,
+      "argmax_agreement": 0.9996649029982363,
+      "U_truth_read": false
+    },
+    {
+      "row_id": "BOTH-s2026092703",
+      "count": 56700,
+      "argmax_agreement": 0.9998589065255732,
+      "U_truth_read": false
+    }
+  ],
+  "snapshots": 12,
+  "unique_sourceU_samples": 56700,
+  "snapshot_forward_examples": 680400,
+  "seconds": 75.18714900000487,
+  "max_cuda_allocated_MiB": 95.83203125,
+  "U_truth_read": false,
+  "target_reads": 0,
+  "head_fit_updates": 0,
+  "optimizer_updates": 0,
+  "EMA_updates": 0,
+  "conclusion": "Final sourceU predicted-category counts are near balanced in all fixed models; weaker confidence for source-fixed weak categories exists, but many confidence-tail examples remain. This does not establish historical class-specific gate acceptance or explain target errors. No current training change.",
+  "limitations": "Exploratory frozen sourceU confidence analysis after benchmark exposure. Not true class coverage, PL precision, historical acceptance, target performance or Phase2 claim; ordinary training augmentation/temporal/strong-agreement gates are not replayed. All6 prior-fixed BASE/BOTH final50 models included, no score-based selection. Current margin training unchanged."
+}
