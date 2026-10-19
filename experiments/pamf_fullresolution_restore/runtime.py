@@ -17,15 +17,15 @@ def initialize(candidate,parent_action,device):
     return ResolutionRestorer(candidate,frozen).to(device),parent
 
 
-def save_checkpoint(path,model,optimizer,epoch,updates,parent):
-    torch.save(dict(schema='fullresolution_prior_checkpoint_v1',config=d.configuration(),kind=d.KIND,candidate=model.candidate,
+def save_checkpoint(path,model,optimizer,epoch,updates,parent,*,configuration=None,schema='fullresolution_prior_checkpoint_v1'):
+    torch.save(dict(schema=schema,config=d.configuration() if configuration is None else configuration,kind=d.KIND,candidate=model.candidate,
         model=model.state_dict(),optimizer=optimizer.state_dict() if optimizer is not None else None,epoch=epoch,updates=updates,
         parent=parent,prior_initialization='scratch',inherited_prior_epochs=0,training_TX_labels_read=0,training_F_access=False,
         target_training=False),path)
 
 
-def validate_payload(value):
-    if (value.get('schema')!='fullresolution_prior_checkpoint_v1' or value.get('config')!=d.configuration()
+def validate_payload(value,*,configuration=None,schema='fullresolution_prior_checkpoint_v1'):
+    if (value.get('schema')!=schema or value.get('config')!=(d.configuration() if configuration is None else configuration)
             or value.get('kind')!=d.KIND or value.get('candidate') not in d.ROWS or value.get('prior_initialization')!='scratch'
             or value.get('inherited_prior_epochs')!=0 or value.get('training_TX_labels_read')!=0
             or value.get('training_F_access') is not False or value.get('target_training') is not False):
@@ -40,8 +40,8 @@ def validate_payload(value):
     if epoch and not (epoch-1)*247<updates<=epoch*247:raise ValueError('Actual epoch/update exposure differs')
 
 
-def load_checkpoint(path,device):
-    value=torch.load(path,map_location=device,weights_only=False);validate_payload(value)
+def load_checkpoint(path,device,*,configuration=None,schema='fullresolution_prior_checkpoint_v1'):
+    value=torch.load(path,map_location=device,weights_only=False);validate_payload(value,configuration=configuration,schema=schema)
     model=ResolutionRestorer(value['candidate'],ActionRestorer(ComplexTFUNet())).to(device)
     model.load_state_dict(value['model'],strict=True)
     return model.eval(),value
