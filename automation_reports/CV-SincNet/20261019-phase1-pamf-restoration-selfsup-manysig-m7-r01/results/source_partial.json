@@ -1,0 +1,285 @@
+{
+  "status": "PARTIAL_SOURCE_ONLY",
+  "run_id": "20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01",
+  "code_commit": "f99b9202617fa2f61c929b50cef9c541e8876c35",
+  "source_panel_count": 1800,
+  "model_seed": 2026092701,
+  "actual_model_seed_count": 1,
+  "completed_rows": 2,
+  "total_rows": 7,
+  "target_confirmation_complete": false,
+  "observation_time": 1792401840.0704439,
+  "interpretation": "Frozen existing AsF is primary. All values source V only; no target-driven decisions or changes to active rows.",
+  "rows": [
+    {
+      "candidate": "rescnn",
+      "epoch": 20,
+      "training": {
+        "status": "TRAINING_COMPLETE",
+        "candidate": "rescnn",
+        "epochs": 20,
+        "updates": 4940,
+        "parameters": 42338,
+        "train_distinct_L": 6300,
+        "train_distinct_U": 56700,
+        "L_exposures": 126000,
+        "U_exposures": 1134000,
+        "clean_identity_exposures": 252287,
+        "TX_labels_read": 0,
+        "source_only": true,
+        "target_reads": 0,
+        "seconds": 179.48164736991748,
+        "peak_allocated_bytes": 399393280
+      },
+      "recognition": {
+        "clean": {
+          "cleanF": {
+            "accuracy": 98.22222222222223,
+            "baseline_accuracy": 98.38888888888889,
+            "repaired": 5,
+            "damaged": 8,
+            "net_repaired": -3
+          },
+          "AsF": {
+            "accuracy": 98.11111111111111,
+            "baseline_accuracy": 98.77777777777777,
+            "repaired": 0,
+            "damaged": 12,
+            "net_repaired": -12
+          }
+        },
+        "practical_high": {
+          "cleanF": {
+            "accuracy": 91.44444444444444,
+            "baseline_accuracy": 68.72222222222221,
+            "repaired": 445,
+            "damaged": 36,
+            "net_repaired": 409
+          },
+          "AsF": {
+            "accuracy": 94.0,
+            "baseline_accuracy": 96.0,
+            "repaired": 21,
+            "damaged": 57,
+            "net_repaired": -36
+          }
+        },
+        "practical_mid": {
+          "cleanF": {
+            "accuracy": 85.0,
+            "baseline_accuracy": 63.27777777777778,
+            "repaired": 451,
+            "damaged": 60,
+            "net_repaired": 391
+          },
+          "AsF": {
+            "accuracy": 88.77777777777777,
+            "baseline_accuracy": 91.5,
+            "repaired": 43,
+            "damaged": 92,
+            "net_repaired": -49
+          }
+        },
+        "practical_low_suburban": {
+          "cleanF": {
+            "accuracy": 84.0,
+            "baseline_accuracy": 63.61111111111111,
+            "repaired": 443,
+            "damaged": 76,
+            "net_repaired": 367
+          },
+          "AsF": {
+            "accuracy": 86.61111111111111,
+            "baseline_accuracy": 89.5,
+            "repaired": 55,
+            "damaged": 107,
+            "net_repaired": -52
+          }
+        },
+        "practical_high_urban": {
+          "cleanF": {
+            "accuracy": 86.33333333333333,
+            "baseline_accuracy": 64.55555555555556,
+            "repaired": 452,
+            "damaged": 60,
+            "net_repaired": 392
+          },
+          "AsF": {
+            "accuracy": 89.16666666666667,
+            "baseline_accuracy": 91.0,
+            "repaired": 43,
+            "damaged": 76,
+            "net_repaired": -33
+          }
+        },
+        "practical_mid_urban": {
+          "cleanF": {
+            "accuracy": 62.22222222222222,
+            "baseline_accuracy": 48.72222222222222,
+            "repaired": 403,
+            "damaged": 160,
+            "net_repaired": 243
+          },
+          "AsF": {
+            "accuracy": 65.88888888888889,
+            "baseline_accuracy": 72.5,
+            "repaired": 92,
+            "damaged": 211,
+            "net_repaired": -119
+          }
+        },
+        "practical_low_urban": {
+          "cleanF": {
+            "accuracy": 48.55555555555556,
+            "baseline_accuracy": 39.22222222222223,
+            "repaired": 370,
+            "damaged": 202,
+            "net_repaired": 168
+          },
+          "AsF": {
+            "accuracy": 52.5,
+            "baseline_accuracy": 59.94444444444444,
+            "repaired": 138,
+            "damaged": 272,
+            "net_repaired": -134
+          }
+        }
+      }
+    },
+    {
+      "candidate": "dual_domain",
+      "epoch": 20,
+      "training": {
+        "status": "TRAINING_COMPLETE",
+        "candidate": "dual_domain",
+        "epochs": 20,
+        "updates": 4940,
+        "parameters": 48148,
+        "train_distinct_L": 6300,
+        "train_distinct_U": 56700,
+        "L_exposures": 126000,
+        "U_exposures": 1134000,
+        "clean_identity_exposures": 252287,
+        "TX_labels_read": 0,
+        "source_only": true,
+        "target_reads": 0,
+        "seconds": 213.21896395413205,
+        "peak_allocated_bytes": 530827776
+      },
+      "recognition": {
+        "clean": {
+          "cleanF": {
+            "accuracy": 97.83333333333334,
+            "baseline_accuracy": 98.38888888888889,
+            "repaired": 6,
+            "damaged": 16,
+            "net_repaired": -10
+          },
+          "AsF": {
+            "accuracy": 97.83333333333334,
+            "baseline_accuracy": 98.77777777777777,
+            "repaired": 5,
+            "damaged": 22,
+            "net_repaired": -17
+          }
+        },
+        "practical_high": {
+          "cleanF": {
+            "accuracy": 94.33333333333334,
+            "baseline_accuracy": 68.72222222222221,
+            "repaired": 483,
+            "damaged": 22,
+            "net_repaired": 461
+          },
+          "AsF": {
+            "accuracy": 95.77777777777777,
+            "baseline_accuracy": 96.0,
+            "repaired": 37,
+            "damaged": 41,
+            "net_repaired": -4
+          }
+        },
+        "practical_mid": {
+          "cleanF": {
+            "accuracy": 89.0,
+            "baseline_accuracy": 63.27777777777778,
+            "repaired": 502,
+            "damaged": 39,
+            "net_repaired": 463
+          },
+          "AsF": {
+            "accuracy": 90.94444444444446,
+            "baseline_accuracy": 91.5,
+            "repaired": 56,
+            "damaged": 66,
+            "net_repaired": -10
+          }
+        },
+        "practical_low_suburban": {
+          "cleanF": {
+            "accuracy": 87.44444444444444,
+            "baseline_accuracy": 63.61111111111111,
+            "repaired": 473,
+            "damaged": 44,
+            "net_repaired": 429
+          },
+          "AsF": {
+            "accuracy": 88.44444444444444,
+            "baseline_accuracy": 89.5,
+            "repaired": 66,
+            "damaged": 85,
+            "net_repaired": -19
+          }
+        },
+        "practical_high_urban": {
+          "cleanF": {
+            "accuracy": 89.33333333333333,
+            "baseline_accuracy": 64.55555555555556,
+            "repaired": 485,
+            "damaged": 39,
+            "net_repaired": 446
+          },
+          "AsF": {
+            "accuracy": 90.44444444444444,
+            "baseline_accuracy": 91.0,
+            "repaired": 60,
+            "damaged": 70,
+            "net_repaired": -10
+          }
+        },
+        "practical_mid_urban": {
+          "cleanF": {
+            "accuracy": 66.38888888888889,
+            "baseline_accuracy": 48.72222222222222,
+            "repaired": 449,
+            "damaged": 131,
+            "net_repaired": 318
+          },
+          "AsF": {
+            "accuracy": 67.61111111111111,
+            "baseline_accuracy": 72.5,
+            "repaired": 127,
+            "damaged": 215,
+            "net_repaired": -88
+          }
+        },
+        "practical_low_urban": {
+          "cleanF": {
+            "accuracy": 53.388888888888886,
+            "baseline_accuracy": 39.22222222222223,
+            "repaired": 414,
+            "damaged": 159,
+            "net_repaired": 255
+          },
+          "AsF": {
+            "accuracy": 54.61111111111111,
+            "baseline_accuracy": 59.94444444444444,
+            "repaired": 188,
+            "damaged": 284,
+            "net_repaired": -96
+          }
+        }
+      }
+    }
+  ]
+}

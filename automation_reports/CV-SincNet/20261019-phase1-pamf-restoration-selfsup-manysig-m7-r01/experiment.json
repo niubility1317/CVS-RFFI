@@ -1,0 +1,408 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01",
+  "group_id": "phase1-pamf-satellite-observation-restoration",
+  "display_name": "星地观测恢复器：七网络无TX标签训练与冻结F身份保真验证",
+  "description": "全部6300 L_s与56700 U_s进行合成退化配对恢复；7种网络含条件扩散与流匹配；原F基座和默认头冻结，验证真实TX净纠错、clean保持及六practical，不以NMSE或外观代替身份保真。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "self_supervised",
+    "all_L_U",
+    "frozen_F",
+    "diffusion",
+    "flow_matching",
+    "three_GPU",
+    "truth_last"
+  ],
+  "comparison_group_id": "manysig-source-rx13468-day123-076330-restoration-seven-e20-v1",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "本对话2026-10-19用户要求独立无监督恢复网络、覆盖IQ/FFT/PAMF输入、尝试多种设计含扩散、使用L/U；提供恢复器报告；最新明确训练默认N607并允许多GPU快速验证，直接接训练好F验证真实输入TX身份。",
+  "code": {
+    "commit": "f99b9202617fa2f61c929b50cef9c541e8876c35",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python; actual versions in runtime preflight",
+    "cwd": "releases/pamf_restoration_selfsup_20261019_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "equalized=1, center256, original packet RMS; practical residual/post_sync/noeq at25MHz",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "same contract#role_ids; V panel chosen perRX/day without TX labels using fixed data seed",
+    "label_map_ref": "source_cache/manifest.json#class_id_to_tx; label files read only by independent scorer",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json: READY/EXACT_MATCH; reuse existing cache without new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "experiments/pamf_restoration/data.py: six practical residual/noEQ/fixed one source training draw per physical ID",
+    "restoration_train_counts": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "TX_labels": 0
+    },
+    "source_validation_panel": 1800,
+    "target_panel": {
+      "count": 1200,
+      "seed": 2026101904,
+      "selection": "uniform physical-ID panel; source-selected single candidate only; new six practical paired diagnostics, not historical satellite observations"
+    }
+  },
+  "permissions": {
+    "regime": "Phase1 source-only self-supervised recovery; source V default-head scoring/selection after predictions; then frozen target paired diagnostic",
+    "query_use": "fixed per-sample prediction; all7 views and fixed stochastic diagnostics complete before independent scorer opens TX truth",
+    "external_method_exception": null,
+    "claim_scope": "Terrestrial proxy under added practical channel; original RX ground record recovery, no ideal TX or Phase2/real in-orbit claim; one seed does not prove stable gain"
+  },
+  "checkpoint": {
+    "initialization": "All seven restorers scratch",
+    "sources": [],
+    "contract_check_ref": "existing cleanF E200 and AsF T1 E20+10 source_contract and complete scratch-parent lineage; exact local source roles matched; frozen.py",
+    "provenance_verdict": "F checkpoints VERIFIED: cleanF scratch E200/defaulthead; AsF scratch20+own10/defaulthead. Restoration inherits no weights; fixed F used only for post-freeze evaluation.",
+    "selection_rule": "Eligible source-V model with highest frozen existing AsF low-urban accuracy; if none qualifies, source-best once for explicitly negative confirmation; exact tie: fixed candidate order. Never target scores; no expansion after source failure.",
+    "evaluation_readers": [
+      "20261014-phase1-sigtime-purece-e200-clean-manysig-m8-r01/sig_time-s2026092701/source/last.pt",
+      "20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r02/T1-s2026092701/source/final_ssdg.pth"
+    ]
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/pamf-restoration",
+    "gpu_policy": "Physical0/1/5, max3 active run-owned GPU workers, max1 per card; other owners included in total cap2/card; require12GB free; shared capacity lock; healthy tasks preserved",
+    "remote_run_root": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01",
+    "remote_log_root": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01",
+    "launch_command": "python -u -m experiments.pamf_restoration.runner dispatch --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01 --target-capsule ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule --frozen-bundle references --gpus 0,1,5 --expected-commit f99b9202617fa2f61c929b50cef9c541e8876c35",
+    "stop_rule": "A nonfinite loss/gradient/output, channel/shape/permission error, output conflict or checkpoint mismatch stops that row and prevents unstarted rows; healthy active rows finish; preserve all outputs; no automatic retry."
+  },
+  "expected_artifacts": [
+    "reference_smoke.json",
+    "cache/complete.json",
+    "worker_launches.json",
+    "queue_state.json",
+    "<candidate>/initial_source_smoke.pt",
+    "<candidate>/smoke.json",
+    "<candidate>/training.jsonl",
+    "<candidate>/training_complete.json",
+    "<candidate>/final.pt",
+    "<candidate>/prediction/complete.json",
+    "<candidate>/metrics.json",
+    "source_decision.json",
+    "target_confirmation/<selected>/prediction/complete.json",
+    "target_confirmation/<selected>/metrics.json",
+    "target_confirmation/complete.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "frozen AsF accuracy/macroF1",
+      "cleanF independent existing PAMF readout",
+      "perTX/perRX confusion",
+      "repaired/damaged/net_repaired",
+      "true_TX_margin",
+      "paired-clean feature vs other-TX margin (truth-side diagnostic only)",
+      "three fixed draw class switch rate",
+      "raw IQ NMSE",
+      "prefix232 NMSE",
+      "oracle scalar-aligned NMSE (diagnostic only)",
+      "FFT log MSE",
+      "native PAMF frequency/PA/reference/Sinc inputs",
+      "restorer latency",
+      "parameters",
+      "peak memory",
+      "U exposures"
+    ],
+    "dimensions": [
+      "candidate",
+      "source/target",
+      "view",
+      "TX",
+      "RX",
+      "day",
+      "fixed generation draw"
+    ],
+    "prediction_ref": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/<candidate>/prediction",
+    "scorer_ref": "experiments/pamf_restoration/runner.py:score_row",
+    "primary": "Compare F(received) vs F(restored) with exact same frozen AsF/default head; keep clean-through-restorer. Source thresholds: lowurban gain>=.5pp, clean drop<=.2pp, mean raw NMSE no worse and clean NMSE<=.02. Select highest source lowurban among eligible; if none, source-best once for negative target confirmation, no expansion or target-feedback tuning."
+  },
+  "rows": [
+    {
+      "row_id": "rescnn",
+      "method": "rescnn",
+      "purpose": "fixed_restoration_algorithm_comparison",
+      "config_ref": "experiments/pamf_restoration/design.py",
+      "resolved_config_ref": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/rescnn/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": 2026101903
+      },
+      "seed_notes": "split is original contract; data seed fixes source V panel and native source scene/noise draw; augmentation fixes receiver sessions/clean mask and training diffusion/flow RNG; support not applicable; target panel seed separately fixed.",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "AdamW",
+      "lr": 0.0003,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "63,000 physical source records/epoch, batch256, ceil63000/256=247 updates/epoch, 4940 total; each126,000 L and1,134,000 U exposures includes20% clean identity control; actual mask counts logged",
+      "output_root": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/rescnn",
+      "log_path": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/logs/rescnn.log",
+      "command": "worker rescnn (dispatch-generated exact argv in worker_launches.json)",
+      "expected_artifacts": [
+        "final.pt",
+        "training_complete.json",
+        "prediction/complete.json",
+        "metrics.json"
+      ]
+    },
+    {
+      "row_id": "unet",
+      "method": "unet",
+      "purpose": "fixed_restoration_algorithm_comparison",
+      "config_ref": "experiments/pamf_restoration/design.py",
+      "resolved_config_ref": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/unet/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": 2026101903
+      },
+      "seed_notes": "split is original contract; data seed fixes source V panel and native source scene/noise draw; augmentation fixes receiver sessions/clean mask and training diffusion/flow RNG; support not applicable; target panel seed separately fixed.",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "AdamW",
+      "lr": 0.0003,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "63,000 physical source records/epoch, batch256, ceil63000/256=247 updates/epoch, 4940 total; each126,000 L and1,134,000 U exposures includes20% clean identity control; actual mask counts logged",
+      "output_root": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/unet",
+      "log_path": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/logs/unet.log",
+      "command": "worker unet (dispatch-generated exact argv in worker_launches.json)",
+      "expected_artifacts": [
+        "final.pt",
+        "training_complete.json",
+        "prediction/complete.json",
+        "metrics.json"
+      ]
+    },
+    {
+      "row_id": "dual_domain",
+      "method": "dual_domain",
+      "purpose": "fixed_restoration_algorithm_comparison",
+      "config_ref": "experiments/pamf_restoration/design.py",
+      "resolved_config_ref": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/dual_domain/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": 2026101903
+      },
+      "seed_notes": "split is original contract; data seed fixes source V panel and native source scene/noise draw; augmentation fixes receiver sessions/clean mask and training diffusion/flow RNG; support not applicable; target panel seed separately fixed.",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "AdamW",
+      "lr": 0.0003,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "63,000 physical source records/epoch, batch256, ceil63000/256=247 updates/epoch, 4940 total; each126,000 L and1,134,000 U exposures includes20% clean identity control; actual mask counts logged",
+      "output_root": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/dual_domain",
+      "log_path": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/logs/dual_domain.log",
+      "command": "worker dual_domain (dispatch-generated exact argv in worker_launches.json)",
+      "expected_artifacts": [
+        "final.pt",
+        "training_complete.json",
+        "prediction/complete.json",
+        "metrics.json"
+      ]
+    },
+    {
+      "row_id": "diffusion",
+      "method": "diffusion",
+      "purpose": "fixed_restoration_algorithm_comparison",
+      "config_ref": "experiments/pamf_restoration/design.py",
+      "resolved_config_ref": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/diffusion/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": 2026101903
+      },
+      "seed_notes": "split is original contract; data seed fixes source V panel and native source scene/noise draw; augmentation fixes receiver sessions/clean mask and training diffusion/flow RNG; support not applicable; target panel seed separately fixed.",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "AdamW",
+      "lr": 0.0003,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "63,000 physical source records/epoch, batch256, ceil63000/256=247 updates/epoch, 4940 total; each126,000 L and1,134,000 U exposures includes20% clean identity control; actual mask counts logged",
+      "output_root": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/diffusion",
+      "log_path": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/logs/diffusion.log",
+      "command": "worker diffusion (dispatch-generated exact argv in worker_launches.json)",
+      "expected_artifacts": [
+        "final.pt",
+        "training_complete.json",
+        "prediction/complete.json",
+        "metrics.json"
+      ]
+    },
+    {
+      "row_id": "flow",
+      "method": "flow",
+      "purpose": "fixed_restoration_algorithm_comparison",
+      "config_ref": "experiments/pamf_restoration/design.py",
+      "resolved_config_ref": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/flow/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": 2026101903
+      },
+      "seed_notes": "split is original contract; data seed fixes source V panel and native source scene/noise draw; augmentation fixes receiver sessions/clean mask and training diffusion/flow RNG; support not applicable; target panel seed separately fixed.",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "AdamW",
+      "lr": 0.0003,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "63,000 physical source records/epoch, batch256, ceil63000/256=247 updates/epoch, 4940 total; each126,000 L and1,134,000 U exposures includes20% clean identity control; actual mask counts logged",
+      "output_root": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/flow",
+      "log_path": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/logs/flow.log",
+      "command": "worker flow (dispatch-generated exact argv in worker_launches.json)",
+      "expected_artifacts": [
+        "final.pt",
+        "training_complete.json",
+        "prediction/complete.json",
+        "metrics.json"
+      ]
+    },
+    {
+      "row_id": "unrolled",
+      "method": "unrolled",
+      "purpose": "fixed_restoration_algorithm_comparison",
+      "config_ref": "experiments/pamf_restoration/design.py",
+      "resolved_config_ref": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/unrolled/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": 2026101903
+      },
+      "seed_notes": "split is original contract; data seed fixes source V panel and native source scene/noise draw; augmentation fixes receiver sessions/clean mask and training diffusion/flow RNG; support not applicable; target panel seed separately fixed.",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "AdamW",
+      "lr": 0.0003,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "63,000 physical source records/epoch, batch256, ceil63000/256=247 updates/epoch, 4940 total; each126,000 L and1,134,000 U exposures includes20% clean identity control; actual mask counts logged",
+      "output_root": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/unrolled",
+      "log_path": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/logs/unrolled.log",
+      "command": "worker unrolled (dispatch-generated exact argv in worker_launches.json)",
+      "expected_artifacts": [
+        "final.pt",
+        "training_complete.json",
+        "prediction/complete.json",
+        "metrics.json"
+      ]
+    },
+    {
+      "row_id": "transformer",
+      "method": "transformer",
+      "purpose": "fixed_restoration_algorithm_comparison",
+      "config_ref": "experiments/pamf_restoration/design.py",
+      "resolved_config_ref": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/transformer/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": 2026101903
+      },
+      "seed_notes": "split is original contract; data seed fixes source V panel and native source scene/noise draw; augmentation fixes receiver sessions/clean mask and training diffusion/flow RNG; support not applicable; target panel seed separately fixed.",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "AdamW",
+      "lr": 0.0003,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "63,000 physical source records/epoch, batch256, ceil63000/256=247 updates/epoch, 4940 total; each126,000 L and1,134,000 U exposures includes20% clean identity control; actual mask counts logged",
+      "output_root": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/transformer",
+      "log_path": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/logs/transformer.log",
+      "command": "worker transformer (dispatch-generated exact argv in worker_launches.json)",
+      "expected_artifacts": [
+        "final.pt",
+        "training_complete.json",
+        "prediction/complete.json",
+        "metrics.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Restoration pretraining contains zero TX labels, no PL or confidence gating, no frozen-F gradient training and no fitted/replaced head.",
+    "All 63,000 legal L/U IQ participate; V panel1800 has no parameter/statistic update. All physical source/target roles retain original split.",
+    "Native simulator coordinate probe: numerical delay24 samples, peak offset24 in six declared public impulse cases, kernel length62. No oracle alignment at inference; tail loss of observability reported.",
+    "Generative formal prediction: single fixed sample-ID noise draw; extra two draws first128 IDs are diagnostics only, never best-of-N or averaged.",
+    "Pure recovery only in this matrix. TX-protected fine tuning/joint PAMF training require a separate source-driven experiment and remain unlaunched.",
+    "REJECTED_EXTRA_GATE: separate design approval, duplicated unchanged-code/runner review, extra seal/hash/data revalidation are not launch conditions.",
+    "Prior F costs: cleanF E200/10,000 updates; AsF scratchE20+ownE10/6,660 updates. F weights remain frozen; this is not a matched total-training-cost architecture comparison."
+  ],
+  "registered_at": "2026-10-19T09:16:38+00:00"
+}

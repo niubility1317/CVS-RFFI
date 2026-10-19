@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-19T07:19:31+00:00
+更新：2026-10-19T09:23:54+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|127|
+|managed_run|128|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -40,8 +40,8 @@
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|17|
 |[source_only](by_method/source_only.md)|16|
 |[d92](by_method/d92.md)|15|
+|[truth_last](by_method/truth_last.md)|15|
 |[diagnostic](by_method/diagnostic.md)|15|
-|[truth_last](by_method/truth_last.md)|14|
 |[residual](by_method/residual.md)|13|
 |[response](by_method/response.md)|13|
 |[daot](by_method/daot.md)|12|
@@ -207,6 +207,13 @@
 |[batch_size](by_method/batch_size.md)|1|
 |[fixed_completed14](by_method/fixed_completed14.md)|1|
 |[partial_multiseed](by_method/partial_multiseed.md)|1|
+|[restoration](by_method/restoration.md)|1|
+|[self_supervised](by_method/self_supervised.md)|1|
+|[all_L_U](by_method/all_L_U.md)|1|
+|[frozen_F](by_method/frozen_F.md)|1|
+|[diffusion](by_method/diffusion.md)|1|
+|[flow_matching](by_method/flow_matching.md)|1|
+|[three_GPU](by_method/three_GPU.md)|1|
 |[ecrs](by_method/ecrs.md)|1|
 |[fedcvs](by_method/fedcvs.md)|1|
 
