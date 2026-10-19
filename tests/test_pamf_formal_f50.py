@@ -96,3 +96,13 @@ def test_entry_and_original_F50_three_way_readout_fixed_without_R07():
     assert config['new_training_updates'] == config['adaptation_updates'] == config['head_fit_updates'] == config['channel_generation_calls'] == 0
     assert config['no_R07_result_or_checkpoint_use'] and config['truth_last']
     assert config['GPU'] == 4 and config['capacity_lock'] == 'receiver_residual_capacity4.lock'
+
+
+def test_unstarted_resource_replacement_keeps_the_scientific_matrix():
+    old, new = r.configuration(), r.configuration('R09_gpu5')
+    assert new['GPU'] == 5 and new['run'] == r.REPLACEMENT_RUN
+    assert new['replaces_unstarted_run'] == r.RUN
+    changed = {key for key in old if old[key] != new[key]}
+    assert changed == {'run', 'GPU', 'registered_plan', 'replaces_unstarted_run'}
+    with pytest.raises(ValueError):
+        r.plan_settings('arbitrary_GPU')

@@ -20,6 +20,7 @@ from experiments.pamf_restoration.feature_diagnostic import capped_pair_margin
 
 ROOT = Path(__file__).resolve().parents[2]
 RUN = '20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r08'
+REPLACEMENT_RUN = '20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09'
 COARSE_RUN = '20261019-phase1-restoration-formal-frozen-coarse-s2026092701-r04'
 RESIDUAL_RUN = '20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05'
 COARSE_COMMIT = 'a173cc5002262f243abeb5a904433fcac42ee1cf'
@@ -28,13 +29,23 @@ VIEWS = ('clean', *SCENES)
 MODES = ('identity', 'coarse', 'residual')
 
 
-def configuration():
-    return dict(schema='formal_F50_frozen_readout_v1', run=RUN, count=COUNT, views=list(VIEWS), readouts=list(MODES),
+def plan_settings(plan):
+    if plan == 'R08_gpu4':
+        return RUN, 4
+    if plan == 'R09_gpu5':
+        return REPLACEMENT_RUN, 5
+    raise ValueError('Only the two preregistered resource plans are allowed')
+
+
+def configuration(plan='R08_gpu4'):
+    run, gpu = plan_settings(plan)
+    return dict(schema='formal_F50_frozen_readout_v1', run=run, count=COUNT, views=list(VIEWS), readouts=list(MODES),
         F_run=REFERENCE_RUN, F_seed=2026092701, F_epochs=50, F_updates=11100, original_default_head=True,
         new_training_updates=0, adaptation_updates=0, head_fit_updates=0, channel_generation_calls=0,
         restorer_choice='Existing R02/R03 source-frozen selections;reuse R04/R05 completed IQ,not target ranking',
         IQ_prediction_owner='R04/R05 complete immutable predictions,not this readout',
-        feature_reference_cap=512, GPU=4, capacity_lock='receiver_residual_capacity4.lock',
+        feature_reference_cap=512, GPU=gpu, capacity_lock='receiver_residual_capacity4.lock',
+        registered_plan=plan, replaces_unstarted_run=RUN if plan == 'R09_gpu5' else None,
         truth_last=True, no_R07_result_or_checkpoint_use=True,
         scope='Fixed three-way full formal readout on exposed engineering proxy;not new independent blind/in-orbit evidence')
 
@@ -76,11 +87,12 @@ def completed_inputs(coarse, residual, expected_count=COUNT):
 @torch.no_grad()
 def predict(args):
     import fcntl
+    _, gpu = plan_settings(args.plan)
     source_parent(args.parent_coarse); source_residual_parent(args.parent_residual)
     while True:
         with (args.output.parent/'receiver_residual_capacity4.lock').open('a') as lock:
             fcntl.flock(lock, fcntl.LOCK_EX)
-            card = capacity()[4]
+            card = capacity()[gpu]
             if card['free_mb'] >= 12000 and len(card['pids']) < 2:
                 reader = load_reader(args.reader_folder, args.source_cache, 'cuda:0')
                 x = array_tensor(IQSource(args.source_cache, 'L_s').iq[:2], 'cuda:0')
@@ -92,7 +104,7 @@ def predict(args):
         time.sleep(2)
     write_json(args.output/'smoke.json', dict(status='PASS', real_source_samples=2, target_reads=0,
         TX_labels_read=0, original_default_head=True, head_fit_updates=0))
-    write_json(args.output/'gpu_ready.json', dict(pid=os.getpid(), cwd=str(ROOT), argv=sys.argv, GPU=4))
+    write_json(args.output/'gpu_ready.json', dict(pid=os.getpid(), cwd=str(ROOT), argv=sys.argv, GPU=gpu))
     ids, inputs = completed_inputs(args.formal_coarse, args.formal_residual)
     output = args.output/'prediction'; output.mkdir()
     timings = {}
@@ -187,29 +199,31 @@ def score(args):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('mode', choices=('run', 'score'))
+    parser.add_argument('--plan', choices=('R08_gpu4', 'R09_gpu5'), default='R08_gpu4')
     for key in ('formal-coarse', 'formal-residual', 'parent-coarse', 'parent-residual', 'reader-folder', 'source-cache', 'output', 'target-truth'):
         parser.add_argument('--'+key, type=Path, required=True)
     parser.add_argument('--expected-commit', required=True)
     args = parser.parse_args()
     for key in ('formal_coarse', 'formal_residual', 'parent_coarse', 'parent_residual', 'reader_folder', 'source_cache', 'output', 'target_truth'):
         setattr(args, key, getattr(args, key).resolve())
-    if args.output.name != RUN or code_commit() != args.expected_commit:
+    run, gpu = plan_settings(args.plan)
+    if args.output.name != run or code_commit() != args.expected_commit:
         raise ValueError('Registered readout run/code differs')
     torch.set_num_threads(2); torch.backends.cuda.matmul.allow_tf32=False; torch.backends.cudnn.allow_tf32=False
     if args.mode == 'score':
         score(args); return
     if args.output.exists():
         raise FileExistsError('Immutable readout output exists; reconcile')
-    if os.environ.get('CUDA_VISIBLE_DEVICES') != '4':
-        raise ValueError('Only registered GPU4 allowed')
+    if os.environ.get('CUDA_VISIBLE_DEVICES') != str(gpu):
+        raise ValueError('Only the registered physical GPU is allowed')
     args.output.mkdir()
     write_json(args.output/'launch.json', dict(pid=os.getpid(), cwd=str(ROOT), argv=sys.argv, commit=args.expected_commit,
-        owner='codex/root/formal-F50-readout', GPU=4, started=time.time()))
-    write_json(args.output/'resolved_config.json', configuration())
+        owner='codex/root/formal-F50-readout', GPU=gpu, started=time.time()))
+    write_json(args.output/'resolved_config.json', configuration(args.plan))
     try:
         predict(args)
         command = [sys.executable, '-u', '-m', 'experiments.pamf_formal_f50.runner', 'score']
-        for key in ('formal_coarse', 'formal_residual', 'parent_coarse', 'parent_residual', 'reader_folder', 'source_cache', 'output', 'target_truth', 'expected_commit'):
+        for key in ('plan', 'formal_coarse', 'formal_residual', 'parent_coarse', 'parent_residual', 'reader_folder', 'source_cache', 'output', 'target_truth', 'expected_commit'):
             command.extend(['--'+key.replace('_', '-'), str(getattr(args, key))])
         subprocess.run(command, cwd=ROOT, env=dict(os.environ, CUDA_VISIBLE_DEVICES=''), check=True)
         write_json(args.output/'complete.json', dict(status='ANALYZED', count=COUNT, readouts=list(MODES),
