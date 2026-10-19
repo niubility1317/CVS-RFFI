@@ -1,0 +1,271 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-phase1-restoration-iqmean-source-s2026092701-m2-r01",
+  "group_id": "phase1-restoration-iqmean",
+  "display_name": "冻结恢复器固定 IQ 平均：最终特征与中间层搭配",
+  "description": "两个源候选固定0.5/0.5 IQ平均，原F/默认头冻结，零新增训练；源选择后自动完整目标双评价。",
+  "kind": "comparison",
+  "stage": "Phase1-source-ablation-conditional-target",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "iqmean_frozenF",
+    "source_only_selection",
+    "truth_last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261020-phase1-restoration-identity-priority-source-s2026092701-m2-r01",
+    "20261020-phase1-restoration-layerwise50-source-s2026092701-m2-r01",
+    "20261019-phase1-restoration-residual-refinement-selfsup-m3-r03",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户授权独立优化、不向另一对话发指令；分开报告与clean的差距和接入基座后的目标表现；目标lowurban>=70%、其他环境接近clean（Agent暂按<=2pp）。",
+  "code": {
+    "commit": null,
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python3.10/Torch2.1+cu121/NumPy2;CPU2;FP32;no package changes",
+    "cwd": "releases/pamf_iqmean_restore_20261020_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original validated source7/63/30 physical split,unchanged",
+    "representation": "Existing1800 sourceV clean+six practical;2Ls IQ smoke only;no new IQ generation or training",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/validation/physical_ids.npy",
+    "label_map_ref": "source_cache/manifest.json#class_id_to_tx; TX truth not used for restorer training",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original six TX;restorer input IQ only,sourceV truth scoring only after all registered source predictions",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/validation",
+    "support_query_ref": null,
+    "leo_config_ref": "R02 existing20epoch matchedfull/residual post_sync/noEQ observations;no regeneration",
+    "new_physical_exposures": {
+      "L_s": 0,
+      "U_s": 0,
+      "total": 0
+    },
+    "unique_training_records": 0,
+    "actual_training_labels": "No new training;inherited source models used supervised frozenF knowledge,not a wholly label-free system",
+    "IQ_examples_per_arm": 0,
+    "clean_reference": "SourceV pairedclean scoring only after predictions;targetpairedclean scoringonly after all7predictions",
+    "augmentation": "None;reuse fixed source and conditionaltarget receivedIQ",
+    "target_views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "F_readout_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "restorer_model_seed": 2026092701,
+    "F_training_teacher_seeds": [],
+    "target_receivers_ref": "Original immutable formal R05 physical IDs and matched Phase1 data contract; no new target population",
+    "inherited_physical_exposures": "Member source-training histories preserved in their reports;common originalcoarse20 reused,not counted as new training",
+    "middle_references": "None at runtime;middle-guided member weights are frozen"
+  },
+  "permissions": {
+    "regime": "Frozen source-member IQ composition;sourceV selection;conditional Phase1targettruthlast",
+    "query_use": "No target during fitting/selection; only one qualified frozen arm accesses original seven target views, all predictions fixed before independent truth scoring",
+    "external_method_exception": null,
+    "claim_scope": "One inherited training seed,2restorationmembers,3existingFreadouts;not3restorerseeds/blind/inorbit;failedmembersnotrequalified"
+  },
+  "checkpoint": {
+    "initialization": "No new initialization or fitting; two frozen source-trained member checkpoints, arithmetic IQ mean only",
+    "sources": [
+      "20261020-phase1-restoration-identity-priority-source-s2026092701-m2-r01/posterior03/final.pt E10/2470,method de3118c724026869581a9cf1975b0d1314c96d6e",
+      "20261020-phase1-restoration-layerwise50-source-s2026092701-m2-r01/<final_guidance or layerwise_guidance>/final.pt E30/7410,method672a36de61da32f3974472db97448b8977bbae71",
+      "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02 original default heads,seeds2026092701/02/03,frozen"
+    ],
+    "contract_check_ref": "Completed source-only member launch/training metadata and original native-equivalent F/data handles reused",
+    "provenance_verdict": "Same validated63000 source L/U histories;members source-only and never target trained/selected;strict loaders pin schemas and final budgets",
+    "selection_rule": "Fixed0.5IQmean;vs source posterior03 each urban+.5pp,otherfour>=-.5pp,clean drop<=.1pp,NMSE<=1.15 ORIGINAL feature;select sourceurbanmean,lowerNMSE,registeredorder"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/iqmean",
+    "gpu_policy": "GPU4mean_final/GPU5mean_layerwise;1own/card,allowner<2/free>=12GB;sourceCPUscore1;selectedtarget after both sourceworkers exit",
+    "remote_run_root": "runs/20261020-phase1-restoration-iqmean-source-s2026092701-m2-r01",
+    "remote_log_root": "logs/20261020-phase1-restoration-iqmean-source-s2026092701-m2-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/iqmean_20261020_r01",
+    "launch_command": "python -u -m experiments.pamf_iqmean_restore.runner run --run-root ../../runs --parent-restoration ../../runs/20261019-phase1-restoration-residual-refinement-selfsup-m3-r03 --parent-cache ../../runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --reader-root ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02 --formal-residual ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-iqmean-source-s2026092701-m2-r01 --expected-commit <actual method commit>",
+    "stop_rule": "Illegal input/parent/code,collision,nonfinite,budget/predcoverage failure:preserveoutputs,abort,noautoretry",
+    "CPU_generation_workers": 0
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "workers.json",
+    "<arm>/composition.json",
+    "<arm>/gpu_ready.json",
+    "<arm>/prediction/complete.json",
+    "<arm>/inference_complete.json",
+    "<arm>/summary.json",
+    "<arm>/complete.json",
+    "source_decision.json",
+    "source_complete.json",
+    "target_launch.json(ifqualified)",
+    "target/prediction/complete.json(ifqualified)",
+    "target/summary.json(ifqualified)",
+    "target/complete.json(ifqualified)",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "sourceaccuracy",
+      "sourceIQNMSE",
+      "targetaccuracy/MacroF1",
+      "pairedrepair/damage/net",
+      "gap_to_clean",
+      "perTX/RX/dayconfusion",
+      "full/prefix232/tail24waveformgap",
+      "evaluationtime/peakmemory/modelparameters"
+    ],
+    "dimensions": [
+      "identity/parentR03/refined",
+      "mean_final/mean_layerwise",
+      "clean+sixpractical",
+      "TX",
+      "RX",
+      "day",
+      "3originalFseeds"
+    ],
+    "prediction_ref": "runs/20261020-phase1-restoration-iqmean-source-s2026092701-m2-r01/<arm>/prediction and selectedtarget/prediction",
+    "scorer_ref": "pamf_iqmean_restore.runner.score andtarget.score;independentCPU after allviews",
+    "source_rule": "Fixed0.5IQmean;vs source posterior03 each urban+.5pp,otherfour>=-.5pp,clean drop<=.1pp,NMSE<=1.15 ORIGINAL feature;select sourceurbanmean,lowerNMSE,registeredorder",
+    "next_stage": "Only a qualified source-selected arm automatically evaluates all seven target views and three independent original F heads",
+    "primary": "Actual target low urban >=70%; other five close to original clean (agent provisional <=2pp), paired clean IQ gap reported separately",
+    "target_feedback_to_training": false
+  },
+  "rows": [
+    {
+      "row_id": "mean_final",
+      "method": "Fixed0.5IQmean posterior03 + final_guidance",
+      "purpose": "source_composed_candidate_falsification",
+      "config_ref": "experiments/pamf_iqmean_restore/design.py#configuration",
+      "resolved_config_ref": "runs/20261020-phase1-restoration-iqmean-source-s2026092701-m2-r01/mean_final/composition.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101951,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No new stochastic fitting;both inherited members modelseed2701;fixed source/target observations,no new draws",
+      "k": null,
+      "scenario": "sourceL/U clean+originalR02mixed;fixedsourceVclean+6practical;conditionaltargetall7",
+      "optimizer": "AdamW reset",
+      "lr": 3e-05,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0new epochs/updates;2frozen members 4,281,680parameters;carriedmember60/80componentepochs,common20=>120unique historicalcomponentepochs",
+      "output_root": "runs/20261020-phase1-restoration-iqmean-source-s2026092701-m2-r01/mean_final",
+      "log_path": "runs/20261020-phase1-restoration-iqmean-source-s2026092701-m2-r01/logs/mean_final.log",
+      "command": "python -u -m experiments.pamf_iqmean_restore.runner run --run-root ../../runs --parent-restoration ../../runs/20261019-phase1-restoration-residual-refinement-selfsup-m3-r03 --parent-cache ../../runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --reader-root ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02 --formal-residual ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-iqmean-source-s2026092701-m2-r01 --expected-commit <actual method commit>",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "workers.json",
+        "<arm>/composition.json",
+        "<arm>/gpu_ready.json",
+        "<arm>/prediction/complete.json",
+        "<arm>/inference_complete.json",
+        "<arm>/summary.json",
+        "<arm>/complete.json",
+        "source_decision.json",
+        "source_complete.json",
+        "target_launch.json(ifqualified)",
+        "target/prediction/complete.json(ifqualified)",
+        "target/summary.json(ifqualified)",
+        "target/complete.json(ifqualified)",
+        "complete.json"
+      ],
+      "GPU": 4
+    },
+    {
+      "row_id": "mean_layerwise",
+      "method": "Fixed0.5IQmean posterior03 + layerwise_guidance",
+      "purpose": "source_composed_candidate_falsification",
+      "config_ref": "experiments/pamf_iqmean_restore/design.py#configuration",
+      "resolved_config_ref": "runs/20261020-phase1-restoration-iqmean-source-s2026092701-m2-r01/mean_layerwise/composition.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101951,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No new stochastic fitting;both inherited members modelseed2701;fixed source/target observations,no new draws",
+      "k": null,
+      "scenario": "sourceL/U clean+originalR02mixed;fixedsourceVclean+6practical;conditionaltargetall7",
+      "optimizer": "AdamW reset",
+      "lr": 3e-05,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0new epochs/updates;2frozen members 4,281,680parameters;carriedmember60/80componentepochs,common20=>120unique historicalcomponentepochs",
+      "output_root": "runs/20261020-phase1-restoration-iqmean-source-s2026092701-m2-r01/mean_layerwise",
+      "log_path": "runs/20261020-phase1-restoration-iqmean-source-s2026092701-m2-r01/logs/mean_layerwise.log",
+      "command": "python -u -m experiments.pamf_iqmean_restore.runner run --run-root ../../runs --parent-restoration ../../runs/20261019-phase1-restoration-residual-refinement-selfsup-m3-r03 --parent-cache ../../runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --reader-root ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02 --formal-residual ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-iqmean-source-s2026092701-m2-r01 --expected-commit <actual method commit>",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "workers.json",
+        "<arm>/composition.json",
+        "<arm>/gpu_ready.json",
+        "<arm>/prediction/complete.json",
+        "<arm>/inference_complete.json",
+        "<arm>/summary.json",
+        "<arm>/complete.json",
+        "source_decision.json",
+        "source_complete.json",
+        "target_launch.json(ifqualified)",
+        "target/prediction/complete.json(ifqualified)",
+        "target/summary.json(ifqualified)",
+        "target/complete.json(ifqualified)",
+        "complete.json"
+      ],
+      "GPU": 5
+    }
+  ],
+  "notes": [
+    "Previoussourceerroroverlap motivated hypothesis;not targetfeedback. Fixed equal IQweights before this run predictions.",
+    "Failed single members remain failed. New composition has new source predictions and frozen sourcecriterion;no retrospective target access.",
+    "No logits/teachercoordinate averaging,headreplacement,voting,perpacketfittedselector,pairedcleanortruth at practicalinference.",
+    "Zero additional optimization;two frozen2,140,840parameter networks. Actual evaluationtime/peakmemory includes diagnosticR03 andhead forwards;not pure deployment latency.",
+    "28 focused checks PASS;one independent P0/P1 review PASS,no findings;actualmember2Ls noquerysmoke is launcherfirst step then immediatelycontinue.",
+    "One ordinary-account preflight verifiedcompletedsourceparents and freeGPU4/5 at24124MB each;otherownerworkloads preserved.",
+    "Currenttargetgoal unchanged:lowurban>=70%,other5 near originalclean85.113889% (Agent<=2pp interpretation);two evaluation axes reported separately."
+  ],
+  "registered_at": "2026-10-19T18:27:22+00:00"
+}
