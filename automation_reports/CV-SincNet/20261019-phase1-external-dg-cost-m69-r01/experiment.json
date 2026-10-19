@@ -1,0 +1,3343 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-external-dg-cost-m69-r01",
+  "group_id": "phase1-external-dg-frozen-inference-cost",
+  "display_name": "非PAMF冻结模型统一推理成本：三种子69配置",
+  "description": "复用F0、ManyRx、通用DG和历史ResNet冻结默认头；同GPU、同torch1.11环境、固定合成输入；零新增训练和目标访问。全部识别矩阵完成后才测GPU。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "non-PAMF",
+    "inference-cost",
+    "three-seed",
+    "synthetic-only",
+    "deferred-GPU"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261019-phase1-pamf-dg-nativebudget-m24-r01",
+    "20261019-phase1-external-dg-suite-m168-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "既有非PAMF完整对比目标及已固定设计中的统一推理成本；复用冻结三种子，不增加训练，不占用健康任务GPU。",
+  "code": {
+    "commit": "publisher records actual Git commit in release_commit.txt/package.json",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "uniform existing SDG-SEI Python3.8 torch1.11 NumPy1.23; no shared install",
+    "cwd": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/release_root"
+  },
+  "data": {
+    "dataset": "synthetic zero IQ for cost only; frozen source contracts retained",
+    "version": "2x256 FP32 resident input, no real/source/target IQ loaded",
+    "representation": "batch1 or128 x2x256 FP32 zeros",
+    "contract_ref": "original source contracts checked by the frozen-model loader",
+    "physical_ids_ref": null,
+    "label_map_ref": "original source_contract classes; no labels provided for timing",
+    "source_receivers": null,
+    "target_receivers": null,
+    "source_days": null,
+    "target_days": null,
+    "roles": null,
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "reuse existing validated source contracts; no data construction/revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "frozen source-model cost evaluation",
+    "query_use": "none; synthetic inputs only",
+    "external_method_exception": null,
+    "claim_scope": "specified inference path and runtime; no new accuracy/generalization/in-orbit claim"
+  },
+  "checkpoint": {
+    "initialization": "load original frozen default head and backbone; no training",
+    "sources": [
+      "F0 native full/CE 24",
+      "ManyRx native full/CE 24",
+      "generic ResNet18 15",
+      "historical ResNet18/50 6"
+    ],
+    "contract_check_ref": "cost.load_task invokes original parent, suite or legacy strict loader",
+    "provenance_verdict": "per-row strict contract/provenance/default-head checks at load; future checkpoints not claimed verified now",
+    "selection_rule": "reuse original source-selected/fixed-final checkpoint; no new selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex-root-phase1-external-dg-cost-20261019",
+    "launch_command": "python -u -m experiments.phase1_external_dg.cost dispatch --config runtime.json",
+    "remote_run_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root",
+    "remote_log_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root",
+    "local_artifact_root": "local_artifacts/phase1_external_dg_cost_20261019",
+    "runtime_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json",
+    "gpu_policy": "after suite process exits and all186 training/6evaluation closure; select one idle GPU from physical0/1 once; keep same GPU for all69; wait foreign tasks",
+    "stop_rule": "first technical/contended measurement failure leaves PARTIAL and stops unstarted cost rows; no intervention in other owners; preserve all outputs"
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "state.json",
+    "69ROW/result.json",
+    "summary.json",
+    "report.md",
+    "completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "identity_parameters",
+      "identity_parameter_bytes",
+      "identity_buffer_bytes",
+      "defined_MACs",
+      "median_ms",
+      "p95_ms",
+      "examples_per_second",
+      "peak_allocated_bytes"
+    ],
+    "dimensions": [
+      "origin",
+      "protocol",
+      "family",
+      "variant",
+      "model_seed",
+      "batch"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "not applicable; no predictions/truth; synchronized1000 timings per batch and three-seed cost aggregation"
+  },
+  "rows": [
+    {
+      "row_id": "F0-riei-full-s2026092701",
+      "method": "riei",
+      "variant": "full",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-riei-full-s2026092701.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-riei-full-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/F0-riei-full-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-riei-ce-s2026092701",
+      "method": "riei",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-riei-ce-s2026092701.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-riei-ce-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/F0-riei-ce-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-drift-full-s2026092701",
+      "method": "drift",
+      "variant": "full",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-drift-full-s2026092701.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-drift-full-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/F0-drift-full-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-drift-ce-s2026092701",
+      "method": "drift",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-drift-ce-s2026092701.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-drift-ce-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/F0-drift-ce-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-ibrff-full-s2026092701",
+      "method": "ibrff",
+      "variant": "full",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-ibrff-full-s2026092701.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-ibrff-full-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/F0-ibrff-full-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-ibrff-ce-s2026092701",
+      "method": "ibrff",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-ibrff-ce-s2026092701.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-ibrff-ce-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/F0-ibrff-ce-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-sdg-full-s2026092701",
+      "method": "sdg",
+      "variant": "full",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-sdg-full-s2026092701.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-sdg-full-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/F0-sdg-full-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-sdg-ce-s2026092701",
+      "method": "sdg",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-sdg-ce-s2026092701.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-sdg-ce-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/F0-sdg-ce-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-ManyRx-ibrff-full-s2026092701",
+      "method": "ibrff",
+      "variant": "full",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-ibrff-full-s2026092701.json",
+      "data_overrides": {
+        "source_receivers": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 10,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-ibrff-full-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-ManyRx-ibrff-full-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-ManyRx-ibrff-ce-s2026092701",
+      "method": "ibrff",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-ibrff-ce-s2026092701.json",
+      "data_overrides": {
+        "source_receivers": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 10,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-ibrff-ce-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-ManyRx-ibrff-ce-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-ManyRx-sdg-full-s2026092701",
+      "method": "sdg",
+      "variant": "full",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-sdg-full-s2026092701.json",
+      "data_overrides": {
+        "source_receivers": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 10,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-sdg-full-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-ManyRx-sdg-full-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-ManyRx-sdg-ce-s2026092701",
+      "method": "sdg",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-sdg-ce-s2026092701.json",
+      "data_overrides": {
+        "source_receivers": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 10,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-sdg-ce-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-ManyRx-sdg-ce-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-ManyRx-riei-full-s2026092701",
+      "method": "riei",
+      "variant": "full",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-riei-full-s2026092701.json",
+      "data_overrides": {
+        "source_receivers": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 10,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-riei-full-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-ManyRx-riei-full-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-ManyRx-riei-ce-s2026092701",
+      "method": "riei",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-riei-ce-s2026092701.json",
+      "data_overrides": {
+        "source_receivers": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 10,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-riei-ce-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-ManyRx-riei-ce-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-ManyRx-drift-full-s2026092701",
+      "method": "drift",
+      "variant": "full",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-drift-full-s2026092701.json",
+      "data_overrides": {
+        "source_receivers": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 10,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-drift-full-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-ManyRx-drift-full-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-ManyRx-drift-ce-s2026092701",
+      "method": "drift",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-drift-ce-s2026092701.json",
+      "data_overrides": {
+        "source_receivers": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 10,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-drift-ce-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-ManyRx-drift-ce-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-generic-resnet18-erm-s2026092701",
+      "method": "resnet18",
+      "variant": "erm",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-erm-s2026092701.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-erm-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-generic-resnet18-erm-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-generic-resnet18-mixstyle-s2026092701",
+      "method": "resnet18",
+      "variant": "mixstyle",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-mixstyle-s2026092701.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-mixstyle-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-generic-resnet18-mixstyle-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-generic-resnet18-mixstyle_id-s2026092701",
+      "method": "resnet18",
+      "variant": "mixstyle_id",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-mixstyle_id-s2026092701.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-mixstyle_id-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-generic-resnet18-mixstyle_id-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-generic-resnet18-fishr-s2026092701",
+      "method": "resnet18",
+      "variant": "fishr",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-fishr-s2026092701.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-fishr-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-generic-resnet18-fishr-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-generic-resnet18-coral-s2026092701",
+      "method": "resnet18",
+      "variant": "coral",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-coral-s2026092701.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-coral-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-generic-resnet18-coral-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-legacy-resnet18-s2026092701",
+      "method": "resnet18",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-legacy-resnet18-s2026092701.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-legacy-resnet18-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-legacy-resnet18-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-legacy-resnet50-s2026092701",
+      "method": "resnet50",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-legacy-resnet50-s2026092701.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-legacy-resnet50-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-legacy-resnet50-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-riei-full-s2026092702",
+      "method": "riei",
+      "variant": "full",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-riei-full-s2026092702.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-riei-full-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/F0-riei-full-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-riei-ce-s2026092702",
+      "method": "riei",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-riei-ce-s2026092702.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-riei-ce-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/F0-riei-ce-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-drift-full-s2026092702",
+      "method": "drift",
+      "variant": "full",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-drift-full-s2026092702.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-drift-full-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/F0-drift-full-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-drift-ce-s2026092702",
+      "method": "drift",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-drift-ce-s2026092702.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-drift-ce-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/F0-drift-ce-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-ibrff-full-s2026092702",
+      "method": "ibrff",
+      "variant": "full",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-ibrff-full-s2026092702.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-ibrff-full-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/F0-ibrff-full-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-ibrff-ce-s2026092702",
+      "method": "ibrff",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-ibrff-ce-s2026092702.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-ibrff-ce-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/F0-ibrff-ce-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-sdg-full-s2026092702",
+      "method": "sdg",
+      "variant": "full",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-sdg-full-s2026092702.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-sdg-full-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/F0-sdg-full-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-sdg-ce-s2026092702",
+      "method": "sdg",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-sdg-ce-s2026092702.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-sdg-ce-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/F0-sdg-ce-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-ManyRx-ibrff-full-s2026092702",
+      "method": "ibrff",
+      "variant": "full",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-ibrff-full-s2026092702.json",
+      "data_overrides": {
+        "source_receivers": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 10,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-ibrff-full-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-ManyRx-ibrff-full-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-ManyRx-ibrff-ce-s2026092702",
+      "method": "ibrff",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-ibrff-ce-s2026092702.json",
+      "data_overrides": {
+        "source_receivers": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 10,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-ibrff-ce-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-ManyRx-ibrff-ce-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-ManyRx-sdg-full-s2026092702",
+      "method": "sdg",
+      "variant": "full",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-sdg-full-s2026092702.json",
+      "data_overrides": {
+        "source_receivers": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 10,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-sdg-full-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-ManyRx-sdg-full-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-ManyRx-sdg-ce-s2026092702",
+      "method": "sdg",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-sdg-ce-s2026092702.json",
+      "data_overrides": {
+        "source_receivers": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 10,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-sdg-ce-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-ManyRx-sdg-ce-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-ManyRx-riei-full-s2026092702",
+      "method": "riei",
+      "variant": "full",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-riei-full-s2026092702.json",
+      "data_overrides": {
+        "source_receivers": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 10,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-riei-full-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-ManyRx-riei-full-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-ManyRx-riei-ce-s2026092702",
+      "method": "riei",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-riei-ce-s2026092702.json",
+      "data_overrides": {
+        "source_receivers": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 10,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-riei-ce-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-ManyRx-riei-ce-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-ManyRx-drift-full-s2026092702",
+      "method": "drift",
+      "variant": "full",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-drift-full-s2026092702.json",
+      "data_overrides": {
+        "source_receivers": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 10,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-drift-full-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-ManyRx-drift-full-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-ManyRx-drift-ce-s2026092702",
+      "method": "drift",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-drift-ce-s2026092702.json",
+      "data_overrides": {
+        "source_receivers": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 10,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-drift-ce-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-ManyRx-drift-ce-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-generic-resnet18-erm-s2026092702",
+      "method": "resnet18",
+      "variant": "erm",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-erm-s2026092702.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-erm-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-generic-resnet18-erm-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-generic-resnet18-mixstyle-s2026092702",
+      "method": "resnet18",
+      "variant": "mixstyle",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-mixstyle-s2026092702.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-mixstyle-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-generic-resnet18-mixstyle-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-generic-resnet18-mixstyle_id-s2026092702",
+      "method": "resnet18",
+      "variant": "mixstyle_id",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-mixstyle_id-s2026092702.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-mixstyle_id-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-generic-resnet18-mixstyle_id-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-generic-resnet18-fishr-s2026092702",
+      "method": "resnet18",
+      "variant": "fishr",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-fishr-s2026092702.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-fishr-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-generic-resnet18-fishr-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-generic-resnet18-coral-s2026092702",
+      "method": "resnet18",
+      "variant": "coral",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-coral-s2026092702.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-coral-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-generic-resnet18-coral-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-legacy-resnet18-s2026092702",
+      "method": "resnet18",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-legacy-resnet18-s2026092702.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-legacy-resnet18-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-legacy-resnet18-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-legacy-resnet50-s2026092702",
+      "method": "resnet50",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-legacy-resnet50-s2026092702.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-legacy-resnet50-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-legacy-resnet50-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-riei-full-s2026092703",
+      "method": "riei",
+      "variant": "full",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-riei-full-s2026092703.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-riei-full-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/F0-riei-full-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-riei-ce-s2026092703",
+      "method": "riei",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-riei-ce-s2026092703.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-riei-ce-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/F0-riei-ce-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-drift-full-s2026092703",
+      "method": "drift",
+      "variant": "full",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-drift-full-s2026092703.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-drift-full-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/F0-drift-full-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-drift-ce-s2026092703",
+      "method": "drift",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-drift-ce-s2026092703.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-drift-ce-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/F0-drift-ce-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-ibrff-full-s2026092703",
+      "method": "ibrff",
+      "variant": "full",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-ibrff-full-s2026092703.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-ibrff-full-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/F0-ibrff-full-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-ibrff-ce-s2026092703",
+      "method": "ibrff",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-ibrff-ce-s2026092703.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-ibrff-ce-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/F0-ibrff-ce-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-sdg-full-s2026092703",
+      "method": "sdg",
+      "variant": "full",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-sdg-full-s2026092703.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-sdg-full-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/F0-sdg-full-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-sdg-ce-s2026092703",
+      "method": "sdg",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-sdg-ce-s2026092703.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/F0-sdg-ce-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/F0-sdg-ce-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-ManyRx-ibrff-full-s2026092703",
+      "method": "ibrff",
+      "variant": "full",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-ibrff-full-s2026092703.json",
+      "data_overrides": {
+        "source_receivers": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 10,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-ibrff-full-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-ManyRx-ibrff-full-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-ManyRx-ibrff-ce-s2026092703",
+      "method": "ibrff",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-ibrff-ce-s2026092703.json",
+      "data_overrides": {
+        "source_receivers": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 10,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-ibrff-ce-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-ManyRx-ibrff-ce-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-ManyRx-sdg-full-s2026092703",
+      "method": "sdg",
+      "variant": "full",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-sdg-full-s2026092703.json",
+      "data_overrides": {
+        "source_receivers": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 10,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-sdg-full-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-ManyRx-sdg-full-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-ManyRx-sdg-ce-s2026092703",
+      "method": "sdg",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-sdg-ce-s2026092703.json",
+      "data_overrides": {
+        "source_receivers": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 10,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-sdg-ce-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-ManyRx-sdg-ce-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-ManyRx-riei-full-s2026092703",
+      "method": "riei",
+      "variant": "full",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-riei-full-s2026092703.json",
+      "data_overrides": {
+        "source_receivers": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 10,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-riei-full-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-ManyRx-riei-full-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-ManyRx-riei-ce-s2026092703",
+      "method": "riei",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-riei-ce-s2026092703.json",
+      "data_overrides": {
+        "source_receivers": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 10,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-riei-ce-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-ManyRx-riei-ce-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-ManyRx-drift-full-s2026092703",
+      "method": "drift",
+      "variant": "full",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-drift-full-s2026092703.json",
+      "data_overrides": {
+        "source_receivers": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 10,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-drift-full-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-ManyRx-drift-full-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-ManyRx-drift-ce-s2026092703",
+      "method": "drift",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-drift-ce-s2026092703.json",
+      "data_overrides": {
+        "source_receivers": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 10,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-ManyRx-drift-ce-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-ManyRx-drift-ce-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-generic-resnet18-erm-s2026092703",
+      "method": "resnet18",
+      "variant": "erm",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-erm-s2026092703.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-erm-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-generic-resnet18-erm-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-generic-resnet18-mixstyle-s2026092703",
+      "method": "resnet18",
+      "variant": "mixstyle",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-mixstyle-s2026092703.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-mixstyle-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-generic-resnet18-mixstyle-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-generic-resnet18-mixstyle_id-s2026092703",
+      "method": "resnet18",
+      "variant": "mixstyle_id",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-mixstyle_id-s2026092703.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-mixstyle_id-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-generic-resnet18-mixstyle_id-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-generic-resnet18-fishr-s2026092703",
+      "method": "resnet18",
+      "variant": "fishr",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-fishr-s2026092703.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-fishr-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-generic-resnet18-fishr-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-generic-resnet18-coral-s2026092703",
+      "method": "resnet18",
+      "variant": "coral",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-coral-s2026092703.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-generic-resnet18-coral-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-generic-resnet18-coral-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-legacy-resnet18-s2026092703",
+      "method": "resnet18",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-legacy-resnet18-s2026092703.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-legacy-resnet18-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-legacy-resnet18-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "suite-legacy-resnet50-s2026092703",
+      "method": "resnet50",
+      "variant": "ce",
+      "purpose": "frozen_inference_cost_only",
+      "config_ref": "cost.tasks(parent matrix, suite make_plan)",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-legacy-resnet50-s2026092703.json",
+      "data_overrides": {
+        "source_receivers": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "num_classes": 6,
+        "input": "FP32 synthetic zeros; no packet/labels read"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model/split describe original checkpoint; timing has no random input/augmentation/support/evaluation seed",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "zero training; batch1/128 each warmup100, timed1000 synchronized model calls",
+      "output_root": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/run_root/suite-legacy-resnet50-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/log_root/suite-legacy-resnet50-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg.cost worker --config ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [],
+  "registered_at": "2026-10-19T05:02:44+00:00"
+}

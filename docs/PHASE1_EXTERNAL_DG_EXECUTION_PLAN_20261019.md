@@ -191,3 +191,9 @@ CORAL只对源RX的身份表征均值和协方差进行对齐，不访问目标�
 发布后快照：原24行中8行ANALYZED、2行RUNNING，原dispatcher仍存活。新队列处于PREPARE_DATA，不把已登记的162次训练或6次补测写为完成。该快照不是最终结果，实时状态以原run证据为准。
 
 最新准备结果（2026-10-19T12:43:36+08:00）：17个源契约和18个测试任务的七视图构建完成；23个真实L_s训练结构组合与6个历史checkpoint检查PASS，新dispatcher实际存活并自动等待原24行完成。原矩阵已有9行ANALYZED。见[准备结果](../automation_reports/CV-SincNet/20261019-phase1-external-dg-suite-m168-r01/preparation_analysis.md)。新增GPU行尚未启动，整体目标仍未完成。
+
+## 9 统一冻结推理成本的收尾
+
+已固定设计中的统一推理成本另以20261019-phase1-external-dg-cost-m69-r01登记：F0四方法full／CE三seed共24、ManyRx相同24、generic五路线15、历史ResNet-18/50六个，共69个既有checkpoint，零新增训练。原186训练＋6补测的性能矩阵数量保持。成本任务先CPU真实checkpoint检查，必须等整个性能suite真实进程退出且所有行闭合后才申请物理GPU0/1中的一张空闲卡，整批固定同卡，不争抢健康训练。
+
+统一现有torch1.11／NumPy1.23、FP32及TF32关闭；legacy ResNet-18原checkpoint已在此环境实际严格加载通过，不改变其原预测环境。每模型batch1/128各预热100、同步计时1000次；汇总身份参数、声明口径的MACs、延迟中位数/P95、吞吐及显存。MACs不含逐元素/BN/激活等，不能称完整FLOPs；计时重复不冒充模型seed。所有测量使用合成零输入，不访问目标、不重拟合头、不改变性能结果或候选排序。整体交付除性能矩阵闭合，还须核实该成本run的69行测量及summary/report/completion。详见[成本预登记](../automation_reports/CV-SincNet/20261019-phase1-external-dg-cost-m69-r01/report.md)。
