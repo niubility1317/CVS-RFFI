@@ -1,0 +1,65 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "protocol_negative_cases": 6,
+  "source_loader_shapes": {
+    "L": [
+      128,
+      2,
+      256
+    ],
+    "U": [
+      256,
+      2,
+      256
+    ],
+    "V": [
+      256,
+      2,
+      256
+    ]
+  },
+  "U_TX_hidden": true,
+  "original_temporal_neighbor_gate_preserved": true,
+  "source_handles": "READY EXACT_MATCH reused",
+  "warmup_matches_original": true,
+  "actual_feature_flows": [
+    {
+      "treatment": "WEIGHT",
+      "auxiliary_head_gradient": null,
+      "auxiliary_Sinc_gradient": 0.0009529465460218489,
+      "main_head_gradient": 4.017119407653809,
+      "temporary_hooks_remaining": 0,
+      "extra_model_forwards": 0,
+      "feature_export_exact": true
+    },
+    {
+      "treatment": "GEOMETRY",
+      "auxiliary_head_gradient": null,
+      "auxiliary_Sinc_gradient": 0.0009641516953706741,
+      "main_head_gradient": 4.017119407653809,
+      "temporary_hooks_remaining": 0,
+      "extra_model_forwards": 0,
+      "feature_export_exact": true
+    },
+    {
+      "treatment": "BOTH",
+      "auxiliary_head_gradient": null,
+      "auxiliary_Sinc_gradient": 0.0009515561978332698,
+      "main_head_gradient": 4.017119407653809,
+      "temporary_hooks_remaining": 0,
+      "extra_model_forwards": 0,
+      "feature_export_exact": true
+    }
+  ],
+  "network_parameters": 900722,
+  "default_head": [
+    6,
+    160
+  ],
+  "own_real_checkpoint_no_query_smoke": true,
+  "optimizer_updates": 0,
+  "target_reads": 0,
+  "truth_reads": 0,
+  "source_IQ": "Only source loader/gate checks; no parameter updates or source performance claim"
+}

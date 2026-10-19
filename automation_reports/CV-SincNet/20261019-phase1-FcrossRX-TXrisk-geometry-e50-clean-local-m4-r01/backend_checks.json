@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "purpose": "Synthetic native backend compatibility only",
+  "synthetic_epochs": 2,
+  "updates": 10,
+  "L_stage": true,
+  "U_stage": true,
+  "ownEMA_updates": 10,
+  "physical_Sinc_clips": 10,
+  "RDrop_calls": 10,
+  "U_TX_truth_hidden": true,
+  "source_IQ_reads": 0,
+  "target_reads": 0,
+  "head_fit_updates": 0,
+  "formal_candidate_budget_unchanged": "50=33L+17U,11100updates",
+  "inherited_by_candidate": false
+}
