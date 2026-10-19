@@ -1,0 +1,62 @@
+{
+  "cwd": "PROJECT_WORKTREE",
+  "local_checks": {
+    "interpreter": "verified existing ssr-gpu Python3.10/Torch2.10",
+    "argv": [
+      "-X",
+      "utf8",
+      "-B",
+      "local_artifacts/F_sigBoundary_source_20261019/run_checks.py"
+    ],
+    "result": "PASS10full syntheticNN/5negative;earlier layout attempts8NN,total18local attempted,0CP/IQ/target"
+  },
+  "release": {
+    "interpreter": "verified native Python3.13 and task-only verified Git OpenSSH route",
+    "argv": [
+      "-X",
+      "utf8",
+      "-B",
+      "local_artifacts/F_sigBoundary_source_20261019/verified_native.py",
+      "--module",
+      "experiments.cvs_sig_boundary_source.publish"
+    ],
+    "code_commit": "836c646c8de05a813f9c4e3baa2e350ff2b86f1e",
+    "release_commit": "440540231bada63ce0a4400201a3a58682b1f814"
+  },
+  "remote": {
+    "interpreter": "existing ordinary-account CVS-RFFI/python",
+    "argv": [
+      "-u",
+      "experiments/cvs_sig_boundary_source/runner.py"
+    ],
+    "cwd": "PROJECT/releases/cvs_F_sigBoundary_source_20261019_r01",
+    "first_step": "realCP zeroIQ4NN then fixed source21600NN"
+  },
+  "independent_recount": {
+    "argv": [
+      "-X",
+      "utf8",
+      "-B",
+      "local_artifacts/F_sigBoundary_source_20261019/verified_native.py",
+      "analysis/cvs_F_sig_boundary_source_20261019.py",
+      "--runtime",
+      "local_artifacts/F_sigBoundary_source_20261019/runtime.json",
+      "--output",
+      "local_artifacts/F_sigBoundary_source_20261019/analysis_r01"
+    ],
+    "NN": 0,
+    "CP": 0,
+    "IQ": false,
+    "CM": 744,
+    "paired": 744
+  },
+  "traceability": {
+    "verified": 6,
+    "deferred": 0,
+    "rejected": 0,
+    "blocked": 0,
+    "pending": 0
+  },
+  "parity": "Exact preregistered E/I/EI operators and original-head replay. Local mean is a counterfactual path operation,not exact physical-noise separation.",
+  "highest_remaining_risk": "No learned architecture or unseenRX/cross-seed performance gain established;fixed source condition failed."
+}

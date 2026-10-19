@@ -1,0 +1,26 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261019-phase1-F-sigBoundary-source-s2026092701-r01",
+  "code_commit": "836c646c8de05a813f9c4e3baa2e350ff2b86f1e",
+  "release_commit": "440540231bada63ce0a4400201a3a58682b1f814",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "postlaunch": {
+    "status": "VERIFIED",
+    "time": 1792408436.5186393,
+    "PID": 2362128,
+    "CWD_argv_environment_matches": true,
+    "CPU_threads": 2,
+    "GPU_used": false,
+    "log_growth": 760,
+    "progress_NN": 19804
+  },
+  "real_CP_zeroIQ_smoke": {
+    "status": "PASS",
+    "NN": 4,
+    "source_IQ_read": false,
+    "query_read": false
+  },
+  "CPU_threads": 2,
+  "GPU_used": false
+}
