@@ -1,0 +1,24 @@
+{
+  "status": "VERIFIED_SOURCE_AUDIT_COMPLETE",
+  "run": "20261019-diagnostic-FcrossRX-TXrisk-sourceV-m3-r01",
+  "execution_commit": "511b5c60b2d63c89c7187c6fa77d143c41c829d7",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "GPU": "2",
+  "PID": 2212288,
+  "original_startup_observed": true,
+  "CWD": "PROJECT/releases/cvs_F_TXrisk_sourceV_20261019_r01",
+  "argv": [
+    "PYTHON",
+    "experiments/cvs_f_txrisk/runner.py"
+  ],
+  "source_progress_observed": 54000,
+  "source_predictions_final": 81000,
+  "terminal_log_bytes": 25,
+  "terminal_log": "SOURCE_TX_AUDIT_COMPLETE",
+  "worker_gone": true,
+  "target_IQ_reads": 0,
+  "head_fit_updates": 0,
+  "optimizer_updates": 0,
+  "other_jobs_preserved": true
+}

@@ -15,3 +15,5 @@
 本地6个协议负例、等风险基线精确、类标签置换等变与权重上下界检查PASS，7个Python文件AST通过；下一真实运行仅一次独立P0/P1审查。预期产物为各行smoke/sourceV统计、source_calibration、result及completion，最终统计与解释登记提交Git，原权重/原始日志/物理IQ不入Git。
 
 REJECTED_EXTRA_GATE：brainstorming独立设计审批/固定spec/plan门槛被用户Exclusive Minimal Experiment Workflow覆盖；既有研发授权内直接落实，不新增审批。
+
+完成：3模型全V/81000次默认头源预测结束，零参数更新、零新目标访问；source risk系数已冻结。详见 [final_analysis.md](final_analysis.md)、source_results.json、source_calibration.json。该诊断已完成，训练方法改善目标仍ACTIVE。
