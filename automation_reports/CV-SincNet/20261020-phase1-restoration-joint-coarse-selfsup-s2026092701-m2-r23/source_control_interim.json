@@ -1,0 +1,534 @@
+{
+  "status": "PARTIAL_SOURCE_ONLY",
+  "method_commit": "d43dbab326d0b1e2cb6fb7faa23dc9a3ec25a025",
+  "candidate": "prior_only",
+  "source_records": 1800,
+  "source_overall": {
+    "clean": {
+      "view": "clean",
+      "readout": "restored",
+      "dimension": "overall",
+      "value": "all",
+      "accuracy": 98.44444444444444,
+      "macro_f1": 98.44004952386145,
+      "baseline_accuracy": 98.5,
+      "repaired": 0,
+      "damaged": 1,
+      "net_repaired": -1,
+      "count": 1800,
+      "confusion": [
+        [
+          293,
+          2,
+          0,
+          4,
+          2,
+          0
+        ],
+        [
+          0,
+          297,
+          0,
+          1,
+          0,
+          1
+        ],
+        [
+          1,
+          1,
+          281,
+          0,
+          1,
+          2
+        ],
+        [
+          0,
+          7,
+          0,
+          286,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          1,
+          0,
+          305,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          0,
+          0,
+          310
+        ]
+      ],
+      "iq_nmse": 9.617238538339734e-05
+    },
+    "practical_high": {
+      "view": "practical_high",
+      "readout": "restored",
+      "dimension": "overall",
+      "value": "all",
+      "accuracy": 97.94444444444444,
+      "macro_f1": 97.9393014202293,
+      "baseline_accuracy": 54.27777777777778,
+      "repaired": 793,
+      "damaged": 7,
+      "net_repaired": 786,
+      "count": 1800,
+      "confusion": [
+        [
+          292,
+          3,
+          0,
+          4,
+          2,
+          0
+        ],
+        [
+          0,
+          293,
+          0,
+          5,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          281,
+          1,
+          1,
+          2
+        ],
+        [
+          0,
+          11,
+          0,
+          282,
+          0,
+          0
+        ],
+        [
+          1,
+          1,
+          0,
+          0,
+          305,
+          1
+        ],
+        [
+          1,
+          0,
+          1,
+          0,
+          1,
+          310
+        ]
+      ],
+      "iq_nmse": 0.008917258121073246
+    },
+    "practical_mid": {
+      "view": "practical_mid",
+      "readout": "restored",
+      "dimension": "overall",
+      "value": "all",
+      "accuracy": 96.72222222222221,
+      "macro_f1": 96.71934790243486,
+      "baseline_accuracy": 51.72222222222223,
+      "repaired": 825,
+      "damaged": 15,
+      "net_repaired": 810,
+      "count": 1800,
+      "confusion": [
+        [
+          284,
+          5,
+          0,
+          10,
+          1,
+          1
+        ],
+        [
+          0,
+          286,
+          0,
+          11,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          280,
+          2,
+          1,
+          1
+        ],
+        [
+          0,
+          13,
+          0,
+          279,
+          1,
+          0
+        ],
+        [
+          1,
+          1,
+          0,
+          2,
+          303,
+          1
+        ],
+        [
+          1,
+          0,
+          1,
+          0,
+          2,
+          309
+        ]
+      ],
+      "iq_nmse": 0.012876811437308788
+    },
+    "practical_low_suburban": {
+      "view": "practical_low_suburban",
+      "readout": "restored",
+      "dimension": "overall",
+      "value": "all",
+      "accuracy": 96.05555555555556,
+      "macro_f1": 96.04771046567387,
+      "baseline_accuracy": 51.0,
+      "repaired": 836,
+      "damaged": 25,
+      "net_repaired": 811,
+      "count": 1800,
+      "confusion": [
+        [
+          283,
+          5,
+          0,
+          12,
+          1,
+          0
+        ],
+        [
+          1,
+          279,
+          1,
+          17,
+          1,
+          0
+        ],
+        [
+          0,
+          1,
+          281,
+          0,
+          2,
+          2
+        ],
+        [
+          0,
+          19,
+          1,
+          273,
+          0,
+          0
+        ],
+        [
+          2,
+          1,
+          0,
+          0,
+          304,
+          1
+        ],
+        [
+          1,
+          1,
+          0,
+          0,
+          2,
+          309
+        ]
+      ],
+      "iq_nmse": 0.01609618403017521
+    },
+    "practical_high_urban": {
+      "view": "practical_high_urban",
+      "readout": "restored",
+      "dimension": "overall",
+      "value": "all",
+      "accuracy": 97.16666666666667,
+      "macro_f1": 97.15437909324277,
+      "baseline_accuracy": 51.0,
+      "repaired": 844,
+      "damaged": 13,
+      "net_repaired": 831,
+      "count": 1800,
+      "confusion": [
+        [
+          291,
+          3,
+          0,
+          6,
+          1,
+          0
+        ],
+        [
+          0,
+          282,
+          0,
+          15,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          280,
+          0,
+          1,
+          3
+        ],
+        [
+          0,
+          13,
+          0,
+          280,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          306,
+          1
+        ],
+        [
+          1,
+          0,
+          1,
+          0,
+          1,
+          310
+        ]
+      ],
+      "iq_nmse": 0.012345660477876663
+    },
+    "practical_mid_urban": {
+      "view": "practical_mid_urban",
+      "readout": "restored",
+      "dimension": "overall",
+      "value": "all",
+      "accuracy": 91.72222222222223,
+      "macro_f1": 91.69567073821973,
+      "baseline_accuracy": 43.388888888888886,
+      "repaired": 893,
+      "damaged": 23,
+      "net_repaired": 870,
+      "count": 1800,
+      "confusion": [
+        [
+          259,
+          16,
+          1,
+          22,
+          3,
+          0
+        ],
+        [
+          6,
+          247,
+          0,
+          44,
+          2,
+          0
+        ],
+        [
+          0,
+          1,
+          280,
+          1,
+          3,
+          1
+        ],
+        [
+          9,
+          29,
+          0,
+          251,
+          4,
+          0
+        ],
+        [
+          2,
+          1,
+          0,
+          1,
+          303,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          1,
+          311
+        ]
+      ],
+      "iq_nmse": 0.0344400592148304
+    },
+    "practical_low_urban": {
+      "view": "practical_low_urban",
+      "readout": "restored",
+      "dimension": "overall",
+      "value": "all",
+      "accuracy": 86.44444444444444,
+      "macro_f1": 86.495162714475,
+      "baseline_accuracy": 36.666666666666664,
+      "repaired": 938,
+      "damaged": 42,
+      "net_repaired": 896,
+      "count": 1800,
+      "confusion": [
+        [
+          239,
+          24,
+          0,
+          35,
+          2,
+          1
+        ],
+        [
+          10,
+          217,
+          1,
+          63,
+          7,
+          1
+        ],
+        [
+          2,
+          1,
+          266,
+          8,
+          7,
+          2
+        ],
+        [
+          14,
+          36,
+          4,
+          236,
+          3,
+          0
+        ],
+        [
+          2,
+          5,
+          1,
+          7,
+          292,
+          1
+        ],
+        [
+          0,
+          1,
+          2,
+          1,
+          3,
+          306
+        ]
+      ],
+      "iq_nmse": 0.05294320359826088
+    }
+  },
+  "source_waveform": {
+    "clean": {
+      "iq_nmse": 9.617238538339734e-05,
+      "prefix232_nmse": 9.188096009893343e-05,
+      "tail24_nmse": 0.00013766194751951844,
+      "fft_log_power_L1": 0.029734505340456963
+    },
+    "practical_high": {
+      "iq_nmse": 0.008917258121073246,
+      "prefix232_nmse": 0.005776344798505306,
+      "tail24_nmse": 0.043455641716718674,
+      "fft_log_power_L1": 0.19311730563640594
+    },
+    "practical_mid": {
+      "iq_nmse": 0.012876811437308788,
+      "prefix232_nmse": 0.009446964599192142,
+      "tail24_nmse": 0.04999060556292534,
+      "fft_log_power_L1": 0.2325177639722824
+    },
+    "practical_low_suburban": {
+      "iq_nmse": 0.01609618403017521,
+      "prefix232_nmse": 0.012634756974875927,
+      "tail24_nmse": 0.05357543006539345,
+      "fft_log_power_L1": 0.2620377242565155
+    },
+    "practical_high_urban": {
+      "iq_nmse": 0.012345660477876663,
+      "prefix232_nmse": 0.008935561403632164,
+      "tail24_nmse": 0.04885748028755188,
+      "fft_log_power_L1": 0.21362511813640594
+    },
+    "practical_mid_urban": {
+      "iq_nmse": 0.0344400592148304,
+      "prefix232_nmse": 0.030680138617753983,
+      "tail24_nmse": 0.07288878411054611,
+      "fft_log_power_L1": 0.31866806745529175
+    },
+    "practical_low_urban": {
+      "iq_nmse": 0.05294320359826088,
+      "prefix232_nmse": 0.04845382645726204,
+      "tail24_nmse": 0.09914064407348633,
+      "fft_log_power_L1": 0.4007158875465393
+    }
+  },
+  "mean6_NMSE": 0.022936529479920864,
+  "training_complete": {
+    "status": "SOURCE_TRAINED",
+    "candidate": "prior_only",
+    "epochs": 20,
+    "updates": 4940,
+    "L_exposures": 126000,
+    "U_exposures": 1134000,
+    "TX_labels_read": 0,
+    "F_outputs_read": 0,
+    "F_weights_read": 0,
+    "target_reads": 0,
+    "prior_updates": 4940,
+    "coarse_updates": 0,
+    "action_estimator_updates": 0,
+    "prior_initialization": "scratch",
+    "inherited_prior_epochs": 0,
+    "coarse_initial_epochs": 20,
+    "coarse_cumulative_epochs": 20,
+    "parameter_groups": {
+      "prior": 2507526
+    },
+    "trainable_parameters": 2507526,
+    "parameters": 4665073,
+    "seconds": 1668.2587125229184,
+    "peak_allocated_bytes": 2116666368
+  },
+  "full_training_epochs_verified": 20,
+  "classification_records_verified": 105,
+  "target_artifacts_read": false,
+  "source_selection_or_training_changed": false,
+  "complete_run": false,
+  "goal_complete": false,
+  "scope": "One frozen row,one seed,sourceV only;no formal performance claim;other row and overall source decision not represented"
+}

@@ -45,3 +45,6 @@ prior AdamW 2e-4→2e-5、coarse 2e-5→2e-6；共同 warm247/cos、WD1e-4、FP3
 非阻断记录：REJECTED_EXTRA_GATE——通用全仓库测试要求由项目聚焦负测协议覆盖，未添加全面测试或重复 review 门槛。
 
 完整矩阵、命令、环境/CWD、路径、GPU及停止规则见[登记](experiment.json)。
+
+
+控制行的完整源评分已返回：[prior_only局部报告](source_control_interim.md)。本矩阵仍RUNNING，未改变其他行或最终选择规则；该局部结果不冒充正式测试。
