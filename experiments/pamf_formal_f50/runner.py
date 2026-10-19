@@ -76,7 +76,6 @@ def completed_inputs(coarse, residual, expected_count=COUNT):
 @torch.no_grad()
 def predict(args):
     import fcntl
-    ids, inputs = completed_inputs(args.formal_coarse, args.formal_residual)
     source_parent(args.parent_coarse); source_residual_parent(args.parent_residual)
     while True:
         with (args.output.parent/'receiver_residual_capacity4.lock').open('a') as lock:
@@ -94,6 +93,7 @@ def predict(args):
     write_json(args.output/'smoke.json', dict(status='PASS', real_source_samples=2, target_reads=0,
         TX_labels_read=0, original_default_head=True, head_fit_updates=0))
     write_json(args.output/'gpu_ready.json', dict(pid=os.getpid(), cwd=str(ROOT), argv=sys.argv, GPU=4))
+    ids, inputs = completed_inputs(args.formal_coarse, args.formal_residual)
     output = args.output/'prediction'; output.mkdir()
     timings = {}
     for view in VIEWS:
