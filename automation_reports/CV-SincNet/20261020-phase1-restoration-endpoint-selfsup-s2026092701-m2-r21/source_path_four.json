@@ -1,0 +1,8656 @@
+{
+  "status": "SOURCE_ROW_ANALYZED_RUN_STILL_RUNNING",
+  "candidate": "path_four",
+  "source_summary": {
+    "status": "ANALYZED",
+    "kind": "native_map_prior",
+    "role": "source",
+    "count": 1800,
+    "views": {
+      "clean": {
+        "restored": {
+          "waveform": {
+            "iq_nmse": 9.617280738893896e-05,
+            "prefix232_nmse": 9.188122203340754e-05,
+            "tail24_nmse": 0.00013766385382041335,
+            "fft_log_power_L1": 0.029734522104263306
+          },
+          "paired_clean_feature_cosine_distance": 0.0004275325045455247,
+          "paired_clean_vs_other_TX": {
+            "mean": 0.1093599945306778,
+            "own_pair_higher_percent": 100.0,
+            "inference_or_selection_use": false,
+            "reference_pool_count": 512,
+            "query_count": 1800,
+            "valid_comparison_count": 1800,
+            "reference_pool_rule": "Fixed evenly spaced opaque-record positions; independent of TX truth",
+            "full_global_nearest_other_TX": false
+          }
+        }
+      },
+      "practical_high": {
+        "restored": {
+          "waveform": {
+            "iq_nmse": 0.01244000531733036,
+            "prefix232_nmse": 0.00769504951313138,
+            "tail24_nmse": 0.06264607608318329,
+            "fft_log_power_L1": 0.26733455061912537
+          },
+          "paired_clean_feature_cosine_distance": 0.008254644460976124,
+          "paired_clean_vs_other_TX": {
+            "mean": 0.09989593178033829,
+            "own_pair_higher_percent": 99.44444444444444,
+            "inference_or_selection_use": false,
+            "reference_pool_count": 512,
+            "query_count": 1800,
+            "valid_comparison_count": 1800,
+            "reference_pool_rule": "Fixed evenly spaced opaque-record positions; independent of TX truth",
+            "full_global_nearest_other_TX": false
+          }
+        }
+      },
+      "practical_mid": {
+        "restored": {
+          "waveform": {
+            "iq_nmse": 0.018794365227222443,
+            "prefix232_nmse": 0.01372118666768074,
+            "tail24_nmse": 0.0722239688038826,
+            "fft_log_power_L1": 0.3476318418979645
+          },
+          "paired_clean_feature_cosine_distance": 0.013882961124181747,
+          "paired_clean_vs_other_TX": {
+            "mean": 0.09125912189483643,
+            "own_pair_higher_percent": 96.5,
+            "inference_or_selection_use": false,
+            "reference_pool_count": 512,
+            "query_count": 1800,
+            "valid_comparison_count": 1800,
+            "reference_pool_rule": "Fixed evenly spaced opaque-record positions; independent of TX truth",
+            "full_global_nearest_other_TX": false
+          }
+        }
+      },
+      "practical_low_suburban": {
+        "restored": {
+          "waveform": {
+            "iq_nmse": 0.023776130750775337,
+            "prefix232_nmse": 0.018882637843489647,
+            "tail24_nmse": 0.07514350861310959,
+            "fft_log_power_L1": 0.401200532913208
+          },
+          "paired_clean_feature_cosine_distance": 0.018868595361709595,
+          "paired_clean_vs_other_TX": {
+            "mean": 0.08435729146003723,
+            "own_pair_higher_percent": 94.27777777777779,
+            "inference_or_selection_use": false,
+            "reference_pool_count": 512,
+            "query_count": 1800,
+            "valid_comparison_count": 1800,
+            "reference_pool_rule": "Fixed evenly spaced opaque-record positions; independent of TX truth",
+            "full_global_nearest_other_TX": false
+          }
+        }
+      },
+      "practical_high_urban": {
+        "restored": {
+          "waveform": {
+            "iq_nmse": 0.01774016208946705,
+            "prefix232_nmse": 0.01264519989490509,
+            "tail24_nmse": 0.07097046822309494,
+            "fft_log_power_L1": 0.2924330234527588
+          },
+          "paired_clean_feature_cosine_distance": 0.01136116124689579,
+          "paired_clean_vs_other_TX": {
+            "mean": 0.096856027841568,
+            "own_pair_higher_percent": 97.27777777777777,
+            "inference_or_selection_use": false,
+            "reference_pool_count": 512,
+            "query_count": 1800,
+            "valid_comparison_count": 1800,
+            "reference_pool_rule": "Fixed evenly spaced opaque-record positions; independent of TX truth",
+            "full_global_nearest_other_TX": false
+          }
+        }
+      },
+      "practical_mid_urban": {
+        "restored": {
+          "waveform": {
+            "iq_nmse": 0.049789801239967346,
+            "prefix232_nmse": 0.043961454182863235,
+            "tail24_nmse": 0.10891876369714737,
+            "fft_log_power_L1": 0.4384761154651642
+          },
+          "paired_clean_feature_cosine_distance": 0.031117649748921394,
+          "paired_clean_vs_other_TX": {
+            "mean": 0.0718349739909172,
+            "own_pair_higher_percent": 81.72222222222221,
+            "inference_or_selection_use": false,
+            "reference_pool_count": 512,
+            "query_count": 1800,
+            "valid_comparison_count": 1800,
+            "reference_pool_rule": "Fixed evenly spaced opaque-record positions; independent of TX truth",
+            "full_global_nearest_other_TX": false
+          }
+        }
+      },
+      "practical_low_urban": {
+        "restored": {
+          "waveform": {
+            "iq_nmse": 0.07715956121683121,
+            "prefix232_nmse": 0.07042669504880905,
+            "tail24_nmse": 0.14501896500587463,
+            "fft_log_power_L1": 0.5332715511322021
+          },
+          "paired_clean_feature_cosine_distance": 0.05419791489839554,
+          "paired_clean_vs_other_TX": {
+            "mean": 0.04186251014471054,
+            "own_pair_higher_percent": 69.05555555555556,
+            "inference_or_selection_use": false,
+            "reference_pool_count": 512,
+            "query_count": 1800,
+            "valid_comparison_count": 1800,
+            "reference_pool_rule": "Fixed evenly spaced opaque-record positions; independent of TX truth",
+            "full_global_nearest_other_TX": false
+          }
+        }
+      }
+    },
+    "records": [
+      {
+        "view": "clean",
+        "readout": "restored",
+        "dimension": "overall",
+        "value": "all",
+        "accuracy": 98.44444444444444,
+        "macro_f1": 98.44004952386145,
+        "baseline_accuracy": 98.5,
+        "repaired": 0,
+        "damaged": 1,
+        "net_repaired": -1,
+        "count": 1800,
+        "confusion": [
+          [
+            293,
+            2,
+            0,
+            4,
+            2,
+            0
+          ],
+          [
+            0,
+            297,
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            1,
+            1,
+            281,
+            0,
+            1,
+            2
+          ],
+          [
+            0,
+            7,
+            0,
+            286,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0,
+            305,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            0,
+            0,
+            310
+          ]
+        ],
+        "iq_nmse": 9.617280738893896e-05
+      },
+      {
+        "view": "clean",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "0",
+        "accuracy": 97.34219269102991,
+        "macro_f1": 16.44219977553311,
+        "baseline_accuracy": 97.67441860465115,
+        "repaired": 0,
+        "damaged": 1,
+        "net_repaired": -1,
+        "count": 301,
+        "confusion": [
+          [
+            293,
+            2,
+            0,
+            4,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 8.10653145890683e-05
+      },
+      {
+        "view": "clean",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "1",
+        "accuracy": 99.33110367892976,
+        "macro_f1": 16.610738255033556,
+        "baseline_accuracy": 99.33110367892976,
+        "repaired": 0,
+        "damaged": 0,
+        "net_repaired": 0,
+        "count": 299,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            297,
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 8.030762546695769e-05
+      },
+      {
+        "view": "clean",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "2",
+        "accuracy": 98.25174825174825,
+        "macro_f1": 16.519694297472075,
+        "baseline_accuracy": 98.25174825174825,
+        "repaired": 0,
+        "damaged": 0,
+        "net_repaired": 0,
+        "count": 286,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            281,
+            0,
+            1,
+            2
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 9.44902203627862e-05
+      },
+      {
+        "view": "clean",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "3",
+        "accuracy": 97.61092150170649,
+        "macro_f1": 16.465169833045483,
+        "baseline_accuracy": 97.61092150170649,
+        "repaired": 0,
+        "damaged": 0,
+        "net_repaired": 0,
+        "count": 293,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            7,
+            0,
+            286,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 7.56221343181096e-05
+      },
+      {
+        "view": "clean",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "4",
+        "accuracy": 99.02597402597402,
+        "macro_f1": 16.585100598151172,
+        "baseline_accuracy": 99.02597402597402,
+        "repaired": 0,
+        "damaged": 0,
+        "net_repaired": 0,
+        "count": 308,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0,
+            305,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.00010843774362001568
+      },
+      {
+        "view": "clean",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "5",
+        "accuracy": 99.04153354632588,
+        "macro_f1": 16.586409844836812,
+        "baseline_accuracy": 99.04153354632588,
+        "repaired": 0,
+        "damaged": 0,
+        "net_repaired": 0,
+        "count": 313,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            1,
+            0,
+            0,
+            310
+          ]
+        ],
+        "iq_nmse": 0.00013456257875077426
+      },
+      {
+        "view": "clean",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "1",
+        "accuracy": 100.0,
+        "macro_f1": 100.0,
+        "baseline_accuracy": 100.0,
+        "repaired": 0,
+        "damaged": 0,
+        "net_repaired": 0,
+        "count": 360,
+        "confusion": [
+          [
+            68,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            54,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            65,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            55,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            60,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            58
+          ]
+        ],
+        "iq_nmse": 8.361788786714897e-05
+      },
+      {
+        "view": "clean",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "3",
+        "accuracy": 95.83333333333334,
+        "macro_f1": 95.77967162568504,
+        "baseline_accuracy": 96.11111111111111,
+        "repaired": 0,
+        "damaged": 1,
+        "net_repaired": -1,
+        "count": 360,
+        "confusion": [
+          [
+            59,
+            1,
+            0,
+            3,
+            2,
+            0
+          ],
+          [
+            0,
+            57,
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            65,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            3,
+            0,
+            50,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0,
+            54,
+            1
+          ],
+          [
+            1,
+            0,
+            1,
+            0,
+            0,
+            60
+          ]
+        ],
+        "iq_nmse": 0.00010241151176160201
+      },
+      {
+        "view": "clean",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "4",
+        "accuracy": 98.05555555555556,
+        "macro_f1": 98.04033920675194,
+        "baseline_accuracy": 98.05555555555556,
+        "repaired": 0,
+        "damaged": 0,
+        "net_repaired": 0,
+        "count": 360,
+        "confusion": [
+          [
+            59,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            59,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            56,
+            0,
+            1,
+            2
+          ],
+          [
+            0,
+            2,
+            0,
+            61,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            61,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            0,
+            57
+          ]
+        ],
+        "iq_nmse": 8.952798816608265e-05
+      },
+      {
+        "view": "clean",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "6",
+        "accuracy": 100.0,
+        "macro_f1": 100.0,
+        "baseline_accuracy": 100.0,
+        "repaired": 0,
+        "damaged": 0,
+        "net_repaired": 0,
+        "count": 360,
+        "confusion": [
+          [
+            51,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            61,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            45,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            67,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            64,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            72
+          ]
+        ],
+        "iq_nmse": 9.449184290133417e-05
+      },
+      {
+        "view": "clean",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "8",
+        "accuracy": 98.33333333333333,
+        "macro_f1": 98.32101586983111,
+        "baseline_accuracy": 98.33333333333333,
+        "repaired": 0,
+        "damaged": 0,
+        "net_repaired": 0,
+        "count": 360,
+        "confusion": [
+          [
+            56,
+            1,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            66,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            50,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            2,
+            0,
+            53,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            66,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            63
+          ]
+        ],
+        "iq_nmse": 0.00011081480624852702
+      },
+      {
+        "view": "clean",
+        "readout": "restored",
+        "dimension": "day",
+        "value": "1",
+        "accuracy": 99.0,
+        "macro_f1": 98.98561180249358,
+        "baseline_accuracy": 99.0,
+        "repaired": 0,
+        "damaged": 0,
+        "net_repaired": 0,
+        "count": 600,
+        "confusion": [
+          [
+            97,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            107,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            91,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            87,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            0,
+            116
+          ]
+        ],
+        "iq_nmse": 9.334371861768886e-05
+      },
+      {
+        "view": "clean",
+        "readout": "restored",
+        "dimension": "day",
+        "value": "2",
+        "accuracy": 98.33333333333333,
+        "macro_f1": 98.39961479319574,
+        "baseline_accuracy": 98.33333333333333,
+        "repaired": 0,
+        "damaged": 0,
+        "net_repaired": 0,
+        "count": 600,
+        "confusion": [
+          [
+            105,
+            0,
+            0,
+            3,
+            0,
+            0
+          ],
+          [
+            0,
+            104,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            89,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            5,
+            0,
+            100,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            95,
+            1
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            0,
+            97
+          ]
+        ],
+        "iq_nmse": 9.213857993017882e-05
+      },
+      {
+        "view": "clean",
+        "readout": "restored",
+        "dimension": "day",
+        "value": "3",
+        "accuracy": 98.0,
+        "macro_f1": 97.96690351824488,
+        "baseline_accuracy": 98.16666666666667,
+        "repaired": 0,
+        "damaged": 1,
+        "net_repaired": -1,
+        "count": 600,
+        "confusion": [
+          [
+            91,
+            1,
+            0,
+            1,
+            2,
+            0
+          ],
+          [
+            0,
+            86,
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            1,
+            1,
+            101,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            1,
+            0,
+            99,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            114,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0,
+            0,
+            97
+          ]
+        ],
+        "iq_nmse": 0.00010303611634299159
+      },
+      {
+        "view": "practical_high",
+        "readout": "restored",
+        "dimension": "overall",
+        "value": "all",
+        "accuracy": 97.83333333333334,
+        "macro_f1": 97.8261587784944,
+        "baseline_accuracy": 54.27777777777778,
+        "repaired": 791,
+        "damaged": 7,
+        "net_repaired": 784,
+        "count": 1800,
+        "confusion": [
+          [
+            292,
+            4,
+            0,
+            3,
+            2,
+            0
+          ],
+          [
+            0,
+            292,
+            0,
+            6,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            280,
+            2,
+            1,
+            2
+          ],
+          [
+            1,
+            8,
+            0,
+            283,
+            0,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            0,
+            304,
+            1
+          ],
+          [
+            1,
+            0,
+            1,
+            0,
+            1,
+            310
+          ]
+        ],
+        "iq_nmse": 0.01244000531733036
+      },
+      {
+        "view": "practical_high",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "0",
+        "accuracy": 97.00996677740864,
+        "macro_f1": 16.413715570545246,
+        "baseline_accuracy": 69.76744186046511,
+        "repaired": 84,
+        "damaged": 2,
+        "net_repaired": 82,
+        "count": 301,
+        "confusion": [
+          [
+            292,
+            4,
+            0,
+            3,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.011932536028325558
+      },
+      {
+        "view": "practical_high",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "1",
+        "accuracy": 97.65886287625418,
+        "macro_f1": 16.4692611393119,
+        "baseline_accuracy": 16.722408026755854,
+        "repaired": 244,
+        "damaged": 2,
+        "net_repaired": 242,
+        "count": 299,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            292,
+            0,
+            6,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.010246321558952332
+      },
+      {
+        "view": "practical_high",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "2",
+        "accuracy": 97.9020979020979,
+        "macro_f1": 16.48998822143698,
+        "baseline_accuracy": 85.66433566433567,
+        "repaired": 35,
+        "damaged": 0,
+        "net_repaired": 35,
+        "count": 286,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            280,
+            2,
+            1,
+            2
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.010923638939857483
+      },
+      {
+        "view": "practical_high",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "3",
+        "accuracy": 96.58703071672356,
+        "macro_f1": 16.377314814814817,
+        "baseline_accuracy": 23.890784982935152,
+        "repaired": 216,
+        "damaged": 3,
+        "net_repaired": 213,
+        "count": 293,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            8,
+            0,
+            283,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.013992098160088062
+      },
+      {
+        "view": "practical_high",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "4",
+        "accuracy": 98.7012987012987,
+        "macro_f1": 16.55773420479303,
+        "baseline_accuracy": 35.714285714285715,
+        "repaired": 194,
+        "damaged": 0,
+        "net_repaired": 194,
+        "count": 308,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            1,
+            0,
+            304,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.01057729497551918
+      },
+      {
+        "view": "practical_high",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "5",
+        "accuracy": 99.04153354632588,
+        "macro_f1": 16.586409844836812,
+        "baseline_accuracy": 93.29073482428115,
+        "repaired": 18,
+        "damaged": 0,
+        "net_repaired": 18,
+        "count": 313,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0,
+            1,
+            310
+          ]
+        ],
+        "iq_nmse": 0.016789181157946587
+      },
+      {
+        "view": "practical_high",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "1",
+        "accuracy": 99.72222222222223,
+        "macro_f1": 99.69408660997446,
+        "baseline_accuracy": 61.66666666666667,
+        "repaired": 137,
+        "damaged": 0,
+        "net_repaired": 137,
+        "count": 360,
+        "confusion": [
+          [
+            68,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            53,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            65,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            55,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            60,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            58
+          ]
+        ],
+        "iq_nmse": 0.004936571232974529
+      },
+      {
+        "view": "practical_high",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "3",
+        "accuracy": 94.16666666666667,
+        "macro_f1": 94.06006308681283,
+        "baseline_accuracy": 51.11111111111111,
+        "repaired": 159,
+        "damaged": 4,
+        "net_repaired": 155,
+        "count": 360,
+        "confusion": [
+          [
+            59,
+            2,
+            0,
+            2,
+            2,
+            0
+          ],
+          [
+            0,
+            55,
+            0,
+            2,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            64,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            5,
+            0,
+            48,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0,
+            0,
+            53,
+            1
+          ],
+          [
+            1,
+            0,
+            1,
+            0,
+            0,
+            60
+          ]
+        ],
+        "iq_nmse": 0.019189955666661263
+      },
+      {
+        "view": "practical_high",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "4",
+        "accuracy": 97.5,
+        "macro_f1": 97.50554529590832,
+        "baseline_accuracy": 51.66666666666667,
+        "repaired": 166,
+        "damaged": 1,
+        "net_repaired": 165,
+        "count": 360,
+        "confusion": [
+          [
+            59,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            57,
+            0,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            56,
+            1,
+            1,
+            2
+          ],
+          [
+            1,
+            1,
+            0,
+            61,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            61,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            1,
+            57
+          ]
+        ],
+        "iq_nmse": 0.012604333460330963
+      },
+      {
+        "view": "practical_high",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "6",
+        "accuracy": 100.0,
+        "macro_f1": 100.0,
+        "baseline_accuracy": 51.66666666666667,
+        "repaired": 174,
+        "damaged": 0,
+        "net_repaired": 174,
+        "count": 360,
+        "confusion": [
+          [
+            51,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            61,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            45,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            67,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            64,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            72
+          ]
+        ],
+        "iq_nmse": 0.00599629757925868
+      },
+      {
+        "view": "practical_high",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "8",
+        "accuracy": 97.77777777777777,
+        "macro_f1": 97.76316024326857,
+        "baseline_accuracy": 55.27777777777778,
+        "repaired": 155,
+        "damaged": 2,
+        "net_repaired": 153,
+        "count": 360,
+        "confusion": [
+          [
+            55,
+            2,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            66,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            50,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            2,
+            0,
+            52,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            66,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            63
+          ]
+        ],
+        "iq_nmse": 0.019472867250442505
+      },
+      {
+        "view": "practical_high",
+        "readout": "restored",
+        "dimension": "day",
+        "value": "1",
+        "accuracy": 98.83333333333333,
+        "macro_f1": 98.82387392228446,
+        "baseline_accuracy": 59.833333333333336,
+        "repaired": 235,
+        "damaged": 1,
+        "net_repaired": 234,
+        "count": 600,
+        "confusion": [
+          [
+            96,
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            107,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            91,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            87,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            0,
+            116
+          ]
+        ],
+        "iq_nmse": 0.009699786081910133
+      },
+      {
+        "view": "practical_high",
+        "readout": "restored",
+        "dimension": "day",
+        "value": "2",
+        "accuracy": 97.66666666666667,
+        "macro_f1": 97.75636331847456,
+        "baseline_accuracy": 51.66666666666667,
+        "repaired": 278,
+        "damaged": 2,
+        "net_repaired": 276,
+        "count": 600,
+        "confusion": [
+          [
+            104,
+            1,
+            0,
+            3,
+            0,
+            0
+          ],
+          [
+            0,
+            103,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            89,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            6,
+            0,
+            98,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            95,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            1,
+            97
+          ]
+        ],
+        "iq_nmse": 0.014238947071135044
+      },
+      {
+        "view": "practical_high",
+        "readout": "restored",
+        "dimension": "day",
+        "value": "3",
+        "accuracy": 97.0,
+        "macro_f1": 96.9306908418794,
+        "baseline_accuracy": 51.33333333333333,
+        "repaired": 278,
+        "damaged": 4,
+        "net_repaired": 274,
+        "count": 600,
+        "confusion": [
+          [
+            92,
+            1,
+            0,
+            0,
+            2,
+            0
+          ],
+          [
+            0,
+            82,
+            0,
+            4,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            100,
+            2,
+            0,
+            2
+          ],
+          [
+            0,
+            1,
+            0,
+            98,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1,
+            0,
+            113,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0,
+            0,
+            97
+          ]
+        ],
+        "iq_nmse": 0.013381280936300755
+      },
+      {
+        "view": "practical_mid",
+        "readout": "restored",
+        "dimension": "overall",
+        "value": "all",
+        "accuracy": 96.16666666666667,
+        "macro_f1": 96.14611837355233,
+        "baseline_accuracy": 51.72222222222223,
+        "repaired": 814,
+        "damaged": 14,
+        "net_repaired": 800,
+        "count": 1800,
+        "confusion": [
+          [
+            288,
+            3,
+            0,
+            8,
+            2,
+            0
+          ],
+          [
+            2,
+            280,
+            0,
+            16,
+            0,
+            1
+          ],
+          [
+            3,
+            1,
+            276,
+            3,
+            2,
+            1
+          ],
+          [
+            6,
+            12,
+            0,
+            275,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            1,
+            0,
+            304,
+            1
+          ],
+          [
+            1,
+            0,
+            2,
+            0,
+            2,
+            308
+          ]
+        ],
+        "iq_nmse": 0.018794365227222443
+      },
+      {
+        "view": "practical_mid",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "0",
+        "accuracy": 95.68106312292359,
+        "macro_f1": 16.298811544991512,
+        "baseline_accuracy": 61.12956810631229,
+        "repaired": 107,
+        "damaged": 3,
+        "net_repaired": 104,
+        "count": 301,
+        "confusion": [
+          [
+            288,
+            3,
+            0,
+            8,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.01866593398153782
+      },
+      {
+        "view": "practical_mid",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "1",
+        "accuracy": 93.64548494983278,
+        "macro_f1": 16.11974668969488,
+        "baseline_accuracy": 17.05685618729097,
+        "repaired": 232,
+        "damaged": 3,
+        "net_repaired": 229,
+        "count": 299,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            2,
+            280,
+            0,
+            16,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.016043487936258316
+      },
+      {
+        "view": "practical_mid",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "2",
+        "accuracy": 96.5034965034965,
+        "macro_f1": 16.370106761565836,
+        "baseline_accuracy": 79.02097902097903,
+        "repaired": 50,
+        "damaged": 0,
+        "net_repaired": 50,
+        "count": 286,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            276,
+            3,
+            2,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.019585585221648216
+      },
+      {
+        "view": "practical_mid",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "3",
+        "accuracy": 93.85665529010238,
+        "macro_f1": 16.13849765258216,
+        "baseline_accuracy": 23.890784982935152,
+        "repaired": 212,
+        "damaged": 7,
+        "net_repaired": 205,
+        "count": 293,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            6,
+            12,
+            0,
+            275,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.016276702284812927
+      },
+      {
+        "view": "practical_mid",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "4",
+        "accuracy": 98.7012987012987,
+        "macro_f1": 16.55773420479303,
+        "baseline_accuracy": 37.66233766233766,
+        "repaired": 188,
+        "damaged": 0,
+        "net_repaired": 188,
+        "count": 308,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            1,
+            0,
+            304,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.01698210835456848
+      },
+      {
+        "view": "practical_mid",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "5",
+        "accuracy": 98.40255591054313,
+        "macro_f1": 16.532474503489,
+        "baseline_accuracy": 90.73482428115017,
+        "repaired": 25,
+        "damaged": 1,
+        "net_repaired": 24,
+        "count": 313,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            2,
+            0,
+            2,
+            308
+          ]
+        ],
+        "iq_nmse": 0.024962836876511574
+      },
+      {
+        "view": "practical_mid",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "1",
+        "accuracy": 98.05555555555556,
+        "macro_f1": 97.99098221422862,
+        "baseline_accuracy": 55.833333333333336,
+        "repaired": 153,
+        "damaged": 1,
+        "net_repaired": 152,
+        "count": 360,
+        "confusion": [
+          [
+            68,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            2,
+            50,
+            0,
+            2,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            63,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            54,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            60,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            58
+          ]
+        ],
+        "iq_nmse": 0.011035342700779438
+      },
+      {
+        "view": "practical_mid",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "3",
+        "accuracy": 90.83333333333333,
+        "macro_f1": 90.62708672245913,
+        "baseline_accuracy": 51.66666666666667,
+        "repaired": 151,
+        "damaged": 10,
+        "net_repaired": 141,
+        "count": 360,
+        "confusion": [
+          [
+            55,
+            2,
+            0,
+            6,
+            2,
+            0
+          ],
+          [
+            0,
+            50,
+            0,
+            7,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            64,
+            0,
+            1,
+            0
+          ],
+          [
+            1,
+            6,
+            0,
+            46,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0,
+            0,
+            53,
+            1
+          ],
+          [
+            0,
+            0,
+            2,
+            0,
+            1,
+            59
+          ]
+        ],
+        "iq_nmse": 0.029417339712381363
+      },
+      {
+        "view": "practical_mid",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "4",
+        "accuracy": 96.94444444444444,
+        "macro_f1": 96.95550777686537,
+        "baseline_accuracy": 48.333333333333336,
+        "repaired": 175,
+        "damaged": 0,
+        "net_repaired": 175,
+        "count": 360,
+        "confusion": [
+          [
+            59,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            59,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            56,
+            1,
+            1,
+            1
+          ],
+          [
+            4,
+            1,
+            0,
+            58,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            61,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0,
+            1,
+            56
+          ]
+        ],
+        "iq_nmse": 0.01841038465499878
+      },
+      {
+        "view": "practical_mid",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "6",
+        "accuracy": 98.33333333333333,
+        "macro_f1": 98.24526723367511,
+        "baseline_accuracy": 50.0,
+        "repaired": 174,
+        "damaged": 0,
+        "net_repaired": 174,
+        "count": 360,
+        "confusion": [
+          [
+            50,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            60,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            43,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0,
+            65,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            64,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            72
+          ]
+        ],
+        "iq_nmse": 0.010154194198548794
+      },
+      {
+        "view": "practical_mid",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "8",
+        "accuracy": 96.66666666666667,
+        "macro_f1": 96.69265798760325,
+        "baseline_accuracy": 52.77777777777778,
+        "repaired": 161,
+        "damaged": 3,
+        "net_repaired": 158,
+        "count": 360,
+        "confusion": [
+          [
+            56,
+            1,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            61,
+            0,
+            6,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            50,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            3,
+            0,
+            52,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            66,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            63
+          ]
+        ],
+        "iq_nmse": 0.024954568594694138
+      },
+      {
+        "view": "practical_mid",
+        "readout": "restored",
+        "dimension": "day",
+        "value": "1",
+        "accuracy": 97.16666666666667,
+        "macro_f1": 97.09889733792191,
+        "baseline_accuracy": 56.49999999999999,
+        "repaired": 246,
+        "damaged": 2,
+        "net_repaired": 244,
+        "count": 600,
+        "confusion": [
+          [
+            94,
+            2,
+            0,
+            2,
+            0,
+            0
+          ],
+          [
+            1,
+            103,
+            0,
+            4,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            90,
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            4,
+            0,
+            84,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            0,
+            116
+          ]
+        ],
+        "iq_nmse": 0.016713961958885193
+      },
+      {
+        "view": "practical_mid",
+        "readout": "restored",
+        "dimension": "day",
+        "value": "2",
+        "accuracy": 96.0,
+        "macro_f1": 96.14661839920802,
+        "baseline_accuracy": 48.833333333333336,
+        "repaired": 289,
+        "damaged": 6,
+        "net_repaired": 283,
+        "count": 600,
+        "confusion": [
+          [
+            103,
+            0,
+            0,
+            5,
+            0,
+            0
+          ],
+          [
+            0,
+            96,
+            0,
+            8,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            87,
+            0,
+            1,
+            0
+          ],
+          [
+            1,
+            5,
+            0,
+            99,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            95,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            2,
+            96
+          ]
+        ],
+        "iq_nmse": 0.019589191302657127
+      },
+      {
+        "view": "practical_mid",
+        "readout": "restored",
+        "dimension": "day",
+        "value": "3",
+        "accuracy": 95.33333333333334,
+        "macro_f1": 95.20594187667332,
+        "baseline_accuracy": 49.833333333333336,
+        "repaired": 279,
+        "damaged": 6,
+        "net_repaired": 273,
+        "count": 600,
+        "confusion": [
+          [
+            91,
+            1,
+            0,
+            1,
+            2,
+            0
+          ],
+          [
+            1,
+            81,
+            0,
+            4,
+            0,
+            1
+          ],
+          [
+            2,
+            1,
+            99,
+            2,
+            0,
+            1
+          ],
+          [
+            5,
+            3,
+            0,
+            92,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            1,
+            0,
+            113,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0,
+            0,
+            96
+          ]
+        ],
+        "iq_nmse": 0.02007994055747986
+      },
+      {
+        "view": "practical_low_suburban",
+        "readout": "restored",
+        "dimension": "overall",
+        "value": "all",
+        "accuracy": 94.05555555555556,
+        "macro_f1": 94.04260379259695,
+        "baseline_accuracy": 51.0,
+        "repaired": 800,
+        "damaged": 25,
+        "net_repaired": 775,
+        "count": 1800,
+        "confusion": [
+          [
+            284,
+            3,
+            0,
+            11,
+            3,
+            0
+          ],
+          [
+            3,
+            263,
+            0,
+            29,
+            3,
+            1
+          ],
+          [
+            6,
+            1,
+            270,
+            4,
+            2,
+            3
+          ],
+          [
+            8,
+            14,
+            0,
+            271,
+            0,
+            0
+          ],
+          [
+            1,
+            4,
+            1,
+            3,
+            298,
+            1
+          ],
+          [
+            1,
+            1,
+            2,
+            0,
+            2,
+            307
+          ]
+        ],
+        "iq_nmse": 0.023776130750775337
+      },
+      {
+        "view": "practical_low_suburban",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "0",
+        "accuracy": 94.35215946843853,
+        "macro_f1": 16.182336182336183,
+        "baseline_accuracy": 60.46511627906976,
+        "repaired": 106,
+        "damaged": 4,
+        "net_repaired": 102,
+        "count": 301,
+        "confusion": [
+          [
+            284,
+            3,
+            0,
+            11,
+            3,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.022590396925807
+      },
+      {
+        "view": "practical_low_suburban",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "1",
+        "accuracy": 87.95986622073578,
+        "macro_f1": 15.599051008303674,
+        "baseline_accuracy": 18.394648829431436,
+        "repaired": 215,
+        "damaged": 7,
+        "net_repaired": 208,
+        "count": 299,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            3,
+            263,
+            0,
+            29,
+            3,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.02444363944232464
+      },
+      {
+        "view": "practical_low_suburban",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "2",
+        "accuracy": 94.4055944055944,
+        "macro_f1": 16.18705035971223,
+        "baseline_accuracy": 76.92307692307693,
+        "repaired": 53,
+        "damaged": 3,
+        "net_repaired": 50,
+        "count": 286,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            6,
+            1,
+            270,
+            4,
+            2,
+            3
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.02340233512222767
+      },
+      {
+        "view": "practical_low_suburban",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "3",
+        "accuracy": 92.4914675767918,
+        "macro_f1": 16.016548463356976,
+        "baseline_accuracy": 24.2320819112628,
+        "repaired": 206,
+        "damaged": 6,
+        "net_repaired": 200,
+        "count": 293,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            8,
+            14,
+            0,
+            271,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.01897488161921501
+      },
+      {
+        "view": "practical_low_suburban",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "4",
+        "accuracy": 96.75324675324676,
+        "macro_f1": 16.39163916391639,
+        "baseline_accuracy": 34.74025974025974,
+        "repaired": 194,
+        "damaged": 3,
+        "net_repaired": 191,
+        "count": 308,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            4,
+            1,
+            3,
+            298,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.02586417645215988
+      },
+      {
+        "view": "practical_low_suburban",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "5",
+        "accuracy": 98.08306709265176,
+        "macro_f1": 16.505376344086024,
+        "baseline_accuracy": 90.41533546325878,
+        "repaired": 26,
+        "damaged": 2,
+        "net_repaired": 24,
+        "count": 313,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            2,
+            0,
+            2,
+            307
+          ]
+        ],
+        "iq_nmse": 0.027060076594352722
+      },
+      {
+        "view": "practical_low_suburban",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "1",
+        "accuracy": 96.38888888888889,
+        "macro_f1": 96.26996683460284,
+        "baseline_accuracy": 55.00000000000001,
+        "repaired": 153,
+        "damaged": 4,
+        "net_repaired": 149,
+        "count": 360,
+        "confusion": [
+          [
+            67,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            50,
+            0,
+            3,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            64,
+            0,
+            0,
+            0
+          ],
+          [
+            2,
+            2,
+            0,
+            51,
+            0,
+            0
+          ],
+          [
+            0,
+            2,
+            0,
+            0,
+            58,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            0,
+            57
+          ]
+        ],
+        "iq_nmse": 0.01322757638990879
+      },
+      {
+        "view": "practical_low_suburban",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "3",
+        "accuracy": 90.55555555555556,
+        "macro_f1": 90.44082325432615,
+        "baseline_accuracy": 53.61111111111111,
+        "repaired": 144,
+        "damaged": 11,
+        "net_repaired": 133,
+        "count": 360,
+        "confusion": [
+          [
+            57,
+            1,
+            0,
+            5,
+            2,
+            0
+          ],
+          [
+            0,
+            50,
+            0,
+            7,
+            1,
+            0
+          ],
+          [
+            3,
+            1,
+            60,
+            1,
+            1,
+            0
+          ],
+          [
+            1,
+            5,
+            0,
+            47,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0,
+            1,
+            52,
+            1
+          ],
+          [
+            1,
+            1,
+            0,
+            0,
+            0,
+            60
+          ]
+        ],
+        "iq_nmse": 0.038639698177576065
+      },
+      {
+        "view": "practical_low_suburban",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "4",
+        "accuracy": 93.61111111111111,
+        "macro_f1": 93.66423990921979,
+        "baseline_accuracy": 45.27777777777778,
+        "repaired": 175,
+        "damaged": 1,
+        "net_repaired": 174,
+        "count": 360,
+        "confusion": [
+          [
+            57,
+            0,
+            0,
+            2,
+            0,
+            0
+          ],
+          [
+            1,
+            55,
+            0,
+            3,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            53,
+            2,
+            1,
+            3
+          ],
+          [
+            2,
+            2,
+            0,
+            59,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            2,
+            58,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            2,
+            55
+          ]
+        ],
+        "iq_nmse": 0.021114883944392204
+      },
+      {
+        "view": "practical_low_suburban",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "6",
+        "accuracy": 96.66666666666667,
+        "macro_f1": 96.61975472860576,
+        "baseline_accuracy": 45.55555555555556,
+        "repaired": 185,
+        "damaged": 1,
+        "net_repaired": 184,
+        "count": 360,
+        "confusion": [
+          [
+            51,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            55,
+            0,
+            5,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            43,
+            1,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            0,
+            63,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            64,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            72
+          ]
+        ],
+        "iq_nmse": 0.014194732531905174
+      },
+      {
+        "view": "practical_low_suburban",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "8",
+        "accuracy": 93.05555555555556,
+        "macro_f1": 93.15896026952437,
+        "baseline_accuracy": 55.55555555555556,
+        "repaired": 143,
+        "damaged": 8,
+        "net_repaired": 135,
+        "count": 360,
+        "confusion": [
+          [
+            52,
+            2,
+            0,
+            3,
+            1,
+            0
+          ],
+          [
+            0,
+            53,
+            0,
+            11,
+            2,
+            1
+          ],
+          [
+            0,
+            0,
+            50,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            4,
+            0,
+            51,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            66,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            63
+          ]
+        ],
+        "iq_nmse": 0.03170376271009445
+      },
+      {
+        "view": "practical_low_suburban",
+        "readout": "restored",
+        "dimension": "day",
+        "value": "1",
+        "accuracy": 94.66666666666667,
+        "macro_f1": 94.54224297048638,
+        "baseline_accuracy": 56.333333333333336,
+        "repaired": 239,
+        "damaged": 9,
+        "net_repaired": 230,
+        "count": 600,
+        "confusion": [
+          [
+            96,
+            1,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            92,
+            0,
+            13,
+            1,
+            1
+          ],
+          [
+            2,
+            0,
+            88,
+            0,
+            2,
+            0
+          ],
+          [
+            4,
+            3,
+            0,
+            81,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0,
+            0,
+            95,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            0,
+            116
+          ]
+        ],
+        "iq_nmse": 0.02063557505607605
+      },
+      {
+        "view": "practical_low_suburban",
+        "readout": "restored",
+        "dimension": "day",
+        "value": "2",
+        "accuracy": 94.33333333333334,
+        "macro_f1": 94.51687137869064,
+        "baseline_accuracy": 47.0,
+        "repaired": 289,
+        "damaged": 5,
+        "net_repaired": 284,
+        "count": 600,
+        "confusion": [
+          [
+            101,
+            1,
+            0,
+            5,
+            1,
+            0
+          ],
+          [
+            1,
+            93,
+            0,
+            9,
+            1,
+            0
+          ],
+          [
+            3,
+            0,
+            85,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            5,
+            0,
+            99,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            2,
+            92,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            1,
+            96
+          ]
+        ],
+        "iq_nmse": 0.02288142777979374
+      },
+      {
+        "view": "practical_low_suburban",
+        "readout": "restored",
+        "dimension": "day",
+        "value": "3",
+        "accuracy": 93.16666666666666,
+        "macro_f1": 93.02955130042562,
+        "baseline_accuracy": 49.666666666666664,
+        "repaired": 272,
+        "damaged": 11,
+        "net_repaired": 261,
+        "count": 600,
+        "confusion": [
+          [
+            87,
+            1,
+            0,
+            5,
+            2,
+            0
+          ],
+          [
+            1,
+            78,
+            0,
+            7,
+            1,
+            0
+          ],
+          [
+            1,
+            1,
+            97,
+            3,
+            0,
+            3
+          ],
+          [
+            3,
+            6,
+            0,
+            91,
+            0,
+            0
+          ],
+          [
+            0,
+            2,
+            1,
+            1,
+            111,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0,
+            1,
+            95
+          ]
+        ],
+        "iq_nmse": 0.027811391279101372
+      },
+      {
+        "view": "practical_high_urban",
+        "readout": "restored",
+        "dimension": "overall",
+        "value": "all",
+        "accuracy": 96.55555555555554,
+        "macro_f1": 96.53663440561753,
+        "baseline_accuracy": 51.0,
+        "repaired": 835,
+        "damaged": 15,
+        "net_repaired": 820,
+        "count": 1800,
+        "confusion": [
+          [
+            292,
+            3,
+            0,
+            4,
+            2,
+            0
+          ],
+          [
+            2,
+            279,
+            0,
+            17,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            276,
+            5,
+            1,
+            3
+          ],
+          [
+            6,
+            9,
+            0,
+            278,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            1,
+            304,
+            1
+          ],
+          [
+            2,
+            0,
+            1,
+            0,
+            1,
+            309
+          ]
+        ],
+        "iq_nmse": 0.01774016208946705
+      },
+      {
+        "view": "practical_high_urban",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "0",
+        "accuracy": 97.00996677740864,
+        "macro_f1": 16.413715570545246,
+        "baseline_accuracy": 61.79401993355482,
+        "repaired": 108,
+        "damaged": 2,
+        "net_repaired": 106,
+        "count": 301,
+        "confusion": [
+          [
+            292,
+            3,
+            0,
+            4,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.016606509685516357
+      },
+      {
+        "view": "practical_high_urban",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "1",
+        "accuracy": 93.31103678929766,
+        "macro_f1": 16.089965397923876,
+        "baseline_accuracy": 15.719063545150503,
+        "repaired": 238,
+        "damaged": 6,
+        "net_repaired": 232,
+        "count": 299,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            2,
+            279,
+            0,
+            17,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.015897545963525772
+      },
+      {
+        "view": "practical_high_urban",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "2",
+        "accuracy": 96.5034965034965,
+        "macro_f1": 16.370106761565836,
+        "baseline_accuracy": 78.67132867132867,
+        "repaired": 52,
+        "damaged": 1,
+        "net_repaired": 51,
+        "count": 286,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            276,
+            5,
+            1,
+            3
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.021517999470233917
+      },
+      {
+        "view": "practical_high_urban",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "3",
+        "accuracy": 94.88054607508532,
+        "macro_f1": 16.228838295388208,
+        "baseline_accuracy": 21.843003412969285,
+        "repaired": 217,
+        "damaged": 3,
+        "net_repaired": 214,
+        "count": 293,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            6,
+            9,
+            0,
+            278,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.01330604124814272
+      },
+      {
+        "view": "practical_high_urban",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "4",
+        "accuracy": 98.7012987012987,
+        "macro_f1": 16.55773420479303,
+        "baseline_accuracy": 36.038961038961034,
+        "repaired": 195,
+        "damaged": 2,
+        "net_repaired": 193,
+        "count": 308,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            1,
+            304,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.01705637201666832
+      },
+      {
+        "view": "practical_high_urban",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "5",
+        "accuracy": 98.7220447284345,
+        "macro_f1": 16.559485530546624,
+        "baseline_accuracy": 91.05431309904152,
+        "repaired": 25,
+        "damaged": 1,
+        "net_repaired": 24,
+        "count": 313,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            2,
+            0,
+            1,
+            0,
+            1,
+            309
+          ]
+        ],
+        "iq_nmse": 0.021962255239486694
+      },
+      {
+        "view": "practical_high_urban",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "1",
+        "accuracy": 98.88888888888889,
+        "macro_f1": 98.83181317963925,
+        "baseline_accuracy": 57.22222222222222,
+        "repaired": 150,
+        "damaged": 0,
+        "net_repaired": 150,
+        "count": 360,
+        "confusion": [
+          [
+            68,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            51,
+            0,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            65,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            54,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            60,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            58
+          ]
+        ],
+        "iq_nmse": 0.008394083939492702
+      },
+      {
+        "view": "practical_high_urban",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "3",
+        "accuracy": 94.16666666666667,
+        "macro_f1": 94.10360769813609,
+        "baseline_accuracy": 50.27777777777778,
+        "repaired": 165,
+        "damaged": 7,
+        "net_repaired": 158,
+        "count": 360,
+        "confusion": [
+          [
+            59,
+            1,
+            0,
+            3,
+            2,
+            0
+          ],
+          [
+            0,
+            54,
+            0,
+            3,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            62,
+            3,
+            0,
+            0
+          ],
+          [
+            0,
+            2,
+            0,
+            51,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            1,
+            53,
+            1
+          ],
+          [
+            1,
+            0,
+            1,
+            0,
+            0,
+            60
+          ]
+        ],
+        "iq_nmse": 0.029963858425617218
+      },
+      {
+        "view": "practical_high_urban",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "4",
+        "accuracy": 95.83333333333334,
+        "macro_f1": 95.82491184150307,
+        "baseline_accuracy": 47.5,
+        "repaired": 177,
+        "damaged": 3,
+        "net_repaired": 174,
+        "count": 360,
+        "confusion": [
+          [
+            59,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            54,
+            0,
+            4,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            55,
+            1,
+            1,
+            3
+          ],
+          [
+            1,
+            2,
+            0,
+            60,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            61,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0,
+            1,
+            56
+          ]
+        ],
+        "iq_nmse": 0.018437717109918594
+      },
+      {
+        "view": "practical_high_urban",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "6",
+        "accuracy": 98.05555555555556,
+        "macro_f1": 98.06726080016381,
+        "baseline_accuracy": 48.05555555555556,
+        "repaired": 182,
+        "damaged": 2,
+        "net_repaired": 180,
+        "count": 360,
+        "confusion": [
+          [
+            51,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            59,
+            0,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            45,
+            0,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            0,
+            62,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            64,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            72
+          ]
+        ],
+        "iq_nmse": 0.009262033738195896
+      },
+      {
+        "view": "practical_high_urban",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "8",
+        "accuracy": 95.83333333333334,
+        "macro_f1": 95.85195222900732,
+        "baseline_accuracy": 51.94444444444445,
+        "repaired": 161,
+        "damaged": 3,
+        "net_repaired": 158,
+        "count": 360,
+        "confusion": [
+          [
+            55,
+            2,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            61,
+            0,
+            6,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            49,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            4,
+            0,
+            51,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            66,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            63
+          ]
+        ],
+        "iq_nmse": 0.02264312095940113
+      },
+      {
+        "view": "practical_high_urban",
+        "readout": "restored",
+        "dimension": "day",
+        "value": "1",
+        "accuracy": 97.66666666666667,
+        "macro_f1": 97.60203779748153,
+        "baseline_accuracy": 56.833333333333336,
+        "repaired": 249,
+        "damaged": 4,
+        "net_repaired": 245,
+        "count": 600,
+        "confusion": [
+          [
+            97,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            102,
+            0,
+            5,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            90,
+            2,
+            0,
+            0
+          ],
+          [
+            1,
+            2,
+            0,
+            85,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            0,
+            116
+          ]
+        ],
+        "iq_nmse": 0.016462039202451706
+      },
+      {
+        "view": "practical_high_urban",
+        "readout": "restored",
+        "dimension": "day",
+        "value": "2",
+        "accuracy": 95.66666666666667,
+        "macro_f1": 95.85164015129561,
+        "baseline_accuracy": 49.333333333333336,
+        "repaired": 284,
+        "damaged": 6,
+        "net_repaired": 278,
+        "count": 600,
+        "confusion": [
+          [
+            103,
+            1,
+            0,
+            4,
+            0,
+            0
+          ],
+          [
+            0,
+            96,
+            0,
+            8,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            86,
+            3,
+            0,
+            0
+          ],
+          [
+            2,
+            5,
+            0,
+            98,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            94,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            1,
+            97
+          ]
+        ],
+        "iq_nmse": 0.019052116200327873
+      },
+      {
+        "view": "practical_high_urban",
+        "readout": "restored",
+        "dimension": "day",
+        "value": "3",
+        "accuracy": 96.33333333333334,
+        "macro_f1": 96.22219311508456,
+        "baseline_accuracy": 46.833333333333336,
+        "repaired": 302,
+        "damaged": 5,
+        "net_repaired": 297,
+        "count": 600,
+        "confusion": [
+          [
+            92,
+            1,
+            0,
+            0,
+            2,
+            0
+          ],
+          [
+            1,
+            81,
+            0,
+            4,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            100,
+            0,
+            1,
+            3
+          ],
+          [
+            3,
+            2,
+            0,
+            95,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            114,
+            0
+          ],
+          [
+            2,
+            0,
+            0,
+            0,
+            0,
+            96
+          ]
+        ],
+        "iq_nmse": 0.017706334590911865
+      },
+      {
+        "view": "practical_mid_urban",
+        "readout": "restored",
+        "dimension": "overall",
+        "value": "all",
+        "accuracy": 86.44444444444444,
+        "macro_f1": 86.42916203976046,
+        "baseline_accuracy": 43.388888888888886,
+        "repaired": 818,
+        "damaged": 43,
+        "net_repaired": 775,
+        "count": 1800,
+        "confusion": [
+          [
+            268,
+            4,
+            1,
+            27,
+            1,
+            0
+          ],
+          [
+            31,
+            209,
+            1,
+            55,
+            2,
+            1
+          ],
+          [
+            18,
+            5,
+            235,
+            21,
+            4,
+            3
+          ],
+          [
+            34,
+            17,
+            0,
+            239,
+            3,
+            0
+          ],
+          [
+            0,
+            4,
+            0,
+            5,
+            298,
+            1
+          ],
+          [
+            3,
+            0,
+            2,
+            0,
+            1,
+            307
+          ]
+        ],
+        "iq_nmse": 0.049789801239967346
+      },
+      {
+        "view": "practical_mid_urban",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "0",
+        "accuracy": 89.03654485049833,
+        "macro_f1": 15.700058582308142,
+        "baseline_accuracy": 44.518272425249165,
+        "repaired": 146,
+        "damaged": 12,
+        "net_repaired": 134,
+        "count": 301,
+        "confusion": [
+          [
+            268,
+            4,
+            1,
+            27,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.05503968149423599
+      },
+      {
+        "view": "practical_mid_urban",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "1",
+        "accuracy": 69.89966555183946,
+        "macro_f1": 13.713910761154855,
+        "baseline_accuracy": 20.066889632107024,
+        "repaired": 166,
+        "damaged": 17,
+        "net_repaired": 149,
+        "count": 299,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            31,
+            209,
+            1,
+            55,
+            2,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.041406162083148956
+      },
+      {
+        "view": "practical_mid_urban",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "2",
+        "accuracy": 82.16783216783216,
+        "macro_f1": 15.035188739603326,
+        "baseline_accuracy": 62.23776223776224,
+        "repaired": 62,
+        "damaged": 5,
+        "net_repaired": 57,
+        "count": 286,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            18,
+            5,
+            235,
+            21,
+            4,
+            3
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.05059059336781502
+      },
+      {
+        "view": "practical_mid_urban",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "3",
+        "accuracy": 81.56996587030717,
+        "macro_f1": 14.974937343358397,
+        "baseline_accuracy": 19.453924914675767,
+        "repaired": 186,
+        "damaged": 4,
+        "net_repaired": 182,
+        "count": 293,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            34,
+            17,
+            0,
+            239,
+            3,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.030589627102017403
+      },
+      {
+        "view": "practical_mid_urban",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "4",
+        "accuracy": 96.75324675324676,
+        "macro_f1": 16.39163916391639,
+        "baseline_accuracy": 35.064935064935064,
+        "repaired": 191,
+        "damaged": 1,
+        "net_repaired": 190,
+        "count": 308,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            4,
+            0,
+            5,
+            298,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.06073325499892235
+      },
+      {
+        "view": "practical_mid_urban",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "5",
+        "accuracy": 98.08306709265176,
+        "macro_f1": 16.505376344086024,
+        "baseline_accuracy": 77.95527156549521,
+        "repaired": 67,
+        "damaged": 4,
+        "net_repaired": 63,
+        "count": 313,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            3,
+            0,
+            2,
+            0,
+            1,
+            307
+          ]
+        ],
+        "iq_nmse": 0.059222809970378876
+      },
+      {
+        "view": "practical_mid_urban",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "1",
+        "accuracy": 88.61111111111111,
+        "macro_f1": 88.48845958974944,
+        "baseline_accuracy": 45.27777777777778,
+        "repaired": 160,
+        "damaged": 4,
+        "net_repaired": 156,
+        "count": 360,
+        "confusion": [
+          [
+            66,
+            0,
+            0,
+            2,
+            0,
+            0
+          ],
+          [
+            10,
+            37,
+            0,
+            6,
+            1,
+            0
+          ],
+          [
+            6,
+            1,
+            57,
+            1,
+            0,
+            0
+          ],
+          [
+            9,
+            3,
+            0,
+            43,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            59,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0,
+            0,
+            57
+          ]
+        ],
+        "iq_nmse": 0.02480965666472912
+      },
+      {
+        "view": "practical_mid_urban",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "3",
+        "accuracy": 81.94444444444444,
+        "macro_f1": 82.36918539852459,
+        "baseline_accuracy": 45.27777777777778,
+        "repaired": 147,
+        "damaged": 15,
+        "net_repaired": 132,
+        "count": 360,
+        "confusion": [
+          [
+            52,
+            1,
+            1,
+            10,
+            1,
+            0
+          ],
+          [
+            0,
+            36,
+            0,
+            21,
+            1,
+            0
+          ],
+          [
+            1,
+            1,
+            49,
+            14,
+            1,
+            0
+          ],
+          [
+            1,
+            5,
+            0,
+            46,
+            1,
+            0
+          ],
+          [
+            0,
+            2,
+            0,
+            1,
+            52,
+            1
+          ],
+          [
+            0,
+            0,
+            2,
+            0,
+            0,
+            60
+          ]
+        ],
+        "iq_nmse": 0.08607795834541321
+      },
+      {
+        "view": "practical_mid_urban",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "4",
+        "accuracy": 85.83333333333333,
+        "macro_f1": 86.08617079759466,
+        "baseline_accuracy": 39.44444444444444,
+        "repaired": 174,
+        "damaged": 7,
+        "net_repaired": 167,
+        "count": 360,
+        "confusion": [
+          [
+            56,
+            0,
+            0,
+            3,
+            0,
+            0
+          ],
+          [
+            11,
+            45,
+            0,
+            3,
+            0,
+            0
+          ],
+          [
+            6,
+            1,
+            47,
+            2,
+            2,
+            2
+          ],
+          [
+            11,
+            4,
+            0,
+            46,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            60,
+            0
+          ],
+          [
+            2,
+            0,
+            0,
+            0,
+            1,
+            55
+          ]
+        ],
+        "iq_nmse": 0.03649132326245308
+      },
+      {
+        "view": "practical_mid_urban",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "6",
+        "accuracy": 88.05555555555556,
+        "macro_f1": 87.66691300512034,
+        "baseline_accuracy": 38.333333333333336,
+        "repaired": 182,
+        "damaged": 3,
+        "net_repaired": 179,
+        "count": 360,
+        "confusion": [
+          [
+            46,
+            1,
+            0,
+            4,
+            0,
+            0
+          ],
+          [
+            4,
+            49,
+            0,
+            8,
+            0,
+            0
+          ],
+          [
+            5,
+            2,
+            35,
+            1,
+            1,
+            1
+          ],
+          [
+            12,
+            2,
+            0,
+            53,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1,
+            62,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            72
+          ]
+        ],
+        "iq_nmse": 0.030048877000808716
+      },
+      {
+        "view": "practical_mid_urban",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "8",
+        "accuracy": 87.77777777777777,
+        "macro_f1": 87.86176671429978,
+        "baseline_accuracy": 48.61111111111111,
+        "repaired": 155,
+        "damaged": 14,
+        "net_repaired": 141,
+        "count": 360,
+        "confusion": [
+          [
+            48,
+            2,
+            0,
+            8,
+            0,
+            0
+          ],
+          [
+            6,
+            42,
+            1,
+            17,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            47,
+            3,
+            0,
+            0
+          ],
+          [
+            1,
+            3,
+            0,
+            51,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1,
+            65,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            63
+          ]
+        ],
+        "iq_nmse": 0.07152117788791656
+      },
+      {
+        "view": "practical_mid_urban",
+        "readout": "restored",
+        "dimension": "day",
+        "value": "1",
+        "accuracy": 87.83333333333333,
+        "macro_f1": 87.53869751173946,
+        "baseline_accuracy": 48.0,
+        "repaired": 251,
+        "damaged": 12,
+        "net_repaired": 239,
+        "count": 600,
+        "confusion": [
+          [
+            89,
+            2,
+            0,
+            7,
+            0,
+            0
+          ],
+          [
+            13,
+            75,
+            0,
+            18,
+            1,
+            1
+          ],
+          [
+            7,
+            0,
+            79,
+            4,
+            2,
+            0
+          ],
+          [
+            10,
+            5,
+            0,
+            72,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            96,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            0,
+            116
+          ]
+        ],
+        "iq_nmse": 0.044590238481760025
+      },
+      {
+        "view": "practical_mid_urban",
+        "readout": "restored",
+        "dimension": "day",
+        "value": "2",
+        "accuracy": 83.5,
+        "macro_f1": 84.1521379709051,
+        "baseline_accuracy": 42.5,
+        "repaired": 268,
+        "damaged": 22,
+        "net_repaired": 246,
+        "count": 600,
+        "confusion": [
+          [
+            94,
+            1,
+            0,
+            13,
+            0,
+            0
+          ],
+          [
+            10,
+            69,
+            1,
+            24,
+            0,
+            0
+          ],
+          [
+            7,
+            2,
+            69,
+            10,
+            1,
+            0
+          ],
+          [
+            10,
+            9,
+            0,
+            85,
+            1,
+            0
+          ],
+          [
+            0,
+            2,
+            0,
+            3,
+            90,
+            1
+          ],
+          [
+            2,
+            0,
+            1,
+            0,
+            1,
+            94
+          ]
+        ],
+        "iq_nmse": 0.05176371708512306
+      },
+      {
+        "view": "practical_mid_urban",
+        "readout": "restored",
+        "dimension": "day",
+        "value": "3",
+        "accuracy": 88.0,
+        "macro_f1": 87.67851982314698,
+        "baseline_accuracy": 39.666666666666664,
+        "repaired": 299,
+        "damaged": 9,
+        "net_repaired": 290,
+        "count": 600,
+        "confusion": [
+          [
+            85,
+            1,
+            1,
+            7,
+            1,
+            0
+          ],
+          [
+            8,
+            65,
+            0,
+            13,
+            1,
+            0
+          ],
+          [
+            4,
+            3,
+            87,
+            7,
+            1,
+            3
+          ],
+          [
+            14,
+            3,
+            0,
+            82,
+            1,
+            0
+          ],
+          [
+            0,
+            2,
+            0,
+            1,
+            112,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0,
+            0,
+            97
+          ]
+        ],
+        "iq_nmse": 0.05301544815301895
+      },
+      {
+        "view": "practical_low_urban",
+        "readout": "restored",
+        "dimension": "overall",
+        "value": "all",
+        "accuracy": 76.88888888888889,
+        "macro_f1": 77.24539379073262,
+        "baseline_accuracy": 36.666666666666664,
+        "repaired": 788,
+        "damaged": 64,
+        "net_repaired": 724,
+        "count": 1800,
+        "confusion": [
+          [
+            242,
+            9,
+            0,
+            45,
+            3,
+            2
+          ],
+          [
+            38,
+            178,
+            0,
+            77,
+            4,
+            2
+          ],
+          [
+            27,
+            9,
+            192,
+            48,
+            6,
+            4
+          ],
+          [
+            59,
+            19,
+            2,
+            208,
+            5,
+            0
+          ],
+          [
+            4,
+            10,
+            0,
+            17,
+            273,
+            4
+          ],
+          [
+            3,
+            1,
+            3,
+            8,
+            7,
+            291
+          ]
+        ],
+        "iq_nmse": 0.07715956121683121
+      },
+      {
+        "view": "practical_low_urban",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "0",
+        "accuracy": 80.39867109634552,
+        "macro_f1": 14.85573971761817,
+        "baseline_accuracy": 42.524916943521596,
+        "repaired": 131,
+        "damaged": 17,
+        "net_repaired": 114,
+        "count": 301,
+        "confusion": [
+          [
+            242,
+            9,
+            0,
+            45,
+            3,
+            2
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.07048682123422623
+      },
+      {
+        "view": "practical_low_urban",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "1",
+        "accuracy": 59.53177257525084,
+        "macro_f1": 12.43885394828791,
+        "baseline_accuracy": 17.391304347826086,
+        "repaired": 147,
+        "damaged": 21,
+        "net_repaired": 126,
+        "count": 299,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            38,
+            178,
+            0,
+            77,
+            4,
+            2
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.060830794274806976
+      },
+      {
+        "view": "practical_low_urban",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "2",
+        "accuracy": 67.13286713286713,
+        "macro_f1": 13.389121338912135,
+        "baseline_accuracy": 45.8041958041958,
+        "repaired": 71,
+        "damaged": 10,
+        "net_repaired": 61,
+        "count": 286,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            27,
+            9,
+            192,
+            48,
+            6,
+            4
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.09049543738365173
+      },
+      {
+        "view": "practical_low_urban",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "3",
+        "accuracy": 70.98976109215018,
+        "macro_f1": 13.838988689288092,
+        "baseline_accuracy": 13.993174061433447,
+        "repaired": 171,
+        "damaged": 4,
+        "net_repaired": 167,
+        "count": 293,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            59,
+            19,
+            2,
+            208,
+            5,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.06931060552597046
+      },
+      {
+        "view": "practical_low_urban",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "4",
+        "accuracy": 88.63636363636364,
+        "macro_f1": 15.66265060240964,
+        "baseline_accuracy": 32.142857142857146,
+        "repaired": 179,
+        "damaged": 5,
+        "net_repaired": 174,
+        "count": 308,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            4,
+            10,
+            0,
+            17,
+            273,
+            4
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "iq_nmse": 0.07272524386644363
+      },
+      {
+        "view": "practical_low_urban",
+        "readout": "restored",
+        "dimension": "TX",
+        "value": "5",
+        "accuracy": 92.97124600638978,
+        "macro_f1": 16.059602649006624,
+        "baseline_accuracy": 66.77316293929712,
+        "repaired": 89,
+        "damaged": 7,
+        "net_repaired": 82,
+        "count": 313,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            3,
+            1,
+            3,
+            8,
+            7,
+            291
+          ]
+        ],
+        "iq_nmse": 0.09870028495788574
+      },
+      {
+        "view": "practical_low_urban",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "1",
+        "accuracy": 79.72222222222223,
+        "macro_f1": 79.99378262612214,
+        "baseline_accuracy": 34.72222222222222,
+        "repaired": 169,
+        "damaged": 7,
+        "net_repaired": 162,
+        "count": 360,
+        "confusion": [
+          [
+            63,
+            2,
+            0,
+            3,
+            0,
+            0
+          ],
+          [
+            9,
+            33,
+            0,
+            11,
+            1,
+            0
+          ],
+          [
+            13,
+            1,
+            47,
+            4,
+            0,
+            0
+          ],
+          [
+            18,
+            2,
+            0,
+            35,
+            0,
+            0
+          ],
+          [
+            0,
+            3,
+            0,
+            4,
+            53,
+            0
+          ],
+          [
+            2,
+            0,
+            0,
+            0,
+            0,
+            56
+          ]
+        ],
+        "iq_nmse": 0.040304675698280334
+      },
+      {
+        "view": "practical_low_urban",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "3",
+        "accuracy": 68.33333333333333,
+        "macro_f1": 69.63922901357981,
+        "baseline_accuracy": 40.55555555555556,
+        "repaired": 124,
+        "damaged": 24,
+        "net_repaired": 100,
+        "count": 360,
+        "confusion": [
+          [
+            40,
+            2,
+            0,
+            20,
+            1,
+            2
+          ],
+          [
+            1,
+            33,
+            0,
+            21,
+            1,
+            2
+          ],
+          [
+            3,
+            2,
+            31,
+            26,
+            4,
+            0
+          ],
+          [
+            6,
+            2,
+            1,
+            42,
+            2,
+            0
+          ],
+          [
+            1,
+            1,
+            0,
+            5,
+            47,
+            2
+          ],
+          [
+            0,
+            0,
+            1,
+            5,
+            3,
+            53
+          ]
+        ],
+        "iq_nmse": 0.11588376015424728
+      },
+      {
+        "view": "practical_low_urban",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "4",
+        "accuracy": 76.66666666666667,
+        "macro_f1": 76.94620728710223,
+        "baseline_accuracy": 33.88888888888889,
+        "repaired": 164,
+        "damaged": 10,
+        "net_repaired": 154,
+        "count": 360,
+        "confusion": [
+          [
+            56,
+            0,
+            0,
+            2,
+            1,
+            0
+          ],
+          [
+            13,
+            34,
+            0,
+            12,
+            0,
+            0
+          ],
+          [
+            6,
+            5,
+            41,
+            4,
+            1,
+            3
+          ],
+          [
+            13,
+            5,
+            0,
+            43,
+            2,
+            0
+          ],
+          [
+            1,
+            5,
+            0,
+            5,
+            50,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            2,
+            2,
+            52
+          ]
+        ],
+        "iq_nmse": 0.05498176068067551
+      },
+      {
+        "view": "practical_low_urban",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "6",
+        "accuracy": 74.72222222222223,
+        "macro_f1": 74.48144723628035,
+        "baseline_accuracy": 35.27777777777778,
+        "repaired": 153,
+        "damaged": 11,
+        "net_repaired": 142,
+        "count": 360,
+        "confusion": [
+          [
+            41,
+            1,
+            0,
+            9,
+            0,
+            0
+          ],
+          [
+            11,
+            33,
+            0,
+            17,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            27,
+            11,
+            1,
+            1
+          ],
+          [
+            21,
+            6,
+            0,
+            40,
+            0,
+            0
+          ],
+          [
+            2,
+            1,
+            0,
+            2,
+            59,
+            0
+          ],
+          [
+            0,
+            1,
+            1,
+            0,
+            1,
+            69
+          ]
+        ],
+        "iq_nmse": 0.0565023198723793
+      },
+      {
+        "view": "practical_low_urban",
+        "readout": "restored",
+        "dimension": "RX",
+        "value": "8",
+        "accuracy": 85.0,
+        "macro_f1": 85.19079980649028,
+        "baseline_accuracy": 38.88888888888889,
+        "repaired": 178,
+        "damaged": 12,
+        "net_repaired": 166,
+        "count": 360,
+        "confusion": [
+          [
+            42,
+            4,
+            0,
+            11,
+            1,
+            0
+          ],
+          [
+            4,
+            45,
+            0,
+            16,
+            2,
+            0
+          ],
+          [
+            1,
+            0,
+            46,
+            3,
+            0,
+            0
+          ],
+          [
+            1,
+            4,
+            1,
+            48,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            64,
+            2
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            1,
+            61
+          ]
+        ],
+        "iq_nmse": 0.11812528967857361
+      },
+      {
+        "view": "practical_low_urban",
+        "readout": "restored",
+        "dimension": "day",
+        "value": "1",
+        "accuracy": 77.66666666666666,
+        "macro_f1": 77.73105900956358,
+        "baseline_accuracy": 37.833333333333336,
+        "repaired": 259,
+        "damaged": 20,
+        "net_repaired": 239,
+        "count": 600,
+        "confusion": [
+          [
+            78,
+            6,
+            0,
+            14,
+            0,
+            0
+          ],
+          [
+            15,
+            64,
+            0,
+            28,
+            1,
+            0
+          ],
+          [
+            4,
+            1,
+            69,
+            13,
+            4,
+            1
+          ],
+          [
+            24,
+            5,
+            0,
+            58,
+            1,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            7,
+            85,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            2,
+            3,
+            112
+          ]
+        ],
+        "iq_nmse": 0.07086829096078873
+      },
+      {
+        "view": "practical_low_urban",
+        "readout": "restored",
+        "dimension": "day",
+        "value": "2",
+        "accuracy": 76.66666666666667,
+        "macro_f1": 77.73125965687136,
+        "baseline_accuracy": 36.16666666666667,
+        "repaired": 262,
+        "damaged": 19,
+        "net_repaired": 243,
+        "count": 600,
+        "confusion": [
+          [
+            85,
+            1,
+            0,
+            20,
+            2,
+            0
+          ],
+          [
+            10,
+            61,
+            0,
+            32,
+            1,
+            0
+          ],
+          [
+            10,
+            4,
+            58,
+            16,
+            0,
+            1
+          ],
+          [
+            17,
+            7,
+            1,
+            79,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            5,
+            89,
+            2
+          ],
+          [
+            2,
+            0,
+            2,
+            4,
+            2,
+            88
+          ]
+        ],
+        "iq_nmse": 0.07576368749141693
+      },
+      {
+        "view": "practical_low_urban",
+        "readout": "restored",
+        "dimension": "day",
+        "value": "3",
+        "accuracy": 76.33333333333333,
+        "macro_f1": 76.1338120652149,
+        "baseline_accuracy": 36.0,
+        "repaired": 267,
+        "damaged": 25,
+        "net_repaired": 242,
+        "count": 600,
+        "confusion": [
+          [
+            79,
+            2,
+            0,
+            11,
+            1,
+            2
+          ],
+          [
+            13,
+            53,
+            0,
+            17,
+            2,
+            2
+          ],
+          [
+            13,
+            4,
+            65,
+            19,
+            2,
+            2
+          ],
+          [
+            18,
+            7,
+            1,
+            71,
+            3,
+            0
+          ],
+          [
+            2,
+            7,
+            0,
+            5,
+            99,
+            2
+          ],
+          [
+            1,
+            1,
+            1,
+            2,
+            2,
+            91
+          ]
+        ],
+        "iq_nmse": 0.08484671264886856
+      }
+    ],
+    "F_run": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+    "F_seed": 2026092701,
+    "original_default_head": true,
+    "all_predictions_before_truth": true,
+    "training_TX_labels_read": 0,
+    "training_F_access": false,
+    "head_fit_updates": 0,
+    "target_access": false,
+    "goal_complete": false,
+    "sampling_stability": {
+      "status": "SOURCE_STABILITY_PREDICTIONS_COMPLETE",
+      "role": "source",
+      "count": 128,
+      "seeds": [
+        202610202102,
+        202610202103,
+        202610202104
+      ],
+      "view": "practical_low_urban",
+      "disagreement_percent": 0.0,
+      "TX_truth_reads": 0,
+      "state_updates": 0,
+      "head_fit_updates": 0,
+      "full_sampling_steps": 4,
+      "primary_changed": false,
+      "qualified": true
+    }
+  },
+  "training_complete": {
+    "status": "SOURCE_TRAINED",
+    "candidate": "path_four",
+    "epochs": 20,
+    "updates": 4940,
+    "L_exposures": 126000,
+    "U_exposures": 1134000,
+    "TX_labels_read": 0,
+    "F_outputs_read": 0,
+    "F_weights_read": 0,
+    "target_reads": 0,
+    "frozen_context_updates": 0,
+    "prior_initialization": "scratch",
+    "inherited_prior_epochs": 0,
+    "trainable_parameters": 1389250,
+    "parameters": 3546797,
+    "seconds": 987.9208595070522,
+    "peak_allocated_bytes": 1177155072
+  },
+  "method_commit": "130e9f594fc9da0244b3ad22fb2ca2021485a6bb",
+  "training_history": [
+    {
+      "epoch": 1,
+      "updates": 247,
+      "losses": {
+        "loss": 0.020717994578064433,
+        "flow_time": 0.4991315366654169,
+        "start_noise_power": 0.0,
+        "objective_nmse": 0.020717994577827907,
+        "teacher_path_endpoint_nmse": 0.007114846124062463
+      },
+      "L_exposures": 6300,
+      "U_exposures": 56700,
+      "learning_rate_last": 0.0002,
+      "gradient_clip_fraction": 0.0,
+      "seconds": 52.51555462600663,
+      "strata": {
+        "L_s": {
+          "count": 6300,
+          "mean_objective_nmse": 0.021501560583488927
+        },
+        "U_s": {
+          "count": 56700,
+          "mean_objective_nmse": 0.020630931683423448
+        },
+        "state:BLOCKED": {
+          "count": 10276,
+          "mean_objective_nmse": 0.0933684746899021
+        },
+        "state:LOS": {
+          "count": 37017,
+          "mean_objective_nmse": 0.0062292776168581055
+        },
+        "state:PARTIAL": {
+          "count": 6269,
+          "mean_objective_nmse": 0.017568166553855305
+        },
+        "state:clean": {
+          "count": 9438,
+          "mean_objective_nmse": 0.0005356224429568472
+        },
+        "lock:degraded": {
+          "count": 5716,
+          "mean_objective_nmse": 0.05421048390273033
+        },
+        "lock:locked": {
+          "count": 41438,
+          "mean_objective_nmse": 0.006915863325651349
+        },
+        "lock:not_applicable": {
+          "count": 9438,
+          "mean_objective_nmse": 0.0005356224429568472
+        },
+        "lock:unlocked": {
+          "count": 6408,
+          "mean_objective_nmse": 0.10982081533314314
+        },
+        "scene:clean": {
+          "count": 9438,
+          "mean_objective_nmse": 0.0005356224429568472
+        },
+        "scene:practical_high": {
+          "count": 8843,
+          "mean_objective_nmse": 0.007198703507207698
+        },
+        "scene:practical_high_urban": {
+          "count": 9038,
+          "mean_objective_nmse": 0.011727477679192742
+        },
+        "scene:practical_low_suburban": {
+          "count": 8753,
+          "mean_objective_nmse": 0.014650848546781146
+        },
+        "scene:practical_low_urban": {
+          "count": 8949,
+          "mean_objective_nmse": 0.06114822184565627
+        },
+        "scene:practical_mid": {
+          "count": 8917,
+          "mean_objective_nmse": 0.011393956105200035
+        },
+        "scene:practical_mid_urban": {
+          "count": 9062,
+          "mean_objective_nmse": 0.03900608650613433
+        }
+      }
+    },
+    {
+      "epoch": 2,
+      "updates": 494,
+      "losses": {
+        "loss": 0.0020579705999365875,
+        "flow_time": 0.5008070409865606,
+        "start_noise_power": 0.0,
+        "objective_nmse": 0.0020579705999365875,
+        "teacher_path_endpoint_nmse": 0.001004122545100039
+      },
+      "L_exposures": 12600,
+      "U_exposures": 113400,
+      "learning_rate_last": 0.0001987818960049755,
+      "gradient_clip_fraction": 0.0,
+      "seconds": 102.14744670386426,
+      "strata": {
+        "L_s": {
+          "count": 6300,
+          "mean_objective_nmse": 0.002040683314267043
+        },
+        "U_s": {
+          "count": 56700,
+          "mean_objective_nmse": 0.002059891392728166
+        },
+        "state:BLOCKED": {
+          "count": 10294,
+          "mean_objective_nmse": 0.009904300764330456
+        },
+        "state:LOS": {
+          "count": 36951,
+          "mean_objective_nmse": 0.0004891687019909771
+        },
+        "state:PARTIAL": {
+          "count": 6349,
+          "mean_objective_nmse": 0.0012401714940158748
+        },
+        "state:clean": {
+          "count": 9406,
+          "mean_objective_nmse": 0.00018585511172992716
+        },
+        "lock:degraded": {
+          "count": 5782,
+          "mean_objective_nmse": 0.005518335545172919
+        },
+        "lock:locked": {
+          "count": 41424,
+          "mean_objective_nmse": 0.000520183239829129
+        },
+        "lock:not_applicable": {
+          "count": 9406,
+          "mean_objective_nmse": 0.00018585511172992716
+        },
+        "lock:unlocked": {
+          "count": 6388,
+          "mean_objective_nmse": 0.011654493878330188
+        },
+        "scene:clean": {
+          "count": 9406,
+          "mean_objective_nmse": 0.00018585511172992716
+        },
+        "scene:practical_high": {
+          "count": 8968,
+          "mean_objective_nmse": 0.0005910410158147987
+        },
+        "scene:practical_high_urban": {
+          "count": 8831,
+          "mean_objective_nmse": 0.0013139630792203326
+        },
+        "scene:practical_low_suburban": {
+          "count": 8973,
+          "mean_objective_nmse": 0.0012136267444137956
+        },
+        "scene:practical_low_urban": {
+          "count": 8839,
+          "mean_objective_nmse": 0.006215662048209346
+        },
+        "scene:practical_mid": {
+          "count": 8940,
+          "mean_objective_nmse": 0.0008929609294753663
+        },
+        "scene:practical_mid_urban": {
+          "count": 9043,
+          "mean_objective_nmse": 0.004112213784598089
+        }
+      }
+    },
+    {
+      "epoch": 3,
+      "updates": 741,
+      "losses": {
+        "loss": 0.0006787456781751225,
+        "flow_time": 0.4990042066271343,
+        "start_noise_power": 0.0,
+        "objective_nmse": 0.0006787456781751225,
+        "teacher_path_endpoint_nmse": 0.00039603228987534605
+      },
+      "L_exposures": 18900,
+      "U_exposures": 170100,
+      "learning_rate_last": 0.00019514104345825703,
+      "gradient_clip_fraction": 0.0,
+      "seconds": 151.97964872792363,
+      "strata": {
+        "L_s": {
+          "count": 6300,
+          "mean_objective_nmse": 0.000808873865152857
+        },
+        "U_s": {
+          "count": 56700,
+          "mean_objective_nmse": 0.000664286988769285
+        },
+        "state:BLOCKED": {
+          "count": 10313,
+          "mean_objective_nmse": 0.003099610009150301
+        },
+        "state:LOS": {
+          "count": 36954,
+          "mean_objective_nmse": 0.0001997786493153981
+        },
+        "state:PARTIAL": {
+          "count": 6191,
+          "mean_objective_nmse": 0.00042247349169163243
+        },
+        "state:clean": {
+          "count": 9542,
+          "mean_objective_nmse": 8.347786823164383e-05
+        },
+        "lock:degraded": {
+          "count": 5815,
+          "mean_objective_nmse": 0.0016862871919627288
+        },
+        "lock:locked": {
+          "count": 41293,
+          "mean_objective_nmse": 0.00021062266958403675
+        },
+        "lock:not_applicable": {
+          "count": 9542,
+          "mean_objective_nmse": 8.347786823164383e-05
+        },
+        "lock:unlocked": {
+          "count": 6350,
+          "mean_objective_nmse": 0.0036947132839443616
+        },
+        "scene:clean": {
+          "count": 9542,
+          "mean_objective_nmse": 8.347786823164383e-05
+        },
+        "scene:practical_high": {
+          "count": 8969,
+          "mean_objective_nmse": 0.00024079604951062752
+        },
+        "scene:practical_high_urban": {
+          "count": 8946,
+          "mean_objective_nmse": 0.00041174750684514513
+        },
+        "scene:practical_low_suburban": {
+          "count": 8882,
+          "mean_objective_nmse": 0.00044150571662048075
+        },
+        "scene:practical_low_urban": {
+          "count": 8961,
+          "mean_objective_nmse": 0.0021687632017210706
+        },
+        "scene:practical_mid": {
+          "count": 8835,
+          "mean_objective_nmse": 0.00044281211907379266
+        },
+        "scene:practical_mid_urban": {
+          "count": 8865,
+          "mean_objective_nmse": 0.000998674816984076
+        }
+      }
+    },
+    {
+      "epoch": 4,
+      "updates": 988,
+      "losses": {
+        "loss": 0.0005059247953846814,
+        "flow_time": 0.5000983607277038,
+        "start_noise_power": 0.0,
+        "objective_nmse": 0.0005059247953809857,
+        "teacher_path_endpoint_nmse": 0.00032606658329706757
+      },
+      "L_exposures": 25200,
+      "U_exposures": 226800,
+      "learning_rate_last": 0.00018917677739299047,
+      "gradient_clip_fraction": 0.0,
+      "seconds": 202.2045020100195,
+      "strata": {
+        "L_s": {
+          "count": 6300,
+          "mean_objective_nmse": 0.0005517499201786926
+        },
+        "U_s": {
+          "count": 56700,
+          "mean_objective_nmse": 0.0005008331153006334
+        },
+        "state:BLOCKED": {
+          "count": 10264,
+          "mean_objective_nmse": 0.002229298672094685
+        },
+        "state:LOS": {
+          "count": 37085,
+          "mean_objective_nmse": 0.00016897893247384317
+        },
+        "state:PARTIAL": {
+          "count": 6288,
+          "mean_objective_nmse": 0.00034146975241862145
+        },
+        "state:clean": {
+          "count": 9363,
+          "mean_objective_nmse": 6.173179530391952e-05
+        },
+        "lock:degraded": {
+          "count": 5784,
+          "mean_objective_nmse": 0.0014982031687818316
+        },
+        "lock:locked": {
+          "count": 41489,
+          "mean_objective_nmse": 0.0001727026919640931
+        },
+        "lock:not_applicable": {
+          "count": 9363,
+          "mean_objective_nmse": 6.173179530391952e-05
+        },
+        "lock:unlocked": {
+          "count": 6364,
+          "mean_objective_nmse": 0.0024299808874418097
+        },
+        "scene:clean": {
+          "count": 9363,
+          "mean_objective_nmse": 6.173179530391952e-05
+        },
+        "scene:practical_high": {
+          "count": 9001,
+          "mean_objective_nmse": 0.00017713123034552788
+        },
+        "scene:practical_high_urban": {
+          "count": 8984,
+          "mean_objective_nmse": 0.00022565680598858102
+        },
+        "scene:practical_low_suburban": {
+          "count": 8934,
+          "mean_objective_nmse": 0.0003552103680512635
+        },
+        "scene:practical_low_urban": {
+          "count": 8914,
+          "mean_objective_nmse": 0.0017076543780931894
+        },
+        "scene:practical_mid": {
+          "count": 8822,
+          "mean_objective_nmse": 0.00020254438631647214
+        },
+        "scene:practical_mid_urban": {
+          "count": 8982,
+          "mean_objective_nmse": 0.0008340326322289756
+        }
+      }
+    },
+    {
+      "epoch": 5,
+      "updates": 1235,
+      "losses": {
+        "loss": 0.00033888197022153893,
+        "flow_time": 0.49905509379553414,
+        "start_noise_power": 0.0,
+        "objective_nmse": 0.00033888197022061497,
+        "teacher_path_endpoint_nmse": 0.00020926441157436264
+      },
+      "L_exposures": 31500,
+      "U_exposures": 283500,
+      "learning_rate_last": 0.00018105185663666237,
+      "gradient_clip_fraction": 0.0,
+      "seconds": 251.6334929058794,
+      "strata": {
+        "L_s": {
+          "count": 6300,
+          "mean_objective_nmse": 0.000473921373551194
+        },
+        "U_s": {
+          "count": 56700,
+          "mean_objective_nmse": 0.0003238775887681792
+        },
+        "state:BLOCKED": {
+          "count": 10509,
+          "mean_objective_nmse": 0.0014322997124996634
+        },
+        "state:LOS": {
+          "count": 36824,
+          "mean_objective_nmse": 0.00011929712469296321
+        },
+        "state:PARTIAL": {
+          "count": 6212,
+          "mean_objective_nmse": 0.00023313763797887664
+        },
+        "state:clean": {
+          "count": 9455,
+          "mean_objective_nmse": 4.825785204646656e-05
+        },
+        "lock:degraded": {
+          "count": 5716,
+          "mean_objective_nmse": 0.0007664628567096196
+        },
+        "lock:locked": {
+          "count": 41191,
+          "mean_objective_nmse": 0.00012582105445324172
+        },
+        "lock:not_applicable": {
+          "count": 9455,
+          "mean_objective_nmse": 4.825785204646656e-05
+        },
+        "lock:unlocked": {
+          "count": 6638,
+          "mean_objective_nmse": 0.0017067624839354149
+        },
+        "scene:clean": {
+          "count": 9455,
+          "mean_objective_nmse": 4.825785204646656e-05
+        },
+        "scene:practical_high": {
+          "count": 8986,
+          "mean_objective_nmse": 0.0001200198402717227
+        },
+        "scene:practical_high_urban": {
+          "count": 8917,
+          "mean_objective_nmse": 0.00017577059816803461
+        },
+        "scene:practical_low_suburban": {
+          "count": 8814,
+          "mean_objective_nmse": 0.00020916386101794195
+        },
+        "scene:practical_low_urban": {
+          "count": 8998,
+          "mean_objective_nmse": 0.0011148484462654429
+        },
+        "scene:practical_mid": {
+          "count": 8882,
+          "mean_objective_nmse": 0.00014553670560923484
+        },
+        "scene:practical_mid_urban": {
+          "count": 8948,
+          "mean_objective_nmse": 0.0005677031419025738
+        }
+      }
+    },
+    {
+      "epoch": 6,
+      "updates": 1482,
+      "losses": {
+        "loss": 0.00029413161725027573,
+        "flow_time": 0.499348524139041,
+        "start_noise_power": 0.0,
+        "objective_nmse": 0.00029413161724658,
+        "teacher_path_endpoint_nmse": 0.00019035039877238137
+      },
+      "L_exposures": 37800,
+      "U_exposures": 340200,
+      "learning_rate_last": 0.00017098800211205718,
+      "gradient_clip_fraction": 0.0,
+      "seconds": 301.0771697368473,
+      "strata": {
+        "L_s": {
+          "count": 6300,
+          "mean_objective_nmse": 0.000417960540790874
+        },
+        "U_s": {
+          "count": 56700,
+          "mean_objective_nmse": 0.0002803728489223309
+        },
+        "state:BLOCKED": {
+          "count": 10380,
+          "mean_objective_nmse": 0.0012953670229874947
+        },
+        "state:LOS": {
+          "count": 36898,
+          "mean_objective_nmse": 9.895960265763033e-05
+        },
+        "state:PARTIAL": {
+          "count": 6266,
+          "mean_objective_nmse": 0.00017310508932327353
+        },
+        "state:clean": {
+          "count": 9456,
+          "mean_objective_nmse": 3.6833140101501355e-05
+        },
+        "lock:degraded": {
+          "count": 5723,
+          "mean_objective_nmse": 0.000877002482453422
+        },
+        "lock:locked": {
+          "count": 41299,
+          "mean_objective_nmse": 0.00010321357253313446
+        },
+        "lock:not_applicable": {
+          "count": 9456,
+          "mean_objective_nmse": 3.6833140101501355e-05
+        },
+        "lock:unlocked": {
+          "count": 6522,
+          "mean_objective_nmse": 0.0013646573176253638
+        },
+        "scene:clean": {
+          "count": 9456,
+          "mean_objective_nmse": 3.6833140101501355e-05
+        },
+        "scene:practical_high": {
+          "count": 8959,
+          "mean_objective_nmse": 0.00010507641555492979
+        },
+        "scene:practical_high_urban": {
+          "count": 8723,
+          "mean_objective_nmse": 0.0001569651097018038
+        },
+        "scene:practical_low_suburban": {
+          "count": 9003,
+          "mean_objective_nmse": 0.00026264113316538565
+        },
+        "scene:practical_low_urban": {
+          "count": 9061,
+          "mean_objective_nmse": 0.0007689129212974132
+        },
+        "scene:practical_mid": {
+          "count": 8927,
+          "mean_objective_nmse": 0.00016138240526611034
+        },
+        "scene:practical_mid_urban": {
+          "count": 8871,
+          "mean_objective_nmse": 0.0005748024559382943
+        }
+      }
+    },
+    {
+      "epoch": 7,
+      "updates": 1729,
+      "losses": {
+        "loss": 0.00023996014583722823,
+        "flow_time": 0.49979774632529606,
+        "start_noise_power": 0.0,
+        "objective_nmse": 0.00023996014583722823,
+        "teacher_path_endpoint_nmse": 0.00015135372781734322
+      },
+      "L_exposures": 44100,
+      "U_exposures": 396900,
+      "learning_rate_last": 0.00015925984629607922,
+      "gradient_clip_fraction": 0.0,
+      "seconds": 350.36100959801115,
+      "strata": {
+        "L_s": {
+          "count": 6300,
+          "mean_objective_nmse": 0.00023541019292592648
+        },
+        "U_s": {
+          "count": 56700,
+          "mean_objective_nmse": 0.00024046569608473852
+        },
+        "state:BLOCKED": {
+          "count": 10284,
+          "mean_objective_nmse": 0.0010486390299114133
+        },
+        "state:LOS": {
+          "count": 37008,
+          "mean_objective_nmse": 8.349703069902576e-05
+        },
+        "state:PARTIAL": {
+          "count": 6264,
+          "mean_objective_nmse": 0.00015169594007370118
+        },
+        "state:clean": {
+          "count": 9444,
+          "mean_objective_nmse": 3.102540825318715e-05
+        },
+        "lock:degraded": {
+          "count": 5781,
+          "mean_objective_nmse": 0.000689125661276865
+        },
+        "lock:locked": {
+          "count": 41344,
+          "mean_objective_nmse": 8.663816165622375e-05
+        },
+        "lock:not_applicable": {
+          "count": 9444,
+          "mean_objective_nmse": 3.102540825318715e-05
+        },
+        "lock:unlocked": {
+          "count": 6431,
+          "mean_objective_nmse": 0.0011287018602025769
+        },
+        "scene:clean": {
+          "count": 9444,
+          "mean_objective_nmse": 3.102540825318715e-05
+        },
+        "scene:practical_high": {
+          "count": 8909,
+          "mean_objective_nmse": 8.293066252828598e-05
+        },
+        "scene:practical_high_urban": {
+          "count": 9083,
+          "mean_objective_nmse": 0.00012872283337165354
+        },
+        "scene:practical_low_suburban": {
+          "count": 8906,
+          "mean_objective_nmse": 0.00015575451481334034
+        },
+        "scene:practical_low_urban": {
+          "count": 8970,
+          "mean_objective_nmse": 0.0006329737140728553
+        },
+        "scene:practical_mid": {
+          "count": 8936,
+          "mean_objective_nmse": 0.00015962025586308733
+        },
+        "scene:practical_mid_urban": {
+          "count": 8752,
+          "mean_objective_nmse": 0.0005056188356436879
+        }
+      }
+    },
+    {
+      "epoch": 8,
+      "updates": 1976,
+      "losses": {
+        "loss": 0.00025355061093005276,
+        "flow_time": 0.5005755549234058,
+        "start_noise_power": 0.0,
+        "objective_nmse": 0.00025355061093005276,
+        "teacher_path_endpoint_nmse": 0.00016860638251380315
+      },
+      "L_exposures": 50400,
+      "U_exposures": 453600,
+      "learning_rate_last": 0.00014618743877543397,
+      "gradient_clip_fraction": 0.0,
+      "seconds": 399.05662593385205,
+      "strata": {
+        "L_s": {
+          "count": 6300,
+          "mean_objective_nmse": 0.00027466657611223617
+        },
+        "U_s": {
+          "count": 56700,
+          "mean_objective_nmse": 0.0002512043938627943
+        },
+        "state:BLOCKED": {
+          "count": 10174,
+          "mean_objective_nmse": 0.0011662759322152954
+        },
+        "state:LOS": {
+          "count": 37127,
+          "mean_objective_nmse": 7.60637209365786e-05
+        },
+        "state:PARTIAL": {
+          "count": 6257,
+          "mean_objective_nmse": 0.00015814618121426114
+        },
+        "state:clean": {
+          "count": 9442,
+          "mean_objective_nmse": 3.1186064728374735e-05
+        },
+        "lock:degraded": {
+          "count": 5681,
+          "mean_objective_nmse": 0.0005707764954394425
+        },
+        "lock:locked": {
+          "count": 41470,
+          "mean_objective_nmse": 8.061566003094097e-05
+        },
+        "lock:not_applicable": {
+          "count": 9442,
+          "mean_objective_nmse": 3.1186064728374735e-05
+        },
+        "lock:unlocked": {
+          "count": 6407,
+          "mean_objective_nmse": 0.0014193096593412202
+        },
+        "scene:clean": {
+          "count": 9442,
+          "mean_objective_nmse": 3.1186064728374735e-05
+        },
+        "scene:practical_high": {
+          "count": 8925,
+          "mean_objective_nmse": 8.287261929219531e-05
+        },
+        "scene:practical_high_urban": {
+          "count": 9009,
+          "mean_objective_nmse": 0.0001431033118175795
+        },
+        "scene:practical_low_suburban": {
+          "count": 8867,
+          "mean_objective_nmse": 0.00014910886332503398
+        },
+        "scene:practical_low_urban": {
+          "count": 8919,
+          "mean_objective_nmse": 0.0007736228670037749
+        },
+        "scene:practical_mid": {
+          "count": 9040,
+          "mean_objective_nmse": 9.38386413372025e-05
+        },
+        "scene:practical_mid_urban": {
+          "count": 8798,
+          "mean_objective_nmse": 0.0005205708074324264
+        }
+      }
+    },
+    {
+      "epoch": 9,
+      "updates": 2223,
+      "losses": {
+        "loss": 0.00018713345623294275,
+        "flow_time": 0.5007016391148643,
+        "start_noise_power": 0.0,
+        "objective_nmse": 0.00018713345623294275,
+        "teacher_path_endpoint_nmse": 0.00011799644418005344
+      },
+      "L_exposures": 56700,
+      "U_exposures": 510300,
+      "learning_rate_last": 0.0001321275124150214,
+      "gradient_clip_fraction": 0.0,
+      "seconds": 447.72176416101865,
+      "strata": {
+        "L_s": {
+          "count": 6300,
+          "mean_objective_nmse": 0.00029731195837528156
+        },
+        "U_s": {
+          "count": 56700,
+          "mean_objective_nmse": 0.00017489140198526597
+        },
+        "state:BLOCKED": {
+          "count": 10302,
+          "mean_objective_nmse": 0.0007875782895543154
+        },
+        "state:LOS": {
+          "count": 36868,
+          "mean_objective_nmse": 6.985393148599796e-05
+        },
+        "state:PARTIAL": {
+          "count": 6349,
+          "mean_objective_nmse": 0.00013269817398184526
+        },
+        "state:clean": {
+          "count": 9481,
+          "mean_objective_nmse": 2.7201845391889525e-05
+        },
+        "lock:degraded": {
+          "count": 5849,
+          "mean_objective_nmse": 0.0005755020548844053
+        },
+        "lock:locked": {
+          "count": 41247,
+          "mean_objective_nmse": 7.20152452298481e-05
+        },
+        "lock:not_applicable": {
+          "count": 9481,
+          "mean_objective_nmse": 2.7201845391889525e-05
+        },
+        "lock:unlocked": {
+          "count": 6423,
+          "mean_objective_nmse": 0.0008088093946781256
+        },
+        "scene:clean": {
+          "count": 9481,
+          "mean_objective_nmse": 2.7201845391889525e-05
+        },
+        "scene:practical_high": {
+          "count": 8921,
+          "mean_objective_nmse": 7.410485842894439e-05
+        },
+        "scene:practical_high_urban": {
+          "count": 8784,
+          "mean_objective_nmse": 0.00020149404351414208
+        },
+        "scene:practical_low_suburban": {
+          "count": 9113,
+          "mean_objective_nmse": 0.00012639790604919733
+        },
+        "scene:practical_low_urban": {
+          "count": 8860,
+          "mean_objective_nmse": 0.00048128263165206705
+        },
+        "scene:practical_mid": {
+          "count": 8902,
+          "mean_objective_nmse": 9.359193760928106e-05
+        },
+        "scene:practical_mid_urban": {
+          "count": 8939,
+          "mean_objective_nmse": 0.00031897419066804583
+        }
+      }
+    },
+    {
+      "epoch": 10,
+      "updates": 2470,
+      "losses": {
+        "loss": 0.00015132150081326328,
+        "flow_time": 0.5001974909040663,
+        "start_noise_power": 0.0,
+        "objective_nmse": 0.00015132150081326328,
+        "teacher_path_endpoint_nmse": 9.413744177898421e-05
+      },
+      "L_exposures": 63000,
+      "U_exposures": 567000,
+      "learning_rate_last": 0.00011746374847653041,
+      "gradient_clip_fraction": 0.0,
+      "seconds": 496.78104098699987,
+      "strata": {
+        "L_s": {
+          "count": 6300,
+          "mean_objective_nmse": 0.00020065216586757857
+        },
+        "U_s": {
+          "count": 56700,
+          "mean_objective_nmse": 0.00014584031492731217
+        },
+        "state:BLOCKED": {
+          "count": 10357,
+          "mean_objective_nmse": 0.0006034026181381877
+        },
+        "state:LOS": {
+          "count": 36974,
+          "mean_objective_nmse": 6.448377566536523e-05
+        },
+        "state:PARTIAL": {
+          "count": 6247,
+          "mean_objective_nmse": 0.00010723442956726961
+        },
+        "state:clean": {
+          "count": 9422,
+          "mean_objective_nmse": 2.437878178084932e-05
+        },
+        "lock:degraded": {
+          "count": 5693,
+          "mean_objective_nmse": 0.00038593376342681567
+        },
+        "lock:locked": {
+          "count": 41347,
+          "mean_objective_nmse": 6.614504241742638e-05
+        },
+        "lock:not_applicable": {
+          "count": 9422,
+          "mean_objective_nmse": 2.437878178084932e-05
+        },
+        "lock:unlocked": {
+          "count": 6538,
+          "mean_objective_nmse": 0.0006686353039334201
+        },
+        "scene:clean": {
+          "count": 9422,
+          "mean_objective_nmse": 2.437878178084932e-05
+        },
+        "scene:practical_high": {
+          "count": 9041,
+          "mean_objective_nmse": 7.369911319453312e-05
+        },
+        "scene:practical_high_urban": {
+          "count": 8876,
+          "mean_objective_nmse": 0.00012012258347464818
+        },
+        "scene:practical_low_suburban": {
+          "count": 8838,
+          "mean_objective_nmse": 0.0001519111744710903
+        },
+        "scene:practical_low_urban": {
+          "count": 9006,
+          "mean_objective_nmse": 0.00039029631434021303
+        },
+        "scene:practical_mid": {
+          "count": 8999,
+          "mean_objective_nmse": 9.097806089062758e-05
+        },
+        "scene:practical_mid_urban": {
+          "count": 8818,
+          "mean_objective_nmse": 0.00021487012590836097
+        }
+      }
+    },
+    {
+      "epoch": 11,
+      "updates": 2717,
+      "losses": {
+        "loss": 0.00014052563376857767,
+        "flow_time": 0.49981953993297756,
+        "start_noise_power": 0.0,
+        "objective_nmse": 0.00014052563376857767,
+        "teacher_path_endpoint_nmse": 8.966517518274486e-05
+      },
+      "L_exposures": 69300,
+      "U_exposures": 623700,
+      "learning_rate_last": 0.00010259630634236501,
+      "gradient_clip_fraction": 0.0,
+      "seconds": 546.155131273903,
+      "strata": {
+        "L_s": {
+          "count": 6300,
+          "mean_objective_nmse": 0.00017296842036081388
+        },
+        "U_s": {
+          "count": 56700,
+          "mean_objective_nmse": 0.00013692088128680223
+        },
+        "state:BLOCKED": {
+          "count": 10312,
+          "mean_objective_nmse": 0.0005921430211024324
+        },
+        "state:LOS": {
+          "count": 37063,
+          "mean_objective_nmse": 4.969620336183806e-05
+        },
+        "state:PARTIAL": {
+          "count": 6199,
+          "mean_objective_nmse": 0.00011692087493979906
+        },
+        "state:clean": {
+          "count": 9426,
+          "mean_objective_nmse": 1.9122991218336066e-05
+        },
+        "lock:degraded": {
+          "count": 5674,
+          "mean_objective_nmse": 0.0003289891470153783
+        },
+        "lock:locked": {
+          "count": 41386,
+          "mean_objective_nmse": 5.123271326139202e-05
+        },
+        "lock:not_applicable": {
+          "count": 9426,
+          "mean_objective_nmse": 1.9122991218336066e-05
+        },
+        "lock:unlocked": {
+          "count": 6514,
+          "mean_objective_nmse": 0.0007193521930644772
+        },
+        "scene:clean": {
+          "count": 9426,
+          "mean_objective_nmse": 1.9122991218336066e-05
+        },
+        "scene:practical_high": {
+          "count": 9057,
+          "mean_objective_nmse": 5.153438136988204e-05
+        },
+        "scene:practical_high_urban": {
+          "count": 8950,
+          "mean_objective_nmse": 9.081397191120583e-05
+        },
+        "scene:practical_low_suburban": {
+          "count": 8797,
+          "mean_objective_nmse": 0.0001121770043823809
+        },
+        "scene:practical_low_urban": {
+          "count": 8939,
+          "mean_objective_nmse": 0.0004075522638110556
+        },
+        "scene:practical_mid": {
+          "count": 9052,
+          "mean_objective_nmse": 6.451929058241516e-05
+        },
+        "scene:practical_mid_urban": {
+          "count": 8779,
+          "mean_objective_nmse": 0.00024824812390295415
+        }
+      }
+    },
+    {
+      "epoch": 12,
+      "updates": 2964,
+      "losses": {
+        "loss": 0.00013650429033903436,
+        "flow_time": 0.49943492174905446,
+        "start_noise_power": 0.0,
+        "objective_nmse": 0.00013650429033903436,
+        "teacher_path_endpoint_nmse": 8.296842641744112e-05
+      },
+      "L_exposures": 75600,
+      "U_exposures": 680400,
+      "learning_rate_last": 8.79309035682149e-05,
+      "gradient_clip_fraction": 0.0,
+      "seconds": 594.8967185998335,
+      "strata": {
+        "L_s": {
+          "count": 6300,
+          "mean_objective_nmse": 0.00015008229547328527
+        },
+        "U_s": {
+          "count": 56700,
+          "mean_objective_nmse": 0.00013499562377257952
+        },
+        "state:BLOCKED": {
+          "count": 10415,
+          "mean_objective_nmse": 0.0005719674312774731
+        },
+        "state:LOS": {
+          "count": 37050,
+          "mean_objective_nmse": 5.196365234570882e-05
+        },
+        "state:PARTIAL": {
+          "count": 6193,
+          "mean_objective_nmse": 8.781755349480248e-05
+        },
+        "state:clean": {
+          "count": 9342,
+          "mean_objective_nmse": 1.8585111551062332e-05
+        },
+        "lock:degraded": {
+          "count": 5798,
+          "mean_objective_nmse": 0.00034952541411101463
+        },
+        "lock:locked": {
+          "count": 41426,
+          "mean_objective_nmse": 5.345848917602135e-05
+        },
+        "lock:not_applicable": {
+          "count": 9342,
+          "mean_objective_nmse": 1.8585111551062332e-05
+        },
+        "lock:unlocked": {
+          "count": 6434,
+          "mean_objective_nmse": 0.0006504551720713406
+        },
+        "scene:clean": {
+          "count": 9342,
+          "mean_objective_nmse": 1.8585111551062332e-05
+        },
+        "scene:practical_high": {
+          "count": 8936,
+          "mean_objective_nmse": 5.693845194346898e-05
+        },
+        "scene:practical_high_urban": {
+          "count": 8861,
+          "mean_objective_nmse": 0.00012878098770602528
+        },
+        "scene:practical_low_suburban": {
+          "count": 9022,
+          "mean_objective_nmse": 8.351495442219065e-05
+        },
+        "scene:practical_low_urban": {
+          "count": 8900,
+          "mean_objective_nmse": 0.00038197964058372746
+        },
+        "scene:practical_mid": {
+          "count": 8800,
+          "mean_objective_nmse": 9.980145194855471e-05
+        },
+        "scene:practical_mid_urban": {
+          "count": 9139,
+          "mean_objective_nmse": 0.0001909261744685242
+        }
+      }
+    },
+    {
+      "epoch": 13,
+      "updates": 3211,
+      "losses": {
+        "loss": 0.00012345705006737263,
+        "flow_time": 0.49923014519706604,
+        "start_noise_power": 0.0,
+        "objective_nmse": 0.00012345705006552474,
+        "teacher_path_endpoint_nmse": 7.983004654728113e-05
+      },
+      "L_exposures": 81900,
+      "U_exposures": 737100,
+      "learning_rate_last": 7.386774425866234e-05,
+      "gradient_clip_fraction": 0.0,
+      "seconds": 643.7298186309636,
+      "strata": {
+        "L_s": {
+          "count": 6300,
+          "mean_objective_nmse": 0.00012721371714885917
+        },
+        "U_s": {
+          "count": 56700,
+          "mean_objective_nmse": 0.00012303964216409932
+        },
+        "state:BLOCKED": {
+          "count": 10383,
+          "mean_objective_nmse": 0.0005107917174613324
+        },
+        "state:LOS": {
+          "count": 36962,
+          "mean_objective_nmse": 5.021417870414401e-05
+        },
+        "state:PARTIAL": {
+          "count": 6150,
+          "mean_objective_nmse": 6.971453943780086e-05
+        },
+        "state:clean": {
+          "count": 9505,
+          "mean_objective_nmse": 1.9935075772841948e-05
+        },
+        "lock:degraded": {
+          "count": 5856,
+          "mean_objective_nmse": 0.0003181180800510064
+        },
+        "lock:locked": {
+          "count": 41247,
+          "mean_objective_nmse": 5.0572225664070265e-05
+        },
+        "lock:not_applicable": {
+          "count": 9505,
+          "mean_objective_nmse": 1.9935075772841948e-05
+        },
+        "lock:unlocked": {
+          "count": 6392,
+          "mean_objective_nmse": 0.0005693772158035321
+        },
+        "scene:clean": {
+          "count": 9505,
+          "mean_objective_nmse": 1.9935075772841948e-05
+        },
+        "scene:practical_high": {
+          "count": 8907,
+          "mean_objective_nmse": 4.700782965820927e-05
+        },
+        "scene:practical_high_urban": {
+          "count": 8922,
+          "mean_objective_nmse": 0.0001006052683711448
+        },
+        "scene:practical_low_suburban": {
+          "count": 8789,
+          "mean_objective_nmse": 0.00010025084174687118
+        },
+        "scene:practical_low_urban": {
+          "count": 9038,
+          "mean_objective_nmse": 0.00029900239053406736
+        },
+        "scene:practical_mid": {
+          "count": 8944,
+          "mean_objective_nmse": 9.193233433404474e-05
+        },
+        "scene:practical_mid_urban": {
+          "count": 8895,
+          "mean_objective_nmse": 0.0002098124021549875
+        }
+      }
+    },
+    {
+      "epoch": 14,
+      "updates": 3458,
+      "losses": {
+        "loss": 0.00014462661605221146,
+        "flow_time": 0.4994532525804308,
+        "start_noise_power": 0.0,
+        "objective_nmse": 0.00014462661605128753,
+        "teacher_path_endpoint_nmse": 9.660795209227159e-05
+      },
+      "L_exposures": 88200,
+      "U_exposures": 793800,
+      "learning_rate_last": 6.0790597899329526e-05,
+      "gradient_clip_fraction": 0.0,
+      "seconds": 692.6109622619115,
+      "strata": {
+        "L_s": {
+          "count": 6300,
+          "mean_objective_nmse": 0.00014467119705466121
+        },
+        "U_s": {
+          "count": 56700,
+          "mean_objective_nmse": 0.0001446216630977718
+        },
+        "state:BLOCKED": {
+          "count": 10477,
+          "mean_objective_nmse": 0.0006398472385630338
+        },
+        "state:LOS": {
+          "count": 36831,
+          "mean_objective_nmse": 4.49006477207976e-05
+        },
+        "state:PARTIAL": {
+          "count": 6208,
+          "mean_objective_nmse": 9.371413070485433e-05
+        },
+        "state:clean": {
+          "count": 9484,
+          "mean_objective_nmse": 1.8165778156269465e-05
+        },
+        "lock:degraded": {
+          "count": 5748,
+          "mean_objective_nmse": 0.0002717200962909405
+        },
+        "lock:locked": {
+          "count": 41159,
+          "mean_objective_nmse": 4.701882008649798e-05
+        },
+        "lock:not_applicable": {
+          "count": 9484,
+          "mean_objective_nmse": 1.8165778156269465e-05
+        },
+        "lock:unlocked": {
+          "count": 6609,
+          "mean_objective_nmse": 0.0008234374003300525
+        },
+        "scene:clean": {
+          "count": 9484,
+          "mean_objective_nmse": 1.8165778156269465e-05
+        },
+        "scene:practical_high": {
+          "count": 8991,
+          "mean_objective_nmse": 4.6503965103139134e-05
+        },
+        "scene:practical_high_urban": {
+          "count": 8903,
+          "mean_objective_nmse": 9.768268489969264e-05
+        },
+        "scene:practical_low_suburban": {
+          "count": 8759,
+          "mean_objective_nmse": 0.00012747278067885864
+        },
+        "scene:practical_low_urban": {
+          "count": 9090,
+          "mean_objective_nmse": 0.0005294065055915342
+        },
+        "scene:practical_mid": {
+          "count": 8923,
+          "mean_objective_nmse": 5.310473711404379e-05
+        },
+        "scene:practical_mid_urban": {
+          "count": 8850,
+          "mean_objective_nmse": 0.00014109759270226698
+        }
+      }
+    },
+    {
+      "epoch": 15,
+      "updates": 3705,
+      "losses": {
+        "loss": 0.00013133127301550722,
+        "flow_time": 0.5006808901892768,
+        "start_noise_power": 0.0,
+        "objective_nmse": 0.00013133127301550722,
+        "teacher_path_endpoint_nmse": 9.045715508696121e-05
+      },
+      "L_exposures": 94500,
+      "U_exposures": 850500,
+      "learning_rate_last": 4.905632667326222e-05,
+      "gradient_clip_fraction": 0.0,
+      "seconds": 741.6318623099942,
+      "strata": {
+        "L_s": {
+          "count": 6300,
+          "mean_objective_nmse": 0.00010776752698167535
+        },
+        "U_s": {
+          "count": 56700,
+          "mean_objective_nmse": 0.0001339494701090139
+        },
+        "state:BLOCKED": {
+          "count": 10273,
+          "mean_objective_nmse": 0.0005857003894314071
+        },
+        "state:LOS": {
+          "count": 37066,
+          "mean_objective_nmse": 4.573784173354429e-05
+        },
+        "state:PARTIAL": {
+          "count": 6295,
+          "mean_objective_nmse": 6.420170224441483e-05
+        },
+        "state:clean": {
+          "count": 9366,
+          "mean_objective_nmse": 1.681630874780631e-05
+        },
+        "lock:degraded": {
+          "count": 5674,
+          "mean_objective_nmse": 0.0003989016710365742
+        },
+        "lock:locked": {
+          "count": 41496,
+          "mean_objective_nmse": 4.603309213347075e-05
+        },
+        "lock:not_applicable": {
+          "count": 9366,
+          "mean_objective_nmse": 1.681630874780631e-05
+        },
+        "lock:unlocked": {
+          "count": 6464,
+          "mean_objective_nmse": 0.0006099646295301636
+        },
+        "scene:clean": {
+          "count": 9366,
+          "mean_objective_nmse": 1.681630874780631e-05
+        },
+        "scene:practical_high": {
+          "count": 8977,
+          "mean_objective_nmse": 4.352800652061954e-05
+        },
+        "scene:practical_high_urban": {
+          "count": 8951,
+          "mean_objective_nmse": 7.051837131483625e-05
+        },
+        "scene:practical_low_suburban": {
+          "count": 8977,
+          "mean_objective_nmse": 9.486779031012603e-05
+        },
+        "scene:practical_low_urban": {
+          "count": 8886,
+          "mean_objective_nmse": 0.00047877932919938567
+        },
+        "scene:practical_mid": {
+          "count": 8861,
+          "mean_objective_nmse": 5.6861969922672014e-05
+        },
+        "scene:practical_mid_urban": {
+          "count": 8982,
+          "mean_objective_nmse": 0.00016527416993561062
+        }
+      }
+    },
+    {
+      "epoch": 16,
+      "updates": 3952,
+      "losses": {
+        "loss": 0.00011348045721977195,
+        "flow_time": 0.4994245081099253,
+        "start_noise_power": 0.0,
+        "objective_nmse": 0.00011348045721930998,
+        "teacher_path_endpoint_nmse": 7.420058289564969e-05
+      },
+      "L_exposures": 100800,
+      "U_exposures": 907200,
+      "learning_rate_last": 3.898514705056182e-05,
+      "gradient_clip_fraction": 0.0,
+      "seconds": 790.6621149289422,
+      "strata": {
+        "L_s": {
+          "count": 6300,
+          "mean_objective_nmse": 5.809141407048123e-05
+        },
+        "U_s": {
+          "count": 56700,
+          "mean_objective_nmse": 0.00011963479457085548
+        },
+        "state:BLOCKED": {
+          "count": 10405,
+          "mean_objective_nmse": 0.0005072335443027131
+        },
+        "state:LOS": {
+          "count": 36918,
+          "mean_objective_nmse": 3.5873091850549146e-05
+        },
+        "state:PARTIAL": {
+          "count": 6286,
+          "mean_objective_nmse": 6.557002594366918e-05
+        },
+        "state:clean": {
+          "count": 9391,
+          "mean_objective_nmse": 1.4372038399900722e-05
+        },
+        "lock:degraded": {
+          "count": 5832,
+          "mean_objective_nmse": 0.0003100773439732664
+        },
+        "lock:locked": {
+          "count": 41261,
+          "mean_objective_nmse": 4.571681988702573e-05
+        },
+        "lock:not_applicable": {
+          "count": 9391,
+          "mean_objective_nmse": 1.4372038399900722e-05
+        },
+        "lock:unlocked": {
+          "count": 6516,
+          "mean_objective_nmse": 0.0005094549056585861
+        },
+        "scene:clean": {
+          "count": 9391,
+          "mean_objective_nmse": 1.4372038399900722e-05
+        },
+        "scene:practical_high": {
+          "count": 8932,
+          "mean_objective_nmse": 3.755314453164857e-05
+        },
+        "scene:practical_high_urban": {
+          "count": 8853,
+          "mean_objective_nmse": 5.656317393781912e-05
+        },
+        "scene:practical_low_suburban": {
+          "count": 8938,
+          "mean_objective_nmse": 7.426535402943331e-05
+        },
+        "scene:practical_low_urban": {
+          "count": 8937,
+          "mean_objective_nmse": 0.00033878046677357086
+        },
+        "scene:practical_mid": {
+          "count": 8795,
+          "mean_objective_nmse": 5.029619112011864e-05
+        },
+        "scene:practical_mid_urban": {
+          "count": 9154,
+          "mean_objective_nmse": 0.0002233234351993898
+        }
+      }
+    },
+    {
+      "epoch": 17,
+      "updates": 4199,
+      "losses": {
+        "loss": 0.0001037577759836697,
+        "flow_time": 0.5005787949789138,
+        "start_noise_power": 0.0,
+        "objective_nmse": 0.0001037577759836697,
+        "teacher_path_endpoint_nmse": 6.801958085362991e-05
+      },
+      "L_exposures": 107100,
+      "U_exposures": 963900,
+      "learning_rate_last": 3.085189140269889e-05,
+      "gradient_clip_fraction": 0.0,
+      "seconds": 839.9370260988362,
+      "strata": {
+        "L_s": {
+          "count": 6300,
+          "mean_objective_nmse": 7.664677911504571e-05
+        },
+        "U_s": {
+          "count": 56700,
+          "mean_objective_nmse": 0.00010677010768480809
+        },
+        "state:BLOCKED": {
+          "count": 10262,
+          "mean_objective_nmse": 0.00046466737006256576
+        },
+        "state:LOS": {
+          "count": 37075,
+          "mean_objective_nmse": 3.334332456584927e-05
+        },
+        "state:PARTIAL": {
+          "count": 6195,
+          "mean_objective_nmse": 6.513106039123154e-05
+        },
+        "state:clean": {
+          "count": 9468,
+          "mean_objective_nmse": 1.3586037869967848e-05
+        },
+        "lock:degraded": {
+          "count": 5678,
+          "mean_objective_nmse": 0.0003065251036735013
+        },
+        "lock:locked": {
+          "count": 41409,
+          "mean_objective_nmse": 3.447273568162952e-05
+        },
+        "lock:not_applicable": {
+          "count": 9468,
+          "mean_objective_nmse": 1.3586037869967848e-05
+        },
+        "lock:unlocked": {
+          "count": 6445,
+          "mean_objective_nmse": 0.0005027426144016417
+        },
+        "scene:clean": {
+          "count": 9468,
+          "mean_objective_nmse": 1.3586037869967848e-05
+        },
+        "scene:practical_high": {
+          "count": 8948,
+          "mean_objective_nmse": 4.61151193226111e-05
+        },
+        "scene:practical_high_urban": {
+          "count": 9028,
+          "mean_objective_nmse": 6.122533418684005e-05
+        },
+        "scene:practical_low_suburban": {
+          "count": 8856,
+          "mean_objective_nmse": 5.986649544124871e-05
+        },
+        "scene:practical_low_urban": {
+          "count": 8871,
+          "mean_objective_nmse": 0.00020608685983449846
+        },
+        "scene:practical_mid": {
+          "count": 8930,
+          "mean_objective_nmse": 5.609937723528402e-05
+        },
+        "scene:practical_mid_urban": {
+          "count": 8899,
+          "mean_objective_nmse": 0.00029030061109638113
+        }
+      }
+    },
+    {
+      "epoch": 18,
+      "updates": 4446,
+      "losses": {
+        "loss": 0.00010404262079724243,
+        "flow_time": 0.49989651230403354,
+        "start_noise_power": 0.0,
+        "objective_nmse": 0.00010404262079724243,
+        "teacher_path_endpoint_nmse": 6.873031260791265e-05
+      },
+      "L_exposures": 113400,
+      "U_exposures": 1020600,
+      "learning_rate_last": 2.487850810327209e-05,
+      "gradient_clip_fraction": 0.0,
+      "seconds": 889.3368144009728,
+      "strata": {
+        "L_s": {
+          "count": 6300,
+          "mean_objective_nmse": 0.00011430961039935475
+        },
+        "U_s": {
+          "count": 56700,
+          "mean_objective_nmse": 0.00010290184468269099
+        },
+        "state:BLOCKED": {
+          "count": 10177,
+          "mean_objective_nmse": 0.0004697147861350814
+        },
+        "state:LOS": {
+          "count": 36961,
+          "mean_objective_nmse": 3.5971172763015955e-05
+        },
+        "state:PARTIAL": {
+          "count": 6392,
+          "mean_objective_nmse": 4.884206226607387e-05
+        },
+        "state:clean": {
+          "count": 9470,
+          "mean_objective_nmse": 1.4009361333642038e-05
+        },
+        "lock:degraded": {
+          "count": 5729,
+          "mean_objective_nmse": 0.00033758246486301305
+        },
+        "lock:locked": {
+          "count": 41465,
+          "mean_objective_nmse": 3.6834653842422506e-05
+        },
+        "lock:not_applicable": {
+          "count": 9470,
+          "mean_objective_nmse": 1.4009361333642038e-05
+        },
+        "lock:unlocked": {
+          "count": 6336,
+          "mean_objective_nmse": 0.00046727547879352714
+        },
+        "scene:clean": {
+          "count": 9470,
+          "mean_objective_nmse": 1.4009361333642038e-05
+        },
+        "scene:practical_high": {
+          "count": 8918,
+          "mean_objective_nmse": 3.9629502131040614e-05
+        },
+        "scene:practical_high_urban": {
+          "count": 8872,
+          "mean_objective_nmse": 0.00010752616617373548
+        },
+        "scene:practical_low_suburban": {
+          "count": 8998,
+          "mean_objective_nmse": 4.786339058662326e-05
+        },
+        "scene:practical_low_urban": {
+          "count": 8936,
+          "mean_objective_nmse": 0.00035328358358049363
+        },
+        "scene:practical_mid": {
+          "count": 8942,
+          "mean_objective_nmse": 4.666686485296606e-05
+        },
+        "scene:practical_mid_urban": {
+          "count": 8864,
+          "mean_objective_nmse": 0.00012519363255561217
+        }
+      }
+    },
+    {
+      "epoch": 19,
+      "updates": 4693,
+      "losses": {
+        "loss": 0.00010124989096925313,
+        "flow_time": 0.4978093357388935,
+        "start_noise_power": 0.0,
+        "objective_nmse": 0.00010124989096925313,
+        "teacher_path_endpoint_nmse": 6.586368735403835e-05
+      },
+      "L_exposures": 119700,
+      "U_exposures": 1077300,
+      "learning_rate_last": 2.122800477992648e-05,
+      "gradient_clip_fraction": 0.0,
+      "seconds": 938.6169237908907,
+      "strata": {
+        "L_s": {
+          "count": 6300,
+          "mean_objective_nmse": 0.00013441106349134879
+        },
+        "U_s": {
+          "count": 56700,
+          "mean_objective_nmse": 9.75653163557363e-05
+        },
+        "state:BLOCKED": {
+          "count": 10336,
+          "mean_objective_nmse": 0.0004643346500564882
+        },
+        "state:LOS": {
+          "count": 37049,
+          "mean_objective_nmse": 3.0785640768077654e-05
+        },
+        "state:PARTIAL": {
+          "count": 6383,
+          "mean_objective_nmse": 5.102490469373146e-05
+        },
+        "state:clean": {
+          "count": 9232,
+          "mean_objective_nmse": 1.2252055837463868e-05
+        },
+        "lock:degraded": {
+          "count": 5823,
+          "mean_objective_nmse": 0.0003424750734287543
+        },
+        "lock:locked": {
+          "count": 41494,
+          "mean_objective_nmse": 3.222916852345484e-05
+        },
+        "lock:not_applicable": {
+          "count": 9232,
+          "mean_objective_nmse": 1.2252055837463868e-05
+        },
+        "lock:unlocked": {
+          "count": 6451,
+          "mean_objective_nmse": 0.00045482602452472304
+        },
+        "scene:clean": {
+          "count": 9232,
+          "mean_objective_nmse": 1.2252055837463868e-05
+        },
+        "scene:practical_high": {
+          "count": 8996,
+          "mean_objective_nmse": 3.1654925159289034e-05
+        },
+        "scene:practical_high_urban": {
+          "count": 8873,
+          "mean_objective_nmse": 8.206986773856452e-05
+        },
+        "scene:practical_low_suburban": {
+          "count": 8992,
+          "mean_objective_nmse": 5.0108260997039e-05
+        },
+        "scene:practical_low_urban": {
+          "count": 9055,
+          "mean_objective_nmse": 0.0003230811806115636
+        },
+        "scene:practical_mid": {
+          "count": 9024,
+          "mean_objective_nmse": 4.046432641374759e-05
+        },
+        "scene:practical_mid_urban": {
+          "count": 8828,
+          "mean_objective_nmse": 0.00017120920738983013
+        }
+      }
+    },
+    {
+      "epoch": 20,
+      "updates": 4940,
+      "losses": {
+        "loss": 8.444889179903955e-05,
+        "flow_time": 0.49922014617919924,
+        "start_noise_power": 0.0,
+        "objective_nmse": 8.444889179903955e-05,
+        "teacher_path_endpoint_nmse": 5.424828755222113e-05
+      },
+      "L_exposures": 126000,
+      "U_exposures": 1134000,
+      "learning_rate_last": 2e-05,
+      "gradient_clip_fraction": 0.0,
+      "seconds": 987.8166706948541,
+      "strata": {
+        "L_s": {
+          "count": 6300,
+          "mean_objective_nmse": 7.55370518151996e-05
+        },
+        "U_s": {
+          "count": 56700,
+          "mean_objective_nmse": 8.543909597580159e-05
+        },
+        "state:BLOCKED": {
+          "count": 10327,
+          "mean_objective_nmse": 0.00035987979078241873
+        },
+        "state:LOS": {
+          "count": 36983,
+          "mean_objective_nmse": 3.0989972369787205e-05
+        },
+        "state:PARTIAL": {
+          "count": 6146,
+          "mean_objective_nmse": 5.551346856449133e-05
+        },
+        "state:clean": {
+          "count": 9544,
+          "mean_objective_nmse": 1.2208059356838296e-05
+        },
+        "lock:degraded": {
+          "count": 5677,
+          "mean_objective_nmse": 0.00019462063867317915
+        },
+        "lock:locked": {
+          "count": 41300,
+          "mean_objective_nmse": 3.246384236192642e-05
+        },
+        "lock:not_applicable": {
+          "count": 9544,
+          "mean_objective_nmse": 1.2208059356838296e-05
+        },
+        "lock:unlocked": {
+          "count": 6479,
+          "mean_objective_nmse": 0.00042570588584616434
+        },
+        "scene:clean": {
+          "count": 9544,
+          "mean_objective_nmse": 1.2208059356838296e-05
+        },
+        "scene:practical_high": {
+          "count": 8929,
+          "mean_objective_nmse": 3.099492489073661e-05
+        },
+        "scene:practical_high_urban": {
+          "count": 8874,
+          "mean_objective_nmse": 3.895779650207532e-05
+        },
+        "scene:practical_low_suburban": {
+          "count": 8932,
+          "mean_objective_nmse": 9.863513134240003e-05
+        },
+        "scene:practical_low_urban": {
+          "count": 8974,
+          "mean_objective_nmse": 0.00023925726597404085
+        },
+        "scene:practical_mid": {
+          "count": 8918,
+          "mean_objective_nmse": 3.5773474140645485e-05
+        },
+        "scene:practical_mid_urban": {
+          "count": 8829,
+          "mean_objective_nmse": 0.0001397859116639274
+        }
+      }
+    }
+  ],
+  "source_mean6_IQ_NMSE": 0.03328333764026562,
+  "target_artifacts_read": false,
+  "formal_target_metrics": null,
+  "necessary_low_mid_source_conditions_met": false,
+  "source_selection_frozen": false,
+  "endpoint_training_unchanged": true
+}
