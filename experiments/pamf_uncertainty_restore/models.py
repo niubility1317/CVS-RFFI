@@ -8,7 +8,7 @@ from experiments.pamf_restoration.models import complex_iq, pair
 from .design import NAMES
 
 
-def weighted_map(action, observed, prior, variance, prior_variance=SCALE**2, steps=6):
+def weighted_map(action, observed, prior, variance, prior_variance=SCALE**2, steps=6, *, initial=None):
     if variance.shape == (len(observed),):
         variance = variance[:, None].expand_as(observed.real)
     elif variance.shape == (len(observed), 1):
@@ -18,8 +18,15 @@ def weighted_map(action, observed, prior, variance, prior_variance=SCALE**2, ste
         raise ValueError('Positive current-window variance and prior required')
     weight = variance.reciprocal()
     rhs = action.adjoint(weight*(observed-action(prior)))
-    delta = torch.zeros_like(prior)
-    residual, direction = rhs, rhs
+    if initial is None:
+        delta = torch.zeros_like(prior)
+        residual = rhs
+    else:
+        if initial.shape != prior.shape or not initial.is_complex() or not torch.isfinite(initial).all():
+            raise ValueError('Finite matched current-window warm start required')
+        delta = initial-prior
+        residual = rhs-action.adjoint(weight*action(delta))-delta/prior_variance
+    direction = residual
     squared = real_dot(residual, residual)
     for _ in range(steps):
         normal = action.adjoint(weight*action(direction))+direction/prior_variance

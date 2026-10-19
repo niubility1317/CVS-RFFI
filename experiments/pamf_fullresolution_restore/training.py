@@ -22,7 +22,8 @@ def train(args,*,configuration=None,model_runtime=None,loss_fn=pair_loss):
     build=initialize if model_runtime is None else model_runtime.initialize
     save=save_checkpoint if model_runtime is None else model_runtime.save_checkpoint
     load=load_checkpoint if model_runtime is None else model_runtime.load_checkpoint
-    if args.row not in d.ROWS or args.parent_action.name!=d.ACTION:raise ValueError('Registered scratch row/original source cache required')
+    cfg=config()
+    if args.row not in cfg['rows'] or args.parent_action.name!=cfg['action_parent']:raise ValueError('Registered scratch row/original source cache required')
     model,parent=build(args.row,args.parent_action,'cuda:0');parameters=list(model.prior.parameters())
     optimizer=torch.optim.AdamW(parameters,lr=2e-4,weight_decay=1e-4)
     root=args.output/args.row;root.mkdir();row=root/d.KIND;row.mkdir()
@@ -31,7 +32,7 @@ def train(args,*,configuration=None,model_runtime=None,loss_fn=pair_loss):
     write_json(root/'resolved_config.json',dict(config(),candidate=args.row,frozen_parent=parent,prior_parameters=sum(p.numel() for p in parameters)))
     cache=args.parent_action/'cache';clean=np.load(cache/'train/clean.npy',mmap_mode='r',allow_pickle=False);roles=np.load(cache/'train/roles.npy',allow_pickle=False)
     if clean.shape!=(63000,2,256) or (roles=='L_s').sum()!=6300 or (roles=='U_s').sum()!=56700:raise ValueError('Exactly complete original L/U without V required')
-    rng=np.random.default_rng(d.DATA_SEED);updates=seen_l=seen_u=0;started=time.perf_counter();torch.cuda.reset_peak_memory_stats()
+    rng=np.random.default_rng(cfg['data_seed']);updates=seen_l=seen_u=0;started=time.perf_counter();torch.cuda.reset_peak_memory_stats()
     with (root/'training.jsonl').open('x',encoding='utf-8') as log:
         for epoch in range(1,21):
             received=np.load(cache/'epochs'/f'{epoch:02d}'/'received.npy',mmap_mode='r',allow_pickle=False)

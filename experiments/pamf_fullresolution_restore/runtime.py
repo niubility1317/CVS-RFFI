@@ -24,9 +24,9 @@ def save_checkpoint(path,model,optimizer,epoch,updates,parent,*,configuration=No
         target_training=False),path)
 
 
-def validate_payload(value,*,configuration=None,schema='fullresolution_prior_checkpoint_v1'):
+def validate_payload(value,*,configuration=None,schema='fullresolution_prior_checkpoint_v1',allowed_candidates=None):
     if (value.get('schema')!=schema or value.get('config')!=(d.configuration() if configuration is None else configuration)
-            or value.get('kind')!=d.KIND or value.get('candidate') not in d.ROWS or value.get('prior_initialization')!='scratch'
+            or value.get('kind')!=d.KIND or value.get('candidate') not in (d.ROWS if allowed_candidates is None else allowed_candidates) or value.get('prior_initialization')!='scratch'
             or value.get('inherited_prior_epochs')!=0 or value.get('training_TX_labels_read')!=0
             or value.get('training_F_access') is not False or value.get('target_training') is not False):
         raise ValueError('Scratch fullresolution prior contract/permissions differ')
