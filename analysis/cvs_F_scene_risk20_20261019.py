@@ -12,7 +12,7 @@ c=CONFIG;root=Path(c['project'])/'runs'/c['run_id'];ref=Path(c['project'])/'runs
 def read(p):return json.loads(p.read_text())
 def records(p):
  with gzip.open(p,'rt') if str(p).endswith('.gz') else p.open() as f:return [json.loads(s) for s in f if s.strip()]
-if not (root/'complete.json').is_file():raise ValueError('Registered training/prediction/scoring incomplete')
+if not c['source_only'] and not (root/'complete.json').is_file():raise ValueError('Registered training/prediction/scoring incomplete')
 decision=read(root/'source_matrix_decision.json')
 if decision['formal_scores_read'] is not False:raise ValueError('Source decision depends on scores')
 runner=Path(c['project'])/'releases/cvs_F_sceneRisk_E20_20261019_r01/experiments/cvs_scene_risk20/runner.py';spec=importlib.util.spec_from_file_location('_scene_risk_readonly_analysis',runner);boot=importlib.util.module_from_spec(spec);spec.loader.exec_module(boot);boot.bootstrap()
@@ -22,7 +22,8 @@ paths={a:(ref if a in ('B0','B1') else root)/(a+'-s2026092701') for a in ('B0','
 initials={a:torch.load(p/'source/initial_smoke.pt',map_location='cpu',weights_only=False)['model'] for a,p in paths.items()}
 same=all(set(q)==set(initials['B0']) and all(torch.equal(v,q[k]) for k,v in initials['B0'].items()) for q in initials.values())
 if not same:raise ValueError('Matched scratch F initial states differ')
-result=dict(summary=read(root/'analysis.json'),initial_all_four_exact_equal=same,logs={},paired={},source_pairs={})
+summary=dict(status='SOURCE_AUDITED',run_id=c['run_id'],source_decision=decision,formal_scores_read=False) if c['source_only'] else read(root/'analysis.json')
+result=dict(summary=summary,initial_all_four_exact_equal=same,logs={},paired={},source_pairs={})
 for arm in ('BALANCED','RISK'):
  p=paths[arm];source=p/'source';rr=records(source/'mechanism_steps.jsonl.gz');native=records(source/'step_metrics.jsonl.gz');unit=records(source/'unit_steps.jsonl.gz');ep=records(source/'metrics_epoch.jsonl')
  if len(rr)!=4440 or len(native)!=4440 or len(unit)!=4440 or len(ep)!=20:raise ValueError('Incomplete full training log')
@@ -48,7 +49,7 @@ for arm in ('BALANCED','RISK'):
  seqcounts={'L':0,'U':0};seqpackets={'L':0,'U':0}
  for r in records(source/'training_sequence.jsonl.gz'):seqcounts[r['role']]+=1;seqpackets[r['role']]+=len(r['ids'])
  log=(root/'logs'/(arm+'-s2026092701.log')).read_text();errors=[s for s in log.splitlines() if re.search(r'Traceback|CUDA out of memory|FloatingPointError|^Killed$|RuntimeError|ModuleNotFoundError',s)]
- result['logs'][arm]=dict(complete_records=dict(mechanism=len(rr),native=len(native),unit=len(unit),epochs=len(ep)),all_risk_steps_independently_replayed=True,max_formula_errors=maxerr,all_As_positive_CE=True,actual_scene_counts=countsall.tolist(),min_applied_group_weight=global_min,max_applied_group_weight=global_max,final_logq=last.tolist(),curves=curves,native_epochs=ep,hidden_U_steps=len(usteps),ownEMA_all_updates_exact=True,sequence_batches=seqcounts,sequence_packets=seqpackets,errors=errors,actual=read(source/'training_result.json'),completion=read(source/'completion.json'),ordinary=read(source/'ordinary_augmentation_actual.json'),prediction_completion=read(p/'prediction/complete.json'))
+ result['logs'][arm]=dict(complete_records=dict(mechanism=len(rr),native=len(native),unit=len(unit),epochs=len(ep)),all_risk_steps_independently_replayed=True,max_formula_errors=maxerr,all_As_positive_CE=True,actual_scene_counts=countsall.tolist(),min_applied_group_weight=global_min,max_applied_group_weight=global_max,final_logq=last.tolist(),curves=curves,native_epochs=ep,hidden_U_steps=len(usteps),ownEMA_all_updates_exact=True,sequence_batches=seqcounts,sequence_packets=seqpackets,errors=errors,actual=read(source/'training_result.json'),completion=read(source/'completion.json'),ordinary=read(source/'ordinary_augmentation_actual.json'),prediction_completion=None if c['source_only'] else read(p/'prediction/complete.json'))
  if errors:raise ValueError('Training logs include a technical failure')
 result['training_sequences_all_four_equal']=True
 streams=[gzip.open(paths[a]/'source/training_sequence.jsonl.gz','rt') for a in paths]
@@ -59,6 +60,24 @@ finally:
  for f in streams:f.close()
 channels={a:read(p/'source/training_result.json')['channel'] for a,p in paths.items() if a!='B0'}
 result['physical_training_summary_equal_B1_BALANCED_RISK']=all(v==channels['B1'] for v in channels.values())
+source_rates={};source_clean={};source_ids=None
+for a,p in paths.items():
+ with np.load(p/'source_qualification/predictions.npz',allow_pickle=False) as f:
+  ids=f['ids'];y=f['TX'];z=f['satellite']
+  if ids.shape!=(1800,) or y.shape!=(1800,) or z.shape!=(2,3,1800,6) or not np.isfinite(z).all():raise ValueError('Incomplete source default-head readout')
+  if source_ids is None:source_ids=ids.copy()
+  elif not np.array_equal(ids,source_ids):raise ValueError('Source physical pair differs')
+  source_rates[a]=(z.argmax(-1)==y).mean(-1).tolist()
+ done=read(p/'source/completion.json');source_clean[a]=done['final_source_metrics']['source_val_accuracy']
+ if done['final_source_metrics']['source_val_count']!=27000:raise ValueError('Full source clean denominator differs')
+ if not np.allclose(source_rates[a],decision['readouts'][a]['source_accuracies'],atol=1e-12,rtol=0):raise ValueError('Source decision accuracies differ from saved observations')
+midlow=lambda a:np.asarray(source_rates[a])[:,1:].mean()
+inc={a:100*(midlow('RISK')-midlow(a)) for a in ('BALANCED','B1')};dc=100*(source_clean['RISK']-source_clean['B0'])
+if any(abs(inc[a]-decision['midlow_increment_pp'][a])>1e-9 for a in inc) or abs(dc-decision['fullVclean_net_pp'])>1e-9 or bool(min(inc.values())>=.5 and dc>=-.2)!=decision['source_qualified']:raise ValueError('Fixed source qualification recount differs')
+result['source_criterion_independently_recomputed']=True
+if c['source_only']:
+ print(json.dumps(result))
+ raise SystemExit(0)
 def pair(y,b,m):return dict(count=len(y),corrected=int(((m==y)&(b!=y)).sum()),damaged=int(((m!=y)&(b==y)).sum()),both_correct=int(((m==y)&(b==y)).sum()),both_wrong=int(((m!=y)&(b!=y)).sum()),net_pp=float(100*((m==y).mean()-(b==y).mean())))
 from experiments.cvs_early_geometry.evaluate import truth_arrays
 with np.load(paths['RISK']/'prediction/predictions.npz',allow_pickle=False) as f:ids=f['ids'].copy();mp={v:f[v].copy() for v in views}
@@ -75,10 +94,13 @@ for a,p in paths.items():
   result['source_pairs'][a]=dict(clean=pair(sy,f['clean'].argmax(1),mc),urban={str(j):pair(np.tile(sy,2),f['satellite'][:,j].argmax(-1).reshape(-1),ms[:,j].reshape(-1)) for j in (1,2)})
 print(json.dumps(result))
 '''
-def main(runtime,output):
+def main(runtime,output,source_only=False):
  rt=json.loads(Path(runtime).read_text(encoding='utf8'));out=Path(output);out.mkdir(parents=True,exist_ok=False)
- c=dict(project=rt['project'],run_id=RUN,reference_run='20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01',views=['clean','practical_high','practical_mid','practical_low_suburban','practical_high_urban','practical_mid_urban','practical_low_urban'])
- result=remote(SCRIPT.replace('CONFIG',repr(c)),rt);(out/'complete_analysis.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf8');render(result,out)
+ c=dict(project=rt['project'],run_id=RUN,source_only=source_only,reference_run='20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01',views=['clean','practical_high','practical_mid','practical_low_suburban','practical_high_urban','practical_mid_urban','practical_low_urban'])
+ result=remote(SCRIPT.replace('CONFIG',repr(c)),rt);(out/('source_analysis.json' if source_only else 'complete_analysis.json')).write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+ if source_only:
+  print(json.dumps(dict(status=result['summary']['status'],source=result['summary']['source_decision'],all_training_replayed=True,formal_scores_read=False)));return
+ render(result,out)
  print(json.dumps(dict(status=result['summary']['status'],source=result['summary']['source_decision']['decision'],differences=result['summary']['differences'],initial_equal=result['initial_all_four_exact_equal'],training_sequences_equal=result['training_sequences_all_four_equal'],physical_As_equal=result['physical_training_summary_equal_B1_BALANCED_RISK'])))
 def render(result,out):
  import matplotlib;matplotlib.use('Agg')
@@ -92,6 +114,6 @@ def render(result,out):
  for ax in axes.flat:ax.spines[['top','right']].set_visible(False);ax.grid(axis='y',alpha=.15)
  fig.savefig(out/'seven_views_and_scene_risk.png',dpi=180);fig.savefig(out/'seven_views_and_scene_risk.pdf');plt.close(fig)
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--runtime');p.add_argument('--output',required=True);p.add_argument('--render-cache');a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--runtime');p.add_argument('--output',required=True);p.add_argument('--render-cache');p.add_argument('--source-only',action='store_true');a=p.parse_args()
  if a.render_cache:render(json.loads(Path(a.render_cache).read_text(encoding='utf8')),Path(a.output))
- else:main(a.runtime,a.output)
+ else:main(a.runtime,a.output,a.source_only)
