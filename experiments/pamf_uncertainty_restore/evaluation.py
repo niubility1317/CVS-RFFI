@@ -46,7 +46,7 @@ def row_folder(args, role):
 
 
 @torch.no_grad()
-def predict(args, role):
+def predict(args, role, *, checkpoint_loader=None):
     source, ids, _, _ = reference(args, role)
     row = row_folder(args, role)
     if role == 'target':
@@ -61,7 +61,8 @@ def predict(args, role):
         calibration = read_json(args.output/'calibration.json'); validate_calibration(calibration)
         floor = calibration['excess_variance']; names = REFERENCES
     else:
-        model, payload = load_checkpoint(args.output/args.kind/'final.pt', 'cuda:0')
+        loader = load_checkpoint if checkpoint_loader is None else checkpoint_loader
+        model, payload = loader(args.output/args.kind/'final.pt', 'cuda:0')
         if payload['epoch'] != 20 or payload['updates'] != 4940 or payload['kind'] != args.kind:
             raise ValueError('Fixed final E20 candidate required')
         model.requires_grad_(False); names = ('restored',)
