@@ -1,6 +1,6 @@
 # PAMF Phase1 域泛化对比实验方案
 
-日期：2026-10-19。状态：设计提案，未发布新训练或测试。PAMF 指用户选定并改名的 SIG_TIME 主模型；历史 CVS、SIG_TIME 目录和结果保持原样。
+日期：2026-10-19。状态：首批 24 行已发布并运行，已完成 1 行训练及七视图独立评分；下文未执行部分仍为提案。PAMF 指用户选定并改名的 SIG_TIME 主模型；历史 CVS、SIG_TIME 目录和结果保持原样。
 
 本轮执行覆盖：用户随后明确要求运行、仅使用两张 GPU、3 个模型种子，各方法采用论文或公开作者配方；对未披露总轮数的 RIEI/DRIFT 又明确指定 E100，并按 100/200 比例调整原轮次安排。实际先发布 RIEI、DRIFT、IB-RFF、SDG 的 full/CE 共 24 行；RIEI/DRIFT 恒定学习率无轮次节点，IB-RFF 保留两阶段各最多 200 轮及原源域早停，SDG 固定 200 轮。详细矩阵以[本次登记](../automation_reports/CV-SincNet/20261019-phase1-pamf-dg-nativebudget-m24-r01/experiment.json)为准。下文 8 种子、统一 E200 和 64/160 次训练数保留为此前提案，不用于本轮执行。
 

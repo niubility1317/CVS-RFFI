@@ -68,3 +68,19 @@ VERIFIED：代码提交 ac5163f6cb59b49a657c3ee02089f8e556ae2279 已推送，远
 独立证据保存在 local_artifacts/phase1_dg_nativebudget_20261019/postlaunch_third.json。本次尚无冻结后的测试结果，不作性能结论；所有行完成后自动生成同 row 七视图评分、三种子统计和 full−CE 配对差。
 
 首行训练日志已从 0 增长至 10296 字节，stage1 已到 E27，损失和默认头源 V 输出有限，实际训练子进程为 PID2008921，GPU 暴露值为 0。证据：local_artifacts/phase1_dg_nativebudget_20261019/postlaunch_training.json；确认 RUNNING，不等同于矩阵完成。
+
+## 首行完整产物（单种子，非矩阵结论）
+
+VERIFIED：ibrff-full-s2026092701 已为 ANALYZED。源 V 规则使 stage1 在 30 轮、stage2 在 84 轮早停；默认头 best checkpoint 冻结后完成各 168000 包的七视图预测，prediction 明确 truth_read=false，独立 scorer 为 truth_last=true。当前实际完成 1/24 行，CE 配对行已自动开始。
+
+| 视图 | 准确率（%） | Macro-F1（%） |
+|---|---:|---:|
+| clean | 64.7458 | 63.7213 |
+| practical_high | 23.1482 | 16.5380 |
+| practical_mid | 22.9357 | 16.4425 |
+| practical_low_suburban | 22.4601 | 16.1526 |
+| practical_high_urban | 22.7458 | 16.7536 |
+| practical_mid_urban | 21.1226 | 17.0713 |
+| practical_low_urban | 19.7619 | 16.7135 |
+
+证据为 local_artifacts/phase1_dg_nativebudget_20261019/firstrow_artifacts.json，含 freeze、prediction complete、独立 scores 和 row complete 原始读回。保留负结果，不依据此分数修改后续训练。PAMF 历史对应三个种子的 E200 clean 基准可与后续同 seed 结果配对，但预算和已测视图单列。
