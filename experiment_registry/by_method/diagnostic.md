@@ -22,3 +22,4 @@
 |R2耗时分析与后续执行加速|managed_run|[打开](../../automation_reports/CV-SincNet/20261004-diagnostic-reference-stack-speed-synthetic-m12-r01/report.md)|
 |Phase2实现前本地审计记录|legacy_evidence_group|[打开](../../diagnostics/phase2_implementation_audit.md)|
 |P66 实际 As20 学生父模型的源域正确集合读出|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-FcrossRX-parent20-cohort-s2026092701-m1-r01/report.md)|
+|E30 固定适配器源域诊断预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/report.md)|

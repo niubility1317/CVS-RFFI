@@ -12,3 +12,4 @@
 |纯 F 冻结 E20：训练命名流与新信道拟合诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-F-observedChannel-e20-s2026092701-m4-r01/report.md)|
 |纯 F rawAs E20：固定 L 面板源拟合诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-F-rawAs-sourceFit-e20-s2026092701-m2-r01/report.md)|
 |纯 F E20 同轮 As 重访：冻结源拟合诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-F-epochReplay-sourceFit-e20-s2026092701-m2-r01/report.md)|
+|E30 固定适配器源域诊断预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/report.md)|
