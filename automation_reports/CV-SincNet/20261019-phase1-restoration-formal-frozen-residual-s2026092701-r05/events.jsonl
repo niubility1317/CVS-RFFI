@@ -1,0 +1,5 @@
+{"at": "2026-10-19T11:46:27+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T11:46:27+00:00", "status": "LOCAL_VERIFIED", "note": "源资格先冻结，29项检查/compile/help与N607GPU0预检通过，待零训练正式确认。", "evidence": ["experiment.json", "report.md"], "row_id": null}
+{"at": "2026-10-19T11:49:07+00:00", "status": "LANDED", "note": "单归档比较及远端compile/import通过，method9522a4e固定，复用R03不变候选原审查。", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T11:49:07+00:00", "status": "RUNNING", "note": "独立PID/CWD/argv/GPU0与日志增长核实；源2样本smokePASS、clean168000预测完成。", "evidence": ["report.md"], "row_id": "residual_deterministic"}
+{"at": "2026-10-19T11:49:07+00:00", "status": "RUNNING", "note": "完整正式七视图预测进行中，训练/适配/头更新均0。", "evidence": ["report.md"], "row_id": null}

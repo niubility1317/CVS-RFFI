@@ -1,0 +1,221 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05",
+  "group_id": "phase1-pamf-satellite-observation-restoration",
+  "display_name": "冻结确定性残差恢复器：168000条正式固定观测确认",
+  "description": "R03源规则A/B独立选中且合格的确定性修正器零训练确认；原正式观测与R04粗恢复控制一致。",
+  "kind": "comparison",
+  "stage": "Phase1-final-evaluation",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "formal_received",
+    "frozen_coarse",
+    "residual_refinement",
+    "zero_update",
+    "truth_last",
+    "full168000",
+    "single_seed"
+  ],
+  "comparison_group_id": "manysig-source-rx13468-day123-076330-restoration-seven-e20-v1",
+  "parent_run_ids": [
+    "20261019-phase1-restoration-residual-refinement-selfsup-m3-r03",
+    "20261019-phase1-restoration-formal-frozen-coarse-s2026092701-r04"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户持续身份忠实恢复目标；R03纯源资格先成立后扩展，N607多GPU授权，不用目标分数改选模型。",
+  "code": {
+    "commit": "9522a4edb63f30293542de7326ce1e53aa816ed5",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python3.10.19/Torch2.1+cu121/NumPy2.2.5; no package changes",
+    "cwd": "releases/pamf_formal_restoration_20261019_r05"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "Existing fixed float32 IQ[168000,2,256], original center/unitRMS; residual/post_sync/noEQ; no re-generation",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/index.npz#ids, original opaque168000 IDs, no subset/reorder",
+    "label_map_ref": "source_cache/manifest.json#class_id_to_tx; label files read only by independent scorer",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing VALIDATED_ONCE formal manifest; source qualification reused from R02, not recomputed on target",
+    "support_query_ref": null,
+    "leo_config_ref": "runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/manifest.json, receiver_seed2027/namespace phase1_full_six_fixed_20261002_v1/fc2450MHz",
+    "restoration_train_counts": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "TX_labels": 0
+    },
+    "source_validation_panel": 1800,
+    "target_panel": {
+      "count": 168000,
+      "stage": "Phase1 original fixed complete formal receiver panel, not Phase2",
+      "selection": "All original fixed IDs/bytes"
+    },
+    "training_observation_schedule": "No training or channel generation",
+    "formal_manifest_ref": "runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/manifest.json"
+  },
+  "permissions": {
+    "regime": "Frozen source-selected zero-update evaluation only",
+    "query_use": "Each observation independently through one frozen R and original frozen default heads; all7 predictions before separate CPU truth scorer",
+    "external_method_exception": null,
+    "claim_scope": "One R model seed, fixed2 original F readouts, full168000 formal simulated observations; not independent physical family or real in-orbit proof"
+  },
+  "checkpoint": {
+    "initialization": "Strict finalR03 residual_deterministic, including frozen R02 coarse; no updates or optimizer",
+    "sources": [
+      {
+        "run_id": "20261019-phase1-restoration-residual-refinement-selfsup-m3-r03",
+        "candidate": "residual_deterministic",
+        "commit": "b01b534f52daf9cae9e940ed6ec6f9243bccbdbe",
+        "path": "runs/20261019-phase1-restoration-residual-refinement-selfsup-m3-r03/residual_deterministic/final.pt",
+        "selection": "Prior source waveformA and source identityB agree,source-qualified"
+      }
+    ],
+    "contract_check_ref": "existing cleanF E200 and AsF T1 E20+10 source_contract and complete scratch-parent lineage; exact local source roles matched; frozen.py",
+    "provenance_verdict": "R03 corrector scratch E20 after frozen R02 scratch E20,original63000L/U source roles,0TX training; same original legal2F lineage.",
+    "selection_rule": "Fixed source-qualified R03 deterministic correction; no target ranking,threshold changes or retries",
+    "evaluation_readers": [
+      "20261014-phase1-sigtime-purece-e200-clean-manysig-m8-r01/sig_time-s2026092701/source/last.pt",
+      "20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r02/T1-s2026092701/source/final_ssdg.pth"
+    ]
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/formal-restoration-confirmation",
+    "gpu_policy": "PhysicalGPU0 one own predictor,all-owner cap2/free12GB using shared capacity lock; CPU scorer2threads; preserve R04GPU4 and otherownersGPU2/3",
+    "remote_run_root": "runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05",
+    "remote_log_root": "logs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05",
+    "local_artifact_root": "local_artifacts/pamf_restoration/formal_r05_20261019",
+    "launch_command": "python -u -m experiments.pamf_formal_restore.runner --plan residual_R05 --formal-views ../../runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views --parent-restoration ../../runs/20261019-phase1-restoration-residual-refinement-selfsup-m3-r03 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --frozen-bundle references --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05 --expected-commit 9522a4edb63f30293542de7326ce1e53aa816ed5",
+    "stop_rule": "Missing/mismatched source parent/inputs, collision, nonfinite output or invalid/incomplete predictions: preserve outputs, no automatic retry, no scientific stopping",
+    "CPU_generation_workers": 0
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "resolved_config.json",
+    "reference_smoke.json",
+    "reference/manifest.json",
+    "residual_deterministic/prediction/complete.json",
+    "residual_deterministic/metrics.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "raw IQ NMSE",
+      "log-power spectrum error",
+      "AsF/cleanF accuracy and macroF1",
+      "perTX/perRX confusion",
+      "repair/damage/net",
+      "trueTX margin",
+      "source-only shuffled-condition full sampling",
+      "3draw identity switch",
+      "source route/scene/L/U/lock/state/addedSNR/time-quartile losses",
+      "raw/weighted loss",
+      "LR/gradient clip fraction",
+      "batch1 synchronized latency",
+      "batch throughput",
+      "parameter count",
+      "peak allocated memory"
+    ],
+    "dimensions": [
+      "candidate",
+      "source/target",
+      "view",
+      "TX",
+      "RX",
+      "day",
+      "fixed generation draw"
+    ],
+    "prediction_ref": "runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/residual_deterministic/prediction",
+    "scorer_ref": "experiments/pamf_restoration/runner.py#score_row, independent afterall7; explicit512reference cap for auxiliary paired feature margin only",
+    "primary": "Same168000x7 rawF vs correctedF,plus preregistered R04 coarse control; allscenes,macroF1,net repairs,RX/TX/day and waveform metrics",
+    "auxiliary_reference_pool": {
+      "count": 512,
+      "rule": "Fixed evenly spaced opaque-record positions; truth-independent; block2048",
+      "inference_or_selection_use": false,
+      "not_full_global_nearest_other_TX": true
+    }
+  },
+  "rows": [
+    {
+      "row_id": "residual_deterministic",
+      "method": "residual_deterministic",
+      "purpose": "zero_update_formal_confirmation",
+      "config_ref": "experiments/pamf_formal_restore/runner.py",
+      "resolved_config_ref": "runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": 2026101903
+      },
+      "seed_notes": "split is original contract; data seed fixes source V panel and native source scene/noise draw; augmentation fixes receiver sessions/clean mask and training diffusion/flow RNG; support not applicable; target panel seed separately fixed.",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Zero new optimizer/adaptation/head-fit updates; R02coarseE20+R03correctorE20 cumulativeR40; originalF costs separately reused",
+      "output_root": "runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/residual_deterministic",
+      "log_path": "logs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/runner.log",
+      "command": "python -u -m experiments.pamf_formal_restore.runner --plan residual_R05 --formal-views ../../runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views --parent-restoration ../../runs/20261019-phase1-restoration-residual-refinement-selfsup-m3-r03 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --frozen-bundle references --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05 --expected-commit 9522a4edb63f30293542de7326ce1e53aa816ed5",
+      "expected_artifacts": [
+        "prediction/complete.json",
+        "metrics.json"
+      ]
+    }
+  ],
+  "notes": [
+    "R03 source A/B both selected deterministic before target; qualification lowurban+1.5556pp vs coarse,clean drop0.1111pp,meanNMSE lower. No other candidate formally tested.",
+    "R04 metrics have not been fetched while preparing this fixed source-selected extension; R03 already source-frozen and complete.",
+    "R03 model/data/hyperparameters unchanged. Cumulative R training40epochs,not20; F E200/E30 separately reused.",
+    "All formal original IQ bytes/opaqueIDs reused,not regenerated; clean+sixpractical,168000each,VALIDATED_ONCE handles reused.",
+    "No target training,adaptation,state updates,F/head fits,best-of-N or scene-dependent bypass. One recovered IQ for original PAMF branches.",
+    "All7 predictions fixed then separateCPU truth-last scorer. Auxiliary512reference feature pool explicitlypartial,not global nearest otherTX.",
+    "Candidate independent P0/P1 review already completed in R03; reused once,no duplicate candidate/runner/report review. New source-contract negative check plus28regressions passed; compile/help passed.",
+    "R04coarse is fixedcontrol,not target ranking. Technicalfailure preservesoutputs,no automaticretry; lowperformance neverstops.",
+    "OneRmodelseed and original2Freadouts,same nativeengineeringchannel with differentfixedRXsession frompilot; no independent physicalfamily or realorbit claim.",
+    "N607 ordinaryaccount preflight:GPU0idle24GB,~2.58TBfree,inputs/parent/Favailable,newrun/releaseabsent; otherownerspreserved."
+  ],
+  "registered_at": "2026-10-19T11:46:27+00:00"
+}
