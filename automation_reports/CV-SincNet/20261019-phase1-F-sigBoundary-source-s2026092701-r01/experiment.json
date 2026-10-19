@@ -1,0 +1,190 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-F-sigBoundary-source-s2026092701-r01",
+  "group_id": "phase1-F-sig-boundary-source",
+  "display_name": "纯F SIG_TIME边界与内部等量平均：源域固定头归因",
+  "description": "原生/E/I/EI固定2x2，两个固定合法checkpoint及同一L1800六视图；实际base+pool/joint/原W逐位回放，0拟合/0目标/0新模拟",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "F",
+    "SIG_TIME_boundary",
+    "source_only",
+    "fixed_default_head",
+    "no_fit",
+    "factorial_diagnostic"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01",
+    "20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active user goal authorizes source-only feature analysis;new attachment3.3/7/9 identifies signature beforeaggregation feature bottleneck. Two frozen source states,deterministic matched partial path averaging,no training/target access.",
+  "code": {
+    "commit": null,
+    "checkout": "E:\\type10-7\\code\\worktrees\\phase1_sameiq_experts_20261019",
+    "environment": "N607 ordinary account; existing pinned headJoint931af runtime/Torch2.1,CPU2,FP32,TF32off,no installation",
+    "cwd": "PROJECT/releases/cvs_F_sigBoundary_source_20261019_r01"
+  },
+  "data": {
+    "dataset": "existing immutable ManySig equalized1",
+    "version": "same source contract reused",
+    "representation": "equalized1/center256/unitRMS; exact saved residual post_sync/noeq full observation",
+    "contract_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json",
+    "physical_ids_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json#role_ids",
+    "label_map_ref": "original native6TX class mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 source TX unchanged",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "V/U unused;existing exact L1800 panel/6300role/20perTXxRXxday reused",
+    "support_query_ref": "not applicable Phase1 source-only",
+    "leo_config_ref": "R02 actual_first_training_As and same_L_new_channel mid/low2draw;0new physical simulations"
+  },
+  "permissions": {
+    "regime": "phase1_source_L_fixed_checkpoint_counterfactual_feature_readout",
+    "query_use": "NONE;no target IQ/truth/predictions/scores read",
+    "external_method_exception": null,
+    "claim_scope": "Only fixed source default-head readout/paired geometry;not learned architecture proof,not physical noise removal,not unseenRX gain or model-seed replication"
+  },
+  "checkpoint": {
+    "initialization": "No optimization;strict frozen original source B0 FINAL20 and predetermined FULL_As_JOINT FINAL30",
+    "sources": [
+      {
+        "run_id": "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01",
+        "row_id": "B0-s2026092701",
+        "checkpoint": "source/final_ssdg.pth",
+        "role": "original fixed B0 source feature reference"
+      },
+      {
+        "run_id": "20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01",
+        "row_id": "FULL_As_JOINT-s2026092701",
+        "checkpoint": "source/final_ssdg.pth",
+        "role": "predeclared full adaptation source feature reference"
+      }
+    ],
+    "contract_check_ref": "Existing strict original parent and joint own_model lineage/source handles/no target selection reused; no data revalidation",
+    "provenance_verdict": "matching unchanged6300/56700/27000 source role contract; both fixed final checkpoints already verified, chosen by method/source evidence",
+    "selection_rule": "No selection or updates; fixed two source states"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/F-sig-boundary-source",
+    "gpu_policy": "CPU only,CUDA_VISIBLE_DEVICES empty;GPU processes read-only in preflight;no healthy tasks touched",
+    "remote_run_root": "PROJECT/runs/20261019-phase1-F-sigBoundary-source-s2026092701-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_sigBoundary_source_20261019_r01/source.stdout.log",
+    "local_artifact_root": "local_artifacts/F_sigBoundary_source_20261019",
+    "launch_command": [
+      "CVS-RFFI/python",
+      "-u",
+      "experiments/cvs_sig_boundary_source/runner.py"
+    ],
+    "stop_rule": "Owned input/provenance/shape/numerical/native replay/state/output mismatch;preserve failure,no auto retry,no other workload changes"
+  },
+  "expected_artifacts": [
+    "config.json",
+    "smoke.json",
+    "progress.json",
+    "B0_FINAL20_source_logits.npz",
+    "FULL_As_JOINT_FINAL30_source_logits.npz",
+    "results.json",
+    "complete.json or failure.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source_default_head_accuracy",
+      "macro_F1",
+      "worst_RX",
+      "repair/damage",
+      "E_minus_NATIVE",
+      "E_minus_I",
+      "EI_interaction",
+      "native_base_pool_joint_logits_bit_equal",
+      "signature_endpoint_timearea_identity_error",
+      "state_unchanged",
+      "NN_and_partial_head_projection_counts"
+    ],
+    "dimensions": [
+      "2fixed models",
+      "6existing source views",
+      "4matched operator modes",
+      "RX/day/TX",
+      "actual_training_scene"
+    ],
+    "prediction_ref": "LegalL source-only four-condition original default-head outputs;no new models or target predictions",
+    "scorer_ref": "Source labels already allowed;independent noNN recount of all saved source logits/CM/paired and fixed criterion"
+  },
+  "rows": [
+    {
+      "row_id": "sig-boundary-source",
+      "method": "SIG_TIME_boundary_interior_matched_mean_2x2",
+      "purpose": "fixed source causal diagnostic,not a trained candidate",
+      "config_ref": "configs/source.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-sigBoundary-source-s2026092701-r01/config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original model2026092701 and physical split392005;all existing R02 IQ/indices/panels reused;no new draw/split/seed;draws not model seeds",
+      "k": null,
+      "scenario": "raw/actual_training_mix/mid2draw/low2draw sourceL",
+      "optimizer": "NONE",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "21600source encoder+4zeroIQ realCP smoke=21604wholeNN;64800alternative head+21600native replay+21600native=108000source head decisions;86400extra pool output projections;20smoke head;0fit/U/V/target/newAs",
+      "output_root": "PROJECT/runs/20261019-phase1-F-sigBoundary-source-s2026092701-r01",
+      "log_path": "PROJECT/releases/cvs_F_sigBoundary_source_20261019_r01/source.stdout.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_sig_boundary_source/runner.py"
+      ],
+      "expected_artifacts": [
+        "config.json",
+        "smoke.json",
+        "progress.json",
+        "B0_FINAL20_source_logits.npz",
+        "FULL_As_JOINT_FINAL30_source_logits.npz",
+        "results.json",
+        "complete.json or failure.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Both frozen source checkpoints and allL role checks reused through existing strict parent/own_model.",
+    "Actual F wrapper SequenceReference and native t2 output32,4windows of8,requartered into2-position regions;no source score used to set size.",
+    "Original native base/pool/joint/head replay exact;alternative conditions use same fixed original W,no head fit.",
+    "E/I each average2quarters=4positions perwindow;not only replacing2endpoints;EI fixed interaction.",
+    "No new training/model means existing formal prediction/scoring not repeated.",
+    "Source counterfactual result cannot establish trained representation or independent physical-noise decomposition.",
+    "One fixed source condition,negative preserved;no region/window/parent/seed sweep,no automatic training/E50."
+  ],
+  "registered_at": "2026-10-19T11:09:08+00:00"
+}

@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "synthetic_whole_model_NN": 10,
+  "real_checkpoint": 0,
+  "real_IQ": 0,
+  "fit_updates": 0,
+  "target_access": false,
+  "negative_tests": 5,
+  "E_I_matched_regions": true,
+  "no_cross_packet_mix": true,
+  "endpoint_and_timearea_identities": true,
+  "native_base_pool_joint_logits_bit_equal": true,
+  "alternative_direct_whole_forward_bit_equal": true,
+  "model_and_RNG_unchanged": true,
+  "method_and_hooks_restored": true,
+  "source_metrics_and_fixed_decision": true,
+  "initial_synthetic_interface_failures": 2,
+  "prior_synthetic_attempted_NN": 8,
+  "total_local_synthetic_attempted_NN": 18,
+  "layout_source": "actual measured SequenceReference and local_projection[2,6,32]"
+}
