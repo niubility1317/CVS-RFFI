@@ -49,3 +49,5 @@ N607普通账号既有环境，FP32/TF32off/CPU2，无安装。唯一owner codex
 发布 commit `037bcb0a4701953aec27ca2493ef2922a051498f`，单归档传输/远端compile VERIFIED，首步原B1真实训练CP2NN无query smoke PASS且未继承。CE2 PID2209229/GPU0、TAIL2 PID2209716/GPU1，实际参数均900722；两PID/CWD/argv/CUDA/所有owner容量及训练步骤日志增长独立核实，见launch_evidence.json。source决定与正式结果仍待完整训练返回，不作中途晋级或调参。
 
 实际首轮检查已通过：两行的完整双信道、3L、默认头/骨干和物理optimizer预算计数与4440总计划一致；当前仍在训练。完整独立分析工具 `analysis/cvs_F_conditional_tail20_20261019.py` 已准备且语法通过，待完整产物到齐后执行 source-only 与全七景/504 CM/配对重计；尚未冒称这些最终重计已通过。
+
+源端完整重放与固定决定已保存，见 [source_closure.md](source_closure.md)。源条件 FAIL，固定方案关闭，不扩 E50，不救援重跑。正式全七景按原计划收尾，总目标保持 ACTIVE。

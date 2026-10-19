@@ -1,0 +1,26 @@
+{
+  "status": "SOURCE_DECISION_FIXED",
+  "timestamp": 1792399590.4985578,
+  "source_qualified": false,
+  "midlow_increment_pp": {
+    "CE2": 0.4444444444444362,
+    "B1": 0.4861111111111094
+  },
+  "fullVclean_net_pp": -0.2555555555555533,
+  "fullVclean": {
+    "CE2": 0.9783703703703703,
+    "TAIL2": 0.978,
+    "B0": 0.9805555555555555,
+    "B1": 0.9776296296296296
+  },
+  "formal_scores_read": false,
+  "decision": "CLOSE_FIXED_TWO_DRAW_CONDITIONAL_TAIL_RECIPE; no K/mixture/seed rescue",
+  "goal_complete": false,
+  "independent_full_replay": true,
+  "all_new_source_steps": 8880,
+  "all_four_initial_states_equal": true,
+  "all_four_data_sequences_equal": true,
+  "first_draw_summary_equal": true,
+  "second_draw_summary_equal": true,
+  "source_criterion_independently_recomputed": true
+}
