@@ -1,0 +1,7 @@
+{"at": "2026-10-19T11:14:10+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T11:14:10+00:00", "status": "LOCAL_VERIFIED", "note": "23项聚焦检查、编译/help与一次独立P0/P1通过；N607实际资源/父源状态已核实，待发布。", "evidence": ["experiment.json", "report.md"], "row_id": null}
+{"at": "2026-10-19T11:17:16+00:00", "status": "LANDED", "note": "单个归档传输比较与远端compile/import通过；实际commit b01b534固定。", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T11:17:16+00:00", "status": "RUNNING", "note": "独立live PID/CWD/argv和日志增长读回；真实F源smoke PASS，16CPU生成新缓存，无TX/目标读取。", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-10-19T11:17:16+00:00", "status": "QUEUED", "note": "等待共享20轮源缓存及一次源尺度估计；本行尚未启动GPU训练。", "evidence": ["experiment.json"], "row_id": "residual_deterministic"}
+{"at": "2026-10-19T11:17:16+00:00", "status": "QUEUED", "note": "等待共享20轮源缓存及一次源尺度估计；本行尚未启动GPU训练。", "evidence": ["experiment.json"], "row_id": "residual_diffusion"}
+{"at": "2026-10-19T11:17:16+00:00", "status": "QUEUED", "note": "等待共享20轮源缓存及一次源尺度估计；本行尚未启动GPU训练。", "evidence": ["experiment.json"], "row_id": "residual_flow"}

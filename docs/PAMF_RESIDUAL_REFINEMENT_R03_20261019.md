@@ -1,6 +1,6 @@
 # 冻结粗恢复后的恢复残差修正
 
-状态：LOCAL_VERIFIED，待发布；11项新增与12项R02回归检查、compileall、controller --help通过，独立P0/P1无阻断。尚无本轮训练或有效性结果。承接用户“六类恢复器”报告 R6，并保留确定性二次修正控制。有限 L 身份保护和 F 联合训练本轮不启用，优先保持恢复训练的无 TX 标签边界。
+状态：RUNNING / VERIFIED（源信道缓存生成）；11项新增与12项R02回归检查、compileall、controller --help通过，独立P0/P1无阻断。尚无本轮训练或有效性结果。承接用户“六类恢复器”报告 R6，并保留确定性二次修正控制。有限 L 身份保护和 F 联合训练本轮不启用，优先保持恢复训练的无 TX 标签边界。
 
 父恢复器固定为 R02 源波形规则 A 选中的 `tf_unet_mixed`，不是根据目标分数选择。复用 R02 的源角色、原 F 来源和仅源选模记录；父模型从零 E20、6300 L_s/56700 U_s、0 TX 标签训练、无目标拟合。R03 只读取其 source_decision、最终 checkpoint 及源数据，禁止把父目标指标输入训练、尺度估计或选模。
 
@@ -31,6 +31,6 @@ N607计划GPU0/1/5各最多一条本run worker，总并发三，其他owner计�
 |R03-09|生成验收|三采样类别稳定性、编码置换|runner|implemented|完整采样及三draw接线；实际训练后诊断待运行|
 |R03-10|资源/日志|损失/曝光/实际延迟/显存|runner|implemented|训练/分层日志及同步batch1接口已接线；实际成本待测|
 |R03-11|最小流程|负测与真实源checkpoint smoke|tests/controller/runner|implemented|23项本地检查通过；launcher先真实F源smoke，首训练更新真实R往返|
-|R03-12|最小流程|单次P0/P1、commit/预登记/发布|experiment记录|implemented|一次独立P0/P1无阻断；N6070/1/5空闲，待commit/登记/发布|
+|R03-12|最小流程|单次P0/P1、commit/预登记/发布|experiment记录|verified|单次review/提交推送/归档比较/compile/真实F源smoke与live PID/CWD/log增长通过|
 |R03-13|最终证明|完整正式输入、独立族、多seed|后续冻结验证|deferred|本run单seed小面板不能替代|
 |R03-14|R3/身份保护|有效算子展开/有限L或联合F|本轮未启用|deferred|独立权限与控制，不混入纯自监督|
