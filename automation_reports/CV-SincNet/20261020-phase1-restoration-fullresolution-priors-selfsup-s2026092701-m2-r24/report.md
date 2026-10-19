@@ -1,6 +1,6 @@
 # 全分辨率 TCN 与注意力三步恢复 R24
 
-状态：LOCAL_VERIFIED，尚未发布。方法 commit `da5b9d52819ccd40f8b59dbfdefebff3bd3c2230` 已推送并核对远端 OID。37项聚焦检查、compile/help和一次独立P0/P1 PASS。真实checkpoint入口在远端首步执行，PASS立即继续。
+状态：RUNNING，真实入口与两条 GPU worker 已核实。方法 commit `da5b9d52819ccd40f8b59dbfdefebff3bd3c2230` 已推送并核对远端 OID。37项聚焦检查、compile/help和一次独立P0/P1 PASS。真实checkpoint入口在远端首步执行，PASS立即继续。
 
 
 当前状态：LOCAL_VERIFIED。两个新先验与一个复用源控制的完整训练链路已通过本地聚焦验证，尚未发布。以下“先前原型”保留13项检查的历史；当前实际矩阵与验收追踪以文末“完整实验设计”为准，不把原型检查当作训练或性能证据。
@@ -65,3 +65,6 @@
 
 
 完整矩阵、命令、环境/CWD、路径、GPU和停止规则见[登记](experiment.json)。
+
+
+发布后状态：VERIFIED。单归档传输比对、远端编译和真实两条源样本 checkpoint/defaultF 入口通过。原R07上下文一致、完整初始输出相同，隐藏结构不同；三步 prior 梯度有限非零，全部上下文无参数梯度。R23控制完整权重仅严格加载检查，不进入新prior初始化。两条真实 GPU worker 的 PID/CWD/argv/GPU 和日志增长已核实，每卡一条，未干预其他 owner。全LU训练、源七视图及有条件正式确认自动执行；当前没有新的性能结论。

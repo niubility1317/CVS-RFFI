@@ -1,6 +1,6 @@
 # R24：全分辨率 TCN 与注意力的三步恢复先验
 
-当前状态：LOCAL_VERIFIED。两个新先验与一个复用源控制的完整训练链路已通过本地聚焦验证，尚未发布。以下“先前原型”保留13项检查的历史；当前实际矩阵与验收追踪以文末“完整实验设计”为准，不把原型检查当作训练或性能证据。
+当前状态：RUNNING。真实checkpoint首步与两条GPU worker已核实，完整结果待返回。以下“先前原型”保留13项检查的历史；当前实际矩阵与验收追踪以文末“完整实验设计”为准，不把原型检查当作训练或性能证据。
 
 ## 先前原型记录
 
@@ -49,13 +49,13 @@
 |R24-01|多网络设计|全分辨率TCN/注意力，3步6CG单IQ|models.py|verified|形状/零头/初始输出/参数|报告扩展，非首次Transformer|
 |R24-02|样本独立|单包、无跨包/持久统计|models.py|verified|逐包/置换/状态|GroupNorm作用于本包全窗|
 |R24-03|梯度与成本|checkpoint梯度一致，三stage可训练|models.py/training.py|verified|实际反传/参数/成本|原型13项不覆盖新TCN|
-|R24-04|无监督/来源|R02/R07初始化，R23仅控制，0TX/F/target训练|runtime.py/evaluation.py|implemented|来源/schema/角色负测/真实checkpoint|不重验未变数据|
+|R24-04|无监督/来源|R02/R07初始化，R23仅控制，0TX/F/target训练|runtime.py/evaluation.py|verified|来源/schema/角色负测/真实checkpoint|不重验未变数据|
 |R24-05|源资格/隔离|六参考保护、固定排序及条件正式|evaluation.py/controller.py|implemented|负测/全部预测后truth|无资格0target|
-|R24-06|资源/发布|登记/commit/smoke/review/队列/退出|runner/controller/登记|pending|实际GPU/PID/日志及退出|不干扰其他owner|
+|R24-06|资源/发布|登记/commit/smoke/review/队列/退出|runner/controller/登记|verified|实际GPU/PID/日志及退出|不干扰其他owner|
 |R24-07|完整结果|源及条件正式、逐TX/RX/day、成本/Git|report/summary|pending|独立评分/本地完整权重|不以NMSE代替身份|
 |R24-08|身份真实性|多seed/独立物理族/逐细节TX归属|后续合格实验|deferred|尚无性能证据|不作为早期启动门槛|
 
-完整设计当前3 verified、2 implemented、2 pending、1 deferred、0 rejected、0 blocked。37项聚焦检查、compile/help及一次独立P0/P1 PASS，真实checkpoint首步与N607训练尚待执行。最高未证实项是真实输入对应TX细节及跨RX泛化。REJECTED_EXTRA_GATE：通用全仓测试、重复review、签名和额外数据重验不新增为门槛。
+完整设计当前5 verified、1 implemented、1 pending、1 deferred、0 rejected、0 blocked。37项聚焦检查、compile/help、一次独立P0/P1及实际checkpoint入口、发布与两条worker运行证据均通过；完整训练/源资格/条件正式结果待返回。最高风险仍是真实输入对应TX细节及跨RX泛化。REJECTED_EXTRA_GATE记录保留。
 
 当前完整结构参数：{"unet_control": {"parameters": 4665073, "prior_parameters": 2507526, "position_buffer_elements": 0}, "tcn_prior": {"parameters": 4549105, "prior_parameters": 2391558, "position_buffer_elements": 0}, "attention_prior": {"parameters": 4863217, "prior_parameters": 2705670, "position_buffer_elements": 98304}}。TCN和attention均为3个不共享prior，参数/FLOPs不严格匹配，隐藏初始化不同。位置buffer单独列出，非实测峰值显存。
 当前完整验证：`python -X utf8 -m pytest tests/test_pamf_attention_restore.py -q --maxfail=1`（37 passed）；`python -X utf8 -m compileall -q experiments/pamf_attention_restore`；`python -X utf8 -m experiments.pamf_attention_restore.runner --help`。只有随机输入/临时元数据的本地检查，未伪称真实恢复或识别证据。
