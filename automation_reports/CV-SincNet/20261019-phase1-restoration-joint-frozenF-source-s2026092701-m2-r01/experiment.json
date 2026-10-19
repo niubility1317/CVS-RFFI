@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "用户授权独立优化、不向另一对话发指令；分开报告与clean的差距和接入基座后的目标表现；目标lowurban>=70%、其他环境接近clean（Agent暂按<=2pp）。",
   "code": {
-    "commit": null,
+    "commit": "315cf9731898c14d452a9beb4af1b0ed24535eef",
     "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
     "environment": "N607 existing CVS-RFFI Python3.10/Torch2.1+cu121/NumPy2;CPU2;FP32;no package changes",
     "cwd": "releases/pamf_joint_refine_20261019_r01"

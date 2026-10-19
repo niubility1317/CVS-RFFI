@@ -1,6 +1,6 @@
 # 粗恢复器与修正器联合优化
 
-状态：PLANNED。目标仍为 low-urban 至少70%，其他五种 practical 接近同一原 F clean（Agent暂按差距≤2个百分点解释）。分别报告恢复IQ与clean差距、接入冻结基座后的目标识别，不能由源域或NMSE单项宣布目标达成。
+状态：RUNNING / VERIFIED。目标仍为 low-urban 至少70%，其他五种 practical 接近同一原 F clean（Agent暂按差距≤2个百分点解释）。分别报告恢复IQ与clean差距、接入冻结基座后的目标识别，不能由源域或NMSE单项宣布目标达成。
 
 ## 固定消融与成本
 
@@ -25,3 +25,15 @@
 一个code/config commit、一个不可覆盖root。N607普通账号，GPU0/1各一条本run worker，总owner<2且空闲≥12GB，CPU2线程、最多一条scorer；源两臂完成退出后，仅启动选定臂对应GPU的target worker。启动第一步真实R03＋原F两条L_s smoke，验证coarse/correction均有有限非零梯度、F无梯度、新checkpoint往返一致，PASS立即继续。一次发布归档比较、远端compile/import、实际PID/CWD/命令/GPU/日志增长保存。数据/模型/commit不符、输出冲突、非有限、预算或预测失败则保留产物停止、不自动重试，不停止其他健康任务。
 
 具体命令、环境、路径、矩阵和预期产物见[experiment.json](experiment.json)。
+
+
+## 启动核验
+
+方法commit：`315cf9731898c14d452a9beb4af1b0ed24535eef`。21项聚焦检查通过；一次独立P0/P1审查无发现，发布前修复源评估残留E20硬编码的直接P1，并仅定点复核E10预算链。一次发布归档比较及远端compile/import通过。真实R03＋原F两条L_s smoke证实coarse和correction均有非零有限梯度、F无梯度、新权重往返一致，0目标访问、0更新。PASS后两臂直接继续训练。
+
+独立后态已核实两条实际worker的PID/CWD/完整命令、物理GPU0/1归属和从0到首轮的日志增长。当前进度：
+
+- joint_feature：1/10轮、247/2470步。
+- joint_posterior：1/10轮、247/2470步。
+
+两个源参考特征缓存均为63000条L/U，没有TX真值读取。当前没有源V评分或新目标性能结论；只有固定源规则选中的通过臂会自动进入目标七视图／三原F验证。
