@@ -6,4 +6,5 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|接收观测恢复第二轮|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/report.md)|
 |恢复器自监督校核与独立评分恢复|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-restoration-unlabeled-confirmation-s2026092701-r01/report.md)|

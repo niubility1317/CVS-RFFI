@@ -1,0 +1,10 @@
+{"at": "2026-10-19T10:22:38+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T10:22:38+00:00", "status": "LOCAL_VERIFIED", "note": "本地12项检查/compile/help与一次独立P0/P1复核通过，N607只读preflight通过；尚未发布训练。", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T10:31:10+00:00", "status": "LANDED", "note": "单归档传输比较、远端编译/导入通过；immutable release已落地。", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T10:31:10+00:00", "status": "RUNNING", "note": "N607归档传输/编译/导入与真实冻结F no-query检查通过，独立PID/CWD/argv/日志增长读回；16CPU缓存生成中，至少12/20epoch完成，GPU训练尚未开始。", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-10-19T10:31:10+00:00", "status": "QUEUED", "note": "等待同一16CPU源信道缓存准备完成；本行尚未开始GPU训练。", "evidence": ["experiment.json"], "row_id": "unet_residual"}
+{"at": "2026-10-19T10:31:10+00:00", "status": "QUEUED", "note": "等待同一16CPU源信道缓存准备完成；本行尚未开始GPU训练。", "evidence": ["experiment.json"], "row_id": "unet_full"}
+{"at": "2026-10-19T10:31:10+00:00", "status": "QUEUED", "note": "等待同一16CPU源信道缓存准备完成；本行尚未开始GPU训练。", "evidence": ["experiment.json"], "row_id": "unet_mixed"}
+{"at": "2026-10-19T10:31:10+00:00", "status": "QUEUED", "note": "等待同一16CPU源信道缓存准备完成；本行尚未开始GPU训练。", "evidence": ["experiment.json"], "row_id": "tf_unet_mixed"}
+{"at": "2026-10-19T10:31:10+00:00", "status": "QUEUED", "note": "等待同一16CPU源信道缓存准备完成；本行尚未开始GPU训练。", "evidence": ["experiment.json"], "row_id": "diffusion_mixed"}
+{"at": "2026-10-19T10:31:10+00:00", "status": "QUEUED", "note": "等待同一16CPU源信道缓存准备完成；本行尚未开始GPU训练。", "evidence": ["experiment.json"], "row_id": "flow_mixed"}
