@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "reviewer": "sinc_rdrop_diag_p0p1",
+  "scope": "One independent P0/P1 review found missing dataset counter; direct fix plus one targeted re-review PASS. No full/report-only re-review.",
+  "fixed_issue": "Diagnostic CountingRole owns actual __getitem__ count instead of assuming SourceRoleDataset.samples_read;6300/model18900total verified.",
+  "targeted_rereview_PASS": true,
+  "extra_review_required": false
+}
