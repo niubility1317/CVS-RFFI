@@ -1,6 +1,6 @@
 # 冻结默认头的决策保真恢复
 
-状态：PLANNED。用户目标为 low-urban 目标准确率至少 70%，其他五种 practical 接近原 F clean；Agent 暂将“接近”按差距≤2 个百分点报告。恢复 IQ 与同物理 clean 的差距、接入基座后的真实 TX 表现是独立评价线。目标基准已暴露，本轮不声称新的独立盲测。
+状态：RUNNING / VERIFIED。用户目标为 low-urban 目标准确率至少 70%，其他五种 practical 接近原 F clean；Agent 暂将“接近”按差距≤2 个百分点报告。恢复 IQ 与同物理 clean 的差距、接入基座后的真实 TX 表现是独立评价线。目标基准已暴露，本轮不声称新的独立盲测。
 
 ## 唯一改动与匹配对照
 
@@ -27,3 +27,10 @@
 N607 普通账号、GPU0 每阶段最多一条本 run worker，总 owner 少于2且空闲≥12GB，CPU2线程、最多1条 scorer。source worker 完成退出后才可启动 target worker；不停止其他健康任务。新 root 不可覆盖，一次发布归档比较与远端 compile/import，启动后核实实际 PID/CWD/完整命令/GPU/日志增长。
 
 数据／父模型／commit 不匹配、输出冲突、非有限、预算／预测失败属于技术停止，保留产物、不自动重试。科学源阈值失败属于负结果，目标不访问。具体命令、环境、路径、矩阵和预期产物见 [experiment.json](experiment.json)。
+
+
+## 启动核验
+
+方法 commit：`4770317b4aec06904e638c23edaea9678ea8a48d`。21项聚焦检查与一次独立 P0/P1 审查通过，未发现 P0/P1；一次归档比较和远端 compile/import 通过。真实 R03＋原 F 默认头两条 L_s smoke 证实 posterior 目标通过 native F 对 IQ 有非零有限梯度，F／coarse 无梯度、新权重往返一致，0目标访问和0更新。PASS 后控制器直接继续训练。
+
+独立后态核实一个训练 worker 的实际 PID、CWD、完整命令、GPU0 归属和从0到首轮的日志增长。当前 2/20 轮、494/4940 步；训练损失记录包含独立 posterior 分量。63000条源 L/U 固定特征已生成，未读取 TX 真值。源 V 尚未评分，新候选没有目标结果。满足固定源条件后，控制器自动衔接七视图／三套原 F 的目标验证。
