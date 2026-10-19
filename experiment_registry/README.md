@@ -381,3 +381,5 @@
 本轮记录：[三套冻结原 F 的恢复约束](by_method/multireader_frozenF.md)。
 
 本轮记录：[原默认头决策约束强度消融](by_method/identity_priority.md)。
+
+本轮记录：[原 F 最终特征与中间层匹配消融](by_method/layerwise_frozenF.md)。
