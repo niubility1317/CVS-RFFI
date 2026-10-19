@@ -69,3 +69,5 @@ LORA 在 t1/t2 pointwise 层加入 r=8、alpha=8 的线性 BA 增量，B零、A�
 启动证据见launch_evidence.json：单归档传输、远端compile、普通账号调度器PID/CWD/argv及日志增长VERIFIED；真实B0父8NN无query smoke PASS。共享观察逐步生成，没有据此声称六行已训练完成。
 
 启动证据见launch_evidence.json：单归档传输、远端compile、普通账号调度器PID/CWD/argv及日志增长VERIFIED；真实B0父8NN无query smoke PASS。共享观察逐步生成，没有据此声称六行已训练完成。
+
+源端完整回放与固定决定已保存，见source_closure.md。正式预测按固定流程继续。
