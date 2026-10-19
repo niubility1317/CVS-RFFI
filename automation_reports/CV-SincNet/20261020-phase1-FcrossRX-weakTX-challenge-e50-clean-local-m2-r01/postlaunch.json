@@ -1,0 +1,120 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01",
+  "execution_commit": "294e79315fd628c97dca7e312d7e9b0bb3c5a0b6",
+  "controller_pid": 2404,
+  "worker_pids": [
+    33424,
+    38372
+  ],
+  "physical_GPU": 0,
+  "source_workers": 2,
+  "foreign_GPU_workers": 0,
+  "max_total_GPU_workers": 3,
+  "minimum_dispatch_free_RAM_GiB": 4.5,
+  "observed_free_RAM_GiB": 9.352161407470703,
+  "original50_recipe": true,
+  "satellite_training": false,
+  "test_views": [
+    "clean"
+  ],
+  "default_head_joint": true,
+  "head_fit_updates": 0,
+  "target_results_available": false,
+  "real_initial_checkpoint_smoke": true,
+  "CUDA_combined_backward": {
+    "status": "PASS",
+    "synthetic_only": true,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0,
+    "IQ_reads": 0,
+    "target_reads": 0,
+    "extra_weak_L_packets": 43,
+    "Sinc_gradient_norm": 0.002250719117000699,
+    "main_W_gradient_norm": 3.9951705932617188
+  },
+  "workers": [
+    {
+      "row_id": "RANDOM_WEAK-s2026092701",
+      "pid": 33424,
+      "PID_cmdline_matches": true,
+      "CWD_matches_release": true,
+      "resolved_commit_matches": true,
+      "parameters": 900722,
+      "label_epochs": 33,
+      "pseudo_epochs": 17,
+      "first_log_bytes": 7353,
+      "current_log_bytes": 12527,
+      "log_growth": true,
+      "scope": {
+        "mode": "RANDOM_WEAK",
+        "weak_indices": [
+          1,
+          3
+        ],
+        "layers": [
+          "time_down",
+          "t2.pool"
+        ],
+        "drop_fraction": 0.125,
+        "every": 4,
+        "max_weight": 0.1,
+        "warmup": 5,
+        "ramp": 10,
+        "extra_parameters": 0,
+        "default_head_aux_detached": true,
+        "source_L_only": true,
+        "ordinary_augmented_IQ_reused": true,
+        "original_RDrop_and_SupCon_unchanged": true,
+        "extra_forward_mode": "eval, cloned buffers and detached existing W"
+      }
+    },
+    {
+      "row_id": "SALIENCY_WEAK-s2026092701",
+      "pid": 38372,
+      "PID_cmdline_matches": true,
+      "CWD_matches_release": true,
+      "resolved_commit_matches": true,
+      "parameters": 900722,
+      "label_epochs": 33,
+      "pseudo_epochs": 17,
+      "first_log_bytes": 7369,
+      "current_log_bytes": 12547,
+      "log_growth": true,
+      "scope": {
+        "mode": "SALIENCY_WEAK",
+        "weak_indices": [
+          1,
+          3
+        ],
+        "layers": [
+          "time_down",
+          "t2.pool"
+        ],
+        "drop_fraction": 0.125,
+        "every": 4,
+        "max_weight": 0.1,
+        "warmup": 5,
+        "ramp": 10,
+        "extra_parameters": 0,
+        "default_head_aux_detached": true,
+        "source_L_only": true,
+        "ordinary_augmented_IQ_reused": true,
+        "original_RDrop_and_SupCon_unchanged": true,
+        "extra_forward_mode": "eval, cloned buffers and detached existing W"
+      }
+    }
+  ],
+  "GPU_residency": [
+    {
+      "pid": 38372,
+      "physical_GPU": 0,
+      "dedicated_MiB": 3251.55078125
+    },
+    {
+      "pid": 33424,
+      "physical_GPU": 0,
+      "dedicated_MiB": 3251.55078125
+    }
+  ]
+}
