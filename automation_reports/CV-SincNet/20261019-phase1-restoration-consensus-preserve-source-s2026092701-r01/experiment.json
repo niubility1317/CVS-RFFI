@@ -1,0 +1,179 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-restoration-consensus-preserve-source-s2026092701-r01",
+  "group_id": "phase1-restoration-consensus-preserve",
+  "display_name": "双判据一致修复：固定质量门与波形改变量的源验证",
+  "description": "只有已冻结质量门和波形改变量都判定需要恢复时才修改IQ；不训练、不校准，source-only同面板机制诊断。",
+  "kind": "diagnostic",
+  "stage": "Phase1-source-frozen-consensus",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "consensus_preserve",
+    "no_TX_training",
+    "FcrossRX50",
+    "source_only",
+    "truth_last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261019-phase1-restoration-quality-preserve-source-s2026092701-r01",
+    "20261019-phase1-restoration-change-preserve-source-s2026092701-r01",
+    "20261019-phase1-restoration-residual-refinement-selfsup-m3-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户持续共同优化星地恢复网络；独立源机制消融，N607剩余容量，0target，无其他owner修改。",
+  "code": {
+    "commit": "8730bf2f6a5173f2103f1ee412463a8a7565919e",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python3.10/Torch2.1+cu121/NumPy2;CPU2;FP32;no package changes",
+    "cwd": "releases/pamf_consensus_preserve_20261019_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original validated source7/63/30 physical split,unchanged",
+    "representation": "Original 1800sourceVx7;L_s2only real-parent smoke;no new training",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/train/physical_ids.npy",
+    "label_map_ref": "source_cache/manifest.json#class_id_to_tx;TX labels never used to fit quality network",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original all6TX;qualitytargets are augmentation0/1,not TX",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache/validation",
+    "support_query_ref": null,
+    "leo_config_ref": "R02 existing20epoch matchedfull/residual post_sync/noEQ observations;no regeneration",
+    "actual_training_labels": "None;0new trainingupdates"
+  },
+  "permissions": {
+    "regime": "source_only synthetic self-supervised quality training",
+    "query_use": "No target/query IQ/truth in this run",
+    "external_method_exception": null,
+    "claim_scope": "Fixed single quality seed/sourceV diagnostic;no target/independent physical-family/orbit claim"
+  },
+  "checkpoint": {
+    "initialization": "Frozen qualitygate E20 + R03E40 + original F50 defaulthead",
+    "sources": [
+      "R03 residual_deterministic/final.pt for frozen restoration",
+      "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth for defaulthead",
+      "runs/20261019-phase1-restoration-quality-preserve-source-s2026092701-r01/final.pt frozen qualitygateE20/4940"
+    ],
+    "contract_check_ref": "OriginalR03 source lineage and native-equivalent F50/source-role evidence reused;R02 cache handles preflight verified",
+    "provenance_verdict": "New qualityweights have no ancestors;originalR03E40 and F50 same original63000source roles,0targettraining/defaultheadrefits",
+    "selection_rule": "Reuse fixed lastE20 quality and prior L/U-calibratedchange.02;no new fit,selection or threshold sweep"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/consensus-preserve",
+    "gpu_policy": "PhysicalGPU1 only,one own train/predict worker;capacity4 lock before CUDA;allowner cap2/free12GB;preserveR07GPU5 and otherowners",
+    "remote_run_root": "runs/20261019-phase1-restoration-consensus-preserve-source-s2026092701-r01",
+    "remote_log_root": "logs/20261019-phase1-restoration-consensus-preserve-source-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/consensus_preserve_20261019_r01",
+    "launch_command": "python -u -m experiments.pamf_consensus_preserve.runner run --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-cache ../../runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache --restorer-checkpoint ../../runs/20261019-phase1-restoration-residual-refinement-selfsup-m3-r03/residual_deterministic/final.pt --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --output ../../runs/20261019-phase1-restoration-consensus-preserve-source-s2026092701-r01 --expected-commit 8730bf2f6a5173f2103f1ee412463a8a7565919e --quality-checkpoint ../../runs/20261019-phase1-restoration-quality-preserve-source-s2026092701-r01/final.pt",
+    "stop_rule": "Illegal input/parent/code,collision,nonfinite,budget/predcoverage failure:preserveoutputs,abort,noautoretry",
+    "CPU_generation_workers": 0
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "resolved_config.json",
+    "smoke.json",
+    "gpu_ready.json",
+    "prediction/<7views>.npz",
+    "prediction/<7views>_restored.npy",
+    "prediction/<7views>_quality.npz",
+    "prediction/complete.json",
+    "gate_diagnostic.json",
+    "metrics.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "originalF50accuracy/MacroF1",
+      "repair/damage/net",
+      "perTX/RX/dayconfusion",
+      "rawIQNMSE",
+      "preservedcounts"
+    ],
+    "dimensions": [
+      "identity/R03/consensus-preservedR03",
+      "clean+sixsourcepractical",
+      "TX",
+      "RX",
+      "day"
+    ],
+    "prediction_ref": "runs/20261019-phase1-restoration-consensus-preserve-source-s2026092701-r01/prediction",
+    "scorer_ref": "pamf_change_preserve.runner.score,independentCUDAemptyCPU afterall7",
+    "source_rule": "clean1800 decisions exactly equal identity and clean IQNMSE0;eachpractical accuracy/MacroF1>=R03 and NMSE<=R03;otherwise source negative,not threshold sweep",
+    "next_stage": "Source-only run;no automatictarget;currentchat target testing remains clean-only",
+    "policy": "Keep iff qualitylogit<0 OR relativechange<=.02;bothfixed before current V access"
+  },
+  "rows": [
+    {
+      "row_id": "consensus",
+      "method": "Frozen qualitylogit>=0 AND relativechange>.02 triggers R03;originalF50 defaulthead",
+      "purpose": "single_candidate_source_falsification",
+      "config_ref": "experiments/pamf_consensus_preserve/runner.py#configuration",
+      "resolved_config_ref": "runs/20261019-phase1-restoration-consensus-preserve-source-s2026092701-r01/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": 2026101903
+      },
+      "seed_notes": "No new draws;fixed parent seeds reused,2L_s smoke;sourceV panel reused for mechanism development,not new blind confirmation",
+      "k": null,
+      "scenario": "clean+six fixedsourcepractical views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0newtraining;frozenqualityE20/R03E40/F50 historical costs separate",
+      "output_root": "runs/20261019-phase1-restoration-consensus-preserve-source-s2026092701-r01",
+      "log_path": "logs/20261019-phase1-restoration-consensus-preserve-source-s2026092701-r01/runner.log",
+      "command": "python -u -m experiments.pamf_consensus_preserve.runner run --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-cache ../../runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache --restorer-checkpoint ../../runs/20261019-phase1-restoration-residual-refinement-selfsup-m3-r03/residual_deterministic/final.pt --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --output ../../runs/20261019-phase1-restoration-consensus-preserve-source-s2026092701-r01 --expected-commit 8730bf2f6a5173f2103f1ee412463a8a7565919e --quality-checkpoint ../../runs/20261019-phase1-restoration-quality-preserve-source-s2026092701-r01/final.pt",
+      "expected_artifacts": [
+        "launch.json",
+        "resolved_config.json",
+        "smoke.json",
+        "gpu_ready.json",
+        "prediction/<7views>.npz",
+        "prediction/<7views>_restored.npy",
+        "prediction/<7views>_quality.npz",
+        "prediction/complete.json",
+        "gate_diagnostic.json",
+        "metrics.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Only GPU1 readout worker;R07/GPU5/formal_f50 and other owner jobs untouched.",
+    "Candidate rationale uses already-seen sourceV diagnostic failures;source panel is development evidence,not a new independent blind test.",
+    "Thresholds logit0 and change.02 are independently frozen earlier;no new calibration,sweep,best-of-N,training or fitted head.",
+    "Decision uses current received IQ,R03output and frozen qualitygate only;no F confidence,trueclean,scene/RX/TX label or query fitting.",
+    "All7source predictions precede separate CPU truth-last;no new target access."
+  ],
+  "registered_at": "2026-10-19T13:08:02+00:00"
+}
