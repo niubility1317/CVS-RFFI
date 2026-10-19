@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "synthetic_NN": 36,
+  "checkpoint_loads": 0,
+  "real_IQ": 0,
+  "query_read": false,
+  "protocol_negatives": 8,
+  "trainable_parameters": {
+    "FULL": 231233,
+    "LORA": 2304,
+    "TEMP": 2384
+  },
+  "total_parameters": {
+    "FULL": 900722,
+    "LORA": 903026,
+    "TEMP": 903106
+  },
+  "checks": [
+    "zero-function exact default logits and joint160",
+    "two-step B then A/K gradient flow through frozen F",
+    "default W and original frozen state bit-equal",
+    "standard pw BA merged-weight equality",
+    "FULL physical Sinc AdamW oracle including decay and clip",
+    "parent-correct all128 denominator KL and detached teacher",
+    "fixed six-row/head/U/update-space negatives"
+  ],
+  "flow_checks": {
+    "status": "PASS",
+    "shared_sequence_updates": 2220,
+    "physical_L_slots": 284160,
+    "full_L_cycles": 45,
+    "protocol_negatives": 3,
+    "source_order_and_failure_verified": true,
+    "NN": 0
+  }
+}

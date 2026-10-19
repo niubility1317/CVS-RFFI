@@ -1,0 +1,492 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01",
+  "group_id": "phase1-F-feature-adaptation",
+  "display_name": "纯 F：固定默认头的浅中层 LoRA 与时序残差适配 E30",
+  "description": "同B0 FINAL20父、FULL/LORA/TEMP×NoAs/As，L-only三项固定目标，新增E10累计E30，自动七环境独立truth-last",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "F",
+    "feature_adaptation",
+    "LoRA",
+    "temporal_residual",
+    "fixed_default_head",
+    "E20plus10",
+    "L_only",
+    "matched_NoAs",
+    "single_seed"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User new attachment explicitly authorizes shallow/middle feature adapters/FULL with frozen existing W; user explicitly confirmed L-only cleanCE+AsCE+cleanKeep for new E10; original final performance goals retained",
+  "code": {
+    "commit": null,
+    "checkout": "E:\\type10-7\\code\\worktrees\\phase1_sameiq_experts_20261019",
+    "environment": "N607 ordinary account; existing CVS-RFFI Torch2.1 FP32 TF32off CPU2; no installation",
+    "cwd": "PROJECT/releases/cvs_F_featureAdapters_E30_20261019_r01"
+  },
+  "data": {
+    "dataset": "existing immutable ManySig equalized1",
+    "version": "same source contract reused",
+    "representation": "equalized1/center256/unitRMS; exact saved residual post_sync/noeq full observation",
+    "contract_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json",
+    "physical_ids_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json#role_ids",
+    "label_map_ref": "design.CLASSES and native class_mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "protocol.CLASSES",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing sourceV27000 + fixed cached balancedV1800/two full physical draws; Phase2 capsule not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": "PROJECT/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/observations/actual_engine.json"
+  },
+  "permissions": {
+    "regime": "phase1_source_L_adaptation_target_prediction_only",
+    "query_use": "No target training/selection/ranking; fixed FINAL30 default head predicts all seven existing168000 views; separate CPU scorer only after row predictions complete and six-row source decision saved",
+    "external_method_exception": null,
+    "claim_scope": "Same source contract, one model seed exploratory exposed benchmark; not reproducible gain or new independent blind test"
+  },
+  "checkpoint": {
+    "initialization": "strict verified B0 pureF own source scratch FINAL20; same parent for all six; no target-selected teacher or class head",
+    "sources": [
+      {
+        "run_id": "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01",
+        "row_id": "B0-s2026092701",
+        "checkpoint": "source/final_ssdg.pth",
+        "role": "common initialization and frozen clean reference"
+      }
+    ],
+    "contract_check_ref": "Existing strict own_model checks entire scratch/source-role/final_only/defaulthead lineage before load; adapter reconstruction loads parent strict before attaching zero-output modules",
+    "provenance_verdict": "Verified source scratch parent; actual source handles must match at launcher, no target lineage",
+    "selection_rule": "fixed FINAL30 (parent20+new10), no source-V best epoch or target ranking"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/F-feature-adapters",
+    "gpu_policy": "all owners cap2/GPU, free>=12000MB, shared capacity lock for CUDA init; healthy jobs unchanged",
+    "remote_run_root": "PROJECT/runs/20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01",
+    "remote_log_root": "PROJECT/runs/20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01/logs",
+    "local_artifact_root": "local_artifacts/F_featureAdapters_E30_20261019",
+    "launch_command": [
+      "CVS-RFFI/python",
+      "-u",
+      "experiments/cvs_feature_adapters30/runner.py"
+    ],
+    "stop_rule": "Owned systemic protocol/defaulthead/nonfinite/interface/output/prediction failure; no automatic retry; preserve completed artifacts and healthy jobs. Low source performance does not stop declared formal completion."
+  },
+  "expected_artifacts": [
+    "checkpoint_smoke.json",
+    "observation_bank/complete.json",
+    "launch.json",
+    "queue_state.json",
+    "source_matrix_decision.json",
+    "all six perrow artifacts",
+    "analysis.json",
+    "complete.json or failure.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "worst_RX",
+      "paired repaired/new errors",
+      "actual trainingAs / sameL newchannel / V separation",
+      "fixed default W / feature gradient and cost"
+    ],
+    "dimensions": [
+      "FULL/LORA/TEMP each paired As-NoAs",
+      "all7 views",
+      "RX/day/TX",
+      "one model seed",
+      "parent20+new10"
+    ],
+    "prediction_ref": "perrow prediction/predictions.npz and seven score files fixed before truth",
+    "scorer_ref": "separate CPU exec opaque-ID independent truth-last with CM recount"
+  },
+  "rows": [
+    {
+      "row_id": "FULL_NoAs-s2026092701",
+      "method": "FULL_NoAs",
+      "purpose": "same-parent fixed-W FULL equal two clean CE NoAs control",
+      "config_ref": "configs/FULL_NoAs-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01/FULL_NoAs-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261017431
+      },
+      "seed_notes": "Common parent2026092701, L stream20261019643, zero-output adapter private initialization20261019641; original complete channel20261016421/receiver20261016423 in declared new E21..30 namespace. Existing V/target observations reused. Not independent model seeds.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "reset AdamW; default W fixed all rows; FULL retains CENTER_UNITS/physicalclip5; adapters only otherwise",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "parent20+new10=total30;2220 new updates;2 student L128+1 frozen parent L128 eachstep=568320student+284160reference NN;initial/final source each50400;all7 prediction1176002;U/EMA0;bank284160 completeAs shared once globally",
+      "output_root": "PROJECT/runs/20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01/FULL_NoAs-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01/logs/FULL_NoAs-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_feature_adapters30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "FULL_NoAs-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/initialization.json",
+        "source/source_contract.json",
+        "source/step_metrics.jsonl.gz",
+        "source/initial_source_readout/complete.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ],
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "FULL_As-s2026092701",
+      "method": "FULL_As",
+      "purpose": "same-parent fixed-W FULL complete As",
+      "config_ref": "configs/FULL_As-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01/FULL_As-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261017431
+      },
+      "seed_notes": "Common parent2026092701, L stream20261019643, zero-output adapter private initialization20261019641; original complete channel20261016421/receiver20261016423 in declared new E21..30 namespace. Existing V/target observations reused. Not independent model seeds.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "reset AdamW; default W fixed all rows; FULL retains CENTER_UNITS/physicalclip5; adapters only otherwise",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "parent20+new10=total30;2220 new updates;2 student L128+1 frozen parent L128 eachstep=568320student+284160reference NN;initial/final source each50400;all7 prediction1176002;U/EMA0;bank284160 completeAs shared once globally",
+      "output_root": "PROJECT/runs/20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01/FULL_As-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01/logs/FULL_As-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_feature_adapters30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "FULL_As-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/initialization.json",
+        "source/source_contract.json",
+        "source/step_metrics.jsonl.gz",
+        "source/initial_source_readout/complete.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ],
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "LORA_NoAs-s2026092701",
+      "method": "LORA_NoAs",
+      "purpose": "same-parent fixed-W LORA equal two clean CE NoAs control",
+      "config_ref": "configs/LORA_NoAs-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01/LORA_NoAs-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261017431
+      },
+      "seed_notes": "Common parent2026092701, L stream20261019643, zero-output adapter private initialization20261019641; original complete channel20261016421/receiver20261016423 in declared new E21..30 namespace. Existing V/target observations reused. Not independent model seeds.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "reset AdamW; default W fixed all rows; FULL retains CENTER_UNITS/physicalclip5; adapters only otherwise",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "parent20+new10=total30;2220 new updates;2 student L128+1 frozen parent L128 eachstep=568320student+284160reference NN;initial/final source each50400;all7 prediction1176002;U/EMA0;bank284160 completeAs shared once globally",
+      "output_root": "PROJECT/runs/20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01/LORA_NoAs-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01/logs/LORA_NoAs-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_feature_adapters30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "LORA_NoAs-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/initialization.json",
+        "source/source_contract.json",
+        "source/step_metrics.jsonl.gz",
+        "source/initial_source_readout/complete.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ],
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "LORA_As-s2026092701",
+      "method": "LORA_As",
+      "purpose": "same-parent fixed-W LORA complete As",
+      "config_ref": "configs/LORA_As-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01/LORA_As-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261017431
+      },
+      "seed_notes": "Common parent2026092701, L stream20261019643, zero-output adapter private initialization20261019641; original complete channel20261016421/receiver20261016423 in declared new E21..30 namespace. Existing V/target observations reused. Not independent model seeds.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "reset AdamW; default W fixed all rows; FULL retains CENTER_UNITS/physicalclip5; adapters only otherwise",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "parent20+new10=total30;2220 new updates;2 student L128+1 frozen parent L128 eachstep=568320student+284160reference NN;initial/final source each50400;all7 prediction1176002;U/EMA0;bank284160 completeAs shared once globally",
+      "output_root": "PROJECT/runs/20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01/LORA_As-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01/logs/LORA_As-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_feature_adapters30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "LORA_As-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/initialization.json",
+        "source/source_contract.json",
+        "source/step_metrics.jsonl.gz",
+        "source/initial_source_readout/complete.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ],
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "TEMP_NoAs-s2026092701",
+      "method": "TEMP_NoAs",
+      "purpose": "same-parent fixed-W TEMP equal two clean CE NoAs control",
+      "config_ref": "configs/TEMP_NoAs-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01/TEMP_NoAs-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261017431
+      },
+      "seed_notes": "Common parent2026092701, L stream20261019643, zero-output adapter private initialization20261019641; original complete channel20261016421/receiver20261016423 in declared new E21..30 namespace. Existing V/target observations reused. Not independent model seeds.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "reset AdamW; default W fixed all rows; FULL retains CENTER_UNITS/physicalclip5; adapters only otherwise",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "parent20+new10=total30;2220 new updates;2 student L128+1 frozen parent L128 eachstep=568320student+284160reference NN;initial/final source each50400;all7 prediction1176002;U/EMA0;bank284160 completeAs shared once globally",
+      "output_root": "PROJECT/runs/20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01/TEMP_NoAs-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01/logs/TEMP_NoAs-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_feature_adapters30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "TEMP_NoAs-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/initialization.json",
+        "source/source_contract.json",
+        "source/step_metrics.jsonl.gz",
+        "source/initial_source_readout/complete.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ],
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "TEMP_As-s2026092701",
+      "method": "TEMP_As",
+      "purpose": "same-parent fixed-W TEMP complete As",
+      "config_ref": "configs/TEMP_As-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01/TEMP_As-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261017431
+      },
+      "seed_notes": "Common parent2026092701, L stream20261019643, zero-output adapter private initialization20261019641; original complete channel20261016421/receiver20261016423 in declared new E21..30 namespace. Existing V/target observations reused. Not independent model seeds.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "reset AdamW; default W fixed all rows; FULL retains CENTER_UNITS/physicalclip5; adapters only otherwise",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "parent20+new10=total30;2220 new updates;2 student L128+1 frozen parent L128 eachstep=568320student+284160reference NN;initial/final source each50400;all7 prediction1176002;U/EMA0;bank284160 completeAs shared once globally",
+      "output_root": "PROJECT/runs/20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01/TEMP_As-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01/logs/TEMP_As-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_feature_adapters30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "TEMP_As-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/initialization.json",
+        "source/source_contract.json",
+        "source/step_metrics.jsonl.gz",
+        "source/initial_source_readout/complete.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ],
+      "weight_decay": 0.0001
+    }
+  ],
+  "notes": [
+    "New attachment fixes W as first comparison; this is the explicit exception to generic default-head joint-training policy, no new/retrained class head.",
+    "User confirms new E10 is L-only; parent original training and healthy jobs remain unchanged.",
+    "Student eval with autograd, teacher eval/no_grad, raw ordinary input, CE smoothing0, keep weight1/tau1 only parent-correct L; all As positive CE.",
+    "TEMP rectangular A->rankDWk5->SiLU->B reads original block input before preGN/prePool merge; different from existing Cin-DW CRRA, no whitening/support gate/conditionalcode/delay.",
+    "All new rows use identical fixed L and actualAs stream, no model-dependent sampling; actual training IQ preserved, independent new-channel diagnostic distinct from held-out V.",
+    "NoAs duplicates raw second CE and matches total CE mass/two forwards, same head/keep/update budget.",
+    "Source fixed criteria before target scores; no rank/kernel/lambda/seed rescue. E50 not automatic. Raw IQ bypass and W-unfreeze deferred conditional new independent comparisons.",
+    "Model seed n1 cannot establish repeated clean gain; old exposed benchmark context retained."
+  ],
+  "registered_at": "2026-10-19T08:34:02+00:00"
+}
