@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-19T11:17:17+00:00
+更新：2026-10-19T11:42:41+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|132|
+|managed_run|133|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -35,8 +35,8 @@
 |[fasttrust](by_method/fasttrust.md)|26|
 |[source](by_method/source.md)|23|
 |[rff_physics](by_method/rff_physics.md)|20|
+|[truth_last](by_method/truth_last.md)|19|
 |[reference_response](by_method/reference_response.md)|19|
-|[truth_last](by_method/truth_last.md)|18|
 |[source_selected](by_method/source_selected.md)|18|
 |[source_only](by_method/source_only.md)|17|
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|17|
@@ -61,13 +61,13 @@
 |[benchmark_informed](by_method/benchmark_informed.md)|7|
 |[lightweight](by_method/lightweight.md)|6|
 |[repair](by_method/repair.md)|6|
+|[restoration](by_method/restoration.md)|6|
 |[core90](by_method/core90.md)|6|
 |[full](by_method/full.md)|5|
 |[zf](by_method/zf.md)|5|
 |[mmse](by_method/mmse.md)|5|
 |[relative_cfo](by_method/relative_cfo.md)|5|
 |[eight_seeds](by_method/eight_seeds.md)|5|
-|[restoration](by_method/restoration.md)|5|
 |[self_supervised](by_method/self_supervised.md)|5|
 |[final200](by_method/final200.md)|4|
 |[mirror_relation](by_method/mirror_relation.md)|4|
@@ -119,6 +119,7 @@
 |[synthetic](by_method/synthetic.md)|2|
 |[sequential_source_selection](by_method/sequential_source_selection.md)|2|
 |[completed_snapshot](by_method/completed_snapshot.md)|2|
+|[single_seed](by_method/single_seed.md)|2|
 |[deployment](by_method/deployment.md)|2|
 |[synthetic_no_query](by_method/synthetic_no_query.md)|2|
 |[FP32](by_method/FP32.md)|2|
@@ -129,6 +130,7 @@
 |[default_head](by_method/default_head.md)|2|
 |[full_residual](by_method/full_residual.md)|2|
 |[identity_assisted_selection](by_method/identity_assisted_selection.md)|2|
+|[frozen_coarse](by_method/frozen_coarse.md)|2|
 |[three_seed](by_method/three_seed.md)|2|
 |[nm fdu](by_method/nm_fdu.md)|2|
 |[protonet](by_method/protonet.md)|2|
@@ -204,7 +206,6 @@
 |[r5](by_method/r5.md)|1|
 |[four_seed](by_method/four_seed.md)|1|
 |[fixed_completed5](by_method/fixed_completed5.md)|1|
-|[single_seed](by_method/single_seed.md)|1|
 |[temporal_bank](by_method/temporal_bank.md)|1|
 |[cosine](by_method/cosine.md)|1|
 |[fixed_controls](by_method/fixed_controls.md)|1|
@@ -218,9 +219,11 @@
 |[diffusion](by_method/diffusion.md)|1|
 |[flow_matching](by_method/flow_matching.md)|1|
 |[multiscale_condition](by_method/multiscale_condition.md)|1|
+|[formal_received](by_method/formal_received.md)|1|
+|[zero_update](by_method/zero_update.md)|1|
+|[full168000](by_method/full168000.md)|1|
 |[observability](by_method/observability.md)|1|
 |[waveform_diagnostic](by_method/waveform_diagnostic.md)|1|
-|[frozen_coarse](by_method/frozen_coarse.md)|1|
 |[residual_refinement](by_method/residual_refinement.md)|1|
 |[fixed_source_scale](by_method/fixed_source_scale.md)|1|
 |[technical_scoring_recovery](by_method/technical_scoring_recovery.md)|1|

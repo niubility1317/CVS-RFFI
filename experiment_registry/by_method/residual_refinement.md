@@ -6,4 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|冻结粗恢复后的恢复残差修正|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-restoration-residual-refinement-selfsup-m3-r03/report.md)|
+|冻结粗恢复后的残差修正结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-restoration-residual-refinement-selfsup-m3-r03/report.md)|

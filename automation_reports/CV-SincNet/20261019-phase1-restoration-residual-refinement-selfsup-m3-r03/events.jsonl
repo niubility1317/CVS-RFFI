@@ -5,3 +5,7 @@
 {"at": "2026-10-19T11:17:16+00:00", "status": "QUEUED", "note": "等待共享20轮源缓存及一次源尺度估计；本行尚未启动GPU训练。", "evidence": ["experiment.json"], "row_id": "residual_deterministic"}
 {"at": "2026-10-19T11:17:16+00:00", "status": "QUEUED", "note": "等待共享20轮源缓存及一次源尺度估计；本行尚未启动GPU训练。", "evidence": ["experiment.json"], "row_id": "residual_diffusion"}
 {"at": "2026-10-19T11:17:16+00:00", "status": "QUEUED", "note": "等待共享20轮源缓存及一次源尺度估计；本行尚未启动GPU训练。", "evidence": ["experiment.json"], "row_id": "residual_flow"}
+{"at": "2026-10-19T11:42:40+00:00", "status": "ANALYZED", "note": "E20与双路源独立评分完成；仅源选中确定性行完成固定目标确认，其他两行保留源证伪。", "evidence": ["report.md", "results/summary.json"], "row_id": "residual_deterministic"}
+{"at": "2026-10-19T11:42:40+00:00", "status": "ANALYZED", "note": "E20与双路源独立评分完成；仅源选中确定性行完成固定目标确认，其他两行保留源证伪。", "evidence": ["report.md", "results/summary.json"], "row_id": "residual_diffusion"}
+{"at": "2026-10-19T11:42:40+00:00", "status": "ANALYZED", "note": "E20与双路源独立评分完成；仅源选中确定性行完成固定目标确认，其他两行保留源证伪。", "evidence": ["report.md", "results/summary.json"], "row_id": "residual_flow"}
+{"at": "2026-10-19T11:42:40+00:00", "status": "ANALYZED", "note": "三行完成且原进程自然退出；完整身份目标未完成，不以平均改善替代TX忠实证明。", "evidence": ["report.md", "results/summary.json"], "row_id": null}
