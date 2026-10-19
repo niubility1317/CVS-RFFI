@@ -29,11 +29,13 @@ N607池0/1/5/7择有容量卡，最多两条本run worker，每卡一条，全ow
 |---|---|---|---|---|---|---|
 |A18-01|R3/R17源机制|current锚点三次2CG，当前状态可累积|models.py|verified|实际锚点与CG次数/梯度本地检查通过|同容量同输入|
 |A18-02|容量/计算归因|三Core末端6CG对照|models.py|verified|中间无CG，三神经前向，参数与R17相同检查通过|非同FLOPs|
-|A18-03|无监督与来源|全L/U、0TX/F/target、仅R07父，新prior scratch|runtime.py/training.py|pending|schema/来源负测及实际曝光|旧R17 epoch0只比较|
+|A18-03|无监督与来源|全L/U、0TX/F/target、仅R07父，新prior scratch|runtime.py/training.py|verified|schema/来源负测及实际曝光|旧R17 epoch0只比较|
 |A18-04|身份保真|四源参考护栏、固定排序、未选target阻断|evaluation.py|verified|R17参考非法target训练/读出角色/最差TX/排序负测通过|V标签选择单独披露|
-|A18-05|可用checkpoint|新schema全状态、原F默认头、真实无query入口|runtime.py/controller.py|pending|新旧权重与epoch0匹配、真实样本输出及各Core梯度|不拟合分类头|
-|A18-06|安全发布|Git/一次P0P1/不可覆盖/容量锁/原进程核实|controller.py/runner.py|pending|本地验证和N607实际poststate|不干扰其他owner|
-|A18-07|完整证据|source全7、条件正式全7、TX/RX/day/损伤/成本|run报告|pending|完整日志、先预测后truth与已有R17对照复用|源成绩不代替正式目标|
+|A18-05|可用checkpoint|新schema全状态、原F默认头、真实无query入口|runtime.py/controller.py|verified|新旧权重与epoch0匹配、真实样本输出及各Core梯度|不拟合分类头|
+|A18-06|安全发布|Git/一次P0P1/不可覆盖/容量锁/原进程核实|controller.py/runner.py|verified|本地验证和N607实际poststate|不干扰其他owner|
+|A18-07|完整证据|source全7、条件正式全7、TX/RX/day/损伤/成本|run报告|verified|完整日志、先预测后truth与已有R17对照复用|源成绩不代替正式目标|
 |A18-08|真实性边界|新oracle反事实/多seed/独立物理族/逐细节真伪|后续确认|deferred|已有R14/R17边界，当前不宣称|不增加本轮发布门槛|
 
 发布前验证：`python -X utf8 -m pytest tests/test_pamf_unrolled_restore.py tests/test_pamf_iterative_restore.py -q` 共 33 项通过。一次独立 P0/P1 审查发现目标评分收尾错误地把参数对象交给验收函数；新增回归先复现 TypeError，修复为读取已完成的目标摘要并保存 goal_assessment，定向复核确认解决，无其余 P0/P1。N607 普通账户预检通过，复用既有合法缓存及源参考，未打开 IQ/TX/F/target 数据。实际训练、真实 checkpoint 入口及发布后状态尚待执行。
+
+实际状态：7 verified、1 deferred、0 rejected/blocked。SOURCE_NOT_QUALIFIED，选定 None。本轮没有新正式目标集成绩，持续目标尚未证实。训练全量曝光、0TX/F/target、实际checkpoint入口、源七视图、全部条件工作和运行退出已核实。最高剩余风险为单seed及逐细节身份真实性；[完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-iterative-controls-selfsup-s2026092701-m2-r18/report.md)。

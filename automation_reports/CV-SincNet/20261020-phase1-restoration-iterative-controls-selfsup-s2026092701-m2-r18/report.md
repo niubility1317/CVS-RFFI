@@ -1,7 +1,20 @@
 # 当前估计锚点与末端观测求解 R18
 
-状态：LOCAL_VERIFIED，未发布。方法 commit `e059c5815eed9121f592795f026b9e2536b3035f` 已推送并独立核对远端 OID；33 项聚焦检查、compile/help、一次 P0/P1 审查及唯一 P1 定向复核、N607 普通账户预检通过。真实 checkpoint 无 query 入口检查在控制器第一步执行，PASS 即自动继续。
+状态：**ANALYZED / SOURCE_NOT_QUALIFIED**。本轮没有新正式目标集成绩，持续目标尚未证实。 固定 40 轮新增训练、两行全部源评分及登记的有条件工作完成，控制器和本 run worker 均自然退出。方法 `e059c5815eed9121f592795f026b9e2536b3035f`，没有按目标反馈改变结构、阈值、排序或选择性重跑。
 
+
+
+核心结果：两种改动都降低了六场景平均 IQ NMSE，且提高源 low/mid urban 总准确率，但均损伤 TX20-19，未通过原身份保护条件。相对 R17，current_anchor/terminal_dc 的平均 NMSE 分别下降 2.4597%/6.1582%，low urban 从 86.8333% 升至 88.0556%/88.3333%，mid urban 从 91.4444% 升至 92.6111%/92.6667%。但 TX20-19 的 low urban 准确率从 83.9590% 降至 79.5222%/77.1331%，分别下降 4.4369/6.8259 pp，超过预登记最多下降 1 pp 的条件。两者虽有平均收益，仍均 SOURCE_NOT_QUALIFIED；实际 target worker、target prediction 和 target truth 评分均为 0。
+
+这组负结果说明“当前锚点累积”与“末端求解”尚不能作为忠实恢复的合格替代；不能仅按平均改善晋级。以上是源域统计关联，不证明混淆由某种具体 RF 指纹成分造成，也没有按 TX 设置推理分支或训练权重。
+
+|source low urban 聚合计数|R17|current_anchor|terminal_dc|
+|---|---:|---:|---:|
+|TX20-19 正确/293|246|233|226|
+|TX20-19 →14-7|29|38|40|
+|TX14-7 →20-19|61|52|48|
+
+各 Core 的零初始化输出投影训练后范数为 current_anchor 的 0.8751/0.7806/0.9325、terminal_dc 的 0.7331/0.7423/1.0520，均有梯度驱动的参数变化；不能把参数变化本身解释成每一步都有正向身份贡献。取回权重后的只读参数统计曾出现一次 requires_grad 张量转标量的提示，没有反向传播或参数更新；辅助统计已改用 detach，完整远端训练/预测日志仍为 0 warning。
 
 完整目标保持：独立恢复网络输出一份 IQ，原 PAMF 的 FFT/PA/统计/时域分支由该 IQ 一致计算；合法 L/U 全量、恢复训练不读 TX/F、原 F50/默认头冻结。正式 low urban≥70%，其余五个受损场景分别距同 F/seed 原始 raw clean≤5 pp；恢复 clean 损伤单列。此轮不是达标声明。
 
@@ -28,21 +41,62 @@ R17来源须核对方法commit、原source决策、unroll_unshared训练完成�
 
 N607池0/1/5/7择有容量卡，最多两条本run worker，每卡一条，全owner cap2/free≥12GB；共享capacity4锁到CUDA PID可见。独立不可覆盖root/release、唯一owner、普通账户。入口一次真实2Ls、新旧checkpoint/原F/各Core梯度/实际CG位置检查，PASS立即继续。技术失败保留产物，失败行/pending停止推进，健康任务继续，不自动重试；不以低成绩停机。
 
-|ID|来源|要求|目标文件|状态|验证|说明|
+
+
+以下均为 1800 条 source V 的百分比，不能代替正式目标集成绩。原 F50 seed2701/defaulthead；每个源视图的 TX/RX/day 分组计数、accuracy、Macro-F1、混淆矩阵及 repair/damage 完整保留于[汇总](summary.json)和[逐组数据](row_metrics.csv)。
+
+|源场景|native_reference|fft_reference|single_shot|unrolled_reference|current_anchor|terminal_dc|
 |---|---|---|---|---|---|---|
-|A18-01|R3/R17源机制|current锚点三次2CG，当前状态可累积|models.py|verified|实际锚点与CG次数/梯度本地检查通过|同容量同输入|
-|A18-02|容量/计算归因|三Core末端6CG对照|models.py|verified|中间无CG，三神经前向，参数与R17相同检查通过|非同FLOPs|
-|A18-03|无监督与来源|全L/U、0TX/F/target、仅R07父，新prior scratch|runtime.py/training.py|pending|schema/来源负测及实际曝光|旧R17 epoch0只比较|
-|A18-04|身份保真|四源参考护栏、固定排序、未选target阻断|evaluation.py|verified|R17参考非法target训练/读出角色/最差TX/排序负测通过|V标签选择单独披露|
-|A18-05|可用checkpoint|新schema全状态、原F默认头、真实无query入口|runtime.py/controller.py|pending|新旧权重与epoch0匹配、真实样本输出及各Core梯度|不拟合分类头|
-|A18-06|安全发布|Git/一次P0P1/不可覆盖/容量锁/原进程核实|controller.py/runner.py|pending|本地验证和N607实际poststate|不干扰其他owner|
-|A18-07|完整证据|source全7、条件正式全7、TX/RX/day/损伤/成本|run报告|pending|完整日志、先预测后truth与已有R17对照复用|源成绩不代替正式目标|
-|A18-08|真实性边界|新oracle反事实/多seed/独立物理族/逐细节真伪|后续确认|deferred|已有R14/R17边界，当前不宣称|不增加本轮发布门槛|
+|clean|98.4444|98.4444|98.4444|98.4444|98.4444|98.4444|
+|高仰角郊区|98.0000|97.9444|97.8333|97.8333|98.0000|98.1111|
+|中仰角郊区|96.6667|96.6667|96.9444|96.7778|96.6667|97.2222|
+|低仰角郊区|95.9444|96.0556|95.9444|95.9444|96.1667|96.6667|
+|高仰角城区|97.0000|96.8889|97.2222|97.0000|97.1111|97.5000|
+|中仰角城区|89.8889|90.1667|90.7222|91.4444|92.6111|92.6667|
+|低仰角城区|82.1667|82.5000|84.3889|86.8333|88.0556|88.3333|
 
-发布前验证：`python -X utf8 -m pytest tests/test_pamf_unrolled_restore.py tests/test_pamf_iterative_restore.py -q` 共 33 项通过。一次独立 P0/P1 审查发现目标评分收尾错误地把参数对象交给验收函数；新增回归先复现 TypeError，修复为读取已完成的目标摘要并保存 goal_assessment，定向复核确认解决，无其余 P0/P1。N607 普通账户预检通过，复用既有合法缓存及源参考，未打开 IQ/TX/F/target 数据。实际训练、真实 checkpoint 入口及发布后状态尚待执行。
+|源 IQ NMSE|native_reference|fft_reference|single_shot|unrolled_reference|current_anchor|terminal_dc|
+|---|---|---|---|---|---|---|
+|clean|0.00009617|0.00009617|0.00009617|0.00009617|0.00009617|0.00009617|
+|高仰角郊区|0.01046707|0.01042492|0.01090087|0.00898618|0.00954325|0.00886190|
+|中仰角郊区|0.01539733|0.01535856|0.01554777|0.01297654|0.01298029|0.01230561|
+|低仰角郊区|0.01939996|0.01926939|0.01919486|0.01615114|0.01587638|0.01513356|
+|高仰角城区|0.01474365|0.01460483|0.01465043|0.01238056|0.01262708|0.01180888|
+|中仰角城区|0.04131214|0.04097974|0.03884036|0.03438081|0.03325678|0.03200176|
+|低仰角城区|0.06428189|0.06342117|0.05999025|0.05259345|0.04980353|0.04889132|
 
+|候选|参考组合|波形|身份|通过|low增益pp|mid增益pp|最差TX差pp|
+|---|---|---|---|---|---|---|---|
+|current_anchor|R16/native|True|False|False|+3.6667|+1.8889|-3.4130|
+|current_anchor|R15/native|True|True|True|+5.5556|+2.4444|+2.5559|
+|current_anchor|R17/native|True|False|False|+1.2222|+1.1667|-4.4369|
+|terminal_dc|R16/native|True|False|False|+3.9444|+1.9444|-5.8020|
+|terminal_dc|R15/native|True|False|False|+5.8333|+2.5000|+1.9169|
+|terminal_dc|R17/native|True|False|False|+1.5000|+1.2222|-6.8259|
 
-完整矩阵、命令、环境/CWD、路径、GPU和停止规则见[登记](experiment.json)，长期追踪见[设计适配记录](../../../docs/PAMF_ITERATIVE_RESTORE_R18_20261020.md)。
+固定合格排序为 `[]`，选定 `None`。四个参考同时保护；不以平均 NMSE 替代最差 TX 条件。
 
+|源 low urban TX|native_reference|fft_reference|single_shot|unrolled_reference|current_anchor|terminal_dc|
+|---|---|---|---|---|---|---|
+|14-10|74.7508|77.4086|77.0764|78.0731|82.7243|85.7143|
+|14-7|70.2341|72.2408|69.2308|73.5786|77.9264|77.5920|
+|20-15|83.9161|85.3147|87.0629|91.9580|92.6573|94.4056|
+|20-19|78.4983|71.3311|82.9352|83.9590|79.5222|77.1331|
+|6-15|89.9351|92.5325|94.4805|95.4545|97.0779|97.4026|
+|8-20|94.8882|95.2077|94.8882|97.4441|97.7636|97.1246|
 
-发布后状态：VERIFIED。单次归档传输 SHA 比对、远端编译、真实两条源样本检查通过。新旧完整初始权重匹配，两个新结构完整初始输出允许不同，梯度仅进入新 prior。控制器及两条 worker 的 PID/CWD/参数/GPU 和日志增长已核实；实际两张容量合规 GPU 各一条，未干扰其他 owner。无校准、无 TX/F/target 训练。逐行源评分及有条件正式确认继续自动执行。
+两候选均未通过全部四源参考条件，因此本 run 保持 **0 target**，没有启动目标预测或 truth 评分。源域结果不代替正式 70%/5 pp 目标；没有放宽条件或选择性重跑。
+
+|行|总参数/可训练参数|原训练秒数|batch1中位数/P90 ms|
+|---|---|---|---|
+|unrolled_reference|4665073/2507526|1668.396|44.028/45.129|
+|current_anchor|4665073/2507526|1662.929|41.495/42.441|
+|terminal_dc|4665073/2507526|1646.688|40.514/41.112|
+
+两新网络各 2507526 个可训练参数，三次 Core 前向和总六次 CG；求解器重启/准备成本不同，不宣称相同 FLOPs。batch1 含冻结上下文，固定源低 urban 16 样本、两次预热，所在卡与其他负载不同，不是严格同卡速度测量。新 prior 各 E20，组件累计 E60；原 F50 E50 和历史参考成本另列。
+
+完整日志解析：新增40轮、三参考历史60轮，135行，致命错误0，warning 0。每行4940更新、L126000/U1134000曝光，全部真实记录参与，恢复训练 TX/F/target读取均为0。33项本地聚焦检查、compile/help、一次独立P0/P1及唯一问题定向复核、N607预检、归档单次SHA比对、远端编译、真实checkpoint/原F50/每Core梯度/CG位置入口、PID/CWD/argv/GPU及日志增长均 VERIFIED。新权重已取回本机，从登记工作树严格加载并连接原 F/defaulthead，两条真实 L_s 输出有限，逐包与合批一致性检查通过；没有参数更新或标签读取。
+
+入口梯度范数 `{'current_anchor': [2.580159567602186e-16, 2.626562229973879e-13, 4.0631793762901935e-10], 'terminal_dc': [7.232596327400032e-10, 7.232596327400032e-10, 6.557894366432393e-10]}` 仅证明连通性；很小的初始梯度不证明各学习步都有足够训练贡献。汇总 stage_parameter_changes 记录了各 Core 相对初始权重的变化，以及零初始化输出投影的最终范数；后者非零能排除“只有 weight decay 导致变化”，但不等于逐步身份贡献消融。最终性能和同TX统计改善不构成逐采样点真实性保证。单seed、同信道引擎代理、已暴露基准和未完成的新oracle反事实仍是边界。此轮为报告R3接收链机制适配，不是报告梯度公式的逐式复现。
+
+验证命令：`python -X utf8 -m pytest tests/test_pamf_unrolled_restore.py tests/test_pamf_iterative_restore.py -q`、`python -X utf8 -m compileall -q experiments/pamf_iterative_restore`、`python -X utf8 -m experiments.pamf_iterative_restore.runner --help`。矩阵、命令、环境/CWD、路径、GPU、停止规则见[登记](experiment.json)，[追踪记录](../../../docs/PAMF_ITERATIVE_RESTORE_R18_20261020.md)为7 verified、1 deferred、0 rejected/blocked。持续目标仍保持 active，权重、数据与原始日志不提交。

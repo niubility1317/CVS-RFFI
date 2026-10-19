@@ -159,3 +159,6 @@ R16 IQ-only严格配对消融完成：SOURCE_NOT_QUALIFIED。两新prior各20/49
 
 
 R17 三步物理展开完成：SOURCE_QUALIFIED_TARGET_ANALYZED，选定 unroll_unshared。全L/U、0TX/F训练，两新prior各20/4940、三次Core与3×2CG。源低urban单次/共享/不共享为 84.3889% / 86.3889% / 86.8333%。选定展开与固定单次正式两行自动确认完成。正式选定展开 low urban为67.2167%，70%条件未通过；其他五场景有2/5达到原rawclean−5pp。数值总目标尚未达到，完整身份真实性及稳定性边界仍须保留。[完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/report.md)。70%/其余五场景距原始clean≤5pp目标保持，source不替代正式。
+
+
+R18 当前锚点与末端CG比较：SOURCE_NOT_QUALIFIED，选定 None。各新prior20/4940、全63000L/U、0TX/F/target训练，四固定源参考保护。本轮没有新正式目标集成绩，持续目标尚未证实。[完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-iterative-controls-selfsup-s2026092701-m2-r18/report.md)。持续目标保持active。
