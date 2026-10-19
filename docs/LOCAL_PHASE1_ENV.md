@@ -31,3 +31,9 @@
 缓存的 domain 保持原生加载器的原始编号；训练时继续使用缓存 manifest 中的 `domain_label_map` 映射到连续域编号。它不改变 RX/day 分组。源训练进程只加载源缓存，不打开 `target/` 或 `scoring/`。
 
 本地与 N607 的 PyTorch 版本可能不同。涉及复数梯度、临界点、数值精度及序列化时，分别验证对应行为；不能仅凭本地检查通过断言远端兼容，也不能预先承诺本地比 N607 更快。
+
+## 后台任务的控制台生命周期
+
+后台长任务使用 profile 中的 base_python 直接入口，与已配置 venv 共享同套包和 CUDA 运行库。控制器和每个子进程都使用 CREATE_NO_WINDOW，避免 venv 重定向器产生额外控制台；前台使用入口保持可用。不能只给最外层启动器设置 DETACHED_PROCESS。
+
+当前本机路径以忽略目录中的 profile 为准。显式设置 run 自己的 TORCHINDUCTOR_CACHE_DIR，使后台环境缺少用户名变量时也能正常构造优化器。启动后检查实际进程、CWD、argv、GPU及日志增长；进程消失或控制台关闭事件必须保留产物并先查明原因。

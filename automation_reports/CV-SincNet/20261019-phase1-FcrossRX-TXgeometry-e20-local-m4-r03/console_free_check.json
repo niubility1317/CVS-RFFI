@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "elapsed_seconds": 90,
+  "console_present": false,
+  "parent_launcher_exited_before_probe_completed": true,
+  "probe_completed_normally": true,
+  "in_OS_job": true,
+  "interpreter": "configured base_python shared by local Phase1 venv",
+  "limitation": "No claim of detachment from every Windows job or guarantee against machine shutdown; validates observed console lifecycle fix"
+}

@@ -1,0 +1,18 @@
+{
+  "status": "FAILED",
+  "run_id": "20261019-phase1-FcrossRX-TXgeometry-e20-local-m4-r02",
+  "layer": "Windows console/lifecycle",
+  "terminal_evidence": "forrtl error200 program aborting due to window-CLOSE event; controller and all matching worker processes absent",
+  "recorded_completed_epochs": 10,
+  "recorded_optimizer_steps": 2220,
+  "possible_unlogged_partial_next_epoch_updates": "0..221; exact count unavailable because no final checkpoint",
+  "source_frozen": false,
+  "final_checkpoint_exists": false,
+  "target_IQ_reads": 0,
+  "truth_reads": 0,
+  "nonfinite_failure": false,
+  "artifacts_preserved": true,
+  "replacement": "20261019-phase1-FcrossRX-TXgeometry-e20-local-m4-r03",
+  "recorded_completed_epoch_seconds": 295.3209148001042,
+  "recorded_L_exposure_lower_bound": 284160
+}

@@ -25,7 +25,8 @@ def run(args):
    if role=='source':command+=['--commit',args.commit]
    child_env=dict(env,CUDA_VISIBLE_DEVICES='' if role=='score' else '0');logpath=base/(row['row_id']+'-'+role+'.log')
    with logpath.open('x',encoding='utf-8') as stream:
-    p=subprocess.Popen(command,cwd=d.ROOT,env=child_env,stdout=stream,stderr=subprocess.STDOUT,stdin=subprocess.DEVNULL)
+    flags=(subprocess.CREATE_NO_WINDOW|subprocess.CREATE_NEW_PROCESS_GROUP|subprocess.CREATE_BREAKAWAY_FROM_JOB) if os.name=='nt' else 0
+    p=subprocess.Popen(command,cwd=d.ROOT,env=child_env,stdout=stream,stderr=subprocess.STDOUT,stdin=subprocess.DEVNULL,creationflags=flags)
     evidence=dict(pid=p.pid,role=role,row_id=row['row_id'],cwd=str(d.ROOT),argv=command,gpu=None if role=='score' else 0,log=str(logpath))
     d.write(base/(row['row_id']+'-'+role+'-start.json'),evidence);update(base/'progress.json',dict(status='RUNNING',**evidence));print(json.dumps(dict(event='CHILD_STARTED',**evidence)),flush=True)
     code=p.wait()
