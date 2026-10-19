@@ -1,6 +1,6 @@
 # 原F指导恢复的参数梯度范数上限
 
-状态：PLANNED。目标仍为完整目标low urban≥70%，其余五practical接近原F clean85.113889%（Agent暂采用≤2个百分点口径）；分别报告同物理clean的波形差距与冻结原默认头真实TX识别/净纠错。当前最好66.384127%，用户完整目标尚未达成。
+状态：RUNNING / VERIFIED。目标仍为完整目标low urban≥70%，其余五practical接近原F clean85.113889%（Agent暂采用≤2个百分点口径）；分别报告同物理clean的波形差距与冻结原默认头真实TX识别/净纠错。当前最好66.384127%，用户完整目标尚未达成。
 
 源依据为既有scalar_sum训练E5/1235/630000IQ的累计identity/wave输出梯度RMS比15.426531，仅为源训练聚合统计，不是逐step/参数比或因果证明。网络Jacobian会改变任务相对梯度，因此输出空间限制不等于参数空间限制。本轮独立检验参数坐标及分组，保持两项损失、原数据/参数/预算，不因当前residual_flow新目标准确率调整方案；source_gradient_evidence.json复用已有聚合证据，0新模型前向/更新/目标读取。
 
@@ -25,3 +25,18 @@ source V原1800/原F1/七视图仅诊断，无早停/资格/NMSE gate/排序/状
 一次N607普通账号预检VERIFIED，新run/release不存在、原R03合法，GPU4/5各24124MB空闲无PID；当前residual_flow在GPU6/7实际target PID/CWD/cmd LIVE并保留。每卡1本owner、allowner<2，重叠最多4本owner GPUworkers，source≥18GB、target≥12GB，CPU2线程/scorer最多1；新source评分先等residual_flow complete/failure，再与本run target共用score.lock，实际source退出才同卡target。停止规则：非法输入/权限/代码、输出冲突、非有限/OOM、预算/梯度执行或预测失败时保留并技术失败该行，无自动重试，健康行继续，不停止/修改他人任务。
 
 一个实际代码配置commit、不可覆盖root、一次归档本地/远端SHA比较及remotecompile/import、真实smoke、PID/CWD/cmd/GPU/日志增长证据随后核实。命令、环境/CWD、矩阵、路径、资源、停止规则与产物见experiment.json。数据、权重、逐样本预测、日志及私有机器状态不进Git。另一用户对话未被发送指令或修改。
+
+
+## 实际发布与首轮核验
+
+方法commit `fd9c8fee5370f2b3ca7a2744862e99efb59968fd`已推送并独立核实远端OID，一次归档本地/远端SHA比较及远端compile/import均PASS。实际R03/三F/四Ls no-query smoke PASS：两臂完整初始IQ/state等于原R03，coarse/correction合并梯度及原头到IQ梯度有效，F无梯度，新checkpoint往返一致，0V/TX/target/optimizer更新。两臂实际2140840参数，无新增模块；PASS立即训练。
+
+两条实际source worker的PID/CWD/完整命令/GPU4/5及持续日志增长已核实，三F参考缓存各63000条。实际参数组/更新步约束计数：
+
+- parameter_global：1/10轮、247/2470步，参数梯度合并247次、IQ126000条。
+  all：实际cap 247步、冲突28步，平均scale0.0546821691、范围0.0175209232至0.287018746，wave/identity/identityafter norm²总和14.168569/4694.36999/14.1685689。
+- parameter_parts：1/10轮、247/2470步，参数梯度合并247次、IQ126000条。
+  coarse：实际cap 247步、冲突22步，平均scale0.0564548573、范围0.0173563622至0.295902342，wave/identity/identityafter norm²总和14.7636229/4585.33089/14.7636229。
+  correction：实际cap 247步、冲突25步，平均scale0.0371360714、范围0.0164287072至0.0674817935，wave/identity/identityafter norm²总和0.170577067/144.187353/0.170577069。
+
+首轮核验时尚无新源V或目标准确率。实际缩放不代表性能改善或参数步波形保证；两臂固定E10后分别自动完整目标测试，source V不作资格筛选，用户目标仍未达成。最终状态与结果以完整结果节为准。前一流修正的GPU6/7目标进程保留，CPU评分等待其完成后执行；复用另一个已完成的per_frame_cap固定控制，不重复训练/预测。

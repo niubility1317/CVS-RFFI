@@ -194,8 +194,8 @@ source误差分解显示精修在多个有效频带增加波形误差，末端ti
 整批范数上限：目标low urban 65.755357%，clean 84.939286%。逐帧范数上限：目标low urban 66.384127%，clean 85.061111%。两行均完成原预登记E10/2470、168000物理目标clean+六practical及三原头独立truth-last评分。没有source分数筛选、目标反馈或选择性重跑，全部负结果保留。[完整逐环境/逐F/波形/净纠错/成本结果](../../automation_reports/CV-SincNet/20261020-phase1-restoration-gradient-balance-source-s2026092701-m2-r01/report.md)。本轮仍未达到用户完整目标，不由新增结构/训练检查推断性能。
 
 
-## 当前参数梯度固定比较（实现完成，待发布）
+## 当前参数梯度固定比较（两臂实际训练中）
 
 依据已有源输出梯度RMS比15.426531及Jacobian不保持任务范数的限制，新增`pamf_parameter_balance`全参数与coarse/correction分组参数cap两行。仍从原合法R03完整相同state开始、2140840参数、jointE10/2470与原数据/路由/seed/三冻结F loss保持，任务mean loss分别求参数梯度、各组s=min(1,sqrt(w2/i2))、detached合并回p.grad，再clip1/AdamW，无二次batch除法。记录每更新步/组的scale/conflict/norms/dot；原始Euclidean wave方向性质不保证AdamW或最终效果，不称GradNorm/PCGrad。
 
-复用既有gradient_balance/per_frame_cap作为operator结构对应的output-space控制，不按分数选、不重训/预测/初始化；两新行反传工作不同于该控制，成本如实报告。60项检查及一次独立P0/P1审查PASS；新GPU4/5一次预检空闲，GPU6/7流修正target存活保留。launcher首步真实R03/三F/四Ls no-query smoke PASS立即训练；sourceV只诊断，两固定最终E10都自动完整168000/七视图/三原头独立truth-last，新CPU评分等流修正run终态。尚无本轮新性能，用户完整目标未完成。[最小登记](../../automation_reports/CV-SincNet/20261020-phase1-restoration-parameter-balance-source-s2026092701-m2-r01/report.md)。
+复用既有gradient_balance/per_frame_cap作为operator结构对应的output-space控制，不按分数选、不重训/预测/初始化；两新行反传工作不同于该控制，成本如实报告。60项检查及一次独立P0/P1审查PASS；新GPU4/5一次预检空闲，GPU6/7流修正target存活保留。launcher首步真实R03/三F/四Ls no-query smoke PASS立即训练；sourceV只诊断，两固定最终E10都自动完整168000/七视图/三原头独立truth-last，新CPU评分等流修正run终态。方法commit`fd9c8fee5370f2b3ca7a2744862e99efb59968fd`已实际发布，归档比较/编译、真实R03/三F/四Ls smoke均PASS；GPU4/5两条source worker的PID/CWD/cmd/GPU/日志增长和实际参数组/step cap计数已核实。尚无本轮新模型表现，参数梯度候选尚未完成目标验证。[最小登记](../../automation_reports/CV-SincNet/20261020-phase1-restoration-parameter-balance-source-s2026092701-m2-r01/report.md)。

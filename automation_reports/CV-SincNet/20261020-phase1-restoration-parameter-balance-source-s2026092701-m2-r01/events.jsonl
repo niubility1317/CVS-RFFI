@@ -1,1 +1,4 @@
 {"at": "2026-10-19T23:44:48+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T23:49:27+00:00", "status": "RUNNING", "note": "VERIFIED realR03/3Fsmoke,PID/CWD/cmd/GPU/loggrowth and actual parameter-group cap/scale counts;0target", "evidence": ["report.md", "experiment.json"], "row_id": "parameter_global"}
+{"at": "2026-10-19T23:49:27+00:00", "status": "RUNNING", "note": "VERIFIED realR03/3Fsmoke,PID/CWD/cmd/GPU/loggrowth and actual parameter-group cap/scale counts;0target", "evidence": ["report.md", "experiment.json"], "row_id": "parameter_parts"}
+{"at": "2026-10-19T23:49:27+00:00", "status": "RUNNING", "note": "Both parameter-cap rows live onGPU4/5;previousGPU6/7targetpreserved;reuse fixed output per-frame control;CPUscorewaitspreviouscomplete", "evidence": ["report.md", "experiment.json"], "row_id": null}
