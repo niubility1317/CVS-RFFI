@@ -41,3 +41,5 @@
 代码/config commit f4fe173d83245e5ac8a7769d14cacbdf8260dc5a 已push且远端OID独立核实。命令 CVS-RFFI/python -u experiments/cvs_feature_head_joint30/runner.py，CWD=PROJECT/releases/cvs_F_featureHeadJoint_E30_20261019_r01，普通N607既有Torch2.1/FP32/TF32off/CPU2；输出=PROJECT/runs/20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01，所有owner每GPU最多2、free≥12000MB，默认首步真实CP8NN通过即继续复用bank和六行训练。逐row配置/路径/stop rule/预期产物见experiment.json。
 
 启动证据见launch_evidence.json：单归档传输与远端compile VERIFIED；六行复用既有实际As bank，新增物理模拟0。没有据运行状态声称性能目标已完成。
+
+源端完整回放与事前固定结论已保存，见source_closure.md；本分析尚未读取正式分数。

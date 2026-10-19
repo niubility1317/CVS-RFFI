@@ -1,0 +1,87 @@
+{
+  "status": "VERIFIED",
+  "NN": 14,
+  "physical_L_samples": 1,
+  "observations": [
+    "same saved raw L",
+    "same saved first actual training As"
+  ],
+  "fit_updates": 0,
+  "query_read": false,
+  "formal_scores_read": false,
+  "new_physical_simulations": 0,
+  "rows": {
+    "FULL_NoAs": {
+      "joint160_shape": [
+        2,
+        160
+      ],
+      "clean_and_actual_As_joint_L2_change": [
+        4.392297744750977,
+        4.339801788330078
+      ],
+      "features_changed": true,
+      "default_head_from_checkpoint": true
+    },
+    "FULL_As": {
+      "joint160_shape": [
+        2,
+        160
+      ],
+      "clean_and_actual_As_joint_L2_change": [
+        6.173638820648193,
+        6.53453254699707
+      ],
+      "features_changed": true,
+      "default_head_from_checkpoint": true
+    },
+    "LORA_NoAs": {
+      "joint160_shape": [
+        2,
+        160
+      ],
+      "clean_and_actual_As_joint_L2_change": [
+        0.5243832468986511,
+        0.5549272894859314
+      ],
+      "features_changed": true,
+      "default_head_from_checkpoint": true
+    },
+    "LORA_As": {
+      "joint160_shape": [
+        2,
+        160
+      ],
+      "clean_and_actual_As_joint_L2_change": [
+        1.2567837238311768,
+        1.2284661531448364
+      ],
+      "features_changed": true,
+      "default_head_from_checkpoint": true
+    },
+    "TEMP_NoAs": {
+      "joint160_shape": [
+        2,
+        160
+      ],
+      "clean_and_actual_As_joint_L2_change": [
+        0.49040719866752625,
+        0.4702790379524231
+      ],
+      "features_changed": true,
+      "default_head_from_checkpoint": true
+    },
+    "TEMP_As": {
+      "joint160_shape": [
+        2,
+        160
+      ],
+      "clean_and_actual_As_joint_L2_change": [
+        1.274791955947876,
+        1.3924345970153809
+      ],
+      "features_changed": true,
+      "default_head_from_checkpoint": true
+    }
+  }
+}
