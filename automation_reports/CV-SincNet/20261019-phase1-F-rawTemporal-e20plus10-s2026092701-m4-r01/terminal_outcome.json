@@ -1,0 +1,22 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261019-phase1-F-rawTemporal-e20plus10-s2026092701-m4-r01",
+  "state": "ANALYZED",
+  "new_rows": 4,
+  "reused_rows": 4,
+  "all_new_rows_source_trained": true,
+  "all_new_rows_all_seven_predictions_complete": true,
+  "all_new_rows_independently_scored": true,
+  "dispatcher_and_owned_workers_terminal": true,
+  "process_restart": false,
+  "technical_failure": null,
+  "source_qualified": false,
+  "source_preferred": null,
+  "automatic_E50": false,
+  "actual_joint160_source_NN": 10,
+  "updates_replayed": 8880,
+  "new_confusions_recounted": 504,
+  "new_and_reused_confusions_recounted": 1008,
+  "paired_strata_recounted": 1008,
+  "goal_complete": false
+}

@@ -1,0 +1,110 @@
+{
+  "status": "VERIFIED",
+  "all_new_updates_replayed": 8880,
+  "source_criterion_independently_recomputed": true,
+  "new_formal_confusions": 504,
+  "new_and_reused_formal_confusions": 1008,
+  "paired_strata": 1008,
+  "actual_states": {
+    "RAW_NoAs": {
+      "changed_parameters": [
+        "id_backbone.encoder.core.id_backbone.cls_head.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.down.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.mix.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.temporal.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B1.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B2.weight"
+      ],
+      "all_native_F_state_except_W_bit_equal": true,
+      "original_W_jointly_changed": true,
+      "both_feature_projections_changed": true,
+      "all_raw_encoder_parameters_have_nonzero_gradients": true,
+      "gradient_squared_sum": {
+        "id_backbone.encoder.core.id_backbone.raw_temporal.temporal.weight": 0.011785791733173324,
+        "id_backbone.encoder.core.id_backbone.cls_head.weight": 161.29762206917985,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.mix.weight": 0.010844462499078396,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.down.weight": 0.023746712756630574,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B1.weight": 0.6334099168337559,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B2.weight": 0.12585312495460066
+      },
+      "total_parameters": 902974,
+      "trainable_parameters": 3212
+    },
+    "RAW_As": {
+      "changed_parameters": [
+        "id_backbone.encoder.core.id_backbone.cls_head.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.down.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.mix.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.temporal.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B1.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B2.weight"
+      ],
+      "all_native_F_state_except_W_bit_equal": true,
+      "original_W_jointly_changed": true,
+      "both_feature_projections_changed": true,
+      "all_raw_encoder_parameters_have_nonzero_gradients": true,
+      "gradient_squared_sum": {
+        "id_backbone.encoder.core.id_backbone.raw_temporal.temporal.weight": 2.2139152059817966,
+        "id_backbone.encoder.core.id_backbone.cls_head.weight": 4078.4018792957067,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.mix.weight": 2.4331249005856224,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.down.weight": 3.2503292856784824,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B1.weight": 34.99624338083959,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B2.weight": 10.092758305920142
+      },
+      "total_parameters": 902974,
+      "trainable_parameters": 3212
+    },
+    "PAIR_NoAs": {
+      "changed_parameters": [
+        "id_backbone.encoder.core.id_backbone.cls_head.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.down.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.mix.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.temporal.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B1.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B2.weight"
+      ],
+      "all_native_F_state_except_W_bit_equal": true,
+      "original_W_jointly_changed": true,
+      "both_feature_projections_changed": true,
+      "all_raw_encoder_parameters_have_nonzero_gradients": true,
+      "gradient_squared_sum": {
+        "id_backbone.encoder.core.id_backbone.raw_temporal.temporal.weight": 0.010149225719582995,
+        "id_backbone.encoder.core.id_backbone.cls_head.weight": 163.47077631505817,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.mix.weight": 0.009738106425288176,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.down.weight": 0.022027263889402203,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B1.weight": 0.4508551174639308,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B2.weight": 0.11581206520863674
+      },
+      "total_parameters": 902974,
+      "trainable_parameters": 3212
+    },
+    "PAIR_As": {
+      "changed_parameters": [
+        "id_backbone.encoder.core.id_backbone.cls_head.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.down.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.mix.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.temporal.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B1.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B2.weight"
+      ],
+      "all_native_F_state_except_W_bit_equal": true,
+      "original_W_jointly_changed": true,
+      "both_feature_projections_changed": true,
+      "all_raw_encoder_parameters_have_nonzero_gradients": true,
+      "gradient_squared_sum": {
+        "id_backbone.encoder.core.id_backbone.raw_temporal.temporal.weight": 1.8923490904200775,
+        "id_backbone.encoder.core.id_backbone.cls_head.weight": 4098.721526786685,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.mix.weight": 2.0915777038726273,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.down.weight": 2.7255705024654056,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B1.weight": 32.08443109165819,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B2.weight": 11.634247915488231
+      },
+      "total_parameters": 902974,
+      "trainable_parameters": 3212
+    }
+  },
+  "actual_joint160_source_NN": 10,
+  "new_physical_simulations": 0,
+  "model_seed_count": 1,
+  "goal_complete": false
+}

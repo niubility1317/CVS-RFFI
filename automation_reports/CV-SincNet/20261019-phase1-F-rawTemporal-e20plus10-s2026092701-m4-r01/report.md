@@ -1,6 +1,6 @@
 # 合法源证据后的 raw 时间补充路径比较
 
-状态：RUNNING / VERIFIED，真实父模型6NN无query smoke通过，四行PID/CWD/argv/GPU及日志增长已核实；尚未完成正式评分。
+状态：ANALYZED / VERIFIED，四新行训练、七景预测、独立评分及完整重计完成，四旧控制直接复用；最终目标未完成。
 
 ## 为什么现在提出此比较
 
@@ -41,13 +41,13 @@ RAW_As须同时达到：源V mid/low两draw均值相对同轮PAIR_As至少+.5pp�
 | R03 | 目标三/七 | 实际t1/t2/joint160及原默认W | model/train | verified | 零函数/特征与W更新 | 原block hooks保留 |
 | R04 | 附件七.2 | 最后B零、前层正常、无双零门控 | layers/checks | verified | 初始等价/两步梯度 | 不冻结学生autograd |
 | R05 | 目标三 | 合法B0来源、源角色与原始输入 | model/data | verified | strict own_model/既有bank | 无U/V拟合/target |
-| R06 | 用户L-only/目标六 | 三项目标与同NN/同As/NoAs | train/config | implemented | 全量更新/计数/实际IQ | 固定总尺度 |
-| R07 | 目标二/七 | 4新行E30、4既有匹配控制复用 | design/report | implemented | 原成本/增量/MAC/耗时 | 不冒称全新盲测 |
-| R08 | 目标二.5 | RAW-PAIR/FULL增量及clean源门槛 | report/dispatch | implemented | source-only固定判断 | 非As-NoAs已知收益 |
-| R09 | 目标七/最小流程 | 全七景/原默认头/独立truth-last | evaluate/dispatch | implemented | 逐row预测/独立重计 | 单包/不读目标选模 |
-| R10 | 目标七 | error redistribution/最差RX/F1/seed | report/analysis | implemented | 全分层与配对 | model-seed n1 |
+| R06 | 用户L-only/目标六 | 三项目标与同NN/同As/NoAs | train/config | verified | 全量更新/计数/实际IQ | 固定总尺度 |
+| R07 | 目标二/七 | 4新行E30、4既有匹配控制复用 | design/report | verified | 原成本/增量/MAC/耗时 | 不冒称全新盲测 |
+| R08 | 目标二.5 | RAW-PAIR/FULL增量及clean源门槛 | report/dispatch | verified | source-only固定判断 | 非As-NoAs已知收益 |
+| R09 | 目标七/最小流程 | 全七景/原默认头/独立truth-last | evaluate/dispatch | verified | 逐row预测/独立重计 | 单包/不读目标选模 |
+| R10 | 目标七 | error redistribution/最差RX/F1/seed | report/analysis | verified | 全分层与配对 | model-seed n1 |
 | R11 | 最小流程 | 一次review/commit/首步CP/单归档/后态 | checks/publish | verified | 实际证据 | 健康任务保护 |
-| R12 | 目标八 | 所有失败保留/不重启旧root | 所有执行路径 | implemented | immutable run/output | 无自动扫参/E50 |
+| R12 | 目标八 | 所有失败保留/不重启旧root | 所有执行路径 | verified | immutable run/output | 无自动扫参/E50 |
 
 唯一owner codex/root/F-raw-temporal；输出PROJECT/runs/20261019-phase1-F-rawTemporal-e20plus10-s2026092701-m4-r01，每GPU所有owner最多2进程/free≥12000MB。停止规则：仅所属技术/协议/数值/来源/接口/输出/无法生成合法prediction的失败；保留健康行，不自动重试。预期逐row source/initial/final/steps、源决定、7景prediction/独立score、analysis/complete或failure。实际commit、命令、环境、路径及逐row配置在experiment.json登记。
 
@@ -60,3 +60,5 @@ RAW_As须同时达到：源V mid/low两draw均值相对同轮PAIR_As至少+.5pp�
 连接恢复后普通客户端发布和Git push成功；当前本地HEAD与远端OID独立一致，git_delivery.json已更新VERIFIED。模型/数据/实验配置未变，没有重复启动。
 
 源端完整回放及固定决定见source_closure.md；本分析未读取正式分数。
+
+完整结果见final_report.md、results_summary.json及validation.json；总体目标仍未完成。
