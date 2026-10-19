@@ -1,0 +1,81 @@
+{
+  "commit": "0976d1f1476f8a8e6124714435b607e19507c1ee",
+  "archive": "VERIFIED",
+  "compile": "VERIFIED",
+  "smoke": {
+    "status": "PASS",
+    "records": [
+      {
+        "arm": "KD",
+        "NN": 768,
+        "As_IQ": 64,
+        "Ag_IQ": 0,
+        "head_joint_gradient": true,
+        "Sinc_joint_gradient": true,
+        "same_initial": true,
+        "optimizer_updates": 0,
+        "noise": {
+          "step": 1333,
+          "cumulative_step": 1333,
+          "shape_RD": 4.679795742034912,
+          "shape_CE": 3.426377296447754,
+          "shape_KL": 1.2534184455871582,
+          "weight": 0.25,
+          "NN": 256,
+          "same_IQ_each_pair": true,
+          "mode": "NONE",
+          "packets": 128,
+          "applied": 0,
+          "relative_noise_RMS": 0,
+          "noise_peak_fraction_mean": 0,
+          "SNR_added_db": null,
+          "new_boundary_samples": 0
+        }
+      },
+      {
+        "arm": "KD",
+        "NN": 768,
+        "As_IQ": 64,
+        "Ag_IQ": 0,
+        "head_joint_gradient": true,
+        "Sinc_joint_gradient": true,
+        "same_initial": true,
+        "optimizer_updates": 0,
+        "noise": {
+          "step": 1333,
+          "cumulative_step": 5773,
+          "shape_RD": 4.679795742034912,
+          "shape_CE": 3.426377296447754,
+          "shape_KL": 1.2534184455871582,
+          "weight": 0.25,
+          "NN": 256,
+          "same_IQ_each_pair": true,
+          "mode": "NONE",
+          "packets": 128,
+          "applied": 0,
+          "relative_noise_RMS": 0,
+          "noise_peak_fraction_mean": 0,
+          "SNR_added_db": null,
+          "new_boundary_samples": 0
+        }
+      }
+    ],
+    "NN": 1536,
+    "teacher_NN": 128,
+    "real_checkpoint_NN": 2,
+    "real_IQ": 0,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0,
+    "target_access": false
+  },
+  "dispatcher_observed": true,
+  "rows": [
+    {
+      "row": "KD-s2026092701",
+      "pid": 2021783,
+      "gpu": 5,
+      "cwd_match": true,
+      "log_bytes": 6372
+    }
+  ]
+}

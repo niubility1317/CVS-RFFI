@@ -17,3 +17,5 @@ TEACHERS全局仅训练使用，未注册进学生/EMA/优化器；factory加载
 5项知识目标/隐藏标签负例与16文件AST通过；一次独立P0/P1审查进行中。launcher首步加载真实P43默认头和CSIL，并在两个segment的实际六前向hook上运行1666NN/0更新无query检查，PASS直接训练。只做单次发布归档比较与compile，不新增hash/签名/审批门槛。当前未读取T1/T6任何正式新分数。
 
 本候选一次独立P0/P1检查完成：未发现阻塞问题；普通身份/剩余容量/新输出未占用/复用T1实际配置已VERIFIED，未改动健康任务。
+
+实际发布已VERIFIED：代码commit 0976d1f1476f8a8e6124714435b607e19507c1ee，单归档比较/compile、真实学生与CSIL默认头首步检查1666NN PASS，直接进入训练；PID/CWD/argv/GPU/log已独立核实。教师额外检查前向128计入，学生1536与真实源CP2单列。

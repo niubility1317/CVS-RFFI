@@ -26,4 +26,4 @@
 |完整 As 后前缀屏蔽（预登记）|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-asPrefix-e30-s2026092701-m2-r01/report.md)|
 |As 分类温度解耦：同初始化完整 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r01/report.md)|
 |As 分类温度解耦：同初始化完整 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r02/report.md)|
-|同一受损 As 的 CSIL 类别知识迁移：完整 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-sameAsKD-e30-s2026092701-m2-r01/report.md)|
+|同一受损 As 的 CSIL 类别知识迁移|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-sameAsKD-e30-s2026092701-m2-r01/report.md)|
