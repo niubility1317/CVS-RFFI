@@ -99,3 +99,12 @@ batch1 含冻结上下文，固定源低 urban 16 样本、两次预热，所在
 补充同批源V路径诊断：固定R07原验证缓存low urban前128条、对应clean和物理ID，0 TX标签/F权重/F输出/target；只使用已冻结R20两行E20权重，本机CPU、不更新参数。两行共享一个CPU epsilon（seed202610202105），分别报告t=0/.25/.5/.75的含真值路径单点端点误差，以及实际自由运行16步的逐步先验误差和末端6CG输出误差。含真值路径不作为可部署预测；t>0会暴露clean端点信息，CPU噪声也不冒充原CUDA主draw。新增256次源IQ恢复仅为这128条源V子集的诊断，不增加独立物理样本数，不影响既定源资格与0target决定。
 
 代码 `tools/diagnose_pamf_flow_path.py`，3项聚焦检查覆盖同批路径区分、真值观察不改变实际输出/随机状态及冻结状态和形状约束。输入仅clean/received/physical_ids的本机私有npz，权重为本机严格核实的R20目录；命令 `python -m tools.diagnose_pamf_flow_path --inputs <private_source128.npz> --weights-root <private_R20_weights> --output <new_diagnostic.json>`。分析只检验同批误差差异，不声称已确定唯一失败原因，输入、权重与原始路径日志不提交。
+
+
+同批128条源V的受控诊断已完成，不含TX标签、F调用或target，也无参数更新。零起点粗恢复NMSE为0.04072880；不含clean信息的t=0端点预测为0.04299623，含clean信息的t=.5路径端点误差仅0.00001737，而真正自由运行16步先验为0.04309058、6CG最终为0.04450014。随机起点同样表现为teacher-path误差很低、自由运行没有改善粗恢复。两个模型、相同源物理样本和各自相同epsilon下的差异，排除了仅由训练集/验证集样本不同造成表面差异的解释；尚不能确定唯一原因。t>0含真值路径信息，不应作为可部署恢复性能。
+
+![同批源V路径与自由运行诊断](../../../docs/figures/pamf_flow_path_20261020/path_diagnostic.png)
+
+图的橙色斜线柱使用了clean路径点，仅作诊断；蓝色和绿色计算只依赖当前输入及固定噪声。纵轴是对数。完整均值/中位数/P90与16步误差见[诊断汇总](flow_path_diagnostic.json)，[SVG](../../../docs/figures/pamf_flow_path_20261020/path_diagnostic.svg)可复用。新增256次源IQ恢复只对应原128物理样本子集，不增加独立样本数，CPU epsilon与原CUDA主draw不同且没有被选择性挑选。本补充不改变R20的SOURCE_NOT_QUALIFIED或0target结论。
+
+下一轮已固定可检验假设：[R21按实际推理终点训练](../../../docs/PAMF_ENDPOINT_TRAINING_R21_20261020.md)。四步路径回归与四步真实终点训练匹配部署路径、初始化、参数和全量预算，只检验训练目标差异；尚未实现、发布或宣称有效，不引入TX/F损失。
