@@ -1,3 +1,4 @@
 {"at": "2026-10-19T12:47:06+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-19T12:47:06+00:00", "status": "LOCAL_VERIFIED", "note": "11聚焦检查与一次独立P0/P1通过；GPU5/源句柄/新root预检完成，待发布。", "evidence": ["experiment.json", "report.md"], "row_id": null}
 {"at": "2026-10-19T12:49:36+00:00", "status": "RUNNING", "note": "VERIFIED：不可变release传输/compile、真实2L_s smoke、原controller/CWD/argv/日志增长核实；fresh源教师缓存构建中，尚未启动GPU训练。", "evidence": ["report.md", "experiment.json"], "row_id": null}
+{"at": "2026-10-19T13:20:46+00:00", "status": "ANALYZED", "note": "VERIFIED：完整20/4940、全L/U、七视图独立评分完成；SOURCE_NOT_QUALIFIED，平均NMSE增加1.55353%，低郊区分类下降0.6111pp，不进target。", "evidence": ["report.md", "results/summary.json"], "row_id": null}

@@ -1,0 +1,3 @@
+{"at": "2026-10-19T13:18:39+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T13:18:39+00:00", "status": "LOCAL_VERIFIED", "note": "8聚焦检查通过；R08未启动GPU行已退出且无target；同一固定矩阵/原IQ/F50改由新GPU5独占root执行。", "evidence": ["experiment.json", "report.md"], "row_id": null}
+{"at": "2026-10-19T13:29:26+00:00", "status": "ANALYZED", "note": "VERIFIED：原F50/168000x7x3完整固定预测后独立评分；六practical身份收益、三郊区细目及clean损伤均保留，0新更新，原进程自然退出。", "evidence": ["report.md", "results/summary.json"], "row_id": null}

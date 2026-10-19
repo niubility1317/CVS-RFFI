@@ -16,9 +16,11 @@
 |---|---|---|---|---|
 |A07-01|正确有限窗口广义线性作用及实伴随|pamf_action_restore/operators.py|verified|原生四场景重放、实内积、稠密 MAP 和6步目标下降测试通过|
 |A07-02|观测估计网络没有 oracle / clean / TX 输入|pamf_action_restore/models.py|verified|接口、教师隔离、真实梯度和冻结父测试通过|
-|A07-03|L/U 全量、fresh residual、0 TX/F 训练|pamf_action_restore/data.py、runner.py|implemented|源计数和实际曝光检查已接线，待完整日志|
-|A07-04|冻结父来源、固定预算、checkpoint 往返|pamf_action_restore/runtime.py|implemented|权限/来源/预算负测通过，待真实源 checkpoint smoke|
-|A07-05|源预测先固定、独立 F50 默认头评分|pamf_action_restore/evaluation.py|implemented|七视图完成负测通过，独立 CPU scorer 已接线|
-|A07-06|三档郊区及三档城区分别报告|run report/results|implemented|七视图分层已接线，待完整源结果，禁止冒称 target|
-|A07-07|不可覆盖输出、单 owner、共享容量锁|pamf_action_restore/runner.py|implemented|一次独立 P0/P1 无阻断，N607 预检 GPU5 空闲，待 post-state|
+|A07-03|L/U 全量、fresh residual、0 TX/F 训练|pamf_action_restore/data.py、runner.py|verified|完整20/4940，L126000/U1134000，fresh每轮，训练TX/F/target=0|
+|A07-04|冻结父来源、固定预算、checkpoint 往返|pamf_action_restore/runtime.py|verified|真实2L_s CPU往返、GPU源smoke/首更新L/U往返、固定父来源、最终E20通过|
+|A07-05|源预测先固定、独立 F50 默认头评分|pamf_action_restore/evaluation.py|verified|七视图先固定，独立CPUV标签评分，全部315分层完整|
+|A07-06|三档郊区及三档城区分别报告|run report/results|verified|源七视图、三郊区细目、accuracy/F1/repair/damage与NMSE分别报告|
+|A07-07|不可覆盖输出、单 owner、共享容量锁|pamf_action_restore/runner.py|verified|GPU5实际PID/CWD/argv/GPU/log及自然退出核实，完整日志0错误|
 |A07-08|多 seed、独立物理族、正式目标身份验证|后续阶段|deferred|本阶段不产生相关完成声明|
+
+执行结论：完整源验收结束，SOURCE_NOT_QUALIFIED；六场景平均NMSE增加1.55353%，没有达到至少5%改善。实现已验证不等于物理恢复有效，更不等于TX细节已证明；保持0R07target访问和原负结果。

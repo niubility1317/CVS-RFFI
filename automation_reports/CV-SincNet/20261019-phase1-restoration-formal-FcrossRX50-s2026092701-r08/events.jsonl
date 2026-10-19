@@ -1,0 +1,3 @@
+{"at": "2026-10-19T13:07:05+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T13:07:05+00:00", "status": "LOCAL_VERIFIED", "note": "7项新增聚焦覆盖/协议检查通过，复用一次候选审查；GPU4及既有完整输入预检通过。", "evidence": ["experiment.json", "report.md"], "row_id": null}
+{"at": "2026-10-19T13:18:39+00:00", "status": "REPLACED", "note": "VERIFIED：GPU4资源等待行在CUDA/sourceSmoke/target之前撤下；原PID已退出、输出保留；R09相同冻结比较改GPU5，不改变健康其他owner。", "evidence": ["report.md", "experiment.json"], "row_id": null}
