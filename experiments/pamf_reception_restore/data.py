@@ -74,7 +74,8 @@ def paired_worker(item):
 
 
 def prepare_cache(parent, output, epochs=20, workers=16, data_seed=2026101901,
-                  augmentation_seed=2026101902):
+                  augmentation_seed=2026101902,namespace_prefix='reception-restoration/train',
+                  validation_full_reference=None):
     """Fresh paired native channels each epoch; common exposure across six rows."""
     import json
     import multiprocessing
@@ -112,7 +113,8 @@ def prepare_cache(parent, output, epochs=20, workers=16, data_seed=2026101901,
             diagnostics={route:dict(lock=np.full(len(clean), -1, np.int8),
                          state=np.full(len(clean), -1, np.int8),
                          signal_to_added_noise_db=np.zeros(len(clean), np.float32)) for route in arrays}
-            items=((int(i),SCENES[scene_indices[i]],data_seed,epoch,augmentation_seed,None) for i in active)
+            namespace=f'{namespace_prefix}/epoch{epoch:02d}'
+            items=((int(i),SCENES[scene_indices[i]],data_seed,epoch,augmentation_seed,namespace) for i in active)
             for count,(index,residual,full,meta) in enumerate(pool.imap(paired_worker,items,chunksize=32),1):
                 arrays['residual'][index]=residual;arrays['full'][index]=full
                 seed_values[index]=meta['seed']
@@ -134,7 +136,17 @@ def prepare_cache(parent, output, epochs=20, workers=16, data_seed=2026101901,
     # Full/post-sync V uses the exact latent namespace/seed of original V.
     # Residual replay is checked against the existing source input, then
     # discarded; no new formal residual test observation is introduced.
-    validation=output/'validation_full';validation.mkdir()
+    validation=output/'validation_full'
+    if validation_full_reference is not None:
+        validation.symlink_to(Path(validation_full_reference).resolve(),target_is_directory=True)
+        write_json(output/'complete.json',dict(status='RECEPTION_SOURCE_CACHE_COMPLETE',epochs=epochs,
+            train_count=63000,L_count=6300,U_count=56700,source_V_count=len(np.load(parent/'validation/physical_ids.npy',allow_pickle=False)),
+            TX_labels_read=0,target_reads=0,parent_source_cache=str(parent),paired_full_residual=True,
+            observations_per_physical_record_per_row_per_epoch=1,training_namespace=namespace_prefix,
+            source_full_reference_reused=True,
+            available_training_routes=['clean','residual/post_sync/noeq','full/post_sync/noeq']))
+        return
+    validation.mkdir()
     for file in ('clean.npy','physical_ids.npy','rx.npy','day.npy','roles.npy'):
         (validation/file).symlink_to(parent/'validation'/file)
     vclean=np.load(parent/'validation/clean.npy',mmap_mode='r',allow_pickle=False)
