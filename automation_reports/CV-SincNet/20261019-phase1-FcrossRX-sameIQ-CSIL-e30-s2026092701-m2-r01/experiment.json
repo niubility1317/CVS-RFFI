@@ -1,0 +1,245 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-FcrossRX-sameIQ-CSIL-e30-s2026092701-m2-r01",
+  "group_id": "phase1-sameIQ-CSIL-transfer",
+  "display_name": "同受损观测CSIL类别迁移：默认头CE匹配E30",
+  "description": "同As20父模型独立CE/KD两条E10；全标签CE不变，双方去除AsKL，冻结CSIL同IQ类别监督，控制做等成本teacher shadow；自动all7 truth-last。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "same-IQ",
+    "frozen-external-head",
+    "source-only",
+    "cross-model-complement"
+  ],
+  "comparison_group_id": "original-P43-ownAs20plus10-nativeU-defaulthead",
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+    "20261019-diagnostic-FcrossRX-sameIQ-experts-s2026092701-m2-r02",
+    "20260930-phase1-native-baselines-practical-manysig-m5-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User20261019: continue target development using a route distinct from the two referenced chats; attached report proposes same-IQ cross-model transfer.",
+  "code": {
+    "commit": "release_commit.txt records code identity",
+    "checkout": "E:\\type10-7\\code\\worktrees\\phase1_sameiq_experts_20261019",
+    "environment": "existing N607 CVS-RFFI Python3.10/Torch2.1/NumPy2.2; FP32/TF32off/CPU2",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_sameIQ_CSIL_E30_20261019_r01"
+  },
+  "data": {
+    "dataset": "existing immutable ManySig equalized1",
+    "version": "same source contract reused",
+    "representation": "equalized1/center256/unitRMS; exact saved residual post_sync/noeq full observation",
+    "contract_ref": "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "contract_ref#role_ids; P24/data_roles.json#physical_ids",
+    "label_map_ref": "protocol.CLASSES and checkpoint.classes/class_mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "protocol.CLASSES",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing legal V1800 cached IQ; no Phase2 capsule applicable",
+    "support_query_ref": null,
+    "leo_config_ref": "PROJECT/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/observations/actual_engine.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "fixed target IQ prediction only after row freezing; all7 predictions before separate exec truth-side scorer",
+    "external_method_exception": null,
+    "claim_scope": "single-seed matched teacher-increment experiment; no new independent blind benchmark claim"
+  },
+  "checkpoint": {
+    "initialization": "strict original P43 As20 student+ownEMA, reset AdamW/cosine10/Ucache",
+    "sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth",
+      "HISTORY/csil-s2026092701/last.pt (D training teacher; C shadow only)"
+    ],
+    "contract_check_ref": "Existing actual source_contract/initialization/completion/resolved_config and checkpoint payload; role_ids exact",
+    "provenance_verdict": "JSON source provenance VERIFIED; payload checked before smoke",
+    "selection_rule": "parent final20 scratch; teacher final200 scratch; final student fixed cumulative30, no source/target best epoch"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/sameIQ-CSIL",
+    "gpu_policy": "global all-owner max2/GPU, free>=12000MB; no healthy task intervention",
+    "remote_run_root": "PROJECT/runs/20261019-phase1-FcrossRX-sameIQ-CSIL-e30-s2026092701-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261019-phase1-FcrossRX-sameIQ-CSIL-e30-s2026092701-m2-r01/logs",
+    "local_artifact_root": "local_artifacts/F_sameIQ_distill_E30_20261019",
+    "launch_command": [
+      "CVS-RFFI/python",
+      "-u",
+      "experiments/cvs_sameiq_distill30/runner.py"
+    ],
+    "stop_rule": "Protocol/provenance/numerical/unlaunchable/output/prediction/truth-order technical failures only; preserve failed artifacts; no performance stop/retry"
+  },
+  "expected_artifacts": [
+    "eachrow/source/final_ssdg.pth and ownEMA",
+    "eachrow/source/result.json",
+    "eachrow/source/distill_steps.jsonl.gz",
+    "eachrow/source/training_sequence.jsonl.gz",
+    "eachrow/source_qualification/predictions.npz",
+    "eachrow/prediction all7 scores and predictions",
+    "eachrow/scoring/scores.json",
+    "source_matrix_decision.json",
+    "automatic_summary.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macroF1",
+      "worstRX",
+      "paired repairs/damage",
+      "fullV clean and fixedpanel source decision",
+      "complete training losses/budget/teacher correct fraction"
+    ],
+    "dimensions": [
+      "row",
+      "seed",
+      "clean+6practical",
+      "RX",
+      "day",
+      "TX"
+    ],
+    "prediction_ref": "eachrow/prediction (all seven frozen before truth)",
+    "scorer_ref": "separate exec evaluate.score then same-row report.collect"
+  },
+  "rows": [
+    {
+      "row_id": "C01-s2026092701",
+      "method": "sameIQ_CSIL_CE",
+      "purpose": "matched_control",
+      "config_ref": "configs/C01-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-FcrossRX-sameIQ-CSIL-e30-s2026092701-m2-r01/C01-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "Model/split unchanged; source data physical roles fixed; channel seeds exact in config channel.seeds, U and ordinary streams inherited; evaluation uses fixed existing formal received arrays, panel draws0/1; support not applicable.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW reset, inherited original Sinc Hz coordinate correction",
+      "lr": null,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "parentE20/4440updates + localE10/2220updates;768studentL+64classTeacherNN/step; U567000student+567000EMA perrow",
+      "output_root": "PROJECT/runs/20261019-phase1-FcrossRX-sameIQ-CSIL-e30-s2026092701-m2-r01/C01-s2026092701/source",
+      "log_path": "PROJECT/runs/20261019-phase1-FcrossRX-sameIQ-CSIL-e30-s2026092701-m2-r01/logs/C01-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_sameiq_distill30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "C01-s2026092701"
+      ],
+      "expected_artifacts": [
+        "eachrow/source/final_ssdg.pth and ownEMA",
+        "eachrow/source/result.json",
+        "eachrow/source/distill_steps.jsonl.gz",
+        "eachrow/source/training_sequence.jsonl.gz",
+        "eachrow/source_qualification/predictions.npz",
+        "eachrow/prediction all7 scores and predictions",
+        "eachrow/scoring/scores.json",
+        "source_matrix_decision.json",
+        "automatic_summary.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "D01-s2026092701",
+      "method": "sameIQ_CSIL_CSIL",
+      "purpose": "candidate",
+      "config_ref": "configs/D01-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-FcrossRX-sameIQ-CSIL-e30-s2026092701-m2-r01/D01-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "Model/split unchanged; source data physical roles fixed; channel seeds exact in config channel.seeds, U and ordinary streams inherited; evaluation uses fixed existing formal received arrays, panel draws0/1; support not applicable.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "AdamW reset, inherited original Sinc Hz coordinate correction",
+      "lr": null,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "parentE20/4440updates + localE10/2220updates;768studentL+64classTeacherNN/step; U567000student+567000EMA perrow",
+      "output_root": "PROJECT/runs/20261019-phase1-FcrossRX-sameIQ-CSIL-e30-s2026092701-m2-r01/D01-s2026092701/source",
+      "log_path": "PROJECT/runs/20261019-phase1-FcrossRX-sameIQ-CSIL-e30-s2026092701-m2-r01/logs/D01-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_sameiq_distill30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "D01-s2026092701"
+      ],
+      "expected_artifacts": [
+        "eachrow/source/final_ssdg.pth and ownEMA",
+        "eachrow/source/result.json",
+        "eachrow/source/distill_steps.jsonl.gz",
+        "eachrow/source/training_sequence.jsonl.gz",
+        "eachrow/source_qualification/predictions.npz",
+        "eachrow/prediction all7 scores and predictions",
+        "eachrow/scoring/scores.json",
+        "source_matrix_decision.json",
+        "automatic_summary.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Fixed CSIL-first from attached recommendation, MoPC not selected using larger source accuracy. Both historical teachers passed prereg source-only qualification.",
+    "Main AsCE temp1/smoothing.01 unchanged; KD only uses student logits/6 to match native teacher cosine scale5. Mean64 after teacherCorrect mask; no accepted-only renormalization. Outer .25*6. Both remove exactly selectedAs .25KL64, preserve ordinary/rawKL and nativeU.",
+    "Source decision: D-C midlow>=+.5pp, D-originalAs low>=0, D-NoAs fullVclean>=-.1pp; failure closes fixed recipe, all7 formal still execute; no auto E50/seeds/lambda/T rescue.",
+    "Costs: original As20 parent reused; external teacher historical200epochs/9800updates disclosed separately; each new row2220updates,1704960studentL+142080frozenCSIL+567000Ustudent+567000UEMA; two rows matched. No extra deployment parameters."
+  ],
+  "registered_at": "2026-10-19T03:13:42+00:00"
+}

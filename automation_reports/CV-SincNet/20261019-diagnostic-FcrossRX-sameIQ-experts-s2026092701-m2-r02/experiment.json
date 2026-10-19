@@ -1,0 +1,231 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-diagnostic-FcrossRX-sameIQ-experts-s2026092701-m2-r02",
+  "group_id": "phase1-same-observation-external-teacher",
+  "display_name": "同一源域受损IQ：CSIL、MoPC-HR与当前PAMF的冻结互补检验",
+  "description": "复用P79缓存和AS30默认头预测；固定历史seed01/final200外部模型读取相同IQ，先证伪教师资格。0训练、0新增信道、0目标访问。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "same-IQ",
+    "frozen-external-head",
+    "source-only",
+    "cross-model-complement"
+  ],
+  "comparison_group_id": "sourceV1800-sameIQ-P79-fixed2draw",
+  "parent_run_ids": [
+    "20260930-phase1-native-baselines-practical-manysig-m5-r01",
+    "20261019-diagnostic-FcrossRX-current-controls-e30-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": "20261019-diagnostic-FcrossRX-sameIQ-experts-s2026092701-m2-r01",
+  "authorization": "User20261019: continue target development using a route distinct from the two referenced chats; attached report proposes same-IQ cross-model transfer.",
+  "code": {
+    "commit": "fc8dffa6f4d1340be6686cd2853914fe60714361",
+    "checkout": "E:\\type10-7\\code\\worktrees\\phase1_sameiq_experts_20261019",
+    "environment": "existing N607 CVS-RFFI Python3.10/Torch2.1/NumPy2.2; FP32/TF32off/CPU2",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_sameIQ_experts_20261019_r02"
+  },
+  "data": {
+    "dataset": "existing immutable ManySig equalized1",
+    "version": "same source contract reused",
+    "representation": "equalized1/center256/unitRMS; exact saved residual post_sync/noeq full observation",
+    "contract_ref": "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/source/source_contract.json",
+    "physical_ids_ref": "contract_ref#role_ids; P24/data_roles.json#physical_ids",
+    "label_map_ref": "protocol.CLASSES and checkpoint.classes/class_mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "protocol.CLASSES",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing legal V1800 cached IQ; no Phase2 capsule applicable",
+    "support_query_ref": null,
+    "leo_config_ref": "PROJECT/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/observations/actual_engine.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none; no target loader or formal scorer imported",
+    "external_method_exception": null,
+    "claim_scope": "frozen source comparison only; teacher200/student30 training costs differ; no matched-training superiority claim"
+  },
+  "checkpoint": {
+    "initialization": "frozen historical models; no new initialization or fitting",
+    "sources": [
+      "HISTORY/csil-s2026092701/last.pt",
+      "HISTORY/mopc_hr-s2026092701/last.pt"
+    ],
+    "contract_check_ref": "Existing actual source_contract/initialization/completion/resolved_config and checkpoint payload; role_ids exact",
+    "provenance_verdict": "JSON source provenance VERIFIED; payload checked before smoke",
+    "selection_rule": "both external fixed final200/scratch; existing PAMF fixed final30; no best-target or best-seed selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/sameIQ-experts",
+    "gpu_policy": "single GPU0 process, global maximum2; CPU2; no interference with others",
+    "remote_run_root": "PROJECT/runs/20261019-diagnostic-FcrossRX-sameIQ-experts-s2026092701-m2-r02",
+    "remote_log_root": "PROJECT/releases/cvs_FcrossRX_sameIQ_experts_20261019_r02",
+    "local_artifact_root": "local_artifacts/F_sameIQ_experts_20261019",
+    "launch_command": [
+      "CVS-RFFI/python",
+      "-u",
+      "experiments/cvs_sameiq_experts/runner.py",
+      "--project",
+      "PROJECT",
+      "--device",
+      "cuda:0"
+    ],
+    "stop_rule": "Stop only this run on contract/provenance/class-map/shape/nonfinite/frozen-state/resource/output errors; preserve partial output; no automatic retry or performance stop"
+  },
+  "expected_artifacts": [
+    "checkpoint_smoke.json",
+    "csil/predictions.npz",
+    "mopc_hr/predictions.npz",
+    "csil/comparison.json",
+    "mopc_hr/comparison.json",
+    "completion.json or failure.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "paired repair/damage/bothwrong",
+      "oracle union (diagnostic only)",
+      "per-draw teacher qualification"
+    ],
+    "dimensions": [
+      "method",
+      "draw",
+      "scene",
+      "RX",
+      "day",
+      "TX",
+      "state",
+      "lock",
+      "signal_to_added_noise_db (not totalSNR)"
+    ],
+    "prediction_ref": "existing P79 AS30/predictions.npz and this run external predictions",
+    "scorer_ref": "source-only pair counts; source labels legal; no target scorer"
+  },
+  "rows": [
+    {
+      "row_id": "csil-s2026092701",
+      "method": "historical csil frozen native head",
+      "purpose": "source_teacher_falsification",
+      "config_ref": "experiments/cvs_sameiq_experts/runner.py",
+      "resolved_config_ref": "checkpoint_smoke.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 202610172401,
+        "augmentation": 202610172402,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "data=existing balanced panel seed; augmentation/evaluation=existing channel draws0/1; source receiver seed2026092701; support null because Phase1 no support. No RNG redrawn.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "none (frozen)",
+      "lr": 0,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "12600 real source NN+2 synthetic per external model; existing PAMF predictions reused",
+      "output_root": "PROJECT/runs/20261019-diagnostic-FcrossRX-sameIQ-experts-s2026092701-m2-r02/csil",
+      "log_path": "PROJECT/releases/cvs_FcrossRX_sameIQ_experts_20261019_r02/stdout.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_sameiq_experts/runner.py",
+        "--project",
+        "PROJECT",
+        "--device",
+        "cuda:0"
+      ],
+      "expected_artifacts": [
+        "checkpoint_smoke.json",
+        "csil/predictions.npz",
+        "mopc_hr/predictions.npz",
+        "csil/comparison.json",
+        "mopc_hr/comparison.json",
+        "completion.json or failure.json"
+      ]
+    },
+    {
+      "row_id": "mopc_hr-s2026092701",
+      "method": "historical mopc_hr frozen native head",
+      "purpose": "source_teacher_falsification",
+      "config_ref": "experiments/cvs_sameiq_experts/runner.py",
+      "resolved_config_ref": "checkpoint_smoke.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 202610172401,
+        "augmentation": 202610172402,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "data=existing balanced panel seed; augmentation/evaluation=existing channel draws0/1; source receiver seed2026092701; support null because Phase1 no support. No RNG redrawn.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "none (frozen)",
+      "lr": 0,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "12600 real source NN+2 synthetic per external model; existing PAMF predictions reused",
+      "output_root": "PROJECT/runs/20261019-diagnostic-FcrossRX-sameIQ-experts-s2026092701-m2-r02/mopc_hr",
+      "log_path": "PROJECT/releases/cvs_FcrossRX_sameIQ_experts_20261019_r02/stdout.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_sameiq_experts/runner.py",
+        "--project",
+        "PROJECT",
+        "--device",
+        "cuda:0"
+      ],
+      "expected_artifacts": [
+        "checkpoint_smoke.json",
+        "csil/predictions.npz",
+        "mopc_hr/predictions.npz",
+        "csil/comparison.json",
+        "mopc_hr/comparison.json",
+        "completion.json or failure.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Both draw low>=+1pp and mid/low mean>=+.5pp relative to AS30 required separately for each teacher. Failure closes fixed teacher route; no teacher choice from target metrics. PASS authorizes design of a bounded matched training experiment under current user request, not automatic seed/budget extension.",
+    "Clean and all three full practical scenes only. Do not evaluate 11 intervention conditions; reuse same current IQ. Raw tensors/checkpoints/logs remain outside Git. No deploy changes.",
+    "REJECTED_EXTRA_GATE: separate generic design approval, report hashes/seals, repeated review/data revalidation; project minimal workflow applies.",
+    "r02 changes only incompatible Torch/NumPy transfer. Original r01 preserved; no scientific changes."
+  ],
+  "registered_at": "2026-10-19T03:05:32+00:00"
+}
