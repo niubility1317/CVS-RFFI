@@ -1,0 +1,70 @@
+{
+  "status": "VERIFIED_U_STAGE_ACTIVE",
+  "run_id": "20261020-phase1-FcrossRX-weakTX-blockPC-e50-clean-local-m2-r01",
+  "code_config_commit": "116664b439eb702898ae4e019ba4159f19e4ced3",
+  "rows": [
+    {
+      "row_id": "NORM_L_ID-s2026092701",
+      "parsed_complete_steps": 7484,
+      "current_epoch": 34,
+      "first_U_step": 7327,
+      "completed_label_epochs": 33,
+      "registered_label_steps": 7326,
+      "observed_U_steps": 158,
+      "observed_U_exposure": 40448,
+      "observed_U_selected": 623,
+      "partial_U_acceptance": 0.015402492088607595,
+      "pc_scheduled": 1594,
+      "pc_eligible": 1594,
+      "pc_changed": 1594,
+      "extra_feature_VJP_calls": 4782,
+      "EMA_updates": 7484,
+      "all_observed_optimizer_updates_applied": true,
+      "skipped_nonfinite_updates": 0,
+      "U_truth_available": 0,
+      "satellite_active": 0,
+      "extra_model_forwards": 0,
+      "partial_only": true
+    },
+    {
+      "row_id": "BLOCK_PAIR-s2026092701",
+      "parsed_complete_steps": 7468,
+      "current_epoch": 34,
+      "first_U_step": 7327,
+      "completed_label_epochs": 33,
+      "registered_label_steps": 7326,
+      "observed_U_steps": 142,
+      "observed_U_exposure": 36352,
+      "observed_U_selected": 560,
+      "partial_U_acceptance": 0.015404929577464789,
+      "pc_scheduled": 1590,
+      "pc_eligible": 1590,
+      "pc_changed": 1590,
+      "extra_feature_VJP_calls": 4770,
+      "EMA_updates": 7468,
+      "all_observed_optimizer_updates_applied": true,
+      "skipped_nonfinite_updates": 0,
+      "U_truth_available": 0,
+      "satellite_active": 0,
+      "extra_model_forwards": 0,
+      "partial_only": true
+    }
+  ],
+  "actual_workers": [
+    {
+      "row": "NORM_L_ID-s2026092701",
+      "role": "source",
+      "live": true
+    },
+    {
+      "row": "BLOCK_PAIR-s2026092701",
+      "role": "source",
+      "live": true
+    }
+  ],
+  "recipe_changed": false,
+  "source_expansion_fixed": false,
+  "target_access": false,
+  "performance_result": null,
+  "limitation": "Partial training execution evidence only; not source promotion, complete U acceptance, target performance or pseudo-label truth accuracy."
+}

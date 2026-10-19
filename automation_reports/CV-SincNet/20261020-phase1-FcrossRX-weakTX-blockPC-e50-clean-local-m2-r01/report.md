@@ -50,3 +50,5 @@ REJECTED_EXTRA_GATE：通用设计审批暂停、全项目测试不属白名单�
 执行 commit：116664b439eb702898ae4e019ba4159f19e4ced3，代码已推送并独立核对远端。一个发布包复制校验与提取后编译 PASS，两个 worker 的实际 PID／命令／CWD／GPU 和训练日志增长 VERIFIED，详见 launch_verification.json。
 
 真实训练已在第 1112 步启用新增机制，两个条件均观察到合格且非零的模块修正，额外 VJP 与计划一致；无额外模型前向、星地增强或直接辅助头梯度。详见 active_feature_verification.json。当前仍在训练，暂无新目标性能结果。
+
+两条件已按原始 33L＋17U 进入第 34 轮，首次 U 训练步均为第 7327 步。流式核对所有已完成步骤：EMA 更新与主步一致、无非有限跳步、U 真值隐藏、星地增强关闭，新模块修正继续执行。U_stage_verification.json 仅为部分执行证据，不能代替最终接受率、源域晋级或目标性能。
