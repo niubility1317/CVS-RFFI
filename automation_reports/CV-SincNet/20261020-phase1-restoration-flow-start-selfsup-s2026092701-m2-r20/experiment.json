@@ -1,0 +1,351 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-phase1-restoration-flow-start-selfsup-s2026092701-m2-r20",
+  "group_id": "pamf-restoration-flow-start",
+  "display_name": "固定起点与随机起点：残差流匹配恢复",
+  "description": "同初值同容量同训练随机流，只比较sigma0=0与.02；源三draw稳定性与四参考身份保护后条件正式确认。",
+  "kind": "cvs",
+  "stage": "Phase1-source-research-conditional-confirmation",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "self_supervised",
+    "flow_matching",
+    "sampling_stability",
+    "no_TX_F_training"
+  ],
+  "comparison_group_id": "manysig-matched-sigma0-0-vs-002-fullLU-flow16-MAP6",
+  "parent_run_ids": [
+    "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02",
+    "20261019-phase1-restoration-learned-action-source-s2026092701-r07",
+    "20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+    "20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15",
+    "20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16",
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17"
+  ],
+  "replaces_run_id": null,
+  "authorization": "持续独立恢复器目标、用户六类报告R5/R6与N607多GPU授权；R19源结果未知时固定设计，R20等其全部所属进程退出。",
+  "code": {
+    "commit": "98c1822f88baa546db267dd97efe00f10870afd3",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
+    "cwd": "releases/pamf_flow_start_restoration_20261020_r20"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "OneIQ2x256;conditionalresidualflowEncoder5/Core2/time64;cachedcurrentreceived/coarse/logvariance;16Eulerthen6softCG",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train6300L+56700U originalIDs;R07validation1800V;conditional R05 original168000IDs",
+    "label_map_ref": "NoTX/F training;sourceVtruth independentCPU aftereachrow7predsets;conditional targettruth after7fixedpredictions",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json: READY/EXACT_MATCH; reuse existing cache without new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "Unchanged code/leo_practical/channel.py;reuse R07 epoch01..20 and original sourceV;conditional original formal received bytes",
+    "restoration_train_counts": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "L_exposures_per_row": 126000,
+      "U_exposures_per_row": 1134000,
+      "epochs_per_row": 20,
+      "updates_per_row": 4940,
+      "TX_labels": 0,
+      "F_training_reads": 0,
+      "shared_extra_LU_calibration_exposures": 0
+    },
+    "source_validation_panel": 1800,
+    "target_panel": "Onlysource-qualified fixedrank winner,original168000x7;otherwise0target;oldR17formal reused onlyafternewscoring"
+  },
+  "permissions": {
+    "regime": "SimulatedpairedfullLU velocityregression;0TX/F/targettraining;sourceVtruthselectionseparate",
+    "query_use": "Conditional frozen inference only;no targetadaptation/feedback;originalF/defaulthead unchanged",
+    "external_method_exception": null,
+    "claim_scope": "ReportR5 zero/randomstart residualFM andR6softMAP adaptation;notI2SB/Schrodingerbridge/fullposterior/wholepipelineunlabeled/perdetailidentityproof"
+  },
+  "checkpoint": {
+    "initialization": "OnlyR07frozencoarse/action;newVelocityFieldscratch;reset2701afterparent;fullnewinitialstatesmatchedbetweenrows;noR17/R18/R19priorinheritance",
+    "sources": [
+      {
+        "run_id": "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02",
+        "commit": "7efdba92932a86bf4b0492a565d35377564a26da",
+        "role": "Inherited frozen R02coarse E20 viaR07fullstate",
+        "path": "runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/tf_unet_mixed/final.pt"
+      },
+      {
+        "run_id": "20261019-phase1-restoration-learned-action-source-s2026092701-r07",
+        "commit": "c8ccdfdbd03ab5ad8828b1eb9210b99a664ebe7b",
+        "role": "Full frozen source-only R07coarse/action E40;notnewprior",
+        "path": "runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/learned_operator/final.pt"
+      },
+      {
+        "run_id": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+        "commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+        "role": "Frozen inference only originalF50E50/11100 anddefaulthead",
+        "path": "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+      },
+      {
+        "run_id": "20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16",
+        "commit": "50587946b6c83b7b32500696af7fa7b9086484b5",
+        "role": "Frozen source IQ-only summary guard only;weights never loaded",
+        "path": "runs/20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16/unet_control/native_map_prior/summary.json"
+      },
+      {
+        "run_id": "20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15",
+        "commit": "26a8b7f5fc5471719f600ad880bc465c4b544521",
+        "role": "Frozen source FFT summary for third identity guard,weights not loaded",
+        "path": "runs/20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15/unet_control/native_map_prior/summary.json"
+      },
+      {
+        "run_id": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+        "commit": "cd97744884b5e460926e48c8b7efb7d78c6da0f4",
+        "role": "Frozen source summary guard only;no checkpoint initialization;formal artifacts read onlyafternewscore",
+        "path": "runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/unroll_unshared/native_map_prior"
+      }
+    ],
+    "contract_check_ref": "StrictR07fullsourcecontract;28focusedchecks/compile/help;oneP0P1immutable-summaryfixandtargetedPASS;real2Ls/fullcheckpoint/defaultF/sampler first",
+    "provenance_verdict": "ReuseverifiedR02/R07/F50sourcecontract;R15/R16source-only,R17source-onlytrainingandfrozenselection;R17postfreezeevaluationnottraininginheritance",
+    "selection_rule": {
+      "thresholds": {
+        "mean6_NMSE_vs_control_max_ratio": 1.05,
+        "mean6_NMSE_vs_reference_max_ratio": 1.05,
+        "clean_NMSE_max": 0.02,
+        "lowurban_gain_vs_control_min_pp": 0.5,
+        "lowurban_gain_vs_reference_min_pp": 0.5,
+        "midurban_gain_vs_control_min_pp": 0.5,
+        "midurban_gain_vs_reference_min_pp": 0.5,
+        "clean_drop_vs_original_max_pp": 0.1,
+        "worst_lowurban_TX_vs_control_min_pp": -1.0,
+        "worst_lowurban_TX_vs_reference_min_pp": -1.0,
+        "worst_other_scene_vs_control_min_pp": -0.5,
+        "worst_other_scene_vs_reference_min_pp": -0.5
+      },
+      "sampling_max_disagreement_percent": 5.0,
+      "all_four_references": [
+        "20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16",
+        "20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15",
+        "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+        "20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10"
+      ],
+      "ranking": "All R17/native AND R16/native AND R15/native guards;rank lowmidmean,lowestTX,lowestRX,lexicalname"
+    },
+    "evaluation_readers": [
+      "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701 original defaulthead"
+    ]
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/flow-start-restoration",
+    "gpu_policy": "OnlyafteroriginalR19ANALYZEDandallownedPIDsnotlive;pool0/1/5/7,max2ownworkersone/card,allownercap2/free12GB;capacity4lockuntilCUDApidvisible",
+    "remote_run_root": "runs/20261020-phase1-restoration-flow-start-selfsup-s2026092701-m2-r20",
+    "remote_log_root": "logs/20261020-phase1-restoration-flow-start-selfsup-s2026092701-m2-r20",
+    "local_artifact_root": "local_artifacts/pamf_restoration/flow_start_r20_20261020",
+    "launch_command": "python -u -m experiments.pamf_flow_start_restore.runner run --preceding-run ../../runs/20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19 --unrolled-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --single-run ../../runs/20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16 --fft-run ../../runs/20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-run ../../runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-flow-start-selfsup-s2026092701-m2-r20 --expected-commit 98c1822f88baa546db267dd97efe00f10870afd3",
+    "stop_rule": "Wrongsource/parent,collision,nonfinite,invalidpredictions:stopfailedrow,holdpending,preservehealthyrows,noautomaticretry;liveR19blockslaunch"
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "resolved_config.json",
+    "workers.json",
+    "queue_state.json",
+    "{row}/resolved_config.json",
+    "{row}/training.jsonl",
+    "{row}/training_complete.json",
+    "{row}/native_map_prior/final.pt",
+    "{row}/native_map_prior/prediction/complete.json",
+    "{row}/native_map_prior/summary.json",
+    "{row}/native_map_prior/flow_source_summary.json",
+    "{row}/sampling_stability/logits.npy",
+    "{row}/sampling_stability/complete.json",
+    "source_decision.json",
+    "complete.json",
+    "Conditional:{winner}/target_confirmation/native_map_prior/prediction/complete.json,summary.json;goal_assessment.json;target_complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "IQNMSEfull/prefix232/tail24",
+      "FFTlogpowerL1",
+      "originalF50accuracy/MacroF1",
+      "repair/damage",
+      "pairedcleanfeaturecosine/capped512sameTXmargin",
+      "completeLUexposure/parameters/trainingseconds/peakmemory",
+      "batch1latency",
+      "3draw_source128_argmax_disagreement_percent",
+      "trainingvelocityNMSE",
+      "teacher_path_endpoint_NMSE_not_samplerperformance"
+    ],
+    "dimensions": [
+      "clean",
+      "three suburban separately",
+      "three urban separately",
+      "TX",
+      "RX",
+      "day",
+      "train role/state/lock"
+    ],
+    "primary": "Fixedprimarysource1800x7 plus128lowurban3draw;allfourreferenceguards AND disagreement<=5%;fixedrankonewinner conditionalformal168000x7",
+    "prediction_ref": "runs/20261020-phase1-restoration-flow-start-selfsup-s2026092701-m2-r20/{zero_start,noise_start}/native_map_prior/prediction;conditional{winner}/target_confirmation/native_map_prior/prediction",
+    "scorer_ref": "experiments.pamf_flow_start_restore.runner score_source/score_target;source3drawvalidBEFOREindependentCPUtruth;targetall7fixedBEFOREtruth",
+    "final_user_targets": {
+      "lowurban_accuracy_min": 70.0,
+      "other_five_max_gap_vs_original_clean_pp": 5.0
+    }
+  },
+  "rows": [
+    {
+      "row_id": "zero_start",
+      "method": "flow_start_restore",
+      "purpose": "source_eligible_zero_start",
+      "config_ref": "experiments/pamf_flow_start_restore/design.py#configuration",
+      "resolved_config_ref": "runs/20261020-phase1-restoration-flow-start-selfsup-s2026092701-m2-r20/zero_start/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027,
+        "training_noise": 202610202000,
+        "primary_sampling": 202610202001,
+        "stability_sampling": [
+          202610202002,
+          202610202003,
+          202610202004
+        ]
+      },
+      "seed_notes": "R07thenreset2701;data2001/cache1912/sourceV1902/formal2027;trainnoise202610202000;primary202610202001;diagnostic202610202002/003/004;no support stage",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "Newprior20/4940;1389250trainable/3546797total;train1Core/inference16Core+6CG;L126000/U1134000exposures;componentE60/F50E50separate",
+      "output_root": "runs/20261020-phase1-restoration-flow-start-selfsup-s2026092701-m2-r20/zero_start",
+      "log_path": "runs/20261020-phase1-restoration-flow-start-selfsup-s2026092701-m2-r20/logs/train-zero_start.log",
+      "command": "python -u -m experiments.pamf_flow_start_restore.runner run --preceding-run ../../runs/20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19 --unrolled-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --single-run ../../runs/20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16 --fft-run ../../runs/20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-run ../../runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-flow-start-selfsup-s2026092701-m2-r20 --expected-commit 98c1822f88baa546db267dd97efe00f10870afd3",
+      "expected_artifacts": [
+        "smoke.json",
+        "resolved_config.json",
+        "workers.json",
+        "queue_state.json",
+        "{row}/resolved_config.json",
+        "{row}/training.jsonl",
+        "{row}/training_complete.json",
+        "{row}/native_map_prior/final.pt",
+        "{row}/native_map_prior/prediction/complete.json",
+        "{row}/native_map_prior/summary.json",
+        "{row}/native_map_prior/flow_source_summary.json",
+        "{row}/sampling_stability/logits.npy",
+        "{row}/sampling_stability/complete.json",
+        "source_decision.json",
+        "complete.json",
+        "Conditional:{winner}/target_confirmation/native_map_prior/prediction/complete.json,summary.json;goal_assessment.json;target_complete.json"
+      ]
+    },
+    {
+      "row_id": "noise_start",
+      "method": "flow_start_restore",
+      "purpose": "source_eligible_noise_start",
+      "config_ref": "experiments/pamf_flow_start_restore/design.py#configuration",
+      "resolved_config_ref": "runs/20261020-phase1-restoration-flow-start-selfsup-s2026092701-m2-r20/noise_start/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027,
+        "training_noise": 202610202000,
+        "primary_sampling": 202610202001,
+        "stability_sampling": [
+          202610202002,
+          202610202003,
+          202610202004
+        ]
+      },
+      "seed_notes": "R07thenreset2701;data2001/cache1912/sourceV1902/formal2027;trainnoise202610202000;primary202610202001;diagnostic202610202002/003/004;no support stage",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "Newprior20/4940;1389250trainable/3546797total;train1Core/inference16Core+6CG;L126000/U1134000exposures;componentE60/F50E50separate",
+      "output_root": "runs/20261020-phase1-restoration-flow-start-selfsup-s2026092701-m2-r20/noise_start",
+      "log_path": "runs/20261020-phase1-restoration-flow-start-selfsup-s2026092701-m2-r20/logs/train-noise_start.log",
+      "command": "python -u -m experiments.pamf_flow_start_restore.runner run --preceding-run ../../runs/20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19 --unrolled-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --single-run ../../runs/20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16 --fft-run ../../runs/20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-run ../../runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-flow-start-selfsup-s2026092701-m2-r20 --expected-commit 98c1822f88baa546db267dd97efe00f10870afd3",
+      "expected_artifacts": [
+        "smoke.json",
+        "resolved_config.json",
+        "workers.json",
+        "queue_state.json",
+        "{row}/resolved_config.json",
+        "{row}/training.jsonl",
+        "{row}/training_complete.json",
+        "{row}/native_map_prior/final.pt",
+        "{row}/native_map_prior/prediction/complete.json",
+        "{row}/native_map_prior/summary.json",
+        "{row}/native_map_prior/flow_source_summary.json",
+        "{row}/sampling_stability/logits.npy",
+        "{row}/sampling_stability/complete.json",
+        "source_decision.json",
+        "complete.json",
+        "Conditional:{winner}/target_confirmation/native_map_prior/prediction/complete.json,summary.json;goal_assessment.json;target_complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "UserreportR5explicitfixedvsrandomstartablation;R03sigma.02source switching7.03125motivates,butoldcache/mixnotmatchedcontrol;R20methodfixedbeforeR19source/targetknown.",
+    "sigma0=0/.02normalizedresidualunits;identicalEncoder5/Core2/time64fullinitialstates;onlyR07frozencontext;newprior scratch20/4940,0TX/Fweights/Foutputs/target/Vupdates.",
+    "e=(clean-base)/SCALE,z0=sigma*epsilon,z_t=(1-t)z0+t*e,target=e-z0;SCALE²velocityMSE/currentcleanpower;uniformt,independentnormalnoise;bothrowsdrawsameepsilon/tstreamevenzero.",
+    "Trainonevelocitycall;teacher-pathendpointerroronlydiagnostic,notfullsamplerperformance;inference16Eulerwithconditioncachedonce,then6CGwarmcoarse;oneIQforalloriginalPAMFviews.",
+    "Explicitworker-ownedtorchGeneratornoiseindependentlabels/IQcontent/IDs/globalFrng;fixedprimaryseed/batch128;givenfixedepsilonpacketindependence;no drawselection/calibration/prototypeupdate.",
+    "Sourceprimary1800x7fixedthenlowurbanfirst128subset3extraseedsfullsampler/Fdefaulthead;validatebeforetruth;anyargmaxdisagreement<=5;zero0byconstructionnotidentityproof.",
+    "AllL6300/U56700used;20epochsL126000/U1134000exposures;R07cache15clean85residual,order2001,augmentation1912;AdamW2e-4to2e-5warm247WD1e-4clip1FP32batch256.",
+    "Fourfixednative/R15/R16/R17sourceguards unchanged plus stochasticstability;fixedrankonewinner;otherwise0target;R19newsource/targetnotselectionreference.",
+    "Conditionaloriginal168000x7F50defaultheadtruthlast;R17cachedformalonlyafternewscore;goallowurban70,eachotherrawcleanminus5;previouslyexposedbenchmarknotnewblindtest.",
+    "Nativewhiteinputvarianceproxy notfullcovariance;no trueA/noise/TX/sceneconditions/hardprojection/clipping;notI2SB/Schrodingerbridge/fullposterior/perdetailproof.",
+    "OneindependentP0P1sourceimmutable-summarybugfailed-firstreproduced,fixednewflow_source_summaryandcontrollerinput,targetedPASS;28focusedchecks/compile/helpPASS.",
+    "WAITING_R19:localcodeandpreregonly;noR20remote preflight/deploy/workeruntiloriginalR19completeandcontroller/allworkersnotlive;preservehealthyothers.",
+    "Inference16Corecallsoneconditioner+6CG;training1Coreoneconditioner;conditioner465920/Core917058/time6272;1389250trainable,3546797total."
+  ],
+  "registered_at": "2026-10-19T19:37:31+00:00"
+}
