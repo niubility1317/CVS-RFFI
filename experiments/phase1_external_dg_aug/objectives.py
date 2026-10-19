@@ -95,7 +95,15 @@ def step(net, c, x, y, rx, optimizer, augment, progress, batch_index, *,
         objective = objective + native_loss
     optimizer.zero_grad()
     if fed_optimizer is not None: fed_optimizer.zero_grad()
-    objective.backward(); finite(net, objective); optimizer.step()
+    objective.backward()
+    try:
+        finite(net, objective)
+    except FloatingPointError as error:
+        bad = [name for name, parameter in net.named_parameters()
+               if parameter.grad is not None and not torch.isfinite(parameter.grad).all()]
+        raise FloatingPointError('Nonfinite joint objective: row=%s stage=%s batch=%s loss=%s gradients=%s' %
+            (c['row_id'], stage, batch_index, float(objective.detach()), bad)) from error
+    optimizer.step()
     if fed_optimizer is not None: fed_optimizer.step()
     extra = 0.
     if c['family'] == 'riei' and full:

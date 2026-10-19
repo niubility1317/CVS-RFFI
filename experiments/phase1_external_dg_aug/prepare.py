@@ -7,7 +7,7 @@ import sys
 from .plan import make_plan, RUN, COST_RUN, REPLACES, PARENT
 
 ROOT=Path(__file__).resolve().parents[2]
-LOCAL='local_artifacts/phase1_external_dg_aug_pl_gpu23_20261019'
+LOCAL='local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019'
 
 
 def base_spec(run_id):
@@ -83,7 +83,7 @@ def register():
     cost=base_spec(COST_RUN)
     cost.update(run_id=COST_RUN,group_id='phase1-nonpamf-concat-PL-cost',display_name='Phase1拼接增强/普通PL：96冻结模型统一推理成本',
         description='219性能训练全部闭合后，同一空闲GPU2/3测96个冻结checkpoint；合成IQ、零新增训练、无query。',
-        kind='diagnostic',stage='Phase1',parent_run_ids=[RUN],replaces_run_id='20261019-phase1-external-dg-concat-pl-cost-m96-r01',
+        kind='diagnostic',stage='Phase1',parent_run_ids=[RUN],replaces_run_id='20261019-phase1-external-dg-concat-pl-cost-m96-r02',
         authorization=spec['authorization'],tags=['non-PAMF','frozen-cost','concat-satellite','plain-PL','two-GPU'])
     cost['code']=spec['code'];cost['data']=dict(dataset='synthetic zeros',version='FP32 Bx2x256',representation='resident GPU synthetic IQ',
         contract_ref='upstream frozen checkpoint contracts only',physical_ids_ref=None,label_map_ref=None,source_receivers=None,

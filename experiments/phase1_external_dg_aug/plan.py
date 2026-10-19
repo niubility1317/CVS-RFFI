@@ -3,9 +3,9 @@ from copy import deepcopy
 
 from experiments.phase1_external_dg.plan import SEEDS, VIEWS, make_plan as old_plan, native_row, resnet_row
 
-RUN = '20261019-phase1-external-dg-concat-pl-m219-r02'
-COST_RUN = '20261019-phase1-external-dg-concat-pl-cost-m96-r02'
-REPLACES = '20261019-phase1-external-dg-concat-pl-m219-r01'
+RUN = '20261019-phase1-external-dg-concat-pl-m219-r03'
+COST_RUN = '20261019-phase1-external-dg-concat-pl-cost-m96-r03'
+REPLACES = '20261019-phase1-external-dg-concat-pl-m219-r02'
 PARENT = '20261019-phase1-pamf-dg-nativebudget-m24-r01'
 
 

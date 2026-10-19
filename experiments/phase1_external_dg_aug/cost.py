@@ -12,7 +12,7 @@ from .data import read, write
 from .driver import atomic, process_alive
 from .plan import SEEDS, make_plan
 
-COST_RUN = '20261019-phase1-external-dg-concat-pl-cost-m96-r02'
+COST_RUN = '20261019-phase1-external-dg-concat-pl-cost-m96-r03'
 BATCHES = (1, 128)
 WARMUP = 100
 REPEATS = 1000

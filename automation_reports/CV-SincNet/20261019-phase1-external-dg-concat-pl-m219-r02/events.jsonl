@@ -1,1 +1,2 @@
 {"at": "2026-10-19T06:34:39+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T06:42:23+00:00", "status": "FAILED", "note": "r02在首行IB+PL源smoke发生非有限梯度，零正式GPU行，dispatcher已退出；成本为上游失败退出、零测量。输入/初始化有限，3次独立批次及完整33项诊断重放PASS，首次原因未确定；不声称修复。保留失败和全部诊断。相同219配方r03作一次技术恢复，只加失败定位，GPU仍2/3。", "evidence": ["local_artifacts/phase1_external_dg_aug_pl_gpu23_20261019/smoke_failure.json", "local_artifacts/phase1_external_dg_aug_pl_gpu23_20261019/full_smoke_reproduction.json"], "row_id": null}
