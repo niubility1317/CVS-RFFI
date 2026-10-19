@@ -212,3 +212,6 @@ R21 四步路径／实际终点目标：SOURCE_NOT_QUALIFIED，选定 None。各
 
 
 R22 三步解析观测量目标：SOURCE_NOT_QUALIFIED，选定 None。各新prior20/4940、全63000L/U、0TX/F/target训练，五固定源参考保护。本轮没有新正式目标集成绩，持续目标尚未证实。[完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-analytic-unrolled-selfsup-s2026092701-m2-r22/report.md)。持续目标保持active。
+
+
+R23 coarse联合恢复目标：SOURCE_NOT_QUALIFIED，选定 None。各新prior20/4940、全63000L/U、0TX/F/target训练，五固定源参考保护。本轮没有新正式目标集成绩，持续目标尚未证实。[完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-joint-coarse-selfsup-s2026092701-m2-r23/report.md)。持续目标保持active。

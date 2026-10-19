@@ -1,50 +1,88 @@
 # coarse 与三步先验的无 TX/F 联合恢复 R23
 
-状态：**RUNNING**。方法 `d43dbab326d0b1e2cb6fb7faa23dc9a3ec25a025` 已固定、推送并独立核对远端 OID。实际源checkpoint/defaultF入口与两条GPU worker的PID/CWD/argv/GPU/日志增长已核实；尚无完整源评估或新正式测试成绩。未改变正在运行的训练与选择规则。
+状态：**ANALYZED / SOURCE_NOT_QUALIFIED**。本轮没有新正式目标集成绩，持续目标尚未证实。 两行均完成 E20/4940、全部源评分及预登记条件工作，控制器和本 run worker 自然退出。方法 `d43dbab326d0b1e2cb6fb7faa23dc9a3ec25a025`。结构、学习率、资格、排序和末轮规则没有使用目标反馈改变。
 
-本次只读核查使用当前所有已完成轮次，未读取TX/F/V/target，未改变优化器、权重或排序。核查范围如下，曝光次数不表示新增独立物理样本数：
+本轮严格实现已登记的 coarse 联合对照，属于用户接收链报告思路的扩展，并非原六类矩阵的逐项复现。两行均继承同一个合规 R07 完整上下文及 R02 coarse20，三个 R17 Core9 prior 从头初始化；全部初始权重和输出相同。不加载 R17/R19/R22 训练后 prior。每步两次 warm CG、coarse 锚定，最终一份 IQ 进入原 PAMF，由其原始分支一致生成 FFT/PA/统计/时域量。
 
-|行|已核查轮次|prior更新|coarse更新|estimator更新|L曝光|U曝光|
-|---|---|---|---|---|---|---|
-|prior_only|8|1976|0|0|50400|453600|
-|joint_coarse|5|1235|1235|0|31500|283500|
+`prior_only` 只更新 prior；`joint_coarse` 额外以0.1倍学习率更新 coarse，梯度经固定估计器关于 coarse 输入的导数、作用/方差、复数 CG 返回。两行估计器参数都冻结；其预测值仍可能随 coarse 改变，不能声称作用/噪声参数固定或可辨识。仅有 detach clean 的逐包 IQ NMSE，没有解析/FFT辅助损失、身份/伪标签或 F 引导。训练使用全部6300 L/56700 U，TX标签、训练好的F权重/输出、V拟合、target训练读取均为0。clean→received模拟配对允许但须披露，准确名称为“TX无标签模拟自监督”，不是无clean或整个识别链无监督。原F50 seed2026092701/defaulthead只在冻结后评估，未重训或替换头；源V身份标签仅用于固定资格。
 
-下面为当前设计与追踪。训练和预测仍按原入口串联，源资格失败则0target；退出检查在实际进程终止后完成，不把启动核实当作退出核实。
+以下是1800条固定sourceV的源验证结果，不是正式168000条目标集。郊区和urban各三场景、clean及逐TX/RX/day的准确率、MacroF1、混淆矩阵、修复/损坏、波形与配对clean特征见[汇总](summary.json)和[逐组数据](row_metrics.csv)。
 
+|源场景|native_reference|fft_reference|single_shot|unrolled_reference|alternating_reference|prior_only|joint_coarse|
+|---|---|---|---|---|---|---|---|
+|clean|98.4444|98.4444|98.4444|98.4444|98.4444|98.4444|98.4444|
+|高仰角郊区|98.0000|97.9444|97.8333|97.8333|97.8889|97.9444|98.0556|
+|中仰角郊区|96.6667|96.6667|96.9444|96.7778|96.8333|96.7222|96.8889|
+|低仰角郊区|95.9444|96.0556|95.9444|95.9444|96.2222|96.0556|96.0000|
+|高仰角城区|97.0000|96.8889|97.2222|97.0000|97.3889|97.1667|97.2778|
+|中仰角城区|89.8889|90.1667|90.7222|91.4444|92.5556|91.7222|91.5000|
+|低仰角城区|82.1667|82.5000|84.3889|86.8333|88.2778|86.4444|86.7222|
 
-状态：RUNNING，真实入口与两条 GPU worker 已核实。持续目标为原冻结 F50 seed2026092701/defaulthead 下，正式 low urban ≥70%；其他五个受损场景分别 ≥79.6761904762%（原始 raw clean 84.6761904762%−5 个百分点）。restored clean 损伤单列。源域证据不能代替正式结果。
+|源IQ NMSE|native_reference|fft_reference|single_shot|unrolled_reference|alternating_reference|prior_only|joint_coarse|
+|---|---|---|---|---|---|---|---|
+|clean|0.00009617|0.00009617|0.00009617|0.00009617|0.00009617|0.00009617|0.00008154|
+|高仰角郊区|0.01046707|0.01042492|0.01090087|0.00898618|0.00879958|0.00891726|0.00899971|
+|中仰角郊区|0.01539733|0.01535856|0.01554777|0.01297654|0.01242056|0.01287681|0.01289273|
+|低仰角郊区|0.01939996|0.01926939|0.01919486|0.01615114|0.01533881|0.01609618|0.01606345|
+|高仰角城区|0.01474365|0.01460483|0.01465043|0.01238056|0.01185807|0.01234566|0.01245112|
+|中仰角城区|0.04131214|0.04097974|0.03884036|0.03438081|0.03248636|0.03444006|0.03444254|
+|低仰角城区|0.06428189|0.06342117|0.05999025|0.05259345|0.04972775|0.05294320|0.05289212|
 
-R22 的源域配对结果为：解析约束相对 IQ 控制 low urban +0.5556 pp、mid urban +0.1667 pp，但 mean6 IQ NMSE 增加 2.0001%，没有通过固定五参考资格。R17/R18/R19/R22 均固定 R07 coarse 和接收作用估计权重。R14 已知作用诊断不构成整个模型理论上界，亦没有支持单独追求作用估计精度。本轮检验另一个明确问题：在固定接收作用估计权重时，允许 coarse 适应最终三步恢复目标，是否改善源域观测与身份保真。历史 F 引导联合训练属于另一权限路线，不能混作本轮 0 F 训练对照。
+同轮匹配中，joint相对control的low urban变化+0.2778pp、mid urban变化-0.2222pp，六场景平均IQ NMSE相对增加 0.0890%。训练秒数比1.427；不同GPU/并发负载，不是严格同卡速度比较。两行部署参数和图相同，但joint有更多可训练参数及反传计算，不能称相同训练FLOPs。
 
-两行 `prior_only` 与 `joint_coarse` 均从同一个合规 R07 完整上下文及同一个 scratch R17 三步不共享 Core9 初值开始，初始全部张量和输出完全相同。每步两次 warm CG、coarse 锚定，部署为一份恢复 IQ；原 PAMF 的所有视图继续从该 IQ 计算。`prior_only` 仅更新三个 prior；`joint_coarse` 还更新 coarse，学习率为 prior 的 0.1 倍。作用估计器参数在两行都冻结；joint 行梯度通过固定估计器关于 coarse 输入的导数、作用和方差、CG 返回 coarse。因此估计器权重固定不代表其预测的作用和方差在训练中固定，不称接收参数可辨识或物理正确。
+|源low urban TX|native_reference|fft_reference|single_shot|unrolled_reference|alternating_reference|prior_only|joint_coarse|
+|---|---|---|---|---|---|---|---|
+|14-10|74.7508|77.4086|77.0764|78.0731|81.7276|79.4020|78.7375|
+|14-7|70.2341|72.2408|69.2308|73.5786|75.5853|72.5753|72.2408|
+|20-15|83.9161|85.3147|87.0629|91.9580|93.3566|93.0070|94.0559|
+|20-19|78.4983|71.3311|82.9352|83.9590|83.6177|80.5461|82.2526|
+|6-15|89.9351|92.5325|94.4805|95.4545|97.0779|94.8052|95.1299|
+|8-20|94.8882|95.2077|94.8882|97.4441|97.7636|97.7636|97.4441|
 
-全部原 6300 L_s/56700 U_s，原 R07 二十轮 received 缓存，batch256、20 epoch/4940 updates，model2026092701/data2026102001/cache2026101912。TX 标签、训练好的 F 权重/输出、源 V 拟合及 target 训练读取均为 0。只有逐包 IQ NMSE，clean target detach，无额外解析/FFT/身份/伪标签损失。允许的 clean→received 模拟配对须披露，准确名称为“TX 无标签模拟自监督”。F50 及原默认头只在训练冻结后评估，不重训或替换。
+五固定源参考全部保护，合格排序 `[]`，选定 `None`。不因某个平均量改善忽略最差TX或clean损伤。
 
-prior AdamW 2e-4→2e-5、coarse 2e-5→2e-6；共同 warm247/cos、WD1e-4、FP32/noTF32、固定末轮。prior 与 coarse 参数组各自 clip norm1，逐组报告裁剪比例。每行新的优化曝光 L126000/U1134000；作用估计器更新0，prior更新4940，coarse分别0/4940。同更新预算与相同部署不代表相同训练 FLOPs。顺序阶段为 coarse20+action20+本轮20；joint 行 coarse 累计40、action20、prior20，组件更新轮数不能混作新增独立数据或相同训练成本。
+|候选|参考组合|波形|身份|通过|low增益pp|mid增益pp|最差TX差pp|
+|---|---|---|---|---|---|---|---|
+|prior_only|R16/native|True|False|False|+2.0556|+1.0000|-2.3891|
+|prior_only|R15/native|True|True|True|+3.9444|+1.5556|+0.3344|
+|prior_only|R17/native|True|False|False|-0.3889|+0.2778|-3.4130|
+|prior_only|R19/native|False|False|False|-1.8333|-0.8333|-3.0717|
+|joint_coarse|R16/native|True|True|True|+2.3333|+0.7778|-0.6826|
+|joint_coarse|R15/native|True|True|True|+4.2222|+1.3333|+0.0000|
+|joint_coarse|R17/native|True|False|False|-0.1111|+0.0556|-1.7065|
+|joint_coarse|R19/native|False|False|False|-1.5556|-1.0556|-3.3445|
 
-仅继承 R07（`20261019-phase1-restoration-learned-action-source-s2026092701-r07`，`c8ccdfdbd03ab5ad8828b1eb9210b99a664ebe7b`）及其 R02 coarse 来源，沿用已核实 original7/63/30、原物理 ID 和完整来源结论，不加载 R17/R19/R22 的训练后 prior，不扩大数据角色。R23 新 checkpoint schema 明确记录 coarse/estimator/prior 更新权限及实际更新数，拒绝旧 schema 或不一致来源。
+两候选均未通过全部五源参考条件，因此本 run 保持 **0 target**，没有启动目标预测或 truth 评分。源域结果不代替正式 70%/5 pp 目标；没有放宽条件或选择性重跑。
 
-固定源1800×七视图全部预测后独立 CPU truth 评分。五个既定参考 native/R15/R16/R17/R19 及原波形/身份/clean/最差 TX/其他场景保护不变；全部合格后按 low/mid 均值、最差 TX、最差 RX、名称排序，至多选一行。若无合格者则 0 target。若选定则自动完成原168000×七视图、原冻结 F50/defaulthead、全部预测固定后独立 truth-last。源/正式分别报告三郊区、三urban、clean、逐 TX/RX/day、修复/损坏、波形/特征/成本及缺项。已暴露基准不称新盲测；旧正式成绩不得反馈本轮结构或选择。
+源资格未通过时，正式配对身份诊断不适用。
 
-本地实现和聚焦检查后，实际代码 commit、一次独立 P0/P1、最小登记、新不可覆盖 release/run root、一次 N607 预检/归档比对/编译。launcher 首步真实2Ls/checkpoint/noquery smoke，PASS 后立即队列训练和条件测试。沿用池0/1/5/7、最多两条本任务 GPU worker、每卡一条、全 owner cap2/free12GB、共享容量锁直至 CUDA PID 可见。R22 原所属进程已自然退出仍须入口核实；不修改其他 owner。只有预登记系统技术故障停止并保留产物，不因低分重启或热改。
+|行|prior更新|coarse更新|estimator更新|coarse累计轮数|
+|---|---|---|---|---|
+|prior_only|4940|0|0|20|
+|joint_coarse|4940|4940|0|40|
 
-|ID|来源|要求|目标文件|状态|验证|说明|
-|---|---|---|---|---|---|---|
-|J23-01|报告接收链逆问题|同完整初值/部署，仅 coarse 梯度权限变化|models.py/design.py|verified|初值/输出/逐包测试 PASS|严格实现本轮对照；非首次联合网络研究|
-|J23-02|无监督首先正确|全 LU、0TX/F/target、clean仅训练目标|training.py/runtime.py|pending|负测/完整训练记录|模拟配对自监督，非无 clean 训练|
-|J23-03|可达梯度|三 prior 和 joint coarse 真正更新，estimator不更新|models.py/training.py|implemented|真实梯度/优化器一步/完整更新计数|joint 包含固定估计器输入导数|
-|J23-04|数据与继承权限|只继承原 R02/R07、schema隔离|runtime.py|verified|来源负测/真实checkpoint入口|不重验未变数据|
-|J23-05|两阶段三层验收|五参考固定源选择及条件正式隔离|evaluation.py/controller.py|implemented|负测/全部预测后truth|无资格0target|
-|J23-06|资源与最小发布|登记/commit/smoke/一次review/队列与退出|runner.py/controller.py/登记|implemented|发布/队列已核实；退出待实际结束|不增加其他门槛|
-|J23-07|全场景身份保真|源及条件正式、逐组指标、成本/Git交付|report/summary|pending|独立评分与报告|不以NMSE代替TX归属|
-|J23-08|逐细节归属|多seed、独立物理族、逐细节真实性|后续研究|deferred|尚无合格候选|当前不得宣称完成|
+prior AdamW2e-4至2e-5，coarse2e-5至2e-6，共同warm247/cos、WD1e-4、batch256、FP32/noTF32；两个参数组各clip1并单独记录每轮学习率/裁剪比例。每行L126000/U1134000优化曝光，没有新增尺度拟合。顺序阶段为coarse20+action20+本轮20；组件累计为control coarse20或joint coarse40、estimator20、prior20，不能把并行组件更新相加冒充新的80轮顺序训练。原F50监督E50另列。
 
-当前2 verified、3 implemented、2 pending、1 deferred、0 blocked。29项聚焦检查、compile/help、一次独立P0/P1及实际checkpoint入口、发布与两条worker运行证据已通过；退出及完整训练/源评估/条件正式结果仍待返回。最高剩余风险为 coarse 漂移、跨 RX 泛化与逐细节身份真实性。
+|行|总/可训练参数|原训练秒数|batch1中位/P90 ms|
+|---|---|---|---|
+|unrolled_reference|4665073/2507526|1668.396|44.028/45.129|
+|alternating_reference|6083767/3926220|3171.370|64.169/65.602|
+|prior_only|4665073/2507526|1668.259|45.921/60.457|
+|joint_coarse|4665073/3813484|2381.421|42.741/43.233|
 
-实际参数：{"prior_only": {"total": 4665073, "groups": {"prior": 2507526}}, "joint_coarse": {"total": 4665073, "groups": {"prior": 2507526, "coarse": 1305958}}}。参数统计仅构造恢复器，未读取训练好的 F/TX/target。
-非阻断记录：REJECTED_EXTRA_GATE——通用全仓库测试要求由项目聚焦负测协议覆盖，未添加全面测试或重复 review 门槛。
+两行部署均4665073参数；prior_only可训练2507526，joint_coarse可训练3813484（额外coarse1305958）。batch1测量包括上下文与全部部署步骤，固定源low urban16条、2次预热，不是同卡严格速度结论。
 
-完整矩阵、命令、环境/CWD、路径、GPU及停止规则见[登记](experiment.json)。
+|行|coarse相对L2变化|estimator逐位不变|
+|---|---|---|
+|prior_only|0.00000000|True|
+|joint_coarse|0.01322989|True|
 
+取回本轮epoch0共同初始checkpoint和两行完整末轮权重，严格schema加载后直接连接原F50/defaulthead，两条真实Ls输出有限、逐包/合批一致。独立张量比较确认control coarse完全不变、joint coarse变化，两行estimator完全不变，三个prior均变化。完整变化量与逐包误差见汇总；参数变化本身不证明身份细节恢复。
 
-控制行的完整源评分已返回：[prior_only局部报告](source_control_interim.md)。本矩阵仍RUNNING，未改变其他行或最终选择规则；该局部结果不冒充正式测试。
+新增40轮及四参考80轮完整历史均解析，共162日志行，致命错误0、warning 0；没有用抽样代替完整训练分析。另比较全部20轮R17与本轮prior_only的更新、曝光、LR、clip、损失及分层NMSE，逐位轨迹相同为False，差异字段为['losses', 'strata']；原因未确定，不以数学公式相同宣称确定性重现，也不将跨轮差异归因于单一机制。
+
+29项聚焦检查（包括实际64抽头/复杂CG反传）、compile/help、一次独立P0/P1、单次预检/归档比对/远端编译、真实2Ls/checkpoint/defaultF入口，以及PID/CWD/argv/GPU/日志增长均VERIFIED。实际运行中原始数据角色与来源不变，未停止或修改其他owner。验证命令：`python -X utf8 -m pytest tests/test_pamf_joint_coarse_restore.py -q`、`python -X utf8 -m compileall -q experiments/pamf_joint_coarse_restore`、`python -X utf8 -m experiments.pamf_joint_coarse_restore.runner --help`；29检查由原28全量通过及新增64抽头定向通过组成，没有重复全仓库检查。
+
+该单seed实验仍不能证明每个生成细节属于输入TX；coarse漂移、RX/信道混杂、跨接收机泛化及独立物理族仍需后续合格候选验证。已暴露基准不称新盲测；数值目标和身份真实性分别保留未证实项。数据、权重和原始日志不提交。
+
+[设计追踪](../../../docs/PAMF_JOINT_COARSE_R23_20261020.md)：7verified、0implemented、0pending、1deferred、0blocked；1条额外全仓库测试要求已拒绝。持续目标active。
