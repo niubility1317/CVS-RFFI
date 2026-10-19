@@ -5,3 +5,6 @@
 {"at": "2026-10-19T15:59:03+00:00", "status": "ANALYZED", "note": "Sourcefixedrulefailed,no newtargetaccess", "evidence": ["report.md", "experiment.json"], "row_id": "joint_feature"}
 {"at": "2026-10-19T15:59:03+00:00", "status": "RUNNING", "note": "Sourcequalifiedselected;actualtargetPID/CWD/cmd/GPU/loggrowth,0scoresyet", "evidence": ["report.md", "experiment.json"], "row_id": "joint_posterior"}
 {"at": "2026-10-19T15:59:03+00:00", "status": "RUNNING", "note": "Sourcechoicefrozen;selectedtargetfull7views/3Factive,truthlastpending", "evidence": ["report.md", "experiment.json"], "row_id": null}
+{"at": "2026-10-19T16:11:39+00:00", "status": "ANALYZED", "note": "Sourcecomplete;notargetaccess", "evidence": ["report.md", "results/summary.json"], "row_id": "joint_feature"}
+{"at": "2026-10-19T16:11:39+00:00", "status": "ANALYZED", "note": "Sourcecomplete;selectedandtargetcomplete", "evidence": ["report.md", "results/summary.json"], "row_id": "joint_posterior"}
+{"at": "2026-10-19T16:11:39+00:00", "status": "ANALYZED", "note": "Sourcequalified=True;selected=joint_posterior;wholegoalnotclaimedcomplete", "evidence": ["report.md", "results/summary.json"], "row_id": null}
