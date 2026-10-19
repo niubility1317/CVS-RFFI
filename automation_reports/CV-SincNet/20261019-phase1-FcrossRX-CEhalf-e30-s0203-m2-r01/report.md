@@ -23,3 +23,5 @@ CE_HALF 保持原 .5 satellite CE，两次 logits 分别计算后平均，原全
 发布已 VERIFIED：实际代码 ccd7a6afc5a0fd27ebf3498ff4f087c81290619d 已推送并独立比较远端OID一致；单次归档传输比较与远端编译通过，两个真实父默认头smoke共4NN／0IQ／0更新通过。调度器PID/CWD/argv独立核实，当前等待GPU2/3空位，尚未开始新增训练。
 
 资源说明：GPU2/3仍被其他owner占用。已向用户请求仅本次允许使用空闲GPU4/6；未收到明确回复前保持原2/3队列，不改GPU或训练配方。
+
+终态：FAILED_BEFORE_TRAINING。seed02在首个训练更新前因共享GPU争用退出；两个source目录均不存在，全部所属PID自然退出。训练更新0、target访问0，仅4NN旧烟测。原产物保留，由 20261019-phase1-FcrossRX-CEhalf-e30-s0203-m2-r02 替代；无科学分数或失败补零。

@@ -25,9 +25,20 @@ def worker(row):
         gpu = int(os.environ['CUDA_VISIBLE_DEVICES'])
         if gpu not in d.GPU_IDS:
             raise ValueError('Unregistered physical GPU')
-        with lock(Path(d.PROJECT) / 'runs/receiver_residual_capacity4.lock'):
-            if len(capacity()[gpu]['pids'] | {os.getpid()}) > 1:
-                raise ValueError('One total GPU worker per card, including other owners')
+        # Another owner can enter after dispatch but before this worker starts.
+        # Resource contention waits; it must not consume a scientific run.
+        while True:
+            with lock(Path(d.PROJECT) / 'runs/receiver_residual_capacity4.lock'):
+                state = capacity()[gpu]
+                pids = state['pids'] | {os.getpid()}
+                ready = len(pids) <= 1 and state['free_mb'] >= 12000
+                d.write(d.BASE / (row + '.capacity.json'), dict(
+                    status='CAPACITY_READY' if ready else 'WAITING_CAPACITY',
+                    gpu=gpu, pid=os.getpid(), total_pids=sorted(pids),
+                    max_total_GPU_workers=1, free_mb=state['free_mb']))
+            if ready:
+                break
+            time.sleep(5)
         from .observer import train
         train(c)
     execute('predict', row)

@@ -5,8 +5,8 @@ from experiments.cvs_As_replicate49 import design as parents
 
 ROOT = Path(__file__).resolve().parents[2]
 PROJECT, SOURCE = parents.PROJECT, parents.SOURCE
-RUN = '20261019-phase1-FcrossRX-CEhalf-e30-s0203-m2-r01'
-RELEASE = 'cvs_FcrossRX_CEhalf_E30_s0203_20261019_r01'
+RUN = '20261019-phase1-FcrossRX-CEhalf-e30-s0203-m2-r02'
+RELEASE = 'cvs_FcrossRX_CEhalf_E30_s0203_20261019_r02'
 OWNER = 'codex/root/ce-half-three-seeds'
 BASE = Path(PROJECT) / 'runs' / RUN
 SEEDS = (2026092702, 2026092703)
@@ -16,7 +16,7 @@ FULL_FP32_POLICY, CLASSES = parents.FULL_FP32_POLICY, parents.CLASSES
 SCENES, FORMAL_VIEWS, TRUTH = parents.SCENES, parents.FORMAL_VIEWS, parents.TRUTH
 PANEL, SOURCE_CACHE = parents.PANEL, parents.SOURCE_CACHE
 VIEWS = ('clean',)
-GPU_IDS = (2, 3)
+GPU_IDS = (4, 6)
 read, write = parents.read, parents.write
 SEED01_RUN = '20261018-phase1-FcrossRX-satelliteCE-temperature-e30-s2026092701-m2-r01'
 SEED01 = Path(PROJECT) / 'runs' / SEED01_RUN / 'CE_HALF-s2026092701'
