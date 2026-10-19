@@ -152,3 +152,12 @@ Run ID `20261020-phase1-restoration-temporal-context-source-s2026092701-m2-r01`�
 46项聚焦检查及唯一一次独立P0/P1审查PASS，审查者复跑46项通过。一次N607普通账号预检VERIFIED：原R03合法、前序完整、新root不存在、GPU4/5各24124MB空闲无PID、空间≥8GB，保留其他owner。GPU4time/GPU5frequency，每卡一条本run worker，source≥18GB/target≥12GB/allowner<2/CPU scorer最多1。launcher首步真实R03/三F/四Ls no-query smoke，PASS立即训练；源V只诊断，固定最终E10两行都自动完整168000目标clean+六practical/三原默认头，各行七视图固定后独立CPU连接truth和pairedclean；实际source进程退出后同卡target，不作源筛选或目标反馈。方法commit`c68588016e6960e48ef3b320c8e5daeefc8f16ac`已实际发布，归档比较/编译、真实R03/三F/四Ls smoke均PASS；两条训练worker的PID/CWD/命令/GPU/持续日志增长及实际encoder非零梯度/滤波曝光已核实。当前尚无本轮新源V或目标准确率，用户完整目标仍未达成。
 
 Run ID `20261020-phase1-restoration-basis-filter-source-s2026092701-m2-r01`；[最小登记与方法](../../automation_reports/CV-SincNet/20261020-phase1-restoration-basis-filter-source-s2026092701-m2-r01/report.md)含命令、环境/CWD、矩阵、路径、资源、停止规则和预期产物，source_error_profile.json只含聚合误差。另一用户对话只读确认采用解析观测量损失/展开结构路线，未发消息或改动其文件/任务。
+
+
+## 当前输出梯度固定比较（实现完成，待发布）
+
+source误差分解显示精修在多个有效频带增加波形误差，末端time/frequency源low urban87.055556/86.888889也未明显超过posterior03。由此提出梯度冲突假设，尚未证明；新方案不根据新basis的目标成绩调整，原basis预测继续保持。`experiments/pamf_gradient_projection`两行scalar_sum/waveform_projection从原合法R03完整相同state独立开始，无新模块、2140840参数，原两项loss数值/三冻结F/缓存/顺序/预算保持。均计算每恢复IQ帧2×256坐标的wave/identity sum-loss梯度gw/gi；控制相加，投影臂仅在dot<0且norm²(gw)>1e-20时去除gi沿gw的冲突分量，合并除以实际IQ批量后一次原模型backward。记录实际conflict/applied/obs-clean/dot/norms，不把零冲突作为技术失败。
+
+这是单向IQ输出空间投影，借鉴[梯度投影论文](https://arxiv.org/abs/2001.06782)，不称完整参数空间PCGrad，也不保证共享Jacobian/AdamW后的参数步或最终波形收益。44项聚焦检查及一次独立P0/P1审查PASS；源Ls实际R03/三F no-query smoke为launcher首步，PASS立即训练。原R03 coarse20/corr20+jointE10/2470，每组件累计30轮、60组件epoch、串行50pass，0L/U TX真值/F更新/新头拟合。sourceV只诊断，两行固定最终E10自动完整168000目标七视图/三原头，七视图固定后独立CPU truth/pairedclean；不以source或目标成绩改参数/预算/顺序/选择性重跑。
+
+一次N607普通账号预检VERIFIED：GPU6/7各24124MB空闲无PID、原R03合法、新root不存在，前一basis在GPU4/5的实际target PID/CWD/cmd LIVE并保留。新GPU6scalar/GPU7projection各一worker，重叠期间本owner最多4GPUworkers、每卡1且allowner<2；新sourceCPUscorer等前basis完成再执行，全run独立scorer最多1。尚无本轮新模型性能，用户70%/近clean完整目标仍未达成。[最小登记与方法](../../automation_reports/CV-SincNet/20261020-phase1-restoration-gradient-projection-source-s2026092701-m2-r01/report.md)含命令、环境/CWD、矩阵、路径、资源、停止规则和产物；另一用户对话未被发送指令或改动。
