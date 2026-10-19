@@ -1,0 +1,496 @@
+{
+  "CPU": {
+    "status": "PASS",
+    "math": {
+      "status": "PASS",
+      "numeric_tail_value": 4,
+      "numeric_mean_value": 3.5,
+      "numeric_tail_gradient": [
+        0,
+        0.25,
+        0,
+        0.25,
+        0,
+        0.25,
+        0,
+        0.25
+      ],
+      "paired_physical_risk_selection": true,
+      "source_group_balance": true,
+      "pair_formula_oracle": true,
+      "no_pair_zero_gradient": true,
+      "protocol_negative_cases": 2,
+      "IQ_reads": 0,
+      "target_reads": 0
+    },
+    "protocol_negative_cases": 10,
+    "actual_feature_gradient_difference": 0.23855823278427124,
+    "scheduled_calls": 9990,
+    "source_geometry_promotion_test": true,
+    "individual_weak_guard": true,
+    "coverage_guard": true,
+    "actual_F_flows": [
+      {
+        "treatment": "MEAN_WEAK_RX",
+        "actual_identity_forwards": 2,
+        "extra_model_forwards": 0,
+        "aux_W_gradient": null,
+        "aux_Sinc_gradient_norm": 0.011002089828252792,
+        "aux_shallow_gradient_norm": 0.5417596101760864,
+        "aux_middle_gradient_norm": 0.16516654193401337,
+        "middle_parameter": "id_backbone.encoder.core.id_backbone.t2.dw.weight",
+        "main_W_gradient_norm": 4.017119407653809,
+        "combined_backward": true,
+        "actual_tail_record": {
+          "step": 1111,
+          "epoch": 6,
+          "scheduled": true,
+          "weight": 0.010000000000000002,
+          "loss": 2.1079351902008057,
+          "eligible": true,
+          "valid_cells": 20,
+          "available_anchor_objectives": 86,
+          "selected_anchor_objectives": 86,
+          "levels": [
+            {
+              "level": "time_down",
+              "loss": 2.5132713317871094,
+              "eligible": true,
+              "valid_cells": 10,
+              "available_anchors": 43,
+              "selected_anchors": 43,
+              "selected_fraction": 1,
+              "cells": [
+                {
+                  "TX": 1,
+                  "RX": 1,
+                  "available": 5,
+                  "selected": 5,
+                  "mean_loss": 2.155910015106201,
+                  "selected_loss": 2.155910015106201
+                },
+                {
+                  "TX": 1,
+                  "RX": 3,
+                  "available": 4,
+                  "selected": 4,
+                  "mean_loss": 3.036435842514038,
+                  "selected_loss": 3.036435842514038
+                },
+                {
+                  "TX": 1,
+                  "RX": 4,
+                  "available": 5,
+                  "selected": 5,
+                  "mean_loss": 2.180990219116211,
+                  "selected_loss": 2.180990219116211
+                },
+                {
+                  "TX": 1,
+                  "RX": 6,
+                  "available": 4,
+                  "selected": 4,
+                  "mean_loss": 2.128978729248047,
+                  "selected_loss": 2.128978729248047
+                },
+                {
+                  "TX": 1,
+                  "RX": 8,
+                  "available": 4,
+                  "selected": 4,
+                  "mean_loss": 2.0990612506866455,
+                  "selected_loss": 2.0990612506866455
+                },
+                {
+                  "TX": 3,
+                  "RX": 1,
+                  "available": 4,
+                  "selected": 4,
+                  "mean_loss": 3.020230770111084,
+                  "selected_loss": 3.020230770111084
+                },
+                {
+                  "TX": 3,
+                  "RX": 3,
+                  "available": 5,
+                  "selected": 5,
+                  "mean_loss": 2.9989571571350098,
+                  "selected_loss": 2.9989571571350098
+                },
+                {
+                  "TX": 3,
+                  "RX": 4,
+                  "available": 4,
+                  "selected": 4,
+                  "mean_loss": 2.584139823913574,
+                  "selected_loss": 2.584139823913574
+                },
+                {
+                  "TX": 3,
+                  "RX": 6,
+                  "available": 4,
+                  "selected": 4,
+                  "mean_loss": 2.3600006103515625,
+                  "selected_loss": 2.3600006103515625
+                },
+                {
+                  "TX": 3,
+                  "RX": 8,
+                  "available": 4,
+                  "selected": 4,
+                  "mean_loss": 2.5680079460144043,
+                  "selected_loss": 2.5680079460144043
+                }
+              ]
+            },
+            {
+              "level": "t2.pool",
+              "loss": 1.7025991678237915,
+              "eligible": true,
+              "valid_cells": 10,
+              "available_anchors": 43,
+              "selected_anchors": 43,
+              "selected_fraction": 1,
+              "cells": [
+                {
+                  "TX": 1,
+                  "RX": 1,
+                  "available": 5,
+                  "selected": 5,
+                  "mean_loss": 1.5398411750793457,
+                  "selected_loss": 1.5398411750793457
+                },
+                {
+                  "TX": 1,
+                  "RX": 3,
+                  "available": 4,
+                  "selected": 4,
+                  "mean_loss": 1.9572572708129883,
+                  "selected_loss": 1.9572572708129883
+                },
+                {
+                  "TX": 1,
+                  "RX": 4,
+                  "available": 5,
+                  "selected": 5,
+                  "mean_loss": 1.5039108991622925,
+                  "selected_loss": 1.5039108991622925
+                },
+                {
+                  "TX": 1,
+                  "RX": 6,
+                  "available": 4,
+                  "selected": 4,
+                  "mean_loss": 1.4440867900848389,
+                  "selected_loss": 1.4440867900848389
+                },
+                {
+                  "TX": 1,
+                  "RX": 8,
+                  "available": 4,
+                  "selected": 4,
+                  "mean_loss": 1.331810474395752,
+                  "selected_loss": 1.331810474395752
+                },
+                {
+                  "TX": 3,
+                  "RX": 1,
+                  "available": 4,
+                  "selected": 4,
+                  "mean_loss": 1.9165141582489014,
+                  "selected_loss": 1.9165141582489014
+                },
+                {
+                  "TX": 3,
+                  "RX": 3,
+                  "available": 5,
+                  "selected": 5,
+                  "mean_loss": 2.184924840927124,
+                  "selected_loss": 2.184924840927124
+                },
+                {
+                  "TX": 3,
+                  "RX": 4,
+                  "available": 4,
+                  "selected": 4,
+                  "mean_loss": 2.010911464691162,
+                  "selected_loss": 2.010911464691162
+                },
+                {
+                  "TX": 3,
+                  "RX": 6,
+                  "available": 4,
+                  "selected": 4,
+                  "mean_loss": 1.6471662521362305,
+                  "selected_loss": 1.6471662521362305
+                },
+                {
+                  "TX": 3,
+                  "RX": 8,
+                  "available": 4,
+                  "selected": 4,
+                  "mean_loss": 1.4895682334899902,
+                  "selected_loss": 1.4895682334899902
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "treatment": "TAIL_WEAK_RX",
+        "actual_identity_forwards": 2,
+        "extra_model_forwards": 0,
+        "aux_W_gradient": null,
+        "aux_Sinc_gradient_norm": 0.011966036632657051,
+        "aux_shallow_gradient_norm": 0.6644672751426697,
+        "aux_middle_gradient_norm": 0.2127911001443863,
+        "middle_parameter": "id_backbone.encoder.core.id_backbone.t2.dw.weight",
+        "main_W_gradient_norm": 4.017119407653809,
+        "combined_backward": true,
+        "actual_tail_record": {
+          "step": 1111,
+          "epoch": 6,
+          "scheduled": true,
+          "weight": 0.010000000000000002,
+          "loss": 2.490645408630371,
+          "eligible": true,
+          "valid_cells": 20,
+          "available_anchor_objectives": 86,
+          "selected_anchor_objectives": 46,
+          "levels": [
+            {
+              "level": "time_down",
+              "loss": 3.0137715339660645,
+              "eligible": true,
+              "valid_cells": 10,
+              "available_anchors": 43,
+              "selected_anchors": 23,
+              "selected_fraction": 0.5348837209302325,
+              "cells": [
+                {
+                  "TX": 1,
+                  "RX": 1,
+                  "available": 5,
+                  "selected": 3,
+                  "mean_loss": 2.155910015106201,
+                  "selected_loss": 2.6261706352233887
+                },
+                {
+                  "TX": 1,
+                  "RX": 3,
+                  "available": 4,
+                  "selected": 2,
+                  "mean_loss": 3.036435842514038,
+                  "selected_loss": 3.8124611377716064
+                },
+                {
+                  "TX": 1,
+                  "RX": 4,
+                  "available": 5,
+                  "selected": 3,
+                  "mean_loss": 2.180990219116211,
+                  "selected_loss": 2.692715883255005
+                },
+                {
+                  "TX": 1,
+                  "RX": 6,
+                  "available": 4,
+                  "selected": 2,
+                  "mean_loss": 2.128978729248047,
+                  "selected_loss": 2.498955011367798
+                },
+                {
+                  "TX": 1,
+                  "RX": 8,
+                  "available": 4,
+                  "selected": 2,
+                  "mean_loss": 2.0990612506866455,
+                  "selected_loss": 2.7357583045959473
+                },
+                {
+                  "TX": 3,
+                  "RX": 1,
+                  "available": 4,
+                  "selected": 2,
+                  "mean_loss": 3.020230770111084,
+                  "selected_loss": 3.8877387046813965
+                },
+                {
+                  "TX": 3,
+                  "RX": 3,
+                  "available": 5,
+                  "selected": 3,
+                  "mean_loss": 2.9989571571350098,
+                  "selected_loss": 3.26908802986145
+                },
+                {
+                  "TX": 3,
+                  "RX": 4,
+                  "available": 4,
+                  "selected": 2,
+                  "mean_loss": 2.584139823913574,
+                  "selected_loss": 3.0024590492248535
+                },
+                {
+                  "TX": 3,
+                  "RX": 6,
+                  "available": 4,
+                  "selected": 2,
+                  "mean_loss": 2.3600006103515625,
+                  "selected_loss": 2.644033193588257
+                },
+                {
+                  "TX": 3,
+                  "RX": 8,
+                  "available": 4,
+                  "selected": 2,
+                  "mean_loss": 2.5680079460144043,
+                  "selected_loss": 2.968337297439575
+                }
+              ]
+            },
+            {
+              "level": "t2.pool",
+              "loss": 1.9675192832946777,
+              "eligible": true,
+              "valid_cells": 10,
+              "available_anchors": 43,
+              "selected_anchors": 23,
+              "selected_fraction": 0.5348837209302325,
+              "cells": [
+                {
+                  "TX": 1,
+                  "RX": 1,
+                  "available": 5,
+                  "selected": 3,
+                  "mean_loss": 1.5398411750793457,
+                  "selected_loss": 1.7808688879013062
+                },
+                {
+                  "TX": 1,
+                  "RX": 3,
+                  "available": 4,
+                  "selected": 2,
+                  "mean_loss": 1.9572572708129883,
+                  "selected_loss": 2.2486236095428467
+                },
+                {
+                  "TX": 1,
+                  "RX": 4,
+                  "available": 5,
+                  "selected": 3,
+                  "mean_loss": 1.5039108991622925,
+                  "selected_loss": 1.7726277112960815
+                },
+                {
+                  "TX": 1,
+                  "RX": 6,
+                  "available": 4,
+                  "selected": 2,
+                  "mean_loss": 1.4440867900848389,
+                  "selected_loss": 1.6627302169799805
+                },
+                {
+                  "TX": 1,
+                  "RX": 8,
+                  "available": 4,
+                  "selected": 2,
+                  "mean_loss": 1.331810474395752,
+                  "selected_loss": 1.568314790725708
+                },
+                {
+                  "TX": 3,
+                  "RX": 1,
+                  "available": 4,
+                  "selected": 2,
+                  "mean_loss": 1.9165141582489014,
+                  "selected_loss": 2.37160587310791
+                },
+                {
+                  "TX": 3,
+                  "RX": 3,
+                  "available": 5,
+                  "selected": 3,
+                  "mean_loss": 2.184924840927124,
+                  "selected_loss": 2.314713716506958
+                },
+                {
+                  "TX": 3,
+                  "RX": 4,
+                  "available": 4,
+                  "selected": 2,
+                  "mean_loss": 2.010911464691162,
+                  "selected_loss": 2.29567551612854
+                },
+                {
+                  "TX": 3,
+                  "RX": 6,
+                  "available": 4,
+                  "selected": 2,
+                  "mean_loss": 1.6471662521362305,
+                  "selected_loss": 1.9903126955032349
+                },
+                {
+                  "TX": 3,
+                  "RX": 8,
+                  "available": 4,
+                  "selected": 2,
+                  "mean_loss": 1.4895682334899902,
+                  "selected_loss": 1.6697206497192383
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "real_checkpoint_no_query_smoke": true,
+    "loaded_checkpoint_not_inherited_by_training": true,
+    "default_head_joint": true,
+    "feature_export_exact": true,
+    "EMA_eval_untouched": true,
+    "warmup_exact": true,
+    "parameters": 900722,
+    "IQ_reads": 0,
+    "target_reads": 0,
+    "head_fit_updates": 0,
+    "optimizer_updates": 0
+  },
+  "CUDA": {
+    "status": "PASS",
+    "device": "cuda:0",
+    "actual_F_flows": [
+      {
+        "treatment": "MEAN_WEAK_RX",
+        "combined_backward": true,
+        "actual_identity_forwards": 2,
+        "extra_model_forwards": 0,
+        "main_RNG_unchanged": true,
+        "aux_W_gradient": null,
+        "Sinc_gradient_norm": 0.0022195372730493546,
+        "main_W_gradient_norm": 3.9951705932617188,
+        "selected_anchor_objectives": 86,
+        "available_anchor_objectives": 86
+      },
+      {
+        "treatment": "TAIL_WEAK_RX",
+        "combined_backward": true,
+        "actual_identity_forwards": 2,
+        "extra_model_forwards": 0,
+        "main_RNG_unchanged": true,
+        "aux_W_gradient": null,
+        "Sinc_gradient_norm": 0.002210097387433052,
+        "main_W_gradient_norm": 3.9951705932617188,
+        "selected_anchor_objectives": 46,
+        "available_anchor_objectives": 86
+      }
+    ],
+    "IQ_reads": 0,
+    "target_reads": 0,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0
+  },
+  "tail_math_first_red_then_green": true,
+  "actual_F_bridge_first_red_then_green": true
+}
