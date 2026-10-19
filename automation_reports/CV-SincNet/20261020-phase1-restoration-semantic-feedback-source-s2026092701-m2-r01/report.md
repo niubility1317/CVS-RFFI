@@ -1,0 +1,21 @@
+# 原 F 特征反馈的纠错结构对比
+
+状态：PLANNED。用户完整目标仍为目标low-urban≥70%，其他五practical接近原clean85.113889%（Agent暂按≤2个百分点解释），并分开报告恢复IQ与同条clean的差距、接入原F/defaulthead后的真实TX识别及净纠错。源分数、波形或检查PASS均不能替代目标成绩。
+
+此前多个损失/重加权/伪身份变体没有同时改善源low/mid。最新一致身份native源low/mid86.888889%/93.333333%，crossRX87.388889%/93.222222%，均未通过固定源规则，0新目标访问，负结果保留。本轮将冻结原F特征显式加入恢复结构，不追认失败精修或按目标结果选择权重。
+
+两个新臂iq_condition、semantic_condition都从合法原R03 coarse20/correction20（method b01b534f52daf9cae9e940ed6ec6f9243bccbdbe）复制原网络权重。仅新增FiLM调制MLP：160→128 SiLU→640，末层weight/bias为0，拆成四个encoder/skip层（32/64/96/128）的gamma/beta，feature×(1+0.1tanh gamma)+0.1tanh beta。初始输出应逐点等于原R03。两个新臂可训练参数均2244008，其中新FiLM103168；相同数据/初始权重/预算下只改变条件代码。
+
+IQ对照将本帧received＋coarse IQ的4通道各自adaptiveavgpool至40，拼成160维并逐条单位化。semantic臂用原冻结F1（seed2026092701）对本帧coarse IQ提取160维特征并单位化。F1只提供原监督先验，不拟合新头；参数与统计状态始终冻结、优化器排除，梯度可经F1输入回传到coarse。该特征只由当前IQ产生，不读取clean/其他帧/RX/TX/伪身份/bank，不在推断优化权重或状态。语义臂独立恢复checkpoint包含原F1；当前source/target代码与外部原读出共享F1实例。部署若已用F1可共享权重，使用其他F时需携带F1；额外特征前向与独立恢复模型状态不同，不能把2244008相同说成总状态或计算成本相同，实际耗时/显存另报。
+
+两臂基础损失恢复为既有posterior03：observed＋clean等权的IQ NMSE＋0.1logpower＋三套原F各自final160cosine＋0.3×T²KL（T=2）的标量均值。没有新增失败CE/跨RX prototype/困难项，不平均教师坐标。原F均为原50轮CROSS_RX seeds2026092701/02/03及原联合训练默认头；原有参数/统计状态逐一保持，0新头拟合/0F优化更新。称冻结F引导自监督恢复，不称整个系统全无标签。
+
+reset AdamW联合E10/2470，旧coarse/correction LR3e-5、新FiLM LR2e-4；共同warm247、cos至各自0.1，WD1e-4、全可训练梯度clip1、FP32/TF32关闭。加载三教师后重置modelseed2026092701，确保新增MLP的初始随机权重匹配；dataseed2026101951。原63000物理L/U、缓存epoch1..10、.15clean/.60residual/.25full、observed＋clean配对、batch256、L/U新增优化曝光63000/567000、IQ1260000全部匹配，无新IQ与L/U TX真值。coarse/correction各累计30轮，共60原组件epoch、串行继承50pass；新增FiLM单独10轮，F原50轮仅继承不更新，预算不混称。新增参数、冻结运行F参数、独立恢复模型总参数和实际时间/显存分别报告，逐轮记录FiLM末层权重/偏置范数及两种LR。
+
+固定最终E10，不用V更新或早停。源V同一1800条、原F1、clean＋六practical，每row七视图预测固定后独立无CUDA CPU才接入真值。沿用最新low优先规则：相对已完成posterior03，low≥+0.5个百分点、mid不下降、其他四≥−0.5个百分点、相对原clean降幅≤0.1个百分点、六环境平均NMSE≤1.15×原feature0.028326367493718863（不复利）。两个新臂是可训练参数/预算/损失匹配的条件代码比较；旧posterior03没有新FiLM，是历史源发布参考，不是相同参数结构对照。全部两臂完成后按源low最高、mid最高、NMSE更低、登记顺序选一通过者；全失败不访问新目标，不追认旧失败。
+
+只对选定合格者自动完整测试原168000条目标clean＋六practical。三套原默认头分别argmax，对同一恢复IQ各自评分，不投票、不拼接按环境选出的模型。全七视图IQ/ID/决策固定后，独立无CUDA CPU才接入目标truth和评分clean。报告accuracy/Macro-F1、逐F/TX/RX/day、修复/损坏/净修复与原clean差距；无oracle相位/增益/时延对齐的full256/prefix232/tail24 NMSE及logFFTpower均值/中位数/P90。一个恢复器seed、三套既有F读出；不称三恢复器种子、新盲测、Phase2部署或在轨性能。
+
+25项聚焦检查、一次独立P0/P1审查PASS。launcher首步实际原R03/三F/2条Ls no-query smoke：两臂初始输出逐点等于原R03，共同参数初始值相同，coarse/correction/FiLM有限非零梯度、原默认头到IQ梯度、F无梯度、真实新checkpoint往返；0V/0TX/0target/0optimizer更新，PASS立即训练。新增层缺失是受控方法变化，父checkpoint数据/继承来源已核实，不以部分加载绕过契约。复用VALIDATED_ONCE数据，方法变化不重验IQ或加哈希链。
+
+一次N607普通账号预检VERIFIED：父R03和源参考合法、前序完成，新run/release不存在；GPU4/5各24124MB空闲无PID，其他owner进程保留。固定GPU4 IQ、GPU5 semantic，每卡一条本run worker，计入全owner进程<2/获取空闲≥18GB；CPU2线程/独立scorer最多1。源worker全部退出后选中臂在对应卡获取≥12GB再跑target。一个代码配置commit、一个不可覆盖root、一个发布归档本地/远端SHA比较与远端compile；随后核实实际PID/CWD/完整命令/GPU/日志增长。非法来源/权限/代码、输出冲突、非有限/OOM、预算或预测缺失按技术停止规则保存产物，不自动重试、不热改/重启健康任务；具体环境/CWD/命令/路径/GPU/产物见experiment.json。原始IQ/权重/预测/日志私有，仅方法、登记与派生汇总进Git。未给另一对话发指令。
