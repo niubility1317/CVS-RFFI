@@ -1,6 +1,6 @@
 # 纯 F E20 同轮 As 重访：冻结源拟合诊断
 
-状态：PLANNED。当前M正在健康训练；本诊断等待其固定源判定、FINAL20与source qualification完整后运行。完整矩阵、seed、命令、环境和路径以experiment.json为准。
+状态：ANALYZED / VERIFIED。诊断已在M固定SOURCE_FAIL后完成；source smoke PASS，实际1441NN、180个相同origin复用，B1新增NN0、新VNN0、更新0。完整结果见final_analysis.md；以下保留准备阶段记录。
 
 目的：区分训练过程中重复命中时的在线正确率、冻结FINAL20对首次缓存观测的拟合、同一L新信道与源V新物理观测。0训练/optimizer/EMA/默认头拟合，0正式IQ、prediction或truth读取。此诊断不新增晋级门槛，也不救援已固定的源FAIL；是否追加E50仅用原事前两项源规则。
 

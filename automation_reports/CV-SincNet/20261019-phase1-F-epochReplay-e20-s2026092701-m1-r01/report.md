@@ -1,6 +1,6 @@
 # 纯 F E20：同轮首次 As 重访
 
-状态：RUNNING / VERIFIED。单行E20已启动；完整矩阵、seed、预算、命令与路径以experiment.json为准，B0/B1完整读出复用。尚无新终轮性能结果。
+状态：ANALYZED / VERIFIED。单行E20、源判定、七视图独立评分和配套源拟合诊断均完成；固定方案SOURCE_FAIL已关闭，不扩E50。完整结果见final_analysis.md，B0/B1读出复用。以下保留原发布及执行阶段记录。
 
 唯一假设：当前B1的low urban训练命名流重建45/69、同L新信道89/138、源V新观测2237/3600，困难已在训练期出现。当前每次遇见同一L都刷新As，可能缺少对同一受损观测跨优化更新的重复学习。本轮只检验epoch内重访首次As、下一epoch再刷新；不从已见正式分数选择候选，不预判有效或物理上限。whole-raw、sceneRisk、nontrue、PCGrad、旧独立view固定方案不重启。
 
@@ -33,3 +33,5 @@ loss为0.5×mean128 ordinary CE＋0.5×mean128 used-As CE（T1，smoothing0.01�
 Git交付后续已恢复 VERIFIED：仅本次命令使用本机已有代理，不修改持久配置；push后独立ls-remote读回86cb9b5a8a0d3147344b23e7003a6752e44043ea，与本地HEAD相等。此前TCP失败记录保留，但当前两次提交均已同步。
 
 后续只读快照：原worker2187003仍存活，CWD/argv/GPU匹配，日志持续增长；已完成E13/2886更新，epoch cache reset12、unique81900、hit287508。尚无FINAL20/source判定/正式成绩。配套0更新源拟合诊断已独立登记、提交并发布准备，只有原模型冻结后执行，不热改当前run。
+
+固定源判定 SOURCE_FAIL（在本row正式分数读取前已落盘）：mid/low源两draw均值相对B1为−0.416667个百分点，fullV27000 clean相对B0为−0.277778个百分点；门槛分别+0.5和−0.2。M fullVclean97.777778%，B0 98.055556%，B1 97.762963%。关闭固定epoch-first-As重访，不扩E50，不扫间隔/seed/日程。此为科学负结果；原run继续预登记七视图独立评分，冻结源诊断不改变判定或救援。

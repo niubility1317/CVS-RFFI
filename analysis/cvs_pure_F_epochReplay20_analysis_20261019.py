@@ -6,6 +6,7 @@ scoring jobs. Collection requires the final run and all original scores first.
 import argparse
 import importlib.util
 import json
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -482,9 +483,14 @@ def remote_helper(runtime):
     path = next((path for path in candidates if path.is_file()), None)
     if path is None:
         raise FileNotFoundError('Existing cvs_sameiq_experts.publish.remote helper unavailable')
-    spec = importlib.util.spec_from_file_location('_existing_epochReplay_analysis_remote', path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
+    if path.parent.parent.name == 'experiments':
+        # Publish helpers use relative imports and must keep their package name.
+        sys.path.insert(0, str(path.parents[2]))
+        module = importlib.import_module('experiments.'+path.parent.name+'.'+path.stem)
+    else:
+        spec = importlib.util.spec_from_file_location('_existing_epochReplay_analysis_remote', path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
     return module.remote
 
 
