@@ -27,7 +27,7 @@
   "replaces_run_id": null,
   "authorization": "用户持续目标和adf双教师/非分类头设计授权必要源拟合诊断；raw4组E20+10已完成且源FAIL固定。本独立run只读FINAL30，训练/分类头拟合/EMA更新/V/target前向均为0，不救援已关闭配方。",
   "code": {
-    "commit": null,
+    "commit": "d94bb9c949bdf53c96efa8acc16c1695fcb44f21",
     "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
     "environment": "N607 existing Python3.10/Torch2.1; CPU2 FP32/TF32off",
     "cwd": "PROJECT/releases/cvs_F_rawIQAdapter_sourceFit_E30_20261019_r01"
@@ -141,7 +141,9 @@
       "--output",
       "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01"
     ],
-    "stop_rule": "Only technical failure:legality/provenance/shape/nonfinite/checkpoint,state-persistent mutation,budget,output conflict;preserve all artifacts,no auto retry/healthy-job stop."
+    "stop_rule": "Only technical failure:legality/provenance/shape/nonfinite/checkpoint,state-persistent mutation,budget,output conflict;preserve all artifacts,no auto retry/healthy-job stop.",
+    "code_commit": "d94bb9c949bdf53c96efa8acc16c1695fcb44f21",
+    "readout_layout": "Four <ARM>_readout.json at run root; reused TC/TS embedded in analysis.json and predictions.npz"
   },
   "expected_artifacts": [
     "execution.json",
@@ -202,7 +204,7 @@
       "epochs": 0,
       "fl_rounds": null,
       "budget_ref": "Reuse oldsourceFit predictions0NN;no teacherload/forward",
-      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01/models/TC",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01",
       "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
       "command": [
         "CVS-RFFI/python",
@@ -214,7 +216,8 @@
         "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01"
       ],
       "expected_artifacts": [
-        "readout.json"
+        "analysis.json reused teacher row",
+        "predictions.npz TC_logits"
       ]
     },
     {
@@ -247,7 +250,7 @@
       "epochs": 0,
       "fl_rounds": null,
       "budget_ref": "1080 actualsourcepacketforwards (180x6);launchersmoke1 separately;4newtotal4321",
-      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01/models/NOAS_ADAPTER",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01",
       "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
       "command": [
         "CVS-RFFI/python",
@@ -259,7 +262,8 @@
         "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01"
       ],
       "expected_artifacts": [
-        "readout.json"
+        "NOAS_ADAPTER_readout.json",
+        "predictions.npz NOAS_ADAPTER_logits andjoint"
       ]
     },
     {
@@ -292,7 +296,7 @@
       "epochs": 0,
       "fl_rounds": null,
       "budget_ref": "1080 actualsourcepacketforwards (180x6);launchersmoke1 separately;4newtotal4321",
-      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01/models/S1",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01",
       "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
       "command": [
         "CVS-RFFI/python",
@@ -304,7 +308,8 @@
         "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01"
       ],
       "expected_artifacts": [
-        "readout.json"
+        "S1_readout.json",
+        "predictions.npz S1_logits andjoint"
       ]
     },
     {
@@ -337,7 +342,7 @@
       "epochs": 0,
       "fl_rounds": null,
       "budget_ref": "1080 actualsourcepacketforwards (180x6);launchersmoke1 separately;4newtotal4321",
-      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01/models/S2",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01",
       "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
       "command": [
         "CVS-RFFI/python",
@@ -349,7 +354,8 @@
         "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01"
       ],
       "expected_artifacts": [
-        "readout.json"
+        "S2_readout.json",
+        "predictions.npz S2_logits andjoint"
       ]
     },
     {
@@ -382,7 +388,7 @@
       "epochs": 0,
       "fl_rounds": null,
       "budget_ref": "1080 actualsourcepacketforwards (180x6);launchersmoke1 separately;4newtotal4321",
-      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01/models/S3",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01",
       "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
       "command": [
         "CVS-RFFI/python",
@@ -394,7 +400,8 @@
         "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01"
       ],
       "expected_artifacts": [
-        "readout.json"
+        "S3_readout.json",
+        "predictions.npz S3_logits andjoint"
       ]
     },
     {
@@ -427,7 +434,7 @@
       "epochs": 0,
       "fl_rounds": null,
       "budget_ref": "Reuse oldsourceFit predictions0NN;no teacherload/forward",
-      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01/models/TS",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01",
       "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
       "command": [
         "CVS-RFFI/python",
@@ -439,7 +446,8 @@
         "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01"
       ],
       "expected_artifacts": [
-        "readout.json"
+        "analysis.json reused teacher row",
+        "predictions.npz TS_logits"
       ]
     }
   ],
