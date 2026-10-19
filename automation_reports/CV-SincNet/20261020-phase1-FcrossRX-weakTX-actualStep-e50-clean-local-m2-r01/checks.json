@@ -1,0 +1,507 @@
+{
+  "CPU": {
+    "status": "PASS",
+    "device": "cpu",
+    "math": {
+      "status": "PASS",
+      "independent_three_risk_QP": true,
+      "degenerate_opposing_redundant_zero_constraints": true,
+      "stored_FP32_norm_match": true,
+      "full_strength_first_order_constraint": true,
+      "common_physical_unit_invariance": true,
+      "actual_sum128_class_contributions": true,
+      "protocol_negative_cases": 2,
+      "IQ_reads": 0,
+      "target_reads": 0,
+      "head_fit_updates": 0,
+      "optimizer_updates": 0
+    },
+    "protocol_negative_cases": 10,
+    "actual_F_flows": [
+      {
+        "treatment": "STEP_NORM",
+        "actual_identity_forwards": 2,
+        "original_scalar_RNG_exact": true,
+        "CPU_all_preclip_gradients_exact": true,
+        "CUDA_nonhead_backward_absolute_tolerance": 0,
+        "poststep_RNG_exact": true,
+        "unmodified_native_step_oracle": true,
+        "all_native_AdamW_moments_exact": true,
+        "default_W_joint_update_exact": true,
+        "poststep_Sinc_witness_sees_final_state": true,
+        "feature_export_exact": true,
+        "selected_feature_parameters": 231233,
+        "record": {
+          "step": 3112,
+          "epoch": 15,
+          "scheduled": true,
+          "eligible": true,
+          "class_counts": [
+            22,
+            21,
+            85
+          ],
+          "strength": 1,
+          "feature_VJP_calls": 3,
+          "finalized": true,
+          "extra_model_forwards": 0,
+          "extra_optimizer_steps": 0,
+          "head_fit_updates": 0,
+          "actual_correction_nonzero": true,
+          "solver_fallback": false,
+          "projection_storage_fallback": false,
+          "storage_match_fallback": false,
+          "stored_norm_match_error": 4.491174627816856e-10,
+          "active_constraints": [
+            0,
+            1
+          ],
+          "raw_normalized_dots": [
+            238.1932257893361,
+            -6.590405361195867,
+            -76.195461941406
+          ],
+          "projected_normalized_dots": [
+            -6.344517535579637e-13,
+            1.142052727073125e-13,
+            -16.357583696531517
+          ],
+          "zero_constraint_rows": 0,
+          "block_metric": "same-state native step RMS per feature block; zero-step blocks stay zero",
+          "raw_step_normalized_norm": 467.53930316070796,
+          "projected_stored_normalized_norm": 402.2972930205273,
+          "control_stored_normalized_norm": 402.29729320120606,
+          "control_gamma": 0.8604566296370705,
+          "control_stored_normalized_dots": [
+            204.95494029067376,
+            -5.670757960589057,
+            -65.56289031694465
+          ],
+          "control_normalized_correction_fraction": 0.1395433699766798,
+          "control_raw_cosine": 0.9999999999999661,
+          "retained_normalized_norm_ratio": 0.8604566296370705,
+          "raw_projected_cosine": 0.8604566296970082,
+          "candidate_stored_normalized_dots": [
+            -1.838316278746389e-8,
+            -8.321973854911592e-9,
+            -16.357583750758128
+          ],
+          "candidate_full_strength_max_residual_relative": -1.779951717139611e-11,
+          "candidate_constraint_enforced": true,
+          "candidate_normalized_correction_fraction": 0.5095236877815114,
+          "applied_normalized_dots": [
+            204.95494029067376,
+            -5.670757960589057,
+            -65.56289031694465
+          ],
+          "applied_full_strength_max_residual_relative": 0.4383694352648344,
+          "constraint_enforced": false,
+          "applied_normalized_correction_fraction": 0.1395433699766798,
+          "applied_raw_cosine": 0.9999999999999661,
+          "default_W_post_correction_exact": true,
+          "native_main_W_update_norm": 0.006196829184477538,
+          "selected_feature_parameters": 231233
+        }
+      },
+      {
+        "treatment": "UPDATE_CONE",
+        "actual_identity_forwards": 2,
+        "original_scalar_RNG_exact": true,
+        "CPU_all_preclip_gradients_exact": true,
+        "CUDA_nonhead_backward_absolute_tolerance": 0,
+        "poststep_RNG_exact": true,
+        "unmodified_native_step_oracle": true,
+        "all_native_AdamW_moments_exact": true,
+        "default_W_joint_update_exact": true,
+        "poststep_Sinc_witness_sees_final_state": true,
+        "feature_export_exact": true,
+        "selected_feature_parameters": 231233,
+        "record": {
+          "step": 3112,
+          "epoch": 15,
+          "scheduled": true,
+          "eligible": true,
+          "class_counts": [
+            22,
+            21,
+            85
+          ],
+          "strength": 1,
+          "feature_VJP_calls": 3,
+          "finalized": true,
+          "extra_model_forwards": 0,
+          "extra_optimizer_steps": 0,
+          "head_fit_updates": 0,
+          "actual_correction_nonzero": true,
+          "solver_fallback": false,
+          "projection_storage_fallback": false,
+          "storage_match_fallback": false,
+          "stored_norm_match_error": 4.491174627816856e-10,
+          "active_constraints": [
+            0,
+            1
+          ],
+          "raw_normalized_dots": [
+            238.1932257893361,
+            -6.590405361195867,
+            -76.195461941406
+          ],
+          "projected_normalized_dots": [
+            -6.344517535579637e-13,
+            1.142052727073125e-13,
+            -16.357583696531517
+          ],
+          "zero_constraint_rows": 0,
+          "block_metric": "same-state native step RMS per feature block; zero-step blocks stay zero",
+          "raw_step_normalized_norm": 467.53930316070796,
+          "projected_stored_normalized_norm": 402.2972930205273,
+          "control_stored_normalized_norm": 402.29729320120606,
+          "control_gamma": 0.8604566296370705,
+          "control_stored_normalized_dots": [
+            204.95494029067376,
+            -5.670757960589057,
+            -65.56289031694465
+          ],
+          "control_normalized_correction_fraction": 0.1395433699766798,
+          "control_raw_cosine": 0.9999999999999661,
+          "retained_normalized_norm_ratio": 0.8604566296370705,
+          "raw_projected_cosine": 0.8604566296970082,
+          "candidate_stored_normalized_dots": [
+            -1.838316278746389e-8,
+            -8.321973854911592e-9,
+            -16.357583750758128
+          ],
+          "candidate_full_strength_max_residual_relative": -1.779951717139611e-11,
+          "candidate_constraint_enforced": true,
+          "candidate_normalized_correction_fraction": 0.5095236877815114,
+          "applied_normalized_dots": [
+            -1.838316278746389e-8,
+            -8.321973854911592e-9,
+            -16.357583750758128
+          ],
+          "applied_full_strength_max_residual_relative": -1.779951717139611e-11,
+          "constraint_enforced": true,
+          "applied_normalized_correction_fraction": 0.5095236877815114,
+          "applied_raw_cosine": 0.8604566296970082,
+          "default_W_post_correction_exact": true,
+          "native_main_W_update_norm": 0.006196829184477538,
+          "selected_feature_parameters": 231233
+        }
+      }
+    ],
+    "real_checkpoint_no_query_smoke": true,
+    "loaded_checkpoint_discarded_not_inherited_by_training": true,
+    "parameters": 900722,
+    "IQ_reads": 0,
+    "target_reads": 0,
+    "head_fit_updates": 0,
+    "discarded_synthetic_native_optimizer_steps": 4,
+    "real_data_training_updates": 0,
+    "EMA_eval_untouched": true
+  },
+  "CUDA": {
+    "status": "PASS",
+    "device": "cuda:0",
+    "math": {
+      "status": "PASS",
+      "independent_three_risk_QP": true,
+      "degenerate_opposing_redundant_zero_constraints": true,
+      "stored_FP32_norm_match": true,
+      "full_strength_first_order_constraint": true,
+      "common_physical_unit_invariance": true,
+      "actual_sum128_class_contributions": true,
+      "protocol_negative_cases": 2,
+      "IQ_reads": 0,
+      "target_reads": 0,
+      "head_fit_updates": 0,
+      "optimizer_updates": 0
+    },
+    "protocol_negative_cases": 10,
+    "actual_F_flows": [
+      {
+        "treatment": "STEP_NORM",
+        "actual_identity_forwards": 2,
+        "original_scalar_RNG_exact": true,
+        "CPU_all_preclip_gradients_exact": false,
+        "CUDA_nonhead_backward_absolute_tolerance": 2e-7,
+        "poststep_RNG_exact": true,
+        "unmodified_native_step_oracle": true,
+        "all_native_AdamW_moments_exact": true,
+        "default_W_joint_update_exact": true,
+        "poststep_Sinc_witness_sees_final_state": true,
+        "feature_export_exact": true,
+        "selected_feature_parameters": 231233,
+        "record": {
+          "step": 3112,
+          "epoch": 15,
+          "scheduled": true,
+          "eligible": true,
+          "class_counts": [
+            22,
+            21,
+            85
+          ],
+          "strength": 1,
+          "feature_VJP_calls": 3,
+          "finalized": true,
+          "extra_model_forwards": 0,
+          "extra_optimizer_steps": 0,
+          "head_fit_updates": 0,
+          "actual_correction_nonzero": true,
+          "solver_fallback": false,
+          "projection_storage_fallback": false,
+          "storage_match_fallback": false,
+          "stored_norm_match_error": 8.786457099406859e-10,
+          "active_constraints": [
+            0,
+            1
+          ],
+          "raw_normalized_dots": [
+            241.37745812410265,
+            -1.1713141696244114,
+            -98.91387230795475
+          ],
+          "projected_normalized_dots": [
+            -1.1628252343225814e-12,
+            -1.2753848948081e-13,
+            -16.815904333855578
+          ],
+          "zero_constraint_rows": 0,
+          "block_metric": "same-state native step RMS per feature block; zero-step blocks stay zero",
+          "raw_step_normalized_norm": 467.53930316070796,
+          "projected_stored_normalized_norm": 400.3713767530667,
+          "control_stored_normalized_norm": 400.37137640128213,
+          "control_gamma": 0.8563373689579344,
+          "control_stored_normalized_dots": [
+            206.70053742570005,
+            -1.003040100617869,
+            -84.70364514982882
+          ],
+          "control_normalized_correction_fraction": 0.1436626317947197,
+          "control_raw_cosine": 0.9999999999999576,
+          "retained_normalized_norm_ratio": 0.8563373689579344,
+          "raw_projected_cosine": 0.8563373687161945,
+          "candidate_stored_normalized_dots": [
+            1.1989175683790496e-8,
+            2.98161336787818e-8,
+            -16.815904398549694
+          ],
+          "candidate_full_strength_max_residual_relative": 6.37724646403322e-11,
+          "candidate_constraint_enforced": true,
+          "candidate_normalized_correction_fraction": 0.5164167996301269,
+          "applied_normalized_dots": [
+            206.70053742570005,
+            -1.003040100617869,
+            -84.70364514982882
+          ],
+          "applied_full_strength_max_residual_relative": 0.4421030189940001,
+          "constraint_enforced": false,
+          "applied_normalized_correction_fraction": 0.1436626317947197,
+          "applied_raw_cosine": 0.9999999999999576,
+          "default_W_post_correction_exact": true,
+          "native_main_W_update_norm": 0.006196833728647776,
+          "selected_feature_parameters": 231233
+        }
+      },
+      {
+        "treatment": "UPDATE_CONE",
+        "actual_identity_forwards": 2,
+        "original_scalar_RNG_exact": true,
+        "CPU_all_preclip_gradients_exact": false,
+        "CUDA_nonhead_backward_absolute_tolerance": 2e-7,
+        "poststep_RNG_exact": true,
+        "unmodified_native_step_oracle": true,
+        "all_native_AdamW_moments_exact": true,
+        "default_W_joint_update_exact": true,
+        "poststep_Sinc_witness_sees_final_state": true,
+        "feature_export_exact": true,
+        "selected_feature_parameters": 231233,
+        "record": {
+          "step": 3112,
+          "epoch": 15,
+          "scheduled": true,
+          "eligible": true,
+          "class_counts": [
+            22,
+            21,
+            85
+          ],
+          "strength": 1,
+          "feature_VJP_calls": 3,
+          "finalized": true,
+          "extra_model_forwards": 0,
+          "extra_optimizer_steps": 0,
+          "head_fit_updates": 0,
+          "actual_correction_nonzero": true,
+          "solver_fallback": false,
+          "projection_storage_fallback": false,
+          "storage_match_fallback": false,
+          "stored_norm_match_error": 9.720627068977767e-10,
+          "active_constraints": [
+            0,
+            1
+          ],
+          "raw_normalized_dots": [
+            241.37745811906296,
+            -1.1713142007690152,
+            -98.9138722752002
+          ],
+          "projected_normalized_dots": [
+            -3.1639516242967618e-12,
+            2.517066822983402e-14,
+            -16.815904299094765
+          ],
+          "zero_constraint_rows": 0,
+          "block_metric": "same-state native step RMS per feature block; zero-step blocks stay zero",
+          "raw_step_normalized_norm": 467.53930316070824,
+          "projected_stored_normalized_norm": 400.3713767506737,
+          "control_stored_normalized_norm": 400.3713763614876,
+          "control_gamma": 0.8563373689528155,
+          "control_stored_normalized_dots": [
+            206.70053742954147,
+            -1.0030401321412619,
+            -84.70364512090353
+          ],
+          "control_normalized_correction_fraction": 0.14366263187983394,
+          "control_raw_cosine": 0.9999999999999578,
+          "retained_normalized_norm_ratio": 0.8563373689528155,
+          "raw_projected_cosine": 0.8563373687327394,
+          "candidate_stored_normalized_dots": [
+            1.9210381089293396e-8,
+            4.115842775501022e-8,
+            -16.815904375154116
+          ],
+          "candidate_full_strength_max_residual_relative": 8.803201672408437e-11,
+          "candidate_constraint_enforced": true,
+          "candidate_normalized_correction_fraction": 0.5164167996026929,
+          "applied_normalized_dots": [
+            1.9210381089293396e-8,
+            4.115842775501022e-8,
+            -16.815904375154116
+          ],
+          "applied_full_strength_max_residual_relative": 8.803201672408437e-11,
+          "constraint_enforced": true,
+          "applied_normalized_correction_fraction": 0.5164167996026929,
+          "applied_raw_cosine": 0.8563373687327394,
+          "default_W_post_correction_exact": true,
+          "native_main_W_update_norm": 0.006196833728647776,
+          "selected_feature_parameters": 231233
+        }
+      }
+    ],
+    "real_checkpoint_no_query_smoke": true,
+    "loaded_checkpoint_discarded_not_inherited_by_training": true,
+    "parameters": 900722,
+    "IQ_reads": 0,
+    "target_reads": 0,
+    "head_fit_updates": 0,
+    "discarded_synthetic_native_optimizer_steps": 4,
+    "real_data_training_updates": 0,
+    "EMA_eval_untouched": true
+  },
+  "independent_original_CUDA_backward_probe": {
+    "status": "OBSERVED",
+    "new_mechanism_installed": false,
+    "original_F_runs": 3,
+    "source_IQ_reads": 0,
+    "target_reads": 0,
+    "comparisons": [
+      {
+        "original_vs_original": true,
+        "maximum_abs": 1.1368683772161603e-7,
+        "Sinc": [
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_coordinate",
+            "max_abs": 9.094901542994194e-8,
+            "norm": 0.002084928099066019
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_coordinate",
+            "max_abs": 1.1368683772161603e-7,
+            "norm": 0.000995660899206996
+          }
+        ],
+        "head": [
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.gain",
+            "max_abs": 0,
+            "norm": 0.3693084120750427
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+            "max_abs": 0,
+            "norm": 3.9951705932617188
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.base_norm.weight",
+            "max_abs": 0,
+            "norm": 0.4177318215370178
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.base_norm.bias",
+            "max_abs": 0,
+            "norm": 0.4419434666633606
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.weight",
+            "max_abs": 0,
+            "norm": 0.09848224371671677
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.bias",
+            "max_abs": 0,
+            "norm": 0.11048586666584015
+          }
+        ]
+      },
+      {
+        "original_vs_original": true,
+        "maximum_abs": 1.1368638297426514e-7,
+        "Sinc": [
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_coordinate",
+            "max_abs": 6.821164788561873e-8,
+            "norm": 0.0020849299617111683
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_coordinate",
+            "max_abs": 1.1368638297426514e-7,
+            "norm": 0.0009956622961908579
+          }
+        ],
+        "head": [
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.gain",
+            "max_abs": 0,
+            "norm": 0.3693084120750427
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+            "max_abs": 0,
+            "norm": 3.9951705932617188
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.base_norm.weight",
+            "max_abs": 0,
+            "norm": 0.4177318215370178
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.base_norm.bias",
+            "max_abs": 0,
+            "norm": 0.4419434666633606
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.weight",
+            "max_abs": 0,
+            "norm": 0.09848224371671677
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.bias",
+            "max_abs": 0,
+            "norm": 0.11048586666584015
+          }
+        ]
+      }
+    ]
+  }
+}
