@@ -1,4 +1,4 @@
-RUN='20261019-diagnostic-restoration-action-fidelity-F50-s2026092701-m5-r13'
+RUN='20261019-diagnostic-restoration-action-fidelity-F50-s2026092701-m5-r14'
 PARENT='20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10'
 PARENT_COMMIT='b57eca9946b2a912a88870e24826fe3e2f70985d'
 ACTION='20261019-phase1-restoration-learned-action-source-s2026092701-r07'
@@ -8,7 +8,7 @@ GPUS=(0,1,5,7)
 
 
 def configuration():
-    return dict(schema='action_fidelity_source_v1',run=RUN,parent=PARENT,parent_commit=PARENT_COMMIT,action_cache=ACTION,
+    return dict(schema='action_fidelity_source_v1',run=RUN,technical_replacement_for='20261019-diagnostic-restoration-action-fidelity-F50-s2026092701-m5-r13',parent=PARENT,parent_commit=PARENT_COMMIT,action_cache=ACTION,
         source_count=1800,rows=list(ROWS),references=list(REFERENCES),epochs=0,optimizer_updates=0,
         TX_training_labels=0,F_training_reads=0,source_V_state_updates=0,target_reads=0,target_promotion=False,
         cg_steps=6,prior_scale='Original sourceLU SCALE=.1169459182403555,not refit',

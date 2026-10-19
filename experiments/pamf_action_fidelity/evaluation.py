@@ -24,7 +24,7 @@ def complete_contract(value,count):
         raise ValueError('Every registered source prediction must precede truth')
 
 
-@torch.inference_mode()
+@torch.no_grad()
 def predict(args):
     folder,ids,_,_=source_inputs(args);model,_=load_model(args,'cuda:0')
     reader=load_reader(args.reader_folder,args.source_cache,'cuda:0').requires_grad_(False).eval()

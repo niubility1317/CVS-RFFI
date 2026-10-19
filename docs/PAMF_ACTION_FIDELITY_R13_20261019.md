@@ -1,4 +1,4 @@
-# R13：接收作用与 prior 的源身份瓶颈诊断
+# R13/R14：接收作用与 prior 的源身份瓶颈诊断
 
 持续目标不变：独立 TX 无标签恢复器使用全部合法 L/U，输出同一份 IQ 供原 F 的全部 PAMF 分支；正式 low urban≥70%，其余五场景与同 F/seed 原始 clean 差距≤5pp。R12 已完成而未通过身份验收，不调阈值或救跑。
 
@@ -13,6 +13,8 @@
 预先固定解释规则：known action＋simulator proxy 相对原 native 的六场景平均 NMSE 至少−5%、low urban≥+1pp、mid urban≥+0.5pp、clean 相对原输入下降≤0.1pp、low urban 最差 TX≥−1pp时，支持优先改善作用估计。分别比较单独替换 action、单独替换 variance 以及 coarse oracle，区分估计瓶颈与学习 prior 共适应。否则不声称算子可解决当前身份目标，也不自动堆更多迭代。此规则只组织下一次源实验，不读取目标指标。
 
 不可覆盖 run/release、一个 launch owner、普通账户 N607、GPU 池0/1/5/7择空闲卡；最多一个本 run GPU worker，计入所有 owner cap2/free≥12GB，共享 capacity4 锁至 CUDA PID 可见。入口先真实2条L_s/固定checkpoint no-query smoke，PASS继续；完成全部源预测后独立CPU评分。非法来源/角色、输出冲突、非有限或不完整预测时保留输出并停止本run，无自动重试，不动健康任务。
+
+R13 原运行在首个视图完成前发生技术故障，0完整视图/0源评分/0target，进程已退出，原产物保留。根因是新增predict的外层inference_mode使构造出的原F Sinc参数没有版本计数器，与原F的缓存接口不兼容。真实F50/defaulthead及2条L_s本地复现相同异常；no_grad构造/推理通过。新增全七视图五读出接口测试先失败，单一上下文修复后通过。R14为新不可覆盖root，数据、父权重、矩阵、6CG和解释阈值不变；只修复上下文，不热改R13，不自动重试。
 
 |ID|来源|要求|目标文件|状态|验证|说明|
 |---|---|---|---|---|---|---|

@@ -93,3 +93,31 @@ def test_score_requires_independent_CPU_before_any_source_IO(monkeypatch):
     monkeypatch.setenv('CUDA_VISIBLE_DEVICES','1')
     monkeypatch.setattr(e,'source_inputs',lambda a:pytest.fail('Forbidden source IO'))
     with pytest.raises(ValueError):e.score(None)
+
+
+def test_predict_constructs_versioned_F_parameters_and_completes_all_readouts(tmp_path,monkeypatch):
+    source=tmp_path/'source';source.mkdir();action_cache=tmp_path/'action';output=tmp_path/'output';output.mkdir()
+    for view in e.VIEWS:
+        np.save(source/(view+'.npy'),np.ones((16,2,256),np.float32))
+        folder=action_cache/'cache/validation_actions'/view;folder.mkdir(parents=True)
+        (folder/'complete.json').write_text(json.dumps(dict(count=16,namespace='restoration/validation/draw0',TX_labels_read=0,F_outputs_read=0,target_reads=0,native_engine_modified=False)))
+        for key,shape in (('kernel',(16,2,64)),('coefficients',(16,4,256)),('variance',(16,))):np.save(folder/(key+'.npy'),np.ones(shape,np.float32))
+    class VersionedReader(torch.nn.Module):
+        def __init__(self):super().__init__();self.coordinate=torch.nn.Parameter(torch.ones(1))
+        def features(self,x):
+            # Mirrors the original F Sinc cache's required parameter-version read.
+            assert self.coordinate._version>=0
+            return x.flatten(1)[:,:160]
+        def classify_features(self,x):return x[:,:6]
+    monkeypatch.setattr(e,'source_inputs',lambda a:(source,np.arange(16),None,None))
+    monkeypatch.setattr(e,'load_model',lambda *a:(None,None))
+    monkeypatch.setattr(e,'load_reader',lambda *a:VersionedReader())
+    monkeypatch.setattr(e,'teacher_action',lambda *a:None)
+    monkeypatch.setattr(e,'counterfactuals',lambda model,r,known,var:{name:r for name in d.ROWS})
+    monkeypatch.setattr(e,'array_tensor',lambda value,device:torch.tensor(value.tolist(),dtype=torch.float32))
+    monkeypatch.setattr(e,'tensor_array',lambda value:np.asarray(value.tolist(),np.float32))
+    monkeypatch.setattr(torch.cuda,'synchronize',lambda:None)
+    args=SimpleNamespace(parent_action=action_cache,output=output,reader_folder=tmp_path/'unused',source_cache=tmp_path/'unused')
+    e.predict(args)
+    values=e.load_predictions(output/'prediction',np.arange(16))
+    assert len(values)==7 and all(tuple(values[view])==d.ROWS for view in e.VIEWS)
