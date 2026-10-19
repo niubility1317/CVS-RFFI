@@ -31,3 +31,5 @@
 |冻结原 F 引导恢复的 observed 困难度加权|managed_run|[打开](../../automation_reports/CV-SincNet/20261020-phase1-restoration-hardness-source-s2026092701-m3-r01/report.md)|
 |冻结原 F 的一致伪身份与跨 RX 特征恢复|managed_run|[打开](../../automation_reports/CV-SincNet/20261020-phase1-restoration-consensus-identity-source-s2026092701-m2-r01/report.md)|
 |原 F 特征反馈的纠错结构对比|managed_run|[打开](../../automation_reports/CV-SincNet/20261020-phase1-restoration-semantic-feedback-source-s2026092701-m2-r01/report.md)|
+|同伪身份的同 RX 与跨 RX 统计混合|managed_run|[打开](../../automation_reports/CV-SincNet/20261020-phase1-restoration-style-generalization-source-s2026092701-m2-r01/report.md)|
+|同伪身份的同 RX 与跨 RX 统计混合|managed_run|[打开](../../automation_reports/CV-SincNet/20261020-phase1-restoration-style-generalization-source-s2026092701-m2-r02/report.md)|

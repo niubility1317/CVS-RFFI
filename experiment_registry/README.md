@@ -391,3 +391,7 @@
 本轮记录：[一致伪身份与跨 RX 特征](by_method/consensus_identity.md)。
 
 本轮记录：[冻结原F特征反馈纠错结构](by_method/semantic_feedback_frozenF.md)。
+
+本轮记录：[同伪身份同RX与跨RX统计混合](by_method/style_generalization.md)。
+
+本轮记录：[训练前固定双行目标比较](by_method/fixed_target_comparison.md)。
