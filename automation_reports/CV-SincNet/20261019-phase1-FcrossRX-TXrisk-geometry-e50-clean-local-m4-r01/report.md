@@ -26,3 +26,5 @@
 执行提交：`31467086c3ced30237f3ac86e91eae68645425d7`，已推送并独立核对远端一致。不可变本机 release 编译通过。启动证据见 [launch_verified.json](launch_verified.json)；首次观察三行各约 965.5 MiB 专用显存，初始 checkpoint 已生成，正式性能尚待训练与 clean truth-last。
 
 首三组阶段更新：各 50 轮、11100 次实际更新；U 曝光均为 963900，接受数分别为 BASE 15127、WEIGHT 15126、GEOMETRY 14900，约 1.55% 至 1.57%。实际 Sinc 物理裁剪各 11100 次，默认头联合训练、单独拟合头为 0，未使用星地增强，未访问目标数据。完整 50 轮／11100 步分析及 BOTH 启动证据见 [source_first3_complete.json](source_first3_complete.json)。此为源训练执行证据，尚无本轮 clean 性能结论；扩种子决定仍等待 BOTH 完成。不同并行密度的 worker 耗时不能解释为算法加速。
+
+真实最终 checkpoint 入口核对通过：首三组来源、原生参数和 EMA 更新数被既定预测入口接受；未读取目标 IQ 或真值、未更新任何参数。见 [checkpoint_entry_checks.json](checkpoint_entry_checks.json)。此为输入兼容检查，仍无本轮目标性能结论。

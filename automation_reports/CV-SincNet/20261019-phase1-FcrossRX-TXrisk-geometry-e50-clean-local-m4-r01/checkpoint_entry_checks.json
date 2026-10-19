@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "scope": "Real final50 checkpoint provenance and native-args prediction-entry compatibility only",
+  "records": [
+    {
+      "row_id": "BASE-s2026092701",
+      "source_proof": "PASS",
+      "actual_checkpoint": "PASS",
+      "epoch": 50,
+      "EMA_updates": 11100,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "WEIGHT-s2026092701",
+      "source_proof": "PASS",
+      "actual_checkpoint": "PASS",
+      "epoch": 50,
+      "EMA_updates": 11100,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "GEOMETRY-s2026092701",
+      "source_proof": "PASS",
+      "actual_checkpoint": "PASS",
+      "epoch": 50,
+      "EMA_updates": 11100,
+      "head_fit_updates": 0
+    }
+  ],
+  "target_IQ_reads": 0,
+  "truth_reads": 0,
+  "optimizer_updates": 0,
+  "training_unchanged": true
+}
