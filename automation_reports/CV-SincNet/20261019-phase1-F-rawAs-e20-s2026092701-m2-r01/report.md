@@ -1,6 +1,6 @@
 # 纯 F E20：raw＋As 与机制匹配 NoAs
 
-状态：RUNNING / VERIFIED，尚无新终轮性能结果。运行 20261019-phase1-F-rawAs-e20-s2026092701-m2-r01。总体目标保持lowurban>60%、clean相对同预算NoAs可重复正收益、分别报告suburban差距。
+状态：ANALYZED / VERIFIED。两行E20、源资格、七视图预测与独立truth-last评分及完整日志分析均完成；whole-raw配方源规则FAIL，关闭不续E50。完整结果见 [final_analysis.md](final_analysis.md)。总体目标未达成。
 
 唯一假设：ordinary与完整As共同训练可能存在监督任务竞争；以raw替代第一ordinary监督槽，检验是否改善严重受损身份提取并保持clean。当前纯F固定L诊断的raw180均正确，而low训练命名流重建45/69、新实现89/138、V2237/3600；翻倍low权重没有修复seen拟合。旧CROSS_RX/RDrop LRaw尾段曾source PASS，但旧无As/RX1留出raw-anchor降低clean且关闭。因此不预判ordinary整体有害，也不把当前As描述成重复损伤——As一直从raw独立生成。
 
