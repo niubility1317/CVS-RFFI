@@ -1,0 +1,979 @@
+{
+  "status": "SOURCE_REPLAY_VERIFIED",
+  "run_id": "20261019-phase1-F-rawTemporal-e20plus10-s2026092701-m4-r01",
+  "decision": {
+    "status": "SOURCE_DECISION_FIXED",
+    "timestamp": 1792405610.977694,
+    "criteria": {
+      "RAW_minus_PAIR_As_urban_pp": -0.08333333333332416,
+      "RAW_minus_FULL_As_urban_pp": -11.069444444444443,
+      "RAW_minus_PAIR_As_fullVclean_pp": 0.04074074074074119,
+      "RAW_minus_FULL_As_fullVclean_pp": -0.129629629629624,
+      "RAW_As_minus_RAW_NoAs_fullVclean_pp": -0.04444444444444695,
+      "RAW_minus_PAIR_NoAs_urban_pp": 0.4027777777777797,
+      "RAW_PAIR_As_specific_urban_interaction_pp": -0.48611111111110383,
+      "qualified": false
+    },
+    "preferred": null,
+    "new_readouts": {
+      "RAW_NoAs": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9988888888888889,
+        "L_actual_training_As_accuracy": 0.5516666666666666,
+        "L_new_midlow_accuracies": [
+          [
+            0.5388888888888889,
+            0.4261111111111111
+          ],
+          [
+            0.5255555555555556,
+            0.4038888888888889
+          ]
+        ],
+        "V_clean_accuracy": 0.9816666666666667,
+        "source_accuracies": [
+          [
+            0.6511111111111111,
+            0.5161111111111111,
+            0.44
+          ],
+          [
+            0.63,
+            0.5444444444444444,
+            0.425
+          ]
+        ],
+        "full_V_clean_accuracy": 0.981925925925926,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "RAW_As": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9961111111111111,
+        "L_actual_training_As_accuracy": 0.68,
+        "L_new_midlow_accuracies": [
+          [
+            0.6622222222222223,
+            0.5266666666666666
+          ],
+          [
+            0.6633333333333333,
+            0.5066666666666667
+          ]
+        ],
+        "V_clean_accuracy": 0.9816666666666667,
+        "source_accuracies": [
+          [
+            0.8011111111111111,
+            0.6455555555555555,
+            0.5166666666666667
+          ],
+          [
+            0.8138888888888889,
+            0.6727777777777778,
+            0.5072222222222222
+          ]
+        ],
+        "full_V_clean_accuracy": 0.9814814814814815,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "PAIR_NoAs": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9988888888888889,
+        "L_actual_training_As_accuracy": 0.5505555555555556,
+        "L_new_midlow_accuracies": [
+          [
+            0.5338888888888889,
+            0.425
+          ],
+          [
+            0.5216666666666666,
+            0.40444444444444444
+          ]
+        ],
+        "V_clean_accuracy": 0.9822222222222222,
+        "source_accuracies": [
+          [
+            0.6483333333333333,
+            0.5072222222222222,
+            0.43555555555555553
+          ],
+          [
+            0.6294444444444445,
+            0.5427777777777778,
+            0.42388888888888887
+          ]
+        ],
+        "full_V_clean_accuracy": 0.982037037037037,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "PAIR_As": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9955555555555555,
+        "L_actual_training_As_accuracy": 0.6761111111111111,
+        "L_new_midlow_accuracies": [
+          [
+            0.6611111111111111,
+            0.5222222222222223
+          ],
+          [
+            0.6583333333333333,
+            0.5061111111111111
+          ]
+        ],
+        "V_clean_accuracy": 0.9822222222222222,
+        "source_accuracies": [
+          [
+            0.7988888888888889,
+            0.6433333333333333,
+            0.5177777777777778
+          ],
+          [
+            0.8088888888888889,
+            0.6716666666666666,
+            0.5127777777777778
+          ]
+        ],
+        "full_V_clean_accuracy": 0.9810740740740741,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      }
+    },
+    "control_readouts": {
+      "FULL_NoAs": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 1.0,
+        "L_actual_training_As_accuracy": 0.5372222222222223,
+        "L_new_midlow_accuracies": [
+          [
+            0.5355555555555556,
+            0.42277777777777775
+          ],
+          [
+            0.5194444444444445,
+            0.4072222222222222
+          ]
+        ],
+        "V_clean_accuracy": 0.9833333333333333,
+        "source_accuracies": [
+          [
+            0.6433333333333333,
+            0.5083333333333333,
+            0.43277777777777776
+          ],
+          [
+            0.6305555555555555,
+            0.5372222222222223,
+            0.4127777777777778
+          ]
+        ],
+        "full_V_clean_accuracy": 0.9826666666666667,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "FULL_As": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9994444444444445,
+        "L_actual_training_As_accuracy": 0.7955555555555556,
+        "L_new_midlow_accuracies": [
+          [
+            0.7722222222222223,
+            0.635
+          ],
+          [
+            0.7761111111111111,
+            0.6288888888888889
+          ]
+        ],
+        "V_clean_accuracy": 0.9827777777777778,
+        "source_accuracies": [
+          [
+            0.9083333333333333,
+            0.7594444444444445,
+            0.6305555555555555
+          ],
+          [
+            0.9133333333333333,
+            0.7688888888888888,
+            0.6261111111111111
+          ]
+        ],
+        "full_V_clean_accuracy": 0.9827777777777778,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "TEMP_NoAs": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9994444444444445,
+        "L_actual_training_As_accuracy": 0.5461111111111111,
+        "L_new_midlow_accuracies": [
+          [
+            0.5427777777777778,
+            0.4222222222222222
+          ],
+          [
+            0.5283333333333333,
+            0.4066666666666667
+          ]
+        ],
+        "V_clean_accuracy": 0.9827777777777778,
+        "source_accuracies": [
+          [
+            0.6533333333333333,
+            0.5133333333333333,
+            0.44166666666666665
+          ],
+          [
+            0.6333333333333333,
+            0.5361111111111111,
+            0.42333333333333334
+          ]
+        ],
+        "full_V_clean_accuracy": 0.9822962962962963,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "TEMP_As": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9961111111111111,
+        "L_actual_training_As_accuracy": 0.6938888888888889,
+        "L_new_midlow_accuracies": [
+          [
+            0.6711111111111111,
+            0.5355555555555556
+          ],
+          [
+            0.6733333333333333,
+            0.5261111111111111
+          ]
+        ],
+        "V_clean_accuracy": 0.9833333333333333,
+        "source_accuracies": [
+          [
+            0.8166666666666667,
+            0.6638888888888889,
+            0.5305555555555556
+          ],
+          [
+            0.8394444444444444,
+            0.6816666666666666,
+            0.5222222222222223
+          ]
+        ],
+        "full_V_clean_accuracy": 0.9807777777777777,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      }
+    },
+    "formal_scores_read": false,
+    "automatic_extension": false,
+    "current_cumulative_epochs": 30,
+    "max_cumulative_epochs": 50,
+    "model_seed_count": 1,
+    "goal_complete": false,
+    "decision": "CLOSE_FIXED2252_K5_WIDTH12_E10_RAW_PAIR;no kernel/rank/lambda/seed rescue"
+  },
+  "source": {
+    "RAW_NoAs": {
+      "initial": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9988888888888889,
+        "L_actual_training_As_accuracy": 0.5444444444444444,
+        "L_new_midlow_accuracies": [
+          [
+            0.5311111111111111,
+            0.42277777777777775
+          ],
+          [
+            0.5222222222222223,
+            0.4022222222222222
+          ]
+        ],
+        "V_clean_accuracy": 0.9816666666666667,
+        "source_accuracies": [
+          [
+            0.6333333333333333,
+            0.5183333333333333,
+            0.4388888888888889
+          ],
+          [
+            0.6205555555555555,
+            0.5372222222222223,
+            0.4161111111111111
+          ]
+        ],
+        "full_V_clean_accuracy": 0.9805555555555555,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "final": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9988888888888889,
+        "L_actual_training_As_accuracy": 0.5516666666666666,
+        "L_new_midlow_accuracies": [
+          [
+            0.5388888888888889,
+            0.4261111111111111
+          ],
+          [
+            0.5255555555555556,
+            0.4038888888888889
+          ]
+        ],
+        "V_clean_accuracy": 0.9816666666666667,
+        "source_accuracies": [
+          [
+            0.6511111111111111,
+            0.5161111111111111,
+            0.44
+          ],
+          [
+            0.63,
+            0.5444444444444444,
+            0.425
+          ]
+        ],
+        "full_V_clean_accuracy": 0.981925925925926,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "actual_training_As_by_scene": {
+        "practical_low_suburban": {
+          "count": 610,
+          "initial_accuracy": 0.6229508196721312,
+          "final_accuracy": 0.6229508196721312,
+          "repair": 15,
+          "damage": 15
+        },
+        "practical_low_urban": {
+          "count": 592,
+          "initial_accuracy": 0.44594594594594594,
+          "final_accuracy": 0.44425675675675674,
+          "repair": 15,
+          "damage": 16
+        },
+        "practical_mid_urban": {
+          "count": 598,
+          "initial_accuracy": 0.5618729096989966,
+          "final_accuracy": 0.5852842809364549,
+          "repair": 21,
+          "damage": 7
+        }
+      }
+    },
+    "RAW_As": {
+      "initial": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9988888888888889,
+        "L_actual_training_As_accuracy": 0.5444444444444444,
+        "L_new_midlow_accuracies": [
+          [
+            0.5311111111111111,
+            0.42277777777777775
+          ],
+          [
+            0.5222222222222223,
+            0.4022222222222222
+          ]
+        ],
+        "V_clean_accuracy": 0.9816666666666667,
+        "source_accuracies": [
+          [
+            0.6333333333333333,
+            0.5183333333333333,
+            0.4388888888888889
+          ],
+          [
+            0.6205555555555555,
+            0.5372222222222223,
+            0.4161111111111111
+          ]
+        ],
+        "full_V_clean_accuracy": 0.9805555555555555,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "final": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9961111111111111,
+        "L_actual_training_As_accuracy": 0.68,
+        "L_new_midlow_accuracies": [
+          [
+            0.6622222222222223,
+            0.5266666666666666
+          ],
+          [
+            0.6633333333333333,
+            0.5066666666666667
+          ]
+        ],
+        "V_clean_accuracy": 0.9816666666666667,
+        "source_accuracies": [
+          [
+            0.8011111111111111,
+            0.6455555555555555,
+            0.5166666666666667
+          ],
+          [
+            0.8138888888888889,
+            0.6727777777777778,
+            0.5072222222222222
+          ]
+        ],
+        "full_V_clean_accuracy": 0.9814814814814815,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "actual_training_As_by_scene": {
+        "practical_low_suburban": {
+          "count": 610,
+          "initial_accuracy": 0.6229508196721312,
+          "final_accuracy": 0.8049180327868852,
+          "repair": 126,
+          "damage": 15
+        },
+        "practical_low_urban": {
+          "count": 592,
+          "initial_accuracy": 0.44594594594594594,
+          "final_accuracy": 0.5489864864864865,
+          "repair": 87,
+          "damage": 26
+        },
+        "practical_mid_urban": {
+          "count": 598,
+          "initial_accuracy": 0.5618729096989966,
+          "final_accuracy": 0.6822742474916388,
+          "repair": 92,
+          "damage": 20
+        }
+      }
+    },
+    "PAIR_NoAs": {
+      "initial": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9988888888888889,
+        "L_actual_training_As_accuracy": 0.5444444444444444,
+        "L_new_midlow_accuracies": [
+          [
+            0.5311111111111111,
+            0.42277777777777775
+          ],
+          [
+            0.5222222222222223,
+            0.4022222222222222
+          ]
+        ],
+        "V_clean_accuracy": 0.9816666666666667,
+        "source_accuracies": [
+          [
+            0.6333333333333333,
+            0.5183333333333333,
+            0.4388888888888889
+          ],
+          [
+            0.6205555555555555,
+            0.5372222222222223,
+            0.4161111111111111
+          ]
+        ],
+        "full_V_clean_accuracy": 0.9805555555555555,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "final": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9988888888888889,
+        "L_actual_training_As_accuracy": 0.5505555555555556,
+        "L_new_midlow_accuracies": [
+          [
+            0.5338888888888889,
+            0.425
+          ],
+          [
+            0.5216666666666666,
+            0.40444444444444444
+          ]
+        ],
+        "V_clean_accuracy": 0.9822222222222222,
+        "source_accuracies": [
+          [
+            0.6483333333333333,
+            0.5072222222222222,
+            0.43555555555555553
+          ],
+          [
+            0.6294444444444445,
+            0.5427777777777778,
+            0.42388888888888887
+          ]
+        ],
+        "full_V_clean_accuracy": 0.982037037037037,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "actual_training_As_by_scene": {
+        "practical_low_suburban": {
+          "count": 610,
+          "initial_accuracy": 0.6229508196721312,
+          "final_accuracy": 0.6278688524590164,
+          "repair": 16,
+          "damage": 13
+        },
+        "practical_low_urban": {
+          "count": 592,
+          "initial_accuracy": 0.44594594594594594,
+          "final_accuracy": 0.44256756756756754,
+          "repair": 13,
+          "damage": 15
+        },
+        "practical_mid_urban": {
+          "count": 598,
+          "initial_accuracy": 0.5618729096989966,
+          "final_accuracy": 0.5785953177257525,
+          "repair": 19,
+          "damage": 9
+        }
+      }
+    },
+    "PAIR_As": {
+      "initial": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9988888888888889,
+        "L_actual_training_As_accuracy": 0.5444444444444444,
+        "L_new_midlow_accuracies": [
+          [
+            0.5311111111111111,
+            0.42277777777777775
+          ],
+          [
+            0.5222222222222223,
+            0.4022222222222222
+          ]
+        ],
+        "V_clean_accuracy": 0.9816666666666667,
+        "source_accuracies": [
+          [
+            0.6333333333333333,
+            0.5183333333333333,
+            0.4388888888888889
+          ],
+          [
+            0.6205555555555555,
+            0.5372222222222223,
+            0.4161111111111111
+          ]
+        ],
+        "full_V_clean_accuracy": 0.9805555555555555,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "final": {
+        "status": "SOURCE_READOUT_COMPLETE",
+        "L_train_clean_accuracy": 0.9955555555555555,
+        "L_actual_training_As_accuracy": 0.6761111111111111,
+        "L_new_midlow_accuracies": [
+          [
+            0.6611111111111111,
+            0.5222222222222223
+          ],
+          [
+            0.6583333333333333,
+            0.5061111111111111
+          ]
+        ],
+        "V_clean_accuracy": 0.9822222222222222,
+        "source_accuracies": [
+          [
+            0.7988888888888889,
+            0.6433333333333333,
+            0.5177777777777778
+          ],
+          [
+            0.8088888888888889,
+            0.6716666666666666,
+            0.5127777777777778
+          ]
+        ],
+        "full_V_clean_accuracy": 0.9810740740740741,
+        "NN": 50400,
+        "fit_updates": 0,
+        "head_fit_updates": 0,
+        "target_access": false,
+        "U_used": false,
+        "formal_scores_read": false
+      },
+      "actual_training_As_by_scene": {
+        "practical_low_suburban": {
+          "count": 610,
+          "initial_accuracy": 0.6229508196721312,
+          "final_accuracy": 0.8098360655737705,
+          "repair": 127,
+          "damage": 13
+        },
+        "practical_low_urban": {
+          "count": 592,
+          "initial_accuracy": 0.44594594594594594,
+          "final_accuracy": 0.543918918918919,
+          "repair": 82,
+          "damage": 24
+        },
+        "practical_mid_urban": {
+          "count": 598,
+          "initial_accuracy": 0.5618729096989966,
+          "final_accuracy": 0.6705685618729097,
+          "repair": 86,
+          "damage": 21
+        }
+      }
+    }
+  },
+  "source_parent_error_redistribution": {
+    "RAW_NoAs": {
+      "L_clean": {
+        "count": 1800,
+        "repair": 1,
+        "damage": 1,
+        "initial_accuracy": 0.9988888888888889,
+        "final_accuracy": 0.9988888888888889
+      },
+      "L_actual_training_As": {
+        "count": 1800,
+        "repair": 51,
+        "damage": 38,
+        "initial_accuracy": 0.5444444444444444,
+        "final_accuracy": 0.5516666666666666
+      },
+      "L_new": {
+        "count": 7200,
+        "repair": 188,
+        "damage": 159,
+        "initial_accuracy": 0.46958333333333335,
+        "final_accuracy": 0.4736111111111111
+      },
+      "V_clean": {
+        "count": 1800,
+        "repair": 2,
+        "damage": 2,
+        "initial_accuracy": 0.9816666666666667,
+        "final_accuracy": 0.9816666666666667
+      },
+      "V_satellite": {
+        "count": 10800,
+        "repair": 274,
+        "damage": 198,
+        "initial_accuracy": 0.5274074074074074,
+        "final_accuracy": 0.5344444444444445
+      },
+      "V_full_clean": {
+        "count": 27000,
+        "repair": 64,
+        "damage": 27,
+        "initial_accuracy": 0.9805555555555555,
+        "final_accuracy": 0.981925925925926
+      }
+    },
+    "RAW_As": {
+      "L_clean": {
+        "count": 1800,
+        "repair": 1,
+        "damage": 6,
+        "initial_accuracy": 0.9988888888888889,
+        "final_accuracy": 0.9961111111111111
+      },
+      "L_actual_training_As": {
+        "count": 1800,
+        "repair": 305,
+        "damage": 61,
+        "initial_accuracy": 0.5444444444444444,
+        "final_accuracy": 0.68
+      },
+      "L_new": {
+        "count": 7200,
+        "repair": 1146,
+        "damage": 281,
+        "initial_accuracy": 0.46958333333333335,
+        "final_accuracy": 0.5897222222222223
+      },
+      "V_clean": {
+        "count": 1800,
+        "repair": 7,
+        "damage": 7,
+        "initial_accuracy": 0.9816666666666667,
+        "final_accuracy": 0.9816666666666667
+      },
+      "V_satellite": {
+        "count": 10800,
+        "repair": 1770,
+        "damage": 343,
+        "initial_accuracy": 0.5274074074074074,
+        "final_accuracy": 0.659537037037037
+      },
+      "V_full_clean": {
+        "count": 27000,
+        "repair": 100,
+        "damage": 75,
+        "initial_accuracy": 0.9805555555555555,
+        "final_accuracy": 0.9814814814814815
+      }
+    },
+    "PAIR_NoAs": {
+      "L_clean": {
+        "count": 1800,
+        "repair": 1,
+        "damage": 1,
+        "initial_accuracy": 0.9988888888888889,
+        "final_accuracy": 0.9988888888888889
+      },
+      "L_actual_training_As": {
+        "count": 1800,
+        "repair": 48,
+        "damage": 37,
+        "initial_accuracy": 0.5444444444444444,
+        "final_accuracy": 0.5505555555555556
+      },
+      "L_new": {
+        "count": 7200,
+        "repair": 176,
+        "damage": 164,
+        "initial_accuracy": 0.46958333333333335,
+        "final_accuracy": 0.47125
+      },
+      "V_clean": {
+        "count": 1800,
+        "repair": 3,
+        "damage": 2,
+        "initial_accuracy": 0.9816666666666667,
+        "final_accuracy": 0.9822222222222222
+      },
+      "V_satellite": {
+        "count": 10800,
+        "repair": 253,
+        "damage": 212,
+        "initial_accuracy": 0.5274074074074074,
+        "final_accuracy": 0.5312037037037037
+      },
+      "V_full_clean": {
+        "count": 27000,
+        "repair": 66,
+        "damage": 26,
+        "initial_accuracy": 0.9805555555555555,
+        "final_accuracy": 0.982037037037037
+      }
+    },
+    "PAIR_As": {
+      "L_clean": {
+        "count": 1800,
+        "repair": 1,
+        "damage": 7,
+        "initial_accuracy": 0.9988888888888889,
+        "final_accuracy": 0.9955555555555555
+      },
+      "L_actual_training_As": {
+        "count": 1800,
+        "repair": 295,
+        "damage": 58,
+        "initial_accuracy": 0.5444444444444444,
+        "final_accuracy": 0.6761111111111111
+      },
+      "L_new": {
+        "count": 7200,
+        "repair": 1127,
+        "damage": 282,
+        "initial_accuracy": 0.46958333333333335,
+        "final_accuracy": 0.5869444444444445
+      },
+      "V_clean": {
+        "count": 1800,
+        "repair": 6,
+        "damage": 5,
+        "initial_accuracy": 0.9816666666666667,
+        "final_accuracy": 0.9822222222222222
+      },
+      "V_satellite": {
+        "count": 10800,
+        "repair": 1776,
+        "damage": 356,
+        "initial_accuracy": 0.5274074074074074,
+        "final_accuracy": 0.6588888888888889
+      },
+      "V_full_clean": {
+        "count": 27000,
+        "repair": 91,
+        "damage": 77,
+        "initial_accuracy": 0.9805555555555555,
+        "final_accuracy": 0.9810740740740741
+      }
+    }
+  },
+  "states": {
+    "RAW_NoAs": {
+      "changed_parameters": [
+        "id_backbone.encoder.core.id_backbone.cls_head.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.down.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.mix.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.temporal.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B1.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B2.weight"
+      ],
+      "all_native_F_state_except_W_bit_equal": true,
+      "original_W_jointly_changed": true,
+      "both_feature_projections_changed": true,
+      "all_raw_encoder_parameters_have_nonzero_gradients": true,
+      "gradient_squared_sum": {
+        "id_backbone.encoder.core.id_backbone.raw_temporal.temporal.weight": 0.011785791733173324,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B1.weight": 0.6334099168337559,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.down.weight": 0.023746712756630574,
+        "id_backbone.encoder.core.id_backbone.cls_head.weight": 161.29762206917985,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B2.weight": 0.12585312495460066,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.mix.weight": 0.010844462499078396
+      },
+      "total_parameters": 902974,
+      "trainable_parameters": 3212
+    },
+    "RAW_As": {
+      "changed_parameters": [
+        "id_backbone.encoder.core.id_backbone.cls_head.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.down.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.mix.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.temporal.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B1.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B2.weight"
+      ],
+      "all_native_F_state_except_W_bit_equal": true,
+      "original_W_jointly_changed": true,
+      "both_feature_projections_changed": true,
+      "all_raw_encoder_parameters_have_nonzero_gradients": true,
+      "gradient_squared_sum": {
+        "id_backbone.encoder.core.id_backbone.raw_temporal.temporal.weight": 2.2139152059817966,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B1.weight": 34.99624338083959,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.down.weight": 3.2503292856784824,
+        "id_backbone.encoder.core.id_backbone.cls_head.weight": 4078.4018792957067,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B2.weight": 10.092758305920142,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.mix.weight": 2.4331249005856224
+      },
+      "total_parameters": 902974,
+      "trainable_parameters": 3212
+    },
+    "PAIR_NoAs": {
+      "changed_parameters": [
+        "id_backbone.encoder.core.id_backbone.cls_head.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.down.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.mix.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.temporal.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B1.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B2.weight"
+      ],
+      "all_native_F_state_except_W_bit_equal": true,
+      "original_W_jointly_changed": true,
+      "both_feature_projections_changed": true,
+      "all_raw_encoder_parameters_have_nonzero_gradients": true,
+      "gradient_squared_sum": {
+        "id_backbone.encoder.core.id_backbone.raw_temporal.temporal.weight": 0.010149225719582995,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B1.weight": 0.4508551174639308,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.down.weight": 0.022027263889402203,
+        "id_backbone.encoder.core.id_backbone.cls_head.weight": 163.47077631505817,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B2.weight": 0.11581206520863674,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.mix.weight": 0.009738106425288176
+      },
+      "total_parameters": 902974,
+      "trainable_parameters": 3212
+    },
+    "PAIR_As": {
+      "changed_parameters": [
+        "id_backbone.encoder.core.id_backbone.cls_head.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.down.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.mix.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.temporal.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B1.weight",
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B2.weight"
+      ],
+      "all_native_F_state_except_W_bit_equal": true,
+      "original_W_jointly_changed": true,
+      "both_feature_projections_changed": true,
+      "all_raw_encoder_parameters_have_nonzero_gradients": true,
+      "gradient_squared_sum": {
+        "id_backbone.encoder.core.id_backbone.raw_temporal.temporal.weight": 1.8923490904200775,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B1.weight": 32.08443109165819,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.down.weight": 2.7255705024654056,
+        "id_backbone.encoder.core.id_backbone.cls_head.weight": 4098.721526786685,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.B2.weight": 11.634247915488231,
+        "id_backbone.encoder.core.id_backbone.raw_temporal.mix.weight": 2.0915777038726273
+      },
+      "total_parameters": 902974,
+      "trainable_parameters": 3212
+    }
+  },
+  "initial_logits_max_abs_difference": {
+    "RAW_NoAs": 0.0,
+    "RAW_As": 0.0,
+    "PAIR_NoAs": 0.0,
+    "PAIR_As": 0.0
+  },
+  "source_criterion_independently_recomputed": true,
+  "all_new_updates_replayed": 8880,
+  "new_physical_simulations": 0,
+  "formal_scores_read": false,
+  "goal_complete": false
+}

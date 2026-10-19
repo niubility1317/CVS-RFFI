@@ -58,3 +58,5 @@ RAW_As须同时达到：源V mid/low两draw均值相对同轮PAIR_As至少+.5pp�
 启动证据见launch_evidence.json：单归档传输与远端compile VERIFIED；四行复用既有实际As bank，新增物理模拟0。没有据运行状态声称性能目标已完成。
 
 连接恢复后普通客户端发布和Git push成功；当前本地HEAD与远端OID独立一致，git_delivery.json已更新VERIFIED。模型/数据/实验配置未变，没有重复启动。
+
+源端完整回放及固定决定见source_closure.md；本分析未读取正式分数。
