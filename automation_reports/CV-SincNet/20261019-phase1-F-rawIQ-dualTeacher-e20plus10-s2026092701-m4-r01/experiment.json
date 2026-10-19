@@ -116,30 +116,23 @@
       "dispatch"
     ],
     "stop_rule": "Only registered run-owned systemic technical failure:roles/provenance/nonfinite/frozenW/F/view/teacher/U truth/budget/output inconsistency.Preserve artifacts,no automatic restart,no healthy-task stop.",
-    "launch_readback_ref": "local_artifacts/F_rawIQ_dualTeacher_E30_20261019/progress003.json",
+    "launch_readback_ref": "local_artifacts/F_rawIQ_dualTeacher_E30_20261019/progress010.json",
     "release_commit": "6ea2f71f6654f4ceeadd460905a9d719b5dc1b89",
     "actual_dispatcher_pid": 2318162,
     "actual_running_rows": [
       {
-        "row_id": "NOAS_ADAPTER-s2026092701",
+        "row_id": "S3-s2026092701",
         "gpu": 6,
-        "pid": 2318182
-      },
-      {
-        "row_id": "S1-s2026092701",
-        "gpu": 7,
-        "pid": 2318268
-      },
-      {
-        "row_id": "S2-s2026092701",
-        "gpu": 4,
-        "pid": 2318352
+        "pid": 2333275
       }
     ],
-    "actual_queued_rows": [
-      "S3-s2026092701"
-    ],
-    "postlaunch_status": "VERIFIED PID/CWD/cmdline/GPU/CUDA/source-log-growth+epoch1"
+    "actual_queued_rows": [],
+    "postlaunch_status": "VERIFIED first3FINAL30+all7prediction;S3PID2333275GPU6realCPsmoke/firstepoch/loggrowth;no source decision or scores yet",
+    "actual_prediction_complete_rows": [
+      "NOAS_ADAPTER-s2026092701",
+      "S1-s2026092701",
+      "S2-s2026092701"
+    ]
   },
   "expected_artifacts": [
     "source/final_ssdg.pth with phase1_lineage",
