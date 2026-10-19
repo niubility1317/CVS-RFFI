@@ -375,3 +375,5 @@
 本轮记录：[星地六场景双评价线](by_method/feature_target_practical.md)。
 
 本轮记录：[冻结原默认头的决策保真恢复](by_method/frozenF_posterior.md)。
+
+本轮记录：[联合优化恢复器、冻结原 F](by_method/joint_frozenF.md)。

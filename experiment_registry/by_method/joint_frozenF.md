@@ -2,4 +2,4 @@
 
 两臂E10已核实运行，源选择后自动完整目标测试，尚无新性能结论。
 
-[实验报告](../../automation_reports/CV-SincNet/20261019-phase1-restoration-joint-frozenF-source-s2026092701-m2-r01/report.md)
+|粗恢复器与修正器联合优化|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-restoration-joint-frozenF-source-s2026092701-m2-r01/report.md)|
