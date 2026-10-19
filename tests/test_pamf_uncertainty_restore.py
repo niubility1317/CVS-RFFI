@@ -182,3 +182,20 @@ def test_module_entry_and_fixed_incremental_budget():
     assert config['training_TX_labels_read'] == config['V_persistent_updates'] == 0 and not config['training_F_access']
     assert config['epochs'] == 20 and config['updates'] == 4940 and config['U_exposures'] == 1134000
     assert config['max_simultaneous_GPU_workers'] == 3 and config['capacity_lock'] == 'receiver_residual_capacity4.lock'
+
+
+def test_prior_initialization_does_not_depend_on_frozen_parent_rng_consumption():
+    from experiments.pamf_uncertainty_restore.training import initialize_model
+    from experiments.pamf_reception_restore.models import ComplexTFUNet
+    from experiments.pamf_action_restore.models import ActionRestorer
+    priors = []
+    for kind in d.NAMES:
+        torch.manual_seed(123)
+        frozen = ComplexTFUNet() if kind == 'direct_control' else ActionRestorer(ComplexTFUNet())
+        before = next(frozen.parameters()).detach().clone()
+        # Frozen parent construction/loading can consume different random draws.
+        torch.rand(7 if kind == 'direct_control' else 123)
+        model = initialize_model(kind, frozen, .01 if kind == 'uncertain_map_prior' else None)
+        assert model.frozen is frozen and torch.equal(before, next(frozen.parameters()))
+        priors.append({key: value.clone() for key, value in model.prior.state_dict().items()})
+    assert all(torch.equal(priors[0][key], prior[key]) for prior in priors[1:] for key in priors[0])

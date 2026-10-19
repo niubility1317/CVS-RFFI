@@ -21,6 +21,13 @@ def learning_rate(update):
     return 2e-4*(.1+.9*(1+math.cos(math.pi*(update-247)/4692))/2)
 
 
+def initialize_model(kind, frozen, floor):
+    # Reset after loading parents: their constructors consume different RNG draws.
+    torch.manual_seed(d.MODEL_SEED)
+    torch.cuda.manual_seed_all(d.MODEL_SEED)
+    return UncertaintyRestorer(kind, frozen, floor)
+
+
 def train(args):
     if args.kind not in d.NAMES:
         raise ValueError('Registered trained candidate required')
@@ -29,7 +36,7 @@ def train(args):
     calibration = read_json(args.output/'calibration.json'); validate_calibration(calibration)
     used_calibration = calibration if args.kind == 'uncertain_map_prior' else None
     floor = calibration['excess_variance'] if used_calibration is not None else None
-    model = UncertaintyRestorer(args.kind, frozen, floor).to('cuda:0')
+    model = initialize_model(args.kind, frozen, floor).to('cuda:0')
     parameters = [p for p in model.parameters() if p.requires_grad]
     optimizer = torch.optim.AdamW(parameters, lr=2e-4, weight_decay=1e-4)
     row = args.output/args.kind; row.mkdir()

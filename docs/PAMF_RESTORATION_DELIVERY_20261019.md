@@ -96,3 +96,7 @@ def restore_and_read(received):
 在已验证的本机 Phase1 Python 中实际分别执行 `python -X utf8 -m pytest -q tests/test_pamf_action_restore.py`（11项通过）及 `python -X utf8 -m pytest -q tests/test_pamf_formal_f50.py`（最终8项通过）。N607实际执行compile、模块入口、真实源checkpoint smoke、R07完整E20源评分及R09完整原F50独立truth-last评分，原进程均已退出且产物完成。
 
 [R07追踪](PAMF_ACTION_RESTORE_R07_20261019.md)为7项已验证、1项延期；[R08/R09追踪](PAMF_FORMAL_F50_R08_20261019.md)为5项已验证、1项延期。合计12项已验证、2项延期、0项功能需求拒绝或阻断。R07属于条件性物理近似且未通过源科学标准；这些执行验证不等于最终逐细节身份真实性已证明。
+
+## R10观测不确定性对照
+
+三种网络各E20/4940、完整L/U、0TX/F训练及七源视图已完成，科学状态SOURCE_NOT_QUALIFIED。uncertain平均源NMSE=0.02747268，同预算direct=0.02885981，原R03=0.02836140；低城区身份变化相对R03 +1.5000pp，但最差TX -1.9934pp，不晋级、0新target。含三档郊区、各TX/RX/day、方差控制、累计成本和预登记条件逐项结果见[R10完整报告](../automation_reports/CV-SincNet/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10/report.md)。源身份验收使用V标签，恢复训练仍0TX/F；不把端到端选择称为完全无标签。direct/physical存在初值偏差，两个物理组初值一致；后续代码已修复，未追溯热改R10。

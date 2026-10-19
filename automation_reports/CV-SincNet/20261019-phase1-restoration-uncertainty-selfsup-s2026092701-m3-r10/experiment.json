@@ -333,7 +333,40 @@
     "Conditional full original168000x7 after allfixedsource thresholds;all7predictions perrow beforeindependenttruth. Otherwise0target;not a missing required test of promoted candidate.",
     "All3suburban,3urban,clean andTX/RX/day preserved includingnegative findings;singlemodelseed,not all-detail authenticity proof.",
     "10focusedchecksPASS;oneindependentP0/P1 no blocking findings;N607ordinary preflight source/parents/newroots verified.",
-    "Generic extra designapproval REJECTED_EXTRA_GATE under exclusiveprojectminimalworkflow;no addedpermissiongate."
+    "Generic extra designapproval REJECTED_EXTRA_GATE under exclusiveprojectminimalworkflow;no addedpermissiongate.",
+    "Complete3xE20/4940,allLU and7views;fixedsourcequalification=False;targetrows=[];norescuererun.",
+    "PREREG_DEVIATION:direct vsphysical prior initialstates differ70/128;native vsuncertain equal128/128. All sharedata/order/incrementalbudget. Futureseedfix11PASS+targetedreview,notdeployedR10;nohotedit/restart."
   ],
-  "registered_at": "2026-10-19T14:07:15+00:00"
+  "registered_at": "2026-10-19T14:07:15+00:00",
+  "scientific_outcome": "SOURCE_NOT_QUALIFIED",
+  "execution_deviations": [
+    {
+      "type": "prior_initialization",
+      "actual": {
+        "direct_control_vs_native_map_prior": {
+          "equal": false,
+          "differing_tensors": 70,
+          "total_tensors": 128,
+          "max_absolute_difference": 0.9239056706428528
+        },
+        "native_map_prior_vs_uncertain_map_prior": {
+          "equal": true,
+          "differing_tensors": 0,
+          "total_tensors": 128,
+          "max_absolute_difference": 0.0
+        },
+        "reproduction": {
+          "actual_R10_pinned_release": true,
+          "actual_parent_checkpoint_loads": true,
+          "Torch": "2.1.0+cu121",
+          "device": "CPU",
+          "source_TX_labels_read": 0,
+          "F_access": 0,
+          "target_reads": 0,
+          "optimizer_updates": 0
+        }
+      },
+      "impact": "No strict common-init direct/physical attribution;two physical rows common-init;worstTX rejection vsfixedR03 unaffected"
+    }
+  ]
 }

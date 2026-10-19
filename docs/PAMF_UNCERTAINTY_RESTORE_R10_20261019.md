@@ -30,9 +30,13 @@ N607使用允许卡池0/1/5/7，最多3个本run GPU worker，每卡最多1个�
 |---|---|---|---|---|
 |U10-01|正确逐时加权实线性软解|pamf_uncertainty_restore/models.py|verified|稠密公式、标量/列向量等价、CG目标下降与有限梯度测试通过|
 |U10-02|方差NLL只更新方差，重建只更新prior|models.py、training.py|verified|梯度隔离、冻结父、direct无A前向和推理接口负测通过|
-|U10-03|原L/U、固定增量、原cache、0TX/F训练|runtime.py、training.py|implemented|原source/R07源训练与20缓存预检通过，待实际曝光/全日志|
-|U10-04|8192训练源标量校准和全局floor控制|runtime.py|implemented|V/标签/F/target负测通过，待真实源校准|
-|U10-05|源阈值固定，合格后自动原F50七视图truth-last|evaluation.py、controller.py|implemented|覆盖/资格/未合格禁止target负测通过，待实际闭合|
-|U10-06|三档郊区和类/RX损伤分别报告|report/results|implemented|原F50/source七视图逐组接线，待完整同row指标|
-|U10-07|独占root、共享锁、单owner、健康任务保护|controller.py|implemented|一次独立P0/P1无阻断，N607空闲卡预检通过，待post-state|
+|U10-03|原L/U、固定增量、原cache、0TX/F训练|runtime.py、training.py|verified|3x20/4940，L378000/U3402000，0TX/F/target训练，完整60epoch解析|
+|U10-04|8192训练源标量校准和全局floor控制|runtime.py|verified|8192LU(825L/7367U)单标量，0V/TX/F/target；globalfloor七视图完成|
+|U10-05|源阈值固定，合格后自动原F50七视图truth-last|evaluation.py、controller.py|verified|源固定阈值实际冻结，未通过全部源标准，0本轮target；合格target分支未执行|
+|U10-06|三档郊区和类/RX损伤分别报告|report/results|verified|source七视图和全部TX/RX/day、三郊区accuracy/F1/repair/damage完整|
+|U10-07|独占root、共享锁、单owner、健康任务保护|controller.py|verified|实际GPU0/1/5 PID/CWD/argv/NVML/log增长与自然退出已核实|
 |U10-08|多seed、独立物理族、逐细节真实性|后续验证|deferred|本轮单seed机制检验，不提前声称最终目标完成|
+
+执行结论：SOURCE_NOT_QUALIFIED。三网络完整20轮、全量L/U和七源视图完成，全部原进程自然退出；实现验证不等于最终逐细节身份目标已完成。
+
+初始化偏差：direct/physical先验70/128状态张量不同，native/uncertain完全一致；不能把本轮称为三组共同初值严格消融。后续种子重置已移到父加载后，11项检查通过及一次定点复审无P0/P1；原R10 release不变。uncertain相对原R03最差TX失败不依赖direct初值。
