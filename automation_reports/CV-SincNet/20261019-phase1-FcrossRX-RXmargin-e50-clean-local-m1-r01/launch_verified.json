@@ -1,0 +1,52 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261019-phase1-FcrossRX-RXmargin-e50-clean-local-m1-r01",
+  "execution_commit": "ee1a615b6876aeaac80309169e90cb5f6015e1b5",
+  "controller_PID": 12148,
+  "source_PID": 46604,
+  "CIM_PID_cmdline_seen": true,
+  "resolved_CWD_matches_immutable_release": true,
+  "resolved_commit_matches": true,
+  "own_scratch_checkpoint_smoke": "PASS",
+  "scratch_initialization": true,
+  "role_match": "EXACT_MATCH",
+  "source_roles": {
+    "L_s": 6300,
+    "U_s_hidden": 56700,
+    "V": 27000
+  },
+  "epochs": 50,
+  "label_epochs": 33,
+  "pseudo_epochs": 17,
+  "RDrop_alpha": 1,
+  "default_head_joint": true,
+  "separate_head_training": false,
+  "parameters": 900722,
+  "satellite_training": false,
+  "test_views": [
+    "clean"
+  ],
+  "CIM_GPU0_allocations_MiB": {
+    "existing_BOTH_worker": 3273.55078125,
+    "new_margin_worker": 3251.55078125
+  },
+  "observed_GPU_workers": 2,
+  "max_total_GPU_workers": 3,
+  "free_RAM_GiB": 8.387969970703125,
+  "source_log_grew": true,
+  "step_observation": {
+    "row_id": "RX_MARGIN-s2026092701",
+    "step": 443,
+    "epoch": 2,
+    "loss": 0.347292959690094,
+    "margin_weight": 0,
+    "margin_loss": 0,
+    "U_seen": 0,
+    "U_truth": 0,
+    "satellite": 0,
+    "compressed_step_bytes": 846448
+  },
+  "existing_healthy_PID15656_preserved": true,
+  "release_packaging": "Full repository archive timed out before launch, process absent/no run created; preserved partial archive. Runtime-only Git archive21.22MiB completed, compile PASS; one new launch.",
+  "target_results_available": false
+}
