@@ -256,7 +256,9 @@ def predict_row(name, reference, folder, device, frozen_bundle, source_cache, ch
                one_noise_draw_per_physical_sample=True, TX_truth_reads=0, state_updates=0))
 
 
-def score_row(reference, folder, source_cache=None, target_truth=None):
+def score_row(reference, folder, source_cache=None, target_truth=None, feature_reference_cap=None):
+    if feature_reference_cap is not None and (not isinstance(feature_reference_cap,int) or feature_reference_cap<1):
+        raise ValueError('Positive fixed feature reference count required before truth access')
     done = read_json(folder/'prediction/complete.json')
     if done['status'] != 'PREDICTIONS_COMPLETE' or done['views'] != ['clean', *SCENES]:
         raise ValueError('All registered predictions must be fixed before scoring')
@@ -340,13 +342,18 @@ def score_row(reference, folder, source_cache=None, target_truth=None):
                     item['true_TX_margin_mean'] = float((a[np.arange(len(labels)), labels]-competitors.max(1)).mean())
                     unit = z/np.maximum(np.linalg.norm(z, axis=1, keepdims=True), 1e-8)
                     reference_unit = ref_z/np.maximum(np.linalg.norm(ref_z, axis=1, keepdims=True), 1e-8)
-                    similarities = unit@reference_unit.T
-                    paired = similarities.diagonal().copy()
-                    similarities[labels[:, None] == labels[None, :]] = -np.inf
-                    margin = paired-similarities.max(1)
-                    item['truthside_paired_clean_feature_vs_other_TX_margin'] = dict(
-                        mean=float(margin.mean()), own_pair_higher_percent=float((margin > 0).mean()*100),
-                        inference_or_selection_use=False)
+                    if feature_reference_cap is None:
+                        similarities = unit@reference_unit.T
+                        paired = similarities.diagonal().copy()
+                        similarities[labels[:, None] == labels[None, :]] = -np.inf
+                        margin = paired-similarities.max(1)
+                        item['truthside_paired_clean_feature_vs_other_TX_margin'] = dict(
+                            mean=float(margin.mean()), own_pair_higher_percent=float((margin > 0).mean()*100),
+                            inference_or_selection_use=False)
+                    else:
+                        from .feature_diagnostic import capped_pair_margin
+                        item['truthside_paired_clean_feature_vs_other_TX_margin'] = capped_pair_margin(
+                            unit, reference_unit, labels, feature_reference_cap)
                     if done.get('stochastic_diagnostic_draws', 1) > 1:
                         count = done['stochastic_diagnostic_count']
                         predictions = [a[:count].argmax(1)]
@@ -435,12 +442,13 @@ def main():
     score.add_argument('--row-output', type=Path, required=True)
     score.add_argument('--source-cache', type=Path)
     score.add_argument('--target-truth', type=Path)
+    score.add_argument('--feature-reference-cap', type=int)
     args = parser.parse_args()
     torch.set_num_threads(2)
     torch.backends.cudnn.allow_tf32 = False
     torch.backends.cuda.matmul.allow_tf32 = False
     if args.mode == 'score':
-        score_row(args.reference, args.row_output, args.source_cache, args.target_truth)
+        score_row(args.reference, args.row_output, args.source_cache, args.target_truth, args.feature_reference_cap)
         return
     if args.mode == 'dispatch':
         from .dispatcher import dispatch
