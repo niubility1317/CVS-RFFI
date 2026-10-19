@@ -1,0 +1,162 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-diagnostic-restoration-FcrossRX50-source-s2026092701-m3-r01",
+  "group_id": "phase1-restoration-original-F50-readout",
+  "display_name": "星地恢复器接入原50轮F＋跨RX：冻结默认头源域比较",
+  "description": "固定现有粗恢复和确定性残差修正，补齐用户指定原50轮F＋跨RX读出；只诊断源V，不选候选、不访问目标。",
+  "kind": "diagnostic",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "FcrossRX50",
+    "source_only",
+    "default_head",
+    "truth_last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+    "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02",
+    "20261019-phase1-restoration-residual-refinement-selfsup-m3-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户于01a15415-30f7-74d2-9c5a-af53f97a046d明确要求与设计恢复网络对话一同优化；本行仅源诊断，0更新，CPU运行。",
+  "code": {
+    "commit": null,
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "Verified local phase1-cu128 Python; CPU 2 threads, CUDA_VISIBLE_DEVICES empty; no package changes",
+    "cwd": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing VALIDATED_ONCE source physical split",
+    "representation": "Fixed normalized float32 IQ[1800,2,256], clean+six native residual/post_sync/noEQ source observations",
+    "contract_ref": "E:\\type10-7\\local_artifacts\\datasets\\phase1_manysig_reference_20261019\\source\\source_contract.json",
+    "physical_ids_ref": "E:\\type10-7\\local_artifacts\\pamf_restoration\\observability_inputs_20261019\\validation\\physical_ids.npy",
+    "label_map_ref": "E:\\type10-7\\local_artifacts\\datasets\\phase1_manysig_reference_20261019\\source_cache\\manifest.json#class_id_to_tx",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original all six TX; only independent source scorer opens V labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "E:\\type10-7\\local_artifacts\\pamf_restoration\\observability_inputs_20261019\\validation",
+    "support_query_ref": null,
+    "leo_config_ref": "Original R01 validation observations; no channel regeneration"
+  },
+  "permissions": {
+    "regime": "Frozen source V only",
+    "query_use": "No target/query access",
+    "external_method_exception": null,
+    "claim_scope": "Single original F seed and fixed1800 V diagnostic; no target performance or restorer selection"
+  },
+  "checkpoint": {
+    "initialization": "No initialization/training: strict frozen native checkpoint readout",
+    "sources": [
+      "E:\\type10-7\\local_artifacts\\pamf_restoration\\fcrossrx50_reference_20261019_r01\\final_ssdg.pth",
+      "E:\\type10-7\\local_artifacts\\pamf_restoration\\trained\\20261019-phase1-reception-restoration-selfsup-manysig-m6-r02\\tf_unet_mixed\\final.pt",
+      "E:\\type10-7\\local_artifacts\\pamf_restoration\\trained\\20261019-phase1-restoration-residual-refinement-selfsup-m3-r03\\residual_deterministic\\final.pt"
+    ],
+    "contract_check_ref": "E:\\type10-7\\local_artifacts\\pamf_restoration\\fcrossrx50_reference_20261019_r01\\source_smoke.json",
+    "provenance_verdict": "OriginalF scratch50=33L+17U,11100updates;noancestors;matched originalsource role_ids; originaldefaulthead; R02/R03 existing selfsupervised source lineage",
+    "selection_rule": "Fixed identity/R02coarse/R03residual, no source/target candidate selection or expansion"
+  },
+  "execution": {
+    "host": "local Windows CPU",
+    "launch_owner": "codex/root/joint-restoration-F50-source-20261019",
+    "gpu_policy": "No GPU worker,2 CPU threads; preserve all other owners",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_restoration\\20261019-diagnostic-restoration-FcrossRX50-source-s2026092701-m3-r01",
+    "launch_command": "python -X utf8 -m experiments.pamf_fcrossrx_readout.source_diagnostic predict --reference E:\\type10-7\\local_artifacts\\pamf_restoration\\observability_inputs_20261019\\validation --source-cache E:\\type10-7\\local_artifacts\\datasets\\phase1_manysig_reference_20261019\\source_cache --output E:\\type10-7\\local_artifacts\\pamf_restoration\\20261019-diagnostic-restoration-FcrossRX50-source-s2026092701-m3-r01/prediction --reader-folder E:\\type10-7\\local_artifacts\\pamf_restoration\\fcrossrx50_reference_20261019_r01 --coarse-checkpoint E:\\type10-7\\local_artifacts\\pamf_restoration\\trained\\20261019-phase1-reception-restoration-selfsup-manysig-m6-r02\\tf_unet_mixed\\final.pt --residual-checkpoint E:\\type10-7\\local_artifacts\\pamf_restoration\\trained\\20261019-phase1-restoration-residual-refinement-selfsup-m3-r03\\residual_deterministic\\final.pt",
+    "stop_rule": "Missing/wrong provenance or source IDs,output collision,nonfinite output,incomplete views:preserve artifacts,no automatic retry"
+  },
+  "expected_artifacts": [
+    "prediction/execution.json",
+    "prediction/clean.npz",
+    "prediction/<each practical>.npz",
+    "prediction/complete.json",
+    "metrics.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "Macro-F1",
+      "repaired",
+      "damaged",
+      "net_repaired",
+      "confusion"
+    ],
+    "dimensions": [
+      "identity/coarse/residual",
+      "clean+sixpractical",
+      "TX",
+      "RX",
+      "day"
+    ],
+    "prediction_ref": "E:\\type10-7\\local_artifacts\\pamf_restoration\\20261019-diagnostic-restoration-FcrossRX50-source-s2026092701-m3-r01\\prediction",
+    "scorer_ref": "python -X utf8 -m experiments.pamf_fcrossrx_readout.source_diagnostic score --reference E:\\type10-7\\local_artifacts\\pamf_restoration\\observability_inputs_20261019\\validation --source-cache E:\\type10-7\\local_artifacts\\datasets\\phase1_manysig_reference_20261019\\source_cache --output E:\\type10-7\\local_artifacts\\pamf_restoration\\20261019-diagnostic-restoration-FcrossRX50-source-s2026092701-m3-r01/prediction --metrics E:\\type10-7\\local_artifacts\\pamf_restoration\\20261019-diagnostic-restoration-FcrossRX50-source-s2026092701-m3-r01/metrics.json",
+    "primary": "Same1800 sourceV IDs: originalF50 baseline vs each fixed restorer,allscenes and strata"
+  },
+  "rows": [
+    {
+      "row_id": "fixed_three_readouts",
+      "method": "Original frozen F50: identity/R02coarse/R03residual shared predictor",
+      "purpose": "Three fixed paired readouts in one source-only prediction artifact",
+      "config_ref": "experiments/pamf_fcrossrx_readout/source_diagnostic.py",
+      "resolved_config_ref": "E:\\type10-7\\local_artifacts\\pamf_restoration\\20261019-diagnostic-restoration-FcrossRX50-source-s2026092701-m3-r01\\prediction\\execution.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": 2026101903
+      },
+      "seed_notes": "Existing fixedsourcepanel/channel and originalF/R seed roles;support null as no fewshot. Deterministic inference,no new draw.",
+      "k": null,
+      "scenario": "clean + all six source practical diagnostic views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 new updates/head fits; reuse F50,R02E20,R03cumulativeR40; no new source IQ exposure for training",
+      "output_root": "E:\\type10-7\\local_artifacts\\pamf_restoration\\20261019-diagnostic-restoration-FcrossRX50-source-s2026092701-m3-r01\\prediction",
+      "log_path": "E:\\type10-7\\local_artifacts\\pamf_restoration\\20261019-diagnostic-restoration-FcrossRX50-source-s2026092701-m3-r01\\predict.log",
+      "command": "python -X utf8 -m experiments.pamf_fcrossrx_readout.source_diagnostic predict --reference E:\\type10-7\\local_artifacts\\pamf_restoration\\observability_inputs_20261019\\validation --source-cache E:\\type10-7\\local_artifacts\\datasets\\phase1_manysig_reference_20261019\\source_cache --output E:\\type10-7\\local_artifacts\\pamf_restoration\\20261019-diagnostic-restoration-FcrossRX50-source-s2026092701-m3-r01/prediction --reader-folder E:\\type10-7\\local_artifacts\\pamf_restoration\\fcrossrx50_reference_20261019_r01 --coarse-checkpoint E:\\type10-7\\local_artifacts\\pamf_restoration\\trained\\20261019-phase1-reception-restoration-selfsup-manysig-m6-r02\\tf_unet_mixed\\final.pt --residual-checkpoint E:\\type10-7\\local_artifacts\\pamf_restoration\\trained\\20261019-phase1-restoration-residual-refinement-selfsup-m3-r03\\residual_deterministic\\final.pt",
+      "expected_artifacts": [
+        "prediction/execution.json",
+        "prediction/clean.npz",
+        "prediction/<each practical>.npz",
+        "prediction/complete.json",
+        "metrics.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Three readouts share one CPU predictor and fixedsource physical panel; no other owner process changes.",
+    "All seven views complete before an independent CPU scorer opens V labels; U labels never read.",
+    "REJECTED_EXTRA_GATE: blanket design approval and full runtime args JSON equality are not scientific/source legality checks; actual recipe and checkpoint identity are checked directly.",
+    "Final recovery optimization remains active; this diagnostic does not claim target improvement or rank candidates."
+  ],
+  "registered_at": "2026-10-19T12:26:34+00:00"
+}
