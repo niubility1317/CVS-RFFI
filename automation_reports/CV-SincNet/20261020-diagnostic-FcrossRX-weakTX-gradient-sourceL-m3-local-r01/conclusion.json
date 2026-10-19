@@ -1,0 +1,25 @@
+{
+  "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+  "goal_achieved": false,
+  "new_target_evaluations": 0,
+  "new_training_models": 0,
+  "fixed_weak_classes": [
+    "14-7",
+    "20-19"
+  ],
+  "findings": [
+    "Weak1/3 full-pool feature CE gradient cosine negative in all3 modelseeds in both stated coordinate metrics. In physical clip metric the pair is most negative among15 class pairs for all3; normalized-Hz ranks1/1/2.",
+    "Sinc,t1,t2,all3SIG_TIME local projections and output projection have negative weak-pair full-pool cosine in all3 model states.",
+    "Minibatch conflicts are intermittent: physical-metric53/150 batches negative despite full-pool negative3/3; mean batch cosine differs from cosine of full-pool summed gradients.",
+    "In physical clip metric each weak CE gradient vs other4 average is positive for all3; normalized-Hz signs differ. A blanket strong-class-suppresses-weak-class story is unsupported.",
+    "New mean/tail loss vs deployed joint160 contrastive gradients vary across seeds and coordinate metrics; these static results cannot establish the cause of completed training degradation."
+  ],
+  "source_only_followup_hypothesis": "Test blockwise coordination between fixed weakTX feature gradients, with a matched-gradient-norm direction control. Preserve default classifier main joint training and original F CROSS_RX/RDrop/oldgate-ownEMA-cos/unifiedSinc/no satellite/clean only. Scientific source qualification before any new target scoring.",
+  "not_established": [
+    "Actual stochastic RDrop+U+AdamW step interference",
+    "Target clean improvement",
+    "Generalization to unseen RX or Phase2",
+    "Causal explanation or guaranteed PCGrad benefit"
+  ],
+  "raw_gradient_vectors_saved_to_Git": false
+}

@@ -1,0 +1,24 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "83535d3c37226f8b40883f2cad72f60c07e513db",
+  "remote_commit_verified": true,
+  "archive": {
+    "status": "VERIFIED",
+    "bytes": 21768738,
+    "local_sha256": "3a7bdf62f17c3cb776367a62266b0bf7d7ccba914cab05fca951386f46e38e12",
+    "copied_sha256": "3a7bdf62f17c3cb776367a62266b0bf7d7ccba914cab05fca951386f46e38e12"
+  },
+  "release_compile": "PASS",
+  "actual_CWD_matches_immutable_release": true,
+  "actual_PID_cmdline_and_GPU_worker_confirmed": true,
+  "physical_GPU": 0,
+  "source_role": "L_s",
+  "log_growth_observed": {
+    "earlier_bytes": 0,
+    "later_bytes": 799,
+    "completed_reference_models": 1
+  },
+  "optimizer_updates": 0,
+  "head_fit_updates": 0,
+  "target_reads": 0
+}

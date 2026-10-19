@@ -1,6 +1,6 @@
 # 原 F：固定弱 TX 的源 L 特征梯度诊断
 
-状态：LOCAL_VERIFIED，尚未运行真实源数据诊断。此项只为下一训练机制取得源域证据，不能当作性能提升结果。
+状态：ANALYZED。三个固定 BASE 的源 L 诊断均完成，结果见 [results.md](results.md) 与 results_summary.json；此项只为下一训练机制取得源域证据，不能当作性能提升结果。
 
 复用原始 F＋CROSS_RX50 的 BASE-s2026092701/02/03，确切模型实现为 31467086c3ced30237f3ac86e91eae68645425d7；来自既定 scratch50、默认头联合训练和 final-only 冻结，同一 source contract，绝不继承为新训练初始化。固定弱 TX 仍为源 V 先前确定的 14-7、20-19（索引 1、3）。
 
@@ -39,3 +39,5 @@ LOCAL_PYTHON -X utf8 -u experiments/cvs_f_weaktx_gradient50/runner.py --profile 
 一次独立 P0/P1 审查发现旧 SourceRoleDataset 无 samples_read 属性，已由诊断侧 CountingRole 独立记录实际 __getitem__ 调用并核对 6300/模型、18900 总计；聚焦计数测试及唯一一次定点复核 PASS。无额外整体或报告审查。checks.json 与 review.json 保存证据。
 
 REJECTED_EXTRA_GATE：不增加通用设计审批、全项目测试、成员 SHA、签名或报告完整性发布门槛。此只读诊断由现有目标授权；下一训练机制仍须独立固定配方、合法源域判断及冻结后的 clean 评分，不能把此处当作目标达成。
+
+执行代码 `83535d3c37226f8b40883f2cad72f60c07e513db` 已推送并核对远端；发布包一次复制 SHA 核对、编译和实际 PID/CWD/GPU/log 增长核验通过。completion_verification.json 确认全部三模型完成、18900 次源 L 读取、1650 次 VJP、零模型/头/优化器更新及零目标访问。进程已结束，完整终态标记和产物均已保存。
