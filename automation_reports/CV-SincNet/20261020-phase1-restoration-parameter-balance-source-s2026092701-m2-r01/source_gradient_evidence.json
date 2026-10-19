@@ -1,0 +1,30 @@
+{
+  "source_only": true,
+  "target_reads": 0,
+  "new_model_forwards": 0,
+  "new_training_updates": 0,
+  "source_roles": [
+    "L_s",
+    "U_s"
+  ],
+  "source_run": "20261020-phase1-restoration-gradient-projection-source-s2026092701-m2-r01",
+  "source_arm": "scalar_sum",
+  "method_commit": "9f2d8f65e507809de396af5fdb89f11b749759b1",
+  "epoch": 5,
+  "updates": 1235,
+  "gradient_state": {
+    "calls": 1235,
+    "IQ_examples": 630000,
+    "conflict": 116985,
+    "applied": 0,
+    "observed_conflict": 54180,
+    "clean_conflict": 62805,
+    "dot_before_sum": 805.3702160269022,
+    "dot_after_sum": 805.3702160269022,
+    "wave_norm2_sum": 5008.574194550514,
+    "identity_norm2_sum": 1191929.8158283234,
+    "removed_norm2_sum": 0.0
+  },
+  "identity_over_wave_RMS_norm": 15.42653134879579,
+  "limitation": "Cumulative training-gradient RMS ratio;not per-frame or per-step ratio,not proof of cause,not target evidence"
+}
