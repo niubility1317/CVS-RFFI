@@ -18,9 +18,13 @@ N607池0/1/5/7择空卡，最多两条本run训练/预测worker，每卡一条�
 |---|---|---|---|---|---|---|
 |A17-01|报告R3|三步共享/不共享、软物理约束、单IQ|models.py/design.py|verified|三次Core/各2CG、初始输出一致/各步梯度/逐包独立；参数{'unroll_shared': 835842, 'unroll_unshared': 2507526}|CG适配，非报告逐式复现|
 |A17-02|逆问题正确性|warm-start实线性MAP与真伴随|shared weighted_map|verified|稠密实系统一致、两步目标下降、有限梯度；旧默认兼容检查通过|不硬投影|
-|A17-03|无监督/来源|全L/U、0TX/F/target训练、仅R07冻结父|runtime.py/training.py|implemented|来源/schema/非法行负测通过；实际曝光待训练|R16/R15仅源参照|
+|A17-03|无监督/来源|全L/U、0TX/F/target训练、仅R07冻结父|runtime.py/training.py|verified|两行实际20轮/4940；每行L126000/U1134000曝光；TX标签/F权重/F输出/target读取及冻结父更新均0|R16/R15仅源参照；两行仅R07父，新prior scratch|
 |A17-04|身份保护|三参考护栏、固定源排序、无合格0target|evaluation.py/controller.py|verified|第三参考最差TX/角色/性能与最差RX排序/未选target负测通过|V标签选择单独披露|
-|A17-05|原F/正式对照|新展开与旧单次不同schema；七预测后truth|evaluation.py/runner.py|implemented|两loader全七视图/原F版本计数接口通过；实际checkpoint/F smoke入口执行|默认头不拟合|
-|A17-06|运行保护|单owner/共享容量/不可覆盖/N607发布|controller.py|implemented|43tests/compile/help/一次P0P1无阻断/N607普通账户预检通过；待实际poststate|无额外gate|
+|A17-05|原F/正式对照|新展开与旧单次不同schema；七预测后truth|evaluation.py/runner.py|implemented|实际新/旧checkpoint和原F smoke通过；两新行source七预测先固定再CPU评分；正式胜出+固定单步两worker正在预测|完整正式七视图及truth-last结果仍待证；默认头不拟合|
+|A17-06|运行保护|单owner/共享容量/不可覆盖/N607发布|controller.py|verified|43tests/compile/help/一次P0P1/预检/单归档比对/远端编译及PID/CWD/参数/GPU/日志增长均有实际证据；原训练worker自然退出，原controller自动启动正式两行|无额外gate；正式原worker继续监测|
 |A17-07|完整报告|三郊区三urban/clean、TX/RX/day/损伤/成本|run汇总|pending|完整日志和预登记条件工作|源成绩不替代正式70/5|
 |A17-08|有效作用边界|新展开已知作用反事实/多seed/独立物理族/逐细节真实|后续确认|deferred|已有R06/R14源诊断；新模型及外部稳定性须另证|保持完整目标|
+
+当前为 **5 verified、1 implemented、1 pending、1 deferred、0 rejected、0 blocked**。只有不共享行通过全部原定源条件，已在目标访问前固定选择；source low/mid urban为86.8333%/91.4444%，逐TX low urban均优于R16单次及R15 FFT。完整[源域固定汇总](../automation_reports/CV-SincNet/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/source_interim.json)与[运行报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/report.md)已更新。正式结果尚无，最高风险是这些源收益能否迁移至固定目标RX并满足70%/五场景5pp，不能提前宣布目标达成。
+
+本阶段实际执行 `python -X utf8 .codex_tmp/observe_unrolled_r17_20261020.py`、`python -X utf8 .codex_tmp/collect_unrolled_r17_source_interim_20261020.py` 与 `python -X utf8 .codex_tmp/record_unrolled_r17_source_20261020.py`。它们核实同一原进程/源域固定产物并更新公开登记，不重新启动训练、改变方法或读取中途目标评分。已有43项聚焦检查与真实checkpoint检查保持原证据，本阶段不增加重复审查或额外发布门槛。实现仍为warm-CG的接收链适配，非原报告梯度步/MoDL MRI逐式复现。
