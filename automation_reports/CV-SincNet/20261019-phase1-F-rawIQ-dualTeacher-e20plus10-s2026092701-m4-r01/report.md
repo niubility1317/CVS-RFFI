@@ -27,3 +27,5 @@ N607普通账户，GPU4/6/7候选，每GPU最多一个本runworker，所有owner
 本地聚焦验证及唯一P0/P1独立审查已PASS，源场景轴metadata更正为实际low_suburban/mid_urban/low_urban，未改变任何IQ、数值或筛选门槛。
 
 实际代码/config commit：`28d14761575b080077fde038cc96baedd4d982cc`。归档身份由release_commit.txt保留，可能包含后续纯登记元数据提交，实际训练代码保持。
+
+实际状态已转RUNNING；三个worker首轮健康完成，S3排队。详见[live_status.md](live_status.md)。当前无本轮最终性能结论，不以训练日志替代完整七视图独立评分。

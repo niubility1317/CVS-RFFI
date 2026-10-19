@@ -116,7 +116,30 @@
       "dispatch"
     ],
     "stop_rule": "Only registered run-owned systemic technical failure:roles/provenance/nonfinite/frozenW/F/view/teacher/U truth/budget/output inconsistency.Preserve artifacts,no automatic restart,no healthy-task stop.",
-    "launch_readback_ref": "local_artifacts/F_rawIQ_dualTeacher_E30_20261019/postlaunch.json"
+    "launch_readback_ref": "local_artifacts/F_rawIQ_dualTeacher_E30_20261019/progress003.json",
+    "release_commit": "6ea2f71f6654f4ceeadd460905a9d719b5dc1b89",
+    "actual_dispatcher_pid": 2318162,
+    "actual_running_rows": [
+      {
+        "row_id": "NOAS_ADAPTER-s2026092701",
+        "gpu": 6,
+        "pid": 2318182
+      },
+      {
+        "row_id": "S1-s2026092701",
+        "gpu": 7,
+        "pid": 2318268
+      },
+      {
+        "row_id": "S2-s2026092701",
+        "gpu": 4,
+        "pid": 2318352
+      }
+    ],
+    "actual_queued_rows": [
+      "S3-s2026092701"
+    ],
+    "postlaunch_status": "VERIFIED PID/CWD/cmdline/GPU/CUDA/source-log-growth+epoch1"
   },
   "expected_artifacts": [
     "source/final_ssdg.pth with phase1_lineage",

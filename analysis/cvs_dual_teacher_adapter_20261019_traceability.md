@@ -47,4 +47,4 @@
 - 已实现当前received2×256→两级16通道卷积GN/GELU→两个零B投影，在t1/t2原GN前注入；4256参数/8新键/卷积MAC356352，原206状态与defaultcos30头保留。无跨forwardclean缓存、oracle部署输入、新头或旧localadapter叠加。
 - 实际F合成验证零输出joint/logits逐值相同，原状态保持，两个B有梯度；本地aggregate68负例与源决定/元数据10负例通过，0真实CP/IQ/remote。真实CPsmoke为launch首步，PASS继续。
 - 训练raw/As正确数取已有logits，标注stochastic读出；全4固定FINAL30自动7view预测，源3条件固定后独立truthlast。标准LoRA/featurekeep暂不混入。
-- 当前状态：实现和本地验证完成，唯一独立P0/P1审查PASS，准备远端启动。最小预登记：[report.md](../automation_reports/CV-SincNet/20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01/report.md)。
+- 当前状态：RUNNING，真实父CP smoke PASS后三个worker首轮健康完成，S3排队；运行commit6ea2f71f6，尚未获得本轮最终性能。最小预登记：[report.md](../automation_reports/CV-SincNet/20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01/report.md)。
