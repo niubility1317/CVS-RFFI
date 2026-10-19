@@ -1,2 +1,3 @@
 {"at": "2026-10-19T04:21:19+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-19T04:24:09+00:00", "status": "RUNNING", "note": "VERIFIED:archive/compile/smoke6402NN,4realworkers cwdargvGPUloggrowth,actualsame206initialtensorswithinseed. Matrixunchanged.", "evidence": ["launch_verification.json"], "row_id": null}
+{"at": "2026-10-19T05:25:02+00:00", "status": "ANALYZED", "note": "VERIFIED:6matchedrows3studentseedsall7scored,no missing;12fulltrainingsegmentsPASS. SourcePASS;formal low+.801786pp clean-.514087pp;JOINT_GOAL_NOT_MET.", "evidence": ["assessment.json"], "row_id": null}

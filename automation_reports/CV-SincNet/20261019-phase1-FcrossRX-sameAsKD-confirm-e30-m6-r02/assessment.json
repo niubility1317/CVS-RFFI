@@ -1,0 +1,38 @@
+{
+  "artifact_status": "VERIFIED",
+  "analysis_status": "ANALYZED",
+  "model_seed_count": 3,
+  "teacher_seed_count": 1,
+  "rows": 6,
+  "views_per_row": 7,
+  "missing_rows": [],
+  "full_training_segments_PASS": 12,
+  "source_rule_PASS": true,
+  "midlow_source_gain_pp": 0.7314814814814848,
+  "source_clean_delta_pp": -0.045679012345678505,
+  "formal_lowurban_KD_minus_T1": {
+    "mean_pp": 0.8017857142857188,
+    "sample_std_pp": 0.08571428571428896,
+    "per_seed_pp": [
+      0.7160714285714298,
+      0.8875000000000077,
+      0.8017857142857188
+    ],
+    "positive_seed_count": 3
+  },
+  "formal_clean_KD_minus_T1": {
+    "mean_pp": -0.5140873015872996,
+    "sample_std_pp": 0.49499204529519036,
+    "per_seed_pp": [
+      -0.2500000000000058,
+      -0.2071428571428502,
+      -1.085119047619043
+    ],
+    "positive_seed_count": 0
+  },
+  "clean_preservation_pass": false,
+  "joint_goal": "NOT_MET",
+  "no_target_retuning_or_selective_rerun": true,
+  "training_code": "4919fbe67f7fe0f197a0378a0fc39b1c5f1a9470",
+  "figures_visual_QA": "PASS"
+}

@@ -1,0 +1,145 @@
+{
+  "validation": {
+    "status": "VERIFIED",
+    "rows": [
+      {
+        "row": "B00-s2026092702",
+        "same_physical_source_roles": true,
+        "model_seed": 2026092702,
+        "all7_complete": true,
+        "head_fit_updates": 0
+      },
+      {
+        "row": "B01-s2026092702",
+        "same_physical_source_roles": true,
+        "model_seed": 2026092702,
+        "all7_complete": true,
+        "head_fit_updates": 0
+      },
+      {
+        "row": "B00-s2026092703",
+        "same_physical_source_roles": true,
+        "model_seed": 2026092703,
+        "all7_complete": true,
+        "head_fit_updates": 0
+      },
+      {
+        "row": "B01-s2026092703",
+        "same_physical_source_roles": true,
+        "model_seed": 2026092703,
+        "all7_complete": true,
+        "head_fit_updates": 0
+      }
+    ],
+    "new_NN": 0,
+    "checkpoint_loads": 0,
+    "target_prediction_reuse": true
+  },
+  "actual_initial_state": [
+    {
+      "row": "B00-s2026092702",
+      "initial_changed": 4,
+      "state_tensors": 206,
+      "native_seed": 2026092702,
+      "head_fit_updates": 0
+    },
+    {
+      "row": "B01-s2026092702",
+      "initial_changed": 4,
+      "state_tensors": 206,
+      "native_seed": 2026092702,
+      "head_fit_updates": 0
+    },
+    {
+      "row": "B00-s2026092703",
+      "initial_changed": 4,
+      "state_tensors": 206,
+      "native_seed": 2026092703,
+      "head_fit_updates": 0
+    },
+    {
+      "row": "B01-s2026092703",
+      "initial_changed": 4,
+      "state_tensors": 206,
+      "native_seed": 2026092703,
+      "head_fit_updates": 0
+    }
+  ],
+  "changed_tensor_names": {
+    "2026092702": [
+      {
+        "name": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+        "shape": [
+          6,
+          96,
+          1
+        ],
+        "maximum_absolute_delta": 0.19095230102539062
+      },
+      {
+        "name": "id_backbone.encoder.sequence_pool.views.1.local_projection.weight",
+        "shape": [
+          6,
+          96,
+          1
+        ],
+        "maximum_absolute_delta": 0.19764670729637146
+      },
+      {
+        "name": "id_backbone.encoder.sequence_pool.views.2.local_projection.weight",
+        "shape": [
+          6,
+          96,
+          1
+        ],
+        "maximum_absolute_delta": 0.20091035962104797
+      },
+      {
+        "name": "id_backbone.encoder.sequence_pool.output_projection.weight",
+        "shape": [
+          160,
+          336
+        ],
+        "maximum_absolute_delta": 0.10845458507537842
+      }
+    ],
+    "2026092703": [
+      {
+        "name": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+        "shape": [
+          6,
+          96,
+          1
+        ],
+        "maximum_absolute_delta": 0.1927950084209442
+      },
+      {
+        "name": "id_backbone.encoder.sequence_pool.views.1.local_projection.weight",
+        "shape": [
+          6,
+          96,
+          1
+        ],
+        "maximum_absolute_delta": 0.19926518201828003
+      },
+      {
+        "name": "id_backbone.encoder.sequence_pool.views.2.local_projection.weight",
+        "shape": [
+          6,
+          96,
+          1
+        ],
+        "maximum_absolute_delta": 0.20136034488677979
+      },
+      {
+        "name": "id_backbone.encoder.sequence_pool.output_projection.weight",
+        "shape": [
+          160,
+          336
+        ],
+        "maximum_absolute_delta": 0.10886067152023315
+      }
+    ]
+  },
+  "caveat": "Three backbone studentseeds;fixed sequence-pool subinitializer in current wrapper. Main T1/KD exactall206 matched. History As/NoAs sameactualseed/contract/E30,4poolprojections differ;descriptive benchmark only."
+}

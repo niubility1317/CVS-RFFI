@@ -1,0 +1,28 @@
+{
+  "status": "SOURCE_DECIDED",
+  "pairs": [
+    {
+      "model_seed": 2026092701,
+      "midlow_gain_pp": 0.7777777777777883,
+      "clean_delta_pp": -0.07407407407407085
+    },
+    {
+      "model_seed": 2026092702,
+      "midlow_gain_pp": 0.6388888888888888,
+      "clean_delta_pp": -0.048148148148152714
+    },
+    {
+      "model_seed": 2026092703,
+      "midlow_gain_pp": 0.7777777777777772,
+      "clean_delta_pp": -0.01481481481481195
+    }
+  ],
+  "midlow_gain_pp": 0.7314814814814848,
+  "clean_delta_pp": -0.045679012345678505,
+  "passed": true,
+  "model_seed_count": 3,
+  "target_scores_read": false,
+  "automatic_extension": false,
+  "all_rows_still_all7": true,
+  "confirmation_fixed_from_seed01_source": true
+}

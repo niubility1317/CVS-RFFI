@@ -1,0 +1,675 @@
+{
+  "2026092701": {
+    "status": "COMPLETE_TRAINING_LOGS",
+    "physical": {
+      "stage20": true,
+      "source": true
+    },
+    "rows": {
+      "T1": {
+        "complete": true,
+        "epochs": 30,
+        "stdout": {
+          "lines": 1219,
+          "tracebacks": 0,
+          "OOM": 0
+        },
+        "segments": {
+          "stage20": {
+            "checks": "PASS",
+            "errors": [],
+            "records": {
+              "step_metrics": 4440,
+              "reference_steps": 4440,
+              "shape_steps": 4440,
+              "temperature_steps": 4440,
+              "unit_steps": 4440
+            },
+            "cost": {
+              "status": "SEGMENT_TRAINED",
+              "segment_epochs": 20,
+              "optimizer_steps": 4440,
+              "L_NN": 3409920,
+              "L_As": 284160,
+              "Ag_mode": "NONE",
+              "Ag_packets": 0,
+              "Ag_control_NN": 1136640,
+              "total_L_loss_scale": 1.25,
+              "extra_U_NN": 0,
+              "U_As": 0,
+              "student_train_NN": 3806820,
+              "student_eval_NN": 594002,
+              "teacher_train_NN": 0,
+              "teacher_eval_NN": 396900,
+              "source_qualification": null,
+              "U_source_qualified": null,
+              "U_channel": null,
+              "source_RX_holdout": null,
+              "U_truth_read": false,
+              "target_access": false,
+              "head_fit_updates": 0,
+              "wall_seconds": 1957.5613856315613,
+              "U_steps_legacy_raw": 0,
+              "actual_U_student_NN": 396900,
+              "actual_U_batches": 1554
+            },
+            "sameAsKD": null
+          },
+          "source": {
+            "checks": "PASS",
+            "errors": [],
+            "records": {
+              "step_metrics": 2220,
+              "reference_steps": 2220,
+              "shape_steps": 2220,
+              "temperature_steps": 2220,
+              "unit_steps": 2220
+            },
+            "cost": {
+              "status": "SEGMENT_TRAINED",
+              "segment_epochs": 10,
+              "optimizer_steps": 2220,
+              "L_NN": 1704960,
+              "L_As": 142080,
+              "Ag_mode": "NONE",
+              "Ag_packets": 0,
+              "Ag_control_NN": 568320,
+              "total_L_loss_scale": 1.25,
+              "extra_U_NN": 0,
+              "U_As": 0,
+              "student_train_NN": 2271960,
+              "student_eval_NN": 324002,
+              "teacher_train_NN": 0,
+              "teacher_eval_NN": 567000,
+              "source_qualification": null,
+              "U_source_qualified": null,
+              "U_channel": null,
+              "source_RX_holdout": null,
+              "U_truth_read": false,
+              "target_access": false,
+              "head_fit_updates": 0,
+              "wall_seconds": 1164.3111352920532,
+              "U_steps_legacy_raw": 0,
+              "actual_U_student_NN": 567000,
+              "actual_U_batches": 2220
+            },
+            "sameAsKD": null
+          }
+        }
+      },
+      "KD": {
+        "complete": true,
+        "epochs": 30,
+        "stdout": {
+          "lines": 1218,
+          "tracebacks": 0,
+          "OOM": 0
+        },
+        "segments": {
+          "stage20": {
+            "checks": "PASS",
+            "errors": [],
+            "records": {
+              "step_metrics": 4440,
+              "reference_steps": 4440,
+              "shape_steps": 4440,
+              "temperature_steps": 4440,
+              "unit_steps": 4440
+            },
+            "cost": {
+              "status": "SEGMENT_TRAINED",
+              "segment_epochs": 20,
+              "optimizer_steps": 4440,
+              "L_NN": 3409920,
+              "L_As": 284160,
+              "Ag_mode": "NONE",
+              "Ag_packets": 0,
+              "Ag_control_NN": 1136640,
+              "total_L_loss_scale": 1.25,
+              "extra_U_NN": 0,
+              "U_As": 0,
+              "student_train_NN": 3806820,
+              "student_eval_NN": 594002,
+              "teacher_train_NN": 0,
+              "teacher_eval_NN": 396900,
+              "source_qualification": null,
+              "U_source_qualified": null,
+              "U_channel": null,
+              "source_RX_holdout": null,
+              "U_truth_read": false,
+              "target_access": false,
+              "head_fit_updates": 0,
+              "wall_seconds": 1930.3054552078247,
+              "U_steps_legacy_raw": 0,
+              "actual_U_student_NN": 396900,
+              "actual_U_batches": 1554
+            },
+            "sameAsKD": {
+              "teacher_NN": 284160,
+              "student_extra_NN": 0,
+              "steps": 4440,
+              "teacher_correct": 248722,
+              "teacher_same_IQ": true,
+              "teacher_state_unchanged": true,
+              "beta": 1,
+              "common_scale": 5,
+              "head_fit_updates": 0
+            }
+          },
+          "source": {
+            "checks": "PASS",
+            "errors": [],
+            "records": {
+              "step_metrics": 2220,
+              "reference_steps": 2220,
+              "shape_steps": 2220,
+              "temperature_steps": 2220,
+              "unit_steps": 2220
+            },
+            "cost": {
+              "status": "SEGMENT_TRAINED",
+              "segment_epochs": 10,
+              "optimizer_steps": 2220,
+              "L_NN": 1704960,
+              "L_As": 142080,
+              "Ag_mode": "NONE",
+              "Ag_packets": 0,
+              "Ag_control_NN": 568320,
+              "total_L_loss_scale": 1.25,
+              "extra_U_NN": 0,
+              "U_As": 0,
+              "student_train_NN": 2271960,
+              "student_eval_NN": 324002,
+              "teacher_train_NN": 0,
+              "teacher_eval_NN": 567000,
+              "source_qualification": null,
+              "U_source_qualified": null,
+              "U_channel": null,
+              "source_RX_holdout": null,
+              "U_truth_read": false,
+              "target_access": false,
+              "head_fit_updates": 0,
+              "wall_seconds": 1123.103355884552,
+              "U_steps_legacy_raw": 0,
+              "actual_U_student_NN": 567000,
+              "actual_U_batches": 2220
+            },
+            "sameAsKD": {
+              "teacher_NN": 142080,
+              "student_extra_NN": 0,
+              "steps": 2220,
+              "teacher_correct": 124521,
+              "teacher_same_IQ": true,
+              "teacher_state_unchanged": true,
+              "beta": 1,
+              "common_scale": 5,
+              "head_fit_updates": 0
+            }
+          }
+        }
+      }
+    }
+  },
+  "2026092702": {
+    "status": "COMPLETE_TRAINING_LOGS",
+    "physical": {
+      "stage20": true,
+      "source": true
+    },
+    "rows": {
+      "T1": {
+        "complete": true,
+        "epochs": 30,
+        "stdout": {
+          "lines": 1218,
+          "tracebacks": 0,
+          "OOM": 0
+        },
+        "segments": {
+          "stage20": {
+            "checks": "PASS",
+            "errors": [],
+            "records": {
+              "step_metrics": 4440,
+              "reference_steps": 4440,
+              "shape_steps": 4440,
+              "temperature_steps": 4440,
+              "unit_steps": 4440
+            },
+            "cost": {
+              "status": "SEGMENT_TRAINED",
+              "segment_epochs": 20,
+              "optimizer_steps": 4440,
+              "L_NN": 3409920,
+              "L_As": 284160,
+              "Ag_mode": "NONE",
+              "Ag_packets": 0,
+              "Ag_control_NN": 1136640,
+              "total_L_loss_scale": 1.25,
+              "extra_U_NN": 0,
+              "U_As": 0,
+              "student_train_NN": 3806820,
+              "student_eval_NN": 594002,
+              "teacher_train_NN": 0,
+              "teacher_eval_NN": 396900,
+              "source_qualification": null,
+              "U_source_qualified": null,
+              "U_channel": null,
+              "source_RX_holdout": null,
+              "U_truth_read": false,
+              "target_access": false,
+              "head_fit_updates": 0,
+              "wall_seconds": 2040.9109852313995,
+              "U_steps_legacy_raw": 0,
+              "actual_U_student_NN": 396900,
+              "actual_U_batches": 1554
+            },
+            "sameAsKD": {
+              "teacher_NN": 0,
+              "student_extra_NN": 0,
+              "steps": 0,
+              "teacher_correct": 0,
+              "teacher_same_IQ": true,
+              "teacher_state_unchanged": true,
+              "beta": 1,
+              "common_scale": 5,
+              "head_fit_updates": 0
+            }
+          },
+          "source": {
+            "checks": "PASS",
+            "errors": [],
+            "records": {
+              "step_metrics": 2220,
+              "reference_steps": 2220,
+              "shape_steps": 2220,
+              "temperature_steps": 2220,
+              "unit_steps": 2220
+            },
+            "cost": {
+              "status": "SEGMENT_TRAINED",
+              "segment_epochs": 10,
+              "optimizer_steps": 2220,
+              "L_NN": 1704960,
+              "L_As": 142080,
+              "Ag_mode": "NONE",
+              "Ag_packets": 0,
+              "Ag_control_NN": 568320,
+              "total_L_loss_scale": 1.25,
+              "extra_U_NN": 0,
+              "U_As": 0,
+              "student_train_NN": 2271960,
+              "student_eval_NN": 324002,
+              "teacher_train_NN": 0,
+              "teacher_eval_NN": 567000,
+              "source_qualification": null,
+              "U_source_qualified": null,
+              "U_channel": null,
+              "source_RX_holdout": null,
+              "U_truth_read": false,
+              "target_access": false,
+              "head_fit_updates": 0,
+              "wall_seconds": 1163.2453949451447,
+              "U_steps_legacy_raw": 0,
+              "actual_U_student_NN": 567000,
+              "actual_U_batches": 2220
+            },
+            "sameAsKD": {
+              "teacher_NN": 0,
+              "student_extra_NN": 0,
+              "steps": 0,
+              "teacher_correct": 0,
+              "teacher_same_IQ": true,
+              "teacher_state_unchanged": true,
+              "beta": 1,
+              "common_scale": 5,
+              "head_fit_updates": 0
+            }
+          }
+        }
+      },
+      "KD": {
+        "complete": true,
+        "epochs": 30,
+        "stdout": {
+          "lines": 1218,
+          "tracebacks": 0,
+          "OOM": 0
+        },
+        "segments": {
+          "stage20": {
+            "checks": "PASS",
+            "errors": [],
+            "records": {
+              "step_metrics": 4440,
+              "reference_steps": 4440,
+              "shape_steps": 4440,
+              "temperature_steps": 4440,
+              "unit_steps": 4440
+            },
+            "cost": {
+              "status": "SEGMENT_TRAINED",
+              "segment_epochs": 20,
+              "optimizer_steps": 4440,
+              "L_NN": 3409920,
+              "L_As": 284160,
+              "Ag_mode": "NONE",
+              "Ag_packets": 0,
+              "Ag_control_NN": 1136640,
+              "total_L_loss_scale": 1.25,
+              "extra_U_NN": 0,
+              "U_As": 0,
+              "student_train_NN": 3806820,
+              "student_eval_NN": 594002,
+              "teacher_train_NN": 0,
+              "teacher_eval_NN": 396900,
+              "source_qualification": null,
+              "U_source_qualified": null,
+              "U_channel": null,
+              "source_RX_holdout": null,
+              "U_truth_read": false,
+              "target_access": false,
+              "head_fit_updates": 0,
+              "wall_seconds": 2008.9942498207092,
+              "U_steps_legacy_raw": 0,
+              "actual_U_student_NN": 396900,
+              "actual_U_batches": 1554
+            },
+            "sameAsKD": {
+              "teacher_NN": 284160,
+              "student_extra_NN": 0,
+              "steps": 4440,
+              "teacher_correct": 249036,
+              "teacher_same_IQ": true,
+              "teacher_state_unchanged": true,
+              "beta": 1,
+              "common_scale": 5,
+              "head_fit_updates": 0
+            }
+          },
+          "source": {
+            "checks": "PASS",
+            "errors": [],
+            "records": {
+              "step_metrics": 2220,
+              "reference_steps": 2220,
+              "shape_steps": 2220,
+              "temperature_steps": 2220,
+              "unit_steps": 2220
+            },
+            "cost": {
+              "status": "SEGMENT_TRAINED",
+              "segment_epochs": 10,
+              "optimizer_steps": 2220,
+              "L_NN": 1704960,
+              "L_As": 142080,
+              "Ag_mode": "NONE",
+              "Ag_packets": 0,
+              "Ag_control_NN": 568320,
+              "total_L_loss_scale": 1.25,
+              "extra_U_NN": 0,
+              "U_As": 0,
+              "student_train_NN": 2271960,
+              "student_eval_NN": 324002,
+              "teacher_train_NN": 0,
+              "teacher_eval_NN": 567000,
+              "source_qualification": null,
+              "U_source_qualified": null,
+              "U_channel": null,
+              "source_RX_holdout": null,
+              "U_truth_read": false,
+              "target_access": false,
+              "head_fit_updates": 0,
+              "wall_seconds": 1163.3685982227325,
+              "U_steps_legacy_raw": 0,
+              "actual_U_student_NN": 567000,
+              "actual_U_batches": 2220
+            },
+            "sameAsKD": {
+              "teacher_NN": 142080,
+              "student_extra_NN": 0,
+              "steps": 2220,
+              "teacher_correct": 124594,
+              "teacher_same_IQ": true,
+              "teacher_state_unchanged": true,
+              "beta": 1,
+              "common_scale": 5,
+              "head_fit_updates": 0
+            }
+          }
+        }
+      }
+    }
+  },
+  "2026092703": {
+    "status": "COMPLETE_TRAINING_LOGS",
+    "physical": {
+      "stage20": true,
+      "source": true
+    },
+    "rows": {
+      "T1": {
+        "complete": true,
+        "epochs": 30,
+        "stdout": {
+          "lines": 1218,
+          "tracebacks": 0,
+          "OOM": 0
+        },
+        "segments": {
+          "stage20": {
+            "checks": "PASS",
+            "errors": [],
+            "records": {
+              "step_metrics": 4440,
+              "reference_steps": 4440,
+              "shape_steps": 4440,
+              "temperature_steps": 4440,
+              "unit_steps": 4440
+            },
+            "cost": {
+              "status": "SEGMENT_TRAINED",
+              "segment_epochs": 20,
+              "optimizer_steps": 4440,
+              "L_NN": 3409920,
+              "L_As": 284160,
+              "Ag_mode": "NONE",
+              "Ag_packets": 0,
+              "Ag_control_NN": 1136640,
+              "total_L_loss_scale": 1.25,
+              "extra_U_NN": 0,
+              "U_As": 0,
+              "student_train_NN": 3806820,
+              "student_eval_NN": 594002,
+              "teacher_train_NN": 0,
+              "teacher_eval_NN": 396900,
+              "source_qualification": null,
+              "U_source_qualified": null,
+              "U_channel": null,
+              "source_RX_holdout": null,
+              "U_truth_read": false,
+              "target_access": false,
+              "head_fit_updates": 0,
+              "wall_seconds": 2130.441403388977,
+              "U_steps_legacy_raw": 0,
+              "actual_U_student_NN": 396900,
+              "actual_U_batches": 1554
+            },
+            "sameAsKD": {
+              "teacher_NN": 0,
+              "student_extra_NN": 0,
+              "steps": 0,
+              "teacher_correct": 0,
+              "teacher_same_IQ": true,
+              "teacher_state_unchanged": true,
+              "beta": 1,
+              "common_scale": 5,
+              "head_fit_updates": 0
+            }
+          },
+          "source": {
+            "checks": "PASS",
+            "errors": [],
+            "records": {
+              "step_metrics": 2220,
+              "reference_steps": 2220,
+              "shape_steps": 2220,
+              "temperature_steps": 2220,
+              "unit_steps": 2220
+            },
+            "cost": {
+              "status": "SEGMENT_TRAINED",
+              "segment_epochs": 10,
+              "optimizer_steps": 2220,
+              "L_NN": 1704960,
+              "L_As": 142080,
+              "Ag_mode": "NONE",
+              "Ag_packets": 0,
+              "Ag_control_NN": 568320,
+              "total_L_loss_scale": 1.25,
+              "extra_U_NN": 0,
+              "U_As": 0,
+              "student_train_NN": 2271960,
+              "student_eval_NN": 324002,
+              "teacher_train_NN": 0,
+              "teacher_eval_NN": 567000,
+              "source_qualification": null,
+              "U_source_qualified": null,
+              "U_channel": null,
+              "source_RX_holdout": null,
+              "U_truth_read": false,
+              "target_access": false,
+              "head_fit_updates": 0,
+              "wall_seconds": 1241.3610363006592,
+              "U_steps_legacy_raw": 0,
+              "actual_U_student_NN": 567000,
+              "actual_U_batches": 2220
+            },
+            "sameAsKD": {
+              "teacher_NN": 0,
+              "student_extra_NN": 0,
+              "steps": 0,
+              "teacher_correct": 0,
+              "teacher_same_IQ": true,
+              "teacher_state_unchanged": true,
+              "beta": 1,
+              "common_scale": 5,
+              "head_fit_updates": 0
+            }
+          }
+        }
+      },
+      "KD": {
+        "complete": true,
+        "epochs": 30,
+        "stdout": {
+          "lines": 1218,
+          "tracebacks": 0,
+          "OOM": 0
+        },
+        "segments": {
+          "stage20": {
+            "checks": "PASS",
+            "errors": [],
+            "records": {
+              "step_metrics": 4440,
+              "reference_steps": 4440,
+              "shape_steps": 4440,
+              "temperature_steps": 4440,
+              "unit_steps": 4440
+            },
+            "cost": {
+              "status": "SEGMENT_TRAINED",
+              "segment_epochs": 20,
+              "optimizer_steps": 4440,
+              "L_NN": 3409920,
+              "L_As": 284160,
+              "Ag_mode": "NONE",
+              "Ag_packets": 0,
+              "Ag_control_NN": 1136640,
+              "total_L_loss_scale": 1.25,
+              "extra_U_NN": 0,
+              "U_As": 0,
+              "student_train_NN": 3806820,
+              "student_eval_NN": 594002,
+              "teacher_train_NN": 0,
+              "teacher_eval_NN": 396900,
+              "source_qualification": null,
+              "U_source_qualified": null,
+              "U_channel": null,
+              "source_RX_holdout": null,
+              "U_truth_read": false,
+              "target_access": false,
+              "head_fit_updates": 0,
+              "wall_seconds": 2150.7065029144287,
+              "U_steps_legacy_raw": 0,
+              "actual_U_student_NN": 396900,
+              "actual_U_batches": 1554
+            },
+            "sameAsKD": {
+              "teacher_NN": 284160,
+              "student_extra_NN": 0,
+              "steps": 4440,
+              "teacher_correct": 248984,
+              "teacher_same_IQ": true,
+              "teacher_state_unchanged": true,
+              "beta": 1,
+              "common_scale": 5,
+              "head_fit_updates": 0
+            }
+          },
+          "source": {
+            "checks": "PASS",
+            "errors": [],
+            "records": {
+              "step_metrics": 2220,
+              "reference_steps": 2220,
+              "shape_steps": 2220,
+              "temperature_steps": 2220,
+              "unit_steps": 2220
+            },
+            "cost": {
+              "status": "SEGMENT_TRAINED",
+              "segment_epochs": 10,
+              "optimizer_steps": 2220,
+              "L_NN": 1704960,
+              "L_As": 142080,
+              "Ag_mode": "NONE",
+              "Ag_packets": 0,
+              "Ag_control_NN": 568320,
+              "total_L_loss_scale": 1.25,
+              "extra_U_NN": 0,
+              "U_As": 0,
+              "student_train_NN": 2271960,
+              "student_eval_NN": 324002,
+              "teacher_train_NN": 0,
+              "teacher_eval_NN": 567000,
+              "source_qualification": null,
+              "U_source_qualified": null,
+              "U_channel": null,
+              "source_RX_holdout": null,
+              "U_truth_read": false,
+              "target_access": false,
+              "head_fit_updates": 0,
+              "wall_seconds": 1265.7528445720673,
+              "U_steps_legacy_raw": 0,
+              "actual_U_student_NN": 567000,
+              "actual_U_batches": 2220
+            },
+            "sameAsKD": {
+              "teacher_NN": 142080,
+              "student_extra_NN": 0,
+              "steps": 2220,
+              "teacher_correct": 124337,
+              "teacher_same_IQ": true,
+              "teacher_state_unchanged": true,
+              "beta": 1,
+              "common_scale": 5,
+              "head_fit_updates": 0
+            }
+          }
+        }
+      }
+    }
+  }
+}

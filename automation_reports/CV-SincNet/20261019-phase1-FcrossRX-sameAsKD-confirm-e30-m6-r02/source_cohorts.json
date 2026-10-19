@@ -1,0 +1,272 @@
+{
+  "2026092701": {
+    "groups": [
+      {
+        "scene": "practical_mid_urban",
+        "cohort": "all",
+        "n": 3600,
+        "T1_correct": 2627,
+        "KD_correct": 2657,
+        "repairs": 78,
+        "new_errors": 48,
+        "delta_pp": 0.8333333333333304
+      },
+      {
+        "scene": "practical_mid_urban",
+        "cohort": "teacher_correct_originalPAMF_wrong",
+        "n": 609,
+        "T1_correct": 45,
+        "KD_correct": 77,
+        "repairs": 48,
+        "new_errors": 16,
+        "delta_pp": 5.254515599343186
+      },
+      {
+        "scene": "practical_mid_urban",
+        "cohort": "teacher_wrong_originalPAMF_correct",
+        "n": 118,
+        "T1_correct": 102,
+        "KD_correct": 105,
+        "repairs": 7,
+        "new_errors": 4,
+        "delta_pp": 2.5423728813559254
+      },
+      {
+        "scene": "practical_mid_urban",
+        "cohort": "teacher_correct_T1_wrong",
+        "n": 602,
+        "T1_correct": 0,
+        "KD_correct": 63,
+        "repairs": 63,
+        "new_errors": 0,
+        "delta_pp": 10.465116279069768
+      },
+      {
+        "scene": "practical_low_urban",
+        "cohort": "all",
+        "n": 3600,
+        "T1_correct": 2133,
+        "KD_correct": 2159,
+        "repairs": 95,
+        "new_errors": 69,
+        "delta_pp": 0.7222222222222241
+      },
+      {
+        "scene": "practical_low_urban",
+        "cohort": "teacher_correct_originalPAMF_wrong",
+        "n": 835,
+        "T1_correct": 62,
+        "KD_correct": 106,
+        "repairs": 60,
+        "new_errors": 16,
+        "delta_pp": 5.26946107784431
+      },
+      {
+        "scene": "practical_low_urban",
+        "cohort": "teacher_wrong_originalPAMF_correct",
+        "n": 174,
+        "T1_correct": 147,
+        "KD_correct": 134,
+        "repairs": 4,
+        "new_errors": 17,
+        "delta_pp": -7.471264367816099
+      },
+      {
+        "scene": "practical_low_urban",
+        "cohort": "teacher_correct_T1_wrong",
+        "n": 822,
+        "T1_correct": 0,
+        "KD_correct": 70,
+        "repairs": 70,
+        "new_errors": 0,
+        "delta_pp": 8.51581508515815
+      }
+    ],
+    "NN": 0,
+    "updates": 0,
+    "head_fit_updates": 0,
+    "target_access": false,
+    "source_cohort_posthoc": true,
+    "not_training_or_selection": true
+  },
+  "2026092702": {
+    "groups": [
+      {
+        "scene": "practical_mid_urban",
+        "cohort": "all",
+        "n": 3600,
+        "T1_correct": 2627,
+        "KD_correct": 2646,
+        "repairs": 76,
+        "new_errors": 57,
+        "delta_pp": 0.5277777777777715
+      },
+      {
+        "scene": "practical_mid_urban",
+        "cohort": "teacher_correct_originalPAMF_wrong",
+        "n": 609,
+        "T1_correct": 145,
+        "KD_correct": 145,
+        "repairs": 23,
+        "new_errors": 23,
+        "delta_pp": 0
+      },
+      {
+        "scene": "practical_mid_urban",
+        "cohort": "teacher_wrong_originalPAMF_correct",
+        "n": 118,
+        "T1_correct": 71,
+        "KD_correct": 77,
+        "repairs": 10,
+        "new_errors": 4,
+        "delta_pp": 5.084745762711873
+      },
+      {
+        "scene": "practical_mid_urban",
+        "cohort": "teacher_correct_T1_wrong",
+        "n": 599,
+        "T1_correct": 0,
+        "KD_correct": 56,
+        "repairs": 56,
+        "new_errors": 0,
+        "delta_pp": 9.348914858096828
+      },
+      {
+        "scene": "practical_low_urban",
+        "cohort": "all",
+        "n": 3600,
+        "T1_correct": 2130,
+        "KD_correct": 2157,
+        "repairs": 86,
+        "new_errors": 59,
+        "delta_pp": 0.7499999999999951
+      },
+      {
+        "scene": "practical_low_urban",
+        "cohort": "teacher_correct_originalPAMF_wrong",
+        "n": 835,
+        "T1_correct": 159,
+        "KD_correct": 179,
+        "repairs": 36,
+        "new_errors": 16,
+        "delta_pp": 2.3952095808383227
+      },
+      {
+        "scene": "practical_low_urban",
+        "cohort": "teacher_wrong_originalPAMF_correct",
+        "n": 174,
+        "T1_correct": 103,
+        "KD_correct": 102,
+        "repairs": 8,
+        "new_errors": 9,
+        "delta_pp": -0.5747126436781658
+      },
+      {
+        "scene": "practical_low_urban",
+        "cohort": "teacher_correct_T1_wrong",
+        "n": 839,
+        "T1_correct": 0,
+        "KD_correct": 68,
+        "repairs": 68,
+        "new_errors": 0,
+        "delta_pp": 8.104886769964244
+      }
+    ],
+    "NN": 0,
+    "updates": 0,
+    "head_fit_updates": 0,
+    "target_access": false,
+    "source_cohort_posthoc": true,
+    "not_training_or_selection": true
+  },
+  "2026092703": {
+    "groups": [
+      {
+        "scene": "practical_mid_urban",
+        "cohort": "all",
+        "n": 3600,
+        "T1_correct": 2649,
+        "KD_correct": 2674,
+        "repairs": 77,
+        "new_errors": 52,
+        "delta_pp": 0.694444444444442
+      },
+      {
+        "scene": "practical_mid_urban",
+        "cohort": "teacher_correct_originalPAMF_wrong",
+        "n": 609,
+        "T1_correct": 150,
+        "KD_correct": 156,
+        "repairs": 27,
+        "new_errors": 21,
+        "delta_pp": 0.9852216748768489
+      },
+      {
+        "scene": "practical_mid_urban",
+        "cohort": "teacher_wrong_originalPAMF_correct",
+        "n": 118,
+        "T1_correct": 72,
+        "KD_correct": 75,
+        "repairs": 6,
+        "new_errors": 3,
+        "delta_pp": 2.5423728813559254
+      },
+      {
+        "scene": "practical_mid_urban",
+        "cohort": "teacher_correct_T1_wrong",
+        "n": 585,
+        "T1_correct": 0,
+        "KD_correct": 58,
+        "repairs": 58,
+        "new_errors": 0,
+        "delta_pp": 9.914529914529915
+      },
+      {
+        "scene": "practical_low_urban",
+        "cohort": "all",
+        "n": 3600,
+        "T1_correct": 2173,
+        "KD_correct": 2204,
+        "repairs": 101,
+        "new_errors": 70,
+        "delta_pp": 0.8611111111111125
+      },
+      {
+        "scene": "practical_low_urban",
+        "cohort": "teacher_correct_originalPAMF_wrong",
+        "n": 835,
+        "T1_correct": 197,
+        "KD_correct": 199,
+        "repairs": 33,
+        "new_errors": 31,
+        "delta_pp": 0.2395209580838331
+      },
+      {
+        "scene": "practical_low_urban",
+        "cohort": "teacher_wrong_originalPAMF_correct",
+        "n": 174,
+        "T1_correct": 108,
+        "KD_correct": 109,
+        "repairs": 7,
+        "new_errors": 6,
+        "delta_pp": 0.5747126436781547
+      },
+      {
+        "scene": "practical_low_urban",
+        "cohort": "teacher_correct_T1_wrong",
+        "n": 808,
+        "T1_correct": 0,
+        "KD_correct": 67,
+        "repairs": 67,
+        "new_errors": 0,
+        "delta_pp": 8.292079207920793
+      }
+    ],
+    "NN": 0,
+    "updates": 0,
+    "head_fit_updates": 0,
+    "target_access": false,
+    "source_cohort_posthoc": true,
+    "not_training_or_selection": true
+  }
+}

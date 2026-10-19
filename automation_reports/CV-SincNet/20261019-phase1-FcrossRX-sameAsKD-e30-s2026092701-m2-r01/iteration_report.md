@@ -20,3 +20,5 @@ KD 对匹配 T1：clean −0.2500、mid urban +0.3839、low urban +0.7161、urba
 三种子确认：复用 seed01，新增 seed02/03 各 T1/KD，完整固定 E30 和全部 7 视图。教师固定同一 CSIL s392005，最终只评估学生种子稳健性。当前尚未完成三种子结论，不把信道 draw 或测试样本数当模型种子。WiSig practical 代理场景结果不等同部署或在轨证明。
 
 完整数值见 final_analysis.json，完整训练汇总见 training_log_summary.json，源域分组见 source_cohorts.json。
+
+三种子收尾更新：固定确认已全部完成。KD−T1 low urban +0.801786pp、mid urban +0.618651pp、clean −0.514087pp，联合目标未达成。详见 ../20261019-phase1-FcrossRX-sameAsKD-confirm-e30-m6-r02/final_report.md。
