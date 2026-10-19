@@ -18,8 +18,14 @@ MAC口径为Conv1d/2d/3d点积和mm/bmm/addmm的FLOPs/2，不含BN、激活、�
 
 ## 版本、路径、验证与完成
 
-当前PLANNED。实际code commit由publisher写入release_commit.txt及本地package.json；精确命令、环境/CWD、checkpoint来源、GPU、输出/log和逐行69配置见experiment.json及local_artifacts/phase1_external_dg_cost_20261019/runtime.json。预期产物：smoke.json、state.json、69个ROW/result.json、summary.json、report.md、completion.json。
+当前QUEUED，CPU准备及等待进程VERIFIED，尚未开始GPU测量。实际code commit由publisher写入release_commit.txt及本地package.json；精确命令、环境/CWD、checkpoint来源、GPU、输出/log和逐行69配置见experiment.json及local_artifacts/phase1_external_dg_cost_20261019/runtime.json。预期产物：smoke.json、state.json、69个ROW/result.json、summary.json、report.md、completion.json。
 
 一次独立P0/P1审查PASS；四项聚焦检查通过，覆盖三seed矩阵、资源/预算/目标输入拒绝、可手算Conv/Linear MAC、上游真实退出及完整矩阵依赖、计时重复不混淆model seed。Py3.8和remote脚本语法通过。证据verification.json和uniform_cost_environment_probe.json保存在本地artifact目录。
 
 发布只做一次归档传输SHA比较和一次remote compile；post-launch核实实际PID/CWD/argv、CPU smoke及等待状态，SUBMITTED回执单独不足为VERIFIED。最终69行必须各有两batch完整测量、原头/契约及未更新参数证据，并完成汇总；等待进程存在或单个smoke通过不代表成本完成。整体目标还需要原性能矩阵和本成本产物全部完成。
+
+## 发布后读回（2026-10-19T13:03:43+08:00）
+
+代码f94abdc74bf4700e542b6c900813d1648164dddf已提交、推送并独立核对远端OID。一次N607普通账户preflight、一次archive SHA比较和一次remote compile通过。实际dispatcher PID/CWD/argv匹配，CUDA_VISIBLE_DEVICES为空；真实IB-RFF默认头checkpoint在统一torch1.11环境加载并完成CPU MAC profile，smoke.json为PASS且query_access=false、trained=false，随后自动进入WAITING_MATRIX。
+
+当前stdout没有输出，属于等待阶段的静默行为；以实际进程及新生成的smoke/state artifact核实CPU执行，不宣称已有GPU worker或GPU测量日志增长。首个GPU worker的PID/CWD/设备/日志增长核验仍待性能矩阵完成后执行。原训练和扩展suite保持原代码与配置，不占用其他GPU。证据local_artifacts/phase1_external_dg_cost_20261019/post_launch.json。69行成本结果尚未完成，整体目标保持active。

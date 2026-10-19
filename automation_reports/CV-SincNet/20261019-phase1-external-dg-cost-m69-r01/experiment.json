@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "既有非PAMF完整对比目标及已固定设计中的统一推理成本；复用冻结三种子，不增加训练，不占用健康任务GPU。",
   "code": {
-    "commit": "publisher records actual Git commit in release_commit.txt/package.json",
+    "commit": "f94abdc74bf4700e542b6c900813d1648164dddf",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "uniform existing SDG-SEI Python3.8 torch1.11 NumPy1.23; no shared install",
     "cwd": "local_artifacts/phase1_external_dg_cost_20261019/runtime.json#/release_root"

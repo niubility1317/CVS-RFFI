@@ -1,1 +1,2 @@
 {"at": "2026-10-19T05:02:44+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T05:05:45+00:00", "status": "QUEUED", "note": "VERIFIED：实际CPU dispatcher PID/CWD/argv匹配、CUDA不可见；真实IB默认头checkpoint及MAC CPU smoke PASS，无query/训练，已自动WAITING_MATRIX。GPU worker与计时尚未开始，首GPU日志增长验收待上游矩阵完成。", "evidence": ["local_artifacts/phase1_external_dg_cost_20261019/post_launch.json"], "row_id": null}
