@@ -1,0 +1,261 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-F-conditionalTail-e20-s2026092701-m2-r01",
+  "group_id": "phase1-F-conditional-channel-tail",
+  "display_name": "纯 F：逐包双完整信道条件尾风险 E20",
+  "description": "同一合法L每包两完整独立As，比较均匀CE与half-mean+half-max；匹配3L计算，复用原B0/B1；scratch累计E20，固定FINAL自动七环境独立truth-last",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "F",
+    "SIG_TIME_X3",
+    "CENTER_UNITS",
+    "conditional_channel_risk",
+    "two_complete_draws",
+    "matched3L",
+    "E20",
+    "default_head",
+    "oldU",
+    "ownEMA",
+    "single_seed"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Current fixed-F goal explicitly authorizes scratch cumulative E20 augmentation training with source-only selection and fixed seven-view independent truth-last; do not change healthy jobs",
+  "code": {
+    "commit": null,
+    "checkout": "E:\\type10-7\\code\\worktrees\\phase1_sameiq_experts_20261019",
+    "environment": "N607 ordinary account; existing CVS-RFFI Torch2.1 FP32 TF32off CPU2; no installation",
+    "cwd": "PROJECT/releases/cvs_F_conditionalTail_E20_20261019_r01"
+  },
+  "data": {
+    "dataset": "existing immutable ManySig equalized1",
+    "version": "same source contract reused",
+    "representation": "equalized1/center256/unitRMS; exact saved residual post_sync/noeq full observation",
+    "contract_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json",
+    "physical_ids_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json#role_ids",
+    "label_map_ref": "design.CLASSES and native class_mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "protocol.CLASSES",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing sourceV27000 + fixed cached balancedV1800/two full physical draws; Phase2 capsule not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": "PROJECT/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/observations/actual_engine.json"
+  },
+  "permissions": {
+    "regime": "phase1_source_training_target_prediction_only",
+    "query_use": "No target use in training/selection/ranking; frozen FINAL20 defaulthead predicts all seven fixed168000 views; separate exec scorer only after predictions complete and source decision saved",
+    "external_method_exception": null,
+    "claim_scope": "Same source contract/default F. Same model seed E20 exploratory comparison; not fresh blind benchmark or reproducible gain"
+  },
+  "checkpoint": {
+    "initialization": "same-seed scratch F; no student initialization/resume/teacher/distillation checkpoint",
+    "sources": [],
+    "contract_check_ref": "Native exact existing source role handles; immutable scratch init/ownEMA; original B0/B1 controls strict own_model matching source/defaulthead/final_only checked before reuse",
+    "provenance_verdict": "SCRATCH_ONLY; no ancestors or target inheritance. Read-only no-query smoke original B1 source contract matches; never inherited into new training",
+    "selection_rule": "fixed FINAL20 student; no V-selected epoch or target ranking"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/F-conditionalTail20",
+    "gpu_policy": "all owners cap2/GPU;free>=12000MB;CUDA init inside shared capacity lock;healthy jobs untouched",
+    "remote_run_root": "PROJECT/runs/20261019-phase1-F-conditionalTail-e20-s2026092701-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261019-phase1-F-conditionalTail-e20-s2026092701-m2-r01/logs",
+    "local_artifact_root": "local_artifacts/F_conditionalTail_E20_20261019",
+    "launch_command": [
+      "CVS-RFFI/python",
+      "-u",
+      "experiments/cvs_conditional_tail20/runner.py"
+    ],
+    "stop_rule": "Only owned systemic technical/data/defaulthead/nonfinite/output/prediction failure; preserve artifacts/no automatic retry; source low scores do not stop automatic formal completion"
+  },
+  "expected_artifacts": [
+    "checkpoint_smoke.json",
+    "launch.json",
+    "queue_state.json",
+    "source_matrix_decision.json",
+    "perrow all expected artifacts",
+    "analysis.json",
+    "complete.json or failure.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "worst_RX",
+      "paired repaired/new errors",
+      "source two-draw midlow mean and fullVclean",
+      "actual three-forward and physical draw execution",
+      "real Sinc/body/defaulthead updates",
+      "cost/wall"
+    ],
+    "dimensions": [
+      "B0/B1 reused plus CE2/TAIL2",
+      "all7 views",
+      "RX/day/TX",
+      "one model seed",
+      "conditional same-packet draw pair"
+    ],
+    "prediction_ref": "perrow prediction/predictions.npz and seven score files;1176000 physical observations fixed first",
+    "scorer_ref": "perrow separate CPU exec original opaque-ID truth-last scorer; no training object; independent confusion metric recount"
+  },
+  "rows": [
+    {
+      "row_id": "CE2-s2026092701",
+      "method": "CE2",
+      "purpose": "two complete draws uniform CE compute control",
+      "config_ref": "configs/CE2-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-conditionalTail-e20-s2026092701-m2-r01/CE2-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "Model controls original native initialization/loader/ordinary/dropout. Original Practical train channel20261016421 and receiver20261016423 unchanged, mirror step4441-s defines second stream, private second-dropout20261019631+s. Existing fixed V panel/received arrays reused; no new evaluation draw. Physical streams/receiver seeds are algorithm keys, not independent model seeds. Support not applicable.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "original joint AdamW/CENTER_UNITS/physicalclip5; ownEMA/native oldU unchanged",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "scratch20=13L+7U/4440 updates;3L384 student NN perstep=1704960; twoAs256 observations perstep=1136640 physical simulations; native U student/ownEMA each396900; source eval and seven-view prediction counted separately;0 external teacher NN",
+      "output_root": "PROJECT/runs/20261019-phase1-F-conditionalTail-e20-s2026092701-m2-r01/CE2-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-conditionalTail-e20-s2026092701-m2-r01/logs/CE2-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_conditional_tail20/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "CE2-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/mechanism_steps.jsonl.gz",
+        "source/second_actual_channel.json",
+        "source/training_sequence.jsonl.gz",
+        "source/training_result.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ],
+      "weight_decay": 0.0001
+    },
+    {
+      "row_id": "TAIL2-s2026092701",
+      "method": "TAIL2",
+      "purpose": "per-physical-packet half mean plus half max two-draw CE",
+      "config_ref": "configs/TAIL2-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-conditionalTail-e20-s2026092701-m2-r01/TAIL2-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "Model controls original native initialization/loader/ordinary/dropout. Original Practical train channel20261016421 and receiver20261016423 unchanged, mirror step4441-s defines second stream, private second-dropout20261019631+s. Existing fixed V panel/received arrays reused; no new evaluation draw. Physical streams/receiver seeds are algorithm keys, not independent model seeds. Support not applicable.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "original joint AdamW/CENTER_UNITS/physicalclip5; ownEMA/native oldU unchanged",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "scratch20=13L+7U/4440 updates;3L384 student NN perstep=1704960; twoAs256 observations perstep=1136640 physical simulations; native U student/ownEMA each396900; source eval and seven-view prediction counted separately;0 external teacher NN",
+      "output_root": "PROJECT/runs/20261019-phase1-F-conditionalTail-e20-s2026092701-m2-r01/TAIL2-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-conditionalTail-e20-s2026092701-m2-r01/logs/TAIL2-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_conditional_tail20/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "TAIL2-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/mechanism_steps.jsonl.gz",
+        "source/second_actual_channel.json",
+        "source/training_sequence.jsonl.gz",
+        "source/training_result.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ],
+      "weight_decay": 0.0001
+    }
+  ],
+  "notes": [
+    "Explicit current-thread goal fixes native oldU/ownEMA recipe despite generic external-comparison PL/As.68 defaults; no silent loss/data changes.",
+    "B0/B1 original same scratch F controls reused without retraining/prediction/scoring; B1 frozen CSIL shadow has no loss effect and is not loaded or forwarded here.",
+    "New rows match each other in all3L/backward/complete-channel costs; B1 used2L+shadow teacher, not equal student backward cost.",
+    "Same packet two draws with fixed positive weights and total packet mass1, not across-packet withinTX hardness, groupDRO, rejection/recoverable proposals, noise-only KL or HQ teaching.",
+    "Source decision fixed before new formal numeric read; sourceFAIL closes this half-mean+half-max K2 recipe without mixing/K/seed rescue.",
+    "Only source-supported candidates may later own20+30 after explicit matched E50 seam plan; this run has no automatic extension.",
+    "Source V readout is health/mechanism evidence; no V fitting or threshold search; existing exposed benchmark is not new independent blind test."
+  ],
+  "registered_at": "2026-10-19T07:52:05+00:00"
+}

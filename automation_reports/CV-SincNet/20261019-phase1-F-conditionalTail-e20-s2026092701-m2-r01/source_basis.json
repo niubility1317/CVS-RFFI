@@ -1,0 +1,299 @@
+{
+  "cached_two_draw": {
+    "status": "SOURCE_CACHED_ANALYZED",
+    "origin_run": "20261019-diagnostic-F-CSIL-inputJacobian-s2026092701-m1-r01",
+    "student": "original pure F B1 FINAL20",
+    "role": "previously declared source V360 diagnostic readout only",
+    "rows": {
+      "mid": {
+        "packets": 360,
+        "draw_accuracy": [
+          0.7638888888888888,
+          0.7388888888888889
+        ],
+        "both_correct": 215,
+        "one_correct": 111,
+        "both_wrong": 34,
+        "argmax_disagree": 133,
+        "mean_absolute_pair_CE_gap": 0.6874409914016724,
+        "uniform_mean_CE": 0.6552243232727051,
+        "half_mean_half_max_CE": 0.8270845413208008
+      },
+      "low": {
+        "packets": 360,
+        "draw_accuracy": [
+          0.6416666666666667,
+          0.6138888888888889
+        ],
+        "both_correct": 148,
+        "one_correct": 156,
+        "both_wrong": 56,
+        "argmax_disagree": 199,
+        "mean_absolute_pair_CE_gap": 0.902093768119812,
+        "uniform_mean_CE": 0.9448291063308716,
+        "half_mean_half_max_CE": 1.1703524589538574
+      }
+    },
+    "model_seed_count": 1,
+    "NN": 0,
+    "new_IQ": 0,
+    "parameter_or_threshold_fits": 0,
+    "target_access": false,
+    "claim": "Observed conditional draw variability, not proof conditional-tail training will help; coefficients fixed before this recount"
+  },
+  "parent_tail": {
+    "B0": {
+      "epochs": [
+        {
+          "epoch": 1,
+          "As_CE": null,
+          "ordinary_CE": 1.2825838481789236,
+          "source_clean_V_percent": 91.45555555555555
+        },
+        {
+          "epoch": 2,
+          "As_CE": null,
+          "ordinary_CE": 0.53150446377359,
+          "source_clean_V_percent": 94.86666666666666
+        },
+        {
+          "epoch": 3,
+          "As_CE": null,
+          "ordinary_CE": 0.3543967205259177,
+          "source_clean_V_percent": 96.79629629629629
+        },
+        {
+          "epoch": 4,
+          "As_CE": null,
+          "ordinary_CE": 0.28839734055705973,
+          "source_clean_V_percent": 97.01481481481481
+        },
+        {
+          "epoch": 5,
+          "As_CE": null,
+          "ordinary_CE": 0.2670947040120761,
+          "source_clean_V_percent": 97.57777777777778
+        },
+        {
+          "epoch": 6,
+          "As_CE": null,
+          "ordinary_CE": 0.2649692415452755,
+          "source_clean_V_percent": 97.6
+        },
+        {
+          "epoch": 7,
+          "As_CE": null,
+          "ordinary_CE": 0.23726890390520697,
+          "source_clean_V_percent": 97.52222222222223
+        },
+        {
+          "epoch": 8,
+          "As_CE": null,
+          "ordinary_CE": 0.24490736780671385,
+          "source_clean_V_percent": 97.62592592592593
+        },
+        {
+          "epoch": 9,
+          "As_CE": null,
+          "ordinary_CE": 0.2286640461030844,
+          "source_clean_V_percent": 97.87407407407407
+        },
+        {
+          "epoch": 10,
+          "As_CE": null,
+          "ordinary_CE": 0.24750151048909436,
+          "source_clean_V_percent": 97.84074074074074
+        },
+        {
+          "epoch": 11,
+          "As_CE": null,
+          "ordinary_CE": 0.2634818568691477,
+          "source_clean_V_percent": 97.92592592592592
+        },
+        {
+          "epoch": 12,
+          "As_CE": null,
+          "ordinary_CE": 0.2538320775907319,
+          "source_clean_V_percent": 97.61111111111111
+        },
+        {
+          "epoch": 13,
+          "As_CE": null,
+          "ordinary_CE": 0.2745195813141428,
+          "source_clean_V_percent": 97.93703703703704
+        },
+        {
+          "epoch": 14,
+          "As_CE": null,
+          "ordinary_CE": 0.24505045134070758,
+          "source_clean_V_percent": 97.88518518518518
+        },
+        {
+          "epoch": 15,
+          "As_CE": null,
+          "ordinary_CE": 0.25758619730671245,
+          "source_clean_V_percent": 97.95555555555555
+        },
+        {
+          "epoch": 16,
+          "As_CE": null,
+          "ordinary_CE": 0.249393920506443,
+          "source_clean_V_percent": 97.91851851851852
+        },
+        {
+          "epoch": 17,
+          "As_CE": null,
+          "ordinary_CE": 0.23451183437629863,
+          "source_clean_V_percent": 98.03703703703704
+        },
+        {
+          "epoch": 18,
+          "As_CE": null,
+          "ordinary_CE": 0.22770942633484934,
+          "source_clean_V_percent": 98.00740740740741
+        },
+        {
+          "epoch": 19,
+          "As_CE": null,
+          "ordinary_CE": 0.2617076043677223,
+          "source_clean_V_percent": 98.05185185185185
+        },
+        {
+          "epoch": 20,
+          "As_CE": null,
+          "ordinary_CE": 0.2566713614909499,
+          "source_clean_V_percent": 98.05555555555556
+        }
+      ],
+      "complete_native_steps": 4440
+    },
+    "B1": {
+      "epochs": [
+        {
+          "epoch": 1,
+          "As_CE": 1.6854233328286592,
+          "ordinary_CE": 1.362343761566523,
+          "source_clean_V_percent": 90.4
+        },
+        {
+          "epoch": 2,
+          "As_CE": 1.0634392733509477,
+          "ordinary_CE": 0.5891598340895798,
+          "source_clean_V_percent": 92.67407407407407
+        },
+        {
+          "epoch": 3,
+          "As_CE": 0.930381421301816,
+          "ordinary_CE": 0.4095926886877498,
+          "source_clean_V_percent": 94.99259259259259
+        },
+        {
+          "epoch": 4,
+          "As_CE": 0.8587435709463583,
+          "ordinary_CE": 0.34054446972168245,
+          "source_clean_V_percent": 95.84814814814816
+        },
+        {
+          "epoch": 5,
+          "As_CE": 0.8157383026303472,
+          "ordinary_CE": 0.31153742183704636,
+          "source_clean_V_percent": 96.82222222222222
+        },
+        {
+          "epoch": 6,
+          "As_CE": 0.7798466013895499,
+          "ordinary_CE": 0.29000808392559085,
+          "source_clean_V_percent": 96.79629629629629
+        },
+        {
+          "epoch": 7,
+          "As_CE": 0.7597754874207951,
+          "ordinary_CE": 0.2717863756592746,
+          "source_clean_V_percent": 97.21851851851852
+        },
+        {
+          "epoch": 8,
+          "As_CE": 0.7500548086187862,
+          "ordinary_CE": 0.281853661914398,
+          "source_clean_V_percent": 97.5
+        },
+        {
+          "epoch": 9,
+          "As_CE": 0.7437253621247437,
+          "ordinary_CE": 0.2694815029767719,
+          "source_clean_V_percent": 97.49259259259259
+        },
+        {
+          "epoch": 10,
+          "As_CE": 0.7171418202352954,
+          "ordinary_CE": 0.28296124861315564,
+          "source_clean_V_percent": 97.5037037037037
+        },
+        {
+          "epoch": 11,
+          "As_CE": 0.7167749638492996,
+          "ordinary_CE": 0.3033054896571615,
+          "source_clean_V_percent": 97.58888888888889
+        },
+        {
+          "epoch": 12,
+          "As_CE": 0.7070391548646463,
+          "ordinary_CE": 0.2908357367053762,
+          "source_clean_V_percent": 97.65925925925926
+        },
+        {
+          "epoch": 13,
+          "As_CE": 0.7023128340910146,
+          "ordinary_CE": 0.32187060820492536,
+          "source_clean_V_percent": 97.8037037037037
+        },
+        {
+          "epoch": 14,
+          "As_CE": 0.699661013108116,
+          "ordinary_CE": 0.2833022127548854,
+          "source_clean_V_percent": 97.74074074074075
+        },
+        {
+          "epoch": 15,
+          "As_CE": 0.6951367450995488,
+          "ordinary_CE": 0.2934359044910551,
+          "source_clean_V_percent": 97.73703703703704
+        },
+        {
+          "epoch": 16,
+          "As_CE": 0.694946632460431,
+          "ordinary_CE": 0.2871562776130599,
+          "source_clean_V_percent": 97.7074074074074
+        },
+        {
+          "epoch": 17,
+          "As_CE": 0.6927473794769596,
+          "ordinary_CE": 0.27942195756209864,
+          "source_clean_V_percent": 97.73333333333333
+        },
+        {
+          "epoch": 18,
+          "As_CE": 0.6830472724663245,
+          "ordinary_CE": 0.27452083086376794,
+          "source_clean_V_percent": 97.72222222222223
+        },
+        {
+          "epoch": 19,
+          "As_CE": 0.6884135774395488,
+          "ordinary_CE": 0.31928845642654746,
+          "source_clean_V_percent": 97.8
+        },
+        {
+          "epoch": 20,
+          "As_CE": 0.6945747026989052,
+          "ordinary_CE": 0.2905162512450605,
+          "source_clean_V_percent": 97.76296296296296
+        }
+      ],
+      "complete_native_steps": 4440
+    }
+  },
+  "extension_decision": "No direct E50 extension from these weak tail trends alone; test a distinct E20 hypothesis instead",
+  "new_model_or_IQ_calls": 0,
+  "target_access": false
+}
