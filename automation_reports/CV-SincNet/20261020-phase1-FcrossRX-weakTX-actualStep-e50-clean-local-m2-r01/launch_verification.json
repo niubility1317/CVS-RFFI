@@ -1,0 +1,61 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261020-phase1-FcrossRX-weakTX-actualStep-e50-clean-local-m2-r01",
+  "code_config_commit": "16abc8559e80f929cd109a6a64a5051525302a7f",
+  "remote_code_commit_verified": true,
+  "archive_copy": {
+    "status": "VERIFIED",
+    "bytes": 21884423
+  },
+  "extracted_release_compile": "PASS",
+  "local_preflight": {
+    "GPU_workers": 0,
+    "free_system_GiB": 11.692279815673828
+  },
+  "actual_workers": [
+    {
+      "row_id": "STEP_NORM-s2026092701",
+      "role": "source",
+      "actual_PID_cmdline_CWD_confirmed": true,
+      "physical_GPU": 0
+    },
+    {
+      "row_id": "UPDATE_CONE-s2026092701",
+      "role": "source",
+      "actual_PID_cmdline_CWD_confirmed": true,
+      "physical_GPU": 0
+    }
+  ],
+  "resource_observation": {
+    "GPU_workers": 2,
+    "free_system_GiB": 8.022106170654297
+  },
+  "initial_logs": [
+    {
+      "row": "STEP_NORM-s2026092701",
+      "step": 318,
+      "epoch": 2,
+      "log_bytes": 12536,
+      "extra_forwards": 0,
+      "U_truth_available": 0,
+      "satellite_active": 0
+    },
+    {
+      "row": "UPDATE_CONE-s2026092701",
+      "step": 302,
+      "epoch": 2,
+      "log_bytes": 12556,
+      "extra_forwards": 0,
+      "U_truth_available": 0,
+      "satellite_active": 0
+    }
+  ],
+  "training_initialization": "scratch",
+  "source_recipe": "original50=33L+17U; F+CROSS_RX/RDrop1/oldgate-ownEMA-cos/defaultheadjoint",
+  "new_mechanism_active": "Not yet; first scheduled event1112 after5warmup epochs",
+  "satellite_training": false,
+  "test_views": [
+    "clean"
+  ],
+  "target_access": false
+}
