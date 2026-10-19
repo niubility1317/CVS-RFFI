@@ -1,0 +1,66 @@
+{
+  "schema": "sameIQ_input_sensitivity_source_v1",
+  "run_id": "20261019-diagnostic-F-CSIL-inputJacobian-s2026092701-m1-r01",
+  "owner": "codex/root/sameIQ-sensitivity",
+  "model_seed": 2026092701,
+  "student": "pureF ORIGINAL/defaultcos30/scratchFINAL20 B1",
+  "student_run": "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01",
+  "student_row": "B1-s2026092701",
+  "teacher": "frozen CSIL native/defaulthead/scale5/scratchlast200",
+  "unique_source_V": 360,
+  "selection": "First4 original V panel entries per TX x sourceRX x day; no prediction selection",
+  "source_RX": [
+    1,
+    3,
+    4,
+    6,
+    8
+  ],
+  "source_days": [
+    1,
+    2,
+    3
+  ],
+  "classes": [
+    "14-10",
+    "14-7",
+    "20-15",
+    "20-19",
+    "6-15",
+    "8-20"
+  ],
+  "batch": 90,
+  "views": [
+    "clean",
+    "d0_mid",
+    "d0_low",
+    "d1_mid",
+    "d1_low"
+  ],
+  "observations": "existing V1800 full residual IQ at condition0; original two cached draws",
+  "student_mode": "eval for source geometry; train only synthetic double-backward smoke",
+  "target": "normalize d logit_y/d IQ; signed cosine; one true-label row, not full Jacobian",
+  "wrong_target": "same teacher derivative row (y+1)%6; same correct-teacher mask",
+  "teacher_mask": "teacher argmax==legal source V TX; denominator all90",
+  "finite_difference_relative_L2": 0.001,
+  "physical_parameter_metric": "Sinc q gradient /25000; remaining native coordinates",
+  "expected_NN": 10804,
+  "synthetic_CP_smoke_NN": 4,
+  "source_base_forward_packets": 3600,
+  "finite_difference_packets": 7200,
+  "new_physical_channel_draws": 0,
+  "optimizer_updates": 0,
+  "head_fit_updates": 0,
+  "teacher_or_student_state_update": false,
+  "U_truth_read": false,
+  "target_access": false,
+  "qualification": {
+    "teacher_minus_student_urban_min_pp": 1.0,
+    "urban_body_true_CE_cos_min": 0.0,
+    "urban_body_true_minus_wrong_cos_min": 0.01,
+    "clean_body_true_CE_cos_min": -0.05,
+    "scope": "fixed source mechanistic rationale only; never E50/performance evidence",
+    "on_fail": "close fixed signed true-row alignment rationale; no norm/label/threshold rescue",
+    "automatic_training": false
+  }
+}

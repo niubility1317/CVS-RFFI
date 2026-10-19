@@ -1,0 +1,196 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-diagnostic-F-CSIL-inputJacobian-s2026092701-m1-r01",
+  "group_id": "phase1-F-CSIL-local-sensitivity",
+  "display_name": "纯 F 与 CSIL：同受损 IQ 局部身份敏感性源诊断",
+  "description": "只读V360、两draw完整As；比较真/错类教师输入Jacobian方向、骨干CE方向和中心差分；0更新/0target。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "F",
+    "CSIL",
+    "input-Jacobian",
+    "source-only",
+    "default-head",
+    "zero-update"
+  ],
+  "comparison_group_id": "same-source-IQ-true-vs-wrong-Jacobian",
+  "parent_run_ids": [
+    "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01",
+    "20260930-phase1-native-baselines-practical-manysig-m5-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User active fixed F E20 research goal and current continue instruction; source-only mechanism validation before any new candidate training.",
+  "code": {
+    "commit": null,
+    "checkout": "E:\\type10-7\\code\\worktrees\\phase1_sameiq_experts_20261019",
+    "environment": "N607 existing CVS-RFFI Python3.10/Torch2.1/NumPy2.2/FP32/CPU2",
+    "cwd": "PROJECT/releases/cvs_F_CSIL_inputJacobian_probe_20261019_r01"
+  },
+  "data": {
+    "dataset": "existing immutable ManySig equalized1",
+    "version": "same source contract reused",
+    "representation": "equalized1/center256/unitRMS; exact saved residual post_sync/noeq full observation",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "source_contract#role_ids.V; source probe data_roles.json#ids",
+    "label_map_ref": "design.config.classes; existing verified default-head class mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "protocol.CLASSES",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing VALIDATED_ONCE source V1800 and cached two full draws; fixed360 subset; no Phase2 capsule",
+    "support_query_ref": null,
+    "leo_config_ref": "PROJECT/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/observations/actual_engine.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "NO TARGET: source-only frozen diagnostic; no new model/prediction/scoring on target",
+    "external_method_exception": null,
+    "claim_scope": "One seed/source mechanistic rationale; no training/recognition benefit or new blind-test claim"
+  },
+  "checkpoint": {
+    "initialization": "read-only frozen F B1 final20 and historical CSIL last200; no new model training",
+    "sources": [
+      "PROJECT/runs/20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01/B1-s2026092701/source/final_ssdg.pth",
+      "PROJECT/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092701/last.pt"
+    ],
+    "contract_check_ref": "Pinned existing own_model and teacher.load actual source/defaulthead payload checks before source IQ",
+    "provenance_verdict": "Previously VERIFIED same source roles/no ancestors/target selection; payload verified on load",
+    "selection_rule": "Predeclared ordinary As reference final20; teacher fixedlast200; no target-based model selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/sameIQ-sensitivity",
+    "gpu_policy": "all-owner cap2/GPU; free>=12000MB; own CUDA init inside capacity lock; no process intervention",
+    "remote_run_root": "PROJECT/runs/20261019-diagnostic-F-CSIL-inputJacobian-s2026092701-m1-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_CSIL_inputJacobian_probe_20261019_r01/probe.stdout.log",
+    "local_artifact_root": "local_artifacts/F_sameIQ_sensitivity_20261019",
+    "launch_command": [
+      "CVS-RFFI/python",
+      "-u",
+      "experiments/cvs_sameiq_sensitivity/runner.py"
+    ],
+    "stop_rule": "Protocol/provenance/nonfinite/interface/output technical failure only; preserve outputs; no automatic retry",
+    "launch_readback_ref": "local_artifacts/F_sameIQ_sensitivity_20261019/latest.json"
+  },
+  "expected_artifacts": [
+    "resolved_config.json",
+    "allocation.json",
+    "checkpoint_smoke.json",
+    "data_roles.json",
+    "source_derivatives.npz",
+    "batch_geometry.json",
+    "source_decision.json",
+    "complete.json or failure.json",
+    "probe.stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source default-head accuracy",
+      "teacher-correct/student-wrong count",
+      "input derivative cosine/norm",
+      "body/head true/wrong auxiliary-to-CE gradient cosine",
+      "central finite difference residual",
+      "actual NN/time/state unchanged"
+    ],
+    "dimensions": [
+      "clean",
+      "two draws x mid/low urban",
+      "batch",
+      "body/head",
+      "single model seed"
+    ],
+    "prediction_ref": "source_derivatives.npz only; no formal predictions",
+    "scorer_ref": "source V legal labels only; no target truth-side scorer applicable to zero-update probe"
+  },
+  "rows": [
+    {
+      "row_id": "F_B1_vs_CSIL-s2026092701",
+      "method": "signed true-label input sensitivity/source-only",
+      "purpose": "diagnostic",
+      "config_ref": "configs/source_probe.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-diagnostic-F-CSIL-inputJacobian-s2026092701-m1-r01/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "Model/source split known; cached physical draws use existing evaluation seed; no new physical augmentation; subset first4 per source cell deterministic; support/LR/epochs/FL not applicable to zero-update probe.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "d0_mid",
+        "d0_low",
+        "d1_mid",
+        "d1_low"
+      ],
+      "optimizer": "none; autograd.grad only/no parameter assignment",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 updates;360 uniqueV/1800 source views;10804 totalNN;2 old models reused",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-CSIL-inputJacobian-s2026092701-m1-r01",
+      "log_path": "PROJECT/releases/cvs_F_CSIL_inputJacobian_probe_20261019_r01/probe.stdout.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_sameiq_sensitivity/runner.py"
+      ],
+      "expected_artifacts": [
+        "resolved_config.json",
+        "allocation.json",
+        "checkpoint_smoke.json",
+        "data_roles.json",
+        "source_derivatives.npz",
+        "batch_geometry.json",
+        "source_decision.json",
+        "complete.json or failure.json",
+        "probe.stdout.log"
+      ]
+    }
+  ],
+  "notes": [
+    "Current source-only probe is not a smaller substitute for final fixedF multi-seed recognition goal.",
+    "Closed posterior CSIL losses remain closed; normalized input derivative is different content, not coefficient/temperature scan.",
+    "Counterfactual +/- IQ only checks derivative calculus, not physical identity-preserving augmentation or performance.",
+    "Rationale: urban teacher advantage>=1pp; body trueCEcos>=0 and true-minus-wrong>=.01; clean body trueCEcos>=-.05. Fixed before source data. FAIL closes; PASS at most supports considering E20 pilot, not E50 or recognition success."
+  ],
+  "registered_at": "2026-10-19T05:04:49+00:00"
+}
