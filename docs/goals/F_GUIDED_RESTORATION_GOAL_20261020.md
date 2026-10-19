@@ -95,7 +95,7 @@ IQ摘要/冻结F语义条件E10两臂现均已完成，方法commit `1c869980ae9
 - [一致伪身份与跨 RX 特征匹配实验](../../automation_reports/CV-SincNet/20261020-phase1-restoration-consensus-identity-source-s2026092701-m2-r01/report.md)
 - [IQ摘要与冻结F语义条件的恢复结构对比](../../automation_reports/CV-SincNet/20261020-phase1-restoration-semantic-feedback-source-s2026092701-m2-r01/report.md)
 
-## 当前固定比较（完整源与目标结果已返回）
+## 统计混合固定比较（完整源与目标结果已返回）
 
 本轮开始前的IQ摘要/语义FiLM两臂源low/mid均下降，未创建target目录；完整源负结果已保存，方法`1c869980ae9059e613ec29915d2b92db7444ed20`，结果`fb7c289d4186be9ba369c31f36232527858c9da7`。本轮不是因为波形界限而漏选识别候选：两臂波形与clean保持通过，但城市识别均不改善。
 
@@ -121,3 +121,16 @@ IQ摘要/冻结F语义条件E10两臂现均已完成，方法commit `1c869980ae9
 ## 统计混合固定矩阵的实际结论
 
 同 RX 统计混合：目标low urban 64.968056%，clean 85.054365%。跨 RX 统计混合：目标low urban 65.132937%，clean 85.064286%。两臂均完成预登记E10/2470、原168000目标clean+六practical和三原头独立truth-last评分，实际source/target/controller均已退出。source V未作候选筛选，未修改/重排/选择性重跑任何行。完整逐环境/逐F/波形/净纠错/成本结果见[本轮报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-style-generalization-source-s2026092701-m2-r02/report.md)。本轮仍未达到用户完整目标，不由波形或训练检查推断性能。
+
+
+## 当前时间上下文固定比较（完整实现，待发布）
+
+源域事后诊断显示，跨RX统计混合相对同RX主要改善RX1/6，但最弱RX3仍79.722222%，RX4下降；此前IQ摘要/语义FiLM源low/mid也未改善。下一候选依据这些source证据检验显式、输入相关时间交互，不依据目标成绩调整参数。已有卷积感受野较宽，GroupNorm也用帧内整体统计；不能称原网络没有全局信息，也不能把窄注意力mask解释为全模型只看局部原始IQ。
+
+`experiments/pamf_temporal_context`两行window_attention/global_attention在纠错器最深128×32特征上增加同规格四头残差注意力，PreLayerNorm＋固定sin/cos位置编码、128→384 QKV、dense32×32 scaled-dot softmax、128→128输出投影，无dropout/FFN。两行只改变mask：半径2（154允许位置对）/全32（1024对），参数和随机初值完全匹配。输出投影从0开始，原R03全部旧state严格继承，初始完整IQ逐点等于原R03；不继承任何失败精修。新增66304参数，两行总2207144；仍单次当前IQ前向，无restorer内部运行F、信道迭代、RX/pseudo/bank/clean/其他帧输入或状态更新。另一用户对话当前四步/信道一致性路线仅仅读取确认，未发消息或修改其文件/任务。
+
+原R03 coarse20/correction20独立分叉jointE10/2470，原posterior03三F冻结损失、原63000L/U缓存1..10、数据顺序/路由和seed保持，源V仅诊断；旧LR3e-5、新attention2e-4，共warm247/cos至各自.1、WD1e-4、clip1、FP32。原组件各累计30轮、60组件epoch、串行继承50pass，新attention另计10轮，0F/defaulthead更新或新头拟合。逐轮记录attention输出范数、QKV delta及实际非零梯度步数，避免把AdamW decay当作学习；初始零输出投影导致首步QKV梯度0是预期，第二步可学习已unit验证。
+
+42项聚焦检查与一次独立P0/P1审查PASS；一次N607普通账号预检VERIFIED，原R03与数据契约合法、前序完成、新run/release不存在、GPU4/5各24124MB空闲无PID且空间≥8GB，其他owner保持。GPU4窄窗/GPU5全窗，每卡一条本run worker、source空闲≥18GB/target≥12GB、CPU scorer全run最多1。launcher首步实际原R03/三F/四Ls no-query smoke，PASS立即训练；每行实际source进程退出后自动同卡完整测试原168000 clean＋六practical及三原默认头，全部七视图预测固定后独立CPU才连接truth与评分clean，不作源分数筛选或目标反馈。当前尚未实际发布或产出新模型性能，用户完整目标保持未达成。
+
+Run ID `20261020-phase1-restoration-temporal-context-source-s2026092701-m2-r01`；[本轮最小登记与方法](../../automation_reports/CV-SincNet/20261020-phase1-restoration-temporal-context-source-s2026092701-m2-r01/report.md)包含命令、环境/CWD、矩阵、路径、资源、停止规则及产物。没有额外审批、签名或哈希链。
