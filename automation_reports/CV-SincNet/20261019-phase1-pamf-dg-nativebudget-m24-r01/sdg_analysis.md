@@ -76,3 +76,7 @@ clean最差RX：full 58.7917 ± 0.7882%，CE 49.8181 ± 2.0128%；配对差8.973
 全部已运行结果、负差及先前单seed报告保留，不据此调整后续矩阵、参数、选模或选择性重跑。SDG完整三seed仅完成原24行中的6行；RIEI、DRIFT和扩展162训练/6补测及69成本测量继续。
 
 本地证据：local_artifacts/phase1_external_dg_20261019/sdg_family_audit.json、sdg_family_summary.json、sdg_by_receiver_date.csv。原始预测、日志、checkpoint和私有运行路径不提交Git。
+
+## 后续用户配方修订
+
+本报告保留无星地训练增强的历史结果。用户后续要求正式星地对比统一启用默认拼接增强，并另加同时保留增强的普通PL对照；本组结果不混入新219行正式排名，不据这些分数选择性重跑或改超参数。

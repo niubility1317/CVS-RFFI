@@ -1,0 +1,2697 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-external-dg-concat-pl-cost-m96-r01",
+  "group_id": "phase1-nonpamf-concat-PL-cost",
+  "display_name": "Phase1拼接增强/普通PL：96冻结模型统一推理成本",
+  "description": "219性能训练全部闭合后，同一空闲GPU0/1测96个冻结checkpoint；合成IQ、零新增训练、无query。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "non-PAMF",
+    "frozen-cost",
+    "concat-satellite",
+    "plain-PL",
+    "two-GPU"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261019-phase1-external-dg-concat-pl-m219-r01"
+  ],
+  "replaces_run_id": "20261019-phase1-external-dg-cost-m69-r01",
+  "authorization": "用户要求星地测试统一默认拼接增强；半监督只用普通置信度PL并保留监督对照；明确允许撤下未开始GPU的旧扩展并重发，正在训练和历史产物保留。启用时点授权Agent自行判断。",
+  "code": {
+    "commit": "publisher records actual Git commit in package.json/release_commit.txt",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 existing SDG-SEI Py3.8/torch1.11 + existing isolated NumPy1.23.5; no shared install",
+    "cwd": "local_artifacts/phase1_external_dg_aug_pl_20261019/runtime.json#/release_root"
+  },
+  "data": {
+    "dataset": "synthetic zeros",
+    "version": "FP32 Bx2x256",
+    "representation": "resident GPU synthetic IQ",
+    "contract_ref": "upstream frozen checkpoint contracts only",
+    "physical_ids_ref": null,
+    "label_map_ref": null,
+    "source_receivers": null,
+    "target_receivers": null,
+    "source_days": null,
+    "target_days": null,
+    "roles": null,
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "strict default-head load + CPU real-checkpoint MAC smoke after upstream completes",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "frozen inference measurement",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "latency/MACs on one shared-server GPU under declared idle policy"
+  },
+  "checkpoint": {
+    "initialization": "frozen upstream models",
+    "sources": [
+      "20261019-phase1-external-dg-concat-pl-m219-r01"
+    ],
+    "contract_check_ref": "cost.load_task and source.frozen_model",
+    "provenance_verdict": "same registered upstream checkpoints, no fitting",
+    "selection_rule": "all96 fixed tasks; no target selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex-root-phase1-concat-pl-cost-20261019",
+    "launch_command": "python -u -m experiments.phase1_external_dg_aug.cost dispatch --config cost_runtime.json",
+    "remote_run_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root",
+    "remote_log_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root",
+    "local_artifact_root": "local_artifacts/phase1_external_dg_aug_pl_20261019",
+    "runtime_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json",
+    "gpu_policy": "physical0/1 only, one own row worker per card; wait for foreign workloads; no extra GPU for cost queue",
+    "stop_rule": "wait upstream actual exit and219 complete; then one fixed idle GPU0/1, first technical/contended measurement failure preserves outputs and stops unstarted rows"
+  },
+  "expected_artifacts": [
+    "state.json",
+    "smoke.json",
+    "COST_ROW/result.json",
+    "summary.json",
+    "report.md",
+    "completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "identity_parameters",
+      "MACs_declared_scope",
+      "median_ms",
+      "P95_ms",
+      "throughput",
+      "peak_cuda_bytes"
+    ],
+    "dimensions": [
+      "family",
+      "variant",
+      "training_regime",
+      "model_seed",
+      "batch"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "F0-ibrff-ce-pl-s2026092701",
+      "method": "ibrff",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-ibrff-ce-pl-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-ibrff-ce-pl-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-ibrff-ce-pl-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-ibrff-ce-s2026092701",
+      "method": "ibrff",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-ibrff-ce-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-ibrff-ce-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-ibrff-ce-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-ibrff-full-pl-s2026092701",
+      "method": "ibrff",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-ibrff-full-pl-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-ibrff-full-pl-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-ibrff-full-pl-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-ibrff-full-s2026092701",
+      "method": "ibrff",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-ibrff-full-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-ibrff-full-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-ibrff-full-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-ibrff-ce-pl-s2026092702",
+      "method": "ibrff",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-ibrff-ce-pl-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-ibrff-ce-pl-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-ibrff-ce-pl-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-ibrff-ce-s2026092702",
+      "method": "ibrff",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-ibrff-ce-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-ibrff-ce-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-ibrff-ce-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-ibrff-full-pl-s2026092702",
+      "method": "ibrff",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-ibrff-full-pl-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-ibrff-full-pl-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-ibrff-full-pl-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-ibrff-full-s2026092702",
+      "method": "ibrff",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-ibrff-full-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-ibrff-full-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-ibrff-full-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-ibrff-ce-pl-s2026092703",
+      "method": "ibrff",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-ibrff-ce-pl-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-ibrff-ce-pl-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-ibrff-ce-pl-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-ibrff-ce-s2026092703",
+      "method": "ibrff",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-ibrff-ce-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-ibrff-ce-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-ibrff-ce-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-ibrff-full-pl-s2026092703",
+      "method": "ibrff",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-ibrff-full-pl-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-ibrff-full-pl-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-ibrff-full-pl-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-ibrff-full-s2026092703",
+      "method": "ibrff",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-ibrff-full-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-ibrff-full-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-ibrff-full-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-sdg-ce-pl-s2026092701",
+      "method": "sdg",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-sdg-ce-pl-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-sdg-ce-pl-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-sdg-ce-pl-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-sdg-ce-s2026092701",
+      "method": "sdg",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-sdg-ce-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-sdg-ce-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-sdg-ce-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-sdg-full-pl-s2026092701",
+      "method": "sdg",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-sdg-full-pl-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-sdg-full-pl-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-sdg-full-pl-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-sdg-full-s2026092701",
+      "method": "sdg",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-sdg-full-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-sdg-full-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-sdg-full-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-sdg-ce-pl-s2026092702",
+      "method": "sdg",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-sdg-ce-pl-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-sdg-ce-pl-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-sdg-ce-pl-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-sdg-ce-s2026092702",
+      "method": "sdg",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-sdg-ce-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-sdg-ce-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-sdg-ce-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-sdg-full-pl-s2026092702",
+      "method": "sdg",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-sdg-full-pl-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-sdg-full-pl-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-sdg-full-pl-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-sdg-full-s2026092702",
+      "method": "sdg",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-sdg-full-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-sdg-full-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-sdg-full-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-sdg-ce-pl-s2026092703",
+      "method": "sdg",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-sdg-ce-pl-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-sdg-ce-pl-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-sdg-ce-pl-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-sdg-ce-s2026092703",
+      "method": "sdg",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-sdg-ce-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-sdg-ce-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-sdg-ce-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-sdg-full-pl-s2026092703",
+      "method": "sdg",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-sdg-full-pl-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-sdg-full-pl-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-sdg-full-pl-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-sdg-full-s2026092703",
+      "method": "sdg",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-sdg-full-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-sdg-full-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-sdg-full-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-riei-ce-pl-s2026092701",
+      "method": "riei",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-riei-ce-pl-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-riei-ce-pl-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-riei-ce-pl-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-riei-ce-s2026092701",
+      "method": "riei",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-riei-ce-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-riei-ce-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-riei-ce-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-riei-full-pl-s2026092701",
+      "method": "riei",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-riei-full-pl-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-riei-full-pl-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-riei-full-pl-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-riei-full-s2026092701",
+      "method": "riei",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-riei-full-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-riei-full-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-riei-full-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-riei-ce-pl-s2026092702",
+      "method": "riei",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-riei-ce-pl-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-riei-ce-pl-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-riei-ce-pl-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-riei-ce-s2026092702",
+      "method": "riei",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-riei-ce-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-riei-ce-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-riei-ce-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-riei-full-pl-s2026092702",
+      "method": "riei",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-riei-full-pl-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-riei-full-pl-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-riei-full-pl-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-riei-full-s2026092702",
+      "method": "riei",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-riei-full-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-riei-full-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-riei-full-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-riei-ce-pl-s2026092703",
+      "method": "riei",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-riei-ce-pl-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-riei-ce-pl-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-riei-ce-pl-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-riei-ce-s2026092703",
+      "method": "riei",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-riei-ce-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-riei-ce-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-riei-ce-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-riei-full-pl-s2026092703",
+      "method": "riei",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-riei-full-pl-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-riei-full-pl-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-riei-full-pl-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-riei-full-s2026092703",
+      "method": "riei",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-riei-full-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-riei-full-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-riei-full-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-drift-ce-pl-s2026092701",
+      "method": "drift",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-drift-ce-pl-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-drift-ce-pl-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-drift-ce-pl-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-drift-ce-s2026092701",
+      "method": "drift",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-drift-ce-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-drift-ce-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-drift-ce-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-drift-full-pl-s2026092701",
+      "method": "drift",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-drift-full-pl-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-drift-full-pl-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-drift-full-pl-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-drift-full-s2026092701",
+      "method": "drift",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-drift-full-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-drift-full-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-drift-full-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-drift-ce-pl-s2026092702",
+      "method": "drift",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-drift-ce-pl-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-drift-ce-pl-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-drift-ce-pl-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-drift-ce-s2026092702",
+      "method": "drift",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-drift-ce-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-drift-ce-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-drift-ce-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-drift-full-pl-s2026092702",
+      "method": "drift",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-drift-full-pl-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-drift-full-pl-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-drift-full-pl-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-drift-full-s2026092702",
+      "method": "drift",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-drift-full-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-drift-full-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-drift-full-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-drift-ce-pl-s2026092703",
+      "method": "drift",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-drift-ce-pl-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-drift-ce-pl-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-drift-ce-pl-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-drift-ce-s2026092703",
+      "method": "drift",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-drift-ce-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-drift-ce-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-drift-ce-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-drift-full-pl-s2026092703",
+      "method": "drift",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-drift-full-pl-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-drift-full-pl-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-drift-full-pl-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "F0-drift-full-s2026092703",
+      "method": "drift",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-drift-full-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/F0-drift-full-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/F0-drift-full-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "strongce-resnet18-erm-pl-s2026092701",
+      "method": "resnet18",
+      "variant": "strongce-pl:erm",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/strongce-resnet18-erm-pl-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/strongce-resnet18-erm-pl-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/strongce-resnet18-erm-pl-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "strongce-resnet18-erm-s2026092701",
+      "method": "resnet18",
+      "variant": "strongce:erm",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/strongce-resnet18-erm-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/strongce-resnet18-erm-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/strongce-resnet18-erm-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "strongce-resnet18-erm-pl-s2026092702",
+      "method": "resnet18",
+      "variant": "strongce-pl:erm",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/strongce-resnet18-erm-pl-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/strongce-resnet18-erm-pl-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/strongce-resnet18-erm-pl-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "strongce-resnet18-erm-s2026092702",
+      "method": "resnet18",
+      "variant": "strongce:erm",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/strongce-resnet18-erm-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/strongce-resnet18-erm-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/strongce-resnet18-erm-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "strongce-resnet18-erm-pl-s2026092703",
+      "method": "resnet18",
+      "variant": "strongce-pl:erm",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/strongce-resnet18-erm-pl-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/strongce-resnet18-erm-pl-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/strongce-resnet18-erm-pl-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "strongce-resnet18-erm-s2026092703",
+      "method": "resnet18",
+      "variant": "strongce:erm",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/strongce-resnet18-erm-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/strongce-resnet18-erm-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/strongce-resnet18-erm-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "strongce-resnet50-erm-s2026092701",
+      "method": "resnet50",
+      "variant": "strongce:erm",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/strongce-resnet50-erm-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/strongce-resnet50-erm-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/strongce-resnet50-erm-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "strongce-resnet50-erm-s2026092702",
+      "method": "resnet50",
+      "variant": "strongce:erm",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/strongce-resnet50-erm-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/strongce-resnet50-erm-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/strongce-resnet50-erm-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "strongce-resnet50-erm-s2026092703",
+      "method": "resnet50",
+      "variant": "strongce:erm",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/strongce-resnet50-erm-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/strongce-resnet50-erm-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/strongce-resnet50-erm-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-ibrff-ce-s2026092701",
+      "method": "ibrff",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-ibrff-ce-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-ibrff-ce-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/ManyRx-ibrff-ce-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-ibrff-full-s2026092701",
+      "method": "ibrff",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-ibrff-full-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-ibrff-full-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/ManyRx-ibrff-full-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-ibrff-ce-s2026092702",
+      "method": "ibrff",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-ibrff-ce-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-ibrff-ce-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/ManyRx-ibrff-ce-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-ibrff-full-s2026092702",
+      "method": "ibrff",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-ibrff-full-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-ibrff-full-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/ManyRx-ibrff-full-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-ibrff-ce-s2026092703",
+      "method": "ibrff",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-ibrff-ce-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-ibrff-ce-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/ManyRx-ibrff-ce-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-ibrff-full-s2026092703",
+      "method": "ibrff",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-ibrff-full-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-ibrff-full-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/ManyRx-ibrff-full-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-sdg-ce-s2026092701",
+      "method": "sdg",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-sdg-ce-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-sdg-ce-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/ManyRx-sdg-ce-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-sdg-full-s2026092701",
+      "method": "sdg",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-sdg-full-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-sdg-full-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/ManyRx-sdg-full-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-sdg-ce-s2026092702",
+      "method": "sdg",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-sdg-ce-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-sdg-ce-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/ManyRx-sdg-ce-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-sdg-full-s2026092702",
+      "method": "sdg",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-sdg-full-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-sdg-full-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/ManyRx-sdg-full-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-sdg-ce-s2026092703",
+      "method": "sdg",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-sdg-ce-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-sdg-ce-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/ManyRx-sdg-ce-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-sdg-full-s2026092703",
+      "method": "sdg",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-sdg-full-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-sdg-full-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/ManyRx-sdg-full-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-riei-ce-s2026092701",
+      "method": "riei",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-riei-ce-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-riei-ce-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/ManyRx-riei-ce-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-riei-full-s2026092701",
+      "method": "riei",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-riei-full-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-riei-full-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/ManyRx-riei-full-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-riei-ce-s2026092702",
+      "method": "riei",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-riei-ce-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-riei-ce-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/ManyRx-riei-ce-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-riei-full-s2026092702",
+      "method": "riei",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-riei-full-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-riei-full-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/ManyRx-riei-full-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-riei-ce-s2026092703",
+      "method": "riei",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-riei-ce-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-riei-ce-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/ManyRx-riei-ce-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-riei-full-s2026092703",
+      "method": "riei",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-riei-full-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-riei-full-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/ManyRx-riei-full-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-drift-ce-s2026092701",
+      "method": "drift",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-drift-ce-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-drift-ce-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/ManyRx-drift-ce-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-drift-full-s2026092701",
+      "method": "drift",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-drift-full-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-drift-full-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/ManyRx-drift-full-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-drift-ce-s2026092702",
+      "method": "drift",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-drift-ce-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-drift-ce-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/ManyRx-drift-ce-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-drift-full-s2026092702",
+      "method": "drift",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-drift-full-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-drift-full-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/ManyRx-drift-full-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-drift-ce-s2026092703",
+      "method": "drift",
+      "variant": "ce",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-drift-ce-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-drift-ce-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/ManyRx-drift-ce-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "ManyRx-drift-full-s2026092703",
+      "method": "drift",
+      "variant": "full",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-drift-full-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/ManyRx-drift-full-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/ManyRx-drift-full-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "generic-resnet18-coral-s2026092701",
+      "method": "resnet18",
+      "variant": "generic:coral",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-coral-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-coral-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/generic-resnet18-coral-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "generic-resnet18-erm-s2026092701",
+      "method": "resnet18",
+      "variant": "generic:erm",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-erm-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-erm-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/generic-resnet18-erm-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "generic-resnet18-fishr-s2026092701",
+      "method": "resnet18",
+      "variant": "generic:fishr",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-fishr-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-fishr-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/generic-resnet18-fishr-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "generic-resnet18-mixstyle-s2026092701",
+      "method": "resnet18",
+      "variant": "generic:mixstyle",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-mixstyle-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-mixstyle-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/generic-resnet18-mixstyle-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "generic-resnet18-mixstyle_id-s2026092701",
+      "method": "resnet18",
+      "variant": "generic:mixstyle_id",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-mixstyle_id-s2026092701/result.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-mixstyle_id-s2026092701",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/generic-resnet18-mixstyle_id-s2026092701.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "generic-resnet18-coral-s2026092702",
+      "method": "resnet18",
+      "variant": "generic:coral",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-coral-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-coral-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/generic-resnet18-coral-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "generic-resnet18-erm-s2026092702",
+      "method": "resnet18",
+      "variant": "generic:erm",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-erm-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-erm-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/generic-resnet18-erm-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "generic-resnet18-fishr-s2026092702",
+      "method": "resnet18",
+      "variant": "generic:fishr",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-fishr-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-fishr-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/generic-resnet18-fishr-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "generic-resnet18-mixstyle-s2026092702",
+      "method": "resnet18",
+      "variant": "generic:mixstyle",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-mixstyle-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-mixstyle-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/generic-resnet18-mixstyle-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "generic-resnet18-mixstyle_id-s2026092702",
+      "method": "resnet18",
+      "variant": "generic:mixstyle_id",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-mixstyle_id-s2026092702/result.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-mixstyle_id-s2026092702",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/generic-resnet18-mixstyle_id-s2026092702.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "generic-resnet18-coral-s2026092703",
+      "method": "resnet18",
+      "variant": "generic:coral",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-coral-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-coral-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/generic-resnet18-coral-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "generic-resnet18-erm-s2026092703",
+      "method": "resnet18",
+      "variant": "generic:erm",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-erm-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-erm-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/generic-resnet18-erm-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "generic-resnet18-fishr-s2026092703",
+      "method": "resnet18",
+      "variant": "generic:fishr",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-fishr-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-fishr-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/generic-resnet18-fishr-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "generic-resnet18-mixstyle-s2026092703",
+      "method": "resnet18",
+      "variant": "generic:mixstyle",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-mixstyle-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-mixstyle-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/generic-resnet18-mixstyle-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "generic-resnet18-mixstyle_id-s2026092703",
+      "method": "resnet18",
+      "variant": "generic:mixstyle_id",
+      "purpose": "frozen_cost_no_training",
+      "config_ref": "cost.tasks deterministic96",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-mixstyle_id-s2026092703/result.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only model training seed varies; synthetic inference uses no stochastic sampling.",
+      "epochs": null,
+      "optimizer": null,
+      "lr": null,
+      "budget_ref": "batch1/128; warm100/time1000 synchronized FP32 calls; unchanged model state",
+      "output_root": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/run_root/generic-resnet18-mixstyle_id-s2026092703",
+      "log_path": "local_artifacts/phase1_external_dg_aug_pl_20261019/cost_runtime.json#/log_root/generic-resnet18-mixstyle_id-s2026092703.log",
+      "command": "python -u -m experiments.phase1_external_dg_aug.cost worker --config COST_ROW.json",
+      "expected_artifacts": [
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [],
+  "registered_at": "2026-10-19T06:22:03+00:00"
+}

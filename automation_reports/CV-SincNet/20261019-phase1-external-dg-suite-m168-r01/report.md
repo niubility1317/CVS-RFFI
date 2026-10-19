@@ -47,3 +47,7 @@ RIEI/DRIFT按用户E100，恒定LR无需移动milestone；IB两阶段各最多20
 ## 最终报告补充实现
 
 本地报告器已补齐旧F0 frozen predictions的RX×日期联合分层、generic各路线对同seed ERM的配对差，以及新的原目录之外报告输出根。七项聚焦验证通过，证据local_artifacts/phase1_external_dg_20261019/final_report_verification.json。已发布8c50d20ec队列保持原代码；最终仅在预测冻结/评分闭合后，以另一个新报告根读取现有artifact复算，不覆盖原结果，不重训、不重测或改变候选。此项不是新增发布gate，尚未生成最终全矩阵统计。
+
+## 用户授权替代（2026-10-19）
+
+本run标记REPLACED。未开始GPU训练/补测或成本测量，实际调度进程已退出。已构建数据和所有既有产物保留；性能目标由20261019-phase1-external-dg-concat-pl-m219-r01接替，成本由20261019-phase1-external-dg-concat-pl-cost-m96-r01接替。原因是用户要求正式星地比较训练使用默认拼接增强，并保留监督与增强+普通PL对照，不是低分或技术失败。

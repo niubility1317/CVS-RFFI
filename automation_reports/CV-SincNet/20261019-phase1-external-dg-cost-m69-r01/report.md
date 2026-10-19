@@ -29,3 +29,7 @@ MAC口径为Conv1d/2d/3d点积和mm/bmm/addmm的FLOPs/2，不含BN、激活、�
 代码f94abdc74bf4700e542b6c900813d1648164dddf已提交、推送并独立核对远端OID。一次N607普通账户preflight、一次archive SHA比较和一次remote compile通过。实际dispatcher PID/CWD/argv匹配，CUDA_VISIBLE_DEVICES为空；真实IB-RFF默认头checkpoint在统一torch1.11环境加载并完成CPU MAC profile，smoke.json为PASS且query_access=false、trained=false，随后自动进入WAITING_MATRIX。
 
 当前stdout没有输出，属于等待阶段的静默行为；以实际进程及新生成的smoke/state artifact核实CPU执行，不宣称已有GPU worker或GPU测量日志增长。首个GPU worker的PID/CWD/设备/日志增长核验仍待性能矩阵完成后执行。原训练和扩展suite保持原代码与配置，不占用其他GPU。证据local_artifacts/phase1_external_dg_cost_20261019/post_launch.json。69行成本结果尚未完成，整体目标保持active。
+
+## 用户授权替代（2026-10-19）
+
+本run标记REPLACED。未开始GPU训练/补测或成本测量，实际调度进程已退出。已构建数据和所有既有产物保留；性能目标由20261019-phase1-external-dg-concat-pl-m219-r01接替，成本由20261019-phase1-external-dg-concat-pl-cost-m96-r01接替。原因是用户要求正式星地比较训练使用默认拼接增强，并保留监督与增强+普通PL对照，不是低分或技术失败。
