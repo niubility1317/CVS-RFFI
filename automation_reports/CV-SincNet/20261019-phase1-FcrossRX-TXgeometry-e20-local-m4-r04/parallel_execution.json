@@ -1,0 +1,46 @@
+{
+  "status": "VERIFIED",
+  "scope": "Resource-only continuation of existing immutable local F factorial",
+  "controller_commit": "1e65196e1270075e32fbdff779612c1d40c91865",
+  "worker_commit": "4679f66babb40c17b96285c7393225787ed13c08",
+  "max_GPU_workers": 3,
+  "actual_concurrent_source_workers": 3,
+  "old_source_worker_preserved": true,
+  "old_serial_controller_stopped": true,
+  "existing_BASE_20epochs_reused": true,
+  "new_rows_started": [
+    "GEOMETRY-s2026092701",
+    "BOTH-s2026092701"
+  ],
+  "CIM_exact_process_argv": true,
+  "worker_CWD_matches_original_release": true,
+  "GPU_process_memory_independently_present": 3,
+  "task_dedicated_GPU_GiB": 2.744720458984375,
+  "system_free_memory_GiB": 7.332450866699219,
+  "head_or_data_changes": false,
+  "target_access_so_far": false,
+  "source_expansion_unchanged": true,
+  "all7views_before_truth": true,
+  "throughput": "Three actual training workers advanced concurrently; original WEIGHT PID unchanged; complete log epochs observed",
+  "new_rows_checkpoint_smoke": "PASS actual CUDA F checkpoints, zero query/truth reads",
+  "log_growth_verified": true,
+  "parallel_window": {
+    "seconds": 102.774,
+    "completed_model_epochs": 8,
+    "rows": {
+      "WEIGHT": {
+        "from_epoch": 15,
+        "to_epoch": 17
+      },
+      "GEOMETRY": {
+        "from_epoch": 0,
+        "to_epoch": 3
+      },
+      "BOTH": {
+        "from_epoch": 0,
+        "to_epoch": 3
+      }
+    },
+    "caveat": "Epochs cross different warmup/feature-loss stages and boundary times; observed aggregate progress only, no matched speedup factor"
+  }
+}
