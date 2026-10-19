@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "scope": "One independent P0/P1 review of next real local run; no blocking findings",
+  "reviewer": "/root/sinc_rdrop_diag_p0p1",
+  "candidate": "cvs_f_txgeometry20 plus cvs_f_txrisk.feature",
+  "extra_review_required": false,
+  "targeted_fix_review": {
+    "status": "PASS",
+    "issue": "Missing local optional leo_practical.execution would block prediction with FAST enabled",
+    "fix": "Disable FAST; preserve reference physics, actual ID contexts, buffered IO and shared cache",
+    "scope": "Only that direct startup issue; no repeated whole review"
+  },
+  "cache_startup_fix": {
+    "status": "PASS",
+    "scope": "Only missing-username Torch cache startup issue",
+    "fix": "Explicit run-owned TORCHINDUCTOR_CACHE_DIR inherited before optimizer initialization",
+    "evidence": "optimizer_environment_check.json",
+    "full_review_repeated": false
+  },
+  "console_lifecycle_fix": {
+    "status": "PASS",
+    "scope": "Only observed Windows console-CLOSE lifecycle defect",
+    "fix": "Direct configured base interpreter; NO_WINDOW/GROUP/BREAKAWAY flags for controller and every child",
+    "canary_seconds": 90,
+    "no_console": true,
+    "in_OS_job": true,
+    "full_review_repeated": false
+  },
+  "nested_flags_fix": {
+    "status": "PASS",
+    "scope": "Only nested BREAKAWAY WinError5 defect",
+    "fix": "Remove BREAKAWAY; keep NO_WINDOW and GROUP for both controller and worker",
+    "full_review_repeated": false
+  }
+}

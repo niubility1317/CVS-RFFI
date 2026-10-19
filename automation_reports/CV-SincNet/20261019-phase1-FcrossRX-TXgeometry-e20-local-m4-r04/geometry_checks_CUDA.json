@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "device": "cuda:0",
+  "protocol_negative_cases": 6,
+  "positive_cosine_before": 0.7241379310344825,
+  "positive_cosine_after": 0.7243031012198182,
+  "negative_cosine_before": -0.8620689655172411,
+  "negative_cosine_after": -0.862151550609909,
+  "geometry_loss_decreased": true,
+  "actual_joint160_Sinc_gradient_norm": 0.00009471615339862183,
+  "geometry_direct_defaulthead_gradient": null,
+  "defaulthead_joint_gradient_norm": 6.50131893157959,
+  "paired_forward_metrics": {
+    "clean_CE": 3.607605457305908,
+    "RDrop_KL": 1.2560418844223022,
+    "satellite_CE": 3.289243698120117,
+    "shallow_middle_loss": 3.2816896438598633,
+    "joint160_loss": 2.111079454421997,
+    "shallow_middle_weight": 0.010000000000000002,
+    "joint160_weight": 0.005000000000000001,
+    "valid_anchors": [
+      128,
+      128,
+      128,
+      128
+    ],
+    "paired_forwards": 2,
+    "extra_forwards_for_metric": 0
+  },
+  "actual_feature_export_exact": true,
+  "extra_inference_parameters": 0,
+  "optimizer_updates": 0,
+  "source_or_target_reads": 0,
+  "head_fit_updates": 0
+}

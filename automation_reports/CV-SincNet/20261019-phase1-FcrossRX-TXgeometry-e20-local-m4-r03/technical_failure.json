@@ -1,0 +1,15 @@
+{
+  "status": "FAILED",
+  "run_id": "20261019-phase1-FcrossRX-TXgeometry-e20-local-m4-r03",
+  "layer": "Windows nested job launch flags",
+  "error": "WinError5 denied nested CREATE_BREAKAWAY_FROM_JOB request",
+  "controller_started": true,
+  "GPU_worker_started": false,
+  "source_IQ_reads": 0,
+  "target_IQ_reads": 0,
+  "truth_reads": 0,
+  "optimizer_updates": 0,
+  "artifacts_preserved": true,
+  "replacement": "20261019-phase1-FcrossRX-TXgeometry-e20-local-m4-r04",
+  "fix": "Remove unnecessary BREAKAWAY request; retain direct configured base interpreter, NO_WINDOW and NEW_PROCESS_GROUP for controller and worker"
+}

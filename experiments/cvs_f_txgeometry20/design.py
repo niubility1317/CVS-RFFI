@@ -2,7 +2,7 @@
 from pathlib import Path
 import json
 ROOT=Path(__file__).resolve().parents[2]
-RUN='20261019-phase1-FcrossRX-TXgeometry-e20-local-m4-r03'
+RUN='20261019-phase1-FcrossRX-TXgeometry-e20-local-m4-r04'
 SEEDS=(2026092701,2026092702,2026092703)
 ARMS=('BASE','WEIGHT','GEOMETRY','BOTH')
 VIEWS=('clean','practical_high','practical_mid','practical_low_suburban','practical_high_urban','practical_mid_urban','practical_low_urban')
