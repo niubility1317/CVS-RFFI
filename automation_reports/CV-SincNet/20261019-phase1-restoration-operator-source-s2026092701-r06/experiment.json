@@ -1,0 +1,206 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-restoration-operator-source-s2026092701-r06",
+  "group_id": "phase1-pamf-satellite-observation-restoration",
+  "display_name": "物理展开前的源域算子可行性：真实有效作用与观测估计",
+  "description": "用户报告R3源域诊断：冻结粗恢复，比较真实条件广义线性作用与当前观测/粗恢复估计的软数据一致性；0TX/F输出/target访问，不训练新网。",
+  "kind": "cvs",
+  "stage": "Phase1-source-only-feasibility",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "source_only",
+    "physical_operator",
+    "oracle_diagnostic",
+    "transient_estimation",
+    "no_TX_training"
+  ],
+  "comparison_group_id": "manysig-source-rx13468-day123-076330-restoration-seven-e20-v1",
+  "parent_run_ids": [
+    "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02",
+    "20261019-phase1-restoration-residual-refinement-selfsup-m3-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "持续恢复目标与用户六类恢复器报告R3要求先oracle有效作用诊断再估计版本；仅合法源数据研发，不由目标分数修改方法。N607既有普通账户授权。",
+  "code": {
+    "commit": "91b32bdaee5db0b8ef21eede44dcb8c83dcffb36",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5; native NumPy FP64 algebra,torch FP32coarse",
+    "cwd": "releases/pamf_operator_restoration_20261019_r06"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "Original source normalized IQ2x256; fresh source-only clean+six residual/post_sync/noEQ/reflect observations,fs25MHz/fc2462MHz",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "Original source_cache/V/physical_ids.npy,4 fixed unlabeled records per originalRX/day by seed2026101909,60total",
+    "label_map_ref": "Original manifest metadata only,TX label files never opened",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json: READY/EXACT_MATCH; reuse existing cache without new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "code/leo_practical/channel.py and source-only namespace operator_feasibility/sourceV/draw0",
+    "restoration_train_counts": {
+      "current_run": 0,
+      "parent_R02_L": 6300,
+      "parent_R02_U": 56700,
+      "parent_training_TX_labels": 0
+    },
+    "source_validation_panel": 60,
+    "target_panel": null
+  },
+  "permissions": {
+    "regime": "Source waveform/operator feasibility,not identity evaluation; noTX labels/Foutputs/target or persistent updates",
+    "query_use": "None; oracle matrices/AGC/lock/covariance restricted to source diagnostic branches",
+    "external_method_exception": null,
+    "claim_scope": "Conditional finite-window inverse feasibility only; no deployable oracle,TX identity,Phase2 or in-orbit claim"
+  },
+  "checkpoint": {
+    "initialization": "Strict frozen R02 tf_unet_mixed source-waveform-selected final E20/4940; no new network training",
+    "sources": [
+      {
+        "run_id": "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02",
+        "candidate": "tf_unet_mixed",
+        "commit": "7efdba92932a86bf4b0492a565d35377564a26da",
+        "path": "runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/tf_unet_mixed/final.pt",
+        "selection": "Original source waveform A,source-qualified before target access"
+      },
+      {
+        "run_id": "20261019-phase1-restoration-residual-refinement-selfsup-m3-r03",
+        "role": "Source8192L/U RMS scalar only,not child weights",
+        "value": 0.1169459182403555,
+        "source_V_TX_target_reads": 0
+      }
+    ],
+    "contract_check_ref": "Reuse unchanged R02 source contract/lineage and R03 source-only scale; native load_coarse parent checks",
+    "provenance_verdict": "VERIFIED original63000source role IDs/scratchE20/0TX/source-only choice; noF checkpoint loaded",
+    "selection_rule": "Fixed seven analytic controls; thresholds only govern next source-only feasibility direction,not identity or target promotion",
+    "evaluation_readers": []
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-operator-feasibility",
+    "gpu_policy": "PhysicalGPU5 one own sourcecoarse inferenceworker; all-owner cap2/free12GB under existing capacity4 shared lock; CPU algebra2threads",
+    "remote_run_root": "runs/20261019-phase1-restoration-operator-source-s2026092701-r06",
+    "remote_log_root": "logs/20261019-phase1-restoration-operator-source-s2026092701-r06",
+    "local_artifact_root": "local_artifacts/pamf_restoration/operator_r06_20261019",
+    "launch_command": "python -u -m experiments.pamf_operator_restore.runner --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-restoration ../../runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02 --output ../../runs/20261019-phase1-restoration-operator-source-s2026092701-r06 --expected-commit 91b32bdaee5db0b8ef21eede44dcb8c83dcffb36",
+    "stop_rule": "Output/code/role/parent mismatch,nonfinite or native/oracle decomposition mismatch aborts,preserves all outputs; no automaticretry,no low-performance stop"
+  },
+  "expected_artifacts": [
+    "resolved_config.json",
+    "launch.json",
+    "smoke.json",
+    "physical_ids.npy",
+    "clean.json",
+    "six practical scene JSONs",
+    "pairs/*.npz",
+    "summary.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "IQ NMSE(full/prefix232/tail24)",
+      "FFT log-power difference",
+      "oracle replay error",
+      "effective observed real dimensions",
+      "estimated operator error and noise ratio",
+      "transient observation-fit error"
+    ],
+    "dimensions": [
+      "sourceRX/day",
+      "clean+three suburban+threeurban",
+      "seven controls"
+    ],
+    "primary": "Oracle NMSE gain>=10% vs coarse; estimatedgain>=5% andcleanNMSE<=.02 are source waveform feasibility only,not identity acceptance",
+    "prediction_ref": "runs/20261019-phase1-restoration-operator-source-s2026092701-r06/pairs",
+    "scorer_ref": "Source clean used for waveform diagnosis only; TX truth and F never opened"
+  },
+  "rows": [
+    {
+      "row_id": "source-operators",
+      "method": "conditional_operator_feasibility",
+      "purpose": "source_only_mechanism_diagnostic",
+      "config_ref": "experiments/pamf_operator_restore/runner.py#configuration",
+      "resolved_config_ref": "runs/20261019-phase1-restoration-operator-source-s2026092701-r06/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101909,
+        "augmentation": 2026101908,
+        "support": null,
+        "evaluation": 2026101910
+      },
+      "seed_notes": "Model inherits R02;data selects sourceV without TX;augmentation fixes fresh latent; evaluation fixes per-sourceRX/day hardware;oracleprobe fixed2026101907;support N/A",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "60sourceV physicalrecords x7views x7analyticcontrols;0optimizer/persistentupdates; temporary current-record LS parameters are fitted and disclosed",
+      "output_root": "runs/20261019-phase1-restoration-operator-source-s2026092701-r06",
+      "log_path": "logs/20261019-phase1-restoration-operator-source-s2026092701-r06/runner.log",
+      "command": "python -u -m experiments.pamf_operator_restore.runner --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-restoration ../../runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02 --output ../../runs/20261019-phase1-restoration-operator-source-s2026092701-r06 --expected-commit 91b32bdaee5db0b8ef21eede44dcb8c83dcffb36",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "launch.json",
+        "smoke.json",
+        "physical_ids.npy",
+        "clean.json",
+        "six practical scene JSONs",
+        "pairs/*.npz",
+        "summary.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "R3 specified in supplied six-family report; source inverse-operator mechanism remains untested. No target metric consumed by code or preregistration.",
+    "Seven controls:received,coarse,coldoraclewhiteprior,warmoracletruecov,warmoracleisotropic,warmestimated10,warmestimated49.",
+    "Oracle freezes actual input-dependent AGC/lock plus true time-varying widely-linear action; not a global linear receiver or deployment input.",
+    "Oracle action is recovered with two deterministic clean-independent probes of SAME native snapshot,not by changing the native engine; expected propernoise covariance propagated analytically.",
+    "Observation-only LS gets onlyreceived andcoarse,static10or49tap widely-linear approximation;tap0allowscleanidentity,tap24modelsknownnumericaldelay. No scene router.",
+    "Ridge tracefraction.01;noiseestimatedfromcurrentfitresidual with1e-4relativefloor;priorprecision1/sourceRMS^2 fixed. No hyperparameter scan.",
+    "NoTX/F/target scoring or model training in this prerequisite source diagnostic; it cannot qualify an identity method or close the full goal.",
+    "All seven scene groups,especially three suburban levels,will be reported separately;sample reuse across views is correlated,not multiplemodelseeds.",
+    "One independent P0/P1 review foundentrypath andsharedlock issues;bothfixed,one targetedrereviewPASS. Nine focusedchecks andcompile/helpPASS.",
+    "N607 ordinary-account preflightGPU5idle24GB/~2.57TBfree,newrootsabsent,sourcehandles/parent/sourceRMSlineageverified;otherownerspreserved."
+  ],
+  "registered_at": "2026-10-19T12:22:35+00:00"
+}

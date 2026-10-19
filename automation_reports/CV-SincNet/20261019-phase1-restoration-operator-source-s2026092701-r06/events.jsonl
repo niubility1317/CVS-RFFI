@@ -1,0 +1,6 @@
+{"at": "2026-10-19T12:22:35+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T12:22:35+00:00", "status": "LOCAL_VERIFIED", "note": "9项聚焦检查、一次P0/P1及一次两点复审通过；原源数据与GPU5预检通过，待源算子诊断。", "evidence": ["experiment.json", "report.md"], "row_id": null}
+{"at": "2026-10-19T12:28:23+00:00", "status": "LANDED", "note": "单归档比较及远端compile/import通过，method91b32bd固定。", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T12:28:23+00:00", "status": "RUNNING", "note": "首个独立观察livePID/CWD/argv/GPU5匹配，源2样本smokePASS，源场景进度与日志增长核实。", "evidence": ["report.md"], "row_id": "source-operators"}
+{"at": "2026-10-19T12:28:23+00:00", "status": "ANALYZED", "note": "60源物理样本×7视图×7控制完成，真实作用潜力13.73%；两估计算子未达源波形标准，0TX/F前向/target读取。", "evidence": ["report.md", "results/summary.json"], "row_id": "source-operators"}
+{"at": "2026-10-19T12:28:23+00:00", "status": "ANALYZED", "note": "源诊断完整闭合，原进程自然退出；仅波形/算子证据，不构成身份或完整目标成功。", "evidence": ["report.md", "results/summary.json"], "row_id": null}
