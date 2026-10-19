@@ -15,3 +15,10 @@
 {"at": "2026-10-19T10:41:35+00:00", "status": "RUNNING", "note": "自动队列启动；真实PID/CWD/argv/GPU已读回。", "evidence": ["report.md"], "row_id": "tf_unet_mixed"}
 {"at": "2026-10-19T10:41:35+00:00", "status": "RUNNING", "note": "自动队列启动；真实PID/CWD/argv/GPU已读回。", "evidence": ["report.md"], "row_id": "diffusion_mixed"}
 {"at": "2026-10-19T10:41:35+00:00", "status": "RUNNING", "note": "自动队列启动；真实PID/CWD/argv/GPU已读回。", "evidence": ["report.md"], "row_id": "flow_mixed"}
+{"at": "2026-10-19T10:55:52+00:00", "status": "ANALYZED", "note": "E20及双路源独立评分完成；目标范围仅为预登记源规则选中的候选。", "evidence": ["report.md", "results/summary.json"], "row_id": "unet_residual"}
+{"at": "2026-10-19T10:55:52+00:00", "status": "ANALYZED", "note": "E20及双路源独立评分完成；目标范围仅为预登记源规则选中的候选。", "evidence": ["report.md", "results/summary.json"], "row_id": "unet_full"}
+{"at": "2026-10-19T10:55:52+00:00", "status": "ANALYZED", "note": "E20及双路源独立评分完成；目标范围仅为预登记源规则选中的候选。", "evidence": ["report.md", "results/summary.json"], "row_id": "unet_mixed"}
+{"at": "2026-10-19T10:55:52+00:00", "status": "ANALYZED", "note": "E20及双路源独立评分完成；目标范围仅为预登记源规则选中的候选。", "evidence": ["report.md", "results/summary.json"], "row_id": "tf_unet_mixed"}
+{"at": "2026-10-19T10:55:52+00:00", "status": "ANALYZED", "note": "E20及双路源独立评分完成；目标范围仅为预登记源规则选中的候选。", "evidence": ["report.md", "results/summary.json"], "row_id": "diffusion_mixed"}
+{"at": "2026-10-19T10:55:52+00:00", "status": "ANALYZED", "note": "E20及双路源独立评分完成；目标范围仅为预登记源规则选中的候选。", "evidence": ["report.md", "results/summary.json"], "row_id": "flow_mixed"}
+{"at": "2026-10-19T10:55:52+00:00", "status": "ANALYZED", "note": "六行源训练/评分及冻结选择的固定目标确认完成；技术VERIFIED，完整身份恢复目标仍未完成。", "evidence": ["report.md", "results/summary.json"], "row_id": null}

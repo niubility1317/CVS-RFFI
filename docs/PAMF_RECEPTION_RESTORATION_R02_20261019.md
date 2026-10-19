@@ -1,6 +1,6 @@
 # 接收观测恢复第二轮：设计与报告核对
 
-状态：RUNNING / VERIFIED，N607六行源训练及独立评分进行中。12项聚焦检查通过，独立P0/P1复核无阻断问题。保持原目标：单独、无 TX 标签训练的星地恢复器输出同一份 IQ，直接接现有冻结 F 与原默认头，证明身份细节属于对应输入，而不是仅降低波形误差。
+状态：本轮 ANALYZED / VERIFIED，六行 E20、双路源评分与冻结候选目标确认完成；最终身份恢复目标未完成。12项聚焦检查通过，独立P0/P1复核无阻断问题。保持原目标：单独、无 TX 标签训练的星地恢复器输出同一份 IQ，直接接现有冻结 F 与原默认头，证明身份细节属于对应输入，而不是仅降低波形误差。
 
 依据：用户先后提供的《接收链逆问题》与《六类恢复器、两阶段训练、三层验收》报告。采用报告提出的比较顺序；其建议参数不是已证明的最佳配置。原七网络 run 与所有负结果保持。
 
@@ -37,20 +37,20 @@ L/U的lag16/32/64/128复相干均值最高约0.14，不支持重复前导码/周
 
 |ID|要求|实现/产物|状态|验证与边界|
 |---|---|---|---|---|
-|R02-01|全L/U无TX配对恢复|原IQSource＋新data.py|verified|20epoch缓存与前三行真实曝光完成；0 TX读取|
+|R02-01|全L/U无TX配对恢复|原IQSource＋新data.py|verified|20epoch缓存与全部六行真实曝光完成；0 TX读取|
 |R02-02|full/residual共享latent且不串接|data.shared_pair|verified|原生引擎同seed/RX/state；跨epoch变化测试|
 |R02-03|同U-Net三种route、同曝光|六行矩阵与route_array/runner|verified|实际训练函数使用同一向量路由；曝光与LR窄测试通过|
 |R02-04|深度适度的U-Net、线性IQ、零输出初始化|models.ReceptionUNet|verified|256→128→64→32；初始严格恒等、幅值不剪裁|
 |R02-05|复时频、正确-k共轭镜像、有界增益|models.ComplexTFUNet|verified|FFT(x*)=conj(FFT(x)[-k])测试；幅度gain1/4至4|
-|R02-06|单恢复IQ供全部原PAMF分支|原views/frozen接口＋checkpoint_loader|verified|实际七视图接线与前三行真实冻结F读出通过|
+|R02-06|单恢复IQ供全部原PAMF分支|原views/frozen接口＋checkpoint_loader|verified|实际七视图接线与六行真实冻结F读出通过|
 |R02-07|扩散多尺度条件、每步条件、复用编码|models.MultiscaleDiffusion|verified|完整16步；条件编码每次推理一次；无状态更新|
 |R02-08|流匹配目标和推理起点一致|models.MultiscaleFlow|verified|sigma0.02/16Euler；两生成模型条件编码梯度测试通过|
 |R02-09|新信道流、route/scene元数据不进模型|新cache与runner|verified|20个epoch原生缓存完成；模拟器truth/route不输入R|
 |R02-10|基本两类恢复损失、warmup和实际预算|新runner/design|verified|固定IQ＋log-power；端点LR与有限梯度测试通过|
-|R02-11|shuffle条件与完整采样分开诊断|新source预测诊断|pending|固定source V置换，禁止目标选择|
-|R02-12|source资格/选模冻结→逐行预测→truth-last|新controller，复用独立scorer|implemented|无TX选择字段与错路线checkpoint负向测试；原truth路径显式传入|
-|R02-13|clean＋六practical＋full交叉源诊断|新source数据与评分|pending|同状态两实现是相关观测，不冒充模型seed|
-|R02-14|batch1延迟、显存、调用数|新预测诊断|pending|批量吞吐和单样本延迟分开|
+|R02-11|shuffle条件与完整采样分开诊断|新source预测诊断|verified|完整采样固定源条件置换完成；禁止目标选择|
+|R02-12|source资格/选模冻结→逐行预测→truth-last|新controller，复用独立scorer|verified|六行源选择冻结；选中候选先七视图预测、后独立truth-last|
+|R02-13|clean＋六practical＋full交叉源诊断|新source数据与评分|verified|六行七视图×两路独立评分完成；相关观测不冒充model seed|
+|R02-14|batch1延迟、显存、调用数|新预测诊断|verified|六行16条逐样本GPU同步计时、显存与采样调用完成|
 |R02-15|物理展开需先验证有效算子|未启动|deferred|原49tap圆周FIR只是近似，不能据此宣称真实接收链反演|
 |R02-16|粗恢复＋生成残差与确定性二次修正控制|未启动|deferred|先有合格粗恢复器；残差不命名硬件指纹|
 |R02-17|E14分叉有限L身份监督，默认头冻结|未启动|deferred|仅后续有源证据时单独登记；明确其非纯自监督|
