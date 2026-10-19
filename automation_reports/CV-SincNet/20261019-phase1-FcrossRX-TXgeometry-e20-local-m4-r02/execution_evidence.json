@@ -1,0 +1,18 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261019-phase1-FcrossRX-TXgeometry-e20-local-m4-r02",
+  "method_commit": "97dadf6309e743acc055e196b1eab0492891581f",
+  "local_compile": "VERIFIED",
+  "own_initial_checkpoint_noquery_smoke": "PASS",
+  "source_role_match": "EXACT_MATCH",
+  "process_PID_and_argv_match": true,
+  "CWD_match": true,
+  "GPU": "local physical0 RTX5070Ti; real CUDA forward/backward",
+  "training_optimizer_steps": 666,
+  "epoch": 3,
+  "log_growth_bytes": 704,
+  "head": "existing default joint",
+  "target_evaluated": false,
+  "truth_read": false,
+  "technical_replacement": true
+}
