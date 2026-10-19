@@ -23,11 +23,11 @@ prior AdamW 2e-4→2e-5、coarse 2e-5→2e-6；共同 warm247/cos、WD1e-4、FP3
 |J23-03|可达梯度|三 prior 和 joint coarse 真正更新，estimator不更新|models.py/training.py|implemented|真实梯度/优化器一步/完整更新计数|joint 包含固定估计器输入导数|
 |J23-04|数据与继承权限|只继承原 R02/R07、schema隔离|runtime.py|verified|来源负测/真实checkpoint入口|不重验未变数据|
 |J23-05|两阶段三层验收|五参考固定源选择及条件正式隔离|evaluation.py/controller.py|implemented|负测/全部预测后truth|无资格0target|
-|J23-06|资源与最小发布|登记/commit/smoke/一次review/队列与退出|runner.py/controller.py/登记|verified|实际运行证据|不增加其他门槛|
+|J23-06|资源与最小发布|登记/commit/smoke/一次review/队列与退出|runner.py/controller.py/登记|implemented|发布/队列已核实；退出待实际结束|不增加其他门槛|
 |J23-07|全场景身份保真|源及条件正式、逐组指标、成本/Git交付|report/summary|pending|独立评分与报告|不以NMSE代替TX归属|
 |J23-08|逐细节归属|多seed、独立物理族、逐细节真实性|后续研究|deferred|尚无合格候选|当前不得宣称完成|
 
-当前3 verified、2 implemented、2 pending、1 deferred、0 blocked。29项聚焦检查、compile/help、一次独立P0/P1及实际checkpoint入口、发布与两条worker运行证据均通过；完整训练/源评估/条件正式结果仍待返回。最高剩余风险为 coarse 漂移、跨 RX 泛化与逐细节身份真实性。
+当前2 verified、3 implemented、2 pending、1 deferred、0 blocked。29项聚焦检查、compile/help、一次独立P0/P1及实际checkpoint入口、发布与两条worker运行证据已通过；退出及完整训练/源评估/条件正式结果仍待返回。最高剩余风险为 coarse 漂移、跨 RX 泛化与逐细节身份真实性。
 
 实际参数：{"prior_only": {"total": 4665073, "groups": {"prior": 2507526}}, "joint_coarse": {"total": 4665073, "groups": {"prior": 2507526, "coarse": 1305958}}}。参数统计仅构造恢复器，未读取训练好的 F/TX/target。
 非阻断记录：REJECTED_EXTRA_GATE——通用全仓库测试要求由项目聚焦负测协议覆盖，未添加全面测试或重复 review 门槛。
