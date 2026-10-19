@@ -16,6 +16,9 @@ def run(args):
   base.mkdir(parents=True,exist_ok=False);d.write(base/'execution.json',dict(run_id=d.RUN,commit=args.commit,pid=os.getpid(),cwd=str(d.ROOT),python=sys.executable,profile=args.profile,GPU=0,max_GPU_workers=1,source_selection_before_target=True))
   env=dict(os.environ,CUDA_VISIBLE_DEVICES='0',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',PYTHONUTF8='1',PYTHONIOENCODING='utf-8')
   env['PYTHONPATH']=os.pathsep.join((str(d.ROOT),str(d.ROOT/'code')))
+  # Optimizer imports Dynamo even with compile off; background Windows may have
+  # no USERNAME. A run-owned explicit cache avoids getpass/pwd fallback.
+  env['TORCHINDUCTOR_CACHE_DIR']=str(base/'torch_cache')
   d.write(base/'registered_rows.json',dict(initial=[d.config(r) for r in d.rows(d.SEEDS[:1])],expansion_candidates=[d.config(r) for r in d.rows(d.SEEDS[1:])]))
   def child(role,row):
    command=[sys.executable,'-X','utf8','-u','-m','experiments.cvs_f_txgeometry20.'+role,'--row',row['row_id'],'--profile',args.profile,'--base',str(base)]

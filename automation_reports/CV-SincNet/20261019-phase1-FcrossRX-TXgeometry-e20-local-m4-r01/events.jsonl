@@ -1,1 +1,2 @@
 {"at": "2026-10-19T08:25:14+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T08:38:33+00:00", "status": "FAILED", "note": "Initial own-checkpoint smoke passed; optimizer creation failed on missing username/default Torch cache, zero training updates and target0. Preserve artifacts; same scientific recipe moves to r02.", "evidence": ["automation_reports/CV-SincNet/20261019-phase1-FcrossRX-TXgeometry-e20-local-m4-r01/technical_failure.json"], "row_id": null}

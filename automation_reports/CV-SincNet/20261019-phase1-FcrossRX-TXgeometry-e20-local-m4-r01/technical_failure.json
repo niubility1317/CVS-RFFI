@@ -1,0 +1,15 @@
+{
+  "status": "FAILED",
+  "run_id": "20261019-phase1-FcrossRX-TXgeometry-e20-local-m4-r01",
+  "layer": "PyTorch optimizer default cache path in username-free background Windows environment",
+  "error": "ModuleNotFoundError: No module named 'pwd' via getpass.getuser in default_cache_dir",
+  "real_checkpoint_smoke": "PASS",
+  "optimizer_created": false,
+  "optimizer_updates": 0,
+  "target_IQ_reads": 0,
+  "truth_reads": 0,
+  "artifact_preservation": true,
+  "processes_exited": true,
+  "replacement_run": "20261019-phase1-FcrossRX-TXgeometry-e20-local-m4-r02",
+  "fix": "Run-owned explicit TORCHINDUCTOR_CACHE_DIR; scientific recipe unchanged"
+}
