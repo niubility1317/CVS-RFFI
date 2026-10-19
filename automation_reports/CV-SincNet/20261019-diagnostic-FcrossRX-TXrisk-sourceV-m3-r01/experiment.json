@@ -1,0 +1,275 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-diagnostic-FcrossRX-TXrisk-sourceV-m3-r01",
+  "group_id": "F-crossRX-source-validation-TXrisk",
+  "display_name": "F＋跨 RX：三模型完整源V发射机与接收机风险诊断",
+  "description": "Read-only default-head sourceV audit of all three fixed original F+CROSS_RX final50 models; derive generic bounded class-risk coefficients for subsequent feature-learning experiments; no new target access or parameter fitting.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "F worse transmitter source risk"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "sourceV",
+    "weak_TX",
+    "default_head",
+    "no_training",
+    "risk_calibration"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active user goal asks to improve worse transmitters using source validation on F+crossRX sameTX; source-only audit and calibration are authorized preparation; no target identity-based special cases.",
+  "code": {
+    "commit": "Git HEAD stored in release_commit.txt",
+    "checkout": "codex/phase1-rdrop-combinations-20261015",
+    "environment": "Existing N607 CVS-RFFI Python/PyTorch; frozen original runtime",
+    "cwd": "PROJECT/releases/cvs_F_TXrisk_sourceV_20261019_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing source contract",
+    "representation": "raw received residual/post_sync/noeq IQ; fixed256 packet; deployed160-dimensional id_feat_joint",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "roles": {
+      "L_s": "6300 original legal labels, 10% of train pool / 7% of all90000 source",
+      "U_s": "56700 original hidden TX, native oldgate/ownEMA only",
+      "V": "27000 source health/default-head diagnostics only, no training"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": "existing VALIDATED_ONCE Phase1 capsule manifest; reuse unchanged",
+    "split_id": "original registered source/target physical split; reuse unchanged",
+    "validation_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "support_query_ref": null,
+    "leo_config_ref": null,
+    "original_source_days_metadata": [
+      0,
+      1,
+      2
+    ],
+    "source_days_correction": "Descriptive metadata corrected from [0,1,2] to actual native wisig_train_days/day_i [1,2,3]; same exact physical role IDs, no data or run change"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Frozen F default-head source V recall/RX/day and class-risk calibration; no target performance or deployment claim"
+  },
+  "checkpoint": {
+    "initialization": "No training. Three fixed original final50 students; EMA states not executed or updated",
+    "sources": [
+      "PROJECT/runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth",
+      "PROJECT/runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092702/source/final_ssdg.pth",
+      "PROJECT/runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092703/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Original cvs_f_supcon50.provenance.source_proof and validate_checkpoint; original matching source roles reused",
+    "provenance_verdict": "Existing verified scratch ancestry and fixedfinal50 source-only selection; all three model seeds retained",
+    "selection_rule": "All three fixed final50 models; no target-based model/seed choice"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/F-source-TXrisk-20261019",
+    "gpu_policy": "Only physical GPU2/3; one audit worker total, no more than one own GPU worker per physical GPU; global3 owner-inclusive and12000MiB free before launch",
+    "remote_run_root": "PROJECT/runs/20261019-diagnostic-FcrossRX-TXrisk-sourceV-m3-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_TXrisk_sourceV_20261019_r01/worker.stdout.log",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261019-diagnostic-FcrossRX-TXrisk-sourceV-m3-r01",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_f_txrisk/runner.py",
+    "stop_rule": "Wrong source roles/checkpoint/defaulthead, model update, nonfinite/shape or immutable output conflict: preserve outputs; no target access and no retry based on scores"
+  },
+  "expected_artifacts": [
+    "release_commit.txt",
+    "submit.json",
+    "*-smoke.json",
+    "*-sourceV.json",
+    "source_calibration.json",
+    "result.json",
+    "completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "sourceV perTX recall/CE/margin mean/q10",
+      "perTX sourceRX/day confusion/recall",
+      "pooled global/worstRX risk and bounded mean-one weights",
+      "three model-seed stability",
+      "no model/optimizer/head updates"
+    ],
+    "dimensions": [
+      "3 original model seeds",
+      "6 TX",
+      "5 sourceRX",
+      "3 source days",
+      "27000 identical physical sourceV IDs per model"
+    ],
+    "prediction_ref": "Read-only original source V loader;81000 predictions on27000unique physical samples; no target input",
+    "scorer_ref": "Source V labels legal during frozen evaluation; no target scorer required"
+  },
+  "rows": [
+    {
+      "row_id": "CROSS_RX-s2026092701",
+      "method": "Frozen F SIG_TIME_X3 / full CENTER_UNITS / RDrop1 / CROSS_RX SupCon / defaulthead final50",
+      "purpose": "source-only per-TX/RX/day difficulty audit; no head fitting",
+      "config_ref": "registration/experiment.json#rows/CROSS_RX-s2026092701",
+      "config": {
+        "model_seed": 2026092701,
+        "checkpoint_role": "frozen original final50 student only",
+        "class_risk_beta": 0.5,
+        "sourceV_only": true,
+        "head_fit_updates": 0
+      },
+      "resolved_config_ref": "PROJECT/runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "evaluation_role": "sourceV",
+        "augmentation": "none during frozen evaluation"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model and source split/data inherited exactly; deterministic unaugmented sourceV inference, no support or stochastic evaluation.",
+      "k": null,
+      "scenario": "sourceV_clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "27000 sourceV predictions +2 synthetic checkpoint smoke, zero optimizer/head fitting",
+      "output_root": "PROJECT/runs/20261019-diagnostic-FcrossRX-TXrisk-sourceV-m3-r01/CROSS_RX-s2026092701-sourceV.json",
+      "log_path": "PROJECT/releases/cvs_F_TXrisk_sourceV_20261019_r01/worker.stdout.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_f_txrisk/runner.py",
+      "expected_artifacts": [
+        "release_commit.txt",
+        "submit.json",
+        "*-smoke.json",
+        "*-sourceV.json",
+        "source_calibration.json",
+        "result.json",
+        "completion.json"
+      ]
+    },
+    {
+      "row_id": "CROSS_RX-s2026092702",
+      "method": "Frozen F SIG_TIME_X3 / full CENTER_UNITS / RDrop1 / CROSS_RX SupCon / defaulthead final50",
+      "purpose": "source-only per-TX/RX/day difficulty audit; no head fitting",
+      "config_ref": "registration/experiment.json#rows/CROSS_RX-s2026092702",
+      "config": {
+        "model_seed": 2026092702,
+        "checkpoint_role": "frozen original final50 student only",
+        "class_risk_beta": 0.5,
+        "sourceV_only": true,
+        "head_fit_updates": 0
+      },
+      "resolved_config_ref": "PROJECT/runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "evaluation_role": "sourceV",
+        "augmentation": "none during frozen evaluation"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model and source split/data inherited exactly; deterministic unaugmented sourceV inference, no support or stochastic evaluation.",
+      "k": null,
+      "scenario": "sourceV_clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "27000 sourceV predictions +2 synthetic checkpoint smoke, zero optimizer/head fitting",
+      "output_root": "PROJECT/runs/20261019-diagnostic-FcrossRX-TXrisk-sourceV-m3-r01/CROSS_RX-s2026092702-sourceV.json",
+      "log_path": "PROJECT/releases/cvs_F_TXrisk_sourceV_20261019_r01/worker.stdout.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_f_txrisk/runner.py",
+      "expected_artifacts": [
+        "release_commit.txt",
+        "submit.json",
+        "*-smoke.json",
+        "*-sourceV.json",
+        "source_calibration.json",
+        "result.json",
+        "completion.json"
+      ]
+    },
+    {
+      "row_id": "CROSS_RX-s2026092703",
+      "method": "Frozen F SIG_TIME_X3 / full CENTER_UNITS / RDrop1 / CROSS_RX SupCon / defaulthead final50",
+      "purpose": "source-only per-TX/RX/day difficulty audit; no head fitting",
+      "config_ref": "registration/experiment.json#rows/CROSS_RX-s2026092703",
+      "config": {
+        "model_seed": 2026092703,
+        "checkpoint_role": "frozen original final50 student only",
+        "class_risk_beta": 0.5,
+        "sourceV_only": true,
+        "head_fit_updates": 0
+      },
+      "resolved_config_ref": "PROJECT/runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "evaluation_role": "sourceV",
+        "augmentation": "none during frozen evaluation"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model and source split/data inherited exactly; deterministic unaugmented sourceV inference, no support or stochastic evaluation.",
+      "k": null,
+      "scenario": "sourceV_clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "27000 sourceV predictions +2 synthetic checkpoint smoke, zero optimizer/head fitting",
+      "output_root": "PROJECT/runs/20261019-diagnostic-FcrossRX-TXrisk-sourceV-m3-r01/CROSS_RX-s2026092703-sourceV.json",
+      "log_path": "PROJECT/releases/cvs_F_TXrisk_sourceV_20261019_r01/worker.stdout.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_f_txrisk/runner.py",
+      "expected_artifacts": [
+        "release_commit.txt",
+        "submit.json",
+        "*-smoke.json",
+        "*-sourceV.json",
+        "source_calibration.json",
+        "result.json",
+        "completion.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Image supplied by user is PAMF8-seed ranking; its TX identities/weights are not copied as F-specific rules.",
+    "V is used only for the user-requested source-side difficulty calibration and no-update diagnostics; no V gradient, EMA/prototype/normalization fitting, source TX identity-specific branch or target-derived ranking.",
+    "Calibration formula fixed before audit: r=.5 global error+.5 worst source RX error; w=1+.5(r-meanr)/maxabs(r-meanr), equal risk ->1. Weights mean1 in[.5,1.5], permutation equivariant.",
+    "Original historical EMA/gates exist only in archived checkpoints, not executed as new semi-supervised training. Future training must follow latest ordinaryPL/noEMA rules with matched supervision control.",
+    "Only sourceV audit here, no new training or satellite tests; original clean/satellite outcomes unchanged.",
+    "REJECTED_EXTRA_GATE: brainstorming separate design approval/spec/plan gates conflict with explicit Exclusive Minimal Experiment Workflow and existing active research authorization; no additional approval introduced."
+  ],
+  "registered_at": "2026-10-19T07:57:35+00:00"
+}
