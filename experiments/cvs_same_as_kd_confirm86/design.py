@@ -3,7 +3,7 @@ from copy import deepcopy
 from pathlib import Path
 from experiments.cvs_same_as_kd85 import design as old
 ROOT=Path(__file__).resolve().parents[2];PROJECT=old.PROJECT
-RUN='20261019-phase1-FcrossRX-sameAsKD-confirm-e30-m6-r01';RELEASE='cvs_FcrossRX_sameAsKD_confirm_E30_20261019_r01';OWNER='codex/root/sameAsKDconfirm86';BASE=Path(PROJECT)/'runs'/RUN
+RUN='20261019-phase1-FcrossRX-sameAsKD-confirm-e30-m6-r02';RELEASE='cvs_FcrossRX_sameAsKD_confirm_E30_20261019_r02';OWNER='codex/root/sameAsKDconfirm86';BASE=Path(PROJECT)/'runs'/RUN
 RX=FIT=old.RX;STEPS=222;UPDATES=6660;SEEDS=(2026092701,2026092702,2026092703)
 for _k in ('SOURCE','FULL_FP32_POLICY','CLASSES','SCENES','VIEWS','FORMAL_VIEWS','TRUTH','PANEL','SOURCE_CACHE'):globals()[_k]=deepcopy(getattr(old,_k))
 read,write=old.read,old.write

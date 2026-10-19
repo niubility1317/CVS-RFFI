@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 VIEWS=('clean','practical_high','practical_mid','practical_low_suburban','practical_high_urban','practical_mid_urban','practical_low_urban')
 R1='20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r01';R2='20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r02';RK='20261019-phase1-FcrossRX-sameAsKD-e30-s2026092701-m2-r01';REF='20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01'
-def read(p):return json.loads(p.read_text(encoding='utf-8-sig'))
+def read(p):return json.loads(Path(p).read_text(encoding='utf-8-sig'))
 def collect(project):
  import numpy as np
  p=Path(project)/'runs';roots={'T1':p/R2/'T1-s2026092701','T6':p/R1/'T6-s2026092701','KD':p/RK/'KD-s2026092701','AS30':p/REF/'B01-s2026092701','NOAS30':p/REF/'B00-s2026092701'}
