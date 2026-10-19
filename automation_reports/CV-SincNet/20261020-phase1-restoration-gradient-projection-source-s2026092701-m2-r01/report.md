@@ -1,6 +1,6 @@
 # 波形与原F识别梯度的单向投影
 
-状态：PLANNED。目标仍是完整目标测试 low urban ≥70%，其余五practical接近原F clean85.113889%（Agent暂用≤2个百分点口径）；同时报告同物理clean波形差距和冻结原默认头真实TX识别/净纠错。当前已验证最好low urban65.309127%，目标未完成。
+状态：RUNNING / VERIFIED。目标仍是完整目标测试 low urban ≥70%，其余五practical接近原F clean85.113889%（Agent暂用≤2个百分点口径）；同时报告同物理clean波形差距和冻结原默认头真实TX识别/净纠错。当前已验证最好low urban65.309127%，目标未完成。
 
 源域依据：既有source V的精修NMSE约0.0748，原R030.068199，误差增加遍及有效频带；末端time/frequency的source low urban87.055556/86.888889，相对posterior0387.055556无明显突破。source_rationale.json保存聚合证据，0新增模型前向/更新/目标访问。这只能提出“波形与识别梯度可能冲突”的假设，不能证明原因；实际conflict/applied比例将在训练中记录。本设计和代码固定时没有读取新basis候选的目标准确率，不继承它或任何失败精修权重，不改变其正在运行的预测。
 
@@ -15,3 +15,15 @@
 44项聚焦检查及唯一一次独立P0/P1审查PASS（审查者独立复跑44项通过）。launcher首步实际R03/三F/四source Ls no-query smoke，检查初始IQ/state相同、合并梯度到coarse/correction有限非零、原头到IQ梯度、F无梯度及新checkpoint往返，0V/TX/target/optimizer；PASS立即训练。一轮普通账号N607预检VERIFIED，原R03合法、新root不存在、GPU6/7各24124MB空闲无PID、空间≥8GB；实际GPU4/5上前一basis的target PID/CWD/命令已核实LIVE并保留。新GPU6scalar/GPU7projection各一worker，与前一预测重叠期间最多4条本owner GPUworker，单卡最多1条本owner、计入allowner<2、source获取≥18GB/target≥12GB。CPU2线程/scorer最多1；新source scorer等待前basis complete/failure后，source/target共用本run score.lock，避免跨run CPU评分重叠。实际source进程退出才同卡target，不等待另一行。
 
 停止规则：非法来源/权限/代码、冲突、非有限/OOM、预算/梯度合并执行或预测失败时保存产物并技术失败该行，无自动重试，健康行继续；不停止/重启/热改其他任务。一个代码配置commit、不可覆盖root、一次归档本地/远端SHA比较、remotecompile/import，随后核实PID/CWD/命令/GPU/日志增长。命令、环境/CWD、矩阵、路径、资源和预期产物见experiment.json；原IQ、权重、逐样本预测、日志与私有运行状态不进Git。未向另一用户对话发消息或改动其文件/任务。
+
+
+## 实际发布与首轮核验
+
+方法commit `9f2d8f65e507809de396af5fdb89f11b749759b1`已推送并独立核实远端OID，一次归档本地/远端SHA比较及远端compile/import均PASS。实际R03/三F/四Ls no-query smoke PASS：两臂完整初始IQ/state等于原R03，coarse/correction合并梯度及原头到IQ梯度有效，F无梯度，新checkpoint往返一致，0V/TX/target/optimizer更新。两臂实际2140840参数，无新增模块；PASS立即训练。
+
+两条实际source worker的PID/CWD/完整命令/GPU6/7及持续日志增长已核实，三F参考缓存各63000条。实际冲突/合并计数：
+
+- scalar_sum：1/10轮、247/2470步，梯度合并调用247、IQ126000条、eligible冲突22614（observed10011/clean12603），实际投影0；dot前/后总和208.49425/208.49425，移除梯度norm²总和0。
+- waveform_projection：1/10轮、247/2470步，梯度合并调用247、IQ126000条、eligible冲突22555（observed10017/clean12538），实际投影22555；dot前/后总和209.95659/225.39494，移除梯度norm²总和21.84372。
+
+首轮核验时尚无新源V或目标准确率。实际冲突/投影不代表性能改善或参数步波形保证；两臂固定E10后分别自动完整目标测试，source V不作资格筛选，用户目标仍未达成。最终状态与结果以完整结果节为准。前一basis的GPU4/5目标进程保留，CPU评分等待其完成后执行。
