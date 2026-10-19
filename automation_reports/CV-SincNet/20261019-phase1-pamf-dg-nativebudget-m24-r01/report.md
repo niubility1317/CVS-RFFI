@@ -84,3 +84,11 @@ VERIFIED：ibrff-full-s2026092701 已为 ANALYZED。源 V 规则使 stage1 在 3
 | practical_low_urban | 19.7619 | 16.7135 |
 
 证据为 local_artifacts/phase1_dg_nativebudget_20261019/firstrow_artifacts.json，含 freeze、prediction complete、独立 scores 和 row complete 原始读回。保留负结果，不依据此分数修改后续训练。PAMF 历史对应三个种子的 E200 clean 基准可与后续同 seed 结果配对，但预算和已测视图单列。
+
+## 后续读回与IB-RFF完整组三种子结果
+
+最新独立读回确认dispatcher PID2008297及SDG首行worker实际存活，IB-RFF full／CE各三个seed共6行ANALYZED，SDG full首行到E115，其他行尚未开始；无FAILED。旧1/24描述保留为当时快照。
+
+IB-RFF六行全部七视图预测已独立复算，42个总体CM及Accuracy／Macro-F1与原scorer逐值一致。[完整同row结果、日期分层与训练成本](ibrff_analysis.md)。clean full64.4792±2.9341%，CE63.4599±1.7316%，配对差+1.0192±1.8158个百分点，2/3正差，不能据此称稳定有效。
+
+本次目标范围已明确排除PAMF，详细实施范围见docs/PHASE1_EXTERNAL_DG_EXECUTION_PLAN_20261019.md。新增162训练和6补测尚未发布，原24行配置未变。
