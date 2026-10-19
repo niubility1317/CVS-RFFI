@@ -1,0 +1,82 @@
+{
+  "code_commit": "409fbf49571fb39cfd02701992824d7d71a6c712",
+  "archive_transfer": "VERIFIED",
+  "compile": "VERIFIED",
+  "ordinary_preflight": "reused same active task ordinary preflight",
+  "T6_not_restarted": true,
+  "smoke": {
+    "status": "PASS",
+    "records": [
+      {
+        "arm": "T1",
+        "NN": 768,
+        "As_IQ": 64,
+        "Ag_IQ": 0,
+        "head_joint_gradient": true,
+        "Sinc_joint_gradient": true,
+        "same_initial": true,
+        "optimizer_updates": 0,
+        "noise": {
+          "step": 1333,
+          "cumulative_step": 1333,
+          "shape_RD": 4.679795742034912,
+          "shape_CE": 3.426377296447754,
+          "shape_KL": 1.2534184455871582,
+          "weight": 0.25,
+          "NN": 256,
+          "same_IQ_each_pair": true,
+          "mode": "NONE",
+          "packets": 128,
+          "applied": 0,
+          "relative_noise_RMS": 0,
+          "noise_peak_fraction_mean": 0,
+          "SNR_added_db": null,
+          "new_boundary_samples": 0
+        }
+      },
+      {
+        "arm": "T1",
+        "NN": 768,
+        "As_IQ": 64,
+        "Ag_IQ": 0,
+        "head_joint_gradient": true,
+        "Sinc_joint_gradient": true,
+        "same_initial": true,
+        "optimizer_updates": 0,
+        "noise": {
+          "step": 1333,
+          "cumulative_step": 5773,
+          "shape_RD": 4.679795742034912,
+          "shape_CE": 3.426377296447754,
+          "shape_KL": 1.2534184455871582,
+          "weight": 0.25,
+          "NN": 256,
+          "same_IQ_each_pair": true,
+          "mode": "NONE",
+          "packets": 128,
+          "applied": 0,
+          "relative_noise_RMS": 0,
+          "noise_peak_fraction_mean": 0,
+          "SNR_added_db": null,
+          "new_boundary_samples": 0
+        }
+      }
+    ],
+    "NN": 1536,
+    "real_checkpoint_NN": 2,
+    "real_IQ": 0,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0,
+    "target_access": false
+  },
+  "dispatcher_observed": true,
+  "rows": [
+    {
+      "row": "T1-s2026092701",
+      "pid": 2011644,
+      "gpu": 2,
+      "cwd_match": true,
+      "log_bytes": 0
+    }
+  ]
+}
