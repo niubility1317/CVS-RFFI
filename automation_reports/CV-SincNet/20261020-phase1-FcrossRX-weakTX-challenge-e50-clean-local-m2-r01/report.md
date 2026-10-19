@@ -27,3 +27,5 @@ GPU0最多3个总训练／预测／诊断worker，计入其他owner；派发前�
 聚焦检查PASS：8个协议负例、已知top6通道oracle、私有随机mask精确预算、2498／1249分层日程、实际F两臂两层梯度、辅助W梯度None而Sinc非零、主W正常、原RDrop/SupCon／RNG／state不变、warmup完全一致、EMA／实际feature导出保持900722参数、真实匹配final50 checkpoint的零输入no-query smoke。检查读取IQ和target均0，没有optimizer或head拟合。唯一独立P0/P1审查PASS，未发现会使下一真实run错误或越权的缺陷。
 
 发布状态 **VERIFIED／RUNNING**。执行提交 `294e79315fd628c97dca7e312d7e9b0bb3c5a0b6` 已推送并独立对齐远端OID。两source worker的实际PID／CWD／cmdline／物理GPU0驻留／resolved33L＋17U／900722参数和日志增长已回读。CUDA合成输入完整main＋aux联合反传PASS，零IQ或target读取，零optimizer或head拟合。正在前5轮原配方预热，尚无本轮clean分数；源扩展在新目标访问前固定。
+
+真实训练激活 **VERIFIED**：两臂均从第1112步／epoch6开始，首个time_down遮蔽实际weakL30包，首个t2.pool为第1116步／weakL44包，新增系数.01。SALIENCY首浅／中损失.720654／.455578；RANDOM为.272616／.240000，均有限。仅说明实际训练执行，不是识别提升证据。此时source进程仍存活，U真值与星地执行均0，未访问本轮目标域。

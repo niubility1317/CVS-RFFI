@@ -1,0 +1,74 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01",
+  "execution_commit": "294e79315fd628c97dca7e312d7e9b0bb3c5a0b6",
+  "live_controller_pid": 2404,
+  "live_source_pids": [
+    33424,
+    38372
+  ],
+  "native_active_step": 1112,
+  "first_middle_step": 1116,
+  "expected_first_active_epoch": 6,
+  "actual_weight": 0.01,
+  "satellite_active": 0,
+  "U_truth_available": 0,
+  "target_feedback": false,
+  "rows": [
+    {
+      "row_id": "RANDOM_WEAK-s2026092701",
+      "last_step": 1231,
+      "last_epoch": 6,
+      "actual_calls": 30,
+      "extra_L_packets": 1292,
+      "first_active": {
+        "step": 1112,
+        "epoch": 6,
+        "packets": 30,
+        "weight": 0.010000000000000002,
+        "loss": 0.27261611819267273,
+        "layer": 0,
+        "U_truth": 0,
+        "satellite": 0
+      },
+      "first_middle": {
+        "step": 1116,
+        "epoch": 6,
+        "packets": 44,
+        "weight": 0.010000000000000002,
+        "loss": 0.2399996966123581,
+        "layer": 1,
+        "U_truth": 0,
+        "satellite": 0
+      }
+    },
+    {
+      "row_id": "SALIENCY_WEAK-s2026092701",
+      "last_step": 1213,
+      "last_epoch": 6,
+      "actual_calls": 26,
+      "extra_L_packets": 1108,
+      "first_active": {
+        "step": 1112,
+        "epoch": 6,
+        "packets": 30,
+        "weight": 0.010000000000000002,
+        "loss": 0.7206544876098633,
+        "layer": 0,
+        "U_truth": 0,
+        "satellite": 0
+      },
+      "first_middle": {
+        "step": 1116,
+        "epoch": 6,
+        "packets": 44,
+        "weight": 0.010000000000000002,
+        "loss": 0.45557790994644165,
+        "layer": 1,
+        "U_truth": 0,
+        "satellite": 0
+      }
+    }
+  ],
+  "interpretation": "Actual finite auxiliary forward/loss execution, not evidence of target recognition gain. Original source promotion and clean matrix unchanged."
+}
