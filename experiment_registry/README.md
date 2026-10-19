@@ -397,3 +397,5 @@
 本轮记录：[训练前固定双行目标比较](by_method/fixed_target_comparison.md)。
 
 本轮记录：[窄窗与全窗注意力恢复](by_method/temporal_context.md)。
+
+本轮记录：[末端时域与频域有界残差滤波](by_method/basis_filter.md)。
