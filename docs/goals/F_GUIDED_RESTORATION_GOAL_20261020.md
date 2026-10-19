@@ -95,17 +95,17 @@ IQ摘要/冻结F语义条件E10两臂现均已完成，方法commit `1c869980ae9
 - [一致伪身份与跨 RX 特征匹配实验](../../automation_reports/CV-SincNet/20261020-phase1-restoration-consensus-identity-source-s2026092701-m2-r01/report.md)
 - [IQ摘要与冻结F语义条件的恢复结构对比](../../automation_reports/CV-SincNet/20261020-phase1-restoration-semantic-feedback-source-s2026092701-m2-r01/report.md)
 
-## 下一轮固定比较（尚未实现或发布）
+## 下一轮固定比较（配对模块已实现，尚未发布）
 
 最新IQ摘要/语义FiLM两臂的源low/mid均下降，未创建target目录；完整源负结果已保存，方法`1c869980ae9059e613ec29915d2b92db7444ed20`，结果`fb7c289d4186be9ba369c31f36232527858c9da7`。本轮不是因为波形界限而漏选识别候选：两臂波形与clean保持通过，但城市识别均不改善。
 
 下一方向检验源接收机统计依赖：训练时在纠错器浅层和中层混合特征均值/标准差，候选配对仅来自三原头在source clean上一致且各置信度≥0.9的同伪身份、不同源RX记录；不读取L/U TX真值，不保证伪身份等于真实TX。无候选则跳过，不退回跨身份混合。拟定层位为原corrector encoder第0/2层，概率0.5、Beta(0.1,0.1)、epsilon1e-6；每条observed与配对clean使用相同物理配对/系数，但donor保持对应半批，不从clean半向observed半输入特征。均值/标准差停止梯度，逐条记录有效配对/实际混合、层位、L/U曝光。推断关闭混合，仅当前IQ，恢复网络原参数结构和三个原F/defaulthead保持。
 
-拟定两行普通匹配控制和同伪身份跨RX统计混合，均从原R03 coarse20/correction20直接分叉，原posterior03三F基础损失、jointE10/2470、数据/顺序/预算匹配，不继承本轮或此前失败精修。接收机标签和伪身份仅用于source训练配对，原F和默认头冻结，不增加分类/诊断头或推断状态。
+拟定两行同伪身份同RX统计混合匹配控制、同伪身份跨RX统计混合，两行都保护伪身份。只对两种规则均有合法donor的物理记录启用混合，以相同随机抽取数匹配可配对集合、尝试概率和系数，只改变donor的RX条件；不使用旧失败checkpoint作为新目标候选。两行均从原R03 coarse20/correction20直接分叉，原posterior03三F基础损失、jointE10/2470、数据/顺序/预算匹配，不继承本轮或此前失败精修。接收机标签和伪身份仅用于source训练配对，原F和默认头冻结，不增加分类/诊断头或推断状态。
 
 按用户“性能以目标测试集为准”的要求，新实验改用训练前预登记的固定目标对比矩阵：两行固定最终E10后均自动完整测试同一168000条clean＋六practical、三原默认头。source V用于诊断，不再用源涨分/NMSE资格筛出一行；这是新的固定比较，不追认任何旧失败，也不重测它们。每行全七视图预测固定后，独立CPU才接入对应truth；source/target CPU scorer串行。目标分数不改变任何行的配置、权重、预算、排序或选择性重跑，所有已登记行完整报告。
 
-实现时保持逐行训练结束自动测试：控制器确认该source worker实际退出后再在同一卡启动该row target，避免源worker残留CUDA上下文与新预测worker并占；其他健康行不等待整批、也不因已出分行而变化。原R03/F来源、VALIDATED_ONCE数据、不可覆盖输出、唯一owner和最小发布流程保持。具体run ID、命令、资源、停止规则与产物在实现后的同一最小预登记固定；当前本方向尚未实现、测试或启动，不把计划写成完成。
+实现时保持逐行训练结束自动测试：控制器确认该source worker实际退出后再在同一卡启动该row target，避免源worker残留CUDA上下文与新预测worker并占；其他健康行不等待整批、也不因已出分行而变化。原R03/F来源、VALIDATED_ONCE数据、不可覆盖输出、唯一owner和最小发布流程保持。配对/混合数学模块`experiments/pamf_style_generalization/mixing.py`已实现，12项聚焦单元检查通过，覆盖同伪身份保护、同/跨RX区分、相同有效曝光与系数、半批隔离、donor统计停止梯度、无合法配对时跳过、类别置换与非法输入。float32系数舍入为1的尝试单独记录并跳过无效混合；其余原基础记录不删减。这尚不是完整恢复器验证：模型层位接线、固定双行source→target控制器、独立审查、真实权重smoke和实际训练尚未执行。具体run ID、命令、资源、停止规则与产物在完整实现后的同一最小预登记固定。
 
 ## 固定边界
 
