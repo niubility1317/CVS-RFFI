@@ -1,1 +1,4 @@
 {"at": "2026-10-19T14:38:19+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T14:40:42+00:00", "status": "RUNNING", "note": "VERIFIED source-checkpoint/3F smoke,PID/CWD/cmd/GPU/loggrowth;sixpracticalprediction active", "evidence": ["report.md", "experiment.json"], "row_id": "waveform_control"}
+{"at": "2026-10-19T14:40:42+00:00", "status": "RUNNING", "note": "VERIFIED source-checkpoint/3F smoke,PID/CWD/cmd/GPU/loggrowth;sixpracticalprediction active", "evidence": ["report.md", "experiment.json"], "row_id": "frozenF_feature"}
+{"at": "2026-10-19T14:40:42+00:00", "status": "RUNNING", "note": "Two frozenarms,sixpractical,threeoriginalFreadouts;pairedclean/truth scoreronly", "evidence": ["report.md", "experiment.json"], "row_id": null}

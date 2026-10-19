@@ -1,6 +1,6 @@
 # 冻结特征恢复：星地六场景双评价线
 
-状态：PLANNED。用户最新要求将评价分为恢复 IQ 与 clean 的差距、接入基座后的目标测试表现，并明确 low-urban 达到 70% 以上、其余环境接近 clean。本轮据此完成既有六种 practical 目标评估，已完成的 clean 对照原样保留，不重复训练或预测 clean。
+状态：RUNNING / VERIFIED。用户最新要求将评价分为恢复 IQ 与 clean 的差距、接入基座后的目标测试表现，并明确 low-urban 达到 70% 以上、其余环境接近 clean。本轮据此完成既有六种 practical 目标评估，已完成的 clean 对照原样保留，不重复训练或预测 clean。
 
 ## 固定模型、目标与比较
 
@@ -25,3 +25,8 @@ N607 普通账号，GPU0 控制组、GPU1 特征组，每卡一条本 run worker
 一个不可覆盖输出 root；数据句柄／模型来源／commit 不符、输出冲突、非有限、预算或预测完整性失败即保留产物并停止，不自动重试，不停止其他健康进程。10 项聚焦测试覆盖六场景及三 F 完整性、提前 truth／clean、状态更新、ID 错位、非法类、IQ 缺失和未对齐全窗／尾部误差；沿用该固定候选已完成的一次独立 P0/P1 审查，不加重复 runner review。
 
 预检确认原 formal 七视图、父预测、已完成 clean 对照和源资格齐全，新 run/release 不存在、GPU0/1 空闲。单次发布归档比较、远端 compile、启动后 PID/CWD/命令/GPU/日志增长必须保存。具体命令、CWD、环境、路径、矩阵、输出见 [experiment.json](experiment.json)。
+
+
+## 启动核验
+
+方法 commit：`096d6e9ce8028f25a98a1afc97d2a343d9270ca0`。一次归档 SHA 比较、远端 compile/import、真实两组末轮权重＋三套原默认头的 2 条 L_s smoke 通过。独立后态核实控制器及两 worker PID/CWD/完整命令、物理 GPU0/1 与两次日志增长，六种 practical 目标预测实际推进。尚未完成全部目标预测，不宣称性能达标。

@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "用户答复要求两条评价线：恢复后与clean差距、接入基座后的目标表现；随后明确lowurban达到70%以上、其他环境接近clean。本轮据此评估既有六种practical，保留clean对照。",
   "code": {
-    "commit": null,
+    "commit": "096d6e9ce8028f25a98a1afc97d2a343d9270ca0",
     "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
     "environment": "N607 existing CVS-RFFI Python3.10/Torch2.1+cu121/NumPy2;CPU2;FP32;no package changes",
     "cwd": "releases/pamf_feature_practical_20261019_r01"
@@ -104,7 +104,7 @@
     "remote_run_root": "runs/20261019-phase1-restoration-feature-target-practical-m3-r01",
     "remote_log_root": "logs/20261019-phase1-restoration-feature-target-practical-m3-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/feature_practical_20261019_r01",
-    "launch_command": "python -u -m experiments.pamf_feature_refine.practical_target run --source-run ../../runs/20261019-phase1-restoration-frozenF-feature-source-s2026092701-m2-r01 --formal-residual ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05 --clean-run ../../runs/20261019-phase1-restoration-feature-target-clean-m3-r01 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-root ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261019-phase1-restoration-feature-target-practical-m3-r01 --expected-commit <actual method commit>",
+    "launch_command": "python -u -m experiments.pamf_feature_refine.practical_target run --source-run ../../runs/20261019-phase1-restoration-frozenF-feature-source-s2026092701-m2-r01 --formal-residual ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05 --clean-run ../../runs/20261019-phase1-restoration-feature-target-clean-m3-r01 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-root ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261019-phase1-restoration-feature-target-practical-m3-r01 --expected-commit 096d6e9ce8028f25a98a1afc97d2a343d9270ca0",
     "stop_rule": "Illegal input/parent/code,collision,nonfinite,budget/predcoverage failure:preserveoutputs,abort,noautoretry",
     "CPU_generation_workers": 0
   },
@@ -175,7 +175,7 @@
       "budget_ref": "0newtraining/adapter/headupdates;sourceparentcosts retained;3frozenclassifiers share eachphysicalIQ,no ensemblevote",
       "output_root": "runs/20261019-phase1-restoration-feature-target-practical-m3-r01/waveform_control",
       "log_path": "runs/20261019-phase1-restoration-feature-target-practical-m3-r01/logs/waveform_control.log",
-      "command": "python -u -m experiments.pamf_feature_refine.practical_target run --source-run ../../runs/20261019-phase1-restoration-frozenF-feature-source-s2026092701-m2-r01 --formal-residual ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05 --clean-run ../../runs/20261019-phase1-restoration-feature-target-clean-m3-r01 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-root ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261019-phase1-restoration-feature-target-practical-m3-r01 --expected-commit <actual method commit>",
+      "command": "python -u -m experiments.pamf_feature_refine.practical_target run --source-run ../../runs/20261019-phase1-restoration-frozenF-feature-source-s2026092701-m2-r01 --formal-residual ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05 --clean-run ../../runs/20261019-phase1-restoration-feature-target-clean-m3-r01 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-root ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261019-phase1-restoration-feature-target-practical-m3-r01 --expected-commit 096d6e9ce8028f25a98a1afc97d2a343d9270ca0",
       "expected_artifacts": [
         "launch.json",
         "resolved_config.json",
@@ -220,7 +220,7 @@
       "budget_ref": "0newtraining/adapter/headupdates;sourceparentcosts retained;3frozenclassifiers share eachphysicalIQ,no ensemblevote",
       "output_root": "runs/20261019-phase1-restoration-feature-target-practical-m3-r01/frozenF_feature",
       "log_path": "runs/20261019-phase1-restoration-feature-target-practical-m3-r01/logs/frozenF_feature.log",
-      "command": "python -u -m experiments.pamf_feature_refine.practical_target run --source-run ../../runs/20261019-phase1-restoration-frozenF-feature-source-s2026092701-m2-r01 --formal-residual ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05 --clean-run ../../runs/20261019-phase1-restoration-feature-target-clean-m3-r01 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-root ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261019-phase1-restoration-feature-target-practical-m3-r01 --expected-commit <actual method commit>",
+      "command": "python -u -m experiments.pamf_feature_refine.practical_target run --source-run ../../runs/20261019-phase1-restoration-frozenF-feature-source-s2026092701-m2-r01 --formal-residual ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05 --clean-run ../../runs/20261019-phase1-restoration-feature-target-clean-m3-r01 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-root ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261019-phase1-restoration-feature-target-practical-m3-r01 --expected-commit 096d6e9ce8028f25a98a1afc97d2a343d9270ca0",
       "expected_artifacts": [
         "launch.json",
         "resolved_config.json",
