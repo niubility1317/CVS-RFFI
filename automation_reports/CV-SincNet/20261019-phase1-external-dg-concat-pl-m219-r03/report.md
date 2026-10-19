@@ -55,3 +55,7 @@ VERIFIED：代码commit `cb9e19fbbbfee31704064be0ad4f6ec96d29b966`，远端分�
 实际训练位于物理GPU2、3，每卡一行，PID/CWD/argv与启动登记一致，完整源epoch记录及日志均持续增长。当前首批IB-RFF CE监督与CE＋PL配对行都记录了实际卫星增强样本，PL行同时记录U曝光；U缓存明确不导出TX标签，阈值0.95、默认头联合训练已核实。当前只是开始运行，未声称219性能行或96成本行完成；r02首次数值失败原因仍未确定，记录保留。
 
 性能run：`20261019-phase1-external-dg-concat-pl-m219-r03`；成本run：`20261019-phase1-external-dg-concat-pl-cost-m96-r03`。实际私有运行路径、PID及日志证据位于本run runtime/release_result/postlaunch_verified 引用，不将私有运行配置或原始日志提交Git。成本队列等待全部性能行完成及进程实际退出。
+
+## 首个完整四条件配对
+
+[IB-RFF首seed增强与PL结果](ibrff_seed01_aug_pl_analysis.md)：4行七视图独立复算通过，只有seed2026092701。报告保留监督条件机制负差及PL条件机制正差，具体数字、实际早停轮数和全部场景在子报告；不据分数调整后续矩阵。整体仍RUNNING，219行与96成本未全部完成。
