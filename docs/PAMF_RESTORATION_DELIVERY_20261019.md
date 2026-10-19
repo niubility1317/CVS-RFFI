@@ -1,8 +1,28 @@
 # 独立星地观测恢复器：实现与当前证据
 
-已有可复用的独立恢复器，训练使用源 L/U 的 IQ 和模拟接收退化，不读取 TX 标签、不使用 F 损失。冻结原 F50 的完整正式测试已证明统计识别收益；逐条生成细节的 TX 真实性仍未证明，clean 也存在小幅损伤。目标保持 active，不能把本轮正收益写成普遍身份认证保证。
+已有可复用的独立恢复器，训练使用源 L/U 的 IQ 和模拟接收退化，不读取 TX 标签、不使用 F 损失。冻结原 F50 的完整正式测试已证明统计识别收益；逐条生成细节的 TX 真实性仍未证明，clean 也存在小幅损伤。目标保持 active，不能把对原受损输入的统计收益写成普遍身份认证保证。
 
-## 最新完成正式验证的版本：R17
+## 最新完成的正式比较：R19
+
+R19 在固定源域验收中选定 `time_time`，连接原 F50 seed2026092701/defaulthead，完成原168000条物理记录×七视图。它的源low urban为88.2778%，较R17增加1.4444pp，但正式low urban仅67.1030%，比R17低0.1137pp；六个受损正式场景均未超过R17。**本轮源域提升没有转化为正式跨接收机提升，70%/五场景各距原始clean≤5pp的总目标仍未达到。** `time_frequency` 虽平均源IQ误差更低，却因TX20-19的源损伤未合格，保留结果且0target。
+
+|正式场景|R17（%）|R19（%）|R19−R17（pp）|R19距原始clean（pp）|验收|
+|---|---:|---:|---:|---:|---|
+|clean|84.5869|84.5869|+0.0000|0.0893|损伤单列|
+|高仰角郊区|81.3190|81.1375|-0.1815|3.5387|通过|
+|中仰角郊区|79.5780|79.3613|-0.2167|5.3149|未通过|
+|低仰角郊区|77.9964|77.5381|-0.4583|7.1381|未通过|
+|高仰角城区|80.3536|80.0649|-0.2887|4.6113|通过|
+|中仰角城区|73.6851|73.5137|-0.1714|11.1625|未通过|
+|低仰角城区|67.2167|67.1030|-0.1137|17.5732|未通过|
+
+原始clean仍为84.6761904762%，其余五受损场景各自下限79.6761904762%，本轮只有2/5通过；恢复clean损伤0.0893pp单列。没有按正式分数调整R19、选择性重跑或回流R20；R20的固定/随机起点设计和提交早已固定。
+
+配对诊断复用原预测与同物理clean：low urban恢复判断与clean判断一致的比例从31.9923%升至72.5649%；但沿用clean原有错误判断有15135条，匹配clean不等于TX正确。clean可正确识别的142256条子集中，恢复准确率为75.0576%，这是条件子集，不能代替全量67.1030%。low urban相对原受损输入修复70872条、损坏9042条。六个相关受损视图全部正确的物理样本从18150条增加到87994条；这是描述统计，不是部署集成，也不增加独立样本数。误差方向投影及正交修正能量已按TX/RX/day保留，仍不能证明每个生成细节的身份归属。
+
+两行新prior各E20/4940，完整L/U曝光、恢复训练TX/F/target读取均为0；source V标签只用于验收，历史F50监督知识单列。两行权重已取回本机，严格加载并直接连接原F50/defaulthead验证有限输出和逐包一致性。R19可复用权重目录为 `local_artifacts/pamf_restoration/trained/20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19/{time_time,time_frequency}/final.pt`，使用 `experiments.pamf_alternating_restore.runtime.load_checkpoint`；未合格的频域行没有正式部署效果结论。[R19完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19/report.md)和[汇总](../automation_reports/CV-SincNet/20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19/summary.json)包含七场景、逐TX/RX/day、完整成本和配对诊断。追踪记录为7 verified、1 deferred，实验工作完成，持续总目标仍active。
+
+## 历史正式参考：R17
 
 R17 的 `unroll_unshared` 先通过固定源域条件并冻结，再连接原 F50 seed2026092701 和原默认头完成 168000 条物理记录×七视图。恢复训练全量使用 6300 L/56700 U、各 20 轮/4940 次更新，读取 TX 标签、F 权重/输出和目标数据均为 0。源 V 标签用于冻结前的独立验收，历史 F50 使用过监督训练，因此整条流程不称完全无标签。
 
@@ -162,3 +182,6 @@ R17 三步物理展开完成：SOURCE_QUALIFIED_TARGET_ANALYZED，选定 unroll_
 
 
 R18 当前锚点与末端CG比较：SOURCE_NOT_QUALIFIED，选定 None。各新prior20/4940、全63000L/U、0TX/F/target训练，四固定源参考保护。本轮没有新正式目标集成绩，持续目标尚未证实。[完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-iterative-controls-selfsup-s2026092701-m2-r18/report.md)。持续目标保持active。
+
+
+R19 时域—频域交替与同容量时域比较：SOURCE_QUALIFIED_TARGET_ANALYZED，选定 time_time。各新prior20/4940、全63000L/U、0TX/F/target训练，四固定源参考保护。正式 low urban 为 67.1030%，70% 条件未通过；其余五场景 2/5 达到原始 clean−5 pp。数值总目标未达到。[完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19/report.md)。持续目标保持active。

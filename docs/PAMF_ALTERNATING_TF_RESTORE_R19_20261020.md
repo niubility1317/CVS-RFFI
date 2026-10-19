@@ -31,7 +31,7 @@ N607池0/1/5/7，最多两条本run GPU worker，每卡一条；全owner cap2/fr
 |A19-04|合法恢复训练|全L/U、仅R07冻结父、全部新模块进入优化器、0TX/F/target|runtime.py/training.py|verified|来源/schema负测及实际20/4940曝光、各子模块梯度|IQNMSE唯一目标|
 |A19-05|身份保护|四源参考、固定排序、仅合格选定target|evaluation.py/runner.py|verified|未选target阻断、两角色实际七预测路由、原默认头及目标评分收尾负测通过|不降低旧条件|
 |A19-06|安全发布|一次P0P1、真实checkpoint入口、Git/容量锁/N607poststate|controller.py|verified|34tests、独立P0P1、单归档传输/编译、真实2Ls/noquery入口、6Core梯度、GPU0/1 PID/CWD/argv/loggrowth均通过|不可覆盖/保护其他owner|
-|A19-07|完整证据|源全7、条件正式全7、TX/RX/day/损伤/成本、全日志|run报告|pending|独立truth-last、全量计数和汇总读回|源分数不替代目标|
+|A19-07|完整证据|源全7、条件正式全7、TX/RX/day/损伤/成本、全日志|run报告|verified|独立truth-last、全量计数和汇总读回|源分数不替代目标|
 |A19-08|真实性边界|新oracle/多seed/独立物理族/逐细节真假|后续确认|deferred|本轮不宣称、完整目标保持|非发布前阻断|
 
 REJECTED_EXTRA_GATE：通用 brainstorming 技能的额外设计/计划多轮人工审批不在本项目最小流程白名单内。本轮已有用户“先尝试各种网络设计”及参考报告授权，保留实质设计与可核查对照，按项目最小流程继续，不增加审批或新的流程文件链。
@@ -39,4 +39,5 @@ REJECTED_EXTRA_GATE：通用 brainstorming 技能的额外设计/计划多轮人
 发布前状态：34项聚焦检查通过，`python -X utf8 -m pytest tests/test_pamf_unrolled_restore.py tests/test_pamf_alternating_restore.py -q`；新模块 compile/help、Git diff检查通过。一次独立P0/P1审查无阻断，N607普通账户新root/合法缓存/源参考/实际容量预检通过。真实checkpoint/noquery入口、实际训练曝光和完整评分尚待执行。
 
 
-当前为6 verified、1 pending、1 deferred、0 rejected/blocked；另记录1个REJECTED_EXTRA_GATE。两行E20及源七视图已完成，time_time通过全部源条件并进入正式七视图预测；time_frequency因最差TX损伤未合格、0target。真实本机权重/原F50默认头连接通过。A19-07正式证据与最终交付仍pending。
+
+实际状态：7 verified、1 deferred、0 rejected/blocked。SOURCE_QUALIFIED_TARGET_ANALYZED，选定 time_time。正式 low urban 为 67.1030%，70% 条件未通过；其余五场景 2/5 达到原始 clean−5 pp。数值总目标未达到。训练全量曝光、0TX/F/target、实际checkpoint入口、源七视图、全部条件工作和运行退出已核实。最高剩余风险为单seed及逐细节身份真实性；[完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19/report.md)。
