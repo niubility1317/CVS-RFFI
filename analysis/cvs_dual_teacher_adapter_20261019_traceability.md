@@ -1,0 +1,32 @@
+# 双教师＋浅中层时序残差适配器：实现追踪
+
+来源：用户新增附件 adf48c3d-6ad2-43ef-88b1-01357f6738dc/已粘贴的文本.txt，及本chat确认学生追加10轮、累计E30。目标保持low urban>60%、clean相对匹配NoAs可重复正收益、逐suburban差距；新用户明确授权新增非分类头特征模块和首轮冻结F/defaultW，覆盖旧仅原F正常联合训练的本轮限制。
+
+本表服务实现范围与结果交付，属NONBLOCKING记录；不增加设计审批、report/hash、重复review或数据重验门槛。尚未声明方案有效或完成，未启动新学生。
+
+|ID|来源章节|要求|目标文件|状态|验证|说明|
+|---|---|---|---|---|---|---|
+|T01|§4/9|固定合法Tc与Ts、source-first选择；不按target择师|teacher.py / design.py|verified|已有CSIL來源inspection/payload與inputJacobian同IQV360；Tc为固定seed B0 FINAL20|Ts远端可用性待一次preflight；E200成本单列，不冒充E20|
+|T02|§1/9|复用已完成训练/同L新channel/V诊断|ER与D3 final_analysis.md|verified|D3 actual1441NN，sameorigin180/different0，SOURCE_FAIL固定|旧epoch-first关闭，不救援|
+|T03|§6|t1/t2原GN之前并联浅中层时序残差|adapters.py|implemented|实际native block窄测，新增4768参数；完整F+父CP验证待launcher首步|rank16，k5 DW/GELU，维持原pool/tap|
+|T04|§6|仅B输出层0初始化；无双零gate|adapters.py / checks_adapters.py|verified|11负例，train/eval同RNG相等，B首步及后续A/D有效梯度，strict reload|A/D正常初始化，首步A/D梯度0正常|
+|T05|§6|原F与默认head冻结，梯度仍穿过后续层|model.py / adapters.py|implemented|native block＋固定后层/合成6×160头回传PASS；实际F/CP待完整接入|新用户明确覆盖旧默认联合训练限制；不是另训头|
+|T06|§6/9|新checkpoint严格恢复adapter与累计继承状态|model.py|implemented|先strict父F再装adapter；eval先装结构再strict新CP|不可套用scratch20/ancestors[]旧guard|
+|T07|§4/7|Tc和学生用同clean视图，Ts和学生用同practical IQ|teacher.py / model.py|implemented|实际同tensor/生成标识和class order witness|两教师eval/stopgrad；不混源概率路由|
+|T08|§7|全L真实CE；仅teacher错误时减弱KD，不看student置信|distillation.py|verified|全128 CE、wrongteacher mask、KD归一化和梯度窄测|无branch alignment/HQ/MixStyle/Fishr/新伪标签|
+|T09|§7|显式处理六类顺序/输出尺度/温度|teacher.py / design.py|implemented|从固定来源读取并记录logit scale及固定温度规则|不用target校准；不raw-logit MSE|
+|T10|§9|S0/S1/S2/S3统一head/data/初始化/预算|design.py / source.py / runner.py|pending|学生E20+10累计E30，用户已明确确认|匹配NoAs及教师shadow成本控制在最小矩阵中披露|
+|T11|§9|保留原数据/U隐藏真值/测试七视图truth-last|source.py / evaluate.py / runner.py|pending|复用L6300/U56700/V27000与现有received IQ|不改SNR/场景/物理ID/单包推理|
+|T12|§6/9|分别报告参数/反传/teacher前向/信道/墙钟|observer.py / report.py|pending|实际计数与原F冻结/默认头/J160更新可达性|冻结不宣称廉价或clean必保持|
+|T13|§9|源资格先固定；完整性能与配对误差/多seed口径|qualification.py / report.py|pending|先源规则后formal，无失败近邻救援|n1仅探索，不宣称可重复|
+|T14|§5/9|标准浅中层LoRA仅在主S3有效后独立比较|后续独立实验|deferred|用户明确条件性后续|首轮不同时展开多个adapter族|
+|T15|§8|raw IQ补充分支仅在局部修正不足后独立比较|后续独立实验|deferred|用户明确条件性后续|不做IQ MSE去噪器，不先新增分支|
+|T16|§7.3|clean特征keep约束仅KD仍明显漂移后考虑|后续独立消融|deferred|用户明确必要时，不首轮叠加|不用epsilon0限制未知RX改错空间|
+|T18|§6.3|恢复原默认头联合更新仅在后续独立比较|后续独立实验|deferred|用户要求先统一冻结 W 验证特征|本轮不改头自由度|
+|T17|项目最小流程|一次实际code/config提交、窄负测/CPsmoke、P0/1、archive/compile、live证据|runner / 最小prereg|pending|按项目唯一whitelist完成，不增seals/hash/审批|本表为NONBLOCKING记录，不新增release gate|
+
+固定现有教师：Tc=原B0纯F seed2026092701 FINAL20（不按目标最高分选择）；Ts=CSIL csil-s2026092701固定last200，scratch/9800updates/合法相同物理角色。既有同IQ源V360每项比较：d0mid44修复/18新增错，d1mid65/11，d0low72/21，d1low76/16；总净13.263889pp。该证据不是完整V1800，也不是新独立blind test。旧nontrueKD和inputJacobian方向固定配方已关闭；本轮改变的是监督分工与新增特征承载空间，不把旧教师识别优势等同于新学生有效。
+
+首轮结构限定：rank16、k5、bias=False；两处adapter分别约2000和2768参数，共4768；原900722参数F保持完整。具体计数须实际模块读回，不用估计替代。不是标准线性LoRA，不能声称可折叠成原单权重矩阵。标准LoRA/残差适配/蒸馏的研究依据分别见 [LoRA](https://arxiv.org/abs/2106.09685)、[Residual adapters](https://arxiv.org/abs/1705.08045)、[Knowledge distillation](https://arxiv.org/abs/1503.02531)，无线任务收益仍需本实验验证。
+
+实际接入约束：原native CENTER_UNITS optimizer要求Sinc和W可训练，不能直接拿来给冻结F/adapter使用。保留CoordinateSinc参数化与已加载函数，适配阶段Sinc冻结/更新0，显式仅adapter优化器；S0若更新骨干则另作统一冻结head的实际优化器规则，不能为绕过断言开启W。

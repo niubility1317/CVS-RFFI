@@ -1,0 +1,198 @@
+{
+  "schema": "F_dualTeacher_adapter30_v1",
+  "run_id": "20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r01",
+  "arm": "S3",
+  "row_id": "S3-s2026092701",
+  "model_seed": 2026092701,
+  "launch_owner": "codex/root/F-dualTeacherAdapter30",
+  "output_root": "PROJECT\\runs\\20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r01\\S3-s2026092701\\source",
+  "project": "PROJECT",
+  "epochs": 10,
+  "label_epochs": 0,
+  "pseudo_epochs": 10,
+  "steps_per_epoch": 222,
+  "updates": 2220,
+  "parent_epochs": 20,
+  "parent_updates": 4440,
+  "cumulative_epochs": 30,
+  "cumulative_updates": 6660,
+  "parent_source": "PROJECT\\runs\\20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01\\B0-s2026092701\\source",
+  "checkpoint_sources": [
+    {
+      "run_id": "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01",
+      "row_id": "B0-s2026092701",
+      "checkpoint": "PROJECT\\runs\\20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01\\B0-s2026092701\\source\\final_ssdg.pth",
+      "selection": "fixed FINAL20",
+      "scope": "student and own parent EMA"
+    }
+  ],
+  "initialization": "strict own cleanF B0 FINAL20, then zero-output adapter when applicable",
+  "head": "unchanged default6x160 cosine scale30; all head parameters frozen in every row",
+  "features": "SIG_TIME_X3+CENTER_25K; NoExplicitCFO; original physical paths preserved",
+  "adapter": {
+    "enabled": true,
+    "rank": 16,
+    "kernel": 5,
+    "bias": false,
+    "activation": "GELU",
+    "positions": [
+      "t1_pre_norm",
+      "t2_pre_norm"
+    ],
+    "zero_B": true,
+    "zero_gate": false,
+    "init_seed": 2026092701,
+    "parameters": 4768
+  },
+  "original_F_trainable": false,
+  "default_head_trainable": false,
+  "first_view": "raw",
+  "As": true,
+  "loss": {
+    "clean_CE_weight": 0.5,
+    "satellite_CE_weight": 0.5,
+    "label_smoothing": 0.01,
+    "CE_temperature": 1.0,
+    "clean_KD_weight": 0.25,
+    "satellite_KD_weight": 0.25,
+    "clean_temperature": 4.0,
+    "satellite_temperature": 4.0,
+    "clean_teacher_scale": 1.0,
+    "clean_student_scale": 1.0,
+    "satellite_teacher_scale": 6.0,
+    "satellite_student_scale": 1.0,
+    "denominator": "all128 for each CE and masked KL",
+    "teacher_correct_mask": true,
+    "student_gate": false,
+    "temperature_compensation": true
+  },
+  "teachers": {
+    "clean": {
+      "run_id": "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01",
+      "row_id": "B0-s2026092701",
+      "epochs": 20,
+      "selection": "fixed FINAL20"
+    },
+    "satellite": {
+      "run_id": "20260930-phase1-native-baselines-practical-manysig-m5-r01",
+      "row_id": "csil-s2026092701",
+      "epochs": 200,
+      "updates": 9800,
+      "selection": "fixed last200"
+    },
+    "both_forwards_every_row": true,
+    "teacher_packets_per_L_step_each": 128,
+    "shadow_when_loss_zero": true,
+    "register_in_student": false,
+    "new_teacher_training_epochs": 0,
+    "class_order": [
+      "14-10",
+      "14-7",
+      "20-15",
+      "20-19",
+      "6-15",
+      "8-20"
+    ],
+    "logit_units": {
+      "common_cosine_scale": 30,
+      "clean_native_scale": 30,
+      "satellite_native_scale": 5,
+      "satellite_native_bias": 5,
+      "source_fitted_temperature": false
+    }
+  },
+  "optimizer": {
+    "name": "AdamW",
+    "reset": true,
+    "lr": 0.0002,
+    "lr_min": 1e-06,
+    "schedule": "newcosine10;notcontinuouscos30",
+    "weight_decay": 0.0001,
+    "clip": 5.0,
+    "Sinc": "frozen0updates"
+  },
+  "ownEMA": {
+    "parent": "own B0 parent ema_model strict original keys plus identical zero-output adapter keys",
+    "decay": 0.999,
+    "startup_average": false,
+    "local_update_start": 0,
+    "local_final_updates": 2220,
+    "cumulative_final_updates": 6660
+  },
+  "U": {
+    "recipe": "original hiddenTX batch_neighbor/strong/confidence/ownEMA;no new U hypothesis",
+    "TX_hidden": true,
+    "student_packets": 567000,
+    "EMA_packets": 567000,
+    "cache": "no crossbatch epoch bank inherited"
+  },
+  "sampler": {
+    "reset": true,
+    "rule": "same fixed role-specific Generator on DataLoader and RandomSampler in every new segment",
+    "actual_sequences_logged": true
+  },
+  "channel": {
+    "input": "rawL",
+    "full_practical": true,
+    "fresh_every_step": true,
+    "cumulative_epoch_range": [
+      21,
+      30
+    ],
+    "cumulative_step_range": [
+      4441,
+      6660
+    ],
+    "namespace": "FcrossRX/train/e{cumulative_epoch}/step{cumulative_step}/L_S",
+    "NoAs": "same channel/teacher shadow only; no student As CE"
+  },
+  "data": {
+    "L": 6300,
+    "U": 56700,
+    "V": 27000,
+    "source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "split": 392005,
+    "unchanged_contract": true
+  },
+  "new_student_NN": {
+    "L": 568320,
+    "U": 567000,
+    "ownEMA": 567000,
+    "clean_teacher": 284160,
+    "satellite_teacher": 284160
+  },
+  "source_promotion": {
+    "primary": "S3",
+    "midlow_S3_minus_S2_min_pp": 0.5,
+    "fullVclean_S3_minus_max_NOAS_FT_NOAS_ADAPTER_min_pp": -0.2,
+    "decision_before_formal_scores": true,
+    "automatic_extension": false
+  },
+  "test_views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "checkpoint_selection": "fixed FINAL30;no source best or target selection",
+  "target_access": false,
+  "head_fit_updates": 0,
+  "new_pseudo_mechanism": false,
+  "scientific_scope": "Two frozen view-specific teachers plus new shallow/mid temporal feature modules;not closed epochReplay/nontrue rescue",
+  "baseline_note": "NOAS_FT preserves original ordinary NoAs continuation;NOAS_ADAPTER matches raw+cleanKD adapter.NoAs cannot be weakened to manufacture gain;reportboth and parentB0.",
+  "budget_authorization": "User latest dual-teacher/adapter report;explicit E20+10 cumulativeE30,one seed;historicalTc20/Ts200 costs separate"
+}

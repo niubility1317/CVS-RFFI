@@ -35,3 +35,4 @@
 |纯 F E20：raw＋As 与机制匹配 NoAs|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-F-rawAs-e20-s2026092701-m2-r01/report.md)|
 |纯 F E20 同轮 As 重访：冻结源拟合诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-F-epochReplay-sourceFit-e20-s2026092701-m2-r01/report.md)|
 |纯 F E20：同轮首次 As 重访|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-F-epochReplay-e20-s2026092701-m1-r01/report.md)|
+|双教师与浅中层时序适配器：固定 E20＋10 预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r01/report.md)|
