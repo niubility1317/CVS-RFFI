@@ -1,6 +1,6 @@
 # 原 F 与 raw 补充特征共同学习：固定四行比较
 
-状态：IMPLEMENTING，训练及正式评分尚未启动。
+状态：LOCAL_VERIFIED，本地完整模型/负测/源flow及一次独立P0/P1审查PASS；尚未发布。
 
 唯一新假设：冻结原 F 时，新增特征难以进入适合严重受损 IQ 的联合表示；让原 F 与同一补充编码器共同学习，可能产生普通 FULL 适应没有的有效特征。该判断只来自既有源结果：固定原 F 的 RAW/PAIR 源 urban 为 58.5556%/58.6389%，实际训练 low urban 面板为 54.8986%/54.3919%；原 FULL 对应 69.6250%/66.0473%。原 W 已联合更新，所以这次改变的是整个原特征提取器的可训练集合，不是再次放开头。新方案不以正式分数选择参数。
 
@@ -37,9 +37,9 @@ RAW与PAIR分别判断：源V mid/low urban两draw均值相对普通FULL_As至�
 | ID | 要求 | 位置 | 状态 | 验证 |
 |---|---|---|---|---|
 | R01 | 新源依据及旧反证范围 | 本报告 | verified | 固定F源失败记录 |
-| R02 | 原F/2252特征/原W同一步联合 | model/optimizer | implemented | 合成真实模型与原生更新 |
-| R03 | 严格RAW/PAIR输入、零函数、hooks/joint160 | layers/checks | implemented | 实际输入/深拷贝/特征读出 |
-| R04 | 原Sinc物理更新与全局clip | optimizer/train | implemented | 逐步计数和物理LR |
+| R02 | 原F/2252特征/原W同一步联合 | model/optimizer | verified | 合成真实模型与原生更新 |
+| R03 | 严格RAW/PAIR输入、零函数、hooks/joint160 | layers/checks | verified | 实际输入/深拷贝/特征读出 |
+| R04 | 原Sinc物理更新与全局clip | optimizer/train | verified | 逐步计数和物理LR |
 | R05 | 合法B0父及数据角色 | model/data | implemented | 原strict loader/既有bank |
 | R06 | 用户L三项目标/NoAs/同曝光 | train/config | implemented | 全量日志与计数 |
 | R07 | 4新行E30/4旧匹配控制 | design/report | implemented | 成本和无重训重测 |
@@ -50,3 +50,7 @@ RAW与PAIR分别判断：源V mid/low urban两draw均值相对普通FULL_As至�
 | R12 | 不覆盖/不重启/不自动扫参或E50 | dispatch | implemented | immutable root/失败保留 |
 
 严格实现固定结构与训练集合；PAIR是raw成对平均输入控制，并非非线性time_fuse内m/d操作的精确替代。最高风险仍是新增表示只提高源拟合或引入跨RX捷径，任何梯度/散布不代替正式识别证据。已暴露benchmark上的n1探索，不能声称新的盲测或可重复clean正收益。
+
+本地34合成NN/7负测及0NN source flow PASS；实际原t1/t2/Sinc、原W和补充特征在同一步更新，物理CENTER_UNITS及clip计数通过，0真实CP/IQ/target。
+
+唯一一次独立P0/P1审查PASS，15文件/2个发布内嵌脚本/4行配置及参数MAC、0NN源flow核对通过；无新增模型/CP/IQ/target/remote，见review.json。代码/config commit 5bbd30bde89f6e00c8fc108d4ce76e8a2293ceb5 已本地提交；push/OID状态 VERIFIED，见git_delivery.json。命令 CVS-RFFI/python -u experiments/cvs_raw_coadapt30/runner.py，CWD=PROJECT/releases/cvs_F_rawCoAdapt_E30_20261019_r01，普通账号既有Torch2.1/FP32/TF32off/CPU2；首步真实B0 checkpoint6NN无query smoke通过即继续复用bank并启动四行。逐行路径、资源、停止条件和产物见experiment.json。REJECTED_EXTRA_GATE：不把暂不可达的远端Git OID追加为实验发布门槛；交付仍继续推送/独立核实。

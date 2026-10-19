@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "scope": "one independent P0/P1 review of this new four-row candidate",
+  "findings": [],
+  "checks": [
+    "original-feature/CENTER_UNITS joint trainables and raw cache/hooks",
+    "PAIR supplemental-only input",
+    "native hooks retained",
+    "original-feature/Sinc/defaultW and actual checkpoint loader",
+    "per-style source FULL/ownNoAs rule and truth-last order",
+    "four fixed configs",
+    "independent parameter/MAC arithmetic",
+    "0NN source flow PASS",
+    "15 modules and2 publisher scripts syntax PASS"
+  ],
+  "full_model_forwards": 0,
+  "real_checkpoint_loads": 0,
+  "real_IQ": 0,
+  "target_access": false,
+  "remote_actions": false,
+  "reviewer_edits": false
+}
