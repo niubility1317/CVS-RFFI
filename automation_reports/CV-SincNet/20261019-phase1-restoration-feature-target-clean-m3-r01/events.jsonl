@@ -1,0 +1,4 @@
+{"at": "2026-10-19T14:08:34+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T14:14:28+00:00", "status": "RUNNING", "note": "VERIFIED actual3F/newcheckpoint smoke,PID/CWD/cmd/GPU/loggrowth;fulltargetcleanprediction inprogress,no scoreyet", "evidence": ["report.md", "experiment.json"], "row_id": "waveform_control"}
+{"at": "2026-10-19T14:14:28+00:00", "status": "RUNNING", "note": "VERIFIED actual3F/newcheckpoint smoke,PID/CWD/cmd/GPU/loggrowth;fulltargetcleanprediction inprogress,no scoreyet", "evidence": ["report.md", "experiment.json"], "row_id": "frozenF_feature"}
+{"at": "2026-10-19T14:14:28+00:00", "status": "RUNNING", "note": "Both frozenarms active,all3Freadouts;onlyclean target,no training/headupdates", "evidence": ["report.md", "experiment.json"], "row_id": null}
