@@ -1,0 +1,506 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-FcrossRX-RXmargin-e50-clean-local-m1-r01",
+  "group_id": "F-crossRX-source-RXmatched-margin",
+  "display_name": "原F跨RX50：跨RX难正对与同RX近异类的特征间隔",
+  "description": "One new source-driven margin candidate on original F+CROSS_RX50, joint160 only. Fixed native recipe/noSat/clean. Reuse three prior-fixed matching BASE sources and target predictions; no baseline retraining.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "F crossRX RX matched angular margin"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "RX_matched_margin",
+    "source_driven",
+    "weak_TX",
+    "clean_only",
+    "default_head_joint",
+    "baseline_reuse"
+  ],
+  "comparison_group_id": "F-CROSSRX50-weakTX-local",
+  "parent_run_ids": [
+    "20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01",
+    "20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active user worse-transmitter feature-learning goal; local, no satellite augmentation/test, default head joint. Source feature geometry motivates a generic all-class margin, no target class-specific rule.",
+  "code": {
+    "commit": "Git release HEAD",
+    "checkout": "codex/phase1-rdrop-combinations-20261015",
+    "environment": "Verified native Windows base Python3.10/PyTorch2.10+cu128; direct base interpreter; FP32/noTF32",
+    "cwd": "IMMUTABLE_LOCAL_RELEASE/cvs_F_RXmargin50_local_20261019_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing source contract",
+    "representation": "Original native received residual/post_sync/noeq, center crop/RMS normalized256 IQ; SAME validated mmap cache; native eq_i/sig_i/base_index restored by opaque physicalID join",
+    "contract_ref": "LOCAL_DATASET/source/source_contract.json",
+    "physical_ids_ref": "LOCAL_DATASET/source/source_contract.json#role_ids",
+    "label_map_ref": "LOCAL_DATASET/source_cache/manifest.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      "2021_03_01",
+      "2021_03_08",
+      "2021_03_15",
+      "2021_03_23"
+    ],
+    "tx_sets_ref": "LOCAL_DATASET/source_cache/manifest.json",
+    "roles": {
+      "L_s": "6300 original visible source labels, randomL128 drop_last; ordinary augmentation; original native two RDrop forwards",
+      "U_s": "56700 TX hidden; original U256 and batch_neighbor/ownEMA recipe during17U epochs; no new U feature objective",
+      "V": "27000 no-update health and source-only fixed expansion; prior3model sourceV risk calibrates uniform class-weight formula"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": "existing VALIDATED_ONCE Phase1 capsule manifest; reuse unchanged",
+    "split_id": "original registered source/target physical split; reuse unchanged",
+    "validation_ref": "LOCAL_DATASET/source_cache/manifest.json; existing capsule/manifest.json VALIDATED_ONCE",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_training_then_frozen_target_test",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Frozen default-head ManySig clean target168000 accuracy/MacroF1/perTX/RX/day; exposed benchmark; no independent blind/Phase2/satellite claim"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "Existing source READY/EXACT_MATCH manifest reused; original role cache and native temporal metadata, current same-run initialization/source_frozen/native checkpoint args",
+    "provenance_verdict": "New candidate/ownEMA starts from scratch, no inherited state. Existing BASE final50 checkpoint used only in discarded no-query verification. Matching BASE training/predictions reused for comparison, never loaded into candidate initialization.",
+    "selection_rule": "fixed_final50; no V/test checkpoint selection",
+    "reference_run": "20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01",
+    "reference_code_commit": "31467086c3ced30237f3ac86e91eae68645425d7",
+    "reference_rows": [
+      "BASE-s2026092701",
+      "BASE-s2026092702",
+      "BASE-s2026092703"
+    ]
+  },
+  "execution": {
+    "host": "local Windows RTX5070Ti",
+    "launch_owner": "codex/root/FcrossRX50-RXmargin-local-20261019",
+    "gpu_policy": "Physical GPU0 max3 total source/predict workers across owners, freeRAM>=4.5GiB; CPU score max1 across this/current original50 run via CIM; preserve all healthy tasks",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "LOCAL_RUN/20261019-phase1-FcrossRX-RXmargin-e50-clean-local-m1-r01",
+    "launch_command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_rxmargin50.driver --profile LOCAL_PROFILE --metadata LOCAL_SOURCE_NATIVE_GATE_METADATA_R02 --base LOCAL_RUN/20261019-phase1-FcrossRX-RXmargin-e50-clean-local-m1-r01 --reference-base LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --commit RELEASE_COMMIT --max-workers 3",
+    "stop_rule": "Role/provenance/config/output conflicts, nonfinite loss/gradient, incomplete native budget/EMA/Sinc/feature scope or failed worker stop new dispatch; preserve outputs and other healthy workers; no automatic or performance-based retries"
+  },
+  "expected_artifacts": [
+    "execution.json",
+    "registered_rows.json",
+    "source_expansion.json",
+    "frozen_matrix.json",
+    "*-start.json",
+    "source/initial_smoke.pt",
+    "source/initialization.json",
+    "source/actual_native_args.json",
+    "source/source_contract.json",
+    "source/epoch_metrics.csv",
+    "source/epoch_metrics.jsonl",
+    "source/step_metrics.jsonl.gz",
+    "source/sinc_optimizer_observation.json",
+    "source/supcon_training_observation.json",
+    "source/source_training_mechanism.json",
+    "source/final_ssdg.pth",
+    "source/source_frozen.json",
+    "source/local_source_complete.json",
+    "prediction/predictions.npz",
+    "prediction/complete.json",
+    "scores/metrics.json",
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean target accuracy",
+      "MacroF1",
+      "source-fixed weak2 meanrecall",
+      "perTX recall",
+      "worst RX/day",
+      "paired seed differences and sampleSD/positive counts",
+      "full native U exposure/acceptance",
+      "source/predict cost and CUDA memory"
+    ],
+    "dimensions": [
+      "actual1 or3 candidate model seeds",
+      "6TX",
+      "7 targetRX",
+      "4 targetdays",
+      "clean168000/model"
+    ],
+    "prediction_ref": "Frozen same-row final50 default head; reused matching BASE predictions from parent run",
+    "scorer_ref": "Independent CPU truth-last only after row clean predictions fixed"
+  },
+  "rows": [
+    {
+      "row_id": "RX_MARGIN-s2026092701",
+      "method": "Original F+CROSS_RX50 plus RX-matched joint160 angular margin",
+      "purpose": "Initial source-driven fixed falsification with reused matching BASE",
+      "config_ref": "experiments/cvs_f_rxmargin50/design.py#config",
+      "resolved_config_ref": "LOCAL_RUN/20261019-phase1-FcrossRX-RXmargin-e50-clean-local-m1-r01/RX_MARGIN-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "original_source_roles": "unchanged7/63/30",
+        "U_TX_hidden": true,
+        "oldgate_ownEMA": true,
+        "ordinary_aug": true,
+        "satellite_training": false,
+        "test_views": [
+          "clean"
+        ],
+        "source_risk_weighting": false,
+        "joint160_geometry": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Original native model/augmentation and random L/U sampler; fixed original source partition392005; clean evaluation deterministic, no new channel randomness",
+      "k": null,
+      "scenario": "clean only",
+      "optimizer": {
+        "mode": "CENTER_UNITS",
+        "sample_rate_Hz": 25000000,
+        "center_scale_Hz": 25000,
+        "lr": "alpha Fs/s",
+        "epsilon": "epsilon s/Fs",
+        "weight_decay": "q -= alpha lambda (q+p0/s); AdamW q decay0",
+        "gradient_clipping": "physical Hz globalclip5",
+        "native_cosine_schedule": "Original alpha cosine; one fixed mapping immediately before each actual step",
+        "extra_parameters": 0,
+        "extra_model_forwards_vs_RDrop": 0,
+        "extra_optimizer_steps": 0,
+        "diagnostic_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "source_feature_objective": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "descriptor": "channel time mean/population std, current L-batch detached standardization floor1e-4, sampleL2 eps1e-4",
+          "positive": "sameTX differentRX",
+          "negative": "otherTX only; sameTX sameRX excluded in CROSS_RX denominator",
+          "two_forward_policy": "Mean of first/second losses, each mean of shallow/middle; reuse original actual augmented L IQ and RDrop forwards",
+          "invalid_anchor": "Exclude anchors without positive or otherTX negative; finite zero if none; sampler unchanged",
+          "U": "Original oldgate/ownEMA/cos untouched; no U TX labels or added U feature loss",
+          "extra_model_forwards": 0,
+          "extra_trainable_parameters": 0,
+          "default_head_direct_aux_gradient": false,
+          "additional_joint160": {
+            "margin": 0.05,
+            "positive_softmin_temperature": 0.05,
+            "max_weight": 0.1,
+            "positive": "sameTX differentRX",
+            "negative": "hardest differentTX sameRX",
+            "reduction": "mean per class, then classes; hinge satisfied ->0",
+            "two_existing_RDrop_forwards": true
+          }
+        }
+      },
+      "lr": 0.0002,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50=33L+17U,222 updates/epoch,11100 optimizer/EMA/physicalclip steps; original U stage963900 packets; actual cache reads measured; no extra model forward for new features",
+      "output_root": "LOCAL_RUN/20261019-phase1-FcrossRX-RXmargin-e50-clean-local-m1-r01/RX_MARGIN-s2026092701",
+      "log_path": "LOCAL_RUN/20261019-phase1-FcrossRX-RXmargin-e50-clean-local-m1-r01/RX_MARGIN-s2026092701-source.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_rxmargin50.driver --profile LOCAL_PROFILE --metadata LOCAL_SOURCE_NATIVE_GATE_METADATA_R02 --base LOCAL_RUN/20261019-phase1-FcrossRX-RXmargin-e50-clean-local-m1-r01 --reference-base LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --commit RELEASE_COMMIT --max-workers 3",
+      "expected_artifacts": [
+        "execution.json",
+        "registered_rows.json",
+        "source_expansion.json",
+        "frozen_matrix.json",
+        "*-start.json",
+        "source/initial_smoke.pt",
+        "source/initialization.json",
+        "source/actual_native_args.json",
+        "source/source_contract.json",
+        "source/epoch_metrics.csv",
+        "source/epoch_metrics.jsonl",
+        "source/step_metrics.jsonl.gz",
+        "source/sinc_optimizer_observation.json",
+        "source/supcon_training_observation.json",
+        "source/source_training_mechanism.json",
+        "source/final_ssdg.pth",
+        "source/source_frozen.json",
+        "source/local_source_complete.json",
+        "prediction/predictions.npz",
+        "prediction/complete.json",
+        "scores/metrics.json",
+        "result.json"
+      ],
+      "arm": "RX_MARGIN",
+      "model_seed": 2026092701
+    }
+  ],
+  "notes": [
+    "Original50=33L+17U,11100 updates, original F+CROSS_RX shallow/middle objectives, oldgate/ownEMA/cos,RDrop1,ordinaryAug,LS.01,physical Sinc units/clipping/origin decay unchanged. No satellite augmentation; only clean168000 test; default head jointly trained, no separate head fitting.",
+    "Source-only full3 model geometry showed relative RX drift and small outRX low-tail interclass gap; all-class symmetric margin mechanism is fixed before new candidate target access. Prior benchmark outcomes already exposed: exploratory, not new blind confirmation.",
+    "For each actual L joint160 anchor: positives sameTX/differentRX, hard negative highest cosine among differentTX/sameRX. Softmin of positive cosines uses temp.05 with count normalization. Class-balanced mean relu(.05+hardnegative-softpositive). Satisfied margins get zero gradient. Maxlambda.1, warm5/ramp10 exactly original schedule. No class weights, V prototypes, fitted projection, extra head, extra model forwards or deploy parameters.",
+    "Initial only seed2026092701 candidate scratch50. Reuse already completed exact matching local BASE seeds; no duplicated control training/prediction/scoring. Before new target access freeze source promotion: source-fixed weak2 (14-7,20-19) meanrecall>=+.2pp,overall>=-.2pp,worstRX>=-.5pp,anyTX>=-1pp vs same-seed BASE. On PASS expand candidate unchanged seeds2026092702/03; otherwise retain n1.",
+    "Firstseed is a fixed falsification row and always gets clean test after freeze, even source failure; conditional extra rows only follow source rule. Predictions fixed per row before independent CPU truth-last score. No target tuning/reordering/selection/retry; all negatives retained.",
+    "Existing healthy original8 row run continues unchanged. New dispatcher prioritizes frozen row clean prediction before filling GPU slots with seed extensions. CPU scorer observes other score processes.",
+    "Checks include independent finite/nonempty NumPy angle oracle, satisfied-margin zero gradient, class permutation,7protocol negatives, actual F/RDrop capture/gradient/export/EMA boundary, real final50 noquery smoke. Failed test-only RX grouping and reference path were fixed before release; no real training used those checks.",
+    "Exclusive Minimal workflow only; one independent P0/P1 review, no extra approvals/seals/hash chains. Native local release/compile/postlaunch evidence; no N607 actions."
+  ],
+  "conditional_rows": [
+    {
+      "row_id": "RX_MARGIN-s2026092702",
+      "method": "Original F+CROSS_RX50 plus RX-matched joint160 angular margin",
+      "purpose": "Initial source-driven fixed falsification with reused matching BASE",
+      "config_ref": "experiments/cvs_f_rxmargin50/design.py#config",
+      "resolved_config_ref": "LOCAL_RUN/20261019-phase1-FcrossRX-RXmargin-e50-clean-local-m1-r01/RX_MARGIN-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "original_source_roles": "unchanged7/63/30",
+        "U_TX_hidden": true,
+        "oldgate_ownEMA": true,
+        "ordinary_aug": true,
+        "satellite_training": false,
+        "test_views": [
+          "clean"
+        ],
+        "source_risk_weighting": false,
+        "joint160_geometry": true
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Original native model/augmentation and random L/U sampler; fixed original source partition392005; clean evaluation deterministic, no new channel randomness",
+      "k": null,
+      "scenario": "clean only",
+      "optimizer": {
+        "mode": "CENTER_UNITS",
+        "sample_rate_Hz": 25000000,
+        "center_scale_Hz": 25000,
+        "lr": "alpha Fs/s",
+        "epsilon": "epsilon s/Fs",
+        "weight_decay": "q -= alpha lambda (q+p0/s); AdamW q decay0",
+        "gradient_clipping": "physical Hz globalclip5",
+        "native_cosine_schedule": "Original alpha cosine; one fixed mapping immediately before each actual step",
+        "extra_parameters": 0,
+        "extra_model_forwards_vs_RDrop": 0,
+        "extra_optimizer_steps": 0,
+        "diagnostic_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "source_feature_objective": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "descriptor": "channel time mean/population std, current L-batch detached standardization floor1e-4, sampleL2 eps1e-4",
+          "positive": "sameTX differentRX",
+          "negative": "otherTX only; sameTX sameRX excluded in CROSS_RX denominator",
+          "two_forward_policy": "Mean of first/second losses, each mean of shallow/middle; reuse original actual augmented L IQ and RDrop forwards",
+          "invalid_anchor": "Exclude anchors without positive or otherTX negative; finite zero if none; sampler unchanged",
+          "U": "Original oldgate/ownEMA/cos untouched; no U TX labels or added U feature loss",
+          "extra_model_forwards": 0,
+          "extra_trainable_parameters": 0,
+          "default_head_direct_aux_gradient": false,
+          "additional_joint160": {
+            "margin": 0.05,
+            "positive_softmin_temperature": 0.05,
+            "max_weight": 0.1,
+            "positive": "sameTX differentRX",
+            "negative": "hardest differentTX sameRX",
+            "reduction": "mean per class, then classes; hinge satisfied ->0",
+            "two_existing_RDrop_forwards": true
+          }
+        }
+      },
+      "lr": 0.0002,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50=33L+17U,222 updates/epoch,11100 optimizer/EMA/physicalclip steps; original U stage963900 packets; actual cache reads measured; no extra model forward for new features",
+      "output_root": "LOCAL_RUN/20261019-phase1-FcrossRX-RXmargin-e50-clean-local-m1-r01/RX_MARGIN-s2026092702",
+      "log_path": "LOCAL_RUN/20261019-phase1-FcrossRX-RXmargin-e50-clean-local-m1-r01/RX_MARGIN-s2026092702-source.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_rxmargin50.driver --profile LOCAL_PROFILE --metadata LOCAL_SOURCE_NATIVE_GATE_METADATA_R02 --base LOCAL_RUN/20261019-phase1-FcrossRX-RXmargin-e50-clean-local-m1-r01 --reference-base LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --commit RELEASE_COMMIT --max-workers 3",
+      "expected_artifacts": [
+        "execution.json",
+        "registered_rows.json",
+        "source_expansion.json",
+        "frozen_matrix.json",
+        "*-start.json",
+        "source/initial_smoke.pt",
+        "source/initialization.json",
+        "source/actual_native_args.json",
+        "source/source_contract.json",
+        "source/epoch_metrics.csv",
+        "source/epoch_metrics.jsonl",
+        "source/step_metrics.jsonl.gz",
+        "source/sinc_optimizer_observation.json",
+        "source/supcon_training_observation.json",
+        "source/source_training_mechanism.json",
+        "source/final_ssdg.pth",
+        "source/source_frozen.json",
+        "source/local_source_complete.json",
+        "prediction/predictions.npz",
+        "prediction/complete.json",
+        "scores/metrics.json",
+        "result.json"
+      ],
+      "arm": "RX_MARGIN",
+      "model_seed": 2026092702,
+      "condition": "Only if initial seed meets fixed source promotion before target"
+    },
+    {
+      "row_id": "RX_MARGIN-s2026092703",
+      "method": "Original F+CROSS_RX50 plus RX-matched joint160 angular margin",
+      "purpose": "Initial source-driven fixed falsification with reused matching BASE",
+      "config_ref": "experiments/cvs_f_rxmargin50/design.py#config",
+      "resolved_config_ref": "LOCAL_RUN/20261019-phase1-FcrossRX-RXmargin-e50-clean-local-m1-r01/RX_MARGIN-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "original_source_roles": "unchanged7/63/30",
+        "U_TX_hidden": true,
+        "oldgate_ownEMA": true,
+        "ordinary_aug": true,
+        "satellite_training": false,
+        "test_views": [
+          "clean"
+        ],
+        "source_risk_weighting": false,
+        "joint160_geometry": true
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026092703,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Original native model/augmentation and random L/U sampler; fixed original source partition392005; clean evaluation deterministic, no new channel randomness",
+      "k": null,
+      "scenario": "clean only",
+      "optimizer": {
+        "mode": "CENTER_UNITS",
+        "sample_rate_Hz": 25000000,
+        "center_scale_Hz": 25000,
+        "lr": "alpha Fs/s",
+        "epsilon": "epsilon s/Fs",
+        "weight_decay": "q -= alpha lambda (q+p0/s); AdamW q decay0",
+        "gradient_clipping": "physical Hz globalclip5",
+        "native_cosine_schedule": "Original alpha cosine; one fixed mapping immediately before each actual step",
+        "extra_parameters": 0,
+        "extra_model_forwards_vs_RDrop": 0,
+        "extra_optimizer_steps": 0,
+        "diagnostic_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "source_feature_objective": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "descriptor": "channel time mean/population std, current L-batch detached standardization floor1e-4, sampleL2 eps1e-4",
+          "positive": "sameTX differentRX",
+          "negative": "otherTX only; sameTX sameRX excluded in CROSS_RX denominator",
+          "two_forward_policy": "Mean of first/second losses, each mean of shallow/middle; reuse original actual augmented L IQ and RDrop forwards",
+          "invalid_anchor": "Exclude anchors without positive or otherTX negative; finite zero if none; sampler unchanged",
+          "U": "Original oldgate/ownEMA/cos untouched; no U TX labels or added U feature loss",
+          "extra_model_forwards": 0,
+          "extra_trainable_parameters": 0,
+          "default_head_direct_aux_gradient": false,
+          "additional_joint160": {
+            "margin": 0.05,
+            "positive_softmin_temperature": 0.05,
+            "max_weight": 0.1,
+            "positive": "sameTX differentRX",
+            "negative": "hardest differentTX sameRX",
+            "reduction": "mean per class, then classes; hinge satisfied ->0",
+            "two_existing_RDrop_forwards": true
+          }
+        }
+      },
+      "lr": 0.0002,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50=33L+17U,222 updates/epoch,11100 optimizer/EMA/physicalclip steps; original U stage963900 packets; actual cache reads measured; no extra model forward for new features",
+      "output_root": "LOCAL_RUN/20261019-phase1-FcrossRX-RXmargin-e50-clean-local-m1-r01/RX_MARGIN-s2026092703",
+      "log_path": "LOCAL_RUN/20261019-phase1-FcrossRX-RXmargin-e50-clean-local-m1-r01/RX_MARGIN-s2026092703-source.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_rxmargin50.driver --profile LOCAL_PROFILE --metadata LOCAL_SOURCE_NATIVE_GATE_METADATA_R02 --base LOCAL_RUN/20261019-phase1-FcrossRX-RXmargin-e50-clean-local-m1-r01 --reference-base LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --commit RELEASE_COMMIT --max-workers 3",
+      "expected_artifacts": [
+        "execution.json",
+        "registered_rows.json",
+        "source_expansion.json",
+        "frozen_matrix.json",
+        "*-start.json",
+        "source/initial_smoke.pt",
+        "source/initialization.json",
+        "source/actual_native_args.json",
+        "source/source_contract.json",
+        "source/epoch_metrics.csv",
+        "source/epoch_metrics.jsonl",
+        "source/step_metrics.jsonl.gz",
+        "source/sinc_optimizer_observation.json",
+        "source/supcon_training_observation.json",
+        "source/source_training_mechanism.json",
+        "source/final_ssdg.pth",
+        "source/source_frozen.json",
+        "source/local_source_complete.json",
+        "prediction/predictions.npz",
+        "prediction/complete.json",
+        "scores/metrics.json",
+        "result.json"
+      ],
+      "arm": "RX_MARGIN",
+      "model_seed": 2026092703,
+      "condition": "Only if initial seed meets fixed source promotion before target"
+    }
+  ],
+  "registered_at": "2026-10-19T14:51:23+00:00"
+}
