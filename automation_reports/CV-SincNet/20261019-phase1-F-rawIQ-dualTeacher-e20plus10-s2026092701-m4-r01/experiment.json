@@ -116,23 +116,27 @@
       "dispatch"
     ],
     "stop_rule": "Only registered run-owned systemic technical failure:roles/provenance/nonfinite/frozenW/F/view/teacher/U truth/budget/output inconsistency.Preserve artifacts,no automatic restart,no healthy-task stop.",
-    "launch_readback_ref": "local_artifacts/F_rawIQ_dualTeacher_E30_20261019/progress010.json",
+    "launch_readback_ref": "local_artifacts/F_rawIQ_dualTeacher_E30_20261019/progress020.json",
     "release_commit": "6ea2f71f6654f4ceeadd460905a9d719b5dc1b89",
     "actual_dispatcher_pid": 2318162,
-    "actual_running_rows": [
-      {
-        "row_id": "S3-s2026092701",
-        "gpu": 6,
-        "pid": 2333275
-      }
-    ],
+    "actual_running_rows": [],
     "actual_queued_rows": [],
-    "postlaunch_status": "VERIFIED first3FINAL30+all7prediction;S3PID2333275GPU6realCPsmoke/firstepoch/loggrowth;no source decision or scores yet",
+    "postlaunch_status": "VERIFIED all4 FINAL30/sourcequalification/all7predictions/independenttruthlast;dispatcher andworkers terminalnormally;sourceFAILfixedbeforefirstnewscore;ANALYZED",
     "actual_prediction_complete_rows": [
       "NOAS_ADAPTER-s2026092701",
       "S1-s2026092701",
-      "S2-s2026092701"
-    ]
+      "S2-s2026092701",
+      "S3-s2026092701"
+    ],
+    "actual_scored_rows": [
+      "NOAS_ADAPTER-s2026092701",
+      "S1-s2026092701",
+      "S2-s2026092701",
+      "S3-s2026092701"
+    ],
+    "status": "ANALYZED",
+    "analysis_ref": "final_analysis.md",
+    "full_training_log_analysis_ref": "full_training_log_analysis.md"
   },
   "expected_artifacts": [
     "source/final_ssdg.pth with phase1_lineage",
@@ -231,7 +235,8 @@
         "scoring/scores.json plus truth-last complete",
         "report.json",
         "complete.json"
-      ]
+      ],
+      "result_status": "ANALYZED"
     },
     {
       "row_id": "S1-s2026092701",
@@ -288,7 +293,8 @@
         "scoring/scores.json plus truth-last complete",
         "report.json",
         "complete.json"
-      ]
+      ],
+      "result_status": "ANALYZED"
     },
     {
       "row_id": "S2-s2026092701",
@@ -345,7 +351,8 @@
         "scoring/scores.json plus truth-last complete",
         "report.json",
         "complete.json"
-      ]
+      ],
+      "result_status": "ANALYZED"
     },
     {
       "row_id": "S3-s2026092701",
@@ -402,7 +409,8 @@
         "scoring/scores.json plus truth-last complete",
         "report.json",
         "complete.json"
-      ]
+      ],
+      "result_status": "ANALYZED"
     }
   ],
   "notes": [
@@ -416,5 +424,31 @@
     "FirstrealCPnoquerysmoke continues immediately;one independentP0/P1 review;onecodeconfigcommit/immutablearchive/SHAtransfer/remotecompile/preflight/postlaunch.Inheritedteacherlegacycostseparate.Newdatahash/seal/designapproval notneeded.",
     "Uniformparent/headtrainingrulesfixoriginalF/defaulthead whiletrainnewrawfeatures peruseradf.0newclassifier/probehead. NoexplicitCFO retained;newpathcurrentreceivedIQonly,scene/RX/truthnotdeploymentinputs."
   ],
-  "registered_at": "2026-10-19T10:12:49+00:00"
+  "registered_at": "2026-10-19T10:12:49+00:00",
+  "result_summary": {
+    "status": "ANALYZED",
+    "scientific_decision": "CLOSE_FIXED_RAW_IQ16_GN8_DUALTEACHER_RECIPE; no coefficient/temperature/seed rescue",
+    "source_qualified": false,
+    "model_seed_count": 1,
+    "crossseed_confirmed": false,
+    "goal_complete": false,
+    "source_criteria": {
+      "midlow_S3_minus_S2": false,
+      "midlow_S3_minus_old_local_S3": true,
+      "fullVclean_S3_minus_max_all_matched_NoAs": false
+    },
+    "source_correct_count_differences": {
+      "midlow_S3_minus_S2": 29,
+      "midlow_S3_minus_old_local_S3": 72,
+      "fullVclean_vs_best_NoAs": -236
+    },
+    "clean_accuracy_percent": 83.67797619047619,
+    "low_urban_accuracy_percent": 42.70059523809524,
+    "formal_prediction_count_per_view": 168000,
+    "formal_view_count": 7,
+    "automatic_extension": false,
+    "report_ref": "final_analysis.md",
+    "private_evidence_root": "local_artifacts/F_rawIQ_dualTeacher_E30_20261019/retrieved",
+    "full_log_status": "FULL_FOUR_ROW_CONSISTENT_STRUCTURED_LOGS"
+  }
 }

@@ -29,3 +29,8 @@ N607普通账户，GPU4/6/7候选，每GPU最多一个本runworker，所有owner
 实际代码/config commit：`28d14761575b080077fde038cc96baedd4d982cc`。归档身份由release_commit.txt保留，可能包含后续纯登记元数据提交，实际训练代码保持。
 
 实际状态已转RUNNING；三个worker首轮健康完成，S3排队。详见[live_status.md](live_status.md)。当前无本轮最终性能结论，不以训练日志替代完整七视图独立评分。
+
+
+## 本轮完成状态
+
+四组均为 ANALYZED：全量 10 轮、2220 次追加更新和全部七视图独立评分完成。源域规则先固定 FAIL；本次固定 rawIQ16/GN8 双教师配方关闭，目标尚未达成。详见 [最终结果](final_analysis.md) 与 [完整训练日志](full_training_log_analysis.md)。旧 RUNNING 段落为当时记录，当前状态以本节及 experiment.json 为准。

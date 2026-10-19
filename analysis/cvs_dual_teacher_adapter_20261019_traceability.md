@@ -47,4 +47,6 @@
 - 已实现当前received2×256→两级16通道卷积GN/GELU→两个零B投影，在t1/t2原GN前注入；4256参数/8新键/卷积MAC356352，原206状态与defaultcos30头保留。无跨forwardclean缓存、oracle部署输入、新头或旧localadapter叠加。
 - 实际F合成验证零输出joint/logits逐值相同，原状态保持，两个B有梯度；本地aggregate68负例与源决定/元数据10负例通过，0真实CP/IQ/remote。真实CPsmoke为launch首步，PASS继续。
 - 训练raw/As正确数取已有logits，标注stochastic读出；全4固定FINAL30自动7view预测，源3条件固定后独立truthlast。标准LoRA/featurekeep暂不混入。
-- 当前状态：RUNNING，真实父CP smoke PASS后三个worker首轮健康完成，S3排队；运行commit6ea2f71f6，尚未获得本轮最终性能。最小预登记：[report.md](../automation_reports/CV-SincNet/20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01/report.md)。
+- 当前状态：ANALYZED；四组均完成10轮/2220步及七视图独立truth-last。源规则先固定FAIL（S3-S2 +0.402778pp；相对旧localS3 +1pp；clean相对最佳NoAs -0.874074pp），固定rawIQ16/GN8双教师配方关闭。S3正式clean83.677976%、lowurban42.700595%，1seed不代表可重复收益；目标仍未完成。全部F206/defaulthead保持，新增8状态已更新；完整训练日志无计数矛盾。运行commit6ea2f71f6。最小预登记：[report.md](../automation_reports/CV-SincNet/20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01/report.md)。
+
+- rawIQ 本轮完整结果：[final_analysis.md](../automation_reports/CV-SincNet/20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01/final_analysis.md)。不因正式分数重排候选、延长、换seed或修改KD系数；后续仅依据合法源证据判断机制。
