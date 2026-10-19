@@ -395,3 +395,5 @@
 本轮记录：[同伪身份同RX与跨RX统计混合](by_method/style_generalization.md)。
 
 本轮记录：[训练前固定双行目标比较](by_method/fixed_target_comparison.md)。
+
+本轮记录：[窄窗与全窗注意力恢复](by_method/temporal_context.md)。
