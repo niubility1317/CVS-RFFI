@@ -1,7 +1,7 @@
 {
   "status": "VERIFIED",
   "run_id": "20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r02",
-  "stage": "SHARED_OBSERVATION_PREPARATION",
+  "stage": "SIX_ROW_TRAINING",
   "release_commit": "d53c53982d3bd98dc817a41b90f4adab0556b099",
   "code_commit": "38316bc17e13db7acc0032dcda030afbcf414abf",
   "archive_transfer": "VERIFIED",
@@ -16,18 +16,126 @@
     "status": "VERIFIED",
     "PID": 2239157,
     "CWD_argv_matches": true,
-    "log_growth": 266,
-    "time": 1792399575.4831245
+    "log_growth": 165,
+    "time": 1792399876.997444
   },
   "bank_progress": {
     "status": "GENERATING",
-    "steps": 902,
+    "steps": 2220,
     "total": 2220,
-    "physical_observations": 115456,
-    "seconds": 214.3941446871031
+    "physical_observations": 284160,
+    "seconds": 517.3223120861221
   },
-  "postlaunch": null,
-  "rows": [],
+  "postlaunch": {
+    "status": "VERIFIED",
+    "time": 1792399980.8019001,
+    "rows": [
+      {
+        "row": "FULL_NoAs-s2026092701",
+        "status": "VERIFIED",
+        "PID": 2247305,
+        "GPU": 0,
+        "all_owner_count": 1,
+        "log_growth": 184,
+        "step_growth": 392387,
+        "cwd_argv_cuda_matches": true
+      },
+      {
+        "row": "FULL_As-s2026092701",
+        "status": "VERIFIED",
+        "PID": 2247389,
+        "GPU": 1,
+        "all_owner_count": 1,
+        "log_growth": 184,
+        "step_growth": 388018,
+        "cwd_argv_cuda_matches": true
+      },
+      {
+        "row": "LORA_NoAs-s2026092701",
+        "status": "VERIFIED",
+        "PID": 2247470,
+        "GPU": 4,
+        "all_owner_count": 2,
+        "log_growth": 188,
+        "step_growth": 122891,
+        "cwd_argv_cuda_matches": true
+      },
+      {
+        "row": "LORA_As-s2026092701",
+        "status": "VERIFIED",
+        "PID": 2247553,
+        "GPU": 5,
+        "all_owner_count": 1,
+        "log_growth": 181,
+        "step_growth": 123595,
+        "cwd_argv_cuda_matches": true
+      },
+      {
+        "row": "TEMP_NoAs-s2026092701",
+        "status": "VERIFIED",
+        "PID": 2247635,
+        "GPU": 6,
+        "all_owner_count": 2,
+        "log_growth": 186,
+        "step_growth": 100531,
+        "cwd_argv_cuda_matches": true
+      },
+      {
+        "row": "TEMP_As-s2026092701",
+        "status": "VERIFIED",
+        "PID": 2247718,
+        "GPU": 7,
+        "all_owner_count": 2,
+        "log_growth": 185,
+        "step_growth": 100886,
+        "cwd_argv_cuda_matches": true
+      }
+    ]
+  },
+  "rows": [
+    {
+      "row": "FULL_NoAs-s2026092701",
+      "PID": 2247305,
+      "GPU": 0,
+      "parameters": 900722,
+      "trainable_parameters": 231233
+    },
+    {
+      "row": "FULL_As-s2026092701",
+      "PID": 2247389,
+      "GPU": 1,
+      "parameters": 900722,
+      "trainable_parameters": 231233
+    },
+    {
+      "row": "LORA_NoAs-s2026092701",
+      "PID": 2247470,
+      "GPU": 4,
+      "parameters": 903026,
+      "trainable_parameters": 2304
+    },
+    {
+      "row": "LORA_As-s2026092701",
+      "PID": 2247553,
+      "GPU": 5,
+      "parameters": 903026,
+      "trainable_parameters": 2304
+    },
+    {
+      "row": "TEMP_NoAs-s2026092701",
+      "PID": 2247635,
+      "GPU": 6,
+      "parameters": 903106,
+      "trainable_parameters": 2384
+    },
+    {
+      "row": "TEMP_As-s2026092701",
+      "PID": 2247718,
+      "GPU": 7,
+      "parameters": 903106,
+      "trainable_parameters": 2384
+    }
+  ],
   "training_complete": false,
   "formal_scores_read": false
 }

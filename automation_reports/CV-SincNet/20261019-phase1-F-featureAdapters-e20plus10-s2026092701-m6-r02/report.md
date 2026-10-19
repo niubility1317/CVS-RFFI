@@ -67,3 +67,5 @@ LORA 在 t1/t2 pointwise 层加入 r=8、alpha=8 的线性 BA 增量，B零、A�
 本恢复实际代码/配置 commit 38316bc17e13db7acc0032dcda030afbcf414abf，远端分支 OID=本地 HEAD 已独立核实；先前r01版本仅为保留历史，不是本次执行身份。
 
 启动证据见launch_evidence.json：单归档传输、远端compile、普通账号调度器PID/CWD/argv及日志增长VERIFIED；真实B0父8NN无query smoke PASS。共享观察逐步生成，没有据此声称六行已训练完成。
+
+启动证据见launch_evidence.json：单归档传输、远端compile、普通账号调度器PID/CWD/argv及日志增长VERIFIED；真实B0父8NN无query smoke PASS。共享观察逐步生成，没有据此声称六行已训练完成。
