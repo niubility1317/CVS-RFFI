@@ -12,7 +12,7 @@ RIEI/DRIFT按用户E100，恒定LR无需移动milestone；IB两阶段各最多20
 
 ## 生命周期与资源
 
-代码提交8c50d20ecf62d9273a9c5c07f12a04ad7da33685已推送并独立核对远端OID。新队列启动VERIFIED，当前PREPARE_DATA，未开始新增GPU训练；实际CWD、命令、解释器和私有输入输出路径引用本地runtime.json。
+代码提交8c50d20ecf62d9273a9c5c07f12a04ad7da33685已推送并独立核对远端OID。新队列启动VERIFIED，当前WAITING_PARENT，数据和checkpoint检查已通过，未开始新增GPU训练；实际CWD、命令、解释器和私有输入输出路径引用本地runtime.json。
 
 源角色和观测构建在CPU完成；数学库2线程、最多4个生成worker。真实L_s checkpoint无query smoke后直接继续。历史checkpoint使用原torch2.1解释器，其余方法使用已验证作者torch1.11环境，无共享安装。
 
@@ -39,3 +39,7 @@ RIEI/DRIFT按用户E100，恒定LR无需移动milestone；IB两阶段各最多20
 ## 静态成本补充
 
 已按当前不可变发布的实际身份推理路径核算6类／10类默认头参数，并区分RIEI／DRIFT辅助支路。见[静态参数表](static_parameter_cost.md)。仅静态参数与FP32参数字节数，不声称已测GPU延迟、MACs或对应模型已训练完成；未改变任何运行代码、矩阵或健康进程。
+
+## 数据准备完成（2026-10-19T12:43:36+08:00）
+
+17个源契约、18个测试任务七视图构建完成；23个真实L_s结构组合和6个历史checkpoint检查PASS。dispatcher实际存活并自动进入WAITING_PARENT。见[准备结果与实际数量](preparation_analysis.md)。新162训练＋6补测未开始GPU行，仍需完成原24行及全部新增矩阵。

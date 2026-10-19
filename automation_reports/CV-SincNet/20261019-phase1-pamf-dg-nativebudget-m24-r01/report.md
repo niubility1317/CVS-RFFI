@@ -96,3 +96,7 @@ IB-RFF六行全部七视图预测已独立复算，42个总体CM及Accuracy／Ma
 ## SDG首个seed独立核验（2026-10-19T12:26:50+08:00）
 
 两行均完整训练200轮、39400更新，按源V最小NLL分别冻结E179和E39。七视图实际预测独立复算通过；仅一个seed，不报告三seed均值。见[首seed配对分析](sdg_seed01_analysis.md)。其余健康SDG训练继续，参数和队列顺序保持冻结。
+
+## 第二seed SDG-full完成读回（2026-10-19T12:43:36+08:00）
+
+实际E200训练、source freeze、168000包七视图prediction、独立truth-last评分及row complete齐全，原dispatcher正常回收并标ANALYZED，当前9行完成。原worker退出早于一次状态刷新，随后已读回正常闭合，未做重启。证据local_artifacts/phase1_external_dg_20261019/sdg_full_seed02_completion.json。其余健康任务继续；家族三seed未齐，不在这里形成最终均值结论。
