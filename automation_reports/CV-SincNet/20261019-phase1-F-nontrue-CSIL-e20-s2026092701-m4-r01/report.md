@@ -1,6 +1,8 @@
 # 纯 F 从零 E20：同一受损 IQ 的非真类关系迁移
 
-状态：RUNNING（2026-10-19 12:04 HKT 独立读回）。一个 seed 的四行固定矩阵。代码/config commit 为 a276b957ce85b939e75cac19f6cc9e5191c44398，发布commit为 1e7cc414f73f093dfbdccee0e4ba7cf90c7a5324；Git远端OID已独立比较相同。归档传输、远端compile、checks均VERIFIED；唯一P0/P1审查PASS。四行分别位于GPU3/4/6/7，PID/CWD/argv/GPU与逐步日志增长均VERIFIED。此时B0已E4、其余三行已E1；尚无终轮、正式预测或评分结果。不将本报告 SHA 作为门槛。
+状态：ANALYZED／VERIFIED。四行从零E20、七视图冻结预测、独立truth-last和完整日志分析均已完成，无技术失败。固定非真类配方源端否证失败，关闭、不追加E50；研发总目标仍未达到。M clean=79.8030%、low urban=49.5911%，相对普通As下降1.4083、3.0446pp，七视图全部下降。[完整逐行结果与证据边界](final_analysis.md)。
+
+一个 seed 的四行固定矩阵。代码/config commit 为 a276b957ce85b939e75cac19f6cc9e5191c44398，发布commit为 1e7cc414f73f093dfbdccee0e4ba7cf90c7a5324；Git远端OID已独立比较相同。归档传输、远端compile、checks均VERIFIED；唯一P0/P1审查PASS。启动时四行分别位于GPU3/4/6/7，PID/CWD/argv/GPU与逐步日志增长均VERIFIED。不将本报告 SHA 作为门槛。
 
 12:18 HKT 更新：B0 已完成自身从零 E20/4440 更新并固定终轮；源 V27000 clean=98.0556%、最差源 RX=94.8148%，不能冒充正式未见RX成绩。真实特征为2×160；变化参数项包括Sinc2、signature7、time17、frequency18、PA15以及默认分类权重1，说明并非只调整融合/头。B0共568320个训练L前向包。七视图各168000包的预测已固定，NN=1176002（含2个synthetic smoke），参数冻结、独立头拟合0，truth未读。其余三行此时已E10，源矩阵决策与正式评分均未发生；全run保持RUNNING。私有独立读回见 local_artifacts/F_nontrue_E20_20261019/source_artifacts.json。
 
@@ -17,6 +19,8 @@
 数据为 L6300/U56700/V27000，RX1/3/4/6/8、day1/2/3、split392005。通用 trainer 在构建数据时比较实际完整 role_ids，禁止 target loader。历史教师固定last200/9800updates，完整来源已在旧probe核实；首次前向再次核对 payload/同角色/无祖先/无target选模，冻结且置于学生state_dict外，不参与ownEMA或部署。其历史成本单列。
 
 已只读核对实际运行依赖：fullsource runtime commit b94076b191648103daeb8a9cb1c17bdcc9c0e231，实际 train_ssdg 与 DataAugmentation 都来自原 evidence_responsibility release 的 experiments/adv3b02_xuc/code，不依赖同名根code实现。原普通增强包含循环移位、幅度、相位、CFO/相噪、AWGN20—36dB、轻多径/DC/taper；p_dac=0、class-signature关闭。现场 `aug_enable_pa_normal=True`，native调用显式传 `no_pa=False`，所以原 ordinary 还包含 p_pa=.14 的既有 PA 失真，不能只看 augmentor 默认 no_pa=True 就误报关闭。本轮遵守“保留原普通增强”，没有新增PA/DAC/IQ失真；As从raw独立生成，不串接该ordinary PA。实际开关继续随resolved产物核对。
+
+终轮完整日志补充：上一段数值是基础配置上限，不等于各轮实际强度。四行共用原ordinary强度日程；E1—3 aug_scale=.1，E13—20保持.2506003。终轮实际p_PA=.0350840、p_time_shift=.0877101、max_time_shift=8、p_AWGN=.1002401、p_multipath=.0451081。不能把基础p_PA=.14、±32或AWGN范围当作全程每包实际损伤；完整实际日程见final_analysis及原epoch日志。As使用独立完整信道，不走这份ordinary流程。
 
 完整 As 始终从 raw L 生成，不从 ordinary 或已受损 IQ 再叠加；只在原始256窗口内采用既有 residual/post_sync/noEQ，reference30dB、reflect边界、物理延迟/同步原实现。源输入单位RMS，As前原channel normalize。信道内部保留AGC（请求单位RMS增益，限幅±30dB），因此部分总幅度变化被AGC消除，触及限幅时不保证单位RMS；As输出后无额外normalize。ordinary的0.9—1.1幅度在增强后没有统一输入RMS层将其精确消除；参考响应分支具有平坦增益商去除，不能推断全模型严格增益不变。普通循环移位最多±32会移动原256包与固定[80,160)参考窗口的相对位置；此既有行为各行共同保留，As不额外叠加这次移位。硬件session按RX/day/eq，非TX；train/eval随机流及固定formal数组隔离。ordinary与As是不同输入、各承担CE；teacher只见同一份As。C0是raw额外槽位。所有现场resolved开关与实际模块路径随产物保存。
 

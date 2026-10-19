@@ -43,7 +43,7 @@ for arm in ('B0','C0','B1','M'):
  with gzip.open(source/'training_sequence.jsonl.gz','rt') as f:
   for line in f:
    r=json.loads(line);seqcounts[r['role']]+=1;seqpackets[r['role']]+=len(r['ids'])
- result['logs'][arm]=dict(complete_records=dict(mechanism=len(rr),native_steps=len(native),unit=len(unit),epochs=len(epochs)),hidden_U_steps=len(u),U_truth_available_max=0.,ownEMA_all_updates_exact=ema_exact,sequence_batches=seqcounts,sequence_packets=seqpackets,errors=errors,max_L_formula_error=max(formula),curves=curves,native_epochs=epochs,actual=read(source/'training_result.json'),ordinary=read(source/'ordinary_augmentation_actual.json'))
+ result['logs'][arm]=dict(complete_records=dict(mechanism=len(rr),native_steps=len(native),unit=len(unit),epochs=len(epochs)),hidden_U_steps=len(u),U_truth_available_max=0.,ownEMA_all_updates_exact=ema_exact,sequence_batches=seqcounts,sequence_packets=seqpackets,errors=errors,max_L_formula_error=max(formula),curves=curves,native_epochs=epochs,actual=read(source/'training_result.json'),source_completion=read(source/'completion.json'),prediction_completion=read(root/(arm+'-s2026092701')/'prediction/complete.json'),ordinary=read(source/'ordinary_augmentation_actual.json'))
 paths=[root/(a+'-s2026092701')/'source/training_sequence.jsonl.gz' for a in ('B0','C0','B1','M')]
 with gzip.open(paths[0],'rt') as a,gzip.open(paths[1],'rt') as b,gzip.open(paths[2],'rt') as cc,gzip.open(paths[3],'rt') as mm:
  same={'B0_C0':True,'C0_B1':True,'B1_M':True}
@@ -72,15 +72,19 @@ def main(runtime,output):
 def render(x,out):
  import matplotlib;matplotlib.use('Agg')
  import matplotlib.pyplot as plt
- colors=dict(B0='#8a8a8a',C0='#c59342',B1='#315e8d',M='#148f7b');fig,axes=plt.subplots(2,2,figsize=(12,8),layout='constrained')
+ colors=dict(B0='#8a8a8a',C0='#c59342',B1='#315e8d',M='#148f7b');names=dict(B0='NoAs',C0='Raw CE control',B1='As CE control',M='As + nontrue');fig,axes=plt.subplots(2,2,figsize=(12,8),layout='constrained')
  for a in colors:
   metrics=x['summary']['rows'][a]['overall'];cs=x['logs'][a]['curves'];e=[v['epoch'] for v in cs]
-  axes[0,0].plot(range(7),[100*metrics[v]['accuracy'] for v in d.VIEWS],'-o',label=a,color=colors[a],ms=4)
-  axes[0,1].plot(e,[v['ordinary_CE'] for v in cs],label=a,color=colors[a]);axes[1,0].plot(e,[v['As_or_raw_CE'] for v in cs],label=a,color=colors[a])
-  if a!='B0':axes[1,1].plot(e,[v['masked_nontrue'] for v in cs],label=a,color=colors[a])
+  axes[0,0].plot(range(7),[100*metrics[v]['accuracy'] for v in d.VIEWS],'-o',label=names[a],color=colors[a],ms=4)
+  axes[0,1].plot(e,[v['ordinary_CE'] for v in cs],label=a,color=colors[a])
+  if a!='B0':axes[1,0].plot(e,[v['As_or_raw_CE'] for v in cs],label=a,color=colors[a])
+  if a!='B0':axes[1,1].plot(e,[v['masked_nontrue'] for v in cs],label=a+(': active (As)' if a=='M' else ': shadow ('+('raw' if a=='C0' else 'As')+')'),color=colors[a])
  axes[0,0].set(xticks=range(7),xticklabels=['clean','high','mid','low sub','high urb','mid urb','low urb'],ylabel='Accuracy (%)');axes[0,0].legend(frameon=False)
  axes[0,1].set(xlabel='Epoch',ylabel='Ordinary CE');axes[1,0].set(xlabel='Epoch',ylabel='Raw / As CE');axes[1,1].set(xlabel='Epoch',ylabel='Correct-masked nontrue auxiliary')
+ axes[1,1].legend(frameon=False,fontsize=9)
  for ax in axes.flat:ax.spines[['top','right']].set_visible(False);ax.grid(axis='y',alpha=.15)
  fig.savefig(out/'seven_views_and_full_training.png',dpi=180);fig.savefig(out/'seven_views_and_full_training.pdf');plt.close(fig)
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--runtime',required=True);p.add_argument('--output',required=True);a=p.parse_args();main(a.runtime,a.output)
+ p=argparse.ArgumentParser();p.add_argument('--runtime');p.add_argument('--output',required=True);p.add_argument('--render-cache');a=p.parse_args()
+ if a.render_cache:render(json.loads(Path(a.render_cache).read_text(encoding='utf8')),Path(a.output))
+ else:main(a.runtime,a.output)

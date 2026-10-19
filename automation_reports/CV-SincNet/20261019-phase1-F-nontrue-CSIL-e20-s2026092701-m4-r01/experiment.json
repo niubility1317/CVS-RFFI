@@ -115,7 +115,8 @@
     "eachrow/scoring/scores.json",
     "source_matrix_decision.json",
     "analysis.json",
-    "complete.json"
+    "complete.json",
+    "final_analysis.md"
   ],
   "metrics_plan": {
     "metric_names": [
@@ -374,7 +375,8 @@
     "C0/B1/M all compute same fullAs128 + frozenCSIL128; C0 uses raw extra student slot, As teacher shadow. B0 original oneforward cost disclosed; no equalcost claim againstB0.",
     "Source promotion: M-B1 two-draw midlow >=.5pp and M-B0 fullVclean>=-.2pp; decision before formal scores. Only eligible E50 continuation subsequently locks state rules/matched controls. Fail closes fixed recipe.",
     "Historical externalteacher200epochs/9800updates disclosed separately. Closed fullposteriorKD and self-subnetwork margin-envelope are different auxiliary targets; no retuning of either.",
-    "Target fixed168000 x7; all results kept, one model seed cannot establish repeatability."
+    "Target fixed168000 x7; all results kept, one model seed cannot establish repeatability.",
+    "FINAL VERIFIED: all4 scratchE20/4440, all7x168000 frozen then independent score, full logs; source rule FAILED before scores; fixed nontrue recipe CLOSED/noE50/no coefficient rescue; Mclean79.802976/low49.591071%; goal not complete."
   ],
   "registered_at": "2026-10-19T03:58:34+00:00"
 }
