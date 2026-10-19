@@ -23,7 +23,7 @@
   "comparison_group_id": "F-TXgeometry-local-E20",
   "parent_run_ids": [],
   "replaces_run_id": "20261019-phase1-FcrossRX-TXgeometry-e20-local-m4-r03",
-  "authorization": "User goal asks to improve worse TX based on source validation; adds explicit class compactness/separation and requests all future work in configured local environment. Existing max50 honored by20; current E20 default, source permissions/defaulthead/truth-last retained.",
+  "authorization": "User goal asks to improve worse TX based on source validation; adds explicit class compactness/separation and requests all future work in configured local environment. Existing max50 honored by20; current E20 default, source permissions/defaulthead/truth-last retained. User subsequently explicitly requests more concurrent local experiments to reduce elapsed time; fixed max3 GPU workers overrides old single-worker resource default only.",
   "code": {
     "commit": "Actual Git HEAD recorded in immutable local release/release_commit.txt",
     "checkout": "codex/phase1-rdrop-combinations-20261015",
@@ -93,12 +93,12 @@
   "execution": {
     "host": "local Windows RTX5070Ti",
     "launch_owner": "codex/root/F-TXgeometry-local-20261019",
-    "gpu_policy": "Single local physical GPU0; one training/prediction worker; CPU score separate, serial controller; prior remote healthy owners untouched",
+    "gpu_policy": "Local physical GPU0; up to3 concurrent source/predict workers plus at most1 independent CPU scorer; exact serial-controller handoff, preserve existing healthy child and all artifacts",
     "remote_run_root": null,
     "remote_log_root": null,
     "local_artifact_root": "LOCAL_RUN/20261019-phase1-FcrossRX-TXgeometry-e20-local-m4-r04",
-    "launch_command": "LOCAL_PYTHON -X utf8 -u -m experiments.cvs_f_txgeometry20.driver --profile LOCAL_PROFILE --base LOCAL_RUN --commit RELEASE_COMMIT",
-    "stop_rule": "Nonfinite loss/gradient, wrong roles/defaulthead/budget/provenance, immutable output conflict, prediction coverage failure or nonzero child exit: preserve artifacts and stop; no automatic or score-based retry"
+    "launch_command": "LOCAL_BASE_PYTHON -X utf8 -u ORCHESTRATOR_RELEASE/parallel.py --profile LOCAL_PROFILE --base EXISTING_RUN --worker-release ORIGINAL_RELEASE --worker-commit 4679f66babb40c17b96285c7393225787ed13c08 --controller-commit CONTROLLER_COMMIT --old-controller VERIFIED_SERIAL_PID --max-workers 3",
+    "stop_rule": "Nonfinite loss/gradient, wrong roles/defaulthead/budget/provenance, immutable output conflict, prediction coverage failure or nonzero child exit: preserve artifacts and stop; no automatic or score-based retry; on a worker/controller failure stop new dispatch and preserve other healthy workers"
   },
   "expected_artifacts": [
     "execution.json",
@@ -115,7 +115,10 @@
     "prediction/predictions.npz",
     "prediction/complete.json",
     "scores/metrics.json",
-    "result.json"
+    "result.json",
+    "parallel_handoff.json",
+    "parallel_adoption.json",
+    "parallel_progress.json"
   ],
   "metrics_plan": {
     "metric_names": [
@@ -362,7 +365,8 @@
     "Technical r01 failed before optimizer creation and before target IQ/truth. Original initial checkpoint and logs preserved. r02 uses fresh output/release; same formula and matrix, no performance-based retry.",
     "r02 was externally aborted by Windows console-close after10 recorded epochs. No final checkpoint/source freeze/target predictions, and no r02 state is inherited. Recorded wasted lower-bound cost preserved in technical_failure.json; next partial epoch count is unknown. r03 changes process launch only.",
     "Console-free direct-base-interpreter canary survived exited launcher for90s, GetConsoleWindow=false and completed. Windows still reports in_job=true; no claim of detachment from every OS job. One targeted P0/P1 check addresses the observed lifecycle issue only.",
-    "r03 controller reached nested Popen but Windows denied BREAKAWAY. No GPU worker/data read/optimizer update. r04 removes only this unnecessary flag, with both controller and worker NO_WINDOW/GROUP direct-base Python. Two-level smoke PASS; no administrator or job-policy changes."
+    "r03 controller reached nested Popen but Windows denied BREAKAWAY. No GPU worker/data read/optimizer update. r04 removes only this unnecessary flag, with both controller and worker NO_WINDOW/GROUP direct-base Python. Two-level smoke PASS; no administrator or job-policy changes.",
+    "2026-10-19 resource continuation: original worker release4679 unchanged. Existing BASE source complete and current WEIGHT source process adopted; GEOMETRY/BOTH may run in remaining GPU slots. No repeated training or hot science edits. Before target, original source-only expansion remains fixed. GPU memory headroom does not imply speedup; observe aggregate throughput and RAM."
   ],
   "registered_at": "2026-10-19T08:59:31+00:00"
 }
