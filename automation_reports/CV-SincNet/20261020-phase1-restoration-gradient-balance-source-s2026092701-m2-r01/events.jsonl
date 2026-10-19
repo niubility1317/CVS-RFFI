@@ -1,1 +1,4 @@
 {"at": "2026-10-19T22:58:19+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T23:03:49+00:00", "status": "RUNNING", "note": "VERIFIED realR03/3Fsmoke,PID/CWD/cmd/GPU/loggrowth and actual gradient norm-cap/scale counts;0target", "evidence": ["report.md", "experiment.json"], "row_id": "global_cap"}
+{"at": "2026-10-19T23:03:49+00:00", "status": "RUNNING", "note": "VERIFIED realR03/3Fsmoke,PID/CWD/cmd/GPU/loggrowth and actual gradient norm-cap/scale counts;0target", "evidence": ["report.md", "experiment.json"], "row_id": "per_frame_cap"}
+{"at": "2026-10-19T23:03:49+00:00", "status": "RUNNING", "note": "Both fixed norm-cap rows live onGPU4/5;previousGPU6/7targetpreserved;reuse scalar control;CPUscorewaitspreviouscomplete", "evidence": ["report.md", "experiment.json"], "row_id": null}

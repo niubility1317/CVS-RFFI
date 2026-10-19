@@ -1,6 +1,6 @@
 # 整批与逐帧的识别梯度范数上限
 
-状态：PLANNED。目标仍是完整目标测试low urban≥70%，其余五practical接近原F clean85.113889%（Agent暂用≤2个百分点口径）；分别报告同物理clean的波形差距和冻结原默认头真实TX识别/净纠错。当前已验证最好low urban65.309127%，目标未达成。
+状态：RUNNING / VERIFIED。目标仍是完整目标测试low urban≥70%，其余五practical接近原F clean85.113889%（Agent暂用≤2个百分点口径）；分别报告同物理clean的波形差距和冻结原默认头真实TX识别/净纠错。当前已验证最好low urban65.309127%，目标未达成。
 
 source依据：当前gradient_projection的scalar_sum控制行E5/1235、630000条训练IQ，identity梯度norm²总和1191929.8158283，wave为5008.57419455，累计RMS范数比15.426531。该统计来自合法L/U训练，不是逐帧或逐step比，不证明幅度失衡就是性能原因，也不是目标证据。source_gradient_evidence.json仅含聚合统计，0新模型前向/更新/目标读取。新范数约束在该控制行新目标准确率被访问前固定，不热改其或投影行。
 
@@ -23,3 +23,15 @@ scalar控制已在本轮设计中明确固定为前run的scalar_sum E10/2470，�
 50项聚焦检查与唯一一次独立P0/P1审查PASS（审查者独立复跑50项）。launcher首步实际R03/三F/四source Ls no-query smoke：初始完整IQ/state相同、有限非零merged coarse/corr及原头到IQ梯度、F无梯度、新checkpoint往返，0V/TX/target/optimizer，PASS立即训练。一次N607普通账号预检VERIFIED，原R03合法、新root不存在、GPU4/5各24124MB空闲无PID、空间≥8GB；GPU6/7现有source PID/CWD/cmd LIVE并保留。每卡一条本owner、计入allowner<2，重叠最多4本owner GPUworkers，source≥18GB/target≥12GB。CPU2线程/scorer最多1，新source scorer先等前gradient_projection complete/failure，再与本run target共用score.lock；实际source进程退出才同卡target，不等另一新行。
 
 停止规则：非法来源/权限/代码、冲突、非有限/OOM、预算/缩放执行或预测失败时保留产物并技术失败该行，无自动重试，健康行继续，不停止/重启/热改他人任务。一个代码配置commit、不可覆盖root、一次归档本地/远端SHA比较及remotecompile/import，随后核实PID/CWD/cmd/GPU/日志增长。命令、环境/CWD、矩阵、路径、资源、停止规则和产物见experiment.json；原IQ、权重、逐样本预测、日志及私有运行状态不进Git。另一用户对话未被发送指令或改动。
+
+
+## 实际发布与首轮核验
+
+方法commit `9866f24dab7097294d585069bfcfe529d3346ade`已推送并独立核实远端OID，一次归档本地/远端SHA比较及远端compile/import均PASS。实际R03/三F/四Ls no-query smoke PASS：两臂完整初始IQ/state等于原R03，coarse/correction合并梯度及原头到IQ梯度有效，F无梯度，新checkpoint往返一致，0V/TX/target/optimizer更新。两臂实际2140840参数，无新增模块；PASS立即训练。
+
+两条实际source worker的PID/CWD/完整命令/GPU4/5及持续日志增长已核实，三F参考缓存各63000条。实际范数约束/缩放计数：
+
+- global_cap：1/10轮、247/2470步，梯度合并调用247、IQ126000条，实际缩放126000（observed63000/clean63000），平均scale0.046522301、范围0.029634306至0.079243258，wave/identity/缩放后identity norm²总和996.19665/503684.15/996.19664。
+- per_frame_cap：1/10轮、247/2470步，梯度合并调用247、IQ126000条，实际缩放50262（observed41542/clean8720），平均scale0.74880064、范围0.00275951至1，wave/identity/缩放后identity norm²总和995.95361/683227.22/521.45933。
+
+首轮核验时尚无新源V或目标准确率。实际缩放不代表性能改善或参数步波形保证；两臂固定E10后分别自动完整目标测试，source V不作资格筛选，用户目标仍未达成。最终状态与结果以完整结果节为准。前一梯度投影的GPU6/7目标进程保留，CPU评分等待其完成后执行；复用其scalar_sum固定控制，不重复训练/预测。

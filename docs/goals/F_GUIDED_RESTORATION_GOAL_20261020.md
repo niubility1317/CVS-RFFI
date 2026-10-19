@@ -168,10 +168,10 @@ source误差分解显示精修在多个有效频带增加波形误差，末端ti
 时域滤波：目标low urban 64.973016%，clean 85.089484%。频域滤波：目标low urban 64.939087%，clean 85.006151%。两行均完成原预登记E10/2470、168000物理目标clean+六practical及三原头独立truth-last评分。没有source分数筛选、目标反馈或选择性重跑，全部负结果保留。[完整逐环境/逐F/波形/净纠错/成本结果](../../automation_reports/CV-SincNet/20261020-phase1-restoration-basis-filter-source-s2026092701-m2-r01/report.md)。本轮仍未达到用户完整目标，不由新增结构/训练检查推断性能。
 
 
-## 当前梯度幅度固定比较（实现完成，待发布）
+## 当前梯度幅度固定比较（两臂实际训练中）
 
 合法源训练scalar_sum E5/1235/630000IQ的累计identity/wave输出梯度RMS范数比15.426531（不是逐帧/step比，也不证明原因）。据此检验幅度上限，未读取该run新target分数，不热改其或投影行。`experiments/pamf_gradient_balance`新global_cap/per_frame_cap均从原合法R03完整相同state开始，2140840参数，无新增模块，原数据/顺序/预算/三F冻结loss保持；gw+s×gi、s=min(1,sqrt(wave norm²/identity norm²))，分别按整批总和或每IQ帧计算，只缩小identity、不投影冲突。identity norm²≤1e-20时s=1；非零identity/wave0时s=0，停止scale梯度后除以实际IQ批量反传。不是参数GradNorm/PCGrad，不保证参数步/最终波形或身份改善，实际scale/计数/dot/norms完整记录。
 
 科学矩阵为前run scalar_sum固定E10控制（已登记并健康训练，直接复用、不重训/重预测/从其初始化）与两新norm-cap行；配置和matrix含external_control引用。每新行jointE10/2470、原coarse/corr各30轮、60组件epoch、串行50pass，0L/U TX真值/F更新/新头拟合。sourceV仅诊断，两新行固定最终E10自动完整168000目标七视图/三原头，全部固定后独立CPU truth/pairedclean；控制技术缺项如实报告，不静默声称匹配完整。
 
-50项聚焦检查及唯一一次独立P0/P1审查PASS。一次N607普通账号预检VERIFIED，新GPU4/5各24124MB空闲无PID、原R03合法、新root不存在；GPU6/7现有source实际PID/CWD/cmd LIVE并保留。重叠最多4本owner worker，每卡1/allowner<2，CPU scorer先等前run complete/failure再执行，实际source退出后同卡target。launcher首步真实R03/三F/四Ls no-query smoke PASS立即训练，尚无本轮新性能，用户完整目标未完成。[最小登记与方法](../../automation_reports/CV-SincNet/20261020-phase1-restoration-gradient-balance-source-s2026092701-m2-r01/report.md)含命令、环境/CWD、矩阵、路径、资源、停止规则和产物；另一用户对话未被发送指令或改动。
+50项聚焦检查及唯一一次独立P0/P1审查PASS。一次N607普通账号预检VERIFIED，新GPU4/5各24124MB空闲无PID、原R03合法、新root不存在；GPU6/7现有source实际PID/CWD/cmd LIVE并保留。重叠最多4本owner worker，每卡1/allowner<2，CPU scorer先等前run complete/failure再执行，实际source退出后同卡target。方法commit`9866f24dab7097294d585069bfcfe529d3346ade`已实际发布，归档比较/编译、真实R03/三F/四Ls smoke均PASS；GPU4/5两条source worker的PID/CWD/cmd/GPU/日志增长和实际norm-cap/scale计数已核实。尚无本轮新源V或目标准确率，用户完整目标未完成。[最小登记与方法](../../automation_reports/CV-SincNet/20261020-phase1-restoration-gradient-balance-source-s2026092701-m2-r01/report.md)含命令、环境/CWD、矩阵、路径、资源、停止规则和产物；另一用户对话未被发送指令或改动。
