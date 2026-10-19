@@ -4,6 +4,27 @@ import torch
 from torch import nn
 from torch.utils.checkpoint import checkpoint
 from experiments.pamf_unrolled_restore.models import UnrolledRestorer
+from experiments.pamf_restoration.models import Block
+
+
+def validate_input(value):
+    if (value.ndim!=3 or value.shape[1:]!=(9,256) or value.dtype!=torch.float32
+            or not torch.isfinite(value).all()):
+        raise ValueError('Finite FP32 current-packet 9x256 prior inputs required')
+
+
+class TemporalTCNPrior(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.stem=nn.Conv1d(9,128,5,padding=2)
+        self.blocks=nn.ModuleList(Block(128,128,dilation) for dilation in (1,2,4,8,16,32))
+        self.out=nn.Conv1d(128,2,1)
+        nn.init.zeros_(self.out.weight);nn.init.zeros_(self.out.bias)
+
+    def forward(self,value):
+        validate_input(value);value=self.stem(value)
+        for block in self.blocks:value=block(value)
+        return self.out(value)
 
 
 class TemporalBlock(nn.Module):
@@ -47,9 +68,7 @@ class TemporalAttentionPrior(nn.Module):
         self.register_buffer('position',.1*position[None])
 
     def forward(self,value):
-        if (value.ndim!=3 or value.shape[1:]!=(9,256) or value.dtype!=torch.float32
-                or not torch.isfinite(value).all()):
-            raise ValueError('Finite FP32 current-packet 9x256 prior inputs required')
+        validate_input(value)
         value=self.stem(value).transpose(1,2)+self.position
         for block in self.blocks:
             value=(checkpoint(block,value,use_reentrant=False)
@@ -59,13 +78,13 @@ class TemporalAttentionPrior(nn.Module):
 
 class AttentionRestorer(UnrolledRestorer):
     def __init__(self,candidate,frozen):
-        if candidate not in ('unet_control','attention_prior'):
-            raise ValueError('Registered U-Net or attention prototype required')
+        if candidate not in ('unet_control','tcn_prior','attention_prior'):
+            raise ValueError('Registered U-Net,TCN or attention prior required')
         if candidate=='unet_control':
             super().__init__('unroll_unshared',frozen)
         else:
             nn.Module.__init__(self)
             self.frozen=frozen.requires_grad_(False).eval()
-            core=TemporalAttentionPrior()
+            core=TemporalAttentionPrior() if candidate=='attention_prior' else TemporalTCNPrior()
             self.prior=nn.ModuleList(copy.deepcopy(core) for _ in range(3))
         self.candidate=candidate
