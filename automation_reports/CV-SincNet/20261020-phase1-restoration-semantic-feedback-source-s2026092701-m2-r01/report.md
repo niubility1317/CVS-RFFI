@@ -1,6 +1,6 @@
 # 原 F 特征反馈的纠错结构对比
 
-状态：PLANNED。用户完整目标仍为目标low-urban≥70%，其他五practical接近原clean85.113889%（Agent暂按≤2个百分点解释），并分开报告恢复IQ与同条clean的差距、接入原F/defaulthead后的真实TX识别及净纠错。源分数、波形或检查PASS均不能替代目标成绩。
+状态：RUNNING / VERIFIED。用户完整目标仍为目标low-urban≥70%，其他五practical接近原clean85.113889%（Agent暂按≤2个百分点解释），并分开报告恢复IQ与同条clean的差距、接入原F/defaulthead后的真实TX识别及净纠错。源分数、波形或检查PASS均不能替代目标成绩。
 
 此前多个损失/重加权/伪身份变体没有同时改善源low/mid。最新一致身份native源low/mid86.888889%/93.333333%，crossRX87.388889%/93.222222%，均未通过固定源规则，0新目标访问，负结果保留。本轮将冻结原F特征显式加入恢复结构，不追认失败精修或按目标结果选择权重。
 
@@ -19,3 +19,15 @@ reset AdamW联合E10/2470，旧coarse/correction LR3e-5、新FiLM LR2e-4；共�
 25项聚焦检查、一次独立P0/P1审查PASS。launcher首步实际原R03/三F/2条Ls no-query smoke：两臂初始输出逐点等于原R03，共同参数初始值相同，coarse/correction/FiLM有限非零梯度、原默认头到IQ梯度、F无梯度、真实新checkpoint往返；0V/0TX/0target/0optimizer更新，PASS立即训练。新增层缺失是受控方法变化，父checkpoint数据/继承来源已核实，不以部分加载绕过契约。复用VALIDATED_ONCE数据，方法变化不重验IQ或加哈希链。
 
 一次N607普通账号预检VERIFIED：父R03和源参考合法、前序完成，新run/release不存在；GPU4/5各24124MB空闲无PID，其他owner进程保留。固定GPU4 IQ、GPU5 semantic，每卡一条本run worker，计入全owner进程<2/获取空闲≥18GB；CPU2线程/独立scorer最多1。源worker全部退出后选中臂在对应卡获取≥12GB再跑target。一个代码配置commit、一个不可覆盖root、一个发布归档本地/远端SHA比较与远端compile；随后核实实际PID/CWD/完整命令/GPU/日志增长。非法来源/权限/代码、输出冲突、非有限/OOM、预算或预测缺失按技术停止规则保存产物，不自动重试、不热改/重启健康任务；具体环境/CWD/命令/路径/GPU/产物见experiment.json。原始IQ/权重/预测/日志私有，仅方法、登记与派生汇总进Git。未给另一对话发指令。
+
+
+## 实际发布与首轮核验
+
+方法 commit `1c869980ae9059e613ec29915d2b92db7444ed20` 已推送且独立远端OID一致。25项聚焦检查、一次独立P0/P1审查PASS；一次发布归档本地/远端比较、远端compile/import、真实原R03/三F/2条Ls no-query smoke均PASS。两臂初始输出逐点等于直接加载的原R03，共同参数初值一致；coarse/correction/新增FiLM均有有限非零梯度，原默认头能向IQ反传，F无梯度，两种新checkpoint往返一致。两臂可训练参数实际均2244008，0V/0TX真值/0target/0optimizer更新，PASS立即训练。
+
+已核实两个实际worker的PID/CWD/完整命令与物理GPU4/5对应，日志从0增长至完整首轮；三教师参考缓存各63000条，无TX真值。新增FiLM末层权重从0变为非0，两组LR比例与预登记一致：
+
+- iq_condition：1/10轮、247/2470步，FiLM末层weight/bias范数0.35935473/0.03062300，旧LR3e-05，新FiLM LR0.0002。
+- semantic_condition：1/10轮、247/2470步，FiLM末层weight/bias范数0.40294698/0.03038993，旧LR3e-05，新FiLM LR0.0002。
+
+这证明新增层在实际训练中参与；尚未产生新源V或目标准确率，运行检查不证明用户目标达成。后续按固定源规则决定是否自动完整目标测试，独立恢复模型/冻结运行F参数、耗时和显存按实际结果报告，不把可训练参数匹配当成总成本相同。

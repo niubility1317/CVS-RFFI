@@ -75,6 +75,8 @@ post-hoc 源决策分析（代码 `9771481bb49a6cb814759500affa22a2d23b4831`，2
 两臂一致CE各曝光594020（L/U60740/533280），crossrx额外特征曝光594020，native为0；原基础曝光仍全量630000。三头高置信一致源记录59402/63000是伪身份接受率，不是准确率。无参数、各teacher独立坐标的其他RX均值只供训练，不作为分类器，推断不使用bank/RX。每臂新增联合10轮，coarse/correction各累计30轮、60组件epoch、串行继承50pass，参数2140840。两臂均未通过本轮预先固定low≥+0.5、mid不下降及其他/clean/波形要求，没有创建target目录或新增目标访问。过往失败未追认，实际目标最好仍65.309127%，用户目标未达成。
 
 
+恢复结构的IQ摘要/冻结F语义条件E10两臂已在N607 GPU4/5实际运行，方法commit `1c869980ae9059e613ec29915d2b92db7444ed20`。25项聚焦检查、一次独立P0/P1审查、真实原R03/三F no-query smoke及PID/CWD/命令/GPU/日志增长均通过。新增四尺度FiLM调制末层零初始化，初始输出逐点等于原R03，两臂共同参数初值匹配，实际可训练参数均2244008；首轮FiLM权重已非零。IQ对照使用当前received+coarse的4×40摘要，语义臂使用原冻结F1对当前coarse IQ的160维特征；只改变条件代码，基础损失保持posterior03，不带此前失败CE/prototype/focus。语义恢复器携带原F1并增加特征前向，可与外部读出共享实例，不能称总状态/计算匹配。F和原默认头冻结，无新拟合头、RX/TX/clean运行输入或目标状态更新。两臂从原R03直接分叉联合10轮，原coarse/correction各累计30轮，新增FiLM单独10轮；源筛选和实际70%/近clean目标保持。当前仍在训练，没有新源V或目标成绩。
+
 已完成行的 post-hoc 源分析发现：三 teacher 平均使整体与 tail NMSE 略低，但在原 clean 可识别样本中，六视图错误决策由 410 增至 419（10638 个重复视图决策，只有 1773 个物理样本）。错误组在 prefix 和 tail 均有较大误差；这是关联诊断，不是“只有 tail 导致错误”的因果证据，不改已冻结的选择或正在运行的配方。
 
 - [三 teacher 平均/最差项源结果及分段分析](../../automation_reports/CV-SincNet/20261020-phase1-restoration-multireader-source-s2026092701-m2-r01/report.md)
@@ -83,6 +85,7 @@ post-hoc 源决策分析（代码 `9771481bb49a6cb814759500affa22a2d23b4831`，2
 - [固定 IQ 平均源结果及分组诊断](../../automation_reports/CV-SincNet/20261020-phase1-restoration-iqmean-source-s2026092701-m2-r01/report.md)
 - [困难样本与 RX 分组加权的匹配实验](../../automation_reports/CV-SincNet/20261020-phase1-restoration-hardness-source-s2026092701-m3-r01/report.md)
 - [一致伪身份与跨 RX 特征匹配实验](../../automation_reports/CV-SincNet/20261020-phase1-restoration-consensus-identity-source-s2026092701-m2-r01/report.md)
+- [IQ摘要与冻结F语义条件的恢复结构对比](../../automation_reports/CV-SincNet/20261020-phase1-restoration-semantic-feedback-source-s2026092701-m2-r01/report.md)
 
 ## 固定边界
 

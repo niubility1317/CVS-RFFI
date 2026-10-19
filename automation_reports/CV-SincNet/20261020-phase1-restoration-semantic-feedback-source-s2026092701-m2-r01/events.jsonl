@@ -1,1 +1,4 @@
 {"at": "2026-10-19T19:44:11+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T19:48:04+00:00", "status": "RUNNING", "note": "VERIFIED realR03/3Fsmoke,PID/CWD/cmd/GPU/loggrowth,newFiLM nonzero norm andtwoLR;0target", "evidence": ["report.md", "experiment.json"], "row_id": "iq_condition"}
+{"at": "2026-10-19T19:48:04+00:00", "status": "RUNNING", "note": "VERIFIED realR03/3Fsmoke,PID/CWD/cmd/GPU/loggrowth,newFiLM nonzero norm andtwoLR;0target", "evidence": ["report.md", "experiment.json"], "row_id": "semantic_condition"}
+{"at": "2026-10-19T19:48:04+00:00", "status": "RUNNING", "note": "Both currentIQ/semantic conditioning arms live;sourcefreeze beforeselectedtarget", "evidence": ["report.md", "experiment.json"], "row_id": null}
