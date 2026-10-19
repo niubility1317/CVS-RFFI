@@ -3,3 +3,7 @@
 {"at": "2026-10-19T18:46:47+00:00", "status": "RUNNING", "note": "VERIFIED actualR03/3Fsmoke,PID/CWD/cmd/GPU/loggrowth,focus exposure/update counts;E10 active,0target", "evidence": ["report.md", "experiment.json"], "row_id": "cvar_observed"}
 {"at": "2026-10-19T18:46:47+00:00", "status": "RUNNING", "note": "VERIFIED actualR03/3Fsmoke,PID/CWD/cmd/GPU/loggrowth,focus exposure/update counts;E10 active,0target", "evidence": ["report.md", "experiment.json"], "row_id": "rxdro_observed"}
 {"at": "2026-10-19T18:46:47+00:00", "status": "RUNNING", "note": "Allthree matched observed-focus arms live;source choice before automatic selected target", "evidence": ["report.md", "experiment.json"], "row_id": null}
+{"at": "2026-10-19T19:03:25+00:00", "status": "ANALYZED", "note": "Source complete,no target access", "evidence": ["report.md", "results/summary.json"], "row_id": "mean_observed"}
+{"at": "2026-10-19T19:03:25+00:00", "status": "ANALYZED", "note": "Source complete,no target access", "evidence": ["report.md", "results/summary.json"], "row_id": "cvar_observed"}
+{"at": "2026-10-19T19:03:25+00:00", "status": "ANALYZED", "note": "Source complete,no target access", "evidence": ["report.md", "results/summary.json"], "row_id": "rxdro_observed"}
+{"at": "2026-10-19T19:03:25+00:00", "status": "ANALYZED", "note": "Sourcequalified=False;selected=None;wholegoal not claimed complete", "evidence": ["report.md", "results/summary.json"], "row_id": null}
