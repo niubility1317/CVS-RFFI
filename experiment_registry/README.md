@@ -399,3 +399,5 @@
 本轮记录：[窄窗与全窗注意力恢复](by_method/temporal_context.md)。
 
 本轮记录：[末端时域与频域有界残差滤波](by_method/basis_filter.md)。
+
+本轮记录：[波形与原F识别梯度单向投影](by_method/gradient_projection.md)。
