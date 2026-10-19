@@ -1,6 +1,8 @@
 # 双教师与浅中层时序适配器：固定 E20＋10 预登记
 
-状态：PLANNED。用户确认学生继承合法 clean F 的 E20 权重，追加 10 轮，累计 E30。此轮明确授权冻结原 F 与默认分类头并新增特征模块；没有新分类器。一个模型种子 2026092701，不宣称多种子稳定性。实际 code/config commit 写入 experiment.json 与 release_commit.txt；以下矩阵已固定，不按目标成绩改变。
+当前结果：ANALYZED。六行训练、七视图独立评分与全量日志分析完成；固定源资格FAIL，整体目标未完成。详见final_analysis.md。以下保留发布前固定方案。
+
+事前状态：PLANNED。用户确认学生继承合法 clean F 的 E20 权重，追加 10 轮，累计 E30。此轮明确授权冻结原 F 与默认分类头并新增特征模块；没有新分类器。一个模型种子 2026092701，不宣称多种子稳定性。实际 code/config commit 写入 experiment.json 与 release_commit.txt；以下矩阵已固定，不按目标成绩改变。
 
 研究问题：合法同 IQ 星地教师的额外判别能力，能否通过 t1/t2 浅中层适配器进入单个部署学生，同时保持 clean？已有同 IQ 源 V360 上，CSIL 相对纯 F B1 在 1440 条 urban 观测修复 257 条、新增错 66 条，净差 13.263889 个百分点。分层证据见 teacher_source_evidence.md。旧 epochReplay、nontrue KD 和输入 Jacobian 固定损失路线保持关闭。
 
