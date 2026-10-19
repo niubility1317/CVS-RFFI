@@ -1,0 +1,18 @@
+{
+  "route": "Ordinary current-student confidence PL on F+CROSS_RX BASE",
+  "basis": "All4 completed source factorials: weighting/final-geometry variants failed source weakTX promotion; no target score consulted",
+  "training": "Matched baseline retains actual existing clean+satCE0.68 recipe unless user later changes training scope; only test scope changes to clean",
+  "threshold": 0.95,
+  "warm_epochs": 5,
+  "ramp_epochs": 10,
+  "PL_max_weight": 0.5,
+  "U_batch128": true,
+  "source_epochs": 20,
+  "optimizer_updates": 4440,
+  "U_TX_truth_hidden": true,
+  "U_metric_or_strong_consistency": false,
+  "EMA": false,
+  "head_refit": false,
+  "source_expansion": "weak2 mean>=+0.2pp/global>=-0.2pp/worstRX>=-0.5pp/anyTX>=-1pp vs paired BASE; determine before own target tests",
+  "target_feedback": false
+}

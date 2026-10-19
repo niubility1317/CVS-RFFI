@@ -1,0 +1,70 @@
+{
+  "status": "VERIFIED",
+  "commit": "a260ec967e6b914464a56d00b4584065df30525b",
+  "source_commit": "4679f66babb40c17b96285c7393225787ed13c08",
+  "max_GPU_workers": 3,
+  "max_CPU_scorers": 1,
+  "complete_rows": [
+    {
+      "arm": "BASE",
+      "prediction_exit": 0,
+      "score_exit": 0,
+      "smoke": "PASS",
+      "frozen_default_head": true,
+      "source_epoch": 20,
+      "source_commit": "4679f66babb40c17b96285c7393225787ed13c08",
+      "count": 168000,
+      "views": [
+        "clean"
+      ],
+      "predictions_fixed_before_truth": true
+    },
+    {
+      "arm": "WEIGHT",
+      "prediction_exit": 0,
+      "score_exit": 0,
+      "smoke": "PASS",
+      "frozen_default_head": true,
+      "source_epoch": 20,
+      "source_commit": "4679f66babb40c17b96285c7393225787ed13c08",
+      "count": 168000,
+      "views": [
+        "clean"
+      ],
+      "predictions_fixed_before_truth": true
+    },
+    {
+      "arm": "GEOMETRY",
+      "prediction_exit": 0,
+      "score_exit": 0,
+      "smoke": "PASS",
+      "frozen_default_head": true,
+      "source_epoch": 20,
+      "source_commit": "4679f66babb40c17b96285c7393225787ed13c08",
+      "count": 168000,
+      "views": [
+        "clean"
+      ],
+      "predictions_fixed_before_truth": true
+    },
+    {
+      "arm": "BOTH",
+      "prediction_exit": 0,
+      "score_exit": 0,
+      "smoke": "PASS",
+      "frozen_default_head": true,
+      "source_epoch": 20,
+      "source_commit": "4679f66babb40c17b96285c7393225787ed13c08",
+      "count": 168000,
+      "views": [
+        "clean"
+      ],
+      "predictions_fixed_before_truth": true
+    }
+  ],
+  "controller_terminal": true,
+  "actual_processes_no_longer_present": true,
+  "practical_workers_cancelled": true,
+  "optimizer_updates": 0,
+  "head_fit_updates": 0
+}

@@ -98,7 +98,8 @@
     "remote_log_root": null,
     "local_artifact_root": "LOCAL_RUN/20261019-phase1-FcrossRX-TXgeometry-e20-local-m4-r04",
     "launch_command": "LOCAL_BASE_PYTHON -X utf8 -u ORCHESTRATOR_RELEASE/parallel.py --profile LOCAL_PROFILE --base EXISTING_RUN --worker-release ORIGINAL_RELEASE --worker-commit 4679f66babb40c17b96285c7393225787ed13c08 --controller-commit CONTROLLER_COMMIT --old-controller VERIFIED_SERIAL_PID --max-workers 3",
-    "stop_rule": "Nonfinite loss/gradient, wrong roles/defaulthead/budget/provenance, immutable output conflict, prediction coverage failure or nonzero child exit: preserve artifacts and stop; no automatic or score-based retry; on a worker/controller failure stop new dispatch and preserve other healthy workers"
+    "stop_rule": "Nonfinite loss/gradient, wrong roles/defaulthead/budget/provenance, immutable output conflict, prediction coverage failure or nonzero child exit: preserve artifacts and stop; no automatic or score-based retry; on a worker/controller failure stop new dispatch and preserve other healthy workers",
+    "evaluation_scope_override": "User latest: clean only; practical cancelled; completed in 20261019-eval-FcrossRX-TXgeometry-clean-local-m4-r01"
   },
   "expected_artifacts": [
     "execution.json",
@@ -122,7 +123,7 @@
   ],
   "metrics_plan": {
     "metric_names": [
-      "target clean/all6practical accuracy",
+      "target clean accuracy",
       "Macro-F1",
       "perTX recall and confusion",
       "worstRX/day",
@@ -135,7 +136,7 @@
       "6TX",
       "7targetRX",
       "4targetdays",
-      "7views",
+      "clean only (user scope revision)",
       "168000 same physical IDs/view"
     ],
     "prediction_ref": "predict.py: all7 fixed before same-row score; actual final.pt default head; shared deterministic physical-ID practical cache",
@@ -366,7 +367,8 @@
     "r02 was externally aborted by Windows console-close after10 recorded epochs. No final checkpoint/source freeze/target predictions, and no r02 state is inherited. Recorded wasted lower-bound cost preserved in technical_failure.json; next partial epoch count is unknown. r03 changes process launch only.",
     "Console-free direct-base-interpreter canary survived exited launcher for90s, GetConsoleWindow=false and completed. Windows still reports in_job=true; no claim of detachment from every OS job. One targeted P0/P1 check addresses the observed lifecycle issue only.",
     "r03 controller reached nested Popen but Windows denied BREAKAWAY. No GPU worker/data read/optimizer update. r04 removes only this unnecessary flag, with both controller and worker NO_WINDOW/GROUP direct-base Python. Two-level smoke PASS; no administrator or job-policy changes.",
-    "2026-10-19 resource continuation: original worker release4679 unchanged. Existing BASE source complete and current WEIGHT source process adopted; GEOMETRY/BOTH may run in remaining GPU slots. No repeated training or hot science edits. Before target, original source-only expansion remains fixed. GPU memory headroom does not imply speedup; observe aggregate throughput and RAM."
+    "2026-10-19 resource continuation: original worker release4679 unchanged. Existing BASE source complete and current WEIGHT source process adopted; GEOMETRY/BOTH may run in remaining GPU slots. No repeated training or hot science edits. Before target, original source-only expansion remains fixed. GPU memory headroom does not imply speedup; observe aggregate throughput and RAM.",
+    "Final evaluation complete in 20261019-eval-FcrossRX-TXgeometry-clean-local-m4-r01: all4 clean168000 rows independently truth-last scored; all3 interventions have negative overall and weak2 mean recall differences; no source expansion and n1 only. Original source training remains actual satCE0.68."
   ],
   "registered_at": "2026-10-19T08:59:31+00:00"
 }

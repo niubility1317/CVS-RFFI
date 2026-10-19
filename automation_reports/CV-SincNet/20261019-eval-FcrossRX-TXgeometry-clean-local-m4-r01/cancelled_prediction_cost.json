@@ -1,0 +1,55 @@
+{
+  "status": "PARTIAL_COST_PRESERVED",
+  "training_or_head_updates": 0,
+  "rows": [
+    {
+      "arm": "BASE",
+      "completed_views_before_cancel": [
+        {
+          "view": "clean",
+          "seconds": 13.359374899999239,
+          "count": 168000
+        },
+        {
+          "view": "practical_high",
+          "seconds": 456.6414197999984,
+          "count": 168000
+        }
+      ],
+      "partial_next_practical_seconds": "unknown; cancelled mid-view, no full prediction artifact or score"
+    },
+    {
+      "arm": "WEIGHT",
+      "completed_views_before_cancel": [
+        {
+          "view": "clean",
+          "seconds": 14.40055379999103,
+          "count": 168000
+        },
+        {
+          "view": "practical_high",
+          "seconds": 455.53767689998494,
+          "count": 168000
+        }
+      ],
+      "partial_next_practical_seconds": "unknown; cancelled mid-view, no full prediction artifact or score"
+    },
+    {
+      "arm": "GEOMETRY",
+      "completed_views_before_cancel": [
+        {
+          "view": "clean",
+          "seconds": 14.014943699992727,
+          "count": 168000
+        },
+        {
+          "view": "practical_high",
+          "seconds": 452.78986730001634,
+          "count": 168000
+        }
+      ],
+      "partial_next_practical_seconds": "unknown; cancelled mid-view, no full prediction artifact or score"
+    }
+  ],
+  "scope": "Old7view task cancelled by user after source completion; preserve completed-view lower-bound cost plus unknown partial time; clean-only rerun separately reported"
+}
