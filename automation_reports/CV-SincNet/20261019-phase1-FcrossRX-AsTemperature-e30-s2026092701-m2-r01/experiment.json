@@ -1,0 +1,223 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r01",
+  "group_id": "phase1-FcrossRX-AsTemperature-fulltrajectory",
+  "display_name": "As 分类温度解耦：同初始化完整 E30 T1/T6",
+  "description": "完整相同scratch20+own10轨迹，As-only T*CE(z/T)，两组共同取消As KL；附同观测CSIL/MoPC/PAMF及fresh L/V冻结诊断。无新头/特征对齐/额外U/教师。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "P84",
+    "AsTemperature84"
+  ],
+  "tags": [
+    "phase1",
+    "FcrossRX",
+    "As-temperature",
+    "full-E30",
+    "default-head",
+    "single-seed"
+  ],
+  "comparison_group_id": "F-CROSS_RX-ORIGINAL-P43-E30",
+  "parent_run_ids": [],
+  "authorization": "当前用户要求继续完成两会话目标开发并提供附件，附件指定同观测比较→T1/T6完整E30；沿现有源数据/默认头/固定正式IQ权限。",
+  "code": {
+    "commit": null,
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 ordinary CVS-RFFI fullFP32 CPU2",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_AsTemperature_E30_20261019_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original full-source physical roles,split392005;reuse fixed source/cache and formal received views",
+    "representation": "Existing source IQ256,dataset equalized index1,Fs25MHz;practical residual/post_sync propagation receiver EQ=false/reference_snr_db30,complete original dependency graph;fixed received IQ untouched",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract.role_ids L_s/U_s/V;fixed formal received_views manifest and opaque168000 physical IDs,unchanged",
+    "label_map_ref": "Original map [14-10,14-7,20-15,20-19,6-15,8-20]",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "All six registered originalTX,unchanged source/target registered-class map",
+    "roles": {
+      "L_s": "6300 fullsource visibleTX/all5RX/cumulative30epochs,noLdev/noRXholdout",
+      "U_s": "56700 TX hidden;exact original P43 oldU raw ownEMA/quantile/batch_neighbor and strongagreement=true,domain_gate=false,nativeGaussian strong;no newU practical route or eligibility change;one student andone teacher perU",
+      "V": "27000 source validation only,never training/EMA/state updates;fixed existing V1800 two-draw source panel"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "SameVALIDATED_ONCEall5sourceRX/day/physicalL6300 U56700hidden V27000;noLdev/noRXholdout",
+    "support_query_ref": null,
+    "leo_config_ref": "Original P43 full practical on rawL64/step only;unchanged propagation/noise/receiver/compensation dependency. NoAs returns raw64. U unchanged. Fixed formalreceivedIQ reused."
+  },
+  "permissions": {
+    "regime": "source_train_then_frozen_truthlast",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "S-C isolates completeHQ versus extraRAW with equal extraNN/loss/physical shadows;S-N checks matchedNoAs clean cost. Original P43 readouts contextual only. Extra128NN each step explicitly costed;no new Ag/head/deployment branch."
+  },
+  "checkpoint": {
+    "initialization": "scratch at E0;own corresponding E20 student/EMA only for resetcos10",
+    "sources": [],
+    "contract_check_ref": "source_contract.json; source_comparison/complete.json;stage20/initialization.json",
+    "provenance_verdict": "Source roles unchanged;historical CSIL/MoPC metadata exact role_ids/scratchE200/fixedfinal;actual cp verified before readout. Historical weights never initialize training.",
+    "selection_rule": "fixed FINAL30; no target-based selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/temperature84",
+    "gpu_policy": "CPU2;allowners GPUcomputePIDs<=3;free>=12000MB;preservehealthyjobs",
+    "remote_run_root": "PROJECT/runs/20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r01/logs",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r01",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_as_temperature84/runner.py",
+    "stop_rule": "Only own systemic protocol/role/parent/head/nonfinite/output/prediction technicalfailure;preserve/reconcile. Scientificnegative finishesall7,no automaticrestart. Never touchhealthyotherjobs.",
+    "status": "REGISTERED"
+  },
+  "expected_artifacts": [
+    "real_checkpoint_smoke.json",
+    "synthetic_smoke.json",
+    "source_comparison/complete.json",
+    "each row stage20/source checkpoints and full logs",
+    "source_matrix_decision.json",
+    "each row all7 predictions and independent scores",
+    "results.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "all7 accuracy",
+      "urban mean",
+      "macroF1",
+      "worstRX",
+      "paired repairs/new errors",
+      "fresh L/V fit gap",
+      "same-IQ crossmodel complement",
+      "training native-scale NLL and compensated CE"
+    ],
+    "dimensions": [
+      "row",
+      "scene",
+      "RX",
+      "day",
+      "TX",
+      "state",
+      "lock",
+      "signal_to_added_noise_db"
+    ],
+    "prediction_ref": "PROJECT/runs/20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r01/<row>/prediction",
+    "scorer_ref": "experiments/cvs_as_temperature84/evaluate.py:score",
+    "source_rule": "T6-T1 midlow>=.5pp,fullVclean>=-.1pp;future extension only,all7 regardless;no T/weight/seed rescue",
+    "model_seed_count": 1
+  },
+  "rows": [
+    {
+      "row_id": "T1-s2026092701",
+      "method": "T1 As-only compensated CE;As KL0 in both",
+      "purpose": "T1 exact As-CE control;T6 fixed effective scale5",
+      "config_ref": "experiments/cvs_as_temperature84/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r01/T1-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019844
+      },
+      "seed_notes": "Model/split separate;augmentation original train421/val422/hardware423;fresh diagnostic844. Formal fixed observed IQ no resampling;support not applicable. data seed not separate from source split.",
+      "k": null,
+      "scenario": "clean+all6practical fixed;source diagnostics onlymidlow",
+      "optimizer": "OriginalCENTER_UNITS AdamW lr2e-4 wd1e-4 min1e-6;cos20 resetcos10;13L17U,ownEMA",
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "4440+2220=6660updates;768LNN/update=5114880/row;426240fullAs observations/row;nativeU/EMA separately measured",
+      "output_root": "PROJECT/runs/20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r01/T1-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r01/logs/T1-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_as_temperature84/runner.py --mode worker --row T1-s2026092701",
+      "expected_artifacts": [
+        "stage20/final_ssdg.pth",
+        "source/final_ssdg.pth",
+        "source/temperature_steps.jsonl.gz",
+        "source/completion.json",
+        "prediction/complete.json",
+        "scoring/complete.json"
+      ]
+    },
+    {
+      "row_id": "T6-s2026092701",
+      "method": "T6 As-only compensated CE;As KL0 in both",
+      "purpose": "T1 exact As-CE control;T6 fixed effective scale5",
+      "config_ref": "experiments/cvs_as_temperature84/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r01/T6-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019844
+      },
+      "seed_notes": "Model/split separate;augmentation original train421/val422/hardware423;fresh diagnostic844. Formal fixed observed IQ no resampling;support not applicable. data seed not separate from source split.",
+      "k": null,
+      "scenario": "clean+all6practical fixed;source diagnostics onlymidlow",
+      "optimizer": "OriginalCENTER_UNITS AdamW lr2e-4 wd1e-4 min1e-6;cos20 resetcos10;13L17U,ownEMA",
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "4440+2220=6660updates;768LNN/update=5114880/row;426240fullAs observations/row;nativeU/EMA separately measured",
+      "output_root": "PROJECT/runs/20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r01/T6-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r01/logs/T6-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_as_temperature84/runner.py --mode worker --row T6-s2026092701",
+      "expected_artifacts": [
+        "stage20/final_ssdg.pth",
+        "source/final_ssdg.pth",
+        "source/temperature_steps.jsonl.gz",
+        "source/completion.json",
+        "prediction/complete.json",
+        "scoring/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No target channel weakening;formal IQ and default scale30 head unchanged.",
+    "Both arms remove As KL;T6-T1 isolates training temperature. Old As/NoAs descriptive only,not exact temperature controls.",
+    "Source V1800 fixed2drawmidlow same IQ across frozen historical s392005 and PAMF s2026092701;different seeds/E200 vs E30 disclosed,not matched model-budget comparison.",
+    "Fresh balancedL1800/V1800 2drawmidlow with separate seed;no updates;does not measure memorized training channel accuracy.",
+    "Initial source crossmodel experiment is not authorization to train teacher KD without observed complement.",
+    "Prior Uroute83/noiseKL82 local drafts retained but unlaunched;superseded by supplied priority.",
+    "HQsignalBridge existing run complete all7,sourceFAIL;fixed recipe closed;reports preserved."
+  ],
+  "comparators": [
+    "OriginalP43 B00/NoAs30",
+    "OriginalP43 B01/As30"
+  ],
+  "registered_at": "2026-10-19T03:01:14+00:00"
+}

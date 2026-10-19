@@ -1,0 +1,310 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-FcrossRX-signalBridge-e30-s2026092701-m3-r01",
+  "group_id": "CVS-COMPLETE-HQ-LABEL-CE-E30",
+  "display_name": "完整 practical 较清晰观测的纯标签监督：同前向 raw 控制 E30",
+  "description": "N01原NoAs20+10及额外raw；C01/S01同原As20+10，分别额外raw/HQ。原6L监督绝对份额不变，新增.25双CE64，无新增KL/teacher/对齐。每步896LNN、总L尺度1.5；HQ训练reference SNR固定36并重算原接收处理，C匹配HQ shadow物理成本。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "signalBridge30",
+    "HQ-labelCE-only"
+  ],
+  "tags": [
+    "CVS",
+    "Phase1",
+    "practical",
+    "E30",
+    "completeHQ",
+    "labelCE-only",
+    "extraRAW-control"
+  ],
+  "comparison_group_id": "F-CROSS_RX-ORIGINAL-P43-E30",
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01"
+  ],
+  "authorization": "Current user practical-primary augmentation/training authorization;three matched own20+10 tails each totalE30. Only source-qualified future totalE50;no target feedback.",
+  "code": {
+    "commit": "80db12fb33a256ef7174f6dcda6f462645fd53ba",
+    "checkout": "E:/type10-7/code/worktrees/cvs_iq_timing_20261016",
+    "environment": "N607 existing CVS-RFFI PyTorch/fullFP32 CPU2 ordinary account;no installation",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_signalBridge_E30_20261019_r01",
+    "branch": "codex/cvs-iq-timing-e20-20261016",
+    "worktree": "E:/type10-7/code/worktrees/cvs_iq_timing_20261016",
+    "entrypoint": "experiments/cvs_signal_bridge30/runner.py",
+    "remote_push": "VERIFIED independent upstreamOIDmatches"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original full-source physical roles,split392005;reuse fixed source/cache and formal received views",
+    "representation": "Existing source IQ256,dataset equalized index1,Fs25MHz;practical residual/post_sync propagation receiver EQ=false/reference_snr_db30,complete original dependency graph;fixed received IQ untouched",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract.role_ids L_s/U_s/V;fixed formal received_views manifest and opaque168000 physical IDs,unchanged",
+    "label_map_ref": "Original map [14-10,14-7,20-15,20-19,6-15,8-20]",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "All six registered originalTX,unchanged source/target registered-class map",
+    "roles": {
+      "L_s": "6300 fullsource visibleTX/all5RX/cumulative30epochs,noLdev/noRXholdout",
+      "U_s": "56700 TX hidden;exact original P43 oldU raw ownEMA/quantile/batch_neighbor and strongagreement=true,domain_gate=false,nativeGaussian strong;no newU practical route or eligibility change;one student andone teacher perU",
+      "V": "27000 source validation only,never training/EMA/state updates;fixed existing V1800 two-draw source panel"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "SameVALIDATED_ONCEall5sourceRX/day/physicalL6300 U56700hidden V27000;noLdev/noRXholdout",
+    "support_query_ref": null,
+    "leo_config_ref": "Original P43 full practical on rawL64/step only;unchanged propagation/noise/receiver/compensation dependency. NoAs returns raw64. U unchanged. Fixed formalreceivedIQ reused."
+  },
+  "permissions": {
+    "regime": "source_train_then_frozen_truthlast",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "S-C isolates completeHQ versus extraRAW with equal extraNN/loss/physical shadows;S-N checks matchedNoAs clean cost. Original P43 readouts contextual only. Extra128NN each step explicitly costed;no new Ag/head/deployment branch."
+  },
+  "checkpoint": {
+    "policy": "N original ownNoAs20;C/S same original ownAs20 student andownEMA;strict physical roles andsource-final ancestry",
+    "selection": "fixed FINAL10/cumulative30;not target selection",
+    "parent_run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+    "parent_sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B00-s2026092701/stage20/final_ssdg.pth",
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
+    ],
+    "reference_commit": "19aedc3604fed9c193237dd92366164178af0983",
+    "inheritance": "Original corresponding scratch20 -> independent10tails;resetAdamW;no candidate-final parent",
+    "initialization": "strict own source-final20 student andownEMA;resetoptimizer",
+    "sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B00-s2026092701/stage20/final_ssdg.pth",
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
+    ],
+    "contract_check_ref": "OriginalP43 stage20/source_contract.json +initialization.json/completion.json and exact reference_config",
+    "provenance_verdict": "MATCHED_SOURCE_ONLY_SCRATCH_ANCESTOR",
+    "selection_rule": "source fixed final20 parent,child fixedfinal10/cumulative30;no target-selected parents"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/practical-signalBridge",
+    "gpu_policy": "CPU2;allowners GPUcomputePIDs<=3;free>=12000MB;preservehealthyjobs",
+    "remote_run_root": "PROJECT/runs/20261019-phase1-FcrossRX-signalBridge-e30-s2026092701-m3-r01",
+    "remote_log_root": "PROJECT/runs/20261019-phase1-FcrossRX-signalBridge-e30-s2026092701-m3-r01/logs",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261019-phase1-FcrossRX-signalBridge-e30-s2026092701-m3-r01",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_signal_bridge30/runner.py",
+    "stop_rule": "Only own systemic protocol/role/parent/head/nonfinite/output/prediction technicalfailure;preserve/reconcile. Scientificnegative finishesall7,no automaticrestart. Never touchhealthyotherjobs.",
+    "status": "ANALYZED",
+    "launch_pid": 1926111,
+    "launch_verification": "VERIFIED ordinarypreflight/archivecomparison/compile/realCP3592NN-firstlast-smoke/directtrain;postlaunchCWDargvlog observed"
+  },
+  "expected_artifacts": [
+    "real_checkpoint_smoke.json",
+    "synthetic_smoke.json",
+    "source_matrix_decision.json",
+    "automatic_summary.json",
+    "complete.json",
+    "each row source/result.json and full source logs",
+    "each row all7 predictions and independent scores"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "clean accuracy and paired absolute pp",
+      "all6practical accuracy",
+      "mid/lowurban",
+      "urban3scene mean"
+    ],
+    "secondary": [
+      "macroF1",
+      "worstRX",
+      "RX/day/TX strata",
+      "repairs/new errors",
+      "suburban absolute gaps",
+      "actual updates/NN/VJP/EMA/cost/wall"
+    ],
+    "scientific_promotion": {
+      "S_minus_C_midlow_min_pp": 0.5,
+      "S_minus_N_fullVclean_min_pp": -0.1,
+      "S_minus_originalAs_midlow_min_pp": 0,
+      "only_source_evidence": true,
+      "failure_still_all7": true,
+      "no_gap_weight_seed_rescue": true
+    },
+    "formal_feedback_forbidden": true,
+    "model_seeds": 1,
+    "repeatable_gain_claim": false
+  },
+  "rows": [
+    {
+      "row_id": "N01-s2026092701",
+      "method": "B00+extraRAW",
+      "purpose": "Matched NoAs extraRAW",
+      "config_ref": "experiments/cvs_signal_bridge30/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-FcrossRX-signalBridge-e30-s2026092701-m3-r01/N01-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model2026092701;split392005;originalchannel20261016421/422/423;HQ uses same physical seed withref36, no global RNG advance. Fixed sourcepanel/received IQ reused.",
+      "k": null,
+      "scenario": "Original completeAs64/step;oldU;all7fixedformal",
+      "optimizer": "OriginalresetAdamW/cos10 lr2e-4 WD1e-4 min1e-6;one native update andEMA",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "OwnB0020+10=E30;2220new/6660cumulativeupdates;8Lcalls896NN/step,oldUstudent/teacher567000each;extra128NN/step;Lscale1.5",
+      "output_root": "PROJECT/runs/20261019-phase1-FcrossRX-signalBridge-e30-s2026092701-m3-r01/N01-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-FcrossRX-signalBridge-e30-s2026092701-m3-r01/logs/N01-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_signal_bridge30/runner.py --mode worker --row N01-s2026092701",
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/source_frozen.json",
+        "source/result.json",
+        "source/training_sequence.jsonl.gz",
+        "source/extraCE_steps.jsonl.gz",
+        "source/step_metrics.jsonl.gz",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "prediction/predictions.npz",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ]
+    },
+    {
+      "row_id": "C01-s2026092701",
+      "method": "B01+extraRAW",
+      "purpose": "Matched As extraRAW with HQ shadow",
+      "config_ref": "experiments/cvs_signal_bridge30/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-FcrossRX-signalBridge-e30-s2026092701-m3-r01/C01-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model2026092701;split392005;originalchannel20261016421/422/423;HQ uses same physical seed withref36, no global RNG advance. Fixed sourcepanel/received IQ reused.",
+      "k": null,
+      "scenario": "Original completeAs64/step;oldU;all7fixedformal",
+      "optimizer": "OriginalresetAdamW/cos10 lr2e-4 WD1e-4 min1e-6;one native update andEMA",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "OwnB0120+10=E30;2220new/6660cumulativeupdates;8Lcalls896NN/step,oldUstudent/teacher567000each;extra128NN/step;Lscale1.5",
+      "output_root": "PROJECT/runs/20261019-phase1-FcrossRX-signalBridge-e30-s2026092701-m3-r01/C01-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-FcrossRX-signalBridge-e30-s2026092701-m3-r01/logs/C01-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_signal_bridge30/runner.py --mode worker --row C01-s2026092701",
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/source_frozen.json",
+        "source/result.json",
+        "source/training_sequence.jsonl.gz",
+        "source/extraCE_steps.jsonl.gz",
+        "source/step_metrics.jsonl.gz",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "prediction/predictions.npz",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ]
+    },
+    {
+      "row_id": "S01-s2026092701",
+      "method": "B01+extraHQ",
+      "purpose": "Complete HQ labelCE only",
+      "config_ref": "experiments/cvs_signal_bridge30/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-FcrossRX-signalBridge-e30-s2026092701-m3-r01/S01-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model2026092701;split392005;originalchannel20261016421/422/423;HQ uses same physical seed withref36, no global RNG advance. Fixed sourcepanel/received IQ reused.",
+      "k": null,
+      "scenario": "Original completeAs64/step;oldU;all7fixedformal",
+      "optimizer": "OriginalresetAdamW/cos10 lr2e-4 WD1e-4 min1e-6;one native update andEMA",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "OwnB0120+10=E30;2220new/6660cumulativeupdates;8Lcalls896NN/step,oldUstudent/teacher567000each;extra128NN/step;Lscale1.5",
+      "output_root": "PROJECT/runs/20261019-phase1-FcrossRX-signalBridge-e30-s2026092701-m3-r01/S01-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-FcrossRX-signalBridge-e30-s2026092701-m3-r01/logs/S01-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_signal_bridge30/runner.py --mode worker --row S01-s2026092701",
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/source_frozen.json",
+        "source/result.json",
+        "source/training_sequence.jsonl.gz",
+        "source/extraCE_steps.jsonl.gz",
+        "source/step_metrics.jsonl.gz",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "prediction/predictions.npz",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Current code audit confirms P70/P71 quality risk, P76 shared propagation, UPractical/UQualified complete and closed;not rerun.",
+    "Historical BRIDGE_CE included sharedjoint anchors and was not pure label-only HQ control;this experiment adds no such constraint.",
+    "Original fullAs stillref30;HQ extra training view fixedref36 (+6dB prior), all native quality/lock/compensation/AGC recomputed;formalIQ/ref30 unchanged.",
+    "OriginalsixL absoluteweights .5/.5/.25 unchanged;append.25CE64mean2, noKL/teacher. Allnewrows extra128NN matched, C/S physics shadowmatched.",
+    "Sourcecriteria fixed before target;failsclose+6/.25;noE50/gap/weight/seed rescue. Scientificnegative stillall7.",
+    "REJECTED_EXTRA_GATE: no additional design approval, repeated review or hash-chain;existing user authorization and exclusive minimal workflow apply.",
+    "RUNNING actualrelease80db12fb33a256ef7174f6dcda6f462645fd53ba;smoke3592NN/0updates PASS,firstE21/lastE30 covered;N/C launched, S resource queue. No target results read."
+  ],
+  "comparators": [
+    "OriginalP43 B00/NoAs30",
+    "OriginalP43 B01/As30"
+  ],
+  "registered_at": "2026-10-19T00:22:12+00:00",
+  "actual_results": {
+    "all7_complete": true,
+    "source_qualified": false,
+    "fixed_recipe_closed": true,
+    "E50_extension": false,
+    "model_seed_count": 1,
+    "repeatable_dual_gain_proven": false,
+    "low_accuracy": 0.5226607142857141,
+    "low_vs_matched_AsRaw_pp": 1.0803571428571428,
+    "clean_vs_matched_AsRaw_pp": -0.6041666666666666,
+    "clean_vs_matched_NoAsRaw_pp": -0.4982142857142857,
+    "goal_complete": false
+  }
+}

@@ -22,3 +22,4 @@
 |P77：物理新增噪声与 As 目标熵的匹配 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-qualityEntropy-e30-s2026092701-m2-r01/report.md)|
 |P78：保留完整 practical，仅移除 L 普通视图的 AWGN／多径|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-ordinaryChannel-e30-s2026092701-m2-r01/report.md)|
 |完整 As 后前缀屏蔽（预登记）|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-asPrefix-e30-s2026092701-m2-r01/report.md)|
+|As 分类温度解耦：同初始化完整 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r01/report.md)|
