@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "共同优化恢复网络的持续用户目标；本run只做源校准与源V诊断，无target，新机制独立消融。",
   "code": {
-    "commit": null,
+    "commit": "42f17fcd356db910d9073b339f59cbb5092bf395",
     "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
     "environment": "Verified phase1-cu128 Python,CPU2threads,CUDA_VISIBLE_DEVICES empty,PYTHONPATH checkout+checkout/code",
     "cwd": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010"

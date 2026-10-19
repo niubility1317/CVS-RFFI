@@ -15,3 +15,4 @@
 |物理展开前的源域算子可行性结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-restoration-operator-source-s2026092701-r06/report.md)|
 |冻结粗恢复后的残差修正结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-restoration-residual-refinement-selfsup-m3-r03/report.md)|
 |恢复器自监督校核与独立评分恢复|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-restoration-unlabeled-confirmation-s2026092701-r01/report.md)|
+|冻结恢复器的小改变量保留|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-restoration-change-preserve-source-s2026092701-r01/report.md)|
