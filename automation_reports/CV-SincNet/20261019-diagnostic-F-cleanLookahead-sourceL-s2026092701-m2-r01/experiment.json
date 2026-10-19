@@ -1,0 +1,234 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-diagnostic-F-cleanLookahead-sourceL-s2026092701-m2-r01",
+  "group_id": "phase1-F-clean-lookahead-source",
+  "display_name": "纯 F：clean 一步后的 As 有限响应",
+  "description": "仅合法源L；两固定FINAL20，丢弃raw/joint/first-order lookahead副本，测互斥L包的实际CE响应；不训练新模型、不访问目标",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "F",
+    "source_only",
+    "clean_lookahead",
+    "fresh_AdamW",
+    "default_head",
+    "single_seed",
+    "discarded_updates"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Current persistent fixed-F augmentation goal: authorized source diagnostics and bounded E20 research; this run explicitly source-only",
+  "code": {
+    "commit": null,
+    "checkout": "E:\\type10-7\\code\\worktrees\\phase1_sameiq_experts_20261019",
+    "environment": "ordinary N607 existing Torch2.1/Python3.10; FP32 TF32off CPU2",
+    "cwd": "PROJECT/releases/cvs_F_cleanLookahead_source_20261019_r01"
+  },
+  "data": {
+    "dataset": "existing immutable ManySig equalized1",
+    "version": "same source contract reused",
+    "representation": "same cached equalized1/IQ256/unitRMS; raw plus native full residual diagnostic draws",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "existing source_contract#role_ids.L_s; this source_roles.json first2/next2 perTX/RX/day",
+    "label_map_ref": "design.config.classes; existing verified default-head class mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "protocol.CLASSES",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing qualified source cache and exact role handles reused; no revalidation or Phase2 capsule",
+    "support_query_ref": null,
+    "leo_config_ref": "actual_channel.json and source_observations_metadata.json; native full mid/low urban ref30/noEQ/reflect"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "NO TARGET; only sourceL operator probe; no formal scoring",
+    "external_method_exception": null,
+    "claim_scope": "Reset-optimizer finite source response only; not old optimizer reconstruction, unseen validation, recognition gain or E50 qualification"
+  },
+  "checkpoint": {
+    "initialization": "Read-only B0/B1 pureF own scratch FINAL20; all temporary updated copies discarded",
+    "sources": [
+      "PROJECT/runs/20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01/B0-s2026092701/source/final_ssdg.pth",
+      "PROJECT/runs/20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01/B1-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Existing strict cvs_F_nontrue20.model.own_model source/defaulthead/complete/scratch/ancestor checks before source IQ",
+    "provenance_verdict": "Previously VERIFIED same full L6300/U56700/V27000 source roles and final_only; exact payload checked on load; no CSIL inheritance",
+    "selection_rule": "Both preregistered default-head original B0/B1 FINAL20; no target ranking"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/F-clean-lookahead",
+    "gpu_policy": "all-owner cap2/GPU;free>=12000MB;CUDA init inside shared capacity lock;no intervention in healthy jobs",
+    "remote_run_root": "PROJECT/runs/20261019-diagnostic-F-cleanLookahead-sourceL-s2026092701-m2-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_cleanLookahead_source_20261019_r01",
+    "local_artifact_root": "local_artifacts/F_cleanLookahead_source_20261019",
+    "launch_command": [
+      "CVS-RFFI/python",
+      "-u",
+      "experiments/cvs_clean_lookahead/runner.py"
+    ],
+    "stop_rule": "Only actual protocol/provenance/nonfinite/interface/budget/output technical failure; preserve/no automatic retry; low source response is scientific closure"
+  },
+  "expected_artifacts": [
+    "allocation.json",
+    "resolved_config.json",
+    "checkpoint_smoke.json",
+    "source_roles.json",
+    "actual_channel.json",
+    "source_observations_metadata.json",
+    "source_observations.npz",
+    "responses.json",
+    "source_decision.json",
+    "complete.json or failure.json",
+    "B0/responses.json",
+    "B1/responses.json",
+    "B0/complete.json",
+    "B1/complete.json",
+    "probe.stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "actual source CE/accuracy response",
+      "lookahead-minus-joint paired CE",
+      "physical-Sinc-metric gradient cosine/norm",
+      "actual perparameter virtual displacement",
+      "original state/grad/RNG unchanged",
+      "NN/backward packets/virtual steps/wall"
+    ],
+    "dimensions": [
+      "B0/B1 FINAL20",
+      "step versus disjoint response L",
+      "raw/mid urban/low urban",
+      "12 complete batches",
+      "single model seed"
+    ],
+    "prediction_ref": "responses.json and perarm/responses.json only; no formal target predictions",
+    "scorer_ref": "Legal sourceL labels only; independent aggregate recomputation after complete; no target truth scorer"
+  },
+  "rows": [
+    {
+      "row_id": "B0-s2026092701",
+      "method": "fixed B0 FINAL20 / RAW_STEP-JOINT_STEP-FIRST_ORDER_LOOKAHEAD finite source response",
+      "purpose": "diagnostic",
+      "config_ref": "configs/source_probe.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-diagnostic-F-cleanLookahead-sourceL-s2026092701-m2-r01/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261019624,
+        "support": null,
+        "evaluation": 20261019624
+      },
+      "seed_notes": "Deterministic first2/next2 percell; no stochastic model inference; receiver private seed20261019625 and synthetic smoke20261019626 are algorithm keys, not independent model seeds. support/FL not applicable.",
+      "k": null,
+      "scenario": [
+        "raw",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "fresh AdamW each discarded copy;CENTER_UNITS; no original optimizer loaded",
+      "lr": 0.0002,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 new trained models/original updates; 18 source+3 synthetic discarded steps perrow;3094NN/910backward packets each; total6188NN/42discarded steps/1820backward packets",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-cleanLookahead-sourceL-s2026092701-m2-r01/B0",
+      "log_path": "PROJECT/releases/cvs_F_cleanLookahead_source_20261019_r01/probe.stdout.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_clean_lookahead/runner.py"
+      ],
+      "expected_artifacts": [
+        "B0/responses.json",
+        "B0/complete.json",
+        "source_decision.json"
+      ]
+    },
+    {
+      "row_id": "B1-s2026092701",
+      "method": "fixed B1 FINAL20 / RAW_STEP-JOINT_STEP-FIRST_ORDER_LOOKAHEAD finite source response",
+      "purpose": "diagnostic",
+      "config_ref": "configs/source_probe.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-diagnostic-F-cleanLookahead-sourceL-s2026092701-m2-r01/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261019624,
+        "support": null,
+        "evaluation": 20261019624
+      },
+      "seed_notes": "Deterministic first2/next2 percell; no stochastic model inference; receiver private seed20261019625 and synthetic smoke20261019626 are algorithm keys, not independent model seeds. support/FL not applicable.",
+      "k": null,
+      "scenario": [
+        "raw",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "fresh AdamW each discarded copy;CENTER_UNITS; no original optimizer loaded",
+      "lr": 0.0002,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 new trained models/original updates; 18 source+3 synthetic discarded steps perrow;3094NN/910backward packets each; total6188NN/42discarded steps/1820backward packets",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-cleanLookahead-sourceL-s2026092701-m2-r01/B1",
+      "log_path": "PROJECT/releases/cvs_F_cleanLookahead_source_20261019_r01/probe.stdout.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "experiments/cvs_clean_lookahead/runner.py"
+      ],
+      "expected_artifacts": [
+        "B1/responses.json",
+        "B1/complete.json",
+        "source_decision.json"
+      ]
+    }
+  ],
+  "notes": [
+    "All 360 diagnostic packets historically seen by the two checkpoints; response is only disjoint from the current operator step batch, never independent held-out V.",
+    "Raw clean is not ordinary augmentation. Existing physical test arrays untouched. No V/U values or target math.",
+    "Perrow and shared config source_probe.json deliberately describe one owner process over both fixed checkpoints; no duplicate row launch.",
+    "One real-checkpoint noquery smoke executes the exact full three-copy batch path before source IQ; 68NN/6discarded steps total.",
+    "Qualification fixed in design.config. No step-size/inner-state/seed rescue, no automatic E20/E50 launch.",
+    "Existing closed teacher, risk, margin, PCGrad, SAM and split-state routes are not restarted. This tests a reset-optimizer finite nonlinear response."
+  ]
+}
