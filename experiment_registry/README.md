@@ -403,3 +403,5 @@
 本轮记录：[波形与原F识别梯度单向投影](by_method/gradient_projection.md)。
 
 本轮记录：[整批与逐帧识别梯度范数上限](by_method/gradient_balance.md)。
+
+本轮记录：[冻结R03的直接残差与四步确定性流](by_method/anchored_residual_flow.md)。
