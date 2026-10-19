@@ -31,3 +31,5 @@ loss为0.5×mean128 ordinary CE＋0.5×mean128 used-As CE（T1，smoothing0.01�
 首epoch真实222更新：ordinary与usedAs各28416包；freshAs完整生成28416；缓存覆盖6300个合法L、命中22116，命中均实际替换IQ（fresh-used MSE0.573414），222步encoder firstordinary/secondusedAs witness通过；无RDrop/CROSS_RX或Utruth/target访问。尚无终轮或正式性能结论。后续仍按原20轮→源规则→七视图独立评分自动继续。
 
 Git交付后续已恢复 VERIFIED：仅本次命令使用本机已有代理，不修改持久配置；push后独立ls-remote读回86cb9b5a8a0d3147344b23e7003a6752e44043ea，与本地HEAD相等。此前TCP失败记录保留，但当前两次提交均已同步。
+
+后续只读快照：原worker2187003仍存活，CWD/argv/GPU匹配，日志持续增长；已完成E13/2886更新，epoch cache reset12、unique81900、hit287508。尚无FINAL20/source判定/正式成绩。配套0更新源拟合诊断已独立登记、提交并发布准备，只有原模型冻结后执行，不热改当前run。

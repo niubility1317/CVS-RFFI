@@ -19,3 +19,7 @@ M对raw180、原B1训练命名观测180、同L两新draw×三场景1080进行144
 本地静态与窄测 PASS：py_compile/AST/whitespace，合成4440闭合step与180首次origin，4个角色/非法pid/缺步/错误origin负例，scene组成分别统计、配对修正/新错/CE和origin复用mask。0源IQ、0checkpoint、0NN、0更新；真实模型source smoke留作启动首步。
 
 唯一一次独立P0/P1 delta审查 PASS，未见直接缺陷。审查覆盖L角色beforeIQ、完整origin恢复、同origin复用与d0不加载B1、1441+2d实际encoder计数、冻结state/grad、源判定前置、0目标/0新V/0更新、输出独占及GPU6共享容量。没有重审既有E20候选。
+
+代码/config commit `3145fad02007f07cd0a3d187093c58a7ba872b9b`；push后独立ls-remote读回与本地HEAD完全一致，Git交付 VERIFIED。当前仅代码/配置完成，尚未运行真实诊断。
+
+远端归档传输 VERIFIED（单archive比较），远端compile VERIFIED，普通账户预检通过且新run/release/archive原均不存在。独立诊断release已准备，未启动；必须先等原M固定源判定与FINAL20/qualification。
