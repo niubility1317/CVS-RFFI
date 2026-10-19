@@ -33,6 +33,7 @@ def collect(project):
    if arm=='KD':
     kd=records(p/'KD_steps.jsonl.gz')
     if len(kd)!=n or any(r['teacher_NN']!=64 or r['student_extra_NN']!=0 or not r['all_As_CE'] or not r['teacher_input_same_As'] for r in kd):errors.append('KD_count_or_input')
+    if any(abs((r['extra_RD']-r['extra_CE']-r['extra_KL'])-.5*k['KL'])>1e-4 for r,k in zip(data['reference_steps'],kd)):errors.append('actual_KD_objective_coefficient')
     for e in curves[-done['epoch']:]:
      kk=kd[(e['epoch']-offset-1)*222:(e['epoch']-offset)*222];e['KD']=mean([r['KL'] for r in kk]);e['teacher_correct_fraction']=mean([r['teacher_correct']/64 for r in kk])
    sequence=records(p/'training_sequence.jsonl.gz');sequences[(arm,name)]=sequence;role_counts={}
