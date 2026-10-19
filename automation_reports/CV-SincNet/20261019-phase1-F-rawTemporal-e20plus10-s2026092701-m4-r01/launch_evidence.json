@@ -1,0 +1,106 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261019-phase1-F-rawTemporal-e20plus10-s2026092701-m4-r01",
+  "stage": "FOUR_ROW_TRAINING",
+  "release_commit": "b4d608fa968f1e63297592bacc6b0c6ab9b9c8ec",
+  "code_commit": "906fd841ffcc0a91d2cb88112c641c42d2d2802b",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "real_parent_checkpoint_smoke": {
+    "status": "PASS",
+    "NN": 6,
+    "source_IQ_read": false,
+    "query_read": false
+  },
+  "dispatcher": {
+    "PID": 2315958,
+    "CWD_argv_matches": true
+  },
+  "bank_reuse": {
+    "status": "REUSED_EXISTING_VALIDATED_SOURCE_OBSERVATIONS",
+    "control_run": "20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r02",
+    "updates": 2220,
+    "L_slots": 284160,
+    "new_physical_simulations": 0,
+    "target_access": false,
+    "U_used": false
+  },
+  "postlaunch": {
+    "status": "VERIFIED",
+    "time": 1792405030.810561,
+    "rows": [
+      {
+        "row": "RAW_NoAs-s2026092701",
+        "status": "VERIFIED",
+        "PID": 2316042,
+        "GPU": 0,
+        "all_owner_count": 1,
+        "log_growth": 188,
+        "step_growth": 72317,
+        "cwd_argv_cuda_matches": true
+      },
+      {
+        "row": "RAW_As-s2026092701",
+        "status": "VERIFIED",
+        "PID": 2316124,
+        "GPU": 1,
+        "all_owner_count": 1,
+        "log_growth": 0,
+        "step_growth": 58198,
+        "cwd_argv_cuda_matches": true
+      },
+      {
+        "row": "PAIR_NoAs-s2026092701",
+        "status": "VERIFIED",
+        "PID": 2316206,
+        "GPU": 4,
+        "all_owner_count": 1,
+        "log_growth": 0,
+        "step_growth": 58256,
+        "cwd_argv_cuda_matches": true
+      },
+      {
+        "row": "PAIR_As-s2026092701",
+        "status": "VERIFIED",
+        "PID": 2316289,
+        "GPU": 5,
+        "all_owner_count": 1,
+        "log_growth": 0,
+        "step_growth": 57222,
+        "cwd_argv_cuda_matches": true
+      }
+    ]
+  },
+  "rows": [
+    {
+      "row": "RAW_NoAs-s2026092701",
+      "PID": 2316042,
+      "GPU": 0,
+      "parameters": 902974,
+      "trainable_parameters": 3212
+    },
+    {
+      "row": "RAW_As-s2026092701",
+      "PID": 2316124,
+      "GPU": 1,
+      "parameters": 902974,
+      "trainable_parameters": 3212
+    },
+    {
+      "row": "PAIR_NoAs-s2026092701",
+      "PID": 2316206,
+      "GPU": 4,
+      "parameters": 902974,
+      "trainable_parameters": 3212
+    },
+    {
+      "row": "PAIR_As-s2026092701",
+      "PID": 2316289,
+      "GPU": 5,
+      "parameters": 902974,
+      "trainable_parameters": 3212
+    }
+  ],
+  "training_complete": false,
+  "formal_scores_read": false
+}
