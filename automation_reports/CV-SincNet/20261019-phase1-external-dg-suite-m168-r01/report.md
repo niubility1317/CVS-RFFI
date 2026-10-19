@@ -35,3 +35,7 @@ RIEI/DRIFT按用户E100，恒定LR无需移动milestone；IB两阶段各最多20
 一次N607普通账户preflight、一次归档传输SHA比较和一次远端编译通过。独立读回dispatcher及CPU子进程实际PID／CWD／argv匹配，CUDA可见设备为空；prepare_data.log从618字节增长至1120字节，16个新源缓存已产出。当前只证明CPU准备队列健康启动，不代表新观测、smoke或168行实验完成。证据：local_artifacts/phase1_external_dg_20261019/post_launch_verified.json。
 
 原24行队列同次读回为8行ANALYZED、2行RUNNING，dispatcher继续存活。新GPU队列仍等待父任务实际终结，随后仅允许物理GPU0/1并等待其他owner释放。不停止、重启或修改健康原任务。
+
+## 静态成本补充
+
+已按当前不可变发布的实际身份推理路径核算6类／10类默认头参数，并区分RIEI／DRIFT辅助支路。见[静态参数表](static_parameter_cost.md)。仅静态参数与FP32参数字节数，不声称已测GPU延迟、MACs或对应模型已训练完成；未改变任何运行代码、矩阵或健康进程。
