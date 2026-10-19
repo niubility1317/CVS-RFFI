@@ -1,0 +1,28 @@
+"""Full completed training-log analysis, no IQ or truth access."""
+import argparse,json
+from pathlib import Path
+from . import design as d
+from .analysis import stats
+from experiments.cvs_f_crossrx50_local.report_results import training_logs
+
+def publish(base,output):
+ base=Path(base);output=Path(output);r=d.read(base/'result.json');rows=d.read(base/'frozen_matrix.json')['rows']
+ if r['run_id']!=d.RUN or r['status']!='ARTIFACTS_COMPLETE' or len(r['records'])!=len(rows) or r['target_feedback']:raise ValueError('Full frozen matrix required')
+ logs=[training_logs(base,row['row_id']) for row in rows];summary=dict(result=r,training_logs=logs,all_log_records_parsed=True)
+ text='# 弱发射机浅中层特征挑战：完整 clean 结果\n\n默认头正常联合训练，逐模型固定final50；clean168000预测完成后独立CPU truth-last评分。匹配BASE复用既有同seed结果，没有重复训练或测试。\n\n| 方法 | seed | clean准确率% | BASE准确率% | 整体差/百分点 | 弱2类差/百分点 | Macro-F1差/百分点 | 最差RX差/百分点 | 最差day差/百分点 |\n|---|---:|---:|---:|---:|---:|---:|---:|---:|\n'
+ for row,p in zip(r['records'],r['paired']):text+='| '+row['treatment']+' | '+str(row['model_seed'])+' | '+format(100*row['current']['accuracy'],'.4f')+' | '+format(100*row['reused_BASE']['accuracy'],'.4f')+' | '+' | '.join(format(p[k],'+.4f') for k in ('accuracy_pp','weak_TX_mean_pp','macro_f1_pp','worst_RX_pp','worst_day_pp'))+' |\n'
+ for arm in d.ARMS:
+  pairs=[p for p in r['paired'] if p['treatment']==arm];absolute=stats([100*v['current']['accuracy'] for v in r['records'] if v['treatment']==arm]);summary.setdefault('absolute_accuracy_percent',{})[arm]=absolute
+  text+='\n## '+arm+' 的逐类配对差\n\n| TX | 实际配对数 | 均差/百分点 | 样本SD | 正差数 |\n|---|---:|---:|---:|---:|\n'
+  for index,name in enumerate(d.CLASSES):
+   s=stats([p['per_TX_pp'][index] for p in pairs]);text+='| '+name+' | '+str(s['n'])+' | '+format(s['mean'],'+.4f')+' | '+('无' if s['sample_SD'] is None else format(s['sample_SD'],'.4f'))+' | '+str(sum(p['per_TX_pp'][index]>0 for p in pairs))+' |\n'
+ text+='\n## 实际训练执行与成本\n\n| row | U曝光 | 接受数 | 接受率% | 新增弱L前向包数 | 训练秒 | 预测秒 | CUDA峰值MiB |\n|---|---:|---:|---:|---:|---:|---:|---:|\n'
+ for log,cost in zip(logs,r['cost']):text+='| '+log['row_id']+' | '+str(log['U_seen'])+' | '+str(log['U_selected'])+' | '+format(100*log['U_acceptance'],'.4f')+' | '+str(cost['extra_L_feature_forwards'])+' | '+format(cost['source_seconds'],'.1f')+' | '+format(cost['prediction_seconds'],'.1f')+' | '+format(cost['peak_cuda_MiB'],'.1f')+' |\n'
+ text+='\n各组均保留原F+CROSS_RX50=33L+17U、RDrop1、旧门控/ownEMA/cos、普通增强/LS.01、统一物理Sinc。无星地增强，只测clean；新增遮蔽仅在当前源L的固定弱类14-7/20-19生效。原两次RDrop和浅中层SupCon保持。新增functional eval前向不更新buffer/随机数流，既有W在辅助中detach；没有新增分类器、参数或真实优化步骤。\n\n所有50轮、11100步和完整stdout均已解析。U真值读取、非有限跳步、星地执行均须为0，实际接受率不是最终模型置信度。源条件在新目标访问前固定；失败组不依据目标成绩补种子。单种子无样本SD，不冒充稳定泛化收益。完整均值/样本SD/正差数、SALIENCY−RANDOM配对差和全部负结果见results_summary.json。并发资源竞争影响墙钟，不据此宣称算法加速。\n\n历史85.1139%是原方法三seed参考；新差值一律对本机同seed匹配BASE。当前基准已暴露，本轮属Phase1 clean探索，不声称新独立盲测、Phase2迁移或卫星部署。\n'
+ output.mkdir(parents=True,exist_ok=True)
+ for name,value in [('result.json',r),('results_summary.json',summary)]:
+  with (output/name).open('x',encoding='utf-8') as f:json.dump(value,f,ensure_ascii=False,indent=2,allow_nan=False);f.write('\n')
+ with (output/'results.md').open('x',encoding='utf-8') as f:f.write(text)
+ return summary
+if __name__=='__main__':
+ p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--output',required=True);a=p.parse_args();r=publish(a.base,a.output);print(json.dumps(dict(status='REPORTED',rows=len(r['result']['records']),full_logs=True)))

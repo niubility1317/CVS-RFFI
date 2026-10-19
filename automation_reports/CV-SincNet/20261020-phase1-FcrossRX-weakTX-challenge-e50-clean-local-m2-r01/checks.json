@@ -1,0 +1,59 @@
+{
+  "status": "PASS",
+  "protocol_negative_cases": 8,
+  "known_channel_oracle": true,
+  "random_control_private_RNG": true,
+  "active_calls": 2498,
+  "shallow_calls": 1249,
+  "middle_calls": 1249,
+  "real_checkpoint_no_query_smoke": true,
+  "checkpoint_not_inherited_by_training": true,
+  "default_head_joint": true,
+  "head_fit_updates": 0,
+  "IQ_reads": 0,
+  "target_reads": 0,
+  "parameters": 900722,
+  "warmup_exact": true,
+  "feature_export_exact": true,
+  "EMA_eval_untouched": true,
+  "actual_feature_gradients": [
+    {
+      "treatment": "RANDOM_WEAK",
+      "step": 1112,
+      "level": "time_down",
+      "extra_L_packets": 43,
+      "aux_Sinc_gradient_norm": 0.007026032544672489,
+      "main_W_gradient_norm": 4.017119407653809,
+      "aux_W_gradient": null
+    },
+    {
+      "treatment": "RANDOM_WEAK",
+      "step": 1116,
+      "level": "t2.pool",
+      "extra_L_packets": 43,
+      "aux_Sinc_gradient_norm": 0.004709460306912661,
+      "main_W_gradient_norm": 4.017119407653809,
+      "aux_W_gradient": null
+    },
+    {
+      "treatment": "SALIENCY_WEAK",
+      "step": 1112,
+      "level": "time_down",
+      "extra_L_packets": 43,
+      "aux_Sinc_gradient_norm": 0.008585075847804546,
+      "main_W_gradient_norm": 4.017119407653809,
+      "aux_W_gradient": null
+    },
+    {
+      "treatment": "SALIENCY_WEAK",
+      "step": 1116,
+      "level": "t2.pool",
+      "extra_L_packets": 43,
+      "aux_Sinc_gradient_norm": 0.007643547374755144,
+      "main_W_gradient_norm": 4.017119407653809,
+      "aux_W_gradient": null
+    }
+  ],
+  "main_RNG_unchanged": true,
+  "live_state_unchanged": true
+}

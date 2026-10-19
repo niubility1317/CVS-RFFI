@@ -1,0 +1,920 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01",
+  "group_id": "F-crossRX50-weakTX-feature-challenge",
+  "display_name": "F跨RX50弱发射机：浅中层随机与显著通道挑战",
+  "description": "Two initial scratch50 candidates on exact original F+CROSS_RX50; source-fixed weak TX only, shallow/mid12.5% channel challenge with matched random control. NO satellite; clean only; default head jointly trained on original objective. Candidate auxiliary freezes existing W, no new classifier/params.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "F弱TX特征挑战",
+    "F weakTX RSC"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "weak_TX",
+    "feature_challenge",
+    "shallow_middle",
+    "RSC_inspired",
+    "RDrop",
+    "old_gates",
+    "ownEMA",
+    "scratch50",
+    "clean",
+    "no_satellite",
+    "default_head",
+    "local"
+  ],
+  "comparison_group_id": "F-CROSSRX50-weakTX-local",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active user worse-transmitter feature-learning goal; local, no satellite augmentation/test, default head joint. Source feature geometry motivates a generic all-class margin, no target class-specific rule.",
+  "code": {
+    "commit": "release_commit.txt (actual code/config Git commit)",
+    "checkout": "codex/phase1-rdrop-combinations-20261015",
+    "environment": "Verified native Windows base Python3.10/PyTorch2.10+cu128; direct base interpreter; FP32/noTF32",
+    "cwd": "IMMUTABLE_LOCAL_RELEASE/cvs_F_RXmargin50_local_20261019_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing source contract",
+    "representation": "Original native received residual/post_sync/noeq, center crop/RMS normalized256 IQ; SAME validated mmap cache; native eq_i/sig_i/base_index restored by opaque physicalID join",
+    "contract_ref": "LOCAL_DATASET/source/source_contract.json",
+    "physical_ids_ref": "LOCAL_DATASET/source/source_contract.json#role_ids",
+    "label_map_ref": "LOCAL_DATASET/source_cache/manifest.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      "2021_03_01",
+      "2021_03_08",
+      "2021_03_15",
+      "2021_03_23"
+    ],
+    "tx_sets_ref": "LOCAL_DATASET/source_cache/manifest.json",
+    "roles": {
+      "L_s": "6300 original visible source labels, randomL128 drop_last; ordinary augmentation; original native two RDrop forwards",
+      "U_s": "56700 TX hidden; original U256 and batch_neighbor/ownEMA recipe during17U epochs; no new U feature objective",
+      "V": "27000 no-update final source expansion; prior3model sourceV alone defines weakTX1/3. No V loss/prototypes/feature masks."
+    },
+    "train_ratio": 0.07,
+    "capsule_id": "existing VALIDATED_ONCE Phase1 capsule manifest; reuse unchanged",
+    "split_id": "original registered source/target physical split; reuse unchanged",
+    "validation_ref": "LOCAL_DATASET/source_cache/manifest.json; existing capsule/manifest.json VALIDATED_ONCE",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_training_then_frozen_target_test",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Frozen default-head ManySig clean target168000 accuracy/MacroF1/perTX/RX/day; exposed benchmark; no independent blind/Phase2/satellite claim"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "Existing source READY/EXACT_MATCH manifest reused; original role cache and native temporal metadata, current same-run initialization/source_frozen/native checkpoint args",
+    "provenance_verdict": "Scratch only; own scratch EMA; exact matching local BASE source/pred reused as comparison, no weight inheritance. Real matching BASE checkpoint loaded only for discarded zero-input smoke.",
+    "selection_rule": "fixed_final50; no V/test checkpoint selection",
+    "reference_run": "20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01",
+    "reference_code_commit": "31467086c3ced30237f3ac86e91eae68645425d7",
+    "reference_rows": [
+      "BASE-s2026092701",
+      "BASE-s2026092702",
+      "BASE-s2026092703"
+    ]
+  },
+  "execution": {
+    "host": "local Windows RTX5070Ti",
+    "launch_owner": "codex/root/FcrossRX50-weakTX-challenge-local-20261020",
+    "gpu_policy": "Physical GPU0 max3 total source/predict workers across owners, freeRAM>=4.5GiB; CPU score max1 across this/current original50 run via CIM; preserve all healthy tasks",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01",
+    "launch_command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_weaktx_challenge50.driver --profile LOCAL_PROFILE --metadata LOCAL_SOURCE_NATIVE_GATE_METADATA_R02 --base LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01 --reference-base LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --commit RELEASE_COMMIT --max-workers 3",
+    "stop_rule": "Role/provenance/config/output conflicts, nonfinite loss/gradient, incomplete native budget/EMA/Sinc/feature scope or failed worker stop new dispatch; preserve outputs and other healthy workers; no automatic or performance-based retries"
+  },
+  "expected_artifacts": [
+    "execution.json",
+    "registered_rows.json",
+    "source_expansion.json",
+    "frozen_matrix.json",
+    "*-start.json",
+    "source/initial_smoke.pt",
+    "source/initialization.json",
+    "source/actual_native_args.json",
+    "source/source_contract.json",
+    "source/epoch_metrics.csv",
+    "source/epoch_metrics.jsonl",
+    "source/step_metrics.jsonl.gz",
+    "source/sinc_optimizer_observation.json",
+    "source/supcon_training_observation.json",
+    "source/source_training_mechanism.json",
+    "source/final_ssdg.pth",
+    "source/source_frozen.json",
+    "source/local_source_complete.json",
+    "prediction/predictions.npz",
+    "prediction/complete.json",
+    "scores/metrics.json",
+    "result.json",
+    "source/challenge_training_observation.json",
+    "source/challenge_steps.jsonl.gz"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean target accuracy",
+      "MacroF1",
+      "source-fixed weak2 meanrecall",
+      "perTX recall",
+      "worst RX/day",
+      "paired seed differences and sampleSD/positive counts",
+      "full native U exposure/acceptance",
+      "source/predict cost and CUDA memory",
+      "Actual extra weak-L feature forwards and scheduled per-layer calls",
+      "SALIENCY_WEAK minus RANDOM_WEAK same-seed paired differences"
+    ],
+    "dimensions": [
+      "actual1 or3 candidate model seeds",
+      "6TX",
+      "7 targetRX",
+      "4 targetdays",
+      "clean168000/model"
+    ],
+    "prediction_ref": "Frozen same-row final50 default head; reused matching BASE predictions from parent run",
+    "scorer_ref": "Independent CPU truth-last only after row clean predictions fixed"
+  },
+  "rows": [
+    {
+      "row_id": "RANDOM_WEAK-s2026092701",
+      "method": "Original F CROSS_RX50; RANDOM_WEAK",
+      "purpose": "Initial two-arm source falsification; reused same-seed BASE",
+      "config_ref": "experiments/cvs_f_weaktx_challenge50/design.py#config",
+      "resolved_config_ref": "LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01/RANDOM_WEAK-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "original_source_roles": "unchanged7/63/30",
+        "U_TX_hidden": true,
+        "oldgate_ownEMA": true,
+        "ordinary_aug": true,
+        "satellite_training": false,
+        "test_views": [
+          "clean"
+        ],
+        "source_risk_weighting": false,
+        "joint160_geometry": false,
+        "weak_TX_indices": [
+          1,
+          3
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Original native model/augmentation and random L/U sampler; fixed original source partition392005; clean evaluation deterministic, no new channel randomness",
+      "k": null,
+      "scenario": "clean only",
+      "optimizer": {
+        "mode": "CENTER_UNITS",
+        "sample_rate_Hz": 25000000,
+        "center_scale_Hz": 25000,
+        "lr": "alpha Fs/s",
+        "epsilon": "epsilon s/Fs",
+        "weight_decay": "q -= alpha lambda (q+p0/s); AdamW q decay0",
+        "gradient_clipping": "physical Hz globalclip5",
+        "native_cosine_schedule": "Original alpha cosine; one fixed mapping immediately before each actual step",
+        "extra_parameters": 0,
+        "extra_model_forwards_vs_RDrop": 2498,
+        "extra_optimizer_steps": 0,
+        "diagnostic_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "source_feature_objective": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "descriptor": "channel time mean/population std, current L-batch detached standardization floor1e-4, sampleL2 eps1e-4",
+          "positive": "sameTX differentRX",
+          "negative": "otherTX only; sameTX sameRX excluded in CROSS_RX denominator",
+          "two_forward_policy": "Mean of first/second losses, each mean of shallow/middle; reuse original actual augmented L IQ and RDrop forwards",
+          "invalid_anchor": "Exclude anchors without positive or otherTX negative; finite zero if none; sampler unchanged",
+          "U": "Original oldgate/ownEMA/cos untouched; no U TX labels or added U feature loss",
+          "extra_model_forwards": 0,
+          "extra_trainable_parameters": 0,
+          "default_head_direct_aux_gradient": false,
+          "additional_weak_feature_challenge": {
+            "mode": "RANDOM_WEAK",
+            "levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "drop_fraction": 0.125,
+            "every_steps": 4,
+            "scheduled_after_step": 1110,
+            "scheduled_calls": 2498,
+            "max_weight": 0.1,
+            "warm_epochs": 5,
+            "ramp_epochs": 10,
+            "selection": "Per weak source sample; random private CPU generator vs highest sum(activation * d(true logit)/d(activation)); detached mask",
+            "auxiliary": "Current augmented weakL only. Existing identity backbone functional eval, all buffers cloned, existing W detached; smoothed CE updates only deployed features.",
+            "main_RDrop": "Two original stochastic forwards unchanged; original source SupCon and oldgate ownEMA U unchanged"
+          }
+        }
+      },
+      "lr": 0.0002,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "Scratch50=33L+17U/11100updates. Original two RDrop forwards and shallow/mid SupCon unchanged.2498 extra eval identity forwards only current weak L; same deterministic calendar/random mask budget. No extra optimizer steps/parameters/head fitting.",
+      "output_root": "LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01/RANDOM_WEAK-s2026092701",
+      "log_path": "LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01/RANDOM_WEAK-s2026092701-source.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_weaktx_challenge50.driver --profile LOCAL_PROFILE --metadata LOCAL_SOURCE_NATIVE_GATE_METADATA_R02 --base LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01 --reference-base LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --commit RELEASE_COMMIT --max-workers 3",
+      "expected_artifacts": [
+        "execution.json",
+        "registered_rows.json",
+        "source_expansion.json",
+        "frozen_matrix.json",
+        "*-start.json",
+        "source/initial_smoke.pt",
+        "source/initialization.json",
+        "source/actual_native_args.json",
+        "source/source_contract.json",
+        "source/epoch_metrics.csv",
+        "source/epoch_metrics.jsonl",
+        "source/step_metrics.jsonl.gz",
+        "source/sinc_optimizer_observation.json",
+        "source/supcon_training_observation.json",
+        "source/source_training_mechanism.json",
+        "source/final_ssdg.pth",
+        "source/source_frozen.json",
+        "source/local_source_complete.json",
+        "prediction/predictions.npz",
+        "prediction/complete.json",
+        "scores/metrics.json",
+        "result.json"
+      ],
+      "arm": "RANDOM_WEAK",
+      "model_seed": 2026092701
+    },
+    {
+      "row_id": "SALIENCY_WEAK-s2026092701",
+      "method": "Original F CROSS_RX50; SALIENCY_WEAK",
+      "purpose": "Initial two-arm source falsification; reused same-seed BASE",
+      "config_ref": "experiments/cvs_f_weaktx_challenge50/design.py#config",
+      "resolved_config_ref": "LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01/SALIENCY_WEAK-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "original_source_roles": "unchanged7/63/30",
+        "U_TX_hidden": true,
+        "oldgate_ownEMA": true,
+        "ordinary_aug": true,
+        "satellite_training": false,
+        "test_views": [
+          "clean"
+        ],
+        "source_risk_weighting": false,
+        "joint160_geometry": false,
+        "weak_TX_indices": [
+          1,
+          3
+        ]
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Original native model/augmentation and random L/U sampler; fixed original source partition392005; clean evaluation deterministic, no new channel randomness",
+      "k": null,
+      "scenario": "clean only",
+      "optimizer": {
+        "mode": "CENTER_UNITS",
+        "sample_rate_Hz": 25000000,
+        "center_scale_Hz": 25000,
+        "lr": "alpha Fs/s",
+        "epsilon": "epsilon s/Fs",
+        "weight_decay": "q -= alpha lambda (q+p0/s); AdamW q decay0",
+        "gradient_clipping": "physical Hz globalclip5",
+        "native_cosine_schedule": "Original alpha cosine; one fixed mapping immediately before each actual step",
+        "extra_parameters": 0,
+        "extra_model_forwards_vs_RDrop": 2498,
+        "extra_optimizer_steps": 0,
+        "diagnostic_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "source_feature_objective": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "descriptor": "channel time mean/population std, current L-batch detached standardization floor1e-4, sampleL2 eps1e-4",
+          "positive": "sameTX differentRX",
+          "negative": "otherTX only; sameTX sameRX excluded in CROSS_RX denominator",
+          "two_forward_policy": "Mean of first/second losses, each mean of shallow/middle; reuse original actual augmented L IQ and RDrop forwards",
+          "invalid_anchor": "Exclude anchors without positive or otherTX negative; finite zero if none; sampler unchanged",
+          "U": "Original oldgate/ownEMA/cos untouched; no U TX labels or added U feature loss",
+          "extra_model_forwards": 0,
+          "extra_trainable_parameters": 0,
+          "default_head_direct_aux_gradient": false,
+          "additional_weak_feature_challenge": {
+            "mode": "SALIENCY_WEAK",
+            "levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "drop_fraction": 0.125,
+            "every_steps": 4,
+            "scheduled_after_step": 1110,
+            "scheduled_calls": 2498,
+            "max_weight": 0.1,
+            "warm_epochs": 5,
+            "ramp_epochs": 10,
+            "selection": "Per weak source sample; random private CPU generator vs highest sum(activation * d(true logit)/d(activation)); detached mask",
+            "auxiliary": "Current augmented weakL only. Existing identity backbone functional eval, all buffers cloned, existing W detached; smoothed CE updates only deployed features.",
+            "main_RDrop": "Two original stochastic forwards unchanged; original source SupCon and oldgate ownEMA U unchanged"
+          }
+        }
+      },
+      "lr": 0.0002,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "Scratch50=33L+17U/11100updates. Original two RDrop forwards and shallow/mid SupCon unchanged.2498 extra eval identity forwards only current weak L; same deterministic calendar/random mask budget. No extra optimizer steps/parameters/head fitting.",
+      "output_root": "LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01/SALIENCY_WEAK-s2026092701",
+      "log_path": "LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01/SALIENCY_WEAK-s2026092701-source.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_weaktx_challenge50.driver --profile LOCAL_PROFILE --metadata LOCAL_SOURCE_NATIVE_GATE_METADATA_R02 --base LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01 --reference-base LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --commit RELEASE_COMMIT --max-workers 3",
+      "expected_artifacts": [
+        "execution.json",
+        "registered_rows.json",
+        "source_expansion.json",
+        "frozen_matrix.json",
+        "*-start.json",
+        "source/initial_smoke.pt",
+        "source/initialization.json",
+        "source/actual_native_args.json",
+        "source/source_contract.json",
+        "source/epoch_metrics.csv",
+        "source/epoch_metrics.jsonl",
+        "source/step_metrics.jsonl.gz",
+        "source/sinc_optimizer_observation.json",
+        "source/supcon_training_observation.json",
+        "source/source_training_mechanism.json",
+        "source/final_ssdg.pth",
+        "source/source_frozen.json",
+        "source/local_source_complete.json",
+        "prediction/predictions.npz",
+        "prediction/complete.json",
+        "scores/metrics.json",
+        "result.json"
+      ],
+      "arm": "SALIENCY_WEAK",
+      "model_seed": 2026092701
+    }
+  ],
+  "notes": [
+    "Exact original F+CROSS_RX50=33L+17U,11100 real updates; ordinaryAug,LS.01,RDrop1,oldgate-ownEMA-cos,unified physical Sinc. No satellite; clean168000 only; default head main jointly trained.",
+    "Weak indices1/3 (14-7,20-19) fixed by prior sourceV calibration. No target-conditioned sample selection or mask. SourceV geometry suggests close class centroids; feature-margin and extra joint SupCon did not jointly solve weak classes. This separate hypothesis tests alternative usable features, not stronger repulsion or more U.",
+    "Reference RSC: https://github.com/DeLightCMU/RSC . Adaptation is source-fixed weak-only, shallow/mid channel mask, auxiliary CE with detached existing W; do not claim canonical RSC reproduction or invention.",
+    "Firstseed two arms run concurrently, source freeze for BOTH before any new candidate target. Each arm independently follows unchanged fixed source expansion criterion; failed arms retain n1 with clean test. Reuse matching original50 local BASE controls, no retraining or re-prediction.",
+    "Every4 updates after step1110, alternate48channel time_down and96channel t2.pool. Remove exactly6/12 channels for each current weak L sample.2498 calls split1249each. Max coefficient.1 with warm5/ramp10. Private mask RNG; no change to main RNG or original two RDrop/SupCon forwards. Extra identity forward eval/cloned buffers/existing W detached; actual feature gradients verified.",
+    "Independent truth-last CPU scorer opens truth only after exact clean predictions complete. No satellite/LEO, no separately fit head. Report eachseed,mean/sampleSD,paired weak/perTX/RX/day/cost and preserve negatives. Benchmark already exposed, no new blind-test claim.",
+    "New local immutable release/output; GPU0 max3 total including other owners, RAM>=4.5GiB, scorer max1. No healthy process changes or automated retry. One focused review only; checks already PASS with real final50 discarded checkpoint zero-input smoke."
+  ],
+  "conditional_rows": [
+    {
+      "row_id": "RANDOM_WEAK-s2026092702",
+      "method": "Original F CROSS_RX50; RANDOM_WEAK",
+      "purpose": "Conditional unchanged source-qualified seed extension",
+      "config_ref": "experiments/cvs_f_weaktx_challenge50/design.py#config",
+      "resolved_config_ref": "LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01/RANDOM_WEAK-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "original_source_roles": "unchanged7/63/30",
+        "U_TX_hidden": true,
+        "oldgate_ownEMA": true,
+        "ordinary_aug": true,
+        "satellite_training": false,
+        "test_views": [
+          "clean"
+        ],
+        "source_risk_weighting": false,
+        "joint160_geometry": false,
+        "weak_TX_indices": [
+          1,
+          3
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Original native model/augmentation and random L/U sampler; fixed original source partition392005; clean evaluation deterministic, no new channel randomness",
+      "k": null,
+      "scenario": "clean only",
+      "optimizer": {
+        "mode": "CENTER_UNITS",
+        "sample_rate_Hz": 25000000,
+        "center_scale_Hz": 25000,
+        "lr": "alpha Fs/s",
+        "epsilon": "epsilon s/Fs",
+        "weight_decay": "q -= alpha lambda (q+p0/s); AdamW q decay0",
+        "gradient_clipping": "physical Hz globalclip5",
+        "native_cosine_schedule": "Original alpha cosine; one fixed mapping immediately before each actual step",
+        "extra_parameters": 0,
+        "extra_model_forwards_vs_RDrop": 2498,
+        "extra_optimizer_steps": 0,
+        "diagnostic_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "source_feature_objective": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "descriptor": "channel time mean/population std, current L-batch detached standardization floor1e-4, sampleL2 eps1e-4",
+          "positive": "sameTX differentRX",
+          "negative": "otherTX only; sameTX sameRX excluded in CROSS_RX denominator",
+          "two_forward_policy": "Mean of first/second losses, each mean of shallow/middle; reuse original actual augmented L IQ and RDrop forwards",
+          "invalid_anchor": "Exclude anchors without positive or otherTX negative; finite zero if none; sampler unchanged",
+          "U": "Original oldgate/ownEMA/cos untouched; no U TX labels or added U feature loss",
+          "extra_model_forwards": 0,
+          "extra_trainable_parameters": 0,
+          "default_head_direct_aux_gradient": false,
+          "additional_weak_feature_challenge": {
+            "mode": "RANDOM_WEAK",
+            "levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "drop_fraction": 0.125,
+            "every_steps": 4,
+            "scheduled_after_step": 1110,
+            "scheduled_calls": 2498,
+            "max_weight": 0.1,
+            "warm_epochs": 5,
+            "ramp_epochs": 10,
+            "selection": "Per weak source sample; random private CPU generator vs highest sum(activation * d(true logit)/d(activation)); detached mask",
+            "auxiliary": "Current augmented weakL only. Existing identity backbone functional eval, all buffers cloned, existing W detached; smoothed CE updates only deployed features.",
+            "main_RDrop": "Two original stochastic forwards unchanged; original source SupCon and oldgate ownEMA U unchanged"
+          }
+        }
+      },
+      "lr": 0.0002,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "Scratch50=33L+17U/11100updates. Original two RDrop forwards and shallow/mid SupCon unchanged.2498 extra eval identity forwards only current weak L; same deterministic calendar/random mask budget. No extra optimizer steps/parameters/head fitting.",
+      "output_root": "LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01/RANDOM_WEAK-s2026092702",
+      "log_path": "LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01/RANDOM_WEAK-s2026092702-source.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_weaktx_challenge50.driver --profile LOCAL_PROFILE --metadata LOCAL_SOURCE_NATIVE_GATE_METADATA_R02 --base LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01 --reference-base LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --commit RELEASE_COMMIT --max-workers 3",
+      "expected_artifacts": [
+        "execution.json",
+        "registered_rows.json",
+        "source_expansion.json",
+        "frozen_matrix.json",
+        "*-start.json",
+        "source/initial_smoke.pt",
+        "source/initialization.json",
+        "source/actual_native_args.json",
+        "source/source_contract.json",
+        "source/epoch_metrics.csv",
+        "source/epoch_metrics.jsonl",
+        "source/step_metrics.jsonl.gz",
+        "source/sinc_optimizer_observation.json",
+        "source/supcon_training_observation.json",
+        "source/source_training_mechanism.json",
+        "source/final_ssdg.pth",
+        "source/source_frozen.json",
+        "source/local_source_complete.json",
+        "prediction/predictions.npz",
+        "prediction/complete.json",
+        "scores/metrics.json",
+        "result.json"
+      ],
+      "arm": "RANDOM_WEAK",
+      "model_seed": 2026092702,
+      "condition": "Each own arm only if firstseed source weak2>=+.2pp/overall>=-.2pp/worstRX>=-.5pp/anyTX>=-1pp before candidate target access"
+    },
+    {
+      "row_id": "SALIENCY_WEAK-s2026092702",
+      "method": "Original F CROSS_RX50; SALIENCY_WEAK",
+      "purpose": "Conditional unchanged source-qualified seed extension",
+      "config_ref": "experiments/cvs_f_weaktx_challenge50/design.py#config",
+      "resolved_config_ref": "LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01/SALIENCY_WEAK-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "original_source_roles": "unchanged7/63/30",
+        "U_TX_hidden": true,
+        "oldgate_ownEMA": true,
+        "ordinary_aug": true,
+        "satellite_training": false,
+        "test_views": [
+          "clean"
+        ],
+        "source_risk_weighting": false,
+        "joint160_geometry": false,
+        "weak_TX_indices": [
+          1,
+          3
+        ]
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Original native model/augmentation and random L/U sampler; fixed original source partition392005; clean evaluation deterministic, no new channel randomness",
+      "k": null,
+      "scenario": "clean only",
+      "optimizer": {
+        "mode": "CENTER_UNITS",
+        "sample_rate_Hz": 25000000,
+        "center_scale_Hz": 25000,
+        "lr": "alpha Fs/s",
+        "epsilon": "epsilon s/Fs",
+        "weight_decay": "q -= alpha lambda (q+p0/s); AdamW q decay0",
+        "gradient_clipping": "physical Hz globalclip5",
+        "native_cosine_schedule": "Original alpha cosine; one fixed mapping immediately before each actual step",
+        "extra_parameters": 0,
+        "extra_model_forwards_vs_RDrop": 2498,
+        "extra_optimizer_steps": 0,
+        "diagnostic_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "source_feature_objective": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "descriptor": "channel time mean/population std, current L-batch detached standardization floor1e-4, sampleL2 eps1e-4",
+          "positive": "sameTX differentRX",
+          "negative": "otherTX only; sameTX sameRX excluded in CROSS_RX denominator",
+          "two_forward_policy": "Mean of first/second losses, each mean of shallow/middle; reuse original actual augmented L IQ and RDrop forwards",
+          "invalid_anchor": "Exclude anchors without positive or otherTX negative; finite zero if none; sampler unchanged",
+          "U": "Original oldgate/ownEMA/cos untouched; no U TX labels or added U feature loss",
+          "extra_model_forwards": 0,
+          "extra_trainable_parameters": 0,
+          "default_head_direct_aux_gradient": false,
+          "additional_weak_feature_challenge": {
+            "mode": "SALIENCY_WEAK",
+            "levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "drop_fraction": 0.125,
+            "every_steps": 4,
+            "scheduled_after_step": 1110,
+            "scheduled_calls": 2498,
+            "max_weight": 0.1,
+            "warm_epochs": 5,
+            "ramp_epochs": 10,
+            "selection": "Per weak source sample; random private CPU generator vs highest sum(activation * d(true logit)/d(activation)); detached mask",
+            "auxiliary": "Current augmented weakL only. Existing identity backbone functional eval, all buffers cloned, existing W detached; smoothed CE updates only deployed features.",
+            "main_RDrop": "Two original stochastic forwards unchanged; original source SupCon and oldgate ownEMA U unchanged"
+          }
+        }
+      },
+      "lr": 0.0002,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "Scratch50=33L+17U/11100updates. Original two RDrop forwards and shallow/mid SupCon unchanged.2498 extra eval identity forwards only current weak L; same deterministic calendar/random mask budget. No extra optimizer steps/parameters/head fitting.",
+      "output_root": "LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01/SALIENCY_WEAK-s2026092702",
+      "log_path": "LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01/SALIENCY_WEAK-s2026092702-source.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_weaktx_challenge50.driver --profile LOCAL_PROFILE --metadata LOCAL_SOURCE_NATIVE_GATE_METADATA_R02 --base LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01 --reference-base LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --commit RELEASE_COMMIT --max-workers 3",
+      "expected_artifacts": [
+        "execution.json",
+        "registered_rows.json",
+        "source_expansion.json",
+        "frozen_matrix.json",
+        "*-start.json",
+        "source/initial_smoke.pt",
+        "source/initialization.json",
+        "source/actual_native_args.json",
+        "source/source_contract.json",
+        "source/epoch_metrics.csv",
+        "source/epoch_metrics.jsonl",
+        "source/step_metrics.jsonl.gz",
+        "source/sinc_optimizer_observation.json",
+        "source/supcon_training_observation.json",
+        "source/source_training_mechanism.json",
+        "source/final_ssdg.pth",
+        "source/source_frozen.json",
+        "source/local_source_complete.json",
+        "prediction/predictions.npz",
+        "prediction/complete.json",
+        "scores/metrics.json",
+        "result.json"
+      ],
+      "arm": "SALIENCY_WEAK",
+      "model_seed": 2026092702,
+      "condition": "Each own arm only if firstseed source weak2>=+.2pp/overall>=-.2pp/worstRX>=-.5pp/anyTX>=-1pp before candidate target access"
+    },
+    {
+      "row_id": "RANDOM_WEAK-s2026092703",
+      "method": "Original F CROSS_RX50; RANDOM_WEAK",
+      "purpose": "Conditional unchanged source-qualified seed extension",
+      "config_ref": "experiments/cvs_f_weaktx_challenge50/design.py#config",
+      "resolved_config_ref": "LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01/RANDOM_WEAK-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "original_source_roles": "unchanged7/63/30",
+        "U_TX_hidden": true,
+        "oldgate_ownEMA": true,
+        "ordinary_aug": true,
+        "satellite_training": false,
+        "test_views": [
+          "clean"
+        ],
+        "source_risk_weighting": false,
+        "joint160_geometry": false,
+        "weak_TX_indices": [
+          1,
+          3
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026092703,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Original native model/augmentation and random L/U sampler; fixed original source partition392005; clean evaluation deterministic, no new channel randomness",
+      "k": null,
+      "scenario": "clean only",
+      "optimizer": {
+        "mode": "CENTER_UNITS",
+        "sample_rate_Hz": 25000000,
+        "center_scale_Hz": 25000,
+        "lr": "alpha Fs/s",
+        "epsilon": "epsilon s/Fs",
+        "weight_decay": "q -= alpha lambda (q+p0/s); AdamW q decay0",
+        "gradient_clipping": "physical Hz globalclip5",
+        "native_cosine_schedule": "Original alpha cosine; one fixed mapping immediately before each actual step",
+        "extra_parameters": 0,
+        "extra_model_forwards_vs_RDrop": 2498,
+        "extra_optimizer_steps": 0,
+        "diagnostic_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "source_feature_objective": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "descriptor": "channel time mean/population std, current L-batch detached standardization floor1e-4, sampleL2 eps1e-4",
+          "positive": "sameTX differentRX",
+          "negative": "otherTX only; sameTX sameRX excluded in CROSS_RX denominator",
+          "two_forward_policy": "Mean of first/second losses, each mean of shallow/middle; reuse original actual augmented L IQ and RDrop forwards",
+          "invalid_anchor": "Exclude anchors without positive or otherTX negative; finite zero if none; sampler unchanged",
+          "U": "Original oldgate/ownEMA/cos untouched; no U TX labels or added U feature loss",
+          "extra_model_forwards": 0,
+          "extra_trainable_parameters": 0,
+          "default_head_direct_aux_gradient": false,
+          "additional_weak_feature_challenge": {
+            "mode": "RANDOM_WEAK",
+            "levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "drop_fraction": 0.125,
+            "every_steps": 4,
+            "scheduled_after_step": 1110,
+            "scheduled_calls": 2498,
+            "max_weight": 0.1,
+            "warm_epochs": 5,
+            "ramp_epochs": 10,
+            "selection": "Per weak source sample; random private CPU generator vs highest sum(activation * d(true logit)/d(activation)); detached mask",
+            "auxiliary": "Current augmented weakL only. Existing identity backbone functional eval, all buffers cloned, existing W detached; smoothed CE updates only deployed features.",
+            "main_RDrop": "Two original stochastic forwards unchanged; original source SupCon and oldgate ownEMA U unchanged"
+          }
+        }
+      },
+      "lr": 0.0002,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "Scratch50=33L+17U/11100updates. Original two RDrop forwards and shallow/mid SupCon unchanged.2498 extra eval identity forwards only current weak L; same deterministic calendar/random mask budget. No extra optimizer steps/parameters/head fitting.",
+      "output_root": "LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01/RANDOM_WEAK-s2026092703",
+      "log_path": "LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01/RANDOM_WEAK-s2026092703-source.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_weaktx_challenge50.driver --profile LOCAL_PROFILE --metadata LOCAL_SOURCE_NATIVE_GATE_METADATA_R02 --base LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01 --reference-base LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --commit RELEASE_COMMIT --max-workers 3",
+      "expected_artifacts": [
+        "execution.json",
+        "registered_rows.json",
+        "source_expansion.json",
+        "frozen_matrix.json",
+        "*-start.json",
+        "source/initial_smoke.pt",
+        "source/initialization.json",
+        "source/actual_native_args.json",
+        "source/source_contract.json",
+        "source/epoch_metrics.csv",
+        "source/epoch_metrics.jsonl",
+        "source/step_metrics.jsonl.gz",
+        "source/sinc_optimizer_observation.json",
+        "source/supcon_training_observation.json",
+        "source/source_training_mechanism.json",
+        "source/final_ssdg.pth",
+        "source/source_frozen.json",
+        "source/local_source_complete.json",
+        "prediction/predictions.npz",
+        "prediction/complete.json",
+        "scores/metrics.json",
+        "result.json"
+      ],
+      "arm": "RANDOM_WEAK",
+      "model_seed": 2026092703,
+      "condition": "Each own arm only if firstseed source weak2>=+.2pp/overall>=-.2pp/worstRX>=-.5pp/anyTX>=-1pp before candidate target access"
+    },
+    {
+      "row_id": "SALIENCY_WEAK-s2026092703",
+      "method": "Original F CROSS_RX50; SALIENCY_WEAK",
+      "purpose": "Conditional unchanged source-qualified seed extension",
+      "config_ref": "experiments/cvs_f_weaktx_challenge50/design.py#config",
+      "resolved_config_ref": "LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01/SALIENCY_WEAK-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "original_source_roles": "unchanged7/63/30",
+        "U_TX_hidden": true,
+        "oldgate_ownEMA": true,
+        "ordinary_aug": true,
+        "satellite_training": false,
+        "test_views": [
+          "clean"
+        ],
+        "source_risk_weighting": false,
+        "joint160_geometry": false,
+        "weak_TX_indices": [
+          1,
+          3
+        ]
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026092703,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Original native model/augmentation and random L/U sampler; fixed original source partition392005; clean evaluation deterministic, no new channel randomness",
+      "k": null,
+      "scenario": "clean only",
+      "optimizer": {
+        "mode": "CENTER_UNITS",
+        "sample_rate_Hz": 25000000,
+        "center_scale_Hz": 25000,
+        "lr": "alpha Fs/s",
+        "epsilon": "epsilon s/Fs",
+        "weight_decay": "q -= alpha lambda (q+p0/s); AdamW q decay0",
+        "gradient_clipping": "physical Hz globalclip5",
+        "native_cosine_schedule": "Original alpha cosine; one fixed mapping immediately before each actual step",
+        "extra_parameters": 0,
+        "extra_model_forwards_vs_RDrop": 2498,
+        "extra_optimizer_steps": 0,
+        "diagnostic_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "source_feature_objective": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "descriptor": "channel time mean/population std, current L-batch detached standardization floor1e-4, sampleL2 eps1e-4",
+          "positive": "sameTX differentRX",
+          "negative": "otherTX only; sameTX sameRX excluded in CROSS_RX denominator",
+          "two_forward_policy": "Mean of first/second losses, each mean of shallow/middle; reuse original actual augmented L IQ and RDrop forwards",
+          "invalid_anchor": "Exclude anchors without positive or otherTX negative; finite zero if none; sampler unchanged",
+          "U": "Original oldgate/ownEMA/cos untouched; no U TX labels or added U feature loss",
+          "extra_model_forwards": 0,
+          "extra_trainable_parameters": 0,
+          "default_head_direct_aux_gradient": false,
+          "additional_weak_feature_challenge": {
+            "mode": "SALIENCY_WEAK",
+            "levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "drop_fraction": 0.125,
+            "every_steps": 4,
+            "scheduled_after_step": 1110,
+            "scheduled_calls": 2498,
+            "max_weight": 0.1,
+            "warm_epochs": 5,
+            "ramp_epochs": 10,
+            "selection": "Per weak source sample; random private CPU generator vs highest sum(activation * d(true logit)/d(activation)); detached mask",
+            "auxiliary": "Current augmented weakL only. Existing identity backbone functional eval, all buffers cloned, existing W detached; smoothed CE updates only deployed features.",
+            "main_RDrop": "Two original stochastic forwards unchanged; original source SupCon and oldgate ownEMA U unchanged"
+          }
+        }
+      },
+      "lr": 0.0002,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "Scratch50=33L+17U/11100updates. Original two RDrop forwards and shallow/mid SupCon unchanged.2498 extra eval identity forwards only current weak L; same deterministic calendar/random mask budget. No extra optimizer steps/parameters/head fitting.",
+      "output_root": "LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01/SALIENCY_WEAK-s2026092703",
+      "log_path": "LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01/SALIENCY_WEAK-s2026092703-source.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_weaktx_challenge50.driver --profile LOCAL_PROFILE --metadata LOCAL_SOURCE_NATIVE_GATE_METADATA_R02 --base LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01 --reference-base LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --commit RELEASE_COMMIT --max-workers 3",
+      "expected_artifacts": [
+        "execution.json",
+        "registered_rows.json",
+        "source_expansion.json",
+        "frozen_matrix.json",
+        "*-start.json",
+        "source/initial_smoke.pt",
+        "source/initialization.json",
+        "source/actual_native_args.json",
+        "source/source_contract.json",
+        "source/epoch_metrics.csv",
+        "source/epoch_metrics.jsonl",
+        "source/step_metrics.jsonl.gz",
+        "source/sinc_optimizer_observation.json",
+        "source/supcon_training_observation.json",
+        "source/source_training_mechanism.json",
+        "source/final_ssdg.pth",
+        "source/source_frozen.json",
+        "source/local_source_complete.json",
+        "prediction/predictions.npz",
+        "prediction/complete.json",
+        "scores/metrics.json",
+        "result.json"
+      ],
+      "arm": "SALIENCY_WEAK",
+      "model_seed": 2026092703,
+      "condition": "Each own arm only if firstseed source weak2>=+.2pp/overall>=-.2pp/worstRX>=-.5pp/anyTX>=-1pp before candidate target access"
+    }
+  ],
+  "registered_at": "2026-10-19T16:19:36+00:00"
+}
