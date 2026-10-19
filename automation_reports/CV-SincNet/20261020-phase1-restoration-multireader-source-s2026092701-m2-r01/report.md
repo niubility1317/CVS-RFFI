@@ -1,6 +1,6 @@
 # 三套冻结原 F 约束的恢复实验
 
-状态：PLANNED。用户要求 low-urban 超过 70%，其他五种 practical 接近 clean；“接近”暂按不超过原 F clean 2 个百分点解释，仍逐环境报告精确差值。评价分为恢复 IQ 与同条 clean 的差距、接入冻结原 F/default head 后的实际目标识别，两项不互相替代。
+状态：RUNNING / VERIFIED。用户要求 low-urban 超过 70%，其他五种 practical 接近 clean；“接近”暂按不超过原 F clean 2 个百分点解释，仍逐环境报告精确差值。评价分为恢复 IQ 与同条 clean 的差距、接入冻结原 F/default head 后的实际目标识别，两项不互相替代。
 
 ## 方法和源依据
 
@@ -21,3 +21,15 @@ teacher_mean、teacher_worst 均从原 R03 coarse20/correction20 独立初始化
 26 项聚焦检查通过；一次独立 P0/P1 审查 PASS，无发现。代码/配置以一个 Git commit 固定，真实 R03+三个原 F 的两条 L_s no-query smoke 是 launcher 第一步，PASS 立即继续。核实两个恢复模块有限非零梯度、三个 teacher 全冻结、默认头梯度可回传到 IQ、新权重往返一致，0 query/0优化步。
 
 N607 普通账号，GPU0/1 分别 teacher_mean/teacher_worst，每卡最多一条本 run worker，总 owner 数<2、空闲≥18GB才获取训练容量。CPU2线程、独立 scorer 最多1个；两源 worker 完成退出后在所选臂对应卡启动一个 target worker。保留其他 owner 和不可覆盖产物。单次预检、发布归档 SHA 比较、远端compile、实际 PID/CWD/cmdline/GPU/日志增长保存。协议、来源、commit、预算、输出冲突、OOM、非有限或预测失败时保留产物并停止对应技术失败，不自动重试，不修改健康任务。命令、路径、矩阵和预期产物见 experiment.json。
+
+
+## 启动核验
+
+方法commit：`286efa5bd71dcac5d108add346be40059e8ffa1c`。26项聚焦检查通过；一次独立P0/P1审查PASS，无发现。一次发布归档比较及远端compile/import通过。真实R03＋三套原F的两条L_s smoke证实coarse和correction均有非零有限梯度、三套F均无梯度、新权重往返一致，0目标访问、0更新。PASS后两臂直接继续训练。
+
+独立后态已核实两条实际worker的PID/CWD/完整命令、物理GPU0/1归属和从0到首轮的日志增长。当前进度：
+
+- teacher_mean：1/10轮、247/2470步。
+- teacher_worst：1/10轮、247/2470步。
+
+两个源参考特征缓存均为63000条L/U×三套F独立160维坐标，没有TX真值读取。当前没有源V评分或新目标性能结论；只有固定源规则选中的通过臂会自动进入目标七视图／三原F验证。
