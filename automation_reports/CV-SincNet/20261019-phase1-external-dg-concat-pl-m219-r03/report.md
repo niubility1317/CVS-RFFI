@@ -63,3 +63,21 @@ VERIFIED：代码commit `cb9e19fbbbfee31704064be0ad4f6ec96d29b966`，远端分�
 ## IB-RFF主划分三seed完整结果
 
 [IB-RFF增强监督与PL完整配对](ibrff_aug_pl_analysis.md)：12行七视图及全部分层CM独立复算通过，原生预算/源曲线/default-head核验齐全。负结果全部保留，后续固定矩阵继续运行，整体目标未完成。
+
+## SDG CE 首种子监督／PL配对
+
+VERIFIED：seed 2026092701 的 CE 监督与 CE＋PL 均完成 E200，默认头及完整源曲线核验通过，7视图独立复算共 588 个分层CM一致。全部条件保留默认拼接增强；当前仅1个seed，不能代替三seed结论。
+
+| 视图 | 监督 Accuracy（%） | PL Accuracy（%） | PL−监督（百分点） | 监督 Macro-F1（%） | PL Macro-F1（%） |
+|---|---:|---:|---:|---:|---:|
+| clean | 72.8637 | 71.5851 | -1.2786 | 72.3386 | 71.7140 |
+| practical_high | 42.9708 | 48.3268 | +5.3560 | 38.7514 | 41.3546 |
+| practical_mid | 42.5202 | 47.1149 | +4.5946 | 38.8116 | 40.2923 |
+| practical_low_suburban | 41.9280 | 45.9077 | +3.9798 | 38.5531 | 39.0563 |
+| practical_high_urban | 42.0482 | 46.8137 | +4.7655 | 38.3105 | 39.9196 |
+| practical_mid_urban | 37.9476 | 40.1173 | +2.1696 | 35.8745 | 33.7281 |
+| practical_low_urban | 33.7958 | 34.6429 | +0.8470 | 32.4149 | 28.6628 |
+
+按源验证 NLL 冻结，监督／PL 选中 epoch 分别为 101／66；两行均实际训练满200轮。监督不读取U，PL真值隐藏，阈值0.95、权重1、U/L=1，没有EMA或另训头。PL的clean负差如实保留，不据此关闭机制、调阈值或重跑。完整SDG监督/PL两行已在物理GPU2、3接续，整体14/219行完成，96成本尚未测量。
+
+逐行独立复算与完整曲线证据：`local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/verified_rows/`；配对汇总：`local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/sdg_ce_seed01_pair_summary.json`。
