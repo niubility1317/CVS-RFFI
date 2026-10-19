@@ -38,16 +38,21 @@ def dispatch():
   smoke()
  except BaseException as error:
   d.write(d.BASE/'failure.json',dict(status='PREFLIGHT_FAILED',error=repr(error),preserve_outputs=True,no_automatic_retry=True));raise
- pending=d.rows();active={};receipts=[];completed=[];failed=[]
- while pending or active:
+ pending=[r for r in d.rows() if r['arm']=='T1'];active={};receipts=[];completed=[];failed=[]
+ reference=next(r['row_id'] for r in d.rows() if r['arm']=='T6')
+ def reference_done():
+  p=d.row_root(reference)/'complete.json'
+  return p.is_file() and d.read(p).get('status')=='TRAINED_AND_SCORED'
+ while pending or active or not reference_done():
+  if reference_done() and reference not in completed:completed.append(reference)
   for row,child in list(active.items()):
    code=child.poll()
    if code is None:continue
-   done=d.BASE/row/'complete.json'
+   done=d.row_root(row)/'complete.json'
    if code or not done.is_file() or d.read(done).get('status')!='TRAINED_AND_SCORED':failed.append(dict(row_id=row,exit_code=code))
    else:completed.append(row)
    del active[row]
-  if not (d.BASE/'source_matrix_decision.json').exists() and all((d.BASE/r['row_id']/'source_qualification/complete.json').is_file() for r in d.rows()):
+  if not (d.BASE/'source_matrix_decision.json').exists() and all((d.row_root(r['row_id'])/'source_qualification/complete.json').is_file() for r in d.rows()):
    from .report import source_decision
    source_decision()
   if pending and not failed:
@@ -65,7 +70,7 @@ def dispatch():
      d.write(d.BASE/'launch.json',dict(rows=receipts))
   d.write(d.BASE/'queue_state.json',dict(active=list(active),pending=pending,completed=completed,failures=failed,updated_at=time.time(),max_total_processes_per_GPU=3))
   if failed and not active:break
-  if pending or active:time.sleep(3)
+  if pending or active or not reference_done():time.sleep(3)
  if failed:
   d.write(d.BASE/'failure.json',dict(status='FAILED',rows=failed,unlaunched=pending,healthy_rows_preserved=True,no_automatic_retry=True));raise RuntimeError('Technical failure preserved; no scientific retuning')
  from .report import collect

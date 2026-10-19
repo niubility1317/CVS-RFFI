@@ -1,0 +1,28 @@
+{
+  "code_commit": "facb98b73a524094c168243c4805c4760635e39d",
+  "archive_transfer": "VERIFIED",
+  "compile": "VERIFIED",
+  "ordinary_preflight": "VERIFIED",
+  "smoke_status": "PASS",
+  "synthetic_NN": 3072,
+  "real_checkpoint_NN": 2,
+  "optimizer_updates": 0,
+  "poststate_verified": true,
+  "rows": [
+    {
+      "row": "T1-s2026092701",
+      "pid": 2008296,
+      "gpu": 0,
+      "cwd_match": false,
+      "log_bytes": 1725
+    },
+    {
+      "row": "T6-s2026092701",
+      "pid": 2008466,
+      "gpu": 1,
+      "cwd_match": true,
+      "log_bytes": 6412
+    }
+  ],
+  "private_runtime_omitted": true
+}

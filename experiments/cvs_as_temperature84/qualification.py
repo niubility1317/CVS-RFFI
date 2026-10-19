@@ -8,7 +8,7 @@ from .channel import tensor_iq
 
 def run(row):
  from .model import own_model
- c=d.config(next(r for r in d.rows() if r['row_id']==row));out=d.BASE/row/'source_qualification';out.mkdir(exist_ok=False)
+ c=d.config(next(r for r in d.rows() if r['row_id']==row));out=d.row_root(row)/'source_qualification';out.mkdir(exist_ok=False)
  m=own_model(c,'cuda:0');before={k:v.clone() for k,v in m.state_dict().items()};data,roles=panel(torch)
  obs=np.load(d.PANEL/'observations/iq.npy',mmap_mode='r',allow_pickle=False)
  clean=np.empty((1800,6),np.float32);sat=np.empty((2,3,1800,6),np.float32)

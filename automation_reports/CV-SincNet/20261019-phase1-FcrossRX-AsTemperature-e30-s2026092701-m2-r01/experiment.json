@@ -22,7 +22,7 @@
   "parent_run_ids": [],
   "authorization": "当前用户要求继续完成两会话目标开发并提供附件，附件指定同观测比较→T1/T6完整E30；沿现有源数据/默认头/固定正式IQ权限。",
   "code": {
-    "commit": null,
+    "commit": "facb98b73a524094c168243c4805c4760635e39d",
     "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
     "environment": "N607 ordinary CVS-RFFI fullFP32 CPU2",
     "cwd": "PROJECT/releases/cvs_FcrossRX_AsTemperature_E30_20261019_r01"
@@ -96,7 +96,9 @@
     "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_as_temperature84/runner.py",
     "stop_rule": "Only own systemic protocol/role/parent/head/nonfinite/output/prediction technicalfailure;preserve/reconcile. Scientificnegative finishesall7,no automaticrestart. Never touchhealthyotherjobs.",
-    "status": "REGISTERED"
+    "status": "RUNNING",
+    "launch_pid": 2007734,
+    "launch_verification": "VERIFIED ordinarypreflight/archivecomparison/compile/realCP3074NN/directtrain and independent PID/CWD/argv/log readback"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",

@@ -11,7 +11,7 @@ def smoke():
  d.write(d.BASE/'real_checkpoint_smoke.json',dict(status='PASS',NN=2,source_IQ=0,target_query=False,checkpoint=c['output_root']+'/final_ssdg.pth',training_initializer=False,same_source_contract=True,optimizer_updates=0))
  del m,before
  initial=None;records=[]
- for row,segment in [(r,s) for r in d.rows() for s in (20,30)]:
+ for row,segment in [(r,s) for r in d.rows() if r['arm']=='T1' for s in (20,30)]:
   torch.manual_seed(6007);c=d.config(row,segment);m=model.build(c,'cpu').train();current={k:v.clone() for k,v in m.state_dict().items()}
   if initial is None:initial=current
   if sum(p.numel() for p in m.parameters())!=900722 or len(current)!=206 or any(not torch.equal(v,initial[k]) for k,v in current.items()):raise ValueError('Same fixed F/defaulthead initialization differs')
@@ -24,6 +24,6 @@ def smoke():
   if len(m._temperature_records)!=1 or m._temperature_records[0]['T']!=c['temperature']['T'] or m.id_backbone.encoder._full_train_packets!=768 or m._shape_NN!=256 or len(m._shape_records)!=1 or m._full_channel.packets!=(64 if c['As'] else 0) or r['As_packets']!=(64 if c['As'] else 0) or r['L_forwards']!=6 or m._supcon_pending is not None or m._supcon_handles or any(not torch.equal(v,m.state_dict()[k]) for k,v in current.items()) or getattr(m,'_source_unlabeled_feature_hook',None) is not None:raise ValueError('SixL/actualAs/ownshape/state/defaultU budget differs')
   if abs(r['total_L']-float(total.detach()))>3e-6 or abs(r['total_L']-r['base_L_before_shape']-.25*shape['shape_RD'])>1e-6 or not shape['same_IQ_each_pair']:raise ValueError('Prospective normalized1.25 loss scale differs')
   records.append(dict(arm=row['arm'],NN=768,As_IQ=r['As_packets'],Ag_IQ=shape['applied'],head_joint_gradient=True,Sinc_joint_gradient=True,same_initial=True,optimizer_updates=0,noise=shape))
- d.write(d.BASE/'synthetic_smoke.json',dict(status='PASS',records=records,NN=3072,real_checkpoint_NN=2,real_IQ=0,optimizer_updates=0,head_fit_updates=0,target_access=False))
- print('REAL_CP_NO_QUERY+SIX_REAL_F_SYNTHETIC_SMOKE PASS3074NN;continue training',flush=True)
- return dict(status='PASS',NN=3074)
+ d.write(d.BASE/'synthetic_smoke.json',dict(status='PASS',records=records,NN=1536,real_checkpoint_NN=2,real_IQ=0,optimizer_updates=0,head_fit_updates=0,target_access=False))
+ print('REAL_CP_NO_QUERY+SIX_REAL_F_SYNTHETIC_SMOKE PASS1538NN;continue training',flush=True)
+ return dict(status='PASS',NN=1538)

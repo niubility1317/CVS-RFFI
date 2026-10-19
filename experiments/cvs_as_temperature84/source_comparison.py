@@ -1,6 +1,6 @@
 """Bounded same-IQ frozen source comparison; no target, fitted head or persistence update."""
 from pathlib import Path
-import importlib.util,json,time
+import importlib.util,json,time,sys
 import numpy as np
 import torch
 from . import design as d
@@ -13,7 +13,10 @@ def inherited(method):
  if not init['scratch_only'] or init['ancestors'] or init['checkpoint_sources'] or init['target_contact'] or init['target_access'] or init['selection']!='fixed_last_epoch' or done['epoch']!=200 or done['steps']!=9800 or done['target_access'] or contract['role_ids']!=current['role_ids'] or contract['equalized']!=1 or contract['out_len']!=256 or not contract['normalize'] or contract['classes']!=d.CLASSES:raise ValueError('Historical source checkpoint provenance/physical roles mismatch')
  cp=torch.load(p/'last.pt',map_location='cpu',weights_only=False)
  if cp['source_contract']!=contract or cp['initialization']!=init or cp['epoch']!=200 or cp['selection']!='fixed_last_epoch' or cp['method']!=method:raise ValueError('Actual historical checkpoint differs from audited provenance')
- ref=Path(d.PROJECT)/'releases/native_comparisons_20260930_r01';s=importlib.util.spec_from_file_location('historical84_models',ref/'comparison_suite/models.py');mod=importlib.util.module_from_spec(s);s.loader.exec_module(mod)
+ ref=Path(d.PROJECT)/'releases/native_comparisons_20260930_r01';s=importlib.util.spec_from_file_location('historical84_models',ref/'comparison_suite/models.py');mod=importlib.util.module_from_spec(s)
+ sys.path.insert(0,str(ref))
+ try:s.loader.exec_module(mod)
+ finally:sys.path.remove(str(ref))
  m=mod.factory(method,cp['num_classes'],cp['num_receivers'],**cp['model_kwargs']);m.load_state_dict(cp['model'],strict=True)
  return m.eval().requires_grad_(False),dict(method=method,model_seed=392005,epoch=200,steps=9800,origin='scratch;fixed last;exact physical roles;no target ancestors',head='original native classifier',checkpoint=str(p/'last.pt'))
 def logits(m,x,device,method):

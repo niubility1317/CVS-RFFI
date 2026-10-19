@@ -20,7 +20,7 @@ def predict(row):
     from .model import own_model
     from .channel import tensor_iq
     from experiments.cvs_equivariant_identity.precision import numerical_context,actual_flags
-    c=d.config(next(r for r in d.rows() if r['row_id']==row));out=d.BASE/row/'prediction'
+    c=d.config(next(r for r in d.rows() if r['row_id']==row));out=d.row_root(row)/'prediction'
     if out.exists():raise FileExistsError('Reconcile existing predictions; do not overwrite')
     torch.set_num_threads(2);start=time.perf_counter()
     with numerical_context(d.FULL_FP32_POLICY):
@@ -55,7 +55,7 @@ def predict(row):
 
 def preflight(row):
     import numpy as np
-    c=d.config(next(r for r in d.rows() if r['row_id']==row));out=d.BASE/row/'prediction'
+    c=d.config(next(r for r in d.rows() if r['row_id']==row));out=d.row_root(row)/'prediction'
     done=d.read(out/'complete.json');ids,m=observations()
     if done['status']!='PREDICTIONS_COMPLETE' or done['config']!=c or done['count']!=COUNT or done['views']!=list(d.VIEWS) or done['truth_read'] or done['query_fit'] or not done['all_parameters_frozen'] or done['head_fit_updates']:
         raise ValueError('Truth closed: incomplete or unfrozen row predictions')
@@ -72,14 +72,14 @@ def preflight(row):
 def score(row):
     import numpy as np
     from comparison_suite.score import metrics
-    c,ids=preflight(row);out=d.BASE/row/'scoring'
+    c,ids=preflight(row);out=d.row_root(row)/'scoring'
     if out.exists():raise FileExistsError('Existing independent scores must be reconciled, never overwritten')
     out.mkdir(parents=True,exist_ok=False)
     # This is a separate exec stage. No training object or teacher survives.
     truth=d.read(d.TRUTH)
     from experiments.cvs_early_geometry.evaluate import truth_arrays
     y,rx,days=truth_arrays(truth,ids);records=[]
-    with np.load(d.BASE/row/'prediction/predictions.npz',allow_pickle=False) as f:
+    with np.load(d.row_root(row)/'prediction/predictions.npz',allow_pickle=False) as f:
         for view in d.VIEWS:
             predicted=f[view]
             for dim,values in [('overall',['ALL']),('receiver',sorted(set(rx))),('day',sorted(set(days))),('transmitter',range(6))]:

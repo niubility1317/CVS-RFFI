@@ -19,3 +19,7 @@ T1/T6 都仅取消64个As槽的RDrop KL，ordinary和raw KL保持。T1为原尺�
 聚焦验证：5项损失与隐藏标签负例通过，17文件AST通过。普通账户N607预检、输出未占用及资源核对VERIFIED；独立P0/P1审查进行中。launcher首步一次真实As30 checkpoint无query smoke，随后T1/T6完整6前向及两个segment路径合成检查，PASS直接训练。代码以Git commit、release_commit.txt固定；只校验一次发布归档，不增加报告或成员hash门槛。
 
 独立P0/P1审查完成：未发现阻塞缺陷；只读核对损失/父EMA/预算/源比较/七视图评分，无额外审查轮次。
+
+发布与真实检查已VERIFIED。代码commit facb98b73a524094c168243c4805c4760635e39d；归档比较、远端compile、真实CP及两segment完整路径合成检查3074NN PASS，直接进入队列；独立PID/CWD/argv/log核实。尚无新性能结论。
+
+技术状态：T1在源跨模型诊断导入失败，训练更新0；T6健康继续。新r02只替代T1并复用原T6，所有r01产物保留，不重复训练健康行。
