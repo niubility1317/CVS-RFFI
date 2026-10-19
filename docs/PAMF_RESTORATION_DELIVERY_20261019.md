@@ -124,3 +124,6 @@ R12 参数无关 PAMF 解析视图实验（同父权重两组新增 E20/4940、0
 
 
 2026-10-20更新：R14源作用/prior诊断完成，R13技术故障保留、单点上下文修复后新root执行；0训练/target。已知作用＋原生噪声代理使平均NMSE降低15.4053%，源低城区82.1667%→82.7222%，中城区89.8889%→89.8333%，未达到预登记作用估计优先门槛。prior单独输出clean退化至96.0556%，不能独立部署。保留三郊区/三城区/clean和TX/RX/day全部945分层；[完整报告](../automation_reports/CV-SincNet/20261019-diagnostic-restoration-action-fidelity-F50-s2026092701-m5-r14/report.md)。该源反事实不是70%/5pp正式结果，也不是oracle理论上界；持续目标active。
+
+
+R15 全分辨率 TCN 对照已完成：SOURCE_NOT_QUALIFIED。两行均 scratch prior20/4940、全L/U、0TX/F训练，只继承冻结R07 coarse/action。源低城区 native / 新U-Net / TCN 为 82.1667% / 82.5000% / 78.4444%；六场景平均 NMSE 为 0.02760034 / 0.02734310 / 0.02912038。未通过全部固定源条件，0target。[完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15/report.md)。最终70%/各场景距原始clean≤5pp目标保持，不把源成绩当目标成绩。

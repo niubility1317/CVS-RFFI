@@ -19,10 +19,12 @@
 |ID|来源|要求|目标文件|状态|验证|说明|
 |---|---|---|---|---|---|---|
 |A15-01|报告TCN控制|全256点表示、复用原Block、近参数量、单IQ|models.py|verified|长度/初始输出/梯度/逐样本测试通过；TCN793986、control834882参数|并未声称已改善TX|
-|A15-02|无监督优先|全L/U、0TX/F训练、同预算/观察/顺序|training.py/design.py|implemented|预算/权限代码及LR检查通过，待实际训练曝光日志|不把V作为训练|
-|A15-03|继承约束|只继承R02/R07，无R10prior，seed在加载父后重置|runtime.py|implemented|严格全状态和来源负测、加载后seed检查通过；实际smoke为入口第一步|新control不冒充旧R10复现|
+|A15-02|无监督优先|全L/U、0TX/F训练、同预算/观察/顺序|training.py/design.py|verified|实际两行20/4940，L126000/U1134000曝光；0TX/F/target/冻结父更新|不把V作为训练|
+|A15-03|继承约束|只继承R02/R07，无R10prior，seed加载父后重置|runtime.py|verified|严格来源负测与状态往返；实际2Ls初始完整输出相同、仅prior有梯度|新control不冒充旧R10复现|
 |A15-04|冻结F有效性|原F50/defaulthead，七预测先于独立truth|evaluation.py|verified|新loader全七视图接口、F版本计数器及角色负测通过|训练不打开F|
 |A15-05|源筛选|固定TCN主候选阈值、control和历史native护栏|evaluation.py/design.py|verified|身份/NMSE/最差TX双护栏、clean/其他场景退化及来源负测通过|条件性自动target|
-|A15-06|执行保护|唯一owner/共享容量/不可覆盖/故障保留|controller.py/runner.py|implemented|11tests、compile/help、一次P0P1及N607普通账户preflight通过；待实际poststate|无额外门槛|
-|A15-07|完整报告|三郊区三城区clean、分TX/RX/day、成本、正式70%/5pp|本run报告/汇总|pending|实际逐行评分与完整日志|源结果不冒充正式结果|
+|A15-06|执行保护|唯一owner/共享容量/不可覆盖/故障保留|controller.py/runner.py|verified|一次P0P1及N607 preflight/归档/compile；GPU5/7 PID/CWD/参数/loggrowth核实，全部自然退出|无额外门槛|
+|A15-07|完整报告|三郊区三城区clean、TX/RX/day、成本、正式70%/5pp|本run报告/汇总|verified|实际源七视图及分层完整；源门槛未过，0target，正式70%/5pp尚未完成|源结果不冒充正式结果|
 |A15-08|外部有效性|跨seed/独立物理族/逐细节真实|后续确认|deferred|单seed首轮源证伪，须通过再扩展|保持完整持续目标|
+
+实际结论：SOURCE_NOT_QUALIFIED；源低城区 native / 新U-Net / TCN 为 82.1667% / 82.5000% / 78.4444%。详见[完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15/report.md)。不改阈值或选择性重跑，目标保持 active。
