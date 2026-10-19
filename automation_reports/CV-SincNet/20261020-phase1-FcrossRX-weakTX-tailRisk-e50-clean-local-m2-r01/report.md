@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：弱发射机特征困难样本对照
 
-状态：LOCAL_VERIFIED，尚未训练或获得本轮目标结果。
+状态：RUNNING。两个首种子已并行进入实际训练，尚无本轮目标测试结果。
 
 基底为原始 F CROSS_RX50：三路独立 SIG_TIME 局部投影、实际 joint160、统一居中物理 Sinc、RDrop α=1、旧门控＋ownEMA＋cos。85.1139% 是历史方法锚点；本机逐种子比较复用同配置、同数据、同后端的 BASE-s2026092701/02/03，不把历史均值当作本轮配对值。
 
@@ -39,7 +39,7 @@
 
 ## 本地执行与停止规则
 
-代码身份：本报告同次实际 code/config Git commit，发布后写入 release_commit.txt。CWD：IMMUTABLE_LOCAL_RELEASE/cvs_F_weakTX_tailRisk50_local_20261020_r01。环境：已核实 native Windows Python3.10 / PyTorch2.10+cu128，FULL_FP32_NO_TF32，threads2/workers0。输出：LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-tailRisk-e50-clean-local-m2-r01，新建不可覆盖。
+代码身份：实际 code/config Git commit `689546e29d3b83b53337dba7a6045beb82d1c7df`，已推送并独立核对远端；不可覆盖发布包复制核对和编译通过。两个 worker 的实际 GPU、命令、CWD 及训练日志增长已核实，见 launch_verification.json。CWD：IMMUTABLE_LOCAL_RELEASE/cvs_F_weakTX_tailRisk50_local_20261020_r01。环境：已核实 native Windows Python3.10 / PyTorch2.10+cu128，FULL_FP32_NO_TF32，threads2/workers0。输出：LOCAL_RUN/20261020-phase1-FcrossRX-weakTX-tailRisk-e50-clean-local-m2-r01，新建不可覆盖。
 
 启动命令：
 

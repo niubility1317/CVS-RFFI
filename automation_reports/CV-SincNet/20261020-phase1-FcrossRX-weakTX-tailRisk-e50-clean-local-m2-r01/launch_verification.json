@@ -1,0 +1,44 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "689546e29d3b83b53337dba7a6045beb82d1c7df",
+  "remote_commit_verified": true,
+  "archive_transfer": {
+    "status": "VERIFIED",
+    "archive_bytes": 21776394,
+    "release_archive_sha256": "8c7c6807900abf2201e7215e6bc39993794abc9f424ab640ad7c2b1e3c7047d8",
+    "copied_archive_sha256": "8c7c6807900abf2201e7215e6bc39993794abc9f424ab640ad7c2b1e3c7047d8",
+    "same_bytes": true,
+    "code_commit": "689546e29d3b83b53337dba7a6045beb82d1c7df"
+  },
+  "release_compile": "PASS",
+  "immutable_CWD_matches_execution_and_worker_start": true,
+  "controller_cmdline_and_two_worker_cmdlines_confirmed_live": true,
+  "physical_GPU": 0,
+  "actual_GPU_training_workers": 2,
+  "other_GPU_workers": 0,
+  "source_log_growth": [
+    {
+      "row": "MEAN_WEAK_RX-s2026092701",
+      "bytes": 12541,
+      "step": 315,
+      "epoch": 2
+    },
+    {
+      "row": "TAIL_WEAK_RX-s2026092701",
+      "bytes": 12539,
+      "step": 302,
+      "epoch": 2
+    }
+  ],
+  "scratch_initialization_and_own_EMA": true,
+  "actual_training_satellite_active": 0,
+  "U_truth_available": 0,
+  "test_views": [
+    "clean"
+  ],
+  "default_head": "original main joint; no separate fits",
+  "source_expansion_fixed": false,
+  "target_reads_before_source_decision": 0,
+  "stop_rule": "Stop new dispatch on role/provenance/config/output conflict or systemic technical failure; preserve healthy workers and outputs",
+  "result_available": false
+}
