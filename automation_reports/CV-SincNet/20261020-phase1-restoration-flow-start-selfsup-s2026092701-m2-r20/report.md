@@ -44,3 +44,8 @@ R20任何GPU worker必须等R19控制器和全部所属worker真实退出后才�
 
 
 发布后状态：VERIFIED。单次归档传输 SHA 比对、远端编译、真实两条源样本检查通过。两流模型完整初始权重相同；训练速度场梯度有限且非零、冻结上下文无梯度；实测完整16次Core、一次条件编码和6步软CG。控制器及两条 worker 的 PID/CWD/参数/GPU 和日志增长已核实；实际两张容量合规 GPU 各一条，未干扰其他 owner。无校准、无 TX/F/target 训练。逐行源评分及有条件正式确认继续自动执行。
+
+
+真实入口已核实：两行完整初始权重相同，实测各16次推理速度Core、一次条件编码、6步软CG；训练速度目标梯度有限非零、冻结上下文无梯度。首轮实际训练中两行time随机流一致，随机起点epsilon功率符合sigma²，零起点功率为0。以上是实现证据，不是完整采样性能。追踪更新为4 verified、3 pending、1 deferred。
+
+若本轮有源合格候选并完成原七视图正式独立评分，复用已提交的配对身份诊断 `tools/analyze_pamf_paired_identity.py`（代码092affdd1c4129d7e61347ba8c7d11a88c9fe2fc，12项检查）。该CPU分析只读取已完成的原预测、原R09 F50 baseline、原R05 paired clean及原truth，另写选定行 `paired_identity_diagnostic.json`，0新增模型预测/拟合/决策修改；区分clean正确与clean错误，按TX/RX/day报告误差方向投影和正交修正。无合格候选则0target，也不执行此目标诊断。全部六受损视图同时正确仅为相关视图的描述统计，不是推理集成；配对判断及IQ误差不能保证逐细节TX真实性。此附加分析不改变方法、训练、源规则或正式阈值。
