@@ -1,6 +1,6 @@
 # 纯 F：clean 一步更新后的 As 响应诊断
 
-状态：LOCAL_VERIFIED，未发布。真实源 worker、完整批路径及统一两行登记已完成；限定独立 P0/P1 和远端发布尚未完成。没有新真实 IQ、checkpoint、源模型前向或正式测试访问，不能报告源诊断结果，也没有后台新任务。
+状态：ANALYZED / VERIFIED，实际源诊断与独立复算完成；固定 fresh-Adam raw-lookahead 理由 FAIL 并关闭。原模型更新 0，无目标访问。完整逐批结果见 [final_analysis.md](final_analysis.md)。下文保留发布前固定方案与验证记录。
 
 总体目标仍为固定 F 的 low urban >60%、同预算 NoAs clean 可重复正收益及逐场景 suburban 接近自身 clean。本诊断只检验下一假设，不替代识别或多种子证据，不因一个梯度或虚拟步骤通过就自动延长 E50。
 

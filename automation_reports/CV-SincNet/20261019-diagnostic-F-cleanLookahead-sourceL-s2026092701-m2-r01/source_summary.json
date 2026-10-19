@@ -1,0 +1,368 @@
+{
+  "status": "SOURCE_ANALYZED",
+  "run_id": "20261019-diagnostic-F-cleanLookahead-sourceL-s2026092701-m2-r01",
+  "decision": {
+    "rationale_pass": false,
+    "rows": {
+      "B0": {
+        "urban_CE_delta": 0.016379664341608684,
+        "raw_CE_delta": 0.0004922176400820414,
+        "urban_better_batches": 1,
+        "batches": 6
+      },
+      "B1": {
+        "urban_CE_delta": 0.001871548593044281,
+        "raw_CE_delta": 0.005627813438574473,
+        "urban_better_batches": 2,
+        "batches": 6
+      }
+    },
+    "automatic_training": false,
+    "E50_qualified": false,
+    "recognition_benefit_proved": false,
+    "decision": "CLOSE_FIXED_FRESH_ADAM_RAW_LOOKAHEAD_RATIONALE; no step-size/inner-state/seed rescue",
+    "target_access": false
+  },
+  "max_CE_error": 2.8589617717678095e-07,
+  "all_logits_independently_recounted": true,
+  "source_decision_independently_recomputed": true,
+  "same_source_packet_order_both_models": true,
+  "model_or_IQ_loads": 0,
+  "target_access": false,
+  "full_log_errors": [],
+  "code_commit": "0740b3e010e4c0cad39642767ee3690d96fb40ff",
+  "release_commit": "7835c41e9ca20c86324b48cff6ca965e674a7b78",
+  "postlaunch": {
+    "status": "VERIFIED",
+    "process_live": true,
+    "log_growth_bytes": 476,
+    "GPU": 0,
+    "cwd_matches": true,
+    "argv_matches": true,
+    "cuda_matches": true
+  },
+  "per_model": {
+    "B0": {
+      "responses": {
+        "BASE": {
+          "raw": {
+            "CE": 0.10579817522863139,
+            "correct": 179,
+            "n": 180,
+            "accuracy": 0.9944444444444445
+          },
+          "practical_mid_urban": {
+            "CE": 1.329493787634359,
+            "correct": 99,
+            "n": 180,
+            "accuracy": 0.55
+          },
+          "practical_low_urban": {
+            "CE": 1.8717372548257587,
+            "correct": 74,
+            "n": 180,
+            "accuracy": 0.4111111111111111
+          }
+        },
+        "RAW_STEP": {
+          "raw": {
+            "CE": 0.09865177863167957,
+            "correct": 180,
+            "n": 180,
+            "accuracy": 1.0
+          },
+          "practical_mid_urban": {
+            "CE": 1.4445050243938407,
+            "correct": 89,
+            "n": 180,
+            "accuracy": 0.49444444444444446
+          },
+          "practical_low_urban": {
+            "CE": 1.8779339323964144,
+            "correct": 71,
+            "n": 180,
+            "accuracy": 0.39444444444444443
+          }
+        },
+        "JOINT_STEP": {
+          "raw": {
+            "CE": 0.12656478882888988,
+            "correct": 176,
+            "n": 180,
+            "accuracy": 0.9777777777777777
+          },
+          "practical_mid_urban": {
+            "CE": 1.2370144225834057,
+            "correct": 102,
+            "n": 180,
+            "accuracy": 0.5666666666666667
+          },
+          "practical_low_urban": {
+            "CE": 1.7620020134087306,
+            "correct": 74,
+            "n": 180,
+            "accuracy": 0.4111111111111111
+          }
+        },
+        "FIRST_ORDER_LOOKAHEAD": {
+          "raw": {
+            "CE": 0.12705699777663224,
+            "correct": 175,
+            "n": 180,
+            "accuracy": 0.9722222222222222
+          },
+          "practical_mid_urban": {
+            "CE": 1.2457231885227698,
+            "correct": 98,
+            "n": 180,
+            "accuracy": 0.5444444444444444
+          },
+          "practical_low_urban": {
+            "CE": 1.7860527503146733,
+            "correct": 79,
+            "n": 180,
+            "accuracy": 0.4388888888888889
+          }
+        }
+      },
+      "lookahead_minus_joint": {
+        "urban_CE_delta": 0.016379664341608684,
+        "raw_CE_delta": 0.0004922176400820414,
+        "urban_better_batches": 1,
+        "batches": 6
+      },
+      "batch_urban_CE_deltas": [
+        -0.001885831356048584,
+        0.006378829479217529,
+        0.054540038108825684,
+        0.002352297306060791,
+        0.021793067455291748,
+        0.015099585056304932
+      ],
+      "batch_raw_CE_deltas": [
+        -0.0018998458981513977,
+        -0.01697660982608795,
+        0.007876522839069366,
+        0.002822399139404297,
+        -0.001157611608505249,
+        0.012288451194763184
+      ],
+      "gradient_geometry": [
+        {
+          "batch": 0,
+          "cosine": 0.7064198879977954,
+          "angle_deg": 45.05563090461565,
+          "norm_before": 8.814234373567546,
+          "norm_after": 5.833398173213568
+        },
+        {
+          "batch": 1,
+          "cosine": 0.9061199042284751,
+          "angle_deg": 25.02545977457005,
+          "norm_before": 8.745102740310166,
+          "norm_after": 10.542597538090243
+        },
+        {
+          "batch": 2,
+          "cosine": 0.949564078629635,
+          "angle_deg": 18.274691880384125,
+          "norm_before": 7.445892058611557,
+          "norm_after": 7.573014032551295
+        },
+        {
+          "batch": 3,
+          "cosine": 0.9772573318889435,
+          "angle_deg": 12.24291615291292,
+          "norm_before": 9.163534591251205,
+          "norm_after": 9.48232664797532
+        },
+        {
+          "batch": 4,
+          "cosine": 0.9262672240048162,
+          "angle_deg": 22.139776060589,
+          "norm_before": 10.05553821262892,
+          "norm_after": 9.788353312483538
+        },
+        {
+          "batch": 5,
+          "cosine": 0.8599781042052806,
+          "angle_deg": 30.68587547844416,
+          "norm_before": 6.374033507861626,
+          "norm_after": 7.185240157202645
+        }
+      ],
+      "virtual_update_count": 21,
+      "original_updates": 0,
+      "NN": 3094,
+      "backward_packets": 910
+    },
+    "B1": {
+      "responses": {
+        "BASE": {
+          "raw": {
+            "CE": 0.1471827604374077,
+            "correct": 178,
+            "n": 180,
+            "accuracy": 0.9888888888888889
+          },
+          "practical_mid_urban": {
+            "CE": 0.5500405309375322,
+            "correct": 146,
+            "n": 180,
+            "accuracy": 0.8111111111111111
+          },
+          "practical_low_urban": {
+            "CE": 1.0327190842261844,
+            "correct": 101,
+            "n": 180,
+            "accuracy": 0.5611111111111111
+          }
+        },
+        "RAW_STEP": {
+          "raw": {
+            "CE": 0.13607160280874586,
+            "correct": 178,
+            "n": 180,
+            "accuracy": 0.9888888888888889
+          },
+          "practical_mid_urban": {
+            "CE": 0.5688531953705357,
+            "correct": 143,
+            "n": 180,
+            "accuracy": 0.7944444444444444
+          },
+          "practical_low_urban": {
+            "CE": 1.0427599970604415,
+            "correct": 101,
+            "n": 180,
+            "accuracy": 0.5611111111111111
+          }
+        },
+        "JOINT_STEP": {
+          "raw": {
+            "CE": 0.1429644384896324,
+            "correct": 178,
+            "n": 180,
+            "accuracy": 0.9888888888888889
+          },
+          "practical_mid_urban": {
+            "CE": 0.5776057715085392,
+            "correct": 144,
+            "n": 180,
+            "accuracy": 0.8
+          },
+          "practical_low_urban": {
+            "CE": 1.0296591804344328,
+            "correct": 105,
+            "n": 180,
+            "accuracy": 0.5833333333333334
+          }
+        },
+        "FIRST_ORDER_LOOKAHEAD": {
+          "raw": {
+            "CE": 0.14859224743016403,
+            "correct": 178,
+            "n": 180,
+            "accuracy": 0.9888888888888889
+          },
+          "practical_mid_urban": {
+            "CE": 0.573534893627128,
+            "correct": 145,
+            "n": 180,
+            "accuracy": 0.8055555555555556
+          },
+          "practical_low_urban": {
+            "CE": 1.0374732047620328,
+            "correct": 103,
+            "n": 180,
+            "accuracy": 0.5722222222222222
+          }
+        }
+      },
+      "lookahead_minus_joint": {
+        "urban_CE_delta": 0.001871548593044281,
+        "raw_CE_delta": 0.005627813438574473,
+        "urban_better_batches": 2,
+        "batches": 6
+      },
+      "batch_urban_CE_deltas": [
+        -0.001689627766609192,
+        0.0009814798831939697,
+        0.0020275264978408813,
+        0.0023368895053863525,
+        0.011003106832504272,
+        -0.003430083394050598
+      ],
+      "batch_raw_CE_deltas": [
+        -0.00039623677730560303,
+        -0.0005826056003570557,
+        0.032586485147476196,
+        0.003611162304878235,
+        0.009105876088142395,
+        -0.010557800531387329
+      ],
+      "gradient_geometry": [
+        {
+          "batch": 0,
+          "cosine": 0.8789235968306287,
+          "angle_deg": 28.487211074500618,
+          "norm_before": 2.3392425754797,
+          "norm_after": 2.0877070525525037
+        },
+        {
+          "batch": 1,
+          "cosine": 0.9693260638812138,
+          "angle_deg": 14.227834591626157,
+          "norm_before": 2.427571735488306,
+          "norm_after": 2.51017972469838
+        },
+        {
+          "batch": 2,
+          "cosine": 0.7664422720636427,
+          "angle_deg": 39.964525866542076,
+          "norm_before": 2.201103603322078,
+          "norm_after": 2.964142718492685
+        },
+        {
+          "batch": 3,
+          "cosine": 0.8821032310861314,
+          "angle_deg": 28.102874913045014,
+          "norm_before": 2.733435762768765,
+          "norm_after": 2.6778753141277916
+        },
+        {
+          "batch": 4,
+          "cosine": 0.67490537568307,
+          "angle_deg": 47.55319748567004,
+          "norm_before": 1.6855703551892653,
+          "norm_after": 1.3197778791354042
+        },
+        {
+          "batch": 5,
+          "cosine": 0.34106691293224356,
+          "angle_deg": 70.05811050104452,
+          "norm_before": 2.2889315420543106,
+          "norm_after": 3.2389498312489735
+        }
+      ],
+      "virtual_update_count": 21,
+      "original_updates": 0,
+      "NN": 3094,
+      "backward_packets": 910
+    }
+  },
+  "cost": {
+    "NN": 6188,
+    "network_backward_packets": 1820,
+    "virtual_updates": 42,
+    "original_model_updates": 0,
+    "new_trained_models": 0,
+    "head_only_fit_updates": 0,
+    "wall_seconds": 12.164268117863685,
+    "source_L_unique": 360,
+    "original_states_and_grads_unchanged": true,
+    "global_RNG_unchanged": true
+  },
+  "final_process_gone": true,
+  "overall_goal_complete": false
+}
