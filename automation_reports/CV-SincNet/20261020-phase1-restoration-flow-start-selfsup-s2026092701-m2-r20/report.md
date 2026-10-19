@@ -94,3 +94,8 @@ batch1 含冻结上下文，固定源低 urban 16 样本、两次预热，所在
 
 
 训练路径单点误差与完整源采样误差来自不同路径暴露和训练/验证分布，数值差异只支持“单点误差不能替代部署采样验收”，不足以确定唯一失败原因；不将其解释为全部流匹配方法无效。
+
+
+补充同批源V路径诊断：固定R07原验证缓存low urban前128条、对应clean和物理ID，0 TX标签/F权重/F输出/target；只使用已冻结R20两行E20权重，本机CPU、不更新参数。两行共享一个CPU epsilon（seed202610202105），分别报告t=0/.25/.5/.75的含真值路径单点端点误差，以及实际自由运行16步的逐步先验误差和末端6CG输出误差。含真值路径不作为可部署预测；t>0会暴露clean端点信息，CPU噪声也不冒充原CUDA主draw。新增256次源IQ恢复仅为这128条源V子集的诊断，不增加独立物理样本数，不影响既定源资格与0target决定。
+
+代码 `tools/diagnose_pamf_flow_path.py`，3项聚焦检查覆盖同批路径区分、真值观察不改变实际输出/随机状态及冻结状态和形状约束。输入仅clean/received/physical_ids的本机私有npz，权重为本机严格核实的R20目录；命令 `python -m tools.diagnose_pamf_flow_path --inputs <private_source128.npz> --weights-root <private_R20_weights> --output <new_diagnostic.json>`。分析只检验同批误差差异，不声称已确定唯一失败原因，输入、权重与原始路径日志不提交。
