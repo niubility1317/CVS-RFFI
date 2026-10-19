@@ -1,0 +1,79 @@
+{
+  "rows": [
+    {
+      "row_id": "EXTRA_RX_CE-s2026092701",
+      "treatment": "EXTRA_RX_CE",
+      "model_seed": 2026092701
+    },
+    {
+      "row_id": "META_RX-s2026092701",
+      "treatment": "META_RX",
+      "model_seed": 2026092701
+    }
+  ],
+  "source_only_decision": {
+    "status": "SOURCE_EXPANSION_FIXED",
+    "arms": {
+      "EXTRA_RX_CE": {
+        "PASS": false,
+        "source_classification_health": true,
+        "overall_pp": 0.04074074074074119,
+        "worst_RX_pp": 0.07407407407408195,
+        "per_TX_pp": [
+          0.022222222222212373,
+          0.13333333333332975,
+          0.0,
+          0.13333333333332975,
+          0.0,
+          -0.04444444444444695
+        ],
+        "weak_geometry": [
+          {
+            "TX": "14-7",
+            "out_RX_margin_q10_gain": -0.001378439527155731,
+            "RX_spread_to_gap_ratio": 1.0681630636702366,
+            "PASS": false
+          },
+          {
+            "TX": "20-19",
+            "out_RX_margin_q10_gain": -0.00024928104197695714,
+            "RX_spread_to_gap_ratio": 1.0534653936948877,
+            "PASS": false
+          }
+        ]
+      },
+      "META_RX": {
+        "PASS": false,
+        "source_classification_health": true,
+        "overall_pp": 0.0,
+        "worst_RX_pp": -0.037037037037035425,
+        "per_TX_pp": [
+          -0.04444444444444695,
+          0.022222222222223476,
+          0.0,
+          0.022222222222223476,
+          0.022222222222223476,
+          -0.022222222222223476
+        ],
+        "weak_geometry": [
+          {
+            "TX": "14-7",
+            "out_RX_margin_q10_gain": -0.0014825179871514882,
+            "RX_spread_to_gap_ratio": 1.0407276370243828,
+            "PASS": false
+          },
+          {
+            "TX": "20-19",
+            "out_RX_margin_q10_gain": 0.00038135485864475467,
+            "RX_spread_to_gap_ratio": 1.0068773444742676,
+            "PASS": false
+          }
+        ]
+      }
+    },
+    "expand_arms": [],
+    "target_access": false,
+    "criterion": "Each weakTX outRX feature-margin q10 >= same-seed BASE+.002; eligible meta calls>=99%; RXspread/interclassgap <=1.05x BASE; no degenerate features; defaulthead overall>=-.2pp,worstRX>=-.5pp,anyTX>=-1pp. Source only, no retrofit of prior rejected candidates."
+  },
+  "target_feedback": false
+}

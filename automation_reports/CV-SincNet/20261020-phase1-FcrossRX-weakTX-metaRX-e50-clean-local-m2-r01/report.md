@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：弱发射机跨 RX 元训练（50 轮，clean）
 
-run_id：`20261020-phase1-FcrossRX-weakTX-metaRX-e50-clean-local-m2-r01`。当前为 RUNNING，尚无本轮性能结果。实际代码身份为运行时 `release_commit.txt` 中的 Git 提交；完整固定矩阵见 [experiment.json](experiment.json)。
+run_id：`20261020-phase1-FcrossRX-weakTX-metaRX-e50-clean-local-m2-r01`。当前为 ANALYZED（本实验完成，弱 TX 优化目标尚未达成）。实际代码身份为运行时 `release_commit.txt` 中的 Git 提交；完整固定矩阵见 [experiment.json](experiment.json)。
 
 ## 固定方法与对照
 
@@ -18,7 +18,7 @@ META_RX 在临时函数式副本中计算 p'=p−0.01·grad(inner)，保留二�
 
 ## 源域扩种子规则（目标访问前固定）
 
-先完成首种子两行，按同种子 BASE 独立决定各行是否原样扩展 2026092702/03，再访问任何本轮目标汇总。每个弱 TX 必须同时满足：源 V 的 out_RX 特征角度 margin q10 比 BASE 至少增加 0.002；RX spread／类间间隔至多为 BASE 的 1.05 倍；无零特征。默认头健康边界为总体不少于 BASE−0.2 个百分点、最差 RX 不少于−0.5 个百分点、任一 TX 不少于−1 个百分点。预定调用须为 624，适用率至少 99%。
+先完成首种子两行，按同种子 BASE 独立决定各行是否原样扩展 2026092702/03，再访问任何本轮目标汇总。每个弱 TX 必须同时满足：源 V 的 out_RX 余弦间隔 q10（无量纲） 比 BASE 至少增加 0.002；RX spread／类间间隔至多为 BASE 的 1.05 倍；无零特征。默认头健康边界为总体不少于 BASE−0.2 个百分点、最差 RX 不少于−0.5 个百分点、任一 TX 不少于−1 个百分点。预定调用须为 624，适用率至少 99%。
 
 该规则只作用于本轮未来实验，不追溯晋级以前失败的候选。几何来自同一次合法源 V 验证的原始 joint160；不拟合分类器或输出原型分类决策。所有源 RX 都已参与训练；out_RX 只排除描述性中心中的 RX，不是未见 RX 模型验证。科学规则失败仍完成首种子 clean，保留负结果，不按目标分数扩种子、重排或重跑。
 
@@ -42,4 +42,14 @@ GPU0 总 source／predict worker 上限 3（计入其他 owner），派发前可
 
 代码提交 95e6466c6d17d0955fb55506976c2e4125442b99 已推送，独立远端 OID 一致（VERIFIED）。一次归档转移比对一致，发布根编译通过。[launch_verification.json](launch_verification.json) 核实两个 source worker、实际 CWD／cuda:0／原 33L＋17U 配方及增长日志；当前无本轮目标访问。
 
-尚待：完整训练、源域扩种子决定、逐行自动 clean／独立评分及同 row 结果提交推送。
+## 完成结果与判断
+
+两行均完成 50 轮、11100 步、624 次实际机制调用；每行 clean 168000 个样本完成预测和独立 CPU truth-last 评分，六个 worker 均以 0 退出，已无本 run 活跃进程。全部 100 个 epoch、22200 步和完整 stdout 已解析；每行仅 3 条已知 FutureWarning，无 traceback／OOM、U 真值访问、非有限跳步、星地执行或分类头另训。
+
+本机同 seed BASE 为 85.1393%。EXTRA_RX_CE 为 85.3143%（+0.1750 个百分点）；META_RX 为 85.3089%（+0.1696 个百分点）。META 的弱 TX 14-7 为 +0.4214 个百分点，20-19 为 −0.1536 个百分点，最差 RX 为 −0.3250 个百分点；两弱类均值 +0.1339 不能掩盖其中一个退步。META−CE 总体为 −0.0054 个百分点；当前 n=1，不能认定稳定的额外元训练收益。
+
+源域分类健康通过，但两行均未使两个弱 TX 的 out_RX 余弦间隔低分位同步改善；按预登记在目标访问前决定不扩种子。01 已完整测试；02/03 未发布，不按目标结果补跑或放宽规则。保留原 F＋CROSS_RX 基底，目标保持未达成。
+
+每行实际 U 曝光 963900；EXTRA_RX_CE 接受 15118（1.5684%），META_RX 接受 15107（1.5673%）。额外前向各为 L128 的 79872 包次＋held 弱类的 21085 包次，共 100957 包次，复用当前 IQ。训练 3922.2／3963.8 秒，CUDA 峰值 1984.3／2127.7 MiB；推理无新增参数或额外前向。
+
+[完整结果](results.md)、[全程统计](results_summary.json)、[源域决定](source_expansion.json)、[实际路径](metarx_training_observations.json)、[独立收尾核验](completion_verification.json)、[结论](conclusion.json)。后续研究继续依据合法源域特征尾部与 RX 稳定性证据；本轮结果不用于 alpha／权重扫描、额外种子或 checkpoint 选择。

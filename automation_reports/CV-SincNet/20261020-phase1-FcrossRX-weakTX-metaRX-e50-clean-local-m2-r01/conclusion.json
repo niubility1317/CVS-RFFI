@@ -1,0 +1,101 @@
+{
+  "status": "ANALYZED_NOT_ADOPTED",
+  "run_id": "20261020-phase1-FcrossRX-weakTX-metaRX-e50-clean-local-m2-r01",
+  "execution_commit": "95e6466c6d17d0955fb55506976c2e4125442b99",
+  "goal_achieved": false,
+  "baseline_changed": false,
+  "model_seed": 2026092701,
+  "actual_seed_count_per_arm": 1,
+  "sample_SD": null,
+  "source_promotion": "Both fail; no 2702/2703 trained. Decision fixed before new target predictions",
+  "clean": [
+    {
+      "arm": "EXTRA_RX_CE",
+      "count": 168000,
+      "accuracy_percent": 85.3142857142857,
+      "macro_F1_percent": 85.07055964003519,
+      "worst_RX_percent": 76.1375,
+      "worst_day_percent": 82.42857142857143,
+      "paired": {
+        "treatment": "EXTRA_RX_CE",
+        "model_seed": 2026092701,
+        "accuracy_pp": 0.17499999999999183,
+        "macro_f1_pp": 0.20637844025778174,
+        "per_TX_pp": [
+          0.09642857142856398,
+          0.271428571428578,
+          0.9464285714285703,
+          -0.2142857142857224,
+          -0.04285714285714448,
+          -0.007142857142861114
+        ],
+        "weak_TX_mean_pp": 0.028571428571427804,
+        "other_TX_mean_pp": 0.24821428571428217,
+        "worst_RX_pp": -0.26249999999999885,
+        "worst_day_pp": 0.04285714285714448
+      }
+    },
+    {
+      "arm": "META_RX",
+      "count": 168000,
+      "accuracy_percent": 85.30892857142857,
+      "macro_F1_percent": 85.06228585762697,
+      "worst_RX_percent": 76.075,
+      "worst_day_percent": 82.45714285714286,
+      "paired": {
+        "treatment": "META_RX",
+        "model_seed": 2026092701,
+        "accuracy_pp": 0.16964285714284877,
+        "macro_f1_pp": 0.19810465784957376,
+        "per_TX_pp": [
+          -0.10000000000000009,
+          0.4214285714285726,
+          0.8642857142857174,
+          -0.1535714285714307,
+          -0.04642857142856949,
+          0.03214285714284726
+        ],
+        "weak_TX_mean_pp": 0.13392857142857095,
+        "other_TX_mean_pp": 0.18749999999999878,
+        "worst_RX_pp": -0.3249999999999975,
+        "worst_day_pp": 0.07142857142857784
+      }
+    }
+  ],
+  "meta_minus_exposure_CE": [
+    {
+      "model_seed": 2026092701,
+      "accuracy_pp": -0.00535714285714306,
+      "macro_f1_pp": -0.008273782408207975,
+      "weak_TX_mean_pp": 0.10535714285714315,
+      "other_TX_mean_pp": -0.06071428571428339,
+      "worst_RX_pp": -0.06249999999999867,
+      "worst_day_pp": 0.028571428571433355,
+      "per_TX_pp": [
+        -0.19642857142856407,
+        0.14999999999999458,
+        -0.08214285714285285,
+        0.060714285714291716,
+        -0.003571428571425006,
+        0.03928571428570837
+      ]
+    }
+  ],
+  "scientific_interpretation": [
+    "Both show small overall n1 gains versus matched local BASE; this is not verified stable improvement of both weak transmitters.",
+    "META improves 14-7 by .4214286pp but reduces 20-19 by .1535714pp and worstRX by .325pp versus BASE.",
+    "META minus exposure CE is -.0053571pp overall; weak mean +.1053571pp is exploratory n1, without sample SD or stable causal attribution.",
+    "Source defaulthead health passes, but 14-7 outRX cosine-margin q10 decreases and 20-19 gain stays below the preregistered .002 requirement.",
+    "Retain original F+CROSS_RX base. No target-driven alpha/weight scan, extra seed, checkpoint selection, or replay.",
+    "Further research must return to source-only feature-tail discrimination and crossRX stability evidence; current CE or meta-CE gains do not establish improved transferable weak-TX features."
+  ],
+  "inference_added_parameters": 0,
+  "inference_added_forwards": 0,
+  "training_added_true_optimizer_steps": 0,
+  "default_head_main_joint": true,
+  "satellite_training": false,
+  "test_views": [
+    "clean"
+  ],
+  "all_negative_results_retained": true
+}
