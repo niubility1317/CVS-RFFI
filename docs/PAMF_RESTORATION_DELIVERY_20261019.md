@@ -22,6 +22,24 @@ R19 在固定源域验收中选定 `time_time`，连接原 F50 seed2026092701/de
 
 两行新prior各E20/4940，完整L/U曝光、恢复训练TX/F/target读取均为0；source V标签只用于验收，历史F50监督知识单列。两行权重已取回本机，严格加载并直接连接原F50/defaulthead验证有限输出和逐包一致性。R19可复用权重目录为 `local_artifacts/pamf_restoration/trained/20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19/{time_time,time_frequency}/final.pt`，使用 `experiments.pamf_alternating_restore.runtime.load_checkpoint`；未合格的频域行没有正式部署效果结论。[R19完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19/report.md)和[汇总](../automation_reports/CV-SincNet/20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19/summary.json)包含七场景、逐TX/RX/day、完整成本和配对诊断。追踪记录为7 verified、1 deferred，实验工作完成，持续总目标仍active。
 
+## 当前生成式消融结果：R20（仅源域）
+
+相同完整初始速度场、同数据和随机流的 sigma0=0/.02 两行均完成E20/4940，源V1800条×七视图完整16步采样后独立评分。两行均未通过既定波形和身份保护，0target；不得将下表的源准确率当作新的正式跨接收机结果。
+
+|源V场景|零起点（%）|随机起点（%）|
+|---|---:|---:|
+|clean|98.4444|98.4444|
+|高仰角郊区|97.7222|97.8333|
+|中仰角郊区|96.1111|96.2222|
+|低仰角郊区|94.3889|94.5000|
+|高仰角城区|96.7222|96.7222|
+|中仰角城区|87.0556|87.4444|
+|低仰角城区|78.1111|78.0556|
+
+六受损源视图平均IQ NMSE分别0.03320103/0.03359369，高于R17的0.02291145。随机起点在固定源low urban前128条、三个独立完整draw上的类别分歧为14/128=10.9375%，超过5%上限；零起点分歧为0是构造属性，却没有恢复身份性能。低训练路径误差并未预测完整采样效果；训练/验证分布和路径暴露不同，不能仅据两种误差的差异确定唯一原因，也不据此否定所有流匹配方法。
+
+两行均取回并严格加载，直接连接原F50/defaulthead，固定epsilon的逐包/合批输出一致，无标签或参数更新。全L/U完整曝光、恢复训练0TX/F/target读取；两行负结果、逐TX/RX/day、三draw及成本保留于[R20完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-flow-start-selfsup-s2026092701-m2-r20/report.md)。追踪7 verified、1 deferred。持续总目标尚未达到，最近的正式结果仍为上述R19，R17仍是已登记的历史正式对照。
+
 ## 历史正式参考：R17
 
 R17 的 `unroll_unshared` 先通过固定源域条件并冻结，再连接原 F50 seed2026092701 和原默认头完成 168000 条物理记录×七视图。恢复训练全量使用 6300 L/56700 U、各 20 轮/4940 次更新，读取 TX 标签、F 权重/输出和目标数据均为 0。源 V 标签用于冻结前的独立验收，历史 F50 使用过监督训练，因此整条流程不称完全无标签。
@@ -185,3 +203,6 @@ R18 当前锚点与末端CG比较：SOURCE_NOT_QUALIFIED，选定 None。各新p
 
 
 R19 时域—频域交替与同容量时域比较：SOURCE_QUALIFIED_TARGET_ANALYZED，选定 time_time。各新prior20/4940、全63000L/U、0TX/F/target训练，四固定源参考保护。正式 low urban 为 67.1030%，70% 条件未通过；其余五场景 2/5 达到原始 clean−5 pp。数值总目标未达到。[完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19/report.md)。持续目标保持active。
+
+
+R20 固定起点与随机起点流匹配：SOURCE_NOT_QUALIFIED，选定 None。各新prior20/4940、全63000L/U、0TX/F/target训练，四固定源参考保护。本轮没有新正式目标集成绩，持续目标尚未证实。[完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-flow-start-selfsup-s2026092701-m2-r20/report.md)。持续目标保持active。

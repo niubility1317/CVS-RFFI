@@ -24,11 +24,12 @@ R20任何GPU worker必须等R19控制器和全部所属worker真实退出后才�
 |---|---|---|---|---|---|---|
 |A20-01|R5sigma消融|同速度场同初值/随机流，只改0/.02|models.py/design.py|verified|路径端点、目标、独立time/noise、完整state匹配通过|不同初始完整输出是预期|
 |A20-02|R5/R6条件|received上下文多分辨率注入、16步完整采样后软MAP、一份IQ|models.py|verified|条件缓存、实际调用16、恒定速度解析式通过；N607真实2Ls入口已通过|非I2SB|
-|A20-03|无监督与来源|全L/U、仅R07冻结父、scratch/0TX/F/target|training.py/runtime.py|pending|来源/schema负测、实际20/4940及曝光|单点训练诊断不作性能|
-|A20-04|生成身份风险|固定128源3draw≤5%，无挑draw或标签条件|evaluation.py|pending|诊断完整性先于truth、零起点属性和随机起点实测|不替代逐TX|
+|A20-03|无监督与来源|全L/U、仅R07冻结父、scratch/0TX/F/target|training.py/runtime.py|verified|来源/schema负测、实际20/4940及曝光|单点训练诊断不作性能|
+|A20-04|生成身份风险|固定128源3draw≤5%，无挑draw或标签条件|evaluation.py|verified|诊断完整性先于truth、零起点属性和随机起点实测|不替代逐TX|
 |A20-05|源/目标边界|四源保护/固定排序、只有合格选定行target7|evaluation.py/runner.py|verified|未选target阻断、全部预测先truth、源成功收尾回归通过|目标不得回流|
 |A20-06|执行保护|先等R19真实退出，单owner/容量/不可覆盖/真实入口|controller.py|verified|负测、一次P0P1、N607真实PID/CWD/argv/GPU/loggrowth均通过|不热改健康R19|
-|A20-07|完整交付|source7/条件target7、TX/RX/day/损伤/成本/全日志|run报告|pending|独立CPU评分、完整统计与实际seed|目标保持active|
+|A20-07|完整交付|source7/条件target7、TX/RX/day/损伤/成本/全日志|run报告|verified|独立CPU评分、完整统计与实际seed|目标保持active|
 |A20-08|真实性边界|新oracle/多seed/独立物理族/逐细节证明|后续确认|deferred|如实披露，非本轮发布前门槛|不称已完成总目标|
 
-本地完成 28 项聚焦检查、编译和命令入口检查；一次独立 P0/P1 审查发现源摘要重复创建问题，已先复现 FileExistsError，再改为保留原 summary.json、另写 flow_source_summary.json，并将控制器选择输入同步到新摘要，定向复核 PASS。训练参数 1389250，总参数 3546797；条件编码 465920、速度 Core 917058、时间编码 6272。每训练样本调用一次速度 Core，推理为完整 16 次，不把两者的成本混报。当前 4 verified、3 pending、1 deferred，0 rejected/blocked；pending 对应实际完整训练、采样稳定性与最终交付证据。
+
+实际状态：7 verified、1 deferred、0 rejected/blocked。SOURCE_NOT_QUALIFIED，选定 None。本轮没有新正式目标集成绩，持续目标尚未证实。训练全量曝光、0TX/F/target、实际checkpoint入口、源七视图、全部条件工作和运行退出已核实。最高剩余风险为单seed及逐细节身份真实性；[完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-flow-start-selfsup-s2026092701-m2-r20/report.md)。

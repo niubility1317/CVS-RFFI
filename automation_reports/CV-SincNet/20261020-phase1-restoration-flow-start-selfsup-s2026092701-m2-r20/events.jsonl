@@ -2,3 +2,4 @@
 {"at": "2026-10-19T19:37:31+00:00", "status": "LOCAL_VERIFIED", "note": "WAITING_R19:localmethodverified;originalR19mustfinishbeforeanyR20remoteGPUwork;no deployment yet.", "evidence": ["experiment.json", "report.md"], "row_id": null}
 {"at": "2026-10-19T19:47:00+00:00", "status": "QUEUED", "note": "One local sequential owner confirmed running;waitfororiginalR19ANALYZEDandallownedPIDs exit,thenonepreflight/release;R20remote notstarted.", "evidence": ["report.md"], "row_id": null}
 {"at": "2026-10-19T20:27:53+00:00", "status": "RUNNING", "note": "VERIFIED:archiveSHA,remotecompile,actual2Lsnoquerysmoke,controllerand2workersPID/CWD/argv/GPU/loggrowth;capacitypool0/1/5/7,twoactualcards.", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-10-19T20:45:35+00:00", "status": "ANALYZED", "note": "SOURCE_NOT_QUALIFIED:new40/ref60epochs,allsource7,conditionalworkcomplete,processesexited.", "evidence": ["report.md", "summary.json", "row_metrics.csv"], "row_id": null}
