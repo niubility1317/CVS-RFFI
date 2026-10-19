@@ -23,9 +23,10 @@ def training_logs(base,row_id):
    if m.get('F_weak/joint160_weight',0)>0 and first_joint is None:first_joint=steps
  if steps!=11100 or total!=963900 or selected>total or truth or nonfinite or satellite:raise ValueError('Full native budget/hidden U/noSat differs')
  stdout=(Path(base)/(row_id+'-source.log')).read_text(encoding='utf-8-sig')
- warnings=[line.strip() for line in stdout.splitlines() if re.search(r'Warning|Traceback|CUDA out of memory|MemoryError|Fatal Python|killed',line,re.I)]
+ markers=('FutureWarning','UserWarning','RuntimeWarning','Traceback','CUDA out of memory','MemoryError','Fatal Python','killed')
+ marker_counts={key:len(re.findall(re.escape(key),stdout,re.I)) for key in markers}
  curve_keys=('epoch','lr','epoch_time_s','train_loss','train_loss_tx_labeled','train_loss_unlabeled','train_pseudo_total','train_pseudo_selected','train_F_supcon_weight','train_F_supcon_loss','train_F_weak_joint160_weight','train_F_weak_joint160_loss','val_tx_acc')
- return dict(row_id=row_id,parsed_epochs=50,parsed_steps=steps,stdout_lines=len(stdout.splitlines()),warnings_or_error_markers=warnings,first_feature_aux_step=first_aux,first_joint160_aux_step=first_joint,U_seen=total,U_selected=selected,U_acceptance=selected/total,U_truth_available=truth,skipped_nonfinite_updates=nonfinite,satellite_active_steps=satellite,epoch_curve=[{k:v.get(k) for k in curve_keys} for v in epochs])
+ return dict(row_id=row_id,parsed_epochs=50,parsed_steps=steps,stdout_lines=len(stdout.splitlines()),full_stdout_scanned=True,stdout_marker_counts=marker_counts,first_feature_aux_step=first_aux,first_joint160_aux_step=first_joint,U_seen=total,U_selected=selected,U_acceptance=selected/total,U_truth_available=truth,skipped_nonfinite_updates=nonfinite,satellite_active_steps=satellite,epoch_curve=[{k:v.get(k) for k in curve_keys} for v in epochs])
 
 def publish(base,output):
  base=Path(base);output=Path(output);result=d.read(base/'result.json')
