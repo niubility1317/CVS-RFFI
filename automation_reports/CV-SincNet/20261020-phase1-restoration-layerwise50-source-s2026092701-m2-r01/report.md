@@ -1,6 +1,6 @@
 # 更早持续的原 F 引导与中间层约束
 
-状态：PLANNED。用户目标仍为目标集low-urban≥70%、其他五种practical接近原clean（Agent暂按差距≤2个百分点记录）。分别报告恢复IQ与同条clean差距、接入冻结原F/default head后的真实TX识别。源分数、NMSE、检查通过均不能替代完整目标验证。
+状态：RUNNING / VERIFIED。用户目标仍为目标集low-urban≥70%、其他五种practical接近原clean（Agent暂按差距≤2个百分点记录）。分别报告恢复IQ与同条clean差距、接入冻结原F/default head后的真实TX识别。源分数、NMSE、检查通过均不能替代完整目标验证。
 
 ## 源依据与两个匹配臂
 
@@ -27,3 +27,15 @@ final_guidance与layerwise_guidance均平均三套原F50 CROSS_RX(seed2026092701
 38项聚焦检查通过，涵盖中间图到IQ梯度/clean隔离、hook正常/异常清理、对照跳过分支、新修正器初始等于coarse、标量权限、E30/7410与缓存循环、两LR/检查点预算、source选择和全部七视图truth-last。一次独立P0/P1审查PASS，无发现。N607普通账号，预登记GPU4 final_guidance/GPU5 layerwise_guidance，每卡一条本run worker，获取时全owner<2且free≥18GB。只读预检时两卡各24124MB空闲、无PID；启动时实际容量再次由既有acquire检查，不停止其他任务。CPU2线程，源scorer最多1个；两源worker完成退出后，仅在所选卡启动一条target worker。
 
 一个code/config commit、一个不可覆盖root、一次预检、一个发布归档SHA比较和远端compile。launcher第一步真实原R02+新correction+三F的两条Ls no-query smoke，证明初始等于coarse、两个模块有限非零梯度、原F全冻结、中间图与默认头到IQ梯度、实际t1/t2形状、新checkpoint往返、0query/0update，PASS立即续训。随后核实实际PID/CWD/完整命令/GPU/日志增长。数据/来源/commit/预算/输出冲突、非有限、OOM或预测失败时保留产物并停止对应技术失败，不自动重试，不热改/停止健康任务。具体命令/环境/路径/矩阵/产物见experiment.json。
+
+
+## 启动核验
+
+方法 commit：`672a36de61da32f3974472db97448b8977bbae71`，已推送且远端分支 OID 与本地一致。38 项聚焦检查和一次独立 P0/P1 审查 PASS；一次发布归档本地/远端比较及远端 compile/import 通过。真实原 R02 coarse＋全新零输出 correction＋三套原 F 的两条 L_s no-query smoke PASS，初始 IQ 等于 coarse、两个恢复组件均有有限非零梯度、默认头及中间层能向 IQ 反传、F 全冻结、新 checkpoint 往返一致，0V/0TX/0target/0optimizer update，PASS 直接续训。
+
+已从独立后态核实两条实际 worker 的 PID/CWD/完整命令（含原 R02 parent-coarse）、物理 GPU4/5 归属及从首个快照到训练首轮的日志增长。进度快照：
+
+- final_guidance：1/30 轮、247/7410 步，累计训练 109.823 s。
+- layerwise_guidance：1/30 轮、247/7410 步，累计训练 118.083 s。
+
+两臂各自完成 63000 条 L/U×三套 F 的源参考缓存，未读取 TX 真值。源 V 评分和新目标测试均尚未发生。完成两臂后按预登记源规则冻结选择；只对通过且选中的恢复器自动完成目标七视图及三套原默认头的独立评分。运行状态和 smoke 不能证明性能改善或用户目标已达成。
