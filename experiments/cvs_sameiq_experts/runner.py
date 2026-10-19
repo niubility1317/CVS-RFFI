@@ -11,8 +11,9 @@ import traceback
 HERE = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(HERE))
 from experiments.cvs_sameiq_experts import protocol as p
+from experiments.cvs_sameiq_experts.array_io import same_values, tensor_iq
 
-RUN = '20261019-diagnostic-FcrossRX-sameIQ-experts-s2026092701-m2-r01'
+RUN = '20261019-diagnostic-FcrossRX-sameIQ-experts-s2026092701-m2-r02'
 P43 = '20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01'
 P79 = '20261019-diagnostic-FcrossRX-current-controls-e30-s2026092701-m2-r01'
 HISTORY = '20260930-phase1-native-baselines-practical-manysig-m5-r01'
@@ -117,7 +118,7 @@ def run(project, device):
         if v['role']!='V' or set(v['ids'])!=set(current['role_ids']['V']):raise ValueError('Validation cache role differs')
         index=torch.tensor([lookup[pid] for pid in ids]);x=v['x'][index].clone()
         for field,want in [('y',y),('rx',rx),('day',day)]:
-            if not np.array_equal(v[field][index].numpy(),want):raise ValueError('Source row order/labels differ')
+            if not same_values(v[field][index],want):raise ValueError('Source row order/labels differ')
         del cache,v
         if x.shape!=(1800,2,256) or not torch.isfinite(x).all():raise ValueError('Finite original clean IQ required')
         iq=np.load(panelroot/'observations/iq.npy',mmap_mode='r',allow_pickle=False)
@@ -129,14 +130,14 @@ def run(project, device):
                 dest=out/method;dest.mkdir()
                 clean=np.empty((1800,6),np.float32);sat=np.empty((2,3,1800,6),np.float32)
                 for begin in range(0,1800,90):
-                    clean[begin:begin+90]=classifier_logits(model,method,x[begin:begin+90].to(device)).cpu().numpy();nn+=90
+                    clean[begin:begin+90]=classifier_logits(model,method,x[begin:begin+90].to(device)).cpu().tolist();nn+=90
                 for draw in (0,1):
                     for si,scene in enumerate(p.SCENES):
                         for begin in range(0,1800,90):
                             batch=np.array(iq[draw,si,0,begin:begin+90],copy=True)
                             if not np.isfinite(batch).all():raise ValueError('Nonfinite cached observation')
-                            t=torch.from_numpy(batch).to(device)
-                            sat[draw,si,begin:begin+90]=classifier_logits(model,method,t).cpu().numpy();nn+=90
+                            t=tensor_iq(batch,device,torch)
+                            sat[draw,si,begin:begin+90]=classifier_logits(model,method,t).cpu().tolist();nn+=90
                 if not np.isfinite(clean).all() or not np.isfinite(sat).all():raise ValueError('Nonfinite predictions')
                 np.savez_compressed(dest/'predictions.npz',ids=np.asarray(ids),clean=clean,satellite=sat)
                 result=analyze(dict(clean=clean,satellite=sat),student,y,rx,day,physics)

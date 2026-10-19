@@ -2,9 +2,22 @@ import unittest
 from copy import deepcopy
 import numpy as np
 from . import protocol as p
+from .array_io import same_values
 
 
 class ProtocolTests(unittest.TestCase):
+    def test_legacy_array_bridge_regression(self):
+        class LegacyArray(np.ndarray):
+            def __array_function__(self, *args, **kwargs):
+                raise TypeError('incompatible legacy NumPy array class')
+        class LegacyTensor:
+            shape=(2,)
+            def numpy(self):return np.asarray([1,2]).view(LegacyArray)
+            def tolist(self):return [1,2]
+        t=LegacyTensor();a=np.asarray([1,2])
+        with self.assertRaises(TypeError):np.array_equal(t.numpy(),a)
+        self.assertTrue(same_values(t,a))
+        self.assertFalse(same_values(t,np.asarray([2,1])))
     def test_pair_identity_and_union(self):
         q=p.paired([0,1,0,1],[1,1,1,0],[0,1,1,0])
         self.assertEqual((q['repair'],q['damage'],q['both_wrong'],q['both_correct']), (1,2,0,1))

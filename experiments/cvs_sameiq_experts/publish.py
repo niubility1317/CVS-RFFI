@@ -8,8 +8,8 @@ import subprocess
 import tarfile
 
 ROOT=Path(__file__).resolve().parents[2]
-RUN='20261019-diagnostic-FcrossRX-sameIQ-experts-s2026092701-m2-r01'
-RELEASE='cvs_FcrossRX_sameIQ_experts_20261019_r01'
+RUN='20261019-diagnostic-FcrossRX-sameIQ-experts-s2026092701-m2-r02'
+RELEASE='cvs_FcrossRX_sameIQ_experts_20261019_r02'
 
 
 def remote(code, runtime):
