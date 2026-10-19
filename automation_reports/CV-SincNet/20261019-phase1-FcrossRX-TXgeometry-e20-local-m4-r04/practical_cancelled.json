@@ -1,0 +1,14 @@
+{
+  "status": "VERIFIED",
+  "user_scope": [
+    "clean"
+  ],
+  "cancelled_owned_controllers": 1,
+  "cancelled_owned_prediction_workers": 3,
+  "source_models_preserved": 4,
+  "source_epochs_each": 20,
+  "no_source_training_stopped": true,
+  "no_optimizer_updates": true,
+  "partial_practical_files_preserved": true,
+  "new_clean_eval_run": "20261019-eval-FcrossRX-TXgeometry-clean-local-m4-r01"
+}

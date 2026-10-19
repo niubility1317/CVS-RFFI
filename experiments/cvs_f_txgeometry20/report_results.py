@@ -38,7 +38,7 @@ def summarize(result):
 def render(summary):
  classes=['14-10','14-7','20-15','20-19','6-15','8-20'];weak=summary['weak_indices']
  percent=lambda x:f'{100*x:.4f}'
- lines=['# F＋跨 RX：弱发射机特征学习结果','',f"Run：{summary['run_id']}。弱类在目标访问前由源V固定为 "+'、'.join(classes[k] for k in weak)+'。以下结果只作冻结后的同划分配对评价，不参与调参、扩种子或重跑。','', '分类头全程按原流程联合训练；评分直接使用checkpoint内默认头。clean与六种practical每个视图各168000物理样本。未扩种子的组只报告实际种子数，单种子没有样本标准差。','', '## clean 逐种子结果','', '| 条件 | 模型 seed | Accuracy% | Macro-F1% | 弱类平均 recall% | 其余类平均 recall% | 最差 RX% | 最差 day% |','|---|---:|---:|---:|---:|---:|---:|---:|']
+ lines=['# F＋跨 RX：弱发射机特征学习结果','',f"Run：{summary['run_id']}。弱类在目标访问前由源V固定为 "+'、'.join(classes[k] for k in weak)+'。以下结果只作冻结后的同划分配对评价，不参与调参、扩种子或重跑。','', '分类头全程按原流程联合训练；评分直接使用checkpoint内默认头。每个实际登记的评估视图各168000物理样本；具体视图以本次结果为准。未扩种子的组只报告实际种子数，单种子没有样本标准差。','', '## clean 逐种子结果','', '| 条件 | 模型 seed | Accuracy% | Macro-F1% | 弱类平均 recall% | 其余类平均 recall% | 最差 RX% | 最差 day% |','|---|---:|---:|---:|---:|---:|---:|---:|']
  for row in summary['details']:
   if row['view']=='clean':lines.append('| '+row['arm']+' | '+str(row['model_seed'])+' | '+' | '.join(percent(row[k]) for k in ('accuracy','macro_f1','weak_TX_mean_recall','other_TX_mean_recall','worst_RX','worst_day'))+' |')
  lines+=['','## clean 相对同 seed BASE 的差值（百分点）','','| 条件 | seed | 整体 | 弱类平均 | 其余类平均 | 其余类最差变化 | 最差 RX | 最差 day |','|---|---:|---:|---:|---:|---:|---:|---:|']

@@ -1,0 +1,38 @@
+{
+  "status": "SOURCE_EXPANSION_FIXED",
+  "weak_indices": [
+    1,
+    3
+  ],
+  "qualified": [],
+  "expand_arms": [],
+  "remaining_seeds": [
+    2026092702,
+    2026092703
+  ],
+  "criterion": "weakTX mean +0.2pp; overall >=-0.2pp; worstRX >=-0.5pp; anyTX >=-1pp; all relative to matched BASE; no target feedback",
+  "detail": {
+    "WEIGHT": {
+      "PASS": false,
+      "weak_TX_gain_pp": -0.022222222222217924,
+      "overall_difference_pp": -0.04444444444444695,
+      "worst_RX_difference_pp": -0.18518518518518823,
+      "minimum_class_difference_pp": -0.15555555555556433
+    },
+    "GEOMETRY": {
+      "PASS": false,
+      "weak_TX_gain_pp": -0.03333333333332966,
+      "overall_difference_pp": 0.01481481481481195,
+      "worst_RX_difference_pp": -0.018518518518517713,
+      "minimum_class_difference_pp": -0.11111111111110628
+    },
+    "BOTH": {
+      "PASS": false,
+      "weak_TX_gain_pp": -0.05555555555555314,
+      "overall_difference_pp": -0.037037037037035425,
+      "worst_RX_difference_pp": -0.1666666666666594,
+      "minimum_class_difference_pp": -0.13333333333332975
+    }
+  },
+  "target_access": false
+}

@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "real_checkpoint_no_query_smoke": true,
+  "checkpoint_epoch": 20,
+  "source_contract_same": true,
+  "clean_scope_negative": true,
+  "invalid_class_negative": true,
+  "synthetic_prediction_preflight": true,
+  "query_reads": 0,
+  "truth_reads": 0,
+  "default_head_shape": [
+    6,
+    160
+  ],
+  "model_updates": 0
+}

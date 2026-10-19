@@ -1,0 +1,333 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-eval-FcrossRX-TXgeometry-clean-local-m4-r01",
+  "group_id": "F-crossRX-weakTX-clean-evaluation",
+  "display_name": "F弱发射机四组冻结模型：仅clean默认头评估",
+  "description": "User-authorized clean-only evaluation of the four completed r04 final20 models. No training, no head refit, no practical simulation. Old partial practical predictions preserved; new output root avoids overwriting. Each row clean168000 predictions fixed before separate CPU truth-last score.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "F 弱TX clean only"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "weak_TX",
+    "clean",
+    "evaluation_only",
+    "default_head"
+  ],
+  "comparison_group_id": "F-TXgeometry-local-E20",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "User latest explicitly requests only clean tests and cancels practical. Evaluates existing frozen4 final20 checkpoints; no new optimizer or source/target fitting. Source expansion was already fixed from all4 source results before any target score.",
+  "code": {
+    "commit": "Actual Git HEAD recorded in immutable local release/release_commit.txt",
+    "checkout": "codex/phase1-rdrop-combinations-20261015",
+    "environment": "Verified native local base Python3.10/PyTorch2.10+cu128, FP32/noTF32",
+    "cwd": "LOCAL_CLEAN_RELEASE"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing source contract",
+    "representation": "raw received residual/post_sync/noeq IQ; fixed256 packet; deployed160-dimensional id_feat_joint",
+    "contract_ref": "LOCAL_DATASET/source/source_contract.json",
+    "physical_ids_ref": "LOCAL_DATASET/source/source_contract.json#role_ids",
+    "label_map_ref": "LOCAL_DATASET/source_cache/manifest.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      "2021_03_01",
+      "2021_03_08",
+      "2021_03_15",
+      "2021_03_23"
+    ],
+    "tx_sets_ref": "LOCAL_DATASET/source_cache/manifest.json",
+    "roles": {
+      "L_s": "6300 visible source labels; original per-packet native preprocessing; ordinary augmentation plus sat concat",
+      "U_s": "56700 hidden labels; NOT loaded or iterated in this supervised feature factorial",
+      "V": "27000 no-update validation, perTX/RX/day feature diagnostics and preregistered expansion only"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": "existing VALIDATED_ONCE Phase1 capsule manifest; reuse unchanged",
+    "split_id": "original registered source/target physical split; reuse unchanged",
+    "validation_ref": "LOCAL_DATASET/source_cache/manifest.json; existing capsule/manifest.json VALIDATED_ONCE",
+    "support_query_ref": null,
+    "leo_config_ref": "Native practical v3 residual/post_sync/noeq; all6 declared scenarios via actual physical opaque IDs, channel392005/receiver2027"
+  },
+  "permissions": {
+    "regime": "source_training_then_frozen_target_test",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Default-head ManySig target clean+6practical accuracy/MacroF1/perTX/RX/day; exposed benchmark, no new blind/Phase2 or real satellite claim"
+  },
+  "checkpoint": {
+    "initialization": "frozen evaluation only",
+    "sources": [
+      {
+        "run_id": "20261019-phase1-FcrossRX-TXgeometry-e20-local-m4-r04",
+        "commit": "4679f66babb40c17b96285c7393225787ed13c08",
+        "rows": [
+          "BASE-s2026092701",
+          "WEIGHT-s2026092701",
+          "GEOMETRY-s2026092701",
+          "BOTH-s2026092701"
+        ],
+        "checkpoint": "source/final.pt",
+        "epoch": 20
+      }
+    ],
+    "contract_check_ref": "clean_eval.source_proof plus original source final20 exact config/roles/commit/ancestry; existing VALIDATED_ONCE data reused",
+    "provenance_verdict": "VERIFIED same source roles and final20; no target feedback or head fit",
+    "selection_rule": "All4 original fixed matrix rows; no target ranking"
+  },
+  "execution": {
+    "host": "local Windows RTX5070Ti",
+    "launch_owner": "codex/root/F-TXgeometry-clean-20261019",
+    "gpu_policy": "GPU0 max3 prediction workers plus max1 independent CPU scorer",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "LOCAL_RUN/20261019-eval-FcrossRX-TXgeometry-clean-local-m4-r01",
+    "launch_command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_txgeometry20.clean_eval --role driver --profile LOCAL_PROFILE --source-base ORIGINAL_R04_RUN --base LOCAL_CLEAN_RUN --commit RELEASE_COMMIT",
+    "stop_rule": "Invalid source config/provenance/frozen state, nonfinite or incomplete predictions, output conflict or failed child: preserve outputs, stop new dispatch, leave healthy other workers"
+  },
+  "expected_artifacts": [
+    "execution.json",
+    "*-start.json",
+    "prediction/smoke.json",
+    "prediction/predictions.npz",
+    "prediction/complete.json",
+    "scores/metrics.json",
+    "result.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean accuracy",
+      "Macro-F1",
+      "perTX recall/confusion",
+      "weak2 source-defined mean recall",
+      "otherTX retention",
+      "worst RX/day",
+      "same-seed paired differences",
+      "source and evaluation cost"
+    ],
+    "dimensions": [
+      "seed2026092701",
+      "6TX",
+      "7targetRX",
+      "4targetdays",
+      "clean",
+      "168000 physical IDs"
+    ],
+    "prediction_ref": "clean_eval.py predict; real final20 checkpoint smoke then clean only; no practical channel function",
+    "scorer_ref": "clean_eval.py CPU scorer connects truth only after full clean prediction preflight"
+  },
+  "rows": [
+    {
+      "row_id": "BASE-s2026092701",
+      "method": "F SIG_TIME_X3+CENTER_UNITS+RDrop1+CROSS_RX; BASE",
+      "purpose": "frozen existing final20 checkpoint default-head clean-only evaluation",
+      "config_ref": "experiments/cvs_f_txgeometry20/design.py#config (unchanged training configuration)",
+      "resolved_config_ref": "ORIGINAL_R04_RUN/BASE-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "source_roles": "unchanged7/63/30",
+        "training_U_used": false,
+        "supervised": true,
+        "ordinary_aug": true,
+        "clean_sat_concat_CE": 0.68,
+        "sat_consistency": 0
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Augmentation uses model-seeded ordinary RNG plus independent sat2027; fixed practical perphysical seed392005/receiver2027, no support sampling",
+      "k": null,
+      "scenario": "clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Zero optimizer updates; existing20epochs/4440updates source cost disclosed",
+      "output_root": "LOCAL_CLEAN_RUN/BASE-s2026092701",
+      "log_path": "LOCAL_CLEAN_RUN/BASE-s2026092701-predict.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_txgeometry20.clean_eval --role driver --profile LOCAL_PROFILE --source-base ORIGINAL_R04_RUN --base LOCAL_CLEAN_RUN --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "execution.json",
+        "*-start.json",
+        "prediction/smoke.json",
+        "prediction/predictions.npz",
+        "prediction/complete.json",
+        "scores/metrics.json",
+        "result.json"
+      ],
+      "arm": "BASE",
+      "model_seed": 2026092701
+    },
+    {
+      "row_id": "WEIGHT-s2026092701",
+      "method": "F SIG_TIME_X3+CENTER_UNITS+RDrop1+CROSS_RX; WEIGHT",
+      "purpose": "frozen existing final20 checkpoint default-head clean-only evaluation",
+      "config_ref": "experiments/cvs_f_txgeometry20/design.py#config (unchanged training configuration)",
+      "resolved_config_ref": "ORIGINAL_R04_RUN/WEIGHT-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "source_roles": "unchanged7/63/30",
+        "training_U_used": false,
+        "supervised": true,
+        "ordinary_aug": true,
+        "clean_sat_concat_CE": 0.68,
+        "sat_consistency": 0
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Augmentation uses model-seeded ordinary RNG plus independent sat2027; fixed practical perphysical seed392005/receiver2027, no support sampling",
+      "k": null,
+      "scenario": "clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Zero optimizer updates; existing20epochs/4440updates source cost disclosed",
+      "output_root": "LOCAL_CLEAN_RUN/WEIGHT-s2026092701",
+      "log_path": "LOCAL_CLEAN_RUN/WEIGHT-s2026092701-predict.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_txgeometry20.clean_eval --role driver --profile LOCAL_PROFILE --source-base ORIGINAL_R04_RUN --base LOCAL_CLEAN_RUN --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "execution.json",
+        "*-start.json",
+        "prediction/smoke.json",
+        "prediction/predictions.npz",
+        "prediction/complete.json",
+        "scores/metrics.json",
+        "result.json"
+      ],
+      "arm": "WEIGHT",
+      "model_seed": 2026092701
+    },
+    {
+      "row_id": "GEOMETRY-s2026092701",
+      "method": "F SIG_TIME_X3+CENTER_UNITS+RDrop1+CROSS_RX; GEOMETRY",
+      "purpose": "frozen existing final20 checkpoint default-head clean-only evaluation",
+      "config_ref": "experiments/cvs_f_txgeometry20/design.py#config (unchanged training configuration)",
+      "resolved_config_ref": "ORIGINAL_R04_RUN/GEOMETRY-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "source_roles": "unchanged7/63/30",
+        "training_U_used": false,
+        "supervised": true,
+        "ordinary_aug": true,
+        "clean_sat_concat_CE": 0.68,
+        "sat_consistency": 0
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Augmentation uses model-seeded ordinary RNG plus independent sat2027; fixed practical perphysical seed392005/receiver2027, no support sampling",
+      "k": null,
+      "scenario": "clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Zero optimizer updates; existing20epochs/4440updates source cost disclosed",
+      "output_root": "LOCAL_CLEAN_RUN/GEOMETRY-s2026092701",
+      "log_path": "LOCAL_CLEAN_RUN/GEOMETRY-s2026092701-predict.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_txgeometry20.clean_eval --role driver --profile LOCAL_PROFILE --source-base ORIGINAL_R04_RUN --base LOCAL_CLEAN_RUN --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "execution.json",
+        "*-start.json",
+        "prediction/smoke.json",
+        "prediction/predictions.npz",
+        "prediction/complete.json",
+        "scores/metrics.json",
+        "result.json"
+      ],
+      "arm": "GEOMETRY",
+      "model_seed": 2026092701
+    },
+    {
+      "row_id": "BOTH-s2026092701",
+      "method": "F SIG_TIME_X3+CENTER_UNITS+RDrop1+CROSS_RX; BOTH",
+      "purpose": "frozen existing final20 checkpoint default-head clean-only evaluation",
+      "config_ref": "experiments/cvs_f_txgeometry20/design.py#config (unchanged training configuration)",
+      "resolved_config_ref": "ORIGINAL_R04_RUN/BOTH-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "source_roles": "unchanged7/63/30",
+        "training_U_used": false,
+        "supervised": true,
+        "ordinary_aug": true,
+        "clean_sat_concat_CE": 0.68,
+        "sat_consistency": 0
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Augmentation uses model-seeded ordinary RNG plus independent sat2027; fixed practical perphysical seed392005/receiver2027, no support sampling",
+      "k": null,
+      "scenario": "clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "Zero optimizer updates; existing20epochs/4440updates source cost disclosed",
+      "output_root": "LOCAL_CLEAN_RUN/BOTH-s2026092701",
+      "log_path": "LOCAL_CLEAN_RUN/BOTH-s2026092701-predict.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_txgeometry20.clean_eval --role driver --profile LOCAL_PROFILE --source-base ORIGINAL_R04_RUN --base LOCAL_CLEAN_RUN --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "execution.json",
+        "*-start.json",
+        "prediction/smoke.json",
+        "prediction/predictions.npz",
+        "prediction/complete.json",
+        "scores/metrics.json",
+        "result.json"
+      ],
+      "arm": "BOTH",
+      "model_seed": 2026092701
+    }
+  ],
+  "notes": [
+    "User latest clean-only scope supersedes earlier7view scope for these frozen models. No source retraining or source config rewrite.",
+    "Factual correction: r04 training DID use clean+sat concat CE0.68. All4 source completions record568320 sat examples,371968 actually transformed. Current user test-scope change does not retroactively remove that training.",
+    "Original4 source arms all failed weakTX expansion; do not add02/03 based on target scores. Report actual n1 and all negatives.",
+    "Old clean vectors were held in workers memory pending all7view completion, and no prediction npz existed. Therefore new independent clean prediction is required after practical cancellation; no target score had been read.",
+    "No new blind, Phase2, or satellite deployment claim. Historical50旧门控ownEMA85.11 is unpaired with current20监督sat recipe."
+  ],
+  "registered_at": "2026-10-19T09:46:11+00:00"
+}
