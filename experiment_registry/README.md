@@ -1,6 +1,6 @@
 # 实验总索引
 
-更新：2026-10-19T09:49:41+00:00
+更新：2026-10-19T10:18:09+00:00
 
 先按方法/问题检索，再用run ID读取精确配置与证据。历史组数量不等于独立实验数量。
 
@@ -12,7 +12,7 @@
 
 |记录类型|数量|
 |---|---:|
-|managed_run|129|
+|managed_run|130|
 |legacy_evidence_group|724|
 
 历史状态统一为HISTORICAL_UNVERIFIED；RUNNING等原文声明只供查证，不能证明此刻仍在运行。
@@ -37,8 +37,8 @@
 |[rff_physics](by_method/rff_physics.md)|20|
 |[reference_response](by_method/reference_response.md)|19|
 |[source_selected](by_method/source_selected.md)|18|
+|[source_only](by_method/source_only.md)|17|
 |[frozen_prediction_reuse](by_method/frozen_prediction_reuse.md)|17|
-|[source_only](by_method/source_only.md)|16|
 |[truth_last](by_method/truth_last.md)|16|
 |[d92](by_method/d92.md)|15|
 |[diagnostic](by_method/diagnostic.md)|15|
@@ -91,6 +91,8 @@
 |[standard_architecture](by_method/standard_architecture.md)|3|
 |[full_width](by_method/full_width.md)|3|
 |[automatic_row_test](by_method/automatic_row_test.md)|3|
+|[restoration](by_method/restoration.md)|3|
+|[self_supervised](by_method/self_supervised.md)|3|
 |[smoke](by_method/smoke.md)|3|
 |[evaluation](by_method/evaluation.md)|2|
 |[true256](by_method/true256.md)|2|
@@ -119,8 +121,6 @@
 |[synthetic_no_query](by_method/synthetic_no_query.md)|2|
 |[FP32](by_method/FP32.md)|2|
 |[RTX3090](by_method/RTX3090.md)|2|
-|[restoration](by_method/restoration.md)|2|
-|[self_supervised](by_method/self_supervised.md)|2|
 |[frozen_F](by_method/frozen_F.md)|2|
 |[PAMF](by_method/PAMF.md)|2|
 |[source_V](by_method/source_V.md)|2|
@@ -214,6 +214,8 @@
 |[diffusion](by_method/diffusion.md)|1|
 |[flow_matching](by_method/flow_matching.md)|1|
 |[three_GPU](by_method/three_GPU.md)|1|
+|[observability](by_method/observability.md)|1|
+|[waveform_diagnostic](by_method/waveform_diagnostic.md)|1|
 |[label_free_selection](by_method/label_free_selection.md)|1|
 |[technical_scoring_recovery](by_method/technical_scoring_recovery.md)|1|
 |[ecrs](by_method/ecrs.md)|1|

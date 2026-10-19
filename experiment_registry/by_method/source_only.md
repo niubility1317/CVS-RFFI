@@ -22,3 +22,4 @@
 |CVS显式补偿响应：完整源V冻结归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/report.md)|
 |CVS补偿响应：完整源V判别几何|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/report.md)|
 |双路径冻结机制诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-validdual-mechanism-source-public-m8-r01/report.md)|
+|恢复器源域可观测性诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-restoration-observability-source-s2026092701-r01/report.md)|

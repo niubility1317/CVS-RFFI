@@ -178,9 +178,10 @@ def train_row(name, cache, output, device, source_cache, frozen_bundle):
 
 
 @torch.no_grad()
-def predict_row(name, reference, folder, device, frozen_bundle, source_cache):
+def predict_row(name, reference, folder, device, frozen_bundle, source_cache, checkpoint_loader=None):
     from .frozen import load_readers
-    model, checkpoint = load_checkpoint(folder/'final.pt', name, device)
+    loader = load_checkpoint if checkpoint_loader is None else checkpoint_loader
+    model, checkpoint = loader(folder/'final.pt', name, device)
     readers = load_readers(frozen_bundle, source_cache, device)
     if checkpoint['epoch'] != d.EPOCHS:
         raise ValueError('Fixed final checkpoint required')

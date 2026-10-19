@@ -1,0 +1,176 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-restoration-observability-source-s2026092701-r01",
+  "group_id": "phase1-pamf-satellite-observation-restoration",
+  "display_name": "恢复器源域可观测性诊断：延迟、边界、相位与弱频谱",
+  "description": "不新增训练，不读取TX/F输出或目标；全L/U重复结构统计及既有1800源V六信道和U-Net恢复误差分解，为下一版机制提供源证据。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "self_supervised",
+    "source_only",
+    "observability",
+    "waveform_diagnostic"
+  ],
+  "comparison_group_id": "manysig-source-rx13468-day123-076330-restoration-seven-e20-v1",
+  "parent_run_ids": [
+    "20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "本对话2026-10-19用户要求独立无监督恢复网络、覆盖IQ/FFT/PAMF输入、尝试多种设计含扩散、使用L/U；提供恢复器报告；最新明确训练默认N607并允许多GPU快速验证，直接接训练好F验证真实输入TX身份。",
+  "code": {
+    "commit": "86aa3179b077e9b6c2b585e5c350f945817b7d4c",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "Verified local Phase1 Python3.10.19/Torch2.10/cu128/NumPy2.2; CPU",
+    "cwd": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "equalized=1, center256, original packet RMS; practical residual/post_sync/noeq at25MHz",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "same contract#role_ids; V panel chosen perRX/day without TX labels using fixed data seed",
+    "label_map_ref": "source_cache/manifest.json#class_id_to_tx; label files read only by independent scorer",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json: READY/EXACT_MATCH; reuse existing cache without new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "experiments/pamf_restoration/data.py: six practical residual/noEQ/fixed one source training draw per physical ID",
+    "restoration_train_counts": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "TX_labels": 0
+    },
+    "source_validation_panel": 1800,
+    "target_panel": {
+      "count": 1200,
+      "seed": 2026101904,
+      "selection": "uniform physical-ID panel; source-selected single candidate only; new six practical paired diagnostics, not historical satellite observations"
+    }
+  },
+  "permissions": {
+    "regime": "Source waveform diagnostic only; no TX label/F output/target access; no parameter update",
+    "query_use": "None",
+    "external_method_exception": null,
+    "claim_scope": "Nominal latency and source received-only boundary controls; no claim of transmitter identity or exact lost-information rank"
+  },
+  "checkpoint": {
+    "initialization": "No new model; analyze existing source-only U-Net predictions, no checkpoint loading",
+    "sources": [
+      "20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/unet/final.pt (indirect existing output only)"
+    ],
+    "contract_check_ref": "existing cleanF E200 and AsF T1 E20+10 source_contract and complete scratch-parent lineage; exact local source roles matched; frozen.py",
+    "provenance_verdict": "F checkpoints VERIFIED: cleanF scratch E200/defaulthead; AsF scratch20+own10/defaulthead. Restoration inherits no weights; fixed F used only for post-freeze evaluation.",
+    "selection_rule": "No candidate selection or target scoring in this diagnostic",
+    "evaluation_readers": [
+      "20261014-phase1-sigtime-purece-e200-clean-manysig-m8-r01/sig_time-s2026092701/source/last.pt",
+      "20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r02/T1-s2026092701/source/final_ssdg.pth"
+    ]
+  },
+  "execution": {
+    "host": "Local CPU; read-only N607 source artifact retrieval",
+    "launch_owner": "codex/root/pamf-restoration",
+    "gpu_policy": "No GPU workers",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "local_artifacts/pamf_restoration/20261019-phase1-restoration-observability-source-s2026092701-r01",
+    "launch_command": "python -X utf8 -m experiments.pamf_restoration.observability --source-cache E:/type10-7/local_artifacts/datasets/phase1_manysig_reference_20261019/source_cache --observations E:/type10-7/local_artifacts/pamf_restoration/observability_inputs_20261019 --output E:/type10-7/local_artifacts/pamf_restoration/20261019-phase1-restoration-observability-source-s2026092701-r01",
+    "stop_rule": "Output conflict, nonfinite waveform, mismatching source ID set or missing original source artifact aborts; no target fallback."
+  },
+  "expected_artifacts": [
+    "metrics.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "lag16/32/64/128 coherence",
+      "raw IQ NMSE/full-prefix-tail",
+      "known24-shift controls with zero/reflect/received-only periodic boundary",
+      "oracle gain/phase diagnostic",
+      "low/high power FFT quartile relative error with denominator floor"
+    ],
+    "dimensions": [
+      "source role",
+      "scene",
+      "control"
+    ],
+    "primary": "Explain common waveform error components; no identity/model-qualification claims",
+    "prediction_ref": null,
+    "scorer_ref": "observability.py"
+  },
+  "rows": [
+    {
+      "row_id": "source-waveforms",
+      "method": "observability",
+      "purpose": "source_only_mechanism_diagnostic",
+      "config_ref": "experiments/pamf_restoration/observability.py",
+      "resolved_config_ref": null,
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": 2026101903
+      },
+      "seed_notes": "split is original contract; data seed fixes source V panel and native source scene/noise draw; augmentation fixes receiver sessions/clean mask and training diffusion/flow RNG; support not applicable; target panel seed separately fixed.",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Zero optimization; full6300L+56700U autocorrelation; fixed1800 source V x clean+six native views and existing U-Net outputs.",
+      "output_root": "local_artifacts/pamf_restoration/20261019-phase1-restoration-observability-source-s2026092701-r01",
+      "log_path": null,
+      "command": "python -X utf8 -m experiments.pamf_restoration.observability --source-cache E:/type10-7/local_artifacts/datasets/phase1_manysig_reference_20261019/source_cache --observations E:/type10-7/local_artifacts/pamf_restoration/observability_inputs_20261019 --output E:/type10-7/local_artifacts/pamf_restoration/20261019-phase1-restoration-observability-source-s2026092701-r01",
+      "expected_artifacts": [
+        "metrics.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Original seven-network fixed matrix remains complete and unchanged; no budget expansion or multi-seed promotion.",
+    "Known scene appears only in diagnostic grouping. Fixed shift controls cannot become a deployable clean/augmented router using scene labels.",
+    "Oracle gain/phase uses clean solely for source diagnosis and is never a restoration output.",
+    "L/U IQ inputs and sourceV membership reuse validated source cache; no data revalidation; no target artifact downloads.",
+    "Next mechanism must be justified by source diagnostics; previous target outcomes cannot tune or select it."
+  ],
+  "registered_at": "2026-10-19T09:56:50+00:00"
+}
