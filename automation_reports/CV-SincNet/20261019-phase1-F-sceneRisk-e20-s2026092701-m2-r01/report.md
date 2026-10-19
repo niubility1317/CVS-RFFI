@@ -23,3 +23,6 @@ BALANCED：本批出现的每个场景先取 CE 平均，再等权平均。RISK�
 技术停止仅限实际数据/角色/来源/预算/非有限值/接口/输出错误，保留产物，不自动重启。每行预期568320 As、1136640 L训练前向包，原 U学生396900包/EMA4440次；最终源读出12600包、正式预测1176002包另计，运行时间和实际开销实测。首步原生 checkpoint 无query smoke PASS后立即训练。完整训练流、风险 CE/q/逐样本权重、真实 joint160、Sinc/签名/时频/PA/默认头更新均保留核验。
 
 本地公式/正权/停止梯度/缺场景/置换/有界权/5协议负测 PASS；实际两个 F 同初态，原生 L hook 与全部关键骨干及默认头非零梯度、joint160 PASS。一次独立P0/P1审查结果待写入代码身份事件，发布前完成。Git commit 为代码/config身份，不增加设计SHA或审批。REJECTED_EXTRA_GATE：通用 brainstorming 的额外设计批准流程被当前用户自主研究授权及 exhaustive minimal workflow 覆盖；本报告与登记已包含唯一假设、矩阵、命令、预算和放弃规则。
+
+
+发布状态：RUNNING / VERIFIED。实际发布 commit `9737b41af49a38516d85925b604c015b95ce5225`，代码/config `3f7062ff5a8be5074a280b410a45ec8be9213021`。一次独立P0/P1审查PASS；单归档传输比较、远端编译/负测PASS。BALANCED GPU2/PID2099403、RISK GPU3/PID2099480，实际PID/CWD/argv/CUDA和增长中的原生step日志已核实，参数均900722；含其他owner资源上限满足。当前两行正在原定训练，尚无源推进决定或新正式性能结果。
