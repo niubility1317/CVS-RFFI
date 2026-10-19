@@ -3,8 +3,8 @@ from copy import deepcopy
 import json
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
-RUN='20261019-phase1-FcrossRX-sameIQ-CSIL-e30-s2026092701-m2-r01'
-RELEASE='cvs_FcrossRX_sameIQ_CSIL_E30_20261019_r01'
+RUN='20261019-phase1-FcrossRX-sameIQ-CSIL-e30-s2026092701-m2-r02'
+RELEASE='cvs_FcrossRX_sameIQ_CSIL_E30_20261019_r02'
 OWNER='codex/root/sameIQ-CSIL';LOCAL='local_artifacts/F_sameIQ_distill_E30_20261019'
 REFERENCE_RUN='20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01'
 REFERENCE_RELEASE='cvs_FcrossRX_impulse_factorial_E30_20261018_r01'

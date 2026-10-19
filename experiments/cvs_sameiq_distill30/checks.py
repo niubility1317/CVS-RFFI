@@ -19,6 +19,8 @@ def math_checks():
   else:raise ValueError('Invalid teacher or selected view accepted')
  return dict(loss_gradient='PASS',all64_mean=True,student_NN=0)
 def run():
+ from .native_factory import import_regression
+ dependency=import_regression()
  count=0
  for r in d.rows():
   c=d.config(r);d.validate(c)
@@ -31,5 +33,5 @@ def run():
   try:d.validate(x)
   except ValueError:count+=1
   else:raise ValueError('Removing As supervision accepted')
- return dict(status='PASS',protocol_negatives=count,math=math_checks(),query_access=False,updates=0)
+ return dict(status='PASS',protocol_negatives=count,math=math_checks(),dependency=dependency,query_access=False,updates=0)
 if __name__=='__main__':print(json.dumps(run()))

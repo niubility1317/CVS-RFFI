@@ -46,3 +46,7 @@ D01额外加入 .25×6×mean64[teacherCorrectL×mean两学生pass KL(softmax(教
 N607普通账号；GPU按全owner≤2且free≥12GB分配，CPU2，FP32/TF32off。唯一owner=codex/root/sameIQ-CSIL；不可覆盖run/output root、命令和停止规则见登记。仅契约/来源/非有限/无法执行/预测闭合/错误truth连接/输出冲突等系统技术失败中止所属run，保留产物；低性能不停止，健康旧任务不干预。
 
 本地实际Torch检查PASS：12协议负例、KD完整批次公式和两pass梯度与直接计算一致；真实checkpoint/full-path smoke作为launcher首步，PASS后直接训练。一次P0/P1审查，单归档一次SHA对比、一次远端编译。REJECTED_EXTRA_GATE：额外设计审批、报告/成员hash、重复审查和不变数据重验。
+
+## 技术失败，原目录保留
+
+真实路径smoke在导入历史factory的paper_reproduction依赖时失败，训练0更新、query0，无性能结果。原生文件级import没有将历史release根加入sys.path。隔离fixture复现旧失败，修复的完整历史依赖路由PASS；使用新r02，同模型/数据/系数/预算/判据，不覆盖r01。
