@@ -59,3 +59,7 @@ VERIFIED：代码commit `cb9e19fbbbfee31704064be0ad4f6ec96d29b966`，远端分�
 ## 首个完整四条件配对
 
 [IB-RFF首seed增强与PL结果](ibrff_seed01_aug_pl_analysis.md)：4行七视图独立复算通过，只有seed2026092701。报告保留监督条件机制负差及PL条件机制正差，具体数字、实际早停轮数和全部场景在子报告；不据分数调整后续矩阵。整体仍RUNNING，219行与96成本未全部完成。
+
+## IB-RFF主划分三seed完整结果
+
+[IB-RFF增强监督与PL完整配对](ibrff_aug_pl_analysis.md)：12行七视图及全部分层CM独立复算通过，原生预算/源曲线/default-head核验齐全。负结果全部保留，后续固定矩阵继续运行，整体目标未完成。
