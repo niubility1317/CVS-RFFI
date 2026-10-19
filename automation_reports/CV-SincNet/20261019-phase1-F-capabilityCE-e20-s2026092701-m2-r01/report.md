@@ -32,3 +32,6 @@
 
 
 启动状态：RUNNING / VERIFIED。实际code/config commit `b2e372613a4b48f3003cbd3e8e70e28705f6a90e`；release commit `52bab9e8b6410ee480751d37d634a8af7b3d6bf3` 已push并独立核对remoteOID等于localHEAD。一次archive传输SHA、远端compile/checks PASS。SHUFFLED PID2143863/GPU0，CAPABILITY PID2143942/GPU1；独立核对实际PID/CWD/argv/CUDA/900722参数及原生step日志增长，两GPU当时各1个总进程，未触碰其他owner。后续完成实际累计E20、源资格固定、七视图预测与独立truth-last评分；当前没有新性能结果。
+
+
+最终状态：ANALYZED / VERIFIED。两新行均完成从零E20/4440更新、全部168000×7固定预测和独立truth-last评分，原进程自然退出。全部源轨迹、逐包权重/私有置换及实际训练字段已独立复算，图已查看。本轮没有证明逐观测教师判对 bit 改善 urban 学习。CAPABILITY clean 81.739881%、mid urban 63.661905%、low urban 52.693452%；相对普通 As 分别 +0.528571/+0.189286/+0.057738 个百分点；相对同量组内随机控制的 mid/low urban 分别 -0.041667/-0.104167 个百分点。随机控制本身也比普通 As 有小幅变动，不能把 CAPABILITY 相对 B1 的微小 urban 正差归因于该 bit。clean 相对 NoAs 仍低 2.424405 个百分点，未达到 clean 净收益和 low urban >60% 目标。n=1 也不足以证明稳定性。 源关闭决定commit `bc3612da81ea790930b8ab44a8b4c2a784aa4efd`早于主Agent读取本轮正式数字，且服务端源决定先于评分。固定配方保持关闭，不追加E50，不改混合份额/教师/seed/阈值救援。详见 [完整分析](final_analysis.md)。总体研发目标仍在进行。
