@@ -35,14 +35,14 @@ subprocess.run([rt['python'],'-m','compileall','-q',str(release)],cwd=release,en
 command=[rt['python'],'-u','-m','experiments.phase1_external_dg_aug.driver','dispatch','--config',str(runtime)]
 with (release/'dispatcher.stdout.log').open('x') as log:
  child=subprocess.Popen(command,cwd=release,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
-receipt=dict(status='SUBMITTED',pid=child.pid,cwd=str(release),argv=command,commit=package['commit'],allowed_gpus=[0,1],expected_training=219)
+receipt=dict(status='SUBMITTED',pid=child.pid,cwd=str(release),argv=command,commit=package['commit'],allowed_gpus=[2,3],expected_training=219)
 (release/'submit.json').write_text(json.dumps(receipt,indent=2)+'\n')
 cost.update(suite_pid=child.pid)
 cost_path=release/'cost_runtime.json';cost_path.write_text(json.dumps(cost,indent=2)+'\n')
 cost_command=[cost['python'],'-u','-m','experiments.phase1_external_dg_aug.cost','dispatch','--config',str(cost_path)]
 with (release/'cost_dispatcher.stdout.log').open('x') as log:
  cost_child=subprocess.Popen(cost_command,cwd=release,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
-cost_receipt=dict(status='SUBMITTED',pid=cost_child.pid,cwd=str(release),argv=cost_command,commit=package['commit'],allowed_gpus=[0,1],expected_rows=96)
+cost_receipt=dict(status='SUBMITTED',pid=cost_child.pid,cwd=str(release),argv=cost_command,commit=package['commit'],allowed_gpus=[2,3],expected_rows=96)
 (release/'cost_submit.json').write_text(json.dumps(cost_receipt,indent=2)+'\n')
 print(json.dumps(dict(performance=receipt,cost=cost_receipt,cost_runtime=cost,archive_transfer='MATCH',remote_compile='PASS')))
 """
@@ -57,11 +57,11 @@ def publish(repo,output):
     old=json.loads((ROOT/'local_artifacts/phase1_external_dg_20261019/runtime.json').read_text(encoding='utf-8-sig'))
     project=str(PurePosixPath(old['run_root']).parent.parent)
     release=project+'/releases/'+RUN
-    rt=dict(old,run_id=RUN,release_root=release,run_root=project+'/runs/'+RUN,log_root=project+'/logs/'+RUN,
+    rt=dict(old,run_id=RUN,allowed_gpus=[2,3],release_root=release,run_root=project+'/runs/'+RUN,log_root=project+'/logs/'+RUN,
         matrix=release+'/experiments/phase1_external_dg_aug/matrix.json',runtime_file=release+'/runtime.json',
         code_commit=commit,reused_suite_root=old['run_root'],launch_owner='codex-root-phase1-concat-pl-20261019')
     cost=dict(run_id=COST_RUN,release_root=release,run_root=project+'/runs/'+COST_RUN,log_root=project+'/logs/'+COST_RUN,
-        python=rt['python'],numpy_deps=rt['numpy_deps'],code_commit=commit,allowed_gpus=[0,1],
+        python=rt['python'],numpy_deps=rt['numpy_deps'],code_commit=commit,allowed_gpus=[2,3],
         suite_release_root=release,suite_run_root=rt['run_root'],batches=[1,128],warmup=100,repeats=1000,
         launch_owner='codex-root-phase1-concat-pl-cost-20261019')
     all_files=subprocess.check_output(['git','-C',str(repo),'ls-files'],text=True).splitlines()

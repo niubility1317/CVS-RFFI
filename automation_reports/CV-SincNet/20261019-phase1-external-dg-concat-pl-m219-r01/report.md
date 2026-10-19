@@ -39,3 +39,7 @@ RIEI/DRIFT E100（用户指定实现预算，阶段按比例缩放）；IB-RFF �
 仅物理 GPU 0、1，每卡一个本任务训练/预测 worker，其他 owner 占用时等待。每行全部七视图预测固定后独立 CPU truth-last 评分。两次相同技术故障暂停未启动行，健康行继续；低分、负收益或零 PL 接受率均不触发重跑、调参或停跑。
 
 针对性检查：8 项通过；独立 P0/P1 审查 PASS，唯一 stages 字段缺陷已修复并完成针对性复核。实际 Git commit、发布包、运行路径和提交回执在发布后登记，真实 checkpoint 无 query 联合目标 smoke 为启动第一步，PASS 后立即继续。
+
+## 用户指定更换空闲卡
+
+原发布commit c44625bfeb9d71d90dc98fe1b4e59f0b95a38333，包传输MATCH、远端编译PASS、33项真实源checkpoint无query联合损失smoke通过；GPU0/1被其他owner占用，正式GPU行始终为0。用户随后要求改用另外两张空闲卡，精确等待进程已退出，本run标记REPLACED。当前由性能m219-r02及成本m96-r02接替，只使用物理GPU2、3，219行方法、数据、预算、增强和PL配置完全不变；旧产物完整保留。

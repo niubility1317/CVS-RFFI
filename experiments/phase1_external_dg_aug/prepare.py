@@ -7,7 +7,7 @@ import sys
 from .plan import make_plan, RUN, COST_RUN, REPLACES, PARENT
 
 ROOT=Path(__file__).resolve().parents[2]
-LOCAL='local_artifacts/phase1_external_dg_aug_pl_20261019'
+LOCAL='local_artifacts/phase1_external_dg_aug_pl_gpu23_20261019'
 
 
 def base_spec(run_id):
@@ -25,7 +25,7 @@ def register():
         description='219次从零训练：192增强监督+27同时保留增强的普通PL；默认头、原生预算、七视图truth-last。',
         kind='comparison',stage='Phase1',parent_run_ids=[PARENT,REPLACES],replaces_run_id=REPLACES,
         tags=['non-PAMF','concat-satellite','plain-PL','three-seed','two-GPU','native-budget'],
-        authorization='用户要求星地测试统一默认拼接增强；半监督只用普通置信度PL并保留监督对照；明确允许撤下未开始GPU的旧扩展并重发，正在训练和历史产物保留。启用时点授权Agent自行判断。')
+        authorization='用户要求星地测试统一默认拼接增强；半监督只用普通置信度PL并保留监督对照；明确允许撤下未开始GPU的旧扩展并重发，正在训练和历史产物保留。启用时点授权Agent自行判断。用户进一步要求改用另两张空闲卡，当前为物理GPU2、3；此前等待队列零GPU行保留。')
     spec['code']=dict(commit='publisher records actual Git commit in package.json/release_commit.txt',
         checkout='github_publish/CVS-RFFI-repo',environment='N607 existing SDG-SEI Py3.8/torch1.11 + existing isolated NumPy1.23.5; no shared install',cwd=runtime+'#/release_root')
     spec['data']=dict(dataset='ManySig and ManyRx',version='reuse existing VALIDATED_ONCE roles and seven observations; F0 PL exports legal U IQ only',
@@ -44,7 +44,7 @@ def register():
     spec['execution']=dict(host='N607 ordinary account',launch_owner='codex-root-phase1-concat-pl-20261019',
         launch_command='python -u -m experiments.phase1_external_dg_aug.driver dispatch --config runtime.json',
         remote_run_root=runtime+'#/run_root',remote_log_root=runtime+'#/log_root',local_artifact_root=LOCAL,runtime_ref=runtime,
-        gpu_policy='physical0/1 only, one own row worker per card; wait for foreign workloads; no extra GPU for cost queue',
+        gpu_policy='physical2/3 only, one own row worker per card; wait for foreign workloads; no extra GPU for cost queue',
         stop_rule='two matching technical row failures pause unstarted rows; healthy rows continue; wrong roles/contract/output/nonfinite/no legal predictions are technical failures; low score never stops')
     spec['metrics_plan']=dict(metric_names=['equal_RX_accuracy','overall_accuracy','macro_f1_all_registered','worst_RX',
         'full_minus_CE','PL_minus_supervised','PL_acceptance','training_cost'],
@@ -82,8 +82,8 @@ def register():
     subprocess.run([sys.executable,'-X','utf8',str(tool),'new','--spec',str(file)],check=True)
     cost=base_spec(COST_RUN)
     cost.update(run_id=COST_RUN,group_id='phase1-nonpamf-concat-PL-cost',display_name='Phase1拼接增强/普通PL：96冻结模型统一推理成本',
-        description='219性能训练全部闭合后，同一空闲GPU0/1测96个冻结checkpoint；合成IQ、零新增训练、无query。',
-        kind='diagnostic',stage='Phase1',parent_run_ids=[RUN],replaces_run_id='20261019-phase1-external-dg-cost-m69-r01',
+        description='219性能训练全部闭合后，同一空闲GPU2/3测96个冻结checkpoint；合成IQ、零新增训练、无query。',
+        kind='diagnostic',stage='Phase1',parent_run_ids=[RUN],replaces_run_id='20261019-phase1-external-dg-concat-pl-cost-m96-r01',
         authorization=spec['authorization'],tags=['non-PAMF','frozen-cost','concat-satellite','plain-PL','two-GPU'])
     cost['code']=spec['code'];cost['data']=dict(dataset='synthetic zeros',version='FP32 Bx2x256',representation='resident GPU synthetic IQ',
         contract_ref='upstream frozen checkpoint contracts only',physical_ids_ref=None,label_map_ref=None,source_receivers=None,
@@ -96,7 +96,7 @@ def register():
     cost['execution']=dict(spec['execution'],launch_owner='codex-root-phase1-concat-pl-cost-20261019',
         launch_command='python -u -m experiments.phase1_external_dg_aug.cost dispatch --config cost_runtime.json',
         runtime_ref=cost_runtime,remote_run_root=cost_runtime+'#/run_root',remote_log_root=cost_runtime+'#/log_root',
-        stop_rule='wait upstream actual exit and219 complete; then one fixed idle GPU0/1, first technical/contended measurement failure preserves outputs and stops unstarted rows')
+        stop_rule='wait upstream actual exit and219 complete; then one fixed idle GPU2/3, first technical/contended measurement failure preserves outputs and stops unstarted rows')
     cost['metrics_plan']=dict(metric_names=['identity_parameters','MACs_declared_scope','median_ms','P95_ms','throughput','peak_cuda_bytes'],
         dimensions=['family','variant','training_regime','model_seed','batch'],prediction_ref=None,scorer_ref=None)
     cost['expected_artifacts']=['state.json','smoke.json','COST_ROW/result.json','summary.json','report.md','completion.json']

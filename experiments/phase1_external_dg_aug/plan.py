@@ -3,9 +3,9 @@ from copy import deepcopy
 
 from experiments.phase1_external_dg.plan import SEEDS, VIEWS, make_plan as old_plan, native_row, resnet_row
 
-RUN = '20261019-phase1-external-dg-concat-pl-m219-r01'
-COST_RUN = '20261019-phase1-external-dg-concat-pl-cost-m96-r01'
-REPLACES = '20261019-phase1-external-dg-suite-m168-r01'
+RUN = '20261019-phase1-external-dg-concat-pl-m219-r02'
+COST_RUN = '20261019-phase1-external-dg-concat-pl-cost-m96-r02'
+REPLACES = '20261019-phase1-external-dg-concat-pl-m219-r01'
 PARENT = '20261019-phase1-pamf-dg-nativebudget-m24-r01'
 
 
@@ -51,7 +51,7 @@ def make_plan():
     protocols['F0_PL'] = deepcopy(protocols['F0'])
     protocols['F0_PL'].update(protocol_id='F0_PL', U_s_use=True)
     plan = dict(run_id=RUN, replaces_run_id=REPLACES, parent_run_id=PARENT,
-        allowed_gpus=[0, 1], exclude_pamf=True, views=list(VIEWS), protocols=protocols,
+        allowed_gpus=[2, 3], exclude_pamf=True, views=list(VIEWS), protocols=protocols,
         rows=rows, new_training_rows=219, supervised_rows=192, pl_rows=27,
         frozen_eval_rows=0, no_target_feedback=True, optional_candidate_search=False,
         cost_rows=96, cost_run_id=COST_RUN,
@@ -60,7 +60,7 @@ def make_plan():
 
 
 def validate_plan(plan):
-    if plan['allowed_gpus'] != [0, 1] or not plan['exclude_pamf']:
+    if plan['allowed_gpus'] != [2, 3] or not plan['exclude_pamf']:
         raise ValueError('Two physical GPUs and non-PAMF scope required')
     rows = plan['rows']
     if len(rows) != 219 or len({r['row_id'] for r in rows}) != 219:

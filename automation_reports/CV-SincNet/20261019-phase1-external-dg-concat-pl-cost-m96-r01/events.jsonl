@@ -1,1 +1,2 @@
 {"at": "2026-10-19T06:22:03+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T06:35:16+00:00", "status": "REPLACED", "note": "用户要求改用另外两张空闲卡，已核实GPU2/3空闲；本run零GPU训练/测量行，精确等待进程已退出，原33项smoke和全部产物保留；同矩阵r02接替。", "evidence": ["local_artifacts/phase1_external_dg_aug_pl_20261019/gpu01_withdraw_verified.json"], "row_id": null}

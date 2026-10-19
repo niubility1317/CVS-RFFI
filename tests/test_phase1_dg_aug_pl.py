@@ -14,6 +14,9 @@ class AugmentedMatrixTests(unittest.TestCase):
     def test_all_pl_rows_keep_satellite_and_matched_supervised_control(self):
         plan = make_plan()
         self.assertEqual(len(plan['rows']), 219)
+        self.assertEqual(plan['allowed_gpus'], [2, 3])
+        bad_gpu=copy.deepcopy(plan);bad_gpu['allowed_gpus']=[0,1]
+        with self.assertRaises(ValueError):validate_plan(bad_gpu)
         self.assertEqual(sum(r['U_s_use'] for r in plan['rows']), 27)
         self.assertTrue(all(r['satellite_train_augmentation'] for r in plan['rows']))
         self.assertTrue(all(r['stages']==(2 if r['family']=='ibrff' else 1) for r in plan['rows']))
@@ -120,7 +123,7 @@ class AugmentedMatrixTests(unittest.TestCase):
         self.assertEqual(len(groups),32)
         self.assertTrue(all(sorted(v)==[2026092701,2026092702,2026092703] for v in groups.values()))
         with self.assertRaises(ValueError):
-            policy(dict(allowed_gpus=[0,1],batches=[1,128],warmup=100,repeats=1000,truth='forbidden'))
+            policy(dict(allowed_gpus=[2,3],batches=[1,128],warmup=100,repeats=1000,truth='forbidden'))
 
 
 if __name__ == '__main__': unittest.main()

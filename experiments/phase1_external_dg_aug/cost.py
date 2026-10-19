@@ -12,7 +12,7 @@ from .data import read, write
 from .driver import atomic, process_alive
 from .plan import SEEDS, make_plan
 
-COST_RUN = '20261019-phase1-external-dg-concat-pl-cost-m96-r01'
+COST_RUN = '20261019-phase1-external-dg-concat-pl-cost-m96-r02'
 BATCHES = (1, 128)
 WARMUP = 100
 REPEATS = 1000
@@ -36,7 +36,7 @@ def tasks(suite=None):
     return selected
 
 def policy(rt):
-    if (rt['allowed_gpus'] != [0, 1] or rt['batches'] != list(BATCHES) or
+    if (rt['allowed_gpus'] != [2, 3] or rt['batches'] != list(BATCHES) or
         rt['warmup'] != WARMUP or rt['repeats'] != REPEATS):
         raise ValueError('Unregistered resource or measurement budget')
     forbidden = ('truth', 'target_truth', 'dataset', 'datasets', 'views_root', 'target_inputs')
@@ -114,7 +114,7 @@ def worker(c):
         raise ValueError('Unregistered cost row')
     root = Path(rt['run_root']) / task['cost_id']; root.mkdir(parents=True, exist_ok=False)
     gpu = c['physical_gpu']
-    if gpu not in (0, 1) or os.environ.get('CUDA_VISIBLE_DEVICES') != str(gpu):
+    if gpu not in (2, 3) or os.environ.get('CUDA_VISIBLE_DEVICES') != str(gpu):
         raise ValueError('Unexpected physical GPU')
     torch.set_num_threads(2)
     torch.backends.cuda.matmul.allow_tf32 = False
@@ -216,7 +216,7 @@ def dispatch(rt):
     policy(rt); root = Path(rt['run_root']); root.mkdir(parents=True, exist_ok=False)
     logs = Path(rt['log_root']); logs.mkdir(parents=True, exist_ok=False)
     state = dict(status='STARTING', pid=os.getpid(), cwd=os.getcwd(), rows={},
-        allowed_gpus=[0, 1], query_access=False)
+        allowed_gpus=[2, 3], query_access=False)
     atomic(root / 'state.json', state)
     while True:
         verdict = dependency(rt)
@@ -232,7 +232,7 @@ def dispatch(rt):
     for task in selected:
         while gpu is None or gpu_pids(gpu):
             if gpu is None:
-                gpu = next((g for g in (0, 1) if not gpu_pids(g)), None)
+                gpu = next((g for g in (2, 3) if not gpu_pids(g)), None)
                 if gpu is not None:
                     break
             state.update(status='WAITING_IDLE_GPU', physical_gpu=gpu)

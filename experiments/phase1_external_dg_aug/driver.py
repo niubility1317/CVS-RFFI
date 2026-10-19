@@ -102,7 +102,7 @@ def dispatch(rt):
     root=Path(rt['run_root']);root.mkdir(parents=True,exist_ok=False)
     Path(rt['log_root']).mkdir(parents=True,exist_ok=False)
     state=dict(status='STARTING',run_id=rt['run_id'],pid=os.getpid(),cwd=os.getcwd(),
-        allowed_gpus=[0,1],rows={},expected_training=219,expected_supervised=192,expected_pl=27)
+        allowed_gpus=[2,3],rows={},expected_training=219,expected_supervised=192,expected_pl=27)
     write(root/'dispatcher.json',state)
     run_stage(rt,state,'prepare_data',[rt['python'],'-u','-m','experiments.phase1_external_dg_aug.driver',
         'prepare','--config',rt['runtime_file']])
@@ -140,7 +140,7 @@ def dispatch(rt):
         if pending and failures and max(failures.values())>=2:
             state['unstarted_rows']=[r['row_id'] for r in pending];pending.clear()
             state['stop_reason']='two_matching_technical_failures'
-        for gpu in (0,1):
+        for gpu in (2,3):
             if gpu in active or not pending:continue
             occupied=subprocess.check_output(['nvidia-smi','-i',str(gpu),'--query-compute-apps=pid','--format=csv,noheader,nounits'],text=True).strip()
             if occupied:continue
