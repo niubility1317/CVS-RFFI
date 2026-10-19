@@ -29,3 +29,5 @@ loss为0.5×mean128 ordinary CE＋0.5×mean128 used-As CE（T1，smoothing0.01�
 启动 VERIFIED：dispatcher2186915；唯一worker2187003/GPU4，CWD与argv匹配，CUDA_VISIBLE_DEVICES4/CPU2，NVML有该PID，日志6412→11554字节。首步真实scratch checkpoint smoke PASS且query_read=false；206初始state条目与原B0/B1逐张量相等，scratch_only=true、sources/ancestors空、target_contact=false。
 
 首epoch真实222更新：ordinary与usedAs各28416包；freshAs完整生成28416；缓存覆盖6300个合法L、命中22116，命中均实际替换IQ（fresh-used MSE0.573414），222步encoder firstordinary/secondusedAs witness通过；无RDrop/CROSS_RX或Utruth/target访问。尚无终轮或正式性能结论。后续仍按原20轮→源规则→七视图独立评分自动继续。
+
+Git交付后续已恢复 VERIFIED：仅本次命令使用本机已有代理，不修改持久配置；push后独立ls-remote读回86cb9b5a8a0d3147344b23e7003a6752e44043ea，与本地HEAD相等。此前TCP失败记录保留，但当前两次提交均已同步。

@@ -1,0 +1,223 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-diagnostic-F-epochReplay-sourceFit-e20-s2026092701-m2-r01",
+  "group_id": "phase1-F-epochReplay-source-fit",
+  "display_name": "纯 F 同轮 As 重访 E20：冻结源拟合诊断",
+  "description": "固定180个L与原始step/slot，区分原B1训练命名观测、M实际缓存首次观测、同L新信道与源V新观测。0更新，不改变源资格或正式评价。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "F",
+    "E20",
+    "source-only",
+    "epochReplay",
+    "default-head"
+  ],
+  "comparison_group_id": "pure-F-frozen20-observed-newChannel",
+  "parent_run_ids": [
+    "20261019-phase1-F-epochReplay-e20-s2026092701-m1-r01",
+    "20261019-diagnostic-F-observedChannel-e20-s2026092701-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户固定纯F目标要求训练L固定观测/同L新信道/源V新观测分离；既有权限内0更新源诊断。",
+  "code": {
+    "commit": null,
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 existing FP32/TF32off Python3.10 Torch2.1/NumPy2.2 CPU2",
+    "cwd": "PROJECT/releases/cvs_F_epochReplay_E20_20261019_r01"
+  },
+  "data": {
+    "dataset": "existing immutable ManySig equalized1",
+    "version": "same source contract reused",
+    "representation": "equalized1/center256/unitRMS; exact saved residual post_sync/noeq full observation",
+    "contract_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json",
+    "physical_ids_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json#role_ids",
+    "label_map_ref": "design.CLASSES and native class_mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "protocol.CLASSES",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "reuse registered DR fixed180 L panel and existing L6300/U56700/V27000 contract; no new validation",
+    "support_query_ref": null,
+    "leo_config_ref": "PROJECT/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/observations/actual_engine.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none; no formal IQ/prediction/truth reads",
+    "external_method_exception": null,
+    "claim_scope": "Frozen default-head source fitting diagnostics; n=1, no performance promotion or physical-limit claim"
+  },
+  "checkpoint": {
+    "initialization": "strictly load each own scratch FINAL20 for frozen eval only",
+    "sources": [
+      "20261019-phase1-F-epochReplay-e20-s2026092701-m1-r01",
+      "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01"
+    ],
+    "contract_check_ref": "each own_model strict completion and source contract; M fixed source decision and FINAL20/qualification required",
+    "provenance_verdict": "Own pureF scratch20 same data roles; fixed FINAL20 frozen evaluation, no target-based selection",
+    "selection_rule": "all registered fixed FINAL20; no epoch or score selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/F-epochReplay-sourceFit20",
+    "gpu_policy": "GPU6 one diagnostic process; all-owner cap2/GPU free>=12000MB, shared existing GPU lock; CPU2 FP32/TF32off; no healthy process intervention",
+    "remote_run_root": "PROJECT/runs/20261019-diagnostic-F-epochReplay-sourceFit-e20-s2026092701-m2-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_epochReplay_sourceFit_E20_20261019_r01",
+    "local_artifact_root": "local_artifacts/F_epochReplay_sourceFit_E20_20261019",
+    "launch_command": [
+      "CVS-RFFI/python",
+      "-u",
+      "PROJECT/releases/cvs_F_epochReplay_sourceFit_E20_20261019_r01/analysis/cvs_pure_F_epochReplay20_source_fit_20261019.py",
+      "--project",
+      "PROJECT",
+      "--output",
+      "PROJECT/runs/20261019-diagnostic-F-epochReplay-sourceFit-e20-s2026092701-m2-r01"
+    ],
+    "stop_rule": "Wait for M fixed source decision and FINAL20/qualification; stop on role/provenance/nonfinite/state/origin/output inconsistency, preserve artifacts; no automatic restart, no target access or source-fail rescue",
+    "launch_readback_ref": "local_artifacts/F_epochReplay_sourceFit_E20_20261019/postlaunch.json"
+  },
+  "expected_artifacts": [
+    "metadata.json",
+    "source_smoke.json",
+    "predictions.npz",
+    "analysis.json",
+    "complete.json or failure.json",
+    "run.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "default-head CE",
+      "n",
+      "paired corrected/damaged",
+      "source clean-correct retention"
+    ],
+    "dimensions": [
+      "checkpoint",
+      "scene",
+      "RX",
+      "observed-vs-new source condition"
+    ],
+    "prediction_ref": "source-only predictions.npz; no formal inference",
+    "scorer_ref": "same legal L/V labels within zero-update diagnostics; no target truth"
+  },
+  "rows": [
+    {
+      "row_id": "EPOCH_REPLAY-s2026092701",
+      "method": "EPOCH_REPLAY own frozen FINAL20",
+      "purpose": "source-fitting diagnostic",
+      "config_ref": "configs/diagnostic.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-epochReplay-e20-s2026092701-m1-r01/EPOCH_REPLAY-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019531
+      },
+      "seed_notes": "No new model seed/training; reuse exact DR180 IDs, old train namespace and2 fixed new draw namespaces. No archived IQ-byte proof. Support seed not applicable.",
+      "k": null,
+      "scenario": [
+        "L_raw",
+        "L_B1_training_stream_reconstructed",
+        "L_M_actual_cache_origin_reconstructed",
+        "same_L_new_channel_2draw_3scenes",
+        "V_existing_new_channel_2draw_3scenes"
+      ],
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "M raw180+oldseen180+new1080=1440; add d differing M cache origins; one realCP smoke1. Total1441+2d<=1801 NN; no new V NN",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-epochReplay-sourceFit-e20-s2026092701-m2-r01/EPOCH_REPLAY-s2026092701",
+      "log_path": "PROJECT/releases/cvs_F_epochReplay_sourceFit_E20_20261019_r01/run.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_epochReplay_sourceFit_E20_20261019_r01/analysis/cvs_pure_F_epochReplay20_source_fit_20261019.py",
+        "--project",
+        "PROJECT",
+        "--output",
+        "PROJECT/runs/20261019-diagnostic-F-epochReplay-sourceFit-e20-s2026092701-m2-r01"
+      ],
+      "expected_artifacts": [
+        "analysis.json"
+      ]
+    },
+    {
+      "row_id": "B1-s2026092701",
+      "method": "old B1 frozen FINAL20 on differing M cached IQ only",
+      "purpose": "source-fitting diagnostic",
+      "config_ref": "configs/diagnostic.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01/B1-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019531
+      },
+      "seed_notes": "No new model seed/training; reuse exact DR180 IDs, old train namespace and2 fixed new draw namespaces. No archived IQ-byte proof. Support seed not applicable.",
+      "k": null,
+      "scenario": [
+        "L_raw",
+        "L_B1_training_stream_reconstructed",
+        "L_M_actual_cache_origin_reconstructed",
+        "same_L_new_channel_2draw_3scenes",
+        "V_existing_new_channel_2draw_3scenes"
+      ],
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Only d differing cache origins require new B1 NN; identical origin reuses old DR B1 logits; 0<=d<=180",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-epochReplay-sourceFit-e20-s2026092701-m2-r01/B1-s2026092701",
+      "log_path": "PROJECT/releases/cvs_F_epochReplay_sourceFit_E20_20261019_r01/run.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_epochReplay_sourceFit_E20_20261019_r01/analysis/cvs_pure_F_epochReplay20_source_fit_20261019.py",
+        "--project",
+        "PROJECT",
+        "--output",
+        "PROJECT/runs/20261019-diagnostic-F-epochReplay-sourceFit-e20-s2026092701-m2-r01"
+      ],
+      "expected_artifacts": [
+        "analysis.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Reuse exact DR selected180 IDs/step/slot; validate legal L membership before IQ; do not substitute samples if cached origin overlaps old seen stream.",
+    "M cache origins independently reconstructed from complete 4440 replay/mechanism and full L sequence. Recorded source step/slot/namespace/scene identifies first full As; reconstruction is deterministic, not historical IQ-byte proof.",
+    "If M origin equals oldseen coordinate, reuse M computed seen logits and archived B1 seen logits; only differing origins receive new predictions, actual NN count reported.",
+    "All other old B0/B1 L/V predictions reused. M V logits reused from qualification; no new V model calls, target IQ/prediction/truth or scoring.",
+    "Raw/oldseen/cache/newL/V named separately. Compare models on identical IQ; unequal scene subsets are descriptive, not paired treatment effects.",
+    "Source eligibility fixed before diagnostic; this is not a new promotion gate or source-failure rescue. Zero updates/default-head fitting/EMA mutation; n=1."
+  ],
+  "registered_at": "2026-10-19T07:36:45+00:00"
+}
