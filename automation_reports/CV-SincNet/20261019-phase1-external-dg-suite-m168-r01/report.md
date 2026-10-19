@@ -43,3 +43,7 @@ RIEI/DRIFT按用户E100，恒定LR无需移动milestone；IB两阶段各最多20
 ## 数据准备完成（2026-10-19T12:43:36+08:00）
 
 17个源契约、18个测试任务七视图构建完成；23个真实L_s结构组合和6个历史checkpoint检查PASS。dispatcher实际存活并自动进入WAITING_PARENT。见[准备结果与实际数量](preparation_analysis.md)。新162训练＋6补测未开始GPU行，仍需完成原24行及全部新增矩阵。
+
+## 最终报告补充实现
+
+本地报告器已补齐旧F0 frozen predictions的RX×日期联合分层、generic各路线对同seed ERM的配对差，以及新的原目录之外报告输出根。七项聚焦验证通过，证据local_artifacts/phase1_external_dg_20261019/final_report_verification.json。已发布8c50d20ec队列保持原代码；最终仅在预测冻结/评分闭合后，以另一个新报告根读取现有artifact复算，不覆盖原结果，不重训、不重测或改变候选。此项不是新增发布gate，尚未生成最终全矩阵统计。

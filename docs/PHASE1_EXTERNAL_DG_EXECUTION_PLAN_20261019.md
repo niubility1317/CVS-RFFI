@@ -197,3 +197,9 @@ CORAL只对源RX的身份表征均值和协方差进行对齐，不访问目标�
 已固定设计中的统一推理成本另以20261019-phase1-external-dg-cost-m69-r01登记：F0四方法full／CE三seed共24、ManyRx相同24、generic五路线15、历史ResNet-18/50六个，共69个既有checkpoint，零新增训练。原186训练＋6补测的性能矩阵数量保持。成本任务先CPU真实checkpoint检查，必须等整个性能suite真实进程退出且所有行闭合后才申请物理GPU0/1中的一张空闲卡，整批固定同卡，不争抢健康训练。
 
 统一现有torch1.11／NumPy1.23、FP32及TF32关闭；legacy ResNet-18原checkpoint已在此环境实际严格加载通过，不改变其原预测环境。每模型batch1/128各预热100、同步计时1000次；汇总身份参数、声明口径的MACs、延迟中位数/P95、吞吐及显存。MACs不含逐元素/BN/激活等，不能称完整FLOPs；计时重复不冒充模型seed。所有测量使用合成零输入，不访问目标、不重拟合头、不改变性能结果或候选排序。整体交付除性能矩阵闭合，还须核实该成本run的69行测量及summary/report/completion。详见[成本预登记](../automation_reports/CV-SincNet/20261019-phase1-external-dg-cost-m69-r01/report.md)。
+
+## 10 冻结预测的最终报告复算
+
+报告器补齐receiver_date（RX×日期）联合分层，以及generic各路线相对同seed ERM的固定配对差，正差和负差均保留。数据、训练、默认头、冻结及源选模均不变。当前已发布suite仍运行原8c50d20ec代码，不热更新健康进程；待全部预测/评分闭合后，以后续Git固定的报告器在新的只读分析环境复算，使用--report-root指定原run目录之外、尚不存在的新输出根，保留原summary、状态和所有row产物。
+
+新增报告根保留summary.json/csv、audited_rows.json、final_report.md、analysis_state.json和completion.json。七项聚焦报告检查已通过，包含RX×日期CM计数闭合、同seed ERM配对与负差保留、拒绝重复seed、原输出/状态保护及禁止嵌套/重复报告root。验证证据local_artifacts/phase1_external_dg_20261019/final_report_verification.json。当前仅实现并验证报告能力，不把待生成的最终统计写成已完成结果。最终目标仍需186训练＋6补测的性能闭合、69冻结成本测量及实际最终报告。

@@ -35,7 +35,9 @@ def extend_frozen_scores(ids, values, truth, classes, source_dates, test='main',
                 raise ValueError('Independent frozen prediction audit mismatch')
         results.append(dict(test=test, view=view, dimension='overall', stratum='ALL', **overall))
         visibility = np.asarray(['seen_dates' if d in source_dates else 'unseen_dates' for d in date])
-        for dimension, values_in_dimension in [('receiver', rx), ('date', date), ('date_visibility', visibility)]:
+        receiver_date = np.asarray([str(r) + '|' + str(d) for r, d in zip(rx, date)])
+        for dimension, values_in_dimension in [('receiver', rx), ('date', date),
+                ('date_visibility', visibility), ('receiver_date', receiver_date)]:
             for stratum in sorted(set(values_in_dimension)):
                 mask = values_in_dimension == stratum
                 results.append(dict(test=test, view=view, dimension=dimension, stratum=stratum,
@@ -186,11 +188,34 @@ def summary_records(rows):
             positive_pairs=sum(x > 0 for x in delta),
             equal_rx_full_minus_ce=rx_delta, equal_rx_mean=statistics.mean(rx_delta),
             equal_rx_sample_sd=statistics.stdev(rx_delta) if len(rx_delta) > 1 else None))
+    for group, family, test, view in sorted(groups):
+        if group != 'generic':
+            continue
+        baseline = {v['seed']: v for v in buckets.get((group, family, 'erm', test, view), [])}
+        for route in ('mixstyle', 'mixstyle_id', 'fishr', 'coral'):
+            method = {v['seed']: v for v in buckets.get((group, family, route, test, view), [])}
+            seeds = sorted(set(baseline) & set(method))
+            if not seeds:
+                continue
+            delta = [method[s]['accuracy'] - baseline[s]['accuracy'] for s in seeds]
+            rx_delta = [method[s]['equal_rx_accuracy'] - baseline[s]['equal_rx_accuracy'] for s in seeds]
+            paired.append(dict(group=group, family=family, test=test, view=view,
+                comparison='route_minus_erm', route=route, baseline='erm', actual_pairs=len(seeds),
+                seeds=seeds, method_minus_erm=delta, mean=statistics.mean(delta),
+                sample_sd=statistics.stdev(delta) if len(delta) > 1 else None,
+                positive_pairs=sum(x > 0 for x in delta), equal_rx_method_minus_erm=rx_delta,
+                equal_rx_mean=statistics.mean(rx_delta),
+                equal_rx_sample_sd=statistics.stdev(rx_delta) if len(rx_delta) > 1 else None))
     return output, paired
 
 
-def analyze(rt):
+def analyze(rt, report_root=None):
     plan = make_plan(); root = Path(rt['run_root'])
+    out = root
+    if report_root is not None:
+        out = Path(report_root)
+        if out.exists() or out.resolve() == root.resolve() or root.resolve() in out.resolve().parents:
+            raise ValueError('Use a new report root outside the preserved experiment root')
     state = read(root / 'pipeline_state.json'); parent = parent_audit(rt)
     rows = list(parent); actual_train = actual_eval = 0
     missing = []
@@ -234,11 +259,13 @@ def analyze(rt):
     summary, paired = summary_records(rows)
     complete = len(parent) == 24 and actual_train == 162 and actual_eval == 6 and not missing
     status = 'ANALYZED' if complete else 'PARTIAL'
-    write(root / 'summary.json', dict(status=status, parent_rows=24, new_training_rows=actual_train,
+    if report_root is not None:
+        out.mkdir(parents=True, exist_ok=False)
+    write(out / 'summary.json', dict(status=status, parent_rows=24, new_training_rows=actual_train,
         frozen_eval_rows=actual_eval, missing=missing, summary=summary, paired=paired,
         target_feedback_forbidden=True, expected_model_seeds=list(SEEDS)))
-    write(root / 'audited_rows.json', dict(status=status, rows=rows, exclude_pamf=True))
-    with (root / 'summary.csv').open('x', encoding='utf-8-sig', newline='') as file:
+    write(out / 'audited_rows.json', dict(status=status, rows=rows, exclude_pamf=True))
+    with (out / 'summary.csv').open('x', encoding='utf-8-sig', newline='') as file:
         columns = ['group', 'family', 'version', 'test', 'view', 'actual_seeds',
             'accuracy_mean', 'accuracy_sample_sd', 'equal_rx_accuracy_mean',
             'equal_rx_accuracy_sample_sd', 'macro_f1_mean', 'macro_f1_sample_sd',
@@ -257,13 +284,14 @@ def analyze(rt):
                 100 * r['macro_f1_mean'], 100 * r['worst_rx_mean']))
     lines += ['', '样本SD、逐seed、七视图、日期分层、源数量链及full−CE配对差见summary.json及audited_rows.json。',
         '三seed不视为接收机总体的显著性证明；ManySig／ManyRx同属WiSig采集系统；六practical为压力代理。',
+        'receiver_date为接收机×日期联合分层；generic配对差固定为各路线减去同seed ERM，不按目标成绩选择比较。',
         '', '缺少行：' + str(len(missing)), '全部负结果保留，不据目标成绩改参数、选模或选择性重跑。']
-    (root / 'final_report.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
+    (out / 'final_report.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
     state.update(status=status, analyzed_training=actual_train, analyzed_frozen_eval=actual_eval,
         parent_analyzed=24, missing=missing)
     state.pop('stage_pid', None)
-    atomic(root / 'pipeline_state.json', state)
-    write(root / 'completion.json', dict(status=status, goal_scope='non_PAMF_fixed_design',
+    atomic(out / ('pipeline_state.json' if report_root is None else 'analysis_state.json'), state)
+    write(out / 'completion.json', dict(status=status, goal_scope='non_PAMF_fixed_design',
         parent_training=24, new_training=actual_train, frozen_eval=actual_eval,
         expected_training_total=186, expected_eval=6, complete=complete))
     print('COMPARISON_AUDIT', status, len(parent), actual_train, actual_eval, flush=True)
@@ -271,4 +299,5 @@ def analyze(rt):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(); parser.add_argument('--config', required=True)
-    analyze(read(parser.parse_args().config))
+    parser.add_argument('--report-root')
+    args = parser.parse_args(); analyze(read(args.config), args.report_root)

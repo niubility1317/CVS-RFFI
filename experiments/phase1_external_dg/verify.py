@@ -362,6 +362,58 @@ class QueueAndAudit(unittest.TestCase):
         with self.assertRaises(ValueError): summary_records(rows + [rows[0]])
 
 
+    def test_joint_receiver_date_counts_and_confusion_cover_the_overall(self):
+        from .analysis import extend_frozen_scores
+        ids = np.asarray(['a', 'b', 'c', 'd'])
+        truth = {name: dict(label=label, receiver=rx, day=day) for name, label, rx, day in
+            [('a', 0, 'R1', 'D1'), ('b', 1, 'R1', 'D2'),
+             ('c', 0, 'R2', 'D1'), ('d', 1, 'R2', 'D2')]}
+        records = extend_frozen_scores(ids, {'clean': np.asarray([0, 1, 1, 1])},
+            truth, 2, {'D1'})
+        joint = [x for x in records if x['dimension'] == 'receiver_date']
+        overall = next(x for x in records if x['dimension'] == 'overall')
+        self.assertEqual({x['stratum'] for x in joint}, {'R1|D1', 'R1|D2', 'R2|D1', 'R2|D2'})
+        self.assertEqual(sum(x['count'] for x in joint), 4)
+        self.assertEqual(np.asarray([x['confusion'] for x in joint]).sum(0).tolist(), overall['confusion'])
+
+    def test_generic_routes_pair_with_same_seed_erm_and_keep_negative_differences(self):
+        from .analysis import summary_records
+        rows = []
+        for route, delta in [('erm', 0.), ('fishr', .01), ('mixstyle', -.02)]:
+            for seed in [1, 2, 3]:
+                accuracy = .6 + seed * .001 + delta
+                rows.append(dict(config=dict(group='generic', family='resnet18', variant='ce',
+                    route=route, model_seed=seed, row_id=route+str(seed)), results=[
+                    dict(test='main', view='clean', dimension='overall', accuracy=accuracy, macro_f1=accuracy),
+                    dict(test='main', view='clean', dimension='receiver', accuracy=accuracy)]))
+        _, paired = summary_records(rows)
+        indexed = {x['route']: x for x in paired}
+        self.assertAlmostEqual(indexed['fishr']['mean'], .01)
+        self.assertAlmostEqual(indexed['mixstyle']['mean'], -.02)
+        self.assertEqual(indexed['mixstyle']['positive_pairs'], 0)
+        self.assertTrue(all(x['actual_pairs'] == 3 and x['baseline'] == 'erm' for x in paired))
+
+    def test_frozen_report_reanalysis_preserves_original_output_and_state(self):
+        from .analysis import analyze
+        with tempfile.TemporaryDirectory() as folder:
+            source = Path(folder) / 'source'; source.mkdir()
+            state = dict(status='ANALYZED', owner='original')
+            (source / 'pipeline_state.json').write_text(json.dumps(state), encoding='utf-8')
+            (source / 'summary.json').write_text('preserve original', encoding='utf-8')
+            output = Path(folder) / 'new-report'
+            with patch('experiments.phase1_external_dg.analysis.make_plan', return_value=dict(rows=[], protocols={})), \
+                    patch('experiments.phase1_external_dg.analysis.parent_audit', return_value=[]):
+                analyze(dict(run_root=str(source)), str(output))
+                with self.assertRaises(ValueError):
+                    analyze(dict(run_root=str(source)), str(source / 'nested'))
+                with self.assertRaises(ValueError):
+                    analyze(dict(run_root=str(source)), str(output))
+            self.assertEqual(json.loads((source / 'pipeline_state.json').read_text()), state)
+            self.assertEqual((source / 'summary.json').read_text(), 'preserve original')
+            self.assertTrue((output / 'analysis_state.json').exists())
+            self.assertFalse((source / 'nested').exists())
+
+
 class LegacyProvenance(unittest.TestCase):
     def test_legacy_default_checkpoint_load_and_forbidden_ancestor(self):
         from .evaluation import legacy_model
