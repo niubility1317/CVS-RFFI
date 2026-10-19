@@ -8,3 +8,4 @@
 |---|---|---|
 |原50轮F＋跨RX的冻结源域恢复诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-restoration-FcrossRX50-source-s2026092701-m3-r01/report.md)|
 |冻结恢复器的小改变量保留|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-restoration-change-preserve-source-s2026092701-r01/report.md)|
+|模拟自监督输入质量门|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-restoration-quality-preserve-source-s2026092701-r01/report.md)|

@@ -361,3 +361,5 @@
 |十三模型八种子：端到端推理时延、内存显存与FP32模型存储实测|managed_run|[打开](../automation_reports/CV-SincNet/20261012-phase1-standard-ce-deployment-m104-r02/report.md)|
 
 本轮新增：[恢复器小改变量保留](by_method/change_preserve.md)，源诊断已完成，完整 clean 保持条件未通过。
+
+本轮新增：[模拟自监督输入质量门](by_method/synthetic_quality_gate.md)，源诊断完成，clean 保持条件未通过。
