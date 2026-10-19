@@ -201,8 +201,7 @@ def hook(self, *, model, labeled_output, labels, extra, domains, optimizer_step,
             raise ValueError('Actual As student and Ts must receive identical fullAs IQ')
     bundle = self.__dict__['_dta_teachers']
     if bundle is None:
-        from .teacher import load
-        bundle = set_teachers(self,load(first.device))
+        raise ValueError('Frozen teachers must be preloaded before native student scopes')
     teachers = bundle.same_iq_logits(witness['actual_first'],as_iq)
     bundle.assert_frozen()
     loss_options = {key:c['loss'][key] for key in (

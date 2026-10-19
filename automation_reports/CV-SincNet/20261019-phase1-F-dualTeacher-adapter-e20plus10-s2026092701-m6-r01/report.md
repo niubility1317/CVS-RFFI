@@ -46,3 +46,5 @@ As 只从实际 raw L 生成，保留完整 practical 物理、场景、归一�
 系统性技术失败停止规则：真实角色/来源不匹配、非有限更新、冻结 F/头变化、视图/教师/U truth 隔离、预算或输出根不一致，只处理该 run owner 的精确进程，保留产物、不自动重试，不停止其他健康任务。源指标低或正式结果未达目标是科学结果，不是技术故障。
 
 预期产物：逐 row strict FINAL30 checkpoint/lineage、resolved native args、完整 step 与 L/U ID 序列、actual channel/ordinary/teacher identity、EMA/optimizer 初始化与逐轮成本、真实 joint160、参数变化/冻结证据、source 12600 NN readout、七视图 prediction complete、独立 truth-last scores、同 row 报告和登记。分别核算学生 L（NoAs284160/As568320）、U567000、ownEMA567000、Tc284160、Ts284160、信道284160、source eval/qualification、formal1176002 以及墙钟；不按可训练参数数目宣称加速。
+
+实际状态：技术失败，未完成首个 optimizer update，无性能结果。后态与恢复见 final_analysis.md；原预登记保留。

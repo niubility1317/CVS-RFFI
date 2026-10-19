@@ -3,8 +3,8 @@ import json
 from copy import deepcopy
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
-RUN='20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r01'
-RELEASE='cvs_F_dualTeacher_adapter_E30_20261019_r01'
+RUN='20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02'
+RELEASE='cvs_F_dualTeacher_adapter_E30_20261019_r02'
 OWNER='codex/root/F-dualTeacherAdapter30'
 SEED=2026092701;STEPS=222;EPOCHS=10;UPDATES=2220;PARENT_EPOCH=20;PARENT_UPDATES=4440
 PROJECT=json.loads((ROOT/'runtime.json').read_text(encoding='utf-8-sig'))['project'] if (ROOT/'runtime.json').is_file() else 'PROJECT'

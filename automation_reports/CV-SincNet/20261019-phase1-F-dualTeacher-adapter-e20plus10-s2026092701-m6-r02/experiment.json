@@ -1,0 +1,512 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02",
+  "group_id": "phase1-F-dualTeacher-temporalAdapter",
+  "display_name": "双教师＋浅中层时序适配器：继承E20再适配10轮",
+  "description": "先复用已核实且同IQ源优势的CSIL Ts与cleanF Tc，固定原默认头，四个As条件分离原骨干更新/新adapter/cleanKD/dualKD，另保留ordinary NoAs FT与adapter raw cleanKD NoAs双参照。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "F",
+    "E30",
+    "dual-teacher",
+    "temporal-adapter",
+    "default-head",
+    "source-first",
+    "single-seed"
+  ],
+  "comparison_group_id": "same-B0E20-own-parent-10epoch-head-frozen",
+  "parent_run_ids": [
+    "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01"
+  ],
+  "replaces_run_id": "20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r01",
+  "authorization": "用户新增adf48c3d-6ad2-43ef-88b1-01357f6738dc方案明确授权新特征adapter与首轮冻结F/W；本chat明确学生追加10累计E30。",
+  "code": {
+    "commit": null,
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 existing Python3.10/Torch2.1;CPU2 FP32/TF32off",
+    "cwd": "PROJECT/releases/cvs_F_dualTeacher_adapter_E30_20261019_r02"
+  },
+  "data": {
+    "dataset": "existing immutable ManySig equalized1",
+    "version": "same source contract reused",
+    "representation": "equalized1/center256/unitRMS; exact saved residual post_sync/noeq full observation",
+    "contract_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json",
+    "physical_ids_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json#role_ids",
+    "label_map_ref": "design.CLASSES and native class_mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "protocol.CLASSES",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing sourceV27000 + fixed cached balancedV1800/two full physical draws; Phase2 capsule not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": "PROJECT/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/observations/actual_engine.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "Fixed7 singlepacket predictions after FINAL30 (inherited20+new10); source matrix decision fixed before independentexec scorer connects truth",
+    "external_method_exception": null,
+    "claim_scope": "single modelseed cumulativeE30 exploratory; old exposed benchmark; no fresh blindtest or repeatableclean benefit claim"
+  },
+  "checkpoint": {
+    "initialization": "Each row strict same legitimate B0 FINAL20;add zero-output adapters only where registered",
+    "sources": [
+      {
+        "role": "student,ownEMA,cleanTeacher",
+        "run_id": "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01",
+        "row": "B0-s2026092701",
+        "checkpoint": "PROJECT/runs/20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01/B0-s2026092701/source/final_ssdg.pth"
+      },
+      {
+        "role": "satelliteTeacher eval only;not inherited student",
+        "run_id": "20260930-phase1-native-baselines-practical-manysig-m5-r01",
+        "row": "csil-s2026092701",
+        "checkpoint": "PROJECT/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092701/last.pt"
+      }
+    ],
+    "contract_check_ref": "Existing own B0 provenance plus sameIQ inspection/payload role_ids_exact and old teacher strict load;source contract unchanged",
+    "provenance_verdict": "VERIFIED same legal parent and teachers;strict load first;realCPsmoke before train",
+    "selection_rule": "fixed seed2026092701/fixed FINAL20 Tc and last200 Ts;not highest target score"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/F-dualTeacherAdapter30",
+    "gpu_policy": "GPU4/6/7 candidates;all-owner cap2/GPU and >=12000MBfree,shared scheduling lock;CPU2 FP32 TF32off;no healthy-task intervention",
+    "remote_run_root": "PROJECT/runs/20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02",
+    "remote_log_root": "PROJECT/runs/20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02/logs",
+    "local_artifact_root": "local_artifacts/F_dualTeacher_adapter_E30_20261019",
+    "launch_command": [
+      "CVS-RFFI/python",
+      "-u",
+      "PROJECT/releases/cvs_F_dualTeacher_adapter_E30_20261019_r02/experiments/cvs_dual_teacher_adapter30/runner.py",
+      "--mode",
+      "dispatch"
+    ],
+    "stop_rule": "Only registered run-owned systemic technical failure:roles/provenance/nonfinite/frozenW/F/view/teacher/U truth/budget/output inconsistency.Preserve artifacts,no automatic restart,no healthy-task stop.",
+    "launch_readback_ref": "local_artifacts/F_dualTeacher_adapter_E30_20261019/postlaunch.json"
+  },
+  "expected_artifacts": [
+    "source/final_ssdg.pth with phase1_lineage",
+    "source/initialization.json",
+    "source/completion.json",
+    "source/resolved_config.json",
+    "source/training_result.json",
+    "source/complete step and L/U sequence logs",
+    "source_qualification/complete.json and predictions.npz",
+    "source_matrix_decision.json before formal score read",
+    "prediction/predictions.npz plus complete all7",
+    "scoring/scores.json plus truth-last complete",
+    "report.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro F1",
+      "worst RX",
+      "paired corrected/new errors",
+      "fixed parent B0 clean-correct retention",
+      "per suburban absolute/gap",
+      "actual L/U/EMA/Tc/Ts forward counts",
+      "adapter and frozen F/head state",
+      "actual wallclock"
+    ],
+    "dimensions": [
+      "row",
+      "seed",
+      "clean+6practical",
+      "RX",
+      "day",
+      "TX"
+    ],
+    "prediction_ref": "PROJECT/runs/20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02/<row>/prediction/predictions.npz",
+    "scorer_ref": "independent CPU truth-last after all7 frozen and source decision fixed"
+  },
+  "rows": [
+    {
+      "row_id": "NOAS_FT-s2026092701",
+      "method": "Original ordinary NoAs,backbone FT fixed head",
+      "purpose": "matched NoAs control",
+      "config_ref": "configs/NOAS_FT-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02/NOAS_FT-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "Same fixed model seed,split/data392005,legacychannel seed/receiver session unchanged. Adapter private initialization seed fixed.Same role-specific newsegment sampler reset;support not applicable. Two source draws are not model seeds.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "reset AdamW;all cls_head params frozen;CENTER_UNITS only FT Sinc;adapter only4768otherwise",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "InheritedE20/4440 once;new10/2220 each cumulativeE30/6660;originalU/ownEMA each567000;eachTc/Ts284160 eval shadows in all rows.L NN284160 NoAs or568320 As;teacherE200 history separate,no newteacher training.",
+      "output_root": "PROJECT/runs/20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02/NOAS_FT-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02/logs/NOAS_FT-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_dualTeacher_adapter_E30_20261019_r02/experiments/cvs_dual_teacher_adapter30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "NOAS_FT-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/final_ssdg.pth with phase1_lineage",
+        "source/initialization.json",
+        "source/completion.json",
+        "source/resolved_config.json",
+        "source/training_result.json",
+        "source/complete step and L/U sequence logs",
+        "source_qualification/complete.json and predictions.npz",
+        "source_matrix_decision.json before formal score read",
+        "prediction/predictions.npz plus complete all7",
+        "scoring/scores.json plus truth-last complete",
+        "report.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "NOAS_ADAPTER-s2026092701",
+      "method": "raw NoAs adapter+cleanKD fixedF/head",
+      "purpose": "matched NoAs control",
+      "config_ref": "configs/NOAS_ADAPTER-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02/NOAS_ADAPTER-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "Same fixed model seed,split/data392005,legacychannel seed/receiver session unchanged. Adapter private initialization seed fixed.Same role-specific newsegment sampler reset;support not applicable. Two source draws are not model seeds.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "reset AdamW;all cls_head params frozen;CENTER_UNITS only FT Sinc;adapter only4768otherwise",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "InheritedE20/4440 once;new10/2220 each cumulativeE30/6660;originalU/ownEMA each567000;eachTc/Ts284160 eval shadows in all rows.L NN284160 NoAs or568320 As;teacherE200 history separate,no newteacher training.",
+      "output_root": "PROJECT/runs/20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02/NOAS_ADAPTER-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02/logs/NOAS_ADAPTER-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_dualTeacher_adapter_E30_20261019_r02/experiments/cvs_dual_teacher_adapter30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "NOAS_ADAPTER-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/final_ssdg.pth with phase1_lineage",
+        "source/initialization.json",
+        "source/completion.json",
+        "source/resolved_config.json",
+        "source/training_result.json",
+        "source/complete step and L/U sequence logs",
+        "source_qualification/complete.json and predictions.npz",
+        "source_matrix_decision.json before formal score read",
+        "prediction/predictions.npz plus complete all7",
+        "scoring/scores.json plus truth-last complete",
+        "report.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "S0-s2026092701",
+      "method": "raw+As backbone FT fixed head",
+      "purpose": "mechanism control",
+      "config_ref": "configs/S0-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02/S0-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "Same fixed model seed,split/data392005,legacychannel seed/receiver session unchanged. Adapter private initialization seed fixed.Same role-specific newsegment sampler reset;support not applicable. Two source draws are not model seeds.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "reset AdamW;all cls_head params frozen;CENTER_UNITS only FT Sinc;adapter only4768otherwise",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "InheritedE20/4440 once;new10/2220 each cumulativeE30/6660;originalU/ownEMA each567000;eachTc/Ts284160 eval shadows in all rows.L NN284160 NoAs or568320 As;teacherE200 history separate,no newteacher training.",
+      "output_root": "PROJECT/runs/20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02/S0-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02/logs/S0-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_dualTeacher_adapter_E30_20261019_r02/experiments/cvs_dual_teacher_adapter30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "S0-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/final_ssdg.pth with phase1_lineage",
+        "source/initialization.json",
+        "source/completion.json",
+        "source/resolved_config.json",
+        "source/training_result.json",
+        "source/complete step and L/U sequence logs",
+        "source_qualification/complete.json and predictions.npz",
+        "source_matrix_decision.json before formal score read",
+        "prediction/predictions.npz plus complete all7",
+        "scoring/scores.json plus truth-last complete",
+        "report.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "S1-s2026092701",
+      "method": "raw+As adapter only no KD",
+      "purpose": "mechanism control",
+      "config_ref": "configs/S1-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02/S1-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "Same fixed model seed,split/data392005,legacychannel seed/receiver session unchanged. Adapter private initialization seed fixed.Same role-specific newsegment sampler reset;support not applicable. Two source draws are not model seeds.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "reset AdamW;all cls_head params frozen;CENTER_UNITS only FT Sinc;adapter only4768otherwise",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "InheritedE20/4440 once;new10/2220 each cumulativeE30/6660;originalU/ownEMA each567000;eachTc/Ts284160 eval shadows in all rows.L NN284160 NoAs or568320 As;teacherE200 history separate,no newteacher training.",
+      "output_root": "PROJECT/runs/20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02/S1-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02/logs/S1-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_dualTeacher_adapter_E30_20261019_r02/experiments/cvs_dual_teacher_adapter30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "S1-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/final_ssdg.pth with phase1_lineage",
+        "source/initialization.json",
+        "source/completion.json",
+        "source/resolved_config.json",
+        "source/training_result.json",
+        "source/complete step and L/U sequence logs",
+        "source_qualification/complete.json and predictions.npz",
+        "source_matrix_decision.json before formal score read",
+        "prediction/predictions.npz plus complete all7",
+        "scoring/scores.json plus truth-last complete",
+        "report.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "S2-s2026092701",
+      "method": "raw+As adapter+cleanKD",
+      "purpose": "mechanism control",
+      "config_ref": "configs/S2-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02/S2-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "Same fixed model seed,split/data392005,legacychannel seed/receiver session unchanged. Adapter private initialization seed fixed.Same role-specific newsegment sampler reset;support not applicable. Two source draws are not model seeds.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "reset AdamW;all cls_head params frozen;CENTER_UNITS only FT Sinc;adapter only4768otherwise",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "InheritedE20/4440 once;new10/2220 each cumulativeE30/6660;originalU/ownEMA each567000;eachTc/Ts284160 eval shadows in all rows.L NN284160 NoAs or568320 As;teacherE200 history separate,no newteacher training.",
+      "output_root": "PROJECT/runs/20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02/S2-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02/logs/S2-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_dualTeacher_adapter_E30_20261019_r02/experiments/cvs_dual_teacher_adapter30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "S2-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/final_ssdg.pth with phase1_lineage",
+        "source/initialization.json",
+        "source/completion.json",
+        "source/resolved_config.json",
+        "source/training_result.json",
+        "source/complete step and L/U sequence logs",
+        "source_qualification/complete.json and predictions.npz",
+        "source_matrix_decision.json before formal score read",
+        "prediction/predictions.npz plus complete all7",
+        "scoring/scores.json plus truth-last complete",
+        "report.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "S3-s2026092701",
+      "method": "raw+As adapter+cleanKD+satKD",
+      "purpose": "primary",
+      "config_ref": "configs/S3-s2026092701.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02/S3-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "Same fixed model seed,split/data392005,legacychannel seed/receiver session unchanged. Adapter private initialization seed fixed.Same role-specific newsegment sampler reset;support not applicable. Two source draws are not model seeds.",
+      "k": null,
+      "scenario": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": "reset AdamW;all cls_head params frozen;CENTER_UNITS only FT Sinc;adapter only4768otherwise",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "InheritedE20/4440 once;new10/2220 each cumulativeE30/6660;originalU/ownEMA each567000;eachTc/Ts284160 eval shadows in all rows.L NN284160 NoAs or568320 As;teacherE200 history separate,no newteacher training.",
+      "output_root": "PROJECT/runs/20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02/S3-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02/logs/S3-s2026092701.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_dualTeacher_adapter_E30_20261019_r02/experiments/cvs_dual_teacher_adapter30/runner.py",
+        "--mode",
+        "worker",
+        "--row",
+        "S3-s2026092701"
+      ],
+      "expected_artifacts": [
+        "source/final_ssdg.pth with phase1_lineage",
+        "source/initialization.json",
+        "source/completion.json",
+        "source/resolved_config.json",
+        "source/training_result.json",
+        "source/complete step and L/U sequence logs",
+        "source_qualification/complete.json and predictions.npz",
+        "source_matrix_decision.json before formal score read",
+        "prediction/predictions.npz plus complete all7",
+        "scoring/scores.json plus truth-last complete",
+        "report.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Fixed As rows use real raw clean view and same fullPractical(raw);NOAS_FT preserves originalordinary NoAs recipe.NOAS_ADAPTER matches feature architecture/raw/cleanKD,do not manufacture gain by weakened NoAs;report both and inherited B0E20.",
+    "First-stage all originalF/head parameters frozen in adapter rows;FT rows allow identitybackbone except entire defaulthead.No newclassifier/head_fit,teacher guidance onlyL,originalU unchanged.",
+    "Ts native5*cos+5 converted with multiplicative6 to common30;Tc/studentnative30 unchanged;KD T4 weights.25/.25,CE.5/.5(As) or1/0(NoAs),allN maskteacherCorrect only.No target fitting or teacher-confidence/student gate.",
+    "PrimaryS3 source requirement midlow S3-S2>=.5pp and fullVclean S3-max(twoNoAs)>=-.2pp,prior to formal scores.No automaticextension;same fixed FINAL30 all6 rows all7 evaluation.",
+    "StandardLoRA and rawIQ supplemental encoder conditional deferred,not firstmatrix;new adapters are nonlinear and not claimed mergeable standardLoRA.",
+    "Source physical IDs/data handles reuse;code/config Git identity only,no exactdesignsha/seal/extra data validation.",
+    "Technical replacement of r01:0 successful updates,0 formal predictions/scores. Preload frozen teachers before all student native scopes;no scientific setting or budget change. Failed r01 artifacts preserved."
+  ],
+  "registered_at": "2026-10-19T08:51:21+00:00"
+}

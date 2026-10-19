@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "用户新增adf48c3d-6ad2-43ef-88b1-01357f6738dc方案明确授权新特征adapter与首轮冻结F/W；本chat明确学生追加10累计E30。",
   "code": {
-    "commit": null,
+    "commit": "c775c7ffe0c5d95a04d323f5f4af953e6bd53c5c",
     "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
     "environment": "N607 existing Python3.10/Torch2.1;CPU2 FP32/TF32off",
     "cwd": "PROJECT/releases/cvs_F_dualTeacher_adapter_E30_20261019_r01"
@@ -98,7 +98,7 @@
       }
     ],
     "contract_check_ref": "Existing own B0 provenance plus sameIQ inspection/payload role_ids_exact and old teacher strict load;source contract unchanged",
-    "provenance_verdict": "Existing source inspection VERIFIED,actual remote availability/firstCP smoke pending. HistoricalTs E200/9800updates,not E20.",
+    "provenance_verdict": "VERIFIED existing exact source roles/lineage;N607 parent/Tc/Ts available; actualCP smoke first launcher step",
     "selection_rule": "fixed seed2026092701/fixed FINAL20 Tc and last200 Ts;not highest target score"
   },
   "execution": {

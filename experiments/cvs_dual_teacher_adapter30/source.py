@@ -130,6 +130,10 @@ def segment_train(c,design=None,model_api=None,observer=None):
     a=configure(make_args(c,str(device)));parent=model_api.parent_payload(c)
     if observer is None:raise ValueError('Complete native continuation observer required')
     observer.parent=parent
+    # Teacher construction also enters the native builder. Load before any
+    # student-only installed/build/optimizer/deepcopy scope can intercept it.
+    from .teacher import load as load_teachers
+    teachers=load_teachers(device)
     expected=d.read(d.SOURCE);state={};started=time.time();steps=c['steps_per_epoch']
     # Runtime needs the original identity variant; the new fixed config is
     # consumed by model.install and never masquerades as the old scratch recipe.
@@ -149,6 +153,7 @@ def segment_train(c,design=None,model_api=None,observer=None):
             return ctx
         def checked_model(args,dev):
             m=model_api.install(build_model(args,dev),c,parent).to(dev)
+            model_api.set_teachers(m,teachers)
             if actual_flags()!=d.FULL_FP32_POLICY:raise ValueError('Native numerical policy differs')
             p=out/'initial_smoke.pt'
             torch.save(dict(model=m.state_dict(),scratch_only=False,phase1_lineage=model_api.phase1_lineage(c)),p)
