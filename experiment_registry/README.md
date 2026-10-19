@@ -377,3 +377,7 @@
 本轮记录：[冻结原默认头的决策保真恢复](by_method/frozenF_posterior.md)。
 
 本轮记录：[联合优化恢复器、冻结原 F](by_method/joint_frozenF.md)。
+
+本轮记录：[三套冻结原 F 的恢复约束](by_method/multireader_frozenF.md)。
+
+本轮记录：[原默认头决策约束强度消融](by_method/identity_priority.md)。

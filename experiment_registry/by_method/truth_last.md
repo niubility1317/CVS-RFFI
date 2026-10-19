@@ -36,3 +36,5 @@
 |冻结特征恢复：星地六场景双评价线|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-restoration-feature-target-practical-m3-r01/report.md)|
 |冻结默认头的决策保真恢复|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-restoration-frozenF-posterior-source-s2026092701-r01/report.md)|
 |粗恢复器与修正器联合优化|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-restoration-joint-frozenF-source-s2026092701-m2-r01/report.md)|
+|三套冻结原 F 的决策约束强度消融|managed_run|[打开](../../automation_reports/CV-SincNet/20261020-phase1-restoration-identity-priority-source-s2026092701-m2-r01/report.md)|
+|三套冻结原 F 约束的恢复实验|managed_run|[打开](../../automation_reports/CV-SincNet/20261020-phase1-restoration-multireader-source-s2026092701-m2-r01/report.md)|
