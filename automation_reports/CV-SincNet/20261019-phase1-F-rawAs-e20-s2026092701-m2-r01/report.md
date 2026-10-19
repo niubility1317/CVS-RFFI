@@ -1,6 +1,6 @@
 # 纯 F E20：raw＋As 与机制匹配 NoAs
 
-状态：PLANNED，未发布，无新性能结果。运行 20261019-phase1-F-rawAs-e20-s2026092701-m2-r01。总体目标保持lowurban>60%、clean相对同预算NoAs可重复正收益、分别报告suburban差距。
+状态：RUNNING / VERIFIED，尚无新终轮性能结果。运行 20261019-phase1-F-rawAs-e20-s2026092701-m2-r01。总体目标保持lowurban>60%、clean相对同预算NoAs可重复正收益、分别报告suburban差距。
 
 唯一假设：ordinary与完整As共同训练可能存在监督任务竞争；以raw替代第一ordinary监督槽，检验是否改善严重受损身份提取并保持clean。当前纯F固定L诊断的raw180均正确，而low训练命名流重建45/69、新实现89/138、V2237/3600；翻倍low权重没有修复seen拟合。旧CROSS_RX/RDrop LRaw尾段曾source PASS，但旧无As/RX1留出raw-anchor降低clean且关闭。因此不预判ordinary整体有害，也不把当前As描述成重复损伤——As一直从raw独立生成。
 
@@ -21,3 +21,7 @@ Git代码/config身份提交后记入experiment.json。命令 CVS-RFFI/python -u
 仅role/provenance/budget/nonfinite/实际raw槽或接口/输出技术错误停止并保留产物，不自动重启，不动健康旧任务。首步真实checkpoint无query smoke PASS立即训练。一次窄协议负测、一次P0/P1审查、一次归档比较、远端编译和启动后PID/CWD/argv/GPU/日志增长核验；不增加设计审批、签名或文件哈希。
 
 本地11文件compile、真实ordinary shadow/RNG与raw消费、U标签负例、两槽CE/梯度、6项协议负测及native make_args比较均PASS；一次独立P0/P1审查PASS。完整发布依赖边界在N607 --checks执行；首步真实checkpoint smoke由launcher立即串联训练，不增加token/审批。尚未发布或启动。
+
+实际发布代码/config commit `3d4e188890dce6df2c20c9df5576450d06a2eac4`（GitHub独立比对identical），单归档比较/11文件远端编译/真实依赖checks PASS。dispatcher PID2139499；RAW_NOAS GPU4 PID2139570、RAW_AS GPU5 PID2139653，实际PID/CWD/argv/NVML及增长日志均已核实。首步own scratch真实checkpoint无query smoke各PASS一次。四行初态206个state项逐项相等、参数900722；已观察原生444/222步第一槽raw实核全部通过，外部teacher/RDrop/CROSS_RX为0。当前还在L阶段，原U规则配置保持但尚未发生U阶段，不能写成全程核验或全部实验完成。
+
+完训后只读完整分析入口：analysis/cvs_pure_F_rawAs20_analysis_20261019.py。仅complete/source决定已固定后读取全部4440步、20轮及冻结七视图；不会新增模型前向、预测或评分。完整分析尚未执行，不把准备好的工具写成性能证据。
