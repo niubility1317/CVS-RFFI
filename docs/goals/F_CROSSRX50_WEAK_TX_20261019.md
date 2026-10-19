@@ -10,4 +10,4 @@
 
 弱类与其权重只由既有合法源V风险统一公式确定，不根据本轮目标域分数改权重、阈值、候选或重跑。新实验先固定候选/源规则/预算/seed/输出再发布；训练冻结后只测clean168000物理样本并独立truth-last评分。已暴露ManySig代理基准，保留所有负结果，报告逐seed、弱类与其余类、最差RX/day、Macro-F1、成本和实际seed数。
 
-代码入口`experiments/cvs_f_crossrx50_local/baseline.py`以显式检查拒绝E20、错误阶段、sat开启、EMA关闭或外部teacher初始化，防止再次偏离用户指定的底座。下一正式run尚未发布；旧训练与结果全部保留。
+代码入口`experiments/cvs_f_crossrx50_local/baseline.py`以显式检查拒绝E20、错误阶段、sat开启、EMA关闭或外部teacher初始化，防止再次偏离用户指定的底座。正式 run `20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01` 已从实现提交 `31467086c3ced30237f3ac86e91eae68645425d7` 在本机发布。首种子 BASE／WEIGHT／GEOMETRY 三行并行，BOTH 排队；原样源规则决定是否扩展剩余两种子。每行冻结后自动 clean 预测与独立 truth-last 评分；完整配置和当前状态见 `automation_reports/CV-SincNet/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01/`。旧训练与结果全部保留。
