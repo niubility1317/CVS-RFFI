@@ -1,0 +1,170 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-restoration-change-preserve-source-s2026092701-r01",
+  "group_id": "phase1-restoration-waveform-change-preserve",
+  "display_name": "冻结恢复器的小改变量保留：无TX标签源校准与原F50验证",
+  "description": "只从L/U clean波形的恢复改变量校准单标量，抑制不必要的小幅改写；固定原IQ/R03/保留R03三读出，不用TX或F拟合。",
+  "kind": "diagnostic",
+  "stage": "Phase1-source-only",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "change_preserve",
+    "no_TX_training",
+    "FcrossRX50",
+    "source_only",
+    "truth_last"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261019-phase1-restoration-residual-refinement-selfsup-m3-r03",
+    "20261019-diagnostic-restoration-FcrossRX50-source-s2026092701-m3-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "共同优化恢复网络的持续用户目标；本run只做源校准与源V诊断，无target，新机制独立消融。",
+  "code": {
+    "commit": null,
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "Verified phase1-cu128 Python,CPU2threads,CUDA_VISIBLE_DEVICES empty,PYTHONPATH checkout+checkout/code",
+    "cwd": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Reuse existing validated original7/63/30 source physical split",
+    "representation": "float32 IQ[2,256];8192 fixed L/U clean for calibration;fixed1800 V clean+sixpractical for diagnosis",
+    "contract_ref": "E:\\type10-7\\local_artifacts\\datasets\\phase1_manysig_reference_20261019\\source\\source_contract.json",
+    "physical_ids_ref": "E:\\type10-7\\local_artifacts\\pamf_restoration\\observability_inputs_20261019\\validation\\physical_ids.npy",
+    "label_map_ref": "E:\\type10-7\\local_artifacts\\datasets\\phase1_manysig_reference_20261019\\source_cache\\manifest.json#class_id_to_tx",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original sixTX;no TX labels in calibration/predictor;V labels opened only by independent scorer",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "E:\\type10-7\\local_artifacts\\pamf_restoration\\observability_inputs_20261019\\validation",
+    "support_query_ref": null,
+    "leo_config_ref": "Existing fixed source residual/post_sync/noEQ seven-view observations, no new channel generation"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "No target/query IQ or truth",
+    "external_method_exception": null,
+    "claim_scope": "Single-source-panel/seed preservation ablation; no independent target or orbit claim"
+  },
+  "checkpoint": {
+    "initialization": "Frozen R03 and original F50 defaulthead;no new model optimization",
+    "sources": [
+      "E:\\type10-7\\local_artifacts\\pamf_restoration\\trained\\20261019-phase1-restoration-residual-refinement-selfsup-m3-r03\\residual_deterministic\\final.pt",
+      "E:\\type10-7\\local_artifacts\\pamf_restoration\\fcrossrx50_reference_20261019_r01\\final_ssdg.pth"
+    ],
+    "contract_check_ref": "Previous R03 source lineage and originalF50 exact role/native smoke reused",
+    "provenance_verdict": "R03scratchcorrectorE20 over frozenR02scratchE20,0TX;F50scratch33L+17U originalsame roles,noheadfit",
+    "selection_rule": "No candidate ranking;one fixed scalar rule,8192 L/U seed2026101933,then all sourceV views;no target feedback"
+  },
+  "execution": {
+    "host": "local Windows CPU",
+    "launch_owner": "codex/root/restoration-change-preserve-20261019",
+    "gpu_policy": "0 GPU workers,2CPUthreads;preserve otherowners",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\pamf_restoration\\20261019-phase1-restoration-change-preserve-source-s2026092701-r01",
+    "launch_command": "python -X utf8 -u -m experiments.pamf_change_preserve.runner predict --reference E:\\type10-7\\local_artifacts\\pamf_restoration\\observability_inputs_20261019\\validation --source-cache E:\\type10-7\\local_artifacts\\datasets\\phase1_manysig_reference_20261019\\source_cache --output E:\\type10-7\\local_artifacts\\pamf_restoration\\20261019-phase1-restoration-change-preserve-source-s2026092701-r01 --reader-folder E:\\type10-7\\local_artifacts\\pamf_restoration\\fcrossrx50_reference_20261019_r01 --restorer-checkpoint E:\\type10-7\\local_artifacts\\pamf_restoration\\trained\\20261019-phase1-restoration-residual-refinement-selfsup-m3-r03\\residual_deterministic\\final.pt",
+    "stop_rule": "Wrongsource/provenance/outputcollision/nonfinite/incompleteprediction:preserveoutputs,noautoretry"
+  },
+  "expected_artifacts": [
+    "execution.json",
+    "calibration.json",
+    "smoke.json",
+    "prediction/<7views>.npz",
+    "prediction/<7views>_restored.npy",
+    "prediction/complete.json",
+    "gate_diagnostic.json",
+    "metrics.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "Macro-F1",
+      "repair/damage/net",
+      "confusion",
+      "rawIQ NMSE",
+      "preservedfraction"
+    ],
+    "dimensions": [
+      "identity/originalR03/preservedR03",
+      "clean+sixpractical source views",
+      "TX",
+      "RX",
+      "day"
+    ],
+    "prediction_ref": "E:\\type10-7\\local_artifacts\\pamf_restoration\\20261019-phase1-restoration-change-preserve-source-s2026092701-r01\\prediction",
+    "scorer_ref": "python -X utf8 -u -m experiments.pamf_change_preserve.runner score --reference E:\\type10-7\\local_artifacts\\pamf_restoration\\observability_inputs_20261019\\validation --source-cache E:\\type10-7\\local_artifacts\\datasets\\phase1_manysig_reference_20261019\\source_cache --output E:\\type10-7\\local_artifacts\\pamf_restoration\\20261019-phase1-restoration-change-preserve-source-s2026092701-r01",
+    "scientific_rule": "PASS only if all1800 clean decisions equal raw identity,clean IQ NMSE0,each practical accuracy/MacroF1>=originalR03 and paired NMSE<=originalR03;otherwise source negative,no threshold tuning",
+    "threshold_rule": "tau=min(.02,max q over fixed8192 L/U clean);q=mean((R(y)-y)^2)/max(mean(y^2),1e-4);preserve y iff q<=tau",
+    "next_stage": "No automatic target in this source-only run;this chat target scope remains clean-only"
+  },
+  "rows": [
+    {
+      "row_id": "fixed_three_readouts",
+      "method": "FixedR03 with waveform-only small-change preservation;originalF50 defaulthead",
+      "purpose": "source_only_matched_ablation",
+      "config_ref": "experiments/pamf_change_preserve/model.py#POLICY",
+      "resolved_config_ref": "E:\\type10-7\\local_artifacts\\pamf_restoration\\20261019-phase1-restoration-change-preserve-source-s2026092701-r01\\calibration.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": 2026101903
+      },
+      "seed_notes": "Prior F/R and fixedsourceview seeds reused;calibration seed2026101933 selects8192 L/U only;support null,no fewshot,no new draw.",
+      "k": null,
+      "scenario": "clean+six fixedsourcepractical views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "8192sourceL/U calibration inference;0model/optimizer/head updates;R03 historicalE40 and originalF50 reused",
+      "output_root": "E:\\type10-7\\local_artifacts\\pamf_restoration\\20261019-phase1-restoration-change-preserve-source-s2026092701-r01",
+      "log_path": "E:\\type10-7\\local_artifacts\\pamf_restoration\\20261019-phase1-restoration-change-preserve-source-s2026092701-r01.predict.log",
+      "command": "python -X utf8 -u -m experiments.pamf_change_preserve.runner predict --reference E:\\type10-7\\local_artifacts\\pamf_restoration\\observability_inputs_20261019\\validation --source-cache E:\\type10-7\\local_artifacts\\datasets\\phase1_manysig_reference_20261019\\source_cache --output E:\\type10-7\\local_artifacts\\pamf_restoration\\20261019-phase1-restoration-change-preserve-source-s2026092701-r01 --reader-folder E:\\type10-7\\local_artifacts\\pamf_restoration\\fcrossrx50_reference_20261019_r01 --restorer-checkpoint E:\\type10-7\\local_artifacts\\pamf_restoration\\trained\\20261019-phase1-restoration-residual-refinement-selfsup-m3-r03\\residual_deterministic\\final.pt",
+      "expected_artifacts": [
+        "execution.json",
+        "calibration.json",
+        "smoke.json",
+        "prediction/<7views>.npz",
+        "prediction/<7views>_restored.npy",
+        "prediction/complete.json",
+        "gate_diagnostic.json",
+        "metrics.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Calibration has no F or V argument and reads no TX labels; V opened only after scalar frozen.",
+    "Inference uses only each received IQ,itsR03output and frozen scalar; no scene/RX/TX routing,classificationconfidence or query fitting.",
+    "Preserving small changes is a falsifiable heuristic,not a clean detector; damaged samples can also bypass.",
+    "Report all seven sourceviews,including three suburban and threeurban;no new practical target test in this chat.",
+    "IndependentCPU truth-side scorer starts only after all seven prediction artifacts; no label/pairedclean feedback to gate."
+  ],
+  "registered_at": "2026-10-19T12:38:28+00:00"
+}
