@@ -130,3 +130,6 @@ R15 全分辨率 TCN 对照已完成：SOURCE_NOT_QUALIFIED。两行均 scratch 
 
 
 R16 IQ-only严格配对消融完成：SOURCE_NOT_QUALIFIED。两新prior各20/4940、全L/U、0TX/F训练，实际每结构完整epoch0与R15一致，原FFT对照复用。源低urban U-Net FFT/IQ、TCN FFT/IQ为 82.5000% / 84.3889% / 78.4444% / 82.3333%。固定U-Net主候选未过源条件，0target，无改选TCN。[报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16/report.md)。70%/其余五场景距原始clean≤5pp目标保持，source不替代正式。
+
+
+R17 三步物理展开完成：SOURCE_QUALIFIED_TARGET_ANALYZED，选定 unroll_unshared。全L/U、0TX/F训练，两新prior各20/4940、三次Core与3×2CG。源低urban单次/共享/不共享为 84.3889% / 86.3889% / 86.8333%。选定展开与固定单次正式两行自动确认完成。正式选定展开 low urban为67.2167%，70%条件未通过；其他五场景有2/5达到原rawclean−5pp。数值总目标尚未达到，完整身份真实性及稳定性边界仍须保留。[完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/report.md)。70%/其余五场景距原始clean≤5pp目标保持，source不替代正式。
