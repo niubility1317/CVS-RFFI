@@ -1,6 +1,6 @@
 # 原 F 与 raw 补充特征共同学习：固定四行比较
 
-状态：RUNNING / VERIFIED，真实父模型6NN无query smoke通过，四行PID/CWD/argv/GPU及日志增长已核实；尚未完成正式评分。
+状态：ANALYZED / VERIFIED，四新行训练、七景预测、独立评分及完整重计完成，四旧控制直接复用；最终目标未完成。
 
 唯一新假设：冻结原 F 时，新增特征难以进入适合严重受损 IQ 的联合表示；让原 F 与同一补充编码器共同学习，可能产生普通 FULL 适应没有的有效特征。该判断只来自既有源结果：固定原 F 的 RAW/PAIR 源 urban 为 58.5556%/58.6389%，实际训练 low urban 面板为 54.8986%/54.3919%；原 FULL 对应 69.6250%/66.0473%。原 W 已联合更新，所以这次改变的是整个原特征提取器的可训练集合，不是再次放开头。新方案不以正式分数选择参数。
 
@@ -41,13 +41,13 @@ RAW与PAIR分别判断：源V mid/low urban两draw均值相对普通FULL_As至�
 | R03 | 严格RAW/PAIR输入、零函数、hooks/joint160 | layers/checks | verified | 实际输入/深拷贝/特征读出 |
 | R04 | 原Sinc物理更新与全局clip | optimizer/train | verified | 逐步计数和物理LR |
 | R05 | 合法B0父及数据角色 | model/data | verified | 原strict loader/既有bank |
-| R06 | 用户L三项目标/NoAs/同曝光 | train/config | implemented | 全量日志与计数 |
-| R07 | 4新行E30/4旧匹配控制 | design/report | implemented | 成本和无重训重测 |
-| R08 | 每候选相对FULL源增量/clean保持 | report/flow_checks | implemented | 只读source判定 |
-| R09 | 固定终轮七景/独立truth-last | dispatch/evaluate | implemented | 逐row预测与评分 |
-| R10 | F1/最差RX/修正新增错/seed边界 | report/analysis | implemented | 完整重计与配对 |
+| R06 | 用户L三项目标/NoAs/同曝光 | train/config | verified | 全量日志与计数 |
+| R07 | 4新行E30/4旧匹配控制 | design/report | verified | 成本和无重训重测 |
+| R08 | 每候选相对FULL源增量/clean保持 | report/flow_checks | verified | 只读source判定 |
+| R09 | 固定终轮七景/独立truth-last | dispatch/evaluate | verified | 逐row预测与评分 |
+| R10 | F1/最差RX/修正新增错/seed边界 | report/analysis | verified | 完整重计与配对 |
 | R11 | commit/一次review/CPsmoke/发布/后态 | publish/checks | verified | 独立运行证据 |
-| R12 | 不覆盖/不重启/不自动扫参或E50 | dispatch | implemented | immutable root/失败保留 |
+| R12 | 不覆盖/不重启/不自动扫参或E50 | dispatch | verified | immutable root/失败保留 |
 
 严格实现固定结构与训练集合；PAIR是raw成对平均输入控制，并非非线性time_fuse内m/d操作的精确替代。最高风险仍是新增表示只提高源拟合或引入跨RX捷径，任何梯度/散布不代替正式识别证据。已暴露benchmark上的n1探索，不能声称新的盲测或可重复clean正收益。
 
@@ -58,3 +58,5 @@ RAW与PAIR分别判断：源V mid/low urban两draw均值相对普通FULL_As至�
 启动证据见launch_evidence.json：单归档传输与远端compile VERIFIED；四行复用既有实际As bank，新增物理模拟0。没有据运行状态声称性能目标已完成。
 
 源端完整回放及固定决定见source_closure.md；本分析未读取正式分数。
+
+完整结果见final_report.md、results_summary.json及validation.json；总体目标仍未完成。

@@ -1,0 +1,80 @@
+{
+  "interpreter_aliases": {
+    "LOCAL_TORCH_PYTHON": "verified existing ssr-gpu Python3.10/Torch2.10;private executable location omitted",
+    "LOCAL_STDLIB_PYTHON": "verified existing native Python3.13;private executable location omitted",
+    "REMOTE_PYTHON": "existing ordinary-account CVS-RFFI/python"
+  },
+  "cwd": "PROJECT_WORKTREE",
+  "executed_commands": [
+    {
+      "interpreter": "LOCAL_TORCH_PYTHON",
+      "argv": [
+        "-X",
+        "utf8",
+        "-B",
+        "local_artifacts/F_rawCoAdapt_E30_20261019/run_checks.py"
+      ],
+      "result": "PASS34syntheticNN/7protocol negatives and0NN flow"
+    },
+    {
+      "interpreter": "REMOTE_PYTHON",
+      "argv": [
+        "-u",
+        "experiments/cvs_raw_coadapt30/runner.py"
+      ],
+      "cwd": "PROJECT/releases/cvs_F_rawCoAdapt_E30_20261019_r01",
+      "result": "PASS first6NN real parent no-query smoke;4rows complete"
+    },
+    {
+      "interpreter": "LOCAL_STDLIB_PYTHON",
+      "argv": [
+        "-X",
+        "utf8",
+        "-B",
+        "local_artifacts/F_rawCoAdapt_E30_20261019/verified_native.py",
+        "analysis/cvs_F_raw_coadapt30_20261019.py",
+        "--runtime",
+        "local_artifacts/F_rawCoAdapt_E30_20261019/runtime.json",
+        "--output",
+        "local_artifacts/F_rawCoAdapt_E30_20261019/source_analysis_r01",
+        "--source-only"
+      ],
+      "result": "SOURCE_REPLAY_VERIFIED;8880updates;no formal score read"
+    },
+    {
+      "interpreter": "LOCAL_STDLIB_PYTHON",
+      "argv": [
+        "-X",
+        "utf8",
+        "-B",
+        "local_artifacts/F_rawCoAdapt_E30_20261019/verified_native.py",
+        "local_artifacts/F_rawCoAdapt_E30_20261019/source_joint_check.py"
+      ],
+      "result": "VERIFIED10sourceNN,0fit/query/newAs"
+    },
+    {
+      "interpreter": "LOCAL_STDLIB_PYTHON",
+      "argv": [
+        "-X",
+        "utf8",
+        "-B",
+        "local_artifacts/F_rawCoAdapt_E30_20261019/verified_native.py",
+        "analysis/cvs_F_raw_coadapt30_20261019.py",
+        "--runtime",
+        "local_artifacts/F_rawCoAdapt_E30_20261019/runtime.json",
+        "--output",
+        "local_artifacts/F_rawCoAdapt_E30_20261019/final_analysis_r01"
+      ],
+      "result": "ANALYZED;1008CM/1008paired strata recounted"
+    }
+  ],
+  "traceability": {
+    "verified": 12,
+    "deferred": 0,
+    "rejected": 0,
+    "blocked": 0,
+    "pending": 0
+  },
+  "strict_parity": "Fixed preregistered encoder/input/trainable set/loss/budget implemented exactly. PAIR is a supplemental raw-input smoothing control,not the nonlinear time_fuse m/d decomposition.",
+  "highest_remaining_risk": "Actual unseen-RX identity gain and cross-model-seed repeatability are unproved;current source increment fails and target clean falls versus matched NoAs."
+}

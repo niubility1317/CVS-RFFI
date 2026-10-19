@@ -1,7 +1,14 @@
 {
   "local_code_commit": "5bbd30bde89f6e00c8fc108d4ce76e8a2293ceb5",
+  "immutable_release_commit": "34ef5c6af6e82a61ab46879500d42385b15ed525",
   "local_commit": "VERIFIED",
-  "remote_oid": "5bbd30bde89f6e00c8fc108d4ce76e8a2293ceb5",
-  "push_and_remote_comparison": "VERIFIED",
-  "launch_gate": "Git commit identity satisfied;network delivery retried before final handoff,not an added release blocker"
+  "last_independent_comparison": {
+    "status": "UNKNOWN",
+    "local_HEAD": "7253cd9b7c1e806690d83f415f8c35bbb29bbbd5",
+    "remote_oid": null,
+    "checked_at_unix": 1792407276.9503834,
+    "layer": "Git remote HTTPS read timed out at12s;local commit preserved"
+  },
+  "push_and_remote_comparison": "UNKNOWN",
+  "final_report_commit": "recorded by following Git commit and independently checked after push;not a circular report hash gate"
 }
