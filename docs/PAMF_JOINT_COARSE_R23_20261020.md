@@ -23,7 +23,7 @@ prior AdamW 2e-4→2e-5、coarse 2e-5→2e-6；共同 warm247/cos、WD1e-4、FP3
 |J23-03|可达梯度|三 prior 和 joint coarse 真正更新，estimator不更新|models.py/training.py|verified|真实梯度/优化器一步/完整更新计数|joint 包含固定估计器输入导数|
 |J23-04|数据与继承权限|只继承原 R02/R07、schema隔离|runtime.py|verified|来源负测/真实checkpoint入口|不重验未变数据|
 |J23-05|两阶段三层验收|五参考固定源选择及条件正式隔离|evaluation.py/controller.py|verified|源资格失败，按登记0target；正式配对身份诊断不适用|无资格0target|
-|J23-06|资源与最小发布|登记/commit/smoke/一次review/队列与退出|runner.py/controller.py/登记|verified|发布/队列已核实；退出待实际结束|不增加其他门槛|
+|J23-06|资源与最小发布|登记/commit/smoke/一次review/队列与退出|runner.py/controller.py/登记|verified|发布/队列及控制器、全部worker自然退出已核实|不增加其他门槛|
 |J23-07|全场景身份保真|源及条件正式、逐组指标、成本/Git交付|report/summary|verified|独立评分与报告|不以NMSE代替TX归属|
 |J23-08|逐细节归属|多seed、独立物理族、逐细节真实性|后续研究|deferred|尚无合格候选|当前不得宣称完成|
 
