@@ -10,3 +10,4 @@
 |冻结默认头：固定接收状态去噪的四贡献归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-FcrossRX-branchNoise-sourceV-s2026092701-m2-r02/report.md)|
 |P79：当前P43基座的受控 practical 退化诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-FcrossRX-current-controls-e30-s2026092701-m2-r01/report.md)|
 |纯 F 冻结 E20：训练命名流与新信道拟合诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-F-observedChannel-e20-s2026092701-m4-r01/report.md)|
+|纯 F rawAs E20：固定 L 面板源拟合诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-F-rawAs-sourceFit-e20-s2026092701-m2-r01/report.md)|

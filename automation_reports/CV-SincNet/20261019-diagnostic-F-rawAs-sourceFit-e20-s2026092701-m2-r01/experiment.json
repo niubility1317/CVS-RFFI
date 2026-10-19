@@ -1,0 +1,220 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-diagnostic-F-rawAs-sourceFit-e20-s2026092701-m2-r01",
+  "group_id": "phase1-F-rawAs-source-fit",
+  "display_name": "纯 F rawAs E20：复用固定 L 面板的源拟合诊断",
+  "description": "0更新默认头读出；只补RAW_NOAS/RAW_AS，旧B0/B1源预测原样复用。区分训练命名流、同L新信道与既有V新信道，不改资格规则。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "F",
+    "E20",
+    "source-only",
+    "rawAs",
+    "default-head"
+  ],
+  "comparison_group_id": "pure-F-frozen20-observed-newChannel",
+  "parent_run_ids": [
+    "20261019-phase1-F-rawAs-e20-s2026092701-m2-r01",
+    "20261019-diagnostic-F-observedChannel-e20-s2026092701-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户固定纯F目标要求训练L固定观测/同L新信道/源V新观测分离；既有权限内0更新源诊断。",
+  "code": {
+    "commit": null,
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 existing FP32/TF32off Python3.10 Torch2.1/NumPy2.2 CPU2",
+    "cwd": "PROJECT/releases/cvs_F_rawAs_E20_20261019_r01"
+  },
+  "data": {
+    "dataset": "existing immutable ManySig equalized1",
+    "version": "same source contract reused",
+    "representation": "equalized1/center256/unitRMS; exact saved residual post_sync/noeq full observation",
+    "contract_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json",
+    "physical_ids_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json#role_ids",
+    "label_map_ref": "design.CLASSES and native class_mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "protocol.CLASSES",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "reuse registered DR fixed180 L panel and existing L6300/U56700/V27000 contract; no new validation",
+    "support_query_ref": null,
+    "leo_config_ref": "PROJECT/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/observations/actual_engine.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none; no formal IQ/prediction/truth reads",
+    "external_method_exception": null,
+    "claim_scope": "Frozen default-head source fitting diagnostics; n=1, no performance promotion or physical-limit claim"
+  },
+  "checkpoint": {
+    "initialization": "strictly load each own scratch FINAL20 for frozen eval only",
+    "sources": [
+      "20261019-phase1-F-rawAs-e20-s2026092701-m2-r01"
+    ],
+    "contract_check_ref": "RAW own_model strict source completion lineage/provenance; frozen source decision and each FINAL20/qualification before reads",
+    "provenance_verdict": "Own pureF scratch20; same data roles; no target selection; verify completion before load",
+    "selection_rule": "all registered fixed FINAL20; no epoch or score selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/F-rawAs-sourceFit20",
+    "gpu_policy": "GPU6 one diagnostic process; all-owner cap2/GPU free>=12000MB, shared existing GPU lock; CPU2 FP32/TF32off; no healthy process intervention",
+    "remote_run_root": "PROJECT/runs/20261019-diagnostic-F-rawAs-sourceFit-e20-s2026092701-m2-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_rawAs_sourceFit_E20_20261019_r01",
+    "local_artifact_root": "local_artifacts/F_rawAs_sourceFit_E20_20261019",
+    "launch_command": [
+      "CVS-RFFI/python",
+      "-u",
+      "PROJECT/releases/cvs_F_rawAs_sourceFit_E20_20261019_r01/analysis/cvs_pure_F_rawAs20_source_fit_20261019.py",
+      "--project",
+      "PROJECT",
+      "--output",
+      "PROJECT/runs/20261019-diagnostic-F-rawAs-sourceFit-e20-s2026092701-m2-r01"
+    ],
+    "stop_rule": "Wait for fixed source decision and both FINAL20/qualification; stop on role/provenance/nonfinite/model state/stream/output/interface inconsistency; preserve artifacts; no automatic restart; no target access",
+    "launch_readback_ref": "local_artifacts/F_rawAs_sourceFit_E20_20261019/postlaunch.json"
+  },
+  "expected_artifacts": [
+    "config.json",
+    "metadata.json",
+    "reconstruction.json",
+    "source_smoke.json",
+    "predictions.npz",
+    "analysis.json",
+    "complete.json or failure.json",
+    "run.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "default-head CE",
+      "n",
+      "paired corrected/damaged",
+      "source clean-correct retention"
+    ],
+    "dimensions": [
+      "checkpoint",
+      "scene",
+      "RX",
+      "observed-vs-new source condition"
+    ],
+    "prediction_ref": "source-only predictions.npz; no formal inference",
+    "scorer_ref": "same legal L/V labels within zero-update diagnostics; no target truth"
+  },
+  "rows": [
+    {
+      "row_id": "RAW_NOAS-s2026092701",
+      "method": "RAW_NOAS frozen pureF FINAL20",
+      "purpose": "source-fitting diagnostic",
+      "config_ref": "configs/diagnostic.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-rawAs-e20-s2026092701-m2-r01/RAW_NOAS-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019531
+      },
+      "seed_notes": "No new model seed or training. Two fixed new source namespaces; old exact training step namespace reconstructed, not historical IQ-byte verified.",
+      "k": null,
+      "scenario": [
+        "L_raw",
+        "L_training_stream_reconstructed",
+        "same_L_new_channel_2draw_3scenes",
+        "V_existing_new_channel_2draw_3scenes"
+      ],
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 updates; 180 L IDs raw+reconstructed+2draw*3scenes=1440 NN/model plus one shared real-CP source smoke; 2881 NN total; V logits and old B0/B1 predictions reused",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawAs-sourceFit-e20-s2026092701-m2-r01/RAW_NOAS-s2026092701",
+      "log_path": "PROJECT/releases/cvs_F_rawAs_sourceFit_E20_20261019_r01/run.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_rawAs_sourceFit_E20_20261019_r01/analysis/cvs_pure_F_rawAs20_source_fit_20261019.py",
+        "--project",
+        "PROJECT",
+        "--output",
+        "PROJECT/runs/20261019-diagnostic-F-rawAs-sourceFit-e20-s2026092701-m2-r01"
+      ],
+      "expected_artifacts": [
+        "analysis.json"
+      ]
+    },
+    {
+      "row_id": "RAW_AS-s2026092701",
+      "method": "RAW_AS frozen pureF FINAL20",
+      "purpose": "source-fitting diagnostic",
+      "config_ref": "configs/diagnostic.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-F-rawAs-e20-s2026092701-m2-r01/RAW_AS-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019531
+      },
+      "seed_notes": "No new model seed or training. Two fixed new source namespaces; old exact training step namespace reconstructed, not historical IQ-byte verified.",
+      "k": null,
+      "scenario": [
+        "L_raw",
+        "L_training_stream_reconstructed",
+        "same_L_new_channel_2draw_3scenes",
+        "V_existing_new_channel_2draw_3scenes"
+      ],
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 updates; 180 L IDs raw+reconstructed+2draw*3scenes=1440 NN/model plus one shared real-CP source smoke; 2881 NN total; V logits and old B0/B1 predictions reused",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawAs-sourceFit-e20-s2026092701-m2-r01/RAW_AS-s2026092701",
+      "log_path": "PROJECT/releases/cvs_F_rawAs_sourceFit_E20_20261019_r01/run.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_rawAs_sourceFit_E20_20261019_r01/analysis/cvs_pure_F_rawAs20_source_fit_20261019.py",
+        "--project",
+        "PROJECT",
+        "--output",
+        "PROJECT/runs/20261019-diagnostic-F-rawAs-sourceFit-e20-s2026092701-m2-r01"
+      ],
+      "expected_artifacts": [
+        "analysis.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Reuse exactly DR selected180 IDs with real B1 E20 step/slot; no resampling and no recomputation of B0/B1/old models. Validate L membership and base metadata before IQ.",
+    "RAW_AS actual L consumption step/slot and As_packets128 are verified; its log does not persist per-packet scene or historical As IQ. Same fixed Config/session/seed/namespace allows deterministic reconstruction only; do not claim archived scene/IQ equality. RAW_NOAS never trained As.",
+    "Reuse same two new source namespaces and three original training scenes, no channel weakening; V logits from fixed qualification only. No formal dataset/prediction/truth reads.",
+    "Source qualification precedes this diagnostic. Results do not add a promotion gate or rescue/extend a source-failed recipe. One model seed; 0 optimizer/default-head/EMA updates and complete state equality."
+  ],
+  "registered_at": "2026-10-19T06:32:04+00:00"
+}
