@@ -87,3 +87,21 @@ VERIFIED：seed 2026092701 的 CE 监督与 CE＋PL 均完成 E200，默认头�
 [SDG首seed增强与PL结果](sdg_seed01_aug_pl_analysis.md)：4行七视图独立复算通过，只有seed2026092701。报告保留全部四条件的原始配对差，具体数字、实际早停轮数和全部场景在子报告；不据分数调整后续矩阵。整体仍RUNNING，219行与96成本未全部完成。
 
 最新实际进度：**16/219行完成并独立复算**。SDG首seed四条件共1176个分层CM一致；clean原生组合−CE为监督+0.6339、PL+0.5851个百分点，PL clean两模型均下降。完整组合在本seed六种practical的Accuracy相对CE均为正；不把单seed或单指标结果冒充三seed结论。第二seed CE监督/PL已在GPU2、3接续，96成本仍等待性能全矩阵完成。
+
+## SDG CE 第二种子监督／PL 配对
+
+VERIFIED：seed 2026092702 的 CE 监督与 CE＋PL 均完成 E200，默认头及完整源曲线核验通过，7 视图独立复算共 588 个分层 CM 一致。全部条件保留默认拼接增强；本表仅该 seed，不能代替三 seed 结论。
+
+| 视图 | 监督 Accuracy（%） | PL Accuracy（%） | PL−监督（百分点） | 监督 Macro-F1（%） | PL Macro-F1（%） |
+|---|---:|---:|---:|---:|---:|
+| clean | 73.6500 | 69.4714 | -4.1786 | 72.8879 | 67.8861 |
+| practical_high | 30.3673 | 38.7190 | +8.3518 | 28.9815 | 37.6893 |
+| practical_mid | 30.4643 | 37.7101 | +7.2458 | 29.2880 | 36.8528 |
+| practical_low_suburban | 30.1452 | 36.5744 | +6.4292 | 28.9485 | 35.7552 |
+| practical_high_urban | 30.4113 | 38.1131 | +7.7018 | 29.3385 | 37.1865 |
+| practical_mid_urban | 29.8179 | 34.2393 | +4.4214 | 28.8436 | 33.3776 |
+| practical_low_urban | 27.9940 | 30.5042 | +2.5101 | 26.7691 | 29.3335 |
+
+按源验证 NLL 冻结，监督／PL 选中 epoch 分别为 77／55；两行均实际训练满 200 轮。监督不读取 U，PL 真值隐藏，阈值 0.95、权重 1、U/L=1，没有 EMA 或另训头。PL 的正负差如实保留，不据此关闭机制、调阈值或重跑。完整 SDG 监督/PL 两行已在物理 GPU2、3 接续，整体 18/219 行完成，96 成本尚未测量。
+
+逐行独立复算与完整曲线证据：`local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/verified_rows/`；配对汇总：`local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/sdg_ce_seed02_pair_summary.json`。
