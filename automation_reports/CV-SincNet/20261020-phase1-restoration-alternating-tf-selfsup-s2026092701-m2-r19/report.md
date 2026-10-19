@@ -61,3 +61,10 @@ REJECTED_EXTRA_GATE：通用 brainstorming 技能的额外设计/计划多轮人
 |低仰角城区|88.2778|88.1111|
 
 `time_time` 通过四参考全部条件并选定，源low urban较R17增加1.4444pp、mid urban增加1.1111pp，平均六受损视图NMSE为0.02177185。`time_frequency` 的平均NMSE更低（0.01985769），但TX20-19较R17下降3.0717pp，违反−1pp保护条件，保留为未合格结果，0target。仅time_time已自动启动原168000物理记录×七视图正式预测；本段没有读取或报告目标指标，不能将源88.2778%当作正式70%目标达成。两行权重已在本机严格加载，连接原F50/defaulthead的两条真实源样本输出有限，逐包/合批一致性通过，无标签或参数更新。
+
+
+配对身份诊断预先固定于正式七视图尚未全部完成时：仅复用已经独立评分完成的同一冻结 F50/defaulthead 预测，不重训、不拟合参数、不新增模型预测、不改变任何推理决定或源排序。CPU 分析脚本为 `tools/analyze_pamf_paired_identity.py`，12 项聚焦检查包括合成 168000 行的完整流程、全部14组logits先于truth、错判分层、修复/损坏、零误差和正交误差算术。
+
+分析比较同物理样本的原 clean 判断 C、受损输入判断 B 与恢复判断 R，分开报告 C 正确与 C 错误的样本；“继承 clean 的错误判断”不视作身份正确。另按逐包 e=clean−received、delta=restored−received 计算未截断 alpha=<delta,e>/<e,e> 和正交修正能量，并按 TX/RX/day 汇总。零输入误差时 alpha 不定义，单列引入的误差。全六受损视图同时正确的计数仅为相关视图的描述统计，不是推理集成，也不增加独立样本数。全 IQ 校正可能主要由信道校正主导，这些统计仍不能证明每个生成细节属于对应 TX。
+
+执行输入：选定行 `time_time/target_confirmation/native_map_prior` 已完成的 `summary.json` 与 prediction；原 R09 F50 baseline prediction；原 R05 reference；原目标 truth。仅在完成原独立评分后读取 truth，输出到该选定行新建的 `paired_identity_diagnostic.json`，不可覆盖。命令为 `python tools/analyze_pamf_paired_identity.py --row <selected_target_row> --baseline <R09/prediction> --reference <R05/reference> --truth <original_truth.json> --output <new_diagnostic.json>`，N607 既有环境、CPU、普通账户、0 GPU worker；本分析不改变正在运行的 R19 method commit、矩阵或验收阈值。若分析技术失败，保留原正式产物并如实标记缺项，不重新训练或预测。
