@@ -1,0 +1,87 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261020-phase1-FcrossRX-weakTX-actualStep-e50-clean-local-m2-r01",
+  "code_config_commit": "16abc8559e80f929cd109a6a64a5051525302a7f",
+  "phase": "First full active epoch6 verified; formal source training continues",
+  "rows": [
+    {
+      "row_id": "STEP_NORM-s2026092701",
+      "latest_step": 1388,
+      "latest_epoch": 7,
+      "completed_active_epoch": {
+        "epoch": 6,
+        "steps": 1332,
+        "post_steps": 1332,
+        "scheduled": 56,
+        "eligible": 56,
+        "changed": 41,
+        "extra_feature_VJP_calls": 168,
+        "numerical_fallbacks": 0,
+        "maximum_stored_norm_match_error": 0.000020739608138246862,
+        "extra_model_forwards": 0,
+        "head_fit_updates": 0,
+        "U_truth_read": false
+      },
+      "logged_mechanism": {
+        "F_actual_step/calls": 1388,
+        "F_actual_step/scheduled": 1,
+        "F_actual_step/scheduled_calls": 70,
+        "F_actual_step/eligible_calls": 70,
+        "F_actual_step/feature_VJP_calls": 210,
+        "F_actual_step/previous_post_steps": 1387,
+        "F_actual_step/previous_changed_steps": 53,
+        "F_actual_step/strength": 0.2,
+        "F_actual_step/extra_model_forwards": 0,
+        "F_actual_step/head_direct_aux_gradient": 0
+      },
+      "satellite_active": 0,
+      "U_truth_available": 0
+    },
+    {
+      "row_id": "UPDATE_CONE-s2026092701",
+      "latest_step": 1358,
+      "latest_epoch": 7,
+      "completed_active_epoch": {
+        "epoch": 6,
+        "steps": 1332,
+        "post_steps": 1332,
+        "scheduled": 56,
+        "eligible": 56,
+        "changed": 40,
+        "extra_feature_VJP_calls": 168,
+        "numerical_fallbacks": 0,
+        "maximum_stored_norm_match_error": 0.000018459903151132034,
+        "extra_model_forwards": 0,
+        "head_fit_updates": 0,
+        "U_truth_read": false
+      },
+      "logged_mechanism": {
+        "F_actual_step/calls": 1358,
+        "F_actual_step/scheduled": 0,
+        "F_actual_step/scheduled_calls": 62,
+        "F_actual_step/eligible_calls": 62,
+        "F_actual_step/feature_VJP_calls": 186,
+        "F_actual_step/previous_post_steps": 1357,
+        "F_actual_step/previous_changed_steps": 46,
+        "F_actual_step/strength": 0,
+        "F_actual_step/extra_model_forwards": 0,
+        "F_actual_step/head_direct_aux_gradient": 0
+      },
+      "satellite_active": 0,
+      "U_truth_available": 0
+    }
+  ],
+  "resources": {
+    "foreign_GPU_workers": 0,
+    "own_GPU_workers": 2,
+    "free_system_GiB": 8.284656524658203
+  },
+  "test_views": [
+    "clean"
+  ],
+  "satellite_training": false,
+  "head_fit_updates": 0,
+  "target_access": false,
+  "performance_result_available": false,
+  "interpretation": "Scheduled and eligible events plus actual stored-step changes observed; native post-step/feature correction/Sinc witness/ownEMA epoch guards passed. This is execution evidence, not performance."
+}
