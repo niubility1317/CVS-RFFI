@@ -3,7 +3,7 @@ from experiments.pamf_identity_priority.design import PARENT_RUN,PARENT_COMMIT,T
 from experiments.pamf_restoration.data import SCENES
 from .mixing import ARMS,P,ALPHA,EPS,LAYERS,SOURCE_RX
 
-RUN='20261020-phase1-restoration-style-generalization-source-s2026092701-m2-r01'
+RUN='20261020-phase1-restoration-style-generalization-source-s2026092701-m2-r02'
 ARM=ARMS[0];GPUS=dict(zip(ARMS,(4,5)));MIX_SEED=2026102051
 PRECEDING_RUN='20261020-phase1-restoration-semantic-feedback-source-s2026092701-m2-r01'
 PSEUDO_RUN='20261020-phase1-restoration-consensus-identity-source-s2026092701-m2-r01'

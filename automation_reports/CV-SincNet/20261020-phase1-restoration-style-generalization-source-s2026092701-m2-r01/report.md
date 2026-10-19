@@ -1,6 +1,6 @@
 # 同伪身份的同 RX 与跨 RX 统计混合
 
-状态：PLANNED。用户目标为目标 low urban ≥70%，其余五 practical 接近原 F clean 85.113889%（Agent 暂按差距≤2个百分点解释）。分开报告恢复 IQ 与同条 clean 的差距，以及接入冻结原 F/default heads 后的真实 TX 识别、修复/损坏/净修复。当前已核实目标最好 low urban 65.309127%，目标未达成。
+状态：FAILED_TECHNICAL / VERIFIED。用户目标为目标 low urban ≥70%，其余五 practical 接近原 F clean 85.113889%（Agent 暂按差距≤2个百分点解释）。分开报告恢复 IQ 与同条 clean 的差距，以及接入冻结原 F/default heads 后的真实 TX 识别、修复/损坏/净修复。当前已核实目标最好 low urban 65.309127%，目标未达成。
 
 本轮检验源接收机统计依赖。两个新训练配方均从合法原 R03 coarse20/correction20 严格加载全部权重，方法 b01b534f52daf9cae9e940ed6ec6f9243bccbdbe；不继承任何源失败的精修权重。samerx_style（GPU4）在同伪身份、同 RX 内取非自身 donor；crossrx_style（GPU5）在同伪身份、不同源 RX 间取 donor。两臂都保护伪身份，没有无保护混合。仅对两种规则均有合法 donor 的记录启用，固定随机抽取数量匹配 eligible、尝试概率、有效物理曝光和系数，只改变 donor RX 条件。
 
@@ -19,3 +19,6 @@
 46项聚焦检查PASS，覆盖身份/RX/有效曝光/半批隔离、统计停止梯度、实际浅/中层接线、推断原路径与逐帧独立、预算/来源/权限拒绝、固定双行无源选择、七视图/三F/有限IQ后truth。单次独立P0/P1审查发现一项控制器进度文件不可重复创建的P1，已修复为临时进度文件替换，连续source→target→complete更新回归通过；唯一该项定点复核PASS。launcher首步实际原R03/三F/source Ls同伪身份两RX四条smoke，检查初始eval逐点等于R03、真实两层应用、coarse/correction及原默认头到IQ有限非零梯度、F无梯度、新checkpoint往返；0V/0TX/0target/0optimizer更新，PASS立即训练，不设smoke令牌。
 
 一次N607普通账号预检VERIFIED：新run/release不存在，原R03与source-only伪身份来源核实，前序完成，GPU4/5各24124MB空闲且无PID，空间≥8GB，其他owner保持。每卡最多一条本run训练/预测worker，计入全owner进程<2、source获取≥18GB/target≥12GB；CPU2线程，source/target共用一把score.lock，独立scorer最多1。root确认某行source Popen实际退出后才同一卡启动该行target，不等待另一行结束。非法来源/权限/代码、冲突、非有限/OOM、预算或预测失败时保存并技术失败该行、无自动重试，其他健康行继续，不热改/停止/重启其他任务。一个代码配置commit，一个不可覆盖run/output root，一个归档本地/远端SHA比较和remotecompile，启动后独立核实PID/CWD/完整命令/GPU/日志增长。具体命令、环境/CWD、路径、矩阵与产物见experiment.json。IQ、权重、预测、日志和本机状态不进Git；未给另一对话发指令。
+
+
+方法 cf39036650556fcea12172be450a0ffb11fa7d6b 已完成一次发布归档比较/远端编译。实际root在首步smoke退出，failure.json与实际进程退出已核实：Torch2.1/NumPy2不能直接用NumPy索引数组索引Torch张量（Could not infer dtype of numpy.int64）。尚未产生任何source训练worker、优化步或目标读取；没有科学性能结果。保留旧run/release/log，不原地覆盖或重启。修复为显式long Tensor index_select，原科学配方保持，在新r02不可覆盖root重新发布。

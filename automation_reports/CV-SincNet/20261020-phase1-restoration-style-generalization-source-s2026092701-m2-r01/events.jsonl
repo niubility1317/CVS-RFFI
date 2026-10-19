@@ -1,1 +1,4 @@
 {"at": "2026-10-19T20:25:19+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T20:28:55+00:00", "status": "FAILED", "note": "Root smoke NumPy/Torch indexing compatibility failure;row training never started,0target", "evidence": ["report.md", "experiment.json"], "row_id": "samerx_style"}
+{"at": "2026-10-19T20:28:55+00:00", "status": "FAILED", "note": "Root smoke NumPy/Torch indexing compatibility failure;row training never started,0target", "evidence": ["report.md", "experiment.json"], "row_id": "crossrx_style"}
+{"at": "2026-10-19T20:28:55+00:00", "status": "FAILED", "note": "VERIFIED smoke technical failure and controller EXITED;no source workers/no target;preserved,not restarted", "evidence": ["report.md", "experiment.json"], "row_id": null}

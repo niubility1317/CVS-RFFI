@@ -50,7 +50,8 @@ def source_smoke(args):
         groups=[g for g in groups if len(g)==2]
         if len(groups)>=2:selected=np.concatenate(groups[:2]);break
     if selected is None:raise ValueError('Real source same-pseudo two-RX smoke quartet required')
-    x=all_x[selected];references=all_refs[selected].repeat(2,1,1);y=x.repeat(2,1,1)
+    tensor_indices=torch.tensor(selected.tolist(),dtype=torch.long)
+    x=all_x.index_select(0,tensor_indices);references=all_refs.index_select(0,tensor_indices).repeat(2,1,1);y=x.repeat(2,1,1)
     parent=load_restorer(args.parent_restoration/'residual_deterministic/final.pt')
     with torch.no_grad():expected=parent(x)
     records={}
