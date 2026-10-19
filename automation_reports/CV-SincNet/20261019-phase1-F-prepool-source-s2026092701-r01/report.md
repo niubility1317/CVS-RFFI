@@ -1,6 +1,6 @@
 # 首次时间池化的信息诊断
 
-状态：LOCAL_VERIFIED，尚未发布。上一目标轮为progress：六行联合W实验训练/七景独立评分与完整重计完成，源规则全部FAIL；最终性能目标仍未达到。
+状态：FAILED，Python脚本目录中的statistics.py遮蔽标准库，首次模型前向前失败；0NN/0拟合/0target，失败产物保留。
 
 本轮只做合法源L的不拟合参数诊断。共同B0 FINAL20及既定FULL_As_JOINT FINAL30均按原严格来源加载；后者依据已固定源比较作为全量适应参照，不依据正式成绩选择。二者不续训，不替换或拟合分类头。U始终隐藏且不读取，V不参与本诊断，目标IQ/truth不可访问，不增加正式预测。
 
@@ -26,3 +26,5 @@
 本地解析小例、常量零散布、负散布保留、四项负测及真实pool模块hook检查PASS；0完整模型NN/0真实CP/0IQ/0target。所有模块及发布内嵌脚本语法通过。
 
 唯一一次独立P0/P1审查PASS，未发现会直接使下一真实源诊断错误、越权、破坏或无法启动的问题。检查及边界见review.json。代码/config commit dfb7caabe427ee62ac4b0ff14637d82fdfde8868 已push，远端OID独立一致；命令 CVS-RFFI/python -u experiments/cvs_prepool_source/runner.py，CWD=PROJECT/releases/cvs_F_prepool_source_20261019_r01，CPU2/FP32/无GPU。真实首步及完整诊断待返回。
+
+实际失败和本地同指纹复现见failure.json。仅修复模块命名，后续使用新r02 root；本轮没有科学结果，不当作负效果或诊断不支持。

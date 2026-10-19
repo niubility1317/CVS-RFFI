@@ -1,10 +1,13 @@
 import numpy as np
+import subprocess,sys
+from pathlib import Path
 import torch
 from torch import nn
 from .probe import Probe,descriptor
-from .statistics import halves,scatter
+from .scatter import halves,scatter
 
 def main():
+ subprocess.run([sys.executable,'-X','utf8','-B','-c','from statistics import median; assert median([1,2,3])==2'],cwd=Path(__file__).parent,check=True)
  y=np.tile(np.repeat(np.arange(6),20),15);rx=np.repeat(np.repeat([1,3,4,6,8],3),120);day=np.tile(np.repeat([1,2,3],120),5);ids=[str(i).zfill(5) for i in range(1800)];sp=halves(y,rx,day,ids,20261019821)
  x=np.repeat(y[:,None],144,axis=1).astype(float);r=scatter(x,sp);assert abs(r['ratio']-1)<1e-12 and r['positive_RX_day_count']==15
  assert scatter(np.ones((1800,144)),sp)['ratio']==0
@@ -18,5 +21,5 @@ def main():
   try:fn()
   except ValueError:negative+=1
   else:raise AssertionError('Malformed source diagnostic accepted')
- print(dict(status='PASS',synthetic_full_model_NN=0,synthetic_pool_activations=2,real_checkpoint=0,real_IQ=0,target_access=False,negative_tests=negative,analytic_identity_scatter_ratio=1,negative_scatter_preserved=True))
+ print(dict(status='PASS',direct_script_stdlib_median_regression=True,synthetic_full_model_NN=0,synthetic_pool_activations=2,real_checkpoint=0,real_IQ=0,target_access=False,negative_tests=negative,analytic_identity_scatter_ratio=1,negative_scatter_preserved=True))
 if __name__=='__main__':main()

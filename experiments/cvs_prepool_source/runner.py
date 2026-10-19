@@ -14,7 +14,7 @@ def main():
  import torch
  from experiments.cvs_prepool_source import design as d
  from experiments.cvs_prepool_source.probe import Probe
- from experiments.cvs_prepool_source.statistics import halves,scatter
+ from experiments.cvs_prepool_source.scatter import halves,scatter
  from experiments.cvs_feature_head_joint30 import model as api
  from experiments.cvs_feature_adapters30.data import diagnostic_indices
  from experiments.cvs_F_nontrue20.channel import tensor_iq

@@ -1,4 +1,4 @@
-"""Class-conditional cross-half scatter, with no fitted decision rule."""
+"""Class-conditional cross-half scatter, with no fitted decision rule or stdlib shadow."""
 import numpy as np
 
 def halves(y,rx,day,ids,seed):

@@ -2,7 +2,7 @@ from pathlib import Path
 from experiments.cvs_feature_head_joint30 import design as joint
 read,write=joint.read,joint.write
 ROOT=Path(__file__).resolve().parents[2]
-RUN='20261019-phase1-F-prepool-source-s2026092701-r01';RELEASE='cvs_F_prepool_source_20261019_r01';LOCAL='local_artifacts/F_prepool_source_20261019';OWNER='codex/root/F-prepool-source'
+RUN='20261019-phase1-F-prepool-source-s2026092701-r02';RELEASE='cvs_F_prepool_source_20261019_r02';LOCAL='local_artifacts/F_prepool_source_20261019_r02';OWNER='codex/root/F-prepool-source'
 PROJECT=read(ROOT/'runtime.json')['project'] if (ROOT/'runtime.json').is_file() else 'PROJECT';BASE=Path(PROJECT)/'runs'/RUN
 REFERENCE_RELEASE=joint.RELEASE;REFERENCE_COMMIT='931af701470e781122494398dc58c3e027597550'
 SEED=2026092701;DIAGNOSTIC_SEED=20261019821;ROW='prepool-source'
