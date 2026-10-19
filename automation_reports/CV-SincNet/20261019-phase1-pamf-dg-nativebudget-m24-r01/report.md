@@ -92,3 +92,7 @@ VERIFIED：ibrff-full-s2026092701 已为 ANALYZED。源 V 规则使 stage1 在 3
 IB-RFF六行全部七视图预测已独立复算，42个总体CM及Accuracy／Macro-F1与原scorer逐值一致。[完整同row结果、日期分层与训练成本](ibrff_analysis.md)。clean full64.4792±2.9341%，CE63.4599±1.7316%，配对差+1.0192±1.8158个百分点，2/3正差，不能据此称稳定有效。
 
 本次目标范围已明确排除PAMF，详细实施范围见docs/PHASE1_EXTERNAL_DG_EXECUTION_PLAN_20261019.md。新增162训练和6补测尚未发布，原24行配置未变。
+
+## SDG首个seed独立核验（2026-10-19T12:26:50+08:00）
+
+两行均完整训练200轮、39400更新，按源V最小NLL分别冻结E179和E39。七视图实际预测独立复算通过；仅一个seed，不报告三seed均值。见[首seed配对分析](sdg_seed01_analysis.md)。其余健康SDG训练继续，参数和队列顺序保持冻结。
