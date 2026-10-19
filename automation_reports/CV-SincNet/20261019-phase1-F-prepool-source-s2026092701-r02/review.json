@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "scope": "one targeted re-review of direct-script stdlib import defect only;initial full review retained in r01/review.json",
+  "findings": [],
+  "checks": [
+    "old statistics.py removed",
+    "runner/checks imports use scatter",
+    "median independently imports successfully from package CWD",
+    "run/release/LOCAL r02 isolated from r01",
+    "computation unchanged"
+  ],
+  "real_checkpoint_loads": 0,
+  "real_IQ": 0,
+  "target_access": false,
+  "remote_actions": false,
+  "reviewer_edits": false
+}
