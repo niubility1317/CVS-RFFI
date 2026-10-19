@@ -1,6 +1,6 @@
 # 原 F＋跨 RX 同 TX 对比学习：弱发射机特征优化
 
-当前状态：RUNNING，BASE／WEIGHT／GEOMETRY 三行已完成并冻结 50 轮，BOTH 正在训练。历史 85.1139% 为原三种子方法结果；本次实际增益以同 run 的本机 BASE 配对比较。
+当前状态：RUNNING，首种子四行均已冻结；BASE／BOTH 按原定源域规则扩展到三个种子，实际矩阵共 8 行，新增训练继续运行。历史 85.1139% 为原三种子方法结果；本次实际增益以同 run 的本机 BASE 配对比较。
 
 固定原配方从零训练 50 轮（33L＋17U），保留三路 SIG_TIME、统一 Sinc 物理更新、旧门控、ownEMA、cos、RDrop alpha=1、LS0.01、普通增强和默认分类头联合训练。训练关闭星地信道增强，冻结后只测 clean。两次 RDrop 前向复用同一实际增强 IQ。无历史权重继承。
 
@@ -28,3 +28,7 @@
 首三组阶段更新：各 50 轮、11100 次实际更新；U 曝光均为 963900，接受数分别为 BASE 15127、WEIGHT 15126、GEOMETRY 14900，约 1.55% 至 1.57%。实际 Sinc 物理裁剪各 11100 次，默认头联合训练、单独拟合头为 0，未使用星地增强，未访问目标数据。完整 50 轮／11100 步分析及 BOTH 启动证据见 [source_first3_complete.json](source_first3_complete.json)。此为源训练执行证据，尚无本轮 clean 性能结论；扩种子决定仍等待 BOTH 完成。不同并行密度的 worker 耗时不能解释为算法加速。
 
 真实最终 checkpoint 入口核对通过：首三组来源、原生参数和 EMA 更新数被既定预测入口接受；未读取目标 IQ 或真值、未更新任何参数。见 [checkpoint_entry_checks.json](checkpoint_entry_checks.json)。此为输入兼容检查，仍无本轮目标性能结论。
+
+源域扩种子决定已固定，见 [source_expansion.json](source_expansion.json) 和 [frozen_matrix.json](frozen_matrix.json)。组合弱两类平均 recall 相对匹配 BASE 增加 0.2000 个百分点，达到原先含等号的门槛；WEIGHT 的 0.1222 和 GEOMETRY 的 0.1111 个百分点未达扩种子门槛。此处均为源 V 证据，不是目标性能增益。最终保留 BASE／BOTH 各 3 种子、WEIGHT／GEOMETRY 各 1 种子，全部 8 行自动 clean 预测和独立 truth-last；未扩展的单种子条件不冒充三种子估计。
+
+首种子四行各 50 轮、11100 更新，完整执行证据见 [source_firstseed_complete.json](source_firstseed_complete.json)。第四组来源与真实最终 checkpoint 预测入口核对也已通过。新增 BASE-02、BOTH-02、BASE-03 的实际进程、参数、GPU0 和日志增长已核实；BOTH-03 排队。模型参数、数据、增强、默认头和单模型预算均未改变。
