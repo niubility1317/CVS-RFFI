@@ -56,3 +56,5 @@ LORA 在 t1/t2 pointwise 层加入 r=8、alpha=8 的线性 BA 增量，B零、A�
 本地结构验证 PASS：36 个合成 NN，0 checkpoint、0真实 IQ、0 query，8项负测。FULL实际可训练特征231233，LoRA2304、TEMP2384；零输出预测逐位相同、更新后joint160及默认预测改变、原W与适配器行固定原F状态逐位不变。FULL物理Sinc更新解析对照通过。详见local_checks.json。独立审查与真实CP/实际训练仍待执行，implemented不等于性能或远端验证完成。
 
 一次独立 P0/P1 审查 PASS（review.json）：当前未发现会使下一次真实运行错误、越权、破坏、无法启动或不能生成合法预测的缺陷。19个Python文件语法和6行配置已核对。流检查另通过2220×128固定序列、45次完整L覆盖、源排序/失败及3项禁止角色负测，0NN。真实checkpoint smoke、共享实际观察生成、远端训练与七环境证据仍待返回。
+
+实际代码/六行配置 commit 2dad0da37bb5bc885c8563bc91fbde7f1b4ddb84，已 push 并独立比较远端分支 OID=本地 HEAD。精确命令 CVS-RFFI/python -u experiments/cvs_feature_adapters30/runner.py；CWD=PROJECT/releases/cvs_F_featureAdapters_E30_20261019_r01，普通 N607 既有 Torch2.1/FP32/TF32关闭，每进程CPU2，所有owner每GPU最多2、free≥12000MB。输出=PROJECT/runs/20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01。stop rule及逐行路径见 experiment.json；失败保留、无自动重试，科学低分仍完成全七环境。
