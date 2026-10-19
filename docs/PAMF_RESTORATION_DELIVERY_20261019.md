@@ -100,3 +100,21 @@ def restore_and_read(received):
 ## R10观测不确定性对照
 
 三种网络各E20/4940、完整L/U、0TX/F训练及七源视图已完成，科学状态SOURCE_NOT_QUALIFIED。uncertain平均源NMSE=0.02747268，同预算direct=0.02885981，原R03=0.02836140；低城区身份变化相对R03 +1.5000pp，但最差TX -1.9934pp，不晋级、0新target。含三档郊区、各TX/RX/day、方差控制、累计成本和预登记条件逐项结果见[R10完整报告](../automation_reports/CV-SincNet/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10/report.md)。源身份验收使用V标签，恢复训练仍0TX/F；不把端到端选择称为完全无标签。direct/physical存在初值偏差，两个物理组初值一致；后续代码已修复，未追溯热改R10。
+
+## R11原生噪声软MAP正式确认与最新验收
+
+用户明确lowurban≥70%，另外五个受损场景分别距同一原F/seed原始clean≤5pp；恢复后clean损伤单列。冻结native的168000×七视图及原F50/defaulthead独立truth-last已完成。lowurban=65.2292%，用户数值标准USER_PERFORMANCE_NOT_MET；原clean=84.6762%，恢复后clean=84.5863%。三郊区、三urban、逐TX/RX/day、净纠错、波形和配对身份特征见[R11完整报告](../automation_reports/CV-SincNet/20261019-phase1-restoration-formal-nativeMAP-F50-s2026092701-r11/report.md)。R10原uncertain拒绝不变，R11仅源选择native；0新训练、无目标反馈，不宣称整个逐细节恢复目标完成。
+
+可复现本轮固定native权重时，使用现有同一IQ派生视图示例，将恢复器加载替换为：
+
+```python
+from experiments.pamf_uncertainty_restore.runtime import load_checkpoint as load_native_map
+
+restorer, metadata = load_native_map(
+    artifacts / "trained/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10/native_map_prior/final.pt",
+    "cpu",
+)
+assert metadata["kind"] == "native_map_prior"
+```
+
+它包含coarse、作用估计器和prior的完整冻结状态，输入仍仅为当前float32 IQ `[B,2,256]`，不读clean、TX、场景或真实作用。全部FFT/PA/time按前文原F计算。该权重在本机已用真实2条L_s严格加载，R11又完成原F50全七视图验证；它尚未满足70%/5pp性能目标，不以可运行替代有效性完成。

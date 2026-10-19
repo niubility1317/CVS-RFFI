@@ -16,10 +16,12 @@ run/release不可覆盖，唯一launch owner。来源/权限/形状/非有限/�
 
 |ID|要求|状态|证据|
 |---|---|---|---|
-|N11-01|仅根据完整源V选择固定native，保留R10拒绝结论|implemented|源权限/预算/最差TX负测通过，待真实父元数据|
-|N11-02|真实权重和原F50/defaulthead，0新增训练|implemented|严格加载器复用，待launcher真实源smoke|
-|N11-03|完整七视图，预测完成后独立truth-last|implemented|复用R10已执行预测/scorer和覆盖负测，待正式产物|
-|N11-04|urban与郊区各三档及逐TX/RX损伤|implemented|七场景/840源分层的复用通路，待新目标同row结果|
+|N11-01|仅根据完整源V选择固定native，保留R10拒绝结论|verified|原完整源选择通过，R10原拒绝结论不变，0目标反馈|
+|N11-02|真实权重和原F50/defaulthead，0新增训练|verified|原native和F50实际2Ls smoke、最终固定读出完成|
+|N11-03|完整七视图，预测完成后独立truth-last|verified|168000x7全预测有限/IDs匹配后独立CPU评分完成|
+|N11-04|urban与郊区各三档及逐TX/RX损伤|verified|三郊区三城区及全部126份TX/RX/day结果完整|
 |N11-05|lowurban≥70，其余五场景距原clean≤5pp|verified|逐场景、原clean参照、边界值和降clean不得放宽的测试通过|
-|N11-06|GPU共享容量、唯一owner、不可覆盖root|implemented|复用共享锁，待N607 preflight/post-state|
+|N11-06|GPU共享容量、唯一owner、不可覆盖root|verified|GPU5实际PID/CWD/argv/NVML/log增长及自然退出核实|
 |N11-07|跨seed、独立物理族、逐细节真实可辨识性|deferred|本轮单seed冻结确认不能证明全部细节真实|
+
+执行结果：USER_PERFORMANCE_NOT_MET；lowurban=65.2292%，其他五场景5pp标准逐项结果见正式报告。方法执行完成不等于整个身份忠实恢复目标已完成。
