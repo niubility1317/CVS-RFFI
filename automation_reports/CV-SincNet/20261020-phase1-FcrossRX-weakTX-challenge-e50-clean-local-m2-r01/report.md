@@ -29,3 +29,7 @@ GPU0最多3个总训练／预测／诊断worker，计入其他owner；派发前�
 发布状态 **VERIFIED／RUNNING**。执行提交 `294e79315fd628c97dca7e312d7e9b0bb3c5a0b6` 已推送并独立对齐远端OID。两source worker的实际PID／CWD／cmdline／物理GPU0驻留／resolved33L＋17U／900722参数和日志增长已回读。CUDA合成输入完整main＋aux联合反传PASS，零IQ或target读取，零optimizer或head拟合。正在前5轮原配方预热，尚无本轮clean分数；源扩展在新目标访问前固定。
 
 真实训练激活 **VERIFIED**：两臂均从第1112步／epoch6开始，首个time_down遮蔽实际weakL30包，首个t2.pool为第1116步／weakL44包，新增系数.01。SALIENCY首浅／中损失.720654／.455578；RANDOM为.272616／.240000，均有限。仅说明实际训练执行，不是识别提升证据。此时source进程仍存活，U真值与星地执行均0，未访问本轮目标域。
+
+两臂206个实际initial state张量完全相同，actual native args仅candidate_id／output_dir不同。但完整前5轮1110步不是逐位相同轨迹：第3步首次loss差4.768e-7，最大total-loss差.056868；这些步骤的新机制调用均0。两臂cudnn_deterministic均false，数值非确定性与早期分歧相符，但未定位到具体算子，不能当作已证根因。实际跨进程输入bytes／RNG未逐项记录；同进程合成RNG保持与跨运行逐位配对不同。属于非阻塞可比性限制，健康任务／配方／源规则保持；单seed细小差值不作稳定因果结论。见warmup_comparability.json。
+
+原半监督阶段实际执行 **VERIFIED**：两臂均第7327步／epoch34开始U，首批256样本、各接纳4个伪标签；当前完整prefix统计见semi_stage_execution.json，U真值可用计数与星地执行均0，RDrop alpha1保持。新遮蔽仍只用当前L，不以U预测或truth选择弱类。此为执行证据，非最终接受率或识别收益。

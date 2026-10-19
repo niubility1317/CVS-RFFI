@@ -1,0 +1,48 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01",
+  "execution_commit": "294e79315fd628c97dca7e312d7e9b0bb3c5a0b6",
+  "live_controller_pid": 2404,
+  "live_source_pids": [
+    33424,
+    38372
+  ],
+  "expected_first_U_step": 7327,
+  "expected_first_U_epoch": 34,
+  "rows": [
+    {
+      "row_id": "RANDOM_WEAK-s2026092701",
+      "logged_through": 7431,
+      "first_U_step": 7327,
+      "first_U_epoch": 34,
+      "first_U_count": 256,
+      "first_U_selected": 4,
+      "U_exposed": 26880,
+      "U_accepted": 403,
+      "U_truth_available": 0,
+      "satellite_active_steps": 0,
+      "RDrop_alpha": 1,
+      "source_challenge_calls": 1580
+    },
+    {
+      "row_id": "SALIENCY_WEAK-s2026092701",
+      "logged_through": 7389,
+      "first_U_step": 7327,
+      "first_U_epoch": 34,
+      "first_U_count": 256,
+      "first_U_selected": 4,
+      "U_exposed": 16128,
+      "U_accepted": 258,
+      "U_truth_available": 0,
+      "satellite_active_steps": 0,
+      "RDrop_alpha": 1,
+      "source_challenge_calls": 1570
+    }
+  ],
+  "satellite_training": false,
+  "hidden_U_truth": true,
+  "RDrop_alpha": 1,
+  "extra_challenge_uses_current_L_only": true,
+  "target_feedback": false,
+  "interpretation": "Actual original semi-supervised stage reached; prefix exposure/acceptance only, not final counts or target performance."
+}

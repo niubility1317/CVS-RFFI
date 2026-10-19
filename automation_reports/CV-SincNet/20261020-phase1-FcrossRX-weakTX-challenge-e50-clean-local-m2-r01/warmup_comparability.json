@@ -1,0 +1,58 @@
+{
+  "status": "NONBLOCKING_OBSERVATION",
+  "run_id": "20261020-phase1-FcrossRX-weakTX-challenge-e50-clean-local-m2-r01",
+  "execution_commit": "294e79315fd628c97dca7e312d7e9b0bb3c5a0b6",
+  "scope": "All1110steps of the first5epochs; before challenge activation; no target results",
+  "initialization": {
+    "tensors": 206,
+    "nonidentical_tensors": [],
+    "actual_native_arg_difference_fields": [
+      "candidate_id",
+      "output_dir"
+    ],
+    "only_expected_argument_differences": true
+  },
+  "warmup": {
+    "status": "COMPARED_COMPLETE_FIRST5",
+    "steps": 1110,
+    "all_challenge_calls_zero": true,
+    "metrics": {
+      "train/loss": {
+        "max_absolute_difference": 0.05686759948730469,
+        "nonidentical_steps": 1108
+      },
+      "train/loss_tx_labeled": {
+        "max_absolute_difference": 0.038968682289123535,
+        "nonidentical_steps": 1108
+      },
+      "legacy_rdrop/CE1": {
+        "max_absolute_difference": 0.038968682289123535,
+        "nonidentical_steps": 1108
+      },
+      "legacy_rdrop/CE2": {
+        "max_absolute_difference": 0.04942464828491211,
+        "nonidentical_steps": 1108
+      },
+      "legacy_rdrop/symmetric_KL": {
+        "max_absolute_difference": 0.02010101079940796,
+        "nonidentical_steps": 1107
+      }
+    }
+  },
+  "first_difference": {
+    "step": 3,
+    "total_loss_absolute_difference": 4.76837158203125e-7
+  },
+  "backend": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "interpretation": "Initial tensor equality and native recipe equality verified; actual CUDA training is not bitwise paired. Backend nondeterminism is consistent with early numerical divergence but exact operator cause has not been isolated. No claim of input-byte or stochastic-state equality between processes. Synthetic same-process RNG preservation is a separate claim. No change/restart/retraining or gate alteration; small n1 differences remain exploratory.",
+  "IQ_reads": 0,
+  "target_reads": 0,
+  "optimizer_updates": 0,
+  "head_fit_updates": 0
+}
