@@ -1,0 +1,51 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261020-phase1-FcrossRX-weakTX-metaRX-e50-clean-local-m2-r01",
+  "execution_commit": "95e6466c6d17d0955fb55506976c2e4125442b99",
+  "remote_code_OID_verified": true,
+  "archive_transfer": {
+    "status": "VERIFIED",
+    "bytes": 21740880,
+    "local_SHA256": "36ea7fbb88cd5b9f088cde2a9c0256b0987fba90b6e3822c3dad4549a7ca9127",
+    "release_SHA256": "36ea7fbb88cd5b9f088cde2a9c0256b0987fba90b6e3822c3dad4549a7ca9127",
+    "scope": "One runtime archive transfer comparison only; no per-member seals",
+    "commit": "95e6466c6d17d0955fb55506976c2e4125442b99"
+  },
+  "release_compile": "PASS",
+  "CIM_controller_and_two_source_workers_alive": true,
+  "actual_CWD_matches_immutable_release": true,
+  "physical_GPU": 0,
+  "worker_limit_including_foreign": 3,
+  "actual_GPU_workers": 2,
+  "actual_source_device": "cuda:0",
+  "log_growth": [
+    {
+      "row": "EXTRA_RX_CE-s2026092701",
+      "from_bytes": 0,
+      "to_bytes": 7335,
+      "observed_step": 221
+    },
+    {
+      "row": "META_RX-s2026092701",
+      "from_bytes": 0,
+      "to_bytes": 7303,
+      "observed_step": 218
+    }
+  ],
+  "actual_recipe": {
+    "scratch": true,
+    "checkpoint_sources": [],
+    "label_epochs": 33,
+    "pseudo_epochs": 17,
+    "total_epochs": 50,
+    "amp": false,
+    "satellite_augmentation": false,
+    "eval_satellite": false,
+    "test_views": [
+      "clean"
+    ],
+    "default_head_main_joint": true
+  },
+  "source_only_before_target": true,
+  "scope": "Post-launch actual args, execution CWD, independent live CIM cmdline and nonempty growing training logs. No new performance claim."
+}

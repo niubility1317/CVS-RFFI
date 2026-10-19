@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：弱发射机跨 RX 元训练（50 轮，clean）
 
-run_id：`20261020-phase1-FcrossRX-weakTX-metaRX-e50-clean-local-m2-r01`。当前为 LOCAL_VERIFIED，尚无本轮性能结果。实际代码身份为运行时 `release_commit.txt` 中的 Git 提交；完整固定矩阵见 [experiment.json](experiment.json)。
+run_id：`20261020-phase1-FcrossRX-weakTX-metaRX-e50-clean-local-m2-r01`。当前为 RUNNING，尚无本轮性能结果。实际代码身份为运行时 `release_commit.txt` 中的 Git 提交；完整固定矩阵见 [experiment.json](experiment.json)。
 
 ## 固定方法与对照
 
@@ -40,4 +40,6 @@ GPU0 总 source／predict worker 上限 3（计入其他 owner），派发前可
 
 [review.json](review.json)：本候选一次独立 P0/P1 审查 PASS，无额外重复审查。既有跨进程训练存在微小数值非确定性，单种子小差异只能作为探索证据。本基准已有历史暴露，不宣称独立盲测。
 
-尚待：提交和独立远端核对、一次发布归档比对、本机启动后进程／CWD／GPU／日志增长核实、完整训练及自动 clean／独立评分、同 row 结果提交推送。
+代码提交 95e6466c6d17d0955fb55506976c2e4125442b99 已推送，独立远端 OID 一致（VERIFIED）。一次归档转移比对一致，发布根编译通过。[launch_verification.json](launch_verification.json) 核实两个 source worker、实际 CWD／cuda:0／原 33L＋17U 配方及增长日志；当前无本轮目标访问。
+
+尚待：完整训练、源域扩种子决定、逐行自动 clean／独立评分及同 row 结果提交推送。
