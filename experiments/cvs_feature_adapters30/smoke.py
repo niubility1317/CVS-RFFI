@@ -14,7 +14,7 @@ def run():
    c=d.config(next(r for r in d.rows() if r['style']==style and r['As']));m=api.from_state(c,state)
    with torch.no_grad():a=m.forward_identity_only(x)
    if not torch.equal(a['tx_logits'],z) or a['id_feat_joint'].shape!=(2,160):raise ValueError('Real zero-output adapter must preserve original default prediction')
-   rows.append(dict(style=style,**api.counts(m)))
+   rows.append(api.counts(m))
   if any(not torch.equal(v,p.state_dict()[k]) for k,v in state.items()):raise ValueError('Real parent smoke mutated state')
  d.write(d.BASE/'checkpoint_smoke.json',dict(status='PASS',actual_trained_checkpoint='verified original pureF B0 scratch fixed FINAL20',rows=rows,NN=8,updates=0,query_read=False,source_IQ_read=False,parent_inherited_by_all_six=True))
  print('SMOKE PASS strict real B0 parent; zero-output features/default head; no query. Continue bank and training.',flush=True)

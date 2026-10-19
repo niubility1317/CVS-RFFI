@@ -1,0 +1,104 @@
+{
+  "schema": "F_feature_adapters30_v1",
+  "run_id": "20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r02",
+  "row_id": "TEMP_As-s2026092701",
+  "style": "TEMP",
+  "As": true,
+  "arm": "TEMP_As",
+  "model_seed": 2026092701,
+  "launch_owner": "codex/root/F-feature-adapters",
+  "output_root": "PROJECT\\runs\\20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r02\\TEMP_As-s2026092701\\source",
+  "parent": {
+    "run": "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01",
+    "row": "B0-s2026092701",
+    "checkpoint": "source/final_ssdg.pth",
+    "selection": "strict own source scratch FINAL20, never target selected",
+    "epochs": 20,
+    "identity": "pureF SIG_TIME_X3+CENTER_25K+CENTER_UNITS; no CROSS_RX/RDrop"
+  },
+  "epochs": 10,
+  "steps_per_epoch": 222,
+  "updates": 2220,
+  "cumulative_epochs": 30,
+  "cumulative_backbone_exposure": "shared parent20 + own supervised feature-adaptation10; original F frozen in LORA/TEMP, never free parent cost",
+  "source": {
+    "L": 6300,
+    "U": 56700,
+    "V": 27000,
+    "RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "days": [
+      1,
+      2,
+      3
+    ],
+    "split": 392005,
+    "U_TX_hidden": true,
+    "adaptation_U_used": false
+  },
+  "training": {
+    "model_mode": "eval with autograd; common deterministic dropout-off objective, not native unchanged continuation",
+    "input": "raw clean source IQ",
+    "source_sampler": "fixed private shuffled full L cycling;222x128 per epoch;exact shared complete As stream",
+    "loss": "CE0(raw)+CE0(second)+mean_all128[parentCorrect*KL(parent_raw||student_raw)]",
+    "second": "complete practical(raw)",
+    "label_smoothing": 0.0,
+    "As_weight": 1.0,
+    "keep_weight": 1.0,
+    "keep_temperature": 1.0,
+    "keep_only_parent_correct_L": true,
+    "student_As_confidence_gate": false,
+    "reference_parent_frozen": true,
+    "default_head_frozen": true,
+    "U_used": false,
+    "EMA_used": false
+  },
+  "feature_adapter": {
+    "style": "TEMP",
+    "layers": [
+      "t1",
+      "t2"
+    ],
+    "rank": 8,
+    "kernel": 5,
+    "lora_alpha": 8.0,
+    "temporal": "B SiLU(K_depthwise_rank(A block_input)), add after native pw before GN/activation/pool",
+    "init": "A/K normal;B zero;no zero gate",
+    "CRRA_whitening": false,
+    "CRRA_conditioning": false,
+    "CRRA_support_gate": false,
+    "enabled_from_update": 1,
+    "raw_IQ_bypass": false
+  },
+  "optimizer": {
+    "type": "reset AdamW",
+    "lr": 0.0002,
+    "min_lr": 1e-06,
+    "weight_decay": 0.0001,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "schedule": "cosine over new10 epochs, not continuous30",
+    "physical_clip": 5.0,
+    "Sinc": "existing CENTER_UNITS algebra for FULL; unchanged frozen Sinc in LORA/TEMP"
+  },
+  "checkpoint_selection": "fixed FINAL30",
+  "test_views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "new_classification_head": false,
+  "target_feedback": false
+}

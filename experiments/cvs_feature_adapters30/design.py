@@ -3,8 +3,8 @@ from copy import deepcopy
 from experiments.cvs_F_nontrue20 import design as old
 read,write=old.read,old.write
 ROOT=Path(__file__).resolve().parents[2]
-RUN='20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01'
-RELEASE='cvs_F_featureAdapters_E30_20261019_r01';LOCAL='local_artifacts/F_featureAdapters_E30_20261019';OWNER='codex/root/F-feature-adapters'
+RUN='20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r02'
+RELEASE='cvs_F_featureAdapters_E30_20261019_r02';LOCAL='local_artifacts/F_featureAdapters_E30_20261019_r02';OWNER='codex/root/F-feature-adapters'
 PROJECT=read(ROOT/'runtime.json')['project'] if (ROOT/'runtime.json').is_file() else 'PROJECT'
 BASE=Path(PROJECT)/'runs'/RUN
 SEED=2026092701;RANK=8;KERNEL=5;ALPHA=8.;EPOCHS=10;STEPS=222;UPDATES=2220;BATCH=128

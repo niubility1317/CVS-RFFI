@@ -1,1 +1,2 @@
 {"at": "2026-10-19T08:34:02+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T08:41:13+00:00", "status": "FAILED", "note": "Startup smoke duplicate-style metadata TypeError;0 training/bank/target; preserved immutable outputs; exact local repro and sole metadata fix for r02", "evidence": ["automation_reports/CV-SincNet/20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01/failure_record.json"], "row_id": null}

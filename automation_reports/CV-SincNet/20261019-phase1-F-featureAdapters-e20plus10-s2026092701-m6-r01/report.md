@@ -1,6 +1,6 @@
 # 纯 F：浅中层 LoRA 与时序残差特征适配
 
-状态：LOCAL_VERIFIED，代码、聚焦负测与一次独立 P0/P1 审查通过；尚未发布或启动新训练。原双信道 E20 两行继续独立执行，不热改、不重启、不覆盖。
+状态：FAILED，首步真实父CP smoke的记录拼接错误；0训练更新、未生成bank、无目标访问。原双信道 E20 两行继续独立执行，不热改、不重启、不覆盖。
 
 ## 当前授权与固定范围
 
@@ -58,3 +58,5 @@ LORA 在 t1/t2 pointwise 层加入 r=8、alpha=8 的线性 BA 增量，B零、A�
 一次独立 P0/P1 审查 PASS（review.json）：当前未发现会使下一次真实运行错误、越权、破坏、无法启动或不能生成合法预测的缺陷。19个Python文件语法和6行配置已核对。流检查另通过2220×128固定序列、45次完整L覆盖、源排序/失败及3项禁止角色负测，0NN。真实checkpoint smoke、共享实际观察生成、远端训练与七环境证据仍待返回。
 
 实际代码/六行配置 commit 2dad0da37bb5bc885c8563bc91fbde7f1b4ddb84，已 push 并独立比较远端分支 OID=本地 HEAD。精确命令 CVS-RFFI/python -u experiments/cvs_feature_adapters30/runner.py；CWD=PROJECT/releases/cvs_F_featureAdapters_E30_20261019_r01，普通 N607 既有 Torch2.1/FP32/TF32关闭，每进程CPU2，所有owner每GPU最多2、free≥12000MB。输出=PROJECT/runs/20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01。stop rule及逐行路径见 experiment.json；失败保留、无自动重试，科学低分仍完成全七环境。
+
+首步真实父模型默认预测和FULL零输出比较已执行，随后因统计中重复style字段抛异常（failure_record.json）。远端归档/compile已核实，但不能据此声称训练启动成功。原release/run完整保留。唯一代码修复不改变训练或推理，使用新r02恢复。

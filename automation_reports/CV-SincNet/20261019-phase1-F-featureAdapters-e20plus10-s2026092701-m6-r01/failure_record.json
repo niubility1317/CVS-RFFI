@@ -1,0 +1,18 @@
+{
+  "status": "FAILED",
+  "run_id": "20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r01",
+  "layer": "startup real-checkpoint smoke record assembly",
+  "root_cause": "api.counts already contains style; dict(style=style,**counts) raises duplicate keyword TypeError",
+  "traceback": "Traceback (most recent call last):\n  File \"PROJECT/releases/cvs_F_featureAdapters_E30_20261019_r01/experiments/cvs_feature_adapters30/dispatch.py\", line 83, in main\n    try:dispatch()\n  File \"PROJECT/releases/cvs_F_featureAdapters_E30_20261019_r01/experiments/cvs_feature_adapters30/dispatch.py\", line 35, in dispatch\n    smoke()\n  File \"PROJECT/releases/cvs_F_featureAdapters_E30_20261019_r01/experiments/cvs_feature_adapters30/smoke.py\", line 17, in run\n    rows.append(dict(style=style,**api.counts(m)))\nTypeError: dict() got multiple values for keyword argument 'style'\n",
+  "training_updates": 0,
+  "bank_generated": false,
+  "row_workers_launched": 0,
+  "target_access": false,
+  "real_parent_noquery_synthetic_NN_before_failure": 4,
+  "local_exact_expression_reproduced": true,
+  "sole_fix": "rows.append(api.counts(m))",
+  "fixed_expression_PASS": true,
+  "replacement": "20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r02",
+  "recipe_changed": false,
+  "outputs_preserved": true
+}
