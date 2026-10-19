@@ -12,6 +12,9 @@ c=CONFIG;root=Path(c['project'])/'runs'/c['run_id']
 def read(p):return json.loads(p.read_text())
 if not (root/'complete.json').is_file():raise ValueError('Immutable training/prediction/scoring matrix incomplete')
 if not read(root/'source_matrix_decision.json')['formal_scores_read'] is False:raise ValueError('Source decision order differs')
+import importlib.util
+runner=Path(c['project'])/'releases/cvs_F_nontrue_CSIL_E20_20261019_r01/experiments/cvs_F_nontrue20/runner.py'
+spec=importlib.util.spec_from_file_location('_F_nontrue_complete_analysis',runner);boot=importlib.util.module_from_spec(spec);spec.loader.exec_module(boot);boot.bootstrap()
 result=dict(summary=read(root/'analysis.json'),logs={},paired={},source_pairs={})
 import torch
 initials=[torch.load(root/(a+'-s2026092701')/'source/initial_smoke.pt',map_location='cpu',weights_only=False)['model'] for a in ('B0','C0','B1','M')]
@@ -23,6 +26,10 @@ def ppairs(y,b,m):return dict(corrected=int(((m==y)&(b!=y)).sum()),damaged=int((
 for arm in ('B0','C0','B1','M'):
  source=root/(arm+'-s2026092701')/'source';rr=records(source/'mechanism_steps.jsonl.gz');unit=records(source/'unit_steps.jsonl.gz');epochs=records(source/'metrics_epoch.jsonl');native=records(source/'step_metrics.jsonl.gz')
  if any(len(a)!=4440 for a in (rr,unit,native)) or len(epochs)!=20:raise ValueError('Missing complete training records')
+ u=[v for v in native if v['step']>13*222]
+ if len(u)!=7*222 or any('train/pseudo_truth_available' not in v['metrics'] or float(v['metrics']['train/pseudo_truth_available'] or 0)!=0. for v in u):raise ValueError('Complete hidden-U truth boundary differs')
+ ema_exact=all(float(v['metrics'].get('train/a1_ema_successful_updates',-1))==v['step'] for v in native)
+ if not ema_exact:raise ValueError('Full ownEMA successful update sequence differs')
  errors=[s for s in (root/'logs'/(arm+'-s2026092701.log')).read_text().splitlines() if re.search(r'Traceback|CUDA out of memory|FloatingPointError|^Killed$|RuntimeError|ModuleNotFoundError',s)]
  formula=[];curves=[]
  for r in rr:
@@ -36,7 +43,7 @@ for arm in ('B0','C0','B1','M'):
  with gzip.open(source/'training_sequence.jsonl.gz','rt') as f:
   for line in f:
    r=json.loads(line);seqcounts[r['role']]+=1;seqpackets[r['role']]+=len(r['ids'])
- result['logs'][arm]=dict(complete_records=dict(mechanism=len(rr),native_steps=len(native),unit=len(unit),epochs=len(epochs)),sequence_batches=seqcounts,sequence_packets=seqpackets,errors=errors,max_L_formula_error=max(formula),curves=curves,native_epochs=epochs,actual=read(source/'training_result.json'),ordinary=read(source/'ordinary_augmentation_actual.json'))
+ result['logs'][arm]=dict(complete_records=dict(mechanism=len(rr),native_steps=len(native),unit=len(unit),epochs=len(epochs)),hidden_U_steps=len(u),U_truth_available_max=0.,ownEMA_all_updates_exact=ema_exact,sequence_batches=seqcounts,sequence_packets=seqpackets,errors=errors,max_L_formula_error=max(formula),curves=curves,native_epochs=epochs,actual=read(source/'training_result.json'),ordinary=read(source/'ordinary_augmentation_actual.json'))
 paths=[root/(a+'-s2026092701')/'source/training_sequence.jsonl.gz' for a in ('B0','C0','B1','M')]
 with gzip.open(paths[0],'rt') as a,gzip.open(paths[1],'rt') as b,gzip.open(paths[2],'rt') as cc,gzip.open(paths[3],'rt') as mm:
  same={'B0_C0':True,'C0_B1':True,'B1_M':True}
