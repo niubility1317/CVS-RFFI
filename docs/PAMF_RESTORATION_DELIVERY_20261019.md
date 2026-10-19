@@ -209,3 +209,6 @@ R20 固定起点与随机起点流匹配：SOURCE_NOT_QUALIFIED，选定 None。
 
 
 R21 四步路径／实际终点目标：SOURCE_NOT_QUALIFIED，选定 None。各新prior20/4940、全63000L/U、0TX/F/target训练，五固定源参考保护。本轮没有新正式目标集成绩，持续目标尚未证实。[完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-endpoint-selfsup-s2026092701-m2-r21/report.md)。持续目标保持active。
+
+
+R22 三步解析观测量目标：SOURCE_NOT_QUALIFIED，选定 None。各新prior20/4940、全63000L/U、0TX/F/target训练，五固定源参考保护。本轮没有新正式目标集成绩，持续目标尚未证实。[完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-analytic-unrolled-selfsup-s2026092701-m2-r22/report.md)。持续目标保持active。
