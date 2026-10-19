@@ -6,5 +6,6 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|原50轮F＋跨RX的冻结源域恢复诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-restoration-FcrossRX50-source-s2026092701-m3-r01/report.md)|
 |PAMF八种子原源域验证集发射机召回率诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-pamf-source-class-manysig-m8-r01/report.md)|
 |PAMF八种子原源域验证集发射机召回率诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-pamf-source-class-manysig-m8-r02/report.md)|

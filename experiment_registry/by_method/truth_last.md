@@ -20,6 +20,7 @@
 |纯CE正常遍历：batch256/512/1024/2048速度与泛化对照|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-ce-singlepass-batch-manysig-m4-r01/report.md)|
 |纯CE正常遍历：batch256/512/1024/2048速度与泛化对照|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-ce-singlepass-batch-manysig-m4-r02/report.md)|
 |纯CE正常遍历：batch256/512/1024/2048速度与泛化对照|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-ce-singlepass-batch-manysig-m4-r03/report.md)|
+|原50轮F＋跨RX的冻结源域恢复诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-restoration-FcrossRX50-source-s2026092701-m3-r01/report.md)|
 |星地观测恢复器：七网络与冻结 F 身份保真验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/report.md)|
 |接收观测恢复第二轮结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/report.md)|
 |复时频粗恢复器的完整正式观测结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-restoration-formal-frozen-coarse-s2026092701-r04/report.md)|
