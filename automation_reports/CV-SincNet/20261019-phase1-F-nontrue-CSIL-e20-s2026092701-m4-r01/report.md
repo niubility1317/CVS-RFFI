@@ -16,7 +16,7 @@
 
 已只读核对实际运行依赖：fullsource runtime commit b94076b191648103daeb8a9cb1c17bdcc9c0e231，实际 train_ssdg 与 DataAugmentation 都来自原 evidence_responsibility release 的 experiments/adv3b02_xuc/code，不依赖同名根code实现。原普通增强包含循环移位、幅度、相位、CFO/相噪、AWGN20—36dB、轻多径/DC/taper；p_dac=0、class-signature关闭。现场 `aug_enable_pa_normal=True`，native调用显式传 `no_pa=False`，所以原 ordinary 还包含 p_pa=.14 的既有 PA 失真，不能只看 augmentor 默认 no_pa=True 就误报关闭。本轮遵守“保留原普通增强”，没有新增PA/DAC/IQ失真；As从raw独立生成，不串接该ordinary PA。实际开关继续随resolved产物核对。
 
-完整 As 始终从 raw L 生成，不从 ordinary 或已受损 IQ 再叠加；只在原始256窗口内采用既有 residual/post_sync/noEQ，reference30dB、reflect边界、物理延迟/同步原实现。源输入单位RMS，As前原channel normalize，不在As后额外normalize；模型既有逐包处理保留。硬件session按RX/day/eq，非TX；train/eval随机流及固定formal数组隔离。ordinary与As是不同输入、各承担CE；teacher只见同一份As。C0是raw额外槽位。所有现场resolved开关与实际模块路径随产物保存。
+完整 As 始终从 raw L 生成，不从 ordinary 或已受损 IQ 再叠加；只在原始256窗口内采用既有 residual/post_sync/noEQ，reference30dB、reflect边界、物理延迟/同步原实现。源输入单位RMS，As前原channel normalize。信道内部保留AGC（请求单位RMS增益，限幅±30dB），因此部分总幅度变化被AGC消除，触及限幅时不保证单位RMS；As输出后无额外normalize。ordinary的0.9—1.1幅度在增强后没有统一输入RMS层将其精确消除；参考响应分支具有平坦增益商去除，不能推断全模型严格增益不变。普通循环移位最多±32会移动原256包与固定[80,160)参考窗口的相对位置；此既有行为各行共同保留，As不额外叠加这次移位。硬件session按RX/day/eq，非TX；train/eval随机流及固定formal数组隔离。ordinary与As是不同输入、各承担CE；teacher只见同一份As。C0是raw额外槽位。所有现场resolved开关与实际模块路径随产物保存。
 
 源端推进规则固定：M−B1 的两draw源 mid/low 平均至少 +.5 pp，且 M−B0 的全V clean 不低于 −.2 pp。只用这两个必要判断，不加几十个分层门槛。固定终轮、无best模型。源决策先落盘，之后独立truth评分；失败关闭当前非真类配方，不小扫系数、改seed或换名挽救。通过仅取得E50资格，追加前再固定E21—50的优化器/LR/EMA/U缓存/采样/信道衔接及匹配B0/B1控制；不把20+30冒称连续cosine50。
 

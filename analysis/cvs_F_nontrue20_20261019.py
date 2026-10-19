@@ -13,6 +13,10 @@ def read(p):return json.loads(p.read_text())
 if not (root/'complete.json').is_file():raise ValueError('Immutable training/prediction/scoring matrix incomplete')
 if not read(root/'source_matrix_decision.json')['formal_scores_read'] is False:raise ValueError('Source decision order differs')
 result=dict(summary=read(root/'analysis.json'),logs={},paired={},source_pairs={})
+import torch
+initials=[torch.load(root/(a+'-s2026092701')/'source/initial_smoke.pt',map_location='cpu',weights_only=False)['model'] for a in ('B0','C0','B1','M')]
+result['initial_student_states_exact_equal']=all(set(q)==set(initials[0]) and all(torch.equal(v,q[k]) for k,v in initials[0].items()) for q in initials[1:])
+if not result['initial_student_states_exact_equal']:raise ValueError('Same-seed scratch F initial states differ')
 def records(p):
  with gzip.open(p,'rt') if str(p).endswith('.gz') else p.open() as f:return [json.loads(s) for s in f if s.strip()]
 def ppairs(y,b,m):return dict(corrected=int(((m==y)&(b!=y)).sum()),damaged=int(((m!=y)&(b==y)).sum()),both_correct=int(((m==y)&(b==y)).sum()),both_wrong=int(((m!=y)&(b!=y)).sum()),count=len(y),net_pp=float(100*((m==y).mean()-(b==y).mean())))
