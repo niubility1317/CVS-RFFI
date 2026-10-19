@@ -142,5 +142,58 @@ class Mechanisms(unittest.TestCase):
         self.assertFalse(any('probe' in k or 'diagnostic' in k for k in a.state_dict()))
 
 
+class TrainingProtocol(unittest.TestCase):
+    def fixture(self, folder):
+        from .source import check_training
+        row = next(r for r in make_plan()['rows'] if r['group'] == 'generic')
+        contract = dict(source_rxs=[1, 3, 4, 6, 8], source_days=[1, 2, 3],
+            num_classes=6, counts=dict(L_s=6300, U_s=56700, V=27000),
+            split_seed=392005, role_ids={}, target_access_before_freeze=False)
+        classes = ['14-10', '14-7', '20-15', '20-19', '6-15', '8-20']
+        meta = dict(source_contract=contract, classes=classes,
+            U_s_exported=False, target_constructed=False)
+        folder = Path(folder)
+        (folder / 'source_contract.json').write_text(json.dumps(contract))
+        (folder / 'metadata.json').write_text(json.dumps(meta))
+        row = dict(row, source_cache=str(folder), source_contract_path=str(folder / 'source_contract.json'),
+            classes=classes, num_classes=6, num_domains=5)
+        return row, meta, check_training
+
+    def test_matching_source_and_forbidden_target_inputs(self):
+        with tempfile.TemporaryDirectory() as folder:
+            row, meta, check = self.fixture(folder)
+            self.assertEqual(check(row), meta)
+            for key in ('truth', 'target_inputs', 'dataset', 'checkpoint', 'tests'):
+                with self.assertRaises(ValueError): check(dict(row, **{key: 'forbidden'}))
+
+    def test_budget_and_group_miswiring_rejected(self):
+        with tempfile.TemporaryDirectory() as folder:
+            row, meta, check = self.fixture(folder)
+            with self.assertRaises(ValueError): check(dict(row, updates=20))
+            with self.assertRaises(ValueError): check(dict(row, fishr_lambda=0))
+            contract = meta['source_contract']; contract['source_rxs'] = [0, 2, 5, 7, 9]
+            Path(row['source_contract_path']).write_text(json.dumps(contract))
+            (Path(folder) / 'metadata.json').write_text(json.dumps(meta))
+            with self.assertRaises(ValueError): check(row)
+
+    def test_native_default_heads_follow_dataset_cardinality(self):
+        from .source import build, forward
+        torch.set_num_threads(2)
+        for family in ('riei', 'drift'):
+            for classes, domains in [(6, 5), (10, 16)]:
+                c = dict(family=family, num_classes=classes, num_domains=domains)
+                model = build(c).eval()
+                with torch.no_grad(): output = forward(model, c, torch.randn(2, 2, 256))
+                self.assertEqual(tuple(output.shape), (2, classes))
+                self.assertTrue(torch.isfinite(output).all())
+
+    def test_resnet_default_head_and_backbone_both_receive_gradients(self):
+        torch.set_num_threads(2)
+        net = RoutedResNet(); x = torch.randn(6, 2, 256); labels = torch.arange(6)
+        loss = F.cross_entropy(net(x)[1], labels); loss.backward()
+        self.assertGreater(float(net.classifier.weight.grad.abs().sum()), 0.)
+        self.assertGreater(float(net.features[0].weight.grad.abs().sum()), 0.)
+
+
 if __name__ == '__main__':
     unittest.main()

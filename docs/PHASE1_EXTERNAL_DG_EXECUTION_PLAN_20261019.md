@@ -88,8 +88,10 @@ CORAL只对源RX的身份表征均值和协方差进行对齐，不访问目标�
 
 上一目标回合分类为PROGRESS：完整设计以Git27247f050提交并推送。本回合分类为PROGRESS：读回既有dispatcher仍存活、IB-RFF六行七视图完成、SDG健康训练；核实ManyRx实际数量；生成不含PAMF的168行矩阵；实现独立源角色构建、共享观测复用、ResNet默认头路由及三个机制。
 
-本地10项聚焦测试通过，覆盖源角色互斥、隐藏标签不导出、矩阵缺项／额外GPU拒绝、解析CE梯度、Fishr方差及EMA、CORAL、身份保护配对、默认头checkpoint键一致。120组输入与不可变数据代码6408f29的float32裁剪及RMS结果逐元素一致；Python3.8语法检查通过。
+本地14项聚焦测试通过，覆盖源角色互斥、隐藏标签不导出、矩阵缺项／额外GPU拒绝、解析CE梯度、训练预算及数据契约错配拒绝、6／10类原生默认头、骨干与默认头共同接收梯度、Fishr方差及EMA、CORAL、身份保护配对、默认头checkpoint键一致。120组输入与不可变数据代码6408f29的float32裁剪及RMS结果逐元素一致；Python3.8语法检查通过。
 
-**扩展套件尚未发布，不是已完成实验。** 下一步完成原生四方法的多数据契约适配、ResNet训练循环、七视图预测／独立评分、历史checkpoint补测、依赖调度与报告；完成一次整体P0/P1审查、真实L_s checkpoint smoke及登记后，以不可变新run发布。目标保持active，既有24行健康队列继续。
+**扩展套件尚未发布，不是已完成实验。** 已接入原生四方法多数据契约训练适配及ResNet训练循环；训练配置逐项匹配已登记矩阵并拒绝target、truth、原pickle及外部checkpoint输入。下一步完成七视图预测／独立评分、历史checkpoint补测、依赖调度与报告；完成一次整体P0/P1审查、真实L_s checkpoint smoke及登记后，以不可变新run发布。目标保持active，既有24行健康队列继续。
 
 证据目录：local_artifacts/phase1_external_dg_20261019。已有24行状态证据：local_artifacts/phase1_dg_nativebudget_20261019/continuation_snapshot.json。恢复时先核实原PID2008297及现有产物，不重复提交或停止健康任务。
+
+协议文档同步时发现本地文本落后于Git中的Phase3定义；已完整恢复Git原文，并合并已有Phase1补充和本轮诊断条款。对正确基准27247f050的最终差异只有37行新增，未删改任何原有段落；修复提交53514c922已推送。
