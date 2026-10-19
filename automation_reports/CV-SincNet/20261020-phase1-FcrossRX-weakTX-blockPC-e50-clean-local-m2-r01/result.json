@@ -1,0 +1,588 @@
+{
+  "status": "ARTIFACTS_COMPLETE",
+  "run_id": "20261020-phase1-FcrossRX-weakTX-blockPC-e50-clean-local-m2-r01",
+  "reference_run": "20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01",
+  "records": [
+    {
+      "row_id": "NORM_L_ID-s2026092701",
+      "treatment": "NORM_L_ID",
+      "model_seed": 2026092701,
+      "current": {
+        "count": 168000,
+        "accuracy": 0.851875,
+        "macro_f1": 0.84914677352256,
+        "confusion": [
+          [
+            27032,
+            144,
+            182,
+            348,
+            116,
+            178
+          ],
+          [
+            606,
+            18445,
+            113,
+            8725,
+            58,
+            53
+          ],
+          [
+            775,
+            281,
+            21217,
+            42,
+            129,
+            5556
+          ],
+          [
+            1999,
+            4421,
+            713,
+            20728,
+            25,
+            114
+          ],
+          [
+            8,
+            24,
+            12,
+            10,
+            27924,
+            22
+          ],
+          [
+            19,
+            39,
+            130,
+            4,
+            39,
+            27769
+          ]
+        ],
+        "per_TX_recall": [
+          0.9654285714285714,
+          0.65875,
+          0.75775,
+          0.7402857142857143,
+          0.9972857142857143,
+          0.99175
+        ],
+        "receiver_accuracy": {
+          "1-1": 0.80725,
+          "14-7": 0.7636666666666667,
+          "2-1": 0.9241666666666667,
+          "20-1": 0.84275,
+          "7-14": 0.9142083333333333,
+          "7-7": 0.886,
+          "8-8": 0.8250833333333333
+        },
+        "day_accuracy": {
+          "2021_03_01": 0.8256904761904762,
+          "2021_03_08": 0.8676904761904762,
+          "2021_03_15": 0.8284523809523809,
+          "2021_03_23": 0.8856666666666667
+        },
+        "worst_RX": 0.7636666666666667,
+        "worst_day": 0.8256904761904762
+      },
+      "reused_BASE": {
+        "count": 168000,
+        "accuracy": 0.8513928571428572,
+        "macro_f1": 0.848641811997774,
+        "confusion": [
+          [
+            27043,
+            141,
+            201,
+            332,
+            121,
+            162
+          ],
+          [
+            573,
+            18460,
+            107,
+            8726,
+            60,
+            74
+          ],
+          [
+            712,
+            309,
+            21268,
+            45,
+            114,
+            5552
+          ],
+          [
+            1935,
+            4493,
+            857,
+            20572,
+            27,
+            116
+          ],
+          [
+            8,
+            23,
+            12,
+            10,
+            27932,
+            15
+          ],
+          [
+            21,
+            39,
+            138,
+            4,
+            39,
+            27759
+          ]
+        ],
+        "per_TX_recall": [
+          0.9658214285714286,
+          0.6592857142857143,
+          0.7595714285714286,
+          0.7347142857142858,
+          0.9975714285714286,
+          0.9913928571428572
+        ],
+        "receiver_accuracy": {
+          "1-1": 0.80575,
+          "14-7": 0.764,
+          "2-1": 0.924125,
+          "20-1": 0.8407083333333333,
+          "7-14": 0.9156666666666666,
+          "7-7": 0.8860416666666666,
+          "8-8": 0.8234583333333333
+        },
+        "day_accuracy": {
+          "2021_03_01": 0.8238571428571428,
+          "2021_03_08": 0.8675,
+          "2021_03_15": 0.8291904761904761,
+          "2021_03_23": 0.8850238095238095
+        },
+        "worst_RX": 0.764,
+        "worst_day": 0.8238571428571428
+      }
+    },
+    {
+      "row_id": "BLOCK_PAIR-s2026092701",
+      "treatment": "BLOCK_PAIR",
+      "model_seed": 2026092701,
+      "current": {
+        "count": 168000,
+        "accuracy": 0.8414345238095238,
+        "macro_f1": 0.8378882069535366,
+        "confusion": [
+          [
+            26855,
+            124,
+            191,
+            492,
+            117,
+            221
+          ],
+          [
+            608,
+            16404,
+            116,
+            10724,
+            82,
+            66
+          ],
+          [
+            699,
+            257,
+            21333,
+            54,
+            119,
+            5538
+          ],
+          [
+            2060,
+            3552,
+            1113,
+            21105,
+            25,
+            145
+          ],
+          [
+            11,
+            16,
+            14,
+            14,
+            27924,
+            21
+          ],
+          [
+            20,
+            35,
+            166,
+            6,
+            33,
+            27740
+          ]
+        ],
+        "per_TX_recall": [
+          0.9591071428571428,
+          0.5858571428571429,
+          0.7618928571428571,
+          0.75375,
+          0.9972857142857143,
+          0.9907142857142858
+        ],
+        "receiver_accuracy": {
+          "1-1": 0.801375,
+          "14-7": 0.7529166666666667,
+          "2-1": 0.9140833333333334,
+          "20-1": 0.8375416666666666,
+          "7-14": 0.8929166666666667,
+          "7-7": 0.879,
+          "8-8": 0.8122083333333333
+        },
+        "day_accuracy": {
+          "2021_03_01": 0.8140952380952381,
+          "2021_03_08": 0.8566904761904762,
+          "2021_03_15": 0.8190238095238095,
+          "2021_03_23": 0.8759285714285714
+        },
+        "worst_RX": 0.7529166666666667,
+        "worst_day": 0.8140952380952381
+      },
+      "reused_BASE": {
+        "count": 168000,
+        "accuracy": 0.8513928571428572,
+        "macro_f1": 0.848641811997774,
+        "confusion": [
+          [
+            27043,
+            141,
+            201,
+            332,
+            121,
+            162
+          ],
+          [
+            573,
+            18460,
+            107,
+            8726,
+            60,
+            74
+          ],
+          [
+            712,
+            309,
+            21268,
+            45,
+            114,
+            5552
+          ],
+          [
+            1935,
+            4493,
+            857,
+            20572,
+            27,
+            116
+          ],
+          [
+            8,
+            23,
+            12,
+            10,
+            27932,
+            15
+          ],
+          [
+            21,
+            39,
+            138,
+            4,
+            39,
+            27759
+          ]
+        ],
+        "per_TX_recall": [
+          0.9658214285714286,
+          0.6592857142857143,
+          0.7595714285714286,
+          0.7347142857142858,
+          0.9975714285714286,
+          0.9913928571428572
+        ],
+        "receiver_accuracy": {
+          "1-1": 0.80575,
+          "14-7": 0.764,
+          "2-1": 0.924125,
+          "20-1": 0.8407083333333333,
+          "7-14": 0.9156666666666666,
+          "7-7": 0.8860416666666666,
+          "8-8": 0.8234583333333333
+        },
+        "day_accuracy": {
+          "2021_03_01": 0.8238571428571428,
+          "2021_03_08": 0.8675,
+          "2021_03_15": 0.8291904761904761,
+          "2021_03_23": 0.8850238095238095
+        },
+        "worst_RX": 0.764,
+        "worst_day": 0.8238571428571428
+      }
+    }
+  ],
+  "paired": [
+    {
+      "treatment": "NORM_L_ID",
+      "model_seed": 2026092701,
+      "accuracy_pp": 0.04821428571428754,
+      "macro_f1_pp": 0.05049615247859629,
+      "per_TX_pp": [
+        -0.039285714285719475,
+        -0.0535714285714306,
+        -0.18214285714285294,
+        0.557142857142856,
+        -0.028571428571422253,
+        0.03571428571428337
+      ],
+      "weak_TX_mean_pp": 0.2517857142857127,
+      "other_TX_mean_pp": -0.053571428571427826,
+      "worst_RX_pp": -0.03333333333332966,
+      "worst_day_pp": 0.18333333333333535
+    },
+    {
+      "treatment": "BLOCK_PAIR",
+      "model_seed": 2026092701,
+      "accuracy_pp": -0.9958333333333402,
+      "macro_f1_pp": -1.075360504423739,
+      "per_TX_pp": [
+        -0.6714285714285784,
+        -7.34285714285714,
+        0.23214285714285854,
+        1.9035714285714267,
+        -0.028571428571422253,
+        -0.06785714285714173
+      ],
+      "weak_TX_mean_pp": -2.7196428571428566,
+      "other_TX_mean_pp": -0.13392857142857095,
+      "worst_RX_pp": -1.1083333333333334,
+      "worst_day_pp": -0.9761904761904749
+    }
+  ],
+  "by_arm": {
+    "NORM_L_ID": {
+      "paired_summary": {
+        "accuracy_pp": {
+          "n": 1,
+          "mean": 0.04821428571428754,
+          "sample_SD": null
+        },
+        "macro_f1_pp": {
+          "n": 1,
+          "mean": 0.05049615247859629,
+          "sample_SD": null
+        },
+        "weak_TX_mean_pp": {
+          "n": 1,
+          "mean": 0.2517857142857127,
+          "sample_SD": null
+        },
+        "other_TX_mean_pp": {
+          "n": 1,
+          "mean": -0.053571428571427826,
+          "sample_SD": null
+        },
+        "worst_RX_pp": {
+          "n": 1,
+          "mean": -0.03333333333332966,
+          "sample_SD": null
+        },
+        "worst_day_pp": {
+          "n": 1,
+          "mean": 0.18333333333333535,
+          "sample_SD": null
+        }
+      },
+      "positive_seeds": {
+        "overall": 1,
+        "weak": 1
+      }
+    },
+    "BLOCK_PAIR": {
+      "paired_summary": {
+        "accuracy_pp": {
+          "n": 1,
+          "mean": -0.9958333333333402,
+          "sample_SD": null
+        },
+        "macro_f1_pp": {
+          "n": 1,
+          "mean": -1.075360504423739,
+          "sample_SD": null
+        },
+        "weak_TX_mean_pp": {
+          "n": 1,
+          "mean": -2.7196428571428566,
+          "sample_SD": null
+        },
+        "other_TX_mean_pp": {
+          "n": 1,
+          "mean": -0.13392857142857095,
+          "sample_SD": null
+        },
+        "worst_RX_pp": {
+          "n": 1,
+          "mean": -1.1083333333333334,
+          "sample_SD": null
+        },
+        "worst_day_pp": {
+          "n": 1,
+          "mean": -0.9761904761904749,
+          "sample_SD": null
+        }
+      },
+      "positive_seeds": {
+        "overall": 0,
+        "weak": 0
+      }
+    }
+  },
+  "block_minus_norm": [
+    {
+      "model_seed": 2026092701,
+      "accuracy_pp": -1.0440476190476278,
+      "macro_f1_pp": -1.1258566569023354,
+      "weak_TX_mean_pp": -2.9714285714285693,
+      "other_TX_mean_pp": -0.08035714285714313,
+      "worst_RX_pp": -1.0750000000000037,
+      "worst_day_pp": -1.1595238095238103,
+      "per_TX_pp": [
+        -0.6321428571428589,
+        -7.289285714285709,
+        0.4142857142857115,
+        1.3464285714285706,
+        0.0,
+        -0.1035714285714251
+      ]
+    }
+  ],
+  "cost": [
+    {
+      "row_id": "NORM_L_ID-s2026092701",
+      "epochs": 50,
+      "optimizer_steps": 11100,
+      "source_seconds": 4967.164354801178,
+      "prediction_seconds": 29.416098000016063,
+      "peak_cuda_MiB": 1972.05126953125,
+      "source_packet_reads": {
+        "L_s": 1420800,
+        "U_s": 963900,
+        "V": 2754000
+      },
+      "extra_L_feature_forwards": 0,
+      "extra_model_forwards": 0,
+      "extra_feature_VJP_calls": 7494,
+      "scheduled_calls": 2498,
+      "nonzero_fraction": 1.0,
+      "eligible_fraction": 1.0,
+      "maximum_norm_match_error": 2.42574179159789e-08,
+      "satellite_examples": 0,
+      "head_fit_updates": 0,
+      "BASE_training_reused": true
+    },
+    {
+      "row_id": "BLOCK_PAIR-s2026092701",
+      "epochs": 50,
+      "optimizer_steps": 11100,
+      "source_seconds": 4979.801675796509,
+      "prediction_seconds": 28.659430100000463,
+      "peak_cuda_MiB": 1972.05126953125,
+      "source_packet_reads": {
+        "L_s": 1420800,
+        "U_s": 963900,
+        "V": 2754000
+      },
+      "extra_L_feature_forwards": 0,
+      "extra_model_forwards": 0,
+      "extra_feature_VJP_calls": 7494,
+      "scheduled_calls": 2498,
+      "nonzero_fraction": 1.0,
+      "eligible_fraction": 1.0,
+      "maximum_norm_match_error": 1.9491228308831408e-08,
+      "satellite_examples": 0,
+      "head_fit_updates": 0,
+      "BASE_training_reused": true
+    }
+  ],
+  "source_expansion": {
+    "status": "SOURCE_EXPANSION_FIXED",
+    "arms": {
+      "NORM_L_ID": {
+        "PASS": false,
+        "source_classification_and_execution_health": true,
+        "overall_pp": 0.01481481481481195,
+        "worst_RX_pp": 0.018518518518517713,
+        "per_TX_pp": [
+          -0.0888888888888939,
+          0.0,
+          0.022222222222223476,
+          0.11111111111111738,
+          0.04444444444444695,
+          0.0
+        ],
+        "weak_geometry": [
+          {
+            "TX": "14-7",
+            "out_RX_margin_q10_gain": -0.00157804932268224,
+            "RX_spread_to_gap_ratio": 0.9869035865338441,
+            "PASS": false
+          },
+          {
+            "TX": "20-19",
+            "out_RX_margin_q10_gain": 0.001677302734752438,
+            "RX_spread_to_gap_ratio": 0.9718274347425552,
+            "PASS": false
+          }
+        ]
+      },
+      "BLOCK_PAIR": {
+        "PASS": false,
+        "source_classification_and_execution_health": true,
+        "overall_pp": 0.06296296296296466,
+        "worst_RX_pp": 0.35185185185185874,
+        "per_TX_pp": [
+          0.022222222222212373,
+          -0.3555555555555534,
+          0.04444444444444695,
+          0.7555555555555538,
+          -0.06666666666665932,
+          -0.022222222222223476
+        ],
+        "weak_geometry": [
+          {
+            "TX": "14-7",
+            "out_RX_margin_q10_gain": -1.4238135152978837e-05,
+            "RX_spread_to_gap_ratio": 0.9441849030893557,
+            "PASS": false
+          },
+          {
+            "TX": "20-19",
+            "out_RX_margin_q10_gain": 0.00578957912121356,
+            "RX_spread_to_gap_ratio": 0.8593166612030021,
+            "PASS": true
+          }
+        ]
+      }
+    },
+    "expand_arms": [],
+    "target_access": false,
+    "criterion": "Each weakTX source outRX feature marginq10>=BASE+.002,RXspread/gap<=1.05x,no zero features; defaulthead overall>=-.2pp,worstRX>=-.5pp,anyTX>=-1pp;2498scheduled,eligible>=99%,nonzero routing>=10%. Fixed source only, no target-based promotion."
+  },
+  "head_fit_updates": 0,
+  "target_feedback": false,
+  "truth_last": true,
+  "limitation": "Exposed exploratory Phase1 clean benchmark. Source promotion fixed before new candidate target. Default head joint throughout. No target tuning, independent blind-test, Phase2, or satellite claim."
+}

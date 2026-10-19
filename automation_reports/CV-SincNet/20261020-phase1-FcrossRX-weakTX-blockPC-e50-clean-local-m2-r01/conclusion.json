@@ -1,0 +1,104 @@
+{
+  "status": "ANALYZED_NOT_ADOPTED",
+  "run_id": "20261020-phase1-FcrossRX-weakTX-blockPC-e50-clean-local-m2-r01",
+  "code_config_commit": "116664b439eb702898ae4e019ba4159f19e4ced3",
+  "reference_run": "20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01",
+  "actual_model_seeds": [
+    2026092701
+  ],
+  "models": 2,
+  "all_seed_counts_explicit": true,
+  "sample_SD": null,
+  "source_expansion_fixed_before_target": true,
+  "source_qualified_arms": [],
+  "unlaunched_conditional_seeds": [
+    2026092702,
+    2026092703
+  ],
+  "reused_BASE_accuracy_percent": 85.13928571428572,
+  "results": [
+    {
+      "treatment": "NORM_L_ID",
+      "seed": 2026092701,
+      "accuracy_percent": 85.1875,
+      "macro_F1_percent": 84.91467735225599,
+      "worst_RX_percent": 76.36666666666667,
+      "worst_day_percent": 82.56904761904762,
+      "paired": {
+        "treatment": "NORM_L_ID",
+        "model_seed": 2026092701,
+        "accuracy_pp": 0.04821428571428754,
+        "macro_f1_pp": 0.05049615247859629,
+        "per_TX_pp": [
+          -0.039285714285719475,
+          -0.0535714285714306,
+          -0.18214285714285294,
+          0.557142857142856,
+          -0.028571428571422253,
+          0.03571428571428337
+        ],
+        "weak_TX_mean_pp": 0.2517857142857127,
+        "other_TX_mean_pp": -0.053571428571427826,
+        "worst_RX_pp": -0.03333333333332966,
+        "worst_day_pp": 0.18333333333333535
+      }
+    },
+    {
+      "treatment": "BLOCK_PAIR",
+      "seed": 2026092701,
+      "accuracy_percent": 84.14345238095238,
+      "macro_F1_percent": 83.78882069535366,
+      "worst_RX_percent": 75.29166666666667,
+      "worst_day_percent": 81.4095238095238,
+      "paired": {
+        "treatment": "BLOCK_PAIR",
+        "model_seed": 2026092701,
+        "accuracy_pp": -0.9958333333333402,
+        "macro_f1_pp": -1.075360504423739,
+        "per_TX_pp": [
+          -0.6714285714285784,
+          -7.34285714285714,
+          0.23214285714285854,
+          1.9035714285714267,
+          -0.028571428571422253,
+          -0.06785714285714173
+        ],
+        "weak_TX_mean_pp": -2.7196428571428566,
+        "other_TX_mean_pp": -0.13392857142857095,
+        "worst_RX_pp": -1.1083333333333334,
+        "worst_day_pp": -0.9761904761904749
+      }
+    }
+  ],
+  "block_minus_norm": [
+    {
+      "model_seed": 2026092701,
+      "accuracy_pp": -1.0440476190476278,
+      "macro_f1_pp": -1.1258566569023354,
+      "weak_TX_mean_pp": -2.9714285714285693,
+      "other_TX_mean_pp": -0.08035714285714313,
+      "worst_RX_pp": -1.0750000000000037,
+      "worst_day_pp": -1.1595238095238103,
+      "per_TX_pp": [
+        -0.6321428571428589,
+        -7.289285714285709,
+        0.4142857142857115,
+        1.3464285714285706,
+        0,
+        -0.1035714285714251
+      ]
+    }
+  ],
+  "original_F_CROSS_RX_preserved": true,
+  "adopted_arm": null,
+  "weak_TX_goal_achieved": false,
+  "interpretation": [
+    "NORM_L_ID overall +0.048214pp is a one-seed result and weak14-7 still decreases0.053571pp; it does not establish both weakTX improvement.",
+    "BLOCK_PAIR overall -0.995833pp; weak14-7 -7.342857pp while weak20-19 +1.903571pp. Its net weak2 recall worsens2.719643pp. Do not adopt or claim84% goal success.",
+    "Fixed source weak1/3 confusion analysis: 14-7->20-19 errors1998 more;20-19->14-7 errors941 fewer. Pair errorsnet1057 more, plus other-class errorsnet466 more. This is descriptive, not target-driven tuning or independent statistical proof.",
+    "All2498scheduled events were eligible/nonzero,3VJP each. Maximum perblock Lidentity norm match error below2.5e-8; no extra modelFF/params/realoptimizersteps/headfit/satellite. The negative result is not explained by the mechanism failing to execute.",
+    "Source rules rejected both before new target scores; BLOCK_PAIR improved weak20 source q10 by.00578958 but weak14 q10 stayed effectivelyflat(-.0000142381) and defaulthead source recall fell.355556pp. No post-target threshold or seed changes.",
+    "Frozen source raw-gradient conflict is not sufficient evidence that removing those components will improve both weakTX in full RDrop/SC/U/AdamW training. Preserve original baseline and all negatives."
+  ],
+  "limitation": "Actualn1 each; no sampleSD or stable three-seed benefit. Exposed Phase1 clean benchmark, defaulthead joint, no Phase2/independentblind/satellite claim. Scientific objective remains unmet."
+}

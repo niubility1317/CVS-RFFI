@@ -1,0 +1,81 @@
+{
+  "run_id": "20261020-phase1-FcrossRX-weakTX-blockPC-e50-clean-local-m2-r01",
+  "fixed_source_weak_indices": [
+    1,
+    3
+  ],
+  "descriptive_only": true,
+  "used_for_target_tuning_or_promotion": false,
+  "rows": [
+    {
+      "row_id": "NORM_L_ID-s2026092701",
+      "treatment": "NORM_L_ID",
+      "model_seed": 2026092701,
+      "weak_TX": [
+        {
+          "TX": "14-7",
+          "paired_weak_TX": "20-19",
+          "samples": 28000,
+          "BASE_recall_percent": 65.92857142857143,
+          "current_recall_percent": 65.875,
+          "recall_gain_pp": -0.05357142857142857,
+          "BASE_pair_errors": 8726,
+          "current_pair_errors": 8725,
+          "pair_error_reduction_pp": 0.0035714285714285713,
+          "BASE_other_TX_errors": 814,
+          "current_other_TX_errors": 830,
+          "other_TX_error_reduction_pp": -0.05714285714285714
+        },
+        {
+          "TX": "20-19",
+          "paired_weak_TX": "14-7",
+          "samples": 28000,
+          "BASE_recall_percent": 73.47142857142858,
+          "current_recall_percent": 74.02857142857142,
+          "recall_gain_pp": 0.5571428571428572,
+          "BASE_pair_errors": 4493,
+          "current_pair_errors": 4421,
+          "pair_error_reduction_pp": 0.2571428571428571,
+          "BASE_other_TX_errors": 2935,
+          "current_other_TX_errors": 2851,
+          "other_TX_error_reduction_pp": 0.3
+        }
+      ]
+    },
+    {
+      "row_id": "BLOCK_PAIR-s2026092701",
+      "treatment": "BLOCK_PAIR",
+      "model_seed": 2026092701,
+      "weak_TX": [
+        {
+          "TX": "14-7",
+          "paired_weak_TX": "20-19",
+          "samples": 28000,
+          "BASE_recall_percent": 65.92857142857143,
+          "current_recall_percent": 58.58571428571429,
+          "recall_gain_pp": -7.3428571428571425,
+          "BASE_pair_errors": 8726,
+          "current_pair_errors": 10724,
+          "pair_error_reduction_pp": -7.135714285714286,
+          "BASE_other_TX_errors": 814,
+          "current_other_TX_errors": 872,
+          "other_TX_error_reduction_pp": -0.20714285714285716
+        },
+        {
+          "TX": "20-19",
+          "paired_weak_TX": "14-7",
+          "samples": 28000,
+          "BASE_recall_percent": 73.47142857142858,
+          "current_recall_percent": 75.375,
+          "recall_gain_pp": 1.9035714285714285,
+          "BASE_pair_errors": 4493,
+          "current_pair_errors": 3552,
+          "pair_error_reduction_pp": 3.3607142857142858,
+          "BASE_other_TX_errors": 2935,
+          "current_other_TX_errors": 3343,
+          "other_TX_error_reduction_pp": -1.457142857142857
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "status": "SOURCE_EXPANSION_FIXED",
+  "arms": {
+    "NORM_L_ID": {
+      "PASS": false,
+      "source_classification_and_execution_health": true,
+      "overall_pp": 0.01481481481481195,
+      "worst_RX_pp": 0.018518518518517713,
+      "per_TX_pp": [
+        -0.0888888888888939,
+        0,
+        0.022222222222223476,
+        0.11111111111111738,
+        0.04444444444444695,
+        0
+      ],
+      "weak_geometry": [
+        {
+          "TX": "14-7",
+          "out_RX_margin_q10_gain": -0.00157804932268224,
+          "RX_spread_to_gap_ratio": 0.9869035865338441,
+          "PASS": false
+        },
+        {
+          "TX": "20-19",
+          "out_RX_margin_q10_gain": 0.001677302734752438,
+          "RX_spread_to_gap_ratio": 0.9718274347425552,
+          "PASS": false
+        }
+      ]
+    },
+    "BLOCK_PAIR": {
+      "PASS": false,
+      "source_classification_and_execution_health": true,
+      "overall_pp": 0.06296296296296466,
+      "worst_RX_pp": 0.35185185185185874,
+      "per_TX_pp": [
+        0.022222222222212373,
+        -0.3555555555555534,
+        0.04444444444444695,
+        0.7555555555555538,
+        -0.06666666666665932,
+        -0.022222222222223476
+      ],
+      "weak_geometry": [
+        {
+          "TX": "14-7",
+          "out_RX_margin_q10_gain": -0.000014238135152978837,
+          "RX_spread_to_gap_ratio": 0.9441849030893557,
+          "PASS": false
+        },
+        {
+          "TX": "20-19",
+          "out_RX_margin_q10_gain": 0.00578957912121356,
+          "RX_spread_to_gap_ratio": 0.8593166612030021,
+          "PASS": true
+        }
+      ]
+    }
+  },
+  "expand_arms": [],
+  "target_access": false,
+  "criterion": "Each weakTX source outRX feature marginq10>=BASE+.002,RXspread/gap<=1.05x,no zero features; defaulthead overall>=-.2pp,worstRX>=-.5pp,anyTX>=-1pp;2498scheduled,eligible>=99%,nonzero routing>=10%. Fixed source only, no target-based promotion."
+}
