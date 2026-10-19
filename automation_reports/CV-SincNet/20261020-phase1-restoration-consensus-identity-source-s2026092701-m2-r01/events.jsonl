@@ -2,3 +2,6 @@
 {"at": "2026-10-19T19:15:03+00:00", "status": "RUNNING", "note": "VERIFIED realR03/3Fsmoke,PID/CWD/cmd/GPU/loggrowth,sourceconsensusbank andactualidentityexposures;0target", "evidence": ["report.md", "experiment.json"], "row_id": "consensus_native"}
 {"at": "2026-10-19T19:15:03+00:00", "status": "RUNNING", "note": "VERIFIED realR03/3Fsmoke,PID/CWD/cmd/GPU/loggrowth,sourceconsensusbank andactualidentityexposures;0target", "evidence": ["report.md", "experiment.json"], "row_id": "consensus_crossrx"}
 {"at": "2026-10-19T19:15:03+00:00", "status": "RUNNING", "note": "Both matched consensus identity arms live;source freeze before selected target", "evidence": ["report.md", "experiment.json"], "row_id": null}
+{"at": "2026-10-19T19:33:13+00:00", "status": "ANALYZED", "note": "Source complete,no target access", "evidence": ["report.md", "results/summary.json"], "row_id": "consensus_native"}
+{"at": "2026-10-19T19:33:13+00:00", "status": "ANALYZED", "note": "Source complete,no target access", "evidence": ["report.md", "results/summary.json"], "row_id": "consensus_crossrx"}
+{"at": "2026-10-19T19:33:13+00:00", "status": "ANALYZED", "note": "Sourcequalified=False;selected=None;goalachieved=False", "evidence": ["report.md", "results/summary.json"], "row_id": null}
