@@ -1,0 +1,169 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "689546e29d3b83b53337dba7a6045beb82d1c7df",
+  "source_expansion_fixed_before_target": true,
+  "source_qualified_arms": [],
+  "conditional_seeds_not_launched": [
+    2026092702,
+    2026092703
+  ],
+  "actual_models": 2,
+  "live_owned_workers": 0,
+  "controller_status": "ARTIFACTS_COMPLETE",
+  "rows": [
+    {
+      "row_id": "MEAN_WEAK_RX-s2026092701",
+      "source_commit": "689546e29d3b83b53337dba7a6045beb82d1c7df",
+      "exits": [
+        {
+          "role": "source",
+          "returncode": 0
+        },
+        {
+          "role": "predict",
+          "returncode": 0
+        },
+        {
+          "role": "score",
+          "returncode": 0
+        }
+      ],
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "prediction_truth_read": false,
+      "prediction_query_fit": false,
+      "prediction_head_fit_updates": 0,
+      "scoring_status": "MODEL_PREDICTED_SCORED",
+      "truth_last": true,
+      "independent_CPU_score": true,
+      "count": 168000,
+      "views": [
+        "clean"
+      ],
+      "source_seconds": 4229.2151436805725,
+      "prediction_seconds": 29.249494199990295,
+      "peak_cuda_MiB": 1972.05126953125
+    },
+    {
+      "row_id": "TAIL_WEAK_RX-s2026092701",
+      "source_commit": "689546e29d3b83b53337dba7a6045beb82d1c7df",
+      "exits": [
+        {
+          "role": "source",
+          "returncode": 0
+        },
+        {
+          "role": "predict",
+          "returncode": 0
+        },
+        {
+          "role": "score",
+          "returncode": 0
+        }
+      ],
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "prediction_truth_read": false,
+      "prediction_query_fit": false,
+      "prediction_head_fit_updates": 0,
+      "scoring_status": "MODEL_PREDICTED_SCORED",
+      "truth_last": true,
+      "independent_CPU_score": true,
+      "count": 168000,
+      "views": [
+        "clean"
+      ],
+      "source_seconds": 4235.197541236877,
+      "prediction_seconds": 29.31877730000997,
+      "peak_cuda_MiB": 1972.05126953125
+    }
+  ],
+  "native_logs": [
+    {
+      "row_id": "MEAN_WEAK_RX-s2026092701",
+      "parsed_epochs": 50,
+      "parsed_steps": 11100,
+      "stdout_lines": 1976,
+      "full_stdout_scanned": true,
+      "stdout_marker_counts": {
+        "FutureWarning": 3,
+        "UserWarning": 0,
+        "RuntimeWarning": 0,
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "MemoryError": 0,
+        "Fatal Python": 0,
+        "killed": 0
+      },
+      "U_seen": 963900,
+      "U_selected": 14830,
+      "U_truth_available": 0,
+      "skipped_nonfinite_updates": 0,
+      "satellite_active_steps": 0
+    },
+    {
+      "row_id": "TAIL_WEAK_RX-s2026092701",
+      "parsed_epochs": 50,
+      "parsed_steps": 11100,
+      "stdout_lines": 1976,
+      "full_stdout_scanned": true,
+      "stdout_marker_counts": {
+        "FutureWarning": 3,
+        "UserWarning": 0,
+        "RuntimeWarning": 0,
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "MemoryError": 0,
+        "Fatal Python": 0,
+        "killed": 0
+      },
+      "U_seen": 963900,
+      "U_selected": 14777,
+      "U_truth_available": 0,
+      "skipped_nonfinite_updates": 0,
+      "satellite_active_steps": 0
+    }
+  ],
+  "feature_logs": [
+    {
+      "row_id": "MEAN_WEAK_RX-s2026092701",
+      "full_feature_log_parsed": true,
+      "calls": 11100,
+      "scheduled": 9990,
+      "applied": 9990,
+      "eligible_fraction": 1,
+      "weak_RX_cell_coverage": 0.9871571571571571,
+      "available_weak_anchor_objectives": 852234,
+      "selected_weak_anchor_objectives": 852234,
+      "extra_model_forwards": 0,
+      "extra_optimizer_updates": 0,
+      "extra_parameters": 0,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "TAIL_WEAK_RX-s2026092701",
+      "full_feature_log_parsed": true,
+      "calls": 11100,
+      "scheduled": 9990,
+      "applied": 9990,
+      "eligible_fraction": 1,
+      "weak_RX_cell_coverage": 0.9871571571571571,
+      "available_weak_anchor_objectives": 852234,
+      "selected_weak_anchor_objectives": 476122,
+      "extra_model_forwards": 0,
+      "extra_optimizer_updates": 0,
+      "extra_parameters": 0,
+      "head_fit_updates": 0
+    }
+  ],
+  "actual_artifact_order": [
+    {
+      "row_id": "MEAN_WEAK_RX-s2026092701",
+      "source_decision_before_prediction_launch": true,
+      "prediction_complete_before_score_launch": true
+    },
+    {
+      "row_id": "TAIL_WEAK_RX-s2026092701",
+      "source_decision_before_prediction_launch": true,
+      "prediction_complete_before_score_launch": true
+    }
+  ]
+}

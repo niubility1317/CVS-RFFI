@@ -1,0 +1,146 @@
+{
+  "status": "ANALYZED_NOT_ADOPTED",
+  "run_id": "20261020-phase1-FcrossRX-weakTX-tailRisk-e50-clean-local-m2-r01",
+  "code_commit": "689546e29d3b83b53337dba7a6045beb82d1c7df",
+  "method_anchor": "Original F plus CROSS_RX50, RDrop1, unified physical Sinc, default main joint head; no satellite; clean only",
+  "actual_model_seeds": [
+    2026092701
+  ],
+  "n_per_arm": 1,
+  "sample_SD": null,
+  "reused_paired_BASE_accuracy_percent": 85.13928571428572,
+  "source_decision_before_target": {
+    "status": "SOURCE_EXPANSION_FIXED",
+    "arms": {
+      "MEAN_WEAK_RX": {
+        "PASS": false,
+        "source_classification_health": true,
+        "overall_pp": -0.02592592592592924,
+        "worst_RX_pp": -0.2962962962962945,
+        "per_TX_pp": [
+          -0.0888888888888939,
+          0,
+          -0.04444444444444695,
+          0.04444444444444695,
+          -0.022222222222223476,
+          -0.04444444444444695
+        ],
+        "weak_geometry": [
+          {
+            "TX": "14-7",
+            "out_RX_margin_q10_gain": -0.005614473389500288,
+            "RX_spread_to_gap_ratio": 1.2492019942134849,
+            "PASS": false
+          },
+          {
+            "TX": "20-19",
+            "out_RX_margin_q10_gain": -0.006684752252000827,
+            "RX_spread_to_gap_ratio": 1.211208135680093,
+            "PASS": false
+          }
+        ]
+      },
+      "TAIL_WEAK_RX": {
+        "PASS": false,
+        "source_classification_health": true,
+        "overall_pp": -0.0888888888888939,
+        "worst_RX_pp": -0.4629629629629539,
+        "per_TX_pp": [
+          -0.20000000000000018,
+          -0.06666666666667043,
+          0.022222222222223476,
+          -0.31111111111110645,
+          0.04444444444444695,
+          -0.022222222222223476
+        ],
+        "weak_geometry": [
+          {
+            "TX": "14-7",
+            "out_RX_margin_q10_gain": -0.00813019937196784,
+            "RX_spread_to_gap_ratio": 1.293001424209483,
+            "PASS": false
+          },
+          {
+            "TX": "20-19",
+            "out_RX_margin_q10_gain": -0.004466736617779133,
+            "RX_spread_to_gap_ratio": 1.172847036487713,
+            "PASS": false
+          }
+        ]
+      }
+    },
+    "expand_arms": [],
+    "target_access": false,
+    "criterion": "Each weakTX outRX feature-margin q10 >= same-seed BASE+.002; eligible feature calls>=99%; weakTX/RX cell coverage>=95%; RXspread/interclassgap <=1.05x BASE; no degenerate features; defaulthead overall>=-.2pp,worstRX>=-.5pp,anyTX>=-1pp. Source only, no retrofit of prior rejected candidates."
+  },
+  "clean_pair_differences": [
+    {
+      "treatment": "MEAN_WEAK_RX",
+      "model_seed": 2026092701,
+      "accuracy_pp": -0.8404761904761915,
+      "macro_f1_pp": -0.873583495748409,
+      "per_TX_pp": [
+        0.40714285714285037,
+        -4.392857142857142,
+        0.5964285714285755,
+        -1.1678571428571427,
+        -0.28571428571428914,
+        -0.20000000000000018
+      ],
+      "weak_TX_mean_pp": -2.7803571428571425,
+      "other_TX_mean_pp": 0.12946428571428414,
+      "worst_RX_pp": -1.433333333333331,
+      "worst_day_pp": -0.735714285714284
+    },
+    {
+      "treatment": "TAIL_WEAK_RX",
+      "model_seed": 2026092701,
+      "accuracy_pp": -0.7797619047619109,
+      "macro_f1_pp": -0.7906598209312277,
+      "per_TX_pp": [
+        0.18928571428571406,
+        -3.9964285714285674,
+        1.6285714285714348,
+        -1.1178571428571482,
+        -1.1749999999999927,
+        -0.2071428571428613
+      ],
+      "weak_TX_mean_pp": -2.557142857142858,
+      "other_TX_mean_pp": 0.1089285714285737,
+      "worst_RX_pp": -1.8625000000000003,
+      "worst_day_pp": -0.9619047619047638
+    }
+  ],
+  "TAIL_minus_MEAN": [
+    {
+      "model_seed": 2026092701,
+      "accuracy_pp": 0.060714285714280614,
+      "macro_f1_pp": 0.08292367481718133,
+      "weak_TX_mean_pp": 0.2232142857142847,
+      "other_TX_mean_pp": -0.020535714285710438,
+      "worst_RX_pp": -0.42916666666666936,
+      "worst_day_pp": -0.22619047619047983,
+      "per_TX_pp": [
+        -0.2178571428571363,
+        0.3964285714285749,
+        1.0321428571428592,
+        0.04999999999999449,
+        -0.8892857142857036,
+        -0.007142857142861114
+      ]
+    }
+  ],
+  "adoption": "Retain original BASE; adopt neither extra paired RX-conditional mean risk nor upper-half tail risk.",
+  "reason": "Both weakTX clean recalls, overall accuracy, MacroF1 and worstRX/day decreased versus the same-seed original BASE. Both candidates had already failed fixed source-feature promotion before target access.",
+  "goal_achieved": false,
+  "goal_remaining": "Improve the fixed source-weak transmitters on actual clean target while retaining strong transmitter performance; current negative single-seed experiment does not satisfy this objective.",
+  "limitations": [
+    "One seed each, no sample SD or multi-seed stability claim. No target-based reseeding, hyperparameter search or checkpoint selection.",
+    "TAIL minus MEAN is +0.060714 pp overall and +0.223214 pp weak mean for this one seed, but both remain substantially worse than BASE; this does not establish a useful hard-mining effect.",
+    "Source outRX geometry uses descriptive centroids with RX exclusion; all sourceRX were seen by the encoder, not unseenRX model validation.",
+    "Exposed Phase1 clean benchmark; no fresh blind, Phase2 or satellite deployment claim."
+  ],
+  "source_interpretation": "Observed shallow/middle conditional feature-risk training did not improve final joint160 source weak-class geometry. This is consistent with the failed scientific criterion; a causal explanation for transfer degradation has not been isolated.",
+  "outputs_preserved": true,
+  "raw_runtime_artifacts_committed": false
+}

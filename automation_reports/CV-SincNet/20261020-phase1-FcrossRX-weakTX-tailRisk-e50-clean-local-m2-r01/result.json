@@ -1,0 +1,586 @@
+{
+  "status": "ARTIFACTS_COMPLETE",
+  "run_id": "20261020-phase1-FcrossRX-weakTX-tailRisk-e50-clean-local-m2-r01",
+  "reference_run": "20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01",
+  "records": [
+    {
+      "row_id": "MEAN_WEAK_RX-s2026092701",
+      "treatment": "MEAN_WEAK_RX",
+      "model_seed": 2026092701,
+      "current": {
+        "count": 168000,
+        "accuracy": 0.8429880952380953,
+        "macro_f1": 0.8399059770402899,
+        "confusion": [
+          [
+            27157,
+            171,
+            204,
+            295,
+            73,
+            100
+          ],
+          [
+            619,
+            17230,
+            78,
+            9963,
+            56,
+            54
+          ],
+          [
+            553,
+            177,
+            21435,
+            39,
+            67,
+            5729
+          ],
+          [
+            1972,
+            4708,
+            942,
+            20245,
+            19,
+            114
+          ],
+          [
+            8,
+            67,
+            12,
+            30,
+            27852,
+            31
+          ],
+          [
+            31,
+            36,
+            192,
+            6,
+            32,
+            27703
+          ]
+        ],
+        "per_TX_recall": [
+          0.9698928571428571,
+          0.6153571428571428,
+          0.7655357142857143,
+          0.7230357142857143,
+          0.9947142857142857,
+          0.9893928571428572
+        ],
+        "receiver_accuracy": {
+          "1-1": 0.797875,
+          "14-7": 0.7496666666666667,
+          "2-1": 0.9087916666666667,
+          "20-1": 0.8305833333333333,
+          "7-14": 0.8923333333333333,
+          "7-7": 0.8869166666666667,
+          "8-8": 0.83475
+        },
+        "day_accuracy": {
+          "2021_03_01": 0.8165,
+          "2021_03_08": 0.8631666666666666,
+          "2021_03_15": 0.8165714285714286,
+          "2021_03_23": 0.8757142857142857
+        },
+        "worst_RX": 0.7496666666666667,
+        "worst_day": 0.8165
+      },
+      "reused_BASE": {
+        "count": 168000,
+        "accuracy": 0.8513928571428572,
+        "macro_f1": 0.848641811997774,
+        "confusion": [
+          [
+            27043,
+            141,
+            201,
+            332,
+            121,
+            162
+          ],
+          [
+            573,
+            18460,
+            107,
+            8726,
+            60,
+            74
+          ],
+          [
+            712,
+            309,
+            21268,
+            45,
+            114,
+            5552
+          ],
+          [
+            1935,
+            4493,
+            857,
+            20572,
+            27,
+            116
+          ],
+          [
+            8,
+            23,
+            12,
+            10,
+            27932,
+            15
+          ],
+          [
+            21,
+            39,
+            138,
+            4,
+            39,
+            27759
+          ]
+        ],
+        "per_TX_recall": [
+          0.9658214285714286,
+          0.6592857142857143,
+          0.7595714285714286,
+          0.7347142857142858,
+          0.9975714285714286,
+          0.9913928571428572
+        ],
+        "receiver_accuracy": {
+          "1-1": 0.80575,
+          "14-7": 0.764,
+          "2-1": 0.924125,
+          "20-1": 0.8407083333333333,
+          "7-14": 0.9156666666666666,
+          "7-7": 0.8860416666666666,
+          "8-8": 0.8234583333333333
+        },
+        "day_accuracy": {
+          "2021_03_01": 0.8238571428571428,
+          "2021_03_08": 0.8675,
+          "2021_03_15": 0.8291904761904761,
+          "2021_03_23": 0.8850238095238095
+        },
+        "worst_RX": 0.764,
+        "worst_day": 0.8238571428571428
+      }
+    },
+    {
+      "row_id": "TAIL_WEAK_RX-s2026092701",
+      "treatment": "TAIL_WEAK_RX",
+      "model_seed": 2026092701,
+      "current": {
+        "count": 168000,
+        "accuracy": 0.8435952380952381,
+        "macro_f1": 0.8407352137884617,
+        "confusion": [
+          [
+            27096,
+            180,
+            215,
+            295,
+            91,
+            123
+          ],
+          [
+            565,
+            17341,
+            81,
+            9916,
+            60,
+            37
+          ],
+          [
+            773,
+            159,
+            21724,
+            37,
+            73,
+            5234
+          ],
+          [
+            1913,
+            4567,
+            1105,
+            20259,
+            26,
+            130
+          ],
+          [
+            20,
+            188,
+            48,
+            96,
+            27603,
+            45
+          ],
+          [
+            31,
+            40,
+            194,
+            8,
+            26,
+            27701
+          ]
+        ],
+        "per_TX_recall": [
+          0.9677142857142857,
+          0.6193214285714286,
+          0.7758571428571429,
+          0.7235357142857143,
+          0.9858214285714286,
+          0.9893214285714286
+        ],
+        "receiver_accuracy": {
+          "1-1": 0.7972083333333333,
+          "14-7": 0.745375,
+          "2-1": 0.90575,
+          "20-1": 0.8251666666666667,
+          "7-14": 0.89975,
+          "7-7": 0.8854583333333333,
+          "8-8": 0.8464583333333333
+        },
+        "day_accuracy": {
+          "2021_03_01": 0.8164761904761905,
+          "2021_03_08": 0.8676666666666667,
+          "2021_03_15": 0.8142380952380952,
+          "2021_03_23": 0.876
+        },
+        "worst_RX": 0.745375,
+        "worst_day": 0.8142380952380952
+      },
+      "reused_BASE": {
+        "count": 168000,
+        "accuracy": 0.8513928571428572,
+        "macro_f1": 0.848641811997774,
+        "confusion": [
+          [
+            27043,
+            141,
+            201,
+            332,
+            121,
+            162
+          ],
+          [
+            573,
+            18460,
+            107,
+            8726,
+            60,
+            74
+          ],
+          [
+            712,
+            309,
+            21268,
+            45,
+            114,
+            5552
+          ],
+          [
+            1935,
+            4493,
+            857,
+            20572,
+            27,
+            116
+          ],
+          [
+            8,
+            23,
+            12,
+            10,
+            27932,
+            15
+          ],
+          [
+            21,
+            39,
+            138,
+            4,
+            39,
+            27759
+          ]
+        ],
+        "per_TX_recall": [
+          0.9658214285714286,
+          0.6592857142857143,
+          0.7595714285714286,
+          0.7347142857142858,
+          0.9975714285714286,
+          0.9913928571428572
+        ],
+        "receiver_accuracy": {
+          "1-1": 0.80575,
+          "14-7": 0.764,
+          "2-1": 0.924125,
+          "20-1": 0.8407083333333333,
+          "7-14": 0.9156666666666666,
+          "7-7": 0.8860416666666666,
+          "8-8": 0.8234583333333333
+        },
+        "day_accuracy": {
+          "2021_03_01": 0.8238571428571428,
+          "2021_03_08": 0.8675,
+          "2021_03_15": 0.8291904761904761,
+          "2021_03_23": 0.8850238095238095
+        },
+        "worst_RX": 0.764,
+        "worst_day": 0.8238571428571428
+      }
+    }
+  ],
+  "paired": [
+    {
+      "treatment": "MEAN_WEAK_RX",
+      "model_seed": 2026092701,
+      "accuracy_pp": -0.8404761904761915,
+      "macro_f1_pp": -0.873583495748409,
+      "per_TX_pp": [
+        0.40714285714285037,
+        -4.392857142857142,
+        0.5964285714285755,
+        -1.1678571428571427,
+        -0.28571428571428914,
+        -0.20000000000000018
+      ],
+      "weak_TX_mean_pp": -2.7803571428571425,
+      "other_TX_mean_pp": 0.12946428571428414,
+      "worst_RX_pp": -1.433333333333331,
+      "worst_day_pp": -0.735714285714284
+    },
+    {
+      "treatment": "TAIL_WEAK_RX",
+      "model_seed": 2026092701,
+      "accuracy_pp": -0.7797619047619109,
+      "macro_f1_pp": -0.7906598209312277,
+      "per_TX_pp": [
+        0.18928571428571406,
+        -3.9964285714285674,
+        1.6285714285714348,
+        -1.1178571428571482,
+        -1.1749999999999927,
+        -0.2071428571428613
+      ],
+      "weak_TX_mean_pp": -2.557142857142858,
+      "other_TX_mean_pp": 0.1089285714285737,
+      "worst_RX_pp": -1.8625000000000003,
+      "worst_day_pp": -0.9619047619047638
+    }
+  ],
+  "by_arm": {
+    "MEAN_WEAK_RX": {
+      "paired_summary": {
+        "accuracy_pp": {
+          "n": 1,
+          "mean": -0.8404761904761915,
+          "sample_SD": null
+        },
+        "macro_f1_pp": {
+          "n": 1,
+          "mean": -0.873583495748409,
+          "sample_SD": null
+        },
+        "weak_TX_mean_pp": {
+          "n": 1,
+          "mean": -2.7803571428571425,
+          "sample_SD": null
+        },
+        "other_TX_mean_pp": {
+          "n": 1,
+          "mean": 0.12946428571428414,
+          "sample_SD": null
+        },
+        "worst_RX_pp": {
+          "n": 1,
+          "mean": -1.433333333333331,
+          "sample_SD": null
+        },
+        "worst_day_pp": {
+          "n": 1,
+          "mean": -0.735714285714284,
+          "sample_SD": null
+        }
+      },
+      "positive_seeds": {
+        "overall": 0,
+        "weak": 0
+      }
+    },
+    "TAIL_WEAK_RX": {
+      "paired_summary": {
+        "accuracy_pp": {
+          "n": 1,
+          "mean": -0.7797619047619109,
+          "sample_SD": null
+        },
+        "macro_f1_pp": {
+          "n": 1,
+          "mean": -0.7906598209312277,
+          "sample_SD": null
+        },
+        "weak_TX_mean_pp": {
+          "n": 1,
+          "mean": -2.557142857142858,
+          "sample_SD": null
+        },
+        "other_TX_mean_pp": {
+          "n": 1,
+          "mean": 0.1089285714285737,
+          "sample_SD": null
+        },
+        "worst_RX_pp": {
+          "n": 1,
+          "mean": -1.8625000000000003,
+          "sample_SD": null
+        },
+        "worst_day_pp": {
+          "n": 1,
+          "mean": -0.9619047619047638,
+          "sample_SD": null
+        }
+      },
+      "positive_seeds": {
+        "overall": 0,
+        "weak": 0
+      }
+    }
+  },
+  "tail_minus_mean": [
+    {
+      "model_seed": 2026092701,
+      "accuracy_pp": 0.060714285714280614,
+      "macro_f1_pp": 0.08292367481718133,
+      "weak_TX_mean_pp": 0.2232142857142847,
+      "other_TX_mean_pp": -0.020535714285710438,
+      "worst_RX_pp": -0.42916666666666936,
+      "worst_day_pp": -0.22619047619047983,
+      "per_TX_pp": [
+        -0.2178571428571363,
+        0.3964285714285749,
+        1.0321428571428592,
+        0.04999999999999449,
+        -0.8892857142857036,
+        -0.007142857142861114
+      ]
+    }
+  ],
+  "cost": [
+    {
+      "row_id": "MEAN_WEAK_RX-s2026092701",
+      "epochs": 50,
+      "optimizer_steps": 11100,
+      "source_seconds": 4229.2151436805725,
+      "prediction_seconds": 29.249494199990295,
+      "peak_cuda_MiB": 1972.05126953125,
+      "source_packet_reads": {
+        "L_s": 1420800,
+        "U_s": 963900,
+        "V": 2754000
+      },
+      "extra_L_feature_forwards": 0,
+      "extra_model_forwards": 0,
+      "selected_weak_anchor_objectives": 852234,
+      "available_weak_anchor_objectives": 852234,
+      "weak_RX_cell_coverage": 0.9871571571571571,
+      "eligible_fraction": 1.0,
+      "satellite_examples": 0,
+      "head_fit_updates": 0,
+      "BASE_training_reused": true
+    },
+    {
+      "row_id": "TAIL_WEAK_RX-s2026092701",
+      "epochs": 50,
+      "optimizer_steps": 11100,
+      "source_seconds": 4235.197541236877,
+      "prediction_seconds": 29.31877730000997,
+      "peak_cuda_MiB": 1972.05126953125,
+      "source_packet_reads": {
+        "L_s": 1420800,
+        "U_s": 963900,
+        "V": 2754000
+      },
+      "extra_L_feature_forwards": 0,
+      "extra_model_forwards": 0,
+      "selected_weak_anchor_objectives": 476122,
+      "available_weak_anchor_objectives": 852234,
+      "weak_RX_cell_coverage": 0.9871571571571571,
+      "eligible_fraction": 1.0,
+      "satellite_examples": 0,
+      "head_fit_updates": 0,
+      "BASE_training_reused": true
+    }
+  ],
+  "source_expansion": {
+    "status": "SOURCE_EXPANSION_FIXED",
+    "arms": {
+      "MEAN_WEAK_RX": {
+        "PASS": false,
+        "source_classification_health": true,
+        "overall_pp": -0.02592592592592924,
+        "worst_RX_pp": -0.2962962962962945,
+        "per_TX_pp": [
+          -0.0888888888888939,
+          0.0,
+          -0.04444444444444695,
+          0.04444444444444695,
+          -0.022222222222223476,
+          -0.04444444444444695
+        ],
+        "weak_geometry": [
+          {
+            "TX": "14-7",
+            "out_RX_margin_q10_gain": -0.005614473389500288,
+            "RX_spread_to_gap_ratio": 1.2492019942134849,
+            "PASS": false
+          },
+          {
+            "TX": "20-19",
+            "out_RX_margin_q10_gain": -0.006684752252000827,
+            "RX_spread_to_gap_ratio": 1.211208135680093,
+            "PASS": false
+          }
+        ]
+      },
+      "TAIL_WEAK_RX": {
+        "PASS": false,
+        "source_classification_health": true,
+        "overall_pp": -0.0888888888888939,
+        "worst_RX_pp": -0.4629629629629539,
+        "per_TX_pp": [
+          -0.20000000000000018,
+          -0.06666666666667043,
+          0.022222222222223476,
+          -0.31111111111110645,
+          0.04444444444444695,
+          -0.022222222222223476
+        ],
+        "weak_geometry": [
+          {
+            "TX": "14-7",
+            "out_RX_margin_q10_gain": -0.00813019937196784,
+            "RX_spread_to_gap_ratio": 1.293001424209483,
+            "PASS": false
+          },
+          {
+            "TX": "20-19",
+            "out_RX_margin_q10_gain": -0.004466736617779133,
+            "RX_spread_to_gap_ratio": 1.172847036487713,
+            "PASS": false
+          }
+        ]
+      }
+    },
+    "expand_arms": [],
+    "target_access": false,
+    "criterion": "Each weakTX outRX feature-margin q10 >= same-seed BASE+.002; eligible feature calls>=99%; weakTX/RX cell coverage>=95%; RXspread/interclassgap <=1.05x BASE; no degenerate features; defaulthead overall>=-.2pp,worstRX>=-.5pp,anyTX>=-1pp. Source only, no retrofit of prior rejected candidates."
+  },
+  "head_fit_updates": 0,
+  "target_feedback": false,
+  "truth_last": true,
+  "limitation": "Exposed exploratory Phase1 clean benchmark. Source promotion fixed before new candidate target. Default head joint throughout. No target tuning, independent blind-test, Phase2, or satellite claim."
+}
