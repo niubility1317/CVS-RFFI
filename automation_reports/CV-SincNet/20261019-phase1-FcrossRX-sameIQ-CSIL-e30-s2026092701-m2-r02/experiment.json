@@ -9,9 +9,12 @@
   "aliases": [],
   "tags": [
     "same-IQ",
-    "frozen-external-head",
-    "source-only",
-    "cross-model-complement"
+    "CSIL-transfer",
+    "default-head",
+    "practical",
+    "matched-CE",
+    "E30",
+    "truth-last"
   ],
   "comparison_group_id": "original-P43-ownAs20plus10-nativeU-defaulthead",
   "parent_run_ids": [
@@ -22,7 +25,7 @@
   "replaces_run_id": "20261019-phase1-FcrossRX-sameIQ-CSIL-e30-s2026092701-m2-r01",
   "authorization": "User20261019: continue target development using a route distinct from the two referenced chats; attached report proposes same-IQ cross-model transfer.",
   "code": {
-    "commit": "release_commit.txt records repaired actual code",
+    "commit": "b3d659854894f400f8cf9b96ac47a8d67f0ccb72",
     "checkout": "E:\\type10-7\\code\\worktrees\\phase1_sameiq_experts_20261019",
     "environment": "existing N607 CVS-RFFI Python3.10/Torch2.1/NumPy2.2; FP32/TF32off/CPU2",
     "cwd": "PROJECT/releases/cvs_FcrossRX_sameIQ_CSIL_E30_20261019_r02"
@@ -102,7 +105,8 @@
       "-u",
       "experiments/cvs_sameiq_distill30/runner.py"
     ],
-    "stop_rule": "Protocol/provenance/numerical/unlaunchable/output/prediction/truth-order technical failures only; preserve failed artifacts; no performance stop/retry"
+    "stop_rule": "Protocol/provenance/numerical/unlaunchable/output/prediction/truth-order technical failures only; preserve failed artifacts; no performance stop/retry",
+    "launch_readback_ref": "local_artifacts/F_sameIQ_distill_E30_20261019/latest.json"
   },
   "expected_artifacts": [
     "eachrow/source/final_ssdg.pth and ownEMA",
@@ -152,7 +156,7 @@
         "support": null,
         "evaluation": 202610172402
       },
-      "seed_notes": "Model/split unchanged; source data physical roles fixed; channel seeds exact in config channel.seeds, U and ordinary streams inherited; evaluation uses fixed existing formal received arrays, panel draws0/1; support not applicable.",
+      "seed_notes": "model2026092701; split/data392005; training channel20261016421, validation20261016422, receiver20261016423; source panel selection202610172401, cached draw seed202610172402; official fixed received arrays reused; support not applicable. Native ordinary/U seeds inherited from original parent args.",
       "k": null,
       "scenario": [
         "clean",
@@ -164,7 +168,7 @@
         "practical_low_urban"
       ],
       "optimizer": "AdamW reset, inherited original Sinc Hz coordinate correction",
-      "lr": null,
+      "lr": 0.0002,
       "epochs": 10,
       "fl_rounds": null,
       "budget_ref": "parentE20/4440updates + localE10/2220updates;768studentL+64classTeacherNN/step; U567000student+567000EMA perrow",
@@ -190,7 +194,8 @@
         "source_matrix_decision.json",
         "automatic_summary.json",
         "complete.json"
-      ]
+      ],
+      "weight_decay": 0.0001
     },
     {
       "row_id": "D01-s2026092701",
@@ -207,7 +212,7 @@
         "support": null,
         "evaluation": 202610172402
       },
-      "seed_notes": "Model/split unchanged; source data physical roles fixed; channel seeds exact in config channel.seeds, U and ordinary streams inherited; evaluation uses fixed existing formal received arrays, panel draws0/1; support not applicable.",
+      "seed_notes": "model2026092701; split/data392005; training channel20261016421, validation20261016422, receiver20261016423; source panel selection202610172401, cached draw seed202610172402; official fixed received arrays reused; support not applicable. Native ordinary/U seeds inherited from original parent args.",
       "k": null,
       "scenario": [
         "clean",
@@ -219,7 +224,7 @@
         "practical_low_urban"
       ],
       "optimizer": "AdamW reset, inherited original Sinc Hz coordinate correction",
-      "lr": null,
+      "lr": 0.0002,
       "epochs": 10,
       "fl_rounds": null,
       "budget_ref": "parentE20/4440updates + localE10/2220updates;768studentL+64classTeacherNN/step; U567000student+567000EMA perrow",
@@ -245,7 +250,8 @@
         "source_matrix_decision.json",
         "automatic_summary.json",
         "complete.json"
-      ]
+      ],
+      "weight_decay": 0.0001
     }
   ],
   "notes": [

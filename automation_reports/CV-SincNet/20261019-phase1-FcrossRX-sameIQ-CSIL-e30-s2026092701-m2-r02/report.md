@@ -1,3 +1,5 @@
+当前状态：ANALYZED。两条E30和全部七环境独立评分、完整日志及图表已完成，固定源条件FAIL；详见 [final_analysis.md](final_analysis.md)。以下保留原预登记与发布记录。
+
 r02 技术恢复：仅补历史factory的完整仓库依赖路径；隔离回归与唯一问题定点复审PASS。原r01保留，无训练结果。原科学配方如下。
 
 # 同受损观测CSIL类别迁移：默认头CE匹配E30
@@ -48,3 +50,7 @@ D01额外加入 .25×6×mean64[teacherCorrectL×mean两学生pass KL(softmax(教
 N607普通账号；GPU按全owner≤2且free≥12GB分配，CPU2，FP32/TF32off。唯一owner=codex/root/sameIQ-CSIL；不可覆盖run/output root、命令和停止规则见登记。仅契约/来源/非有限/无法执行/预测闭合/错误truth连接/输出冲突等系统技术失败中止所属run，保留产物；低性能不停止，健康旧任务不干预。
 
 本地实际Torch检查PASS：12协议负例、KD完整批次公式和两pass梯度与直接计算一致；真实checkpoint/full-path smoke作为launcher首步，PASS后直接训练。一次P0/P1审查，单归档一次SHA对比、一次远端编译。REJECTED_EXTRA_GATE：额外设计审批、报告/成员hash、重复审查和不变数据重验。
+
+## 发布与实际执行
+
+VERIFIED：代码b3d659854，远端branch OID与本地HEAD一致；单archive传输和compile通过。真实父模型/default head与冻结CSIL的首步及E30末步合成路径共2502NN、0更新/query通过。两行PID/CWD/argv、独立GPU占用、日志增长均已观察，进入累计E21。实际AdamW初始lr=.0002、weight_decay=.0001，cos10/reset，运行中的配置不改动。只读检查与私有原始记录位于execution.launch_readback_ref，未写入Git。

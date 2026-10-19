@@ -1,3 +1,5 @@
+当前状态：FAILED (0 training updates; preserved)。以下保留原预登记与实际结果记录。
+
 # 同受损观测CSIL类别迁移：默认头CE匹配E30
 
 - run_id：`20261019-phase1-FcrossRX-sameIQ-CSIL-e30-s2026092701-m2-r01`

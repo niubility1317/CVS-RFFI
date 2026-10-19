@@ -1,3 +1,5 @@
+当前状态：FAILED (0 training updates; preserved)。以下保留原预登记与实际结果记录。
+
 # 同一源域受损IQ：CSIL、MoPC-HR与当前PAMF的冻结互补检验
 
 - run_id：`20261019-diagnostic-FcrossRX-sameIQ-experts-s2026092701-m2-r01`
