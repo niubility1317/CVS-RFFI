@@ -1,0 +1,33 @@
+{
+  "status": "VERIFIED_WAITING_FOR_GPU",
+  "code_commit": "ccd7a6afc5a0fd27ebf3498ff4f087c81290619d",
+  "archive_transfer": "VERIFIED_SINGLE_ARCHIVE_SHA_COMPARISON",
+  "remote_compile": "PASS",
+  "real_checkpoint_smoke": {
+    "status": "PASS",
+    "model_seeds": [
+      2026092702,
+      2026092703
+    ],
+    "NN": 4,
+    "source_IQ": 0,
+    "target_query": false,
+    "optimizer_updates": 0
+  },
+  "dispatcher": {
+    "PID_CWD_cmdline": "VERIFIED",
+    "healthy": true,
+    "training_workers_started": 0
+  },
+  "resources": {
+    "GPU_ids": [
+      2,
+      3
+    ],
+    "total_GPU_workers_per_card": 1,
+    "other_owner_processes_preserved": true
+  },
+  "prediction_scope": [
+    "clean"
+  ]
+}

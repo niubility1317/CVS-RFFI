@@ -19,3 +19,7 @@ CE_HALF 保持原 .5 satellite CE，两次 logits 分别计算后平均，原全
 35项新接线协议负例检查PASS，复制目标函数的值和梯度与原CE_HALF逐值相同。唯一独立P0/P1只读审查PASS；无多余审批或重复审查。direct ordinary N607预检已通过；一次release归档传输比较、远端编译、真实父smoke、PID/CWD/argv/GPU/日志增长将在发布时记录。
 
 报告三个seed的clean accuracy／macroF1／最差RX、均值±样本SD、对对应As30和NoAs30的配对差，完整解析两条E10日志并记录实际成本。全部固定seed均保留。用户是在看到seed01 clean85.808333%后指定该复现；不能宣称新的独立盲测，不用新分数修改配方或选择性重跑。精确矩阵及artifact路径由experiment.json唯一维护。
+
+发布已 VERIFIED：实际代码 ccd7a6afc5a0fd27ebf3498ff4f087c81290619d 已推送并独立比较远端OID一致；单次归档传输比较与远端编译通过，两个真实父默认头smoke共4NN／0IQ／0更新通过。调度器PID/CWD/argv独立核实，当前等待GPU2/3空位，尚未开始新增训练。
+
+资源说明：GPU2/3仍被其他owner占用。已向用户请求仅本次允许使用空闲GPU4/6；未收到明确回复前保持原2/3队列，不改GPU或训练配方。

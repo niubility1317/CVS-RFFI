@@ -99,7 +99,9 @@
     "local_artifact_root": "local_artifacts/ce_half_three_seeds_20261019",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_ce_half_replicate/runner.py",
     "stop_rule": "Only input/provenance/protocol/nonfinite/output collision/unlaunchable technical failure; preserve all outputs, finish healthy active rows, do not launch pending rows after technical failure; no automatic retry or scientific early stop.",
-    "status": "LOCAL_VERIFIED"
+    "status": "WAITING_FOR_GPU",
+    "code_commit": "ccd7a6afc5a0fd27ebf3498ff4f087c81290619d",
+    "real_checkpoint_smoke": "PASS_4NN_0QUERY_0UPDATES"
   },
   "expected_artifacts": [
     "dispatcher.json",
