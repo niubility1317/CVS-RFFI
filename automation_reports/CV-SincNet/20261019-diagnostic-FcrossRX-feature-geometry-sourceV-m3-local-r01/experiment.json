@@ -1,0 +1,281 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01",
+  "group_id": "F-crossRX-source-feature-geometry",
+  "display_name": "本机原F跨RX50：三模型源V类内类间与跨RX特征几何诊断",
+  "description": "Read-only source-V analysis of all3 fixed local BASE final50 students using deployed joint160. No training, head fitting, prototype decisions, target or U-truth access.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "F source feature geometry"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "sourceV",
+    "feature_geometry",
+    "no_training",
+    "no_target",
+    "clean_only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User active worse-transmitter feature-learning goal on original F+CROSS_RX50; source validation analysis authorized; local/no satellite/clean only.",
+  "code": {
+    "commit": "Git HEAD stored in release_commit.txt",
+    "checkout": "codex/phase1-rdrop-combinations-20261015",
+    "environment": "Verified local ssr-gpu Python3.11 / torch2.10+cu128 / FULL_FP32_NO_TF32 / threads2",
+    "cwd": "LOCAL_RELEASE/cvs_F_source_geometry50_local_20261019_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing validated local exact native role cache",
+    "representation": "raw received residual/post_sync/noeq IQ; fixed256 packet; deployed160-dimensional id_feat_joint",
+    "contract_ref": "LOCAL_DATA/source/source_contract.json",
+    "physical_ids_ref": "LOCAL_DATA/source/source_contract.json#role_ids",
+    "label_map_ref": "LOCAL_DATA/source/source_contract.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "LOCAL_DATA/source/source_contract.json",
+    "roles": {
+      "L_s": "6300 existing source training role; NOT READ",
+      "U_s": "56700 hidden TX; NOT READ",
+      "V": "27000 labeled source validation samples, frozen feature analysis only"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": "existing VALIDATED_ONCE local manifest; unchanged",
+    "split_id": "392005 exact original roles; unchanged",
+    "validation_ref": "LOCAL_DATA/source_cache/manifest.json",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Exploratory frozen source feature geometry only; no target performance or Phase2 claim"
+  },
+  "checkpoint": {
+    "initialization": "No training. All3 local fixed BASE final50 students. EMA states not executed or updated.",
+    "sources": [
+      "LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01/BASE-s2026092701/source/final_ssdg.pth",
+      "LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01/BASE-s2026092702/source/final_ssdg.pth",
+      "LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01/BASE-s2026092703/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Exact original training release cvs_f_crossrx50_local.provenance.source_proof and validate_checkpoint",
+    "provenance_verdict": "Existing scratch ancestry and source roles verified; no new training initialization",
+    "selection_rule": "All3 BASE seeds fixed in prior training preregistration; final50 no target-based checkpoint/model selection",
+    "reference_code_commit": "31467086c3ced30237f3ac86e91eae68645425d7"
+  },
+  "execution": {
+    "host": "Local Windows workstation, ordinary account",
+    "launch_owner": "codex/root/F-source-geometry-20261019",
+    "gpu_policy": "Physical GPU0, one sequential diagnostic worker, max3 GPU source/predict workers across all owners and freeRAM>=4.5GiB; preserve healthy tasks",
+    "remote_run_root": "LOCAL_RUNS/20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01",
+    "remote_log_root": "LOCAL_RELEASE/cvs_F_source_geometry50_local_20261019_r01/worker.stdout.log",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01",
+    "launch_command": "LOCAL_PYTHON -X utf8 -u experiments/cvs_f_source_geometry50/runner.py --profile LOCAL_PROFILE/profile.json --source-run LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --source-release LOCAL_RELEASE/cvs_F_crossRX50_weakTX_local_20261019_r01 --output LOCAL_RUNS/20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01 --commit RELEASE_COMMIT",
+    "stop_rule": "Wrong source role/reference/checkpoint, nonfinite/shape, any model state change or output collision: fail and preserve outputs; no performance retries, no other process termination."
+  },
+  "expected_artifacts": [
+    "release_commit.txt",
+    "execution.json",
+    "BASE-s*/smoke.json",
+    "BASE-s*/source_geometry.json",
+    "BASE-s*/source_features.npz (private, not Git)",
+    "result.json",
+    "completion.json",
+    "postlaunch.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "withinTX angular dispersion",
+      "crossRX and crossday centroid angular spread",
+      "closest otherTX centroid cosine",
+      "outRX labeled geometric margin q10/mean",
+      "RX spread / interTX gap",
+      "model seed mean and sampleSD",
+      "no optimizer/head/model updates"
+    ],
+    "dimensions": [
+      "3 model seeds",
+      "6 TX",
+      "5 sourceRX",
+      "3 source days",
+      "27000 unique V samples per model"
+    ],
+    "prediction_ref": "81000 frozen sourceV feature forwards plus3x2 zero-input checkpoint smoke; no class predictions from centroids",
+    "scorer_ref": "Legal sourceV labels for descriptive means; no target scorer/truth access"
+  },
+  "rows": [
+    {
+      "row_id": "BASE-s2026092701",
+      "method": "Frozen original F+CROSS_RX50 / SIG_TIME_X3 / CENTER_UNITS / RDrop1 / default head",
+      "purpose": "Source feature geometry without fitted head or prototype classifier",
+      "config_ref": "experiment.json#rows/BASE-s2026092701",
+      "config": {
+        "model_seed": 2026092701,
+        "sourceV_only": true,
+        "feature_key": "id_feat_joint",
+        "dimensions": 160,
+        "head_fit_updates": 0,
+        "optimizer_updates": 0,
+        "target_reads": 0
+      },
+      "resolved_config_ref": "LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01/BASE-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "evaluation_role": "V",
+        "augmentation": "none"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Inherited fixed training model/data seeds; deterministic unaugmented no-update analysis",
+      "k": null,
+      "scenario": "sourceV_clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "27000 sourceV feature forwards +2 synthetic smoke,0updates",
+      "output_root": "LOCAL_RUNS/20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01/BASE-s2026092701",
+      "log_path": "LOCAL_RELEASE/cvs_F_source_geometry50_local_20261019_r01/worker.stdout.log",
+      "command": "LOCAL_PYTHON -X utf8 -u experiments/cvs_f_source_geometry50/runner.py --profile LOCAL_PROFILE/profile.json --source-run LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --source-release LOCAL_RELEASE/cvs_F_crossRX50_weakTX_local_20261019_r01 --output LOCAL_RUNS/20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01 --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "release_commit.txt",
+        "execution.json",
+        "BASE-s*/smoke.json",
+        "BASE-s*/source_geometry.json",
+        "BASE-s*/source_features.npz (private, not Git)",
+        "result.json",
+        "completion.json",
+        "postlaunch.json"
+      ]
+    },
+    {
+      "row_id": "BASE-s2026092702",
+      "method": "Frozen original F+CROSS_RX50 / SIG_TIME_X3 / CENTER_UNITS / RDrop1 / default head",
+      "purpose": "Source feature geometry without fitted head or prototype classifier",
+      "config_ref": "experiment.json#rows/BASE-s2026092702",
+      "config": {
+        "model_seed": 2026092702,
+        "sourceV_only": true,
+        "feature_key": "id_feat_joint",
+        "dimensions": 160,
+        "head_fit_updates": 0,
+        "optimizer_updates": 0,
+        "target_reads": 0
+      },
+      "resolved_config_ref": "LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01/BASE-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "evaluation_role": "V",
+        "augmentation": "none"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Inherited fixed training model/data seeds; deterministic unaugmented no-update analysis",
+      "k": null,
+      "scenario": "sourceV_clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "27000 sourceV feature forwards +2 synthetic smoke,0updates",
+      "output_root": "LOCAL_RUNS/20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01/BASE-s2026092702",
+      "log_path": "LOCAL_RELEASE/cvs_F_source_geometry50_local_20261019_r01/worker.stdout.log",
+      "command": "LOCAL_PYTHON -X utf8 -u experiments/cvs_f_source_geometry50/runner.py --profile LOCAL_PROFILE/profile.json --source-run LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --source-release LOCAL_RELEASE/cvs_F_crossRX50_weakTX_local_20261019_r01 --output LOCAL_RUNS/20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01 --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "release_commit.txt",
+        "execution.json",
+        "BASE-s*/smoke.json",
+        "BASE-s*/source_geometry.json",
+        "BASE-s*/source_features.npz (private, not Git)",
+        "result.json",
+        "completion.json",
+        "postlaunch.json"
+      ]
+    },
+    {
+      "row_id": "BASE-s2026092703",
+      "method": "Frozen original F+CROSS_RX50 / SIG_TIME_X3 / CENTER_UNITS / RDrop1 / default head",
+      "purpose": "Source feature geometry without fitted head or prototype classifier",
+      "config_ref": "experiment.json#rows/BASE-s2026092703",
+      "config": {
+        "model_seed": 2026092703,
+        "sourceV_only": true,
+        "feature_key": "id_feat_joint",
+        "dimensions": 160,
+        "head_fit_updates": 0,
+        "optimizer_updates": 0,
+        "target_reads": 0
+      },
+      "resolved_config_ref": "LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01/BASE-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "evaluation_role": "V",
+        "augmentation": "none"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Inherited fixed training model/data seeds; deterministic unaugmented no-update analysis",
+      "k": null,
+      "scenario": "sourceV_clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "27000 sourceV feature forwards +2 synthetic smoke,0updates",
+      "output_root": "LOCAL_RUNS/20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01/BASE-s2026092703",
+      "log_path": "LOCAL_RELEASE/cvs_F_source_geometry50_local_20261019_r01/worker.stdout.log",
+      "command": "LOCAL_PYTHON -X utf8 -u experiments/cvs_f_source_geometry50/runner.py --profile LOCAL_PROFILE/profile.json --source-run LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --source-release LOCAL_RELEASE/cvs_F_crossRX50_weakTX_local_20261019_r01 --output LOCAL_RUNS/20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01 --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "release_commit.txt",
+        "execution.json",
+        "BASE-s*/smoke.json",
+        "BASE-s*/source_geometry.json",
+        "BASE-s*/source_features.npz (private, not Git)",
+        "result.json",
+        "completion.json",
+        "postlaunch.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Reference code commit31467086c3ced30237f3ac86e91eae68645425d7; diagnostic Git commit independently recorded at release.",
+    "Some frozen target results are already exposed. This is exploratory source-only diagnosis of all prior-fixed BASE seeds, no target-dependent class ranking or new blind-test claim.",
+    "All class metrics computed symmetrically; no class-specific branch, learned projection, head fitting or centroid class decisions. V never updates model/EMA/buffers.",
+    "Private feature arrays stay local. Git stores numeric aggregate metrics and code/config/report only.",
+    "No satellite augmentation/evaluation and no target input; current training and its frozen expansion continue unchanged."
+  ],
+  "registered_at": "2026-10-19T14:39:02+00:00"
+}
