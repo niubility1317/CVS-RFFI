@@ -1,0 +1,59 @@
+{
+  "status": "VERIFIED_ACTIVE",
+  "run_id": "20261020-phase1-FcrossRX-weakTX-blockPC-e50-clean-local-m2-r01",
+  "code_config_commit": "116664b439eb702898ae4e019ba4159f19e4ced3",
+  "rows": [
+    {
+      "row": "NORM_L_ID-s2026092701",
+      "records_parsed": 1184,
+      "first_scheduled_step": 1112,
+      "first_strength": 0.1,
+      "actual_scheduled_events": 19,
+      "eligible_calls": 19,
+      "changed_steps": 19,
+      "extra_feature_VJP_calls": 57,
+      "maximum_norm_match_error": 1.067325568312361e-9,
+      "nonzero_modules_at_first": 23,
+      "extra_model_forwards": 0,
+      "head_direct_aux_gradient": 0,
+      "satellite_active": 0,
+      "U_truth_available": 0
+    },
+    {
+      "row": "BLOCK_PAIR-s2026092701",
+      "records_parsed": 1178,
+      "first_scheduled_step": 1112,
+      "first_strength": 0.1,
+      "actual_scheduled_events": 17,
+      "eligible_calls": 17,
+      "changed_steps": 17,
+      "extra_feature_VJP_calls": 51,
+      "maximum_norm_match_error": 6.915059970301721e-10,
+      "nonzero_modules_at_first": 26,
+      "extra_model_forwards": 0,
+      "head_direct_aux_gradient": 0,
+      "satellite_active": 0,
+      "U_truth_available": 0
+    }
+  ],
+  "actual_worker_state": [
+    {
+      "row": "NORM_L_ID-s2026092701",
+      "role": "source",
+      "live": true
+    },
+    {
+      "row": "BLOCK_PAIR-s2026092701",
+      "role": "source",
+      "live": true
+    }
+  ],
+  "physical_GPU": 0,
+  "test_views": [
+    "clean"
+  ],
+  "satellite_training": false,
+  "new_target_predictions_or_scores": 0,
+  "performance_result": null,
+  "remaining": "Complete original50 source, fixed source expansion, frozen clean168000 prediction, independent truthlast score and same-row report."
+}
