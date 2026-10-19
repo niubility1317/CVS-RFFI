@@ -29,3 +29,6 @@
 预期每行L训练前向1136640包、As568320包、外部教师568320包、原U学生396900包/ownEMA4440更新；源面板12600包、正式预测1176002包另计，实际耗时和NN在完成后报告。每行原生checkpoint无query smoke是首步，PASS后直接训练，无额外token/批准。精确row/config/seed与artifact路径由experiment.json维护。
 
 已通过：公式与logit梯度、全部正CE和平均权重1、教师脱图、TX×RX数量保持、全0/全1回退、类别重标记与全局RNG不变、5协议负测；两实际F同初态、原native L hook、置换mask实际变化30/原mask变化0、Sinc/签名/时/频/PA/默认头均非零梯度、joint160；这些本地测试0真实sourceIQ/0真实教师CP/0target/0优化器更新。一次独立P0/P1审查PASS，无缺陷。代码/config身份在实际commit后写入登记；无额外设计SHA、签名或审批门槛。
+
+
+启动状态：RUNNING / VERIFIED。实际code/config commit `b2e372613a4b48f3003cbd3e8e70e28705f6a90e`；release commit `52bab9e8b6410ee480751d37d634a8af7b3d6bf3` 已push并独立核对remoteOID等于localHEAD。一次archive传输SHA、远端compile/checks PASS。SHUFFLED PID2143863/GPU0，CAPABILITY PID2143942/GPU1；独立核对实际PID/CWD/argv/CUDA/900722参数及原生step日志增长，两GPU当时各1个总进程，未触碰其他owner。后续完成实际累计E20、源资格固定、七视图预测与独立truth-last评分；当前没有新性能结果。
