@@ -1,6 +1,6 @@
 # R22：固定解析观测量的配对恢复约束
 
-状态：LOCAL_VERIFIED，已实现并完成本地检查，尚未发布。持续目标不变：原冻结 F50 seed2026092701/defaulthead 下，正式 low urban≥70%，其他五个受损场景分别距原始 raw clean≤5 pp（当前原 clean84.6761904762%，对应79.6761904762%）；restored clean 损伤单列。一份恢复 IQ 进入原 PAMF，FFT/PA/统计/时间分支继续从该 IQ 计算。
+状态：RUNNING，真实checkpoint入口、源训练尺度和运行后证据已核实。持续目标不变：原冻结 F50 seed2026092701/defaulthead 下，正式 low urban≥70%，其他五个受损场景分别距原始 raw clean≤5 pp（当前原 clean84.6761904762%，对应79.6761904762%）；restored clean 损伤单列。一份恢复 IQ 进入原 PAMF，FFT/PA/统计/时间分支继续从该 IQ 计算。
 
 假设只依据源证据：R15 的通用 log-power 辅助损失没有优于 R16；R17 的三步不共享先验优于这两个源参考；R19 的源 low/mid urban 为88.2778%/92.5556%。R20 同批源诊断显示真值路径与自由运行差距；R21 直接终点目标相对路径目标使源 low/mid 增加7.0556/3.9444 pp、mean6 NMSE下降19.5375%，但仍未超过 R17/R19，且训练调用量更高。这些事实不支持继续只根据速度路径损失选网络。
 
@@ -36,11 +36,11 @@ N607普通账户、新不可覆盖root/release、原R21所属进程全部退出�
 |A22-02|匹配完整初值/部署、仅改变配对损失|verified：本地聚焦检查|
 |A22-03|全LU、训练尺度权限、0TX/F/target、固定预算|pending|
 |A22-04|五源参考及固定排序、选定行隔离|verified：本地聚焦检查|
-|A22-05|真实checkpoint入口、发布、资源与负测|pending|
+|A22-05|真实checkpoint入口、发布、资源与负测|verified：真实入口与运行后证据|
 |A22-06|完整源七视图、梯度和成本证据|pending|
 |A22-07|条件正式七视图、配对身份及Git交付|pending|
 |A22-08|多seed、独立物理族与逐细节身份归属证明|deferred|
 
-当前3 verified、4 pending、1 deferred。36项聚焦检查、compile/help以及一次独立P0/P1 PASS。实现包含三步共同初值、旧schema隔离、训练尺度权限、实际目标梯度、五源参考及源/正式全七视图路由；不代表源资格或正式目标已达成。真实checkpoint入口及实际N607发布仍pending，持续目标保持active。
+当前4 verified、3 pending、1 deferred。36项聚焦检查、compile/help以及一次独立P0/P1 PASS。实现包含三步共同初值、旧schema隔离、训练尺度权限、实际目标梯度、五源参考及源/正式全七视图路由；不代表源资格或正式目标已达成。真实checkpoint入口及实际N607发布仍pending，持续目标保持active。
 
 非阻断记录：REJECTED_EXTRA_GATE——通用TDD技能的全仓库测试要求由项目明确的聚焦负测协议覆盖，未新增全面测试门槛。R12模块、原测试与历史产物保持原样；新模块和测试独立命名。
