@@ -15,10 +15,12 @@ U-Net IQ-only 为唯一主候选，TCN IQ-only 为源机制对照，不能因结
 |ID|来源|要求|目标文件|状态|验证|说明|
 |---|---|---|---|---|---|---|
 |A16-01|R15源损失/身份矛盾|IQ-only与FFT配对；不计算训练FFT|training.py/design.py|verified|实际IQ损失梯度/禁FFT及训练注入接口检查通过|不提前归因|
-|A16-02|无监督/来源|全L/U、0TX/F/target训练、只继承冻结R07|runtime.py/shared training|pending|来源负测、实际曝光日志|不是无clean配对学习|
-|A16-03|配对公平|同结构初始化全状态/顺序/预算与R15一致|controller.py|pending|实际epoch0逐值比较、20/4940日志|复用对照不新增预算|
+|A16-02|无监督/来源|全L/U、0TX/F/target训练、只继承冻结R07|runtime.py/shared training|verified|实际两行20/4940、L126000/U1134000曝光、0TX/F/target/冻结父更新|不是无clean配对学习|
+|A16-03|配对公平|同结构初始化全状态/顺序/预算与R15一致|controller.py|verified|N607实际R15完整epoch0逐值一致、配置同顺序和预算、完整日志|复用对照不新增预算|
 |A16-04|选择权限|固定U-Net主候选及双护栏，TCN不可救跑|evaluation.py|verified|source角色/最差TX/非法target及旧完整护栏负测通过|V选择标签单独披露|
-|A16-05|冻结F与正式对照|新IQ和旧FFT不同schema正确加载；七预测后truth|evaluation.py/runner.py|implemented|两loader全七视图/原F版本计数接口通过，真实父+F smoke为启动第一步|默认头不拟合|
-|A16-06|执行保护|单owner、共享容量、不可覆盖、N607发布|controller.py/runner.py|implemented|20项聚焦检查、compile/help、一次P0P1无阻断、N607 preflight通过，待poststate|无额外gate|
-|A16-07|完整证据|三郊区三urban/clean、TX/RX/day/损坏/成本|run报告/汇总|pending|完整40epoch和条件正式结果|不以source替代正式70/5|
+|A16-05|冻结F与正式对照|新IQ和旧FFT不同schema正确加载；七预测后truth|evaluation.py/runner.py|verified|两loader全七视图接口；实际真实父/新checkpoint/原F smoke通过；源七预测后评分，未过门槛故0target|默认头不拟合|
+|A16-06|执行保护|单owner、共享容量、不可覆盖、N607发布|controller.py/runner.py|verified|20tests/一次P0P1/N607发布与GPU0/1 PID/CWD/参数/loggrowth核实，全自然退出|无额外gate|
+|A16-07|完整证据|三郊区三urban/clean、TX/RX/day/损坏/成本|run报告/汇总|verified|新增40+配对40轮全日志、源七视图分层；0target，正式70/5仍未达成|不以source替代正式70/5|
 |A16-08|外部有效性|多seed/独立物理族/逐细节真实|后续确认|deferred|单seed首轮证伪，候选通过再扩展|完整持续目标不缩减|
+
+实际结论：SOURCE_NOT_QUALIFIED。源低urban U-Net FFT/IQ与TCN FFT/IQ为 82.5000% / 84.3889% / 78.4444% / 82.3333%。[完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16/report.md)。完整持续目标保持active。

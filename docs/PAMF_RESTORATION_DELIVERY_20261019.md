@@ -127,3 +127,6 @@ R12 参数无关 PAMF 解析视图实验（同父权重两组新增 E20/4940、0
 
 
 R15 全分辨率 TCN 对照已完成：SOURCE_NOT_QUALIFIED。两行均 scratch prior20/4940、全L/U、0TX/F训练，只继承冻结R07 coarse/action。源低城区 native / 新U-Net / TCN 为 82.1667% / 82.5000% / 78.4444%；六场景平均 NMSE 为 0.02760034 / 0.02734310 / 0.02912038。未通过全部固定源条件，0target。[完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15/report.md)。最终70%/各场景距原始clean≤5pp目标保持，不把源成绩当目标成绩。
+
+
+R16 IQ-only严格配对消融完成：SOURCE_NOT_QUALIFIED。两新prior各20/4940、全L/U、0TX/F训练，实际每结构完整epoch0与R15一致，原FFT对照复用。源低urban U-Net FFT/IQ、TCN FFT/IQ为 82.5000% / 84.3889% / 78.4444% / 82.3333%。固定U-Net主候选未过源条件，0target，无改选TCN。[报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16/report.md)。70%/其余五场景距原始clean≤5pp目标保持，source不替代正式。
