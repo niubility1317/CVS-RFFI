@@ -95,7 +95,7 @@ IQ摘要/冻结F语义条件E10两臂现均已完成，方法commit `1c869980ae9
 - [一致伪身份与跨 RX 特征匹配实验](../../automation_reports/CV-SincNet/20261020-phase1-restoration-consensus-identity-source-s2026092701-m2-r01/report.md)
 - [IQ摘要与冻结F语义条件的恢复结构对比](../../automation_reports/CV-SincNet/20261020-phase1-restoration-semantic-feedback-source-s2026092701-m2-r01/report.md)
 
-## 下一轮固定比较（配对模块已实现，尚未发布）
+## 当前固定比较（完整实现，尚未发布）
 
 最新IQ摘要/语义FiLM两臂的源low/mid均下降，未创建target目录；完整源负结果已保存，方法`1c869980ae9059e613ec29915d2b92db7444ed20`，结果`fb7c289d4186be9ba369c31f36232527858c9da7`。本轮不是因为波形界限而漏选识别候选：两臂波形与clean保持通过，但城市识别均不改善。
 
@@ -105,7 +105,9 @@ IQ摘要/冻结F语义条件E10两臂现均已完成，方法commit `1c869980ae9
 
 按用户“性能以目标测试集为准”的要求，新实验改用训练前预登记的固定目标对比矩阵：两行固定最终E10后均自动完整测试同一168000条clean＋六practical、三原默认头。source V用于诊断，不再用源涨分/NMSE资格筛出一行；这是新的固定比较，不追认任何旧失败，也不重测它们。每行全七视图预测固定后，独立CPU才接入对应truth；source/target CPU scorer串行。目标分数不改变任何行的配置、权重、预算、排序或选择性重跑，所有已登记行完整报告。
 
-实现时保持逐行训练结束自动测试：控制器确认该source worker实际退出后再在同一卡启动该row target，避免源worker残留CUDA上下文与新预测worker并占；其他健康行不等待整批、也不因已出分行而变化。原R03/F来源、VALIDATED_ONCE数据、不可覆盖输出、唯一owner和最小发布流程保持。配对/混合数学模块`experiments/pamf_style_generalization/mixing.py`已实现，12项聚焦单元检查通过，覆盖同伪身份保护、同/跨RX区分、相同有效曝光与系数、半批隔离、donor统计停止梯度、无合法配对时跳过、类别置换与非法输入。float32系数舍入为1的尝试单独记录并跳过无效混合；其余原基础记录不删减。这尚不是完整恢复器验证：模型层位接线、固定双行source→target控制器、独立审查、真实权重smoke和实际训练尚未执行。具体run ID、命令、资源、停止规则与产物在完整实现后的同一最小预登记固定。
+实现时保持逐行训练结束自动测试：控制器确认该source worker实际退出后再在同一卡启动该row target，避免源worker残留CUDA上下文与新预测worker并占；其他健康行不等待整批、也不因已出分行而变化。原R03/F来源、VALIDATED_ONCE数据、不可覆盖输出、唯一owner和最小发布流程保持。完整实现为`experiments/pamf_style_generalization`，run ID `20261020-phase1-restoration-style-generalization-source-s2026092701-m2-r01`。46项聚焦检查通过，涵盖同伪身份配对、同/跨RX匹配有效曝光和系数、半批隔离、统计停止梯度、真实浅/中层接线、推断原Core路径与逐帧独立、checkpoint预算/来源/权限拒绝、固定双行无源分数筛选以及全七视图/三F/有限IQ后truth。单次独立P0/P1审查发现进度文件独占创建会令第二次轮询失败，已修复并通过连续source→target→complete回归及该问题唯一一次定点复核；无未决P0/P1。
+
+新两臂均2140840参数，jointE10/2470、相同原posterior03三F基础损失、原数据顺序/路由，mixseed2026102051；float32系数舍入为1的尝试单独记录并跳过无效混合，所有原基础记录保留。一次N607普通账号预检VERIFIED，GPU4/5各24124MB空闲无PID，空间≥8GB，新run/release不存在，原R03与source-only伪身份来源核实，其他owner保持。固定GPU4同RX、GPU5跨RX，每卡一条本run训练/预测进程，CPU scorer全run最多一个。真实原R03/三F/source Ls四条、两RX的no-query smoke由launcher首步执行，PASS立即启动训练；实际训练/目标成绩尚未产生，用户目标保持未达成。完整命令、环境/CWD、矩阵、路径、资源、停止规则与产物见[本轮最小登记](../../automation_reports/CV-SincNet/20261020-phase1-restoration-style-generalization-source-s2026092701-m2-r01/report.md)。
 
 ## 固定边界
 
