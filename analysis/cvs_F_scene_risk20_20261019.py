@@ -99,7 +99,8 @@ def main(runtime,output,source_only=False):
  c=dict(project=rt['project'],run_id=RUN,source_only=source_only,reference_run='20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01',views=['clean','practical_high','practical_mid','practical_low_suburban','practical_high_urban','practical_mid_urban','practical_low_urban'])
  result=remote(SCRIPT.replace('CONFIG',repr(c)),rt);(out/('source_analysis.json' if source_only else 'complete_analysis.json')).write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
  if source_only:
-  print(json.dumps(dict(status=result['summary']['status'],source=result['summary']['source_decision'],all_training_replayed=True,formal_scores_read=False)));return
+  decision=result['summary']['source_decision'];brief={k:decision[k] for k in ('source_qualified','midlow_increment_pp','fullVclean_net_pp','decision')}
+  print(json.dumps(dict(status=result['summary']['status'],source=brief,all_training_replayed=True,formal_scores_read=False)));return
  render(result,out)
  print(json.dumps(dict(status=result['summary']['status'],source=result['summary']['source_decision']['decision'],differences=result['summary']['differences'],initial_equal=result['initial_all_four_exact_equal'],training_sequences_equal=result['training_sequences_all_four_equal'],physical_As_equal=result['physical_training_summary_equal_B1_BALANCED_RISK'])))
 def render(result,out):
