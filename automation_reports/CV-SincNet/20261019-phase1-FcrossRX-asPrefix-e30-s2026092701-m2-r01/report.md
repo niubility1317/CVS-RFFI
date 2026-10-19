@@ -30,3 +30,5 @@ N607非特权现有CVS-RFFI/FP32/CPU2，dispatcher容量锁每GPU最多2总进�
 停止仅限本run错误权限/父来源/头/预算/非有限数/输出碰撞/无法合法预测或系统技术失败；保留产物，不干预健康任务，不因低性能停止。一次本地focused negative tests、一个真实CP no-query smoke、唯一P0/P1运行缺陷审查；一次N607预检、archive SHA传输比较、remotecompile、PID/CWD/argv/GPU/log增长核验。Launcher先smoke，PASS立即训练，覆盖E21和末E30实际信道调用。
 
 本地mask首跑7PASS及1项test-only NumPy桥接错误；改项目既有frombuffer后3项相关检查PASS，保留原错误，不安装依赖。17协议负测试/18Python AST PASS，0NN/CP/IQ；实际smoke计划1540NN/0更新。预期全量epoch/step曲线、mask步骤、物理覆盖、实际modules/config/初始化/EMA/冻结/成本、源分层及固定NoAs clean正确集合保持率、七视图accuracy/F1/最差RX/错误修复与新增、PNG/PDF、负结果和缺项。IQ/CP/原始log/预测不进Git。单seed不能证明重复双提升。
+
+运行核实：code14dbca26d47fdbe180bc5983cea1ed336593c29e，dispatcher1918925，RANDOM1918961/GPU0，PREFIX1919043/GPU1；archive SHA与compile VERIFIED；真实smoke1540NN PASS；日志0→6682并持续增长。实际模块位于固定r02/experiments/adv3b02_xuc/code；质量适配/相位跟踪/IQ补偿/AGC开启，weight_decay=.0001/strong_noise_std=.015/feature_masks=false。源状态工具是独立的posthoc分析，不修改运行代码，不参与选择；实际运行后另记工具commit与状态。
