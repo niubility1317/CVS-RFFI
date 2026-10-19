@@ -1,8 +1,10 @@
 # R22：固定解析观测量的配对恢复约束
 
-状态：SOURCE_HYPOTHESIS_FIXED，尚未实现或发布。持续目标不变：原冻结 F50 seed2026092701/defaulthead 下，正式 low urban≥70%，其他五个受损场景分别距原始 raw clean≤5 pp（当前原 clean84.6761904762%，对应79.6761904762%）；restored clean 损伤单列。一份恢复 IQ 进入原 PAMF，FFT/PA/统计/时间分支继续从该 IQ 计算。
+状态：LOCAL_VERIFIED，已实现并完成本地检查，尚未发布。持续目标不变：原冻结 F50 seed2026092701/defaulthead 下，正式 low urban≥70%，其他五个受损场景分别距原始 raw clean≤5 pp（当前原 clean84.6761904762%，对应79.6761904762%）；restored clean 损伤单列。一份恢复 IQ 进入原 PAMF，FFT/PA/统计/时间分支继续从该 IQ 计算。
 
 假设只依据源证据：R15 的通用 log-power 辅助损失没有优于 R16；R17 的三步不共享先验优于这两个源参考；R19 的源 low/mid urban 为88.2778%/92.5556%。R20 同批源诊断显示真值路径与自由运行差距；R21 直接终点目标相对路径目标使源 low/mid 增加7.0556/3.9444 pp、mean6 NMSE下降19.5375%，但仍未超过 R17/R19，且训练调用量更高。这些事实不支持继续只根据速度路径损失选网络。
+
+历史 R12 已验证过四组解析损失，不能遗漏其负结果或把本轮写成首次尝试。R12 从单步 R10 prior续训、同时保留0.1 FFT项、使用1.0解析权重及63个每通道RMS尺度；解析源low urban82.9444%与同预算pair相同，mid urban89.9444%比pair低0.3889 pp，身份验收未通过。本轮在R17三步scratch结构内做新的匹配对照，按坐标源变化标准差缩放，并固定较小0.01权重、无FFT辅助项；不含PA polynomial lift或DAC统计。R22与R12之间改变了多个条件，不把两轮直接差值归因为单一因素。[R12完整记录](../automation_reports/CV-SincNet/20261019-phase1-restoration-analytic-views-selfsup-s2026092701-m2-r12/report.md)。代码与测试使用独立`pamf_analytic_unrolled_restore`名称，保留历史`pamf_analytic_restore`。
 
 已有 R14 oracle 诊断保持原结论：已知作用＋模拟器白输入方差代理的源平均 NMSE 相对 native下降15.4053%，low urban仅+0.5556 pp、mid urban−0.0556 pp，未支持优先提升作用估计。本轮不重复该矩阵，不把 oracle 分数当全模型理论上界。新假设是：IQ 平方误差之外，对原接收观测中的固定解析量施加配对约束可能保留更多差异；这些量含 RX/信道混杂，不能预先称为 TX 专属指纹。
 
@@ -12,7 +14,7 @@
 
 `iq_control` 只计算原逐包 IQ NMSE，不执行无用解析分支。`analytic_views` 计算同一 IQ NMSE＋0.01乘以一个解析描述量损失。描述量分为三个组，组内按坐标平均、组间等权：
 
-- 原 raw-FFT 镜像压缩量：64频带的正／负频功率log1p、对数功率比、非对称性，复用原数学定义及epsilon1e-8；不是重复加入与时域L2等价的完整复FFT L2。
+- 原 raw-FFT 镜像压缩量：32频带的正／负频功率log1p、对数功率比、非对称性，复用原lite_d实际配置、数学定义及epsilon1e-8；不是重复加入与时域L2等价的完整复FFT L2。源类通用默认64带不等于本F所用lite_d的32带。
 - 原谱PA统计与圆度：edge ratio、regrowth ratio、spectral kurtosis、abs(E[z²])/(E[abs(z)²]+epsilon)，不使用可学习Sinc或PA投影。
 - 公共L-STF解析参考响应：原29维响应去除显式CFO坐标27，保留28维；固定80:160窗口、20点周期、4周期均值、320延迟网格、12个占用tone、相同归一化与软界限。不使用训练好的参考投影或分类器。
 
@@ -30,13 +32,15 @@ N607普通账户、新不可覆盖root/release、原R21所属进程全部退出�
 
 |ID|要求|状态|
 |---|---|---|
-|A22-01|独立固定解析量与原数学一致，0训练好F信息|pending|
-|A22-02|匹配完整初值/部署、仅改变配对损失|pending|
+|A22-01|独立固定解析量与原数学一致，0训练好F信息|verified：本地聚焦检查|
+|A22-02|匹配完整初值/部署、仅改变配对损失|verified：本地聚焦检查|
 |A22-03|全LU、训练尺度权限、0TX/F/target、固定预算|pending|
-|A22-04|五源参考及固定排序、选定行隔离|pending|
+|A22-04|五源参考及固定排序、选定行隔离|verified：本地聚焦检查|
 |A22-05|真实checkpoint入口、发布、资源与负测|pending|
 |A22-06|完整源七视图、梯度和成本证据|pending|
 |A22-07|条件正式七视图、配对身份及Git交付|pending|
 |A22-08|多seed、独立物理族与逐细节身份归属证明|deferred|
 
-当前0 verified、7 pending、1 deferred。这是下一轮可证伪设计，不代表已实现或有效；持续目标保持active。
+当前3 verified、4 pending、1 deferred。36项聚焦检查、compile/help以及一次独立P0/P1 PASS。实现包含三步共同初值、旧schema隔离、训练尺度权限、实际目标梯度、五源参考及源/正式全七视图路由；不代表源资格或正式目标已达成。真实checkpoint入口及实际N607发布仍pending，持续目标保持active。
+
+非阻断记录：REJECTED_EXTRA_GATE——通用TDD技能的全仓库测试要求由项目明确的聚焦负测协议覆盖，未新增全面测试门槛。R12模块、原测试与历史产物保持原样；新模块和测试独立命名。
