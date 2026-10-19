@@ -1,0 +1,456 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01",
+  "group_id": "F-rawIQAdapter-E30-frozen-sourcefit-20261019",
+  "display_name": "纯 F raw IQ 适配器 E30 冻结源拟合诊断",
+  "description": "在同一合法L180/相同六视图比较新raw4模型与复用Tc/Ts，判断已见受损拟合、同L新信道和clean表征变化；0训练/target",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "rawIQ4321-sourcefit"
+  ],
+  "tags": [
+    "F",
+    "E30",
+    "diagnostic",
+    "source-only",
+    "raw-IQ-adapter",
+    "default-head",
+    "zero-update",
+    "single-seed"
+  ],
+  "comparison_group_id": "20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02",
+  "parent_run_ids": [
+    "20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01",
+    "20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户持续目标和adf双教师/非分类头设计授权必要源拟合诊断；raw4组E20+10已完成且源FAIL固定。本独立run只读FINAL30，训练/分类头拟合/EMA更新/V/target前向均为0，不救援已关闭配方。",
+  "code": {
+    "commit": null,
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 existing Python3.10/Torch2.1; CPU2 FP32/TF32off",
+    "cwd": "PROJECT/releases/cvs_F_rawIQAdapter_sourceFit_E30_20261019_r01"
+  },
+  "data": {
+    "dataset": "existing immutable ManySig equalized1",
+    "version": "same source contract reused",
+    "representation": "native source raw normalized eq1 IQ256 and unchanged full practical residual noEQ",
+    "contract_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json",
+    "physical_ids_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json#role_ids",
+    "label_map_ref": "design.CLASSES and native class_mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "protocol.CLASSES",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing VALIDATED_ONCE source handles reused. Fixed previous observedChannel180 metadata,90 TX/RX/day cells x2,first2bylegalLorder.No V NN.",
+    "support_query_ref": null,
+    "leo_config_ref": "immutable reference release existing Practical full physics,original TRAIN_SCENES three; no test IQ read"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none; no target IQ/truth/predictions read",
+    "external_method_exception": null,
+    "claim_scope": "Seen source L frozen readout;not unseen RX generalization,not model-seed replication or new training improvement"
+  },
+  "checkpoint": {
+    "initialization": "No training. Read four raw feature FINAL30 CPs via strict inherited pureF model;TC/TS frozen source predictions reused from old complete sourceFit,0NN;fixed TC head read from legalB0 parent state,0NN.",
+    "sources": [
+      {
+        "role": "student,ownEMA,cleanTeacher; no model forward in this diagnostic,old predictions reused",
+        "run_id": "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01",
+        "row": "B0-s2026092701",
+        "checkpoint": "PROJECT/runs/20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01/B0-s2026092701/source/final_ssdg.pth"
+      },
+      {
+        "role": "satelliteTeacher eval only;not inherited student; no model forward in this diagnostic,old predictions reused",
+        "run_id": "20260930-phase1-native-baselines-practical-manysig-m5-r01",
+        "row": "csil-s2026092701",
+        "checkpoint": "PROJECT/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092701/last.pt"
+      },
+      {
+        "role": "four current-IQ raw adapter FINAL30 readouts",
+        "run_id": "20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01",
+        "rows": [
+          "NOAS_ADAPTER",
+          "S1",
+          "S2",
+          "S3"
+        ],
+        "selection": "fixed FINAL30/ownseed inherited E20+10,not performance selected"
+      },
+      {
+        "role": "TC/TS frozen source predictions and metadata only",
+        "run_id": "20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01",
+        "rows": [
+          "TC",
+          "TS"
+        ],
+        "selection": "existing source-only full artifact reuse after same180ID/origin/channel namespace check;0newNN"
+      }
+    ],
+    "contract_check_ref": "raw model.own_model parent_payload strict214 states and legal data lineage;previous teacher_source_evidence reused;originalF/defaulthead unchanged",
+    "provenance_verdict": "Previously VERIFIED lineage,strict repeat check at load;no data revalidation",
+    "selection_rule": "Fixed modelseed2026092701/final20,final30,last200.180 IDs reused without performance selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/F-rawIQAdapter-sourceFit30",
+    "gpu_policy": "One readout worker on GPU4/6/7 chosen onceby shared all-owner cap2/free12000MB lock;CPU2;do not alterhealthyjobs",
+    "remote_run_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_rawIQAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
+    "local_artifact_root": "E:/type10-7/local_artifacts/F_rawIQAdapter_sourceFit_E30_20261019",
+    "launch_command": [
+      "CVS-RFFI/python",
+      "-u",
+      "PROJECT/releases/cvs_F_rawIQAdapter_sourceFit_E30_20261019_r01/analysis/cvs_raw_iq_adapter_source_fit_20261019.py",
+      "--runtime",
+      "PROJECT/releases/cvs_F_rawIQAdapter_sourceFit_E30_20261019_r01/runtime.json",
+      "--output",
+      "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01"
+    ],
+    "stop_rule": "Only technical failure:legality/provenance/shape/nonfinite/checkpoint,state-persistent mutation,budget,output conflict;preserve all artifacts,no auto retry/healthy-job stop."
+  },
+  "expected_artifacts": [
+    "execution.json",
+    "source_smoke.json",
+    "source_panel.json",
+    "predictions.npz",
+    "analysis.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "correct/n/accuracy",
+      "macroF1",
+      "nativeNLL/LS001CE",
+      "TC clean correct retention/new errors",
+      "normalized joint160 distance quantiles",
+      "cosine margin sufficientbound coverage",
+      "samehead forward equality",
+      "exact NN/physics/updatecosts"
+    ],
+    "dimensions": [
+      "model",
+      "raw/observed_last/newmid/newlow",
+      "draw",
+      "TX/RX/day descriptive"
+    ],
+    "prediction_ref": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01/predictions.npz",
+    "scorer_ref": "source L visible labels only;independent target scorer not applicable"
+  },
+  "rows": [
+    {
+      "row_id": "TC-readout",
+      "method": "Reused fixed TC source prediction",
+      "purpose": "source_mechanism_context",
+      "config_ref": "experiment.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/execution.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019
+      },
+      "seed_notes": "No new modelseed.Original channel seeds and RX/day/eq session reuse;fresh namespace FdualAdapter/sourceFit/20261019/draw0|draw1;dropout4fixedseeds2026101901..04,not independent modelseeds.Support notapplicable.",
+      "k": null,
+      "scenario": [
+        "raw",
+        "observed_last",
+        "fresh_mid_d0",
+        "fresh_mid_d1",
+        "fresh_low_d0",
+        "fresh_low_d1"
+      ],
+      "optimizer": "none;no gradients/no optimizer/no EMA/headfit",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Reuse oldsourceFit predictions0NN;no teacherload/forward",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01/models/TC",
+      "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_rawIQAdapter_sourceFit_E30_20261019_r01/analysis/cvs_raw_iq_adapter_source_fit_20261019.py",
+        "--runtime",
+        "PROJECT/releases/cvs_F_rawIQAdapter_sourceFit_E30_20261019_r01/runtime.json",
+        "--output",
+        "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01"
+      ],
+      "expected_artifacts": [
+        "readout.json"
+      ]
+    },
+    {
+      "row_id": "NOAS_ADAPTER-readout",
+      "method": "Frozen raw IQ adapter NOAS_ADAPTER",
+      "purpose": "source_mechanism_context",
+      "config_ref": "experiment.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/execution.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019
+      },
+      "seed_notes": "No new modelseed.Original channel seeds and RX/day/eq session reuse;fresh namespace FdualAdapter/sourceFit/20261019/draw0|draw1;dropout4fixedseeds2026101901..04,not independent modelseeds.Support notapplicable.",
+      "k": null,
+      "scenario": [
+        "raw",
+        "observed_last",
+        "fresh_mid_d0",
+        "fresh_mid_d1",
+        "fresh_low_d0",
+        "fresh_low_d1"
+      ],
+      "optimizer": "none;no gradients/no optimizer/no EMA/headfit",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "1080 actualsourcepacketforwards (180x6);launchersmoke1 separately;4newtotal4321",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01/models/NOAS_ADAPTER",
+      "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_rawIQAdapter_sourceFit_E30_20261019_r01/analysis/cvs_raw_iq_adapter_source_fit_20261019.py",
+        "--runtime",
+        "PROJECT/releases/cvs_F_rawIQAdapter_sourceFit_E30_20261019_r01/runtime.json",
+        "--output",
+        "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01"
+      ],
+      "expected_artifacts": [
+        "readout.json"
+      ]
+    },
+    {
+      "row_id": "S1-readout",
+      "method": "Frozen raw IQ adapter S1",
+      "purpose": "source_mechanism_context",
+      "config_ref": "experiment.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/execution.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019
+      },
+      "seed_notes": "No new modelseed.Original channel seeds and RX/day/eq session reuse;fresh namespace FdualAdapter/sourceFit/20261019/draw0|draw1;dropout4fixedseeds2026101901..04,not independent modelseeds.Support notapplicable.",
+      "k": null,
+      "scenario": [
+        "raw",
+        "observed_last",
+        "fresh_mid_d0",
+        "fresh_mid_d1",
+        "fresh_low_d0",
+        "fresh_low_d1"
+      ],
+      "optimizer": "none;no gradients/no optimizer/no EMA/headfit",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "1080 actualsourcepacketforwards (180x6);launchersmoke1 separately;4newtotal4321",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01/models/S1",
+      "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_rawIQAdapter_sourceFit_E30_20261019_r01/analysis/cvs_raw_iq_adapter_source_fit_20261019.py",
+        "--runtime",
+        "PROJECT/releases/cvs_F_rawIQAdapter_sourceFit_E30_20261019_r01/runtime.json",
+        "--output",
+        "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01"
+      ],
+      "expected_artifacts": [
+        "readout.json"
+      ]
+    },
+    {
+      "row_id": "S2-readout",
+      "method": "Frozen raw IQ adapter S2",
+      "purpose": "source_mechanism_context",
+      "config_ref": "experiment.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/execution.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019
+      },
+      "seed_notes": "No new modelseed.Original channel seeds and RX/day/eq session reuse;fresh namespace FdualAdapter/sourceFit/20261019/draw0|draw1;dropout4fixedseeds2026101901..04,not independent modelseeds.Support notapplicable.",
+      "k": null,
+      "scenario": [
+        "raw",
+        "observed_last",
+        "fresh_mid_d0",
+        "fresh_mid_d1",
+        "fresh_low_d0",
+        "fresh_low_d1"
+      ],
+      "optimizer": "none;no gradients/no optimizer/no EMA/headfit",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "1080 actualsourcepacketforwards (180x6);launchersmoke1 separately;4newtotal4321",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01/models/S2",
+      "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_rawIQAdapter_sourceFit_E30_20261019_r01/analysis/cvs_raw_iq_adapter_source_fit_20261019.py",
+        "--runtime",
+        "PROJECT/releases/cvs_F_rawIQAdapter_sourceFit_E30_20261019_r01/runtime.json",
+        "--output",
+        "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01"
+      ],
+      "expected_artifacts": [
+        "readout.json"
+      ]
+    },
+    {
+      "row_id": "S3-readout",
+      "method": "Frozen raw IQ adapter S3",
+      "purpose": "primary_readout",
+      "config_ref": "experiment.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/execution.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019
+      },
+      "seed_notes": "No new modelseed.Original channel seeds and RX/day/eq session reuse;fresh namespace FdualAdapter/sourceFit/20261019/draw0|draw1;dropout4fixedseeds2026101901..04,not independent modelseeds.Support notapplicable.",
+      "k": null,
+      "scenario": [
+        "raw",
+        "observed_last",
+        "fresh_mid_d0",
+        "fresh_mid_d1",
+        "fresh_low_d0",
+        "fresh_low_d1"
+      ],
+      "optimizer": "none;no gradients/no optimizer/no EMA/headfit",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "1080 actualsourcepacketforwards (180x6);launchersmoke1 separately;4newtotal4321",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01/models/S3",
+      "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_rawIQAdapter_sourceFit_E30_20261019_r01/analysis/cvs_raw_iq_adapter_source_fit_20261019.py",
+        "--runtime",
+        "PROJECT/releases/cvs_F_rawIQAdapter_sourceFit_E30_20261019_r01/runtime.json",
+        "--output",
+        "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01"
+      ],
+      "expected_artifacts": [
+        "readout.json"
+      ]
+    },
+    {
+      "row_id": "TS-readout",
+      "method": "Reused fixed TS source prediction",
+      "purpose": "source_mechanism_context",
+      "config_ref": "experiment.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/execution.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019
+      },
+      "seed_notes": "No new modelseed.Original channel seeds and RX/day/eq session reuse;fresh namespace FdualAdapter/sourceFit/20261019/draw0|draw1;dropout4fixedseeds2026101901..04,not independent modelseeds.Support notapplicable.",
+      "k": null,
+      "scenario": [
+        "raw",
+        "observed_last",
+        "fresh_mid_d0",
+        "fresh_mid_d1",
+        "fresh_low_d0",
+        "fresh_low_d1"
+      ],
+      "optimizer": "none;no gradients/no optimizer/no EMA/headfit",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Reuse oldsourceFit predictions0NN;no teacherload/forward",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01/models/TS",
+      "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_rawIQAdapter_sourceFit_E30_20261019_r01/analysis/cvs_raw_iq_adapter_source_fit_20261019.py",
+        "--runtime",
+        "PROJECT/releases/cvs_F_rawIQAdapter_sourceFit_E30_20261019_r01/runtime.json",
+        "--output",
+        "PROJECT/runs/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01"
+      ],
+      "expected_artifacts": [
+        "readout.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Four newraw readouts x180 x6=4320 actual packet forwards;firstrealcheckpoint noquery smoke1 immediatelycontinues,total4321.900channel-generated packets;180raw sourceLreads.0optimizer/EMA/headfit/newV/target.Originalsourcephysicalroles unchanged,VALIDATED_ONCE reused.",
+    "OldTc/Ts frozen source predictions reused0NN. Local full rawS3 source sequence4440 records matches all180 oldlastorigins,allphysical/local+cumulativecoordinates. Same normalization and fullchannel helper,draw/session/seed/config checked at runtime;no hashes or data revalidation.",
+    "Sixviews:raw,observed_last,newmid_d0/d1,newlow_d0/d1. Fixed balancedL180 fromoldpanel90TX/RX/daycellsx2,no newselection. Seen-vs-fresh compare onlysame scene;notdifferent scene mixtures.",
+    "No repeated INIT_ZERO/Dropout-only study,oldlocalS3 forward or targetretest. Previous oldlocal evidence remains available. Frozen logits/joint drift cannot prove gradient conflict.",
+    "Fixedbefore diagnostic:descriptive source readout only. No trainingpromotion,epsilon/weight/temp/seedselection,extension or goaldone decision. Closedraw recipe remainsclosed. Followingmechanism mustbe justifiedsourceonly before any future targetscore.",
+    "Currentdirecthuman pureF/star-ground/E20+10 controlledstudy overrides unrelatedconversation CROSS_RX/defaultrecipe entries. No headfit or replacement;unchanged default6x160cos30head used.",
+    "Runoutput immutable newroot. Oneowner/ordinaryaccount/GPU4/6/7cap2sharedlock/free12GB/CPU2FP32;firstsmokePASScontinues. No currenthealthyotherownerintervention."
+  ],
+  "registered_at": "2026-10-19T11:07:56+00:00"
+}
