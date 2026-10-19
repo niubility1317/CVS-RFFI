@@ -1,6 +1,6 @@
 # 冻结R03后的直接残差与确定性流修正
 
-状态：PLANNED。用户目标仍为完整目标low urban≥70%，其余五practical接近原F clean85.113889%（Agent暂采用≤2个百分点口径）；分别报告同物理clean的波形差距和冻结原默认头真实TX识别/净纠错。现有最好65.309127%，未达到目标。
+状态：RUNNING / VERIFIED。用户目标仍为完整目标low urban≥70%，其余五practical接近原F clean85.113889%（Agent暂采用≤2个百分点口径）；分别报告同物理clean的波形差距和冻结原默认头真实TX识别/净纠错。现有最好65.309127%，未达到目标。
 
 源依据是旧R03生成残差在其AsF/sourceV设置中未通过身份稳定性：residual_flow的三次采样TX切换7.03125%、low urban78.888889%，未访问目标。本候选独立检验无Gaussian、完整R03 anchor与原F指导的确定性流，不追认/加载旧生成或失败精修。借鉴[PMRF](https://arxiv.org/abs/2410.00418)的先预测后运输结构；R03不是已证明MMSE估计，本候选使用当前received条件/无Gaussian/F约束，因此不是PMRF复现或其最优性保证。论文图像质量结论不代表IQ指纹身份能恢复。
 
@@ -22,3 +22,15 @@ source V原1800/原F1/七视图仅诊断，无早停、资格、NMSE gate、候�
 一次N607普通账号预检VERIFIED：原R03合法、新run/release不存在，GPU6/7各24124MB空闲无PID；现有gradient_balance在GPU4/5实际target PID/CWD/cmd LIVE并保留。每卡一条本owner、计入allowner<2，重叠最多4本owner GPU worker，source≥18GB、target≥12GB，CPU2线程/scorer最多1。新source评分先等前gradient_balance complete/failure，再与本run target共用score.lock。实际source退出后才同卡target，不等另一新行。停止规则：非法输入/权限/代码、输出冲突、非有限/OOM、预算/冻结/执行或预测失败时保留产物并技术失败该行，无自动重试，健康行继续；不因源分数或当前新目标成绩改参数/预算/顺序/选择性重跑，不停止/修改他人任务。
 
 一个实际代码配置commit、不可覆盖run/release、一次归档本地/远端SHA比较及remotecompile/import、真实smoke、PID/CWD/命令/GPU/日志增长随后核实。命令、环境/CWD、矩阵、路径、资源、停止规则与产物见experiment.json。数据/权重/逐样本预测/原日志/私有机器状态不进Git。另一用户对话未被发送指令或修改。
+
+
+## 实际发布与首轮核验
+
+方法commit `9625f878ed9659ce053911bb4b033d7261cfc7d2`已推送并独立核实远端OID，一次归档本地/远端SHA比较及远端compile/import均PASS。实际R03/三F/四Ls no-query smoke PASS：两臂完整初始IQ/state等于原R03，新field输出投影梯度、原R03冻结及原头到IQ梯度有效，F无梯度，新checkpoint往返一致，0V/TX/target/optimizer更新。两臂实际210882可训练/2351722总参数，原R03冻结，新field从零输出开始；PASS立即训练。
+
+两条实际source worker的PID/CWD/完整命令/GPU6/7及持续日志增长已核实，三F参考缓存各63000条。实际field学习与时间曝光计数：
+
+- direct_residual：1/10轮、247/2470步，field调用247、IQ126000条、t0曝光126000、平均t0、范围0至0，encoder非零学习梯度246步。
+- rectified_flow4：1/10轮、247/2470步，field调用247、IQ126000条、t0曝光62964、平均t0.25003436、范围0至0.99996781，encoder非零学习梯度246步。
+
+首轮核验时尚无新源V或目标准确率。实际field学习不代表性能改善或身份保证；两臂固定E10后分别自动完整目标测试，source V不作资格筛选，用户目标仍未达成。最终状态与结果以完整结果节为准。前一范数约束的GPU4/5目标进程保留，CPU评分等待其完成后执行。

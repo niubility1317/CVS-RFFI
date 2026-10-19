@@ -182,8 +182,8 @@ source误差分解显示精修在多个有效频带增加波形误差，末端ti
 标量和：目标low urban 64.989484%，clean 85.062500%。单向投影：目标low urban 64.952778%，clean 85.063889%。两行均完成原预登记E10/2470、168000物理目标clean+六practical及三原头独立truth-last评分。没有source分数筛选、目标反馈或选择性重跑，全部负结果保留。[完整逐环境/逐F/波形/净纠错/成本结果](../../automation_reports/CV-SincNet/20261020-phase1-restoration-gradient-projection-source-s2026092701-m2-r01/report.md)。本轮仍未达到用户完整目标，不由新增结构/训练检查推断性能。
 
 
-## 当前确定性残差流固定比较（实现完成，待发布）
+## 当前确定性残差流固定比较（两臂实际训练中）
 
 旧R03随机残差流在其AsF/sourceV设置有7.03125%三采样TX切换，未通过身份稳定性；本轮不加载其权重。新`pamf_residual_flow`两行direct_residual/rectified_flow4从同一原合法R03完整冻结state开始，新增相同Core7→2 widths16/32/48/64零输出网络，210882可训练/2351722总参数。训练velocity目标clean-anchor，direct t0；flow半t0/半U[0,1)，源point=anchor+t(clean-anchor)，两行F/logpower代理均anchor+velocity。推断只用当前IQ/R03anchor，1/4步固定Euler，无Gaussian/F/clean/真实信道/TX/RX/场景/其他帧/更新；不把source训练代理当完整采样，不称PMRF复现/最优性或身份保证。
 
-原数据/缓存1..10/顺序/路由/seed和三原F冻结loss保持，newfield E10/2470、AdamW2e-4，旧coarse/corr各20不更新、新field10，总组件/串行50。40项检查及一次独立P0/P1审查PASS；GPU6/7一次预检空闲，当前GPU4/5范数约束target存活保留。launcher首步真实R03/三F/四Ls no-query smoke PASS立即训练；两行sourceV只诊断、固定最终E10自动完整168000/七视图/三原头独立truth-last，CPU scorer先等范数run终态。尚无本轮新性能，用户完整目标未完成。[最小登记](../../automation_reports/CV-SincNet/20261020-phase1-restoration-residual-flow-source-s2026092701-m2-r01/report.md)。
+原数据/缓存1..10/顺序/路由/seed和三原F冻结loss保持，newfield E10/2470、AdamW2e-4，旧coarse/corr各20不更新、新field10，总组件/串行50。40项检查及一次独立P0/P1审查PASS；GPU6/7一次预检空闲，当前GPU4/5范数约束target存活保留。launcher首步真实R03/三F/四Ls no-query smoke PASS立即训练；两行sourceV只诊断、固定最终E10自动完整168000/七视图/三原头独立truth-last，CPU scorer先等范数run终态。方法commit`9625f878ed9659ce053911bb4b033d7261cfc7d2`已实际发布，归档比较/编译、真实R03/三F/四Ls smoke均PASS；GPU6/7两条source worker的PID/CWD/cmd/GPU/日志增长和实际field/time/encoder非零学习计数已核实。尚无本轮新模型表现，用户完整目标未完成。[最小登记](../../automation_reports/CV-SincNet/20261020-phase1-restoration-residual-flow-source-s2026092701-m2-r01/report.md)。

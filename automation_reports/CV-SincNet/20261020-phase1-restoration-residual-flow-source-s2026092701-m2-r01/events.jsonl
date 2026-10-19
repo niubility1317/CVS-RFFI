@@ -1,1 +1,4 @@
 {"at": "2026-10-19T23:26:44+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T23:29:38+00:00", "status": "RUNNING", "note": "VERIFIED realR03/3Fsmoke,PID/CWD/cmd/GPU/loggrowth and actual field/time/encoder-learning counts;0target", "evidence": ["report.md", "experiment.json"], "row_id": "direct_residual"}
+{"at": "2026-10-19T23:29:38+00:00", "status": "RUNNING", "note": "VERIFIED realR03/3Fsmoke,PID/CWD/cmd/GPU/loggrowth and actual field/time/encoder-learning counts;0target", "evidence": ["report.md", "experiment.json"], "row_id": "rectified_flow4"}
+{"at": "2026-10-19T23:29:38+00:00", "status": "RUNNING", "note": "Both direct/four-step field rows live onGPU6/7;previousGPU4/5targetpreserved;CPUscorewaitspreviouscomplete", "evidence": ["report.md", "experiment.json"], "row_id": null}
