@@ -1,0 +1,38 @@
+{
+  "status": "USER_SELECTED_BASELINE_LOCKED",
+  "reference_run": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+  "reference_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+  "reported_target_clean_accuracy_mean_percent": 85.11388888888888,
+  "reported_sample_SD_pp": 0.379881,
+  "paired_gain_over_F_pp": 0.8436507936507937,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "feature_extractor": "F SIG_TIME_X3 + unified centered physical Sinc + RDrop1 + L-only shallow/middle sameTX differentRX contrastive",
+  "epochs": 50,
+  "label_epochs": 33,
+  "pseudo_epochs": 17,
+  "updates_per_model": 11100,
+  "oldgate_ownEMA_cos": true,
+  "ordinary_augmentation": true,
+  "label_smoothing": 0.01,
+  "satellite_training_augmentation": false,
+  "test_views": [
+    "clean"
+  ],
+  "default_classifier": "existing default head jointly trained; checkpoint head predicts directly",
+  "no_head_refit": true,
+  "model_initialization": "New variants scratch50; no use of target-selected or provenance-unknown checkpoint",
+  "source_data": "Same native L6300/U56700 hidden/V27000; RX1,3,4,6,8; days1,2,3; split392005",
+  "local_execution": "Verified native local environment; max3 GPU0 train/predict workers including other owners",
+  "current_E20_sat_factorial": "Independent completed negative study only; not the requested baseline and not evidence against the correct50/no-satellite recipe",
+  "unlaunched_E20_plainPL_preparation": "SUPERSEDED_BEFORE_LAUNCH by latest user baseline/training-scope instruction",
+  "evidence": [
+    "experiments/cvs_f_supcon50/design.py",
+    "experiments/cvs_sigtime_rdrop_legacy/design.py#make_args (requires use_concat_sat_channel_aug=False)",
+    "automation_reports/CV-SincNet/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/final_analysis.md"
+  ],
+  "target_feedback_to_training": false
+}

@@ -8,11 +8,14 @@
   "PL_max_weight": 0.5,
   "U_batch128": true,
   "source_epochs": 20,
-  "optimizer_updates": 4440,
+  "optimizer_updates": 0,
   "U_TX_truth_hidden": true,
   "U_metric_or_strong_consistency": false,
   "EMA": false,
   "head_refit": false,
   "source_expansion": "weak2 mean>=+0.2pp/global>=-0.2pp/worstRX>=-0.5pp/anyTX>=-1pp vs paired BASE; determine before own target tests",
-  "target_feedback": false
+  "target_feedback": false,
+  "status": "SUPERSEDED_BEFORE_LAUNCH",
+  "reason": "User latest explicitly selects original F+CROSS_RX50 85.1139%, no satellite training, clean-only tests; do not release this E20/satellite preparation",
+  "new_anchor": "experiments/cvs_f_crossrx50_local/baseline_anchor.json"
 }
