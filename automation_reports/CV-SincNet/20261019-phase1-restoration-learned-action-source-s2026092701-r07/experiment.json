@@ -1,0 +1,231 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-restoration-learned-action-source-s2026092701-r07",
+  "group_id": "pamf-restoration-learned-action",
+  "display_name": "学习接收作用的自监督物理恢复：源域验证",
+  "description": "冻结源波形选中的R02粗恢复；用全量L/U合成真实作用和独立白探针训练观测条件算子，6步软CG恢复；原F50源V默认头独立评分，0target。",
+  "kind": "cvs",
+  "stage": "Phase1-source-only-mechanism",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "source_only",
+    "learned_action",
+    "no_TX_training"
+  ],
+  "comparison_group_id": "manysig-source-rx13468-day123-076330-restoration-seven-e20-v1",
+  "parent_run_ids": [
+    "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02",
+    "20261019-phase1-restoration-residual-refinement-selfsup-m3-r03",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "持续恢复目标与用户报告R3；原生真实作用诊断R06的源证据支持研究估计差距。纯源研发，不由目标分数调参；N607普通账户授权。",
+  "code": {
+    "commit": "c8ccdfdbd03ab5ad8828b1eb9210b99a664ebe7b",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5,FP32 GPU model,16 CPU source generators",
+    "cwd": "releases/pamf_action_restoration_20261019_r07"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "IQ2x256;15%clean85%native residual/post_sync/noEQ/reflect,fs25MHz/fc2462MHz/referenceSNR30,fresh20epoch namespaces",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "Original validated7/63/30 source roles:6300L+56700U;R02/cache/train and fixed1800sourceV IDs unchanged",
+    "label_map_ref": "Training never opensTX labels;only independent CPU source scorer opens V/labels.npy after7view predictions",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json: READY/EXACT_MATCH; reuse existing cache without new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "code/leo_practical/channel.py;learned-action/train/epochNN;sourceV restoration/validation/draw0 reused",
+    "restoration_train_counts": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "L_exposures": 126000,
+      "U_exposures": 1134000,
+      "epochs": 20,
+      "updates": 4940,
+      "TX_labels": 0
+    },
+    "source_validation_panel": 1800,
+    "target_panel": null
+  },
+  "permissions": {
+    "regime": "Simulator self-supervised action learning from source L/U IQ;0TX/F training;sourceV no persistent updates",
+    "query_use": "None;true action/AGC/lock only source synthetic teacher,never estimator inputs;Vlabels independent scorer after all predictions",
+    "external_method_exception": null,
+    "claim_scope": "Source mechanism and originalF50 identity diagnosis only;not target,in-orbit or completed identity recovery"
+  },
+  "checkpoint": {
+    "initialization": "Estimator scratch;frozenR02 coarse E20/4940;fixed last additionalE20/4940,notV-selected",
+    "sources": [
+      {
+        "run_id": "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02",
+        "commit": "7efdba92932a86bf4b0492a565d35377564a26da",
+        "candidate": "tf_unet_mixed",
+        "path": "runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/tf_unet_mixed/final.pt",
+        "selection": "Source waveformA before target;0TXtraining"
+      },
+      {
+        "run_id": "20261019-phase1-restoration-residual-refinement-selfsup-m3-r03",
+        "role": "Only8192L/U RMSscalar",
+        "value": 0.1169459182403555,
+        "child_weights_loaded": false
+      },
+      {
+        "run_id": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+        "commit": "4df7b94d",
+        "role": "Frozen inference-only originalF50 CROSS_RX-s2026092701/defaulthead",
+        "path": "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth",
+        "selection": "Original fixed final50;no headfit"
+      }
+    ],
+    "contract_check_ref": "Reused R02 originalroleIDs/lineage;load_coarse exact source checks;F50 load_reader actual contract/scratch/final50/defaulthead checks",
+    "provenance_verdict": "VERIFIED R02 source-waveform parent and F50 source contract;true-source smoke first launcher step",
+    "selection_rule": "One fixed last-E20 candidate;source wavefeasible if mean6NMSE improves>=5% andcleanNMSE<=.02;notidentityqualification",
+    "evaluation_readers": [
+      "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701 original default head"
+    ]
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/learned-action",
+    "gpu_policy": "PhysicalGPU5 only,one own training/prediction worker;all-owner cap2/free12GB;capacity4 shared lock covers CUDA init/smoke;CPUcontroller+16generationworkers",
+    "remote_run_root": "runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07",
+    "remote_log_root": "logs/20261019-phase1-restoration-learned-action-source-s2026092701-r07",
+    "local_artifact_root": "local_artifacts/pamf_restoration/action_r07_20261019",
+    "launch_command": "python -u -m experiments.pamf_action_restore.runner run --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-restoration ../../runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02 --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --output ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --expected-commit c8ccdfdbd03ab5ad8828b1eb9210b99a664ebe7b",
+    "stop_rule": "Illegal source/parent/code,collision,nonfinite,teacher replay mismatch,invalidprediction aborts andpreserves outputs;no performance stop/automaticretry"
+  },
+  "expected_artifacts": [
+    "resolved_config.json",
+    "launch.json",
+    "smoke.json",
+    "cache/complete.json",
+    "worker_launch.json",
+    "learned_operator/training.jsonl",
+    "learned_operator/final.pt",
+    "learned_operator/training_complete.json",
+    "learned_operator/prediction/seven scene npz",
+    "learned_operator/prediction/complete.json",
+    "learned_operator/batch1_profile.json",
+    "learned_operator/summary.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "probe action error",
+      "log noise variance MSE",
+      "IQ NMSE full/prefix232/tail24",
+      "FFT logpowerL1",
+      "originalF50 accuracy",
+      "Macro-F1",
+      "repair/damage",
+      "batch1 latency",
+      "training exposure/cost"
+    ],
+    "dimensions": [
+      "clean",
+      "three suburban separately",
+      "three urban separately",
+      "TX",
+      "RX",
+      "day",
+      "train role/state/lock"
+    ],
+    "primary": "Source action estimation andwaveform qualification only;F50 identity separate,noNMSE substitution",
+    "prediction_ref": "runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/learned_operator/prediction",
+    "scorer_ref": "experiments.pamf_action_restore.runner score inindependentCPUprocess,afterall7predictions"
+  },
+  "rows": [
+    {
+      "row_id": "learned_operator",
+      "method": "learned_action",
+      "purpose": "source_only_mechanism_diagnostic",
+      "config_ref": "experiments/pamf_action_restore/design.py#configuration",
+      "resolved_config_ref": "runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/learned_operator/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101913
+      },
+      "seed_notes": "Original source split/physicalIDs unchanged;model estimator scratch;freshnative augmentation1912,hardware1911;teacherprobe1907;evalprobe1913;support N/A",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "NewE20/4940/all63000sourceIQ,AdamW2e-4,warmup247thenCosine2e-5,WD1e-4,batch256,FP32,clip1;coarseE20frozen,cumulativeE40",
+      "output_root": "runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/learned_operator",
+      "log_path": "runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/logs/worker.log",
+      "command": "python -u -m experiments.pamf_action_restore.runner run --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-restoration ../../runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02 --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --output ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --expected-commit c8ccdfdbd03ab5ad8828b1eb9210b99a664ebe7b",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "launch.json",
+        "smoke.json",
+        "cache/complete.json",
+        "worker_launch.json",
+        "learned_operator/training.jsonl",
+        "learned_operator/final.pt",
+        "learned_operator/training_complete.json",
+        "learned_operator/prediction/seven scene npz",
+        "learned_operator/prediction/complete.json",
+        "learned_operator/batch1_profile.json",
+        "learned_operator/summary.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Source-only stage follows suppliedR3 and R06 oracle/estimated gap,not formal target outcomes.",
+    "Simulator-assisted self-supervision has clean source IQ and generated action labels;notclean-free orTX-supervised.",
+    "15%clean85%residual differs from R03 15/60/25 mixed;exposure/recipe/cumulative cost disclosed.",
+    "Independent whiteprobe action loss,notcurrent observationfit;no paired reconstruction/classifierloss;two fresh probes per update.",
+    "Single source-qualified R02 parent/source8192scale,notR03correctorweights;one outputIQ,allFviews derive it.",
+    "Original F50 CROSS_RX has E50/11100 classifiertraining,notE200cleanF or E30AsF;onlyfrozenreadout,noheadfit.",
+    "Allthree suburbanandthreeurban source resultsreported;no target inthis stage;scientificfailure preservedwithoutrescue retries.",
+    "11focusedchecksPASS,oneindependentP0/P1noissues,N607GPU5idle/rootabsent preflight;existing otherowners preserved.",
+    "Additional generic design approval is REJECTED_EXTRA_GATE under exclusiveprojectminimalworkflow;no additional permission gate."
+  ],
+  "registered_at": "2026-10-19T12:47:06+00:00"
+}
