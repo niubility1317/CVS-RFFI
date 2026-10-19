@@ -1,0 +1,290 @@
+{
+  "status": "DESIGN_ONLY_NOT_A_LAUNCH_MANIFEST",
+  "date": "2026-10-19",
+  "purpose": "PAMF Phase1论文对比设计；新组未启动",
+  "existing_run_id": "20261019-phase1-pamf-dg-nativebudget-m24-r01",
+  "gpu_slots_max": 2,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "split_seed": 392005,
+  "dataset": {
+    "name": "ManySig",
+    "tx_names": [
+      "14-10",
+      "14-7",
+      "20-15",
+      "20-19",
+      "6-15",
+      "8-20"
+    ],
+    "rx_names": [
+      "1-1",
+      "1-19",
+      "14-7",
+      "18-2",
+      "19-2",
+      "2-1",
+      "2-19",
+      "20-1",
+      "3-19",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "dates": [
+      "2021_03_01",
+      "2021_03_08",
+      "2021_03_15",
+      "2021_03_23"
+    ],
+    "equalized": 1,
+    "iq_shape": [
+      2,
+      256
+    ],
+    "source_rx_indices": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_rx_indices": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_day_indices": [
+      1,
+      2,
+      3
+    ],
+    "target_day_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "source_pool": 90000,
+    "L_s": 6300,
+    "U_s": 56700,
+    "V": 27000,
+    "target_packets": 168000,
+    "target_rx_seen_dates": 126000,
+    "target_rx_unseen_date": 42000,
+    "source_rx_unseen_date_diagnostic": 30000,
+    "training_pool_label_rate": 0.1,
+    "source_pool_training_label_rate": 0.07,
+    "source_validation_labels": 27000
+  },
+  "folds": [
+    {
+      "id": "F0",
+      "source": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "target": [
+        0,
+        2,
+        5,
+        7,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "id": "F1",
+      "source": [
+        0,
+        2,
+        5,
+        7,
+        9
+      ],
+      "target": [
+        1,
+        3,
+        4,
+        6,
+        8,
+        10,
+        11
+      ]
+    },
+    {
+      "id": "F2",
+      "source": [
+        1,
+        3,
+        4,
+        10,
+        11
+      ],
+      "target": [
+        0,
+        2,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    }
+  ],
+  "source_count_chains": [
+    [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    [
+      4,
+      6,
+      8,
+      1,
+      3
+    ],
+    [
+      8,
+      1,
+      3,
+      4,
+      6
+    ]
+  ],
+  "groups": [
+    {
+      "id": "E1",
+      "name": "F0原生预算领域方法与自身CE",
+      "training_instances": 24,
+      "status": "EXISTING_QUEUE",
+      "methods": 8,
+      "model_seeds": 3
+    },
+    {
+      "id": "E1b",
+      "name": "历史三网络六practical补测",
+      "training_instances": 0,
+      "evaluation_checkpoints": 9
+    },
+    {
+      "id": "E1c",
+      "name": "PAMF E100成本敏感性",
+      "training_instances": 3
+    },
+    {
+      "id": "E2",
+      "name": "F1/F2九方法确认",
+      "training_instances": 54,
+      "folds": 2,
+      "methods": 9,
+      "model_seeds": 3
+    },
+    {
+      "id": "E3",
+      "name": "PAMF七个新增结构/容量控制",
+      "training_instances": 21,
+      "methods": 7,
+      "model_seeds": 3
+    },
+    {
+      "id": "E4",
+      "name": "两骨干五种训练路线",
+      "training_instances": 30,
+      "backbones": 2,
+      "routes": 5,
+      "model_seeds": 3
+    },
+    {
+      "id": "E5",
+      "name": "三条源数量链与双标签预算",
+      "training_instances": 66,
+      "m": [
+        1,
+        3,
+        5
+      ],
+      "chains": 3,
+      "backbones": 2,
+      "model_seeds": 3,
+      "dedup": "m1双预算同配置；m5三链同集合"
+    },
+    {
+      "id": "E6",
+      "name": "两个新增标签率四方法",
+      "training_instances": 24,
+      "new_label_rates": [
+        0.01,
+        0.05
+      ],
+      "methods": 4,
+      "model_seeds": 3
+    },
+    {
+      "id": "E7",
+      "name": "向未来日期九方法",
+      "training_instances": 27,
+      "methods": 9,
+      "model_seeds": 3
+    },
+    {
+      "id": "E8",
+      "name": "ManyRx九方法",
+      "training_instances": 27,
+      "methods": 9,
+      "model_seeds": 3
+    }
+  ],
+  "total_training_instances_including_existing24": 276,
+  "core_training_instances_including_existing24": 132,
+  "optional_m2_extra_training_instances": 36,
+  "optional_generic_source_hparam_panel": {
+    "replaces": "E4",
+    "candidate_count": 3,
+    "model_seeds": 3,
+    "training_instances": 90,
+    "extra_over_canonical": 60,
+    "candidate_grid": {
+      "ERM_lr": [
+        0.0001,
+        0.0002,
+        0.0004
+      ],
+      "MixStyle_alpha": [
+        0.05,
+        0.1,
+        0.2
+      ],
+      "MixStyle_ID_alpha": [
+        0.05,
+        0.1,
+        0.2
+      ],
+      "Fishr_lambda": [
+        100,
+        1000,
+        10000
+      ],
+      "source_CORAL_lambda": [
+        0.1,
+        1,
+        10
+      ]
+    },
+    "selection": "three-seed mean source-V NLL at fixed update5000; ties canonical then candidate index; only selected candidate target evaluated; scratch; no target feedback"
+  }
+}
