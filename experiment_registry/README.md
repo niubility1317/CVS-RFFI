@@ -487,4 +487,5 @@
 
 ## 本次新增登记
 
-- [CE_HALF 补齐三种子，仅 clean](../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-CEhalf-e30-s0203-m2-r01/report.md)
+- [CE_HALF 补齐三种子，仅 clean](../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-CEhalf-e30-s0203-m2-r02/final_report.md)：ANALYZED，84.883929% ± 0.808549%，n=3。
+- [原 r01 首次排队记录](../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-CEhalf-e30-s0203-m2-r01/report.md)：FAILED，资源争用检查在训练前结束，0 更新／0 目标访问，产物保留。

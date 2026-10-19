@@ -1,6 +1,6 @@
 # CE_HALF 补齐三种子：固定 E30，仅 clean
 
-状态：RUNNING；seed02／03 已在用户授权的 GPU 4／6 完成首轮，等待固定 E10 和 clean 自动评分。
+状态：ANALYZED；完整三种子 clean 均值84.883929% ± 0.808549%。最终结果、匹配对照和实际成本见[完整结果报告](final_report.md)。
 
 用户于 2026-10-19 明确要求“CE_HALF跑完整三种子”。复用 seed2026092701 的完整旧结果；仅补02/03各一条 CE_HALF，分别从原 P49 对应 B01 scratch20 的 student／ownEMA 追加10轮，总E30／6660更新。新增20模型轮／4440更新，不重训父模型、seed01或原As／NoAs控制。旧 source gate 不抑制用户明确指定的固定复现。
 

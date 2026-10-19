@@ -32,7 +32,7 @@
     "checkout": "codex/ce-half-three-seeds-20261019",
     "environment": "Existing ordinary N607 CVS-RFFI Python3.10/Torch2.1 FP32 CPU2; pinned original P43 runtime and P49 actual factory seed",
     "cwd": "PROJECT/releases/cvs_FcrossRX_CEhalf_E30_s0203_20261019_r02",
-    "identity_status": "LOCAL_VERIFIED"
+    "identity_status": "VERIFIED_RELEASE_COMMIT"
   },
   "data": {
     "dataset": "ManySig",
@@ -49,7 +49,13 @@
       8
     ],
     "target_receivers": [
-      "fixedmanifest7unseenRX;nevertrain"
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
     ],
     "source_days": [
       1,
@@ -77,7 +83,7 @@
   },
   "permissions": {
     "regime": "source_only_training_then_frozen_target_prediction",
-    "query_use": "Frozen defaulthead all7 fixed received IQ predictions;truthlast independent perrow only afterall7complete;formal scores never candidate/seed/parameter/promotion feedback",
+    "query_use": "Frozen default head on declared clean only, 168000 samples per new row; independent truth-side score after each row predictions fixed; no result feedback to training, candidates or seeds",
     "external_method_exception": null,
     "claim_scope": "Three fixed model seeds clean only; user-selected replication after exposed seed01 target result, not an independent blind selection. No new three-seed practical claim."
   },
@@ -88,7 +94,7 @@
       "PROJECT/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r02/B01-s2026092703/stage20/final_ssdg.pth"
     ],
     "contract_check_ref": "Original P49 scratch20:4440updates,final_only,source role_ids EXACT_MATCH,L6300/U56700hidden/V27000,no ancestors/no target; independently reread before launch. Launcher verifies checkpoint student/EMA and actual seed before training.",
-    "provenance_verdict": "METADATA_VERIFIED_EXACT_ROLES_SCRATCH20_OWN_STUDENT_EMA;REAL_CP_SMOKE_AT_DISPATCH",
+    "provenance_verdict": "VERIFIED_EXACT_SOURCE_ROLES_OWN_SCRATCH20_STUDENT_EMA_AND_REAL_CP_NO_QUERY_SMOKE",
     "selection_rule": "Fixed corresponding seed parents; fixed FINAL10/cumulative30, no performance selection"
   },
   "execution": {
@@ -100,7 +106,7 @@
     "local_artifact_root": "local_artifacts/ce_half_three_seeds_20261019",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_ce_half_replicate/runner.py",
     "stop_rule": "Only input/provenance/protocol/nonfinite/output collision/unlaunchable technical failure; preserve all outputs, finish healthy active rows, do not launch pending rows after technical failure; no automatic retry or scientific early stop.",
-    "status": "RUNNING",
+    "status": "ANALYZED",
     "workers": {
       "modelseed2026092702": {
         "GPU": 4
@@ -108,7 +114,8 @@
       "modelseed2026092703": {
         "GPU": 6
       }
-    }
+    },
+    "completion_verification": "VERIFIED: both fixed E30 tails, frozen clean168000 predictions, independent truth-last recount, complete full logs; all owned processes naturally exited"
   },
   "expected_artifacts": [
     "dispatcher.json",
@@ -186,7 +193,7 @@
         "name": "AdamW",
         "state": "reset afterstrictstudentEMA parentload",
         "lr_schedule": "cosine10 original",
-        "teacher": "ownEMA initializedexactfromP43AS20;originalupdatesonly",
+        "teacher": "ownEMA initialized from corresponding P49 B01 scratch20; original updates only",
         "temporal_cache": "reset"
       },
       "lr": 0.0002,
@@ -220,7 +227,8 @@
         "results.json",
         "final_report.md",
         "complete.json"
-      ]
+      ],
+      "status": "ANALYZED"
     },
     {
       "row_id": "CE_HALF-s2026092703",
@@ -251,7 +259,7 @@
         "name": "AdamW",
         "state": "reset afterstrictstudentEMA parentload",
         "lr_schedule": "cosine10 original",
-        "teacher": "ownEMA initializedexactfromP43AS20;originalupdatesonly",
+        "teacher": "ownEMA initialized from corresponding P49 B01 scratch20; original updates only",
         "temporal_cache": "reset"
       },
       "lr": 0.0002,
@@ -285,7 +293,8 @@
         "results.json",
         "final_report.md",
         "complete.json"
-      ]
+      ],
+      "status": "ANALYZED"
     }
   ],
   "notes": [
@@ -296,5 +305,15 @@
     "Keep all three seeds and negative results. No target-feedback recipe change, checkpoint selection or selective rerun.",
     "r01 failed in pre-training capacity check;0 training/0 target;all partial outputs retained. Fix only treats card contention as wait and binds authorized4/6. Reproduce-before-fix regression FAIL,after-fix PASS;35protocolchecks andunchangedvalue/gradientPASS;one targeted P0/P1 re-reviewPASS."
   ],
-  "registered_at": "2026-10-19T12:01:35+00:00"
+  "registered_at": "2026-10-19T12:01:35+00:00",
+  "metrics": {
+    "result_ref": "results.json",
+    "report_ref": "final_report.md",
+    "clean_three_seed_mean": 0.8488392857142857,
+    "clean_three_seed_sample_SD": 0.008085487387444067,
+    "model_seed_count": 3,
+    "new_updates": 4440,
+    "reused_seed01": true,
+    "verification": "VERIFIED"
+  }
 }

@@ -1,0 +1,111 @@
+{
+  "run_complete": {
+    "status": "ANALYZED",
+    "rows": [
+      "CE_HALF-s2026092702",
+      "CE_HALF-s2026092703"
+    ],
+    "reused_seed01": true,
+    "model_seed_count": 3,
+    "views": [
+      "clean"
+    ],
+    "clean_mean": 0.8488392857142857
+  },
+  "failure": null,
+  "rows": {
+    "CE_HALF-s2026092702": {
+      "source": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 10,
+        "optimizer_steps": 2220,
+        "target_access": false,
+        "head_fit_updates": 0
+      },
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "head_fit_updates": 0,
+        "all_parameters_frozen": true
+      },
+      "scoring": {
+        "status": "SCORED_COMPLETE",
+        "predictions": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_last": true,
+        "independent_recount": "VERIFIED"
+      },
+      "progress": {
+        "epoch": 10,
+        "steps": 2220,
+        "cumulative_epoch": 30,
+        "cumulative_steps": 6660,
+        "target_access": false,
+        "U_truth_read": false
+      }
+    },
+    "CE_HALF-s2026092703": {
+      "source": {
+        "status": "SOURCE_TRAINED",
+        "epoch": 10,
+        "optimizer_steps": 2220,
+        "target_access": false,
+        "head_fit_updates": 0
+      },
+      "prediction": {
+        "status": "PREDICTIONS_COMPLETE",
+        "count": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_read": false,
+        "head_fit_updates": 0,
+        "all_parameters_frozen": true
+      },
+      "scoring": {
+        "status": "SCORED_COMPLETE",
+        "predictions": 168000,
+        "views": [
+          "clean"
+        ],
+        "truth_last": true,
+        "independent_recount": "VERIFIED"
+      },
+      "progress": {
+        "epoch": 10,
+        "steps": 2220,
+        "cumulative_epoch": 30,
+        "cumulative_steps": 6660,
+        "target_access": false,
+        "U_truth_read": false
+      }
+    }
+  },
+  "owned_workers_alive": {
+    "CE_HALF-s2026092702": false,
+    "CE_HALF-s2026092703": false
+  },
+  "queue": {
+    "active": [],
+    "pending": [],
+    "completed": [
+      "CE_HALF-s2026092702",
+      "CE_HALF-s2026092703"
+    ],
+    "failures": [],
+    "updated_at": 1792412508.3833694
+  },
+  "dispatcher_alive": false,
+  "log_bytes": {
+    "CE_HALF-s2026092702": 80167,
+    "CE_HALF-s2026092703": 80163
+  },
+  "status": "VERIFIED",
+  "code_commit": "c487f1f2a983a05e457516c901aa68391748bf76"
+}
