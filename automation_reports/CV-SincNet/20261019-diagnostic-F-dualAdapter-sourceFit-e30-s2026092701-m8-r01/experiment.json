@@ -1,0 +1,535 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01",
+  "group_id": "source-F-dualAdapter-fixedE30-fit-and-drift",
+  "display_name": "E30适配器零更新诊断：clean特征漂移、已见信道拟合与Dropout",
+  "description": "固定既有CP，复用180个合法L；区别训练实际末次As、同一L新mid/low信道、clean joint160变化及零输出adapter的Dropout差异。只诊断不训练，不重新访问target。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "F",
+    "E30",
+    "diagnostic",
+    "source-only",
+    "temporal-adapter",
+    "default-head",
+    "zero-update",
+    "single-seed"
+  ],
+  "comparison_group_id": "20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02",
+  "parent_run_ids": [
+    "20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02",
+    "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01",
+    "20260930-phase1-native-baselines-practical-manysig-m5-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "当前星地研究目标授权必要源域拟合诊断；最新用户适配器方案及追加10轮已经执行，本run只读冻结CP并做0更新源L诊断。",
+  "code": {
+    "commit": "a2c9694f97e4d314207795ba774ea348cfe8c0fa",
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 existing Python3.10/Torch2.1; CPU2 FP32/TF32off",
+    "cwd": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01"
+  },
+  "data": {
+    "dataset": "existing immutable ManySig equalized1",
+    "version": "same source contract reused",
+    "representation": "native source raw normalized eq1 IQ256 and unchanged full practical residual noEQ",
+    "contract_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json",
+    "physical_ids_ref": "PROJECT\\runs\\phase1_daot_rc4_pure_game_m3_20260917_r2\\source_contract.json#role_ids",
+    "label_map_ref": "design.CLASSES and native class_mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "protocol.CLASSES",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing VALIDATED_ONCE source handles reused. Fixed previous observedChannel180 metadata,90 TX/RX/day cells x2,first2bylegalLorder.No V NN.",
+    "support_query_ref": null,
+    "leo_config_ref": "immutable reference release existing Practical full physics,original TRAIN_SCENES three; no test IQ read"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none; no target IQ/truth/predictions read",
+    "external_method_exception": null,
+    "claim_scope": "Seen source L frozen readout;not unseen RX generalization,not model-seed replication or new training improvement"
+  },
+  "checkpoint": {
+    "initialization": "no training; fixed existing TC FINAL20, init-zero fromsame legal parent, five E30 CPs, Ts fixed last200",
+    "sources": [
+      {
+        "role": "student,ownEMA,cleanTeacher",
+        "run_id": "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01",
+        "row": "B0-s2026092701",
+        "checkpoint": "PROJECT/runs/20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01/B0-s2026092701/source/final_ssdg.pth"
+      },
+      {
+        "role": "satelliteTeacher eval only;not inherited student",
+        "run_id": "20260930-phase1-native-baselines-practical-manysig-m5-r01",
+        "row": "csil-s2026092701",
+        "checkpoint": "PROJECT/paper_reproduction/runs/20260930-phase1-native-baselines-practical-manysig-m5-r01/csil-s2026092701/last.pt"
+      },
+      {
+        "role": "E30 fixed source readout",
+        "run_id": "20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02",
+        "rows": [
+          "NOAS_ADAPTER",
+          "S0",
+          "S1",
+          "S2",
+          "S3"
+        ],
+        "selection": "fixed FINAL30,not performance selected"
+      }
+    ],
+    "contract_check_ref": "Existing strict own_model and parent_payload/load_ts perform inherited physical source role and FINAL identity checks before use",
+    "provenance_verdict": "Previously VERIFIED lineage,strict repeat check at load;no data revalidation",
+    "selection_rule": "Fixed modelseed2026092701/final20,final30,last200.180 IDs reused without performance selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/F-dualAdapter-sourceFit30",
+    "gpu_policy": "One readout worker on GPU4/6/7 chosen onceby shared all-owner cap2/free12000MB lock;CPU2;do not alterhealthyjobs",
+    "remote_run_root": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
+    "local_artifact_root": "E:/type10-7/local_artifacts/F_dualAdapter_sourceFit_E30_20261019",
+    "launch_command": [
+      "CVS-RFFI/python",
+      "-u",
+      "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/analysis/cvs_dual_teacher_adapter_source_fit_20261019.py",
+      "--runtime",
+      "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/runtime.json",
+      "--output",
+      "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01"
+    ],
+    "stop_rule": "Only technical failure:legality/provenance/shape/nonfinite/checkpoint,state-persistent mutation,budget,output conflict;preserve all artifacts,no auto retry/healthy-job stop."
+  },
+  "expected_artifacts": [
+    "execution.json",
+    "source_smoke.json",
+    "source_panel.json",
+    "predictions.npz",
+    "analysis.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "correct/n/accuracy",
+      "macroF1",
+      "nativeNLL/LS001CE",
+      "TC clean correct retention/new errors",
+      "normalized joint160 distance quantiles",
+      "cosine margin sufficientbound coverage",
+      "T4teacher-eval vsDropout KL",
+      "samehead forward equality",
+      "exact NN/physics/updatecosts"
+    ],
+    "dimensions": [
+      "model",
+      "raw/observed_last/newmid/newlow",
+      "draw",
+      "TX/RX/day descriptive"
+    ],
+    "prediction_ref": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/predictions.npz",
+    "scorer_ref": "source L visible labels only;independent target scorer not applicable"
+  },
+  "rows": [
+    {
+      "row_id": "TC-readout",
+      "method": "frozen TC",
+      "purpose": "source diagnostic",
+      "config_ref": "experiment.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/execution.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019
+      },
+      "seed_notes": "No new modelseed.Original channel seeds and RX/day/eq session reuse;fresh namespace FdualAdapter/sourceFit/20261019/draw0|draw1;dropout4fixedseeds2026101901..04,not independent modelseeds.Support notapplicable.",
+      "k": null,
+      "scenario": [
+        "raw",
+        "observed_last",
+        "fresh_mid_d0",
+        "fresh_mid_d1",
+        "fresh_low_d0",
+        "fresh_low_d1"
+      ],
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "1080 NN/model x8 +720 INIT_ZERO Dropout +1 realCP source smoke =9361 max/exactNN;900 channelpackets;180 rawLreads;0grad/optimizer/EMA/head updates.No newV/targetNN. Inherited20/30/E200 costsalreadyrecorded,notnew training.",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/models/TC",
+      "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/analysis/cvs_dual_teacher_adapter_source_fit_20261019.py",
+        "--runtime",
+        "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/runtime.json",
+        "--output",
+        "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01"
+      ],
+      "expected_artifacts": [
+        "readout.json"
+      ]
+    },
+    {
+      "row_id": "INIT_ZERO-readout",
+      "method": "frozen INIT_ZERO",
+      "purpose": "source diagnostic",
+      "config_ref": "experiment.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/execution.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019
+      },
+      "seed_notes": "No new modelseed.Original channel seeds and RX/day/eq session reuse;fresh namespace FdualAdapter/sourceFit/20261019/draw0|draw1;dropout4fixedseeds2026101901..04,not independent modelseeds.Support notapplicable.",
+      "k": null,
+      "scenario": [
+        "raw",
+        "observed_last",
+        "fresh_mid_d0",
+        "fresh_mid_d1",
+        "fresh_low_d0",
+        "fresh_low_d1"
+      ],
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "1080 NN/model x8 +720 INIT_ZERO Dropout +1 realCP source smoke =9361 max/exactNN;900 channelpackets;180 rawLreads;0grad/optimizer/EMA/head updates.No newV/targetNN. Inherited20/30/E200 costsalreadyrecorded,notnew training.",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/models/INIT_ZERO",
+      "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/analysis/cvs_dual_teacher_adapter_source_fit_20261019.py",
+        "--runtime",
+        "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/runtime.json",
+        "--output",
+        "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01"
+      ],
+      "expected_artifacts": [
+        "readout.json"
+      ]
+    },
+    {
+      "row_id": "NOAS_ADAPTER-readout",
+      "method": "frozen NOAS_ADAPTER",
+      "purpose": "source diagnostic",
+      "config_ref": "experiment.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/execution.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019
+      },
+      "seed_notes": "No new modelseed.Original channel seeds and RX/day/eq session reuse;fresh namespace FdualAdapter/sourceFit/20261019/draw0|draw1;dropout4fixedseeds2026101901..04,not independent modelseeds.Support notapplicable.",
+      "k": null,
+      "scenario": [
+        "raw",
+        "observed_last",
+        "fresh_mid_d0",
+        "fresh_mid_d1",
+        "fresh_low_d0",
+        "fresh_low_d1"
+      ],
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "1080 NN/model x8 +720 INIT_ZERO Dropout +1 realCP source smoke =9361 max/exactNN;900 channelpackets;180 rawLreads;0grad/optimizer/EMA/head updates.No newV/targetNN. Inherited20/30/E200 costsalreadyrecorded,notnew training.",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/models/NOAS_ADAPTER",
+      "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/analysis/cvs_dual_teacher_adapter_source_fit_20261019.py",
+        "--runtime",
+        "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/runtime.json",
+        "--output",
+        "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01"
+      ],
+      "expected_artifacts": [
+        "readout.json"
+      ]
+    },
+    {
+      "row_id": "S0-readout",
+      "method": "frozen S0",
+      "purpose": "source diagnostic",
+      "config_ref": "experiment.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/execution.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019
+      },
+      "seed_notes": "No new modelseed.Original channel seeds and RX/day/eq session reuse;fresh namespace FdualAdapter/sourceFit/20261019/draw0|draw1;dropout4fixedseeds2026101901..04,not independent modelseeds.Support notapplicable.",
+      "k": null,
+      "scenario": [
+        "raw",
+        "observed_last",
+        "fresh_mid_d0",
+        "fresh_mid_d1",
+        "fresh_low_d0",
+        "fresh_low_d1"
+      ],
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "1080 NN/model x8 +720 INIT_ZERO Dropout +1 realCP source smoke =9361 max/exactNN;900 channelpackets;180 rawLreads;0grad/optimizer/EMA/head updates.No newV/targetNN. Inherited20/30/E200 costsalreadyrecorded,notnew training.",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/models/S0",
+      "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/analysis/cvs_dual_teacher_adapter_source_fit_20261019.py",
+        "--runtime",
+        "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/runtime.json",
+        "--output",
+        "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01"
+      ],
+      "expected_artifacts": [
+        "readout.json"
+      ]
+    },
+    {
+      "row_id": "S1-readout",
+      "method": "frozen S1",
+      "purpose": "source diagnostic",
+      "config_ref": "experiment.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/execution.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019
+      },
+      "seed_notes": "No new modelseed.Original channel seeds and RX/day/eq session reuse;fresh namespace FdualAdapter/sourceFit/20261019/draw0|draw1;dropout4fixedseeds2026101901..04,not independent modelseeds.Support notapplicable.",
+      "k": null,
+      "scenario": [
+        "raw",
+        "observed_last",
+        "fresh_mid_d0",
+        "fresh_mid_d1",
+        "fresh_low_d0",
+        "fresh_low_d1"
+      ],
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "1080 NN/model x8 +720 INIT_ZERO Dropout +1 realCP source smoke =9361 max/exactNN;900 channelpackets;180 rawLreads;0grad/optimizer/EMA/head updates.No newV/targetNN. Inherited20/30/E200 costsalreadyrecorded,notnew training.",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/models/S1",
+      "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/analysis/cvs_dual_teacher_adapter_source_fit_20261019.py",
+        "--runtime",
+        "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/runtime.json",
+        "--output",
+        "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01"
+      ],
+      "expected_artifacts": [
+        "readout.json"
+      ]
+    },
+    {
+      "row_id": "S2-readout",
+      "method": "frozen S2",
+      "purpose": "source diagnostic",
+      "config_ref": "experiment.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/execution.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019
+      },
+      "seed_notes": "No new modelseed.Original channel seeds and RX/day/eq session reuse;fresh namespace FdualAdapter/sourceFit/20261019/draw0|draw1;dropout4fixedseeds2026101901..04,not independent modelseeds.Support notapplicable.",
+      "k": null,
+      "scenario": [
+        "raw",
+        "observed_last",
+        "fresh_mid_d0",
+        "fresh_mid_d1",
+        "fresh_low_d0",
+        "fresh_low_d1"
+      ],
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "1080 NN/model x8 +720 INIT_ZERO Dropout +1 realCP source smoke =9361 max/exactNN;900 channelpackets;180 rawLreads;0grad/optimizer/EMA/head updates.No newV/targetNN. Inherited20/30/E200 costsalreadyrecorded,notnew training.",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/models/S2",
+      "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/analysis/cvs_dual_teacher_adapter_source_fit_20261019.py",
+        "--runtime",
+        "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/runtime.json",
+        "--output",
+        "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01"
+      ],
+      "expected_artifacts": [
+        "readout.json"
+      ]
+    },
+    {
+      "row_id": "S3-readout",
+      "method": "frozen S3",
+      "purpose": "source diagnostic",
+      "config_ref": "experiment.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/execution.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019
+      },
+      "seed_notes": "No new modelseed.Original channel seeds and RX/day/eq session reuse;fresh namespace FdualAdapter/sourceFit/20261019/draw0|draw1;dropout4fixedseeds2026101901..04,not independent modelseeds.Support notapplicable.",
+      "k": null,
+      "scenario": [
+        "raw",
+        "observed_last",
+        "fresh_mid_d0",
+        "fresh_mid_d1",
+        "fresh_low_d0",
+        "fresh_low_d1"
+      ],
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "1080 NN/model x8 +720 INIT_ZERO Dropout +1 realCP source smoke =9361 max/exactNN;900 channelpackets;180 rawLreads;0grad/optimizer/EMA/head updates.No newV/targetNN. Inherited20/30/E200 costsalreadyrecorded,notnew training.",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/models/S3",
+      "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/analysis/cvs_dual_teacher_adapter_source_fit_20261019.py",
+        "--runtime",
+        "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/runtime.json",
+        "--output",
+        "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01"
+      ],
+      "expected_artifacts": [
+        "readout.json"
+      ]
+    },
+    {
+      "row_id": "TS-readout",
+      "method": "frozen TS",
+      "purpose": "source diagnostic",
+      "config_ref": "experiment.json",
+      "resolved_config_ref": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/execution.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019
+      },
+      "seed_notes": "No new modelseed.Original channel seeds and RX/day/eq session reuse;fresh namespace FdualAdapter/sourceFit/20261019/draw0|draw1;dropout4fixedseeds2026101901..04,not independent modelseeds.Support notapplicable.",
+      "k": null,
+      "scenario": [
+        "raw",
+        "observed_last",
+        "fresh_mid_d0",
+        "fresh_mid_d1",
+        "fresh_low_d0",
+        "fresh_low_d1"
+      ],
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "1080 NN/model x8 +720 INIT_ZERO Dropout +1 realCP source smoke =9361 max/exactNN;900 channelpackets;180 rawLreads;0grad/optimizer/EMA/head updates.No newV/targetNN. Inherited20/30/E200 costsalreadyrecorded,notnew training.",
+      "output_root": "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/models/TS",
+      "log_path": "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/sourceFit.stdout.log",
+      "command": [
+        "CVS-RFFI/python",
+        "-u",
+        "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/analysis/cvs_dual_teacher_adapter_source_fit_20261019.py",
+        "--runtime",
+        "PROJECT/releases/cvs_F_dualAdapter_sourceFit_E30_20261019_r01/runtime.json",
+        "--output",
+        "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01"
+      ],
+      "expected_artifacts": [
+        "readout.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Model teacher/native scale30 vsTs5 NLL units disclosed;accuracy unaffected. TS no joint160 distance bound.",
+    "Observed_last is deterministic replay oflast actual r02 L namespace/seed/scene,not savedIQbyte assertion. Original source L sequences only metadata scan;noUdatasetiteration orUtruth.",
+    "No promotion or coefficient sweep. Closed r02 recipe remains SOURCE_FAIL. Source evidence may justify one later substantive mechanism;no newtrainedCP,no targetretest.",
+    "Onlyregistered params/persistentbuffers unchanged;temporary Dropout flags, Pythoncounters,RNG and Sincderivedcache may change;no global objectunchanged claim."
+  ],
+  "registered_at": "2026-10-19T09:53:17+00:00"
+}
