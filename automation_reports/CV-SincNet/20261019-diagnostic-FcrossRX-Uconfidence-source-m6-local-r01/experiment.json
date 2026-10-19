@@ -1,0 +1,489 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-diagnostic-FcrossRX-Uconfidence-source-m6-local-r01",
+  "group_id": "F-crossRX-source-U-confidence",
+  "display_name": "原F跨RX50：六模型student与ownEMA的隐藏标签源U置信度诊断",
+  "description": "Frozen clean source-U prediction confidence for all3 fixed BASE/BOTH final50 students and ownEMA snapshots;12 evaluations. No true U labels, training, head fitting, EMA updates or target access.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "F Uconfidence diagnostic"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "source_U_hidden",
+    "confidence",
+    "student_ownEMA",
+    "no_training",
+    "no_target",
+    "clean_only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active user worse-transmitter feature-learning goal. Read-only sourceU diagnostics authorized within Phase1; latest noSat/defaulthead constraint preserved. Ongoing RX_MARGIN training is untouched.",
+  "code": {
+    "commit": "Git release HEAD",
+    "checkout": "codex/phase1-rdrop-combinations-20261015",
+    "environment": "Verified local ssr-gpu Python3.10.19 / torch2.10+cu128 / FULL_FP32_NO_TF32 / threads2",
+    "cwd": "LOCAL_RELEASE/cvs_F_Uconfidence50_local_20261019_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing validated local exact native role cache",
+    "representation": "raw received residual/post_sync/noeq IQ; fixed256 packet; deployed160-dimensional id_feat_joint",
+    "contract_ref": "LOCAL_DATA/source/source_contract.json",
+    "physical_ids_ref": "LOCAL_DATA/source/source_contract.json#role_ids",
+    "label_map_ref": "LOCAL_DATA/source/source_contract.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "LOCAL_DATA/source/source_contract.json",
+    "roles": {
+      "L_s": "6300 source labels; NOT READ",
+      "U_s": "56700 hidden TX source IQ; dataset.y=None,y=-1,tx_label_visible=False",
+      "V": "27000 source validation; NOT READ"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": "existing VALIDATED_ONCE local manifest; unchanged",
+    "split_id": "392005 exact original roles; unchanged",
+    "validation_ref": "LOCAL_DATA/source_cache/manifest.json",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Frozen sourceU prediction distribution/confidence only; no U precision/recall/historical gate acceptance/target performance or deployment claim"
+  },
+  "checkpoint": {
+    "initialization": "No training. All6 prior-fixed BASE/BOTH final50 models, each student and ownEMA snapshots; no EMA/optimizer/model update",
+    "sources": [
+      "LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01/BASE-s2026092701/source/final_ssdg.pth",
+      "LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01/BOTH-s2026092701/source/final_ssdg.pth",
+      "LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01/BASE-s2026092702/source/final_ssdg.pth",
+      "LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01/BOTH-s2026092702/source/final_ssdg.pth",
+      "LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01/BASE-s2026092703/source/final_ssdg.pth",
+      "LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01/BOTH-s2026092703/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Exact original training release cvs_f_crossrx50_local.provenance.source_proof and validate_checkpoint",
+    "provenance_verdict": "Existing scratch ancestry and source roles verified; no new training initialization",
+    "selection_rule": "All3 fixed seeds in both source-qualified/preregistered families; no target-based seed/model selection",
+    "reference_code_commit": "31467086c3ced30237f3ac86e91eae68645425d7"
+  },
+  "execution": {
+    "host": "Local Windows workstation, ordinary account",
+    "launch_owner": "codex/root/F-sourceU-confidence-20261019",
+    "gpu_policy": "GPU0 one sequential diagnostic worker, global source/predict/diagnostic workers<=3, freeRAM>=4.5GiB; preserve sourcePID46604/controller12148",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "LOCAL_RUNS/20261019-diagnostic-FcrossRX-Uconfidence-source-m6-local-r01",
+    "launch_command": "LOCAL_PYTHON -X utf8 -u experiments/cvs_f_uconfidence50/runner.py --profile LOCAL_PROFILE --source-run LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --source-release LOCAL_RELEASE/cvs_F_crossRX50_weakTX_local_20261019_r01 --output LOCAL_RUNS/20261019-diagnostic-FcrossRX-Uconfidence-source-m6-local-r01 --commit RELEASE_COMMIT",
+    "stop_rule": "Wrong reference/role/hidden labels, nonfinite/shape, model state change, missing ownEMA or output collision: fail and preserve; no threshold fitting, performance retries or process termination"
+  },
+  "expected_artifacts": [
+    "execution.json",
+    "*-smoke.json",
+    "*-sourceU.json",
+    "student_EMA_agreement.json",
+    "result.json",
+    "completion.json",
+    "postlaunch.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "predictedTX count/fraction",
+      "conditional prediction confidence mean/q10",
+      "entropy",
+      "confidence tail counts at.92/.95/.97",
+      "sourceRX/day group prediction distribution",
+      "student-ownEMA argmax agreement",
+      "model state unchanged,0truth/target/head/optimizer/EMA updates"
+    ],
+    "dimensions": [
+      "3 model seeds",
+      "2 prior-fixed families",
+      "2 snapshots each",
+      "6 predictedTX categories",
+      "5 sourceRX",
+      "3 source days",
+      "56700 unique hidden-label U samples"
+    ],
+    "prediction_ref": "680400 frozen unaugmented sourceU snapshot forwards; no target input and no labels",
+    "scorer_ref": "No truth-side scoring; aggregate predicted confidence only, no accuracy/precision/recall"
+  },
+  "rows": [
+    {
+      "row_id": "BASE-s2026092701",
+      "method": "Frozen originalF+CROSS_RX50 BASE default-head student+ownEMA",
+      "purpose": "Read-only sourceU confidence, never acceptance or true-class performance",
+      "config_ref": "experiment.json#rows/BASE-s2026092701",
+      "config": {
+        "model_seed": 2026092701,
+        "sourceU_only": true,
+        "snapshot_roles": [
+          "student",
+          "ownEMA"
+        ],
+        "label_visibility": "hidden",
+        "thresholds": [
+          0.92,
+          0.95,
+          0.97
+        ],
+        "head_fit_updates": 0,
+        "optimizer_updates": 0,
+        "EMA_updates": 0,
+        "target_reads": 0
+      },
+      "resolved_config_ref": "LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01/BASE-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "evaluation_role": "U_s",
+        "augmentation": "none",
+        "U_TX_hidden": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Inherited fixed source/model seeds; deterministic clean/no-update analysis, no random threshold calibration",
+      "k": null,
+      "scenario": "sourceU_clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "2x56700 sourceU forwards +2x2 zero-input checkpoint smoke;0optimizer/head/EMA updates",
+      "output_root": "LOCAL_RUNS/20261019-diagnostic-FcrossRX-Uconfidence-source-m6-local-r01/BASE-s2026092701",
+      "log_path": "LOCAL_RELEASE/cvs_F_Uconfidence50_local_20261019_r01/worker.stdout.log",
+      "command": "LOCAL_PYTHON -X utf8 -u experiments/cvs_f_uconfidence50/runner.py --profile LOCAL_PROFILE --source-run LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --source-release LOCAL_RELEASE/cvs_F_crossRX50_weakTX_local_20261019_r01 --output LOCAL_RUNS/20261019-diagnostic-FcrossRX-Uconfidence-source-m6-local-r01 --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "execution.json",
+        "*-smoke.json",
+        "*-sourceU.json",
+        "student_EMA_agreement.json",
+        "result.json",
+        "completion.json",
+        "postlaunch.json"
+      ]
+    },
+    {
+      "row_id": "BOTH-s2026092701",
+      "method": "Frozen originalF+CROSS_RX50 BOTH default-head student+ownEMA",
+      "purpose": "Read-only sourceU confidence, never acceptance or true-class performance",
+      "config_ref": "experiment.json#rows/BOTH-s2026092701",
+      "config": {
+        "model_seed": 2026092701,
+        "sourceU_only": true,
+        "snapshot_roles": [
+          "student",
+          "ownEMA"
+        ],
+        "label_visibility": "hidden",
+        "thresholds": [
+          0.92,
+          0.95,
+          0.97
+        ],
+        "head_fit_updates": 0,
+        "optimizer_updates": 0,
+        "EMA_updates": 0,
+        "target_reads": 0
+      },
+      "resolved_config_ref": "LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01/BOTH-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "evaluation_role": "U_s",
+        "augmentation": "none",
+        "U_TX_hidden": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Inherited fixed source/model seeds; deterministic clean/no-update analysis, no random threshold calibration",
+      "k": null,
+      "scenario": "sourceU_clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "2x56700 sourceU forwards +2x2 zero-input checkpoint smoke;0optimizer/head/EMA updates",
+      "output_root": "LOCAL_RUNS/20261019-diagnostic-FcrossRX-Uconfidence-source-m6-local-r01/BOTH-s2026092701",
+      "log_path": "LOCAL_RELEASE/cvs_F_Uconfidence50_local_20261019_r01/worker.stdout.log",
+      "command": "LOCAL_PYTHON -X utf8 -u experiments/cvs_f_uconfidence50/runner.py --profile LOCAL_PROFILE --source-run LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --source-release LOCAL_RELEASE/cvs_F_crossRX50_weakTX_local_20261019_r01 --output LOCAL_RUNS/20261019-diagnostic-FcrossRX-Uconfidence-source-m6-local-r01 --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "execution.json",
+        "*-smoke.json",
+        "*-sourceU.json",
+        "student_EMA_agreement.json",
+        "result.json",
+        "completion.json",
+        "postlaunch.json"
+      ]
+    },
+    {
+      "row_id": "BASE-s2026092702",
+      "method": "Frozen originalF+CROSS_RX50 BASE default-head student+ownEMA",
+      "purpose": "Read-only sourceU confidence, never acceptance or true-class performance",
+      "config_ref": "experiment.json#rows/BASE-s2026092702",
+      "config": {
+        "model_seed": 2026092702,
+        "sourceU_only": true,
+        "snapshot_roles": [
+          "student",
+          "ownEMA"
+        ],
+        "label_visibility": "hidden",
+        "thresholds": [
+          0.92,
+          0.95,
+          0.97
+        ],
+        "head_fit_updates": 0,
+        "optimizer_updates": 0,
+        "EMA_updates": 0,
+        "target_reads": 0
+      },
+      "resolved_config_ref": "LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01/BASE-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "evaluation_role": "U_s",
+        "augmentation": "none",
+        "U_TX_hidden": true
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Inherited fixed source/model seeds; deterministic clean/no-update analysis, no random threshold calibration",
+      "k": null,
+      "scenario": "sourceU_clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "2x56700 sourceU forwards +2x2 zero-input checkpoint smoke;0optimizer/head/EMA updates",
+      "output_root": "LOCAL_RUNS/20261019-diagnostic-FcrossRX-Uconfidence-source-m6-local-r01/BASE-s2026092702",
+      "log_path": "LOCAL_RELEASE/cvs_F_Uconfidence50_local_20261019_r01/worker.stdout.log",
+      "command": "LOCAL_PYTHON -X utf8 -u experiments/cvs_f_uconfidence50/runner.py --profile LOCAL_PROFILE --source-run LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --source-release LOCAL_RELEASE/cvs_F_crossRX50_weakTX_local_20261019_r01 --output LOCAL_RUNS/20261019-diagnostic-FcrossRX-Uconfidence-source-m6-local-r01 --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "execution.json",
+        "*-smoke.json",
+        "*-sourceU.json",
+        "student_EMA_agreement.json",
+        "result.json",
+        "completion.json",
+        "postlaunch.json"
+      ]
+    },
+    {
+      "row_id": "BOTH-s2026092702",
+      "method": "Frozen originalF+CROSS_RX50 BOTH default-head student+ownEMA",
+      "purpose": "Read-only sourceU confidence, never acceptance or true-class performance",
+      "config_ref": "experiment.json#rows/BOTH-s2026092702",
+      "config": {
+        "model_seed": 2026092702,
+        "sourceU_only": true,
+        "snapshot_roles": [
+          "student",
+          "ownEMA"
+        ],
+        "label_visibility": "hidden",
+        "thresholds": [
+          0.92,
+          0.95,
+          0.97
+        ],
+        "head_fit_updates": 0,
+        "optimizer_updates": 0,
+        "EMA_updates": 0,
+        "target_reads": 0
+      },
+      "resolved_config_ref": "LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01/BOTH-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "evaluation_role": "U_s",
+        "augmentation": "none",
+        "U_TX_hidden": true
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Inherited fixed source/model seeds; deterministic clean/no-update analysis, no random threshold calibration",
+      "k": null,
+      "scenario": "sourceU_clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "2x56700 sourceU forwards +2x2 zero-input checkpoint smoke;0optimizer/head/EMA updates",
+      "output_root": "LOCAL_RUNS/20261019-diagnostic-FcrossRX-Uconfidence-source-m6-local-r01/BOTH-s2026092702",
+      "log_path": "LOCAL_RELEASE/cvs_F_Uconfidence50_local_20261019_r01/worker.stdout.log",
+      "command": "LOCAL_PYTHON -X utf8 -u experiments/cvs_f_uconfidence50/runner.py --profile LOCAL_PROFILE --source-run LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --source-release LOCAL_RELEASE/cvs_F_crossRX50_weakTX_local_20261019_r01 --output LOCAL_RUNS/20261019-diagnostic-FcrossRX-Uconfidence-source-m6-local-r01 --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "execution.json",
+        "*-smoke.json",
+        "*-sourceU.json",
+        "student_EMA_agreement.json",
+        "result.json",
+        "completion.json",
+        "postlaunch.json"
+      ]
+    },
+    {
+      "row_id": "BASE-s2026092703",
+      "method": "Frozen originalF+CROSS_RX50 BASE default-head student+ownEMA",
+      "purpose": "Read-only sourceU confidence, never acceptance or true-class performance",
+      "config_ref": "experiment.json#rows/BASE-s2026092703",
+      "config": {
+        "model_seed": 2026092703,
+        "sourceU_only": true,
+        "snapshot_roles": [
+          "student",
+          "ownEMA"
+        ],
+        "label_visibility": "hidden",
+        "thresholds": [
+          0.92,
+          0.95,
+          0.97
+        ],
+        "head_fit_updates": 0,
+        "optimizer_updates": 0,
+        "EMA_updates": 0,
+        "target_reads": 0
+      },
+      "resolved_config_ref": "LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01/BASE-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "evaluation_role": "U_s",
+        "augmentation": "none",
+        "U_TX_hidden": true
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Inherited fixed source/model seeds; deterministic clean/no-update analysis, no random threshold calibration",
+      "k": null,
+      "scenario": "sourceU_clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "2x56700 sourceU forwards +2x2 zero-input checkpoint smoke;0optimizer/head/EMA updates",
+      "output_root": "LOCAL_RUNS/20261019-diagnostic-FcrossRX-Uconfidence-source-m6-local-r01/BASE-s2026092703",
+      "log_path": "LOCAL_RELEASE/cvs_F_Uconfidence50_local_20261019_r01/worker.stdout.log",
+      "command": "LOCAL_PYTHON -X utf8 -u experiments/cvs_f_uconfidence50/runner.py --profile LOCAL_PROFILE --source-run LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --source-release LOCAL_RELEASE/cvs_F_crossRX50_weakTX_local_20261019_r01 --output LOCAL_RUNS/20261019-diagnostic-FcrossRX-Uconfidence-source-m6-local-r01 --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "execution.json",
+        "*-smoke.json",
+        "*-sourceU.json",
+        "student_EMA_agreement.json",
+        "result.json",
+        "completion.json",
+        "postlaunch.json"
+      ]
+    },
+    {
+      "row_id": "BOTH-s2026092703",
+      "method": "Frozen originalF+CROSS_RX50 BOTH default-head student+ownEMA",
+      "purpose": "Read-only sourceU confidence, never acceptance or true-class performance",
+      "config_ref": "experiment.json#rows/BOTH-s2026092703",
+      "config": {
+        "model_seed": 2026092703,
+        "sourceU_only": true,
+        "snapshot_roles": [
+          "student",
+          "ownEMA"
+        ],
+        "label_visibility": "hidden",
+        "thresholds": [
+          0.92,
+          0.95,
+          0.97
+        ],
+        "head_fit_updates": 0,
+        "optimizer_updates": 0,
+        "EMA_updates": 0,
+        "target_reads": 0
+      },
+      "resolved_config_ref": "LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01/BOTH-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "evaluation_role": "U_s",
+        "augmentation": "none",
+        "U_TX_hidden": true
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Inherited fixed source/model seeds; deterministic clean/no-update analysis, no random threshold calibration",
+      "k": null,
+      "scenario": "sourceU_clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "2x56700 sourceU forwards +2x2 zero-input checkpoint smoke;0optimizer/head/EMA updates",
+      "output_root": "LOCAL_RUNS/20261019-diagnostic-FcrossRX-Uconfidence-source-m6-local-r01/BOTH-s2026092703",
+      "log_path": "LOCAL_RELEASE/cvs_F_Uconfidence50_local_20261019_r01/worker.stdout.log",
+      "command": "LOCAL_PYTHON -X utf8 -u experiments/cvs_f_uconfidence50/runner.py --profile LOCAL_PROFILE --source-run LOCAL_RUNS/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --source-release LOCAL_RELEASE/cvs_F_crossRX50_weakTX_local_20261019_r01 --output LOCAL_RUNS/20261019-diagnostic-FcrossRX-Uconfidence-source-m6-local-r01 --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "execution.json",
+        "*-smoke.json",
+        "*-sourceU.json",
+        "student_EMA_agreement.json",
+        "result.json",
+        "completion.json",
+        "postlaunch.json"
+      ]
+    }
+  ],
+  "notes": [
+    "All original training records and current RX_MARGIN remain unchanged; this is a separate source-only diagnostic, not a new training candidate.",
+    "Native completed logs record total U exposure/acceptance but no class-specific accepted-pseudo history. Frozen final confidence cannot reconstruct historical acceptance, ground-truth class coverage or pseudo-label precision.",
+    "Source U TX labels remain hidden. No raw ManySig/scoring truth, L/V or target path is opened. Models only eval/no_grad, parameters and buffers checked unchanged, ownEMA loaded only for read-only inference.",
+    "Fixed confidence thresholds.92/.95/.97 are descriptive tails from original threshold range, not fitted or selected training thresholds. No sourceV calibration or target-dependent class ranking.",
+    "No replay of ordinary augmentation, batch temporal-neighbor or strong-agreement gates. These are explicitly not actual gate-accepted counts; no assumption about hidden true class distribution.",
+    "All6 prior-fixed BASE/BOTH parents and both snapshots are included symmetrically. Benchmark already exposed; no new blind-test, Phase2 or satellite claim.",
+    "Only numeric aggregate confidence counts enter Git; no datasets/CP/per-packet predictions/logits/IDs or raw runtime logs."
+  ],
+  "registered_at": "2026-10-19T15:34:20+00:00"
+}
