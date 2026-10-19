@@ -2,3 +2,6 @@
 {"at": "2026-10-19T16:20:12+00:00", "status": "RUNNING", "note": "VERIFIED realjointgradients/Ffrozen/checkpointsmoke;actualPID/CWD/cmd/GPU/loggrowth;E10active;0target", "evidence": ["report.md", "experiment.json"], "row_id": "teacher_mean"}
 {"at": "2026-10-19T16:20:12+00:00", "status": "RUNNING", "note": "VERIFIED realjointgradients/Ffrozen/checkpointsmoke;actualPID/CWD/cmd/GPU/loggrowth;E10active;0target", "evidence": ["report.md", "experiment.json"], "row_id": "teacher_worst"}
 {"at": "2026-10-19T16:20:12+00:00", "status": "RUNNING", "note": "Bothjointarmsactive,sourcechoicebeforeautomaticselectedtarget", "evidence": ["report.md", "experiment.json"], "row_id": null}
+{"at": "2026-10-19T16:37:36+00:00", "status": "ANALYZED", "note": "Source complete; no target access", "evidence": ["report.md", "results/summary.json"], "row_id": "teacher_mean"}
+{"at": "2026-10-19T16:37:36+00:00", "status": "ANALYZED", "note": "Source complete; no target access", "evidence": ["report.md", "results/summary.json"], "row_id": "teacher_worst"}
+{"at": "2026-10-19T16:37:36+00:00", "status": "ANALYZED", "note": "Sourcequalified=False;selected=None;wholegoalnotclaimedcomplete", "evidence": ["report.md", "results/summary.json"], "row_id": null}
