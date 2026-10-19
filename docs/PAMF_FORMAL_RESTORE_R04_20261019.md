@@ -20,9 +20,8 @@
 |R04-04|有界且显式标注参考池的特征诊断|feature_diagnostic/score_row|verified|完整池数学对照/标签置换/无其他TX/非法cap测试通过，默认分支保留|
 |R04-05|资源/输出/提交与运行状态可核实|experiment/发布|verified|单归档比较、compile/import、PID/CWD/argv/GPU4与日志增长已核实|
 |R04-06|多seed和独立物理族最终证明|后续冻结扩展|deferred|本轮只有原单seed；R03结果不依据本轮分数调参|
+|R04-07|用户新增：报告郊区数据|report/summary/figure|verified|高、中、低仰角郊区分别列原F/恢复准确率、变化、恢复宏F1及修复/损坏；cleanF与AsF分开|
 
 R05 固定计划使用 R03 源 A/B 同选且合格的确定性修正，继承 R03 既有独立审查；新增源冻结与训练契约负测后共29项通过。与 R04 共享原正式输入，独立GPU0，不按正式分数改型、调参或重排。R04 code a173cc5，R05 code 9522a4e，各自实际冻结于 experiment.json。
 
 报告口径：本恢复研究同时保留 clean、郊区三档和城区三档，不以 urban 单项或六场景均值替代郊区明细。
-
-|R04-07|用户新增：报告郊区数据|report/summary/figure|verified|高、中、低仰角郊区分别列原F/恢复准确率、变化、恢复宏F1及修复/损坏；cleanF与AsF分开|
