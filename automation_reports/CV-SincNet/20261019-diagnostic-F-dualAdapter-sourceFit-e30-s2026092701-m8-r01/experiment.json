@@ -113,7 +113,7 @@
       }
     ],
     "contract_check_ref": "Existing strict own_model and parent_payload/load_ts perform inherited physical source role and FINAL identity checks before use",
-    "provenance_verdict": "Previously VERIFIED lineage,strict repeat check at load;no data revalidation",
+    "provenance_verdict": "VERIFIED all actual strict loads/role/FINAL checks; TC/INIT_ZERO equality0 and all registered states unchanged",
     "selection_rule": "Fixed modelseed2026092701/final20,final30,last200.180 IDs reused without performance selection"
   },
   "execution": {
@@ -132,7 +132,13 @@
       "--output",
       "PROJECT/runs/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01"
     ],
-    "stop_rule": "Only technical failure:legality/provenance/shape/nonfinite/checkpoint,state-persistent mutation,budget,output conflict;preserve all artifacts,no auto retry/healthy-job stop."
+    "stop_rule": "Only technical failure:legality/provenance/shape/nonfinite/checkpoint,state-persistent mutation,budget,output conflict;preserve all artifacts,no auto retry/healthy-job stop.",
+    "actual_gpu": 4,
+    "actual_pid": 2306590,
+    "release_commit": "15c6c23b8bb22ee732b474beef066f2f244f6b9a",
+    "launch_readback_ref": "local_artifacts/F_dualAdapter_sourceFit_E30_20261019/postlaunch.json",
+    "completion_evidence": "retrieved/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/complete.json; SOURCE_ONLY_ZERO_UPDATE_COMPLETE",
+    "live_process_evidence": "Completed before first external readback; no alive PID/GPU/log-growth captured; no rerun"
   },
   "expected_artifacts": [
     "execution.json",
@@ -529,7 +535,8 @@
     "Model teacher/native scale30 vsTs5 NLL units disclosed;accuracy unaffected. TS no joint160 distance bound.",
     "Observed_last is deterministic replay oflast actual r02 L namespace/seed/scene,not savedIQbyte assertion. Original source L sequences only metadata scan;noUdatasetiteration orUtruth.",
     "No promotion or coefficient sweep. Closed r02 recipe remains SOURCE_FAIL. Source evidence may justify one later substantive mechanism;no newtrainedCP,no targetretest.",
-    "Onlyregistered params/persistentbuffers unchanged;temporary Dropout flags, Pythoncounters,RNG and Sincderivedcache may change;no global objectunchanged claim."
+    "Onlyregistered params/persistentbuffers unchanged;temporary Dropout flags, Pythoncounters,RNG and Sincderivedcache may change;no global objectunchanged claim.",
+    "Actual completed9361NN/900channel/180Lreads;zero optimizer/EMA/head/V/target. Full source results final_analysis.md; no new trainedCP. Independent artifact readback VERIFIED; completed before first live process snapshot."
   ],
   "registered_at": "2026-10-19T09:53:17+00:00"
 }

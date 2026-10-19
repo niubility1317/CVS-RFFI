@@ -17,3 +17,7 @@ N607 单普通账户 worker，CPU2、FP32/TF32off；GPU4/6/7 单次分配，共�
 结果不能证明未见 RX 泛化、反推物理上限或构成模型多种子结论。已有完整正式预测不重跑，本 run 无 target scorer。
 
 实际诊断代码 commit：`a2c9694f97e4d314207795ba774ea348cfe8c0fa`。发布归档保留含此代码的当前 Git HEAD，`release_commit.txt`记录归档身份。
+
+## 实际状态
+
+SOURCE_ONLY_ZERO_UPDATE_COMPLETE / ANALYZED。完整结论见[final_analysis.md](final_analysis.md)。已核实9361身份前向、900信道生成、180合法L物理样本、0训练更新/新增V/target前向。首个进程读回时已结束，保留该证据限制。固定S3配方保持关闭；raw补充路径只完成维度与成本可行性核对，尚未实现或启动。

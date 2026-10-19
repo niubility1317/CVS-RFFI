@@ -32,3 +32,10 @@
 实际接入约束：原native CENTER_UNITS optimizer要求Sinc和W可训练，不能直接拿来给冻结F/adapter使用。保留CoordinateSinc参数化与已加载函数，适配阶段Sinc冻结/更新0，显式仅adapter优化器；S0若更新骨干则另作统一冻结head的实际优化器规则，不能为绕过断言开启W。
 
 实际闭环：r01在首更新前教师构建重入，已保留FAILED/0update；r02 code/config 9a376ab313b3ba42459df32694c1502675e02a59，六行全2220steps/累计6660、默认head冻结、adapter原F冻结、同L/U顺序、teacher/As完整计数、strict FINAL30加载与all7 truth-last完成。源决策先固定FAIL，fullVclean相对较强NoAs −0.903704pp；正式S3 clean82.348810%、lowurban42.326190%。不延长/扩种子/扫系数；source-only下一问题另存当前run。详细数值见 automation_reports/CV-SincNet/20261019-phase1-F-dualTeacher-adapter-e20plus10-s2026092701-m6-r02/final_analysis.md。
+
+## 追加：冻结源拟合与joint160诊断
+
+- Run `20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01`：ANALYZED，9361身份前向/900原物理信道包/180合法L，0optimizer/EMA/head/V/target更新或新前向（V/target为0）。
+- S3末次已见118/180，Ts154/180；low同场景已见S3为28/59、Ts42/59。clean真实joint160中位漂移S3=.242783、S1=.111271；零输出eval一致为0，Dropout-only T4²KL=.885004而720/720全对。
+- 用户条件“局部修正不足后再考虑rawIQ补充编码器”已有源证据支持；仅完成4256参数/356352卷积MAC/当前输入同IQ的可行性核对，NOT_IMPLEMENTED/NOT_LAUNCHED。LoRA的S3有效前置条件未成立，本轮不混featurekeep。
+- 完整结果：[final_analysis.md](../automation_reports/CV-SincNet/20261019-diagnostic-F-dualAdapter-sourceFit-e30-s2026092701-m8-r01/final_analysis.md)。旧配方SOURCE_FAIL保持，未扩seed/E50或新target读出。
