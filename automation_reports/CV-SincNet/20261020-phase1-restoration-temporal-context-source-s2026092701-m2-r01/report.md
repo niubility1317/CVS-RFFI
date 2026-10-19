@@ -1,6 +1,6 @@
 # 纠错器窄窗与全窗注意力
 
-状态：PLANNED。用户完整目标保持为目标 low urban ≥70%，其他五 practical 接近原 clean 85.113889%（本对话 Agent 暂按差距≤2个百分点解释）；分别报告同物理 clean 的 IQ 差距，以及接入冻结原 F/default heads 后真实 TX 识别和净纠错。实际目标最好仍65.309127%，未达成，不以新结构、检查通过、源分数或波形代替目标成绩。
+状态：RUNNING / VERIFIED。用户完整目标保持为目标 low urban ≥70%，其他五 practical 接近原 clean 85.113889%（本对话 Agent 暂按差距≤2个百分点解释）；分别报告同物理 clean 的 IQ 差距，以及接入冻结原 F/default heads 后真实 TX 识别和净纠错。实际目标最好仍65.309127%，未达成，不以新结构、检查通过、源分数或波形代替目标成绩。
 
 本轮依据 source V 分组证据提出结构假设：此前跨RX统计混合相对同RX主要改善RX1/6，但最弱RX3仍79.722222%，RX4下降；此前IQ摘要/语义FiLM源low/mid也未改善。这些证据不能证明原因是时间上下文不足。本轮只检验显式、随当前输入变化的时间交互，训练配方不依据目标分数调整。已有卷积感受野较宽，GroupNorm也使用帧内整体统计，不能称原网络没有全局信息，也不能将窄注意力窗称为全模型只看局部原始IQ。
 
@@ -19,3 +19,15 @@
 42项聚焦检查PASS，覆盖原R03全state继承与初始输出、同参数/初值、实际窄/全窗作用范围、零投影及QKV后续梯度、逐帧独立和eval无状态更新、checkpoint预算/来源/权限、固定双行无源筛选、七视图/三F/有限IQ后truth。单次独立P0/P1审查PASS，无确定P0/P1；QKV实际非零梯度观测已纳入该次审查。launcher首步使用实际原R03/三F、source Ls四条（RX1/3各2条）no-query smoke，验证零输出逐点等于原R03、两臂初始state相同、coarse/correction/新attention.out有限非零梯度、原头向IQ输入梯度、F无梯度及新checkpoint往返；0V/0TX/0target/0optimizer更新，PASS立即训练，不设smoke令牌。
 
 一次N607普通账号预检VERIFIED：原R03来源合法，前序固定矩阵完整完成，新run/release不存在，GPU4/5各24124MB空闲无PID、空间≥8GB，其他owner保持。GPU4窄窗/GPU5全窗，每卡一条本run训练/预测worker，计入全owner<2、source获取≥18GB/target≥12GB；CPU2线程、独立scorer最多1。root确认某source进程实际退出才同卡启动其target，不等另一行。非法来源/权限/代码、冲突、非有限/OOM、预算/新模块未实际执行或预测失败时保存并技术失败该行，无自动重试，健康行继续；不热改/停止/重启其他任务。一个代码配置commit、不可覆盖root、一个归档本地/远端SHA比较与remotecompile，随后核实实际PID/CWD/命令/GPU/日志增长。命令、环境/CWD、路径、资源、停止规则与产物见experiment.json；原IQ、权重、预测、日志及私有运行状态不进Git。
+
+
+## 实际发布与首轮核验
+
+方法commit `d3d0d90f16271204bb0f31a788557f21ad86655a` 已推送并独立核实远端OID。一次发布归档本地/远端比较、远端compile/import和真实原R03/三F/四条Ls no-query smoke均PASS；两臂初始完整IQ逐点等于原R03、参数初值匹配、coarse/correction/新attention.out及原头到IQ输入梯度有效、F无梯度、新checkpoint往返一致；0V/0TX/0target/0optimizer更新。实际参数两臂均2207144、新attention66304，允许位置对为154/1024，PASS立即开始训练。
+
+两条实际source worker的PID/CWD/完整命令/GPU4/5及持续日志增长已核实；三F参考缓存各63000条。训练中QKV已有实际非零梯度，不能仅由参数delta推断学习：
+
+- window_attention：1/10轮、247/2470步，attention调用247次、IQ126000条、位置对19404000次；QKV非零梯度246步，输出投影范数0.15690157、QKV delta0.61689281。
+- global_attention：1/10轮、247/2470步，attention调用247次、IQ126000条、位置对129024000次；QKV非零梯度246步，输出投影范数0.14223653、QKV delta0.73779160。
+
+新模块已实际参与，不代表性能有效。当前仍在训练，尚无新源V或目标准确率；固定两臂最终E10后分别自动完整目标测试，source V不作资格筛选，用户70%/近clean完整目标保持未达成。

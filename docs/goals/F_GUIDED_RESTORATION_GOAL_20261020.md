@@ -123,7 +123,7 @@ IQ摘要/冻结F语义条件E10两臂现均已完成，方法commit `1c869980ae9
 同 RX 统计混合：目标low urban 64.968056%，clean 85.054365%。跨 RX 统计混合：目标low urban 65.132937%，clean 85.064286%。两臂均完成预登记E10/2470、原168000目标clean+六practical和三原头独立truth-last评分，实际source/target/controller均已退出。source V未作候选筛选，未修改/重排/选择性重跑任何行。完整逐环境/逐F/波形/净纠错/成本结果见[本轮报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-style-generalization-source-s2026092701-m2-r02/report.md)。本轮仍未达到用户完整目标，不由波形或训练检查推断性能。
 
 
-## 当前时间上下文固定比较（完整实现，待发布）
+## 当前时间上下文固定比较（两臂实际训练中）
 
 源域事后诊断显示，跨RX统计混合相对同RX主要改善RX1/6，但最弱RX3仍79.722222%，RX4下降；此前IQ摘要/语义FiLM源low/mid也未改善。下一候选依据这些source证据检验显式、输入相关时间交互，不依据目标成绩调整参数。已有卷积感受野较宽，GroupNorm也用帧内整体统计；不能称原网络没有全局信息，也不能把窄注意力mask解释为全模型只看局部原始IQ。
 
@@ -131,6 +131,6 @@ IQ摘要/冻结F语义条件E10两臂现均已完成，方法commit `1c869980ae9
 
 原R03 coarse20/correction20独立分叉jointE10/2470，原posterior03三F冻结损失、原63000L/U缓存1..10、数据顺序/路由和seed保持，源V仅诊断；旧LR3e-5、新attention2e-4，共warm247/cos至各自.1、WD1e-4、clip1、FP32。原组件各累计30轮、60组件epoch、串行继承50pass，新attention另计10轮，0F/defaulthead更新或新头拟合。逐轮记录attention输出范数、QKV delta及实际非零梯度步数，避免把AdamW decay当作学习；初始零输出投影导致首步QKV梯度0是预期，第二步可学习已unit验证。
 
-42项聚焦检查与一次独立P0/P1审查PASS；一次N607普通账号预检VERIFIED，原R03与数据契约合法、前序完成、新run/release不存在、GPU4/5各24124MB空闲无PID且空间≥8GB，其他owner保持。GPU4窄窗/GPU5全窗，每卡一条本run worker、source空闲≥18GB/target≥12GB、CPU scorer全run最多1。launcher首步实际原R03/三F/四Ls no-query smoke，PASS立即训练；每行实际source进程退出后自动同卡完整测试原168000 clean＋六practical及三原默认头，全部七视图预测固定后独立CPU才连接truth与评分clean，不作源分数筛选或目标反馈。当前尚未实际发布或产出新模型性能，用户完整目标保持未达成。
+42项聚焦检查与一次独立P0/P1审查PASS；一次N607普通账号预检VERIFIED，原R03与数据契约合法、前序完成、新run/release不存在、GPU4/5各24124MB空闲无PID且空间≥8GB，其他owner保持。GPU4窄窗/GPU5全窗，每卡一条本run worker、source空闲≥18GB/target≥12GB、CPU scorer全run最多1。launcher首步实际原R03/三F/四Ls no-query smoke，PASS立即训练；每行实际source进程退出后自动同卡完整测试原168000 clean＋六practical及三原默认头，全部七视图预测固定后独立CPU才连接truth与评分clean，不作源分数筛选或目标反馈。方法commit`d3d0d90f16271204bb0f31a788557f21ad86655a`已实际发布，归档比较/编译、真实R03/三F/四Ls smoke均PASS；两条GPU4/5训练worker的PID/CWD/命令/GPU/持续日志增长、实际QKV非零梯度与attention曝光已核实。当前训练中，尚无新源V或目标准确率，用户完整目标保持未达成。
 
 Run ID `20261020-phase1-restoration-temporal-context-source-s2026092701-m2-r01`；[本轮最小登记与方法](../../automation_reports/CV-SincNet/20261020-phase1-restoration-temporal-context-source-s2026092701-m2-r01/report.md)包含命令、环境/CWD、矩阵、路径、资源、停止规则及产物。没有额外审批、签名或哈希链。
