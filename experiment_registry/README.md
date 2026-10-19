@@ -199,3 +199,5 @@
 |CVS-only GitHub整理自动化|legacy_evidence_group|[打开](../github_publish/rffi-labeled-da-three-20260915/docs/AUTOMATION_GITHUB_REVIEW.md)|
 
 2026-10-12 已精简 2026-09-01 前无当前引用的旧目录记录，保留[历史摘要](retired_pre20260901_summaries.jsonl.gz)。历史原报告和精简结果保留，已删除的元数据明细不会在重建时回填。
+
+- [20261019-phase1-external-dg-suite-m168-r01](../automation_reports/CV-SincNet/20261019-phase1-external-dg-suite-m168-r01/report.md)：非PAMF对比，162新增训练＋6冻结补测，三seed，仅GPU0/1。

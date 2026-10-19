@@ -118,11 +118,16 @@ def train_resnet(c, meta):
     generator = torch.Generator().manual_seed(c['model_seed'])
     state = models.FishrVariance(c['num_domains'], c['fishr_ema']) if c['route'] == 'fishr' else None
     optimizer = torch.optim.AdamW(net.parameters(), lr=c['lr'], weight_decay=c['weight_decay'])
+    mix_pairs = [0, 0]
     write(out / 'resolved_config.json', dict(c, source_counts=meta['counts'],
         pid=os.getpid(), cwd=os.getcwd(), python=sys.executable,
         cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES'),
         target_access=False, actual_total_updates=total, default_head_joint_training=True,
-        separate_head_training=False, total_parameters=sum(p.numel() for p in net.parameters())))
+        separate_head_training=False, total_parameters=sum(p.numel() for p in net.parameters()),
+        mechanism=dict(route=c['route'], mixstyle_layers=['features.5', 'features.7']
+            if c['route'].startswith('mixstyle') else [], identity_protected=c['route'] == 'mixstyle_id',
+            fishr_gradient_parameters=['classifier.weight', 'classifier.bias']
+            if c['route'] == 'fishr' else [], source_domain_grouping='receiver')))
     iterator = iter(train_loader)
     started = time.monotonic(); exposure = 0; accumulated = []
     log = (out / 'steps.jsonl').open('x', encoding='utf-8')
@@ -146,6 +151,7 @@ def train_resnet(c, meta):
             x, y, rx = x.to(device), y.to(device), rx.to(device)
             net.train(); net.context = (y, rx)
             z, logits = net(x); ce = F.cross_entropy(logits, y)
+            mix_pairs = [a + b for a, b in zip(mix_pairs, net.mixstyle_counts)]
             penalty = ce.new_zeros(()); weight = 0.
             if c['route'] == 'fishr':
                 penalty = state(z, logits, y, rx)
@@ -165,6 +171,7 @@ def train_resnet(c, meta):
                     ce=sum(x[1] for x in accumulated) / len(accumulated),
                     penalty=sum(x[2] for x in accumulated) / len(accumulated),
                     penalty_weight=weight, physical_source_exposure=exposure,
+                    mixstyle_pairs_total=list(mix_pairs),
                     source_val_loss=val_loss, source_val_accuracy=val_acc,
                     seconds=time.monotonic() - started, target_access=False)
                 import json
@@ -173,11 +180,12 @@ def train_resnet(c, meta):
     finally:
         log.close()
     native.save(out / 'last.pt', net, c, meta['source_contract'],
-        c['epochs'] if c['epochs'] is not None else total, 1, val_loss)
+        c['epochs'], 1, val_loss)
     write(out / 'freeze.json', dict(status='SOURCE_TRAINED_FROZEN',
         checkpoint=str(out / 'last.pt'), config=c, source_contract=meta['source_contract'],
         selection='fixed_final_budget', target_access=False, target_score_used=False,
-        updates=total, physical_source_exposure=exposure, seconds=time.monotonic() - started))
+        updates=total, physical_source_exposure=exposure, mixstyle_pairs_total=mix_pairs,
+        seconds=time.monotonic() - started))
     print('SOURCE_TRAINED_FROZEN', c['row_id'], total, flush=True)
 
 

@@ -10,6 +10,7 @@ from concurrent.futures import ProcessPoolExecutor
 from dataclasses import asdict
 import hashlib
 import json
+import multiprocessing
 from pathlib import Path
 import pickle
 import sys
@@ -73,8 +74,10 @@ def selections(data, p):
     cells = [(rx, day) for rx in sorted(p['source_rxs']) for day in p['source_days']]
     fixed = p['fixed_labels']
     if fixed is not None:
-        if fixed % classes: raise ValueError('Fixed budget cannot be class-balanced')
-        quotient, remainder = divmod(fixed // classes, len(cells))
+        if fixed % (classes * len(p['source_rxs'])):
+            raise ValueError('Fixed budget cannot be TX/RX-balanced')
+        per_receiver = fixed // (classes * len(p['source_rxs']))
+        quotient, remainder = divmod(per_receiver, len(p['source_days']))
     result = {r: [] for r in ('L_s', 'U_s', 'V')}
     for tx in range(classes):
         for cell_index, (rx, day) in enumerate(cells):
@@ -84,7 +87,9 @@ def selections(data, p):
             validation_start = natural_l + natural_u
             label_count = n * p['label_per_thousand'] // 1000
             if fixed is not None:
-                label_count = quotient + (cell_index < remainder)
+                receiver_position = p['source_rxs'].index(rx)
+                day_position = p['source_days'].index(day)
+                label_count = quotient + ((day_position - receiver_position) % len(p['source_days']) < remainder)
             if label_count > natural_l:
                 raise ValueError('Cannot enlarge visible labels beyond original L_s')
             for packet in range(n):
@@ -153,8 +158,11 @@ def inventory(data, dataset, receivers):
 
 def generate_chunk(task):
     import numpy as np
+    root, scene, positions, configuration, engine_root = task
+    # New records use the exact immutable simulator that produced the reused
+    # sixscene observations, rather than whichever engine is in the checkout.
+    sys.path.insert(0, str(Path(engine_root) / 'code'))
     from leo_practical import Config, apply_leo_practical_channel_batch
-    root, scene, positions, configuration = task
     root = Path(root)
     with np.load(root / 'index.npz', allow_pickle=False) as ix:
         ids = ix['ids'][positions].tolist()
@@ -171,7 +179,7 @@ def generate_chunk(task):
     return positions, y, dict(Counter(m['receiver_lock_status'] for m in meta))
 
 
-def build_union(data, dataset, root, existing_views):
+def build_union(data, dataset, root, existing_views, engine_root):
     """Copy existing ManySig observations; synthesize only previously absent IDs."""
     import numpy as np
     root = Path(root); root.mkdir(parents=True, exist_ok=False)
@@ -202,7 +210,7 @@ def build_union(data, dataset, root, existing_views):
     if new_positions is not None: unknown = np.setdiff1d(unknown, new_positions)
     evidence = []
     started = time.monotonic()
-    with ProcessPoolExecutor(max_workers=4) as pool:
+    with ProcessPoolExecutor(max_workers=4, mp_context=multiprocessing.get_context('spawn')) as pool:
         for item in original['evidence']:
             scene = item['scene']
             dest = np.lib.format.open_memmap(root / (scene + '.npy'), mode='w+',
@@ -213,7 +221,7 @@ def build_union(data, dataset, root, existing_views):
                 for start in range(0, len(old_positions), 1000):
                     dest[new_positions[start:start + 1000]] = prior[old_positions[start:start + 1000]]
                 copied = len(new_positions)
-            tasks = [(str(root), scene, unknown[start:start + 1000], item['config'])
+            tasks = [(str(root), scene, unknown[start:start + 1000], item['config'], engine_root)
                      for start in range(0, len(unknown), 1000)]
             generated = 0; lock_counts = Counter()
             for positions, values, locks in pool.map(generate_chunk, tasks, chunksize=1):
@@ -227,7 +235,7 @@ def build_union(data, dataset, root, existing_views):
     write(root / 'manifest.json', dict(status='OBSERVATIONS_COMPLETE', dataset=dataset,
         classes=[str(v) for v in data['tx_list']], count=len(ids), scenes=list(VIEWS[1:]),
         seed=392005, receiver_seed=2027, rows_share_observations=True,
-        seconds=time.monotonic() - started, evidence=evidence,
+        seconds=time.monotonic() - started, evidence=evidence, channel_engine_root=str(engine_root),
         note='Union storage has no source/target role; each protocol wrapper validates its own roles.'))
     return records
 
@@ -293,7 +301,7 @@ def prepare(rt, plan):
     unions = {}
     for dataset in ('ManySig', 'ManyRx'):
         union_root = data_root / 'observations' / dataset
-        records = build_union(datasets[dataset], dataset, union_root, rt['existing_views_root'])
+        records = build_union(datasets[dataset], dataset, union_root, rt['existing_views_root'], rt['channel_engine_root'])
         unions[dataset] = (union_root, records)
     for pid, p in plan['protocols'].items():
         if p['dataset'] == 'ManySig' and p['target_rxs'] == list(TARGET_F0) and p['target_days'] == [0, 1, 2, 3]:

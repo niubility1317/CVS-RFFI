@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 import numpy as np
 import torch
@@ -23,6 +24,20 @@ def fake_dataset():
 
 
 class RolesAndMatrix(unittest.TestCase):
+    def test_fixed_budget_balances_TX_RX_and_dates(self):
+        class CountCell:
+            def __len__(self): return 1000
+        data = dict(tx_list=list(range(6)), equalized_list=[0, 1],
+            data=[[[[None, CountCell()] for _ in range(4)] for _ in range(12)] for _ in range(6)])
+        p = protocol('count-test', [1, 3, 4], fixed_labels=1260)
+        records = selections(data, p)['L_s']
+        self.assertEqual(len(records), 1260)
+        for tx in range(6):
+            for rx in [1, 3, 4]:
+                self.assertEqual(sum(r[0] == tx and r[1] == rx for r in records), 70)
+            for day in [1, 2, 3]:
+                self.assertEqual(sum(r[0] == tx and r[2] == day for r in records), 70)
+
     def test_complete_fixed_scope_and_seed_counts(self):
         plan = make_plan()
         self.assertEqual(len(plan['rows']), 168)
@@ -193,6 +208,194 @@ class TrainingProtocol(unittest.TestCase):
         loss = F.cross_entropy(net(x)[1], labels); loss.backward()
         self.assertGreater(float(net.classifier.weight.grad.abs().sum()), 0.)
         self.assertGreater(float(net.features[0].weight.grad.abs().sum()), 0.)
+
+
+class EvaluationProtocol(unittest.TestCase):
+    def fixtures(self, folder):
+        from . import evaluation
+        root = Path(folder); views = root / 'views'; views.mkdir()
+        classes = ['14-10', '14-7', '20-15', '20-19', '6-15', '8-20']
+        ids = np.asarray(['id' + str(i) for i in range(8)])
+        np.savez(views / 'index.npz', ids=ids)
+        rng = np.random.default_rng(4)
+        x = rng.normal(size=(8, 2, 256)).astype(np.float32)
+        for view in evaluation.VIEWS: np.save(views / (view + '.npy'), x)
+        manifest = dict(status='VALIDATED_ONCE', classes=classes, count=8,
+            scenes=list(evaluation.VIEWS[1:]), source_target_disjoint=True,
+            clean_ref=str(views / 'clean.npy'))
+        (views / 'manifest.json').write_text(json.dumps(manifest))
+        row = next(r for r in make_plan()['rows'] if r['group'] == 'generic')
+        pc = dict(row_id=row['row_id'], model_seed=row['model_seed'], source_output='unused',
+            expected_source_contract='unused', output_root=str(root / 'prediction'),
+            tests=dict(main=dict(views_root=str(views), kind='unseen_receiver')))
+        sc = dict(row_id=row['row_id'], model_seed=row['model_seed'],
+            prediction_output=pc['output_root'], output_root=str(root / 'scores'), classes=classes,
+            tests=dict(main=dict(views_root=str(views), truth=str(root / 'truth.json'))))
+        model = RoutedResNet().eval()
+        metadata = dict(row_id=row['row_id'], model_seed=row['model_seed'], family='resnet18',
+            num_classes=6, classes=classes)
+        return evaluation, pc, sc, model, metadata, ids
+
+    def test_predictor_has_no_truth_and_keeps_model_frozen(self):
+        with tempfile.TemporaryDirectory() as folder:
+            evaluation, pc, sc, model, metadata, ids = self.fixtures(folder)
+            before = {k: v.clone() for k, v in model.state_dict().items()}
+            with patch.object(evaluation, 'load_model', return_value=(model, metadata)):
+                evaluation.predict(pc, device='cpu')
+            self.assertFalse(Path(sc['tests']['main']['truth']).exists())
+            for key, value in model.state_dict().items():
+                torch.testing.assert_close(value, before[key], rtol=0, atol=0)
+            with self.assertRaises(ValueError):
+                evaluation.predict(dict(pc, truth='forbidden'), device='cpu')
+            prepared = evaluation.score_preflight(sc)
+            self.assertEqual(set(prepared), {'main'})
+            self.assertEqual(len(prepared['main'][0]), 8)
+
+    def test_swapped_prediction_ids_keep_truth_closed(self):
+        with tempfile.TemporaryDirectory() as folder:
+            evaluation, pc, sc, model, metadata, ids = self.fixtures(folder)
+            with patch.object(evaluation, 'load_model', return_value=(model, metadata)):
+                evaluation.predict(pc, device='cpu')
+            path = Path(pc['output_root']) / 'main/predictions.npz'
+            with np.load(path) as p: values = {v: p[v].copy() for v in evaluation.VIEWS}
+            np.savez(path, ids=ids[::-1], **values)
+            with self.assertRaises(ValueError): evaluation.score(sc)
+            self.assertFalse(Path(sc['tests']['main']['truth']).exists())
+
+    def test_missing_chrono_second_task_keeps_truth_closed(self):
+        with tempfile.TemporaryDirectory() as folder:
+            evaluation, pc, sc, model, metadata, ids = self.fixtures(folder)
+            with patch.object(evaluation, 'load_model', return_value=(model, metadata)):
+                evaluation.predict(pc, device='cpu')
+            row = next(r for r in make_plan()['rows'] if r['group'] == 'chrono')
+            sc['row_id'] = row['row_id']
+            sc['tests']['source_unseen_date'] = dict(sc['tests']['main'])
+            path = Path(pc['output_root']) / 'complete.json'
+            done = json.loads(path.read_text()); done['row_id'] = row['row_id']
+            done['tests']['source_unseen_date'] = dict(done['tests']['main'])
+            path.write_text(json.dumps(done))
+            with self.assertRaises(FileNotFoundError): evaluation.score(sc)
+            self.assertFalse(Path(sc['tests']['main']['truth']).exists())
+
+    def test_complete_prediction_scores_all_views_and_date_layers(self):
+        with tempfile.TemporaryDirectory() as folder:
+            evaluation, pc, sc, model, metadata, ids = self.fixtures(folder)
+            with patch.object(evaluation, 'load_model', return_value=(model, metadata)):
+                evaluation.predict(pc, device='cpu')
+            truth = {sid: dict(label=i % 6, receiver='rx' + str(i % 2),
+                day='2021_03_01' if i % 2 else '2021_03_08') for i, sid in enumerate(ids)}
+            Path(sc['tests']['main']['truth']).write_text(json.dumps(truth))
+            evaluation.score(sc)
+            results = read(Path(sc['output_root']) / 'scores.json')
+            self.assertTrue(results['truth_last'])
+            overall = [x for x in results['results'] if x['dimension'] == 'overall']
+            self.assertEqual(len(overall), 7)
+            for x in overall: self.assertEqual(sum(map(sum, x['confusion'])), 8)
+            layers = {x['stratum'] for x in results['results'] if x['dimension'] == 'date_visibility'}
+            self.assertEqual(layers, {'seen_dates', 'unseen_dates'})
+            for x in results['results']:
+                if x['dimension'] == 'transmitter':
+                    self.assertIn('recall', x); self.assertNotIn('macro_f1', x)
+
+
+class QueueAndAudit(unittest.TestCase):
+    def test_parent_must_be_terminal_and_actual_process_gone(self):
+        from .driver import parent_state
+        with tempfile.TemporaryDirectory() as folder:
+            state = dict(status='ANALYZED', rows={str(i): dict(status='ANALYZED') for i in range(24)})
+            path = Path(folder) / 'pipeline_state.json'; path.write_text(json.dumps(state))
+            rt = dict(parent_run_root=folder, parent_pid=1, parent_release_root='parent-owner')
+            with patch('experiments.phase1_external_dg.driver.process_alive', return_value=True):
+                self.assertEqual(parent_state(rt)[0], 'LIVE')
+            with patch('experiments.phase1_external_dg.driver.process_alive', return_value=False):
+                self.assertEqual(parent_state(rt)[0], 'DONE')
+                state['status'] = 'RUNNING'; path.write_text(json.dumps(state))
+                self.assertEqual(parent_state(rt)[0], 'NEEDS_RECOVERY')
+
+    def test_systemic_failure_matching_does_not_use_scores(self):
+        from .driver import failure_fingerprint
+        with tempfile.TemporaryDirectory() as folder:
+            fingerprints = []
+            for rid in ['method-s1', 'method-s2']:
+                p = Path(folder) / (rid + '.log')
+                p.write_text('Traceback:\nValueError: wrong contract in /run/' + rid + '/source\n')
+                fingerprints.append(failure_fingerprint(p, rid))
+            self.assertEqual(fingerprints[0], fingerprints[1])
+
+    def test_audit_distinguishes_main_and_diagnostic_CMs(self):
+        from .analysis import extend_frozen_scores
+        from .evaluation import metrics
+        truth = dict(a=dict(label=9, receiver='R', day='2021_03_23'),
+                     b=dict(label=0, receiver='R', day='2021_03_08'))
+        ids = np.asarray(['a', 'b']); predicted = np.asarray([9, 1])
+        original = [dict(test='main', view='clean', dimension='overall',
+            **metrics(np.asarray([9, 0]), predicted, 10)),
+            dict(test='source_unseen_date', view='clean', dimension='overall',
+            **metrics(np.asarray([9]), np.asarray([9]), 10))]
+        result = extend_frozen_scores(np.asarray(['a']), dict(clean=np.asarray([9])), truth, 10,
+            {'2021_03_08'}, test='source_unseen_date', original=original)
+        overall = next(x for x in result if x['dimension'] == 'overall')
+        self.assertEqual(overall['accuracy'], 1.)
+        self.assertEqual(np.asarray(overall['confusion']).shape, (10, 10))
+        with self.assertRaises(ValueError):
+            extend_frozen_scores(ids, dict(clean=np.asarray([0, 0])), truth, 10,
+                {'2021_03_08'}, original=original)
+
+    def test_three_seed_pairing_and_no_duplicate_seed_inflation(self):
+        from .analysis import summary_records
+        rows = []
+        for variant, offset in [('full', .02), ('ce', 0.)]:
+            for seed in [1, 2, 3]:
+                value = .6 + offset + seed / 100
+                rows.append(dict(config=dict(group='G', family='ibrff', variant=variant, model_seed=seed, row_id=variant+str(seed)),
+                    results=[dict(test='main', view='clean', dimension='overall', accuracy=value, macro_f1=value),
+                             dict(test='main', view='clean', dimension='receiver', accuracy=value-.1),
+                             dict(test='main', view='clean', dimension='receiver', accuracy=value+.2)]))
+        summary, paired = summary_records(rows)
+        self.assertEqual(len(summary), 2)
+        self.assertEqual(paired[0]['actual_pairs'], 3)
+        self.assertAlmostEqual(paired[0]['mean'], .02)
+        self.assertAlmostEqual(paired[0]['equal_rx_mean'], .02)
+        full = next(r for r in summary if r['version'] == 'full')
+        self.assertAlmostEqual(full['accuracy_mean'], .64)
+        self.assertAlmostEqual(full['equal_rx_accuracy_mean'], .69)
+        with self.assertRaises(ValueError): summary_records(rows + [rows[0]])
+
+
+class LegacyProvenance(unittest.TestCase):
+    def test_legacy_default_checkpoint_load_and_forbidden_ancestor(self):
+        from .evaluation import legacy_model
+        from experiments.standard_ce_baselines.model import build
+        torch.set_num_threads(2)
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder); model = build('resnet18'); count = sum(p.numel() for p in model.parameters())
+            seed = 2026092701
+            contract = dict(source_rxs=[1,3,4,6,8], source_days=[1,2,3], equalized=1,
+                out_len=256, normalize=True, classes=['a','b','c','d','e','f'])
+            initial = dict(scratch_only=True, checkpoint=None, ancestors=[], checkpoint_sources=[],
+                target_access=False, target_contact=False, model_seed=seed, physical_roles='EXACT_MATCH',
+                selection='fixed_last_epoch')
+            resolved = dict(method='standard_ce_baselines', variant='resnet18', model_seed=seed,
+                epochs=200, batch_size=128, lr=.0002, lr_min=1e-6, weight_decay=.0001,
+                drop_last=False, augmentation=False, domain_backbone=False, extra_losses=[],
+                selection='fixed_last_epoch', split_seed=392005, trainable_parameters=count)
+            freeze = dict(status='FROZEN', epoch=200, variant='resnet18', model_seed=seed,
+                checkpoint=str(root/'last.pt'), target_access=False, target_score_used=False)
+            done = dict(status='SOURCE_TRAINED', epoch=200, steps=10000, target_access=False)
+            for name, content in [('source_contract.json',contract),('initialization.json',initial),
+                ('resolved_config.json',resolved),('freeze.json',freeze),('completion.json',done)]:
+                (root/name).write_text(json.dumps(content))
+            (root/'epoch_metrics.jsonl').write_text(json.dumps(dict(epoch=200,
+                optimizer_steps_total=10000, gradient_used_parameters=count))+'\n')
+            torch.save(dict(method='standard_ce_baselines', variant='resnet18', epoch=200,
+                selection='fixed_last_epoch', config=resolved, initialization=initial,
+                source_contract=contract, model=model.state_dict()),root/'last.pt')
+            c=dict(row_id='legacy-resnet18-s2026092701', model_seed=seed, source_output=folder)
+            net, metadata=legacy_model(c,contract,torch.device('cpu'))
+            self.assertEqual(metadata['num_classes'],6)
+            self.assertEqual(net.classifier.out_features,6)
+            initial['ancestors']=['unknown-parent'];(root/'initialization.json').write_text(json.dumps(initial))
+            with self.assertRaises(ValueError):legacy_model(c,contract,torch.device('cpu'))
 
 
 if __name__ == '__main__':
