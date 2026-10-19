@@ -182,8 +182,10 @@ CORAL只对源RX的身份表征均值和协方差进行对齐，不访问目标�
 
 本地24项聚焦测试全部通过，覆盖源角色互斥、隐藏标签不导出、矩阵缺项／额外GPU拒绝、解析CE梯度、训练预算及数据契约错配拒绝、6／10类原生默认头、骨干与默认头共同接收梯度、Fishr方差及EMA、CORAL、身份保护配对、默认头checkpoint键一致、全任务预测闭合后评分、truth隔离、历史checkpoint继承核验、父进程实际退出条件、逐seed配对及主测试／日期诊断区分。120组输入与不可变数据代码6408f29的float32裁剪及RMS结果逐元素一致。
 
-**扩展套件已登记，尚未发布，不是已完成实验。** 训练、预测、独立评分、历史checkpoint补测、依赖调度和最终复算报告已实现。训练配置逐项匹配已登记矩阵并拒绝target、truth、原pickle及外部checkpoint输入；按更新数训练的路线不伪记为同数量epoch。机制日志记录实际MixStyle层位／配对次数、Fishr梯度对象及源RX分组。新run为20261019-phase1-external-dg-suite-m168-r01；原队列继续健康运行。完成审查及Git发布后，在CPU构建数据、完成真实L_s checkpoint smoke，再等待父队列退出后运行GPU矩阵。
+**扩展套件已发布，启动VERIFIED，当前CPU准备数据；实验尚未完成。** 训练、预测、独立评分、历史checkpoint补测、依赖调度和最终复算报告已实现。训练配置逐项匹配已登记矩阵并拒绝target、truth、原pickle及外部checkpoint输入；按更新数训练的路线不伪记为同数量epoch。机制日志记录实际MixStyle层位／配对次数、Fishr梯度对象及源RX分组。新run为20261019-phase1-external-dg-suite-m168-r01；原队列继续健康运行。代码8c50d20ec已提交、推送并核对远端OID。独立P0/P1审查PASS；一次归档传输校验及远端编译通过。实际CPU进程、CWD、命令和日志增长已核实；当前16个新源缓存完成，后续继续构建新增观测和真实L_s checkpoint smoke，再等待父队列退出后运行GPU矩阵。
 
 证据目录：local_artifacts/phase1_external_dg_20261019。已有24行状态证据：local_artifacts/phase1_dg_nativebudget_20261019/continuation_snapshot.json。恢复时先核实原PID2008297及现有产物，不重复提交或停止健康任务。
 
 登记入口：[168行逐行预登记](../automation_reports/CV-SincNet/20261019-phase1-external-dg-suite-m168-r01/experiment.json)、[新run执行报告](../automation_reports/CV-SincNet/20261019-phase1-external-dg-suite-m168-r01/report.md)。代码commit、发布证据及后续状态追加到该run，不把本地测试PASS写成远端启动VERIFIED。
+
+发布后快照：原24行中8行ANALYZED、2行RUNNING，原dispatcher仍存活。新队列处于PREPARE_DATA，不把已登记的162次训练或6次补测写为完成。该快照不是最终结果，实时状态以原run证据为准。

@@ -12,7 +12,7 @@ RIEI/DRIFT按用户E100，恒定LR无需移动milestone；IB两阶段各最多20
 
 ## 生命周期与资源
 
-当前PLANNED，尚未声明发布成功。代码commit由publisher写入release_commit.txt和本地package.json，实际CWD、命令、解释器和私有输入输出路径引用本地runtime.json。
+代码提交8c50d20ecf62d9273a9c5c07f12a04ad7da33685已推送并独立核对远端OID。新队列启动VERIFIED，当前PREPARE_DATA，未开始新增GPU训练；实际CWD、命令、解释器和私有输入输出路径引用本地runtime.json。
 
 源角色和观测构建在CPU完成；数学库2线程、最多4个生成worker。真实L_s checkpoint无query smoke后直接继续。历史checkpoint使用原torch2.1解释器，其余方法使用已验证作者torch1.11环境，无共享安装。
 
@@ -29,3 +29,9 @@ RIEI/DRIFT按用户E100，恒定LR无需移动milestone；IB两阶段各最多20
 ## 当前证据
 
 本地24项聚焦检查全部通过；输入120组与不可变数据代码逐元素一致。独立P0/P1审查PASS，无P0/P1；已核对原生和ResNet依赖。非阻断P2为技术失败指纹可能合并不同外层异常，保留记录，不新增发布门槛。ManyRx分别报告等权RX主指标和总体包准确率，新增统计检查通过。原IB-RFF六行已独立复算完成，原SDG健康训练。所有目标性能不反馈到此固定矩阵。
+
+## 发布读回
+
+一次N607普通账户preflight、一次归档传输SHA比较和一次远端编译通过。独立读回dispatcher及CPU子进程实际PID／CWD／argv匹配，CUDA可见设备为空；prepare_data.log从618字节增长至1120字节，16个新源缓存已产出。当前只证明CPU准备队列健康启动，不代表新观测、smoke或168行实验完成。证据：local_artifacts/phase1_external_dg_20261019/post_launch_verified.json。
+
+原24行队列同次读回为8行ANALYZED、2行RUNNING，dispatcher继续存活。新GPU队列仍等待父任务实际终结，随后仅允许物理GPU0/1并等待其他owner释放。不停止、重启或修改健康原任务。

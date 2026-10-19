@@ -1,1 +1,2 @@
 {"at": "2026-10-19T04:19:21+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T04:25:07+00:00", "status": "RUNNING", "note": "VERIFIED：CPU准备阶段实际PID/CWD/argv匹配且日志增长；16个新源缓存产出。未开始新增GPU行，等待父24行实际终结。", "evidence": ["local_artifacts/phase1_external_dg_20261019/post_launch_verified.json"], "row_id": null}

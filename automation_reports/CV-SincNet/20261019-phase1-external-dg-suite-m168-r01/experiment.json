@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "用户明确继续优化完成设计并完成全部非PAMF对比；保留两GPU、三seed和各方法原生预算，RIEI/DRIFT E100。",
   "code": {
-    "commit": "release_commit.txt; publisher records actual Git commit in package.json",
+    "commit": "8c50d20ecf62d9273a9c5c07f12a04ad7da33685",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "existing SDG-SEI Py3.8/torch1.11 + existing task-local NumPy1.23.5; legacy uses original CVS-RFFI torch2.1; no shared install",
     "cwd": "local_artifacts/phase1_external_dg_20261019/runtime.json#/release_root"
