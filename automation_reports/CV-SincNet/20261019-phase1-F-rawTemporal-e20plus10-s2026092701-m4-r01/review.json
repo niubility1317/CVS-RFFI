@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "scope": "one independent P0/P1 review of this new four-row candidate",
+  "findings": [],
+  "checks": [
+    "cache consumption and deepcopy",
+    "PAIR supplemental-only input",
+    "native hooks retained",
+    "joint gradients and actual checkpoint loader",
+    "source rule and truth-last order",
+    "four fixed configs",
+    "independent parameter/MAC arithmetic",
+    "0NN source flow PASS",
+    "15 modules and2 publisher scripts syntax PASS"
+  ],
+  "full_model_forwards": 0,
+  "real_checkpoint_loads": 0,
+  "real_IQ": 0,
+  "target_access": false,
+  "remote_actions": false,
+  "reviewer_edits": false
+}
