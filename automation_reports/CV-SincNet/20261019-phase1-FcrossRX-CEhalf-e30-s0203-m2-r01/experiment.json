@@ -1,0 +1,290 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-FcrossRX-CEhalf-e30-s0203-m2-r01",
+  "group_id": "phase1-FcrossRX-CE_HALF-three-seeds-E30-clean",
+  "display_name": "CE_HALF补齐三种子：02/03原As20追加10轮，仅clean",
+  "description": "Explicit user-requested replication of CE_HALF after seed01 clean result. Reuse seed01 and corresponding original As/NoAs controls; only two new own20+10 trajectories, unchanged satellite CE weight0.5 and original U/EMA/RDrop. New seeds evaluate clean only per current chat scope.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "CE_HALF_THREE_SEEDS"
+  ],
+  "tags": [
+    "Phase1",
+    "F",
+    "CROSS_RX",
+    "CE_HALF",
+    "E30",
+    "three_seed",
+    "clean_only",
+    "default_head",
+    "user_requested_replication"
+  ],
+  "comparison_group_id": "P43-fullsource-sixL-cleanretain-nominalAs-seed01",
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r02",
+    "20261018-phase1-FcrossRX-satelliteCE-temperature-e30-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-10-19 user: CE_HALF跑完整三种子. Complete02/03, reuse01; current chat clean-only scope, exact historical training recipe. This explicit replication overrides generic new-exploration/no-satellite/ordinaryPL defaults for this run.",
+  "code": {
+    "commit": "ccd7a6afc5a0fd27ebf3498ff4f087c81290619d",
+    "checkout": "codex/ce-half-three-seeds-20261019",
+    "environment": "Existing ordinary N607 CVS-RFFI Python3.10/Torch2.1 FP32 CPU2; pinned original P43 runtime and P49 actual factory seed",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_CEhalf_E30_s0203_20261019_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Unchanged original7/63/30 source physical roles; existing VALIDATED_ONCE fixed formal IQ",
+    "representation": "equalized1/native perpacketRMS center=false;float32 Bx2x256/fs25MHz;full residual/post_sync/EQoffG1/ref30/reflect;As fromraw,no extra ordinary PA/noise beforeAs;trainingfc2.462GHz/fixedformal2.45GHz unchanged",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "Same original6TX map;no new or U truth",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      "fixedmanifest7unseenRX;nevertrain"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original6registeredTX;formalmanifest classmappingunchanged",
+    "roles": {
+      "L_s": 6300,
+      "U_s_hidden": 56700,
+      "V": 27000
+    },
+    "train_ratio": "7/63/30 wholepool;10% labeled trainingpool;noheldRX/Ldev",
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "ExistingPhase1 source handles and fixedformalmanifest;Phase2 p2capsule/splitN/A",
+    "support_query_ref": "Phase1,no support;source/target disjoint fixedformalmanifest",
+    "leo_config_ref": "PROJECT/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/manifest.json"
+  },
+  "permissions": {
+    "regime": "source_only_training_then_frozen_target_prediction",
+    "query_use": "Frozen defaulthead all7 fixed received IQ predictions;truthlast independent perrow only afterall7complete;formal scores never candidate/seed/parameter/promotion feedback",
+    "external_method_exception": null,
+    "claim_scope": "Three fixed model seeds clean only; user-selected replication after exposed seed01 target result, not an independent blind selection. No new three-seed practical claim."
+  },
+  "checkpoint": {
+    "initialization": "Corresponding P49 B01 own scratch20 student/ownEMA -> reset AdamW/cos10, cumulativeE30; original01 reused without reload/retrain/repredict",
+    "sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r02/B01-s2026092702/stage20/final_ssdg.pth",
+      "PROJECT/runs/20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r02/B01-s2026092703/stage20/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Original P49 scratch20:4440updates,final_only,source role_ids EXACT_MATCH,L6300/U56700hidden/V27000,no ancestors/no target; independently reread before launch. Launcher verifies checkpoint student/EMA and actual seed before training.",
+    "provenance_verdict": "METADATA_VERIFIED_EXACT_ROLES_SCRATCH20_OWN_STUDENT_EMA;REAL_CP_SMOKE_AT_DISPATCH",
+    "selection_rule": "Fixed corresponding seed parents; fixed FINAL10/cumulative30, no performance selection"
+  },
+  "execution": {
+    "host": "N607 ordinary nonprivileged account",
+    "launch_owner": "codex/root/ce-half-three-seeds",
+    "gpu_policy": "Only physical GPU2/3; maximum one total GPU worker per card including other owners; free>=12000MB; queue while occupied; no process intervention",
+    "remote_run_root": "PROJECT/runs/20261019-phase1-FcrossRX-CEhalf-e30-s0203-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261019-phase1-FcrossRX-CEhalf-e30-s0203-m2-r01/logs",
+    "local_artifact_root": "local_artifacts/ce_half_three_seeds_20261019",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_ce_half_replicate/runner.py",
+    "stop_rule": "Only input/provenance/protocol/nonfinite/output collision/unlaunchable technical failure; preserve all outputs, finish healthy active rows, do not launch pending rows after technical failure; no automatic retry or scientific early stop.",
+    "status": "LOCAL_VERIFIED"
+  },
+  "expected_artifacts": [
+    "dispatcher.json",
+    "real_checkpoint_smoke.json",
+    "launch.json",
+    "queue_state.json",
+    "ROW/source/resolved_config.json",
+    "ROW/source/source_contract.json",
+    "ROW/source/initialization.json",
+    "ROW/source/EMA_initialization.json",
+    "ROW/source/final_ssdg.pth",
+    "ROW/source/completion.json",
+    "ROW/source/source_frozen.json",
+    "ROW/source/result.json",
+    "ROW/source/reference_steps.jsonl.gz",
+    "ROW/source/satellite_ce_steps.jsonl.gz",
+    "ROW/source/training_sequence.jsonl.gz",
+    "ROW/prediction/complete.json",
+    "ROW/prediction/clean_scores.npz",
+    "ROW/scoring/scores.json",
+    "ROW/scoring/complete.json",
+    "full_log_verification.json",
+    "results.json",
+    "final_report.md",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean_accuracy",
+      "clean_macroF1",
+      "worst_RX",
+      "three_seed_mean",
+      "sample_SD_ddof1",
+      "paired_difference_vs_original_As30_and_NoAs30",
+      "full_tail_training_curves",
+      "updates_and_actual_NN_cost"
+    ],
+    "dimensions": [
+      "modelseed2026092701/02/03",
+      "clean",
+      "RX",
+      "day",
+      "TX"
+    ],
+    "prediction_ref": "Two new declared clean-only predictions; reuse original01 clean and all matching controls",
+    "scorer_ref": "Independent CPU exec only after each row clean fixed; final mean from complete3 seeds; no additional truth access for training"
+  },
+  "rows": [
+    {
+      "row_id": "CE_HALF-s2026092702",
+      "method": "Original CE_HALF:only satellite64 two-pass CE weight0.5;all original symmetric KL/ordinary/raw/U/ownEMA unchanged",
+      "purpose": "User requested fixed missing model seed",
+      "config_ref": "experiments/cvs_ce_half_replicate/design.py#config",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-FcrossRX-CEhalf-e30-s0203-m2-r01/CE_HALF-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "held_source_RX": null,
+        "L": 6300,
+        "U_hidden": 56700,
+        "V": 27000,
+        "new_Ag": false,
+        "all5sourceRX": true
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 202610185301,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Actual native and F factory same corresponding model seed;split392005,source roles unchanged,train/val/receiver channel seeds20261016421/422/423;noise seed202610185301 remains dormant(no new Ag);evaluation null because fixed original received clean;support N/A.",
+      "k": null,
+      "scenario": "Training original full practical lowSub/midUrban/lowUrban equal prior; onlyclean final test",
+      "optimizer": {
+        "name": "AdamW",
+        "state": "reset afterstrictstudentEMA parentload",
+        "lr_schedule": "cosine10 original",
+        "teacher": "ownEMA initializedexactfromP43AS20;originalupdatesonly",
+        "temporal_cache": "reset"
+      },
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Own original20/4440updates already completed, new10/2220updates,cumulative30/6660;seed01 reused;new total20modelepochs/4440updates",
+      "output_root": "PROJECT/runs/20261019-phase1-FcrossRX-CEhalf-e30-s0203-m2-r01/CE_HALF-s2026092702",
+      "log_path": "PROJECT/runs/20261019-phase1-FcrossRX-CEhalf-e30-s0203-m2-r01/logs/CE_HALF-s2026092702.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_ce_half_replicate/runner.py",
+      "expected_artifacts": [
+        "dispatcher.json",
+        "real_checkpoint_smoke.json",
+        "launch.json",
+        "queue_state.json",
+        "ROW/source/resolved_config.json",
+        "ROW/source/source_contract.json",
+        "ROW/source/initialization.json",
+        "ROW/source/EMA_initialization.json",
+        "ROW/source/final_ssdg.pth",
+        "ROW/source/completion.json",
+        "ROW/source/source_frozen.json",
+        "ROW/source/result.json",
+        "ROW/source/reference_steps.jsonl.gz",
+        "ROW/source/satellite_ce_steps.jsonl.gz",
+        "ROW/source/training_sequence.jsonl.gz",
+        "ROW/prediction/complete.json",
+        "ROW/prediction/clean_scores.npz",
+        "ROW/scoring/scores.json",
+        "ROW/scoring/complete.json",
+        "full_log_verification.json",
+        "results.json",
+        "final_report.md",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "CE_HALF-s2026092703",
+      "method": "Original CE_HALF:only satellite64 two-pass CE weight0.5;all original symmetric KL/ordinary/raw/U/ownEMA unchanged",
+      "purpose": "User requested fixed missing model seed",
+      "config_ref": "experiments/cvs_ce_half_replicate/design.py#config",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-FcrossRX-CEhalf-e30-s0203-m2-r01/CE_HALF-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "held_source_RX": null,
+        "L": 6300,
+        "U_hidden": 56700,
+        "V": 27000,
+        "new_Ag": false,
+        "all5sourceRX": true
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 202610185301,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Actual native and F factory same corresponding model seed;split392005,source roles unchanged,train/val/receiver channel seeds20261016421/422/423;noise seed202610185301 remains dormant(no new Ag);evaluation null because fixed original received clean;support N/A.",
+      "k": null,
+      "scenario": "Training original full practical lowSub/midUrban/lowUrban equal prior; onlyclean final test",
+      "optimizer": {
+        "name": "AdamW",
+        "state": "reset afterstrictstudentEMA parentload",
+        "lr_schedule": "cosine10 original",
+        "teacher": "ownEMA initializedexactfromP43AS20;originalupdatesonly",
+        "temporal_cache": "reset"
+      },
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Own original20/4440updates already completed, new10/2220updates,cumulative30/6660;seed01 reused;new total20modelepochs/4440updates",
+      "output_root": "PROJECT/runs/20261019-phase1-FcrossRX-CEhalf-e30-s0203-m2-r01/CE_HALF-s2026092703",
+      "log_path": "PROJECT/runs/20261019-phase1-FcrossRX-CEhalf-e30-s0203-m2-r01/logs/CE_HALF-s2026092703.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_ce_half_replicate/runner.py",
+      "expected_artifacts": [
+        "dispatcher.json",
+        "real_checkpoint_smoke.json",
+        "launch.json",
+        "queue_state.json",
+        "ROW/source/resolved_config.json",
+        "ROW/source/source_contract.json",
+        "ROW/source/initialization.json",
+        "ROW/source/EMA_initialization.json",
+        "ROW/source/final_ssdg.pth",
+        "ROW/source/completion.json",
+        "ROW/source/source_frozen.json",
+        "ROW/source/result.json",
+        "ROW/source/reference_steps.jsonl.gz",
+        "ROW/source/satellite_ce_steps.jsonl.gz",
+        "ROW/source/training_sequence.jsonl.gz",
+        "ROW/prediction/complete.json",
+        "ROW/prediction/clean_scores.npz",
+        "ROW/scoring/scores.json",
+        "ROW/scoring/complete.json",
+        "full_log_verification.json",
+        "results.json",
+        "final_report.md",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Original CE_HALF seed01 is a historical scalar attenuation control, now explicitly selected by user after its exposed clean85.808333% result. No new blind confirmation claim.",
+    "Explicit user replication authorizes all fixed02/03 regardless earlier source gate; no temperature/weight/newseed/E50 sweep.",
+    "Training recipe and old U/ownEMA preserved; no generic sat0.68/plainPL substitution.",
+    "Current chat clean-only test scope overrides old all7 default for the two new rows. Historical01 practical artifacts retained, not rerun or aggregated as three seeds.",
+    "Keep all three seeds and negative results. No target-feedback recipe change, checkpoint selection or selective rerun."
+  ],
+  "registered_at": "2026-10-19T11:32:41+00:00"
+}
