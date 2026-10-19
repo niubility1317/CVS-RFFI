@@ -1,0 +1,49 @@
+{
+  "status": "PASS",
+  "rows": {
+    "RAW": {
+      "total_parameters": 902974,
+      "trainable_parameters": 234445,
+      "adapter_parameters": 2252,
+      "adapter_convolution_MAC": 214528,
+      "zero_function_exact": true,
+      "original_native_input_preserved": true,
+      "supplement_input_correct": true,
+      "shared_initial_state": true,
+      "shared_encoder_once": true,
+      "B1_B2_and_inner_encoder_gradient": true,
+      "W_and_actual_joint160_updated": true,
+      "all_unused_frozen_state_equal": true,
+      "original_shallow_middle_Sinc_updated": true,
+      "physical_clip_and_Sinc_lr_steps_verified": true,
+      "deepcopy_prediction_and_joint_equal": true,
+      "actual_checkpoint_expression_and_loader_replayed": true,
+      "synthetic_optimizer_steps": 2
+    },
+    "PAIR": {
+      "total_parameters": 902974,
+      "trainable_parameters": 234445,
+      "adapter_parameters": 2252,
+      "adapter_convolution_MAC": 214528,
+      "zero_function_exact": true,
+      "original_native_input_preserved": true,
+      "supplement_input_correct": true,
+      "shared_initial_state": true,
+      "shared_encoder_once": true,
+      "B1_B2_and_inner_encoder_gradient": true,
+      "W_and_actual_joint160_updated": true,
+      "all_unused_frozen_state_equal": true,
+      "original_shallow_middle_Sinc_updated": true,
+      "physical_clip_and_Sinc_lr_steps_verified": true,
+      "deepcopy_prediction_and_joint_equal": true,
+      "actual_checkpoint_expression_and_loader_replayed": true,
+      "synthetic_optimizer_steps": 2
+    }
+  },
+  "protocol_negatives": 7,
+  "synthetic_NN": 34,
+  "real_checkpoint_loads": 0,
+  "real_IQ": 0,
+  "target_access": false,
+  "parent_and_global_RNG_unchanged": true
+}

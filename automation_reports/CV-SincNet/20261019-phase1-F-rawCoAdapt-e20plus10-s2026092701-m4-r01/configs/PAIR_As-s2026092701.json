@@ -1,0 +1,117 @@
+{
+  "schema": "F_raw_coadapt30_v1",
+  "run_id": "20261019-phase1-F-rawCoAdapt-e20plus10-s2026092701-m4-r01",
+  "row_id": "PAIR_As-s2026092701",
+  "style": "PAIR",
+  "As": true,
+  "arm": "PAIR_As",
+  "model_seed": 2026092701,
+  "launch_owner": "codex/root/F-raw-coadapt",
+  "output_root": "PROJECT\\runs\\20261019-phase1-F-rawCoAdapt-e20plus10-s2026092701-m4-r01\\PAIR_As-s2026092701\\source",
+  "parent": {
+    "run": "20261019-phase1-F-nontrue-CSIL-e20-s2026092701-m4-r01",
+    "row": "B0-s2026092701",
+    "checkpoint": "source/final_ssdg.pth",
+    "selection": "strict own source scratch FINAL20, never target selected",
+    "epochs": 20,
+    "identity": "pureF SIG_TIME_X3+CENTER_25K+CENTER_UNITS; no CROSS_RX/RDrop"
+  },
+  "epochs": 10,
+  "steps_per_epoch": 222,
+  "updates": 2220,
+  "cumulative_epochs": 30,
+  "cumulative_backbone_exposure": "shared legal parent20 + own10;all original identity encoder,original W and2252 supplemental parameters jointly train;parent cost retained",
+  "source": {
+    "L": 6300,
+    "U": 56700,
+    "V": 27000,
+    "RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "days": [
+      1,
+      2,
+      3
+    ],
+    "split": 392005,
+    "U_TX_hidden": true,
+    "adaptation_U_used": false
+  },
+  "training": {
+    "model_mode": "eval with autograd; common deterministic dropout-off objective, not native unchanged continuation",
+    "input": "raw clean source IQ",
+    "source_sampler": "fixed private shuffled full L cycling;222x128 per epoch;exact shared complete As stream",
+    "loss": "CE0(raw)+CE0(second)+mean_all128[parentCorrect*KL(frozen_B0_parent_raw||joint_feature_and_original_W_student_raw)]",
+    "second": "complete practical(raw)",
+    "label_smoothing": 0.0,
+    "As_weight": 1.0,
+    "keep_weight": 1.0,
+    "keep_temperature": 1.0,
+    "keep_only_parent_correct_L": true,
+    "student_As_confidence_gate": false,
+    "reference_parent_frozen": true,
+    "default_head_frozen": false,
+    "U_used": false,
+    "EMA_used": false,
+    "default_head_joint": true
+  },
+  "feature_adapter": {
+    "style": "PAIR",
+    "raw_IQ_bypass": true,
+    "input": "pair-average-repeat of same IQ for supplemental path only;native F still full IQ",
+    "encoder": "2to8 k5 s2 p2 / SiLU / 8to12 k1 / DW12 k5 p2 / SiLU",
+    "heads": "12to72 k1 at t1 preGN;12to96 k1 after AvgPool2 at t2 preGN",
+    "shared_encoder_once_per_forward": true,
+    "adapter_seed": 20261019901,
+    "parameters": 2252,
+    "convolution_MAC_per_packet": 214528,
+    "initialization": "encoder normal;B1/B2 zero;no zero gate",
+    "original_F_frozen": false,
+    "original_F_joint": true,
+    "default_W_joint": true,
+    "original_blocks_and_SIG_TIME_hooks": true
+  },
+  "optimizer": {
+    "type": "reset AdamW",
+    "lr": 0.0002,
+    "min_lr": 1e-06,
+    "weight_decay": 0.0001,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "schedule": "cosine over new10 epochs, not continuous30",
+    "physical_clip": 5.0,
+    "Sinc": "original encoder/Sinc/raw features/original W joint;CENTER_UNITS physical AdamW/globalclip5 exactly as FULL",
+    "classifier": "existing W, same AdamW lr/eps/weight_decay and same global clip; no new/reset head or head-only optimizer"
+  },
+  "checkpoint_selection": "fixed FINAL30",
+  "test_views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "new_classification_head": false,
+  "target_feedback": false,
+  "observation_bank": "PROJECT\\runs\\20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r02\\observation_bank",
+  "source_promotion": {
+    "per_style_urban_minus_FULL_joint_As_min_pp": 0.5,
+    "per_style_fullVclean_minus_FULL_joint_As_min_pp": -0.2,
+    "per_style_As_minus_own_NoAs_fullVclean_min_pp": -0.2,
+    "RAW_PAIR_urban_difference": "secondary causal contrast,not eligibility",
+    "selection": "highest eligible source urban;then clean;then RAW",
+    "automatic_extension": false,
+    "max_cumulative_epochs": 50,
+    "on_fail": "close fixed originalF+2252 joint k5/width12/E10 RAW/PAIR;no kernel/rank/lambda/seed rescue"
+  },
+  "matched_control_run": "20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01"
+}
