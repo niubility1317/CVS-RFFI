@@ -1,0 +1,4 @@
+{"at": "2026-10-19T15:22:33+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T15:22:33+00:00", "status": "LOCAL_VERIFIED", "note": "VERIFIED:21checks,oneP0/P1,N607preflight;fixedsourcehypothesis;pendingrelease.", "evidence": ["experiment.json", "report.md"], "row_id": null}
+{"at": "2026-10-19T15:25:39+00:00", "status": "RUNNING", "note": "VERIFIED:archiveSHA,remotecompile,actual2Lsnoquerysmoke,controllerand2workersPID/CWD/argv/GPU/loggrowth;GPU1/5.", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-10-19T15:42:48+00:00", "status": "ANALYZED", "note": "SOURCE_NOT_QUALIFIED:full40epochs,all7sourceviews,conditionaltargetsfinished,allprocessesexited.", "evidence": ["report.md", "summary.json", "row_metrics.csv"], "row_id": null}

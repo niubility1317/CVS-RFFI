@@ -26,10 +26,12 @@ N607池GPU0/1/5/7，最多两个本run GPU worker、每卡一个，优先空卡�
 |ID|要求|状态|证据|
 |---|---|---|---|
 |A12-01|复用原PAMF参数无关前端，0F训练|verified|逐张量匹配、0参数、梯度分离/有限性检查通过|
-|A12-02|全L/U、共同父、同预算、冻结coarse/action|implemented|独立checkpoint全状态往返和权限负测，待实际训练曝光|
-|A12-03|8192训练源、63RMS、0V/F/TX|implemented|权限/标量形状/floor负测通过，待真实校准|
+|A12-02|全L/U、共同父、同预算、冻结coarse/action|verified|实际两行20/4940，L126000/U1134000，冻结父更新0|
+|A12-03|8192训练源、63RMS、0V/F/TX|verified|实际L866/U7326，63RMS，0V/F/TX/target/optimizer|
 |A12-04|新schema正确用于原七视图预测/独立评分|verified|自定义加载器全七视图接口检查，旧默认未改|
 |A12-05|源固定阈值，未合格禁止目标|verified|身份/波形/最差TX和角色负测通过|
-|A12-06|郊区urban各三档、clean、用户70%/5pp|implemented|复用已执行scorer与用户阈值函数，待本轮结果|
-|A12-07|共享容量/不可覆盖/单owner/健康任务保护|implemented|待一次P0/P1与N607实际post-state|
+|A12-06|郊区urban各三档、clean、用户70%/5pp|deferred|源七视图完成；未过固定源条件故0target，不冒充最终70%/5pp达标|
+|A12-07|共享容量/不可覆盖/单owner/健康任务保护|verified|一次P0/P1无阻断；N607普通账户GPU1/5，PID/CWD/参数/GPU/loggrowth已核实|
 |A12-08|多seed、独立物理族、逐细节真实|deferred|本轮是单seed源机制和条件性冻结确认|
+
+实际结论：SOURCE_NOT_QUALIFIED；解析源 lowurban=82.9444%。详见[完整报告](../automation_reports/CV-SincNet/20261019-phase1-restoration-analytic-views-selfsup-s2026092701-m2-r12/report.md)。目标继续active，不改阈值或选择性重跑。

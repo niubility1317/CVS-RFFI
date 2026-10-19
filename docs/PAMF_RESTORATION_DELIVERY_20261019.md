@@ -118,3 +118,6 @@ assert metadata["kind"] == "native_map_prior"
 ```
 
 它包含coarse、作用估计器和prior的完整冻结状态，输入仍仅为当前float32 IQ `[B,2,256]`，不读clean、TX、场景或真实作用。全部FFT/PA/time按前文原F计算。该权重在本机已用真实2条L_s严格加载，R11又完成原F50全七视图验证；它尚未满足70%/5pp性能目标，不以可运行替代有效性完成。
+
+
+R12 参数无关 PAMF 解析视图实验（同父权重两组新增 E20/4940、0 TX/F 训练、全 L/U）已完成：SOURCE_NOT_QUALIFIED。源 lowurban 父 / pair / 解析为 82.1667% / 82.9444% / 82.9444%，六场景平均 NMSE 为 0.02760034 / 0.02699101 / 0.02759046。未通过固定源条件，保持 0 target。[完整报告](../automation_reports/CV-SincNet/20261019-phase1-restoration-analytic-views-selfsup-s2026092701-m2-r12/report.md)。用户 70%/各场景与原始 clean 差距≤5pp 目标保持，不以源成绩代替目标成绩。
