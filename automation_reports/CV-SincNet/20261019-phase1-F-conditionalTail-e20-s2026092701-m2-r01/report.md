@@ -1,6 +1,6 @@
 # 纯 F：逐包双完整信道条件尾风险 E20
 
-状态：LOCAL_VERIFIED，未发布。主目标仍为 low urban>60%、clean 相对同预算 NoAs 可重复正收益、逐 suburban 接近自身 clean。本轮是单 seed E20 机制比较，不能据源观察或单 seed 微增声称完成。
+状态：RUNNING / VERIFIED，已发布并核实两行实际训练；尚未训练完成或读取新正式分数。主目标仍为 low urban>60%、clean 相对同预算 NoAs 可重复正收益、逐 suburban 接近自身 clean。本轮是单 seed E20 机制比较，不能据源观察或单 seed 微增声称完成。
 
 ## 唯一问题及既有源证据
 
@@ -45,3 +45,7 @@ N607普通账号既有环境，FP32/TF32off/CPU2，无安装。唯一owner codex
 预期首步smoke、launch/queue、每行source完整state/config/init/ownEMA/原生step/sequence/units/mechanism/两draw统计、source_qualification、源决定、all7 prediction/separate score、analysis/complete。IQ、权重、原始日志、机器状态与私有runtime不入Git。
 
 实际 code/config commit `1e3cdcca4481c2f30c864e452ab5f69c8db46aea`。唯一独立限定 P0/P1 审查 PASS，无直接使本次运行错误、越权、覆盖、不可启动或无法合法预测的问题。发布前完整本地检查已完成；尚未以此宣称远端训练或识别收益。
+
+发布 commit `037bcb0a4701953aec27ca2493ef2922a051498f`，单归档传输/远端compile VERIFIED，首步原B1真实训练CP2NN无query smoke PASS且未继承。CE2 PID2209229/GPU0、TAIL2 PID2209716/GPU1，实际参数均900722；两PID/CWD/argv/CUDA/所有owner容量及训练步骤日志增长独立核实，见launch_evidence.json。source决定与正式结果仍待完整训练返回，不作中途晋级或调参。
+
+实际首轮检查已通过：两行的完整双信道、3L、默认头/骨干和物理optimizer预算计数与4440总计划一致；当前仍在训练。完整独立分析工具 `analysis/cvs_F_conditional_tail20_20261019.py` 已准备且语法通过，待完整产物到齐后执行 source-only 与全七景/504 CM/配对重计；尚未冒称这些最终重计已通过。
