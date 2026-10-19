@@ -405,3 +405,5 @@
 本轮记录：[整批与逐帧识别梯度范数上限](by_method/gradient_balance.md)。
 
 本轮记录：[冻结R03的直接残差与四步确定性流](by_method/anchored_residual_flow.md)。
+
+本轮记录：[全恢复器与粗恢复/修正分组的参数梯度范数上限](by_method/parameter_gradient_balance.md)。
