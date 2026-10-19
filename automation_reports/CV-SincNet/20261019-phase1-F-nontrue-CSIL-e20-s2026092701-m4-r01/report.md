@@ -1,6 +1,6 @@
 # 纯 F 从零 E20：同一受损 IQ 的非真类关系迁移
 
-状态：PLANNED。一个 seed 的四行固定矩阵。代码 commit 由 release_commit.txt、登记事件及远端 submit 记录；不将本报告 SHA 作为门槛。
+状态：RUNNING（2026-10-19 12:04 HKT 独立读回）。一个 seed 的四行固定矩阵。代码/config commit 为 a276b957ce85b939e75cac19f6cc9e5191c44398，发布commit为 1e7cc414f73f093dfbdccee0e4ba7cf90c7a5324；Git远端OID已独立比较相同。归档传输、远端compile、checks均VERIFIED；唯一P0/P1审查PASS。四行分别位于GPU3/4/6/7，PID/CWD/argv/GPU与逐步日志增长均VERIFIED。此时B0已E4、其余三行已E1；尚无终轮、正式预测或评分结果。不将本报告 SHA 作为门槛。
 
 本轮遵守用户最新目标附件：F 仅为三路 SIG_TIME_X3、CENTER_25K 和 CENTER_UNITS。默认 cosine 6×160、scale30，NoExplicitCFO，骨干和默认头联合训练。无 CROSS_RX、RDrop、附加部署分支或拟合诊断头。所有学生从零训练累计 E20；不会复用旧 FcrossRX E20/E30 学生权重。
 
