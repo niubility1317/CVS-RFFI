@@ -30,10 +30,12 @@ N607池0/1/5/7，最多两条本run GPU worker，每卡一条；全owner cap2/fr
 |A19-03|容量归因|time_time匹配参数、6Core/6CG及完整初始输出|models.py/controller.py|verified|参数与初始化/完整初始输出本地匹配；真实权重入口待远端|非同FLOPs|
 |A19-04|合法恢复训练|全L/U、仅R07冻结父、全部新模块进入优化器、0TX/F/target|runtime.py/training.py|pending|来源/schema负测及实际20/4940曝光、各子模块梯度|IQNMSE唯一目标|
 |A19-05|身份保护|四源参考、固定排序、仅合格选定target|evaluation.py/runner.py|verified|未选target阻断、两角色实际七预测路由、原默认头及目标评分收尾负测通过|不降低旧条件|
-|A19-06|安全发布|一次P0P1、真实checkpoint入口、Git/容量锁/N607poststate|controller.py|pending|聚焦检查和真实PID/CWD/argv/GPU/log|不可覆盖/保护其他owner|
+|A19-06|安全发布|一次P0P1、真实checkpoint入口、Git/容量锁/N607poststate|controller.py|verified|34tests、独立P0P1、单归档传输/编译、真实2Ls/noquery入口、6Core梯度、GPU0/1 PID/CWD/argv/loggrowth均通过|不可覆盖/保护其他owner|
 |A19-07|完整证据|源全7、条件正式全7、TX/RX/day/损伤/成本、全日志|run报告|pending|独立truth-last、全量计数和汇总读回|源分数不替代目标|
 |A19-08|真实性边界|新oracle/多seed/独立物理族/逐细节真假|后续确认|deferred|本轮不宣称、完整目标保持|非发布前阻断|
 
 REJECTED_EXTRA_GATE：通用 brainstorming 技能的额外设计/计划多轮人工审批不在本项目最小流程白名单内。本轮已有用户“先尝试各种网络设计”及参考报告授权，保留实质设计与可核查对照，按项目最小流程继续，不增加审批或新的流程文件链。
 
 发布前状态：34项聚焦检查通过，`python -X utf8 -m pytest tests/test_pamf_unrolled_restore.py tests/test_pamf_alternating_restore.py -q`；新模块 compile/help、Git diff检查通过。一次独立P0/P1审查无阻断，N607普通账户新root/合法缓存/源参考/实际容量预检通过。真实checkpoint/noquery入口、实际训练曝光和完整评分尚待执行。
+
+当前为5 verified、2 pending、1 deferred、0 rejected/blocked；另记录1个REJECTED_EXTRA_GATE。R19已实际启动，两行各完成首轮247更新；全部六Core有梯度、冻结上下文无梯度，新两行初始状态相同且完整输出匹配R17。尚无源验收/正式性能结论，完整持续目标保持active。
