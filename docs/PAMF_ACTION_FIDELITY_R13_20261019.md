@@ -19,9 +19,11 @@ R13 原运行在首个视图完成前发生技术故障，0完整视图/0源评�
 |ID|来源|要求|目标文件|状态|验证|说明|
 |---|---|---|---|---|---|---|
 |A13-01|报告 R3|已知/估计作用与噪声分别替换，prior 共适应对照|experiments/pamf_action_fidelity/models.py|verified|精确解析 MAP 算例及同prior对照通过|不把 oracle 当部署或理论上界|
-|A13-02|无监督优先|固定完整来源、0训练/TX/F训练信号、原源面板|runtime.py/runner.py|implemented|来源/角色负测及N607句柄核实，真实checkpoint smoke待入口执行|source V仅评分|
+|A13-02|无监督优先|固定完整来源、0训练/TX/F训练信号、原源面板|runtime.py/runner.py|verified|R14实际checkpoint/source2Ls smoke、固定完整父、0训练/target、实际源1800通过|source V仅评分|
 |A13-03|用户有效性要求|原F50/原头、全部预测先于truth|evaluation.py|verified|缺视图/读出/ID入口/状态负测，独立CPU路径通过|0新分类头|
-|A13-04|郊区/urban|clean+六场景及TX/RX/day完整指标|evaluation.py|pending|实际同row汇总|源数据不冒充正式70%/5pp|
+|A13-04|郊区/urban|clean+六场景及TX/RX/day完整指标|evaluation.py|verified|实际七视图9读出945分层、完整JSON/CSV汇总|源数据不冒充正式70%/5pp|
 |A13-05|解释规则|固定源身份/NMSE门槛，0target晋级|design.py/evaluation.py|verified|阈值/最差TX/角色负测通过，CLI无target/train模式|不依目标调参|
-|A13-06|最小工作流|单owner/GPU容量/真实smoke/独立P0P1/发布核实|runner.py/登记|implemented|9tests、compile/help、一次独立P0/P1及普通账户preflight通过；待实际post-state|无额外gate|
+|A13-06|最小工作流|单owner/GPU容量/真实smoke/独立P0P1/发布核实|runner.py/登记|verified|10tests及真实F2Ls/定点复核，R14GPU0 PID/CWD/参数/GPU/loggrowth及CPUtruthlast核实|无额外gate|
 |A13-07|最终目标|合法可部署新网络、正式70%/5pp、多seed/独立物理族|后续源训练/正式测试|deferred|本轮oracle诊断不能证明|保持完整持续目标|
+
+R14实际结论：SOURCE_ACTION_PRIORITY_NOT_SUPPORTED。known_action_simvar平均NMSE相对native−15.4053%，源低城区+0.5556pp、中城区-0.0556pp，未足以证明作用更准显著提高身份。6项verified/1项deferred；[完整报告](../automation_reports/CV-SincNet/20261019-diagnostic-restoration-action-fidelity-F50-s2026092701-m5-r14/report.md)。

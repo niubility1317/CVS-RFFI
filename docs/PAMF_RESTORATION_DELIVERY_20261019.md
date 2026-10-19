@@ -121,3 +121,6 @@ assert metadata["kind"] == "native_map_prior"
 
 
 R12 参数无关 PAMF 解析视图实验（同父权重两组新增 E20/4940、0 TX/F 训练、全 L/U）已完成：SOURCE_NOT_QUALIFIED。源 lowurban 父 / pair / 解析为 82.1667% / 82.9444% / 82.9444%，六场景平均 NMSE 为 0.02760034 / 0.02699101 / 0.02759046。未通过固定源条件，保持 0 target。[完整报告](../automation_reports/CV-SincNet/20261019-phase1-restoration-analytic-views-selfsup-s2026092701-m2-r12/report.md)。用户 70%/各场景与原始 clean 差距≤5pp 目标保持，不以源成绩代替目标成绩。
+
+
+2026-10-20更新：R14源作用/prior诊断完成，R13技术故障保留、单点上下文修复后新root执行；0训练/target。已知作用＋原生噪声代理使平均NMSE降低15.4053%，源低城区82.1667%→82.7222%，中城区89.8889%→89.8333%，未达到预登记作用估计优先门槛。prior单独输出clean退化至96.0556%，不能独立部署。保留三郊区/三城区/clean和TX/RX/day全部945分层；[完整报告](../automation_reports/CV-SincNet/20261019-diagnostic-restoration-action-fidelity-F50-s2026092701-m5-r14/report.md)。该源反事实不是70%/5pp正式结果，也不是oracle理论上界；持续目标active。

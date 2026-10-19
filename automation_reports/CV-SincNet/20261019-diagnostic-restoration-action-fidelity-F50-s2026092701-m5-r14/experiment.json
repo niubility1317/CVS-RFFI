@@ -1,0 +1,241 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-diagnostic-restoration-action-fidelity-F50-s2026092701-m5-r14",
+  "group_id": "pamf-restoration-action-fidelity",
+  "display_name": "固定恢复器的接收作用与 prior 源身份瓶颈诊断",
+  "description": "固定 R10native，通过原F50比较学习prior、已知/估计作用和模拟器噪声代理；源诊断，0训练/0target，不把oracle当部署或理论上界。",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "source_diagnostic",
+    "oracle_not_deployable",
+    "frozen_F"
+  ],
+  "comparison_group_id": "manysig-fixed-source1800-action-fidelity",
+  "parent_run_ids": [
+    "20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10",
+    "20261019-phase1-restoration-learned-action-source-s2026092701-r07",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02"
+  ],
+  "replaces_run_id": "20261019-diagnostic-restoration-action-fidelity-F50-s2026092701-m5-r13",
+  "authorization": "持续恢复目标及用户报告R3的oracle/估计作用诊断；N607多GPU授权。结果仅组织下一次合法源训练，不读取目标分数。",
+  "code": {
+    "commit": "a571e10343f7a990833b3ef7f41e2d442dfe1bba",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
+    "cwd": "releases/pamf_action_fidelity_20261019_r14"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "Fixed source residual/post_sync/noEQ/reflect IQ2x256;cached known64tap/main/image and whiteinput varianceproxy",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/validation original1800 sourceV physicalIDs;matching validation_actions perview reused without regeneration",
+    "label_map_ref": "0TX beforeall35newprediction sets;independent CPUsource scorer opens existingVlabels;no target/query",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json: READY/EXACT_MATCH; reuse existing cache without new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "Unchanged original source practical received and validated action cache;2462MHz/25MHz source proxy,not inorbit",
+    "restoration_train_counts": {
+      "new_epochs": 0,
+      "new_updates": 0,
+      "new_L_exposures": 0,
+      "new_U_exposures": 0,
+      "parent_L_count": 6300,
+      "parent_U_count": 56700
+    },
+    "source_validation_panel": 1800,
+    "target_panel": "None;alloracle/priorcounterfactuals source-only,not eligible for target promotion"
+  },
+  "permissions": {
+    "regime": "Frozen sourceV conditional action/prior diagnostic;actualAGClockknown andnativewhiteinputvarianceproxy explicitly oracle;no persistentfit",
+    "query_use": "No target/query input or mode;sourceV truth onlyafter5readoutsx7completefinitepredictions;0sourceVstateupdates",
+    "external_method_exception": null,
+    "claim_scope": "Source mechanistic evidence only;not theoreticalupperbound,deployableoracle,formal70%/5pp or everydetailproof"
+  },
+  "checkpoint": {
+    "initialization": "Unchanged complete fixedlast R10native20/4940;allparamsfrozen;no newmodel/optimizer",
+    "sources": [
+      {
+        "run_id": "20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10",
+        "commit": "b57eca9946b2a912a88870e24826fe3e2f70985d",
+        "role": "Fixed complete native/coarse/action/prior E60 source-only;actual0TX/Ftraining",
+        "path": "runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10/native_map_prior/final.pt"
+      },
+      {
+        "run_id": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+        "commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+        "role": "Frozen originalF50 E50/11100/defaulthead inference only",
+        "path": "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+      }
+    ],
+    "contract_check_ref": "Reuse strict R12.initialize originalR10 fullcontract and sourcehandles;originalF50reader;actual2Ls checkpointnoquerysmoke first",
+    "provenance_verdict": "VERIFIED samephysicalsourcecontract/sourceonly fixedparents;knownactionis cachedsourceoracle metadata,not target info",
+    "selection_rule": {
+      "interpretation_only": {
+        "mean6_NMSE_ratio_max": 0.95,
+        "lowurban_gain_min_pp": 1.0,
+        "midurban_gain_min_pp": 0.5,
+        "clean_drop_vs_original_max_pp": 0.1,
+        "worst_lowurban_TX_delta_min_pp": -1.0
+      },
+      "target_promotion": false
+    },
+    "evaluation_readers": [
+      "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701 original defaulthead"
+    ]
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/action-fidelity",
+    "gpu_policy": "Pool0/1/5/7,preferidle,max1ownworker;allownercap2/free12GB;sharedcapacity4lock throughCUDAvisiblePID,nochildrelock",
+    "remote_run_root": "runs/20261019-diagnostic-restoration-action-fidelity-F50-s2026092701-m5-r14",
+    "remote_log_root": "logs/20261019-diagnostic-restoration-action-fidelity-F50-s2026092701-m5-r14",
+    "local_artifact_root": "local_artifacts/pamf_restoration/action_fidelity_r14_20261019",
+    "launch_command": "python -u -m experiments.pamf_action_fidelity.runner run --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-run ../../runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --output ../../runs/20261019-diagnostic-restoration-action-fidelity-F50-s2026092701-m5-r14 --expected-commit a571e10343f7a990833b3ef7f41e2d442dfe1bba",
+    "stop_rule": "Wrongsource/parent,collision,nonfinite,incompleteprediction:preserveoutputs,abortownrun,noautomaticretry;healthyjobsunchanged"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "resolved_config.json",
+    "smoke.json",
+    "worker.json",
+    "gpu_ready.json",
+    "predict.log",
+    "prediction/{view}.{readout}.{iq,features,logits}.npy",
+    "prediction/physical_ids.npy",
+    "prediction/complete.json",
+    "summary.json",
+    "interpretation.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "IQNMSEfull/prefix232/tail24",
+      "FFTlogpowerL1",
+      "originalF50accuracy/MacroF1",
+      "repair/damage",
+      "pairedcleanfeaturecosine/capped512sameTXmargin",
+      "predictionseconds"
+    ],
+    "dimensions": [
+      "clean",
+      "three suburban separately",
+      "three urban separately",
+      "TX",
+      "RX",
+      "day",
+      "train role/state/lock"
+    ],
+    "primary": "Source-only known_action_simvar vs fixed native;single action/variance swaps and coarse/priorcontrols separate attribution;no automatic targetpromotion",
+    "prediction_ref": "runs/20261019-diagnostic-restoration-action-fidelity-F50-s2026092701-m5-r14/prediction;baselines reuse R10 unchangedcompletepredictions",
+    "scorer_ref": "experiments.pamf_action_fidelity.runner score independentCPU after35completepredsets",
+    "final_user_targets": {
+      "lowurban_accuracy_min": 70.0,
+      "other_five_max_gap_vs_original_clean_pp": 5.0
+    }
+  },
+  "rows": [
+    {
+      "row_id": "source_counterfactuals",
+      "method": "action_fidelity",
+      "purpose": "source_only_counterfactual",
+      "config_ref": "experiments/pamf_action_fidelity/design.py#configuration",
+      "resolved_config_ref": "runs/20261019-diagnostic-restoration-action-fidelity-F50-s2026092701-m5-r14/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026101901
+      },
+      "seed_notes": "No new RNG;original sourceV namespace restoration/validation/draw0 andhardwareseed2026101902;knownmetadata bytealigned by originalR07 builder;nativeparenttrainingdata1921/aug1912 inherited only",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "None(frozen)",
+      "lr": 0.0,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0training/0newfit;all5readouts sharecurrentobserved/base/prior once,batch128,6CG;inheritedcomponentE60 andF50E50separate",
+      "output_root": "runs/20261019-diagnostic-restoration-action-fidelity-F50-s2026092701-m5-r14/prediction",
+      "log_path": "runs/20261019-diagnostic-restoration-action-fidelity-F50-s2026092701-m5-r14/predict.log",
+      "command": "python -u -m experiments.pamf_action_fidelity.runner run --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-run ../../runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --output ../../runs/20261019-diagnostic-restoration-action-fidelity-F50-s2026092701-m5-r14 --expected-commit a571e10343f7a990833b3ef7f41e2d442dfe1bba",
+      "expected_artifacts": [
+        "launch.json",
+        "resolved_config.json",
+        "smoke.json",
+        "worker.json",
+        "gpu_ready.json",
+        "predict.log",
+        "prediction/{view}.{readout}.{iq,features,logits}.npy",
+        "prediction/physical_ids.npy",
+        "prediction/complete.json",
+        "summary.json",
+        "interpretation.json",
+        "complete.json"
+      ],
+      "counterfactual_readouts": [
+        "prior_only",
+        "known_action_estvar",
+        "est_action_simvar",
+        "known_action_simvar",
+        "coarse_known_action_simvar"
+      ]
+    }
+  ],
+  "notes": [
+    "User reportR3:check knownactionvsestimated before addingunfold blocks. R06sourcewaveformpotential alone didnot verify TX;R12statisticslossfailedsourceidentity.",
+    "No R11 targetmetrics consumed fordesign or source interpretation. Existing exposedformalbenchmark isnot a newblindtest;thisrun0target.",
+    "Same1800sourcephysicalrecords across7correlatedviews and5newreadouts=63000computations,not63000independentrecords.",
+    "Complete fixed R10native parent allparamsfrozen;0epochs/optimizer/Vpersistentfit;0TXtraining;F/defaulthead frozeninference. FullLU wasusedbyparent,not newtraininghere.",
+    "Knownaction includesactualinputconditionalAGClock;simvar iswhiteinputequivalent realnoiseproxy,not full truecovariance. Learnedprior coadapted to estimatedaction,so swapscore isnot theoreticalupperbound.",
+    "SoftMAP6CG,originalSCALE²,nohardprojection/refit/samplealignment. Five newreadouts exactlyfixed;originalraw/coarse/R07/nativepredictions reused.",
+    "Sourceinterpretationprimary requiresmean6NMSE≤.95native,lowurban≥+1pp,midurban≥+.5pp,cleanoriginaldrop≤.1pp,worstTXlow≥-1pp. Allremainnonpromotable.",
+    "All35newpredsets and existingbaselinepreds validatebeforeindependentCPUfirstTXtruth/pairedclean scoring;all3suburban/3urban/clean/TX/RX/day/repairdamage preserved.",
+    "10focusedtests,compile/help,oneindependentP0P1PASS;ordinaryN607preflightverified;real2Ls checkpointsmoke firstthenimmediatecontinue.",
+    "TechnicalreplacementofR13only:no_grad modelconstruction fixes versioncounter;RED/GREEN regressionandactualF50CPU2Lsverified;no datamatrix/hyperparameter changes.",
+    "Oneimmutable root/release,oneowner,max1GPUworker,sharedcapacity4lock;noautomaticretry/nohealthyjobmutation.",
+    "Complete35newpredsets/945sourcegroups beforeCPUtruth;allprocessesEXITED;operatorpriority=False;0training/target;goalnotcomplete."
+  ],
+  "registered_at": "2026-10-19T15:59:14+00:00",
+  "scientific_outcome": "SOURCE_ACTION_PRIORITY_NOT_SUPPORTED"
+}
