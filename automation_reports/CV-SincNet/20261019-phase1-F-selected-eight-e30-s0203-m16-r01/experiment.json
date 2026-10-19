@@ -31,7 +31,7 @@
   "replaces_run_id": null,
   "authorization": "2026-10-19 user selected six report links containing eight configurations and requested all complete three model seeds. Latest user specifies only two cards with three processes/card. Existing permission for GPU4/6 retained; explicit historical replication overrides new-exploration defaults.",
   "code": {
-    "commit": "PENDING_EXECUTION_COMMIT",
+    "commit": "9a8f3a164c5c9e53ba718dfa5da9c0cf9c473972",
     "checkout": "codex/ce-half-three-seeds-20261019",
     "environment": "Existing N607 CVS-RFFI Python3.10/Torch2.1 FP32; exact immutable historical family runtime; CPU threads2 per worker",
     "cwd": "PROJECT/releases/cvs_F_selected_eight_E30_s0203_20261019_r01"
@@ -209,7 +209,7 @@
         "final_report.md",
         "complete.json"
       ],
-      "status": "PREREGISTERED"
+      "status": "RUNNING"
     },
     {
       "row_id": "B01-s2026092702",
@@ -267,7 +267,7 @@
         "final_report.md",
         "complete.json"
       ],
-      "status": "PREREGISTERED"
+      "status": "RUNNING"
     },
     {
       "row_id": "B0-s2026092702",
@@ -325,7 +325,7 @@
         "final_report.md",
         "complete.json"
       ],
-      "status": "PREREGISTERED"
+      "status": "RUNNING"
     },
     {
       "row_id": "URAW-s2026092702",
@@ -383,7 +383,7 @@
         "final_report.md",
         "complete.json"
       ],
-      "status": "PREREGISTERED"
+      "status": "RUNNING"
     },
     {
       "row_id": "H01-s2026092702",
@@ -441,7 +441,7 @@
         "final_report.md",
         "complete.json"
       ],
-      "status": "PREREGISTERED"
+      "status": "RUNNING"
     },
     {
       "row_id": "FIR_B11-s2026092702",
@@ -499,7 +499,7 @@
         "final_report.md",
         "complete.json"
       ],
-      "status": "PREREGISTERED"
+      "status": "QUEUED"
     },
     {
       "row_id": "ORD128-s2026092702",
@@ -557,7 +557,7 @@
         "final_report.md",
         "complete.json"
       ],
-      "status": "PREREGISTERED"
+      "status": "RUNNING"
     },
     {
       "row_id": "DUP192-s2026092702",
@@ -615,7 +615,7 @@
         "final_report.md",
         "complete.json"
       ],
-      "status": "PREREGISTERED"
+      "status": "QUEUED"
     },
     {
       "row_id": "AS_PAOFF-s2026092703",
@@ -673,7 +673,7 @@
         "final_report.md",
         "complete.json"
       ],
-      "status": "PREREGISTERED"
+      "status": "QUEUED"
     },
     {
       "row_id": "B01-s2026092703",
@@ -731,7 +731,7 @@
         "final_report.md",
         "complete.json"
       ],
-      "status": "PREREGISTERED"
+      "status": "QUEUED"
     },
     {
       "row_id": "B0-s2026092703",
@@ -789,7 +789,7 @@
         "final_report.md",
         "complete.json"
       ],
-      "status": "PREREGISTERED"
+      "status": "QUEUED"
     },
     {
       "row_id": "URAW-s2026092703",
@@ -847,7 +847,7 @@
         "final_report.md",
         "complete.json"
       ],
-      "status": "PREREGISTERED"
+      "status": "QUEUED"
     },
     {
       "row_id": "H01-s2026092703",
@@ -905,7 +905,7 @@
         "final_report.md",
         "complete.json"
       ],
-      "status": "PREREGISTERED"
+      "status": "QUEUED"
     },
     {
       "row_id": "FIR_B11-s2026092703",
@@ -963,7 +963,7 @@
         "final_report.md",
         "complete.json"
       ],
-      "status": "PREREGISTERED"
+      "status": "QUEUED"
     },
     {
       "row_id": "ORD128-s2026092703",
@@ -1021,7 +1021,7 @@
         "final_report.md",
         "complete.json"
       ],
-      "status": "PREREGISTERED"
+      "status": "QUEUED"
     },
     {
       "row_id": "DUP192-s2026092703",
@@ -1079,7 +1079,7 @@
         "final_report.md",
         "complete.json"
       ],
-      "status": "PREREGISTERED"
+      "status": "QUEUED"
     }
   ],
   "notes": [
@@ -1087,6 +1087,5 @@
     "Only missing02/03 train. FIR depends on new matching B01 stage20;no duplicate parent training. All fixed seeds retained regardless target score.",
     "Existing seed01 practical low urban remains single-seed;new clean scope does not establish three-seed satellite performance.",
     "16 local config/model-seed checks PASS;real source checkpoint no-query smoke is first launcher step and continues immediately on PASS."
-  ],
-  "registered_at": "2026-10-19T13:00:54+00:00"
+  ]
 }

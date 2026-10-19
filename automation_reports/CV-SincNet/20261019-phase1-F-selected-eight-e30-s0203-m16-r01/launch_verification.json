@@ -1,0 +1,53 @@
+{
+  "verification": "VERIFIED",
+  "execution_commit": "9a8f3a164c5c9e53ba718dfa5da9c0cf9c473972",
+  "archive_transfer": "VERIFIED_ONE_SHA_COMPARISON",
+  "remote_compile": "PASS",
+  "real_checkpoint_smoke": {
+    "status": "PASS",
+    "rows": [
+      "AS_PAOFF-s2026092702",
+      "B01-s2026092702",
+      "B0-s2026092702",
+      "URAW-s2026092702",
+      "H01-s2026092702",
+      "FIR_B11-s2026092702",
+      "ORD128-s2026092702",
+      "DUP192-s2026092702",
+      "AS_PAOFF-s2026092703"
+    ],
+    "NN": 18,
+    "source_IQ": 0,
+    "target_query": false,
+    "optimizer_updates": 0,
+    "continue_immediately": true
+  },
+  "GPU_policy": {
+    "physical_GPUs": [
+      4,
+      6
+    ],
+    "max_total_workers_per_card": 3,
+    "CPU_scorers": 1
+  },
+  "active_rows": [
+    "AS_PAOFF-s2026092702",
+    "B01-s2026092702",
+    "B0-s2026092702",
+    "URAW-s2026092702",
+    "H01-s2026092702",
+    "ORD128-s2026092702"
+  ],
+  "pending_count": 10,
+  "all_six_actual_GPU_processes_observed": true,
+  "PID_CWD_cmdline_GPU_match": true,
+  "log_growth_verified": [
+    "B0-s2026092702",
+    "URAW-s2026092702",
+    "H01-s2026092702",
+    "ORD128-s2026092702"
+  ],
+  "failure_count": 0,
+  "complete": false,
+  "Git_push": "FAILED_GITHUB_443_CONNECTION;local commit preserved;remote OID unavailable"
+}
