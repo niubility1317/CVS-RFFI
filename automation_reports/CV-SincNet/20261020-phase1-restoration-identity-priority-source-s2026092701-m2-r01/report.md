@@ -1,6 +1,6 @@
 # 三套冻结原 F 的决策约束强度消融
 
-状态：PLANNED。目标保持 low-urban≥70%，其他五种 practical 接近原clean（Agent暂按差距≤2个百分点解释），并分别报告恢复IQ与同条clean差距、接入冻结原基座的目标识别。任何源分数或NMSE单项不能证明目标达成。
+状态：RUNNING / VERIFIED。目标保持 low-urban≥70%，其他五种 practical 接近原clean（Agent暂按差距≤2个百分点解释），并分别报告恢复IQ与同条clean差距、接入冻结原基座的目标识别。任何源分数或NMSE单项不能证明目标达成。
 
 ## 源依据和固定两臂
 
@@ -23,3 +23,15 @@ posterior03、posterior10仅后验权重为0.3/1.0不同，均平均三个teache
 一个code/config commit、一个不可覆盖root、一次预检、一次发布归档SHA比较、一次远端compile。launcher第一步原R03+三原F两条Ls no-query smoke，检查两恢复模块有限非零梯度、F全部冻结、原头到IQ梯度、新checkpoint往返、0目标/0更新，PASS立即继续。随后核实实际PID/CWD/完整命令/GPU/日志增长。数据/来源/commit/预算/输出冲突、非有限、OOM或预测失败时保留产物、停止对应技术失败且不自动重试；不因指标或另一run进展热改健康任务。具体命令/环境/路径/矩阵/产物见experiment.json。
 
 一次只读预检核实GPU4可用24124MB、GPU5可用22905MB；GPU5已有一个其他owner进程，满足全owner少于2且可用≥18GB的获取条件。保留其进程和产物。
+
+
+## 启动核验
+
+方法commit：`de3118c724026869581a9cf1975b0d1314c96d6e`。26项聚焦检查通过；一次独立P0/P1审查PASS，无发现。一次发布归档比较及远端compile/import通过。真实R03＋三套原F的两条L_s smoke证实coarse和correction均有非零有限梯度、三套F均无梯度、新权重往返一致，0目标访问、0更新。PASS后两臂直接继续训练。
+
+独立后态已核实两条实际worker的PID/CWD/完整命令、物理GPU4/5归属和从0到首轮的日志增长。当前进度：
+
+- posterior03：2/10轮、494/2470步。
+- posterior10：1/10轮、247/2470步。
+
+两个源参考特征缓存均为63000条L/U×三套F独立160维坐标，没有TX真值读取。当前没有源V评分或新目标性能结论；只有固定源规则选中的通过臂会自动进入目标七视图／三原F验证。
