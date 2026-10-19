@@ -1,2 +1,10 @@
 {"at": "2026-10-19T09:16:38+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-19T09:23:53+00:00", "status": "RUNNING", "note": "VERIFIED: N607实际F检查、缓存及GPU0/1/5三训练行已启动；其余四行排队；尚无恢复后识别结论", "evidence": ["local_artifacts/pamf_restoration/observations/1792401688596776600.json"], "row_id": null}
+{"at": "2026-10-19T09:47:20+00:00", "status": "FAILED", "note": "主run目标评分目录错误，完整预测保留；七源行已评分，原目标预测由独立恢复run完成评分，技术恢复VERIFIED、科学身份资格不通过。", "evidence": ["results/source_complete.json", "../20261019-phase1-restoration-unlabeled-confirmation-s2026092701-r01/report.md"], "row_id": null}
+{"at": "2026-10-19T09:47:20+00:00", "status": "ANALYZED", "note": "固定20 epoch/4940更新及七源视图评分完成；source资格失败，不追加预算。", "evidence": ["results/source_complete.json"], "row_id": "rescnn"}
+{"at": "2026-10-19T09:47:20+00:00", "status": "ANALYZED", "note": "固定20 epoch/4940更新及七源视图评分完成；source资格失败，不追加预算。", "evidence": ["results/source_complete.json"], "row_id": "unet"}
+{"at": "2026-10-19T09:47:20+00:00", "status": "ANALYZED", "note": "固定20 epoch/4940更新及七源视图评分完成；source资格失败，不追加预算。", "evidence": ["results/source_complete.json"], "row_id": "dual_domain"}
+{"at": "2026-10-19T09:47:20+00:00", "status": "ANALYZED", "note": "固定20 epoch/4940更新及七源视图评分完成；source资格失败，不追加预算。", "evidence": ["results/source_complete.json"], "row_id": "diffusion"}
+{"at": "2026-10-19T09:47:20+00:00", "status": "ANALYZED", "note": "固定20 epoch/4940更新及七源视图评分完成；source资格失败，不追加预算。", "evidence": ["results/source_complete.json"], "row_id": "flow"}
+{"at": "2026-10-19T09:47:20+00:00", "status": "ANALYZED", "note": "固定20 epoch/4940更新及七源视图评分完成；source资格失败，不追加预算。", "evidence": ["results/source_complete.json"], "row_id": "unrolled"}
+{"at": "2026-10-19T09:47:20+00:00", "status": "ANALYZED", "note": "固定20 epoch/4940更新及七源视图评分完成；source资格失败，不追加预算。", "evidence": ["results/source_complete.json"], "row_id": "transformer"}

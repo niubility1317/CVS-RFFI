@@ -1,0 +1,64 @@
+{
+  "status": "LABEL_FREE_SOURCE_SELECTION_FROZEN",
+  "candidate": "unet",
+  "policy": {
+    "version": "restoration_label_free_selection_v1",
+    "clean_nmse_max": 0.02,
+    "primary": "minimum mean raw IQ NMSE across six source practical views",
+    "constraints": "clean->clean NMSE<=.02; no TX labels/F scores/features/stochastic classification",
+    "tie": "fixed original candidate order",
+    "fallback": "If no clean-qualified model, minimum clean NMSE, then minimum practical NMSE; negative confirmation only"
+  },
+  "source_run": "20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01",
+  "source_code_commit": "f99b9202617fa2f61c929b50cef9c541e8876c35",
+  "source_waveform_metrics": [
+    {
+      "candidate": "rescnn",
+      "clean_nmse": 0.0124154482036829,
+      "mean_practical_nmse": 0.11910705392559369,
+      "identity_mean_nmse": 2.01351527372996
+    },
+    {
+      "candidate": "unet",
+      "clean_nmse": 0.00788778904825449,
+      "mean_practical_nmse": 0.08449727358917396,
+      "identity_mean_nmse": 2.01351527372996
+    },
+    {
+      "candidate": "dual_domain",
+      "clean_nmse": 0.020605219528079033,
+      "mean_practical_nmse": 0.08534324293335278,
+      "identity_mean_nmse": 2.01351527372996
+    },
+    {
+      "candidate": "diffusion",
+      "clean_nmse": 0.013648073188960552,
+      "mean_practical_nmse": 0.18118935947616896,
+      "identity_mean_nmse": 2.01351527372996
+    },
+    {
+      "candidate": "flow",
+      "clean_nmse": 0.01735078915953636,
+      "mean_practical_nmse": 0.2644777869184812,
+      "identity_mean_nmse": 2.01351527372996
+    },
+    {
+      "candidate": "unrolled",
+      "clean_nmse": 0.013849671930074692,
+      "mean_practical_nmse": 0.10138908525307973,
+      "identity_mean_nmse": 2.01351527372996
+    },
+    {
+      "candidate": "transformer",
+      "clean_nmse": 0.010464734397828579,
+      "mean_practical_nmse": 0.10669378377497196,
+      "identity_mean_nmse": 2.01351527372996
+    }
+  ],
+  "clean_qualified": true,
+  "reconstruction_improves": true,
+  "training_TX_label_access": false,
+  "selection_TX_label_access": false,
+  "selection_F_prediction_access": false,
+  "target_feedback": false
+}

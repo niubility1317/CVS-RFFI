@@ -1,6 +1,6 @@
 # 星地观测恢复器：七网络与冻结 F 身份保真验证
 
-状态：RUNNING / VERIFIED。N607 上真实冻结 F 检查通过，源域缓存完成，GPU0／1／5 的前三个恢复器已开始训练。尚无恢复后识别有效性结论。
+状态：首轮研发已分析。七行源训练／预测／评分 VERIFIED；主 run 的目标评分因目录错误 FAILED，原预测已由独立恢复 run 完成评分。科学判定：未达到稳定身份恢复标准。
 
 本轮检验同一份输入的 `F(received)` 与 `F(R(received))`。F 和原默认分类头始终冻结，不训练新头。恢复 IQ 经原 PAMF 操作重新生成 Sinc／时域、复 FFT／镜像关系、PA、参考响应和 SIG_TIME，所有分支来自同一个恢复信号。
 
@@ -60,13 +60,107 @@ REJECTED_EXTRA_GATE：另设设计审批、重复未变代码／runner 审查、
 
 条件扩散采用 [DDPM](https://arxiv.org/abs/2006.11239) 的条件去噪思路、[v 参数化](https://arxiv.org/abs/2202.00512)及 [DDIM](https://arxiv.org/abs/2010.02502) 采样；流匹配采用[向量场配对路径回归](https://arxiv.org/abs/2210.02747)。这里的 1D IQ 条件路径与损失是待检验的任务适配，原论文结果不作为射频指纹有效性证据。
 
-## 首批源域结果（未完成矩阵）
+## 自监督正确性结论
 
-固定源 V 1,800 条、单 model seed。主基座为已做 As 训练的 AsF；cleanF 是另一个已有 PAMF 读出。以下不代表目标接收机表现，不用于修改其他健康训练。完整七行及目标确认尚未完成。
+恢复网络训练属于**合成退化配对自监督**：`x∈L_s∪U_s，r=Aξ(x)，R(r)≈x`。它不需要 TX 标签，但需要增强前的源域原观测 x；不能称为完全没有 clean 参照的盲恢复。恢复器本身不加载已有 F，不使用 CE、KL、伪标签、F 分类分数或 F 的训练梯度。PAMF 输入损失使用原确定性变换和默认初始化 Sinc，全部冻结；不是学习过身份的 F 特征损失。模型目标均有明确 x 锚点，不以相互一致替代配对端点。
 
-|恢复器|AsF clean|AsF low urban|low urban 净纠错|cleanF low urban|
+原比较流程的 source V **选模使用了 TX 标签**，因此不能把原端到端研发流程称为全无监督。新增 `unlabeled_selection.py` 只接受原坐标波形 NMSE，拒绝 TX/F/识别字段；clean NMSE≤0.02 后以六场景平均 NMSE 最低选择，同样得到 U-Net。该规则是在全部源诊断后补充、首次成功目标评分前执行的校核；不是新的前瞻盲选实验。完全复用原先已冻结的 U-Net 目标预测，无新增训练或 GPU 预测。已有 F 使用过监督预训练，也不属于全无监督系统。
+
+原 15 项聚焦检查已通过；本轮新增 6 项实际运行：`python -X utf8 -m pytest tests/test_pamf_restoration_unsupervised.py -q`。覆盖禁用分类损失/教师加载仍可优化恢复器、解析扩散 v 与完整 DDIM 端点、流匹配 Euler 端点、推理禁用 clean-dependent 训练路径、无 TX 选模白名单、评分路径不提前读取真值。检查验证训练定义与实现边界，不等于验证真实身份细节已恢复。
+
+## 七网络完整源域结果
+
+源 V 固定 1,800 条、单模型 seed2026092701。所有候选的 clean AsF 原始准确率为98.78%，low urban 原始准确率为59.94%；cleanF low urban 原始为39.22%。下面不是目标接收机表现。
+
+|恢复器|六场景平均 raw NMSE|AsF clean|AsF low urban|low urban 修复/破坏/净纠错|cleanF low urban|
+|---|---:|---:|---:|---:|---:|
+|rescnn|0.11911|98.11%|52.50%|138/272/-134|48.56%|
+|unet|0.08450|98.56%|57.56%|192/235/-43|53.94%|
+|dual_domain|0.08534|97.83%|54.61%|188/284/-96|53.39%|
+|diffusion|0.18119|98.44%|52.56%|165/298/-133|46.33%|
+|flow|0.26448|97.78%|46.67%|129/368/-239|42.61%|
+|unrolled|0.10139|98.39%|52.61%|151/283/-132|48.44%|
+|transformer|0.10669|98.28%|51.06%|180/340/-160|47.89%|
+
+不恢复的六场景平均 raw IQ NMSE 为2.01352。全部网络大幅降低波形误差，也都改善较弱 cleanF 的 low urban；但**七行均未达到预登记的主 AsF low urban＋clean 资格**。U-Net 是固定源规则的负结果确认对象，不能因目标局部涨分反过来把它升级为合格方案。完整每视图、每 TX／RX 及 Macro-F1 见 [source_complete.json](results/source_complete.json)。
+
+## 固定目标面板：冻结 AsF＋U-Net
+
+目标1,200个原划分未见 RX 物理 ID，单模型 seed，7个视图共用同一批物理样本；六 practical 是固定共同注入接收机会话的新模拟观测。无目标重训、选模或场景旁路，clean 同样经过恢复器。所有预测先固定，独立 scorer 后读真值。
+
+|视图|原 AsF|AsF＋U-Net|变化/百分点|修复/破坏/净纠错|配对 clean 特征高于其他 TX/比例|
+|---|---:|---:|---:|---:|---:|
+|clean|84.17%|83.33%|-0.83|7/17/-10|100.00%|
+|practical_high|80.50%|82.50%|+2.00|89/65/+24|79.17%|
+|practical_mid|78.75%|80.25%|+1.50|93/75/+18|70.17%|
+|practical_low_suburban|76.17%|78.50%|+2.33|115/87/+28|63.33%|
+|practical_high_urban|75.50%|79.50%|+4.00|128/80/+48|68.92%|
+|practical_mid_urban|60.33%|60.25%|-0.08|133/134/-1|45.75%|
+|practical_low_urban|49.83%|48.50%|-1.33|141/157/-16|28.42%|
+
+四场景提高1.50至4.00个百分点；中仰角 urban 基本持平，主 low urban 下降1.33个百分点，clean下降0.83个百分点。六场景等权准确率均值70.18%→71.58%只是相关场景的描述性汇总，不可替代主指标或独立多 seed 证明。low urban 修复141个同时破坏157个；原 clean 对照也净破坏10个。该模型在部分条件下帮助冻结 F 识别，但没有通过报告所要求的稳定忠实恢复判据。
+
+特征配对诊断比较恢复特征与其本样本 clean 特征相似度，是否高于面板中其他 TX 的 clean 特征；这是冻结模型空间的辅助诊断，不是“生成细节真属该 TX”的物理证明。low urban 仅28.42%，不支持强身份恢复结论。目标每 TX／RX、混淆、默认头 margin、全部波形/输入误差与次要 cleanF 结果见 [target_confirmation.json](results/target_confirmation.json)。配对 McNemar p 值是单次事后描述，未作为选模或扩展依据；近似区间不代替多 seed 证据。
+
+## 生成随机性与完整训练日志
+
+源面板 low urban 前128 ID、预先固定3次单独生成，扩散 AsF 类别切换59.375%，流匹配同为59.375%；没有按真值挑选或平均波形。相应完整源面板 AsF 准确率为52.56%和46.67%，均低于59.94%原输入。该 E20 实现未学到足够稳定的身份条件；结果不能泛化成所有扩散/流匹配算法无效。
+
+已完整解析7行×20 epoch=140条训练记录，以及9份完整 stdout、323行。七行均4940更新；各使用126000次 L IQ、1134000次 U IQ，含252287次 clean identity输入。训练损失/梯度均有限，训练 stdout 未出现错误/OOM/早停记录。各行末5轮自身总损失下降0.70%至3.18%；不是没有运行或只训练少量批次。扩散/流的速度与重建目标定义不同，训练损失绝对大小不能横比，也不能用下降宣称身份改善。
+
+|恢复器|参数|训练耗时/秒|峰值 allocated/MB|源6场景恢复吞吐均摊/ms每样本|
 |---|---:|---:|---:|---:|
-|rescnn|98.78% → 98.11%|59.94% → 52.50%|-134／1800|39.22% → 48.56%|
-|dual_domain|98.78% → 97.83%|59.94% → 54.61%|-96／1800|39.22% → 53.39%|
+|rescnn|42338|179.48|399.39|0.0087|
+|unet|207650|268.48|401.30|0.0575|
+|dual_domain|48148|213.22|530.83|0.0148|
+|diffusion|209090|257.66|406.05|0.9083|
+|flow|209090|254.04|406.05|0.8967|
+|unrolled|46595|261.28|630.81|0.0293|
+|transformer|130376|208.42|336.90|0.0108|
 
-当前已完成的候选对较弱 clean-only F 有收益，但对主 AsF 的 low urban 与 clean 还未显示收益。不能把前者改善或波形误差下降当作主路线成功。其余候选继续固定预算；明细见 [source_partial.json](results/source_partial.json)。
+时间为实际该次硬件/并发状态的FP32批量同步测量，单次样本延迟与部署峰值需要另测；不声称等推理成本。完整曲线摘要见 [training_analysis.json](results/training_analysis.json)。七份 final.pt 已下载到本地私有产物目录；整体归档传输比较一致，7模型严格加载并以2条真实源 IQ 推理通过，不提交权重。
+
+## 技术恢复与交付
+
+主 run 的 target prediction/complete.json 已记录全部7视图×1200、零 TX 真值读取和零状态更新。随后评分误用了本地数据布局，在打开真值前 FileNotFoundError；主 run 的失败文件保留。独立恢复 run `20261019-phase1-restoration-unlabeled-confirmation-s2026092701-r01` 仅以符号引用读取原预测、原输入和原 checkpoint，使用原已验证 scorer 及 N607 实际 data/truth.json。新增训练0、重新生成观测0、重新 GPU预测0。独立回读确认 metrics.json 完整、scorer退出、原失败保留。技术交付VERIFIED；科学资格未通过。
+
+训练/预测代码为 `f99b9202617fa2f61c929b50cef9c541e8876c35`，自监督校核和未来路径修复为 `c9aaaec09b66da475fe5b6322b14847994d40d96`。新修复只在预测完成后解析两个既有目录布局，缺失或歧义均拒绝；一次定点独立P0/P1复核通过。既有健康训练未重启或热修改。原源标签选模历史与新增无 TX 选模校核均明示保留。
+
+实际使用核验：15项原聚焦测试；6项新增自监督与路径测试；7个真实 checkpoint源样本推理；远端七源行与七目标视图完整独立评分；完整140 epoch记录/9份日志。所有报告表值由保存的评分产物生成。
+
+## 报告要求核对
+
+这是按报告思想进行的任务适配，不是原论文或示例层宽的逐项复刻。23 项已验证、6 项暂缓、1 项最终选型未通过、0 项技术阻塞。最高风险是生成细节属于输入真实 TX 的证据不足，尤其未知相位、尾部裁剪与生成随机性。
+
+|ID|报告位置|要求|实现/产物|状态|验证/边界|
+|---|---|---|---|---|---|
+|T01|一／八|全部 L/U、原观测锚定，不读 TX/PL|data.py,runner.py|verified|63000 ID；140 epoch records；负向标签测试|
+|T02|二|单 IQ 生成实际 PAMF 全部分支|views.py,frozen.py|verified|真实两个 F 严格加载；原 joint160/默认头|
+|T03|二|完整复 FFT 与正负频率|models.py,views.py|verified|dual-domain IFFT；不使用 irfft/RGB|
+|T04|二／八|非重复频谱目标、数值稳定|views.py|verified|log1p 幅谱＋实际镜像特征；分母下界|
+|T05|三／四 R1|非下采样残差 CNN、零输出层|models.py|verified|dilation1/2/4/8/16；无双零门控|
+|T06|三／四 R2|U-Net 适度压缩与插值跳连|models.py|verified|长度256→128→64，宽24；非报告示例逐层复刻|
+|T07|三／四 R3|时频联合最终一致 IQ|models.py|verified|完整复数残差后 IFFT；非精确物理逆|
+|T08|五|扩散条件包含当前完整 IQ|models.py|verified|条件为 received；不用预测 TX/场景真值|
+|T09|五|扩散训练公式正确|models.py|verified|cosine v 参数化；解析 v 目标与端点测试|
+|T10|五|完整正式采样不以 clean 构造起点|runner.py,models.py|verified|64 级训练／16 DDIM；推理负向测试|
+|T11|六|流匹配配对路径与完整积分|models.py|verified|sigma0.02，16 Euler；解析端点测试|
+|T12|七|坐标、延迟、裁剪可观测性|report.md,data.py|verified|六 impulse 延迟24、核62；完整256＋prefix232诊断|
+|T13|七|最优相位增益仅作诊断|views.py|verified|raw 目标；oracle 对齐不参与推理或选模|
+|T14|七|不输入真实信道核与噪声元数据|data.py,runner.py|verified|输入仅当前 IQ；展开 FIR 为学习代理|
+|T15|八／九|clean 控制训练与统一推理|runner.py|verified|每模型252287 clean 曝光；clean 也完整经过 R|
+|T16|八／九|固定原 F 和默认头|frozen.py|verified|完整来源匹配；零 F 更新、零另训头|
+|T17|九|cleanF 与普通 AsF 两个参照|frozen.py,report.md|verified|分别保留既有 E200 与 E20+10 成本|
+|T18|九|TX/RX、混淆、修复破坏与身份间隔|runner.py|verified|源7行、目标1行所有7视图独立评分|
+|T19|九|固定随机主结果、禁止 best/平均|runner.py|verified|主1次；每视图前128 ID 额外2次|
+|T20|十|实际预算、延迟、参数与曝光|training_complete.json,prediction/complete.json|verified|每行4940更新，GPU同步计时；成本表|
+|T21|十|源冻结、逐行自动预测、truth-last|dispatcher.py,runner.py|verified|源7行贯通；目标路径失败后原预测独立恢复评分|
+|T22|一／九|clean/目标/Phase2 及声明边界|report.md|verified|地面观测恢复；目标共用模拟接收机会话；无在轨声明|
+|T23|用户最新要求|TX/F-free 波形选模与披露历史|unlabeled_selection.py|verified|严格白名单；同选 U-Net；属源诊断后校核，非事前盲选|
+|T24|八第二阶段|有标签 CE 身份保护|未启动|deferred|本轮坚持恢复器无 TX 标签；不混入纯自监督结果|
+|T25|八第三阶段|联合微调 PAMF|未启动|deferred|本轮要求固定已有 F；未达到稳定身份收益|
+|T26|九辅助|独立外部架构冻结读出|未启动|deferred|两个读出均 PAMF；不能冒充不同外部架构|
+|T27|一／十扩展|每样本多信道重采与多步成本扫描|未启动|deferred|首轮固定一个观测/ID与16采样步；未做该消融|
+|T28|七相位|仅依赖输入的相位规范化／可辨识性处理|未启动|deferred|raw 回归合法，但未知相位/裁剪可导致条件平均；未证明唯一反演|
+|T29|十扩展|多模型 seed 与全目标矩阵|未启动|deferred|七行源资格均失败，遵守预登记停止规则，不据目标局部涨分扩展|
+|T30|报告最终判据|将本轮模型认定为稳定忠实 TX 恢复器|本轮最终选型|rejected|主 low urban 与 clean 未达标；生成身份随机性较大|

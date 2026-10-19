@@ -1,0 +1,206 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-restoration-unlabeled-confirmation-s2026092701-r01",
+  "group_id": "phase1-pamf-satellite-observation-restoration",
+  "display_name": "恢复器无TX标签选模校核与原目标预测独立评分恢复",
+  "description": "七种恢复器训练自监督边界及扩散/流端点检查；纯源波形NMSE规则同样选择U-Net，复用此前已经冻结的全部1200条七视图预测，仅修正真值目录的CPU评分调用，不训练或重做预测。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "self_supervised",
+    "label_free_selection",
+    "frozen_F",
+    "truth_last",
+    "technical_scoring_recovery"
+  ],
+  "comparison_group_id": "manysig-source-rx13468-day123-076330-restoration-seven-e20-v1",
+  "parent_run_ids": [
+    "20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "原任务完整授权恢复器研发及冻结F验证；最新要求无监督学习首先正确。原预测已完成，原评分因N607真值路径与本地布局不同而在读真值前失败。",
+  "code": {
+    "commit": "c9aaaec09b66da475fe5b6322b14847994d40d96",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI; CPU independent scorer",
+    "cwd": "releases/pamf_restoration_selfsup_20261019_r01",
+    "prediction_code_commit": "f99b9202617fa2f61c929b50cef9c541e8876c35",
+    "scorer_code_commit": "f99b9202617fa2f61c929b50cef9c541e8876c35",
+    "audit_code_commit": "c9aaaec09b66da475fe5b6322b14847994d40d96"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "equalized=1, center256, original packet RMS; practical residual/post_sync/noeq at25MHz",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "same contract#role_ids; V panel chosen perRX/day without TX labels using fixed data seed",
+    "label_map_ref": "source_cache/manifest.json#class_id_to_tx; label files read only by independent scorer",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json: READY/EXACT_MATCH; reuse existing cache without new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "experiments/pamf_restoration/data.py: six practical residual/noEQ/fixed one source training draw per physical ID",
+    "restoration_train_counts": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "TX_labels": 0
+    },
+    "source_validation_panel": 1800,
+    "target_panel": {
+      "count": 1200,
+      "seed": 2026101904,
+      "selection": "uniform physical-ID panel; source-selected single candidate only; new six practical paired diagnostics, not historical satellite observations"
+    }
+  },
+  "permissions": {
+    "regime": "Phase1 fixed prediction diagnostic; restoration training and waveform-only selection use no TX labels; existing F was pretrained supervised",
+    "query_use": "fixed per-sample prediction; all7 views and fixed stochastic diagnostics complete before independent scorer opens TX truth",
+    "external_method_exception": null,
+    "claim_scope": "Selection audit is added after all seven source diagnostics, before successful target truth scoring. It is not a new prospectively blinded selection experiment. No target feedback or parameter updates."
+  },
+  "checkpoint": {
+    "initialization": "No training; reuse original final U-Net",
+    "sources": [
+      "20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/unet/final.pt"
+    ],
+    "contract_check_ref": "existing cleanF E200 and AsF T1 E20+10 source_contract and complete scratch-parent lineage; exact local source roles matched; frozen.py",
+    "provenance_verdict": "F checkpoints VERIFIED: cleanF scratch E200/defaulthead; AsF scratch20+own10/defaulthead. Restoration inherits no weights; fixed F used only for post-freeze evaluation.",
+    "selection_rule": {
+      "version": "restoration_label_free_selection_v1",
+      "clean_nmse_max": 0.02,
+      "primary": "minimum mean raw IQ NMSE across six source practical views",
+      "constraints": "clean->clean NMSE<=.02; no TX labels/F scores/features/stochastic classification",
+      "tie": "fixed original candidate order",
+      "fallback": "If no clean-qualified model, minimum clean NMSE, then minimum practical NMSE; negative confirmation only"
+    },
+    "evaluation_readers": [
+      "20261014-phase1-sigtime-purece-e200-clean-manysig-m8-r01/sig_time-s2026092701/source/last.pt",
+      "20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r02/T1-s2026092701/source/final_ssdg.pth"
+    ]
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/pamf-restoration",
+    "gpu_policy": "CPU only; zero GPU workers, zero training, original predictions referenced read-only",
+    "remote_run_root": "runs/20261019-phase1-restoration-unlabeled-confirmation-s2026092701-r01",
+    "remote_log_root": "runs/20261019-phase1-restoration-unlabeled-confirmation-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/audit_20261019",
+    "launch_command": "CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 python -X utf8 -m experiments.pamf_restoration.runner score --reference ../../runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/target_inputs --row-output ../../runs/20261019-phase1-restoration-unlabeled-confirmation-s2026092701-r01/unet --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json",
+    "stop_rule": "Abort if original seven-view prediction marker/shape/ID checks fail or output exists; no automatic retraining or reprediction."
+  },
+  "expected_artifacts": [
+    "unlabeled_decision.json",
+    "launch.json",
+    "unet/metrics.json",
+    "score.log",
+    "completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "frozen AsF accuracy/macroF1",
+      "cleanF independent existing PAMF readout",
+      "perTX/perRX confusion",
+      "repaired/damaged/net_repaired",
+      "true_TX_margin",
+      "paired-clean feature vs other-TX margin (truth-side diagnostic only)",
+      "three fixed draw class switch rate",
+      "raw IQ NMSE",
+      "prefix232 NMSE",
+      "oracle scalar-aligned NMSE (diagnostic only)",
+      "FFT log MSE",
+      "native PAMF frequency/PA/reference/Sinc inputs",
+      "restorer latency",
+      "parameters",
+      "peak memory",
+      "U exposures"
+    ],
+    "dimensions": [
+      "candidate",
+      "source/target",
+      "view",
+      "TX",
+      "RX",
+      "day",
+      "fixed generation draw"
+    ],
+    "prediction_ref": "runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/target_confirmation/unet/prediction",
+    "scorer_ref": "experiments/pamf_restoration/runner.py:score_row",
+    "primary": "Primary frozen AsF default-head paired accuracy, net corrections, true TX margin; cleanF secondary; clean plus six practical, all1200 IDs fixed before scorer truth access."
+  },
+  "rows": [
+    {
+      "row_id": "unet-original-predictions",
+      "method": "unet",
+      "purpose": "label_free_selection_audit_and_CPU_scoring_recovery",
+      "config_ref": "experiments/pamf_restoration/unlabeled_selection.py",
+      "resolved_config_ref": "runs/20261019-phase1-restoration-unlabeled-confirmation-s2026092701-r01/unlabeled_decision.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": 2026101903
+      },
+      "seed_notes": "split is original contract; data seed fixes source V panel and native source scene/noise draw; augmentation fixes receiver sessions/clean mask and training diffusion/flow RNG; support not applicable; target panel seed separately fixed.",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "No new optimization or prediction; source parent E20/4940 updates unchanged.",
+      "output_root": "runs/20261019-phase1-restoration-unlabeled-confirmation-s2026092701-r01/unet",
+      "log_path": "runs/20261019-phase1-restoration-unlabeled-confirmation-s2026092701-r01/score.log",
+      "command": "CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 python -X utf8 -m experiments.pamf_restoration.runner score --reference ../../runs/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/target_inputs --row-output ../../runs/20261019-phase1-restoration-unlabeled-confirmation-s2026092701-r01/unet --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json",
+      "expected_artifacts": [
+        "metrics.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Original main run remains FAILED_TECHNICAL at scoring; preserve all artifacts and failed traceback.",
+    "Waveform-only selector input contains candidate, clean NMSE, mean six-practical raw NMSE and identity NMSE only; rejects TX/F fields. Deterministic result U-Net matches original labeled-V selection, permitting exact prediction reuse.",
+    "This audit does not retroactively describe the original labeled-V source selection as unsupervised. Training has zero TX-label reads; paired clean IQ remains necessary source reference.",
+    "Original archive transfer/compile, real-checkpoint no-query smokes and matching validated data reused; no new code landing or GPU launch. Focused six audit tests passed; independent P0/P1 review of the truth-path fix passed.",
+    "No target-score-based model selection, parameter tuning, added training, altered sample panel or channel regeneration."
+  ],
+  "registered_at": "2026-10-19T09:40:56+00:00"
+}
