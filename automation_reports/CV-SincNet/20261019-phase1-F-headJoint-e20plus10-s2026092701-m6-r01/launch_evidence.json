@@ -1,0 +1,140 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261019-phase1-F-headJoint-e20plus10-s2026092701-m6-r01",
+  "stage": "SIX_ROW_TRAINING",
+  "release_commit": "931af701470e781122494398dc58c3e027597550",
+  "code_commit": "f4fe173d83245e5ac8a7769d14cacbdf8260dc5a",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "real_parent_checkpoint_smoke": {
+    "status": "PASS",
+    "NN": 8,
+    "source_IQ_read": false,
+    "query_read": false
+  },
+  "dispatcher": {
+    "PID": 2272154,
+    "CWD_argv_matches": true
+  },
+  "bank_reuse": {
+    "status": "REUSED_EXISTING_VALIDATED_SOURCE_OBSERVATIONS",
+    "control_run": "20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r02",
+    "updates": 2220,
+    "L_slots": 284160,
+    "new_physical_simulations": 0,
+    "target_access": false,
+    "U_used": false
+  },
+  "postlaunch": {
+    "status": "VERIFIED",
+    "time": 1792402064.3134217,
+    "rows": [
+      {
+        "row": "FULL_NoAs_JOINT-s2026092701",
+        "status": "VERIFIED",
+        "PID": 2272244,
+        "GPU": 4,
+        "all_owner_count": 2,
+        "log_growth": 187,
+        "step_growth": 100659,
+        "cwd_argv_cuda_matches": true
+      },
+      {
+        "row": "FULL_As_JOINT-s2026092701",
+        "status": "VERIFIED",
+        "PID": 2272339,
+        "GPU": 4,
+        "all_owner_count": 2,
+        "log_growth": 185,
+        "step_growth": 117590,
+        "cwd_argv_cuda_matches": true
+      },
+      {
+        "row": "LORA_NoAs_JOINT-s2026092701",
+        "status": "VERIFIED",
+        "PID": 2272513,
+        "GPU": 7,
+        "all_owner_count": 2,
+        "log_growth": 0,
+        "step_growth": 29380,
+        "cwd_argv_cuda_matches": true
+      },
+      {
+        "row": "LORA_As_JOINT-s2026092701",
+        "status": "VERIFIED",
+        "PID": 2272605,
+        "GPU": 6,
+        "all_owner_count": 2,
+        "log_growth": 182,
+        "step_growth": 38009,
+        "cwd_argv_cuda_matches": true
+      },
+      {
+        "row": "TEMP_NoAs_JOINT-s2026092701",
+        "status": "VERIFIED",
+        "PID": 2272745,
+        "GPU": 6,
+        "all_owner_count": 2,
+        "log_growth": 189,
+        "step_growth": 44235,
+        "cwd_argv_cuda_matches": true
+      },
+      {
+        "row": "TEMP_As_JOINT-s2026092701",
+        "status": "VERIFIED",
+        "PID": 2272847,
+        "GPU": 7,
+        "all_owner_count": 2,
+        "log_growth": 0,
+        "step_growth": 28879,
+        "cwd_argv_cuda_matches": true
+      }
+    ]
+  },
+  "rows": [
+    {
+      "row": "FULL_NoAs_JOINT-s2026092701",
+      "PID": 2272244,
+      "GPU": 4,
+      "parameters": 900722,
+      "trainable_parameters": 232193
+    },
+    {
+      "row": "FULL_As_JOINT-s2026092701",
+      "PID": 2272339,
+      "GPU": 4,
+      "parameters": 900722,
+      "trainable_parameters": 232193
+    },
+    {
+      "row": "LORA_NoAs_JOINT-s2026092701",
+      "PID": 2272513,
+      "GPU": 7,
+      "parameters": 903026,
+      "trainable_parameters": 3264
+    },
+    {
+      "row": "LORA_As_JOINT-s2026092701",
+      "PID": 2272605,
+      "GPU": 6,
+      "parameters": 903026,
+      "trainable_parameters": 3264
+    },
+    {
+      "row": "TEMP_NoAs_JOINT-s2026092701",
+      "PID": 2272745,
+      "GPU": 6,
+      "parameters": 903106,
+      "trainable_parameters": 3344
+    },
+    {
+      "row": "TEMP_As_JOINT-s2026092701",
+      "PID": 2272847,
+      "GPU": 7,
+      "parameters": 903106,
+      "trainable_parameters": 3344
+    }
+  ],
+  "training_complete": false,
+  "formal_scores_read": false
+}
