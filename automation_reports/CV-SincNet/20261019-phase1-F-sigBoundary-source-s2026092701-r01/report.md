@@ -1,6 +1,6 @@
 # SIG_TIME 边界与内部等量平均：固定 checkpoint 源域归因
 
-状态：PLANNED，未启动。
+状态：LOCAL_VERIFIED，源诊断尚未发布。
 
 当前raw补充路径在冻结原F和共同更新两轮均没有形成超过普通As的源增量。这里不再加宽、换rank、换seed或调整旧loss。新问题是现有SIG_TIME聚合是否把边界局部波动放大为判别变化。实际代码三路均先tanh(local_projection(t2))，将32位置分为四个8位置窗口；一阶空间量等于u_end−u_start，空间与时间的反对称面积等于梯形积分u−(u_start+u_end)/2。后者恒等式只用于核验算子，不能把CNN相关噪声当独立白噪声。
 
@@ -31,12 +31,14 @@ E/I不是仅替换两个端点，也不是加权选择最有利窗口；其影�
 | R01 | 附件三.3/七/九 | 从真实SIG_TIME端点机制提问 | 本报告/实际descriptors | verified | 原代码恒等式 | 非独立白噪声假设 |
 | R02 | 本轮固定2×2 | E/I等量、EI交互、native严格保留 | operators/checks | verified | 合成张量/恒等式 | 非仅改两端点 |
 | R03 | 目标三/七 | 实际base、pool、joint160和原W精确回放 | probe/checks | verified | 全模型与实际源 | 无新头/拟合 |
-| R04 | 协议来源禁令 | 合法两个固定父及L角色 | runner/design | pending | 原strict loader/既有bank | 不读V/U/target |
-| R05 | 最小工作流 | commit/review/smoke/发布/后态 | publish/runner | pending | 独立实际证据 | 不重复审批 |
-| R06 | 目标八 | 完整源读出/配对/固定决定/失败保留 | report/analysis | pending | 全条件独立重计 | 不自动训练 |
+| R04 | 协议来源禁令 | 合法两个固定父及L角色 | runner/design | implemented | 原strict loader/既有bank | 不读V/U/target |
+| R05 | 最小工作流 | commit/review/smoke/发布/后态 | publish/runner | implemented | 独立实际证据 | 不重复审批 |
+| R06 | 目标八 | 完整源读出/配对/固定决定/失败保留 | report/analysis | implemented | 全条件独立重计 | 不自动训练 |
 
 最高风险是局部平均损伤了已学习的路径几何，或源端变化不转移到未见RX；本诊断不承诺性能改善。严格实现事前E/I算子，不能把它称为原物理噪声的精确分解。
 
 本地接口修正记录：真实F包装类为SequenceReference，t2最终输出32位置，四窗各8、再四分区域各2。首次结构名称检查及随后尺寸检查在合成输入阶段失败，未访问任何实际CP/IQ/target；按真实路径修正，不是依据源成绩调区域长度。完整模型synthetic回放随后验证算子与实际forward一致。
 
 本地10NN完整模型回放/5负测PASS；原输出与捕获、替代读出与直接前向逐位相等，方法/hook/模型/RNG恢复。此前两次合成接口失败和尺寸核验共8次尝试包前向，合计本地18次尝试NN，0真实CP/IQ/target。实际额外原生logit复核21600已单列计入头计算，不隐去局部神经成本。
+
+唯一一次独立P0/P1审查PASS，范围见review.json；8模块、配置和0NN指标/源判定核对通过，0真实CP/IQ/target/remote，未改文件。代码/config commit 836c646c8de05a813f9c4e3baa2e350ff2b86f1e。命令 CVS-RFFI/python -u experiments/cvs_sig_boundary_source/runner.py；CWD=PROJECT/releases/cvs_F_sigBoundary_source_20261019_r01；普通账号既有Torch2.1/FP32/TF32off/CPU2/CUDA禁用。Git push失败于HTTPS连接，保留本地commit，未将网络交付增加为实验审批。首步真实CP4NN零IQ smoke PASS后立即进行固定源读出。
