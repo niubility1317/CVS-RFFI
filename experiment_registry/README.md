@@ -385,3 +385,5 @@
 本轮记录：[原 F 最终特征与中间层匹配消融](by_method/layerwise_frozenF.md)。
 
 本轮记录：[固定 IQ 平均源验证](by_method/iqmean_frozenF.md)。
+
+本轮记录：[困难样本与 RX 分组加权](by_method/hardness_frozenF.md)。
