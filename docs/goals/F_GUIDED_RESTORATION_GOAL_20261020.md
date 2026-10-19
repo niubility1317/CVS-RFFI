@@ -53,7 +53,7 @@ post-hoc 源决策分析（代码 `9771481bb49a6cb814759500affa22a2d23b4831`，2
 
 固定 0.5/0.5 IQ 平均实验也已完成（方法 commit `c369d4f2d6572a7f584f7675140187a675972bed`，28 项检查、一次独立 P0/P1 审查、真实成员 no-query smoke 和启动后态均通过）。两臂零新增训练，两个恢复成员合计 4281680 参数。mean_final 源 low/mid-urban 为 87.666667%/93.166667%，相对 posterior03 为 +0.611111/−0.277778 个百分点；mean_layerwise 为 87.388889%/93.166667%，变化 +0.333333/−0.277778。平均 NMSE 为 0.03152350/0.03147830，波形与 clean 保持通过，但两城市增益条件未通过。均已退出，没有新目标访问。不能由这些源结果推断目标收益。
 
-已完成源汇总的分组诊断显示，参考 RX3 的 low-urban 为 79.722222%，其他四源 RX 为 86.111111% 至 90.833333%；其 clean 也较低（96.111111%），因此是关联而非因果证明。下一方向拟比较困难 observed 样本加权与源 RX 分组加权，并设置普通 observed 加权匹配对照；只用合法训练误差/RX 元数据，不读取 L/U TX 真值，不新增拟合头。该矩阵尚未实现或发布，用户目标和源/目标边界保持不变。
+已完成源汇总的分组诊断显示，参考 RX3 的 low-urban 为 79.722222%，其他四源 RX 为 86.111111% 至 90.833333%；其 clean 也较低（96.111111%），因此是关联而非因果证明。困难 observed 样本加权、源 RX 分组加权与普通 observed 加权匹配对照已实现并在 N607 GPU4/5/6 核实启动，方法 commit `63c9c3d2b81d92ebfee1623b54d942011e410f0a`。30 项聚焦检查、一次独立 P0/P1 审查、真实 R03/三 F no-query smoke 和三 worker 的 PID/CWD/命令/GPU/日志增长均通过。三臂同一原 R03 coarse20/correction20、联合 E10/2470，参数/数据/顺序/优化器和原 F/default heads 完全匹配；只改变额外 0.5×observed semantic 的聚合（均值、top25%、训练 RX 动态加权）。实际首轮选择率/更新数与预登记一致。没有 L/U TX 真值或新拟合头，q 只在源训练更新，推断不使用 RX 或 q。当前仍在训练，没有新源 V 或目标成绩，用户目标未缩减。
 
 已完成行的 post-hoc 源分析发现：三 teacher 平均使整体与 tail NMSE 略低，但在原 clean 可识别样本中，六视图错误决策由 410 增至 419（10638 个重复视图决策，只有 1773 个物理样本）。错误组在 prefix 和 tail 均有较大误差；这是关联诊断，不是“只有 tail 导致错误”的因果证据，不改已冻结的选择或正在运行的配方。
 
@@ -61,6 +61,7 @@ post-hoc 源决策分析（代码 `9771481bb49a6cb814759500affa22a2d23b4831`，2
 - [决策约束强度消融的固定矩阵与进度](../../automation_reports/CV-SincNet/20261020-phase1-restoration-identity-priority-source-s2026092701-m2-r01/report.md)
 - [coarse20＋全新修正器 joint30 的最终特征/中间层匹配实验](../../automation_reports/CV-SincNet/20261020-phase1-restoration-layerwise50-source-s2026092701-m2-r01/report.md)
 - [固定 IQ 平均源结果及分组诊断](../../automation_reports/CV-SincNet/20261020-phase1-restoration-iqmean-source-s2026092701-m2-r01/report.md)
+- [困难样本与 RX 分组加权的匹配实验](../../automation_reports/CV-SincNet/20261020-phase1-restoration-hardness-source-s2026092701-m3-r01/report.md)
 
 ## 固定边界
 

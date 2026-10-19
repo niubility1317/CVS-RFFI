@@ -1,1 +1,5 @@
 {"at": "2026-10-19T18:41:37+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-19T18:46:47+00:00", "status": "RUNNING", "note": "VERIFIED actualR03/3Fsmoke,PID/CWD/cmd/GPU/loggrowth,focus exposure/update counts;E10 active,0target", "evidence": ["report.md", "experiment.json"], "row_id": "mean_observed"}
+{"at": "2026-10-19T18:46:47+00:00", "status": "RUNNING", "note": "VERIFIED actualR03/3Fsmoke,PID/CWD/cmd/GPU/loggrowth,focus exposure/update counts;E10 active,0target", "evidence": ["report.md", "experiment.json"], "row_id": "cvar_observed"}
+{"at": "2026-10-19T18:46:47+00:00", "status": "RUNNING", "note": "VERIFIED actualR03/3Fsmoke,PID/CWD/cmd/GPU/loggrowth,focus exposure/update counts;E10 active,0target", "evidence": ["report.md", "experiment.json"], "row_id": "rxdro_observed"}
+{"at": "2026-10-19T18:46:47+00:00", "status": "RUNNING", "note": "Allthree matched observed-focus arms live;source choice before automatic selected target", "evidence": ["report.md", "experiment.json"], "row_id": null}
