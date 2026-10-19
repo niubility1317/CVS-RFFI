@@ -86,3 +86,28 @@ def test_formal_candidate_is_source_selected_and_qualified_before_target(tmp_pat
     assert formal.source_parent(parent)['source_waveform_selected']
     decision['identity_diagnostic'][0]['qualified']=False;p.write_text(json.dumps(decision),encoding='utf-8')
     with pytest.raises(ValueError):formal.source_parent(parent)
+
+
+def test_residual_formal_plan_requires_prior_source_freeze_and_correct_training_contract(tmp_path):
+    parent=tmp_path/formal.RESIDUAL_PARENT;parent.mkdir();row=parent/formal.RESIDUAL_CANDIDATE;row.mkdir()
+    (parent/'launch.json').write_text(json.dumps(dict(commit=formal.RESIDUAL_COMMIT)),encoding='utf-8')
+    decision=dict(status='SOURCE_SELECTION_FROZEN',waveform_selected=formal.RESIDUAL_CANDIDATE,
+        identity_assisted_selected=formal.RESIDUAL_CANDIDATE,target_candidates=[formal.RESIDUAL_CANDIDATE],
+        source_qualified=True,waveform_selection_TX_F_access=False,training_TX_labels_read=0,
+        target_reads_before_selection=0,no_target_feedback=True,
+        identity_diagnostic=[dict(candidate=formal.RESIDUAL_CANDIDATE,qualified=True)])
+    p=parent/'source_decision.json';p.write_text(json.dumps(decision),encoding='utf-8')
+    training=dict(epochs=20,updates=4940,coarse_updates=0,TX_labels_read=0,target_reads=0,
+                  L_exposures=126000,U_exposures=1134000)
+    t=row/'training_complete.json';t.write_text(json.dumps(training),encoding='utf-8')
+    assert formal.source_residual_parent(parent)['cumulative_restorer_epochs']==40
+    decision['target_reads_before_selection']=1;p.write_text(json.dumps(decision),encoding='utf-8')
+    with pytest.raises(ValueError):formal.source_residual_parent(parent)
+    decision['target_reads_before_selection']=0;p.write_text(json.dumps(decision),encoding='utf-8')
+    training['coarse_updates']=1;t.write_text(json.dumps(training),encoding='utf-8')
+    with pytest.raises(ValueError):formal.source_residual_parent(parent)
+    run,candidate,gpu,check,loader=formal.plan_settings('residual_R05')
+    assert run==formal.RESIDUAL_RUN and candidate==formal.RESIDUAL_CANDIDATE and gpu==0 and check is formal.source_residual_parent
+    assert loader.__module__=='experiments.pamf_residual_restore.runtime'
+    assert formal.plan_settings('coarse_R04')[:3]==(formal.RUN,formal.CANDIDATE,4)
+    with pytest.raises(ValueError):formal.plan_settings('target_best')
