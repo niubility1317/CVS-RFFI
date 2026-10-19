@@ -369,3 +369,5 @@
 本轮记录：[完整目标 clean 对照](by_method/consensus_target_clean.md)。
 
 本轮记录：[冻结 F50 特征引导训练](by_method/frozenF_feature.md)。
+
+本轮记录：[三套原 F50 的特征恢复目标 clean 对照](by_method/feature_target_clean.md)。
