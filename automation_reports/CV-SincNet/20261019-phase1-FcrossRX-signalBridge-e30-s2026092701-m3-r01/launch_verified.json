@@ -1,0 +1,39 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "80db12fb33a256ef7174f6dcda6f462645fd53ba",
+  "ordinary_account": true,
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "real_CP_and_complete_hook_smoke": {
+    "status": "PASS",
+    "sample_forwards": 3592,
+    "updates": 0,
+    "target_access": false,
+    "covered_cumulative_steps": [
+      4441,
+      6660
+    ]
+  },
+  "dispatcher_pid": 1926111,
+  "rows": [
+    {
+      "row": "N01-s2026092701",
+      "pid": 1926557,
+      "gpu": 2
+    },
+    {
+      "row": "C01-s2026092701",
+      "pid": 1926639,
+      "gpu": 3
+    },
+    {
+      "row": "S01-s2026092701",
+      "pid": 1926784,
+      "gpu": 4
+    }
+  ],
+  "PID_CWD_argv_GPU_loggrowth": "VERIFIED",
+  "CPU_threads": 2,
+  "other_jobs_modified": false,
+  "formal_metrics_read": false
+}

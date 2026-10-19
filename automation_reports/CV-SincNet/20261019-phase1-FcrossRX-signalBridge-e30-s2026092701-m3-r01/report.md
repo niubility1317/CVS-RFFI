@@ -31,3 +31,6 @@ F+CROSS_RX、SIG_TIME_X3、统一Sinc、joint160、默认cosine6×160/scale30；
 聚焦协议负例和CE数学检查本地通过（87+3，0NN）；17文件/2段发布脚本AST通过。一次独立P0/P1后实际代码commit/push，单归档local/remote SHA比较、ordinary preflight和compile。launcher首先加载真实own20默认头，在三行完整8调用路径及末E30边界运行3592NN/0更新无query smoke，PASS直接训练，无额外授权token。
 
 停止仅限本run系统性协议/父角色/非有限/输出覆盖/技术失败，保留产物并先核实poststate，不自动重启；不因科学负结果停跑或变参。完成后自然退出。预期artifact包括real_checkpoint_smoke.json、synthetic_smoke.json、逐rowsource/result和完整日志、source_matrix_decision.json、7viewprediction、独立score及automatic_summary/complete和同rowfinal报告。
+
+
+发布状态：RUNNING。实际代码/config commit `80db12fb33a256ef7174f6dcda6f462645fd53ba`，upstream OID 独立匹配。ordinary preflight、单归档传输比较、远端 compile、真实父与首末 hook smoke3592NN 均 PASS/VERIFIED，已直接进入资源队列；尚无本轮性能结果。
