@@ -1,5 +1,6 @@
 """Read every completed training record and scored artifact for the fixed T1/T6 matrix."""
-import argparse,gzip,json,math
+import argparse,gzip,json,math,csv
+from collections import Counter
 from pathlib import Path
 RUN1='20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r01'
 RUN2='20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r02'
@@ -10,7 +11,7 @@ def records(p):
  with (gzip.open if p.suffix=='.gz' else open)(p,'rt',encoding='utf-8-sig') as f:return [json.loads(s) for s in f if s.strip()]
 def mean(x):return sum(x)/len(x) if x else None
 def collect(project):
- project=Path(project);roots={'T1':project/'runs'/RUN2/'T1-s2026092701','T6':project/'runs'/RUN1/'T6-s2026092701'};summary={}
+ project=Path(project);roots={'T1':project/'runs'/RUN2/'T1-s2026092701','T6':project/'runs'/RUN1/'T6-s2026092701'};summary={};sequences={}
  for arm,b in roots.items():
   segments={};curves=[]
   for name,offset in [('stage20',0),('source',20)]:
@@ -29,9 +30,18 @@ def collect(project):
    for ep in range(done['epoch']):
     cut=slice(ep*222,(ep+1)*222);nn=metrics[cut];tt=temp[cut];rr=data['reference_steps'][cut];ss=data['shape_steps'][cut]
     curves.append(dict(epoch=offset+ep+1,steps=len(nn),native_loss=mean([v['train/loss'] for v in nn]),As_compensated_CE=mean([v['As_CE_compensated'] for v in tt]),As_native_NLL=mean([v['As_native_NLL'] for v in tt]),As_per_example_cosine_gradient_proxy=mean([v['As_mean_logit_gradient_norm'] for v in tt]),ordinary_CE=mean([v['common_CE'] for v in rr]),mixed_CE=mean([v['extra_CE'] for v in rr]),raw_CE=mean([v['shape_CE'] for v in ss]),U_selected=mean([float(v.get('train/pseudo_selected',0)) for v in nn])))
-   epochs=records(p/'epoch_metrics.jsonl');scalars={k:v for k,v in cost.items() if v is None or isinstance(v,(str,int,float,bool))};segments[name]=dict(parsed_streams={k:len(v) for k,v in data.items()},epoch_records=len(epochs),expected_epochs=done['epoch'],expected_updates=n,checks='PASS' if not errors else 'FAIL',errors=errors,cost=scalars,extra_temperature_NN=0)
+   sequence=records(p/'training_sequence.jsonl.gz');sequences[(arm,name)]=sequence;role_counts={}
+   for role in ('L','U'):
+    vv=[r for r in sequence if r.get('role')==role];role_counts[role]=dict(batches=len(vv),packets=sum(len(r.get('ids',[])) for r in vv))
+   native_epochs=records(p/'metrics_epoch.jsonl');csv_counts={}
+   for fn in ('metrics_epoch.csv','epoch_metrics.csv'):
+    with (p/fn).open(encoding='utf-8-sig',newline='') as handle:csv_counts[fn]=len(list(csv.DictReader(handle)))
+   if len(native_epochs)!=done['epoch'] or any(v!=done['epoch'] for v in csv_counts.values()):errors.append('native_epoch_records')
+   epochs=records(p/'epoch_metrics.jsonl');scalars={k:v for k,v in cost.items() if v is None or isinstance(v,(str,int,float,bool))};scalars['U_steps_legacy_raw']=scalars.pop('U_steps',None);scalars['actual_U_student_NN']=cost['student_train_NN']-cost['L_NN'];scalars['actual_U_batches']=role_counts['U']['batches']
+   segments[name]=dict(physical_role_counts=role_counts,native_epoch_records=len(native_epochs),csv_records=csv_counts,sameAsKD=cost.get('sameAsKD'),parsed_streams={k:len(v) for k,v in data.items()},epoch_records=len(epochs),expected_epochs=done['epoch'],expected_updates=n,checks='PASS' if not errors else 'FAIL',errors=errors,cost=scalars,extra_temperature_NN=0)
   log=project/'runs'/(RUN2 if arm=='T1' else RUN1)/'logs'/(arm+'-s2026092701.log');stdout=log.read_text(errors='replace') if log.is_file() else '';summary[arm]=dict(segments=segments,epochs=curves,full_stdout=dict(lines=len(stdout.splitlines()),tracebacks=stdout.count('Traceback (most recent call last):'),OOM=stdout.count('CUDA out of memory')),complete=len(segments)==2 and (b/'complete.json').is_file())
- return dict(status='COMPLETE_TRAINING_LOGS' if all(v['complete'] for v in summary.values()) else 'PARTIAL_TRAINING_LOGS',rows=summary,full_structured_scan=True,sampled=False,model_seed_count=1,new_NN=0,checkpoint_reads=0,IQ_reads=0,truth_reads=0)
+ comparable=[name for name in ('stage20','source') if all((a,name) in sequences for a in roots)];sequence_equal={name:all(sequences[(a,name)]==sequences[(next(iter(roots)),name)] for a in roots) for name in comparable}
+ return dict(physical_sequences_equal=sequence_equal,status='COMPLETE_TRAINING_LOGS' if all(v['complete'] for v in summary.values()) else 'PARTIAL_TRAINING_LOGS',rows=summary,full_structured_scan=True,sampled=False,model_seed_count=1,new_NN=0,checkpoint_reads=0,IQ_reads=0,truth_reads=0)
 def pair(project):
  import numpy as np
  project=Path(project);roots={'T1':project/'runs'/RUN2/'T1-s2026092701','T6':project/'runs'/RUN1/'T6-s2026092701'}
