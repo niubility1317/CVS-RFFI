@@ -104,3 +104,11 @@ IB-RFF六行全部七视图预测已独立复算，42个总体CM及Accuracy／Ma
 ## SDG第二seed独立配对核验（2026-10-19T12:47:27+08:00）
 
 full与CE均完成E200、39400更新及七视图；独立复算CM／Accuracy／Macro-F1通过，实际冻结为源V最小NLL的E187／E32。见[第二seed配对分析](sdg_seed02_analysis.md)。目前SDG配对2/3，原队列至少10行完成；第三seed继续，不形成最终三seed结论。
+
+## SDG完整家族与RIEI首seed核验（2026-10-19T13:37:05+08:00）
+
+SDG full／CE三个模型seed共6行、42个总体视图独立复算一致。clean full73.7933±1.0396%，CE64.9948±0.8154%，配对差+8.7984±1.5075个百分点；六practical等权差+3.5479±2.1919个百分点。low urban Macro-F1保留一个seed负差。见[完整SDG三seed分析](sdg_analysis.md)。
+
+RIEI首个模型seed的两行也已完成E100与七视图独立复算，clean full60.6286%、CE66.5470%，差−5.9185个百分点。此为单seed负结果，其他seed继续，不据此调参。见[RIEI首seed分析](riei_seed01_analysis.md)。
+
+当前独立读回原dispatcher仍实际存活，14/24行ANALYZED，两个RIEI第二seed行训练中；没有失败。扩展队列实际存活并等待父进程，数据与smoke已完成，186训练、6补测和69成本测量整体仍未完成。此前状态段保留为历史快照。详细设计已修订并以2aa5e159a提交推送，当前报告不热改任何健康任务。
