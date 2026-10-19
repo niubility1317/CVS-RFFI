@@ -1,0 +1,33 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r02",
+  "stage": "SHARED_OBSERVATION_PREPARATION",
+  "release_commit": "d53c53982d3bd98dc817a41b90f4adab0556b099",
+  "code_commit": "38316bc17e13db7acc0032dcda030afbcf414abf",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "real_parent_checkpoint_smoke": {
+    "status": "PASS",
+    "NN": 8,
+    "source_IQ_read": false,
+    "query_read": false
+  },
+  "dispatcher": {
+    "status": "VERIFIED",
+    "PID": 2239157,
+    "CWD_argv_matches": true,
+    "log_growth": 266,
+    "time": 1792399575.4831245
+  },
+  "bank_progress": {
+    "status": "GENERATING",
+    "steps": 902,
+    "total": 2220,
+    "physical_observations": 115456,
+    "seconds": 214.3941446871031
+  },
+  "postlaunch": null,
+  "rows": [],
+  "training_complete": false,
+  "formal_scores_read": false
+}

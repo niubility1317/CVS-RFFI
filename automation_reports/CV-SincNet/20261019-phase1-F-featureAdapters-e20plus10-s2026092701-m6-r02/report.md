@@ -1,6 +1,6 @@
 # 纯 F：浅中层 LoRA 与时序残差特征适配
 
-状态：LOCAL_VERIFIED，代码、聚焦负测与一次独立 P0/P1 审查通过；尚未发布或启动新训练。原双信道 E20 两行继续独立执行，不热改、不重启、不覆盖。
+状态：RUNNING / VERIFIED，r02真实父CP smoke通过，共享观察生成/后续六行训练执行中；未完成正式评分。原双信道 E20 两行继续独立执行，不热改、不重启、不覆盖。
 
 ## 当前授权与固定范围
 
@@ -30,7 +30,7 @@ LORA 在 t1/t2 pointwise 层加入 r=8、alpha=8 的线性 BA 增量，B零、A�
 
 | ID | 附件来源 | 要求 | 目标文件 | 状态 | 验证 | 说明 |
 |---|---|---|---|---|---|---|
-| A01 | 一、九 | 合法固定clean F父、完整角色、不按target选父 | design.py/data.py/model.py | implemented | strict own_model/role handles | 原B0 FINAL20，非旧高分父 |
+| A01 | 一、九 | 合法固定clean F父、完整角色、不按target选父 | design.py/data.py/model.py | verified | strict own_model/role handles | 原B0 FINAL20，非旧高分父 |
 | A02 | 五、七 | 标准浅中层LoRA，r8/alpha8、B零 | layers.py/model.py | verified | local_checks.json：真实F/BA merge/零函数PASS | 仅t1/t2 pw |
 | A03 | 七 | TEMP读取块输入、A→Krank5→SiLU→B，preGN/prePool | layers.py/model.py | verified | 实际层hook及t2 signature梯度 | 不仅joint160末端 |
 | A04 | 六 | 复用CRRA原则但不混入白化/门控/延迟 | layers.py/report | verified | 已读两个CRRA副本及实际DSConvBlock | 原类顺序/矩形差异显式保留 |
@@ -48,7 +48,7 @@ LORA 在 t1/t2 pointwise 层加入 r=8、alpha=8 的线性 BA 增量，B零、A�
 | A16 | 九 | E20父成本+新增E10，源支持才可总E50 | design.py/report | implemented | 实际epoch/update/optimizer/flow记录 | 原父optimizer/EMA不恢复 |
 | A17 | 五、七 | 先比较LoRA/TEMP/FULL再考虑raw旁路 | 无本轮raw模块 | deferred | 本轮实际拟合/泛化结果后判断 | 附件明确条件式第二阶段 |
 | A18 | 七 | 放开原W的独立消融 | 无本轮unfreeze行 | deferred | 首轮统一固定W后再判断 | 不是漏做当前矩阵 |
-| A19 | 执行 | 单commit/聚焦负测/真实CP smoke/一次独审/唯一owner | checks.py/publish.py/dispatch.py | pending | 最小八项流程实际证据 | 不加SHA/审批链 |
+| A19 | 执行 | 单commit/聚焦负测/真实CP smoke/一次独审/唯一owner | checks.py/publish.py/dispatch.py | implemented | 最小八项流程实际证据 | 不加SHA/审批链 |
 | A20 | 本次用户回复 | 新增阶段仅L三项，U隐藏且不使用 | design.py/data.py/train.py | implemented | 实际batch角色/无U分支 | 原健康任务U不修改 |
 
 研究依据仅为 [LoRA](https://arxiv.org/abs/2106.09685)、[残差适配器](https://arxiv.org/abs/1705.08045)、[Learning without Forgetting](https://arxiv.org/abs/1606.09282) 的机制原则，已读取主源，不借用图像/LLM结果保证RFFI收益。当前数学结构计划严格对应附件提出的适配公式，新增预算、共同eval/autograd、L-only及NoAs槽位均在本报告显式固定。
@@ -65,3 +65,5 @@ LORA 在 t1/t2 pointwise 层加入 r=8、alpha=8 的线性 BA 增量，B零、A�
 同类记录拼接检查另发现completion中的default_head_frozen重复字段，一并删除显式重复值（counts仍保留True）。针对所有counts/info拼接的实际AST复现及修后扫描通过，0NN；不改变计算、状态、配方或预算。
 
 本恢复实际代码/配置 commit 38316bc17e13db7acc0032dcda030afbcf414abf，远端分支 OID=本地 HEAD 已独立核实；先前r01版本仅为保留历史，不是本次执行身份。
+
+启动证据见launch_evidence.json：单归档传输、远端compile、普通账号调度器PID/CWD/argv及日志增长VERIFIED；真实B0父8NN无query smoke PASS。共享观察逐步生成，没有据此声称六行已训练完成。
