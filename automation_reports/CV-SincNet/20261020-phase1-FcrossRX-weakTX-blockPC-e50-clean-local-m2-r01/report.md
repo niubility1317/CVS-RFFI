@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：弱类模块梯度协调
 
-状态：LOCAL_VERIFIED，准备在本机发布首 seed 两条件。
+状态：RUNNING。两个首 seed 训练 worker 已在本机真实 GPU 并行运行，命令／CWD／日志增长已独立核实；目标尚未访问，不能预报收益。
 
 基底为原始 F CROSS_RX50（三路 SIG_TIME、统一居中物理 Sinc、RDrop1、旧门控＋ownEMA＋cos、普通增强／LS.01、默认头正常联合）。历史 85.1139% 只作方法锚点；增量复用本机原始匹配 BASE 三 seed，不重复训练或测试。无星地信道增强，测试只跑 clean。
 
@@ -46,3 +46,5 @@ LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_weaktx_blockpc50.driver --prof
 此前原三 seed BASE 源 L 全量梯度诊断发现两个弱类池化 CE 特征梯度夹角均为负；只是冻结 clean／eval 证据，不代表训练每批冲突或实际 AdamW／目标效果。本路线受 [Gradient Surgery for Multi-Task Learning](https://arxiv.org/abs/2001.06782) 启发，是固定弱类、分模块、有范数对照的适配，不宣称完整复现、首创或预设有效。
 
 REJECTED_EXTRA_GATE：通用设计审批暂停、全项目测试不属白名单；用户已有有界研究授权，采用聚焦验证及一次独立 P0／P1 审查。已暴露 Phase1 clean 探索，不声称独立盲测、Phase2 或星地部署。
+
+执行 commit：116664b439eb702898ae4e019ba4159f19e4ced3，代码已推送并独立核对远端。一个发布包复制校验与提取后编译 PASS，两个 worker 的实际 PID／命令／CWD／GPU 和训练日志增长 VERIFIED，详见 launch_verification.json。

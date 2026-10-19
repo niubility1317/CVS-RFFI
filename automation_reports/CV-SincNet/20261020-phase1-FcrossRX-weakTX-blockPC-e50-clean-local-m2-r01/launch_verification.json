@@ -1,0 +1,63 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261020-phase1-FcrossRX-weakTX-blockPC-e50-clean-local-m2-r01",
+  "code_config_commit": "116664b439eb702898ae4e019ba4159f19e4ced3",
+  "remote_code_commit_verified": true,
+  "archive_copy": {
+    "status": "VERIFIED",
+    "bytes": 21845585
+  },
+  "extracted_release_compile": "PASS",
+  "local_preflight": {
+    "GPU_workers": 0,
+    "free_system_GiB": 10.302845001220703
+  },
+  "actual_workers": [
+    {
+      "row_id": "NORM_L_ID-s2026092701",
+      "role": "source",
+      "actual_PID_cmdline_CWD_confirmed": true,
+      "physical_GPU": 0
+    },
+    {
+      "row_id": "BLOCK_PAIR-s2026092701",
+      "role": "source",
+      "actual_PID_cmdline_CWD_confirmed": true,
+      "physical_GPU": 0
+    }
+  ],
+  "resource_observation": {
+    "GPU_workers": 2,
+    "free_system_GiB": 6.386619567871094
+  },
+  "initial_logs": [
+    {
+      "row": "NORM_L_ID-s2026092701",
+      "source_live": true,
+      "step": 197,
+      "epoch": 1,
+      "log_bytes": 7330,
+      "extra_forwards": 0,
+      "U_truth_available": 0,
+      "satellite_active": 0
+    },
+    {
+      "row": "BLOCK_PAIR-s2026092701",
+      "source_live": true,
+      "step": 178,
+      "epoch": 1,
+      "log_bytes": 7338,
+      "extra_forwards": 0,
+      "U_truth_available": 0,
+      "satellite_active": 0
+    }
+  ],
+  "training_initialization": "scratch",
+  "source_recipe": "original50=33L+17U; F+CROSS_RX/RDrop1/oldgate-ownEMA-cos/defaultheadjoint",
+  "new_mechanism_active": "Not yet; first scheduled event1112 after five warmup epochs",
+  "satellite_training": false,
+  "test_views": [
+    "clean"
+  ],
+  "target_access": false
+}
