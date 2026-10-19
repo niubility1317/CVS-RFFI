@@ -57,10 +57,11 @@ LORA 在 t1/t2 pointwise 层加入 r=8、alpha=8 的线性 BA 增量，B零、A�
 
 一次独立 P0/P1 审查 PASS（review.json）：当前未发现会使下一次真实运行错误、越权、破坏、无法启动或不能生成合法预测的缺陷。19个Python文件语法和6行配置已核对。流检查另通过2220×128固定序列、45次完整L覆盖、源排序/失败及3项禁止角色负测，0NN。真实checkpoint smoke、共享实际观察生成、远端训练与七环境证据仍待返回。
 
-实际代码/六行配置 commit 2dad0da37bb5bc885c8563bc91fbde7f1b4ddb84，已 push 并独立比较远端分支 OID=本地 HEAD。精确命令 CVS-RFFI/python -u experiments/cvs_feature_adapters30/runner.py；CWD=PROJECT/releases/cvs_F_featureAdapters_E30_20261019_r02，普通 N607 既有 Torch2.1/FP32/TF32关闭，每进程CPU2，所有owner每GPU最多2、free≥12000MB。输出=PROJECT/runs/20261019-phase1-F-featureAdapters-e20plus10-s2026092701-m6-r02。stop rule及逐行路径见 experiment.json；失败保留、无自动重试，科学低分仍完成全七环境。
 
 技术恢复说明：r01首步记录拼接失败、0训练/0bank/0query，原产物保留；这里r02只修smoke参数统计中的重复style字段，科学方案完全相同。未更改parent、层、rank、kernel、目标、采样、epoch、seed、默认头或测试；不是重跑负科学结果。
 
 一次独立 P0/P1 审查 PASS（review.json）：当前未发现会使下一次真实运行错误、越权、破坏、无法启动或不能生成合法预测的缺陷。19个Python文件语法和6行配置已核对。流检查另通过2220×128固定序列、45次完整L覆盖、源排序/失败及3项禁止角色负测，0NN。真实checkpoint smoke、共享实际观察生成、远端训练与七环境证据仍待返回。
 
 同类记录拼接检查另发现completion中的default_head_frozen重复字段，一并删除显式重复值（counts仍保留True）。针对所有counts/info拼接的实际AST复现及修后扫描通过，0NN；不改变计算、状态、配方或预算。
+
+本恢复实际代码/配置 commit 38316bc17e13db7acc0032dcda030afbcf414abf，远端分支 OID=本地 HEAD 已独立核实；先前r01版本仅为保留历史，不是本次执行身份。
