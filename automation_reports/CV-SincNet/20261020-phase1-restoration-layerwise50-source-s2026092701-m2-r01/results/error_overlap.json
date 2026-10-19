@@ -1,0 +1,495 @@
+{
+  "status": "ANALYZED",
+  "source_only": true,
+  "count": 1800,
+  "original_clean_correct": 1773,
+  "target_reads": 0,
+  "new_model_forwards": 0,
+  "parameter_updates": 0,
+  "IQ_values_used": 0,
+  "records": [
+    {
+      "view": "clean",
+      "candidate": "final_guidance",
+      "all": {
+        "count": 1800,
+        "baseline_wrong": 27,
+        "candidate_wrong": 27,
+        "both_wrong": 26,
+        "both_correct": 1772,
+        "corrected_vs_baseline": 1,
+        "damaged_vs_baseline": 1,
+        "decision_disagreements": 3,
+        "net_corrected": 0,
+        "baseline_error_overlap_fraction": 0.9629629629629629,
+        "truth_oracle_coverage_upper_bound_percent": 98.55555555555556
+      },
+      "given_original_clean_correct": {
+        "count": 1773,
+        "baseline_wrong": 1,
+        "candidate_wrong": 0,
+        "both_wrong": 0,
+        "both_correct": 1772,
+        "corrected_vs_baseline": 1,
+        "damaged_vs_baseline": 0,
+        "decision_disagreements": 1,
+        "net_corrected": 1,
+        "baseline_error_overlap_fraction": 0.0,
+        "truth_oracle_coverage_upper_bound_percent": 100.0
+      }
+    },
+    {
+      "view": "clean",
+      "candidate": "layerwise_guidance",
+      "all": {
+        "count": 1800,
+        "baseline_wrong": 27,
+        "candidate_wrong": 26,
+        "both_wrong": 26,
+        "both_correct": 1773,
+        "corrected_vs_baseline": 1,
+        "damaged_vs_baseline": 0,
+        "decision_disagreements": 2,
+        "net_corrected": 1,
+        "baseline_error_overlap_fraction": 0.9629629629629629,
+        "truth_oracle_coverage_upper_bound_percent": 98.55555555555556
+      },
+      "given_original_clean_correct": {
+        "count": 1773,
+        "baseline_wrong": 1,
+        "candidate_wrong": 0,
+        "both_wrong": 0,
+        "both_correct": 1772,
+        "corrected_vs_baseline": 1,
+        "damaged_vs_baseline": 0,
+        "decision_disagreements": 1,
+        "net_corrected": 1,
+        "baseline_error_overlap_fraction": 0.0,
+        "truth_oracle_coverage_upper_bound_percent": 100.0
+      }
+    },
+    {
+      "view": "practical_high",
+      "candidate": "final_guidance",
+      "all": {
+        "count": 1800,
+        "baseline_wrong": 30,
+        "candidate_wrong": 29,
+        "both_wrong": 24,
+        "both_correct": 1765,
+        "corrected_vs_baseline": 6,
+        "damaged_vs_baseline": 5,
+        "decision_disagreements": 12,
+        "net_corrected": 1,
+        "baseline_error_overlap_fraction": 0.8,
+        "truth_oracle_coverage_upper_bound_percent": 98.66666666666667
+      },
+      "given_original_clean_correct": {
+        "count": 1773,
+        "baseline_wrong": 10,
+        "candidate_wrong": 7,
+        "both_wrong": 5,
+        "both_correct": 1761,
+        "corrected_vs_baseline": 5,
+        "damaged_vs_baseline": 2,
+        "decision_disagreements": 7,
+        "net_corrected": 3,
+        "baseline_error_overlap_fraction": 0.5,
+        "truth_oracle_coverage_upper_bound_percent": 99.71799210377891
+      }
+    },
+    {
+      "view": "practical_high",
+      "candidate": "layerwise_guidance",
+      "all": {
+        "count": 1800,
+        "baseline_wrong": 30,
+        "candidate_wrong": 30,
+        "both_wrong": 24,
+        "both_correct": 1764,
+        "corrected_vs_baseline": 6,
+        "damaged_vs_baseline": 6,
+        "decision_disagreements": 13,
+        "net_corrected": 0,
+        "baseline_error_overlap_fraction": 0.8,
+        "truth_oracle_coverage_upper_bound_percent": 98.66666666666667
+      },
+      "given_original_clean_correct": {
+        "count": 1773,
+        "baseline_wrong": 10,
+        "candidate_wrong": 8,
+        "both_wrong": 5,
+        "both_correct": 1760,
+        "corrected_vs_baseline": 5,
+        "damaged_vs_baseline": 3,
+        "decision_disagreements": 8,
+        "net_corrected": 2,
+        "baseline_error_overlap_fraction": 0.5,
+        "truth_oracle_coverage_upper_bound_percent": 99.71799210377891
+      }
+    },
+    {
+      "view": "practical_mid",
+      "candidate": "final_guidance",
+      "all": {
+        "count": 1800,
+        "baseline_wrong": 45,
+        "candidate_wrong": 44,
+        "both_wrong": 39,
+        "both_correct": 1750,
+        "corrected_vs_baseline": 6,
+        "damaged_vs_baseline": 5,
+        "decision_disagreements": 15,
+        "net_corrected": 1,
+        "baseline_error_overlap_fraction": 0.8666666666666667,
+        "truth_oracle_coverage_upper_bound_percent": 97.83333333333333
+      },
+      "given_original_clean_correct": {
+        "count": 1773,
+        "baseline_wrong": 22,
+        "candidate_wrong": 20,
+        "both_wrong": 17,
+        "both_correct": 1748,
+        "corrected_vs_baseline": 5,
+        "damaged_vs_baseline": 3,
+        "decision_disagreements": 10,
+        "net_corrected": 2,
+        "baseline_error_overlap_fraction": 0.7727272727272727,
+        "truth_oracle_coverage_upper_bound_percent": 99.04117315284829
+      }
+    },
+    {
+      "view": "practical_mid",
+      "candidate": "layerwise_guidance",
+      "all": {
+        "count": 1800,
+        "baseline_wrong": 45,
+        "candidate_wrong": 46,
+        "both_wrong": 39,
+        "both_correct": 1748,
+        "corrected_vs_baseline": 6,
+        "damaged_vs_baseline": 7,
+        "decision_disagreements": 17,
+        "net_corrected": -1,
+        "baseline_error_overlap_fraction": 0.8666666666666667,
+        "truth_oracle_coverage_upper_bound_percent": 97.83333333333333
+      },
+      "given_original_clean_correct": {
+        "count": 1773,
+        "baseline_wrong": 22,
+        "candidate_wrong": 21,
+        "both_wrong": 17,
+        "both_correct": 1747,
+        "corrected_vs_baseline": 5,
+        "damaged_vs_baseline": 4,
+        "decision_disagreements": 11,
+        "net_corrected": 1,
+        "baseline_error_overlap_fraction": 0.7727272727272727,
+        "truth_oracle_coverage_upper_bound_percent": 99.04117315284829
+      }
+    },
+    {
+      "view": "practical_low_suburban",
+      "candidate": "final_guidance",
+      "all": {
+        "count": 1800,
+        "baseline_wrong": 59,
+        "candidate_wrong": 57,
+        "both_wrong": 48,
+        "both_correct": 1732,
+        "corrected_vs_baseline": 11,
+        "damaged_vs_baseline": 9,
+        "decision_disagreements": 25,
+        "net_corrected": 2,
+        "baseline_error_overlap_fraction": 0.8135593220338984,
+        "truth_oracle_coverage_upper_bound_percent": 97.33333333333334
+      },
+      "given_original_clean_correct": {
+        "count": 1773,
+        "baseline_wrong": 38,
+        "candidate_wrong": 36,
+        "both_wrong": 28,
+        "both_correct": 1727,
+        "corrected_vs_baseline": 10,
+        "damaged_vs_baseline": 8,
+        "decision_disagreements": 22,
+        "net_corrected": 2,
+        "baseline_error_overlap_fraction": 0.7368421052631579,
+        "truth_oracle_coverage_upper_bound_percent": 98.42075578116187
+      }
+    },
+    {
+      "view": "practical_low_suburban",
+      "candidate": "layerwise_guidance",
+      "all": {
+        "count": 1800,
+        "baseline_wrong": 59,
+        "candidate_wrong": 56,
+        "both_wrong": 48,
+        "both_correct": 1733,
+        "corrected_vs_baseline": 11,
+        "damaged_vs_baseline": 8,
+        "decision_disagreements": 24,
+        "net_corrected": 3,
+        "baseline_error_overlap_fraction": 0.8135593220338984,
+        "truth_oracle_coverage_upper_bound_percent": 97.33333333333334
+      },
+      "given_original_clean_correct": {
+        "count": 1773,
+        "baseline_wrong": 38,
+        "candidate_wrong": 35,
+        "both_wrong": 28,
+        "both_correct": 1728,
+        "corrected_vs_baseline": 10,
+        "damaged_vs_baseline": 7,
+        "decision_disagreements": 20,
+        "net_corrected": 3,
+        "baseline_error_overlap_fraction": 0.7368421052631579,
+        "truth_oracle_coverage_upper_bound_percent": 98.42075578116187
+      }
+    },
+    {
+      "view": "practical_high_urban",
+      "candidate": "final_guidance",
+      "all": {
+        "count": 1800,
+        "baseline_wrong": 37,
+        "candidate_wrong": 46,
+        "both_wrong": 35,
+        "both_correct": 1752,
+        "corrected_vs_baseline": 2,
+        "damaged_vs_baseline": 11,
+        "decision_disagreements": 13,
+        "net_corrected": -9,
+        "baseline_error_overlap_fraction": 0.9459459459459459,
+        "truth_oracle_coverage_upper_bound_percent": 98.05555555555556
+      },
+      "given_original_clean_correct": {
+        "count": 1773,
+        "baseline_wrong": 15,
+        "candidate_wrong": 21,
+        "both_wrong": 13,
+        "both_correct": 1750,
+        "corrected_vs_baseline": 2,
+        "damaged_vs_baseline": 8,
+        "decision_disagreements": 10,
+        "net_corrected": -6,
+        "baseline_error_overlap_fraction": 0.8666666666666667,
+        "truth_oracle_coverage_upper_bound_percent": 99.26677946982515
+      }
+    },
+    {
+      "view": "practical_high_urban",
+      "candidate": "layerwise_guidance",
+      "all": {
+        "count": 1800,
+        "baseline_wrong": 37,
+        "candidate_wrong": 43,
+        "both_wrong": 33,
+        "both_correct": 1753,
+        "corrected_vs_baseline": 4,
+        "damaged_vs_baseline": 10,
+        "decision_disagreements": 15,
+        "net_corrected": -6,
+        "baseline_error_overlap_fraction": 0.8918918918918919,
+        "truth_oracle_coverage_upper_bound_percent": 98.16666666666667
+      },
+      "given_original_clean_correct": {
+        "count": 1773,
+        "baseline_wrong": 15,
+        "candidate_wrong": 19,
+        "both_wrong": 11,
+        "both_correct": 1750,
+        "corrected_vs_baseline": 4,
+        "damaged_vs_baseline": 8,
+        "decision_disagreements": 12,
+        "net_corrected": -4,
+        "baseline_error_overlap_fraction": 0.7333333333333333,
+        "truth_oracle_coverage_upper_bound_percent": 99.37958262831359
+      }
+    },
+    {
+      "view": "practical_mid_urban",
+      "candidate": "final_guidance",
+      "all": {
+        "count": 1800,
+        "baseline_wrong": 118,
+        "candidate_wrong": 125,
+        "both_wrong": 89,
+        "both_correct": 1646,
+        "corrected_vs_baseline": 29,
+        "damaged_vs_baseline": 36,
+        "decision_disagreements": 79,
+        "net_corrected": -7,
+        "baseline_error_overlap_fraction": 0.7542372881355932,
+        "truth_oracle_coverage_upper_bound_percent": 95.05555555555556
+      },
+      "given_original_clean_correct": {
+        "count": 1773,
+        "baseline_wrong": 97,
+        "candidate_wrong": 101,
+        "both_wrong": 68,
+        "both_correct": 1643,
+        "corrected_vs_baseline": 29,
+        "damaged_vs_baseline": 33,
+        "decision_disagreements": 71,
+        "net_corrected": -4,
+        "baseline_error_overlap_fraction": 0.7010309278350515,
+        "truth_oracle_coverage_upper_bound_percent": 96.16469261139312
+      }
+    },
+    {
+      "view": "practical_mid_urban",
+      "candidate": "layerwise_guidance",
+      "all": {
+        "count": 1800,
+        "baseline_wrong": 118,
+        "candidate_wrong": 123,
+        "both_wrong": 87,
+        "both_correct": 1646,
+        "corrected_vs_baseline": 31,
+        "damaged_vs_baseline": 36,
+        "decision_disagreements": 78,
+        "net_corrected": -5,
+        "baseline_error_overlap_fraction": 0.7372881355932204,
+        "truth_oracle_coverage_upper_bound_percent": 95.16666666666667
+      },
+      "given_original_clean_correct": {
+        "count": 1773,
+        "baseline_wrong": 97,
+        "candidate_wrong": 100,
+        "both_wrong": 66,
+        "both_correct": 1642,
+        "corrected_vs_baseline": 31,
+        "damaged_vs_baseline": 34,
+        "decision_disagreements": 72,
+        "net_corrected": -3,
+        "baseline_error_overlap_fraction": 0.6804123711340206,
+        "truth_oracle_coverage_upper_bound_percent": 96.27749576988155
+      }
+    },
+    {
+      "view": "practical_low_urban",
+      "candidate": "final_guidance",
+      "all": {
+        "count": 1800,
+        "baseline_wrong": 233,
+        "candidate_wrong": 232,
+        "both_wrong": 183,
+        "both_correct": 1518,
+        "corrected_vs_baseline": 50,
+        "damaged_vs_baseline": 49,
+        "decision_disagreements": 133,
+        "net_corrected": 1,
+        "baseline_error_overlap_fraction": 0.7854077253218884,
+        "truth_oracle_coverage_upper_bound_percent": 89.83333333333333
+      },
+      "given_original_clean_correct": {
+        "count": 1773,
+        "baseline_wrong": 211,
+        "candidate_wrong": 210,
+        "both_wrong": 162,
+        "both_correct": 1514,
+        "corrected_vs_baseline": 49,
+        "damaged_vs_baseline": 48,
+        "decision_disagreements": 128,
+        "net_corrected": 1,
+        "baseline_error_overlap_fraction": 0.7677725118483413,
+        "truth_oracle_coverage_upper_bound_percent": 90.86294416243655
+      }
+    },
+    {
+      "view": "practical_low_urban",
+      "candidate": "layerwise_guidance",
+      "all": {
+        "count": 1800,
+        "baseline_wrong": 233,
+        "candidate_wrong": 236,
+        "both_wrong": 186,
+        "both_correct": 1517,
+        "corrected_vs_baseline": 47,
+        "damaged_vs_baseline": 50,
+        "decision_disagreements": 126,
+        "net_corrected": -3,
+        "baseline_error_overlap_fraction": 0.7982832618025751,
+        "truth_oracle_coverage_upper_bound_percent": 89.66666666666667
+      },
+      "given_original_clean_correct": {
+        "count": 1773,
+        "baseline_wrong": 211,
+        "candidate_wrong": 214,
+        "both_wrong": 165,
+        "both_correct": 1513,
+        "corrected_vs_baseline": 46,
+        "damaged_vs_baseline": 49,
+        "decision_disagreements": 121,
+        "net_corrected": -3,
+        "baseline_error_overlap_fraction": 0.7819905213270142,
+        "truth_oracle_coverage_upper_bound_percent": 90.69373942470389
+      }
+    }
+  ],
+  "pooled_six_views": [
+    {
+      "candidate": "final_guidance",
+      "all": {
+        "count": 10800,
+        "baseline_wrong": 522,
+        "candidate_wrong": 533,
+        "both_wrong": 418,
+        "both_correct": 10163,
+        "corrected_vs_baseline": 104,
+        "damaged_vs_baseline": 115,
+        "decision_disagreements": 277,
+        "net_corrected": -11,
+        "baseline_error_overlap_fraction": 0.8007662835249042,
+        "truth_oracle_coverage_upper_bound_percent": 96.12962962962963
+      },
+      "given_original_clean_correct": {
+        "count": 10638,
+        "baseline_wrong": 393,
+        "candidate_wrong": 395,
+        "both_wrong": 293,
+        "both_correct": 10143,
+        "corrected_vs_baseline": 100,
+        "damaged_vs_baseline": 102,
+        "decision_disagreements": 248,
+        "net_corrected": -2,
+        "baseline_error_overlap_fraction": 0.7455470737913485,
+        "truth_oracle_coverage_upper_bound_percent": 97.24572288024065
+      }
+    },
+    {
+      "candidate": "layerwise_guidance",
+      "all": {
+        "count": 10800,
+        "baseline_wrong": 522,
+        "candidate_wrong": 534,
+        "both_wrong": 417,
+        "both_correct": 10161,
+        "corrected_vs_baseline": 105,
+        "damaged_vs_baseline": 117,
+        "decision_disagreements": 273,
+        "net_corrected": -12,
+        "baseline_error_overlap_fraction": 0.7988505747126436,
+        "truth_oracle_coverage_upper_bound_percent": 96.13888888888889
+      },
+      "given_original_clean_correct": {
+        "count": 10638,
+        "baseline_wrong": 393,
+        "candidate_wrong": 397,
+        "both_wrong": 292,
+        "both_correct": 10140,
+        "corrected_vs_baseline": 101,
+        "damaged_vs_baseline": 105,
+        "decision_disagreements": 244,
+        "net_corrected": -4,
+        "baseline_error_overlap_fraction": 0.7430025445292621,
+        "truth_oracle_coverage_upper_bound_percent": 97.25512314344802
+      }
+    }
+  ],
+  "limitation": "Post-hoc source error association. Oracle coverage uses source truth and is not deployable selection or target evidence. Six views repeat the same physical samples.",
+  "analysis_commit": "9771481bb49a6cb814759500affa22a2d23b4831",
+  "scientific_thresholds_changed": false
+}
