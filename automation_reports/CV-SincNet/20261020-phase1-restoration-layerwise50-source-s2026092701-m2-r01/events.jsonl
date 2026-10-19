@@ -2,3 +2,6 @@
 {"at": "2026-10-19T17:16:55+00:00", "status": "RUNNING", "note": "VERIFIED originalR02/freshcorrection,real no-query smoke,F frozen,actualPID/CWD/cmd/GPU/loggrowth;E30 active;0target", "evidence": ["report.md", "experiment.json"], "row_id": "final_guidance"}
 {"at": "2026-10-19T17:16:55+00:00", "status": "RUNNING", "note": "VERIFIED originalR02/freshcorrection,real no-query smoke,F frozen,actualPID/CWD/cmd/GPU/loggrowth;E30 active;0target", "evidence": ["report.md", "experiment.json"], "row_id": "layerwise_guidance"}
 {"at": "2026-10-19T17:16:55+00:00", "status": "RUNNING", "note": "Matched final vs layerwise joint30 active; source-selected automatic complete target evaluation", "evidence": ["report.md", "experiment.json"], "row_id": null}
+{"at": "2026-10-19T18:13:51+00:00", "status": "ANALYZED", "note": "Source complete; no target access", "evidence": ["report.md", "results/summary.json"], "row_id": "final_guidance"}
+{"at": "2026-10-19T18:13:51+00:00", "status": "ANALYZED", "note": "Source complete; no target access", "evidence": ["report.md", "results/summary.json"], "row_id": "layerwise_guidance"}
+{"at": "2026-10-19T18:13:51+00:00", "status": "ANALYZED", "note": "Sourcequalified=False;selected=None;goal not claimed complete", "evidence": ["report.md", "results/summary.json"], "row_id": null}
