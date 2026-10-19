@@ -16,6 +16,20 @@ from . import design as d
 from .data import SCENES, write_json
 
 
+def target_truth_path(capsule):
+    """Resolve the two established dataset layouts after predictions finish.
+
+    Inspect paths only; the independent scorer is the first truth reader.
+    Never silently choose when both layouts supply a truth file.
+    """
+    capsule = Path(capsule)
+    candidates = (capsule.parent/'truth.json', capsule.parent.parent/'scoring/truth.json')
+    present = [path for path in candidates if path.is_file()]
+    if len(present) != 1:
+        raise ValueError('Exactly one declared target truth layout must exist')
+    return present[0]
+
+
 def confirm(name, capsule, output, frozen_bundle, source_cache):
     from .runner import ROOT, read_json, predict_row
     from leo_practical.channel import Config, normalize_input
@@ -74,7 +88,7 @@ def confirm(name, capsule, output, frozen_bundle, source_cache):
     predict_row(name, reference, folder, 'cuda:0', frozen_bundle, source_cache)
     subprocess.run([sys.executable, '-X', 'utf8', '-m', 'experiments.pamf_restoration.runner',
                     'score', '--reference', str(reference), '--row-output', str(folder),
-                    '--target-truth', str(capsule.parent.parent/'scoring/truth.json')],
+                    '--target-truth', str(target_truth_path(capsule))],
                    cwd=ROOT, env=dict(os.environ, CUDA_VISIBLE_DEVICES=''), check=True)
     write_json(output/'target_confirmation/complete.json', dict(status='ANALYZED_PHASE1_PAIRED_DIAGNOSTIC',
                candidate=name, count=len(ids), views=['clean', *SCENES],
