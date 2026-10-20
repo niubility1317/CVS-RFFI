@@ -49,14 +49,16 @@ def load_rows(root):
         c = row['config']
         assert c['model_seed'] in SEEDS and c['satellite_train_augmentation']
         assert c['default_head_joint_training'] and not c['separate_head_training']
-        key = (c['group'], c['family'], c['variant'], c['training_regime'], c['model_seed'])
+        key = (c['group'], c['family'], c['variant'], c['training_regime'], c['model_seed'], c.get('route'))
         assert key not in rows
         rows[key] = row
     return rows
 
 
-def get(rows, group, family, variant, seed, regime='supervised'):
-    key = (group, family, variant, regime, seed)
+def get(rows, group, family, variant, seed, regime='supervised', route=None):
+    if route is None and family in ('resnet18','resnet50'):
+        route = 'erm'
+    key = (group, family, variant, regime, seed, route)
     if key not in rows:
         raise ValueError('PENDING_DATA: missing verified row ' + str(key))
     return rows[key]
@@ -137,13 +139,13 @@ def export(fig, out, stem, data, caption, rows):
     target.mkdir()
     fields = ('row_id', 'group', 'family', 'variant', 'training_regime', 'model_seed',
               'satellite_train_augmentation', 'default_head_joint_training',
-              'separate_head_training', 'batch_size')
+              'separate_head_training', 'batch_size', 'route')
     for row in rows.values():
         c = row['config']
         if c['row_id'] not in needed:
             continue
         safe = dict(status=row['status'], run_id=row['run_id'],
-            config={k:c[k] for k in fields},
+            config={k:c[k] for k in fields if k in c},
             results=[{k:v[k] for k in ('test','view','dimension','stratum','count','accuracy')}
                      for v in row['results'] if v['dimension'] in ('overall','receiver','receiver_date')],
             cost=dict(stages=[dict(updates=s['updates']) for s in row['cost']['stages']]))

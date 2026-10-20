@@ -6,7 +6,7 @@
 
 | 图 | 论证问题 | 数据与展示 | 当前状态 |
 |---|---|---|---|
-| 图 1：源 RX 数 | 多样性与训练标签量能否区分？ | 1/3/5 源 RX，自然/固定标签预算，三链分面、三种子点及 SD | 等待 33 行完整数据 |
+| 图 1：源 RX 数 | 多样性与训练标签量能否区分？ | 1/3/5 源 RX，自然/固定标签预算，三链分面、三种子点及 SD | **已完成并验证** |
 | 图 2：标签效率 | 少标签表现是否稳定、是否伴随不同计算量？ | 1%/5%/10%，标出标签数及实际更新范围；ResNet18、IB-RFF CE/full | IB-RFF 和 10% ResNet18 已有，等待其余 6 行 |
 | 图 3：RX×日期 | 机制的增减来自哪些接收机和日期？ | F0/Chrono 每 RX×日期 full−CE 的配对均值，共用对称色标，标出未见日期 | **已完成并验证** |
 | 图 4：压力结果 | clean 与模拟星地压力是否存在不同方向的收益？ | 四方法各自 CE/full × 监督/PL；上排绝对性能，下排同种子相对 clean 下降 | **已完成并验证** |
@@ -28,7 +28,7 @@
 - [重绘说明及配套脚本](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig04_pressure_r03/README.md)
 - [项目制图代码](../../../tools/figures/plot_phase1_external_dg.py)
 
-图形及派生评分数据在本机交付，不提交原始实验输出到 Git；代码和分析说明使用 Git。图 1/2 在数据到齐并分别验证后更新，当前不将完整图表交付或整体 219＋96 实验目标标为完成。
+图形及派生评分数据在本机交付，不提交原始实验输出到 Git；代码和分析说明使用 Git。图 2 在数据到齐并验证后更新，当前不将完整图表交付或整体 219＋96 实验目标标为完成。
 
 ## 图 3：接收机与日期分层完成
 
@@ -40,3 +40,12 @@
 - [图 3 可编辑 SVG](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig03_receiver_date_r02/svg/fig03_receiver_date.svg)
 - [图 3 源数据](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig03_receiver_date_r02/source_data/fig03_receiver_date.csv)
 - [重绘说明](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig03_receiver_date_r02/README.md)
+
+## 图 1：源接收机数量曲线完成
+
+33 个去重模型、三条源 RX 链、自然与固定标签预算，显示 54 个种子位置；共享的 m=1 预算点和 m=5 链端点均明确标注。所有点逐项与 33 行完整报告核对，保持 10000 更新、batch180 的实际预算。已完成目视与矢量/分辨率检查，并用交付评分子集独立重绘；两次导出的 54 行数值一致。
+
+- [图 1 PDF](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig01_source_count_r02/pdf/fig01_source_count.pdf)
+- [图 1 可编辑 SVG](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig01_source_count_r02/svg/fig01_source_count.svg)
+- [图 1 源数据](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig01_source_count_r02/source_data/fig01_source_count.csv)
+- [重绘说明](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig01_source_count_r02/README.md)
