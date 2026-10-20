@@ -1,0 +1,176 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261021-diagnostic-restoration-R46-phase-reference-s2026092701-r52",
+  "group_id": "R46-source-phase-reference",
+  "display_name": "指定35.05万恢复器的相位补偿与坐标参考对照",
+  "description": "同R51源矩阵，增加fixedclean/invariance与transportedclean/equivariance对照，0训练/F/TX/目标。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "diagnostic",
+    "source_only",
+    "R46_350521",
+    "C4_rotation",
+    "F_free",
+    "TX_unlabeled"
+  ],
+  "comparison_group_id": "same_frozen_G_C4",
+  "parent_run_ids": [
+    "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46",
+    "20261019-phase1-restoration-learned-action-source-s2026092701-r07"
+  ],
+  "replaces_run_id": null,
+  "authorization": "当前持续goal授权恢复器的压缩/性能优化及验证；source-only小矩阵检验既有模型，不研发其他网络族、不改变父/已有结果。",
+  "code": {
+    "commit": "abbb41be3100ae4522c4e01fac6cb919764b6da8",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python3.10/Torch2.1cu121/NumPy2.2.5;CPU2/emptyCUDA/FP32",
+    "cwd": "releases/pamf_r46_phase_reference_20261021_r52"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original validated source physical split;no resplit",
+    "representation": "nativefloat32 IQ128x2x256;paired sourceclean and R07received01/20",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train original6300L+56700U row positions;deterministic64perrole",
+    "label_map_ref": "TX labels never read;only L_s/U_s role strings",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original six TX source pool;labels hidden in diagnostic",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json READY/EXACT_MATCH reused;0Vreads",
+    "support_query_ref": "Not applicable;Phase1source diagnostic;0support/query",
+    "leo_config_ref": "Original R07cachedmixedreceived01/20;no new scene generation",
+    "actual_samples": {
+      "L_s": 64,
+      "U_s": 64,
+      "V": 0,
+      "target": 0
+    },
+    "actual_training_labels": 0
+  },
+  "permissions": {
+    "regime": "source_only_frozen_function_diagnostic",
+    "query_use": "none;no target or truth path accepted",
+    "external_method_exception": null,
+    "claim_scope": "Source phase reference control;no inference that C4 equivariance is required for clean recovery or TX authenticity"
+  },
+  "checkpoint": {
+    "initialization": "Frozen designated R46prune_refine350521 sourcefinal20/4940;no optimizer or training",
+    "sources": [
+      {
+        "run_id": "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46",
+        "commit": "bbb8daf817de050b958d217b70d4c33f4aefe341",
+        "row": "prune_refine",
+        "epoch": 20,
+        "updates": 4940,
+        "parameters": 350521
+      }
+    ],
+    "contract_check_ref": "R46/R48/R49 verified original7/63/30 source ancestry;runtimevalidate_parent_root;originalR07cachepin",
+    "provenance_verdict": "MATCH_SOURCE_CONTRACT;human chose parent after historical exposure;no new source/target selection",
+    "selection_rule": "Singlefixedparent;no selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/R46-phase-reference",
+    "gpu_policy": "CPU2/0GPU;emptyCUDA;startafterR50originalscoring/independentcollectionexited",
+    "remote_run_root": "runs/20261021-diagnostic-restoration-R46-phase-reference-s2026092701-r52",
+    "remote_log_root": "logs/20261021-diagnostic-restoration-R46-phase-reference-s2026092701-r52",
+    "local_artifact_root": "local_artifacts/pamf_restoration/r46_phase_reference_r52_20261021",
+    "launch_command": "python -u -m experiments.pamf_r46_phase_reference.runner --parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-phase-reference-s2026092701-r52 --expected-commit abbb41be3100ae4522c4e01fac6cb919764b6da8",
+    "stop_rule": "On technical failure preserve own output and error;no retries,other-process stops,or model changes"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "summary.json",
+    "complete.json",
+    "per_example_metrics.json",
+    "failure.json if technicalfailure"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "equivariance_NMSE",
+      "transportedclean_NMSE",
+      "invariance_NMSE",
+      "fixedclean_NMSE",
+      "unrotatedclean_NMSE",
+      "mean/median/P95/max",
+      "state_unchanged"
+    ],
+    "dimensions": [
+      "three_source_views",
+      "four_quarterturns",
+      "three_stages",
+      "overall/Ls/Us"
+    ],
+    "prediction_ref": "None;no classifier or target predictions",
+    "scorer_ref": "Source-only pairedIQ arithmetic in same frozen diagnostic",
+    "scientific_threshold": "Compare all four source errors;small invariance error suggests phase compensation,small equivariance error suggests coordinate transport;no training/selection threshold"
+  },
+  "rows": [
+    {
+      "row_id": "source_C4",
+      "method": "R46-phase-reference-frozen",
+      "purpose": "source_physical_function_falsification",
+      "config_ref": "experiments/pamf_r46_phase_reference/design.py#configuration",
+      "resolved_config_ref": "runs/20261021-diagnostic-restoration-R46-phase-reference-s2026092701-r52/launch.json#configuration",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026102051
+      },
+      "seed_notes": "model/sourcecache inherited unchanged;eval controls64perrole sampling;C4 deterministic;support not applicable",
+      "k": null,
+      "scenario": "source clean and originalR07received01/20",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "128unique+1536sourceprobeinputs+2Lssmoke;108summarycells;0updates/F/TX/V/target",
+      "output_root": "runs/20261021-diagnostic-restoration-R46-phase-reference-s2026092701-r52",
+      "log_path": "logs/20261021-diagnostic-restoration-R46-phase-reference-s2026092701-r52/runner.log",
+      "command": "python -u -m experiments.pamf_r46_phase_reference.runner --parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-phase-reference-s2026092701-r52 --expected-commit abbb41be3100ae4522c4e01fac6cb919764b6da8",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "summary.json",
+        "complete.json",
+        "per_example_metrics.json",
+        "failure.json if technicalfailure"
+      ]
+    }
+  ],
+  "notes": [
+    "All8previousversionsformaltestsclosed;human350521parentunchanged;not basedon target-score selected newparent/width.",
+    "No training/newnetworkversions;source128C4diagnostic does not replace existing seven-scene formal validation.",
+    "21focusedchecks/CLIhelp/ONE P0P1PASS;real2Lsnoquerysmokefirstthenimmediateprobe.",
+    "REJECTED_EXTRA_GATE:extra brainstorm design approval conflicts user minimalworkflow;no additional approval/hash/seal machinery."
+  ],
+  "registered_at": "2026-10-20T16:42:08+00:00"
+}
