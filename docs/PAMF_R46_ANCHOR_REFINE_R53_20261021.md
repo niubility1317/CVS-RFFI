@@ -1,6 +1,6 @@
 # R53：持续 IQ 教师约束的压缩性能优化
 
-状态：LOCAL_VERIFIED，未发布。性能优先；不把更小参数、容差通过或源域小幅涨分当作正式性能优化完成。
+状态：**VERIFIED / RUNNING**，两行训练、一行排队。性能优先；不把更小参数、容差通过或源域小幅涨分当作正式性能优化完成。
 
 研究差异来自完整源域目标审计：IQ 重建误差改善可能伴随固定识别器源准确率下降。原衰减1→0.1教师约束可能不足以保持父模型的逐输入响应；这里只检验持续权重1的波形教师约束，不用TX标签、F输出或测试分数设置新损失。该假设可能无效，全部负结果保留。R52两个相位参考均不足，未据此施加C4等变或不变损失。
 
@@ -17,3 +17,6 @@
 32项聚焦检查与CLIhelp通过，唯一一次限P0/P1审查见实际review.json；首步真实R46/F50/2Ls配对IQ noquery smoke，PASS立即训练。Git commit固定代码/config；一次预检、单归档两端SHA比较和compile，禁止额外设计审批/签名/成员哈希等门槛（REJECTED_EXTRA_GATE）。精确命令、环境/CWD、路径、三行矩阵与预期产物以experiment.json为准。
 
 正式主要指标是七景accuracy/Macro-F1、相对R17/R46的逐景差、修复/损伤与逐TX/RX/day；原R17逐景最多下降1pp为退化容差，不是性能优先的成功定义。low urban≥70%、其他五受损场景距rawclean84.6761904762%≤5pp以及更强TX细节真实性目标继续ACTIVE。成本次级：同卡64源V，G和G+F的B1/B32三轮交替同步计时、median/P90/P95、吞吐、峰值/增量/共享驻留显存、完整参数/序列化大小/ConvLinear MAC；不含传输/前处理/loader，MAC不含FFT/CG/norm/激活/F，驻留是3G＋1F共享suite，不冒充单模型显存。
+
+
+VERIFIED/RUNNING：真实350521父/F50/2Ls noquery smoke PASS，三行全部coarse/action/prior有限非零梯度、父/F不更新、checkpoint严格重载一致。单归档SHA/compile与实际controller、GPU2 prune_decay、GPU3 retain_anchor的PID/CWD/argv/CUDA/GPU-PID匹配、首轮曝光、micro256/directbuffer和日志增长核实。prune_anchor按固定计划在GPU2等待；各卡仅一条本任务GPU worker，其他owner不动。尚无正式性能结果；每行完整E20/4940后自动源七视图/成本/正式七视图及独立truth-last，不以负分提前停止。原性能/TX保真目标ACTIVE。
