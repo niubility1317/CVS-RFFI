@@ -129,6 +129,6 @@ R05完整结果：符合七场景1个百分点容差：step_norm_task, activatio
 
 [R06 登记](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-shared-factor-s2026092701-m2-r06/report.md)：固定 shared_half 2821345 / shared_quarter 2582905 完整参数，约减少39.52%/44.63%。从原 R17 源最终权重取长卷积均值后 CPU SVD，跨三步共享左右因子，各步 bias/GN/1×1 和其他状态独立；0校准IQ，3步×2CG不变。只加载原R17teacher/init，不加载R04/R05或失败学生。固定同R04损失、原source63000缓存/顺序与E20/4940预算；原F50/defaulthead冻结，0TX/V/target训练和0头拟合，使用源监督F知识。
 
-两行在新运行前固定，source/V/波形仅诊断；每行冻结后自动source七视图/独立truth-last/成本测量及target168000×七视图/独立truth-last。按原R17逐场景最多下降1个百分点，不以均值或波形覆盖超限，不用目标结果改结构、超参、父权重、预算或重跑。40项检查和唯一独立P0/P1审查PASS，普通N607预检VERIFIED，旧R05实际GPU句柄已退出、GPU4/5空闲；后续一次归档比较/远端编译/launcher-first真实R17+F50+2Ls noquery smoke、实际PID/CWD/cmd/GPU/loggrowth。当前只有结构和流程验证，尚未训练或证明目标性能。
+两行在新运行前固定，source/V/波形仅诊断；每行冻结后自动source七视图/独立truth-last/成本测量及target168000×七视图/独立truth-last。按原R17逐场景最多下降1个百分点，不以均值或波形覆盖超限，不用目标结果改结构、超参、父权重、预算或重跑。40项检查和唯一独立P0/P1审查PASS，普通N607预检VERIFIED，旧R05实际GPU句柄已退出、GPU4/5空闲；后续一次归档比较/远端编译/launcher-first真实R17+F50+2Ls noquery smoke、实际PID/CWD/cmd/GPU/loggrowth。实际发布 VERIFIED：方法 `1ccc14248d025006b1cf38cdf6779685156ee092` 已推送/OID一致，归档/远端编译及真实原R17+F50+2Ls无query smoke PASS，GPU4/5实际PID/CWD/完整命令/GPU/日志增长与E1/247均已核实。两行按固定配方继续，尚无完整训练或目标准确率结果，结构成本不证明性能验收。
 
 旧R04/R05显存profile包含checkpointpayload，原R17含optimizer而精简final不含，不能解释为纯推理显存收益；数值保留并补明口径。R06排除GPU上的payload/optimizer，分别报告resident/peak/增量peak。目标准确率和参数结论不受此统计口径影响。
