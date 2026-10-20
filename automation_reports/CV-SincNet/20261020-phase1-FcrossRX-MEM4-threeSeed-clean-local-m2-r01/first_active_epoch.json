@@ -1,0 +1,37 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "33880ebb8b2a9ae55a87756504e20e5262023b69",
+  "rows": [
+    {
+      "row_id": "MEM4-s2026092702",
+      "epoch": 6,
+      "native_updates_at_epoch_end": 1332,
+      "active_SC_updates_at_epoch_end": 222,
+      "SC_loss": 2.037743332686725,
+      "SC_weight": 0.009999999999999985,
+      "same_actual_augmented_IQ_reused": true,
+      "extra_model_forwards": 0,
+      "U_truth_available": 0,
+      "skipped_nonfinite_loss": 0,
+      "skipped_nonfinite_grad": 0,
+      "epoch_seconds": 127.67426943778992
+    },
+    {
+      "row_id": "MEM4-s2026092703",
+      "epoch": 6,
+      "native_updates_at_epoch_end": 1332,
+      "active_SC_updates_at_epoch_end": 222,
+      "SC_loss": 2.0988929432791634,
+      "SC_weight": 0.009999999999999985,
+      "same_actual_augmented_IQ_reused": true,
+      "extra_model_forwards": 0,
+      "U_truth_available": 0,
+      "skipped_nonfinite_loss": 0,
+      "skipped_nonfinite_grad": 0,
+      "epoch_seconds": 127.29325795173645
+    }
+  ],
+  "target_performance": "PENDING_COMPLETE_THREE_SEEDS",
+  "target_samples_for_this_check": 0,
+  "whole_key_history_and_age_validation": "Verified by unchanged per-step implementation; full per-key statistics emitted at source completion"
+}

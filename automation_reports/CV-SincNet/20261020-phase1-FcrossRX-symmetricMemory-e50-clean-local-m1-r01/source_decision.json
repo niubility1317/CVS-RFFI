@@ -1,0 +1,49 @@
+{
+  "status": "VERIFIED",
+  "target_summary_read_before_this_audit": false,
+  "source_gate_PASS": false,
+  "per_TX_pp": [
+    -0.1777777777777878,
+    0.06666666666667043,
+    0,
+    -0.13333333333332975,
+    0.022222222222223476,
+    0
+  ],
+  "source_accuracy_pp": -0.037037037037035425,
+  "source_worst_RX_pp": -0.018518518518517713,
+  "each_weak_improved": false,
+  "otherTX_health": true,
+  "source_classification_health": false,
+  "frozen_rows": [
+    {
+      "row_id": "SYM4-s2026092701",
+      "treatment": "SYM4",
+      "model_seed": 2026092701
+    }
+  ],
+  "source_decision": {
+    "status": "SOURCE_EXPANSION_FIXED",
+    "arms": {
+      "SYM4": {
+        "PASS": false,
+        "each_weak_improved": false,
+        "otherTX_health": true,
+        "source_classification_health": false,
+        "overall_pp": -0.037037037037035425,
+        "worst_RX_pp": -0.018518518518517713,
+        "per_TX_pp": [
+          -0.1777777777777878,
+          0.06666666666667043,
+          0,
+          -0.13333333333332975,
+          0.022222222222223476,
+          0
+        ]
+      }
+    },
+    "expand_arms": [],
+    "target_access": false,
+    "criterion": "Full sourceV27000 defaulthead fixedfinal50: BOTH weakTX recall strictly improve over same-seed BASE; eachotherTX >=BASE-.25pp, overall>=BASE, worstRX>=BASE-.25pp, no zero features. All initial rows still clean-tested, expansion fixed before any new target results."
+  }
+}

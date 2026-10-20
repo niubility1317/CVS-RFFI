@@ -21,3 +21,6 @@ SYM4 在当前批次的锚点与参照特征两侧保留梯度，只让历史参
 启动后实际 PID/CWD/命令/GPU0/日志增长均 VERIFIED。SYM4 完成 E1、222 更新；两行既有训练分别完成 E25/E24，保持健康。全局 3 个 worker，剩余系统内存约 4.82 GiB。实际原生配方已核对，无星地增强、默认头联合训练；当前尚无新增目标域结果。详见 launch_verification.json。
 
 SYM4 首个机制启用轮 E6 已完成：1332 次原生更新、222 次对比更新，权重 0.01，损失有限，复用同一次实际增强 IQ；额外前向、星地样本、U 真值和目标样本均为 0，无非有限跳步。完整历史键计数在训练完成后按全部逐步记录核实。详见 first_active_epoch.json。
+
+
+最终状态：ARTIFACTS_COMPLETE／ANALYZED_SOURCE_NOT_PROMOTED_N1_NO_BOTH_WEAK_GAIN。完整结果见results.md、results_summary.json和completion_verification.json。源域决定FAIL已先核对，再读取新目标汇总；三种子MEM4独立补充继续运行。

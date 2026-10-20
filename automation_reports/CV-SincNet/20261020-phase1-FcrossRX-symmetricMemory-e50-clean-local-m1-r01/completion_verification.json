@@ -1,0 +1,153 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "20b6c54d72bb3433dfce07d7a186fc2908ffe970",
+  "source_expansion_fixed_before_target": true,
+  "source_qualified_arms": [],
+  "conditional_seeds_not_launched": [
+    2026092702,
+    2026092703
+  ],
+  "actual_models": 1,
+  "live_owned_workers": 0,
+  "controller_status": "ARTIFACTS_COMPLETE",
+  "rows": [
+    {
+      "row_id": "SYM4-s2026092701",
+      "source_commit": "20b6c54d72bb3433dfce07d7a186fc2908ffe970",
+      "exits": [
+        {
+          "role": "source",
+          "returncode": 0,
+          "PID_matches_start": true
+        },
+        {
+          "role": "predict",
+          "returncode": 0,
+          "PID_matches_start": true
+        },
+        {
+          "role": "score",
+          "returncode": 0,
+          "PID_matches_start": true
+        }
+      ],
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "prediction_truth_read": false,
+      "prediction_query_fit": false,
+      "prediction_head_fit_updates": 0,
+      "scoring_status": "MODEL_PREDICTED_SCORED",
+      "truth_last": true,
+      "independent_CPU_score": true,
+      "count": 168000,
+      "views": [
+        "clean"
+      ],
+      "source_seconds": 5359.87091088295,
+      "prediction_seconds": 37.616434299969114,
+      "peak_cuda_MiB": 1972.91845703125
+    }
+  ],
+  "native_logs": [
+    {
+      "row_id": "SYM4-s2026092701",
+      "parsed_epochs": 50,
+      "parsed_steps": 11100,
+      "stdout_lines": 1976,
+      "full_stdout_scanned": true,
+      "stdout_marker_counts": {
+        "FutureWarning": 3,
+        "UserWarning": 0,
+        "RuntimeWarning": 0,
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "MemoryError": 0,
+        "Fatal Python": 0,
+        "killed": 0
+      },
+      "U_seen": 963900,
+      "U_selected": 15174,
+      "U_truth_available": 0,
+      "skipped_nonfinite_updates": 0,
+      "satellite_active_steps": 0
+    }
+  ],
+  "feature_logs": [
+    {
+      "row_id": "SYM4-s2026092701",
+      "treatment": "SYM4",
+      "calls": 11100,
+      "applied_calls": 9990,
+      "actual_layer_forward_objectives": 39960,
+      "valid_anchors": 5114880,
+      "mean_historical_keys": 383.33823823823826,
+      "max_historical_keys": 384,
+      "max_history_age": 3,
+      "per_TX_keys": [
+        {
+          "TX": "14-10",
+          "valid_anchor_occurrences": 853176,
+          "positive_mean": 68.0962298853056,
+          "negative_mean": 425.29436854483987
+        },
+        {
+          "TX": "14-7",
+          "valid_anchor_occurrences": 852008,
+          "positive_mean": 68.04307589536005,
+          "negative_mean": 425.3800386892377
+        },
+        {
+          "TX": "20-15",
+          "valid_anchor_occurrences": 852588,
+          "positive_mean": 68.08880374339967,
+          "negative_mean": 425.30308178045914
+        },
+        {
+          "TX": "20-19",
+          "valid_anchor_occurrences": 852460,
+          "positive_mean": 68.03323206229304,
+          "negative_mean": 425.35376184750476
+        },
+        {
+          "TX": "6-15",
+          "valid_anchor_occurrences": 852180,
+          "positive_mean": 68.03863155414052,
+          "negative_mean": 425.36059046222925
+        },
+        {
+          "TX": "8-20",
+          "valid_anchor_occurrences": 852468,
+          "positive_mean": 68.06846596660964,
+          "negative_mean": 425.3576064801642
+        }
+      ],
+      "extra_model_forwards": 0,
+      "extra_optimizer_updates": 0,
+      "extra_parameters": 0,
+      "head_fit_updates": 0
+    }
+  ],
+  "actual_artifact_order": [
+    {
+      "row_id": "SYM4-s2026092701",
+      "source_decision_before_prediction_launch": true,
+      "prediction_complete_before_score_launch": true
+    }
+  ],
+  "independent_confusion_accuracy_recall_macro_worst_and_paired_arithmetic": {
+    "status": "PASS",
+    "records": [
+      {
+        "row": "SYM4-s2026092701",
+        "role": "current",
+        "count": 168000,
+        "confusion_accuracy_recall_MacroF1_worstRXday": "PASS"
+      },
+      {
+        "row": "SYM4-s2026092701",
+        "role": "BASE",
+        "count": 168000,
+        "confusion_accuracy_recall_MacroF1_worstRXday": "PASS"
+      }
+    ]
+  }
+}
