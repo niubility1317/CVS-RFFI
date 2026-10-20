@@ -22,12 +22,12 @@
   "parent_run_ids": [
     "20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r02"
   ],
-  "authorization": "2026-10-20 用户要求T1去As独立KL E30拉到E50、seed2026092701；对复用E30续20和从零完整50明确答复“两种都试”。",
+  "authorization": "2026-10-20 用户要求T1去As独立KL E30拉到E50、seed2026092701；对复用E30续20和从零完整50明确答复“两种都试”。 用户随后明确要求查看其他GPU余量，两组并行，找进程量最少的直接启动。",
   "code": {
-    "commit": "ed652af1f7b427cb7cff293e6b6185ca76a32bec",
+    "commit": "971fd16ac342f3523c4e3112f437e678f32ca459",
     "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
     "environment": "N607 ordinary account; existing CVS-RFFI Python3.10/Torch2.1 FP32; CPU2",
-    "cwd": "PROJECT/releases/cvs_T1_AsKL0_E50_20261020_r01"
+    "cwd": "PROJECT/releases/cvs_T1_AsKL0_E50_20261020_parallel_r02"
   },
   "data": {
     "dataset": "ManySig",
@@ -94,14 +94,14 @@
   "execution": {
     "host": "N607",
     "launch_owner": "codex/root/T1-e50",
-    "gpu_policy": "physical GPU4 only, one own worker serial; wait until no other compute PID and free>=12000MB; CPU scorer serial; do not preempt others",
+    "gpu_policy": "All8GPUs sorted by all-owner process count, then free memory; minfree12000MB,maxtotal3/GPU,maxoneown/GPU,maxtwoownworkers;CPUscorer1. Actual E30PLUS20 GPU0/SCRATCH50 GPU6.",
     "remote_run_root": "PROJECT/runs/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01",
     "remote_log_root": "PROJECT/runs/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01/logs",
     "local_artifact_root": "automation_reports/CV-SincNet/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01",
-    "launch_command": "CVS-RFFI/python -u experiments/cvs_t1_e50/runner.py",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_t1_e50/runner.py --adopt-empty-queue",
     "stop_rule": "Only own protocol/roles/provenance/head/nonfinite/output collision/unlaunchable/illegal-prediction systemic failure; preserve all outputs, cancel own pending rows, no automatic retry or science-driven stop. Never change healthy other owners.",
-    "status": "QUEUED",
-    "launch_verification": "VERIFIED independent dispatcher PID/CWD/argv, live queue, PASS real T1 checkpoint and two-path six-L smoke; GPU4 currently other-owner occupied,0 own GPU training updates"
+    "status": "RUNNING",
+    "launch_verification": "VERIFIED new controller and two workers exact PID/CWD/argv/GPU; actual budgets20/50 and ownEMA/scratch initialization; old empty controller stopped only; unchanged scientific configs and old smoke PASS reused"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",

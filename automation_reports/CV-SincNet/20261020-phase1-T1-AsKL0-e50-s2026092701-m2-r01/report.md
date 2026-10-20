@@ -1,6 +1,6 @@
 # T1 去除 As 独立 KL：两条 E50 路径
 
-状态：LOCAL_VERIFIED，等待原普通账户发布；代码 commit `ed652af1f7b427cb7cff293e6b6185ca76a32bec`。
+状态：RUNNING，两组分别运行于 GPU0、GPU6。科学实现 commit `ed652af1f7b427cb7cff293e6b6185ca76a32bec`；当前并行调度 commit `971fd16ac342f3523c4e3112f437e678f32ca459`。
 
 2026-10-20 用户指定原 T1 E30 拉长到 E50、model seed `2026092701`，并明确要求 E30 续训及从零完整 E50 两种都试。逐行矩阵只维护于 experiment.json。
 
@@ -25,3 +25,10 @@ REJECTED_EXTRA_GATE：不增加设计审批、报告/配置 SHA、重复数据�
 ## 发布读回
 
 VERIFIED：release 归档一次本地/远端 SHA 比较一致；12 个 Python 文件远端编译通过。真实原 T1 checkpoint 无 query 2 NN、两路径完整 six-L 合成 1536 NN（含真实 As、默认头与 Sinc 梯度）均 PASS，0 optimizer 更新，直接进入队列。独立读回调度器 PID/CWD/argv 与连续更新的 queue 状态；failure 不存在。GPU4 在部署期间被其他 owner 健康任务占用，当前两行均 QUEUED，尚无本 run GPU 训练或性能结果；资源空闲后调度器自动依次启动。完整私有进程证据保留在 local_artifacts/cvs_t1_e50/latest_readback.json，不提交原始日志或机器状态。
+
+
+## 用户授权的并行调度更新
+
+2026-10-20 用户要求查看其他 GPU 余量、两组并行，并明确“找进程量最少的，直接启动”。按所有 owner 的进程总数排序，同数时优先显存空余更多的卡；free≥12000MB、总进程≤3/GPU、每卡一个本 run GPU worker、两组不同 GPU，独立 CPU scorer 锁保证最多一个。本条取代上文 GPU4 清空后串行的资源设置，科学配置、数据、预算、seed 与输出 root 保持。
+
+VERIFIED：切换前原 run 仍为两行 pending、无 launch.json、无行输出或训练更新；核对原控制器精确 PID/CWD/argv 后只停止该空队列控制器，保留 dispatcher/queue 历史。新不可变 release `cvs_T1_AsKL0_E50_20261020_parallel_r02` 已完成一次归档比较及编译，采用原 run 已 PASS 的真实 checkpoint/six-L smoke，直接接管未启动队列，没有重复训练或重复 smoke。E30PLUS20 已分配 GPU0，实际预算20、0L20U、cos20、严格原T1 FINAL30 EMA；SCRATCH50 已分配 GPU6，实际预算50、33L17U、cos50、自身scratch EMA。两组独立PID/CWD/argv及resolved config已读回，pending为空，failure不存在。其他 owner 任务保持。
