@@ -175,7 +175,7 @@
       "group_pruned",
       "low_rank"
     ],
-    "postlaunch_state": "VERIFIED_CPU_WAITING_R58_ACTUAL_EXIT"
+    "postlaunch_state": "VERIFIED_ALL_OWNED_PROCESSES_EXITED"
   },
   "expected_artifacts": [
     "launch.json",
@@ -409,7 +409,8 @@
     "Coreprototype0549b81fixedbeforeR58source/formal scores;no targetfeedback parent,width,loss,hyperparamchoice or selective rerun.",
     "GPU3/2wait actualR58samecardexit;oneown/card/max2acrossruns;healthyothersunchanged;allnewrowsfull7formalregardlesssource.",
     "Original parameters inherited80+new20=100each/component sum300/serial140pass;perrowL126000U1134000/teacherstudent1260000each;no new parameters/calibration/Gforwards;84context and optional84prior perIQfeature reductions add measured training time/memory;G/GplusF paired samecardB1/B32three rounds",
-    "VERIFIED/WAITING_R58_ACTUAL_EXIT：归档单SHA/远端compile、真实350521父/F50/2Ls noquerysmoke通过，两scope全组件有限非零梯度、父及F不更新、训练hooks移除后独立权重严格重载一致。controller与两条CPU等待worker的实际PID/CWD/argv/CPU2/日志增长核实；均未建立GPU context、0epoch，等待R58同卡row完成并实际PID退出后才分配GPU3/2，跨run最多两条GPU worker。保持273765普通GN图和指定350521直接父，0新增推理参数/校准IQ/额外G前向，训练期开销待实测；尚无正式性能结论。每行固定E20/4940后自动source七景/成本/正式168000×7/独立truth-last，全部正负结果保留，原完整目标ACTIVE。"
+    "VERIFIED/WAITING_R58_ACTUAL_EXIT：归档单SHA/远端compile、真实350521父/F50/2Ls noquerysmoke通过，两scope全组件有限非零梯度、父及F不更新、训练hooks移除后独立权重严格重载一致。controller与两条CPU等待worker的实际PID/CWD/argv/CPU2/日志增长核实；均未建立GPU context、0epoch，等待R58同卡row完成并实际PID退出后才分配GPU3/2，跨run最多两条GPU worker。保持273765普通GN图和指定350521直接父，0新增推理参数/校准IQ/额外G前向，训练期开销待实测；尚无正式性能结论。每行固定E20/4940后自动source七景/成本/正式168000×7/独立truth-last，全部正负结果保留，原完整目标ACTIVE。",
+    "VERIFIED/ANALYZED：两行完整E20/4940、源1800×7和正式168000×7、每行七预测固定后独立truth-last、完整曲线/同卡成本、所属controller/worker退出及两套独立权重CPU严格重载均已核实。context_hint 273765参数，七景较父提高7/下降0，lowurban 68.232143%（较父+0.722024pp），70%=False、其他五景gap5pp=False；同卡G B1父/本版47.6136/47.1164ms，G+F B1父/本版59.5221/58.5740ms；all_hint 273765参数，七景较父提高1/下降6，lowurban 67.719643%（较父+0.209524pp），70%=False、其他五景gap5pp=False；同卡G B1父/本版45.9480/45.2744ms，G+F B1父/本版57.7602/56.0171ms。context_hint相对预登记同图同预算无hint控制R53prune_decay七景提高3/下降4，lowurban差-0.295238pp；all_hint相对预登记同图同预算无hint控制R53prune_decay七景提高0/下降7，lowurban差-0.807738pp。相同.02context权重，all_hint比context_hint额外.02prior：七景提高0/下降7，lowurban差-0.512500pp。原参数80+20=100轮，context/prior各84模块的训练期特征约束；0额外G前向/校准IQ/新增参数，全部hooks保存前移除，额外训练开销已列账。原指定350521直接父保持，正负结果保留；不把容差、减参或中间特征拟合当作整体提升或逐细节TX真实性。原完整目标ACTIVE。"
   ],
   "reused_controls": [
     {
@@ -425,5 +426,18 @@
       "target_results_used_for_selection": false
     }
   ],
-  "registered_at": "2026-10-20T20:50:55+00:00"
+  "registered_at": "2026-10-20T20:50:54+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "all_fixed_rows_scored": true,
+    "accepted_R17": [
+      "context_hint",
+      "all_hint"
+    ],
+    "accepted_R46": [
+      "context_hint",
+      "all_hint"
+    ],
+    "goal_complete": false
+  }
 }
