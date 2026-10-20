@@ -91,3 +91,27 @@ N607普通账户，GPU4/5各一own target worker，free≥12GB/allowner<2，保�
 两份冻结恢复器已取回本地：`local_artifacts/pamf_restoration/r17_target_compare_20261020_r05/models/<arm>/final.pt`。文件大小与远端一致，严格加载来源/最终轮次/全部参数通过，独立恢复器在1条合成零IQ上输出有限，0真实IQ或目标访问。checkpoint不含优化器或F分类器权重，保留原完整coarse/action/prior与来源元数据；不提交权重到Git。部署加载使用`experiments.pamf_r17_task.runtime.load_checkpoint`，输入沿用正式流程原生尺度的float32 `[B,2,256]`，输出同形状恢复IQ；识别时接入原F/defaulthead。
 
 本轮0新训练、0头拟合、0目标适配或状态更新。R04 prior累计40轮/coarse20/action20共80继承串行pass及原F50预训练50/11100成本沿用原记录，不能把本轮E0当作整体零训练成本。结果为固定单训练seed/单原F50seed的点估计，七视图相关，不增加独立物理样本数，不称在轨或多seed总体保证。
+
+
+## 保存预测的逐条补充对照
+
+相对原R17的lost/gained区别于前述相对raw的repair/damage。全部原R17及两版3×7保存预测、既有独立评分及物理IDs先验证后连接truth；0新模型推理/原始IQ/权重读取/拟合或训练更新，独立CPU分析实际进程已退出。
+
+|版本|场景|原正确丢失|原错误修复|净正确数差|决策翻转|
+|---|---|---:|---:|---:|---:|
+|step_norm_task|clean|1|0|-1|1|
+|step_norm_task|practical_high|2611|1999|-612|5304|
+|step_norm_task|practical_mid|2803|2369|-434|6113|
+|step_norm_task|practical_low_suburban|3169|2564|-605|7029|
+|step_norm_task|practical_high_urban|3039|2427|-612|6399|
+|step_norm_task|practical_mid_urban|4661|4711|+50|11808|
+|step_norm_task|practical_low_urban|6307|6542|+235|17320|
+|activation_task|clean|0|0|+0|0|
+|activation_task|practical_high|1860|1322|-538|3743|
+|activation_task|practical_mid|2164|1650|-514|4622|
+|activation_task|practical_low_suburban|2562|2080|-482|5778|
+|activation_task|practical_high_urban|2188|1690|-498|4650|
+|activation_task|practical_mid_urban|3813|3797|-16|9681|
+|activation_task|practical_low_urban|5227|5364|+137|14278|
+
+完整教师置信度/特征与保存IQ偏离、逐TX/RX/day分组见[配对汇总](paired_prediction_fidelity.json)。该同row事后分析不作因果归因或选择反馈，不改变1个百分点验收结果。整体准确率保持不表示每条样本预测一致，也不把场景阈值扩展为所有TX/RX/day分组逐项阈值。

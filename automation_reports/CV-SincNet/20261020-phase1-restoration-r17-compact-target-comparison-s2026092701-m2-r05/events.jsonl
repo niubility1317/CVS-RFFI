@@ -6,3 +6,4 @@
 {"at": "2026-10-20T05:47:13+00:00", "status": "ANALYZED", "note": "VERIFIED target168000x7/truthlast/allactualprocessesEXITED;1ppaccepted=True", "evidence": ["report.md", "results.json", "row_metrics.csv"], "row_id": "step_norm_task"}
 {"at": "2026-10-20T05:47:13+00:00", "status": "ANALYZED", "note": "VERIFIED target168000x7/truthlast/allactualprocessesEXITED;1ppaccepted=True", "evidence": ["report.md", "results.json", "row_metrics.csv"], "row_id": "activation_task"}
 {"at": "2026-10-20T05:47:13+00:00", "status": "ANALYZED", "note": "符合七场景1个百分点容差：step_norm_task, activation_task", "evidence": ["report.md", "results.json", "row_metrics.csv"], "row_id": null}
+{"at": "2026-10-20T05:59:59+00:00", "status": "ANALYZED", "note": "VERIFIED saved3x7predictionsbeforetruth/pairedcountsagreewithcanonicalscore;0newqueries/modelweights/updates;1ppacceptanceunchanged", "evidence": ["report.md", "paired_prediction_fidelity.json"], "row_id": null}

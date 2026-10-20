@@ -1,0 +1,3746 @@
+{
+  "status": "SAVED_TARGET_PAIRED_PREDICTIONS_ANALYZED",
+  "run_id": "20261020-phase1-restoration-r17-compact-target-comparison-s2026092701-m2-r05",
+  "teacher_run": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+  "method_commit": "81c39cb908373d4e19b70ec8406f4083529da99a",
+  "target_labels_evaluated": 168000,
+  "all_three_rows_seven_views_before_truth": true,
+  "raw_IQ_reads": 0,
+  "checkpoint_weight_reads": 0,
+  "model_forwards": 0,
+  "training_updates": 0,
+  "head_fit_updates": 0,
+  "target_feedback": false,
+  "rows": {
+    "step_norm_task": {
+      "clean": {
+        "count": 168000,
+        "teacher_correct": 142106,
+        "student_correct": 142105,
+        "teacher_accuracy": 84.58690476190476,
+        "student_accuracy": 84.58630952380952,
+        "decision_changed": 1,
+        "lost": 1,
+        "gained": 0,
+        "net_correct_delta": -1,
+        "both_wrong_changed": 0,
+        "confidence_bins": [
+          {
+            "teacher_confidence_low": 0.0,
+            "teacher_confidence_high": 0.6,
+            "count": 10532,
+            "decision_changed": 0,
+            "lost": 0,
+            "gained": 0
+          },
+          {
+            "teacher_confidence_low": 0.6,
+            "teacher_confidence_high": 0.9,
+            "count": 29521,
+            "decision_changed": 1,
+            "lost": 1,
+            "gained": 0
+          },
+          {
+            "teacher_confidence_low": 0.9,
+            "teacher_confidence_high": 0.99,
+            "count": 43910,
+            "decision_changed": 0,
+            "lost": 0,
+            "gained": 0
+          },
+          {
+            "teacher_confidence_low": 0.99,
+            "teacher_confidence_high": 1.0,
+            "count": 84037,
+            "decision_changed": 0,
+            "lost": 0,
+            "gained": 0
+          }
+        ],
+        "cases": {
+          "all": {
+            "count": 168000,
+            "teacher_confidence_mean": 0.9182541065733039,
+            "teacher_logit_margin_mean": 4.980418340911202,
+            "logit_max_absolute_change_mean": 1.995885284296015e-05,
+            "feature_cosine_distance_to_R17_mean": 7.067643352562975e-08,
+            "saved_IQ_NMSE_to_R17_mean": 3.748008874388391e-08
+          },
+          "decision_changed": {
+            "count": 1,
+            "teacher_confidence_mean": 0.813423008829117,
+            "teacher_logit_margin_mean": 1.657214641571045,
+            "logit_max_absolute_change_mean": 1.3519055843353271,
+            "feature_cosine_distance_to_R17_mean": 0.01097313041496617,
+            "saved_IQ_NMSE_to_R17_mean": 0.0036528723048891714
+          },
+          "R17_correct_student_wrong": {
+            "count": 1,
+            "teacher_confidence_mean": 0.813423008829117,
+            "teacher_logit_margin_mean": 1.657214641571045,
+            "logit_max_absolute_change_mean": 1.3519055843353271,
+            "feature_cosine_distance_to_R17_mean": 0.01097313041496617,
+            "saved_IQ_NMSE_to_R17_mean": 0.0036528723048891714
+          },
+          "R17_wrong_student_correct": {
+            "count": 0,
+            "teacher_confidence_mean": null,
+            "teacher_logit_margin_mean": null,
+            "logit_max_absolute_change_mean": null,
+            "feature_cosine_distance_to_R17_mean": null,
+            "saved_IQ_NMSE_to_R17_mean": null
+          },
+          "decision_unchanged": {
+            "count": 167999,
+            "teacher_confidence_mean": 0.9182547305716475,
+            "teacher_logit_margin_mean": 4.980438122003347,
+            "logit_max_absolute_change_mean": 1.1911866697313545e-05,
+            "feature_cosine_distance_to_R17_mean": 5.360212961622559e-09,
+            "saved_IQ_NMSE_to_R17_mean": 1.573689488677507e-08
+          }
+        },
+        "groups": {
+          "TX": {
+            "0": {
+              "count": 28000,
+              "teacher_correct": 26507,
+              "student_correct": 26507,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "1": {
+              "count": 28000,
+              "teacher_correct": 17827,
+              "student_correct": 17827,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "2": {
+              "count": 28000,
+              "teacher_correct": 21220,
+              "student_correct": 21220,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "3": {
+              "count": 28000,
+              "teacher_correct": 20840,
+              "student_correct": 20840,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "4": {
+              "count": 28000,
+              "teacher_correct": 27924,
+              "student_correct": 27923,
+              "decision_changed": 1,
+              "lost": 1,
+              "gained": 0,
+              "net_correct_delta": -1,
+              "both_wrong_changed": 0
+            },
+            "5": {
+              "count": 28000,
+              "teacher_correct": 27788,
+              "student_correct": 27788,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            }
+          },
+          "RX": {
+            "1-1": {
+              "count": 24000,
+              "teacher_correct": 19349,
+              "student_correct": 19349,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "14-7": {
+              "count": 24000,
+              "teacher_correct": 17898,
+              "student_correct": 17898,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "2-1": {
+              "count": 24000,
+              "teacher_correct": 21942,
+              "student_correct": 21942,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "20-1": {
+              "count": 24000,
+              "teacher_correct": 20004,
+              "student_correct": 20003,
+              "decision_changed": 1,
+              "lost": 1,
+              "gained": 0,
+              "net_correct_delta": -1,
+              "both_wrong_changed": 0
+            },
+            "7-14": {
+              "count": 24000,
+              "teacher_correct": 22020,
+              "student_correct": 22020,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "7-7": {
+              "count": 24000,
+              "teacher_correct": 21396,
+              "student_correct": 21396,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "8-8": {
+              "count": 24000,
+              "teacher_correct": 19497,
+              "student_correct": 19497,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            }
+          },
+          "day": {
+            "2021_03_01": {
+              "count": 42000,
+              "teacher_correct": 34467,
+              "student_correct": 34466,
+              "decision_changed": 1,
+              "lost": 1,
+              "gained": 0,
+              "net_correct_delta": -1,
+              "both_wrong_changed": 0
+            },
+            "2021_03_08": {
+              "count": 42000,
+              "teacher_correct": 36151,
+              "student_correct": 36151,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "2021_03_15": {
+              "count": 42000,
+              "teacher_correct": 34760,
+              "student_correct": 34760,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "2021_03_23": {
+              "count": 42000,
+              "teacher_correct": 36728,
+              "student_correct": 36728,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            }
+          }
+        }
+      },
+      "practical_high": {
+        "count": 168000,
+        "teacher_correct": 136616,
+        "student_correct": 136004,
+        "teacher_accuracy": 81.31904761904762,
+        "student_accuracy": 80.95476190476191,
+        "decision_changed": 5304,
+        "lost": 2611,
+        "gained": 1999,
+        "net_correct_delta": -612,
+        "both_wrong_changed": 694,
+        "confidence_bins": [
+          {
+            "teacher_confidence_low": 0.0,
+            "teacher_confidence_high": 0.6,
+            "count": 11677,
+            "decision_changed": 3485,
+            "lost": 1598,
+            "gained": 1314
+          },
+          {
+            "teacher_confidence_low": 0.6,
+            "teacher_confidence_high": 0.9,
+            "count": 30918,
+            "decision_changed": 1740,
+            "lost": 964,
+            "gained": 662
+          },
+          {
+            "teacher_confidence_low": 0.9,
+            "teacher_confidence_high": 0.99,
+            "count": 44621,
+            "decision_changed": 78,
+            "lost": 48,
+            "gained": 23
+          },
+          {
+            "teacher_confidence_low": 0.99,
+            "teacher_confidence_high": 1.0,
+            "count": 80784,
+            "decision_changed": 1,
+            "lost": 1,
+            "gained": 0
+          }
+        ],
+        "cases": {
+          "all": {
+            "count": 168000,
+            "teacher_confidence_mean": 0.9125219898752974,
+            "teacher_logit_margin_mean": 4.83322823644027,
+            "logit_max_absolute_change_mean": 0.5309232226918518,
+            "feature_cosine_distance_to_R17_mean": 0.001969467348782682,
+            "saved_IQ_NMSE_to_R17_mean": 0.0012220948156232455
+          },
+          "decision_changed": {
+            "count": 5304,
+            "teacher_confidence_mean": 0.5694347742756647,
+            "teacher_logit_margin_mean": 0.5220687007067969,
+            "logit_max_absolute_change_mean": 0.8342243752959936,
+            "feature_cosine_distance_to_R17_mean": 0.003095733235603217,
+            "saved_IQ_NMSE_to_R17_mean": 0.0033101274900876397
+          },
+          "R17_correct_student_wrong": {
+            "count": 2611,
+            "teacher_confidence_mean": 0.5907498726879941,
+            "teacher_logit_margin_mean": 0.5547793757089113,
+            "logit_max_absolute_change_mean": 0.8179802862325936,
+            "feature_cosine_distance_to_R17_mean": 0.002803774416972177,
+            "saved_IQ_NMSE_to_R17_mean": 0.0016292613204371988
+          },
+          "R17_wrong_student_correct": {
+            "count": 1999,
+            "teacher_confidence_mean": 0.5693385056859539,
+            "teacher_logit_margin_mean": 0.4921679961317596,
+            "logit_max_absolute_change_mean": 0.8489418020094556,
+            "feature_cosine_distance_to_R17_mean": 0.003293601498399862,
+            "saved_IQ_NMSE_to_R17_mean": 0.0031167145520700256
+          },
+          "decision_unchanged": {
+            "count": 162696,
+            "teacher_confidence_mean": 0.9237068659112198,
+            "teacher_logit_margin_mean": 4.973774962712153,
+            "logit_max_absolute_change_mean": 0.5210353993070582,
+            "feature_cosine_distance_to_R17_mean": 0.0019327503166264141,
+            "saved_IQ_NMSE_to_R17_mean": 0.0011540235335673918
+          }
+        },
+        "groups": {
+          "TX": {
+            "0": {
+              "count": 28000,
+              "teacher_correct": 26017,
+              "student_correct": 26186,
+              "decision_changed": 803,
+              "lost": 296,
+              "gained": 465,
+              "net_correct_delta": 169,
+              "both_wrong_changed": 42
+            },
+            "1": {
+              "count": 28000,
+              "teacher_correct": 14847,
+              "student_correct": 14569,
+              "decision_changed": 2061,
+              "lost": 1054,
+              "gained": 776,
+              "net_correct_delta": -278,
+              "both_wrong_changed": 231
+            },
+            "2": {
+              "count": 28000,
+              "teacher_correct": 20531,
+              "student_correct": 20142,
+              "decision_changed": 904,
+              "lost": 615,
+              "gained": 226,
+              "net_correct_delta": -389,
+              "both_wrong_changed": 63
+            },
+            "3": {
+              "count": 28000,
+              "teacher_correct": 19499,
+              "student_correct": 19412,
+              "decision_changed": 1437,
+              "lost": 590,
+              "gained": 503,
+              "net_correct_delta": -87,
+              "both_wrong_changed": 344
+            },
+            "4": {
+              "count": 28000,
+              "teacher_correct": 27884,
+              "student_correct": 27854,
+              "decision_changed": 48,
+              "lost": 37,
+              "gained": 7,
+              "net_correct_delta": -30,
+              "both_wrong_changed": 4
+            },
+            "5": {
+              "count": 28000,
+              "teacher_correct": 27838,
+              "student_correct": 27841,
+              "decision_changed": 51,
+              "lost": 19,
+              "gained": 22,
+              "net_correct_delta": 3,
+              "both_wrong_changed": 10
+            }
+          },
+          "RX": {
+            "1-1": {
+              "count": 24000,
+              "teacher_correct": 18245,
+              "student_correct": 17953,
+              "decision_changed": 614,
+              "lost": 399,
+              "gained": 107,
+              "net_correct_delta": -292,
+              "both_wrong_changed": 108
+            },
+            "14-7": {
+              "count": 24000,
+              "teacher_correct": 18951,
+              "student_correct": 18723,
+              "decision_changed": 1230,
+              "lost": 589,
+              "gained": 361,
+              "net_correct_delta": -228,
+              "both_wrong_changed": 280
+            },
+            "2-1": {
+              "count": 24000,
+              "teacher_correct": 20804,
+              "student_correct": 20755,
+              "decision_changed": 790,
+              "lost": 394,
+              "gained": 345,
+              "net_correct_delta": -49,
+              "both_wrong_changed": 51
+            },
+            "20-1": {
+              "count": 24000,
+              "teacher_correct": 18481,
+              "student_correct": 18502,
+              "decision_changed": 623,
+              "lost": 276,
+              "gained": 297,
+              "net_correct_delta": 21,
+              "both_wrong_changed": 50
+            },
+            "7-14": {
+              "count": 24000,
+              "teacher_correct": 21350,
+              "student_correct": 21385,
+              "decision_changed": 534,
+              "lost": 237,
+              "gained": 272,
+              "net_correct_delta": 35,
+              "both_wrong_changed": 25
+            },
+            "7-7": {
+              "count": 24000,
+              "teacher_correct": 20308,
+              "student_correct": 20095,
+              "decision_changed": 734,
+              "lost": 396,
+              "gained": 183,
+              "net_correct_delta": -213,
+              "both_wrong_changed": 155
+            },
+            "8-8": {
+              "count": 24000,
+              "teacher_correct": 18477,
+              "student_correct": 18591,
+              "decision_changed": 779,
+              "lost": 320,
+              "gained": 434,
+              "net_correct_delta": 114,
+              "both_wrong_changed": 25
+            }
+          },
+          "day": {
+            "2021_03_01": {
+              "count": 42000,
+              "teacher_correct": 33580,
+              "student_correct": 33596,
+              "decision_changed": 1259,
+              "lost": 511,
+              "gained": 527,
+              "net_correct_delta": 16,
+              "both_wrong_changed": 221
+            },
+            "2021_03_08": {
+              "count": 42000,
+              "teacher_correct": 34668,
+              "student_correct": 34501,
+              "decision_changed": 1264,
+              "lost": 632,
+              "gained": 465,
+              "net_correct_delta": -167,
+              "both_wrong_changed": 167
+            },
+            "2021_03_15": {
+              "count": 42000,
+              "teacher_correct": 33712,
+              "student_correct": 33302,
+              "decision_changed": 1366,
+              "lost": 814,
+              "gained": 404,
+              "net_correct_delta": -410,
+              "both_wrong_changed": 148
+            },
+            "2021_03_23": {
+              "count": 42000,
+              "teacher_correct": 34656,
+              "student_correct": 34605,
+              "decision_changed": 1415,
+              "lost": 654,
+              "gained": 603,
+              "net_correct_delta": -51,
+              "both_wrong_changed": 158
+            }
+          }
+        }
+      },
+      "practical_mid": {
+        "count": 168000,
+        "teacher_correct": 133691,
+        "student_correct": 133257,
+        "teacher_accuracy": 79.57797619047618,
+        "student_accuracy": 79.31964285714285,
+        "decision_changed": 6113,
+        "lost": 2803,
+        "gained": 2369,
+        "net_correct_delta": -434,
+        "both_wrong_changed": 941,
+        "confidence_bins": [
+          {
+            "teacher_confidence_low": 0.0,
+            "teacher_confidence_high": 0.6,
+            "count": 11833,
+            "decision_changed": 3817,
+            "lost": 1674,
+            "gained": 1458
+          },
+          {
+            "teacher_confidence_low": 0.6,
+            "teacher_confidence_high": 0.9,
+            "count": 31295,
+            "decision_changed": 2114,
+            "lost": 1043,
+            "gained": 849
+          },
+          {
+            "teacher_confidence_low": 0.9,
+            "teacher_confidence_high": 0.99,
+            "count": 45093,
+            "decision_changed": 171,
+            "lost": 81,
+            "gained": 60
+          },
+          {
+            "teacher_confidence_low": 0.99,
+            "teacher_confidence_high": 1.0,
+            "count": 79779,
+            "decision_changed": 11,
+            "lost": 5,
+            "gained": 2
+          }
+        ],
+        "cases": {
+          "all": {
+            "count": 168000,
+            "teacher_confidence_mean": 0.9113888930955533,
+            "teacher_logit_margin_mean": 4.794932258606312,
+            "logit_max_absolute_change_mean": 0.6016014961188055,
+            "feature_cosine_distance_to_R17_mean": 0.0028359798020189523,
+            "saved_IQ_NMSE_to_R17_mean": 0.0026052290080578497
+          },
+          "decision_changed": {
+            "count": 6113,
+            "teacher_confidence_mean": 0.5834988733145643,
+            "teacher_logit_margin_mean": 0.6188861653220921,
+            "logit_max_absolute_change_mean": 1.0592773408785465,
+            "feature_cosine_distance_to_R17_mean": 0.006993564154107279,
+            "saved_IQ_NMSE_to_R17_mean": 0.008020169226832534
+          },
+          "R17_correct_student_wrong": {
+            "count": 2803,
+            "teacher_confidence_mean": 0.5955535978730238,
+            "teacher_logit_margin_mean": 0.6210203799782928,
+            "logit_max_absolute_change_mean": 0.9579578285882017,
+            "feature_cosine_distance_to_R17_mean": 0.005414256455773706,
+            "saved_IQ_NMSE_to_R17_mean": 0.005004774520227356
+          },
+          "R17_wrong_student_correct": {
+            "count": 2369,
+            "teacher_confidence_mean": 0.5900412202779353,
+            "teacher_logit_margin_mean": 0.6011976273113184,
+            "logit_max_absolute_change_mean": 1.1077575576473964,
+            "feature_cosine_distance_to_R17_mean": 0.007645076154403442,
+            "saved_IQ_NMSE_to_R17_mean": 0.008128725782229304
+          },
+          "decision_unchanged": {
+            "count": 161887,
+            "teacher_confidence_mean": 0.9237703177369463,
+            "teacher_logit_margin_mean": 4.952623548013407,
+            "logit_max_absolute_change_mean": 0.584319240971596,
+            "feature_cosine_distance_to_R17_mean": 0.0026789856447097435,
+            "saved_IQ_NMSE_to_R17_mean": 0.00240075595242417
+          }
+        },
+        "groups": {
+          "TX": {
+            "0": {
+              "count": 28000,
+              "teacher_correct": 25931,
+              "student_correct": 25965,
+              "decision_changed": 829,
+              "lost": 372,
+              "gained": 406,
+              "net_correct_delta": 34,
+              "both_wrong_changed": 51
+            },
+            "1": {
+              "count": 28000,
+              "teacher_correct": 13085,
+              "student_correct": 12870,
+              "decision_changed": 2074,
+              "lost": 1001,
+              "gained": 786,
+              "net_correct_delta": -215,
+              "both_wrong_changed": 287
+            },
+            "2": {
+              "count": 28000,
+              "teacher_correct": 20476,
+              "student_correct": 20007,
+              "decision_changed": 1259,
+              "lost": 787,
+              "gained": 318,
+              "net_correct_delta": -469,
+              "both_wrong_changed": 154
+            },
+            "3": {
+              "count": 28000,
+              "teacher_correct": 18873,
+              "student_correct": 19035,
+              "decision_changed": 1629,
+              "lost": 532,
+              "gained": 694,
+              "net_correct_delta": 162,
+              "both_wrong_changed": 403
+            },
+            "4": {
+              "count": 28000,
+              "teacher_correct": 27830,
+              "student_correct": 27811,
+              "decision_changed": 76,
+              "lost": 40,
+              "gained": 21,
+              "net_correct_delta": -19,
+              "both_wrong_changed": 15
+            },
+            "5": {
+              "count": 28000,
+              "teacher_correct": 27496,
+              "student_correct": 27569,
+              "decision_changed": 246,
+              "lost": 71,
+              "gained": 144,
+              "net_correct_delta": 73,
+              "both_wrong_changed": 31
+            }
+          },
+          "RX": {
+            "1-1": {
+              "count": 24000,
+              "teacher_correct": 18262,
+              "student_correct": 17961,
+              "decision_changed": 770,
+              "lost": 474,
+              "gained": 173,
+              "net_correct_delta": -301,
+              "both_wrong_changed": 123
+            },
+            "14-7": {
+              "count": 24000,
+              "teacher_correct": 17908,
+              "student_correct": 17821,
+              "decision_changed": 1295,
+              "lost": 518,
+              "gained": 431,
+              "net_correct_delta": -87,
+              "both_wrong_changed": 346
+            },
+            "2-1": {
+              "count": 24000,
+              "teacher_correct": 20490,
+              "student_correct": 20501,
+              "decision_changed": 885,
+              "lost": 401,
+              "gained": 412,
+              "net_correct_delta": 11,
+              "both_wrong_changed": 72
+            },
+            "20-1": {
+              "count": 24000,
+              "teacher_correct": 17956,
+              "student_correct": 17981,
+              "decision_changed": 788,
+              "lost": 334,
+              "gained": 359,
+              "net_correct_delta": 25,
+              "both_wrong_changed": 95
+            },
+            "7-14": {
+              "count": 24000,
+              "teacher_correct": 20738,
+              "student_correct": 20768,
+              "decision_changed": 691,
+              "lost": 298,
+              "gained": 328,
+              "net_correct_delta": 30,
+              "both_wrong_changed": 65
+            },
+            "7-7": {
+              "count": 24000,
+              "teacher_correct": 20000,
+              "student_correct": 19907,
+              "decision_changed": 872,
+              "lost": 382,
+              "gained": 289,
+              "net_correct_delta": -93,
+              "both_wrong_changed": 201
+            },
+            "8-8": {
+              "count": 24000,
+              "teacher_correct": 18337,
+              "student_correct": 18318,
+              "decision_changed": 812,
+              "lost": 396,
+              "gained": 377,
+              "net_correct_delta": -19,
+              "both_wrong_changed": 39
+            }
+          },
+          "day": {
+            "2021_03_01": {
+              "count": 42000,
+              "teacher_correct": 32746,
+              "student_correct": 32861,
+              "decision_changed": 1483,
+              "lost": 537,
+              "gained": 652,
+              "net_correct_delta": 115,
+              "both_wrong_changed": 294
+            },
+            "2021_03_08": {
+              "count": 42000,
+              "teacher_correct": 34061,
+              "student_correct": 33923,
+              "decision_changed": 1440,
+              "lost": 664,
+              "gained": 526,
+              "net_correct_delta": -138,
+              "both_wrong_changed": 250
+            },
+            "2021_03_15": {
+              "count": 42000,
+              "teacher_correct": 33015,
+              "student_correct": 32678,
+              "decision_changed": 1513,
+              "lost": 826,
+              "gained": 489,
+              "net_correct_delta": -337,
+              "both_wrong_changed": 198
+            },
+            "2021_03_23": {
+              "count": 42000,
+              "teacher_correct": 33869,
+              "student_correct": 33795,
+              "decision_changed": 1677,
+              "lost": 776,
+              "gained": 702,
+              "net_correct_delta": -74,
+              "both_wrong_changed": 199
+            }
+          }
+        }
+      },
+      "practical_low_suburban": {
+        "count": 168000,
+        "teacher_correct": 131034,
+        "student_correct": 130429,
+        "teacher_accuracy": 77.99642857142857,
+        "student_accuracy": 77.63630952380952,
+        "decision_changed": 7029,
+        "lost": 3169,
+        "gained": 2564,
+        "net_correct_delta": -605,
+        "both_wrong_changed": 1296,
+        "confidence_bins": [
+          {
+            "teacher_confidence_low": 0.0,
+            "teacher_confidence_high": 0.6,
+            "count": 11782,
+            "decision_changed": 4064,
+            "lost": 1792,
+            "gained": 1471
+          },
+          {
+            "teacher_confidence_low": 0.6,
+            "teacher_confidence_high": 0.9,
+            "count": 32164,
+            "decision_changed": 2624,
+            "lost": 1225,
+            "gained": 975
+          },
+          {
+            "teacher_confidence_low": 0.9,
+            "teacher_confidence_high": 0.99,
+            "count": 45644,
+            "decision_changed": 320,
+            "lost": 139,
+            "gained": 113
+          },
+          {
+            "teacher_confidence_low": 0.99,
+            "teacher_confidence_high": 1.0,
+            "count": 78410,
+            "decision_changed": 21,
+            "lost": 13,
+            "gained": 5
+          }
+        ],
+        "cases": {
+          "all": {
+            "count": 168000,
+            "teacher_confidence_mean": 0.9103934579743611,
+            "teacher_logit_margin_mean": 4.749361090383304,
+            "logit_max_absolute_change_mean": 0.7055121628838007,
+            "feature_cosine_distance_to_R17_mean": 0.004051552757755862,
+            "saved_IQ_NMSE_to_R17_mean": 0.004199114210948138
+          },
+          "decision_changed": {
+            "count": 7029,
+            "teacher_confidence_mean": 0.5999961828964722,
+            "teacher_logit_margin_mean": 0.7457809881730513,
+            "logit_max_absolute_change_mean": 1.308234570334883,
+            "feature_cosine_distance_to_R17_mean": 0.010646609471420107,
+            "saved_IQ_NMSE_to_R17_mean": 0.013338982796080352
+          },
+          "R17_correct_student_wrong": {
+            "count": 3169,
+            "teacher_confidence_mean": 0.6077858637362188,
+            "teacher_logit_margin_mean": 0.722927751583269,
+            "logit_max_absolute_change_mean": 1.1645056362557449,
+            "feature_cosine_distance_to_R17_mean": 0.008527685452516393,
+            "saved_IQ_NMSE_to_R17_mean": 0.009187830313823213
+          },
+          "R17_wrong_student_correct": {
+            "count": 2564,
+            "teacher_confidence_mean": 0.6042495723415517,
+            "teacher_logit_margin_mean": 0.7214946151244659,
+            "logit_max_absolute_change_mean": 1.32726971203332,
+            "feature_cosine_distance_to_R17_mean": 0.010841334710328877,
+            "saved_IQ_NMSE_to_R17_mean": 0.012845304291907245
+          },
+          "decision_unchanged": {
+            "count": 160971,
+            "teacher_confidence_mean": 0.9239473431246213,
+            "teacher_logit_margin_mean": 4.924182421793533,
+            "logit_max_absolute_change_mean": 0.679193535292659,
+            "feature_cosine_distance_to_R17_mean": 0.0037635713596136746,
+            "saved_IQ_NMSE_to_R17_mean": 0.003800010420297062
+          }
+        },
+        "groups": {
+          "TX": {
+            "0": {
+              "count": 28000,
+              "teacher_correct": 25567,
+              "student_correct": 25470,
+              "decision_changed": 921,
+              "lost": 460,
+              "gained": 363,
+              "net_correct_delta": -97,
+              "both_wrong_changed": 98
+            },
+            "1": {
+              "count": 28000,
+              "teacher_correct": 11939,
+              "student_correct": 11497,
+              "decision_changed": 2076,
+              "lost": 1089,
+              "gained": 647,
+              "net_correct_delta": -442,
+              "both_wrong_changed": 340
+            },
+            "2": {
+              "count": 28000,
+              "teacher_correct": 20516,
+              "student_correct": 19977,
+              "decision_changed": 1634,
+              "lost": 955,
+              "gained": 416,
+              "net_correct_delta": -539,
+              "both_wrong_changed": 263
+            },
+            "3": {
+              "count": 28000,
+              "teacher_correct": 18148,
+              "student_correct": 18521,
+              "decision_changed": 1807,
+              "lost": 474,
+              "gained": 847,
+              "net_correct_delta": 373,
+              "both_wrong_changed": 486
+            },
+            "4": {
+              "count": 28000,
+              "teacher_correct": 27733,
+              "student_correct": 27744,
+              "decision_changed": 122,
+              "lost": 38,
+              "gained": 49,
+              "net_correct_delta": 11,
+              "both_wrong_changed": 35
+            },
+            "5": {
+              "count": 28000,
+              "teacher_correct": 27131,
+              "student_correct": 27220,
+              "decision_changed": 469,
+              "lost": 153,
+              "gained": 242,
+              "net_correct_delta": 89,
+              "both_wrong_changed": 74
+            }
+          },
+          "RX": {
+            "1-1": {
+              "count": 24000,
+              "teacher_correct": 18192,
+              "student_correct": 17886,
+              "decision_changed": 902,
+              "lost": 544,
+              "gained": 238,
+              "net_correct_delta": -306,
+              "both_wrong_changed": 120
+            },
+            "14-7": {
+              "count": 24000,
+              "teacher_correct": 17172,
+              "student_correct": 17118,
+              "decision_changed": 1379,
+              "lost": 504,
+              "gained": 450,
+              "net_correct_delta": -54,
+              "both_wrong_changed": 425
+            },
+            "2-1": {
+              "count": 24000,
+              "teacher_correct": 20184,
+              "student_correct": 20205,
+              "decision_changed": 909,
+              "lost": 392,
+              "gained": 413,
+              "net_correct_delta": 21,
+              "both_wrong_changed": 104
+            },
+            "20-1": {
+              "count": 24000,
+              "teacher_correct": 17327,
+              "student_correct": 17353,
+              "decision_changed": 1014,
+              "lost": 409,
+              "gained": 435,
+              "net_correct_delta": 26,
+              "both_wrong_changed": 170
+            },
+            "7-14": {
+              "count": 24000,
+              "teacher_correct": 20234,
+              "student_correct": 20140,
+              "decision_changed": 902,
+              "lost": 438,
+              "gained": 344,
+              "net_correct_delta": -94,
+              "both_wrong_changed": 120
+            },
+            "7-7": {
+              "count": 24000,
+              "teacher_correct": 19704,
+              "student_correct": 19677,
+              "decision_changed": 1003,
+              "lost": 382,
+              "gained": 355,
+              "net_correct_delta": -27,
+              "both_wrong_changed": 266
+            },
+            "8-8": {
+              "count": 24000,
+              "teacher_correct": 18221,
+              "student_correct": 18050,
+              "decision_changed": 920,
+              "lost": 500,
+              "gained": 329,
+              "net_correct_delta": -171,
+              "both_wrong_changed": 91
+            }
+          },
+          "day": {
+            "2021_03_01": {
+              "count": 42000,
+              "teacher_correct": 32016,
+              "student_correct": 32101,
+              "decision_changed": 1618,
+              "lost": 600,
+              "gained": 685,
+              "net_correct_delta": 85,
+              "both_wrong_changed": 333
+            },
+            "2021_03_08": {
+              "count": 42000,
+              "teacher_correct": 33370,
+              "student_correct": 33221,
+              "decision_changed": 1712,
+              "lost": 759,
+              "gained": 610,
+              "net_correct_delta": -149,
+              "both_wrong_changed": 343
+            },
+            "2021_03_15": {
+              "count": 42000,
+              "teacher_correct": 32511,
+              "student_correct": 32089,
+              "decision_changed": 1708,
+              "lost": 919,
+              "gained": 497,
+              "net_correct_delta": -422,
+              "both_wrong_changed": 292
+            },
+            "2021_03_23": {
+              "count": 42000,
+              "teacher_correct": 33137,
+              "student_correct": 33018,
+              "decision_changed": 1991,
+              "lost": 891,
+              "gained": 772,
+              "net_correct_delta": -119,
+              "both_wrong_changed": 328
+            }
+          }
+        }
+      },
+      "practical_high_urban": {
+        "count": 168000,
+        "teacher_correct": 134994,
+        "student_correct": 134382,
+        "teacher_accuracy": 80.35357142857143,
+        "student_accuracy": 79.98928571428571,
+        "decision_changed": 6399,
+        "lost": 3039,
+        "gained": 2427,
+        "net_correct_delta": -612,
+        "both_wrong_changed": 933,
+        "confidence_bins": [
+          {
+            "teacher_confidence_low": 0.0,
+            "teacher_confidence_high": 0.6,
+            "count": 11839,
+            "decision_changed": 3831,
+            "lost": 1743,
+            "gained": 1425
+          },
+          {
+            "teacher_confidence_low": 0.6,
+            "teacher_confidence_high": 0.9,
+            "count": 31609,
+            "decision_changed": 2328,
+            "lost": 1175,
+            "gained": 916
+          },
+          {
+            "teacher_confidence_low": 0.9,
+            "teacher_confidence_high": 0.99,
+            "count": 45111,
+            "decision_changed": 225,
+            "lost": 111,
+            "gained": 82
+          },
+          {
+            "teacher_confidence_low": 0.99,
+            "teacher_confidence_high": 1.0,
+            "count": 79441,
+            "decision_changed": 15,
+            "lost": 10,
+            "gained": 4
+          }
+        ],
+        "cases": {
+          "all": {
+            "count": 168000,
+            "teacher_confidence_mean": 0.9110173159952766,
+            "teacher_logit_margin_mean": 4.802391608487676,
+            "logit_max_absolute_change_mean": 0.6225290793456149,
+            "feature_cosine_distance_to_R17_mean": 0.003153030102284945,
+            "saved_IQ_NMSE_to_R17_mean": 0.002983291657601075
+          },
+          "decision_changed": {
+            "count": 6399,
+            "teacher_confidence_mean": 0.5937564379255783,
+            "teacher_logit_margin_mean": 0.6779161224254948,
+            "logit_max_absolute_change_mean": 1.1520788903365757,
+            "feature_cosine_distance_to_R17_mean": 0.00810063616839534,
+            "saved_IQ_NMSE_to_R17_mean": 0.008903286806276419
+          },
+          "R17_correct_student_wrong": {
+            "count": 3039,
+            "teacher_confidence_mean": 0.6080469361091134,
+            "teacher_logit_margin_mean": 0.6957388055603062,
+            "logit_max_absolute_change_mean": 1.0704810800470286,
+            "feature_cosine_distance_to_R17_mean": 0.006573610713826932,
+            "saved_IQ_NMSE_to_R17_mean": 0.006664666230419117
+          },
+          "R17_wrong_student_correct": {
+            "count": 2427,
+            "teacher_confidence_mean": 0.597422067093808,
+            "teacher_logit_margin_mean": 0.6577758698685453,
+            "logit_max_absolute_change_mean": 1.1830282639524066,
+            "feature_cosine_distance_to_R17_mean": 0.008902517960215572,
+            "saved_IQ_NMSE_to_R17_mean": 0.008647135486007412
+          },
+          "decision_unchanged": {
+            "count": 161601,
+            "teacher_confidence_mean": 0.9235800622577877,
+            "teacher_logit_margin_mean": 4.96571063891021,
+            "logit_max_absolute_change_mean": 0.6015602162783618,
+            "feature_cosine_distance_to_R17_mean": 0.002957117136294386,
+            "saved_IQ_NMSE_to_R17_mean": 0.0027488744884228296
+          }
+        },
+        "groups": {
+          "TX": {
+            "0": {
+              "count": 28000,
+              "teacher_correct": 25773,
+              "student_correct": 25862,
+              "decision_changed": 882,
+              "lost": 371,
+              "gained": 460,
+              "net_correct_delta": 89,
+              "both_wrong_changed": 51
+            },
+            "1": {
+              "count": 28000,
+              "teacher_correct": 14156,
+              "student_correct": 13866,
+              "decision_changed": 2187,
+              "lost": 1081,
+              "gained": 791,
+              "net_correct_delta": -290,
+              "both_wrong_changed": 315
+            },
+            "2": {
+              "count": 28000,
+              "teacher_correct": 20455,
+              "student_correct": 20126,
+              "decision_changed": 1296,
+              "lost": 739,
+              "gained": 410,
+              "net_correct_delta": -329,
+              "both_wrong_changed": 147
+            },
+            "3": {
+              "count": 28000,
+              "teacher_correct": 19311,
+              "student_correct": 19213,
+              "decision_changed": 1633,
+              "lost": 674,
+              "gained": 576,
+              "net_correct_delta": -98,
+              "both_wrong_changed": 383
+            },
+            "4": {
+              "count": 28000,
+              "teacher_correct": 27871,
+              "student_correct": 27842,
+              "decision_changed": 82,
+              "lost": 50,
+              "gained": 21,
+              "net_correct_delta": -29,
+              "both_wrong_changed": 11
+            },
+            "5": {
+              "count": 28000,
+              "teacher_correct": 27428,
+              "student_correct": 27473,
+              "decision_changed": 319,
+              "lost": 124,
+              "gained": 169,
+              "net_correct_delta": 45,
+              "both_wrong_changed": 26
+            }
+          },
+          "RX": {
+            "1-1": {
+              "count": 24000,
+              "teacher_correct": 18057,
+              "student_correct": 17836,
+              "decision_changed": 776,
+              "lost": 425,
+              "gained": 204,
+              "net_correct_delta": -221,
+              "both_wrong_changed": 147
+            },
+            "14-7": {
+              "count": 24000,
+              "teacher_correct": 18598,
+              "student_correct": 18371,
+              "decision_changed": 1379,
+              "lost": 644,
+              "gained": 417,
+              "net_correct_delta": -227,
+              "both_wrong_changed": 318
+            },
+            "2-1": {
+              "count": 24000,
+              "teacher_correct": 20511,
+              "student_correct": 20493,
+              "decision_changed": 893,
+              "lost": 419,
+              "gained": 401,
+              "net_correct_delta": -18,
+              "both_wrong_changed": 73
+            },
+            "20-1": {
+              "count": 24000,
+              "teacher_correct": 18139,
+              "student_correct": 18170,
+              "decision_changed": 888,
+              "lost": 374,
+              "gained": 405,
+              "net_correct_delta": 31,
+              "both_wrong_changed": 109
+            },
+            "7-14": {
+              "count": 24000,
+              "teacher_correct": 21099,
+              "student_correct": 21114,
+              "decision_changed": 680,
+              "lost": 309,
+              "gained": 324,
+              "net_correct_delta": 15,
+              "both_wrong_changed": 47
+            },
+            "7-7": {
+              "count": 24000,
+              "teacher_correct": 20052,
+              "student_correct": 19813,
+              "decision_changed": 898,
+              "lost": 481,
+              "gained": 242,
+              "net_correct_delta": -239,
+              "both_wrong_changed": 175
+            },
+            "8-8": {
+              "count": 24000,
+              "teacher_correct": 18538,
+              "student_correct": 18585,
+              "decision_changed": 885,
+              "lost": 387,
+              "gained": 434,
+              "net_correct_delta": 47,
+              "both_wrong_changed": 64
+            }
+          },
+          "day": {
+            "2021_03_01": {
+              "count": 42000,
+              "teacher_correct": 33049,
+              "student_correct": 33137,
+              "decision_changed": 1517,
+              "lost": 585,
+              "gained": 673,
+              "net_correct_delta": 88,
+              "both_wrong_changed": 259
+            },
+            "2021_03_08": {
+              "count": 42000,
+              "teacher_correct": 34369,
+              "student_correct": 34130,
+              "decision_changed": 1553,
+              "lost": 775,
+              "gained": 536,
+              "net_correct_delta": -239,
+              "both_wrong_changed": 242
+            },
+            "2021_03_15": {
+              "count": 42000,
+              "teacher_correct": 33357,
+              "student_correct": 32939,
+              "decision_changed": 1579,
+              "lost": 889,
+              "gained": 471,
+              "net_correct_delta": -418,
+              "both_wrong_changed": 219
+            },
+            "2021_03_23": {
+              "count": 42000,
+              "teacher_correct": 34219,
+              "student_correct": 34176,
+              "decision_changed": 1750,
+              "lost": 790,
+              "gained": 747,
+              "net_correct_delta": -43,
+              "both_wrong_changed": 213
+            }
+          }
+        }
+      },
+      "practical_mid_urban": {
+        "count": 168000,
+        "teacher_correct": 123791,
+        "student_correct": 123841,
+        "teacher_accuracy": 73.68511904761905,
+        "student_accuracy": 73.71488095238095,
+        "decision_changed": 11808,
+        "lost": 4661,
+        "gained": 4711,
+        "net_correct_delta": 50,
+        "both_wrong_changed": 2436,
+        "confidence_bins": [
+          {
+            "teacher_confidence_low": 0.0,
+            "teacher_confidence_high": 0.6,
+            "count": 13461,
+            "decision_changed": 5439,
+            "lost": 1998,
+            "gained": 2191
+          },
+          {
+            "teacher_confidence_low": 0.6,
+            "teacher_confidence_high": 0.9,
+            "count": 35162,
+            "decision_changed": 5163,
+            "lost": 2128,
+            "gained": 2097
+          },
+          {
+            "teacher_confidence_low": 0.9,
+            "teacher_confidence_high": 0.99,
+            "count": 45997,
+            "decision_changed": 1112,
+            "lost": 494,
+            "gained": 396
+          },
+          {
+            "teacher_confidence_low": 0.99,
+            "teacher_confidence_high": 1.0,
+            "count": 73380,
+            "decision_changed": 94,
+            "lost": 41,
+            "gained": 27
+          }
+        ],
+        "cases": {
+          "all": {
+            "count": 168000,
+            "teacher_confidence_mean": 0.9009061471578373,
+            "teacher_logit_margin_mean": 4.594771058185364,
+            "logit_max_absolute_change_mean": 1.0113749268626075,
+            "feature_cosine_distance_to_R17_mean": 0.008556254247582332,
+            "saved_IQ_NMSE_to_R17_mean": 0.011526611304028172
+          },
+          "decision_changed": {
+            "count": 11808,
+            "teacher_confidence_mean": 0.6473745946242057,
+            "teacher_logit_margin_mean": 1.0565434794363169,
+            "logit_max_absolute_change_mean": 1.8876653062987336,
+            "feature_cosine_distance_to_R17_mean": 0.02073971578622606,
+            "saved_IQ_NMSE_to_R17_mean": 0.028083157551310505
+          },
+          "R17_correct_student_wrong": {
+            "count": 4661,
+            "teacher_confidence_mean": 0.6623467713593638,
+            "teacher_logit_margin_mean": 1.094038902434431,
+            "logit_max_absolute_change_mean": 1.7771867527841252,
+            "feature_cosine_distance_to_R17_mean": 0.018179939096371805,
+            "saved_IQ_NMSE_to_R17_mean": 0.023608826942144064
+          },
+          "R17_wrong_student_correct": {
+            "count": 4711,
+            "teacher_confidence_mean": 0.645359482490878,
+            "teacher_logit_margin_mean": 0.9905582383366761,
+            "logit_max_absolute_change_mean": 1.8689500121285099,
+            "feature_cosine_distance_to_R17_mean": 0.02065762740527663,
+            "saved_IQ_NMSE_to_R17_mean": 0.02571224002227148
+          },
+          "decision_unchanged": {
+            "count": 156192,
+            "teacher_confidence_mean": 0.9200729455362249,
+            "teacher_logit_margin_mean": 4.862258453505667,
+            "logit_max_absolute_change_mean": 0.9451280204885182,
+            "feature_cosine_distance_to_R17_mean": 0.007635193541218976,
+            "saved_IQ_NMSE_to_R17_mean": 0.010274948619076895
+          }
+        },
+        "groups": {
+          "TX": {
+            "0": {
+              "count": 28000,
+              "teacher_correct": 23637,
+              "student_correct": 23496,
+              "decision_changed": 1513,
+              "lost": 699,
+              "gained": 558,
+              "net_correct_delta": -141,
+              "both_wrong_changed": 256
+            },
+            "1": {
+              "count": 28000,
+              "teacher_correct": 10434,
+              "student_correct": 10199,
+              "decision_changed": 2765,
+              "lost": 1187,
+              "gained": 952,
+              "net_correct_delta": -235,
+              "both_wrong_changed": 626
+            },
+            "2": {
+              "count": 28000,
+              "teacher_correct": 19104,
+              "student_correct": 18764,
+              "decision_changed": 3107,
+              "lost": 1340,
+              "gained": 1000,
+              "net_correct_delta": -340,
+              "both_wrong_changed": 767
+            },
+            "3": {
+              "count": 28000,
+              "teacher_correct": 17930,
+              "student_correct": 18367,
+              "decision_changed": 2486,
+              "lost": 774,
+              "gained": 1211,
+              "net_correct_delta": 437,
+              "both_wrong_changed": 501
+            },
+            "4": {
+              "count": 28000,
+              "teacher_correct": 27454,
+              "student_correct": 27490,
+              "decision_changed": 248,
+              "lost": 72,
+              "gained": 108,
+              "net_correct_delta": 36,
+              "both_wrong_changed": 68
+            },
+            "5": {
+              "count": 28000,
+              "teacher_correct": 25232,
+              "student_correct": 25525,
+              "decision_changed": 1689,
+              "lost": 589,
+              "gained": 882,
+              "net_correct_delta": 293,
+              "both_wrong_changed": 218
+            }
+          },
+          "RX": {
+            "1-1": {
+              "count": 24000,
+              "teacher_correct": 17235,
+              "student_correct": 17104,
+              "decision_changed": 1482,
+              "lost": 682,
+              "gained": 551,
+              "net_correct_delta": -131,
+              "both_wrong_changed": 249
+            },
+            "14-7": {
+              "count": 24000,
+              "teacher_correct": 16050,
+              "student_correct": 16125,
+              "decision_changed": 2259,
+              "lost": 798,
+              "gained": 873,
+              "net_correct_delta": 75,
+              "both_wrong_changed": 588
+            },
+            "2-1": {
+              "count": 24000,
+              "teacher_correct": 19088,
+              "student_correct": 19206,
+              "decision_changed": 1649,
+              "lost": 632,
+              "gained": 750,
+              "net_correct_delta": 118,
+              "both_wrong_changed": 267
+            },
+            "20-1": {
+              "count": 24000,
+              "teacher_correct": 16284,
+              "student_correct": 16315,
+              "decision_changed": 1755,
+              "lost": 678,
+              "gained": 709,
+              "net_correct_delta": 31,
+              "both_wrong_changed": 368
+            },
+            "7-14": {
+              "count": 24000,
+              "teacher_correct": 18869,
+              "student_correct": 18892,
+              "decision_changed": 1596,
+              "lost": 653,
+              "gained": 676,
+              "net_correct_delta": 23,
+              "both_wrong_changed": 267
+            },
+            "7-7": {
+              "count": 24000,
+              "teacher_correct": 18513,
+              "student_correct": 18482,
+              "decision_changed": 1628,
+              "lost": 615,
+              "gained": 584,
+              "net_correct_delta": -31,
+              "both_wrong_changed": 429
+            },
+            "8-8": {
+              "count": 24000,
+              "teacher_correct": 17752,
+              "student_correct": 17717,
+              "decision_changed": 1439,
+              "lost": 603,
+              "gained": 568,
+              "net_correct_delta": -35,
+              "both_wrong_changed": 268
+            }
+          },
+          "day": {
+            "2021_03_01": {
+              "count": 42000,
+              "teacher_correct": 30341,
+              "student_correct": 30565,
+              "decision_changed": 2821,
+              "lost": 1001,
+              "gained": 1225,
+              "net_correct_delta": 224,
+              "both_wrong_changed": 595
+            },
+            "2021_03_08": {
+              "count": 42000,
+              "teacher_correct": 31923,
+              "student_correct": 31881,
+              "decision_changed": 2763,
+              "lost": 1107,
+              "gained": 1065,
+              "net_correct_delta": -42,
+              "both_wrong_changed": 591
+            },
+            "2021_03_15": {
+              "count": 42000,
+              "teacher_correct": 30560,
+              "student_correct": 30226,
+              "decision_changed": 2910,
+              "lost": 1316,
+              "gained": 982,
+              "net_correct_delta": -334,
+              "both_wrong_changed": 612
+            },
+            "2021_03_23": {
+              "count": 42000,
+              "teacher_correct": 30967,
+              "student_correct": 31169,
+              "decision_changed": 3314,
+              "lost": 1237,
+              "gained": 1439,
+              "net_correct_delta": 202,
+              "both_wrong_changed": 638
+            }
+          }
+        }
+      },
+      "practical_low_urban": {
+        "count": 168000,
+        "teacher_correct": 112924,
+        "student_correct": 113159,
+        "teacher_accuracy": 67.21666666666667,
+        "student_accuracy": 67.35654761904762,
+        "decision_changed": 17320,
+        "lost": 6307,
+        "gained": 6542,
+        "net_correct_delta": 235,
+        "both_wrong_changed": 4471,
+        "confidence_bins": [
+          {
+            "teacher_confidence_low": 0.0,
+            "teacher_confidence_high": 0.6,
+            "count": 15183,
+            "decision_changed": 6964,
+            "lost": 2314,
+            "gained": 2704
+          },
+          {
+            "teacher_confidence_low": 0.6,
+            "teacher_confidence_high": 0.9,
+            "count": 39032,
+            "decision_changed": 8192,
+            "lost": 3087,
+            "gained": 3129
+          },
+          {
+            "teacher_confidence_low": 0.9,
+            "teacher_confidence_high": 0.99,
+            "count": 46415,
+            "decision_changed": 1961,
+            "lost": 802,
+            "gained": 668
+          },
+          {
+            "teacher_confidence_low": 0.99,
+            "teacher_confidence_high": 1.0,
+            "count": 67370,
+            "decision_changed": 203,
+            "lost": 104,
+            "gained": 41
+          }
+        ],
+        "cases": {
+          "all": {
+            "count": 168000,
+            "teacher_confidence_mean": 0.8900758368117381,
+            "teacher_logit_margin_mean": 4.37792471445099,
+            "logit_max_absolute_change_mean": 1.3538938807802263,
+            "feature_cosine_distance_to_R17_mean": 0.013623493852379561,
+            "saved_IQ_NMSE_to_R17_mean": 0.019487887038112297
+          },
+          "decision_changed": {
+            "count": 17320,
+            "teacher_confidence_mean": 0.6691022295226445,
+            "teacher_logit_margin_mean": 1.2218545862075638,
+            "logit_max_absolute_change_mean": 2.2345938298248473,
+            "feature_cosine_distance_to_R17_mean": 0.027388696163912984,
+            "saved_IQ_NMSE_to_R17_mean": 0.03806928946760782
+          },
+          "R17_correct_student_wrong": {
+            "count": 6307,
+            "teacher_confidence_mean": 0.6862530377372387,
+            "teacher_logit_margin_mean": 1.2854106260003766,
+            "logit_max_absolute_change_mean": 2.1257338724184005,
+            "feature_cosine_distance_to_R17_mean": 0.024663847488768126,
+            "saved_IQ_NMSE_to_R17_mean": 0.03146011764830987
+          },
+          "R17_wrong_student_correct": {
+            "count": 6542,
+            "teacher_confidence_mean": 0.6624718340060203,
+            "teacher_logit_margin_mean": 1.1304775851467486,
+            "logit_max_absolute_change_mean": 2.174066853622679,
+            "feature_cosine_distance_to_R17_mean": 0.026711971804992945,
+            "saved_IQ_NMSE_to_R17_mean": 0.035616051499197894
+          },
+          "decision_unchanged": {
+            "count": 150680,
+            "teacher_confidence_mean": 0.9154757762744878,
+            "teacher_logit_margin_mean": 4.7407010259799005,
+            "logit_max_absolute_change_mean": 1.252661314298591,
+            "feature_cosine_distance_to_R17_mean": 0.012041244688351431,
+            "saved_IQ_NMSE_to_R17_mean": 0.017352036957949953
+          }
+        },
+        "groups": {
+          "TX": {
+            "0": {
+              "count": 28000,
+              "teacher_correct": 21257,
+              "student_correct": 20772,
+              "decision_changed": 2347,
+              "lost": 1136,
+              "gained": 651,
+              "net_correct_delta": -485,
+              "both_wrong_changed": 560
+            },
+            "1": {
+              "count": 28000,
+              "teacher_correct": 7907,
+              "student_correct": 7528,
+              "decision_changed": 3328,
+              "lost": 1333,
+              "gained": 954,
+              "net_correct_delta": -379,
+              "both_wrong_changed": 1041
+            },
+            "2": {
+              "count": 28000,
+              "teacher_correct": 17278,
+              "student_correct": 16985,
+              "decision_changed": 4613,
+              "lost": 1732,
+              "gained": 1439,
+              "net_correct_delta": -293,
+              "both_wrong_changed": 1442
+            },
+            "3": {
+              "count": 28000,
+              "teacher_correct": 17151,
+              "student_correct": 17851,
+              "decision_changed": 3354,
+              "lost": 1002,
+              "gained": 1702,
+              "net_correct_delta": 700,
+              "both_wrong_changed": 650
+            },
+            "4": {
+              "count": 28000,
+              "teacher_correct": 26448,
+              "student_correct": 26589,
+              "decision_changed": 665,
+              "lost": 137,
+              "gained": 278,
+              "net_correct_delta": 141,
+              "both_wrong_changed": 250
+            },
+            "5": {
+              "count": 28000,
+              "teacher_correct": 22883,
+              "student_correct": 23434,
+              "decision_changed": 3013,
+              "lost": 967,
+              "gained": 1518,
+              "net_correct_delta": 551,
+              "both_wrong_changed": 528
+            }
+          },
+          "RX": {
+            "1-1": {
+              "count": 24000,
+              "teacher_correct": 15940,
+              "student_correct": 15978,
+              "decision_changed": 2213,
+              "lost": 820,
+              "gained": 858,
+              "net_correct_delta": 38,
+              "both_wrong_changed": 535
+            },
+            "14-7": {
+              "count": 24000,
+              "teacher_correct": 14258,
+              "student_correct": 14459,
+              "decision_changed": 3041,
+              "lost": 1013,
+              "gained": 1214,
+              "net_correct_delta": 201,
+              "both_wrong_changed": 814
+            },
+            "2-1": {
+              "count": 24000,
+              "teacher_correct": 17604,
+              "student_correct": 17669,
+              "decision_changed": 2460,
+              "lost": 909,
+              "gained": 974,
+              "net_correct_delta": 65,
+              "both_wrong_changed": 577
+            },
+            "20-1": {
+              "count": 24000,
+              "teacher_correct": 14614,
+              "student_correct": 14596,
+              "decision_changed": 2641,
+              "lost": 968,
+              "gained": 950,
+              "net_correct_delta": -18,
+              "both_wrong_changed": 723
+            },
+            "7-14": {
+              "count": 24000,
+              "teacher_correct": 16930,
+              "student_correct": 16928,
+              "decision_changed": 2461,
+              "lost": 945,
+              "gained": 943,
+              "net_correct_delta": -2,
+              "both_wrong_changed": 573
+            },
+            "7-7": {
+              "count": 24000,
+              "teacher_correct": 16745,
+              "student_correct": 16791,
+              "decision_changed": 2498,
+              "lost": 866,
+              "gained": 912,
+              "net_correct_delta": 46,
+              "both_wrong_changed": 720
+            },
+            "8-8": {
+              "count": 24000,
+              "teacher_correct": 16833,
+              "student_correct": 16738,
+              "decision_changed": 2006,
+              "lost": 786,
+              "gained": 691,
+              "net_correct_delta": -95,
+              "both_wrong_changed": 529
+            }
+          },
+          "day": {
+            "2021_03_01": {
+              "count": 42000,
+              "teacher_correct": 27697,
+              "student_correct": 27900,
+              "decision_changed": 4277,
+              "lost": 1514,
+              "gained": 1717,
+              "net_correct_delta": 203,
+              "both_wrong_changed": 1046
+            },
+            "2021_03_08": {
+              "count": 42000,
+              "teacher_correct": 29302,
+              "student_correct": 29255,
+              "decision_changed": 3930,
+              "lost": 1462,
+              "gained": 1415,
+              "net_correct_delta": -47,
+              "both_wrong_changed": 1053
+            },
+            "2021_03_15": {
+              "count": 42000,
+              "teacher_correct": 27978,
+              "student_correct": 27849,
+              "decision_changed": 4363,
+              "lost": 1655,
+              "gained": 1526,
+              "net_correct_delta": -129,
+              "both_wrong_changed": 1182
+            },
+            "2021_03_23": {
+              "count": 42000,
+              "teacher_correct": 27947,
+              "student_correct": 28155,
+              "decision_changed": 4750,
+              "lost": 1676,
+              "gained": 1884,
+              "net_correct_delta": 208,
+              "both_wrong_changed": 1190
+            }
+          }
+        }
+      }
+    },
+    "activation_task": {
+      "clean": {
+        "count": 168000,
+        "teacher_correct": 142106,
+        "student_correct": 142106,
+        "teacher_accuracy": 84.58690476190476,
+        "student_accuracy": 84.58690476190476,
+        "decision_changed": 0,
+        "lost": 0,
+        "gained": 0,
+        "net_correct_delta": 0,
+        "both_wrong_changed": 0,
+        "confidence_bins": [
+          {
+            "teacher_confidence_low": 0.0,
+            "teacher_confidence_high": 0.6,
+            "count": 10532,
+            "decision_changed": 0,
+            "lost": 0,
+            "gained": 0
+          },
+          {
+            "teacher_confidence_low": 0.6,
+            "teacher_confidence_high": 0.9,
+            "count": 29521,
+            "decision_changed": 0,
+            "lost": 0,
+            "gained": 0
+          },
+          {
+            "teacher_confidence_low": 0.9,
+            "teacher_confidence_high": 0.99,
+            "count": 43910,
+            "decision_changed": 0,
+            "lost": 0,
+            "gained": 0
+          },
+          {
+            "teacher_confidence_low": 0.99,
+            "teacher_confidence_high": 1.0,
+            "count": 84037,
+            "decision_changed": 0,
+            "lost": 0,
+            "gained": 0
+          }
+        ],
+        "cases": {
+          "all": {
+            "count": 168000,
+            "teacher_confidence_mean": 0.9182541065733039,
+            "teacher_logit_margin_mean": 4.980418340911202,
+            "logit_max_absolute_change_mean": 1.594999689924797e-05,
+            "feature_cosine_distance_to_R17_mean": 6.431393427402491e-08,
+            "saved_IQ_NMSE_to_R17_mean": 2.1462411677744667e-08
+          },
+          "decision_changed": {
+            "count": 0,
+            "teacher_confidence_mean": null,
+            "teacher_logit_margin_mean": null,
+            "logit_max_absolute_change_mean": null,
+            "feature_cosine_distance_to_R17_mean": null,
+            "saved_IQ_NMSE_to_R17_mean": null
+          },
+          "R17_correct_student_wrong": {
+            "count": 0,
+            "teacher_confidence_mean": null,
+            "teacher_logit_margin_mean": null,
+            "logit_max_absolute_change_mean": null,
+            "feature_cosine_distance_to_R17_mean": null,
+            "saved_IQ_NMSE_to_R17_mean": null
+          },
+          "R17_wrong_student_correct": {
+            "count": 0,
+            "teacher_confidence_mean": null,
+            "teacher_logit_margin_mean": null,
+            "logit_max_absolute_change_mean": null,
+            "feature_cosine_distance_to_R17_mean": null,
+            "saved_IQ_NMSE_to_R17_mean": null
+          },
+          "decision_unchanged": {
+            "count": 168000,
+            "teacher_confidence_mean": 0.9182541065733039,
+            "teacher_logit_margin_mean": 4.980418340911202,
+            "logit_max_absolute_change_mean": 1.594999689924797e-05,
+            "feature_cosine_distance_to_R17_mean": 6.431393427402491e-08,
+            "saved_IQ_NMSE_to_R17_mean": 2.1462411677744667e-08
+          }
+        },
+        "groups": {
+          "TX": {
+            "0": {
+              "count": 28000,
+              "teacher_correct": 26507,
+              "student_correct": 26507,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "1": {
+              "count": 28000,
+              "teacher_correct": 17827,
+              "student_correct": 17827,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "2": {
+              "count": 28000,
+              "teacher_correct": 21220,
+              "student_correct": 21220,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "3": {
+              "count": 28000,
+              "teacher_correct": 20840,
+              "student_correct": 20840,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "4": {
+              "count": 28000,
+              "teacher_correct": 27924,
+              "student_correct": 27924,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "5": {
+              "count": 28000,
+              "teacher_correct": 27788,
+              "student_correct": 27788,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            }
+          },
+          "RX": {
+            "1-1": {
+              "count": 24000,
+              "teacher_correct": 19349,
+              "student_correct": 19349,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "14-7": {
+              "count": 24000,
+              "teacher_correct": 17898,
+              "student_correct": 17898,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "2-1": {
+              "count": 24000,
+              "teacher_correct": 21942,
+              "student_correct": 21942,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "20-1": {
+              "count": 24000,
+              "teacher_correct": 20004,
+              "student_correct": 20004,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "7-14": {
+              "count": 24000,
+              "teacher_correct": 22020,
+              "student_correct": 22020,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "7-7": {
+              "count": 24000,
+              "teacher_correct": 21396,
+              "student_correct": 21396,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "8-8": {
+              "count": 24000,
+              "teacher_correct": 19497,
+              "student_correct": 19497,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            }
+          },
+          "day": {
+            "2021_03_01": {
+              "count": 42000,
+              "teacher_correct": 34467,
+              "student_correct": 34467,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "2021_03_08": {
+              "count": 42000,
+              "teacher_correct": 36151,
+              "student_correct": 36151,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "2021_03_15": {
+              "count": 42000,
+              "teacher_correct": 34760,
+              "student_correct": 34760,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            },
+            "2021_03_23": {
+              "count": 42000,
+              "teacher_correct": 36728,
+              "student_correct": 36728,
+              "decision_changed": 0,
+              "lost": 0,
+              "gained": 0,
+              "net_correct_delta": 0,
+              "both_wrong_changed": 0
+            }
+          }
+        }
+      },
+      "practical_high": {
+        "count": 168000,
+        "teacher_correct": 136616,
+        "student_correct": 136078,
+        "teacher_accuracy": 81.31904761904762,
+        "student_accuracy": 80.99880952380953,
+        "decision_changed": 3743,
+        "lost": 1860,
+        "gained": 1322,
+        "net_correct_delta": -538,
+        "both_wrong_changed": 561,
+        "confidence_bins": [
+          {
+            "teacher_confidence_low": 0.0,
+            "teacher_confidence_high": 0.6,
+            "count": 11677,
+            "decision_changed": 2959,
+            "lost": 1438,
+            "gained": 1001
+          },
+          {
+            "teacher_confidence_low": 0.6,
+            "teacher_confidence_high": 0.9,
+            "count": 30918,
+            "decision_changed": 766,
+            "lost": 413,
+            "gained": 313
+          },
+          {
+            "teacher_confidence_low": 0.9,
+            "teacher_confidence_high": 0.99,
+            "count": 44621,
+            "decision_changed": 17,
+            "lost": 8,
+            "gained": 8
+          },
+          {
+            "teacher_confidence_low": 0.99,
+            "teacher_confidence_high": 1.0,
+            "count": 80784,
+            "decision_changed": 1,
+            "lost": 1,
+            "gained": 0
+          }
+        ],
+        "cases": {
+          "all": {
+            "count": 168000,
+            "teacher_confidence_mean": 0.9125219898752974,
+            "teacher_logit_margin_mean": 4.83322823644027,
+            "logit_max_absolute_change_mean": 0.35311597477143264,
+            "feature_cosine_distance_to_R17_mean": 0.0009848409399607566,
+            "saved_IQ_NMSE_to_R17_mean": 0.0006425176541492649
+          },
+          "decision_changed": {
+            "count": 3743,
+            "teacher_confidence_mean": 0.5300272636890595,
+            "teacher_logit_margin_mean": 0.35830207655145113,
+            "logit_max_absolute_change_mean": 0.6018009043412869,
+            "feature_cosine_distance_to_R17_mean": 0.001959657364181429,
+            "saved_IQ_NMSE_to_R17_mean": 0.0019612318403287978
+          },
+          "R17_correct_student_wrong": {
+            "count": 1860,
+            "teacher_confidence_mean": 0.544369165413585,
+            "teacher_logit_margin_mean": 0.35238379284899723,
+            "logit_max_absolute_change_mean": 0.5482355725200426,
+            "feature_cosine_distance_to_R17_mean": 0.0016725571432118906,
+            "saved_IQ_NMSE_to_R17_mean": 0.001248676031220223
+          },
+          "R17_wrong_student_correct": {
+            "count": 1322,
+            "teacher_confidence_mean": 0.5484096482179448,
+            "teacher_logit_margin_mean": 0.3703266579697244,
+            "logit_max_absolute_change_mean": 0.6145424783080478,
+            "feature_cosine_distance_to_R17_mean": 0.002135689456737682,
+            "saved_IQ_NMSE_to_R17_mean": 0.002226079309430512
+          },
+          "decision_unchanged": {
+            "count": 164257,
+            "teacher_confidence_mean": 0.9212380735741054,
+            "teacher_logit_margin_mean": 4.935200442291246,
+            "logit_max_absolute_change_mean": 0.34744907660952806,
+            "feature_cosine_distance_to_R17_mean": 0.0009626273486017399,
+            "saved_IQ_NMSE_to_R17_mean": 0.0006124675059128428
+          }
+        },
+        "groups": {
+          "TX": {
+            "0": {
+              "count": 28000,
+              "teacher_correct": 26017,
+              "student_correct": 26173,
+              "decision_changed": 470,
+              "lost": 141,
+              "gained": 297,
+              "net_correct_delta": 156,
+              "both_wrong_changed": 32
+            },
+            "1": {
+              "count": 28000,
+              "teacher_correct": 14847,
+              "student_correct": 14887,
+              "decision_changed": 1206,
+              "lost": 529,
+              "gained": 569,
+              "net_correct_delta": 40,
+              "both_wrong_changed": 108
+            },
+            "2": {
+              "count": 28000,
+              "teacher_correct": 20531,
+              "student_correct": 19992,
+              "decision_changed": 772,
+              "lost": 633,
+              "gained": 94,
+              "net_correct_delta": -539,
+              "both_wrong_changed": 45
+            },
+            "3": {
+              "count": 28000,
+              "teacher_correct": 19499,
+              "student_correct": 19319,
+              "decision_changed": 1209,
+              "lost": 511,
+              "gained": 331,
+              "net_correct_delta": -180,
+              "both_wrong_changed": 367
+            },
+            "4": {
+              "count": 28000,
+              "teacher_correct": 27884,
+              "student_correct": 27871,
+              "decision_changed": 35,
+              "lost": 22,
+              "gained": 9,
+              "net_correct_delta": -13,
+              "both_wrong_changed": 4
+            },
+            "5": {
+              "count": 28000,
+              "teacher_correct": 27838,
+              "student_correct": 27836,
+              "decision_changed": 51,
+              "lost": 24,
+              "gained": 22,
+              "net_correct_delta": -2,
+              "both_wrong_changed": 5
+            }
+          },
+          "RX": {
+            "1-1": {
+              "count": 24000,
+              "teacher_correct": 18245,
+              "student_correct": 17880,
+              "decision_changed": 499,
+              "lost": 411,
+              "gained": 46,
+              "net_correct_delta": -365,
+              "both_wrong_changed": 42
+            },
+            "14-7": {
+              "count": 24000,
+              "teacher_correct": 18951,
+              "student_correct": 19139,
+              "decision_changed": 914,
+              "lost": 203,
+              "gained": 391,
+              "net_correct_delta": 188,
+              "both_wrong_changed": 320
+            },
+            "2-1": {
+              "count": 24000,
+              "teacher_correct": 20804,
+              "student_correct": 20711,
+              "decision_changed": 518,
+              "lost": 288,
+              "gained": 195,
+              "net_correct_delta": -93,
+              "both_wrong_changed": 35
+            },
+            "20-1": {
+              "count": 24000,
+              "teacher_correct": 18481,
+              "student_correct": 18403,
+              "decision_changed": 438,
+              "lost": 238,
+              "gained": 160,
+              "net_correct_delta": -78,
+              "both_wrong_changed": 40
+            },
+            "7-14": {
+              "count": 24000,
+              "teacher_correct": 21350,
+              "student_correct": 21194,
+              "decision_changed": 434,
+              "lost": 284,
+              "gained": 128,
+              "net_correct_delta": -156,
+              "both_wrong_changed": 22
+            },
+            "7-7": {
+              "count": 24000,
+              "teacher_correct": 20308,
+              "student_correct": 20176,
+              "decision_changed": 447,
+              "lost": 246,
+              "gained": 114,
+              "net_correct_delta": -132,
+              "both_wrong_changed": 87
+            },
+            "8-8": {
+              "count": 24000,
+              "teacher_correct": 18477,
+              "student_correct": 18575,
+              "decision_changed": 493,
+              "lost": 190,
+              "gained": 288,
+              "net_correct_delta": 98,
+              "both_wrong_changed": 15
+            }
+          },
+          "day": {
+            "2021_03_01": {
+              "count": 42000,
+              "teacher_correct": 33580,
+              "student_correct": 33475,
+              "decision_changed": 935,
+              "lost": 376,
+              "gained": 271,
+              "net_correct_delta": -105,
+              "both_wrong_changed": 288
+            },
+            "2021_03_08": {
+              "count": 42000,
+              "teacher_correct": 34668,
+              "student_correct": 34616,
+              "decision_changed": 828,
+              "lost": 385,
+              "gained": 333,
+              "net_correct_delta": -52,
+              "both_wrong_changed": 110
+            },
+            "2021_03_15": {
+              "count": 42000,
+              "teacher_correct": 33712,
+              "student_correct": 33406,
+              "decision_changed": 953,
+              "lost": 585,
+              "gained": 279,
+              "net_correct_delta": -306,
+              "both_wrong_changed": 89
+            },
+            "2021_03_23": {
+              "count": 42000,
+              "teacher_correct": 34656,
+              "student_correct": 34581,
+              "decision_changed": 1027,
+              "lost": 514,
+              "gained": 439,
+              "net_correct_delta": -75,
+              "both_wrong_changed": 74
+            }
+          }
+        }
+      },
+      "practical_mid": {
+        "count": 168000,
+        "teacher_correct": 133691,
+        "student_correct": 133177,
+        "teacher_accuracy": 79.57797619047618,
+        "student_accuracy": 79.2720238095238,
+        "decision_changed": 4622,
+        "lost": 2164,
+        "gained": 1650,
+        "net_correct_delta": -514,
+        "both_wrong_changed": 808,
+        "confidence_bins": [
+          {
+            "teacher_confidence_low": 0.0,
+            "teacher_confidence_high": 0.6,
+            "count": 11833,
+            "decision_changed": 3340,
+            "lost": 1532,
+            "gained": 1165
+          },
+          {
+            "teacher_confidence_low": 0.6,
+            "teacher_confidence_high": 0.9,
+            "count": 31295,
+            "decision_changed": 1201,
+            "lost": 589,
+            "gained": 463
+          },
+          {
+            "teacher_confidence_low": 0.9,
+            "teacher_confidence_high": 0.99,
+            "count": 45093,
+            "decision_changed": 75,
+            "lost": 41,
+            "gained": 19
+          },
+          {
+            "teacher_confidence_low": 0.99,
+            "teacher_confidence_high": 1.0,
+            "count": 79779,
+            "decision_changed": 6,
+            "lost": 2,
+            "gained": 3
+          }
+        ],
+        "cases": {
+          "all": {
+            "count": 168000,
+            "teacher_confidence_mean": 0.9113888930955533,
+            "teacher_logit_margin_mean": 4.794932258606312,
+            "logit_max_absolute_change_mean": 0.4403683533911604,
+            "feature_cosine_distance_to_R17_mean": 0.0017408796339170066,
+            "saved_IQ_NMSE_to_R17_mean": 0.0016664282897821635
+          },
+          "decision_changed": {
+            "count": 4622,
+            "teacher_confidence_mean": 0.5523123156781523,
+            "teacher_logit_margin_mean": 0.48372983959576416,
+            "logit_max_absolute_change_mean": 0.8632282068286363,
+            "feature_cosine_distance_to_R17_mean": 0.005210446890772663,
+            "saved_IQ_NMSE_to_R17_mean": 0.005655764394099624
+          },
+          "R17_correct_student_wrong": {
+            "count": 2164,
+            "teacher_confidence_mean": 0.5636305723784398,
+            "teacher_logit_margin_mean": 0.46920546784638917,
+            "logit_max_absolute_change_mean": 0.7525422801478816,
+            "feature_cosine_distance_to_R17_mean": 0.0038872894900740048,
+            "saved_IQ_NMSE_to_R17_mean": 0.003686988897487907
+          },
+          "R17_wrong_student_correct": {
+            "count": 1650,
+            "teacher_confidence_mean": 0.5640164671423921,
+            "teacher_logit_margin_mean": 0.4706721939462604,
+            "logit_max_absolute_change_mean": 0.8958397879553112,
+            "feature_cosine_distance_to_R17_mean": 0.006108742198336703,
+            "saved_IQ_NMSE_to_R17_mean": 0.006715712001159768
+          },
+          "decision_unchanged": {
+            "count": 163378,
+            "teacher_confidence_mean": 0.9215472494276374,
+            "teacher_logit_margin_mean": 4.916897135031943,
+            "logit_max_absolute_change_mean": 0.42840555397760405,
+            "feature_cosine_distance_to_R17_mean": 0.0016427248036388362,
+            "saved_IQ_NMSE_to_R17_mean": 0.0015535690830703946
+          }
+        },
+        "groups": {
+          "TX": {
+            "0": {
+              "count": 28000,
+              "teacher_correct": 25931,
+              "student_correct": 26021,
+              "decision_changed": 549,
+              "lost": 208,
+              "gained": 298,
+              "net_correct_delta": 90,
+              "both_wrong_changed": 43
+            },
+            "1": {
+              "count": 28000,
+              "teacher_correct": 13085,
+              "student_correct": 13032,
+              "decision_changed": 1436,
+              "lost": 646,
+              "gained": 593,
+              "net_correct_delta": -53,
+              "both_wrong_changed": 197
+            },
+            "2": {
+              "count": 28000,
+              "teacher_correct": 20476,
+              "student_correct": 20079,
+              "decision_changed": 1016,
+              "lost": 651,
+              "gained": 254,
+              "net_correct_delta": -397,
+              "both_wrong_changed": 111
+            },
+            "3": {
+              "count": 28000,
+              "teacher_correct": 18873,
+              "student_correct": 18714,
+              "decision_changed": 1344,
+              "lost": 541,
+              "gained": 382,
+              "net_correct_delta": -159,
+              "both_wrong_changed": 421
+            },
+            "4": {
+              "count": 28000,
+              "teacher_correct": 27830,
+              "student_correct": 27798,
+              "decision_changed": 74,
+              "lost": 48,
+              "gained": 16,
+              "net_correct_delta": -32,
+              "both_wrong_changed": 10
+            },
+            "5": {
+              "count": 28000,
+              "teacher_correct": 27496,
+              "student_correct": 27533,
+              "decision_changed": 203,
+              "lost": 70,
+              "gained": 107,
+              "net_correct_delta": 37,
+              "both_wrong_changed": 26
+            }
+          },
+          "RX": {
+            "1-1": {
+              "count": 24000,
+              "teacher_correct": 18262,
+              "student_correct": 17961,
+              "decision_changed": 618,
+              "lost": 422,
+              "gained": 121,
+              "net_correct_delta": -301,
+              "both_wrong_changed": 75
+            },
+            "14-7": {
+              "count": 24000,
+              "teacher_correct": 17908,
+              "student_correct": 18039,
+              "decision_changed": 1029,
+              "lost": 260,
+              "gained": 391,
+              "net_correct_delta": 131,
+              "both_wrong_changed": 378
+            },
+            "2-1": {
+              "count": 24000,
+              "teacher_correct": 20490,
+              "student_correct": 20431,
+              "decision_changed": 612,
+              "lost": 307,
+              "gained": 248,
+              "net_correct_delta": -59,
+              "both_wrong_changed": 57
+            },
+            "20-1": {
+              "count": 24000,
+              "teacher_correct": 17956,
+              "student_correct": 17889,
+              "decision_changed": 639,
+              "lost": 314,
+              "gained": 247,
+              "net_correct_delta": -67,
+              "both_wrong_changed": 78
+            },
+            "7-14": {
+              "count": 24000,
+              "teacher_correct": 20738,
+              "student_correct": 20611,
+              "decision_changed": 552,
+              "lost": 317,
+              "gained": 190,
+              "net_correct_delta": -127,
+              "both_wrong_changed": 45
+            },
+            "7-7": {
+              "count": 24000,
+              "teacher_correct": 20000,
+              "student_correct": 19827,
+              "decision_changed": 606,
+              "lost": 321,
+              "gained": 148,
+              "net_correct_delta": -173,
+              "both_wrong_changed": 137
+            },
+            "8-8": {
+              "count": 24000,
+              "teacher_correct": 18337,
+              "student_correct": 18419,
+              "decision_changed": 566,
+              "lost": 223,
+              "gained": 305,
+              "net_correct_delta": 82,
+              "both_wrong_changed": 38
+            }
+          },
+          "day": {
+            "2021_03_01": {
+              "count": 42000,
+              "teacher_correct": 32746,
+              "student_correct": 32785,
+              "decision_changed": 1150,
+              "lost": 385,
+              "gained": 424,
+              "net_correct_delta": 39,
+              "both_wrong_changed": 341
+            },
+            "2021_03_08": {
+              "count": 42000,
+              "teacher_correct": 34061,
+              "student_correct": 33887,
+              "decision_changed": 1088,
+              "lost": 537,
+              "gained": 363,
+              "net_correct_delta": -174,
+              "both_wrong_changed": 188
+            },
+            "2021_03_15": {
+              "count": 42000,
+              "teacher_correct": 33015,
+              "student_correct": 32706,
+              "decision_changed": 1119,
+              "lost": 641,
+              "gained": 332,
+              "net_correct_delta": -309,
+              "both_wrong_changed": 146
+            },
+            "2021_03_23": {
+              "count": 42000,
+              "teacher_correct": 33869,
+              "student_correct": 33799,
+              "decision_changed": 1265,
+              "lost": 601,
+              "gained": 531,
+              "net_correct_delta": -70,
+              "both_wrong_changed": 133
+            }
+          }
+        }
+      },
+      "practical_low_suburban": {
+        "count": 168000,
+        "teacher_correct": 131034,
+        "student_correct": 130552,
+        "teacher_accuracy": 77.99642857142857,
+        "student_accuracy": 77.7095238095238,
+        "decision_changed": 5778,
+        "lost": 2562,
+        "gained": 2080,
+        "net_correct_delta": -482,
+        "both_wrong_changed": 1136,
+        "confidence_bins": [
+          {
+            "teacher_confidence_low": 0.0,
+            "teacher_confidence_high": 0.6,
+            "count": 11782,
+            "decision_changed": 3788,
+            "lost": 1652,
+            "gained": 1341
+          },
+          {
+            "teacher_confidence_low": 0.6,
+            "teacher_confidence_high": 0.9,
+            "count": 32164,
+            "decision_changed": 1813,
+            "lost": 822,
+            "gained": 689
+          },
+          {
+            "teacher_confidence_low": 0.9,
+            "teacher_confidence_high": 0.99,
+            "count": 45644,
+            "decision_changed": 165,
+            "lost": 79,
+            "gained": 47
+          },
+          {
+            "teacher_confidence_low": 0.99,
+            "teacher_confidence_high": 1.0,
+            "count": 78410,
+            "decision_changed": 12,
+            "lost": 9,
+            "gained": 3
+          }
+        ],
+        "cases": {
+          "all": {
+            "count": 168000,
+            "teacher_confidence_mean": 0.9103934579743611,
+            "teacher_logit_margin_mean": 4.749361090383304,
+            "logit_max_absolute_change_mean": 0.5460921106548825,
+            "feature_cosine_distance_to_R17_mean": 0.002660061195766119,
+            "saved_IQ_NMSE_to_R17_mean": 0.002869399389444989
+          },
+          "decision_changed": {
+            "count": 5778,
+            "teacher_confidence_mean": 0.5755564333331471,
+            "teacher_logit_margin_mean": 0.6177090541761034,
+            "logit_max_absolute_change_mean": 1.0976702053879681,
+            "feature_cosine_distance_to_R17_mean": 0.007816150196368804,
+            "saved_IQ_NMSE_to_R17_mean": 0.009138863751109259
+          },
+          "R17_correct_student_wrong": {
+            "count": 2562,
+            "teacher_confidence_mean": 0.5857408206198664,
+            "teacher_logit_margin_mean": 0.5970996258130398,
+            "logit_max_absolute_change_mean": 0.9576708616264991,
+            "feature_cosine_distance_to_R17_mean": 0.00621707881698395,
+            "saved_IQ_NMSE_to_R17_mean": 0.00630779227206747
+          },
+          "R17_wrong_student_correct": {
+            "count": 2080,
+            "teacher_confidence_mean": 0.5816935493099746,
+            "teacher_logit_margin_mean": 0.5972175250832851,
+            "logit_max_absolute_change_mean": 1.1225277368968818,
+            "feature_cosine_distance_to_R17_mean": 0.008180163405443695,
+            "saved_IQ_NMSE_to_R17_mean": 0.009830612987514985
+          },
+          "decision_unchanged": {
+            "count": 162222,
+            "teacher_confidence_mean": 0.9223196352399418,
+            "teacher_logit_margin_mean": 4.89652168182716,
+            "logit_max_absolute_change_mean": 0.5264460809464103,
+            "feature_cosine_distance_to_R17_mean": 0.0024764123550078845,
+            "saved_IQ_NMSE_to_R17_mean": 0.002646094504277156
+          }
+        },
+        "groups": {
+          "TX": {
+            "0": {
+              "count": 28000,
+              "teacher_correct": 25567,
+              "student_correct": 25588,
+              "decision_changed": 694,
+              "lost": 293,
+              "gained": 314,
+              "net_correct_delta": 21,
+              "both_wrong_changed": 87
+            },
+            "1": {
+              "count": 28000,
+              "teacher_correct": 11939,
+              "student_correct": 11722,
+              "decision_changed": 1662,
+              "lost": 812,
+              "gained": 595,
+              "net_correct_delta": -217,
+              "both_wrong_changed": 255
+            },
+            "2": {
+              "count": 28000,
+              "teacher_correct": 20516,
+              "student_correct": 20229,
+              "decision_changed": 1385,
+              "lost": 731,
+              "gained": 444,
+              "net_correct_delta": -287,
+              "both_wrong_changed": 210
+            },
+            "3": {
+              "count": 28000,
+              "teacher_correct": 18148,
+              "student_correct": 18131,
+              "decision_changed": 1527,
+              "lost": 524,
+              "gained": 507,
+              "net_correct_delta": -17,
+              "both_wrong_changed": 496
+            },
+            "4": {
+              "count": 28000,
+              "teacher_correct": 27733,
+              "student_correct": 27695,
+              "decision_changed": 118,
+              "lost": 62,
+              "gained": 24,
+              "net_correct_delta": -38,
+              "both_wrong_changed": 32
+            },
+            "5": {
+              "count": 28000,
+              "teacher_correct": 27131,
+              "student_correct": 27187,
+              "decision_changed": 392,
+              "lost": 140,
+              "gained": 196,
+              "net_correct_delta": 56,
+              "both_wrong_changed": 56
+            }
+          },
+          "RX": {
+            "1-1": {
+              "count": 24000,
+              "teacher_correct": 18192,
+              "student_correct": 17957,
+              "decision_changed": 784,
+              "lost": 459,
+              "gained": 224,
+              "net_correct_delta": -235,
+              "both_wrong_changed": 101
+            },
+            "14-7": {
+              "count": 24000,
+              "teacher_correct": 17172,
+              "student_correct": 17192,
+              "decision_changed": 1161,
+              "lost": 351,
+              "gained": 371,
+              "net_correct_delta": 20,
+              "both_wrong_changed": 439
+            },
+            "2-1": {
+              "count": 24000,
+              "teacher_correct": 20184,
+              "student_correct": 20098,
+              "decision_changed": 709,
+              "lost": 358,
+              "gained": 272,
+              "net_correct_delta": -86,
+              "both_wrong_changed": 79
+            },
+            "20-1": {
+              "count": 24000,
+              "teacher_correct": 17327,
+              "student_correct": 17310,
+              "decision_changed": 831,
+              "lost": 349,
+              "gained": 332,
+              "net_correct_delta": -17,
+              "both_wrong_changed": 150
+            },
+            "7-14": {
+              "count": 24000,
+              "teacher_correct": 20234,
+              "student_correct": 20120,
+              "decision_changed": 763,
+              "lost": 394,
+              "gained": 280,
+              "net_correct_delta": -114,
+              "both_wrong_changed": 89
+            },
+            "7-7": {
+              "count": 24000,
+              "teacher_correct": 19704,
+              "student_correct": 19566,
+              "decision_changed": 787,
+              "lost": 364,
+              "gained": 226,
+              "net_correct_delta": -138,
+              "both_wrong_changed": 197
+            },
+            "8-8": {
+              "count": 24000,
+              "teacher_correct": 18221,
+              "student_correct": 18309,
+              "decision_changed": 743,
+              "lost": 287,
+              "gained": 375,
+              "net_correct_delta": 88,
+              "both_wrong_changed": 81
+            }
+          },
+          "day": {
+            "2021_03_01": {
+              "count": 42000,
+              "teacher_correct": 32016,
+              "student_correct": 32087,
+              "decision_changed": 1332,
+              "lost": 454,
+              "gained": 525,
+              "net_correct_delta": 71,
+              "both_wrong_changed": 353
+            },
+            "2021_03_08": {
+              "count": 42000,
+              "teacher_correct": 33370,
+              "student_correct": 33206,
+              "decision_changed": 1412,
+              "lost": 656,
+              "gained": 492,
+              "net_correct_delta": -164,
+              "both_wrong_changed": 264
+            },
+            "2021_03_15": {
+              "count": 42000,
+              "teacher_correct": 32511,
+              "student_correct": 32185,
+              "decision_changed": 1380,
+              "lost": 737,
+              "gained": 411,
+              "net_correct_delta": -326,
+              "both_wrong_changed": 232
+            },
+            "2021_03_23": {
+              "count": 42000,
+              "teacher_correct": 33137,
+              "student_correct": 33074,
+              "decision_changed": 1654,
+              "lost": 715,
+              "gained": 652,
+              "net_correct_delta": -63,
+              "both_wrong_changed": 287
+            }
+          }
+        }
+      },
+      "practical_high_urban": {
+        "count": 168000,
+        "teacher_correct": 134994,
+        "student_correct": 134496,
+        "teacher_accuracy": 80.35357142857143,
+        "student_accuracy": 80.05714285714286,
+        "decision_changed": 4650,
+        "lost": 2188,
+        "gained": 1690,
+        "net_correct_delta": -498,
+        "both_wrong_changed": 772,
+        "confidence_bins": [
+          {
+            "teacher_confidence_low": 0.0,
+            "teacher_confidence_high": 0.6,
+            "count": 11839,
+            "decision_changed": 3256,
+            "lost": 1535,
+            "gained": 1115
+          },
+          {
+            "teacher_confidence_low": 0.6,
+            "teacher_confidence_high": 0.9,
+            "count": 31609,
+            "decision_changed": 1291,
+            "lost": 605,
+            "gained": 538
+          },
+          {
+            "teacher_confidence_low": 0.9,
+            "teacher_confidence_high": 0.99,
+            "count": 45111,
+            "decision_changed": 96,
+            "lost": 44,
+            "gained": 35
+          },
+          {
+            "teacher_confidence_low": 0.99,
+            "teacher_confidence_high": 1.0,
+            "count": 79441,
+            "decision_changed": 7,
+            "lost": 4,
+            "gained": 2
+          }
+        ],
+        "cases": {
+          "all": {
+            "count": 168000,
+            "teacher_confidence_mean": 0.9110173159952766,
+            "teacher_logit_margin_mean": 4.802391608487676,
+            "logit_max_absolute_change_mean": 0.43945170934166944,
+            "feature_cosine_distance_to_R17_mean": 0.0018644631548890651,
+            "saved_IQ_NMSE_to_R17_mean": 0.0019416838666255559
+          },
+          "decision_changed": {
+            "count": 4650,
+            "teacher_confidence_mean": 0.5601683647759271,
+            "teacher_logit_margin_mean": 0.5313717089673524,
+            "logit_max_absolute_change_mean": 0.9592805844024624,
+            "feature_cosine_distance_to_R17_mean": 0.006305891126893921,
+            "saved_IQ_NMSE_to_R17_mean": 0.006835909874126557
+          },
+          "R17_correct_student_wrong": {
+            "count": 2188,
+            "teacher_confidence_mean": 0.5692549407391153,
+            "teacher_logit_margin_mean": 0.5090709561294786,
+            "logit_max_absolute_change_mean": 0.8252408689243798,
+            "feature_cosine_distance_to_R17_mean": 0.004845378045125775,
+            "saved_IQ_NMSE_to_R17_mean": 0.004588300427494537
+          },
+          "R17_wrong_student_correct": {
+            "count": 1690,
+            "teacher_confidence_mean": 0.574820749692869,
+            "teacher_logit_margin_mean": 0.5439446014060071,
+            "logit_max_absolute_change_mean": 1.0269899555046618,
+            "feature_cosine_distance_to_R17_mean": 0.0075777376537443965,
+            "saved_IQ_NMSE_to_R17_mean": 0.00813530846893238
+          },
+          "decision_unchanged": {
+            "count": 163350,
+            "teacher_confidence_mean": 0.9210047517049187,
+            "teacher_logit_margin_mean": 4.923972523901019,
+            "logit_max_absolute_change_mean": 0.42465400950063675,
+            "feature_cosine_distance_to_R17_mean": 0.001738031320975244,
+            "saved_IQ_NMSE_to_R17_mean": 0.0018023624651264459
+          }
+        },
+        "groups": {
+          "TX": {
+            "0": {
+              "count": 28000,
+              "teacher_correct": 25773,
+              "student_correct": 25809,
+              "decision_changed": 531,
+              "lost": 227,
+              "gained": 263,
+              "net_correct_delta": 36,
+              "both_wrong_changed": 41
+            },
+            "1": {
+              "count": 28000,
+              "teacher_correct": 14156,
+              "student_correct": 14131,
+              "decision_changed": 1422,
+              "lost": 625,
+              "gained": 600,
+              "net_correct_delta": -25,
+              "both_wrong_changed": 197
+            },
+            "2": {
+              "count": 28000,
+              "teacher_correct": 20455,
+              "student_correct": 20089,
+              "decision_changed": 1037,
+              "lost": 639,
+              "gained": 273,
+              "net_correct_delta": -366,
+              "both_wrong_changed": 125
+            },
+            "3": {
+              "count": 28000,
+              "teacher_correct": 19311,
+              "student_correct": 19173,
+              "decision_changed": 1312,
+              "lost": 535,
+              "gained": 397,
+              "net_correct_delta": -138,
+              "both_wrong_changed": 380
+            },
+            "4": {
+              "count": 28000,
+              "teacher_correct": 27871,
+              "student_correct": 27845,
+              "decision_changed": 63,
+              "lost": 40,
+              "gained": 14,
+              "net_correct_delta": -26,
+              "both_wrong_changed": 9
+            },
+            "5": {
+              "count": 28000,
+              "teacher_correct": 27428,
+              "student_correct": 27449,
+              "decision_changed": 285,
+              "lost": 122,
+              "gained": 143,
+              "net_correct_delta": 21,
+              "both_wrong_changed": 20
+            }
+          },
+          "RX": {
+            "1-1": {
+              "count": 24000,
+              "teacher_correct": 18057,
+              "student_correct": 17776,
+              "decision_changed": 640,
+              "lost": 422,
+              "gained": 141,
+              "net_correct_delta": -281,
+              "both_wrong_changed": 77
+            },
+            "14-7": {
+              "count": 24000,
+              "teacher_correct": 18598,
+              "student_correct": 18781,
+              "decision_changed": 1021,
+              "lost": 248,
+              "gained": 431,
+              "net_correct_delta": 183,
+              "both_wrong_changed": 342
+            },
+            "2-1": {
+              "count": 24000,
+              "teacher_correct": 20511,
+              "student_correct": 20417,
+              "decision_changed": 663,
+              "lost": 351,
+              "gained": 257,
+              "net_correct_delta": -94,
+              "both_wrong_changed": 55
+            },
+            "20-1": {
+              "count": 24000,
+              "teacher_correct": 18139,
+              "student_correct": 18073,
+              "decision_changed": 649,
+              "lost": 310,
+              "gained": 244,
+              "net_correct_delta": -66,
+              "both_wrong_changed": 95
+            },
+            "7-14": {
+              "count": 24000,
+              "teacher_correct": 21099,
+              "student_correct": 20969,
+              "decision_changed": 512,
+              "lost": 302,
+              "gained": 172,
+              "net_correct_delta": -130,
+              "both_wrong_changed": 38
+            },
+            "7-7": {
+              "count": 24000,
+              "teacher_correct": 20052,
+              "student_correct": 19882,
+              "decision_changed": 595,
+              "lost": 325,
+              "gained": 155,
+              "net_correct_delta": -170,
+              "both_wrong_changed": 115
+            },
+            "8-8": {
+              "count": 24000,
+              "teacher_correct": 18538,
+              "student_correct": 18598,
+              "decision_changed": 570,
+              "lost": 230,
+              "gained": 290,
+              "net_correct_delta": 60,
+              "both_wrong_changed": 50
+            }
+          },
+          "day": {
+            "2021_03_01": {
+              "count": 42000,
+              "teacher_correct": 33049,
+              "student_correct": 33019,
+              "decision_changed": 1151,
+              "lost": 436,
+              "gained": 406,
+              "net_correct_delta": -30,
+              "both_wrong_changed": 309
+            },
+            "2021_03_08": {
+              "count": 42000,
+              "teacher_correct": 34369,
+              "student_correct": 34242,
+              "decision_changed": 1053,
+              "lost": 497,
+              "gained": 370,
+              "net_correct_delta": -127,
+              "both_wrong_changed": 186
+            },
+            "2021_03_15": {
+              "count": 42000,
+              "teacher_correct": 33357,
+              "student_correct": 33044,
+              "decision_changed": 1150,
+              "lost": 658,
+              "gained": 345,
+              "net_correct_delta": -313,
+              "both_wrong_changed": 147
+            },
+            "2021_03_23": {
+              "count": 42000,
+              "teacher_correct": 34219,
+              "student_correct": 34191,
+              "decision_changed": 1296,
+              "lost": 597,
+              "gained": 569,
+              "net_correct_delta": -28,
+              "both_wrong_changed": 130
+            }
+          }
+        }
+      },
+      "practical_mid_urban": {
+        "count": 168000,
+        "teacher_correct": 123791,
+        "student_correct": 123775,
+        "teacher_accuracy": 73.68511904761905,
+        "student_accuracy": 73.67559523809524,
+        "decision_changed": 9681,
+        "lost": 3813,
+        "gained": 3797,
+        "net_correct_delta": -16,
+        "both_wrong_changed": 2071,
+        "confidence_bins": [
+          {
+            "teacher_confidence_low": 0.0,
+            "teacher_confidence_high": 0.6,
+            "count": 13461,
+            "decision_changed": 5001,
+            "lost": 1879,
+            "gained": 1953
+          },
+          {
+            "teacher_confidence_low": 0.6,
+            "teacher_confidence_high": 0.9,
+            "count": 35162,
+            "decision_changed": 3997,
+            "lost": 1632,
+            "gained": 1614
+          },
+          {
+            "teacher_confidence_low": 0.9,
+            "teacher_confidence_high": 0.99,
+            "count": 45997,
+            "decision_changed": 628,
+            "lost": 270,
+            "gained": 216
+          },
+          {
+            "teacher_confidence_low": 0.99,
+            "teacher_confidence_high": 1.0,
+            "count": 73380,
+            "decision_changed": 55,
+            "lost": 32,
+            "gained": 14
+          }
+        ],
+        "cases": {
+          "all": {
+            "count": 168000,
+            "teacher_confidence_mean": 0.9009061471578373,
+            "teacher_logit_margin_mean": 4.594771058185364,
+            "logit_max_absolute_change_mean": 0.8122846199361243,
+            "feature_cosine_distance_to_R17_mean": 0.005957311832511967,
+            "saved_IQ_NMSE_to_R17_mean": 0.00799693493778979
+          },
+          "decision_changed": {
+            "count": 9681,
+            "teacher_confidence_mean": 0.6238491444365412,
+            "teacher_logit_margin_mean": 0.9098331631368971,
+            "logit_max_absolute_change_mean": 1.6323731536192474,
+            "feature_cosine_distance_to_R17_mean": 0.015454111887896823,
+            "saved_IQ_NMSE_to_R17_mean": 0.018397653186607806
+          },
+          "R17_correct_student_wrong": {
+            "count": 3813,
+            "teacher_confidence_mean": 0.637571975571677,
+            "teacher_logit_margin_mean": 0.9284261113666281,
+            "logit_max_absolute_change_mean": 1.497026683986402,
+            "feature_cosine_distance_to_R17_mean": 0.013162312707107316,
+            "saved_IQ_NMSE_to_R17_mean": 0.015673017444897595
+          },
+          "R17_wrong_student_correct": {
+            "count": 3797,
+            "teacher_confidence_mean": 0.6241863112853934,
+            "teacher_logit_margin_mean": 0.8631874763686186,
+            "logit_max_absolute_change_mean": 1.6602372001294388,
+            "feature_cosine_distance_to_R17_mean": 0.016330361430394864,
+            "saved_IQ_NMSE_to_R17_mean": 0.019018767609020302
+          },
+          "decision_unchanged": {
+            "count": 158319,
+            "teacher_confidence_mean": 0.917847820888374,
+            "teacher_logit_margin_mean": 4.8201001959512935,
+            "logit_max_absolute_change_mean": 0.7621372775793237,
+            "feature_cosine_distance_to_R17_mean": 0.005376594917067953,
+            "saved_IQ_NMSE_to_R17_mean": 0.007360944605822008
+          }
+        },
+        "groups": {
+          "TX": {
+            "0": {
+              "count": 28000,
+              "teacher_correct": 23637,
+              "student_correct": 23506,
+              "decision_changed": 1214,
+              "lost": 560,
+              "gained": 429,
+              "net_correct_delta": -131,
+              "both_wrong_changed": 225
+            },
+            "1": {
+              "count": 28000,
+              "teacher_correct": 10434,
+              "student_correct": 10126,
+              "decision_changed": 2168,
+              "lost": 981,
+              "gained": 673,
+              "net_correct_delta": -308,
+              "both_wrong_changed": 514
+            },
+            "2": {
+              "count": 28000,
+              "teacher_correct": 19104,
+              "student_correct": 19141,
+              "decision_changed": 2609,
+              "lost": 971,
+              "gained": 1008,
+              "net_correct_delta": 37,
+              "both_wrong_changed": 630
+            },
+            "3": {
+              "count": 28000,
+              "teacher_correct": 17930,
+              "student_correct": 18241,
+              "decision_changed": 2094,
+              "lost": 657,
+              "gained": 968,
+              "net_correct_delta": 311,
+              "both_wrong_changed": 469
+            },
+            "4": {
+              "count": 28000,
+              "teacher_correct": 27454,
+              "student_correct": 27370,
+              "decision_changed": 234,
+              "lost": 125,
+              "gained": 41,
+              "net_correct_delta": -84,
+              "both_wrong_changed": 68
+            },
+            "5": {
+              "count": 28000,
+              "teacher_correct": 25232,
+              "student_correct": 25391,
+              "decision_changed": 1362,
+              "lost": 519,
+              "gained": 678,
+              "net_correct_delta": 159,
+              "both_wrong_changed": 165
+            }
+          },
+          "RX": {
+            "1-1": {
+              "count": 24000,
+              "teacher_correct": 17235,
+              "student_correct": 17077,
+              "decision_changed": 1286,
+              "lost": 620,
+              "gained": 462,
+              "net_correct_delta": -158,
+              "both_wrong_changed": 204
+            },
+            "14-7": {
+              "count": 24000,
+              "teacher_correct": 16050,
+              "student_correct": 16192,
+              "decision_changed": 1845,
+              "lost": 574,
+              "gained": 716,
+              "net_correct_delta": 142,
+              "both_wrong_changed": 555
+            },
+            "2-1": {
+              "count": 24000,
+              "teacher_correct": 19088,
+              "student_correct": 19095,
+              "decision_changed": 1318,
+              "lost": 546,
+              "gained": 553,
+              "net_correct_delta": 7,
+              "both_wrong_changed": 219
+            },
+            "20-1": {
+              "count": 24000,
+              "teacher_correct": 16284,
+              "student_correct": 16216,
+              "decision_changed": 1461,
+              "lost": 597,
+              "gained": 529,
+              "net_correct_delta": -68,
+              "both_wrong_changed": 335
+            },
+            "7-14": {
+              "count": 24000,
+              "teacher_correct": 18869,
+              "student_correct": 18868,
+              "decision_changed": 1338,
+              "lost": 556,
+              "gained": 555,
+              "net_correct_delta": -1,
+              "both_wrong_changed": 227
+            },
+            "7-7": {
+              "count": 24000,
+              "teacher_correct": 18513,
+              "student_correct": 18483,
+              "decision_changed": 1288,
+              "lost": 494,
+              "gained": 464,
+              "net_correct_delta": -30,
+              "both_wrong_changed": 330
+            },
+            "8-8": {
+              "count": 24000,
+              "teacher_correct": 17752,
+              "student_correct": 17844,
+              "decision_changed": 1145,
+              "lost": 426,
+              "gained": 518,
+              "net_correct_delta": 92,
+              "both_wrong_changed": 201
+            }
+          },
+          "day": {
+            "2021_03_01": {
+              "count": 42000,
+              "teacher_correct": 30341,
+              "student_correct": 30477,
+              "decision_changed": 2316,
+              "lost": 809,
+              "gained": 945,
+              "net_correct_delta": 136,
+              "both_wrong_changed": 562
+            },
+            "2021_03_08": {
+              "count": 42000,
+              "teacher_correct": 31923,
+              "student_correct": 31823,
+              "decision_changed": 2279,
+              "lost": 931,
+              "gained": 831,
+              "net_correct_delta": -100,
+              "both_wrong_changed": 517
+            },
+            "2021_03_15": {
+              "count": 42000,
+              "teacher_correct": 30560,
+              "student_correct": 30351,
+              "decision_changed": 2338,
+              "lost": 1026,
+              "gained": 817,
+              "net_correct_delta": -209,
+              "both_wrong_changed": 495
+            },
+            "2021_03_23": {
+              "count": 42000,
+              "teacher_correct": 30967,
+              "student_correct": 31124,
+              "decision_changed": 2748,
+              "lost": 1047,
+              "gained": 1204,
+              "net_correct_delta": 157,
+              "both_wrong_changed": 497
+            }
+          }
+        }
+      },
+      "practical_low_urban": {
+        "count": 168000,
+        "teacher_correct": 112924,
+        "student_correct": 113061,
+        "teacher_accuracy": 67.21666666666667,
+        "student_accuracy": 67.29821428571428,
+        "decision_changed": 14278,
+        "lost": 5227,
+        "gained": 5364,
+        "net_correct_delta": 137,
+        "both_wrong_changed": 3687,
+        "confidence_bins": [
+          {
+            "teacher_confidence_low": 0.0,
+            "teacher_confidence_high": 0.6,
+            "count": 15183,
+            "decision_changed": 6583,
+            "lost": 2246,
+            "gained": 2490
+          },
+          {
+            "teacher_confidence_low": 0.6,
+            "teacher_confidence_high": 0.9,
+            "count": 39032,
+            "decision_changed": 6464,
+            "lost": 2459,
+            "gained": 2471
+          },
+          {
+            "teacher_confidence_low": 0.9,
+            "teacher_confidence_high": 0.99,
+            "count": 46415,
+            "decision_changed": 1132,
+            "lost": 462,
+            "gained": 386
+          },
+          {
+            "teacher_confidence_low": 0.99,
+            "teacher_confidence_high": 1.0,
+            "count": 67370,
+            "decision_changed": 99,
+            "lost": 60,
+            "gained": 17
+          }
+        ],
+        "cases": {
+          "all": {
+            "count": 168000,
+            "teacher_confidence_mean": 0.8900758368117381,
+            "teacher_logit_margin_mean": 4.37792471445099,
+            "logit_max_absolute_change_mean": 1.1159368061413906,
+            "feature_cosine_distance_to_R17_mean": 0.009668847761933181,
+            "saved_IQ_NMSE_to_R17_mean": 0.013434228393069158
+          },
+          "decision_changed": {
+            "count": 14278,
+            "teacher_confidence_mean": 0.6427418236140808,
+            "teacher_logit_margin_mean": 1.0399068616605103,
+            "logit_max_absolute_change_mean": 1.9177258619611386,
+            "feature_cosine_distance_to_R17_mean": 0.020144197809283875,
+            "saved_IQ_NMSE_to_R17_mean": 0.024952030321525303
+          },
+          "R17_correct_student_wrong": {
+            "count": 5227,
+            "teacher_confidence_mean": 0.6591267802609838,
+            "teacher_logit_margin_mean": 1.0830346407706957,
+            "logit_max_absolute_change_mean": 1.7828539374936747,
+            "feature_cosine_distance_to_R17_mean": 0.017560025404105124,
+            "saved_IQ_NMSE_to_R17_mean": 0.021848736478212852
+          },
+          "R17_wrong_student_correct": {
+            "count": 5364,
+            "teacher_confidence_mean": 0.6389577157916524,
+            "teacher_logit_margin_mean": 0.9782010553311626,
+            "logit_max_absolute_change_mean": 1.9199625786618204,
+            "feature_cosine_distance_to_R17_mean": 0.020574606719735326,
+            "saved_IQ_NMSE_to_R17_mean": 0.024959006582245157
+          },
+          "decision_unchanged": {
+            "count": 153722,
+            "teacher_confidence_mean": 0.9130487036781345,
+            "teacher_logit_margin_mean": 4.687966340907467,
+            "logit_max_absolute_change_mean": 1.0414650705473028,
+            "feature_cosine_distance_to_R17_mean": 0.008695876762492158,
+            "saved_IQ_NMSE_to_R17_mean": 0.01236443242414801
+          }
+        },
+        "groups": {
+          "TX": {
+            "0": {
+              "count": 28000,
+              "teacher_correct": 21257,
+              "student_correct": 20818,
+              "decision_changed": 1871,
+              "lost": 913,
+              "gained": 474,
+              "net_correct_delta": -439,
+              "both_wrong_changed": 484
+            },
+            "1": {
+              "count": 28000,
+              "teacher_correct": 7907,
+              "student_correct": 7343,
+              "decision_changed": 2695,
+              "lost": 1206,
+              "gained": 642,
+              "net_correct_delta": -564,
+              "both_wrong_changed": 847
+            },
+            "2": {
+              "count": 28000,
+              "teacher_correct": 17278,
+              "student_correct": 17567,
+              "decision_changed": 3845,
+              "lost": 1199,
+              "gained": 1488,
+              "net_correct_delta": 289,
+              "both_wrong_changed": 1158
+            },
+            "3": {
+              "count": 28000,
+              "teacher_correct": 17151,
+              "student_correct": 17869,
+              "decision_changed": 2779,
+              "lost": 749,
+              "gained": 1467,
+              "net_correct_delta": 718,
+              "both_wrong_changed": 563
+            },
+            "4": {
+              "count": 28000,
+              "teacher_correct": 26448,
+              "student_correct": 26303,
+              "decision_changed": 585,
+              "lost": 260,
+              "gained": 115,
+              "net_correct_delta": -145,
+              "both_wrong_changed": 210
+            },
+            "5": {
+              "count": 28000,
+              "teacher_correct": 22883,
+              "student_correct": 23161,
+              "decision_changed": 2503,
+              "lost": 900,
+              "gained": 1178,
+              "net_correct_delta": 278,
+              "both_wrong_changed": 425
+            }
+          },
+          "RX": {
+            "1-1": {
+              "count": 24000,
+              "teacher_correct": 15940,
+              "student_correct": 15906,
+              "decision_changed": 1837,
+              "lost": 732,
+              "gained": 698,
+              "net_correct_delta": -34,
+              "both_wrong_changed": 407
+            },
+            "14-7": {
+              "count": 24000,
+              "teacher_correct": 14258,
+              "student_correct": 14374,
+              "decision_changed": 2470,
+              "lost": 818,
+              "gained": 934,
+              "net_correct_delta": 116,
+              "both_wrong_changed": 718
+            },
+            "2-1": {
+              "count": 24000,
+              "teacher_correct": 17604,
+              "student_correct": 17635,
+              "decision_changed": 2001,
+              "lost": 749,
+              "gained": 780,
+              "net_correct_delta": 31,
+              "both_wrong_changed": 472
+            },
+            "20-1": {
+              "count": 24000,
+              "teacher_correct": 14614,
+              "student_correct": 14530,
+              "decision_changed": 2188,
+              "lost": 827,
+              "gained": 743,
+              "net_correct_delta": -84,
+              "both_wrong_changed": 618
+            },
+            "7-14": {
+              "count": 24000,
+              "teacher_correct": 16930,
+              "student_correct": 16999,
+              "decision_changed": 2046,
+              "lost": 757,
+              "gained": 826,
+              "net_correct_delta": 69,
+              "both_wrong_changed": 463
+            },
+            "7-7": {
+              "count": 24000,
+              "teacher_correct": 16745,
+              "student_correct": 16740,
+              "decision_changed": 2071,
+              "lost": 740,
+              "gained": 735,
+              "net_correct_delta": -5,
+              "both_wrong_changed": 596
+            },
+            "8-8": {
+              "count": 24000,
+              "teacher_correct": 16833,
+              "student_correct": 16877,
+              "decision_changed": 1665,
+              "lost": 604,
+              "gained": 648,
+              "net_correct_delta": 44,
+              "both_wrong_changed": 413
+            }
+          },
+          "day": {
+            "2021_03_01": {
+              "count": 42000,
+              "teacher_correct": 27697,
+              "student_correct": 27776,
+              "decision_changed": 3512,
+              "lost": 1241,
+              "gained": 1320,
+              "net_correct_delta": 79,
+              "both_wrong_changed": 951
+            },
+            "2021_03_08": {
+              "count": 42000,
+              "teacher_correct": 29302,
+              "student_correct": 29265,
+              "decision_changed": 3214,
+              "lost": 1197,
+              "gained": 1160,
+              "net_correct_delta": -37,
+              "both_wrong_changed": 857
+            },
+            "2021_03_15": {
+              "count": 42000,
+              "teacher_correct": 27978,
+              "student_correct": 27899,
+              "decision_changed": 3559,
+              "lost": 1360,
+              "gained": 1281,
+              "net_correct_delta": -79,
+              "both_wrong_changed": 918
+            },
+            "2021_03_23": {
+              "count": 42000,
+              "teacher_correct": 27947,
+              "student_correct": 28121,
+              "decision_changed": 3993,
+              "lost": 1429,
+              "gained": 1603,
+              "net_correct_delta": 174,
+              "both_wrong_changed": 961
+            }
+          }
+        }
+      }
+    }
+  },
+  "limitation": "Post-hoc same-row fixed benchmark diagnostics;not new prediction,selection feedback or causal attribution",
+  "analysis_code_commit": "39c85846f770c84ca4059952d6125afabe2257cd"
+}

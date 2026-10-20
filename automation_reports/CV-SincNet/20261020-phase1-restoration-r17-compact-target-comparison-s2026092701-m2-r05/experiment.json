@@ -355,5 +355,17 @@
     "new_training_updates": 0,
     "all_negative_results_preserved": true,
     "goal_complete": false
+  },
+  "posthoc_paired_analysis": {
+    "status": "ANALYZED",
+    "analysis_code_commit": "39c85846f770c84ca4059952d6125afabe2257cd",
+    "all_three_rows_seven_views_before_truth": true,
+    "target_labels_evaluated": 168000,
+    "raw_IQ_reads": 0,
+    "checkpoint_weight_reads": 0,
+    "model_forwards": 0,
+    "training_updates": 0,
+    "head_fit_updates": 0,
+    "target_feedback": false
   }
 }
