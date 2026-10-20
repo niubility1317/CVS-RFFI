@@ -189,3 +189,10 @@ full/half/quarter静态成本早于R08目标，现补齐固定上下文层级；
 
 
 R10本轮两个直接纠正对照全部完成：符合七场景1个百分点容差：clean_only_eighth_pointwise。E20/4940、source七视图诊断及同168000×七目标场景、独立truth-last、实际进程退出均核实；完整训练曲线、精确1pp验收、相对已验收3118001版本差、配对clean差距、TX/RX/day和成本见[本轮报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-clean-corrective-s2026092701-m2-r10/report.md)。两份完整恢复器已取回本地并严格加载验证；本轮未追加其他结构，目标反馈未用于改训练/超参/重跑，长期指标依实际结果报告。
+
+
+## R12 八分之一上下文
+
+[R12固定两行](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-eighth-context-s2026092701-m2-r12/report.md)补齐早于R08目标的0IQ静态容量审计层级context=.125，两种既定prior对应完整参数907657/677141、context482299。沿用R10/R11固定直接source-clean IQNMSE+T1KL(Fclean||Frestored)+0.5单位F160平方距离，以及相同source缓存/顺序/seed/优化器/E20/4940；全部coarse/action/prior联合优化。R10 half与R11 full/quarter是已登记匹配对照，R10 benchmark已暴露而R11尚无目标结果；不按目标选秩/系数/预算/父权重或排序、选择性重跑。只原source-selected R17/cd977448 CPU初始化，0已测学生继承，R17在optimizer前删除，0R17正式训练forward，原F50/defaulthead冻结/0新TX/V/target训练标签。每行自动完整168000×七目标预测后独立truth-last，原R17逐项1pp、真实升降/lowurban70/paired-clean差距分别报告，所有负结果保留。
+
+继承coarse20/action20/R17prior20+joint20=80串行pass，各组件40/component sum120，F50预训练另计。40项合成/协议检查与唯一独立P0/P1审查PASS；普通N607预检VERIFIED，R10实际句柄退出，GPU4/5空闲，R11健康2/3/6/7保持，max6own GPU/max1own scorer共享R06锁。当前实现与登记完成，尚未发布/证明性能。
