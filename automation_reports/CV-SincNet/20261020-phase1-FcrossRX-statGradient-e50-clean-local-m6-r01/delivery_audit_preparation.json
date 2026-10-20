@@ -1,0 +1,35 @@
+{
+  "status": "READ_ONLY_AUDIT_READY_NOT_COMPLETE_MATRIX_VERIFIED",
+  "execution_commit": "7b5532e9ff3845c23c7c229385ff5763254d31c3",
+  "audit_implementation": "experiments/cvs_f_statgrad50/audit.py",
+  "checks": {
+    "status": "PASS",
+    "known_confusion_and_sampleSD": true,
+    "incorrect_metric_rejected": true,
+    "partial_matrix_guard": {
+      "status": "WAIT_FIXED_MATRIX_RUNNING",
+      "checkpoint_loads": 0,
+      "IQ_reads": 0,
+      "truth_reads": 0,
+      "output_written": false
+    }
+  },
+  "CLI_check": {
+    "status": "PASS",
+    "CLI_partial_matrix_deferral": true,
+    "no_output_written": true,
+    "checkpoint_loads": 0,
+    "IQ_reads": 0,
+    "truth_reads": 0
+  },
+  "actual_complete_matrix_audit_ran": false,
+  "IQ_reads": 0,
+  "truth_reads": 0,
+  "model_forwards": 0,
+  "optimizer_updates": 0,
+  "head_fit_updates": 0,
+  "immutable_release_changed": false,
+  "running_training_changed": false,
+  "scope": "Post-run source checkpoint/defaulthead and backbone update/provenance/cleanprediction-truthlastscore/order/full-log-summary/same-seedBASE/directioncontrol/mean-sampleSD-positive arithmetic checks. It is a read-only delivery helper, not a new launch permission or science gate.",
+  "command": "LOCAL_BASE_PYTHON -X utf8 -m experiments.cvs_f_statgrad50.audit --base LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01 --reference-base LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --execution-commit 7b5532e9ff3845c23c7c229385ff5763254d31c3 --output LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01/completion_verification.json"
+}
