@@ -33,3 +33,28 @@ VERIFIED/RUNNING：真实350521父/F50/2Ls noquery smoke PASS，三行全部coar
 完整p90/p95、各轮中位数、显存和Conv/Linear MAC见[source阶段与成本汇总](../automation_reports/CV-SincNet/20261021-phase1-restoration-R46-anchor-refine-s2026092701-m3-r53/source_cost_progress.json)。参数、实际时延与吞吐分别比较，任何变慢都保留，不预设压缩必然加速；训练吞吐提高不能混为推理加速。模型仍执行三prior/六CG，不能仅据这些时间断定具体瓶颈。
 
 成本在64条sourceV、预加载GPU的FP32 eval上同步测量，不含传输/预处理/loader；三G一F共享suite驻留不是独立部署显存，增量峰值对应当前前向。GPU负载/温度与相关重复观测限制保留，尚无独立性能置信区间。原70%/5pp/输入TX细节要求继续ACTIVE。
+
+## 已完成行的正式测试（2/3）
+
+以下均完整168000条×七景、原冻结F50默认头、预测固定后独立truth-last；其余行继续固定训练/预测，不能把部分行冒充完整矩阵。性能优先，所有负结果保留，不回流选模、参数或父。
+
+|场景|指定父350521|prune_decay（273765）|retain_anchor（350521）|
+|---|---:|---:|---:|
+|clean|84.456548|84.528571|84.543452|
+|郊区高|82.452381|82.408929|82.301190|
+|郊区中|81.222024|81.348810|80.898214|
+|郊区低|79.620238|79.858333|79.405952|
+|urban高|81.386905|81.411905|81.206548|
+|urban中|74.447024|75.061310|74.374405|
+|urban低|67.510119|68.527381|67.636310|
+
+准确率单位为%。逐TX/RX/day、Macro-F1与repair/damage见[逐行正式结果](../automation_reports/CV-SincNet/20261021-phase1-restoration-R46-anchor-refine-s2026092701-m3-r53/partial_formal_results.json)。
+
+|行|R17逐景1pp容差|指定父逐景1pp参考|lowurban≥70%|其他五景raw-clean差≤5pp|
+|---|---|---|---|---|
+|prune_decay|True|True|False|False|
+|retain_anchor|True|True|False|False|
+
+retain_anchor相对预登记同宽衰减控制的七景差（百分点，顺序同上）：+0.102381、+0.419643、+0.472024、+0.469048、+0.444643、+0.643452、+0.814286。
+
+原350521直接父不变；原完整识别与更强输入TX细节真实性目标ACTIVE。单seed、已暴露工程基准；识别率和波形误差不单独证明逐细节身份。完整模型和时延/吞吐/显存随最终交付保留，源域分数不替代以上正式结果。
