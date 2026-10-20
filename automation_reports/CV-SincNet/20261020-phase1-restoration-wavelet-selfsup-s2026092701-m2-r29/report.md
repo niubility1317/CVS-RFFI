@@ -1,6 +1,6 @@
 # 小波 U-Net 高频保留的匹配恢复 R29
 
-状态：LOCAL_VERIFIED，尚未发布。方法 commit `1bed939069bdb87385d6f32dde95e276eb1b5a17` 已推送并核对远端 OID。39项聚焦检查、compile/help和一次独立P0/P1 PASS。真实checkpoint入口在远端首步执行，PASS立即继续。
+状态：RUNNING，真实入口与两条 GPU worker 已核实。方法 commit `1bed939069bdb87385d6f32dde95e276eb1b5a17` 已推送并核对远端 OID。39项聚焦检查、compile/help和一次独立P0/P1 PASS。真实checkpoint入口在远端首步执行，PASS立即继续。
 
 
 持续目标不变：单条当前 received IQ → 单条恢复 IQ，原 PAMF 从同一 IQ 派生 FFT、PA、时域和统计输入；恢复训练利用合法 L6300/U56700，0 TX 标签、0 已训练 F 权重/输出、0 target。允许模拟配对 clean。原 F50 seed2026092701/defaulthead 冻结推理；正式 low urban≥70%，其他五受损场景分别距原始 clean84.67619047619047%≤5 个百分点，即各≥79.67619047619047%。恢复 clean 损伤单列；不能把源域或波形改善当成逐细节 TX 归属证明。
@@ -41,3 +41,6 @@ REJECTED_EXTRA_GATE：通用额外设计/spec审批、全仓库回归和报告�
 
 
 完整矩阵、命令、环境/CWD、路径、GPU和停止规则见[登记](experiment.json)。
+
+
+发布后状态：VERIFIED。单归档传输比对、远端编译和真实两条源样本 checkpoint/defaultF 入口通过。原R07上下文一致、完整初始输出相同，完整隐藏初值和参数量相同，只有分析高频保留不同；三步 prior 梯度有限非零，全部上下文无参数梯度。R23控制完整权重仅严格加载检查，不进入新prior初始化。两条真实 GPU worker 的 PID/CWD/argv/GPU 和日志增长已核实，每卡一条，未干预其他 owner。全LU训练、源七视图及有条件正式确认自动执行；当前没有新的性能结论。
