@@ -19,3 +19,6 @@
 N607 普通账户、单本 run GPU worker，复用已验证容量锁/原池0/1/5/7，全owner cap2/free≥12GB；不干预其他 owner。新不可覆盖 run/release，最小登记包含实际 commit、命令、环境/CWD、路径、GPU、停止规则和产物。真实 checkpoint smoke 是 launcher 首步，PASS 后继续。只因协议/路径/来源/形状/非有限值/所属进程失败停止并保留部分产物，不因负结果重启。具体登记以 experiment.json 为准。
 
 与用户报告的关系：这是对“学习观测中的修正、检验细节是否被平均化”的补充机制实验，报告未指定本轮方向、幅度或判据，这些均为本项目预登记假设。IQ/FFT/PA/统计仍全部来自原恢复器的一份 IQ。总目标仍是正式 low urban≥70%、其他五受损场景各距同一 raw clean≤5个百分点，以及输入对应TX的身份细节保真；本轮本身不能完成这些要求。
+
+
+实际结果：SOURCE_RF_RESPONSE_ATTENUATION_SUPPORTED；70完整源单元/1050组独立原始IQ复算，0训练/F反事实/target，全部进程退出。[完整报告](../automation_reports/CV-SincNet/20261020-diagnostic-restoration-RF-response-F50-s2026092701-r31/report.md)。机制诊断不证明训练收益或真实TX逐细节归属，总目标active。
