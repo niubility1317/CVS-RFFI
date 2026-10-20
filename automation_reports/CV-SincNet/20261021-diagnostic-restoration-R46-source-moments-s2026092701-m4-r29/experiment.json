@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "用户要求配合主对话继续优化压缩。源诊断使用同R25四份已合规冻结权重与既有源训练IQ，补充描述性四阶统计误差；不读F/TX标签/V/target，不新训练，后续每个网络版本仍完整七景。",
   "code": {
-    "commit": null,
+    "commit": "3eff8ce2a778d1f952f625b2a5a7c94a66c7e723",
     "checkout": "Git-backed standard_ce_baselines_20261010 worktree",
     "environment": "N607 existing CVS-RFFI Python3.10/Torch2.1;CPU2;CUDA hidden;nativeFP32",
     "cwd": "releases/pamf_r46_source_moments_20261021_r29"
@@ -139,7 +139,7 @@
     "remote_run_root": "runs/20261021-diagnostic-restoration-R46-source-moments-s2026092701-m4-r29",
     "remote_log_root": "logs/20261021-diagnostic-restoration-R46-source-moments-s2026092701-m4-r29",
     "local_artifact_root": "local_artifacts\\pamf_restoration\\r46_source_moments_20261021_r29",
-    "launch_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_source_moments.runner --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --complex-run ../../runs/20261021-phase1-restoration-R46-complex-fidelity-s2026092701-m2-r22 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-source-moments-s2026092701-m4-r29 --expected-commit <actual method commit>",
+    "launch_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_source_moments.runner --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --complex-run ../../runs/20261021-phase1-restoration-R46-complex-fidelity-s2026092701-m2-r22 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-source-moments-s2026092701-m4-r29 --expected-commit 3eff8ce2a778d1f952f625b2a5a7c94a66c7e723",
     "stop_rule": "Preserve technical failure;no retry/update/fallback/other-owner mutation",
     "local_validation": {
       "status": "PASS",
@@ -150,7 +150,8 @@
       "P0P1_issues": [],
       "reviewer_reads_real_data_or_remote": false,
       "reviewer_edits": false
-    }
+    },
+    "postlaunch_status": "VERIFIED_COMPLETE_ACTUAL_OWNED_HANDLE_EXITED"
   },
   "expected_artifacts": [
     "launch.json",
@@ -237,7 +238,7 @@
       "budget_ref": "0newupdates;768diagnostic+2Ls smoke inputs per model;0F/TX/V/target",
       "output_root": "runs/20261021-diagnostic-restoration-R46-source-moments-s2026092701-m4-r29/R46_350521",
       "log_path": "logs/20261021-diagnostic-restoration-R46-source-moments-s2026092701-m4-r29/runner.log",
-      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_source_moments.runner --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --complex-run ../../runs/20261021-phase1-restoration-R46-complex-fidelity-s2026092701-m2-r22 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-source-moments-s2026092701-m4-r29 --expected-commit <actual method commit>",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_source_moments.runner --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --complex-run ../../runs/20261021-phase1-restoration-R46-complex-fidelity-s2026092701-m2-r22 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-source-moments-s2026092701-m4-r29 --expected-commit 3eff8ce2a778d1f952f625b2a5a7c94a66c7e723",
       "expected_artifacts": [
         "smoke.json",
         "clean_metrics.json",
@@ -272,7 +273,7 @@
       "budget_ref": "0newupdates;768diagnostic+2Ls smoke inputs per model;0F/TX/V/target",
       "output_root": "runs/20261021-diagnostic-restoration-R46-source-moments-s2026092701-m4-r29/R18_factor625_stage",
       "log_path": "logs/20261021-diagnostic-restoration-R46-source-moments-s2026092701-m4-r29/runner.log",
-      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_source_moments.runner --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --complex-run ../../runs/20261021-phase1-restoration-R46-complex-fidelity-s2026092701-m2-r22 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-source-moments-s2026092701-m4-r29 --expected-commit <actual method commit>",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_source_moments.runner --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --complex-run ../../runs/20261021-phase1-restoration-R46-complex-fidelity-s2026092701-m2-r22 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-source-moments-s2026092701-m4-r29 --expected-commit 3eff8ce2a778d1f952f625b2a5a7c94a66c7e723",
       "expected_artifacts": [
         "smoke.json",
         "clean_metrics.json",
@@ -307,7 +308,7 @@
       "budget_ref": "0newupdates;768diagnostic+2Ls smoke inputs per model;0F/TX/V/target",
       "output_root": "runs/20261021-diagnostic-restoration-R46-source-moments-s2026092701-m4-r29/R22_complex625",
       "log_path": "logs/20261021-diagnostic-restoration-R46-source-moments-s2026092701-m4-r29/runner.log",
-      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_source_moments.runner --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --complex-run ../../runs/20261021-phase1-restoration-R46-complex-fidelity-s2026092701-m2-r22 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-source-moments-s2026092701-m4-r29 --expected-commit <actual method commit>",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_source_moments.runner --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --complex-run ../../runs/20261021-phase1-restoration-R46-complex-fidelity-s2026092701-m2-r22 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-source-moments-s2026092701-m4-r29 --expected-commit 3eff8ce2a778d1f952f625b2a5a7c94a66c7e723",
       "expected_artifacts": [
         "smoke.json",
         "clean_metrics.json",
@@ -342,7 +343,7 @@
       "budget_ref": "0newupdates;768diagnostic+2Ls smoke inputs per model;0F/TX/V/target",
       "output_root": "runs/20261021-diagnostic-restoration-R46-source-moments-s2026092701-m4-r29/R22_complex625_identity",
       "log_path": "logs/20261021-diagnostic-restoration-R46-source-moments-s2026092701-m4-r29/runner.log",
-      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_source_moments.runner --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --complex-run ../../runs/20261021-phase1-restoration-R46-complex-fidelity-s2026092701-m2-r22 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-source-moments-s2026092701-m4-r29 --expected-commit <actual method commit>",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_source_moments.runner --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --complex-run ../../runs/20261021-phase1-restoration-R46-complex-fidelity-s2026092701-m2-r22 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-source-moments-s2026092701-m4-r29 --expected-commit 3eff8ce2a778d1f952f625b2a5a7c94a66c7e723",
       "expected_artifacts": [
         "smoke.json",
         "clean_metrics.json",
@@ -360,5 +361,27 @@
     "Futuretraininginitializer/teacher remains original350521;eachnewnetwork full7formal;this source-onlydiagnostic createsnone.",
     "13focusedchecks and unique independentP0/P1reviewPASS;no extra designapproval/reportSHA/receipt chain."
   ],
-  "registered_at": "2026-10-20T22:06:47+00:00"
+  "registered_at": "2026-10-20T22:06:47+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "metric_rows": 1044,
+    "all4_models_3sourceviews": true,
+    "source_states_unchanged": true,
+    "actual_owned_handle_exited": true,
+    "source_only": true,
+    "new_network_versions": 0,
+    "new_training_updates": 0,
+    "target_feedback": false,
+    "long_term_goal_complete": false,
+    "received_mean_ratios_vs_R18stage": {
+      "R22_complex625": {
+        "received_IQ_ratio": 0.9883371055369502,
+        "received_moment_ratio": 1.0494329806791531
+      },
+      "R22_complex625_identity": {
+        "received_IQ_ratio": 0.98902135363616,
+        "received_moment_ratio": 1.060175321018557
+      }
+    }
+  }
 }
