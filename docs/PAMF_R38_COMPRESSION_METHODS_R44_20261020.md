@@ -1,6 +1,6 @@
 # R38 的低秩分解与重要性剪枝
 
-状态：PLANNED。用户在“继续压缩79.45万版”的基础上进一步明确“探索另外的不同压缩，优化提升”。本轮只压缩同一 R38 恢复器，比较两种权重压缩方法，不研发其他恢复网络、不加同参数量变体。刚登记的 R43 延长训练方案尚未发布、没有远端进程，暂存为 DEFERRED_BEFORE_LAUNCH，不占 GPU；已在运行的 R41/R42 保留按原计划收尾。
+状态：QUEUE_VERIFIED。用户在“继续压缩79.45万版”的基础上进一步明确“探索另外的不同压缩，优化提升”。本轮只压缩同一 R38 恢复器，比较两种权重压缩方法，不研发其他恢复网络、不加同参数量变体。刚登记的 R43 延长训练方案尚未发布、没有远端进程，暂存为 DEFERRED_BEFORE_LAUNCH，不占 GPU；已在运行的 R41/R42 保留按原计划收尾。
 
 |固定方法|完整参数|上下文参数|较 794529 减参|结构变化|
 |---|---:|---:|---:|---|
@@ -20,3 +20,5 @@
 每行 E20 后自动 source1800×7诊断、同卡原R17/R38/学生完整链batch1成本，然后七个正式场景：clean、practical_high、practical_mid、practical_low_suburban、practical_high_urban、practical_mid_urban、practical_low_urban。每景相同168000物理样本，每行全部预测IQ/logits/features/IDs固定后独立CPU连接truth。报告 accuracy/Macro-F1、TX/RX/day、波形/FFT/身份特征误差、配对修复与损伤、相对原R17和79.45万版逐景差；原R17每景最多下降1pp保留，并保守同时报告R38的1pp。lowurban≥70%、其他五景距rawclean84.6762%≤5pp单列，输入TX逐细节真实性仍未证明。所有固定行及负结果保留。
 
 N607 GPU0/1每卡一own、总计最多二own；按卡等待 R41 对应row终态且实际PID/cmd句柄退出，不停止或热改健康任务。容量free≥18GB/all-owner进程<2，共享R41 score.lock/CPU2/max1本任务scorer。不可覆盖release/run/output；聚焦协议负测、一次独立P0/P1、launcher首步实际R38/F50/两条L_s配对IQ noquery smoke，PASS立即排队。单archiveSHA/远端compile和PID/CWD/argv/日志读回。技术失败保留受影响输出，健康行继续，不自动重试。精确方法commit、命令、路径、环境/CWD、矩阵与停止规则见本run的experiment.json；当前没有R44正式性能结果。
+
+已发布方法 `2f5247dbd5fe50f28defa38a0252d70e692934af`；实际R38/F50/两Ls配对IQ smoke、单archiveSHA/compile及controller/CWD/argv/commit/等待日志增长 VERIFIED。当前排队，0新增GPUworker，无R44识别结论。

@@ -1,1 +1,4 @@
 {"at": "2026-10-20T11:15:46+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-20T11:18:56+00:00", "status": "QUEUED", "note": "QUEUE_VERIFIED actualCPUcontroller+R38/F50/2Ls smoke PASS;0newGPUworker", "evidence": ["experiment.json", "report.md"], "row_id": "low_rank"}
+{"at": "2026-10-20T11:18:56+00:00", "status": "QUEUED", "note": "QUEUE_VERIFIED actualCPUcontroller+R38/F50/2Ls smoke PASS;0newGPUworker", "evidence": ["experiment.json", "report.md"], "row_id": "group_pruned"}
+{"at": "2026-10-20T11:18:56+00:00", "status": "QUEUED", "note": "VERIFIED source-legal smoke and growing queue log;waiting R41 owned handles", "evidence": ["experiment.json", "report.md"], "row_id": null}
