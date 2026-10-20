@@ -46,13 +46,16 @@ MAC 不含 FFT、复数 MAP/CG、归一化、激活、插值与访存，不等�
 已启动的 scratch_guidance、spectral_precision 健康任务保留原配置和自动测试，不追加、停止或热改；完成后只归档其既定结果，不作为新压缩父模型。下一次新增训练或测试发布专用于本 R17 精简目标。当前尚无缩小网络后保持目标性能的证据，目标保持未完成。
 
 
-## 当前固定 R17 压缩试验（实际训练中）
+## 首轮固定 R17 压缩试验（完整结果已返回）
 
 [首轮登记](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-compact-distill-source-s2026092701-m2-r01/report.md)：shared_mean完整2993389参数，三训练后prior逐元素平均并共享；factor_half完整3775105参数，三prior分别按半秩CPU SVD分解长卷积。原R17/source-selected finalE20/4940作为冻结源教师；三步×2CG与原coarse/action不变，各追加E20/4940，原R07全L/U缓存和顺序，不加额外clean拼接。最终IQNMSE+10倍三步teacher stage NMSE，0TX/F/V/target训练。prior累计40轮，完整继承训练80串行pass及蒸馏教师成本单列。
 
-28项聚焦检查与一次独立P0/P1审查、唯一P1修复定点复审通过；方法commit`606b5b20943e9839fe97cbe15a6c19baf6ef0189`，归档比较/远端编译、实际原R17/原F50/2Ls无querysmoke PASS。新GPU4/5等待scratch根终态且实际owned handles退出，随后两source真实PID/CWD/命令/GPU/日志增长已核实，各完成第1轮/247更新；spectral6/7保持，CPU评分等spectral终态再ownlock。源V仅资格，逐七场景不降分+原波形护栏，合格者按最少完整参数固定选一个自动全目标确认，不在失败后补测落选者。当前尚无压缩版源资格/目标零退化结果，不能把参数减少或检查通过当成性能保持。
+28项聚焦检查与一次独立P0/P1审查、唯一P1修复定点复审通过；方法commit`606b5b20943e9839fe97cbe15a6c19baf6ef0189`，归档比较/远端编译、实际原R17/原F50/2Ls无querysmoke PASS。新GPU4/5等待scratch根终态且实际owned handles退出，随后两source真实PID/CWD/命令/GPU/日志增长已核实，各完成第1轮/247更新；spectral6/7保持，CPU评分等spectral终态再ownlock。源V仅资格，逐七场景不降分+原波形护栏，合格者按最少完整参数固定选一个自动全目标确认，不在失败后补测落选者。当前完整结果：两候选均未通过固定源域资格，0新目标预测；未交付能保持目标性能的结构压缩版本。
 
 
 ### 原版参数冗余的只读证据
 
 在首轮压缩源资格/新目标结果返回前，读取原R17最终权重的28个长卷积/步，0物理IQ、forward或TX/F/V/target访问。共同均值相对卷积权重Frobenius差异28.1663%，每个步间差异矩阵保留99%能量的秩中位61（范围23至121）；秩16的共享基底＋差异假设仍剩47.8833%的差异能量未表示。它仅反驳“步间差异天然极低秩”的直接假定，不能判定识别/恢复退化或排除函数级冗余。当前两个完整输出蒸馏候选继续固定E20，不增加新模型或改变预算/源选择；全部代数成本和边界见[当前run报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-compact-distill-source-s2026092701-m2-r01/report.md)。
+
+
+首轮压缩完成结论：两候选均未通过固定源域资格，0新目标预测；未交付能保持目标性能的结构压缩版本。全量20轮日志、source七视图资格、自动选择/目标范围、完整成本和逐场景/逐TX/RX/day证据均见[本轮报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-compact-distill-source-s2026092701-m2-r01/report.md)。不从目标分数继续调参、替换父模型或补测落选者；完整持续目标保持ACTIVE，尚未证明最大可达精简或70%/接近clean全部要求。
