@@ -232,7 +232,7 @@
       "group_pruned",
       "low_rank"
     ],
-    "postlaunch_state": "VERIFIED_TWO_GPU_WORKERS_TRAINING"
+    "postlaunch_state": "VERIFIED_ALL_OWNED_PROCESSES_EXITED"
   },
   "expected_artifacts": [
     "launch.json",
@@ -460,7 +460,8 @@
     "Allsourcecalibrationtime/exposureslistedonce;noaddedruntimebranch/state;notnewblindvalidation/notcleanfree/notperdetailTXproof.",
     "REJECTED_EXTRA_GATE:extraapproval/signature/memberhash/repeatedreviewoutsideexhaustiveminimalworkflow.",
     "Matched same-card source-only G and G+F;B1 warm16/64samples x3 alternating rounds;B32 warm4/16iterations x3;median,p90,p95,throughput,peak/resident memory;ConvLinearMAC excludes FFT/CG/norm",
-    "VERIFIED/RUNNING：真实源校准128物理样本/256冻结G输入完成（3.9369s），101组通道投影、141处模块使用的岭回归独立复算通过；校准0clean/TX/F/V/target/optimizer更新、父状态不变。两行实际R46/F50/2Ls smoke PASS，所有组件有限非零梯度、严格重载一致。单归档SHA/compile、controller与两worker实际PID/CWD/argv/线程/GPU及首轮日志增长已核实，GPU3fold_full与GPU2fold_half各一条本任务worker；R54固定退出守护已通过。仅说明实现与运行正常，尚无正式识别收益。两行继续固定E20/4940后自动七正式预测/独立truth-last；原指定父和原完整目标ACTIVE。"
+    "VERIFIED/RUNNING：真实源校准128物理样本/256冻结G输入完成（3.9369s），101组通道投影、141处模块使用的岭回归独立复算通过；校准0clean/TX/F/V/target/optimizer更新、父状态不变。两行实际R46/F50/2Ls smoke PASS，所有组件有限非零梯度、严格重载一致。单归档SHA/compile、controller与两worker实际PID/CWD/argv/线程/GPU及首轮日志增长已核实，GPU3fold_full与GPU2fold_half各一条本任务worker；R54固定退出守护已通过。仅说明实现与运行正常，尚无正式识别收益。两行继续固定E20/4940后自动七正式预测/独立truth-last；原指定父和原完整目标ACTIVE。",
+    "VERIFIED/ANALYZED：两行完整E20/4940、源1800×7和正式168000×7、每行七预测固定后独立truth-last、完整曲线/同卡成本、所属controller/worker退出及两套独立权重CPU严格重载均已核实。fold_full 273765参数，七景较父提高0/下降7，lowurban 66.324405%（较父-1.185714pp），70%=False、其他五景gap5pp=False；同卡G B1父/本版43.0100/42.1524ms，G+F B1父/本版54.3029/53.6499ms；fold_half 273765参数，七景较父提高0/下降7，lowurban 67.173810%（较父-0.336310pp），70%=False、其他五景gap5pp=False；同卡G B1父/本版43.5420/42.7307ms，G+F B1父/本版53.4489/52.6415ms。fold_full相对同宽权重切片R53/prune_decay七景提高0/下降7，lowurban差-2.202976pp；fold_half相对同宽权重切片R53/prune_decay七景提高0/下降7，lowurban差-1.353571pp。原指定350521直接父保持，全部正负结果保留；不把容差通过、减参、源域或解析关联当作正式提升或逐细节TX真实性。原完整目标ACTIVE。"
   ],
   "reused_controls": [
     {
@@ -476,5 +477,17 @@
       "target_results_used_for_selection": false
     }
   ],
-  "registered_at": "2026-10-20T18:43:28+00:00"
+  "registered_at": "2026-10-20T18:43:28+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "all_fixed_rows_scored": true,
+    "accepted_R17": [
+      "fold_full",
+      "fold_half"
+    ],
+    "accepted_R46": [
+      "fold_half"
+    ],
+    "goal_complete": false
+  }
 }
