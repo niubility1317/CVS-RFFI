@@ -1,3 +1,37 @@
+# R51：指定 35.05 万恢复器的源域 C4 相位一致性
+
+VERIFIED/ANALYZED：128源样本、1536主检验前向及2Ls真checkpoint smoke，108聚合单元独立复算通过，所属CPU进程退出；非零旋转received final平均等变NMSE=0.82160833，超过固定0.001=True。0F/TX/V/target/truth/训练，原模型逐张量未变。不等于TX真实性或正式识别收益证明，完整目标ACTIVE。
+
+|源视图|旋转角度|最终stage等变NMSE均值|逆转输出对clean的NMSE均值|原输出对clean的NMSE均值|
+|---|---:|---:|---:|---:|
+|clean|0|0.00000000|0.00004318|0.00004318|
+|clean|90|0.04124547|0.04104720|0.00004318|
+|clean|180|0.03508788|0.03511086|0.00004318|
+|clean|270|0.01655705|0.01662308|0.00004318|
+|received01|0|0.00000000|0.02099969|0.02099969|
+|received01|90|0.82435531|0.84532782|0.02099969|
+|received01|180|1.25366267|1.27871434|0.02099969|
+|received01|270|0.54749858|0.56901462|0.02099969|
+|received20|0|0.00000000|0.01984630|0.01984630|
+|received20|90|0.79332548|0.81663617|0.01984630|
+|received20|180|1.02641374|1.04712840|0.01984630|
+|received20|270|0.48439409|0.50211660|0.01984630|
+
+该检验对同一成对 IQ 施加已知复平面坐标旋转，并在输出端逆转，量化冻结 G 对该坐标变化的一致性。两受损视图与三个非零角度共6项均值按预登记汇总；0.001只定义源子集的非微小函数依赖，不是识别率门槛或新训练有效性。没有拟合/选择新参数，不改变原权重、父或已有预测。
+
+全部三stage、overall/Ls/Us 的108单元和mean/median/P95/max见[汇总](../automation_reports/CV-SincNet/20261021-diagnostic-restoration-R46-source-phase-s2026092701-r51/summary.json)及[逐组CSV](../automation_reports/CV-SincNet/20261021-diagnostic-restoration-R46-source-phase-s2026092701-r51/row_metrics.csv)。实际受损样本来自同一R07缓存epoch01/20，不代表六个practical分景性能。源样本来自已知RX/day、数量128；不能证明跨RX泛化、逐细节TX来源或真实在轨效果。CPU耗时包含加载和批量探测，不替代GPU推理时延。
+
+原pairedclean及无TX标签Us训练的权限保持，0F/TX/V/target/truth读取；没有新网络版本或训练checkpoint，无需以此冒充一轮新的正式性能测试。原全部八版正式七景结果保持。原lowurban70%、其他五景距rawclean≤5pp和更强TX细节真实性目标继续ACTIVE。
+
+固定代码、父来源、源角色、抽样seed、C4矩阵、预算、命令、环境/CWD与停止规则见[登记](../automation_reports/CV-SincNet/20261021-diagnostic-restoration-R46-source-phase-s2026092701-r51/experiment.json)。
+
+解释限制：接收链逆问题本来需要补偿载波相位。当前同时旋转输入与clean参考的检验，没有同时比较“只旋转received、clean固定”时的补偿能力；大误差不能单独证明恢复器有缺陷，更不能直接作为加入全局相位等变训练的理由。下一步须在合法源域补充这两个参考定义的对照，避免把需要消除的信道相位当作必须保留的TX细节。
+
+任务在首次PID快照前已完成，实际PID已退出；归档SHA/compile、runtime记录的PID/ROOT/方法pin、真实smoke、完整增长日志和108聚合算术均核实。未取得存活期间的CWD/argv快照，保留这一观测缺项，不为补拍重复运行。
+
+
+## 固定方法与历史发布记录
+
 # R51：指定 35.05 万恢复器的源域 C4 相位一致性检验
 
 状态：LOCAL_VERIFIED，尚未发布。18 项聚焦检查及 CLIhelp 通过，一次限 P0/P1 审查发现 code_commit 接口错误，已修复并完成原问题一次定点复审 PASS。

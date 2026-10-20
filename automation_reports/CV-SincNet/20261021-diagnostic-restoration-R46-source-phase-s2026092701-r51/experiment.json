@@ -99,7 +99,8 @@
     "remote_log_root": "logs/20261021-diagnostic-restoration-R46-source-phase-s2026092701-r51",
     "local_artifact_root": "local_artifacts/pamf_restoration/r46_source_phase_r51_20261021",
     "launch_command": "python -u -m experiments.pamf_r46_source_phase.runner --parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-source-phase-s2026092701-r51 --expected-commit e4c420c968d9c6190b52fde1bf909698360e7f9c",
-    "stop_rule": "On technical failure preserve own output and error;no retries,other-process stops,or model changes"
+    "stop_rule": "On technical failure preserve own output and error;no retries,other-process stops,or model changes",
+    "postlaunch_state": "VERIFIED_ALL_OWNED_PROCESSES_EXITED"
   },
   "expected_artifacts": [
     "launch.json",
@@ -168,7 +169,14 @@
     "All8previousversionsformaltestsclosed;human350521parentunchanged;not basedon target-score selected newparent/width.",
     "No training/newnetworkversions;source128C4diagnostic does not replace existing seven-scene formal validation.",
     "18focusedchecks/CLIhelp/ONE P0P1 plus ONE targetedfixPASS;real2Lsnoquerysmokefirstthenimmediateprobe.",
-    "REJECTED_EXTRA_GATE:extra brainstorm design approval conflicts user minimalworkflow;no additional approval/hash/seal machinery."
+    "REJECTED_EXTRA_GATE:extra brainstorm design approval conflicts user minimalworkflow;no additional approval/hash/seal machinery.",
+    "VERIFIED/ANALYZED：128源样本、1536主检验前向及2Ls真checkpoint smoke，108聚合单元独立复算通过，所属CPU进程退出；非零旋转received final平均等变NMSE=0.82160833，超过固定0.001=True。0F/TX/V/target/truth/训练，原模型逐张量未变。不等于TX真实性或正式识别收益证明，完整目标ACTIVE。"
   ],
-  "registered_at": "2026-10-20T16:05:46+00:00"
+  "registered_at": "2026-10-20T16:05:46+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "source_phase_dependence": true,
+    "TX_or_target_proof": false,
+    "goal_complete": false
+  }
 }
