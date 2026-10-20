@@ -1,6 +1,6 @@
 # 整批与逐帧的识别梯度范数上限
 
-状态：ANALYZED / VERIFIED。目标仍是完整目标测试low urban≥70%，其余五practical接近原F clean85.113889%（Agent暂用≤2个百分点口径）；分别报告同物理clean的波形差距和冻结原默认头真实TX识别/净纠错。当前已验证最好low urban65.309127%，目标未达成。
+状态：ANALYZED / VERIFIED。目标仍是完整目标测试low urban≥70%，其余五practical接近原F clean85.113889%（Agent暂用≤2个百分点口径）；分别报告同物理clean的波形差距和冻结原默认头真实TX识别/净纠错。登记时已测最好low urban为65.309127%；本轮逐帧约束将已测最好提高至66.384127%，完整目标仍未达成。
 
 source依据：当前gradient_projection的scalar_sum控制行E5/1235、630000条训练IQ，identity梯度norm²总和1191929.8158283，wave为5008.57419455，累计RMS范数比15.426531。该统计来自合法L/U训练，不是逐帧或逐step比，不证明幅度失衡就是性能原因，也不是目标证据。source_gradient_evidence.json仅含聚合统计，0新模型前向/更新/目标读取。新范数约束在该控制行新目标准确率被访问前固定，不热改其或投影行。
 

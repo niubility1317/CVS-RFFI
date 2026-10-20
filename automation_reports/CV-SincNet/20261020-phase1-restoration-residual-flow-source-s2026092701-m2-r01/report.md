@@ -1,6 +1,6 @@
 # 冻结R03后的直接残差与确定性流修正
 
-状态：ANALYZED / VERIFIED。用户目标仍为完整目标low urban≥70%，其余五practical接近原F clean85.113889%（Agent暂采用≤2个百分点口径）；分别报告同物理clean的波形差距和冻结原默认头真实TX识别/净纠错。现有最好65.309127%，未达到目标。
+状态：ANALYZED / VERIFIED。用户目标仍为完整目标low urban≥70%，其余五practical接近原F clean85.113889%（Agent暂采用≤2个百分点口径）；分别报告同物理clean的波形差距和冻结原默认头真实TX识别/净纠错。登记时已测最好为65.309127%；本轮完成时已测最好为66.384127%（既有逐帧输出约束），完整目标仍未达到。
 
 源依据是旧R03生成残差在其AsF/sourceV设置中未通过身份稳定性：residual_flow的三次采样TX切换7.03125%、low urban78.888889%，未访问目标。本候选独立检验无Gaussian、完整R03 anchor与原F指导的确定性流，不追认/加载旧生成或失败精修。借鉴[PMRF](https://arxiv.org/abs/2410.00418)的先预测后运输结构；R03不是已证明MMSE估计，本候选使用当前received条件/无Gaussian/F约束，因此不是PMRF复现或其最优性保证。论文图像质量结论不代表IQ指纹身份能恢复。
 
