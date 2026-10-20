@@ -1,3 +1,4 @@
 {"at": "2026-10-20T07:13:25+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-20T07:13:25+00:00", "status": "LOCAL_VERIFIED", "note": "13checks/CLIhelp/P0P1PASS;recover only savedsource scoring;bothformal fixed;notlaunched", "evidence": ["experiment.json", "report.md"], "row_id": null}
 {"at": "2026-10-20T07:19:31+00:00", "status": "RUNNING", "note": "R37 已独立核实运行：源评分已修复并补齐，0重训；：原 R32 训练及源预测已保存、评分技术失败且进程退出后发布；实际两版最终 checkpoint/F50 无 query smoke PASS；固定两版正式测试，无源域性能门槛。正式预测进行中，尚未完成本轮评分。", "evidence": ["experiment.json", "report.md"], "row_id": null}
+{"at": "2026-10-20T08:02:26+00:00", "status": "ANALYZED", "note": "VERIFIED/ANALYZED：两版正式7x168000，source210分类/360响应与target252分类原数组复算；40完整新epoch已分析，原源评分故障保留/新run修复无重训；全部所属进程退出；70%/5pp未达成，目标active。", "evidence": ["experiment.json", "report.md", "summary.json", "row_metrics.csv"], "row_id": null}

@@ -11,3 +11,6 @@ R32 两版已完整训练 E20/4940，原 L6300/U56700、累计 L126000/U1134000�
 报告每版源域及正式结果、三种郊区、三种 urban、clean 损伤、accuracy/Macro-F1、逐 TX/RX/day、repair/damage 和波形误差。low urban ≥70%；其他五个受损场景各自 ≥79.67619047619047%，即距原 raw clean 84.67619047619047% 不超过 5 个百分点。源域改善、局部合成响应或单个 F 的输出均不能证明每个恢复细节属于输入 TX。本次为已暴露固定历史测试，非新的独立盲测。
 
 N607 普通账户，固定 Git release，最多两条本任务 GPU 预测 worker、每卡一条；池 0/1/5/7、既有共享 receiver_residual_capacity4.lock、计入其他 owner 的每卡少于两进程和至少 12 GB 空闲。0 停止或修改 peers。输入、来源、冲突、非有限数或评分/预测技术错误时保留产物并停止安排待启动行，不自动重试；同一错误经本次修复仍复现则停止盲目重启。一次预检、一次 archive 两端 SHA 比较、远端 compile、一次 scoped P0/P1、实际 smoke 和启动后独立 PID/CWD/argv/GPU/log/产物核实按项目最小流程执行。
+
+
+实际结果：VERIFIED/ANALYZED：两版正式7x168000，source210分类/360响应与target252分类原数组复算；40完整新epoch已分析，原源评分故障保留/新run修复无重训；全部所属进程退出；70%/5pp未达成，目标active。 [完整报告](../automation_reports/CV-SincNet/20261020-evaluation-restoration-R32-recovery-all-versions-F50-s2026092701-m2-r37/report.md)。响应约束 low urban 66.9917%，匹配控制67.2208%，原R17 67.2167%；合成方向源收益未转化为该正式场景改善。
