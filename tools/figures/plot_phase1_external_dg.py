@@ -265,14 +265,15 @@ def receiver_date(rows, out):
             for ri in range(7):
                 for di in range(4):
                     value = float(data[ri, di])
-                    ax.text(di, ri, f'{value:+.1f}', ha='center', va='center', fontsize=5.6,
+                    label = '0.0' if abs(value) < .05 else f'{value:+.1f}'
+                    ax.text(di, ri, label, ha='center', va='center', fontsize=5.6,
                             color='white' if abs(value) > .62 * limit else '#272727')
             panel(ax, chr(ord('a')+gi*4+fi))
     fig.text(.5, .945, 'F0: source dates D1–D3; D0 is earlier and unseen', ha='center', fontsize=7)
     fig.text(.5, .495, 'Chrono: source dates D0–D2; D3 is future and unseen', ha='center', fontsize=7)
-    bar = fig.add_axes((.27, .09, .46, .02))
+    bar = fig.add_axes((.27, .11, .46, .02))
     fig.colorbar(image, cax=bar, orientation='horizontal', label='Full method − own CE (percentage points)')
-    fig.text(.5, .018, 'Clean; paired mean across 3 model seeds. Black outline: unseen date. Cells/RX/dates are not independent repeats.',
+    fig.text(.5, .012, 'Clean; paired mean across 3 model seeds. Black outline: unseen date. Cells/RX/dates are not independent repeats.',
              ha='center', fontsize=6)
     caption = ('Clean receiver-by-date paired differences, full method minus its own CE, averaged across '
         'three fixed model seeds. Each cell contains 6000 packets per seed; row labels are physical target '

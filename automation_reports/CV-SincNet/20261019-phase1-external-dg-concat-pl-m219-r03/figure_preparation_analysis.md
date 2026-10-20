@@ -8,7 +8,7 @@
 |---|---|---|---|
 | 图 1：源 RX 数 | 多样性与训练标签量能否区分？ | 1/3/5 源 RX，自然/固定标签预算，三链分面、三种子点及 SD | 等待 33 行完整数据 |
 | 图 2：标签效率 | 少标签表现是否稳定、是否伴随不同计算量？ | 1%/5%/10%，标出标签数及实际更新范围；ResNet18、IB-RFF CE/full | IB-RFF 和 10% ResNet18 已有，等待其余 6 行 |
-| 图 3：RX×日期 | 机制的增减来自哪些接收机和日期？ | F0/Chrono 每 RX×日期 full−CE 的配对均值，共用对称色标，标出未见日期 | 等待 DRIFT Chrono 完整核验 |
+| 图 3：RX×日期 | 机制的增减来自哪些接收机和日期？ | F0/Chrono 每 RX×日期 full−CE 的配对均值，共用对称色标，标出未见日期 | **已完成并验证** |
 | 图 4：压力结果 | clean 与模拟星地压力是否存在不同方向的收益？ | 四方法各自 CE/full × 监督/PL；上排绝对性能，下排同种子相对 clean 下降 | **已完成并验证** |
 
 各图沿用既定矩阵，不根据结果改换方法、场景、源组合或种子。更强 CE 与负结果保留。图 3 的未来端点为目标 RX 的 D3 子集，不将 Chrono 的全日期 overall 当作未来结果。ManyRx 的不平衡主指标在表格中采用 RX 等权准确率。
@@ -28,4 +28,15 @@
 - [重绘说明及配套脚本](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig04_pressure_r03/README.md)
 - [项目制图代码](../../../tools/figures/plot_phase1_external_dg.py)
 
-图形及派生评分数据在本机交付，不提交原始实验输出到 Git；代码和分析说明使用 Git。图 1/2/3 在数据到齐并分别验证后更新，当前不将完整图表交付或整体 219＋96 实验目标标为完成。
+图形及派生评分数据在本机交付，不提交原始实验输出到 Git；代码和分析说明使用 Git。图 1/2 在数据到齐并分别验证后更新，当前不将完整图表交付或整体 219＋96 实验目标标为完成。
+
+## 图 3：接收机与日期分层完成
+
+48 个监督模型（F0/Chrono × 四方法 × full/CE × 三种子），672 个 RX×日期逐种子配对点，全部 224 个显示单元采用三种子配对均值。每单元每种子 6000 包；四方法 D3 单元平均均与各自主要未来结果一致。共用对称色标、不截断数据；黑框标出 F0 的较早未见 D0 和 Chrono 的未来 D3，不能混用两个时间含义。源数据保留各 seed，不将单元数或日期数视为独立训练重复。
+
+已调整底部说明间距并目视检查；从独立评分子集重绘成功，数据 CSV 与初版相同。
+
+- [图 3 PDF](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig03_receiver_date_r02/pdf/fig03_receiver_date.pdf)
+- [图 3 可编辑 SVG](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig03_receiver_date_r02/svg/fig03_receiver_date.svg)
+- [图 3 源数据](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig03_receiver_date_r02/source_data/fig03_receiver_date.csv)
+- [重绘说明](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig03_receiver_date_r02/README.md)
