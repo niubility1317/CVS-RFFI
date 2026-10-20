@@ -1,6 +1,6 @@
 # 原 F 多尺度汇总与时序特征辅助恢复
 
-状态：PLANNED。用户目标仍为完整目标low urban≥70%、其余五practical接近原F clean85.113889%；“接近”暂按≤2个百分点，是Agent操作解释。登记时已测最好66.384127%，目标未完成。本轮结构、输入、预算与顺序在当前局部敏感度候选的新目标结果返回前固定；不依靠目标分数制定或筛选。
+状态：RUNNING / VERIFIED。用户目标仍为完整目标low urban≥70%、其余五practical接近原F clean85.113889%；“接近”暂按≤2个百分点，是Agent操作解释。登记时已测最好66.384127%，目标未完成。本轮结构、输入、预算与顺序在当前局部敏感度候选的新目标结果返回前固定；不依靠目标分数制定或筛选。
 
 源代码依据：旧semantic_feedback把原F1的全局160维向量用于FiLM；layerwise_refine只在训练增加中间层距离。本轮检验原F的局部时序特征能否在恢复前向中提供信息，不复用或晋级任何旧失败权重。源逐F梯度的局部冲突只能说明引导方向有差异，不能证明新结构有效。另一对话保持独立，没有发送指令。
 
@@ -24,3 +24,17 @@ source V1800/原F1/七视图只诊断，无源资格/早停/排序。两固定�
 一次N607普通账号预检VERIFIED，原R03合法、新root/release不存在，当前局部J在GPU6/7的真实target PID/CWD/cmd LIVE，agreement在GPU4/5，全部保留。新CPUcontroller先等局部J根终态并核实所有旧owned source/target真实handle退出，才创建GPU6/7新worker，不能只凭终态文件；不读取分数来放行。后续source≥18GB/target≥12GB、allowner<2、每卡一个本owner、最多4个本owner GPUworker。CPU2线程，scorer最多1；新source评分等agreement根终态，再与本run target共用score.lock；source实际退出才同卡target。非法输入/权限/代码、冲突、非有限/OOM、预算/梯度执行/冻结state或预测失败时保留并失败该行，无自动重试，健康行继续。
 
 一个实际代码配置commit、不可覆盖root、一次归档本地/远端SHA比较及remotecompile、真实smoke、controller/worker PID/CWD/cmd/GPU/日志增长随后核实。精确命令、环境/CWD、路径、数据与父来源、seed、矩阵及产物见experiment.json。IQ/权重/逐样本预测/原始日志和私有机器状态不进Git。
+
+
+## 实际发布与首轮核验
+
+方法commit `79088f493863d81f5408d2577ff858cf27b44922`已推送并独立核实远端OID，一次归档本地/远端SHA比较及远端compile/import均PASS。实际R03/三F/四Ls no-query smoke PASS：两臂完整初始IQ/state等于原R03，新field零输出head及原头到IQ梯度有效，F无梯度，新checkpoint往返一致，0V/TX/target/optimizer更新。两臂实际925378可训练/3299211总参数，原R03和232993参数的原F1冻结，新增field/projection/fusion；PASS立即训练。
+
+两条实际source worker的PID/CWD/完整命令/GPU6/7及持续日志增长已核实，三F参考缓存各63000条。实际field前向/非零梯度与逐帧cap计数：
+
+- pooled_features：2/10轮、494/2470步，梯度合并调用494、IQ252000条，实际缩放97993（observed82946/clean15047），平均scale0.75141345、范围0.0025452143至1，wave/identity/缩放后identity norm²总和1991.3193/1476179.7/1009.9166。
+- spatial_features：2/10轮、494/2470步，梯度合并调用494、IQ252000条，实际缩放98117（observed82892/clean15225），平均scale0.75181723、范围0.0022333772至1，wave/identity/缩放后identity norm²总和1991.0933/1461570.7/1011.3796。
+- pooled_features field：实际调用494、IQ252000；head/encoder/projection/fusion非零梯度步数494/493/493/493。原R03/F1冻结，仅field参与optimizer。
+- spatial_features field：实际调用494、IQ252000；head/encoder/projection/fusion非零梯度步数494/493/493/493。原R03/F1冻结，仅field参与optimizer。
+
+首轮核验时尚无新源V或目标准确率。实际缩放不代表性能改善或参数步波形保证；两臂固定E10后分别自动完整目标测试，source V不作资格筛选，用户目标仍未达成。最终状态与结果以完整结果节为准。局部J旧GPU6/7的source/target实际handles退出后才创建新worker，放行不读分数，释放记录与退出证据已核实。agreement GPU4/5任务保持，CPU评分等其终态后执行。两新行只比较pooled/spatial原生maps；旧不同结构/预算行不称匹配对照。
