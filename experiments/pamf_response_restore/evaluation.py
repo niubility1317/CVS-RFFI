@@ -49,7 +49,7 @@ def predict(args,role):
 def score(args,role):
     if os.environ.get('CUDA_VISIBLE_DEVICES')!='':raise ValueError('Independent CPU truth-side scoring required')
     if role=='source':
-        _,ids,_,_=source_reference(args.parent_action/'cache/validation',args.source_cache)
+        ids,_,_=source_reference(args.parent_action/'cache/validation',args.source_cache)
         response.load_predictions(args.output/args.row/'source_response',ids,args.row)
     original_score(row_args(args),role)
     if role=='source':response.score(args)
