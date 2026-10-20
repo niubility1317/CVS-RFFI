@@ -12,6 +12,8 @@
 
 5376 字节只描述缓存 Tensor。默认 `clone=True` 会同时保留原实例和一份完整模型；另一份 FP32 参数为 1105812 字节，还须计入其原有 buffer、Python 元数据和准备时临时分配。`clone=False` 在原实例上准备缓存。上述数字不是实际 GPU 驻留或峰值显存，后续计时须按真实持有模型数量报告。
 
-本地 CPU 原型使用 Torch 2.10.0+cu128、2 线程和合成 IQ；未读取真实 IQ、checkpoint、source/target 分数或 F。层级 FP32/FP64 输出及输入梯度、完整图输出、portable state 与缓存刷新等 21 项检查通过。CPU dispatcher 记录显示，完整前向的 `aten::index` 从 168 到 0、`aten::clamp` 从 337 到 169、`aten::exp` 从 339 到 171；这些是高层算子调用数，不是 CUDA kernel 数或加速倍数。
+最初 21 项本地 CPU 检查使用 Torch 2.10.0+cu128、2 线程和合成 IQ，未读取真实 IQ、checkpoint、source/target 分数或 F。层级 FP32/FP64 输出及输入梯度、完整图输出、portable state 与缓存刷新等检查通过。CPU dispatcher 记录显示，完整前向的 `aten::index` 从 168 到 0、`aten::clamp` 从 337 到 169、`aten::exp` 从 339 到 171；这些是高层算子调用数，不是 CUDA kernel 数或加速倍数。
 
-本轮只用合成输入验证原层与缓存层、完整 276453 图的输出、输入梯度和权重状态。即使 CPU 逐位相同，也不能据此宣称 CUDA 逐位相同、正式准确率已验证或实际提速。后续真实源权重/no-query 验证、GPU 计时和适用的正式预测对照必须另按最小流程固定预算，等待现有 GPU 任务自然完成；原性能、70%/5pp 和 TX 细节保真目标保持 ACTIVE。
+R58 正式评测完成并交付权重后，另对 calibrated、identity_control 两套真实源训练权重执行 CPU no-query 验证：严格加载固定 E20/4940，使用零输入 B1、合成高斯 B2 和小幅合成高斯 B1。两套模型的三种输入均有限且与原实现逐位相同，portable state 和原模型权重均保持一致；实际 IQ、F、TX 标签与源／目标分数读取均为 0。这里验证的是实际权重在合成输入上的 CPU 一致性，不是实际测试 IQ 上的一致性。
+
+即使 CPU 逐位相同，也不能据此宣称 CUDA 逐位相同、正式准确率已验证或实际提速。GPU 计时和适用的正式预测对照仍须按最小流程固定预算，等待现有 GPU 任务自然完成；原性能、70%/5pp 和 TX 细节保真目标保持 ACTIVE。
