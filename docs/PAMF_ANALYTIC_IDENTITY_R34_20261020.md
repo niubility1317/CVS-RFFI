@@ -27,3 +27,5 @@ run 为 `20261020-diagnostic-restoration-independent-analytic-TX-s2026092701-r34
 本地聚焦协议负测和数学检查、一次独立 P0/P1、一个代码 commit、最小预登记、一次源句柄预检、单归档 SHA 比对和远端编译，随后实际 PID/CWD/argv/日志和产物读回。不加载 checkpoint，因此不增加真实 checkpoint smoke；不重新验证未变数据，不增加签名或哈希链。输入、权限、非有限值或输出冲突等技术错误保留产物，不自动重试，不改变健康 R32 或其他任务。
 
 预期产物：`launch.json`、`resolved_config.json`、`calibration.json`、`analytic_features.npz`、`physical_ids.npy`、`feature_complete.json`、两阶段启动记录和完整日志、`summary.json`、`complete.json`。只提交方法、登记和公开汇总；校准状态、特征、物理 ID、标签和原始日志留在私有产物。
+
+实际完成：SOURCE_ANALYTIC_ASSOCIATION_PARTLY_SUPPORTED；420条分组及84条负控制独立复核，CPU 8.602s，0新神经预测/F/target。谱统计 clean 未高于负控制，保留负结果；未证明逐细节真实性。见[完整报告](../automation_reports/CV-SincNet/20261020-diagnostic-restoration-independent-analytic-TX-s2026092701-r34/report.md)。
