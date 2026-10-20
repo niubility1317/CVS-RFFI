@@ -93,7 +93,8 @@ def test_width_comparison_uses_matching_objective_and_budget():
     assert result['rows']['keep_task']['matched_same_budget_control']['target']['accuracy_nonregression']
 
 
-def test_delivery_renders_all_six_rows_without_remote_or_IQ_access(tmp_path, monkeypatch):
+@pytest.mark.parametrize('status', ['QUEUE_VERIFIED', 'RUNNING'])
+def test_delivery_renders_all_six_rows_without_remote_or_IQ_access(tmp_path, monkeypatch, status):
     import json
     from tools import complete_pamf_r38_successor as delivery
     local = tmp_path/'local'
@@ -101,7 +102,7 @@ def test_delivery_renders_all_six_rows_without_remote_or_IQ_access(tmp_path, mon
     folder = local/'automation_reports/CV-SincNet'/d.RUN
     folder.mkdir(parents=True)
     (workspace/'automation_reports/CV-SincNet'/d.RUN).mkdir(parents=True)
-    (folder/'report.md').write_text('状态：QUEUE_VERIFIED。\n', encoding='utf-8')
+    (folder/'report.md').write_text('状态：'+status+'。\n', encoding='utf-8')
     (folder/'experiment.json').write_text('{}', encoding='utf-8')
     (folder/'events.jsonl').write_text('', encoding='utf-8')
     (local/'tools').mkdir()

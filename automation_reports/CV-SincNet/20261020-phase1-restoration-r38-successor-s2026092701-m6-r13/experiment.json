@@ -203,7 +203,15 @@
       ],
       "new_GPU_workers": 0,
       "new_training_performance_claim": false
-    }
+    },
+    "actual_training_rows_verified": [
+      "keep_task",
+      "half_iq",
+      "three_quarter_iq",
+      "keep_iq",
+      "half_task",
+      "three_quarter_task"
+    ]
   },
   "expected_artifacts": [
     "launch.json",

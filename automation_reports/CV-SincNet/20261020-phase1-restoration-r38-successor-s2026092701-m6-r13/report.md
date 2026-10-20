@@ -1,6 +1,6 @@
 # R38 79万参数基底的继续压缩与优化 R13
 
-状态：QUEUE_VERIFIED。用户最新明确在79万参数模型基础继续压缩优化。本轮唯一直接父权重为R38 dense_half、完整794529参数、固定source E20/4940、commit e0868f0a0c3cf056a1753a5b4e5ce4f0bff84381；原R17为合法source祖先。用户在已暴露benchmark后指定此基底，如实披露，不称新独立盲测。R38训练/固定最终权重未使用TX/F/V/target优化或target选epoch；新训练不读取目标反馈。现有R11/R12健康六行继续完成。
+状态：RUNNING。用户最新明确在79万参数模型基础继续压缩优化。本轮唯一直接父权重为R38 dense_half、完整794529参数、固定source E20/4940、commit e0868f0a0c3cf056a1753a5b4e5ce4f0bff84381；原R17为合法source祖先。用户在已暴露benchmark后指定此基底，如实披露，不称新独立盲测。R38训练/固定最终权重未使用TX/F/V/target优化或target选epoch；新训练不读取目标反馈。现有R11/R12健康六行继续完成。
 
 |固定行|完整/可训练参数|context参数|相对794529减少|GPU|训练F知识|
 |---|---:|---:|---:|---:|---|
@@ -28,3 +28,9 @@
 普通N607预检VERIFIED：R38实际父权重source E20/4940、0TX/F/V/target训练、各组件累计40及原R17source-only来源核实；新run/release不存在。R11/R12六个实际GPU句柄仍在运行，只提交CPU真实权重smoke与逐卡接续队列；0原任务停止/重启。
 
 实际队列发布VERIFIED：方法commit `593bf5905f50fb7894e475b062bc191a2837a149` 已推送且远端OID独立比较一致，单归档SHA与远端compile/help通过。实际CPUcontroller PID/CWD/完整命令/commit及持续等待日志核实；真实R38最终权重/F50/2Ls noquery smoke PASS，六行全部组件及F输入有限非零梯度、父/F/head0更新、严格复载逐位输出一致。当前旧R11/R12六卡继续健康运行，新行按各卡真实句柄退出接续；排队状态不等于GPU训练或目标性能已验证。
+
+GPU 实际训练 VERIFIED：keep_task (GPU7, E1), half_iq (GPU6, E1)。实际 PID/CWD/命令/commit/GPU 与完整首轮记录核实，0 新技术故障；其余行按原队列接续。目标结果尚未齐全，不宣称完成。
+
+GPU 实际训练 VERIFIED：three_quarter_iq (GPU3, E1), keep_iq (GPU2, E1)。实际 PID/CWD/命令/commit/GPU 与完整首轮记录核实，0 新技术故障；其余行按原队列接续。目标结果尚未齐全，不宣称完成。
+
+GPU 实际训练 VERIFIED：half_task (GPU5, E1), three_quarter_task (GPU4, E1)。实际 PID/CWD/命令/commit/GPU 与完整首轮记录核实，0 新技术故障；其余行按原队列接续。目标结果尚未齐全，不宣称完成。

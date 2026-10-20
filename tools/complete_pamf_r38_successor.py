@@ -131,7 +131,8 @@ def retrieve(local, output):
             raise ValueError('Invalid full-chain inference artifact')
         artifacts[arm] = dict(path=str(path), bytes=path.stat().st_size, parameters=d.PARAMETERS[arm],
             components=components, FP32_parameter_bytes=4*d.PARAMETERS[arm], conv_linear_MACs_per_IQ=macs[0],
-            strict_load=True, synthetic_zero_IQ_output_finite=True, actual_IQ_reads=0, optimizer_included=False)
+            strict_load=True, synthetic_zero_IQ_output_finite=True, actual_IQ_reads=0, optimizer_included=False,
+            training_F_access=d.TASK[arm], training_TX_labels_read=0, parent_R38_run=d.COMPACT_PARENT_RUN)
     result = dict(status='VERIFIED', source_run=d.RUN, method_commit=METHOD, models=artifacts,
                   MAC_scope='Conv1d and Linear only; excludes FFT/complex CG/normalization/activation/memory traffic')
     write(saved, result)
@@ -142,14 +143,14 @@ def report(local, output, analysis, artifacts):
     folder = local/'automation_reports/CV-SincNet'/d.RUN
     report_path = folder/'report.md'
     body = report_path.read_text(encoding='utf-8').split('\n## R13 完整结果交付\n')[0]
-    body = body.replace('状态：QUEUE_VERIFIED。', '状态：ANALYZED。', 1)
+    body = body.replace('状态：QUEUE_VERIFIED。', '状态：ANALYZED。', 1).replace('状态：RUNNING。', '状态：ANALYZED。', 1)
     lines = ['\n## R13 完整结果交付\n',
         '六行均完成固定 E10/2470、source 1800×7 和 target 168000×7；每行全部预测固定后独立 truth-last。'
         '实际所属进程已退出，六份完整恢复器已取回并严格加载。全部负结果保留，结果不回流训练或重跑。\n',
         '|版本|参数|较 R38 减少|最大下降 R38/R17（pp）|low urban（%）|双参考 1pp|训练 F 知识|',
         '|---|---:|---:|---:|---:|---|---|']
     for arm, row in analysis['rows'].items():
-        drops = [max(-v['accuracy_delta_pp'] for v in row['acceptance'][b]['views'].values()) for b in ('R38', 'R17')]
+        drops = [max(0., max(-v['accuracy_delta_pp'] for v in row['acceptance'][b]['views'].values())) for b in ('R38', 'R17')]
         lines.append(f"|{arm}|{row['parameters']}|{row['reduction_from_R38_percent']:.4f}%|{drops[0]:.6f}/{drops[1]:.6f}|"
                      f"{row['performance_optimization']['low_urban_accuracy']:.6f}|{row['accepted_both']}|{row['training_F_access']}|")
     lines += ['\n1pp 通过仅表示满足退化容差。IQ 行训练不加载 F；task 行使用监督训练的冻结 F 知识，须单独标注。'
@@ -218,7 +219,8 @@ def report(local, output, analysis, artifacts):
         if destination.resolve() != (folder/name).resolve():
             shutil.copy2(folder/name, destination)
     (output/'models/README.md').write_text('六行完整模型与七场景结果：'+str(report_path)+'\n'
-        '加载 experiments.pamf_r38_successor.runtime.load_checkpoint(path, device)，原生 float32 [B,2,256] IQ 输入/输出。\n', encoding='utf-8')
+        '加载 experiments.pamf_r38_successor.runtime.load_checkpoint(path, device)，原生 float32 [B,2,256] IQ 输入/输出。\n'
+        '所有模型不读取新 TX 训练标签。*_iq 行训练不使用 F；*_task 行使用监督训练的冻结 F 知识，不能称严格 F-free 无监督。\n', encoding='utf-8')
     print(json.dumps(dict(status='REPORT_AND_MODELS_VERIFIED', report=str(report_path), accepted_rows=analysis['accepted_rows'])))
 
 
