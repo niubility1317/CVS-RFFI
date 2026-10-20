@@ -1,0 +1,267 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-diagnostic-restoration-RF-response-F50-s2026092701-r31",
+  "group_id": "pamf-restoration-RF-response",
+  "display_name": "冻结恢复器的小幅射频变化保留源诊断",
+  "description": "固定原源选择R17，检验四种录音IQ方向与随机控制在1%/2%下的中央响应；0训练/target。",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "source_diagnostic",
+    "rf_response",
+    "oracle_not_deployable"
+  ],
+  "comparison_group_id": "manysig-source1800-R17-local-observable-response",
+  "parent_run_ids": [
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+    "20261019-phase1-restoration-learned-action-source-s2026092701-r07",
+    "20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "持续独立恢复研究与N607授权；检验输入细节是否被平均化，先做小规模单seed源机制证伪；不使用正式排名或成绩选父模型/参数。",
+  "code": {
+    "commit": "c333e666c2c648773b7f2994d65176abd72310ff",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
+    "cwd": "releases/pamf_rf_response_20261020_r31"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "Original source IQ2x256;known cached fixed-AGC A generates r+-Adelta;raw counterfactual outputs retained",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/validation original1800 sourceV physicalIDs;matching validation_actions perview reused without regeneration",
+    "label_map_ref": "All70 source counterfactual cells finite and IDs matched before independent CPU TX grouping;counterfactuals have no class labels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json: READY/EXACT_MATCH; reuse existing cache without new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "Unchanged original source practical received and validated action cache;2462MHz/25MHz source proxy,not inorbit",
+    "restoration_train_counts": {
+      "new_epochs": 0,
+      "new_updates": 0,
+      "new_L_exposures": 0,
+      "new_U_exposures": 0,
+      "parent_L_count": 6300,
+      "parent_U_count": 56700
+    },
+    "source_validation_panel": 1800,
+    "target_panel": "None;source-only diagnostic;all oracles nondeployable and never automatically target-promoted"
+  },
+  "permissions": {
+    "regime": "Frozen source finite-response diagnostic;clean/knownA used only for source counterfactual construction",
+    "query_use": "No target/query mode;0 V state updates;source truth only for independent CPU stratification after all outputs",
+    "external_method_exception": null,
+    "claim_scope": "Local response attenuation and finite-model observability;not realTX derivative,future-training efficacy,formal accuracy or per-detail authenticity"
+  },
+  "checkpoint": {
+    "initialization": "Strict original R17 unroll_unshared/native_map_prior/final.pt;E20/4940 full-LU training;all parameters frozen",
+    "sources": [
+      {
+        "run_id": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+        "commit": "cd97744884b5e460926e48c8b7efb7d78c6da0f4",
+        "role": "Original fixed source-selected unshared three-stage restorer;0TX/F/target training",
+        "path": "runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/unroll_unshared/native_map_prior/final.pt"
+      },
+      {
+        "run_id": "20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10",
+        "commit": "b57eca9946b2a912a88870e24826fe3e2f70985d",
+        "role": "Historical R10 source-handle provenance required by reused runtime;no reference prediction read or target ranking",
+        "path": "runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10/reference_controls/prediction"
+      },
+      {
+        "run_id": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+        "commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+        "role": "Original F50/defaulthead only for two unmodified realLs no-query checkpoint smoke;counterfactuals never sent toF",
+        "path": "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+      }
+    ],
+    "contract_check_ref": "Reuse original physical source handles and ancestor audit;strict fullR17 E20/4940;real2Ls frozen R17/F50 no-query smoke",
+    "provenance_verdict": "VERIFIED unchanged original 7/63/30 physical role contract and source-only ancestors;no target use or unknown inherited weights",
+    "selection_rule": {
+      "parent": "Historical source-selected unshared;not target rank",
+      "interpretation_only": {
+        "primary_amplitude": 0.01,
+        "primary_view": "practical_low_urban",
+        "physical_directions": [
+          "pa_amplitude",
+          "pa_phase",
+          "iq_image",
+          "delay_residual"
+        ],
+        "minimum_observable_records": 100,
+        "median_response_NMSE_min": 0.25,
+        "median_gain_max": 0.8,
+        "median_curvature_NMSE_max": 0.1,
+        "minimum_supported_directions": 2,
+        "interpretation_only": true,
+        "target_promotion": false
+      },
+      "target_promotion": false
+    },
+    "evaluation_readers": [
+      "Original F50/defaulthead for real2Ls unperturbed smoke only;no F counterfactual predictions"
+    ]
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/RF-response",
+    "gpu_policy": "Pool0/1/5/7,max1ownworker;allowner cap2/free12GB;sharedcapacity4lock until CUDA PID visible;no other-owner mutation",
+    "remote_run_root": "runs/20261020-diagnostic-restoration-RF-response-F50-s2026092701-r31",
+    "remote_log_root": "logs/20261020-diagnostic-restoration-RF-response-F50-s2026092701-r31",
+    "local_artifact_root": "local_artifacts/pamf_restoration/rf_response_r31_20261020",
+    "launch_command": "python -u -m experiments.pamf_rf_response.runner run --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --reference-run ../../runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10 --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --output ../../runs/20261020-diagnostic-restoration-RF-response-F50-s2026092701-r31 --expected-commit c333e666c2c648773b7f2994d65176abd72310ff",
+    "stop_rule": "Protocol/path/provenance/shape/nonfinite or owned worker failure;preserve outputs;no automatic restart"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "resolved_config.json",
+    "smoke.json",
+    "worker.json",
+    "gpu_ready.json",
+    "predict.log",
+    "prediction/{view}/base.npy",
+    "prediction/{view}/{direction_amplitude}/{plus,minus,oracle,observation_delta,CG_residual}.npy",
+    "prediction/physical_ids.npy",
+    "prediction/complete.json",
+    "{view}.{row}.metrics.npz",
+    "summary.json",
+    "interpretation.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "central response NMSE/projectiongain/cosine/energy",
+      "midpointcurvatureNMSE",
+      "knownA ridge response NMSE/gain",
+      "directionalFisherEnergy",
+      "oracleCGrelativeResidual",
+      "valid/observable counts",
+      "predictionseconds"
+    ],
+    "dimensions": [
+      "clean",
+      "three suburban separately",
+      "three urban separately",
+      "five directions",
+      "1%/2%",
+      "TX",
+      "RX",
+      "day"
+    ],
+    "primary": "1% lowurban observable physical directions;two of four attenuation criteria for research priority only;random control descriptive",
+    "prediction_ref": "runs/20261020-diagnostic-restoration-RF-response-F50-s2026092701-r31/prediction;70completecells before source labels",
+    "scorer_ref": "experiments.pamf_rf_response.runner score;independent CPU float64 arithmetic from saved raw response IQ;TX grouping only",
+    "final_user_targets": {
+      "lowurban_accuracy_min": 70.0,
+      "other_five_max_gap_vs_original_clean_pp": 5.0
+    }
+  },
+  "rows": [
+    {
+      "row_id": "source_response",
+      "method": "rf_response",
+      "purpose": "source_only_response",
+      "config_ref": "experiments/pamf_rf_response/design.py#configuration",
+      "resolved_config_ref": "runs/20261020-diagnostic-restoration-RF-response-F50-s2026092701-r31/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026102031
+      },
+      "seed_notes": "Parent R17 model/split/data/augmentation provenance retained;source observations1901/hardware1902 reused;new random-direction-only seed2031+sourcepanelindex;no target/support draw",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "None(frozen)",
+      "lr": 0.0,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0training/fit/target;1800 source x7views x5directions x2amplitudes x2signs;one base perview;CG64 oracle per direction;1050group records",
+      "output_root": "runs/20261020-diagnostic-restoration-RF-response-F50-s2026092701-r31/prediction",
+      "log_path": "runs/20261020-diagnostic-restoration-RF-response-F50-s2026092701-r31/predict.log",
+      "command": "python -u -m experiments.pamf_rf_response.runner run --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --reference-run ../../runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10 --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --output ../../runs/20261020-diagnostic-restoration-RF-response-F50-s2026092701-r31 --expected-commit c333e666c2c648773b7f2994d65176abd72310ff",
+      "expected_artifacts": [
+        "launch.json",
+        "resolved_config.json",
+        "smoke.json",
+        "worker.json",
+        "gpu_ready.json",
+        "predict.log",
+        "prediction/{view}/base.npy",
+        "prediction/{view}/{direction_amplitude}/{plus,minus,oracle,observation_delta,CG_residual}.npy",
+        "prediction/physical_ids.npy",
+        "prediction/complete.json",
+        "{view}.{row}.metrics.npz",
+        "summary.json",
+        "interpretation.json",
+        "complete.json"
+      ],
+      "counterfactual_readouts": [
+        "pa_amplitude_r01",
+        "pa_phase_r01",
+        "iq_image_r01",
+        "delay_residual_r01",
+        "random_control_r01",
+        "pa_amplitude_r02",
+        "pa_phase_r02",
+        "iq_image_r02",
+        "delay_residual_r02",
+        "random_control_r02"
+      ]
+    }
+  ],
+  "notes": [
+    "R07/R17 source code confirmed fresh training channel per epoch;no duplicate single-draw hypothesis experiment.",
+    "Source x direction definitions are observed-IQ counterfactuals after removing complex span(x),not known trueTX parameter directions.",
+    "r+-Adelta fixes cached noise,actualAGC androtations;not a fully regenerated nonlinear receiver.",
+    "Fisher energy uses same scalar simulator real-coordinate variance as oracle,not full groundnoise/operatorerror covariance;not theoretical upper bound.",
+    "Original R17 inference input/output unchanged;0 training andV updates;no counterfactual TX-class labels orF logits.",
+    "All70cells andbase finite before independentCPUtruth grouping;source full1800/7/10/15=1050groups;views/directions correlated.",
+    "34 focused new andoriginalunrolled checks,CLIhelp,one P0P1 plus its one targeted projection P1 recheck;real2Ls fullcheckpoint originalF50 unmodifiedIQ smoke first.",
+    "Interpretation priority requires1%lowurban>=100observable records;median responseNMSE>=.25,gain<=.8,curvature<=.1;>=2of4physicaldirections;not targetpromotion.",
+    "One immutable release/run;ordinaryN607,max1ownGPUworker,original pool0/1/5/7 sharedcapacity lock;preserve all otherowners.",
+    "Goal70/5pp/inputTXfidelity active;no target rank orscore feeds method;future training and identity benefit unproven."
+  ],
+  "registered_at": "2026-10-20T04:34:01+00:00"
+}
