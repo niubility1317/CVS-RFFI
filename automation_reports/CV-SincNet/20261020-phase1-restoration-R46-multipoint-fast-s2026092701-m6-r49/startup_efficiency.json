@@ -1,0 +1,150 @@
+{
+  "status": "OBSERVED_STARTUP_NOT_FINAL_PERFORMANCE",
+  "run": "20261020-phase1-restoration-R46-multipoint-fast-s2026092701-m6-r49",
+  "method_commit": "e96397bc3c7036f085317f9cc0e59074fb6ee24f",
+  "rows": {
+    "retain_refine": {
+      "epoch": 1,
+      "source_examples": 63000,
+      "updates": 247,
+      "global_batch": 256,
+      "microbatch": 256,
+      "seconds": 78.52086648507975,
+      "source_examples_per_second": 802.3344980785589,
+      "source_IQ_NMSE": 0.02415093368859518,
+      "F_training_inputs": 0,
+      "GPU": 2,
+      "R48_samewidth_micro64_E1_seconds": 161.75251549109817,
+      "observed_R48_seconds_over_R49_seconds": 2.0599940211030883,
+      "source_IQ_NMSE_minus_R48": -3.2395597489298655e-08
+    },
+    "prune_near": {
+      "epoch": 1,
+      "source_examples": 63000,
+      "updates": 247,
+      "global_batch": 256,
+      "microbatch": 256,
+      "seconds": 80.03783776285127,
+      "source_examples_per_second": 787.1277106044062,
+      "source_IQ_NMSE": 0.027539722904326425,
+      "F_training_inputs": 0,
+      "GPU": 3
+    },
+    "prune_balanced": {
+      "epoch": 1,
+      "source_examples": 63000,
+      "updates": 247,
+      "global_batch": 256,
+      "microbatch": 256,
+      "seconds": 53.92643916700035,
+      "source_examples_per_second": 1168.2581118493747,
+      "source_IQ_NMSE": 0.0415084312018894,
+      "F_training_inputs": 0,
+      "GPU": 4
+    },
+    "prune_small": {
+      "epoch": 1,
+      "source_examples": 63000,
+      "updates": 247,
+      "global_batch": 256,
+      "microbatch": 256,
+      "seconds": 50.76111615519039,
+      "source_examples_per_second": 1241.107461218781,
+      "source_IQ_NMSE": 0.12475796307268597,
+      "F_training_inputs": 0,
+      "GPU": 5
+    },
+    "context_slim": {
+      "epoch": 1,
+      "source_examples": 63000,
+      "updates": 247,
+      "global_batch": 256,
+      "microbatch": 256,
+      "seconds": 53.967771604890004,
+      "source_examples_per_second": 1167.3633749645426,
+      "source_IQ_NMSE": 0.07866577907592531,
+      "F_training_inputs": 0,
+      "GPU": 6
+    },
+    "prior_slim": {
+      "epoch": 1,
+      "source_examples": 63000,
+      "updates": 247,
+      "global_batch": 256,
+      "microbatch": 256,
+      "seconds": 54.58457944984548,
+      "source_examples_per_second": 1154.1721239766434,
+      "source_IQ_NMSE": 0.04840499621724326,
+      "F_training_inputs": 0,
+      "GPU": 7
+    }
+  },
+  "GPU_utilization": {
+    "0": {
+      "physical_GPU": 0,
+      "utilization_mean": 34.2,
+      "utilization_min": 25,
+      "utilization_max": 41,
+      "used_MB_max": 1370
+    },
+    "1": {
+      "physical_GPU": 1,
+      "utilization_mean": 38,
+      "utilization_min": 35,
+      "utilization_max": 42,
+      "used_MB_max": 1344
+    },
+    "2": {
+      "physical_GPU": 2,
+      "utilization_mean": 94.8,
+      "utilization_min": 89,
+      "utilization_max": 98,
+      "used_MB_max": 3733
+    },
+    "3": {
+      "physical_GPU": 3,
+      "utilization_mean": 89.4,
+      "utilization_min": 77,
+      "utilization_max": 100,
+      "used_MB_max": 3717
+    },
+    "4": {
+      "physical_GPU": 4,
+      "utilization_mean": 65.8,
+      "utilization_min": 60,
+      "utilization_max": 72,
+      "used_MB_max": 2260
+    },
+    "5": {
+      "physical_GPU": 5,
+      "utilization_mean": 58.6,
+      "utilization_min": 43,
+      "utilization_max": 69,
+      "used_MB_max": 2140
+    },
+    "6": {
+      "physical_GPU": 6,
+      "utilization_mean": 67,
+      "utilization_min": 61,
+      "utilization_max": 75,
+      "used_MB_max": 2240
+    },
+    "7": {
+      "physical_GPU": 7,
+      "utilization_mean": 67.4,
+      "utilization_min": 64,
+      "utilization_max": 70,
+      "used_MB_max": 2204
+    }
+  },
+  "sample_count": 5,
+  "sample_interval_seconds": 5,
+  "scope": "First complete source epoch only,not formal accuracy or full convergence;FP32 globalbatch budget unchanged;no target scores used",
+  "limitations": [
+    "Twentysecond/fiveinstantaneous utilization samples,not sustained average",
+    "GPU2/3 include otherowner concurrent load;GPU4to7 own oneGPUworker each",
+    "R48/R49 samewidth trainingtiming is between different physical3090s/load conditions and firstepoch warmup;ratio is observed elapsedtime,not isolated method speedup",
+    "Trainingthroughput doesnot establish G or GplusF inference latency;fullsevenformal and preregistered repeated inferenceprofile stillpending"
+  ],
+  "goal_complete": false
+}

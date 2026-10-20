@@ -31,3 +31,6 @@
 
 
 VERIFIED/RUNNING：实际350521父/F50/两Ls配对IQ noquery smoke PASS，六行全部组件有限非零梯度、teacher/F不更新、checkpoint严格重载一致。归档单SHA/compile及controller/六worker实际PID/CWD/argv/空controllerCUDA/各预登记物理GPU2至7和GPU-PID匹配、首轮曝光、micro256/directbuffer和日志增长已核实。GPU2/3发布前已有各一条其他owner轻负载，按free≥18GB/总进程<2共存；GPU4至7预检空闲；无旧进程改动。无本轮正式性能结果；每行E20后自动七正式测试和独立truth-last。
+
+
+VERIFIED启动效率观察：六行真实E1/247/L6300+U56700、micro256/directbuffer、0F训练输入；retain_refine E1 78.52s/802.33sample/s；prune_near E1 80.04s/787.13sample/s；prune_balanced E1 53.93s/1168.26sample/s；prune_small E1 50.76s/1241.11sample/s；context_slim E1 53.97s/1167.36sample/s；prior_slim E1 54.58s/1154.17sample/s。GPU4至7五次5s间隔采样平均利用率58.6%至67.4%；GPU2/3为94.8%/89.4%且含其他owner负载。同宽控制E1相对R48的耗时比为2.0600，属于不同物理卡/负载/首轮条件的观察，不是隔离方法加速倍数，不能替代正式识别率或完整推理成本。
