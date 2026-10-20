@@ -327,7 +327,26 @@
     "source/V/NMSE仅诊断，按用户最新目标域性能口径固定两行自动测试，不伪造源资格；两个结果包括负结果完整报告。",
     "旧R04 profile包含loadedcheckpointpayload/原R17optimizer，旧peakallocatedratio不能解释为纯推理显存收益；R06profile先CPU加载并删除payload再GPU计时，报告resident及增量peak。",
     "最小流程：一次普通N607预检、实际code/config commit、一次归档SHA/remotecompile、PID/CWD/cmd/GPU/loggrowth；无其他gate。",
-    "唯一独立P0/P1发布审查PASS，未发现确定P0/P1；独立复跑40项合成/协议检查PASS，未访问真实IQ/权重/远端。N607普通账户预检VERIFIED，原source/R17/缓存句柄匹配，R05旧GPU实际进程0，GPU4/5各24124MB空闲；新root/release不存在。"
+    "唯一独立P0/P1发布审查PASS，未发现确定P0/P1；独立复跑40项合成/协议检查PASS，未访问真实IQ/权重/远端。N607普通账户预检VERIFIED，原source/R17/缓存句柄匹配，R05旧GPU实际进程0，GPU4/5各24124MB空闲；新root/release不存在。",
+    "用户要求将本轮两种结构完整执行完；未追加新结构。已验收3118001参数版本保留，并在结果中补充相对该版本差值。"
   ],
-  "registered_at": "2026-10-20T06:27:23+00:00"
+  "registered_at": "2026-10-20T06:27:23+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "source_rows": [
+      "shared_half",
+      "shared_quarter"
+    ],
+    "target_rows": [
+      "shared_half",
+      "shared_quarter"
+    ],
+    "accepted_rows": [
+      "shared_half",
+      "shared_quarter"
+    ],
+    "target_acceptance_allowance_pp": 1.0,
+    "all_negative_results_preserved": true,
+    "goal_complete": false
+  }
 }
