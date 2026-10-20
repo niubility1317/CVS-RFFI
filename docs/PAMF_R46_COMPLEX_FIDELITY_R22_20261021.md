@@ -1,6 +1,6 @@
 # R22：27.82万恢复器复频谱保真与clean恒等约束
 
-状态：VERIFIED / RUNNING；两版训练中，无新版正式识别成绩。
+状态：VERIFIED / PARTIAL；complex625 已完成七场景正式测试，识别性能未提升；complex625_identity 按原固定方案继续，整个 R22 尚未完成。
 
 从用户指定原R46 prune_refine350521 source-final E20/4940独立初始化及作IQ教师，方法bbb8daf817de050b958d217b70d4c33f4aefe341。两版均为R18阶段对照的完整SVD625架构：278180参数，其中coarse106658、action80045、prior91477；保留全部通道/GN4/skip、共享prior长卷积权重及各stage独立bias/norm，三stage/六次CG全部执行。原R18学生不作为训练父或教师。
 
@@ -89,3 +89,5 @@ complex625的168000物理记录×七景预测全部固定后，独立CPU truth-l
 TX1 lowurban为35.253571%，较父下降7.953571pp、较R18阶段版下降6.671429pp；整体仅下降0.044643pp掩盖了明显类别重分配。既有源pairedIQ误差略低并未转化为跨RX身份识别收益，teacher-stage与power-STFT源误差略高；新增分组复FFT目标可能改变有限容量下的保真取舍，但历史R18不是同批复跑对照，不能将全部差异唯一归因于该损失。最终波形/解析身份关联仍须与识别结果分别评价，低NMSE不能替代TX真实性。
 
 本次仅只读已有评分artifact，额外IQ/truth/F读取与训练改动均0，没有重复预测、评分或启动新的完成owner。两版汇总与完整权重仍由既有唯一完成owner在全run完成后交付；负结果保留，整个目标ACTIVE。
+
+第一版完整 TX/RX/day、混淆矩阵、波形及成本细表见 [七场景详细报告](PAMF_R46_COMPLEX_FIDELITY_R22_FIRST_ROW_DETAIL_20261021.md)。
