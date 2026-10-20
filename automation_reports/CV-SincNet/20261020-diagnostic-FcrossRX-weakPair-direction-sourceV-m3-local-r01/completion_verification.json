@@ -1,0 +1,21 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "13201a1d90f1010e646d2a54006652ce7db9d4a9",
+  "archive_transfer": "VERIFIED",
+  "release_compile": "PASS",
+  "native_local_CPU_only": true,
+  "worker_exit": 0,
+  "execution_CWD_and_commit_match": true,
+  "all3_completion_markers": true,
+  "all15_pairs_each_seed": true,
+  "independent_summary_math": "PASS",
+  "owned_worker_live": false,
+  "new_checkpoint_loads": 0,
+  "new_model_forwards": 0,
+  "new_IQ_reads": 0,
+  "target_reads": 0,
+  "U_TX_truth_reads": 0,
+  "head_fit_updates": 0,
+  "optimizer_updates": 0,
+  "source_only": true
+}

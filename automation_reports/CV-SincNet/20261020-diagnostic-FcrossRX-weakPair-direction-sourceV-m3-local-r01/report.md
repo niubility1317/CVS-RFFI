@@ -13,3 +13,5 @@
 运行：普通本机账户，native Python3.10/Numpy，CPU线程2，无GPU worker。代码标识为本次实现提交；入口、CWD、参数及固定缓存/新输出别名见experiment.json。新release/output不可覆盖，一次archive copy比较及release compile后执行。停止规则：错误缓存/角色/来源/接口、非有限或零特征、输出冲突即失败保留产物；不改健康进程，不按性能重跑。
 
 预期产物：execution.json、三row/source_direction.json、result.json、results.md、completion.json；记录全部15类对、固定前提判定、CPU成本、0模型/目标/头拟合。纯源域缓存诊断无新增目标性能，研究目标保持ACTIVE/UNMET。
+
+已完成三种子 CPU 诊断：弱对平均方向余弦分别为 0.885160、0.861759、0.911220；相对其他类对中位数的差额为 0.040900、0.037936、−0.000613，均未满足预先固定的双条件。前提不成立，不启动该方向一致性训练路线，不调整阈值。全部 15 类对结果、独立汇总复算与本地终态核验已保存。没有新增目标性能结果，目标保持 ACTIVE/UNMET。

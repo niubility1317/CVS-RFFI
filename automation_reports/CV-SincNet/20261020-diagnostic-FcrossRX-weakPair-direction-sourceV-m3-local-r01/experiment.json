@@ -29,7 +29,7 @@
   "replaces_run_id": null,
   "authorization": "Active weakTX optimization goal, defaultheadjoint/no satellite/onlyclean for training studies; source-only no-fit diagnosis is authorized. Fixed source pair14-7/20-19 from BASE3 confusion evidence recorded before remaining MEM4 target results. No new training or target experiment in this diagnostic.",
   "code": {
-    "commit": "PENDING_COMMIT",
+    "commit": "13201a1d90f1010e646d2a54006652ce7db9d4a9",
     "checkout": "codex/phase1-rdrop-combinations-20261015",
     "environment": "Verified native Python3.10/Numpy; CPU2; no torch/model/CP import",
     "cwd": "LOCAL_RELEASE/cvs_F_pair_direction_local_20261020_r01"
@@ -62,8 +62,8 @@
       "V": "Reuse completed frozen BASE3 sourceV cache27000x160 with original class/RX/day arrays; no new IQ or network forwards"
     },
     "train_ratio": 0.07,
-    "capsule_id": "existing VALIDATED_ONCE local manifest; unchanged",
-    "split_id": "392005 exact original roles; unchanged",
+    "capsule_id": null,
+    "split_id": null,
     "validation_ref": "LOCAL_DATA/source_cache/manifest.json",
     "support_query_ref": null,
     "leo_config_ref": null
@@ -264,7 +264,8 @@
     "If FAIL, do not relax thresholds or launch that proposed direction-consistency training route. If PASS, only supports entering a separate properly fixed3seed training/clean experiment; no performance assertion.",
     "Only original BASE3 source caches. MEM4 three-seed negative target result retained as history, no MEM4 stacking/reseed/target tuning. Old benchmark exposure disclosed.",
     "Focused math/source negative tests PASS12; prior model/checkpoint/sourcecache provenance reused. This G0 computation consumes no model or checkpoint, so does not rerun the prior true-checkpoint noquery smoke. One direct independent P0/P1 review PASS.",
-    "SourceV labels only for descriptive diagnosis; no gradients, classifierfit, targetdata, Utruth or new model forwards. All15classpairs/negative results preserved."
+    "SourceV labels only for descriptive diagnosis; no gradients, classifierfit, targetdata, Utruth or new model forwards. All15classpairs/negative results preserved.",
+    "Phase1 existing source contract has no Phase2 capsule_id/split_id;392005 is the original split seed, not an invented Phase2 split identifier. Existing VALIDATED_ONCE source cache reused."
   ],
   "registered_at": "2026-10-20T09:28:39+00:00"
 }
