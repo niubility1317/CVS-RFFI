@@ -35413,5 +35413,267 @@
       },
       "mean6_gain_pp": -0.23839285714285552
     }
+  ],
+  "stratified_identity_checks": [
+    {
+      "row": "r10_native_map_prior",
+      "view": "practical_low_urban",
+      "TX": {
+        "0": {
+          "accuracy": 76.40357142857142,
+          "baseline_accuracy": 39.25,
+          "repaired": 12038,
+          "damaged": 1635,
+          "count": 28000
+        },
+        "1": {
+          "accuracy": 30.58928571428571,
+          "baseline_accuracy": 11.217857142857143,
+          "repaired": 7407,
+          "damaged": 1983,
+          "count": 28000
+        },
+        "2": {
+          "accuracy": 54.871428571428574,
+          "baseline_accuracy": 31.285714285714285,
+          "repaired": 9307,
+          "damaged": 2703,
+          "count": 28000
+        },
+        "3": {
+          "accuracy": 57.846428571428575,
+          "baseline_accuracy": 8.303571428571429,
+          "repaired": 14619,
+          "damaged": 747,
+          "count": 28000
+        },
+        "4": {
+          "accuracy": 89.88928571428572,
+          "baseline_accuracy": 26.610714285714288,
+          "repaired": 18352,
+          "damaged": 634,
+          "count": 28000
+        },
+        "5": {
+          "accuracy": 81.77499999999999,
+          "baseline_accuracy": 65.12857142857142,
+          "repaired": 6503,
+          "damaged": 1842,
+          "count": 28000
+        }
+      },
+      "worst": {
+        "TX": {
+          "value": "1",
+          "accuracy": 30.58928571428571,
+          "count": 28000
+        },
+        "RX": {
+          "value": "14-7",
+          "accuracy": 58.32083333333333,
+          "count": 24000
+        },
+        "day": {
+          "value": "2021_03_15",
+          "accuracy": 63.84285714285715,
+          "count": 42000
+        }
+      }
+    },
+    {
+      "row": "r16_unet_control",
+      "view": "practical_low_urban",
+      "TX": {
+        "0": {
+          "accuracy": 75.175,
+          "baseline_accuracy": 39.25,
+          "repaired": 11833,
+          "damaged": 1774,
+          "count": 28000
+        },
+        "1": {
+          "accuracy": 27.70714285714286,
+          "baseline_accuracy": 11.217857142857143,
+          "repaired": 6778,
+          "damaged": 2161,
+          "count": 28000
+        },
+        "2": {
+          "accuracy": 54.61071428571429,
+          "baseline_accuracy": 31.285714285714285,
+          "repaired": 9101,
+          "damaged": 2570,
+          "count": 28000
+        },
+        "3": {
+          "accuracy": 59.603571428571435,
+          "baseline_accuracy": 8.303571428571429,
+          "repaired": 15147,
+          "damaged": 783,
+          "count": 28000
+        },
+        "4": {
+          "accuracy": 93.24285714285713,
+          "baseline_accuracy": 26.610714285714288,
+          "repaired": 19065,
+          "damaged": 408,
+          "count": 28000
+        },
+        "5": {
+          "accuracy": 76.02857142857142,
+          "baseline_accuracy": 65.12857142857142,
+          "repaired": 5754,
+          "damaged": 2702,
+          "count": 28000
+        }
+      },
+      "worst": {
+        "TX": {
+          "value": "1",
+          "accuracy": 27.70714285714286,
+          "count": 28000
+        },
+        "RX": {
+          "value": "14-7",
+          "accuracy": 54.19166666666667,
+          "count": 24000
+        },
+        "day": {
+          "value": "2021_03_01",
+          "accuracy": 62.897619047619045,
+          "count": 42000
+        }
+      }
+    },
+    {
+      "row": "r17_unroll_unshared",
+      "view": "practical_low_urban",
+      "TX": {
+        "0": {
+          "accuracy": 75.91785714285714,
+          "baseline_accuracy": 39.25,
+          "repaired": 12112,
+          "damaged": 1845,
+          "count": 28000
+        },
+        "1": {
+          "accuracy": 28.239285714285717,
+          "baseline_accuracy": 11.217857142857143,
+          "repaired": 6962,
+          "damaged": 2196,
+          "count": 28000
+        },
+        "2": {
+          "accuracy": 61.70714285714286,
+          "baseline_accuracy": 31.285714285714285,
+          "repaired": 10653,
+          "damaged": 2135,
+          "count": 28000
+        },
+        "3": {
+          "accuracy": 61.253571428571426,
+          "baseline_accuracy": 8.303571428571429,
+          "repaired": 15542,
+          "damaged": 716,
+          "count": 28000
+        },
+        "4": {
+          "accuracy": 94.45714285714286,
+          "baseline_accuracy": 26.610714285714288,
+          "repaired": 19347,
+          "damaged": 350,
+          "count": 28000
+        },
+        "5": {
+          "accuracy": 81.72500000000001,
+          "baseline_accuracy": 65.12857142857142,
+          "repaired": 6571,
+          "damaged": 1924,
+          "count": 28000
+        }
+      },
+      "worst": {
+        "TX": {
+          "value": "1",
+          "accuracy": 28.239285714285717,
+          "count": 28000
+        },
+        "RX": {
+          "value": "14-7",
+          "accuracy": 59.40833333333333,
+          "count": 24000
+        },
+        "day": {
+          "value": "2021_03_01",
+          "accuracy": 65.9452380952381,
+          "count": 42000
+        }
+      }
+    },
+    {
+      "row": "r19_time_time",
+      "view": "practical_low_urban",
+      "TX": {
+        "0": {
+          "accuracy": 81.10357142857143,
+          "baseline_accuracy": 39.25,
+          "repaired": 13168,
+          "damaged": 1449,
+          "count": 28000
+        },
+        "1": {
+          "accuracy": 29.53928571428571,
+          "baseline_accuracy": 11.217857142857143,
+          "repaired": 7293,
+          "damaged": 2163,
+          "count": 28000
+        },
+        "2": {
+          "accuracy": 57.56071428571429,
+          "baseline_accuracy": 31.285714285714285,
+          "repaired": 9691,
+          "damaged": 2334,
+          "count": 28000
+        },
+        "3": {
+          "accuracy": 57.792857142857144,
+          "baseline_accuracy": 8.303571428571429,
+          "repaired": 14656,
+          "damaged": 799,
+          "count": 28000
+        },
+        "4": {
+          "accuracy": 95.04285714285714,
+          "baseline_accuracy": 26.610714285714288,
+          "repaired": 19473,
+          "damaged": 312,
+          "count": 28000
+        },
+        "5": {
+          "accuracy": 81.57857142857144,
+          "baseline_accuracy": 65.12857142857142,
+          "repaired": 6591,
+          "damaged": 1985,
+          "count": 28000
+        }
+      },
+      "worst": {
+        "TX": {
+          "value": "1",
+          "accuracy": 29.53928571428571,
+          "count": 28000
+        },
+        "RX": {
+          "value": "20-1",
+          "accuracy": 59.05833333333334,
+          "count": 24000
+        },
+        "day": {
+          "value": "2021_03_23",
+          "accuracy": 66.01666666666667,
+          "count": 42000
+        }
+      }
+    }
   ]
 }
