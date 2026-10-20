@@ -421,3 +421,5 @@
 本轮记录：[冻结原F的源域恢复误差位置归因](by_method/oracle_attribution.md)。
 
 本轮记录：[R17 原性能保持约束下的共享与低秩精简](by_method/r17_compact.md)。
+
+本轮记录：[R17 纯函数保真与分步状态精简](by_method/pure_function_fidelity.md)。

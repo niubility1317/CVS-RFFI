@@ -15,15 +15,13 @@
   ],
   "comparison_group_id": "manysig-estimated-action-3step-2CG-fullLU-IQonly",
   "parent_run_ids": [
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
     "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02",
     "20261019-phase1-restoration-learned-action-source-s2026092701-r07",
-    "20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10",
-    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
-    "20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15",
-    "20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16"
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02"
   ],
   "replaces_run_id": null,
-  "authorization": "持续独立恢复器目标和N607多GPU授权；用户报告R3及R14/R16源证据驱动，不使用目标反馈。",
+  "authorization": "用户最新要求专门优化R17精简版，最大程度精简且不能降低目标性能；N607多GPU既有授权；仅依据源证据固定候选，不向另一个用户对话发送指令。",
   "code": {
     "commit": "1515d73c5de3e962a822bbaca34182e28a6ae584",
     "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
@@ -88,13 +86,13 @@
       "shared_extra_LU_calibration_exposures": 0
     },
     "source_validation_panel": 1800,
-    "target_panel": "Onlysource-qualified fixedrank winner plus R16 single-shot IQ control;eachoriginal168000x7;otherwise0target",
+    "target_panel": "Only one source-qualified minimum-full-parameter winner, original168000physicalx7;otherwise0newtarget;originalR17baseline reused;noR16control",
     "actual_training_labels": "NoTX/F/V/targettraining;only frozen originalR17restorationstageoutputs asoptimizedtargets;pairedcleanonlydetachedenergydenominator/diagnostic",
     "augmentation": "OriginalR07 .15clean/.85residual cachedreceived,no newaugmentation or cleanconcatenation",
     "runtime_inputs": "CurrentIQ2x256 only;originalcoarse/action+3stepsx2CG,constantinternalstepnorm/biasstate;no teacher/F/clean/TX/RX/scene/otherframes/update"
   },
   "permissions": {
-    "regime": "SourceL/U simulatedpaired selfsupervision+sourceR17 distillation;V labels only fixedsourcequalification;independenttruthlasttarget",
+    "regime": "SourceL/U receivedIQ to frozenoriginalR17outputs only;pairedclean detachedenergy/diagnostic,notoptimized;V labels fixedqualification only;independenttruthlasttarget",
     "query_use": "Conditional frozen inference only;no targetadaptation/feedback;originalF/defaulthead unchanged",
     "external_method_exception": null,
     "claim_scope": "One compressedrestorerseed/oneoriginalF50seed2701/defaulthead;0fittedheads;baselineuserselectedandexposed,no newblindtest,Phase2,inorbit or mathematicalglobalminimum claim"
@@ -102,6 +100,12 @@
   "checkpoint": {
     "initialization": "Only originalR17 unroll_unsharedcd977448E20/4940;step-specificnorm/1x1/bias preserved withlongweightsmean shared OR3independenthalf-rankSVD;noR01failedstudentweights",
     "sources": [
+      {
+        "run_id": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+        "commit": "cd97744884b5e460926e48c8b7efb7d78c6da0f4",
+        "role": "Only student initialization and frozen restoration teacher;original source-selected R17 finalE20/4940 before target",
+        "path": "runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/unroll_unshared/native_map_prior/final.pt"
+      },
       {
         "run_id": "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02",
         "commit": "7efdba92932a86bf4b0492a565d35377564a26da",
@@ -119,22 +123,10 @@
         "commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
         "role": "Frozen inference only originalF50E50/11100 anddefaulthead",
         "path": "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
-      },
-      {
-        "run_id": "20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16",
-        "commit": "50587946b6c83b7b32500696af7fa7b9086484b5",
-        "role": "Frozen source single-shot IQ reference;trainedfinal onlyconditionaltargetcontrol,not newinitialization",
-        "path": "runs/20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16/unet_control/native_map_prior/final.pt"
-      },
-      {
-        "run_id": "20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15",
-        "commit": "26a8b7f5fc5471719f600ad880bc465c4b544521",
-        "role": "Frozen source FFT summary for third identity guard,weights not loaded",
-        "path": "runs/20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15/unet_control/native_map_prior/summary.json"
       }
     ],
     "contract_check_ref": "OnlyoriginalR17cd977448/source-selected unroll_unsharedE20/4940;originalR02/R07 ancestors,physicalroles,budget,0TX/F/target and sameF50 baseline handles matched;no R01student initialization;newactualsmoke launcherfirst",
-    "provenance_verdict": "ReuseverifiedR02/R07/F50sourcecontract;R15/R16 source-only complete and0target,source references;R16trainedprior only conditionaltargetcontrol",
+    "provenance_verdict": "OriginalR17cd977448source-selected-before-target/LUonlyE20;R02coarse/R07action source-only ancestors;F50originaldefaulthead frozen evaluation only;0R01student initialization;noR15/R16control newlyloadedortested",
     "selection_rule": "Each view accuracy>=originalR17;mean6NMSE<=1.05xR17 and cleanNMSE<=.02;amongqualified smallest fullparameters then name;onlyonefulltarget,no fallback",
     "evaluation_readers": [
       "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701 original defaulthead"
@@ -168,7 +160,6 @@
     "smoke.json",
     "resolved_config.json",
     "workers.json",
-    "queue_state.json",
     "{row}/resolved_config.json",
     "{row}/training.jsonl",
     "{row}/training_complete.json",
@@ -177,7 +168,10 @@
     "{row}/native_map_prior/summary.json",
     "source_decision.json",
     "complete.json",
-    "Conditional:{winner,single_shot_reference}/target_confirmation/native_map_prior/prediction/complete.json,summary.json;goal_assessment.json;target_complete.json"
+    "stages.json",
+    "GPU_predecessor_released.json",
+    "Conditional:{winner}/target_confirmation/native_map_prior/prediction/complete.json,summary.json",
+    "Conditional:{winner}/compression_assessment.json,target_complete.json"
   ],
   "metrics_plan": {
     "metric_names": [
@@ -197,12 +191,12 @@
       "day",
       "20epochs"
     ],
-    "primary": "AllR16/native andR15/native guards intersect;fixedsource rank winner only;PASS newunrolled+R16single formal,else0target",
+    "primary": "Each sourceview accuracy>=originalR17 and mean6NMSE<=1.05xR17/cleanNMSE<=.02;qualified minimumfullparameters thenname;one targetcandidate only;each7targetcorrectcount>=R17,0ppallowance;noR15/R16guard/control",
     "prediction_ref": "runs/20261020-phase1-restoration-r17-fidelity-source-s2026092701-m2-r02/<arm>/native_map_prior/prediction and target_confirmation/native_map_prior/prediction",
     "scorer_ref": "pamf_r17_fidelity.runner score_source/score_target;independentCPUafterall7",
     "final_user_targets": {
       "lowurban_accuracy_min": 70.0,
-      "other_five_max_gap_vs_original_clean_pp": 5.0
+      "other_five_goal": "接近原raw clean；用户未指定数值容差，不把历史继承5pp当作验收阈值"
     },
     "source_rule": "Each view accuracy>=originalR17;mean6NMSE<=1.05xR17 and cleanNMSE<=.02;amongqualified smallest fullparameters then name;onlyonefulltarget,no fallback"
   },
@@ -237,7 +231,6 @@
         "smoke.json",
         "resolved_config.json",
         "workers.json",
-        "queue_state.json",
         "{row}/resolved_config.json",
         "{row}/training.jsonl",
         "{row}/training_complete.json",
@@ -246,7 +239,10 @@
         "{row}/native_map_prior/summary.json",
         "source_decision.json",
         "complete.json",
-        "Conditional:{winner,single_shot_reference}/target_confirmation/native_map_prior/prediction/complete.json,summary.json;goal_assessment.json;target_complete.json"
+        "stages.json",
+        "GPU_predecessor_released.json",
+        "Conditional:{winner}/target_confirmation/native_map_prior/prediction/complete.json,summary.json",
+        "Conditional:{winner}/compression_assessment.json,target_complete.json"
       ],
       "GPU": 4,
       "trainable_parameters": 960454,
@@ -282,7 +278,6 @@
         "smoke.json",
         "resolved_config.json",
         "workers.json",
-        "queue_state.json",
         "{row}/resolved_config.json",
         "{row}/training.jsonl",
         "{row}/training_complete.json",
@@ -291,7 +286,10 @@
         "{row}/native_map_prior/summary.json",
         "source_decision.json",
         "complete.json",
-        "Conditional:{winner,single_shot_reference}/target_confirmation/native_map_prior/prediction/complete.json,summary.json;goal_assessment.json;target_complete.json"
+        "stages.json",
+        "GPU_predecessor_released.json",
+        "Conditional:{winner}/target_confirmation/native_map_prior/prediction/complete.json,summary.json",
+        "Conditional:{winner}/compression_assessment.json,target_complete.json"
       ],
       "GPU": 5,
       "trainable_parameters": 1617558,
@@ -307,7 +305,8 @@
     "10focusedchecksPASS;oneindependentP0/P1reviewindependently10PASS/noP0P1. RealR17/F50/2Ls noquerysmokelauncherfirst,teacherfunctionexact/allstudentgradients/frozenstate/checkpointoutput;PASSimmediatelycontinue.Noextraapprovals/reviews/hashes.",
     "GPU4/5 waitsR01rootterminal AND actualoldownedGPUhandlesEXITED,oneown/card/source18GBtarget12GBallowner<2;CPU2threads/oneownscorer,R01terminalthenownscorelock. Oneordinarypreflight/oneimmutablearchiveSHAcomparison/compile/PID-CWD-cmd-GPU-loggrowth;allotherownerspreserved.",
     "No newmodeltargetresultseverreadindesign;originalR17exposedbaselineuserchosen,noblindtest/globalminimum/inorbitclaim. OriginalF50classifiertrainedwithsourceTXlabels;restoretrainingnew0TX/Fdoesnotmakeentirechainfullyunsupervised.",
-    "10focusedchecksPASS;oneindependentP0/P1review independentlyreran10checks andreportedPASS/noP0P1. OneordinaryN607preflightVERIFIED:source63000/V1800,originalR17 source-selection-before-target/fullbudget/frozenF50 handles;R01actualownedGPUhandlesEXITED;GPU4/5free. No repeatedreview ordatarevalidation."
+    "10focusedchecksPASS;oneindependentP0/P1review independentlyreran10checks andreportedPASS/noP0P1. OneordinaryN607preflightVERIFIED:source63000/V1800,originalR17 source-selection-before-target/fullbudget/frozenF50 handles;R01actualownedGPUhandlesEXITED;GPU4/5free. No repeatedreview ordatarevalidation.",
+    "Registrymetadata correction beforeanycompressedtargetresult:removed inheritedR15/R16control/guard/oldauthorization/5ppthreshold fields;actual preregistered report/design/source rule/CLI/immutable run and training remain unchanged."
   ],
   "registered_at": "2026-10-20T03:16:01+00:00"
 }

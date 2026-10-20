@@ -26,3 +26,6 @@ N607普通账户，GPU4/5等R01根终态且实际owned GPU handles退出；每�
 
 
 实际发布 VERIFIED：方法commit `1515d73c5de3e962a822bbaca34182e28a6ae584` 已push且本地HEAD/远端OID独立比较一致；一次归档SHA比较、远端新模块compile及入口help通过。launcher原R17/原F50/2Ls无querysmoke PASS：教师stage函数一致、两student各步prior梯度有限非零、冻结teacher/context、严格checkpoint复载输出逐位一致，0TX/V/target/optimizer。R01根终态且实际owned GPU handles退出后，新GPU4/5各一source创建；独立/proc和GPU证据确认controller/两source实际LIVE、CWD/完整命令/commit/GPU PID匹配、源日志增长。各已完成至少第1轮，不据中间训练loss判定性能。新聚合分析工具另有10项检查PASS，拒绝把配对clean诊断误算为优化项、缺失训练轮次、未合格目标访问及目标单样本退化。尚无压缩模型目标结果。
+
+
+登记字段纠正：本轮复用旧登记结构时遗留R15/R16 guard/control、旧授权文字和5个百分点长期差距阈值，现改为原R17单一对照、唯一合格候选和用户最新R17授权；接近clean未获用户数值定义。实际预登记正文、design、命令、源选择、目标范围、不可变run与运行中模型均保持。本次仅纠正公开元数据，未读取新压缩目标结果。
