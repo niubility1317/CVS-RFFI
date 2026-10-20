@@ -1,5 +1,7 @@
 # 无 TX 标签恢复器的压缩与性能联合优化
 
+2026-10-21 当前R57：在读取R55正式分数前固定的既有273765拓扑GN响应校正，沿用R55 source-only full-fold投影但不加载R55训练权重；直接人选350521父，CPU2在同128源received上额外256父+256初始子G输入，一次拟合168原GN，full/half两行；0clean/TX/F/V/target校准，0TX/F/V/target训练，完整E20/4940及自动全部七景。固定同宽控制R55fold_full复用、GPU3/2各一条并等待R55实际退出。LOCAL_VERIFIED尚未发布，无新正式结论；性能优先，原完整目标ACTIVE。[R57固定方案](../PAMF_R46_GN_RESPONSE_R57_20261021.md)。
+
 R56已实际VERIFIED/WAITING_PARENT_FORMAL：CPU2/0GPU，真实2Ls解析noquerysmoke、单archiveSHA/compile/实际PID/CWD/argv/空CUDA/日志增长核实。等待R53三行、R54两行及R55两行全部正式评分后解析7新版，复用R50raw/指定350521父/R49retain84单元、新算196，280全固定后独立truthlast4536组/756条件对照/392配对差。无新网络/F/checkpoint/神经预测/训练/headfit/校准；不改变父训练预测，不阻塞其交付，当前主路线仍为用户指定35.05万父的压缩优化。固定描述符在clean TX2已有不足，不把该类负margin单独解释为身份错误。[R56固定评价](../PAMF_COMPRESSION_FORMAL_IDENTITY_R56_20261021.md)。
 
 2026-10-21 当前R55：原273765拓扑与weight-only GN4 map，源通道岭回归合并到既有Conv/Linear权重，full/half两固定幅度；直接人选350521父，CPU2共同128物理样本/256冻结G输入、校准无clean/TX/F/V/target/更新；两行全部联合E20/4940后自动七正式测试及成本。唯一同宽控制R53prune_decay复用，GPU3/2各一条、固定R54实际退出保护。VERIFIED/RUNNING：两行实际GPU3/2首轮训练、真实校准/101组投影复算/smoke/PID与日志增长已核实，正式性能待完成；原性能/TX细节目标ACTIVE。[R55方案](../PAMF_R46_FOLD_COMPENSATE_R55_20261021.md)。
