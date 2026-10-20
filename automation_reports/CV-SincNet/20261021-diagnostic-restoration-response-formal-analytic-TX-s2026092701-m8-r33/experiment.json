@@ -31,7 +31,7 @@
   "replaces_run_id": null,
   "authorization": "用户要求从原350521继续不同路线压缩和性能优化、每新版七景正式测试及TX保真。固定当前已发布8版统一事后身份关联；不改变父训练或预测、不新增神经测试或拟合。",
   "code": {
-    "commit": null,
+    "commit": "19e91827a4e8555eaf3cdc29a3f8d4137ea04800",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 existing Python3.10.19/torch2.1.0+cu121/NumPy2.2.5;CPU2/emptyCUDA;no environment changes",
     "cwd": "releases/pamf_response_formal_identity_20261021_r33"
@@ -216,7 +216,7 @@
     "remote_run_root": "runs/20261021-diagnostic-restoration-response-formal-analytic-TX-s2026092701-m8-r33",
     "remote_log_root": "logs/20261021-diagnostic-restoration-response-formal-analytic-TX-s2026092701-m8-r33",
     "local_artifact_root": "local_artifacts\\pamf_restoration\\response_formal_identity_20261021_r33",
-    "launch_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_response_formal_identity.runner run --runs-root ../../runs --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261021-diagnostic-restoration-response-formal-analytic-TX-s2026092701-m8-r33 --expected-commit <actual method commit>",
+    "launch_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_response_formal_identity.runner run --runs-root ../../runs --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261021-diagnostic-restoration-response-formal-analytic-TX-s2026092701-m8-r33 --expected-commit 19e91827a4e8555eaf3cdc29a3f8d4137ea04800",
     "stop_rule": "Parent technicalfailure/wrongpath or IDs/calibration/missing or nonfinite inputs/features/outputcollision:preserve,no automaticretry;healthy parents untouched",
     "local_validation": {
       "status": "PASS",
@@ -227,6 +227,36 @@
       "P0P1_issues": [],
       "reviewer_reads_real_data_or_remote": false,
       "reviewer_edits": false
+    },
+    "postlaunch_state": "VERIFIED_WAITING_PARENT_FORMAL",
+    "launch_observation": {
+      "status": "VERIFIED",
+      "method_commit": "19e91827a4e8555eaf3cdc29a3f8d4137ea04800",
+      "actual_PID_CWD_argv_environment_log_growth": true,
+      "real_Ls_analytic_smoke": 2,
+      "CPU_threads": 2,
+      "GPU_workers": 0,
+      "model_checkpoint_loads": 0,
+      "F_access": 0,
+      "target_IQ_reads": 0,
+      "target_truth_reads": 0,
+      "state": "WAITING_PARENT_FORMAL",
+      "all8versions_included": true,
+      "cells": 336,
+      "statistics_complete": false,
+      "result_processing_tests": 21,
+      "goal_complete": false,
+      "log_growth": [
+        390,
+        1170
+      ]
+    },
+    "result_processing_tests": 21,
+    "completion_tools": {
+      "analyzer": "tools/analyze_pamf_response_formal_identity_results.py",
+      "collector": "tools/complete_pamf_response_formal_identity.py",
+      "single_local_owner": "codex/root/R33",
+      "remote_mutations": 0
     }
   },
   "expected_artifacts": [
@@ -292,7 +322,7 @@
       "budget_ref": "0neuralupdates/F/checkpoint/headfit/newpredictions/GPU;CPU2;9408000analyticinputs;224newcells13848576000bytes+112cachedsymlinks",
       "output_root": "runs/20261021-diagnostic-restoration-response-formal-analytic-TX-s2026092701-m8-r33",
       "log_path": "runs/20261021-diagnostic-restoration-response-formal-analytic-TX-s2026092701-m8-r33/logs/extract.log",
-      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_response_formal_identity.runner run --runs-root ../../runs --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261021-diagnostic-restoration-response-formal-analytic-TX-s2026092701-m8-r33 --expected-commit <actual method commit>",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_response_formal_identity.runner run --runs-root ../../runs --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261021-diagnostic-restoration-response-formal-analytic-TX-s2026092701-m8-r33 --expected-commit 19e91827a4e8555eaf3cdc29a3f8d4137ea04800",
       "expected_artifacts": [
         "launch.json",
         "resolved_config.json",

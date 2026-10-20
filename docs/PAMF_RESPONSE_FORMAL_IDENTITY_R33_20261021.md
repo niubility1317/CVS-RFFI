@@ -1,6 +1,6 @@
 # R33：响应、统计与梯度协调八版的固定无 F 身份关联
 
-状态：LOCAL_VERIFIED / REGISTERED。43 项聚焦检查 PASS，唯一独立 P0/P1 审查 PASS，无 P0/P1；尚未发布或读取新目标 IQ，无新身份统计。
+状态：VERIFIED / WAITING_PARENT_FORMAL。已发布，真实源解析检查通过；尚未读取新目标IQ或truth，无新身份统计。
 
 固定纳入已发布的 R26 两版扰动输出/响应、R28 两版冻结 prior 合并、R30 两版四阶统计参考、R32 两版梯度合成。所有八版均在原168000×七景正式预测与独立评分完成后才进入解析评价，保留负结果，不按分数选择、调整或重跑。固定原350521父与R22两版历史控制，不使用这些分数选择新训练父；所有新训练父与IQ教师仍只有原350521。
 
@@ -17,3 +17,14 @@
 N607普通账户、CPU2、空CUDA/0GPU；等四父全8行评分完成后在R06共享score.lock内串行extract/独立score。复用已验证源数据句柄，0新增数据重验证。一个方法commit、一次预检/归档两端SHA/compile；launcher首步真实2Ls参数自由解析noquery smoke，无神经checkpoint被该阶段消费。实际PID/CWD/完整命令/空CUDA/日志增长后核实。父技术失败、错误路径/ID/源统计、缺失或非有限输入/输出冲突保留产物，不自动重试或干预健康父任务。
 
 43项合成检查覆盖R24精确数学别名、全矩阵、已训练/冻结两类预算与权限负例、四父未完成时不打开array、全部cells固定前truth关闭、cache与新矩阵计数区分、原源坐标和ID、不变配置。唯一独立P0/P1审查PASS，无P0/P1。精确命令、方法commit、环境/CWD和路径见experiment.json；整体联合优化目标仍ACTIVE。
+
+
+## 真实发布与自动收尾
+
+方法commit 19e91827a4e8555eaf3cdc29a3f8d4137ea04800 已提交、推送并独立匹配远端OID。普通账户一次预检核实源READY/EXACT_MATCH、R34原8192统计、已完成R24缓存和四父实际控制器；归档两端一次SHA一致，远端compile/module入口通过。
+
+真实2Ls参数自由解析no-query smoke PASS，0神经checkpoint/F/TX/V/target/更新。实际CPU控制器PID/CWD/完整命令/空CUDA/2线程和日志390→1170字节增长均已核实。当前等待R26/R28/R30/R32全部八行七景正式评分，extract/score均未启动，0GPU占用，无身份统计结果；父任务保持。
+
+43项执行检查及唯一独立P0/P1审查PASS，独立复跑43项；结果工具21项检查PASS，核对336cells/5544组/924控制/532比较、原坐标、权限、完整分组、非有限/缺项/重复及margin算术。以上合成检查不是实际身份保真收益。
+
+单一本地完成owner只读等待既有controller/extract/score全部实际退出，取回已有完整summary与配置/时序，独立核对全部聚合算术，自动报告、提交、推送并核验远端OID。它不启动、停止、重试或修改远端任务，不重新读取IQ/truth或重复评分；其他既有完成owner保留。联合目标仍ACTIVE。
