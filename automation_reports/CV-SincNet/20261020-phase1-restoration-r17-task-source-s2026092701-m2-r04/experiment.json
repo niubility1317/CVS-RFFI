@@ -257,7 +257,7 @@
       "day",
       "20epochs"
     ],
-    "primary": "Healthonly:each7Vaccuracy>=R17-1pp;mean6NMSE<=1.05xR17/cleanNMSE<=.02;qualifiedminfullparameters thenname;onlyoneautomaticfulltarget;sourcehealthisnotperformanceacceptance;targeteach7correctcount>=R17/0pp;no fallback",
+    "primary": "Final user acceptance:targeteach7accuracy>=originalR17sameview-1percentagepoint;exactcorrectcounts,168000/view allows1680 fewercorrect;sourcehealthisnotperformanceevidence;currentfrozen sourcechoice/targetmatrix unchanged",
     "prediction_ref": "runs/20261020-phase1-restoration-r17-task-source-s2026092701-m2-r04/<arm>/native_map_prior/prediction and target_confirmation/native_map_prior/prediction",
     "scorer_ref": "pamf_r17_task.runner score_source/score_target;independentCPUafterall7;training_F_access=True",
     "final_user_targets": {
@@ -267,8 +267,12 @@
     "source_rule": "Healthonly:each7Vaccuracy>=R17-1pp;mean6NMSE<=1.05xR17/cleanNMSE<=.02;qualifiedminfullparameters thenname;onlyoneautomaticfulltarget;sourcehealthisnotperformanceacceptance;targeteach7correctcount>=R17/0pp;no fallback",
     "calibration_metrics": "stepnorm0,activation512;actualL/U/patches/ridge/time separate;0calibrationF/optimizer",
     "source_screening_allowance_pp": 1.0,
-    "target_acceptance_allowance_pp": 0.0,
-    "posthoc_saved_prediction_analysis": "tools/analyze_pamf_r17_task_saved_predictions.py;afterrootterminal/allsource+selectedtarget7predictionsandtruthlastscores complete;originalR17pairedlost/gained/flips/confidence/byTXRXday;0newmodelquery/rawIQ/checkpointreads/fit;NONBLOCKING/no sourceor targetfeedback"
+    "target_acceptance_allowance_pp": 1.0,
+    "posthoc_saved_prediction_analysis": "tools/analyze_pamf_r17_task_saved_predictions.py;afterrootterminal/allsource+selectedtarget7predictionsandtruthlastscores complete;originalR17pairedlost/gained/flips/confidence/byTXRXday;0newmodelquery/rawIQ/checkpointreads/fit;NONBLOCKING/no sourceor targetfeedback",
+    "launch_time_primary": "Healthonly:each7Vaccuracy>=R17-1pp;mean6NMSE<=1.05xR17/cleanNMSE<=.02;qualifiedminfullparameters thenname;onlyoneautomaticfulltarget;sourcehealthisnotperformanceacceptance;targeteach7correctcount>=R17/0pp;no fallback",
+    "launch_time_target_acceptance_allowance_pp": 0.0,
+    "target_acceptance_unit": "percentage_points",
+    "user_acceptance_ref": "tools/r17_compact_acceptance.py;userexplicitlyconfirmed80%to79%,notrelative1%;legacyruntimezero-dropretainedasdiagnostic"
   },
   "rows": [
     {
@@ -377,7 +381,8 @@
     "19 focusedchecksPASS;oneindependentP0/P1reviewPASS/19independentchecks/noP0P1;no actualFinputgradientproof until launcher-firstsmoke.",
     "Allcoefficientsfixed:10mean3stageIQNMSE + nativeT1teacherposteriorKL + halfsquaredunitF160distance;teacherreference=originalR17restoredsameinput;notcleanF;onlyprioroptimizer.",
     "R01-R03 source-negative remainclosed/0target;new1ppsourcehealthisnotretrospectivequalificationorfinalperformanceacceptance;target7exactcount0pp unchanged.",
-    "OneordinaryN607preflightVERIFIED/sourcehandlesoriginalR17fullbudgetandF50baseline;R03actualGPUhandles0;GPU4/5free24124MB;reusevalidateddata. ActualrealFinputgradientchecklauncherfirst/no target beforequalification."
+    "OneordinaryN607preflightVERIFIED/sourcehandlesoriginalR17fullbudgetandF50baseline;R03actualGPUhandles0;GPU4/5free24124MB;reusevalidateddata. ActualrealFinputgradientchecklauncherfirst/no target beforequalification.",
+    "LatestexplicituseroverridebeforeanyR04targetresult:performancejudgedontargetdomain;maxdrop1percentagepointineachviewvsoriginalR17. Training/methodcommit/sourcechoice/onecandidate targetscope remainfrozen;independentpost-analysis useracceptanceupdated;0-dropdiagnosticretained;lowurban70longtermgoal unchanged."
   ],
   "registered_at": "2026-10-20T04:38:22+00:00"
 }

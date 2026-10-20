@@ -5,6 +5,7 @@ import numpy as np
 from experiments.pamf_r17_task import design as d
 from experiments.pamf_r17_task.evaluation import select_source
 from experiments.pamf_r17_task.calibration import validate_calibration
+from tools.r17_compact_acceptance import target_acceptance
 
 
 def classification_record(record):
@@ -152,7 +153,8 @@ def completed_metrics(collection):
         raise ValueError('Actual source decision differs;target may not influence selection')
     public=dict(run_id=d.RUN,method_commit=collection['method_commit'],status='ANALYZED',goal_complete=False,
                 source_decision=expected,baseline_source=source_baseline,arms={},
-                source_screening_allowance_pp=1.,target_acceptance_allowance_pp=0.,training_F_access=True,F_parameter_updates=0,
+                source_screening_allowance_pp=1.,target_acceptance_allowance_pp=1.,
+                launch_time_target_acceptance_allowance_pp=0.,training_F_access=True,F_parameter_updates=0,
                 target_performance_evaluated=bool(expected['selected']),physical_unit='One physical IQ per view;single original F50seed2701/defaulthead')
     for arm,row in collection['arms'].items():
         validate_calibration(row['calibration'],arm,20)
@@ -174,10 +176,12 @@ def completed_metrics(collection):
         comparison=compare(target,baseline)
         if row['assessment']['target_accuracy_nonregression']!=comparison['accuracy_nonregression']:
             raise ValueError('Runtime target assessment disagrees with exact correct-count comparison')
-        public.update(baseline_target=baseline,target_accuracy_nonregression=comparison['accuracy_nonregression'])
+        acceptance=target_acceptance(target,baseline)
+        public.update(baseline_target=baseline,target_accuracy_nonregression=comparison['accuracy_nonregression'],
+                      target_user_acceptance=acceptance,target_user_accepted=acceptance['accepted'])
         public['arms'][arm].update(target=target,target_vs_R17=comparison)
     else:
         if collection['baseline_target'] is not None or any(row.get('target_summary') is not None for row in collection['arms'].values()):
             raise ValueError('Unqualified candidates must not generate new target results')
-        public.update(target_accuracy_nonregression=None)
+        public.update(target_accuracy_nonregression=None,target_user_acceptance=None,target_user_accepted=None)
     return public

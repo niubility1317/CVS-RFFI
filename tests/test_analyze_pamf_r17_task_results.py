@@ -110,7 +110,7 @@ def test_task_summary_cannot_claim_F_free_training():
 
 
 @pytest.mark.parametrize('source_qualified',[True,False])
-def test_source_health_allowance_never_relaxes_target_single_error(source_qualified):
+def test_fixed_source_selection_retains_legacy_zero_drop_and_new_user_target_allowance(source_qualified):
     baseline=summary();candidate=task_summary(errors=198 if source_qualified else 199)
     decision=select_source({a:candidate for a in d.ARMS},baseline)
     from experiments.pamf_r17_calibrated.calibration import smoke_info
@@ -136,7 +136,9 @@ def test_source_health_allowance_never_relaxes_target_single_error(source_qualif
     result=completed_metrics(collection)
     assert result['target_performance_evaluated']==source_qualified and not result['goal_complete']
     assert result['target_accuracy_nonregression'] is (False if source_qualified else None)
-    assert result['source_screening_allowance_pp']==1 and result['target_acceptance_allowance_pp']==0
+    assert result['source_screening_allowance_pp']==1 and result['target_acceptance_allowance_pp']==1
+    assert result['launch_time_target_acceptance_allowance_pp']==0
+    assert result['target_user_accepted'] is (True if source_qualified else None)
     if source_qualified:
         assert decision['checks']['step_norm_task']['qualified']
         assert not all(decision['checks']['step_norm_task']['per_view_accuracy_nonregression'].values())
