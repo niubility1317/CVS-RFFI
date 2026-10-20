@@ -1,0 +1,229 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261021-diagnostic-restoration-feature-hint-formal-analytic-TX-s2026092701-m2-r61",
+  "group_id": "pamf-restoration-formal-independent-analytic-identity",
+  "display_name": "R60两个特征约束压缩版的无F同TX关联",
+  "description": "原R56坐标；复用raw/350521/R53控制84单元，两R60全部正式评分后新算56，共140固定后独立truth-last。0F/模型预测/训练/拟合。",
+  "kind": "cvs",
+  "stage": "Phase1-postscore-formal-diagnostic",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "compression",
+    "formal_test",
+    "F_independent",
+    "analytic_TX",
+    "CPU"
+  ],
+  "comparison_group_id": "R60_all2_vs_R53_samewidth_and_human_R46_analytic_TX",
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R46-feature-hint-s2026092701-m2-r60",
+    "20261021-phase1-restoration-R46-anchor-refine-s2026092701-m3-r53",
+    "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46",
+    "20261021-diagnostic-restoration-compression-formal-analytic-TX-s2026092701-m7-r56",
+    "20261020-diagnostic-restoration-independent-analytic-TX-s2026092701-r34"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求压缩同时性能优化、所有新版正式测试及输入TX细节保真；固定事后评价不改变网络、训练、预测或选择。",
+  "code": {
+    "commit": "762202a1da51233da77b16d3401d2b9aa819c7d7",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;CPU2;emptyCUDA;no environment mutation",
+    "cwd": "releases/pamf_hint_formal_identity_20261021_r61"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original validated physical split;no resplit",
+    "representation": "Fixed168000x7x5readouts:reuse84R56raw/350521/R53cells+compute56R60cells;mirror64/spectral4/reference24/combined92",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference/physical_ids.npy;R60/R46/R53 saved predictions andR56cache exactlyaligned",
+    "label_map_ref": "Originaltargettruth only independent score after bothR60 full7formal scores andall140featuresfixed;TX/RX/day evaluation only",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original sixTX;0TX in restorationtraining",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Reuse existing validated source and formal handles;no revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": "Originalfixed formal receivedIQ/practical seed2027 x7 views",
+    "target_panel": 168000,
+    "restoration_train_counts": {
+      "new_neural_updates": 0,
+      "new_calibration_samples": 0,
+      "reused_R34_LU_calibration": 8192,
+      "extra_model_predictions": 0,
+      "F_access": 0,
+      "new_analytic_transform_inputs": 2352000,
+      "reused_feature_cells": 84,
+      "new_feature_cells": 56
+    }
+  },
+  "permissions": {
+    "regime": "Postscore formal evaluation only;sourceLU moments reused,no fit",
+    "query_use": "BothR60full7formal scored before savedtargetIQ;all140features fixed before independenttruthscore;no neuraladaptation/classifier/selection",
+    "external_method_exception": null,
+    "claim_scope": "Descriptive sameTXassociation only;weak/negative cleanTX2 retained;not perdetail or TXexclusive authenticity/not newblind validation;no parent/method selection"
+  },
+  "checkpoint": {
+    "initialization": "N/A:no checkpoint loaded;0F/weights/embeddings/logits",
+    "sources": [
+      {
+        "run_id": "20261021-phase1-restoration-R46-feature-hint-s2026092701-m2-r60",
+        "commit": "04357684a7c069308e6c89a64d3bb51d54376fdf",
+        "role": "Both fixed sourceE20/4940 F/TX-free R60 formalIQ after independent scores"
+      },
+      {
+        "run_id": "20261021-phase1-restoration-R46-anchor-refine-s2026092701-m3-r53",
+        "commit": "df36c3d3da4e026b747776b65b58d4921dc1a71e",
+        "role": "Predeclared R53 prune_decay same273765graph/init/IQteacher/budget/micro;cached fixed formal descriptor control"
+      },
+      {
+        "run_id": "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46",
+        "commit": "bbb8daf817de050b958d217b70d4c33f4aefe341",
+        "role": "Human designated350521 fixed formalIQ/analytic reference;differentwidth/cost"
+      },
+      {
+        "run_id": "20261020-diagnostic-restoration-independent-analytic-TX-s2026092701-r34",
+        "commit": "60f0d924aa0a43f4213c683df17d7ae9e2ea54ee",
+        "role": "Existing LU8192 source label-free calibration;no refit"
+      },
+      {
+        "run_id": "20261021-diagnostic-restoration-compression-formal-analytic-TX-s2026092701-m7-r56",
+        "commit": "c7c1641d3e4555eb69c80fd4a601ed5e66751166",
+        "role": "CompletedR56raw/M35/R53 cached84cells;readonly,no refit"
+      }
+    ],
+    "contract_check_ref": "Pinned parents/controls;complete7formal;source READY/EXACT_MATCH;originalIDs aligned;all140features beforetruth",
+    "provenance_verdict": "No checkpoint inherited/loaded;source-only training ancestry checked;targetclean/truth only postevaluation",
+    "selection_rule": "None;all fixed readouts/groups/views;no thresholds/ranking"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/formal-analytic-identity",
+    "gpu_policy": "CPU2/emptyCUDA/0GPU;waitbothR60fullformal;R41score.lock/max1ownscorer;healthyjobsuntouched",
+    "remote_run_root": "runs/20261021-diagnostic-restoration-feature-hint-formal-analytic-TX-s2026092701-m2-r61",
+    "remote_log_root": "logs/20261021-diagnostic-restoration-feature-hint-formal-analytic-TX-s2026092701-m2-r61",
+    "local_artifact_root": "local_artifacts\\pamf_restoration\\hint_formal_identity_r61_20261021",
+    "launch_command": "python -u -m experiments.pamf_hint_formal_identity.runner run --runs-root ../../runs --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261021-diagnostic-restoration-feature-hint-formal-analytic-TX-s2026092701-m2-r61 --expected-commit 762202a1da51233da77b16d3401d2b9aa819c7d7",
+    "stop_rule": "Parent failure/wrongpaths/IDs/calibration/missingnonfiniteinputs/features/outputcollision:preserveoutputs,no retry;healthyparentsuntouched"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "resolved_config.json",
+    "smoke.json",
+    "extract_launch.json",
+    "score_launch.json",
+    "calibration_reference.json",
+    "features/*.npy",
+    "physical_ids.npy",
+    "feature_complete.json",
+    "logs/extract.log",
+    "logs/score.log",
+    "summary.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "crossRX_and_day_same_TX_cosine",
+      "other_TX_mean_cosine",
+      "TX_margin",
+      "positive_margin_percent_not_accuracy",
+      "valid_missing_zero_counts",
+      "paired_clean_descriptor_error",
+      "199querylabel_controls_not_pvalue"
+    ],
+    "dimensions": [
+      "raw/humanR46/R53samewidth/2R60",
+      "fouranalyticgroups",
+      "sevenviews",
+      "TX",
+      "RX",
+      "day"
+    ],
+    "prediction_ref": "runs/20261021-diagnostic-restoration-feature-hint-formal-analytic-TX-s2026092701-m2-r61/features/*.npy;84cached+56newfixedcells;0neuralpredictions",
+    "scorer_ref": "experiments.pamf_hint_formal_identity.runner score;2016records/336controls/140comparisons",
+    "final_user_targets": "Doesnotreplace seven-scene F50accuracy/1pp/70and5pp/perdetailproof;no modelselection"
+  },
+  "rows": [
+    {
+      "row_id": "formal_analytic",
+      "method": "hint_formal_identity",
+      "purpose": "postscore_F_independent_TX_association",
+      "config_ref": "experiments/pamf_hint_formal_identity/design.py#configuration",
+      "resolved_config_ref": "runs/20261021-diagnostic-restoration-feature-hint-formal-analytic-TX-s2026092701-m2-r61/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2026102034
+      },
+      "seed_notes": "Inherited model/split/data/formal observation;0newtraining/augmentation;199conditionalquerylabel controls fixed seed2034;support N/A",
+      "k": null,
+      "scenario": "clean + suburban high/mid/low + urban high/mid/low",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0neuralupdates/F/checkpoint/headfit/newpredictions/GPU;CPU2;2352000newanalytictransforms;56newcells~3.46GB+84readonlyR56refs",
+      "output_root": "runs/20261021-diagnostic-restoration-feature-hint-formal-analytic-TX-s2026092701-m2-r61",
+      "log_path": "runs/20261021-diagnostic-restoration-feature-hint-formal-analytic-TX-s2026092701-m2-r61/logs/extract.log",
+      "command": "python -u -m experiments.pamf_hint_formal_identity.runner run --runs-root ../../runs --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261021-diagnostic-restoration-feature-hint-formal-analytic-TX-s2026092701-m2-r61 --expected-commit 762202a1da51233da77b16d3401d2b9aa819c7d7",
+      "expected_artifacts": [
+        "launch.json",
+        "resolved_config.json",
+        "smoke.json",
+        "extract_launch.json",
+        "score_launch.json",
+        "calibration_reference.json",
+        "features/*.npy",
+        "physical_ids.npy",
+        "feature_complete.json",
+        "logs/extract.log",
+        "logs/score.log",
+        "summary.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "36focusedchecks/CLIhelp/ONEP0P1PASS;launcher firststep real2Ls analytic noquerysmoke;stage consumes0checkpoint.",
+    "R60 source/target scores not consumed in this design;source recipe, widths and training unchanged.",
+    "Existing exposed engineering benchmark;descriptive sameTX association,not independentblind/perdetailproof;weakcleanTX2retained.",
+    "Wait bothR60all7formal;reuse84R56raw/M35/R53 cells,new56;all140fixed before independenttruth;R41lock/CPU2/0GPU."
+  ],
+  "registered_at": "2026-10-20T21:41:36+00:00"
+}
