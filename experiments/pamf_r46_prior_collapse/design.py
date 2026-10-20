@@ -1,7 +1,7 @@
 from experiments.pamf_r46_complex_fidelity import design as source
 from experiments.pamf_r46_response_distill import design as previous
 
-RUN='20261021-phase1-restoration-R46-prior-collapse-s2026092701-m2-r27'
+RUN='20261021-phase1-restoration-R46-prior-collapse-s2026092701-m2-r28'
 ARMS=('R22_complex625_priorcollapsed','R22_complex625_identity_priorcollapsed')
 PARAMETERS={a:299297 for a in ARMS}
 SOURCE_ROWS=dict(zip(ARMS,source.ARMS))
@@ -30,7 +30,7 @@ def configuration():
         source_choice='BOTH fixedR22 source-final models;not a new training initializer/teacher;futuretraining original350521 only',
         source_count=1800,formal_count=168000,views=list(VIEWS),batch=BATCH,
         freeze_rule='Frozen source checkpoints;eachrow source7/profile/formal7 and independenttruthlast without sourcegain gate',
-        source_equivalence='Actual2Ls clean+received noquery smoke;full outputs before/after reported;not assumed bitwise identical',
+        source_equivalence='Actual2Ls clean+received noquery smoke;IQ/variance rtol2e-5/atol2e-6 unchanged;all outputs finite/strictreload;Ffeatures/logits descriptive,not sourcegain/equivalence gate;formal7required',
         prediction_comparison='Allnew7predictions fixed,then compare IQ/features/logits and argmax with completed R22 native predictions;no native targetrerun',
         timing='Samecard originalR17,parent350521,sourceR22lowrank278180,expanded299297;nativeG/G+F;B1/B32;3alternatingrounds;64sourceV',
         timing_scope='All physics included;preloaded device FP32;excludes transfer/preprocess/loader;MAC Conv1d+Linear only,notFFT/CG/norm/F',

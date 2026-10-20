@@ -147,10 +147,8 @@ def smoke(args):
         fresh,_=load_checkpoint(args.output/'exports'/(arm+'.pt'),'cpu');views={}
         for view,x in panel.items():
             native=FrozenPipeline(source,reader)(x);converted=FrozenPipeline(model,reader)(x);reloaded=FrozenPipeline(fresh,reader)(x)
-            for a,b in zip(native,converted):torch.testing.assert_close(a,b,rtol=2e-5,atol=2e-6)
-            if any(not torch.equal(a,b) for a,b in zip(converted,reloaded)):raise ValueError('Strict frozen export output differs')
-            views[view]=dict(max_abs=[float((a-b).abs().max()) for a,b in zip(native,converted)],
-                argmax_disagreements=int((native[-1].argmax(1)!=converted[-1].argmax(1)).sum()))
+            from .verification import verify_outputs
+            views[view]=verify_outputs(native,converted,reloaded)
         if any(not torch.equal(v,before[k]) for k,v in source.state_dict().items()):raise ValueError('Original frozen source weights changed')
         records[arm]=dict(parameters=299297,source_parameters=278180,conversion=audit,views=views,
             strict_reload_exact=True,source_unchanged=True,new_training_updates=0,training_F_access=False)
