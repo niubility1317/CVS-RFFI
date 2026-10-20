@@ -1,0 +1,174 @@
+import argparse
+import gc
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import time
+import traceback
+import numpy as np
+import torch
+from . import design as d
+from .runtime import ROOT,initialize,save_checkpoint,load_checkpoint,load_original,validate_teacher_root,validate_aliases
+from .models import objective,convolution_linear_macs,make_probes,action_from_arrays
+from .training import validate_cache,epoch_arrays
+from .context_probe import extract_context
+from experiments.pamf_r17_compact.models import stages
+from .training import train
+from .evaluation import predict,score
+from experiments.pamf_fcrossrx_readout.frozen import load_reader
+from experiments.pamf_restoration.runner import array_tensor,read_json,code_commit
+from experiments.pamf_restoration.data import IQSource,write_json
+
+PATH_ARGS=('teacher_run','parent_action','source_cache','reader_folder','formal_reference','formal_f50','target_truth','output')
+
+
+def command(args,mode,arm):
+    result=[sys.executable,'-u','-m','experiments.pamf_iq_physics_compact.runner',mode,'--arm',arm]
+    for key in PATH_ARGS:result.extend(['--'+key.replace('_','-'),str(getattr(args,key))])
+    result.extend(['--expected-commit',args.expected_commit]);return result
+
+
+def smoke(args):
+    validate_teacher_root(args.teacher_run)
+    validate_cache(args.parent_action)
+    cache=args.parent_action/'cache';roles=np.load(cache/'train/roles.npy',allow_pickle=False);take=np.flatnonzero(roles=='L_s')[:2]
+    if len(take)!=2:raise ValueError('Actual two source L_s observations required')
+    arrays=epoch_arrays(cache,1);x=array_tensor(np.load(cache/'train/clean.npy',mmap_mode='r',allow_pickle=False)[take],'cpu')
+    r=array_tensor(arrays['received'][take],'cpu')
+    target=action_from_arrays(array_tensor(arrays['kernel'][take],'cpu'),array_tensor(arrays['coefficients'][take],'cpu'))
+    target_variance=array_tensor(arrays['variance'][take],'cpu')
+    reader=load_reader(args.reader_folder,args.source_cache,'cpu').requires_grad_(False).eval();records={}
+    reader_before={key:value.detach().clone() for key,value in reader.state_dict().items()}
+    for arm in d.ARMS:
+        model,teacher,parent=initialize(arm,args.teacher_run,'cpu');model.train()
+        before={key:value.detach().clone() for key,value in teacher.state_dict().items()}
+        with torch.no_grad():desired=teacher.stage_outputs(r)[0]
+        context=model.estimate_context(r);output=stages(model.prior,r,context)[0]
+        generator=torch.Generator(device='cpu').manual_seed(d.PROBE_SEED)
+        loss,_=objective(output,desired,x,1,context,target,target_variance,make_probes(2,'cpu',generator));loss.mean().backward()
+        parts={'coarse':model.frozen.coarse,'action':model.frozen.estimator,**{'prior'+str(i):p for i,p in enumerate(model.prior)}}
+        norms={}
+        for name,part in parts.items():
+            grads=[p.grad for p in part.parameters() if p.grad is not None]
+            if not grads or any(not torch.isfinite(g).all() for g in grads) or sum(float(g.abs().sum()) for g in grads)<=0:
+                raise ValueError('Every compact coarse/action/prior must receive finite nonzero gradients')
+            norms[name]=sum(float(g.norm()) for g in grads)
+        if any(p.grad is not None for p in teacher.parameters()) or any(not torch.equal(v,before[k]) for k,v in teacher.state_dict().items()):
+            raise ValueError('Original R17 IQ teacher changed during joint compact smoke')
+        if any(p.grad is not None for p in reader.parameters()):raise ValueError('F must not participate in the compression loss')
+        model.eval();path=args.output/('smoke-'+arm+'.pt');save_checkpoint(path,model,None,0,0,parent)
+        fresh,payload=load_checkpoint(path,'cpu')
+        with torch.no_grad():
+            expected=model(r);actual=fresh(r)
+            if not torch.equal(expected,actual) or not torch.isfinite(actual).all() or not torch.isfinite(reader(actual)).all():
+                raise ValueError('Actual compact whole-checkpoint and original default-head smoke failed')
+        records[arm]=dict(parameters=sum(p.numel() for p in model.parameters()),all_component_gradient_norms=norms,
+            checkpoint_output_exact=True,teacher_unchanged=True,original_F50_output_finite=True,training_F_access=False)
+    if any(not torch.equal(value,reader_before[key]) for key,value in reader.state_dict().items()):raise ValueError('Frozen F/defaulthead changed')
+    write_json(args.output/'smoke.json',dict(status='PASS',real_Ls_IQ=2,arms=records,TX_labels_read=0,V_reads=0,target_reads=0,
+        teacher_parameter_updates=0,F_training=False,F_knowledge_in_loss=False,F_parameter_updates=0,head_fit_updates=0,optimizer_updates=0))
+
+
+def score_subprocess(args,role):
+    import fcntl
+    with (args.output.parent/d.SCORING_RUN/'score.lock').open('a') as lock:
+        fcntl.flock(lock,fcntl.LOCK_EX)
+        subprocess.run(command(args,'score_'+role,args.arm),cwd=ROOT,env=dict(os.environ,CUDA_VISIBLE_DEVICES=''),check=True)
+
+
+@torch.no_grad()
+def profile(args):
+    values=array_tensor(np.load(args.parent_action/'cache/validation/practical_low_urban.npy',mmap_mode='r',allow_pickle=False)[:16],'cuda:0')
+    results={}
+    for name in ('original_R17','compact'):
+        if name=='original_R17':model,payload=load_original(args.teacher_run/'unroll_unshared'/d.KIND/'final.pt','cpu')
+        else:model,payload=load_checkpoint(args.output/args.arm/d.KIND/'final.pt','cpu')
+        if (payload['epoch'],payload['updates'])!=(20,4940):raise ValueError('Fixed final profile checkpoint required')
+        del payload;gc.collect()
+        model.eval().requires_grad_(False).to('cuda:0')
+        if name=='compact':validate_aliases(model)
+        for _ in range(2):model(values[:1])
+        macs=convolution_linear_macs(model,values[:1])
+        torch.cuda.synchronize();resident=torch.cuda.memory_allocated();torch.cuda.reset_peak_memory_stats();times=[]
+        for value in values:
+            torch.cuda.synchronize();start=time.perf_counter();model(value[None]);torch.cuda.synchronize();times.append((time.perf_counter()-start)*1000)
+        peak=torch.cuda.max_memory_allocated()
+        results[name]=dict(samples=16,warmup=2,median_ms=float(np.median(times)),p90_ms=float(np.quantile(times,.9)),
+            resident_before_forward_bytes=resident,peak_allocated_bytes=peak,incremental_peak_bytes=peak-resident,
+            convolution_linear_MAC_per_IQ=macs,MAC_probe_examples=1,MAC_excludes_FFT_CG_norm_activation=True,
+            parameters=sum(p.numel() for p in model.parameters()))
+        del model;gc.collect();torch.cuda.empty_cache()
+    write_json(args.output/args.arm/'matched_batch1_profile.json',dict(status='PROFILE_COMPLETE',physical_GPU=d.GPUS[args.arm],
+        includes_full_frozen_context_and_CG=True,checkpoint_payload_on_GPU=False,optimizer_on_GPU=False,
+        source_V_IQ=16,TX_labels_read=0,state_updates=0,results=results))
+
+
+def worker(args):
+    try:
+        train(args);torch.cuda.empty_cache();predict(args,'source');extract_context(args);profile(args);score_subprocess(args,'source')
+        write_json(args.output/args.arm/'source_complete.json',dict(status='ANALYZED',arm=args.arm,role='source',
+            diagnostic_only=True,source_selection=False,all_predictions_before_truth=True,target_feedback=False))
+        # Both compact widths were fixed prospectively; source scores never gate formal tests.
+        torch.cuda.empty_cache();predict(args,'target');score_subprocess(args,'target')
+        write_json(args.output/args.arm/'complete.json',dict(status='ANALYZED',arm=args.arm,role='target',
+            all_predictions_before_truth=True,target_feedback=False))
+    except BaseException as error:
+        row=args.output/args.arm;row.mkdir(exist_ok=True)
+        write_json(row/'failure.json',dict(status='FAILED_TECHNICAL',error=repr(error),traceback=traceback.format_exc(),
+            outputs_preserved=True,automatic_retry=False));raise
+
+
+def write_status(path,value):
+    temporary=path.with_name(path.name+'.tmp');temporary.write_text(json.dumps(value,allow_nan=False)+'\n',encoding='utf-8');temporary.replace(path)
+
+
+def run(args):
+    if args.output.name!=d.RUN or args.output.exists() or os.environ.get('CUDA_VISIBLE_DEVICES')!='':
+        raise ValueError('Immutable new root and CPU controller required')
+    validate_teacher_root(args.teacher_run);args.output.mkdir();(args.output/'logs').mkdir()
+    write_json(args.output/'launch.json',dict(pid=os.getpid(),cwd=str(ROOT),argv=sys.argv,commit=args.expected_commit,
+        owner='codex/root/R17-IQ-physics-compact',parent_run=d.PARENT_RUN,parent_commit=d.PARENT_COMMIT))
+    write_json(args.output/'resolved_config.json',d.configuration());write_json(args.output/'comparison_plan.json',d.configuration())
+    try:
+        smoke(args)
+        print(json.dumps(dict(event='COMPACT_SMOKE_PASS',arms=list(d.ARMS),TX_labels_read=0,V_reads=0,target_reads=0)),flush=True)
+        active={};launches=[];failed=[]
+        for arm in d.ARMS:
+            argv=command(args,'worker',arm);log=args.output/'logs'/('worker-'+arm+'.log')
+            with log.open('xb') as stream:
+                process=subprocess.Popen(argv,cwd=ROOT,env=dict(os.environ,CUDA_VISIBLE_DEVICES=str(d.GPUS[arm])),
+                    stdin=subprocess.DEVNULL,stdout=stream,stderr=subprocess.STDOUT,start_new_session=True)
+            record=dict(arm=arm,pid=process.pid,GPU=d.GPUS[arm],cwd=str(ROOT),argv=argv,log=str(log))
+            active[arm]=process;launches.append(record)
+        write_json(args.output/'workers.json',dict(workers=launches))
+        while active:
+            for arm,process in list(active.items()):
+                if process.poll() is None:continue
+                if process.returncode or not (args.output/arm/'complete.json').exists():failed.append(dict(arm=arm,exit_code=process.returncode))
+                del active[arm]
+            write_status(args.output/'stages.json',dict(stage='fixed_source_then_target',active={a:p.pid for a,p in active.items()},failed=failed))
+            if active:time.sleep(2)
+        if failed:raise RuntimeError('Technical failures preserved;healthy rows completed;no retry:'+str(failed))
+        write_json(args.output/'complete.json',dict(status='ANALYZED',source_rows=list(d.ARMS),target_rows=list(d.ARMS),
+            no_source_score_selection=True,target_feedback=False,goal_complete=False))
+    except BaseException as error:
+        write_json(args.output/'failure.json',dict(status='FAILED_TECHNICAL',error=repr(error),traceback=traceback.format_exc(),outputs_preserved=True,automatic_retry=False));raise
+
+
+def main():
+    parser=argparse.ArgumentParser(description='F-free physically anchored compact R17 restoration and all-version formal test matrix')
+    parser.add_argument('mode',choices=('run','worker','score_source','score_target'));parser.add_argument('--arm',choices=d.ARMS)
+    for name in PATH_ARGS:parser.add_argument('--'+name.replace('_','-'),type=Path,required=True)
+    parser.add_argument('--expected-commit',required=True);args=parser.parse_args()
+    for name in PATH_ARGS:setattr(args,name,getattr(args,name).resolve())
+    if args.output.name!=d.RUN or code_commit()!=args.expected_commit:raise ValueError('Pinned compact code/root required')
+    torch.set_num_threads(2);torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False
+    if args.mode=='run':run(args)
+    elif args.arm is None:parser.error('Registered compact arm required')
+    elif args.mode.startswith('score_'):score(args,args.mode[6:])
+    else:worker(args)
+
+
+if __name__=='__main__':main()
