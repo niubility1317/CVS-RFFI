@@ -1,0 +1,21 @@
+{
+  "status": "VERIFIED",
+  "control_commit": "7693a88f359620d90069d29357bf4546335f72f5",
+  "scientific_commit": "7b5532e9ff3845c23c7c229385ff5763254d31c3",
+  "remote_branch_OID": "VERIFIED",
+  "archive_copy": "VERIFIED",
+  "new_control_release_compile": "PASS",
+  "controller_PID_CWD_cmdline": "VERIFIED",
+  "adopted_original_source_worker_PID_and_backend_unchanged": true,
+  "source_row": "STAT_GRAD-s2026092702",
+  "scientific_worker_release_unchanged": true,
+  "source_log_growth": true,
+  "source_progress_epoch": 40,
+  "recovery_progress_growth": true,
+  "old_progress_status": "FAILED_DISPATCH_STOPPED",
+  "other_study_controller_healthy": true,
+  "new_model_training_started_by_recovery": false,
+  "completed_rows_repeated": false,
+  "matrix": "Original STAT_GRAD/NORM_ONLY x 2026092701/02/03, allscratch50=33L+17U, defaultheadjoint, no satellite, cleanonly",
+  "performance_verdict": "PENDING_ALL_THREE_SEEDS"
+}
