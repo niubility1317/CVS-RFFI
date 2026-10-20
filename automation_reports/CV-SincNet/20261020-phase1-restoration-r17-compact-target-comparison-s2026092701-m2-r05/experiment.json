@@ -340,5 +340,20 @@
     "actual_IQ_read_for_local_check": 0,
     "target_performance_claim": false,
     "weights_committed_to_Git": false
+  },
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "target_rows": [
+      "step_norm_task",
+      "activation_task"
+    ],
+    "accepted_rows": [
+      "step_norm_task",
+      "activation_task"
+    ],
+    "target_acceptance_allowance_pp": 1.0,
+    "new_training_updates": 0,
+    "all_negative_results_preserved": true,
+    "goal_complete": false
   }
 }

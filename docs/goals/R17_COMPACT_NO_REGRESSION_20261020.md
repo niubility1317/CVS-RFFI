@@ -119,4 +119,7 @@ R04 冻结F任务精简完成结论：两候选均未通过预登记源健康筛
 
 [R05登记](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-compact-target-comparison-s2026092701-m2-r05/report.md)：按用户最新“性能测试以目标域为准、最多下降1个百分点”要求，固定评测R04已完成E20/4940的两份最终权重，step_norm_task3118001（−33.1629%）和activation_task3775105（−19.0773%），每版同168000物理样本×七视图、原F50/defaulthead，0新训练或头拟合。两版源准确率均在1个百分点范围内，但原R04波形NMSE护栏未过；旧source_qualified=false/selected=null/0target记录保留，不伪造源资格。波形指标不替代目标身份性能，新建显式comparison_plan作为固定双行目标比较依据。两行和checkpoint在新目标结果前固定，不回流训练、超参、候选重排、追加或选择性重跑；全部结果包括负结果保留，不称新盲测。
 
-28项检查及唯一新适配层P0/P1审查PASS；N607普通账户预检VERIFIED，旧实际GPU进程已退出，GPU4/5空闲。新不可覆盖root、一次归档比较/远端compile、launcher-first实际R04-final/F50/2Ls no-query smoke及实际PID/CWD/cmd/GPU/日志增长核实按最小流程执行。R05 实际发布 VERIFIED：方法commit `81c39cb908373d4e19b70ec8406f4083529da99a` 已推送/OID一致，归档/远端编译/实际两版final+F50+2Ls无query smoke PASS；两个target GPU4/5实际PID/CWD/命令/GPU/日志增长与首个clean视图完成已核实。当前尚无完整目标结果，参数减少和源准确率不证明目标验收通过。
+28项检查及唯一新适配层P0/P1审查PASS；N607普通账户预检VERIFIED，旧实际GPU进程已退出，GPU4/5空闲。新不可覆盖root、一次归档比较/远端compile、launcher-first实际R04-final/F50/2Ls no-query smoke及实际PID/CWD/cmd/GPU/日志增长核实按最小流程执行。R05 实际发布 VERIFIED：方法commit `81c39cb908373d4e19b70ec8406f4083529da99a` 已推送/OID一致，归档/远端编译/实际两版final+F50+2Ls无query smoke PASS；两个target GPU4/5实际PID/CWD/命令/GPU/日志增长与首个clean视图完成已核实。R05完整目标结果已返回：符合七场景1个百分点容差：step_norm_task, activation_task。
+
+
+R05完整结果：符合七场景1个百分点容差：step_norm_task, activation_task。两版均完成同168000×七视图、原F50/defaulthead、独立truth-last；整数正确数验收、逐TX/RX/day、clean恢复差距、净修复/损伤与完整成本见[本轮报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-compact-target-comparison-s2026092701-m2-r05/report.md)。保留原R04源护栏失败记录与两版全部目标结果，不回流训练/调参/重跑。长期70%/接近clean及最大可达精简仍按实际证据核对，完整目标保持ACTIVE。
