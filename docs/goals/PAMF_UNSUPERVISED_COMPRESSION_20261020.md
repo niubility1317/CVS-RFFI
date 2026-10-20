@@ -1,5 +1,9 @@
 # 无 TX 标签恢复器的压缩与性能联合优化
 
+2026-10-20 当前正式结果：**R46两行全部完成并交付独立权重。** VERIFIED/ANALYZED：两行E20/4940、源1800×7、正式168000×7全部预测固定后独立truth-last、所属控制器和GPU进程自然退出、完整权重取回与CPU严格加载均核实。retain_refine442805参数，lowurban67.964881%（较442805父+1.192262pp），原R17逐景1pp=True，父逐景1pp=True，70%=False，其他五景gap5pp=False；prune_refine350521参数，lowurban67.510119%（较442805父+0.737500pp），原R17逐景1pp=True，父逐景1pp=True，70%=False，其他五景gap5pp=False。全部负结果和成本保留，不回流调参或选择性重跑。原完整目标继续ACTIVE，识别率/损失/关联均不单独证明逐细节TX真实性。 [R46全部七场景、完整曲线与成本](../../automation_reports/CV-SincNet/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46/report.md)。
+
+用户指定的原R44 group_pruned442805权重与所有历史产物继续保留。R47独立无F同TX评价按固定流程继续，实际进度见[R47登记](../../automation_reports/CV-SincNet/20261020-diagnostic-restoration-R46-formal-analytic-TX-s2026092701-m2-r47/report.md)，不作为R46正式交付门槛。原lowurban70%、其他五景距rawclean≤5pp、原R17逐景最多1pp及更强输入TX细节真实性要求保持，不因产物齐全或参数下降缩小目标。下文为历史方案与启动记录，以本段为R46当前状态。
+
 R47已实际VERIFIED/WAITING_PARENT_FORMAL：CPU2/空CUDA/0GPU，真实2Ls解析noquery smoke、归档SHA/compile/PID/CWD/argv/日志增长均核实。等待R46两行全部七正式评分后复用R45raw/442805的56特征，新算两版56特征；全112固定后独立truth-last评价1512组/252条件对照/84配对差，不改变R46健康训练、权重或预测，不阻塞其正式交付。[R47固定评价](../PAMF_R46_FORMAL_IDENTITY_R47_20261020.md)。
 
 2026-10-20 用户再次指定：**保留R44 group_pruned442805并继续优化、进一步减参。** 已固定[R46同预算优化控制与350521进一步剪枝](../PAMF_R44_PRUNED_REFINE_R46_20261020.md)，两行均直接从该父分叉，完整E20，0TX/F/V/target训练，逐行自动七正式测试。用户在已揭示R44结果后指定父，报告保留工程基准暴露背景，不称独立盲测。当前VERIFIED/FORMAL_PREDICTING，两版完整E20/4940及source七视图已完成，正式预测已实际启动、尚无正式评分结果；旧44万权重/结果保持，下文R38基底说明为先前阶段。
