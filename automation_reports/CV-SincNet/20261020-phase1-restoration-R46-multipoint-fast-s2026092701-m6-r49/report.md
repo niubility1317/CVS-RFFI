@@ -114,3 +114,6 @@ prior_slim首轮→末轮：loss 0.069341158→0.023597765；iq_nmse 0.048404996
 继承120串行pass+本次20=140；每组件累计100、组件轮次和300，原F50训练另计。六行同预算、同损失配方、同全局batch256/micro256，采用direct float32 buffer，均重置优化器并以指定350521父作IQ教师；与旧父相比增加了训练预算及可能的通道裁剪，不把追加训练收益全部归因于减参。
 
 独立恢复器已取回，CPU严格加载、synthetic零IQ有限输出通过。路径local_artifacts/pamf_restoration/r46_multipoint_fast_r49_20261020/models/<arm>/final.pt；使用experiments.pamf_r46_multipoint_fast.runtime.load_checkpoint，float32[B,2,256]输入/同形输出；无需teacher/F即可运行恢复器，接原F50/defaulthead完成识别。权重/数据/原始日志不入Git。总目标继续active，是否性能达标按实际逐景数据判断。
+
+
+完整源域训练与目标核对：9 行/180 个 epoch、全部 source V 七场景，详见[源域审计](source_objective_audit.md)及[机器可读数据](source_objective_audit.json)。这不改变八版训练、正式预测、父选择或原完整目标。

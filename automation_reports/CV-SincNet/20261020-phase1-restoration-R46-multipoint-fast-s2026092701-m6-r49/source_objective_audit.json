@@ -1,0 +1,1055 @@
+{
+  "status": "VERIFIED_SOURCE_AUDIT",
+  "source_rows": 9,
+  "complete_epoch_records": 180,
+  "source_views_per_row": 7,
+  "source_samples_per_view": 1800,
+  "rows": {
+    "R46 prune_refine": {
+      "records": 20,
+      "curves": {
+        "loss": {
+          "first": 0.13009790982329655,
+          "last": 0.02373399904559529,
+          "minimum": 0.02373399904559529,
+          "minimum_epoch": 20,
+          "increases": 1
+        },
+        "iq_nmse": {
+          "first": 0.07831142554396675,
+          "last": 0.023135336579784515,
+          "minimum": 0.023135336579784515,
+          "minimum_epoch": 20,
+          "increases": 4
+        },
+        "spectral_error": {
+          "first": 0.017386838460725453,
+          "last": 0.006089048270254381,
+          "minimum": 0.006089048270254381,
+          "minimum_epoch": 20,
+          "increases": 6
+        },
+        "teacher_stage_nmse": {
+          "first": 0.050917142726599224,
+          "last": 0.002942100626490419,
+          "minimum": 0.002749824221763346,
+          "minimum_epoch": 17,
+          "increases": 7
+        }
+      },
+      "source": {
+        "clean": {
+          "accuracy": 98.5,
+          "accuracy_delta_pp": 0.0,
+          "paired_IQ_NMSE": 0.0008339594351127744,
+          "NMSE_delta": 0.0,
+          "paired_F_feature_distance": 0.00016189971938729286
+        },
+        "practical_high": {
+          "accuracy": 97.88888888888889,
+          "accuracy_delta_pp": 0.0,
+          "paired_IQ_NMSE": 0.010820168070495129,
+          "NMSE_delta": 0.0,
+          "paired_F_feature_distance": 0.006163886282593012
+        },
+        "practical_mid": {
+          "accuracy": 96.61111111111111,
+          "accuracy_delta_pp": 0.0,
+          "paired_IQ_NMSE": 0.014726310037076473,
+          "NMSE_delta": 0.0,
+          "paired_F_feature_distance": 0.010165282525122166
+        },
+        "practical_low_suburban": {
+          "accuracy": 95.61111111111111,
+          "accuracy_delta_pp": 0.0,
+          "paired_IQ_NMSE": 0.01939750276505947,
+          "NMSE_delta": 0.0,
+          "paired_F_feature_distance": 0.012587636709213257
+        },
+        "practical_high_urban": {
+          "accuracy": 96.94444444444444,
+          "accuracy_delta_pp": 0.0,
+          "paired_IQ_NMSE": 0.01486842893064022,
+          "NMSE_delta": 0.0,
+          "paired_F_feature_distance": 0.008680650033056736
+        },
+        "practical_mid_urban": {
+          "accuracy": 90.05555555555556,
+          "accuracy_delta_pp": 0.0,
+          "paired_IQ_NMSE": 0.0389656238257885,
+          "NMSE_delta": 0.0,
+          "paired_F_feature_distance": 0.02074352093040943
+        },
+        "practical_low_urban": {
+          "accuracy": 83.94444444444444,
+          "accuracy_delta_pp": 0.0,
+          "paired_IQ_NMSE": 0.05874697491526604,
+          "NMSE_delta": 0.0,
+          "paired_F_feature_distance": 0.03454110771417618
+        }
+      },
+      "median_epoch_seconds": 164.08309055003338,
+      "teacher_weights": [
+        1.0,
+        0.9526315789473684,
+        0.9052631578947369,
+        0.8578947368421053,
+        0.8105263157894737,
+        0.7631578947368421,
+        0.7157894736842105,
+        0.668421052631579,
+        0.6210526315789473,
+        0.5736842105263158,
+        0.5263157894736843,
+        0.47894736842105257,
+        0.43157894736842106,
+        0.38421052631578945,
+        0.33684210526315794,
+        0.2894736842105263,
+        0.2421052631578947,
+        0.1947368421052631,
+        0.1473684210526316,
+        0.09999999999999998
+      ]
+    },
+    "R48 retain_refine": {
+      "records": 20,
+      "curves": {
+        "loss": {
+          "first": 0.02551770904139867,
+          "last": 0.02189155386175428,
+          "minimum": 0.02189155386175428,
+          "minimum_epoch": 20,
+          "increases": 5
+        },
+        "iq_nmse": {
+          "first": 0.02415096608419267,
+          "last": 0.021491356833586616,
+          "minimum": 0.021491356833586616,
+          "minimum_epoch": 20,
+          "increases": 9
+        },
+        "spectral_error": {
+          "first": 0.006367059819518574,
+          "last": 0.005659764503321004,
+          "minimum": 0.005659764503321004,
+          "minimum_epoch": 20,
+          "increases": 10
+        },
+        "teacher_stage_nmse": {
+          "first": 0.001048389915407045,
+          "last": 0.001172088576214654,
+          "minimum": 0.001048389915407045,
+          "minimum_epoch": 1,
+          "increases": 9
+        }
+      },
+      "source": {
+        "clean": {
+          "accuracy": 98.5,
+          "accuracy_delta_pp": 0.0,
+          "paired_IQ_NMSE": 3.495328928693198e-05,
+          "NMSE_delta": -0.0007990061458258424,
+          "paired_F_feature_distance": 9.6827709057834e-05
+        },
+        "practical_high": {
+          "accuracy": 97.94444444444444,
+          "accuracy_delta_pp": 0.055555555555557135,
+          "paired_IQ_NMSE": 0.010093901306390762,
+          "NMSE_delta": -0.0007262667641043663,
+          "paired_F_feature_distance": 0.005505043547600508
+        },
+        "practical_mid": {
+          "accuracy": 96.94444444444444,
+          "accuracy_delta_pp": 0.3333333333333286,
+          "paired_IQ_NMSE": 0.013423326425254345,
+          "NMSE_delta": -0.0013029836118221283,
+          "paired_F_feature_distance": 0.008956324309110641
+        },
+        "practical_low_suburban": {
+          "accuracy": 95.61111111111111,
+          "accuracy_delta_pp": 0.0,
+          "paired_IQ_NMSE": 0.017832636833190918,
+          "NMSE_delta": -0.0015648659318685532,
+          "paired_F_feature_distance": 0.011092884466052055
+        },
+        "practical_high_urban": {
+          "accuracy": 97.05555555555556,
+          "accuracy_delta_pp": 0.11111111111111427,
+          "paired_IQ_NMSE": 0.013671203516423702,
+          "NMSE_delta": -0.0011972254142165184,
+          "paired_F_feature_distance": 0.007645736448466778
+        },
+        "practical_mid_urban": {
+          "accuracy": 91.16666666666667,
+          "accuracy_delta_pp": 1.1111111111111143,
+          "paired_IQ_NMSE": 0.03599703311920166,
+          "NMSE_delta": -0.0029685907065868378,
+          "paired_F_feature_distance": 0.018530312925577164
+        },
+        "practical_low_urban": {
+          "accuracy": 85.83333333333333,
+          "accuracy_delta_pp": 1.8888888888888857,
+          "paired_IQ_NMSE": 0.0541178397834301,
+          "NMSE_delta": -0.0046291351318359375,
+          "paired_F_feature_distance": 0.030673349276185036
+        }
+      },
+      "median_epoch_seconds": 174.02618050959427,
+      "teacher_weights": [
+        1.0,
+        0.9526315789473684,
+        0.9052631578947369,
+        0.8578947368421053,
+        0.8105263157894737,
+        0.7631578947368421,
+        0.7157894736842105,
+        0.668421052631579,
+        0.6210526315789473,
+        0.5736842105263158,
+        0.5263157894736843,
+        0.47894736842105257,
+        0.43157894736842106,
+        0.38421052631578945,
+        0.33684210526315794,
+        0.2894736842105263,
+        0.2421052631578947,
+        0.1947368421052631,
+        0.1473684210526316,
+        0.09999999999999998
+      ]
+    },
+    "R48 prune_refine": {
+      "records": 20,
+      "curves": {
+        "loss": {
+          "first": 0.1337098336295476,
+          "last": 0.023518631572761232,
+          "minimum": 0.023518631572761232,
+          "minimum_epoch": 20,
+          "increases": 3
+        },
+        "iq_nmse": {
+          "first": 0.07926999714450231,
+          "last": 0.022922496386936733,
+          "minimum": 0.022922496386936733,
+          "minimum_epoch": 20,
+          "increases": 4
+        },
+        "spectral_error": {
+          "first": 0.019420517442718385,
+          "last": 0.006003400852874158,
+          "minimum": 0.006003400852874158,
+          "minimum_epoch": 20,
+          "increases": 6
+        },
+        "teacher_stage_nmse": {
+          "first": 0.05346881065151048,
+          "last": 0.002959651748221072,
+          "minimum": 0.002833674306789088,
+          "minimum_epoch": 18,
+          "increases": 6
+        }
+      },
+      "source": {
+        "clean": {
+          "accuracy": 98.5,
+          "accuracy_delta_pp": 0.0,
+          "paired_IQ_NMSE": 0.0004467627441044897,
+          "NMSE_delta": -0.0003871966910082847,
+          "paired_F_feature_distance": 0.00013567169662564993
+        },
+        "practical_high": {
+          "accuracy": 97.83333333333333,
+          "accuracy_delta_pp": -0.055555555555557135,
+          "paired_IQ_NMSE": 0.011009154841303825,
+          "NMSE_delta": 0.00018898677080869675,
+          "paired_F_feature_distance": 0.006234012544155121
+        },
+        "practical_mid": {
+          "accuracy": 96.22222222222223,
+          "accuracy_delta_pp": -0.38888888888888573,
+          "paired_IQ_NMSE": 0.014793583191931248,
+          "NMSE_delta": 6.727315485477448e-05,
+          "paired_F_feature_distance": 0.010198010131716728
+        },
+        "practical_low_suburban": {
+          "accuracy": 95.27777777777777,
+          "accuracy_delta_pp": -0.3333333333333428,
+          "paired_IQ_NMSE": 0.019628500565886497,
+          "NMSE_delta": 0.00023099780082702637,
+          "paired_F_feature_distance": 0.012831147760152817
+        },
+        "practical_high_urban": {
+          "accuracy": 96.72222222222223,
+          "accuracy_delta_pp": -0.22222222222221433,
+          "paired_IQ_NMSE": 0.01518313493579626,
+          "NMSE_delta": 0.0003147060051560402,
+          "paired_F_feature_distance": 0.008644551038742065
+        },
+        "practical_mid_urban": {
+          "accuracy": 90.44444444444444,
+          "accuracy_delta_pp": 0.38888888888888573,
+          "paired_IQ_NMSE": 0.038733210414648056,
+          "NMSE_delta": -0.0002324134111404419,
+          "paired_F_feature_distance": 0.02057536691427231
+        },
+        "practical_low_urban": {
+          "accuracy": 83.83333333333333,
+          "accuracy_delta_pp": -0.11111111111111427,
+          "paired_IQ_NMSE": 0.059714630246162415,
+          "NMSE_delta": 0.0009676553308963776,
+          "paired_F_feature_distance": 0.033430684357881546
+        }
+      },
+      "median_epoch_seconds": 162.13528995006345,
+      "teacher_weights": [
+        1.0,
+        0.9526315789473684,
+        0.9052631578947369,
+        0.8578947368421053,
+        0.8105263157894737,
+        0.7631578947368421,
+        0.7157894736842105,
+        0.668421052631579,
+        0.6210526315789473,
+        0.5736842105263158,
+        0.5263157894736843,
+        0.47894736842105257,
+        0.43157894736842106,
+        0.38421052631578945,
+        0.33684210526315794,
+        0.2894736842105263,
+        0.2421052631578947,
+        0.1947368421052631,
+        0.1473684210526316,
+        0.09999999999999998
+      ]
+    },
+    "R49 retain_refine": {
+      "records": 20,
+      "curves": {
+        "loss": {
+          "first": 0.02551766322151063,
+          "last": 0.02175373881913367,
+          "minimum": 0.02175373881913367,
+          "minimum_epoch": 20,
+          "increases": 5
+        },
+        "iq_nmse": {
+          "first": 0.02415093368859518,
+          "last": 0.021364156264161306,
+          "minimum": 0.021364156264161306,
+          "minimum_epoch": 20,
+          "increases": 6
+        },
+        "spectral_error": {
+          "first": 0.006367056657161032,
+          "last": 0.0056479812135535575,
+          "minimum": 0.0056479812135535575,
+          "minimum_epoch": 20,
+          "increases": 9
+        },
+        "teacher_stage_nmse": {
+          "first": 0.0010483766150090747,
+          "last": 0.0010718354077211448,
+          "minimum": 0.0010483766150090747,
+          "minimum_epoch": 1,
+          "increases": 8
+        }
+      },
+      "source": {
+        "clean": {
+          "accuracy": 98.5,
+          "accuracy_delta_pp": 0.0,
+          "paired_IQ_NMSE": 0.0003849630302283913,
+          "NMSE_delta": -0.0004489964048843831,
+          "paired_F_feature_distance": 0.000115411909064278
+        },
+        "practical_high": {
+          "accuracy": 97.94444444444444,
+          "accuracy_delta_pp": 0.055555555555557135,
+          "paired_IQ_NMSE": 0.009721019305288792,
+          "NMSE_delta": -0.001099148765206337,
+          "paired_F_feature_distance": 0.0054810671135783195
+        },
+        "practical_mid": {
+          "accuracy": 96.66666666666667,
+          "accuracy_delta_pp": 0.055555555555557135,
+          "paired_IQ_NMSE": 0.013352769427001476,
+          "NMSE_delta": -0.001373540610074997,
+          "paired_F_feature_distance": 0.0089289965108037
+        },
+        "practical_low_suburban": {
+          "accuracy": 95.66666666666667,
+          "accuracy_delta_pp": 0.055555555555557135,
+          "paired_IQ_NMSE": 0.017823338508605957,
+          "NMSE_delta": -0.001574164256453514,
+          "paired_F_feature_distance": 0.011133518069982529
+        },
+        "practical_high_urban": {
+          "accuracy": 97.05555555555556,
+          "accuracy_delta_pp": 0.11111111111111427,
+          "paired_IQ_NMSE": 0.01357673853635788,
+          "NMSE_delta": -0.001291690394282341,
+          "paired_F_feature_distance": 0.007596427109092474
+        },
+        "practical_mid_urban": {
+          "accuracy": 91.05555555555556,
+          "accuracy_delta_pp": 1.0,
+          "paired_IQ_NMSE": 0.03570045530796051,
+          "NMSE_delta": -0.0032651685178279877,
+          "paired_F_feature_distance": 0.018384644761681557
+        },
+        "practical_low_urban": {
+          "accuracy": 86.16666666666667,
+          "accuracy_delta_pp": 2.2222222222222285,
+          "paired_IQ_NMSE": 0.0543353408575058,
+          "NMSE_delta": -0.004411634057760239,
+          "paired_F_feature_distance": 0.030613858252763748
+        }
+      },
+      "median_epoch_seconds": 76.51811132498551,
+      "teacher_weights": [
+        1.0,
+        0.9526315789473684,
+        0.9052631578947369,
+        0.8578947368421053,
+        0.8105263157894737,
+        0.7631578947368421,
+        0.7157894736842105,
+        0.668421052631579,
+        0.6210526315789473,
+        0.5736842105263158,
+        0.5263157894736843,
+        0.47894736842105257,
+        0.43157894736842106,
+        0.38421052631578945,
+        0.33684210526315794,
+        0.2894736842105263,
+        0.2421052631578947,
+        0.1947368421052631,
+        0.1473684210526316,
+        0.09999999999999998
+      ]
+    },
+    "R49 prune_near": {
+      "records": 20,
+      "curves": {
+        "loss": {
+          "first": 0.03199416331071702,
+          "last": 0.021878084616055563,
+          "minimum": 0.021878084616055563,
+          "minimum_epoch": 20,
+          "increases": 6
+        },
+        "iq_nmse": {
+          "first": 0.027539722904326425,
+          "last": 0.021470603220046514,
+          "minimum": 0.021470603220046514,
+          "minimum_epoch": 20,
+          "increases": 6
+        },
+        "spectral_error": {
+          "first": 0.007046050216470446,
+          "last": 0.005668047548582156,
+          "minimum": 0.005668047548582156,
+          "minimum_epoch": 20,
+          "increases": 7
+        },
+        "teacher_stage_nmse": {
+          "first": 0.004102138074617537,
+          "last": 0.0012407895447242828,
+          "minimum": 0.001225119676914007,
+          "minimum_epoch": 18,
+          "increases": 8
+        }
+      },
+      "source": {
+        "clean": {
+          "accuracy": 98.5,
+          "accuracy_delta_pp": 0.0,
+          "paired_IQ_NMSE": 3.44084546668455e-05,
+          "NMSE_delta": -0.0007995509804459289,
+          "paired_F_feature_distance": 0.00011031154281226918
+        },
+        "practical_high": {
+          "accuracy": 98.0,
+          "accuracy_delta_pp": 0.11111111111111427,
+          "paired_IQ_NMSE": 0.009614821523427963,
+          "NMSE_delta": -0.0012053465470671654,
+          "paired_F_feature_distance": 0.005527850240468979
+        },
+        "practical_mid": {
+          "accuracy": 97.0,
+          "accuracy_delta_pp": 0.38888888888888573,
+          "paired_IQ_NMSE": 0.013450834900140762,
+          "NMSE_delta": -0.001275475136935711,
+          "paired_F_feature_distance": 0.009023191407322884
+        },
+        "practical_low_suburban": {
+          "accuracy": 95.77777777777777,
+          "accuracy_delta_pp": 0.1666666666666572,
+          "paired_IQ_NMSE": 0.017854485660791397,
+          "NMSE_delta": -0.001543017104268074,
+          "paired_F_feature_distance": 0.011095970869064331
+        },
+        "practical_high_urban": {
+          "accuracy": 97.11111111111111,
+          "accuracy_delta_pp": 0.1666666666666714,
+          "paired_IQ_NMSE": 0.013748793862760067,
+          "NMSE_delta": -0.0011196350678801537,
+          "paired_F_feature_distance": 0.007794218137860298
+        },
+        "practical_mid_urban": {
+          "accuracy": 91.27777777777777,
+          "accuracy_delta_pp": 1.2222222222222143,
+          "paired_IQ_NMSE": 0.0363810732960701,
+          "NMSE_delta": -0.002584550529718399,
+          "paired_F_feature_distance": 0.018230656161904335
+        },
+        "practical_low_urban": {
+          "accuracy": 86.16666666666667,
+          "accuracy_delta_pp": 2.2222222222222285,
+          "paired_IQ_NMSE": 0.054619692265987396,
+          "NMSE_delta": -0.004127282649278641,
+          "paired_F_feature_distance": 0.0312812514603138
+        }
+      },
+      "median_epoch_seconds": 75.8824467684608,
+      "teacher_weights": [
+        1.0,
+        0.9526315789473684,
+        0.9052631578947369,
+        0.8578947368421053,
+        0.8105263157894737,
+        0.7631578947368421,
+        0.7157894736842105,
+        0.668421052631579,
+        0.6210526315789473,
+        0.5736842105263158,
+        0.5263157894736843,
+        0.47894736842105257,
+        0.43157894736842106,
+        0.38421052631578945,
+        0.33684210526315794,
+        0.2894736842105263,
+        0.2421052631578947,
+        0.1947368421052631,
+        0.1473684210526316,
+        0.09999999999999998
+      ]
+    },
+    "R49 prune_balanced": {
+      "records": 20,
+      "curves": {
+        "loss": {
+          "first": 0.058816203512842696,
+          "last": 0.02241421184700633,
+          "minimum": 0.02241421184700633,
+          "minimum_epoch": 20,
+          "increases": 5
+        },
+        "iq_nmse": {
+          "first": 0.0415084312018894,
+          "last": 0.02195365663085665,
+          "minimum": 0.02195365663085665,
+          "minimum_epoch": 20,
+          "increases": 5
+        },
+        "spectral_error": {
+          "first": 0.01045487679470153,
+          "last": 0.005783175978395674,
+          "minimum": 0.005783175978395674,
+          "minimum_epoch": 20,
+          "increases": 7
+        },
+        "teacher_stage_nmse": {
+          "first": 0.016785028224190077,
+          "last": 0.0017139645489080558,
+          "minimum": 0.0016484383799076554,
+          "minimum_epoch": 18,
+          "increases": 8
+        }
+      },
+      "source": {
+        "clean": {
+          "accuracy": 98.5,
+          "accuracy_delta_pp": 0.0,
+          "paired_IQ_NMSE": 3.6469671613303944e-05,
+          "NMSE_delta": -0.0007974897634994704,
+          "paired_F_feature_distance": 0.0001176108926301822
+        },
+        "practical_high": {
+          "accuracy": 98.11111111111111,
+          "accuracy_delta_pp": 0.22222222222222854,
+          "paired_IQ_NMSE": 0.010507280938327312,
+          "NMSE_delta": -0.00031288713216781616,
+          "paired_F_feature_distance": 0.0057794563472270966
+        },
+        "practical_mid": {
+          "accuracy": 96.55555555555556,
+          "accuracy_delta_pp": -0.055555555555557135,
+          "paired_IQ_NMSE": 0.01416610274463892,
+          "NMSE_delta": -0.0005602072924375534,
+          "paired_F_feature_distance": 0.00955606997013092
+        },
+        "practical_low_suburban": {
+          "accuracy": 95.72222222222223,
+          "accuracy_delta_pp": 0.11111111111111427,
+          "paired_IQ_NMSE": 0.018359098583459854,
+          "NMSE_delta": -0.001038404181599617,
+          "paired_F_feature_distance": 0.011721672490239143
+        },
+        "practical_high_urban": {
+          "accuracy": 97.44444444444444,
+          "accuracy_delta_pp": 0.5,
+          "paired_IQ_NMSE": 0.014086764305830002,
+          "NMSE_delta": -0.0007816646248102188,
+          "paired_F_feature_distance": 0.007919585332274437
+        },
+        "practical_mid_urban": {
+          "accuracy": 90.61111111111111,
+          "accuracy_delta_pp": 0.5555555555555571,
+          "paired_IQ_NMSE": 0.03657740354537964,
+          "NMSE_delta": -0.0023882202804088593,
+          "paired_F_feature_distance": 0.018834711983799934
+        },
+        "practical_low_urban": {
+          "accuracy": 85.0,
+          "accuracy_delta_pp": 1.0555555555555571,
+          "paired_IQ_NMSE": 0.05598124861717224,
+          "NMSE_delta": -0.0027657262980937958,
+          "paired_F_feature_distance": 0.03141027316451073
+        }
+      },
+      "median_epoch_seconds": 51.975951733998954,
+      "teacher_weights": [
+        1.0,
+        0.9526315789473684,
+        0.9052631578947369,
+        0.8578947368421053,
+        0.8105263157894737,
+        0.7631578947368421,
+        0.7157894736842105,
+        0.668421052631579,
+        0.6210526315789473,
+        0.5736842105263158,
+        0.5263157894736843,
+        0.47894736842105257,
+        0.43157894736842106,
+        0.38421052631578945,
+        0.33684210526315794,
+        0.2894736842105263,
+        0.2421052631578947,
+        0.1947368421052631,
+        0.1473684210526316,
+        0.09999999999999998
+      ]
+    },
+    "R49 prune_small": {
+      "records": 20,
+      "curves": {
+        "loss": {
+          "first": 0.22493015637473454,
+          "last": 0.02503262652480413,
+          "minimum": 0.02503262652480413,
+          "minimum_epoch": 20,
+          "increases": 0
+        },
+        "iq_nmse": {
+          "first": 0.12475796307268597,
+          "last": 0.02430915392675097,
+          "minimum": 0.02430915392675097,
+          "minimum_epoch": 20,
+          "increases": 3
+        },
+        "spectral_error": {
+          "first": 0.023923675851689443,
+          "last": 0.0063684187623716535,
+          "minimum": 0.0063684187623716535,
+          "minimum_epoch": 20,
+          "increases": 6
+        },
+        "teacher_stage_nmse": {
+          "first": 0.09897601062532455,
+          "last": 0.004050515553307912,
+          "minimum": 0.003971809521317482,
+          "minimum_epoch": 18,
+          "increases": 2
+        }
+      },
+      "source": {
+        "clean": {
+          "accuracy": 98.44444444444444,
+          "accuracy_delta_pp": -0.055555555555557135,
+          "paired_IQ_NMSE": 0.0009123001946136355,
+          "NMSE_delta": 7.834075950086117e-05,
+          "paired_F_feature_distance": 0.00021239108173176646
+        },
+        "practical_high": {
+          "accuracy": 97.94444444444444,
+          "accuracy_delta_pp": 0.055555555555557135,
+          "paired_IQ_NMSE": 0.010676178149878979,
+          "NMSE_delta": -0.0001439899206161499,
+          "paired_F_feature_distance": 0.006597346160560846
+        },
+        "practical_mid": {
+          "accuracy": 96.38888888888889,
+          "accuracy_delta_pp": -0.22222222222222854,
+          "paired_IQ_NMSE": 0.015561274252831936,
+          "NMSE_delta": 0.0008349642157554626,
+          "paired_F_feature_distance": 0.010838269256055355
+        },
+        "practical_low_suburban": {
+          "accuracy": 95.61111111111111,
+          "accuracy_delta_pp": 0.0,
+          "paired_IQ_NMSE": 0.0203598253428936,
+          "NMSE_delta": 0.0009623225778341293,
+          "paired_F_feature_distance": 0.01351485401391983
+        },
+        "practical_high_urban": {
+          "accuracy": 97.22222222222223,
+          "accuracy_delta_pp": 0.2777777777777857,
+          "paired_IQ_NMSE": 0.014923465438187122,
+          "NMSE_delta": 5.50365075469017e-05,
+          "paired_F_feature_distance": 0.009106330573558807
+        },
+        "practical_mid_urban": {
+          "accuracy": 89.83333333333333,
+          "accuracy_delta_pp": -0.22222222222222854,
+          "paired_IQ_NMSE": 0.04057305306196213,
+          "NMSE_delta": 0.0016074292361736298,
+          "paired_F_feature_distance": 0.021623244509100914
+        },
+        "practical_low_urban": {
+          "accuracy": 84.61111111111111,
+          "accuracy_delta_pp": 0.6666666666666714,
+          "paired_IQ_NMSE": 0.06061685457825661,
+          "NMSE_delta": 0.00186987966299057,
+          "paired_F_feature_distance": 0.03480035066604614
+        }
+      },
+      "median_epoch_seconds": 49.59150955802761,
+      "teacher_weights": [
+        1.0,
+        0.9526315789473684,
+        0.9052631578947369,
+        0.8578947368421053,
+        0.8105263157894737,
+        0.7631578947368421,
+        0.7157894736842105,
+        0.668421052631579,
+        0.6210526315789473,
+        0.5736842105263158,
+        0.5263157894736843,
+        0.47894736842105257,
+        0.43157894736842106,
+        0.38421052631578945,
+        0.33684210526315794,
+        0.2894736842105263,
+        0.2421052631578947,
+        0.1947368421052631,
+        0.1473684210526316,
+        0.09999999999999998
+      ]
+    },
+    "R49 context_slim": {
+      "records": 20,
+      "curves": {
+        "loss": {
+          "first": 0.13756790432854304,
+          "last": 0.022461186171051056,
+          "minimum": 0.022461186171051056,
+          "minimum_epoch": 20,
+          "increases": 3
+        },
+        "iq_nmse": {
+          "first": 0.07866577907592531,
+          "last": 0.021984676494484857,
+          "minimum": 0.021984676494484857,
+          "minimum_epoch": 20,
+          "increases": 5
+        },
+        "spectral_error": {
+          "first": 0.016254056264010688,
+          "last": 0.005757570006189839,
+          "minimum": 0.005757570006189839,
+          "minimum_epoch": 20,
+          "increases": 6
+        },
+        "teacher_stage_nmse": {
+          "first": 0.05808942250174189,
+          "last": 0.0018863109495076869,
+          "minimum": 0.0018290639372453804,
+          "minimum_epoch": 18,
+          "increases": 6
+        }
+      },
+      "source": {
+        "clean": {
+          "accuracy": 98.44444444444444,
+          "accuracy_delta_pp": -0.055555555555557135,
+          "paired_IQ_NMSE": 0.0006553321145474911,
+          "NMSE_delta": -0.0001786273205652833,
+          "paired_F_feature_distance": 0.00017251465760637075
+        },
+        "practical_high": {
+          "accuracy": 97.83333333333333,
+          "accuracy_delta_pp": -0.055555555555557135,
+          "paired_IQ_NMSE": 0.01059508416801691,
+          "NMSE_delta": -0.00022508390247821808,
+          "paired_F_feature_distance": 0.005807430483400822
+        },
+        "practical_mid": {
+          "accuracy": 96.66666666666667,
+          "accuracy_delta_pp": 0.055555555555557135,
+          "paired_IQ_NMSE": 0.014972989447414875,
+          "NMSE_delta": 0.0002466794103384018,
+          "paired_F_feature_distance": 0.009365519508719444
+        },
+        "practical_low_suburban": {
+          "accuracy": 95.5,
+          "accuracy_delta_pp": -0.11111111111111427,
+          "paired_IQ_NMSE": 0.01856149546802044,
+          "NMSE_delta": -0.000836007297039032,
+          "paired_F_feature_distance": 0.011590703390538692
+        },
+        "practical_high_urban": {
+          "accuracy": 96.94444444444444,
+          "accuracy_delta_pp": 0.0,
+          "paired_IQ_NMSE": 0.014882102608680725,
+          "NMSE_delta": 1.3673678040504456e-05,
+          "paired_F_feature_distance": 0.007906807586550713
+        },
+        "practical_mid_urban": {
+          "accuracy": 91.22222222222223,
+          "accuracy_delta_pp": 1.1666666666666714,
+          "paired_IQ_NMSE": 0.0365518257021904,
+          "NMSE_delta": -0.0024137981235980988,
+          "paired_F_feature_distance": 0.018486540764570236
+        },
+        "practical_low_urban": {
+          "accuracy": 86.05555555555556,
+          "accuracy_delta_pp": 2.1111111111111143,
+          "paired_IQ_NMSE": 0.056232329457998276,
+          "NMSE_delta": -0.0025146454572677612,
+          "paired_F_feature_distance": 0.030504094436764717
+        }
+      },
+      "median_epoch_seconds": 52.471407601376995,
+      "teacher_weights": [
+        1.0,
+        0.9526315789473684,
+        0.9052631578947369,
+        0.8578947368421053,
+        0.8105263157894737,
+        0.7631578947368421,
+        0.7157894736842105,
+        0.668421052631579,
+        0.6210526315789473,
+        0.5736842105263158,
+        0.5263157894736843,
+        0.47894736842105257,
+        0.43157894736842106,
+        0.38421052631578945,
+        0.33684210526315794,
+        0.2894736842105263,
+        0.2421052631578947,
+        0.1947368421052631,
+        0.1473684210526316,
+        0.09999999999999998
+      ]
+    },
+    "R49 prior_slim": {
+      "records": 20,
+      "curves": {
+        "loss": {
+          "first": 0.06934115839004516,
+          "last": 0.023597765483553447,
+          "minimum": 0.023597765483553447,
+          "minimum_epoch": 20,
+          "increases": 4
+        },
+        "iq_nmse": {
+          "first": 0.04840499621724326,
+          "last": 0.02299225102814417,
+          "minimum": 0.02299225102814417,
+          "minimum_epoch": 20,
+          "increases": 6
+        },
+        "spectral_error": {
+          "first": 0.013857960649899075,
+          "last": 0.006024355007838162,
+          "minimum": 0.006024355007838162,
+          "minimum_epoch": 20,
+          "increases": 6
+        },
+        "teacher_stage_nmse": {
+          "first": 0.020243263733765435,
+          "last": 0.00304296784930759,
+          "minimum": 0.002947281681651634,
+          "minimum_epoch": 18,
+          "increases": 5
+        }
+      },
+      "source": {
+        "clean": {
+          "accuracy": 98.5,
+          "accuracy_delta_pp": 0.0,
+          "paired_IQ_NMSE": 9.076742571778595e-05,
+          "NMSE_delta": -0.0007431920093949884,
+          "paired_F_feature_distance": 8.926020382205024e-05
+        },
+        "practical_high": {
+          "accuracy": 97.88888888888889,
+          "accuracy_delta_pp": 0.0,
+          "paired_IQ_NMSE": 0.009636444970965385,
+          "NMSE_delta": -0.0011837230995297432,
+          "paired_F_feature_distance": 0.005946535617113113
+        },
+        "practical_mid": {
+          "accuracy": 96.44444444444444,
+          "accuracy_delta_pp": -0.1666666666666714,
+          "paired_IQ_NMSE": 0.014289427548646927,
+          "NMSE_delta": -0.00043688248842954636,
+          "paired_F_feature_distance": 0.010019245557487011
+        },
+        "practical_low_suburban": {
+          "accuracy": 95.44444444444444,
+          "accuracy_delta_pp": -0.1666666666666714,
+          "paired_IQ_NMSE": 0.018939819186925888,
+          "NMSE_delta": -0.00045768357813358307,
+          "paired_F_feature_distance": 0.012401909567415714
+        },
+        "practical_high_urban": {
+          "accuracy": 96.83333333333333,
+          "accuracy_delta_pp": -0.11111111111111427,
+          "paired_IQ_NMSE": 0.01368840504437685,
+          "NMSE_delta": -0.0011800238862633705,
+          "paired_F_feature_distance": 0.008256758563220501
+        },
+        "practical_mid_urban": {
+          "accuracy": 89.88888888888889,
+          "accuracy_delta_pp": -0.1666666666666714,
+          "paired_IQ_NMSE": 0.038719888776540756,
+          "NMSE_delta": -0.0002457350492477417,
+          "paired_F_feature_distance": 0.020643454045057297
+        },
+        "practical_low_urban": {
+          "accuracy": 83.38888888888889,
+          "accuracy_delta_pp": -0.5555555555555571,
+          "paired_IQ_NMSE": 0.05877005681395531,
+          "NMSE_delta": 2.308189868927002e-05,
+          "paired_F_feature_distance": 0.0339946486055851
+        }
+      },
+      "median_epoch_seconds": 52.01784995000344,
+      "teacher_weights": [
+        1.0,
+        0.9526315789473684,
+        0.9052631578947369,
+        0.8578947368421053,
+        0.8105263157894737,
+        0.7631578947368421,
+        0.7157894736842105,
+        0.668421052631579,
+        0.6210526315789473,
+        0.5736842105263158,
+        0.5263157894736843,
+        0.47894736842105257,
+        0.43157894736842106,
+        0.38421052631578945,
+        0.33684210526315794,
+        0.2894736842105263,
+        0.2421052631578947,
+        0.1947368421052631,
+        0.1473684210526316,
+        0.09999999999999998
+      ]
+    }
+  },
+  "NMSE_improves_accuracy_declines": [
+    {
+      "row": "R49 prune_balanced",
+      "view": "practical_mid",
+      "accuracy": 96.55555555555556,
+      "accuracy_delta_pp": -0.055555555555557135,
+      "paired_IQ_NMSE": 0.01416610274463892,
+      "NMSE_delta": -0.0005602072924375534,
+      "paired_F_feature_distance": 0.00955606997013092
+    },
+    {
+      "row": "R49 context_slim",
+      "view": "clean",
+      "accuracy": 98.44444444444444,
+      "accuracy_delta_pp": -0.055555555555557135,
+      "paired_IQ_NMSE": 0.0006553321145474911,
+      "NMSE_delta": -0.0001786273205652833,
+      "paired_F_feature_distance": 0.00017251465760637075
+    },
+    {
+      "row": "R49 context_slim",
+      "view": "practical_high",
+      "accuracy": 97.83333333333333,
+      "accuracy_delta_pp": -0.055555555555557135,
+      "paired_IQ_NMSE": 0.01059508416801691,
+      "NMSE_delta": -0.00022508390247821808,
+      "paired_F_feature_distance": 0.005807430483400822
+    },
+    {
+      "row": "R49 context_slim",
+      "view": "practical_low_suburban",
+      "accuracy": 95.5,
+      "accuracy_delta_pp": -0.11111111111111427,
+      "paired_IQ_NMSE": 0.01856149546802044,
+      "NMSE_delta": -0.000836007297039032,
+      "paired_F_feature_distance": 0.011590703390538692
+    },
+    {
+      "row": "R49 prior_slim",
+      "view": "practical_mid",
+      "accuracy": 96.44444444444444,
+      "accuracy_delta_pp": -0.1666666666666714,
+      "paired_IQ_NMSE": 0.014289427548646927,
+      "NMSE_delta": -0.00043688248842954636,
+      "paired_F_feature_distance": 0.010019245557487011
+    },
+    {
+      "row": "R49 prior_slim",
+      "view": "practical_low_suburban",
+      "accuracy": 95.44444444444444,
+      "accuracy_delta_pp": -0.1666666666666714,
+      "paired_IQ_NMSE": 0.018939819186925888,
+      "NMSE_delta": -0.00045768357813358307,
+      "paired_F_feature_distance": 0.012401909567415714
+    },
+    {
+      "row": "R49 prior_slim",
+      "view": "practical_high_urban",
+      "accuracy": 96.83333333333333,
+      "accuracy_delta_pp": -0.11111111111111427,
+      "paired_IQ_NMSE": 0.01368840504437685,
+      "NMSE_delta": -0.0011800238862633705,
+      "paired_F_feature_distance": 0.008256758563220501
+    },
+    {
+      "row": "R49 prior_slim",
+      "view": "practical_mid_urban",
+      "accuracy": 89.88888888888889,
+      "accuracy_delta_pp": -0.1666666666666714,
+      "paired_IQ_NMSE": 0.038719888776540756,
+      "NMSE_delta": -0.0002457350492477417,
+      "paired_F_feature_distance": 0.020643454045057297
+    }
+  ],
+  "new_IQ_reads": 0,
+  "new_F_forward_calls": 0,
+  "training_updates": 0,
+  "new_target_or_truth_access": 0,
+  "historical_formal_results_already_exposed": true,
+  "source_metrics_used_for_this_audit_only": true,
+  "new_parent_selected": false,
+  "causal_root_cause_proven": false,
+  "goal_complete": false
+}
