@@ -1,6 +1,6 @@
 # R47：R46保留与再压缩版的正式无F同TX关联
 
-状态：LOCAL_VERIFIED，尚未发布。22项聚焦检查、CLIhelp、一次独立P0/P1 PASS；方法commit `a29dc38f7dd527edbf250c4d5b0e88f40f8ed032`。
+状态：**VERIFIED / WAITING_PARENT_FORMAL**，已发布。22项聚焦检查、CLIhelp、一次独立P0/P1 PASS；方法commit `a29dc38f7dd527edbf250c4d5b0e88f40f8ed032`。
 
 
 状态：LOCAL_IMPLEMENTED，未发布。固定比较用户指定 R44 group_pruned442805、R46 retain_refine442805 与 prune_refine350521。R46 训练、权重与完整七场景测试保持已发布计划；本诊断只做事后统计，不筛候选、改变损失或影响正式交付。
@@ -17,3 +17,6 @@ CPU2线程、空CUDA、0GPU。等待R46两行全部七正式预测和独立truth
 
 
 精确环境、命令、路径、预算见[登记](experiment.json)。
+
+
+VERIFIED / WAITING_PARENT_FORMAL：普通账户新release/归档单SHA/compile已核实；真实2Ls参数自由noquery smoke PASS，0checkpoint/F/TX/V/target；实际PID/CWD/argv/空CUDA/2线程及日志增长已读回。等待R46双方全部正式评分后解析，复用R45raw/442805的56单元，新算56单元；无统计结果，不改变父训练或预测。
