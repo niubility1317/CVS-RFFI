@@ -328,7 +328,10 @@
     "47 focused new/R31 checks andCLIhelp;one independentP0P1 andone targeted shared-lock fix recheck;real2Ls checkpoint/gradient/originalF50 noquery first.",
     "Immutable ordinaryN607 roots,max2ownworkerone/card,pool0/1/5/7,allowner cap2/free12GB;original sharedlock receiver_residual_capacity4.lock;otherowners untouched.",
     "No targetfeedback,low-score retry orseed expansion;benchmark exposed notnewblindtest;70/5pp/inputTXfidelity stillunachieved;negative rows preserved.",
-    "VERIFIED:two actual GPU workers,PID/CWD/argv/GPU andloggrowth;realcheckpoint smokePASS;firstepoch fullL6300/U56700 confirmed;training0TX/F/target;goalactive"
+    "VERIFIED:two actual GPU workers,PID/CWD/argv/GPU andloggrowth;realcheckpoint smokePASS;firstepoch fullL6300/U56700 confirmed;training0TX/F/target;goalactive",
+    "FAILED_TECHNICAL_AFTER_TRAINING：两版 E20/4940、七源视图和十二响应单元均已保存；CPU源评分误将三个返回值解包为四个，源评分及target未执行。所有原所属进程已退出，产物保留。新 R37 只恢复评分并正式测试两版，0重训。"
   ],
-  "registered_at": "2026-10-20T04:55:54+00:00"
+  "registered_at": "2026-10-20T04:55:54+00:00",
+  "evaluation_recovery_run_id": "20261020-evaluation-restoration-R32-recovery-all-versions-F50-s2026092701-m2-r37",
+  "scientific_outcome": "TRAINED_PREDICTED_SOURCE_SCORER_TECHNICAL_FAILURE"
 }

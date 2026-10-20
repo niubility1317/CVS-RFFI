@@ -19,3 +19,10 @@ N607 普通账户、固定 release commit、不可覆盖 run/output root；GPU �
 
 
 精确命令、环境、路径和逐行矩阵见[登记](experiment.json)。
+
+
+## 最新状态：REPLACED
+
+REPLACED：R36 尚未发布，原 R32 训练后源评分接口技术故障，无法满足 R36 原 parent ANALYZED 条件。新 R37 显式恢复已保存源评分并执行同一两版正式矩阵；0重训，源域涨跌不删行。
+
+后续[两版正式测试及评分恢复 R37](../20261020-evaluation-restoration-R32-recovery-all-versions-F50-s2026092701-m2-r37/report.md)。此处没有本轮正式收益结论。
