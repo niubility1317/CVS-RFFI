@@ -1,0 +1,31 @@
+# 投稿图表进度与统计口径
+
+采用项目既有 Python 制图工作流，仅读取已独立核验的冻结评分，不读取 IQ、checkpoint 或 truth，不执行模型、训练或选模。正式训练代码仍为 cb9e19fbbbfee31704064be0ad4f6ec96d29b966，制图脚本独立保存。
+
+## 图表与论证
+
+| 图 | 论证问题 | 数据与展示 | 当前状态 |
+|---|---|---|---|
+| 图 1：源 RX 数 | 多样性与训练标签量能否区分？ | 1/3/5 源 RX，自然/固定标签预算，三链分面、三种子点及 SD | 等待 33 行完整数据 |
+| 图 2：标签效率 | 少标签表现是否稳定、是否伴随不同计算量？ | 1%/5%/10%，标出标签数及实际更新范围；ResNet18、IB-RFF CE/full | IB-RFF 和 10% ResNet18 已有，等待其余 6 行 |
+| 图 3：RX×日期 | 机制的增减来自哪些接收机和日期？ | F0/Chrono 每 RX×日期 full−CE 的配对均值，共用对称色标，标出未见日期 | 等待 DRIFT Chrono 完整核验 |
+| 图 4：压力结果 | clean 与模拟星地压力是否存在不同方向的收益？ | 四方法各自 CE/full × 监督/PL；上排绝对性能，下排同种子相对 clean 下降 | **已完成并验证** |
+
+各图沿用既定矩阵，不根据结果改换方法、场景、源组合或种子。更强 CE 与负结果保留。图 3 的未来端点为目标 RX 的 D3 子集，不将 Chrono 的全日期 overall 当作未来结果。ManyRx 的不平衡主指标在表格中采用 RX 等权准确率。
+
+## 图 4 的证据与交付
+
+48 个 F0 模型、每行 7 个视图，共 336 个种子点。112 组均值和样本 SD 逐项与四方法既有完整报告核对；相对 clean 的下降直接在同一种子内相减，再计算均值及 SD。未将两个独立 SD 相加代替配对差的实际 SD。
+
+图中同时保留绝对性能与下降量，避免把较低 clean 基础上的小下降单独解释为更强识别性能。每个模型的七视图来自相同物理包，不增加独立重复数。n=3 指模型种子，误差线为样本 SD，不是置信区间；没有显著性标记或推断检验。
+
+交付采用 183 mm 宽画布、统一无衬线字体、可编辑文本 SVG、文本可提取 PDF、600 dpi PNG 及预览图。已检查画布边界、PDF 尺寸、SVG 文本、PNG 分辨率，并完成预览目视检查。使用评分子集重绘成功，证明交付不依赖私有训练环境或模型文件。
+
+- [图 4 PDF](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig04_pressure_r03/pdf/fig04_pressure.pdf)
+- [图 4 可编辑 SVG](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig04_pressure_r03/svg/fig04_pressure.svg)
+- [图 4 600 dpi PNG](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig04_pressure_r03/png/fig04_pressure.png)
+- [逐种子源数据 CSV](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig04_pressure_r03/source_data/fig04_pressure.csv)
+- [重绘说明及配套脚本](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig04_pressure_r03/README.md)
+- [项目制图代码](../../../tools/figures/plot_phase1_external_dg.py)
+
+图形及派生评分数据在本机交付，不提交原始实验输出到 Git；代码和分析说明使用 Git。图 1/2/3 在数据到齐并分别验证后更新，当前不将完整图表交付或整体 219＋96 实验目标标为完成。
