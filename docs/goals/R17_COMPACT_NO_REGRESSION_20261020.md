@@ -209,4 +209,4 @@ R10本轮两个直接纠正对照全部完成：符合七场景1个百分点容�
 
 只追加E10/2470/L63000/U567000，重置AdamW1e-4/warm247/cos1e-5/WD1e-4/clip1，global256/micro64按真实尾batch归一化。原祖先coarse20/action20/R17prior20+R38joint20+newjoint10=90串行pass，各组件累计50/component sum150，F50E50另计；0新TX/V/target训练、0F/head/teacher更新。每行自动source1800×7及同168000×七目标全部预测后独立truth-last；相对用户R38和原R17逐场景1pp均报告，lowurban70和真实升降/paired-clean差距独立报告，所有负结果保留。
 
-41项检查及唯一P0/P1定向修复复审PASS；E10预测入口已显式传递合法预算，共享旧默认E20保持。普通N607预检VERIFIED，R11/R12六个实际GPU句柄仍LIVE。R13 launcher首步真实R38/F50/2Ls noquery smoke通过即按各卡旧row终态且实际owned句柄退出逐卡派发，GPU2–7各一own/max6、R06锁max1own scorer。当前实现/登记完成，尚未发布或证明目标性能。
+41项检查及唯一P0/P1定向修复复审PASS；E10预测入口已显式传递合法预算，共享旧默认E20保持。普通N607预检VERIFIED，R11/R12六个实际GPU句柄仍LIVE。R13 launcher首步真实R38/F50/2Ls noquery smoke通过即按各卡旧row终态且实际owned句柄退出逐卡派发，GPU2–7各一own/max6、R06锁max1own scorer。R13实际QUEUE_VERIFIED：方法 `593bf5905f50fb7894e475b062bc191a2837a149` 已推送/OID一致，单归档/远端compile/help及真实R38/F50/2Ls smoke PASS，实际CPUcontroller PID/CWD/cmd/commit/等待日志核实。六行按R11/R12相应旧卡句柄退出自动接续；当前排队，不冒称GPU训练或目标性能完成。
