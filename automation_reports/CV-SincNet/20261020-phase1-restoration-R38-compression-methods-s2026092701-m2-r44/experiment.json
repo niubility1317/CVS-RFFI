@@ -171,7 +171,8 @@
     "actual_training_rows_verified": [
       "group_pruned",
       "low_rank"
-    ]
+    ],
+    "postlaunch_state": "VERIFIED_ALL_PROCESSES_EXITED"
   },
   "expected_artifacts": [
     "launch.json",
@@ -335,7 +336,17 @@
     "25项聚焦合成/协议负测及一次独立P0/P1；launcher首步真实父/F50/两Ls配对IQ noquery smoke，PASS立即排队。",
     "R41/R42健康任务保持，GPU0/1逐卡等待对应row终态和实际句柄退出；不新增同时ownGPUworker；单archiveSHA/remotecompile/PIDreadback。",
     "完整E20和LR/教师权重日程同时改变，较R13E10并非单因素或同预算比较，全部成本公开，所有固定行和负结果保留。",
-    "QUEUE_VERIFIED：单archiveSHA/compile/help、实际controllerPID/CWD/argv/commit及两次等待日志增长核实。真实R38/F50/两Ls配对IQ smoke通过，父/F不变、各组件梯度有限非零、完整复载逐位一致。0新增GPUworker，按卡等待R41；尚无R44性能结果。"
+    "QUEUE_VERIFIED：单archiveSHA/compile/help、实际controllerPID/CWD/argv/commit及两次等待日志增长核实。真实R38/F50/两Ls配对IQ smoke通过，父/F不变、各组件梯度有限非零、完整复载逐位一致。0新增GPUworker，按卡等待R41；尚无R44性能结果。",
+    "VERIFIED/ANALYZED：两种压缩均完成E20/4940、同168000×七正式场景及独立truth-last，全部所属GPU/controller退出，独立完整权重已取回并CPU严格加载。group_pruned442805通过原R17逐景1pp容差，但相对指定R38 lowurban−1.4970pp；low_rank530161为−2.4982pp，两版均未通过保守R38逐景1pp。batch1延迟均增加；原70%/5pp及逐细节TX真实性未达成，负结果全部保留。"
   ],
-  "registered_at": "2026-10-20T11:15:46+00:00"
+  "registered_at": "2026-10-20T11:15:46+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "all_fixed_methods_scored": true,
+    "accepted_R17": [
+      "group_pruned"
+    ],
+    "accepted_R38": [],
+    "goal_complete": false
+  }
 }
