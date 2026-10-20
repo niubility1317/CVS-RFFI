@@ -44,3 +44,5 @@ LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_weaktx_crossgap50.driver --pro
 均值嵌入背景参考[Gretton等2012](https://jmlr.org/papers/v13/gretton12a.html)，本实验并非完整MMD检验或首次提出。REJECTED_EXTRA_GATE：通用设计审批暂停、全项目测试和报告再审不属于最小白名单；依已有用户授权，采用聚焦检查和唯一P0/P1审查后本机发布。
 
 发布前修正：原检查仅覆盖W，发现gain及两LayerNorm直接收到新辅助梯度；正式训练未启动，已改为上述辅助常量头路径。保留首次失败和修复事实，不追溯改写历史实验。匹配真实checkpoint只做过一次CPU无查询smoke，丢弃且不继承；本修复复核不重复加载。
+
+首个启用轮次E6真实记录：两行均222计划事件、212有效（95.4955%）、全部15个RX/day覆盖；SELF_GAP仅2个有hinge违反（0.9009%），CROSS_GAP为194个（87.3874%），见first_active_epoch.json。仅为源训练执行证据，两统计目标实际强度差异明显；不据此热改间距/权重、提前停止、扩seed或推断目标收益，固定final50及既定源扩展规则不变。
