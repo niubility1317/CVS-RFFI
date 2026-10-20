@@ -1,0 +1,131 @@
+{
+  "status": "PASS",
+  "expected_RED": {
+    "expected": "missing loss module before implementation",
+    "failed": true,
+    "layer": "import"
+  },
+  "CPU": {
+    "status": "PASS",
+    "device": "cpu",
+    "math": {
+      "status": "PASS",
+      "multi_positive_gradient_decomposition": true,
+      "single_positive_no_competition": true,
+      "permutation_rotation_invariance": true,
+      "missing_positive_negative_zero": true,
+      "shallow_middle_gradients": true,
+      "protocol_negative_cases": 5,
+      "IQ_reads": 0,
+      "model_forwards": 0,
+      "head_fit_updates": 0,
+      "target_reads": 0
+    },
+    "protocol_negative_cases": 13,
+    "source_expansion_positive_negative": true,
+    "actual_F_flows": [
+      {
+        "treatment": "Q_DCL",
+        "actual_identity_forwards": 2,
+        "same_actual_IQ": true,
+        "aux_all_6_default_head_gradients_None": true,
+        "main_all_6_default_head_gradients_exact_original": true,
+        "aux_Sinc_gradient_norm": 0.00879537221044302,
+        "aux_shallow_gradient_norm": 0.38649269938468933,
+        "aux_middle_gradient_norm": 0.13665762543678284,
+        "physical_Sinc_updated": true,
+        "default_head_jointly_updated": true,
+        "own_EMA_safe": true,
+        "export_exact": true,
+        "discarded_synthetic_native_optimizer_steps": 1
+      },
+      {
+        "treatment": "DCL",
+        "actual_identity_forwards": 2,
+        "same_actual_IQ": true,
+        "aux_all_6_default_head_gradients_None": true,
+        "main_all_6_default_head_gradients_exact_original": true,
+        "aux_Sinc_gradient_norm": 0.009571715258061886,
+        "aux_shallow_gradient_norm": 0.4232698678970337,
+        "aux_middle_gradient_norm": 0.148992121219635,
+        "physical_Sinc_updated": true,
+        "default_head_jointly_updated": true,
+        "own_EMA_safe": true,
+        "export_exact": true,
+        "discarded_synthetic_native_optimizer_steps": 1
+      }
+    ],
+    "real_checkpoint_no_query_smoke": true,
+    "loaded_checkpoint_discarded_not_inherited": true,
+    "parameters": 900722,
+    "extra_parameters": 0,
+    "IQ_reads": 0,
+    "target_reads": 0,
+    "head_fit_updates": 0,
+    "real_data_training_updates": 0,
+    "discarded_synthetic_native_optimizer_steps": 2
+  },
+  "CUDA": {
+    "status": "PASS",
+    "device": "cuda:0",
+    "math": {
+      "status": "PASS",
+      "multi_positive_gradient_decomposition": true,
+      "single_positive_no_competition": true,
+      "permutation_rotation_invariance": true,
+      "missing_positive_negative_zero": true,
+      "shallow_middle_gradients": true,
+      "protocol_negative_cases": 5,
+      "IQ_reads": 0,
+      "model_forwards": 0,
+      "head_fit_updates": 0,
+      "target_reads": 0
+    },
+    "protocol_negative_cases": 13,
+    "source_expansion_positive_negative": true,
+    "actual_F_flows": [
+      {
+        "treatment": "Q_DCL",
+        "actual_identity_forwards": 2,
+        "same_actual_IQ": true,
+        "aux_all_6_default_head_gradients_None": true,
+        "main_all_6_default_head_gradients_exact_original": true,
+        "aux_Sinc_gradient_norm": 0.008819184266030788,
+        "aux_shallow_gradient_norm": 0.4274321496486664,
+        "aux_middle_gradient_norm": 0.13210974633693695,
+        "physical_Sinc_updated": true,
+        "default_head_jointly_updated": true,
+        "own_EMA_safe": true,
+        "export_exact": true,
+        "discarded_synthetic_native_optimizer_steps": 1
+      },
+      {
+        "treatment": "DCL",
+        "actual_identity_forwards": 2,
+        "same_actual_IQ": true,
+        "aux_all_6_default_head_gradients_None": true,
+        "main_all_6_default_head_gradients_exact_original": true,
+        "aux_Sinc_gradient_norm": 0.009648745879530907,
+        "aux_shallow_gradient_norm": 0.47759008407592773,
+        "aux_middle_gradient_norm": 0.14792698621749878,
+        "physical_Sinc_updated": true,
+        "default_head_jointly_updated": true,
+        "own_EMA_safe": true,
+        "export_exact": true,
+        "discarded_synthetic_native_optimizer_steps": 1
+      }
+    ],
+    "real_checkpoint_no_query_smoke": false,
+    "loaded_checkpoint_discarded_not_inherited": true,
+    "parameters": 900722,
+    "extra_parameters": 0,
+    "IQ_reads": 0,
+    "target_reads": 0,
+    "head_fit_updates": 0,
+    "real_data_training_updates": 0,
+    "discarded_synthetic_native_optimizer_steps": 2
+  },
+  "unique_independent_P0P1_review": "PASS",
+  "scope": "Only defects directly making next real run wrong/unauthorized/destructive/unlaunchable/unable legal predictions; no further unchanged review gate",
+  "development_assertion_correction": "Capture-location assertions failed before synthetic optimizer. Fixed test to original captured L input and second identity-only method; actual IQ unchanged; no real train/target."
+}
