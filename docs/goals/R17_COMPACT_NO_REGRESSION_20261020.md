@@ -224,3 +224,6 @@ R13 六行完整完成 E10/2470、source1800×7 与 target168000×7、逐行独�
 ## R14：冻结上下文、仅压缩先验
 
 用户要求分析R13失败，并继续从原794529参数R38做F-free压缩和性能优化。完整60轮日志无数值故障；窄版末轮stage IQ拟合误差增大且梯度裁剪频繁，不能据此断言容量极限。冻结原548795参数coarse/action，仅压缩prior，固定794529/689129/613041三版；原R38 source E20/4940作为父，0继承R13目标评分后的状态。最终IQ配对NMSE+原R38三stage IQ锚，0TX标签/F/V/target训练，E10/2470，同宽对照、0IQ校准，coarse/action累计40、prior累计50。每版完成1800×源七视图与168000×目标七场景，逐版所有预测后独立truth-last，0源分数筛选。GPU2/3/6各一own，保持其他owner；15项检查及唯一P0/P1审查PASS。实际结果、完整成本与目标差距待正式评分，未宣布性能成功。
+
+
+R14 三行完整完成 E10/2470、source1800×7 与 target168000×7、逐行独立 truth-last，实际所属进程均退出，三份模型取回并严格加载。通过原 R17 与用户 R38 双参考逐场景 1pp 的行：prior_keep。进一步缩小且通过的 F-free 行：无；全部三行为F-free，coarse/action累计40，prior累计50。原宽度 prior_keep 的 low urban 为 68.117857%，参数仍为 794529；压缩保持与长期 70%/5pp/TX 真实性目标分别判断。全部负结果、逐 TX/RX/day、完整 10 轮曲线、全链参数/MAC/存储/实测延迟/显存和独立模型入口见 [R14 完整报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r38-prior-compact-s2026092701-m3-r14/report.md)。本轮未追加目标反馈训练或选择性重跑。
