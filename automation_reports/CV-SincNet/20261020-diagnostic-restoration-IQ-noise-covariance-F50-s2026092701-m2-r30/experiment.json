@@ -1,0 +1,260 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-diagnostic-restoration-IQ-noise-covariance-F50-s2026092701-m2-r30",
+  "group_id": "pamf-restoration-noise-covariance",
+  "display_name": "三步恢复器的IQ噪声协方差源域诊断",
+  "description": "固定原R17，对应原R28各向同性控制，仅替换两条路径的MAP逐时2x2噪声精度；0训练/target。",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "source_diagnostic",
+    "oracle_not_deployable",
+    "frozen_F"
+  ],
+  "comparison_group_id": "manysig-source1800-R17-IQ-block-noise-covariance",
+  "parent_run_ids": [
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+    "20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10",
+    "20261019-phase1-restoration-learned-action-source-s2026092701-r07",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+    "20261020-diagnostic-restoration-unrolled-action-F50-s2026092701-m5-r28"
+  ],
+  "replaces_run_id": null,
+  "authorization": "持续独立恢复研究与N607授权；R10/R28源噪声协方差未证实项，0新训练/target。",
+  "code": {
+    "commit": "e88745f0ca750ce36569b1fff17c94fee8587d9a",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
+    "cwd": "releases/pamf_noise_covariance_20261020_r30"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "Original source received IQ2x256 and R07 matched known64tap/main/image/variance cache;one restored IQ for all F branches",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/validation original1800 sourceV physicalIDs;matching validation_actions perview reused without regeneration",
+    "label_map_ref": "All two new readouts x seven views finite and complete,plus original source references,before independent CPU source truth",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json: READY/EXACT_MATCH; reuse existing cache without new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "Unchanged original source practical received and validated action cache;2462MHz/25MHz source proxy,not inorbit",
+    "restoration_train_counts": {
+      "new_epochs": 0,
+      "new_updates": 0,
+      "new_L_exposures": 0,
+      "new_U_exposures": 0,
+      "parent_L_count": 6300,
+      "parent_U_count": 56700
+    },
+    "source_validation_panel": 1800,
+    "target_panel": "None;source-only diagnostic;all oracles nondeployable and never automatically target-promoted"
+  },
+  "permissions": {
+    "regime": "Frozen three-stage source-V conditional diagnostic;known action and simulator variance proxy are source oracles",
+    "query_use": "No target/query input or mode;no source V state updates;labels only in separate CPU scorer after complete prediction",
+    "external_method_exception": null,
+    "claim_scope": "Source mechanistic evidence;not theoretical upper bound, deployable oracle, formal goal success or per-detail identity proof"
+  },
+  "checkpoint": {
+    "initialization": "Strict original R17 unroll_unshared/native_map_prior/final.pt;E20/4940 full-LU training;all parameters frozen",
+    "sources": [
+      {
+        "run_id": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+        "commit": "cd97744884b5e460926e48c8b7efb7d78c6da0f4",
+        "role": "Original fixed source-selected unshared three-stage restorer;0TX/F/target training",
+        "path": "runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/unroll_unshared/native_map_prior/final.pt"
+      },
+      {
+        "run_id": "20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10",
+        "commit": "b57eca9946b2a912a88870e24826fe3e2f70985d",
+        "role": "Original matched identity/coarse source inference references only;not the new prior",
+        "path": "runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10/reference_controls/prediction"
+      },
+      {
+        "run_id": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+        "commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+        "role": "Original frozen F50/defaulthead inference only",
+        "path": "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+      },
+      {
+        "run_id": "20261020-diagnostic-restoration-unrolled-action-F50-s2026092701-m5-r28",
+        "commit": "2af222f06595e8f7d355d032c0144d49802a6174",
+        "role": "Original complete source-only isotropic prediction controls only,not initialization",
+        "path": "runs/20261020-diagnostic-restoration-unrolled-action-F50-s2026092701-m5-r28/prediction"
+      }
+    ],
+    "contract_check_ref": "Reuse original source handles and R07 provenance;strict R17 full training and parent commit checks;real2Ls noquery smoke compares new native trajectory to original forward",
+    "provenance_verdict": "VERIFIED unchanged original 7/63/30 physical role contract and source-only ancestors;no target use or unknown inherited weights",
+    "selection_rule": {
+      "parent": "Historical R17 source-selected unshared;not R27 target ranking",
+      "interpretation_only": {
+        "mean6_NMSE_ratio_max": 0.95,
+        "lowurban_gain_min_pp": 1.0,
+        "midurban_gain_min_pp": 0.5,
+        "clean_drop_vs_original_max_pp": 0.1,
+        "worst_lowurban_TX_delta_min_pp": -1.0
+      },
+      "primary": "known_covariance vs original known_action_simvar",
+      "target_promotion": false
+    },
+    "evaluation_readers": [
+      "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701 original defaulthead"
+    ]
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/unrolled-action-fidelity",
+    "gpu_policy": "Pool0/1/5/7,max1ownworker;allowner cap2/free12GB;sharedcapacity4lock until CUDA PID visible;no other-owner mutation",
+    "remote_run_root": "runs/20261020-diagnostic-restoration-IQ-noise-covariance-F50-s2026092701-m2-r30",
+    "remote_log_root": "logs/20261020-diagnostic-restoration-IQ-noise-covariance-F50-s2026092701-m2-r30",
+    "local_artifact_root": "local_artifacts/pamf_restoration/noise_cov_r30_20261020",
+    "launch_command": "python -u -m experiments.pamf_noise_covariance.runner run --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --reference-run ../../runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10 --covariance-run ../../runs/20261020-diagnostic-restoration-unrolled-action-F50-s2026092701-m5-r28 --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --output ../../runs/20261020-diagnostic-restoration-IQ-noise-covariance-F50-s2026092701-m2-r30 --expected-commit e88745f0ca750ce36569b1fff17c94fee8587d9a",
+    "stop_rule": "Illegal source/parent,collision,nonfinite/incomplete outputs:preserve,abort ownrun,noautomaticretry;healthy peers unchanged"
+  },
+  "expected_artifacts": [
+    "noise_geometry.json",
+    "launch.json",
+    "resolved_config.json",
+    "smoke.json",
+    "worker.json",
+    "gpu_ready.json",
+    "predict.log",
+    "prediction/{view}.{readout}.{iq,features,logits}.npy",
+    "prediction/physical_ids.npy",
+    "prediction/complete.json",
+    "summary.json",
+    "interpretation.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "IQNMSEfull/prefix232/tail24",
+      "FFTlogpowerL1",
+      "originalF50accuracy/MacroF1",
+      "repair/damage",
+      "pairedcleanfeaturecosine/capped512sameTXmargin",
+      "predictionseconds",
+      "noise_kappa/real_covariance_condition_number"
+    ],
+    "dimensions": [
+      "clean",
+      "three suburban separately",
+      "three urban separately",
+      "TX",
+      "RX",
+      "day",
+      "train role/state/lock"
+    ],
+    "primary": "Fixed-AGC source-only known_covariance vs original R28known_action_simvar;estimated path secondary",
+    "prediction_ref": "runs/20261020-diagnostic-restoration-IQ-noise-covariance-F50-s2026092701-m2-r30/prediction;R28 three isotropic andR10 two raw/coarse references reused",
+    "scorer_ref": "experiments.pamf_noise_covariance.runner score;independent CPU after all14new prediction sets plus original references complete",
+    "final_user_targets": {
+      "lowurban_accuracy_min": 70.0,
+      "other_five_max_gap_vs_original_clean_pp": 5.0
+    }
+  },
+  "rows": [
+    {
+      "row_id": "source_counterfactuals",
+      "method": "noise_covariance",
+      "purpose": "source_only_counterfactual",
+      "config_ref": "experiments/pamf_noise_covariance/design.py#configuration",
+      "resolved_config_ref": "runs/20261020-diagnostic-restoration-IQ-noise-covariance-F50-s2026092701-m2-r30/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101901
+      },
+      "seed_notes": "No new RNG;model/split/data/augmentation listed only as parent provenance;source cached validation draw0/data1901/hardware1902;K/support/query N/A",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "None(frozen)",
+      "lr": 0.0,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0training/fit/newdraws;two three-stage trajectories;CG2/2/2;onlyMAPprecision differs from corresponding originalR28 path;1800source7views",
+      "output_root": "runs/20261020-diagnostic-restoration-IQ-noise-covariance-F50-s2026092701-m2-r30/prediction",
+      "log_path": "runs/20261020-diagnostic-restoration-IQ-noise-covariance-F50-s2026092701-m2-r30/predict.log",
+      "command": "python -u -m experiments.pamf_noise_covariance.runner run --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --reference-run ../../runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10 --covariance-run ../../runs/20261020-diagnostic-restoration-unrolled-action-F50-s2026092701-m5-r28 --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --output ../../runs/20261020-diagnostic-restoration-IQ-noise-covariance-F50-s2026092701-m2-r30 --expected-commit e88745f0ca750ce36569b1fff17c94fee8587d9a",
+      "expected_artifacts": [
+        "launch.json",
+        "resolved_config.json",
+        "smoke.json",
+        "worker.json",
+        "gpu_ready.json",
+        "predict.log",
+        "prediction/{view}.{readout}.{iq,features,logits}.npy",
+        "prediction/physical_ids.npy",
+        "prediction/complete.json",
+        "summary.json",
+        "interpretation.json",
+        "complete.json"
+      ],
+      "counterfactual_readouts": [
+        "estimated_covariance",
+        "known_covariance"
+      ],
+      "reference_readouts": [
+        "identity",
+        "coarse",
+        "native_estimated",
+        "est_action_simvar",
+        "known_action_simvar"
+      ]
+    }
+  ],
+  "notes": [
+    "R10/R28 explicitly deferred full noise covariance;original noEQ source code shows G=1 and no added temporal filtering. Correct only per-time IQ2x2 ellipse.",
+    "C=nI+q block,q=2ab/(abs(a)^2+abs(b)^2);original known a/b include fixed actualAGC/rotations. Not full conditional-on-measuredAGC posterior/groundrecordnoise/operatorerror covariance.",
+    "Two new14predictionsets;R28 isotropic controls3x7 andR10identity/coarse2x7 reused;7readoutsx7viewsx15groups=735;only1800 physicalrecords,correlatedviews.",
+    "Fixed source-selected R17unshared parent,fullE20/4940 scratchprior/frozenR07context;0TX/F/target training;0newepochs/LUexposures/fits/draws/Vstateupdates.",
+    "Only MAP block precision changes;original unweighted normalized innovation and scalar simulator logvar retained from each corresponding R28 path;coadapted frozenprior,no theoreticalupperbound.",
+    "All14newIQ/features/logits complete finite andIDs matched before independentCPU source labels;allsuburban/urban,clean,TXRXday,repairdamage,IQ/FFT/features andnoisegeometry recorded.",
+    "40 focused checks across new/R28 plus CLIhelp,one independentP0P1 PASS;actual2Ls/fullcheckpoint/F50 noquerysmoke first then immediatepredict.",
+    "Source mechanism criterion sameR14/R28 scale:mean6NMSE ratio<=.95,lowurban>=+1pp,mid>=+.5pp,clean drop<=.1pp,worstTX>=-1pp;primary knowncov vs knownisotropic,not native.",
+    "No oracle promotion/target mode or targetfeedback. Goal70/5pp/input-specific fidelity unchanged and unachieved.",
+    "One ordinaryN607 preflight/archiveSHA/compile,immutable root/owner,max1GPUworker,pool0/1/5/7,allowner cap2/free12GB,sharedcapacity4lock untilCUDAvisible;R29exited,healthy peers unchanged."
+  ],
+  "registered_at": "2026-10-20T04:14:20+00:00"
+}
