@@ -174,7 +174,15 @@
       "reviewer_edits": false
     },
     "postlaunch_status": "VERIFIED_QUEUED_AFTER_REAL_SMOKE",
-    "postlaunch_evidence": "Actual controller PID/CWD/fullargv/commit matched;realparent+F50+2Ls smokePASS;log growth;bothrowswait actualR23GPU2/3;0newGPUworkers"
+    "postlaunch_evidence": "Actual controller PID/CWD/fullargv/commit matched;realparent+F50+2Ls smokePASS;log growth;bothrowswait actualR23GPU2/3;0newGPUworkers",
+    "completion_tools": {
+      "focused_tests": 18,
+      "status": "PASS",
+      "analyzer": "tools/analyze_pamf_r46_response_distill_results.py",
+      "collector": "tools/complete_pamf_r46_response_distill.py",
+      "single_local_owner": "codex/root/R26",
+      "remote_training_mutations": 0
+    }
   },
   "expected_artifacts": [
     "launch.json",
