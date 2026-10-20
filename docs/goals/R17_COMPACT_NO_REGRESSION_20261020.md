@@ -176,3 +176,6 @@ R07冻结完整汇总补核：2352389参数版比此前已验收3118001版再减
 
 
 R08本轮两种结构全部完成：两版均未通过七场景最多下降1个百分点验收。E20/4940、source七视图诊断及同168000×七目标场景、独立truth-last、实际进程退出均核实；完整训练曲线、精确1pp验收、相对已验收3118001版本差、配对clean差距、TX/RX/day和成本见[本轮报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-context-compact-s2026092701-m2-r08/report.md)。两份完整恢复器已取回本地并严格加载验证；本轮未追加其他结构，目标反馈未用于改训练/超参/重跑，长期指标依实际结果报告。
+
+
+R09本轮四个联合优化对照全部完成：符合七场景1个百分点容差：joint_teacher_quarter, joint_clean_eighth_pointwise。E20/4940、source七视图诊断及同168000×七目标场景、独立truth-last、实际进程退出均核实；完整训练曲线、精确1pp验收、相对已验收3118001版本差、配对clean差距、TX/RX/day和成本见[本轮报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-joint-optimize-s2026092701-m4-r09/report.md)。四份完整恢复器已取回本地并严格加载验证；本轮未追加其他结构，目标反馈未用于改训练/超参/重跑，长期指标依实际结果报告。
