@@ -1,6 +1,6 @@
 # R20：固定权重的CUDA Graph执行优化
 
-状态：LOCAL_VERIFIED，未发布，无新版正式性能结论。
+状态：VERIFIED / FORMAL_TEST_RUNNING，三行真实GPU烟测通过；正式七场景进行中，无最终正式结论。
 
 源计时显示R18两版和R19两版的参数减少均未转化为B1加速。本组保持用户原350521父版及R18两个278180版本的全部权重与数学运算，不另训、不调rank，检验固定计算图重放。三行在读取R19成绩前依据源计时固定，不进行目标排序。主对话研究相位/通道结构，本组处理执行开销。
 
@@ -21,3 +21,15 @@
 GPU2串行原父与stage，GPU3条件版，本组最多2own/每卡1；实际R19owned句柄退出后、sharedlock下free≥18GB/allowner<2才取得GPU。普通账户、新不可覆盖run/output/release，一次preflight/一次归档两端SHA/一次compile。技术失败保留影响行及缺失测试，无nativefallback/自动重跑/热改或停止其他任务；健康行继续。实际方法commit、命令、环境/CWD、路径、停止规则与产物见experiment.json。
 
 图接口依据[PyTorch2.1 CUDA Graph文档](https://docs.pytorch.org/docs/2.1/notes/cuda.html#cuda-graphs)实现。28项本地聚焦检查通过，其中六项使用真实R46/R18架构零/随机IQ，对原函数逐位比较，并禁止Tensor转Python bool；这些CPU检查不替代真实GPU捕获。唯一独立P0/P1审查发现的主机同步问题已修复，原问题一次定向复核PASS；未重复全审查，真实GPU捕获仍待launcher首步smoke。
+
+
+## 已核实发布与源计时快照
+
+实际method `c60a675e4bbc2c207e0a16d36c0ceec075238324`。一次归档两端SHA及remote compile通过；三行均以实际PID/CWD/完整命令/commit/GPU/日志增长核实，三行2Ls在B1/8/32/64/256的IQ/variance/features/logits逐位一致，输入替换与输出所有权检查PASS。28项执行检查、18项结果计算检查、唯一独立审查及一次P1定向修复通过。
+
+|已完成profile行|同卡自身native G+F B1 ms|自身graph G+F B1 ms|自身native→graph倍数|同卡父graph→本版graph倍数|
+|---|---:|---:|---:|---:|
+|R46_350521_graph|64.139907|11.283393|5.6845|1.0000|
+|R18_factor625_cond_graph|75.675792|10.965262|6.9014|1.0296|
+
+这是源计时快照，不是正式识别结论。三行继续完成原定七景；原父也获得graph执行优化，必须同时报告优化父对照。图开销包含copy/clone；数值检查位置改变也影响计时，不单独归因于launch。完整graph池reserved/allocated与capture峰值在最终结果单列。
