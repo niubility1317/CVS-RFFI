@@ -1,0 +1,32 @@
+{
+  "status": "VERIFIED_CONTROLLER_ACTIVE_RESOURCE_WAIT",
+  "code_commit": "7b5532e9ff3845c23c7c229385ff5763254d31c3",
+  "archive_copy": "VERIFIED",
+  "release_compile": "PASS",
+  "ordinary_native_local": true,
+  "controller_PID_cmdline_CWD_verified": true,
+  "fixed_rows": 6,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "conditions": [
+    "STAT_GRAD",
+    "NORM_ONLY"
+  ],
+  "max_GPU_workers_across_owners": 3,
+  "required_free_system_GiB": 4.5,
+  "observed_free_system_GiB": 4.139194488525391,
+  "source_workers_started": 0,
+  "new_model_training_started": false,
+  "new_target_predictions": 0,
+  "default_head_joint": true,
+  "satellite_training": false,
+  "test_views": [
+    "clean"
+  ],
+  "preserved_other_processes": true,
+  "goal_status": "ACTIVE_UNMET",
+  "next": "Keep same controller/output; resource-aware dispatcher starts source workers when existing memory threshold is met. Then verify actual worker PID/CWD/GPU/log growth. Do not relaunch or hotmodify."
+}

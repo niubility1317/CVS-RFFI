@@ -13,3 +13,5 @@
 本机普通账户、native Python3.10/PyTorch2.10cu128、FP32/noTF32、线程2/workers0。GPU0总训练/预测worker上限3，计入其他owner；派发前RAM空闲≥4.5GiB；独立CPU评分上限1。不可覆盖新release/run；实际代码/config以Git commit唯一标识，一次archive复制比对、compile和PID/CWD/参数/GPU/log增长核对。精确命令/CWD/路径别名、逐行矩阵、GPU、stop/artifacts见experiment.json。停止规则：来源、角色、配置、metadata或输出冲突、非有限及预算/工作进程技术失败时停止新派发，保留健康进程和全部产物，不自动重跑。
 
 预期逐行source冻结/标准化梯度全步观测/clean预测/独立评分，以及六行完整日志汇总、配对分析和报告。当前仅检查通过，尚无本轮目标性能结果。研究目标保持ACTIVE/UNMET。
+
+实际执行提交：`7b5532e9ff3845c23c7c229385ff5763254d31c3`，已推送并核对远端。发布归档一次复制比较VERIFIED，新release编译PASS；固定六行、controller真实PID/参数/CWD和持续更新的progress均已核实。当前GPU训练尚未派发：可用系统内存低于既定4.5GiB门槛，controller健康等待资源，其他进程保持。不能把队列启动当成训练完成或性能提升；后续沿同一PID/root核实，不重复启动。
