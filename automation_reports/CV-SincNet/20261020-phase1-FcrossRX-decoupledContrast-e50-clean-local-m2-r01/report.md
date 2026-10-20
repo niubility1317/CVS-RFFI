@@ -29,3 +29,5 @@
 每行固定 final50/defaulthead 预测 target clean168000，7RX×4day；完整预测固定后由独立 CPU scorer 首次连接 truth。记录逐 seed 配对差、均值、样本 SD、正差数、Macro-F1、逐 TX、最差 RX／day，完整 50 epoch／11100 step／11100 对比记录、q 的逐类实际值、U 实际曝光与接受率、训练／预测耗时、GPU 峰值和参数成本；无真实 U TX。n1 无样本 SD，不冒充三种子或独立盲测；不作 Phase2／星地声明。预期产物见 experiment.json；实现、配置、检查与后续汇总提交推送 Git，并独立核对远端 OID。
 
 实际执行提交：`8da6a824434d239f30e3d3796c345b4b31d3ef7a`。两行 PID／CWD／命令／GPU0／逐步日志增长已独立核实，详见 [启动核验](launch_verification.json)。当前仍处原 5 轮预热；不把启动正确性当作新机制或目标性能证明。初次推送遭远端解包失败，独立核对分支后同提交重试成功，远端 OID 已核实一致。
+
+两条原进程均已完成首个启用轮次 E6，各执行 222 个新目标 step，epoch 回调显示无临时 hooks 残留，随后继续进入 E7。实际 RDrop 同 IQ 复用、原调用计数、新目标权重／有限非零 loss、无额外模型前向及默认头辅助梯度边界已核实，见 [首个启用轮次证据](first_active_epoch.json)。这只证明机制在实际训练中运行；尚无终轮或新目标 clean 性能结论。
