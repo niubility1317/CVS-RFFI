@@ -1,0 +1,333 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-phase1-restoration-observable-response-selfsup-s2026092701-m2-r32",
+  "group_id": "pamf-restoration-observable-response",
+  "display_name": "可观察局部响应保持的匹配自监督恢复",
+  "description": "相同三步U-Net和三配对增强；实验行增加已知有噪声方向响应约束；完整LU无TX/F训练，源资格后条件正式测试。",
+  "kind": "cvs",
+  "stage": "Phase1-source-research-conditional-confirmation",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "simulated_self_supervised",
+    "observable_response",
+    "matched_loss_ablation",
+    "no_TX_F_training"
+  ],
+  "comparison_group_id": "manysig-fullLU-unroll3-shared-counterfactual-pairs-response-loss",
+  "parent_run_ids": [
+    "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02",
+    "20261019-phase1-restoration-learned-action-source-s2026092701-r07",
+    "20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10",
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+    "20261020-diagnostic-restoration-RF-response-F50-s2026092701-r31",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "持续独立无TX标签恢复目标及N607多GPU授权；以已完成R31源证据研究响应保持，固定源资格后仅对有正收益主U-Net进行正式测试；不使用目标排名/分数反馈。",
+  "code": {
+    "commit": "1857f2c26eabbf68838bad1074e4fdc9b02e267f",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
+    "cwd": "releases/pamf_response_restoration_20261020_r32"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "Single IQ2x256;original3unsharedCore9/CG2/2/2;shared r/x and r+-Adelta/x+-delta paired source augmentation;one IQ for all F branches",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train6300L+56700U originalIDs;R07validation1800V;conditional R05 original168000IDs",
+    "label_map_ref": "Training label files never opened;both standard7view andsource12response cells fixed before independentCPUsourceV labels;targettruth only after all7formal predictions",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json: READY/EXACT_MATCH; reuse existing cache without new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "Unchanged code/leo_practical/channel.py;reuse R07 epoch01..20 and original sourceV;conditional original formal received bytes",
+    "restoration_train_counts": {
+      "new_epochs_per_row": 20,
+      "new_updates_per_row": 4940,
+      "L_count": 6300,
+      "U_count": 56700,
+      "L_visits_per_row": 126000,
+      "U_visits_per_row": 1134000,
+      "L_waveform_forwards_per_row": 378000,
+      "U_waveform_forwards_per_row": 3402000,
+      "source_V_state_updates": 0
+    },
+    "source_validation_panel": 1800,
+    "target_panel": "Onlysource-qualified fixedrank winner,original168000x7;otherwise0target;oldR17formal reused onlyafternewscoring"
+  },
+  "permissions": {
+    "regime": "TX-unlabeled simulated-paired fullLU;0TX/F/targettraining;V diagnostics only,no fit",
+    "query_use": "No target before frozen source qualification;single-IQ per target;all7 prediction fixed before separateCPUtruth;no targetfeedback",
+    "external_method_exception": null,
+    "claim_scope": "Synthetic recorded-IQ local response regularization;not identified realTX derivatives or per-detail authenticity;noise teacher source-only"
+  },
+  "checkpoint": {
+    "initialization": "Original complete R07 frozencoarse/action only;reset2701 scratch3unsharedCore9;identical complete states across both rows;no historical trainedprior",
+    "sources": [
+      {
+        "run_id": "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02",
+        "commit": "7efdba92932a86bf4b0492a565d35377564a26da",
+        "role": "R02 source-waveform-selected frozencoarse,inside originalR07 snapshot",
+        "path": "OriginalR07 inherited full frozencontext"
+      },
+      {
+        "run_id": "20261019-phase1-restoration-learned-action-source-s2026092701-r07",
+        "commit": "c8ccdfdbd03ab5ad8828b1eb9210b99a664ebe7b",
+        "role": "Only frozencontext initialization;source fullLU TX/F-free E20",
+        "path": "runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/learned_operator/final.pt"
+      },
+      {
+        "run_id": "20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10",
+        "commit": "b57eca9946b2a912a88870e24826fe3e2f70985d",
+        "role": "Original source baselineprediction controls only,no trainedprior inheritance",
+        "path": "runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10/reference_controls/prediction"
+      },
+      {
+        "run_id": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+        "commit": "cd97744884b5e460926e48c8b7efb7d78c6da0f4",
+        "role": "Historical source-selected R17 source summary only,no prior initialization or target ranking",
+        "path": "runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/unroll_unshared/native_map_prior/summary.json"
+      },
+      {
+        "run_id": "20261020-diagnostic-restoration-RF-response-F50-s2026092701-r31",
+        "commit": "c333e666c2c648773b7f2994d65176abd72310ff",
+        "role": "Completed source mechanism evidence only,no weights",
+        "path": "runs/20261020-diagnostic-restoration-RF-response-F50-s2026092701-r31/interpretation.json"
+      },
+      {
+        "run_id": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+        "commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+        "role": "Original frozenF50 defaulthead no-querysmoke andsource/formal eval only",
+        "path": "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+      }
+    ],
+    "contract_check_ref": "Reuse verified original7/63/30 physical handles andR02/R07/F50 ancestry;strictparent/newcheckpoint schema;real2Ls fullcheckpoint/gradient/F50 noquery first",
+    "provenance_verdict": "VERIFIED unchanged originalsource physical roles andsource-only ancestors;R17used onlysource reference,R31mechanism evidence;no targetfeedback",
+    "selection_rule": {
+      "primary": "observable_response",
+      "matched_control": "pair_aug_control",
+      "reference": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+      "thresholds": {
+        "mean6_NMSE_ratio_max": 1.05,
+        "clean_NMSE_max": 0.02,
+        "low_and_mid_gain_min_pp": 0.5,
+        "clean_drop_vs_original_max_pp": 0.1,
+        "worst_lowurban_TX_delta_min_pp": -1.0,
+        "worst_other_scene_delta_min_pp": -0.5,
+        "response_error_ratio_max": 0.95,
+        "response_min_observable_per_physical_direction": 100
+      },
+      "response_teacher": "knownA n SCALE2 ridge h;not unitdelta",
+      "only_source_qualified_candidate_formal": true
+    },
+    "evaluation_readers": [
+      "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701 original defaulthead"
+    ]
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/observable-response-restoration",
+    "gpu_policy": "Pool0/1/5/7,max2ownworkerone/card,allowner cap2/free12GB;original receiver_residual_capacity4.lock untilCUDAvisible;protect allhealthy peers",
+    "remote_run_root": "runs/20261020-phase1-restoration-observable-response-selfsup-s2026092701-m2-r32",
+    "remote_log_root": "logs/20261020-phase1-restoration-observable-response-selfsup-s2026092701-m2-r32",
+    "local_artifact_root": "local_artifacts/pamf_restoration/response_r32_20261020",
+    "launch_command": "python -u -m experiments.pamf_response_restore.runner run --unrolled-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-run ../../runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-observable-response-selfsup-s2026092701-m2-r32 --expected-commit 1857f2c26eabbf68838bad1074e4fdc9b02e267f",
+    "stop_rule": "Protocol/path/parent/outputcollision/nonfinite/unlaunchable/illegalprediction failure;preserve owned outputs and healthy peers;no automatic restart"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "resolved_config.json",
+    "workers.json",
+    "queue_state.json",
+    "{row}/gpu_ready.json",
+    "{row}/resolved_config.json",
+    "{row}/training.jsonl",
+    "{row}/training_complete.json",
+    "{row}/native_map_prior/final.pt",
+    "{row}/native_map_prior/prediction/complete.json",
+    "{row}/source_response/{view}/{direction}/{plus,minus,oracle,observation_delta,CG_residual}.npy",
+    "{row}/source_response/complete.json",
+    "{row}/source_response/summary.json",
+    "{row}/native_map_prior/summary.json",
+    "source_decision.json",
+    "complete.json",
+    "Conditional:{observable_response}/target_confirmation/native_map_prior/prediction/complete.json,summary.json;goal_assessment.json;target_complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "MacroF1",
+      "IQNMSEfull/prefix232/tail24",
+      "FFTlogpower",
+      "repair/damage",
+      "paired_clean_features",
+      "TX/RX/day",
+      "observable_response_to_h_NMSE/gain/curvature",
+      "direction/amplitude counts",
+      "response_eligible_fraction/strata",
+      "gradient_clip",
+      "parameters/seconds/memory/batch1"
+    ],
+    "dimensions": [
+      "clean",
+      "three suburban separately",
+      "three urban separately",
+      "TX",
+      "RX",
+      "day",
+      "train role/state/lock"
+    ],
+    "primary": "Onlyobservable_response if matchedcontrol+originalR17 guards AND observable lowurban3direction oracle-response error ratio<=.95",
+    "prediction_ref": "runs/20261020-phase1-restoration-observable-response-selfsup-s2026092701-m2-r32/{row}/native_map_prior/prediction andsource_response;conditionalobservable_response/target_confirmation/native_map_prior/prediction",
+    "scorer_ref": "experiments.pamf_response_restore.runner score_source/score_target;standard7views+response12cells allcomplete before independentCPUtruth",
+    "final_user_targets": {
+      "lowurban_accuracy_min": 70.0,
+      "other_five_max_gap_vs_original_clean_pp": 5.0
+    }
+  },
+  "rows": [
+    {
+      "row_id": "pair_aug_control",
+      "method": "response_restore",
+      "purpose": "matched_source_control",
+      "config_ref": "experiments/pamf_response_restore/design.py#configuration",
+      "resolved_config_ref": "runs/20261020-phase1-restoration-observable-response-selfsup-s2026092701-m2-r32/pair_aug_control/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101901
+      },
+      "seed_notes": "R07cached epochdraws1912/source1901hardware1902;shuffle2001;new response selector2032+epoch+sourceindex;randomtraining2031/index+2^32 versus V2031/index;formalreceived2027 reused",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "NewE20/4940 eachrow;L126000/U1134000physicalvisits;3waveforms L378000/U3402000;batch256micro64;AdamW2e-4warm247/cos to2e-5,WD1e-4,clip1,FP32;coarse20+action20+prior20 component60;F50E50 separate",
+      "output_root": "runs/20261020-phase1-restoration-observable-response-selfsup-s2026092701-m2-r32/pair_aug_control",
+      "log_path": "runs/20261020-phase1-restoration-observable-response-selfsup-s2026092701-m2-r32/logs/train-pair_aug_control.log",
+      "command": "python -u -m experiments.pamf_response_restore.runner run --unrolled-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-run ../../runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-observable-response-selfsup-s2026092701-m2-r32 --expected-commit 1857f2c26eabbf68838bad1074e4fdc9b02e267f",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "resolved_config.json",
+        "workers.json",
+        "queue_state.json",
+        "{row}/gpu_ready.json",
+        "{row}/resolved_config.json",
+        "{row}/training.jsonl",
+        "{row}/training_complete.json",
+        "{row}/native_map_prior/final.pt",
+        "{row}/native_map_prior/prediction/complete.json",
+        "{row}/source_response/{view}/{direction}/{plus,minus,oracle,observation_delta,CG_residual}.npy",
+        "{row}/source_response/complete.json",
+        "{row}/source_response/summary.json",
+        "{row}/native_map_prior/summary.json",
+        "source_decision.json",
+        "complete.json",
+        "Conditional:{observable_response}/target_confirmation/native_map_prior/prediction/complete.json,summary.json;goal_assessment.json;target_complete.json"
+      ]
+    },
+    {
+      "row_id": "observable_response",
+      "method": "response_restore",
+      "purpose": "source_eligible_response",
+      "config_ref": "experiments/pamf_response_restore/design.py#configuration",
+      "resolved_config_ref": "runs/20261020-phase1-restoration-observable-response-selfsup-s2026092701-m2-r32/observable_response/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101901
+      },
+      "seed_notes": "R07cached epochdraws1912/source1901hardware1902;shuffle2001;new response selector2032+epoch+sourceindex;randomtraining2031/index+2^32 versus V2031/index;formalreceived2027 reused",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "NewE20/4940 eachrow;L126000/U1134000physicalvisits;3waveforms L378000/U3402000;batch256micro64;AdamW2e-4warm247/cos to2e-5,WD1e-4,clip1,FP32;coarse20+action20+prior20 component60;F50E50 separate",
+      "output_root": "runs/20261020-phase1-restoration-observable-response-selfsup-s2026092701-m2-r32/observable_response",
+      "log_path": "runs/20261020-phase1-restoration-observable-response-selfsup-s2026092701-m2-r32/logs/train-observable_response.log",
+      "command": "python -u -m experiments.pamf_response_restore.runner run --unrolled-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-run ../../runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-observable-response-selfsup-s2026092701-m2-r32 --expected-commit 1857f2c26eabbf68838bad1074e4fdc9b02e267f",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "resolved_config.json",
+        "workers.json",
+        "queue_state.json",
+        "{row}/gpu_ready.json",
+        "{row}/resolved_config.json",
+        "{row}/training.jsonl",
+        "{row}/training_complete.json",
+        "{row}/native_map_prior/final.pt",
+        "{row}/native_map_prior/prediction/complete.json",
+        "{row}/source_response/{view}/{direction}/{plus,minus,oracle,observation_delta,CG_residual}.npy",
+        "{row}/source_response/complete.json",
+        "{row}/source_response/summary.json",
+        "{row}/native_map_prior/summary.json",
+        "source_decision.json",
+        "complete.json",
+        "Conditional:{observable_response}/target_confirmation/native_map_prior/prediction/complete.json,summary.json;goal_assessment.json;target_complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "R31 complete source mechanism supportsPAamp/phase/image response study;only163-183/1800lowurbanobservable,randomalsoattenuated;notRF-exclusive orrealTX derivative proof.",
+    "Bothrows identical complete scratchCore9 initialstates/3unsharedprior/CG2/2/2;onlyfrozenR02/R07inherited;R17source-reference weights neverloaded asinitialization.",
+    "Shared3pairaugmentation meansmatched newcontrol needed;newresponse target h isknownA/n/SCALE2/CG64 ridge response,not forcingunitgain;Fisher/oracleNMSE/CGresid training-onlymask.",
+    "Newweight.01 fullbatchmean,zeroeligible contributeszero;onlypriorgradient;0TXlabels/Fweights/Foutputs/target/Vfit in training;allLU exposure/acceptedcounts explicit.",
+    "Standardsource1800x7 plus12source responsecells allcompletebeforeCPUtruth;no counterfactualTX-classaccuracy;onlyoriginalrecordTX grouping.",
+    "Onlyprimarysourcequalifiedbynewcontrol+sourceR17 performanceguards andmean observable responseerrorratio<=.95 may runformal168000x7;controlsource-only;allsuburban/urban andidentity/cost retained.",
+    "47 focused new/R31 checks andCLIhelp;one independentP0P1 andone targeted shared-lock fix recheck;real2Ls checkpoint/gradient/originalF50 noquery first.",
+    "Immutable ordinaryN607 roots,max2ownworkerone/card,pool0/1/5/7,allowner cap2/free12GB;original sharedlock receiver_residual_capacity4.lock;otherowners untouched.",
+    "No targetfeedback,low-score retry orseed expansion;benchmark exposed notnewblindtest;70/5pp/inputTXfidelity stillunachieved;negative rows preserved."
+  ],
+  "registered_at": "2026-10-20T04:55:54+00:00"
+}
