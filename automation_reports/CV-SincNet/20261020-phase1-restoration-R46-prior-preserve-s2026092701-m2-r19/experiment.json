@@ -200,6 +200,23 @@
       ],
       "source_training_only": true,
       "formal_result": false
+    },
+    "source_training_budget_verified": {
+      "status": "VERIFIED",
+      "records": 40,
+      "epochs_per_arm": 20,
+      "updates_per_arm": 4940,
+      "source_IQ_per_arm": 1260000,
+      "coarse_action_updates": 0,
+      "target_scores_read": 0
+    },
+    "source_only_cost_verified": {
+      "status": "VERIFIED",
+      "profile_complete_arms": [
+        "prior625_cond",
+        "prior750_cond"
+      ],
+      "target_scores_read": 0
     }
   },
   "expected_artifacts": [
@@ -378,7 +395,8 @@
     "REJECTED_EXTRA_GATE：仅既有八项最小流程，不引入通用设计审批/重复审查或额外hash。",
     "25项聚焦检查及唯一独立P0/P1审查PASS；普通N607预检VERIFIED，GPU2/3现R18健康训练，先CPUsmoke后实际旧句柄退出再逐卡交接，另一对话0/1保持。",
     "VERIFIED/QUEUED：method3ac37ca1138f266f5fd91f74e7feca0eb11911cc，归档一次SHA/compile、真实原父/F50/2Ls noquerysmoke PASS；实际CPUcontroller PID/CWD/argv/commit和日志增长核实，0新GPUworker，等待R18原owned句柄退出。25项执行检查/唯一P0P1及13项汇总检查PASS。",
-    "2026-10-21 VERIFIED/BOTH_GPU_RUNNING：R18两个owned GPU句柄均退出后逐卡交接；R19两条实际worker的PID/CWD/argv/commit/GPU匹配且日志增长，GPU2完成12轮、GPU3完成6轮。此为当时训练快照，无正式成绩。"
+    "2026-10-21 VERIFIED/BOTH_GPU_RUNNING：R18两个owned GPU句柄均退出后逐卡交接；R19两条实际worker的PID/CWD/argv/commit/GPU匹配且日志增长，GPU2完成12轮、GPU3完成6轮。此为当时训练快照，无正式成绩。",
+    "2026-10-21：两版完整40条源训练记录、source7及同卡配对G/G+F实测成本核对完成；正式七景仍进行中，无目标成绩或目标反馈。"
   ],
   "registered_at": "2026-10-20T15:30:30+00:00"
 }
