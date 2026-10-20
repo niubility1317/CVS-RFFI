@@ -163,3 +163,6 @@ R06本轮两种结构全部完成：符合七场景1个百分点容差：shared_
 
 
 R07本轮四种结构全部完成：符合七场景1个百分点容差：shared_three_eighths, shared_eighth, shared_quarter_pointwise, shared_eighth_pointwise。E20/4940、source七视图诊断及同168000×七目标场景、独立truth-last、实际进程退出均核实；完整训练曲线、精确1pp验收、相对已验收3118001版本差、配对clean差距、TX/RX/day和成本见[本轮报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-parallel-compact-s2026092701-m4-r07/report.md)。四份完整恢复器已取回本地并严格加载验证；本轮未追加其他结构，目标反馈未用于改训练/超参/重跑，长期指标依实际结果报告。
+
+
+R07冻结完整汇总补核：2352389参数版比此前已验收3118001版再减24.554578%，比上一轮最小2582905版再减8.924680%；对两个参考版本均clean正确数相同，六种practical全部提高。相对2582905版lowurban净+820条/+0.488095个百分点，相对3118001版仅+9条/+0.005357个百分点，单seed不称稳定总体提升。原R17七场景1pp仍全部通过；lowurban67.361905%未到70%。0新模型forward/训练/原始IQ/truth访问，完整差值/波形见[R07补充](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-parallel-compact-s2026092701-m4-r07/cross_run_comparison.json)。R08/R09健康固定训练保持，目标结果未回流改配方。
