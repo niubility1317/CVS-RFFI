@@ -1,6 +1,6 @@
 # 源 clean 局部敏感度约束恢复
 
-状态：PLANNED。用户目标为完整目标 low urban≥70%，其余五种 practical 接近原 F clean85.113889%。“接近”暂按≤2个百分点记录，是 Agent 的操作解释。登记时最好 low urban66.384127%，目标仍未完成。
+状态：RUNNING / VERIFIED。用户目标为完整目标 low urban≥70%，其余五种 practical 接近原 F clean85.113889%。“接近”暂按≤2个百分点记录，是 Agent 的操作解释。登记时最好 low urban66.384127%，目标仍未完成。
 
 源训练已有 identity/wave 输出梯度累计 RMS 比15.426531；本轮检验固定 clean 参考点的局部敏感度是否能约束身份损伤。这个源证据不证明局部近似有效，也不决定最终性能。当前参数梯度对照尚在目标预测，本轮结构、预算及顺序不依据其目标分数制定。
 
@@ -29,3 +29,15 @@ source V1800/原F1/七视图只作诊断，无源分数/NMSE gate/排序。两�
 一次N607普通账号预检VERIFIED，原R03合法、新run/release不存在，GPU6/7各24124MB空闲无PID，参数实验GPU4/5实际target PID/CWD/cmd匹配并保留。每卡一个本owner、allowner<2，重叠最多4个本owner GPUworker，source≥18GB/target≥12GB，CPU2线程/scorer最多1。新source评分等parameter_balance终态再与本run共用score.lock；source实际退出才同卡target。非法输入/权限/代码、冲突、非有限/OOM、预算/梯度执行或预测失败时保留产物并失败该行，无自动重试，健康行继续。
 
 一个实际代码配置commit、不可覆盖root、单归档本地/远端SHA比较及remotecompile、真实smoke与实际PID/CWD/cmd/GPU/日志增长随后核实。精确命令、环境/CWD、数据/父来源、路径、seed与逐行矩阵在experiment.json。J/IQ/权重/逐样本预测/原始日志和私有机器状态不进Git。没有向另一用户对话发送指令。
+
+
+## 实际发布与源约束准备核验
+
+方法commit`2afa1cdbd31e1b2d56214499a797bac00ab64c5c`已推送且远端OID独立匹配；一次归档本地/远端SHA比较、remotecompile/modulehelp PASS。launcher首步实际R03/三F/四Ls no-query smoke PASS：两臂原R03完整初始IQ/state一致，真实源J有限非零、形状8×3×6×2×256，native posterior至IQ梯度及coarse/correction合并梯度有效，F无梯度，新checkpoint往返一致，0TX/V/target/optimizer更新。
+
+GPU6/7两条实际source worker的PID/CWD/完整命令/GPU和日志持续增长已独立核实。此时正在生成63000条源clean局部约束缓存，进度为：
+
+- feature_tangent：实际完成12800/63000条源物理样本的三F坐标Jacobian准备。
+- posterior_tangent：实际完成12800/63000条源物理样本的三F坐标Jacobian准备。
+
+缓存进度不冒充完成epoch或性能改善。准备完成后按原固定E10/2470训练、源V诊断及完整目标测试，无额外确认/选模；尚无本轮新目标表现。前序参数梯度run健康GPU4/5任务保持，CPU评分等其终态再共用本run score.lock；复用旧per_frame_cap控制，不重新训练/预测。最终实际梯度统计、准备与训练成本在完整结果节记录。

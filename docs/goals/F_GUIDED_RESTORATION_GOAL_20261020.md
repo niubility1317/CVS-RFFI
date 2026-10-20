@@ -206,6 +206,6 @@ source误差分解显示精修在多个有效频带增加波形误差，末端ti
 直接残差：目标low urban 64.665675%，clean 84.903770%。四步流修正：目标low urban 64.832738%，clean 85.000595%。两行均完成原预登记E10/2470、168000物理目标clean+六practical及三原头独立truth-last评分。没有source分数筛选、目标反馈或选择性重跑，全部负结果保留。[完整逐环境/逐F/波形/净纠错/成本结果](../../automation_reports/CV-SincNet/20261020-phase1-restoration-residual-flow-source-s2026092701-m2-r01/report.md)。本轮仍未达到用户完整目标，不由新增结构/训练检查推断性能。
 
 
-## 当前源 clean 局部敏感度比较（实现完成，待发布）
+## 当前源 clean 局部敏感度比较（两臂实际训练中）
 
-固定`feature_tangent`与`posterior_tangent`，分别用同物理源clean处冻结原F的六坐标Jacobian二次误差替换一个语义项，另一项、原R03初始化、jointE10/2470、数据/路由/seed/AdamW与per_frame_cap保持；无新NN/头、0TX标签/目标训练。特征使用固定Rademacher探针，后验使用六原类sqrt概率坐标，J训练缓存，推理仍单帧原网络。源V仅诊断，两臂都自动完整168000×七视图×三原默认头独立truth-last；GPU6/7，前序参数target4/5保留，评分等前序终态。50项检查PASS，额外J准备成本单列，尚无本轮新目标表现。[最小登记](../../automation_reports/CV-SincNet/20261020-phase1-restoration-tangent-guidance-source-s2026092701-m2-r01/report.md)。
+固定`feature_tangent`与`posterior_tangent`，分别用同物理源clean处冻结原F的六坐标Jacobian二次误差替换一个语义项，另一项、原R03初始化、jointE10/2470、数据/路由/seed/AdamW与per_frame_cap保持；无新NN/头、0TX标签/目标训练。特征使用固定Rademacher探针，后验使用六原类sqrt概率坐标，J训练缓存，推理仍单帧原网络。源V仅诊断，两臂都自动完整168000×七视图×三原默认头独立truth-last；GPU6/7，前序参数target4/5保留，评分等前序终态。50项检查PASS，额外J准备成本单列，方法commit`2afa1cdbd31e1b2d56214499a797bac00ab64c5c`已发布，归档比较/编译及真实R03/三F/四Ls局部J smoke PASS；GPU6/7两条source worker的PID/CWD/cmd/GPU/日志增长和实际源J准备进度已核实，缓存进度不冒充训练完成。尚无本轮新目标表现。[最小登记](../../automation_reports/CV-SincNet/20261020-phase1-restoration-tangent-guidance-source-s2026092701-m2-r01/report.md)。

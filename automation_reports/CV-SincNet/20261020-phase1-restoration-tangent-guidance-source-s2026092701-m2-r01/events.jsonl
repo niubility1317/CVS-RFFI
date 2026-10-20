@@ -1,1 +1,4 @@
 {"at": "2026-10-20T00:18:22+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-20T00:21:13+00:00", "status": "RUNNING", "note": "VERIFIED actualR03/3Fsmoke,PID/CWD/cmd/GPU/loggrowth;sourceJ preparation 12800/63000;no target", "evidence": ["report.md", "experiment.json"], "row_id": "feature_tangent"}
+{"at": "2026-10-20T00:21:13+00:00", "status": "RUNNING", "note": "VERIFIED actualR03/3Fsmoke,PID/CWD/cmd/GPU/loggrowth;sourceJ preparation 12800/63000;no target", "evidence": ["report.md", "experiment.json"], "row_id": "posterior_tangent"}
+{"at": "2026-10-20T00:21:13+00:00", "status": "RUNNING", "note": "Both fixed tangent workers live GPU6/7;parameterGPU4/5preserved;reuse perframecap;CPUscorewaitspreviouscomplete", "evidence": ["report.md", "experiment.json"], "row_id": null}
