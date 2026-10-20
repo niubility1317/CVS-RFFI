@@ -1,6 +1,6 @@
 # R49：35.05 万基准的多点压缩与训练吞吐优化
 
-状态：LOCAL_IMPLEMENTED，未发布。
+状态：**VERIFIED / RUNNING**。
 
 用户最新要求“发布多点压缩优化版本，提高显卡利用率，提升效率”。本轮直接从用户指定的 R46 `prune_refine` 350521 源最终权重出发，固定一个同宽吞吐优化控制和五个不同压缩点。原 R48 两行保持健康运行，不热改或重启。普通账户只读核实当前八张3090中GPU0/1为R48，GPU2至7无计算进程后，新增六行各占一张空闲卡，每卡一条本任务worker；新矩阵最多6条，与R48合计最多8条。本扩展来自用户最新多点并行要求，不影响其他owner。
 
@@ -28,3 +28,6 @@
 每GPU至多一个本run worker，按free≥18GB/每卡总计算进程<2获取，GPU2至7新root独占。CPU2线程、共用R41 score.lock，R48/R49同一任务最多一个scorer；不会启动额外GPU tester。一次归档SHA/远端compile、launcher首步真实父/F50/两条Ls no-query smoke PASS后立即执行。技术失败保留受影响产物、不自动重试，健康行和其他owner不动。单run一个launch owner，原R48自动测试不重复。
 
 最小聚焦检查覆盖来源/预算/权限拒绝、别名冲突、全行自动正式测试、truth晚于全预测、全部组件梯度/精确父控制、新buffer逐值/只读/非连续数组和不同微批梯度等价；一次独立P0/P1审查。精确矩阵、commit、命令、环境/CWD、路径、停止规则和预期产物写入同run登记，不增加其他gate。
+
+
+VERIFIED/RUNNING：实际350521父/F50/两Ls配对IQ noquery smoke PASS，六行全部组件有限非零梯度、teacher/F不更新、checkpoint严格重载一致。归档单SHA/compile及controller/六worker实际PID/CWD/argv/空controllerCUDA/各预登记物理GPU2至7和GPU-PID匹配、首轮曝光、micro256/directbuffer和日志增长已核实。GPU2/3发布前已有各一条其他owner轻负载，按free≥18GB/总进程<2共存；GPU4至7预检空闲；无旧进程改动。无本轮正式性能结果；每行E20后自动七正式测试和独立truth-last。

@@ -178,7 +178,8 @@
     "actual_training_rows_verified": [
       "group_pruned",
       "low_rank"
-    ]
+    ],
+    "postlaunch_state": "VERIFIED_SIX_GPU_RUNNING"
   },
   "expected_artifacts": [
     "launch.json",
@@ -559,7 +560,8 @@
     "No F/TX/V/targetintraining;L/U bothused;notcleanblindunsupervised;no classifierhead fit/replacement.",
     "R46andR47closed;R48GPU0/1healthyunchanged;newGPU2to7previouslyidle;nootherownerstop/hotedit;allhistoricalartifacts preserved.",
     "Allfixedrows getformal tests;no sourcegate/earlystop/targetfeedback/selectivereruns;relativeR44 descriptiveonly;allnegativeresultsreported.",
-    "Matched same-card source-only G and G+F;B1 warm16/64samples x3 alternating rounds;B32 warm4/16iterations x3;median,p90,p95,throughput,peak/resident memory;ConvLinearMAC excludes FFT/CG/norm"
+    "Matched same-card source-only G and G+F;B1 warm16/64samples x3 alternating rounds;B32 warm4/16iterations x3;median,p90,p95,throughput,peak/resident memory;ConvLinearMAC excludes FFT/CG/norm",
+    "VERIFIED/RUNNING：实际350521父/F50/两Ls配对IQ noquery smoke PASS，六行全部组件有限非零梯度、teacher/F不更新、checkpoint严格重载一致。归档单SHA/compile及controller/六worker实际PID/CWD/argv/空controllerCUDA/各预登记物理GPU2至7和GPU-PID匹配、首轮曝光、micro256/directbuffer和日志增长已核实。GPU2/3发布前已有各一条其他owner轻负载，按free≥18GB/总进程<2共存；GPU4至7预检空闲；无旧进程改动。无本轮正式性能结果；每行E20后自动七正式测试和独立truth-last。"
   ],
   "registered_at": "2026-10-20T14:44:51+00:00"
 }

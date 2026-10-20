@@ -1,6 +1,6 @@
 # R49：35.05 万基准的多点压缩与训练吞吐优化
 
-状态：LOCAL_VERIFIED，未发布。40项聚焦检查、CLIhelp和一次限P0/P1审查通过。
+状态：**VERIFIED / RUNNING**，已发布且六版实际训练。40项聚焦检查、CLIhelp和一次限P0/P1审查通过。
 
 用户最新要求“发布多点压缩优化版本，提高显卡利用率，提升效率”。本轮直接从用户指定的 R46 `prune_refine` 350521 源最终权重出发，固定一个同宽吞吐优化控制和五个不同压缩点。原 R48 两行保持健康运行，不热改或重启。普通账户只读核实当前八张3090中GPU0/1为R48，GPU2至7无计算进程后，新增六行各占一张空闲卡，每卡一条本任务worker；新矩阵最多6条，与R48合计最多8条。本扩展来自用户最新多点并行要求，不影响其他owner。
 
@@ -31,3 +31,6 @@
 
 
 方法commit `e96397bc3c7036f085317f9cc0e59074fb6ee24f`。精确命令、环境/CWD、路径、矩阵、预期产物见[登记](experiment.json)。
+
+
+VERIFIED/RUNNING：实际350521父/F50/两Ls配对IQ noquery smoke PASS，六行全部组件有限非零梯度、teacher/F不更新、checkpoint严格重载一致。归档单SHA/compile及controller/六worker实际PID/CWD/argv/空controllerCUDA/各预登记物理GPU2至7和GPU-PID匹配、首轮曝光、micro256/directbuffer和日志增长已核实。GPU2/3发布前已有各一条其他owner轻负载，按free≥18GB/总进程<2共存；GPU4至7预检空闲；无旧进程改动。无本轮正式性能结果；每行E20后自动七正式测试和独立truth-last。
