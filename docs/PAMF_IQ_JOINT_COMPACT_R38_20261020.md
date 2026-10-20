@@ -16,7 +16,13 @@ teacher保留自身原coarse/action上下文。学生每层按原GroupNorm四组
 
 N607普通账户、不可覆盖新root/固定Git release，GPU0/1各一ownworker、总计最多两条。先等待R37根终态且实际ownedGPU句柄退出，不读取其分数；共享receiver_residual_capacity4.lock、source至少18GB空闲及全owner每卡少于两进程。保留其他owner，CPU2线程/本run score.lock最多一独立scorer。launcher首步实际原R17/两学生/原F50/2Ls CPU无query smoke，检查所有组件梯度、教师/F不变、全checkpoint严格复载输出逐位一致，PASS立即继续。F只在该无query读出和冻结评测使用，不进入loss或source训练模块。
 
-一次聚焦协议测试和独立P0/P1、一个Git代码/config身份、最小登记、一次普通账户预检/一个archive两端SHA比较/远端compile、启动后PID/CWD/argv/GPU/日志产物读回。输入/权限/冲突/非有限数/技术错误时保留产物及健康行，不自动重试，不把低分当技术错误。每行完成全部测试/分析/登记后才称该实验完成；单F或source教师拟合不证明新增细节属于输入TX。当前已实际发布并核实两版训练运行，尚未证明本路线的正式性能。
+一次聚焦协议测试和独立P0/P1、一个Git代码/config身份、最小登记、一次普通账户预检/一个archive两端SHA比较/远端compile、启动后PID/CWD/argv/GPU/日志产物读回。输入/权限/冲突/非有限数/技术错误时保留产物及健康行，不自动重试，不把低分当技术错误。每行完成全部测试/分析/登记后才称该实验完成；单F或source教师拟合不证明新增细节属于输入TX。当前两版正式七场景测试及独立评分已完成，79万版在本次单seed的七场景均提高；完整数据、成本和局限见最终报告。
 
 
 启动读回：VERIFIED：实际原R17/两学生/冻结F50 no-query smoke PASS；教师/F不变，各组件梯度有效。GPU0/1各一worker的PID/CWD/argv/CUDA及首epoch/日志增长已核实；两档全链联合训练正在运行，尚无正式性能结论。每版固定E20后自动七场景正式测试，源分数不筛行。
+
+
+本轮实际矩阵完成：VERIFIED/ANALYZED:bothcompactrowsE20/4940;formal7x168000each;rawsource210+formal252classificationverified;40epochs+fullcost+pairedidentity;allownedprocessesEXITED;goalactive。FORMAL_MATRIX_COMPLETE_EACH_SCENE_ALLOWANCE_ALL_PASS。[完整结果](../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-IQ-joint-compact-s2026092701-m2-r38/report.md)。
+
+
+独立交付已核实：两份E20/4940最终权重在固定代码快照下通过CPU独立前向，0教师/F权重/数据/query读取。79万版减参82.9686%、六受损场景平均+1.1111pp；lowurban约68.27%，原70/5pp未达成。峰值显存与源解析关联存在退化，六视图联合统计另报，不能宣称全部TX细节保真。[完整结果与加载说明](../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-IQ-joint-compact-s2026092701-m2-r38/report.md)。
