@@ -35,3 +35,5 @@ C_t=n\begin{bmatrix}1+\Re q_t&\Im q_t\\\Im q_t&1-\Re q_t\end{bmatrix},
 普通账户N607、新不可覆盖run `20261020-diagnostic-restoration-IQ-noise-covariance-F50-s2026092701-m2-r30`；最多一条本任务GPU worker，池0/1/5/7择空，全owner cap2/free≥12GB，共享capacity4锁保持至CUDA PID可见。R29已自然退出。非法来源、输出冲突、非有限或无法合法预测时保留产物、停止本run，无自动重试；其他owner健康任务不动。精确commit/命令/环境/CWD/seed/路径/停止规则/预期artifact见登记。
 
 REJECTED_EXTRA_GATE：额外设计/spec审批、报告单独审查、重复全测或数据hash链不在项目八项最小流程内；按持续授权、聚焦检查和一次独立P0/P1推进。当前仅证明代码与数学检查，真实源身份结果待返回；总目标仍active。
+
+实际结果：**SOURCE_COVARIANCE_PRIORITY_NOT_SUPPORTED**。14组新预测、35组复用参考、735分层及独立复算完成，0训练/target，所有进程退出。由源缓存推导max κ=.01567078、max条件数1.03184052；已知作用下mean6 NMSE仅降低0.005215%，low/mid urban准确率增益均为0。没有支持优先增加协方差估计网络，不宣称全模型理论上界或完整后验协方差。[完整结果](../automation_reports/CV-SincNet/20261020-diagnostic-restoration-IQ-noise-covariance-F50-s2026092701-m2-r30/report.md)。

@@ -1,2 +1,4 @@
 {"at": "2026-10-20T04:14:20+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-20T04:14:20+00:00", "status": "LOCAL_VERIFIED", "note": "VERIFIED:40 focusedchecks/oneP0P1PASS;0training/target;notlaunched", "evidence": ["experiment.json", "report.md"], "row_id": null}
+{"at": "2026-10-20T04:19:16+00:00", "status": "RUNNING", "note": "VERIFIED historical livePID/CWD/argv/GPU0;loggrowth to7viewcomplete;smokePASS", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-10-20T04:19:16+00:00", "status": "ANALYZED", "note": "SOURCE_COVARIANCE_PRIORITY_NOT_SUPPORTED;14newsets,735groups,0training/target,allprocessesEXITED", "evidence": ["report.md", "summary.json", "row_metrics.csv"], "row_id": null}

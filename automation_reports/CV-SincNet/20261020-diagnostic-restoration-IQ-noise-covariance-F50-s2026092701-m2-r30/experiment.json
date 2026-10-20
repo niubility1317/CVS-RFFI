@@ -140,7 +140,7 @@
   },
   "execution": {
     "host": "N607",
-    "launch_owner": "codex/root/unrolled-action-fidelity",
+    "launch_owner": "codex/root/IQ-noise-covariance",
     "gpu_policy": "Pool0/1/5/7,max1ownworker;allowner cap2/free12GB;sharedcapacity4lock until CUDA PID visible;no other-owner mutation",
     "remote_run_root": "runs/20261020-diagnostic-restoration-IQ-noise-covariance-F50-s2026092701-m2-r30",
     "remote_log_root": "logs/20261020-diagnostic-restoration-IQ-noise-covariance-F50-s2026092701-m2-r30",
@@ -254,7 +254,9 @@
     "40 focused checks across new/R28 plus CLIhelp,one independentP0P1 PASS;actual2Ls/fullcheckpoint/F50 noquerysmoke first then immediatepredict.",
     "Source mechanism criterion sameR14/R28 scale:mean6NMSE ratio<=.95,lowurban>=+1pp,mid>=+.5pp,clean drop<=.1pp,worstTX>=-1pp;primary knowncov vs knownisotropic,not native.",
     "No oracle promotion/target mode or targetfeedback. Goal70/5pp/input-specific fidelity unchanged and unachieved.",
-    "One ordinaryN607 preflight/archiveSHA/compile,immutable root/owner,max1GPUworker,pool0/1/5/7,allowner cap2/free12GB,sharedcapacity4lock untilCUDAvisible;R29exited,healthy peers unchanged."
+    "One ordinaryN607 preflight/archiveSHA/compile,immutable root/owner,max1GPUworker,pool0/1/5/7,allowner cap2/free12GB,sharedcapacity4lock untilCUDAvisible;R29exited,healthy peers unchanged.",
+    "VERIFIED14newsets/35reusedreference sets/735groups;independent CPUtruthlast,0training/fit/target;allprocessesEXITED;actualownerlabel clarified to match launch.json"
   ],
-  "registered_at": "2026-10-20T04:14:20+00:00"
+  "registered_at": "2026-10-20T04:14:20+00:00",
+  "scientific_outcome": "SOURCE_COVARIANCE_PRIORITY_NOT_SUPPORTED"
 }
