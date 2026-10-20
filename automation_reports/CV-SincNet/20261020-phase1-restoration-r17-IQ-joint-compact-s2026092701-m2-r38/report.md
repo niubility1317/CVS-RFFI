@@ -23,3 +23,8 @@ N607普通账户、不可覆盖新root/固定Git release，GPU0/1各一ownworker
 
 
 精确命令、环境、路径和逐行矩阵见[登记](experiment.json)。
+
+
+## 训练已启动
+
+VERIFIED：实际原R17/两学生/冻结F50 no-query smoke PASS；教师/F不变，各组件梯度有效。GPU0/1各一worker的PID/CWD/argv/CUDA及首epoch/日志增长已核实；两档全链联合训练正在运行，尚无正式性能结论。每版固定E20后自动七场景正式测试，源分数不筛行。

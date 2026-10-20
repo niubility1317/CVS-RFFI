@@ -1,2 +1,3 @@
 {"at": "2026-10-20T07:50:01+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-20T07:50:01+00:00", "status": "LOCAL_VERIFIED", "note": "35checks/CLIhelp/P0P1PASS;bothdensewidths/IQobjectiveprospective;notremotelaunched", "evidence": ["experiment.json", "report.md"], "row_id": null}
+{"at": "2026-10-20T07:58:41+00:00", "status": "RUNNING", "note": "VERIFIED：实际原R17/两学生/冻结F50 no-query smoke PASS；教师/F不变，各组件梯度有效。GPU0/1各一worker的PID/CWD/argv/CUDA及首epoch/日志增长已核实；两档全链联合训练正在运行，尚无正式性能结论。每版固定E20后自动七场景正式测试，源分数不筛行。", "evidence": ["experiment.json", "report.md"], "row_id": null}

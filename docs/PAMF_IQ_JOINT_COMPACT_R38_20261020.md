@@ -17,3 +17,6 @@ teacher保留自身原coarse/action上下文。学生每层按原GroupNorm四组
 N607普通账户、不可覆盖新root/固定Git release，GPU0/1各一ownworker、总计最多两条。先等待R37根终态且实际ownedGPU句柄退出，不读取其分数；共享receiver_residual_capacity4.lock、source至少18GB空闲及全owner每卡少于两进程。保留其他owner，CPU2线程/本run score.lock最多一独立scorer。launcher首步实际原R17/两学生/原F50/2Ls CPU无query smoke，检查所有组件梯度、教师/F不变、全checkpoint严格复载输出逐位一致，PASS立即继续。F只在该无query读出和冻结评测使用，不进入loss或source训练模块。
 
 一次聚焦协议测试和独立P0/P1、一个Git代码/config身份、最小登记、一次普通账户预检/一个archive两端SHA比较/远端compile、启动后PID/CWD/argv/GPU/日志产物读回。输入/权限/冲突/非有限数/技术错误时保留产物及健康行，不自动重试，不把低分当技术错误。每行完成全部测试/分析/登记后才称该实验完成；单F或source教师拟合不证明新增细节属于输入TX。当前只完成本地结构与链路验证，未发布、未证明本路线的正式性能。
+
+
+启动读回：VERIFIED：实际原R17/两学生/冻结F50 no-query smoke PASS；教师/F不变，各组件梯度有效。GPU0/1各一worker的PID/CWD/argv/CUDA及首epoch/日志增长已核实；两档全链联合训练正在运行，尚无正式性能结论。每版固定E20后自动七场景正式测试，源分数不筛行。
