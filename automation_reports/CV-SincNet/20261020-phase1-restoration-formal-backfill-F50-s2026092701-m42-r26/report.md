@@ -1,6 +1,6 @@
 # 既有恢复器正式测试补齐 R26
 
-状态：**RUNNING**。原训练恢复器共 42 行；已核验复用 6/6 行，新增正式评分 7/36 行。矩阵尚未完成，当前统计不能冒充全部候选结论。
+状态：**STOPPED**。原训练恢复器共 42 行；已核验复用 6/6 行，新增正式评分 7/36 行。用户已将范围收紧为 R23 等后续源域有正收益的 U-Net；原全量队列已停止，29个未完成行撤下，13个完整结果保留。后续子集另登记 R27，不继续原42行队列。
 
 用户明确要求补齐测试，因此本轮不以历史源域资格过滤；历史 source_decision、权重、采样和预算原样保留。所有行固定后才启动目标预测，测试成绩不回流训练、结构、参数、seed 或选择性重跑。
 
@@ -16,41 +16,41 @@
 |[r01_transformer](../20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/report.md)|85.15|76.30|72.89|70.10|71.75|53.78|41.98|新增已评分|
 |[r01_unet](../20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/report.md)|83.74|80.43|77.52|74.91|76.10|59.78|48.92|新增已评分|
 |[r01_unrolled](../20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/report.md)|82.70|78.93|75.29|71.98|74.38|56.34|44.25|新增已评分|
-|[r02_diffusion_mixed](../20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
-|[r02_flow_mixed](../20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
+|[r02_diffusion_mixed](../20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
+|[r02_flow_mixed](../20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
 |[r02_tf_unet_mixed](../20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/report.md)|83.83|77.72|76.75|75.64|76.46|70.11|63.15|复用正式结果|
-|[r02_unet_full](../20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
-|[r02_unet_mixed](../20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
-|[r02_unet_residual](../20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
+|[r02_unet_full](../20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
+|[r02_unet_mixed](../20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
+|[r02_unet_residual](../20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
 |[r03_residual_deterministic](../20261019-phase1-restoration-residual-refinement-selfsup-m3-r03/report.md)|84.18|77.37|76.31|75.33|76.22|70.37|63.95|复用正式结果|
-|[r03_residual_diffusion](../20261019-phase1-restoration-residual-refinement-selfsup-m3-r03/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
-|[r03_residual_flow](../20261019-phase1-restoration-residual-refinement-selfsup-m3-r03/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
-|[r07_learned_operator](../20261019-phase1-restoration-learned-action-source-s2026092701-r07/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
-|[r10_direct_control](../20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
+|[r03_residual_diffusion](../20261019-phase1-restoration-residual-refinement-selfsup-m3-r03/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
+|[r03_residual_flow](../20261019-phase1-restoration-residual-refinement-selfsup-m3-r03/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
+|[r07_learned_operator](../20261019-phase1-restoration-learned-action-source-s2026092701-r07/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
+|[r10_direct_control](../20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
 |[r10_native_map_prior](../20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10/report.md)|84.59|80.64|78.97|76.97|79.52|72.55|65.23|复用正式结果|
-|[r10_uncertain_map_prior](../20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
-|[r12_analytic_views](../20261019-phase1-restoration-analytic-views-selfsup-s2026092701-m2-r12/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
-|[r12_pair_control](../20261019-phase1-restoration-analytic-views-selfsup-s2026092701-m2-r12/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
-|[r15_tcn_prior](../20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
-|[r15_unet_control](../20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
-|[r16_tcn_prior](../20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
+|[r10_uncertain_map_prior](../20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
+|[r12_analytic_views](../20261019-phase1-restoration-analytic-views-selfsup-s2026092701-m2-r12/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
+|[r12_pair_control](../20261019-phase1-restoration-analytic-views-selfsup-s2026092701-m2-r12/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
+|[r15_tcn_prior](../20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
+|[r15_unet_control](../20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
+|[r16_tcn_prior](../20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
 |[r16_unet_control](../20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16/report.md)|84.59|80.86|79.03|76.91|79.60|71.92|64.39|复用正式结果|
-|[r17_unroll_shared](../20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
+|[r17_unroll_shared](../20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
 |[r17_unroll_unshared](../20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/report.md)|84.59|81.32|79.58|78.00|80.35|73.69|67.22|复用正式结果|
-|[r18_current_anchor](../20261020-phase1-restoration-iterative-controls-selfsup-s2026092701-m2-r18/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
-|[r18_terminal_dc](../20261020-phase1-restoration-iterative-controls-selfsup-s2026092701-m2-r18/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
-|[r19_time_frequency](../20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
+|[r18_current_anchor](../20261020-phase1-restoration-iterative-controls-selfsup-s2026092701-m2-r18/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
+|[r18_terminal_dc](../20261020-phase1-restoration-iterative-controls-selfsup-s2026092701-m2-r18/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
+|[r19_time_frequency](../20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
 |[r19_time_time](../20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19/report.md)|84.59|81.14|79.36|77.54|80.06|73.51|67.10|复用正式结果|
-|[r20_noise_start](../20261020-phase1-restoration-flow-start-selfsup-s2026092701-m2-r20/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
-|[r20_zero_start](../20261020-phase1-restoration-flow-start-selfsup-s2026092701-m2-r20/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
-|[r21_endpoint_four](../20261020-phase1-restoration-endpoint-selfsup-s2026092701-m2-r21/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
-|[r21_path_four](../20261020-phase1-restoration-endpoint-selfsup-s2026092701-m2-r21/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
-|[r22_analytic_views](../20261020-phase1-restoration-analytic-unrolled-selfsup-s2026092701-m2-r22/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
-|[r22_iq_control](../20261020-phase1-restoration-analytic-unrolled-selfsup-s2026092701-m2-r22/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
-|[r23_joint_coarse](../20261020-phase1-restoration-joint-coarse-selfsup-s2026092701-m2-r23/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
-|[r23_prior_only](../20261020-phase1-restoration-joint-coarse-selfsup-s2026092701-m2-r23/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
-|[r24_attention_prior](../20261020-phase1-restoration-fullresolution-priors-selfsup-s2026092701-m2-r24/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
-|[r24_tcn_prior](../20261020-phase1-restoration-fullresolution-priors-selfsup-s2026092701-m2-r24/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|补测中|
+|[r20_noise_start](../20261020-phase1-restoration-flow-start-selfsup-s2026092701-m2-r20/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
+|[r20_zero_start](../20261020-phase1-restoration-flow-start-selfsup-s2026092701-m2-r20/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
+|[r21_endpoint_four](../20261020-phase1-restoration-endpoint-selfsup-s2026092701-m2-r21/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
+|[r21_path_four](../20261020-phase1-restoration-endpoint-selfsup-s2026092701-m2-r21/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
+|[r22_analytic_views](../20261020-phase1-restoration-analytic-unrolled-selfsup-s2026092701-m2-r22/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
+|[r22_iq_control](../20261020-phase1-restoration-analytic-unrolled-selfsup-s2026092701-m2-r22/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
+|[r23_joint_coarse](../20261020-phase1-restoration-joint-coarse-selfsup-s2026092701-m2-r23/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
+|[r23_prior_only](../20261020-phase1-restoration-joint-coarse-selfsup-s2026092701-m2-r23/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
+|[r24_attention_prior](../20261020-phase1-restoration-fullresolution-priors-selfsup-s2026092701-m2-r24/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
+|[r24_tcn_prior](../20261020-phase1-restoration-fullresolution-priors-selfsup-s2026092701-m2-r24/report.md)|待完成|待完成|待完成|待完成|待完成|待完成|待完成|用户撤下|
 
 单位为准确率（%）。阈值仍为低 urban≥70%，另外五种 impaired 场景各≥79.67619047619047%（原始 clean84.67619047619047%−5 个百分点）；恢复 clean 损伤另列。
 
@@ -76,6 +76,10 @@
 
 
 这些跨轮管线具有不同的父组件、训练损失和累计训练成本，是冻结管线的实际表现比较，不能把跨轮差异全部归因于网络类型。原训练来源及预算可点击表中各行查看；历史报告中的 source-only／未测 target 保留为当时状态，本轮补测成绩统一记录于 R26。原始 clean 是同基座的配对参考，不是数学上的识别上限。新增行的推理耗时包含恢复器、原 F50 和预测文件写入；复用结果不冒充本轮重新测得的全管线耗时。
+
+Macro-F1 统一平均固定 6 类；单 TX 分组包含其他无样本类的零值，因此以该组 accuracy（召回率）反映该 TX 表现。这里是 ManySig 原始信号上的固定 practical 残余信道仿真，不是卫星实测；不据此扩大到新 TX 或在轨部署有效性声明。
+
+用户收紧范围后，R26 控制器及两条本run生成式推理 worker 均独立核验退出，CUDA 无对应PID。本机旧监控亦已退出。两条中途预测不进入准确率统计；已有完整结果不重复运行，未停止其他owner。
 
 
 ![各模型七场景准确率，灰格为尚未完成的结果](accuracy_matrix.png)
