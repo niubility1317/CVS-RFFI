@@ -214,3 +214,10 @@ source误差分解显示精修在多个有效频带增加波形误差，末端ti
 ## 参数梯度范数上限固定矩阵的实际结论
 
 全参数范数上限：目标low urban 65.683532%，clean 84.942659%。分组件参数范数上限：目标low urban 65.657937%，clean 84.934127%。两行均完成原预登记E10/2470、168000物理目标clean+六practical及三原头独立truth-last评分。没有source分数筛选、目标反馈或选择性重跑，全部负结果保留。[完整逐环境/逐F/波形/净纠错/成本结果](../../automation_reports/CV-SincNet/20261020-phase1-restoration-parameter-balance-source-s2026092701-m2-r01/report.md)。本轮仍未达到用户完整目标，不由新增结构/训练检查推断性能。
+
+
+## 当前三 F 梯度一致性比较（实现完成，待发布）
+
+固定`frame_agreement/time_agreement`，逐个求三原F的相同语义loss对恢复IQ的梯度，仅在整帧512维或每时刻I/Q二维三对dot全≥0处保留mean3F，再沿用per_frame_cap。无教师梯度归一化/拟合权重/轴signmask；算子对教师置换/正交I-Q变换不变，原始identity方向性质不保证AdamW或最终效果。旧源码只保留平均后梯度，尚未实测冲突，不以当前局部J的目标分数定义候选。
+
+原合法R03同state/2140840参数、jointE10/2470、数据/路由/seed/AdamW/三冻结F原loss保持，无新NN/头。记录帧或复采样单位的agreement/activeagreement/pairconflicts/cosines/raw-agreednorms，零一致不设资格gate。54项检查及一次独立P0/P1审查PASS；GPU4/5一次预检空闲，GPU6/7局部Jsource LIVE保留。首步真实权重smoke PASS立即训练，sourceV仅诊断，两固定最终E10自动完整168000×七视图×三原头独立truth-last，CPU评分等前序局部Jrun终态。尚无三 F 一致性新模型的目标表现。[最小登记](../../automation_reports/CV-SincNet/20261020-phase1-restoration-teacher-agreement-source-s2026092701-m2-r01/report.md)。
