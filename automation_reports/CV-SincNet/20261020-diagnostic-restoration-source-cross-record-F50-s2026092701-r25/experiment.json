@@ -1,0 +1,258 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-diagnostic-restoration-source-cross-record-F50-s2026092701-r25",
+  "group_id": "pamf-restoration-source-cross-record",
+  "display_name": "固定 F 的源域跨记录跨 RX/day 特征一致性",
+  "description": "复用五个恢复器和原F50源域已评分特征，固定cap2参考池，比较跨RX/day同TX与异TX余弦差；0训练/预测/target，补充身份解释。",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [],
+  "tags": [
+    "source_only",
+    "diagnostic",
+    "restoration",
+    "cross_record",
+    "RX_day",
+    "frozen_F50"
+  ],
+  "comparison_group_id": "manysig-source-frozen-F50-cross-record-feature-geometry",
+  "parent_run_ids": [
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+    "20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19",
+    "20261020-phase1-restoration-joint-coarse-selfsup-s2026092701-m2-r23",
+    "20261020-phase1-restoration-fullresolution-priors-selfsup-s2026092701-m2-r24",
+    "20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10"
+  ],
+  "replaces_run_id": null,
+  "authorization": "持续独立恢复器及输入TX身份保真验证目标；纯CPU、已有source预测/评分后特征分析；不改变健康R24或其源资格。",
+  "code": {
+    "commit": "d9caa2ae5d7a3651129bcc60fa9d5e6091b4f641",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
+    "cwd": "releases/pamf_source_cross_record_20261020_r25"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "Cached originalF50 sourceV160dim features only;no new model/IQ prediction",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/validation/physical_ids.npy,originalfixed1800V;eachpredictionphysicalIDsmustmatch",
+    "label_map_ref": "Originalsource_cache/V/labels.npy,openedonlyafterall5source7viewscoredfeaturesvalidate",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Unchanged existing source physical handles;matching scoredfeaturemetadata/IDs;no data revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": "UnchangedR07fixedsourceVreceivedpracticalobservations;onlycachedF50features;no knownactionmetadata",
+    "restoration_train_counts": {
+      "new_training_records": 0,
+      "new_L_exposures": 0,
+      "new_U_exposures": 0,
+      "epochs": 0,
+      "optimizer_updates": 0
+    },
+    "source_validation_panel": 1800,
+    "target_panel": null
+  },
+  "permissions": {
+    "regime": "Post-score sourceV truth-side cached feature analysis;0gradients/fit/newpredictions/modelweights/target",
+    "query_use": "No target path or mode;allsourcepredictions/summaries/Fidentity/IDs validate beforeVlabels",
+    "external_method_exception": null,
+    "claim_scope": "Source same-F cross-record RX/day geometry only;not independent reader,payloadindependence,newTX,inorbit,multiseed,formal70/5 or per-detail proof"
+  },
+  "checkpoint": {
+    "initialization": "No checkpoint loaded;readonly cachedF50 originaldefaulthead sourcefeatures;no new model/optimizer",
+    "sources": [
+      {
+        "run_id": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+        "commit": "cd97744884b5e460926e48c8b7efb7d78c6da0f4",
+        "role": "Already source-scored frozen features only",
+        "path": "runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/unroll_unshared/native_map_prior"
+      },
+      {
+        "run_id": "20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19",
+        "commit": "5bbc0ccdc32de19e75cb6a01e2cda0352e39f36a",
+        "role": "Already source-scored frozen features only",
+        "path": "runs/20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19/time_time/native_map_prior"
+      },
+      {
+        "run_id": "20261020-phase1-restoration-joint-coarse-selfsup-s2026092701-m2-r23",
+        "commit": "d43dbab326d0b1e2cb6fb7faa23dc9a3ec25a025",
+        "role": "Already source-scored frozen features only",
+        "path": "runs/20261020-phase1-restoration-joint-coarse-selfsup-s2026092701-m2-r23/prior_only/native_map_prior"
+      },
+      {
+        "run_id": "20261020-phase1-restoration-fullresolution-priors-selfsup-s2026092701-m2-r24",
+        "commit": "da5b9d52819ccd40f8b59dbfdefebff3bd3c2230",
+        "role": "Already source-scored frozen features only",
+        "path": "runs/20261020-phase1-restoration-fullresolution-priors-selfsup-s2026092701-m2-r24/tcn_prior/native_map_prior"
+      },
+      {
+        "run_id": "20261020-phase1-restoration-fullresolution-priors-selfsup-s2026092701-m2-r24",
+        "commit": "da5b9d52819ccd40f8b59dbfdefebff3bd3c2230",
+        "role": "Already source-scored frozen features only",
+        "path": "runs/20261020-phase1-restoration-fullresolution-priors-selfsup-s2026092701-m2-r24/attention_prior/native_map_prior"
+      },
+      {
+        "run_id": "20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10",
+        "commit": "b57eca9946b2a912a88870e24826fe3e2f70985d",
+        "role": "Originalsource clean/rawF50 identity reference features",
+        "path": "runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10/reference_controls"
+      }
+    ],
+    "contract_check_ref": "OriginalsourceV panel/F50 and allcomplete scoredfeature metadata/IDs;17focusedtests/compile/help/oneP0P1PASS;no checkpointsmoke applicable",
+    "provenance_verdict": "Source-only completeoriginalF50features;0newweightsorinheritance",
+    "selection_rule": {
+      "source_selection": false,
+      "target_promotion": false,
+      "cap": 2,
+      "reference_order": "lowestopaquephysicalIDperTXRXday",
+      "reference_exclusion": "sameRXORsameday",
+      "metric": "equaleligiblecell mean(sameTXcosine-meanother5TXcosine);no classifierdecision/thresholdfit"
+    },
+    "evaluation_readers": [
+      "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701 original defaulthead cached features only;0modelcalls"
+    ]
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-cross-record-features",
+    "gpu_policy": "CPUonly;CUDA_VISIBLE_DEVICES empty;2BLAS/OMPthreads;0GPUworkers;healthyR24unchanged",
+    "remote_run_root": "runs/20261020-diagnostic-restoration-source-cross-record-F50-s2026092701-r25",
+    "remote_log_root": "logs/20261020-diagnostic-restoration-source-cross-record-F50-s2026092701-r25",
+    "local_artifact_root": "local_artifacts/pamf_restoration/source_cross_record_r25_20261020",
+    "launch_command": "python -u -m tools.analyze_pamf_source_cross_record --runs-root ../../runs --panel ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/validation --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261020-diagnostic-restoration-source-cross-record-F50-s2026092701-r25 --expected-commit d9caa2ae5d7a3651129bcc60fa9d5e6091b4f641",
+    "stop_rule": "Wrongsource/F/IDs,incompleteinput,nonfinite,collision:preserve,abortownCPUanalysis,noautomaticretry;launchonlyafterall5sourcerowsfinished"
+  },
+  "expected_artifacts": [
+    "summary.json",
+    "logs/20261020-diagnostic-restoration-source-cross-record-F50-s2026092701-r25/analysis.log",
+    "release startup/landing poststate",
+    "local report/row_metrics/verification"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "sameTX_cross_RX_day_cosine",
+      "meanother5TX_matchedcell_cosine",
+      "meanmargin",
+      "positive_margin_percent_not_classification_accuracy",
+      "common_valid_margin_delta",
+      "zeroquery_count",
+      "missing_reference_cells",
+      "reference_pool_counts"
+    ],
+    "dimensions": [
+      "clean",
+      "three suburban separately",
+      "three urban separately",
+      "TX",
+      "RX",
+      "day"
+    ],
+    "primary": "Descriptive cached-feature geometry;source-only,0selection/no new classifier;complete6TX cells/cap2/otherRXandday",
+    "prediction_ref": "Reuse5declaredsource1800x7originalF50featurefiles;nonewmodelprediction",
+    "scorer_ref": "tools/analyze_pamf_source_cross_record.py afterallcomplete sourcescores",
+    "final_user_targets": {
+      "lowurban_accuracy_min": 70.0,
+      "other_five_max_gap_vs_original_clean_pp": 5.0
+    }
+  },
+  "rows": [
+    {
+      "row_id": "source_cross_record_matrix",
+      "method": "source_cross_record_features",
+      "purpose": "oneCPUanalysis_five_fixedsource_inputs",
+      "config_ref": "tools/analyze_pamf_source_cross_record.py#ROWS",
+      "resolved_config_ref": "runs/20261020-diagnostic-restoration-source-cross-record-F50-s2026092701-r25/summary.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026101902,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No new RNG;fixed inheritedsourceV observation1902/originalphysicalsplit;allFandrestorersmodel2701;cap2opaqueIDorder",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "None(no fitting)",
+      "lr": 0.0,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0training/gradients/modelcalls/newpredictions/weights;sourcecachedfeatures1800x7;inheritedrestorercomponent60andF50E50notretrained",
+      "output_root": "runs/20261020-diagnostic-restoration-source-cross-record-F50-s2026092701-r25",
+      "log_path": "logs/20261020-diagnostic-restoration-source-cross-record-F50-s2026092701-r25/analysis.log",
+      "command": "python -u -m tools.analyze_pamf_source_cross_record --runs-root ../../runs --panel ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/validation --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261020-diagnostic-restoration-source-cross-record-F50-s2026092701-r25 --expected-commit d9caa2ae5d7a3651129bcc60fa9d5e6091b4f641",
+      "expected_artifacts": [
+        "summary.json",
+        "logs/20261020-diagnostic-restoration-source-cross-record-F50-s2026092701-r25/analysis.log",
+        "release startup/landing poststate",
+        "local report/row_metrics/verification"
+      ],
+      "diagnostic_candidates": [
+        {
+          "name": "R17_unshared",
+          "source_run": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+          "source_row": "unroll_unshared",
+          "source_commit": "cd97744884b5e460926e48c8b7efb7d78c6da0f4"
+        },
+        {
+          "name": "R19_time",
+          "source_run": "20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19",
+          "source_row": "time_time",
+          "source_commit": "5bbc0ccdc32de19e75cb6a01e2cda0352e39f36a"
+        },
+        {
+          "name": "R23_control",
+          "source_run": "20261020-phase1-restoration-joint-coarse-selfsup-s2026092701-m2-r23",
+          "source_row": "prior_only",
+          "source_commit": "d43dbab326d0b1e2cb6fb7faa23dc9a3ec25a025"
+        },
+        {
+          "name": "R24_TCN",
+          "source_run": "20261020-phase1-restoration-fullresolution-priors-selfsup-s2026092701-m2-r24",
+          "source_row": "tcn_prior",
+          "source_commit": "da5b9d52819ccd40f8b59dbfdefebff3bd3c2230"
+        },
+        {
+          "name": "R24_attention",
+          "source_run": "20261020-phase1-restoration-fullresolution-priors-selfsup-s2026092701-m2-r24",
+          "source_row": "attention_prior",
+          "source_commit": "da5b9d52819ccd40f8b59dbfdefebff3bd3c2230"
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "R24 remains healthy/fixed;this source diagnostic neither changes its eligibility/ranking nor delays training/conditionaltargetwork.",
+    "All5candidates have fixed20/4940source predictions;waituntilR24attentionall7sourcepredictionsandindependentscores complete beforeoneCPUrun.",
+    "SourceVlabelsused onlyafterallfeaturesvalidate;referencecap2perTXRXdaychosenbyopaqueIDs,neverbyfeature/score;crossRXandday excludes samepacket.",
+    "Complete6TXnonzeroreferencecells;missing/zero counts retained,commonvalidmarginchanges explicit;meanother5TX equallyweighted,cellsequallyweighted.",
+    "No fittedclassificationhead/prototypeclassifier,newmodelpredictor,optimizer,thresholdoptimization,targetfeatures/truth,or runtime/outputdecision updates.",
+    "Metric is source same-F feature evidence,not accuracy or proof of payload independence/per-detailTX/newTX/independentphysicalfamilies/inorbit/multiseed.",
+    "17focusedtests/compile/help/ONEP0P1PASS;nocheckpointload so extra realcheckpointsmoke not applicable;no repeateddata validation/hashchain.",
+    "User70/5formalgoal unchanged and not claimed from source;new immutable CPUoutput/codecommit/onearchive/preflight/compile/poststate."
+  ],
+  "registered_at": "2026-10-20T00:19:44+00:00"
+}
