@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "用户要求最大程度精简且同时优化，并授权多 GPU 批量迭代。R09 全部实际进程退出后使用 GPU2/3/6/7；R10 GPU4/5 健康任务保持，最多6个本任务GPU worker；不向其他对话发指令。",
   "code": {
-    "commit": null,
+    "commit": "5f8c563e96766fee9f4601fe64bf0da4395892ae",
     "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
     "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
     "cwd": "releases/pamf_r17_context_grid_20261020_r11"
@@ -182,8 +182,22 @@
     "remote_run_root": "runs/20261020-phase1-restoration-r17-context-grid-s2026092701-m4-r11",
     "remote_log_root": "logs/20261020-phase1-restoration-r17-context-grid-s2026092701-m4-r11",
     "local_artifact_root": "local_artifacts\\pamf_restoration\\r17_context_grid_20261020_r11",
-    "launch_command": "python -u -m experiments.pamf_r17_context_grid.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r17-context-grid-s2026092701-m4-r11 --expected-commit <actual method commit>",
-    "stop_rule": "Contract/nonfinite/OOM/technical error stops affected row and preserves outputs; healthy rows continue; no silent fallback or automatic retry; root FAILED after healthy rows finish if any row fails."
+    "launch_command": "python -u -m experiments.pamf_r17_context_grid.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r17-context-grid-s2026092701-m4-r11 --expected-commit 5f8c563e96766fee9f4601fe64bf0da4395892ae",
+    "stop_rule": "Contract/nonfinite/OOM/technical error stops affected row and preserves outputs; healthy rows continue; no silent fallback or automatic retry; root FAILED after healthy rows finish if any row fails.",
+    "post_launch_verification": {
+      "status": "VERIFIED",
+      "actual_controller_LIVE": true,
+      "actual_worker_PIDs_CWD_command_GPU_match": true,
+      "training_log_growth": true,
+      "minimum_completed_epochs": 1,
+      "actual_R17_F50_2Ls_smoke": "PASS",
+      "original_R17_initialization_only": true,
+      "R17_training_forward_examples": 0,
+      "old_R09_actual_GPU_handles_EXITED": true,
+      "archive_SHA_match": true,
+      "remote_compile": true,
+      "head_fit_updates": 0
+    }
   },
   "expected_artifacts": [
     "launch.json",
@@ -232,7 +246,8 @@
     "final_user_targets": {
       "lowurban_accuracy_min": 70.0,
       "other_five_goal": "接近clean，未指定数值容差，独立于压缩1pp验收"
-    }
+    },
+    "aggregate_analysis_ref": "tools/analyze_pamf_r17_context_grid_results.py;24 synthetic checks PASS;per-arm full/quarter context and full joint budget;all7/exact1pp/actualgains/low70/profile"
   },
   "rows": [
     {
@@ -260,7 +275,7 @@
       "budget_ref": "继承coarse20/action20/R17prior20+一次joint20=80串行pass；各组件累计40/component sum120；E20/4940/L126000/U1134000；source1260000/R17teacher0/studentcontext1260000/Fclean1260000/Fstudent1260000，F50预训练另计",
       "output_root": "runs/20261020-phase1-restoration-r17-context-grid-s2026092701-m4-r11/full_context_quarter",
       "log_path": "runs/20261020-phase1-restoration-r17-context-grid-s2026092701-m4-r11/logs/worker-full_context_quarter.log",
-      "command": "python -u -m experiments.pamf_r17_context_grid.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r17-context-grid-s2026092701-m4-r11 --expected-commit <actual method commit>",
+      "command": "python -u -m experiments.pamf_r17_context_grid.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r17-context-grid-s2026092701-m4-r11 --expected-commit 5f8c563e96766fee9f4601fe64bf0da4395892ae",
       "expected_artifacts": [
         "launch.json",
         "comparison_plan.json",
@@ -313,7 +328,7 @@
       "budget_ref": "继承coarse20/action20/R17prior20+一次joint20=80串行pass；各组件累计40/component sum120；E20/4940/L126000/U1134000；source1260000/R17teacher0/studentcontext1260000/Fclean1260000/Fstudent1260000，F50预训练另计",
       "output_root": "runs/20261020-phase1-restoration-r17-context-grid-s2026092701-m4-r11/full_context_eighth_pointwise",
       "log_path": "runs/20261020-phase1-restoration-r17-context-grid-s2026092701-m4-r11/logs/worker-full_context_eighth_pointwise.log",
-      "command": "python -u -m experiments.pamf_r17_context_grid.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r17-context-grid-s2026092701-m4-r11 --expected-commit <actual method commit>",
+      "command": "python -u -m experiments.pamf_r17_context_grid.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r17-context-grid-s2026092701-m4-r11 --expected-commit 5f8c563e96766fee9f4601fe64bf0da4395892ae",
       "expected_artifacts": [
         "launch.json",
         "comparison_plan.json",
@@ -366,7 +381,7 @@
       "budget_ref": "继承coarse20/action20/R17prior20+一次joint20=80串行pass；各组件累计40/component sum120；E20/4940/L126000/U1134000；source1260000/R17teacher0/studentcontext1260000/Fclean1260000/Fstudent1260000，F50预训练另计",
       "output_root": "runs/20261020-phase1-restoration-r17-context-grid-s2026092701-m4-r11/quarter_context_quarter",
       "log_path": "runs/20261020-phase1-restoration-r17-context-grid-s2026092701-m4-r11/logs/worker-quarter_context_quarter.log",
-      "command": "python -u -m experiments.pamf_r17_context_grid.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r17-context-grid-s2026092701-m4-r11 --expected-commit <actual method commit>",
+      "command": "python -u -m experiments.pamf_r17_context_grid.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r17-context-grid-s2026092701-m4-r11 --expected-commit 5f8c563e96766fee9f4601fe64bf0da4395892ae",
       "expected_artifacts": [
         "launch.json",
         "comparison_plan.json",
@@ -419,7 +434,7 @@
       "budget_ref": "继承coarse20/action20/R17prior20+一次joint20=80串行pass；各组件累计40/component sum120；E20/4940/L126000/U1134000；source1260000/R17teacher0/studentcontext1260000/Fclean1260000/Fstudent1260000，F50预训练另计",
       "output_root": "runs/20261020-phase1-restoration-r17-context-grid-s2026092701-m4-r11/quarter_context_eighth_pointwise",
       "log_path": "runs/20261020-phase1-restoration-r17-context-grid-s2026092701-m4-r11/logs/worker-quarter_context_eighth_pointwise.log",
-      "command": "python -u -m experiments.pamf_r17_context_grid.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r17-context-grid-s2026092701-m4-r11 --expected-commit <actual method commit>",
+      "command": "python -u -m experiments.pamf_r17_context_grid.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r17-context-grid-s2026092701-m4-r11 --expected-commit 5f8c563e96766fee9f4601fe64bf0da4395892ae",
       "expected_artifacts": [
         "launch.json",
         "comparison_plan.json",
@@ -462,7 +477,8 @@
     "所有行仅原source-selected R17 CPU初始化，0已测学生权重继承；每行固定最终E20，全部负结果保留。",
     "R17训练forward0、Fclean/student各1260000、source1260000。coarse20/action20/R17prior20加一次joint20为80串行pass，各组件累计40/component sum120，F50预训练单列。",
     "真实原R17初始化/F50/2Ls noquery smoke为launcher首步；PASS立即继续。R09根终态及实际GPU句柄退出后启动2/3/6/7，R10健康4/5保持，所有scorer共享R06锁。",
-    "普通N607预检 VERIFIED：R09旧实际GPU句柄0，GPU2/3/6/7各24124MiB空闲；R10健康4/5继续，新remote run/release不存在；复用既有数据句柄，无新数据重验。"
+    "普通N607预检 VERIFIED：R09旧实际GPU句柄0，GPU2/3/6/7各24124MiB空闲；R10健康4/5继续，新remote run/release不存在；复用既有数据句柄，无新数据重验。",
+    "实际发布VERIFIED：四个实际worker PID/CWD/完整命令/commit/GPU对应2/3/6/7、日志增长及E1已核实；真实原R17/F50/2Ls noquery smoke PASS，正式R17 teacher训练forward0。R10已按原固定方案完成，结果未回流R11方法。"
   ],
   "registered_at": "2026-10-20T09:14:02+00:00"
 }
