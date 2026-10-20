@@ -1,0 +1,126 @@
+{
+  "status": "PASS",
+  "initial_RED": {
+    "status": "EXPECTED_FAIL",
+    "missing_loss": true,
+    "realIQ": 0
+  },
+  "CPU": {
+    "status": "PASS",
+    "device": "cpu",
+    "math": {
+      "status": "PASS",
+      "current_value_exact_native": true,
+      "detached_history_no_gradient": true,
+      "positive_negative_mask_physical_dedup": true,
+      "three_step_expiry": true,
+      "private_RNG_unchanged": true,
+      "protocol_negative_cases": 5
+    },
+    "protocol_negative_cases": 13,
+    "source_expansion_positive_negative": true,
+    "actual_F_flows": [
+      {
+        "treatment": "ANCHOR",
+        "actual_identity_forwards": 2,
+        "same_actual_IQ": true,
+        "aux_all_6_default_head_gradients_None": true,
+        "main_all_6_default_head_gradients_exact_original": true,
+        "aux_Sinc_gradient_norm": 0.005682420451194048,
+        "aux_shallow_gradient_norm": 0.23269028961658478,
+        "aux_middle_gradient_norm": 0.07912649214267731,
+        "physical_Sinc_updated": true,
+        "default_head_jointly_updated": true,
+        "own_EMA_safe": true,
+        "export_exact": true,
+        "discarded_synthetic_native_optimizer_steps": 1
+      },
+      {
+        "treatment": "MEM4",
+        "actual_identity_forwards": 2,
+        "same_actual_IQ": true,
+        "aux_all_6_default_head_gradients_None": true,
+        "main_all_6_default_head_gradients_exact_original": true,
+        "aux_Sinc_gradient_norm": 0.005347033962607384,
+        "aux_shallow_gradient_norm": 0.24141749739646912,
+        "aux_middle_gradient_norm": 0.0774000957608223,
+        "physical_Sinc_updated": true,
+        "default_head_jointly_updated": true,
+        "own_EMA_safe": true,
+        "export_exact": true,
+        "discarded_synthetic_native_optimizer_steps": 1
+      }
+    ],
+    "real_checkpoint_no_query_smoke": true,
+    "loaded_checkpoint_discarded_not_inherited": true,
+    "parameters": 900722,
+    "extra_parameters": 0,
+    "IQ_reads": 0,
+    "target_reads": 0,
+    "head_fit_updates": 0,
+    "real_data_training_updates": 0,
+    "discarded_synthetic_native_optimizer_steps": 2
+  },
+  "CUDA": {
+    "status": "PASS",
+    "device": "cuda:0",
+    "math": {
+      "status": "PASS",
+      "current_value_exact_native": true,
+      "detached_history_no_gradient": true,
+      "positive_negative_mask_physical_dedup": true,
+      "three_step_expiry": true,
+      "private_RNG_unchanged": true,
+      "protocol_negative_cases": 5
+    },
+    "protocol_negative_cases": 13,
+    "source_expansion_positive_negative": true,
+    "actual_F_flows": [
+      {
+        "treatment": "ANCHOR",
+        "actual_identity_forwards": 2,
+        "same_actual_IQ": true,
+        "aux_all_6_default_head_gradients_None": true,
+        "main_all_6_default_head_gradients_exact_original": true,
+        "aux_Sinc_gradient_norm": 0.005374998785555363,
+        "aux_shallow_gradient_norm": 0.2540700137615204,
+        "aux_middle_gradient_norm": 0.06720152497291565,
+        "physical_Sinc_updated": true,
+        "default_head_jointly_updated": true,
+        "own_EMA_safe": true,
+        "export_exact": true,
+        "discarded_synthetic_native_optimizer_steps": 1
+      },
+      {
+        "treatment": "MEM4",
+        "actual_identity_forwards": 2,
+        "same_actual_IQ": true,
+        "aux_all_6_default_head_gradients_None": true,
+        "main_all_6_default_head_gradients_exact_original": true,
+        "aux_Sinc_gradient_norm": 0.0054198140278458595,
+        "aux_shallow_gradient_norm": 0.2509010136127472,
+        "aux_middle_gradient_norm": 0.07625742256641388,
+        "physical_Sinc_updated": true,
+        "default_head_jointly_updated": true,
+        "own_EMA_safe": true,
+        "export_exact": true,
+        "discarded_synthetic_native_optimizer_steps": 1
+      }
+    ],
+    "real_checkpoint_no_query_smoke": false,
+    "loaded_checkpoint_discarded_not_inherited": true,
+    "parameters": 900722,
+    "extra_parameters": 0,
+    "IQ_reads": 0,
+    "target_reads": 0,
+    "head_fit_updates": 0,
+    "real_data_training_updates": 0,
+    "discarded_synthetic_native_optimizer_steps": 2
+  },
+  "independent_P0_P1": {
+    "status": "PASS",
+    "reviewer": "/root/sinc_rdrop_diag_p0p1",
+    "scope": "Unique direct P0/P1 review of two-arm memory study, no code changes",
+    "verdict": "No direct P0/P1 in memorylifetime/gradientboundary/source_proof/automaticanalysis/cleanpredicttruthlastscore."
+  }
+}
