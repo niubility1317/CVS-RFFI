@@ -1,0 +1,49 @@
+{
+  "status": "PREPARED_NOT_REAL_COMPLETE_MATRIX_VERIFIED",
+  "run_id": "20261020-phase1-FcrossRX-centerGradient-e50-clean-local-m3-r01",
+  "immutable_execution_commit": "67afd61dad3f313c0919d5c08349e2ad4a1ff0f6",
+  "module": "experiments.cvs_f_centergrad50.audit",
+  "nonblocking_delivery_helper": true,
+  "training_release_unchanged": true,
+  "training_config_unchanged": true,
+  "checks": {
+    "syntax": "PASS",
+    "statistics_and_partial_guard": {
+      "status": "PASS",
+      "known_asymmetric_confusion": true,
+      "known_three_seed_sampleSD": true,
+      "incorrect_accuracy_or_macroF1_rejected": true,
+      "populationSD_rejected": true,
+      "partial_matrix_guard": {
+        "status": "WAIT_FIXED_MATRIX_RUNNING",
+        "checkpoint_loads": 0,
+        "IQ_reads": 0,
+        "truth_reads": 0,
+        "output_written": false
+      }
+    },
+    "actual_CLI_partial_guard": {
+      "status": "PASS",
+      "CLI_partial_matrix_deferral": true,
+      "no_output_written": true,
+      "checkpoint_loads": 0,
+      "IQ_reads": 0,
+      "truth_reads": 0
+    }
+  },
+  "complete_matrix_path": "Not executed yet: source/predict/score work is still running; no assertion of real complete-path success.",
+  "scope": [
+    "Fixed three rows/final50, checkpoint/defaulthead and deployed feature updates",
+    "All independent clean168000 predictions, worker exits and prediction-before-truth-score timing",
+    "Confusion-derived accuracy/MacroF1, all perTX paired deltas, three-seed sampleSD/positive counts, worstRX/day and costs",
+    "Declared secondary contrasts only when already published with all3 companion seeds; pending otherwise",
+    "Full50/11100 native and auxiliary log summaries and39960 actual backwards per model"
+  ],
+  "no_model_forwards": true,
+  "no_optimizer_updates": true,
+  "no_head_fitting": true,
+  "no_IQ_or_truth_reads": true,
+  "command": "LOCAL_BASE_PYTHON -X utf8 -m experiments.cvs_f_centergrad50.audit --base LOCAL_RUN/20261020-phase1-FcrossRX-centerGradient-e50-clean-local-m3-r01 --reference-base LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --execution-commit 67afd61dad3f313c0919d5c08349e2ad4a1ff0f6 --output LOCAL_RUN/20261020-phase1-FcrossRX-centerGradient-e50-clean-local-m3-r01/completion_verification.json",
+  "execution_from": "Current checkout, CPU only; immutable training remains original execution commit",
+  "goal_status": "ACTIVE_UNMET"
+}

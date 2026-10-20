@@ -15,3 +15,5 @@ CPU/CUDA f32/f64偏导参考/同输入前向损失/梯度均值0/保留尺度响
 一次新archive复制比较、compile、实际PID/CWD/cmdline/GPU/log增长核验；run/output不可覆盖，代码/config以实际Git commit唯一标识。命令/路径别名/CWD/逐行矩阵/stop/artifacts见experiment.json。技术停止仅来源/权限/配置/metadata/输出冲突、非有限或预算/worker错误，停止新派发并保留健康任务和产物，不按性能停止或自动重跑。尚无本轮目标性能结果，目标ACTIVE/UNMET。
 
 发布状态：实现提交 `67afd61dad3f313c0919d5c08349e2ad4a1ff0f6` 已与远端分支OID核实一致。不可变release复制比较/compile通过，真实训练子进程PID/CWD/cmdline/GPU0及逐步日志增长核实；全局实际3个GPUworker，原六行保持健康。CENTER三种子固定，首行已发生实际更新，另两行排队。训练后逐行自动clean预测/独立truth-last评分；尚无新目标性能结果。
+
+完成核对准备：新增只读CPU工具 `experiments.cvs_f_centergrad50.audit`，在三行完成且worker退出后核对实际checkpoint/默认头/特征更新、预测与独立评分时序、完整日志汇总及三种子配对算术。非对称混淆矩阵/MacroF1、样本标准差与错误结果拒绝检查通过，真实CLI在当前未完成矩阵上返回等待且未加载权重、IQ或真值。完整真实完成路径尚未执行，不能据此宣称实验或目标已完成；训练release与配方不变。
