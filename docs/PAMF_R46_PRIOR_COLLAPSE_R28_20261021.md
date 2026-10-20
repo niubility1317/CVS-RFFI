@@ -1,6 +1,6 @@
 # R28：冻结 prior 低秩卷积合并
 
-状态：LOCAL_VERIFIED。原25项机制检查和唯一审查已通过；针对R27首步边界新增10项检查及唯一一次定向复审PASS。新R28尚未发布，无新性能分数。
+状态：VERIFIED_QUEUED_AFTER_REAL_SMOKE。新R28已发布并通过真实2Ls检查，两份完整299297权重导出/严格重载；等待R26实际进程完成，0新GPUworker，无新版正式分数。
 
 用户要求压缩同时提升性能。本轮固定 BOTH R22 source-final E20/19700（complex625、complex625_identity，方法 e190cf5367b03da8aafced51276a8730ad8274fa），仅作冻结推理的代数变换，无新训练/选模/教师。它们原始训练仍来自用户指定原 R46 prune_refine350521 E20/4940、方法 bbb8daf817de050b958d217b70d4c33f4aefe341，源7/63/30物理角色及完整祖先契约保持。未来训练唯一初始化/教师仍为原350521，本次不把新学生变成训练父版。历史目标已暴露，属于工程执行比较。
 
@@ -22,3 +22,14 @@ N607普通账户，GPU2/3最多2own/每卡1，严格排在R26同卡所属worker�
 25项聚焦检查覆盖卷积合并数学、不同stride/pad/dilation/bias、共享核和阶段偏置、全模型参数与调用计数、保存/严格重载/别名冲突、F/来源/训练权限负例、两版七景链、truth-last与原输出保护；唯一审查由/root/review_r14_prior_compact独立复跑25项PASS，未访问真实IQ/F/TX/远端、未编辑文件。主对话缓存归一化斜率，本组改变prior线性执行，独立固定方案。当前无新增正式结果，完整目标ACTIVE。
 
 R27原run在CPU首步F近零分量等价断言失败，已核实实际退出且0GPU/0target；诊断IQ原阈值均通过，源/F状态不变。新R28只修复F诊断边界，不改变变换/数据/源模型/矩阵/GPU/预算，不覆盖旧失败root；详见R27原报告。
+
+
+## 实际发布、排队与独立交付
+
+方法commit 7ca5af4f6f5d9f862e07e13b9da15902379044e4已推送并独立匹配远端OID。一次N607预检核实原350521父及两份R22 source-final20/19700、原数据READY/EXACT_MATCH与七景测试句柄；一次归档两端SHA及compile通过。实际release/CWD为r28，未复用旧R27失败root。
+
+真实2Ls clean/received01检查PASS：两版合并后完整299297参数，28组共享核、84个prior factor模块已转换；IQ/方差原阈值通过，全部输出有限、正方差、严格重载四输出逐位一致，源模型与F状态不变。完整保留F features/logits数值差异，当前两条源样本argmax均一致；这不是正式分类保持结论。实际CPU控制器PID/CWD/完整命令/commit/日志增长VERIFIED，两版都等待R26同卡终态及实际退出，0新GPUworker，不改动其他健康任务。
+
+结果工具新增22项检查PASS，覆盖两版全七景、原预测一致性与混淆矩阵的相互核对、源/F权限边界、真实进程退出、完整299297部署参数、四模型成本及缺失/错误证据拒绝、公开逐TX/RX/day CSV和报告输出。仅以聚合artifact独立复算，不读新的IQ/truth或调参。
+
+单一本地完成owner只读等待实际controller/worker退出，之后收集完整source7/formal7/原预测差异/独立truth-last，取回两份合并后完整权重并CPU严格加载，检查组件参数/MAC/有限输出，再报告、提交推送并独立核对远端OID。没有重试、热改、目标重测或复制完成owner；原R23/R24/R26完成owner保持。完整70%/5pp/clean/TX真实性目标仍ACTIVE。
