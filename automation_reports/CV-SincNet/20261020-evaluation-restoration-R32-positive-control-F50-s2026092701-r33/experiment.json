@@ -1,0 +1,400 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-evaluation-restoration-R32-positive-control-F50-s2026092701-r33",
+  "group_id": "pamf-restoration-r32-positive-control",
+  "display_name": "R32 配对增强 U-Net 对照的条件正式补测",
+  "description": "在源结果前固定：仅当 R32 对照相对源 R17 六场景均值严格正收益且 clean 损伤<=0.1pp，补原 F50 七场景正式测试；0 新训练。",
+  "kind": "cvs",
+  "stage": "Phase1-source-research-conditional-confirmation",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "conditional_formal",
+    "positive_UNet",
+    "frozen_F50",
+    "truth_last",
+    "no_new_training"
+  ],
+  "comparison_group_id": "source_positive_R32_control_same_F50",
+  "parent_run_ids": [
+    "20261020-phase1-restoration-observable-response-selfsup-s2026092701-m2-r32",
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+    "20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "持续恢复研发及用户明确只测源域正收益 U-Net 授权；R33 规则在 R32 源域最终预测及任何新正式结果前固定；不改变 R32 健康运行。",
+  "code": {
+    "commit": "4d8a51c522ad7c1e40bdbe109a52eba5e0972ba9",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
+    "cwd": "releases/pamf_response_control_formal_20261020_r33"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "R32 pair_aug_control original3unshared U-Net/CG2/2/2;one current IQ2x256;original F derives FFT/PA/time/stats;R05 fixedreceived168000x7",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "Original R32/R17/R10 same R07 validation1800 IDs;conditional R05 original168000 physical IDs",
+    "label_map_ref": "No training in R33;reuse source truthlast summaries only;conditional targettruth only after all7valid fixedpredictions",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json: READY/EXACT_MATCH; reuse existing cache without new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "Unchanged code/leo_practical/channel.py;reuse R07 epoch01..20 and original sourceV;conditional original formal received bytes",
+    "restoration_train_counts": {
+      "new_epochs": 0,
+      "new_updates": 0,
+      "inherited_R32_epochs": 20,
+      "inherited_R32_updates": 4940,
+      "inherited_L_visits": 126000,
+      "inherited_U_visits": 1134000,
+      "inherited_L_waveform_forwards": 378000,
+      "inherited_U_waveform_forwards": 3402000,
+      "training_TX_labels": 0,
+      "training_F_access": false,
+      "source_V_fit_updates": 0
+    },
+    "source_validation_panel": 1800,
+    "target_panel": "Only source-positive R32 pair_aug_control,original168000x7;otherwise0target"
+  },
+  "permissions": {
+    "regime": "Conditional frozen evaluation only;0newtraining/fit;reuse original source evidence;parent run unchanged",
+    "query_use": "Only after fixedsource criterion andR32 complete/exit;originalsingleIQ inference,all7predictions before independentCPUtruth;no targetfeedback",
+    "external_method_exception": null,
+    "claim_scope": "Previously exposed conditional formal audit;not a new blindtest;singleF improvement not per-detail TX authenticity proof"
+  },
+  "checkpoint": {
+    "initialization": "Original complete R32 pair_aug_control E20/4940;strict originalR32 schema/fullstate;no updates",
+    "sources": [
+      {
+        "run_id": "20261020-phase1-restoration-observable-response-selfsup-s2026092701-m2-r32",
+        "commit": "1857f2c26eabbf68838bad1074e4fdc9b02e267f",
+        "role": "Only evaluated restorer;source-only simulatedpaired completeE20/4940;currently training",
+        "path": "runs/20261020-phase1-restoration-observable-response-selfsup-s2026092701-m2-r32/pair_aug_control/native_map_prior/final.pt"
+      },
+      {
+        "run_id": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+        "commit": "cd97744884b5e460926e48c8b7efb7d78c6da0f4",
+        "role": "Source-selected unshared summary only,no target score or weights for selection",
+        "path": "runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/unroll_unshared/native_map_prior/summary.json"
+      },
+      {
+        "run_id": "20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10",
+        "commit": "b57eca9946b2a912a88870e24826fe3e2f70985d",
+        "role": "Original source rawF50 controls only",
+        "path": "runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10/reference_controls/summary.json"
+      },
+      {
+        "run_id": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+        "commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+        "role": "Original frozen F50/defaulthead only,not trained inrestoration",
+        "path": "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+      }
+    ],
+    "contract_check_ref": "R32 original7/63/30 R02/R07 provenance reused;parentterminal;sourcepanelmatch;strict fullcheckpoint/controlrow E20/4940;real2Ls originalF50 noquerysmoke ifsourcepositive",
+    "provenance_verdict": "VERIFIED originalsource-only R02/R07 ancestors andR32 pinnedcode;R32 E20checkpoint pending healthy training;strict actual final check atlaunch",
+    "selection_rule": {
+      "policy": {
+        "metric": "Equal-weight mean accuracy over six impaired source views",
+        "strict_positive": true,
+        "positivity": "Sum of six confusion-matrix diagonal counts strictly greater than source R17 unshared",
+        "clean_drop_vs_raw_max_pp": 0.1,
+        "target_feedback": false
+      },
+      "source_reference": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+      "source_reference_candidate": "unroll_unshared",
+      "raw_clean_reference": "20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10/reference_controls/identity",
+      "no_target_feedback": true,
+      "R32_decisions_modified": false
+    },
+    "evaluation_readers": [
+      "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701 original defaulthead"
+    ]
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/r32-positive-control-formal",
+    "gpu_policy": "AfterR32allownedprocessesexit;pool0/1/5/7,max1ownGPUworker;allowner cap2/free12GB;shared receiver_residual_capacity4.lock untilCUDAvisible;protectpeers",
+    "remote_run_root": "runs/20261020-evaluation-restoration-R32-positive-control-F50-s2026092701-r33",
+    "remote_log_root": "logs/20261020-evaluation-restoration-R32-positive-control-F50-s2026092701-r33",
+    "local_artifact_root": "local_artifacts/pamf_restoration/response_control_r33_20261020",
+    "launch_command": "python -u -m experiments.pamf_response_control_formal.runner run --parent-run ../../runs/20261020-phase1-restoration-observable-response-selfsup-s2026092701-m2-r32 --unrolled-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --reference-run ../../runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-evaluation-restoration-R32-positive-control-F50-s2026092701-r33 --expected-commit 4d8a51c522ad7c1e40bdbe109a52eba5e0972ba9",
+    "stop_rule": "Wrong parent/permissions/inputs,collision,nonfinite,illegal or failed prediction:preserve artifacts and healthy peers;no automatic retry"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "resolved_config.json",
+    "source_decision.json",
+    "complete.json",
+    "Conditional:native_map_prior/final.pt,smoke.json,worker.json,logs/target.log",
+    "Conditional:target_confirmation/native_map_prior/prediction/complete.json,summary.json,goal_assessment.json,target_complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "MacroF1",
+      "repair_damage_net",
+      "TX_RX_day",
+      "IQ_NMSE",
+      "prefix232_tail24_NMSE",
+      "FFT_logpower",
+      "paired_clean_feature_distance",
+      "other_TX_margin",
+      "prediction_cost",
+      "goal_70_and_5pp"
+    ],
+    "dimensions": [
+      "clean",
+      "three suburban separately",
+      "three urban separately",
+      "TX",
+      "RX",
+      "day",
+      "train role/state/lock"
+    ],
+    "primary": "Source-positive-only R32 pair_aug_control;formal accuracy/MacroF1 and70/5ppgoal;not newtraining ortargetdriven selection",
+    "prediction_ref": "runs/20261020-evaluation-restoration-R32-positive-control-F50-s2026092701-r33/target_confirmation/native_map_prior/prediction",
+    "scorer_ref": "experiments.pamf_response_control_formal.runner score;independent CPU after all7finite predictionsandIDs",
+    "final_user_targets": {
+      "lowurban_accuracy_min": 70.0,
+      "other_five_max_gap_vs_original_clean_pp": 5.0
+    }
+  },
+  "rows": [
+    {
+      "row_id": "pair_aug_control",
+      "method": "response_control_formal",
+      "purpose": "conditional_positive_UNet_formal",
+      "config_ref": "experiments/pamf_response_control_formal/design.py#configuration",
+      "resolved_config_ref": "runs/20261020-evaluation-restoration-R32-positive-control-F50-s2026092701-r33/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "No new training;retain originalR32 model/shuffle/R07epochs/source1901hardware1902;newpairedselector2032 inherited;formal R05 received2027 unchanged",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0new epochs/updates;inheritedR32 E20/4940 L126000/U1134000physicalvisits and3xwaveformforwards;inheritedcoarse20+action20+prior20 component60;F50E50 separate",
+      "output_root": "runs/20261020-evaluation-restoration-R32-positive-control-F50-s2026092701-r33",
+      "log_path": "runs/20261020-evaluation-restoration-R32-positive-control-F50-s2026092701-r33/logs/target.log",
+      "command": "python -u -m experiments.pamf_response_control_formal.runner run --parent-run ../../runs/20261020-phase1-restoration-observable-response-selfsup-s2026092701-m2-r32 --unrolled-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --reference-run ../../runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-evaluation-restoration-R32-positive-control-F50-s2026092701-r33 --expected-commit 4d8a51c522ad7c1e40bdbe109a52eba5e0972ba9",
+      "expected_artifacts": [
+        "launch.json",
+        "resolved_config.json",
+        "source_decision.json",
+        "complete.json",
+        "Conditional:native_map_prior/final.pt,smoke.json,worker.json,logs/target.log",
+        "Conditional:target_confirmation/native_map_prior/prediction/complete.json,summary.json,goal_assessment.json,target_complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Rule frozen beforeR32source finalprediction andanynewformal result;no sourcepositive observed orclaimed yet.",
+    "Same1800sourcepanel/F50/defaulthead;integer sixconfusion correctsum gain>0 vsR17unshared;clean dropvsraw<=.1pp;smallgainsnot significance.",
+    "ParentR32training/source/target decisionsunchanged;this separateaudit onlyafterparentrootANALYZED andallownedprocessesexit.",
+    "R32primarytargetmetrics neverread forR33selection;0newtraining/heads/targetadaptation;source-negative=0target.",
+    "27focused checks/CLIhelp/one scopedindependentP0P1 PASS;realfinalcheckpointsmoke atlaunchifsourcepositive;onepreflight/archiveSHA/compile atrelease.",
+    "Originalall7formalprediction before separateCPUtruth;reportsuburban/urban/TX/RX/day/repairdamage and70/5pp;TXdetailsstillunproven.",
+    "LOCAL_VERIFIED waiting forhealthyR32completion;noR33remoteprocess/rootcreated;noautomaticretry orpeermutation."
+  ],
+  "source_positive_policy": {
+    "metric": "Equal-weight mean accuracy of six impaired source views",
+    "minimum_gain_pp": 0.0,
+    "gain_strict": true,
+    "clean_drop_max_pp": 0.1,
+    "all_scene_gains_required": false,
+    "historical_full_qualification_unchanged": true,
+    "target_feedback": false
+  },
+  "source_positive_inputs": [
+    {
+      "row_id": "r10_native_map_prior",
+      "control": null,
+      "statistics": {
+        "mean6": 93.27777777777777,
+        "clean": 98.44444444444444,
+        "lowurban": 82.16666666666667,
+        "midurban": 89.88888888888889
+      },
+      "gain_pp": null,
+      "role": "fixed_reference"
+    },
+    {
+      "row_id": "r12_pair_control",
+      "control": "r10_native_map_prior",
+      "statistics": {
+        "mean6": 93.50925925925925,
+        "clean": 98.44444444444444,
+        "lowurban": 82.94444444444444,
+        "midurban": 90.33333333333333
+      },
+      "gain_pp": 0.23148148148148096,
+      "role": "source_positive"
+    },
+    {
+      "row_id": "r15_unet_control",
+      "control": "r10_native_map_prior",
+      "statistics": {
+        "mean6": 93.37037037037037,
+        "clean": 98.44444444444444,
+        "lowurban": 82.5,
+        "midurban": 90.16666666666666
+      },
+      "gain_pp": 0.09259259259259522,
+      "role": "source_positive"
+    },
+    {
+      "row_id": "r16_unet_control",
+      "control": "r15_unet_control",
+      "statistics": {
+        "mean6": 93.8425925925926,
+        "clean": 98.44444444444444,
+        "lowurban": 84.38888888888889,
+        "midurban": 90.72222222222223
+      },
+      "gain_pp": 0.47222222222222854,
+      "role": "source_positive"
+    },
+    {
+      "row_id": "r17_unroll_shared",
+      "control": "r16_unet_control",
+      "statistics": {
+        "mean6": 94.4074074074074,
+        "clean": 98.44444444444444,
+        "lowurban": 86.38888888888889,
+        "midurban": 91.16666666666666
+      },
+      "gain_pp": 0.5648148148148096,
+      "role": "source_positive"
+    },
+    {
+      "row_id": "r17_unroll_unshared",
+      "control": "r16_unet_control",
+      "statistics": {
+        "mean6": 94.30555555555556,
+        "clean": 98.44444444444444,
+        "lowurban": 86.83333333333333,
+        "midurban": 91.44444444444444
+      },
+      "gain_pp": 0.4629629629629619,
+      "role": "source_positive"
+    },
+    {
+      "row_id": "r18_current_anchor",
+      "control": "r17_unroll_unshared",
+      "statistics": {
+        "mean6": 94.76851851851852,
+        "clean": 98.44444444444444,
+        "lowurban": 88.05555555555556,
+        "midurban": 92.61111111111111
+      },
+      "gain_pp": 0.4629629629629619,
+      "role": "source_positive"
+    },
+    {
+      "row_id": "r18_terminal_dc",
+      "control": "r17_unroll_unshared",
+      "statistics": {
+        "mean6": 95.08333333333333,
+        "clean": 98.44444444444444,
+        "lowurban": 88.33333333333333,
+        "midurban": 92.66666666666666
+      },
+      "gain_pp": 0.7777777777777715,
+      "role": "source_positive"
+    },
+    {
+      "row_id": "r19_time_time",
+      "control": "r17_unroll_unshared",
+      "statistics": {
+        "mean6": 94.86111111111113,
+        "clean": 98.44444444444444,
+        "lowurban": 88.27777777777777,
+        "midurban": 92.55555555555556
+      },
+      "gain_pp": 0.5555555555555713,
+      "role": "source_positive"
+    },
+    {
+      "row_id": "r19_time_frequency",
+      "control": "r19_time_time",
+      "statistics": {
+        "mean6": 95.10185185185185,
+        "clean": 98.44444444444444,
+        "lowurban": 88.1111111111111,
+        "midurban": 93.0
+      },
+      "gain_pp": 0.24074074074071916,
+      "role": "source_positive"
+    },
+    {
+      "row_id": "r23_prior_only",
+      "control": "r17_unroll_unshared",
+      "statistics": {
+        "mean6": 94.3425925925926,
+        "clean": 98.44444444444444,
+        "lowurban": 86.44444444444444,
+        "midurban": 91.72222222222223
+      },
+      "gain_pp": 0.03703703703703809,
+      "role": "source_positive"
+    },
+    {
+      "row_id": "r23_joint_coarse",
+      "control": "r23_prior_only",
+      "statistics": {
+        "mean6": 94.4074074074074,
+        "clean": 98.44444444444444,
+        "lowurban": 86.72222222222223,
+        "midurban": 91.5
+      },
+      "gain_pp": 0.06481481481480955,
+      "role": "source_positive"
+    }
+  ],
+  "registered_at": "2026-10-20T05:33:55+00:00"
+}
