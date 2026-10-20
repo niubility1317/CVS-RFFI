@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "用户要求从指定350521父版继续压缩提升识别性能并与主对话不同。本轮先诊断全部三份预定冻结模型的源IQ误差，不根据目标排序；只读源训练IQ，无新训练或网络，后续每个训练版本仍完整正式七景。",
   "code": {
-    "commit": null,
+    "commit": "199f88078ee4576b705eff84b2a0e33e67492ab0",
     "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
     "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
     "cwd": "releases/pamf_r46_source_fidelity_20261021_r21"
@@ -133,7 +133,7 @@
     "remote_run_root": "runs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21",
     "remote_log_root": "logs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21",
     "local_artifact_root": "local_artifacts\\pamf_restoration\\r46_source_fidelity_20261021_r21",
-    "launch_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_source_fidelity.runner --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21 --expected-commit <actual method commit>",
+    "launch_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_source_fidelity.runner --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21 --expected-commit 199f88078ee4576b705eff84b2a0e33e67492ab0",
     "stop_rule": "Preserve technical failure; no retry, model update, fallback, or other-owner mutation",
     "local_validation": {
       "status": "PASS",
@@ -206,7 +206,7 @@
       "budget_ref": "0newupdates;3x256 source forward examples plus2Ls smoke;no F/TX/V/target",
       "output_root": "runs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21/R46_350521_graph",
       "log_path": "logs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21/runner.log",
-      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_source_fidelity.runner --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21 --expected-commit <actual method commit>",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_source_fidelity.runner --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21 --expected-commit 199f88078ee4576b705eff84b2a0e33e67492ab0",
       "expected_artifacts": [
         "smoke.json",
         "clean_metrics.json",
@@ -243,7 +243,7 @@
       "budget_ref": "0newupdates;3x256 source forward examples plus2Ls smoke;no F/TX/V/target",
       "output_root": "runs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21/R18_factor625_stage_graph",
       "log_path": "logs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21/runner.log",
-      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_source_fidelity.runner --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21 --expected-commit <actual method commit>",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_source_fidelity.runner --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21 --expected-commit 199f88078ee4576b705eff84b2a0e33e67492ab0",
       "expected_artifacts": [
         "smoke.json",
         "clean_metrics.json",
@@ -280,7 +280,7 @@
       "budget_ref": "0newupdates;3x256 source forward examples plus2Ls smoke;no F/TX/V/target",
       "output_root": "runs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21/R18_factor625_cond_graph",
       "log_path": "logs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21/runner.log",
-      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_source_fidelity.runner --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21 --expected-commit <actual method commit>",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_source_fidelity.runner --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21 --expected-commit 199f88078ee4576b705eff84b2a0e33e67492ab0",
       "expected_artifacts": [
         "smoke.json",
         "clean_metrics.json",
