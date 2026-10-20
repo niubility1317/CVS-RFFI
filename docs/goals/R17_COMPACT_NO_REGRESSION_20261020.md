@@ -227,3 +227,8 @@ R13 六行完整完成 E10/2470、source1800×7 与 target168000×7、逐行独�
 
 
 R14 三行完整完成 E10/2470、source1800×7 与 target168000×7、逐行独立 truth-last，实际所属进程均退出，三份模型取回并严格加载。通过原 R17 与用户 R38 双参考逐场景 1pp 的行：prior_keep。进一步缩小且通过的 F-free 行：无；全部三行为F-free，coarse/action累计40，prior累计50。原宽度 prior_keep 的 low urban 为 68.117857%，参数仍为 794529；压缩保持与长期 70%/5pp/TX 真实性目标分别判断。全部负结果、逐 TX/RX/day、完整 10 轮曲线、全链参数/MAC/存储/实测延迟/显存和独立模型入口见 [R14 完整报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r38-prior-compact-s2026092701-m3-r14/report.md)。本轮未追加目标反馈训练或选择性重跑。
+
+
+## R15：保持通道/GN的低秩先验
+
+R14 source完整30轮表明context冻结后裁剪几乎消失，但窄prior末轮teacher-stage NMSE仍为同宽约17/29倍。新两行仅prior内部SVD，保留全部通道/GN/skip/输出尺寸，固定rank fraction .75/.625，仅节省参数卷积才替换，left/right均跨stage共享、bias独立；完整779745/750035参数，原548795context冻结。只原R38 source E20/4940独立父权重，E10/2470，0TX/F/V/target训练；context累计40/prior50，每版全七场景正式测试。同预算control复用R14 prior_keep既有结果，不重训/重测；结构参数依据source拟合与结构事实，0target反馈搜索。14项检查与唯一P0/P1审查PASS。
