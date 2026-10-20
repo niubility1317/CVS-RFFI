@@ -1,0 +1,45 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261020-phase1-FcrossRX-decoupledContrast-e50-clean-local-m2-r01",
+  "source_code_commit": "8da6a824434d239f30e3d3796c345b4b31d3ef7a",
+  "source_only": true,
+  "method": "Complete native ordered step record prefix1..7548/row. Original33L+17U; epoch34 has222 actual batches=221x256+124. Sum perbatch counts; do not multiply cumulative epoch fields bysteps.",
+  "rows": [
+    {
+      "row": "Q_DCL-s2026092701",
+      "parsed_prefix": 7548,
+      "epoch": 34,
+      "steps": 222,
+      "U_seen": 56700,
+      "U_selected": 878,
+      "U_truth_available": 0,
+      "temporal_pass_count": 923,
+      "strong_pass_count": 56151,
+      "satellite_active_steps": 0,
+      "skipped_nonfinite_updates": 0,
+      "last_step": 7548,
+      "U_acceptance": 0.015485008818342152
+    },
+    {
+      "row": "DCL-s2026092701",
+      "parsed_prefix": 7548,
+      "epoch": 34,
+      "steps": 222,
+      "U_seen": 56700,
+      "U_selected": 873,
+      "U_truth_available": 0,
+      "temporal_pass_count": 921,
+      "strong_pass_count": 56122,
+      "satellite_active_steps": 0,
+      "skipped_nonfinite_updates": 0,
+      "last_step": 7548,
+      "U_acceptance": 0.015396825396825397
+    }
+  ],
+  "target_reads": 0,
+  "head_fit_updates": 0,
+  "new_model_forwards": 0,
+  "new_training_updates": 0,
+  "current_training_preserved": true,
+  "limitation": "Acceptance is not pseudo-label precision or target performance; native logs contain no pertrueTX U exposure/correctness. No source expansion, seed, recipe or checkpoint selection changed."
+}
