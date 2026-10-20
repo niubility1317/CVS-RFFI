@@ -217,7 +217,8 @@
         "prior750_cond"
       ],
       "target_scores_read": 0
-    }
+    },
+    "postlaunch_state": "VERIFIED_ALL_OWNED_HANDLES_EXITED"
   },
   "expected_artifacts": [
     "launch.json",
@@ -398,5 +399,15 @@
     "2026-10-21 VERIFIED/BOTH_GPU_RUNNING：R18两个owned GPU句柄均退出后逐卡交接；R19两条实际worker的PID/CWD/argv/commit/GPU匹配且日志增长，GPU2完成12轮、GPU3完成6轮。此为当时训练快照，无正式成绩。",
     "2026-10-21：两版完整40条源训练记录、source7及同卡配对G/G+F实测成本核对完成；正式七景仍进行中，无目标成绩或目标反馈。"
   ],
-  "registered_at": "2026-10-20T15:30:30+00:00"
+  "registered_at": "2026-10-20T15:30:30+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "accepted_compact_rows": [
+      "prior750_cond"
+    ],
+    "every_version_full7formal": true,
+    "models_strict_loaded": true,
+    "target_feedback": false,
+    "long_term_goal_complete": false
+  }
 }
