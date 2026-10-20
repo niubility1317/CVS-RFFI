@@ -173,7 +173,7 @@
       "reviewer_reads_real_data_or_remote": false,
       "reviewer_edits": false
     },
-    "postlaunch_status": "VERIFIED_GPU2_FIRST_SOURCE_EPOCH_GPU3_QUEUED",
+    "postlaunch_status": "VERIFIED_BOTH_GPU_TRAINING",
     "postlaunch_evidence": "Actual controller PID/CWD/fullargv/commit matched;realparent+F50+2Ls smokePASS;log growth;bothrowswait actualR23GPU2/3;0newGPUworkers",
     "completion_tools": {
       "focused_tests": 18,
@@ -184,10 +184,22 @@
       "remote_training_mutations": 0
     },
     "source_progress": {
-      "pair_aug_control_complete_epochs": 1,
-      "odd_response": "QUEUED_AFTER_ACTUAL_R23_GPU3",
-      "no_formal_scores": true,
-      "all_available_source_records_audited": true
+      "pair_aug_control": {
+        "epochs": 6,
+        "updates": 5910,
+        "L_exposures": 37800,
+        "U_exposures": 340200,
+        "all_available_records_audited": true,
+        "formal_results": false
+      },
+      "odd_response": {
+        "epochs": 3,
+        "updates": 2955,
+        "L_exposures": 18900,
+        "U_exposures": 170100,
+        "all_available_records_audited": true,
+        "formal_results": false
+      }
     }
   },
   "expected_artifacts": [
