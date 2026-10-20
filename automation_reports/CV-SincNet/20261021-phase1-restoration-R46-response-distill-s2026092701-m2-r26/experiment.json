@@ -1,0 +1,338 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261021-phase1-restoration-R46-response-distill-s2026092701-m2-r26",
+  "group_id": "R46-source-response-distillation",
+  "display_name": "27.82万恢复器等前向成本扰动输出与响应蒸馏对照",
+  "description": "两版从原350521 source-final独立SVD625初始化，全部coarse/action/prior联合训练；相同额外正负扰动教师/学生前向，仅改变输出与odd响应损失；逐版完整正式七景。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "F_free",
+    "TX_unlabeled",
+    "R46_350521_parent",
+    "SVD625",
+    "finite_response_distillation",
+    "matched_extra_forward",
+    "all7formal"
+  ],
+  "comparison_group_id": "R26_pair_aug_vs_odd_response",
+  "parent_run_ids": [
+    "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求配合主对话，从指定35.05万参数版继续压缩提升性能且路线不同。R25合法源IQ诊断支持检验输出与响应保留的差异；两版矩阵在新目标访问前固定，健康任务保持。",
+  "code": {
+    "commit": null,
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
+    "cwd": "releases/pamf_r46_response_distill_20261021_r26"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "Original63000sourceL6300/U56700/R07 cachedreceived1..20;1800sourceV7views;fixedR05formal168000x7",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train6300L+56700U originalIDs;R07validation1800V;conditional R05 original168000IDs",
+    "label_map_ref": "0新TX/V/target训练标签；原F50源监督知识冻结；各row全7预测后独立truth-last评分",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json: READY/EXACT_MATCH; reuse existing cache without new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "Unchanged code/leo_practical/channel.py;reuse R07 epoch01..20 and original sourceV;conditional original formal received bytes",
+    "restoration_train_counts": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "epochs_per_row": 20,
+      "updates_per_row": 19700,
+      "L_exposures_per_row": 126000,
+      "U_exposures_per_row": 1134000,
+      "source_IQ_examples": 1260000,
+      "teacher_IQ_examples": 1890400,
+      "student_context_inputs": 1260000,
+      "extra_clean_student_inputs": 1260000,
+      "selected_probe_examples": 315200,
+      "extra_probe_teacher_inputs": 630400,
+      "extra_probe_student_inputs": 630400,
+      "student_total_IQ_inputs": 3150400,
+      "probe_count_per_update": 16,
+      "probe_cell_updates": 4925,
+      "probe_cell_examples": 78800,
+      "probe_seed": 2026102126,
+      "TX_labels": 0,
+      "F_weight_loads": 0,
+      "F_output_reads": 0,
+      "V_training": 0,
+      "target_training": 0,
+      "inherited_component_epochs": 80,
+      "new_component_epochs": 20,
+      "cumulative_component_epoch_sum": 300,
+      "cumulative_serial_training_passes": 140,
+      "cumulative_coarse_epochs": 100,
+      "cumulative_action_epochs": 100,
+      "cumulative_prior_epochs": 100,
+      "global_batch": 64,
+      "microbatch": 64
+    },
+    "source_validation_panel": 1800,
+    "target_panel": "Each fixedE20/19700 gets168000x7 irrespective of sourcegain;independenttruthlast after all7",
+    "actual_training_labels": "Original L_s/U_s IQ and paired simulation clean;source-legal original350521 IQteacher;no TX truth/F/V/target",
+    "augmentation": "OriginalR07 .15clean/.85residual cachedreceived,no newaugmentation or cleanconcatenation",
+    "runtime_inputs": "Same complete native G(IQ2x256);no teacher,F,clean,probe or loss branch at deployment;3stage/6CG",
+    "compressed_context_parameters": {
+      "factor625_stage": 186703,
+      "factor625_cond": 186703
+    },
+    "context_training": "Allcoarse/action/prior trainable;preserve full channels/GN4/skip;278180params"
+  },
+  "permissions": {
+    "regime": "TX-unlabeled simulated-paired source self-supervision;F-free waveform teacher",
+    "query_use": "Full7 predictions fixed before independenttruthlast;no target optimization/selection;human parent choice after historical exposure disclosed",
+    "external_method_exception": null,
+    "claim_scope": "TX-unlabeled simulated-paired source self-supervision;noF/TX in restorationtraining;notcleanfree blind learning or per-detailTX proof"
+  },
+  "checkpoint": {
+    "initialization": "Original human-designated R46 350521 E20/4940 only;independent data-free all-core SVD625 per arm;no R18/R22/R23 student weights",
+    "sources": [
+      {
+        "run_id": "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46",
+        "commit": "bbb8daf817de050b958d217b70d4c33f4aefe341",
+        "row": "prune_refine",
+        "epoch": 20,
+        "updates": 4940,
+        "parameters": 350521,
+        "role": "Only direct initialization/frozenIQteacher",
+        "path": "runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46/prune_refine/native_map_prior/final.pt"
+      }
+    ],
+    "contract_check_ref": "PinnedR46launch/plan/source-trainingcomplete/checkpointmetadata;reusevalidatedsourceREADY/EXACT_MATCH;no data revalidation",
+    "provenance_verdict": "R46source-fixedfinal20/4940 original7/63/30physicalsource ancestry;0TX/F/V/targettraining;human selected after formal exposure,engineering comparison only",
+    "selection_rule": "FixedfinalE20/19700 perarm;all7formal without source gate;all predictions before independenttruthlast",
+    "evaluation_readers": [
+      "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701 original defaulthead"
+    ],
+    "parent_run_ids": [
+      "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46",
+      "20261020-phase1-restoration-R38-compression-methods-s2026092701-m2-r44",
+      "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+      "20261019-phase1-restoration-learned-action-source-s2026092701-r07"
+    ]
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/R46-response-distill",
+    "environment": "ExistingCVS-RFFI Python3.10/Torch2.1;FP32/TF32off;CPU2;directfloat32buffer",
+    "gpu_policy": "GPU2pair_aug_control/GPU3odd_response;max2own/1percard;wait actualR23 samecardownedhandleexit;sharedlock/free18GB/allowner<2;preserveotherowners",
+    "remote_run_root": "runs/20261021-phase1-restoration-R46-response-distill-s2026092701-m2-r26",
+    "remote_log_root": "logs/20261021-phase1-restoration-R46-response-distill-s2026092701-m2-r26",
+    "local_artifact_root": "local_artifacts\\pamf_restoration\\r46_response_distill_20261021_r26",
+    "launch_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_response_distill.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261021-phase1-restoration-R46-response-distill-s2026092701-m2-r26 --expected-commit <actual method commit>",
+    "stop_rule": "Preserve affected technicalfailure;healthy peer untouched;no automaticretry/hotedit/other-owner stop",
+    "local_validation": {
+      "status": "PASS",
+      "focused_tests": 37,
+      "independent_P0P1_review_count": 1,
+      "reviewer": "/root/review_r14_prior_compact",
+      "independent_tests": 37,
+      "P0P1_issues": [],
+      "reviewer_reads_real_data_or_remote": false,
+      "reviewer_edits": false
+    }
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "comparison_plan.json",
+    "smoke.json",
+    "workers.json",
+    "stages.json",
+    "<row>/training_complete.json",
+    "<row>/native_map_prior/final.pt",
+    "<row>/target_confirmation/native_map_prior/summary.json",
+    "<row>/matched_inference_profile.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "primary": "All7accuracy/MacroF1,TX/RX/day,repair/damage,cleanpreservation,parent0.8pp tolerance;matchednewrows and historicalR22identity separately",
+    "source_rule": "FixedfinalE20/19700 perarm;all7formal without source gate;all predictions before independenttruthlast",
+    "target_acceptance_allowance_pp": 0.8,
+    "target_acceptance_unit": "percentage_points",
+    "metric_names": [
+      "sevenaccuracy/MacroF1/TX/RX/day",
+      "exactcorrectcount/0.8pp",
+      "repair/damage/net",
+      "full256/prefix232/tail24NMSE/FFT",
+      "fullparams/bytes/MAC",
+      "G_and_GplusF/B1_latency/B32_throughput/memory"
+    ],
+    "dimensions": [
+      "same_SVD_structure",
+      "conditionalprior_loss_ablation",
+      "sevenviews",
+      "TX",
+      "RX",
+      "day",
+      "20epochs"
+    ],
+    "prediction_ref": "runs/20261021-phase1-restoration-R46-response-distill-s2026092701-m2-r26/<arm>/native_map_prior and target_confirmation/native_map_prior/prediction",
+    "scorer_ref": "pamf_r46_response_distill.runner score_source/score_target;CPU2/R06scorelock;all7fixedbeforetruth",
+    "final_user_targets": {
+      "lowurban_accuracy_min": 70.0,
+      "other_five_goal": "距rawclean84.6761904762不超过5pp；当前压缩0.8pp容差分别报告"
+    },
+    "cost": "Samecard G and G+F B1/B32 3 alternating rounds;64sourceV only;median/p90/p95/throughput/resident/peak;ConvLinearMAC excludes FFT/CG/norm",
+    "secondary": [
+      "paired_waveform_NMSE/FFT_error",
+      "repair_damage/clean_damage",
+      "B1_median_p90_p95/G_and_GplusF",
+      "B32_throughput",
+      "peak_incremental_shared_resident_memory",
+      "full_parameters/serialized_size/ConvLinearMAC"
+    ],
+    "training_cost": "Extra probe L_s/U_s actual counts,cell counts,teacher/student inputs,all20loss curves and actualseconds;no equal-wallclock claim"
+  },
+  "rows": [
+    {
+      "row_id": "pair_aug_control",
+      "method": "R46ResponseDistill/pair_aug_control",
+      "purpose": "Matched extra fullG calls with distinct source output/odd-response objective",
+      "config_ref": "experiments/pamf_r46_response_distill/design.py#configuration",
+      "resolved_config_ref": "runs/20261021-phase1-restoration-R46-response-distill-s2026092701-m2-r26/pair_aug_control/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original inherited model/split/data/cacheaugmentation/evaluation seeds retained;support N/A;extra local CPU probe generator seed2026102126+update separately fixed,not F/TX driven.",
+      "k": null,
+      "scenario": "clean+six practical",
+      "optimizer": "ResetAdamW",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "E20/19700;L126000/U1134000;extra perarm teacher630400/student630400 probe IQ inputs plus1260000cleanstudent",
+      "output_root": "runs/20261021-phase1-restoration-R46-response-distill-s2026092701-m2-r26/pair_aug_control",
+      "log_path": "runs/20261021-phase1-restoration-R46-response-distill-s2026092701-m2-r26/logs/worker-pair_aug_control.log",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_response_distill.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261021-phase1-restoration-R46-response-distill-s2026092701-m2-r26 --expected-commit <actual method commit>",
+      "expected_artifacts": [
+        "training.jsonl",
+        "training_complete.json",
+        "native_map_prior/final.pt",
+        "source_complete.json",
+        "matched_inference_profile.json",
+        "target_confirmation/native_map_prior/summary.json",
+        "assessment.json",
+        "complete.json"
+      ],
+      "GPU": 2,
+      "parameters": 278180,
+      "trainable_parameters": 278180,
+      "context_parameters": 186703,
+      "balanced_complex_weight": 0.02,
+      "clean_identity_weight": 0.25,
+      "probe_weight": 0.01,
+      "probe_seed": 2026102126,
+      "selected_probe_examples": 315200,
+      "extra_probe_teacher_inputs": 630400,
+      "extra_probe_student_inputs": 630400
+    },
+    {
+      "row_id": "odd_response",
+      "method": "R46ResponseDistill/odd_response",
+      "purpose": "Matched extra fullG calls with distinct source output/odd-response objective",
+      "config_ref": "experiments/pamf_r46_response_distill/design.py#configuration",
+      "resolved_config_ref": "runs/20261021-phase1-restoration-R46-response-distill-s2026092701-m2-r26/odd_response/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original inherited model/split/data/cacheaugmentation/evaluation seeds retained;support N/A;extra local CPU probe generator seed2026102126+update separately fixed,not F/TX driven.",
+      "k": null,
+      "scenario": "clean+six practical",
+      "optimizer": "ResetAdamW",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "E20/19700;L126000/U1134000;extra perarm teacher630400/student630400 probe IQ inputs plus1260000cleanstudent",
+      "output_root": "runs/20261021-phase1-restoration-R46-response-distill-s2026092701-m2-r26/odd_response",
+      "log_path": "runs/20261021-phase1-restoration-R46-response-distill-s2026092701-m2-r26/logs/worker-odd_response.log",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_response_distill.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261021-phase1-restoration-R46-response-distill-s2026092701-m2-r26 --expected-commit <actual method commit>",
+      "expected_artifacts": [
+        "training.jsonl",
+        "training_complete.json",
+        "native_map_prior/final.pt",
+        "source_complete.json",
+        "matched_inference_profile.json",
+        "target_confirmation/native_map_prior/summary.json",
+        "assessment.json",
+        "complete.json"
+      ],
+      "GPU": 3,
+      "parameters": 278180,
+      "trainable_parameters": 278180,
+      "context_parameters": 186703,
+      "balanced_complex_weight": 0.02,
+      "clean_identity_weight": 0.25,
+      "probe_weight": 0.01,
+      "probe_seed": 2026102126,
+      "selected_probe_examples": 315200,
+      "extra_probe_teacher_inputs": 630400,
+      "extra_probe_student_inputs": 630400
+    }
+  ],
+  "notes": [
+    "R25 source finite-response diagnostic completed;it does not uniquely explain TX1 failure and is not a recognition surrogate.",
+    "Original350521 only initialization/IQteacher;R18/R22/R23 student weights never used. Bothnewrows identical initialstate and all channels/GN retained.",
+    "Bothnewrows fullG base received+cleanidentity plus2teacher/2student perturbationcalls on samefirst16 permutedsource examples perupdate.",
+    "Cycle random.005/phase.005/random.010/phase.010 repeated;19700updates gives4925cells each;positive/negativepaired;allrawextraIQcounts disclosed.",
+    "Paircontrol mean normalized error to each parent perturbed output;oddresponse error of half differences normalized max(parentoddpower,.01deltapower,1e-8). Allteacher references detached.",
+    "No exactJacobian or guaranteedTXpreservation claim;one .01 coefficient fixed source-only before any new target access;no grid or target feedback.",
+    "Everynewversion source7/profile/formal7/independenttruthlast despite source-negative;keep originalF50/defaulthead,no newhead.",
+    "37focusedtests and uniqueindependentP0/P1review PASS;realparent/F50/2Ls smoke is launcherfirststep and continues onPASS.",
+    "REJECTED_EXTRA_GATE:separate generic design/spec approvals and blanket wholeproject tests are NONBLOCKING under ExclusiveMinimalWorkflow;existing relevant checks suffice."
+  ],
+  "registered_at": "2026-10-20T21:07:57+00:00"
+}
