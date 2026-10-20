@@ -1,0 +1,30 @@
+{
+  "status": "VERIFIED",
+  "source_run": "20261021-phase1-restoration-R46-source-prune-s2026092701-m2-r54",
+  "method_commit": "554c52baf75ab8da2618a5480851b74271018103",
+  "models": {
+    "activation_energy": {
+      "path": "local_artifacts/pamf_restoration/r46_source_prune_r54_20261021/models/activation_energy/final.pt",
+      "bytes": 1388124,
+      "parameters": 273765,
+      "components": {
+        "coarse": 106138,
+        "action": 79477,
+        "prior": 88150
+      },
+      "FP32_parameter_bytes": 1095060,
+      "conv_linear_MACs_per_IQ": 30761512,
+      "strict_load": true,
+      "synthetic_zero_IQ_output_finite": true,
+      "actual_IQ_reads": 0,
+      "optimizer_included": false,
+      "training_F_access": false,
+      "training_TX_labels_read": 0,
+      "shared_calibration_IQ_inputs": 256,
+      "parent_R46_run": "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46"
+    }
+  },
+  "all_retrieved_rows_full7_scored": true,
+  "MAC_scope": "Conv1d and Linear only;excludes FFT/complexCG/norm/activation/memory/F",
+  "goal_complete": false
+}
