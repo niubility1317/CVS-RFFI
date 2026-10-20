@@ -353,7 +353,25 @@
     "与R09同结构clean arm相比删除10倍三阶段R17波形项，其余最终sourceclean IQ/F任务系数、训练数据/顺序/seed/优化器/预算相同；同时删除无用R17训练前向并单列计算差，不称相同训练算量。",
     "Fclean教师/学生各1260000，R17原权重只CPU初始化；训练teacher/context forward0，teacher_IQ_examples=0，source_IQ_examples=1260000；smoke/profile开销独立。",
     "普通N607预检VERIFIED，旧R08实际GPU句柄仍2条，新remote run/release均不存在；source/R17/F50/cache/formal handles复用，无额外数据重验。只发布CPU noquery smoke和等待，R08实际退出后接续4/5，R09健康四卡继续。",
-    "Metadata correction: inherited teacher_IQ_examples_train is 0, matching actual R10 training logs/implementation; R17 is CPU initialization only and compact coarse/action are jointly trained. No change to live code, loss, budget, checkpoints or predictions."
+    "Metadata correction: inherited teacher_IQ_examples_train is 0, matching actual R10 training logs/implementation; R17 is CPU initialization only and compact coarse/action are jointly trained. No change to live code, loss, budget, checkpoints or predictions.",
+    "用户要求压缩同时优化；本轮两种压缩结构的直接clean纠正固定两行全部完成，健康旧行保持。已验收3118001参数版本保留，并在结果中补充相对该版本差值。"
   ],
-  "registered_at": "2026-10-20T08:13:28+00:00"
+  "registered_at": "2026-10-20T08:13:28+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "source_rows": [
+      "clean_only_quarter",
+      "clean_only_eighth_pointwise"
+    ],
+    "target_rows": [
+      "clean_only_quarter",
+      "clean_only_eighth_pointwise"
+    ],
+    "accepted_rows": [
+      "clean_only_eighth_pointwise"
+    ],
+    "target_acceptance_allowance_pp": 1.0,
+    "all_negative_results_preserved": true,
+    "goal_complete": false
+  }
 }
