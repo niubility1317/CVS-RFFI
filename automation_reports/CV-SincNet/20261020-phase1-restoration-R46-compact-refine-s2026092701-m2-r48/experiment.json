@@ -172,7 +172,7 @@
       "group_pruned",
       "low_rank"
     ],
-    "postlaunch_state": "VERIFIED_BOTH_GPU_RUNNING"
+    "postlaunch_state": "VERIFIED_ALL_PROCESSES_EXITED"
   },
   "expected_artifacts": [
     "launch.json",
@@ -346,7 +346,21 @@
     "R46fixedmatrixcomplete,outputsandoldweights preserved;R47CPUdiagnostic independent,never gates thisrun;healthyotherownerunchanged.",
     "Allfixedrows getformal tests;no sourcegate/earlystop/targetfeedback/selectivereruns;relativeR44 descriptiveonly;allnegativeresultsreported.",
     "Matched same-card source-only G and G+F;B1 warm16/64samples x3 alternating rounds;B32 warm4/16iterations x3;median,p90,p95,throughput,peak/resident memory;ConvLinearMAC excludes FFT/CG/norm",
-    "VERIFIED/RUNNING：实际350521父/F50/两Ls配对IQ noquery smoke PASS，两行全部组件有限非零梯度、teacher/F不更新、checkpoint严格重载一致。归档单SHA/compile及controller/两worker实际PID/CWD/argv/空controllerCUDA/各物理GPU0或1和GPU-PID匹配、首轮曝光及日志增长已核实。无本轮正式性能结果；每行E20后自动七正式测试和独立truth-last。"
+    "VERIFIED/RUNNING：实际350521父/F50/两Ls配对IQ noquery smoke PASS，两行全部组件有限非零梯度、teacher/F不更新、checkpoint严格重载一致。归档单SHA/compile及controller/两worker实际PID/CWD/argv/空controllerCUDA/各物理GPU0或1和GPU-PID匹配、首轮曝光及日志增长已核实。无本轮正式性能结果；每行E20后自动七正式测试和独立truth-last。",
+    "VERIFIED/ANALYZED：两行E20/4940、源1800×7、正式168000×7全部预测固定后独立truth-last、所属控制器和GPU进程自然退出、完整权重取回与CPU严格加载均核实。retain_refine350521参数，lowurban66.852976%（较350521父-0.657143pp），原R17逐景1pp=True，父逐景1pp=True，70%=False，其他五景gap5pp=False；G_only_B1父/本版median 44.5498/44.5913ms，本版P95 45.8523ms，G_plus_F_B1父/本版median 55.1817/55.6139ms，本版P95 57.8439ms，G_only_B32父/本版吞吐551.4749/549.9111sample/s，G_plus_F_B32父/本版吞吐466.5235/468.6024sample/s；prune_refine273765参数，lowurban68.257738%（较350521父+0.747619pp），原R17逐景1pp=True，父逐景1pp=True，70%=False，其他五景gap5pp=False；G_only_B1父/本版median 41.4050/40.9928ms，本版P95 42.5749ms，G_plus_F_B1父/本版median 52.2722/51.4586ms，本版P95 53.1965ms，G_only_B32父/本版吞吐561.7997/619.6688sample/s，G_plus_F_B32父/本版吞吐485.1169/530.7903sample/s。同卡预加载IQ计时，不含传输/预处理/loader；显存为三G一F共享suite及当前前向增量。参数、时延、吞吐和性能分别报告，全部负结果保留，不回流调参或选择性重跑。原完整目标继续ACTIVE，识别率/损失/关联均不单独证明逐细节TX真实性。"
   ],
-  "registered_at": "2026-10-20T14:25:57+00:00"
+  "registered_at": "2026-10-20T14:25:56+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "all_fixed_rows_scored": true,
+    "accepted_R17": [
+      "retain_refine",
+      "prune_refine"
+    ],
+    "accepted_R46": [
+      "retain_refine",
+      "prune_refine"
+    ],
+    "goal_complete": false
+  }
 }
