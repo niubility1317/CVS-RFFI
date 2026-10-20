@@ -419,3 +419,5 @@
 本轮记录：[有界源频谱精度加权的复数恢复误差](by_method/spectral_precision.md)。
 
 本轮记录：[冻结原F的源域恢复误差位置归因](by_method/oracle_attribution.md)。
+
+本轮记录：[R17 原性能保持约束下的共享与低秩精简](by_method/r17_compact.md)。

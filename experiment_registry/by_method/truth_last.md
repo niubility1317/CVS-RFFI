@@ -57,3 +57,4 @@
 |从零学习恢复映射时加入冻结原 F 指导|managed_run|[打开](../../automation_reports/CV-SincNet/20261020-phase1-restoration-scratch-guidance-source-s2026092701-m2-r01/report.md)|
 |有界源频谱精度加权的复数恢复误差|managed_run|[打开](../../automation_reports/CV-SincNet/20261020-phase1-restoration-spectral-precision-source-s2026092701-m2-r01/report.md)|
 |原 R03 恢复误差的源域位置归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261020-diagnostic-restoration-oracle-attribution-source-F50-m8-r01/report.md)|
+|R17 先验共享与低秩蒸馏精简|managed_run|[打开](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-compact-distill-source-s2026092701-m2-r01/report.md)|
