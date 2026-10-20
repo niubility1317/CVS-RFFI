@@ -174,7 +174,8 @@
     "actual_training_rows_verified": [
       "group_pruned",
       "low_rank"
-    ]
+    ],
+    "postlaunch_state": "VERIFIED_CPU_WAITING_R58_ACTUAL_EXIT"
   },
   "expected_artifacts": [
     "launch.json",
@@ -407,7 +408,8 @@
     "Onlydirecthuman350521weights;R53prune_decay fixedmatchedcontrol reused,no trainedstudentinheritance;all0TX/F/V/targetoptimization;sourcecleanpairsused.",
     "Coreprototype0549b81fixedbeforeR58source/formal scores;no targetfeedback parent,width,loss,hyperparamchoice or selective rerun.",
     "GPU3/2wait actualR58samecardexit;oneown/card/max2acrossruns;healthyothersunchanged;allnewrowsfull7formalregardlesssource.",
-    "Original parameters inherited80+new20=100each/component sum300/serial140pass;perrowL126000U1134000/teacherstudent1260000each;no new parameters/calibration/Gforwards;84context and optional84prior perIQfeature reductions add measured training time/memory;G/GplusF paired samecardB1/B32three rounds"
+    "Original parameters inherited80+new20=100each/component sum300/serial140pass;perrowL126000U1134000/teacherstudent1260000each;no new parameters/calibration/Gforwards;84context and optional84prior perIQfeature reductions add measured training time/memory;G/GplusF paired samecardB1/B32three rounds",
+    "VERIFIED/WAITING_R58_ACTUAL_EXIT：归档单SHA/远端compile、真实350521父/F50/2Ls noquerysmoke通过，两scope全组件有限非零梯度、父及F不更新、训练hooks移除后独立权重严格重载一致。controller与两条CPU等待worker的实际PID/CWD/argv/CPU2/日志增长核实；均未建立GPU context、0epoch，等待R58同卡row完成并实际PID退出后才分配GPU3/2，跨run最多两条GPU worker。保持273765普通GN图和指定350521直接父，0新增推理参数/校准IQ/额外G前向，训练期开销待实测；尚无正式性能结论。每行固定E20/4940后自动source七景/成本/正式168000×7/独立truth-last，全部正负结果保留，原完整目标ACTIVE。"
   ],
   "reused_controls": [
     {
