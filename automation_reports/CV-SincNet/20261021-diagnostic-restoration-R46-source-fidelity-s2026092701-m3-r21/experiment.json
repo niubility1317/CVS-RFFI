@@ -1,0 +1,304 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21",
+  "group_id": "R46-source-IQ-fidelity",
+  "display_name": "原35.05万与两版27.82万恢复器的源IQ保真诊断",
+  "description": "仅128Ls+128Us均匀位置、原clean/received01/20；三份冻结恢复器，无F/TX标签/V/target，CPU2，无新网络或训练。",
+  "kind": "cvs",
+  "stage": "Phase1-source-only-diagnostic",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "F_free",
+    "TX_unlabeled",
+    "source_training_IQ_only",
+    "analytic_fidelity",
+    "zero_new_training"
+  ],
+  "comparison_group_id": "R21_fixed_sourceIQ_fidelity",
+  "parent_run_ids": [
+    "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46",
+    "20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求从指定350521父版继续压缩提升识别性能并与主对话不同。本轮先诊断全部三份预定冻结模型的源IQ误差，不根据目标排序；只读源训练IQ，无新训练或网络，后续每个训练版本仍完整正式七景。",
+  "code": {
+    "commit": null,
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
+    "cwd": "releases/pamf_r46_source_fidelity_20261021_r21"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original validated physical7/63/30;no resplit",
+    "representation": "Native float32 IQ2x256;128 original L_s plus128 U_s;clean and cached source received epochs01/20 only",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source_cache/manifest.json:READY/EXACT_MATCH",
+    "physical_ids_ref": "OriginalR07 source-training cache role positions;evenly spaced within roles",
+    "label_map_ref": "No TX labels/F/V/target inputs;source role names only",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original source known TX mixture;labels neither loaded nor used",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing READY/EXACT_MATCH reused;no new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "Unchanged R07 cached source training epochs01/20;no new simulation",
+    "new_training_counts": {
+      "updates": 0,
+      "IQ_examples": 0,
+      "TX_labels": 0,
+      "F_reads": 0,
+      "V_reads": 0,
+      "target_reads": 0
+    },
+    "diagnostic_counts": {
+      "L_s": 128,
+      "U_s": 128,
+      "views": 3,
+      "models": 3,
+      "physical_source_positions": 256
+    }
+  },
+  "permissions": {
+    "regime": "Read-only source-training IQ diagnostic;frozen source-legal restorers",
+    "query_use": "No query/target/V/labels/F weights or outputs;no scoring against TX truth",
+    "external_method_exception": null,
+    "claim_scope": "Analytic source IQ fidelity only;not TX identity proof,formal recognition improvement,or new blind validation"
+  },
+  "checkpoint": {
+    "initialization": "No new model initialization/training;load exact original R46 and BOTH R18 fixedsource final checkpoints",
+    "sources": [
+      {
+        "run_id": "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46",
+        "commit": "bbb8daf817de050b958d217b70d4c33f4aefe341",
+        "row": "prune_refine",
+        "epoch": 20,
+        "updates": 4940,
+        "parameters": 350521,
+        "role": "Frozen CPU source-IQ diagnostic only"
+      },
+      {
+        "run_id": "20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18",
+        "commit": "aca99499d3f0170df71380f6429ac9a01ef412f8",
+        "row": "factor625_stage",
+        "epoch": 20,
+        "updates": 19700,
+        "parameters": 278180,
+        "role": "Frozen CPU source-IQ diagnostic only"
+      },
+      {
+        "run_id": "20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18",
+        "commit": "aca99499d3f0170df71380f6429ac9a01ef412f8",
+        "row": "factor625_cond",
+        "epoch": 20,
+        "updates": 19700,
+        "parameters": 278180,
+        "role": "Frozen CPU source-IQ diagnostic only"
+      }
+    ],
+    "contract_check_ref": "PinnedR46launch/plan/source-trainingcomplete/checkpointmetadata;reusevalidatedsourceREADY/EXACT_MATCH;no data revalidation",
+    "provenance_verdict": "Runtime strictly checks R46/R18 source contracts and original ancestry;0restorer trainingTX/F/V/target reads;exposed engineering benchmark,not fresh blind test",
+    "selection_rule": "All originalR46 and BOTH fixedR18 source-final checkpoints;no model/rank/teacher selection",
+    "evaluation_readers": [],
+    "parent_run_ids": [
+      "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46",
+      "20261020-phase1-restoration-R38-compression-methods-s2026092701-m2-r44",
+      "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+      "20261019-phase1-restoration-learned-action-source-s2026092701-r07"
+    ]
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/R46-source-fidelity",
+    "environment": "Existing CVS-RFFI Python/torch2.1;CPU2;GPUhidden;directfloat32buffer",
+    "gpu_policy": "CPU-only,zero GPUworkers;one diagnostic process with2threads;healthy other-owner jobs untouched",
+    "remote_run_root": "runs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21",
+    "remote_log_root": "logs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21",
+    "local_artifact_root": "local_artifacts\\pamf_restoration\\r46_source_fidelity_20261021_r21",
+    "launch_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_source_fidelity.runner --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21 --expected-commit <actual method commit>",
+    "stop_rule": "Preserve technical failure; no retry, model update, fallback, or other-owner mutation",
+    "local_validation": {
+      "status": "PASS",
+      "independent_review_count": 1,
+      "initial_independent_tests": 23,
+      "focused_tests": 25,
+      "P1": "Failure recording must only write this invocation newly created output",
+      "P1_closed": true,
+      "targeted_review_count": 1,
+      "targeted_tests": 2,
+      "reviewer_reads_real_IQ_F_remote": false,
+      "reviewer_edits": false
+    }
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "comparison_plan.json",
+    "panel.json",
+    "raw_source_metrics.json",
+    "results.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "primary": "Relative paired IQ/prefix232/tail24; complex FFT power quartiles; normalized lag correlation; amplitude-conditioned residual",
+    "source_rule": "All originalR46 and BOTH fixedR18 source-final checkpoints;no model/rank/teacher selection",
+    "dimensions": [
+      "model",
+      "source_train_view",
+      "L_s/U_s/all",
+      "coarse/stage1/2/3",
+      "FFTpowerquartile",
+      "amplitudequartile",
+      "lag1/2/4/8/16"
+    ],
+    "metric_names": [
+      "IQrelativeNMSE",
+      "prefix232/tail24NMSE",
+      "complexFFTquartileNMSE",
+      "lagcorrelationerror",
+      "amplitudeconditionalcomplexgainerror"
+    ],
+    "prediction_ref": "runs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21/<arm>/*_metrics.json",
+    "scorer_ref": "AnalyticIQcomparisononly;noTXtruthscorer",
+    "final_user_targets": "Recognition70/5pp and cleanpreservation remain active;this diagnostic cannot satisfy them",
+    "cost": "ActualCPU2 walltime;no deployment latency or recognition claim"
+  },
+  "rows": [
+    {
+      "row_id": "R46_350521_graph",
+      "method": "R46SourceFidelity/R46_350521_graph",
+      "purpose": "FixedsourceIQmechanismdiagnostic",
+      "config_ref": "experiments/pamf_r46_source_fidelity/design.py#configuration",
+      "resolved_config_ref": "runs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21/comparison_plan.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "model2026092701,sourceorderdataseed2026102001,R07 original fixedcache/order1..20;no newaugmentationseed",
+      "k": null,
+      "scenario": "Source train clean/received01/received20 only",
+      "optimizer": "None",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0newupdates;3x256 source forward examples plus2Ls smoke;no F/TX/V/target",
+      "output_root": "runs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21/R46_350521_graph",
+      "log_path": "logs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21/runner.log",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_source_fidelity.runner --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21 --expected-commit <actual method commit>",
+      "expected_artifacts": [
+        "smoke.json",
+        "clean_metrics.json",
+        "received01_metrics.json",
+        "received20_metrics.json",
+        "complete.json"
+      ],
+      "GPU": null,
+      "trainable_parameters": 0,
+      "parameters": 350521
+    },
+    {
+      "row_id": "R18_factor625_stage_graph",
+      "method": "R46SourceFidelity/R18_factor625_stage_graph",
+      "purpose": "FixedsourceIQmechanismdiagnostic",
+      "config_ref": "experiments/pamf_r46_source_fidelity/design.py#configuration",
+      "resolved_config_ref": "runs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21/comparison_plan.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "model2026092701,sourceorderdataseed2026102001,R07 original fixedcache/order1..20;no newaugmentationseed",
+      "k": null,
+      "scenario": "Source train clean/received01/received20 only",
+      "optimizer": "None",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0newupdates;3x256 source forward examples plus2Ls smoke;no F/TX/V/target",
+      "output_root": "runs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21/R18_factor625_stage_graph",
+      "log_path": "logs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21/runner.log",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_source_fidelity.runner --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21 --expected-commit <actual method commit>",
+      "expected_artifacts": [
+        "smoke.json",
+        "clean_metrics.json",
+        "received01_metrics.json",
+        "received20_metrics.json",
+        "complete.json"
+      ],
+      "GPU": null,
+      "trainable_parameters": 0,
+      "parameters": 278180
+    },
+    {
+      "row_id": "R18_factor625_cond_graph",
+      "method": "R46SourceFidelity/R18_factor625_cond_graph",
+      "purpose": "FixedsourceIQmechanismdiagnostic",
+      "config_ref": "experiments/pamf_r46_source_fidelity/design.py#configuration",
+      "resolved_config_ref": "runs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21/comparison_plan.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "model2026092701,sourceorderdataseed2026102001,R07 original fixedcache/order1..20;no newaugmentationseed",
+      "k": null,
+      "scenario": "Source train clean/received01/received20 only",
+      "optimizer": "None",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0newupdates;3x256 source forward examples plus2Ls smoke;no F/TX/V/target",
+      "output_root": "runs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21/R18_factor625_cond_graph",
+      "log_path": "logs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21/runner.log",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_source_fidelity.runner --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-source-fidelity-s2026092701-m3-r21 --expected-commit <actual method commit>",
+      "expected_artifacts": [
+        "smoke.json",
+        "clean_metrics.json",
+        "received01_metrics.json",
+        "received20_metrics.json",
+        "complete.json"
+      ],
+      "GPU": null,
+      "trainable_parameters": 0,
+      "parameters": 278180
+    }
+  ],
+  "notes": [
+    "R18/R19/R20 formal outcomes already exposed;this includes all three predetermined models without target ranking.",
+    "All weights fixed;source training data only;no F weights/outputs,TX labels,V,target,optimizer,teacher selection or new network.",
+    "Internal arm identifiers inherited from R20;this diagnostic executes original native CPU functions,not CUDA Graph.",
+    "Complex FFT uses referencepower quartiles,amplitude residual uses referenceamplitude quartiles;both within each opaque sample.",
+    "Source-only measurements do not prove TX identity;future training parent remains original350521 and every trained version gets7formal."
+  ],
+  "registered_at": "2026-10-20T17:44:34+00:00"
+}
