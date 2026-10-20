@@ -178,7 +178,7 @@
   "rows": [
     {
       "row_id": "formal_analytic",
-      "method": "r46_formal_identity",
+      "method": "multipoint_formal_identity",
       "purpose": "postscore_F_independent_TX_association",
       "config_ref": "experiments/pamf_multipoint_formal_identity/design.py#configuration",
       "resolved_config_ref": "runs/20261020-diagnostic-restoration-multipoint-formal-analytic-TX-s2026092701-m9-r50/resolved_config.json",
