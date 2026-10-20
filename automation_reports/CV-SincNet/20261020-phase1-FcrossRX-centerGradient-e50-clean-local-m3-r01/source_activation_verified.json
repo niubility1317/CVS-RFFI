@@ -1,0 +1,36 @@
+{
+  "status": "VERIFIED_ACTIVE_SOURCE_PREFIX_ONLY",
+  "execution_code_commit": "67afd61dad3f313c0919d5c08349e2ad4a1ff0f6",
+  "row_id": "CENTER_GRAD-s2026092701",
+  "fixed_model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "complete_native_prefix_records": 1400,
+  "active_auxiliary_updates": 290,
+  "first_active_step": 1111,
+  "first_active_epoch": 6,
+  "last_complete_step": 1400,
+  "last_complete_epoch": 7,
+  "actual_weight_range": [
+    0.010000000000000002,
+    0.020000000000000004
+  ],
+  "ordered_call_and_schedule_check": true,
+  "all_prefix_training_auxiliary_loss_and_gradient_norms_finite": true,
+  "skipped_nonfinite_loss_updates": 0,
+  "skipped_nonfinite_gradient_updates": 0,
+  "extra_model_forwards": 0,
+  "default_head_direct_aux_gradient": false,
+  "default_head_normal_joint_training": true,
+  "satellite_training": false,
+  "test_views": [
+    "clean"
+  ],
+  "other_rows_unchanged": true,
+  "full_backward_log_check": "Pending final observer/log emission at source completion; this is a source scalar prefix, not a completed training/performance/derivative audit.",
+  "target_performance_results": 0,
+  "target_tuning_or_reranking": false,
+  "goal_status": "ACTIVE_UNMET"
+}
