@@ -1,6 +1,6 @@
 # 无 TX 标签恢复器的压缩与性能联合优化
 
-2026-10-21 当前：R54固定两种源数据通道选择，完整273765拓扑、直接人选350521父，CPU2共用128源物理样本/256冻结G输入，0TX/F/V/target；共享prior采用相同map，全部联合E20/4940后逐行自动七正式测试与成本。固定控制复用R53prune_decay，不依其未知正式分数调参；GPU3等R53retain_anchor完成且PID退出，GPU2等R53queuedprune_anchor完成且同卡所属PID退出，跨R53/R54每卡最多一GPU worker、合计两条。LOCAL_VERIFIED尚未发布，无新正式结论。原性能/TX细节目标ACTIVE。 [R54方案](../PAMF_R46_SOURCE_PRUNE_R54_20261021.md)。
+2026-10-21 当前：R54固定两种源数据通道选择，完整273765拓扑、直接人选350521父，CPU2共用128源物理样本/256冻结G输入，0TX/F/V/target；共享prior采用相同map，全部联合E20/4940后逐行自动七正式测试与成本。固定控制复用R53prune_decay，不依其未知正式分数调参；GPU3等R53retain_anchor完成且PID退出，GPU2等R53queuedprune_anchor完成且同卡所属PID退出，跨R53/R54每卡最多一GPU worker、合计两条。VERIFIED/RUNNING：GPU3实际首轮训练、GPU2仅CPU等待，源校准与真实smoke/48组map复算已核实；无R54正式结论。原性能/TX细节目标ACTIVE。 [R54方案](../PAMF_R46_SOURCE_PRUNE_R54_20261021.md)。
 
 2026-10-21 当前：R52源相位参考对照已完成并独立核实108单元五指标和R51旧108数组，0F/TX/V/target/truth/训练，父逐张量未变；大角度C4下固定clean和坐标传递clean误差都明显，不能据此施加等变/不变训练或声称身份缺陷。回到性能优先的现有压缩结构：R53固定273765衰减控制和350521/273765持续IQ教师约束三行，直接人选350521父、全组件联合E20/4940、GPU2/3各1、全部自动七正式测试及成本；复用R49同宽衰减控制，不重复训练。当前VERIFIED/RUNNING，GPU2/3两行首轮与日志增长核实、第三行排队，尚无新性能结论。原70%/五景gap5pp/更强TX细节目标ACTIVE。 [R52参考对照](../PAMF_R46_PHASE_REFERENCE_R52_20261021.md)；[R53方案](../PAMF_R46_ANCHOR_REFINE_R53_20261021.md)。
 

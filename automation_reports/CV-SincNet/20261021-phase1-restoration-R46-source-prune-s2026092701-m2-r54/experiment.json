@@ -231,7 +231,8 @@
     "actual_training_rows_verified": [
       "group_pruned",
       "low_rank"
-    ]
+    ],
+    "postlaunch_state": "VERIFIED_GPU3_RUNNING_GPU2_CPU_WAIT"
   },
   "expected_artifacts": [
     "launch.json",
@@ -455,7 +456,8 @@
     "PhysicalGPU2/3only;waitR53retain_anchor onGPU3 andR53queuedprune_anchor onGPU2complete+actualsamecardownedPIDexit;max2ownacrossR53/R54.",
     "Allnewrowsauto7formal/truthlast;negativeperformancenotstop;notnewblindvalidation/notcleanfree/notperdetailTXproof.",
     "REJECTED_EXTRA_GATE:extraapproval/signature/memberhash/extraunchangedreviewoutsideexhaustiveminimalworkflow.",
-    "Matched same-card source-only G and G+F;B1 warm16/64samples x3 alternating rounds;B32 warm4/16iterations x3;median,p90,p95,throughput,peak/resident memory;ConvLinearMAC excludes FFT/CG/norm"
+    "Matched same-card source-only G and G+F;B1 warm16/64samples x3 alternating rounds;B32 warm4/16iterations x3;median,p90,p95,throughput,peak/resident memory;ConvLinearMAC excludes FFT/CG/norm",
+    "VERIFIED/RUNNING：真实源校准128物理样本/256冻结G输入完成（9.5506s），48组map独立复算通过，0TX/F/V/target/optimizer更新、父状态不变；两行实际R46/F50/2Ls smoke PASS，所有模块有限非零梯度、严格重载一致。单归档SHA/compile、controller/两worker实际PID/CWD/argv/线程/设备均核实。activation_energy实际GPU3首轮与日志增长核实；projection_sensitivity是CPU等待，尚未分配GPU，正确等待R53第三行GPU2完整结束和实际PID退出。跨R53/R54 GPU2/3各仅一条本任务GPU worker。无R54正式性能结论，全部新行仍固定E20后自动七正式测试；R53已评分两行结果不回流本方法。"
   ],
   "reused_controls": [
     {

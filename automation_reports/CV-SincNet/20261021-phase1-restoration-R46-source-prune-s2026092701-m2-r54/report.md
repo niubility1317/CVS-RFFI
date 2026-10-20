@@ -1,6 +1,6 @@
 # R54：同一压缩拓扑的源响应与输出敏感度通道筛选
 
-状态：LOCAL_VERIFIED，尚未发布。性能优先；没有新正式结果，不把通道评分、源IQ误差、容差或减参当作识别优化完成。
+状态：**VERIFIED / RUNNING**，GPU3实际训练、GPU2为CPU等待。性能优先；没有新正式结果，不把通道评分、源IQ误差、容差或减参当作识别优化完成。
 
 固定两行 activation_energy、projection_sensitivity，均完整273765参数、context185615；沿用R48最初完整两宽度矩阵的273765拓扑，现有350521宽度保留全通道时筛选恒等，原R49同宽控制保留，不为恒等初始化重复训练。仅用源响应替换原权重能量通道排序，不更换网络族、宽度分配、3prior/6CG或推理分支。唯一直接初始化/冻结IQ教师为用户指定R46 prune_refine350521 E20/4940，方法bbb8daf817de050b958d217b70d4c33f4aefe341；不加载R48/R49/R53学生，不根据其正式分数重排或另选父。固定同宽权重剪枝控制复用R53 prune_decay（方法df36c3d3da4e026b747776b65b58d4921dc1a71e），不重复训练。方案参数在读取R53正式分数之前固定；R53健康训练/预测保持原计划。
 
@@ -19,3 +19,6 @@
 每行固定最终E20/4940，自动source1800×7、同卡G与G+F/B1/B32三轮成本、正式168000×7预测；每行七景预测固定后独立truth-last评分并逐行报告，源域无提升也不取消测试。主要指标为逐场景accuracy/Macro-F1、相对同宽weight-only控制和R17/R46、逐TX/RX/day及repair/damage；时延/吞吐/显存/参数次级。成本为64源V、同步预加载FP32、不含传输/前处理/loader，3G＋1F共享驻留不是单模型显存；ConvLinearMAC不含FFT/CG/norm/激活/F。原R17每景1pp只是退化容差；lowurban≥70%、其他五景距rawclean84.6761904762%≤5pp与更强输入TX细节真实性目标继续ACTIVE。精确commit、命令、环境/CWD、路径和矩阵见experiment.json。
 
 方法commit `554c52baf75ab8da2618a5480851b74271018103`。精确命令、环境/CWD、路径与矩阵见[登记](experiment.json)。
+
+
+VERIFIED/RUNNING：真实源校准128物理样本/256冻结G输入完成（9.5506s），48组map独立复算通过，0TX/F/V/target/optimizer更新、父状态不变；两行实际R46/F50/2Ls smoke PASS，所有模块有限非零梯度、严格重载一致。单归档SHA/compile、controller/两worker实际PID/CWD/argv/线程/设备均核实。activation_energy实际GPU3首轮与日志增长核实；projection_sensitivity是CPU等待，尚未分配GPU，正确等待R53第三行GPU2完整结束和实际PID退出。跨R53/R54 GPU2/3各仅一条本任务GPU worker。无R54正式性能结论，全部新行仍固定E20后自动七正式测试；R53已评分两行结果不回流本方法。
