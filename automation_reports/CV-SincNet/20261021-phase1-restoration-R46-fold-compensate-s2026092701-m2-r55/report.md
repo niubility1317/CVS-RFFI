@@ -1,6 +1,6 @@
 # R55：源通道重建合并到原有剪枝权重
 
-状态：LOCAL_VERIFIED，尚未发布。性能优先；两固定行fold_full、fold_half，均273765完整参数，不引入推理分支、矩阵或校准状态。唯一直接初始化和冻结IQ教师仍为人选R46 prune_refine350521 E20/4940、方法bbb8daf817de050b958d217b70d4c33f4aefe341；不继承R48/R49/R53/R54学生。固定weight-only GN4通道map与原273765拓扑不变，只补偿删除输入通道的相关贡献。理论依据是原切片把被删通道置零，源输入通道间相关性可用于线性重建；不依据正式分数重排父、宽度或超参数。R53 prune_decay作为固定同宽/同micro/同E20控制复用，不重复训练。
+状态：**VERIFIED / RUNNING**，GPU3/2 两行实际训练。性能优先；两固定行fold_full、fold_half，均273765完整参数，不引入推理分支、矩阵或校准状态。唯一直接初始化和冻结IQ教师仍为人选R46 prune_refine350521 E20/4940、方法bbb8daf817de050b958d217b70d4c33f4aefe341；不继承R48/R49/R53/R54学生。固定weight-only GN4通道map与原273765拓扑不变，只补偿删除输入通道的相关贡献。理论依据是原切片把被删通道置零，源输入通道间相关性可用于线性重建；不依据正式分数重排父、宽度或超参数。R53 prune_decay作为固定同宽/同micro/同E20控制复用，不重复训练。
 
 共同CPU2校准一次：seed2026102156从原6300L_s/56700U_s分别抽64条，使用原R07 received01/20，128物理样本/256冻结父G输入。校准不读取clean、TX标签、F、V或target，无optimizer更新。每个需要减输入通道的Conv采16个固定、互异的空间位置，action global_head采实际池化后输入；在float64累计未去均值的通道二阶矩。共享prior长卷积的各stage先合并二阶矩，再为同一共享权重求一个投影，保留step独立bias/GN。原权重map的GN4配额及decoder旧上游宽度偏移保持。
 
@@ -19,3 +19,6 @@ source READY/EXACT_MATCH、原7/63/30物理划分及全部R46/R44/R38/R17/R07/R0
 成本使用64源V同步预加载FP32，不含传输/前处理/loader；三G一F共享suite驻留不是独立部署显存。ConvLinearMAC排除FFT/CG/norm/激活及F；参数、MAC和实际时延分别报告。精确commit、命令、环境/CWD、路径和矩阵见experiment.json。
 
 方法commit `6bea50605a1c2cfb49645b5c2f7ba8306b39791d`；精确命令/环境见[登记](experiment.json)。
+
+
+VERIFIED/RUNNING：真实源校准128物理样本/256冻结G输入完成（3.9369s），101组通道投影、141处模块使用的岭回归独立复算通过；校准0clean/TX/F/V/target/optimizer更新、父状态不变。两行实际R46/F50/2Ls smoke PASS，所有组件有限非零梯度、严格重载一致。单归档SHA/compile、controller与两worker实际PID/CWD/argv/线程/GPU及首轮日志增长已核实，GPU3fold_full与GPU2fold_half各一条本任务worker；R54固定退出守护已通过。仅说明实现与运行正常，尚无正式识别收益。两行继续固定E20/4940后自动七正式预测/独立truth-last；原指定父和原完整目标ACTIVE。

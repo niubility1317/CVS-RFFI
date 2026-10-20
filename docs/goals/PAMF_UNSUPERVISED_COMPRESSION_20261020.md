@@ -1,6 +1,6 @@
 # 无 TX 标签恢复器的压缩与性能联合优化
 
-2026-10-21 当前R55：原273765拓扑与weight-only GN4 map，源通道岭回归合并到既有Conv/Linear权重，full/half两固定幅度；直接人选350521父，CPU2共同128物理样本/256冻结G输入、校准无clean/TX/F/V/target/更新；两行全部联合E20/4940后自动七正式测试及成本。唯一同宽控制R53prune_decay复用，GPU3/2各一条、固定R54实际退出保护。LOCAL_VERIFIED尚未发布，无新正式结论；原性能/TX细节目标ACTIVE。[R55方案](../PAMF_R46_FOLD_COMPENSATE_R55_20261021.md)。
+2026-10-21 当前R55：原273765拓扑与weight-only GN4 map，源通道岭回归合并到既有Conv/Linear权重，full/half两固定幅度；直接人选350521父，CPU2共同128物理样本/256冻结G输入、校准无clean/TX/F/V/target/更新；两行全部联合E20/4940后自动七正式测试及成本。唯一同宽控制R53prune_decay复用，GPU3/2各一条、固定R54实际退出保护。VERIFIED/RUNNING：两行实际GPU3/2首轮训练、真实校准/101组投影复算/smoke/PID与日志增长已核实，正式性能待完成；原性能/TX细节目标ACTIVE。[R55方案](../PAMF_R46_FOLD_COMPENSATE_R55_20261021.md)。
 
 十三个固定新版的正式性能、郊区/urban 全场景和配对推理成本均已完整汇总，按预登记顺序保留全部结果；性能优先，不用通过退化容差、减参或提速替代逐场景性能改善。十三行中相对指定父七景全部提高的版本为：R48 prune_refine（273765参数，low urban 68.257738%）。完整数据按固定矩阵顺序报告，不据此另选父、修改超参数或选择性重跑。只反映单 seed 工程基准，70%/5pp以逐行验收表为准；输入TX逐细节真实性尚未证明，原完整目标继续ACTIVE。 见[十三版性能总表](../PAMF_R46_COMPRESSION_PERFORMANCE_20261020.md)。指定 350521 父版不变，原完整目标继续 ACTIVE。
 

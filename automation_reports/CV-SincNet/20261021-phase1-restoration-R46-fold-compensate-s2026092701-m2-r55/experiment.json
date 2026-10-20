@@ -231,7 +231,8 @@
     "actual_training_rows_verified": [
       "group_pruned",
       "low_rank"
-    ]
+    ],
+    "postlaunch_state": "VERIFIED_TWO_GPU_WORKERS_TRAINING"
   },
   "expected_artifacts": [
     "launch.json",
@@ -458,7 +459,8 @@
     "GPU2/3only;eachoneownGPUworker,max2;guardR54completeANDactualownedPIDexit;healthyothersunchanged.",
     "Allsourcecalibrationtime/exposureslistedonce;noaddedruntimebranch/state;notnewblindvalidation/notcleanfree/notperdetailTXproof.",
     "REJECTED_EXTRA_GATE:extraapproval/signature/memberhash/repeatedreviewoutsideexhaustiveminimalworkflow.",
-    "Matched same-card source-only G and G+F;B1 warm16/64samples x3 alternating rounds;B32 warm4/16iterations x3;median,p90,p95,throughput,peak/resident memory;ConvLinearMAC excludes FFT/CG/norm"
+    "Matched same-card source-only G and G+F;B1 warm16/64samples x3 alternating rounds;B32 warm4/16iterations x3;median,p90,p95,throughput,peak/resident memory;ConvLinearMAC excludes FFT/CG/norm",
+    "VERIFIED/RUNNING：真实源校准128物理样本/256冻结G输入完成（3.9369s），101组通道投影、141处模块使用的岭回归独立复算通过；校准0clean/TX/F/V/target/optimizer更新、父状态不变。两行实际R46/F50/2Ls smoke PASS，所有组件有限非零梯度、严格重载一致。单归档SHA/compile、controller与两worker实际PID/CWD/argv/线程/GPU及首轮日志增长已核实，GPU3fold_full与GPU2fold_half各一条本任务worker；R54固定退出守护已通过。仅说明实现与运行正常，尚无正式识别收益。两行继续固定E20/4940后自动七正式预测/独立truth-last；原指定父和原完整目标ACTIVE。"
   ],
   "reused_controls": [
     {
