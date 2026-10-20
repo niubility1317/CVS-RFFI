@@ -3,7 +3,7 @@
   "run_id": "20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01",
   "group_id": "phase1-T1-AsKL0-E50-budget",
   "display_name": "T1 去除 As 独立 KL：E30＋20 与从零 E50",
-  "description": "用户指定两条 E50 路径；续训复用原T1 E30学生及自身EMA，再E20；从零E50为33L17U。保留原As CE、普通/raw RDrop、旧U及ownEMA、默认头与ordinary CROSS_RX；仅clean测试。",
+  "description": "用户指定两条 E50 路径；续训复用原T1 E30学生及自身EMA，再E20；从零E50为33L17U。保留原As CE、普通/raw RDrop、旧U及ownEMA、默认头与ordinary CROSS_RX；自动clean＋六种practical测试。",
   "kind": "cvs",
   "stage": "Phase1",
   "aliases": [
@@ -16,18 +16,20 @@
     "E50",
     "single-seed",
     "default-head",
-    "clean-only"
+    "clean-six-practical"
   ],
   "comparison_group_id": "T1-AsKL0-budget-paths-not-matched-calendar",
   "parent_run_ids": [
     "20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r02"
   ],
-  "authorization": "2026-10-20 用户要求T1去As独立KL E30拉到E50、seed2026092701；对复用E30续20和从零完整50明确答复“两种都试”。 用户随后明确要求查看其他GPU余量，两组并行，找进程量最少的直接启动。",
+  "authorization": "2026-10-20 用户要求T1去As独立KL E30拉到E50、seed2026092701；对复用E30续20和从零完整50明确答复“两种都试”。 用户随后明确要求查看其他GPU余量，两组并行，找进程量最少的直接启动。 用户随后明确训练完自动测试clean＋6种星地环境，覆盖先前clean-only范围。",
   "code": {
     "commit": "971fd16ac342f3523c4e3112f437e678f32ca459",
     "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
     "environment": "N607 ordinary account; existing CVS-RFFI Python3.10/Torch2.1 FP32; CPU2",
-    "cwd": "PROJECT/releases/cvs_T1_AsKL0_E50_20261020_parallel_r02"
+    "cwd": "PROJECT/releases/cvs_T1_AsKL0_E50_20261020_parallel_r02",
+    "evaluation_commit": "ace90948e4dc62df5ec909176f2948802825a774",
+    "evaluation_cwd": "PROJECT/releases/cvs_T1_AsKL0_E50_20261020_all7_r03"
   },
   "data": {
     "dataset": "ManySig",
@@ -98,31 +100,32 @@
     "remote_run_root": "PROJECT/runs/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01",
     "remote_log_root": "PROJECT/runs/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01/logs",
     "local_artifact_root": "automation_reports/CV-SincNet/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01",
-    "launch_command": "CVS-RFFI/python -u experiments/cvs_t1_e50/runner.py --adopt-empty-queue",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_t1_e50/runner.py --observe-running (all7_r03; existing workers preserved)",
     "stop_rule": "Only own protocol/roles/provenance/head/nonfinite/output collision/unlaunchable/illegal-prediction systemic failure; preserve all outputs, cancel own pending rows, no automatic retry or science-driven stop. Never change healthy other owners.",
     "status": "RUNNING",
-    "launch_verification": "VERIFIED new controller and two workers exact PID/CWD/argv/GPU; actual budgets20/50 and ownEMA/scratch initialization; old empty controller stopped only; unchanged scientific configs and old smoke PASS reused"
+    "launch_verification": "VERIFIED same healthy GPU0/GPU6 training PIDs and advancing source logs; new all7 observer PID/CWD/argv and future evaluation route; no source config/model/optimizer change or restart"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
     "synthetic_smoke.json",
     "each row source/final_ssdg.pth and full step/epoch logs",
     "each row source/resolved_config.json and initialization/EMA initialization",
-    "each row clean prediction and independent scoring",
+    "each row all7 predictions and independent scoring",
     "results.json",
     "complete.json"
   ],
   "metrics_plan": {
     "metric_names": [
-      "clean accuracy",
+      "accuracy",
       "macroF1",
       "worstRX",
       "perRX/day/TX",
-      "actual L/U and As exposures",
+      "actual exposures",
       "wall time"
     ],
     "dimensions": [
       "row",
+      "scene",
       "RX",
       "day",
       "TX"
@@ -149,7 +152,7 @@
       },
       "seed_notes": "data seed not independent from original fixed split; support inapplicable; clean evaluation deterministic, existing evaluation seed retained as metadata; train421/val422/receiver423 unchanged",
       "k": null,
-      "scenario": "clean only,168000 fixed target samples",
+      "scenario": "clean + practical_high,practical_mid,practical_low_suburban,practical_high_urban,practical_mid_urban,practical_low_urban;168000 fixed samples per view",
       "optimizer": "CENTER_UNITS AdamW lr2e-4 wd1e-4 min1e-6; resetcos20; label/pseudo=0/20",
       "lr": 0.0002,
       "epochs": 20,
@@ -182,7 +185,7 @@
       },
       "seed_notes": "data seed not independent from original fixed split; support inapplicable; clean evaluation deterministic, existing evaluation seed retained as metadata; train421/val422/receiver423 unchanged",
       "k": null,
-      "scenario": "clean only,168000 fixed target samples",
+      "scenario": "clean + practical_high,practical_mid,practical_low_suburban,practical_high_urban,practical_mid_urban,practical_low_urban;168000 fixed samples per view",
       "optimizer": "CENTER_UNITS AdamW lr2e-4 wd1e-4 min1e-6; resetcos50; label/pseudo=33/17",
       "lr": 0.0002,
       "epochs": 50,
@@ -206,5 +209,23 @@
     "REJECTED_EXTRA_GATE: no separate design approval, report/source SHA, data revalidation, or repeated whole review."
   ],
   "replaces_run_id": null,
-  "registered_at": "2026-10-20T02:35:47+00:00"
+  "registered_at": "2026-10-20T02:35:47+00:00",
+  "evaluation": {
+    "views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "per_view_count": 168000,
+    "predictions_per_row": 1176000,
+    "mode": "Frozen default head;all7 predictions complete before independent CPU truth-last scorer",
+    "code_commit": "ace90948e4dc62df5ec909176f2948802825a774",
+    "runtime_ref": "PROJECT/runs/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01/evaluation_handoff.json",
+    "training_code_commit": "971fd16ac342f3523c4e3112f437e678f32ca459",
+    "automatic": true
+  }
 }

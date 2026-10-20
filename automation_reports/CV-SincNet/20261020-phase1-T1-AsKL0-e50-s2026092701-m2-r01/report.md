@@ -10,7 +10,7 @@
 
 ManySig equalized1／IQ2×256／unitRMS，源 RX1/3/4/6/8、day1/2/3、全部六 TX，固定 split392005；L6300／U56700／V27000，U TX 始终隐藏，复用已验证角色。续训在读权重前复用原完整 scratch20→own10、source-only FINAL、默认头、实际 role_ids 检查，严格加载学生及 EMA；从零路径不加载训练父权重。V 只做健康诊断，固定最终轮，不按 V 或 target 选轮。
 
-仅 clean 测试：每行训练冻结后自动对原 168000 个固定目标 IQ／opaque ID 预测，默认头及全模型无状态更新；该行全部 clean logits 与 predictions 固定后，经独立 exec CPU scorer 才读取 truth，报告 accuracy、Macro-F1 和 RX/day/TX 分层。正式测试已经暴露，不声称新的独立盲测，不用分数回流参数、选模或重跑。
+初始 clean 测试安排（已由下方用户最新七环境要求覆盖）：每行训练冻结后自动对原 168000 个固定目标 IQ／opaque ID 预测，默认头及全模型无状态更新；该行全部 clean logits 与 predictions 固定后，经独立 exec CPU scorer 才读取 truth，报告 accuracy、Macro-F1 和 RX/day/TX 分层。正式测试已经暴露，不声称新的独立盲测，不用分数回流参数、选模或重跑。
 
 环境/CWD：N607 原普通账户 CVS-RFFI Python3.10／Torch2.1／FP32／CPU2；`PROJECT/releases/cvs_T1_AsKL0_E50_20261020_r01`。命令：`CVS-RFFI/python -u experiments/cvs_t1_e50/runner.py`。物理 GPU4 串行，每次只有一个本 run GPU worker，原有所有 compute PID 清空且 free≥12000MB 才启动；其他 owner 健康任务保持。不可覆盖输出 `PROJECT/runs/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01`，唯一 owner `codex/root/T1-e50`。
 
@@ -32,3 +32,14 @@ VERIFIED：release 归档一次本地/远端 SHA 比较一致；12 个 Python �
 2026-10-20 用户要求查看其他 GPU 余量、两组并行，并明确“找进程量最少的，直接启动”。按所有 owner 的进程总数排序，同数时优先显存空余更多的卡；free≥12000MB、总进程≤3/GPU、每卡一个本 run GPU worker、两组不同 GPU，独立 CPU scorer 锁保证最多一个。本条取代上文 GPU4 清空后串行的资源设置，科学配置、数据、预算、seed 与输出 root 保持。
 
 VERIFIED：切换前原 run 仍为两行 pending、无 launch.json、无行输出或训练更新；核对原控制器精确 PID/CWD/argv 后只停止该空队列控制器，保留 dispatcher/queue 历史。新不可变 release `cvs_T1_AsKL0_E50_20261020_parallel_r02` 已完成一次归档比较及编译，采用原 run 已 PASS 的真实 checkpoint/six-L smoke，直接接管未启动队列，没有重复训练或重复 smoke。E30PLUS20 已分配 GPU0，实际预算20、0L20U、cos20、严格原T1 FINAL30 EMA；SCRATCH50 已分配 GPU6，实际预算50、33L17U、cos50、自身scratch EMA。两组独立PID/CWD/argv及resolved config已读回，pending为空，failure不存在。其他 owner 任务保持。
+
+
+## 用户最新测试范围：clean＋六种星地环境
+
+用户明确要求两条路径训练完成后，自动测试 clean、practical_high、practical_mid、practical_low_suburban、practical_high_urban、practical_mid_urban、practical_low_urban。此项覆盖本 run 先前 clean-only 范围；每行每视图168000个固定目标输入，共1176000条预测，原固定received IQ不重新采样。保留各场景accuracy、Macro-F1及RX/day/TX分层，全部七视图预测完整固定后才由独立CPU scorer连接truth，不以clean评分提前闭合。
+
+训练代码仍为971fd16ac342f3523c4e3112f437e678f32ca459，测试/接续代码为ace90948e4dc62df5ec909176f2948802825a774，新不可变测试release为cvs_T1_AsKL0_E50_20261020_all7_r03。未改动内存中的训练模块、配置、模型、优化器、预算或seed；原GPU0/GPU6训练进程保持同一PID并继续写入日志。核对两行实际训练config与新测试读取config完全一致，七份固定测试输入存在，已有prediction/scoring均尚不存在。
+
+为使原健康worker在训练后实际进入新范围，仅把其后续predict/score执行入口接至新release，原runner备份及训练release_commit保持；在run/evaluation_handoff.json记录训练与测试两个commit、入口及七视图。只替换无训练功能的控制器为新观察器，不停止任何训练worker。新观察器只读取所属行进度并收集七视图结果，不再调度训练；每行源冻结后由原worker自动exec新测试入口，七视图预测后再exec独立CPU评分，CPU scorer锁保证最多一个。原初始clean-only训练配置说明文字不追溯改写，实际测试范围由本节及evaluation_handoff指定。
+
+VERIFIED：发布归档一次比较及远端编译通过；两项七视图完整性/提前truth负测通过，实际N607/Linux predict与score入口转发及原入口fallback检查通过，0模型/目标IQ/truth访问。独立读回新控制器PID/CWD/argv、queue.evaluation_views七项、handoff目标及两个原训练PID，failure不存在。最新可见源进展为续训累计E32、scratch E3，训练日志继续增长；尚无正式测试指标。
