@@ -149,3 +149,14 @@ teacher必须用自身原context，student用自身压缩context；helper及sent
 
 
 R06本轮两种结构全部完成：符合七场景1个百分点容差：shared_half, shared_quarter。E20/4940、source七视图诊断及同168000×七目标场景、独立truth-last、实际进程退出均核实；完整训练曲线、精确1pp验收、相对已验收3118001版本差、配对clean差距、TX/RX/day和成本见[本轮报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-shared-factor-s2026092701-m2-r06/report.md)。两份完整恢复器已取回本地并严格加载验证；本轮未追加其他结构，目标反馈未用于改训练/超参/重跑，长期指标依实际结果报告。
+
+
+## R09 压缩同时优化恢复与识别
+
+用户最新明确“压缩的同时也要优化”，1个百分点只是逐场景下降上限，不能把参数减少及容差通过称为识别提升。[R09固定四行](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-joint-optimize-s2026092701-m4-r09/report.md)为两种既定R08结构（完整1822977、1592461参数）×teacher任务保真/配对source-clean纠正目标。两种目标都联合训练压缩coarse/action/prior，另两行增加1倍最终source-clean IQNMSE，并将冻结原F50/defaulthead的参照从原R17恢复改为对应source-clean。10倍三步原R17IQ保真、1倍T1KL及0.5倍单位160维特征平方距离固定；只合法源训练L/U的配对clean，0新增TX/V/target训练或头拟合，不称F-free无监督。纠正目标同时改变IQ和F参照，不能归因于单一项。
+
+只从原R17源选择权重初始化，不加载已测学生；原teacher独立context且全部冻结，student独立context可反传，直接绕过旧coarse的no_grad路径。E20/4940、source63000缓存/顺序/学习率/三步×2CG不变；继承coarse20+action20+R17prior20与本轮joint20共80串行训练pass，每组件累计40、component-epoch总和120，不能将120当串行轮数。原F50预训练成本与双F/双context前向及输入反传单列。
+
+四行在新R09目标预测前固定，最终E20冻结，不以源V或目标重排、调损失、改秩/预算、换父模型、追加或选择性重跑。R06已暴露目标结果如实保留；本方案依据用户性能优化要求和合法source-clean契约建立匹配对照，不声称新的独立盲测。每行自动source诊断与168000×七目标场景，所有视图预测完成后独立truth-last评分；逐场景1pp原始整数验收，同时报告真实涨分/损伤、lowurban是否70%、配对clean恢复差距与相对已验收3118001版本差。
+
+42项检查/唯一独立P0P1审查PASS；普通N607预检VERIFIED，R07实际四条句柄均退出。launcher-first真实原R17/F50/2Ls smoke通过后确认R07根终态和实际进程退出，再GPU2/3/6/7各一own worker；R08健康4/5继续，共六路，所有own scorer共享R06score.lock。当前仅实现/预登记通过，目标性能尚待完整测试。
