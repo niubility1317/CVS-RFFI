@@ -413,3 +413,7 @@
 本轮记录：[冻结三F帧级与复采样点级梯度一致约束](by_method/teacher_gradient_agreement.md)。
 
 本轮记录：[冻结原F多尺度汇总与时序特征辅助IQ恢复](by_method/spatial_F_condition.md)。
+
+本轮记录：[从零学习恢复映射时加入冻结原F指导](by_method/scratch_F_guidance.md)。
+
+本轮记录：[有界源频谱精度加权的复数恢复误差](by_method/spectral_precision.md)。
