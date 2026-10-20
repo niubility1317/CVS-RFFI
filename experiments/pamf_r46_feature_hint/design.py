@@ -1,6 +1,8 @@
 """Fixed source-only hypothesis; no new inference architecture or parameters."""
 from experiments.pamf_r46_anchor_refine import design as base
 
+parent=base.parent
+learning_rate=base.learning_rate
 RUN='20261021-phase1-restoration-R46-feature-hint-s2026092701-m2-r60'
 ARMS=('context_hint','all_hint')
 PARAMETERS={a:273765 for a in ARMS}
@@ -13,17 +15,26 @@ REUSED_CONTROL=dict(run=base.RUN,row='prune_decay',method_commit='df36c3d3da4e02
     role='Same weight-only pruned graph/full E20 and IQteacher schedule,without feature loss',training_repeated=False)
 PREDECESSOR_RUN='20261021-phase1-restoration-R46-stat-transport-s2026092701-m2-r58'
 PREDECESSOR_COMMIT='3e1c14a733b2278c659c653c75a98657663cd8d4'
+PREDECESSOR_MODULE='experiments.pamf_r46_stat_transport.runner'
 PREDECESSOR_ROW={3:'calibrated',2:'identity_control'}
 EPOCHS,UPDATES,BATCH,MICRO=20,4940,256,256
 VIEWS=base.VIEWS
 MODEL_SEED,DATA_SEED=base.MODEL_SEED,base.DATA_SEED
+PARENT_RUN,PARENT_COMMIT,ACTION_RUN=base.PARENT_RUN,base.PARENT_COMMIT,base.ACTION_RUN
+F_RUN,F_SEED,KIND,SCORING_RUN=base.F_RUN,base.F_SEED,base.KIND,base.SCORING_RUN
+IS_RETAIN={a:False for a in ARMS}
+TASK={a:False for a in ARMS}
+MODE={a:'R46_weight_only_prune_feature_hint_'+a for a in ARMS}
+WIDTHS={a:base.WIDTHS['prune_decay'] for a in ARMS}
+CONTEXT_WIDTHS=WIDTHS.copy()
+SPECTRAL_WIDTHS={a:base.SPECTRAL_WIDTHS['prune_decay'] for a in ARMS}
 
 def teacher_weight(epoch,arm):
     if arm not in ARMS:raise ValueError('Registered feature-hint scope required')
     return base.teacher_weight(epoch,'prune_decay')
 
 def configuration():
-    return dict(schema='R46_feature_hint_prototype_v1',run=RUN,arms=list(ARMS),parameters=PARAMETERS,context_parameters=CONTEXT_PARAMETERS,
+    value=dict(schema='R46_feature_hint_v1',run=RUN,arms=list(ARMS),parameters=PARAMETERS,context_parameters=CONTEXT_PARAMETERS,
         compact_parent=COMPACT_PARENT_RUN,compact_parent_commit=COMPACT_PARENT_COMMIT,compact_parent_row=COMPACT_PARENT_ROW,
         architecture='Existing weight-only pruned U-Net/GN4/3prior6CG;no normalization replacement or new inference parameter',
         initialization='Direct human350521;same deterministic weight-only GN4 quota pruning as R53prune_decay;no R53/R55/R57/R58 trained student',
@@ -39,6 +50,18 @@ def configuration():
             original_parameters_inherited_epochs=80,original_parameters_new_epochs=20,original_parameters_cumulative_epochs=100,
             new_trainable_parameters=0,reset_optimizer=True,all_coarse_action_prior_jointly_train=True),
         evaluation=dict(source1800x7=True,target168000x7=True,all_rows_regardless_source=True,frozen_F50_default_head=True,independent_truth_last=True),
-        prototype_only=True,full_pipeline_implemented=False,GPU=GPUS,predecessor=PREDECESSOR_RUN,max_own_GPU_workers=2,
+        prototype_only=False,full_pipeline_implemented=True,GPU=GPUS,predecessor=PREDECESSOR_RUN,max_own_GPU_workers=2,
         no_target_feedback='Hypothesis/scopes/coefficient fixed before reading R58source/formal scores;all rows fixed,no score-based parent/width/loss choice',
-        claim='Data-free module verification only;no new calibration,training or performance evidence;not per-detail TX proof',goal_complete=False)
+        claim='Source-unlabeled pairedclean compression optimization hypothesis;no observed performance benefit yet,not per-detail TX proof',goal_complete=False)
+    inherited=base.configuration()
+    inherited.update(value,widths={a:list(v) for a,v in WIDTHS.items()},context_widths={a:list(v) for a,v in CONTEXT_WIDTHS.items()},
+        spectral_widths={a:list(v) for a,v in SPECTRAL_WIDTHS.items()},teacher_weight_schedule={a:[teacher_weight(e,a) for e in range(1,21)] for a in ARMS},
+        objective=value['training']['loss'],reused_weight_only_control=REUSED_CONTROL,row_order=list(ARMS),max_own_workers_per_card=1,max_own_across_R58_R60=2,
+        predecessor_by_GPU={str(g):dict(run=PREDECESSOR_RUN,row=PREDECESSOR_ROW[g],method_commit=PREDECESSOR_COMMIT) for g in (2,3)},
+        freeze_rule='Both fixed scopes finalE20/4940;source/profile then each full168000x7formal regardless source scores;independenttruthlast;no targetfeedback',
+        throughput_control='Global256micro256/directfloat32buffer unchanged;feature captures/reductions only training,extra activations and time measured;no inference hooks',
+        cost_plan='Original parameters inherited80+new20=100each/component sum300/serial140pass;perrowL126000U1134000/teacherstudent1260000each;no new parameters/calibration/Gforwards;84context and optional84prior perIQfeature reductions add measured training time/memory;G/GplusF paired samecardB1/B32three rounds',
+        authorization='Standingperformancefirstcompressiongoal;existing273765graph;fixedbeforeR58source/formal scores;GPU2/3only oneown/card,wait actualR58samecardexit',
+        stop_rule='Wrongancestry/data/IDs/outputcollision/nonfiniteorincompletepair/training/prediction:preserveoutputs,noautomaticretry;healthyjobsuntouched')
+    for key in ('reused_retain_decay_control','control_policy'):inherited.pop(key,None)
+    return inherited

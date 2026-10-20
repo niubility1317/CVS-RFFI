@@ -1,6 +1,6 @@
 # 无 TX 标签恢复器的压缩与性能联合优化
 
-2026-10-21 R60 LOCAL_PROTOTYPE：保持原273765参数普通GN/U-Net/3prior6CG，增加仅训练时的指定350521恢复器中间响应约束；context_hint/all_hint均为0.02context，后一行另加0.02prior，context/prior各84GN按保留通道逐样本归一化匹配，不增加推理参数/分支、G前向或校准IQ。19项数据自由检查通过，未登记/发布/训练、完整pipeline未实现；原型在R58源验证/正式分数读取前固定。不得以合成梯度/中间响应宣称识别收益或逐细节TX真实性。原完整目标ACTIVE，性能优先。[R60原型与固定范围](../PAMF_R46_FEATURE_HINT_R60_20261021.md)。
+2026-10-21 当前R60：既有273765普通GN/U-Net/3prior6CG的训练期中间特征约束；直接人选350521父，context_hint/all_hint均+.02context，后一行另+.02prior，各84GN按保留通道逐IQ能量归一化。47checks/CLI/ONEP0P1PASS，真实source2Ls noquerysmoke在launcher首步执行；无新增推理参数/buffer/分支、额外G前向或校准IQ。全E20/4940/globalmicro256/所有组件联合源pairedclean自监督，0TX/F/V/target优化；两行自动source与168000×7正式/独立truthlast/同卡成本。核心0549b81原型在R58验证/正式分数读取前固定，源校准与新训练仍未执行；GPU3/2须等待R58同卡实际退出。LOCAL_VERIFIED未发布，无新性能结论，性能优先/原完整目标ACTIVE。[R60固定方案](../PAMF_R46_FEATURE_HINT_R60_20261021.md)。
 
 R59已实际VERIFIED/WAITING_PARENT_FORMAL：CPU2/0GPU，真实2Ls解析noquerysmoke、单archiveSHA/compile/实际PID/CWD/argv/空CUDA/日志增长核实。等待R57两行和R58两行全部七景正式评分后解析四新版，复用R56raw/指定350521父/R55参考84单元、新算112，196全固定后独立truthlast3024组/504条件对照/280配对差。无新网络/F/checkpoint/神经预测/训练/headfit/校准；不改变父训练预测，不阻塞其交付，当前主路线仍为用户指定35.05万父的压缩优化。固定描述符在clean TX2已有不足，不把该类负margin单独解释为身份错误。[R59固定评价](../PAMF_NORM_FORMAL_IDENTITY_R59_20261021.md)。
 
