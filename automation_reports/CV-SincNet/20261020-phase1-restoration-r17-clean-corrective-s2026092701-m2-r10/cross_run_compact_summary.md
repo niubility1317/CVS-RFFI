@@ -23,6 +23,6 @@
 |[R10/clean_only_quarter](../20261020-phase1-restoration-r17-clean-corrective-s2026092701-m2-r10/report.md)|1822977|60.9229%|2.004762|85.236310|79.373214|77.928571|76.441071|78.348810|72.808929|66.647619|未通过|
 |[R10/clean_only_eighth_pointwise](../20261020-phase1-restoration-r17-clean-corrective-s2026092701-m2-r10/report.md)|1592461|65.8642%|0.797619|84.752976|80.552381|79.192857|77.615476|79.555952|73.713690|67.600595|通过|
 
-逐场景支配仅表示：参数不少于对方，且七场景正确数全部不优于对方，至少一个维度严格较差。不同数据曝光/训练计算、延迟、稳定性、单样本配对显著性不包含在这一描述中，不能据此声称稳定总体优胜或全局最简。尚未被本表其他行逐场景支配的已验收版本：R05/activation_task, R07/shared_three_eighths, R07/shared_eighth, R07/shared_eighth_pointwise, R09/joint_clean_eighth_pointwise, R10/clean_only_eighth_pointwise。各行支配关系与整数正确数保存在JSON/CSV。
+被另一版本逐场景支配，表示本版参数不少于对方，且七场景正确数全部不优于对方，至少一个维度严格较差。不同数据曝光/训练计算、延迟、稳定性、单样本配对显著性不包含在这一描述中，不能据此声称稳定总体优胜或全局最简。尚未被本表其他行逐场景支配的已验收版本：R05/activation_task, R07/shared_three_eighths, R07/shared_eighth, R07/shared_eighth_pointwise, R09/joint_clean_eighth_pointwise, R10/clean_only_eighth_pointwise。各行支配关系与整数正确数保存在JSON/CSV。
 
 同1592461参数下，R09 clean版本相对原R17最大下降0.109524pp；R10直接clean版本low urban更高，但若干其他场景下降更多，最大下降0.797619pp。两版均保留，不能把low urban单项提升写成七场景同时改善。单seed/单F种子/已暴露benchmark，非新独立盲测，也非多seed总体保证。

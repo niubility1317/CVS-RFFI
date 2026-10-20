@@ -1,6 +1,6 @@
 # R17 八分之一上下文压缩与源 clean 联合优化 R12
 
-状态：PLANNED。补齐此前0IQ静态容量审计的eighth context层级，沿用与R10/R11相同的两种固定prior、直接source-clean纠正损失和E20预算。R10提供half context，R11提供full/quarter context匹配对照。以正式目标七场景逐项相对原R17下降不超过1个百分点为底线，另报真实提分、low urban≥70%、其他环境距clean和paired-clean恢复差距。容差通过不等于性能改善。
+状态：RUNNING。补齐此前0IQ静态容量审计的eighth context层级，沿用与R10/R11相同的两种固定prior、直接source-clean纠正损失和E20预算。R10提供half context，R11提供full/quarter context匹配对照。以正式目标七场景逐项相对原R17下降不超过1个百分点为底线，另报真实提分、low urban≥70%、其他环境距clean和paired-clean恢复差距。容差通过不等于性能改善。
 
 |固定行|完整/可训练参数|context参数|context比例|较原4665073减少|GPU|
 |---|---:|---:|---:|---:|---:|
@@ -22,3 +22,5 @@
 一次普通N607预检、新不可覆盖run/release/output、单归档SHA比较、远端compile/help，以及实际PID/CWD/完整命令/commit/GPU/日志增长/E1核实。技术错误停止受影响行并保留，健康行继续，完成后若任一失败则根FAILED，无自动重试/回退。命令、环境、CWD、路径及预期产物见experiment.json。
 
 普通N607预检VERIFIED：R10实际GPU句柄0，GPU4/5各24124MiB空闲，R11健康四卡继续。新run/release不存在，复用合法source/R17/F50/formal句柄，不新增数据重验。40项聚焦检查与唯一独立P0/P1审查PASS，审查0真实IQ/checkpoint/远端访问。
+
+实际发布 VERIFIED：方法commit `152f11283ba81b81f1a9e58b5b094f656f1c308b` 已推送并独立核实远端OID；单归档SHA比较、远端compile/help通过。真实原R17/F50/2Ls noquery smoke PASS，两行coarse/action/各prior与F输入有限非零梯度，原初始化父/F/head0更新、严格复载逐位输出。R10实际句柄退出后，在GPU4/5各一新worker；实际PID/CWD/完整命令/commit/GPU/日志增长及E1均核实。R10保持原固定方案完成，不以其新结果改R12设计、预算或顺序。24项完整汇总检查PASS，检查动态context量/比例、全部预算和七视图/整数1pp/真实涨分/成本；汇总工具不修改运行中方法commit。当前尚无R12目标结果。
