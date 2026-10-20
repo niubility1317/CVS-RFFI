@@ -1,0 +1,271 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-evaluation-restoration-R32-all-versions-F50-s2026092701-m2-r36",
+  "group_id": "pamf-restoration-r32-all-versions",
+  "display_name": "R32 两版恢复器均做七场景正式测试",
+  "description": "按用户最新要求固定测试 R32 对照和可观测响应两版，不以源域涨跌删行；完整同版七视图结果复用，其余补齐，0 新训练。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "all_versions_formal",
+    "frozen_F50",
+    "truth_last",
+    "no_new_training"
+  ],
+  "comparison_group_id": "R32_all_versions_same_F50",
+  "parent_run_ids": [
+    "20261020-phase1-restoration-observable-response-selfsup-s2026092701-m2-r32",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02"
+  ],
+  "replaces_run_id": "20261020-evaluation-restoration-R32-positive-control-F50-s2026092701-r33",
+  "authorization": "用户2026-10-20明确以后每个网络新版都做正式测试，不能只看源域；本次固定包含当前R32两版，不热改健康训练，不追加历史源域失败版本。",
+  "code": {
+    "commit": "318658985067b511f5e98089a23db1e34990929b",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
+    "cwd": "releases/pamf_R32_all_formal_20261020_r36"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "Both R32 original3unshared U-Net/CG2/2/2;one current IQ2x256;original F derives FFT/PA/time/stats;R05 fixedreceived168000x7",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "Original R32 legal source-role physical IDs and originalR05 formal168000 physical IDs,unchanged",
+    "label_map_ref": "No R36 training;source labels not read for test inclusion;targettruth only in separateCPU scorer after all7valid fixedpredictions",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json: READY/EXACT_MATCH; reuse existing cache without new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "Unchanged code/leo_practical/channel.py;reuse R07 epoch01..20 and original sourceV;conditional original formal received bytes",
+    "restoration_train_counts": {
+      "new_epochs": 0,
+      "new_updates": 0,
+      "inherited_R32_epochs": 20,
+      "inherited_R32_updates": 4940,
+      "inherited_L_visits": 126000,
+      "inherited_U_visits": 1134000,
+      "inherited_L_waveform_forwards": 378000,
+      "inherited_U_waveform_forwards": 3402000,
+      "training_TX_labels": 0,
+      "training_F_access": false,
+      "source_V_fit_updates": 0
+    },
+    "source_validation_panel": 1800,
+    "target_panel": "Both R32 versions unconditionally:168000x7each;reuse complete same-row formal artifacts without score gating"
+  },
+  "permissions": {
+    "regime": "Fixed all-version frozen evaluation only;0newtraining/fit;parent run unchanged",
+    "query_use": "Both fixed rows after R32 complete/exit;single current IQ inference;all7predictions before independent CPU truth;no targetfeedback",
+    "external_method_exception": null,
+    "claim_scope": "Previously exposed fixed formal benchmark;not a new blind test;single F improvement not per-detail TX authenticity proof"
+  },
+  "checkpoint": {
+    "initialization": "Both complete R32 E20/4940 original schema/fullstate;no new updates",
+    "sources": [
+      {
+        "run_id": "20261020-phase1-restoration-observable-response-selfsup-s2026092701-m2-r32",
+        "commit": "1857f2c26eabbf68838bad1074e4fdc9b02e267f",
+        "role": "Both fixed restored versions;source-only original R02/R07 ancestors;E20/4940 pending healthy training",
+        "path": "runs/20261020-phase1-restoration-observable-response-selfsup-s2026092701-m2-r32/{pair_aug_control,observable_response}/native_map_prior/final.pt"
+      },
+      {
+        "run_id": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+        "commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+        "role": "Original frozen F50/default head,never trained by recovery",
+        "path": "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+      }
+    ],
+    "contract_check_ref": "Reuse originalR32/R02/R07 andF50 provenance,unchanged7/63/30;both fixedE20/4940/strictstates;actual2Ls noquerysmoke atlaunch",
+    "provenance_verdict": "VERIFIED unchanged ancestors/data contract;R32 finalE20 pending healthy training and strict actual check atlaunch",
+    "selection_rule": {
+      "policy": "User 2026-10-20: every new network version receives formal testing regardless of source performance",
+      "rows": [
+        "pair_aug_control",
+        "observable_response"
+      ],
+      "checkpoint": "Fixed originalE20/4940",
+      "source_performance_gate": false,
+      "no_target_feedback": true,
+      "parent_decisions_modified": false
+    }
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/r32-all-versions-formal",
+    "gpu_policy": "AfterR32allownedprocessesexit;pool0/1/5/7,max2ownGPUworkers/onepercard;allowner cap2/free12GB;original shared receiver_residual_capacity4.lock;protect peers",
+    "remote_run_root": "runs/20261020-evaluation-restoration-R32-all-versions-F50-s2026092701-m2-r36",
+    "remote_log_root": "logs/20261020-evaluation-restoration-R32-all-versions-F50-s2026092701-m2-r36",
+    "local_artifact_root": "local_artifacts/pamf_restoration/r32_all_formal_r36_20261020",
+    "launch_command": "python -u -m experiments.pamf_r32_all_formal.runner run --parent-run ../../runs/20261020-phase1-restoration-observable-response-selfsup-s2026092701-m2-r32 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-evaluation-restoration-R32-all-versions-F50-s2026092701-m2-r36 --expected-commit 318658985067b511f5e98089a23db1e34990929b",
+    "stop_rule": "Wrong inputs/lineage,collision,nonfinite or technical failure:preserve artifacts and healthy peers;hold pending rows;no automatic retry"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "resolved_config.json",
+    "formal_matrix.json",
+    "smoke.json",
+    "complete.json",
+    "{row}/native_map_prior/final.pt",
+    "{row}/target_complete.json",
+    "{row}/goal_assessment.json",
+    "New:{row}/target_confirmation/native_map_prior/prediction/complete.json,summary.json;workers.json;logs/target-{row}.log",
+    "Reused:{row}/reused.json referencing original complete same-row seven-view prediction and summary"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "MacroF1",
+      "repair_damage_net",
+      "TX_RX_day",
+      "IQ_NMSE",
+      "prefix232_tail24_NMSE",
+      "FFT_logpower",
+      "paired_clean_feature_distance",
+      "other_TX_margin",
+      "prediction_cost",
+      "goal_70_and_5pp"
+    ],
+    "dimensions": [
+      "clean",
+      "three suburban separately",
+      "three urban separately",
+      "TX",
+      "RX",
+      "day",
+      "train role/state/lock"
+    ],
+    "primary": "Both fixed R32 versions formally tested regardless source gains;accuracy/MacroF1 and70/5pp goals",
+    "prediction_ref": "runs/20261020-evaluation-restoration-R32-all-versions-F50-s2026092701-m2-r36/{row}/target_confirmation/native_map_prior/prediction or validated same-row R32 reuse",
+    "scorer_ref": "experiments.pamf_r32_all_formal.runner score;independent CPU after all7predictions;no source qualified gate",
+    "final_user_targets": {
+      "lowurban_accuracy_min": 70.0,
+      "other_five_max_gap_vs_original_clean_pp": 5.0
+    }
+  },
+  "rows": [
+    {
+      "row_id": "pair_aug_control",
+      "method": "r32_all_formal",
+      "purpose": "fixed_formal_all_versions",
+      "config_ref": "experiments/pamf_r32_all_formal/design.py#configuration",
+      "resolved_config_ref": "runs/20261020-evaluation-restoration-R32-all-versions-F50-s2026092701-m2-r36/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "0 new training;originalR32 seed2701/shuffle2001/R07augmentation1912 andpaired2032 inherited;split392005;formal R05 evaluation2027;support null because Phase1 has no support",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 newtraining;perrow original R32E20/4940 L126000/U1134000 physical exposures and3xwaveformforwards;inheritedcoarse20+action20+prior20 component60;F50E50 separate",
+      "output_root": "runs/20261020-evaluation-restoration-R32-all-versions-F50-s2026092701-m2-r36/pair_aug_control",
+      "log_path": "runs/20261020-evaluation-restoration-R32-all-versions-F50-s2026092701-m2-r36/logs/target-pair_aug_control.log",
+      "command": "python -u -m experiments.pamf_r32_all_formal.runner run --parent-run ../../runs/20261020-phase1-restoration-observable-response-selfsup-s2026092701-m2-r32 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-evaluation-restoration-R32-all-versions-F50-s2026092701-m2-r36 --expected-commit 318658985067b511f5e98089a23db1e34990929b",
+      "expected_artifacts": [
+        "launch.json",
+        "resolved_config.json",
+        "formal_matrix.json",
+        "smoke.json",
+        "complete.json",
+        "{row}/native_map_prior/final.pt",
+        "{row}/target_complete.json",
+        "{row}/goal_assessment.json",
+        "New:{row}/target_confirmation/native_map_prior/prediction/complete.json,summary.json;workers.json;logs/target-{row}.log",
+        "Reused:{row}/reused.json referencing original complete same-row seven-view prediction and summary"
+      ]
+    },
+    {
+      "row_id": "observable_response",
+      "method": "r32_all_formal",
+      "purpose": "fixed_formal_all_versions",
+      "config_ref": "experiments/pamf_r32_all_formal/design.py#configuration",
+      "resolved_config_ref": "runs/20261020-evaluation-restoration-R32-all-versions-F50-s2026092701-m2-r36/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "0 new training;originalR32 seed2701/shuffle2001/R07augmentation1912 andpaired2032 inherited;split392005;formal R05 evaluation2027;support null because Phase1 has no support",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 newtraining;perrow original R32E20/4940 L126000/U1134000 physical exposures and3xwaveformforwards;inheritedcoarse20+action20+prior20 component60;F50E50 separate",
+      "output_root": "runs/20261020-evaluation-restoration-R32-all-versions-F50-s2026092701-m2-r36/observable_response",
+      "log_path": "runs/20261020-evaluation-restoration-R32-all-versions-F50-s2026092701-m2-r36/logs/target-observable_response.log",
+      "command": "python -u -m experiments.pamf_r32_all_formal.runner run --parent-run ../../runs/20261020-phase1-restoration-observable-response-selfsup-s2026092701-m2-r32 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-evaluation-restoration-R32-all-versions-F50-s2026092701-m2-r36 --expected-commit 318658985067b511f5e98089a23db1e34990929b",
+      "expected_artifacts": [
+        "launch.json",
+        "resolved_config.json",
+        "formal_matrix.json",
+        "smoke.json",
+        "complete.json",
+        "{row}/native_map_prior/final.pt",
+        "{row}/target_complete.json",
+        "{row}/goal_assessment.json",
+        "New:{row}/target_confirmation/native_map_prior/prediction/complete.json,summary.json;workers.json;logs/target-{row}.log",
+        "Reused:{row}/reused.json referencing original complete same-row seven-view prediction and summary"
+      ]
+    }
+  ],
+  "notes": [
+    "Fixed two-row formal matrix before final R32 source scores or any new R32 target outcomes;source-performance gate removed by explicit user scope change.",
+    "Original R32 immutable training/controller remains unchanged;R36 waits rootANALYZED and allownedprocessesexit;R33 neverlaunched and superseded.",
+    "Both realfinalrestorer checkpoints/original F50 noquerysmoke atlaunch;0newTXlabels/F training/targetadaptation/heads.",
+    "Complete comparable original R32 same-row seven-view formal predictions/scores reused without accuracy gating;partial artifacts preserved without duplicate inference.",
+    "All7formalpredictions before separateCPUtruth,reportsuburban/urban/TX/RX/day/repairdamage/70and5pp;singleF andsyntheticresponse not perdetailTXproof.",
+    "24 focused protocol checks,CLIhelp andone scopedP0P1 PASS after targeted actual-release interface verification;actualcheckpointsmoke/preflight/archiveSHA/remotecompile remain due atlaunch.",
+    "LOCAL_VERIFIED;no R36 remote run/process/root yet;no historical source-failure massbackfill."
+  ],
+  "registered_at": "2026-10-20T06:57:16+00:00"
+}
