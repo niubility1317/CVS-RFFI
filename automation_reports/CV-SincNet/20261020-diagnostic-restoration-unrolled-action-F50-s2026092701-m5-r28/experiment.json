@@ -1,0 +1,250 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-diagnostic-restoration-unrolled-action-F50-s2026092701-m5-r28",
+  "group_id": "pamf-restoration-unrolled-action-fidelity",
+  "display_name": "三步 U-Net 的作用、噪声和末级先验源域诊断",
+  "description": "固定原源域选择的 R17 unroll_unshared；五路三步反事实及原 identity/coarse 参考；零训练、零 target。",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "source_diagnostic",
+    "oracle_not_deployable",
+    "frozen_F"
+  ],
+  "comparison_group_id": "manysig-source1800-R17-three-stage-action",
+  "parent_run_ids": [
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+    "20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10",
+    "20261019-phase1-restoration-learned-action-source-s2026092701-r07",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户持续恢复研究授权；检验原 R17 A17-08 已留下的源域作用反事实问题。R27 正式分数不参与模型、参数或解释门槛选择。",
+  "code": {
+    "commit": "2af222f06595e8f7d355d032c0144d49802a6174",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
+    "cwd": "releases/pamf_unrolled_action_20261020_r28"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "Original source received IQ2x256 and R07 matched known64tap/main/image/variance cache;one restored IQ for all F branches",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/validation original1800 sourceV physicalIDs;matching validation_actions perview reused without regeneration",
+    "label_map_ref": "V labels stay closed until all five readouts x seven views finite and complete;independent CPU scoring only",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json: READY/EXACT_MATCH; reuse existing cache without new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "Unchanged original source practical received and validated action cache;2462MHz/25MHz source proxy,not inorbit",
+    "restoration_train_counts": {
+      "new_epochs": 0,
+      "new_updates": 0,
+      "new_L_exposures": 0,
+      "new_U_exposures": 0,
+      "parent_L_count": 6300,
+      "parent_U_count": 56700
+    },
+    "source_validation_panel": 1800,
+    "target_panel": "None;source-only diagnostic;all oracles nondeployable and never automatically target-promoted"
+  },
+  "permissions": {
+    "regime": "Frozen three-stage source-V conditional diagnostic;known action and simulator variance proxy are source oracles",
+    "query_use": "No target/query input or mode;no source V state updates;labels only in separate CPU scorer after complete prediction",
+    "external_method_exception": null,
+    "claim_scope": "Source mechanistic evidence;not theoretical upper bound, deployable oracle, formal goal success or per-detail identity proof"
+  },
+  "checkpoint": {
+    "initialization": "Strict original R17 unroll_unshared/native_map_prior/final.pt;E20/4940 full-LU training;all parameters frozen",
+    "sources": [
+      {
+        "run_id": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+        "commit": "cd97744884b5e460926e48c8b7efb7d78c6da0f4",
+        "role": "Original fixed source-selected unshared three-stage restorer;0TX/F/target training",
+        "path": "runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/unroll_unshared/native_map_prior/final.pt"
+      },
+      {
+        "run_id": "20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10",
+        "commit": "b57eca9946b2a912a88870e24826fe3e2f70985d",
+        "role": "Original matched identity/coarse source inference references only;not the new prior",
+        "path": "runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10/reference_controls/prediction"
+      },
+      {
+        "run_id": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+        "commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+        "role": "Original frozen F50/defaulthead inference only",
+        "path": "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+      }
+    ],
+    "contract_check_ref": "Reuse original source handles and R07 provenance;strict R17 full training and parent commit checks;real2Ls noquery smoke compares new native trajectory to original forward",
+    "provenance_verdict": "VERIFIED unchanged original 7/63/30 physical role contract and source-only ancestors;no target use or unknown inherited weights",
+    "selection_rule": {
+      "parent": "Historical R17 source-selected unroll_unshared;not selected by R27 target rank",
+      "interpretation_only": {
+        "mean6_NMSE_ratio_max": 0.95,
+        "lowurban_gain_min_pp": 1.0,
+        "midurban_gain_min_pp": 0.5,
+        "clean_drop_vs_original_max_pp": 0.1,
+        "worst_lowurban_TX_delta_min_pp": -1.0
+      },
+      "target_promotion": false
+    },
+    "evaluation_readers": [
+      "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701 original defaulthead"
+    ]
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/unrolled-action-fidelity",
+    "gpu_policy": "Pool0/1/5/7,max1ownworker;allowner cap2/free12GB;sharedcapacity4lock until CUDA PID visible;no other-owner mutation",
+    "remote_run_root": "runs/20261020-diagnostic-restoration-unrolled-action-F50-s2026092701-m5-r28",
+    "remote_log_root": "logs/20261020-diagnostic-restoration-unrolled-action-F50-s2026092701-m5-r28",
+    "local_artifact_root": "local_artifacts/pamf_restoration/unrolled_action_r28_20261020",
+    "launch_command": "python -u -m experiments.pamf_unrolled_action_fidelity.runner run --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --reference-run ../../runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10 --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --output ../../runs/20261020-diagnostic-restoration-unrolled-action-F50-s2026092701-m5-r28 --expected-commit 2af222f06595e8f7d355d032c0144d49802a6174",
+    "stop_rule": "Wrongsource/parent,collision,nonfinite,incompleteprediction:preserveoutputs,abortownrun,noautomaticretry;healthyjobsunchanged"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "resolved_config.json",
+    "smoke.json",
+    "worker.json",
+    "gpu_ready.json",
+    "predict.log",
+    "prediction/{view}.{readout}.{iq,features,logits}.npy",
+    "prediction/physical_ids.npy",
+    "prediction/complete.json",
+    "summary.json",
+    "interpretation.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "IQNMSEfull/prefix232/tail24",
+      "FFTlogpowerL1",
+      "originalF50accuracy/MacroF1",
+      "repair/damage",
+      "pairedcleanfeaturecosine/capped512sameTXmargin",
+      "predictionseconds"
+    ],
+    "dimensions": [
+      "clean",
+      "three suburban separately",
+      "three urban separately",
+      "TX",
+      "RX",
+      "day",
+      "train role/state/lock"
+    ],
+    "primary": "Known action+simulator variance vs new native R17 control;single substitutions and last-prior isolate conditional effects;source-only interpretation",
+    "prediction_ref": "runs/20261020-diagnostic-restoration-unrolled-action-F50-s2026092701-m5-r28/prediction;identity/coarse reuse original R10 reference_controls only",
+    "scorer_ref": "experiments.pamf_unrolled_action_fidelity.runner score;independent CPU after all35 new prediction sets complete",
+    "final_user_targets": {
+      "lowurban_accuracy_min": 70.0,
+      "other_five_max_gap_vs_original_clean_pp": 5.0
+    }
+  },
+  "rows": [
+    {
+      "row_id": "source_counterfactuals",
+      "method": "unrolled_action_fidelity",
+      "purpose": "source_only_counterfactual",
+      "config_ref": "experiments/pamf_unrolled_action_fidelity/design.py#configuration",
+      "resolved_config_ref": "runs/20261020-diagnostic-restoration-unrolled-action-F50-s2026092701-m5-r28/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101901
+      },
+      "seed_notes": "No new RNG:parent R17 training data/augmentation seeds are provenance only;reused source validation draw0/data2026101901 and hardware2026101902;support/K/query N/A",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "None(frozen)",
+      "lr": 0.0,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0newtraining/fit/draws;five readouts from four full three-stage trajectories;three Core9 calls and CG2/2/2 per trajectory;original SCALE unchanged;1800 source records/7 correlated views",
+      "output_root": "runs/20261020-diagnostic-restoration-unrolled-action-F50-s2026092701-m5-r28/prediction",
+      "log_path": "runs/20261020-diagnostic-restoration-unrolled-action-F50-s2026092701-m5-r28/predict.log",
+      "command": "python -u -m experiments.pamf_unrolled_action_fidelity.runner run --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --reference-run ../../runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10 --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --output ../../runs/20261020-diagnostic-restoration-unrolled-action-F50-s2026092701-m5-r28 --expected-commit 2af222f06595e8f7d355d032c0144d49802a6174",
+      "expected_artifacts": [
+        "launch.json",
+        "resolved_config.json",
+        "smoke.json",
+        "worker.json",
+        "gpu_ready.json",
+        "predict.log",
+        "prediction/{view}.{readout}.{iq,features,logits}.npy",
+        "prediction/physical_ids.npy",
+        "prediction/complete.json",
+        "summary.json",
+        "interpretation.json",
+        "complete.json"
+      ],
+      "counterfactual_readouts": [
+        "native_estimated",
+        "known_action_estvar",
+        "est_action_simvar",
+        "known_action_simvar",
+        "prior_only"
+      ],
+      "reference_readouts": [
+        "identity",
+        "coarse"
+      ]
+    }
+  ],
+  "notes": [
+    "Question is original R17 report A17-08;R14 tested one-step R10 and cannot answer frozen three-stage behavior.",
+    "Source-selected unshared parent fixed before new predictions;R27 target rankings never feed this design or thresholds.",
+    "1800 source physical records;7 correlated views,5 new readouts and2 reused references;735 group records expected,not independent 63000 observations.",
+    "All three innovations/MAPs swap action;all three logvar inputs/MAP weights swap variance;last prior retains first two native MAP steps.",
+    "Known action includes conditional AGC/lock;variance is native white-input equivalent real-noise proxy,not full true covariance. Frozen priors coadapted to original estimates;no theoretical upper bound claim.",
+    "0 new epochs/updates/L/U exposures/F-guided training;F50 trained source-supervised historically,so entire chain is not wholly unsupervised.",
+    "All35 new prediction sets and original references checked before independent CPU source truth;all three suburban,three urban,clean,TX/RX/day,repair/damage,IQ/FFT/paired clean feature metrics retained.",
+    "40 focused checks and one independent P0/P1 PASS;real checkpoint two-Ls noquery smoke is launcher first step and continues immediately.",
+    "No target mode or automatic oracle promotion. Goal70/5pp and per-detail TX identity remain unachieved;negative evidence retained.",
+    "One immutable root/release/owner;one GPU worker;technical failure preserves output and healthy peers,no automatic retry."
+  ],
+  "registered_at": "2026-10-20T03:26:11+00:00"
+}
