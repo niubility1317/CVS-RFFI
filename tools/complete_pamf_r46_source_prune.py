@@ -215,6 +215,19 @@ def report(local,output,analysis,artifacts):
                         records.append(dict(arm=arm,role=role,view=view,dimension=dimension,value=label,**{k:metric[k] for k in ('count','correct','accuracy','macro_f1','repaired','damaged','net_repaired')}))
     with (folder/'row_metrics.csv').open('w',encoding='utf-8',newline='') as stream:
         writer=csv.DictWriter(stream,fieldnames=list(records[0]));writer.writeheader();writer.writerows(records)
+    usage = ['# R54 两套独立恢复器', '',
+        '两行均已完成固定 E20/4940、168000 条记录的七场景正式预测及独立 truth-last 评分。全部正负结果见公开报告。CPU 严格加载、合成零 IQ 有限输出及参数核对已通过；不因此宣称输入 TX 的每个细节均已得到证明。', '',
+        '|模型|完整参数|权重相对路径|', '|---|---:|---|']
+    for arm in d.ARMS:
+        usage.append(f"|{arm}|{artifacts['models'][arm]['parameters']}|{arm}/final.pt|")
+    usage += ['', '```python', 'import torch',
+        'from experiments.pamf_r46_source_prune.runtime import load_checkpoint',
+        'model, metadata = load_checkpoint("path/to/models/activation_energy/final.pt", "cuda:0")',
+        'model.eval().requires_grad_(False)', 'with torch.no_grad():',
+        '    restored_iq = model(received_iq)  # float32 [B, 2, 256]，原生幅度', '```', '',
+        '恢复器推理无需教师、源数据、校准文件或 F。身份识别时，将同一 restored_iq 交给原冻结 F50 默认头，由原 F 一致计算 FFT、PA、时域与统计分支；不另训或替换分类头。两版均直接继承用户指定的 R46 350521 父版。', '',
+        '识别性能为主要指标，参数、时延、吞吐和显存为辅助指标。每景准确率、匹配同宽控制与原 70%/5pp 目标分别报告。权重不提交 Git。', '']
+    (output/'models/README.md').write_text('\n'.join(usage),encoding='utf-8')
     spec=json.loads((folder/'experiment.json').read_text(encoding='utf-8'));spec['scientific_outcome']=dict(status='ANALYZED',all_fixed_rows_scored=True,
         accepted_R17=[a for a,r in analysis['rows'].items() if r['acceptance']['R17']['accepted']],accepted_R46=[a for a,r in analysis['rows'].items() if r['acceptance']['R46']['accepted']],goal_complete=False)
     write(folder/'experiment.json',spec)
