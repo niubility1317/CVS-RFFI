@@ -64,3 +64,5 @@
 |冻结 R17 两版精简模型的目标域对照 R05|managed_run|[打开](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-compact-target-comparison-s2026092701-m2-r05/report.md)|
 |R17 四种精简结构并行验证 R07|managed_run|[打开](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-parallel-compact-s2026092701-m4-r07/report.md)|
 |共享低秩先验的 R17 进一步精简 R06|managed_run|[打开](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-shared-factor-s2026092701-m2-r06/report.md)|
+|同时压缩粗恢复与信道估计的 R17 精简 R08|managed_run|[打开](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-context-compact-s2026092701-m2-r08/report.md)|
+|R17 压缩与恢复识别联合优化 R09|managed_run|[打开](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-joint-optimize-s2026092701-m4-r09/report.md)|

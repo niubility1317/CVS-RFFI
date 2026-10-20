@@ -431,3 +431,7 @@
 本轮记录：[R17共享低秩双候选](by_method/shared_low_rank.md)。
 
 本轮记录：[R17四结构并行精简](by_method/parallel_compact.md)。
+
+本轮记录：[R17上下文压缩](by_method/context_compact.md)。
+
+本轮记录：[R17压缩和联合优化](by_method/joint_optimization.md)。
