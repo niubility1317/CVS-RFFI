@@ -175,7 +175,12 @@
     "remote_log_root": "logs/20261021-phase1-restoration-R46-whole-group-fold-s2026092701-m2-r64",
     "local_artifact_root": "local_artifacts/pamf_restoration/r46_group_fold_r64_20261021",
     "launch_command": "python -u -m experiments.pamf_r46_group_fold.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261021-phase1-restoration-R46-whole-group-fold-s2026092701-m2-r64 --expected-commit 1c5ecf805afa9a15c23de8e3232b7cc83b37dad5",
-    "stop_rule": "Technical failure preserves affectedoutputs,healthy peers unchanged;no automaticretry/hotedit/stop"
+    "stop_rule": "Technical failure preserves affectedoutputs,healthy peers unchanged;no automaticretry/hotedit/stop",
+    "postlaunch_state": "VERIFIED_ACTUAL_GPU_TRAINING",
+    "actual_training_rows_verified": [
+      "fold_full",
+      "fold_half"
+    ]
   },
   "expected_artifacts": [
     "launch.json",
@@ -425,7 +430,8 @@
     "Prototype22704e5b81d8caf0d1ea89380ca8dd950b80a994 fixedbefore R62source/targetaccuracy read;no scorefeedback to choices. R62group_preserve readonlysamegraph/parent/budget/objective control,not teacher.",
     "OnlydirecthumanM35init/IQteacher;all63000source/E20/4940/globalmicro256/originalIQ+.05spec+1to.1teacher;allcoarse/action/priorjoint;0TX/F/V/targetoptimization.",
     "Everyfixedrowfull7formal regardlesssource;wholepredictionbeforeindependenttruthlast/samecardcost/negative results retained;exposedengineeringbenchmark,notnewblind/perdetailproof.",
-    "PhysicalGPU3/2each1own/max2acrossR62R64;waitactualsamecardR62completion+PIDexit/capacity beforenewGPUallocation;healthyotherownersuntouched."
+    "PhysicalGPU3/2each1own/max2acrossR62R64;waitactualsamecardR62completion+PIDexit/capacity beforenewGPUallocation;healthyotherownersuntouched.",
+    "VERIFIED / TRAINING：方法 1c5ecf805afa9a15c23de8e3232b7cc83b37dad5 已普通账户发布，单归档SHA与compile通过。实际共享源校准/真实M35/F50/2Ls no-query smoke PASS；两行物理GPU3/2实际PID/CWD/argv/CUDA/CPU2、GPU PID、日志增长和有限epoch已核实。103处完整输入统计来自128源LU/256父G，只计一次校准成本，0clean/TX/F/V/target/optimizer；新推理参数0。两行248828/GN3/fullprior，补偿强度1/.5；核心22704e5在读取R62分数前固定，直接M35初始化/教师不变，原E20/4940与自动全7正式测试/独立truthlast/同卡成本不变，无源筛选。R62同卡旧GPU进程已实际EXITED，其他owner保持。无R64识别收益结论，完整目标ACTIVE。"
   ],
   "reused_controls": [
     {

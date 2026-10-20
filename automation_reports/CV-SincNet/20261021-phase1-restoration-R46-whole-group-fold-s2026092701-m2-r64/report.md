@@ -1,6 +1,6 @@
 # R64：完整组压缩的源统计补偿
 
-状态：LOCAL_VERIFIED，尚未登记、发布或训练，无新识别性能或GPU时延结论。67项针对性检查、CLI与唯一一次独立P0/P1审查通过。真实M35父严格加载和256条合成CPU校准覆盖103处，两行全部组件输出/梯度有限且非零、父及完整prior初值不变；这不是生产源校准。实际源IQ校准尚未执行。核心22704e5b81d8caf0d1ea89380ca8dd950b80a994在读取R62源/目标准确率前固定，后续分数不回流方案。启动器首步执行一次真实源校准和2Ls/F50 no-query smoke，PASS立即继续。
+状态：VERIFIED / TRAINING，已发布并实际训练，无新识别性能或GPU时延结论。67项针对性检查、CLI与唯一一次独立P0/P1审查通过。真实M35父严格加载和256条合成CPU校准覆盖103处，两行全部组件输出/梯度有限且非零、父及完整prior初值不变；这不是生产源校准。实际源IQ校准尚未执行。核心22704e5b81d8caf0d1ea89380ca8dd950b80a994在读取R62源/目标准确率前固定，后续分数不回流方案。启动器首步执行一次真实源校准和2Ls/F50 no-query smoke，PASS立即继续。
 
 直接初始化和冻结 IQ 教师仍为用户指定 R46 prune_refine350521，方法 bbb8daf817de050b958d217b70d4c33f4aefe341。沿用 R62 group_preserve 的完整 GN 组选择、GN3 上下文及完整 prior，完整248828、context136234、prior112594参数，仍为同一上下文 U-Net/三 prior/六 CG 接收链。禁止继承 R62、R55 或其他学生的训练后权重。
 
@@ -21,3 +21,6 @@
 性能优先，1pp仅为退化上限。保持low urban≥70%、其他五受损场景距rawclean≤5pp和输入TX逐细节真实性目标ACTIVE，不用源重构误差、减参或通过容差替代正式收益。
 
 方法 commit `1c5ecf805afa9a15c23de8e3232b7cc83b37dad5`。精确命令、环境/CWD、路径和矩阵见[登记](experiment.json)。
+
+
+VERIFIED / TRAINING：方法 1c5ecf805afa9a15c23de8e3232b7cc83b37dad5 已普通账户发布，单归档SHA与compile通过。实际共享源校准/真实M35/F50/2Ls no-query smoke PASS；两行物理GPU3/2实际PID/CWD/argv/CUDA/CPU2、GPU PID、日志增长和有限epoch已核实。103处完整输入统计来自128源LU/256父G，只计一次校准成本，0clean/TX/F/V/target/optimizer；新推理参数0。两行248828/GN3/fullprior，补偿强度1/.5；核心22704e5在读取R62分数前固定，直接M35初始化/教师不变，原E20/4940与自动全7正式测试/独立truthlast/同卡成本不变，无源筛选。R62同卡旧GPU进程已实际EXITED，其他owner保持。无R64识别收益结论，完整目标ACTIVE。
