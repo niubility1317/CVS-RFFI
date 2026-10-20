@@ -115,3 +115,5 @@ N607普通账户，GPU4/5等待R03根终态且实际ownedGPU进程退出；每�
 |source|activation_task|practical_low_urban|30|28|-2|80|
 
 完整教师置信度/波形与特征偏离及TX/RX/day分组见[保存预测配对汇总](saved_prediction_fidelity.json)。这项同row事后分析不改变选模、模型或目标准确率门槛，不作因果归因。
+
+成本测量口径补充：旧 matched_batch1_profile 的 peak_allocated_bytes 是进程总 PyTorch allocated peak：profile 内 load_checkpoint(...,cuda) 返回 payload 并在计时期间保留，原 R17 training checkpoint 含 optimizer 状态，精简 final 的 optimizer=None。因此旧显存比值保留为当时进程状态观测，不能解释为隔离的纯推理显存收益。该口径不影响参数数目、预测或目标准确率。R06 先 CPU 加载/删除 payload 再上 GPU，分别报告 resident 与增量 peak。

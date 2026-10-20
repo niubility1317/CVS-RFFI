@@ -115,3 +115,5 @@ N607普通账户，GPU4/5各一own target worker，free≥12GB/allowner<2，保�
 |activation_task|practical_low_urban|5227|5364|+137|14278|
 
 完整教师置信度/特征与保存IQ偏离、逐TX/RX/day分组见[配对汇总](paired_prediction_fidelity.json)。该同row事后分析不作因果归因或选择反馈，不改变1个百分点验收结果。整体准确率保持不表示每条样本预测一致，也不把场景阈值扩展为所有TX/RX/day分组逐项阈值。
+
+成本测量口径补充：旧 matched_batch1_profile 的 peak_allocated_bytes 是进程总 PyTorch allocated peak：profile 内 load_checkpoint(...,cuda) 返回 payload 并在计时期间保留，原 R17 training checkpoint 含 optimizer 状态，精简 final 的 optimizer=None。因此旧显存比值保留为当时进程状态观测，不能解释为隔离的纯推理显存收益。该口径不影响参数数目、预测或目标准确率。R06 先 CPU 加载/删除 payload 再上 GPU，分别报告 resident 与增量 peak。
