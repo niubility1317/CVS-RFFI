@@ -103,8 +103,8 @@ def parent_contract(parent):
     return qualify_source(read_json(row/'summary.json'), read_json(parent/'reference_controls/summary.json'))
 
 
-def assess_goal(summary):
-    if (summary['status'] != 'ANALYZED' or summary['role'] != 'target' or summary['kind'] != KIND or summary['count'] != 168000
+def assess_goal(summary, *, expected_kind=KIND):
+    if (summary['status'] != 'ANALYZED' or summary['role'] != 'target' or summary['kind'] != expected_kind or summary['count'] != 168000
             or summary['F_run'] != REFERENCE_RUN or summary['F_seed'] != 2026092701 or not summary['original_default_head']
             or not summary['all_predictions_before_truth']):
         raise ValueError('Completed same-F target scoring required for performance assessment')

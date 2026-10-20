@@ -185,10 +185,10 @@ def target_baseline(args, ids):
     return result, clean_features
 
 
-def score(args, role):
+def score(args, role, *, reference_loader=None):
     if os.environ.get('CUDA_VISIBLE_DEVICES') != '':
         raise ValueError('Independent CPU truth-side scorer required')
-    folder, ids, source, index = reference(args, role)
+    folder, ids, source, index = (reference if reference_loader is None else reference_loader)(args, role)
     row = row_folder(args, role)
     predictions = prediction_arrays(row/'prediction', ids, args.kind, role)
     if role == 'source':
