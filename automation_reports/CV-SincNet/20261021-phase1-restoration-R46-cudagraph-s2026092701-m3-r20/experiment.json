@@ -208,7 +208,8 @@
       "result_tests": 18,
       "new_training_updates": 0,
       "formal_result": false
-    }
+    },
+    "postlaunch_state": "VERIFIED_ALL_OWNED_HANDLES_EXITED"
   },
   "expected_artifacts": [
     "launch.json",
@@ -401,5 +402,23 @@
     "Minimal8itemworkflow only;no extra hashes/reviews/approvals or data revalidation.",
     "VERIFIED：onearchiveSHA/compile，三行actualPID/CWD/argv/commit/GPU/loggrowth，原R19实际句柄退出后GPU2串行/3单行；三行实际2Ls五批量smoke逐位一致PASS。28项执行与18项结果计算检查、唯一独立审查及原P1一次定向修复PASS；正式七景进行中。"
   ],
-  "registered_at": "2026-10-20T16:56:12+00:00"
+  "registered_at": "2026-10-20T16:56:12+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "every_version_full7formal": true,
+    "models_strict_loaded": 3,
+    "accepted_rows": [
+      "R46_350521_graph",
+      "R18_factor625_stage_graph",
+      "R18_factor625_cond_graph"
+    ],
+    "all_target_native_decisions_equal": {
+      "R46_350521_graph": true,
+      "R18_factor625_stage_graph": true,
+      "R18_factor625_cond_graph": true
+    },
+    "new_training_updates": 0,
+    "target_feedback": false,
+    "long_term_goal_complete": false
+  }
 }
