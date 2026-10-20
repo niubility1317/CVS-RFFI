@@ -1,0 +1,513 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261021-phase1-restoration-R46-stat-transport-s2026092701-m2-r58",
+  "group_id": "pamf-R46-learned-group-statistics",
+  "display_name": "压缩图内组统计校正：同图源拟合与恒等初始化控制",
+  "description": "指定350521直接父/原fullfold；168GN内新增2688可学习组统计参数、完整276453，同图拟合/恒等初始化两行；全E20后七正式测试。",
+  "kind": "cvs",
+  "stage": "Phase1-source-research-conditional-confirmation",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "compression",
+    "performance_first",
+    "R46_350521_parent",
+    "F_free",
+    "TX_unlabeled",
+    "learned_group_statistics",
+    "formal_all_versions"
+  ],
+  "comparison_group_id": "R58_calibrated_vs_identity_same_graph",
+  "parent_run_ids": [
+    "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46",
+    "20261020-phase1-restoration-R38-compression-methods-s2026092701-m2-r44",
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+    "20261019-phase1-restoration-learned-action-source-s2026092701-r07",
+    "20261021-phase1-restoration-R46-fold-compensate-s2026092701-m2-r55"
+  ],
+  "replaces_run_id": null,
+  "authorization": "持续goal内性能优先压缩优化；R57正式分数读取前固定核心原型与公式，保持父/Conv图/fullfold，组内少量参数联合自监督训练；全部固定行正式测试。",
+  "code": {
+    "commit": "3e1c14a733b2278c659c653c75a98657663cd8d4",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
+    "cwd": "releases/pamf_R46_stat_transport_20261021_r58"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "Original63000sourceL6300/U56700/R07 cachedreceived1..20;1800sourceV7views;fixedR05formal168000x7",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train6300L+56700U originalIDs;R07validation1800V;conditional R05 original168000IDs",
+    "label_map_ref": "0新TX/V/target训练标签；原F50源监督知识冻结；各row全7预测后独立truth-last评分",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json: READY/EXACT_MATCH; reuse existing cache without new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "Unchanged code/leo_practical/channel.py;reuse R07 epoch01..20 and original sourceV;conditional original formal received bytes",
+    "restoration_train_counts": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "epochs_per_row": 20,
+      "updates_per_row": 4940,
+      "L_exposures_per_row": 126000,
+      "U_exposures_per_row": 1134000,
+      "source_IQ_examples": 1260000,
+      "teacher_IQ_examples": 1260000,
+      "student_context_inputs": 1260000,
+      "global_batch": 256,
+      "microbatch": 256,
+      "source_tensor_backend": "direct_float32_buffer",
+      "TX_labels": 0,
+      "F_weight_loads": 0,
+      "F_output_reads": 0,
+      "V_training": 0,
+      "target_training": 0,
+      "inherited_component_epochs": 80,
+      "new_component_epochs": 20,
+      "cumulative_component_epochs": 100,
+      "cumulative_component_epoch_sum": 300,
+      "cumulative_serial_training_passes": 140,
+      "original_parameters_inherited_epochs": 80,
+      "original_parameters_cumulative_epochs": 100,
+      "new_stat_parameters_epochs": 20,
+      "new_stat_parameters_updates": 4940,
+      "new_stat_parameters": 2688
+    },
+    "source_validation_panel": 1800,
+    "target_panel": "两固定行各E20/4940后168000x7；无sourcegate",
+    "actual_training_labels": "原源配对clean和冻结R46IQ教师；0TX/F/V/target；不是无clean盲学习",
+    "augmentation": "OriginalR07 .15clean/.85residual cachedreceived,no newaugmentation or cleanconcatenation",
+    "runtime_inputs": "Current native-scale IQ only;one restored IQ through original F50/defaulthead;3prior/6CG;no teacher/clean/TX/RX/scene/cache/state updates",
+    "compressed_context_parameters": {
+      "calibrated": 186959,
+      "identity_control": 186959
+    },
+    "context_training": "OriginalConv/3prior6CG retained;168GN per-sample statistic correction+2688learnableparams;all276453joint;calibrated/identity samegraph;linear1to.1IQteacher",
+    "source_calibration": {
+      "source_unique_IQ": 128,
+      "L_s": 64,
+      "U_s": 64,
+      "received_views": [
+        "01",
+        "20"
+      ],
+      "sampling_seed": 2026102156,
+      "parent_G_inputs": 256,
+      "identity_child_G_inputs": 256,
+      "total_new_G_inputs": 512,
+      "reused_R55_parent_G_inputs": 256,
+      "ridge_fraction": 0.001,
+      "slope_bounds": [
+        0.25,
+        4.0
+      ],
+      "targets": "Frozen parent pre-GN full-group mean and log(biasedvariance+eps);one pair per source sample/group;no spatial subsampling",
+      "model": "Identity transport child with original full-fold inputweights;one shared CPU2 pass;fit fourgroup mean/logvariance coefficients perGN;no optimizer",
+      "calibrated": "Fit initializes existing source-derived new layer parameters;all learn jointly afterward",
+      "identity_control": "Identical graph with rawlog slopes0 and offsets0;all learn jointly afterward",
+      "TX_labels_read": 0,
+      "F_reads": 0,
+      "V_reads": 0,
+      "target_reads": 0,
+      "clean_IQ_reads": 0,
+      "optimizer_updates": 0
+    }
+  },
+  "permissions": {
+    "regime": "TX-unlabeled simulated-paired source self-supervision;F-free waveform teacher",
+    "query_use": "Full7 predictions fixed before independenttruthlast;no target optimization/selection;human parent choice after historical exposure disclosed",
+    "external_method_exception": null,
+    "claim_scope": "TX-unlabeled simulated-paired source self-supervision;noF/TX in restorationtraining;notcleanfree blind learning or per-detailTX proof"
+  },
+  "checkpoint": {
+    "initialization": "HumanR46sourcefinal350521/reusedR55sourcefullfold;new2688layerstatparams source-fitted oridentity;no trainedR55/R57student inherited",
+    "sources": [
+      {
+        "run_id": "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46",
+        "commit": "bbb8daf817de050b958d217b70d4c33f4aefe341",
+        "row": "prune_refine",
+        "epoch": 20,
+        "updates": 4940,
+        "parameters": 350521,
+        "role": "Only direct initialization/frozenIQteacher",
+        "path": "runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46/prune_refine/native_map_prior/final.pt"
+      },
+      {
+        "run_id": "20261021-phase1-restoration-R46-fold-compensate-s2026092701-m2-r55",
+        "commit": "6bea50605a1c2cfb49645b5c2f7ba8306b39791d",
+        "role": "Source-only128IQ/256parentG folding statistics and row indices;no trainedstudent weights;new pre-GN group-mean/logvariance fit parent+identitychild512G inputs"
+      }
+    ],
+    "contract_check_ref": "PinnedR46launch/plan/source-trainingcomplete/checkpointmetadata;reusevalidatedsourceREADY/EXACT_MATCH;no data revalidation",
+    "provenance_verdict": "R46source-fixedfinal20/4940 original7/63/30physicalsource ancestry;0TX/F/V/targettraining;human selected after formal exposure,engineering comparison only",
+    "selection_rule": "Both fixedfinalE20/4940;all rows auto source/profile/full7formal then independentCPUtruthlast;no sourcegate or earlystop",
+    "evaluation_readers": [
+      "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701 original defaulthead"
+    ],
+    "parent_run_ids": [
+      "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46",
+      "20261020-phase1-restoration-R38-compression-methods-s2026092701-m2-r44",
+      "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+      "20261019-phase1-restoration-learned-action-source-s2026092701-r07"
+    ],
+    "calibration": {
+      "source_unique_IQ": 128,
+      "L_s": 64,
+      "U_s": 64,
+      "received_views": [
+        "01",
+        "20"
+      ],
+      "sampling_seed": 2026102156,
+      "parent_G_inputs": 256,
+      "identity_child_G_inputs": 256,
+      "total_new_G_inputs": 512,
+      "reused_R55_parent_G_inputs": 256,
+      "ridge_fraction": 0.001,
+      "slope_bounds": [
+        0.25,
+        4.0
+      ],
+      "targets": "Frozen parent pre-GN full-group mean and log(biasedvariance+eps);one pair per source sample/group;no spatial subsampling",
+      "model": "Identity transport child with original full-fold inputweights;one shared CPU2 pass;fit fourgroup mean/logvariance coefficients perGN;no optimizer",
+      "calibrated": "Fit initializes existing source-derived new layer parameters;all learn jointly afterward",
+      "identity_control": "Identical graph with rawlog slopes0 and offsets0;all learn jointly afterward",
+      "TX_labels_read": 0,
+      "F_reads": 0,
+      "V_reads": 0,
+      "target_reads": 0,
+      "clean_IQ_reads": 0,
+      "optimizer_updates": 0
+    }
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/R46-stat-transport",
+    "gpu_policy": "PhysicalGPU3/2 oneownworkerpercard,max2acrossR57/R58;fixedR57rowcomplete+actualsamecardownedPIDexit;sharedscore.lockCPU2/max1scorer",
+    "remote_run_root": "runs/20261021-phase1-restoration-R46-stat-transport-s2026092701-m2-r58",
+    "remote_log_root": "logs/20261021-phase1-restoration-R46-stat-transport-s2026092701-m2-r58",
+    "local_artifact_root": "local_artifacts/pamf_restoration/r46_stat_transport_r58_20261021",
+    "launch_command": "python -u -m experiments.pamf_r46_stat_transport.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --fold-calibration-run ../../runs/20261021-phase1-restoration-R46-fold-compensate-s2026092701-m2-r55 --output ../../runs/20261021-phase1-restoration-R46-stat-transport-s2026092701-m2-r58 --expected-commit 3e1c14a733b2278c659c653c75a98657663cd8d4",
+    "stop_rule": "Wrongroot/ancestry/IDs,outputcollision,nonfiniteor incompleteinputs/calibration/training/prediction:preserveoutputs,noautomaticretry;healthyjobsuntouched",
+    "post_launch_verification": {
+      "status": "RUNNING_VERIFIED",
+      "ordinary_account": true,
+      "actual_controller_LIVE": true,
+      "CWD_command_commit_match": true,
+      "controller_log_growth": true,
+      "archive_SHA_match": true,
+      "remote_compile": true,
+      "actual_R38_F50_2Ls_paired_noquery_smoke": "PASS",
+      "new_GPU_workers": 2,
+      "waiting": [],
+      "training_performance_claim": false,
+      "actual_training_rows": [
+        "group_pruned",
+        "low_rank"
+      ]
+    },
+    "actual_training_rows_verified": [
+      "group_pruned",
+      "low_rank"
+    ]
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "comparison_plan.json",
+    "smoke.json",
+    "workers.json",
+    "stages.json",
+    "{row}/initialization.json",
+    "{row}/resolved_config.json",
+    "{row}/training.jsonl",
+    "{row}/training_complete.json",
+    "{row}/native_map_prior/final.pt",
+    "{row}/native_map_prior/prediction/complete.json",
+    "{row}/native_map_prior/summary.json",
+    "{row}/source_complete.json",
+    "{row}/matched_inference_profile.json",
+    "{row}/target_confirmation/native_map_prior/prediction/complete.json",
+    "{row}/target_confirmation/native_map_prior/summary.json",
+    "{row}/assessment.json",
+    "{row}/complete.json",
+    "complete.json",
+    "calibration.json (private group-statistic initializers/source folding)",
+    "calibration_statistic_moments.json (private)",
+    "calibration_source_rows.json (private)"
+  ],
+  "metrics_plan": {
+    "primary": "性能优先：两276453同图行每景accuracy/MacroF1配对差与R17/R46；R55只作旧normalization参考；70/5pp和1pp容差分列",
+    "source_rule": "Both fixedfinalE20/4940;all rows auto source/profile/full7formal then independentCPUtruthlast;no sourcegate or earlystop",
+    "target_acceptance_allowance_pp": 1.0,
+    "target_acceptance_unit": "percentage_points",
+    "metric_names": [
+      "perviewaccuracy/MacroF1/TX/RX/day/confusion",
+      "exactcorrectdelta/1ppacceptance/0ppdiagnostic",
+      "rawrepair/damage/net",
+      "full256/prefix232/tail24NMSE/FFTlogpower/pairedcleanfeaturegap",
+      "params/serializedbytes/latency/residentandpeakallocated",
+      "taskKL/unitF160distance/Fforwardcost/frozenFhead0updates"
+    ],
+    "dimensions": [
+      "calibrated_identity_samegraph",
+      "276453params2688newstats",
+      "sevenviews",
+      "TX",
+      "RX",
+      "day",
+      "20epochs"
+    ],
+    "prediction_ref": "runs/20261021-phase1-restoration-R46-stat-transport-s2026092701-m2-r58/<arm>/native_map_prior/prediction and target_confirmation/native_map_prior/prediction",
+    "scorer_ref": "pamf_r46_stat_transport.runner score_source/score_target;independentCPUtruthlast/sharedR41score.lock",
+    "final_user_targets": {
+      "lowurban_accuracy_min": 70.0,
+      "other_five_goal": "接近clean，未指定数值容差，独立于压缩1pp验收"
+    },
+    "cost": "Matched same-card source-only G and G+F;B1 warm16/64samples x3 alternating rounds;B32 warm4/16iterations x3;median,p90,p95,throughput,peak/resident memory;ConvLinearMAC excludes FFT/CG/norm",
+    "secondary": [
+      "paired_waveform_NMSE/FFT_error",
+      "repair_damage/clean_damage",
+      "B1_median_p90_p95/G_and_GplusF",
+      "B32_throughput",
+      "peak_incremental_shared_resident_memory",
+      "full_parameters/serialized_size/ConvLinearMAC"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "calibrated",
+      "method": "R46-stat-transport/calibrated",
+      "purpose": "compressed_graph_learned_group_statistics",
+      "config_ref": "experiments/pamf_r46_stat_transport/design.py#configuration",
+      "resolved_config_ref": "runs/20261021-phase1-restoration-R46-stat-transport-s2026092701-m2-r58/calibrated/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "model2026092701,sourceorderdataseed2026102001,R07 original fixedcache/order1..20;no newaugmentationseed",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "ResetAdamW/warm247/cos2e-5/WD1e-4/clip1/global256micro256/float32buffer",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "Originalweightsinherited80+20=100;new2688statparams0+20only;originalcomponent sum300/serial140;perrowL126000/U1134000;shared512Gcal/128unique plusreused256R55sourceGinputs;0clean/optimizer/TX/F/V/targetin calibration",
+      "output_root": "runs/20261021-phase1-restoration-R46-stat-transport-s2026092701-m2-r58/calibrated",
+      "log_path": "runs/20261021-phase1-restoration-R46-stat-transport-s2026092701-m2-r58/logs/worker-calibrated.log",
+      "command": "python -u -m experiments.pamf_r46_stat_transport.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --fold-calibration-run ../../runs/20261021-phase1-restoration-R46-fold-compensate-s2026092701-m2-r55 --output ../../runs/20261021-phase1-restoration-R46-stat-transport-s2026092701-m2-r58 --expected-commit 3e1c14a733b2278c659c653c75a98657663cd8d4",
+      "expected_artifacts": [
+        "launch.json",
+        "comparison_plan.json",
+        "smoke.json",
+        "workers.json",
+        "stages.json",
+        "{row}/initialization.json",
+        "{row}/resolved_config.json",
+        "{row}/training.jsonl",
+        "{row}/training_complete.json",
+        "{row}/native_map_prior/final.pt",
+        "{row}/native_map_prior/prediction/complete.json",
+        "{row}/native_map_prior/summary.json",
+        "{row}/source_complete.json",
+        "{row}/matched_inference_profile.json",
+        "{row}/target_confirmation/native_map_prior/prediction/complete.json",
+        "{row}/target_confirmation/native_map_prior/summary.json",
+        "{row}/assessment.json",
+        "{row}/complete.json",
+        "complete.json"
+      ],
+      "GPU": 3,
+      "trainable_parameters": 276453,
+      "parameters": 276453,
+      "context_parameters": 186959,
+      "teacher_weights": [
+        1.0,
+        0.9526315789473684,
+        0.9052631578947369,
+        0.8578947368421053,
+        0.8105263157894737,
+        0.7631578947368421,
+        0.7157894736842105,
+        0.668421052631579,
+        0.6210526315789473,
+        0.5736842105263158,
+        0.5263157894736843,
+        0.47894736842105257,
+        0.43157894736842106,
+        0.38421052631578945,
+        0.33684210526315794,
+        0.2894736842105263,
+        0.2421052631578947,
+        0.1947368421052631,
+        0.1473684210526316,
+        0.09999999999999998
+      ],
+      "calibration_seed": 2026102156,
+      "ridge_fraction": 0.001,
+      "fold_strength": 1.0,
+      "statistic_initializer": "calibrated",
+      "new_stat_parameters": 2688,
+      "stat_ridge_fraction": 0.001,
+      "stat_slope_bounds": [
+        0.25,
+        4.0
+      ]
+    },
+    {
+      "row_id": "identity_control",
+      "method": "R46-stat-transport/identity_control",
+      "purpose": "compressed_graph_learned_group_statistics",
+      "config_ref": "experiments/pamf_r46_stat_transport/design.py#configuration",
+      "resolved_config_ref": "runs/20261021-phase1-restoration-R46-stat-transport-s2026092701-m2-r58/identity_control/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "model2026092701,sourceorderdataseed2026102001,R07 original fixedcache/order1..20;no newaugmentationseed",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "ResetAdamW/warm247/cos2e-5/WD1e-4/clip1/global256micro256/float32buffer",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "Originalweightsinherited80+20=100;new2688statparams0+20only;originalcomponent sum300/serial140;perrowL126000/U1134000;shared512Gcal/128unique plusreused256R55sourceGinputs;0clean/optimizer/TX/F/V/targetin calibration",
+      "output_root": "runs/20261021-phase1-restoration-R46-stat-transport-s2026092701-m2-r58/identity_control",
+      "log_path": "runs/20261021-phase1-restoration-R46-stat-transport-s2026092701-m2-r58/logs/worker-identity_control.log",
+      "command": "python -u -m experiments.pamf_r46_stat_transport.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --fold-calibration-run ../../runs/20261021-phase1-restoration-R46-fold-compensate-s2026092701-m2-r55 --output ../../runs/20261021-phase1-restoration-R46-stat-transport-s2026092701-m2-r58 --expected-commit 3e1c14a733b2278c659c653c75a98657663cd8d4",
+      "expected_artifacts": [
+        "launch.json",
+        "comparison_plan.json",
+        "smoke.json",
+        "workers.json",
+        "stages.json",
+        "{row}/initialization.json",
+        "{row}/resolved_config.json",
+        "{row}/training.jsonl",
+        "{row}/training_complete.json",
+        "{row}/native_map_prior/final.pt",
+        "{row}/native_map_prior/prediction/complete.json",
+        "{row}/native_map_prior/summary.json",
+        "{row}/source_complete.json",
+        "{row}/matched_inference_profile.json",
+        "{row}/target_confirmation/native_map_prior/prediction/complete.json",
+        "{row}/target_confirmation/native_map_prior/summary.json",
+        "{row}/assessment.json",
+        "{row}/complete.json",
+        "complete.json"
+      ],
+      "GPU": 2,
+      "trainable_parameters": 276453,
+      "parameters": 276453,
+      "context_parameters": 186959,
+      "teacher_weights": [
+        1.0,
+        0.9526315789473684,
+        0.9052631578947369,
+        0.8578947368421053,
+        0.8105263157894737,
+        0.7631578947368421,
+        0.7157894736842105,
+        0.668421052631579,
+        0.6210526315789473,
+        0.5736842105263158,
+        0.5263157894736843,
+        0.47894736842105257,
+        0.43157894736842106,
+        0.38421052631578945,
+        0.33684210526315794,
+        0.2894736842105263,
+        0.2421052631578947,
+        0.1947368421052631,
+        0.1473684210526316,
+        0.09999999999999998
+      ],
+      "calibration_seed": 2026102156,
+      "ridge_fraction": 0.001,
+      "fold_strength": 1.0,
+      "statistic_initializer": "identity_control",
+      "new_stat_parameters": 2688,
+      "stat_ridge_fraction": 0.001,
+      "stat_slope_bounds": [
+        0.25,
+        4.0
+      ]
+    }
+  ],
+  "notes": [
+    "31focusedchecks/CLIhelp/ONE independentP0P1PASS;launcher first real512sourceGcalibration thenR46/F50/2Lsnoquerysmoke;0clean/TX/F/V/target/optimizerin calibration.",
+    "SameexistingConvfullfold/3prior6CG;new168GNgroupstatmodules+2688learnableparameters;complete276453/context186959;calibratedvsidentity SAMEgraph/cost/budget,notfreeparameters/buffers.",
+    "Originalparameters80inherited+20new=100;newstatparametersonly20epochs/4940updates;all276453parametersjointlyoptimized;source counts and inherited/newcost separate.",
+    "Same128R55sourceindices/received01and20;fullpreGNgroupmean/logvariance pairstats;GN4quotaalignment;identity-centeredridge1e-3/slopes.25to4;sourceparent+identitychild512Ginputs sharedonce.",
+    "R55fold_full ispreviousnormalization reference only:Convwidths match buttotalparameters andnormalizercompute differ;primarymatchedcontrolisidentity_control row.",
+    "Prototype/formulafixedbeforeR57formal scores read;nonewtargetbasedparent/width/loss/hyperparamselection;allrows full7formal regardlesssourceperformance.",
+    "GPU2/3only;max2acrossR57/R58;eachsamecardR57completeANDactualownedPIDexitguard;healthyothersunchanged.",
+    "NewmanualGNcompute/parameters/memory/latency mustbe measured;no speedprediction;notnewblindvalidation/notcleanfree/notperdetailTXproof.",
+    "Originalparameters80inherited+20new=100epochs;newstatisticparameters0inherited+20new;allsource/calibration/time/memory/parametersseparate;G/GplusFpairedsamecardB1/B32threealternatingrounds"
+  ],
+  "reused_controls": [
+    {
+      "run": "20261021-phase1-restoration-R46-fold-compensate-s2026092701-m2-r55",
+      "row": "fold_full",
+      "method_commit": "6bea50605a1c2cfb49645b5c2f7ba8306b39791d",
+      "parameters": 273765,
+      "role": "Previous original-normalization full-fold reference;Convwidths matched,complete parameter/normalization compute differ",
+      "training_repeated": false,
+      "target_results_used_for_selection": false
+    }
+  ],
+  "matched_control": {
+    "row": "identity_control",
+    "parameters": 276453,
+    "epochs": 20,
+    "updates": 4940,
+    "same_graph": true,
+    "same_cost": true,
+    "only_initialization_differs": true
+  },
+  "registered_at": "2026-10-20T20:18:56+00:00"
+}
