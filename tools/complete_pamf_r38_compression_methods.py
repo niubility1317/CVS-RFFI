@@ -77,8 +77,15 @@ else:
     folder = output/'collections'
     folder.mkdir(exist_ok=True)
     for arm, row in value['rows'].items():
-        row['stdout_findings'] = [line for line in row['stdout'].splitlines()
-            if re.search(r'Traceback|out of memory|killed|warning|\b(?:nan|inf)\b', line, re.I)]
+        # Keep raw output in the private collection; public results contain only
+        # finding categories and counts, not raw log lines or runtime paths.
+        findings = {}
+        for line in row['stdout'].splitlines():
+            for kind, pattern in (('traceback', r'Traceback'), ('out_of_memory', r'out of memory'),
+                                  ('killed', r'killed'), ('warning', r'warning'), ('nonfinite', r'\b(?:nan|inf)\b')):
+                if re.search(pattern, line, re.I):
+                    findings[kind] = findings.get(kind, 0) + 1
+        row['stdout_findings'] = [dict(kind=kind, lines=count) for kind, count in findings.items()]
     write(folder/(str(time.time_ns())+'.json'), value)
     analysis = completed_metrics(value)
     write(output/'analysis.json', analysis)
@@ -190,7 +197,9 @@ def report(local,output,analysis,artifacts):
     for arm in d.ARMS:registry.event(local,d.RUN,'ANALYZED',['report.md','results.json','row_metrics.csv'],'VERIFIED E20/4940;all7formaltruth-last;strictstandaloneIQmodel;allownedEXITED',row_id=arm)
     registry.event(local,d.RUN,'ANALYZED',['report.md','results.json','row_metrics.csv'],'Both different compression methods complete;negative results preserved;goalactive')
     for name in ('experiment.json','report.md','events.jsonl','results.json','row_metrics.csv'):
-        shutil.copyfile(folder/name,WORKSPACE/(folder/name).relative_to(local))
+        destination=WORKSPACE/(folder/name).relative_to(local)
+        if destination.resolve()!=(folder/name).resolve():
+            shutil.copyfile(folder/name,destination)
     write(output/'public_results_verified.json',dict(status='VERIFIED',run=d.RUN,methods=list(d.ARMS),all7formal=True,goal_complete=False))
     print(json.dumps(dict(status='REPORT_AND_MODELS_VERIFIED',report=str(folder/'report.md'),goal_complete=False)))
 
