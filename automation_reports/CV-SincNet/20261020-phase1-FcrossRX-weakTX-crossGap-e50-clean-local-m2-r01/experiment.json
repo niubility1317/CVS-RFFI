@@ -38,7 +38,7 @@
   "replaces_run_id": null,
   "authorization": "Active user weak-transmitter feature-learning goal. Keep original F+crossRX sameTX base, source-fixed weakTX1/3, normal defaulthead joint, local no satellite/clean only. New mechanism initialization scratch only.",
   "code": {
-    "commit": "PENDING_ACTUAL_CODE_CONFIG_COMMIT",
+    "commit": "39d7bb72a67a495912bd5ce8db68686210bfaad4",
     "checkout": "codex/phase1-rdrop-combinations-20261015",
     "environment": "Verified native Windows base Python3.10/PyTorch2.10+cu128; direct base interpreter; FP32/noTF32",
     "cwd": "IMMUTABLE_LOCAL_RELEASE/cvs_F_weakTX_crossGap50_local_20261020_r01"
@@ -454,7 +454,8 @@
     "CPU/CUDA actualF checks passed; eachdevice2 discarded syntheticnative steps, defaulthead joint andphysicalSinc updated; no realIQ/formaltraining/target. One realcheckpoint noquery CPU smoke passed anddiscarded. Source/config/hiddenlabel/physicalID/math negatives passed. Unique independent P0/P1 PASS; fullhead P1 caught beforelaunch, auxiliary-only fix CPU/CUDA PASS, targeted issue-only review PASS.",
     "Primary mean-embedding background https://jmlr.org/papers/v13/gretton12a.html. This is supervised feature separation penalty, not a full MMD test, statistical significance claim or guaranteed gain.",
     "Historical85.1139% only methodanchor; actual performance paired to matching localBASE. Exposed exploratoryclean benchmark; n1 noSD, allnegatives retained; no target-based hyper/seed/checkpoint change or independentblind/Phase2/satellite claim.",
-    "REJECTED_EXTRA_GATE: generic designapproval pauses/fullsuite beyond exclusive minimal whitelist; existing authorization suffices for scoped implementation, checks, oneP0P1 and local release."
+    "REJECTED_EXTRA_GATE: generic designapproval pauses/fullsuite beyond exclusive minimal whitelist; existing authorization suffices for scoped implementation, checks, oneP0P1 and local release.",
+    "Actual code/config commit 39d7bb72a67a495912bd5ce8db68686210bfaad4 independently matched remote branch. Immutable local release compiled and two initial source workers independently VERIFIED by actual PID/CWD/cmdline/GPU0 and growing native step records. No satellite; clean only. No candidate target result read."
   ],
   "conditional_rows": [
     {

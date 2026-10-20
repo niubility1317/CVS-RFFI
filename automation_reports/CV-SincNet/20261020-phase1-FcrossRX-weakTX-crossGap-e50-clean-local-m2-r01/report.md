@@ -1,6 +1,6 @@
 # F＋跨RX同TX：两组样本共同支持的弱TX类差
 
-状态：LOCAL_VERIFIED，正式训练尚未启动。CPU与CUDA真实F检查通过，一次匹配真实checkpoint CPU no-query smoke通过且丢弃；唯一独立P0/P1已PASS；随后发现的全头梯度边界P1修复已通过CPU/CUDA，该单项定向复核PASS。代码/配置身份提交后记录为实际Git commit，不要求额外SHA或批准。
+状态：RUNNING，两组首seed已在本机实际并行训练。CPU与CUDA真实F检查通过，一次匹配真实checkpoint CPU no-query smoke通过且丢弃；唯一独立P0/P1已PASS；随后发现的全头梯度边界P1修复已通过CPU/CUDA，该单项定向复核PASS。实际代码/配置commit为`39d7bb72a67a495912bd5ce8db68686210bfaad4`，远端已独立核实；不可覆盖发布包单次校验、发布目录编译及真实进程工作目录/GPU/原生step日志增长已核实，见launch_verification.json。
 
 原基底固定：SIG_TIME_X3真实joint160＋统一居中单位Sinc、RDrop1、LS.01、普通增强、旧门控＋ownEMA＋cos、默认分类头正常联合。原本机三BASE源记录和clean预测只读复用，不重复训练/测试、不继承权重。历史85.1139%是方法锚点，增量与本机同seedBASE配对。新模型从零50=33L+17U，222步/轮、11100主更新；新机制无额外参数、模型前向、IQ读取或optimizer步。无星地增强，测试仅clean。
 

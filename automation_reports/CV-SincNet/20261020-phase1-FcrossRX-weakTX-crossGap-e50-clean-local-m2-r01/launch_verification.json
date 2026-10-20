@@ -1,0 +1,71 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261020-phase1-FcrossRX-weakTX-crossGap-e50-clean-local-m2-r01",
+  "source_code_commit": "39d7bb72a67a495912bd5ce8db68686210bfaad4",
+  "remote_code_commit_verified": true,
+  "release_archive_transfer": {
+    "status": "VERIFIED",
+    "one_archive_compare": true,
+    "bytes": 21928476,
+    "sha256": "b8d6b4fad50bafd7bed0a3bd729c561a43946ea35f10af5af8746f9a5a211bc6"
+  },
+  "release_compile": "PASS",
+  "preflight": {
+    "status": "PASS",
+    "physical_GPU": 0,
+    "existing_GPU_workers": 0,
+    "max_global_GPU_workers": 3,
+    "free_system_GiB": 11.978649139404297,
+    "minimum_free_GiB": 4.5,
+    "existing_CPU_scorers": 0,
+    "no_satellite": true,
+    "test_views": [
+      "clean"
+    ],
+    "healthy_tasks_preserved": true
+  },
+  "satellite_training": false,
+  "test_views": [
+    "clean"
+  ],
+  "default_head": "unchanged normal main joint; new auxiliary path treats all cls_head parameters as constants",
+  "checkpoint_initialization": "scratch, own scratch EMA; no inherited trained checkpoint",
+  "rows": [
+    {
+      "row": "SELF_GAP-s2026092701",
+      "PID_present": true,
+      "command_matches": true,
+      "physical_GPU0_active": true,
+      "actual_CWD_matches": true,
+      "step_advanced": true,
+      "first_observed_step": 739,
+      "current_observed_step": 1002,
+      "epoch": 5,
+      "stdout_growth": true,
+      "step_log_record_growth": true
+    },
+    {
+      "row": "CROSS_GAP-s2026092701",
+      "PID_present": true,
+      "command_matches": true,
+      "physical_GPU0_active": true,
+      "actual_CWD_matches": true,
+      "step_advanced": true,
+      "first_observed_step": 715,
+      "current_observed_step": 968,
+      "epoch": 5,
+      "stdout_growth": true,
+      "step_log_record_growth": true
+    }
+  ],
+  "actual_native_args": {
+    "epochs": 50,
+    "sat_training_mode": "disabled",
+    "eval_sat_channel": false,
+    "a1_source_screen_only": true,
+    "head_separate_fit": false
+  },
+  "source_expansion_fixed": false,
+  "target_predictions_started": false,
+  "performance_claim": false
+}
