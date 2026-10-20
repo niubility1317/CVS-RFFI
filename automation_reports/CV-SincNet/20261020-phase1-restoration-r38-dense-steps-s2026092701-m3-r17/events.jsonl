@@ -1,1 +1,9 @@
 {"at": "2026-10-20T13:23:00+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-20T13:31:40+00:00", "status": "RUNNING", "note": "VERIFIED real smoke, actual PID/CWD/cmd/GPU and epoch1 log growth", "evidence": ["report.md"], "row_id": "dense750_b64_lr3"}
+{"at": "2026-10-20T13:31:40+00:00", "status": "RUNNING", "note": "VERIFIED real smoke, actual PID/CWD/cmd/GPU and epoch1 log growth", "evidence": ["report.md"], "row_id": "factor625_b64_lr1"}
+{"at": "2026-10-20T13:31:40+00:00", "status": "RUNNING", "note": "VERIFIED real smoke, actual PID/CWD/cmd/GPU and epoch1 log growth", "evidence": ["report.md"], "row_id": "factor625_b64_lr3"}
+{"at": "2026-10-20T13:31:40+00:00", "status": "RUNNING", "note": "VERIFIED all three F-free prior-only workers; automatic seven scenes", "evidence": ["report.md"], "row_id": null}
+{"at": "2026-10-20T14:02:22+00:00", "status": "ANALYZED", "note": "VERIFIED E10/9850;source7;target168000x7;truth-last;models strict-loaded;dual0.8pp=True", "evidence": ["report.md", "results.json", "row_metrics.csv"], "row_id": "factor625_b64_lr1"}
+{"at": "2026-10-20T14:02:22+00:00", "status": "ANALYZED", "note": "VERIFIED E10/9850;source7;target168000x7;truth-last;models strict-loaded;dual0.8pp=True", "evidence": ["report.md", "results.json", "row_metrics.csv"], "row_id": "factor625_b64_lr3"}
+{"at": "2026-10-20T14:02:22+00:00", "status": "ANALYZED", "note": "VERIFIED E10/9850;source7;target168000x7;truth-last;models strict-loaded;dual0.8pp=True", "evidence": ["report.md", "results.json", "row_metrics.csv"], "row_id": "dense750_b64_lr3"}
+{"at": "2026-10-20T14:02:22+00:00", "status": "ANALYZED", "note": "All three fixed rows complete; all negative results preserved; no target feedback", "evidence": ["report.md", "results.json", "row_metrics.csv"], "row_id": null}

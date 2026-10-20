@@ -248,3 +248,6 @@ R16完整source30轮记录显示clip全0，最后五轮教师误差仍降15–16
 
 
 R16三行全部完成纯教师IQ目标E10/2470、source1800×7、target168000×7及独立truth-last，实际所属进程退出，模型取回严格加载。通过当前原79万基底逐场景0.8pp的更小F-free行：无。完整识别、净纠错/TX/RX/day、波形证据及完整成本见 [R16报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r38-fidelity-only-s2026092701-m3-r16/report.md)。0目标反馈调参/重跑；70%/5pp长期目标另列。
+
+
+本轮R17三行全部完成纯教师IQ目标同曝光B64/E10/9850、source1800×7、target168000×7及独立truth-last，实际所属进程退出，模型取回严格加载。通过当前原79万基底逐场景0.8pp的更小F-free行：factor625_b64_lr1, factor625_b64_lr3, dense750_b64_lr3。完整识别、净纠错/TX/RX/day、波形证据及完整成本见 [本轮R17报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r38-dense-steps-s2026092701-m3-r17/report.md)。0目标反馈调参/重跑；70%/5pp长期目标另列。
