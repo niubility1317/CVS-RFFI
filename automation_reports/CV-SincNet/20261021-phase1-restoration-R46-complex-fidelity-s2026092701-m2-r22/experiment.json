@@ -193,6 +193,17 @@
       "complete_formal_scores": false,
       "target_scores_read_by_source_analysis": 0,
       "training_changes": 0
+    },
+    "first_formal_row": {
+      "arm": "complex625",
+      "status": "ANALYZED",
+      "fixed_epoch": 20,
+      "updates": 19700,
+      "all7_predictions_before_independent_truth": true,
+      "actual_GPU_worker_exited": true,
+      "lowurban_accuracy": 67.4654761904762,
+      "other_row": "complex625_identity remains on original fixedbudget;no targetfeedback",
+      "whole_run_complete": false
     }
   },
   "expected_artifacts": [
@@ -377,5 +388,17 @@
     "31focusedchecks anduniqueP0/P1reviewPASS;16resultanalysischecksPASS;minimal8itemworkflow only,no extra approval/hash/data revalidation.",
     "Release directory retains r20 suffix due local template label;actual method e190cf536/runR22/outputR22/PID+CWD+argv verified;metadata corrected only,no remote rename/restart/hotedit."
   ],
-  "registered_at": "2026-10-20T18:00:23+00:00"
+  "registered_at": "2026-10-20T18:00:23+00:00",
+  "scientific_outcome": {
+    "status": "PARTIAL_ONE_OF_TWO_ROWS_ANALYZED",
+    "complete_rows": [
+      "complex625"
+    ],
+    "pending_rows": [
+      "complex625_identity"
+    ],
+    "first_row_result": "clean improved vsparent;all6practical decreased;within0.8pp tolerance,notperformanceoptimization",
+    "target_feedback": false,
+    "goal_complete": false
+  }
 }
