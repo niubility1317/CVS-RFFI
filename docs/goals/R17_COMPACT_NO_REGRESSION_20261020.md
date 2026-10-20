@@ -216,3 +216,6 @@ R11固定四行完整完成：七场景原R17逐项1pp验收通过：quarter_con
 
 
 R12固定两行完整完成：七场景原R17逐项1pp验收通过：eighth_context_quarter。完整源诊断、目标七场景/精确1pp/实际升降、配对clean、TX/RX/day、完整日志和成本及匹配R10 half-context对照见[R12报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-eighth-context-s2026092701-m2-r12/report.md)。两份完整恢复器取回且严格加载VERIFIED；长期目标依实际指标判断，仍保留全部历史已验收模型与负结果。
+
+
+R13 六行完整完成 E10/2470、source1800×7 与 target168000×7、逐行独立 truth-last，实际所属进程均退出，六份模型取回并严格加载。通过原 R17 与用户 R38 双参考逐场景 1pp 的行：keep_iq。进一步缩小且通过的 F-free 行：无；IQ 与使用监督 F 知识的 task 行分别报告，不静默替代权限。原宽度 keep_iq 的 low urban 为 68.502976%，参数仍为 794529；压缩保持与长期 70%/5pp/TX 真实性目标分别判断。全部负结果、逐 TX/RX/day、完整 10 轮曲线、全链参数/MAC/存储/实测延迟/显存和独立模型入口见 [R13 完整报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r38-successor-s2026092701-m6-r13/report.md)。本轮未追加目标反馈训练或选择性重跑。

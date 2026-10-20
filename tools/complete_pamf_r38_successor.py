@@ -144,15 +144,20 @@ def report(local, output, analysis, artifacts):
     report_path = folder/'report.md'
     body = report_path.read_text(encoding='utf-8').split('\n## R13 完整结果交付\n')[0]
     body = body.replace('状态：QUEUE_VERIFIED。', '状态：ANALYZED。', 1).replace('状态：RUNNING。', '状态：ANALYZED。', 1)
+    body = body.replace('现有R11/R12健康六行继续完成。', '既有 R11/R12 六行已完成并归档。')
     lines = ['\n## R13 完整结果交付\n',
         '六行均完成固定 E10/2470、source 1800×7 和 target 168000×7；每行全部预测固定后独立 truth-last。'
         '实际所属进程已退出，六份完整恢复器已取回并严格加载。全部负结果保留，结果不回流训练或重跑。\n',
-        '|版本|参数|较 R38 减少|最大下降 R38/R17（pp）|low urban（%）|双参考 1pp|训练 F 知识|',
+        '|版本|参数|较 R38 减少|最大下降 R38/R17（pp）|low urban（%）|R38/R17 各自 1pp|训练 F 知识|',
         '|---|---:|---:|---:|---:|---|---|']
     for arm, row in analysis['rows'].items():
         drops = [max(0., max(-v['accuracy_delta_pp'] for v in row['acceptance'][b]['views'].values())) for b in ('R38', 'R17')]
         lines.append(f"|{arm}|{row['parameters']}|{row['reduction_from_R38_percent']:.4f}%|{drops[0]:.6f}/{drops[1]:.6f}|"
-                     f"{row['performance_optimization']['low_urban_accuracy']:.6f}|{row['accepted_both']}|{row['training_F_access']}|")
+                     f"{row['performance_optimization']['low_urban_accuracy']:.6f}|{row['acceptance']['R38']['accepted']}/{row['acceptance']['R17']['accepted']}|{row['training_F_access']}|")
+    compact_iq = [a for a,r in analysis['rows'].items() if r['parameters'] < 794529 and r['accepted_both'] and not r['training_F_access']]
+    compact_task = [a for a,r in analysis['rows'].items() if r['parameters'] < 794529 and r['accepted_both'] and r['training_F_access']]
+    lines += ['\n进一步缩小且同时通过两个参考容差的 IQ 行：'+(', '.join(compact_iq) or '无')+'；使用冻结 F 知识的行：'+
+              (', '.join(compact_task) or '无')+'。两种训练权限分别解释，不能将 task 结果替代 F-free 恢复器结果。\n']
     lines += ['\n1pp 通过仅表示满足退化容差。IQ 行训练不加载 F；task 行使用监督训练的冻结 F 知识，须单独标注。'
               'low urban≥70% 和其他五场景距 raw clean≤5pp 分别记录，不以压缩验收替代。单 seed、已暴露基准，不称独立盲测或全局最小。\n',
               '|版本|场景|准确率（%）|相对 R38（pp）|相对 R17（pp）|相对同预算原宽度（pp）|净纠错|',
@@ -173,6 +178,7 @@ def report(local, output, analysis, artifacts):
             f"|{model['conv_linear_MACs_per_IQ']}|{model['bytes']}|{base['median_ms']:.4f}/{current['median_ms']:.4f}|"
             f"{current['resident_before_forward_bytes']}/{current['incremental_peak_bytes']}|")
     lines += ['\nMAC 不含 FFT、复数 CG、归一化、激活、插值和访存。实测包含完整恢复链，使用 16 条 source V、batch 1、2 次预热；'
+              '物理求解保持 3 个恢复阶段、每阶段 2 次 CG，共 6 次 CG 迭代。'
               '顺序和共存负载影响延迟，不从参数比例推断加速。原 R17 的同口径延迟和峰值显存保留在 results.json。\n']
     for arm, row in analysis['rows'].items():
         train = row['training']
@@ -205,7 +211,10 @@ def report(local, output, analysis, artifacts):
         writer = csv.DictWriter(stream, fieldnames=list(records[0]));writer.writeheader();writer.writerows(records)
     spec = json.loads((folder/'experiment.json').read_text(encoding='utf-8'))
     spec['scientific_outcome'] = dict(status='ANALYZED', accepted_rows=analysis['accepted_rows'],
-        accepted_IQ_rows=analysis['accepted_IQ_rows'], all_six_rows_scored=True, goal_complete=False)
+        accepted_IQ_rows=analysis['accepted_IQ_rows'],
+        accepted_against_original_R17=[a for a,r in analysis['rows'].items() if r['acceptance']['R17']['accepted']],
+        accepted_against_R38=[a for a,r in analysis['rows'].items() if r['acceptance']['R38']['accepted']],
+        all_six_rows_scored=True, goal_complete=False)
     write(folder/'experiment.json', spec)
     module_spec = importlib.util.spec_from_file_location('registry', local/'tools/experiment_registry.py')
     registry = importlib.util.module_from_spec(module_spec);module_spec.loader.exec_module(registry)

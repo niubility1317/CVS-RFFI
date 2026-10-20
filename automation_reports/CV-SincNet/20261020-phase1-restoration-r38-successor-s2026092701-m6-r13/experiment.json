@@ -586,5 +586,23 @@
     "普通N607预检VERIFIED，R38真实source E20/4940/40组件轮数/0TXFtarget训练与原R17 source-selected-before-target核实。当前R11/R12六个实际GPU句柄仍LIVE，仅发布CPU smoke/逐卡队列，不抢占。",
     "实际QUEUE_VERIFIED：CPUcontroller的PID/CWD/完整命令/commit与日志核实，单归档SHA/远端compile/help通过；真实R38/F50/2Ls smoke PASS，六行coarse/action/prior梯度有限非零、父/F不变、严格复载输出一致。仅排队，不冒称GPU训练完成。"
   ],
-  "registered_at": "2026-10-20T09:46:59+00:00"
+  "registered_at": "2026-10-20T09:46:59+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "accepted_rows": [
+      "keep_iq"
+    ],
+    "accepted_IQ_rows": [
+      "keep_iq"
+    ],
+    "all_six_rows_scored": true,
+    "goal_complete": false,
+    "accepted_against_original_R17": [
+      "keep_iq",
+      "three_quarter_task"
+    ],
+    "accepted_against_R38": [
+      "keep_iq"
+    ]
+  }
 }
