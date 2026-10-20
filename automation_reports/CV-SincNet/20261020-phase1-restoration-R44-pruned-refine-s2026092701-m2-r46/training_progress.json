@@ -1,0 +1,667 @@
+{
+  "status": "VERIFIED_THROUGH_COMPLETE_LOG_RECORDS",
+  "run": "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46",
+  "method_commit": "bbb8daf817de050b958d217b70d4c33f4aefe341",
+  "rows": {
+    "retain_refine": {
+      "parameters": 442805,
+      "parsed_epochs": [
+        1,
+        14
+      ],
+      "all_complete_records": [
+        {
+          "epoch": 1,
+          "updates": 247,
+          "losses": {
+            "loss": 0.02824245631410962,
+            "iq_nmse": 0.0263282998156926,
+            "spectral_error": 0.00697491647622415,
+            "teacher_stage_nmse": 0.0015654107210447408
+          },
+          "L_exposures": 6300,
+          "U_exposures": 56700,
+          "teacher_IQ_examples": 63000,
+          "source_IQ_examples": 63000,
+          "F_inputs": 0,
+          "teacher_weight": 1.0,
+          "learning_rate_last": 0.0002,
+          "clip_fraction": 0.0931174089068826,
+          "seconds": 168.27351312804967
+        },
+        {
+          "epoch": 2,
+          "updates": 494,
+          "losses": {
+            "loss": 0.030311553138589103,
+            "iq_nmse": 0.0270823215671948,
+            "spectral_error": 0.00694678038677999,
+            "teacher_stage_nmse": 0.0030251910772233727
+          },
+          "L_exposures": 12600,
+          "U_exposures": 113400,
+          "teacher_IQ_examples": 126000,
+          "source_IQ_examples": 126000,
+          "F_inputs": 0,
+          "teacher_weight": 0.9526315789473684,
+          "learning_rate_last": 0.0001987818960049755,
+          "clip_fraction": 0.09716599190283401,
+          "seconds": 334.85409641917795
+        },
+        {
+          "epoch": 3,
+          "updates": 741,
+          "losses": {
+            "loss": 0.03096587753390509,
+            "iq_nmse": 0.02745674908586911,
+            "spectral_error": 0.007054959348388135,
+            "teacher_stage_nmse": 0.0034866991768044138
+          },
+          "L_exposures": 18900,
+          "U_exposures": 170100,
+          "teacher_IQ_examples": 189000,
+          "source_IQ_examples": 189000,
+          "F_inputs": 0,
+          "teacher_weight": 0.9052631578947369,
+          "learning_rate_last": 0.00019514104345825703,
+          "clip_fraction": 0.11740890688259109,
+          "seconds": 497.59703709511086
+        },
+        {
+          "epoch": 4,
+          "updates": 988,
+          "losses": {
+            "loss": 0.029604684735101368,
+            "iq_nmse": 0.02681027199067767,
+            "spectral_error": 0.006973605623675717,
+            "teacher_stage_nmse": 0.0028508538448857885
+          },
+          "L_exposures": 25200,
+          "U_exposures": 226800,
+          "teacher_IQ_examples": 252000,
+          "source_IQ_examples": 252000,
+          "F_inputs": 0,
+          "teacher_weight": 0.8578947368421053,
+          "learning_rate_last": 0.00018917677739299047,
+          "clip_fraction": 0.06477732793522267,
+          "seconds": 663.2682644929737
+        },
+        {
+          "epoch": 5,
+          "updates": 1235,
+          "losses": {
+            "loss": 0.028000573183809007,
+            "iq_nmse": 0.02575877146493821,
+            "spectral_error": 0.006713264791974946,
+            "teacher_stage_nmse": 0.0023517293316267784
+          },
+          "L_exposures": 31500,
+          "U_exposures": 283500,
+          "teacher_IQ_examples": 315000,
+          "source_IQ_examples": 315000,
+          "F_inputs": 0,
+          "teacher_weight": 0.8105263157894737,
+          "learning_rate_last": 0.00018105185663666237,
+          "clip_fraction": 0.03643724696356275,
+          "seconds": 825.9716310391668
+        },
+        {
+          "epoch": 6,
+          "updates": 1482,
+          "losses": {
+            "loss": 0.028191069574583144,
+            "iq_nmse": 0.02579807074391653,
+            "spectral_error": 0.006651930045277353,
+            "teacher_stage_nmse": 0.0026998374005631795
+          },
+          "L_exposures": 37800,
+          "U_exposures": 340200,
+          "teacher_IQ_examples": 378000,
+          "source_IQ_examples": 378000,
+          "F_inputs": 0,
+          "teacher_weight": 0.7631578947368421,
+          "learning_rate_last": 0.00017098800211205718,
+          "clip_fraction": 0.08906882591093117,
+          "seconds": 985.2753087871242
+        },
+        {
+          "epoch": 7,
+          "updates": 1729,
+          "losses": {
+            "loss": 0.02754844983324172,
+            "iq_nmse": 0.025512526778001633,
+            "spectral_error": 0.0066714953077690944,
+            "teacher_stage_nmse": 0.002378280692571212
+          },
+          "L_exposures": 44100,
+          "U_exposures": 396900,
+          "teacher_IQ_examples": 441000,
+          "source_IQ_examples": 441000,
+          "F_inputs": 0,
+          "teacher_weight": 0.7157894736842105,
+          "learning_rate_last": 0.00015925984629607922,
+          "clip_fraction": 0.044534412955465584,
+          "seconds": 1150.4700398340356
+        },
+        {
+          "epoch": 8,
+          "updates": 1976,
+          "losses": {
+            "loss": 0.027126671525694077,
+            "iq_nmse": 0.025264437250201666,
+            "spectral_error": 0.0066654395135858704,
+            "teacher_stage_nmse": 0.0022874240736284897
+          },
+          "L_exposures": 50400,
+          "U_exposures": 453600,
+          "teacher_IQ_examples": 504000,
+          "source_IQ_examples": 504000,
+          "F_inputs": 0,
+          "teacher_weight": 0.668421052631579,
+          "learning_rate_last": 0.00014618743877543397,
+          "clip_fraction": 0.02834008097165992,
+          "seconds": 1315.0295320020523
+        },
+        {
+          "epoch": 9,
+          "updates": 2223,
+          "losses": {
+            "loss": 0.02637013020212688,
+            "iq_nmse": 0.024711903069700513,
+            "spectral_error": 0.006497879137358969,
+            "teacher_stage_nmse": 0.0021468924803748016
+          },
+          "L_exposures": 56700,
+          "U_exposures": 510300,
+          "teacher_IQ_examples": 567000,
+          "source_IQ_examples": 567000,
+          "F_inputs": 0,
+          "teacher_weight": 0.6210526315789473,
+          "learning_rate_last": 0.0001321275124150214,
+          "clip_fraction": 0.044534412955465584,
+          "seconds": 1481.473243755987
+        },
+        {
+          "epoch": 10,
+          "updates": 2470,
+          "losses": {
+            "loss": 0.025536578457506877,
+            "iq_nmse": 0.02405681245478373,
+            "spectral_error": 0.006232359385679638,
+            "teacher_stage_nmse": 0.002036221339707337
+          },
+          "L_exposures": 63000,
+          "U_exposures": 567000,
+          "teacher_IQ_examples": 630000,
+          "source_IQ_examples": 630000,
+          "F_inputs": 0,
+          "teacher_weight": 0.5736842105263158,
+          "learning_rate_last": 0.00011746374847653041,
+          "clip_fraction": 0.048582995951417005,
+          "seconds": 1645.4516788930632
+        },
+        {
+          "epoch": 11,
+          "updates": 2717,
+          "losses": {
+            "loss": 0.025345376952773047,
+            "iq_nmse": 0.02402814022226939,
+            "spectral_error": 0.006390311453195792,
+            "teacher_stage_nmse": 0.0018956700248850716
+          },
+          "L_exposures": 69300,
+          "U_exposures": 623700,
+          "teacher_IQ_examples": 693000,
+          "source_IQ_examples": 693000,
+          "F_inputs": 0,
+          "teacher_weight": 0.5263157894736843,
+          "learning_rate_last": 0.00010259630634236501,
+          "clip_fraction": 0.016194331983805668,
+          "seconds": 1809.7086289001163
+        },
+        {
+          "epoch": 12,
+          "updates": 2964,
+          "losses": {
+            "loss": 0.025051620166453105,
+            "iq_nmse": 0.023861694454200683,
+            "spectral_error": 0.0063365503622898976,
+            "teacher_stage_nmse": 0.0018229521748328965
+          },
+          "L_exposures": 75600,
+          "U_exposures": 680400,
+          "teacher_IQ_examples": 756000,
+          "source_IQ_examples": 756000,
+          "F_inputs": 0,
+          "teacher_weight": 0.47894736842105257,
+          "learning_rate_last": 8.79309035682149e-05,
+          "clip_fraction": 0.008097165991902834,
+          "seconds": 1972.2730325881857
+        },
+        {
+          "epoch": 13,
+          "updates": 3211,
+          "losses": {
+            "loss": 0.024259306292685252,
+            "iq_nmse": 0.023215095964689104,
+            "spectral_error": 0.006080938980338119,
+            "teacher_stage_nmse": 0.0017150126641823187
+          },
+          "L_exposures": 81900,
+          "U_exposures": 737100,
+          "teacher_IQ_examples": 819000,
+          "source_IQ_examples": 819000,
+          "F_inputs": 0,
+          "teacher_weight": 0.43157894736842106,
+          "learning_rate_last": 7.386774425866234e-05,
+          "clip_fraction": 0.012145748987854251,
+          "seconds": 2136.285581725184
+        },
+        {
+          "epoch": 14,
+          "updates": 3458,
+          "losses": {
+            "loss": 0.02423560744524002,
+            "iq_nmse": 0.023191947611551435,
+            "spectral_error": 0.006145394871277469,
+            "teacher_stage_nmse": 0.0019166318462008522
+          },
+          "L_exposures": 88200,
+          "U_exposures": 793800,
+          "teacher_IQ_examples": 882000,
+          "source_IQ_examples": 882000,
+          "F_inputs": 0,
+          "teacher_weight": 0.38421052631578945,
+          "learning_rate_last": 6.0790597899329526e-05,
+          "clip_fraction": 0.02834008097165992,
+          "seconds": 2302.8678361990023
+        }
+      ],
+      "stdout_epoch_events": 14,
+      "stdout_scan": {
+        "traceback": 0,
+        "OOM": 0,
+        "killed": 0,
+        "warning": 0,
+        "nonfinite": 0,
+        "early_stop": 0,
+        "resume": 0
+      },
+      "stdout_lines": 14,
+      "incomplete_training_tail": false,
+      "exposures": {
+        "L": 88200,
+        "U": 793800,
+        "U_percent": 90.0
+      },
+      "median_completed_epoch_seconds": 164.55949216801673,
+      "losses": {
+        "loss": {
+          "first": 0.02824245631410962,
+          "latest": 0.02423560744524002,
+          "minimum": 0.02423560744524002,
+          "maximum": 0.03096587753390509
+        },
+        "iq_nmse": {
+          "first": 0.0263282998156926,
+          "latest": 0.023191947611551435,
+          "minimum": 0.023191947611551435,
+          "maximum": 0.02745674908586911
+        },
+        "spectral_error": {
+          "first": 0.00697491647622415,
+          "latest": 0.006145394871277469,
+          "minimum": 0.006080938980338119,
+          "maximum": 0.007054959348388135
+        },
+        "teacher_stage_nmse": {
+          "first": 0.0015654107210447408,
+          "latest": 0.0019166318462008522,
+          "minimum": 0.0015654107210447408,
+          "maximum": 0.0034866991768044138
+        }
+      },
+      "parent_original_R44_final": {
+        "epochs": 20,
+        "parameters": 442805,
+        "source_IQ_nmse": 0.024819453681272172
+      },
+      "historical_parent_caution": "Repeated sourcecache/different incremental trainingbudget and teacher schedule;do not compare total losses or infer classification benefit"
+    },
+    "prune_refine": {
+      "parameters": 350521,
+      "parsed_epochs": [
+        1,
+        14
+      ],
+      "all_complete_records": [
+        {
+          "epoch": 1,
+          "updates": 247,
+          "losses": {
+            "loss": 0.13009790982329655,
+            "iq_nmse": 0.07831142554396675,
+            "spectral_error": 0.017386838460725453,
+            "teacher_stage_nmse": 0.050917142726599224
+          },
+          "L_exposures": 6300,
+          "U_exposures": 56700,
+          "teacher_IQ_examples": 63000,
+          "source_IQ_examples": 63000,
+          "F_inputs": 0,
+          "teacher_weight": 1.0,
+          "learning_rate_last": 0.0002,
+          "clip_fraction": 0.5101214574898786,
+          "seconds": 165.52696239901707
+        },
+        {
+          "epoch": 2,
+          "updates": 494,
+          "losses": {
+            "loss": 0.040955171761058624,
+            "iq_nmse": 0.03289226057888969,
+            "spectral_error": 0.008150509156641506,
+            "teacher_stage_nmse": 0.008036040187355072
+          },
+          "L_exposures": 12600,
+          "U_exposures": 113400,
+          "teacher_IQ_examples": 126000,
+          "source_IQ_examples": 126000,
+          "F_inputs": 0,
+          "teacher_weight": 0.9526315789473684,
+          "learning_rate_last": 0.0001987818960049755,
+          "clip_fraction": 0.2550607287449393,
+          "seconds": 332.5584061869886
+        },
+        {
+          "epoch": 3,
+          "updates": 741,
+          "losses": {
+            "loss": 0.0368767811447855,
+            "iq_nmse": 0.03078022910914724,
+            "spectral_error": 0.007849502562293931,
+            "teacher_stage_nmse": 0.006301014906830258
+          },
+          "L_exposures": 18900,
+          "U_exposures": 170100,
+          "teacher_IQ_examples": 189000,
+          "source_IQ_examples": 189000,
+          "F_inputs": 0,
+          "teacher_weight": 0.9052631578947369,
+          "learning_rate_last": 0.00019514104345825703,
+          "clip_fraction": 0.15789473684210525,
+          "seconds": 496.0746249638032
+        },
+        {
+          "epoch": 4,
+          "updates": 988,
+          "losses": {
+            "loss": 0.034332992408010694,
+            "iq_nmse": 0.029516662872972943,
+            "spectral_error": 0.00758987666973992,
+            "teacher_stage_nmse": 0.0051717716643498056
+          },
+          "L_exposures": 25200,
+          "U_exposures": 226800,
+          "teacher_IQ_examples": 252000,
+          "source_IQ_examples": 252000,
+          "F_inputs": 0,
+          "teacher_weight": 0.8578947368421053,
+          "learning_rate_last": 0.00018917677739299047,
+          "clip_fraction": 0.10931174089068826,
+          "seconds": 664.7358468899038
+        },
+        {
+          "epoch": 5,
+          "updates": 1235,
+          "losses": {
+            "loss": 0.03206254072511007,
+            "iq_nmse": 0.028116137341847494,
+            "spectral_error": 0.007219748648149627,
+            "teacher_stage_nmse": 0.0044235651869149436
+          },
+          "L_exposures": 31500,
+          "U_exposures": 283500,
+          "teacher_IQ_examples": 315000,
+          "source_IQ_examples": 315000,
+          "F_inputs": 0,
+          "teacher_weight": 0.8105263157894737,
+          "learning_rate_last": 0.00018105185663666237,
+          "clip_fraction": 0.08502024291497975,
+          "seconds": 826.7392147458158
+        },
+        {
+          "epoch": 6,
+          "updates": 1482,
+          "losses": {
+            "loss": 0.03112090867568576,
+            "iq_nmse": 0.02755272692063498,
+            "spectral_error": 0.007034445812068288,
+            "teacher_stage_nmse": 0.004214670953059953
+          },
+          "L_exposures": 37800,
+          "U_exposures": 340200,
+          "teacher_IQ_examples": 378000,
+          "source_IQ_examples": 378000,
+          "F_inputs": 0,
+          "teacher_weight": 0.7631578947368421,
+          "learning_rate_last": 0.00017098800211205718,
+          "clip_fraction": 0.044534412955465584,
+          "seconds": 985.2543749369215
+        },
+        {
+          "epoch": 7,
+          "updates": 1729,
+          "losses": {
+            "loss": 0.029988773029001933,
+            "iq_nmse": 0.0269678270646504,
+            "spectral_error": 0.007046027666401295,
+            "teacher_stage_nmse": 0.003728253348479195
+          },
+          "L_exposures": 44100,
+          "U_exposures": 396900,
+          "teacher_IQ_examples": 441000,
+          "source_IQ_examples": 441000,
+          "F_inputs": 0,
+          "teacher_weight": 0.7157894736842105,
+          "learning_rate_last": 0.00015925984629607922,
+          "clip_fraction": 0.02834008097165992,
+          "seconds": 1148.8110288449097
+        },
+        {
+          "epoch": 8,
+          "updates": 1976,
+          "losses": {
+            "loss": 0.029986642310543665,
+            "iq_nmse": 0.026984405738493752,
+            "spectral_error": 0.007077858491667679,
+            "teacher_stage_nmse": 0.003962089013840471
+          },
+          "L_exposures": 50400,
+          "U_exposures": 453600,
+          "teacher_IQ_examples": 504000,
+          "source_IQ_examples": 504000,
+          "F_inputs": 0,
+          "teacher_weight": 0.668421052631579,
+          "learning_rate_last": 0.00014618743877543397,
+          "clip_fraction": 0.06882591093117409,
+          "seconds": 1312.8286128130276
+        },
+        {
+          "epoch": 9,
+          "updates": 2223,
+          "losses": {
+            "loss": 0.02871422381911959,
+            "iq_nmse": 0.026171232780766867,
+            "spectral_error": 0.0068404291577282405,
+            "teacher_stage_nmse": 0.0035439340948822005
+          },
+          "L_exposures": 56700,
+          "U_exposures": 510300,
+          "teacher_IQ_examples": 567000,
+          "source_IQ_examples": 567000,
+          "F_inputs": 0,
+          "teacher_weight": 0.6210526315789473,
+          "learning_rate_last": 0.0001321275124150214,
+          "clip_fraction": 0.05263157894736842,
+          "seconds": 1476.9772099449765
+        },
+        {
+          "epoch": 10,
+          "updates": 2470,
+          "losses": {
+            "loss": 0.02732237674508776,
+            "iq_nmse": 0.025169687041214535,
+            "spectral_error": 0.006505235612392426,
+            "teacher_stage_nmse": 0.0031854248256200837
+          },
+          "L_exposures": 63000,
+          "U_exposures": 567000,
+          "teacher_IQ_examples": 630000,
+          "source_IQ_examples": 630000,
+          "F_inputs": 0,
+          "teacher_weight": 0.5736842105263158,
+          "learning_rate_last": 0.00011746374847653041,
+          "clip_fraction": 0.02834008097165992,
+          "seconds": 1641.5275064129382
+        },
+        {
+          "epoch": 11,
+          "updates": 2717,
+          "losses": {
+            "loss": 0.027616971308276766,
+            "iq_nmse": 0.025538367333866302,
+            "spectral_error": 0.006734497760851232,
+            "teacher_stage_nmse": 0.003309570316875738
+          },
+          "L_exposures": 69300,
+          "U_exposures": 623700,
+          "teacher_IQ_examples": 693000,
+          "source_IQ_examples": 693000,
+          "F_inputs": 0,
+          "teacher_weight": 0.5263157894736843,
+          "learning_rate_last": 0.00010259630634236501,
+          "clip_fraction": 0.04048582995951417,
+          "seconds": 1806.3070707849693
+        },
+        {
+          "epoch": 12,
+          "updates": 2964,
+          "losses": {
+            "loss": 0.02725574993519556,
+            "iq_nmse": 0.025377217533096436,
+            "spectral_error": 0.0067284102849070986,
+            "teacher_stage_nmse": 0.0032197940918424774
+          },
+          "L_exposures": 75600,
+          "U_exposures": 680400,
+          "teacher_IQ_examples": 756000,
+          "source_IQ_examples": 756000,
+          "F_inputs": 0,
+          "teacher_weight": 0.47894736842105257,
+          "learning_rate_last": 8.79309035682149e-05,
+          "clip_fraction": 0.032388663967611336,
+          "seconds": 1972.186034505954
+        },
+        {
+          "epoch": 13,
+          "updates": 3211,
+          "losses": {
+            "loss": 0.025866521342406197,
+            "iq_nmse": 0.024316978769642967,
+            "spectral_error": 0.006383516704752332,
+            "teacher_stage_nmse": 0.0028508500318442072
+          },
+          "L_exposures": 81900,
+          "U_exposures": 737100,
+          "teacher_IQ_examples": 819000,
+          "source_IQ_examples": 819000,
+          "F_inputs": 0,
+          "teacher_weight": 0.43157894736842106,
+          "learning_rate_last": 7.386774425866234e-05,
+          "clip_fraction": 0.016194331983805668,
+          "seconds": 2139.5206724219024
+        },
+        {
+          "epoch": 14,
+          "updates": 3458,
+          "losses": {
+            "loss": 0.025758665402730307,
+            "iq_nmse": 0.02429942747240975,
+            "spectral_error": 0.0064111489606282065,
+            "teacher_stage_nmse": 0.00296368870139122
+          },
+          "L_exposures": 88200,
+          "U_exposures": 793800,
+          "teacher_IQ_examples": 882000,
+          "source_IQ_examples": 882000,
+          "F_inputs": 0,
+          "teacher_weight": 0.38421052631578945,
+          "learning_rate_last": 6.0790597899329526e-05,
+          "clip_fraction": 0.016194331983805668,
+          "seconds": 2308.2361170738004
+        }
+      ],
+      "stdout_epoch_events": 14,
+      "stdout_scan": {
+        "traceback": 0,
+        "OOM": 0,
+        "killed": 0,
+        "warning": 0,
+        "nonfinite": 0,
+        "early_stop": 0,
+        "resume": 0
+      },
+      "stdout_lines": 14,
+      "incomplete_training_tail": false,
+      "exposures": {
+        "L": 88200,
+        "U": 793800,
+        "U_percent": 90.0
+      },
+      "median_completed_epoch_seconds": 164.77956437203102,
+      "losses": {
+        "loss": {
+          "first": 0.13009790982329655,
+          "latest": 0.025758665402730307,
+          "minimum": 0.025758665402730307,
+          "maximum": 0.13009790982329655
+        },
+        "iq_nmse": {
+          "first": 0.07831142554396675,
+          "latest": 0.02429942747240975,
+          "minimum": 0.02429942747240975,
+          "maximum": 0.07831142554396675
+        },
+        "spectral_error": {
+          "first": 0.017386838460725453,
+          "latest": 0.0064111489606282065,
+          "minimum": 0.006383516704752332,
+          "maximum": 0.017386838460725453
+        },
+        "teacher_stage_nmse": {
+          "first": 0.050917142726599224,
+          "latest": 0.00296368870139122,
+          "minimum": 0.0028508500318442072,
+          "maximum": 0.050917142726599224
+        }
+      },
+      "parent_original_R44_final": {
+        "epochs": 20,
+        "parameters": 442805,
+        "source_IQ_nmse": 0.024819453681272172
+      },
+      "historical_parent_caution": "Repeated sourcecache/different incremental trainingbudget and teacher schedule;do not compare total losses or infer classification benefit"
+    }
+  },
+  "target_reads": 0,
+  "IQ_reads": 0,
+  "F_model_reads": 0,
+  "TX_truth_reads": 0,
+  "full_current_stdout_scanned": true,
+  "all_current_complete_training_records_parsed": true,
+  "training_not_complete": true,
+  "claim": "Through latest fully parsed live epoch only;training loss/counters are not formal identification efficacy",
+  "time": 1792503841.9521105,
+  "goal_complete": false
+}
