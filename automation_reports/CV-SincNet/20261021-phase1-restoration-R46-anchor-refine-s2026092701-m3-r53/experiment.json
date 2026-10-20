@@ -177,7 +177,7 @@
       "group_pruned",
       "low_rank"
     ],
-    "postlaunch_state": "VERIFIED_TWO_FORMAL_PREDICTING_ONE_QUEUED"
+    "postlaunch_state": "VERIFIED_ALL_OWNED_PROCESSES_EXITED"
   },
   "expected_artifacts": [
     "launch.json",
@@ -472,7 +472,8 @@
     "REJECTED_EXTRA_GATE:extraapproval/signature/hash/reviewmachineryoutsideexhaustiveminimalworkflow.",
     "Matched same-card source-only G and G+F;B1 warm16/64samples x3 alternating rounds;B32 warm4/16iterations x3;median,p90,p95,throughput,peak/resident memory;ConvLinearMAC excludes FFT/CG/norm",
     "VERIFIED/RUNNING：真实350521父/F50/2Ls noquery smoke PASS，三行全部coarse/action/prior有限非零梯度、父/F不更新、checkpoint严格重载一致。单归档SHA/compile与实际controller、GPU2 prune_decay、GPU3 retain_anchor的PID/CWD/argv/CUDA/GPU-PID匹配、首轮曝光、micro256/directbuffer和日志增长核实。prune_anchor按固定计划在GPU2等待；各卡仅一条本任务GPU worker，其他owner不动。尚无正式性能结果；每行完整E20/4940后自动源七视图/成本/正式七视图及独立truth-last，不以负分提前停止。原性能/TX保真目标ACTIVE。",
-    "VERIFIED：prune_decay/retain_anchor两行完整E20/4940与1800x7源阶段、同卡profile及全部20轮损失/曝光/LR核对通过，实际GPU2/3均进入正式预测；prune_anchor仍按固定GPU2队列等待。尚无正式准确率，每行7预测固定后才独立truth-last；源与成本不替代性能，原完整目标ACTIVE。"
+    "VERIFIED：prune_decay/retain_anchor两行完整E20/4940与1800x7源阶段、同卡profile及全部20轮损失/曝光/LR核对通过，实际GPU2/3均进入正式预测；prune_anchor仍按固定GPU2队列等待。尚无正式准确率，每行7预测固定后才独立truth-last；源与成本不替代性能，原完整目标ACTIVE。",
+    "VERIFIED/ANALYZED：三行完整E20/4940、源1800×7和正式168000×7、每行七预测固定后独立truth-last、完整曲线/同卡成本、所属controller/worker退出及三套独立权重CPU严格重载均已核实。prune_decay 273765参数，七景较父提高6/下降1，lowurban 68.527381%（较父+1.017262pp），70%=False、其他五景gap5pp=False；同卡G B1父/本版44.1931/43.3225ms，G+F B1父/本版56.2200/54.1512ms；retain_anchor 350521参数，七景较父提高2/下降5，lowurban 67.636310%（较父+0.126190pp），70%=False、其他五景gap5pp=False；同卡G B1父/本版44.2953/44.1067ms，G+F B1父/本版55.4548/54.3477ms；prune_anchor 273765参数，七景较父提高4/下降3，lowurban 68.347619%（较父+0.837500pp），70%=False、其他五景gap5pp=False；同卡G B1父/本版43.4629/42.8090ms，G+F B1父/本版54.6030/54.1270ms。retain_anchor相对同宽R49/retain_refine七景提高7/下降0，lowurban差+0.814286pp；prune_anchor相对同宽R53/prune_decay七景提高0/下降7，lowurban差-0.179762pp。原指定350521直接父保持，全部正负结果保留；不把容差通过、减参、源域或解析关联当作正式提升或逐细节TX真实性。原完整目标ACTIVE。"
   ],
   "reused_controls": [
     {
@@ -488,5 +489,20 @@
       "target_results_used_for_selection": false
     }
   ],
-  "registered_at": "2026-10-20T16:50:13+00:00"
+  "registered_at": "2026-10-20T16:50:12+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "all_fixed_rows_scored": true,
+    "accepted_R17": [
+      "prune_decay",
+      "retain_anchor",
+      "prune_anchor"
+    ],
+    "accepted_R46": [
+      "prune_decay",
+      "retain_anchor",
+      "prune_anchor"
+    ],
+    "goal_complete": false
+  }
 }
