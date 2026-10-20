@@ -13,3 +13,4 @@
 |冻结R03后的直接残差与确定性流修正|managed_run|[打开](../../automation_reports/CV-SincNet/20261020-phase1-restoration-residual-flow-source-s2026092701-m2-r01/report.md)|
 |原F指导恢复的参数梯度范数上限|managed_run|[打开](../../automation_reports/CV-SincNet/20261020-phase1-restoration-parameter-balance-source-s2026092701-m2-r01/report.md)|
 |源 clean 局部敏感度约束恢复|managed_run|[打开](../../automation_reports/CV-SincNet/20261020-phase1-restoration-tangent-guidance-source-s2026092701-m2-r01/report.md)|
+|冻结三 F 的帧级与复采样点级梯度一致约束|managed_run|[打开](../../automation_reports/CV-SincNet/20261020-phase1-restoration-teacher-agreement-source-s2026092701-m2-r01/report.md)|
