@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "bounded_mean1_precision": true,
+  "scale_and_rotation_invariance": true,
+  "isotropic_and_zero_covariance": true,
+  "disjoint_balanced_partitions": true,
+  "B_C_cannot_change_A_precision": true,
+  "conditional_group_shift_invariance": true,
+  "decision_positive_and_negative": true,
+  "negative_cases": 4,
+  "IQ_reads": 0,
+  "model_forwards": 0,
+  "head_fit_updates": 0,
+  "optimizer_updates": 0,
+  "target_reads": 0,
+  "independent_P0P1": "PASS",
+  "scope": "CPU cached source statistics, no model/checkpoint/IQ/class decisions"
+}

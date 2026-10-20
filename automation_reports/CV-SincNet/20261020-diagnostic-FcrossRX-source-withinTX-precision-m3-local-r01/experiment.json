@@ -1,0 +1,240 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-diagnostic-FcrossRX-source-withinTX-precision-m3-local-r01",
+  "group_id": "F-crossRX50-source-feature-precision",
+  "display_name": "F跨RX源特征：分离样本的类内精度几何诊断",
+  "description": "Read-only existing3BASE sourceV joint160 caches; A covariance, disjoint B/C class-difference scatter; RAW vs fixed bounded TX and TX_RX_DAY precision. No classifier/model/target/IQ/Utruth.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "F withinTX precision source diagnostic"
+  ],
+  "tags": [
+    "CVS",
+    "Phase1",
+    "F_CROSS_RX",
+    "source_only",
+    "cached_features",
+    "covariance",
+    "bounded_precision",
+    "no_head_fit",
+    "local_CPU"
+  ],
+  "comparison_group_id": "F-crossRX50-source-feature-precision",
+  "parent_run_ids": [
+    "20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01",
+    "20261020-phase1-FcrossRX-weakTX-crossGap-e50-clean-local-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active user goal: improve source-defined weakTX using original F+crossRX sameTX base; local no satellite/clean only/defaulthead joint. This step explicitly source-only cached-feature statistics, not training or test.",
+  "code": {
+    "commit": "PENDING_ACTUAL_CODE_CONFIG_COMMIT",
+    "checkout": "codex/phase1-rdrop-combinations-20261015",
+    "environment": "Verified native Windows Python3.10 NumPy; CPU2threads; no torch/GPU model",
+    "cwd": "IMMUTABLE_LOCAL_RELEASE/cvs_F_source_precision_local_20261020_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "same existing validated source contract",
+    "representation": "Existing BASE sourceV actual joint160 derived cache; normalize each row L2; no raw IQ open",
+    "contract_ref": "ORIGINAL_SOURCE_CONTRACT#V (existing validated handle; unchanged)",
+    "physical_ids_ref": "ORIGINAL_SOURCE_CONTRACT#role_ids.V via existing one-pass derived cache; no ID/bytes change",
+    "label_map_ref": "SOURCE_GEOMETRY_CACHE/source_geometry.json#geometry.class_names",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "SOURCE_GEOMETRY_CACHE/source_geometry.json",
+    "roles": {
+      "L_s": "No current reads; original BASE trained L6300 with unchanged contract, provenance only",
+      "U_s": "No U features/IQ/labels read; original U truth remains hidden",
+      "V": "Existing27000 source feature rows/model, same27000 physical source packets across3trainedmodelseeds. Statistical A/B/C split only; no V-trained network/readout and no matrix sent to training."
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing completed source diagnostic/source_geometry.json:sourceV27000/stateunchanged/nohead/noquery; reuse original data validation, no p2support/query or new builder",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Seen-sourceRX descriptive scatter only. No classification accuracy, unseenRX transfer, 84% claim, classifier decision, target or satellite test."
+  },
+  "checkpoint": {
+    "initialization": "none",
+    "sources": [],
+    "contract_check_ref": "Existing source cache completion and permodel source_geometry metadata; original BASE code31467086c3ced30237f3ac86e91eae68645425d7",
+    "provenance_verdict": "No checkpoint/model loaded or inherited. Existing caches from fixedfinal50 original matching BASE1/2/3, state unchanged, sourceV only, no target/Utruth. Historical E200 whitened readouts only context, never loaded or refitted.",
+    "selection_rule": "Fixed existing3 originalBASE sourceV caches, no model/rank/threshold selection"
+  },
+  "execution": {
+    "host": "local native Windows CPU",
+    "launch_owner": "codex/root/F-source-precision-20261020",
+    "gpu_policy": "No GPU worker/context; oneCPU process threads2; preserve all other workloads",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "LOCAL_RUN/20261020-diagnostic-FcrossRX-source-withinTX-precision-m3-local-r01",
+    "launch_command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_source_precision.run --base LOCAL_RUN/20261020-diagnostic-FcrossRX-source-withinTX-precision-m3-local-r01 --source-cache LOCAL_RUN/20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01 --commit RELEASE_COMMIT",
+    "stop_rule": "Metadata/role/sourcecommit/shape/class/RXday/count/order/output conflict, nonfinite/singular metric or failed math check stops this CPU run preserving partialrows; no retry or model dispatch."
+  },
+  "expected_artifacts": [
+    "execution.json",
+    "checks.json",
+    "BASE-s2026092701/summary.json",
+    "BASE-s2026092702/summary.json",
+    "BASE-s2026092703/summary.json",
+    "result.json",
+    "completion.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "all15TXpair B/C crossRX class-difference signal",
+      "withinTX held-partition variance/SNR",
+      "eachweakTX RXspread/signal",
+      "boundedprecision min/max/mean and covariance spectrum summary",
+      "fixed source-only diagnostic decision",
+      "CPU time/rows/zero model+IQ+target+head updates"
+    ],
+    "dimensions": [
+      "3 existingmodelseeds; same27000 sourcepackets",
+      "6TX/15pairs/5sourceRX/3days",
+      "RAW/TX/TX_RX_DAY fixed modes",
+      "A9000/B9000/C9000 disjoint rows per model"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "BASE-s2026092701",
+      "method": "Cached original F crossRX50 sourceV; fixed RAW/TX/TX_RX_DAY precision scatter",
+      "purpose": "Source-only descriptive falsification; no accuracy/readout",
+      "config_ref": "experiments/cvs_f_source_precision/design.py",
+      "resolved_config_ref": "LOCAL_RUN/20261020-diagnostic-FcrossRX-source-withinTX-precision-m3-local-r01/execution.json",
+      "data_overrides": {
+        "role": "V derived features only",
+        "partition": "3disjoint classRXday-balanced groups,100/cell/part",
+        "A": "Covariance only",
+        "B_C": "Class difference/RXspread/noise only"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102009,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026102009
+      },
+      "seed_notes": "Modelseed identifies existing BASE; split392005 original roles unchanged; data/evaluation2026102009 only source packet partition. No augmentation/support/new model RNG or new training.",
+      "k": null,
+      "scenario": "source-only,no satellite or target views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "One existing27000x160 cache read/model; no model forward, IQ, optimizer, headfit, target or Utruth. 15overlapping pair analyses not15independent datasets.",
+      "output_root": "LOCAL_RUN/20261020-diagnostic-FcrossRX-source-withinTX-precision-m3-local-r01/BASE-s2026092701",
+      "log_path": "IMMUTABLE_LOCAL_RELEASE/stdout.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_source_precision.run --base LOCAL_RUN/20261020-diagnostic-FcrossRX-source-withinTX-precision-m3-local-r01 --source-cache LOCAL_RUN/20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01 --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "summary.json"
+      ]
+    },
+    {
+      "row_id": "BASE-s2026092702",
+      "method": "Cached original F crossRX50 sourceV; fixed RAW/TX/TX_RX_DAY precision scatter",
+      "purpose": "Source-only descriptive falsification; no accuracy/readout",
+      "config_ref": "experiments/cvs_f_source_precision/design.py",
+      "resolved_config_ref": "LOCAL_RUN/20261020-diagnostic-FcrossRX-source-withinTX-precision-m3-local-r01/execution.json",
+      "data_overrides": {
+        "role": "V derived features only",
+        "partition": "3disjoint classRXday-balanced groups,100/cell/part",
+        "A": "Covariance only",
+        "B_C": "Class difference/RXspread/noise only"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026102009,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026102009
+      },
+      "seed_notes": "Modelseed identifies existing BASE; split392005 original roles unchanged; data/evaluation2026102009 only source packet partition. No augmentation/support/new model RNG or new training.",
+      "k": null,
+      "scenario": "source-only,no satellite or target views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "One existing27000x160 cache read/model; no model forward, IQ, optimizer, headfit, target or Utruth. 15overlapping pair analyses not15independent datasets.",
+      "output_root": "LOCAL_RUN/20261020-diagnostic-FcrossRX-source-withinTX-precision-m3-local-r01/BASE-s2026092702",
+      "log_path": "IMMUTABLE_LOCAL_RELEASE/stdout.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_source_precision.run --base LOCAL_RUN/20261020-diagnostic-FcrossRX-source-withinTX-precision-m3-local-r01 --source-cache LOCAL_RUN/20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01 --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "summary.json"
+      ]
+    },
+    {
+      "row_id": "BASE-s2026092703",
+      "method": "Cached original F crossRX50 sourceV; fixed RAW/TX/TX_RX_DAY precision scatter",
+      "purpose": "Source-only descriptive falsification; no accuracy/readout",
+      "config_ref": "experiments/cvs_f_source_precision/design.py",
+      "resolved_config_ref": "LOCAL_RUN/20261020-diagnostic-FcrossRX-source-withinTX-precision-m3-local-r01/execution.json",
+      "data_overrides": {
+        "role": "V derived features only",
+        "partition": "3disjoint classRXday-balanced groups,100/cell/part",
+        "A": "Covariance only",
+        "B_C": "Class difference/RXspread/noise only"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026102009,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026102009
+      },
+      "seed_notes": "Modelseed identifies existing BASE; split392005 original roles unchanged; data/evaluation2026102009 only source packet partition. No augmentation/support/new model RNG or new training.",
+      "k": null,
+      "scenario": "source-only,no satellite or target views",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "One existing27000x160 cache read/model; no model forward, IQ, optimizer, headfit, target or Utruth. 15overlapping pair analyses not15independent datasets.",
+      "output_root": "LOCAL_RUN/20261020-diagnostic-FcrossRX-source-withinTX-precision-m3-local-r01/BASE-s2026092703",
+      "log_path": "IMMUTABLE_LOCAL_RELEASE/stdout.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_source_precision.run --base LOCAL_RUN/20261020-diagnostic-FcrossRX-source-withinTX-precision-m3-local-r01 --source-cache LOCAL_RUN/20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01 --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "summary.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Original F+crossRX sameTX/defaultheadjoint/no satellite/clean-only remains base; prior failed gap not inherited or retuned from target. This separate step reads original source caches only.",
+    "Source0.9S+0.1trace(S)/dI then inverse-spectrum weights clipped.25..4 with scalar normalization to mean1 by64fixed bisection steps; no tuning grid. TX includesRX/day within-class variation; TX_RX_DAY subtracts cellmeans for explanatory contrast.",
+    "EveryclassRXday300 cached packets split fixedseed2026102009 intoA/B/C100 each; partitions disjoint rows of existing one-pass sourceV cache, not independent acquisition or unseenRX. Samey/rx/dayorder acrossmodels required.",
+    "A estimates precision only, B/C supply all pair means/scatter. Preserve signed cross-products; no class decisions/argmax/probabilities/head loss/parameters or exported precision matrices. Scalar spectral summaries only.",
+    "Before newcachedstat read, primaryTX-only advancement fixed: weakpair1/3 all3 modelseeds positive crossRXsignal, SNR>=RAW1.10 and eachweak RXspread/signal<=RAW.95 with positive RAWspread. TX_RX_DAY not candidate-ranked or used as fallback; results only motivate future separately preregistered L-only feature-loss experiment.",
+    "SourceV diagnostic never supplies a training/deployment matrix; any future mechanism must estimate from legal trainingL and keep original head/mainjoint. No future training authorized by this diagnostic artifact alone beyond current user goal and minimal actual launch workflow.",
+    "Focused synthetic checks PASS; one independent P0/P1 PASS. No checkpoint/query/model involved, so realcheckpoint noquery smoke is not consumed by this CPU cached-statistics stage; launcher firststep mathchecks then immediately analyzes.",
+    "CPU-only local immutable release/run, onecode/config commit, one archive copy comparison and releasecompile, postlaunch actualPID/CWD/cmdline/log/completion; no N607/admin access. No additional seals/hashes/data revalidation or approvals.",
+    "Prior E200 whitening anchor diagnostic fit extra readouts and is not repeated. Current study makes no classifier, LDA/Fisher optimality or accuracy claim; covariance multimodality limitations discussed in source primary LFDA background https://www.jmlr.org/beta/papers/v8/sugiyama07b.html."
+  ],
+  "registered_at": "2026-10-20T02:28:13+00:00"
+}
