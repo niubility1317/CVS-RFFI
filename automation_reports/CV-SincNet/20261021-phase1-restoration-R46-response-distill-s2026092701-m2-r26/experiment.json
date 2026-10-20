@@ -173,7 +173,7 @@
       "reviewer_reads_real_data_or_remote": false,
       "reviewer_edits": false
     },
-    "postlaunch_status": "VERIFIED_QUEUED_AFTER_REAL_SMOKE",
+    "postlaunch_status": "VERIFIED_GPU2_FIRST_SOURCE_EPOCH_GPU3_QUEUED",
     "postlaunch_evidence": "Actual controller PID/CWD/fullargv/commit matched;realparent+F50+2Ls smokePASS;log growth;bothrowswait actualR23GPU2/3;0newGPUworkers",
     "completion_tools": {
       "focused_tests": 18,
@@ -182,6 +182,12 @@
       "collector": "tools/complete_pamf_r46_response_distill.py",
       "single_local_owner": "codex/root/R26",
       "remote_training_mutations": 0
+    },
+    "source_progress": {
+      "pair_aug_control_complete_epochs": 1,
+      "odd_response": "QUEUED_AFTER_ACTUAL_R23_GPU3",
+      "no_formal_scores": true,
+      "all_available_source_records_audited": true
     }
   },
   "expected_artifacts": [
