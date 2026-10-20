@@ -1,3 +1,6 @@
 {"at": "2026-10-20T19:02:18+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-20T19:04:02+00:00", "status": "LOCAL_VERIFIED", "note": "45focused+45independentreviewchecksPASS;sourceactivationSVD625/500;eachformal7", "evidence": ["experiment.json", "report.md"], "row_id": "activation625_identity"}
 {"at": "2026-10-20T19:04:02+00:00", "status": "LOCAL_VERIFIED", "note": "45focused+45independentreviewchecksPASS;sourceactivationSVD625/500;eachformal7", "evidence": ["experiment.json", "report.md"], "row_id": "activation500_identity"}
+{"at": "2026-10-20T19:09:08+00:00", "status": "RUNNING", "note": "ActualCPUcontroller PID/CWD/argv/log growth verified;768sourcecalibration and real2Ls smokePASS;GPUworkers0/queued;no performanceclaim", "evidence": ["experiment.json", "report.md"], "row_id": null}
+{"at": "2026-10-20T19:09:08+00:00", "status": "QUEUED", "note": "Await corresponding actualR22ownedPIDexit and rowterminal;no GPUworker yet", "evidence": ["experiment.json", "report.md"], "row_id": "activation625_identity"}
+{"at": "2026-10-20T19:09:08+00:00", "status": "QUEUED", "note": "Await corresponding actualR22ownedPIDexit and rowterminal;no GPUworker yet", "evidence": ["experiment.json", "report.md"], "row_id": "activation500_identity"}

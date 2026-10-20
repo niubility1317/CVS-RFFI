@@ -1,6 +1,6 @@
 # R23：原350521基底的全链激活校准低秩压缩
 
-状态：LOCAL_VERIFIED / REGISTERED，尚未发布，无真实源校准或新版正式成绩。
+状态：VERIFIED / CPU_CALIBRATED_GPU_QUEUED；尚无新训练或正式识别成绩。
 
 本方案固定从用户原R46 prune_refine350521 source-final E20/4940、方法bbb8daf817de050b958d217b70d4c33f4aefe341出发，作为唯一初始化来源和冻结IQ教师。R22仍健康训练，本方案不改变其代码、权重、预算或测试矩阵。当前R22两版尚未预测target；本方案不使用R22的目标成绩挑选父、rank或loss。
 
@@ -27,3 +27,11 @@
 ## 完整执行实现与预登记
 
 两版完整runner、源激活校准、严格checkpoint及逐行自动七景链已实现，45项聚焦合成检查及唯一独立P0/P1审查PASS，审查独立复跑45项通过，无P0/P1问题。当前仅本地实现与登记，尚无真实源校准、新训练或正式成绩。原R22健康训练保持，CPU校准可先执行，GPU行等待对应R22实际所属PID退出及行终态，再按共享容量规则接续。
+
+## 真实发布、源校准与排队核实
+
+方法commit 816b6fceac537d644be3425b8186159ecdd6300b，release目录明确为pamf_r46_activation_factor_20261021_r23，归档两端一次SHA相同、远端compile通过。原父/F50/2Ls真实no-query smoke PASS；两档完整278180/236355参数，coarse/action/三prior梯度有限非零，原父与F状态不变、严格重载输出一致。45项执行检查与一次独立P0/P1审查PASS，另21项结果处理检查PASS。
+
+CPU2实际完成768次原父源IQ校准，256个Ls/Us位置×clean/received01/20、Ls/Us各384曝光，用时9.607647s。校准的F/TX/V/target/optimizer读取或更新均0，原父状态逐位不变；三阶段共享prior输入统计正确汇集。此成本与训练、smoke分别报告，不称data-free或识别收益。
+
+CPU控制器实际PID/CWD/完整命令/commit与日志增长均核实，当前两版GPU worker为0；两行正在等待R22各自终态及实际所属PID退出，再由共享容量锁复核free18GB/allowner<2。没有停止或热改R22及其他owner任务。每版随后固定20轮/19700更新并完整source7/成本/独立源评分/formal168000×7/独立truth-last；源负收益同样测试。完整结果工具已核对变量参数量、768校准成本、两版额外clean输入及预定R22结果对照缺失非阻断，尚无正式分数。
