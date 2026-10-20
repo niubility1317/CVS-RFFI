@@ -1,6 +1,6 @@
 # R38：无 TX 标签全链压缩与性能联合优化
 
-状态：LOCAL_VERIFIED，尚未发布。完整参数1709713/794529为静态结构计数，未证明正式性能或加速。方法 commit `e0868f0a0c3cf056a1753a5b4e5ce4f0bff84381` 已推送并独立核实；35 项聚焦检查、CLI help、一次 scoped P0/P1 通过；实际最终模型与完整测试尚待执行。
+状态：**VERIFIED / RUNNING**。N607 两版已通过真实权重无 query smoke 并完成首轮训练；七场景正式测试尚未完成。完整参数1709713/794529为结构计数，未证明正式性能或加速。方法 commit `e0868f0a0c3cf056a1753a5b4e5ce4f0bff84381` 已推送并独立核实；35 项聚焦检查、CLI help、一次 scoped P0/P1 通过；实际最终模型与完整测试尚待执行。实际发布、真实权重 smoke、首轮训练和所属进程读回已完成。
 
 
 固定两档 dense 通道收窄，不采用增加卷积分解层的低秩推理图：`dense_three_quarter` 完整1709713参数（较4665073减少63.3508%），`dense_half` 完整794529参数（减少82.9686%）。含coarse/action/prior，分别context1165243/prior544470及context548795/prior245734。卷积与线性MAC、FFT/CG之外开销、完整恢复延迟和显存实测单列，不能由参数减少推定加速。
@@ -19,7 +19,7 @@ teacher保留自身原coarse/action上下文。学生每层按原GroupNorm四组
 
 N607普通账户、不可覆盖新root/固定Git release，GPU0/1各一ownworker、总计最多两条。先等待R37根终态且实际ownedGPU句柄退出，不读取其分数；共享receiver_residual_capacity4.lock、source至少18GB空闲及全owner每卡少于两进程。保留其他owner，CPU2线程/本run score.lock最多一独立scorer。launcher首步实际原R17/两学生/原F50/2Ls CPU无query smoke，检查所有组件梯度、教师/F不变、全checkpoint严格复载输出逐位一致，PASS立即继续。F只在该无query读出和冻结评测使用，不进入loss或source训练模块。
 
-一次聚焦协议测试和独立P0/P1、一个Git代码/config身份、最小登记、一次普通账户预检/一个archive两端SHA比较/远端compile、启动后PID/CWD/argv/GPU/日志产物读回。输入/权限/冲突/非有限数/技术错误时保留产物及健康行，不自动重试，不把低分当技术错误。每行完成全部测试/分析/登记后才称该实验完成；单F或source教师拟合不证明新增细节属于输入TX。当前只完成本地结构与链路验证，未发布、未证明本路线的正式性能。
+一次聚焦协议测试和独立P0/P1、一个Git代码/config身份、最小登记、一次普通账户预检/一个archive两端SHA比较/远端compile、启动后PID/CWD/argv/GPU/日志产物读回。输入/权限/冲突/非有限数/技术错误时保留产物及健康行，不自动重试，不把低分当技术错误。每行完成全部测试/分析/登记后才称该实验完成；单F或source教师拟合不证明新增细节属于输入TX。当前已实际发布并核实两版训练运行，尚未证明本路线的正式性能。
 
 
 精确命令、环境、路径和逐行矩阵见[登记](experiment.json)。
