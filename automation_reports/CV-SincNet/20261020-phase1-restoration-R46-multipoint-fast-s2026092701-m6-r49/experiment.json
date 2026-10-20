@@ -179,7 +179,7 @@
       "group_pruned",
       "low_rank"
     ],
-    "postlaunch_state": "VERIFIED_SIX_GPU_RUNNING"
+    "postlaunch_state": "VERIFIED_ALL_PROCESSES_EXITED"
   },
   "expected_artifacts": [
     "launch.json",
@@ -561,7 +561,24 @@
     "R46andR47closed;R48GPU0/1healthyunchanged;newGPU2to7previouslyidle;nootherownerstop/hotedit;allhistoricalartifacts preserved.",
     "Allfixedrows getformal tests;no sourcegate/earlystop/targetfeedback/selectivereruns;relativeR44 descriptiveonly;allnegativeresultsreported.",
     "Matched same-card source-only G and G+F;B1 warm16/64samples x3 alternating rounds;B32 warm4/16iterations x3;median,p90,p95,throughput,peak/resident memory;ConvLinearMAC excludes FFT/CG/norm",
-    "VERIFIED/RUNNING：实际350521父/F50/两Ls配对IQ noquery smoke PASS，六行全部组件有限非零梯度、teacher/F不更新、checkpoint严格重载一致。归档单SHA/compile及controller/六worker实际PID/CWD/argv/空controllerCUDA/各预登记物理GPU2至7和GPU-PID匹配、首轮曝光、micro256/directbuffer和日志增长已核实。GPU2/3发布前已有各一条其他owner轻负载，按free≥18GB/总进程<2共存；GPU4至7预检空闲；无旧进程改动。无本轮正式性能结果；每行E20后自动七正式测试和独立truth-last。"
+    "VERIFIED/RUNNING：实际350521父/F50/两Ls配对IQ noquery smoke PASS，六行全部组件有限非零梯度、teacher/F不更新、checkpoint严格重载一致。归档单SHA/compile及controller/六worker实际PID/CWD/argv/空controllerCUDA/各预登记物理GPU2至7和GPU-PID匹配、首轮曝光、micro256/directbuffer和日志增长已核实。GPU2/3发布前已有各一条其他owner轻负载，按free≥18GB/总进程<2共存；GPU4至7预检空闲；无旧进程改动。无本轮正式性能结果；每行E20后自动七正式测试和独立truth-last。",
+    "VERIFIED/ANALYZED：六行E20/4940、源1800×7、正式168000×7全部预测固定后独立truth-last、所属控制器和GPU进程自然退出、完整权重取回与CPU严格加载均核实。retain_refine350521参数，lowurban66.822024%（较350521父-0.688095pp），原R17逐景1pp=True，父逐景1pp=True，70%=False，其他五景gap5pp=False；G_only_B1父/本版median 44.6075/44.5250ms，本版P95 48.3775ms，G_plus_F_B1父/本版median 54.8240/54.8702ms，本版P95 59.8024ms，G_only_B32父/本版吞吐393.8300/391.5788sample/s，G_plus_F_B32父/本版吞吐353.0949/352.8159sample/s；prune_near329885参数，lowurban66.757143%（较350521父-0.752976pp），原R17逐景1pp=True，父逐景1pp=False，70%=False，其他五景gap5pp=False；G_only_B1父/本版median 45.9973/44.1574ms，本版P95 61.3752ms，G_plus_F_B1父/本版median 54.7709/53.8840ms，本版P95 58.1520ms，G_only_B32父/本版吞吐382.2783/385.3717sample/s，G_plus_F_B32父/本版吞吐347.5274/351.7908sample/s；prune_balanced293069参数，lowurban67.961310%（较350521父+0.451190pp），原R17逐景1pp=True，父逐景1pp=True，70%=False，其他五景gap5pp=False；G_only_B1父/本版median 42.3437/41.2085ms，本版P95 42.4010ms，G_plus_F_B1父/本版median 52.3321/51.3496ms，本版P95 52.6641ms，G_only_B32父/本版吞吐556.5820/592.9033sample/s，G_plus_F_B32父/本版吞吐486.9068/529.1422sample/s；prune_small215049参数，lowurban65.825595%（较350521父-1.684524pp），原R17逐景1pp=False，父逐景1pp=False，70%=False，其他五景gap5pp=False；G_only_B1父/本版median 42.4602/43.3987ms，本版P95 45.0318ms，G_plus_F_B1父/本版median 52.2932/53.3125ms，本版P95 54.8236ms，G_only_B32父/本版吞吐563.4631/691.6884sample/s，G_plus_F_B32父/本版吞吐484.1417/577.7237sample/s；context_slim268257参数，lowurban66.395238%（较350521父-1.114881pp），原R17逐景1pp=True，父逐景1pp=False，70%=False，其他五景gap5pp=False；G_only_B1父/本版median 42.8052/43.6513ms，本版P95 44.8550ms，G_plus_F_B1父/本版median 53.1800/53.8204ms，本版P95 55.6401ms，G_only_B32父/本版吞吐550.4561/581.5011sample/s，G_plus_F_B32父/本版吞吐475.6606/507.2773sample/s；prior_slim310905参数，lowurban66.997024%（较350521父-0.513095pp），原R17逐景1pp=True，父逐景1pp=False，70%=False，其他五景gap5pp=False；G_only_B1父/本版median 43.4693/43.8420ms，本版P95 45.7176ms，G_plus_F_B1父/本版median 53.4682/53.8428ms，本版P95 55.2896ms，G_only_B32父/本版吞吐556.5201/621.2118sample/s，G_plus_F_B32父/本版吞吐480.8649/527.2047sample/s。同卡预加载IQ计时，不含传输/预处理/loader；显存为三G一F共享suite及当前前向增量。参数、时延、吞吐和性能分别报告，全部负结果保留，不回流调参或选择性重跑。原完整目标继续ACTIVE，识别率/损失/关联均不单独证明逐细节TX真实性。"
   ],
-  "registered_at": "2026-10-20T14:44:51+00:00"
+  "registered_at": "2026-10-20T14:44:51+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "all_fixed_rows_scored": true,
+    "accepted_R17": [
+      "retain_refine",
+      "prune_near",
+      "prune_balanced",
+      "context_slim",
+      "prior_slim"
+    ],
+    "accepted_R46": [
+      "retain_refine",
+      "prune_balanced"
+    ],
+    "goal_complete": false
+  }
 }
