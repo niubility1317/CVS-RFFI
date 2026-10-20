@@ -1,6 +1,6 @@
 # R59：R57/R58 归一化压缩版的固定无 F 身份诊断
 
-状态：LOCAL_IMPLEMENTED，未发布，尚无新正式身份统计。R58 正在训练，本方案在读取其源验证/正式分数前固定；全部四行均保留，不作候选选择，不阻塞其自动正式测试或交付。
+状态：**VERIFIED / WAITING_PARENT_FORMAL**。尚无新正式身份统计。R58 正在训练，本方案在读取其源验证/正式分数前固定；全部四行均保留，不作候选选择，不阻塞其自动正式测试或交付。
 
 仅延用 R56 的固定数学评价：同168000物理记录、clean和六种practical、mirror64/spectral4/reference24/combined92，原8192条source L/U均值/std下限0.05，不新增校准、阈值或描述符。复用R56 raw/指定350521父/旧R55 full-fold的84单元，待R57两行与R58两行完整七景评分后新算112单元；196单元全部固定、有限且ID一致后，独立CPU scorer才连接原truth。新增解析输入4704000条，约6.92GB特征，旧特征只读引用；0F权重/embedding/logits、checkpoint、神经预测、训练、head拟合或GPU。
 
@@ -11,3 +11,6 @@
 CPU2/空CUDA/0GPU，等待四行所有正式评分后才读取target IQ，沿用R41 score.lock、最多一个本任务CPU scorer。错误父/物理ID/校准、输入缺失/非有限、输出碰撞保留产物并停止，无自动重试；不触碰健康父任务。启动第一步真实2条L_s参数自由noquery smoke，阶段不消费任何checkpoint，不另加载权重制造无关门槛。
 
 本评价只检验同TX解析关联，不证明每个细节或TX排他真实性，也不是新的独立盲测。准确率和时延仍以各父run的冻结F50默认头七景正式结果为准，原low urban70%、其他五景距rawclean≤5pp与更强TX细节保真目标保持ACTIVE；全部统计不回流训练、选模、结构或父选择。
+
+
+实际启动状态：VERIFIED / WAITING_PARENT_FORMAL：普通账户新release/归档单SHA/compile已核实；真实2Ls参数自由noquery smoke PASS，0checkpoint/F/TX/V/target；实际PID/CWD/argv/空CUDA/2线程及日志增长已读回。等待R57/R58全部四行七景正式评分后解析，复用R56raw/350521/R55参考的84单元，新算112单元；无统计结果，不改变父训练或预测。

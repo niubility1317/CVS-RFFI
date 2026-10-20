@@ -1,6 +1,6 @@
 # R59：R57/R58四个归一化压缩版的无F同TX关联
 
-状态：LOCAL_VERIFIED，尚未发布。26项聚焦检查、CLIhelp、一次独立P0/P1 PASS；方法commit `07d7c47f248ec7178e1a7ecf02e8b2cd4f399cbc`。
+状态：**VERIFIED / WAITING_PARENT_FORMAL**，已发布。26项聚焦检查、CLIhelp、一次独立P0/P1 PASS；方法commit `07d7c47f248ec7178e1a7ecf02e8b2cd4f399cbc`。
 
 
 状态：LOCAL_IMPLEMENTED，未发布，尚无新正式身份统计。R58 正在训练，本方案在读取其源验证/正式分数前固定；全部四行均保留，不作候选选择，不阻塞其自动正式测试或交付。
@@ -17,3 +17,6 @@ CPU2/空CUDA/0GPU，等待四行所有正式评分后才读取target IQ，沿用
 
 
 精确环境、命令、路径、预算见[登记](experiment.json)。
+
+
+VERIFIED / WAITING_PARENT_FORMAL：普通账户新release/归档单SHA/compile已核实；真实2Ls参数自由noquery smoke PASS，0checkpoint/F/TX/V/target；实际PID/CWD/argv/空CUDA/2线程及日志增长已读回。等待R57/R58全部四行七景正式评分后解析，复用R56raw/350521/R55参考的84单元，新算112单元；无统计结果，不改变父训练或预测。
