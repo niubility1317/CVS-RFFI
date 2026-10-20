@@ -115,6 +115,9 @@ def test_delivery_renders_all_six_rows_without_remote_or_IQ_access(tmp_path, mon
     delivery.report(local, output, completed_metrics(fixture()), artifacts)
     text = (folder/'report.md').read_text(encoding='utf-8')
     assert '状态：ANALYZED。' in text and all(arm in text for arm in d.ARMS)
+    comparison = next(line for line in text.splitlines() if line.startswith('|half_iq|clean|')).split('|')
+    expected = completed_metrics(fixture())['rows']['half_iq']['matched_same_budget_control']['target']['views']['clean']['accuracy_delta_pp']
+    assert float(comparison[6]) == pytest.approx(expected, abs=1e-6)
     assert len(list((folder/'row_metrics.csv').open(encoding='utf-8'))) == 1+6*2*7*14
     saved = json.loads((folder/'results.json').read_text(encoding='utf-8'))
     assert not saved['goal_complete'] and len(saved['rows']) == 6

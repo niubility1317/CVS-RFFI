@@ -139,7 +139,7 @@ def retrieve(local, output):
     return result
 
 
-def report(local, output, analysis, artifacts):
+def report(local, output, analysis, artifacts, *, record_events=True):
     folder = local/'automation_reports/CV-SincNet'/d.RUN
     report_path = folder/'report.md'
     body = report_path.read_text(encoding='utf-8').split('\n## R13 完整结果交付\n')[0]
@@ -218,11 +218,12 @@ def report(local, output, analysis, artifacts):
     write(folder/'experiment.json', spec)
     module_spec = importlib.util.spec_from_file_location('registry', local/'tools/experiment_registry.py')
     registry = importlib.util.module_from_spec(module_spec);module_spec.loader.exec_module(registry)
-    for arm, row in analysis['rows'].items():
+    if record_events:
+        for arm, row in analysis['rows'].items():
+            registry.event(local, d.RUN, 'ANALYZED', ['report.md','results.json','row_metrics.csv'],
+                'VERIFIED E10/2470;source7;target168000x7;truth-last;models strict-loaded;dual1pp='+str(row['accepted_both']), row_id=arm)
         registry.event(local, d.RUN, 'ANALYZED', ['report.md','results.json','row_metrics.csv'],
-            'VERIFIED E10/2470;source7;target168000x7;truth-last;models strict-loaded;dual1pp='+str(row['accepted_both']), row_id=arm)
-    registry.event(local, d.RUN, 'ANALYZED', ['report.md','results.json','row_metrics.csv'],
-                   'All six fixed rows complete; all negative results preserved; no target feedback')
+                       'All six fixed rows complete; all negative results preserved; no target feedback')
     for name in ('experiment.json','report.md','events.jsonl','results.json','row_metrics.csv'):
         destination = WORKSPACE/(folder/name).relative_to(local)
         if destination.resolve() != (folder/name).resolve():

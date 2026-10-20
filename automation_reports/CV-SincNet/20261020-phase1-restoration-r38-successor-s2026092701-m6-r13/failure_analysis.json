@@ -1,0 +1,417 @@
+{
+  "status": "FULL_60_EPOCH_AND_STDOUT_ANALYSIS",
+  "training_records": 60,
+  "rows": {
+    "keep_iq": {
+      "epochs_read": 10,
+      "stdout_lines": 24,
+      "stdout_findings": [],
+      "clip_fraction": {
+        "first": 0.06072874493927125,
+        "last": 0.012145748987854251,
+        "mean": 0.0368421052631579
+      },
+      "losses": {
+        "loss": {
+          "first": 0.02533776520263581,
+          "last": 0.02234915578743768,
+          "last3_slope": -0.0004494105920432093,
+          "last5_relative_drop": 0.07566861658891842
+        },
+        "iq_nmse": {
+          "first": 0.02431277946914945,
+          "last": 0.021789959410826364,
+          "last3_slope": -0.00036712698969576193,
+          "last5_relative_drop": 0.05209387495057563
+        },
+        "teacher_stage_nmse": {
+          "first": 0.0010249857494811353,
+          "last": 0.0005591964606964398,
+          "last3_slope": -8.22834846829731e-05,
+          "last5_relative_drop": 0.5305844216981667
+        }
+      },
+      "source": {
+        "clean": {
+          "accuracy": 98.44444444444444,
+          "IQ_NMSE": 0.002733205910772085
+        },
+        "practical_high": {
+          "accuracy": 97.77777777777777,
+          "IQ_NMSE": 0.010718392208218575
+        },
+        "practical_mid": {
+          "accuracy": 96.61111111111111,
+          "IQ_NMSE": 0.01582074910402298
+        },
+        "practical_low_suburban": {
+          "accuracy": 95.94444444444444,
+          "IQ_NMSE": 0.01975936070084572
+        },
+        "practical_high_urban": {
+          "accuracy": 97.38888888888889,
+          "IQ_NMSE": 0.01492471992969513
+        },
+        "practical_mid_urban": {
+          "accuracy": 91.33333333333333,
+          "IQ_NMSE": 0.03687693178653717
+        },
+        "practical_low_urban": {
+          "accuracy": 85.94444444444444,
+          "IQ_NMSE": 0.05604354292154312
+        }
+      },
+      "target_lowurban": 68.50297619047619,
+      "target_clean": 84.6797619047619
+    },
+    "three_quarter_iq": {
+      "epochs_read": 10,
+      "stdout_lines": 24,
+      "stdout_findings": [],
+      "clip_fraction": {
+        "first": 0.9919028340080972,
+        "last": 0.10526315789473684,
+        "mean": 0.40202429149797575
+      },
+      "losses": {
+        "loss": {
+          "first": 0.49720919903497846,
+          "last": 0.04055978338869791,
+          "last3_slope": -0.0008929724243898248,
+          "last5_relative_drop": 0.12589895200757703
+        },
+        "iq_nmse": {
+          "first": 0.26136707174967205,
+          "last": 0.03186004268176972,
+          "last3_slope": -0.0005664477293926558,
+          "last5_relative_drop": 0.09186378831540454
+        },
+        "teacher_stage_nmse": {
+          "first": 0.2358421272493544,
+          "last": 0.008699740749975992,
+          "last3_slope": -0.0003265246221470462,
+          "last5_relative_drop": 0.2313915545930059
+        }
+      },
+      "source": {
+        "clean": {
+          "accuracy": 98.55555555555556,
+          "IQ_NMSE": 0.0035527765285223722
+        },
+        "practical_high": {
+          "accuracy": 97.11111111111111,
+          "IQ_NMSE": 0.0145297572016716
+        },
+        "practical_mid": {
+          "accuracy": 95.22222222222223,
+          "IQ_NMSE": 0.021056342869997025
+        },
+        "practical_low_suburban": {
+          "accuracy": 93.88888888888889,
+          "IQ_NMSE": 0.026909811422228813
+        },
+        "practical_high_urban": {
+          "accuracy": 95.77777777777777,
+          "IQ_NMSE": 0.02120760641992092
+        },
+        "practical_mid_urban": {
+          "accuracy": 84.83333333333333,
+          "IQ_NMSE": 0.05330808460712433
+        },
+        "practical_low_urban": {
+          "accuracy": 75.16666666666667,
+          "IQ_NMSE": 0.07923780381679535
+        }
+      },
+      "target_lowurban": 64.33214285714286,
+      "target_clean": 84.74107142857143
+    },
+    "half_iq": {
+      "epochs_read": 10,
+      "stdout_lines": 24,
+      "stdout_findings": [],
+      "clip_fraction": {
+        "first": 1.0,
+        "last": 0.728744939271255,
+        "mean": 0.91417004048583
+      },
+      "losses": {
+        "loss": {
+          "first": 0.8118280978429885,
+          "last": 0.06848145274888902,
+          "last3_slope": -0.0020723845807332844,
+          "last5_relative_drop": 0.18741698098789217
+        },
+        "iq_nmse": {
+          "first": 0.41173742175480676,
+          "last": 0.04634599893622928,
+          "last3_slope": -0.0011621044013235273,
+          "last5_relative_drop": 0.14593416839523485
+        },
+        "teacher_stage_nmse": {
+          "first": 0.40009067340881105,
+          "last": 0.022135453887402064,
+          "last3_slope": -0.0009102800493202548,
+          "last5_relative_drop": 0.2624248632069725
+        }
+      },
+      "source": {
+        "clean": {
+          "accuracy": 98.44444444444444,
+          "IQ_NMSE": 0.007363280281424522
+        },
+        "practical_high": {
+          "accuracy": 96.22222222222223,
+          "IQ_NMSE": 0.02216186560690403
+        },
+        "practical_mid": {
+          "accuracy": 93.55555555555556,
+          "IQ_NMSE": 0.031449880450963974
+        },
+        "practical_low_suburban": {
+          "accuracy": 90.55555555555556,
+          "IQ_NMSE": 0.03917161747813225
+        },
+        "practical_high_urban": {
+          "accuracy": 93.61111111111111,
+          "IQ_NMSE": 0.03108491748571396
+        },
+        "practical_mid_urban": {
+          "accuracy": 78.38888888888889,
+          "IQ_NMSE": 0.07891269028186798
+        },
+        "practical_low_urban": {
+          "accuracy": 66.44444444444444,
+          "IQ_NMSE": 0.11299872398376465
+        }
+      },
+      "target_lowurban": 56.46547619047619,
+      "target_clean": 84.41130952380952
+    },
+    "keep_task": {
+      "epochs_read": 10,
+      "stdout_lines": 24,
+      "stdout_findings": [],
+      "clip_fraction": {
+        "first": 1.0,
+        "last": 1.0,
+        "mean": 1.0
+      },
+      "losses": {
+        "loss": {
+          "first": 0.18273133725590177,
+          "last": 0.11809884063970474,
+          "last3_slope": -0.003374490369406979,
+          "last5_relative_drop": 0.2113871859126164
+        },
+        "iq_nmse": {
+          "first": 0.028812719900456685,
+          "last": 0.027889057451770418,
+          "last3_slope": -0.00073765019102702,
+          "last5_relative_drop": 0.1331572753905615
+        },
+        "teacher_stage_nmse": {
+          "first": 0.004721625820853776,
+          "last": 0.004365954395087938,
+          "last3_slope": -0.0004269384229112248,
+          "last5_relative_drop": 0.4194590248996894
+        },
+        "task_KL": {
+          "first": 0.13086814295961743,
+          "last": 0.07320458455785872,
+          "last3_slope": -0.0017847511317758327,
+          "last5_relative_drop": 0.2191550598845369
+        },
+        "task_feature_distance": {
+          "first": 0.018328848426304167,
+          "last": 0.012639244222924824,
+          "last3_slope": -0.0004251507693339897,
+          "last5_relative_drop": 0.2251114918772517
+        }
+      },
+      "source": {
+        "clean": {
+          "accuracy": 98.5,
+          "IQ_NMSE": 0.003430799348279834
+        },
+        "practical_high": {
+          "accuracy": 98.11111111111111,
+          "IQ_NMSE": 0.014736253768205643
+        },
+        "practical_mid": {
+          "accuracy": 97.44444444444444,
+          "IQ_NMSE": 0.020807016640901566
+        },
+        "practical_low_suburban": {
+          "accuracy": 97.38888888888889,
+          "IQ_NMSE": 0.025608807802200317
+        },
+        "practical_high_urban": {
+          "accuracy": 97.83333333333333,
+          "IQ_NMSE": 0.019987156614661217
+        },
+        "practical_mid_urban": {
+          "accuracy": 94.38888888888889,
+          "IQ_NMSE": 0.04703596234321594
+        },
+        "practical_low_urban": {
+          "accuracy": 89.0,
+          "IQ_NMSE": 0.07164649665355682
+        }
+      },
+      "target_lowurban": 65.7297619047619,
+      "target_clean": 84.78095238095239
+    },
+    "three_quarter_task": {
+      "epochs_read": 10,
+      "stdout_lines": 24,
+      "stdout_findings": [],
+      "clip_fraction": {
+        "first": 1.0,
+        "last": 1.0,
+        "mean": 1.0
+      },
+      "losses": {
+        "loss": {
+          "first": 1.3582110153985403,
+          "last": 0.2614084028062366,
+          "last3_slope": -0.00917507433891296,
+          "last5_relative_drop": 0.2202795398347909
+        },
+        "iq_nmse": {
+          "first": 0.3976533621303619,
+          "last": 0.0674677815967136,
+          "last3_slope": -0.001735504989586185,
+          "last5_relative_drop": 0.15072265048637448
+        },
+        "teacher_stage_nmse": {
+          "first": 0.3691754345591106,
+          "last": 0.03961382310920292,
+          "last3_slope": -0.001487727701663973,
+          "last5_relative_drop": 0.21953791178281537
+        },
+        "task_KL": {
+          "first": 0.5251837699980962,
+          "last": 0.13071693835088186,
+          "last3_slope": -0.005211845988082488,
+          "last5_relative_drop": 0.2547031141145297
+        },
+        "task_feature_distance": {
+          "first": 0.06619844658601852,
+          "last": 0.02360985934450513,
+          "last3_slope": -0.0007399960065644917,
+          "last5_relative_drop": 0.20429871555247106
+        }
+      },
+      "source": {
+        "clean": {
+          "accuracy": 98.38888888888889,
+          "IQ_NMSE": 0.01188646536320448
+        },
+        "practical_high": {
+          "accuracy": 97.72222222222223,
+          "IQ_NMSE": 0.030491044744849205
+        },
+        "practical_mid": {
+          "accuracy": 96.5,
+          "IQ_NMSE": 0.04361966624855995
+        },
+        "practical_low_suburban": {
+          "accuracy": 96.0,
+          "IQ_NMSE": 0.053815700113773346
+        },
+        "practical_high_urban": {
+          "accuracy": 96.66666666666667,
+          "IQ_NMSE": 0.04361390322446823
+        },
+        "practical_mid_urban": {
+          "accuracy": 89.55555555555556,
+          "IQ_NMSE": 0.1144895926117897
+        },
+        "practical_low_urban": {
+          "accuracy": 82.55555555555556,
+          "IQ_NMSE": 0.16430385410785675
+        }
+      },
+      "target_lowurban": 66.79940476190477,
+      "target_clean": 84.15059523809524
+    },
+    "half_task": {
+      "epochs_read": 10,
+      "stdout_lines": 24,
+      "stdout_findings": [],
+      "clip_fraction": {
+        "first": 1.0,
+        "last": 1.0,
+        "mean": 1.0
+      },
+      "losses": {
+        "loss": {
+          "first": 1.6842493338206457,
+          "last": 0.5806420957020351,
+          "last3_slope": -0.005858099770924318,
+          "last5_relative_drop": 0.13128355178408485
+        },
+        "iq_nmse": {
+          "first": 0.5560516869832599,
+          "last": 0.1429190477946448,
+          "last3_slope": -0.0015795222539750358,
+          "last5_relative_drop": 0.15138287764790595
+        },
+        "teacher_stage_nmse": {
+          "first": 0.5343103214596945,
+          "last": 0.11683462275399102,
+          "last3_slope": -0.001997378095747944,
+          "last5_relative_drop": 0.19865812325235804
+        },
+        "task_KL": {
+          "first": 0.5226747931979951,
+          "last": 0.280239782091171,
+          "last3_slope": -0.0018480843021755908,
+          "last5_relative_drop": 0.09725469171472509
+        },
+        "task_feature_distance": {
+          "first": 0.07121252901591951,
+          "last": 0.040648642375355676,
+          "last3_slope": -0.00043311509016960077,
+          "last5_relative_drop": 0.07083347368976532
+        }
+      },
+      "source": {
+        "clean": {
+          "accuracy": 98.33333333333333,
+          "IQ_NMSE": 0.01414333563297987
+        },
+        "practical_high": {
+          "accuracy": 97.27777777777777,
+          "IQ_NMSE": 0.044201042503118515
+        },
+        "practical_mid": {
+          "accuracy": 94.72222222222223,
+          "IQ_NMSE": 0.07541994005441666
+        },
+        "practical_low_suburban": {
+          "accuracy": 92.66666666666667,
+          "IQ_NMSE": 0.08939298987388611
+        },
+        "practical_high_urban": {
+          "accuracy": 93.11111111111111,
+          "IQ_NMSE": 0.08543338626623154
+        },
+        "practical_mid_urban": {
+          "accuracy": 77.11111111111111,
+          "IQ_NMSE": 0.26895156502723694
+        },
+        "practical_low_urban": {
+          "accuracy": 65.11111111111111,
+          "IQ_NMSE": 0.39162835478782654
+        }
+      },
+      "target_lowurban": 53.91845238095238,
+      "target_clean": 84.31964285714285
+    }
+  },
+  "model_updates": 0,
+  "new_target_predictions": 0,
+  "new_truth_access": 0
+}

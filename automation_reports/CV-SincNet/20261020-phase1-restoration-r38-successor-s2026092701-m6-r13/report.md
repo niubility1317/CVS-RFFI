@@ -55,48 +55,48 @@ GPU 实际训练 VERIFIED：half_task (GPU5, E1), three_quarter_task (GPU4, E1)�
 
 |版本|场景|准确率（%）|相对 R38（pp）|相对 R17（pp）|相对同预算原宽度（pp）|净纠错|
 |---|---|---:|---:|---:|---:|---:|
-|keep_iq|clean|84.679762|+0.050000|+0.092857|True/True|+6|
-|keep_iq|practical_high|82.102381|-0.045238|+0.783333|True/True|+69501|
-|keep_iq|practical_mid|80.805357|-0.167857|+1.227381|True/True|+68693|
-|keep_iq|practical_low_suburban|79.350000|-0.143452|+1.353571|True/True|+67738|
-|keep_iq|practical_high_urban|81.120238|-0.035119|+0.766667|True/True|+69589|
-|keep_iq|practical_mid_urban|74.837500|+0.061310|+1.152381|True/True|+67795|
-|keep_iq|practical_low_urban|68.502976|+0.233333|+1.286310|True/True|+64182|
-|three_quarter_iq|clean|84.741071|+0.111310|+0.154167|False/False|+109|
-|three_quarter_iq|practical_high|81.077381|-1.070238|-0.241667|False/False|+67779|
-|three_quarter_iq|practical_mid|79.592262|-1.380952|+0.014286|False/False|+66655|
-|three_quarter_iq|practical_low_suburban|77.665476|-1.827976|-0.330952|False/False|+64908|
-|three_quarter_iq|practical_high_urban|79.755357|-1.400000|-0.598214|False/False|+67296|
-|three_quarter_iq|practical_mid_urban|72.126786|-2.649405|-1.558333|False/False|+63241|
-|three_quarter_iq|practical_low_urban|64.332143|-3.937500|-2.884524|False/False|+57175|
-|half_iq|clean|84.411310|-0.218452|-0.175595|False/False|-445|
-|half_iq|practical_high|81.279167|-0.868452|-0.039881|False/False|+68118|
-|half_iq|practical_mid|78.767262|-2.205952|-0.810714|False/False|+65269|
-|half_iq|practical_low_suburban|75.919643|-3.573810|-2.076786|False/False|+61975|
-|half_iq|practical_high_urban|79.023214|-2.132143|-1.330357|False/False|+66066|
-|half_iq|practical_mid_urban|67.211905|-7.564286|-6.473214|False/False|+54984|
-|half_iq|practical_low_urban|56.465476|-11.804167|-10.751190|False/False|+43959|
-|keep_task|clean|84.780952|+0.151190|+0.194048|False/False|+176|
-|keep_task|practical_high|81.197619|-0.950000|-0.121429|False/False|+67981|
-|keep_task|practical_mid|79.719048|-1.254167|+0.141071|False/False|+66868|
-|keep_task|practical_low_suburban|78.124405|-1.369048|+0.127976|False/False|+65679|
-|keep_task|practical_high_urban|79.891071|-1.264286|-0.462500|False/False|+67524|
-|keep_task|practical_mid_urban|72.526190|-2.250000|-1.158929|False/False|+63912|
-|keep_task|practical_low_urban|65.729762|-2.539881|-1.486905|False/False|+59523|
-|three_quarter_task|clean|84.150595|-0.479167|-0.436310|False/True|-883|
-|three_quarter_task|practical_high|82.129167|-0.018452|+0.810119|False/True|+69546|
-|three_quarter_task|practical_mid|80.818452|-0.154762|+1.240476|False/True|+68715|
-|three_quarter_task|practical_low_suburban|79.081548|-0.411905|+1.085119|False/True|+67287|
-|three_quarter_task|practical_high_urban|80.897024|-0.258333|+0.543452|False/True|+69214|
-|three_quarter_task|practical_mid_urban|74.034524|-0.741667|+0.349405|False/True|+66446|
-|three_quarter_task|practical_low_urban|66.799405|-1.470238|-0.417262|False/True|+61320|
-|half_task|clean|84.319643|-0.310119|-0.267262|False/False|-599|
-|half_task|practical_high|79.508333|-2.639286|-1.810714|False/False|+65143|
-|half_task|practical_mid|77.534524|-3.438690|-2.043452|False/False|+63198|
-|half_task|practical_low_suburban|75.404167|-4.089286|-2.592262|False/False|+61109|
-|half_task|practical_high_urban|76.348214|-4.807143|-4.005357|False/False|+61572|
-|half_task|practical_mid_urban|63.833333|-10.942857|-9.851786|False/False|+49308|
-|half_task|practical_low_urban|53.918452|-14.351190|-13.298214|False/False|+39680|
+|keep_iq|clean|84.679762|+0.050000|+0.092857|+0.000000|+6|
+|keep_iq|practical_high|82.102381|-0.045238|+0.783333|+0.000000|+69501|
+|keep_iq|practical_mid|80.805357|-0.167857|+1.227381|+0.000000|+68693|
+|keep_iq|practical_low_suburban|79.350000|-0.143452|+1.353571|+0.000000|+67738|
+|keep_iq|practical_high_urban|81.120238|-0.035119|+0.766667|+0.000000|+69589|
+|keep_iq|practical_mid_urban|74.837500|+0.061310|+1.152381|+0.000000|+67795|
+|keep_iq|practical_low_urban|68.502976|+0.233333|+1.286310|+0.000000|+64182|
+|three_quarter_iq|clean|84.741071|+0.111310|+0.154167|+0.061310|+109|
+|three_quarter_iq|practical_high|81.077381|-1.070238|-0.241667|-1.025000|+67779|
+|three_quarter_iq|practical_mid|79.592262|-1.380952|+0.014286|-1.213095|+66655|
+|three_quarter_iq|practical_low_suburban|77.665476|-1.827976|-0.330952|-1.684524|+64908|
+|three_quarter_iq|practical_high_urban|79.755357|-1.400000|-0.598214|-1.364881|+67296|
+|three_quarter_iq|practical_mid_urban|72.126786|-2.649405|-1.558333|-2.710714|+63241|
+|three_quarter_iq|practical_low_urban|64.332143|-3.937500|-2.884524|-4.170833|+57175|
+|half_iq|clean|84.411310|-0.218452|-0.175595|-0.268452|-445|
+|half_iq|practical_high|81.279167|-0.868452|-0.039881|-0.823214|+68118|
+|half_iq|practical_mid|78.767262|-2.205952|-0.810714|-2.038095|+65269|
+|half_iq|practical_low_suburban|75.919643|-3.573810|-2.076786|-3.430357|+61975|
+|half_iq|practical_high_urban|79.023214|-2.132143|-1.330357|-2.097024|+66066|
+|half_iq|practical_mid_urban|67.211905|-7.564286|-6.473214|-7.625595|+54984|
+|half_iq|practical_low_urban|56.465476|-11.804167|-10.751190|-12.037500|+43959|
+|keep_task|clean|84.780952|+0.151190|+0.194048|+0.000000|+176|
+|keep_task|practical_high|81.197619|-0.950000|-0.121429|+0.000000|+67981|
+|keep_task|practical_mid|79.719048|-1.254167|+0.141071|+0.000000|+66868|
+|keep_task|practical_low_suburban|78.124405|-1.369048|+0.127976|+0.000000|+65679|
+|keep_task|practical_high_urban|79.891071|-1.264286|-0.462500|+0.000000|+67524|
+|keep_task|practical_mid_urban|72.526190|-2.250000|-1.158929|+0.000000|+63912|
+|keep_task|practical_low_urban|65.729762|-2.539881|-1.486905|+0.000000|+59523|
+|three_quarter_task|clean|84.150595|-0.479167|-0.436310|-0.630357|-883|
+|three_quarter_task|practical_high|82.129167|-0.018452|+0.810119|+0.931548|+69546|
+|three_quarter_task|practical_mid|80.818452|-0.154762|+1.240476|+1.099405|+68715|
+|three_quarter_task|practical_low_suburban|79.081548|-0.411905|+1.085119|+0.957143|+67287|
+|three_quarter_task|practical_high_urban|80.897024|-0.258333|+0.543452|+1.005952|+69214|
+|three_quarter_task|practical_mid_urban|74.034524|-0.741667|+0.349405|+1.508333|+66446|
+|three_quarter_task|practical_low_urban|66.799405|-1.470238|-0.417262|+1.069643|+61320|
+|half_task|clean|84.319643|-0.310119|-0.267262|-0.461310|-599|
+|half_task|practical_high|79.508333|-2.639286|-1.810714|-1.689286|+65143|
+|half_task|practical_mid|77.534524|-3.438690|-2.043452|-2.184524|+63198|
+|half_task|practical_low_suburban|75.404167|-4.089286|-2.592262|-2.720238|+61109|
+|half_task|practical_high_urban|76.348214|-4.807143|-4.005357|-3.542857|+61572|
+|half_task|practical_mid_urban|63.833333|-10.942857|-9.851786|-8.692857|+49308|
+|half_task|practical_low_urban|53.918452|-14.351190|-13.298214|-11.811310|+39680|
 
 |版本|coarse/action/prior 参数|Conv+Linear MAC/IQ|文件字节|R38/本版中位 ms|resident/增量 peak 字节|
 |---|---|---:|---:|---:|---:|
@@ -197,5 +197,3 @@ MAC 不含 FFT、复数 CG、归一化、激活、插值和访存。实测包含
 逐 TX/RX/day 的准确率、Macro-F1、纠错/损伤、混淆矩阵、配对 clean 几何与完整训练曲线见 results.json 和 row_metrics.csv。这些指标不能证明恢复了全部真实 TX 细节。每组件累计 50 轮；祖先训练共 90 串行 pass，component-epoch 合计 150，F50 预训练另计。
 
 本地模型：local_artifacts/pamf_restoration/r38_successor_20261020_r13/models/<arm>/final.pt。加载 experiments.pamf_r38_successor.runtime.load_checkpoint；输入原生尺度 float32 [B,2,256] IQ，输出同形 IQ，接原 F50 默认头。权重不入 Git。目标状态依据全部识别指标保留，不以本轮完成宣称长期优化目标完成。
-
-参考口径说明：three_quarter_task 相对原 R17 最差下降 0.436310pp，满足用户原 R17 1pp 容差；相对用户指定的 R38 父模型最差下降 1.470238pp，未通过本轮另列的 R38 保持标准。该行使用监督 F 知识，不能替代 F-free 结果。
