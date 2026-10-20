@@ -1,2 +1,3 @@
 {"at": "2026-10-20T04:55:54+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-20T04:55:54+00:00", "status": "LOCAL_VERIFIED", "note": "47checks/CLIhelp/oneP0P1+targetedlockfixPASS;notlaunched", "evidence": ["experiment.json", "report.md"], "row_id": null}
+{"at": "2026-10-20T05:04:16+00:00", "status": "RUNNING", "note": "VERIFIED:two actual GPU workers,PID/CWD/argv/GPU andloggrowth;realcheckpoint smokePASS;firstepoch fullL6300/U56700 confirmed;training0TX/F/target;goalactive", "evidence": ["experiment.json", "report.md"], "row_id": null}

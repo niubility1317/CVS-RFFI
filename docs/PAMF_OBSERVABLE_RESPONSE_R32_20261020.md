@@ -19,3 +19,6 @@
 N607普通账户、池0/1/5/7、最多两条本任务GPU worker，每卡一条，全owner cap2/free≥12GB，容量锁保持到CUDA PID可见。新不可覆盖run/release和唯一owner；已有健康任务、数据和输出保持。launcher首步两条真实Ls/完整checkpoint/梯度/原F50 no-query smoke，PASS后直接排队。最小登记含实际commit、命令、环境/CWD、路径、seed、停止规则和产物；仅协议、路径、来源、碰撞、非有限值或不能生成合法预测的技术问题停止并保留产物，不自动重启。
 
 报告关系：R32是报告中“学习观测中的修正”和“检验平均化”的新增源假设，不是报告指定算法的精确复现。新增训练仍为TX无标签模拟配对自监督，整条含历史监督F的识别链不称完全无监督。合成录音IQ方向不等于真实TX参数，局部响应改善不证明真实发射机细节归属；持续目标仍是正式low urban≥70%、其他五受损场景各距原raw clean≤5个百分点及身份保真证据，尚未达成。
+
+
+执行读回：R32 RUNNING，真实checkpoint smoke、两条GPU worker及首个完整epoch/loggrowth核实；0TX/F/target训练。当前没有源/正式性能结论，持续目标active。
