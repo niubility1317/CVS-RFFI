@@ -883,11 +883,28 @@
   ],
   "registered_at": "2026-10-20T01:52:30+00:00",
   "scientific_outcome": {
-    "status": "RUNNING",
-    "new_scored": 6,
+    "status": "ANALYZED",
+    "new_scored": 8,
     "reused": 4,
     "expected": 12,
     "goal_complete": false,
-    "source_decisions_modified": false
+    "source_decisions_modified": false,
+    "completed_audit": {
+      "models": 12,
+      "new_predictions": 8,
+      "reused_results": 4,
+      "views_per_model": 7,
+      "count_per_view": 168000,
+      "new_paired_identity_diagnostics": 8,
+      "formal_control_comparisons": 11,
+      "formal_mean6_positive": 4,
+      "formal_mean6_negative": 7,
+      "all_targets_met_count": 0,
+      "maximum_observed_lowurban": {
+        "row": "r17_unroll_shared",
+        "accuracy": 67.42797619047619
+      },
+      "target_based_selection": false
+    }
   }
 }
