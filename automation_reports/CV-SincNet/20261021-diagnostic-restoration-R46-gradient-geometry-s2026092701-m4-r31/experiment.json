@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "用户要求配合主对话继续压缩与提升性能。仅用合规源IQ检查新统计目标和共同重建目标的局部梯度关系；不训练新版本或修改健康队列，后续所有新网络继续七景正式测试。",
   "code": {
-    "commit": null,
+    "commit": "375bf471fa5eb30a9ad36eee0411771fdace9e8a",
     "checkout": "Git-backed standard_ce_baselines_20261010 worktree",
     "environment": "N607 existing CVS-RFFI Python3.10/Torch2.1;CPU2;CUDAhidden;FP32forward/gradient,FP64dots",
     "cwd": "releases/pamf_r46_gradient_geometry_20261021_r31"
@@ -146,7 +146,7 @@
     "remote_run_root": "runs/20261021-diagnostic-restoration-R46-gradient-geometry-s2026092701-m4-r31",
     "remote_log_root": "logs/20261021-diagnostic-restoration-R46-gradient-geometry-s2026092701-m4-r31",
     "local_artifact_root": "local_artifacts\\pamf_restoration\\r46_gradient_geometry_20261021_r31",
-    "launch_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_gradient_geometry.runner --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --complex-run ../../runs/20261021-phase1-restoration-R46-complex-fidelity-s2026092701-m2-r22 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-gradient-geometry-s2026092701-m4-r31 --expected-commit <actual method commit>",
+    "launch_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_gradient_geometry.runner --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --complex-run ../../runs/20261021-phase1-restoration-R46-complex-fidelity-s2026092701-m2-r22 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-gradient-geometry-s2026092701-m4-r31 --expected-commit 375bf471fa5eb30a9ad36eee0411771fdace9e8a",
     "stop_rule": "Preserve technical failure;no automaticretry/hotedit/fallback or other-owner mutation",
     "local_validation": {
       "status": "PASS",
@@ -157,7 +157,9 @@
       "P0P1_issues": [],
       "reviewer_reads_real_data_or_remote": false,
       "reviewer_edits": false
-    }
+    },
+    "postlaunch_state": "VERIFIED_COMPLETE_ACTUAL_OWNED_HANDLE_EXITED",
+    "aggregate_audit_tests": 10
   },
   "expected_artifacts": [
     "launch.json",
@@ -230,7 +232,7 @@
       "budget_ref": "0updates;1540studentG+shared770teacherG;192batchgradrecords;324summaryrows;0F/TX/V/target",
       "output_root": "runs/20261021-diagnostic-restoration-R46-gradient-geometry-s2026092701-m4-r31/R46_350521",
       "log_path": "logs/20261021-diagnostic-restoration-R46-gradient-geometry-s2026092701-m4-r31/runner.log",
-      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_gradient_geometry.runner --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --complex-run ../../runs/20261021-phase1-restoration-R46-complex-fidelity-s2026092701-m2-r22 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-gradient-geometry-s2026092701-m4-r31 --expected-commit <actual method commit>",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_gradient_geometry.runner --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --complex-run ../../runs/20261021-phase1-restoration-R46-complex-fidelity-s2026092701-m2-r22 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-gradient-geometry-s2026092701-m4-r31 --expected-commit 375bf471fa5eb30a9ad36eee0411771fdace9e8a",
       "expected_artifacts": [
         "smoke.json",
         "clean_metrics.json",
@@ -265,7 +267,7 @@
       "budget_ref": "0updates;1540studentG+shared770teacherG;192batchgradrecords;324summaryrows;0F/TX/V/target",
       "output_root": "runs/20261021-diagnostic-restoration-R46-gradient-geometry-s2026092701-m4-r31/R18_factor625_stage",
       "log_path": "logs/20261021-diagnostic-restoration-R46-gradient-geometry-s2026092701-m4-r31/runner.log",
-      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_gradient_geometry.runner --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --complex-run ../../runs/20261021-phase1-restoration-R46-complex-fidelity-s2026092701-m2-r22 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-gradient-geometry-s2026092701-m4-r31 --expected-commit <actual method commit>",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_gradient_geometry.runner --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --complex-run ../../runs/20261021-phase1-restoration-R46-complex-fidelity-s2026092701-m2-r22 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-gradient-geometry-s2026092701-m4-r31 --expected-commit 375bf471fa5eb30a9ad36eee0411771fdace9e8a",
       "expected_artifacts": [
         "smoke.json",
         "clean_metrics.json",
@@ -300,7 +302,7 @@
       "budget_ref": "0updates;1540studentG+shared770teacherG;192batchgradrecords;324summaryrows;0F/TX/V/target",
       "output_root": "runs/20261021-diagnostic-restoration-R46-gradient-geometry-s2026092701-m4-r31/R22_complex625",
       "log_path": "logs/20261021-diagnostic-restoration-R46-gradient-geometry-s2026092701-m4-r31/runner.log",
-      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_gradient_geometry.runner --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --complex-run ../../runs/20261021-phase1-restoration-R46-complex-fidelity-s2026092701-m2-r22 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-gradient-geometry-s2026092701-m4-r31 --expected-commit <actual method commit>",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_gradient_geometry.runner --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --complex-run ../../runs/20261021-phase1-restoration-R46-complex-fidelity-s2026092701-m2-r22 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-gradient-geometry-s2026092701-m4-r31 --expected-commit 375bf471fa5eb30a9ad36eee0411771fdace9e8a",
       "expected_artifacts": [
         "smoke.json",
         "clean_metrics.json",
@@ -335,7 +337,7 @@
       "budget_ref": "0updates;1540studentG+shared770teacherG;192batchgradrecords;324summaryrows;0F/TX/V/target",
       "output_root": "runs/20261021-diagnostic-restoration-R46-gradient-geometry-s2026092701-m4-r31/R22_complex625_identity",
       "log_path": "logs/20261021-diagnostic-restoration-R46-gradient-geometry-s2026092701-m4-r31/runner.log",
-      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_gradient_geometry.runner --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --complex-run ../../runs/20261021-phase1-restoration-R46-complex-fidelity-s2026092701-m2-r22 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-gradient-geometry-s2026092701-m4-r31 --expected-commit <actual method commit>",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_gradient_geometry.runner --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --factor-run ../../runs/20261020-phase1-restoration-R46-conditional-factor-s2026092701-m2-r18 --complex-run ../../runs/20261021-phase1-restoration-R46-complex-fidelity-s2026092701-m2-r22 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-gradient-geometry-s2026092701-m4-r31 --expected-commit 375bf471fa5eb30a9ad36eee0411771fdace9e8a",
       "expected_artifacts": [
         "smoke.json",
         "clean_metrics.json",
@@ -355,5 +357,40 @@
     "Actual2Lsfullgradient noquerysmoke is first step;4studentG/arm+2sharedteacherG;sourcegridteacher768+student6144;total6930.",
     "12focusedchecks and uniqueindependentP0/P1review PASS;no extra generic approval/SHA chain. R26/R28/R30 unchanged."
   ],
-  "registered_at": "2026-10-20T22:45:29+00:00"
+  "registered_at": "2026-10-20T22:45:29+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "source_models": 4,
+    "source_views": 3,
+    "batch_records": 192,
+    "summary_rows": 324,
+    "total_G_IQ_inputs": 6930,
+    "all_checkpoint_states_unchanged": true,
+    "new_network_versions": 0,
+    "optimizer_updates": 0,
+    "independent_aggregate_recalculation": true,
+    "derivatives_independently_recomputed": false,
+    "training_or_target_feedback": false,
+    "long_term_goal_complete": false,
+    "source_findings": {
+      "R22_identity_received_clean_conflict_batches": [
+        1,
+        4
+      ],
+      "R22_identity_received_teacher_conflict_batches": [
+        8,
+        10
+      ],
+      "batches_per_view": 16,
+      "R22_identity_received_teacher_module_conflict_batches": {
+        "coarse": 18,
+        "action": 17,
+        "prior": 13
+      },
+      "module_batches": 32,
+      "excludes_original_self_reference_zero_gradients": true,
+      "causal_TX_explanation": false,
+      "R30_matrix_changes": 0
+    }
+  }
 }
