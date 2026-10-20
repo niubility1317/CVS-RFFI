@@ -1,5 +1,7 @@
 # 无 TX 标签恢复器的压缩与性能联合优化
 
+十五个固定新版的正式性能、郊区/urban 全场景和配对推理成本均已完整汇总，按预登记顺序保留全部结果；性能优先，不用通过退化容差、减参或提速替代逐场景性能改善。十五行中相对指定父七景全部提高的版本为：R48 prune_refine（273765参数，low urban 68.257738%）。完整数据按固定矩阵顺序报告，不据此另选父、修改超参数或选择性重跑。只反映单 seed 工程基准，70%/5pp以逐行验收表为准；输入TX逐细节真实性尚未证明，原完整目标继续ACTIVE。 见[十五版性能总表](../PAMF_R46_COMPRESSION_PERFORMANCE_20261020.md)。指定 350521 父版不变，原完整目标继续 ACTIVE。
+
 2026-10-21 当前 R55：VERIFIED/ANALYZED：两行完整E20/4940、源1800×7和正式168000×7、每行七预测固定后独立truth-last、完整曲线/同卡成本、所属controller/worker退出及两套独立权重CPU严格重载均已核实。fold_full 273765参数，七景较父提高0/下降7，lowurban 66.324405%（较父-1.185714pp），70%=False、其他五景gap5pp=False；同卡G B1父/本版43.0100/42.1524ms，G+F B1父/本版54.3029/53.6499ms；fold_half 273765参数，七景较父提高0/下降7，lowurban 67.173810%（较父-0.336310pp），70%=False、其他五景gap5pp=False；同卡G B1父/本版43.5420/42.7307ms，G+F B1父/本版53.4489/52.6415ms。fold_full相对同宽权重切片R53/prune_decay七景提高0/下降7，lowurban差-2.202976pp；fold_half相对同宽权重切片R53/prune_decay七景提高0/下降7，lowurban差-1.353571pp。原指定350521直接父保持，全部正负结果保留；不把容差通过、减参、源域或解析关联当作正式提升或逐细节TX真实性。原完整目标ACTIVE。 [全部七景与同宽控制](../PAMF_R46_FOLD_COMPENSATE_R55_20261021.md)。
 
 2026-10-21 当前R57：在读取R55正式分数前固定的既有273765拓扑GN响应校正，沿用R55 source-only full-fold投影但不加载R55训练权重；直接人选350521父，CPU2在同128源received上额外256父+256初始子G输入，一次拟合168原GN，full/half两行；0clean/TX/F/V/target校准，0TX/F/V/target训练，完整E20/4940及自动全部七景。固定同宽控制R55fold_full复用、GPU3/2各一条并等待R55实际退出。LOCAL_VERIFIED尚未发布，无新正式结论；性能优先，原完整目标ACTIVE。[R57固定方案](../PAMF_R46_GN_RESPONSE_R57_20261021.md)。
@@ -7,8 +9,6 @@
 R56已实际VERIFIED/WAITING_PARENT_FORMAL：CPU2/0GPU，真实2Ls解析noquerysmoke、单archiveSHA/compile/实际PID/CWD/argv/空CUDA/日志增长核实。等待R53三行、R54两行及R55两行全部正式评分后解析7新版，复用R50raw/指定350521父/R49retain84单元、新算196，280全固定后独立truthlast4536组/756条件对照/392配对差。无新网络/F/checkpoint/神经预测/训练/headfit/校准；不改变父训练预测，不阻塞其交付，当前主路线仍为用户指定35.05万父的压缩优化。固定描述符在clean TX2已有不足，不把该类负margin单独解释为身份错误。[R56固定评价](../PAMF_COMPRESSION_FORMAL_IDENTITY_R56_20261021.md)。
 
 2026-10-21 当前R55：原273765拓扑与weight-only GN4 map，源通道岭回归合并到既有Conv/Linear权重，full/half两固定幅度；直接人选350521父，CPU2共同128物理样本/256冻结G输入、校准无clean/TX/F/V/target/更新；两行全部联合E20/4940后自动七正式测试及成本。唯一同宽控制R53prune_decay复用，GPU3/2各一条、固定R54实际退出保护。VERIFIED/RUNNING：两行实际GPU3/2首轮训练、真实校准/101组投影复算/smoke/PID与日志增长已核实，正式性能待完成；原性能/TX细节目标ACTIVE。[R55方案](../PAMF_R46_FOLD_COMPENSATE_R55_20261021.md)。
-
-十三个固定新版的正式性能、郊区/urban 全场景和配对推理成本均已完整汇总，按预登记顺序保留全部结果；性能优先，不用通过退化容差、减参或提速替代逐场景性能改善。十三行中相对指定父七景全部提高的版本为：R48 prune_refine（273765参数，low urban 68.257738%）。完整数据按固定矩阵顺序报告，不据此另选父、修改超参数或选择性重跑。只反映单 seed 工程基准，70%/5pp以逐行验收表为准；输入TX逐细节真实性尚未证明，原完整目标继续ACTIVE。 见[十三版性能总表](../PAMF_R46_COMPRESSION_PERFORMANCE_20261020.md)。指定 350521 父版不变，原完整目标继续 ACTIVE。
 
 2026-10-21 当前 R54：VERIFIED/ANALYZED：两行完整E20/4940、源1800×7和正式168000×7、每行七预测固定后独立truth-last、完整曲线/同卡成本、所属controller/worker退出及两套独立权重CPU严格重载均已核实。activation_energy 273765参数，七景较父提高1/下降6，lowurban 66.435714%（较父-1.074405pp），70%=False、其他五景gap5pp=False；同卡G B1父/本版41.6582/40.9480ms，G+F B1父/本版53.0625/52.8909ms；projection_sensitivity 273765参数，七景较父提高1/下降6，lowurban 66.919048%（较父-0.591071pp），70%=False、其他五景gap5pp=False；同卡G B1父/本版45.7906/44.9914ms，G+F B1父/本版58.4112/57.2981ms。activation_energy相对同宽权重筛选R53/prune_decay七景提高1/下降6，lowurban差-2.091667pp；projection_sensitivity相对同宽权重筛选R53/prune_decay七景提高1/下降6，lowurban差-1.608333pp。原指定350521直接父保持，全部正负结果保留；不把容差通过、减参、源域或解析关联当作正式提升或逐细节TX真实性。原完整目标ACTIVE。 [全部七景与同宽控制](../PAMF_R46_SOURCE_PRUNE_R54_20261021.md)。
 
