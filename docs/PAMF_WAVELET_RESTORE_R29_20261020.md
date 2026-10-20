@@ -27,11 +27,13 @@ N607普通账户，新不可覆盖run `20261020-phase1-restoration-wavelet-selfs
 
 |要求|落实|状态|
 |---|---|---|
-|无TX/F优化、全LU、固定source角色及父来源|原训练循环/严格全状态来源|implemented|
-|单IQ接口、原默认头、三步CG不变|原UnrolledRestorer部署图|implemented|
-|Haar只替换多尺度采样，匹配低通消融|独立WaveletCore及数学/梯度测试|implemented|
-|源七参考与固定主候选、target隔离|独立模块资格/预测/评分接口|implemented|
-|实际训练、源/条件正式测试、成本和Git交付|登记与真实运行|pending|
+|无TX/F优化、全LU、固定source角色及父来源|原训练循环/严格全状态来源|verified|
+|单IQ接口、原默认头、三步CG不变|原UnrolledRestorer部署图|verified|
+|Haar只替换多尺度采样，匹配低通消融|独立WaveletCore及数学/梯度测试|verified|
+|源七参考与固定主候选、target隔离|独立模块资格/预测/评分接口|verified|
+|实际训练、源/条件正式测试、成本和Git交付|登记与真实运行|verified|
 |多seed/独立物理族/每个细节TX唯一归属|当前单seed模拟证据不足|deferred|
 
 REJECTED_EXTRA_GATE：通用额外设计/spec审批、全仓库回归和报告单独审查不属于项目八项最小流程；沿用持续研发授权、聚焦检查和一次独立P0/P1，不新增审批或数据hash链。
+
+实际结果：SOURCE_NOT_QUALIFIED；low/mid urban相对匹配低通 +0.1667/-0.8333 个百分点；完整训练/源与条件正式评分完成、进程退出；总目标未宣称完成。[完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-wavelet-selfsup-s2026092701-m2-r29/report.md)。
