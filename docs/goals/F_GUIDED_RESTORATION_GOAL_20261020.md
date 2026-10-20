@@ -245,3 +245,10 @@ source误差分解显示精修在多个有效频带增加波形误差，末端ti
 源代码假设在新agreement目标成绩读取前固定：原R03波形训练40轮后再加F引导，检验从逆映射学习第一步就加入身份保真。两新ComplexTFUNet相同随机初态/1305958参数，scratch_wave纯波形、scratch_F_guided三原F finalcos+.3T²KL/per_frame_cap，无R03或失败恢复器继承。原R02 epochs1..20重复一次，持续shuffle/原route/observed+clean，E40/9880、L252000/U2268000、IQ5040000、AdamW2e-4/warm247/cos2e-5；wave不建训练教师缓存或教师前向。原F/defaultheads冻结，不新拟合头。31项聚焦检查及唯一一次独立P0/P1审查PASS，审查者独立31项通过；一次普通N607预检VERIFIED。
 
 仅用当前receivedIQ推理，两个固定finalE40自动完整168000×七视图×三原头独立truth-last，sourceV仅诊断。GPU4/5等agreement根终态及实际owned handles退出，spatialGPU6/7保留，总最多4ownGPU；CPU评分等spatial终态后本runlock。方法commit`933e93c88668cd41ad5fe2969394e194ffb9f705`归档比较/编译及实际三F/四Ls smoke PASS，匹配随机初态/received恒等、原头到IQ/新head梯度、原F冻结、checkpoint往返和0恢复器加载均核实。agreement旧owned handles退出后新GPU4/5source才启动，实际PID/CWD/cmd/GPU/日志增长与梯度计数有效；wave无训练F缓存，guided缓存63000。尚无从零原F指导新模型的目标表现。[最小登记](../../automation_reports/CV-SincNet/20261020-phase1-restoration-scratch-guidance-source-s2026092701-m2-r01/report.md)。
+
+
+## 当前复谱精度加权比较（实现完成，待发布）
+
+已有完整源observability说明低功率频点复误差较大，但不等于其必含TX指纹；原logpower也不保留相位。本次在spatial/scratch目标成绩读取前固定两新行spectral_uniform/spectral_whitened，wave均增加.1complexspectralNMSE。uniform全1，whitened由全63000source L/U clean全局PSD归一化/加.01，通过固定64步二分生成范围[.25,4]且均值1的倒数精度，训练前固定，0V/TX/target，不做perrecord/class/RX/场景加权。只原R03初始化jointE10/2470，三原F finalcos+.3T²KL/per_frame_cap、原数据/路由/顺序、AdamW3e-5保持；两新行匹配，旧无额外谱项的cap仅背景。推理仅当前IQ，不读谱权重或F。
+
+33项聚焦检查及唯一一次独立P0/P1审查PASS，审查者独立33项通过；一次普通N607预检VERIFIED。GPU6/7等spatial根终态及实际owned handles退出，scratch4/5保留；CPU评分等scratch终态，再本runlock。两fixedfinalE10自动完整168000×七视图×三原头truth-last，sourceV只诊断。尚无复谱精度新模型的目标表现。[最小登记](../../automation_reports/CV-SincNet/20261020-phase1-restoration-spectral-precision-source-s2026092701-m2-r01/report.md)。
