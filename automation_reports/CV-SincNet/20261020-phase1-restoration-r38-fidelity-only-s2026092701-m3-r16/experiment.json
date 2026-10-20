@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "用户持续目标：在79万模型基础继续F-free压缩优化，每场景性能下降不超过0.8个百分点，每新版七场景正式测试。原R38源E20/4940独立分叉，0继承R13/R14/R15已测模型。",
   "code": {
-    "commit": null,
+    "commit": "4626eb3e378d2d975c875516f75e0fecd09647a2",
     "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
     "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
     "cwd": "releases/pamf_r38_fidelity_only_20261020_r16"
@@ -158,7 +158,7 @@
     "remote_run_root": "runs/20261020-phase1-restoration-r38-fidelity-only-s2026092701-m3-r16",
     "remote_log_root": "logs/20261020-phase1-restoration-r38-fidelity-only-s2026092701-m3-r16",
     "local_artifact_root": "local_artifacts\\pamf_restoration\\r38_fidelity_only_20261020_r16",
-    "launch_command": "python -u -m experiments.pamf_r38_fidelity_only.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-r17-IQ-joint-compact-s2026092701-m2-r38 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r38-fidelity-only-s2026092701-m3-r16 --expected-commit <actual method commit>",
+    "launch_command": "python -u -m experiments.pamf_r38_fidelity_only.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-r17-IQ-joint-compact-s2026092701-m2-r38 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r38-fidelity-only-s2026092701-m3-r16 --expected-commit 4626eb3e378d2d975c875516f75e0fecd09647a2",
     "stop_rule": "Technical failure preserves affected row;healthy rows continue;no automatic retry/fallback"
   },
   "expected_artifacts": [
@@ -239,7 +239,7 @@
       "budget_ref": "新增prior10/2470；context保持累计40、prior累计50；0F/TX/V/target训练；共享上下文每样本一次，教师prior与学生prior各一次。",
       "output_root": "runs/20261020-phase1-restoration-r38-fidelity-only-s2026092701-m3-r16/factor625_fidelity",
       "log_path": "runs/20261020-phase1-restoration-r38-fidelity-only-s2026092701-m3-r16/logs/worker-factor625_fidelity.log",
-      "command": "python -u -m experiments.pamf_r38_fidelity_only.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-r17-IQ-joint-compact-s2026092701-m2-r38 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r38-fidelity-only-s2026092701-m3-r16 --expected-commit <actual method commit>",
+      "command": "python -u -m experiments.pamf_r38_fidelity_only.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-r17-IQ-joint-compact-s2026092701-m2-r38 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r38-fidelity-only-s2026092701-m3-r16 --expected-commit 4626eb3e378d2d975c875516f75e0fecd09647a2",
       "expected_artifacts": [
         "launch.json",
         "comparison_plan.json",
@@ -292,7 +292,7 @@
       "budget_ref": "新增prior10/2470；context保持累计40、prior累计50；0F/TX/V/target训练；共享上下文每样本一次，教师prior与学生prior各一次。",
       "output_root": "runs/20261020-phase1-restoration-r38-fidelity-only-s2026092701-m3-r16/factor500_fidelity",
       "log_path": "runs/20261020-phase1-restoration-r38-fidelity-only-s2026092701-m3-r16/logs/worker-factor500_fidelity.log",
-      "command": "python -u -m experiments.pamf_r38_fidelity_only.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-r17-IQ-joint-compact-s2026092701-m2-r38 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r38-fidelity-only-s2026092701-m3-r16 --expected-commit <actual method commit>",
+      "command": "python -u -m experiments.pamf_r38_fidelity_only.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-r17-IQ-joint-compact-s2026092701-m2-r38 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r38-fidelity-only-s2026092701-m3-r16 --expected-commit 4626eb3e378d2d975c875516f75e0fecd09647a2",
       "expected_artifacts": [
         "launch.json",
         "comparison_plan.json",
@@ -345,7 +345,7 @@
       "budget_ref": "新增prior10/2470；context保持累计40、prior累计50；0F/TX/V/target训练；共享上下文每样本一次，教师prior与学生prior各一次。",
       "output_root": "runs/20261020-phase1-restoration-r38-fidelity-only-s2026092701-m3-r16/dense750_fidelity",
       "log_path": "runs/20261020-phase1-restoration-r38-fidelity-only-s2026092701-m3-r16/logs/worker-dense750_fidelity.log",
-      "command": "python -u -m experiments.pamf_r38_fidelity_only.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-r17-IQ-joint-compact-s2026092701-m2-r38 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r38-fidelity-only-s2026092701-m3-r16 --expected-commit <actual method commit>",
+      "command": "python -u -m experiments.pamf_r38_fidelity_only.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-r17-IQ-joint-compact-s2026092701-m2-r38 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r38-fidelity-only-s2026092701-m3-r16 --expected-commit 4626eb3e378d2d975c875516f75e0fecd09647a2",
       "expected_artifacts": [
         "launch.json",
         "comparison_plan.json",
@@ -382,5 +382,14 @@
     "原R17 0.8pp仅单列历史参考，当前目标验收参照用户固定原R38；长期lowurban70和其他五场景距rawclean5pp另列，不混为0.8pp保持。",
     "18项聚焦检查及唯一独立P0/P1审查PASS；普通N607预检VERIFIED，三张GPU空闲，原所属进程已退出。"
   ],
-  "registered_at": "2026-10-20T12:51:38+00:00"
+  "registered_at": "2026-10-20T12:51:38+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "accepted_rows": [],
+    "accepted_IQ_rows": [],
+    "accepted_against_original_R17": [],
+    "accepted_against_R38": [],
+    "all_three_rows_scored": true,
+    "goal_complete": false
+  }
 }

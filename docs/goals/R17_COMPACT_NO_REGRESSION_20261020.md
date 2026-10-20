@@ -245,3 +245,6 @@ R15两行均完成E10/2470、source1800×7、target168000×7及独立truth-last�
 ## 本轮R17：同曝光密集更新对照
 
 R16完整source30轮记录显示clip全0，最后五轮教师误差仍降15–16%；本轮在其目标评分前固定，不读其target/F分数。新三行750035/750035/689129，保持纯教师IQ目标与原R38 E20/4940独立父、source630000曝光与10轮不变，B256/micro64的2470更新改B64/micro64的9850更新，optimizer成本不同完整披露；不延长已测学生。factor625两行同结构只峰值LR1e-4对3e-4，warm985/floor1e-5相同；dense750为3e-4。原548795 context精确冻结，prior累计50/context40，0TX/F/V/target训练。每版全部source1800×7与target168000×7，逐行所有预测后truth-last，原79万基底逐场景精确0.8pp/1344条；0源门槛或选择性重跑。19项检查及唯一P0/P1审查PASS，R16健康预测保持，GPU2/3/6实际旧句柄退出后接续，共最多3 GPU workers。
+
+
+R16三行全部完成纯教师IQ目标E10/2470、source1800×7、target168000×7及独立truth-last，实际所属进程退出，模型取回严格加载。通过当前原79万基底逐场景0.8pp的更小F-free行：无。完整识别、净纠错/TX/RX/day、波形证据及完整成本见 [R16报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r38-fidelity-only-s2026092701-m3-r16/report.md)。0目标反馈调参/重跑；70%/5pp长期目标另列。
