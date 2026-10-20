@@ -210,7 +210,7 @@
       "edits_by_reviewer": false,
       "reviewer": "/root/review_r14_prior_compact"
     },
-    "postlaunch_state": "VERIFIED_CONTROLLER_CPU_CALIBRATED_SMOKE_PASS_GPU_QUEUED",
+    "postlaunch_state": "VERIFIED_GPU2_TRAINING_GPU3_QUEUED",
     "local_result_analysis_tests": 21,
     "actual_release_directory": "releases/pamf_r46_activation_factor_20261021_r23",
     "launch_observation": {
@@ -230,6 +230,29 @@
       "standalone_both_parameter_counts_and_strict_load_verified": true,
       "other_owner_mutations": 0,
       "time": 1792523067.7368724
+    },
+    "GPU_activation": {
+      "status": "VERIFIED",
+      "method_commit": "816b6fceac537d644be3425b8186159ecdd6300b",
+      "arm": "activation625_identity",
+      "pid": 3647119,
+      "GPU": 2,
+      "actual_PID_CWD_argv_commit_GPU_log_growth": true,
+      "preceding_R22_row_full7_scored_and_actual_owned_handle_exited": true,
+      "epochs": 1,
+      "updates": 985,
+      "L_exposures": 6300,
+      "U_exposures": 56700,
+      "extra_clean_student_inputs": 63000,
+      "training_F_inputs": 0,
+      "loss_finite_and_objective_closed": true,
+      "second_arm": "QUEUED_FOR_GPU3_R22_ACTUAL_EXIT",
+      "source_calibration_IQ": 768,
+      "source_calibration_unique_positions": 256,
+      "formal_scores_available": false,
+      "other_owner_mutations": 0,
+      "goal_complete": false,
+      "time": 1792525334.663524
     }
   },
   "expected_artifacts": [
