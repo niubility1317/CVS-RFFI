@@ -1,3 +1,4 @@
 {"at": "2026-10-20T19:16:47+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-20T19:18:22+00:00", "status": "LOCAL_VERIFIED", "note": "31focused+31independentreviewchecksPASS;all8factorversionspostscore analyticidentity;zero newmodel/F/fit", "evidence": ["experiment.json", "report.md"], "row_id": "formal_analytic"}
 {"at": "2026-10-20T19:24:59+00:00", "status": "RUNNING", "note": "ActualCPU_PID/CWD/argv/emptyCUDA/2threads/loggrowth andreal2Ls smokePASS;waitall8formal;targetIQ/truth0;0GPU", "evidence": ["experiment.json", "report.md"], "row_id": "formal_analytic"}
+{"at": "2026-10-20T22:59:57+00:00", "status": "ANALYZED", "note": "All8formal postscore association4536groups/756controls/364pairs;0F/neural/newfit;limited association only", "evidence": ["experiment.json", "report.md", "summary.json", "row_metrics.csv"], "row_id": "formal_analytic"}

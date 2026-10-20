@@ -189,7 +189,7 @@
       "edits_by_reviewer": false,
       "reviewer": "/root/review_r14_prior_compact"
     },
-    "postlaunch_state": "VERIFIED_WAITING_PARENT_FORMAL",
+    "postlaunch_state": "VERIFIED_ALL_OWNED_CPU_HANDLES_EXITED",
     "launch_observation": {
       "status": "VERIFIED",
       "method_commit": "8a2899f5998bd50d1595391f8c7fad9667b0d1fa",
@@ -301,5 +301,13 @@
     "Budgetchecks use actualR19E20/4940 vs R18/R22/R23E20/19700;R20equalIQfunctions reuseR18,not duplicated.",
     "Onlydescriptive association;knowncleanTX2 descriptorlimit retained;negative margin alone not wrongTX/perdetail proof. Nevergates or changesparentjobs;sharedCPUscorelock."
   ],
-  "registered_at": "2026-10-20T19:16:47+00:00"
+  "registered_at": "2026-10-20T19:16:47+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "groups": 4536,
+    "controls": 756,
+    "comparisons": 364,
+    "claim": "Limited postscore same-TX association;not perdetail authenticity",
+    "goal_complete": false
+  }
 }
