@@ -173,3 +173,6 @@ R07冻结完整汇总补核：2352389参数版比此前已验收3118001版再减
 在未读取R08/R09目标结果前固定[R10两行](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-clean-corrective-s2026092701-m2-r10/report.md)：沿用同既定1822977/1592461完整结构、原R17source-final CPU SVD初始化、原source63000缓存/顺序/seed/优化器/E20/4940，全部coarse/action/prior联合优化。相对R09对应clean arm，仅删除10倍三阶段R17波形模仿项；损失为最终sourceclean IQNMSE（clean detached mean energy floor1e-4）+T1KL(Fclean||Frestored)+0.5单位F160距离平方，系数固定，不从目标分数调参。原R17对象训练前删除，0原R17 teacher/context训练前向；原F50/defaulthead冻结，Fclean/student各1260000，source1260000、0新TX/V/target训练/头拟合。不称严格无监督或同训练算量。
 
 继承coarse20/action20/R17prior20+一次joint20=80串行pass，各组件累计40/component sum120；只原R17初始化，0已测学生继承。所有行固定最终E20，source仅诊断，自动全168000×七目标视图/独立truth-last，原R17每场景1pp底线及真实提分/lowurban70/配对clean差距分别报告，全部负结果保留。38项检查和唯一独立P0P1审查PASS，普通N607预检VERIFIED，R08实际GPU句柄仍2条；launcher-first实际原权重/F50/2Ls smoke通过即等待R08根终态及实际句柄退出，再接续GPU4/5，R09健康2/3/6/7继续，max6own GPU/R06score.lock共享max1own CPU scorer。当前实现/预登记通过，未证明目标性能。
+
+
+R08本轮两种结构全部完成：两版均未通过七场景最多下降1个百分点验收。E20/4940、source七视图诊断及同168000×七目标场景、独立truth-last、实际进程退出均核实；完整训练曲线、精确1pp验收、相对已验收3118001版本差、配对clean差距、TX/RX/day和成本见[本轮报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-context-compact-s2026092701-m2-r08/report.md)。两份完整恢复器已取回本地并严格加载验证；本轮未追加其他结构，目标反馈未用于改训练/超参/重跑，长期指标依实际结果报告。

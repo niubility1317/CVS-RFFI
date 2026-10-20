@@ -337,7 +337,23 @@
     "35项合成/协议检查PASS；唯一独立P0/P1发布审查完成后提交；真实R17/F50/2Ls smoke为launcher首步，PASS立即等待实际R06GPU退出，不读R06评分。",
     "只压context权重并冻结，prior-only优化；teacher用自身原context，student用自身半秩context，不用student物理估计构造teacher目标；新增一次teachercontext前向成本。",
     "两行固定、完整训练与目标自动测试，无source性能门槛/目标反馈/重排/选择性重跑；负结果保留。",
-    "唯一独立P0/P1审查PASS，无确定P0/P1；35项合成/协议检查独立复跑PASS。普通N607预检VERIFIED，R06实际旧GPU句柄仍2条，因此只发布CPU smoke/等待，不抢占GPU。新root/release不存在；source/parent/F句柄复用。"
+    "唯一独立P0/P1审查PASS，无确定P0/P1；35项合成/协议检查独立复跑PASS。普通N607预检VERIFIED，R06实际旧GPU句柄仍2条，因此只发布CPU smoke/等待，不抢占GPU。新root/release不存在；source/parent/F句柄复用。",
+    "用户授权批量快速迭代；本轮固定两种压缩context结构已完整完成，教师保持原上下文，原健康任务未热改。已验收3118001参数版本保留，并在结果中补充相对该版本差值。"
   ],
-  "registered_at": "2026-10-20T07:18:56+00:00"
+  "registered_at": "2026-10-20T07:18:56+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "source_rows": [
+      "context_half_prior_quarter",
+      "context_half_prior_eighth_pointwise"
+    ],
+    "target_rows": [
+      "context_half_prior_quarter",
+      "context_half_prior_eighth_pointwise"
+    ],
+    "accepted_rows": [],
+    "target_acceptance_allowance_pp": 1.0,
+    "all_negative_results_preserved": true,
+    "goal_complete": false
+  }
 }
