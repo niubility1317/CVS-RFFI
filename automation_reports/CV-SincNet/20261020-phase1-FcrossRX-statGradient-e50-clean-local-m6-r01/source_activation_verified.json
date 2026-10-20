@@ -1,0 +1,43 @@
+{
+  "status": "VERIFIED_SOURCE_AUXILIARY_ACTIVE",
+  "code_commit": "7b5532e9ff3845c23c7c229385ff5763254d31c3",
+  "rows": [
+    {
+      "row_id": "STAT_GRAD-s2026092701",
+      "policy": "STAT_GRAD",
+      "parsed_complete_prefix_steps": 1504,
+      "active_steps": 394,
+      "first_active_step": 1111,
+      "last_complete_record": {
+        "step": 1504,
+        "epoch": 7,
+        "aux_weight": 0.020000000000000004,
+        "aux_loss": 1.7820898294448853,
+        "applied_calls": 394
+      },
+      "nonfinite_skips_in_complete_prefix": 0,
+      "full_prefix_read": true,
+      "training_complete": false
+    },
+    {
+      "row_id": "NORM_ONLY-s2026092701",
+      "policy": "NORM_ONLY",
+      "parsed_complete_prefix_steps": 1692,
+      "active_steps": 582,
+      "first_active_step": 1111,
+      "last_complete_record": {
+        "step": 1692,
+        "epoch": 8,
+        "aux_weight": 0.03,
+        "aux_loss": 1.6710937023162842,
+        "applied_calls": 582
+      },
+      "nonfinite_skips_in_complete_prefix": 0,
+      "full_prefix_read": true,
+      "training_complete": false
+    }
+  ],
+  "target_predictions_or_scores": 0,
+  "performance_claim": false,
+  "goal_status": "ACTIVE_UNMET"
+}

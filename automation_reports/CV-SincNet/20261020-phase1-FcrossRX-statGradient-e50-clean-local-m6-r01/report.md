@@ -17,3 +17,5 @@
 实际执行提交：`7b5532e9ff3845c23c7c229385ff5763254d31c3`，已推送并核对远端。发布归档一次复制比较VERIFIED，新release编译PASS；固定六行、controller真实PID/参数/CWD和持续更新的progress均已核实。当前GPU训练尚未派发：可用系统内存低于既定4.5GiB门槛，controller健康等待资源，其他进程保持。不能把队列启动当成训练完成或性能提升；后续沿同一PID/root核实，不重复启动。
 
 资源允许后，首种子的STAT_GRAD与NORM_ONLY均已开始GPU训练。已独立分辨Windows虚拟环境launcher与实际Python子进程，核对两真实worker的PID/命令/CWD/GPU0及逐步日志增长，实际从零50＝33L＋17U/默认头联合/无星地配方一致；其余四行仍按原固定队列。source_launch_verified.json保存聚合证据。实际初始206个参数/buffer张量完全相同；已读取全部当时可用前两轮源记录，存在微小预热轨迹差异，原生参数仅candidate_id/output_dir不同。新辅助项此时权重0，不能把该差异归因于机制；来源尚未定位，原样保留，不据此改配方或重跑。未读取新目标结果。
+
+新辅助机制已在两行真实源训练中从第1111步（第6轮）按固定日程启用。source_activation_verified.json解析当时gzip日志中已完整写入的全部前缀记录，核对连续step/epoch、权重日程、启用计数及有限损失，前缀内非有限跳步0；仍非完整50轮分析。两真实worker健康，未因源或目标成绩改变配方，尚无新目标性能结论。
