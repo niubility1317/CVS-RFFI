@@ -213,3 +213,6 @@ R10本轮两个直接纠正对照全部完成：符合七场景1个百分点容�
 
 
 R11固定四行完整完成：七场景原R17逐项1pp验收通过：quarter_context_eighth_pointwise。完整源诊断、目标七场景/精确1pp/实际升降、配对clean、TX/RX/day、完整日志和成本及匹配R10 half-context对照见[R11报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-context-grid-s2026092701-m4-r11/report.md)。四份完整恢复器取回且严格加载VERIFIED；长期目标依实际指标判断，仍保留全部历史已验收模型与负结果。
+
+
+R12固定两行完整完成：七场景原R17逐项1pp验收通过：eighth_context_quarter。完整源诊断、目标七场景/精确1pp/实际升降、配对clean、TX/RX/day、完整日志和成本及匹配R10 half-context对照见[R12报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-eighth-context-s2026092701-m2-r12/report.md)。两份完整恢复器取回且严格加载VERIFIED；长期目标依实际指标判断，仍保留全部历史已验收模型与负结果。
