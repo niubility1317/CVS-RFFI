@@ -1,0 +1,2 @@
+{"at": "2026-10-20T02:35:47+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-20T02:39:25+00:00", "status": "QUEUED", "note": "VERIFIED：N607 dispatcher PID/CWD/argv与活动queue已独立读回；真实T1无query smoke及两路径six-L smoke PASS；GPU4现被其他健康owner占用，两行等待空闲，尚无GPU训练更新。", "evidence": ["local_artifacts/cvs_t1_e50/latest_readback.json"], "row_id": null}

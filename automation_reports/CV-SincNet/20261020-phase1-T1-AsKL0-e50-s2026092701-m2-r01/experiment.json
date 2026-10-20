@@ -1,0 +1,210 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01",
+  "group_id": "phase1-T1-AsKL0-E50-budget",
+  "display_name": "T1 去除 As 独立 KL：E30＋20 与从零 E50",
+  "description": "用户指定两条 E50 路径；续训复用原T1 E30学生及自身EMA，再E20；从零E50为33L17U。保留原As CE、普通/raw RDrop、旧U及ownEMA、默认头与ordinary CROSS_RX；仅clean测试。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "T1-E50"
+  ],
+  "tags": [
+    "phase1",
+    "T1",
+    "As-KL0",
+    "E50",
+    "single-seed",
+    "default-head",
+    "clean-only"
+  ],
+  "comparison_group_id": "T1-AsKL0-budget-paths-not-matched-calendar",
+  "parent_run_ids": [
+    "20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r02"
+  ],
+  "authorization": "2026-10-20 用户要求T1去As独立KL E30拉到E50、seed2026092701；对复用E30续20和从零完整50明确答复“两种都试”。",
+  "code": {
+    "commit": "ed652af1f7b427cb7cff293e6b6185ca76a32bec",
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 ordinary account; existing CVS-RFFI Python3.10/Torch2.1 FP32; CPU2",
+    "cwd": "PROJECT/releases/cvs_T1_AsKL0_E50_20261020_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original full-source physical roles,split392005;reuse fixed source/cache and formal received views",
+    "representation": "Existing source IQ256,dataset equalized index1,Fs25MHz;practical residual/post_sync propagation receiver EQ=false/reference_snr_db30,complete original dependency graph;fixed received IQ untouched",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract.role_ids L_s/U_s/V;fixed formal received_views manifest and opaque168000 physical IDs,unchanged",
+    "label_map_ref": "Original map [14-10,14-7,20-15,20-19,6-15,8-20]",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "All six registered originalTX,unchanged source/target registered-class map",
+    "roles": {
+      "L_s": "6300 visibleTX full original source physical IDs",
+      "U_s": "56700 TX hidden; original old gate/ownEMA only",
+      "V": "27000 diagnostic only; no checkpoint selection"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "SameVALIDATED_ONCEall5sourceRX/day/physicalL6300 U56700hidden V27000;noLdev/noRXholdout",
+    "support_query_ref": null,
+    "leo_config_ref": "Original T1 full practical As on raw L64/update retained; exact original fullsource_concat20/channel.py with cumulative epoch/step bounds extended to50/11100; same physical-session hardware, seeds and namespace. Test onlyclean; no restoration or KD."
+  },
+  "permissions": {
+    "regime": "source_train_then_frozen_truthlast",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Two user-selected budget paths at one model seed; different L/U/LR calendars; clean benchmark already exposed; no independent blind-test or pure epoch causal claim"
+  },
+  "checkpoint": {
+    "initialization": "E30PLUS20: original T1 FINAL30 student+ownEMA, reset AdamW/cos20 and temporal cache; SCRATCH50: random seed2026092701, no training parent",
+    "sources": [
+      "PROJECT/runs/20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r02/T1-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "experiments/cvs_t1_e50/source.py: original_parent; original T1 model.own_model verifies exact scratch20→own10 inheritance/physical roles/final-only freeze before loading",
+    "provenance_verdict": "Existing fixed-final source-only provenance reused; actual CP is final tail epoch10 after scratch20, run and seed verified read-only; strict model/EMA and current source roles checked launcher-first",
+    "selection_rule": "Fixed FINAL50 for both rows; V health only; no target selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/T1-e50",
+    "gpu_policy": "physical GPU4 only, one own worker serial; wait until no other compute PID and free>=12000MB; CPU scorer serial; do not preempt others",
+    "remote_run_root": "PROJECT/runs/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01/logs",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_t1_e50/runner.py",
+    "stop_rule": "Only own protocol/roles/provenance/head/nonfinite/output collision/unlaunchable/illegal-prediction systemic failure; preserve all outputs, cancel own pending rows, no automatic retry or science-driven stop. Never change healthy other owners.",
+    "status": "QUEUED",
+    "launch_verification": "VERIFIED independent dispatcher PID/CWD/argv, live queue, PASS real T1 checkpoint and two-path six-L smoke; GPU4 currently other-owner occupied,0 own GPU training updates"
+  },
+  "expected_artifacts": [
+    "real_checkpoint_smoke.json",
+    "synthetic_smoke.json",
+    "each row source/final_ssdg.pth and full step/epoch logs",
+    "each row source/resolved_config.json and initialization/EMA initialization",
+    "each row clean prediction and independent scoring",
+    "results.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean accuracy",
+      "macroF1",
+      "worstRX",
+      "perRX/day/TX",
+      "actual L/U and As exposures",
+      "wall time"
+    ],
+    "dimensions": [
+      "row",
+      "RX",
+      "day",
+      "TX"
+    ],
+    "prediction_ref": "PROJECT/runs/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01/<row>/prediction",
+    "scorer_ref": "experiments/cvs_t1_e50/evaluate.py:score",
+    "model_seed_count": 1
+  },
+  "rows": [
+    {
+      "row_id": "E30PLUS20-s2026092701",
+      "method": "T1 AsCE native scale30; AsKL0; original ordinary/raw KL retained; E30PLUS20",
+      "purpose": "User-requested budget path",
+      "config_ref": "experiments/cvs_t1_e50/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01/E30PLUS20-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019844
+      },
+      "seed_notes": "data seed not independent from original fixed split; support inapplicable; clean evaluation deterministic, existing evaluation seed retained as metadata; train421/val422/receiver423 unchanged",
+      "k": null,
+      "scenario": "clean only,168000 fixed target samples",
+      "optimizer": "CENTER_UNITS AdamW lr2e-4 wd1e-4 min1e-6; resetcos20; label/pseudo=0/20",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "new20 epochs/4440updates; inherited30 epochs; cumulative50/11100; LNN=3409920; As=284160; original U/EMA measured separately",
+      "output_root": "PROJECT/runs/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01/E30PLUS20-s2026092701",
+      "log_path": "PROJECT/runs/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01/logs/E30PLUS20-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_t1_e50/runner.py --mode worker --row E30PLUS20-s2026092701",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "prediction/complete.json",
+        "scoring/complete.json"
+      ]
+    },
+    {
+      "row_id": "SCRATCH50-s2026092701",
+      "method": "T1 AsCE native scale30; AsKL0; original ordinary/raw KL retained; SCRATCH50",
+      "purpose": "User-requested budget path",
+      "config_ref": "experiments/cvs_t1_e50/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01/SCRATCH50-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019844
+      },
+      "seed_notes": "data seed not independent from original fixed split; support inapplicable; clean evaluation deterministic, existing evaluation seed retained as metadata; train421/val422/receiver423 unchanged",
+      "k": null,
+      "scenario": "clean only,168000 fixed target samples",
+      "optimizer": "CENTER_UNITS AdamW lr2e-4 wd1e-4 min1e-6; resetcos50; label/pseudo=33/17",
+      "lr": 0.0002,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "new50 epochs/11100updates; inherited0 epochs; cumulative50/11100; LNN=8524800; As=710400; original U/EMA measured separately",
+      "output_root": "PROJECT/runs/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01/SCRATCH50-s2026092701",
+      "log_path": "PROJECT/runs/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01/logs/SCRATCH50-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_t1_e50/runner.py --mode worker --row SCRATCH50-s2026092701",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "prediction/complete.json",
+        "scoring/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Only two rows; 70 newly trained model epochs, 30 inherited epochs; each model cumulative50.",
+    "Original T1 includes As full practical training; this explicit T1 request preserves it. No R17/KD/new temperature or classifier.",
+    "Continuation cumulative13L37U, scratch33L17U. Different optimization/calendar; report costs and results separately.",
+    "REJECTED_EXTRA_GATE: no separate design approval, report/source SHA, data revalidation, or repeated whole review."
+  ],
+  "replaces_run_id": null,
+  "registered_at": "2026-10-20T02:35:47+00:00"
+}
