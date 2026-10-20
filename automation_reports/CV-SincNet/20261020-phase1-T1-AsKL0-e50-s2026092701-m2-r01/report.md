@@ -1,6 +1,6 @@
 # T1 去除 As 独立 KL：两条 E50 路径
 
-状态：RUNNING，两组分别运行于 GPU0、GPU6。科学实现 commit `ed652af1f7b427cb7cff293e6b6185ca76a32bec`；当前并行调度 commit `971fd16ac342f3523c4e3112f437e678f32ca459`。
+状态：ANALYZED，两组累计E50及全部七环境测试和独立评分均已完成。科学实现 commit `ed652af1f7b427cb7cff293e6b6185ca76a32bec`；当前并行调度 commit `971fd16ac342f3523c4e3112f437e678f32ca459`。
 
 2026-10-20 用户指定原 T1 E30 拉长到 E50、model seed `2026092701`，并明确要求 E30 续训及从零完整 E50 两种都试。逐行矩阵只维护于 experiment.json。
 
@@ -48,3 +48,8 @@ VERIFIED：发布归档一次比较及远端编译通过；两项七视图完整
 ## 已完成行的测试结果（2026-10-20 11:48:28 UTC+8）
 
 VERIFIED：E30PLUS20已完成累计E50和七环境独立truth-last评分；clean accuracy85.245833%、Macro-F184.973143%，相对原T1 E30分别+0.173810/+0.188078个百分点；六星地accuracy均值71.738988%（+0.705357个百分点），low urban52.416071%（+1.238095个百分点）。完整场景、RX/day/TX与负向分层见[test_results_partial.md](test_results_partial.md)。scratch目前E40/50仍健康训练、无最终测试分数；整个run继续RUNNING，不能声明两行完成。未改动任何健康训练或按测试调参。
+
+
+## 两组最终完整比对（2026-10-20 15:34:00 UTC+8）
+
+VERIFIED：两行均完成训练、七环境1176000条预测/行与独立truth-last评分，run已闭合，failure为空。续训clean85.245833%／从零84.838095%（从零−续训−0.407738个百分点）；六星地均值71.738988%／71.663889%（−0.075099个百分点）。从零路径未形成整体优势，分层取舍与单seed限制见[test_results_comparison.md](test_results_comparison.md)。历史partial报告保留，不再作为当前完成状态。

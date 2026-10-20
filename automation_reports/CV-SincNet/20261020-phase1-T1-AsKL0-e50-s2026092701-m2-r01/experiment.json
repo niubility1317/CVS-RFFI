@@ -102,8 +102,9 @@
     "local_artifact_root": "automation_reports/CV-SincNet/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_t1_e50/runner.py --observe-running (all7_r03; existing workers preserved)",
     "stop_rule": "Only own protocol/roles/provenance/head/nonfinite/output collision/unlaunchable/illegal-prediction systemic failure; preserve all outputs, cancel own pending rows, no automatic retry or science-driven stop. Never change healthy other owners.",
-    "status": "RUNNING",
-    "launch_verification": "VERIFIED same healthy GPU0/GPU6 training PIDs and advancing source logs; new all7 observer PID/CWD/argv and future evaluation route; no source config/model/optimizer change or restart"
+    "status": "ANALYZED",
+    "launch_verification": "VERIFIED same healthy GPU0/GPU6 training PIDs and advancing source logs; new all7 observer PID/CWD/argv and future evaluation route; no source config/model/optimizer change or restart",
+    "completion_verification": "VERIFIED both fixed FINAL50 source checkpoints,7 views*168000 frozen predictions each,independent scoring126records each,run complete and empty active/pending queue"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
@@ -168,8 +169,8 @@
         "scoring/complete.json"
       ],
       "status": "ANALYZED",
-      "results_ref": "test_results_partial.md",
-      "evaluation_status": "VERIFIED complete seven-view predictions and independent scoring"
+      "results_ref": "test_results_comparison.md",
+      "evaluation_status": "VERIFIED seven-view predictions and independent scores complete"
     },
     {
       "row_id": "SCRATCH50-s2026092701",
@@ -203,8 +204,9 @@
         "prediction/complete.json",
         "scoring/complete.json"
       ],
-      "status": "RUNNING",
-      "progress_at_readback": "E40/50;8880/11100updates;final test pending"
+      "status": "ANALYZED",
+      "results_ref": "test_results_comparison.md",
+      "evaluation_status": "VERIFIED seven-view predictions and independent scores complete"
     }
   ],
   "notes": [
@@ -232,5 +234,7 @@
     "runtime_ref": "PROJECT/runs/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01/evaluation_handoff.json",
     "training_code_commit": "971fd16ac342f3523c4e3112f437e678f32ca459",
     "automatic": true
-  }
+  },
+  "final_results_ref": "test_results_comparison.md",
+  "model_seed_count_actual": 1
 }
