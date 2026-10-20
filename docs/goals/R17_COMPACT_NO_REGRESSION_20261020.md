@@ -59,3 +59,12 @@ MAC 不含 FFT、复数 MAP/CG、归一化、激活、插值与访存，不等�
 
 
 首轮压缩完成结论：两候选均未通过固定源域资格，0新目标预测；未交付能保持目标性能的结构压缩版本。全量20轮日志、source七视图资格、自动选择/目标范围、完整成本和逐场景/逐TX/RX/day证据均见[本轮报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-compact-distill-source-s2026092701-m2-r01/report.md)。不从目标分数继续调参、替换父模型或补测落选者；完整持续目标保持ACTIVE，尚未证明最大可达精简或70%/接近clean全部要求。
+
+
+## R02 纯函数保真精简（实际训练中）
+
+[R02登记](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-fidelity-source-s2026092701-m2-r02/report.md)：仅依据R01源域负结果和原R17权重分析，在任何新压缩目标结果前固定两臂。step_norm_fidelity完整3118001参数（减少33.1629%），仅28长卷积weight跨三步共享原均值，保留各步独立bias/GroupNorm/1×1及其他状态；factor_half_fidelity完整3775105（减少19.0773%），保留R01半秩架构作损失目标匹配参考。全部从原R17教师初始化，0失败R01student初始化；仅10倍三步teacher IQNMSE，配对clean只作detached能量分母和日志诊断。关于原GT损失削弱保真的解释是待检验假设。
+
+预算E20/4940、原完整63000缓存/顺序、3步×2CG/coarse/action均固定；prior累计40轮、完整继承80串行训练pass与教师成本分列，0TX/F/V/target训练、0头拟合。10项聚焦检查和唯一独立P0/P1审查PASS；方法commit `1515d73c5de3e962a822bbaca34182e28a6ae584` 已push/OID一致，归档/远端编译/实际原权重无querysmoke PASS。GPU4/5等待R01终态及实际handles退出后两source实际启动，PID/CWD/命令/GPU/日志增长已核实。CPU2线程/max1 ownscorer；每卡一own，保留其他owner。
+
+源V1800逐七视图不降分与既有波形护栏合格后，按最少完整参数再名称选一个自动全168000×七视图、原F50/defaulthead目标确认；无合格则0target，不回流调参或失败后补测落选者。R02 尚无完整源资格或目标零退化结果，参数减少和检查通过不证明性能保持。

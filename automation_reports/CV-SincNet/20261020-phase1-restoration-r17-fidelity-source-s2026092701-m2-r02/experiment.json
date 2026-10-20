@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "持续独立恢复器目标和N607多GPU授权；用户报告R3及R14/R16源证据驱动，不使用目标反馈。",
   "code": {
-    "commit": null,
+    "commit": "1515d73c5de3e962a822bbaca34182e28a6ae584",
     "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
     "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
     "cwd": "releases/pamf_r17_fidelity_20261020_r02"
@@ -151,8 +151,18 @@
     "remote_run_root": "runs/20261020-phase1-restoration-r17-fidelity-source-s2026092701-m2-r02",
     "remote_log_root": "logs/20261020-phase1-restoration-r17-fidelity-source-s2026092701-m2-r02",
     "local_artifact_root": "local_artifacts/pamf_restoration/r17_fidelity_20261020_r02",
-    "launch_command": "python -u -m experiments.pamf_r17_fidelity.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r17-fidelity-source-s2026092701-m2-r02 --expected-commit <actual method commit>",
-    "stop_rule": "Technicalfailure:failedrowpreserved,healthyrowscontinue,pendingtargetheld,noautomaticretry;negativeperformanceisnottechnicalfailure"
+    "launch_command": "python -u -m experiments.pamf_r17_fidelity.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r17-fidelity-source-s2026092701-m2-r02 --expected-commit 1515d73c5de3e962a822bbaca34182e28a6ae584",
+    "stop_rule": "Technicalfailure:failedrowpreserved,healthyrowscontinue,pendingtargetheld,noautomaticretry;negativeperformanceisnottechnicalfailure",
+    "post_launch_verification": {
+      "status": "VERIFIED",
+      "actual_controller_LIVE": true,
+      "actual_source_PIDs_CWD_command_GPU_match": true,
+      "source_log_growth": true,
+      "minimum_completed_epochs": 1,
+      "actual_R17_F50_2Ls_smoke": "PASS",
+      "previous_owned_GPU_handles_exited": true,
+      "source_target_scores_read_for_queue": 0
+    }
   },
   "expected_artifacts": [
     "smoke.json",
@@ -222,7 +232,7 @@
       "budget_ref": "OriginalR17prior20+new20=40prior epochs;coarse20/action20frozen;80cumulative serialtrainingpasses;teacherforwardcostseparate;4940updates/L126000/U1134000",
       "output_root": "runs/20261020-phase1-restoration-r17-fidelity-source-s2026092701-m2-r02/step_norm_fidelity",
       "log_path": "runs/20261020-phase1-restoration-r17-fidelity-source-s2026092701-m2-r02/logs/source-step_norm_fidelity.log",
-      "command": "python -u -m experiments.pamf_r17_fidelity.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r17-fidelity-source-s2026092701-m2-r02 --expected-commit <actual method commit>",
+      "command": "python -u -m experiments.pamf_r17_fidelity.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r17-fidelity-source-s2026092701-m2-r02 --expected-commit 1515d73c5de3e962a822bbaca34182e28a6ae584",
       "expected_artifacts": [
         "smoke.json",
         "resolved_config.json",
@@ -267,7 +277,7 @@
       "budget_ref": "OriginalR17prior20+new20=40prior epochs;coarse20/action20frozen;80cumulative serialtrainingpasses;teacherforwardcostseparate;4940updates/L126000/U1134000",
       "output_root": "runs/20261020-phase1-restoration-r17-fidelity-source-s2026092701-m2-r02/factor_half_fidelity",
       "log_path": "runs/20261020-phase1-restoration-r17-fidelity-source-s2026092701-m2-r02/logs/source-factor_half_fidelity.log",
-      "command": "python -u -m experiments.pamf_r17_fidelity.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r17-fidelity-source-s2026092701-m2-r02 --expected-commit <actual method commit>",
+      "command": "python -u -m experiments.pamf_r17_fidelity.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r17-fidelity-source-s2026092701-m2-r02 --expected-commit 1515d73c5de3e962a822bbaca34182e28a6ae584",
       "expected_artifacts": [
         "smoke.json",
         "resolved_config.json",

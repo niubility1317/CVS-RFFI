@@ -1,6 +1,6 @@
 # R17 纯函数保真与分步归一化精简 R02
 
-状态：PLANNED。用户最新要求只研发R17精简版，最大程度精简且不能降低性能；原R17 unroll_unshared/source-selected E20/4940/cd977448为固定对照。目标是原F50 seed2701/defaulthead、同168000物理样本×七视图准确率逐项不下降，容许下降0个百分点；原low urban67.216667%，70%和其他环境接近clean仍是未完成的长期目标。基准已经暴露，不称新盲测。
+状态：RUNNING。用户最新要求只研发R17精简版，最大程度精简且不能降低性能；原R17 unroll_unshared/source-selected E20/4940/cd977448为固定对照。目标是原F50 seed2701/defaulthead、同168000物理样本×七视图准确率逐项不下降，容许下降0个百分点；原low urban67.216667%，70%和其他环境接近clean仍是未完成的长期目标。基准已经暴露，不称新盲测。
 
 源依据：R01两臂完整E20/4940后波形护栏通过，但source V1800低urban共享85.944444%（−.888889pp）、半秩86.333333%（−.5pp），均未通过源资格，0新增target；原结果与失败student保留，不加载其权重。原R17权重只读分析显示步间长卷积相对共同均值Frobenius差异.28166、99%差异能量秩中位61（23至121），不支持假定步间差异天然极低秩；这不是功能/身份误差或压缩不可能性的证据。当前新机制在任何新压缩模型target结果前，由源证据固定。
 
@@ -23,3 +23,6 @@ N607普通账户，GPU4/5等R01根终态且实际owned GPU handles退出；每�
 
 
 发布前一次普通账户预检 VERIFIED：source63000/V1800与原R07缓存句柄匹配，原R17先源选择后目标、E20/4940、0TX/F/target训练及同F50基线预测句柄已核实。R01实际owned GPU handles均已退出，GPU4/5各约24GB空闲；保留其他owner，不重新验证VALIDATED_ONCE数据。实际checkpoint smoke由launcher第一步执行，通过后立即继续。
+
+
+实际发布 VERIFIED：方法commit `1515d73c5de3e962a822bbaca34182e28a6ae584` 已push且本地HEAD/远端OID独立比较一致；一次归档SHA比较、远端新模块compile及入口help通过。launcher原R17/原F50/2Ls无querysmoke PASS：教师stage函数一致、两student各步prior梯度有限非零、冻结teacher/context、严格checkpoint复载输出逐位一致，0TX/V/target/optimizer。R01根终态且实际owned GPU handles退出后，新GPU4/5各一source创建；独立/proc和GPU证据确认controller/两source实际LIVE、CWD/完整命令/commit/GPU PID匹配、源日志增长。各已完成至少第1轮，不据中间训练loss判定性能。新聚合分析工具另有10项检查PASS，拒绝把配对clean诊断误算为优化项、缺失训练轮次、未合格目标访问及目标单样本退化。尚无压缩模型目标结果。

@@ -1,1 +1,4 @@
 {"at": "2026-10-20T03:16:01+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-20T03:22:07+00:00", "status": "RUNNING", "note": "VERIFIED R17 fidelity source PID/CWD/cmd/GPU/log growth;first full epoch complete;0target", "evidence": ["experiment.json", "report.md"], "row_id": "step_norm_fidelity"}
+{"at": "2026-10-20T03:22:07+00:00", "status": "RUNNING", "note": "VERIFIED R17 fidelity source PID/CWD/cmd/GPU/log growth;first full epoch complete;0target", "evidence": ["experiment.json", "report.md"], "row_id": "factor_half_fidelity"}
+{"at": "2026-10-20T03:22:07+00:00", "status": "RUNNING", "note": "VERIFIED actual smokePASS andtwoGPUworkers;sourcequalification thenfixedsingle-target or0target;no targetfeedback", "evidence": ["experiment.json", "report.md"], "row_id": null}
