@@ -1,2 +1,3 @@
 {"at": "2026-10-20T14:25:57+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-20T14:25:57+00:00", "status": "LOCAL_VERIFIED", "note": "27checks/CLIhelp/ONE P0P1PASS;not launched", "evidence": ["experiment.json", "report.md"], "row_id": null}
+{"at": "2026-10-20T14:30:15+00:00", "status": "RUNNING", "note": "VERIFIED/RUNNING：实际350521父/F50/两Ls配对IQ noquery smoke PASS，两行全部组件有限非零梯度、teacher/F不更新、checkpoint严格重载一致。归档单SHA/compile及controller/两worker实际PID/CWD/argv/空controllerCUDA/各物理GPU0或1和GPU-PID匹配、首轮曝光及日志增长已核实。无本轮正式性能结果；每行E20后自动七正式测试和独立truth-last。", "evidence": ["experiment.json", "report.md"], "row_id": null}

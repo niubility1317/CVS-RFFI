@@ -1,6 +1,6 @@
 # R48：从 35.05 万版继续优化、压缩并测量推理成本
 
-状态：LOCAL_VERIFIED，未发布。27项聚焦检查、CLIhelp和一次限P0/P1审查通过。
+状态：**VERIFIED / RUNNING**，已发布且两版实际训练。27项聚焦检查、CLIhelp和一次限P0/P1审查通过。
 
 用户明确指定完整 350521 参数的 R46 `prune_refine` 作为后续直接基准，并要求同时关注性能、压缩、时延等实际成本。本轮只在同一接收链恢复器内继续优化和 GN4 通道裁剪，保留父权重、全部历史结果和负结果。用户在七场景结果揭示后指定该父，因此属于暴露工程基准研发，不称新的独立盲测或干净泛化证据。
 
@@ -29,3 +29,6 @@
 
 
 方法commit `86b89ba6bc09b0b3f10fcaff8fc7cd1ecf6d0508`。精确命令、环境/CWD、路径、矩阵、预期产物见[登记](experiment.json)。
+
+
+VERIFIED/RUNNING：实际350521父/F50/两Ls配对IQ noquery smoke PASS，两行全部组件有限非零梯度、teacher/F不更新、checkpoint严格重载一致。归档单SHA/compile及controller/两worker实际PID/CWD/argv/空controllerCUDA/各物理GPU0或1和GPU-PID匹配、首轮曝光及日志增长已核实。无本轮正式性能结果；每行E20后自动七正式测试和独立truth-last。

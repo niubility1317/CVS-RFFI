@@ -1,6 +1,6 @@
 # R48：从 35.05 万版继续优化、压缩并测量推理成本
 
-状态：LOCAL_IMPLEMENTED，未发布。
+状态：**VERIFIED / RUNNING**。
 
 用户明确指定完整 350521 参数的 R46 `prune_refine` 作为后续直接基准，并要求同时关注性能、压缩、时延等实际成本。本轮只在同一接收链恢复器内继续优化和 GN4 通道裁剪，保留父权重、全部历史结果和负结果。用户在七场景结果揭示后指定该父，因此属于暴露工程基准研发，不称新的独立盲测或干净泛化证据。
 
@@ -26,3 +26,6 @@
 物理GPU0/1各最多一条本任务训练/预测worker，总数最多2；先确认R46对应实际PID退出，再按共享容量free≥18GB和每卡总进程<2获取。CPU2线程、最多一个本任务scorer，共用R41 score.lock；R47完成诊断不构成新启动门槛。普通账户、新不可覆盖run/output/release root、一次归档SHA/远端compile；真实父/F50/2条Ls配对IQ的no-query smoke作为launcher首步，PASS后立即训练。健康其他owner不动，技术失败保留产物且不自动重试；任何新结果不热改健康行。
 
 最小聚焦检查覆盖来源/预算/权限拒绝、共享别名冲突、真值必须晚于全部预测、所有固定行自动正式测试、实际父句柄退出、有限梯度及精确保留对照；一次独立审查只限直接影响下一真实run的P0/P1。精确矩阵、命令、环境/CWD、路径和预期产物写入本run登记，不增加审批或其他gate。
+
+
+VERIFIED/RUNNING：实际350521父/F50/两Ls配对IQ noquery smoke PASS，两行全部组件有限非零梯度、teacher/F不更新、checkpoint严格重载一致。归档单SHA/compile及controller/两worker实际PID/CWD/argv/空controllerCUDA/各物理GPU0或1和GPU-PID匹配、首轮曝光及日志增长已核实。无本轮正式性能结果；每行E20后自动七正式测试和独立truth-last。
