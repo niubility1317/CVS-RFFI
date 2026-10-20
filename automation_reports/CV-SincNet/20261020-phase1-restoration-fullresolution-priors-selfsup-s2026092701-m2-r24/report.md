@@ -1,73 +1,86 @@
 # 全分辨率 TCN 与注意力三步恢复 R24
 
-状态：RUNNING，真实入口与两条 GPU worker 已核实。方法 commit `da5b9d52819ccd40f8b59dbfdefebff3bd3c2230` 已推送并核对远端 OID。37项聚焦检查、compile/help和一次独立P0/P1 PASS。真实checkpoint入口在远端首步执行，PASS立即继续。
+状态：**ANALYZED / SOURCE_NOT_QUALIFIED**。本轮没有新的正式目标集成绩，70%／5个百分点和身份细节归属目标仍未证实。 两个新先验均完成固定E20/4940、源七视图及全部预登记条件工作，控制器与本run worker自然退出。方法 `da5b9d52819ccd40f8b59dbfdefebff3bd3c2230`。目标成绩没有反馈结构、训练、源资格、排序或选择性重跑。
 
+本轮严格实现已登记的两个新先验与一个复用源控制，属于用户接收链报告思路的扩展，并非原六类矩阵逐项复现。`tcn_prior`与`attention_prior`只继承原R02 coarse20和R07作用估计20的完整合法源上下文，三个prior均从头、互不共享；不继承R23训练后prior或joint coarse。复用R23 `prior_only`作为同物理角色、观测、预算、IQ损失和F读出的固定U-Net源控制，避免重复训练；它是先期固定控制，不能称同期确定性重复。
 
-当前状态：LOCAL_VERIFIED。两个新先验与一个复用源控制的完整训练链路已通过本地聚焦验证，尚未发布。以下“先前原型”保留13项检查的历史；当前实际矩阵与验收追踪以文末“完整实验设计”为准，不把原型检查当作训练或性能证据。
+每步2次warm CG、coarse锚定、三个stage端到端梯度，最终输出一份IQ。原PAMF从该IQ一致计算FFT、PA、统计与时域量，没有单独预测互相矛盾的输入分支。估计作用与白输入方差代理只来自当前received及固定源上下文，不是真信道或完整噪声协方差。
 
-## 先前原型记录
+TCN接收9通道，全长256，128宽stem和6个原卷积Block，dilation1/2/4/8/16/32；GroupNorm只作用本包全窗，名义卷积感受野269，不宣称严格局部或复数等变。注意力为256逐样点token、128宽、4头、6层pre-norm，局部5点深度卷积、2倍SiLU MLP、固定0.1正弦位置和0.5残差；训练非重入checkpoint减少保留激活并增加重算，推理不重算。两种零头保证完整初始输出相同，隐藏参数不同。R01已尝试patch4/64token/64宽/3层Transformer，R15已尝试单步4输入TCN＋FFT损失，因此本轮不是首次注意力，也不把跨轮差异归因于单一改动。
 
-状态：LOCAL_PROTOTYPE_VERIFIED，尚无源训练、远端发布或性能结论。R23 正常运行，不更改其代码、矩阵或资源。该备选依据 R17/R22 的源域结构与结果提出，不使用任何正式测试成绩设计。
+训练全部6300 L/56700 U，每行L126000/U1134000，复用原R07二十轮15%clean＋85%residual观测、data2001/cache1912，model2701。仅detached clean逐包IQNMSE，不读取TX标签、训练好的F权重／输出、target，不拟合V，无FFT/解析/身份损失、伪标签、教师或重训头。准确名称为“TX无标签模拟配对自监督”；允许clean模拟配对，不能称无clean训练、无配对训练或整个识别链无监督。原F50监督训练E50另列。冻结恢复器后，原F50 seed2026092701及原联合训练默认头只作读出，源V身份标签仅用于固定资格。
 
-用户要求比较多种网络。已比较的 U-Net、TCN、时频、扩散/流匹配及解析约束各有独立记录。本轮新增另一结构假设：逐样点全分辨率 token 的内容相关注意力，配合局部卷积，可能补充多尺度卷积的修正能力；这只是待证伪假设，不预先宣称保留了更多 TX 指纹。
+以下为固定1800条sourceV，**不是正式目标集**。clean、三郊区、三urban、全部TX/RX/day的准确率、MacroF1、混淆矩阵、修复／损坏、波形和配对clean特征见[汇总](summary.json)及[逐组指标](row_metrics.csv)。
 
-备选矩阵为同一冻结 R07 上下文下的 `unet_control` 与 `attention_prior`。均为三个不共享先验、每步两次 warm CG、coarse 锚定、最后输出同一份 IQ；原 PAMF 再一致计算 FFT/PA/统计/时域量。只继承合规 R02/R07，不继承 R23 coarse 更新或任何后续训练 prior。两种结构先验头均零初始化，因此完整初始输出相同；隐藏参数形状不同，不能称完整初始权重相同。
+|源场景|native_reference|fft_reference|single_shot|unrolled_reference|alternating_reference|unet_reused_control|tcn_prior|attention_prior|
+|---|---|---|---|---|---|---|---|---|
+|clean|98.4444|98.4444|98.4444|98.4444|98.4444|98.4444|98.4444|98.4444|
+|高仰角郊区|98.0000|97.9444|97.8333|97.8333|97.8889|97.9444|98.0556|98.0000|
+|中仰角郊区|96.6667|96.6667|96.9444|96.7778|96.8333|96.7222|97.1111|96.6667|
+|低仰角郊区|95.9444|96.0556|95.9444|95.9444|96.2222|96.0556|96.0000|95.1667|
+|高仰角城区|97.0000|96.8889|97.2222|97.0000|97.3889|97.1667|97.3333|96.6667|
+|中仰角城区|89.8889|90.1667|90.7222|91.4444|92.5556|91.7222|91.6111|89.0556|
+|低仰角城区|82.1667|82.5000|84.3889|86.8333|88.2778|86.4444|86.3889|81.3333|
 
-注意力先验接收原九通道 `[received,coarse,current,normalized innovation,log variance]`。9→128 逐点投影，全长256，不做 patch、下采样或跨样本混合。固定0.1倍正弦位置量；6个 pre-norm block，每个含4头样点自注意力、5点深度卷积＋逐点混合、扩展率2的SiLU MLP，三条残差各缩放0.5；最终LayerNorm和零初始化128→2头。三个stage分别持有独立参数。训练使用非重入activation checkpoint减少保留的内部激活，增加重算；推理不重算。没有Dropout、BatchNorm或持久输入统计。位置量是固定buffer，不使用RX、场景、TX、F、clean或其他样本信息。
+|源IQ NMSE|native_reference|fft_reference|single_shot|unrolled_reference|alternating_reference|unet_reused_control|tcn_prior|attention_prior|
+|---|---|---|---|---|---|---|---|---|
+|clean|0.00009617|0.00009617|0.00009617|0.00009617|0.00009617|0.00009617|0.00009617|0.00009617|
+|高仰角郊区|0.01046707|0.01042492|0.01090087|0.00898618|0.00879958|0.00891726|0.00808844|0.01009215|
+|中仰角郊区|0.01539733|0.01535856|0.01554777|0.01297654|0.01242056|0.01287681|0.01180630|0.01450152|
+|低仰角郊区|0.01939996|0.01926939|0.01919486|0.01615114|0.01533881|0.01609618|0.01512645|0.01809297|
+|高仰角城区|0.01474365|0.01460483|0.01465043|0.01238056|0.01185807|0.01234566|0.01144101|0.01428999|
+|中仰角城区|0.04131214|0.04097974|0.03884036|0.03438081|0.03248636|0.03444006|0.03351444|0.04029288|
+|低仰角城区|0.06428189|0.06342117|0.05999025|0.05259345|0.04972775|0.05294320|0.05190125|0.06271932|
 
-本地原型只验证数学与接口。后续真实候选须另行完成完整runtime/schema、训练/评分路由、一次独立P0/P1、登记/commit、真实checkpoint首步与不可覆盖发布，再可训练。当前不把这些未来工作当作R23阻断条件。预期仍为全6300L/56700U、TX无标签模拟配对IQNMSE、0训练好F/TX/target、原冻结F50/defaulthead源七视图资格和条件正式确认；最终预算与矩阵在任何新运行前固定。无准确率目标放宽，正式low urban≥70%，其他五场景各≥79.6761904762%。
+|候选|相对R23 low pp|mid pp|六场景NMSE变化%|
+|---|---|---|---|
+|tcn_prior|-0.0556|-0.1111|-4.1719|
+|attention_prior|-5.1111|-2.6667|+16.2548|
 
-|ID|来源|要求|目标文件|状态|验证|说明|
-|---|---|---|---|---|---|---|
-|T24-01|多网络设计|全分辨率注意力＋局部卷积，单IQ输出|models.py|verified|形状/零头/参数检查|报告思路扩展，并非原六类精确复现|
-|T24-02|样本独立|注意力只在单包时间轴，无跨包或持久更新|models.py|verified|逐包/置换/状态检查|不使用全局query关系|
-|T24-03|可训练性与成本|checkpoint前后输出/梯度一致，三个stage可达|models.py/tests|verified|实际反传/逐层梯度|增加重算成本，参数量实报|
-|T24-04|无监督权限|仅接入原冻结R07、clean只训练目标|完整runtime/training|deferred|尚未接入真实训练|当前随机输入原型不等于数据契约验证|
-|T24-05|实验验收|登记/真实checkpoint/源与条件正式评分|完整pipeline|deferred|尚无运行|不阻断R23|
-|T24-06|身份真实性|逐TX/RX/day及独立物理族/多seed|后续合格实验|deferred|尚无性能证据|不能由接口测试证明|
+|源low urban TX|native_reference|fft_reference|single_shot|unrolled_reference|alternating_reference|unet_reused_control|tcn_prior|attention_prior|
+|---|---|---|---|---|---|---|---|---|
+|14-10|74.7508|77.4086|77.0764|78.0731|81.7276|79.4020|85.3821|76.4120|
+|14-7|70.2341|72.2408|69.2308|73.5786|75.5853|72.5753|70.5686|65.8863|
+|20-15|83.9161|85.3147|87.0629|91.9580|93.3566|93.0070|93.0070|82.1678|
+|20-19|78.4983|71.3311|82.9352|83.9590|83.6177|80.5461|78.4983|76.7918|
+|6-15|89.9351|92.5325|94.4805|95.4545|97.0779|94.8052|94.1558|90.9091|
+|8-20|94.8882|95.2077|94.8882|97.4441|97.7636|97.7636|96.1661|94.8882|
 
-当前3 verified、0 pending、3 deferred、0 rejected、0 blocked。13项聚焦检查及compile通过，仅证明本地原型接口/梯度/单包属性，不证明真实数据或识别效果。N607 Torch2.1和batch256内存/速度未验证，完整pipeline和一次候选审查留待正式登记前完成；不阻断R23。
+源资格保护原native/R15/R16/R17/R19及复用R23控制，完整合格排序 `[]`，选定 `None`。按low/mid均值、最差TX、最差RX和名称固定排序，最多一个。平均IQ改善不替代身份和最差TX、clean及其他场景保护。
 
-实际随机初始化结构参数：{"unet_control": {"parameters": 4665073, "trainable": 2507526, "position_buffer_elements": 0}, "attention_prior": {"parameters": 4863217, "trainable": 2705670, "position_buffer_elements": 98304}}。注意力三个prior共2705670可训练参数，比UNet三个prior2507526增加约7.9%；全部模型参数分别4863217与4665073。新增位置buffer共98304个FP32值（393216字节），不作为可训练参数隐去，也不等于实测峰值显存。
-验证命令：`python -X utf8 -m pytest tests/test_pamf_attention_restore.py -q --maxfail=1`、`python -X utf8 -m compileall -q experiments/pamf_attention_restore`。先观察缺少实现的失败，再实现并通过13项检查；未运行源数据训练或新正式评分。
+|候选|参考组合|波形|身份|通过|low增益pp|mid增益pp|最差TX差pp|
+|---|---|---|---|---|---|---|---|
+|tcn_prior|R16/native|True|False|False|+2.0000|+0.8889|-4.4369|
+|tcn_prior|R15/native|True|False|False|+3.8889|+1.4444|-1.6722|
+|tcn_prior|R17/native|True|False|False|-0.4444|+0.1667|-5.4608|
+|tcn_prior|R19/native|True|False|False|-1.8889|-0.9444|-5.1195|
+|tcn_prior|R23control/native|True|False|False|-0.0556|-0.1111|-2.0478|
+|attention_prior|R16/native|True|False|False|-3.0556|-1.6667|-6.1433|
+|attention_prior|R15/native|True|False|False|-1.1667|-1.1111|-6.3545|
+|attention_prior|R17/native|False|False|False|-5.5000|-2.3889|-9.7902|
+|attention_prior|R19/native|False|False|False|-6.9444|-3.5000|-11.1888|
+|attention_prior|R23control/native|False|False|False|-5.1111|-2.6667|-10.8392|
 
-## 完整实验设计
+两个新候选均未通过全部六个固定源参考的保护条件，本 run 保持 **0 target**。源域评分不代替正式 168000 条目标测试，不放宽条件，不选择性重跑。
 
-持续目标不变：原冻结F50 seed2026092701/defaulthead，正式low urban≥70%；其余五场景各≥79.6761904762%（原raw clean84.6761904762%−5pp），restored clean损伤另列。原PAMF从同一恢复IQ生成全部FFT/PA/统计/时域分支。目标成绩不反馈训练、结构、资格、排序或选择性重跑。
+源资格不通过时，正式配对身份细分不适用。
 
-首轮R01已经测试四点token、64token/64宽/三层的单次残差Transformer，整轮未达稳定身份恢复，不能称R24首次Transformer。其固定训练观测、复合损失、F读出也不同。R15已测试单步四输入TCN＋FFT辅助项；R24为九输入三步、仅IQNMSE，跨轮不作单因素归因。[R01历史](../automation_reports/CV-SincNet/20261019-phase1-pamf-restoration-selfsup-manysig-m7-r01/report.md)。
+|行|总/可训练参数|原训练秒数|训练峰值MiB|batch1中位/P90 ms|
+|---|---|---|---|---|
+|unet_reused_control|4665073/2507526|1668.259|2018.610|45.921/60.457|
+|tcn_prior|4549105/2391558|1158.719|3694.607|34.783/35.339|
+|attention_prior|4863217/2705670|3081.578|2005.867|41.205/42.048|
 
-实际新增训练行是`tcn_prior`、`attention_prior`。复用R23 `prior_only`作固定同数据/同预算U-Net源控制，不重复训练，不把其prior或R23 joint coarse用于新模型初始化。R23控制已经完整20/4940、全L6300/U56700、coarse/estimator更新0、训练TX/F/target读取0，原F50/defaulthead、固定1800×七视图全部预测后truth。只接受`20261020-phase1-restoration-joint-coarse-selfsup-s2026092701-m2-r23` / `d43dbab326d0b1e2cb6fb7faa23dc9a3ec25a025`的匹配源控制；这是先期固定控制，不称同期确定性重复。R23整体0target且所属进程已退出。
+TCN可训练2391558／总4549105参数，attention可训练2705670／总4863217，另有98304个FP32位置buffer（393216字节）。容量、FLOPs和反传重算成本不严格匹配；训练秒数受不同GPU及并发负载影响，不作严格同卡因果速度比较。batch1为固定源low urban16条、2次预热，包括全部冻结上下文和3×2CG。
 
-两行只继承原R07冻结上下文（R02 coarse20＋R07作用估计20），三个prior从头、不共享参数，每步2次warm CG、coarse锚定。新增TCN为9→128的5点stem、6个原Block(128,128)、dilation1/2/4/8/16/32、长度始终256、零128→2头。名义卷积感受野269，GroupNorm仍作用于本包全窗，不称严格局部或复数相位等变。注意力结构与上节原型相同。零头使完整初始输出相同，隐藏结构不同，不能称完整初始权重、参数量或FLOPs严格匹配。
+AdamW2e-4至2e-5、warm247/cos、WD1e-4、clip1、batch256、FP32/noTF32、固定末轮，不按V选checkpoint。新增每行20轮／4940次更新，只有prior更新；coarse和估计器均0新更新。顺序阶段为coarse20＋action20＋prior20，各组件累计20。R23源控制训练成本已发生但本轮没有重训，原F50监督50轮独立列出。
 
-两者均接收received2/coarse2/current2/归一化adjoint创新2/log原生方差1。估计作用和白输入方差代理的权重冻结，不把代理当作全噪声协方差或可辨识真信道。全原6300L/56700U、R07原二十轮缓存、15%clean/85%residual、model2026092701/data2026102001/cache2026101912；每行E20/4940、batch256、L126000/U1134000，AdamW2e-4→2e-5、warm247/cos、WD1e-4、clip1、FP32/noTF32、固定末轮。只有detached clean逐包IQNMSE，无FFT/解析/身份/PL/F引导或V拟合、target训练。名称为TX无标签模拟配对自监督，非无clean训练或整条识别链无监督。组件顺序coarse20+action20+prior20；原F50监督E50另列。
+两种结构各自完整epoch0与末轮权重均取回并严格加载，直接连接原F50/defaulthead，两条真实Ls输出有限且逐包／合批一致。张量比较确认coarse与估计器逐位不变、三个prior均变化，完整变化量见汇总；参数变化本身不证明身份细节恢复。
 
-原五参考native/R15/R16/R17/R19保护不变，并相对复用R23控制使用同一套成对波形/身份保护。每行1800×七视图全部预测后独立CPU连接source truth；两行完成后按low/mid均值、最差TX、最差RX、名称固定排序，至多一行。无资格0target。合格者自动原168000×七视图、原F50/defaulthead、全部预测后独立truth-last及既定配对身份诊断。完整报告三郊区/三urban/clean、TX/RX/day、修复/损坏、波形/配对clean特征与成本。已暴露基准不称新盲测。
+新增40轮与五参考100轮完整历史均解析，共189日志行，致命错误0，warning 0。独立重算210条新源／条件正式分层的混淆矩阵准确率、MacroF1、修复损坏差，以及各TX/RX/day计数；源六参考资格也复算一致。没有用抽样日志代替完整分析。
 
-实际代码commit、一次独立P0P1、最小登记后，新不可覆盖release/run，N607普通账户，一次预检/单归档比对/编译。launcher首步真实2Ls/checkpoint/noquery smoke，PASS立即继续。入口核实R23退出；GPU池0/1/5/7、最多两条本任务worker、每卡一条、全owner cap2/free12GB，共享capacity锁至CUDA PID可见。非有限、错误数据/来源、输出冲突、非法或不完整prediction按预登记技术规则停止失败行、保留产物与健康其他任务，不因低分热改或重启。
+37项聚焦检查、编译／入口帮助、一次独立P0/P1、单次预检／归档比对／远端编译、真实2Ls/noquery/checkpoint/defaultF首步、PID/CWD/argv/GPU/日志增长及最终退出均VERIFIED。实际命令：`python -X utf8 -m pytest tests/test_pamf_attention_restore.py -q --maxfail=1`、`python -X utf8 -m compileall -q experiments/pamf_attention_restore`、`python -X utf8 -m experiments.pamf_attention_restore.runner --help`。真实首步PASS后立即训练，未另设审批、签名、重复审查或未变数据重验；未停止或修改其他owner。
 
-|ID|来源|要求|目标文件|状态|验证|说明|
-|---|---|---|---|---|---|---|
-|R24-01|多网络设计|全分辨率TCN/注意力，3步6CG单IQ|models.py|verified|形状/零头/初始输出/参数|报告扩展，非首次Transformer|
-|R24-02|样本独立|单包、无跨包/持久统计|models.py|verified|逐包/置换/状态|GroupNorm作用于本包全窗|
-|R24-03|梯度与成本|checkpoint梯度一致，三stage可训练|models.py/training.py|verified|实际反传/参数/成本|原型13项不覆盖新TCN|
-|R24-04|无监督/来源|R02/R07初始化，R23仅控制，0TX/F/target训练|runtime.py/evaluation.py|implemented|来源/schema/角色负测/真实checkpoint|不重验未变数据|
-|R24-05|源资格/隔离|六参考保护、固定排序及条件正式|evaluation.py/controller.py|implemented|负测/全部预测后truth|无资格0target|
-|R24-06|资源/发布|登记/commit/smoke/review/队列/退出|runner/controller/登记|pending|实际GPU/PID/日志及退出|不干扰其他owner|
-|R24-07|完整结果|源及条件正式、逐TX/RX/day、成本/Git|report/summary|pending|独立评分/本地完整权重|不以NMSE代替身份|
-|R24-08|身份真实性|多seed/独立物理族/逐细节TX归属|后续合格实验|deferred|尚无性能证据|不作为早期启动门槛|
+该单seed研究尚不能证明每个生成细节属于输入TX；独立物理族、多seed稳定性、严重受损可辨识性和真实在轨验证仍有缺项。已暴露基准不称新盲测。用户数值目标和细节身份真实性分别保留，不以接口、平均误差或源准确率宣称整体完成。数据、权重、原始日志和私有运行信息不提交。
 
-完整设计当前3 verified、2 implemented、2 pending、1 deferred、0 rejected、0 blocked。37项聚焦检查、compile/help及一次独立P0/P1 PASS，真实checkpoint首步与N607训练尚待执行。最高未证实项是真实输入对应TX细节及跨RX泛化。REJECTED_EXTRA_GATE：通用全仓测试、重复review、签名和额外数据重验不新增为门槛。
-
-当前完整结构参数：{"unet_control": {"parameters": 4665073, "prior_parameters": 2507526, "position_buffer_elements": 0}, "tcn_prior": {"parameters": 4549105, "prior_parameters": 2391558, "position_buffer_elements": 0}, "attention_prior": {"parameters": 4863217, "prior_parameters": 2705670, "position_buffer_elements": 98304}}。TCN和attention均为3个不共享prior，参数/FLOPs不严格匹配，隐藏初始化不同。位置buffer单独列出，非实测峰值显存。
-当前完整验证：`python -X utf8 -m pytest tests/test_pamf_attention_restore.py -q --maxfail=1`（37 passed）；`python -X utf8 -m compileall -q experiments/pamf_attention_restore`；`python -X utf8 -m experiments.pamf_attention_restore.runner --help`。只有随机输入/临时元数据的本地检查，未伪称真实恢复或识别证据。
-
-
-完整矩阵、命令、环境/CWD、路径、GPU和停止规则见[登记](experiment.json)。
-
-
-发布后状态：VERIFIED。单归档传输比对、远端编译和真实两条源样本 checkpoint/defaultF 入口通过。原R07上下文一致、完整初始输出相同，隐藏结构不同；三步 prior 梯度有限非零，全部上下文无参数梯度。R23控制完整权重仅严格加载检查，不进入新prior初始化。两条真实 GPU worker 的 PID/CWD/argv/GPU 和日志增长已核实，每卡一条，未干预其他 owner。全LU训练、源七视图及有条件正式确认自动执行；当前没有新的性能结论。
-
-
-一行完整源评分已返回：[tcn_prior局部报告](tcn_prior_source_interim.md)。矩阵仍RUNNING，不改变其他行或最终选择规则。
+[设计追踪](../../../docs/PAMF_ATTENTION_RESTORE_R24_20261020.md)：当前完整阶段7verified、0implemented、0pending、1deferred、0blocked，另1项额外全仓库测试门槛已拒绝。历史原型记录单独保留，持续目标active。

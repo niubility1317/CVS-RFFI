@@ -215,3 +215,6 @@ R22 三步解析观测量目标：SOURCE_NOT_QUALIFIED，选定 None。各新pri
 
 
 R23 coarse联合恢复目标：SOURCE_NOT_QUALIFIED，选定 None。各新prior20/4940、全63000L/U、0TX/F/target训练，五固定源参考保护。本轮没有新正式目标集成绩，持续目标尚未证实。[完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-joint-coarse-selfsup-s2026092701-m2-r23/report.md)。持续目标保持active。
+
+
+R24全分辨率TCN／注意力三步恢复：SOURCE_NOT_QUALIFIED，选定 None。两个新prior各20/4940、全63000L/U、0TX/F/target训练，R23 prior_only仅复用源控制，六固定源参考保护。本轮没有新的正式目标集成绩，70%／5个百分点和身份细节归属目标仍未证实。[完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-fullresolution-priors-selfsup-s2026092701-m2-r24/report.md)。持续目标active。
