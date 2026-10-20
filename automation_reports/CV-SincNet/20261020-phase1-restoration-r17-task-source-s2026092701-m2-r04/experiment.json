@@ -267,7 +267,8 @@
     "source_rule": "Healthonly:each7Vaccuracy>=R17-1pp;mean6NMSE<=1.05xR17/cleanNMSE<=.02;qualifiedminfullparameters thenname;onlyoneautomaticfulltarget;sourcehealthisnotperformanceacceptance;targeteach7correctcount>=R17/0pp;no fallback",
     "calibration_metrics": "stepnorm0,activation512;actualL/U/patches/ridge/time separate;0calibrationF/optimizer",
     "source_screening_allowance_pp": 1.0,
-    "target_acceptance_allowance_pp": 0.0
+    "target_acceptance_allowance_pp": 0.0,
+    "posthoc_saved_prediction_analysis": "tools/analyze_pamf_r17_task_saved_predictions.py;afterrootterminal/allsource+selectedtarget7predictionsandtruthlastscores complete;originalR17pairedlost/gained/flips/confidence/byTXRXday;0newmodelquery/rawIQ/checkpointreads/fit;NONBLOCKING/no sourceor targetfeedback"
   },
   "rows": [
     {
