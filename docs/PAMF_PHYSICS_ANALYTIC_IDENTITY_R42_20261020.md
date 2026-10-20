@@ -1,6 +1,6 @@
 # R42：物理约束紧凑恢复器的无 F 同 TX 关联诊断
 
-状态：LOCAL_IMPLEMENTATION，未发布，尚无新诊断结果。此项在 R41 训练结束、源域预测冻结后比较两版恢复 IQ 和原 source-selected R17 的发射机关联，不改变训练或候选排序，不代替 R41 每版七场景正式测试。
+状态：VERIFIED / WAITING_SOURCE，已发布且正在等待两版源预测冻结，尚无新诊断结果。此项在 R41 训练结束、源域预测冻结后比较两版恢复 IQ 和原 source-selected R17 的发射机关联，不改变训练或候选排序，不代替 R41 每版七场景正式测试。
 
 固定使用原 R34/R39 的解析坐标、源 L/U 的 8192 条 IQ 校准矩、reference 规则及全部统计，不新拟合特征、分类头或阈值。四组为 mirror64、spectral4、reference24、combined92；保留 spectral 在原 clean 上关联不佳等已有局限，不按结果筛组。校准均值/尺度只由原 L/U 得到，尺度下限0.05；V 不参与任何持久状态更新。
 
@@ -15,3 +15,6 @@
 准确边界：解析关联可提供独立于F的同TX统计证据，但特征不具有TX专属性，关联提升也不等于每个细节真实；该固定源V研究不能替代未知TX/新payload/真实在轨验证。F50七场景正式识别、波形误差、源物理准确性与同TX关联分别报告，均不单独宣布整体真实性目标完成。
 
 严格0F权重/输出/embedding、0target、0新校准或参数更新；原R17及两版源IQ/数据/日志保持原位。停止条件为父契约/角色/ID错误、缺失/非有限特征、输出碰撞或技术失败，保留产物，不自动重试，不干预健康R41或其他owner。精确矩阵、命令、commit、环境/CWD、独立root与产物在experiment.json中登记；source-only诊断不新增或重跑正式网络版本。
+
+
+实际启动状态：VERIFIED / WAITING_SOURCE：普通账户新release/归档单SHA/compile已核实，2Ls解析无query smoke PASS，0checkpoint/F/TX/V/target；实际CPU控制器PID/CWD/argv/空CUDA/2线程与等待日志增长已读回。等待R41两版source_complete，不读成绩；尚无解析关联结果。

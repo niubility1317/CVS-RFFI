@@ -1,9 +1,9 @@
 # R42：不经过F的压缩恢复器TX关联源诊断
 
-状态：LOCAL_VERIFIED，未发布。24项聚焦检查、CLIhelp、一次独立P0/P1通过。0GPU/神经前向/target；实际源关联结果尚未生成。方法commit `ea8e0ca8b1850e2ca599b7f5c630c91d105918c4`。
+状态：**VERIFIED / WAITING_SOURCE**，已发布且正在等待两版完整源预测。24项聚焦检查、CLIhelp、一次独立P0/P1通过。0GPU/神经前向/target；实际源关联结果尚未生成。方法commit `ea8e0ca8b1850e2ca599b7f5c630c91d105918c4`。
 
 
-状态：LOCAL_IMPLEMENTATION，未发布，尚无新诊断结果。此项在 R41 训练结束、源域预测冻结后比较两版恢复 IQ 和原 source-selected R17 的发射机关联，不改变训练或候选排序，不代替 R41 每版七场景正式测试。
+状态：VERIFIED / WAITING_SOURCE，已发布且正在等待两版源预测冻结，尚无新诊断结果。此项在 R41 训练结束、源域预测冻结后比较两版恢复 IQ 和原 source-selected R17 的发射机关联，不改变训练或候选排序，不代替 R41 每版七场景正式测试。
 
 固定使用原 R34/R39 的解析坐标、源 L/U 的 8192 条 IQ 校准矩、reference 规则及全部统计，不新拟合特征、分类头或阈值。四组为 mirror64、spectral4、reference24、combined92；保留 spectral 在原 clean 上关联不佳等已有局限，不按结果筛组。校准均值/尺度只由原 L/U 得到，尺度下限0.05；V 不参与任何持久状态更新。
 
@@ -21,3 +21,6 @@
 
 
 精确执行信息见[登记](experiment.json)。
+
+
+VERIFIED / WAITING_SOURCE：普通账户新release/归档单SHA/compile已核实，2Ls解析无query smoke PASS，0checkpoint/F/TX/V/target；实际CPU控制器PID/CWD/argv/空CUDA/2线程与等待日志增长已读回。等待R41两版source_complete，不读成绩；尚无解析关联结果。
