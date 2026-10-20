@@ -46,7 +46,7 @@ def row_folder(args, role):
 
 
 @torch.no_grad()
-def predict(args, role, *, checkpoint_loader=None, reference_loader=None):
+def predict(args, role, *, checkpoint_loader=None, reference_loader=None, checkpoint_budget=(20, 4940)):
     source, ids, _, _ = (reference if reference_loader is None else reference_loader)(args, role)
     row = row_folder(args, role)
     if role == 'target':
@@ -63,8 +63,8 @@ def predict(args, role, *, checkpoint_loader=None, reference_loader=None):
     else:
         loader = load_checkpoint if checkpoint_loader is None else checkpoint_loader
         model, payload = loader(args.output/args.kind/'final.pt', 'cuda:0')
-        if payload['epoch'] != 20 or payload['updates'] != 4940 or payload['kind'] != args.kind:
-            raise ValueError('Fixed final E20 candidate required')
+        if (payload['epoch'], payload['updates']) != checkpoint_budget or payload['kind'] != args.kind:
+            raise ValueError('Fixed final candidate epoch/update required')
         model.requires_grad_(False); names = ('restored',)
     reader = load_reader(args.reader_folder, args.source_cache, 'cuda:0').requires_grad_(False).eval()
     folder = row/'prediction'; folder.mkdir()

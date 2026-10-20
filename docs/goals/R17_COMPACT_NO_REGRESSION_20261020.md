@@ -199,3 +199,14 @@ R10本轮两个直接纠正对照全部完成：符合七场景1个百分点容�
 
 
 已完成R05至R10全部16行的[目标域并列表](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-clean-corrective-s2026092701-m2-r10/cross_run_compact_summary.md)：11行通过原R17逐场景1pp，最少1592461参数的R09/R10两版存在场景取舍。逐场景支配关系只作描述，不回流R11/R12训练或权重继承；全部负结果保留，无新增IQ/模型/truth访问。
+
+
+## 用户指定79万基底：R13
+
+用户最新明确“在79万参数的模型基础上继续进行压缩优化”，后续新工作切换为R38 dense_half完整794529参数、固定source E20/4940、method e0868f0a0c3cf056a1753a5b4e5ce4f0bff84381。该模型训练0TX/F/V/target优化，原R17/cd977448合法源祖先；用户在已暴露benchmark后指定此基底，不称新独立盲测。此明确请求替代后续只原R17初始化的旧方法默认，不追溯改现有R11/R12健康行。
+
+[R13固定六行](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r38-successor-s2026092701-m6-r13/report.md)：原宽度794529、进一步GN4通道收窄442805、204561，各自IQ与task两目标。原宽度逐位copy，窄结构完整coarse/action/prior联合训练、decoder旧宽偏移skip及谱首层投影保持；0IQ校准。全部final pairedclean IQNMSE+1×冻结R38三stage IQ锚，task额外冻结原F50 clean-reference T1KL+0.5单位F160平方距离，IQ控制正式训练不加载/前向F。两目标有同宽同增量预算对照，不按目标筛行或重跑。
+
+只追加E10/2470/L63000/U567000，重置AdamW1e-4/warm247/cos1e-5/WD1e-4/clip1，global256/micro64按真实尾batch归一化。原祖先coarse20/action20/R17prior20+R38joint20+newjoint10=90串行pass，各组件累计50/component sum150，F50E50另计；0新TX/V/target训练、0F/head/teacher更新。每行自动source1800×7及同168000×七目标全部预测后独立truth-last；相对用户R38和原R17逐场景1pp均报告，lowurban70和真实升降/paired-clean差距独立报告，所有负结果保留。
+
+41项检查及唯一P0/P1定向修复复审PASS；E10预测入口已显式传递合法预算，共享旧默认E20保持。普通N607预检VERIFIED，R11/R12六个实际GPU句柄仍LIVE。R13 launcher首步真实R38/F50/2Ls noquery smoke通过即按各卡旧row终态且实际owned句柄退出逐卡派发，GPU2–7各一own/max6、R06锁max1own scorer。当前实现/登记完成，尚未发布或证明目标性能。
