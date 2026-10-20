@@ -1,5 +1,7 @@
 # 无 TX 标签恢复器的压缩与性能联合优化
 
+R63已完成VERIFIED/ANALYZED：140解析单元固定后truth；2016分组/336条件阴性对照/140配对差独立复算，R46父504记录与R56一致；0F/checkpoint/额外神经预测/训练/headfit/新校准/GPU，所属CPU进程EXITED。有限同TX关联不是识别率或逐细节真实性证明，不改变父实验，原目标ACTIVE。 [全部四候选固定关联](../PAMF_GROUP_FORMAL_IDENTITY_R63_20261021.md)。
+
 2026-10-21 当前 R64：VERIFIED / TRAINING：方法 1c5ecf805afa9a15c23de8e3232b7cc83b37dad5 已普通账户发布，单归档SHA与compile通过。实际共享源校准/真实M35/F50/2Ls no-query smoke PASS；两行物理GPU3/2实际PID/CWD/argv/CUDA/CPU2、GPU PID、日志增长和有限epoch已核实。103处完整输入统计来自128源LU/256父G，只计一次校准成本，0clean/TX/F/V/target/optimizer；新推理参数0。两行248828/GN3/fullprior，补偿强度1/.5；核心22704e5在读取R62分数前固定，直接M35初始化/教师不变，原E20/4940与自动全7正式测试/独立truthlast/同卡成本不变，无源筛选。R62同卡旧GPU进程已实际EXITED，其他owner保持。无R64识别收益结论，完整目标ACTIVE。 [固定矩阵](../PAMF_R46_WHOLE_GROUP_FOLD_R64_20261021.md)。
 
 2026-10-21 R64 LOCAL_VERIFIED：固定248828/GN3/完整prior图，源输入统计补偿强度1与0.5两行，直接M35初始化/冻结IQ教师；不继承R62/R55学生。原统计缺37处在真实数据/分数访问前修正为完整103处共享128LU/256父G CPU校准，0clean/TX/F/V/target/optimizer，额外成本只计一次。67checks/CLI/真实父合成CPU/ONEP0P1PASS；核心22704e5在读R62成绩前固定；原E20/4940/globalmicro256/pairedIQ+谱+1to.1教师/全组件联合/自动七景正式测试和成本不变。只读R62GN3同图同预算控制不作老师；新GPU要等同卡R62行complete和实际PID退出，physicalGPU3/2各1/max2。性能优先，未发布，无性能结论，完整目标ACTIVE。[R64固定方案](../PAMF_R46_WHOLE_GROUP_FOLD_R64_20261021.md)。

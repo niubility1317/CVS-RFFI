@@ -1,16 +1,74 @@
-# R63：整组压缩的固定无 F 同 TX 关联
+# R63：整组 GN3/GN1 压缩版的固定无 F 身份诊断
 
-状态：**VERIFIED / WAITING_PARENT_FORMAL**，已发布。30 项针对性检查、CLI 和一次独立 P0/P1 审查通过。R62 两行仍在固定源训练，本设计未读取其源验证或正式准确率，也不改变模型、损失、超参、预算或测试次序。
+状态：**VERIFIED / ANALYZED**。同168000物理记录×7场景，4候选加raw的140特征单元全部先于本诊断truth固定且有限。2016组TX/RX/day统计、336条件阴性对照、140配对差均独立NumPy复算；R46父504条记录与R56完全一致；所属CPU控制器、提取与评分进程自然退出。
 
-本轮只检验已冻结恢复 IQ 的同 TX 关联，不新增恢复网络。读出固定为 raw、指定 M35、同增量预算 R49 retain_refine、R62 GN3/GN1 两行。R62 两行均完成七景正式预测和独立评分后，才读取其已保存 IQ。raw/M35 的 56 个 R56 解析单元只读复用；R49 与两 R62 共 84 单元新算，总 140 单元全部固定后独立接入 TX/RX/day 真值。
+R62两行的全部七场景预测和独立评分完成后才读取保存IQ。复用R56raw/指定350521父56单元，新算R49同增量预算控制及两新版84单元；同原R34源LU8192固定校准，0F权重/embedding/logits、checkpoint、额外神经预测、训练、分类头拟合、新校准或GPU。不改变任何训练、权重、预测、排序或父交付；识别率和推理成本分别见R62原run报告。
 
-原 R34 的 LU8192 无标签源统计保持，不重新拟合任何坐标、阈值或描述子。镜像 64、谱 4、参考 24、组合 92 维解析特征、std floor .05、每 TX/RX/day 取最低两个 opaque physical IDs、参考与 query 同时跨 RX 和 day、六类完整单元等权均沿用。199 次 RX/day 内 query 标签条件置换的均值/95% 界是描述性对照，不称 p 值。保留每 TX、RX、day 和全部正负差异，特别保留原 clean 参考弱 TX2。
+表中margin为同TX余弦相似度减其他五TX均值，**不是识别准确率或逐细节真实性证明**。参考clean每TX/RX/day最多2条，按opaque physicalID排序；参考RX和day均不同，完整六TX单元等权。所有四解析组和全部场景完整保留，包含clean下降及个别TX弱/负关联。
 
-正式数据为原 168000 条物理样本、clean 与六种 practical，郊区和 urban 的 high/mid/low 全覆盖。预期 2016 个分组记录、336 条件对照、140 配对差；主配对为 GN3/GN1，两行各与 M35、R49 比较。R49 与新行同父、同 E20/4940/globalmicro256/IQ 教师，但宽度和归一化不同；不把它称同图。新算解析输入 3528000，无新神经预测、F 权重/输出/特征、checkpoint、训练或分类头拟合；新校准为 0。
+|场景|候选|raw combined margin|恢复 combined margin|原clean参考|
+|---|---|---:|---:|---:|
+|clean|r46_350521|0.124015|0.109981|0.124015|
+|clean|r49_retain_control|0.124015|0.111972|0.124015|
+|clean|r62_group_preserve|0.124015|0.102967|0.124015|
+|clean|r62_regroup_control|0.124015|0.101259|0.124015|
+|practical_high|r46_350521|0.005703|0.099789|0.124015|
+|practical_high|r49_retain_control|0.005703|0.101455|0.124015|
+|practical_high|r62_group_preserve|0.005703|0.094528|0.124015|
+|practical_high|r62_regroup_control|0.005703|0.093323|0.124015|
+|practical_mid|r46_350521|0.003276|0.092008|0.124015|
+|practical_mid|r49_retain_control|0.003276|0.095441|0.124015|
+|practical_mid|r62_group_preserve|0.003276|0.088163|0.124015|
+|practical_mid|r62_regroup_control|0.003276|0.086951|0.124015|
+|practical_low_suburban|r46_350521|0.002559|0.085436|0.124015|
+|practical_low_suburban|r49_retain_control|0.002559|0.090404|0.124015|
+|practical_low_suburban|r62_group_preserve|0.002559|0.082626|0.124015|
+|practical_low_suburban|r62_regroup_control|0.002559|0.081237|0.124015|
+|practical_high_urban|r46_350521|0.005492|0.096866|0.124015|
+|practical_high_urban|r49_retain_control|0.005492|0.098998|0.124015|
+|practical_high_urban|r62_group_preserve|0.005492|0.092684|0.124015|
+|practical_high_urban|r62_regroup_control|0.005492|0.091135|0.124015|
+|practical_mid_urban|r46_350521|0.002913|0.079533|0.124015|
+|practical_mid_urban|r49_retain_control|0.002913|0.084843|0.124015|
+|practical_mid_urban|r62_group_preserve|0.002913|0.079570|0.124015|
+|practical_mid_urban|r62_regroup_control|0.002913|0.077420|0.124015|
+|practical_low_urban|r46_350521|0.002280|0.066143|0.124015|
+|practical_low_urban|r49_retain_control|0.002280|0.072836|0.124015|
+|practical_low_urban|r62_group_preserve|0.002280|0.067693|0.124015|
+|practical_low_urban|r62_regroup_control|0.002280|0.065654|0.124015|
 
-N607 普通账户、CPU2、空 CUDA、GPU worker 0，沿用 R41 score.lock 最多一个本任务 scorer。独立不可覆盖 root，单 Git method commit、一次真实两条 L_s 无参数 no-query smoke、一次独立 P0/P1 审查，最小登记/单归档 SHA/compile/实际 PID/CWD/argv/日志核验。启动入口 python -u -m experiments.pamf_group_formal_identity.runner run，准确参数与路径登记在 experiment.json。预期保存 resolved、smoke、features、physical_ids、calibration_reference、feature_complete、summary、complete 与日志。父失败、输入/ID/预算/分组不符、非有限值、输出冲突均保留产物，不自动重试，不改健康任务。
+mirror64、spectral4、reference24、combined92使用同一固定源均值/std下限0.05；combined按sqrt(3×组维数)缩放使平方误差三组等权。以下逐候选列出lowurban的四解析组，不以某一组涨分代替整体性能或TX真实性。
 
-该检验不阻塞 R62 正式测试或独立权重交付。整体关联、条件置换差异、识别率和 F 几何都不足以证明每个恢复细节真实属于输入 TX；不外推真实在轨场景，不称新独立盲测，不用于回流选模或选择性重跑。原性能与逐细节真实性目标 ACTIVE。
+|lowurban候选|mirror margin|spectral margin|reference margin|combined margin|combined负或零margin的TX|
+|---|---:|---:|---:|---:|---|
+|r46_350521|0.081266|0.076193|0.006108|0.066143|2|
+|r49_retain_control|0.090010|0.077143|0.006538|0.072836|2|
+|r62_group_preserve|0.084828|0.074048|0.006107|0.067693|2|
+|r62_regroup_control|0.082410|0.075594|0.005971|0.065654|2|
 
+逐TX、RX、day的完整正/负结果、有效/零向量/缺参考计数与配对clean描述量误差保留在JSON/CSV。以下置换对照不改变参考标签；199次固定RX/day内query标签置换为描述性阴性对照，不是p值或独立新样本。
 
-实际启动状态：VERIFIED / WAITING_PARENT_FORMAL：普通账户、单归档SHA、compile、真实2Ls无参数解析no-query smoke、实际PID/CWD/argv/空CUDA/CPU2及日志增长已核实。等待R62两行七景正式评分；复用R56raw/M35共56单元，新算R49同增量预算控制与两R62共84，总140先于truth固定。0F/checkpoint/新神经预测/训练/新校准/头拟合/GPU，不改变父实验或选择；无新统计结论，目标ACTIVE。
+|lowurban候选|combined实际margin|query标签置换均值|置换5%至95%|高于95%分位|
+|---|---:|---:|---|---|
+|r46_350521|0.066143|0.000019|-0.000321至0.000342|True|
+|r49_retain_control|0.072836|0.000021|-0.000307至0.000360|True|
+|r62_group_preserve|0.067693|0.000026|-0.000282至0.000374|True|
+|r62_regroup_control|0.065654|0.000023|-0.000291至0.000357|True|
+
+|lowurban配对比较|共同有效数|combined margin变化|配对描述量误差变化|
+|---|---:|---:|---:|
+|r62_group_preserve − r46_350521|168000|0.001549|-0.062731|
+|r62_regroup_control − r46_350521|168000|-0.000489|-0.062075|
+|r62_group_preserve − r49_retain_control|168000|-0.005144|0.060619|
+|r62_regroup_control − r49_retain_control|168000|-0.007182|0.061274|
+|r62_group_preserve − r62_regroup_control|168000|0.002039|-0.000656|
+
+解析提取阶段153.518s，评分阶段570.688s，控制器总墙钟2496.198s（含父完成等待）。3528000次新解析输入与56个旧引用来自同168000记录的相关场景/读出，不称新增独立样本。
+
+真实2条Ls解析no-query smoke、30项聚焦检查、CLIhelp、一次限P0/P1审查，以及普通账户一次预检/归档SHA/compile/实际PID/CWD/argv/空CUDA/2线程/日志增长均核实。等待父时不持R41score.lock；父全部正式评分后提取与评分才使用唯一CPU评分槽。
+
+固定描述符在 clean TX2 已有区分不足，恢复后负 margin 不能单独解释为输入身份错误。该类不足与各 TX 的全部结果一并保留。
+
+本研究使用已暴露工程基准，且事后评价明确使用target clean参考和truth，不称新的独立盲测或完全无标签评价。跨RX/day与置换只提供固定坐标下有限同TX关联，仍可能含载荷、接收链和日期因素，不能证明每个生成细节来源、未知TX泛化或真实在轨有效性。原lowurban70%、其他五景距rawclean≤5pp与更强输入TX细节目标继续ACTIVE。
+
+完整2016组记录、336条件对照和140配对差见[汇总](../automation_reports/CV-SincNet/20261021-diagnostic-restoration-whole-group-formal-analytic-TX-s2026092701-m2-r63/summary.json)与[逐组CSV](../automation_reports/CV-SincNet/20261021-diagnostic-restoration-whole-group-formal-analytic-TX-s2026092701-m2-r63/row_metrics.csv)；固定输入/方法/矩阵/命令/预算/停止规则见[登记](../automation_reports/CV-SincNet/20261021-diagnostic-restoration-whole-group-formal-analytic-TX-s2026092701-m2-r63/experiment.json)。
