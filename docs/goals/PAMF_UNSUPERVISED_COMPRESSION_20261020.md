@@ -1,5 +1,7 @@
 # 无 TX 标签恢复器的压缩与性能联合优化
 
+二十三个固定新版的正式性能、郊区/urban 全场景和配对推理成本均已完整汇总，按预登记顺序保留全部结果；性能优先，不用通过退化容差、减参或提速替代逐场景性能改善。二十三行中相对指定父七景全部提高的版本为：R48 prune_refine（273765参数，low urban 68.257738%）、R60 context_hint（273765参数，low urban 68.232143%）。完整数据按固定矩阵顺序报告，不据此另选父、修改超参数或选择性重跑。只反映单 seed 工程基准，70%/5pp以逐行验收表为准；输入TX逐细节真实性尚未证明，原完整目标继续ACTIVE。 见[二十三版性能总表](../PAMF_R46_COMPRESSION_PERFORMANCE_20261020.md)。指定 350521 父版不变，原完整目标继续 ACTIVE。
+
 R63已完成VERIFIED/ANALYZED：140解析单元固定后truth；2016分组/336条件阴性对照/140配对差独立复算，R46父504记录与R56一致；0F/checkpoint/额外神经预测/训练/headfit/新校准/GPU，所属CPU进程EXITED。有限同TX关联不是识别率或逐细节真实性证明，不改变父实验，原目标ACTIVE。 [全部四候选固定关联](../PAMF_GROUP_FORMAL_IDENTITY_R63_20261021.md)。
 
 2026-10-21 当前 R64：VERIFIED / TRAINING：方法 1c5ecf805afa9a15c23de8e3232b7cc83b37dad5 已普通账户发布，单归档SHA与compile通过。实际共享源校准/真实M35/F50/2Ls no-query smoke PASS；两行物理GPU3/2实际PID/CWD/argv/CUDA/CPU2、GPU PID、日志增长和有限epoch已核实。103处完整输入统计来自128源LU/256父G，只计一次校准成本，0clean/TX/F/V/target/optimizer；新推理参数0。两行248828/GN3/fullprior，补偿强度1/.5；核心22704e5在读取R62分数前固定，直接M35初始化/教师不变，原E20/4940与自动全7正式测试/独立truthlast/同卡成本不变，无源筛选。R62同卡旧GPU进程已实际EXITED，其他owner保持。无R64识别收益结论，完整目标ACTIVE。 [固定矩阵](../PAMF_R46_WHOLE_GROUP_FOLD_R64_20261021.md)。
@@ -13,8 +15,6 @@ R63已实际VERIFIED/WAITING_PARENT_FORMAL：CPU2/0GPU、真实2Ls解析no-query
 2026-10-21 当前 R62：VERIFIED / TRAINING：固定方法 7a8fa7bd836946c3493635cbe0966591ecf14e1e 已发布，普通账户、单归档 SHA 比对和远端 compile 通过；真实指定父/F50/两条 L_s no-query smoke PASS。两固定行物理 GPU3/2 的实际 PID/CWD/argv/CUDA/CPU2、GPU PID、日志增长和至少一轮有限损失已核实。每卡一条本任务训练，总数2；其他 owner 不变。整组 GN3/GN1 同 248828 参数及初值，全 prior、原波形目标、E20/4940 后两行均自动七景正式测试/独立 truth-last/同卡成本，无源分数筛选，无新识别收益结论，完整目标 ACTIVE。 [固定矩阵](../PAMF_R46_WHOLE_GROUP_R62_20261021.md)。
 
 2026-10-21 R62 LOCAL_VERIFIED：整组裁剪既有上下文 U-Net，完整 prior 保留；GN3/GN1 两行同 248828 参数、同初始权重、同源预算。直接指定 M35 父与冻结 IQ 教师，权重选组无需 IQ，原 paired IQ＋谱误差＋1→0.1 IQ 教师，全 E20/4940/micro256，0 TX/F/V/target 优化。56 checks/CLI/真实父合成 CPU 梯度/ONE P0P1 PASS；首步真实 2 L_s smoke 后两行自动七景正式测试、独立 truth-last 与同卡成本。只读复用 R49 retain_refine 同增量预算对照，不继承任何子版；性能优先，70/5pp/逐细节真实性目标 ACTIVE。[R62 固定方案](../PAMF_R46_WHOLE_GROUP_R62_20261021.md)。
-
-二十一个固定新版的正式性能、郊区/urban 全场景和配对推理成本均已完整汇总，按预登记顺序保留全部结果；性能优先，不用通过退化容差、减参或提速替代逐场景性能改善。二十一行中相对指定父七景全部提高的版本为：R48 prune_refine（273765参数，low urban 68.257738%）、R60 context_hint（273765参数，low urban 68.232143%）。完整数据按固定矩阵顺序报告，不据此另选父、修改超参数或选择性重跑。只反映单 seed 工程基准，70%/5pp以逐行验收表为准；输入TX逐细节真实性尚未证明，原完整目标继续ACTIVE。 见[二十一版性能总表](../PAMF_R46_COMPRESSION_PERFORMANCE_20261020.md)。指定 350521 父版不变，原完整目标继续 ACTIVE。
 
 2026-10-21 当前 R60：VERIFIED/ANALYZED：两行完整E20/4940、源1800×7和正式168000×7、每行七预测固定后独立truth-last、完整曲线/同卡成本、所属controller/worker退出及两套独立权重CPU严格重载均已核实。context_hint 273765参数，七景较父提高7/下降0，lowurban 68.232143%（较父+0.722024pp），70%=False、其他五景gap5pp=False；同卡G B1父/本版47.6136/47.1164ms，G+F B1父/本版59.5221/58.5740ms；all_hint 273765参数，七景较父提高1/下降6，lowurban 67.719643%（较父+0.209524pp），70%=False、其他五景gap5pp=False；同卡G B1父/本版45.9480/45.2744ms，G+F B1父/本版57.7602/56.0171ms。context_hint相对预登记同图同预算无hint控制R53prune_decay七景提高3/下降4，lowurban差-0.295238pp；all_hint相对预登记同图同预算无hint控制R53prune_decay七景提高0/下降7，lowurban差-0.807738pp。相同.02context权重，all_hint比context_hint额外.02prior：七景提高0/下降7，lowurban差-0.512500pp。原参数80+20=100轮，context/prior各84模块的训练期特征约束；0额外G前向/校准IQ/新增参数，全部hooks保存前移除，额外训练开销已列账。原指定350521直接父保持，正负结果保留；不把容差、减参或中间特征拟合当作整体提升或逐细节TX真实性。原完整目标ACTIVE。 [全部七景与同图控制](../PAMF_R46_FEATURE_HINT_R60_20261021.md)。
 
