@@ -1,6 +1,6 @@
 # F 跨 RX：短期跨批次特征记忆
 
-状态：LOCAL_VERIFIED，尚未训练。
+状态：RUNNING。首种子 ANCHOR 与 MEM4 两行已在本机 GPU0 并行训练；实际代码提交 2a20ee904223bcc1f0cd7e4c53c5cd57aebcb798，远端 VERIFIED。
 
 目标仍是提高源域固定弱 TX 14-7、20-19 在目标 clean 上的性能，同时保留其余 TX。整体准确率超过 84% 本身不代表弱类目标达成。复用原 F＋跨 RX 同 TX 对比学习及本机同种子 BASE，历史 85.1139% 仅作方法锚点。
 
@@ -17,3 +17,5 @@
 数学及协议负测试、CPU/CUDA 实际网络检查均通过。真实 checkpoint 无 query 检查一次通过，加载模型丢弃，正式模型从零训练。新增辅助梯度对默认头全部 6 个参数均为 None，主联合头梯度与原生逐值相同；Sinc/浅中层梯度非零，物理更新、EMA eval、导出一致性均通过。一次独立 direct P0/P1 审查通过。
 
 [XBM 原论文](https://openaccess.thecvf.com/content_CVPR_2020/html/Wang_Cross-Batch_Memory_for_Embedding_Learning_CVPR_2020_paper.html)提供跨批次嵌入记忆的思路。其图像检索慢漂移观察不能替代本任务的实际训练和目标 clean 结果。
+
+启动后实际控制器、两行 worker 的 CWD/命令/GPU 与日志增长均 VERIFIED。两行已完成 E1、各 222 次原生更新，辅助机制尚在固定五轮预热中，未发现技术错误；尚无新增目标域结果。详见 launch_verification.json。

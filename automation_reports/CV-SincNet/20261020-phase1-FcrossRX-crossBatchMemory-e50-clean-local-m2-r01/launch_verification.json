@@ -1,0 +1,87 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "2a20ee904223bcc1f0cd7e4c53c5cd57aebcb798",
+  "remote_code_commit": "VERIFIED",
+  "archive_copy": "VERIFIED",
+  "release_compile": "PASS",
+  "source_controls_provenance": 3,
+  "actual_controller_and_two_workers_live": true,
+  "actual_CWD_all_match": true,
+  "actual_command_module_row_match": true,
+  "physical_GPU": 0,
+  "actual_two_sourceworkers_GPU_context": true,
+  "global_max_GPU_workers": 3,
+  "observed_own_GPU_workers": 2,
+  "foreign_GPU_workers": 0,
+  "free_RAM_GiB": 8.511390686035156,
+  "log_growth_all": true,
+  "first_epochs": [
+    {
+      "row_id": "ANCHOR-s2026092701",
+      "epoch": 1,
+      "calls": 222,
+      "applied_calls": 0,
+      "mode": "CROSS_RX",
+      "temporary_hooks_remaining": 0,
+      "extra_model_forwards": 0,
+      "head_fit_updates": 0,
+      "U_truth_read": false,
+      "technical_error": false
+    },
+    {
+      "row_id": "MEM4-s2026092701",
+      "epoch": 1,
+      "calls": 222,
+      "applied_calls": 0,
+      "mode": "CROSS_RX",
+      "temporary_hooks_remaining": 0,
+      "extra_model_forwards": 0,
+      "head_fit_updates": 0,
+      "U_truth_read": false,
+      "technical_error": false
+    }
+  ],
+  "native_recipe": {
+    "status": "VERIFIED",
+    "rows": [
+      {
+        "row_id": "ANCHOR-s2026092701",
+        "epochs": 50,
+        "label_epochs": 33,
+        "pseudo_epochs": 17,
+        "batch_size": 128,
+        "label_smoothing": 0.01,
+        "use_aug": true,
+        "use_ema_teacher": true,
+        "max_grad_norm": 5,
+        "sat_training_mode": "disabled",
+        "use_concat_sat_channel_aug": false,
+        "eval_sat_channel": false,
+        "external_checkpoint": false,
+        "head_fit_updates": 0
+      },
+      {
+        "row_id": "MEM4-s2026092701",
+        "epochs": 50,
+        "label_epochs": 33,
+        "pseudo_epochs": 17,
+        "batch_size": 128,
+        "label_smoothing": 0.01,
+        "use_aug": true,
+        "use_ema_teacher": true,
+        "max_grad_norm": 5,
+        "sat_training_mode": "disabled",
+        "use_concat_sat_channel_aug": false,
+        "eval_sat_channel": false,
+        "external_checkpoint": false,
+        "head_fit_updates": 0
+      }
+    ]
+  },
+  "test_views": [
+    "clean"
+  ],
+  "satellite_training": false,
+  "target_access_before_source_decision": false,
+  "head_fit_updates": 0
+}
