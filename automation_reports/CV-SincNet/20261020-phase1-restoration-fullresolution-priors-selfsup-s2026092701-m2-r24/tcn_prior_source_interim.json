@@ -1,0 +1,527 @@
+{
+  "status": "PARTIAL_SOURCE_ONLY",
+  "method_commit": "da5b9d52819ccd40f8b59dbfdefebff3bd3c2230",
+  "candidate": "tcn_prior",
+  "source_records": 1800,
+  "source_overall": {
+    "clean": {
+      "view": "clean",
+      "readout": "restored",
+      "dimension": "overall",
+      "value": "all",
+      "accuracy": 98.44444444444444,
+      "macro_f1": 98.44004952386145,
+      "baseline_accuracy": 98.5,
+      "repaired": 0,
+      "damaged": 1,
+      "net_repaired": -1,
+      "count": 1800,
+      "confusion": [
+        [
+          293,
+          2,
+          0,
+          4,
+          2,
+          0
+        ],
+        [
+          0,
+          297,
+          0,
+          1,
+          0,
+          1
+        ],
+        [
+          1,
+          1,
+          281,
+          0,
+          1,
+          2
+        ],
+        [
+          0,
+          7,
+          0,
+          286,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          1,
+          0,
+          305,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          0,
+          0,
+          310
+        ]
+      ],
+      "iq_nmse": 9.617213800083846e-05
+    },
+    "practical_high": {
+      "view": "practical_high",
+      "readout": "restored",
+      "dimension": "overall",
+      "value": "all",
+      "accuracy": 98.05555555555556,
+      "macro_f1": 98.04902672451784,
+      "baseline_accuracy": 54.27777777777778,
+      "repaired": 795,
+      "damaged": 7,
+      "net_repaired": 788,
+      "count": 1800,
+      "confusion": [
+        [
+          294,
+          3,
+          0,
+          2,
+          2,
+          0
+        ],
+        [
+          1,
+          293,
+          0,
+          4,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          281,
+          1,
+          1,
+          2
+        ],
+        [
+          0,
+          10,
+          1,
+          282,
+          0,
+          0
+        ],
+        [
+          1,
+          1,
+          0,
+          0,
+          305,
+          1
+        ],
+        [
+          1,
+          0,
+          1,
+          0,
+          1,
+          310
+        ]
+      ],
+      "iq_nmse": 0.008088435977697372
+    },
+    "practical_mid": {
+      "view": "practical_mid",
+      "readout": "restored",
+      "dimension": "overall",
+      "value": "all",
+      "accuracy": 97.11111111111111,
+      "macro_f1": 97.10237363445059,
+      "baseline_accuracy": 51.72222222222223,
+      "repaired": 831,
+      "damaged": 14,
+      "net_repaired": 817,
+      "count": 1800,
+      "confusion": [
+        [
+          291,
+          3,
+          0,
+          5,
+          1,
+          1
+        ],
+        [
+          0,
+          289,
+          1,
+          7,
+          1,
+          1
+        ],
+        [
+          0,
+          2,
+          280,
+          2,
+          1,
+          1
+        ],
+        [
+          4,
+          12,
+          0,
+          277,
+          0,
+          0
+        ],
+        [
+          1,
+          2,
+          0,
+          1,
+          303,
+          1
+        ],
+        [
+          1,
+          0,
+          1,
+          1,
+          2,
+          308
+        ]
+      ],
+      "iq_nmse": 0.011806298978626728
+    },
+    "practical_low_suburban": {
+      "view": "practical_low_suburban",
+      "readout": "restored",
+      "dimension": "overall",
+      "value": "all",
+      "accuracy": 96.0,
+      "macro_f1": 95.98574163748971,
+      "baseline_accuracy": 51.0,
+      "repaired": 832,
+      "damaged": 22,
+      "net_repaired": 810,
+      "count": 1800,
+      "confusion": [
+        [
+          287,
+          4,
+          0,
+          9,
+          1,
+          0
+        ],
+        [
+          1,
+          277,
+          1,
+          19,
+          1,
+          0
+        ],
+        [
+          0,
+          1,
+          280,
+          1,
+          3,
+          1
+        ],
+        [
+          3,
+          17,
+          1,
+          272,
+          0,
+          0
+        ],
+        [
+          1,
+          1,
+          0,
+          1,
+          304,
+          1
+        ],
+        [
+          0,
+          3,
+          2,
+          0,
+          0,
+          308
+        ]
+      ],
+      "iq_nmse": 0.015126454643905163
+    },
+    "practical_high_urban": {
+      "view": "practical_high_urban",
+      "readout": "restored",
+      "dimension": "overall",
+      "value": "all",
+      "accuracy": 97.33333333333334,
+      "macro_f1": 97.32240200801071,
+      "baseline_accuracy": 51.0,
+      "repaired": 849,
+      "damaged": 15,
+      "net_repaired": 834,
+      "count": 1800,
+      "confusion": [
+        [
+          292,
+          2,
+          0,
+          5,
+          2,
+          0
+        ],
+        [
+          1,
+          287,
+          0,
+          9,
+          1,
+          1
+        ],
+        [
+          0,
+          1,
+          279,
+          0,
+          2,
+          4
+        ],
+        [
+          1,
+          12,
+          0,
+          280,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          1,
+          305,
+          1
+        ],
+        [
+          1,
+          0,
+          2,
+          0,
+          1,
+          309
+        ]
+      ],
+      "iq_nmse": 0.01144101470708847
+    },
+    "practical_mid_urban": {
+      "view": "practical_mid_urban",
+      "readout": "restored",
+      "dimension": "overall",
+      "value": "all",
+      "accuracy": 91.61111111111111,
+      "macro_f1": 91.565031145937,
+      "baseline_accuracy": 43.388888888888886,
+      "repaired": 892,
+      "damaged": 24,
+      "net_repaired": 868,
+      "count": 1800,
+      "confusion": [
+        [
+          276,
+          11,
+          1,
+          11,
+          2,
+          0
+        ],
+        [
+          8,
+          246,
+          1,
+          43,
+          0,
+          1
+        ],
+        [
+          1,
+          2,
+          275,
+          3,
+          3,
+          2
+        ],
+        [
+          17,
+          34,
+          0,
+          242,
+          0,
+          0
+        ],
+        [
+          2,
+          3,
+          0,
+          2,
+          300,
+          1
+        ],
+        [
+          2,
+          0,
+          1,
+          0,
+          0,
+          310
+        ]
+      ],
+      "iq_nmse": 0.033514440059661865
+    },
+    "practical_low_urban": {
+      "view": "practical_low_urban",
+      "readout": "restored",
+      "dimension": "overall",
+      "value": "all",
+      "accuracy": 86.38888888888889,
+      "macro_f1": 86.4053406532138,
+      "baseline_accuracy": 36.666666666666664,
+      "repaired": 940,
+      "damaged": 45,
+      "net_repaired": 895,
+      "count": 1800,
+      "confusion": [
+        [
+          257,
+          13,
+          1,
+          27,
+          2,
+          1
+        ],
+        [
+          13,
+          211,
+          1,
+          68,
+          5,
+          1
+        ],
+        [
+          1,
+          1,
+          266,
+          10,
+          5,
+          3
+        ],
+        [
+          27,
+          26,
+          7,
+          230,
+          3,
+          0
+        ],
+        [
+          1,
+          5,
+          1,
+          9,
+          290,
+          2
+        ],
+        [
+          1,
+          2,
+          2,
+          3,
+          4,
+          301
+        ]
+      ],
+      "iq_nmse": 0.051901254802942276
+    }
+  },
+  "source_waveform": {
+    "clean": {
+      "iq_nmse": 9.617213800083846e-05,
+      "prefix232_nmse": 9.188071999233216e-05,
+      "tail24_nmse": 0.00013766154006589204,
+      "fft_log_power_L1": 0.029734455049037933
+    },
+    "practical_high": {
+      "iq_nmse": 0.008088435977697372,
+      "prefix232_nmse": 0.005629557650536299,
+      "tail24_nmse": 0.03551046922802925,
+      "fft_log_power_L1": 0.17976884543895721
+    },
+    "practical_mid": {
+      "iq_nmse": 0.011806298978626728,
+      "prefix232_nmse": 0.009220758453011513,
+      "tail24_nmse": 0.04069070890545845,
+      "fft_log_power_L1": 0.2218153029680252
+    },
+    "practical_low_suburban": {
+      "iq_nmse": 0.015126454643905163,
+      "prefix232_nmse": 0.012548000551760197,
+      "tail24_nmse": 0.04334868863224983,
+      "fft_log_power_L1": 0.25407490134239197
+    },
+    "practical_high_urban": {
+      "iq_nmse": 0.01144101470708847,
+      "prefix232_nmse": 0.008867435157299042,
+      "tail24_nmse": 0.03972655534744263,
+      "fft_log_power_L1": 0.20141157507896423
+    },
+    "practical_mid_urban": {
+      "iq_nmse": 0.033514440059661865,
+      "prefix232_nmse": 0.030836068093776703,
+      "tail24_nmse": 0.061636608093976974,
+      "fft_log_power_L1": 0.3129097521305084
+    },
+    "practical_low_urban": {
+      "iq_nmse": 0.051901254802942276,
+      "prefix232_nmse": 0.048534292727708817,
+      "tail24_nmse": 0.08670628815889359,
+      "fft_log_power_L1": 0.40107545256614685
+    }
+  },
+  "mean6_NMSE": 0.021979649861653645,
+  "training_complete": {
+    "status": "SOURCE_TRAINED",
+    "candidate": "tcn_prior",
+    "epochs": 20,
+    "updates": 4940,
+    "L_exposures": 126000,
+    "U_exposures": 1134000,
+    "TX_labels_read": 0,
+    "F_outputs_read": 0,
+    "F_weights_read": 0,
+    "target_reads": 0,
+    "frozen_context_updates": 0,
+    "prior_initialization": "scratch",
+    "inherited_prior_epochs": 0,
+    "trainable_parameters": 2391558,
+    "parameters": 4549105,
+    "seconds": 1158.7192719248123,
+    "peak_allocated_bytes": 3874076672
+  },
+  "full_training_epochs_verified": 20,
+  "classification_records_verified": 105,
+  "target_artifacts_read": false,
+  "source_selection_or_training_changed": false,
+  "complete_run": false,
+  "goal_complete": false,
+  "scope": "One frozen row,one seed,sourceV only;not formal performance;whole source decision pending"
+}

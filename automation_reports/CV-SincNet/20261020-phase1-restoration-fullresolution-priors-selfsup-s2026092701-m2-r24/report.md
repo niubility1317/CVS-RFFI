@@ -68,3 +68,6 @@
 
 
 发布后状态：VERIFIED。单归档传输比对、远端编译和真实两条源样本 checkpoint/defaultF 入口通过。原R07上下文一致、完整初始输出相同，隐藏结构不同；三步 prior 梯度有限非零，全部上下文无参数梯度。R23控制完整权重仅严格加载检查，不进入新prior初始化。两条真实 GPU worker 的 PID/CWD/argv/GPU 和日志增长已核实，每卡一条，未干预其他 owner。全LU训练、源七视图及有条件正式确认自动执行；当前没有新的性能结论。
+
+
+一行完整源评分已返回：[tcn_prior局部报告](tcn_prior_source_interim.md)。矩阵仍RUNNING，不改变其他行或最终选择规则。
