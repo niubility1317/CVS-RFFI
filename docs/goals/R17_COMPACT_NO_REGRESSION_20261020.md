@@ -232,3 +232,6 @@ R14 三行完整完成 E10/2470、source1800×7 与 target168000×7、逐行独�
 ## R15：保持通道/GN的低秩先验
 
 R14 source完整30轮表明context冻结后裁剪几乎消失，但窄prior末轮teacher-stage NMSE仍为同宽约17/29倍。新两行仅prior内部SVD，保留全部通道/GN/skip/输出尺寸，固定rank fraction .75/.625，仅节省参数卷积才替换，left/right均跨stage共享、bias独立；完整779745/750035参数，原548795context冻结。只原R38 source E20/4940独立父权重，E10/2470，0TX/F/V/target训练；context累计40/prior50，每版全七场景正式测试。同预算control复用R14 prior_keep既有结果，不重训/重测；结构参数依据source拟合与结构事实，0target反馈搜索。14项检查与唯一P0/P1审查PASS。
+
+
+R15两行均完成E10/2470、source1800×7、target168000×7及独立truth-last，实际进程退出、模型严格取回加载。通过双参考1pp：无。完整目标结果、成本及局限见 [R15报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r38-factor-prior-s2026092701-m2-r15/report.md)。0目标反馈调参或重跑，全部负结果保留。
