@@ -1,6 +1,6 @@
 # R45：两种压缩版的正式无F同TX关联
 
-状态：LOCAL_VERIFIED，尚未发布。17项聚焦检查、CLIhelp、一次独立P0/P1 PASS；方法commit `a3f1137726f5e691b6466bbd781d411bdb0df62e`。
+状态：**VERIFIED / WAITING_PARENT_FORMAL**，已发布。17项聚焦检查、CLIhelp、一次独立P0/P1 PASS；方法commit `a3f1137726f5e691b6466bbd781d411bdb0df62e`。
 
 
 状态：PLANNED。这是 R44 两种压缩方法的事后保真评价，不是新恢复网络，也不改变 R44 的训练、选模、测试或最终权重。比较用户指定的 R38 dense_half794529、R44低秩530161和重要性剪枝442805，保留原received与clean参考。只有两版全部七场景正式预测和独立评分都完成后，才打开正式 IQ；全部112特征单元冻结、有限且物理ID对齐后，另一个CPU评分进程才连接原truth。
@@ -17,3 +17,6 @@
 
 
 精确环境、命令、路径、预算见[登记](experiment.json)。
+
+
+VERIFIED / WAITING_PARENT_FORMAL：普通账户新release/归档单SHA/compile已核实；真实2Ls参数自由noquery smoke PASS，0checkpoint/F/TX/V/target；实际PID/CWD/argv/空CUDA/2线程及日志增长已读回。等待双方全部正式评分后解析，无统计结果，不改变父训练或预测。

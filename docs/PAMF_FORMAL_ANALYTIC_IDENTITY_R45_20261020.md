@@ -11,3 +11,6 @@
 训练和正式预测仍由R44既有owner完成。本诊断N607普通账户、CPU2线程、空CUDA、0GPU，等待R44全部正式评分后，复用R41 score.lock控制最多一个本任务CPU评分。独立新run/release/output；源码Git固定、17项聚焦检查、一次限P0/P1审查，launcher首步用真实两条L_s IQ及固定源校准做参数自由no-query smoke。本阶段不消费checkpoint，无额外checkpoint/F加载。PASS立即等待父正式完成；一次归档SHA/编译及实际PID/CWD/argv/空CUDA/日志增长读回。父失败、输入/物理ID/校准错误、非有限或输出冲突时保留输出，不自动重试、不停止或热改健康任务。
 
 正式场景包含clean、郊区high/mid/low和urban high/mid/low，与R44相同。精确方法commit、命令、路径、环境/CWD、种子、矩阵、停止规则和预期产物见本run的experiment.json。当前没有本诊断结果；其结果不替代七场景识别率、逐景1pp容差或原70%/5pp目标。
+
+
+实际启动状态：VERIFIED / WAITING_PARENT_FORMAL：普通账户新release/归档单SHA/compile已核实；真实2Ls参数自由noquery smoke PASS，0checkpoint/F/TX/V/target；实际PID/CWD/argv/空CUDA/2线程及日志增长已读回。等待双方全部正式评分后解析，无统计结果，不改变父训练或预测。
