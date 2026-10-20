@@ -1,6 +1,6 @@
 # F 跨 RX 同 TX：同 RX 负样本替换的源域诊断
 
-状态：LOCAL_VERIFIED，尚未启动。
+状态：ANALYZED_NOT_ADVANCED。完整三模型源域诊断已完成；预设判断未通过，不发布本路线训练。
 
 基底为原始 F＋跨 RX 同 TX 对比学习的三个已冻结模型。保留原默认头；本次无训练、无 U/V/目标域访问，不使用星地增强，也不新增 practical 测试。
 
@@ -15,3 +15,5 @@
 数学与协议负测试通过；一次真实 checkpoint 无 query 的 CPU 检查通过；一次独立 P0/P1 检查通过。原始模型未成为新训练的初始化。
 
 DCoDR 的同域负样本均匀性仅提供研究启发，其假设与完整训练机制不等同本方案：[ECCV 2022 原文](https://www.ecva.net/papers/eccv_2022/papers_ECCV/papers/136860566.pdf)。
+
+完整结果、负结果与成本见 [results.md](results.md)，结构化聚合见 result.json。

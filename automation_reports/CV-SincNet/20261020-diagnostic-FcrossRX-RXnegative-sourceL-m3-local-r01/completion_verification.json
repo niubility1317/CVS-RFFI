@@ -1,0 +1,21 @@
+{
+  "status": "VERIFIED",
+  "actual_release_commit": "5be7be05668a3f6fda277c6e251c163ecc60bc1f",
+  "complete_models": 3,
+  "source_packets_per_model": 6300,
+  "source_IQ_forward_occurrences": 18900,
+  "VJP_calls": 900,
+  "full50_batches_per_model": true,
+  "all6_objectives_both_gradient_metrics": true,
+  "model_state_RNG_grad_modes_hooks_unchanged": true,
+  "U_reads": 0,
+  "V_reads": 0,
+  "target_reads": 0,
+  "truth_reads": 0,
+  "optimizer_updates": 0,
+  "head_fit_updates": 0,
+  "whole_stdout_completion_and_no_technical_error": true,
+  "independent_gap_arithmetic": "PASS",
+  "actual_process_exited": true,
+  "source_decision_PASS": false
+}

@@ -1,0 +1,958 @@
+{
+  "status": "ANALYZED_NOT_ADVANCED",
+  "run_id": "20261020-diagnostic-FcrossRX-RXnegative-sourceL-m3-local-r01",
+  "analysis_code_commit": "5be7be05668a3f6fda277c6e251c163ecc60bc1f",
+  "reference_run": "20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01",
+  "reference_commit": "31467086c3ced30237f3ac86e91eae68645425d7",
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "source_role": "L_s",
+      "count": 6300,
+      "class_counts": [
+        1050,
+        1050,
+        1050,
+        1050,
+        1050,
+        1050
+      ],
+      "batches": 50,
+      "objective_names": [
+        "CE_TX1",
+        "CE_TX3",
+        "CE_OTHER4",
+        "SC_ALL",
+        "SC_RANDOM_MATCHED",
+        "SC_SAME_RX"
+      ],
+      "objective_values": [
+        0.09704261121805757,
+        0.11131808924255893,
+        0.08763333977549337,
+        0.9727798611856997,
+        0.4800703057553619,
+        0.49068907951004803
+      ],
+      "feature_parameter_count": 231233,
+      "metrics": {
+        "CLIP_PHYSICAL": {
+          "objectives": [
+            "CE_TX1",
+            "CE_TX3",
+            "CE_OTHER4",
+            "SC_ALL",
+            "SC_RANDOM_MATCHED",
+            "SC_SAME_RX"
+          ],
+          "norm": [
+            0.6482073663696746,
+            0.9359103282174738,
+            0.14172703366701658,
+            0.5528178176396847,
+            0.5377838959354037,
+            0.5666950660795927
+          ],
+          "cosine": [
+            [
+              1,
+              -0.42352285554261865,
+              0.2378966811209641,
+              -0.03480197026908483,
+              -0.06440449433893522,
+              -0.06542562321587124
+            ],
+            [
+              -0.42352285554261865,
+              1,
+              0.0632196103349908,
+              -0.010144279955704504,
+              0.006319183907368528,
+              0.009857047901658537
+            ],
+            [
+              0.2378966811209641,
+              0.0632196103349908,
+              1,
+              -0.020692551032707677,
+              0.023907032513196532,
+              0.017536911037320826
+            ],
+            [
+              -0.03480197026908483,
+              -0.010144279955704504,
+              -0.020692551032707677,
+              1,
+              0.7724833064552521,
+              0.7529208615188989
+            ],
+            [
+              -0.06440449433893522,
+              0.006319183907368528,
+              0.023907032513196532,
+              0.7724833064552521,
+              1,
+              0.9816076461971475
+            ],
+            [
+              -0.06542562321587124,
+              0.009857047901658537,
+              0.017536911037320826,
+              0.7529208615188989,
+              0.9816076461971475,
+              1
+            ]
+          ]
+        },
+        "NORMALIZED_HZ": {
+          "objectives": [
+            "CE_TX1",
+            "CE_TX3",
+            "CE_OTHER4",
+            "SC_ALL",
+            "SC_RANDOM_MATCHED",
+            "SC_SAME_RX"
+          ],
+          "norm": [
+            1.7712573347005502,
+            4.648411051482252,
+            0.5444006914381927,
+            5.168166190426351,
+            3.8941033308134902,
+            4.368576501587909
+          ],
+          "cosine": [
+            [
+              0.9999999999999999,
+              -0.7432237668449286,
+              -0.30121160994021157,
+              -0.07250190591477823,
+              -0.07747543464573628,
+              -0.14570187779364627
+            ],
+            [
+              -0.7432237668449286,
+              1,
+              0.5851895996091645,
+              -0.057629341613428336,
+              -0.1320430578856714,
+              -0.01825289277111678
+            ],
+            [
+              -0.30121160994021157,
+              0.5851895996091645,
+              1,
+              -0.4346984325357458,
+              -0.5347999234486169,
+              -0.47332951090518605
+            ],
+            [
+              -0.07250190591477823,
+              -0.057629341613428336,
+              -0.4346984325357458,
+              1,
+              0.7927977782078436,
+              0.781792918491625
+            ],
+            [
+              -0.07747543464573628,
+              -0.1320430578856714,
+              -0.5347999234486169,
+              0.7927977782078436,
+              1,
+              0.907766974707917
+            ],
+            [
+              -0.14570187779364627,
+              -0.01825289277111678,
+              -0.47332951090518605,
+              0.781792918491625,
+              0.907766974707917,
+              1
+            ]
+          ]
+        }
+      },
+      "descriptor_stats": [
+        {
+          "level": "time_down",
+          "per_TX": [
+            {
+              "TX": 0,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -111.39527279138565,
+              "other_RX_negative_sum": -116.08364045619965,
+              "cross_RX_positive_sum": 561.9000263214111
+            },
+            {
+              "TX": 1,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -13.11097964644432,
+              "other_RX_negative_sum": -35.88382253795862,
+              "cross_RX_positive_sum": 504.8020429611206
+            },
+            {
+              "TX": 2,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -58.890707060694695,
+              "other_RX_negative_sum": -85.43469932675362,
+              "cross_RX_positive_sum": 301.7008126974106
+            },
+            {
+              "TX": 3,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": 3.82732817530632,
+              "other_RX_negative_sum": -28.2935719974339,
+              "cross_RX_positive_sum": 453.60404539108276
+            },
+            {
+              "TX": 4,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -215.3609939366579,
+              "other_RX_negative_sum": -220.92486158013344,
+              "cross_RX_positive_sum": 692.5043791532516
+            },
+            {
+              "TX": 5,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -99.76296389102936,
+              "other_RX_negative_sum": -120.62035793066025,
+              "cross_RX_positive_sum": 330.91709208488464
+            }
+          ]
+        },
+        {
+          "level": "t2.pool",
+          "per_TX": [
+            {
+              "TX": 0,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -112.46436041593552,
+              "other_RX_negative_sum": -110.53716272115707,
+              "cross_RX_positive_sum": 592.3566000461578
+            },
+            {
+              "TX": 1,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -63.39458233118057,
+              "other_RX_negative_sum": -68.7686555981636,
+              "cross_RX_positive_sum": 559.7690353393555
+            },
+            {
+              "TX": 2,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -113.1538754105568,
+              "other_RX_negative_sum": -124.50236600637436,
+              "cross_RX_positive_sum": 443.7131869792938
+            },
+            {
+              "TX": 3,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -40.27212768420577,
+              "other_RX_negative_sum": -55.815640553832054,
+              "cross_RX_positive_sum": 502.10024201869965
+            },
+            {
+              "TX": 4,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -211.7698451578617,
+              "other_RX_negative_sum": -210.41232033073902,
+              "cross_RX_positive_sum": 701.3370127677917
+            },
+            {
+              "TX": 5,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -126.59940457344055,
+              "other_RX_negative_sum": -138.33142334222794,
+              "cross_RX_positive_sum": 431.16234064102173
+            }
+          ]
+        }
+      ],
+      "seconds": 30.11501040001167,
+      "peak_cuda_MiB": 204.46630859375,
+      "model_state_RNG_grad_modes_hooks_unchanged": true,
+      "head_fit_updates": 0,
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_reads": 0,
+      "V_reads": 0
+    },
+    {
+      "model_seed": 2026092702,
+      "source_role": "L_s",
+      "count": 6300,
+      "class_counts": [
+        1050,
+        1050,
+        1050,
+        1050,
+        1050,
+        1050
+      ],
+      "batches": 50,
+      "objective_names": [
+        "CE_TX1",
+        "CE_TX3",
+        "CE_OTHER4",
+        "SC_ALL",
+        "SC_RANDOM_MATCHED",
+        "SC_SAME_RX"
+      ],
+      "objective_values": [
+        0.10119341406971216,
+        0.11507457174593583,
+        0.0887714160780888,
+        1.0190609022974968,
+        0.503918953705579,
+        0.5194463150110096
+      ],
+      "feature_parameter_count": 231233,
+      "metrics": {
+        "CLIP_PHYSICAL": {
+          "objectives": [
+            "CE_TX1",
+            "CE_TX3",
+            "CE_OTHER4",
+            "SC_ALL",
+            "SC_RANDOM_MATCHED",
+            "SC_SAME_RX"
+          ],
+          "norm": [
+            0.6882647530444589,
+            0.6737881570051152,
+            0.1738819933745862,
+            0.5214406845664125,
+            0.49906145180800127,
+            0.5312299089544952
+          ],
+          "cosine": [
+            [
+              1,
+              -0.2638417402077837,
+              0.2494524218521665,
+              0.01648871385510005,
+              -0.0008647004605552817,
+              0.001775336231526428
+            ],
+            [
+              -0.2638417402077837,
+              1,
+              0.1447417657106752,
+              -0.032991381354891644,
+              -0.02394772064116735,
+              -0.02670315301111825
+            ],
+            [
+              0.2494524218521665,
+              0.1447417657106752,
+              1,
+              -0.019505633503574045,
+              0.018219982810411713,
+              0.016172755725066174
+            ],
+            [
+              0.01648871385510005,
+              -0.032991381354891644,
+              -0.019505633503574045,
+              1,
+              0.7768946174339503,
+              0.761170105478156
+            ],
+            [
+              -0.0008647004605552817,
+              -0.02394772064116735,
+              0.018219982810411713,
+              0.7768946174339503,
+              1,
+              0.9790397003951399
+            ],
+            [
+              0.001775336231526428,
+              -0.02670315301111825,
+              0.016172755725066174,
+              0.761170105478156,
+              0.9790397003951399,
+              1
+            ]
+          ]
+        },
+        "NORMALIZED_HZ": {
+          "objectives": [
+            "CE_TX1",
+            "CE_TX3",
+            "CE_OTHER4",
+            "SC_ALL",
+            "SC_RANDOM_MATCHED",
+            "SC_SAME_RX"
+          ],
+          "norm": [
+            2.708732610116767,
+            3.2484556589660936,
+            0.23563125402471602,
+            4.890680114591442,
+            4.19225162693112,
+            4.399214109902183
+          ],
+          "cosine": [
+            [
+              1,
+              -0.7993604725641812,
+              -0.23273992669320082,
+              -0.48814272509840073,
+              -0.2728961473793825,
+              -0.21265370961982777
+            ],
+            [
+              -0.7993604725641812,
+              0.9999999999999998,
+              0.0930820813648744,
+              0.41206759245397434,
+              0.3703639849466544,
+              0.2913913895850552
+            ],
+            [
+              -0.23273992669320082,
+              0.0930820813648744,
+              1,
+              0.18842600865444975,
+              0.06440445804538386,
+              0.10986775450635528
+            ],
+            [
+              -0.48814272509840073,
+              0.41206759245397434,
+              0.18842600865444975,
+              1,
+              0.8374576250667082,
+              0.7908840551500299
+            ],
+            [
+              -0.2728961473793825,
+              0.3703639849466544,
+              0.06440445804538386,
+              0.8374576250667082,
+              1,
+              0.9732593912401903
+            ],
+            [
+              -0.21265370961982777,
+              0.2913913895850552,
+              0.10986775450635528,
+              0.7908840551500299,
+              0.9732593912401903,
+              1
+            ]
+          ]
+        }
+      },
+      "descriptor_stats": [
+        {
+          "level": "time_down",
+          "per_TX": [
+            {
+              "TX": 0,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -113.85499036312103,
+              "other_RX_negative_sum": -121.69411367177963,
+              "cross_RX_positive_sum": 559.4378709793091
+            },
+            {
+              "TX": 1,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -10.691611275076866,
+              "other_RX_negative_sum": -33.96157788578421,
+              "cross_RX_positive_sum": 494.04624247550964
+            },
+            {
+              "TX": 2,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -55.30172689259052,
+              "other_RX_negative_sum": -80.76695209741592,
+              "cross_RX_positive_sum": 220.1315793991089
+            },
+            {
+              "TX": 3,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": 7.96506080031395,
+              "other_RX_negative_sum": -28.543866962194443,
+              "cross_RX_positive_sum": 433.7109112739563
+            },
+            {
+              "TX": 4,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -196.6631405837834,
+              "other_RX_negative_sum": -197.55797751247883,
+              "cross_RX_positive_sum": 670.620802283287
+            },
+            {
+              "TX": 5,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -108.87129771709442,
+              "other_RX_negative_sum": -133.22106462717056,
+              "cross_RX_positive_sum": 339.2266983985901
+            }
+          ]
+        },
+        {
+          "level": "t2.pool",
+          "per_TX": [
+            {
+              "TX": 0,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -128.37912929058075,
+              "other_RX_negative_sum": -133.62899482250214,
+              "cross_RX_positive_sum": 572.6001963615417
+            },
+            {
+              "TX": 1,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -53.67863178253174,
+              "other_RX_negative_sum": -73.81919556856155,
+              "cross_RX_positive_sum": 564.0935127735138
+            },
+            {
+              "TX": 2,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -103.73664477467537,
+              "other_RX_negative_sum": -116.97542452812195,
+              "cross_RX_positive_sum": 424.4166762828827
+            },
+            {
+              "TX": 3,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -40.32806807011366,
+              "other_RX_negative_sum": -59.09331649541855,
+              "cross_RX_positive_sum": 487.3235676288605
+            },
+            {
+              "TX": 4,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -192.1510588787496,
+              "other_RX_negative_sum": -191.03283569216728,
+              "cross_RX_positive_sum": 669.6497910022736
+            },
+            {
+              "TX": 5,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -107.12702000141144,
+              "other_RX_negative_sum": -124.59369564056396,
+              "cross_RX_positive_sum": 393.14413619041443
+            }
+          ]
+        }
+      ],
+      "seconds": 11.495575300010387,
+      "peak_cuda_MiB": 208.05859375,
+      "model_state_RNG_grad_modes_hooks_unchanged": true,
+      "head_fit_updates": 0,
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_reads": 0,
+      "V_reads": 0
+    },
+    {
+      "model_seed": 2026092703,
+      "source_role": "L_s",
+      "count": 6300,
+      "class_counts": [
+        1050,
+        1050,
+        1050,
+        1050,
+        1050,
+        1050
+      ],
+      "batches": 50,
+      "objective_names": [
+        "CE_TX1",
+        "CE_TX3",
+        "CE_OTHER4",
+        "SC_ALL",
+        "SC_RANDOM_MATCHED",
+        "SC_SAME_RX"
+      ],
+      "objective_values": [
+        0.10174313723109663,
+        0.10655816463986412,
+        0.08744810216012411,
+        0.9992259885184467,
+        0.48897629883140326,
+        0.5081225167959929
+      ],
+      "feature_parameter_count": 231233,
+      "metrics": {
+        "CLIP_PHYSICAL": {
+          "objectives": [
+            "CE_TX1",
+            "CE_TX3",
+            "CE_OTHER4",
+            "SC_ALL",
+            "SC_RANDOM_MATCHED",
+            "SC_SAME_RX"
+          ],
+          "norm": [
+            0.7764223828546435,
+            0.6822233116241221,
+            0.20211025712823563,
+            0.4942843393224512,
+            0.4544770357574221,
+            0.49583540894295874
+          ],
+          "cosine": [
+            [
+              0.9999999999999998,
+              -0.3056828406005193,
+              0.31453707008510146,
+              -0.029103517435506307,
+              -0.04425317319373215,
+              -0.03937874922194396
+            ],
+            [
+              -0.3056828406005193,
+              0.9999999999999999,
+              0.243462647106478,
+              -0.008725823793814513,
+              -0.015062353928415309,
+              -0.0185674698673872
+            ],
+            [
+              0.31453707008510146,
+              0.243462647106478,
+              1,
+              -0.02198215264078067,
+              -0.015738453754474174,
+              -0.019700047301044646
+            ],
+            [
+              -0.029103517435506307,
+              -0.008725823793814513,
+              -0.02198215264078067,
+              1,
+              0.7595595367681717,
+              0.7484537417984193
+            ],
+            [
+              -0.04425317319373215,
+              -0.015062353928415309,
+              -0.015738453754474174,
+              0.7595595367681717,
+              0.9999999999999999,
+              0.9644367371061388
+            ],
+            [
+              -0.03937874922194396,
+              -0.0185674698673872,
+              -0.019700047301044646,
+              0.7484537417984193,
+              0.9644367371061388,
+              1
+            ]
+          ]
+        },
+        "NORMALIZED_HZ": {
+          "objectives": [
+            "CE_TX1",
+            "CE_TX3",
+            "CE_OTHER4",
+            "SC_ALL",
+            "SC_RANDOM_MATCHED",
+            "SC_SAME_RX"
+          ],
+          "norm": [
+            2.3165804009666995,
+            1.5595830340063863,
+            0.317228745310599,
+            7.3652518914376435,
+            6.8430614838377455,
+            7.43225280544817
+          ],
+          "cosine": [
+            [
+              0.9999999999999999,
+              -0.19650985012520483,
+              0.49930718852967965,
+              -0.42393599498673695,
+              -0.47677445076434966,
+              -0.47470305466295326
+            ],
+            [
+              -0.19650985012520483,
+              1,
+              0.13496158466909952,
+              0.3344122201216692,
+              0.1485087094560791,
+              0.05465961308567928
+            ],
+            [
+              0.49930718852967965,
+              0.13496158466909952,
+              0.9999999999999999,
+              -0.2617205906036377,
+              -0.4954336808364642,
+              -0.5158843645393545
+            ],
+            [
+              -0.42393599498673695,
+              0.3344122201216692,
+              -0.2617205906036377,
+              1,
+              0.8744374356248431,
+              0.8288511739987139
+            ],
+            [
+              -0.47677445076434966,
+              0.1485087094560791,
+              -0.4954336808364642,
+              0.8744374356248431,
+              1,
+              0.982202017947777
+            ],
+            [
+              -0.47470305466295326,
+              0.05465961308567928,
+              -0.5158843645393545,
+              0.8288511739987139,
+              0.982202017947777,
+              1
+            ]
+          ]
+        }
+      },
+      "descriptor_stats": [
+        {
+          "level": "time_down",
+          "per_TX": [
+            {
+              "TX": 0,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -101.99720102548599,
+              "other_RX_negative_sum": -106.53885418176651,
+              "cross_RX_positive_sum": 589.8688564300537
+            },
+            {
+              "TX": 1,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -4.456346973776817,
+              "other_RX_negative_sum": -38.783433955162764,
+              "cross_RX_positive_sum": 479.26700162887573
+            },
+            {
+              "TX": 2,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -53.92554849386215,
+              "other_RX_negative_sum": -86.20687088370323,
+              "cross_RX_positive_sum": 289.49569964408875
+            },
+            {
+              "TX": 3,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": 8.296721786260605,
+              "other_RX_negative_sum": -28.790736939758062,
+              "cross_RX_positive_sum": 420.1529417037964
+            },
+            {
+              "TX": 4,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -206.91013294830918,
+              "other_RX_negative_sum": -222.40722724795341,
+              "cross_RX_positive_sum": 674.438448548317
+            },
+            {
+              "TX": 5,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -115.69168466329575,
+              "other_RX_negative_sum": -133.8976441025734,
+              "cross_RX_positive_sum": 360.8717496395111
+            }
+          ]
+        },
+        {
+          "level": "t2.pool",
+          "per_TX": [
+            {
+              "TX": 0,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -121.9841502904892,
+              "other_RX_negative_sum": -131.7499213218689,
+              "cross_RX_positive_sum": 565.5282378196716
+            },
+            {
+              "TX": 1,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -65.74830663204193,
+              "other_RX_negative_sum": -85.44022938609123,
+              "cross_RX_positive_sum": 519.7035233974457
+            },
+            {
+              "TX": 2,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -89.05676558613777,
+              "other_RX_negative_sum": -113.17539876699448,
+              "cross_RX_positive_sum": 407.5961307287216
+            },
+            {
+              "TX": 3,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -52.018173679709435,
+              "other_RX_negative_sum": -73.39136937260628,
+              "cross_RX_positive_sum": 458.6347180008888
+            },
+            {
+              "TX": 4,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -180.62546894699335,
+              "other_RX_negative_sum": -184.9325913488865,
+              "cross_RX_positive_sum": 684.1038843393326
+            },
+            {
+              "TX": 5,
+              "total": 1050,
+              "eligible": 1050,
+              "same_RX_negative_sum": -117.95895773172379,
+              "other_RX_negative_sum": -129.16044336557388,
+              "cross_RX_positive_sum": 467.9271206855774
+            }
+          ]
+        }
+      ],
+      "seconds": 12.009208100032993,
+      "peak_cuda_MiB": 204.46630859375,
+      "model_state_RNG_grad_modes_hooks_unchanged": true,
+      "head_fit_updates": 0,
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_reads": 0,
+      "V_reads": 0
+    }
+  ],
+  "decision": {
+    "status": "SOURCE_NEGATIVE_STRUCTURE_DECISION",
+    "PASS": false,
+    "rows": [
+      {
+        "model_seed": 2026092701,
+        "weak": [
+          {
+            "TX": 1,
+            "negative_cosine_RX_gap": 0.013403293408808255,
+            "eligible_fraction": 1,
+            "PASS": false
+          },
+          {
+            "TX": 3,
+            "negative_cosine_RX_gap": 0.02269733954398405,
+            "eligible_fraction": 1,
+            "PASS": true
+          }
+        ],
+        "PASS": false
+      },
+      {
+        "model_seed": 2026092702,
+        "weak": [
+          {
+            "TX": 1,
+            "negative_cosine_RX_gap": 0.020671681141303407,
+            "eligible_fraction": 1,
+            "PASS": true
+          },
+          {
+            "TX": 3,
+            "negative_cosine_RX_gap": 0.026321036279911086,
+            "eligible_fraction": 1,
+            "PASS": true
+          }
+        ],
+        "PASS": true
+      },
+      {
+        "model_seed": 2026092703,
+        "weak": [
+          {
+            "TX": 1,
+            "negative_cosine_RX_gap": 0.02572333796925488,
+            "eligible_fraction": 1,
+            "PASS": true
+          },
+          {
+            "TX": 3,
+            "negative_cosine_RX_gap": 0.02783840686615024,
+            "eligible_fraction": 1,
+            "PASS": true
+          }
+        ],
+        "PASS": true
+      }
+    ],
+    "target_access": false,
+    "rule": "Both source-defined weakTX, all3 existing BASE modelseeds: sameRX differentTX negatives have >=.02 higher mean unit-descriptor cosine than otherRX negatives across fixed shallow/middle, eligiblefraction>=.99. Gradient proxies fullyreported, not used to choose metric or tune. Descriptive motivation only for a separately preregistered matched training study, no accuracy or invariance guarantee."
+  },
+  "unique_sourceL": 6300,
+  "model_forward_examples": 18900,
+  "source_IQ_read_occurrences": 18900,
+  "feature_VJP_calls": 900,
+  "target_reads": 0,
+  "U_reads": 0,
+  "V_reads": 0,
+  "truth_reads": 0,
+  "optimizer_updates": 0,
+  "head_fit_updates": 0,
+  "limitation": "Frozen clean eval-mode seen-sourceL descriptors/feature gradients, not stochastic actual RDrop or AdamW updates. Same source packets across3models; no classifier fitting, unknownRX/target accuracy or DCoDR invariance guarantee. Random negatives countmatched peranchor by private generator; allmodes share validanchors. Both physicalclip and normalizedHz gradient metrics reported, not tuning feedback.",
+  "completion_verification": {
+    "status": "VERIFIED",
+    "actual_release_commit": "5be7be05668a3f6fda277c6e251c163ecc60bc1f",
+    "complete_models": 3,
+    "source_packets_per_model": 6300,
+    "source_IQ_forward_occurrences": 18900,
+    "VJP_calls": 900,
+    "full50_batches_per_model": true,
+    "all6_objectives_both_gradient_metrics": true,
+    "model_state_RNG_grad_modes_hooks_unchanged": true,
+    "U_reads": 0,
+    "V_reads": 0,
+    "target_reads": 0,
+    "truth_reads": 0,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0,
+    "whole_stdout_completion_and_no_technical_error": true,
+    "independent_gap_arithmetic": "PASS",
+    "actual_process_exited": true,
+    "source_decision_PASS": false
+  }
+}

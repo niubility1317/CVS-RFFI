@@ -1,0 +1,12 @@
+{
+  "status": "ANALYZED_NOT_ADVANCED",
+  "code_commit": "5be7be05668a3f6fda277c6e251c163ecc60bc1f",
+  "source_decision_PASS": false,
+  "models": 3,
+  "new_training_launched": false,
+  "new_target_access": false,
+  "satellite_training": false,
+  "test_scope": "clean only if future formal training; current source-only",
+  "active_goal": "UNMET",
+  "next": "Preserve original F baseline; no lowering this threshold or launching sameRX replacement from current failed preregistration."
+}
