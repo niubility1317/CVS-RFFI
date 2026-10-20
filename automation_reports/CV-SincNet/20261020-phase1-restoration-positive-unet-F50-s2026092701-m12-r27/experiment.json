@@ -175,7 +175,7 @@
         "path": "runs/20261020-phase1-restoration-joint-coarse-selfsup-s2026092701-m2-r23/joint_coarse/native_map_prior/final.pt"
       }
     ],
-    "contract_check_ref": "All42 originalrun/commit/trainingmetadata/fullLU/strictschema checked;F50originaldefaulthead provenance unchanged;real2Lsnoquerysmoke firststep",
+    "contract_check_ref": "12 original run/commit/trainingmetadata/fullLU/strictloaders checked;source-only1800-panel mean6 selection frozen;F50 original default head provenance unchanged;real12checkpoint+2Ls noquery smoke PASS",
     "provenance_verdict": "Original7/63/30;TX/F/targettraining0;completefrozenparents",
     "selection_rule": "Source1800 equal-weight mean6 strictly positive versus declared source control,clean drop<=0.1pp;source inputs fixed in design;no target feedback",
     "evaluation_readers": [
