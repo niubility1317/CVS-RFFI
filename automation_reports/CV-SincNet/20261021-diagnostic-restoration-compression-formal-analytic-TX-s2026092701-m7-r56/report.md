@@ -1,6 +1,6 @@
 # R56：七个压缩优化新版的正式无F同TX关联
 
-状态：LOCAL_VERIFIED，尚未发布。22项聚焦检查、CLIhelp、一次独立P0/P1 PASS；方法commit `c7c1641d3e4555eb69c80fd4a601ed5e66751166`。
+状态：**VERIFIED / WAITING_PARENT_FORMAL**，已发布。22项聚焦检查、CLIhelp、一次独立P0/P1 PASS；方法commit `c7c1641d3e4555eb69c80fd4a601ed5e66751166`。
 
 
 状态：LOCAL_IMPLEMENTED，未发布。22项聚焦检查、CLIhelp和一次独立P0/P1审查通过。主训练仍为指定350521父的压缩优化；本诊断不更改父训练、预测、权重或选择。
@@ -21,3 +21,6 @@
 
 
 精确环境、命令、路径、预算见[登记](experiment.json)。
+
+
+VERIFIED / WAITING_PARENT_FORMAL：普通账户新release/归档单SHA/compile已核实；真实2Ls参数自由noquery smoke PASS，0checkpoint/F/TX/V/target；实际PID/CWD/argv/空CUDA/2线程及日志增长已读回。等待R53/R54/R55全部七行正式评分后解析，复用R50raw/350521/R49retain的84单元，新算196单元；无统计结果，不改变父训练或预测。

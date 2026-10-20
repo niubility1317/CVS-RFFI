@@ -1,6 +1,6 @@
 # R56：R53—R55 七个新压缩版的固定无 F 身份关联
 
-状态：LOCAL_IMPLEMENTED，未发布。22项聚焦检查、CLIhelp和一次独立P0/P1审查通过。主训练仍为指定350521父的压缩优化；本诊断不更改父训练、预测、权重或选择。
+状态：**VERIFIED / WAITING_PARENT_FORMAL**。22项聚焦检查、CLIhelp和一次独立P0/P1审查通过。主训练仍为指定350521父的压缩优化；本诊断不更改父训练、预测、权重或选择。
 
 固定纳入R53三行、R54两行、R55两行，不按正式分数选择。全部三个父run完成各自七景正式预测和独立评分后，才读取已经保存的恢复IQ；不重新加载恢复器，不新增神经预测、分类头、训练或校准。CPU2、空CUDA，使用原共享score.lock；不阻塞或改变父版测试和交付。
 
@@ -15,3 +15,6 @@
 现有READY/EXACT_MATCH、原7/63/30和物理ID不变；数据、特征、权重、原始日志不提交。新不可覆盖run/release/output、普通账户、单归档一次SHA/compile及实际PID/CWD/argv/空CUDA/日志增长核实。错误路径/祖先/ID、父技术失败、非有限/缺失特征或输出冲突保留产物、无自动重试；不干预健康父任务。额外审批/签名/成员哈希/重复review为REJECTED_EXTRA_GATE，不等待。
 
 精确方法commit、矩阵、命令、环境/CWD、输入/输出、预算和停止规则在experiment.json预登记。
+
+
+实际启动状态：VERIFIED / WAITING_PARENT_FORMAL：普通账户新release/归档单SHA/compile已核实；真实2Ls参数自由noquery smoke PASS，0checkpoint/F/TX/V/target；实际PID/CWD/argv/空CUDA/2线程及日志增长已读回。等待R53/R54/R55全部七行正式评分后解析，复用R50raw/350521/R49retain的84单元，新算196单元；无统计结果，不改变父训练或预测。
