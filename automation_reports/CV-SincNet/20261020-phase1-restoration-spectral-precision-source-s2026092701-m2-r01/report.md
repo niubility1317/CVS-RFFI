@@ -1,6 +1,6 @@
 # 有界源频谱精度加权的复数恢复误差
 
-状态：RUNNING / VERIFIED（controller资源等待，模型未开始训练）。用户目标仍为完整目标low urban≥70%、其余五practical接近原F clean85.113889%；“接近”暂按≤2个百分点，是Agent操作解释，目标未达成。本次矩阵、权重规则和预算在spatial/scratch新目标分数读取前固定。
+状态：RUNNING / VERIFIED。用户目标仍为完整目标low urban≥70%、其余五practical接近原F clean85.113889%；“接近”暂按≤2个百分点，是Agent操作解释，目标未达成。本次矩阵、权重规则和预算在spatial/scratch新目标分数读取前固定。
 
 源依据是已有完整source-only observability（86aa3179）：L6300/U56700在lag16/32/64/128的平均相干最高约.143，不能假定周期补全有效；oldUNet源low urban最低功率FFT四分位的有界分母复误差约.981。该旧模型诊断既不证明当前R03仍有同样缺陷，也不证明低能量频点就是TX指纹。当前pair_loss的logpower不保留相位，因此检验有限权重下的复误差分配，而非无限放大高频或依据目标涨跌调参。
 
@@ -31,3 +31,13 @@ launch后实际PID/CWD/完整命令/GPU/日志增长独立核实。精确命令/
 方法commit`ba2dbf4de934ae785330877166601a969ece65c6`已推送并独立核实远端OID；一次归档本地/远端SHA比较、远端compile/import PASS。launcher首步实际原R03/三F/四Ls no-query smoke PASS：两行完整初始state/IQ等于原R03，actual复谱loss与coarse/correction梯度有效，原默认头到IQ梯度、F无梯度和checkpoint往返有效；0TX/V/target/optimizer。smoke中的谱权重仅由四Ls FFTpower生成，不作为正式63000source训练谱。
 
 CPUcontroller实际PID/CWD/完整命令LIVE，日志持续记录等待spatial旧owned GPU handles，读取目标分数0；此时两条新GPU模型worker尚未创建。已经独立核实旧spatial target仍LIVE并保持，scratchGPU4/5健康任务保持，未抢占/停止/热改。队列满足旧run终态且实际oldowned handles退出后才创建GPU6/7source；后续PID/GPU/训练日志增长会单独核实。当前没有新训练/源V/目标结果，不能据发布或smoke宣称恢复收益。
+
+
+## 实际新GPU训练与首轮核验
+
+spatial旧owned source/target实际handles退出后，新GPU6/7两source实际启动，释放记录scores_read0；scratchGPU4/5保持，总最多4ownGPU。新PID/CWD/完整命令/GPU及持续日志增长核实，原R03完整state初始化、2140840joint参数与三原F冻结不变。两行训练前均完成全63000source L/U clean全局谱计算，TX/V/target访问0，实际有界/均值1的256频点权重固定：
+
+- spectral_uniform：1/10轮、247/2470步；sourcecount63000，precision min/max/mean=1/1/1；IQNMSE/complexspectralNMSE=0.0123897474/0.0123897463。梯度合并247次/126000IQ、scaled51029（observed41567/clean9462），平均scale0.745471665、范围0.00277244998至1；wave/identity/缩放后identity norm²=1002.99234/684206.208/535.747385。
+- spectral_whitened：1/10轮、247/2470步；sourcecount63000，precision min/max/mean=0.25/3.40890503/0.999999999；IQNMSE/complexspectralNMSE=0.012390079/0.00335737353。梯度合并247次/126000IQ、scaled50546（observed41575/clean8971），平均scale0.748304896、范围0.00277070329至1；wave/identity/缩放后identity norm²=998.993883/683880.822/525.496988。
+
+两行三F参考缓存各63000；均匀行precision实际全1，复杂谱NMSE与IQNMSE一致；逆谱行权重仅来自训练源全局谱，范围和均值均实际核实。没有新源V或目标准确率，不能把loss、频谱权重或实现成功当作身份收益。固定finalE10后两行自动全168000/七视图/三原头truth-last，sourceV仅诊断；CPU scorer等scratch根终态，再本run lock。旧无额外谱项的cap不是本run匹配控制。

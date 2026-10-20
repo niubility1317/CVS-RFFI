@@ -1,2 +1,5 @@
 {"at": "2026-10-20T01:34:05+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-20T01:37:02+00:00", "status": "RUNNING", "note": "VERIFIED committed/archiveSHA/compile/realR03-3Fsmoke;actualCPUcontrollerLIVE waitingoldspatialhandles;scoresread0;newGPUrowsnotstarted", "evidence": ["report.md", "experiment.json"], "row_id": null}
+{"at": "2026-10-20T01:44:26+00:00", "status": "RUNNING", "note": "VERIFIED oldspatialownedhandlesEXITED,newPID/CWD/cmd/GPU/loggrowth,source-only boundedmean1PSDprecision/gradientcounts;0target", "evidence": ["report.md", "experiment.json"], "row_id": "spectral_uniform"}
+{"at": "2026-10-20T01:44:26+00:00", "status": "RUNNING", "note": "VERIFIED oldspatialownedhandlesEXITED,newPID/CWD/cmd/GPU/loggrowth,source-only boundedmean1PSDprecision/gradientcounts;0target", "evidence": ["report.md", "experiment.json"], "row_id": "spectral_whitened"}
+{"at": "2026-10-20T01:44:26+00:00", "status": "RUNNING", "note": "BothfixedE10 actualsourceLIVE GPU6/7;scratch4/5preserved;CPUscorewaitsscratchterminal", "evidence": ["report.md", "experiment.json"], "row_id": null}
