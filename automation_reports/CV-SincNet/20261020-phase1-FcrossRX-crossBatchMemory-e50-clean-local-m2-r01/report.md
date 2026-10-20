@@ -19,3 +19,5 @@
 [XBM 原论文](https://openaccess.thecvf.com/content_CVPR_2020/html/Wang_Cross-Batch_Memory_for_Embedding_Learning_CVPR_2020_paper.html)提供跨批次嵌入记忆的思路。其图像检索慢漂移观察不能替代本任务的实际训练和目标 clean 结果。
 
 启动后实际控制器、两行 worker 的 CWD/命令/GPU 与日志增长均 VERIFIED。两行已完成 E1、各 222 次原生更新，辅助机制尚在固定五轮预热中，未发现技术错误；尚无新增目标域结果。详见 launch_verification.json。
+
+首次机制启用轮 E6 已核实：两行各完成 1332 次原生更新和 222 次对比更新，辅助 loss 有限、权重 0.01；两次 RDrop 复用同一次实际增强 IQ，额外网络前向/星地样本/U 真值/目标样本均为 0，无非有限 loss/梯度跳步。逐步历史键数将在最终完整日志中核实；尚无目标 clean 结果。见 first_active_epoch.json。

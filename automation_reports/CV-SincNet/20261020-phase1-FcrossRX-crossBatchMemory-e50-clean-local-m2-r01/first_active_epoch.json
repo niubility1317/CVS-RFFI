@@ -1,0 +1,41 @@
+{
+  "status": "VERIFIED_FIRST_ACTIVE_EPOCH",
+  "code_commit": "2a20ee904223bcc1f0cd7e4c53c5cd57aebcb798",
+  "rows": [
+    {
+      "row_id": "ANCHOR-s2026092701",
+      "epoch": 6,
+      "native_updates": 1332,
+      "active_SC_updates": 222,
+      "SC_loss": 1.9683251047993566,
+      "SC_weight": 0.009999999999999985,
+      "same_actual_augmented_IQ_reused": true,
+      "extra_model_forwards": 0,
+      "satellite_examples": 0,
+      "U_truth_available": 0,
+      "target_samples": 0,
+      "skipped_nonfinite_loss": 0,
+      "skipped_nonfinite_grad": 0,
+      "epoch_seconds": 71.2827033996582
+    },
+    {
+      "row_id": "MEM4-s2026092701",
+      "epoch": 6,
+      "native_updates": 1332,
+      "active_SC_updates": 222,
+      "SC_loss": 2.009149731816472,
+      "SC_weight": 0.009999999999999985,
+      "same_actual_augmented_IQ_reused": true,
+      "extra_model_forwards": 0,
+      "satellite_examples": 0,
+      "U_truth_available": 0,
+      "target_samples": 0,
+      "skipped_nonfinite_loss": 0,
+      "skipped_nonfinite_grad": 0,
+      "epoch_seconds": 73.3374674320221
+    }
+  ],
+  "full_history_key_counts": "Verified by full final records after training; not yet reported as completed",
+  "goal": "ACTIVE_UNMET",
+  "target_performance": "NOT_AVAILABLE"
+}
