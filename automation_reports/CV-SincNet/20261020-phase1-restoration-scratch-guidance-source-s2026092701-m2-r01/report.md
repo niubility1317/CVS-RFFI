@@ -1,6 +1,6 @@
 # 从零学习恢复映射时加入冻结原 F 指导
 
-状态：PLANNED。用户目标为目标low urban≥70%，其余五practical接近原clean85.113889%。“接近”暂按≤2个百分点，是Agent操作解释。当前最好66.406548%，完整目标未实现。本次假设和两行预算在teacheragreement的新目标分数读取前固定；代码依据为原R03先以波形目标训练coarse20+correction20，近期方案再做E10后置F约束。检验从原逆映射学习开始加入身份保真是否不同，不根据目标成绩选起点、调参或选择性重跑。
+状态：RUNNING / VERIFIED。用户目标为目标low urban≥70%，其余五practical接近原clean85.113889%。“接近”暂按≤2个百分点，是Agent操作解释。当前最好66.406548%，完整目标未实现。本次假设和两行预算在teacheragreement的新目标分数读取前固定；代码依据为原R03先以波形目标训练coarse20+correction20，近期方案再做E10后置F约束。检验从原逆映射学习开始加入身份保真是否不同，不根据目标成绩选起点、调参或选择性重跑。
 
 |固定行|恢复器初始化|训练目标|训练F开销|
 |---|---|---|---|
@@ -22,3 +22,15 @@ source V1800/固定F1/七视图仅诊断，固定finalE40，无源资格/早停/
 代码配置一个Gitcommit；一次归档本地/远端SHA比较、远端compile；launch后实际PID/CWD/完整命令/GPU/日志增长独立核实。精确命令、CWD、原始来源、路径、矩阵和stop rule见experiment.json。IQ/权重/逐样本预测/日志和私有机器状态不提交。未向另一用户对话发送消息。
 
 一次N607普通账号预检VERIFIED：新root/release不存在，合法原R03只用作baseline；agreement已终态，当前其他owner与spatial健康任务完整保留，GPU4/5可用且启动队列仍核实旧owned handles真实退出，磁盘空间充足。无额外签名、数据重验证或审批流程。正式训练尚未启动。
+
+
+## 实际发布与首轮核验
+
+方法commit`933e93c88668cd41ad5fe2969394e194ffb9f705`推送及远端OID已核实，单归档SHA比较、远端compile/import PASS。launcher首步实际原三F/四Ls no-query smoke PASS：两臂完整随机初态一致、初始输出等于receivedIQ，新temporal零head收到梯度，原默认头到IQ梯度有效，F无梯度且完整state不变，新checkpoint往返一致；0TX/V/target/optimizer、0恢复器权重加载。PASS立即继续，agreement根终态且旧owned handles实际退出后两新GPU4/5source启动，spatialGPU6/7保持。
+
+两source实际PID/CWD/完整命令/GPU及日志持续增长已核实：
+
+- scratch_wave：2/40轮，cacheepoch2，494/9880步，梯度调用494、IQ252000，scaled0（observed0/clean0），平均scale1、范围1至1；wave/identity/缩放后identity norm²3078.16158/0/0。
+- scratch_F_guided：1/40轮，cacheepoch1，247/9880步，梯度调用247、IQ126000，scaled79115（observed56325/clean22790），平均scale0.528934262、范围0至1；wave/identity/缩放后identity norm²2043.74062/567944.192/1760.45887。
+
+wave行无训练教师缓存，feature/posterior loss、identity norm²与scaled均实际0；guided行三F sourceclean缓存63000，标签和target读取0。两行1305958可训练参数，R03未初始化新模型。当前只有训练执行证据，无新源V或目标分数；原预算E40不变，完成后自动各行全168000/七视图/三原头truth-last。CPU评分先等spatial根终态，再本run lock；输出梯度性质不当作性能收益，用户完整目标仍未实现。
