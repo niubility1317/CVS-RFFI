@@ -1,0 +1,228 @@
+{
+  "status": "PASS",
+  "protocol_negative_cases": 14,
+  "math_cpu": {
+    "status": "PASS",
+    "device": "cpu",
+    "forward_loss_exact_native": true,
+    "partial_mean_derivative_reference": true,
+    "translation_gradient_removed": true,
+    "original_scale_response_retained": true,
+    "clamped_constant_channels_finite": true,
+    "private_RNG_unchanged": true,
+    "protocol_negative_cases": 4,
+    "oracles": [
+      {
+        "dtype": "torch.float64",
+        "scale": 1,
+        "live_mean_stopped_std_reference": true
+      },
+      {
+        "dtype": "torch.float64",
+        "scale": 1e-7,
+        "live_mean_stopped_std_reference": true
+      },
+      {
+        "dtype": "torch.float64",
+        "scale": 0,
+        "live_mean_stopped_std_reference": true
+      },
+      {
+        "dtype": "torch.float32",
+        "scale": 1,
+        "live_mean_stopped_std_reference": true
+      },
+      {
+        "dtype": "torch.float32",
+        "scale": 1e-7,
+        "live_mean_stopped_std_reference": true
+      },
+      {
+        "dtype": "torch.float32",
+        "scale": 0,
+        "live_mean_stopped_std_reference": true
+      }
+    ],
+    "limitation": "Partial derivative with current std stopped; no claim of total derivative/finite-difference gradcheck when current std is recomputed."
+  },
+  "math_cuda": {
+    "status": "PASS",
+    "device": "cuda:0",
+    "forward_loss_exact_native": true,
+    "partial_mean_derivative_reference": true,
+    "translation_gradient_removed": true,
+    "original_scale_response_retained": true,
+    "clamped_constant_channels_finite": true,
+    "private_RNG_unchanged": true,
+    "protocol_negative_cases": 4,
+    "oracles": [
+      {
+        "dtype": "torch.float64",
+        "scale": 1,
+        "live_mean_stopped_std_reference": true
+      },
+      {
+        "dtype": "torch.float64",
+        "scale": 1e-7,
+        "live_mean_stopped_std_reference": true
+      },
+      {
+        "dtype": "torch.float64",
+        "scale": 0,
+        "live_mean_stopped_std_reference": true
+      },
+      {
+        "dtype": "torch.float32",
+        "scale": 1,
+        "live_mean_stopped_std_reference": true
+      },
+      {
+        "dtype": "torch.float32",
+        "scale": 1e-7,
+        "live_mean_stopped_std_reference": true
+      },
+      {
+        "dtype": "torch.float32",
+        "scale": 0,
+        "live_mean_stopped_std_reference": true
+      }
+    ],
+    "limitation": "Partial derivative with current std stopped; no claim of total derivative/finite-difference gradcheck when current std is recomputed."
+  },
+  "actual_checkpoint_no_query_smoke": true,
+  "checkpoint_seed": 2026092701,
+  "loaded_checkpoint_discarded_not_inherited": true,
+  "actual_F_flows": [
+    {
+      "policy": "CENTER_GRAD",
+      "forward_logits_joint160_export_exact": true,
+      "two_original_L_forwards": true,
+      "aux_direct_head_gradient": null,
+      "aux_Sinc_gradient_norm": 0.021836301311850548,
+      "joint_head_gradient_norm": 2.632955551147461,
+      "no_model_state_update": true,
+      "EMA_eval_untouched": true,
+      "temporary_hooks_remaining": 0,
+      "details": [
+        {
+          "stage": "first",
+          "level": "time_down",
+          "shape": [
+            128,
+            48,
+            128
+          ],
+          "loss": 3.4399750232696533,
+          "statistic_policy": "CENTER_GRAD",
+          "backward": {
+            "backward_calls": 1,
+            "channels": 96,
+            "clamped_channels": 0,
+            "native_descriptor_grad_norm": 0.543439507484436,
+            "policy_descriptor_grad_norm": 0.5423579216003418,
+            "delivered_descriptor_grad_norm": 0.5423579216003418,
+            "norm_ratio": 0.9980097413063049,
+            "translation_removed_norm": 0.034271225333213806,
+            "scale_removed_norm": 0,
+            "std_derivative_stopped": true,
+            "mode": "CENTER_GRAD"
+          },
+          "valid_anchors": 128,
+          "total_anchors": 128,
+          "positive_min": 16,
+          "positive_max": 18
+        },
+        {
+          "stage": "first",
+          "level": "t2.pool",
+          "shape": [
+            128,
+            96,
+            32
+          ],
+          "loss": 2.767444610595703,
+          "statistic_policy": "CENTER_GRAD",
+          "backward": {
+            "backward_calls": 1,
+            "channels": 192,
+            "clamped_channels": 0,
+            "native_descriptor_grad_norm": 0.07385976612567902,
+            "policy_descriptor_grad_norm": 0.07383275777101517,
+            "delivered_descriptor_grad_norm": 0.07383275777101517,
+            "norm_ratio": 0.999634325504303,
+            "translation_removed_norm": 0.0019969327840954065,
+            "scale_removed_norm": 0,
+            "std_derivative_stopped": true,
+            "mode": "CENTER_GRAD"
+          },
+          "valid_anchors": 128,
+          "total_anchors": 128,
+          "positive_min": 16,
+          "positive_max": 18
+        },
+        {
+          "stage": "second",
+          "level": "time_down",
+          "shape": [
+            128,
+            48,
+            128
+          ],
+          "loss": 3.4399750232696533,
+          "statistic_policy": "CENTER_GRAD",
+          "backward": {
+            "backward_calls": 1,
+            "channels": 96,
+            "clamped_channels": 0,
+            "native_descriptor_grad_norm": 0.543439507484436,
+            "policy_descriptor_grad_norm": 0.5423579216003418,
+            "delivered_descriptor_grad_norm": 0.5423579216003418,
+            "norm_ratio": 0.9980097413063049,
+            "translation_removed_norm": 0.034271225333213806,
+            "scale_removed_norm": 0,
+            "std_derivative_stopped": true,
+            "mode": "CENTER_GRAD"
+          },
+          "valid_anchors": 128,
+          "total_anchors": 128,
+          "positive_min": 16,
+          "positive_max": 18
+        },
+        {
+          "stage": "second",
+          "level": "t2.pool",
+          "shape": [
+            128,
+            96,
+            32
+          ],
+          "loss": 2.758317470550537,
+          "statistic_policy": "CENTER_GRAD",
+          "backward": {
+            "backward_calls": 1,
+            "channels": 192,
+            "clamped_channels": 0,
+            "native_descriptor_grad_norm": 0.08141965419054031,
+            "policy_descriptor_grad_norm": 0.08139043301343918,
+            "delivered_descriptor_grad_norm": 0.08139043301343918,
+            "norm_ratio": 0.9996411204338074,
+            "translation_removed_norm": 0.0021828480530530214,
+            "scale_removed_norm": 0,
+            "std_derivative_stopped": true,
+            "mode": "CENTER_GRAD"
+          },
+          "valid_anchors": 128,
+          "total_anchors": 128,
+          "positive_min": 16,
+          "positive_max": 18
+        }
+      ]
+    }
+  ],
+  "IQ_reads": 0,
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "head_fit_updates": 0,
+  "optimizer_updates": 0,
+  "checkpoint_loaded_once_for_registered_policy": true
+}
