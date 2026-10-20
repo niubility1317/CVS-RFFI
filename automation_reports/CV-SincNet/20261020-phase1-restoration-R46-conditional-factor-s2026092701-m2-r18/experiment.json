@@ -188,6 +188,32 @@
       "source7_prediction_complete": true,
       "final_weight_saved": true,
       "formal_scores_complete": false
+    },
+    "all_source_training_verified": {
+      "factor625_stage": {
+        "epochs": 20,
+        "updates": 19700,
+        "L_exposures": 126000,
+        "U_exposures": 1134000,
+        "all20_records_checked": true,
+        "source7_prediction_complete": true,
+        "final_weight_saved": true,
+        "target_prediction_started": true,
+        "target7_prediction_complete": false,
+        "formal_scores_complete": false
+      },
+      "factor625_cond": {
+        "epochs": 20,
+        "updates": 19700,
+        "L_exposures": 126000,
+        "U_exposures": 1134000,
+        "all20_records_checked": true,
+        "source7_prediction_complete": true,
+        "final_weight_saved": true,
+        "target_prediction_started": false,
+        "target7_prediction_complete": false,
+        "formal_scores_complete": false
+      }
     }
   },
   "expected_artifacts": [
@@ -365,7 +391,8 @@
     "REJECTED_EXTRA_GATE：仅项目八项最小流程，不追加通用设计审批/额外hash/审查链。",
     "30项聚焦检查及唯一独立P0/P1审查PASS；普通N607预检VERIFIED，GPU2/3旧actualownedPID退出且各24124MB空闲，另一对话0/1保持。",
     "VERIFIED：归档两端一次SHA/远端compile，真实父/F50/2Ls noquery smoke PASS；两版实际GPU2/3所属PID/CWD/argv/commit和首轮完整日志增长均核实，尚无新正式结果。",
-    "目标评分前阶段记录：factor625_stage完整E20/19700及全部20条源训练记录核对通过，L126000/U1134000/源1260000曝光，0F/TX/V/target训练；最终权重已保存，source1800×7预测完成。另一版按固定预算继续；这不是正式识别收益或实验全部完成。"
+    "目标评分前阶段记录：factor625_stage完整E20/19700及全部20条源训练记录核对通过，L126000/U1134000/源1260000曝光，0F/TX/V/target训练；最终权重已保存，source1800×7预测完成。另一版按固定预算继续；这不是正式识别收益或实验全部完成。",
+    "正式评分前阶段核实：两版全部E20/19700、合计40条源记录与完整当前stdout检查通过；各L126000/U1134000、0F/TX/V/target训练；两份最终权重已保存，source1800×7预测均完成，正式测试流程进行中。尚无完整正式分数，不据源误差宣布性能收益。"
   ],
   "registered_at": "2026-10-20T14:34:29+00:00"
 }
