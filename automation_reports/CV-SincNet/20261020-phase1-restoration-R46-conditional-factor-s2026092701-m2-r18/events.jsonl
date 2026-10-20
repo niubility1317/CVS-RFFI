@@ -1,3 +1,4 @@
 {"at": "2026-10-20T14:34:29+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-20T14:41:12+00:00", "status": "RUNNING", "note": "Actual ownedGPU PID/CWD/cmdline/GPU/firstepoch log growth independently VERIFIED;all7formal automatic;no performanceclaim", "evidence": ["experiment.json", "report.md"], "row_id": "factor625_stage"}
 {"at": "2026-10-20T14:41:12+00:00", "status": "RUNNING", "note": "Actual ownedGPU PID/CWD/cmdline/GPU/firstepoch log growth independently VERIFIED;all7formal automatic;no performanceclaim", "evidence": ["experiment.json", "report.md"], "row_id": "factor625_cond"}
+{"at": "2026-10-20T15:52:38+00:00", "status": "RUNNING", "note": "目标评分前阶段记录：factor625_stage完整E20/19700及全部20条源训练记录核对通过，L126000/U1134000/源1260000曝光，0F/TX/V/target训练；最终权重已保存，source1800×7预测完成。另一版按固定预算继续；这不是正式识别收益或实验全部完成。", "evidence": ["experiment.json", "report.md"], "row_id": "factor625_stage"}
