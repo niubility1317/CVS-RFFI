@@ -218,3 +218,6 @@ R23 coarse联合恢复目标：SOURCE_NOT_QUALIFIED，选定 None。各新prior2
 
 
 R24全分辨率TCN／注意力三步恢复：SOURCE_NOT_QUALIFIED，选定 None。两个新prior各20/4940、全63000L/U、0TX/F/target训练，R23 prior_only仅复用源控制，六固定源参考保护。本轮没有新的正式目标集成绩，70%／5个百分点和身份细节归属目标仍未证实。[完整报告](../automation_reports/CV-SincNet/20261020-phase1-restoration-fullresolution-priors-selfsup-s2026092701-m2-r24/report.md)。持续目标active。
+
+
+R25跨记录／RX／day源特征诊断完成：SOURCE_ONLY_DESCRIPTIVE。固定原F50五组1800×七视图已有特征，cap2参考，不使用同RX／同日参考，0新模型预测／拟合／target。完整分组和缺格／零特征见[报告](../automation_reports/CV-SincNet/20261020-diagnostic-restoration-source-cross-record-F50-s2026092701-r25/report.md)。同F/source证据不能替代正式70%／5个百分点或逐细节TX真实性，持续目标active。

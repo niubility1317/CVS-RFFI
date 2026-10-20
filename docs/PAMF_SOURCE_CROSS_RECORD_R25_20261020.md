@@ -1,6 +1,6 @@
 # R25 固定 F 源域跨记录特征诊断
 
-状态：LOCAL_VERIFIED，尚未发布。该诊断不改变健康 R24 训练、源资格、排序或条件正式测试；它补充身份解释，不能替代用户 low urban≥70%、其余五场景距原 clean≤5 个百分点的数值目标。
+状态：ANALYZED / SOURCE_ONLY_DESCRIPTIVE。五组已有source特征统计完成，0新预测／拟合／target，不改变R24或70%／5个百分点验收。
 
 现有配对 clean 相似度使用同一个物理记录，可能受到共同波形内容影响。新增问题是：恢复的 F 特征是否仍接近不同 RX、不同日期的同 TX 源记录，而非仅接近同包 clean。跨记录／跨日不等于已解码验证的不同 payload；不得声称 payload 独立或逐个生成细节已证真。
 
@@ -17,10 +17,12 @@
 |D25-01|身份问题|跨记录／RX／day固定成对余弦统计|分析工具|verified|正交TX合成数据／置换|不把同包匹配当身份真实性|
 |D25-02|输入权限|完整source评分后标签、原F／ID匹配、0target|分析工具|verified|角色／F／缺项负测|仅复用现有预测|
 |D25-03|统计口径|固定cap2、全部六TX、缺格／零特征及共同有效差值|分析工具|verified|缺格／零／重复ID测试|无分类器／拟合／重排|
-|D25-04|执行|登记／Git／CPU发布／实际输出核实|登记及报告|pending|真实source预测运行|不阻断R24|
-|D25-05|交付|七视图及TX/RX/day、完整结果与边界|报告|pending|独立指标复核|source非正式目标集|
+|D25-04|执行|登记／Git／CPU发布／实际输出核实|登记及报告|verified|真实source预测运行|不阻断R24|
+|D25-05|交付|七视图及TX/RX/day、完整结果与边界|报告|verified|独立指标复核|source非正式目标集|
 |D25-06|真实性|独立物理族／新TX／多seed／逐细节|后续合格研究|deferred|当前输入不能证明|不宣称整个目标完成|
 
-当前3verified、2pending、1deferred、0blocked。17项聚焦检查、编译／入口帮助及一次独立P0/P1 PASS；真实完整source输入分析尚未执行。属于用户报告身份保真原则的补充特征分析，不是新网络或原六类网络的精确复现。
+当前5verified、0pending、1deferred、0rejected、0blocked。17项检查、compile/help、一次P0/P1、真实完整source统计及独立分组加权核验、发布和进程退出均已核实。
 
 实际本地命令：`python -X utf8 -m pytest tests/test_pamf_source_cross_record.py -q --maxfail=1`（17 passed）、`python -X utf8 -m py_compile tools/analyze_pamf_source_cross_record.py`、`python -X utf8 -m tools.analyze_pamf_source_cross_record --help`。无模型或checkpoint加载，故模型smoke不适用；真实运行将核实完整source已评分特征。
+
+[完整源诊断报告](../automation_reports/CV-SincNet/20261020-diagnostic-restoration-source-cross-record-F50-s2026092701-r25/report.md)。源同F几何证据不等于独立TX真实性或正式性能完成。
