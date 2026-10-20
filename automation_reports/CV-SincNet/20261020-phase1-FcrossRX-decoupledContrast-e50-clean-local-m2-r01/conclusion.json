@@ -1,0 +1,160 @@
+{
+  "status": "ANALYZED_NOT_ADOPTED",
+  "goal_status": "ACTIVE_UNMET",
+  "run_id": "20261020-phase1-FcrossRX-decoupledContrast-e50-clean-local-m2-r01",
+  "actual_code_commit": "8da6a824434d239f30e3d3796c345b4b31d3ef7a",
+  "models_completed": 4,
+  "clean_only": true,
+  "satellite_training": false,
+  "default_head_joint": true,
+  "head_fit_updates": 0,
+  "matching_BASE_three_seed_accuracy_percent": {
+    "n": 3,
+    "mean": 84.76170634920635,
+    "sample_SD": 0.36037934971245655
+  },
+  "DCL_three_seed_accuracy_percent": {
+    "n": 3,
+    "mean": 84.85138888888889,
+    "sample_SD": 0.8815293986520456
+  },
+  "DCL_paired": {
+    "paired_summary": {
+      "accuracy_pp": {
+        "n": 3,
+        "mean": 0.08968253968253774,
+        "sample_SD": 0.5312600316957745
+      },
+      "macro_f1_pp": {
+        "n": 3,
+        "mean": 0.1101239106795382,
+        "sample_SD": 0.5663203416878967
+      },
+      "weak_TX_mean_pp": {
+        "n": 3,
+        "mean": -0.6827380952380927,
+        "sample_SD": 1.4924686923413313
+      },
+      "other_TX_mean_pp": {
+        "n": 3,
+        "mean": 0.47589285714285484,
+        "sample_SD": 0.06380649757393944
+      },
+      "worst_RX_pp": {
+        "n": 3,
+        "mean": -1.0069444444444464,
+        "sample_SD": 2.593696730822912
+      },
+      "worst_day_pp": {
+        "n": 3,
+        "mean": -0.06587301587301549,
+        "sample_SD": 0.8876844873349832
+      }
+    },
+    "positive_seeds": {
+      "overall": 2,
+      "weak": 1
+    }
+  },
+  "DCL_per_TX_paired": [
+    {
+      "TX": "14-10",
+      "paired": {
+        "n": 3,
+        "mean": 0.07023809523809173,
+        "sample_SD": 0.17519425564465138,
+        "positive_seeds": 2
+      }
+    },
+    {
+      "TX": "14-7",
+      "paired": {
+        "n": 3,
+        "mean": -0.5797619047619033,
+        "sample_SD": 2.3621978624782054,
+        "positive_seeds": 2
+      }
+    },
+    {
+      "TX": "20-15",
+      "paired": {
+        "n": 3,
+        "mean": 1.9047619047619015,
+        "sample_SD": 0.36988576099990356,
+        "positive_seeds": 3
+      }
+    },
+    {
+      "TX": "20-19",
+      "paired": {
+        "n": 3,
+        "mean": -0.7857142857142821,
+        "sample_SD": 1.0270139497890078,
+        "positive_seeds": 1
+      }
+    },
+    {
+      "TX": "6-15",
+      "paired": {
+        "n": 3,
+        "mean": -0.01071428571428612,
+        "sample_SD": 0.09112393444409704,
+        "positive_seeds": 1
+      }
+    },
+    {
+      "TX": "8-20",
+      "paired": {
+        "n": 3,
+        "mean": -0.06071428571428802,
+        "sample_SD": 0.1661386192801825,
+        "positive_seeds": 1
+      }
+    }
+  ],
+  "Q_DCL_single_seed": {
+    "paired_summary": {
+      "accuracy_pp": {
+        "n": 1,
+        "mean": 0.25654761904762013,
+        "sample_SD": null
+      },
+      "macro_f1_pp": {
+        "n": 1,
+        "mean": 0.2914361152525746,
+        "sample_SD": null
+      },
+      "weak_TX_mean_pp": {
+        "n": 1,
+        "mean": 0.5232142857142852,
+        "sample_SD": null
+      },
+      "other_TX_mean_pp": {
+        "n": 1,
+        "mean": 0.12321428571428483,
+        "sample_SD": null
+      },
+      "worst_RX_pp": {
+        "n": 1,
+        "mean": 0.30000000000000027,
+        "sample_SD": null
+      },
+      "worst_day_pp": {
+        "n": 1,
+        "mean": 0.08809523809524267,
+        "sample_SD": null
+      }
+    },
+    "positive_seeds": {
+      "overall": 1,
+      "weak": 1
+    }
+  },
+  "adopted": false,
+  "reason": "DCL only+0.08968pp overall, but source-fixed weak14-7 and20-19 means negative and worstRX mean negative. Initial weak gains did not repeat. Q_DCL remainsn1 per frozen sourceFAIL, no target-driven extension. Original F+crossRX staysbase.",
+  "goal_completion_proven": false,
+  "technical_completion": "VERIFIED",
+  "source_expansion_rule_preserved": true,
+  "remaining_models": 0,
+  "pending_predictions_scores": 0
+}
