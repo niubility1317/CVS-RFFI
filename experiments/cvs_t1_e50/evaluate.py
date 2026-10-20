@@ -57,6 +57,8 @@ def preflight(row):
     import numpy as np
     c=d.config(next(r for r in d.rows() if r['row_id']==row));out=d.row_root(row)/'prediction'
     done=d.read(out/'complete.json');ids,m=observations()
+    from .evaluation_plan import require_seven_views
+    require_seven_views(done)
     if done['status']!='PREDICTIONS_COMPLETE' or done['config']!=c or done['count']!=COUNT or done['views']!=list(d.VIEWS) or done['truth_read'] or done['query_fit'] or not done['all_parameters_frozen'] or done['head_fit_updates']:
         raise ValueError('Truth closed: incomplete or unfrozen row predictions')
     with np.load(out/'predictions.npz',allow_pickle=False) as p:

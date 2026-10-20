@@ -15,7 +15,7 @@ PARENT_CONFIG = old.config(PARENT_ROW)
 PARENT_SOURCE = Path(PARENT_CONFIG['output_root'])
 for _key in ('SOURCE', 'FULL_FP32_POLICY', 'CLASSES', 'SCENES', 'FORMAL_VIEWS', 'TRUTH', 'RX', 'SOURCE_CACHE'):
     globals()[_key] = deepcopy(getattr(old, _key))
-VIEWS = ('clean',)
+from .evaluation_plan import VIEWS
 read, write = old.read, old.write
 SEED = 2026092701
 STEPS = 222

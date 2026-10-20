@@ -43,7 +43,7 @@ def collect():
         results.append(dict(row=row, training=d.read(root / 'source/result.json'),
                             scores=d.read(root / 'scoring/scores.json')))
     d.write(d.BASE / 'results.json', dict(rows=results, target_feedback_forbidden=True,
-            comparison_limit='Different L/U and LR calendars; model seed count1; clean only'))
+            comparison_limit='Different L/U and LR calendars; model seed count1; clean+six practical'))
     d.write(d.BASE / 'complete.json', dict(status='TRAINED_AND_SCORED', rows=[r['row_id'] for r in d.rows()],
             model_seed_count=1, views=list(d.VIEWS), newly_trained_epochs=70, cumulative_epochs_per_model=50))
 
@@ -119,6 +119,7 @@ def main():
     parser.add_argument('--mode', choices=['worker', 'predict', 'score'])
     parser.add_argument('--row')
     parser.add_argument('--adopt-empty-queue',action='store_true')
+    parser.add_argument('--observe-running',action='store_true')
     args = parser.parse_args()
     if args.mode and args.row not in {r['row_id'] for r in d.rows()}:
         raise ValueError('Unregistered row')
@@ -133,5 +134,40 @@ def main():
         with lock(d.BASE/'CPU_scorer.lock'):
             score(args.row)
         d.write(d.row_root(args.row) / 'complete.json', dict(status='TRAINED_AND_SCORED', row_id=args.row))
+    elif args.observe_running:
+        observe_running()
     else:
         dispatch(args.adopt_empty_queue)
+
+
+def observe_running():
+    """Keep healthy existing workers; own only their post-training completion."""
+    previous=d.read(d.BASE/'dispatcher.json')
+    if Path('/proc',str(previous['pid'])).exists():
+        raise RuntimeError('Previous controller must exit before ownership transfer')
+    launched=d.read(d.BASE/'launch.json')['rows']
+    if {r['row_id'] for r in launched}!={r['row_id'] for r in d.rows()}:
+        raise ValueError('Only the existing complete two-row launch matrix')
+    d.write(d.BASE/'dispatcher.json',dict(pid=os.getpid(),cwd=os.getcwd(),argv=sys.argv,owner=d.OWNER,
+            evaluation_views=list(d.VIEWS),healthy_workers_preserved=True))
+    try:
+        while True:
+            completed=[];active=[]
+            for r in launched:
+                done=d.row_root(r['row_id'])/'complete.json'
+                if done.is_file() and d.read(done).get('status')=='TRAINED_AND_SCORED':
+                    score=d.read(d.row_root(r['row_id'])/'scoring/complete.json')
+                    if score.get('views')!=list(d.VIEWS):raise ValueError('Missing registered evaluation views')
+                    completed.append(r['row_id'])
+                elif not Path('/proc',str(r['pid'])).exists():
+                    raise RuntimeError('Existing worker exited without complete seven-view scoring: '+r['row_id'])
+                else:active.append(r['row_id'])
+            d.write(d.BASE/'queue_state.json',dict(active=active,pending=[],completed=completed,
+                    updated_at=time.time(),maximum_own_workers=2,evaluation_views=list(d.VIEWS)))
+            if not active:break
+            time.sleep(5)
+        collect()
+    except BaseException as error:
+        d.write(d.BASE/'failure.json',dict(status='SYSTEMIC_TECHNICAL_FAILURE',error=repr(error),
+                traceback=traceback.format_exc(),preserve_outputs=True,no_automatic_retry=True))
+        raise
