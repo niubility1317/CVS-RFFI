@@ -235,3 +235,8 @@ R14 source完整30轮表明context冻结后裁剪几乎消失，但窄prior末�
 
 
 R15两行均完成E10/2470、source1800×7、target168000×7及独立truth-last，实际进程退出、模型严格取回加载。通过双参考1pp：无。完整目标结果、成本及局限见 [R15报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r38-factor-prior-s2026092701-m2-r15/report.md)。0目标反馈调参或重跑，全部负结果保留。
+
+
+## 当前目标收紧为原79万基底逐场景0.8pp；R16纯教师IQ压缩
+
+用户持续目标：在固定原R38 794529参数基础继续压缩优化，每个七场景最多下降0.8个百分点，即168000样本最多少1344条正确预测（整数500×损失≤4×样本数）。原R17单列参考，不以均值或旧1pp代替。新三版750035/720185/689129，prior为SVD .625/.5或GN4 .75；原548795 context精确冻结。原R38 source E20/4940独立父，不继承已测R14/R15学生。只mean3stage IQ教师NMSE优化，pairedclean detached仅诊断：精确父的教师误差为零而pairedclean梯度会拉离父函数，按该源侧事实检验目标冲突，不依据目标分数选rank/系数/轮次。E10/2470，0TX/F/V/target训练，context累计40/prior50；每版全部source1800×7和target168000×7预测后独立truth-last。18项检查及唯一P0/P1审查PASS。长期70%/5pp另列，本次0.8pp目标尚待证实。
