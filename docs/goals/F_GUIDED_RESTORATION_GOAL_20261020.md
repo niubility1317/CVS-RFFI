@@ -221,3 +221,10 @@ source误差分解显示精修在多个有效频带增加波形误差，末端ti
 固定`frame_agreement/time_agreement`，逐个求三原F的相同语义loss对恢复IQ的梯度，仅在整帧512维或每时刻I/Q二维三对dot全≥0处保留mean3F，再沿用per_frame_cap。无教师梯度归一化/拟合权重/轴signmask；算子对教师置换/正交I-Q变换不变，原始identity方向性质不保证AdamW或最终效果。旧源码只保留平均后梯度，尚未实测冲突，不以当前局部J的目标分数定义候选。
 
 原合法R03同state/2140840参数、jointE10/2470、数据/路由/seed/AdamW/三冻结F原loss保持，无新NN/头。记录帧或复采样单位的agreement/activeagreement/pairconflicts/cosines/raw-agreednorms，零一致不设资格gate。54项检查及一次独立P0/P1审查PASS；GPU4/5一次预检空闲，GPU6/7局部Jsource LIVE保留。首步真实权重smoke PASS立即训练，sourceV仅诊断，两固定最终E10自动完整168000×七视图×三原头独立truth-last，CPU评分等前序局部Jrun终态。方法commit`d30b6092eb489f20d512e69f231354981cc93e78`已发布，归档比较/编译及真实R03/三F/四Ls smoke PASS；GPU4/5实际PID/CWD/cmd/GPU/日志增长与逐F方向一致/逐帧cap计数已核实。尚无三 F 一致性新模型的目标表现。[最小登记](../../automation_reports/CV-SincNet/20261020-phase1-restoration-teacher-agreement-source-s2026092701-m2-r01/report.md)。
+
+
+## 当前原 F 多尺度前向条件比较（实现完成，待发布）
+
+固定`pooled_features/spatial_features`，冻结原R03及原F1，提取当前anchor原生t1(72×64)/t2(96×32) maps，经相同projection/fusion注入四尺度新零输出IQ残差场。两臂仅沿时间池化或保留native时序不同，925378可训练/3299211总参数含232993冻结运行F1，初始输出严格原R03。旧160维FiLM与中间层loss不等于此结构，不继承失败权重；运行F1是新增成本，不拟合分类头。
+
+新field E10/2470、AdamW2e-4/warm247/cos2e-5，原coarse/corr20+20均冻结，新field10，共50组件/串行epoch；源数据/路由/seed/三F原loss与per_frame_cap保持。58项检查及一次独立P0/P1审查PASS。新CPUcontroller在真实权重smoke后，等局部J根终态且实际GPU6/7旧owned handles退出，再启动新worker，agreementGPU4/5保持、总最多4ownGPU；CPU评分等agreement终态。源V仅诊断，两固定最终E10自动完整168000×七视图×三原头独立truth-last，不读取目标分数决定资源放行。尚无多尺度前向条件新模型的目标表现。[最小登记](../../automation_reports/CV-SincNet/20261020-phase1-restoration-spatial-conditioning-source-s2026092701-m2-r01/report.md)。
