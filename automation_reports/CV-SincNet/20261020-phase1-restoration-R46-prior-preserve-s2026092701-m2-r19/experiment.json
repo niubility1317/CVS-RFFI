@@ -1,0 +1,339 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19",
+  "group_id": "R46-exact-context-prior-lowrank",
+  "display_name": "性能优先的35.05万基底物理上下文保持与prior压缩",
+  "description": "冻结237927 coarse/action原函数，仅prior SVD625/750，完整329404/343974；恒定阶段IQ及条件函数约束；两版七正式测试。",
+  "kind": "cvs",
+  "stage": "Phase1-source-research-conditional-confirmation",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "performance_first",
+    "F_free",
+    "TX_unlabeled",
+    "R46_350521_parent",
+    "frozen_exact_context",
+    "prior_SVD",
+    "all7formal"
+  ],
+  "comparison_group_id": "R19_prior625_vs750_exactcontext_E20",
+  "parent_run_ids": [
+    "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46",
+    "20261020-phase1-restoration-R38-compression-methods-s2026092701-m2-r44",
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+    "20261019-phase1-restoration-learned-action-source-s2026092701-r07"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户goal要求配合主对话继续压缩并提升性能，固定350521基底且与通道裁剪路线不同；本组性能优先，冻结物理context，仅压prior；保持F-free/TX无标签和逐版七景正式测试，不停止健康任务。",
+  "code": {
+    "commit": null,
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
+    "cwd": "releases/pamf_r46_prior_preserve_20261020_r19"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "Original63000sourceL6300/U56700/R07 cachedreceived1..20;1800sourceV7views;fixedR05formal168000x7",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train6300L+56700U originalIDs;R07validation1800V;conditional R05 original168000IDs",
+    "label_map_ref": "0新TX/V/target训练标签；原F50源监督知识冻结；各row全7预测后独立truth-last评分",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json: READY/EXACT_MATCH; reuse existing cache without new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "Unchanged code/leo_practical/channel.py;reuse R07 epoch01..20 and original sourceV;conditional original formal received bytes",
+    "restoration_train_counts": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "epochs_per_row": 20,
+      "updates_per_row": 4940,
+      "L_exposures_per_row": 126000,
+      "U_exposures_per_row": 1134000,
+      "source_IQ_examples": 1260000,
+      "teacher_IQ_examples": 1260000,
+      "student_context_inputs": 0,
+      "TX_labels": 0,
+      "F_weight_loads": 0,
+      "F_output_reads": 0,
+      "V_training": 0,
+      "target_training": 0,
+      "inherited_component_epochs": 80,
+      "new_component_epochs": 20,
+      "cumulative_component_epoch_sum": 260,
+      "cumulative_serial_training_passes": 140,
+      "updates_per_epoch": 247,
+      "global_batch": 256,
+      "microbatch": 256,
+      "shared_context_inputs": 1260000,
+      "cumulative_coarse_epochs": 80,
+      "cumulative_action_epochs": 80,
+      "cumulative_prior_epochs": 100
+    },
+    "source_validation_panel": 1800,
+    "target_panel": "两版各固定E20/4940后168000x7，源诊断不构成测试门槛",
+    "actual_training_labels": "原源配对clean和冻结R46IQ教师；0TX/F/V/target；不是无clean盲学习",
+    "augmentation": "OriginalR07 .15clean/.85residual cachedreceived,no newaugmentation or cleanconcatenation",
+    "runtime_inputs": "Current native-scale IQ only;one restored IQ through original F50/defaulthead;3prior/6CG;no teacher/clean/TX/RX/scene/cache/state updates",
+    "compressed_context_parameters": {
+      "prior625_cond": 237927,
+      "prior750_cond": 237927
+    },
+    "context_training": "Original237927context exactfrozen;only91477/106047prior trainable;teacher context sharedonce,studentcontext0"
+  },
+  "permissions": {
+    "regime": "TX-unlabeled simulated-paired source self-supervision;F-free waveform teacher",
+    "query_use": "Full7 predictions fixed before independenttruthlast;no target optimization/selection;human parent choice after historical exposure disclosed",
+    "external_method_exception": null,
+    "claim_scope": "TX-unlabeled simulated-paired source self-supervision;noF/TX in restorationtraining;notcleanfree blind learning or per-detailTX proof"
+  },
+  "checkpoint": {
+    "initialization": "OnlyoriginalR46prune_refine350521;coarse/action exact237927 frozen,priorSVD625/750;no IQ calibration/no newstudent inheritance",
+    "sources": [
+      {
+        "run_id": "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46",
+        "commit": "bbb8daf817de050b958d217b70d4c33f4aefe341",
+        "row": "prune_refine",
+        "epoch": 20,
+        "updates": 4940,
+        "parameters": 350521,
+        "role": "Only direct initialization/frozenIQteacher",
+        "path": "runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46/prune_refine/native_map_prior/final.pt"
+      }
+    ],
+    "contract_check_ref": "PinnedR46launch/plan/source-trainingcomplete/checkpointmetadata;reusevalidatedsourceREADY/EXACT_MATCH;no data revalidation",
+    "provenance_verdict": "R46source-fixedfinal20/4940 original7/63/30physicalsource ancestry;0TX/F/V/targettraining;human selected after formal exposure,engineering comparison only",
+    "selection_rule": "Both fixedfinalE20/4940;everyrow source7 and formal168000x7 without sourcegate;independenttruthlast after complete row prediction",
+    "evaluation_readers": [
+      "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701 original defaulthead"
+    ],
+    "parent_run_ids": [
+      "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46",
+      "20261020-phase1-restoration-R38-compression-methods-s2026092701-m2-r44",
+      "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+      "20261019-phase1-restoration-learned-action-source-s2026092701-r07"
+    ]
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/R46-prior-preserve",
+    "gpu_policy": "GPU2/3each1own;waitR18correspondingactualPIDexit;R18+R19max2ownGPUworkers/free18GB/allowner<2;R06scorelockCPU2/max1ownscorer",
+    "remote_run_root": "runs/20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19",
+    "remote_log_root": "logs/20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19",
+    "local_artifact_root": "local_artifacts\\pamf_restoration\\r46_prior_preserve_20261020_r19",
+    "launch_command": "python -u -m experiments.pamf_r46_prior_preserve.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19 --expected-commit <actual method commit>",
+    "stop_rule": "Technical failure preserves affectedoutputs,healthy peers unchanged;no automaticretry/hotedit/stop"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "comparison_plan.json",
+    "smoke.json",
+    "workers.json",
+    "stages.json",
+    "{row}/initialization.json",
+    "{row}/resolved_config.json",
+    "{row}/training.jsonl",
+    "{row}/training_complete.json",
+    "{row}/native_map_prior/final.pt",
+    "{row}/native_map_prior/prediction/complete.json",
+    "{row}/native_map_prior/summary.json",
+    "{row}/source_complete.json",
+    "{row}/matched_inference_profile.json",
+    "{row}/target_confirmation/native_map_prior/prediction/complete.json",
+    "{row}/target_confirmation/native_map_prior/summary.json",
+    "{row}/assessment.json",
+    "{row}/complete.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "primary": "性能优先：逐景accuracy/MacroF1与TX/RX/day、净纠错；父350521逐景0.8pp只作上限；原R17历史1pp及70/5pp另列",
+    "source_rule": "Both fixedfinalE20/4940;everyrow source7 and formal168000x7 without sourcegate;independenttruthlast after complete row prediction",
+    "target_acceptance_allowance_pp": 0.8,
+    "target_acceptance_unit": "percentage_points",
+    "metric_names": [
+      "sevenaccuracy/MacroF1/TX/RX/day",
+      "exactcorrectcount/0.8pp",
+      "repair/damage/net",
+      "full256/prefix232/tail24NMSE/FFT",
+      "fullparams/bytes/MAC",
+      "G_and_GplusF/B1_latency/B32_throughput/memory"
+    ],
+    "dimensions": [
+      "matchedprior_rank625_750",
+      "frozen_exactphysicalcontext",
+      "sevenviews",
+      "TX",
+      "RX",
+      "day",
+      "20epochs"
+    ],
+    "prediction_ref": "runs/20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19/<arm>/native_map_prior/prediction and target_confirmation/native_map_prior/prediction",
+    "scorer_ref": "pamf_r46_prior_preserve.runner score_source/score_target independentCPUtruthlast R06lock",
+    "final_user_targets": {
+      "lowurban_accuracy_min": 70.0,
+      "other_five_goal": "距rawclean84.6761904762不超过5pp；当前压缩0.8pp容差分别报告"
+    },
+    "cost": "Samecard64sourceV,G andG+F,B1/B32 three alternating rounds;latency/throughput/resident/peak/fullparams/bytes/ConvLinearMAC excluding FFT/CG/norm",
+    "secondary": [
+      "paired_waveform_NMSE/FFT_error",
+      "repair_damage/clean_damage",
+      "B1_median_p90_p95/G_and_GplusF",
+      "B32_throughput",
+      "peak_incremental_shared_resident_memory",
+      "full_parameters/serialized_size/ConvLinearMAC"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "prior625_cond",
+      "method": "R46priorpreserve/prior625_cond",
+      "purpose": "matchedpriorrank_ablation_with_exactphysicalcontext",
+      "config_ref": "experiments/pamf_r46_prior_preserve/design.py#configuration",
+      "resolved_config_ref": "runs/20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19/prior625_cond/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "model2026092701,sourceorderdataseed2026102001,R07 original fixedcache/order1..20;no newaugmentationseed",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "Prior-onlyResetAdamW/B256micro256/4940/warm247/cos2e-5/WD1e-4/clip1",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "Same20epochs/L126000/U1134000;context80/80/prior100,sum260,serial140;4940notR18_19700updates",
+      "output_root": "runs/20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19/prior625_cond",
+      "log_path": "runs/20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19/logs/worker-prior625_cond.log",
+      "command": "python -u -m experiments.pamf_r46_prior_preserve.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19 --expected-commit <actual method commit>",
+      "expected_artifacts": [
+        "launch.json",
+        "comparison_plan.json",
+        "smoke.json",
+        "workers.json",
+        "stages.json",
+        "{row}/initialization.json",
+        "{row}/resolved_config.json",
+        "{row}/training.jsonl",
+        "{row}/training_complete.json",
+        "{row}/native_map_prior/final.pt",
+        "{row}/native_map_prior/prediction/complete.json",
+        "{row}/native_map_prior/summary.json",
+        "{row}/source_complete.json",
+        "{row}/matched_inference_profile.json",
+        "{row}/target_confirmation/native_map_prior/prediction/complete.json",
+        "{row}/target_confirmation/native_map_prior/summary.json",
+        "{row}/assessment.json",
+        "{row}/complete.json",
+        "complete.json"
+      ],
+      "GPU": 2,
+      "trainable_parameters": 91477,
+      "parameters": 329404,
+      "context_parameters": 237927,
+      "conditional_prior_weight": 0.05
+    },
+    {
+      "row_id": "prior750_cond",
+      "method": "R46priorpreserve/prior750_cond",
+      "purpose": "matchedpriorrank_ablation_with_exactphysicalcontext",
+      "config_ref": "experiments/pamf_r46_prior_preserve/design.py#configuration",
+      "resolved_config_ref": "runs/20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19/prior750_cond/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "model2026092701,sourceorderdataseed2026102001,R07 original fixedcache/order1..20;no newaugmentationseed",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "Prior-onlyResetAdamW/B256micro256/4940/warm247/cos2e-5/WD1e-4/clip1",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "Same20epochs/L126000/U1134000;context80/80/prior100,sum260,serial140;4940notR18_19700updates",
+      "output_root": "runs/20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19/prior750_cond",
+      "log_path": "runs/20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19/logs/worker-prior750_cond.log",
+      "command": "python -u -m experiments.pamf_r46_prior_preserve.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19 --expected-commit <actual method commit>",
+      "expected_artifacts": [
+        "launch.json",
+        "comparison_plan.json",
+        "smoke.json",
+        "workers.json",
+        "stages.json",
+        "{row}/initialization.json",
+        "{row}/resolved_config.json",
+        "{row}/training.jsonl",
+        "{row}/training_complete.json",
+        "{row}/native_map_prior/final.pt",
+        "{row}/native_map_prior/prediction/complete.json",
+        "{row}/native_map_prior/summary.json",
+        "{row}/source_complete.json",
+        "{row}/matched_inference_profile.json",
+        "{row}/target_confirmation/native_map_prior/prediction/complete.json",
+        "{row}/target_confirmation/native_map_prior/summary.json",
+        "{row}/assessment.json",
+        "{row}/complete.json",
+        "complete.json"
+      ],
+      "GPU": 3,
+      "trainable_parameters": 106047,
+      "parameters": 343974,
+      "context_parameters": 237927,
+      "conditional_prior_weight": 0.05
+    }
+  ],
+  "notes": [
+    "本组在R18所有目标访问前固定。源依据为其截至13/12轮的全部25条完整记录及完整当前stdout，0目标/F/TX/IQ读取；teacherstage误差仍约.004，仅支持检验保留物理context，不证明context造成识别下降。",
+    "已读主对话进度用于分工，主对话新目标分数不用于本组配置。指定350521父已暴露的工程基准背景如实保留，不宣称新独立盲测。",
+    "两版仅priorSVD比例.625/.75不同，context逐位冻结共享一次前向；恒定1stageIQ与.05conditional约束，pairedclean+.05频谱保留，0F/TX/V/target训练。",
+    "固定E20/B256micro256/4940，完整源曝光不缩减，原始float32 buffer复用既有验证；相对R18更新数不同，不冒充相同计算预算。",
+    "每版全部source7/formal7，无源门槛，不因负结果取消测试；全预测后truthlast，无目标反馈调参/排序/重跑；性能/参数/实际速度分别报告。",
+    "REJECTED_EXTRA_GATE：仅既有八项最小流程，不引入通用设计审批/重复审查或额外hash。",
+    "25项聚焦检查及唯一独立P0/P1审查PASS；普通N607预检VERIFIED，GPU2/3现R18健康训练，先CPUsmoke后实际旧句柄退出再逐卡交接，另一对话0/1保持。"
+  ],
+  "registered_at": "2026-10-20T15:30:30+00:00"
+}
