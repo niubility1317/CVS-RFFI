@@ -1,6 +1,6 @@
 # F＋跨RX同TX：两组样本共同支持的弱TX类差
 
-状态：RUNNING，两组首seed已在本机实际并行训练。CPU与CUDA真实F检查通过，一次匹配真实checkpoint CPU no-query smoke通过且丢弃；唯一独立P0/P1已PASS；随后发现的全头梯度边界P1修复已通过CPU/CUDA，该单项定向复核PASS。实际代码/配置commit为`39d7bb72a67a495912bd5ce8db68686210bfaad4`，远端已独立核实；不可覆盖发布包单次校验、发布目录编译及真实进程工作目录/GPU/原生step日志增长已核实，见launch_verification.json。
+状态：ANALYZED_NOT_ADOPTED。两组首seed已完成从零50轮、clean168000预测及独立CPU truth-last评分，完成审计VERIFIED。未通过源扩展规则，不新增02/03；保留原F＋跨RX同TX基底，弱TX改善目标仍未实现。CPU与CUDA真实F检查通过，一次匹配真实checkpoint CPU no-query smoke通过且丢弃；唯一独立P0/P1已PASS；随后发现的全头梯度边界P1修复已通过CPU/CUDA，该单项定向复核PASS。实际代码/配置commit为`39d7bb72a67a495912bd5ce8db68686210bfaad4`，远端已独立核实；不可覆盖发布包单次校验、发布目录编译及真实进程工作目录/GPU/原生step日志增长已核实，见launch_verification.json。
 
 原基底固定：SIG_TIME_X3真实joint160＋统一居中单位Sinc、RDrop1、LS.01、普通增强、旧门控＋ownEMA＋cos、默认分类头正常联合。原本机三BASE源记录和clean预测只读复用，不重复训练/测试、不继承权重。历史85.1139%是方法锚点，增量与本机同seedBASE配对。新模型从零50=33L+17U，222步/轮、11100主更新；新机制无额外参数、模型前向、IQ读取或optimizer步。无星地增强，测试仅clean。
 
@@ -52,3 +52,11 @@ LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_weaktx_crossgap50.driver --pro
 该日志只含全局计数，没有逐预测TX/真TX接受分布，不能据此认定弱TX伪标签饥饿，也不能推断隐藏U正确率。temporal包含同批物理邻居、预测同类和最低置信度，不是纯结构上限；教师置信度均值也不是阈值通过率。历史L代理诊断仅用于解释邻居可用性，不代替当前U精度。此结果不改变当前SELF/CROSS_GAP、源扩种子规则或检查点。已试验过的更早/更多U也不能由此重新预设有效。重现入口为experiments.cvs_f_weaktx_crossgap50.gate_context，仅读取既有源日志；无模型前向、IQ/target/U真值读取、训练或头拟合。完整逐轮计数见baseline_gate_context.json。
 
 首个完整U轮次E34复核：每行完整解析step1..7548，前33轮U曝光0；第34轮222步、221个256包和末批124包，U曝光均56700。SELF_GAP接受883（1.5573%），CROSS_GAP接受876（1.5450%）；temporal通过929/933，strong通过56161/56143，U真值可用数0、星地活跃步0、跳过非有限更新0。只读解析没有新模型前向或训练更新，未改当前配方；接受率不代表U精度或目标性能。见first_U_epoch.json，当前两行原进程已进入第35轮且保持健康。
+
+最终clean（各n1；同seed匹配BASE=85.1393%，不是历史85.1139%）：SELF_GAP=85.1339%，整体−0.0054个百分点，14-7−1.2000、20-19+0.6107，弱类均差−0.2946，其他四类均差+0.1393，Macro-F1−0.0025，最差RX−0.7542；CROSS_GAP=84.7702%，整体−0.3690，14-7−0.5821、20-19−1.3679，弱类均差−0.9750，其他四类均差−0.0661，Macro-F1−0.3978，最差RX−1.6708。全部正负逐TX/RX/day、配对差、成本、曝光和完整曲线见results.md/results_summary.json；n1样本SD为null，不推断稳定性或显著性。
+
+源决定先于目标预测：两组均不扩种子。CROSS源14-7 outRXmarginq10提升0.052021、RXspread/gap比率0.810863，但20-19 margin下降0.002014、RXspread/gap比率1.251860，未共同通过；源分类健康通过也没有替代逐弱类几何条件。SELF有效率95.5055%而活跃仅45/9990（0.4505%）；CROSS同样有效9541/9990，活跃6076/9990（60.8208%）；15cell全覆盖且两组cell调用/当前L包数量相同。这是具体源证据，不将已见源RX的几何提升解释为未知RX泛化。
+
+完整核验：每行50epoch/11100更新，原RDrop/SupCon/Sinc/ownEMA/默认头联合保留，L1420800/U963900/V2754000次观察（均含重复读取），U接受15152/15074，真值可用0，星地活跃0，非有限跳过0；两行各1976行stdout、50epoch/11100native step及11100gap记录完整解析。6个source/predict/score worker自然退出0，source扩展决定早于预测、逐row预测完成早于独立评分，现无所属worker；completion_verification.json。训练秒4283.456/4280.005，预测秒33.975/33.432，峰值CUDA均1972.051MiB。
+
+控制器期间一次Windows进程观察子进程reader发生UTF-8解码错误；后续资源读取及所有自动派发继续成功，无停止/重启/热改训练。原控制器日志保留本地，不因该观察层瞬时错误重跑任何模型。该轮结果不采用，目标保持ACTIVE_UNMET。

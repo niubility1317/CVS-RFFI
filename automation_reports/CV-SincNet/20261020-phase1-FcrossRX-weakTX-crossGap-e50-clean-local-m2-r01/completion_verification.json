@@ -1,0 +1,209 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "39d7bb72a67a495912bd5ce8db68686210bfaad4",
+  "source_expansion_fixed_before_target": true,
+  "source_qualified_arms": [],
+  "conditional_seeds_not_launched": [
+    2026092702,
+    2026092703
+  ],
+  "actual_models": 2,
+  "live_owned_workers": 0,
+  "controller_status": "ARTIFACTS_COMPLETE",
+  "rows": [
+    {
+      "row_id": "SELF_GAP-s2026092701",
+      "source_commit": "39d7bb72a67a495912bd5ce8db68686210bfaad4",
+      "exits": [
+        {
+          "role": "source",
+          "returncode": 0,
+          "PID_matches_start": true
+        },
+        {
+          "role": "predict",
+          "returncode": 0,
+          "PID_matches_start": true
+        },
+        {
+          "role": "score",
+          "returncode": 0,
+          "PID_matches_start": true
+        }
+      ],
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "prediction_truth_read": false,
+      "prediction_query_fit": false,
+      "prediction_head_fit_updates": 0,
+      "scoring_status": "MODEL_PREDICTED_SCORED",
+      "truth_last": true,
+      "independent_CPU_score": true,
+      "count": 168000,
+      "views": [
+        "clean"
+      ],
+      "source_seconds": 4283.456007242203,
+      "prediction_seconds": 33.974603899987414,
+      "peak_cuda_MiB": 1972.05126953125
+    },
+    {
+      "row_id": "CROSS_GAP-s2026092701",
+      "source_commit": "39d7bb72a67a495912bd5ce8db68686210bfaad4",
+      "exits": [
+        {
+          "role": "source",
+          "returncode": 0,
+          "PID_matches_start": true
+        },
+        {
+          "role": "predict",
+          "returncode": 0,
+          "PID_matches_start": true
+        },
+        {
+          "role": "score",
+          "returncode": 0,
+          "PID_matches_start": true
+        }
+      ],
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "prediction_truth_read": false,
+      "prediction_query_fit": false,
+      "prediction_head_fit_updates": 0,
+      "scoring_status": "MODEL_PREDICTED_SCORED",
+      "truth_last": true,
+      "independent_CPU_score": true,
+      "count": 168000,
+      "views": [
+        "clean"
+      ],
+      "source_seconds": 4280.004595279694,
+      "prediction_seconds": 33.43245600000955,
+      "peak_cuda_MiB": 1972.05126953125
+    }
+  ],
+  "native_logs": [
+    {
+      "row_id": "SELF_GAP-s2026092701",
+      "parsed_epochs": 50,
+      "parsed_steps": 11100,
+      "stdout_lines": 1976,
+      "full_stdout_scanned": true,
+      "stdout_marker_counts": {
+        "FutureWarning": 3,
+        "UserWarning": 0,
+        "RuntimeWarning": 0,
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "MemoryError": 0,
+        "Fatal Python": 0,
+        "killed": 0
+      },
+      "U_seen": 963900,
+      "U_selected": 15152,
+      "U_truth_available": 0,
+      "skipped_nonfinite_updates": 0,
+      "satellite_active_steps": 0
+    },
+    {
+      "row_id": "CROSS_GAP-s2026092701",
+      "parsed_epochs": 50,
+      "parsed_steps": 11100,
+      "stdout_lines": 1976,
+      "full_stdout_scanned": true,
+      "stdout_marker_counts": {
+        "FutureWarning": 3,
+        "UserWarning": 0,
+        "RuntimeWarning": 0,
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "MemoryError": 0,
+        "Fatal Python": 0,
+        "killed": 0
+      },
+      "U_seen": 963900,
+      "U_selected": 15074,
+      "U_truth_available": 0,
+      "skipped_nonfinite_updates": 0,
+      "satellite_active_steps": 0
+    }
+  ],
+  "feature_logs": [
+    {
+      "row_id": "SELF_GAP-s2026092701",
+      "calls": 11100,
+      "scheduled": 9990,
+      "eligible_calls": 9541,
+      "active_calls": 45,
+      "eligible_fraction": 0.9550550550550551,
+      "active_fraction": 0.0045045045045045045,
+      "cell_calls": [
+        1728,
+        1732,
+        1728,
+        1734,
+        1725,
+        1708,
+        1680,
+        1736,
+        1713,
+        1713,
+        1706,
+        1733,
+        1713,
+        1734,
+        1718
+      ],
+      "RX_day_cell_coverage": 1,
+      "current_L_packets_in_valid_cells": 132373,
+      "extra_model_forwards": 0,
+      "extra_optimizer_updates": 0,
+      "extra_parameters": 0,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "CROSS_GAP-s2026092701",
+      "calls": 11100,
+      "scheduled": 9990,
+      "eligible_calls": 9541,
+      "active_calls": 6076,
+      "eligible_fraction": 0.9550550550550551,
+      "active_fraction": 0.6082082082082082,
+      "cell_calls": [
+        1728,
+        1732,
+        1728,
+        1734,
+        1725,
+        1708,
+        1680,
+        1736,
+        1713,
+        1713,
+        1706,
+        1733,
+        1713,
+        1734,
+        1718
+      ],
+      "RX_day_cell_coverage": 1,
+      "current_L_packets_in_valid_cells": 132373,
+      "extra_model_forwards": 0,
+      "extra_optimizer_updates": 0,
+      "extra_parameters": 0,
+      "head_fit_updates": 0
+    }
+  ],
+  "actual_artifact_order": [
+    {
+      "row_id": "SELF_GAP-s2026092701",
+      "source_decision_before_prediction_launch": true,
+      "prediction_complete_before_score_launch": true
+    },
+    {
+      "row_id": "CROSS_GAP-s2026092701",
+      "source_decision_before_prediction_launch": true,
+      "prediction_complete_before_score_launch": true
+    }
+  ]
+}

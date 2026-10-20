@@ -1,0 +1,220 @@
+{
+  "status": "ANALYZED_NOT_ADOPTED",
+  "run_id": "20261020-phase1-FcrossRX-weakTX-crossGap-e50-clean-local-m2-r01",
+  "source_code_commit": "39d7bb72a67a495912bd5ce8db68686210bfaad4",
+  "actual_models": 2,
+  "actual_seeds_per_arm": 1,
+  "sample_SD": null,
+  "source_qualified_arms": [],
+  "conditional_seeds_not_launched": [
+    2026092702,
+    2026092703
+  ],
+  "default_head_joint": true,
+  "no_satellite": true,
+  "test_views": [
+    "clean"
+  ],
+  "clean_count_per_model": 168000,
+  "truth_last": true,
+  "independent_completion": "VERIFIED",
+  "rows": [
+    {
+      "method": "SELF_GAP",
+      "seed": 2026092701,
+      "clean_accuracy_percent": 85.13392857142857,
+      "BASE_clean_percent": 85.13928571428572,
+      "macro_f1_percent": 84.86172282647706,
+      "worst_RX_percent": 75.64583333333333,
+      "worst_day_percent": 82.36904761904762,
+      "paired": {
+        "treatment": "SELF_GAP",
+        "model_seed": 2026092701,
+        "accuracy_pp": -0.00535714285714306,
+        "macro_f1_pp": -0.0024583733003402664,
+        "per_TX_pp": [
+          -0.014285714285722229,
+          -1.200000000000001,
+          0.5392857142857199,
+          0.6107142857142756,
+          0.007142857142861114,
+          0.024999999999997247
+        ],
+        "weak_TX_mean_pp": -0.29464285714286276,
+        "other_TX_mean_pp": 0.139285714285714,
+        "worst_RX_pp": -0.7541666666666669,
+        "worst_day_pp": -0.01666666666666483
+      }
+    },
+    {
+      "method": "CROSS_GAP",
+      "seed": 2026092701,
+      "clean_accuracy_percent": 84.7702380952381,
+      "BASE_clean_percent": 85.13928571428572,
+      "macro_f1_percent": 84.46634342012523,
+      "worst_RX_percent": 74.72916666666667,
+      "worst_day_percent": 81.9047619047619,
+      "paired": {
+        "treatment": "CROSS_GAP",
+        "model_seed": 2026092701,
+        "accuracy_pp": -0.3690476190476244,
+        "macro_f1_pp": -0.39783777965216593,
+        "per_TX_pp": [
+          -0.12500000000000844,
+          -0.5821428571428533,
+          -0.3107142857142864,
+          -1.3678571428571429,
+          -0.06428571428571672,
+          0.23571428571428354
+        ],
+        "weak_TX_mean_pp": -0.9749999999999981,
+        "other_TX_mean_pp": -0.066071428571432,
+        "worst_RX_pp": -1.6708333333333325,
+        "worst_day_pp": -0.4809523809523819
+      }
+    }
+  ],
+  "source_decision": {
+    "status": "SOURCE_EXPANSION_FIXED",
+    "arms": {
+      "SELF_GAP": {
+        "PASS": false,
+        "source_classification_health": false,
+        "overall_pp": 0.01481481481481195,
+        "worst_RX_pp": 0.07407407407408195,
+        "per_TX_pp": [
+          -0.11111111111111738,
+          0,
+          0.04444444444444695,
+          0.0888888888888939,
+          0.04444444444444695,
+          0.022222222222223476
+        ],
+        "weak_geometry": [
+          {
+            "TX": "14-7",
+            "out_RX_margin_q10_gain": 0.0004594438376752663,
+            "RX_spread_to_gap_ratio": 1.0319726645629348,
+            "PASS": false
+          },
+          {
+            "TX": "20-19",
+            "out_RX_margin_q10_gain": -0.0002413660808229367,
+            "RX_spread_to_gap_ratio": 1.0438559292234204,
+            "PASS": false
+          }
+        ]
+      },
+      "CROSS_GAP": {
+        "PASS": false,
+        "source_classification_health": true,
+        "overall_pp": 0.04814814814814161,
+        "worst_RX_pp": 0.2777777777777768,
+        "per_TX_pp": [
+          -0.04444444444444695,
+          -0.0888888888888939,
+          0.022222222222223476,
+          0.42222222222222383,
+          0,
+          -0.022222222222223476
+        ],
+        "weak_geometry": [
+          {
+            "TX": "14-7",
+            "out_RX_margin_q10_gain": 0.05202107969145178,
+            "RX_spread_to_gap_ratio": 0.8108630573683371,
+            "PASS": true
+          },
+          {
+            "TX": "20-19",
+            "out_RX_margin_q10_gain": -0.0020144644640880628,
+            "RX_spread_to_gap_ratio": 1.2518595564175832,
+            "PASS": false
+          }
+        ]
+      }
+    },
+    "expand_arms": [],
+    "target_access": false,
+    "criterion": "Each weakTX outRX feature-margin q10 >= same-seed BASE+.002; eligible gap calls>=85%; active hinge calls>=10%; all15RXday cells seen>=20times; RXspread/interclassgap <=1.05x BASE; no zero features; defaulthead overall>=-.2pp,worstRX>=-.5pp,anyTX>=-1pp. Fixed source only before target."
+  },
+  "mechanism_counts": [
+    {
+      "row_id": "SELF_GAP-s2026092701",
+      "calls": 11100,
+      "scheduled": 9990,
+      "eligible_calls": 9541,
+      "active_calls": 45,
+      "eligible_fraction": 0.9550550550550551,
+      "active_fraction": 0.0045045045045045045,
+      "cell_calls": [
+        1728,
+        1732,
+        1728,
+        1734,
+        1725,
+        1708,
+        1680,
+        1736,
+        1713,
+        1713,
+        1706,
+        1733,
+        1713,
+        1734,
+        1718
+      ],
+      "RX_day_cell_coverage": 1,
+      "current_L_packets_in_valid_cells": 132373,
+      "extra_model_forwards": 0,
+      "extra_optimizer_updates": 0,
+      "extra_parameters": 0,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "CROSS_GAP-s2026092701",
+      "calls": 11100,
+      "scheduled": 9990,
+      "eligible_calls": 9541,
+      "active_calls": 6076,
+      "eligible_fraction": 0.9550550550550551,
+      "active_fraction": 0.6082082082082082,
+      "cell_calls": [
+        1728,
+        1732,
+        1728,
+        1734,
+        1725,
+        1708,
+        1680,
+        1736,
+        1713,
+        1713,
+        1706,
+        1733,
+        1713,
+        1734,
+        1718
+      ],
+      "RX_day_cell_coverage": 1,
+      "current_L_packets_in_valid_cells": 132373,
+      "extra_model_forwards": 0,
+      "extra_optimizer_updates": 0,
+      "extra_parameters": 0,
+      "head_fit_updates": 0
+    }
+  ],
+  "controller_observation_warning": {
+    "events": 1,
+    "type": "transient Windows process-observation UTF-8 decode error in one subprocess reader thread",
+    "impact": "Subsequent resource observations and automatic sourcefreeze/predict/score completed without restart or hot edit; all6workers exited0. Preserve original controller log locally."
+  },
+  "judgment": "Neither initial arm met source promotion. SELF weak14 decreased despite weak20 increase; CROSS both weak recalls and overall decreased vs same-seed matching BASE. Keep original F+crossRX sameTX baseline; no target-driven reseed or hyperparameter changes.",
+  "limitations": [
+    "Each arm has one model seed; no SD, stable gain/loss or significance claim.",
+    "Source weak14 outRX-margin gain under CROSS did not transfer to that TX clean recall in this seed; all sourceRX had been seen in training.",
+    "SELF and CROSS losses have different active strength; result does not isolate denoising from objective magnitude.",
+    "Exposed exploratory benchmark; no independent blind, Phase2 or satellite claim."
+  ],
+  "goal_status": "ACTIVE_UNMET"
+}

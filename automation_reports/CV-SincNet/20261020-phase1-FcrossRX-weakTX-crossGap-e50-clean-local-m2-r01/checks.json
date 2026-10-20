@@ -392,8 +392,9 @@
   },
   "math_RED_before_implementation": {
     "expected_failure": true,
-    "code": 1,
-    "tail": "\\lh594\\.conda\\envs\\ssr-gpu\\lib\\runpy.py\", line 196, in _run_module_as_main\r\n    return _run_code(code, main_globals, None,\r\n  File \"C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\lib\\runpy.py\", line 86, in _run_code\r\n    exec(code, run_globals)\r\n  File \"E:\\type10-7\\code\\worktrees\\phase1_rdrop_combinations_20261015\\experiments\\cvs_f_weaktx_crossgap50\\checks_math.py\", line 3, in <module>\r\n    from .loss import penalty,estimates\r\nModuleNotFoundError: No module named 'experiments.cvs_f_weaktx_crossgap50.loss'\r\n"
+    "exit_code": 1,
+    "exception": "ModuleNotFoundError: experiments.cvs_f_weaktx_crossgap50.loss",
+    "context": "Expected RED before the new loss implementation existed; preserve diagnostic meaning without local runtime traceback paths."
   },
   "independent_P0P1": {
     "initial_candidate": "PASS",
