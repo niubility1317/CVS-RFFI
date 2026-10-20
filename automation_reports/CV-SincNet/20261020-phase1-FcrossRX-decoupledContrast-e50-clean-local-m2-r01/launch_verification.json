@@ -1,0 +1,120 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261020-phase1-FcrossRX-decoupledContrast-e50-clean-local-m2-r01",
+  "actual_code_config_commit": "8da6a824434d239f30e3d3796c345b4b31d3ef7a",
+  "Git_code_remote_OID_verified": true,
+  "first_push": "FAILED_REMOTE_UNPACK; independent remote reconciliation before same-commit retry; retry VERIFIED",
+  "preflight": {
+    "status": "PASS",
+    "physical_GPU": 0,
+    "existing_GPU_workers": 0,
+    "max_global_GPU_workers": 3,
+    "free_system_GiB": 13.892932891845703,
+    "minimum_free_GiB": 4.5,
+    "existing_CPU_scorers": 0,
+    "matched_source_controls": 3,
+    "no_satellite": true,
+    "test_views": [
+      "clean"
+    ],
+    "healthy_tasks_preserved": true
+  },
+  "archive_transfer": "VERIFIED one archive comparison",
+  "release_compile": "PASS",
+  "launcher_math_first_step": "PASS then immediately launched",
+  "controller_PID_CWD_cmdline_verified": true,
+  "rows": [
+    {
+      "row_id": "Q_DCL-s2026092701",
+      "source_status": "RUNNING",
+      "actual_CWD_and_command_line_verified": true,
+      "actual_GPU": 0,
+      "GPU_dedicated_MiB_observed": 965.53125,
+      "step_before": 61,
+      "step_after": 250,
+      "epoch_after": 2,
+      "log_growth_verified": true,
+      "total_parameters": 900722,
+      "actual_method": {
+        "mode": "Q_DCL",
+        "layers": [
+          "time_down",
+          "t2.pool"
+        ],
+        "temperature": 0.2,
+        "max_weight": 0.1,
+        "warmup": 5,
+        "ramp": 10,
+        "positive": "sameTX differentRX sourceL",
+        "negative": "differentTX",
+        "q_detached": true,
+        "class_reweighting": false,
+        "extra_model_forwards": 0,
+        "extra_parameters": 0,
+        "default_head_direct_aux_gradient": false,
+        "limitation": "Supervised multi-positive extension inspired by DCL; negative loss values are valid and not clipped. No target benefit assumed."
+      },
+      "actual_epochs": 50,
+      "label_epochs": 33,
+      "pseudo_epochs": 17,
+      "default_head_joint": true,
+      "head_fit_updates": 0,
+      "satellite_training": false,
+      "test_views": [
+        "clean"
+      ],
+      "no_external_checkpoint_initialization": true,
+      "performance_result_available": false
+    },
+    {
+      "row_id": "DCL-s2026092701",
+      "source_status": "RUNNING",
+      "actual_CWD_and_command_line_verified": true,
+      "actual_GPU": 0,
+      "GPU_dedicated_MiB_observed": 965.53125,
+      "step_before": 60,
+      "step_after": 246,
+      "epoch_after": 2,
+      "log_growth_verified": true,
+      "total_parameters": 900722,
+      "actual_method": {
+        "mode": "DCL",
+        "layers": [
+          "time_down",
+          "t2.pool"
+        ],
+        "temperature": 0.2,
+        "max_weight": 0.1,
+        "warmup": 5,
+        "ramp": 10,
+        "positive": "sameTX differentRX sourceL",
+        "negative": "differentTX",
+        "q_detached": true,
+        "class_reweighting": false,
+        "extra_model_forwards": 0,
+        "extra_parameters": 0,
+        "default_head_direct_aux_gradient": false,
+        "limitation": "Supervised multi-positive extension inspired by DCL; negative loss values are valid and not clipped. No target benefit assumed."
+      },
+      "actual_epochs": 50,
+      "label_epochs": 33,
+      "pseudo_epochs": 17,
+      "default_head_joint": true,
+      "head_fit_updates": 0,
+      "satellite_training": false,
+      "test_views": [
+        "clean"
+      ],
+      "no_external_checkpoint_initialization": true,
+      "performance_result_available": false
+    }
+  ],
+  "source_expansion_fixed": false,
+  "global_max_GPU_workers": 3,
+  "actual_own_GPU_workers": 2,
+  "other_GPU_workers": 0,
+  "free_system_GiB": 9.554672241210938,
+  "only_clean": true,
+  "healthy_tasks_preserved": true,
+  "model_performance_claim": false
+}
