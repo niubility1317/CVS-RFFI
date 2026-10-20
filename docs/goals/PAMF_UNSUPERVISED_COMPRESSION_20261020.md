@@ -1,6 +1,6 @@
 # 无 TX 标签恢复器的压缩与性能联合优化
 
-2026-10-21 R58 LOCAL_PROTOTYPE：读取R57正式分数前固定的既有压缩图组统计校正；新增2688层内可学习参数，完整276453/context186959，同图calibrated/identity_control两行计划。10项无数据模块/组统计公式/独立样本/梯度/严格state及全图参数/共享prior检查通过，未数据校准、未登记、未发布、未训练；后续须完成真实源校准/launcher及原最小流程。仅原权重累计100轮，新统计参数20轮；无性能结论。[R58固定原型](../PAMF_R46_STAT_TRANSPORT_R58_20261021.md)。
+2026-10-21 当前R58：现有压缩图168GN组内可学习统计校正，完整276453/context186959、新参数2688；同图calibrated/identity_control两行，直接指定350521父/source-onlyR55fullfold统计、无训练学生继承。31checks/CLI/一次P0P1PASS，CPU2共128source received/额外256父+256恒等子G输入，0clean/TX/F/V/target/optimizer校准；所有新统计参数随原参数联合E20/4940，原参数100轮/新参数仅20轮分别记账；两行自动source及168000×7正式测试。核心方案/prototype在R57分数读取前固定，GPU3/2等待R57实际退出。LOCAL_VERIFIED尚未发布，无新正式结论；性能优先，原目标ACTIVE。[R58固定方案](../PAMF_R46_STAT_TRANSPORT_R58_20261021.md)。
 
 十五个固定新版的正式性能、郊区/urban 全场景和配对推理成本均已完整汇总，按预登记顺序保留全部结果；性能优先，不用通过退化容差、减参或提速替代逐场景性能改善。十五行中相对指定父七景全部提高的版本为：R48 prune_refine（273765参数，low urban 68.257738%）。完整数据按固定矩阵顺序报告，不据此另选父、修改超参数或选择性重跑。只反映单 seed 工程基准，70%/5pp以逐行验收表为准；输入TX逐细节真实性尚未证明，原完整目标继续ACTIVE。 见[十五版性能总表](../PAMF_R46_COMPRESSION_PERFORMANCE_20261020.md)。指定 350521 父版不变，原完整目标继续 ACTIVE。
 
