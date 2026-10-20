@@ -1,0 +1,861 @@
+{
+  "status": "CACHED_SOURCE_ANALYSIS_COMPLETE",
+  "run_id": "20261020-phase1-FcrossRX-MEM4-threeSeed-clean-local-m2-r01",
+  "scientific_config_changed": false,
+  "training_changed": false,
+  "inputs": "Existing completed local_source_complete.json sourceV statistics only; same originalF50 source data roles; no new IQ/model/target scoring",
+  "sourceV_count_per_model": 27000,
+  "per_TX_count": 4500,
+  "class_names": [
+    "14-10",
+    "14-7",
+    "20-15",
+    "20-19",
+    "6-15",
+    "8-20"
+  ],
+  "BASE_three_seed": [
+    {
+      "model_seed": 2026092701,
+      "sourceV_count": 27000,
+      "weak": [
+        {
+          "TX": "14-7",
+          "count": 4500,
+          "recall_percent": 98.02222222222223,
+          "total_errors": 89,
+          "largest_error_class": "20-19",
+          "largest_error_count": 32,
+          "nearest_centroid": "20-19",
+          "nearest_centroid_cosine": 0.9289738881047396,
+          "within_pair_cosine": 0.9568310968514373
+        },
+        {
+          "TX": "20-19",
+          "count": 4500,
+          "recall_percent": 95.84444444444445,
+          "total_errors": 187,
+          "largest_error_class": "14-7",
+          "largest_error_count": 133,
+          "nearest_centroid": "14-7",
+          "nearest_centroid_cosine": 0.9289738881047396,
+          "within_pair_cosine": 0.9482018515275474
+        }
+      ]
+    },
+    {
+      "model_seed": 2026092702,
+      "sourceV_count": 27000,
+      "weak": [
+        {
+          "TX": "14-7",
+          "count": 4500,
+          "recall_percent": 97.8,
+          "total_errors": 99,
+          "largest_error_class": "20-19",
+          "largest_error_count": 39,
+          "nearest_centroid": "20-19",
+          "nearest_centroid_cosine": 0.9190788372300267,
+          "within_pair_cosine": 0.9420727074845328
+        },
+        {
+          "TX": "20-19",
+          "count": 4500,
+          "recall_percent": 96.55555555555554,
+          "total_errors": 155,
+          "largest_error_class": "14-7",
+          "largest_error_count": 107,
+          "nearest_centroid": "14-7",
+          "nearest_centroid_cosine": 0.9190788372300267,
+          "within_pair_cosine": 0.9232127107601218
+        }
+      ]
+    },
+    {
+      "model_seed": 2026092703,
+      "sourceV_count": 27000,
+      "weak": [
+        {
+          "TX": "14-7",
+          "count": 4500,
+          "recall_percent": 98,
+          "total_errors": 90,
+          "largest_error_class": "20-19",
+          "largest_error_count": 41,
+          "nearest_centroid": "20-19",
+          "nearest_centroid_cosine": 0.930627018205705,
+          "within_pair_cosine": 0.955708231164692
+        },
+        {
+          "TX": "20-19",
+          "count": 4500,
+          "recall_percent": 96.86666666666667,
+          "total_errors": 141,
+          "largest_error_class": "14-7",
+          "largest_error_count": 91,
+          "nearest_centroid": "14-7",
+          "nearest_centroid_cosine": 0.930627018205705,
+          "within_pair_cosine": 0.9570760762784918
+        }
+      ]
+    }
+  ],
+  "seed2701_only_method_comparison": [
+    {
+      "arm": "BASE",
+      "run_id": "20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01",
+      "model_seed": 2026092701,
+      "count": 27000,
+      "per_TX": [
+        {
+          "TX": "14-10",
+          "source_recall_percent": 98.51111111111112,
+          "within_TX_pair_cosine": 0.9526456695111808,
+          "closest_other_TX_by_centroid_cosine": "14-7",
+          "closest_other_centroid_cosine": 0.9223798671191528,
+          "default_head_errors_by_other_TX": [
+            {
+              "TX": "6-15",
+              "count": 24
+            },
+            {
+              "TX": "20-19",
+              "count": 15
+            },
+            {
+              "TX": "14-7",
+              "count": 11
+            },
+            {
+              "TX": "20-15",
+              "count": 10
+            },
+            {
+              "TX": "8-20",
+              "count": 7
+            }
+          ]
+        },
+        {
+          "TX": "14-7",
+          "source_recall_percent": 98.02222222222223,
+          "within_TX_pair_cosine": 0.9568310968514373,
+          "closest_other_TX_by_centroid_cosine": "20-19",
+          "closest_other_centroid_cosine": 0.9289738881047396,
+          "default_head_errors_by_other_TX": [
+            {
+              "TX": "20-19",
+              "count": 32
+            },
+            {
+              "TX": "20-15",
+              "count": 25
+            },
+            {
+              "TX": "14-10",
+              "count": 14
+            },
+            {
+              "TX": "6-15",
+              "count": 13
+            },
+            {
+              "TX": "8-20",
+              "count": 5
+            }
+          ]
+        },
+        {
+          "TX": "20-15",
+          "source_recall_percent": 99.02222222222223,
+          "within_TX_pair_cosine": 0.9564273793201398,
+          "closest_other_TX_by_centroid_cosine": "8-20",
+          "closest_other_centroid_cosine": 0.8829130002455927,
+          "default_head_errors_by_other_TX": [
+            {
+              "TX": "6-15",
+              "count": 14
+            },
+            {
+              "TX": "8-20",
+              "count": 10
+            },
+            {
+              "TX": "14-10",
+              "count": 8
+            },
+            {
+              "TX": "14-7",
+              "count": 6
+            },
+            {
+              "TX": "20-19",
+              "count": 6
+            }
+          ]
+        },
+        {
+          "TX": "20-19",
+          "source_recall_percent": 95.84444444444445,
+          "within_TX_pair_cosine": 0.9482018515275474,
+          "closest_other_TX_by_centroid_cosine": "14-7",
+          "closest_other_centroid_cosine": 0.9289738881047396,
+          "default_head_errors_by_other_TX": [
+            {
+              "TX": "14-7",
+              "count": 133
+            },
+            {
+              "TX": "14-10",
+              "count": 20
+            },
+            {
+              "TX": "20-15",
+              "count": 16
+            },
+            {
+              "TX": "6-15",
+              "count": 15
+            },
+            {
+              "TX": "8-20",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "TX": "6-15",
+          "source_recall_percent": 98.75555555555555,
+          "within_TX_pair_cosine": 0.8849330389149008,
+          "closest_other_TX_by_centroid_cosine": "8-20",
+          "closest_other_centroid_cosine": 0.3906545211787686,
+          "default_head_errors_by_other_TX": [
+            {
+              "TX": "14-10",
+              "count": 26
+            },
+            {
+              "TX": "14-7",
+              "count": 8
+            },
+            {
+              "TX": "20-15",
+              "count": 8
+            },
+            {
+              "TX": "20-19",
+              "count": 8
+            },
+            {
+              "TX": "8-20",
+              "count": 6
+            }
+          ]
+        },
+        {
+          "TX": "8-20",
+          "source_recall_percent": 99.2,
+          "within_TX_pair_cosine": 0.945838580316087,
+          "closest_other_TX_by_centroid_cosine": "20-15",
+          "closest_other_centroid_cosine": 0.8829130002455927,
+          "default_head_errors_by_other_TX": [
+            {
+              "TX": "20-15",
+              "count": 15
+            },
+            {
+              "TX": "6-15",
+              "count": 10
+            },
+            {
+              "TX": "14-10",
+              "count": 6
+            },
+            {
+              "TX": "14-7",
+              "count": 4
+            },
+            {
+              "TX": "20-19",
+              "count": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arm": "ANCHOR",
+      "run_id": "20261020-phase1-FcrossRX-crossBatchMemory-e50-clean-local-m2-r01",
+      "model_seed": 2026092701,
+      "count": 27000,
+      "per_TX": [
+        {
+          "TX": "14-10",
+          "source_recall_percent": 98.37777777777778,
+          "within_TX_pair_cosine": 0.9507716359240795,
+          "closest_other_TX_by_centroid_cosine": "14-7",
+          "closest_other_centroid_cosine": 0.9271068152718915,
+          "default_head_errors_by_other_TX": [
+            {
+              "TX": "6-15",
+              "count": 27
+            },
+            {
+              "TX": "20-19",
+              "count": 17
+            },
+            {
+              "TX": "14-7",
+              "count": 15
+            },
+            {
+              "TX": "20-15",
+              "count": 10
+            },
+            {
+              "TX": "8-20",
+              "count": 4
+            }
+          ]
+        },
+        {
+          "TX": "14-7",
+          "source_recall_percent": 98.13333333333333,
+          "within_TX_pair_cosine": 0.9546695097116032,
+          "closest_other_TX_by_centroid_cosine": "20-19",
+          "closest_other_centroid_cosine": 0.930716851460465,
+          "default_head_errors_by_other_TX": [
+            {
+              "TX": "20-19",
+              "count": 27
+            },
+            {
+              "TX": "20-15",
+              "count": 23
+            },
+            {
+              "TX": "14-10",
+              "count": 16
+            },
+            {
+              "TX": "6-15",
+              "count": 13
+            },
+            {
+              "TX": "8-20",
+              "count": 5
+            }
+          ]
+        },
+        {
+          "TX": "20-15",
+          "source_recall_percent": 99,
+          "within_TX_pair_cosine": 0.9555232328187336,
+          "closest_other_TX_by_centroid_cosine": "8-20",
+          "closest_other_centroid_cosine": 0.8881945636255681,
+          "default_head_errors_by_other_TX": [
+            {
+              "TX": "6-15",
+              "count": 15
+            },
+            {
+              "TX": "14-10",
+              "count": 8
+            },
+            {
+              "TX": "20-19",
+              "count": 8
+            },
+            {
+              "TX": "8-20",
+              "count": 8
+            },
+            {
+              "TX": "14-7",
+              "count": 6
+            }
+          ]
+        },
+        {
+          "TX": "20-19",
+          "source_recall_percent": 95.71111111111111,
+          "within_TX_pair_cosine": 0.9492989552777036,
+          "closest_other_TX_by_centroid_cosine": "14-7",
+          "closest_other_centroid_cosine": 0.930716851460465,
+          "default_head_errors_by_other_TX": [
+            {
+              "TX": "14-7",
+              "count": 138
+            },
+            {
+              "TX": "20-15",
+              "count": 20
+            },
+            {
+              "TX": "6-15",
+              "count": 17
+            },
+            {
+              "TX": "14-10",
+              "count": 15
+            },
+            {
+              "TX": "8-20",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "TX": "6-15",
+          "source_recall_percent": 98.6888888888889,
+          "within_TX_pair_cosine": 0.8924818048347468,
+          "closest_other_TX_by_centroid_cosine": "8-20",
+          "closest_other_centroid_cosine": 0.4584840575629504,
+          "default_head_errors_by_other_TX": [
+            {
+              "TX": "14-10",
+              "count": 22
+            },
+            {
+              "TX": "14-7",
+              "count": 12
+            },
+            {
+              "TX": "20-15",
+              "count": 10
+            },
+            {
+              "TX": "20-19",
+              "count": 10
+            },
+            {
+              "TX": "8-20",
+              "count": 5
+            }
+          ]
+        },
+        {
+          "TX": "8-20",
+          "source_recall_percent": 99.15555555555555,
+          "within_TX_pair_cosine": 0.9474737686758673,
+          "closest_other_TX_by_centroid_cosine": "20-15",
+          "closest_other_centroid_cosine": 0.8881945636255681,
+          "default_head_errors_by_other_TX": [
+            {
+              "TX": "20-15",
+              "count": 16
+            },
+            {
+              "TX": "6-15",
+              "count": 11
+            },
+            {
+              "TX": "14-10",
+              "count": 6
+            },
+            {
+              "TX": "14-7",
+              "count": 3
+            },
+            {
+              "TX": "20-19",
+              "count": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arm": "MEM4",
+      "run_id": "20261020-phase1-FcrossRX-crossBatchMemory-e50-clean-local-m2-r01",
+      "model_seed": 2026092701,
+      "count": 27000,
+      "per_TX": [
+        {
+          "TX": "14-10",
+          "source_recall_percent": 98.31111111111112,
+          "within_TX_pair_cosine": 0.9535375733074278,
+          "closest_other_TX_by_centroid_cosine": "14-7",
+          "closest_other_centroid_cosine": 0.9301652151736162,
+          "default_head_errors_by_other_TX": [
+            {
+              "TX": "6-15",
+              "count": 26
+            },
+            {
+              "TX": "20-19",
+              "count": 22
+            },
+            {
+              "TX": "14-7",
+              "count": 12
+            },
+            {
+              "TX": "20-15",
+              "count": 11
+            },
+            {
+              "TX": "8-20",
+              "count": 5
+            }
+          ]
+        },
+        {
+          "TX": "14-7",
+          "source_recall_percent": 98.11111111111111,
+          "within_TX_pair_cosine": 0.9584030672613242,
+          "closest_other_TX_by_centroid_cosine": "20-19",
+          "closest_other_centroid_cosine": 0.932180807936733,
+          "default_head_errors_by_other_TX": [
+            {
+              "TX": "20-19",
+              "count": 28
+            },
+            {
+              "TX": "20-15",
+              "count": 23
+            },
+            {
+              "TX": "14-10",
+              "count": 15
+            },
+            {
+              "TX": "6-15",
+              "count": 14
+            },
+            {
+              "TX": "8-20",
+              "count": 5
+            }
+          ]
+        },
+        {
+          "TX": "20-15",
+          "source_recall_percent": 99,
+          "within_TX_pair_cosine": 0.9617915574774003,
+          "closest_other_TX_by_centroid_cosine": "8-20",
+          "closest_other_centroid_cosine": 0.894645429010351,
+          "default_head_errors_by_other_TX": [
+            {
+              "TX": "6-15",
+              "count": 14
+            },
+            {
+              "TX": "20-19",
+              "count": 10
+            },
+            {
+              "TX": "8-20",
+              "count": 9
+            },
+            {
+              "TX": "14-7",
+              "count": 7
+            },
+            {
+              "TX": "14-10",
+              "count": 5
+            }
+          ]
+        },
+        {
+          "TX": "20-19",
+          "source_recall_percent": 95.84444444444445,
+          "within_TX_pair_cosine": 0.9526174960480303,
+          "closest_other_TX_by_centroid_cosine": "14-7",
+          "closest_other_centroid_cosine": 0.932180807936733,
+          "default_head_errors_by_other_TX": [
+            {
+              "TX": "14-7",
+              "count": 135
+            },
+            {
+              "TX": "20-15",
+              "count": 18
+            },
+            {
+              "TX": "14-10",
+              "count": 17
+            },
+            {
+              "TX": "6-15",
+              "count": 14
+            },
+            {
+              "TX": "8-20",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "TX": "6-15",
+          "source_recall_percent": 98.6888888888889,
+          "within_TX_pair_cosine": 0.9028881927841567,
+          "closest_other_TX_by_centroid_cosine": "8-20",
+          "closest_other_centroid_cosine": 0.5289300781018661,
+          "default_head_errors_by_other_TX": [
+            {
+              "TX": "14-10",
+              "count": 24
+            },
+            {
+              "TX": "14-7",
+              "count": 11
+            },
+            {
+              "TX": "20-15",
+              "count": 11
+            },
+            {
+              "TX": "20-19",
+              "count": 8
+            },
+            {
+              "TX": "8-20",
+              "count": 5
+            }
+          ]
+        },
+        {
+          "TX": "8-20",
+          "source_recall_percent": 99.17777777777778,
+          "within_TX_pair_cosine": 0.9563493106783211,
+          "closest_other_TX_by_centroid_cosine": "20-15",
+          "closest_other_centroid_cosine": 0.894645429010351,
+          "default_head_errors_by_other_TX": [
+            {
+              "TX": "20-15",
+              "count": 16
+            },
+            {
+              "TX": "6-15",
+              "count": 12
+            },
+            {
+              "TX": "14-10",
+              "count": 6
+            },
+            {
+              "TX": "14-7",
+              "count": 2
+            },
+            {
+              "TX": "20-19",
+              "count": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arm": "SYM4",
+      "run_id": "20261020-phase1-FcrossRX-symmetricMemory-e50-clean-local-m1-r01",
+      "model_seed": 2026092701,
+      "count": 27000,
+      "per_TX": [
+        {
+          "TX": "14-10",
+          "source_recall_percent": 98.33333333333333,
+          "within_TX_pair_cosine": 0.9525974001630804,
+          "closest_other_TX_by_centroid_cosine": "14-7",
+          "closest_other_centroid_cosine": 0.927742461850433,
+          "default_head_errors_by_other_TX": [
+            {
+              "TX": "6-15",
+              "count": 25
+            },
+            {
+              "TX": "20-19",
+              "count": 22
+            },
+            {
+              "TX": "14-7",
+              "count": 13
+            },
+            {
+              "TX": "20-15",
+              "count": 9
+            },
+            {
+              "TX": "8-20",
+              "count": 6
+            }
+          ]
+        },
+        {
+          "TX": "14-7",
+          "source_recall_percent": 98.08888888888889,
+          "within_TX_pair_cosine": 0.9579176222415402,
+          "closest_other_TX_by_centroid_cosine": "20-19",
+          "closest_other_centroid_cosine": 0.92952140778386,
+          "default_head_errors_by_other_TX": [
+            {
+              "TX": "20-19",
+              "count": 26
+            },
+            {
+              "TX": "20-15",
+              "count": 25
+            },
+            {
+              "TX": "14-10",
+              "count": 15
+            },
+            {
+              "TX": "6-15",
+              "count": 15
+            },
+            {
+              "TX": "8-20",
+              "count": 5
+            }
+          ]
+        },
+        {
+          "TX": "20-15",
+          "source_recall_percent": 99.02222222222223,
+          "within_TX_pair_cosine": 0.959727868451476,
+          "closest_other_TX_by_centroid_cosine": "8-20",
+          "closest_other_centroid_cosine": 0.8900376445986189,
+          "default_head_errors_by_other_TX": [
+            {
+              "TX": "6-15",
+              "count": 13
+            },
+            {
+              "TX": "20-19",
+              "count": 9
+            },
+            {
+              "TX": "14-10",
+              "count": 8
+            },
+            {
+              "TX": "8-20",
+              "count": 8
+            },
+            {
+              "TX": "14-7",
+              "count": 6
+            }
+          ]
+        },
+        {
+          "TX": "20-19",
+          "source_recall_percent": 95.71111111111111,
+          "within_TX_pair_cosine": 0.9507886021907132,
+          "closest_other_TX_by_centroid_cosine": "14-7",
+          "closest_other_centroid_cosine": 0.92952140778386,
+          "default_head_errors_by_other_TX": [
+            {
+              "TX": "14-7",
+              "count": 139
+            },
+            {
+              "TX": "14-10",
+              "count": 18
+            },
+            {
+              "TX": "20-15",
+              "count": 18
+            },
+            {
+              "TX": "6-15",
+              "count": 14
+            },
+            {
+              "TX": "8-20",
+              "count": 4
+            }
+          ]
+        },
+        {
+          "TX": "6-15",
+          "source_recall_percent": 98.77777777777777,
+          "within_TX_pair_cosine": 0.9024620174505132,
+          "closest_other_TX_by_centroid_cosine": "8-20",
+          "closest_other_centroid_cosine": 0.530943444350449,
+          "default_head_errors_by_other_TX": [
+            {
+              "TX": "14-10",
+              "count": 23
+            },
+            {
+              "TX": "14-7",
+              "count": 11
+            },
+            {
+              "TX": "20-15",
+              "count": 8
+            },
+            {
+              "TX": "20-19",
+              "count": 7
+            },
+            {
+              "TX": "8-20",
+              "count": 6
+            }
+          ]
+        },
+        {
+          "TX": "8-20",
+          "source_recall_percent": 99.2,
+          "within_TX_pair_cosine": 0.9538013064036737,
+          "closest_other_TX_by_centroid_cosine": "20-15",
+          "closest_other_centroid_cosine": 0.8900376445986189,
+          "default_head_errors_by_other_TX": [
+            {
+              "TX": "20-15",
+              "count": 15
+            },
+            {
+              "TX": "6-15",
+              "count": 10
+            },
+            {
+              "TX": "14-10",
+              "count": 6
+            },
+            {
+              "TX": "14-7",
+              "count": 4
+            },
+            {
+              "TX": "20-19",
+              "count": 1
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "BASE_three_seed_mutual_confusion": {
+    "weak20_wrong_as14": {
+      "count": 331,
+      "total_errors": 483,
+      "fraction": 0.6853002070393375
+    },
+    "weak14_wrong_as20": {
+      "count": 112,
+      "total_errors": 278,
+      "fraction": 0.4028776978417266
+    },
+    "both_centroids_mutual_nearest_in_all3": true
+  },
+  "finding": "Both weakTX are each other's nearest raw unit-feature centroid in all3 originalBASE seeds and each other's largest source defaulthead error destination. Source20 errors particularly asymmetric toward14. MEM4 n1 raises both withinclass cosines but also raises their centroid cosine, so withinclass tightening does not demonstrate interclass repulsion or target improvement.",
+  "limits": [
+    "BASE3 is complete; ANCHOR/MEM4/SYM4 feature comparison is seed2701 only",
+    "Raw centroid cosine and within-pair cosine are separate descriptors, not a fitted classifier or a cross-domain decision margin",
+    "No feature means/vectors fitted as classifier; no new head or prototype decisions",
+    "Existing first-seed clean results were already exposed; this is descriptive source analysis, not a new blind selection",
+    "No remaining MEM4 target summary read for this analysis, no candidate retuning/reordering/stopping, all fixed3seed outcomes retained",
+    "Do not extrapolate source confusion destinations to target errors; wait for complete three-seed targetclean/defaulthead evaluation"
+  ],
+  "additional_model_forwards": 0,
+  "additional_training_updates": 0,
+  "U_TX_truth_read": false,
+  "new_target_access": false,
+  "head_fit_updates": 0,
+  "goal": "ACTIVE_UNMET"
+}

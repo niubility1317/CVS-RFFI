@@ -1,0 +1,36 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "33880ebb8b2a9ae55a87756504e20e5262023b69",
+  "rows": [
+    {
+      "row_id": "MEM4-s2026092702",
+      "epoch": 15,
+      "native_updates_at_epoch_end": 3330,
+      "active_SC_updates_at_epoch_end": 2220,
+      "SC_weight": 0.1000000000000002,
+      "SC_loss": 1.9252902435826826,
+      "same_actual_augmented_IQ_reused": true,
+      "extra_model_forwards": 0,
+      "direct_default_head_aux_gradient": false,
+      "U_truth_available": 0,
+      "skipped_nonfinite_updates": 0,
+      "epoch_seconds": 82.36737322807312
+    },
+    {
+      "row_id": "MEM4-s2026092703",
+      "epoch": 15,
+      "native_updates_at_epoch_end": 3330,
+      "active_SC_updates_at_epoch_end": 2220,
+      "SC_weight": 0.1000000000000002,
+      "SC_loss": 1.8753537342355058,
+      "same_actual_augmented_IQ_reused": true,
+      "extra_model_forwards": 0,
+      "direct_default_head_aux_gradient": false,
+      "U_truth_available": 0,
+      "skipped_nonfinite_updates": 0,
+      "epoch_seconds": 82.28986549377441
+    }
+  ],
+  "target_reads_for_this_check": 0,
+  "performance_status": "PENDING_COMPLETE_THREE_SEEDS"
+}
