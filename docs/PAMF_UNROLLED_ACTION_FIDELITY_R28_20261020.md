@@ -23,3 +23,5 @@
 N607普通账户、新不可覆盖root `20261020-diagnostic-restoration-unrolled-action-F50-s2026092701-m5-r28`；GPU池0/1/5/7，最多1条本任务GPU worker，每卡全owner cap2、空闲≥12GB，共享capacity4锁保持到CUDA PID可见。非有限／错误来源／输出碰撞／无法合法预测时保留产物、停止派发、无自动重试；健康其他owner不动。精确commit、命令、环境/CWD、路径、seed和预期artifact见登记。
 
 `REJECTED_EXTRA_GATE`：通用 brainstorming 的额外设计审批、独立spec审批不属于项目八项最小流程；按用户明确的持续研究授权和最小流程推进。该记录不放宽科学数据、checkpoint来源或独立评分权限。
+
+实际结果：**SOURCE_ACTION_PRIORITY_NOT_SUPPORTED**。35 新预测集＋14 原参考集全部完成，735 分组独立复算一致；0 训练/target，所有进程已退出。已知作用＋模拟器噪声代理的平均 NMSE 降低 14.5600%，源 low urban +0.4444 个百分点、中 urban +0.6111 个百分点，未达到 low urban≥+1 的预声明机制条件。末级 prior 是共适应的中间量，直接输出会明显损害身份；该反事实不是理论上界，不晋级 oracle、不追加 target。[完整报告](../automation_reports/CV-SincNet/20261020-diagnostic-restoration-unrolled-action-F50-s2026092701-m5-r28/report.md)。
