@@ -1016,5 +1016,22 @@
       "condition": "Eacharm only if fixed source weakfeature/defaulthead health and actualstored-step execution criteria pass before newtarget access"
     }
   ],
-  "registered_at": "2026-10-19T23:13:31+00:00"
+  "registered_at": "2026-10-19T23:13:31+00:00",
+  "completion": {
+    "status": "ANALYZED_NOT_ADOPTED",
+    "actual_models": 2,
+    "seeds_per_arm": 1,
+    "not_launched_conditional_seeds": [
+      2026092702,
+      2026092703
+    ],
+    "source_gate_before_target": true,
+    "all_predictions_scored": true,
+    "clean_samples_per_model": 168000,
+    "independent_truth_last": true,
+    "adopted_arms": [],
+    "goal_status": "UNMET_ACTIVE",
+    "results_ref": "automation_reports/CV-SincNet/20261020-phase1-FcrossRX-weakTX-actualStep-e50-clean-local-m2-r01/results_summary.json",
+    "conclusion_ref": "automation_reports/CV-SincNet/20261020-phase1-FcrossRX-weakTX-actualStep-e50-clean-local-m2-r01/conclusion.json"
+  }
 }

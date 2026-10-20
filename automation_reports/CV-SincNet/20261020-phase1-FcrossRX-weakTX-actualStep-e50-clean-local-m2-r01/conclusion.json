@@ -1,0 +1,142 @@
+{
+  "status": "ANALYZED_NOT_ADOPTED",
+  "goal_status": "UNMET_ACTIVE",
+  "run_id": "20261020-phase1-FcrossRX-weakTX-actualStep-e50-clean-local-m2-r01",
+  "matched_reference_run": "20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01",
+  "code_config_commit": "16abc8559e80f929cd109a6a64a5051525302a7f",
+  "matching_BASE_accuracy_percent": 85.13928571428572,
+  "actual_seed_count_by_arm": {
+    "STEP_NORM": 1,
+    "UPDATE_CONE": 1
+  },
+  "sample_SD": null,
+  "source_extension": {
+    "status": "SOURCE_EXPANSION_FIXED",
+    "arms": {
+      "STEP_NORM": {
+        "PASS": false,
+        "source_classification_and_execution_health": true,
+        "overall_pp": 0.003703703703705763,
+        "worst_RX_pp": 0,
+        "per_TX_pp": [
+          0,
+          0.11111111111110628,
+          0,
+          0,
+          -0.0888888888888828,
+          0
+        ],
+        "weak_geometry": [
+          {
+            "TX": "14-7",
+            "out_RX_margin_q10_gain": -0.0013004343244060676,
+            "RX_spread_to_gap_ratio": 1.021145755596389,
+            "PASS": false
+          },
+          {
+            "TX": "20-19",
+            "out_RX_margin_q10_gain": 0.0004039760101843034,
+            "RX_spread_to_gap_ratio": 1.0202585004888376,
+            "PASS": false
+          }
+        ]
+      },
+      "UPDATE_CONE": {
+        "PASS": false,
+        "source_classification_and_execution_health": true,
+        "overall_pp": 0.011111111111106187,
+        "worst_RX_pp": 0.11111111111111738,
+        "per_TX_pp": [
+          -0.06666666666667043,
+          -0.022222222222223476,
+          0,
+          0.11111111111111738,
+          0.022222222222223476,
+          0.022222222222223476
+        ],
+        "weak_geometry": [
+          {
+            "TX": "14-7",
+            "out_RX_margin_q10_gain": -0.0008943867873240988,
+            "RX_spread_to_gap_ratio": 0.953802496020564,
+            "PASS": false
+          },
+          {
+            "TX": "20-19",
+            "out_RX_margin_q10_gain": 0.0014660076023665803,
+            "RX_spread_to_gap_ratio": 0.9466380050699614,
+            "PASS": false
+          }
+        ]
+      }
+    },
+    "expand_arms": [],
+    "target_access": false,
+    "criterion": "Each weakTX source outRX feature marginq10>=BASE+.002,RXspread/gap<=1.05x,no zero features; defaulthead overall>=-.2pp,worstRX>=-.5pp,anyTX>=-1pp;2498scheduled,eligible>=99%,nonzero actual-step correction>=10%,no numerical/storage fallback,stored normalized norm error<=.001. Fixed source only, no target-based promotion."
+  },
+  "adopted_arms": [],
+  "base_retained": "Original F+CROSS_RX50",
+  "paired": [
+    {
+      "treatment": "STEP_NORM",
+      "model_seed": 2026092701,
+      "accuracy_pp": 0.16726190476190617,
+      "macro_f1_pp": 0.1941733012389424,
+      "per_TX_pp": [
+        -0.017857142857147235,
+        -0.07857142857142785,
+        0.9785714285714286,
+        0.12142857142856123,
+        -0.06428571428571672,
+        0.06428571428570562
+      ],
+      "weak_TX_mean_pp": 0.02142857142856669,
+      "other_TX_mean_pp": 0.24017857142856758,
+      "worst_RX_pp": -0.09166666666666767,
+      "worst_day_pp": 0.2071428571428613
+    },
+    {
+      "treatment": "UPDATE_CONE",
+      "model_seed": 2026092701,
+      "accuracy_pp": -0.07380952380953154,
+      "macro_f1_pp": -0.08516114870404934,
+      "per_TX_pp": [
+        -0.014285714285722229,
+        0.07142857142857784,
+        -0.5607142857142811,
+        0.03928571428570837,
+        -0.003571428571425006,
+        0.024999999999997247
+      ],
+      "weak_TX_mean_pp": 0.055357142857143105,
+      "other_TX_mean_pp": -0.13839285714285776,
+      "worst_RX_pp": -0.09583333333333943,
+      "worst_day_pp": -0.09761904761904638
+    }
+  ],
+  "actual_correct_count_change": [
+    {
+      "row_id": "STEP_NORM-s2026092701",
+      "weak": 12,
+      "other": 269
+    },
+    {
+      "row_id": "UPDATE_CONE-s2026092701",
+      "weak": 31,
+      "other": -155
+    }
+  ],
+  "scientific_conclusion": "Actual current-L first-order feature risk projection executes as designed and removes positive directional risks within fixed storage tolerance. It does not improve the source weak14-7 outRX feature-margin tail; source20-19 improvement below prespecified .002. Target UPDATE_CONE weak recalls +.07143/+ .03929pp are too small and unreplicated, with otherTX20-15 -.56071pp and overall -.07381pp. STEP_NORM overall +.16726pp driven mainly by otherTX20-15, while weak14-7 -.07857pp. Neither demonstrates stable improvement of both weak transmitters while retaining other classes.",
+  "no_new_target_driven_tuning": true,
+  "target_feedback": false,
+  "head_fit_updates": 0,
+  "satellite_training": false,
+  "test_views": [
+    "clean"
+  ],
+  "limitations": [
+    "Only2026092701 perarm; no sampleSD/stability claim. Seeds02/03 not launched because fixed source gate failed before new target.",
+    "Historical85.1139% method anchor is not the matched local seed baseline.",
+    "Exposed exploratory Phase1 clean benchmark; no new blind, Phase2 or satellite claim."
+  ]
+}

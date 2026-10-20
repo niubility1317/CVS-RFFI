@@ -1,0 +1,896 @@
+{
+  "status": "DESCRIPTIVE_SOURCE_LOG_ANALYSIS",
+  "source_only": true,
+  "target_access": false,
+  "rows": [
+    {
+      "row_id": "STEP_NORM-s2026092701",
+      "treatment": "STEP_NORM",
+      "seed": 2026092701,
+      "all": {
+        "native_steps": 11100,
+        "scheduled": 2498,
+        "eligible": 2498,
+        "full_strength": 1998,
+        "full_strength_nonfallback": 1998,
+        "actual_changes": 2047,
+        "fallback_events": 0,
+        "constraint_enforced": 0,
+        "retained_normalized_step_norm_ratio": {
+          "n": 2498,
+          "mean": 0.9992680894164789,
+          "median": 0.9998927113003492,
+          "min": 0.97456934298445,
+          "max": 1.000088243313405
+        },
+        "actual_raw_step_cosine": {
+          "n": 2498,
+          "mean": 0.999999871422124,
+          "median": 0.9999999986605141,
+          "min": 0.9999695794988546,
+          "max": 1.0000000000000604
+        },
+        "applied_normalized_correction_fraction": {
+          "n": 2498,
+          "mean": 0.0007360143822819176,
+          "median": 0.00008565335042595799,
+          "min": 0,
+          "max": 0.025883644271766752
+        },
+        "active_QP_constraints": {
+          "weak14-7_CE": 823,
+          "weak20-19_CE": 808,
+          "other4_CE": 465
+        },
+        "per_risk": {
+          "weak14-7_CE": {
+            "full_strength_nonfallback_events": 1998,
+            "raw": {
+              "n": 1998,
+              "mean": -0.01236108813809622,
+              "median": -0.009771200700456999,
+              "min": -0.266914760057647,
+              "max": 0.2236893159375783
+            },
+            "counterfactual_candidate": {
+              "n": 1998,
+              "mean": -0.01913679816651957,
+              "median": -0.006724804417478341,
+              "min": -0.266914760057647,
+              "max": 0.0003973393520991024
+            },
+            "actually_applied": {
+              "n": 1998,
+              "mean": -0.012356530167169833,
+              "median": -0.009771200700456999,
+              "min": -0.266914760057647,
+              "max": 0.21802839926968204
+            },
+            "raw_positive_strict": 772,
+            "applied_positive_strict": 772,
+            "raw_increase_beyond_storage_tolerance": 751,
+            "applied_increase_beyond_storage_tolerance": 751,
+            "raw_increase_removed_beyond_tolerance": 0,
+            "applied_risk_change": {
+              "n": 1998,
+              "mean": 0.00000455797092638736,
+              "median": 0,
+              "min": -0.005660916667896254,
+              "max": 0.003872429374224662
+            }
+          },
+          "weak20-19_CE": {
+            "full_strength_nonfallback_events": 1998,
+            "raw": {
+              "n": 1998,
+              "mean": -0.01265576364849042,
+              "median": -0.009654856377090624,
+              "min": -0.36537682104943897,
+              "max": 0.2169087272181646
+            },
+            "counterfactual_candidate": {
+              "n": 1998,
+              "mean": -0.019746454377398866,
+              "median": -0.006609026412130536,
+              "min": -0.36537682104943897,
+              "max": 0.00040922284949122
+            },
+            "actually_applied": {
+              "n": 1998,
+              "mean": -0.012661324618827623,
+              "median": -0.009653847243598374,
+              "min": -0.36537682104943897,
+              "max": 0.21177531093073174
+            },
+            "raw_positive_strict": 742,
+            "applied_positive_strict": 742,
+            "raw_increase_beyond_storage_tolerance": 720,
+            "applied_increase_beyond_storage_tolerance": 720,
+            "raw_increase_removed_beyond_tolerance": 0,
+            "applied_risk_change": {
+              "n": 1998,
+              "mean": -0.000005560970337203881,
+              "median": 0,
+              "min": -0.005133416287432857,
+              "max": 0.003165431727070539
+            }
+          },
+          "other4_CE": {
+            "full_strength_nonfallback_events": 1998,
+            "raw": {
+              "n": 1998,
+              "mean": -0.025499642108906182,
+              "median": -0.018311773265520852,
+              "min": -0.313845829077244,
+              "max": 0.16350069828906305
+            },
+            "counterfactual_candidate": {
+              "n": 1998,
+              "mean": -0.025663248771975396,
+              "median": -0.01669902156726448,
+              "min": -0.313845829077244,
+              "max": 0.0004514888018346555
+            },
+            "actually_applied": {
+              "n": 1998,
+              "mean": -0.02545345722560135,
+              "median": -0.018311533362793314,
+              "min": -0.313845829077244,
+              "max": 0.16130042053717422
+            },
+            "raw_positive_strict": 402,
+            "applied_positive_strict": 402,
+            "raw_increase_beyond_storage_tolerance": 386,
+            "applied_increase_beyond_storage_tolerance": 386,
+            "raw_increase_removed_beyond_tolerance": 0,
+            "applied_risk_change": {
+              "n": 1998,
+              "mean": 0.000046184883304835346,
+              "median": 6.266355084567216e-8,
+              "min": -0.0022002777518888295,
+              "max": 0.0044212162710406955
+            }
+          }
+        }
+      },
+      "L_epochs1_to33": {
+        "native_steps": 7326,
+        "scheduled": 1554,
+        "eligible": 1554,
+        "full_strength": 1054,
+        "full_strength_nonfallback": 1054,
+        "actual_changes": 1273,
+        "fallback_events": 0,
+        "constraint_enforced": 0,
+        "retained_normalized_step_norm_ratio": {
+          "n": 1554,
+          "mean": 0.9993796635266617,
+          "median": 0.9998829080915405,
+          "min": 0.9854333007984496,
+          "max": 1.000003750992314
+        },
+        "actual_raw_step_cosine": {
+          "n": 1554,
+          "mean": 0.9999999959284379,
+          "median": 0.999999998467393,
+          "min": 0.999999950329725,
+          "max": 1.0000000000000173
+        },
+        "applied_normalized_correction_fraction": {
+          "n": 1554,
+          "mean": 0.0006201142470943676,
+          "median": 0.00011328755288706309,
+          "min": 0,
+          "max": 0.014567156830070538
+        },
+        "active_QP_constraints": {
+          "weak14-7_CE": 429,
+          "weak20-19_CE": 422,
+          "other4_CE": 246
+        },
+        "per_risk": {
+          "weak14-7_CE": {
+            "full_strength_nonfallback_events": 1054,
+            "raw": {
+              "n": 1054,
+              "mean": -0.012242490800526475,
+              "median": -0.010370309499855984,
+              "min": -0.266914760057647,
+              "max": 0.16806836841139827
+            },
+            "counterfactual_candidate": {
+              "n": 1054,
+              "mean": -0.019055531948770455,
+              "median": -0.007481916915594955,
+              "min": -0.266914760057647,
+              "max": 0.000004369069182827371
+            },
+            "actually_applied": {
+              "n": 1054,
+              "mean": -0.012237822981789591,
+              "median": -0.010370313722479428,
+              "min": -0.266914760057647,
+              "max": 0.16567751923528246
+            },
+            "raw_positive_strict": 406,
+            "applied_positive_strict": 406,
+            "raw_increase_beyond_storage_tolerance": 390,
+            "applied_increase_beyond_storage_tolerance": 390,
+            "raw_increase_removed_beyond_tolerance": 0,
+            "applied_risk_change": {
+              "n": 1054,
+              "mean": 0.000004667818736884614,
+              "median": 0,
+              "min": -0.002390849176115817,
+              "max": 0.0023834588076708796
+            }
+          },
+          "weak20-19_CE": {
+            "full_strength_nonfallback_events": 1054,
+            "raw": {
+              "n": 1054,
+              "mean": -0.013250153096958246,
+              "median": -0.009621219055435826,
+              "min": -0.36537682104943897,
+              "max": 0.156599060801093
+            },
+            "counterfactual_candidate": {
+              "n": 1054,
+              "mean": -0.019343308432794745,
+              "median": -0.006623674160219511,
+              "min": -0.36537682104943897,
+              "max": 0.000004204257230127102
+            },
+            "actually_applied": {
+              "n": 1054,
+              "mean": -0.013250118525851907,
+              "median": -0.009621175700163867,
+              "min": -0.36537682104943897,
+              "max": 0.1546659826858797
+            },
+            "raw_positive_strict": 392,
+            "applied_positive_strict": 392,
+            "raw_increase_beyond_storage_tolerance": 378,
+            "applied_increase_beyond_storage_tolerance": 378,
+            "raw_increase_removed_beyond_tolerance": 0,
+            "applied_risk_change": {
+              "n": 1054,
+              "mean": 3.4571106339325316e-8,
+              "median": 0,
+              "min": -0.0019330781152133159,
+              "max": 0.002564378615021512
+            }
+          },
+          "other4_CE": {
+            "full_strength_nonfallback_events": 1054,
+            "raw": {
+              "n": 1054,
+              "mean": -0.024665700396552394,
+              "median": -0.017864973723327904,
+              "min": -0.22077567195455006,
+              "max": 0.16350069828906305
+            },
+            "counterfactual_candidate": {
+              "n": 1054,
+              "mean": -0.02525321507692627,
+              "median": -0.0163036125983942,
+              "min": -0.2027219674660215,
+              "max": 0.000003979262015678702
+            },
+            "actually_applied": {
+              "n": 1054,
+              "mean": -0.02463120866777641,
+              "median": -0.017854119508466326,
+              "min": -0.21844159770772867,
+              "max": 0.16130042053717422
+            },
+            "raw_positive_strict": 217,
+            "applied_positive_strict": 217,
+            "raw_increase_beyond_storage_tolerance": 208,
+            "applied_increase_beyond_storage_tolerance": 208,
+            "raw_increase_removed_beyond_tolerance": 0,
+            "applied_risk_change": {
+              "n": 1054,
+              "mean": 0.00003449172877598345,
+              "median": 2.4892980135093196e-7,
+              "min": -0.0022002777518888295,
+              "max": 0.002762460317799087
+            }
+          }
+        }
+      },
+      "U_epochs34_to50": {
+        "native_steps": 3774,
+        "scheduled": 944,
+        "eligible": 944,
+        "full_strength": 944,
+        "full_strength_nonfallback": 944,
+        "actual_changes": 774,
+        "fallback_events": 0,
+        "constraint_enforced": 0,
+        "retained_normalized_step_norm_ratio": {
+          "n": 944,
+          "mean": 0.9990844176291654,
+          "median": 0.9999072305608268,
+          "min": 0.97456934298445,
+          "max": 1.000088243313405
+        },
+        "actual_raw_step_cosine": {
+          "n": 944,
+          "mean": 0.9999996664615183,
+          "median": 0.9999999991739008,
+          "min": 0.9999695794988546,
+          "max": 1.0000000000000604
+        },
+        "applied_normalized_correction_fraction": {
+          "n": 944,
+          "mean": 0.0009268076133004057,
+          "median": 0.000043551272249750715,
+          "min": 0,
+          "max": 0.025883644271766752
+        },
+        "active_QP_constraints": {
+          "weak14-7_CE": 394,
+          "weak20-19_CE": 386,
+          "other4_CE": 219
+        },
+        "per_risk": {
+          "weak14-7_CE": {
+            "full_strength_nonfallback_events": 944,
+            "raw": {
+              "n": 944,
+              "mean": -0.012493505080679387,
+              "median": -0.00962542744853414,
+              "min": -0.26450669411119115,
+              "max": 0.2236893159375783
+            },
+            "counterfactual_candidate": {
+              "n": 944,
+              "mean": -0.019227533964726734,
+              "median": -0.006238836511595291,
+              "min": -0.2421285771437507,
+              "max": 0.0003973393520991024
+            },
+            "actually_applied": {
+              "n": 944,
+              "mean": -0.012489069757626162,
+              "median": -0.00962542744853414,
+              "min": -0.2623276055286046,
+              "max": 0.21802839926968204
+            },
+            "raw_positive_strict": 366,
+            "applied_positive_strict": 366,
+            "raw_increase_beyond_storage_tolerance": 361,
+            "applied_increase_beyond_storage_tolerance": 361,
+            "raw_increase_removed_beyond_tolerance": 0,
+            "applied_risk_change": {
+              "n": 944,
+              "mean": 0.000004435323053226232,
+              "median": 0,
+              "min": -0.005660916667896254,
+              "max": 0.003872429374224662
+            }
+          },
+          "weak20-19_CE": {
+            "full_strength_nonfallback_events": 944,
+            "raw": {
+              "n": 944,
+              "mean": -0.011992112717679944,
+              "median": -0.010096114087615151,
+              "min": -0.26568669287091645,
+              "max": 0.2169087272181646
+            },
+            "counterfactual_candidate": {
+              "n": 944,
+              "mean": -0.020196577074022535,
+              "median": -0.006505430071257973,
+              "min": -0.26568669287091645,
+              "max": 0.00040922284949122
+            },
+            "actually_applied": {
+              "n": 944,
+              "mean": -0.012003921252298391,
+              "median": -0.01009611326822362,
+              "min": -0.26568669287091645,
+              "max": 0.21177531093073174
+            },
+            "raw_positive_strict": 350,
+            "applied_positive_strict": 350,
+            "raw_increase_beyond_storage_tolerance": 342,
+            "applied_increase_beyond_storage_tolerance": 342,
+            "raw_increase_removed_beyond_tolerance": 0,
+            "applied_risk_change": {
+              "n": 944,
+              "mean": -0.000011808534618448096,
+              "median": 0,
+              "min": -0.005133416287432857,
+              "max": 0.003165431727070539
+            }
+          },
+          "other4_CE": {
+            "full_strength_nonfallback_events": 944,
+            "raw": {
+              "n": 944,
+              "mean": -0.02643075923265713,
+              "median": -0.01892954915300795,
+              "min": -0.313845829077244,
+              "max": 0.14302002634862832
+            },
+            "counterfactual_candidate": {
+              "n": 944,
+              "mean": -0.026121061817083208,
+              "median": -0.01706572888455723,
+              "min": -0.313845829077244,
+              "max": 0.0004514888018346555
+            },
+            "actually_applied": {
+              "n": 944,
+              "mean": -0.026371518645037242,
+              "median": -0.018929084881675252,
+              "min": -0.313845829077244,
+              "max": 0.1415478751296193
+            },
+            "raw_positive_strict": 185,
+            "applied_positive_strict": 185,
+            "raw_increase_beyond_storage_tolerance": 178,
+            "applied_increase_beyond_storage_tolerance": 178,
+            "raw_increase_removed_beyond_tolerance": 0,
+            "applied_risk_change": {
+              "n": 944,
+              "mean": 0.0000592405876198882,
+              "median": 6.823131641717911e-9,
+              "min": -0.0015366562583540855,
+              "max": 0.0044212162710406955
+            }
+          }
+        }
+      }
+    },
+    {
+      "row_id": "UPDATE_CONE-s2026092701",
+      "treatment": "UPDATE_CONE",
+      "seed": 2026092701,
+      "all": {
+        "native_steps": 11100,
+        "scheduled": 2498,
+        "eligible": 2498,
+        "full_strength": 1998,
+        "full_strength_nonfallback": 1998,
+        "actual_changes": 2061,
+        "fallback_events": 0,
+        "constraint_enforced": 1998,
+        "retained_normalized_step_norm_ratio": {
+          "n": 2498,
+          "mean": 0.9992905609027958,
+          "median": 0.9999053087279393,
+          "min": 0.976090764724144,
+          "max": 1.0001238243417663
+        },
+        "actual_raw_step_cosine": {
+          "n": 2498,
+          "mean": 0.999326344157095,
+          "median": 0.9999192315073627,
+          "min": 0.976090477926949,
+          "max": 1.0000000000000853
+        },
+        "applied_normalized_correction_fraction": {
+          "n": 2498,
+          "mean": 0.022205070462208654,
+          "median": 0.01270946166076283,
+          "min": 0,
+          "max": 0.21736462200737813
+        },
+        "active_QP_constraints": {
+          "weak14-7_CE": 827,
+          "weak20-19_CE": 829,
+          "other4_CE": 474
+        },
+        "per_risk": {
+          "weak14-7_CE": {
+            "full_strength_nonfallback_events": 1998,
+            "raw": {
+              "n": 1998,
+              "mean": -0.011801705510073899,
+              "median": -0.008622820270701884,
+              "min": -0.29972761041950485,
+              "max": 0.21736458668228212
+            },
+            "counterfactual_candidate": {
+              "n": 1998,
+              "mean": -0.018339527745552305,
+              "median": -0.005906986534906025,
+              "min": -0.26221523918720857,
+              "max": 0.00034208114449921846
+            },
+            "actually_applied": {
+              "n": 1998,
+              "mean": -0.018339527745552305,
+              "median": -0.005906986534906025,
+              "min": -0.26221523918720857,
+              "max": 0.00034208114449921846
+            },
+            "raw_positive_strict": 766,
+            "applied_positive_strict": 701,
+            "raw_increase_beyond_storage_tolerance": 744,
+            "applied_increase_beyond_storage_tolerance": 0,
+            "raw_increase_removed_beyond_tolerance": 744,
+            "applied_risk_change": {
+              "n": 1998,
+              "mean": -0.006537822235478408,
+              "median": 0,
+              "min": -0.21736458187965912,
+              "max": 0.10995810471153737
+            }
+          },
+          "weak20-19_CE": {
+            "full_strength_nonfallback_events": 1998,
+            "raw": {
+              "n": 1998,
+              "mean": -0.012025569641277224,
+              "median": -0.008250525153599829,
+              "min": -0.3977558627786263,
+              "max": 0.20885028404917477
+            },
+            "counterfactual_candidate": {
+              "n": 1998,
+              "mean": -0.01866187222459081,
+              "median": -0.004922957300375825,
+              "min": -0.3977558627786263,
+              "max": 0.0003960648080066382
+            },
+            "actually_applied": {
+              "n": 1998,
+              "mean": -0.01866187222459081,
+              "median": -0.004922957300375825,
+              "min": -0.3977558627786263,
+              "max": 0.0003960648080066382
+            },
+            "raw_positive_strict": 760,
+            "applied_positive_strict": 678,
+            "raw_increase_beyond_storage_tolerance": 738,
+            "applied_increase_beyond_storage_tolerance": 0,
+            "raw_increase_removed_beyond_tolerance": 738,
+            "applied_risk_change": {
+              "n": 1998,
+              "mean": -0.006636302583313588,
+              "median": 0,
+              "min": -0.20884311166558353,
+              "max": 0.09686710191095252
+            }
+          },
+          "other4_CE": {
+            "full_strength_nonfallback_events": 1998,
+            "raw": {
+              "n": 1998,
+              "mean": -0.02536283562096757,
+              "median": -0.018488580211126038,
+              "min": -0.36383987464887596,
+              "max": 0.17466028965983696
+            },
+            "counterfactual_candidate": {
+              "n": 1998,
+              "mean": -0.025595266808299738,
+              "median": -0.0171968088486332,
+              "min": -0.36398699180679217,
+              "max": 0.00035394719367933626
+            },
+            "actually_applied": {
+              "n": 1998,
+              "mean": -0.025595266808299738,
+              "median": -0.0171968088486332,
+              "min": -0.36398699180679217,
+              "max": 0.00035394719367933626
+            },
+            "raw_positive_strict": 412,
+            "applied_positive_strict": 419,
+            "raw_increase_beyond_storage_tolerance": 391,
+            "applied_increase_beyond_storage_tolerance": 0,
+            "raw_increase_removed_beyond_tolerance": 391,
+            "applied_risk_change": {
+              "n": 1998,
+              "mean": -0.0002324311873321678,
+              "median": 0,
+              "min": -0.17466014116361606,
+              "max": 0.1428823821518741
+            }
+          }
+        }
+      },
+      "L_epochs1_to33": {
+        "native_steps": 7326,
+        "scheduled": 1554,
+        "eligible": 1554,
+        "full_strength": 1054,
+        "full_strength_nonfallback": 1054,
+        "actual_changes": 1282,
+        "fallback_events": 0,
+        "constraint_enforced": 1054,
+        "retained_normalized_step_norm_ratio": {
+          "n": 1554,
+          "mean": 0.9993990766358679,
+          "median": 0.9999047747249692,
+          "min": 0.976090764724144,
+          "max": 1.0000066680872852
+        },
+        "actual_raw_step_cosine": {
+          "n": 1554,
+          "mean": 0.9994711068925708,
+          "median": 0.9999414189807265,
+          "min": 0.976090477926949,
+          "max": 1.00000000000002
+        },
+        "applied_normalized_correction_fraction": {
+          "n": 1554,
+          "mean": 0.019474804444676426,
+          "median": 0.010824275842581116,
+          "min": 0,
+          "max": 0.21736462200737813
+        },
+        "active_QP_constraints": {
+          "weak14-7_CE": 432,
+          "weak20-19_CE": 429,
+          "other4_CE": 259
+        },
+        "per_risk": {
+          "weak14-7_CE": {
+            "full_strength_nonfallback_events": 1054,
+            "raw": {
+              "n": 1054,
+              "mean": -0.011719016782008148,
+              "median": -0.009283690787326892,
+              "min": -0.23874526004341737,
+              "max": 0.21736458668228212
+            },
+            "counterfactual_candidate": {
+              "n": 1054,
+              "mean": -0.018190906626983774,
+              "median": -0.006402136923949279,
+              "min": -0.22081452433856483,
+              "max": 0.000005301959470113713
+            },
+            "actually_applied": {
+              "n": 1054,
+              "mean": -0.018190906626983774,
+              "median": -0.006402136923949279,
+              "min": -0.22081452433856483,
+              "max": 0.000005301959470113713
+            },
+            "raw_positive_strict": 406,
+            "applied_positive_strict": 348,
+            "raw_increase_beyond_storage_tolerance": 395,
+            "applied_increase_beyond_storage_tolerance": 0,
+            "raw_increase_removed_beyond_tolerance": 395,
+            "applied_risk_change": {
+              "n": 1054,
+              "mean": -0.006471889844975626,
+              "median": 0,
+              "min": -0.21736458187965912,
+              "max": 0.07502147094196389
+            }
+          },
+          "weak20-19_CE": {
+            "full_strength_nonfallback_events": 1054,
+            "raw": {
+              "n": 1054,
+              "mean": -0.012642678976983152,
+              "median": -0.007604984046336588,
+              "min": -0.3977558627786263,
+              "max": 0.2063301157451953
+            },
+            "counterfactual_candidate": {
+              "n": 1054,
+              "mean": -0.01837262618843274,
+              "median": -0.004630076732862416,
+              "min": -0.3977558627786263,
+              "max": 0.000003927984698288307
+            },
+            "actually_applied": {
+              "n": 1054,
+              "mean": -0.01837262618843274,
+              "median": -0.004630076732862416,
+              "min": -0.3977558627786263,
+              "max": 0.000003927984698288307
+            },
+            "raw_positive_strict": 392,
+            "applied_positive_strict": 331,
+            "raw_increase_beyond_storage_tolerance": 385,
+            "applied_increase_beyond_storage_tolerance": 0,
+            "raw_increase_removed_beyond_tolerance": 385,
+            "applied_risk_change": {
+              "n": 1054,
+              "mean": -0.005729947211449591,
+              "median": 0,
+              "min": -0.20632989428652873,
+              "max": 0.08473499145414837
+            }
+          },
+          "other4_CE": {
+            "full_strength_nonfallback_events": 1054,
+            "raw": {
+              "n": 1054,
+              "mean": -0.02397791039368704,
+              "median": -0.01753940378024162,
+              "min": -0.22105602365093047,
+              "max": 0.14584299143611731
+            },
+            "counterfactual_candidate": {
+              "n": 1054,
+              "mean": -0.024615661832169376,
+              "median": -0.01685427296869615,
+              "min": -0.19726556981555915,
+              "max": 0.0000045730119103466545
+            },
+            "actually_applied": {
+              "n": 1054,
+              "mean": -0.024615661832169376,
+              "median": -0.01685427296869615,
+              "min": -0.19726556981555915,
+              "max": 0.0000045730119103466545
+            },
+            "raw_positive_strict": 229,
+            "applied_positive_strict": 225,
+            "raw_increase_beyond_storage_tolerance": 217,
+            "applied_increase_beyond_storage_tolerance": 0,
+            "raw_increase_removed_beyond_tolerance": 217,
+            "applied_risk_change": {
+              "n": 1054,
+              "mean": -0.0006377514384823369,
+              "median": 0,
+              "min": -0.1458428596691489,
+              "max": 0.10078040875673654
+            }
+          }
+        }
+      },
+      "U_epochs34_to50": {
+        "native_steps": 3774,
+        "scheduled": 944,
+        "eligible": 944,
+        "full_strength": 944,
+        "full_strength_nonfallback": 944,
+        "actual_changes": 779,
+        "fallback_events": 0,
+        "constraint_enforced": 944,
+        "retained_normalized_step_norm_ratio": {
+          "n": 944,
+          "mean": 0.9991119237744122,
+          "median": 0.9999067736235911,
+          "min": 0.9776514840382744,
+          "max": 1.0001238243417663
+        },
+        "actual_raw_step_cosine": {
+          "n": 944,
+          "mean": 0.9990880377048393,
+          "median": 0.9998649709731884,
+          "min": 0.9775591530536604,
+          "max": 1.0000000000000853
+        },
+        "applied_normalized_correction_fraction": {
+          "n": 944,
+          "mean": 0.02669959735971404,
+          "median": 0.016433683910897938,
+          "min": 0,
+          "max": 0.21066112789500777
+        },
+        "active_QP_constraints": {
+          "weak14-7_CE": 395,
+          "weak20-19_CE": 400,
+          "other4_CE": 215
+        },
+        "per_risk": {
+          "weak14-7_CE": {
+            "full_strength_nonfallback_events": 944,
+            "raw": {
+              "n": 944,
+              "mean": -0.011894029577215106,
+              "median": -0.007963348603593682,
+              "min": -0.29972761041950485,
+              "max": 0.21064810925034974
+            },
+            "counterfactual_candidate": {
+              "n": 944,
+              "mean": -0.018505467002937086,
+              "median": -0.005300066841156721,
+              "min": -0.26221523918720857,
+              "max": 0.00034208114449921846
+            },
+            "actually_applied": {
+              "n": 944,
+              "mean": -0.018505467002937086,
+              "median": -0.005300066841156721,
+              "min": -0.26221523918720857,
+              "max": 0.00034208114449921846
+            },
+            "raw_positive_strict": 360,
+            "applied_positive_strict": 353,
+            "raw_increase_beyond_storage_tolerance": 349,
+            "applied_increase_beyond_storage_tolerance": 0,
+            "raw_increase_removed_beyond_tolerance": 349,
+            "applied_risk_change": {
+              "n": 944,
+              "mean": -0.006611437425721981,
+              "median": 0,
+              "min": -0.2105597736550442,
+              "max": 0.10995810471153737
+            }
+          },
+          "weak20-19_CE": {
+            "full_strength_nonfallback_events": 944,
+            "raw": {
+              "n": 944,
+              "mean": -0.011336551378741157,
+              "median": -0.008716396489948416,
+              "min": -0.3921449918130243,
+              "max": 0.20885028404917477
+            },
+            "counterfactual_candidate": {
+              "n": 944,
+              "mean": -0.01898482277767408,
+              "median": -0.005077129998926134,
+              "min": -0.3899726422891293,
+              "max": 0.0003960648080066382
+            },
+            "actually_applied": {
+              "n": 944,
+              "mean": -0.01898482277767408,
+              "median": -0.005077129998926134,
+              "min": -0.3899726422891293,
+              "max": 0.0003960648080066382
+            },
+            "raw_positive_strict": 368,
+            "applied_positive_strict": 347,
+            "raw_increase_beyond_storage_tolerance": 353,
+            "applied_increase_beyond_storage_tolerance": 0,
+            "raw_increase_removed_beyond_tolerance": 353,
+            "applied_risk_change": {
+              "n": 944,
+              "mean": -0.007648271398932924,
+              "median": 0,
+              "min": -0.20884311166558353,
+              "max": 0.09686710191095252
+            }
+          },
+          "other4_CE": {
+            "full_strength_nonfallback_events": 944,
+            "raw": {
+              "n": 944,
+              "mean": -0.026909139847189692,
+              "median": -0.01971415889197286,
+              "min": -0.36383987464887596,
+              "max": 0.17466028965983696
+            },
+            "counterfactual_candidate": {
+              "n": 944,
+              "mean": -0.026689020669360547,
+              "median": -0.01732293345202842,
+              "min": -0.36398699180679217,
+              "max": 0.00035394719367933626
+            },
+            "actually_applied": {
+              "n": 944,
+              "mean": -0.026689020669360547,
+              "median": -0.01732293345202842,
+              "min": -0.36398699180679217,
+              "max": 0.00035394719367933626
+            },
+            "raw_positive_strict": 183,
+            "applied_positive_strict": 194,
+            "raw_increase_beyond_storage_tolerance": 174,
+            "applied_increase_beyond_storage_tolerance": 0,
+            "raw_increase_removed_beyond_tolerance": 174,
+            "applied_risk_change": {
+              "n": 944,
+              "mean": 0.00022011917782914392,
+              "median": 0,
+              "min": -0.17466014116361606,
+              "max": 0.1428823821518741
+            }
+          }
+        }
+      }
+    }
+  ],
+  "relative_storage_tolerance": 0.001,
+  "normalization": "Each risk dot divided by same-state RAW normalized step L2norm. Unit-risk normal in native-step per-block RMS metric. Signs describe old-head first-order sourceCE changes only.",
+  "limitation": "Not measured nonlinear CE changes or post-update-head risks, and not heldRX/target performance. Each run has its own trajectory; candidate counterfactual and actually-applied risks are separate. Strict-positive floating residuals differ from residuals beyond fixed storage tolerance."
+}

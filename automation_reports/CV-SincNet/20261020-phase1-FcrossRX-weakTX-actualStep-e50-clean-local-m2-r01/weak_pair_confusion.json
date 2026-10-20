@@ -1,0 +1,115 @@
+{
+  "classes": [
+    "14-10",
+    "14-7",
+    "20-15",
+    "20-19",
+    "6-15",
+    "8-20"
+  ],
+  "rows": [
+    {
+      "row_id": "STEP_NORM-s2026092701",
+      "TX": {
+        "14-7": {
+          "current": {
+            "support": 28000,
+            "correct": 18438,
+            "recall_percent": 65.85,
+            "predicted_as_other_weak": 8725,
+            "predicted_as_other_four": 837
+          },
+          "reused_BASE": {
+            "support": 28000,
+            "correct": 18460,
+            "recall_percent": 65.92857142857143,
+            "predicted_as_other_weak": 8726,
+            "predicted_as_other_four": 814
+          },
+          "change": {
+            "correct": -22,
+            "weak_pair_errors": -1,
+            "other_errors": 23
+          }
+        },
+        "20-19": {
+          "current": {
+            "support": 28000,
+            "correct": 20606,
+            "recall_percent": 73.59285714285714,
+            "predicted_as_other_weak": 4829,
+            "predicted_as_other_four": 2565
+          },
+          "reused_BASE": {
+            "support": 28000,
+            "correct": 20572,
+            "recall_percent": 73.47142857142858,
+            "predicted_as_other_weak": 4493,
+            "predicted_as_other_four": 2935
+          },
+          "change": {
+            "correct": 34,
+            "weak_pair_errors": 336,
+            "other_errors": -370
+          }
+        }
+      },
+      "correct_count_change": {
+        "weak": 12,
+        "other": 269
+      }
+    },
+    {
+      "row_id": "UPDATE_CONE-s2026092701",
+      "TX": {
+        "14-7": {
+          "current": {
+            "support": 28000,
+            "correct": 18480,
+            "recall_percent": 66,
+            "predicted_as_other_weak": 8668,
+            "predicted_as_other_four": 852
+          },
+          "reused_BASE": {
+            "support": 28000,
+            "correct": 18460,
+            "recall_percent": 65.92857142857143,
+            "predicted_as_other_weak": 8726,
+            "predicted_as_other_four": 814
+          },
+          "change": {
+            "correct": 20,
+            "weak_pair_errors": -58,
+            "other_errors": 38
+          }
+        },
+        "20-19": {
+          "current": {
+            "support": 28000,
+            "correct": 20583,
+            "recall_percent": 73.51071428571429,
+            "predicted_as_other_weak": 4373,
+            "predicted_as_other_four": 3044
+          },
+          "reused_BASE": {
+            "support": 28000,
+            "correct": 20572,
+            "recall_percent": 73.47142857142858,
+            "predicted_as_other_weak": 4493,
+            "predicted_as_other_four": 2935
+          },
+          "change": {
+            "correct": 11,
+            "weak_pair_errors": -120,
+            "other_errors": 109
+          }
+        }
+      },
+      "correct_count_change": {
+        "weak": 31,
+        "other": -155
+      }
+    }
+  ],
+  "interpretation": "Counts are post-score descriptive clean confusion only. No parameter/threshold/checkpoint/seed decision uses target counts."
+}
