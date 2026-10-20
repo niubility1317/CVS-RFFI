@@ -411,3 +411,5 @@
 本轮记录：[源clean处固定特征和默认后验Jacobian二次约束](by_method/source_clean_tangent.md)。
 
 本轮记录：[冻结三F帧级与复采样点级梯度一致约束](by_method/teacher_gradient_agreement.md)。
+
+本轮记录：[冻结原F多尺度汇总与时序特征辅助IQ恢复](by_method/spatial_F_condition.md)。
