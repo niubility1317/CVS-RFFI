@@ -99,3 +99,12 @@ R02已冻结源预测显示，low urban换类样本的原F置信度均值约.617
 
 
 R03 激活校准精简完成结论：两候选均未通过固定源域资格，0新目标预测；未交付能保持目标性能的结构压缩版本。全量20轮日志、source七视图资格、自动选择/目标范围、完整成本和逐场景/逐TX/RX/day证据均见[本轮报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-calibrated-source-s2026092701-m2-r03/report.md)。不从目标分数继续调参、替换父模型或补测落选者；完整持续目标保持ACTIVE，尚未证明最大可达精简或70%/接近clean全部要求。
+
+
+## R04 冻结 F 知识约束精简（实际训练中）
+
+[R04登记](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-task-source-s2026092701-m2-r04/report.md)：step_norm_task3118001（−33.1629%）与activation_task3775105（−19.0773%），仅原R17初始化，不加载失败学生。依据R02已保存源预测配对诊断，加入冻结原F50/defaulthead的T1后验KL及单位160维特征距离，教师参照同输入原R17恢复结果；原10倍三步IQ蒸馏保持。只更新精简prior，0新TX/V/target标签训练，原F/默认头0更新；明确使用源监督F知识，不称F-free无监督。E20/4940/原完整L-U顺序不变，Fteacher/student各1260000前向及输入反传成本单列；stepnorm无校准，activation额外512源LU校准。
+
+本轮源规则改为健康筛查：每视图accuracy≥原R17−1个百分点及原波形护栏。该规则仅适用R04，不追溯重判或补测R01至R03，不将不同规则的合格率当作性能提高。所有源候选完成后按最少参数只选一个自动全目标或0target，无fallback；最终目标仍按七场景原始正确数逐项≥原R17、0下降。
+
+19项检查和唯一独立P0/P1审查PASS；方法commit `a310b3b5ff30e23584e7bc950e8a0ff96ac685fb` 已推送/OID一致，归档SHA/远端编译/真实原权重2Ls smoke PASS，实际F输入梯度有限非零且F/默认头冻结。GPU4/5两source真实PID/CWD/命令/GPU/日志增长与首轮已核实。尚无完整源健康或目标结果；参数减少不代表性能保持。

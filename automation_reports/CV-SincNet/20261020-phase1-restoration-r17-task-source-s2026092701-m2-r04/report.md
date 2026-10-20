@@ -1,6 +1,6 @@
 # 冻结原 F 知识约束的 R17 精简 R04
 
-状态：PLANNED。仅优化原 R17 精简版，最大程度精简且不降低目标性能。原 R17 为 source-selected-before-target 的 unroll_unshared/cd977448/E20/4940，原 F50 seed2701/4df7/默认联合训练头不变。最终按同 168000 物理样本×clean及六practical，逐场景正确数≥原R17，容许下降0个百分点；平均值不能掩盖单场景下降。low urban≥70%及其余环境接近clean的长期目标未完成；不自设“接近”的数值阈值。基准已暴露，不称新盲测。
+状态：RUNNING。仅优化原 R17 精简版，最大程度精简且不降低目标性能。原 R17 为 source-selected-before-target 的 unroll_unshared/cd977448/E20/4940，原 F50 seed2701/4df7/默认联合训练头不变。最终按同 168000 物理样本×clean及六practical，逐场景正确数≥原R17，容许下降0个百分点；平均值不能掩盖单场景下降。low urban≥70%及其余环境接近clean的长期目标未完成；不自设“接近”的数值阈值。基准已暴露，不称新盲测。
 
 |固定源候选|完整参数|新 prior 参数|相对原 4665073|
 |---|---:|---:|---:|
@@ -24,3 +24,12 @@
 N607普通账户，GPU4/5等待R03根终态且实际ownedGPU进程退出；每卡一own，source≥18GB/target≥12GB/allowner<2，保留其他owner。CPU2线程/max1ownscorer，R03终态后ownscore.lock。不可覆盖新root，一次预检/一次归档SHA比较/远端新modulecompile；实际PID/CWD/cmd/GPU/日志增长核实。技术失败保留、健康行继续、pendingtarget暂停、无自动重试；性能下降不是技术重启理由。具体命令/CWD/路径/环境/产物见experiment.json。
 
 发布前预检 VERIFIED：原R17完整预算及源选择先于目标、原R07/source缓存、原F50基线句柄匹配；R03实际GPU进程已退出，GPU4/5各24124 MB空闲。复用已有数据验证；实际F输入梯度兼容性仍由launcher第一步验证。
+
+实际发布 VERIFIED：方法commit `a310b3b5ff30e23584e7bc950e8a0ff96ac685fb` 已推送/OID一致，一次归档SHA比较、新module远端compile/help通过。实际原R17/原F50/2Ls无query smoke PASS，原F输入梯度有限非零，各prior梯度有效、F/teacher/context冻结、严格复载输出逐位一致；0TX/V/target/optimizer更新。R03根终态且实际GPU handles退出后，两source实际PID/CWD/完整命令/commit/GPU/日志增长及首轮已核实。
+
+|候选|校准IQ|L_s曝光|U_s曝光|初始化秒|
+|---|---:|---:|---:|---:|
+|step_norm_task|0|0|0|0.087326|
+|activation_task|512|55|457|3.982702|
+
+任务约束实际参与训练，training_F_access=True，原F及默认头0参数更新。真实smoke和loss不证明目标性能，本轮尚无完整源健康筛查或目标结果。
