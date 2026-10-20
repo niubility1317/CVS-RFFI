@@ -1,30 +1,74 @@
-# R61：R60两压缩版的无F同TX关联
+# R61：两个特征约束压缩版的固定无 F 身份诊断
 
-状态：**VERIFIED / WAITING_PARENT_FORMAL**，已发布。36focusedchecks/CLIhelp/ONEP0P1PASS，method `762202a1da51233da77b16d3401d2b9aa819c7d7`。
+状态：**VERIFIED / ANALYZED**。同168000物理记录×7场景，4候选加raw的140特征单元全部先于本诊断truth固定且有限。2016组TX/RX/day统计、336条件阴性对照、140配对差均独立NumPy复算；R46父及R53同宽控制1008条记录与R56完全一致；所属CPU控制器、提取与评分进程自然退出。
 
+R60两行的全部七场景预测和独立评分完成后才读取保存IQ。复用R56raw/指定350521父/R53同宽控制84单元，新算两新版56单元；同原R34源LU8192固定校准，0F权重/embedding/logits、checkpoint、额外神经预测、训练、分类头拟合、新校准或GPU。不改变任何训练、权重、预测、排序或父交付；识别率和推理成本分别见R60原run报告。
 
-状态：LOCAL_IMPLEMENTED，尚未发布。两行 R60 仍在训练，本方案固定时未消费其源验证或正式分数。只复用既有 R56 解析坐标和统计方法，不新增恢复器、分类头、训练或校准。
+表中margin为同TX余弦相似度减其他五TX均值，**不是识别准确率或逐细节真实性证明**。参考clean每TX/RX/day最多2条，按opaque physicalID排序；参考RX和day均不同，完整六TX单元等权。所有四解析组和全部场景完整保留，包含clean下降及个别TX弱/负关联。
 
-R60 的两个 273765 参数版本均直接从指定 R46 prune_refine350521 分叉。R61 固定比较 context_hint、all_hint、原指定父版、R53 prune_decay 同宽控制及 raw。R53 控制已在 R60 预登记中固定：同普通 GN 图、weight-only 初始化、E20/4940、global256/micro256 和 IQ 教师日程；新增训练期特征损失的作用单独比较。两条 hint 行间另比较相同 context 系数下额外 prior 约束的差值。原父版只作不同宽度和成本的描述参考，不把所有差异归因于参数压缩。
+|场景|候选|raw combined margin|恢复 combined margin|原clean参考|
+|---|---|---:|---:|---:|
+|clean|r46_350521|0.124015|0.109981|0.124015|
+|clean|r53_prune_decay_control|0.124015|0.111223|0.124015|
+|clean|r60_context_hint|0.124015|0.108534|0.124015|
+|clean|r60_all_hint|0.124015|0.110381|0.124015|
+|practical_high|r46_350521|0.005703|0.099789|0.124015|
+|practical_high|r53_prune_decay_control|0.005703|0.103692|0.124015|
+|practical_high|r60_context_hint|0.005703|0.102618|0.124015|
+|practical_high|r60_all_hint|0.005703|0.101037|0.124015|
+|practical_mid|r46_350521|0.003276|0.092008|0.124015|
+|practical_mid|r53_prune_decay_control|0.003276|0.096168|0.124015|
+|practical_mid|r60_context_hint|0.003276|0.095780|0.124015|
+|practical_mid|r60_all_hint|0.003276|0.094029|0.124015|
+|practical_low_suburban|r46_350521|0.002559|0.085436|0.124015|
+|practical_low_suburban|r53_prune_decay_control|0.002559|0.090035|0.124015|
+|practical_low_suburban|r60_context_hint|0.002559|0.090367|0.124015|
+|practical_low_suburban|r60_all_hint|0.002559|0.088048|0.124015|
+|practical_high_urban|r46_350521|0.005492|0.096866|0.124015|
+|practical_high_urban|r53_prune_decay_control|0.005492|0.100641|0.124015|
+|practical_high_urban|r60_context_hint|0.005492|0.099851|0.124015|
+|practical_high_urban|r60_all_hint|0.005492|0.098208|0.124015|
+|practical_mid_urban|r46_350521|0.002913|0.079533|0.124015|
+|practical_mid_urban|r53_prune_decay_control|0.002913|0.083247|0.124015|
+|practical_mid_urban|r60_context_hint|0.002913|0.083934|0.124015|
+|practical_mid_urban|r60_all_hint|0.002913|0.081963|0.124015|
+|practical_low_urban|r46_350521|0.002280|0.066143|0.124015|
+|practical_low_urban|r53_prune_decay_control|0.002280|0.069657|0.124015|
+|practical_low_urban|r60_context_hint|0.002280|0.071337|0.124015|
+|practical_low_urban|r60_all_hint|0.002280|0.069157|0.124015|
 
-完整正式划分为 168000 个固定物理样本，clean 与六个 practical 场景全部纳入：郊区高、中、低和 urban 高、中、低。复用 R56 的 raw、R46 父版、R53 prune_decay 共 84 个固定特征单元；仅对 R60 两行已保存的恢复 IQ 新算 56 个单元，共 140 个单元。新解析输入为 2352000 条，不是新增神经网络预测；新特征文件约 3.46 GB，缓存参考只读链接。
+mirror64、spectral4、reference24、combined92使用同一固定源均值/std下限0.05；combined按sqrt(3×组维数)缩放使平方误差三组等权。以下逐候选列出lowurban的四解析组，不以某一组涨分代替整体性能或TX真实性。
 
-坐标保持 mirror64、spectral4、reference24、combined92。标准化只复用 R34 既有 8192 条 L_s/U_s 的无标签源均值与尺度，标准差下限 0.05；新增拟合、校准 IQ、F 权重／嵌入／logit 读取、模型 checkpoint 加载、神经前向、训练更新及另训头均为 0。沿用原物理划分和有效缓存，不重新划分或重复验证数据。
+|lowurban候选|mirror margin|spectral margin|reference margin|combined margin|combined负或零margin的TX|
+|---|---:|---:|---:|---:|---|
+|r46_350521|0.081266|0.076193|0.006108|0.066143|2|
+|r53_prune_decay_control|0.085995|0.078548|0.006213|0.069657|2|
+|r60_context_hint|0.087254|0.083648|0.005805|0.071337|2|
+|r60_all_hint|0.085243|0.080198|0.005388|0.069157|2|
 
-启动器先执行真实 2 条 L_s 的参数自由解析 no-query smoke，随后在 CPU 等待 R60 两行全部七景预测及独立评分完成；在这之前不打开目标 IQ 或 truth。两行全完成后读取已保存 IQ，固定全部 140 个特征单元，独立 scorer 才连接原 truth。clean 参考仅用于事后评价，不提供给恢复器。参考池仍按 TX/RX/day 每格最多 2 条最低不透明 physical ID，查询与参考的 RX、day 均不同，完整六 TX 格等权。
+逐TX、RX、day的完整正/负结果、有效/零向量/缺参考计数与配对clean描述量误差保留在JSON/CSV。以下置换对照不改变参考标签；199次固定RX/day内query标签置换为描述性阴性对照，不是p值或独立新样本。
 
-输出为 2016 组描述统计、336 条条件阴性对照和 140 条配对差。199 次查询标签置换固定在 RX/day 内，参考标签保持；这些是条件对照，不作总体 p 值。四个分析组、七场景、逐 TX/RX/day、缺失和零范数均完整保留。R34 固定坐标在 clean TX2 已有弱／负关联，须连同原始 clean 对照报告，不能单凭该类负 margin 宣称恢复成错误 TX。
+|lowurban候选|combined实际margin|query标签置换均值|置换5%至95%|高于95%分位|
+|---|---:|---:|---|---|
+|r46_350521|0.066143|0.000019|-0.000321至0.000342|True|
+|r53_prune_decay_control|0.069657|0.000018|-0.000286至0.000334|True|
+|r60_context_hint|0.071337|0.000023|-0.000282至0.000336|True|
+|r60_all_hint|0.069157|0.000017|-0.000298至0.000362|True|
 
-执行环境：N607 既有 Python／Torch 环境，CPU 2 线程、空 CUDA、0 GPU。controller/extract/score 共用既有 R41 score.lock，最多一个本任务 scorer；不改动任何健康训练、预测或其他 owner。代码与配置以一次 Git method commit 固定。独占目录为 `runs/20261021-diagnostic-restoration-feature-hint-formal-analytic-TX-s2026092701-m2-r61`；release 使用单独 `_r61` 后缀，旧 root 不覆盖。精确 command、CWD、环境、数据与输出路径在登记的 `experiment.json`。
+|lowurban配对比较|共同有效数|combined margin变化|配对描述量误差变化|
+|---|---:|---:|---:|
+|r60_context_hint − r46_350521|168000|0.005194|-0.094823|
+|r60_all_hint − r46_350521|168000|0.003014|-0.083651|
+|r60_context_hint − r53_prune_decay_control|168000|0.001680|-0.024765|
+|r60_all_hint − r53_prune_decay_control|168000|-0.000500|-0.013593|
+|r60_all_hint − r60_context_hint|168000|-0.002180|0.011172|
 
-固定命令形式：`python -u -m experiments.pamf_hint_formal_identity.runner run --runs-root ../../runs --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261021-diagnostic-restoration-feature-hint-formal-analytic-TX-s2026092701-m2-r61 --expected-commit <method_commit>`。
+解析提取阶段106.222s，评分阶段552.079s，控制器总墙钟2189.976s（含父完成等待）。2352000次新解析输入与84个旧引用来自同168000记录的相关场景/读出，不称新增独立样本。
 
-停止规则：父实验技术失败、方法／路径／ID／源尺度不匹配、缺失或非有限输入／特征、输出冲突时保存现场并停止本诊断，不自动重试，不停止或重启健康父任务。预期产物包括 resolved_config、真实源 smoke、extract/score PID 与日志、calibration_reference、physical_ids、features、feature_complete、summary、complete，以及完成后的独立复算和同一行报告。
+真实2条Ls解析no-query smoke、36项聚焦检查、CLIhelp、一次限P0/P1审查，以及普通账户一次预检/归档SHA/compile/实际PID/CWD/argv/空CUDA/2线程/日志增长均核实。等待父时不持R41score.lock；父全部正式评分后提取与评分才使用唯一CPU评分槽。
 
-识别准确率、解析 margin 和重建误差分别报告；这里只提供固定描述符上的同 TX 关联证据，不能证明每个生成细节的 TX 归属或 TX 排他性。它不替代 R60 七景冻结 F50 正式测试，不用于选模、改父版、改系数或选择性重跑。low urban 70%、其他五景距 raw clean ≤5 个百分点和更强的 TX 细节保真目标继续 ACTIVE。
+固定描述符在 clean TX2 已有区分不足，恢复后负 margin 不能单独解释为输入身份错误。该类不足与各 TX 的全部结果一并保留。
 
+本研究使用已暴露工程基准，且事后评价明确使用target clean参考和truth，不称新的独立盲测或完全无标签评价。跨RX/day与置换只提供固定坐标下有限同TX关联，仍可能含载荷、接收链和日期因素，不能证明每个生成细节来源、未知TX泛化或真实在轨有效性。原lowurban70%、其他五景距rawclean≤5pp与更强输入TX细节目标继续ACTIVE。
 
-精确配置、命令和路径见[登记](experiment.json)。
-
-
-VERIFIED / WAITING_PARENT_FORMAL：普通账户、单归档SHA、compile、真实2Ls无参数解析noquerysmoke已核实；实际PID/CWD/argv/空CUDA/CPU2和日志增长已核实。等待R60两行全部七景正式评分后解析；复用R56raw/350521/R53控制84单元，新算56，总140固定后独立truth-last；无F/checkpoint/神经预测/训练/新校准/头拟合。无统计结果，不改变健康父任务或模型选择。
+完整2016组记录、336条件对照和140配对差见[汇总](summary.json)与[逐组CSV](row_metrics.csv)；固定输入/方法/矩阵/命令/预算/停止规则见[登记](experiment.json)。
