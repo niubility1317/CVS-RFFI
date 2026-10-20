@@ -1,0 +1,74 @@
+{
+  "status": "DATA_FREE_ORIGINAL_WEIGHT_ANALYSIS",
+  "original_full_parameters": 4665073,
+  "original_prior_parameters": 2507526,
+  "frozen_parameters": 2157547,
+  "long_layers_per_stage": 28,
+  "long_kernel_parameters_per_stage": 773536,
+  "stage_kernel_relative_Frobenius_difference": 0.28166271937902554,
+  "delta_rank99_min": 23,
+  "delta_rank99_median": 61.0,
+  "delta_rank99_max": 121,
+  "hypothetical_shared_base_plus_independent_lowrank_deltas": [
+    {
+      "residual_rank": 0,
+      "full_parameters": 3118001,
+      "prior_parameters": 960454,
+      "parameter_reduction_percent": 33.16286797655685,
+      "shared_long_layers": 28,
+      "relative_kernel_Frobenius_error": 0.28166271937902554,
+      "unrepresented_stage_delta_energy_fraction": 1.0
+    },
+    {
+      "residual_rank": 1,
+      "full_parameters": 3151256,
+      "prior_parameters": 993709,
+      "parameter_reduction_percent": 32.45001739522618,
+      "shared_long_layers": 28,
+      "relative_kernel_Frobenius_error": 0.2718693992317684,
+      "unrepresented_stage_delta_energy_fraction": 0.9316695876000549
+    },
+    {
+      "residual_rank": 2,
+      "full_parameters": 3184511,
+      "prior_parameters": 1026964,
+      "parameter_reduction_percent": 31.737166813895513,
+      "shared_long_layers": 28,
+      "relative_kernel_Frobenius_error": 0.26396617541429424,
+      "unrepresented_stage_delta_energy_fraction": 0.8782897695943647
+    },
+    {
+      "residual_rank": 4,
+      "full_parameters": 3251021,
+      "prior_parameters": 1093474,
+      "parameter_reduction_percent": 30.311465651234183,
+      "shared_long_layers": 28,
+      "relative_kernel_Frobenius_error": 0.250822077710941,
+      "unrepresented_stage_delta_energy_fraction": 0.7929992675167856
+    },
+    {
+      "residual_rank": 8,
+      "full_parameters": 3384041,
+      "prior_parameters": 1226494,
+      "parameter_reduction_percent": 27.46006332591151,
+      "shared_long_layers": 28,
+      "relative_kernel_Frobenius_error": 0.22951817279305423,
+      "unrepresented_stage_delta_energy_fraction": 0.6640112228237726
+    },
+    {
+      "residual_rank": 16,
+      "full_parameters": 3649265,
+      "prior_parameters": 1491718,
+      "parameter_reduction_percent": 21.774750362963236,
+      "shared_long_layers": 23,
+      "relative_kernel_Frobenius_error": 0.19490431820002485,
+      "unrepresented_stage_delta_energy_fraction": 0.4788331248581311
+    }
+  ],
+  "algebra": "Float64 kernel matrix analysis;all biases,GN,1x1 and other parameters remain independent across stages;only use shared+delta storage when smaller than3densekernels",
+  "limitation": "Storage/error arithmetic only,not an implemented model or IQ/identity/latency result;extra delta branches can increase compute;does not change the two active candidates",
+  "physical_IQ_reads": 0,
+  "TX_F_V_target_reads": 0,
+  "optimizer_updates": 0,
+  "forward_calls": 0
+}
