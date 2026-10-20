@@ -1,6 +1,6 @@
 # R61：R60两压缩版的无F同TX关联
 
-状态：LOCAL_VERIFIED，尚未发布。36focusedchecks/CLIhelp/ONEP0P1PASS，method `762202a1da51233da77b16d3401d2b9aa819c7d7`。
+状态：**VERIFIED / WAITING_PARENT_FORMAL**，已发布。36focusedchecks/CLIhelp/ONEP0P1PASS，method `762202a1da51233da77b16d3401d2b9aa819c7d7`。
 
 
 状态：LOCAL_IMPLEMENTED，尚未发布。两行 R60 仍在训练，本方案固定时未消费其源验证或正式分数。只复用既有 R56 解析坐标和统计方法，不新增恢复器、分类头、训练或校准。
@@ -25,3 +25,6 @@ R60 的两个 273765 参数版本均直接从指定 R46 prune_refine350521 分�
 
 
 精确配置、命令和路径见[登记](experiment.json)。
+
+
+VERIFIED / WAITING_PARENT_FORMAL：普通账户、单归档SHA、compile、真实2Ls无参数解析noquerysmoke已核实；实际PID/CWD/argv/空CUDA/CPU2和日志增长已核实。等待R60两行全部七景正式评分后解析；复用R56raw/350521/R53控制84单元，新算56，总140固定后独立truth-last；无F/checkpoint/神经预测/训练/新校准/头拟合。无统计结果，不改变健康父任务或模型选择。

@@ -1,6 +1,6 @@
 # R61：R60 两个压缩版的无 F 身份关联检验
 
-状态：LOCAL_IMPLEMENTED，尚未发布。两行 R60 仍在训练，本方案固定时未消费其源验证或正式分数。只复用既有 R56 解析坐标和统计方法，不新增恢复器、分类头、训练或校准。
+状态：**VERIFIED / WAITING_PARENT_FORMAL**，已发布。两行 R60 仍在训练，本方案固定时未消费其源验证或正式分数。只复用既有 R56 解析坐标和统计方法，不新增恢复器、分类头、训练或校准。
 
 R60 的两个 273765 参数版本均直接从指定 R46 prune_refine350521 分叉。R61 固定比较 context_hint、all_hint、原指定父版、R53 prune_decay 同宽控制及 raw。R53 控制已在 R60 预登记中固定：同普通 GN 图、weight-only 初始化、E20/4940、global256/micro256 和 IQ 教师日程；新增训练期特征损失的作用单独比较。两条 hint 行间另比较相同 context 系数下额外 prior 约束的差值。原父版只作不同宽度和成本的描述参考，不把所有差异归因于参数压缩。
 
@@ -19,3 +19,6 @@ R60 的两个 273765 参数版本均直接从指定 R46 prune_refine350521 分�
 停止规则：父实验技术失败、方法／路径／ID／源尺度不匹配、缺失或非有限输入／特征、输出冲突时保存现场并停止本诊断，不自动重试，不停止或重启健康父任务。预期产物包括 resolved_config、真实源 smoke、extract/score PID 与日志、calibration_reference、physical_ids、features、feature_complete、summary、complete，以及完成后的独立复算和同一行报告。
 
 识别准确率、解析 margin 和重建误差分别报告；这里只提供固定描述符上的同 TX 关联证据，不能证明每个生成细节的 TX 归属或 TX 排他性。它不替代 R60 七景冻结 F50 正式测试，不用于选模、改父版、改系数或选择性重跑。low urban 70%、其他五景距 raw clean ≤5 个百分点和更强的 TX 细节保真目标继续 ACTIVE。
+
+
+实际启动状态：VERIFIED / WAITING_PARENT_FORMAL：普通账户、单归档SHA、compile、真实2Ls无参数解析noquerysmoke已核实；实际PID/CWD/argv/空CUDA/CPU2和日志增长已核实。等待R60两行全部七景正式评分后解析；复用R56raw/350521/R53控制84单元，新算56，总140固定后独立truth-last；无F/checkpoint/神经预测/训练/新校准/头拟合。无统计结果，不改变健康父任务或模型选择。
