@@ -1,0 +1,405 @@
+{
+  "CPU": {
+    "status": "PASS",
+    "device": "cpu",
+    "math": {
+      "status": "PASS",
+      "noise_counterexample": true,
+      "exact_self_cross_decomposition": true,
+      "orthogonal_rotation_and_label_swap": true,
+      "disjoint_groups": true,
+      "source_domain_day_cells": 15,
+      "gradient_difference": 1.246384352579342,
+      "protocol_negative_cases": 5,
+      "IQ_reads": 0,
+      "target_reads": 0,
+      "head_fit_updates": 0,
+      "optimizer_updates": 0
+    },
+    "protocol_negative_cases": 13,
+    "source_expansion_positive_negative_PASS": true,
+    "actual_F_flows": [
+      {
+        "treatment": "SELF_GAP",
+        "actual_identity_forwards": 2,
+        "extra_model_forwards": 0,
+        "aux_all_6_default_head_gradients_None": true,
+        "main_all_default_head_gradients_exact_original": true,
+        "aux_feature_values_exact": true,
+        "aux_default_W_gradient": null,
+        "aux_Sinc_gradient_norm": 0.000637831341009587,
+        "aux_shallow_gradient_norm": 0.05908801779150963,
+        "aux_middle_gradient_norm": 0.0214046910405159,
+        "main_W_gradient_norm": 4.798840522766113,
+        "discarded_native_optimizer_steps": 1,
+        "default_W_updated_jointly": true,
+        "physical_Sinc_updated": true,
+        "export_exact": true,
+        "record": {
+          "step": 1111,
+          "epoch": 6,
+          "scheduled": true,
+          "weight": 0.010000000000000002,
+          "loss": 0.5302218198776245,
+          "eligible": true,
+          "valid_cells": 2,
+          "active_cells": 2,
+          "used_packets": 64,
+          "cells": [
+            {
+              "domain": 0,
+              "RX": 1,
+              "day": 1,
+              "counts": [
+                16,
+                16
+              ],
+              "half_A_counts": [
+                8,
+                8
+              ],
+              "half_B_counts": [
+                8,
+                8
+              ],
+              "cross_gap_squared": 0.003912930842489004,
+              "self_gap_squared": 0.08211910724639893,
+              "half_variation": 0.07820617640390992,
+              "violation": 0.4867555797100067
+            },
+            {
+              "domain": 3,
+              "RX": 3,
+              "day": 1,
+              "counts": [
+                16,
+                16
+              ],
+              "half_A_counts": [
+                8,
+                8
+              ],
+              "half_B_counts": [
+                8,
+                8
+              ],
+              "cross_gap_squared": 0.003310443600639701,
+              "self_gap_squared": 0.06820990145206451,
+              "half_variation": 0.06489945785142481,
+              "violation": 0.5736880898475647
+            }
+          ]
+        },
+        "aux_backbone_VJPs_match_raw_joint": true,
+        "aux_backbone_VJP_max_abs_errors": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "treatment": "CROSS_GAP",
+        "actual_identity_forwards": 2,
+        "extra_model_forwards": 0,
+        "aux_all_6_default_head_gradients_None": true,
+        "main_all_default_head_gradients_exact_original": true,
+        "aux_feature_values_exact": true,
+        "aux_default_W_gradient": null,
+        "aux_Sinc_gradient_norm": 0.0003318372182548046,
+        "aux_shallow_gradient_norm": 0.051562339067459106,
+        "aux_middle_gradient_norm": 0.031114643439650536,
+        "main_W_gradient_norm": 4.798840522766113,
+        "discarded_native_optimizer_steps": 1,
+        "default_W_updated_jointly": true,
+        "physical_Sinc_updated": true,
+        "export_exact": true,
+        "record": {
+          "step": 1111,
+          "epoch": 6,
+          "scheduled": true,
+          "weight": 0.010000000000000002,
+          "loss": 0.9774270057678223,
+          "eligible": true,
+          "valid_cells": 2,
+          "active_cells": 2,
+          "used_packets": 64,
+          "cells": [
+            {
+              "domain": 0,
+              "RX": 1,
+              "day": 1,
+              "counts": [
+                16,
+                16
+              ],
+              "half_A_counts": [
+                8,
+                8
+              ],
+              "half_B_counts": [
+                8,
+                8
+              ],
+              "cross_gap_squared": 0.003912930842489004,
+              "self_gap_squared": 0.08211910724639893,
+              "half_variation": 0.07820617640390992,
+              "violation": 0.9755442142486572
+            },
+            {
+              "domain": 3,
+              "RX": 3,
+              "day": 1,
+              "counts": [
+                16,
+                16
+              ],
+              "half_A_counts": [
+                8,
+                8
+              ],
+              "half_B_counts": [
+                8,
+                8
+              ],
+              "cross_gap_squared": 0.003310443600639701,
+              "self_gap_squared": 0.06820990145206451,
+              "half_variation": 0.06489945785142481,
+              "violation": 0.9793097376823425
+            }
+          ]
+        },
+        "aux_backbone_VJPs_match_raw_joint": true,
+        "aux_backbone_VJP_max_abs_errors": [
+          0,
+          0,
+          0
+        ]
+      }
+    ],
+    "real_checkpoint_no_query_smoke": false,
+    "loaded_checkpoint_discarded_not_inherited": true,
+    "parameters": 900722,
+    "extra_parameters": 0,
+    "IQ_reads": 0,
+    "target_reads": 0,
+    "head_fit_updates": 0,
+    "real_data_training_updates": 0,
+    "discarded_synthetic_native_optimizer_steps": 2
+  },
+  "CUDA": {
+    "status": "PASS",
+    "device": "cuda:0",
+    "math": {
+      "status": "PASS",
+      "noise_counterexample": true,
+      "exact_self_cross_decomposition": true,
+      "orthogonal_rotation_and_label_swap": true,
+      "disjoint_groups": true,
+      "source_domain_day_cells": 15,
+      "gradient_difference": 1.246384352579342,
+      "protocol_negative_cases": 5,
+      "IQ_reads": 0,
+      "target_reads": 0,
+      "head_fit_updates": 0,
+      "optimizer_updates": 0
+    },
+    "protocol_negative_cases": 13,
+    "source_expansion_positive_negative_PASS": true,
+    "actual_F_flows": [
+      {
+        "treatment": "SELF_GAP",
+        "actual_identity_forwards": 2,
+        "extra_model_forwards": 0,
+        "aux_all_6_default_head_gradients_None": true,
+        "main_all_default_head_gradients_exact_original": true,
+        "aux_feature_values_exact": true,
+        "aux_backbone_VJPs_match_raw_joint": true,
+        "aux_backbone_VJP_max_abs_errors": [
+          3.552713678800501e-8,
+          2.7939677238464355e-9,
+          0
+        ],
+        "aux_default_W_gradient": null,
+        "aux_Sinc_gradient_norm": 0.000613081210758537,
+        "aux_shallow_gradient_norm": 0.07581385970115662,
+        "aux_middle_gradient_norm": 0.03996044769883156,
+        "main_W_gradient_norm": 4.670489311218262,
+        "discarded_native_optimizer_steps": 1,
+        "default_W_updated_jointly": true,
+        "physical_Sinc_updated": true,
+        "export_exact": true,
+        "record": {
+          "step": 1111,
+          "epoch": 6,
+          "scheduled": true,
+          "weight": 0.010000000000000002,
+          "loss": 0.5881617069244385,
+          "eligible": true,
+          "valid_cells": 2,
+          "active_cells": 2,
+          "used_packets": 64,
+          "cells": [
+            {
+              "domain": 0,
+              "RX": 1,
+              "day": 1,
+              "counts": [
+                16,
+                16
+              ],
+              "half_A_counts": [
+                8,
+                8
+              ],
+              "half_B_counts": [
+                8,
+                8
+              ],
+              "cross_gap_squared": 0.01913517527282238,
+              "self_gap_squared": 0.062263768166303635,
+              "half_variation": 0.043128592893481255,
+              "violation": 0.6108514070510864
+            },
+            {
+              "domain": 3,
+              "RX": 3,
+              "day": 1,
+              "counts": [
+                16,
+                16
+              ],
+              "half_A_counts": [
+                8,
+                8
+              ],
+              "half_B_counts": [
+                8,
+                8
+              ],
+              "cross_gap_squared": 0.0042065707966685295,
+              "self_gap_squared": 0.06952448189258575,
+              "half_variation": 0.06531791109591722,
+              "violation": 0.5654719471931458
+            }
+          ]
+        }
+      },
+      {
+        "treatment": "CROSS_GAP",
+        "actual_identity_forwards": 2,
+        "extra_model_forwards": 0,
+        "aux_all_6_default_head_gradients_None": true,
+        "main_all_default_head_gradients_exact_original": true,
+        "aux_feature_values_exact": true,
+        "aux_backbone_VJPs_match_raw_joint": true,
+        "aux_backbone_VJP_max_abs_errors": [
+          8.526527039975917e-9,
+          2.3283064365386963e-9,
+          0
+        ],
+        "aux_default_W_gradient": null,
+        "aux_Sinc_gradient_norm": 0.00040744265425018966,
+        "aux_shallow_gradient_norm": 0.059512101113796234,
+        "aux_middle_gradient_norm": 0.019730163738131523,
+        "main_W_gradient_norm": 4.670489311218262,
+        "discarded_native_optimizer_steps": 1,
+        "default_W_updated_jointly": true,
+        "physical_Sinc_updated": true,
+        "export_exact": true,
+        "record": {
+          "step": 1111,
+          "epoch": 6,
+          "scheduled": true,
+          "weight": 0.010000000000000002,
+          "loss": 0.9270570278167725,
+          "eligible": true,
+          "valid_cells": 2,
+          "active_cells": 2,
+          "used_packets": 64,
+          "cells": [
+            {
+              "domain": 0,
+              "RX": 1,
+              "day": 1,
+              "counts": [
+                16,
+                16
+              ],
+              "half_A_counts": [
+                8,
+                8
+              ],
+              "half_B_counts": [
+                8,
+                8
+              ],
+              "cross_gap_squared": 0.01913517527282238,
+              "self_gap_squared": 0.062263768166303635,
+              "half_variation": 0.043128592893481255,
+              "violation": 0.8804051280021667
+            },
+            {
+              "domain": 3,
+              "RX": 3,
+              "day": 1,
+              "counts": [
+                16,
+                16
+              ],
+              "half_A_counts": [
+                8,
+                8
+              ],
+              "half_B_counts": [
+                8,
+                8
+              ],
+              "cross_gap_squared": 0.0042065707966685295,
+              "self_gap_squared": 0.06952448189258575,
+              "half_variation": 0.06531791109591722,
+              "violation": 0.9737089276313782
+            }
+          ]
+        }
+      }
+    ],
+    "real_checkpoint_no_query_smoke": false,
+    "loaded_checkpoint_discarded_not_inherited": true,
+    "parameters": 900722,
+    "extra_parameters": 0,
+    "IQ_reads": 0,
+    "target_reads": 0,
+    "head_fit_updates": 0,
+    "real_data_training_updates": 0,
+    "discarded_synthetic_native_optimizer_steps": 2
+  },
+  "real_checkpoint_no_query_smoke": {
+    "status": "PASS",
+    "previous_single_CPU_smoke": true,
+    "checkpoint_discarded_not_inherited": true,
+    "rerun_after_head_fix": false
+  },
+  "head_boundary_P1": {
+    "found_before_formal_launch": true,
+    "old_W_only_test_insufficient": true,
+    "fix": "Auxiliary-only same-valued feature reconstructed from captured original fusion parts with all cls_head norm/gain parameters detached; main unchanged.",
+    "CPU_all_head_None": true,
+    "CUDA_all_head_None": true,
+    "main_all_head_gradient_exact_original": true,
+    "feature_values_exact": true,
+    "CUDA_max_abs_feature_VJP_error": 3.552713678800501e-8,
+    "targeted_review": "PASS: only the direct entire-default-head auxiliary-gradient issue; original full candidate review not repeated"
+  },
+  "math_RED_before_implementation": {
+    "expected_failure": true,
+    "code": 1,
+    "tail": "\\lh594\\.conda\\envs\\ssr-gpu\\lib\\runpy.py\", line 196, in _run_module_as_main\r\n    return _run_code(code, main_globals, None,\r\n  File \"C:\\Users\\lh594\\.conda\\envs\\ssr-gpu\\lib\\runpy.py\", line 86, in _run_code\r\n    exec(code, run_globals)\r\n  File \"E:\\type10-7\\code\\worktrees\\phase1_rdrop_combinations_20261015\\experiments\\cvs_f_weaktx_crossgap50\\checks_math.py\", line 3, in <module>\r\n    from .loss import penalty,estimates\r\nModuleNotFoundError: No module named 'experiments.cvs_f_weaktx_crossgap50.loss'\r\n"
+  },
+  "independent_P0P1": {
+    "initial_candidate": "PASS",
+    "targeted_head_boundary_fix": "PASS",
+    "reviewer": "independent existing reviewer",
+    "full_reviews": 1,
+    "targeted_rereviews": 1
+  }
+}
