@@ -12,7 +12,7 @@
 
 2026-10-20 用户最新明确：**性能优先**。后续在指定R46 prune_refine350521上继续优化/压缩，识别性能与输入TX保真优先，参数/时延/显存次要；原每景1pp仅为退化上限，不以减参或加速掩盖识别下降。当前R48/R49八行保持固定方案与自动七正式测试；已揭示正式分数不回流调参、重排或选择性重跑，不私自更换直接父。首批四行完整正式结果已保留：[R49阶段报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-R46-multipoint-fast-s2026092701-m6-r49/report.md)。原70%/其他五景gap5pp/更强TX细节目标继续ACTIVE。
 
-R50已实际VERIFIED/WAITING_PARENT_FORMAL：CPU2/0GPU，真实2Ls解析noquerysmoke、单archiveSHA/compile/实际PID/CWD/argv/空CUDA/日志增长核实。等待R48两行及R49六行全部正式评分后解析8新版，复用R47raw/指定350521父56单元、新算224，280全固定后独立truthlast4536组/756条件对照/420配对差。无新网络/F/checkpoint/神经预测/训练/headfit/校准；不改变父训练预测，不阻塞其交付，当前主路线仍为用户指定35.05万父的压缩优化。[R50固定评价](../PAMF_MULTIPOINT_FORMAL_IDENTITY_R50_20261020.md)。
+R50已完成VERIFIED/ANALYZED：280解析单元固定后truth；4536分组/756条件阴性对照/420配对差独立复算，R46父504记录与R47一致；0F/checkpoint/额外神经预测/训练/headfit/新校准/GPU，所属CPU进程EXITED。有限同TX关联不是识别率或逐细节真实性证明，不改变父实验，原目标ACTIVE。 [R50全部九候选正式关联](../PAMF_MULTIPOINT_FORMAL_IDENTITY_R50_20261020.md)。
 
 2026-10-20 用户最新要求多点压缩并提高显卡利用率：已固定[R49六点并行与micro256吞吐优化](../PAMF_R46_MULTIPOINT_FAST_R49_20261020.md)，同宽350521及329885/310905/293069/268257/215049参数，直接指定R46父，新增GPU2至7各一行；R48GPU0/1两行保持。每行完整E20/4940、原全局batch256和全部L/U曝光，micro256/directbuffer；0TX/F/V/target训练，全部自动七正式测试和G/G+F成本。当前VERIFIED/RUNNING，六行实际GPU/PID/首轮日志增长核实，尚无新性能结论。参数与训练/推理时延、吞吐、显存分别报告，原70%/5pp/更强TX细节真实性目标保持ACTIVE。
 

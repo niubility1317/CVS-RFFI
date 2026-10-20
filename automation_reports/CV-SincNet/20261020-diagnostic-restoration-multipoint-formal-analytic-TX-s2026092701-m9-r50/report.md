@@ -1,26 +1,127 @@
-# R50：八个压缩优化新版的正式无F同TX关联
+# R50：八个压缩优化新版的固定无 F 身份诊断
 
-状态：**VERIFIED / WAITING_PARENT_FORMAL**，已发布。22项聚焦检查、CLIhelp、一次独立P0/P1 PASS；方法commit `3c03b2e8a8ad41e23c1785de801c295e54b2eec9`。
+状态：**VERIFIED / ANALYZED**。同168000物理记录×7场景，9候选加raw的280特征单元全部先于本诊断truth固定且有限。4536组TX/RX/day统计、756条件阴性对照、420配对差均独立NumPy复算；R46父504条记录与R47完全一致；所属CPU控制器、提取与评分进程自然退出。
 
+R48两版与R49六版的全部七场景预测和独立评分完成后才读取保存IQ。复用R47raw/指定350521父56单元，新算八新版224单元；同原R34源LU8192固定校准，0F权重/embedding/logits、checkpoint、额外神经预测、训练、分类头拟合、新校准或GPU。不改变任何训练、权重、预测、排序或父交付；识别率和推理成本分别见R48/R49原run报告。
 
-状态：LOCAL_IMPLEMENTED，未发布。
+表中margin为同TX余弦相似度减其他五TX均值，**不是识别准确率或逐细节真实性证明**。参考clean每TX/RX/day最多2条，按opaque physicalID排序；参考RX和day均不同，完整六TX单元等权。所有四解析组和全部场景完整保留，包含clean下降及个别TX弱/负关联。
 
-本诊断落实原输入TX保真目标，覆盖已固定R48两版和R49六版；R46指定350521父为共同参照，另含raw输入。它不是新恢复网络，不筛选或改变任何训练/预测，不阻塞父实验正式交付。R48和R49全部八行七场景正式评分完成后才读取保存的target IQ；全280解析特征单元固定且有限后，独立CPU评分才打开目标truth。两父方法固定commit分别为86b89ba6bc09b0b3f10fcaff8fc7cd1ecf6d0508和e96397bc3c7036f085317f9cc0e59074fb6ee24f。
+|场景|候选|raw combined margin|恢复 combined margin|原clean参考|
+|---|---|---:|---:|---:|
+|clean|r46_350521|0.124015|0.109981|0.124015|
+|clean|r48_retain_refine|0.124015|0.111506|0.124015|
+|clean|r48_prune_refine|0.124015|0.111208|0.124015|
+|clean|r49_retain_refine|0.124015|0.111972|0.124015|
+|clean|r49_prune_near|0.124015|0.112731|0.124015|
+|clean|r49_prune_balanced|0.124015|0.112073|0.124015|
+|clean|r49_prune_small|0.124015|0.104534|0.124015|
+|clean|r49_context_slim|0.124015|0.108852|0.124015|
+|clean|r49_prior_slim|0.124015|0.112406|0.124015|
+|practical_high|r46_350521|0.005703|0.099789|0.124015|
+|practical_high|r48_retain_refine|0.005703|0.100945|0.124015|
+|practical_high|r48_prune_refine|0.005703|0.104496|0.124015|
+|practical_high|r49_retain_refine|0.005703|0.101455|0.124015|
+|practical_high|r49_prune_near|0.005703|0.098143|0.124015|
+|practical_high|r49_prune_balanced|0.005703|0.101584|0.124015|
+|practical_high|r49_prune_small|0.005703|0.097079|0.124015|
+|practical_high|r49_context_slim|0.005703|0.099003|0.124015|
+|practical_high|r49_prior_slim|0.005703|0.103272|0.124015|
+|practical_mid|r46_350521|0.003276|0.092008|0.124015|
+|practical_mid|r48_retain_refine|0.003276|0.095073|0.124015|
+|practical_mid|r48_prune_refine|0.003276|0.096443|0.124015|
+|practical_mid|r49_retain_refine|0.003276|0.095441|0.124015|
+|practical_mid|r49_prune_near|0.003276|0.092212|0.124015|
+|practical_mid|r49_prune_balanced|0.003276|0.094282|0.124015|
+|practical_mid|r49_prune_small|0.003276|0.090061|0.124015|
+|practical_mid|r49_context_slim|0.003276|0.091948|0.124015|
+|practical_mid|r49_prior_slim|0.003276|0.095415|0.124015|
+|practical_low_suburban|r46_350521|0.002559|0.085436|0.124015|
+|practical_low_suburban|r48_retain_refine|0.002559|0.090118|0.124015|
+|practical_low_suburban|r48_prune_refine|0.002559|0.089897|0.124015|
+|practical_low_suburban|r49_retain_refine|0.002559|0.090404|0.124015|
+|practical_low_suburban|r49_prune_near|0.002559|0.087209|0.124015|
+|practical_low_suburban|r49_prune_balanced|0.002559|0.088259|0.124015|
+|practical_low_suburban|r49_prune_small|0.002559|0.084024|0.124015|
+|practical_low_suburban|r49_context_slim|0.002559|0.085788|0.124015|
+|practical_low_suburban|r49_prior_slim|0.002559|0.089138|0.124015|
+|practical_high_urban|r46_350521|0.005492|0.096866|0.124015|
+|practical_high_urban|r48_retain_refine|0.005492|0.098569|0.124015|
+|practical_high_urban|r48_prune_refine|0.005492|0.101351|0.124015|
+|practical_high_urban|r49_retain_refine|0.005492|0.098998|0.124015|
+|practical_high_urban|r49_prune_near|0.005492|0.095805|0.124015|
+|practical_high_urban|r49_prune_balanced|0.005492|0.098959|0.124015|
+|practical_high_urban|r49_prune_small|0.005492|0.094538|0.124015|
+|practical_high_urban|r49_context_slim|0.005492|0.096378|0.124015|
+|practical_high_urban|r49_prior_slim|0.005492|0.100116|0.124015|
+|practical_mid_urban|r46_350521|0.002913|0.079533|0.124015|
+|practical_mid_urban|r48_retain_refine|0.002913|0.084826|0.124015|
+|practical_mid_urban|r48_prune_refine|0.002913|0.083264|0.124015|
+|practical_mid_urban|r49_retain_refine|0.002913|0.084843|0.124015|
+|practical_mid_urban|r49_prune_near|0.002913|0.082152|0.124015|
+|practical_mid_urban|r49_prune_balanced|0.002913|0.083101|0.124015|
+|practical_mid_urban|r49_prune_small|0.002913|0.079582|0.124015|
+|practical_mid_urban|r49_context_slim|0.002913|0.081078|0.124015|
+|practical_mid_urban|r49_prior_slim|0.002913|0.083154|0.124015|
+|practical_low_urban|r46_350521|0.002280|0.066143|0.124015|
+|practical_low_urban|r48_retain_refine|0.002280|0.072945|0.124015|
+|practical_low_urban|r48_prune_refine|0.002280|0.069414|0.124015|
+|practical_low_urban|r49_retain_refine|0.002280|0.072836|0.124015|
+|practical_low_urban|r49_prune_near|0.002280|0.070475|0.124015|
+|practical_low_urban|r49_prune_balanced|0.002280|0.070225|0.124015|
+|practical_low_urban|r49_prune_small|0.002280|0.067651|0.124015|
+|practical_low_urban|r49_context_slim|0.002280|0.068582|0.124015|
+|practical_low_urban|r49_prior_slim|0.002280|0.070278|0.124015|
 
-固定9个候选为R46父350521、R48 retain/prune、R49 retain/near/balanced/small/context/prior，连同raw共10种读出。复用已完成R47的raw和指定R46父56个特征单元，只新算八新版224单元；9408000次解析输入来自同168000物理记录及相关七场景，不能称新增独立样本。原clean评价参照仍为同一批记录的raw clean解析量。
+mirror64、spectral4、reference24、combined92使用同一固定源均值/std下限0.05；combined按sqrt(3×组维数)缩放使平方误差三组等权。以下逐候选列出lowurban的四解析组，不以某一组涨分代替整体性能或TX真实性。
 
-解析坐标严格复用R34/R39/R47：mirror64、spectral4、reference24、combined92，使用原源L/U8192条固定均值与std下限0.05，不重新拟合任何参数或校准。无F权重/embedding/logits、模型checkpoint、额外神经预测、分类头拟合、训练或GPU。真实2条Ls解析no-query smoke为launcher首步，PASS后仅等待原父完成；不占GPU，不占用父训练/预测worker。
+|lowurban候选|mirror margin|spectral margin|reference margin|combined margin|combined负或零margin的TX|
+|---|---:|---:|---:|---:|---|
+|r46_350521|0.081266|0.076193|0.006108|0.066143|2|
+|r48_retain_refine|0.090401|0.076930|0.006597|0.072945|2|
+|r48_prune_refine|0.085541|0.079903|0.006075|0.069414|2|
+|r49_retain_refine|0.090010|0.077143|0.006538|0.072836|2|
+|r49_prune_near|0.086848|0.080347|0.006919|0.070475|2|
+|r49_prune_balanced|0.086203|0.078218|0.006704|0.070225|2|
+|r49_prune_small|0.082681|0.080799|0.005428|0.067651|2|
+|r49_context_slim|0.084916|0.076876|0.006628|0.068582|2|
+|r49_prior_slim|0.087944|0.070166|0.006607|0.070278|2|
 
-clean参考按每TX/RX/day最多2条、opaque physicalID排序；参考RX和day均与query不同，完整六TX参考单元等权。统计同TX余弦相似度减其他五TX均值、配对描述量误差、逐TX/RX/day以及199次固定RX/day内query标签置换阴性对照。目标标签只用于这些全部预测完成后的评价统计，不进入任何恢复器、分类头或运行时适应，置换结果不是p值。
+逐TX、RX、day的完整正/负结果、有效/零向量/缺参考计数与配对clean描述量误差保留在JSON/CSV。以下置换对照不改变参考标签；199次固定RX/day内query标签置换为描述性阴性对照，不是p值或独立新样本。
 
-固定4536个分组记录、756个条件阴性对照和420个配对差。比较为八新版各对指定父、R48两版之间、R49五剪枝版各对其同宽控制，以及两个同宽控制之间；所有四解析组和七场景均报告，包括clean关联下降、个别TX负margin、缺参考和零向量。source/target真值与clean参考的评价权限如实披露，整套评价不能称完全无标签。
+|lowurban候选|combined实际margin|query标签置换均值|置换5%至95%|高于95%分位|
+|---|---:|---:|---|---|
+|r46_350521|0.066143|0.000019|-0.000321至0.000342|True|
+|r48_retain_refine|0.072945|0.000019|-0.000324至0.000350|True|
+|r48_prune_refine|0.069414|0.000021|-0.000275至0.000339|True|
+|r49_retain_refine|0.072836|0.000021|-0.000307至0.000360|True|
+|r49_prune_near|0.070475|0.000023|-0.000312至0.000373|True|
+|r49_prune_balanced|0.070225|0.000022|-0.000289至0.000356|True|
+|r49_prune_small|0.067651|0.000024|-0.000284至0.000337|True|
+|r49_context_slim|0.068582|0.000020|-0.000315至0.000354|True|
+|r49_prior_slim|0.070278|0.000025|-0.000275至0.000359|True|
 
-普通账户CPU2线程、0GPU，与R48/R49共用R41 score.lock，等待父时不持锁；提取和评分最多占一个本任务CPU评分槽。原数据与权重只读，另建不可覆盖root、一次归档SHA与compile；核实实际PID/CWD/argv/空CUDA/日志增长。输入路径/commit/ID/原LU校准不符、父技术失败、缺失或非有限输入/输出碰撞时保留产物且不自动重试；健康父和其他owner不动。
+|lowurban配对比较|共同有效数|combined margin变化|配对描述量误差变化|
+|---|---:|---:|---:|
+|r48_retain_refine − r46_350521|168000|0.006802|-0.120709|
+|r48_prune_refine − r46_350521|168000|0.003271|-0.093340|
+|r49_retain_refine − r46_350521|168000|0.006693|-0.123350|
+|r49_prune_near − r46_350521|168000|0.004331|-0.113726|
+|r49_prune_balanced − r46_350521|168000|0.004082|-0.105828|
+|r49_prune_small − r46_350521|168000|0.001508|-0.038052|
+|r49_context_slim − r46_350521|168000|0.002438|-0.103363|
+|r49_prior_slim − r46_350521|168000|0.004135|-0.098638|
+|r48_prune_refine − r48_retain_refine|168000|-0.003531|0.027368|
+|r49_prune_near − r49_retain_refine|168000|-0.002361|0.009623|
+|r49_prune_balanced − r49_retain_refine|168000|-0.002611|0.017522|
+|r49_prune_small − r49_retain_refine|168000|-0.005185|0.085297|
+|r49_context_slim − r49_retain_refine|168000|-0.004255|0.019986|
+|r49_prior_slim − r49_retain_refine|168000|-0.002558|0.024711|
+|r49_retain_refine − r48_retain_refine|168000|-0.000109|-0.002641|
 
-这仍是已暴露工程基准的有标签事后关联统计。它能检验固定解析坐标下是否保留同TX关联，不能证明每个生成细节均来自该TX、未知TX泛化或真实在轨有效性。它不会替代原70%/其他五景距clean≤5pp目标、七场景识别测试或推理成本，也不构成新模型选模门槛。精确矩阵、命令、环境/CWD、路径、停止规则与预期产物登记在同run中。
+解析提取阶段404.917s，评分阶段1142.196s，控制器总墙钟3619.869s（含父完成等待）。9408000次新解析输入与56个旧引用来自同168000记录的相关场景/读出，不称新增独立样本。
 
+真实2条Ls解析no-query smoke、22项聚焦检查、CLIhelp、一次限P0/P1审查，以及普通账户一次预检/归档SHA/compile/实际PID/CWD/argv/空CUDA/2线程/日志增长均核实。等待父时不持R41score.lock；父全部正式评分后提取与评分才使用唯一CPU评分槽。
 
-精确环境、命令、路径、预算见[登记](experiment.json)。
+本研究使用已暴露工程基准，且事后评价明确使用target clean参考和truth，不称新的独立盲测或完全无标签评价。跨RX/day与置换只提供固定坐标下有限同TX关联，仍可能含载荷、接收链和日期因素，不能证明每个生成细节来源、未知TX泛化或真实在轨有效性。原lowurban70%、其他五景距rawclean≤5pp与更强输入TX细节目标继续ACTIVE。
 
-
-VERIFIED / WAITING_PARENT_FORMAL：普通账户新release/归档单SHA/compile已核实；真实2Ls参数自由noquery smoke PASS，0checkpoint/F/TX/V/target；实际PID/CWD/argv/空CUDA/2线程及日志增长已读回。等待R48/R49全部八行正式评分后解析，复用R47raw/350521的56单元，新算224单元；无统计结果，不改变父训练或预测。
+完整4536组记录、756条件对照和420配对差见[汇总](summary.json)与[逐组CSV](row_metrics.csv)；固定输入/方法/矩阵/命令/预算/停止规则见[登记](experiment.json)。
