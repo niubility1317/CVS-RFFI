@@ -24,7 +24,13 @@ def stats_check(actual,values):
 def check(base,reference,commit):
  base=Path(base).resolve();reference=Path(reference).resolve()
  if base.name!=d.RUN or reference.name!='20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01':raise ValueError('Fixed run/reference only')
- progress=d.read(base/'progress.json')
+ progress_path=base/'progress.json'
+ if (base/'control_recovery.json').is_file():
+  link=d.read(base/'control_recovery.json');recovery=Path(link['recovery_base']).resolve()
+  assert link['scientific_run_id']==d.RUN and link['scientific_commit']==commit and recovery.parent==base.parent and recovery.name==link['recovery_run_id']=='20261020-recovery-FcrossRX-statGradient-controller-local-r01'
+  control=d.read(recovery/'execution.json');assert control['scientific_commit']==commit and control['scientific_run_id']==d.RUN and control['control_commit']==link['control_commit'] and not control['model_training_restarted'] and not control['healthy_workers_terminated']
+  progress_path=recovery/'progress.json'
+ progress=d.read(progress_path)
  if progress['status']!='ARTIFACTS_COMPLETE' or progress['active']:return dict(status='WAIT_FIXED_MATRIX_RUNNING',checkpoint_loads=0,IQ_reads=0,truth_reads=0,output_written=False)
  matrix=d.read(base/'frozen_matrix.json');decision=d.read(base/'source_expansion.json');summary=d.read(base/'analysis_report/results_summary.json');result=d.read(base/'result.json');execution=d.read(base/'execution.json')
  assert matrix==dict(rows=d.rows(),user_fixed_extension=d.fixed_authorization(),target_feedback=False) and decision==d.fixed_authorization() and not decision['source_gate_applied']
@@ -32,7 +38,7 @@ def check(base,reference,commit):
  assert summary['result']==result and [dict(row_id=r['row_id'],treatment=r['treatment'],model_seed=r['model_seed']) for r in result['records']]==d.rows()
  script="[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false); Get-CimInstance Win32_Process | Where-Object { $_.Name -like 'python*' } | Select-Object ProcessId,CommandLine | ConvertTo-Json -Compress"
  probe=subprocess.run([os.environ.get('SystemRoot','C:/Windows')+'/System32/WindowsPowerShell/v1.0/powershell.exe','-NoProfile','-Command',script],capture_output=True,text=True,encoding='utf8',check=True,timeout=15);live=json.loads(probe.stdout) or [];live=live if isinstance(live,list) else [live]
- owned=[v for v in live if d.RUN in (v.get('CommandLine') or '') and any(' -m experiments.cvs_f_statgrad50.'+role+' ' in (v.get('CommandLine') or '') for role in ('source','predict','score','driver'))]
+ owned=[v for v in live if d.RUN in (v.get('CommandLine') or '') and (any(' -m experiments.cvs_f_statgrad50.'+role+' ' in (v.get('CommandLine') or '') for role in ('source','predict','score','driver')) or v['ProcessId']==progress['controller_pid'])]
  if owned:return dict(status='WAIT_TERMINAL_PROCESS_EXIT',live_owned_workers=len(owned),checkpoint_loads=0,IQ_reads=0,truth_reads=0,output_written=False)
  import numpy as np
  import torch

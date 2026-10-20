@@ -1,0 +1,187 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-recovery-FcrossRX-statGradient-controller-local-r01",
+  "group_id": "F-crossRX-statistic-gradient",
+  "display_name": "F跨RX统计梯度：保留健康训练的调度恢复",
+  "description": "Control-only recovery of failed progress replace; no new scientific rows or model restart. Preserve original stopped progress and adopt original worker; complete the existing six-row three-model-seed matrix.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "STAT_GRAD controller recovery"
+  ],
+  "tags": [
+    "CVS",
+    "Phase1",
+    "control_recovery",
+    "three_model_seeds",
+    "no_model_restart",
+    "clean_only",
+    "default_head_joint",
+    "no_satellite"
+  ],
+  "comparison_group_id": "F-crossRX-statistic-gradient",
+  "parent_run_ids": [
+    "20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active feature-learning goal and technical recovery; preserve all healthy original workers and the user-required three model seeds. No model restart, new candidate or target-feedback alteration.",
+  "code": {
+    "commit": "PENDING_CONTROL_COMMIT",
+    "checkout": "codex/phase1-rdrop-combinations-20261015",
+    "environment": "Verified native Windows Python3.10 stdlib control only; original workers retain native Python3.10/PyTorch2.10cu128/FP32/noTF32/CPU2/workers0",
+    "cwd": "IMMUTABLE_LOCAL_RELEASE/cvs_F_statGradient50_controlRecovery_local_20261020_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing source contract",
+    "representation": "Original native received residual/post_sync/noeq, center crop/RMS normalized256 IQ; SAME validated mmap cache; native eq_i/sig_i/base_index restored by opaque physicalID join",
+    "contract_ref": "LOCAL_DATASET/source/source_contract.json",
+    "physical_ids_ref": "LOCAL_DATASET/source/source_contract.json#role_ids",
+    "label_map_ref": "LOCAL_DATASET/source_cache/manifest.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      "2021_03_01",
+      "2021_03_08",
+      "2021_03_15",
+      "2021_03_23"
+    ],
+    "tx_sets_ref": "LOCAL_DATASET/source_cache/manifest.json",
+    "roles": {
+      "controller": "No direct IQ or truth access; reuse existing data handles without revalidation",
+      "workers": "Unchanged original scientific six rows: L6300/U56700 TX hidden/V27000; original clean168000 prediction and independent truth-last scores"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "LOCAL_DATASET/source_cache/manifest.json; existing capsule/manifest.json VALIDATED_ONCE; Phase1 manifest has no actual p2capsule_id/split_id fields, so null; unchanged prior VALIDATED_ONCE handle only, no Phase2 support/query.",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_training_then_frozen_target_test",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Operational recovery only; original scientific clean benchmark scope and fixed six rows remain unchanged; no new performance evidence"
+  },
+  "checkpoint": {
+    "initialization": "None: control-only adoption; no checkpoint loaded/restarted by controller",
+    "sources": [],
+    "contract_check_ref": "Original scientific run retains EXACT_MATCH/READY/VALIDATED_ONCE handles and original scientific commit 7b5532e9ff3845c23c7c229385ff5763254d31c3",
+    "provenance_verdict": "Controller has no model state; remaining workers retain original immutable release and scratch training provenance.",
+    "selection_rule": "Original fixed final50 student/defaulthead remains unchanged"
+  },
+  "execution": {
+    "host": "local Windows",
+    "launch_owner": "codex/root/statGradient-control-recovery-20261020",
+    "gpu_policy": "Controller CPU only; workers original physicalGPU0 conservative max3 including foreign/venv children, RAM>=4.5GiB for new GPU work; CPU scoring globalmax1. Never terminate healthy workers.",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "LOCAL_RUN/20261020-recovery-FcrossRX-statGradient-controller-local-r01",
+    "launch_command": "LOCAL_PROFILE_PYTHON -X utf8 -u tools/local_statgrad_controller_recovery.py --base LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01 --recovery-base LOCAL_RUN/20261020-recovery-FcrossRX-statGradient-controller-local-r01 --worker-release IMMUTABLE_LOCAL_RELEASE/cvs_F_statGradient50_local_20261020_r01 --reference-base LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --profile LOCAL_PROFILE --metadata LOCAL_SOURCE_NATIVE_GATE_METADATA_R02 --commit 7b5532e9ff3845c23c7c229385ff5763254d31c3 --control-commit CONTROL_COMMIT --scientific-module experiments.cvs_f_statgrad50 --exit-observation LOCAL_PREPARATION/statGradient_source02_exit_observed_r01.json",
+    "stop_rule": "Existing dispatcher, identity mismatch, unowned partial output, existing role launch/output collision, failed worker or bounded persistent file replace denial stops new dispatch; preserve all healthy workers and artifacts. Same failure after this one repair is not blindly retried. No performance stop or model rerun."
+  },
+  "expected_artifacts": [
+    "execution.json",
+    "original_failed_progress.json",
+    "progress.json",
+    "ORIGINAL_SCIENTIFIC_RUN/control_recovery.json",
+    "ORIGINAL_SCIENTIFIC_RUN/fixed six rows source/prediction/scores and aggregate"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "adopted original worker unchanged",
+      "all original six rows and all3 seeds preserved",
+      "bounded progress writer succeeds under actual Windows reader",
+      "original scientific source/predict/score artifacts; no recovery performance metric"
+    ],
+    "dimensions": [
+      "control recovery vs original failed dispatcher"
+    ],
+    "prediction_ref": "ORIGINAL_SCIENTIFIC_RUN/ROW/prediction/predictions.npz",
+    "scorer_ref": "Original immutable experiments/cvs_f_statgrad50/score.py, scientific commit 7b5532e9ff3845c23c7c229385ff5763254d31c3"
+  },
+  "rows": [
+    {
+      "row_id": "CONTROLLER_RECOVERY",
+      "method": "Bounded file-replace retry and read-only process adoption",
+      "purpose": "Complete unchanged original STAT_GRAD/NORM_ONLY x seeds2026092701/02/03 without restarting training",
+      "config_ref": "tools/local_statgrad_controller_recovery.py",
+      "resolved_config_ref": "LOCAL_RUN/20261020-recovery-FcrossRX-statGradient-controller-local-r01/execution.json",
+      "config": {
+        "scientific_commit": "7b5532e9ff3845c23c7c229385ff5763254d31c3",
+        "scientific_run_id": "20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01",
+        "matrix": [
+          "STAT_GRAD",
+          "NORM_ONLY"
+        ],
+        "model_seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "original_budget": "scratch50=33L+17U per row",
+        "model_training_restarted": false,
+        "healthy_workers_terminated": false
+      },
+      "data_overrides": {
+        "controller_IQ": false,
+        "controller_truth": false,
+        "workers": "unchanged existing original source/test contract"
+      },
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "This controller creates no model seed. All six original rows keep 2026092701/02/03; no new sampling or model state.",
+      "k": null,
+      "scenario": "Original clean only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "No additional model budget; preserve remaining original50 budget",
+      "output_root": "LOCAL_RUN/20261020-recovery-FcrossRX-statGradient-controller-local-r01",
+      "log_path": "IMMUTABLE_LOCAL_RELEASE/cvs_F_statGradient50_controlRecovery_local_20261020_r01/controller.log",
+      "command": "LOCAL_PROFILE_PYTHON -X utf8 -u tools/local_statgrad_controller_recovery.py --base LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01 --recovery-base LOCAL_RUN/20261020-recovery-FcrossRX-statGradient-controller-local-r01 --worker-release IMMUTABLE_LOCAL_RELEASE/cvs_F_statGradient50_local_20261020_r01 --reference-base LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --profile LOCAL_PROFILE --metadata LOCAL_SOURCE_NATIVE_GATE_METADATA_R02 --commit 7b5532e9ff3845c23c7c229385ff5763254d31c3 --control-commit CONTROL_COMMIT --scientific-module experiments.cvs_f_statgrad50 --exit-observation LOCAL_PREPARATION/statGradient_source02_exit_observed_r01.json",
+      "expected_artifacts": [
+        "execution.json",
+        "original_failed_progress.json",
+        "progress.json",
+        "ORIGINAL_SCIENTIFIC_RUN/control_recovery.json",
+        "ORIGINAL_SCIENTIFIC_RUN/fixed six rows source/prediction/scores and aggregate"
+      ]
+    }
+  ],
+  "notes": [
+    "Reproduced original Path.replace WinError5 using actual Windows read handle that denies delete sharing; original target preserved and same writer succeeds after handle release. Real competing reader unidentified.",
+    "New atomic progress writer retries only Windows access/sharing errors 5/32/33 for bounded40 attempts x .05sec; other errors raise. Completed/live source never queued again; duplicate dispatcher and unowned partial output rejected.",
+    "One targeted independent P0/P1 review PASS; no new scientific model/recipe changes, original real-checkpoint no-query smoke retained. New focused control tests contain no IQ/truth/model/CUDA.",
+    "Original failed progress.json remains untouched. New control root/release and explicit control_recovery pointer direct final read-only audit to recovered progress. Scientific worker identity remains 7b5532e9ff3845c23c7c229385ff5763254d31c3.",
+    "No target feedback: all6 rows fixed before first-seed scores and remain unchanged. Completed artifacts reused; pending original roles use old scientific release and output paths."
+  ],
+  "registered_at": "2026-10-20T12:37:42+00:00"
+}

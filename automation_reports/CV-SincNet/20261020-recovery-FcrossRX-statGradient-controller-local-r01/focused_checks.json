@@ -1,0 +1,33 @@
+{
+  "reproduction": {
+    "status": "REPRODUCED",
+    "original_writer_failed_under_transient_reader": {
+      "exception": "PermissionError",
+      "winerror": 5,
+      "stage": "Path.replace"
+    },
+    "unchanged_target_during_denial": true,
+    "same_writer_succeeds_after_reader_close": true,
+    "production_outputs_touched": false,
+    "IQ_reads": 0,
+    "truth_reads": 0
+  },
+  "checks": {
+    "status": "PASS",
+    "recovered_progress_cursor_and_wrong_scientific_identity_guard_verified": true,
+    "real_Windows_reader_denial_retried": true,
+    "permanent_denial_bounded_and_target_preserved": true,
+    "other_errors_not_swallowed": true,
+    "read_only_real_exit_code7_verified": true,
+    "completed_and_live_source_not_queued_again": true,
+    "unowned_partial_output_rejected": true,
+    "existing_dispatcher_rejected": true,
+    "production_outputs_touched": false,
+    "IQ_reads": 0,
+    "truth_reads": 0,
+    "model_forwards": 0,
+    "CUDA_contexts": 0
+  },
+  "scientific_commit": "7b5532e9ff3845c23c7c229385ff5763254d31c3",
+  "scientific_workers_changed": false
+}
