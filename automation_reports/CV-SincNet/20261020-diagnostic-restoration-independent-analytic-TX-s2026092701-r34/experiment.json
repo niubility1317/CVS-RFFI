@@ -1,0 +1,245 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-diagnostic-restoration-independent-analytic-TX-s2026092701-r34",
+  "group_id": "pamf-restoration-independent-analytic-identity",
+  "display_name": "不依赖 F 的解析指纹归属源诊断",
+  "description": "已有正收益 R17 U-Net 恢复 IQ 的跨 RX/day 同 TX 解析观测量对比；纯 CPU，0新网络预测/拟合/target。",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "source_diagnostic",
+    "F_independent",
+    "analytic_TX",
+    "no_new_training",
+    "CPU"
+  ],
+  "comparison_group_id": "source_R17_analytic_TX_no_F",
+  "parent_run_ids": [
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+    "20261019-phase1-restoration-learned-action-source-s2026092701-r07",
+    "20261020-phase1-restoration-analytic-unrolled-selfsup-s2026092701-m2-r22"
+  ],
+  "replaces_run_id": null,
+  "authorization": "持续恢复研发及输入 TX 细节归属验收授权；仅用源域正收益 U-Net 已有 IQ 补不依赖 F 的诊断；不改 R32 健康运行或资格。",
+  "code": {
+    "commit": "60f0d924aa0a43f4213c683df17d7ae9e2ea54ee",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
+    "cwd": "releases/pamf_analytic_identity_20261020_r34"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "OriginalR07 source IQ plus already-predicted R17restoredIQ;fixed public analytic mirror64/spectral4/reference24/combined92;no Ffeatures/logits",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "OriginalR07 validation1800V physicalIDs matched originalR17 prediction;calibration first8192R07LUclean",
+    "label_map_ref": "TrainingLU labels neveropened;independentCPUscore opens V labels only afterall56analyticcells finite/fixed;0target",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Unchanged existing source physical handles;matching scoredfeaturemetadata/IDs;no data revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": "UnchangedR07fixedsourceVreceivedpracticalobservations;onlycachedF50features;no knownactionmetadata",
+    "restoration_train_counts": {
+      "new_neural_epochs": 0,
+      "new_neural_updates": 0,
+      "new_calibration_clean_samples": 8192,
+      "calibration_L_U_actual_counts": "Recorded in calibration.json;noTXlabels/Vfit",
+      "inherited_R17_E20_updates": 4940,
+      "extra_restorer_predictions": 0,
+      "F_weights_read": 0,
+      "F_embeddings_logits_read": 0
+    },
+    "source_validation_panel": 1800,
+    "target_panel": "Not accessed;no target arguments"
+  },
+  "permissions": {
+    "regime": "Source-only post-scoreIQ diagnostic;new label-free trainingLU moment calibration;Vlabels for post-feature grouping only",
+    "query_use": "No target/query/truth inputs;no state or classifier fit;no candidate reordering or source qualification change",
+    "external_method_exception": null,
+    "claim_scope": "F-independent analytic source association only;not TX-exclusive physical parameters,decodedpayload independence,per-detail authenticity or newblindtest"
+  },
+  "checkpoint": {
+    "initialization": "N/A:no checkpoint or trainedweights loaded;existingR17sourceIQ only;publicR22analytic formulas,parameter-free buffers",
+    "sources": [
+      {
+        "run_id": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+        "commit": "cd97744884b5e460926e48c8b7efb7d78c6da0f4",
+        "role": "Existing complete sourceIQ from source-selected positive U-Net;no weights/Foutputs",
+        "path": "runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/unroll_unshared/native_map_prior/prediction/*.restored.iq.npy"
+      },
+      {
+        "run_id": "20261019-phase1-restoration-learned-action-source-s2026092701-r07",
+        "commit": "c8ccdfdbd03ab5ad8828b1eb9210b99a664ebe7b",
+        "role": "Original source-only trainingclean8192 momentcalibration andV1800 rawIQ",
+        "path": "runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/cache/train/clean.npy andcache/validation"
+      },
+      {
+        "run_id": "20261020-phase1-restoration-analytic-unrolled-selfsup-s2026092701-m2-r22",
+        "commit": "ee41478dce40cfdf7778d46f8c44bb58eaf82367",
+        "role": "Public fixed analytic formulas only,no weights/scales inherited",
+        "path": "experiments/pamf_analytic_unrolled_restore/descriptors.py"
+      }
+    ],
+    "contract_check_ref": "Existing source READY/EXACT_MATCH handles;originalR17commit/sourcecomplete andall7IQ/IDs;originalR07fullLU/validation;56features completebeforeVlabels",
+    "provenance_verdict": "VERIFIED originalsource-only R17/R07 provenance reused;no weights inherited or loaded;no dataset revalidation",
+    "selection_rule": "No model selection;fixed source-selected R17unshared;all descriptor families reported;R32 untouched",
+    "evaluation_readers": [
+      "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701 original defaulthead cached features only;0modelcalls"
+    ]
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/analytic-identity-probe",
+    "gpu_policy": "CPUonly,0GPU;2threads;extract thenseparate score sequential;no interruption or mutation ofhealthy R32/peers",
+    "remote_run_root": "runs/20261020-diagnostic-restoration-independent-analytic-TX-s2026092701-r34",
+    "remote_log_root": "logs/20261020-diagnostic-restoration-independent-analytic-TX-s2026092701-r34",
+    "local_artifact_root": "local_artifacts/pamf_restoration/analytic_identity_r34_20261020",
+    "launch_command": "python -u -m experiments.pamf_analytic_identity_probe.runner run --runs-root ../../runs --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261020-diagnostic-restoration-independent-analytic-TX-s2026092701-r34 --expected-commit 60f0d924aa0a43f4213c683df17d7ae9e2ea54ee",
+    "stop_rule": "Wrong source parent/roles,missing or nonfinite input/features,outputcollision:preserve outputs,noautomaticretry;healthy peers unchanged"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "resolved_config.json",
+    "extract_launch.json",
+    "score_launch.json",
+    "calibration.json",
+    "analytic_features.npz",
+    "physical_ids.npy",
+    "feature_complete.json",
+    "logs/extract.log",
+    "logs/score.log",
+    "summary.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "primary": "ActualsourceTX analytic contrasts across differentRX/day,cleaninformativeness andquery-label negativecontrol;descriptive,no newsourcegate",
+    "metric_names": [
+      "same_TX_cosine",
+      "other_TX_cosine",
+      "crossrecord_TX_margin",
+      "positive_margin_percent_not_accuracy",
+      "valid_missing_zero_counts",
+      "paired_standardized_descriptor_error",
+      "query_label_permutation_mean_p05_p95_not_pvalue"
+    ],
+    "dimensions": [
+      "four analytic groups",
+      "all7views",
+      "TX",
+      "RX",
+      "day",
+      "raw/restored/clean"
+    ],
+    "prediction_ref": "runs/20261020-diagnostic-restoration-independent-analytic-TX-s2026092701-r34/analytic_features.npz;no newmodelpredictions",
+    "scorer_ref": "experiments.pamf_analytic_identity_probe.runner score;independentCPU all56cellsbeforeVlabels",
+    "final_user_targets": "Unchanged70/5pp formal performance andinputTXdetailfidelity remainunproven;this sourceprobe doesnot satisfy them alone"
+  },
+  "rows": [
+    {
+      "row_id": "R17_analytic",
+      "method": "analytic_identity_probe",
+      "purpose": "source_only_F_independent_identity_analysis",
+      "config_ref": "experiments/pamf_analytic_identity_probe/design.py#configuration",
+      "resolved_config_ref": "runs/20261020-diagnostic-restoration-independent-analytic-TX-s2026092701-r34/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101901,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026102034
+      },
+      "seed_notes": "OriginalR17model/R07source1901hardware1902;no newtraining/channeldraws;query-labelnegativecontrol2034;fixed first8192calibration",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0neuraltraining/headfit/modelpredictions/target;8192LUclean analyticmoments+1800x7x2analytictransforms;199querylabel permutations;CPU2threads",
+      "output_root": "runs/20261020-diagnostic-restoration-independent-analytic-TX-s2026092701-r34",
+      "log_path": "runs/20261020-diagnostic-restoration-independent-analytic-TX-s2026092701-r34/logs/extract.log",
+      "command": "python -u -m experiments.pamf_analytic_identity_probe.runner run --runs-root ../../runs --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261020-diagnostic-restoration-independent-analytic-TX-s2026092701-r34 --expected-commit 60f0d924aa0a43f4213c683df17d7ae9e2ea54ee",
+      "expected_artifacts": [
+        "launch.json",
+        "resolved_config.json",
+        "extract_launch.json",
+        "score_launch.json",
+        "calibration.json",
+        "analytic_features.npz",
+        "physical_ids.npy",
+        "feature_complete.json",
+        "logs/extract.log",
+        "logs/score.log",
+        "summary.json",
+        "complete.json"
+      ],
+      "diagnostic_candidates": [
+        {
+          "name": "R17_unshared",
+          "source_run": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+          "source_row": "unroll_unshared",
+          "source_commit": "cd97744884b5e460926e48c8b7efb7d78c6da0f4"
+        },
+        {
+          "name": "R19_time",
+          "source_run": "20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19",
+          "source_row": "time_time",
+          "source_commit": "5bbc0ccdc32de19e75cb6a01e2cda0352e39f36a"
+        },
+        {
+          "name": "R23_control",
+          "source_run": "20261020-phase1-restoration-joint-coarse-selfsup-s2026092701-m2-r23",
+          "source_row": "prior_only",
+          "source_commit": "d43dbab326d0b1e2cb6fb7faa23dc9a3ec25a025"
+        },
+        {
+          "name": "R24_TCN",
+          "source_run": "20261020-phase1-restoration-fullresolution-priors-selfsup-s2026092701-m2-r24",
+          "source_row": "tcn_prior",
+          "source_commit": "da5b9d52819ccd40f8b59dbfdefebff3bd3c2230"
+        },
+        {
+          "name": "R24_attention",
+          "source_run": "20261020-phase1-restoration-fullresolution-priors-selfsup-s2026092701-m2-r24",
+          "source_row": "attention_prior",
+          "source_commit": "da5b9d52819ccd40f8b59dbfdefebff3bd3c2230"
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "R25used sameF;R31syntheticdirections not actualTX;R34 adds trainedF-independent actual-sourceTX descriptor association,not per-detail proof.",
+    "Fixedsourcepositive R17unshared only;no classifier,trainedweights,Ffeatures/logits,target,sourcefit or stateupdates.",
+    "New8192LUclean mean/std statistics,FP64/floor.05,actualL/Ucalibrationcounts reported;Vfit0;explicitnot entireanalysisunlabelled.",
+    "Feature extraction all56cells before independentCPUVlabel grouping;cap2crossRX/day balanced6TX;zero/missingcounts kept.",
+    "199 withinRX/day querylabelshuffles,referencefixed;descriptivenull notpvalue/significance;allfamilies/scenes retained,no outcome-based selection.",
+    "19focusedchecks/CLIhelp/oneP0P1PASS;no checkpointloaded so no newcheckpointsmoke;datahandles reused.",
+    "PureCPU2threads,newimmutableroot,onepreflight/archiveSHA/compile/poststate;healthyR32/peers untouched;goalactive."
+  ],
+  "registered_at": "2026-10-20T06:03:28+00:00"
+}
