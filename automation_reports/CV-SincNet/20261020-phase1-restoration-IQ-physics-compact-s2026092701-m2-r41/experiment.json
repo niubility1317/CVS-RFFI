@@ -1,0 +1,323 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-phase1-restoration-IQ-physics-compact-s2026092701-m2-r41",
+  "group_id": "pamf-restoration-IQ-physics-compact",
+  "display_name": "物理约束下的无TX标签紧凑恢复器与七场景正式验证",
+  "description": "固定R38两档宽度、原R17独立初始化，在IQ目标上加入源clean粗恢复/合成信道/噪声锚点；source物理诊断及两版七正式测试全部自动闭合。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "compression",
+    "physics_anchors",
+    "TX_unlabeled",
+    "F_free",
+    "formal_all_versions"
+  ],
+  "comparison_group_id": "R41_physical_anchors_vs_R38_same_width_budget_and_original_R17",
+  "parent_run_ids": [
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+    "20261019-phase1-restoration-learned-action-source-s2026092701-r07",
+    "20261020-diagnostic-restoration-compact-physics-s2026092701-m3-r40"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户压缩同时优化、恢复器无TX/F训练及每新版必须正式测试授权内；源R40证据确定物理锚点，两档固定不按已暴露目标挑父模型或重跑。",
+  "code": {
+    "commit": "be54678266c95e28bbc18f5a71387c8becf463fa",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
+    "cwd": "releases/pamf_IQ_physics_compact_20261020_r41"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "OriginalR07 paired clean/current receivedIQ plus matched per-epoch simulated FIR64/main-image/time-varyingcoefficients/absolute real-coordinate noisevariance",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md;originalR17 parent metadata original7/63/30;source_cache/manifest READY/EXACT_MATCH",
+    "physical_ids_ref": "Original R07 fullL6300/U56700/20receivedepochs;sourceV1800;unchanged original R05 formal168000 IDs/all7receivedviews",
+    "label_map_ref": "No TXlabels inrestorationtraining;known source simulation parameters only;V/target truth in independentCPU score afterall rowpredictions",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json: READY/EXACT_MATCH; reuse existing cache without new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "OriginalR07 cache epochs01..20:15%clean/85%practical residual;original R05 fixedreceived168000x7 unchanged",
+    "source_validation_panel": 1800,
+    "restoration_train_counts": {
+      "L_per_epoch": 6300,
+      "U_per_epoch": 56700,
+      "L_exposures": 126000,
+      "U_exposures": 1134000,
+      "physics_target_examples": 1260000,
+      "action_probe_vectors": 2520000,
+      "TX_labels_read": 0,
+      "F_weights_read": 0,
+      "F_outputs_read": 0,
+      "V_reads": 0,
+      "target_reads": 0
+    },
+    "target_panel": "Both fixed newdenseversions,168000physicalrecords x7 each,regardless source score"
+  },
+  "permissions": {
+    "regime": "TX-unlabeled simulated-paired source self-supervision plus known synthetic-channel parameter supervision",
+    "query_use": "No target/V/F/TX input totraining;all7predictions before separateCPUtruthlast;source physicalcontext estimates all7beforeoracle;no scores gate target",
+    "external_method_exception": null,
+    "claim_scope": "Exposed historicalbenchmark;no targetfeedback orclean-blind claim;fidelity andaccuracy separate,not per-detail TX authenticity proof"
+  },
+  "checkpoint": {
+    "initialization": "Both original R17 source-selected unroll_unshared E20/4940->group-preserving dense slices andshared long priors;allcontext/priors trainable;noR38student inheritance",
+    "sources": [
+      {
+        "run_id": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+        "commit": "cd97744884b5e460926e48c8b7efb7d78c6da0f4",
+        "role": "Frozen originalIQteacher and only channel-slice initialization;0F/TX/target optimization inancestry",
+        "path": "runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/unroll_unshared/native_map_prior/final.pt"
+      },
+      {
+        "run_id": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+        "commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+        "role": "Frozen defaulthead reader for smoke/eval only;never compressionloss",
+        "path": "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+      }
+    ],
+    "contract_check_ref": "Original R17 source_decision/training andstrict metadata;matchingR02/R07ancestry,originalsourcephysicalroles;R07launch/cache header;no databytes revalidation",
+    "provenance_verdict": "VERIFIED unchanged original R17 source-selected IQteacher/data contract;actualwholecheckpoint and2Ls noquerysmoke launcherfirststep",
+    "selection_rule": "Original source-selected R17 fixed;both previously fixed widths andphysicsloss matrix preserved;fixedE20final,sourcegain doesnotcancel formal tests"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/R17-IQ-physics-compact",
+    "gpu_policy": "N607physical0/1 eachoneownworker/max2own;allownercap2/free18GB beforetraining;CPU2/oneownscorer score.lock;protectpeerhealthyjobs",
+    "remote_run_root": "runs/20261020-phase1-restoration-IQ-physics-compact-s2026092701-m2-r41",
+    "remote_log_root": "logs/20261020-phase1-restoration-IQ-physics-compact-s2026092701-m2-r41",
+    "local_artifact_root": "local_artifacts/pamf_restoration/iq_physics_compact_r41_20261020",
+    "launch_command": "python -u -m experiments.pamf_iq_physics_compact.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-IQ-physics-compact-s2026092701-m2-r41 --expected-commit be54678266c95e28bbc18f5a71387c8becf463fa",
+    "stop_rule": "Wrong contract/inputs/collision/nonfinite or technical failure:preserve affected output and healthy peers;no automatic retry"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "resolved_config.json",
+    "comparison_plan.json",
+    "smoke.json",
+    "workers.json",
+    "stages.json",
+    "{row}/gpu_ready.json",
+    "{row}/resolved_config.json",
+    "{row}/initialization.json",
+    "{row}/training.jsonl",
+    "{row}/training_complete.json",
+    "{row}/native_map_prior/final.pt",
+    "{row}/native_map_prior/prediction/complete.json",
+    "{row}/native_map_prior/summary.json",
+    "{row}/source_physics/complete.json",
+    "{row}/source_physics/{view}.npz",
+    "{row}/source_physics/summary.json",
+    "{row}/source_physics/sample_metrics.npz",
+    "{row}/source_complete.json",
+    "{row}/matched_batch1_profile.json",
+    "{row}/target_confirmation/native_map_prior/prediction/complete.json",
+    "{row}/target_confirmation/native_map_prior/summary.json",
+    "{row}/assessment.json",
+    "{row}/goal_assessment.json",
+    "{row}/complete.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "MacroF1",
+      "repair_damage_net",
+      "TX_RX_day",
+      "IQ_NMSE",
+      "prefix232_tail24_NMSE",
+      "FFT_logpower",
+      "paired_clean_feature_distance",
+      "other_TX_margin",
+      "prediction_cost",
+      "goal_70_and_5pp"
+    ],
+    "dimensions": [
+      "all7scenes",
+      "twofixedwidths",
+      "TX/RX/day classification",
+      "RX/day sourcephysics",
+      "originalR17/R38sameworkmatchedcomparisons"
+    ],
+    "primary": "Actualformal7accuracy/MacroF1/gains andper-scene1ppfloor vsoriginalR17;sourcecoarse/compositeaction/nativevariance fidelity andfullmodelcost",
+    "prediction_ref": "runs/20261020-phase1-restoration-IQ-physics-compact-s2026092701-m2-r41/{row}/target_confirmation/native_map_prior/prediction",
+    "scorer_ref": "IndependentCPU runner score_source/score_target;all7fixedbeforetruth;context7fixedbeforeoracle;score.lock",
+    "final_user_targets": {
+      "lowurban_accuracy_min": 70.0,
+      "other_five_max_gap_vs_original_clean_pp": 5.0
+    },
+    "source_physics_metrics": "R40 NumPy coarse/actionclean/actionprobe/logvariance/residuals;mean/median/p90;63RX/day/scenerecords perrow,0fit"
+  },
+  "rows": [
+    {
+      "row_id": "dense_three_quarter",
+      "method": "iq_physics_compact",
+      "purpose": "fixed_physical_anchors_compression_optimization",
+      "config_ref": "experiments/pamf_iq_physics_compact/design.py#configuration",
+      "resolved_config_ref": "runs/20261020-phase1-restoration-IQ-physics-compact-s2026092701-m2-r41/dense_three_quarter/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Model2701/dataorder2001;unchangedR07simulations1912/formal2027;trainingprobes2041independentgenerator,sourcephysicsprobes2040;supportNA",
+      "k": null,
+      "scenario": "clean + three suburban + three urban practical",
+      "optimizer": "AdamW/globalclip1/FP32/noTF32",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "E20/4940/fullLU,L126000/U1134000;teacher/student/context/physics1260000IQ each;2520000trainingprobes;120componentepochs/80sequentialtrainingpasses includingoriginalparents;F50E50separate",
+      "output_root": "runs/20261020-phase1-restoration-IQ-physics-compact-s2026092701-m2-r41/dense_three_quarter",
+      "log_path": "runs/20261020-phase1-restoration-IQ-physics-compact-s2026092701-m2-r41/logs/worker-dense_three_quarter.log",
+      "command": "python -u -m experiments.pamf_iq_physics_compact.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-IQ-physics-compact-s2026092701-m2-r41 --expected-commit be54678266c95e28bbc18f5a71387c8becf463fa",
+      "expected_artifacts": [
+        "launch.json",
+        "resolved_config.json",
+        "comparison_plan.json",
+        "smoke.json",
+        "workers.json",
+        "stages.json",
+        "{row}/gpu_ready.json",
+        "{row}/resolved_config.json",
+        "{row}/initialization.json",
+        "{row}/training.jsonl",
+        "{row}/training_complete.json",
+        "{row}/native_map_prior/final.pt",
+        "{row}/native_map_prior/prediction/complete.json",
+        "{row}/native_map_prior/summary.json",
+        "{row}/source_physics/complete.json",
+        "{row}/source_physics/{view}.npz",
+        "{row}/source_physics/summary.json",
+        "{row}/source_physics/sample_metrics.npz",
+        "{row}/source_complete.json",
+        "{row}/matched_batch1_profile.json",
+        "{row}/target_confirmation/native_map_prior/prediction/complete.json",
+        "{row}/target_confirmation/native_map_prior/summary.json",
+        "{row}/assessment.json",
+        "{row}/goal_assessment.json",
+        "{row}/complete.json",
+        "complete.json"
+      ],
+      "parameters": 1709713,
+      "physical_GPU": 0,
+      "physics_weights": {
+        "coarse_clean_nmse": 0.1,
+        "action_probe_nmse": 0.1,
+        "noise_log_variance_mse": 0.01
+      }
+    },
+    {
+      "row_id": "dense_half",
+      "method": "iq_physics_compact",
+      "purpose": "fixed_physical_anchors_compression_optimization",
+      "config_ref": "experiments/pamf_iq_physics_compact/design.py#configuration",
+      "resolved_config_ref": "runs/20261020-phase1-restoration-IQ-physics-compact-s2026092701-m2-r41/dense_half/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Model2701/dataorder2001;unchangedR07simulations1912/formal2027;trainingprobes2041independentgenerator,sourcephysicsprobes2040;supportNA",
+      "k": null,
+      "scenario": "clean + three suburban + three urban practical",
+      "optimizer": "AdamW/globalclip1/FP32/noTF32",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "E20/4940/fullLU,L126000/U1134000;teacher/student/context/physics1260000IQ each;2520000trainingprobes;120componentepochs/80sequentialtrainingpasses includingoriginalparents;F50E50separate",
+      "output_root": "runs/20261020-phase1-restoration-IQ-physics-compact-s2026092701-m2-r41/dense_half",
+      "log_path": "runs/20261020-phase1-restoration-IQ-physics-compact-s2026092701-m2-r41/logs/worker-dense_half.log",
+      "command": "python -u -m experiments.pamf_iq_physics_compact.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-IQ-physics-compact-s2026092701-m2-r41 --expected-commit be54678266c95e28bbc18f5a71387c8becf463fa",
+      "expected_artifacts": [
+        "launch.json",
+        "resolved_config.json",
+        "comparison_plan.json",
+        "smoke.json",
+        "workers.json",
+        "stages.json",
+        "{row}/gpu_ready.json",
+        "{row}/resolved_config.json",
+        "{row}/initialization.json",
+        "{row}/training.jsonl",
+        "{row}/training_complete.json",
+        "{row}/native_map_prior/final.pt",
+        "{row}/native_map_prior/prediction/complete.json",
+        "{row}/native_map_prior/summary.json",
+        "{row}/source_physics/complete.json",
+        "{row}/source_physics/{view}.npz",
+        "{row}/source_physics/summary.json",
+        "{row}/source_physics/sample_metrics.npz",
+        "{row}/source_complete.json",
+        "{row}/matched_batch1_profile.json",
+        "{row}/target_confirmation/native_map_prior/prediction/complete.json",
+        "{row}/target_confirmation/native_map_prior/summary.json",
+        "{row}/assessment.json",
+        "{row}/goal_assessment.json",
+        "{row}/complete.json",
+        "complete.json"
+      ],
+      "parameters": 794529,
+      "physical_GPU": 1,
+      "physics_weights": {
+        "coarse_clean_nmse": 0.1,
+        "action_probe_nmse": 0.1,
+        "noise_log_variance_mse": 0.01
+      }
+    }
+  ],
+  "notes": [
+    "32focusedchecks/CLIhelp/one independentP0P1PASS;actualoriginalR17/newstudent/F50and2Ls pairedsource checkpoint smoke launcherfirststep.",
+    "R40sourceerrors justify physicalanchors;R38formalbenchmarkalreadyexposed;no targetbasedwidth/parent/weight/rowselection;allversions alwaysformal7.",
+    "Knownsyntheticchannel parameter supervision explicitlydisclosed;pairedclean allowed;0TX/F/V/target training. Original F onlynoquerysmoke/frozeneval/defaulthead.",
+    "Physicsweights .1coarse/.1action/.01logvarMSE;training2Gaussianseed2041 samearms;heldsource4Gaussianseed2040 afterall7contexts frozen.",
+    "Fullmodelparam1709713/794529 unchanged;physicalterms trainingonly;3priorcalls/6CG,currentIQonly;no performance,speeduporfidelitysuccess promised.",
+    "Eachrow E20->source7prediction/context7/profile/independentCPUscore->alwaysformal7prediction/independenttruthlast/1ppfloor+original70and5pp;protectpeers."
+  ],
+  "registered_at": "2026-10-20T10:09:19+00:00"
+}
