@@ -1,0 +1,242 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-diagnostic-restoration-compact-physics-s2026092701-m3-r40",
+  "group_id": "pamf-restoration-compact-source-physics",
+  "display_name": "压缩恢复器粗恢复、信道与噪声源诊断",
+  "description": "冻结原R17及R38两版，只比较源域粗IQ/复合算子/噪声偏差；0TX/F/target/优化/GPU；全估计固定后独立oracle评分。",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "compression",
+    "source_diagnostic",
+    "physics",
+    "F_independent",
+    "CPU"
+  ],
+  "comparison_group_id": "original_R17_and_both_R38_frozen_source_contexts",
+  "parent_run_ids": [
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+    "20261020-phase1-restoration-r17-IQ-joint-compact-s2026092701-m2-r38",
+    "20261019-phase1-restoration-learned-action-source-s2026092701-r07"
+  ],
+  "replaces_run_id": null,
+  "authorization": "压缩同时优化与输入细节保真持续授权内的固定源机制诊断；不增加新模型，不用目标反馈，不重复正式测试。",
+  "code": {
+    "commit": "eebad5b7aaff7181bcdd89e1751f29dcaa471592",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
+    "cwd": "releases/pamf_compact_physics_20261020_r40"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "Original R07 V1800 receivedIQ7views->frozen coarseIQ/operator/absolute real-axis variance;original matching source simulation actions",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "Original R07 cache/validation/physical_ids.npy;subset of existing original V IDs;RX/day from same source role",
+    "label_map_ref": "No TX labels loaded in any stage;no target interface;simulation oracle after all21context cells fixed",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Unchanged existing source physical handles;matching scoredfeaturemetadata/IDs;no data revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": "UnchangedR07fixedsourceVreceivedpracticalobservations;onlycachedF50features;no knownactionmetadata",
+    "restoration_train_counts": {
+      "new_epochs": 0,
+      "new_updates": 0,
+      "new_calibration_samples": 0,
+      "source_context_estimates": 37800,
+      "extra_final_IQ_predictions": 0,
+      "F_weights_read": 0,
+      "F_outputs_read": 0
+    },
+    "source_validation_panel": 1800,
+    "target_panel": "Not accessed;original R17/R38 formal test results retained without reread or rerun"
+  },
+  "permissions": {
+    "regime": "Frozen sourceV mechanism diagnostic only;no TX labels/F/target/fit",
+    "query_use": "No target/query/truth argument;all21 estimates before source clean andsimulation oracle;0 source selection/ranking",
+    "external_method_exception": null,
+    "claim_scope": "Known simulated receive-chain action fidelity;not unique kernel identification, real in-orbit validation or TX detail proof"
+  },
+  "checkpoint": {
+    "initialization": "No training;strict-load fixed original R17 and both R38 E20/4940 checkpoints,freeze all;context only",
+    "sources": [
+      {
+        "run_id": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+        "commit": "cd97744884b5e460926e48c8b7efb7d78c6da0f4",
+        "role": "Original source-selected unroll_unshared,ancestral R02/R07 clean-paired noTX/F/target",
+        "path": "runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/unroll_unshared/native_map_prior/final.pt"
+      },
+      {
+        "run_id": "20261020-phase1-restoration-r17-IQ-joint-compact-s2026092701-m2-r38",
+        "commit": "e0868f0a0c3cf056a1753a5b4e5ce4f0bff84381",
+        "role": "Both F-free joint compact E20/4940,original L6300/U56700 source only",
+        "path": "runs/20261020-phase1-restoration-r17-IQ-joint-compact-s2026092701-m2-r38/{dense_three_quarter,dense_half}/native_map_prior/final.pt"
+      }
+    ],
+    "contract_check_ref": "Reuse READY/EXACT_MATCH source IDs;originalR17 source_decision andtraining;bothR38training metadata;R07 simulated cache originalcommit/complete",
+    "provenance_verdict": "Matching original7/63/30 physical source roles andR02/R07/R17 ancestral provenance;0new inherited state/target-drivenselection;exact loaders validate contracts",
+    "selection_rule": "All three fixed context estimators equally;none selected,ranked orupdated",
+    "evaluation_readers": [
+      "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701 original defaulthead cached features only;0modelcalls"
+    ]
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/compact-source-physics",
+    "gpu_policy": "CPUonly2threads/0GPU;one sequential worker;real3checkpoint2Ls noquerysmoke first then extract then separateCPUscore;no newtraining",
+    "remote_run_root": "runs/20261020-diagnostic-restoration-compact-physics-s2026092701-m3-r40",
+    "remote_log_root": "logs/20261020-diagnostic-restoration-compact-physics-s2026092701-m3-r40",
+    "local_artifact_root": "local_artifacts/pamf_restoration/compact_physics_r40_20261020",
+    "launch_command": "python -u -m experiments.pamf_compact_physics_probe.runner run --runs-root ../../runs --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261020-diagnostic-restoration-compact-physics-s2026092701-m3-r40 --expected-commit eebad5b7aaff7181bcdd89e1751f29dcaa471592",
+    "stop_rule": "Wrong source/model contract, incomplete/nonfinite input or estimate, outputcollision or technical failure:preserve outputs,no automatic retry;healthy peers untouched"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "resolved_config.json",
+    "smoke.json",
+    "extract_launch.json",
+    "score_launch.json",
+    "physical_metadata.npz",
+    "{candidate}__{view}.npz",
+    "estimates_complete.json",
+    "sample_metrics.npz",
+    "summary.json",
+    "complete.json",
+    "logs/extract.log",
+    "logs/score.log"
+  ],
+  "metrics_plan": {
+    "primary": "Frozen source coarse NMSE,composite action error on clean and4common Gaussian probes,native real-noise variance andmatchedresidual",
+    "metric_names": [
+      "coarse_clean_nmse",
+      "action_clean_nmse",
+      "action_probe_nmse",
+      "log_variance_error",
+      "squared_log_variance_error",
+      "native_real_variance",
+      "predicted_real_variance",
+      "estimated_action_residual_real_mse",
+      "oracle_action_residual_real_mse",
+      "estimated_action_residual_over_predicted_variance",
+      "oracle_action_residual_over_native_variance"
+    ],
+    "dimensions": [
+      "threefixedmodels",
+      "sevenviews",
+      "overall",
+      "RX",
+      "day",
+      "mean/median/p90"
+    ],
+    "prediction_ref": "runs/20261020-diagnostic-restoration-compact-physics-s2026092701-m3-r40/{candidate}__{view}.npz",
+    "scorer_ref": "Independent NumPy CPU runner score;all21complete cells before source oracle;189aggregate records",
+    "final_user_targets": "Source mechanistic diagnostic;not newnetwork/formalaccuracy orTXauthenticity proof;no candidate selection"
+  },
+  "rows": [
+    {
+      "row_id": "physics_probe",
+      "method": "compact_physics_probe",
+      "purpose": "fixed_frozen_source_receive_chain_comparison",
+      "config_ref": "experiments/pamf_compact_physics_probe/runner.py#configuration",
+      "resolved_config_ref": "runs/20261020-diagnostic-restoration-compact-physics-s2026092701-m3-r40/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026102040
+      },
+      "seed_notes": "No newtraining/dataorder;fixed original source simulations;4common complex Gaussian probes generated once with NumPy2040;no TX labels",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0newtraining/calibration/finalIQ/F/target;CPU2/0GPU;37800 frozen context estimates;all3rows7views/1800physicalIDs",
+      "output_root": "runs/20261020-diagnostic-restoration-compact-physics-s2026092701-m3-r40",
+      "log_path": "runs/20261020-diagnostic-restoration-compact-physics-s2026092701-m3-r40/logs/extract.log",
+      "command": "python -u -m experiments.pamf_compact_physics_probe.runner run --runs-root ../../runs --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261020-diagnostic-restoration-compact-physics-s2026092701-m3-r40 --expected-commit eebad5b7aaff7181bcdd89e1751f29dcaa471592",
+      "expected_artifacts": [
+        "launch.json",
+        "resolved_config.json",
+        "smoke.json",
+        "extract_launch.json",
+        "score_launch.json",
+        "physical_metadata.npz",
+        "{candidate}__{view}.npz",
+        "estimates_complete.json",
+        "sample_metrics.npz",
+        "summary.json",
+        "complete.json",
+        "logs/extract.log",
+        "logs/score.log"
+      ],
+      "diagnostic_candidates": [
+        {
+          "name": "R17_unshared",
+          "source_run": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+          "source_row": "unroll_unshared",
+          "source_commit": "cd97744884b5e460926e48c8b7efb7d78c6da0f4"
+        },
+        {
+          "name": "R19_time",
+          "source_run": "20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19",
+          "source_row": "time_time",
+          "source_commit": "5bbc0ccdc32de19e75cb6a01e2cda0352e39f36a"
+        },
+        {
+          "name": "R23_control",
+          "source_run": "20261020-phase1-restoration-joint-coarse-selfsup-s2026092701-m2-r23",
+          "source_row": "prior_only",
+          "source_commit": "d43dbab326d0b1e2cb6fb7faa23dc9a3ec25a025"
+        },
+        {
+          "name": "R24_TCN",
+          "source_run": "20261020-phase1-restoration-fullresolution-priors-selfsup-s2026092701-m2-r24",
+          "source_row": "tcn_prior",
+          "source_commit": "da5b9d52819ccd40f8b59dbfdefebff3bd3c2230"
+        },
+        {
+          "name": "R24_attention",
+          "source_run": "20261020-phase1-restoration-fullresolution-priors-selfsup-s2026092701-m2-r24",
+          "source_row": "attention_prior",
+          "source_commit": "da5b9d52819ccd40f8b59dbfdefebff3bd3c2230"
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "14focusedchecks/CLIhelp/one P0P1PASS;first launcherstep actual3checkpoints+2Ls noquerysmoke.",
+    "Only frozen coarse/action estimates;no new network version,prior orclassification;original sevenformalresults preserved.",
+    "All3models7views1800source IDs retained;no candidate thresholds,ranks,source or target selection.",
+    "Absolute per-real-axis variance;clean1e-8 syntheticfloor,not actualnoise;composite operator avoids FIR/gain gauge artifacts.",
+    "0TX/F/target/updates/newcalibration/GPU;separateCPU NumPy scorer afterall21complete;not TXdetail proof."
+  ],
+  "registered_at": "2026-10-20T09:51:45+00:00"
+}
