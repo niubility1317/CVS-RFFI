@@ -1,6 +1,6 @@
 # R44 44.28 万裁剪版的训练优化与进一步压缩
 
-状态：LOCAL_VERIFIED，未发布。27项聚焦检查、CLIhelp和一次限P0/P1审查通过。用户在 R44 完整正式结果揭示后明确要求保留 group_pruned442805 并继续优化、压缩；因此直接父由用户指定，不按 Agent 目标排名选择，不声称新的独立盲测或干净泛化。固定两行同预算比较，已有 44.28 万权重与全部负结果保留，不研发其他恢复网络。
+状态：**VERIFIED / RUNNING**，已发布且两版实际训练。27项聚焦检查、CLIhelp和一次限P0/P1审查通过。用户在 R44 完整正式结果揭示后明确要求保留 group_pruned442805 并继续优化、压缩；因此直接父由用户指定，不按 Agent 目标排名选择，不声称新的独立盲测或干净泛化。固定两行同预算比较，已有 44.28 万权重与全部负结果保留，不研发其他恢复网络。
 
 |行|完整参数|上下文参数|较442805减参|主/谱分支宽度|
 |---|---:|---:|---:|---|
@@ -25,3 +25,6 @@ N607普通账户GPU0/1每卡一own、总最多二own，等待R44对应GPU实际�
 
 
 方法commit `bbb8daf817de050b958d217b70d4c33f4aefe341`。精确命令、环境/CWD、路径、矩阵、预期产物见[登记](experiment.json)。
+
+
+VERIFIED/RUNNING：实际442805父/F50/两Ls配对IQ noquery smoke PASS，两行全部组件有限非零梯度、teacher/F不更新、checkpoint严格重载一致。归档单SHA/compile及controller/两worker实际PID/CWD/argv/空controllerCUDA/各物理GPU0或1和GPU-PID匹配、首轮曝光及日志增长已核实。无本轮正式性能结果；每行E20后自动七正式测试和独立truth-last。

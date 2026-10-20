@@ -1,6 +1,6 @@
 # R44 44.28 万裁剪版的训练优化与进一步压缩
 
-状态：LOCAL_IMPLEMENTED，未发布。用户在 R44 完整正式结果揭示后明确要求保留 group_pruned442805 并继续优化、压缩；因此直接父由用户指定，不按 Agent 目标排名选择，不声称新的独立盲测或干净泛化。固定两行同预算比较，已有 44.28 万权重与全部负结果保留，不研发其他恢复网络。
+状态：**VERIFIED / RUNNING**。用户在 R44 完整正式结果揭示后明确要求保留 group_pruned442805 并继续优化、压缩；因此直接父由用户指定，不按 Agent 目标排名选择，不声称新的独立盲测或干净泛化。固定两行同预算比较，已有 44.28 万权重与全部负结果保留，不研发其他恢复网络。
 
 |行|完整参数|上下文参数|较442805减参|主/谱分支宽度|
 |---|---:|---:|---:|---|
@@ -22,3 +22,6 @@ retain_refine 在训练前逐状态严格保留父函数，作为同预算优化
 N607普通账户GPU0/1每卡一own、总最多二own，等待R44对应GPU实际句柄退出、容量free≥18GB/allowner进程<2；其他owner不动。CPU2/max1本任务scorer，复用R41 score.lock。独立不可覆盖run/release/output，方法Git固定；聚焦协议负测、一次限P0/P1审查；launcher首步真实R44/F50/两条Ls配对IQ noquery smoke，PASS立即按卡启动。一次普通预检、归档单SHA/远端compile和实际PID/CWD/argv/GPU/日志读回；技术失败保留受影响产物，无自动重试，不停止或热改健康行。精确commit/命令/环境CWD/路径/预算/矩阵/停止规则与预期产物见run登记。
 
 当前没有本轮源或正式性能结果。减参是确定的结构事实，优化收益、延迟与显存必须实测；参数下降本身不完成用户性能和输入TX细节真实性要求。R45旧正式解析评价独立收尾，不作为本轮训练或预测的门槛。
+
+
+VERIFIED/RUNNING：实际442805父/F50/两Ls配对IQ noquery smoke PASS，两行全部组件有限非零梯度、teacher/F不更新、checkpoint严格重载一致。归档单SHA/compile及controller/两worker实际PID/CWD/argv/空controllerCUDA/各物理GPU0或1和GPU-PID匹配、首轮曝光及日志增长已核实。无本轮正式性能结果；每行E20后自动七正式测试和独立truth-last。

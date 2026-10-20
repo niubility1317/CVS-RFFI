@@ -171,7 +171,8 @@
     "actual_training_rows_verified": [
       "group_pruned",
       "low_rank"
-    ]
+    ],
+    "postlaunch_state": "VERIFIED_BOTH_GPU_RUNNING"
   },
   "expected_artifacts": [
     "launch.json",
@@ -334,7 +335,8 @@
     "27focusedchecks/CLIhelp/ONE P0P1PASS;launcherfirststep actualR44/F50/twoLs pairedIQ noquerysmoke thenautomatictrain/source/profile/full7formal/truthlast.",
     "No F/TX/V/targetintraining;L/U bothused;notcleanblindunsupervised;no classifierhead fit/replacement.",
     "R44fixedmatrixcomplete,outputsandoldweights preserved;R45CPUdiagnostic independent,never gates thisrun;healthyotherownerunchanged.",
-    "Allfixedrows getformal tests;no sourcegate/earlystop/targetfeedback/selectivereruns;relativeR38 descriptiveonly;allnegativeresultsreported."
+    "Allfixedrows getformal tests;no sourcegate/earlystop/targetfeedback/selectivereruns;relativeR38 descriptiveonly;allnegativeresultsreported.",
+    "VERIFIED/RUNNING：实际442805父/F50/两Ls配对IQ noquery smoke PASS，两行全部组件有限非零梯度、teacher/F不更新、checkpoint严格重载一致。归档单SHA/compile及controller/两worker实际PID/CWD/argv/空controllerCUDA/各物理GPU0或1和GPU-PID匹配、首轮曝光及日志增长已核实。无本轮正式性能结果；每行E20后自动七正式测试和独立truth-last。"
   ],
   "registered_at": "2026-10-20T13:01:43+00:00"
 }
