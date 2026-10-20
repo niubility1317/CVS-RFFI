@@ -371,7 +371,7 @@ def label_efficiency(rows, out):
                     marker='o',ms=3,lw=1,capsize=2,elinewidth=.6)
         for si,offset in enumerate((-.1,0,.1)):
             ax.scatter(np.array([1,5,10])+offset,values[si],s=7,color=color,alpha=.5)
-        ax.set(xlim=(.5,10.5),ylim=(low,high),xticks=[1,5,10],xticklabels=['1%\n630 labels','5%\n3150 labels','10%\n6300 labels'])
+        ax.set(xlim=(0,11),ylim=(low,high),xticks=[1,5,10],xticklabels=['1%\n630 labels','5%\n3150 labels','10%\n6300 labels'])
         for x,counts in zip((1,5,10),updates[family,variant]):
             text=str(int(counts[0])) if len(set(counts))==1 else f'{min(counts)}–{max(counts)}'
             ax.text(x,-.36,text,transform=ax.get_xaxis_transform(),ha='center',fontsize=6)

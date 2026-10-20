@@ -7,7 +7,7 @@
 | 图 | 论证问题 | 数据与展示 | 当前状态 |
 |---|---|---|---|
 | 图 1：源 RX 数 | 多样性与训练标签量能否区分？ | 1/3/5 源 RX，自然/固定标签预算，三链分面、三种子点及 SD | **已完成并验证** |
-| 图 2：标签效率 | 少标签表现是否稳定、是否伴随不同计算量？ | 1%/5%/10%，标出标签数及实际更新范围；ResNet18、IB-RFF CE/full | IB-RFF 和 10% ResNet18 已有，等待其余 6 行 |
+| 图 2：标签效率 | 少标签表现是否稳定、是否伴随不同计算量？ | 1%/5%/10%，标出标签数及实际更新范围；ResNet18、IB-RFF CE/full | **已完成并验证** |
 | 图 3：RX×日期 | 机制的增减来自哪些接收机和日期？ | F0/Chrono 每 RX×日期 full−CE 的配对均值，共用对称色标，标出未见日期 | **已完成并验证** |
 | 图 4：压力结果 | clean 与模拟星地压力是否存在不同方向的收益？ | 四方法各自 CE/full × 监督/PL；上排绝对性能，下排同种子相对 clean 下降 | **已完成并验证** |
 
@@ -28,7 +28,7 @@
 - [重绘说明及配套脚本](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig04_pressure_r03/README.md)
 - [项目制图代码](../../../tools/figures/plot_phase1_external_dg.py)
 
-图形及派生评分数据在本机交付，不提交原始实验输出到 Git；代码和分析说明使用 Git。图 2 在数据到齐并验证后更新，当前不将完整图表交付或整体 219＋96 实验目标标为完成。
+图形及派生评分数据在本机交付，不提交原始实验输出到 Git；代码和分析说明使用 Git。四幅图均已完成数值核对、目视检查及评分子集独立重绘。整体 219＋96 实验目标的完成状态另见最终汇总与成本证据。
 
 ## 图 3：接收机与日期分层完成
 
@@ -49,3 +49,14 @@
 - [图 1 可编辑 SVG](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig01_source_count_r02/svg/fig01_source_count.svg)
 - [图 1 源数据](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig01_source_count_r02/source_data/fig01_source_count.csv)
 - [重绘说明](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig01_source_count_r02/README.md)
+
+## 图 2：训练标签效率完成
+
+27 个去重模型、三个训练标签比例和三条模型路线，共 27 个逐种子点。1%/5%/10% 分别对应 630/3150/6300 个 L_s 标签，另有固定 27000 个 V 标签；此图全部为增强监督，不使用 PL。ResNet18 的 10% 点复用同配方 E200 强 CE，不使用 5000 更新通用 ERM 替代。图中标出实际更新范围，保留全部非单调结果，不能将不同标签量的固定 epoch 训练称为等计算比较。
+
+所有点已与标签效率报告核对；183 mm 画布、可编辑 SVG、PDF 文本与 PNG 600 dpi 检查通过，预览无边界裁切。使用评分子集独立重绘后，27 行 CSV 逐字节一致。r01 的边界检查失败版本及 r02 保留为历史；最终交付为 r03。
+
+- [图 2 PDF](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig02_label_efficiency_r03/pdf/fig02_label_efficiency.pdf)
+- [图 2 可编辑 SVG](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig02_label_efficiency_r03/svg/fig02_label_efficiency.svg)
+- [图 2 源数据](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig02_label_efficiency_r03/source_data/fig02_label_efficiency.csv)
+- [重绘说明及配套脚本](../../../local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/publication_figures/fig02_label_efficiency_r03/README.md)

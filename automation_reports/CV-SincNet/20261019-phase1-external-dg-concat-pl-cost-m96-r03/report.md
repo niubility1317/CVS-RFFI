@@ -3,7 +3,7 @@
 - run_id：`20261019-phase1-external-dg-concat-pl-cost-m96-r03`
 - group_id：`phase1-nonpamf-concat-PL-cost`；类别：`diagnostic`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前独立核实状态：ANALYZED；成本 96/96 行完成。最终结论见[完整汇总](frozen_cost_analysis.md)，以下预登记及过程记录按历史保留。
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+最终结果及覆盖已齐全，见本报告末尾完成核验与链接的完整汇总；以下初始协议文字和阶段性记录按历史保留。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -57,3 +57,7 @@ VERIFIED：代码commit `cb9e19fbbbfee31704064be0ad4f6ec96d29b966`，远端分�
 实际训练位于物理GPU2、3，每卡一行，PID/CWD/argv与启动登记一致，完整源epoch记录及日志均持续增长。当前首批IB-RFF CE监督与CE＋PL配对行都记录了实际卫星增强样本，PL行同时记录U曝光；U缓存明确不导出TX标签，阈值0.95、默认头联合训练已核实。当前只是开始运行，未声称219性能行或96成本行完成；r02首次数值失败原因仍未确定，记录保留。
 
 性能run：`20261019-phase1-external-dg-concat-pl-m219-r03`；成本run：`20261019-phase1-external-dg-concat-pl-cost-m96-r03`。实际私有运行路径、PID及日志证据位于本run runtime/release_result/postlaunch_verified 引用，不将私有运行配置或原始日志提交Git。成本队列等待全部性能行完成及进程实际退出。
+
+## 最终完成核验（2026-10-20T13:31:53+08:00）
+
+VERIFIED：96项成本、64组三种子统计及192000原始同步计时独立复核通过。默认头与原矩阵不变，所有负结果保留。见[最终性能汇总](../20261019-phase1-external-dg-concat-pl-m219-r03/final_comparison_analysis.md)和[完整成本](frozen_cost_analysis.md)。本机交付包含可移交ZIP与四图源数据/重绘脚本。

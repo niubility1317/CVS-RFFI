@@ -3,7 +3,7 @@
 - run_id：`20261019-phase1-external-dg-concat-pl-m219-r03`
 - group_id：`phase1-nonpamf-concat-supervised-plain-pl`；类别：`comparison`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前独立核实状态：ANALYZED；性能 219/219 行完成。最终结论见[完整汇总](final_comparison_analysis.md)，以下预登记及过程记录按历史保留。
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+最终结果及覆盖已齐全，见本报告末尾完成核验与链接的完整汇总；以下初始协议文字和阶段性记录按历史保留。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -180,3 +180,15 @@ VERIFIED：seed 2026092702 的 CE 监督与 CE＋PL 均完成 E200，默认头�
 ## 源接收机数量：自然与固定标签预算完整三种子结果
 
 [源接收机数量：自然与固定标签预算](resnet_source_count_analysis.md)：33行、9702个分层混淆矩阵独立复算通过，预算/标签权限和全部负结果保留。整体目标尚待所有性能行、成本及最终汇总。
+
+## 同骨干通用域泛化：5000 更新匹配对照完整三种子结果
+
+[同骨干通用域泛化：5000 更新匹配对照](resnet_generic_dg_analysis.md)：15行、4410个分层混淆矩阵独立复算通过，预算/标签权限和全部负结果保留。整体目标尚待所有性能行、成本及最终汇总。
+
+## 训练池标签效率：1%/5%/10% 与实际计算量完整三种子结果
+
+[训练池标签效率：1%/5%/10% 与实际计算量](label_efficiency_analysis.md)：27行、7938个分层混淆矩阵独立复算通过，预算/标签权限和全部负结果保留。整体目标尚待所有性能行、成本及最终汇总。
+
+## 最终完成核验（2026-10-20T13:31:53+08:00）
+
+VERIFIED：219行训练/预登记预测与独立评分、96项成本、四幅论文图、完整分组及最终报告全部完成。默认头与原矩阵不变，所有负结果保留。见[最终性能汇总](final_comparison_analysis.md)和[完整成本](../20261019-phase1-external-dg-concat-pl-cost-m96-r03/frozen_cost_analysis.md)。本机交付包含可移交ZIP与四图源数据/重绘脚本。
