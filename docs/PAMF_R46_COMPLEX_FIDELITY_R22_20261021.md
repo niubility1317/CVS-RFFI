@@ -1,6 +1,6 @@
 # R22：27.82万恢复器复频谱保真与clean恒等约束
 
-状态：LOCAL_VERIFIED，尚未发布，无新版正式性能结论。
+状态：VERIFIED / RUNNING；两版训练中，无新版正式识别成绩。
 
 从用户指定原R46 prune_refine350521 source-final E20/4940独立初始化及作IQ教师，方法bbb8daf817de050b958d217b70d4c33f4aefe341。两版均为R18阶段对照的完整SVD625架构：278180参数，其中coarse106658、action80045、prior91477；保留全部通道/GN4/skip、共享prior长卷积权重及各stage独立bias/norm，三stage/六次CG全部执行。原R18学生不作为训练父或教师。
 
@@ -24,3 +24,20 @@ R21源诊断固定了128Ls+128Us不透明均匀位置、clean及原received01/20
 N607普通账户、GPU2/3最多2own且每卡1；原R19实际owned句柄退出后，由共享容量锁下free≥18GB/allowner<2取得GPU，忙时等待，不修改其他owner健康任务。CPU评分2线程/R06 score.lock/max1ownscorer。新不可覆盖run/release/output，一次preflight、一次归档两端SHA、一次compile；launcher首步原父/F50/2Ls真实noquery smoke PASS即继续。31项聚焦检查及唯一独立P0/P1审查PASS，无P0/P1问题；真实原父/F50/2Ls noquery smoke由launcher首步执行。技术失败保留影响行、健康行继续，无自动重试/热改/回退/误杀。精确方法commit、环境/CWD、命令、路径与矩阵见experiment.json。
 
 R18/R19/R20正式成绩已暴露，R22仅依据R21源IQ证据固定，不称新盲测或TX逐细节证明。主对话保留锚定/通道剪枝路线，本组保留通道维度并检验解析复频谱保真与clean恒等约束。
+
+
+## 发布目录登记修正
+
+本地发布模板使release目录沿用r20后缀，实际运行的R22实验编号、方法commit e190cf5367b03da8aafced51276a8730ad8274fa、输出root、CPU控制器及两GPUworker的实际PID/CWD/argv已独立匹配，原父/F50/2Ls smoke PASS。已将experiment.json的CWD修正为实际目录；没有移动运行目录、热改代码或重复启动。初次发布快照仍等待首轮日志增长；后续核实见下节，不作性能完成声明。
+
+
+## 真实发布与首轮训练核实
+
+方法commit e190cf5367b03da8aafced51276a8730ad8274fa，归档两端一次SHA及remote compile通过。原父/F50/2Ls真实noquery smoke PASS，全部coarse/action/三prior梯度有限非零、父及F状态不变、完整checkpoint严格重载输出一致、原/直接buffer数值一致。实际CPU控制器及GPU2/3两worker的PID/CWD/完整命令/commit/GPU与日志增长均独立核实；无failure/Traceback，未修改其他owner。31项执行检查、唯一独立P0/P1审查及16项结果分析检查PASS。
+
+|版本|已完成轮次|更新数|Ls/Us曝光|额外clean学生前向|当前IQ损失|当前复FFT损失|当前恒等损失|
+|---|---:|---:|---|---:|---:|---:|---:|
+|complex625|1/20|985|6300/56700|0|0.077015666|0.32038046|0|
+|complex625_identity|1/20|985|6300/56700|63000|0.077231121|0.32278207|0.053079987|
+
+上述是训练健康与分支实际执行快照，不是最终源域收益、正式准确率或推理成本结论。两版保持固定20/19700，之后逐行自动source7/成本/独立源评分/formal7/独立truth-last。结果工具已准备，额外恒等曝光、历史R18阶段对照及clean净损伤独立核对。
