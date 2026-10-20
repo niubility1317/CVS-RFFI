@@ -1,6 +1,6 @@
 # R17 先验共享与低秩蒸馏精简
 
-状态：PLANNED。用户最新要求本对话专门优化 R17 精简版，尽量精简且不能降低性能。固定原 R17 unroll_unshared/source-selected finalE20/4940/method cd977448；同原 F50 seed2026092701/defaulthead、168000 目标物理样本、clean＋六 practical 的准确率逐场景不得下降，容许下降为 0 个百分点。原 low urban67.2166666667%，70% 长期要求未达到。基准已有暴露，不称新盲测。
+状态：RUNNING。用户最新要求本对话专门优化 R17 精简版，尽量精简且不能降低性能。固定原 R17 unroll_unshared/source-selected finalE20/4940/method cd977448；同原 F50 seed2026092701/defaulthead、168000 目标物理样本、clean＋六 practical 的准确率逐场景不得下降，容许下降为 0 个百分点。原 low urban67.2166666667%，70% 长期要求未达到。基准已有暴露，不称新盲测。
 
 |固定源候选|完整恢复链参数|新先验参数|相对原4665073|
 |---|---:|---:|---:|
@@ -21,3 +21,6 @@ N607普通账户，一次preflight/归档SHA比较/远端compile。GPU4/5等待�
 
 
 发布前验证：28项聚焦检查通过。唯一一次独立P0/P1审查独立复跑19项新检查，发现控制器状态文件重复独占创建的P1；已改为仅对运行状态使用临时文件替换，新增两次轮询与source→selectedtarget自动派发回归。该问题唯一一次定点复审及回归PASS，无重复全审。一次N607普通账户预检VERIFIED：原R17源选择先于目标、完整训练预算与0TX/F/target、同原F七视图基线句柄、原R07缓存和源角色均匹配；GPU仍有旧scratch实际handle，launcher将等待它自然退出，不停止健康进程。
+
+
+实际发布状态：方法commit `606b5b20943e9839fe97cbe15a6c19baf6ef0189`，push后本地HEAD/远端OID独立比较一致；一次归档SHA比较、远端compile和入口help均通过。launcher实际原R17/原F50/2Ls无querysmoke PASS：教师stage函数完全等价、所有学生先验梯度有限非零、context/教师无梯度、严格checkpoint输出逐位相同、0TX/V/target/optimizer。旧scratch根终态且所有owned GPU handles实际退出后，新GPU4/5两臂才创建；独立/proc与GPU证据确认controller/两source实际LIVE、CWD/完整命令/commit匹配、GPU PID与日志增长，均已完成第1轮/247updates，各曝光L6300/U56700。梯度连通与源训练loss不证明目标性能；当前无压缩模型目标结果，零退化未证实。

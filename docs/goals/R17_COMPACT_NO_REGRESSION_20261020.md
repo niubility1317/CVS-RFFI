@@ -44,3 +44,10 @@ MAC 不含 FFT、复数 MAP/CG、归一化、激活、插值与访存，不等�
 每个新候选在目标访问前固定结构、预算、源域选择与停止规则；训练/蒸馏只用合法 L_s/U_s 与其模拟配对，不用 V 反传、不用目标数据拟合。来源/物理 ID/数据契约核实后，按最小实验流程在 N607 发布。全部声明视图的预测固定后才独立 truth-last 评分。失败与下降结果全部保留；目标评分只作固定候选验收，不反馈调参、候选重排或选择性重跑。
 
 已启动的 scratch_guidance、spectral_precision 健康任务保留原配置和自动测试，不追加、停止或热改；完成后只归档其既定结果，不作为新压缩父模型。下一次新增训练或测试发布专用于本 R17 精简目标。当前尚无缩小网络后保持目标性能的证据，目标保持未完成。
+
+
+## 当前固定 R17 压缩试验（实际训练中）
+
+[首轮登记](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-compact-distill-source-s2026092701-m2-r01/report.md)：shared_mean完整2993389参数，三训练后prior逐元素平均并共享；factor_half完整3775105参数，三prior分别按半秩CPU SVD分解长卷积。原R17/source-selected finalE20/4940作为冻结源教师；三步×2CG与原coarse/action不变，各追加E20/4940，原R07全L/U缓存和顺序，不加额外clean拼接。最终IQNMSE+10倍三步teacher stage NMSE，0TX/F/V/target训练。prior累计40轮，完整继承训练80串行pass及蒸馏教师成本单列。
+
+28项聚焦检查与一次独立P0/P1审查、唯一P1修复定点复审通过；方法commit`606b5b20943e9839fe97cbe15a6c19baf6ef0189`，归档比较/远端编译、实际原R17/原F50/2Ls无querysmoke PASS。新GPU4/5等待scratch根终态且实际owned handles退出，随后两source真实PID/CWD/命令/GPU/日志增长已核实，各完成第1轮/247更新；spectral6/7保持，CPU评分等spectral终态再ownlock。源V仅资格，逐七场景不降分+原波形护栏，合格者按最少完整参数固定选一个自动全目标确认，不在失败后补测落选者。当前尚无压缩版源资格/目标零退化结果，不能把参数减少或检查通过当成性能保持。
