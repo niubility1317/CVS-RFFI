@@ -1,0 +1,339 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-phase1-restoration-wavelet-selfsup-s2026092701-m2-r29",
+  "group_id": "pamf-restoration-wavelet",
+  "display_name": "小波 U-Net 高频保留的匹配自监督恢复",
+  "description": "完整 Haar 子带与高频置零 U-Net 对照；同初值同容量全LU，六历史及匹配源对照后仅主候选条件正式确认。",
+  "kind": "cvs",
+  "stage": "Phase1-source-research-conditional-confirmation",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "simulated_self_supervised",
+    "Haar",
+    "matched_high_band_ablation",
+    "unrolled",
+    "no_TX_F_training"
+  ],
+  "comparison_group_id": "manysig-unroll3-Haar-high-band-retention-fullLU",
+  "parent_run_ids": [
+    "20261019-phase1-restoration-learned-action-source-s2026092701-r07",
+    "20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10",
+    "20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16",
+    "20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15",
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+    "20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19",
+    "20261020-phase1-restoration-joint-coarse-selfsup-s2026092701-m2-r23",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "持续独立恢复器目标、用户报告与N607多GPU授权；按源域结构与固定先验对照研发，不使用目标成绩设计或筛选。",
+  "code": {
+    "commit": "1bed939069bdb87385d6f32dde95e276eb1b5a17",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
+    "cwd": "releases/pamf_wavelet_restoration_20261020_r29"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "OneIQ2x256;three matched unshared Haar U-Net9inputpriors;CG2/2/2;only analysis high-band retention differs;allFviews derive one IQ",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train6300L+56700U originalIDs;R07validation1800V;conditional R05 original168000IDs",
+    "label_map_ref": "NoTX/F training;sourceVtruth independentCPU aftereachrow7predsets;conditional targettruth after7fixedpredictions",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json: READY/EXACT_MATCH; reuse existing cache without new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "Unchanged code/leo_practical/channel.py;reuse R07 epoch01..20 and original sourceV;conditional original formal received bytes",
+    "restoration_train_counts": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "L_exposures_per_row": 126000,
+      "U_exposures_per_row": 1134000,
+      "epochs_per_row": 20,
+      "updates_per_row": 4940,
+      "TX_labels": 0,
+      "F_training_reads": 0,
+      "shared_extra_LU_calibration_exposures": 0
+    },
+    "source_validation_panel": 1800,
+    "target_panel": "Onlysource-qualified fixedrank winner,original168000x7;otherwise0target;oldR17formal reused onlyafternewscoring"
+  },
+  "permissions": {
+    "regime": "TX-unlabeled simulated-paired fullLU;0TX/F/targettraining;no sourceV fit;sourceVtruthqualificationseparate",
+    "query_use": "Conditional frozen inference only;no targetadaptation/feedback;originalF/defaulthead unchanged",
+    "external_method_exception": null,
+    "claim_scope": "Matched learned feature-band retention study;not an invertible entire network or identified TX-specific high frequency;no per-detail identity guarantee"
+  },
+  "checkpoint": {
+    "initialization": "Only frozen R07 fullcoarse/action context;reset2701 scratch3unsharedHaarpriors;complete states/parameter counts/initial outputs equal;no trainedprior inheritance",
+    "sources": [
+      {
+        "run_id": "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02",
+        "commit": "7efdba92932a86bf4b0492a565d35377564a26da",
+        "role": "Inherited frozen R02coarse E20 viaR07fullstate",
+        "path": "runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/tf_unet_mixed/final.pt"
+      },
+      {
+        "run_id": "20261019-phase1-restoration-learned-action-source-s2026092701-r07",
+        "commit": "c8ccdfdbd03ab5ad8828b1eb9210b99a664ebe7b",
+        "role": "Full frozen source-only R07coarse/action E40;notnewprior",
+        "path": "runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/learned_operator/final.pt"
+      },
+      {
+        "run_id": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+        "commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+        "role": "Frozen inference only originalF50E50/11100 anddefaulthead",
+        "path": "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+      },
+      {
+        "run_id": "20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16",
+        "commit": "50587946b6c83b7b32500696af7fa7b9086484b5",
+        "role": "Frozen source IQ-only summary guard only;weights never loaded",
+        "path": "runs/20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16/unet_control/native_map_prior/summary.json"
+      },
+      {
+        "run_id": "20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15",
+        "commit": "26a8b7f5fc5471719f600ad880bc465c4b544521",
+        "role": "Frozen source FFT summary for third identity guard,weights not loaded",
+        "path": "runs/20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15/unet_control/native_map_prior/summary.json"
+      },
+      {
+        "run_id": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+        "commit": "cd97744884b5e460926e48c8b7efb7d78c6da0f4",
+        "role": "Frozen source summary guard only;no checkpoint initialization;formal artifacts read onlyafternewscore",
+        "path": "runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/unroll_unshared/native_map_prior"
+      },
+      {
+        "run_id": "20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19",
+        "commit": "5bbc0ccdc32de19e75cb6a01e2cda0352e39f36a",
+        "role": "Frozen time_time SOURCE summary fifth guard only;NO weights/target/root-complete reads for selection"
+      },
+      {
+        "run_id": "20261020-phase1-restoration-joint-coarse-selfsup-s2026092701-m2-r23",
+        "commit": "d43dbab326d0b1e2cb6fb7faa23dc9a3ec25a025",
+        "role": "Fixed prior_only source control only;strict loaderG0,not newprior initialization;R23jointcoarse unused",
+        "path": "runs/20261020-phase1-restoration-joint-coarse-selfsup-s2026092701-m2-r23/prior_only/native_map_prior"
+      }
+    ],
+    "contract_check_ref": "Reuse original R02/R07/F50 source contract;strict R23 sourcecontrol metadata/checkpoint;39 focusedchecks/help and one P0P1 PASS;real2Ls/noquery checkpoint smoke first",
+    "provenance_verdict": "VERIFIED unchanged original7/63/30 R02/R07 source-only ancestors;0TX/F/target training;historicalpriors not initialization",
+    "selection_rule": {
+      "thresholds": {
+        "mean6_NMSE_vs_control_max_ratio": 1.05,
+        "mean6_NMSE_vs_reference_max_ratio": 1.05,
+        "clean_NMSE_max": 0.02,
+        "lowurban_gain_vs_control_min_pp": 0.5,
+        "lowurban_gain_vs_reference_min_pp": 0.5,
+        "midurban_gain_vs_control_min_pp": 0.5,
+        "midurban_gain_vs_reference_min_pp": 0.5,
+        "clean_drop_vs_original_max_pp": 0.1,
+        "worst_lowurban_TX_vs_control_min_pp": -1.0,
+        "worst_lowurban_TX_vs_reference_min_pp": -1.0,
+        "worst_other_scene_vs_control_min_pp": -0.5,
+        "worst_other_scene_vs_reference_min_pp": -0.5
+      },
+      "all_six_references": [
+        "20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16",
+        "20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15",
+        "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+        "20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10",
+        "20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19",
+        "20261020-phase1-restoration-joint-coarse-selfsup-s2026092701-m2-r23"
+      ],
+      "matched_control": "lowpass_control",
+      "only_candidate": "haar_allbands",
+      "rule": "All six original guards AND same-run lowpass guards;otherwise0target"
+    },
+    "evaluation_readers": [
+      "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701 original defaulthead"
+    ]
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/fullresolution-priors-restoration",
+    "gpu_policy": "OriginalR23ANALYZED/allownedPIDsnotlive;pool0/1/5/7,max2ownworkersone/card,allownercap2/free12GB;capacity4lockuntilCUDApidvisible",
+    "remote_run_root": "runs/20261020-phase1-restoration-wavelet-selfsup-s2026092701-m2-r29",
+    "remote_log_root": "logs/20261020-phase1-restoration-wavelet-selfsup-s2026092701-m2-r29",
+    "local_artifact_root": "local_artifacts/pamf_restoration/wavelet_r29_20261020",
+    "launch_command": "python -u -m experiments.pamf_wavelet_restore.runner run --preceding-run ../../runs/20261020-phase1-restoration-joint-coarse-selfsup-s2026092701-m2-r23 --alternating-run ../../runs/20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19 --unrolled-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --single-run ../../runs/20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16 --fft-run ../../runs/20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-run ../../runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-wavelet-selfsup-s2026092701-m2-r29 --expected-commit 1bed939069bdb87385d6f32dde95e276eb1b5a17",
+    "stop_rule": "Wrongsource/parent,collision,nonfinite,invalidpredictions:stopfailedrow,holdpending,preservehealthyrows,noautomaticretry;liveR23blockslaunch;CUDAvisibilitytimeout holds newlaunches"
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "resolved_config.json",
+    "workers.json",
+    "queue_state.json",
+    "{row}/resolved_config.json",
+    "{row}/training.jsonl",
+    "{row}/training_complete.json",
+    "{row}/native_map_prior/final.pt",
+    "{row}/native_map_prior/prediction/complete.json",
+    "{row}/native_map_prior/summary.json",
+    "source_decision.json",
+    "complete.json",
+    "Conditional:{winner}/target_confirmation/native_map_prior/prediction/complete.json,summary.json;goal_assessment.json;target_complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "MacroF1",
+      "IQNMSE",
+      "logpower",
+      "repair_damage_net",
+      "paired_clean_features",
+      "TX_RX_day",
+      "parameters_positionbuffers_training_seconds_peakmemory_batch1"
+    ],
+    "dimensions": [
+      "clean",
+      "three suburban separately",
+      "three urban separately",
+      "TX",
+      "RX",
+      "day",
+      "train role/state/lock"
+    ],
+    "primary": "Fixedsource1800x7;allSIXreferenceguards plus matched lowpass;onlyhaar_allbands conditionalformal168000x7",
+    "prediction_ref": "runs/20261020-phase1-restoration-wavelet-selfsup-s2026092701-m2-r29/{lowpass_control,haar_allbands}/native_map_prior/prediction;conditional{winner}/target_confirmation/native_map_prior/prediction",
+    "scorer_ref": "experiments.pamf_wavelet_restore.runner score_source/score_target;all7fixedBEFOREindependentCPUtruth",
+    "final_user_targets": {
+      "lowurban_accuracy_min": 70.0,
+      "other_five_max_gap_vs_original_clean_pp": 5.0
+    }
+  },
+  "rows": [
+    {
+      "row_id": "lowpass_control",
+      "method": "wavelet_restore",
+      "purpose": "matched_source_control",
+      "config_ref": "experiments/pamf_wavelet_restore/design.py#configuration",
+      "resolved_config_ref": "runs/20261020-phase1-restoration-wavelet-selfsup-s2026092701-m2-r29/lowpass_control/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101901
+      },
+      "seed_notes": "No newchannel/noise sampling;cached R07 draw0/source1901 hardware1902;original20trainingcache1912,permutation2001;formalreceivedR05seed2027 reused;support/K/query N/A",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "NewE20/4940fullLU,L126000/U1134000;matched3unsharedHaarU-Nets/6CG;2877126trainableprior/5034673total;coarse20+action20+prior20=component60;F50E50separate",
+      "output_root": "runs/20261020-phase1-restoration-wavelet-selfsup-s2026092701-m2-r29/lowpass_control",
+      "log_path": "runs/20261020-phase1-restoration-wavelet-selfsup-s2026092701-m2-r29/logs/train-lowpass_control.log",
+      "command": "python -u -m experiments.pamf_wavelet_restore.runner run --preceding-run ../../runs/20261020-phase1-restoration-joint-coarse-selfsup-s2026092701-m2-r23 --alternating-run ../../runs/20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19 --unrolled-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --single-run ../../runs/20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16 --fft-run ../../runs/20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-run ../../runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-wavelet-selfsup-s2026092701-m2-r29 --expected-commit 1bed939069bdb87385d6f32dde95e276eb1b5a17",
+      "expected_artifacts": [
+        "smoke.json",
+        "resolved_config.json",
+        "workers.json",
+        "queue_state.json",
+        "{row}/resolved_config.json",
+        "{row}/training.jsonl",
+        "{row}/training_complete.json",
+        "{row}/native_map_prior/final.pt",
+        "{row}/native_map_prior/prediction/complete.json",
+        "{row}/native_map_prior/summary.json",
+        "source_decision.json",
+        "complete.json",
+        "Conditional:{winner}/target_confirmation/native_map_prior/prediction/complete.json,summary.json;goal_assessment.json;target_complete.json"
+      ]
+    },
+    {
+      "row_id": "haar_allbands",
+      "method": "wavelet_restore",
+      "purpose": "source_eligible_haar_allbands",
+      "config_ref": "experiments/pamf_wavelet_restore/design.py#configuration",
+      "resolved_config_ref": "runs/20261020-phase1-restoration-wavelet-selfsup-s2026092701-m2-r29/haar_allbands/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2026101901
+      },
+      "seed_notes": "No newchannel/noise sampling;cached R07 draw0/source1901 hardware1902;original20trainingcache1912,permutation2001;formalreceivedR05seed2027 reused;support/K/query N/A",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "NewE20/4940fullLU,L126000/U1134000;matched3unsharedHaarU-Nets/6CG;2877126trainableprior/5034673total;coarse20+action20+prior20=component60;F50E50separate",
+      "output_root": "runs/20261020-phase1-restoration-wavelet-selfsup-s2026092701-m2-r29/haar_allbands",
+      "log_path": "runs/20261020-phase1-restoration-wavelet-selfsup-s2026092701-m2-r29/logs/train-haar_allbands.log",
+      "command": "python -u -m experiments.pamf_wavelet_restore.runner run --preceding-run ../../runs/20261020-phase1-restoration-joint-coarse-selfsup-s2026092701-m2-r23 --alternating-run ../../runs/20261020-phase1-restoration-alternating-tf-selfsup-s2026092701-m2-r19 --unrolled-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --single-run ../../runs/20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16 --fft-run ../../runs/20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-run ../../runs/20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-wavelet-selfsup-s2026092701-m2-r29 --expected-commit 1bed939069bdb87385d6f32dde95e276eb1b5a17",
+      "expected_artifacts": [
+        "smoke.json",
+        "resolved_config.json",
+        "workers.json",
+        "queue_state.json",
+        "{row}/resolved_config.json",
+        "{row}/training.jsonl",
+        "{row}/training_complete.json",
+        "{row}/native_map_prior/final.pt",
+        "{row}/native_map_prior/prediction/complete.json",
+        "{row}/native_map_prior/summary.json",
+        "source_decision.json",
+        "complete.json",
+        "Conditional:{winner}/target_confirmation/native_map_prior/prediction/complete.json,summary.json;goal_assessment.json;target_complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Newmatchedhigh-bandretention ablation;one fullHaarprior andoneH-zero control. Identical complete initialstates and 2877126 prior parameters;no historical trainedprior inherited.",
+    "Original R17 receivechain with frozenR07coarse/action,threeunsharedscratch9inputpriors,CG2/2/2 andoriginalSCALE;singleIQ for all F branches.",
+    "Both fullL6300/U56700,20epochs/4940,L126000/U1134000,cache15clean85residual;onlyIQNMSE detachedclean. 0 TX labels/Fweights/Foutputs/target/Vfit.",
+    "Source1800x7 perrow predictions before separateCPUtruth;onlyhaar_allbands must pass six historical source references AND newlowpasscontrol. Lowpass sourcecontrol not target-eligible.",
+    "Conditional onlyqualifiedhaarallbands original168000x7 F50/defaulthead;all7predictions before independenttruth;allsuburban/urban andTXRXday/costreported;70%/5pp goal unchanged.",
+    "R28 source operator substitution improvedNMSE14.56% butlowurban only+.4444pp;question uses source mechanism andoriginalCoreavgpool,not R27 target rankings.",
+    "MWCNN image-restoration inspiration only;1D Haar feature retention is not established RF fingerprint recovery. Transformlossless,entire learnednetwork not invertible. Existingfullress/FFT/analytic trials retained.",
+    "39 focusedchecks/help and one independentP0P1 PASS;real2Ls actualR07/F50 smoke first then immediatefulltraining;no extra approval/review.",
+    "OrdinaryN607 immutable roots,pool0/1/5/7,max2ownworkerone/card,allownercap2/free12GB/sharedcapacity4lockuntilCUDAvisible;R28completed;healthy peers unchanged.",
+    "Exposedbenchmark not newblindtest;no target feedback,retries,seed expansion or per-detail/inorbit guarantee. Negative rows retained."
+  ],
+  "registered_at": "2026-10-20T03:40:51+00:00"
+}
