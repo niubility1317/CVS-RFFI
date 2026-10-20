@@ -192,3 +192,7 @@ VERIFIED：seed 2026092702 的 CE 监督与 CE＋PL 均完成 E200，默认头�
 ## 最终完成核验（2026-10-20T13:31:53+08:00）
 
 VERIFIED：219行训练/预登记预测与独立评分、96项成本、四幅论文图、完整分组及最终报告全部完成。默认头与原矩阵不变，所有负结果保留。见[最终性能汇总](final_comparison_analysis.md)和[完整成本](../20261019-phase1-external-dg-concat-pl-cost-m96-r03/frozen_cost_analysis.md)。本机交付包含可移交ZIP与四图源数据/重绘脚本。
+
+## IEEE实验章节交付（2026-10-20）
+
+按用户补充要求仅整理实验部分：英文IEEEtran双栏预览8页、4图8表；正文入口[experiments.tex](../../../paper/phase1_experiments_ieee_20261020/experiments.tex)，[编译PDF](../../../paper/phase1_experiments_ieee_20261020/main.pdf)，[完整源码与图形ZIP](../../../exports/phase1_external_dg/20261020-ieee-experiments-only-r01.zip)。无摘要、引言、独立讨论或附录；表格从冻结评分生成，RIEI零PL接受及负结果保留。MiKTeX编译通过、无未定义引用/溢出，最终页面已目视检查。没有追加训练、评分或目标调参。

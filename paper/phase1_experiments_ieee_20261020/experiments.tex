@@ -1,0 +1,148 @@
+% Insert this file into the paper body. Required packages/macros are listed in README.md.
+\section{Experimental Evaluation}
+\label{sec:experiments}
+
+\subsection{Experimental Setup}
+\subsubsection{Data, Receiver Partitions, and Signal Representation}
+We evaluate closed-set cross-receiver radio frequency fingerprinting using the ManySig and ManyRx subsets of WiSig~\cite{wisig}. Source and target share the registered transmitter (TX) identities, while their physical receiver (RX) sets are disjoint. Neither target signals nor target labels are used for training, model selection, or hyperparameter selection. Every model uses its original identity classifier, jointly trained with the backbone and applied directly after freezing. No separate classifier fitting or head replacement is performed.
+
+ManySig contains six TX, 12 RX, four dates, and 1000 packets per TX--RX--date cell. The TX identifiers are 14-10, 14-7, 20-15, 20-19, 6-15, and 8-20. D0--D3 denote March 1, 8, 15, and 23, 2021. We use equalized IQ, a central 256-sample segment, and float32 per-packet unit-RMS normalization, giving a $2\times256$ input. Different processed representations of one packet do not count as independent samples.
+
+Table~\ref{tab:data} specifies the receiver partitions. F0 has \emph{five physical source RX and seven target RX}. Its source node identifiers are 1-19, 18-2, 19-2, 2-19, and 3-19; the target nodes are 1-1, 14-7, 2-1, 20-1, 7-14, 7-7, and 8-8. Five RX over three source dates form 15 RX--date cells, not 15 physical receivers. F1/F2 change the five-source/seven-target composition. These partitions overlap in acquisition records and are not independent datasets.
+
+\begin{table*}[t]
+\centering\footnotesize
+\caption{Data roles and physical receiver counts. RX indices are local to each dataset.}
+\label{tab:data}
+\begin{tabular}{lllrll}
+\toprule
+Protocol & Source RX indices (count) & Target RX indices (count) & TX & Source dates & $|L_s|/|U_s|/|V|$ \\
+\midrule
+F0 & 1,3,4,6,8 (5) & 0,2,5,7,9,10,11 (7) & 6 & D1,D2,D3 & 6300/56700/27000 \\
+F1 & 0,2,5,7,9 (5) & 1,3,4,6,8,10,11 (7) & 6 & D1,D2,D3 & 6300/56700/27000 \\
+F2 & 1,3,4,10,11 (5) & 0,2,5,6,7,8,9 (7) & 6 & D1,D2,D3 & 6300/56700/27000 \\
+Chronological & F0 source set (5) & F0 target set (7) & 6 & D0,D1,D2 & 6300/56700/27000 \\
+ManyRx & Even indices 0--30 (16) & Odd indices 1--31 (16) & 10 & D1,D2,D3 & 6533/58828/28023 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Within each source TX--RX--date cell, stored signal indices order the packets: the first 70 form labeled training set $L_s$, the next 630 form unlabeled set $U_s$, and the last 300 form source validation set $V$. The labeled fraction is 10\% of the training pool ($6300/63000$), or 7\% of the full source pool. We separately disclose the additional 27\,000 validation labels. This is an ordered split, not randomized packet sampling. Physical identifiers are disjoint across roles, and validation never updates gradients, batch normalization, or other persistent states. U contains no TX labels.
+
+Each all-date ManySig target set contains 168\,000 packets, including 126\,000 on source-seen D1--D3 and 42\,000 on the earlier unseen D0. D0 is therefore not a future-date test. The chronological experiment trains on D0--D2; its principal future endpoint is the 42\,000 D3 packets from the seven target RX. A separate source-RX D3 diagnostic contains 30\,000 packets. Although the frozen prediction task also covers target RX on all four dates, that aggregate is not reported as future generalization.
+
+ManyRx extends the setting to 10 TX and 16 source/16 target RX. Its actual source pool contains 93\,384 packets; per cell, $\lfloor0.07n\rfloor$, $\lfloor0.63n\rfloor$, and the remainder define L/U/V. The target set contains 123\,021 packets. Missing and non-full cells are retained. ManyRx and ManySig belong to the same WiSig acquisition system and may overlap in devices/signals~\cite{wisig}; this is a scale extension, not an independent capture campaign.
+
+\subsubsection{Matched Satellite Augmentation and Ordinary PL}
+All formal rows use clean-plus-satellite concatenation. For a labeled batch and its satellite view $\widetilde x_i$, the identity objective is
+\begin{equation}
+\mathcal L_{\rm cls}=\frac1B\sum_{i=1}^{B}\left[\ell(f_\theta(x_i),y_i)+0.68\ell(f_\theta(\widetilde x_i),y_i)\right].
+\label{eq:concat}
+\end{equation}
+There is no satellite consistency loss. Full and its own CE control share the same augmentation; native DG objectives retain their prescribed clean/native views, and satellite samples contribute TX CE only. SDG Full retains its native two-view recipe and uses its classification view as the satellite-generator input. Its Full$-$CE contrast thus measures the entire native-view/objective combination.
+
+The satellite term starts in the first batch. Augmentation probability is 0.30/0.60/0.80 across relative budget intervals $[0,0.20)$, $[0.20,0.45)$, and $[0.45,1)$. Unselected satellite slots duplicate clean inputs. Clear-weak, low-elevation-weak/rain-weak, and all-three presets are used in the respective intervals. Epoch boundaries are 20/45 for E100 and 40/90 for E200; update budgets scale proportionally, and each IB-RFF stage uses its own maximum budget. This immediate start adapts the historical delayed-start policy so that early-stopped IB models receive actual augmentation.
+
+The weak training presets use elevation intervals $35$--$90^\circ$, $10$--$35^\circ$, and $20$--$80^\circ$; SNR settings 22--32, 16--28, and 14--26~dB; CFO standard deviations 50/90/70~Hz; and Rician-$K$ ranges 16--24, 8--18, and 10--20~dB. The generator uses 25~MS/s, 2.462~GHz, residual Doppler, and weak two-tap multipath. Atmospheric-fading and IQ-imbalance injection are disabled; a rain-named preset is not physical rain validation.
+
+Ordinary PL is added only in F0, with matched no-PL controls. The current model generates hard labels in eval/no-gradient mode without persistent-state updates:
+\begin{equation}
+\begin{aligned}
+\widehat y_j&=\arg\max_c p_\theta(c\mid u_j),\\
+m_j&=\mathbb 1[\max_c p_\theta(c\mid u_j)\geq0.95],\\
+\mathcal L_{\rm PL}&=B_U^{-1}\sum_jm_j\ell(f_\theta(u_j),\widehat y_j).
+\end{aligned}
+\label{eq:pl}
+\end{equation}
+The PL weight and actual U/L exposure ratio are both one. Normalization uses the whole U batch; all-rejected batches have zero PL loss. No EMA teacher, neighbor gating, strong-view consistency, rebalance, or U truth is used. \emph{PL and satellite augmentation coexist in the same training run}. U remains in the joint training forward, so zero acceptance does not imply an identical batch-normalization or stochastic path to the no-U control.
+
+\subsubsection{Methods, Budgets, and Selection}
+We compare RIEI~\cite{riei}, DRIFT-v2~\cite{drift}, IB-RFF~\cite{ibrff}, and SDG~\cite{sdg}, each paired with its own identity-network CE control. Table~\ref{tab:budgets} gives method-specific budgets rather than assigning E200 uniformly. RIEI/DRIFT E100 is a fixed implementation choice because available materials did not establish a total-epoch prescription; it is not attributed to a paper recommendation. IB-RFF/SDG preserve checked author-code budgets, adapted to the present data and augmentation. These runs do not reproduce the original publication tables. All models start from scratch; IB stage two only inherits its own contract-matched stage one, with a reset optimizer.
+
+\begin{table*}[t]
+\centering\footnotesize
+\caption{Training recipes. E denotes epochs. Every recipe additionally includes the matched satellite term; actual early-stopping and optimizer-update costs differ.}
+\label{tab:budgets}
+\begin{tabular}{l>{\raggedright\arraybackslash}p{.34\textwidth}>{\raggedright\arraybackslash}p{.40\textwidth}}
+\toprule
+Method/group & Budget and optimization & Selection/mechanism \\
+\midrule
+RIEI & E100; batch 64; SGD $10^{-4}$; momentum 0; constant LR & Final epoch; short 1-D stem; Full has 3 optimizer steps/batch versus 1 for CE; disentanglement weights 1.2/1.2. \\
+DRIFT-v2 & E100; batch 256; Adam $10^{-4}$; weight decay 0 & Final epoch; GRL/center/separation weights 1/0.01/0.02; batch centers; summed squared distance without feature normalization or cap. \\
+IB-RFF & FAN; 2 stages, each at most E200; batch 128; Adam $10^{-3}$ & Source-V minimum NLL per stage; LR factor 0.1, patience 5, floor $10^{-6}$; early-stop patience 10; stage-two HSIC 0.04 (Full) or 0 (CE). \\
+SDG & MACNN-S; E200; batch 32; Adam $10^{-3}$ & Source-V minimum NLL; Full native-view depths 2/1, contrastive weights 1/100. \\
+Strong CE & ResNet18/50; E200; batch 128; AdamW $2\!\times\!10^{-4}$, weight decay $10^{-4}$ & Final epoch; cosine LR to $10^{-6}$; ResNet18 has matched PL. \\
+Generic DG & ResNet18; 5000 updates; batch 150; same AdamW & TX--RX-balanced replacement sampling; all routes reset the optimizer at update 1500; fixed final step. \\
+Source count & ResNet18; 10\,000 updates; batch 180 & Fixed final step; 1.8 million L exposures; V diagnostic only. \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+The same-backbone group uses ResNet18~\cite{resnet} with ERM, MixStyle-crossRX, MixStyle-ID, Fishr-head, and source-CORAL. MixStyle~\cite{mixstyle} acts after residual stages one/two with probability 0.5 and $\operatorname{Beta}(0.1,0.1)$ mixing. Partners have different source RX; ID additionally requires the same TX. Only clean L features are directly mixed; inference disables mixing. Fishr~\cite{fishr} aligns source-RX variances of per-sample CE gradients of the existing classifier weights/biases, with weight 1000 after update 1500 and EMA 0.95. Source-CORAL adapts moment alignment~\cite{coral} to source RX only (weight 1; covariance scaling $1/(4d^2)$), without target moments. These are fixed-strength controls, not exhaustive method-specific tuning.
+
+There are 219 fresh training runs: 192 augmented supervised and 27 augmented PL. Their breakdown is F0 native 24; F1/F2 48; generic 15; source count 33; 1\%/5\% labels 18; chronological 24; ManyRx 24; strong CE 6; and PL 27. Model seeds are 2026092701/02/03. Python 3.8/PyTorch 1.11 is used on physical GPUs 2/3, with at most one task-owned training/prediction worker per GPU. Native recipes are not equal-GPU-time comparisons; IB stopping and RIEI multiple optimizer steps are counted explicitly.
+
+\subsubsection{Test Conditions, Metrics, and Statistics}
+Each model predicts clean plus six fixed practical conditions on the same physical packets. High/mid/low elevation presets are $45$--$80^\circ$, $20$--$45^\circ$, and $10$--$30^\circ$, crossed with suburban/urban settings. The practical renderer uses a 600-km altitude assumption, 2.45-GHz carrier, 25~MS/s, and a 30-dB reference signal-to-added-noise ratio at $60^\circ$. Its post-synchronization \emph{residual} route adds incremental impairments to already equalized WiSig IQ without further channel equalization. Common residual settings include 100-Hz CFO SD and $1^\circ$ phase-tracking SD. The reference noise ratio is not the unknown total SNR of the original recording. These are engineering stress proxies, not measured in-orbit channels. Shared physical IDs reuse identical observations across models, with channel/virtual-RX seeds 392005/2027; seven views are not seven independent packet sets.
+
+All registered predictions for a model are fixed before an independent scorer connects opaque IDs to truth. The primary metric is receiver-equal accuracy $A_{\rm RX}=|R_t|^{-1}\sum_{r\in R_t}A_r$. We also retain packet-weighted accuracy, pooled Macro-F1 over all registered classes, each seed's worst RX, and RX/date/TX strata. The six-condition mean is computed within each seed before summarization. ManySig is balanced, whereas ManyRx receiver-equal and packet accuracies can differ.
+
+Full$-$CE and PL$-$supervised effects pair the same seed, data, and augmentation. Reported uncertainty is sample SD across three model seeds, not a confidence interval. Packets, RX/date cells, overlapping partitions, and transformed views do not increase the independent model count. No statistical significance is inferred from three seeds. Source evidence selects/finalizes checkpoints; target scores do not change parameters, reorder candidates, or trigger selective reruns.
+
+\subsection{Main Comparison and Mechanism Effects}
+Additional DG mechanisms do not uniformly improve their own identity networks (Table~\ref{tab:main}). In supervised F0, SDG CE reaches 73.73\% clean accuracy versus 71.39\% for Full. IB-RFF Full has a small advantage over CE (63.77\% versus 63.30\%), while RIEI decreases from 66.50\% to 54.53\% and DRIFT from 68.49\% to 67.33\%. Strong ResNet50 CE also does not exceed ResNet18 CE (67.73\% versus 68.51\%). Full and stronger CE controls are both retained; the better branch is not selected separately for each target view.
+\input{tables/main}
+\input{tables/dg_effect}
+
+The paired effects in Table~\ref{tab:dg} distinguish magnitude from seed consistency. RIEI's supervised clean difference is $-11.97$ percentage points, negative in all seeds. SDG's $-2.33$-point effect is positive in only one seed. IB-RFF has two positive differences, and DRIFT has two positives despite a negative mean. These results concern the specified transfer protocol and budgets; they do not establish that a mechanism is universally effective or ineffective under its original paper setting.
+
+\subsection{Channel Robustness and Ordinary PL}
+SDG exhibits a clean--stress tradeoff. Its supervised six-condition mean increases from 35.15\% to 58.14\%, a paired gain of $23.00\pm3.70$ points, despite lower clean accuracy. All six condition means improve: high suburban changes from 36.77\% to 65.95\%, while low urban changes from 30.94\% to 42.00\%. Supervised IB-RFF, RIEI, and DRIFT instead have negative stress-mean effects. Figure~\ref{fig:pressure} reports both absolute performance and same-seed drops from clean; a small drop from a weak clean model is not itself evidence of superior robustness.
+\begin{figure*}[t]
+\centering\includegraphics[width=\textwidth]{images/fig04_pressure.pdf}
+\caption{F0 clean and six practical conditions. Upper: absolute accuracy. Lower: within-seed drops from clean. All Full/CE and supervised/PL conditions are retained; error bars are sample SD of three model seeds. H/M/L denote elevation presets, and S/U denote suburban/urban.}
+\label{fig:pressure}
+\end{figure*}
+
+PL effects depend on the identity recipe (Table~\ref{tab:pl}). IB-RFF Full improves by 2.31 clean points with all three differences positive. ResNet18 CE gains 2.16 clean points but loses 2.47 stress-mean points. DRIFT CE gains 2.01 clean points, whereas DRIFT Full loses 6.36; its Full$-$CE difference under PL is $-9.53$ points in all three seeds. RIEI accepts no U samples at threshold 0.95, so it receives no accepted pseudo-label supervision. Its nonzero arm difference cannot be credited to a PL gradient, given the changed joint forward/stochastic path. Acceptance measures coverage, not hidden-label precision, and the threshold is not revised using target feedback.
+\input{tables/pl}
+
+\subsection{Receiver Composition, Future Date, and Scale}
+Table~\ref{tab:rxeffects} shows condition-dependent effects. SDG has negative clean differences in F0/F1 but positive differences in F2, ManyRx, and future D3. Chronological accuracy increases from 69.82\% to 80.30\% ($+10.49$ points); the ManyRx clean effect is $+3.25$ points. Its practical-condition mean differences are positive across all five groups. RIEI has negative clean and practical mean effects throughout. DRIFT improves F2 clean accuracy but decreases practical means in all five groups; its ManyRx clean difference is $-31.05$ points, with reduced source-validation performance also recorded. Low target accuracy alone does not justify selective retraining.
+\input{tables/receiver_effects}
+\begin{figure*}[t]
+\centering\includegraphics[width=\textwidth]{images/fig03_receiver_date.pdf}
+\caption{Supervised Full$-$CE differences by target RX/date in F0 and the chronological protocol. Each cell averages three matched seed differences and contains 6000 packets per seed. Black outlines distinguish earlier unseen D0 from future unseen D3. A common symmetric scale preserves all positive/negative effects; cells are not independent trained-model repetitions.}
+\label{fig:date}
+\end{figure*}
+
+Figure~\ref{fig:date} localizes variation without feeding strata back into training. The chronological principal result uses only target D3. ManyRx increases both TX/RX counts and changes cell density, so its differences cannot isolate the causal effect of RX count alone.
+
+\subsection{Same-Backbone DG Controls}
+Under the matched ResNet18/5000-update recipe, clean means are 69.97\% for ERM, 70.23\% for MixStyle-crossRX, 69.92\% for MixStyle-ID, 68.63\% for Fishr-head, and 70.69\% for source-CORAL (Table~\ref{tab:generic}). The effects are small or negative at these fixed strengths. This group separates architecture/update-count changes from mechanism changes without claiming each method's optimum. The fixed code establishes MixStyle layer/partner rules, but per-batch/cumulative partner counts were not saved; no historical pairing-frequency claim is made. Fishr warmup and later nonzero penalties are recorded.
+\input{tables/generic}
+
+\subsection{Source Diversity and Label Efficiency}
+We vary source count along three nested RX chains: A=(1,3,4,6,8), B=(4,6,8,1,3), and C=(8,1,3,4,6), taking the first 1/3/5 RX. The seven target RX remain fixed. Natural/fixed labeled budgets are $1260m$/1260, validation is $5400m$, and every model performs 10\,000 batch180 updates (1.8 million L exposures). V is diagnostic only. The coincident $m=1$ budget points and shared $m=5$ endpoint are deduplicated: 11 configurations times three seeds give 33 models, not 54 independent plotted repetitions.
+\begin{figure*}[t]
+\centering\includegraphics[width=\textwidth]{images/fig01_source_count.pdf}
+\caption{Source-RX count under natural and fixed labeled budgets. All runs use ResNet18, 10\,000 updates, batch180, and the same target set. Three chains and all seed points are retained. Coincident endpoints are shared; error bars are sample SD.}
+\label{fig:count}
+\end{figure*}
+
+With 1260 labels, clean means along 1/3/5 RX are 38.24/58.18/65.99\% (A), 40.63/46.65/65.99\% (B), and 20.09/45.82/65.99\% (C). The five-source natural 6300-label setting reaches 69.89\%. Figure~\ref{fig:count} thus separates source diversity from additional labels, while the different one-source results expose receiver-identity sensitivity. These selected chains do not establish a universal monotonic law.
+
+The label-efficiency group fixes V=27\,000 and uses training label fractions 1/5/10\%: L=630/3150/6300 and U=62370/59850/56700. All these runs are supervised with satellite augmentation, without PL. The 10\% ResNet18 point uses the matching E200 strong CE. Clean accuracy is 65.68/69.79/68.51\% for ResNet18, 64.44/64.49/63.30\% for IB-RFF CE, and 65.75/65.71/63.77\% for IB-RFF Full. All non-monotonic results are retained (Fig.~\ref{fig:labels}). ResNet18 uses 1000/5000/10\,000 updates; IB additionally has variable source-only stopping. This is not an equal-compute estimate of label quantity, and V labels remain part of the annotation budget.
+\begin{figure*}[t]
+\centering\includegraphics[width=\textwidth]{images/fig02_label_efficiency.pdf}
+\caption{Training-label efficiency at 1/5/10\%, with actual-update annotations and a separately labeled validation set. All 27 models are supervised with satellite concatenation. IB retains two capped stages and source-only early stopping; ResNet18 uses E200. Non-monotonic points and unequal compute are explicit.}
+\label{fig:labels}
+\end{figure*}
+
+\subsection{Computational Cost and Evaluation Scope}
+We distinguish source-training cost from deployment calls. RIEI Full performs three optimizer steps per batch; IB-RFF has two variable-length stages. Actual stages, updates, label/augmentation exposure, and source seconds are retained, so equal epoch labels are not interpreted as equal cost.
+\input{tables/inference_cost}
+
+For frozen inference, 96 models (32 configurations, three seeds) are measured serially on one RTX3090. Batch1/128 each use FP32, TF32 disabled, 100 warmups, and 1000 synchronized calls. All 192\,000 timings and 64 seed-group summaries are independently recomputed; no target input, fitting, or parameter/buffer update occurs. Table~\ref{tab:inference} reports representative identity-path costs. MACs include convolution/matrix products only; GPU-resident synthetic-input timing excludes transfer/preprocessing and is not flight-hardware latency.
+
+All 219 performance rows and 96 cost rows are complete. Three model seeds, overlapping WiSig subsets, substantial source-validation labels, and simulated residual-channel observations delimit the evidence. The benchmark had historical target exposure; fixing the later matrix does not make it a new blind test. No present target score changes training or selection. Negative effects, stronger CE controls, zero PL acceptance, and non-monotonic curves remain part of the experimental results.

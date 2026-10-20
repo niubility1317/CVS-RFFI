@@ -1,0 +1,25 @@
+\noindent\begin{minipage}{\columnwidth}
+\makeatletter\def\@captype{table}\makeatother
+\centering
+\caption{Frozen identity-path cost on one RTX 3090. FP32, TF32 off; 100 warmups/1000 synchronized calls per batch and checkpoint. Latency is in ms.}
+\label{tab:inference}
+\footnotesize
+\setlength{\tabcolsep}{4.1pt}
+\begin{tabular}{lrrrr}
+\toprule
+Model & Params (M) & MACs (M) & Batch1 & Batch128 \\
+\midrule
+IB-RFF CE & 0.147 & 2.35 & \pmv{2.07}{0.05} & \pmv{2.09}{0.04} \\
+IB-RFF Full & 0.147 & 2.35 & \pmv{2.05}{0.05} & \pmv{2.11}{0.03} \\
+SDG CE & 0.130 & 10.41 & \pmv{4.85}{0.29} & \pmv{4.57}{0.07} \\
+SDG Full & 0.130 & 10.41 & \pmv{4.80}{0.18} & \pmv{4.63}{0.07} \\
+RIEI CE & 3.977 & 174.29 & \pmv{4.02}{0.23} & \pmv{5.68}{0.43} \\
+RIEI Full & 3.977 & 174.29 & \pmv{4.06}{0.13} & \pmv{5.48}{0.03} \\
+DRIFT CE & 3.977 & 43.76 & \pmv{3.72}{0.05} & \pmv{5.37}{0.06} \\
+DRIFT Full & 3.977 & 43.76 & \pmv{3.90}{0.06} & \pmv{5.47}{0.06} \\
+ResNet18 CE & 3.847 & 43.63 & \pmv{3.64}{0.05} & \pmv{5.04}{0.11} \\
+ResNet50 CE & 15.967 & 199.88 & \pmv{9.10}{0.38} & \pmv{12.92}{0.42} \\
+\bottomrule
+\end{tabular}
+\par\smallskip\begin{minipage}{\columnwidth}\footnotesize Latency summarizes three checkpoint medians (mean/sample SD). MACs exclude elementwise work; transfer and preprocessing are not timed. Memory and the full precision measurements remain in the source CSV.\end{minipage}
+\end{minipage}
