@@ -132,3 +132,8 @@ R05完整结果：符合七场景1个百分点容差：step_norm_task, activatio
 两行在新运行前固定，source/V/波形仅诊断；每行冻结后自动source七视图/独立truth-last/成本测量及target168000×七视图/独立truth-last。按原R17逐场景最多下降1个百分点，不以均值或波形覆盖超限，不用目标结果改结构、超参、父权重、预算或重跑。40项检查和唯一独立P0/P1审查PASS，普通N607预检VERIFIED，旧R05实际GPU句柄已退出、GPU4/5空闲；后续一次归档比较/远端编译/launcher-first真实R17+F50+2Ls noquery smoke、实际PID/CWD/cmd/GPU/loggrowth。实际发布 VERIFIED：方法 `1ccc14248d025006b1cf38cdf6779685156ee092` 已推送/OID一致，归档/远端编译及真实原R17+F50+2Ls无query smoke PASS，GPU4/5实际PID/CWD/完整命令/GPU/日志增长与E1/247均已核实。两行按固定配方继续，尚无完整训练或目标准确率结果，结构成本不证明性能验收。
 
 旧R04/R05显存profile包含checkpointpayload，原R17含optimizer而精简final不含，不能解释为纯推理显存收益；数值保留并补明口径。R06排除GPU上的payload/optimizer，分别报告resident/peak/增量peak。目标准确率和参数结论不受此统计口径影响。
+
+
+## R07 四候选并行扩展
+
+用户最新要求空闲服务器一次发布多个、快速迭代，覆盖此前等R06完成再追加的次序约束。[R07登记](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-parallel-compact-s2026092701-m4-r07/report.md)固定四行：shared_three_eighths2702125、shared_eighth2463685、shared_quarter_pointwise2471609、shared_eighth_pointwise2352389。新GPU2/3/6/7各一own worker，R06健康4/5继续，共六路；R06/R07共享R06score.lock、跨六行最多一个CPU scorer。原R17源权重CPU均值/SVD，另两行共享原1×1权重，保留逐步bias/GN；只原R17teacher/init，不加载R04/05/06学生，R06尚无目标结果。固定同损失/数据/顺序/E20/4940；每行source诊断后自动全168000×七目标场景，独立truth-last与逐场景1pp验收，0target训练/参数反馈/重排/重跑。40项检查/唯一P0P1审查PASS，普通N607预检VERIFIED，四卡空闲，新root不存在。当前尚未运行新四候选，不以参数数目证明目标准确率。
