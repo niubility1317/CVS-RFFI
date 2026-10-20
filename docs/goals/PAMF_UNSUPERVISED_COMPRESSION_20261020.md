@@ -1,5 +1,7 @@
 # 无 TX 标签恢复器的压缩与性能联合优化
 
+2026-10-21 当前R55：原273765拓扑与weight-only GN4 map，源通道岭回归合并到既有Conv/Linear权重，full/half两固定幅度；直接人选350521父，CPU2共同128物理样本/256冻结G输入、校准无clean/TX/F/V/target/更新；两行全部联合E20/4940后自动七正式测试及成本。唯一同宽控制R53prune_decay复用，GPU3/2各一条、固定R54实际退出保护。LOCAL_VERIFIED尚未发布，无新正式结论；原性能/TX细节目标ACTIVE。[R55方案](../PAMF_R46_FOLD_COMPENSATE_R55_20261021.md)。
+
 十三个固定新版的正式性能、郊区/urban 全场景和配对推理成本均已完整汇总，按预登记顺序保留全部结果；性能优先，不用通过退化容差、减参或提速替代逐场景性能改善。十三行中相对指定父七景全部提高的版本为：R48 prune_refine（273765参数，low urban 68.257738%）。完整数据按固定矩阵顺序报告，不据此另选父、修改超参数或选择性重跑。只反映单 seed 工程基准，70%/5pp以逐行验收表为准；输入TX逐细节真实性尚未证明，原完整目标继续ACTIVE。 见[十三版性能总表](../PAMF_R46_COMPRESSION_PERFORMANCE_20261020.md)。指定 350521 父版不变，原完整目标继续 ACTIVE。
 
 2026-10-21 当前 R54：VERIFIED/ANALYZED：两行完整E20/4940、源1800×7和正式168000×7、每行七预测固定后独立truth-last、完整曲线/同卡成本、所属controller/worker退出及两套独立权重CPU严格重载均已核实。activation_energy 273765参数，七景较父提高1/下降6，lowurban 66.435714%（较父-1.074405pp），70%=False、其他五景gap5pp=False；同卡G B1父/本版41.6582/40.9480ms，G+F B1父/本版53.0625/52.8909ms；projection_sensitivity 273765参数，七景较父提高1/下降6，lowurban 66.919048%（较父-0.591071pp），70%=False、其他五景gap5pp=False；同卡G B1父/本版45.7906/44.9914ms，G+F B1父/本版58.4112/57.2981ms。activation_energy相对同宽权重筛选R53/prune_decay七景提高1/下降6，lowurban差-2.091667pp；projection_sensitivity相对同宽权重筛选R53/prune_decay七景提高1/下降6，lowurban差-1.608333pp。原指定350521直接父保持，全部正负结果保留；不把容差通过、减参、源域或解析关联当作正式提升或逐细节TX真实性。原完整目标ACTIVE。 [全部七景与同宽控制](../PAMF_R46_SOURCE_PRUNE_R54_20261021.md)。
