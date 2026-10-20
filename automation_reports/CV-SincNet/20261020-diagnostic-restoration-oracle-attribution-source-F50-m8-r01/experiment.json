@@ -1,0 +1,176 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-diagnostic-restoration-oracle-attribution-source-F50-m8-r01",
+  "group_id": "phase1-F50-source-oracle-attribution",
+  "display_name": "冻结原F的源域恢复误差位置归因",
+  "description": "180sourceV/7views/8counterfactuals/3originalF;sourceclean oracle局部替换仅机制诊断，无训练/target/可部署性能宣称。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "source_only",
+    "oracle_attribution",
+    "truth_last"
+  ],
+  "comparison_group_id": "manysig-source-rx13468-day123-076330-oracle-attribution",
+  "parent_run_ids": [
+    "20261019-phase1-restoration-residual-refinement-selfsup-m3-r03",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+    "20261020-phase1-restoration-spatial-conditioning-source-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "本对话2026-10-19用户要求独立无监督恢复网络、覆盖IQ/FFT/PAMF输入、尝试多种设计含扩散、使用L/U；提供恢复器报告；最新明确训练默认N607并允许多GPU快速验证，直接接训练好F验证真实输入TX身份。",
+  "code": {
+    "commit": null,
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 verified CVS-RFFI Python/Torch2.1cu121/NumPy2.2.5;CPU2threads/CUDAempty",
+    "cwd": "releases/pamf_oracle_attribution_20261020_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "OriginalR02 sourceV pairedclean+sixpractical;originalR03 parent_R03 sourcepredictions from closedspatial/pooled_features",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "Private prediction/physical_ids.npy;180systematicpositionsfromexisting1800sourceV",
+    "label_map_ref": "source_cache/manifest.json#class_id_to_tx; label files read only by independent scorer",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json: READY/EXACT_MATCH; reuse existing cache without new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "experiments/pamf_restoration/data.py: six practical residual/noEQ/fixed one source training draw per physical ID",
+    "restoration_train_counts": {
+      "L_s": 0,
+      "U_s": 0,
+      "TX_labels": 0
+    },
+    "source_validation_panel": 1800,
+    "target_panel": null,
+    "diagnostic_panel": {
+      "count": 180,
+      "per_RX": 36,
+      "selection": "SystematiclinspacepositionswithinoriginalRXorder;noTXlabels;notVsplitforcalibration"
+    },
+    "actual_training_labels": "No training;sourceVTXlabels onlyindependentCPUscorer afterall7x8x3Fpredictions",
+    "runtime_inputs": "N/A;allclean-dependentcounterfactuals explicitlySOURCEoracle diagnostic,notdeployable restoration"
+  },
+  "permissions": {
+    "regime": "SourceV read-only mechanism diagnosis;pairedclean deliberatelyoracle;originalF/R03frozen;4Lsnoquerysmokeonly",
+    "query_use": "NONE;no target inputs/arguments",
+    "external_method_exception": null,
+    "claim_scope": "Source-only errorattribution on180physical examples;not runtime correction,targetperformance,newheadfit,mathematicalupperbound,Phase2/inorbit orgoalcompletion"
+  },
+  "checkpoint": {
+    "initialization": "No new model/training;originalR03 actual4Ls smoke;fixednativeF50/defaultheads",
+    "sources": [
+      "OriginalR03b01b534f/coarse20+corr20",
+      "OriginalF4df7b94d seeds2026092701/02/03",
+      "Closedspatial pooled_features source parent_R03.npy only,notfieldoutputs"
+    ],
+    "contract_check_ref": "Original validated sourcehandles;source_residual_parent andload_reader;source-only baseline summary/prediction1800",
+    "provenance_verdict": "Reuse original legalR03/F/sourcecontract;no failed/refined/targetselected weights;spatialmodelnotinitialized orloaded",
+    "selection_rule": "NONE;all8counterfactuals/7views/3F complete;no sourcecandidate promotion orruntimegate"
+  },
+  "execution": {
+    "host": "N607 ordinaryaccount CPUonly",
+    "launch_owner": "codex/root/source-oracle-attribution",
+    "gpu_policy": "0GPUworkers;CPU2threads;holdbothscratchandspectralscore.lock inthatorder throughsmoke/inference+childscorer;healthyjobsuntouched",
+    "remote_run_root": "runs/20261020-diagnostic-restoration-oracle-attribution-source-F50-m8-r01",
+    "remote_log_root": "logs/20261020-diagnostic-restoration-oracle-attribution-source-F50-m8-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/oracle_attribution_20261020_r01",
+    "launch_command": "python -u -m experiments.pamf_oracle_attribution.runner run --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-cache ../../runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache --parent-restoration ../../runs/20261019-phase1-restoration-residual-refinement-selfsup-m3-r03 --baseline-source-run ../../runs/20261020-phase1-restoration-spatial-conditioning-source-s2026092701-m2-r01 --reader-root ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02 --output ../../runs/20261020-diagnostic-restoration-oracle-attribution-source-F50-m8-r01 --expected-commit <actual method commit>",
+    "stop_rule": "Illegalparent/source/config,collision,nonfinite,Fstatechange,incompletepredictions:preserve/fail,noautoretry"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "prediction/complete.json",
+    "summary.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "sourceperFaccuracy/MacroF1/confusion",
+      "repair/damage/netvsreceivedandR03",
+      "sourcepairedfull/prefix232/tail24NMSE/logpower",
+      "sourceTXcounts",
+      "CPUtime"
+    ],
+    "dimensions": [
+      "7views",
+      "8declaredcounterfactuals",
+      "3originalF",
+      "TX",
+      "RX",
+      "day"
+    ],
+    "primary": "Source-only oracle errorlocationdiagnosis;cannotestablishtargetgain",
+    "prediction_ref": "runs/20261020-diagnostic-restoration-oracle-attribution-source-F50-m8-r01/prediction",
+    "scorer_ref": "pamf_oracle_attribution.runner.score;independentCPUchildafterallpredictions"
+  },
+  "rows": [
+    {
+      "row_id": "source-attribution",
+      "method": "FrozenoriginalF/sourceoracleattribution",
+      "purpose": "source_only_mechanism_diagnostic",
+      "config_ref": "experiments/pamf_oracle_attribution/design.py#configuration",
+      "resolved_config_ref": "runs/20261020-diagnostic-restoration-oracle-attribution-source-F50-m8-r01/launch.json#config",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "data": null,
+        "evaluation": null,
+        "augmentation": null,
+        "split": null,
+        "support": null
+      },
+      "seed_notes": "No stochastic sampling;systematicRXpositions;three originalF seeds01/02/03 independentreadouts,notthree newmodels",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0trainingupdates/0headfit/0GPU;180physicalsamples/7views/8counterfactuals/3nativeheads;CPU2threads",
+      "output_root": "runs/20261020-diagnostic-restoration-oracle-attribution-source-F50-m8-r01",
+      "log_path": "logs/20261020-diagnostic-restoration-oracle-attribution-source-F50-m8-r01/runner.log",
+      "command": "python -u -m experiments.pamf_oracle_attribution.runner run --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-cache ../../runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache --parent-restoration ../../runs/20261019-phase1-restoration-residual-refinement-selfsup-m3-r03 --baseline-source-run ../../runs/20261020-phase1-restoration-spatial-conditioning-source-s2026092701-m2-r01 --reader-root ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02 --output ../../runs/20261020-diagnostic-restoration-oracle-attribution-source-F50-m8-r01 --expected-commit <actual method commit>",
+      "expected_artifacts": [
+        "metrics.json"
+      ],
+      "GPU": null
+    }
+  ],
+  "notes": [
+    "Before another architecture,attribute currentR03 SOURCE residual errors to declaredtime/frequency/gaincoordinates. This is diagnosis,not a sourcecandidate ranking or response basedon targetresults. Existingmodelscontinuefixedbudgets.",
+    "All8readouts:received,R03,clean_tail24,clean_prefix232,clean_low64,clean_high64,clean_gain,clean_reference. Timepatches48/464realcoordinates;frequency64complexbins=128realcoordinates;gain2realcoefficients dependsclean. They have unequaloracleinformation,not comparablealgorithmbudgets or mathematicalupperbounds.",
+    "Fixed180sourceV:36systematiclinspacepositionsinoriginalorderperRX1/3/4/6/8;noTXlabelselection. ActualTXcountsreportedaftertruth. Samephysicalsampleacrossviews/interventions/heads,not independentreplication.",
+    "OriginalR03parentoutputs fromclosedspatial/pooled_features SOURCEonly1800 predictions;notnewfieldwaveforms ortargetoutputs. ActualoriginalR03and3F checkpointsourcecontractchecked;F/defaultheads/stateallfrozen,0training/optimizer/heads/target.",
+    "24focusedchecksPASS;one independentP0/P1reviewPASS,independent24checksPASS,noP0/P1. Launcherfirst actualR03/3F/fourLs noquerysmoke,0TX/V/target/optimizer,thenallsourcepredictions;all7x8x3F/IQ fixedbeforeindependentCPUchildopensVlabels.",
+    "CPU2threads/noGPU;existing scratchscore.lock thenspectralscore.lock heldthroughsmoke,predictions,independentchildscore. Existingworkersneverholdbothso no cycle;no recipe/controller/process modification. No overlapping ownCPUscorers.",
+    "Oneordinarypreflight/newimmutableroot/actualcodeconfigcommit/archiveSHAcomparison/compile/PID-CWD-cmd-loggrowth;no target access ordefaulttargettesting becausezero-training SOURCE-onlydiagnostic;cannotcompleteusergoal.",
+    "OneordinaryN607preflightVERIFIED,newroot/releaseabsent,originalR03/sourcebaselinelegal,fourhealthytrainingPIDsLIVEpreserved;CPUonlydualexistinglocks;no launchyet."
+  ],
+  "registered_at": "2026-10-20T01:56:25+00:00"
+}
