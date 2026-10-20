@@ -231,7 +231,7 @@
       "lowurban_accuracy_min": 70.0,
       "other_five_goal": "接近clean，未指定数值容差，独立于压缩1pp验收"
     },
-    "aggregate_analysis_ref": "tools/analyze_pamf_r17_joint_optimize_results.py;16syntheticchecksPASS;complete20epoch/fulljointcomponentbudget/matchedobjectives/actualgains/each7/sourceandtarget/exact1pp/profile"
+    "aggregate_analysis_ref": "tools/analyze_pamf_r17_joint_optimize_results.py;17syntheticchecksPASS;fulljointbudget/each7/exact1pp/actualgains/matchedclean-minus-teacher/waveform/groups/profile"
   },
   "rows": [
     {
@@ -450,7 +450,8 @@
     "student context不再no_grad；不调用ActionRestorer.estimate的coarse-detach路径；teacher helper只对原teacher no_grad，student路径保留图；optimizer全恢复器参数。",
     "corrective objective是clean-IQ loss与clean-F reference的组合，不能仅归因某一项；R08冻结context行仅作已有匹配对照，不继承其权重。",
     "新机制由用户压缩同时优化要求、合法source clean数据与冻结路径代码审计推导，秩/系数/预算未按目标成绩调整；全部固定row正式目标测试/负结果保留。",
-    "42项合成/协议检查及唯一独立P0/P1审查PASS，独立复跑42项。普通N607预检VERIFIED，R07实际四条GPU句柄均退出，新root/release不存在；R08健康GPU4/5继续。先真实原R17/F50/2Ls smoke，再核实R07终态/实际退出后启动固定GPU2/3/6/7四行。"
+    "42项合成/协议检查及唯一独立P0/P1审查PASS，独立复跑42项。普通N607预检VERIFIED，R07实际四条GPU句柄均退出，新root/release不存在；R08健康GPU4/5继续。先真实原R17/F50/2Ls smoke，再核实R07终态/实际退出后启动固定GPU2/3/6/7四行。",
+    "分析完善：17项聚焦合成检查PASS。同压缩规模teacher/clean目标比较逐源/目标七场景准确率、原始正确数、MacroF1、分组及配对clean波形差；clean减teacher固定方向。只比较完成后的冻结汇总，不从汇总推算逐样本配对检验，不单独归因IQ或F参照，0新模型forward/训练/target访问。方法commit及运行中配方不变。"
   ],
   "registered_at": "2026-10-20T07:41:55+00:00"
 }

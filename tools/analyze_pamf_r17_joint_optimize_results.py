@@ -96,4 +96,18 @@ def completed_metrics(value):
             practical_gap_to_same_model_clean_pp={view:metrics['target']['views']['clean']['accuracy']-metrics['target']['views'][view]['accuracy'] for view in d.VIEWS if view!='clean'},
             acceptance_is_not_optimization_success=True,near_clean_threshold_unspecified=True,single_seed_only=True)
         if acceptance['accepted']:public['accepted_rows'].append(arm)
+    pairs=(('quarter','joint_teacher_quarter','joint_clean_quarter'),
+           ('eighth_pointwise','joint_teacher_eighth_pointwise','joint_clean_eighth_pointwise'))
+    public['matched_objective_comparisons']={}
+    for size,teacher_arm,clean_arm in pairs:
+        teacher_row,clean_row=(public['rows'][arm] for arm in (teacher_arm,clean_arm))
+        public['matched_objective_comparisons'][size]=dict(
+            teacher_arm=teacher_arm,clean_arm=clean_arm,parameters=d.PARAMETERS[teacher_arm],
+            delta_direction='clean_corrective_minus_teacher_fidelity',
+            source=compare(clean_row['source'],teacher_row['source']),
+            target=compare(clean_row['target'],teacher_row['target']),
+            same_architecture_initialization_seed_data_order_optimizer_epochs=True,
+            changed_factors=['paired_source_clean_IQ_loss','F_reference_from_R17_restored_to_source_clean'],
+            single_factor_attribution=False,single_seed_only=True,target_feedback=False,
+            raw_sample_pairwise_correctness_not_inferred_from_aggregate=True)
     return public

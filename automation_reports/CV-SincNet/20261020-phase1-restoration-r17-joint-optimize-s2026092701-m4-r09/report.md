@@ -28,3 +28,5 @@ GPU2/3/6/7等待R07根终态及全部实际ownedGPU句柄EXITED，不读其评�
 实际发布 VERIFIED：方法commit `63a8b45b502351ba72aaf80f83b377036ce255fe` 已推送且远端OID独立比较一致；单归档SHA比较/远端compile/help通过。实际原R17/F50/2Ls noquery smoke PASS，原teacher三步输出逐位等价，四行student coarse/action/prior和原F输入梯度均有限非零，原teacher/F/head0更新，严格复载输出逐位一致。先核实R07完整测试/评分与实际controller/四个GPU句柄退出，再在GPU2/3/6/7各启动一个新worker。实际PID/CWD/完整命令/commit/GPU/loggrowth与首轮完成均核实，R08健康4/5继续。没有读取R07结果改变R09已固定设计/训练/矩阵。
 
 完整汇总工具16项合成检查PASS，覆盖联合组件预算、全模型optimizer参数、teacher/clean损失参照及clean IQ权重、80串行pass与120组件epoch区别、四行全七视图/分组、整数1pp重算与actual gains/70%状态分开、payload-free推理profile。该工具未改运行中方法commit；当前尚无R09目标准确率。
+
+分析完善：17项聚焦合成检查PASS。同压缩规模teacher/clean目标比较逐源/目标七场景准确率、原始正确数、MacroF1、分组及配对clean波形差；clean减teacher固定方向。只比较完成后的冻结汇总，不从汇总推算逐样本配对检验，不单独归因IQ或F参照，0新模型forward/训练/target访问。方法commit及运行中配方不变。

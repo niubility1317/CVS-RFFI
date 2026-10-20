@@ -79,3 +79,19 @@ def test_accepted_compactness_does_not_get_reported_as_optimization_success():
     assert not outcome['improved_views'] and outcome['decreased_views']==list(d.VIEWS)
     assert not outcome['all_seven_non_decreasing'] and outcome['near_clean_threshold_unspecified']
     assert outcome['low_urban_at_least_70']==(outcome['low_urban_accuracy']>=70)
+
+
+def test_same_architecture_objective_comparison_keeps_direction_and_all_views():
+    result=completed_metrics(fixture())
+    assert set(result['matched_objective_comparisons'])=={'quarter','eighth_pointwise'}
+    for pair in result['matched_objective_comparisons'].values():
+        assert pair['delta_direction']=='clean_corrective_minus_teacher_fidelity'
+        assert set(pair['target']['views'])==set(d.VIEWS)
+        assert set(pair['source']['views'])==set(d.VIEWS)
+        for item in pair['target']['views'].values():
+            assert item['correct_delta']==-1
+            assert item['accuracy_delta_pp']==-100/168000
+        assert pair['parameters']==d.PARAMETERS[pair['teacher_arm']]==d.PARAMETERS[pair['clean_arm']]
+        assert pair['changed_factors']==['paired_source_clean_IQ_loss','F_reference_from_R17_restored_to_source_clean']
+        assert not pair['single_factor_attribution'] and not pair['target_feedback']
+        assert pair['raw_sample_pairwise_correctness_not_inferred_from_aggregate']
