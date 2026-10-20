@@ -13,3 +13,5 @@ CPU/CUDA f32/f64偏导参考/同输入前向损失/梯度均值0/保留尺度响
 普通本机账户，native Python3.10/PyTorch2.10cu128，原FP32/noTF32/benchmarkfalse/deterministicfalse，CPU2/workers0。GPU0源训练/预测总worker上限3，计入其他owner；派发前系统空闲内存≥4.5GiB；CPU评分最多1个。资源许可时可作为第三个实际GPUworker，不停止或热改原任务。Windowsvenv launcher与真实子进程不同，旧计数可能保守降低并行；不伪造计数或绕过容量。
 
 一次新archive复制比较、compile、实际PID/CWD/cmdline/GPU/log增长核验；run/output不可覆盖，代码/config以实际Git commit唯一标识。命令/路径别名/CWD/逐行矩阵/stop/artifacts见experiment.json。技术停止仅来源/权限/配置/metadata/输出冲突、非有限或预算/worker错误，停止新派发并保留健康任务和产物，不按性能停止或自动重跑。尚无本轮目标性能结果，目标ACTIVE/UNMET。
+
+发布状态：实现提交 `67afd61dad3f313c0919d5c08349e2ad4a1ff0f6` 已与远端分支OID核实一致。不可变release复制比较/compile通过，真实训练子进程PID/CWD/cmdline/GPU0及逐步日志增长核实；全局实际3个GPUworker，原六行保持健康。CENTER三种子固定，首行已发生实际更新，另两行排队。训练后逐行自动clean预测/独立truth-last评分；尚无新目标性能结果。

@@ -1,0 +1,53 @@
+{
+  "status": "VERIFIED_SOURCE_WORKER_STARTED",
+  "code_commit": "67afd61dad3f313c0919d5c08349e2ad4a1ff0f6",
+  "remote_code_commit": "VERIFIED",
+  "controller_live": true,
+  "archive_copy": "VERIFIED",
+  "release_compile": "PASS",
+  "preflight": {
+    "actual_GPU_workers": 2,
+    "free_system_GiB": 11.632251739501953,
+    "capacity": "PASS"
+  },
+  "actual_global_GPU_workers": 3,
+  "actual_gpu_training_worker": {
+    "row_id": "CENTER_GRAD-s2026092701",
+    "CWD_verified": true,
+    "cmdline_verified": true,
+    "GPU0_verified": true,
+    "scratch": true,
+    "epochs": 50,
+    "stage_epochs": [
+      33,
+      17
+    ],
+    "default_head_joint": true,
+    "backbone_frozen": false,
+    "satellite_training": false,
+    "test_views": [
+      "clean"
+    ],
+    "actual_statistic_policy": "CENTER_GRAD"
+  },
+  "actual_launcher_and_child_resolved": true,
+  "step_log_growth": {
+    "previous_bytes": 96186,
+    "bytes": 387464,
+    "grew": true,
+    "complete_prefix_updates": 179
+  },
+  "technical_errors_observed": 0,
+  "target_predictions_or_scores": 0,
+  "fixed_rows": 3,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "source_expansion_gate": false,
+  "matched_BASE3": "reused without training",
+  "old_six_rows": "unchanged and healthy",
+  "other_center_rows": "queued unchanged",
+  "goal_status": "ACTIVE_UNMET"
+}
