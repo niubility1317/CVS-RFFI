@@ -1,0 +1,303 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-phase1-restoration-r17-compact-distill-source-s2026092701-m2-r01",
+  "group_id": "phase1-restoration-r17-compact-distill",
+  "display_name": "原 R17 先验共享与低秩蒸馏的零退化精简验证",
+  "description": "完整R17/原F50同输入逐场景不降分约束；两臂source-only蒸馏，源域固定择最小合格者自动正式确认。",
+  "kind": "cvs",
+  "stage": "Phase1-source-research-conditional-confirmation",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "r17_compact",
+    "source_distillation",
+    "truth_last"
+  ],
+  "comparison_group_id": "manysig-estimated-action-3step-2CG-fullLU-IQonly",
+  "parent_run_ids": [
+    "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02",
+    "20261019-phase1-restoration-learned-action-source-s2026092701-r07",
+    "20261019-phase1-restoration-uncertainty-selfsup-s2026092701-m3-r10",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+    "20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15",
+    "20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16"
+  ],
+  "replaces_run_id": null,
+  "authorization": "持续独立恢复器目标和N607多GPU授权；用户报告R3及R14/R16源证据驱动，不使用目标反馈。",
+  "code": {
+    "commit": null,
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
+    "cwd": "releases/pamf_r17_compact_distill_20261020_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "Original63000sourceL6300/U56700/R07 cachedreceived1..20;1800sourceV7views;fixedR05formal168000x7",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train6300L+56700U originalIDs;R07validation1800V;conditional R05 original168000IDs",
+    "label_map_ref": "NoTX/F training;sourceVtruth independentCPU aftereachrow7predsets;conditional targettruth after7fixedpredictions",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json: READY/EXACT_MATCH; reuse existing cache without new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "Unchanged code/leo_practical/channel.py;reuse R07 epoch01..20 and original sourceV;conditional original formal received bytes",
+    "restoration_train_counts": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "L_exposures_per_row": 126000,
+      "U_exposures_per_row": 1134000,
+      "epochs_per_row": 20,
+      "updates_per_row": 4940,
+      "TX_labels": 0,
+      "F_training_reads": 0,
+      "shared_extra_LU_calibration_exposures": 0
+    },
+    "source_validation_panel": 1800,
+    "target_panel": "Onlysource-qualified fixedrank winner plus R16 single-shot IQ control;eachoriginal168000x7;otherwise0target",
+    "actual_training_labels": "No TX labels,F weights/outputs,V or target in training;frozenR17 source-only restoration stage outputs are teacher targets",
+    "augmentation": "OriginalR07 .15clean/.85residual cachedreceived,no newaugmentation or cleanconcatenation",
+    "runtime_inputs": "CurrentIQ2x256 only;frozencoarse/action+compactpriors/3stepsx2CG;no teacher/F/clean/cache/TX/RX/scene/otherframes/update"
+  },
+  "permissions": {
+    "regime": "SourceL/U simulatedpaired selfsupervision+sourceR17 distillation;V labels only fixedsourcequalification;independenttruthlasttarget",
+    "query_use": "Conditional frozen inference only;no targetadaptation/feedback;originalF/defaulthead unchanged",
+    "external_method_exception": null,
+    "claim_scope": "One compressedrestorerseed/oneoriginalF50seed2701/defaulthead;0fittedheads;baselineuserselectedandexposed,no newblindtest,Phase2,inorbit or mathematicalglobalminimum claim"
+  },
+  "checkpoint": {
+    "initialization": "Only source-selected originalR17 unroll_unshared finalE20/4940 cd977448;shared mean or per-layer half-rank SVD;originalR02/R07 coarse/action frozen;all3R17teacherpriors frozen",
+    "sources": [
+      {
+        "run_id": "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02",
+        "commit": "7efdba92932a86bf4b0492a565d35377564a26da",
+        "role": "Inherited frozen R02coarse E20 viaR07fullstate",
+        "path": "runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/tf_unet_mixed/final.pt"
+      },
+      {
+        "run_id": "20261019-phase1-restoration-learned-action-source-s2026092701-r07",
+        "commit": "c8ccdfdbd03ab5ad8828b1eb9210b99a664ebe7b",
+        "role": "Full frozen source-only R07coarse/action E40;notnewprior",
+        "path": "runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/learned_operator/final.pt"
+      },
+      {
+        "run_id": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+        "commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+        "role": "Frozen inference only originalF50E50/11100 anddefaulthead",
+        "path": "runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth"
+      },
+      {
+        "run_id": "20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16",
+        "commit": "50587946b6c83b7b32500696af7fa7b9086484b5",
+        "role": "Frozen source single-shot IQ reference;trainedfinal onlyconditionaltargetcontrol,not newinitialization",
+        "path": "runs/20261020-phase1-restoration-iqonly-selfsup-s2026092701-m2-r16/unet_control/native_map_prior/final.pt"
+      },
+      {
+        "run_id": "20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15",
+        "commit": "26a8b7f5fc5471719f600ad880bc465c4b544521",
+        "role": "Frozen source FFT summary for third identity guard,weights not loaded",
+        "path": "runs/20261020-phase1-restoration-fullresolution-selfsup-s2026092701-m2-r15/unet_control/native_map_prior/summary.json"
+      }
+    ],
+    "contract_check_ref": "OriginalR17cd977448/source-selected unroll_unsharedE20/4940;originalR02/R07 ancestors/roles/trainingmetadata and sameF50 baseline prediction handles checked;newsmoke launcherfirst,no target training",
+    "provenance_verdict": "ReuseverifiedR02/R07/F50sourcecontract;R15/R16 source-only complete and0target,source references;R16trainedprior only conditionaltargetcontrol",
+    "selection_rule": "Each view accuracy>=originalR17;mean6NMSE<=1.05xR17 and cleanNMSE<=.02;amongqualified smallest fullparameters then name;onlyonefulltarget,no fallback",
+    "evaluation_readers": [
+      "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701 original defaulthead"
+    ],
+    "parent_run_ids": [
+      "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+      "20261019-phase1-restoration-learned-action-source-s2026092701-r07"
+    ]
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/R17-compact-distill",
+    "gpu_policy": "Waitscratchrootterminal AND actualownedGPUhandlesEXITED;oneown/card4,5,max4ownwithspectral6,7;18GBfree/allowner<2;Waitspectralrootterminal;ownscore.lock,CPU2threads/max1ownscorer",
+    "remote_run_root": "runs/20261020-phase1-restoration-r17-compact-distill-source-s2026092701-m2-r01",
+    "remote_log_root": "logs/20261020-phase1-restoration-r17-compact-distill-source-s2026092701-m2-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/r17_compact_distill_20261020_r01",
+    "launch_command": "python -u -m experiments.pamf_r17_compact.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r17-compact-distill-source-s2026092701-m2-r01 --expected-commit <actual method commit>",
+    "stop_rule": "Technicalfailure:failedrowpreserved,healthyrowscontinue,pendingtargetheld,noautomaticretry;negativeperformanceisnottechnicalfailure"
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "resolved_config.json",
+    "workers.json",
+    "queue_state.json",
+    "{row}/resolved_config.json",
+    "{row}/training.jsonl",
+    "{row}/training_complete.json",
+    "{row}/native_map_prior/final.pt",
+    "{row}/native_map_prior/prediction/complete.json",
+    "{row}/native_map_prior/summary.json",
+    "source_decision.json",
+    "complete.json",
+    "Conditional:{winner,single_shot_reference}/target_confirmation/native_map_prior/prediction/complete.json,summary.json;goal_assessment.json;target_complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "perviewaccuracy/MacroF1/TX/RX/day/confusion",
+      "perviewdelta_to_originalR17/zeroregression",
+      "repair/damage/net_to_raw",
+      "full256/prefix232/tail24NMSE/FFTlogpower/pairedcleanfeatures",
+      "fullmodel/priorparameters/FP32statebytes",
+      "matchedsameGPUsourcebatch1latency/peakmemory",
+      "all20epochloss/teacher_stage_NMSE/exposures/time/memory"
+    ],
+    "dimensions": [
+      "shared_mean/factor_half/original_R17",
+      "clean+sixpractical",
+      "TX",
+      "RX",
+      "day",
+      "20epochs"
+    ],
+    "primary": "AllR16/native andR15/native guards intersect;fixedsource rank winner only;PASS newunrolled+R16single formal,else0target",
+    "prediction_ref": "runs/20261020-phase1-restoration-r17-compact-distill-source-s2026092701-m2-r01/<arm>/native_map_prior/prediction and target_confirmation/native_map_prior/prediction",
+    "scorer_ref": "pamf_r17_compact.runner score_source/score_target;independentCPUafterall7predictions",
+    "final_user_targets": {
+      "lowurban_accuracy_min": 70.0,
+      "other_five_max_gap_vs_original_clean_pp": 5.0
+    },
+    "source_rule": "Each view accuracy>=originalR17;mean6NMSE<=1.05xR17 and cleanNMSE<=.02;amongqualified smallest fullparameters then name;onlyonefulltarget,no fallback"
+  },
+  "rows": [
+    {
+      "row_id": "shared_mean",
+      "method": "R17compact/shared_mean",
+      "purpose": "source_candidate_then_fixed_single_confirmation",
+      "config_ref": "experiments/pamf_r17_compact/design.py#configuration",
+      "resolved_config_ref": "runs/20261020-phase1-restoration-r17-compact-distill-source-s2026092701-m2-r01/shared_mean/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "model2026092701,sourceorderdataseed2026102001,R07 original fixedcache/order1..20;no newaugmentationseed",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "OriginalR17prior20+new20=40prior epochs;coarse20/action20frozen;80cumulative serialtrainingpasses;teacherforwardcostseparate;4940updates/L126000/U1134000",
+      "output_root": "runs/20261020-phase1-restoration-r17-compact-distill-source-s2026092701-m2-r01/shared_mean",
+      "log_path": "runs/20261020-phase1-restoration-r17-compact-distill-source-s2026092701-m2-r01/logs/source-shared_mean.log",
+      "command": "python -u -m experiments.pamf_r17_compact.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r17-compact-distill-source-s2026092701-m2-r01 --expected-commit <actual method commit>",
+      "expected_artifacts": [
+        "smoke.json",
+        "resolved_config.json",
+        "workers.json",
+        "queue_state.json",
+        "{row}/resolved_config.json",
+        "{row}/training.jsonl",
+        "{row}/training_complete.json",
+        "{row}/native_map_prior/final.pt",
+        "{row}/native_map_prior/prediction/complete.json",
+        "{row}/native_map_prior/summary.json",
+        "source_decision.json",
+        "complete.json",
+        "Conditional:{winner,single_shot_reference}/target_confirmation/native_map_prior/prediction/complete.json,summary.json;goal_assessment.json;target_complete.json"
+      ],
+      "GPU": 4,
+      "trainable_parameters": 835842,
+      "parameters": 2993389
+    },
+    {
+      "row_id": "factor_half",
+      "method": "R17compact/factor_half",
+      "purpose": "source_candidate_then_fixed_single_confirmation",
+      "config_ref": "experiments/pamf_r17_compact/design.py#configuration",
+      "resolved_config_ref": "runs/20261020-phase1-restoration-r17-compact-distill-source-s2026092701-m2-r01/factor_half/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "model2026092701,sourceorderdataseed2026102001,R07 original fixedcache/order1..20;no newaugmentationseed",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "OriginalR17prior20+new20=40prior epochs;coarse20/action20frozen;80cumulative serialtrainingpasses;teacherforwardcostseparate;4940updates/L126000/U1134000",
+      "output_root": "runs/20261020-phase1-restoration-r17-compact-distill-source-s2026092701-m2-r01/factor_half",
+      "log_path": "runs/20261020-phase1-restoration-r17-compact-distill-source-s2026092701-m2-r01/logs/source-factor_half.log",
+      "command": "python -u -m experiments.pamf_r17_compact.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-r17-compact-distill-source-s2026092701-m2-r01 --expected-commit <actual method commit>",
+      "expected_artifacts": [
+        "smoke.json",
+        "resolved_config.json",
+        "workers.json",
+        "queue_state.json",
+        "{row}/resolved_config.json",
+        "{row}/training.jsonl",
+        "{row}/training_complete.json",
+        "{row}/native_map_prior/final.pt",
+        "{row}/native_map_prior/prediction/complete.json",
+        "{row}/native_map_prior/summary.json",
+        "source_decision.json",
+        "complete.json",
+        "Conditional:{winner,single_shot_reference}/target_confirmation/native_map_prior/prediction/complete.json,summary.json;goal_assessment.json;target_complete.json"
+      ],
+      "GPU": 5,
+      "trainable_parameters": 1617558,
+      "parameters": 3775105
+    }
+  ],
+  "notes": [
+    "LatestuserrequiresonlyR17compact,maximizecompressionwithouttargetperformance loss;pervieworiginalaccuracynoalloweddecrease,notmeanorroundedscore;allnegativeandunselectedrowsretained. OriginalR17source-selectedbeforetarget;usernowchoosesthis exposedbaseline;no newindependentblindtestclaim.",
+    "Sharedmean:clonearithmeticmeanofallthreeR17trainedCore9states intoone,used3times. Factorhalf:eachof3trainedpriorsseparately decomposedConv1d kernel>1 viaCPUbalancedSVD,rank=floor(min(out,in*kernel)/2),onlyifactualparamreduction;1x1/GN/activation/softphysicsunchanged. fullparamcounts2993389/3775105 vs4665073.",
+    "E20/4940 matchedcachedR07L6300/U56700received15%clean/85%residual;no cleanconcat/noTX/F/V/targettraining. FrozenR17stageoutputsfromsame received/frozencoarse/actioncontext,all3stageNMSEmean normalizedpairedcleanenergyfloor1e-4 withweight10;plusfinalpairedIQNMSE. AdamW2e-4warm247cos2e-5WD1e-4clip1FP32/noTF32;teacherandcoarse/actionstateunchanged.",
+    "Eachsource1800all7predictionsfixedbeforeindependentCPUlabels;eachviewaccuracy>=originalR17,mean6NMSE<=1.05xR17/cleanNMSE<=.02. Amongqualifiedselectsmallestfullparameters thenname;onlyoneselectedautomatic168000x7confirmation,no targetfallback/reorder/retry. Noqualifiersmeans0targetandscientificclosure,notlaunchfailure.",
+    "F50seed2701/defaulthead4df7b94d inferenceonly,0headfit;originalR17fullsourceandtargetpredictions/summariesreused,notretrained. Sameinput/currentIQallPAMFbranches;reportsfull/prefix232/tail24waveform and perTX/RX/dayidentity/repair/damage;originalteacher/sourceforwardcostnotdeploymentcost.",
+    "OneindependentP0/P1reviewandfocusednegativechecks;launcherfirstactualR17/2Ls/originalFdefaultheadsmoke:teacherstagefunctionexact/allstudentstepgradients/frozenstates/checkpointroundtrip,0TX/V/target/optimizer. PASSimmediatelyqueuesGPUs. Noextraapproval/hashlayers.",
+    "Waitscratchrootterminal AND actualownedGPUhandlesEXITED beforeGPU4/5 creation,max4ownwithspectral6/7,oneown/card,source18GB/target12GB/allowner<2. CPUscorewaitsspectralrootterminal thenownlock,2threads/max1ownscorer. Oldhealthyrowsandotherownerspreserved;nonewunrelatedrouteandnomessagesotheruserchat.",
+    "OneordinaryN607preflight,oneimmutableoutput/release/onearchiveSHAcomparison/compile/actualPID-CWD-command-GPU-loggrowth. Technicalfailurepreservefailedrow,healthycontinues,pendingtargetheld,noautomaticretry;negativeperformancekept.",
+    "28focusedchecksPASS;oneindependentP0/P1review reran19newchecks andfound1P1exclusive-write status bug,now fixed;one targetedre-review of that issue andcontroller regressionPASS. No secondfullreview. OneordinaryN607preflightVERIFIED;newGPUwaits actualprevioushandles."
+  ],
+  "registered_at": "2026-10-20T02:27:54+00:00"
+}
