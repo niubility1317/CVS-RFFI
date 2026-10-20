@@ -427,3 +427,7 @@
 本轮记录：[源激活校准的 R17 低秩精简](by_method/activation_calibrated.md)。
 
 本轮记录：[冻结原F知识约束的R17精简](by_method/frozen_task.md)。
+
+本轮记录：[R17共享低秩双候选](by_method/shared_low_rank.md)。
+
+本轮记录：[R17四结构并行精简](by_method/parallel_compact.md)。
