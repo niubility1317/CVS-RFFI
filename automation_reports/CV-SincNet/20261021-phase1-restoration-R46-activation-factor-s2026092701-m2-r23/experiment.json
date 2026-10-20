@@ -210,7 +210,7 @@
       "edits_by_reviewer": false,
       "reviewer": "/root/review_r14_prior_compact"
     },
-    "postlaunch_state": "VERIFIED_GPU2_TRAINING_GPU3_QUEUED",
+    "postlaunch_state": "VERIFIED_ALL_OWNED_HANDLES_EXITED",
     "local_result_analysis_tests": 21,
     "actual_release_directory": "releases/pamf_r46_activation_factor_20261021_r23",
     "launch_observation": {
@@ -461,5 +461,16 @@
     "target_feedback": false,
     "remaining_row": "activation500_identity",
     "full_weight_delivery": "Existing sole whole-run finisher pending"
+  },
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "accepted_compact_rows": [
+      "activation625_identity"
+    ],
+    "every_version_full7formal": true,
+    "models_strict_loaded": true,
+    "target_feedback": false,
+    "long_term_goal_complete": false,
+    "numeric_target_rows": []
   }
 }
