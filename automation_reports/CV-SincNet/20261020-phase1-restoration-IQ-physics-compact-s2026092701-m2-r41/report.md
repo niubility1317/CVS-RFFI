@@ -1,9 +1,9 @@
 # R41：以源域物理约束继续压缩和性能联合优化
 
-状态：LOCAL_VERIFIED，尚未发布。32项聚焦检查、CLI帮助及一次P0/P1通过。方法commit `be54678266c95e28bbc18f5a71387c8becf463fa`；真实checkpoint首步smoke/训练/七场景正式结果尚待执行。
+状态：RUNNING / VERIFIED。32项聚焦检查、CLI帮助及一次P0/P1通过。方法commit `be54678266c95e28bbc18f5a71387c8becf463fa`；真实checkpoint首步smoke已通过，两卡均完成E1，固定E20训练及源物理/七场景正式结果尚待完成。
 
 
-状态：LOCAL_IMPLEMENTATION，尚未发布。基于 R40 的固定源域证据，检验给紧凑网络增加粗恢复、复合信道作用和噪声约束，能否兼顾中间物理准确性、恢复细节与最终识别。结果未知，不宣称已有新收益。
+状态：RUNNING / VERIFIED，N607 两档训练均已完成首轮。基于 R40 的固定源域证据，检验给紧凑网络增加粗恢复、复合信道作用和噪声约束，能否兼顾中间物理准确性、恢复细节与最终识别。结果未知，不宣称已有新收益。
 
 两档结构及参数与 R38 相同：`dense_three_quarter` 1709713 参数、`dense_half` 794529 参数。完整 coarse/action/prior 联合优化，共享三步 prior 的长卷积权重，保留各步 bias/GN/pointwise。每版都从原 source-selected R17 `unroll_unshared` E20/4940 的合法数据契约独立初始化；不从 R38 学生或其他 owner 的 F 蒸馏学生续训，不依据已暴露的正式分数选择宽度、父模型、损失、预算或重跑。R38 两档已完成产物作为同预算控制，不重新训练或覆盖。
 
@@ -29,3 +29,8 @@
 
 
 精确命令与矩阵见[登记](experiment.json)。
+
+
+## 训练已启动
+
+VERIFIED：实际原R17/两学生/冻结F50 no-query smoke PASS；教师/F不变，各组件梯度有效。GPU0/1各一worker的PID/CWD/argv/CUDA及首epoch/日志增长已核实；两档物理约束全链联合训练正在运行，尚无正式性能结论。每版固定E20后自动七场景正式测试，源分数不筛行。

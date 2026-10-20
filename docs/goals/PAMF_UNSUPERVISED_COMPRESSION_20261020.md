@@ -59,3 +59,6 @@ R37 已完成此前固定 R32 两版七场景正式测试、独立评分、成�
 
 
 R40 已完成固定原 R17 与 R38 两档的源域接收链诊断：CPU2/0GPU，37800 次 context-only 估计，所有21单元固定后独立 NumPy oracle 评分；189个RX/day/场景汇总与2079项统计独立核实，0TX/F/target/拟合/新网络，所属进程均退出。低仰角 urban coarse NMSE 原版/171万/79万为0.074163/0.151927/0.279164，四探针算子误差为0.047689/0.106442/0.182144。中间物理量偏离不能直接推断最终性能，但提供源域物理约束的可检验依据。下一步仍从原R17独立初始化，不从已暴露目标成绩挑学生；固定损失与矩阵后再训练，并按每新版七正式测试报告。原70%/5pp及更强输入TX细节真实性目标继续ACTIVE。[R40全部源结果](../../automation_reports/CV-SincNet/20261020-diagnostic-restoration-compact-physics-s2026092701-m3-r40/report.md)。
+
+
+R41 已在 N607 GPU0/1 发布物理锚点两档紧凑恢复器（1709713/794529参数），方法commit `be54678266c95e28bbc18f5a71387c8becf463fa`。保留R38 paired-clean与原R17三步IQ约束，新增0.1coarse-cleanNMSE、0.1复合信道探针NMSE和0.01实轴噪声log比平方；两档都从原source-selected R17独立初始化、固定E20/4940，全L6300/U56700及原R07已知合成算子参与，0TX/F/V/target训练。32项检查/唯一P0P1、实际2Ls配对/教师/学生/F50 no-query smoke、归档SHA/compile及两卡PID/CWD/argv/GPU/首轮日志增长均VERIFIED；训练尚在继续，无新版正式性能或细节保真结论。每row自动固定源7预测及物理诊断后无成绩门槛地完成正式7视图及独立truth-last，原R17每景1pp容差与70%/5pp分别验收，不用target重排或改健康训练。已知合成参数监督明确披露，不称盲无监督。[R41登记与运行证据](../../automation_reports/CV-SincNet/20261020-phase1-restoration-IQ-physics-compact-s2026092701-m2-r41/report.md)。
