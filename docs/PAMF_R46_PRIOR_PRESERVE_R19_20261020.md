@@ -1,6 +1,6 @@
 # R19：性能优先的物理上下文保持与prior低秩压缩
 
-状态：LOCAL_VERIFIED，未发布，无新版正式性能结论。
+状态：VERIFIED / QUEUED，真实smoke已通过，实际CPU控制器等待R18逐卡交接；未开始GPU训练，无新版正式结论。
 
 本组从用户指定R46 prune_refine350521继续，性能优先。主对话进行GN4通道裁剪，本对话R18进行全链低秩与条件先验匹配；R19保持所有通道/GN/skip，进一步保留原237927参数的coarse/action完整函数并冻结，只对prior的saving kernel>1卷积做SVD分解。两个比例固定为.625/.75，不从新目标结果选择父或rank。推理仍自带完整context/三步prior/六次CG，训练教师不参与部署。
 
@@ -22,3 +22,6 @@
 同卡64sourceV，完整G和G+原冻结F，B1 warm16/64次×3轮、B32 warm4/16次×3轮，候选顺序正反交替，报告median/p90/p95/各轮median/吞吐/共享suite驻留/峰值/增量内存/完整参数/权重字节/ConvLinearMAC。预加载GPU输入，不含传输/预处理/loader；MAC不含FFT/复数CG/norm/激活/访存/F。三G加一F共享驻留不称独立部署内存；并存负载影响计时，参数减少不预设推理加速。
 
 GPU2/3分别接续R18对应实际owned PID/argv退出且原行终态后运行；R18+R19总最多2本任务GPU workers、每卡1，free≥18GB/每卡全owner<2再次检查，其他owner保持。R06共享CPU score.lock、CPU2、max1own scorer。新不可覆盖run/release/output，普通账户，一次preflight/归档两端SHA/compile；launcher首步真实父/F50/2Ls noquery smoke PASS即继续。技术失败保留影响行，不自动重试、热改、回退或误杀；健康行继续。25项聚焦检查及唯一独立P0/P1审查PASS。精确commit、命令、环境/CWD、路径、矩阵和停止规则见experiment.json。
+
+
+真实发布核实：method `3ac37ca1138f266f5fd91f74e7feca0eb11911cc`，归档两端一次SHA一致、compile通过；原R46/F50/2Ls真实noquery smoke PASS，coarse/action实际梯度0、三prior梯度有限非零、父不变及独立权重重载一致。CPU控制器PID/CWD/argv/commit/日志增长VERIFIED，当前0新GPUworker，原R18继续。25项执行检查和唯一独立P0/P1审查、13项结果计算检查PASS。

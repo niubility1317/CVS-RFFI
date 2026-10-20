@@ -27,7 +27,7 @@
   "replaces_run_id": null,
   "authorization": "用户goal要求配合主对话继续压缩并提升性能，固定350521基底且与通道裁剪路线不同；本组性能优先，冻结物理context，仅压prior；保持F-free/TX无标签和逐版七景正式测试，不停止健康任务。",
   "code": {
-    "commit": null,
+    "commit": "3ac37ca1138f266f5fd91f74e7feca0eb11911cc",
     "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
     "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
     "cwd": "releases/pamf_r46_prior_preserve_20261020_r19"
@@ -156,8 +156,27 @@
     "remote_run_root": "runs/20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19",
     "remote_log_root": "logs/20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19",
     "local_artifact_root": "local_artifacts\\pamf_restoration\\r46_prior_preserve_20261020_r19",
-    "launch_command": "python -u -m experiments.pamf_r46_prior_preserve.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19 --expected-commit <actual method commit>",
-    "stop_rule": "Technical failure preserves affectedoutputs,healthy peers unchanged;no automaticretry/hotedit/stop"
+    "launch_command": "python -u -m experiments.pamf_r46_prior_preserve.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19 --expected-commit 3ac37ca1138f266f5fd91f74e7feca0eb11911cc",
+    "stop_rule": "Technical failure preserves affectedoutputs,healthy peers unchanged;no automaticretry/hotedit/stop",
+    "post_launch_verification": {
+      "status": "QUEUE_VERIFIED",
+      "ordinary_account": true,
+      "archive_SHA_match": true,
+      "remote_compile": true,
+      "real_parent_F50_2Ls_noquery_smoke": "PASS",
+      "actual_controller_LIVE": true,
+      "CWD_command_commit_loggrowth_match": true,
+      "waiting_rows": [
+        "prior625_cond",
+        "prior750_cond"
+      ],
+      "new_GPU_workers": 0,
+      "wait_actual_R18_owned_GPU_handles_exit": true,
+      "focused_tests": 25,
+      "report_tests": 13,
+      "independent_P0_P1": "PASS",
+      "formal_result": false
+    }
   },
   "expected_artifacts": [
     "launch.json",
@@ -244,7 +263,7 @@
       "budget_ref": "Same20epochs/L126000/U1134000;context80/80/prior100,sum260,serial140;4940notR18_19700updates",
       "output_root": "runs/20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19/prior625_cond",
       "log_path": "runs/20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19/logs/worker-prior625_cond.log",
-      "command": "python -u -m experiments.pamf_r46_prior_preserve.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19 --expected-commit <actual method commit>",
+      "command": "python -u -m experiments.pamf_r46_prior_preserve.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19 --expected-commit 3ac37ca1138f266f5fd91f74e7feca0eb11911cc",
       "expected_artifacts": [
         "launch.json",
         "comparison_plan.json",
@@ -297,7 +316,7 @@
       "budget_ref": "Same20epochs/L126000/U1134000;context80/80/prior100,sum260,serial140;4940notR18_19700updates",
       "output_root": "runs/20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19/prior750_cond",
       "log_path": "runs/20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19/logs/worker-prior750_cond.log",
-      "command": "python -u -m experiments.pamf_r46_prior_preserve.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19 --expected-commit <actual method commit>",
+      "command": "python -u -m experiments.pamf_r46_prior_preserve.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-R46-prior-preserve-s2026092701-m2-r19 --expected-commit 3ac37ca1138f266f5fd91f74e7feca0eb11911cc",
       "expected_artifacts": [
         "launch.json",
         "comparison_plan.json",
@@ -333,7 +352,8 @@
     "固定E20/B256micro256/4940，完整源曝光不缩减，原始float32 buffer复用既有验证；相对R18更新数不同，不冒充相同计算预算。",
     "每版全部source7/formal7，无源门槛，不因负结果取消测试；全预测后truthlast，无目标反馈调参/排序/重跑；性能/参数/实际速度分别报告。",
     "REJECTED_EXTRA_GATE：仅既有八项最小流程，不引入通用设计审批/重复审查或额外hash。",
-    "25项聚焦检查及唯一独立P0/P1审查PASS；普通N607预检VERIFIED，GPU2/3现R18健康训练，先CPUsmoke后实际旧句柄退出再逐卡交接，另一对话0/1保持。"
+    "25项聚焦检查及唯一独立P0/P1审查PASS；普通N607预检VERIFIED，GPU2/3现R18健康训练，先CPUsmoke后实际旧句柄退出再逐卡交接，另一对话0/1保持。",
+    "VERIFIED/QUEUED：method3ac37ca1138f266f5fd91f74e7feca0eb11911cc，归档一次SHA/compile、真实原父/F50/2Ls noquerysmoke PASS；实际CPUcontroller PID/CWD/argv/commit和日志增长核实，0新GPUworker，等待R18原owned句柄退出。25项执行检查/唯一P0P1及13项汇总检查PASS。"
   ],
   "registered_at": "2026-10-20T15:30:30+00:00"
 }
