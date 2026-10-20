@@ -169,7 +169,7 @@
       "edits_by_reviewer": false
     },
     "actual_release_directory": "releases/pamf_r46_complex_fidelity_20261021_r20",
-    "postlaunch_state": "VERIFIED_ACTUAL_PID_CWD_ARGV_GPU_LOG_GROWTH_REAL_SMOKE",
+    "postlaunch_state": "VERIFIED_ALL_OWNED_HANDLES_EXITED",
     "local_result_analysis_tests": 16,
     "launch_observation": {
       "real_L_s_smoke": 2,
@@ -390,15 +390,15 @@
   ],
   "registered_at": "2026-10-20T18:00:23+00:00",
   "scientific_outcome": {
-    "status": "PARTIAL_ONE_OF_TWO_ROWS_ANALYZED",
-    "complete_rows": [
-      "complex625"
-    ],
-    "pending_rows": [
+    "status": "ANALYZED",
+    "accepted_compact_rows": [
+      "complex625",
       "complex625_identity"
     ],
-    "first_row_result": "clean improved vsparent;all6practical decreased;within0.8pp tolerance,notperformanceoptimization",
+    "every_version_full7formal": true,
+    "models_strict_loaded": true,
     "target_feedback": false,
-    "goal_complete": false
+    "long_term_goal_complete": false,
+    "numeric_target_rows": []
   }
 }

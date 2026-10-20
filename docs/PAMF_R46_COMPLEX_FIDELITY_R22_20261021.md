@@ -1,6 +1,6 @@
 # R22：27.82万恢复器复频谱保真与clean恒等约束
 
-状态：VERIFIED / PARTIAL；complex625 已完成七场景正式测试，识别性能未提升；complex625_identity 按原固定方案继续，整个 R22 尚未完成。
+状态：VERIFIED / ANALYZED。
 
 从用户指定原R46 prune_refine350521 source-final E20/4940独立初始化及作IQ教师，方法bbb8daf817de050b958d217b70d4c33f4aefe341。两版均为R18阶段对照的完整SVD625架构：278180参数，其中coarse106658、action80045、prior91477；保留全部通道/GN4/skip、共享prior长卷积权重及各stage独立bias/norm，三stage/六次CG全部执行。原R18学生不作为训练父或教师。
 
@@ -90,4 +90,79 @@ TX1 lowurban为35.253571%，较父下降7.953571pp、较R18阶段版下降6.6714
 
 本次仅只读已有评分artifact，额外IQ/truth/F读取与训练改动均0，没有重复预测、评分或启动新的完成owner。两版汇总与完整权重仍由既有唯一完成owner在全run完成后交付；负结果保留，整个目标ACTIVE。
 
-第一版完整 TX/RX/day、混淆矩阵、波形及成本细表见 [七场景详细报告](PAMF_R46_COMPLEX_FIDELITY_R22_FIRST_ROW_DETAIL_20261021.md)。
+第一版完整 TX/RX/day、混淆矩阵、波形及成本细表见 [七场景详细报告](../../../docs/PAMF_R46_COMPLEX_FIDELITY_R22_FIRST_ROW_DETAIL_20261021.md)。
+
+
+## 完整正式结果
+
+两版均完成源1800×7和正式168000×7；逐行所有预测固定后独立truth-last，实际所属进程退出，两份完整权重取回并CPU严格加载。所有负结果保留，无目标反馈调参或选择性重跑。
+
+|版本|完整参数|较350521减参|父逐景0.8pp|原R17历史1pp|最大下降父（pp）|lowurban（%）|
+|---|---:|---:|---|---|---:|---:|
+|complex625|278180|20.6381%|True|True|0.398810|67.465476|
+|complex625_identity|278180|20.6381%|True|True|0.598214|68.055952|
+
+逐景0.8pp是退化上限，不能替代实际性能优化；lowurban70%、其他五景距rawclean5pp与更强TX细节真实性另列。单seed、已暴露工程基准，不称独立盲测。
+
+|版本|场景|准确率（%）|MacroF1（%）|较350521（pp）|较原R17（pp）|较R18阶段版（pp）|raw净纠错|
+|---|---|---:|---:|---:|---:|---:|---:|
+|complex625|clean|84.542857|84.260260|+0.086310|-0.044048|+0.082143|-224|
+|complex625|practical_high|82.053571|81.561357|-0.398810|+0.734524|-0.561310|+69419|
+|complex625|practical_mid|80.845833|80.380230|-0.376190|+1.267857|-0.513095|+68761|
+|complex625|practical_low_suburban|79.344643|78.917260|-0.275595|+1.348214|-0.490476|+67729|
+|complex625|practical_high_urban|81.020238|80.566155|-0.366667|+0.666667|-0.486905|+69421|
+|complex625|practical_mid_urban|74.251786|73.946401|-0.195238|+0.566667|-0.366071|+66811|
+|complex625|practical_low_urban|67.465476|67.312288|-0.044643|+0.248810|-0.337500|+62439|
+|complex625_identity|clean|84.605952|84.331257|+0.149405|+0.019048|+0.145238|-118|
+|complex625_identity|practical_high|81.854167|81.337937|-0.598214|+0.535119|-0.760714|+69084|
+|complex625_identity|practical_mid|80.692262|80.189302|-0.529762|+1.114286|-0.666667|+68503|
+|complex625_identity|practical_low_suburban|79.269048|78.807012|-0.351190|+1.272619|-0.566071|+67602|
+|complex625_identity|practical_high_urban|80.840476|80.339280|-0.546429|+0.486905|-0.666667|+69119|
+|complex625_identity|practical_mid_urban|74.536310|74.180915|+0.089286|+0.851190|-0.081548|+67289|
+|complex625_identity|practical_low_urban|68.055952|67.847113|+0.545833|+0.839286|+0.252976|+63431|
+
+|版本|比较口径|B|父/本版中位ms|父/本版p95ms|父/本版吞吐条/s|父/本版增量峰值字节|
+|---|---|---:|---|---|---|---|
+|complex625|G_only_B1|1|45.6123/53.3244|48.1946/56.8130|21.871/18.696|67017728/41730048|
+|complex625|G_only_B32|32|57.8070/55.3679|59.5652/57.6825|552.812/575.806|276216832/225774592|
+|complex625|G_plus_F_B1|1|53.6834/63.4214|56.3242/66.4198|18.569/15.758|67017728/41730048|
+|complex625|G_plus_F_B32|32|65.8782/63.6907|67.5663/66.4904|484.813/500.577|276216832/225774592|
+|complex625_identity|G_only_B1|1|44.5376/53.4442|45.5674/54.9623|22.506/18.685|67194880/41764864|
+|complex625_identity|G_only_B32|32|58.1540/56.7798|59.7876/59.9875|549.347/559.867|276216832/225774592|
+|complex625_identity|G_plus_F_B1|1|54.3920/63.6050|60.9406/65.5322|18.194/15.706|67194880/41764864|
+|complex625_identity|G_plus_F_B32|32|67.2233/65.4228|70.0114/68.3380|472.529/486.323|276216832/225774592|
+
+上述计时为同卡64sourceV、三轮正反顺序、预加载GPU输入的完整G及G+原F。共享suite驻留不可称独立部署占用；MAC不包括FFT/复数CG/norm/激活/访存/F。完整各轮median、p90/p95、所有resident/peak及原R17参考见results.json，不从减参推断加速。
+
+|版本|coarse/action/prior参数|权重字节|ConvLinearMAC/IQ|70%/5pp|
+|---|---|---:|---:|---|
+|complex625|106658/80045/91477|1482812|29727404|False/False|
+|complex625_identity|106658/80045/91477|1482812|29727404|False/False|
+
+complex625：全部20轮已核对，19700更新，L126000/U1134000；额外clean学生前向0、复FFT权重0.02、恒等权重0.0；每轮时间中位225.252s。所有loss首→末：clean_identity_nmse 0→0；spectral_error 0.017651469→0.0060378264；balanced_complex_nmse 0.32038046→0.099357967；teacher_stage_nmse 0.05206227→0.0037731143；iq_nmse 0.077015666→0.022274276；loss 0.13636812→0.024940638。完整stdout异常类别：[]。
+
+|场景|full256 NMSE|prefix232 NMSE|tail24 NMSE|FFTlogpower L1|
+|---|---:|---:|---:|---:|
+|clean|0.000120223798|0.000124569531|7.31806504e-05|0.0139766876|
+|practical_high|0.0156991854|0.00686451048|0.100724317|0.251369953|
+|practical_mid|0.020635169|0.0118868575|0.104696311|0.28261748|
+|practical_low_suburban|0.0261056982|0.0174254682|0.109384172|0.311600327|
+|practical_high_urban|0.0209404714|0.012233316|0.10457243|0.268439174|
+|practical_mid_urban|0.0454998501|0.0373549089|0.122789375|0.355371267|
+|practical_low_urban|0.0685784072|0.060784325|0.141185805|0.422803193|
+
+complex625_identity：全部20轮已核对，19700更新，L126000/U1134000；额外clean学生前向1260000、复FFT权重0.02、恒等权重0.25；每轮时间中位358.874s。所有loss首→末：clean_identity_nmse 0.053079987→5.7577215e-05；spectral_error 0.018032845→0.0060324209；balanced_complex_nmse 0.32278207→0.099307986；teacher_stage_nmse 0.052285706→0.0037044657；iq_nmse 0.077231121→0.022241666；loss 0.15014411→0.024914288。完整stdout异常类别：[]。
+
+|场景|full256 NMSE|prefix232 NMSE|tail24 NMSE|FFTlogpower L1|
+|---|---:|---:|---:|---:|
+|clean|4.09193963e-05|4.21238328e-05|2.98536397e-05|0.0142119722|
+|practical_high|0.0158022363|0.00685482519|0.101531096|0.252665609|
+|practical_mid|0.0207824018|0.0119372401|0.10546305|0.283867598|
+|practical_low_suburban|0.0262748823|0.0175072867|0.110142551|0.31276679|
+|practical_high_urban|0.0210536215|0.0122395502|0.105404936|0.269756973|
+|practical_mid_urban|0.045709651|0.0374773256|0.123765416|0.356823921|
+|practical_low_urban|0.0688387603|0.0609728321|0.142138973|0.424488008|
+
+完整逐TX/RX/day、repair/damage、confusion、波形及F配对clean几何见[结果](../automation_reports/CV-SincNet/20261021-phase1-restoration-R46-complex-fidelity-s2026092701-m2-r22/results.json)和[逐组CSV](../automation_reports/CV-SincNet/20261021-phase1-restoration-R46-complex-fidelity-s2026092701-m2-r22/row_metrics.csv)。NMSE、F几何和准确率不能单独证明每个细节来自真实TX。
+
+独立权重：local_artifacts/pamf_restoration/r46_complex_fidelity_20261021_r22/models/<arm>/final.pt，使用experiments.pamf_r46_complex_fidelity.runtime.load_checkpoint；float32[B,2,256]输入/同形输出，恢复器运行无需F或teacher。数据、权重、原始日志和私有运行信息不入Git。
