@@ -1,6 +1,6 @@
 # R19：性能优先的物理上下文保持与prior低秩压缩
 
-状态：VERIFIED / QUEUED，真实smoke已通过，实际CPU控制器等待R18逐卡交接；未开始GPU训练，无新版正式结论。
+状态：VERIFIED / BOTH_GPU_RUNNING，R18完成退出后已逐卡交接；2026-10-21快照GPU2完成12轮、GPU3完成6轮，均为20轮预算，无新版正式成绩。
 
 本组从用户指定R46 prune_refine350521继续，性能优先。主对话进行GN4通道裁剪，本对话R18进行全链低秩与条件先验匹配；R19保持所有通道/GN/skip，进一步保留原237927参数的coarse/action完整函数并冻结，只对prior的saving kernel>1卷积做SVD分解。两个比例固定为.625/.75，不从新目标结果选择父或rank。推理仍自带完整context/三步prior/六次CG，训练教师不参与部署。
 
@@ -25,3 +25,8 @@ GPU2/3分别接续R18对应实际owned PID/argv退出且原行终态后运行；
 
 
 真实发布核实：method `3ac37ca1138f266f5fd91f74e7feca0eb11911cc`，归档两端一次SHA一致、compile通过；原R46/F50/2Ls真实noquery smoke PASS，coarse/action实际梯度0、三prior梯度有限非零、父不变及独立权重重载一致。CPU控制器PID/CWD/argv/commit/日志增长VERIFIED，当前0新GPUworker，原R18继续。25项执行检查和唯一独立P0/P1审查、13项结果计算检查PASS。
+
+
+## 实际GPU训练核实（2026-10-21）
+
+普通账户实际控制器与两条worker的PID/CWD/完整命令/方法commit已匹配，worker分别在物理GPU2和GPU3，日志均继续增长，未见failure或Traceback。prior625_cond已完成12/20轮，prior750_cond已完成6/20轮；这是一次训练进度快照，不是最终成绩。R18的对应实际owned GPU句柄已退出后才接续，两个组同时最多2条本任务GPU worker。两版继续固定最终轮次后完整七场景预测及独立truth-last，健康训练保持。此前QUEUE记录为发布时历史快照。

@@ -176,6 +176,30 @@
       "report_tests": 13,
       "independent_P0_P1": "PASS",
       "formal_result": false
+    },
+    "actual_training_poststate": {
+      "status": "VERIFIED",
+      "phase": "BOTH_GPU_RUNNING",
+      "observation_time": 1792512775.7225943,
+      "ordinary_account": true,
+      "controller_CWD_command_commit_verified": true,
+      "two_actual_GPU_workers_verified": true,
+      "workers": [
+        {
+          "arm": "prior625_cond",
+          "GPU": 2,
+          "completed_epochs": 12,
+          "log_growth_positive": true
+        },
+        {
+          "arm": "prior750_cond",
+          "GPU": 3,
+          "completed_epochs": 6,
+          "log_growth_positive": true
+        }
+      ],
+      "source_training_only": true,
+      "formal_result": false
     }
   },
   "expected_artifacts": [
@@ -353,7 +377,8 @@
     "每版全部source7/formal7，无源门槛，不因负结果取消测试；全预测后truthlast，无目标反馈调参/排序/重跑；性能/参数/实际速度分别报告。",
     "REJECTED_EXTRA_GATE：仅既有八项最小流程，不引入通用设计审批/重复审查或额外hash。",
     "25项聚焦检查及唯一独立P0/P1审查PASS；普通N607预检VERIFIED，GPU2/3现R18健康训练，先CPUsmoke后实际旧句柄退出再逐卡交接，另一对话0/1保持。",
-    "VERIFIED/QUEUED：method3ac37ca1138f266f5fd91f74e7feca0eb11911cc，归档一次SHA/compile、真实原父/F50/2Ls noquerysmoke PASS；实际CPUcontroller PID/CWD/argv/commit和日志增长核实，0新GPUworker，等待R18原owned句柄退出。25项执行检查/唯一P0P1及13项汇总检查PASS。"
+    "VERIFIED/QUEUED：method3ac37ca1138f266f5fd91f74e7feca0eb11911cc，归档一次SHA/compile、真实原父/F50/2Ls noquerysmoke PASS；实际CPUcontroller PID/CWD/argv/commit和日志增长核实，0新GPUworker，等待R18原owned句柄退出。25项执行检查/唯一P0P1及13项汇总检查PASS。",
+    "2026-10-21 VERIFIED/BOTH_GPU_RUNNING：R18两个owned GPU句柄均退出后逐卡交接；R19两条实际worker的PID/CWD/argv/commit/GPU匹配且日志增长，GPU2完成12轮、GPU3完成6轮。此为当时训练快照，无正式成绩。"
   ],
   "registered_at": "2026-10-20T15:30:30+00:00"
 }
