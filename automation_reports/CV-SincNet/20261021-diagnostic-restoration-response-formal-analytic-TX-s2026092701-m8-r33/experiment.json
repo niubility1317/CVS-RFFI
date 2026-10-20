@@ -1,0 +1,323 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261021-diagnostic-restoration-response-formal-analytic-TX-s2026092701-m8-r33",
+  "group_id": "R46-response-gradient-formal-independent-identity",
+  "display_name": "响应蒸馏、prior合并、四阶统计与梯度协调八版无F同TX关联",
+  "description": "四个已发布父run全部8版正式七景独立评分后，对保存restoredIQ作固定参数自由关联；复用R24raw/350521/R22两版112cells，新增224cells，全336cells固定后独立truthlast。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "compression",
+    "F_independent",
+    "analytic_TX",
+    "formal_test",
+    "CPU",
+    "all_versions_including_negative",
+    "trained_and_frozen_reparameterized"
+  ],
+  "comparison_group_id": "R26_R28_R30_R32_all8_fixed_analytic_TX",
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R46-response-distill-s2026092701-m2-r26",
+    "20261021-phase1-restoration-R46-prior-collapse-s2026092701-m2-r28",
+    "20261021-phase1-restoration-R46-moment-fidelity-s2026092701-m2-r30",
+    "20261021-phase1-restoration-R46-gradient-coordination-s2026092701-m2-r32",
+    "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46",
+    "20261021-phase1-restoration-R46-complex-fidelity-s2026092701-m2-r22",
+    "20261021-diagnostic-restoration-factor-formal-analytic-TX-s2026092701-m8-r24",
+    "20261020-diagnostic-restoration-independent-analytic-TX-s2026092701-r34"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求从原350521继续不同路线压缩和性能优化、每新版七景正式测试及TX保真。固定当前已发布8版统一事后身份关联；不改变父训练或预测、不新增神经测试或拟合。",
+  "code": {
+    "commit": null,
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/torch2.1.0+cu121/NumPy2.2.5;CPU2/emptyCUDA;no environment changes",
+    "cwd": "releases/pamf_response_formal_identity_20261021_r33"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original validated physical split;no resplit",
+    "representation": "Fixed168000x7x12readouts;112cachedR24raw/350521/nativeR22bothcells+224newcells;mirror64/spectral4/reference24/combined92",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference/physical_ids.npy;all8savedrestoredIQ andR24cache same168000IDs",
+    "label_map_ref": "Independentpostscoretruth only after all8full7scores and336analyticfeatures fixed;TX/RX/day descriptive evaluation",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original sixTX;0TX in restorationtraining",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Reuse existing validated source and formal handles;no revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": "Originalfixed formal receivedIQ/practical seed2027 x7 views",
+    "target_panel": 168000,
+    "restoration_train_counts": {
+      "new_neural_updates": 0,
+      "new_calibration_samples": 0,
+      "reused_R34_LU_calibration": 8192,
+      "extra_model_predictions": 0,
+      "F_access": 0,
+      "new_analytic_transform_inputs": 9408000,
+      "reused_feature_cells": 112,
+      "new_feature_cells": 224,
+      "parent_budget": {
+        "r26_pair_aug_control": {
+          "kind": "trained",
+          "source_final_updates": 19700,
+          "new_training_updates": 19700
+        },
+        "r26_odd_response": {
+          "kind": "trained",
+          "source_final_updates": 19700,
+          "new_training_updates": 19700
+        },
+        "r28_R22_complex625_priorcollapsed": {
+          "kind": "frozen_prior_collapse",
+          "source_final_updates": 19700,
+          "new_training_updates": 0
+        },
+        "r28_R22_complex625_identity_priorcollapsed": {
+          "kind": "frozen_prior_collapse",
+          "source_final_updates": 19700,
+          "new_training_updates": 0
+        },
+        "r30_moment_clean": {
+          "kind": "trained",
+          "source_final_updates": 19700,
+          "new_training_updates": 19700
+        },
+        "r30_moment_teacher": {
+          "kind": "trained",
+          "source_final_updates": 19700,
+          "new_training_updates": 19700
+        },
+        "r32_moment_teacher_grad_sum": {
+          "kind": "trained",
+          "source_final_updates": 19700,
+          "new_training_updates": 19700
+        },
+        "r32_moment_teacher_symproj": {
+          "kind": "trained",
+          "source_final_updates": 19700,
+          "new_training_updates": 19700
+        }
+      }
+    },
+    "runtime_inputs": "SavedrestoredIQ plus fixedcachedanalytic cells;0checkpoint/F/neuralprediction/training/refit;postscorecleanreference statisticalevaluation only"
+  },
+  "permissions": {
+    "regime": "Postscore F-independent analytic evaluation;originalLU8192moments reused,no newfit",
+    "query_use": "All4parents/8rows full7formal scores before savedtargetIQ;all336features before independenttruthlast;0adaptation/classifier/selection",
+    "external_method_exception": null,
+    "claim_scope": "Descriptive same-TX association only;clean descriptor fails to separate someTX2;negative margin alone not wrongTX or perdetail authenticity proof;exposed engineering benchmark"
+  },
+  "checkpoint": {
+    "initialization": "N/A:no neural checkpoint loaded;0F/weights/logits/embeddings",
+    "sources": [
+      {
+        "run_id": "20261021-phase1-restoration-R46-response-distill-s2026092701-m2-r26",
+        "commit": "781e56d9d2bd401d56ad7b758ed4f4812c04f1e4",
+        "rows": [
+          "pair_aug_control",
+          "odd_response"
+        ],
+        "role": "Saved IQ after fixedfull7formal independent score;6trainedE20/19700 and2frozenR28newupdates0/sourceR22E20/19700"
+      },
+      {
+        "run_id": "20261021-phase1-restoration-R46-prior-collapse-s2026092701-m2-r28",
+        "commit": "7ca5af4f6f5d9f862e07e13b9da15902379044e4",
+        "rows": [
+          "R22_complex625_priorcollapsed",
+          "R22_complex625_identity_priorcollapsed"
+        ],
+        "role": "Saved IQ after fixedfull7formal independent score;6trainedE20/19700 and2frozenR28newupdates0/sourceR22E20/19700"
+      },
+      {
+        "run_id": "20261021-phase1-restoration-R46-moment-fidelity-s2026092701-m2-r30",
+        "commit": "0b2c778d566ef83f159f236328cc704897a24507",
+        "rows": [
+          "moment_clean",
+          "moment_teacher"
+        ],
+        "role": "Saved IQ after fixedfull7formal independent score;6trainedE20/19700 and2frozenR28newupdates0/sourceR22E20/19700"
+      },
+      {
+        "run_id": "20261021-phase1-restoration-R46-gradient-coordination-s2026092701-m2-r32",
+        "commit": "8f2e8a3fb413d0d116ec6ee3bb7f9de871d3ba83",
+        "rows": [
+          "moment_teacher_grad_sum",
+          "moment_teacher_symproj"
+        ],
+        "role": "Saved IQ after fixedfull7formal independent score;6trainedE20/19700 and2frozenR28newupdates0/sourceR22E20/19700"
+      },
+      {
+        "run_id": "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46",
+        "commit": "bbb8daf817de050b958d217b70d4c33f4aefe341",
+        "row": "prune_refine",
+        "role": "Originaldesignated350521sourcefinalE20/4940;cachedR24analyticcells"
+      },
+      {
+        "run_id": "20261021-phase1-restoration-R46-complex-fidelity-s2026092701-m2-r22",
+        "commit": "e190cf5367b03da8aafced51276a8730ad8274fa",
+        "role": "R28nativeR22sourceancestry;cachedR24nativeR22both cells"
+      },
+      {
+        "run_id": "20261020-diagnostic-restoration-independent-analytic-TX-s2026092701-r34",
+        "commit": "60f0d924aa0a43f4213c683df17d7ae9e2ea54ee",
+        "role": "ExistingLU8192sourceonlylabel-free moments;0refit"
+      },
+      {
+        "run_id": "20261021-diagnostic-restoration-factor-formal-analytic-TX-s2026092701-m8-r24",
+        "commit": "8a2899f5998bd50d1595391f8c7fad9667b0d1fa",
+        "role": "CompletedR24readonly112raw/350521/nativeR22cells"
+      }
+    ],
+    "contract_check_ref": "Pinned4parents/full7scoremarkers;R28checkpoint_source/runtime_ready/collapse plus nativeR22training sourceonlymetadata;alignedIDs and fixedR24calibration;0data revalidation",
+    "provenance_verdict": "No neuralcheckpoint loaded;parent source-only TX/Ffree metadata and actualtrained/frozen budget checked;targetclean/truth postscoreevaluation only",
+    "selection_rule": "None;all8 fixed current versions and19pairedcontrasts includingnegative results;0threshold/ranking"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/response-formal-analytic-identity",
+    "environment": "N607 existing Python3.10.19/torch2.1.0+cu121/NumPy2.2.5;CPU2/emptyCUDA;no environment changes",
+    "gpu_policy": "CPU2/emptyCUDA/0GPU;waitall4parents/8rows full7scores;R06sharedscore.lock/max1ownCPUscorer;0parentmutations/launchgates",
+    "remote_run_root": "runs/20261021-diagnostic-restoration-response-formal-analytic-TX-s2026092701-m8-r33",
+    "remote_log_root": "logs/20261021-diagnostic-restoration-response-formal-analytic-TX-s2026092701-m8-r33",
+    "local_artifact_root": "local_artifacts\\pamf_restoration\\response_formal_identity_20261021_r33",
+    "launch_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_response_formal_identity.runner run --runs-root ../../runs --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261021-diagnostic-restoration-response-formal-analytic-TX-s2026092701-m8-r33 --expected-commit <actual method commit>",
+    "stop_rule": "Parent technicalfailure/wrongpath or IDs/calibration/missing or nonfinite inputs/features/outputcollision:preserve,no automaticretry;healthy parents untouched",
+    "local_validation": {
+      "status": "PASS",
+      "focused_tests": 43,
+      "independent_P0P1_review_count": 1,
+      "reviewer": "/root/review_r14_prior_compact",
+      "independent_tests": 43,
+      "P0P1_issues": [],
+      "reviewer_reads_real_data_or_remote": false,
+      "reviewer_edits": false
+    }
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "resolved_config.json",
+    "smoke.json",
+    "extract_launch.json",
+    "score_launch.json",
+    "calibration_reference.json",
+    "features/*.npy",
+    "physical_ids.npy",
+    "feature_complete.json",
+    "logs/extract.log",
+    "logs/score.log",
+    "summary.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "crossRX_and_day_sameTX_cosine",
+      "otherTX_mean_cosine",
+      "TXmargin",
+      "positive_margin_percent_not_accuracy",
+      "valid_missing_zero_counts",
+      "paired_descriptor_error",
+      "199querylabelcontrols_not_pvalue"
+    ],
+    "dimensions": [
+      "raw/original350521/nativeR22both/2R26/2R28/2R30/2R32",
+      "fouranalyticgroups",
+      "sevenviews",
+      "TX",
+      "RX",
+      "day"
+    ],
+    "prediction_ref": "runs/20261021-diagnostic-restoration-response-formal-analytic-TX-s2026092701-m8-r33/features/*.npy;112readonlycache+224newcells;0neuralpredictions",
+    "scorer_ref": "experiments.pamf_response_formal_identity.runner score;5544records/924controls/532comparisons",
+    "final_user_targets": "Separate from originalF50seven-scene accuracy/parent0.8pp/70and5pp/cleanpreservation;limitedsameTXassociation,notperdetailproof orselection"
+  },
+  "rows": [
+    {
+      "row_id": "formal_analytic",
+      "method": "response_formal_identity",
+      "purpose": "postscore_F_independent_TX_association",
+      "config_ref": "experiments/pamf_response_formal_identity/design.py#configuration",
+      "resolved_config_ref": "runs/20261021-diagnostic-restoration-response-formal-analytic-TX-s2026092701-m8-r33/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2026102034
+      },
+      "seed_notes": "Inheritedmodel/split/data/formalobservationseeds;0newtraining/augmentation;199querylabelcontrols seed2034;supportN/A",
+      "k": null,
+      "scenario": "clean + suburban high/mid/low + urban high/mid/low",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0neuralupdates/F/checkpoint/headfit/newpredictions/GPU;CPU2;9408000analyticinputs;224newcells13848576000bytes+112cachedsymlinks",
+      "output_root": "runs/20261021-diagnostic-restoration-response-formal-analytic-TX-s2026092701-m8-r33",
+      "log_path": "runs/20261021-diagnostic-restoration-response-formal-analytic-TX-s2026092701-m8-r33/logs/extract.log",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_response_formal_identity.runner run --runs-root ../../runs --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261021-diagnostic-restoration-response-formal-analytic-TX-s2026092701-m8-r33 --expected-commit <actual method commit>",
+      "expected_artifacts": [
+        "launch.json",
+        "resolved_config.json",
+        "smoke.json",
+        "extract_launch.json",
+        "score_launch.json",
+        "calibration_reference.json",
+        "features/*.npy",
+        "physical_ids.npy",
+        "feature_complete.json",
+        "logs/extract.log",
+        "logs/score.log",
+        "summary.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "43syntheticfocusedchecks and uniqueindependentP0/P1review PASS;launcherfirststep real2Lsanalyticnoquerysmoke;0neuralcheckpoint consumed.",
+    "Allcurrent8versions fixed before theirformalresults;6trained and2frozenreparameterized distinguished;R28uses nativeR22sourceancestry without fake newtraining.",
+    "Reuse unchangedR24/R34coordinates/sourceLU8192moments/std.05,199RXdayquerylabelpermutations;0descriptor/threshold/sourcefit changes.",
+    "All4parents complete8fullformal rows before targetIQ;all336features/IDs fixed before truth;112cache+224newcells;0F/neuralprediction/headfit/calibration.",
+    "Fixed19contrasts include8vsoriginalparent,responsepair,collapsevsnative2,momentpair,gradientpair,gradienthistoricalR30teacher2,responsevsR22identity2,momentvsR22identity2.",
+    "Positive analyticmargin not classificationaccuracy;cleanTX2descriptorlimit retained;0newblindclaim or perdetailauthenticity;never gates/changesparentjobs.",
+    "No newnetwork candidate/checkpoint;real2Ls analytic smoke matches consumed stage. Extra genericapprovals or unchangedreviews NONBLOCKING underExclusiveMinimalWorkflow."
+  ],
+  "registered_at": "2026-10-20T23:49:44+00:00"
+}
