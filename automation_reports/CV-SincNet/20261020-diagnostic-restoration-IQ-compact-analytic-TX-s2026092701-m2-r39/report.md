@@ -1,6 +1,6 @@
 # R39：不经过F的压缩恢复器TX关联源诊断
 
-状态：LOCAL_VERIFIED，未发布。20项聚焦检查、CLIhelp、一次独立P0/P1通过。0GPU/神经前向/target；实际源关联结果尚未生成。方法commit `676f76a09cf6e7a2431020d60c2287f04b3de99a`。
+状态：**VERIFIED / WAITING_SOURCE**，已发布且正在等待两版完整源预测。20项聚焦检查、CLIhelp、一次独立P0/P1通过。0GPU/神经前向/target；实际源关联结果尚未生成。方法commit `676f76a09cf6e7a2431020d60c2287f04b3de99a`。
 
 
 固定比较原 source-selected R17、R38 dense_three_quarter 和 dense_half；不读正式测试成绩、候选排名或 target 完成状态，不改变任何训练、筛选或 R38 自动七场景正式测试。纯 CPU、2 线程、0 GPU、0 新神经网络预测/训练、0 checkpoint/F 权重或输出加载、0 target 访问。
@@ -17,3 +17,6 @@
 
 
 精确执行信息见[登记](experiment.json)。
+
+
+VERIFIED / WAITING_SOURCE：普通账户新release/归档单SHA/compile已核实，2Ls解析无query smoke PASS，0checkpoint/F/TX/V/target；实际CPU控制器PID/CWD/argv/空CUDA/2线程与等待日志增长已读回。等待R38两版source_complete，不读成绩；尚无解析关联结果。

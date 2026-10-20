@@ -11,3 +11,6 @@
 新 root、固定 Git 代码，N607 普通账户。首步两条合法 L_s IQ 的参数自由无 query smoke；本方法不加载 checkpoint，实际 checkpoint/F50 smoke 由 R38 训练发布承担。等待两版 source_complete 和 E20/4940 元数据后运行；不读取源准确率和 target 分数。与 R38 共用 score.lock，extract/独立 score 顺序执行，避免增加本任务 CPU scorer 并发。父训练或输入技术失败时保留输出、不自动重试，不停止健康 R38 或其他 owner。
 
 发布最小记录包括一次聚焦协议负例、真实源 IQ smoke、一次直接 P0/P1 审查、Git commit、矩阵/命令/CWD/路径/环境/停止规则、一次普通账户预检、归档两端单 SHA 比对、远端编译，以及 PID/CWD/argv/日志/产物读回。源角色和物理划分沿用原 READY/EXACT_MATCH，不新增数据重验或哈希链。执行状态和实际结果见同名实验登记；当前尚无 R38 独立解析关联结果。
+
+
+实际启动状态：VERIFIED / WAITING_SOURCE：普通账户新release/归档单SHA/compile已核实，2Ls解析无query smoke PASS，0checkpoint/F/TX/V/target；实际CPU控制器PID/CWD/argv/空CUDA/2线程与等待日志增长已读回。等待R38两版source_complete，不读成绩；尚无解析关联结果。
