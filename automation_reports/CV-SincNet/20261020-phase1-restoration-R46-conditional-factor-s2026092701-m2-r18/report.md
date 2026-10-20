@@ -1,6 +1,6 @@
 # R18：35.05万基底的保通道低秩压缩与条件先验匹配
 
-状态：LOCAL_VERIFIED，未发布，无新性能结论。
+状态：VERIFIED / RUNNING，实际两版首轮训练及日志增长核实，尚无正式性能结论。
 
 用户明确从R46 `prune_refine`完整350521参数继续优化压缩，并要求与另一个对话不同。另一个对话R48保留350521优化对照并裁剪通道到273765；本轮保持全部通道数、GN4统计集合、skip、独立bias/norm、三步prior与六次CG，只将saving kernel>1 Conv1d做输出通道SVD625分解。两行均完整278180参数，其中context186703、prior91477，比指定父减参20.6381%。不以结构更小宣布识别或速度优化成功。
 
@@ -20,3 +20,6 @@
 同卡sourceV64条，G及G+冻结原F，B1 warm16/64次×3轮、B32 warm4/16次×3轮；候选正反顺序交替。报告median/p90/p95、逐轮中位、吞吐、驻留/峰值/增量显存、完整参数/文件字节/ConvLinearMAC。输入已在GPU，时间不含传输/预处理/loader；驻留是三G加一F共享suite，增量峰值对应当前前向。MAC不含FFT/复数CG/norm/激活/访存/F；实际时延包括全部context/3prior/6CG，不预设加速。
 
 GPU2/3每卡一本任务，总最多2，先确认本对话R17旧actual owned PID退出，再按free≥18GB和每卡全owner<2占用。CPU2/R06锁max1own scorer。另一对话GPU0/1和所有健康任务不停止、不热改。普通账户、全新不可覆盖run/release、一次预检、一次归档两端SHA及compile、launcher首步真实R46/F50/2Ls无query smoke PASS后直接训练。技术失败保留影响行，健康行继续，不自动重试或回退。唯一P0/P1审查限下次真实run正确性；精确命令/环境/CWD/路径/停止规则见experiment.json。
+
+
+真实发布已核实：method `aca99499d3f0170df71380f6429ac9a01ef412f8`，30项聚焦检查和唯一独立P0/P1审查PASS，归档两端一次SHA一致、compile通过。真实父/F50/2Ls无query smoke PASS，两版GPU2/3实际PID/CWD/argv/commit、GPU对应及首轮日志增长逐项VERIFIED。另一对话0/1不变。
