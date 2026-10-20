@@ -1,6 +1,6 @@
 # R50：八个压缩优化新版的固定无 F 身份诊断
 
-状态：LOCAL_IMPLEMENTED，未发布。
+状态：**VERIFIED / WAITING_PARENT_FORMAL**。
 
 本诊断落实原输入TX保真目标，覆盖已固定R48两版和R49六版；R46指定350521父为共同参照，另含raw输入。它不是新恢复网络，不筛选或改变任何训练/预测，不阻塞父实验正式交付。R48和R49全部八行七场景正式评分完成后才读取保存的target IQ；全280解析特征单元固定且有限后，独立CPU评分才打开目标truth。两父方法固定commit分别为86b89ba6bc09b0b3f10fcaff8fc7cd1ecf6d0508和e96397bc3c7036f085317f9cc0e59074fb6ee24f。
 
@@ -15,3 +15,6 @@ clean参考按每TX/RX/day最多2条、opaque physicalID排序；参考RX和day�
 普通账户CPU2线程、0GPU，与R48/R49共用R41 score.lock，等待父时不持锁；提取和评分最多占一个本任务CPU评分槽。原数据与权重只读，另建不可覆盖root、一次归档SHA与compile；核实实际PID/CWD/argv/空CUDA/日志增长。输入路径/commit/ID/原LU校准不符、父技术失败、缺失或非有限输入/输出碰撞时保留产物且不自动重试；健康父和其他owner不动。
 
 这仍是已暴露工程基准的有标签事后关联统计。它能检验固定解析坐标下是否保留同TX关联，不能证明每个生成细节均来自该TX、未知TX泛化或真实在轨有效性。它不会替代原70%/其他五景距clean≤5pp目标、七场景识别测试或推理成本，也不构成新模型选模门槛。精确矩阵、命令、环境/CWD、路径、停止规则与预期产物登记在同run中。
+
+
+实际启动状态：VERIFIED / WAITING_PARENT_FORMAL：普通账户新release/归档单SHA/compile已核实；真实2Ls参数自由noquery smoke PASS，0checkpoint/F/TX/V/target；实际PID/CWD/argv/空CUDA/2线程及日志增长已读回。等待R48/R49全部八行正式评分后解析，复用R47raw/350521的56单元，新算224单元；无统计结果，不改变父训练或预测。

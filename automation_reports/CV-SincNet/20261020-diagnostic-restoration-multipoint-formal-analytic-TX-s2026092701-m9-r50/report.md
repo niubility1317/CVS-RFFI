@@ -1,6 +1,6 @@
 # R50：八个压缩优化新版的正式无F同TX关联
 
-状态：LOCAL_VERIFIED，尚未发布。22项聚焦检查、CLIhelp、一次独立P0/P1 PASS；方法commit `3c03b2e8a8ad41e23c1785de801c295e54b2eec9`。
+状态：**VERIFIED / WAITING_PARENT_FORMAL**，已发布。22项聚焦检查、CLIhelp、一次独立P0/P1 PASS；方法commit `3c03b2e8a8ad41e23c1785de801c295e54b2eec9`。
 
 
 状态：LOCAL_IMPLEMENTED，未发布。
@@ -21,3 +21,6 @@ clean参考按每TX/RX/day最多2条、opaque physicalID排序；参考RX和day�
 
 
 精确环境、命令、路径、预算见[登记](experiment.json)。
+
+
+VERIFIED / WAITING_PARENT_FORMAL：普通账户新release/归档单SHA/compile已核实；真实2Ls参数自由noquery smoke PASS，0checkpoint/F/TX/V/target；实际PID/CWD/argv/空CUDA/2线程及日志增长已读回。等待R48/R49全部八行正式评分后解析，复用R47raw/350521的56单元，新算224单元；无统计结果，不改变父训练或预测。

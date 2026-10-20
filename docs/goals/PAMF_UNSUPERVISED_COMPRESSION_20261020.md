@@ -1,5 +1,7 @@
 # 无 TX 标签恢复器的压缩与性能联合优化
 
+R50已实际VERIFIED/WAITING_PARENT_FORMAL：CPU2/0GPU，真实2Ls解析noquerysmoke、单archiveSHA/compile/实际PID/CWD/argv/空CUDA/日志增长核实。等待R48两行及R49六行全部正式评分后解析8新版，复用R47raw/指定350521父56单元、新算224，280全固定后独立truthlast4536组/756条件对照/420配对差。无新网络/F/checkpoint/神经预测/训练/headfit/校准；不改变父训练预测，不阻塞其交付，当前主路线仍为用户指定35.05万父的压缩优化。[R50固定评价](../PAMF_MULTIPOINT_FORMAL_IDENTITY_R50_20261020.md)。
+
 2026-10-20 用户最新要求多点压缩并提高显卡利用率：已固定[R49六点并行与micro256吞吐优化](../PAMF_R46_MULTIPOINT_FAST_R49_20261020.md)，同宽350521及329885/310905/293069/268257/215049参数，直接指定R46父，新增GPU2至7各一行；R48GPU0/1两行保持。每行完整E20/4940、原全局batch256和全部L/U曝光，micro256/directbuffer；0TX/F/V/target训练，全部自动七正式测试和G/G+F成本。当前VERIFIED/RUNNING，六行实际GPU/PID/首轮日志增长核实，尚无新性能结论。参数与训练/推理时延、吞吐、显存分别报告，原70%/5pp/更强TX细节真实性目标保持ACTIVE。
 
 2026-10-20 用户最新指定：**以R46 prune_refine350521继续优化、压缩，同时关注时延、吞吐量与显存。** 已固定[R48同预算350521优化对照与273765进一步剪枝](../PAMF_R46_COMPACT_REFINE_R48_20261020.md)，两行均直接从指定父分叉，新增E20/4940，0TX/F/V/target训练，逐行自动七正式测试；同卡测G与G+F的B1/B32多轮时延/吞吐和内存，减参不预设加速。当前VERIFIED/RUNNING，实际两卡首轮和日志增长核实，尚无新性能结论。保留所有父权重/结果，人工指定已暴露工程基准的限制及原70%/5pp/真实性目标保持ACTIVE。
