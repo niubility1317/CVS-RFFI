@@ -83,10 +83,10 @@ def score(args,role):
             target_feedback=False,goal_complete=False))
 
 
-def score_original_head(args,role):
+def score_original_head(args,role,*,reference_loader=None):
     """Same original truth-last scorer, with honest F-knowledge metadata."""
     if os.environ.get('CUDA_VISIBLE_DEVICES')!='':raise ValueError('Independent CPU scorer required')
-    folder,ids,source,index=base_eval.reference(args,role)
+    folder,ids,source,index=(base_eval.reference if reference_loader is None else reference_loader)(args,role)
     row=base_eval.row_folder(args,role)
     predictions=base_eval.prediction_arrays(row/'prediction',ids,args.kind,role)
     if role=='source':

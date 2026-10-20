@@ -113,3 +113,10 @@ R03 激活校准精简完成结论：两候选均未通过固定源域资格，0
 
 
 R04 冻结F任务精简完成结论：两候选均未通过预登记源健康筛查，0新目标预测；未交付能保持目标性能的结构压缩版本。全量20轮日志、source七视图资格、自动选择/目标范围、完整成本和逐场景/逐TX/RX/day证据均见[本轮报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-task-source-s2026092701-m2-r04/report.md)。不从目标分数继续调参、替换父模型或补测落选者；完整持续目标保持ACTIVE，尚未证明最大可达精简或70%/接近clean全部要求。
+
+
+## R05 固定双模型目标域对照
+
+[R05登记](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-compact-target-comparison-s2026092701-m2-r05/report.md)：按用户最新“性能测试以目标域为准、最多下降1个百分点”要求，固定评测R04已完成E20/4940的两份最终权重，step_norm_task3118001（−33.1629%）和activation_task3775105（−19.0773%），每版同168000物理样本×七视图、原F50/defaulthead，0新训练或头拟合。两版源准确率均在1个百分点范围内，但原R04波形NMSE护栏未过；旧source_qualified=false/selected=null/0target记录保留，不伪造源资格。波形指标不替代目标身份性能，新建显式comparison_plan作为固定双行目标比较依据。两行和checkpoint在新目标结果前固定，不回流训练、超参、候选重排、追加或选择性重跑；全部结果包括负结果保留，不称新盲测。
+
+28项检查及唯一新适配层P0/P1审查PASS；N607普通账户预检VERIFIED，旧实际GPU进程已退出，GPU4/5空闲。新不可覆盖root、一次归档比较/远端compile、launcher-first实际R04-final/F50/2Ls no-query smoke及实际PID/CWD/cmd/GPU/日志增长核实按最小流程执行。当前尚未启动新目标预测，参数减少和源准确率不证明目标验收通过。

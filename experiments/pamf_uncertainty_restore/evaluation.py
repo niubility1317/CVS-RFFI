@@ -46,8 +46,8 @@ def row_folder(args, role):
 
 
 @torch.no_grad()
-def predict(args, role, *, checkpoint_loader=None):
-    source, ids, _, _ = reference(args, role)
+def predict(args, role, *, checkpoint_loader=None, reference_loader=None):
+    source, ids, _, _ = (reference if reference_loader is None else reference_loader)(args, role)
     row = row_folder(args, role)
     if role == 'target':
         row.mkdir(parents=True)
