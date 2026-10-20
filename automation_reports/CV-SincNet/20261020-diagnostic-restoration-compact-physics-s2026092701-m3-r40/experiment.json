@@ -111,7 +111,14 @@
     "remote_log_root": "logs/20261020-diagnostic-restoration-compact-physics-s2026092701-m3-r40",
     "local_artifact_root": "local_artifacts/pamf_restoration/compact_physics_r40_20261020",
     "launch_command": "python -u -m experiments.pamf_compact_physics_probe.runner run --runs-root ../../runs --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261020-diagnostic-restoration-compact-physics-s2026092701-m3-r40 --expected-commit eebad5b7aaff7181bcdd89e1751f29dcaa471592",
-    "stop_rule": "Wrong source/model contract, incomplete/nonfinite input or estimate, outputcollision or technical failure:preserve outputs,no automatic retry;healthy peers untouched"
+    "stop_rule": "Wrong source/model contract, incomplete/nonfinite input or estimate, outputcollision or technical failure:preserve outputs,no automatic retry;healthy peers untouched",
+    "postlaunch_state": {
+      "status": "VERIFIED",
+      "processes": "All owned exited",
+      "source": "local_artifacts\\pamf_restoration\\compact_physics_r40_20261020\\collections\\1792490091049076100.json",
+      "GPU_workers": 0,
+      "CPU_threads": 2
+    }
   },
   "expected_artifacts": [
     "launch.json",
@@ -228,7 +235,13 @@
           "source_row": "attention_prior",
           "source_commit": "da5b9d52819ccd40f8b59dbfdefebff3bd3c2230"
         }
-      ]
+      ],
+      "result": {
+        "status": "ANALYZED",
+        "aggregate_records": 189,
+        "target_reads": 0,
+        "new_network": false
+      }
     }
   ],
   "notes": [
@@ -238,5 +251,17 @@
     "Absolute per-real-axis variance;clean1e-8 syntheticfloor,not actualnoise;composite operator avoids FIR/gain gauge artifacts.",
     "0TX/F/target/updates/newcalibration/GPU;separateCPU NumPy scorer afterall21complete;not TXdetail proof."
   ],
-  "registered_at": "2026-10-20T09:51:45+00:00"
+  "registered_at": "2026-10-20T09:51:45+00:00",
+  "scientific_outcome": {
+    "source_only": true,
+    "all_fixed_candidates_retained": true,
+    "records": 189,
+    "statistics_verified": 2079,
+    "training_updates": 0,
+    "target_reads": 0,
+    "F_access": 0,
+    "TX_labels_read": 0,
+    "selected_candidate": null,
+    "goal_complete": false
+  }
 }
