@@ -1,5 +1,7 @@
 # 无 TX 标签恢复器的压缩与性能联合优化
 
+2026-10-21 R58执行缓存LOCAL_PROTOTYPE：同一276453图只缓存冻结权重派生斜率，21项CPU合成检查通过、输出/输入梯度/portable state逐位一致；每完整G前向index/clamp/exp各少168次dispatcher调用，不是GPU kernel或提速证据。额外非持久缓存5376B，默认clone另持完整模型参数1105812B及其状态，显存须实测。未读取真实IQ/checkpoint/F/source或target分数；无新训练候选、当前发布代码/矩阵/权重/进程不变，GPU与正式预测一致性尚待验证。主线仍为R58全部七正式、R59固定身份诊断和R60现图训练优化/全部正式，性能优先/原完整目标ACTIVE。[缓存原型及边界](../PAMF_R58_COEFFICIENT_CACHE_20261021.md)。
+
 2026-10-21 当前R60：既有273765普通GN/U-Net/3prior6CG的训练期中间特征约束；直接人选350521父，context_hint/all_hint均+.02context，后一行另+.02prior，各84GN按保留通道逐IQ能量归一化。47checks/CLI/ONEP0P1PASS，真实source2Ls noquerysmoke在launcher首步执行；无新增推理参数/buffer/分支、额外G前向或校准IQ。全E20/4940/globalmicro256/所有组件联合源pairedclean自监督，0TX/F/V/target优化；两行自动source与168000×7正式/独立truthlast/同卡成本。核心0549b81原型在R58验证/正式分数读取前固定，源校准与新训练仍未执行；GPU3/2须等待R58同卡实际退出。VERIFIED/WAITING_R58_ACTUAL_EXIT：真实2Ls smoke/严格重载/hooks移除和两条CPU等待进程/日志增长已核实，未分配GPU或训练，无新性能结论，性能优先/原完整目标ACTIVE。[R60固定方案](../PAMF_R46_FEATURE_HINT_R60_20261021.md)。
 
 R59已实际VERIFIED/WAITING_PARENT_FORMAL：CPU2/0GPU，真实2Ls解析noquerysmoke、单archiveSHA/compile/实际PID/CWD/argv/空CUDA/日志增长核实。等待R57两行和R58两行全部七景正式评分后解析四新版，复用R56raw/指定350521父/R55参考84单元、新算112，196全固定后独立truthlast3024组/504条件对照/280配对差。无新网络/F/checkpoint/神经预测/训练/headfit/校准；不改变父训练预测，不阻塞其交付，当前主路线仍为用户指定35.05万父的压缩优化。固定描述符在clean TX2已有不足，不把该类负margin单独解释为身份错误。[R59固定评价](../PAMF_NORM_FORMAL_IDENTITY_R59_20261021.md)。
