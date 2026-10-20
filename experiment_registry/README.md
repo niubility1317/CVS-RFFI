@@ -417,3 +417,5 @@
 本轮记录：[从零学习恢复映射时加入冻结原F指导](by_method/scratch_F_guidance.md)。
 
 本轮记录：[有界源频谱精度加权的复数恢复误差](by_method/spectral_precision.md)。
+
+本轮记录：[冻结原F的源域恢复误差位置归因](by_method/oracle_attribution.md)。
