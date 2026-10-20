@@ -1,0 +1,246 @@
+{
+  "status": "ANALYZED_COMPLETE_THREE_SEEDS_NOT_ADOPTED",
+  "run_id": "20261020-phase1-FcrossRX-MEM4-threeSeed-clean-local-m2-r01",
+  "code_commit": "33880ebb8b2a9ae55a87756504e20e5262023b69",
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "new_models": 2,
+  "reused_MEM4_models": 1,
+  "reused_BASE_models": 3,
+  "test_view": "clean",
+  "physical_test_samples_per_seed": 168000,
+  "default_head_joint": true,
+  "head_fit_updates": 0,
+  "satellite_training": false,
+  "absolute_MEM4_percent": {
+    "accuracy": {
+      "n": 3,
+      "mean": 84.65059523809524,
+      "sample_SD": 0.6915519124541949
+    },
+    "macro_f1": {
+      "n": 3,
+      "mean": 84.3131233139815,
+      "sample_SD": 0.74814867420012
+    },
+    "worst_RX": {
+      "n": 3,
+      "mean": 75.44722222222222,
+      "sample_SD": 3.118388376199294
+    },
+    "worst_day": {
+      "n": 3,
+      "mean": 81.41666666666667,
+      "sample_SD": 0.8464913579284937
+    }
+  },
+  "absolute_matching_BASE_percent": {
+    "accuracy": {
+      "n": 3,
+      "mean": 84.76170634920635,
+      "sample_SD": 0.36037934971245655
+    },
+    "macro_f1": {
+      "n": 3,
+      "mean": 84.45938401602517,
+      "sample_SD": 0.36438242530038345
+    },
+    "worst_RX": {
+      "n": 3,
+      "mean": 76.27222222222223,
+      "sample_SD": 1.412674112507256
+    },
+    "worst_day": {
+      "n": 3,
+      "mean": 81.6515873015873,
+      "sample_SD": 0.6391353167653999
+    }
+  },
+  "paired_summary_pp": {
+    "accuracy_pp": {
+      "n": 3,
+      "mean": -0.11111111111110998,
+      "sample_SD": 0.33718246028942617
+    },
+    "macro_f1_pp": {
+      "n": 3,
+      "mean": -0.1462607020436583,
+      "sample_SD": 0.4043135601520065
+    },
+    "weak_TX_mean_pp": {
+      "n": 3,
+      "mean": -0.3529761904761915,
+      "sample_SD": 1.1994023986742637
+    },
+    "other_TX_mean_pp": {
+      "n": 3,
+      "mean": 0.009821428571424318,
+      "sample_SD": 0.17757085751545726
+    },
+    "worst_RX_pp": {
+      "n": 3,
+      "mean": -0.8250000000000016,
+      "sample_SD": 1.7518492213784989
+    },
+    "worst_day_pp": {
+      "n": 3,
+      "mean": -0.234920634920636,
+      "sample_SD": 0.5060704810810623
+    }
+  },
+  "per_seed": [
+    {
+      "treatment": "MEM4",
+      "model_seed": 2026092701,
+      "accuracy_pp": 0.187499999999996,
+      "macro_f1_pp": 0.1983831712294215,
+      "per_TX_pp": [
+        -0.23571428571429465,
+        0.8357142857142841,
+        0.5428571428571449,
+        0.02142857142856114,
+        -0.06428571428571672,
+        0.024999999999997247
+      ],
+      "weak_TX_mean_pp": 0.4285714285714226,
+      "other_TX_mean_pp": 0.0669642857142827,
+      "worst_RX_pp": 0.004166666666660657,
+      "worst_day_pp": -0.12857142857142234
+    },
+    {
+      "treatment": "MEM4",
+      "model_seed": 2026092702,
+      "accuracy_pp": -0.47678571428571015,
+      "macro_f1_pp": -0.591318601443247,
+      "per_TX_pp": [
+        0.7642857142857062,
+        -3.3499999999999974,
+        -0.2142857142857224,
+        -0.11785714285714732,
+        0.003571428571425006,
+        0.0535714285714195
+      ],
+      "weak_TX_mean_pp": -1.7339285714285724,
+      "other_TX_mean_pp": 0.15178571428570709,
+      "worst_RX_pp": -2.837500000000004,
+      "worst_day_pp": -0.7857142857142896
+    },
+    {
+      "treatment": "MEM4",
+      "model_seed": 2026092703,
+      "accuracy_pp": -0.04404761904761578,
+      "macro_f1_pp": -0.045846675917149415,
+      "per_TX_pp": [
+        -0.03571428571429447,
+        0.4285714285714337,
+        -1.0392857142857093,
+        0.06428571428571672,
+        0.24999999999999467,
+        0.06785714285714173
+      ],
+      "weak_TX_mean_pp": 0.24642857142857522,
+      "other_TX_mean_pp": -0.18928571428571683,
+      "worst_RX_pp": 0.3583333333333383,
+      "worst_day_pp": 0.2095238095238039
+    }
+  ],
+  "per_TX": [
+    {
+      "TX": "14-10",
+      "absolute_recall_percent": {
+        "n": 3,
+        "mean": 96.44880952380952,
+        "sample_SD": 0.08930952063577302
+      },
+      "paired_pp": {
+        "n": 3,
+        "mean": 0.1642857142857057,
+        "sample_SD": 0.5291502622129186
+      },
+      "positive_seeds": 1
+    },
+    {
+      "TX": "14-7",
+      "absolute_recall_percent": {
+        "n": 3,
+        "mean": 59.58333333333333,
+        "sample_SD": 6.516374913002064
+      },
+      "paired_pp": {
+        "n": 3,
+        "mean": -0.6952380952380932,
+        "sample_SD": 2.308086199595219
+      },
+      "positive_seeds": 2
+    },
+    {
+      "TX": "20-15",
+      "absolute_recall_percent": {
+        "n": 3,
+        "mean": 79.00714285714285,
+        "sample_SD": 2.1712523424728594
+      },
+      "paired_pp": {
+        "n": 3,
+        "mean": -0.23690476190476226,
+        "sample_SD": 0.7913139206967312
+      },
+      "positive_seeds": 1
+    },
+    {
+      "TX": "20-19",
+      "absolute_recall_percent": {
+        "n": 3,
+        "mean": 74.60238095238094,
+        "sample_SD": 1.3765591037025626
+      },
+      "paired_pp": {
+        "n": 3,
+        "mean": -0.01071428571428982,
+        "sample_SD": 0.09523065447124018
+      },
+      "positive_seeds": 2
+    },
+    {
+      "TX": "6-15",
+      "absolute_recall_percent": {
+        "n": 3,
+        "mean": 99.3547619047619,
+        "sample_SD": 0.5671416576693507
+      },
+      "paired_pp": {
+        "n": 3,
+        "mean": 0.06309523809523432,
+        "sample_SD": 0.16538195329657346
+      },
+      "positive_seeds": 2
+    },
+    {
+      "TX": "8-20",
+      "absolute_recall_percent": {
+        "n": 3,
+        "mean": 98.90714285714286,
+        "sample_SD": 0.31657042934344237
+      },
+      "paired_pp": {
+        "n": 3,
+        "mean": 0.048809523809519494,
+        "sample_SD": 0.02182178902359926
+      },
+      "positive_seeds": 3
+    }
+  ],
+  "overall_positive_seeds": 1,
+  "weak_mean_positive_seeds": 2,
+  "weak14_positive_seeds": 2,
+  "weak20_positive_seeds": 2,
+  "decision": "Do not adopt MEM4 as an improvement; retain original F+CROSS_RX50 baseline. Both weakTX paired means fail to improve, whole accuracy/Macro-F1/worstRX/day paired means also decrease.",
+  "negative_seed_retained": "2702: weak14 -3.35pp; overall -.4767857pp. No drop/reseed/retrain.",
+  "source_authorization": "Explicit user-fixed3seed extension after exposed01; old sourcegateFAIL preserved, no gate applied to02/03 and no recipe changes.",
+  "goal": "ACTIVE_UNMET: not yet reliably improve both source-defined weak transmitters in actual targetclean",
+  "future_basis": "Source BASE3 mutual weakpair confusion was recorded before remaining target summaries; next source-only diagnosis may examine transferable class separation across RX. No target tuning/reselection or MEM4 stacking.",
+  "claim_scope": "Exposed exploratory Phase1 clean; no independent blind/Phase2/satellite claim."
+}

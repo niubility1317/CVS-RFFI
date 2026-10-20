@@ -1,0 +1,390 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "33880ebb8b2a9ae55a87756504e20e5262023b69",
+  "user_fixed_remaining_rows_before_new_target": true,
+  "old_source_gate_failure_preserved": true,
+  "after_first_seed_target_exposure": true,
+  "source_gate_applied": false,
+  "new_models": 2,
+  "reused_models": 1,
+  "combined_seeds": 3,
+  "live_owned_workers": 0,
+  "controller_status": "ARTIFACTS_COMPLETE",
+  "rows": [
+    {
+      "row_id": "MEM4-s2026092702",
+      "source_commit": "33880ebb8b2a9ae55a87756504e20e5262023b69",
+      "exits": [
+        {
+          "role": "source",
+          "returncode": 0,
+          "PID_matches_start": true
+        },
+        {
+          "role": "predict",
+          "returncode": 0,
+          "PID_matches_start": true
+        },
+        {
+          "role": "score",
+          "returncode": 0,
+          "PID_matches_start": true
+        }
+      ],
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "prediction_truth_read": false,
+      "prediction_query_fit": false,
+      "prediction_head_fit_updates": 0,
+      "scoring_status": "MODEL_PREDICTED_SCORED",
+      "truth_last": true,
+      "independent_CPU_score": true,
+      "count": 168000,
+      "views": [
+        "clean"
+      ],
+      "source_seconds": 4933.550103664398,
+      "prediction_seconds": 30.10157599998638,
+      "peak_cuda_MiB": 1972.91845703125
+    },
+    {
+      "row_id": "MEM4-s2026092703",
+      "source_commit": "33880ebb8b2a9ae55a87756504e20e5262023b69",
+      "exits": [
+        {
+          "role": "source",
+          "returncode": 0,
+          "PID_matches_start": true
+        },
+        {
+          "role": "predict",
+          "returncode": 0,
+          "PID_matches_start": true
+        },
+        {
+          "role": "score",
+          "returncode": 0,
+          "PID_matches_start": true
+        }
+      ],
+      "prediction_status": "PREDICTIONS_COMPLETE",
+      "prediction_truth_read": false,
+      "prediction_query_fit": false,
+      "prediction_head_fit_updates": 0,
+      "scoring_status": "MODEL_PREDICTED_SCORED",
+      "truth_last": true,
+      "independent_CPU_score": true,
+      "count": 168000,
+      "views": [
+        "clean"
+      ],
+      "source_seconds": 4941.283612012863,
+      "prediction_seconds": 29.00621790002333,
+      "peak_cuda_MiB": 1972.91845703125
+    }
+  ],
+  "native_logs": [
+    {
+      "row_id": "MEM4-s2026092701",
+      "parsed_epochs": 50,
+      "parsed_steps": 11100,
+      "stdout_lines": 1976,
+      "full_stdout_scanned": true,
+      "stdout_marker_counts": {
+        "FutureWarning": 3,
+        "UserWarning": 0,
+        "RuntimeWarning": 0,
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "MemoryError": 0,
+        "Fatal Python": 0,
+        "killed": 0
+      },
+      "U_seen": 963900,
+      "U_selected": 15154,
+      "U_truth_available": 0,
+      "skipped_nonfinite_updates": 0,
+      "satellite_active_steps": 0
+    },
+    {
+      "row_id": "MEM4-s2026092702",
+      "parsed_epochs": 50,
+      "parsed_steps": 11100,
+      "stdout_lines": 1976,
+      "full_stdout_scanned": true,
+      "stdout_marker_counts": {
+        "FutureWarning": 3,
+        "UserWarning": 0,
+        "RuntimeWarning": 0,
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "MemoryError": 0,
+        "Fatal Python": 0,
+        "killed": 0
+      },
+      "U_seen": 963900,
+      "U_selected": 15302,
+      "U_truth_available": 0,
+      "skipped_nonfinite_updates": 0,
+      "satellite_active_steps": 0
+    },
+    {
+      "row_id": "MEM4-s2026092703",
+      "parsed_epochs": 50,
+      "parsed_steps": 11100,
+      "stdout_lines": 1976,
+      "full_stdout_scanned": true,
+      "stdout_marker_counts": {
+        "FutureWarning": 3,
+        "UserWarning": 0,
+        "RuntimeWarning": 0,
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "MemoryError": 0,
+        "Fatal Python": 0,
+        "killed": 0
+      },
+      "U_seen": 963900,
+      "U_selected": 15190,
+      "U_truth_available": 0,
+      "skipped_nonfinite_updates": 0,
+      "satellite_active_steps": 0
+    }
+  ],
+  "feature_logs": [
+    {
+      "row_id": "MEM4-s2026092701",
+      "treatment": "MEM4",
+      "calls": 11100,
+      "applied_calls": 9990,
+      "actual_layer_forward_objectives": 39960,
+      "valid_anchors": 5114880,
+      "mean_historical_keys": 383.33823823823826,
+      "max_historical_keys": 384,
+      "max_history_age": 3,
+      "per_TX_keys": [
+        {
+          "TX": "14-10",
+          "valid_anchor_occurrences": 853176,
+          "positive_mean": 68.0962298853056,
+          "negative_mean": 425.29436854483987
+        },
+        {
+          "TX": "14-7",
+          "valid_anchor_occurrences": 852008,
+          "positive_mean": 68.04307589536005,
+          "negative_mean": 425.3800386892377
+        },
+        {
+          "TX": "20-15",
+          "valid_anchor_occurrences": 852588,
+          "positive_mean": 68.08880374339967,
+          "negative_mean": 425.30308178045914
+        },
+        {
+          "TX": "20-19",
+          "valid_anchor_occurrences": 852460,
+          "positive_mean": 68.03323206229304,
+          "negative_mean": 425.35376184750476
+        },
+        {
+          "TX": "6-15",
+          "valid_anchor_occurrences": 852180,
+          "positive_mean": 68.03863155414052,
+          "negative_mean": 425.36059046222925
+        },
+        {
+          "TX": "8-20",
+          "valid_anchor_occurrences": 852468,
+          "positive_mean": 68.06846596660964,
+          "negative_mean": 425.3576064801642
+        }
+      ],
+      "extra_model_forwards": 0,
+      "extra_optimizer_updates": 0,
+      "extra_parameters": 0,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "MEM4-s2026092702",
+      "treatment": "MEM4",
+      "calls": 11100,
+      "applied_calls": 9990,
+      "actual_layer_forward_objectives": 39960,
+      "valid_anchors": 5114880,
+      "mean_historical_keys": 383.35455455455457,
+      "max_historical_keys": 384,
+      "max_history_age": 3,
+      "per_TX_keys": [
+        {
+          "TX": "14-10",
+          "valid_anchor_occurrences": 852284,
+          "positive_mean": 68.02265093835932,
+          "negative_mean": 425.39740732624296
+        },
+        {
+          "TX": "14-7",
+          "valid_anchor_occurrences": 853204,
+          "positive_mean": 68.10630165462537,
+          "negative_mean": 425.28614952126065
+        },
+        {
+          "TX": "20-15",
+          "valid_anchor_occurrences": 852136,
+          "positive_mean": 68.07176912624273,
+          "negative_mean": 425.35929934818245
+        },
+        {
+          "TX": "20-19",
+          "valid_anchor_occurrences": 852584,
+          "positive_mean": 68.09142205876545,
+          "negative_mean": 425.3240829341348
+        },
+        {
+          "TX": "6-15",
+          "valid_anchor_occurrences": 852544,
+          "positive_mean": 68.06213991412547,
+          "negative_mean": 425.38431328118503
+        },
+        {
+          "TX": "8-20",
+          "valid_anchor_occurrences": 852128,
+          "positive_mean": 68.03534796953407,
+          "negative_mean": 425.3740329127158
+        }
+      ],
+      "extra_model_forwards": 0,
+      "extra_optimizer_updates": 0,
+      "extra_parameters": 0,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "MEM4-s2026092703",
+      "treatment": "MEM4",
+      "calls": 11100,
+      "applied_calls": 9990,
+      "actual_layer_forward_objectives": 39960,
+      "valid_anchors": 5114880,
+      "mean_historical_keys": 383.32632632632635,
+      "max_historical_keys": 384,
+      "max_history_age": 3,
+      "per_TX_keys": [
+        {
+          "TX": "14-10",
+          "valid_anchor_occurrences": 853196,
+          "positive_mean": 68.13393988785988,
+          "negative_mean": 425.2667520410481
+        },
+        {
+          "TX": "14-7",
+          "valid_anchor_occurrences": 851984,
+          "positive_mean": 68.01320803221627,
+          "negative_mean": 425.3878382748511
+        },
+        {
+          "TX": "20-15",
+          "valid_anchor_occurrences": 852540,
+          "positive_mean": 68.04312878699827,
+          "negative_mean": 425.3419523106825
+        },
+        {
+          "TX": "20-19",
+          "valid_anchor_occurrences": 852212,
+          "positive_mean": 68.06772611808309,
+          "negative_mean": 425.3499408970856
+        },
+        {
+          "TX": "6-15",
+          "valid_anchor_occurrences": 852128,
+          "positive_mean": 68.03751672192115,
+          "negative_mean": 425.3695500068818
+        },
+        {
+          "TX": "8-20",
+          "valid_anchor_occurrences": 852820,
+          "positive_mean": 68.05497177263403,
+          "negative_mean": 425.31723447406813
+        }
+      ],
+      "extra_model_forwards": 0,
+      "extra_optimizer_updates": 0,
+      "extra_parameters": 0,
+      "head_fit_updates": 0
+    }
+  ],
+  "actual_artifact_order": [
+    {
+      "row_id": "MEM4-s2026092702",
+      "source_decision_before_prediction_launch": true,
+      "prediction_complete_before_score_launch": true
+    },
+    {
+      "row_id": "MEM4-s2026092703",
+      "source_decision_before_prediction_launch": true,
+      "prediction_complete_before_score_launch": true
+    }
+  ],
+  "independent_arithmetic": {
+    "status": "PASS",
+    "confusion_and_perseed_metrics": [
+      {
+        "seed": 2026092701,
+        "role": "MEM4",
+        "count": 168000,
+        "status": "PASS"
+      },
+      {
+        "seed": 2026092701,
+        "role": "BASE",
+        "count": 168000,
+        "status": "PASS"
+      },
+      {
+        "seed": 2026092702,
+        "role": "MEM4",
+        "count": 168000,
+        "status": "PASS"
+      },
+      {
+        "seed": 2026092702,
+        "role": "BASE",
+        "count": 168000,
+        "status": "PASS"
+      },
+      {
+        "seed": 2026092703,
+        "role": "MEM4",
+        "count": 168000,
+        "status": "PASS"
+      },
+      {
+        "seed": 2026092703,
+        "role": "BASE",
+        "count": 168000,
+        "status": "PASS"
+      }
+    ],
+    "paired_difference_mean_sample_SD_positive_counts": "PASS",
+    "baseline_absolute": {
+      "accuracy": {
+        "n": 3,
+        "mean": 84.76170634920635,
+        "sample_SD": 0.36037934971245655
+      },
+      "macro_f1": {
+        "n": 3,
+        "mean": 84.45938401602517,
+        "sample_SD": 0.36438242530038345
+      },
+      "worst_RX": {
+        "n": 3,
+        "mean": 76.27222222222223,
+        "sample_SD": 1.412674112507256
+      },
+      "worst_day": {
+        "n": 3,
+        "mean": 81.6515873015873,
+        "sample_SD": 0.6391353167653999
+      }
+    }
+  }
+}

@@ -23,3 +23,6 @@
 
 
 非阻塞的已完成源域统计复核见source_feature_notes.md/json：BASE三种子确认弱TX互为主要混淆对；方法几何比较仅首种子，不替代目标性能或改变当前固定矩阵。两新增行第15轮满权重执行通过，证据见full_weight_epoch.json。
+
+
+最终状态：ARTIFACTS_COMPLETE／ANALYZED_COMPLETE_THREE_SEEDS_NOT_ADOPTED。MEM4三种子clean84.6506±0.6916%，匹配BASE84.7617±0.3604%，配对−0.1111±0.3372个百分点。弱14均差−0.6952，弱20−0.0107；不采用，负种子完整保留。全部训练、预测、独立评分、全量日志与算术核对VERIFIED，详见results.md/json和completion_verification.json。
