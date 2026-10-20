@@ -160,3 +160,6 @@ R06本轮两种结构全部完成：符合七场景1个百分点容差：shared_
 四行在新R09目标预测前固定，最终E20冻结，不以源V或目标重排、调损失、改秩/预算、换父模型、追加或选择性重跑。R06已暴露目标结果如实保留；本方案依据用户性能优化要求和合法source-clean契约建立匹配对照，不声称新的独立盲测。每行自动source诊断与168000×七目标场景，所有视图预测完成后独立truth-last评分；逐场景1pp原始整数验收，同时报告真实涨分/损伤、lowurban是否70%、配对clean恢复差距与相对已验收3118001版本差。
 
 42项检查/唯一独立P0P1审查PASS；普通N607预检VERIFIED，R07实际四条句柄均退出。launcher-first真实原R17/F50/2Ls smoke通过后确认R07根终态和实际进程退出，再GPU2/3/6/7各一own worker；R08健康4/5继续，共六路，所有own scorer共享R06score.lock。当前仅实现/预登记通过，目标性能尚待完整测试。
+
+
+R07本轮四种结构全部完成：符合七场景1个百分点容差：shared_three_eighths, shared_eighth, shared_quarter_pointwise, shared_eighth_pointwise。E20/4940、source七视图诊断及同168000×七目标场景、独立truth-last、实际进程退出均核实；完整训练曲线、精确1pp验收、相对已验收3118001版本差、配对clean差距、TX/RX/day和成本见[本轮报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-parallel-compact-s2026092701-m4-r07/report.md)。四份完整恢复器已取回本地并严格加载验证；本轮未追加其他结构，目标反馈未用于改训练/超参/重跑，长期指标依实际结果报告。
