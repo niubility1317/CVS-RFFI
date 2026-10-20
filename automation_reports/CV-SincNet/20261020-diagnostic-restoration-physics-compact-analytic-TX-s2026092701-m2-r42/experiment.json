@@ -113,7 +113,7 @@
     "local_artifact_root": "local_artifacts/pamf_restoration/physics_identity_r42_20261020",
     "launch_command": "python -u -m experiments.pamf_physics_identity_probe.runner run --runs-root ../../runs --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261020-diagnostic-restoration-physics-compact-analytic-TX-s2026092701-m2-r42 --expected-commit ea8e0ca8b1850e2ca599b7f5c630c91d105918c4",
     "stop_rule": "Wrong source parent/roles/panel,missing or nonfinite input/features,outputcollision:preserve outputs,noautomaticretry;healthy compact/peers unchanged",
-    "postlaunch_state": "VERIFIED_WAITING_SOURCE"
+    "postlaunch_state": "VERIFIED_ALL_PROCESSES_EXITED"
   },
   "expected_artifacts": [
     "launch.json",
@@ -235,7 +235,9 @@
     "R34calibration/raw/R17features exactreuse,0newcalibration;all112cells beforeVlabels;sourceVlabels usedonlystatisticalreference/contrasts.",
     "0Fweights/embeddings/logits orneuralcheckpoints/forwards;0target;descriptors not TXexclusive;no perdetailproof claim.",
     "CPUcontroller waits both source_complete without scores;parent sharedscore.lock serialanalysis stages;R41healthyno hotchanges;0GPUworkers.",
-    "VERIFIED / WAITING_SOURCE：普通账户新release/归档单SHA/compile已核实，2Ls解析无query smoke PASS，0checkpoint/F/TX/V/target；实际CPU控制器PID/CWD/argv/空CUDA/2线程与等待日志增长已读回。等待R41两版source_complete，不读成绩；尚无解析关联结果。"
+    "VERIFIED / WAITING_SOURCE：普通账户新release/归档单SHA/compile已核实，2Ls解析无query smoke PASS，0checkpoint/F/TX/V/target；实际CPU控制器PID/CWD/argv/空CUDA/2线程与等待日志增长已读回。等待R41两版source_complete，不读成绩；尚无解析关联结果。",
+    "VERIFIED/ANALYZED:112fixedsourcefeaturecells;1260groups/252conditionalcontrols/84pairedchanges independentlyrecomputed;R17referenceunchanged;0F/checkpoint/neuralforward/fit/target;allCPUprocessesEXITED;goalactive"
   ],
-  "registered_at": "2026-10-20T10:25:35+00:00"
+  "registered_at": "2026-10-20T10:25:35+00:00",
+  "scientific_outcome": "SOURCE_ASSOCIATION_REPORTED_NOT_PER_DETAIL_PROOF"
 }
