@@ -4,3 +4,5 @@
 {"at": "2026-10-20T11:18:56+00:00", "status": "QUEUED", "note": "VERIFIED source-legal smoke and growing queue log;waiting R41 owned handles", "evidence": ["experiment.json", "report.md"], "row_id": null}
 {"at": "2026-10-20T11:31:33+00:00", "status": "RUNNING", "note": "GPU实际训练VERIFIED：group_pruned (GPU1,E1)；实际PID/CWD/argv/commit/GPU和首轮曝光/日志增长核实，0TX/F训练。其余行按既定队列接续，无正式识别结论。", "evidence": ["experiment.json", "report.md"], "row_id": "group_pruned"}
 {"at": "2026-10-20T11:31:33+00:00", "status": "RUNNING", "note": "Actual first epochs verified:group_pruned;waiting:low_rank", "evidence": ["experiment.json", "report.md"], "row_id": null}
+{"at": "2026-10-20T11:37:25+00:00", "status": "RUNNING", "note": "GPU实际训练VERIFIED：low_rank (GPU0,E1)；实际PID/CWD/argv/commit/GPU和首轮曝光/日志增长核实，0TX/F训练。其余行按既定队列接续，无正式识别结论。", "evidence": ["experiment.json", "report.md"], "row_id": "low_rank"}
+{"at": "2026-10-20T11:37:25+00:00", "status": "RUNNING", "note": "Actual first epochs verified:group_pruned,low_rank;waiting:", "evidence": ["experiment.json", "report.md"], "row_id": null}

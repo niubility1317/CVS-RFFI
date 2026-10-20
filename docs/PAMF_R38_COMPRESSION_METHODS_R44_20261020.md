@@ -24,3 +24,5 @@ N607 GPU0/1每卡一own、总计最多二own；按卡等待 R41 对应row终态�
 已发布方法 `2f5247dbd5fe50f28defa38a0252d70e692934af`；实际R38/F50/两Ls配对IQ smoke、单archiveSHA/compile及controller/CWD/argv/commit/等待日志增长 VERIFIED。已按卡开始接续训练，实际首轮进展见登记；无R44识别结论。
 
 GPU实际训练VERIFIED：group_pruned (GPU1,E1)；实际PID/CWD/argv/commit/GPU和首轮曝光/日志增长核实，0TX/F训练。其余行按既定队列接续，无正式识别结论。
+
+GPU实际训练VERIFIED：low_rank (GPU0,E1)；实际PID/CWD/argv/commit/GPU和首轮曝光/日志增长核实，0TX/F训练。其余行按既定队列接续，无正式识别结论。

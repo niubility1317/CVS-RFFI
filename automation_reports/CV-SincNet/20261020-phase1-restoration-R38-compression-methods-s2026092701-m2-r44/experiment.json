@@ -160,17 +160,17 @@
       "archive_SHA_match": true,
       "remote_compile": true,
       "actual_R38_F50_2Ls_paired_noquery_smoke": "PASS",
-      "new_GPU_workers": 1,
-      "waiting": [
-        "low_rank"
-      ],
+      "new_GPU_workers": 2,
+      "waiting": [],
       "training_performance_claim": false,
       "actual_training_rows": [
-        "group_pruned"
+        "group_pruned",
+        "low_rank"
       ]
     },
     "actual_training_rows_verified": [
-      "group_pruned"
+      "group_pruned",
+      "low_rank"
     ]
   },
   "expected_artifacts": [

@@ -27,3 +27,5 @@ N607 GPU0/1每卡一own、总计最多二own；按卡等待 R41 对应row终态�
 实际发布 VERIFIED：方法commit `2f5247dbd5fe50f28defa38a0252d70e692934af`，普通N607单archiveSHA/远端compile/help通过。实际controller PID/CWD/完整命令/commit及两次等待日志增长核实，真实R38/F50/两Ls配对IQ noquery smoke PASS。两压缩方法各组件梯度有限非零、父/F不变、完整复载逐位一致。发布队列时0新增GPUworker，按卡等待R41对应row终态及实际句柄退出；不冒称训练或性能完成。
 
 GPU实际训练VERIFIED：group_pruned (GPU1,E1)；实际PID/CWD/argv/commit/GPU和首轮曝光/日志增长核实，0TX/F训练。其余行按既定队列接续，无正式识别结论。
+
+GPU实际训练VERIFIED：low_rank (GPU0,E1)；实际PID/CWD/argv/commit/GPU和首轮曝光/日志增长核实，0TX/F训练。其余行按既定队列接续，无正式识别结论。

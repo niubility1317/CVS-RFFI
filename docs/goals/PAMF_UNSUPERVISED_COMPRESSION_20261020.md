@@ -73,3 +73,5 @@ R41 已完整收尾：两行E20/4940、同168000物理记录×七正式场景、
 R42 已完成固定无F解析同TX关联源诊断，VERIFIED/ANALYZED，最终结果commit `46aaaf5cca30a23201396158c81513240920bae2` 已推送并独立核实远端OID。复用原R34/R39固定LU8192校准，112特征单元在读V标签前全固定，1260组/252条件对照/84配对比较均独立复算，原R17参考420组保持一致；0神经前向/F/target/新拟合/新GPU，三个所属CPU进程均自然退出。lowurban combined margin 原R17/171万R41/79万R41 为0.029034/0.025525/0.022017，属于有限源关联证据，不是识别准确率或逐细节TX真实性证明。R41已完成两行E20及七正式测试并退出；不扩展其同参数物理路线，下一轮保持当前R44低秩/重要性剪枝压缩。R42不筛选或更改任何训练/测试。[R42完整源诊断](../../automation_reports/CV-SincNet/20261020-diagnostic-restoration-physics-compact-analytic-TX-s2026092701-m2-r42/report.md)。
 
 R44实际首轮记录：GPU实际训练VERIFIED：group_pruned (GPU1,E1)；实际PID/CWD/argv/commit/GPU和首轮曝光/日志增长核实，0TX/F训练。其余行按既定队列接续，无正式识别结论。
+
+R44实际首轮记录：GPU实际训练VERIFIED：low_rank (GPU0,E1)；实际PID/CWD/argv/commit/GPU和首轮曝光/日志增长核实，0TX/F训练。其余行按既定队列接续，无正式识别结论。
