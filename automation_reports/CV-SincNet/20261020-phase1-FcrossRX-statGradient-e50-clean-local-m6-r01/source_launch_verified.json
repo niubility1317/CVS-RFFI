@@ -1,0 +1,66 @@
+{
+  "status": "VERIFIED_SOURCE_WORKERS_STARTED",
+  "code_commit": "7b5532e9ff3845c23c7c229385ff5763254d31c3",
+  "controller_live": true,
+  "actual_gpu_training_workers": [
+    {
+      "row_id": "STAT_GRAD-s2026092701",
+      "CWD_verified": true,
+      "cmdline_verified": true,
+      "GPU0_verified": true,
+      "scratch": true,
+      "epochs": 50,
+      "stage_epochs": [
+        33,
+        17
+      ],
+      "default_head_joint": true,
+      "satellite_training": false,
+      "test_views": [
+        "clean"
+      ],
+      "actual_statistic_policy": "STAT_GRAD"
+    },
+    {
+      "row_id": "NORM_ONLY-s2026092701",
+      "CWD_verified": true,
+      "cmdline_verified": true,
+      "GPU0_verified": true,
+      "scratch": true,
+      "epochs": 50,
+      "stage_epochs": [
+        33,
+        17
+      ],
+      "default_head_joint": true,
+      "satellite_training": false,
+      "test_views": [
+        "clean"
+      ],
+      "actual_statistic_policy": "NORM_ONLY"
+    }
+  ],
+  "actual_launcher_and_child_resolved": true,
+  "raw_dispatch_counts_conservative": "Windows venv launchers and real Python children are separate PIDs; actual GPU children resolved independently. No excess worker dispatched.",
+  "step_log_growth": [
+    {
+      "row_id": "STAT_GRAD-s2026092701",
+      "bytes": 847627,
+      "previous_bytes": 387989,
+      "grew": true,
+      "updated": true
+    },
+    {
+      "row_id": "NORM_ONLY-s2026092701",
+      "bytes": 815791,
+      "previous_bytes": 486551,
+      "grew": true,
+      "updated": true
+    }
+  ],
+  "technical_errors_observed": 0,
+  "target_predictions_or_scores": 0,
+  "fixed_rows": 6,
+  "other_rows": "queued unchanged",
+  "goal_status": "ACTIVE_UNMET"
+}

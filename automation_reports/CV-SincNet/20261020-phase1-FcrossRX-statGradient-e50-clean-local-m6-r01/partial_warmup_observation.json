@@ -1,0 +1,90 @@
+{
+  "status": "PARTIAL_WARMUP_SOURCE_ONLY",
+  "initial_state_comparison": {
+    "status": "VERIFIED",
+    "initial_model_and_buffers_exact": true,
+    "tensor_count": 206,
+    "comparison": "before all optimizer updates",
+    "optimizer_updates": 0,
+    "model_forwards": 0,
+    "IQ_reads": 0,
+    "target_reads": 0,
+    "head_fit_updates": 0
+  },
+  "actual_native_arg_difference_keys": [
+    "output_dir",
+    "candidate_id"
+  ],
+  "completed_epochs_at_read": {
+    "STAT_GRAD-s2026092701": [
+      {
+        "epoch": 1,
+        "lr": 0.0002,
+        "train_loss": 1.5618343653979603,
+        "train_loss_tx_labeled": 1.24764754804405,
+        "train_loss_unlabeled": 0,
+        "val_tx_acc": 91.97037037037038,
+        "train_F_supcon_weight": 0,
+        "train_F_supcon_loss": 0,
+        "train_pseudo_total": 0,
+        "train_pseudo_selected": 0,
+        "epoch_time_s": 102.70897793769836
+      },
+      {
+        "epoch": 2,
+        "lr": 0.00019979556657865848,
+        "train_loss": 0.5954608799100997,
+        "train_loss_tx_labeled": 0.5156852696929966,
+        "train_loss_unlabeled": 0,
+        "val_tx_acc": 93.87037037037037,
+        "train_F_supcon_weight": 0,
+        "train_F_supcon_loss": 0,
+        "train_pseudo_total": 0,
+        "train_pseudo_selected": 0,
+        "epoch_time_s": 93.71181178092957
+      }
+    ],
+    "NORM_ONLY-s2026092701": [
+      {
+        "epoch": 1,
+        "lr": 0.0002,
+        "train_loss": 1.5620851656338115,
+        "train_loss_tx_labeled": 1.2477608916458782,
+        "train_loss_unlabeled": 0,
+        "val_tx_acc": 91.99259259259259,
+        "train_F_supcon_weight": 0,
+        "train_F_supcon_loss": 0,
+        "train_pseudo_total": 0,
+        "train_pseudo_selected": 0,
+        "epoch_time_s": 91.00181102752686
+      },
+      {
+        "epoch": 2,
+        "lr": 0.00019979556657865848,
+        "train_loss": 0.5953627185778575,
+        "train_loss_tx_labeled": 0.5157783487224364,
+        "train_loss_unlabeled": 0,
+        "val_tx_acc": 93.81111111111112,
+        "train_F_supcon_weight": 0,
+        "train_F_supcon_loss": 0,
+        "train_pseudo_total": 0,
+        "train_pseudo_selected": 0,
+        "epoch_time_s": 81.35337829589844
+      }
+    ]
+  },
+  "all_available_epoch_records_read": true,
+  "preheat_epochs": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "feature_aux_weight_in_observed_epochs": 0,
+  "observation": "Actual initial parameters/buffers are exactly equal. Small pre-intervention source trajectory differences are retained; source not localized. They cannot be an effect of the disabled statistic objective. No source/target-based tuning or rerun; all fixed seeds continue.",
+  "performance_claim": false,
+  "new_target_reads": 0,
+  "head_fit_updates": 0,
+  "full_epoch_artifacts": "LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01/ROW/source/epoch_metrics.jsonl; complete available records retained privately, public selected numeric fields only"
+}
