@@ -109,11 +109,23 @@ def retrieve(local, output):
     from experiments.pamf_r46_anchor_refine.runtime import load_checkpoint
     torch.set_num_threads(2)
     artifacts = {}
+    partial_path=output/'partial_model_artifacts.json'
+    partial=json.loads(partial_path.read_text(encoding='utf-8')) if partial_path.exists() else None
+    if partial is not None and (partial.get('status')!='VERIFIED' or partial.get('source_run')!=d.RUN or partial.get('method_commit')!=METHOD):
+        raise ValueError('Existing partial delivery belongs to another run or method')
     for arm in d.ARMS:
         folder = output/'models'/arm
         folder.mkdir(parents=True, exist_ok=True)
         path = folder/'final.pt'
         row = raw['rows'][arm]
+        known=partial.get('models',{}).get(arm) if partial else None
+        if known is not None:
+            if not path.is_file() or path.stat().st_size!=row['checkpoint_bytes'] or known['bytes']!=row['checkpoint_bytes']:
+                raise ValueError('Reconcile the existing verified partial model instead of overwriting')
+            if known['parameters']!=d.PARAMETERS[arm] or not known['strict_load'] or not known['synthetic_zero_IQ_output_finite'] or known['optimizer_included'] or known['training_F_access']:
+                raise ValueError('Partial model inference proof differs')
+            artifacts[arm]=known
+            continue
         if not path.exists():
             subprocess.run(['C:/Program Files/Git/usr/bin/scp.exe', '-F', str(local/'tools/n607_ssh_config'),
                 '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', 'N607:'+row['checkpoint_path'], str(path)],

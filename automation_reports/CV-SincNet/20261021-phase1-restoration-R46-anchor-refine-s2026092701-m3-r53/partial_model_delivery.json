@@ -1,0 +1,48 @@
+{
+  "status": "VERIFIED",
+  "source_run": "20261021-phase1-restoration-R46-anchor-refine-s2026092701-m3-r53",
+  "method_commit": "df36c3d3da4e026b747776b65b58d4921dc1a71e",
+  "models": {
+    "prune_decay": {
+      "path": "local_artifacts/pamf_restoration/r46_anchor_refine_r53_20261021/models/prune_decay/final.pt",
+      "bytes": 1378332,
+      "parameters": 273765,
+      "components": {
+        "coarse": 106138,
+        "action": 79477,
+        "prior": 88150
+      },
+      "FP32_parameter_bytes": 1095060,
+      "conv_linear_MACs_per_IQ": 30761512,
+      "strict_load": true,
+      "synthetic_zero_IQ_output_finite": true,
+      "actual_IQ_reads": 0,
+      "optimizer_included": false,
+      "training_F_access": false,
+      "training_TX_labels_read": 0,
+      "parent_R46_run": "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46"
+    },
+    "retain_anchor": {
+      "path": "local_artifacts/pamf_restoration/r46_anchor_refine_r53_20261021/models/retain_anchor/final.pt",
+      "bytes": 1687260,
+      "parameters": 350521,
+      "components": {
+        "coarse": 136890,
+        "action": 101037,
+        "prior": 112594
+      },
+      "FP32_parameter_bytes": 1402084,
+      "conv_linear_MACs_per_IQ": 39081004,
+      "strict_load": true,
+      "synthetic_zero_IQ_output_finite": true,
+      "actual_IQ_reads": 0,
+      "optimizer_included": false,
+      "training_F_access": false,
+      "training_TX_labels_read": 0,
+      "parent_R46_run": "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46"
+    }
+  },
+  "all_retrieved_rows_full7_scored": true,
+  "MAC_scope": "Conv1d and Linear only;excludes FFT/complexCG/norm/activation/memory/F",
+  "goal_complete": false
+}

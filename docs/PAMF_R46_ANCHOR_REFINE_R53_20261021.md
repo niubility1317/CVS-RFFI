@@ -58,3 +58,12 @@ VERIFIED/RUNNING：真实350521父/F50/2Ls noquery smoke PASS，三行全部coar
 retain_anchor相对预登记同宽衰减控制的七景差（百分点，顺序同上）：+0.102381、+0.419643、+0.472024、+0.469048、+0.444643、+0.643452、+0.814286。
 
 原350521直接父不变；原完整识别与更强输入TX细节真实性目标ACTIVE。单seed、已暴露工程基准；识别率和波形误差不单独证明逐细节身份。完整模型和时延/吞吐/显存随最终交付保留，源域分数不替代以上正式结果。
+
+
+## 已交付前两行独立权重
+
+prune_decay273765与retain_anchor350521已取回本地，CPU严格加载、原生float32输入形状与有限输出、完整参数和ConvLinearMAC均核实；只使用合成零IQ验证，0实际IQ/F/标签读取。完整七景正式测试已经结束，但第三行尚未结束，不能称全矩阵完成。
+
+权重位于项目根的 `local_artifacts/pamf_restoration/r46_anchor_refine_r53_20261021/models/<arm>/final.pt`，同目录 `README.md` 提供独立G加载用法；直接使用 `experiments.pamf_r46_anchor_refine.runtime.load_checkpoint`，无需教师或源缓存。接同一冻结F50默认头时，从同一恢复IQ一致计算FFT/PA/时域/统计分支，不另训头。数据与权重不提交Git。参数/文件大小/严格加载信息见[交付元数据](../automation_reports/CV-SincNet/20261021-phase1-restoration-R46-anchor-refine-s2026092701-m3-r53/partial_model_delivery.json)。
+
+保存全部正负结果和原指定350521直接父，不以单行正式分数重排后续候选。原70%/其他五景gap5pp/更强TX细节保真目标仍未完成。
