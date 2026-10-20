@@ -51,9 +51,9 @@ class Adapter(torch.nn.Module):
         return self.model(received)
 
 
-def load(args, row_id, device):
-    if row_id not in d.BY_ID:raise ValueError('Unregistered audit checkpoint')
-    spec=d.BY_ID[row_id];root=args.runs_root/spec['run']
+def load(args, row_id, device, *, registry=d):
+    if row_id not in registry.BY_ID:raise ValueError('Unregistered audit checkpoint')
+    spec=registry.BY_ID[row_id];root=args.runs_root/spec['run']
     if read_json(root/'launch.json')['commit']!=spec['commit']:raise ValueError('Original code provenance differs')
     validate_training(read_json(root/spec['training']),spec['candidate'])
     loader=importlib.import_module('experiments.'+spec['module']).load_checkpoint
@@ -63,18 +63,18 @@ def load(args, row_id, device):
     return Adapter(model,spec,device).to(device).eval(),payload
 
 
-def audit_contract(args):
+def audit_contract(args, *, registry=d):
     value=read_json(args.output/'resolved_config.json')
-    if (value.get('authorization')!=d.AUTHORIZATION or value.get('rows')!=d.ROWS
+    if (value.get('authorization')!=registry.AUTHORIZATION or value.get('rows')!=registry.ROWS
             or value.get('new_training_updates')!=0 or value.get('target_feedback') is not False
             or value.get('source_decisions_modified') is not False or value.get('commit')!=args.expected_commit):
         raise ValueError('Fixed user-authorized audit matrix required')
 
 
-def reference(args,role):
+def reference(args,role, *, registry=d):
     if role!='target':raise ValueError('Formal audit is target-only')
-    audit_contract(args)
-    if args.row not in d.BY_ID:raise ValueError('Unregistered target row')
+    audit_contract(args,registry=registry)
+    if args.row not in registry.BY_ID:raise ValueError('Unregistered target row')
     manifest=read_json(args.formal_reference/'manifest.json')
     from experiments.pamf_uncertainty_restore.evaluation import VIEWS
     if (manifest.get('status')!='FORMAL_REFERENCE_READY' or manifest.get('count')!=168000
