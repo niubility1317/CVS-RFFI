@@ -1,0 +1,262 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-evaluation-T1E30-R17-s2026092701-r01",
+  "group_id": "pamf-t1-r17-evaluation",
+  "display_name": "T1去除As独立KL E30接入R17正式测试",
+  "description": "原T1默认头冻结，复用完整原输入预测与R17恢复IQ；七场景独立truth-last；0训练/换头。",
+  "kind": "cvs",
+  "stage": "Phase1-source-research-conditional-confirmation",
+  "aliases": [],
+  "tags": [
+    "T1",
+    "R17",
+    "frozen_evaluation",
+    "truth_last"
+  ],
+  "comparison_group_id": "T1E30_original_vs_frozen_R17",
+  "parent_run_ids": [
+    "20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r02",
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-10-20 用户明确指定：T1去除As独立KL E30作为基底，接入R17跑测试。",
+  "code": {
+    "commit": "c462f6e866f736064186f338767975691d98f298",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
+    "cwd": "releases/pamf_T1E30_R17_20261020_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "Original frozen R17 restored IQ2x256;native T1 derives all PAMF inputs;168000 exact opaque IDs x7views",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train6300L+56700U originalIDs;R07validation1800V;conditional R05 original168000IDs",
+    "label_map_ref": "NoTX/F training;sourceVtruth independentCPU aftereachrow7predsets;conditional targettruth after7fixedpredictions",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json: READY/EXACT_MATCH; reuse existing cache without new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "Unchanged code/leo_practical/channel.py;reuse R07 epoch01..20 and original sourceV;conditional original formal received bytes",
+    "restoration_train_counts": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "L_exposures_per_row": 126000,
+      "U_exposures_per_row": 1134000,
+      "epochs_per_row": 20,
+      "updates_per_row": 4940,
+      "TX_labels": 0,
+      "F_training_reads": 0,
+      "shared_extra_LU_calibration_exposures": 0
+    },
+    "source_validation_panel": 1800,
+    "target_panel": "Onlysource-qualified fixedrank winner,original168000x7;otherwise0target;oldR17formal reused onlyafternewscoring"
+  },
+  "permissions": {
+    "regime": "Frozen evaluation only;independent CPU truth-last;no training/head/state update",
+    "query_use": "Conditional frozen inference only;no targetadaptation/feedback;originalF/defaulthead unchanged",
+    "external_method_exception": null,
+    "claim_scope": "User-specified checkpoint composition on previously exposed simulated practical benchmark;no new blind-test or per-detail authenticity claim"
+  },
+  "checkpoint": {
+    "initialization": "No initialization/training;original T1 own scratch20+own10 FINAL30;original R17 finalE20/4940 frozen",
+    "sources": [
+      {
+        "run_id": "20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r02",
+        "commit": "409fbf49571fb39cfd02701992824d7d71a6c712",
+        "path": "runs/20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r02/T1-s2026092701/source/final_ssdg.pth",
+        "role": "Original frozen T1 default head"
+      },
+      {
+        "run_id": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+        "commit": "cd97744884b5e460926e48c8b7efb7d78c6da0f4",
+        "path": "runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/unroll_unshared/native_map_prior/final.pt",
+        "role": "Original frozen R17 restorer"
+      }
+    ],
+    "contract_check_ref": "Original exact role_ids sourceRX/day and fixed-final provenance;T1 historical own_model strict loader;R17 original strict loader;actual2Ls noquery smoke first",
+    "provenance_verdict": "VERIFIED original source metadata:matching7/63/30 roles,source-only fixed final lineage,no target training;original R17 TX/F/target training0",
+    "selection_rule": "Explicit human T1 and R17 selection;no candidate scan or target-based parameter/seed selection",
+    "evaluation_readers": [
+      "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701 original defaulthead"
+    ]
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "side/T1-R17",
+    "gpu_policy": "N607 pool6/7,one ownGPUworker,allownercomputePIDcap2/free12GB;capacity4lock until CUDAvisible;preserveparentandotherowners",
+    "remote_run_root": "runs/20261020-evaluation-T1E30-R17-s2026092701-r01",
+    "remote_log_root": "runs/20261020-evaluation-T1E30-R17-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/T1E30_R17_20261020_r01",
+    "launch_command": "python -u -m experiments.pamf_t1_r17_eval.runner run --base PROJECT --source-cache PROJECT/data_caches/phase1_manysig_reference_20261019/source_cache --output PROJECT/runs/20261020-evaluation-T1E30-R17-s2026092701-r01 --expected-commit c462f6e866f736064186f338767975691d98f298",
+    "stop_rule": "Technical failure:preserveoutputsandhealthyprocesses,noautomaticretry;no stop on low score"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "smoke.json",
+    "worker.json",
+    "prediction.log",
+    "prediction/{view}.logits.npy",
+    "prediction/physical_ids.npy",
+    "prediction/complete.json",
+    "summary.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "MacroF1",
+      "confusion",
+      "repair_damage_net",
+      "TX_RX_day",
+      "clean_correct_wrong_subsets",
+      "all_six_correct",
+      "prediction_cost",
+      "goal_70_and_sameT1_clean_minus5pp"
+    ],
+    "dimensions": [
+      "clean",
+      "three suburban separately",
+      "three urban separately",
+      "TX",
+      "RX",
+      "day",
+      "train role/state/lock"
+    ],
+    "primary": "T1 original vs R17+T1 accuracy/MacroF1 byclean/suburban/urban;lowurban70 andotherfive rawT1clean-5pp",
+    "prediction_ref": "runs/20261020-evaluation-T1E30-R17-s2026092701-r01/prediction",
+    "scorer_ref": "experiments.pamf_t1_r17_eval.runner score;separateCPU after all7new+original finite predictions and IDs",
+    "final_user_targets": {
+      "lowurban_accuracy_min": 70.0,
+      "other_five_max_gap_vs_original_clean_pp": 5.0
+    }
+  },
+  "rows": [
+    {
+      "row_id": "T1_original",
+      "method": "T1E30_R17_frozen",
+      "purpose": "reuse original complete all7 native default-head logits",
+      "config_ref": "experiments/pamf_t1_r17_eval/runner.py",
+      "resolved_config_ref": "runs/20261020-evaluation-T1E30-R17-s2026092701-r01/smoke.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original T1/R17 seeds unchanged;no new sampling/training;fixed original168000x7 received IQ",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0newtraining;T1 own20+10=30/R17component60 historical costs separate;cached R17IQ and T1raw logits reused",
+      "output_root": "runs/20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r02/T1-s2026092701/prediction",
+      "log_path": "runs/20261020-evaluation-T1E30-R17-s2026092701-r01/prediction.log",
+      "command": "python -u -m experiments.pamf_t1_r17_eval.runner run --base PROJECT --source-cache PROJECT/data_caches/phase1_manysig_reference_20261019/source_cache --output PROJECT/runs/20261020-evaluation-T1E30-R17-s2026092701-r01 --expected-commit c462f6e866f736064186f338767975691d98f298",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "worker.json",
+        "prediction.log",
+        "prediction/{view}.logits.npy",
+        "prediction/physical_ids.npy",
+        "prediction/complete.json",
+        "summary.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "R17_T1",
+      "method": "T1E30_R17_frozen",
+      "purpose": "reuse original complete R17 IQ;new original native T1 forward",
+      "config_ref": "experiments/pamf_t1_r17_eval/runner.py",
+      "resolved_config_ref": "runs/20261020-evaluation-T1E30-R17-s2026092701-r01/smoke.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original T1/R17 seeds unchanged;no new sampling/training;fixed original168000x7 received IQ",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0newtraining;T1 own20+10=30/R17component60 historical costs separate;cached R17IQ and T1raw logits reused",
+      "output_root": "runs/20261020-evaluation-T1E30-R17-s2026092701-r01",
+      "log_path": "runs/20261020-evaluation-T1E30-R17-s2026092701-r01/prediction.log",
+      "command": "python -u -m experiments.pamf_t1_r17_eval.runner run --base PROJECT --source-cache PROJECT/data_caches/phase1_manysig_reference_20261019/source_cache --output PROJECT/runs/20261020-evaluation-T1E30-R17-s2026092701-r01 --expected-commit c462f6e866f736064186f338767975691d98f298",
+      "expected_artifacts": [
+        "launch.json",
+        "smoke.json",
+        "worker.json",
+        "prediction.log",
+        "prediction/{view}.logits.npy",
+        "prediction/physical_ids.npy",
+        "prediction/complete.json",
+        "summary.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Only this side-task new root and files may be changed;do not alter parent R27 workers/monitor/output.",
+    "19focused negative checks PASS;real source checkpoint smoke first,then immediately prediction.",
+    "Original T1/R17 independent reviews exist;no new independent reviewer invoked under explicit side-conversation subagent prohibition.",
+    "R17 cached IQ is reader-independent and exact opaque-ID aligned;old F50 logits are never consumed by T1 scoring.",
+    "All new7 and original7 predictions complete before CPU truth connection;report all negatives,never rerank/retrain."
+  ],
+  "registered_at": "2026-10-20T02:14:24+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "formal_views_complete": 7,
+    "model_seed_count": 1,
+    "lowurban_accuracy": 67.10119047619048,
+    "goal_complete": false,
+    "performance_targets_met": false
+  }
+}

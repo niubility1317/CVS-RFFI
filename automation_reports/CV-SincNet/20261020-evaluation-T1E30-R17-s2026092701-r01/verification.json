@@ -1,0 +1,20 @@
+{
+  "status": "VERIFIED",
+  "method_commit": "c462f6e866f736064186f338767975691d98f298",
+  "archive_SHA_match": true,
+  "remote_compile": true,
+  "focused_negative_checks": 19,
+  "real_checkpoint_source_noquery_smoke": "PASS",
+  "source_physical_roles": "EXACT_MATCH",
+  "original_T1_native_loader": true,
+  "original_R17_strict_loader": true,
+  "PID_CWD_argv_GPU_log_growth": true,
+  "own_controller_and_worker_exited": true,
+  "independent_truth_last": true,
+  "confusion_accuracy_MacroF1_records_recomputed": 252,
+  "TX_RX_day_partitions_verified": true,
+  "new_training_updates": 0,
+  "head_fit_updates": 0,
+  "original_R17_IQ_and_T1_raw_predictions_reused": true,
+  "independent_review": "Original T1/R17 P0/P1 reviews reused;new subagent review not invoked under side-conversation prohibition"
+}
