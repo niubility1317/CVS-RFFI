@@ -99,7 +99,8 @@
     "remote_log_root": "logs/20261021-diagnostic-restoration-R46-phase-reference-s2026092701-r52",
     "local_artifact_root": "local_artifacts/pamf_restoration/r46_phase_reference_r52_20261021",
     "launch_command": "python -u -m experiments.pamf_r46_phase_reference.runner --parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source ../../data_caches/phase1_manysig_reference_20261019/source_cache --output ../../runs/20261021-diagnostic-restoration-R46-phase-reference-s2026092701-r52 --expected-commit abbb41be3100ae4522c4e01fac6cb919764b6da8",
-    "stop_rule": "On technical failure preserve own output and error;no retries,other-process stops,or model changes"
+    "stop_rule": "On technical failure preserve own output and error;no retries,other-process stops,or model changes",
+    "postlaunch_state": "VERIFIED_ALL_OWNED_PROCESSES_EXITED"
   },
   "expected_artifacts": [
     "launch.json",
@@ -170,7 +171,20 @@
     "All8previousversionsformaltestsclosed;human350521parentunchanged;not basedon target-score selected newparent/width.",
     "No training/newnetworkversions;source128C4diagnostic does not replace existing seven-scene formal validation.",
     "21focusedchecks/CLIhelp/ONE P0P1PASS;real2Lsnoquerysmokefirstthenimmediateprobe.",
-    "REJECTED_EXTRA_GATE:extra brainstorm design approval conflicts user minimalworkflow;no additional approval/hash/seal machinery."
+    "REJECTED_EXTRA_GATE:extra brainstorm design approval conflicts user minimalworkflow;no additional approval/hash/seal machinery.",
+    "VERIFIED/ANALYZED：128源样本、1536主前向及2Ls真实checkpoint smoke；108单元的五种误差独立复算通过，R51三个旧指标共108数组逐项一致。两received非零C4 final均值：等变0.82160833、不变1.49335690、固定clean1.50956389、坐标传递clean0.84315633。0F/TX/V/target/truth/训练，原350521父逐张量未变，所属CPU进程已退出；原完整性能和TX真实性目标ACTIVE。"
   ],
-  "registered_at": "2026-10-20T16:42:08+00:00"
+  "registered_at": "2026-10-20T16:42:08+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "source_phase_reference_errors": {
+      "equivariance_nmse": 0.8216083298126856,
+      "paired_clean_nmse": 0.8431563278039297,
+      "unrotated_clean_nmse": 0.02042299509048462,
+      "invariance_nmse": 1.4933569033940632,
+      "fixed_clean_nmse": 1.5095638930797577
+    },
+    "TX_or_target_proof": false,
+    "goal_complete": false
+  }
 }
