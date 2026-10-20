@@ -1,10 +1,10 @@
 # 无 TX 标签恢复器的压缩与性能联合优化
 
+十七个固定新版的正式性能、郊区/urban 全场景和配对推理成本均已完整汇总，按预登记顺序保留全部结果；性能优先，不用通过退化容差、减参或提速替代逐场景性能改善。十七行中相对指定父七景全部提高的版本为：R48 prune_refine（273765参数，low urban 68.257738%）。完整数据按固定矩阵顺序报告，不据此另选父、修改超参数或选择性重跑。只反映单 seed 工程基准，70%/5pp以逐行验收表为准；输入TX逐细节真实性尚未证明，原完整目标继续ACTIVE。 见[十七版性能总表](../PAMF_R46_COMPRESSION_PERFORMANCE_20261020.md)。指定 350521 父版不变，原完整目标继续 ACTIVE。
+
 2026-10-21 当前 R57：VERIFIED/ANALYZED：两行完整E20/4940、源1800×7和正式168000×7、每行七预测固定后独立truth-last、完整曲线/同卡成本、所属controller/worker退出及两套独立权重CPU严格重载均已核实。gn_full 273765参数，七景较父提高4/下降3，lowurban 67.330357%（较父-0.179762pp），70%=False、其他五景gap5pp=False；同卡G B1父/本版45.8344/45.3467ms，G+F B1父/本版57.1810/57.1344ms；gn_half 273765参数，七景较父提高4/下降3，lowurban 67.588095%（较父+0.077976pp），70%=False、其他五景gap5pp=False；同卡G B1父/本版47.8450/47.4498ms，G+F B1父/本版58.4878/58.0378ms。gn_full相对同宽full-fold控制R55/fold_full七景提高6/下降1，lowurban差+1.005952pp；gn_half相对同宽full-fold控制R55/fold_full七景提高7/下降0，lowurban差+1.263690pp。原指定350521直接父保持，全部正负结果保留；不把容差通过、减参、源域或解析关联当作正式提升或逐细节TX真实性。原完整目标ACTIVE。 [全部七景与同宽控制](../PAMF_R46_GN_RESPONSE_R57_20261021.md)。
 
 2026-10-21 当前R58：现有压缩图168GN组内可学习统计校正，完整276453/context186959、新参数2688；同图calibrated/identity_control两行，直接指定350521父/source-onlyR55fullfold统计、无训练学生继承。31checks/CLI/一次P0P1PASS，CPU2共128source received/额外256父+256恒等子G输入，0clean/TX/F/V/target/optimizer校准；所有新统计参数随原参数联合E20/4940，原参数100轮/新参数仅20轮分别记账；两行自动source及168000×7正式测试。核心方案/prototype在R57分数读取前固定，GPU3/2等待R57实际退出。VERIFIED/RUNNING：两行实际GPU3/2首轮训练、真实组统计校准/smoke/PID与日志增长已核实，正式性能待完成；性能优先，原目标ACTIVE。[R58固定方案](../PAMF_R46_STAT_TRANSPORT_R58_20261021.md)。
-
-十五个固定新版的正式性能、郊区/urban 全场景和配对推理成本均已完整汇总，按预登记顺序保留全部结果；性能优先，不用通过退化容差、减参或提速替代逐场景性能改善。十五行中相对指定父七景全部提高的版本为：R48 prune_refine（273765参数，low urban 68.257738%）。完整数据按固定矩阵顺序报告，不据此另选父、修改超参数或选择性重跑。只反映单 seed 工程基准，70%/5pp以逐行验收表为准；输入TX逐细节真实性尚未证明，原完整目标继续ACTIVE。 见[十五版性能总表](../PAMF_R46_COMPRESSION_PERFORMANCE_20261020.md)。指定 350521 父版不变，原完整目标继续 ACTIVE。
 
 2026-10-21 当前 R55：VERIFIED/ANALYZED：两行完整E20/4940、源1800×7和正式168000×7、每行七预测固定后独立truth-last、完整曲线/同卡成本、所属controller/worker退出及两套独立权重CPU严格重载均已核实。fold_full 273765参数，七景较父提高0/下降7，lowurban 66.324405%（较父-1.185714pp），70%=False、其他五景gap5pp=False；同卡G B1父/本版43.0100/42.1524ms，G+F B1父/本版54.3029/53.6499ms；fold_half 273765参数，七景较父提高0/下降7，lowurban 67.173810%（较父-0.336310pp），70%=False、其他五景gap5pp=False；同卡G B1父/本版43.5420/42.7307ms，G+F B1父/本版53.4489/52.6415ms。fold_full相对同宽权重切片R53/prune_decay七景提高0/下降7，lowurban差-2.202976pp；fold_half相对同宽权重切片R53/prune_decay七景提高0/下降7，lowurban差-1.353571pp。原指定350521直接父保持，全部正负结果保留；不把容差通过、减参、源域或解析关联当作正式提升或逐细节TX真实性。原完整目标ACTIVE。 [全部七景与同宽控制](../PAMF_R46_FOLD_COMPENSATE_R55_20261021.md)。
 
