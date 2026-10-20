@@ -84,3 +84,8 @@ R02 纯函数保真精简完成结论：两候选均未通过固定源域资格�
 [R03登记](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-calibrated-source-s2026092701-m2-r03/report.md)：半秩3775105（−19.0773%）与2/3秩4241809（−9.0730%），仅原R17教师/初始化，0失败student。固定R07源训练epoch01中seed2026102002选512 IQ、每层8位置未中心化二阶矩/固定ridge，以SVD(W·Cholesky(C))及左因子逆白化初始化；bias/GN/1×1和三步×2CG保持。纯10倍三步教师输出NMSE，E20/4940与原完整L/U缓存顺序；额外512校准曝光/实际L-U/初始化耗时单列，0TX/F/V/target训练或校准。
 
 该科学方案在R02尚运行且未读取任何新压缩模型目标结果时固定。18项聚焦检查与唯一独立P0/P1审查PASS；方法commit `bbccd16408a0d9fc356b48f3579044e2284112dd` 已push/OID一致，归档/远端编译/实际原权重2Ls无querysmoke PASS。等待R02根终态且实际owned GPU handles全部退出后，两source GPU4/5实际PID/CWD/命令/GPU/日志增长及首轮已核实。每view源V准确率不低于原R17和原波形护栏，合格者按最少完整参数只选一个自动完整目标或0target；不依据目标重排/追加/重跑。R03 尚无完整源资格或目标零退化结果，校准误差与参数减少不证明性能保持。
+
+
+## R02 冻结源预测的配对诊断
+
+复用全部已冻结/评分source预测，0原始IQ/权重/模型forward/目标访问。1800个low urban样本中，step_norm_fidelity49次换类（原正确变错20、原错变对17、净−3），factor_half_fidelity69次（31/20、净−11）；两版source clean均0次换类。独立CPU配对计数与此前完整汇总一致，完整TX/RX/day和输出距离见[同row补充](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-fidelity-source-s2026092701-m2-r02/report.md#冻结源预测的配对决策诊断)。波形均值误差不能替代决策保持；可在后续独立R17精简候选中检验冻结原默认头的后验/特征保真，但当前R03不变，不以此追溯补测或改变目标选择。分析实现commit `ed82cd7b711c592f7bb58a283c143034ca2a4514`，7项聚焦检查PASS。

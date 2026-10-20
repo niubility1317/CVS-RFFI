@@ -315,6 +315,26 @@
     "target_evaluated": false,
     "target_accuracy_nonregression": null,
     "all_negative_results_preserved": true,
-    "goal_complete": false
+    "goal_complete": false,
+    "paired_source_diagnostic": {
+      "analysis_code_commit": "ed82cd7b711c592f7bb58a283c143034ca2a4514",
+      "source_only": true,
+      "new_model_forward": false,
+      "new_target_access": false,
+      "lowurban": {
+        "step_norm_fidelity": {
+          "decision_changed": 49,
+          "lost": 20,
+          "gained": 17,
+          "net_correct_delta": -3
+        },
+        "factor_half_fidelity": {
+          "decision_changed": 69,
+          "lost": 31,
+          "gained": 20,
+          "net_correct_delta": -11
+        }
+      }
+    }
   }
 }

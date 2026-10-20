@@ -89,3 +89,40 @@ N607普通账户，GPU4/5等R01根终态且实际owned GPU handles退出；每�
 |factor_half_fidelity|teacher_stage_nmse|0.00327135622|0.000407370609|0.000742718217|-7.16775409e-05|
 
 独立重算315组混淆矩阵、accuracy/Macro-F1、repair−damage/net与分组样本数；TX/RX/day分区分别回合至各view总矩阵。全部结果是单一训练seed及固定测试集点估计，七视图相关，不增加独立物理样本量；不称总体/多seed零退化、在轨效果或数学全局最简。实际方法commit`1515d73c5de3e962a822bbaca34182e28a6ae584`保持；新增分析代码只读取完整聚合，不修改健康run。
+
+
+## 冻结源预测的配对决策诊断
+
+复用原R17及本轮两版已经完整冻结并评分的source V1800×七视图预测；全部三行/七视图、物理ID及原F50/defaulthead匹配后，独立CPU分析已有源验证标签。0原始IQ/权重读取、0模型forward/训练/头拟合/目标访问，当前R03保持固定。分析代码commit `ed82cd7b711c592f7bb58a283c143034ca2a4514`，7项聚焦检查PASS；配对正确数与原完整汇总逐项一致。
+
+|候选|场景|决策变化|原正确变错误|原错误变正确|双方错误但换类|正确数净变化|
+|---|---|---:|---:|---:|---:|---:|
+|step_norm_fidelity|clean|0|0|0|0|+0|
+|step_norm_fidelity|practical_high|5|1|4|0|+3|
+|step_norm_fidelity|practical_mid|15|6|7|2|+1|
+|step_norm_fidelity|practical_low_suburban|12|7|2|3|-5|
+|step_norm_fidelity|practical_high_urban|6|1|4|1|+3|
+|step_norm_fidelity|practical_mid_urban|43|20|15|8|-5|
+|step_norm_fidelity|practical_low_urban|49|20|17|12|-3|
+|factor_half_fidelity|clean|0|0|0|0|+0|
+|factor_half_fidelity|practical_high|4|1|3|0|+2|
+|factor_half_fidelity|practical_mid|13|7|5|1|-2|
+|factor_half_fidelity|practical_low_suburban|15|7|4|4|-3|
+|factor_half_fidelity|practical_high_urban|14|6|7|1|+1|
+|factor_half_fidelity|practical_mid_urban|44|21|17|6|-4|
+|factor_half_fidelity|practical_low_urban|69|31|20|18|-11|
+
+low urban的内部变化（距离均对原R17同一输入的已保存输出，不对clean；是诊断均值，不是因果证明）：
+
+|候选|样本组|数量|教师置信度均值|教师logit间隔均值|最大logit变化均值|特征cos距离均值|恢复IQ NMSE到R17均值|
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+|step_norm_fidelity|all|1800|0.944464701|5.79360566|0.534263816|0.00192863795|0.00163679558|
+|step_norm_fidelity|decision_changed|49|0.617323923|0.688750982|1.11051608|0.00583512038|0.0024635503|
+|step_norm_fidelity|R17_correct_student_wrong|20|0.590098384|0.529302359|1.13912008|0.00703586738|0.00223592546|
+|step_norm_fidelity|R17_wrong_student_correct|17|0.620759111|0.631805406|0.982851621|0.00362270863|0.00244499091|
+|factor_half_fidelity|all|1800|0.944464701|5.79360566|0.684551048|0.00315387235|0.00278478369|
+|factor_half_fidelity|decision_changed|69|0.651678046|0.974158586|1.52126866|0.00869359705|0.00483025547|
+|factor_half_fidelity|R17_correct_student_wrong|31|0.653287857|0.95251481|1.48198229|0.00993762511|0.003660332|
+|factor_half_fidelity|R17_wrong_student_correct|20|0.644711117|0.853182691|1.34699762|0.0069565692|0.00792716778|
+
+两版source clean逐样本决策均未改变；low urban则分别49/69次翻转，净损失3/11个正确样本。波形护栏通过、教师IQ均值误差或净准确率差不能替代逐样本决策保持。该现象支持在后续独立R17精简候选中检验原默认头的决策/特征保真约束，但不证明某种损失必然有效，也不用于改变R03、回流目标分数或追溯补测R02。所有TX/RX/day配对分组、置信度分箱和完整数值见[诊断汇总](source_saved_prediction_fidelity.json)。这是同row事后源域诊断，仍无新目标性能证据。
