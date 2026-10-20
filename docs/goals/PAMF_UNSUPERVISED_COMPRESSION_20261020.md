@@ -1,5 +1,7 @@
 # 无 TX 标签恢复器的压缩与性能联合优化
 
+R63已实际VERIFIED/WAITING_PARENT_FORMAL：CPU2/0GPU、真实2Ls解析no-query smoke、单archiveSHA/compile/实际PID/CWD/argv/空CUDA及日志增长核实。未消费R62源验证或正式准确率；同父M35、同增量预算R49retain与GN3/GN1两个固定读出。复用56、新算84，总140固定后独立truth-last2016组/336条件对照/140配对差。无新恢复器/F/checkpoint/神经预测/训练/校准/头拟合，不改父，不作逐细节真实性证明。[R63固定评价](../PAMF_GROUP_FORMAL_IDENTITY_R63_20261021.md)。
+
 2026-10-21 当前 R62：VERIFIED / TRAINING：固定方法 7a8fa7bd836946c3493635cbe0966591ecf14e1e 已发布，普通账户、单归档 SHA 比对和远端 compile 通过；真实指定父/F50/两条 L_s no-query smoke PASS。两固定行物理 GPU3/2 的实际 PID/CWD/argv/CUDA/CPU2、GPU PID、日志增长和至少一轮有限损失已核实。每卡一条本任务训练，总数2；其他 owner 不变。整组 GN3/GN1 同 248828 参数及初值，全 prior、原波形目标、E20/4940 后两行均自动七景正式测试/独立 truth-last/同卡成本，无源分数筛选，无新识别收益结论，完整目标 ACTIVE。 [固定矩阵](../PAMF_R46_WHOLE_GROUP_R62_20261021.md)。
 
 2026-10-21 R62 LOCAL_VERIFIED：整组裁剪既有上下文 U-Net，完整 prior 保留；GN3/GN1 两行同 248828 参数、同初始权重、同源预算。直接指定 M35 父与冻结 IQ 教师，权重选组无需 IQ，原 paired IQ＋谱误差＋1→0.1 IQ 教师，全 E20/4940/micro256，0 TX/F/V/target 优化。56 checks/CLI/真实父合成 CPU 梯度/ONE P0P1 PASS；首步真实 2 L_s smoke 后两行自动七景正式测试、独立 truth-last 与同卡成本。只读复用 R49 retain_refine 同增量预算对照，不继承任何子版；性能优先，70/5pp/逐细节真实性目标 ACTIVE。[R62 固定方案](../PAMF_R46_WHOLE_GROUP_R62_20261021.md)。

@@ -1,6 +1,6 @@
 # R63：整组压缩的固定无 F 同 TX 关联
 
-状态：LOCAL_VERIFIED，尚未发布。30 项针对性检查、CLI 和一次独立 P0/P1 审查通过。R62 两行仍在固定源训练，本设计未读取其源验证或正式准确率，也不改变模型、损失、超参、预算或测试次序。
+状态：**VERIFIED / WAITING_PARENT_FORMAL**，已发布。30 项针对性检查、CLI 和一次独立 P0/P1 审查通过。R62 两行仍在固定源训练，本设计未读取其源验证或正式准确率，也不改变模型、损失、超参、预算或测试次序。
 
 本轮只检验已冻结恢复 IQ 的同 TX 关联，不新增恢复网络。读出固定为 raw、指定 M35、同增量预算 R49 retain_refine、R62 GN3/GN1 两行。R62 两行均完成七景正式预测和独立评分后，才读取其已保存 IQ。raw/M35 的 56 个 R56 解析单元只读复用；R49 与两 R62 共 84 单元新算，总 140 单元全部固定后独立接入 TX/RX/day 真值。
 
@@ -11,3 +11,6 @@
 N607 普通账户、CPU2、空 CUDA、GPU worker 0，沿用 R41 score.lock 最多一个本任务 scorer。独立不可覆盖 root，单 Git method commit、一次真实两条 L_s 无参数 no-query smoke、一次独立 P0/P1 审查，最小登记/单归档 SHA/compile/实际 PID/CWD/argv/日志核验。启动入口 python -u -m experiments.pamf_group_formal_identity.runner run，准确参数与路径登记在 experiment.json。预期保存 resolved、smoke、features、physical_ids、calibration_reference、feature_complete、summary、complete 与日志。父失败、输入/ID/预算/分组不符、非有限值、输出冲突均保留产物，不自动重试，不改健康任务。
 
 该检验不阻塞 R62 正式测试或独立权重交付。整体关联、条件置换差异、识别率和 F 几何都不足以证明每个恢复细节真实属于输入 TX；不外推真实在轨场景，不称新独立盲测，不用于回流选模或选择性重跑。原性能与逐细节真实性目标 ACTIVE。
+
+
+实际启动状态：VERIFIED / WAITING_PARENT_FORMAL：普通账户、单归档SHA、compile、真实2Ls无参数解析no-query smoke、实际PID/CWD/argv/空CUDA/CPU2及日志增长已核实。等待R62两行七景正式评分；复用R56raw/M35共56单元，新算R49同增量预算控制与两R62共84，总140先于truth固定。0F/checkpoint/新神经预测/训练/新校准/头拟合/GPU，不改变父实验或选择；无新统计结论，目标ACTIVE。

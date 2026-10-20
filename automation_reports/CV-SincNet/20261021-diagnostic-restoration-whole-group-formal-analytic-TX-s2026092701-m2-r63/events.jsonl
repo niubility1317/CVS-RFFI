@@ -1,2 +1,3 @@
 {"at": "2026-10-20T22:54:50+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-20T22:54:50+00:00", "status": "LOCAL_VERIFIED", "note": "30checks/CLI/ONEP0P1PASS;notlaunched", "evidence": ["experiment.json", "report.md"], "row_id": null}
+{"at": "2026-10-20T22:57:15+00:00", "status": "RUNNING", "note": "VERIFIED / WAITING_PARENT_FORMAL：普通账户、单归档SHA、compile、真实2Ls无参数解析no-query smoke、实际PID/CWD/argv/空CUDA/CPU2及日志增长已核实。等待R62两行七景正式评分；复用R56raw/M35共56单元，新算R49同增量预算控制与两R62共84，总140先于truth固定。0F/checkpoint/新神经预测/训练/新校准/头拟合/GPU，不改变父实验或选择；无新统计结论，目标ACTIVE。", "evidence": ["experiment.json", "report.md"], "row_id": null}
