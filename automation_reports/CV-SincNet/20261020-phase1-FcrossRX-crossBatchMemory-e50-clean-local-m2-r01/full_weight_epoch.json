@@ -1,0 +1,37 @@
+{
+  "status": "VERIFIED_FULL_WEIGHT_SOURCE_EPOCH",
+  "code_commit": "2a20ee904223bcc1f0cd7e4c53c5cd57aebcb798",
+  "rows": [
+    {
+      "row_id": "ANCHOR-s2026092701",
+      "epochs_checked": 15,
+      "native_updates": 3330,
+      "SC_active_updates": 2220,
+      "full_weight": 0.1,
+      "full_weight_loss": 1.9143088685499656,
+      "skipped_nonfinite_updates": 0,
+      "satellite_examples": 0,
+      "U_truth_available": 0,
+      "target_examples": 0,
+      "extra_model_forwards": 0,
+      "first_full_weight_epoch_seconds": 70.79179191589355
+    },
+    {
+      "row_id": "MEM4-s2026092701",
+      "epochs_checked": 15,
+      "native_updates": 3330,
+      "SC_active_updates": 2220,
+      "full_weight": 0.1,
+      "full_weight_loss": 2.0070071080783465,
+      "skipped_nonfinite_updates": 0,
+      "satellite_examples": 0,
+      "U_truth_available": 0,
+      "target_examples": 0,
+      "extra_model_forwards": 0,
+      "first_full_weight_epoch_seconds": 72.72832322120667
+    }
+  ],
+  "actual_controller_and_two_workers_live_when_observed": true,
+  "performance_conclusion": "Pending fixedfinal50 and independent clean scoring; source health is not target improvement",
+  "goal": "ACTIVE_UNMET"
+}

@@ -19,3 +19,5 @@ SYM4 在当前批次的锚点与参照特征两侧保留梯度，只让历史参
 [XBM 原论文](https://openaccess.thecvf.com/content_CVPR_2020/html/Wang_Cross-Batch_Memory_for_Embedding_Learning_CVPR_2020_paper.html)提供跨批次记忆思路；当前无收益预设，更多独立配对和陈旧性不能混作纯难负样本效果。
 
 启动后实际 PID/CWD/命令/GPU0/日志增长均 VERIFIED。SYM4 完成 E1、222 更新；两行既有训练分别完成 E25/E24，保持健康。全局 3 个 worker，剩余系统内存约 4.82 GiB。实际原生配方已核对，无星地增强、默认头联合训练；当前尚无新增目标域结果。详见 launch_verification.json。
+
+SYM4 首个机制启用轮 E6 已完成：1332 次原生更新、222 次对比更新，权重 0.01，损失有限，复用同一次实际增强 IQ；额外前向、星地样本、U 真值和目标样本均为 0，无非有限跳步。完整历史键计数在训练完成后按全部逐步记录核实。详见 first_active_epoch.json。
