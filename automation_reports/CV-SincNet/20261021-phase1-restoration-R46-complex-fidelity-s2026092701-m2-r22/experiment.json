@@ -178,6 +178,21 @@
       "all_first_epochs_complete": true,
       "target_predictions": 0,
       "performance_claim": false
+    },
+    "source_stage_snapshot": {
+      "complex625_fixed_E20_19700_complete": true,
+      "source_views": 7,
+      "current_epochs": {
+        "complex625": 20,
+        "complex625_identity": 14
+      },
+      "formal_view_counts": {
+        "complex625": 4,
+        "complex625_identity": 0
+      },
+      "complete_formal_scores": false,
+      "target_scores_read_by_source_analysis": 0,
+      "training_changes": 0
     }
   },
   "expected_artifacts": [
