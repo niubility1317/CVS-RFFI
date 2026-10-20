@@ -221,7 +221,8 @@
       "lowurban_accuracy_min": 70.0,
       "other_five_goal": "接近clean，用户未指定数值容差；与本轮压缩1pp验收分别报告"
     },
-    "aggregate_analysis_ref": "tools/analyze_pamf_r17_target_comparison_results.py;5syntheticchecksPASS;exactcorrectcounts/allfixedrows/1ppacceptance;actualresultsnotreadwhilepredictionactive"
+    "aggregate_analysis_ref": "tools/analyze_pamf_r17_target_comparison_results.py;5syntheticchecksPASS;exactcorrectcounts/allfixedrows/1ppacceptance;actualresultsnotreadwhilepredictionactive",
+    "nonblocking_paired_analysis": "tools/analyze_pamf_r17_target_saved_predictions.py;afterbothrowscomplete/allactualprocessesexited;all3rowsx7savedpredictionsbeforetruth;R17lost/gained/flips/confidence/TXRXday;0newmodelquery/rawIQ/weights/fit;notselectionfeedback or additionalperformancegate"
   },
   "rows": [
     {
