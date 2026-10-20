@@ -1,0 +1,1568 @@
+{
+  "status": "VERIFIED_SOURCE_TRAIN_AND_COST_ONLY",
+  "run": "20261021-phase1-restoration-R46-anchor-refine-s2026092701-m3-r53",
+  "rows": {
+    "prune_decay": {
+      "parameters": 273765,
+      "training": {
+        "full_log_records": 20,
+        "actual_microbatch": 256,
+        "source_tensor_backend": "direct_float32_buffer",
+        "records": [
+          {
+            "epoch": 1,
+            "updates": 247,
+            "losses": {
+              "loss": 0.1337097890982552,
+              "iq_nmse": 0.0792699472147321,
+              "spectral_error": 0.019420509409336817,
+              "teacher_stage_nmse": 0.053468815744869294
+            },
+            "L_exposures": 6300,
+            "U_exposures": 56700,
+            "teacher_IQ_examples": 63000,
+            "source_IQ_examples": 63000,
+            "F_inputs": 0,
+            "teacher_weight": 1.0,
+            "learning_rate_last": 0.0002,
+            "clip_fraction": 0.5506072874493927,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 52.32929971721023
+          },
+          {
+            "epoch": 2,
+            "updates": 494,
+            "losses": {
+              "loss": 0.04273390030293238,
+              "iq_nmse": 0.033004975322693114,
+              "spectral_error": 0.008065098657021447,
+              "teacher_stage_nmse": 0.00978937722576989
+            },
+            "L_exposures": 12600,
+            "U_exposures": 113400,
+            "teacher_IQ_examples": 126000,
+            "source_IQ_examples": 126000,
+            "F_inputs": 0,
+            "teacher_weight": 0.9526315789473684,
+            "learning_rate_last": 0.0001987818960049755,
+            "clip_fraction": 0.22267206477732793,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 101.6815274991095
+          },
+          {
+            "epoch": 3,
+            "updates": 741,
+            "losses": {
+              "loss": 0.036843860431322976,
+              "iq_nmse": 0.030036381705412788,
+              "spectral_error": 0.007564325523636644,
+              "teacher_stage_nmse": 0.0071020919037243675
+            },
+            "L_exposures": 18900,
+            "U_exposures": 170100,
+            "teacher_IQ_examples": 189000,
+            "source_IQ_examples": 189000,
+            "F_inputs": 0,
+            "teacher_weight": 0.9052631578947369,
+            "learning_rate_last": 0.00019514104345825703,
+            "clip_fraction": 0.12955465587044535,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 151.06698538805358
+          },
+          {
+            "epoch": 4,
+            "updates": 988,
+            "losses": {
+              "loss": 0.034022231040492894,
+              "iq_nmse": 0.028671451182592483,
+              "spectral_error": 0.007297486684388585,
+              "teacher_stage_nmse": 0.005811792227483931
+            },
+            "L_exposures": 25200,
+            "U_exposures": 226800,
+            "teacher_IQ_examples": 252000,
+            "source_IQ_examples": 252000,
+            "F_inputs": 0,
+            "teacher_weight": 0.8578947368421053,
+            "learning_rate_last": 0.00018917677739299047,
+            "clip_fraction": 0.10526315789473684,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 201.61832177615725
+          },
+          {
+            "epoch": 5,
+            "updates": 1235,
+            "losses": {
+              "loss": 0.032378173795957414,
+              "iq_nmse": 0.027741976610251837,
+              "spectral_error": 0.007062772314226817,
+              "teacher_stage_nmse": 0.005284293158423333
+            },
+            "L_exposures": 31500,
+            "U_exposures": 283500,
+            "teacher_IQ_examples": 315000,
+            "source_IQ_examples": 315000,
+            "F_inputs": 0,
+            "teacher_weight": 0.8105263157894737,
+            "learning_rate_last": 0.00018105185663666237,
+            "clip_fraction": 0.05263157894736842,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 252.7156321941875
+          },
+          {
+            "epoch": 6,
+            "updates": 1482,
+            "losses": {
+              "loss": 0.030103104778698514,
+              "iq_nmse": 0.026436996069219378,
+              "spectral_error": 0.006719724719723066,
+              "teacher_stage_nmse": 0.004363608589721104
+            },
+            "L_exposures": 37800,
+            "U_exposures": 340200,
+            "teacher_IQ_examples": 378000,
+            "source_IQ_examples": 378000,
+            "F_inputs": 0,
+            "teacher_weight": 0.7631578947368421,
+            "learning_rate_last": 0.00017098800211205718,
+            "clip_fraction": 0.02834008097165992,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 303.5255971220322
+          },
+          {
+            "epoch": 7,
+            "updates": 1729,
+            "losses": {
+              "loss": 0.029595207203002204,
+              "iq_nmse": 0.02625194725725386,
+              "spectral_error": 0.006856036336175979,
+              "teacher_stage_nmse": 0.0041918163644889045
+            },
+            "L_exposures": 44100,
+            "U_exposures": 396900,
+            "teacher_IQ_examples": 441000,
+            "source_IQ_examples": 441000,
+            "F_inputs": 0,
+            "teacher_weight": 0.7157894736842105,
+            "learning_rate_last": 0.00015925984629607922,
+            "clip_fraction": 0.032388663967611336,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 352.4633831582032
+          },
+          {
+            "epoch": 8,
+            "updates": 1976,
+            "losses": {
+              "loss": 0.029724150995886513,
+              "iq_nmse": 0.026444386498322564,
+              "spectral_error": 0.0068629599155651195,
+              "teacher_stage_nmse": 0.004393363583064269
+            },
+            "L_exposures": 50400,
+            "U_exposures": 453600,
+            "teacher_IQ_examples": 504000,
+            "source_IQ_examples": 504000,
+            "F_inputs": 0,
+            "teacher_weight": 0.668421052631579,
+            "learning_rate_last": 0.00014618743877543397,
+            "clip_fraction": 0.044534412955465584,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 401.38723141606897
+          },
+          {
+            "epoch": 9,
+            "updates": 2223,
+            "losses": {
+              "loss": 0.028277146495050854,
+              "iq_nmse": 0.025520265641666595,
+              "spectral_error": 0.006635566204313248,
+              "teacher_stage_nmse": 0.0039048260171262047
+            },
+            "L_exposures": 56700,
+            "U_exposures": 510300,
+            "teacher_IQ_examples": 567000,
+            "source_IQ_examples": 567000,
+            "F_inputs": 0,
+            "teacher_weight": 0.6210526315789473,
+            "learning_rate_last": 0.0001321275124150214,
+            "clip_fraction": 0.03643724696356275,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 450.3446171230171
+          },
+          {
+            "epoch": 10,
+            "updates": 2470,
+            "losses": {
+              "loss": 0.026888040097932966,
+              "iq_nmse": 0.0245721659253514,
+              "spectral_error": 0.006316244757601193,
+              "teacher_stage_nmse": 0.003486346273431702
+            },
+            "L_exposures": 63000,
+            "U_exposures": 567000,
+            "teacher_IQ_examples": 630000,
+            "source_IQ_examples": 630000,
+            "F_inputs": 0,
+            "teacher_weight": 0.5736842105263158,
+            "learning_rate_last": 0.00011746374847653041,
+            "clip_fraction": 0.012145748987854251,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 498.9954214771278
+          },
+          {
+            "epoch": 11,
+            "updates": 2717,
+            "losses": {
+              "loss": 0.026705325790340937,
+              "iq_nmse": 0.024635600818055017,
+              "spectral_error": 0.006461371779441834,
+              "teacher_stage_nmse": 0.0033186469292120326
+            },
+            "L_exposures": 69300,
+            "U_exposures": 623700,
+            "teacher_IQ_examples": 693000,
+            "source_IQ_examples": 693000,
+            "F_inputs": 0,
+            "teacher_weight": 0.5263157894736843,
+            "learning_rate_last": 0.00010259630634236501,
+            "clip_fraction": 0.008097165991902834,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 547.6656457830686
+          },
+          {
+            "epoch": 12,
+            "updates": 2964,
+            "losses": {
+              "loss": 0.026560415264159913,
+              "iq_nmse": 0.024659597411988275,
+              "spectral_error": 0.006503743666978109,
+              "teacher_stage_nmse": 0.003289778315595218
+            },
+            "L_exposures": 75600,
+            "U_exposures": 680400,
+            "teacher_IQ_examples": 756000,
+            "source_IQ_examples": 756000,
+            "F_inputs": 0,
+            "teacher_weight": 0.47894736842105257,
+            "learning_rate_last": 8.79309035682149e-05,
+            "clip_fraction": 0.020242914979757085,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 596.973288170062
+          },
+          {
+            "epoch": 13,
+            "updates": 3211,
+            "losses": {
+              "loss": 0.025764352755887166,
+              "iq_nmse": 0.0240507911216645,
+              "spectral_error": 0.006299511951113504,
+              "teacher_stage_nmse": 0.003240626405274111
+            },
+            "L_exposures": 81900,
+            "U_exposures": 737100,
+            "teacher_IQ_examples": 819000,
+            "source_IQ_examples": 819000,
+            "F_inputs": 0,
+            "teacher_weight": 0.43157894736842106,
+            "learning_rate_last": 7.386774425866234e-05,
+            "clip_fraction": 0.016194331983805668,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 653.1432485021651
+          },
+          {
+            "epoch": 14,
+            "updates": 3458,
+            "losses": {
+              "loss": 0.025282640876278045,
+              "iq_nmse": 0.023769729862137445,
+              "spectral_error": 0.006259259750918737,
+              "teacher_stage_nmse": 0.0031231523520416685
+            },
+            "L_exposures": 88200,
+            "U_exposures": 793800,
+            "teacher_IQ_examples": 882000,
+            "source_IQ_examples": 882000,
+            "F_inputs": 0,
+            "teacher_weight": 0.38421052631578945,
+            "learning_rate_last": 6.0790597899329526e-05,
+            "clip_fraction": 0.008097165991902834,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 726.5933010221925
+          },
+          {
+            "epoch": 15,
+            "updates": 3705,
+            "losses": {
+              "loss": 0.025020816486506236,
+              "iq_nmse": 0.02364240821722954,
+              "spectral_error": 0.006087301250961092,
+              "teacher_stage_nmse": 0.003188565638566774
+            },
+            "L_exposures": 94500,
+            "U_exposures": 850500,
+            "teacher_IQ_examples": 945000,
+            "source_IQ_examples": 945000,
+            "F_inputs": 0,
+            "teacher_weight": 0.33684210526315794,
+            "learning_rate_last": 4.905632667326222e-05,
+            "clip_fraction": 0.03643724696356275,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 809.3912557261065
+          },
+          {
+            "epoch": 16,
+            "updates": 3952,
+            "losses": {
+              "loss": 0.024845901814718095,
+              "iq_nmse": 0.023666375987113467,
+              "spectral_error": 0.006324875754969461,
+              "teacher_stage_nmse": 0.0029822468133199782
+            },
+            "L_exposures": 100800,
+            "U_exposures": 907200,
+            "teacher_IQ_examples": 1008000,
+            "source_IQ_examples": 1008000,
+            "F_inputs": 0,
+            "teacher_weight": 0.2894736842105263,
+            "learning_rate_last": 3.898514705056182e-05,
+            "clip_fraction": 0.016194331983805668,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 892.6776454281062
+          },
+          {
+            "epoch": 17,
+            "updates": 4199,
+            "losses": {
+              "loss": 0.02412441188428137,
+              "iq_nmse": 0.023121597295715696,
+              "spectral_error": 0.006133721676374239,
+              "teacher_stage_nmse": 0.0028753134959510394
+            },
+            "L_exposures": 107100,
+            "U_exposures": 963900,
+            "teacher_IQ_examples": 1071000,
+            "source_IQ_examples": 1071000,
+            "F_inputs": 0,
+            "teacher_weight": 0.2421052631578947,
+            "learning_rate_last": 3.085189140269889e-05,
+            "clip_fraction": 0.004048582995951417,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 976.638206226984
+          },
+          {
+            "epoch": 18,
+            "updates": 4446,
+            "losses": {
+              "loss": 0.023940791219472884,
+              "iq_nmse": 0.02307799797682535,
+              "spectral_error": 0.006085218251993259,
+              "teacher_stage_nmse": 0.002868138956586047
+            },
+            "L_exposures": 113400,
+            "U_exposures": 1020600,
+            "teacher_IQ_examples": 1134000,
+            "source_IQ_examples": 1134000,
+            "F_inputs": 0,
+            "teacher_weight": 0.1947368421052631,
+            "learning_rate_last": 2.487850810327209e-05,
+            "clip_fraction": 0.024291497975708502,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 1059.5603427949827
+          },
+          {
+            "epoch": 19,
+            "updates": 4693,
+            "losses": {
+              "loss": 0.02391347435637126,
+              "iq_nmse": 0.023179772898318275,
+              "spectral_error": 0.006179536055714365,
+              "teacher_stage_nmse": 0.0028820609805129825
+            },
+            "L_exposures": 119700,
+            "U_exposures": 1077300,
+            "teacher_IQ_examples": 1197000,
+            "source_IQ_examples": 1197000,
+            "F_inputs": 0,
+            "teacher_weight": 0.1473684210526316,
+            "learning_rate_last": 2.122800477992648e-05,
+            "clip_fraction": 0.0,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 1142.8192181151826
+          },
+          {
+            "epoch": 20,
+            "updates": 4940,
+            "losses": {
+              "loss": 0.023484957249391647,
+              "iq_nmse": 0.022890740352963644,
+              "spectral_error": 0.006000500002728095,
+              "teacher_stage_nmse": 0.0029419191426464488
+            },
+            "L_exposures": 126000,
+            "U_exposures": 1134000,
+            "teacher_IQ_examples": 1260000,
+            "source_IQ_examples": 1260000,
+            "F_inputs": 0,
+            "teacher_weight": 0.09999999999999998,
+            "learning_rate_last": 2e-05,
+            "clip_fraction": 0.016194331983805668,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 1198.581402580021
+          }
+        ],
+        "losses": {
+          "loss": {
+            "first": 0.1337097890982552,
+            "last": 0.023484957249391647,
+            "minimum": 0.023484957249391647,
+            "maximum": 0.1337097890982552,
+            "mean": 0.03369593459684698,
+            "slope_per_epoch": -0.0021957535213076246
+          },
+          "iq_nmse": {
+            "first": 0.0792699472147321,
+            "last": 0.022890740352963644,
+            "minimum": 0.022890740352963644,
+            "maximum": 0.0792699472147321,
+            "mean": 0.02823225526847537,
+            "slope_per_epoch": -0.0011403024015143235
+          },
+          "spectral_error": {
+            "first": 0.019420509409336817,
+            "last": 0.006000500002728095,
+            "minimum": 0.006000500002728095,
+            "maximum": 0.019420509409336817,
+            "mean": 0.007256788233159081,
+            "slope_per_epoch": -0.0002597022458695755
+          },
+          "teacher_stage_nmse": {
+            "first": 0.053468815744869294,
+            "last": 0.0029419191426464488,
+            "minimum": 0.002868138956586047,
+            "maximum": 0.053468815744869294,
+            "mean": 0.006625339005890464,
+            "slope_per_epoch": -0.000925018046699266
+          }
+        },
+        "training_complete": {
+          "status": "SOURCE_TRAINED",
+          "arm": "prune_decay",
+          "epochs": 20,
+          "updates": 4940,
+          "L_exposures": 126000,
+          "U_exposures": 1134000,
+          "source_IQ_examples": 1260000,
+          "teacher_IQ_examples": 1260000,
+          "student_context_examples": 1260000,
+          "teacher_parameter_updates": 0,
+          "parameters": 273765,
+          "trainable_parameters": 273765,
+          "context_parameters": 185615,
+          "context_updates": 4940,
+          "coarse_updates": 4940,
+          "action_updates": 4940,
+          "prior_updates": 4940,
+          "context_trainable": true,
+          "paired_clean_optimized": true,
+          "inherited_component_epochs": 80,
+          "cumulative_coarse_epochs": 100,
+          "cumulative_action_epochs": 100,
+          "cumulative_prior_epochs": 100,
+          "cumulative_component_epoch_sum": 300,
+          "cumulative_serial_training_passes": 140,
+          "initialization_IQ_examples": 0,
+          "initialization_seconds": 0.09987302287481725,
+          "TX_labels_read": 0,
+          "V_reads": 0,
+          "target_reads": 0,
+          "training_F_access": false,
+          "F_weights_read": 0,
+          "F_outputs_read": 0,
+          "F_parameter_updates": 0,
+          "head_fit_updates": 0,
+          "R17_training_forward_examples": 0,
+          "F_training_reference": null,
+          "seconds": 1198.6647705831565,
+          "peak_allocated_bytes": 1307594752
+        },
+        "epoch_seconds_median": 50.953637672937475,
+        "checkpoint_selection": "fixed final E20/4940"
+      },
+      "profile": {
+        "status": "PROFILE_COMPLETE",
+        "physical_GPU": 2,
+        "results": {
+          "original_R17": {
+            "parameters": 4665073,
+            "cases": {
+              "G_only_B1": {
+                "batch": 1,
+                "warmup_per_round": 16,
+                "rounds": 3,
+                "iterations_per_round": 64,
+                "source_V_unique_IQ": 64,
+                "median_ms": 46.075010439381,
+                "p90_ms": 56.77845259197056,
+                "p95_ms": 63.071358774323016,
+                "round_median_ms": [
+                  45.30041909310967,
+                  46.58215551171452,
+                  45.52293545566499
+                ],
+                "throughput_samples_per_second": 20.840415060687874,
+                "resident_before_forward_bytes": 40070656,
+                "peak_allocated_bytes": 41229312,
+                "incremental_peak_bytes": 1158656
+              },
+              "G_only_B32": {
+                "batch": 32,
+                "warmup_per_round": 4,
+                "rounds": 3,
+                "iterations_per_round": 16,
+                "source_V_unique_IQ": 64,
+                "median_ms": 64.09372750204057,
+                "p90_ms": 77.97030590008944,
+                "p95_ms": 78.41435285517946,
+                "round_median_ms": [
+                  70.47094404697418,
+                  71.23818050604314,
+                  49.21045794617385
+                ],
+                "throughput_samples_per_second": 509.332921313273,
+                "resident_before_forward_bytes": 40070656,
+                "peak_allocated_bytes": 52812288,
+                "incremental_peak_bytes": 12741632
+              },
+              "G_plus_F_B1": {
+                "batch": 1,
+                "warmup_per_round": 16,
+                "rounds": 3,
+                "iterations_per_round": 64,
+                "source_V_unique_IQ": 64,
+                "median_ms": 58.378254412673414,
+                "p90_ms": 77.7893885737285,
+                "p95_ms": 78.86607105610892,
+                "round_median_ms": [
+                  58.77031583804637,
+                  55.994693539105356,
+                  73.4366464894265
+                ],
+                "throughput_samples_per_second": 15.869330782032634,
+                "resident_before_forward_bytes": 40078336,
+                "peak_allocated_bytes": 41279488,
+                "incremental_peak_bytes": 1201152
+              },
+              "G_plus_F_B32": {
+                "batch": 32,
+                "warmup_per_round": 4,
+                "rounds": 3,
+                "iterations_per_round": 16,
+                "source_V_unique_IQ": 64,
+                "median_ms": 85.75719106011093,
+                "p90_ms": 88.40455228928477,
+                "p95_ms": 88.61192617332563,
+                "round_median_ms": [
+                  86.04263002052903,
+                  85.92076902277768,
+                  84.63654946535826
+                ],
+                "throughput_samples_per_second": 385.01229878468797,
+                "resident_before_forward_bytes": 40078336,
+                "peak_allocated_bytes": 52819968,
+                "incremental_peak_bytes": 12741632
+              }
+            },
+            "ConvLinear_MAC_per_IQ": 353427584
+          },
+          "parent_R46_350521": {
+            "parameters": 350521,
+            "cases": {
+              "G_only_B1": {
+                "batch": 1,
+                "warmup_per_round": 16,
+                "rounds": 3,
+                "iterations_per_round": 64,
+                "source_V_unique_IQ": 64,
+                "median_ms": 44.19310041703284,
+                "p90_ms": 60.3087404044345,
+                "p95_ms": 61.890819796826676,
+                "round_median_ms": [
+                  43.88348734937608,
+                  44.525890494696796,
+                  44.052452547475696
+                ],
+                "throughput_samples_per_second": 21.31381081579169,
+                "resident_before_forward_bytes": 40070656,
+                "peak_allocated_bytes": 107265536,
+                "incremental_peak_bytes": 67194880
+              },
+              "G_only_B32": {
+                "batch": 32,
+                "warmup_per_round": 4,
+                "rounds": 3,
+                "iterations_per_round": 16,
+                "source_V_unique_IQ": 64,
+                "median_ms": 94.59269605576992,
+                "p90_ms": 122.46784870512784,
+                "p95_ms": 124.25536062801257,
+                "round_median_ms": [
+                  119.72822004463524,
+                  97.61638101190329,
+                  71.51823490858078
+                ],
+                "throughput_samples_per_second": 333.7614254837716,
+                "resident_before_forward_bytes": 40070656,
+                "peak_allocated_bytes": 316287488,
+                "incremental_peak_bytes": 276216832
+              },
+              "G_plus_F_B1": {
+                "batch": 1,
+                "warmup_per_round": 16,
+                "rounds": 3,
+                "iterations_per_round": 64,
+                "source_V_unique_IQ": 64,
+                "median_ms": 56.22004996985197,
+                "p90_ms": 75.24339905939996,
+                "p95_ms": 76.0031244251877,
+                "round_median_ms": [
+                  56.04418599978089,
+                  54.53112395480275,
+                  72.12210609577596
+                ],
+                "throughput_samples_per_second": 16.1934338219876,
+                "resident_before_forward_bytes": 40078336,
+                "peak_allocated_bytes": 107273216,
+                "incremental_peak_bytes": 67194880
+              },
+              "G_plus_F_B32": {
+                "batch": 32,
+                "warmup_per_round": 4,
+                "rounds": 3,
+                "iterations_per_round": 16,
+                "source_V_unique_IQ": 64,
+                "median_ms": 105.80806445796043,
+                "p90_ms": 119.08635173458606,
+                "p95_ms": 119.60779132787138,
+                "round_median_ms": [
+                  67.2999465605244,
+                  113.9429984614253,
+                  115.08304649032652
+                ],
+                "throughput_samples_per_second": 327.63716845737974,
+                "resident_before_forward_bytes": 40078336,
+                "peak_allocated_bytes": 316295168,
+                "incremental_peak_bytes": 276216832
+              }
+            },
+            "ConvLinear_MAC_per_IQ": 39081004
+          },
+          "compact": {
+            "parameters": 273765,
+            "cases": {
+              "G_only_B1": {
+                "batch": 1,
+                "warmup_per_round": 16,
+                "rounds": 3,
+                "iterations_per_round": 64,
+                "source_V_unique_IQ": 64,
+                "median_ms": 43.322487035766244,
+                "p90_ms": 64.07690974883735,
+                "p95_ms": 65.20327382022515,
+                "round_median_ms": [
+                  43.05618104990572,
+                  42.36727999523282,
+                  61.51610193774104
+                ],
+                "throughput_samples_per_second": 20.201055446753255,
+                "resident_before_forward_bytes": 40070656,
+                "peak_allocated_bytes": 41155584,
+                "incremental_peak_bytes": 1084928
+              },
+              "G_only_B32": {
+                "batch": 32,
+                "warmup_per_round": 4,
+                "rounds": 3,
+                "iterations_per_round": 16,
+                "source_V_unique_IQ": 64,
+                "median_ms": 89.74587148986757,
+                "p90_ms": 97.6011739578098,
+                "p95_ms": 98.46289218403399,
+                "round_median_ms": [
+                  89.94640887249261,
+                  96.83218447025865,
+                  63.759020529687405
+                ],
+                "throughput_samples_per_second": 385.759258276571,
+                "resident_before_forward_bytes": 40070656,
+                "peak_allocated_bytes": 267762176,
+                "incremental_peak_bytes": 227691520
+              },
+              "G_plus_F_B1": {
+                "batch": 1,
+                "warmup_per_round": 16,
+                "rounds": 3,
+                "iterations_per_round": 64,
+                "source_V_unique_IQ": 64,
+                "median_ms": 54.15117205120623,
+                "p90_ms": 73.83818763773888,
+                "p95_ms": 75.34092016285285,
+                "round_median_ms": [
+                  53.16051095724106,
+                  53.69541945401579,
+                  69.9629649752751
+                ],
+                "throughput_samples_per_second": 16.972626229127947,
+                "resident_before_forward_bytes": 40078336,
+                "peak_allocated_bytes": 41279488,
+                "incremental_peak_bytes": 1201152
+              },
+              "G_plus_F_B32": {
+                "batch": 32,
+                "warmup_per_round": 4,
+                "rounds": 3,
+                "iterations_per_round": 16,
+                "source_V_unique_IQ": 64,
+                "median_ms": 93.74079247936606,
+                "p90_ms": 96.68695069849491,
+                "p95_ms": 99.0754934027791,
+                "round_median_ms": [
+                  62.181066954508424,
+                  94.30999949108809,
+                  94.46308843325824
+                ],
+                "throughput_samples_per_second": 385.0358315053063,
+                "resident_before_forward_bytes": 40078336,
+                "peak_allocated_bytes": 267769856,
+                "incremental_peak_bytes": 227691520
+              }
+            },
+            "ConvLinear_MAC_per_IQ": 30761512
+          }
+        },
+        "checkpoint_payload_on_GPU": false,
+        "optimizer_on_GPU": false,
+        "source_V_IQ": 64,
+        "TX_labels_read": 0,
+        "state_updates": 0,
+        "includes_full_context_3prior_6CG": true,
+        "reader_weights_read_for_evaluation_only": true,
+        "training_F_access": false,
+        "memory_scope": "All3frozenGand1Fresident in every case;incrementalpeak perforward is comparable;resident is shared suite,not standalone deploymentmemory",
+        "MAC_scope": "Conv1d+Linear only;FFT/complexCG/norm/activation/memory excluded;F MAC excluded",
+        "timing_scope": "Synchronized preloaded-device FP32 eval;excludes transfer,preprocess,loader;alternating forward/reverse candidate order perround",
+        "whole_pipeline": "G_plus_F includes original frozen F default head and internal FFT/PA/time/stats;no new head",
+        "latency_ratio_to_R46_by_case": {
+          "G_only_B1": 0.9802997894908717,
+          "G_only_B32": 0.948761111925124,
+          "G_plus_F_B1": 0.9632003543263449,
+          "G_plus_F_B32": 0.8859513021014677
+        },
+        "limitation": "64 source V unique IQ,repeated correlated timings,preloaded-device synchronization;threeG/oneF share resident memory;not hardware-independent end-to-end service latency"
+      },
+      "source_all7_complete": true,
+      "target_truth_reads": 0
+    },
+    "retain_anchor": {
+      "parameters": 350521,
+      "training": {
+        "full_log_records": 20,
+        "actual_microbatch": 256,
+        "source_tensor_backend": "direct_float32_buffer",
+        "records": [
+          {
+            "epoch": 1,
+            "updates": 247,
+            "losses": {
+              "loss": 0.02551771383058457,
+              "iq_nmse": 0.024150969619788822,
+              "spectral_error": 0.006367060087029896,
+              "teacher_stage_nmse": 0.001048391238578049
+            },
+            "L_exposures": 6300,
+            "U_exposures": 56700,
+            "teacher_IQ_examples": 63000,
+            "source_IQ_examples": 63000,
+            "F_inputs": 0,
+            "teacher_weight": 1.0,
+            "learning_rate_last": 0.0002,
+            "clip_fraction": 0.032388663967611336,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 55.180979495169595
+          },
+          {
+            "epoch": 2,
+            "updates": 494,
+            "losses": {
+              "loss": 0.0285021958824188,
+              "iq_nmse": 0.025369894519684806,
+              "spectral_error": 0.006480996114867074,
+              "teacher_stage_nmse": 0.0028082516075126707
+            },
+            "L_exposures": 12600,
+            "U_exposures": 113400,
+            "teacher_IQ_examples": 126000,
+            "source_IQ_examples": 126000,
+            "F_inputs": 0,
+            "teacher_weight": 1.0,
+            "learning_rate_last": 0.0001987818960049755,
+            "clip_fraction": 0.07692307692307693,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 108.3283490461763
+          },
+          {
+            "epoch": 3,
+            "updates": 741,
+            "losses": {
+              "loss": 0.02780347670449151,
+              "iq_nmse": 0.025047692821139382,
+              "spectral_error": 0.006518513935071135,
+              "teacher_stage_nmse": 0.002429858329395453
+            },
+            "L_exposures": 18900,
+            "U_exposures": 170100,
+            "teacher_IQ_examples": 189000,
+            "source_IQ_examples": 189000,
+            "F_inputs": 0,
+            "teacher_weight": 1.0,
+            "learning_rate_last": 0.00019514104345825703,
+            "clip_fraction": 0.0728744939271255,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 161.93247746303678
+          },
+          {
+            "epoch": 4,
+            "updates": 988,
+            "losses": {
+              "loss": 0.02716746616647357,
+              "iq_nmse": 0.024779099926115974,
+              "spectral_error": 0.006505430758709,
+              "teacher_stage_nmse": 0.002063094626579966
+            },
+            "L_exposures": 25200,
+            "U_exposures": 226800,
+            "teacher_IQ_examples": 252000,
+            "source_IQ_examples": 252000,
+            "F_inputs": 0,
+            "teacher_weight": 1.0,
+            "learning_rate_last": 0.00018917677739299047,
+            "clip_fraction": 0.05263157894736842,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 216.20142931607552
+          },
+          {
+            "epoch": 5,
+            "updates": 1235,
+            "losses": {
+              "loss": 0.025879718361392853,
+              "iq_nmse": 0.023916107255315025,
+              "spectral_error": 0.006245487309519261,
+              "teacher_stage_nmse": 0.0016513367418258909
+            },
+            "L_exposures": 31500,
+            "U_exposures": 283500,
+            "teacher_IQ_examples": 315000,
+            "source_IQ_examples": 315000,
+            "F_inputs": 0,
+            "teacher_weight": 1.0,
+            "learning_rate_last": 0.00018105185663666237,
+            "clip_fraction": 0.03643724696356275,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 270.7781226581428
+          },
+          {
+            "epoch": 6,
+            "updates": 1482,
+            "losses": {
+              "loss": 0.026127180935844544,
+              "iq_nmse": 0.023958323570470962,
+              "spectral_error": 0.006173877539852309,
+              "teacher_stage_nmse": 0.0018601635720521684
+            },
+            "L_exposures": 37800,
+            "U_exposures": 340200,
+            "teacher_IQ_examples": 378000,
+            "source_IQ_examples": 378000,
+            "F_inputs": 0,
+            "teacher_weight": 1.0,
+            "learning_rate_last": 0.00017098800211205718,
+            "clip_fraction": 0.048582995951417005,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 327.2716473680921
+          },
+          {
+            "epoch": 7,
+            "updates": 1729,
+            "losses": {
+              "loss": 0.02578884865651055,
+              "iq_nmse": 0.023848447538557506,
+              "spectral_error": 0.006269671308379325,
+              "teacher_stage_nmse": 0.0016269176157989672
+            },
+            "L_exposures": 44100,
+            "U_exposures": 396900,
+            "teacher_IQ_examples": 441000,
+            "source_IQ_examples": 441000,
+            "F_inputs": 0,
+            "teacher_weight": 1.0,
+            "learning_rate_last": 0.00015925984629607922,
+            "clip_fraction": 0.024291497975708502,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 383.0232183029875
+          },
+          {
+            "epoch": 8,
+            "updates": 1976,
+            "losses": {
+              "loss": 0.026046772445478136,
+              "iq_nmse": 0.023908421339260206,
+              "spectral_error": 0.006327317692812473,
+              "teacher_stage_nmse": 0.0018219851486325736
+            },
+            "L_exposures": 50400,
+            "U_exposures": 453600,
+            "teacher_IQ_examples": 504000,
+            "source_IQ_examples": 504000,
+            "F_inputs": 0,
+            "teacher_weight": 1.0,
+            "learning_rate_last": 0.00014618743877543397,
+            "clip_fraction": 0.05263157894736842,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 439.0752683850005
+          },
+          {
+            "epoch": 9,
+            "updates": 2223,
+            "losses": {
+              "loss": 0.024418240139408718,
+              "iq_nmse": 0.022978100015057457,
+              "spectral_error": 0.006058113225277454,
+              "teacher_stage_nmse": 0.0011372344047718105
+            },
+            "L_exposures": 56700,
+            "U_exposures": 510300,
+            "teacher_IQ_examples": 567000,
+            "source_IQ_examples": 567000,
+            "F_inputs": 0,
+            "teacher_weight": 1.0,
+            "learning_rate_last": 0.0001321275124150214,
+            "clip_fraction": 0.008097165991902834,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 496.29042958514765
+          },
+          {
+            "epoch": 10,
+            "updates": 2470,
+            "losses": {
+              "loss": 0.02405042309704281,
+              "iq_nmse": 0.02258115341360607,
+              "spectral_error": 0.0058835360795732525,
+              "teacher_stage_nmse": 0.0011750929020936528
+            },
+            "L_exposures": 63000,
+            "U_exposures": 567000,
+            "teacher_IQ_examples": 630000,
+            "source_IQ_examples": 630000,
+            "F_inputs": 0,
+            "teacher_weight": 1.0,
+            "learning_rate_last": 0.00011746374847653041,
+            "clip_fraction": 0.020242914979757085,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 552.526183223119
+          },
+          {
+            "epoch": 11,
+            "updates": 2717,
+            "losses": {
+              "loss": 0.02403253199751415,
+              "iq_nmse": 0.022744026775871003,
+              "spectral_error": 0.006054845217437971,
+              "teacher_stage_nmse": 0.0009857629405127632
+            },
+            "L_exposures": 69300,
+            "U_exposures": 623700,
+            "teacher_IQ_examples": 693000,
+            "source_IQ_examples": 693000,
+            "F_inputs": 0,
+            "teacher_weight": 1.0,
+            "learning_rate_last": 0.00010259630634236501,
+            "clip_fraction": 0.004048582995951417,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 606.3425088180229
+          },
+          {
+            "epoch": 12,
+            "updates": 2964,
+            "losses": {
+              "loss": 0.02437567165162828,
+              "iq_nmse": 0.022955647346519288,
+              "spectral_error": 0.006116076334128304,
+              "teacher_stage_nmse": 0.0011142204834059591
+            },
+            "L_exposures": 75600,
+            "U_exposures": 680400,
+            "teacher_IQ_examples": 756000,
+            "source_IQ_examples": 756000,
+            "F_inputs": 0,
+            "teacher_weight": 1.0,
+            "learning_rate_last": 8.79309035682149e-05,
+            "clip_fraction": 0.024291497975708502,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 671.020627747057
+          },
+          {
+            "epoch": 13,
+            "updates": 3211,
+            "losses": {
+              "loss": 0.023347301930662187,
+              "iq_nmse": 0.022203457277918618,
+              "spectral_error": 0.005857433565788799,
+              "teacher_stage_nmse": 0.0008509729537107642
+            },
+            "L_exposures": 81900,
+            "U_exposures": 737100,
+            "teacher_IQ_examples": 819000,
+            "source_IQ_examples": 819000,
+            "F_inputs": 0,
+            "teacher_weight": 1.0,
+            "learning_rate_last": 7.386774425866234e-05,
+            "clip_fraction": 0.008097165991902834,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 743.9254729230888
+          },
+          {
+            "epoch": 14,
+            "updates": 3458,
+            "losses": {
+              "loss": 0.02312600785210019,
+              "iq_nmse": 0.022052212817328318,
+              "spectral_error": 0.005857123036706258,
+              "teacher_stage_nmse": 0.0007809388693717737
+            },
+            "L_exposures": 88200,
+            "U_exposures": 793800,
+            "teacher_IQ_examples": 882000,
+            "source_IQ_examples": 882000,
+            "F_inputs": 0,
+            "teacher_weight": 1.0,
+            "learning_rate_last": 6.0790597899329526e-05,
+            "clip_fraction": 0.0,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 832.024879045086
+          },
+          {
+            "epoch": 15,
+            "updates": 3705,
+            "losses": {
+              "loss": 0.02304236975714328,
+              "iq_nmse": 0.021941779150376244,
+              "spectral_error": 0.005736843352398229,
+              "teacher_stage_nmse": 0.0008137485569431668
+            },
+            "L_exposures": 94500,
+            "U_exposures": 850500,
+            "teacher_IQ_examples": 945000,
+            "source_IQ_examples": 945000,
+            "F_inputs": 0,
+            "teacher_weight": 1.0,
+            "learning_rate_last": 4.905632667326222e-05,
+            "clip_fraction": 0.004048582995951417,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 923.0866418459918
+          },
+          {
+            "epoch": 16,
+            "updates": 3952,
+            "losses": {
+              "loss": 0.023072652337096985,
+              "iq_nmse": 0.02209011611295125,
+              "spectral_error": 0.005975030650695165,
+              "teacher_stage_nmse": 0.000683784510851616
+            },
+            "L_exposures": 100800,
+            "U_exposures": 907200,
+            "teacher_IQ_examples": 1008000,
+            "source_IQ_examples": 1008000,
+            "F_inputs": 0,
+            "teacher_weight": 1.0,
+            "learning_rate_last": 3.898514705056182e-05,
+            "clip_fraction": 0.012145748987854251,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 1013.3743473540526
+          },
+          {
+            "epoch": 17,
+            "updates": 4199,
+            "losses": {
+              "loss": 0.022601853844665346,
+              "iq_nmse": 0.021672008365865737,
+              "spectral_error": 0.005810954549009838,
+              "teacher_stage_nmse": 0.0006392976607654303
+            },
+            "L_exposures": 107100,
+            "U_exposures": 963900,
+            "teacher_IQ_examples": 1071000,
+            "source_IQ_examples": 1071000,
+            "F_inputs": 0,
+            "teacher_weight": 1.0,
+            "learning_rate_last": 3.085189140269889e-05,
+            "clip_fraction": 0.008097165991902834,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 1103.9034883170389
+          },
+          {
+            "epoch": 18,
+            "updates": 4446,
+            "losses": {
+              "loss": 0.0224878515752535,
+              "iq_nmse": 0.021622586953734594,
+              "spectral_error": 0.005774685450489559,
+              "teacher_stage_nmse": 0.0005765303377549918
+            },
+            "L_exposures": 113400,
+            "U_exposures": 1020600,
+            "teacher_IQ_examples": 1134000,
+            "source_IQ_examples": 1134000,
+            "F_inputs": 0,
+            "teacher_weight": 1.0,
+            "learning_rate_last": 2.487850810327209e-05,
+            "clip_fraction": 0.0,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 1193.8710257289931
+          },
+          {
+            "epoch": 19,
+            "updates": 4693,
+            "losses": {
+              "loss": 0.02267311440384577,
+              "iq_nmse": 0.021815393460175348,
+              "spectral_error": 0.005871260373069654,
+              "teacher_stage_nmse": 0.0005641579826081556
+            },
+            "L_exposures": 119700,
+            "U_exposures": 1077300,
+            "teacher_IQ_examples": 1197000,
+            "source_IQ_examples": 1197000,
+            "F_inputs": 0,
+            "teacher_weight": 1.0,
+            "learning_rate_last": 2.122800477992648e-05,
+            "clip_fraction": 0.004048582995951417,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 1264.713757634163
+          },
+          {
+            "epoch": 20,
+            "updates": 4940,
+            "losses": {
+              "loss": 0.022345616986827244,
+              "iq_nmse": 0.02150442879445969,
+              "spectral_error": 0.005699105540852225,
+              "teacher_stage_nmse": 0.0005562328906463726
+            },
+            "L_exposures": 126000,
+            "U_exposures": 1134000,
+            "teacher_IQ_examples": 1260000,
+            "source_IQ_examples": 1260000,
+            "F_inputs": 0,
+            "teacher_weight": 1.0,
+            "learning_rate_last": 2e-05,
+            "clip_fraction": 0.0,
+            "microbatch": 256,
+            "source_tensor_backend": "direct_float32_buffer",
+            "seconds": 1319.4974019580986
+          }
+        ],
+        "losses": {
+          "loss": {
+            "first": 0.02551771383058457,
+            "last": 0.022345616986827244,
+            "minimum": 0.022345616986827244,
+            "maximum": 0.0285021958824188,
+            "mean": 0.024620350427819147,
+            "slope_per_epoch": -0.00029276347664104936
+          },
+          "iq_nmse": {
+            "first": 0.024150969619788822,
+            "last": 0.02150442879445969,
+            "minimum": 0.02150442879445969,
+            "maximum": 0.025369894519684806,
+            "mean": 0.023056993353709816,
+            "slope_per_epoch": -0.00019677994160357526
+          },
+          "spectral_error": {
+            "first": 0.006367060087029896,
+            "last": 0.005699105540852225,
+            "minimum": 0.005699105540852225,
+            "maximum": 0.006518513935071135,
+            "mean": 0.006079168106083359,
+            "slope_per_epoch": -4.138545337542023e-05
+          },
+          "teacher_stage_nmse": {
+            "first": 0.001048391238578049,
+            "last": 0.0005562328906463726,
+            "minimum": 0.0005562328906463726,
+            "maximum": 0.0028082516075126707,
+            "mean": 0.00125939866869061,
+            "slope_per_epoch": -9.391426636560176e-05
+          }
+        },
+        "training_complete": {
+          "status": "SOURCE_TRAINED",
+          "arm": "retain_anchor",
+          "epochs": 20,
+          "updates": 4940,
+          "L_exposures": 126000,
+          "U_exposures": 1134000,
+          "source_IQ_examples": 1260000,
+          "teacher_IQ_examples": 1260000,
+          "student_context_examples": 1260000,
+          "teacher_parameter_updates": 0,
+          "parameters": 350521,
+          "trainable_parameters": 350521,
+          "context_parameters": 237927,
+          "context_updates": 4940,
+          "coarse_updates": 4940,
+          "action_updates": 4940,
+          "prior_updates": 4940,
+          "context_trainable": true,
+          "paired_clean_optimized": true,
+          "inherited_component_epochs": 80,
+          "cumulative_coarse_epochs": 100,
+          "cumulative_action_epochs": 100,
+          "cumulative_prior_epochs": 100,
+          "cumulative_component_epoch_sum": 300,
+          "cumulative_serial_training_passes": 140,
+          "initialization_IQ_examples": 0,
+          "initialization_seconds": 0.0596546889282763,
+          "TX_labels_read": 0,
+          "V_reads": 0,
+          "target_reads": 0,
+          "training_F_access": false,
+          "F_weights_read": 0,
+          "F_outputs_read": 0,
+          "F_parameter_updates": 0,
+          "head_fit_updates": 0,
+          "R17_training_forward_examples": 0,
+          "F_training_reference": null,
+          "seconds": 1319.5837165440898,
+          "peak_allocated_bytes": 1426780672
+        },
+        "epoch_seconds_median": 56.36463917396031,
+        "checkpoint_selection": "fixed final E20/4940"
+      },
+      "profile": {
+        "status": "PROFILE_COMPLETE",
+        "physical_GPU": 3,
+        "results": {
+          "original_R17": {
+            "parameters": 4665073,
+            "cases": {
+              "G_only_B1": {
+                "batch": 1,
+                "warmup_per_round": 16,
+                "rounds": 3,
+                "iterations_per_round": 64,
+                "source_V_unique_IQ": 64,
+                "median_ms": 45.70550797507167,
+                "p90_ms": 46.88363366294652,
+                "p95_ms": 47.243265935685486,
+                "round_median_ms": [
+                  45.24551937356591,
+                  45.79360445495695,
+                  46.16143391467631
+                ],
+                "throughput_samples_per_second": 21.871454869371878,
+                "resident_before_forward_bytes": 40365056,
+                "peak_allocated_bytes": 41523712,
+                "incremental_peak_bytes": 1158656
+              },
+              "G_only_B32": {
+                "batch": 32,
+                "warmup_per_round": 4,
+                "rounds": 3,
+                "iterations_per_round": 16,
+                "source_V_unique_IQ": 64,
+                "median_ms": 48.04545594379306,
+                "p90_ms": 48.53388722985983,
+                "p95_ms": 49.01398034999147,
+                "round_median_ms": [
+                  47.79856640379876,
+                  47.8687200229615,
+                  48.39056998025626
+                ],
+                "throughput_samples_per_second": 667.1798869135336,
+                "resident_before_forward_bytes": 40365056,
+                "peak_allocated_bytes": 53106688,
+                "incremental_peak_bytes": 12741632
+              },
+              "G_plus_F_B1": {
+                "batch": 1,
+                "warmup_per_round": 16,
+                "rounds": 3,
+                "iterations_per_round": 64,
+                "source_V_unique_IQ": 64,
+                "median_ms": 56.95197207387537,
+                "p90_ms": 58.487756620161235,
+                "p95_ms": 59.77946338243781,
+                "round_median_ms": [
+                  56.52474798262119,
+                  57.19135899562389,
+                  57.06516292411834
+                ],
+                "throughput_samples_per_second": 17.366327992113856,
+                "resident_before_forward_bytes": 40372736,
+                "peak_allocated_bytes": 41573888,
+                "incremental_peak_bytes": 1201152
+              },
+              "G_plus_F_B32": {
+                "batch": 32,
+                "warmup_per_round": 4,
+                "rounds": 3,
+                "iterations_per_round": 16,
+                "source_V_unique_IQ": 64,
+                "median_ms": 58.2129645626992,
+                "p90_ms": 59.88218227867037,
+                "p95_ms": 63.18629517918452,
+                "round_median_ms": [
+                  57.67211248166859,
+                  58.147335541434586,
+                  58.40292340144515
+                ],
+                "throughput_samples_per_second": 545.0783829529998,
+                "resident_before_forward_bytes": 40372736,
+                "peak_allocated_bytes": 53114368,
+                "incremental_peak_bytes": 12741632
+              }
+            },
+            "ConvLinear_MAC_per_IQ": 353427584
+          },
+          "parent_R46_350521": {
+            "parameters": 350521,
+            "cases": {
+              "G_only_B1": {
+                "batch": 1,
+                "warmup_per_round": 16,
+                "rounds": 3,
+                "iterations_per_round": 64,
+                "source_V_unique_IQ": 64,
+                "median_ms": 44.29525346495211,
+                "p90_ms": 45.33071615733206,
+                "p95_ms": 45.705166179686785,
+                "round_median_ms": [
+                  43.31445798743516,
+                  44.78613752871752,
+                  44.49217754881829
+                ],
+                "throughput_samples_per_second": 22.666850738670124,
+                "resident_before_forward_bytes": 40365056,
+                "peak_allocated_bytes": 107559936,
+                "incremental_peak_bytes": 67194880
+              },
+              "G_only_B32": {
+                "batch": 32,
+                "warmup_per_round": 4,
+                "rounds": 3,
+                "iterations_per_round": 16,
+                "source_V_unique_IQ": 64,
+                "median_ms": 58.31378744915128,
+                "p90_ms": 59.1202630661428,
+                "p95_ms": 59.768275218084455,
+                "round_median_ms": [
+                  58.770094998180866,
+                  57.87621496710926,
+                  58.299285476095974
+                ],
+                "throughput_samples_per_second": 548.8427530924221,
+                "resident_before_forward_bytes": 40365056,
+                "peak_allocated_bytes": 316581888,
+                "incremental_peak_bytes": 276216832
+              },
+              "G_plus_F_B1": {
+                "batch": 1,
+                "warmup_per_round": 16,
+                "rounds": 3,
+                "iterations_per_round": 64,
+                "source_V_unique_IQ": 64,
+                "median_ms": 55.45482307206839,
+                "p90_ms": 61.719104088842876,
+                "p95_ms": 68.96028441842644,
+                "round_median_ms": [
+                  54.93694846518338,
+                  56.08650448266417,
+                  55.52916508167982
+                ],
+                "throughput_samples_per_second": 17.54103085416976,
+                "resident_before_forward_bytes": 40372736,
+                "peak_allocated_bytes": 107567616,
+                "incremental_peak_bytes": 67194880
+              },
+              "G_plus_F_B32": {
+                "batch": 32,
+                "warmup_per_round": 4,
+                "rounds": 3,
+                "iterations_per_round": 16,
+                "source_V_unique_IQ": 64,
+                "median_ms": 67.95481115113944,
+                "p90_ms": 69.53266048803926,
+                "p95_ms": 72.40040700417012,
+                "round_median_ms": [
+                  68.20287241134793,
+                  67.93210410978645,
+                  67.64850404579192
+                ],
+                "throughput_samples_per_second": 467.16346677960007,
+                "resident_before_forward_bytes": 40372736,
+                "peak_allocated_bytes": 316589568,
+                "incremental_peak_bytes": 276216832
+              }
+            },
+            "ConvLinear_MAC_per_IQ": 39081004
+          },
+          "compact": {
+            "parameters": 350521,
+            "cases": {
+              "G_only_B1": {
+                "batch": 1,
+                "warmup_per_round": 16,
+                "rounds": 3,
+                "iterations_per_round": 64,
+                "source_V_unique_IQ": 64,
+                "median_ms": 44.10668252967298,
+                "p90_ms": 45.216694730333984,
+                "p95_ms": 45.47316547250375,
+                "round_median_ms": [
+                  43.840399011969566,
+                  44.166236533783376,
+                  44.58272992633283
+                ],
+                "throughput_samples_per_second": 22.659146668890113,
+                "resident_before_forward_bytes": 40365056,
+                "peak_allocated_bytes": 107559936,
+                "incremental_peak_bytes": 67194880
+              },
+              "G_only_B32": {
+                "batch": 32,
+                "warmup_per_round": 4,
+                "rounds": 3,
+                "iterations_per_round": 16,
+                "source_V_unique_IQ": 64,
+                "median_ms": 58.29146853648126,
+                "p90_ms": 58.982162456959486,
+                "p95_ms": 59.29504615487531,
+                "round_median_ms": [
+                  58.3472145954147,
+                  57.71647556684911,
+                  58.49448044318706
+                ],
+                "throughput_samples_per_second": 548.886923783584,
+                "resident_before_forward_bytes": 40365056,
+                "peak_allocated_bytes": 316581888,
+                "incremental_peak_bytes": 276216832
+              },
+              "G_plus_F_B1": {
+                "batch": 1,
+                "warmup_per_round": 16,
+                "rounds": 3,
+                "iterations_per_round": 64,
+                "source_V_unique_IQ": 64,
+                "median_ms": 54.347699508070946,
+                "p90_ms": 56.18331062141806,
+                "p95_ms": 57.01543584000319,
+                "round_median_ms": [
+                  54.447905509732664,
+                  54.5649848645553,
+                  53.98080300074071
+                ],
+                "throughput_samples_per_second": 18.246991769537363,
+                "resident_before_forward_bytes": 40372736,
+                "peak_allocated_bytes": 107567616,
+                "incremental_peak_bytes": 67194880
+              },
+              "G_plus_F_B32": {
+                "batch": 32,
+                "warmup_per_round": 4,
+                "rounds": 3,
+                "iterations_per_round": 16,
+                "source_V_unique_IQ": 64,
+                "median_ms": 67.47807387728244,
+                "p90_ms": 68.84294820483774,
+                "p95_ms": 69.97715187026188,
+                "round_median_ms": [
+                  68.18123545963317,
+                  67.25117994938046,
+                  66.72788900323212
+                ],
+                "throughput_samples_per_second": 472.5757048477629,
+                "resident_before_forward_bytes": 40372736,
+                "peak_allocated_bytes": 316589568,
+                "incremental_peak_bytes": 276216832
+              }
+            },
+            "ConvLinear_MAC_per_IQ": 39081004
+          }
+        },
+        "checkpoint_payload_on_GPU": false,
+        "optimizer_on_GPU": false,
+        "source_V_IQ": 64,
+        "TX_labels_read": 0,
+        "state_updates": 0,
+        "includes_full_context_3prior_6CG": true,
+        "reader_weights_read_for_evaluation_only": true,
+        "training_F_access": false,
+        "memory_scope": "All3frozenGand1Fresident in every case;incrementalpeak perforward is comparable;resident is shared suite,not standalone deploymentmemory",
+        "MAC_scope": "Conv1d+Linear only;FFT/complexCG/norm/activation/memory excluded;F MAC excluded",
+        "timing_scope": "Synchronized preloaded-device FP32 eval;excludes transfer,preprocess,loader;alternating forward/reverse candidate order perround",
+        "whole_pipeline": "G_plus_F includes original frozen F default head and internal FFT/PA/time/stats;no new head",
+        "latency_ratio_to_R46_by_case": {
+          "G_only_B1": 0.9957428636134042,
+          "G_only_B32": 0.9996172618235528,
+          "G_plus_F_B1": 0.9800355766610481,
+          "G_plus_F_B32": 0.9929844956408358
+        },
+        "limitation": "64 source V unique IQ,repeated correlated timings,preloaded-device synchronization;threeG/oneF share resident memory;not hardware-independent end-to-end service latency"
+      },
+      "source_all7_complete": true,
+      "target_truth_reads": 0
+    }
+  },
+  "formal_performance_pending": true,
+  "goal_complete": false
+}

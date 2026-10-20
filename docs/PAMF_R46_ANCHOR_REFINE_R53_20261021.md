@@ -20,3 +20,16 @@
 
 
 VERIFIED/RUNNING：真实350521父/F50/2Ls noquery smoke PASS，三行全部coarse/action/prior有限非零梯度、父/F不更新、checkpoint严格重载一致。单归档SHA/compile与实际controller、GPU2 prune_decay、GPU3 retain_anchor的PID/CWD/argv/CUDA/GPU-PID匹配、首轮曝光、micro256/directbuffer和日志增长核实。prune_anchor按固定计划在GPU2等待；各卡仅一条本任务GPU worker，其他owner不动。尚无正式性能结果；每行完整E20/4940后自动源七视图/成本/正式七视图及独立truth-last，不以负分提前停止。原性能/TX保真目标ACTIVE。
+
+## 首两行完整训练与推理成本观察
+
+以下两行已完整E20/4940、源1800×7独立评分及同卡G/G+F/B1/B32三轮测量，完整源阶段已结束，正式预测按固定管线自动继续；第三行仍排队。这是训练和成本证据，尚无正式识别结论。全部20轮损失/曝光/LR和profile范围由独立汇总工具核对。
+
+|行|参数|每轮中位s|父/本版G B1 median ms|父/本版G+F B1 median ms|父/本版G+F B32 sample/s|
+|---|---:|---:|---|---|---|
+|prune_decay|273765|50.954|44.1931/43.3225|56.2200/54.1512|327.637/385.036|
+|retain_anchor|350521|56.365|44.2953/44.1067|55.4548/54.3477|467.163/472.576|
+
+完整p90/p95、各轮中位数、显存和Conv/Linear MAC见[source阶段与成本汇总](../automation_reports/CV-SincNet/20261021-phase1-restoration-R46-anchor-refine-s2026092701-m3-r53/source_cost_progress.json)。参数、实际时延与吞吐分别比较，任何变慢都保留，不预设压缩必然加速；训练吞吐提高不能混为推理加速。模型仍执行三prior/六CG，不能仅据这些时间断定具体瓶颈。
+
+成本在64条sourceV、预加载GPU的FP32 eval上同步测量，不含传输/预处理/loader；三G一F共享suite驻留不是独立部署显存，增量峰值对应当前前向。GPU负载/温度与相关重复观测限制保留，尚无独立性能置信区间。原70%/5pp/输入TX细节要求继续ACTIVE。

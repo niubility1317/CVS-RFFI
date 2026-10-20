@@ -177,7 +177,7 @@
       "group_pruned",
       "low_rank"
     ],
-    "postlaunch_state": "VERIFIED_TWO_GPU_RUNNING_ONE_QUEUED"
+    "postlaunch_state": "VERIFIED_TWO_FORMAL_PREDICTING_ONE_QUEUED"
   },
   "expected_artifacts": [
     "launch.json",
@@ -471,7 +471,8 @@
     "PhysicalGPU2/3only,max2ownworkers,onepercard,thirdqueuedGPU2;nootherownerprocesschanges.",
     "REJECTED_EXTRA_GATE:extraapproval/signature/hash/reviewmachineryoutsideexhaustiveminimalworkflow.",
     "Matched same-card source-only G and G+F;B1 warm16/64samples x3 alternating rounds;B32 warm4/16iterations x3;median,p90,p95,throughput,peak/resident memory;ConvLinearMAC excludes FFT/CG/norm",
-    "VERIFIED/RUNNING：真实350521父/F50/2Ls noquery smoke PASS，三行全部coarse/action/prior有限非零梯度、父/F不更新、checkpoint严格重载一致。单归档SHA/compile与实际controller、GPU2 prune_decay、GPU3 retain_anchor的PID/CWD/argv/CUDA/GPU-PID匹配、首轮曝光、micro256/directbuffer和日志增长核实。prune_anchor按固定计划在GPU2等待；各卡仅一条本任务GPU worker，其他owner不动。尚无正式性能结果；每行完整E20/4940后自动源七视图/成本/正式七视图及独立truth-last，不以负分提前停止。原性能/TX保真目标ACTIVE。"
+    "VERIFIED/RUNNING：真实350521父/F50/2Ls noquery smoke PASS，三行全部coarse/action/prior有限非零梯度、父/F不更新、checkpoint严格重载一致。单归档SHA/compile与实际controller、GPU2 prune_decay、GPU3 retain_anchor的PID/CWD/argv/CUDA/GPU-PID匹配、首轮曝光、micro256/directbuffer和日志增长核实。prune_anchor按固定计划在GPU2等待；各卡仅一条本任务GPU worker，其他owner不动。尚无正式性能结果；每行完整E20/4940后自动源七视图/成本/正式七视图及独立truth-last，不以负分提前停止。原性能/TX保真目标ACTIVE。",
+    "VERIFIED：prune_decay/retain_anchor两行完整E20/4940与1800x7源阶段、同卡profile及全部20轮损失/曝光/LR核对通过，实际GPU2/3均进入正式预测；prune_anchor仍按固定GPU2队列等待。尚无正式准确率，每行7预测固定后才独立truth-last；源与成本不替代性能，原完整目标ACTIVE。"
   ],
   "reused_controls": [
     {
