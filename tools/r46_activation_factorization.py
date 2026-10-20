@@ -50,10 +50,11 @@ class SharedInputMoments:
         self.positions = positions
         self.handles = []
         self.examples = 0
+        self.failed = False
 
     def __enter__(self):
-        if self.handles:
-            raise ValueError('Calibration hooks already active')
+        if self.handles or self.failed:
+            raise ValueError('Calibration hooks already active or calibration previously failed')
         for key, value in self.groups.items():
             def observe(module, inputs, moment=self.moments[key]):
                 moment.update(inputs[0].detach())
@@ -74,12 +75,14 @@ class SharedInputMoments:
         return restored
 
     def __exit__(self, *exception):
+        if exception and exception[0] is not None:
+            self.failed = True
         for handle in self.handles:
             handle.remove()
         self.handles = []
 
     def finish(self):
-        if self.handles or not self.examples:
+        if self.handles or not self.examples or self.failed:
             raise ValueError('Close hooks after actual source observations before extracting moments')
         moments = {key:moment.value() for key,moment in self.moments.items()}
         report = dict(teacher_examples=self.examples, positions_per_call=self.positions,

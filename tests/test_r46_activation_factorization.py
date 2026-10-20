@@ -70,12 +70,16 @@ def test_full_context_factorization_pools_shared_inputs_preserves_GN_bias_and_pa
         assert grads and all(torch.isfinite(g).all() for g in grads) and any(g.abs().sum()>0 for g in grads)
 
 
-def test_calibration_hooks_removed_on_failure_and_no_observation_not_accepted():
+@pytest.mark.parametrize('observed_before_failure',[False,True])
+def test_calibration_hooks_removed_on_failure_and_partial_observations_not_accepted(observed_before_failure):
     teacher=parent();collector=SharedInputMoments(teacher)
     with pytest.raises(RuntimeError):
-        with collector:raise RuntimeError('source reader failed')
+        with collector:
+            if observed_before_failure:collector.observe(torch.randn(1,2,256)*.1)
+            raise RuntimeError('source reader failed')
     assert all(not module._forward_pre_hooks for module in teacher.modules())
     with pytest.raises(ValueError):collector.finish()
+    with pytest.raises(ValueError):collector.__enter__()
 
 
 def test_trainable_or_wrong_parent_rejected_without_IQ():
