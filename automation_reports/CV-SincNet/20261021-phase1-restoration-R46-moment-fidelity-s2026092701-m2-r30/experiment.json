@@ -1,0 +1,340 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261021-phase1-restoration-R46-moment-fidelity-s2026092701-m2-r30",
+  "group_id": "R46-source-fourth-order-moment-fidelity",
+  "display_name": "27.82万恢复器配对clean与原父输出四阶统计保持对照",
+  "description": "两版从原350521独立SVD625初始化，同R22恒等基础，固定1.0倍11维四阶描述MSE，仅参考IQ不同；无额外G前向，逐版完整正式七景。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "F_free",
+    "TX_unlabeled",
+    "R46_350521_parent",
+    "SVD625",
+    "fourth_order_IQ_moment",
+    "all7formal"
+  ],
+  "comparison_group_id": "R30_clean_vs_parent_moment",
+  "parent_run_ids": [
+    "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求配合主对话，从指定35.05万参数版继续压缩并提升性能且路线不同；全部新版均测试七景。R29仅源IQ证据用于固定新目标，不修改健康任务。",
+  "code": {
+    "commit": null,
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
+    "cwd": "releases/pamf_r46_moment_fidelity_20261021_r30"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "Original63000sourceL6300/U56700/R07 cachedreceived1..20;1800sourceV7views;fixedR05formal168000x7",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train6300L+56700U originalIDs;R07validation1800V;conditional R05 original168000IDs",
+    "label_map_ref": "0新TX/V/target训练标签；原F50源监督知识冻结；各row全7预测后独立truth-last评分",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json: READY/EXACT_MATCH; reuse existing cache without new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "Unchanged code/leo_practical/channel.py;reuse R07 epoch01..20 and original sourceV;conditional original formal received bytes",
+    "restoration_train_counts": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "epochs_per_row": 20,
+      "updates_per_row": 19700,
+      "L_exposures_per_row": 126000,
+      "U_exposures_per_row": 1134000,
+      "source_IQ_examples": 1260000,
+      "teacher_IQ_examples": 1260000,
+      "student_context_inputs": 1260000,
+      "extra_clean_student_inputs": 1260000,
+      "student_total_IQ_inputs": 2520000,
+      "moment_descriptor_inputs": 3780000,
+      "extra_moment_G_inputs": 0,
+      "TX_labels": 0,
+      "F_weight_loads": 0,
+      "F_output_reads": 0,
+      "V_training": 0,
+      "target_training": 0,
+      "inherited_component_epochs": 80,
+      "new_component_epochs": 20,
+      "cumulative_component_epoch_sum": 300,
+      "cumulative_serial_training_passes": 140,
+      "cumulative_coarse_epochs": 100,
+      "cumulative_action_epochs": 100,
+      "cumulative_prior_epochs": 100,
+      "global_batch": 64,
+      "microbatch": 64
+    },
+    "source_validation_panel": 1800,
+    "target_panel": "Each fixedfinalE20/19700 source7/profile/formal168000x7;all7predictionsbeforeindependenttruthlast;no sourcegain gate",
+    "actual_training_labels": "Legal source L_s/U_s IQ with simulatedpairedclean and original350521 receivedIQteacher;no TX labels,F,V,target",
+    "augmentation": "OriginalR07 .15clean/.85residual cachedreceived,no newaugmentation or cleanconcatenation",
+    "runtime_inputs": "Native full278180 G(IQ2x256) only;no moments,teacher,F,clean or extra loss branch at deployment;3stage/6CG",
+    "compressed_context_parameters": {
+      "factor625_stage": 186703,
+      "factor625_cond": 186703
+    },
+    "context_training": "All coarse/action/prior jointly trainable;full channels/GN4/skip retained"
+  },
+  "permissions": {
+    "regime": "TX-unlabeled simulated-paired source self-supervision;F-free waveform teacher",
+    "query_use": "Full7 predictions fixed before independenttruthlast;no target optimization/selection;human parent choice after historical exposure disclosed",
+    "external_method_exception": null,
+    "claim_scope": "TX-unlabeled simulated-paired source self-supervision;noF/TX in restorationtraining;notcleanfree blind learning or per-detailTX proof"
+  },
+  "checkpoint": {
+    "initialization": "Only original human R46 prune_refine350521 source-final E20/4940 bbb8daf817de050b958d217b70d4c33f4aefe341;independent data-free SVD625;no tested student initialization or teacher",
+    "sources": [
+      {
+        "run_id": "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46",
+        "commit": "bbb8daf817de050b958d217b70d4c33f4aefe341",
+        "row": "prune_refine",
+        "epoch": 20,
+        "updates": 4940,
+        "parameters": 350521,
+        "role": "Only direct initialization/frozenIQteacher",
+        "path": "runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46/prune_refine/native_map_prior/final.pt"
+      }
+    ],
+    "contract_check_ref": "PinnedR46launch/plan/source-trainingcomplete/checkpointmetadata;reusevalidatedsourceREADY/EXACT_MATCH;no data revalidation",
+    "provenance_verdict": "R46source-fixedfinal20/4940 original7/63/30physicalsource ancestry;0TX/F/V/targettraining;human selected after formal exposure,engineering comparison only",
+    "selection_rule": "FixedfinalE20/19700 perarm;all7formal without source gate;all predictions before independenttruthlast",
+    "evaluation_readers": [
+      "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701 original defaulthead"
+    ],
+    "parent_run_ids": [
+      "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46",
+      "20261020-phase1-restoration-R38-compression-methods-s2026092701-m2-r44",
+      "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+      "20261019-phase1-restoration-learned-action-source-s2026092701-r07"
+    ]
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/R46-moment-fidelity",
+    "environment": "ExistingCVS-RFFI Python3.10/Torch2.1;FP32/TF32off;CPU2;directfloat32buffer",
+    "gpu_policy": "GPU2moment_clean/GPU3moment_teacher;max2own/1percard;queue after actualR28 correspondingworkerterminalandexit;sharedlock/free18GB/allowner<2;healthyothersuntouched",
+    "remote_run_root": "runs/20261021-phase1-restoration-R46-moment-fidelity-s2026092701-m2-r30",
+    "remote_log_root": "logs/20261021-phase1-restoration-R46-moment-fidelity-s2026092701-m2-r30",
+    "local_artifact_root": "local_artifacts\\pamf_restoration\\r46_moment_fidelity_20261021_r30",
+    "launch_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_moment_fidelity.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261021-phase1-restoration-R46-moment-fidelity-s2026092701-m2-r30 --expected-commit <actual method commit>",
+    "stop_rule": "Preserve affected technicalfailure;healthy peer untouched;no automaticretry/hotedit/other-owner stop",
+    "local_validation": {
+      "status": "PASS",
+      "focused_tests": 45,
+      "independent_P0P1_review_count": 1,
+      "reviewer": "/root/review_r14_prior_compact",
+      "independent_tests": 45,
+      "P0P1_issues": [],
+      "reviewer_reads_real_data_or_remote": false,
+      "reviewer_edits": false
+    }
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "comparison_plan.json",
+    "smoke.json",
+    "workers.json",
+    "stages.json",
+    "<row>/training_complete.json",
+    "<row>/native_map_prior/final.pt",
+    "<row>/target_confirmation/native_map_prior/summary.json",
+    "<row>/matched_inference_profile.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "primary": "All7accuracy/MacroF1,TX/RX/day,confusion,repair/damage,cleanpreservation,parent0.8pp;matchednewrows and historicalR22identity separately",
+    "source_rule": "FixedfinalE20/19700 perarm;all7formal without source gate;all predictions before independenttruthlast",
+    "target_acceptance_allowance_pp": 0.8,
+    "target_acceptance_unit": "percentage_points",
+    "metric_names": [
+      "sevenaccuracy/MacroF1/TX/RX/day",
+      "exactcorrectcount/0.8pp",
+      "repair/damage/net",
+      "full256/prefix232/tail24NMSE/FFT",
+      "fullparams/bytes/MAC",
+      "G_and_GplusF/B1_latency/B32_throughput/memory"
+    ],
+    "dimensions": [
+      "same_SVD_structure",
+      "conditionalprior_loss_ablation",
+      "sevenviews",
+      "TX",
+      "RX",
+      "day",
+      "20epochs"
+    ],
+    "prediction_ref": "runs/20261021-phase1-restoration-R46-moment-fidelity-s2026092701-m2-r30/<arm>/native_map_prior and target_confirmation/native_map_prior/prediction",
+    "scorer_ref": "pamf_r46_moment_fidelity.runner score_source/score_target;CPU2/R06scorelock;all7beforetruth",
+    "final_user_targets": {
+      "lowurban_accuracy_min": 70.0,
+      "other_five_goal": "距rawclean84.6761904762不超过5pp；当前压缩0.8pp容差分别报告"
+    },
+    "cost": "Samecard G and G+F B1/B32 3 alternating rounds;64sourceV only;median/p90/p95/throughput/resident/peak;ConvLinearMAC excludes FFT/CG/norm",
+    "secondary": [
+      "paired_waveform_NMSE/FFT_error",
+      "repair_damage/clean_damage",
+      "B1_median_p90_p95/G_and_GplusF",
+      "B32_throughput",
+      "peak_incremental_shared_resident_memory",
+      "full_parameters/serialized_size/ConvLinearMAC"
+    ],
+    "training_cost": "All20 source loss curves including raw/weightedselectedmoment,both clean/teachermomenterrors,base loss,actualseconds/peak;no extraG and no guaranteed equal wallclock"
+  },
+  "rows": [
+    {
+      "row_id": "moment_clean",
+      "method": "R46MomentFidelity/moment_clean",
+      "purpose": "SamefullGbudget;fixed fourthorderdescriptorMSE against paired_clean",
+      "config_ref": "experiments/pamf_r46_moment_fidelity/design.py#configuration",
+      "resolved_config_ref": "runs/20261021-phase1-restoration-R46-moment-fidelity-s2026092701-m2-r30/moment_clean/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original fixed model/split/data/received-cache augmentation/evaluation seeds;supportN/A;no new random descriptor/calibration seed",
+      "k": null,
+      "scenario": "clean+six practical",
+      "optimizer": "ResetAdamW",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "E20/19700;L126000/U1134000;teacher1260000/student2520000;descriptor3780000;extraG0",
+      "output_root": "runs/20261021-phase1-restoration-R46-moment-fidelity-s2026092701-m2-r30/moment_clean",
+      "log_path": "runs/20261021-phase1-restoration-R46-moment-fidelity-s2026092701-m2-r30/logs/worker-moment_clean.log",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_moment_fidelity.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261021-phase1-restoration-R46-moment-fidelity-s2026092701-m2-r30 --expected-commit <actual method commit>",
+      "expected_artifacts": [
+        "training.jsonl",
+        "training_complete.json",
+        "native_map_prior/final.pt",
+        "source_complete.json",
+        "matched_inference_profile.json",
+        "target_confirmation/native_map_prior/summary.json",
+        "assessment.json",
+        "complete.json"
+      ],
+      "GPU": 2,
+      "parameters": 278180,
+      "trainable_parameters": 278180,
+      "context_parameters": 186703,
+      "balanced_complex_weight": 0.02,
+      "clean_identity_weight": 0.25,
+      "moment_weight": 1.0,
+      "moment_reference": "paired_clean",
+      "moment_power_floor": 0.0001,
+      "moment_lags": [
+        1,
+        2,
+        4,
+        8
+      ],
+      "extra_moment_G_inputs": 0
+    },
+    {
+      "row_id": "moment_teacher",
+      "method": "R46MomentFidelity/moment_teacher",
+      "purpose": "SamefullGbudget;fixed fourthorderdescriptorMSE against original_350521_restored_IQ",
+      "config_ref": "experiments/pamf_r46_moment_fidelity/design.py#configuration",
+      "resolved_config_ref": "runs/20261021-phase1-restoration-R46-moment-fidelity-s2026092701-m2-r30/moment_teacher/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original fixed model/split/data/received-cache augmentation/evaluation seeds;supportN/A;no new random descriptor/calibration seed",
+      "k": null,
+      "scenario": "clean+six practical",
+      "optimizer": "ResetAdamW",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "E20/19700;L126000/U1134000;teacher1260000/student2520000;descriptor3780000;extraG0",
+      "output_root": "runs/20261021-phase1-restoration-R46-moment-fidelity-s2026092701-m2-r30/moment_teacher",
+      "log_path": "runs/20261021-phase1-restoration-R46-moment-fidelity-s2026092701-m2-r30/logs/worker-moment_teacher.log",
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 python -u -m experiments.pamf_r46_moment_fidelity.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261021-phase1-restoration-R46-moment-fidelity-s2026092701-m2-r30 --expected-commit <actual method commit>",
+      "expected_artifacts": [
+        "training.jsonl",
+        "training_complete.json",
+        "native_map_prior/final.pt",
+        "source_complete.json",
+        "matched_inference_profile.json",
+        "target_confirmation/native_map_prior/summary.json",
+        "assessment.json",
+        "complete.json"
+      ],
+      "GPU": 3,
+      "parameters": 278180,
+      "trainable_parameters": 278180,
+      "context_parameters": 186703,
+      "balanced_complex_weight": 0.02,
+      "clean_identity_weight": 0.25,
+      "moment_weight": 1.0,
+      "moment_reference": "original_350521_restored_IQ",
+      "moment_power_floor": 0.0001,
+      "moment_lags": [
+        1,
+        2,
+        4,
+        8
+      ],
+      "extra_moment_G_inputs": 0
+    }
+  ],
+  "notes": [
+    "R29 complete source-only fixed256physicalIQ panel motivates separate momentfidelity;no unique TX1 causal or perdetailTX claim.",
+    "1.0fixed from R29 source metric scale before R30target access;11dimension vectorMSE,not division by nearzero cumulants;powerfloor1e-4.",
+    "Both rows compute student/clean/originalparent descriptors;only selected reference enters loss;all reference IQ detached;same source and fullGforward counts.",
+    "No additional fullG call,learned descriptor,Fknowledge,TXlabel,newhead,student-parent inheritance or deployment branch.",
+    "45focusedchecks and uniqueindependentP0/P1review PASS;realoriginalparent/F50/2Ls smoke is launcherfirststep and continues onPASS.",
+    "Eachnewversion full7formal regardlesssourcebenefit;known exposed engineering benchmark,not newblind;source and target results never alter queue or otherrows.",
+    "REJECTED_EXTRA_GATE:generic design approvals and blanket wholeproject tests NONBLOCKING under ExclusiveMinimalWorkflow."
+  ],
+  "registered_at": "2026-10-20T22:27:08+00:00"
+}
