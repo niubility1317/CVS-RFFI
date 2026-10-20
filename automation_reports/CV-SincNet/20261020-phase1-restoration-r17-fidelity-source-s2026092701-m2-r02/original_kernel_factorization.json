@@ -1,0 +1,1433 @@
+{
+  "status": "DATA_FREE_ORIGINAL_KERNEL_FACTORIZATION_ANALYSIS",
+  "original_full_parameters": 4665073,
+  "original_prior_parameters": 2507526,
+  "frozen_parameters": 2157547,
+  "long_layers": 84,
+  "hypothetical_costs": [
+    {
+      "strategy": "half_all",
+      "full_parameters": 3775105,
+      "prior_parameters": 1617558,
+      "saved_parameters": 889968,
+      "parameter_reduction_percent": 19.07725774066129,
+      "changed_long_layers": 84,
+      "relative_long_kernel_Frobenius_error": 0.5255737665182345,
+      "by_stage": [
+        {
+          "saved_parameters": 296656,
+          "changed_layers": 28,
+          "error_energy": 208.63490264549645
+        },
+        {
+          "saved_parameters": 296656,
+          "changed_layers": 28,
+          "error_energy": 216.24081366659902
+        },
+        {
+          "saved_parameters": 296656,
+          "changed_layers": 28,
+          "error_energy": 220.6118466382112
+        }
+      ]
+    },
+    {
+      "strategy": "half_output_ge64",
+      "full_parameters": 3821809,
+      "prior_parameters": 1664262,
+      "saved_parameters": 843264,
+      "parameter_reduction_percent": 18.07611585070587,
+      "changed_long_layers": 60,
+      "relative_long_kernel_Frobenius_error": 0.4950822338744508,
+      "by_stage": [
+        {
+          "saved_parameters": 281088,
+          "changed_layers": 20,
+          "error_energy": 183.5309783378677
+        },
+        {
+          "saved_parameters": 281088,
+          "changed_layers": 20,
+          "error_energy": 191.6016413676038
+        },
+        {
+          "saved_parameters": 281088,
+          "changed_layers": 20,
+          "error_energy": 197.63070732050278
+        }
+      ]
+    },
+    {
+      "strategy": "half_output_ge96",
+      "full_parameters": 3999985,
+      "prior_parameters": 1842438,
+      "saved_parameters": 665088,
+      "parameter_reduction_percent": 14.256754395911917,
+      "changed_long_layers": 36,
+      "relative_long_kernel_Frobenius_error": 0.418996308277874,
+      "by_stage": [
+        {
+          "saved_parameters": 221696,
+          "changed_layers": 12,
+          "error_energy": 130.58320866476447
+        },
+        {
+          "saved_parameters": 221696,
+          "changed_layers": 12,
+          "error_energy": 136.8411097229133
+        },
+        {
+          "saved_parameters": 221696,
+          "changed_layers": 12,
+          "error_energy": 142.8184293347397
+        }
+      ]
+    },
+    {
+      "strategy": "two_thirds",
+      "full_parameters": 4241809,
+      "prior_parameters": 2084262,
+      "saved_parameters": 423264,
+      "parameter_reduction_percent": 9.073041300747063,
+      "changed_long_layers": 81,
+      "relative_long_kernel_Frobenius_error": 0.3889684360184928,
+      "by_stage": [
+        {
+          "saved_parameters": 141088,
+          "changed_layers": 27,
+          "error_energy": 114.16010921835434
+        },
+        {
+          "saved_parameters": 141088,
+          "changed_layers": 27,
+          "error_energy": 118.33805555174298
+        },
+        {
+          "saved_parameters": 141088,
+          "changed_layers": 27,
+          "error_energy": 121.05053199429264
+        }
+      ]
+    },
+    {
+      "strategy": "energy99",
+      "full_parameters": 4665073,
+      "prior_parameters": 2507526,
+      "saved_parameters": 0,
+      "parameter_reduction_percent": 0.0,
+      "changed_long_layers": 0,
+      "relative_long_kernel_Frobenius_error": 0.0,
+      "by_stage": [
+        {
+          "saved_parameters": 0,
+          "changed_layers": 0,
+          "error_energy": 0.0
+        },
+        {
+          "saved_parameters": 0,
+          "changed_layers": 0,
+          "error_energy": 0.0
+        },
+        {
+          "saved_parameters": 0,
+          "changed_layers": 0,
+          "error_energy": 0.0
+        }
+      ]
+    },
+    {
+      "strategy": "energy999",
+      "full_parameters": 4665073,
+      "prior_parameters": 2507526,
+      "saved_parameters": 0,
+      "parameter_reduction_percent": 0.0,
+      "changed_long_layers": 0,
+      "relative_long_kernel_Frobenius_error": 0.0,
+      "by_stage": [
+        {
+          "saved_parameters": 0,
+          "changed_layers": 0,
+          "error_energy": 0.0
+        },
+        {
+          "saved_parameters": 0,
+          "changed_layers": 0,
+          "error_energy": 0.0
+        },
+        {
+          "saved_parameters": 0,
+          "changed_layers": 0,
+          "error_energy": 0.0
+        }
+      ]
+    }
+  ],
+  "layers": [
+    {
+      "stage": 0,
+      "name": "encoder.blocks.0.0.net.0",
+      "outer": 32,
+      "inner": 45,
+      "kernel_parameters": 1440,
+      "energy": 11.177639982594055,
+      "half_rank": 16,
+      "half_saves_parameters": 208,
+      "half_relative_Frobenius_error": 0.3989238619550284,
+      "energy_ranks": {
+        "0.99": 28,
+        "0.999": 31
+      }
+    },
+    {
+      "stage": 0,
+      "name": "encoder.blocks.0.0.net.3",
+      "outer": 32,
+      "inner": 96,
+      "kernel_parameters": 3072,
+      "energy": 10.99876334588042,
+      "half_rank": 16,
+      "half_saves_parameters": 1024,
+      "half_relative_Frobenius_error": 0.5149504051985829,
+      "energy_ranks": {
+        "0.99": 31,
+        "0.999": 32
+      }
+    },
+    {
+      "stage": 0,
+      "name": "encoder.blocks.0.1.net.0",
+      "outer": 32,
+      "inner": 160,
+      "kernel_parameters": 5120,
+      "energy": 11.583500601312434,
+      "half_rank": 16,
+      "half_saves_parameters": 2048,
+      "half_relative_Frobenius_error": 0.5640914758848012,
+      "energy_ranks": {
+        "0.99": 32,
+        "0.999": 32
+      }
+    },
+    {
+      "stage": 0,
+      "name": "encoder.blocks.0.1.net.3",
+      "outer": 32,
+      "inner": 96,
+      "kernel_parameters": 3072,
+      "energy": 11.577152063393658,
+      "half_rank": 16,
+      "half_saves_parameters": 1024,
+      "half_relative_Frobenius_error": 0.5089232625361207,
+      "energy_ranks": {
+        "0.99": 31,
+        "0.999": 32
+      }
+    },
+    {
+      "stage": 0,
+      "name": "encoder.blocks.1.0.net.0",
+      "outer": 64,
+      "inner": 160,
+      "kernel_parameters": 10240,
+      "energy": 22.76784778665727,
+      "half_rank": 32,
+      "half_saves_parameters": 3072,
+      "half_relative_Frobenius_error": 0.491843781645229,
+      "energy_ranks": {
+        "0.99": 61,
+        "0.999": 64
+      }
+    },
+    {
+      "stage": 0,
+      "name": "encoder.blocks.1.0.net.3",
+      "outer": 64,
+      "inner": 192,
+      "kernel_parameters": 12288,
+      "energy": 22.973346813832045,
+      "half_rank": 32,
+      "half_saves_parameters": 4096,
+      "half_relative_Frobenius_error": 0.5147382219787263,
+      "energy_ranks": {
+        "0.99": 62,
+        "0.999": 64
+      }
+    },
+    {
+      "stage": 0,
+      "name": "encoder.blocks.1.1.net.0",
+      "outer": 64,
+      "inner": 320,
+      "kernel_parameters": 20480,
+      "energy": 23.97685517004698,
+      "half_rank": 32,
+      "half_saves_parameters": 8192,
+      "half_relative_Frobenius_error": 0.5581879476729736,
+      "energy_ranks": {
+        "0.99": 63,
+        "0.999": 64
+      }
+    },
+    {
+      "stage": 0,
+      "name": "encoder.blocks.1.1.net.3",
+      "outer": 64,
+      "inner": 192,
+      "kernel_parameters": 12288,
+      "energy": 22.817254471404706,
+      "half_rank": 32,
+      "half_saves_parameters": 4096,
+      "half_relative_Frobenius_error": 0.5047528219028266,
+      "energy_ranks": {
+        "0.99": 61,
+        "0.999": 64
+      }
+    },
+    {
+      "stage": 0,
+      "name": "encoder.blocks.2.0.net.0",
+      "outer": 96,
+      "inner": 320,
+      "kernel_parameters": 30720,
+      "energy": 35.27506731784932,
+      "half_rank": 48,
+      "half_saves_parameters": 10752,
+      "half_relative_Frobenius_error": 0.5170228128308982,
+      "energy_ranks": {
+        "0.99": 92,
+        "0.999": 96
+      }
+    },
+    {
+      "stage": 0,
+      "name": "encoder.blocks.2.0.net.3",
+      "outer": 96,
+      "inner": 288,
+      "kernel_parameters": 27648,
+      "energy": 35.16198550958103,
+      "half_rank": 48,
+      "half_saves_parameters": 9216,
+      "half_relative_Frobenius_error": 0.5089604225757085,
+      "energy_ranks": {
+        "0.99": 92,
+        "0.999": 96
+      }
+    },
+    {
+      "stage": 0,
+      "name": "encoder.blocks.2.1.net.0",
+      "outer": 96,
+      "inner": 480,
+      "kernel_parameters": 46080,
+      "energy": 36.832443492520234,
+      "half_rank": 48,
+      "half_saves_parameters": 18432,
+      "half_relative_Frobenius_error": 0.5484798494556535,
+      "energy_ranks": {
+        "0.99": 94,
+        "0.999": 96
+      }
+    },
+    {
+      "stage": 0,
+      "name": "encoder.blocks.2.1.net.3",
+      "outer": 96,
+      "inner": 288,
+      "kernel_parameters": 27648,
+      "energy": 34.771406573539636,
+      "half_rank": 48,
+      "half_saves_parameters": 9216,
+      "half_relative_Frobenius_error": 0.5082135579587869,
+      "energy_ranks": {
+        "0.99": 92,
+        "0.999": 96
+      }
+    },
+    {
+      "stage": 0,
+      "name": "encoder.blocks.3.0.net.0",
+      "outer": 128,
+      "inner": 480,
+      "kernel_parameters": 61440,
+      "energy": 47.74653315500692,
+      "half_rank": 64,
+      "half_saves_parameters": 22528,
+      "half_relative_Frobenius_error": 0.5245216898150507,
+      "energy_ranks": {
+        "0.99": 124,
+        "0.999": 128
+      }
+    },
+    {
+      "stage": 0,
+      "name": "encoder.blocks.3.0.net.3",
+      "outer": 128,
+      "inner": 384,
+      "kernel_parameters": 49152,
+      "energy": 46.21140337476437,
+      "half_rank": 64,
+      "half_saves_parameters": 16384,
+      "half_relative_Frobenius_error": 0.5023467679877832,
+      "energy_ranks": {
+        "0.99": 122,
+        "0.999": 128
+      }
+    },
+    {
+      "stage": 0,
+      "name": "encoder.blocks.3.1.net.0",
+      "outer": 128,
+      "inner": 640,
+      "kernel_parameters": 81920,
+      "energy": 47.97350071548809,
+      "half_rank": 64,
+      "half_saves_parameters": 32768,
+      "half_relative_Frobenius_error": 0.5437584710653776,
+      "energy_ranks": {
+        "0.99": 125,
+        "0.999": 128
+      }
+    },
+    {
+      "stage": 0,
+      "name": "encoder.blocks.3.1.net.3",
+      "outer": 128,
+      "inner": 384,
+      "kernel_parameters": 49152,
+      "energy": 46.059518879873885,
+      "half_rank": 64,
+      "half_saves_parameters": 16384,
+      "half_relative_Frobenius_error": 0.49987978430094177,
+      "energy_ranks": {
+        "0.99": 123,
+        "0.999": 128
+      }
+    },
+    {
+      "stage": 0,
+      "name": "decode.0.0.net.0",
+      "outer": 96,
+      "inner": 1120,
+      "kernel_parameters": 107520,
+      "energy": 39.72228688641616,
+      "half_rank": 48,
+      "half_saves_parameters": 49152,
+      "half_relative_Frobenius_error": 0.5818303336176053,
+      "energy_ranks": {
+        "0.99": 94,
+        "0.999": 96
+      }
+    },
+    {
+      "stage": 0,
+      "name": "decode.0.0.net.3",
+      "outer": 96,
+      "inner": 288,
+      "kernel_parameters": 27648,
+      "energy": 34.702436820252615,
+      "half_rank": 48,
+      "half_saves_parameters": 9216,
+      "half_relative_Frobenius_error": 0.5048814870698486,
+      "energy_ranks": {
+        "0.99": 92,
+        "0.999": 96
+      }
+    },
+    {
+      "stage": 0,
+      "name": "decode.0.1.net.0",
+      "outer": 96,
+      "inner": 480,
+      "kernel_parameters": 46080,
+      "energy": 34.905938535079116,
+      "half_rank": 48,
+      "half_saves_parameters": 18432,
+      "half_relative_Frobenius_error": 0.5497338268907948,
+      "energy_ranks": {
+        "0.99": 94,
+        "0.999": 96
+      }
+    },
+    {
+      "stage": 0,
+      "name": "decode.0.1.net.3",
+      "outer": 96,
+      "inner": 288,
+      "kernel_parameters": 27648,
+      "energy": 34.41294467931998,
+      "half_rank": 48,
+      "half_saves_parameters": 9216,
+      "half_relative_Frobenius_error": 0.5013857296609466,
+      "energy_ranks": {
+        "0.99": 92,
+        "0.999": 96
+      }
+    },
+    {
+      "stage": 0,
+      "name": "decode.1.0.net.0",
+      "outer": 64,
+      "inner": 800,
+      "kernel_parameters": 51200,
+      "energy": 27.744057594918534,
+      "half_rank": 32,
+      "half_saves_parameters": 23552,
+      "half_relative_Frobenius_error": 0.5831516552971392,
+      "energy_ranks": {
+        "0.99": 63,
+        "0.999": 64
+      }
+    },
+    {
+      "stage": 0,
+      "name": "decode.1.0.net.3",
+      "outer": 64,
+      "inner": 192,
+      "kernel_parameters": 12288,
+      "energy": 22.58680138354506,
+      "half_rank": 32,
+      "half_saves_parameters": 4096,
+      "half_relative_Frobenius_error": 0.5075251795083457,
+      "energy_ranks": {
+        "0.99": 61,
+        "0.999": 64
+      }
+    },
+    {
+      "stage": 0,
+      "name": "decode.1.1.net.0",
+      "outer": 64,
+      "inner": 320,
+      "kernel_parameters": 20480,
+      "energy": 23.301378411007196,
+      "half_rank": 32,
+      "half_saves_parameters": 8192,
+      "half_relative_Frobenius_error": 0.5506865075037606,
+      "energy_ranks": {
+        "0.99": 63,
+        "0.999": 64
+      }
+    },
+    {
+      "stage": 0,
+      "name": "decode.1.1.net.3",
+      "outer": 64,
+      "inner": 192,
+      "kernel_parameters": 12288,
+      "energy": 22.767262339274,
+      "half_rank": 32,
+      "half_saves_parameters": 4096,
+      "half_relative_Frobenius_error": 0.5025585008070325,
+      "energy_ranks": {
+        "0.99": 62,
+        "0.999": 64
+      }
+    },
+    {
+      "stage": 0,
+      "name": "decode.2.0.net.0",
+      "outer": 32,
+      "inner": 480,
+      "kernel_parameters": 15360,
+      "energy": 13.461089446658134,
+      "half_rank": 16,
+      "half_saves_parameters": 7168,
+      "half_relative_Frobenius_error": 0.5922510643517795,
+      "energy_ranks": {
+        "0.99": 32,
+        "0.999": 32
+      }
+    },
+    {
+      "stage": 0,
+      "name": "decode.2.0.net.3",
+      "outer": 32,
+      "inner": 96,
+      "kernel_parameters": 3072,
+      "energy": 11.327646333680438,
+      "half_rank": 16,
+      "half_saves_parameters": 1024,
+      "half_relative_Frobenius_error": 0.5064713509391936,
+      "energy_ranks": {
+        "0.99": 31,
+        "0.999": 32
+      }
+    },
+    {
+      "stage": 0,
+      "name": "decode.2.1.net.0",
+      "outer": 32,
+      "inner": 160,
+      "kernel_parameters": 5120,
+      "energy": 10.951308870445125,
+      "half_rank": 16,
+      "half_saves_parameters": 2048,
+      "half_relative_Frobenius_error": 0.5581815715735032,
+      "energy_ranks": {
+        "0.99": 31,
+        "0.999": 32
+      }
+    },
+    {
+      "stage": 0,
+      "name": "decode.2.1.net.3",
+      "outer": 32,
+      "inner": 96,
+      "kernel_parameters": 3072,
+      "energy": 10.870682274271605,
+      "half_rank": 16,
+      "half_saves_parameters": 1024,
+      "half_relative_Frobenius_error": 0.49696395396652093,
+      "energy_ranks": {
+        "0.99": 31,
+        "0.999": 32
+      }
+    },
+    {
+      "stage": 1,
+      "name": "encoder.blocks.0.0.net.0",
+      "outer": 32,
+      "inner": 45,
+      "kernel_parameters": 1440,
+      "energy": 10.995451479740085,
+      "half_rank": 16,
+      "half_saves_parameters": 208,
+      "half_relative_Frobenius_error": 0.4021744439172932,
+      "energy_ranks": {
+        "0.99": 28,
+        "0.999": 31
+      }
+    },
+    {
+      "stage": 1,
+      "name": "encoder.blocks.0.0.net.3",
+      "outer": 32,
+      "inner": 96,
+      "kernel_parameters": 3072,
+      "energy": 11.157561840394505,
+      "half_rank": 16,
+      "half_saves_parameters": 1024,
+      "half_relative_Frobenius_error": 0.5120852020296625,
+      "energy_ranks": {
+        "0.99": 31,
+        "0.999": 32
+      }
+    },
+    {
+      "stage": 1,
+      "name": "encoder.blocks.0.1.net.0",
+      "outer": 32,
+      "inner": 160,
+      "kernel_parameters": 5120,
+      "energy": 11.603050134295325,
+      "half_rank": 16,
+      "half_saves_parameters": 2048,
+      "half_relative_Frobenius_error": 0.5633056939984896,
+      "energy_ranks": {
+        "0.99": 32,
+        "0.999": 32
+      }
+    },
+    {
+      "stage": 1,
+      "name": "encoder.blocks.0.1.net.3",
+      "outer": 32,
+      "inner": 96,
+      "kernel_parameters": 3072,
+      "energy": 11.82526053784955,
+      "half_rank": 16,
+      "half_saves_parameters": 1024,
+      "half_relative_Frobenius_error": 0.4993127900860097,
+      "energy_ranks": {
+        "0.99": 31,
+        "0.999": 32
+      }
+    },
+    {
+      "stage": 1,
+      "name": "encoder.blocks.1.0.net.0",
+      "outer": 64,
+      "inner": 160,
+      "kernel_parameters": 10240,
+      "energy": 23.134490890376206,
+      "half_rank": 32,
+      "half_saves_parameters": 3072,
+      "half_relative_Frobenius_error": 0.488905363986738,
+      "energy_ranks": {
+        "0.99": 61,
+        "0.999": 64
+      }
+    },
+    {
+      "stage": 1,
+      "name": "encoder.blocks.1.0.net.3",
+      "outer": 64,
+      "inner": 192,
+      "kernel_parameters": 12288,
+      "energy": 23.488973957401242,
+      "half_rank": 32,
+      "half_saves_parameters": 4096,
+      "half_relative_Frobenius_error": 0.5081989445305681,
+      "energy_ranks": {
+        "0.99": 62,
+        "0.999": 64
+      }
+    },
+    {
+      "stage": 1,
+      "name": "encoder.blocks.1.1.net.0",
+      "outer": 64,
+      "inner": 320,
+      "kernel_parameters": 20480,
+      "energy": 24.517583547152835,
+      "half_rank": 32,
+      "half_saves_parameters": 8192,
+      "half_relative_Frobenius_error": 0.5589452193296456,
+      "energy_ranks": {
+        "0.99": 63,
+        "0.999": 64
+      }
+    },
+    {
+      "stage": 1,
+      "name": "encoder.blocks.1.1.net.3",
+      "outer": 64,
+      "inner": 192,
+      "kernel_parameters": 12288,
+      "energy": 23.22376787303612,
+      "half_rank": 32,
+      "half_saves_parameters": 4096,
+      "half_relative_Frobenius_error": 0.508207734921012,
+      "energy_ranks": {
+        "0.99": 61,
+        "0.999": 64
+      }
+    },
+    {
+      "stage": 1,
+      "name": "encoder.blocks.2.0.net.0",
+      "outer": 96,
+      "inner": 320,
+      "kernel_parameters": 30720,
+      "energy": 36.43428686724567,
+      "half_rank": 48,
+      "half_saves_parameters": 10752,
+      "half_relative_Frobenius_error": 0.515412359246627,
+      "energy_ranks": {
+        "0.99": 92,
+        "0.999": 96
+      }
+    },
+    {
+      "stage": 1,
+      "name": "encoder.blocks.2.0.net.3",
+      "outer": 96,
+      "inner": 288,
+      "kernel_parameters": 27648,
+      "energy": 36.34330198858495,
+      "half_rank": 48,
+      "half_saves_parameters": 9216,
+      "half_relative_Frobenius_error": 0.50933925613576,
+      "energy_ranks": {
+        "0.99": 92,
+        "0.999": 96
+      }
+    },
+    {
+      "stage": 1,
+      "name": "encoder.blocks.2.1.net.0",
+      "outer": 96,
+      "inner": 480,
+      "kernel_parameters": 46080,
+      "energy": 38.454474864633475,
+      "half_rank": 48,
+      "half_saves_parameters": 18432,
+      "half_relative_Frobenius_error": 0.5486823602680301,
+      "energy_ranks": {
+        "0.99": 93,
+        "0.999": 96
+      }
+    },
+    {
+      "stage": 1,
+      "name": "encoder.blocks.2.1.net.3",
+      "outer": 96,
+      "inner": 288,
+      "kernel_parameters": 27648,
+      "energy": 35.657836274114,
+      "half_rank": 48,
+      "half_saves_parameters": 9216,
+      "half_relative_Frobenius_error": 0.5072976778030868,
+      "energy_ranks": {
+        "0.99": 92,
+        "0.999": 96
+      }
+    },
+    {
+      "stage": 1,
+      "name": "encoder.blocks.3.0.net.0",
+      "outer": 128,
+      "inner": 480,
+      "kernel_parameters": 61440,
+      "energy": 49.851855139640975,
+      "half_rank": 64,
+      "half_saves_parameters": 22528,
+      "half_relative_Frobenius_error": 0.5232718316077039,
+      "energy_ranks": {
+        "0.99": 124,
+        "0.999": 128
+      }
+    },
+    {
+      "stage": 1,
+      "name": "encoder.blocks.3.0.net.3",
+      "outer": 128,
+      "inner": 384,
+      "kernel_parameters": 49152,
+      "energy": 48.23924510046664,
+      "half_rank": 64,
+      "half_saves_parameters": 16384,
+      "half_relative_Frobenius_error": 0.5036275099702497,
+      "energy_ranks": {
+        "0.99": 123,
+        "0.999": 128
+      }
+    },
+    {
+      "stage": 1,
+      "name": "encoder.blocks.3.1.net.0",
+      "outer": 128,
+      "inner": 640,
+      "kernel_parameters": 81920,
+      "energy": 50.873251208035825,
+      "half_rank": 64,
+      "half_saves_parameters": 32768,
+      "half_relative_Frobenius_error": 0.5435577898239188,
+      "energy_ranks": {
+        "0.99": 124,
+        "0.999": 128
+      }
+    },
+    {
+      "stage": 1,
+      "name": "encoder.blocks.3.1.net.3",
+      "outer": 128,
+      "inner": 384,
+      "kernel_parameters": 49152,
+      "energy": 47.889470553293904,
+      "half_rank": 64,
+      "half_saves_parameters": 16384,
+      "half_relative_Frobenius_error": 0.5001421405876534,
+      "energy_ranks": {
+        "0.99": 123,
+        "0.999": 128
+      }
+    },
+    {
+      "stage": 1,
+      "name": "decode.0.0.net.0",
+      "outer": 96,
+      "inner": 1120,
+      "kernel_parameters": 107520,
+      "energy": 43.73855275314094,
+      "half_rank": 48,
+      "half_saves_parameters": 49152,
+      "half_relative_Frobenius_error": 0.5851441519690992,
+      "energy_ranks": {
+        "0.99": 94,
+        "0.999": 96
+      }
+    },
+    {
+      "stage": 1,
+      "name": "decode.0.0.net.3",
+      "outer": 96,
+      "inner": 288,
+      "kernel_parameters": 27648,
+      "energy": 35.472968253223684,
+      "half_rank": 48,
+      "half_saves_parameters": 9216,
+      "half_relative_Frobenius_error": 0.5071578032098282,
+      "energy_ranks": {
+        "0.99": 92,
+        "0.999": 96
+      }
+    },
+    {
+      "stage": 1,
+      "name": "decode.0.1.net.0",
+      "outer": 96,
+      "inner": 480,
+      "kernel_parameters": 46080,
+      "energy": 36.675849308229154,
+      "half_rank": 48,
+      "half_saves_parameters": 18432,
+      "half_relative_Frobenius_error": 0.551041828406103,
+      "energy_ranks": {
+        "0.99": 94,
+        "0.999": 96
+      }
+    },
+    {
+      "stage": 1,
+      "name": "decode.0.1.net.3",
+      "outer": 96,
+      "inner": 288,
+      "kernel_parameters": 27648,
+      "energy": 35.286967480180806,
+      "half_rank": 48,
+      "half_saves_parameters": 9216,
+      "half_relative_Frobenius_error": 0.5007656422705017,
+      "energy_ranks": {
+        "0.99": 92,
+        "0.999": 96
+      }
+    },
+    {
+      "stage": 1,
+      "name": "decode.1.0.net.0",
+      "outer": 64,
+      "inner": 800,
+      "kernel_parameters": 51200,
+      "energy": 28.95785321133736,
+      "half_rank": 32,
+      "half_saves_parameters": 23552,
+      "half_relative_Frobenius_error": 0.593633986432332,
+      "energy_ranks": {
+        "0.99": 63,
+        "0.999": 64
+      }
+    },
+    {
+      "stage": 1,
+      "name": "decode.1.0.net.3",
+      "outer": 64,
+      "inner": 192,
+      "kernel_parameters": 12288,
+      "energy": 23.146703297269774,
+      "half_rank": 32,
+      "half_saves_parameters": 4096,
+      "half_relative_Frobenius_error": 0.50621991800941,
+      "energy_ranks": {
+        "0.99": 62,
+        "0.999": 64
+      }
+    },
+    {
+      "stage": 1,
+      "name": "decode.1.1.net.0",
+      "outer": 64,
+      "inner": 320,
+      "kernel_parameters": 20480,
+      "energy": 24.161142096285296,
+      "half_rank": 32,
+      "half_saves_parameters": 8192,
+      "half_relative_Frobenius_error": 0.5579177218751705,
+      "energy_ranks": {
+        "0.99": 63,
+        "0.999": 64
+      }
+    },
+    {
+      "stage": 1,
+      "name": "decode.1.1.net.3",
+      "outer": 64,
+      "inner": 192,
+      "kernel_parameters": 12288,
+      "energy": 23.18884658543096,
+      "half_rank": 32,
+      "half_saves_parameters": 4096,
+      "half_relative_Frobenius_error": 0.5022457708004261,
+      "energy_ranks": {
+        "0.99": 62,
+        "0.999": 64
+      }
+    },
+    {
+      "stage": 1,
+      "name": "decode.2.0.net.0",
+      "outer": 32,
+      "inner": 480,
+      "kernel_parameters": 15360,
+      "energy": 13.594710444060146,
+      "half_rank": 16,
+      "half_saves_parameters": 7168,
+      "half_relative_Frobenius_error": 0.5959019654299987,
+      "energy_ranks": {
+        "0.99": 32,
+        "0.999": 32
+      }
+    },
+    {
+      "stage": 1,
+      "name": "decode.2.0.net.3",
+      "outer": 32,
+      "inner": 96,
+      "kernel_parameters": 3072,
+      "energy": 11.083661317214503,
+      "half_rank": 16,
+      "half_saves_parameters": 1024,
+      "half_relative_Frobenius_error": 0.490426018573328,
+      "energy_ranks": {
+        "0.99": 31,
+        "0.999": 32
+      }
+    },
+    {
+      "stage": 1,
+      "name": "decode.2.1.net.0",
+      "outer": 32,
+      "inner": 160,
+      "kernel_parameters": 5120,
+      "energy": 11.112386857011973,
+      "half_rank": 16,
+      "half_saves_parameters": 2048,
+      "half_relative_Frobenius_error": 0.5496132827205366,
+      "energy_ranks": {
+        "0.99": 31,
+        "0.999": 32
+      }
+    },
+    {
+      "stage": 1,
+      "name": "decode.2.1.net.3",
+      "outer": 32,
+      "inner": 96,
+      "kernel_parameters": 3072,
+      "energy": 10.918375545131205,
+      "half_rank": 16,
+      "half_saves_parameters": 1024,
+      "half_relative_Frobenius_error": 0.4741649639168224,
+      "energy_ranks": {
+        "0.99": 31,
+        "0.999": 32
+      }
+    },
+    {
+      "stage": 2,
+      "name": "encoder.blocks.0.0.net.0",
+      "outer": 32,
+      "inner": 45,
+      "kernel_parameters": 1440,
+      "energy": 10.993037737487512,
+      "half_rank": 16,
+      "half_saves_parameters": 208,
+      "half_relative_Frobenius_error": 0.37218910652448206,
+      "energy_ranks": {
+        "0.99": 28,
+        "0.999": 31
+      }
+    },
+    {
+      "stage": 2,
+      "name": "encoder.blocks.0.0.net.3",
+      "outer": 32,
+      "inner": 96,
+      "kernel_parameters": 3072,
+      "energy": 11.715128751788063,
+      "half_rank": 16,
+      "half_saves_parameters": 1024,
+      "half_relative_Frobenius_error": 0.47808691510895346,
+      "energy_ranks": {
+        "0.99": 31,
+        "0.999": 32
+      }
+    },
+    {
+      "stage": 2,
+      "name": "encoder.blocks.0.1.net.0",
+      "outer": 32,
+      "inner": 160,
+      "kernel_parameters": 5120,
+      "energy": 11.972598726067979,
+      "half_rank": 16,
+      "half_saves_parameters": 2048,
+      "half_relative_Frobenius_error": 0.5470528388484855,
+      "energy_ranks": {
+        "0.99": 32,
+        "0.999": 32
+      }
+    },
+    {
+      "stage": 2,
+      "name": "encoder.blocks.0.1.net.3",
+      "outer": 32,
+      "inner": 96,
+      "kernel_parameters": 3072,
+      "energy": 11.834228347376504,
+      "half_rank": 16,
+      "half_saves_parameters": 1024,
+      "half_relative_Frobenius_error": 0.4977071807242862,
+      "energy_ranks": {
+        "0.99": 31,
+        "0.999": 32
+      }
+    },
+    {
+      "stage": 2,
+      "name": "encoder.blocks.1.0.net.0",
+      "outer": 64,
+      "inner": 160,
+      "kernel_parameters": 10240,
+      "energy": 22.738714535247862,
+      "half_rank": 32,
+      "half_saves_parameters": 3072,
+      "half_relative_Frobenius_error": 0.4861198691089347,
+      "energy_ranks": {
+        "0.99": 61,
+        "0.999": 64
+      }
+    },
+    {
+      "stage": 2,
+      "name": "encoder.blocks.1.0.net.3",
+      "outer": 64,
+      "inner": 192,
+      "kernel_parameters": 12288,
+      "energy": 22.917708281873065,
+      "half_rank": 32,
+      "half_saves_parameters": 4096,
+      "half_relative_Frobenius_error": 0.5103268928639022,
+      "energy_ranks": {
+        "0.99": 62,
+        "0.999": 64
+      }
+    },
+    {
+      "stage": 2,
+      "name": "encoder.blocks.1.1.net.0",
+      "outer": 64,
+      "inner": 320,
+      "kernel_parameters": 20480,
+      "energy": 23.981828793020433,
+      "half_rank": 32,
+      "half_saves_parameters": 8192,
+      "half_relative_Frobenius_error": 0.5564998655028295,
+      "energy_ranks": {
+        "0.99": 63,
+        "0.999": 64
+      }
+    },
+    {
+      "stage": 2,
+      "name": "encoder.blocks.1.1.net.3",
+      "outer": 64,
+      "inner": 192,
+      "kernel_parameters": 12288,
+      "energy": 23.047834529511547,
+      "half_rank": 32,
+      "half_saves_parameters": 4096,
+      "half_relative_Frobenius_error": 0.5074722354400254,
+      "energy_ranks": {
+        "0.99": 61,
+        "0.999": 64
+      }
+    },
+    {
+      "stage": 2,
+      "name": "encoder.blocks.2.0.net.0",
+      "outer": 96,
+      "inner": 320,
+      "kernel_parameters": 30720,
+      "energy": 35.9690626542849,
+      "half_rank": 48,
+      "half_saves_parameters": 10752,
+      "half_relative_Frobenius_error": 0.5152024802275094,
+      "energy_ranks": {
+        "0.99": 92,
+        "0.999": 96
+      }
+    },
+    {
+      "stage": 2,
+      "name": "encoder.blocks.2.0.net.3",
+      "outer": 96,
+      "inner": 288,
+      "kernel_parameters": 27648,
+      "energy": 35.95128957296869,
+      "half_rank": 48,
+      "half_saves_parameters": 9216,
+      "half_relative_Frobenius_error": 0.5107463902619453,
+      "energy_ranks": {
+        "0.99": 92,
+        "0.999": 96
+      }
+    },
+    {
+      "stage": 2,
+      "name": "encoder.blocks.2.1.net.0",
+      "outer": 96,
+      "inner": 480,
+      "kernel_parameters": 46080,
+      "energy": 38.51548675000182,
+      "half_rank": 48,
+      "half_saves_parameters": 18432,
+      "half_relative_Frobenius_error": 0.547331504687677,
+      "energy_ranks": {
+        "0.99": 94,
+        "0.999": 96
+      }
+    },
+    {
+      "stage": 2,
+      "name": "encoder.blocks.2.1.net.3",
+      "outer": 96,
+      "inner": 288,
+      "kernel_parameters": 27648,
+      "energy": 36.02597226753518,
+      "half_rank": 48,
+      "half_saves_parameters": 9216,
+      "half_relative_Frobenius_error": 0.5091626876743482,
+      "energy_ranks": {
+        "0.99": 92,
+        "0.999": 96
+      }
+    },
+    {
+      "stage": 2,
+      "name": "encoder.blocks.3.0.net.0",
+      "outer": 128,
+      "inner": 480,
+      "kernel_parameters": 61440,
+      "energy": 51.65918882649024,
+      "half_rank": 64,
+      "half_saves_parameters": 22528,
+      "half_relative_Frobenius_error": 0.522853550486588,
+      "energy_ranks": {
+        "0.99": 124,
+        "0.999": 128
+      }
+    },
+    {
+      "stage": 2,
+      "name": "encoder.blocks.3.0.net.3",
+      "outer": 128,
+      "inner": 384,
+      "kernel_parameters": 49152,
+      "energy": 49.958214362127364,
+      "half_rank": 64,
+      "half_saves_parameters": 16384,
+      "half_relative_Frobenius_error": 0.5044781939692832,
+      "energy_ranks": {
+        "0.99": 123,
+        "0.999": 128
+      }
+    },
+    {
+      "stage": 2,
+      "name": "encoder.blocks.3.1.net.0",
+      "outer": 128,
+      "inner": 640,
+      "kernel_parameters": 81920,
+      "energy": 55.15652210944222,
+      "half_rank": 64,
+      "half_saves_parameters": 32768,
+      "half_relative_Frobenius_error": 0.5435463622773493,
+      "energy_ranks": {
+        "0.99": 125,
+        "0.999": 128
+      }
+    },
+    {
+      "stage": 2,
+      "name": "encoder.blocks.3.1.net.3",
+      "outer": 128,
+      "inner": 384,
+      "kernel_parameters": 49152,
+      "energy": 50.06090028194616,
+      "half_rank": 64,
+      "half_saves_parameters": 16384,
+      "half_relative_Frobenius_error": 0.5039237485556165,
+      "energy_ranks": {
+        "0.99": 122,
+        "0.999": 128
+      }
+    },
+    {
+      "stage": 2,
+      "name": "decode.0.0.net.0",
+      "outer": 96,
+      "inner": 1120,
+      "kernel_parameters": 107520,
+      "energy": 48.616446233596946,
+      "half_rank": 48,
+      "half_saves_parameters": 49152,
+      "half_relative_Frobenius_error": 0.576171498771163,
+      "energy_ranks": {
+        "0.99": 94,
+        "0.999": 96
+      }
+    },
+    {
+      "stage": 2,
+      "name": "decode.0.0.net.3",
+      "outer": 96,
+      "inner": 288,
+      "kernel_parameters": 27648,
+      "energy": 36.734221249808414,
+      "half_rank": 48,
+      "half_saves_parameters": 9216,
+      "half_relative_Frobenius_error": 0.5114399495981699,
+      "energy_ranks": {
+        "0.99": 92,
+        "0.999": 96
+      }
+    },
+    {
+      "stage": 2,
+      "name": "decode.0.1.net.0",
+      "outer": 96,
+      "inner": 480,
+      "kernel_parameters": 46080,
+      "energy": 39.121964934722655,
+      "half_rank": 48,
+      "half_saves_parameters": 18432,
+      "half_relative_Frobenius_error": 0.5516365280866857,
+      "energy_ranks": {
+        "0.99": 94,
+        "0.999": 96
+      }
+    },
+    {
+      "stage": 2,
+      "name": "decode.0.1.net.3",
+      "outer": 96,
+      "inner": 288,
+      "kernel_parameters": 27648,
+      "energy": 36.72948483480092,
+      "half_rank": 48,
+      "half_saves_parameters": 9216,
+      "half_relative_Frobenius_error": 0.509039268571676,
+      "energy_ranks": {
+        "0.99": 92,
+        "0.999": 96
+      }
+    },
+    {
+      "stage": 2,
+      "name": "decode.1.0.net.0",
+      "outer": 64,
+      "inner": 800,
+      "kernel_parameters": 51200,
+      "energy": 29.668504593042243,
+      "half_rank": 32,
+      "half_saves_parameters": 23552,
+      "half_relative_Frobenius_error": 0.5967833490297977,
+      "energy_ranks": {
+        "0.99": 63,
+        "0.999": 64
+      }
+    },
+    {
+      "stage": 2,
+      "name": "decode.1.0.net.3",
+      "outer": 64,
+      "inner": 192,
+      "kernel_parameters": 12288,
+      "energy": 23.20979169927857,
+      "half_rank": 32,
+      "half_saves_parameters": 4096,
+      "half_relative_Frobenius_error": 0.509493871007154,
+      "energy_ranks": {
+        "0.99": 62,
+        "0.999": 64
+      }
+    },
+    {
+      "stage": 2,
+      "name": "decode.1.1.net.0",
+      "outer": 64,
+      "inner": 320,
+      "kernel_parameters": 20480,
+      "energy": 24.7742609924832,
+      "half_rank": 32,
+      "half_saves_parameters": 8192,
+      "half_relative_Frobenius_error": 0.553891156917663,
+      "energy_ranks": {
+        "0.99": 63,
+        "0.999": 64
+      }
+    },
+    {
+      "stage": 2,
+      "name": "decode.1.1.net.3",
+      "outer": 64,
+      "inner": 192,
+      "kernel_parameters": 12288,
+      "energy": 23.60737710422957,
+      "half_rank": 32,
+      "half_saves_parameters": 4096,
+      "half_relative_Frobenius_error": 0.5005941400215678,
+      "energy_ranks": {
+        "0.99": 62,
+        "0.999": 64
+      }
+    },
+    {
+      "stage": 2,
+      "name": "decode.2.0.net.0",
+      "outer": 32,
+      "inner": 480,
+      "kernel_parameters": 15360,
+      "energy": 13.358935208349743,
+      "half_rank": 16,
+      "half_saves_parameters": 7168,
+      "half_relative_Frobenius_error": 0.6028712627366081,
+      "energy_ranks": {
+        "0.99": 32,
+        "0.999": 32
+      }
+    },
+    {
+      "stage": 2,
+      "name": "decode.2.0.net.3",
+      "outer": 32,
+      "inner": 96,
+      "kernel_parameters": 3072,
+      "energy": 10.96889168655478,
+      "half_rank": 16,
+      "half_saves_parameters": 1024,
+      "half_relative_Frobenius_error": 0.4605559464211793,
+      "energy_ranks": {
+        "0.99": 31,
+        "0.999": 32
+      }
+    },
+    {
+      "stage": 2,
+      "name": "decode.2.1.net.0",
+      "outer": 32,
+      "inner": 160,
+      "kernel_parameters": 5120,
+      "energy": 11.230508332397367,
+      "half_rank": 16,
+      "half_saves_parameters": 2048,
+      "half_relative_Frobenius_error": 0.5341193761715461,
+      "energy_ranks": {
+        "0.99": 31,
+        "0.999": 32
+      }
+    },
+    {
+      "stage": 2,
+      "name": "decode.2.1.net.3",
+      "outer": 32,
+      "inner": 96,
+      "kernel_parameters": 3072,
+      "energy": 10.590451446143083,
+      "half_rank": 16,
+      "half_saves_parameters": 1024,
+      "half_relative_Frobenius_error": 0.4213614390259713,
+      "energy_ranks": {
+        "0.99": 30,
+        "0.999": 32
+      }
+    }
+  ],
+  "algebra": "Each kernel flattened out_channels x in_channels*kernel;rank(r) cost=r*(outer+inner);original biases/GN/1x1 retained;apply only for positive storage savings;float64 SVD",
+  "limitation": "Kernel storage/error only;not implemented candidates,activation/identity errors,performance,latency or feasibility proof;no active model/budget/selection changes",
+  "physical_IQ_reads": 0,
+  "TX_F_V_target_reads": 0,
+  "optimizer_updates": 0,
+  "forward_calls": 0
+}

@@ -68,3 +68,6 @@ MAC 不含 FFT、复数 MAP/CG、归一化、激活、插值与访存，不等�
 预算E20/4940、原完整63000缓存/顺序、3步×2CG/coarse/action均固定；prior累计40轮、完整继承80串行训练pass与教师成本分列，0TX/F/V/target训练、0头拟合。10项聚焦检查和唯一独立P0/P1审查PASS；方法commit `1515d73c5de3e962a822bbaca34182e28a6ae584` 已push/OID一致，归档/远端编译/实际原权重无querysmoke PASS。GPU4/5等待R01终态及实际handles退出后两source实际启动，PID/CWD/命令/GPU/日志增长已核实。CPU2线程/max1 ownscorer；每卡一own，保留其他owner。
 
 源V1800逐七视图不降分与既有波形护栏合格后，按最少完整参数再名称选一个自动全168000×七视图、原F50/defaulthead目标确认；无合格则0target，不回流调参或失败后补测落选者。R02 尚无完整源资格或目标零退化结果，参数减少和检查通过不证明性能保持。
+
+
+R02训练期间的原权重只读SVD分析：84个长卷积的统一半秩成本精确复核3775105完整参数，原长卷积整体相对Frobenius误差.52557；排除输出宽32卷积时为3821809参数/.49508误差。逐核保留99%能量的SVD均不具备正参数节省。0IQ/forward/TX/F/V/target访问，无当前模型/预算/选择变更；只约束权重近似假设，不代表识别性能或函数压缩极限，见[成本与边界](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-fidelity-source-s2026092701-m2-r02/report.md#原始卷积低秩存储证据)。
