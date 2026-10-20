@@ -1,0 +1,50 @@
+{
+  "status": "VERIFIED",
+  "origin_run": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+  "origin_commit": "cd97744884b5e460926e48c8b7efb7d78c6da0f4",
+  "fixed_source_selected_reference": "unroll_unshared",
+  "rows": [
+    {
+      "candidate": "unroll_unshared",
+      "complete_parameters": 4665073,
+      "prior_parameters": 2507526,
+      "context_parameters": 2157547,
+      "context_share_percent": 46.24894401438091,
+      "FP32_parameter_bytes": 18660292,
+      "groups": {
+        "frozen.coarse": 1305958,
+        "frozen.estimator": 851589,
+        "prior": 2507526
+      },
+      "prior_evaluations_per_input": 3,
+      "shared_prior": false,
+      "CG_steps_per_input": 6
+    },
+    {
+      "candidate": "unroll_shared",
+      "complete_parameters": 2993389,
+      "prior_parameters": 835842,
+      "context_parameters": 2157547,
+      "context_share_percent": 72.07706716367301,
+      "FP32_parameter_bytes": 11973556,
+      "groups": {
+        "frozen.coarse": 1305958,
+        "frozen.estimator": 851589,
+        "prior": 835842
+      },
+      "prior_evaluations_per_input": 3,
+      "shared_prior": true,
+      "CG_steps_per_input": 6
+    }
+  ],
+  "comparison_note": "Shared is an existing original R17 control,not a newly selected compression parent from target scores",
+  "training_updates": 0,
+  "physical_IQ_reads": 0,
+  "F_reads": 0,
+  "TX_label_reads": 0,
+  "target_reads": 0,
+  "model_forwards": 0,
+  "compression_accuracy_verified": false,
+  "compression_latency_verified": false,
+  "parameter_definition": "All unique restoration parameters including coarse/action/prior;excludes original downstream F,optimizer and teacher"
+}
