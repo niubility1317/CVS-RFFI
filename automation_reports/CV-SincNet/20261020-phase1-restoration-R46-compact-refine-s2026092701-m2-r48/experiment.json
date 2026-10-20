@@ -1,0 +1,350 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-phase1-restoration-R46-compact-refine-s2026092701-m2-r48",
+  "group_id": "pamf-R46-compact-compression-refinement",
+  "display_name": "35.05万裁剪版的同预算优化与27.38万进一步压缩",
+  "description": "用户指定R46prune_refine父；保留350521优化对照与273765GN4进一步剪枝；配对IQ/频谱/衰减IQ教师，自动全部七正式测试。",
+  "kind": "cvs",
+  "stage": "Phase1-source-research-conditional-confirmation",
+  "aliases": [],
+  "tags": [
+    "restoration",
+    "compression",
+    "R46_350521_parent",
+    "F_free",
+    "TX_unlabeled",
+    "matched_optimization_control",
+    "formal_all_versions"
+  ],
+  "comparison_group_id": "R48_exact350521_refine_vs273765_further_prune_matched20",
+  "parent_run_ids": [
+    "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46",
+    "20261020-phase1-restoration-R38-compression-methods-s2026092701-m2-r44",
+    "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+    "20261019-phase1-restoration-learned-action-source-s2026092701-r07"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户最新明确35.05万参数裁剪版可以保留优化、继续更优化压缩；同一恢复网络内优化与减参，0TX/F训练，每版自动七正式测试；健康其他owner不动。",
+  "code": {
+    "commit": "86b89ba6bc09b0b3f10fcaff8fc7cd1ecf6d0508",
+    "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32;CPU threads2;reuse original source cache",
+    "cwd": "releases/pamf_R46_compact_refine_20261020_r48"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "Original63000sourceL6300/U56700/R07 cachedreceived1..20;1800sourceV7views;fixedR05formal168000x7",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train6300L+56700U originalIDs;R07validation1800V;conditional R05 original168000IDs",
+    "label_map_ref": "0新TX/V/target训练标签；原F50源监督知识冻结；各row全7预测后独立truth-last评分",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json: READY/EXACT_MATCH; reuse existing cache without new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "Unchanged code/leo_practical/channel.py;reuse R07 epoch01..20 and original sourceV;conditional original formal received bytes",
+    "restoration_train_counts": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "epochs_per_row": 20,
+      "updates_per_row": 4940,
+      "L_exposures_per_row": 126000,
+      "U_exposures_per_row": 1134000,
+      "source_IQ_examples": 1260000,
+      "teacher_IQ_examples": 1260000,
+      "student_context_inputs": 1260000,
+      "TX_labels": 0,
+      "F_weight_loads": 0,
+      "F_output_reads": 0,
+      "V_training": 0,
+      "target_training": 0,
+      "inherited_component_epochs": 80,
+      "new_component_epochs": 20,
+      "cumulative_component_epochs": 100,
+      "cumulative_component_epoch_sum": 300,
+      "cumulative_serial_training_passes": 140
+    },
+    "source_validation_panel": 1800,
+    "target_panel": "两行各E20/4940后168000x7；源无提升也自动测试",
+    "actual_training_labels": "原源配对clean和冻结R46IQ教师；0TX/F/V/target；不是无clean盲学习",
+    "augmentation": "OriginalR07 .15clean/.85residual cachedreceived,no newaugmentation or cleanconcatenation",
+    "runtime_inputs": "Current native-scale IQ only;one restored IQ through original F50/defaulthead;3prior/6CG;no teacher/clean/TX/RX/scene/cache/state updates",
+    "compressed_context_parameters": {
+      "retain_refine": 237927,
+      "prune_refine": 185615
+    },
+    "context_training": "全部coarse/action/prior联合；同架构3prior6CG；GN4重要性进一步裁剪"
+  },
+  "permissions": {
+    "regime": "TX-unlabeled simulated-paired source self-supervision;F-free waveform teacher",
+    "query_use": "Full7 predictions fixed before independenttruthlast;no target optimization/selection;human parent choice after historical exposure disclosed",
+    "external_method_exception": null,
+    "claim_scope": "TX-unlabeled simulated-paired source self-supervision;noF/TX in restorationtraining;notcleanfree blind learning or per-detailTX proof"
+  },
+  "checkpoint": {
+    "initialization": "User explicitly specified R46prune_refine350521;exact samefunction or GN4 weight-only further pruning",
+    "sources": [
+      {
+        "run_id": "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46",
+        "commit": "bbb8daf817de050b958d217b70d4c33f4aefe341",
+        "row": "prune_refine",
+        "epoch": 20,
+        "updates": 4940,
+        "parameters": 350521,
+        "role": "Only direct initialization/frozenIQteacher",
+        "path": "runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46/prune_refine/native_map_prior/final.pt"
+      }
+    ],
+    "contract_check_ref": "PinnedR46launch/plan/source-trainingcomplete/checkpointmetadata;reusevalidatedsourceREADY/EXACT_MATCH;no data revalidation",
+    "provenance_verdict": "R46source-fixedfinal20/4940 original7/63/30physicalsource ancestry;0TX/F/V/targettraining;human selected after formal exposure,engineering comparison only",
+    "selection_rule": "Both fixedfinalE20/4940;source diagnostics only,no earlystop/source selection;automatically full7formal perrow then independentCPUtruthlast",
+    "evaluation_readers": [
+      "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701 original defaulthead"
+    ],
+    "parent_run_ids": [
+      "20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46",
+      "20261020-phase1-restoration-R38-compression-methods-s2026092701-m2-r44",
+      "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
+      "20261019-phase1-restoration-learned-action-source-s2026092701-r07"
+    ]
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/R46-compact-refine",
+    "gpu_policy": "GPU0/1each1own/max2;actualR46predecessorPIDexit+capacity;sharedR41score.lock/CPU2/max1ownscorer",
+    "remote_run_root": "runs/20261020-phase1-restoration-R46-compact-refine-s2026092701-m2-r48",
+    "remote_log_root": "logs/20261020-phase1-restoration-R46-compact-refine-s2026092701-m2-r48",
+    "local_artifact_root": "local_artifacts/pamf_restoration/r46_compact_refine_r48_20261020",
+    "launch_command": "python -u -m experiments.pamf_r46_compact_refine.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-R46-compact-refine-s2026092701-m2-r48 --expected-commit 86b89ba6bc09b0b3f10fcaff8fc7cd1ecf6d0508",
+    "stop_rule": "Technical failure preserves affectedoutputs,healthy peers unchanged;no automaticretry/hotedit/stop",
+    "post_launch_verification": {
+      "status": "RUNNING_VERIFIED",
+      "ordinary_account": true,
+      "actual_controller_LIVE": true,
+      "CWD_command_commit_match": true,
+      "controller_log_growth": true,
+      "archive_SHA_match": true,
+      "remote_compile": true,
+      "actual_R38_F50_2Ls_paired_noquery_smoke": "PASS",
+      "new_GPU_workers": 2,
+      "waiting": [],
+      "training_performance_claim": false,
+      "actual_training_rows": [
+        "group_pruned",
+        "low_rank"
+      ]
+    },
+    "actual_training_rows_verified": [
+      "group_pruned",
+      "low_rank"
+    ]
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "comparison_plan.json",
+    "smoke.json",
+    "workers.json",
+    "stages.json",
+    "{row}/initialization.json",
+    "{row}/resolved_config.json",
+    "{row}/training.jsonl",
+    "{row}/training_complete.json",
+    "{row}/native_map_prior/final.pt",
+    "{row}/native_map_prior/prediction/complete.json",
+    "{row}/native_map_prior/summary.json",
+    "{row}/source_complete.json",
+    "{row}/matched_inference_profile.json",
+    "{row}/target_confirmation/native_map_prior/prediction/complete.json",
+    "{row}/target_confirmation/native_map_prior/summary.json",
+    "{row}/assessment.json",
+    "{row}/complete.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "primary": "全七景accuracy/MacroF1、相对原R17/350521父/R44；原R17与父各逐景1pp分列；70%/其他五景rawclean-gap5pp独立报告",
+    "source_rule": "Both fixedfinalE20/4940;source diagnostics only,no earlystop/source selection;automatically full7formal perrow then independentCPUtruthlast",
+    "target_acceptance_allowance_pp": 1.0,
+    "target_acceptance_unit": "percentage_points",
+    "metric_names": [
+      "perviewaccuracy/MacroF1/TX/RX/day/confusion",
+      "exactcorrectdelta/1ppacceptance/0ppdiagnostic",
+      "rawrepair/damage/net",
+      "full256/prefix232/tail24NMSE/FFTlogpower/pairedcleanfeaturegap",
+      "params/serializedbytes/latency/residentandpeakallocated",
+      "taskKL/unitF160distance/Fforwardcost/frozenFhead0updates"
+    ],
+    "dimensions": [
+      "exact_optimization_control/furtherpruned",
+      "sevenviews",
+      "TX",
+      "RX",
+      "day",
+      "20epochs"
+    ],
+    "prediction_ref": "runs/20261020-phase1-restoration-R46-compact-refine-s2026092701-m2-r48/<arm>/native_map_prior/prediction and target_confirmation/native_map_prior/prediction",
+    "scorer_ref": "pamf_r46_compact_refine.runner score_source/score_target;independentCPUtruthlast/sharedR41score.lock",
+    "final_user_targets": {
+      "lowurban_accuracy_min": 70.0,
+      "other_five_goal": "接近clean，未指定数值容差，独立于压缩1pp验收"
+    },
+    "cost": "Matched same-card source-only G and G+F;B1 warm16/64samples x3 alternating rounds;B32 warm4/16iterations x3;median,p90,p95,throughput,peak/resident memory;ConvLinearMAC excludes FFT/CG/norm",
+    "secondary": [
+      "paired_waveform_NMSE/FFT_error",
+      "repair_damage/clean_damage",
+      "B1_median_p90_p95/G_and_GplusF",
+      "B32_throughput",
+      "peak_incremental_shared_resident_memory",
+      "full_parameters/serialized_size/ConvLinearMAC"
+    ]
+  },
+  "rows": [
+    {
+      "row_id": "retain_refine",
+      "method": "R46-compact-refine/retain_refine",
+      "purpose": "matched_optimization_control_or_further_GN4compression",
+      "config_ref": "experiments/pamf_r46_compact_refine/design.py#configuration",
+      "resolved_config_ref": "runs/20261020-phase1-restoration-R46-compact-refine-s2026092701-m2-r48/retain_refine/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "model2026092701,sourceorderdataseed2026102001,R07 original fixedcache/order1..20;no newaugmentationseed",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "ResetAdamW/warm247/cos2e-5/WD1e-4/clip1/global256micro64",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "Inherited120serialpass+new20=140;eachcomponent100/sum300;newL126000/U1134000;0TX/F/V/target",
+      "output_root": "runs/20261020-phase1-restoration-R46-compact-refine-s2026092701-m2-r48/retain_refine",
+      "log_path": "runs/20261020-phase1-restoration-R46-compact-refine-s2026092701-m2-r48/logs/worker-retain_refine.log",
+      "command": "python -u -m experiments.pamf_r46_compact_refine.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-R46-compact-refine-s2026092701-m2-r48 --expected-commit 86b89ba6bc09b0b3f10fcaff8fc7cd1ecf6d0508",
+      "expected_artifacts": [
+        "launch.json",
+        "comparison_plan.json",
+        "smoke.json",
+        "workers.json",
+        "stages.json",
+        "{row}/initialization.json",
+        "{row}/resolved_config.json",
+        "{row}/training.jsonl",
+        "{row}/training_complete.json",
+        "{row}/native_map_prior/final.pt",
+        "{row}/native_map_prior/prediction/complete.json",
+        "{row}/native_map_prior/summary.json",
+        "{row}/source_complete.json",
+        "{row}/matched_inference_profile.json",
+        "{row}/target_confirmation/native_map_prior/prediction/complete.json",
+        "{row}/target_confirmation/native_map_prior/summary.json",
+        "{row}/assessment.json",
+        "{row}/complete.json",
+        "complete.json"
+      ],
+      "GPU": 0,
+      "trainable_parameters": 350521,
+      "parameters": 350521,
+      "context_parameters": 237927
+    },
+    {
+      "row_id": "prune_refine",
+      "method": "R46-compact-refine/prune_refine",
+      "purpose": "matched_optimization_control_or_further_GN4compression",
+      "config_ref": "experiments/pamf_r46_compact_refine/design.py#configuration",
+      "resolved_config_ref": "runs/20261020-phase1-restoration-R46-compact-refine-s2026092701-m2-r48/prune_refine/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "model2026092701,sourceorderdataseed2026102001,R07 original fixedcache/order1..20;no newaugmentationseed",
+      "k": null,
+      "scenario": "clean + all six practical",
+      "optimizer": "ResetAdamW/warm247/cos2e-5/WD1e-4/clip1/global256micro64",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "Inherited120serialpass+new20=140;eachcomponent100/sum300;newL126000/U1134000;0TX/F/V/target",
+      "output_root": "runs/20261020-phase1-restoration-R46-compact-refine-s2026092701-m2-r48/prune_refine",
+      "log_path": "runs/20261020-phase1-restoration-R46-compact-refine-s2026092701-m2-r48/logs/worker-prune_refine.log",
+      "command": "python -u -m experiments.pamf_r46_compact_refine.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261020-phase1-restoration-R46-compact-refine-s2026092701-m2-r48 --expected-commit 86b89ba6bc09b0b3f10fcaff8fc7cd1ecf6d0508",
+      "expected_artifacts": [
+        "launch.json",
+        "comparison_plan.json",
+        "smoke.json",
+        "workers.json",
+        "stages.json",
+        "{row}/initialization.json",
+        "{row}/resolved_config.json",
+        "{row}/training.jsonl",
+        "{row}/training_complete.json",
+        "{row}/native_map_prior/final.pt",
+        "{row}/native_map_prior/prediction/complete.json",
+        "{row}/native_map_prior/summary.json",
+        "{row}/source_complete.json",
+        "{row}/matched_inference_profile.json",
+        "{row}/target_confirmation/native_map_prior/prediction/complete.json",
+        "{row}/target_confirmation/native_map_prior/summary.json",
+        "{row}/assessment.json",
+        "{row}/complete.json",
+        "complete.json"
+      ],
+      "GPU": 1,
+      "trainable_parameters": 273765,
+      "parameters": 273765,
+      "context_parameters": 185615
+    }
+  ],
+  "notes": [
+    "User explicitly retains350521 after R46formal exposure;not Agent target-based rank;no new blind/generalizationclaim.",
+    "Samearchitecture,retain_refine exact-parent optimization control vs273765GN4 furtherpruning;pairedclean IQ+.05MRspectrum+linear1to.1 IQteacher;fixed both20epochs.",
+    "27focusedchecks/CLIhelp/ONE P0P1PASS;launcherfirststep actualR46/F50/twoLs pairedIQ noquerysmoke thenautomatictrain/source/profile/full7formal/truthlast.",
+    "No F/TX/V/targetintraining;L/U bothused;notcleanblindunsupervised;no classifierhead fit/replacement.",
+    "R46fixedmatrixcomplete,outputsandoldweights preserved;R47CPUdiagnostic independent,never gates thisrun;healthyotherownerunchanged.",
+    "Allfixedrows getformal tests;no sourcegate/earlystop/targetfeedback/selectivereruns;relativeR44 descriptiveonly;allnegativeresultsreported.",
+    "Matched same-card source-only G and G+F;B1 warm16/64samples x3 alternating rounds;B32 warm4/16iterations x3;median,p90,p95,throughput,peak/resident memory;ConvLinearMAC excludes FFT/CG/norm"
+  ],
+  "registered_at": "2026-10-20T14:25:57+00:00"
+}

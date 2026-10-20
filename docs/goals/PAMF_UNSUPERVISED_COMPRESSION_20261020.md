@@ -1,5 +1,7 @@
 # 无 TX 标签恢复器的压缩与性能联合优化
 
+2026-10-20 用户最新指定：**以R46 prune_refine350521继续优化、压缩，同时关注时延、吞吐量与显存。** 已固定[R48同预算350521优化对照与273765进一步剪枝](../PAMF_R46_COMPACT_REFINE_R48_20261020.md)，两行均直接从指定父分叉，新增E20/4940，0TX/F/V/target训练，逐行自动七正式测试；同卡测G与G+F的B1/B32多轮时延/吞吐和内存，减参不预设加速。当前LOCAL_VERIFIED，未发布、无新性能结论。保留所有父权重/结果，人工指定已暴露工程基准的限制及原70%/5pp/真实性目标保持ACTIVE。
+
 2026-10-20 当前正式结果：**R46两行全部完成并交付独立权重。** VERIFIED/ANALYZED：两行E20/4940、源1800×7、正式168000×7全部预测固定后独立truth-last、所属控制器和GPU进程自然退出、完整权重取回与CPU严格加载均核实。retain_refine442805参数，lowurban67.964881%（较442805父+1.192262pp），原R17逐景1pp=True，父逐景1pp=True，70%=False，其他五景gap5pp=False；prune_refine350521参数，lowurban67.510119%（较442805父+0.737500pp），原R17逐景1pp=True，父逐景1pp=True，70%=False，其他五景gap5pp=False。全部负结果和成本保留，不回流调参或选择性重跑。原完整目标继续ACTIVE，识别率/损失/关联均不单独证明逐细节TX真实性。 [R46全部七场景、完整曲线与成本](../../automation_reports/CV-SincNet/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46/report.md)。
 
 用户指定的原R44 group_pruned442805权重与所有历史产物继续保留。R47独立无F同TX评价按固定流程继续，实际进度见[R47登记](../../automation_reports/CV-SincNet/20261020-diagnostic-restoration-R46-formal-analytic-TX-s2026092701-m2-r47/report.md)，不作为R46正式交付门槛。原lowurban70%、其他五景距rawclean≤5pp、原R17逐景最多1pp及更强输入TX细节真实性要求保持，不因产物齐全或参数下降缩小目标。下文为历史方案与启动记录，以本段为R46当前状态。
