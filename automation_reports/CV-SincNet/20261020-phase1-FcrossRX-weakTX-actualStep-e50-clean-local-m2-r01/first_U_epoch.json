@@ -1,0 +1,81 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261020-phase1-FcrossRX-weakTX-actualStep-e50-clean-local-m2-r01",
+  "code_config_commit": "16abc8559e80f929cd109a6a64a5051525302a7f",
+  "phase": "First complete U epoch34 integration; healthy source training continues",
+  "rows": [
+    {
+      "row_id": "STEP_NORM-s2026092701",
+      "completed_epoch": 34,
+      "post_native_feature_update": {
+        "epoch": 34,
+        "steps": 7548,
+        "post_steps": 7548,
+        "scheduled": 1610,
+        "eligible": 1610,
+        "changed": 1317,
+        "extra_feature_VJP_calls": 4830,
+        "numerical_fallbacks": 0,
+        "maximum_stored_norm_match_error": 0.00007062864975566109,
+        "extra_model_forwards": 0,
+        "head_fit_updates": 0,
+        "U_truth_read": false
+      },
+      "U_epoch": {
+        "epoch": 34,
+        "steps": 222,
+        "U_seen": 56700,
+        "U_selected": 876,
+        "U_truth": 0,
+        "satellite_steps": 0,
+        "skipped": 0,
+        "EMA_step_mismatches": 0,
+        "U_acceptance_fraction": 0.01544973544973545,
+        "source_default_head_accuracy": 98.26296296296296,
+        "epoch_counters_match_step_sums": true
+      }
+    },
+    {
+      "row_id": "UPDATE_CONE-s2026092701",
+      "completed_epoch": 34,
+      "post_native_feature_update": {
+        "epoch": 34,
+        "steps": 7548,
+        "post_steps": 7548,
+        "scheduled": 1610,
+        "eligible": 1610,
+        "changed": 1325,
+        "extra_feature_VJP_calls": 4830,
+        "numerical_fallbacks": 0,
+        "maximum_stored_norm_match_error": 0.00007577011535051,
+        "extra_model_forwards": 0,
+        "head_fit_updates": 0,
+        "U_truth_read": false
+      },
+      "U_epoch": {
+        "epoch": 34,
+        "steps": 222,
+        "U_seen": 56700,
+        "U_selected": 881,
+        "U_truth": 0,
+        "satellite_steps": 0,
+        "skipped": 0,
+        "EMA_step_mismatches": 0,
+        "U_acceptance_fraction": 0.015537918871252205,
+        "source_default_head_accuracy": 98.28518518518518,
+        "epoch_counters_match_step_sums": true
+      }
+    }
+  ],
+  "count_method": "Sum every one of the222native step records in epoch34; exact agreement with epoch cumulative counters. No repeated multiplication of epoch totals.",
+  "default_head_joint": true,
+  "head_fit_updates": 0,
+  "extra_model_forwards_from_new_mechanism": 0,
+  "satellite_training": false,
+  "test_views": [
+    "clean"
+  ],
+  "target_access": false,
+  "performance_result_available": false,
+  "interpretation": "Original ownEMA/oldU gate and actual feature-step correction jointly executed in the real network. Source health and execution only; no target-generalization or pseudo-label correctness claim."
+}

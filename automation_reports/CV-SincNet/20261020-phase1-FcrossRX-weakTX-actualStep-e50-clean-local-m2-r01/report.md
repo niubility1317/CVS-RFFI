@@ -62,3 +62,5 @@ LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_weaktx_actualstep50.driver --p
 本实验借鉴[Gradient Episodic Memory](https://arxiv.org/abs/1706.08840)的风险不等式思路，当前类组、完整实际参数步及存储范数控制属于具体适配，不声称完整复现、首创或保证有效。REJECTED_EXTRA_GATE：通用设计审批暂停、全项目测试和报告再审不属于最小白名单；已有用户授权，采用聚焦验证与一次独立P0／P1审查。
 
 首个完整启用epoch6的真实网络执行已核实：两行均56／56计划事件合格、各168次额外特征VJP；STEP_NORM实际纠正41次，UPDATE_CONE40次，数值回退均0，最大存储范数匹配误差约2.08e-5／1.85e-5（预定容差.001）。额外模型前向、另训头和U真值读取均0。完整原生post／特征纠正／Sinc／EMA顺序及预算epoch检查通过，见first_active_epoch.json。此为执行证据，不是目标性能。
+
+首个完整U轮次epoch34已逐步核实：每行222步，U曝光均56700；STEP_NORM接受876（1.544974%），UPDATE_CONE接受881（1.553792%），与原生epoch累计计数一致。U真值读取、星地视图、非有限跳步、EMA步计数错位均0。累计1610个计划事件全部合格，实际纠正1317／1325次，数值回退0；同一步特征纠正与原U／ownEMA联合执行检查通过。默认头继续原生联合更新，源V准确率仅作健康观察，不当作目标性能；详见first_U_epoch.json。
