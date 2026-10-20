@@ -1,6 +1,6 @@
 # R17 四种精简结构并行验证 R07
 
-状态：PLANNED。用户最新要求服务器空闲时一次性发布多个、快速迭代。本轮在健康 R06 两行仍于 GPU4/5 训练、尚无新目标分数时预先固定四种结构，加用 GPU2/3/6/7，每卡一个 own worker，总共六路 own GPU；保留其他 owner。四行完整训练后自动 source 七视图诊断及168000物理样本×clean和六practical目标测试，逐行预测全部固定后独立 CPU truth-last 评分。R06/R07 共用 R06 score.lock，CPU2线程、跨六行最多一个own scorer。
+状态：RUNNING。用户最新要求服务器空闲时一次性发布多个、快速迭代。本轮在健康 R06 两行仍于 GPU4/5 训练、尚无新目标分数时预先固定四种结构，加用 GPU2/3/6/7，每卡一个 own worker，总共六路 own GPU；保留其他 owner。四行完整训练后自动 source 七视图诊断及168000物理样本×clean和六practical目标测试，逐行预测全部固定后独立 CPU truth-last 评分。R06/R07 共用 R06 score.lock，CPU2线程、跨六行最多一个own scorer。
 
 |固定行|完整恢复器参数|比原4665073减少|秩比例|原1x1权重跨步共享|GPU|
 |---|---:|---:|---:|---|---:|
@@ -20,3 +20,7 @@ source/V/波形仅诊断，固定最终E20，无源资格门槛/早停/候选重
 一次普通N607预检核实新root不存在、原数据与继承句柄、四卡空闲和旧R05实际句柄退出；健康R06保持。source启动free≥18GB/allowner<2，沿用共享capacity lock；新不可覆盖run/output/release，单归档SHA比较/远端compile，PID/CWD/完整命令/GPU/loggrowth实际核实。契约/nonfinite/OOM/技术错误停止受影响行并保留，健康行继续；无自动重试或回退，性能负结果不作重启理由。source profile先CPU加载、删除payload/optimizer再上GPU，报告resident/peak/增量peak；受同卡owner和顺序影响，不直接称部署加速。具体命令、环境/CWD、路径、GPU和预期产物见experiment.json。
 
 发布前证据：40项本地合成/协议检查PASS，唯一独立P0/P1审查PASS，无确定P0/P1；独立复跑结果已记录。普通账户N607预检VERIFIED，GPU2/3/6/7各24124MB空闲、新root/release不存在；R06健康两行仍在GPU4/5，观测已完成E9，不停止或修改。旧R05实际句柄已退出。真实checkpoint smoke由launcher首步执行。
+
+实际发布 VERIFIED：方法 commit `f03015d75428f156430cff60633e1c99ec4983b4` 已推送且远端 OID 独立比较一致；一次归档 SHA 比较/远端 compile/help 通过。真实原 R17/原 F50/2Ls CPU no-query smoke PASS，恢复与 F 输出有限、F 输入梯度和各步 prior 梯度有限非零、严格复载输出逐位相同，0TX/V/target/optimizer/F/head 更新。四个实际训练 PID/CWD/完整命令/commit/GPU2/3/6/7/日志增长已核实，各完成 E1/247；这些是训练执行证据，不证明目标性能。固定配置继续到E20，再逐行自动源诊断和全部目标测试。原R06健康GPU4/5继续，跨六行共用R06score.lock。
+
+独立汇总工具9项合成检查PASS，覆盖四个固定row、20轮全日志及真实曝光、损失算术、各七视图、分组混淆矩阵、独立assessment与整数1pp判断的一致性、profile排除optimizer和显存基线差。工具不修改运行中模型、配置或方法commit；当前不读取新目标准确率。
