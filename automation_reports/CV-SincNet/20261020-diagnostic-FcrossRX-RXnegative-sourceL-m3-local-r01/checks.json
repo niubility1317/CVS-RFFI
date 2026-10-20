@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "synthetic_protocol_math": "PASS",
+  "expected_initial_red": {
+    "status": "EXPECTED_FAIL",
+    "reason": "core module absent before implementation",
+    "phase": "import",
+    "realIQ": 0,
+    "modelForwards": 0
+  },
+  "real_checkpoint_noquery": {
+    "status": "PASS",
+    "real_checkpoint_no_query_smoke": true,
+    "source_release_commit": "31467086c3ced30237f3ac86e91eae68645425d7",
+    "total_parameters": 900722,
+    "selected_feature_parameters": 231233,
+    "default_all6_head_aux_gradients_None": true,
+    "Sinc_feature_aux_gradient_nonzero": true,
+    "full_feature_VJP_objectives": [
+      "CE_TX1",
+      "CE_TX3",
+      "CE_OTHER4",
+      "SC_ALL",
+      "SC_RANDOM_MATCHED",
+      "SC_SAME_RX"
+    ],
+    "synthetic_forward_examples": 18,
+    "state_grad_RNG_modes_unchanged": true,
+    "IQ_reads": 0,
+    "target_reads": 0,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0,
+    "loaded_checkpoint_discarded_not_inherited": true
+  },
+  "independent_P0_P1": {
+    "status": "PASS",
+    "reviewer": "/root/sinc_rdrop_diag_p0p1",
+    "scope": "One independent direct P0/P1 only; new diagnostic module; no further review required",
+    "verdict": "No direct P0/P1 making negativepool diagnostic, originalrelease loading, fullL budget or readonly evidence wrong, unauthorized, destructive or unlaunchable."
+  }
+}

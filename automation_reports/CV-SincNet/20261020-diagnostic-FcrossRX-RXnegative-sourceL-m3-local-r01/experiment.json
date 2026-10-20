@@ -1,0 +1,242 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-diagnostic-FcrossRX-RXnegative-sourceL-m3-local-r01",
+  "group_id": "F-crossRX50-source-RXnegative",
+  "display_name": "F跨RX源特征：同RX负样本替换与数量匹配诊断",
+  "description": "Read-only original3BASE full L_s6300 per model: ALL/RANDOM_MATCHED/SAME_RX negative pools with fixed crossRX sameTX positives, plus whole deployed feature VJP against weakTX CE. No training/headfit/U/V/target.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "F sameRX negative-pool source diagnostic"
+  ],
+  "tags": [
+    "CVS",
+    "Phase1",
+    "F_CROSS_RX",
+    "source_only",
+    "RX_negative_pool",
+    "count_matched",
+    "feature_gradient",
+    "no_training",
+    "no_head_fit",
+    "local_GPU"
+  ],
+  "comparison_group_id": "F-crossRX50-source-RXnegative",
+  "parent_run_ids": [
+    "20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01",
+    "20261020-phase1-FcrossRX-decoupledContrast-e50-clean-local-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active user goal: improve source-defined weakTX on original F+crossRX sameTX; local, no satellite training augmentation, targetclean only, defaulthead jointlytrained. This step is source-only frozen diagnostic with no training or test.",
+  "code": {
+    "commit": "PENDING_ACTUAL_CODE_CONFIG_COMMIT",
+    "checkout": "codex/phase1-rdrop-combinations-20261015",
+    "environment": "Verified native Windows Python3.10/Torch2.10cu128 RTX5070Ti FP32 noTF32 CPUthreads2",
+    "cwd": "IMMUTABLE_LOCAL_RELEASE/cvs_F_RXnegative_sourceL_local_20261020_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "same existing validated source contract",
+    "representation": "Source L_s clean IQ, fixed existing original3BASE checkpoints; shallow/middle mean+populationstd descriptors and deployed-feature gradients",
+    "contract_ref": "ORIGINAL_SOURCE_CONTRACT#L (existing EXACT_MATCH/VALIDATED_ONCE handle, unchanged)",
+    "physical_ids_ref": "ORIGINAL_SOURCE_CONTRACT#role_ids.L",
+    "label_map_ref": "ORIGINAL_SOURCE_CONTRACT#class_names",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "ORIGINAL_SOURCE_CONTRACT#class_names",
+    "roles": {
+      "L_s": "Full6300 visible source samples/model,1050 perTX. Same6300 source physical packets across3original BASE seeds;18900 IQread/forward occurrences.",
+      "U_s": "No reads, truth stays hidden",
+      "V": "No reads or model/threshold selection"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing original BASE exact data contract/source cache READY; no bytes/IDs/roles change or revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Seen sourceL eval-mode descriptive geometry and gradient proxies only; no target or unseenRX accuracy, causal AdamW update or invariance claim."
+  },
+  "checkpoint": {
+    "initialization": "none",
+    "sources": [
+      "ORIGINAL_BASE/BASE-s2026092701/source/final_ssdg.pth",
+      "ORIGINAL_BASE/BASE-s2026092702/source/final_ssdg.pth",
+      "ORIGINAL_BASE/BASE-s2026092703/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "experiments/cvs_f_rxnegative_diagnostic/loaders.py; original source_proof and validate_checkpoint",
+    "provenance_verdict": "Fixedfinal50 original BASE code31467086c3ced30237f3ac86e91eae68645425d7, exactsourcecontract/scratch33L+17U/no target selection. Validate each actualsource CP; no model/optimizer inheritance into any new training.",
+    "selection_rule": "All3 fixed original BASE final50; no target/model ranking"
+  },
+  "execution": {
+    "host": "local native Windows",
+    "launch_owner": "codex/root/F-RXnegative-sourceL-20261020",
+    "gpu_policy": "One GPU worker onphysicalGPU0; globalmax3includingforeign; dispatch RAMfree>=4.5GiB; CPUthreads2; preserve allhealthy workloads",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "LOCAL_RUN/20261020-diagnostic-FcrossRX-RXnegative-sourceL-m3-local-r01",
+    "launch_command": "LOCAL_BASE_PYTHON -X utf8 -u IMMUTABLE_LOCAL_RELEASE/experiments/cvs_f_rxnegative_diagnostic/runner.py --profile LOCAL_PROFILE --source-run LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --source-release IMMUTABLE_ORIGINAL_RELEASE --output LOCAL_RUN/20261020-diagnostic-FcrossRX-RXnegative-sourceL-m3-local-r01 --commit RELEASE_COMMIT",
+    "stop_rule": "Stop exactowned diagnostic only for fixeddata/role/provenance/count/precision mismatch, output conflict, nonfinite math/gradients, model/RNG/grad/modes/hooks mutation or systemic technical failure. Preserve partial artifacts; no target-driven retry or training dispatch."
+  },
+  "expected_artifacts": [
+    "execution.json",
+    "checks.json",
+    "BASE-s2026092701/summary.json",
+    "BASE-s2026092702/summary.json",
+    "BASE-s2026092703/summary.json",
+    "result.json",
+    "completion.json",
+    "stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "perTX perlevel sameRX-vs-otherRX negative cosine gap and eligibility",
+      "all6 objective fullL gradient6x6 cosine and norm in CLIP_PHYSICAL and NORMALIZED_HZ",
+      "fixed source-only decision",
+      "counts time CUDApeak zero optimizer/head/U/V/target"
+    ],
+    "dimensions": [
+      "3originalmodelseeds; sameL6300 physicalpackets",
+      "6TX,5sourceRX,3days; fixedshallow/middle",
+      "ALL/RANDOM_MATCHED/SAME_RX commonvalidanchors"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null
+  },
+  "rows": [
+    {
+      "row_id": "BASE-s2026092701",
+      "method": "Frozen original F+crossRX50; sameTX-crossRX positives, ALL vs private countmatched RANDOM vs SAME_RX differentTX negatives",
+      "purpose": "Source-only descriptive falsification, no model/head updates",
+      "config_ref": "experiments/cvs_f_rxnegative_diagnostic/core.py",
+      "resolved_config_ref": "LOCAL_RUN/20261020-diagnostic-FcrossRX-RXnegative-sourceL-m3-local-r01/execution.json",
+      "data_overrides": {
+        "role": "L_s only",
+        "batch_size": 128,
+        "drop_last": false,
+        "source_packets": 6300
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102010,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026102011
+      },
+      "seed_notes": "Modelseed identifies existingBASE. Split392005 originalroles; data2026102010 fixed packet permutation; evaluation2026102011+batchordinal private negative RNG, common acrosslevels/models. No augmentation/support/newtraining RNG.",
+      "k": null,
+      "scenario": "source-only clean; no satellite/target",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "50batches/model incllast28; oneeval forward/sample,6 fullfeature VJPs/batch=300/model900total.18900NN/sourceIQreadtotal; zeroU/V/target/opt/headfit.",
+      "output_root": "LOCAL_RUN/20261020-diagnostic-FcrossRX-RXnegative-sourceL-m3-local-r01/BASE-s2026092701",
+      "log_path": "IMMUTABLE_LOCAL_RELEASE/stdout.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u IMMUTABLE_LOCAL_RELEASE/experiments/cvs_f_rxnegative_diagnostic/runner.py --profile LOCAL_PROFILE --source-run LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --source-release IMMUTABLE_ORIGINAL_RELEASE --output LOCAL_RUN/20261020-diagnostic-FcrossRX-RXnegative-sourceL-m3-local-r01 --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "summary.json"
+      ]
+    },
+    {
+      "row_id": "BASE-s2026092702",
+      "method": "Frozen original F+crossRX50; sameTX-crossRX positives, ALL vs private countmatched RANDOM vs SAME_RX differentTX negatives",
+      "purpose": "Source-only descriptive falsification, no model/head updates",
+      "config_ref": "experiments/cvs_f_rxnegative_diagnostic/core.py",
+      "resolved_config_ref": "LOCAL_RUN/20261020-diagnostic-FcrossRX-RXnegative-sourceL-m3-local-r01/execution.json",
+      "data_overrides": {
+        "role": "L_s only",
+        "batch_size": 128,
+        "drop_last": false,
+        "source_packets": 6300
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026102010,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026102011
+      },
+      "seed_notes": "Modelseed identifies existingBASE. Split392005 originalroles; data2026102010 fixed packet permutation; evaluation2026102011+batchordinal private negative RNG, common acrosslevels/models. No augmentation/support/newtraining RNG.",
+      "k": null,
+      "scenario": "source-only clean; no satellite/target",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "50batches/model incllast28; oneeval forward/sample,6 fullfeature VJPs/batch=300/model900total.18900NN/sourceIQreadtotal; zeroU/V/target/opt/headfit.",
+      "output_root": "LOCAL_RUN/20261020-diagnostic-FcrossRX-RXnegative-sourceL-m3-local-r01/BASE-s2026092702",
+      "log_path": "IMMUTABLE_LOCAL_RELEASE/stdout.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u IMMUTABLE_LOCAL_RELEASE/experiments/cvs_f_rxnegative_diagnostic/runner.py --profile LOCAL_PROFILE --source-run LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --source-release IMMUTABLE_ORIGINAL_RELEASE --output LOCAL_RUN/20261020-diagnostic-FcrossRX-RXnegative-sourceL-m3-local-r01 --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "summary.json"
+      ]
+    },
+    {
+      "row_id": "BASE-s2026092703",
+      "method": "Frozen original F+crossRX50; sameTX-crossRX positives, ALL vs private countmatched RANDOM vs SAME_RX differentTX negatives",
+      "purpose": "Source-only descriptive falsification, no model/head updates",
+      "config_ref": "experiments/cvs_f_rxnegative_diagnostic/core.py",
+      "resolved_config_ref": "LOCAL_RUN/20261020-diagnostic-FcrossRX-RXnegative-sourceL-m3-local-r01/execution.json",
+      "data_overrides": {
+        "role": "L_s only",
+        "batch_size": 128,
+        "drop_last": false,
+        "source_packets": 6300
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026102010,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2026102011
+      },
+      "seed_notes": "Modelseed identifies existingBASE. Split392005 originalroles; data2026102010 fixed packet permutation; evaluation2026102011+batchordinal private negative RNG, common acrosslevels/models. No augmentation/support/newtraining RNG.",
+      "k": null,
+      "scenario": "source-only clean; no satellite/target",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "50batches/model incllast28; oneeval forward/sample,6 fullfeature VJPs/batch=300/model900total.18900NN/sourceIQreadtotal; zeroU/V/target/opt/headfit.",
+      "output_root": "LOCAL_RUN/20261020-diagnostic-FcrossRX-RXnegative-sourceL-m3-local-r01/BASE-s2026092703",
+      "log_path": "IMMUTABLE_LOCAL_RELEASE/stdout.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u IMMUTABLE_LOCAL_RELEASE/experiments/cvs_f_rxnegative_diagnostic/runner.py --profile LOCAL_PROFILE --source-run LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --source-release IMMUTABLE_ORIGINAL_RELEASE --output LOCAL_RUN/20261020-diagnostic-FcrossRX-RXnegative-sourceL-m3-local-r01 --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "summary.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Positivepool fixed sameTX/differentRX. Original SupCon temp.2 includes positives indenominator; three negative modes share anchors with both crossRXpositive and sameRXdifferentTXnegative. ALL is originalpool restricted tocommonanchors, not claimed exactnative loss onexcludedanchors. No DCL/q scaling or weakclass weights.",
+    "RANDOM_MATCHED chooses exactly sameRXnegative count peranchor from all differentTX with privateCPU generator and fixed batchseed; does not perturb globalTorch/CUDA RNG. SameRX sourceTX/RX known labels only.",
+    "Descriptors: actual time_down and t2.pool maps, concat temporal mean/popstd, detachedbatchcenter/std floor1e-4, perrowL2eps1e-4. No extra learnedprojection or classifier.",
+    "SixfullL VJPs: CE_TX1,CE_TX3,CE_OTHER4,SC_ALL,SC_RANDOM_MATCHED,SC_SAME_RX over all actual deployed id_backbone parameters excluding whole existingcls_head. Report both physicalclip and normalizedHz gradientmetrics; not actual AdamWsteps. No .grad accumulation/model/RNG/mode change.",
+    "Before newsource reads, primarydecision fixed: bothweakTX1/3, eachof3BASEmodels, mean overfixedtwolevels of eligible-anchor sameRXnegativecos-otherRXnegativecos>=.02, eligiblefraction>=.99. Gradients reported butnot used tochoosecoordinate metric/hyperparams. PASS only motivates separately preregistered countmatched training study.",
+    "Previous weakTX_tailrisk50 already addedsameRXnegatives as extra weak-only balanced/tail loss, negative. Currentdiagnostic studies replacement originalpool/all6uniform/countmatchedcontrol; noextraweakloss and no fulltraining yet.",
+    "Focused synthetic math/protocol-negative checks PASS. One actual originalBASE CPU noquerysmoke PASS18syntheticexamples/all6headauxgradsNone/nonzeroSincfeaturegrad/stateRNGmodesunchanged. Oneindependent P0/P1 PASS. Launcher firststep mathchecks continues immediately.",
+    "Use file-entry runner, not -m: local diagmodule first and immutable original314release inserted before any currentworktree imports. Onecodeconfig commit/archivecopycomparison/compile/localpreflight/postlaunch processCWD/cmdline/GPU/loggrowth; no remote/admin/seals/repeated reviews.",
+    "DCoDR ECCV2022 Eq5 same-domain negative uniformity is inspiration only; it assumes uniformperdomain sphere and itsfullmethod uses reconstruction/augmentation/pretraining. Thisstudy is supervisedcrossRXpositive SupCon, not reproduction/invarianceproof: https://www.ecva.net/papers/eccv_2022/papers_ECCV/papers/136860566.pdf"
+  ],
+  "registered_at": "2026-10-20T05:40:48+00:00"
+}
