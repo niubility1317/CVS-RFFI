@@ -137,3 +137,12 @@ R05完整结果：符合七场景1个百分点容差：step_norm_task, activatio
 ## R07 四候选并行扩展
 
 用户最新要求空闲服务器一次发布多个、快速迭代，覆盖此前等R06完成再追加的次序约束。[R07登记](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-parallel-compact-s2026092701-m4-r07/report.md)固定四行：shared_three_eighths2702125、shared_eighth2463685、shared_quarter_pointwise2471609、shared_eighth_pointwise2352389。新GPU2/3/6/7各一own worker，R06健康4/5继续，共六路；R06/R07共享R06score.lock、跨六行最多一个CPU scorer。原R17源权重CPU均值/SVD，另两行共享原1×1权重，保留逐步bias/GN；只原R17teacher/init，不加载R04/05/06学生，R06尚无目标结果。固定同损失/数据/顺序/E20/4940；每行source诊断后自动全168000×七目标场景，独立truth-last与逐场景1pp验收，0target训练/参数反馈/重排/重跑。40项检查/唯一P0P1审查PASS，普通N607预检VERIFIED，四卡空闲，新root不存在。R07实际发布 VERIFIED：方法 `f03015d75428f156430cff60633e1c99ec4983b4` 已推送/OID一致，归档/远端编译和四候选实际原R17/F50/2Ls smoke PASS，实际PID/CWD/完整命令/GPU2/3/6/7/日志增长与首轮完成已核实。原R06健康4/5继续，跨六行串行独立评分；尚无完整新目标结果。
+
+
+## R08 压缩主导成本的上下文
+
+纯结构盘点（随机初始化/0checkpoint/IQ/F/TX/V/target）显示原coarse1305958+action851589=2157547，占最小R07完整2352389的91.7%；仅压prior已接近此路线的参数下限。在R06/R07新target分数尚未读取时，预登记[R08两行](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-context-compact-s2026092701-m2-r08/report.md)：context半秩+priorquarter完整1822977，context半秩+prioreighth/原1×1共享完整1592461。只原R17teacher/init；84个context长卷积独立CPU半秩SVD后完全冻结为1397619参数，prior保持原来源共享压缩并优化20轮。context为确定性源权重近似，不能称原context逐位不变。
+
+teacher必须用自身原context，student用自身压缩context；helper及sentinel负向检查保证隔离，额外teachercontext前向1260000单列。其余同source63000/数据顺序/E20/4940/原F50defaulthead冻结/固定蒸馏损失，0新TX/V/target训练或F/head/context更新；全部source仅诊断，逐行自动168000×七target，独立truth-last和1pp整数验收。两行在新结果前固定，不用R06/R07结果改超参、结构、父权重、重排或重跑。
+
+35项检查/唯一独立P0P1审查PASS，普通N607预检VERIFIED，R06实际GPU4/5句柄仍2条。launcher首步实际原R17/F50/2Ls smoke通过即等待R06根终态且实际GPU句柄退出，不读其评分，之后4/5各一own接续；R07健康2/3/6/7继续，共享R06score.lock保持一个own CPU scorer。当前仅静态成本/实现验证与预登记，未证明目标性能。
