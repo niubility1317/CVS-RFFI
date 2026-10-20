@@ -1,6 +1,6 @@
 # R24：本路线全部八版的固定无 F 身份关联评价
 
-状态：LOCAL_VERIFIED / REGISTERED，尚未发布或读取目标IQ，无身份统计结果。
+状态：VERIFIED / WAITING_PARENT_FORMAL；已发布，尚未读取目标IQ或真值，无身份统计结果。
 
 固定纳入R18两版、R19两版、R22两版和R23两版，包括R19负结果。用户原350521父作为固定对照，不依据目标分数挑新版、教师或候选。R20与R18同权重且正式IQ逐位相同，复用R18函数，不重复神经预测。R18/R19成绩已暴露，方案固定时R22正式预测仍0、R23尚排队；这是既有工程基准上的事后评价，不是新盲测。
 
@@ -13,3 +13,8 @@ clean参照只作事后评价：每TX/RX/day按opaque物理ID取至多2条，RX�
 已有clean TX2存在描述符区分不足，逐TX保留。该评价只提供同TX统计关联及负控制证据，不证明每个恢复细节属于输入TX，也不把恢复后的负margin单独判为错误身份。七景准确率、父逐景0.8pp容限、lowurban70%、其他五景距rawclean5pp和clean保持继续单列，评价不回流调参、选父或重跑。
 
 N607普通账户、CPU2、空CUDA/0GPU，等待父版全正式完成后在R06共享score.lock内串行extract/独立score；不阻塞父训练、测试或交付。31项聚焦合成检查及一次独立P0/P1审查PASS，独立复跑31项通过，无P0/P1问题；launcher首步真实2Ls解析noquery smoke。新不可覆盖run/release/output，一次预检、单归档一次两端SHA/compile、实际PID/CWD/argv/空CUDA/日志增长核实。父技术失败、错误路径/ID/源统计、非有限或缺输入/输出冲突保留产物，不自动重试，不干预健康父任务。精确矩阵、方法commit、环境、命令及路径见experiment.json。
+
+
+## 真实发布与等待状态
+
+方法commit 8a2899f5998bd50d1595391f8c7fad9667b0d1fa，归档两端单次SHA一致、远端compile通过。真实2Ls参数自由解析no-query smoke PASS，0checkpoint/F/TX/V/target/更新；实际CPU控制器PID/CWD/完整命令/空CUDA/2线程及日志增长均核实。当前等待R22与R23全正式评分，extract/score进程尚未启动；旧R18/R19两run已完成。31项执行检查及一次独立P0/P1审查PASS，独立复跑31项；结果收集与统计核对工具19项检查PASS。没有改变父训练或预测，不占GPU，也没有正式身份统计分数。
