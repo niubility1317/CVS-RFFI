@@ -1,0 +1,270 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-diagnostic-FcrossRX-weakPair-direction-sourceV-m3-local-r01",
+  "group_id": "F-source-crossRX-class-contrast",
+  "display_name": "F源域三种子：弱TX跨RX判别方向诊断",
+  "description": "CPU-only reuse of fixed BASE3 sourceV feature caches; no checkpoint/model/IQ/target/Utruth reads or training. Test prospective weakpair crossRX direction inconsistency against all14 other classpairs.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "source weakpair crossRX difference direction"
+  ],
+  "tags": [
+    "CVS",
+    "Phase1",
+    "source_only",
+    "cached_features",
+    "three_model_seeds",
+    "CPU",
+    "no_training",
+    "no_head_fit",
+    "no_target_access"
+  ],
+  "comparison_group_id": "F-source-crossRX-class-contrast",
+  "parent_run_ids": [
+    "20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01",
+    "20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01",
+    "20261020-phase1-FcrossRX-MEM4-threeSeed-clean-local-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active weakTX optimization goal, defaultheadjoint/no satellite/onlyclean for training studies; source-only no-fit diagnosis is authorized. Fixed source pair14-7/20-19 from BASE3 confusion evidence recorded before remaining MEM4 target results. No new training or target experiment in this diagnostic.",
+  "code": {
+    "commit": "PENDING_COMMIT",
+    "checkout": "codex/phase1-rdrop-combinations-20261015",
+    "environment": "Verified native Python3.10/Numpy; CPU2; no torch/model/CP import",
+    "cwd": "LOCAL_RELEASE/cvs_F_pair_direction_local_20261020_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing validated local exact native role cache",
+    "representation": "raw received residual/post_sync/noeq IQ; fixed256 packet; deployed160-dimensional id_feat_joint",
+    "contract_ref": "LOCAL_DATA/source/source_contract.json",
+    "physical_ids_ref": "LOCAL_DATA/source/source_contract.json#role_ids",
+    "label_map_ref": "LOCAL_DATA/source/source_contract.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "LOCAL_DATA/source/source_contract.json",
+    "roles": {
+      "L_s": "Existing6300 training role NOT READ",
+      "U_s": "56700 TX hidden NOT READ",
+      "V": "Reuse completed frozen BASE3 sourceV cache27000x160 with original class/RX/day arrays; no new IQ or network forwards"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": "existing VALIDATED_ONCE local manifest; unchanged",
+    "split_id": "392005 exact original roles; unchanged",
+    "validation_ref": "LOCAL_DATA/source_cache/manifest.json",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only_cached_feature_analysis",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only geometric premise falsification; no classifier decisions/model training/new target performance/Phase2 claim; benchmark already exposed"
+  },
+  "checkpoint": {
+    "initialization": "None: no checkpoint is loaded; reuse fixed cached original BASE final50 features",
+    "sources": [],
+    "contract_check_ref": "Prior completed source-geometry cache result/metadata, original31467086 sourceCP provenance and smoke already verified; no new checkpoint use",
+    "provenance_verdict": "Reuse fixed sourceV BASE3 immutable feature caches only, old source proof retained; no inheritance/new model",
+    "selection_rule": "All3 cached BASE seeds fixed; no target ranking or model choice",
+    "reference_code_commit": "31467086c3ced30237f3ac86e91eae68645425d7"
+  },
+  "execution": {
+    "host": "local Windows ordinary account",
+    "launch_owner": "codex/root/F-source-pair-direction-20261020",
+    "gpu_policy": "CPU only, no GPU/model worker, threads2",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "LOCAL_RUNS/20261020-diagnostic-FcrossRX-weakPair-direction-sourceV-m3-local-r01",
+    "launch_command": "LOCAL_PYTHON -X utf8 -u -m experiments.cvs_f_pair_direction.runner --cache LOCAL_RUNS/20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01 --output LOCAL_RUNS/20261020-diagnostic-FcrossRX-weakPair-direction-sourceV-m3-local-r01 --commit RELEASE_COMMIT",
+    "stop_rule": "Wrong cache/source role/reference/array interface, nonfinite or zero features, invalid output/release: fail and preserve artifacts. No target-based retry, threshold relaxation, model training or other-process changes."
+  },
+  "expected_artifacts": [
+    "execution.json",
+    "BASE-sSEED/source_direction.json",
+    "result.json",
+    "results.md",
+    "completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "all15pair mean/min crossRX difference cosine",
+      "weakpair direction norms,selfenergy,crossdot,cross/self",
+      "weak cos deficit vs medianother14pairs",
+      "fixed all3 source qualification and negatives",
+      "CPU seconds"
+    ],
+    "dimensions": [
+      "sourceV27000 only/BASE3/5RX/3days",
+      "weakpair14-7/20-19 fixed",
+      "no new model or target score"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "experiments/cvs_f_pair_direction/analysis.py"
+  },
+  "rows": [
+    {
+      "row_id": "BASE-s2026092701",
+      "method": "Frozen BASE sourceV cached unitjoint160 classdifference directions acrossRX",
+      "purpose": "Source-only falsification of prospective direction-consistency premise",
+      "config_ref": "experiments/cvs_f_pair_direction/analysis.py",
+      "config": {
+        "model_seed": 2026092701,
+        "sourceV_only": true,
+        "cache_run": "20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01",
+        "weak_pair": [
+          1,
+          3
+        ],
+        "all_pairs": 15,
+        "max_weak_mean_cosine": 0.9,
+        "min_relative_cosine_deficit": 0.05,
+        "required_seeds": 3,
+        "no_model": true
+      },
+      "resolved_config_ref": "LOCAL_RUNS/20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01/BASE-s2026092701/source_geometry.json",
+      "data_overrides": {
+        "evaluation_role": "V",
+        "augmentation": "none"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Inherited fixed training model/data seeds; deterministic unaugmented no-update analysis",
+      "k": null,
+      "scenario": "sourceV_clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Read27000x160 existing feature cache;0model/CP/IQ/target/optimizer/headfit",
+      "output_root": "LOCAL_RUNS/20261020-diagnostic-FcrossRX-weakPair-direction-sourceV-m3-local-r01/BASE-s2026092701",
+      "log_path": "LOCAL_RELEASE/cvs_F_pair_direction_local_20261020_r01/worker.stdout.log",
+      "command": "LOCAL_PYTHON -X utf8 -u -m experiments.cvs_f_pair_direction.runner --cache LOCAL_RUNS/20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01 --output LOCAL_RUNS/20261020-diagnostic-FcrossRX-weakPair-direction-sourceV-m3-local-r01 --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "BASE-s2026092701/source_direction.json"
+      ]
+    },
+    {
+      "row_id": "BASE-s2026092702",
+      "method": "Frozen BASE sourceV cached unitjoint160 classdifference directions acrossRX",
+      "purpose": "Source-only falsification of prospective direction-consistency premise",
+      "config_ref": "experiments/cvs_f_pair_direction/analysis.py",
+      "config": {
+        "model_seed": 2026092702,
+        "sourceV_only": true,
+        "cache_run": "20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01",
+        "weak_pair": [
+          1,
+          3
+        ],
+        "all_pairs": 15,
+        "max_weak_mean_cosine": 0.9,
+        "min_relative_cosine_deficit": 0.05,
+        "required_seeds": 3,
+        "no_model": true
+      },
+      "resolved_config_ref": "LOCAL_RUNS/20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01/BASE-s2026092702/source_geometry.json",
+      "data_overrides": {
+        "evaluation_role": "V",
+        "augmentation": "none"
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Inherited fixed training model/data seeds; deterministic unaugmented no-update analysis",
+      "k": null,
+      "scenario": "sourceV_clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Read27000x160 existing feature cache;0model/CP/IQ/target/optimizer/headfit",
+      "output_root": "LOCAL_RUNS/20261020-diagnostic-FcrossRX-weakPair-direction-sourceV-m3-local-r01/BASE-s2026092702",
+      "log_path": "LOCAL_RELEASE/cvs_F_pair_direction_local_20261020_r01/worker.stdout.log",
+      "command": "LOCAL_PYTHON -X utf8 -u -m experiments.cvs_f_pair_direction.runner --cache LOCAL_RUNS/20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01 --output LOCAL_RUNS/20261020-diagnostic-FcrossRX-weakPair-direction-sourceV-m3-local-r01 --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "BASE-s2026092702/source_direction.json"
+      ]
+    },
+    {
+      "row_id": "BASE-s2026092703",
+      "method": "Frozen BASE sourceV cached unitjoint160 classdifference directions acrossRX",
+      "purpose": "Source-only falsification of prospective direction-consistency premise",
+      "config_ref": "experiments/cvs_f_pair_direction/analysis.py",
+      "config": {
+        "model_seed": 2026092703,
+        "sourceV_only": true,
+        "cache_run": "20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01",
+        "weak_pair": [
+          1,
+          3
+        ],
+        "all_pairs": 15,
+        "max_weak_mean_cosine": 0.9,
+        "min_relative_cosine_deficit": 0.05,
+        "required_seeds": 3,
+        "no_model": true
+      },
+      "resolved_config_ref": "LOCAL_RUNS/20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01/BASE-s2026092703/source_geometry.json",
+      "data_overrides": {
+        "evaluation_role": "V",
+        "augmentation": "none"
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Inherited fixed training model/data seeds; deterministic unaugmented no-update analysis",
+      "k": null,
+      "scenario": "sourceV_clean",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Read27000x160 existing feature cache;0model/CP/IQ/target/optimizer/headfit",
+      "output_root": "LOCAL_RUNS/20261020-diagnostic-FcrossRX-weakPair-direction-sourceV-m3-local-r01/BASE-s2026092703",
+      "log_path": "LOCAL_RELEASE/cvs_F_pair_direction_local_20261020_r01/worker.stdout.log",
+      "command": "LOCAL_PYTHON -X utf8 -u -m experiments.cvs_f_pair_direction.runner --cache LOCAL_RUNS/20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01 --output LOCAL_RUNS/20261020-diagnostic-FcrossRX-weakPair-direction-sourceV-m3-local-r01 --commit RELEASE_COMMIT",
+      "expected_artifacts": [
+        "BASE-s2026092703/source_direction.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Scientific rule fixed before this analysis: all3 weakpair mean crossRXdirectioncos<=.90 and >=.05 below other14pairmedian; all10RXpairs valid in everyclasspair. Not a performance threshold or new approval flow.",
+    "Delta_RX=mean(unitfeature|14-7,RX)-mean(unitfeature|20-19,RX); classmeans are descriptive, never classifiers. Shared additive shift of those means cancels algebraically; no claim of full nonlinearchannel removal.",
+    "If FAIL, do not relax thresholds or launch that proposed direction-consistency training route. If PASS, only supports entering a separate properly fixed3seed training/clean experiment; no performance assertion.",
+    "Only original BASE3 source caches. MEM4 three-seed negative target result retained as history, no MEM4 stacking/reseed/target tuning. Old benchmark exposure disclosed.",
+    "Focused math/source negative tests PASS12; prior model/checkpoint/sourcecache provenance reused. This G0 computation consumes no model or checkpoint, so does not rerun the prior true-checkpoint noquery smoke. One direct independent P0/P1 review PASS.",
+    "SourceV labels only for descriptive diagnosis; no gradients, classifierfit, targetdata, Utruth or new model forwards. All15classpairs/negative results preserved."
+  ],
+  "registered_at": "2026-10-20T09:28:39+00:00"
+}

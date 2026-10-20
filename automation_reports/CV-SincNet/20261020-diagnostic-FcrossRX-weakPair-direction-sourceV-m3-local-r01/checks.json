@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "protocol_negative_cases": 12,
+  "known_same_directions_cosine1": true,
+  "known_orthogonal_directions_cosine0": true,
+  "RX_common_offset_cancels": true,
+  "degenerate_pair_not_promoted": true,
+  "all3_required": true,
+  "source_cache_only": true,
+  "new_model_forwards": 0,
+  "checkpoint_loads": 0,
+  "target_reads": 0,
+  "head_fit_updates": 0
+}
