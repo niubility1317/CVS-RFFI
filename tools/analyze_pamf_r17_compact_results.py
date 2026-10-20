@@ -24,13 +24,18 @@ def classification_record(record):
     if (any(not isinstance(v,int) for v in (repaired,damaged,net)) or repaired<0 or damaged<0
             or repaired>count-old_correct or damaged>old_correct or repaired-damaged!=net or correct-old_correct!=net):
         raise ValueError('Invalid paired repair arithmetic')
-    return dict(count=count,correct=correct,accuracy=accuracy,macro_f1=macro_f1,
-                repaired=repaired,damaged=damaged,net_repaired=net)
+    result=dict(count=count,correct=correct,accuracy=accuracy,macro_f1=macro_f1,baseline_accuracy=record['baseline_accuracy'],
+                repaired=repaired,damaged=damaged,net_repaired=net,confusion=matrix.tolist())
+    if 'iq_nmse' in record:
+        if not math.isfinite(record['iq_nmse']) or record['iq_nmse']<0:raise ValueError('Finite grouped waveform NMSE required')
+        result['iq_nmse']=record['iq_nmse']
+    return result
 
 
 def summary_metrics(summary,role):
     count=1800 if role=='source' else 168000
     expected=dict(status='ANALYZED',role=role,count=count,F_seed=2026092701,original_default_head=True,
+                  F_run='20261016-phase1-F-supcon-e50-clean-manysig-m9-r02',target_access=role=='target',
                   all_predictions_before_truth=True,training_F_access=False,training_TX_labels_read=0,head_fit_updates=0)
     if role not in ('source','target') or any(summary.get(k)!=v for k,v in expected.items()):
         raise ValueError('Completed same-role same-head summary required')
@@ -54,7 +59,9 @@ def summary_metrics(summary,role):
         wave=summary['views'][view]['restored']['waveform']
         for key in ('iq_nmse','prefix232_nmse','tail24_nmse','fft_log_power_L1'):
             if not math.isfinite(wave[key]) or wave[key]<0:raise ValueError('Finite paired waveform metrics required')
-        views[view]=dict(**metrics,waveform=wave,groups=groups,
+        geometry={key:summary['views'][view]['restored'][key] for key in
+                  ('paired_clean_feature_cosine_distance','paired_clean_vs_other_TX') if key in summary['views'][view]['restored']}
+        views[view]=dict(**metrics,waveform=wave,paired_clean_geometry=geometry,groups=groups,
                         worst={dimension:min(values,key=lambda key:(values[key]['accuracy'],key)) for dimension,values in groups.items()})
     return dict(role=role,count=count,views=views,independently_recomputed_records=checked)
 
@@ -65,6 +72,8 @@ def compare(candidate,baseline):
     for view in d.VIEWS:
         left,right=candidate['views'][view],baseline['views'][view]
         if any(set(left['groups'][k])!=set(right['groups'][k]) for k in ('TX','RX','day')):raise ValueError('Same physical groups required')
+        if any(left['groups'][dim][key]['count']!=right['groups'][dim][key]['count'] for dim in ('TX','RX','day') for key in left['groups'][dim]):
+            raise ValueError('Same physical group counts required')
         result[view]=dict(correct_delta=left['correct']-right['correct'],
                          accuracy_delta_pp=100*(left['correct']-right['correct'])/candidate['count'],
                          macro_f1_delta_pp=left['macro_f1']-right['macro_f1'],

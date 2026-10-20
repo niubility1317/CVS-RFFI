@@ -2,8 +2,9 @@ import copy
 import numpy as np
 import pytest
 
-from tools.analyze_pamf_r17_compact_results import classification_record,summary_metrics,compare,training_metrics
+from tools.analyze_pamf_r17_compact_results import classification_record,summary_metrics,compare,training_metrics,completed_metrics
 from experiments.pamf_r17_compact import design as d
+from experiments.pamf_r17_compact.evaluation import select_source
 
 
 def record(matrix,**fields):
@@ -25,9 +26,11 @@ def summary(role='source',errors=180):
             records.append(record(part,view=view,dimension='TX',value=str(label)))
         for dim,groups in (('RX',5),('day',2)):
             for index in range(groups):
-                part=matrix//groups+(matrix%groups>index)
+                part=np.eye(6,dtype=np.int64)*(n//6//groups)
+                mistakes=errors//groups+int(index<errors%groups);part[0,0]-=mistakes;part[0,1]+=mistakes
                 records.append(record(part,view=view,dimension=dim,value=str(index)))
     return dict(status='ANALYZED',role=role,count=n,F_seed=2026092701,original_default_head=True,
+                F_run='20261016-phase1-F-supcon-e50-clean-manysig-m9-r02',target_access=role=='target',
                 all_predictions_before_truth=True,training_F_access=False,training_TX_labels_read=0,head_fit_updates=0,
                 records=records,views={v:dict(restored=dict(waveform=dict(iq_nmse=.02,prefix232_nmse=.02,tail24_nmse=.02,fft_log_power_L1=.1))) for v in d.VIEWS})
 
@@ -40,6 +43,7 @@ def test_recomputes_every_partition_and_detects_one_target_error_regression():
     assert all(v['correct_delta']==-1 and v['accuracy_delta_pp']==-100/168000 for v in result['views'].values())
     assert baseline['independently_recomputed_records']==7*(1+6+5+2)
     assert compare(baseline,baseline)['accuracy_nonregression']
+    assert sum(sum(row) for row in baseline['views']['clean']['confusion'])==168000
 
 
 @pytest.mark.parametrize('key,bad',[('accuracy',99.),('macro_f1',99.),('net_repaired',0),('count',1)])
@@ -54,6 +58,18 @@ def test_incomplete_or_mismatched_physical_partitions_rejected():
     with pytest.raises(ValueError):summary_metrics(summary('target'),'source')
 
 
+def test_preserves_paired_clean_feature_diagnostics_and_grouped_NMSE():
+    value=summary()
+    for view in d.VIEWS:
+        value['views'][view]['restored'].update(paired_clean_feature_cosine_distance=.03,
+            paired_clean_vs_other_TX={'aggregate_margin':.2})
+    value['records'][0]['iq_nmse']=.02
+    result=summary_metrics(value,'source')
+    assert result['views']['clean']['paired_clean_geometry']['paired_clean_feature_cosine_distance']==.03
+    assert result['views']['clean']['paired_clean_geometry']['paired_clean_vs_other_TX']=={'aggregate_margin':.2}
+    assert result['views']['clean']['iq_nmse']==.02
+
+
 def test_training_analysis_requires_all_fixed_records_and_does_not_select_lowest_loss():
     rows=[dict(epoch=e,updates=247*e,L_exposures=6300*e,U_exposures=56700*e,teacher_IQ_examples=63000*e,
                seconds=100.*e,clip_fraction=0.,losses=dict(loss=.1+.01/e,iq_nmse=.1,teacher_stage_nmse=.001/e)) for e in range(1,21)]
@@ -66,3 +82,30 @@ def test_training_analysis_requires_all_fixed_records_and_does_not_select_lowest
     with pytest.raises(ValueError):training_metrics(rows[:-1],complete,'shared_mean')
     invalid=copy.deepcopy(rows);invalid[-1]['U_exposures']-=1
     with pytest.raises(ValueError):training_metrics(invalid,complete,'shared_mean')
+
+
+@pytest.mark.parametrize('source_qualified',[True,False])
+def test_completed_collection_honors_source_only_closure_and_target_single_error_failure(source_qualified):
+    baseline=summary();candidate=summary(errors=180 if source_qualified else 181)
+    source_decision=select_source({a:candidate for a in d.ARMS},baseline)
+    records=[dict(epoch=e,updates=247*e,L_exposures=6300*e,U_exposures=56700*e,teacher_IQ_examples=63000*e,
+                  seconds=100.*e,clip_fraction=0.,losses=dict(loss=.11,iq_nmse=.1,teacher_stage_nmse=.001)) for e in range(1,21)]
+    arms={}
+    for arm in d.ARMS:
+        complete=dict(status='SOURCE_TRAINED',arm=arm,epochs=20,updates=4940,L_exposures=126000,U_exposures=1134000,
+            teacher_IQ_examples=1260000,inherited_prior_epochs=20,cumulative_prior_epochs=40,cumulative_serial_training_passes=80,
+            parameters=d.PARAMETERS[arm],trainable_parameters=d.PARAMETERS[arm]-2157547,
+            teacher_parameter_updates=0,frozen_context_updates=0,TX_labels_read=0,F_outputs_read=0,F_weights_read=0,V_reads=0,target_reads=0)
+        profile=dict(status='PROFILE_COMPLETE',includes_full_frozen_context_and_CG=True,source_V_IQ=16,TX_labels_read=0,state_updates=0,
+            results={key:dict(samples=16,warmup=2,parameters=p,median_ms=10.,p90_ms=12.,peak_allocated_bytes=1000)
+                     for key,p in (('original_R17',4665073),('compact',d.PARAMETERS[arm]))})
+        arms[arm]=dict(source_summary=candidate,training_records=records,training_complete=complete,
+                       matched_profile=profile,checkpoint_bytes=100,target_summary=None,assessment=None)
+    if source_qualified:
+        arms['shared_mean'].update(target_summary=summary('target',101),assessment={'target_accuracy_nonregression':False})
+    collection=dict(run_id=d.RUN,method_commit='606b5b20943e9839fe97cbe15a6c19baf6ef0189',failure=None,
+        complete=dict(status='ANALYZED',target_rows=source_decision['target_rows']),actual_live_owned_PIDs=[],arms=arms,
+        baseline_source=baseline,baseline_target=summary('target',100) if source_qualified else None,source_decision=source_decision)
+    result=completed_metrics(collection)
+    assert result['target_performance_evaluated']==source_qualified and not result['goal_complete']
+    assert result['target_accuracy_nonregression'] is (False if source_qualified else None)
