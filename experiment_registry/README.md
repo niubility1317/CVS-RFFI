@@ -425,3 +425,5 @@
 本轮记录：[R17 纯函数保真与分步状态精简](by_method/pure_function_fidelity.md)。
 
 本轮记录：[源激活校准的 R17 低秩精简](by_method/activation_calibrated.md)。
+
+本轮记录：[冻结原F知识约束的R17精简](by_method/frozen_task.md)。
