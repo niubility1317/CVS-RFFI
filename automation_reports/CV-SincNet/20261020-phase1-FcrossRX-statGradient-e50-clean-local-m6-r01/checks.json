@@ -1,0 +1,357 @@
+{
+  "status": "PASS",
+  "protocol_negative_cases": 14,
+  "math_cpu": {
+    "status": "PASS",
+    "device": "cpu",
+    "forward_exact_native": true,
+    "true_statistic_gradient_autograd_reference": true,
+    "translation_and_unclamped_scale_orthogonal": true,
+    "size_control_norm_matches_same_descriptor_full_gradient": true,
+    "clamped_and_constant_channels": true,
+    "gradcheck": true,
+    "private_RNG_unchanged": true,
+    "protocol_negative_cases": 4,
+    "oracles": [
+      {
+        "dtype": "torch.float64",
+        "scale": 1,
+        "full_reference": true,
+        "size_control": true
+      },
+      {
+        "dtype": "torch.float64",
+        "scale": 1e-7,
+        "full_reference": true,
+        "size_control": true
+      },
+      {
+        "dtype": "torch.float64",
+        "scale": 0,
+        "full_reference": true,
+        "size_control": true
+      },
+      {
+        "dtype": "torch.float32",
+        "scale": 1,
+        "full_reference": true,
+        "size_control": true
+      },
+      {
+        "dtype": "torch.float32",
+        "scale": 1e-7,
+        "full_reference": true,
+        "size_control": true
+      },
+      {
+        "dtype": "torch.float32",
+        "scale": 0,
+        "full_reference": true,
+        "size_control": true
+      }
+    ]
+  },
+  "math_cuda": {
+    "status": "PASS",
+    "device": "cuda:0",
+    "forward_exact_native": true,
+    "true_statistic_gradient_autograd_reference": true,
+    "translation_and_unclamped_scale_orthogonal": true,
+    "size_control_norm_matches_same_descriptor_full_gradient": true,
+    "clamped_and_constant_channels": true,
+    "gradcheck": true,
+    "private_RNG_unchanged": true,
+    "protocol_negative_cases": 4,
+    "oracles": [
+      {
+        "dtype": "torch.float64",
+        "scale": 1,
+        "full_reference": true,
+        "size_control": true
+      },
+      {
+        "dtype": "torch.float64",
+        "scale": 1e-7,
+        "full_reference": true,
+        "size_control": true
+      },
+      {
+        "dtype": "torch.float64",
+        "scale": 0,
+        "full_reference": true,
+        "size_control": true
+      },
+      {
+        "dtype": "torch.float32",
+        "scale": 1,
+        "full_reference": true,
+        "size_control": true
+      },
+      {
+        "dtype": "torch.float32",
+        "scale": 1e-7,
+        "full_reference": true,
+        "size_control": true
+      },
+      {
+        "dtype": "torch.float32",
+        "scale": 0,
+        "full_reference": true,
+        "size_control": true
+      }
+    ]
+  },
+  "actual_checkpoint_no_query_smoke": true,
+  "checkpoint_seed": 2026092701,
+  "checkpoint_loaded_once_for_both_policies": true,
+  "loaded_checkpoint_discarded_not_inherited": true,
+  "actual_F_flows": [
+    {
+      "policy": "STAT_GRAD",
+      "forward_logits_joint160_export_exact": true,
+      "two_original_L_forwards": true,
+      "aux_direct_head_gradient": null,
+      "aux_Sinc_gradient_norm": 0.01874609664082527,
+      "joint_head_gradient_norm": 2.632955551147461,
+      "no_model_state_update": true,
+      "EMA_eval_untouched": true,
+      "temporary_hooks_remaining": 0,
+      "details": [
+        {
+          "stage": "first",
+          "level": "time_down",
+          "shape": [
+            128,
+            48,
+            128
+          ],
+          "loss": 3.4399750232696533,
+          "statistic_policy": "STAT_GRAD",
+          "backward": {
+            "backward_calls": 1,
+            "channels": 96,
+            "clamped_channels": 0,
+            "native_descriptor_grad_norm": 0.543439507484436,
+            "full_descriptor_grad_norm": 0.5054492354393005,
+            "delivered_descriptor_grad_norm": 0.5054492354393005,
+            "norm_ratio": 0.9300929307937622,
+            "translation_removed_norm": 0.034271225333213806,
+            "scale_removed_norm": 0.1966552585363388,
+            "mode": "STAT_GRAD"
+          },
+          "valid_anchors": 128,
+          "total_anchors": 128,
+          "positive_min": 16,
+          "positive_max": 18
+        },
+        {
+          "stage": "first",
+          "level": "t2.pool",
+          "shape": [
+            128,
+            96,
+            32
+          ],
+          "loss": 2.767444610595703,
+          "statistic_policy": "STAT_GRAD",
+          "backward": {
+            "backward_calls": 1,
+            "channels": 192,
+            "clamped_channels": 0,
+            "native_descriptor_grad_norm": 0.07385976612567902,
+            "full_descriptor_grad_norm": 0.07156657427549362,
+            "delivered_descriptor_grad_norm": 0.07156657427549362,
+            "norm_ratio": 0.9689520597457886,
+            "translation_removed_norm": 0.0019969327840954065,
+            "scale_removed_norm": 0.018152248114347458,
+            "mode": "STAT_GRAD"
+          },
+          "valid_anchors": 128,
+          "total_anchors": 128,
+          "positive_min": 16,
+          "positive_max": 18
+        },
+        {
+          "stage": "second",
+          "level": "time_down",
+          "shape": [
+            128,
+            48,
+            128
+          ],
+          "loss": 3.4399750232696533,
+          "statistic_policy": "STAT_GRAD",
+          "backward": {
+            "backward_calls": 1,
+            "channels": 96,
+            "clamped_channels": 0,
+            "native_descriptor_grad_norm": 0.543439507484436,
+            "full_descriptor_grad_norm": 0.5054492354393005,
+            "delivered_descriptor_grad_norm": 0.5054492354393005,
+            "norm_ratio": 0.9300929307937622,
+            "translation_removed_norm": 0.034271225333213806,
+            "scale_removed_norm": 0.1966552585363388,
+            "mode": "STAT_GRAD"
+          },
+          "valid_anchors": 128,
+          "total_anchors": 128,
+          "positive_min": 16,
+          "positive_max": 18
+        },
+        {
+          "stage": "second",
+          "level": "t2.pool",
+          "shape": [
+            128,
+            96,
+            32
+          ],
+          "loss": 2.758317470550537,
+          "statistic_policy": "STAT_GRAD",
+          "backward": {
+            "backward_calls": 1,
+            "channels": 192,
+            "clamped_channels": 0,
+            "native_descriptor_grad_norm": 0.08141965419054031,
+            "full_descriptor_grad_norm": 0.07827524095773697,
+            "delivered_descriptor_grad_norm": 0.07827524095773697,
+            "norm_ratio": 0.9613801836967468,
+            "translation_removed_norm": 0.0021828480530530214,
+            "scale_removed_norm": 0.022302113473415375,
+            "mode": "STAT_GRAD"
+          },
+          "valid_anchors": 128,
+          "total_anchors": 128,
+          "positive_min": 16,
+          "positive_max": 18
+        }
+      ]
+    },
+    {
+      "policy": "NORM_ONLY",
+      "forward_logits_joint160_export_exact": true,
+      "two_original_L_forwards": true,
+      "aux_direct_head_gradient": null,
+      "aux_Sinc_gradient_norm": 0.020515594631433487,
+      "joint_head_gradient_norm": 2.632955551147461,
+      "no_model_state_update": true,
+      "EMA_eval_untouched": true,
+      "temporary_hooks_remaining": 0,
+      "details": [
+        {
+          "stage": "first",
+          "level": "time_down",
+          "shape": [
+            128,
+            48,
+            128
+          ],
+          "loss": 3.4399750232696533,
+          "statistic_policy": "NORM_ONLY",
+          "backward": {
+            "backward_calls": 1,
+            "channels": 96,
+            "clamped_channels": 0,
+            "native_descriptor_grad_norm": 0.543439507484436,
+            "full_descriptor_grad_norm": 0.5054492354393005,
+            "delivered_descriptor_grad_norm": 0.5054494142532349,
+            "norm_ratio": 0.9300929307937622,
+            "translation_removed_norm": 0.034271225333213806,
+            "scale_removed_norm": 0.1966552585363388,
+            "mode": "NORM_ONLY"
+          },
+          "valid_anchors": 128,
+          "total_anchors": 128,
+          "positive_min": 16,
+          "positive_max": 18
+        },
+        {
+          "stage": "first",
+          "level": "t2.pool",
+          "shape": [
+            128,
+            96,
+            32
+          ],
+          "loss": 2.767444610595703,
+          "statistic_policy": "NORM_ONLY",
+          "backward": {
+            "backward_calls": 1,
+            "channels": 192,
+            "clamped_channels": 0,
+            "native_descriptor_grad_norm": 0.07385976612567902,
+            "full_descriptor_grad_norm": 0.07156657427549362,
+            "delivered_descriptor_grad_norm": 0.07156657427549362,
+            "norm_ratio": 0.9689520597457886,
+            "translation_removed_norm": 0.0019969327840954065,
+            "scale_removed_norm": 0.018152248114347458,
+            "mode": "NORM_ONLY"
+          },
+          "valid_anchors": 128,
+          "total_anchors": 128,
+          "positive_min": 16,
+          "positive_max": 18
+        },
+        {
+          "stage": "second",
+          "level": "time_down",
+          "shape": [
+            128,
+            48,
+            128
+          ],
+          "loss": 3.4399750232696533,
+          "statistic_policy": "NORM_ONLY",
+          "backward": {
+            "backward_calls": 1,
+            "channels": 96,
+            "clamped_channels": 0,
+            "native_descriptor_grad_norm": 0.543439507484436,
+            "full_descriptor_grad_norm": 0.5054492354393005,
+            "delivered_descriptor_grad_norm": 0.5054494142532349,
+            "norm_ratio": 0.9300929307937622,
+            "translation_removed_norm": 0.034271225333213806,
+            "scale_removed_norm": 0.1966552585363388,
+            "mode": "NORM_ONLY"
+          },
+          "valid_anchors": 128,
+          "total_anchors": 128,
+          "positive_min": 16,
+          "positive_max": 18
+        },
+        {
+          "stage": "second",
+          "level": "t2.pool",
+          "shape": [
+            128,
+            96,
+            32
+          ],
+          "loss": 2.758317470550537,
+          "statistic_policy": "NORM_ONLY",
+          "backward": {
+            "backward_calls": 1,
+            "channels": 192,
+            "clamped_channels": 0,
+            "native_descriptor_grad_norm": 0.08141965419054031,
+            "full_descriptor_grad_norm": 0.07827524095773697,
+            "delivered_descriptor_grad_norm": 0.07827524095773697,
+            "norm_ratio": 0.9613801836967468,
+            "translation_removed_norm": 0.0021828480530530214,
+            "scale_removed_norm": 0.022302113473415375,
+            "mode": "NORM_ONLY"
+          },
+          "valid_anchors": 128,
+          "total_anchors": 128,
+          "positive_min": 16,
+          "positive_max": 18
+        }
+      ]
+    }
+  ],
+  "IQ_reads": 0,
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "head_fit_updates": 0,
+  "optimizer_updates": 0
+}

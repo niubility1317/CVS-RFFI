@@ -1,0 +1,731 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01",
+  "group_id": "F-crossRX-statistic-gradient",
+  "display_name": "F跨RX：批统计真实梯度与范数控制，固定三种子",
+  "description": "Original F50 shallow/middle SC same-forward backward ablation: true batch center/std gradient versus native direction matched to full descriptor-gradient norm. Six scratch rows; matched BASE3 reused; no source expansion gate, no target tuning.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "SupCon batch statistic gradient",
+    "STAT_GRAD versus NORM_ONLY"
+  ],
+  "tags": [
+    "CVS",
+    "Phase1",
+    "F_CROSS_RX",
+    "SIG_TIME_X3",
+    "RDrop",
+    "statistic_gradient",
+    "matched_norm_control",
+    "three_model_seeds",
+    "scratch50",
+    "default_head_joint",
+    "no_satellite",
+    "clean_only"
+  ],
+  "comparison_group_id": "F-crossRX-statistic-gradient",
+  "parent_run_ids": [
+    "20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01",
+    "20261020-diagnostic-FcrossRX-weakPair-direction-sourceV-m3-local-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active weakTX feature-learning goal and explicit three-seed requirement. New fixed STAT_GRAD mechanism and magnitude control authorized by goal; no satellite, onlyclean, default head joint. Preserve all completed/healthy work and negative results.",
+  "code": {
+    "commit": "PENDING_COMMIT",
+    "checkout": "codex/phase1-rdrop-combinations-20261015",
+    "environment": "Verified native Windows Python3.10/PyTorch2.10cu128/FP32/noTF32/CPU2/workers0",
+    "cwd": "IMMUTABLE_LOCAL_RELEASE/cvs_F_statGradient50_local_20261020_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing source contract",
+    "representation": "Original native received residual/post_sync/noeq, center crop/RMS normalized256 IQ; SAME validated mmap cache; native eq_i/sig_i/base_index restored by opaque physicalID join",
+    "contract_ref": "LOCAL_DATASET/source/source_contract.json",
+    "physical_ids_ref": "LOCAL_DATASET/source/source_contract.json#role_ids",
+    "label_map_ref": "LOCAL_DATASET/source_cache/manifest.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      "2021_03_01",
+      "2021_03_08",
+      "2021_03_15",
+      "2021_03_23"
+    ],
+    "tx_sets_ref": "LOCAL_DATASET/source_cache/manifest.json",
+    "roles": {
+      "L_s": "6300 original visible source labels, randomL128 drop_last; ordinary augmentation; original native two RDrop forwards",
+      "U_s": "56700 TX hidden; original U256 and batch_neighbor/ownEMA recipe during17U epochs; no new U feature objective",
+      "V": "27000 source defaulthead no_grad descriptive health only; final50 fixed; no promotion/tuning/selection from V or target."
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "LOCAL_DATASET/source_cache/manifest.json; existing capsule/manifest.json VALIDATED_ONCE; Phase1 manifest has no actual p2capsule_id/split_id fields, so null; unchanged prior VALIDATED_ONCE handle only, no Phase2 support/query.",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_training_then_frozen_target_test",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Frozen default-head ManySig clean target168000 accuracy/MacroF1/perTX/RX/day; exposed benchmark; no independent blind/Phase2/satellite claim; user-directed extension after first-seed target exposure, not independent blind confirmation"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "Existing EXACT_MATCH source contract/READY sourcecache/nativegate metadata; no new physicalID/data roles",
+    "provenance_verdict": "No inheritance: original F BASE only reused source and target reference scores; new scratch student and own scratchEMA. One matching legal original BASE CP loaded only for noquery CPU smoke then discarded.",
+    "selection_rule": "Fixed final50 student/defaulthead; no target selection or EMA export substitution"
+  },
+  "execution": {
+    "host": "local Windows RTX5070Ti",
+    "launch_owner": "codex/root/FcrossRX50-statGradient-local-20261020",
+    "gpu_policy": "Physical GPU0 max3 total source/predict workers across owners, freeRAM>=4.5GiB; CPU score max1 across this/current original50 run via CIM; preserve all healthy tasks",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01",
+    "launch_command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_statgrad50.driver --profile LOCAL_PROFILE --metadata LOCAL_SOURCE_NATIVE_GATE_METADATA_R02 --base LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01 --reference-base LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --commit RELEASE_COMMIT --max-workers 3",
+    "stop_rule": "Wrong source/provenance/config/native metadata/immutable output or nonfinite feature/loss/gradient, mismatched native/Sinc/EMA/statistic objective budgets or failed worker stops new dispatch preserving all artifacts and healthy processes. No low-performance stop, target-driven retune or automatic retry."
+  },
+  "expected_artifacts": [
+    "execution.json",
+    "registered_rows.json",
+    "source_expansion.json",
+    "frozen_matrix.json",
+    "ROW/source/local_source_complete.json",
+    "ROW/source/statistic_gradient_observation.json",
+    "ROW/prediction/complete.json",
+    "ROW/scores/metrics.json",
+    "result.json",
+    "analysis_report/results_summary.json",
+    "analysis_report/results.md",
+    "progress.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "clean accuracy,Macro-F1,perTX,weakmean,othermean,worstRX/day",
+      "perseed pairedpp,mean,sampleSD,positivecount",
+      "STAT_GRAD-NORM_ONLY fixed direction comparison",
+      "all50epoch/11100native+SC/39960actualstatisticbackward objectives",
+      "Uexposure/accepted/acceptance and source/predict/memory cost",
+      "descriptor native/full/delivered gradientnorm and translation/scale removed summaries"
+    ],
+    "dimensions": [
+      "STAT_GRAD and NORM_ONLY, each3 seeds2026092701/02/03",
+      "clean168000/6TX/7RX/4days; same physical test set for allmodels",
+      "matched original local BASE3 reused, no duplicate baseline training"
+    ],
+    "prediction_ref": "LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01/ROW/prediction/predictions.npz",
+    "scorer_ref": "experiments/cvs_f_statgrad50/score.py"
+  },
+  "rows": [
+    {
+      "row_id": "STAT_GRAD-s2026092701",
+      "method": "OriginalF SC with full current descriptor mean/std derivative",
+      "purpose": "Fixed full three-seed same-forward training mechanism comparison; every healthyrow trained50 and clean scored regardless source/target result",
+      "config_ref": "experiments/cvs_f_statgrad50/design.py",
+      "resolved_config_ref": "LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01/STAT_GRAD-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "source_roles": "unchanged L6300/U56700TXhidden/V27000",
+        "current_Lbatch": 128,
+        "satellite_training": false,
+        "test_views": [
+          "clean"
+        ],
+        "default_head": "unchanged joint",
+        "extra_IQ_or_network_forwards": 0
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Original native model/augmentation and random L/U sampler; fixed original source partition392005; clean evaluation deterministic, no new channel randomness",
+      "k": null,
+      "scenario": "clean only",
+      "optimizer": {
+        "mode": "CENTER_UNITS",
+        "sample_rate_Hz": 25000000,
+        "center_scale_Hz": 25000,
+        "lr": "alpha Fs/s",
+        "epsilon": "epsilon s/Fs",
+        "weight_decay": "q -= alpha lambda (q+p0/s); AdamW q decay0",
+        "gradient_clipping": "physical Hz globalclip5",
+        "native_cosine_schedule": "Original alpha cosine; one fixed mapping immediately before each actual step",
+        "extra_parameters": 0,
+        "extra_model_forwards_vs_RDrop": 0,
+        "extra_optimizer_steps": 0,
+        "diagnostic_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "source_feature_objective": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "descriptor": "Originalchanneltime mean/populationstd; identical batch-center/std forward floor1e-4 and packetL2; backward STAT_GRAD",
+          "positive": "sameTX differentRX",
+          "negative": "otherTX only; sameTX sameRX excluded in CROSS_RX denominator",
+          "two_forward_policy": "Mean of first/second losses, each mean of shallow/middle; reuse original actual augmented L IQ and RDrop forwards",
+          "invalid_anchor": "Exclude anchors without positive or otherTX negative; finite zero if none; sampler unchanged",
+          "U": "Original oldgate/ownEMA/cos untouched; no U TX labels or added U feature loss",
+          "extra_model_forwards": 0,
+          "extra_trainable_parameters": 0,
+          "default_head_direct_aux_gradient": false
+        },
+        "statistic_gradient": {
+          "policy": "STAT_GRAD",
+          "forward": "exact original SC descriptor at same inputs",
+          "derivative": "true batchcenter/std gradient versus native detachedstats direction rescaled to its full derivative norm",
+          "ratio_gradient": false,
+          "normalization_states": "none",
+          "default_head_aux_gradient": false,
+          "extra_parameters": 0,
+          "extra_forwards": 0,
+          "control_scope": "Descriptor gradient only; no claim of whole-network parameter norm equivalence or equality across trajectories"
+        }
+      },
+      "lr": 0.0002,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "Scratch50=33L+17U/11100updates,9990SCsteps/39960layerforwardbackward; fixedall3 percondition; no source gate/extraIQ/NN/headfit",
+      "output_root": "LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01/STAT_GRAD-s2026092701",
+      "log_path": "LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01/STAT_GRAD-s2026092701-source.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_statgrad50.driver --profile LOCAL_PROFILE --metadata LOCAL_SOURCE_NATIVE_GATE_METADATA_R02 --base LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01 --reference-base LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --commit RELEASE_COMMIT --max-workers 3",
+      "expected_artifacts": [
+        "source/local_source_complete.json",
+        "source/statistic_gradient_observation.json",
+        "source/final_ssdg.pth",
+        "source/supcon_steps.jsonl.gz",
+        "prediction/complete.json",
+        "prediction/predictions.npz",
+        "scores/metrics.json"
+      ],
+      "arm": "STAT_GRAD",
+      "model_seed": 2026092701
+    },
+    {
+      "row_id": "NORM_ONLY-s2026092701",
+      "method": "OriginalF SC native detached-stat direction with same-descriptor full-gradient norm",
+      "purpose": "Fixed full three-seed same-forward training mechanism comparison; every healthyrow trained50 and clean scored regardless source/target result",
+      "config_ref": "experiments/cvs_f_statgrad50/design.py",
+      "resolved_config_ref": "LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01/NORM_ONLY-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "source_roles": "unchanged L6300/U56700TXhidden/V27000",
+        "current_Lbatch": 128,
+        "satellite_training": false,
+        "test_views": [
+          "clean"
+        ],
+        "default_head": "unchanged joint",
+        "extra_IQ_or_network_forwards": 0
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Original native model/augmentation and random L/U sampler; fixed original source partition392005; clean evaluation deterministic, no new channel randomness",
+      "k": null,
+      "scenario": "clean only",
+      "optimizer": {
+        "mode": "CENTER_UNITS",
+        "sample_rate_Hz": 25000000,
+        "center_scale_Hz": 25000,
+        "lr": "alpha Fs/s",
+        "epsilon": "epsilon s/Fs",
+        "weight_decay": "q -= alpha lambda (q+p0/s); AdamW q decay0",
+        "gradient_clipping": "physical Hz globalclip5",
+        "native_cosine_schedule": "Original alpha cosine; one fixed mapping immediately before each actual step",
+        "extra_parameters": 0,
+        "extra_model_forwards_vs_RDrop": 0,
+        "extra_optimizer_steps": 0,
+        "diagnostic_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "source_feature_objective": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "descriptor": "Originalchanneltime mean/populationstd; identical batch-center/std forward floor1e-4 and packetL2; backward NORM_ONLY",
+          "positive": "sameTX differentRX",
+          "negative": "otherTX only; sameTX sameRX excluded in CROSS_RX denominator",
+          "two_forward_policy": "Mean of first/second losses, each mean of shallow/middle; reuse original actual augmented L IQ and RDrop forwards",
+          "invalid_anchor": "Exclude anchors without positive or otherTX negative; finite zero if none; sampler unchanged",
+          "U": "Original oldgate/ownEMA/cos untouched; no U TX labels or added U feature loss",
+          "extra_model_forwards": 0,
+          "extra_trainable_parameters": 0,
+          "default_head_direct_aux_gradient": false
+        },
+        "statistic_gradient": {
+          "policy": "NORM_ONLY",
+          "forward": "exact original SC descriptor at same inputs",
+          "derivative": "true batchcenter/std gradient versus native detachedstats direction rescaled to its full derivative norm",
+          "ratio_gradient": false,
+          "normalization_states": "none",
+          "default_head_aux_gradient": false,
+          "extra_parameters": 0,
+          "extra_forwards": 0,
+          "control_scope": "Descriptor gradient only; no claim of whole-network parameter norm equivalence or equality across trajectories"
+        }
+      },
+      "lr": 0.0002,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "Scratch50=33L+17U/11100updates,9990SCsteps/39960layerforwardbackward; fixedall3 percondition; no source gate/extraIQ/NN/headfit",
+      "output_root": "LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01/NORM_ONLY-s2026092701",
+      "log_path": "LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01/NORM_ONLY-s2026092701-source.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_statgrad50.driver --profile LOCAL_PROFILE --metadata LOCAL_SOURCE_NATIVE_GATE_METADATA_R02 --base LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01 --reference-base LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --commit RELEASE_COMMIT --max-workers 3",
+      "expected_artifacts": [
+        "source/local_source_complete.json",
+        "source/statistic_gradient_observation.json",
+        "source/final_ssdg.pth",
+        "source/supcon_steps.jsonl.gz",
+        "prediction/complete.json",
+        "prediction/predictions.npz",
+        "scores/metrics.json"
+      ],
+      "arm": "NORM_ONLY",
+      "model_seed": 2026092701
+    },
+    {
+      "row_id": "STAT_GRAD-s2026092702",
+      "method": "OriginalF SC with full current descriptor mean/std derivative",
+      "purpose": "Fixed full three-seed same-forward training mechanism comparison; every healthyrow trained50 and clean scored regardless source/target result",
+      "config_ref": "experiments/cvs_f_statgrad50/design.py",
+      "resolved_config_ref": "LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01/STAT_GRAD-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "source_roles": "unchanged L6300/U56700TXhidden/V27000",
+        "current_Lbatch": 128,
+        "satellite_training": false,
+        "test_views": [
+          "clean"
+        ],
+        "default_head": "unchanged joint",
+        "extra_IQ_or_network_forwards": 0
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Original native model/augmentation and random L/U sampler; fixed original source partition392005; clean evaluation deterministic, no new channel randomness",
+      "k": null,
+      "scenario": "clean only",
+      "optimizer": {
+        "mode": "CENTER_UNITS",
+        "sample_rate_Hz": 25000000,
+        "center_scale_Hz": 25000,
+        "lr": "alpha Fs/s",
+        "epsilon": "epsilon s/Fs",
+        "weight_decay": "q -= alpha lambda (q+p0/s); AdamW q decay0",
+        "gradient_clipping": "physical Hz globalclip5",
+        "native_cosine_schedule": "Original alpha cosine; one fixed mapping immediately before each actual step",
+        "extra_parameters": 0,
+        "extra_model_forwards_vs_RDrop": 0,
+        "extra_optimizer_steps": 0,
+        "diagnostic_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "source_feature_objective": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "descriptor": "Originalchanneltime mean/populationstd; identical batch-center/std forward floor1e-4 and packetL2; backward STAT_GRAD",
+          "positive": "sameTX differentRX",
+          "negative": "otherTX only; sameTX sameRX excluded in CROSS_RX denominator",
+          "two_forward_policy": "Mean of first/second losses, each mean of shallow/middle; reuse original actual augmented L IQ and RDrop forwards",
+          "invalid_anchor": "Exclude anchors without positive or otherTX negative; finite zero if none; sampler unchanged",
+          "U": "Original oldgate/ownEMA/cos untouched; no U TX labels or added U feature loss",
+          "extra_model_forwards": 0,
+          "extra_trainable_parameters": 0,
+          "default_head_direct_aux_gradient": false
+        },
+        "statistic_gradient": {
+          "policy": "STAT_GRAD",
+          "forward": "exact original SC descriptor at same inputs",
+          "derivative": "true batchcenter/std gradient versus native detachedstats direction rescaled to its full derivative norm",
+          "ratio_gradient": false,
+          "normalization_states": "none",
+          "default_head_aux_gradient": false,
+          "extra_parameters": 0,
+          "extra_forwards": 0,
+          "control_scope": "Descriptor gradient only; no claim of whole-network parameter norm equivalence or equality across trajectories"
+        }
+      },
+      "lr": 0.0002,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "Scratch50=33L+17U/11100updates,9990SCsteps/39960layerforwardbackward; fixedall3 percondition; no source gate/extraIQ/NN/headfit",
+      "output_root": "LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01/STAT_GRAD-s2026092702",
+      "log_path": "LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01/STAT_GRAD-s2026092702-source.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_statgrad50.driver --profile LOCAL_PROFILE --metadata LOCAL_SOURCE_NATIVE_GATE_METADATA_R02 --base LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01 --reference-base LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --commit RELEASE_COMMIT --max-workers 3",
+      "expected_artifacts": [
+        "source/local_source_complete.json",
+        "source/statistic_gradient_observation.json",
+        "source/final_ssdg.pth",
+        "source/supcon_steps.jsonl.gz",
+        "prediction/complete.json",
+        "prediction/predictions.npz",
+        "scores/metrics.json"
+      ],
+      "arm": "STAT_GRAD",
+      "model_seed": 2026092702
+    },
+    {
+      "row_id": "NORM_ONLY-s2026092702",
+      "method": "OriginalF SC native detached-stat direction with same-descriptor full-gradient norm",
+      "purpose": "Fixed full three-seed same-forward training mechanism comparison; every healthyrow trained50 and clean scored regardless source/target result",
+      "config_ref": "experiments/cvs_f_statgrad50/design.py",
+      "resolved_config_ref": "LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01/NORM_ONLY-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "source_roles": "unchanged L6300/U56700TXhidden/V27000",
+        "current_Lbatch": 128,
+        "satellite_training": false,
+        "test_views": [
+          "clean"
+        ],
+        "default_head": "unchanged joint",
+        "extra_IQ_or_network_forwards": 0
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Original native model/augmentation and random L/U sampler; fixed original source partition392005; clean evaluation deterministic, no new channel randomness",
+      "k": null,
+      "scenario": "clean only",
+      "optimizer": {
+        "mode": "CENTER_UNITS",
+        "sample_rate_Hz": 25000000,
+        "center_scale_Hz": 25000,
+        "lr": "alpha Fs/s",
+        "epsilon": "epsilon s/Fs",
+        "weight_decay": "q -= alpha lambda (q+p0/s); AdamW q decay0",
+        "gradient_clipping": "physical Hz globalclip5",
+        "native_cosine_schedule": "Original alpha cosine; one fixed mapping immediately before each actual step",
+        "extra_parameters": 0,
+        "extra_model_forwards_vs_RDrop": 0,
+        "extra_optimizer_steps": 0,
+        "diagnostic_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "source_feature_objective": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "descriptor": "Originalchanneltime mean/populationstd; identical batch-center/std forward floor1e-4 and packetL2; backward NORM_ONLY",
+          "positive": "sameTX differentRX",
+          "negative": "otherTX only; sameTX sameRX excluded in CROSS_RX denominator",
+          "two_forward_policy": "Mean of first/second losses, each mean of shallow/middle; reuse original actual augmented L IQ and RDrop forwards",
+          "invalid_anchor": "Exclude anchors without positive or otherTX negative; finite zero if none; sampler unchanged",
+          "U": "Original oldgate/ownEMA/cos untouched; no U TX labels or added U feature loss",
+          "extra_model_forwards": 0,
+          "extra_trainable_parameters": 0,
+          "default_head_direct_aux_gradient": false
+        },
+        "statistic_gradient": {
+          "policy": "NORM_ONLY",
+          "forward": "exact original SC descriptor at same inputs",
+          "derivative": "true batchcenter/std gradient versus native detachedstats direction rescaled to its full derivative norm",
+          "ratio_gradient": false,
+          "normalization_states": "none",
+          "default_head_aux_gradient": false,
+          "extra_parameters": 0,
+          "extra_forwards": 0,
+          "control_scope": "Descriptor gradient only; no claim of whole-network parameter norm equivalence or equality across trajectories"
+        }
+      },
+      "lr": 0.0002,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "Scratch50=33L+17U/11100updates,9990SCsteps/39960layerforwardbackward; fixedall3 percondition; no source gate/extraIQ/NN/headfit",
+      "output_root": "LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01/NORM_ONLY-s2026092702",
+      "log_path": "LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01/NORM_ONLY-s2026092702-source.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_statgrad50.driver --profile LOCAL_PROFILE --metadata LOCAL_SOURCE_NATIVE_GATE_METADATA_R02 --base LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01 --reference-base LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --commit RELEASE_COMMIT --max-workers 3",
+      "expected_artifacts": [
+        "source/local_source_complete.json",
+        "source/statistic_gradient_observation.json",
+        "source/final_ssdg.pth",
+        "source/supcon_steps.jsonl.gz",
+        "prediction/complete.json",
+        "prediction/predictions.npz",
+        "scores/metrics.json"
+      ],
+      "arm": "NORM_ONLY",
+      "model_seed": 2026092702
+    },
+    {
+      "row_id": "STAT_GRAD-s2026092703",
+      "method": "OriginalF SC with full current descriptor mean/std derivative",
+      "purpose": "Fixed full three-seed same-forward training mechanism comparison; every healthyrow trained50 and clean scored regardless source/target result",
+      "config_ref": "experiments/cvs_f_statgrad50/design.py",
+      "resolved_config_ref": "LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01/STAT_GRAD-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "source_roles": "unchanged L6300/U56700TXhidden/V27000",
+        "current_Lbatch": 128,
+        "satellite_training": false,
+        "test_views": [
+          "clean"
+        ],
+        "default_head": "unchanged joint",
+        "extra_IQ_or_network_forwards": 0
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026092703,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Original native model/augmentation and random L/U sampler; fixed original source partition392005; clean evaluation deterministic, no new channel randomness",
+      "k": null,
+      "scenario": "clean only",
+      "optimizer": {
+        "mode": "CENTER_UNITS",
+        "sample_rate_Hz": 25000000,
+        "center_scale_Hz": 25000,
+        "lr": "alpha Fs/s",
+        "epsilon": "epsilon s/Fs",
+        "weight_decay": "q -= alpha lambda (q+p0/s); AdamW q decay0",
+        "gradient_clipping": "physical Hz globalclip5",
+        "native_cosine_schedule": "Original alpha cosine; one fixed mapping immediately before each actual step",
+        "extra_parameters": 0,
+        "extra_model_forwards_vs_RDrop": 0,
+        "extra_optimizer_steps": 0,
+        "diagnostic_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "source_feature_objective": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "descriptor": "Originalchanneltime mean/populationstd; identical batch-center/std forward floor1e-4 and packetL2; backward STAT_GRAD",
+          "positive": "sameTX differentRX",
+          "negative": "otherTX only; sameTX sameRX excluded in CROSS_RX denominator",
+          "two_forward_policy": "Mean of first/second losses, each mean of shallow/middle; reuse original actual augmented L IQ and RDrop forwards",
+          "invalid_anchor": "Exclude anchors without positive or otherTX negative; finite zero if none; sampler unchanged",
+          "U": "Original oldgate/ownEMA/cos untouched; no U TX labels or added U feature loss",
+          "extra_model_forwards": 0,
+          "extra_trainable_parameters": 0,
+          "default_head_direct_aux_gradient": false
+        },
+        "statistic_gradient": {
+          "policy": "STAT_GRAD",
+          "forward": "exact original SC descriptor at same inputs",
+          "derivative": "true batchcenter/std gradient versus native detachedstats direction rescaled to its full derivative norm",
+          "ratio_gradient": false,
+          "normalization_states": "none",
+          "default_head_aux_gradient": false,
+          "extra_parameters": 0,
+          "extra_forwards": 0,
+          "control_scope": "Descriptor gradient only; no claim of whole-network parameter norm equivalence or equality across trajectories"
+        }
+      },
+      "lr": 0.0002,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "Scratch50=33L+17U/11100updates,9990SCsteps/39960layerforwardbackward; fixedall3 percondition; no source gate/extraIQ/NN/headfit",
+      "output_root": "LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01/STAT_GRAD-s2026092703",
+      "log_path": "LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01/STAT_GRAD-s2026092703-source.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_statgrad50.driver --profile LOCAL_PROFILE --metadata LOCAL_SOURCE_NATIVE_GATE_METADATA_R02 --base LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01 --reference-base LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --commit RELEASE_COMMIT --max-workers 3",
+      "expected_artifacts": [
+        "source/local_source_complete.json",
+        "source/statistic_gradient_observation.json",
+        "source/final_ssdg.pth",
+        "source/supcon_steps.jsonl.gz",
+        "prediction/complete.json",
+        "prediction/predictions.npz",
+        "scores/metrics.json"
+      ],
+      "arm": "STAT_GRAD",
+      "model_seed": 2026092703
+    },
+    {
+      "row_id": "NORM_ONLY-s2026092703",
+      "method": "OriginalF SC native detached-stat direction with same-descriptor full-gradient norm",
+      "purpose": "Fixed full three-seed same-forward training mechanism comparison; every healthyrow trained50 and clean scored regardless source/target result",
+      "config_ref": "experiments/cvs_f_statgrad50/design.py",
+      "resolved_config_ref": "LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01/NORM_ONLY-s2026092703/source/resolved_config.json",
+      "data_overrides": {
+        "source_roles": "unchanged L6300/U56700TXhidden/V27000",
+        "current_Lbatch": 128,
+        "satellite_training": false,
+        "test_views": [
+          "clean"
+        ],
+        "default_head": "unchanged joint",
+        "extra_IQ_or_network_forwards": 0
+      },
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026092703,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "Original native model/augmentation and random L/U sampler; fixed original source partition392005; clean evaluation deterministic, no new channel randomness",
+      "k": null,
+      "scenario": "clean only",
+      "optimizer": {
+        "mode": "CENTER_UNITS",
+        "sample_rate_Hz": 25000000,
+        "center_scale_Hz": 25000,
+        "lr": "alpha Fs/s",
+        "epsilon": "epsilon s/Fs",
+        "weight_decay": "q -= alpha lambda (q+p0/s); AdamW q decay0",
+        "gradient_clipping": "physical Hz globalclip5",
+        "native_cosine_schedule": "Original alpha cosine; one fixed mapping immediately before each actual step",
+        "extra_parameters": 0,
+        "extra_model_forwards_vs_RDrop": 0,
+        "extra_optimizer_steps": 0,
+        "diagnostic_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "source_feature_objective": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "descriptor": "Originalchanneltime mean/populationstd; identical batch-center/std forward floor1e-4 and packetL2; backward NORM_ONLY",
+          "positive": "sameTX differentRX",
+          "negative": "otherTX only; sameTX sameRX excluded in CROSS_RX denominator",
+          "two_forward_policy": "Mean of first/second losses, each mean of shallow/middle; reuse original actual augmented L IQ and RDrop forwards",
+          "invalid_anchor": "Exclude anchors without positive or otherTX negative; finite zero if none; sampler unchanged",
+          "U": "Original oldgate/ownEMA/cos untouched; no U TX labels or added U feature loss",
+          "extra_model_forwards": 0,
+          "extra_trainable_parameters": 0,
+          "default_head_direct_aux_gradient": false
+        },
+        "statistic_gradient": {
+          "policy": "NORM_ONLY",
+          "forward": "exact original SC descriptor at same inputs",
+          "derivative": "true batchcenter/std gradient versus native detachedstats direction rescaled to its full derivative norm",
+          "ratio_gradient": false,
+          "normalization_states": "none",
+          "default_head_aux_gradient": false,
+          "extra_parameters": 0,
+          "extra_forwards": 0,
+          "control_scope": "Descriptor gradient only; no claim of whole-network parameter norm equivalence or equality across trajectories"
+        }
+      },
+      "lr": 0.0002,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "Scratch50=33L+17U/11100updates,9990SCsteps/39960layerforwardbackward; fixedall3 percondition; no source gate/extraIQ/NN/headfit",
+      "output_root": "LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01/NORM_ONLY-s2026092703",
+      "log_path": "LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01/NORM_ONLY-s2026092703-source.log",
+      "command": "LOCAL_BASE_PYTHON -X utf8 -u -m experiments.cvs_f_statgrad50.driver --profile LOCAL_PROFILE --metadata LOCAL_SOURCE_NATIVE_GATE_METADATA_R02 --base LOCAL_RUN/20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01 --reference-base LOCAL_RUN/20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01 --commit RELEASE_COMMIT --max-workers 3",
+      "expected_artifacts": [
+        "source/local_source_complete.json",
+        "source/statistic_gradient_observation.json",
+        "source/final_ssdg.pth",
+        "source/supcon_steps.jsonl.gz",
+        "prediction/complete.json",
+        "prediction/predictions.npz",
+        "scores/metrics.json"
+      ],
+      "arm": "NORM_ONLY",
+      "model_seed": 2026092703
+    }
+  ],
+  "notes": [
+    "Source BASE3 identified weak TX14-7(index1)/20-19(index3) before current target access. Both are primary endpoints; new SC gradient mechanism treats all classes equally with no reweighting or new heads.",
+    "Allsix rows fixed before any new target access: STAT_GRAD/NORM_ONLY x2026092701/02/03. Reuse matching original BASE3. No source-promotion gate, candidate reranking, parameter scan or selective rerun.",
+    "Mechanism removes batchcommon translation derivative and unclamped percoordinate scale derivative from the auxiliary descriptor gradient. This is the exact derivative of the identical current standardization, no deployed BN or learned/running statistics. Mathematical invariance is not proof of domain or performance gains.",
+    "Norm control matches descriptor-gradient norm for the same current descriptors/upstream loss, with its original gradient direction retained. It does not match actual network parameter norm, optimizer motion, or separately diverged trajectories.",
+    "Fixed primary STAT_GRAD versus BASE criterion: both weakTX meanpairedpp>0 and each >=2/3positive; weakmean positiveall3; overallmean>=BASE; eachotherTXmean>=BASE-.25pp; worstRXmean>=BASE-.5pp. Attribution separately requires STAT_GRAD-NORM_ONLY weakmean>0 and >=2/3positive. Allresults reported evenifFAIL.",
+    "Actualtwo originalRDrop forwards reuse one actual augmentedIQ batch. OriginalSC positives sameTXdifferentRX, negativesdifferentTX, sameTXsameRX excluded; all temperatures, schedule, sampler, U gates and defaulthead unchanged.",
+    "CPU/CUDAfloat32/64 exactforward/trueautograd/gradcheck/constant and clamp mathPASS;14config/permission negatives and realBASE01 checkpoint noquery actualpairedflowPASS. Loadedlegal CP discarded; allformalrows scratch. One joint independentP0/P1 review PASS; no extra gates.",
+    "Existing READY/EXACT_MATCH/VALIDATED_ONCE native source and clean capsule reused; no data role/split changes, no Phase2 handles invented. Utruth always hidden. Only final50/defaulthead clean predictions; no satellite/Phase2/deployment or new blindtest claim.",
+    "Previously rejected MEM4/DCL/geometry/direction premises retained unchanged, not stacked into this candidate. Primary science fixed from code/math/source evidence, not target-score tuning."
+  ],
+  "registered_at": "2026-10-20T09:49:10+00:00"
+}
