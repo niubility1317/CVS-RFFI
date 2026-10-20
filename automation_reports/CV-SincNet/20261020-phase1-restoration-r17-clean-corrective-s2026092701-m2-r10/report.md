@@ -1,6 +1,6 @@
 # R17 精简版源 clean 直接纠正 R10
 
-状态：PLANNED。用户要求压缩同时优化，本轮固定两种既定R08/R09结构，检验去掉模仿原R17恢复波形后，直接源clean波形/身份约束能否提高识别。原R17仅作CPU权重初始化；原F50/defaulthead冻结。目标逐场景原R17−1pp为下降上限，不能把容差通过等同提分。low urban≥70%、其他环境距clean和配对clean恢复差距独立报告，不自设“接近”的阈值。
+状态：RUNNING。用户要求压缩同时优化，本轮固定两种既定R08/R09结构，检验去掉模仿原R17恢复波形后，直接源clean波形/身份约束能否提高识别。原R17仅作CPU权重初始化；原F50/defaulthead冻结。目标逐场景原R17−1pp为下降上限，不能把容差通过等同提分。low urban≥70%、其他环境距clean和配对clean恢复差距独立报告，不自设“接近”的阈值。
 
 |固定行|完整/可训练参数|比原4665073减少|GPU|波形教师权重|F参照|
 |---|---:|---:|---:|---:|---|
@@ -24,3 +24,7 @@ GPU4/5先等R08根终态且实际ownedGPU进程全部退出，不读评分；随
 新方案由用户要求与合法源训练目标的匹配消融决定，在任何R08/R09目标分数前固定，已暴露基准不称新盲测。不以目标结果调秩、系数、预算、父权重、重排或选择性重跑。具体环境/CWD/命令/路径/停止规则和预期产物见experiment.json。
 
 发布前证据：38项聚焦合成/协议检查和唯一独立P0/P1审查PASS，审查0真实IQ/checkpoint/远端访问；已核对正式训练0R17前向、完整联合梯度、F冻结、严格复载、实际R08句柄等待和自动全目标truth-last。普通N607预检VERIFIED，R08仍2个实际GPU进程，新root/release不存在；source/R17/F50句柄复用，只提交CPU smoke与等待，不抢占健康任务。
+
+实际发布 VERIFIED：方法commit `d113672a6e51e75eb3ea0f7ecce0500e67f92966` 已推送且远端OID独立比较一致；单归档SHA比较/远端compile/help通过。实际原R17初始化/F50/2Ls noquery smoke PASS，两行student coarse/action/各prior及F输入梯度有限非零，原CPU初始化父/F/head0更新，严格复载输出逐位一致。R08完整测试/评分及原实际GPU句柄退出后，在GPU4/5各启动一个新worker。实际PID/CWD/完整命令/commit/GPU/loggrowth与E1均核实，R09健康2/3/6/7继续；原R17正式训练前向删除，未用新目标结果改变设计/矩阵。
+
+完整汇总工具26项聚焦检查PASS，检查全联合组件预算、0R17 teacher/context计费/source曝光、直接clean损失、同全七视图/分组/原始整数1pp、实际涨分/70%与容差分开、payload-free profile。汇总工具未改运行中方法commit；当前尚无R10目标准确率。
