@@ -1,0 +1,68 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "20b6c54d72bb3433dfce07d7a186fc2908ffe970",
+  "remote_code_commit": "VERIFIED",
+  "archive_copy": "VERIFIED",
+  "release_compile": "PASS",
+  "source_controls_provenance": 3,
+  "actual_controller_and_sourceworker_live": true,
+  "actual_CWD_all_match": true,
+  "actual_command_module_row_match": true,
+  "physical_GPU": 0,
+  "actual_sourceworker_GPU_context": true,
+  "max_global_GPU_workers": 3,
+  "observed_global_GPU_workers": 3,
+  "foreign_existing_GPU_workers": 2,
+  "free_system_GiB": 4.815887451171875,
+  "log_growth": true,
+  "first_epoch": [
+    {
+      "row_id": "SYM4-s2026092701",
+      "epoch": 1,
+      "native_updates": 222,
+      "SC_active_updates": 0,
+      "technical_error": false
+    }
+  ],
+  "native_recipe": {
+    "status": "VERIFIED",
+    "rows": [
+      {
+        "row_id": "SYM4-s2026092701",
+        "epochs": 50,
+        "label_epochs": 33,
+        "pseudo_epochs": 17,
+        "batch_size": 128,
+        "label_smoothing": 0.01,
+        "use_aug": true,
+        "use_ema_teacher": true,
+        "max_grad_norm": 5,
+        "sat_training_mode": "disabled",
+        "use_concat_sat_channel_aug": false,
+        "eval_sat_channel": false,
+        "external_checkpoint": false,
+        "head_fit_updates": 0
+      }
+    ]
+  },
+  "existing_MB_rows_preserved": [
+    {
+      "row_id": "ANCHOR-s2026092701",
+      "epoch": 25,
+      "live": true,
+      "technical_error": false
+    },
+    {
+      "row_id": "MEM4-s2026092701",
+      "epoch": 24,
+      "live": true,
+      "technical_error": false
+    }
+  ],
+  "satellite_training": false,
+  "test_views": [
+    "clean"
+  ],
+  "target_access": false,
+  "head_fit_updates": 0
+}

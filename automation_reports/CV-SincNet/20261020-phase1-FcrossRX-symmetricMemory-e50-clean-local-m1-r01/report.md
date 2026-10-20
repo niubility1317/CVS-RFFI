@@ -1,6 +1,6 @@
 # F 跨 RX：保留当前批次梯度的短期记忆
 
-状态：LOCAL_VERIFIED，尚未训练。
+状态：RUNNING。SYM4 首种子已在本机 GPU0 第三个名额运行；实际实现提交 20b6c54d72bb3433dfce07d7a186fc2908ffe970，远端 VERIFIED。
 
 本候选 SYM4 仍以原 F＋跨 RX 同 TX 对比学习为基底，目标是提升源域固定弱 TX 14-7、20-19 在 clean 目标域的性能，同时保持其余 TX。整体超过 84% 不代表弱类目标达成。匹配基线复用本机既有三种子 BASE，历史 85.1139% 只作方法锚点。
 
@@ -17,3 +17,5 @@ SYM4 在当前批次的锚点与参照特征两侧保留梯度，只让历史参
 聚焦数学、CPU/CUDA 实际 F 检查通过，共 14 个协议负例。默认头 6 个参数辅助梯度均为 None，主联合梯度逐值与原生一致；Sinc、浅/中层梯度非零，原物理优化器与 clip、EMA eval、精确导出通过。一次真实 checkpoint 无 query 检查通过，模型丢弃、不作训练初始化。一次独立 direct P0/P1 检查通过。
 
 [XBM 原论文](https://openaccess.thecvf.com/content_CVPR_2020/html/Wang_Cross-Batch_Memory_for_Embedding_Learning_CVPR_2020_paper.html)提供跨批次记忆思路；当前无收益预设，更多独立配对和陈旧性不能混作纯难负样本效果。
+
+启动后实际 PID/CWD/命令/GPU0/日志增长均 VERIFIED。SYM4 完成 E1、222 更新；两行既有训练分别完成 E25/E24，保持健康。全局 3 个 worker，剩余系统内存约 4.82 GiB。实际原生配方已核对，无星地增强、默认头联合训练；当前尚无新增目标域结果。详见 launch_verification.json。
