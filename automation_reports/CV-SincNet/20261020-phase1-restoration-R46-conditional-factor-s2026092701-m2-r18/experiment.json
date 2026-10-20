@@ -214,6 +214,86 @@
         "target7_prediction_complete": false,
         "formal_scores_complete": false
       }
+    },
+    "source_cost_verified": {
+      "status": "VERIFIED_SOURCE_ONLY_COST",
+      "parent_parameters": 350521,
+      "current_parameters": 278180,
+      "parent_MAC": 39081004,
+      "current_MAC": 29727404,
+      "parent_checkpoint_bytes": 1686812,
+      "current_checkpoint_bytes": 1482748,
+      "same_card_cases": {
+        "factor625_stage": {
+          "G_only_B1": {
+            "parent_median_ms": 44.538236455991864,
+            "current_median_ms": 52.31630860362202,
+            "median_latency_change_percent": 17.46380810411219,
+            "parent_throughput": 22.441824084707637,
+            "current_throughput": 18.96329017134521,
+            "throughput_change_percent": -15.500228057365339
+          },
+          "G_only_B32": {
+            "parent_median_ms": 58.543126098811626,
+            "current_median_ms": 57.78900592122227,
+            "median_latency_change_percent": -1.2881447026189208,
+            "parent_throughput": 546.0542161073096,
+            "current_throughput": 534.1278210724488,
+            "throughput_change_percent": -2.184104560144451
+          },
+          "G_plus_F_B1": {
+            "parent_median_ms": 57.88393446709961,
+            "current_median_ms": 68.122144555673,
+            "median_latency_change_percent": 17.687481306911934,
+            "parent_throughput": 16.94844592400471,
+            "current_throughput": 14.60800758397296,
+            "throughput_change_percent": -13.809161916827428
+          },
+          "G_plus_F_B32": {
+            "parent_median_ms": 69.02406038716435,
+            "current_median_ms": 67.27728247642517,
+            "median_latency_change_percent": -2.530679738255459,
+            "parent_throughput": 461.63658405876777,
+            "current_throughput": 474.4739445223084,
+            "throughput_change_percent": 2.780836897863015
+          }
+        },
+        "factor625_cond": {
+          "G_only_B1": {
+            "parent_median_ms": 45.34464585594833,
+            "current_median_ms": 53.399406489916146,
+            "median_latency_change_percent": 17.763421638700905,
+            "parent_throughput": 22.086045339836396,
+            "current_throughput": 18.633183832160157,
+            "throughput_change_percent": -15.633679341626383
+          },
+          "G_only_B32": {
+            "parent_median_ms": 59.352097916416824,
+            "current_median_ms": 57.05481499899179,
+            "median_latency_change_percent": -3.8706010369847554,
+            "parent_throughput": 539.3688655950755,
+            "current_throughput": 557.5681452936286,
+            "throughput_change_percent": 3.3741806135721752
+          },
+          "G_plus_F_B1": {
+            "parent_median_ms": 56.73986196052283,
+            "current_median_ms": 65.10803441051394,
+            "median_latency_change_percent": 14.748313021651915,
+            "parent_throughput": 17.568601702751142,
+            "current_throughput": 15.35977240413309,
+            "throughput_change_percent": -12.572595907118567
+          },
+          "G_plus_F_B32": {
+            "parent_median_ms": 69.66490449849516,
+            "current_median_ms": 68.02254565991461,
+            "median_latency_change_percent": -2.3575125099267513,
+            "parent_throughput": 457.16608622280904,
+            "current_throughput": 469.50336583979896,
+            "throughput_change_percent": 2.6986427884279074
+          }
+        }
+      },
+      "target_scores_read": 0
     }
   },
   "expected_artifacts": [
@@ -392,7 +472,8 @@
     "30项聚焦检查及唯一独立P0/P1审查PASS；普通N607预检VERIFIED，GPU2/3旧actualownedPID退出且各24124MB空闲，另一对话0/1保持。",
     "VERIFIED：归档两端一次SHA/远端compile，真实父/F50/2Ls noquery smoke PASS；两版实际GPU2/3所属PID/CWD/argv/commit和首轮完整日志增长均核实，尚无新正式结果。",
     "目标评分前阶段记录：factor625_stage完整E20/19700及全部20条源训练记录核对通过，L126000/U1134000/源1260000曝光，0F/TX/V/target训练；最终权重已保存，source1800×7预测完成。另一版按固定预算继续；这不是正式识别收益或实验全部完成。",
-    "正式评分前阶段核实：两版全部E20/19700、合计40条源记录与完整当前stdout检查通过；各L126000/U1134000、0F/TX/V/target训练；两份最终权重已保存，source1800×7预测均完成，正式测试流程进行中。尚无完整正式分数，不据源误差宣布性能收益。"
+    "正式评分前阶段核实：两版全部E20/19700、合计40条源记录与完整当前stdout检查通过；各L126000/U1134000、0F/TX/V/target训练；两份最终权重已保存，source1800×7预测均完成，正式测试流程进行中。尚无完整正式分数，不据源误差宣布性能收益。",
+    "源域同卡成本VERIFIED：减参20.6381%/ConvLinearMAC降23.9339%；G+F B1时延两版均上升，B32吞吐仅小幅提高。正式识别成绩尚待全七预测后独立评分，不以减参宣布性能或加速成功。"
   ],
   "registered_at": "2026-10-20T14:34:29+00:00"
 }
