@@ -1,6 +1,6 @@
 # 源激活校准的 R17 低秩精简 R03
 
-状态：PLANNED。用户要求专门精简R17，最大程度精简且不能降低目标性能。固定原source-selected R17 unroll_unshared/cd977448/E20/4940，原F50 seed2701/原默认头，同168000物理样本×clean及六practical准确率逐项不降，容许下降0个百分点。原low urban67.216667%；70%和其他环境接近clean长期目标未完成，接近clean不自行新增数值阈值。基准已暴露，不称新盲测。
+状态：RUNNING。用户要求专门精简R17，最大程度精简且不能降低目标性能。固定原source-selected R17 unroll_unshared/cd977448/E20/4940，原F50 seed2701/原默认头，同168000物理样本×clean及六practical准确率逐项不降，容许下降0个百分点。原low urban67.216667%；70%和其他环境接近clean长期目标未完成，接近clean不自行新增数值阈值。基准已暴露，不称新盲测。
 
 本方案在R02仍运行、尚无新压缩模型目标结果时固定。仅依据R01完整源域负结果和原R17权重只读分析：统一半秩权重相对Frobenius误差.52557，要求逐核保留99%权重能量时没有正参数节省；权重误差不等于输入分布下的输出误差，因此检验激活加权初始化。它不是对R02中间loss或目标分数的响应，不使用R01/R02学生权重。
 
@@ -23,3 +23,13 @@ N607普通账户，GPU4/5等待R02根终态且所有实际owned GPU handles退�
 
 
 发布前普通账户预检 VERIFIED：原R17源选择先于目标、完整E20/4940及0TX/F/target训练、同F50完整基线句柄、原R07source63000/V1800缓存均匹配；不重新验证已有数据。R02实际owned GPU handles仍有2个，新控制器等其根终态和真实handles退出，不改当前任务。源码/方案在任何新压缩目标结果前固定，实际checkpoint无querysmoke由launcher第一步执行。
+
+
+实际发布 VERIFIED：方法commit `bbccd16408a0d9fc356b48f3579044e2284112dd` 已push且远端OID独立比较一致；一次归档SHA比较、新模块远端compile与help均通过。原R17/原F50/2Ls实际无querysmoke PASS，各步prior梯度有限非零、teacher/context冻结、严格checkpoint复载输出逐位一致、教师stage函数一致，0TX/V/target/optimizer。等R02根终态且实际owned GPU handles全部退出后，GPU4/5两source真实PID/CWD/完整命令/commit/GPU PID/日志增长已核实，均已完成至少第1轮。源校准额外读取如下，仅训练cache epoch01，未读取验证/目标或身份标签。
+
+|候选|校准IQ|L_s曝光|U_s曝光|每层patch数|校准及初始化秒|
+|---|---:|---:|---:|---:|---:|
+|activation_half|512|55|457|4096|4.185298|
+|activation_two_thirds|512|55|457|4096|4.391543|
+
+校准误差/梯度/损失不证明目标性能。原固定source选择和自动单候选目标流程保持，尚无本轮目标结果。
