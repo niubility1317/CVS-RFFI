@@ -318,5 +318,26 @@
     "Allrow7predictionarraysvalidatebeforetruth;originalF50/defaulthead/R17baselines reused;allnegativeoutcomespreserved;no newblindtest/Phase2/inorbit/globalminimumclaim.",
     "IndependentnewadapterP0/P1reviewPASS/no definiteP0P1;24syntheticchecksindependentlyrerun/0realdataweightsremote;our28checksPASS. OneordinaryN607preflightVERIFIED;originalsourcehandles/R17baseline/R04completebudgetmatched;actualoldGPUhandles0;GPU4/5free24124MB;newrootabsent."
   ],
-  "registered_at": "2026-10-20T05:23:15+00:00"
+  "registered_at": "2026-10-20T05:23:15+00:00",
+  "local_model_artifacts": {
+    "status": "VERIFIED",
+    "root": "local_artifacts/pamf_restoration/r17_target_compare_20261020_r05/models",
+    "files": {
+      "step_norm_task": {
+        "bytes": 12777244,
+        "parameters": 3118001,
+        "strict_checkpoint_load": true,
+        "standalone_restorer": true
+      },
+      "activation_task": {
+        "bytes": 15475140,
+        "parameters": 3775105,
+        "strict_checkpoint_load": true,
+        "standalone_restorer": true
+      }
+    },
+    "actual_IQ_read_for_local_check": 0,
+    "target_performance_claim": false,
+    "weights_committed_to_Git": false
+  }
 }

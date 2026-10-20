@@ -22,3 +22,5 @@ N607普通账户，GPU4/5各一own target worker，free≥12GB/allowner<2，保�
 实际发布 VERIFIED：方法commit `81c39cb908373d4e19b70ec8406f4083529da99a` 已推送且远端OID独立比较一致；一次归档SHA比较、新module远端compile/help通过。真实R04两版final/原F50/2Ls CPU no-query smoke PASS，完整参数/输出有限、0TX/V/target/optimizer/state/head更新。两个target真实PID/CWD/完整命令/commit/GPU4或5/日志增长及首个clean场景预测完成已核实。原R04源资格和权重均保持。全部七场景预测完成前不连接truth；当前尚无完整目标结果。
 
 独立聚合分析已实现，5项合成检查PASS，覆盖固定两行都必须完整、真实句柄退出、缺失视图拒绝、运行时判定与整数正确数重算一致，以及多错1条跨过1个百分点边界的失败分支。分析不修改正在运行的模型、候选或方法commit。
+
+两份冻结恢复器已取回本地并独立验证：共享版12777244字节/3118001参数，半秩版15475140字节/3775105参数；文件大小与远端一致，严格来源/最终轮次/参数加载通过，独立恢复图在合成零IQ上输出有限，0真实IQ/目标访问。文件与使用说明位于`local_artifacts/pamf_restoration/r17_target_compare_20261020_r05/models/`，不提交权重。checkpoint含完整coarse/action/prior，不含优化器或F分类器；推理输入为原生尺度float32 `[B,2,256]`。文件可用不代表目标性能通过，完整七场景仍在预测中。
