@@ -76,7 +76,7 @@
     "split_id": 392005,
     "validation_ref": "SameVALIDATED_ONCEall5sourceRX/day/physicalL6300 U56700hidden V27000;noLdev/noRXholdout",
     "support_query_ref": null,
-    "leo_config_ref": "Original T1 full practical As on raw L64/update retained; exact original fullsource_concat20/channel.py with cumulative epoch/step bounds extended to50/11100; same physical-session hardware, seeds and namespace. Test onlyclean; no restoration or KD."
+    "leo_config_ref": "Original T1 full practical As on raw L64/update retained; exact original fullsource_concat20/channel.py with cumulative epoch/step bounds extended to50/11100; same physical-session hardware, seeds and namespace. Test clean+sixpractical; no restoration or KD."
   },
   "permissions": {
     "regime": "source_train_then_frozen_truthlast",
@@ -166,7 +166,10 @@
         "source/completion.json",
         "prediction/complete.json",
         "scoring/complete.json"
-      ]
+      ],
+      "status": "ANALYZED",
+      "results_ref": "test_results_partial.md",
+      "evaluation_status": "VERIFIED complete seven-view predictions and independent scoring"
     },
     {
       "row_id": "SCRATCH50-s2026092701",
@@ -199,7 +202,9 @@
         "source/completion.json",
         "prediction/complete.json",
         "scoring/complete.json"
-      ]
+      ],
+      "status": "RUNNING",
+      "progress_at_readback": "E40/50;8880/11100updates;final test pending"
     }
   ],
   "notes": [

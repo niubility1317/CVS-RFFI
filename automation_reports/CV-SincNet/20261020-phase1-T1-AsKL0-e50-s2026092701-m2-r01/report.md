@@ -43,3 +43,8 @@ VERIFIED：切换前原 run 仍为两行 pending、无 launch.json、无行输�
 为使原健康worker在训练后实际进入新范围，仅把其后续predict/score执行入口接至新release，原runner备份及训练release_commit保持；在run/evaluation_handoff.json记录训练与测试两个commit、入口及七视图。只替换无训练功能的控制器为新观察器，不停止任何训练worker。新观察器只读取所属行进度并收集七视图结果，不再调度训练；每行源冻结后由原worker自动exec新测试入口，七视图预测后再exec独立CPU评分，CPU scorer锁保证最多一个。原初始clean-only训练配置说明文字不追溯改写，实际测试范围由本节及evaluation_handoff指定。
 
 VERIFIED：发布归档一次比较及远端编译通过；两项七视图完整性/提前truth负测通过，实际N607/Linux predict与score入口转发及原入口fallback检查通过，0模型/目标IQ/truth访问。独立读回新控制器PID/CWD/argv、queue.evaluation_views七项、handoff目标及两个原训练PID，failure不存在。最新可见源进展为续训累计E32、scratch E3，训练日志继续增长；尚无正式测试指标。
+
+
+## 已完成行的测试结果（2026-10-20 11:48:28 UTC+8）
+
+VERIFIED：E30PLUS20已完成累计E50和七环境独立truth-last评分；clean accuracy85.245833%、Macro-F184.973143%，相对原T1 E30分别+0.173810/+0.188078个百分点；六星地accuracy均值71.738988%（+0.705357个百分点），low urban52.416071%（+1.238095个百分点）。完整场景、RX/day/TX与负向分层见[test_results_partial.md](test_results_partial.md)。scratch目前E40/50仍健康训练、无最终测试分数；整个run继续RUNNING，不能声明两行完成。未改动任何健康训练或按测试调参。
