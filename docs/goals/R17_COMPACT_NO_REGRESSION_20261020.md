@@ -145,7 +145,7 @@ R05完整结果：符合七场景1个百分点容差：step_norm_task, activatio
 
 teacher必须用自身原context，student用自身压缩context；helper及sentinel负向检查保证隔离，额外teachercontext前向1260000单列。其余同source63000/数据顺序/E20/4940/原F50defaulthead冻结/固定蒸馏损失，0新TX/V/target训练或F/head/context更新；全部source仅诊断，逐行自动168000×七target，独立truth-last和1pp整数验收。两行在新结果前固定，不用R06/R07结果改超参、结构、父权重、重排或重跑。
 
-35项检查/唯一独立P0P1审查PASS，普通N607预检VERIFIED，R06实际GPU4/5句柄仍2条。launcher首步实际原R17/F50/2Ls smoke通过即等待R06根终态且实际GPU句柄退出，不读其评分，之后4/5各一own接续；R07健康2/3/6/7继续，共享R06score.lock保持一个own CPU scorer。当前仅静态成本/实现验证与预登记，未证明目标性能。
+35项检查/唯一独立P0P1审查PASS，普通N607预检VERIFIED，R06实际GPU4/5句柄仍2条。launcher首步实际原R17/F50/2Ls smoke通过即等待R06根终态且实际GPU句柄退出，不读其评分，之后4/5各一own接续；R07健康2/3/6/7继续，共享R06score.lock保持一个own CPU scorer。R08实际发布 VERIFIED：方法 `2e23af45f4a5fc26c3d44c4efa4305ac36ef45db` 已推送/OID一致，归档/远端compile和真实原R17/F50/2Ls独立context smoke PASS；R06完整测试/实际句柄退出后，GPU4/5新实际PID/CWD/命令/GPU/loggrowth及E1已核实。R07健康四卡继续，全部仍共享一个CPU scorer；尚无R08目标准确率。
 
 
 R06本轮两种结构全部完成：符合七场景1个百分点容差：shared_half, shared_quarter。E20/4940、source七视图诊断及同168000×七目标场景、独立truth-last、实际进程退出均核实；完整训练曲线、精确1pp验收、相对已验收3118001版本差、配对clean差距、TX/RX/day和成本见[本轮报告](../../automation_reports/CV-SincNet/20261020-phase1-restoration-r17-shared-factor-s2026092701-m2-r06/report.md)。两份完整恢复器已取回本地并严格加载验证；本轮未追加其他结构，目标反馈未用于改训练/超参/重跑，长期指标依实际结果报告。
