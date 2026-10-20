@@ -1,6 +1,6 @@
 # F 跨 RX：短期跨批次特征记忆
 
-状态：RUNNING。首种子 ANCHOR 与 MEM4 两行已在本机 GPU0 并行训练；实际代码提交 2a20ee904223bcc1f0cd7e4c53c5cd57aebcb798，远端 VERIFIED。
+状态：ANALYZED_SOURCE_NOT_PROMOTED_SINGLE_SEED_SIGNAL。两行的固定训练、clean 预测、独立评分和完整日志核对均完成；未扩种子。
 
 目标仍是提高源域固定弱 TX 14-7、20-19 在目标 clean 上的性能，同时保留其余 TX。整体准确率超过 84% 本身不代表弱类目标达成。复用原 F＋跨 RX 同 TX 对比学习及本机同种子 BASE，历史 85.1139% 仅作方法锚点。
 
@@ -25,3 +25,5 @@
 两行已完成首次满权重轮 E15，各 3330 次原生更新、2220 次对比更新；权重达到固定 0.1，损失有限，无非有限跳步，额外前向/星地样本/U 真值/目标样本均为 0。该记录是运行健康证据，不是目标性能。详见 full_weight_epoch.json。
 
 两行均已完成首个 U 轮次 E34：各曝光 U 56700，ANCHOR 接受 877（1.5467%），MEM4 接受 876（1.5450%）。U 真值可见数为 0，旧 batch_neighbor 与 rx_day_quantile 保持；原 RDrop 同 IQ、权重和默认头联合方式不变，星地样本/目标样本/额外前向/非有限跳步均为 0。该接受率不是伪标签准确率，不能替代目标性能。详见 first_U_epoch.json。
+
+最终：ANCHOR 85.1083%（配对 -0.0310 个百分点），MEM4 85.3268%（+0.1875）。MEM4 的弱 TX 均值 +0.4286，但只有首种子，20-19 仅多识别 6 个样本；对 ANCHOR 的该类增量为负。两行预定源门槛均失败，不追补种子，不改 SYM4 或原基底。完整逐类、RX/day、Macro-F1、成本、负结果与证据见 [results.md](results.md)、result.json、results_summary.json、completion_verification.json。目标 ACTIVE_UNMET。

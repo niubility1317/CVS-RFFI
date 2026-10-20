@@ -1,0 +1,105 @@
+{
+  "status": "ANALYZED_SOURCE_NOT_PROMOTED_SINGLE_SEED_SIGNAL",
+  "run_id": "20261020-phase1-FcrossRX-crossBatchMemory-e50-clean-local-m2-r01",
+  "code_commit": "2a20ee904223bcc1f0cd7e4c53c5cd57aebcb798",
+  "actual_models": 2,
+  "seeds_per_arm": {
+    "ANCHOR": 1,
+    "MEM4": 1
+  },
+  "matching_BASE_training_reused": true,
+  "BASE_seed2701_clean_percent": 85.13928571428572,
+  "MEM4": {
+    "clean_percent": 85.32678571428572,
+    "paired": {
+      "treatment": "MEM4",
+      "model_seed": 2026092701,
+      "accuracy_pp": 0.187499999999996,
+      "macro_f1_pp": 0.1983831712294215,
+      "per_TX_pp": [
+        -0.23571428571429465,
+        0.8357142857142841,
+        0.5428571428571449,
+        0.02142857142856114,
+        -0.06428571428571672,
+        0.024999999999997247
+      ],
+      "weak_TX_mean_pp": 0.4285714285714226,
+      "other_TX_mean_pp": 0.0669642857142827,
+      "worst_RX_pp": 0.004166666666660657,
+      "worst_day_pp": -0.12857142857142234
+    },
+    "interpretation": "Single-seed positive signal vs matching BASE, tiny20-19gain6samples; not stableconfirmed. Negative20-19increment vsANCHOR control retained."
+  },
+  "ANCHOR": {
+    "clean_percent": 85.10833333333333,
+    "paired": {
+      "treatment": "ANCHOR",
+      "model_seed": 2026092701,
+      "accuracy_pp": -0.03095238095238706,
+      "macro_f1_pp": -0.010463286837913977,
+      "per_TX_pp": [
+        0.04999999999999449,
+        -0.4214285714285726,
+        0.1071428571428612,
+        0.16785714285714182,
+        -0.08214285714285285,
+        -0.007142857142861114
+      ],
+      "weak_TX_mean_pp": -0.1267857142857154,
+      "other_TX_mean_pp": 0.016964285714285432,
+      "worst_RX_pp": -1.2041666666666728,
+      "worst_day_pp": -0.08333333333333526
+    }
+  },
+  "source_expansion": {
+    "status": "SOURCE_EXPANSION_FIXED",
+    "arms": {
+      "ANCHOR": {
+        "PASS": false,
+        "each_weak_improved": false,
+        "otherTX_health": true,
+        "source_classification_health": false,
+        "overall_pp": -0.048148148148152714,
+        "worst_RX_pp": -0.11111111111110628,
+        "per_TX_pp": [
+          -0.13333333333334085,
+          0.11111111111110628,
+          -0.022222222222223476,
+          -0.13333333333332975,
+          -0.06666666666665932,
+          -0.04444444444444695
+        ]
+      },
+      "MEM4": {
+        "PASS": false,
+        "each_weak_improved": false,
+        "otherTX_health": true,
+        "source_classification_health": false,
+        "overall_pp": -0.037037037037035425,
+        "worst_RX_pp": -0.18518518518517713,
+        "per_TX_pp": [
+          -0.20000000000000018,
+          0.0888888888888939,
+          -0.022222222222223476,
+          0,
+          -0.06666666666665932,
+          -0.022222222222223476
+        ]
+      }
+    },
+    "expand_arms": [],
+    "target_access": false,
+    "criterion": "Full sourceV27000 defaulthead fixedfinal50: BOTH weakTX recall strictly improve over same-seed BASE; eachotherTX >=BASE-.25pp, overall>=BASE, worstRX>=BASE-.25pp, no zero features. All initial rows still clean-tested, expansion fixed before any new target results."
+  },
+  "conditional_2702_2703_launched": false,
+  "target_feedback": false,
+  "goal": "ACTIVE_UNMET",
+  "baseline": "Retain original F+CROSS_RX defaultjointhead; no target-selected newbase",
+  "SYM4": "Independent pretarget fixed candidate continues healthy; do not retune/restart/modify from these results",
+  "satellite_training": false,
+  "test_views": [
+    "clean"
+  ],
+  "head_fit_updates": 0
+}

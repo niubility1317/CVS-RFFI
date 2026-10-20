@@ -1,0 +1,103 @@
+{
+  "status": "VERIFIED_SOURCE_DECISION",
+  "code_commit": "2a20ee904223bcc1f0cd7e4c53c5cd57aebcb798",
+  "decision": {
+    "status": "SOURCE_EXPANSION_FIXED",
+    "arms": {
+      "ANCHOR": {
+        "PASS": false,
+        "each_weak_improved": false,
+        "otherTX_health": true,
+        "source_classification_health": false,
+        "overall_pp": -0.048148148148152714,
+        "worst_RX_pp": -0.11111111111110628,
+        "per_TX_pp": [
+          -0.13333333333334085,
+          0.11111111111110628,
+          -0.022222222222223476,
+          -0.13333333333332975,
+          -0.06666666666665932,
+          -0.04444444444444695
+        ]
+      },
+      "MEM4": {
+        "PASS": false,
+        "each_weak_improved": false,
+        "otherTX_health": true,
+        "source_classification_health": false,
+        "overall_pp": -0.037037037037035425,
+        "worst_RX_pp": -0.18518518518517713,
+        "per_TX_pp": [
+          -0.20000000000000018,
+          0.0888888888888939,
+          -0.022222222222223476,
+          0,
+          -0.06666666666665932,
+          -0.022222222222223476
+        ]
+      }
+    },
+    "expand_arms": [],
+    "target_access": false,
+    "criterion": "Full sourceV27000 defaulthead fixedfinal50: BOTH weakTX recall strictly improve over same-seed BASE; eachotherTX >=BASE-.25pp, overall>=BASE, worstRX>=BASE-.25pp, no zero features. All initial rows still clean-tested, expansion fixed before any new target results."
+  },
+  "rows": [
+    {
+      "arm": "ANCHOR",
+      "source_commit": "2a20ee904223bcc1f0cd7e4c53c5cd57aebcb798",
+      "epoch": 50,
+      "steps": 11100,
+      "default_head_joint": true,
+      "U_truth_hidden": true,
+      "satellite_training": false,
+      "target_access": false,
+      "source_accuracy_pp": -0.048148148148152714,
+      "per_TX_recall_pp": [
+        -0.13333333333334085,
+        0.11111111111110628,
+        -0.022222222222223476,
+        -0.13333333333332975,
+        -0.06666666666665932,
+        -0.04444444444444695
+      ],
+      "worst_RX_pp": -0.11111111111110628,
+      "PASS": false
+    },
+    {
+      "arm": "MEM4",
+      "source_commit": "2a20ee904223bcc1f0cd7e4c53c5cd57aebcb798",
+      "epoch": 50,
+      "steps": 11100,
+      "default_head_joint": true,
+      "U_truth_hidden": true,
+      "satellite_training": false,
+      "target_access": false,
+      "source_accuracy_pp": -0.037037037037035425,
+      "per_TX_recall_pp": [
+        -0.20000000000000018,
+        0.0888888888888939,
+        -0.022222222222223476,
+        0,
+        -0.06666666666665932,
+        -0.022222222222223476
+      ],
+      "worst_RX_pp": -0.18518518518517713,
+      "PASS": false
+    }
+  ],
+  "frozen_rows": [
+    {
+      "row_id": "ANCHOR-s2026092701",
+      "treatment": "ANCHOR",
+      "model_seed": 2026092701
+    },
+    {
+      "row_id": "MEM4-s2026092701",
+      "treatment": "MEM4",
+      "model_seed": 2026092701
+    }
+  ],
+  "source_rule_independently_recomputed": true,
+  "target_results_read_before_decision": false,
+  "target_feedback": false
+}

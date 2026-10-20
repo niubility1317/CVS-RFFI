@@ -1,0 +1,634 @@
+{
+  "status": "ARTIFACTS_COMPLETE",
+  "run_id": "20261020-phase1-FcrossRX-crossBatchMemory-e50-clean-local-m2-r01",
+  "reference_run": "20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01",
+  "records": [
+    {
+      "row_id": "ANCHOR-s2026092701",
+      "treatment": "ANCHOR",
+      "model_seed": 2026092701,
+      "current": {
+        "count": 168000,
+        "accuracy": 0.8510833333333333,
+        "macro_f1": 0.8485371791293949,
+        "confusion": [
+          [
+            27057,
+            135,
+            190,
+            341,
+            106,
+            171
+          ],
+          [
+            536,
+            18342,
+            106,
+            8876,
+            68,
+            72
+          ],
+          [
+            599,
+            240,
+            21298,
+            43,
+            79,
+            5741
+          ],
+          [
+            1845,
+            4762,
+            600,
+            20619,
+            29,
+            145
+          ],
+          [
+            8,
+            25,
+            14,
+            13,
+            27909,
+            31
+          ],
+          [
+            22,
+            33,
+            144,
+            7,
+            37,
+            27757
+          ]
+        ],
+        "per_TX_recall": [
+          0.9663214285714286,
+          0.6550714285714285,
+          0.7606428571428572,
+          0.7363928571428572,
+          0.99675,
+          0.9913214285714286
+        ],
+        "receiver_accuracy": {
+          "1-1": 0.8105416666666667,
+          "14-7": 0.7519583333333333,
+          "2-1": 0.9237083333333334,
+          "20-1": 0.8417916666666667,
+          "7-14": 0.916,
+          "7-7": 0.886,
+          "8-8": 0.8275833333333333
+        },
+        "day_accuracy": {
+          "2021_03_01": 0.8230238095238095,
+          "2021_03_08": 0.8646904761904762,
+          "2021_03_15": 0.8319285714285715,
+          "2021_03_23": 0.8846904761904761
+        },
+        "worst_RX": 0.7519583333333333,
+        "worst_day": 0.8230238095238095
+      },
+      "reused_BASE": {
+        "count": 168000,
+        "accuracy": 0.8513928571428572,
+        "macro_f1": 0.848641811997774,
+        "confusion": [
+          [
+            27043,
+            141,
+            201,
+            332,
+            121,
+            162
+          ],
+          [
+            573,
+            18460,
+            107,
+            8726,
+            60,
+            74
+          ],
+          [
+            712,
+            309,
+            21268,
+            45,
+            114,
+            5552
+          ],
+          [
+            1935,
+            4493,
+            857,
+            20572,
+            27,
+            116
+          ],
+          [
+            8,
+            23,
+            12,
+            10,
+            27932,
+            15
+          ],
+          [
+            21,
+            39,
+            138,
+            4,
+            39,
+            27759
+          ]
+        ],
+        "per_TX_recall": [
+          0.9658214285714286,
+          0.6592857142857143,
+          0.7595714285714286,
+          0.7347142857142858,
+          0.9975714285714286,
+          0.9913928571428572
+        ],
+        "receiver_accuracy": {
+          "1-1": 0.80575,
+          "14-7": 0.764,
+          "2-1": 0.924125,
+          "20-1": 0.8407083333333333,
+          "7-14": 0.9156666666666666,
+          "7-7": 0.8860416666666666,
+          "8-8": 0.8234583333333333
+        },
+        "day_accuracy": {
+          "2021_03_01": 0.8238571428571428,
+          "2021_03_08": 0.8675,
+          "2021_03_15": 0.8291904761904761,
+          "2021_03_23": 0.8850238095238095
+        },
+        "worst_RX": 0.764,
+        "worst_day": 0.8238571428571428
+      }
+    },
+    {
+      "row_id": "MEM4-s2026092701",
+      "treatment": "MEM4",
+      "model_seed": 2026092701,
+      "current": {
+        "count": 168000,
+        "accuracy": 0.8532678571428571,
+        "macro_f1": 0.8506256437100682,
+        "confusion": [
+          [
+            26977,
+            150,
+            248,
+            346,
+            123,
+            156
+          ],
+          [
+            539,
+            18694,
+            101,
+            8513,
+            79,
+            74
+          ],
+          [
+            613,
+            237,
+            21420,
+            40,
+            81,
+            5609
+          ],
+          [
+            1950,
+            4298,
+            985,
+            20578,
+            24,
+            165
+          ],
+          [
+            8,
+            23,
+            14,
+            15,
+            27914,
+            26
+          ],
+          [
+            21,
+            34,
+            137,
+            6,
+            36,
+            27766
+          ]
+        ],
+        "per_TX_recall": [
+          0.9634642857142857,
+          0.6676428571428571,
+          0.765,
+          0.7349285714285714,
+          0.9969285714285714,
+          0.9916428571428572
+        ],
+        "receiver_accuracy": {
+          "1-1": 0.8181666666666667,
+          "14-7": 0.7640416666666666,
+          "2-1": 0.9185416666666667,
+          "20-1": 0.8426666666666667,
+          "7-14": 0.9214583333333334,
+          "7-7": 0.8834583333333333,
+          "8-8": 0.8245416666666666
+        },
+        "day_accuracy": {
+          "2021_03_01": 0.8225714285714286,
+          "2021_03_08": 0.8662142857142857,
+          "2021_03_15": 0.8355714285714285,
+          "2021_03_23": 0.8887142857142857
+        },
+        "worst_RX": 0.7640416666666666,
+        "worst_day": 0.8225714285714286
+      },
+      "reused_BASE": {
+        "count": 168000,
+        "accuracy": 0.8513928571428572,
+        "macro_f1": 0.848641811997774,
+        "confusion": [
+          [
+            27043,
+            141,
+            201,
+            332,
+            121,
+            162
+          ],
+          [
+            573,
+            18460,
+            107,
+            8726,
+            60,
+            74
+          ],
+          [
+            712,
+            309,
+            21268,
+            45,
+            114,
+            5552
+          ],
+          [
+            1935,
+            4493,
+            857,
+            20572,
+            27,
+            116
+          ],
+          [
+            8,
+            23,
+            12,
+            10,
+            27932,
+            15
+          ],
+          [
+            21,
+            39,
+            138,
+            4,
+            39,
+            27759
+          ]
+        ],
+        "per_TX_recall": [
+          0.9658214285714286,
+          0.6592857142857143,
+          0.7595714285714286,
+          0.7347142857142858,
+          0.9975714285714286,
+          0.9913928571428572
+        ],
+        "receiver_accuracy": {
+          "1-1": 0.80575,
+          "14-7": 0.764,
+          "2-1": 0.924125,
+          "20-1": 0.8407083333333333,
+          "7-14": 0.9156666666666666,
+          "7-7": 0.8860416666666666,
+          "8-8": 0.8234583333333333
+        },
+        "day_accuracy": {
+          "2021_03_01": 0.8238571428571428,
+          "2021_03_08": 0.8675,
+          "2021_03_15": 0.8291904761904761,
+          "2021_03_23": 0.8850238095238095
+        },
+        "worst_RX": 0.764,
+        "worst_day": 0.8238571428571428
+      }
+    }
+  ],
+  "paired": [
+    {
+      "treatment": "ANCHOR",
+      "model_seed": 2026092701,
+      "accuracy_pp": -0.03095238095238706,
+      "macro_f1_pp": -0.010463286837913977,
+      "per_TX_pp": [
+        0.04999999999999449,
+        -0.4214285714285726,
+        0.1071428571428612,
+        0.16785714285714182,
+        -0.08214285714285285,
+        -0.007142857142861114
+      ],
+      "weak_TX_mean_pp": -0.1267857142857154,
+      "other_TX_mean_pp": 0.016964285714285432,
+      "worst_RX_pp": -1.2041666666666728,
+      "worst_day_pp": -0.08333333333333526
+    },
+    {
+      "treatment": "MEM4",
+      "model_seed": 2026092701,
+      "accuracy_pp": 0.187499999999996,
+      "macro_f1_pp": 0.1983831712294215,
+      "per_TX_pp": [
+        -0.23571428571429465,
+        0.8357142857142841,
+        0.5428571428571449,
+        0.02142857142856114,
+        -0.06428571428571672,
+        0.024999999999997247
+      ],
+      "weak_TX_mean_pp": 0.4285714285714226,
+      "other_TX_mean_pp": 0.0669642857142827,
+      "worst_RX_pp": 0.004166666666660657,
+      "worst_day_pp": -0.12857142857142234
+    }
+  ],
+  "by_arm": {
+    "ANCHOR": {
+      "paired_summary": {
+        "accuracy_pp": {
+          "n": 1,
+          "mean": -0.03095238095238706,
+          "sample_SD": null
+        },
+        "macro_f1_pp": {
+          "n": 1,
+          "mean": -0.010463286837913977,
+          "sample_SD": null
+        },
+        "weak_TX_mean_pp": {
+          "n": 1,
+          "mean": -0.1267857142857154,
+          "sample_SD": null
+        },
+        "other_TX_mean_pp": {
+          "n": 1,
+          "mean": 0.016964285714285432,
+          "sample_SD": null
+        },
+        "worst_RX_pp": {
+          "n": 1,
+          "mean": -1.2041666666666728,
+          "sample_SD": null
+        },
+        "worst_day_pp": {
+          "n": 1,
+          "mean": -0.08333333333333526,
+          "sample_SD": null
+        }
+      },
+      "positive_seeds": {
+        "overall": 0,
+        "weak": 0
+      }
+    },
+    "MEM4": {
+      "paired_summary": {
+        "accuracy_pp": {
+          "n": 1,
+          "mean": 0.187499999999996,
+          "sample_SD": null
+        },
+        "macro_f1_pp": {
+          "n": 1,
+          "mean": 0.1983831712294215,
+          "sample_SD": null
+        },
+        "weak_TX_mean_pp": {
+          "n": 1,
+          "mean": 0.4285714285714226,
+          "sample_SD": null
+        },
+        "other_TX_mean_pp": {
+          "n": 1,
+          "mean": 0.0669642857142827,
+          "sample_SD": null
+        },
+        "worst_RX_pp": {
+          "n": 1,
+          "mean": 0.004166666666660657,
+          "sample_SD": null
+        },
+        "worst_day_pp": {
+          "n": 1,
+          "mean": -0.12857142857142234,
+          "sample_SD": null
+        }
+      },
+      "positive_seeds": {
+        "overall": 1,
+        "weak": 1
+      }
+    }
+  },
+  "MEM4_minus_ANCHOR": [
+    {
+      "model_seed": 2026092701,
+      "accuracy_pp": 0.21845238095238306,
+      "macro_f1_pp": 0.20884645806733548,
+      "weak_TX_mean_pp": 0.555357142857138,
+      "other_TX_mean_pp": 0.04999999999999727,
+      "worst_RX_pp": 1.2083333333333335,
+      "worst_day_pp": -0.045238095238087084,
+      "per_TX_pp": [
+        -0.28571428571428914,
+        1.2571428571428567,
+        0.4357142857142837,
+        -0.14642857142858068,
+        0.017857142857136132,
+        0.03214285714285836
+      ]
+    }
+  ],
+  "cost": [
+    {
+      "row_id": "ANCHOR-s2026092701",
+      "epochs": 50,
+      "optimizer_steps": 11100,
+      "source_seconds": 4880.001873970032,
+      "prediction_seconds": 32.93929810001282,
+      "peak_cuda_MiB": 1972.05126953125,
+      "source_packet_reads": {
+        "L_s": 1420800,
+        "U_s": 963900,
+        "V": 2754000
+      },
+      "extra_L_feature_forwards": 0,
+      "extra_model_forwards": 0,
+      "mean_historical_keys": 0.0,
+      "max_history_age": 0,
+      "per_TX_keys": [
+        {
+          "TX": "14-10",
+          "valid_anchor_occurrences": 853176,
+          "positive_mean": 16.927565058458047,
+          "negative_mean": 105.85172648376529
+        },
+        {
+          "TX": "14-7",
+          "valid_anchor_occurrences": 852008,
+          "positive_mean": 16.935550179524355,
+          "negative_mean": 105.85277209300412
+        },
+        {
+          "TX": "20-15",
+          "valid_anchor_occurrences": 852588,
+          "positive_mean": 16.95839049532721,
+          "negative_mean": 105.82664149484268
+        },
+        {
+          "TX": "20-19",
+          "valid_anchor_occurrences": 852460,
+          "positive_mean": 16.917486142636722,
+          "negative_mean": 105.86492338148993
+        },
+        {
+          "TX": "6-15",
+          "valid_anchor_occurrences": 852180,
+          "positive_mean": 16.938402980182314,
+          "negative_mean": 105.8476432598855
+        },
+        {
+          "TX": "8-20",
+          "valid_anchor_occurrences": 852468,
+          "positive_mean": 16.9435946462507,
+          "negative_mean": 105.85299699478558
+        }
+      ],
+      "satellite_examples": 0,
+      "head_fit_updates": 0,
+      "BASE_training_reused": true
+    },
+    {
+      "row_id": "MEM4-s2026092701",
+      "epochs": 50,
+      "optimizer_steps": 11100,
+      "source_seconds": 4994.0960085392,
+      "prediction_seconds": 32.19242179999128,
+      "peak_cuda_MiB": 1972.91845703125,
+      "source_packet_reads": {
+        "L_s": 1420800,
+        "U_s": 963900,
+        "V": 2754000
+      },
+      "extra_L_feature_forwards": 0,
+      "extra_model_forwards": 0,
+      "mean_historical_keys": 383.33823823823826,
+      "max_history_age": 3,
+      "per_TX_keys": [
+        {
+          "TX": "14-10",
+          "valid_anchor_occurrences": 853176,
+          "positive_mean": 68.0962298853056,
+          "negative_mean": 425.29436854483987
+        },
+        {
+          "TX": "14-7",
+          "valid_anchor_occurrences": 852008,
+          "positive_mean": 68.04307589536005,
+          "negative_mean": 425.3800386892377
+        },
+        {
+          "TX": "20-15",
+          "valid_anchor_occurrences": 852588,
+          "positive_mean": 68.08880374339967,
+          "negative_mean": 425.30308178045914
+        },
+        {
+          "TX": "20-19",
+          "valid_anchor_occurrences": 852460,
+          "positive_mean": 68.03323206229304,
+          "negative_mean": 425.35376184750476
+        },
+        {
+          "TX": "6-15",
+          "valid_anchor_occurrences": 852180,
+          "positive_mean": 68.03863155414052,
+          "negative_mean": 425.36059046222925
+        },
+        {
+          "TX": "8-20",
+          "valid_anchor_occurrences": 852468,
+          "positive_mean": 68.06846596660964,
+          "negative_mean": 425.3576064801642
+        }
+      ],
+      "satellite_examples": 0,
+      "head_fit_updates": 0,
+      "BASE_training_reused": true
+    }
+  ],
+  "source_expansion": {
+    "status": "SOURCE_EXPANSION_FIXED",
+    "arms": {
+      "ANCHOR": {
+        "PASS": false,
+        "each_weak_improved": false,
+        "otherTX_health": true,
+        "source_classification_health": false,
+        "overall_pp": -0.048148148148152714,
+        "worst_RX_pp": -0.11111111111110628,
+        "per_TX_pp": [
+          -0.13333333333334085,
+          0.11111111111110628,
+          -0.022222222222223476,
+          -0.13333333333332975,
+          -0.06666666666665932,
+          -0.04444444444444695
+        ]
+      },
+      "MEM4": {
+        "PASS": false,
+        "each_weak_improved": false,
+        "otherTX_health": true,
+        "source_classification_health": false,
+        "overall_pp": -0.037037037037035425,
+        "worst_RX_pp": -0.18518518518517713,
+        "per_TX_pp": [
+          -0.20000000000000018,
+          0.0888888888888939,
+          -0.022222222222223476,
+          0.0,
+          -0.06666666666665932,
+          -0.022222222222223476
+        ]
+      }
+    },
+    "expand_arms": [],
+    "target_access": false,
+    "criterion": "Full sourceV27000 defaulthead fixedfinal50: BOTH weakTX recall strictly improve over same-seed BASE; eachotherTX >=BASE-.25pp, overall>=BASE, worstRX>=BASE-.25pp, no zero features. All initial rows still clean-tested, expansion fixed before any new target results."
+  },
+  "head_fit_updates": 0,
+  "target_feedback": false,
+  "truth_last": true,
+  "limitation": "Exposed exploratory Phase1 clean benchmark. Source promotion fixed before new candidate target. Default head joint throughout. No target tuning, independent blind-test, Phase2, or satellite claim."
+}
