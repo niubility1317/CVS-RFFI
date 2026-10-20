@@ -89,7 +89,7 @@
       "F_head_fit_updates": 0,
       "F_teacher_forward_examples_per_row": 1260000,
       "F_student_forward_examples_per_row": 1260000,
-      "teacher_IQ_examples_train": 1260000,
+      "teacher_IQ_examples_train": 0,
       "initialization_IQ_examples": 0,
       "initialization_F_reads": 0,
       "teacher_context_forward_examples_per_row": 0,
@@ -130,19 +130,19 @@
       {
         "run_id": "20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17",
         "commit": "cd97744884b5e460926e48c8b7efb7d78c6da0f4",
-        "role": "Only student initialization and frozen restoration teacher;original source-selected R17 finalE20/4940 before target",
+        "role": "Original source-selected R17 finalE20/4940 before target; CPU initialization only; deleted before optimizer; zero R17 training forwards",
         "path": "runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17/unroll_unshared/native_map_prior/final.pt"
       },
       {
         "run_id": "20261019-phase1-reception-restoration-selfsup-manysig-m6-r02",
         "commit": "7efdba92932a86bf4b0492a565d35377564a26da",
-        "role": "Inherited frozen R02coarse E20 viaR07fullstate",
+        "role": "Inherited source-only coarse E20 initialization via original R17; compact coarse jointly trained in this run",
         "path": "runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/tf_unet_mixed/final.pt"
       },
       {
         "run_id": "20261019-phase1-restoration-learned-action-source-s2026092701-r07",
         "commit": "c8ccdfdbd03ab5ad8828b1eb9210b99a664ebe7b",
-        "role": "Full frozen source-only R07coarse/action E40;notnewprior",
+        "role": "Inherited source-only coarse20/action20 serial history via original R17; compact coarse/action jointly trained in this run",
         "path": "runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07/learned_operator/final.pt"
       },
       {
@@ -352,7 +352,8 @@
     "方案在读取任何R08/R09目标分数前固定；R07已暴露结果如实保留。来源为用户优化要求、合法source clean契约及R09固定目标的匹配消融，不按目标调秩/系数/预算/父权重、排序或选择性重跑。",
     "与R09同结构clean arm相比删除10倍三阶段R17波形项，其余最终sourceclean IQ/F任务系数、训练数据/顺序/seed/优化器/预算相同；同时删除无用R17训练前向并单列计算差，不称相同训练算量。",
     "Fclean教师/学生各1260000，R17原权重只CPU初始化；训练teacher/context forward0，teacher_IQ_examples=0，source_IQ_examples=1260000；smoke/profile开销独立。",
-    "普通N607预检VERIFIED，旧R08实际GPU句柄仍2条，新remote run/release均不存在；source/R17/F50/cache/formal handles复用，无额外数据重验。只发布CPU noquery smoke和等待，R08实际退出后接续4/5，R09健康四卡继续。"
+    "普通N607预检VERIFIED，旧R08实际GPU句柄仍2条，新remote run/release均不存在；source/R17/F50/cache/formal handles复用，无额外数据重验。只发布CPU noquery smoke和等待，R08实际退出后接续4/5，R09健康四卡继续。",
+    "Metadata correction: inherited teacher_IQ_examples_train is 0, matching actual R10 training logs/implementation; R17 is CPU initialization only and compact coarse/action are jointly trained. No change to live code, loss, budget, checkpoints or predictions."
   ],
   "registered_at": "2026-10-20T08:13:28+00:00"
 }

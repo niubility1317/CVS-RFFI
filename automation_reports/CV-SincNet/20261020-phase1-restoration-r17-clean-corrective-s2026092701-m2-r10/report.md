@@ -28,3 +28,5 @@ GPU4/5先等R08根终态且实际ownedGPU进程全部退出，不读评分；随
 实际发布 VERIFIED：方法commit `d113672a6e51e75eb3ea0f7ecce0500e67f92966` 已推送且远端OID独立比较一致；单归档SHA比较/远端compile/help通过。实际原R17初始化/F50/2Ls noquery smoke PASS，两行student coarse/action/各prior及F输入梯度有限非零，原CPU初始化父/F/head0更新，严格复载输出逐位一致。R08完整测试/评分及原实际GPU句柄退出后，在GPU4/5各启动一个新worker。实际PID/CWD/完整命令/commit/GPU/loggrowth与E1均核实，R09健康2/3/6/7继续；原R17正式训练前向删除，未用新目标结果改变设计/矩阵。
 
 完整汇总工具26项聚焦检查PASS，检查全联合组件预算、0R17 teacher/context计费/source曝光、直接clean损失、同全七视图/分组/原始整数1pp、实际涨分/70%与容差分开、payload-free profile。汇总工具未改运行中方法commit；当前尚无R10目标准确率。
+
+元数据说明：修正继承的 teacher_IQ_examples_train 为 0，并将父权重角色文字改为 CPU 初始化、coarse/action 联合训练，与实际训练日志和实现一致。未修改运行中代码、配方、预算、权重或预测。
