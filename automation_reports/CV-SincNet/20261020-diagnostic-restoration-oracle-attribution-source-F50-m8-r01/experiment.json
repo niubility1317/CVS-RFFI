@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "本对话2026-10-19用户要求独立无监督恢复网络、覆盖IQ/FFT/PAMF输入、尝试多种设计含扩散、使用L/U；提供恢复器报告；最新明确训练默认N607并允许多GPU快速验证，直接接训练好F验证真实输入TX身份。",
   "code": {
-    "commit": null,
+    "commit": "14b3f2c0af8fefaa766a7b7664f01d4e73ef81f9",
     "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
     "environment": "N607 verified CVS-RFFI Python/Torch2.1cu121/NumPy2.2.5;CPU2threads/CUDAempty",
     "cwd": "releases/pamf_oracle_attribution_20261020_r01"
@@ -99,7 +99,7 @@
     "remote_run_root": "runs/20261020-diagnostic-restoration-oracle-attribution-source-F50-m8-r01",
     "remote_log_root": "logs/20261020-diagnostic-restoration-oracle-attribution-source-F50-m8-r01",
     "local_artifact_root": "local_artifacts/pamf_restoration/oracle_attribution_20261020_r01",
-    "launch_command": "python -u -m experiments.pamf_oracle_attribution.runner run --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-cache ../../runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache --parent-restoration ../../runs/20261019-phase1-restoration-residual-refinement-selfsup-m3-r03 --baseline-source-run ../../runs/20261020-phase1-restoration-spatial-conditioning-source-s2026092701-m2-r01 --reader-root ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02 --output ../../runs/20261020-diagnostic-restoration-oracle-attribution-source-F50-m8-r01 --expected-commit <actual method commit>",
+    "launch_command": "python -u -m experiments.pamf_oracle_attribution.runner run --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-cache ../../runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache --parent-restoration ../../runs/20261019-phase1-restoration-residual-refinement-selfsup-m3-r03 --baseline-source-run ../../runs/20261020-phase1-restoration-spatial-conditioning-source-s2026092701-m2-r01 --reader-root ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02 --output ../../runs/20261020-diagnostic-restoration-oracle-attribution-source-F50-m8-r01 --expected-commit 14b3f2c0af8fefaa766a7b7664f01d4e73ef81f9",
     "stop_rule": "Illegalparent/source/config,collision,nonfinite,Fstatechange,incompletepredictions:preserve/fail,noautoretry"
   },
   "expected_artifacts": [
@@ -155,7 +155,7 @@
       "budget_ref": "0trainingupdates/0headfit/0GPU;180physicalsamples/7views/8counterfactuals/3nativeheads;CPU2threads",
       "output_root": "runs/20261020-diagnostic-restoration-oracle-attribution-source-F50-m8-r01",
       "log_path": "logs/20261020-diagnostic-restoration-oracle-attribution-source-F50-m8-r01/runner.log",
-      "command": "python -u -m experiments.pamf_oracle_attribution.runner run --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-cache ../../runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache --parent-restoration ../../runs/20261019-phase1-restoration-residual-refinement-selfsup-m3-r03 --baseline-source-run ../../runs/20261020-phase1-restoration-spatial-conditioning-source-s2026092701-m2-r01 --reader-root ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02 --output ../../runs/20261020-diagnostic-restoration-oracle-attribution-source-F50-m8-r01 --expected-commit <actual method commit>",
+      "command": "python -u -m experiments.pamf_oracle_attribution.runner run --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --parent-cache ../../runs/20261019-phase1-reception-restoration-selfsup-manysig-m6-r02/cache --parent-restoration ../../runs/20261019-phase1-restoration-residual-refinement-selfsup-m3-r03 --baseline-source-run ../../runs/20261020-phase1-restoration-spatial-conditioning-source-s2026092701-m2-r01 --reader-root ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02 --output ../../runs/20261020-diagnostic-restoration-oracle-attribution-source-F50-m8-r01 --expected-commit 14b3f2c0af8fefaa766a7b7664f01d4e73ef81f9",
       "expected_artifacts": [
         "metrics.json"
       ],

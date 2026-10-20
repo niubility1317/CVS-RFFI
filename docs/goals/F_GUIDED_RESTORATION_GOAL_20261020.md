@@ -257,3 +257,10 @@ source误差分解显示精修在多个有效频带增加波形误差，末端ti
 ## 原 F 多尺度前向条件固定矩阵的实际结论
 
 原F全局池化条件：目标low urban 65.980556%，clean 84.984325%。原F多尺度时间条件：目标low urban 65.112897%，clean 85.045437%。两行均完成E10/2470、168000物理目标clean+六practical及三原头独立truth-last评分。池化条件是同run匹配控制，原R03与运行时F全冻，只更新新IQ场和投影/融合。所有负结果保留。[完整环境/逐F/波形/净纠错/成本结果](../../automation_reports/CV-SincNet/20261020-phase1-restoration-spatial-conditioning-source-s2026092701-m2-r01/report.md)。本轮仍未达到用户完整目标。
+
+
+## 源域恢复误差位置诊断（oracle，仅机制证据）
+
+固定180sourceV（每RX36/不按TX标签选样）、7views/8counterfactuals/3原F，0训练/目标访问。source low urban原R03为80.740741%，oracle修tail24为86.481481%、prefix232为97.222222%、低功率64bins为80.740741%、高功率64bins为90.925926%、全帧复gain为82.592593%，sourceclean参考99.074074%。这些替换使用pairedclean，只定位该源panel的残差影响；不代表可从received恢复，不是runtime方法/数学上界/目标改善。三F重复决策仍只有180物理样本，实际TX分布不平衡。
+
+当前scratch/spectral实验在诊断前固定、保持健康运行；目标最好仍66.406548%，完整目标未完成。全部源预测固定后独立CPU truth-last评分；双既有CPU锁协调，不增GPU，不改旧任务。[完整源诊断、波形/净纠错和证据限制](../../automation_reports/CV-SincNet/20261020-diagnostic-restoration-oracle-attribution-source-F50-m8-r01/report.md)。
