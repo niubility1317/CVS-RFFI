@@ -1,6 +1,6 @@
 # 冻结三 F 的帧级与复采样点级梯度一致约束
 
-状态：PLANNED。用户目标为完整目标 low urban≥70%，其余五 practical 接近原 F clean85.113889%。“接近”暂按≤2个百分点，是 Agent 的操作解释。登记时最好 low urban66.384127%，目标未达到。
+状态：RUNNING / VERIFIED。用户目标为完整目标 low urban≥70%，其余五 practical 接近原 F clean85.113889%。“接近”暂按≤2个百分点，是 Agent 的操作解释。登记时最好 low urban66.384127%，目标未达到。
 
 源代码依据：已有三F引导先平均语义loss再求IQ梯度，旧日志未保存逐F梯度冲突；此前teacher mean/worst是标量聚合比较，不是IQ方向一致性比较。本轮检验是否可以减少教师特有的相互冲突方向，不声称已从旧日志观察到冲突，也不用当前局部敏感度候选的目标结果制定方案。
 
@@ -29,3 +29,17 @@ source V1800/原F1/七视图只诊断，无源分数/NMSE gate、早停或排序
 一次N607普通账号预检VERIFIED：原R03合法、新root/release不存在、GPU4/5各24124MB空闲无PID；局部敏感度source在GPU6/7实际PID/CWD/cmd LIVE并保留。每卡一个本owner、allowner<2，重叠最多4个本owner GPUworker，source≥18GB/target≥12GB，CPU2线程/scorer最多1。新source评分等局部敏感度run complete/failure后，再与本run target共用score.lock；source实际退出才同卡target。非法输入/权限/代码、冲突、非有限/OOM、预算/梯度执行或预测失败则保留并失败该行，无自动重试，健康行继续。
 
 一个实际代码配置commit、不可覆盖root、一次归档本地/远端SHA比较及remotecompile、真实smoke、PID/CWD/cmd/GPU/日志增长随后核实。精确命令、环境/CWD、路径、来源/数据契约、seed、矩阵及期望产物见experiment.json。IQ/权重/逐样本预测/原始日志和私有机器状态不进Git，没有给另一用户对话发送指令。
+
+
+## 实际发布与首轮核验
+
+方法commit `d30b6092eb489f20d512e69f231354981cc93e78`已推送并独立核实远端OID，一次归档本地/远端SHA比较及远端compile/import均PASS。实际R03/三F/四Ls no-query smoke PASS：两臂完整初始IQ/state等于原R03，coarse/correction合并梯度及原头到IQ梯度有效，F无梯度，新checkpoint往返一致，0V/TX/target/optimizer更新。两臂实际2140840参数，无新增模块；PASS立即训练。
+
+两条实际source worker的PID/CWD/完整命令/GPU4/5及持续日志增长已核实，三F参考缓存各63000条。实际三F方向一致/逐帧cap计数：
+
+- frame_agreement：1/10轮、247/2470步，梯度合并调用247、IQ126000条，实际缩放44391（observed37031/clean7360），平均scale0.77209073、范围0.0027414458至1，wave/identity/缩放后identity norm²总和995.94516/680793.69/449.10378。
+- time_agreement：1/10轮、247/2470步，梯度合并调用247、IQ126000条，实际缩放45529（observed38227/clean7302），平均scale0.76998167、范围0.0029156392至1，wave/identity/缩放后identity norm²总和995.94954/646653.28/477.8368。
+- frame_agreement方向一致：单位126000，保留103503，非零保留103503；三对负dot[12021, 11124, 10147]，cosine有效数[126000, 126000, 126000]，raw/agreed norm²684245.411/680793.684。
+- time_agreement方向一致：单位32256000，保留15475361，非零保留15475361；三对负dot[10037953, 10236728, 9364534]，cosine有效数[32256000, 32256000, 32256000]，raw/agreed norm²685816.671/646653.284。
+
+首轮核验时尚无新源V或目标准确率。实际缩放不代表性能改善或参数步波形保证；两臂固定E10后分别自动完整目标测试，source V不作资格筛选，用户目标仍未达成。最终状态与结果以完整结果节为准。前序局部Jrun的GPU6/7健康source/target进程保留，CPU评分等其终态后执行；复用既有per_frame_cap固定控制，不重复训练/预测。
