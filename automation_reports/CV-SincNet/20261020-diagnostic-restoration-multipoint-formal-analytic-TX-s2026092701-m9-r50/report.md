@@ -1,0 +1,23 @@
+# R50：八个压缩优化新版的正式无F同TX关联
+
+状态：LOCAL_VERIFIED，尚未发布。22项聚焦检查、CLIhelp、一次独立P0/P1 PASS；方法commit `3c03b2e8a8ad41e23c1785de801c295e54b2eec9`。
+
+
+状态：LOCAL_IMPLEMENTED，未发布。
+
+本诊断落实原输入TX保真目标，覆盖已固定R48两版和R49六版；R46指定350521父为共同参照，另含raw输入。它不是新恢复网络，不筛选或改变任何训练/预测，不阻塞父实验正式交付。R48和R49全部八行七场景正式评分完成后才读取保存的target IQ；全280解析特征单元固定且有限后，独立CPU评分才打开目标truth。两父方法固定commit分别为86b89ba6bc09b0b3f10fcaff8fc7cd1ecf6d0508和e96397bc3c7036f085317f9cc0e59074fb6ee24f。
+
+固定9个候选为R46父350521、R48 retain/prune、R49 retain/near/balanced/small/context/prior，连同raw共10种读出。复用已完成R47的raw和指定R46父56个特征单元，只新算八新版224单元；9408000次解析输入来自同168000物理记录及相关七场景，不能称新增独立样本。原clean评价参照仍为同一批记录的raw clean解析量。
+
+解析坐标严格复用R34/R39/R47：mirror64、spectral4、reference24、combined92，使用原源L/U8192条固定均值与std下限0.05，不重新拟合任何参数或校准。无F权重/embedding/logits、模型checkpoint、额外神经预测、分类头拟合、训练或GPU。真实2条Ls解析no-query smoke为launcher首步，PASS后仅等待原父完成；不占GPU，不占用父训练/预测worker。
+
+clean参考按每TX/RX/day最多2条、opaque physicalID排序；参考RX和day均与query不同，完整六TX参考单元等权。统计同TX余弦相似度减其他五TX均值、配对描述量误差、逐TX/RX/day以及199次固定RX/day内query标签置换阴性对照。目标标签只用于这些全部预测完成后的评价统计，不进入任何恢复器、分类头或运行时适应，置换结果不是p值。
+
+固定4536个分组记录、756个条件阴性对照和420个配对差。比较为八新版各对指定父、R48两版之间、R49五剪枝版各对其同宽控制，以及两个同宽控制之间；所有四解析组和七场景均报告，包括clean关联下降、个别TX负margin、缺参考和零向量。source/target真值与clean参考的评价权限如实披露，整套评价不能称完全无标签。
+
+普通账户CPU2线程、0GPU，与R48/R49共用R41 score.lock，等待父时不持锁；提取和评分最多占一个本任务CPU评分槽。原数据与权重只读，另建不可覆盖root、一次归档SHA与compile；核实实际PID/CWD/argv/空CUDA/日志增长。输入路径/commit/ID/原LU校准不符、父技术失败、缺失或非有限输入/输出碰撞时保留产物且不自动重试；健康父和其他owner不动。
+
+这仍是已暴露工程基准的有标签事后关联统计。它能检验固定解析坐标下是否保留同TX关联，不能证明每个生成细节均来自该TX、未知TX泛化或真实在轨有效性。它不会替代原70%/其他五景距clean≤5pp目标、七场景识别测试或推理成本，也不构成新模型选模门槛。精确矩阵、命令、环境/CWD、路径、停止规则与预期产物登记在同run中。
+
+
+精确环境、命令、路径、预算见[登记](experiment.json)。
