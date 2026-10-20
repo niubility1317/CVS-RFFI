@@ -27,3 +27,7 @@ native Windows现有Python3.10/NumPy，单CPU进程、OMP/MKL/OpenBLAS线程2，
 元数据/角色/来源/类别RXday/count/order/输出冲突、非有限或无效散度、数学检查失败时停止本CPU运行并保留已写row，不自动重试。0新网络训练、0IQ读取、0U真值/target/分类头更新。逐row summary、完整result、completion/checks/execution和stdout保留；Git只交付代码/config/聚合统计/报告，不含源特征缓存、矩阵、权重、逐包产物或私有进程状态。完成后独立核实实际PID/CWD/cmdline/日志及产物，不将退出码单独视为成功。
 
 检查已覆盖谱权重范围/均值、scale与正交旋转不变性、isotropic/zero covariance、分组平衡与不重叠、B/C改动不影响A精度、条件组平移、source决策正负及4个非法协方差/标签负例。唯一独立审查PASS，无确定P0/P1。没有新增泛化/性能结论。
+
+## 实际完成
+
+代码提交：`e3afbf53aec2a12b15826ab4ab626f152e3e2c71`。诊断状态 ANALYZED，固定源域门槛失败，不晋级训练。见 [完整结果](results.md)、[统计汇总](results_summary.json) 和 [完成核验](completion_verification.json)。全程只用源域缓存，保留所有负结果。

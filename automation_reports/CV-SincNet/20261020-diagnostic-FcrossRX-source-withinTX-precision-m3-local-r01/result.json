@@ -1,0 +1,3878 @@
+{
+  "status": "ANALYZED",
+  "run_id": "20261020-diagnostic-FcrossRX-source-withinTX-precision-m3-local-r01",
+  "source_run": "20261019-diagnostic-FcrossRX-feature-geometry-sourceV-m3-local-r01",
+  "source_commit": "31467086c3ced30237f3ac86e91eae68645425d7",
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "source_count": 27000,
+      "dimension": 160,
+      "partition_counts": [
+        9000,
+        9000,
+        9000
+      ],
+      "pairs": [
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "TX": [
+            "14-10",
+            "14-7"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.14804037526476327,
+              "cross_RX_signal": 0.14491478115812534,
+              "same_RX_day_signal": 0.168965464638604,
+              "within_TX_variance": 0.045108451642217925,
+              "SNR": 3.212586020631589,
+              "per_TX_RX_spread": [
+                0.01354968124906849,
+                0.010088432562400539
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.09350102964502709,
+                0.06961631161277079
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.037824099682834796,
+              "cross_RX_signal": 0.03702500474295155,
+              "same_RX_day_signal": 0.04322843118446987,
+              "within_TX_variance": 0.01277700358578306,
+              "SNR": 2.897784640535687,
+              "per_TX_RX_spread": [
+                0.0034172919964585574,
+                0.002558606583451764
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.09229686856715684,
+                0.0691048279727458
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.03760632395514797,
+              "cross_RX_signal": 0.0367029097765118,
+              "same_RX_day_signal": 0.043583566643910075,
+              "within_TX_variance": 0.013144247227652202,
+              "SNR": 2.7923173644587327,
+              "per_TX_RX_spread": [
+                0.003907862610318586,
+                0.003005323545363708
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.10647282828838386,
+                0.08188243285514597
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.0455935120013833,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000012030486749172707,
+              "eigenvalue_max": 0.00872786098066607,
+              "effective_rank": 12.175446905004332,
+              "weight_min": 0.25,
+              "weight_max": 1.6562911719832285,
+              "weight_mean": 0.9999999999999998
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.03011381329526195,
+              "dimension": 160,
+              "eigenvalue_min": 0.000001138908262165441,
+              "eigenvalue_max": 0.004287267752080341,
+              "effective_rank": 16.012808160947756,
+              "weight_min": 0.25,
+              "weight_max": 1.7599435571732895,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            0,
+            2
+          ],
+          "TX": [
+            "14-10",
+            "20-15"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.2730562492065347,
+              "cross_RX_signal": 0.26766636419884804,
+              "same_RX_day_signal": 0.30453059052490317,
+              "within_TX_variance": 0.04558891731115856,
+              "SNR": 5.87130337779118,
+              "per_TX_RX_spread": [
+                0.01354968124906849,
+                0.019261827891785505
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.05062153135910084,
+                0.07196207842340618
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.06992606181760544,
+              "cross_RX_signal": 0.06856149919726051,
+              "same_RX_day_signal": 0.07803638586519983,
+              "within_TX_variance": 0.012914010232644947,
+              "SNR": 5.309078896650237,
+              "per_TX_RX_spread": [
+                0.00342106236304309,
+                0.0048358889068619605
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.04989771815228603,
+                0.07053359339399023
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.06967704519717854,
+              "cross_RX_signal": 0.06802544492537418,
+              "same_RX_day_signal": 0.07927091537169768,
+              "within_TX_variance": 0.013531180069422704,
+              "SNR": 5.0273105949639785,
+              "per_TX_RX_spread": [
+                0.003938262023195171,
+                0.005739172988085478
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.0578939546447003,
+                0.08436803308499505
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.04525058052823689,
+              "dimension": 160,
+              "eigenvalue_min": 0.00000119684745395597,
+              "eigenvalue_max": 0.008854060501463647,
+              "effective_rank": 12.54586413437471,
+              "weight_min": 0.25,
+              "weight_max": 1.6679707950636304,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.02443129728950865,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000010467145974722719,
+              "eigenvalue_max": 0.002840297611911103,
+              "effective_rank": 18.567364342899815,
+              "weight_min": 0.25,
+              "weight_max": 1.8308478603244427,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            0,
+            3
+          ],
+          "TX": [
+            "14-10",
+            "20-19"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.14744246447016784,
+              "cross_RX_signal": 0.14435903287221838,
+              "same_RX_day_signal": 0.16534611895839582,
+              "within_TX_variance": 0.04975125398166441,
+              "SNR": 2.901615965809047,
+              "per_TX_RX_spread": [
+                0.01354968124906849,
+                0.020203209747412874
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.09386098659349014,
+                0.13995112980076596
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.03745285852638193,
+              "cross_RX_signal": 0.036661822139231075,
+              "same_RX_day_signal": 0.042101839715941974,
+              "within_TX_variance": 0.014098268804910441,
+              "SNR": 2.6004485122642667,
+              "per_TX_RX_spread": [
+                0.0034227348152770258,
+                0.005087268448334502
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.09335964814510478,
+                0.13876201867475427
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.03737440754690522,
+              "cross_RX_signal": 0.03646227690696133,
+              "same_RX_day_signal": 0.04253581238279259,
+              "within_TX_variance": 0.014363972928575549,
+              "SNR": 2.5384534688466047,
+              "per_TX_RX_spread": [
+                0.003885076853155486,
+                0.00562236741142225
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.10655058275896513,
+                0.1541968271967359
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.049256379558676525,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000013651288163863537,
+              "eigenvalue_max": 0.015559013094946426,
+              "effective_rank": 7.6714109147189316,
+              "weight_min": 0.25,
+              "weight_max": 1.6418479379944821,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.029571244303553786,
+              "dimension": 160,
+              "eigenvalue_min": 0.000001279326055711716,
+              "eigenvalue_max": 0.0041992102750191005,
+              "effective_rank": 15.747386437757555,
+              "weight_min": 0.25,
+              "weight_max": 1.790082848257954,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            0,
+            4
+          ],
+          "TX": [
+            "14-10",
+            "6-15"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 1.37505397652918,
+              "cross_RX_signal": 1.3611868957516855,
+              "same_RX_day_signal": 1.446215605386088,
+              "within_TX_variance": 0.07993723954655937,
+              "SNR": 17.028194912320725,
+              "per_TX_RX_spread": [
+                0.01354968124906849,
+                0.05490847070937407
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.009954313615093963,
+                0.04033867125869741
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.34499909343810586,
+              "cross_RX_signal": 0.341504365826855,
+              "same_RX_day_signal": 0.3630247713632212,
+              "within_TX_variance": 0.021990174547217394,
+              "SNR": 15.529861534003535,
+              "per_TX_RX_spread": [
+                0.0034388532035251112,
+                0.013777227653293398
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.010069719592599976,
+                0.04034275702430857
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.3447910534102794,
+              "cross_RX_signal": 0.3411314008560568,
+              "same_RX_day_signal": 0.3635060372941391,
+              "within_TX_variance": 0.02214105895070531,
+              "SNR": 15.407185429366736,
+              "per_TX_RX_spread": [
+                0.004125307918623223,
+                0.014319657644735816
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.012093017260419045,
+                0.041976955533267114
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.08381921958072322,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000011175329099291466,
+              "eigenvalue_max": 0.04592246982533186,
+              "effective_rank": 3.1444047212443667,
+              "weight_min": 0.25,
+              "weight_max": 1.4822108841945068,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.040107087740061984,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000010609325671700668,
+              "eigenvalue_max": 0.01608268547017491,
+              "effective_rank": 5.53508515023401,
+              "weight_min": 0.25,
+              "weight_max": 1.6632554409040983,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            0,
+            5
+          ],
+          "TX": [
+            "14-10",
+            "8-20"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.4050136342570918,
+              "cross_RX_signal": 0.39758112415636787,
+              "same_RX_day_signal": 0.44543059323206446,
+              "within_TX_variance": 0.05085167433230925,
+              "SNR": 7.818447069377217,
+              "per_TX_RX_spread": [
+                0.01354968124906849,
+                0.02289251500250012
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.034080293117083264,
+                0.05757948154876824
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.1030756194496911,
+              "cross_RX_signal": 0.10120419183101728,
+              "same_RX_day_signal": 0.11338708566774941,
+              "within_TX_variance": 0.014309498318019592,
+              "SNR": 7.072518517548123,
+              "per_TX_RX_spread": [
+                0.0034211475689167334,
+                0.005741945815437936
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.0338044057960474,
+                0.05673624492773363
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.10285009147178556,
+              "cross_RX_signal": 0.10059140972184259,
+              "same_RX_day_signal": 0.1148714473305336,
+              "within_TX_variance": 0.015093160283106406,
+              "SNR": 6.664701615501516,
+              "per_TX_RX_spread": [
+                0.004080373098363578,
+                0.007117461846519527
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.040563832534474945,
+                0.07075615965817436
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.05060281746631087,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000011120702413403595,
+              "eigenvalue_max": 0.009415630664197344,
+              "effective_rank": 11.525977016955029,
+              "weight_min": 0.25,
+              "weight_max": 1.6317007642789554,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.02728170823493673,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000010595096752925758,
+              "eigenvalue_max": 0.004708573551831233,
+              "effective_rank": 14.83300926441481,
+              "weight_min": 0.25,
+              "weight_max": 1.7914427125167407,
+              "weight_mean": 0.9999999999999998
+            }
+          }
+        },
+        {
+          "indices": [
+            1,
+            2
+          ],
+          "TX": [
+            "14-7",
+            "20-15"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.28488732256562155,
+              "cross_RX_signal": 0.2800022712974628,
+              "same_RX_day_signal": 0.31342392367941657,
+              "within_TX_variance": 0.04298080459700189,
+              "SNR": 6.514588871074653,
+              "per_TX_RX_spread": [
+                0.010088432562400539,
+                0.019261827891785505
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.036029824028402276,
+                0.06879168444788271
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.07194317827968941,
+              "cross_RX_signal": 0.07070794973235876,
+              "same_RX_day_signal": 0.07929213323523977,
+              "within_TX_variance": 0.01212657249976715,
+              "SNR": 5.830827278995485,
+              "per_TX_RX_spread": [
+                0.0025567202465268547,
+                0.00483369199642617
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.036158879676252274,
+                0.0683613655143798
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.07192769387391307,
+              "cross_RX_signal": 0.07039459038021854,
+              "same_RX_day_signal": 0.08099987375124176,
+              "within_TX_variance": 0.012891511339661273,
+              "SNR": 5.460538219723443,
+              "per_TX_RX_spread": [
+                0.003074147560379408,
+                0.0058131283898794975
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.04367022442740527,
+                0.08257919193053553
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.04417574850810586,
+              "dimension": 160,
+              "eigenvalue_min": 9.857758476772652e-7,
+              "eigenvalue_max": 0.008217341055132563,
+              "effective_rank": 13.35530869557319,
+              "weight_min": 0.25,
+              "weight_max": 1.6532333462262407,
+              "weight_mean": 0.9999999999999998
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.024871609441483745,
+              "dimension": 160,
+              "eigenvalue_min": 8.852418655665899e-7,
+              "eigenvalue_max": 0.0034551452890678627,
+              "effective_rank": 17.532232160791256,
+              "weight_min": 0.25,
+              "weight_max": 1.7820852752327117,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            1,
+            3
+          ],
+          "TX": [
+            "14-7",
+            "20-19"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.13678365494408623,
+              "cross_RX_signal": 0.13155022423652335,
+              "same_RX_day_signal": 0.16231013537601677,
+              "within_TX_variance": 0.04714314126750774,
+              "SNR": 2.7904424843066438,
+              "per_TX_RX_spread": [
+                0.010088432562400539,
+                0.020203209747412874
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.07668882832355983,
+                0.1535779194955085
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.03430923724646766,
+              "cross_RX_signal": 0.032985778609208476,
+              "same_RX_day_signal": 0.040834530452406606,
+              "within_TX_variance": 0.013257488179556189,
+              "SNR": 2.4880865939653973,
+              "per_TX_RX_spread": [
+                0.002554993478555835,
+                0.005081475353350697
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.07745742517784832,
+                0.1540504898657183
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.034353057043788465,
+              "cross_RX_signal": 0.03294635637116798,
+              "same_RX_day_signal": 0.04131694182042299,
+              "within_TX_variance": 0.013545663666520161,
+              "SNR": 2.4322437927201093,
+              "per_TX_RX_spread": [
+                0.0029470248347656046,
+                0.0055780153660586595
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.0894491882976354,
+                0.16930598647139303
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.04818154753854549,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000011723535466646672,
+              "eigenvalue_max": 0.011668994125671881,
+              "effective_rank": 9.956647661120044,
+              "weight_min": 0.25,
+              "weight_max": 1.6120744204359112,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.03001155645552888,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000011052931290768039,
+              "eigenvalue_max": 0.004533008220145314,
+              "effective_rank": 15.285480414355513,
+              "weight_min": 0.25,
+              "weight_max": 1.7354354096864437,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            1,
+            4
+          ],
+          "TX": [
+            "14-7",
+            "6-15"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 1.362063924547717,
+              "cross_RX_signal": 1.3483693414195699,
+              "same_RX_day_signal": 1.4324286181748096,
+              "within_TX_variance": 0.0773291268324027,
+              "SNR": 17.436758911579638,
+              "per_TX_RX_spread": [
+                0.010088432562400539,
+                0.05490847070937407
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.007481950421521293,
+                0.040722129332580466
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.34206645263425894,
+              "cross_RX_signal": 0.338613341274932,
+              "same_RX_day_signal": 0.35990279826240273,
+              "within_TX_variance": 0.02114908286761905,
+              "SNR": 16.010781337160314,
+              "per_TX_RX_spread": [
+                0.0025793423985993537,
+                0.013777568810784019
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.007617367906674107,
+                0.04068820430674505
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.3417237411366588,
+              "cross_RX_signal": 0.33813112304536064,
+              "same_RX_day_signal": 0.36024649787268487,
+              "within_TX_variance": 0.02132745417913188,
+              "SNR": 15.854265596135209,
+              "per_TX_RX_spread": [
+                0.003153424169777502,
+                0.01427103796758922
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.00932603938193074,
+                0.04220563265238009
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.08274438756059219,
+              "dimension": 160,
+              "eigenvalue_min": 9.66518681730556e-7,
+              "eigenvalue_max": 0.04610395102513137,
+              "effective_rank": 3.075418221883281,
+              "weight_min": 0.25,
+              "weight_max": 1.4619958147994803,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.04054739989203707,
+              "dimension": 160,
+              "eigenvalue_min": 9.001029738790685e-7,
+              "eigenvalue_max": 0.016644429057849533,
+              "effective_rank": 5.29262713295605,
+              "weight_min": 0.25,
+              "weight_max": 1.6212943309086403,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            1,
+            5
+          ],
+          "TX": [
+            "14-7",
+            "8-20"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.39304191199864413,
+              "cross_RX_signal": 0.3864598868596217,
+              "same_RX_day_signal": 0.4295791615144386,
+              "within_TX_variance": 0.048243561618152575,
+              "SNR": 8.010600252080241,
+              "per_TX_RX_spread": [
+                0.010088432562400539,
+                0.02289251500250012
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.026104734036899092,
+                0.05923645837741404
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.09933928466922051,
+              "cross_RX_signal": 0.0976791793342023,
+              "same_RX_day_signal": 0.1086797051982352,
+              "within_TX_variance": 0.013489048832347712,
+              "SNR": 7.241368946634738,
+              "per_TX_RX_spread": [
+                0.0025598631865928513,
+                0.0057428210012978485
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.026206845758137087,
+                0.05879268274407998
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.09925238869224547,
+              "cross_RX_signal": 0.09722656052696657,
+              "same_RX_day_signal": 0.11030597261894758,
+              "within_TX_variance": 0.014277949296744741,
+              "SNR": 6.809560568276668,
+              "per_TX_RX_spread": [
+                0.0031566896211552044,
+                0.00699802637182099
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.03246735875511786,
+                0.07197648804906588
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.04952798544617983,
+              "dimension": 160,
+              "eigenvalue_min": 9.114940807793048e-7,
+              "eigenvalue_max": 0.009870865735843322,
+              "effective_rank": 11.389643916357867,
+              "weight_min": 0.25,
+              "weight_max": 1.608554447779923,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.027722020386911822,
+              "dimension": 160,
+              "eigenvalue_min": 8.615676709670943e-7,
+              "eigenvalue_max": 0.005373759599902997,
+              "effective_rank": 13.423628042996402,
+              "weight_min": 0.25,
+              "weight_max": 1.7399973041766026,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            2,
+            3
+          ],
+          "TX": [
+            "20-15",
+            "20-19"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.2699871642729182,
+              "cross_RX_signal": 0.26243918725099447,
+              "same_RX_day_signal": 0.3066250097137428,
+              "within_TX_variance": 0.04762360693644837,
+              "SNR": 5.510695307081804,
+              "per_TX_RX_spread": [
+                0.019261827891785505,
+                0.020203209747412874
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.07339539530490798,
+                0.07698244290053645
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.06857978601553794,
+              "cross_RX_signal": 0.06667793486624843,
+              "same_RX_day_signal": 0.0779625093679772,
+              "within_TX_variance": 0.013425559087084767,
+              "SNR": 4.966492228274637,
+              "per_TX_RX_spread": [
+                0.004833739798024867,
+                0.005087501489720816
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.07249384384385978,
+                0.07629962595461319
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.0685564904816561,
+              "cross_RX_signal": 0.06627701439037059,
+              "same_RX_day_signal": 0.0798119823272192,
+              "within_TX_variance": 0.014126094950658103,
+              "SNR": 4.6918143069173475,
+              "per_TX_RX_spread": [
+                0.005821541235718072,
+                0.005760713632272171
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.08783650394131039,
+                0.08691872567375555
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.047838616065399076,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000012279283538000114,
+              "eigenvalue_max": 0.011460581296477012,
+              "effective_rank": 10.32950834274195,
+              "weight_min": 0.25,
+              "weight_max": 1.634367895972188,
+              "weight_mean": 0.9999999999999997
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.02432904044977558,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000010936622504230858,
+              "eigenvalue_max": 0.0030421659012136474,
+              "effective_rank": 17.806876717861435,
+              "weight_min": 0.25,
+              "weight_max": 1.8134594731752065,
+              "weight_mean": 0.9999999999999998
+            }
+          }
+        },
+        {
+          "indices": [
+            2,
+            4
+          ],
+          "TX": [
+            "20-15",
+            "6-15"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 1.3490125899540653,
+              "cross_RX_signal": 1.3324443660347494,
+              "same_RX_day_signal": 1.4324720105005926,
+              "within_TX_variance": 0.07780959250134334,
+              "SNR": 17.12442287898816,
+              "per_TX_RX_spread": [
+                0.019261827891785505,
+                0.05490847070937407
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.014456009108363154,
+                0.041208828007414225
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.33899410724047585,
+              "cross_RX_signal": 0.33483004377120945,
+              "same_RX_day_signal": 0.36017146946776896,
+              "within_TX_variance": 0.021238940868156253,
+              "SNR": 15.764912471375789,
+              "per_TX_RX_spread": [
+                0.004847899118642808,
+                0.013775629823459562
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.01447868615384883,
+                0.04114215578836318
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.3390813070673401,
+              "cross_RX_signal": 0.3344581211449248,
+              "same_RX_day_signal": 0.36249164409280904,
+              "within_TX_variance": 0.02205537846004909,
+              "SNR": 15.164469825387906,
+              "per_TX_RX_spread": [
+                0.0062623974846899,
+                0.014591123347523164
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.018724010836550523,
+                0.043626159525068466
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.08240145608744577,
+              "dimension": 160,
+              "eigenvalue_min": 8.617836723312745e-7,
+              "eigenvalue_max": 0.04587487127565227,
+              "effective_rank": 3.064643680881812,
+              "weight_min": 0.25,
+              "weight_max": 1.458179046221037,
+              "weight_mean": 0.9999999999999998
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.034864883886283775,
+              "dimension": 160,
+              "eigenvalue_min": 7.955201652303758e-7,
+              "eigenvalue_max": 0.016350692478808843,
+              "effective_rank": 4.261291708707796,
+              "weight_min": 0.25,
+              "weight_max": 1.6341996558320264,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            2,
+            5
+          ],
+          "TX": [
+            "20-15",
+            "8-20"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.22328089666910966,
+              "cross_RX_signal": 0.21638324022357355,
+              "same_RX_day_signal": 0.26352715453744774,
+              "within_TX_variance": 0.04872402728709321,
+              "SNR": 4.440996614434057,
+              "per_TX_RX_spread": [
+                0.019261827891785505,
+                0.02289251500250012
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.08901718946385874,
+                0.10579615583372769
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.05652852753995381,
+              "cross_RX_signal": 0.05479221347752267,
+              "same_RX_day_signal": 0.06683527275781986,
+              "within_TX_variance": 0.013484406755028162,
+              "SNR": 4.063375903214381,
+              "per_TX_RX_spread": [
+                0.004836524228979332,
+                0.005740504234683881
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.08827028371400641,
+                0.10476861346437118
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.0564558177371723,
+              "cross_RX_signal": 0.054279095979092085,
+              "same_RX_day_signal": 0.06910178574184182,
+              "within_TX_variance": 0.014599999439286646,
+              "SNR": 3.7177464427179565,
+              "per_TX_RX_spread": [
+                0.005966162411276186,
+                0.006917101115082558
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.10991639237275265,
+                0.12743582018659588
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.049185053973033424,
+              "dimension": 160,
+              "eigenvalue_min": 7.407357035026885e-7,
+              "eigenvalue_max": 0.01128611084103424,
+              "effective_rank": 9.870311504327198,
+              "weight_min": 0.25,
+              "weight_max": 1.57363859037325,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.02203950438115853,
+              "dimension": 160,
+              "eigenvalue_min": 6.525760032836652e-7,
+              "eigenvalue_max": 0.005262495425931643,
+              "effective_rank": 11.152373790717373,
+              "weight_min": 0.25,
+              "weight_max": 1.7508433343346121,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            3,
+            4
+          ],
+          "TX": [
+            "20-19",
+            "6-15"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 1.3124777809461512,
+              "cross_RX_signal": 1.2981867372618259,
+              "same_RX_day_signal": 1.3825497105947733,
+              "within_TX_variance": 0.08197192917184919,
+              "SNR": 15.83696700049911,
+              "per_TX_RX_spread": [
+                0.020203209747412874,
+                0.05490847070937407
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.015562637614081689,
+                0.042296280753251765
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.32948315857626437,
+              "cross_RX_signal": 0.32588757905583277,
+              "same_RX_day_signal": 0.3471912884578353,
+              "within_TX_variance": 0.022466061084528515,
+              "SNR": 14.505772855761467,
+              "per_TX_RX_spread": [
+                0.005105137163306169,
+                0.013771866345021894
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.015665332131089078,
+                0.042259561978158194
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.3292628223838474,
+              "cross_RX_signal": 0.3254877478875452,
+              "same_RX_day_signal": 0.34770414232589775,
+              "within_TX_variance": 0.02258152501500077,
+              "SNR": 14.413895769719966,
+              "per_TX_RX_spread": [
+                0.00584981816022984,
+                0.014236459420122551
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.017972468082733888,
+                0.04373884888914834
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.0864072551178854,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000010987605193762436,
+              "eigenvalue_max": 0.04636129799105019,
+              "effective_rank": 3.1927960239945334,
+              "weight_min": 0.25,
+              "weight_max": 1.4626595411291137,
+              "weight_mean": 0.9999999999999998
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.040004830900328914,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000010497444603581581,
+              "eigenvalue_max": 0.01607287467140347,
+              "effective_rank": 5.484734217664965,
+              "weight_min": 0.25,
+              "weight_max": 1.6516626158266356,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            3,
+            5
+          ],
+          "TX": [
+            "20-19",
+            "8-20"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.38555016063347697,
+              "cross_RX_signal": 0.3762202288647703,
+              "same_RX_day_signal": 0.4315734235233651,
+              "within_TX_variance": 0.05288636395759906,
+              "SNR": 7.113747301032075,
+              "per_TX_RX_spread": [
+                0.020203209747412874,
+                0.02289251500250012
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.0537004876329358,
+                0.06084870840565214
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.09787687084462393,
+              "cross_RX_signal": 0.09552924174187379,
+              "same_RX_day_signal": 0.1095877258139091,
+              "within_TX_variance": 0.014799443937151848,
+              "SNR": 6.454921019164885,
+              "per_TX_RX_spread": [
+                0.005087297876256324,
+                0.005741427836854279
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.05325382870726152,
+                0.06010126043256985
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.09762786636217893,
+              "cross_RX_signal": 0.09482514073187465,
+              "same_RX_day_signal": 0.11129225999029879,
+              "within_TX_variance": 0.01555822496279069,
+              "SNR": 6.094855997947069,
+              "per_TX_RX_spread": [
+                0.0058512950973558355,
+                0.0070427870566456665
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.061706157799447096,
+                0.07427130613557102
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.05319085300347305,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000010990059925761723,
+              "eigenvalue_max": 0.011044234717941281,
+              "effective_rank": 10.227818541450912,
+              "weight_min": 0.25,
+              "weight_max": 1.5979070067717733,
+              "weight_mean": 0.9999999999999998
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.027179451395203662,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000010215445288860696,
+              "eigenvalue_max": 0.004745447084362753,
+              "effective_rank": 14.404622177245772,
+              "weight_min": 0.25,
+              "weight_max": 1.7776203211155008,
+              "weight_mean": 0.9999999999999997
+            }
+          }
+        },
+        {
+          "indices": [
+            4,
+            5
+          ],
+          "TX": [
+            "6-15",
+            "8-20"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 1.1207796344436762,
+              "cross_RX_signal": 1.103916793472043,
+              "same_RX_day_signal": 1.2060590247296816,
+              "within_TX_variance": 0.08307234952249404,
+              "SNR": 13.288618894462934,
+              "per_TX_RX_spread": [
+                0.05490847070937407,
+                0.02289251500250012
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.0497396824054789,
+                0.020737536685621477
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.2818766445822323,
+              "cross_RX_signal": 0.27764199530069106,
+              "same_RX_day_signal": 0.3034478965314369,
+              "within_TX_variance": 0.022477387317157115,
+              "SNR": 12.352058154408603,
+              "per_TX_RX_spread": [
+                0.013771900104653756,
+                0.005750295570907722
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.04960308720494013,
+                0.02071118803436077
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.28212380844765494,
+              "cross_RX_signal": 0.2773491235843645,
+              "same_RX_day_signal": 0.30598238410752254,
+              "within_TX_variance": 0.02336457332464577,
+              "SNR": 11.870498113988964,
+              "per_TX_RX_spread": [
+                0.014765229951008776,
+                0.007404474528880963
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.05323698074177424,
+                0.026697306388381855
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.08775369302551975,
+              "dimension": 160,
+              "eigenvalue_min": 7.444133027391065e-7,
+              "eigenvalue_max": 0.04959831270868121,
+              "effective_rank": 2.9687126610888295,
+              "weight_min": 0.25,
+              "weight_max": 1.418096429696314,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.03771529483171185,
+              "dimension": 160,
+              "eigenvalue_min": 7.156522433454733e-7,
+              "eigenvalue_max": 0.018885430935851353,
+              "effective_rank": 3.7577091162781295,
+              "weight_min": 0.25,
+              "weight_max": 1.5801194890903818,
+              "weight_mean": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "model_seed": 2026092702,
+      "source_count": 27000,
+      "dimension": 160,
+      "partition_counts": [
+        9000,
+        9000,
+        9000
+      ],
+      "pairs": [
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "TX": [
+            "14-10",
+            "14-7"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.17534440064015613,
+              "cross_RX_signal": 0.17014066258525423,
+              "same_RX_day_signal": 0.20687979849585772,
+              "within_TX_variance": 0.06249058175871217,
+              "SNR": 2.7226608841985045,
+              "per_TX_RX_spread": [
+                0.023295820150926877,
+                0.019708714740190862
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.13692094409973152,
+                0.11583776882445843
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.04480639989992835,
+              "cross_RX_signal": 0.04348065329334105,
+              "same_RX_day_signal": 0.05292454199752075,
+              "within_TX_variance": 0.017634787490226303,
+              "SNR": 2.465618217256049,
+              "per_TX_RX_spread": [
+                0.0058721543245328,
+                0.004979592427320769
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.13505211812059195,
+                0.11452432404191547
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.044671323642953155,
+              "cross_RX_signal": 0.04319414362199493,
+              "same_RX_day_signal": 0.0535689795437341,
+              "within_TX_variance": 0.017937619443402747,
+              "SNR": 2.408019846684909,
+              "per_TX_RX_spread": [
+                0.006380393443712466,
+                0.0055545714373420535
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.1477143174674147,
+                0.12859547548741318
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.06251058300415273,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000012696681746481257,
+              "eigenvalue_max": 0.02164797311418434,
+              "effective_rank": 6.665043686805516,
+              "weight_min": 0.25,
+              "weight_max": 1.6299527990490164,
+              "weight_mean": 0.9999999999999998
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.03588049395611836,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000011841834006369607,
+              "eigenvalue_max": 0.007324062640280901,
+              "effective_rank": 12.844306989500355,
+              "weight_min": 0.25,
+              "weight_max": 1.790618643506262,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            0,
+            2
+          ],
+          "TX": [
+            "14-10",
+            "20-15"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.31816256678654276,
+              "cross_RX_signal": 0.31127522426415377,
+              "same_RX_day_signal": 0.3554009793474998,
+              "within_TX_variance": 0.053611468109270824,
+              "SNR": 5.8061313230541085,
+              "per_TX_RX_spread": [
+                0.023295820150926877,
+                0.014409799326678418
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.0748399433523743,
+                0.046292792369655486
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.08111023921832812,
+              "cross_RX_signal": 0.07936950877093028,
+              "same_RX_day_signal": 0.0907047130483011,
+              "within_TX_variance": 0.015183469138629812,
+              "SNR": 5.227363262391611,
+              "per_TX_RX_spread": [
+                0.00586696293945617,
+                0.003630728389514079
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.07391960754587651,
+                0.04574462467687418
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.08072969247770041,
+              "cross_RX_signal": 0.0786849329149287,
+              "same_RX_day_signal": 0.09186071646633628,
+              "within_TX_variance": 0.015847475481671862,
+              "SNR": 4.965139905465099,
+              "per_TX_RX_spread": [
+                0.006388776529608116,
+                0.004708175232063303
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.08119440778472073,
+                0.05983579139800006
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.05343634807346248,
+              "dimension": 160,
+              "eigenvalue_min": 0.000001144535311140852,
+              "eigenvalue_max": 0.015164169081197604,
+              "effective_rank": 8.695731943785765,
+              "weight_min": 0.25,
+              "weight_max": 1.6417228203642982,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.029876021201375943,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000010618107354959103,
+              "eigenvalue_max": 0.0061043147747053255,
+              "effective_rank": 12.938058613887529,
+              "weight_min": 0.25,
+              "weight_max": 1.7842002237707582,
+              "weight_mean": 0.9999999999999998
+            }
+          }
+        },
+        {
+          "indices": [
+            0,
+            3
+          ],
+          "TX": [
+            "14-10",
+            "20-19"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.16097113589071127,
+              "cross_RX_signal": 0.15644151787012722,
+              "same_RX_day_signal": 0.18495442491021777,
+              "within_TX_variance": 0.07210910667403263,
+              "SNR": 2.169511246024959,
+              "per_TX_RX_spread": [
+                0.023295820150926877,
+                0.04004818029769862
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.14891072694824098,
+                0.25599457767307876
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.04118708168804769,
+              "cross_RX_signal": 0.04002353627241088,
+              "same_RX_day_signal": 0.04743082648115144,
+              "within_TX_variance": 0.020222355873627994,
+              "SNR": 1.979172779003738,
+              "per_TX_RX_spread": [
+                0.005875918475849697,
+                0.010065394567807745
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.14681157696452973,
+                0.251486887597837
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.040926998014677106,
+              "cross_RX_signal": 0.039620468065741314,
+              "same_RX_day_signal": 0.04777418926064068,
+              "within_TX_variance": 0.02030723192195163,
+              "SNR": 1.951052128523363,
+              "per_TX_RX_spread": [
+                0.006371911580278436,
+                0.010597762012051887
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.16082373306912154,
+                0.26748199931578975
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.07158268314267743,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000013697495184372965,
+              "eigenvalue_max": 0.035233081770022476,
+              "effective_rank": 3.872852962247614,
+              "weight_min": 0.25,
+              "weight_max": 1.579869084457801,
+              "weight_mean": 0.9999999999999998
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.03716400956317014,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000013101752137289736,
+              "eigenvalue_max": 0.009694869249448557,
+              "effective_rank": 10.22092718997285,
+              "weight_min": 0.25,
+              "weight_max": 1.7759204256434964,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            0,
+            4
+          ],
+          "TX": [
+            "14-10",
+            "6-15"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.46380590907252095,
+              "cross_RX_signal": 0.45362265191266726,
+              "same_RX_day_signal": 0.5111160222963306,
+              "within_TX_variance": 0.06310308682023447,
+              "SNR": 7.188596862225285,
+              "per_TX_RX_spread": [
+                0.023295820150926877,
+                0.02941352484980463
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.05135506362546431,
+                0.06484139344846343
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.11698272310886483,
+              "cross_RX_signal": 0.11441511953616149,
+              "same_RX_day_signal": 0.12902572510122812,
+              "within_TX_variance": 0.017789167895847738,
+              "SNR": 6.431729702369481,
+              "per_TX_RX_spread": [
+                0.005870495311392602,
+                0.007389635632037461
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.05130873729968181,
+                0.06458618110958603
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.1173277587221051,
+              "cross_RX_signal": 0.11451014671263116,
+              "same_RX_day_signal": 0.1304241287951904,
+              "within_TX_variance": 0.01822113902877666,
+              "SNR": 6.284466988138623,
+              "per_TX_RX_spread": [
+                0.006417382572845212,
+                0.008407833558773822
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.05604204305972945,
+                0.07342435408692378
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.06346248694977166,
+              "dimension": 160,
+              "eigenvalue_min": 0.000001236700889613993,
+              "eigenvalue_max": 0.016753495196965226,
+              "effective_rank": 8.368446483704876,
+              "weight_min": 0.25,
+              "weight_max": 1.6207587684686442,
+              "weight_mean": 0.9999999999999998
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.03407288894381623,
+              "dimension": 160,
+              "eigenvalue_min": 0.000001198612011273846,
+              "eigenvalue_max": 0.006382064413115344,
+              "effective_rank": 14.289323075088753,
+              "weight_min": 0.25,
+              "weight_max": 1.8097112993850666,
+              "weight_mean": 0.9999999999999998
+            }
+          }
+        },
+        {
+          "indices": [
+            0,
+            5
+          ],
+          "TX": [
+            "14-10",
+            "8-20"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.505274128614458,
+              "cross_RX_signal": 0.4944593684166505,
+              "same_RX_day_signal": 0.5554356624263654,
+              "within_TX_variance": 0.05686235419747154,
+              "SNR": 8.695724533308846,
+              "per_TX_RX_spread": [
+                0.023295820150926877,
+                0.027322514929636776
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.04711371983005269,
+                0.055257351108804906
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.1282031057194311,
+              "cross_RX_signal": 0.12548242430647963,
+              "same_RX_day_signal": 0.14099959106430318,
+              "within_TX_variance": 0.015978294797070358,
+              "SNR": 7.853305117983366,
+              "per_TX_RX_spread": [
+                0.005864626126190661,
+                0.006857251745437251
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.04673663390393889,
+                0.054647109213390915
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.12803278749010524,
+              "cross_RX_signal": 0.12494013571553986,
+              "same_RX_day_signal": 0.14247550132054518,
+              "within_TX_variance": 0.01662117206730929,
+              "SNR": 7.516926917643404,
+              "per_TX_RX_spread": [
+                0.0064027516933323255,
+                0.008172483275552447
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.05124655625402816,
+                0.06541119255832509
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.05688815762993773,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000011191915166862722,
+              "eigenvalue_max": 0.015390262037030394,
+              "effective_rank": 8.187053526225794,
+              "weight_min": 0.25,
+              "weight_max": 1.6077768172071643,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.02800146663968273,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000010764478194786046,
+              "eigenvalue_max": 0.005937955831373025,
+              "effective_rank": 12.66316588189153,
+              "weight_min": 0.25,
+              "weight_max": 1.798880145912135,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            1,
+            2
+          ],
+          "TX": [
+            "14-7",
+            "20-15"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.24673844305651954,
+              "cross_RX_signal": 0.2409703178887775,
+              "same_RX_day_signal": 0.2801699590376358,
+              "within_TX_variance": 0.04879701523774767,
+              "SNR": 4.938218387225686,
+              "per_TX_RX_spread": [
+                0.019708714740190862,
+                0.014409799326678418
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.08178897265383381,
+                0.05979906344037533
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.0627450755152602,
+              "cross_RX_signal": 0.061287688401691284,
+              "same_RX_day_signal": 0.07135537277367252,
+              "within_TX_variance": 0.01386915703163462,
+              "SNR": 4.418991598544754,
+              "per_TX_RX_spread": [
+                0.004967435794693763,
+                0.0036256241027619396
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.0810511201227926,
+                0.05915746208274169
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.06234000967380614,
+              "cross_RX_signal": 0.06057668377532223,
+              "same_RX_day_signal": 0.07259639378179313,
+              "within_TX_variance": 0.014548865330573408,
+              "SNR": 4.163670664269922,
+              "per_TX_RX_spread": [
+                0.005506070575623687,
+                0.00462096644048864
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.09089422253693513,
+                0.07628292195108793
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.04937313850606467,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000010845929874229558,
+              "eigenvalue_max": 0.013101232801752237,
+              "effective_rank": 9.668126059786783,
+              "weight_min": 0.25,
+              "weight_max": 1.671227563249215,
+              "weight_mean": 0.9999999999999998
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.02632356584495095,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000010275683661356186,
+              "eigenvalue_max": 0.003934382430458232,
+              "effective_rank": 16.459886554787047,
+              "weight_min": 0.25,
+              "weight_max": 1.8395433586075634,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            1,
+            3
+          ],
+          "TX": [
+            "14-7",
+            "20-19"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.1523802618067402,
+              "cross_RX_signal": 0.14540433896182045,
+              "same_RX_day_signal": 0.1863237530393551,
+              "within_TX_variance": 0.06729465380250947,
+              "SNR": 2.1607115981091236,
+              "per_TX_RX_spread": [
+                0.019708714740190862,
+                0.04004818029769862
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.1355441995810447,
+                0.2754263083456833
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.03826550809081487,
+              "cross_RX_signal": 0.03649158002290542,
+              "same_RX_day_signal": 0.04698844288113358,
+              "within_TX_variance": 0.018835295994517935,
+              "SNR": 1.9374041179669488,
+              "per_TX_RX_spread": [
+                0.004982595376885496,
+                0.010062823891202421
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.13654096023679896,
+                0.2757574181464897
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.03827834008739152,
+              "cross_RX_signal": 0.03638455759135058,
+              "same_RX_day_signal": 0.04761581912287696,
+              "within_TX_variance": 0.01898586030850459,
+              "SNR": 1.916402891421905,
+              "per_TX_RX_spread": [
+                0.00547006053418855,
+                0.010565977509033037
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.15034016891520224,
+                0.29039730612376075
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.06751947357527964,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000012981484750912673,
+              "eigenvalue_max": 0.030378266743374058,
+              "effective_rank": 4.450498014250304,
+              "weight_min": 0.25,
+              "weight_max": 1.5825922142916369,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.03361155420674515,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000012092831193708074,
+              "eigenvalue_max": 0.006750421095714529,
+              "effective_rank": 12.87835376536084,
+              "weight_min": 0.25,
+              "weight_max": 1.797702010227907,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            1,
+            4
+          ],
+          "TX": [
+            "14-7",
+            "6-15"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.3572833188916563,
+              "cross_RX_signal": 0.3491619091044501,
+              "same_RX_day_signal": 0.3977830622813574,
+              "within_TX_variance": 0.0582886339487113,
+              "SNR": 5.990222886535321,
+              "per_TX_RX_spread": [
+                0.019708714740190862,
+                0.02941352484980463
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.056445775516409766,
+                0.0842403597953914
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.0906743428272675,
+              "cross_RX_signal": 0.08862137492491359,
+              "same_RX_day_signal": 0.10100540453668838,
+              "within_TX_variance": 0.016451434784973098,
+              "SNR": 5.386847778520888,
+              "per_TX_RX_spread": [
+                0.004975203320517247,
+                0.007390368303018488
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.056139992464939725,
+                0.08339261616376568
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.09073081443016176,
+              "cross_RX_signal": 0.08844475333099686,
+              "same_RX_day_signal": 0.1021672441199204,
+              "within_TX_variance": 0.016860749611678882,
+              "SNR": 5.2456003065091545,
+              "per_TX_RX_spread": [
+                0.0055446999328991955,
+                0.008211370362663725
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.06269111195492438,
+                0.09284180297200197
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.05939927738237385,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000011760212957888163,
+              "eigenvalue_max": 0.015652545478754994,
+              "effective_rank": 8.477820684522818,
+              "weight_min": 0.25,
+              "weight_max": 1.6350221965364127,
+              "weight_mean": 0.9999999999999998
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.03052043358739124,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000010888318310900297,
+              "eigenvalue_max": 0.004024199982324373,
+              "effective_rank": 16.95032650858211,
+              "weight_min": 0.25,
+              "weight_max": 1.8501769248279925,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            1,
+            5
+          ],
+          "TX": [
+            "14-7",
+            "8-20"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.3555710796012764,
+              "cross_RX_signal": 0.34757902189633166,
+              "same_RX_day_signal": 0.3962718913475815,
+              "within_TX_variance": 0.05204790132594839,
+              "SNR": 6.678060268359884,
+              "per_TX_RX_spread": [
+                0.019708714740190862,
+                0.027322514929636776
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.056702831582480115,
+                0.07860806667954186
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.09009515599183002,
+              "cross_RX_signal": 0.08808203617333829,
+              "same_RX_day_signal": 0.10050903500351063,
+              "within_TX_variance": 0.014650116309150665,
+              "SNR": 6.012377943943083,
+              "per_TX_RX_spread": [
+                0.004968001509891298,
+                0.0068538046127089
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.056401983034482475,
+                0.07781160507258449
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.08993938708568099,
+              "cross_RX_signal": 0.08759017077169325,
+              "same_RX_day_signal": 0.1019307674363536,
+              "within_TX_variance": 0.015236607517651109,
+              "SNR": 5.748666208683456,
+              "per_TX_RX_spread": [
+                0.005530421043569667,
+                0.007940870049606877
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.06313974496048075,
+                0.09065937398735098
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.05282494806253992,
+              "dimension": 160,
+              "eigenvalue_min": 0.000001083128213437025,
+              "eigenvalue_max": 0.014799029142398027,
+              "effective_rank": 8.201293005539934,
+              "weight_min": 0.25,
+              "weight_max": 1.6203126119946538,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.024449011283257736,
+              "dimension": 160,
+              "eigenvalue_min": 9.812374714387363e-7,
+              "eigenvalue_max": 0.003672961259008416,
+              "effective_rank": 16.131449418622168,
+              "weight_min": 0.25,
+              "weight_max": 1.848784417904117,
+              "weight_mean": 0.9999999999999998
+            }
+          }
+        },
+        {
+          "indices": [
+            2,
+            3
+          ],
+          "TX": [
+            "20-15",
+            "20-19"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.30064620943237513,
+              "cross_RX_signal": 0.2897721467368834,
+              "same_RX_day_signal": 0.3504622106486956,
+              "within_TX_variance": 0.0584155401530681,
+              "SNR": 4.960531837548436,
+              "per_TX_RX_spread": [
+                0.014409799326678418,
+                0.04004818029769862
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.04972803455731268,
+                0.138205761832806
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.07622388805916655,
+              "cross_RX_signal": 0.07348300352765126,
+              "same_RX_day_signal": 0.08895828067635027,
+              "within_TX_variance": 0.016439214105347495,
+              "SNR": 4.469982753235634,
+              "per_TX_RX_spread": [
+                0.0036322607833196145,
+                0.010060000244694172
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.04942994446263773,
+                0.13690240956071764
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.07599406957369742,
+              "cross_RX_signal": 0.07286980510169962,
+              "same_RX_day_signal": 0.09055091467745899,
+              "within_TX_variance": 0.017025477213620948,
+              "SNR": 4.280044793305491,
+              "per_TX_RX_spread": [
+                0.00467416011862515,
+                0.01068138178257105
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.06414399094524448,
+                0.14658172569095998
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.058445238644589385,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000012533571704499477,
+              "eigenvalue_max": 0.02379295833143646,
+              "effective_rank": 5.301256715191971,
+              "weight_min": 0.25,
+              "weight_max": 1.6130988309364054,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.027607081452002726,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000011770413289739463,
+              "eigenvalue_max": 0.00531082389897153,
+              "effective_rank": 13.73985372126119,
+              "weight_min": 0.25,
+              "weight_max": 1.826830108550144,
+              "weight_mean": 1.0000000000000002
+            }
+          }
+        },
+        {
+          "indices": [
+            2,
+            4
+          ],
+          "TX": [
+            "20-15",
+            "6-15"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.31789358151896807,
+              "cross_RX_signal": 0.3094822543843019,
+              "same_RX_day_signal": 0.35916630617568424,
+              "within_TX_variance": 0.04940952029926995,
+              "SNR": 6.263615847913315,
+              "per_TX_RX_spread": [
+                0.014409799326678418,
+                0.02941352484980463
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.04656098733462418,
+                0.09504107079845737
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.08088191882967186,
+              "cross_RX_signal": 0.07876614311410363,
+              "same_RX_day_signal": 0.09142118268866196,
+              "within_TX_variance": 0.013931058606465303,
+              "SNR": 5.653995531793171,
+              "per_TX_RX_spread": [
+                0.0036243127521031282,
+                0.007383311806246126
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.046013586660613955,
+                0.09373712504305791
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.08133036101331258,
+              "cross_RX_signal": 0.07882398434772557,
+              "same_RX_day_signal": 0.09375436570142333,
+              "within_TX_variance": 0.014722312576379723,
+              "SNR": 5.354049096484318,
+              "per_TX_RX_spread": [
+                0.004728815090411351,
+                0.008205380166717766
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.05999208400263769,
+                0.10409750578606128
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.050325042451683594,
+              "dimension": 160,
+              "eigenvalue_min": 9.18772679693942e-7,
+              "eigenvalue_max": 0.01260236957702039,
+              "effective_rank": 9.556066103218418,
+              "weight_min": 0.25,
+              "weight_max": 1.6299128156277831,
+              "weight_mean": 0.9999999999999998
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.02451596083264882,
+              "dimension": 160,
+              "eigenvalue_min": 8.442765000655562e-7,
+              "eigenvalue_max": 0.0037717555053399425,
+              "effective_rank": 16.207317406904032,
+              "weight_min": 0.25,
+              "weight_max": 1.8350854328641453,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            2,
+            5
+          ],
+          "TX": [
+            "20-15",
+            "8-20"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.2568207686279802,
+              "cross_RX_signal": 0.2508951312007075,
+              "same_RX_day_signal": 0.2886924752592517,
+              "within_TX_variance": 0.04316878767650703,
+              "SNR": 5.811956849027929,
+              "per_TX_RX_spread": [
+                0.014409799326678418,
+                0.027322514929636776
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.057433555038384036,
+                0.1089001400660091
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.06500620157147291,
+              "cross_RX_signal": 0.06351413250632743,
+              "same_RX_day_signal": 0.07322793471179798,
+              "within_TX_variance": 0.012118333241240321,
+              "SNR": 5.241160747270118,
+              "per_TX_RX_spread": [
+                0.0036224673268094704,
+                0.006848526342862151
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.05703403610918549,
+                0.10782681070515895
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.0648758324936313,
+              "cross_RX_signal": 0.06298688710385716,
+              "same_RX_day_signal": 0.0751051847385251,
+              "within_TX_variance": 0.012952382004452704,
+              "SNR": 4.862957800519152,
+              "per_TX_RX_spread": [
+                0.004562377892736907,
+                0.007823754665414693
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.07243377316320047,
+                0.12421243571720478
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.043750713131849674,
+              "dimension": 160,
+              "eigenvalue_min": 7.955438238700199e-7,
+              "eigenvalue_max": 0.010515293371009577,
+              "effective_rank": 9.20239431920763,
+              "weight_min": 0.25,
+              "weight_max": 1.6105449650954309,
+              "weight_mean": 0.9999999999999998
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.01844453852851532,
+              "dimension": 160,
+              "eigenvalue_min": 7.323204008425515e-7,
+              "eigenvalue_max": 0.0033390980245999254,
+              "effective_rank": 14.999701141649373,
+              "weight_min": 0.25,
+              "weight_max": 1.8411617358381804,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            3,
+            4
+          ],
+          "TX": [
+            "20-19",
+            "6-15"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.40071885379819305,
+              "cross_RX_signal": 0.3884606105092566,
+              "same_RX_day_signal": 0.45295134305569945,
+              "within_TX_variance": 0.06790715886403176,
+              "SNR": 5.7204662513868145,
+              "per_TX_RX_spread": [
+                0.04004818029769862,
+                0.02941352484980463
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.10309457178990947,
+                0.07571816563652271
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.10133619552225101,
+              "cross_RX_signal": 0.09824933598728018,
+              "same_RX_day_signal": 0.11458731651104823,
+              "within_TX_variance": 0.019029208304753527,
+              "SNR": 5.163080587159127,
+              "per_TX_RX_spread": [
+                0.010063629965320722,
+                0.007390594265106643
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.1024294959776991,
+                0.07522284187308363
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.10150995114176888,
+              "cross_RX_signal": 0.09815555394215576,
+              "same_RX_day_signal": 0.11584485380643918,
+              "within_TX_variance": 0.019290318467742602,
+              "SNR": 5.08833247653698,
+              "per_TX_RX_spread": [
+                0.010679685954488542,
+                0.008241694873730703
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.10880368482034351,
+                0.08396564985601969
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.06847137752089855,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000013131271310460818,
+              "eigenvalue_max": 0.025975324644234733,
+              "effective_rank": 5.465699398066739,
+              "weight_min": 0.25,
+              "weight_max": 1.5859353411539108,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.031803949194443015,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000012668540237922658,
+              "eigenvalue_max": 0.005765912593419217,
+              "effective_rank": 14.705889940479908,
+              "weight_min": 0.25,
+              "weight_max": 1.8354858533264726,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            3,
+            5
+          ],
+          "TX": [
+            "20-19",
+            "8-20"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.46656042402077635,
+              "cross_RX_signal": 0.451624818637975,
+              "same_RX_day_signal": 0.5310144796871256,
+              "within_TX_variance": 0.061666426241268835,
+              "SNR": 7.323674261112532,
+              "per_TX_RX_spread": [
+                0.04004818029769862,
+                0.027322514929636776
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.0886757738834576,
+                0.06049825829332612
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.11805303101735364,
+              "cross_RX_signal": 0.11429701557747145,
+              "same_RX_day_signal": 0.1344271655595278,
+              "within_TX_variance": 0.01723130737359413,
+              "SNR": 6.633101778024358,
+              "per_TX_RX_spread": [
+                0.010059521540427725,
+                0.0068582230618601525
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.08801211028654812,
+                0.060003518265195586
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.11804578945958702,
+              "cross_RX_signal": 0.11385212308189555,
+              "same_RX_day_signal": 0.13628139270154696,
+              "within_TX_variance": 0.017734054657676426,
+              "SNR": 6.419971364676781,
+              "per_TX_RX_spread": [
+                0.010620459047232921,
+                0.008116915650537054
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.09328292490069302,
+                0.07129349397110878
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.06189704820106463,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000011958729545079385,
+              "eigenvalue_max": 0.024061139846774125,
+              "effective_rank": 5.337655114202014,
+              "weight_min": 0.25,
+              "weight_max": 1.570388675473179,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.025732526890309516,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000011281146223525774,
+              "eigenvalue_max": 0.0051920805781762325,
+              "effective_rank": 13.280731406430759,
+              "weight_min": 0.25,
+              "weight_max": 1.834517008445039,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            4,
+            5
+          ],
+          "TX": [
+            "6-15",
+            "8-20"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.3240636153077177,
+              "cross_RX_signal": 0.31461484403471496,
+              "same_RX_day_signal": 0.36683679797158153,
+              "within_TX_variance": 0.052660406387470673,
+              "SNR": 5.974409724828297,
+              "per_TX_RX_spread": [
+                0.02941352484980463,
+                0.027322514929636776
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.093490581921046,
+                0.0868443287012293
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.08219259557152357,
+              "cross_RX_signal": 0.07981712842558777,
+              "same_RX_day_signal": 0.09309698714135879,
+              "within_TX_variance": 0.014664293799099504,
+              "SNR": 5.442957534749415,
+              "per_TX_RX_spread": [
+                0.007384649872362878,
+                0.0068510221412663806
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.0925196134968382,
+                0.08583398421372022
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.08235480433515005,
+              "cross_RX_signal": 0.07957932532761344,
+              "same_RX_day_signal": 0.09498775385751773,
+              "within_TX_variance": 0.015288589343180052,
+              "SNR": 5.205145062197139,
+              "per_TX_RX_spread": [
+                0.00818446940821861,
+                0.007979119551067953
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.10284668002052863,
+                0.10026623772216446
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.05377685200815885,
+              "dimension": 160,
+              "eigenvalue_min": 8.655560442348749e-7,
+              "eigenvalue_max": 0.0137465644651331,
+              "effective_rank": 8.039804060773765,
+              "weight_min": 0.25,
+              "weight_max": 1.565522785903392,
+              "weight_mean": 0.9999999999999998
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.022641406270955608,
+              "dimension": 160,
+              "eigenvalue_min": 7.996746936690487e-7,
+              "eigenvalue_max": 0.0038252243813725996,
+              "effective_rank": 15.04068157058862,
+              "weight_min": 0.25,
+              "weight_max": 1.8150226592092376,
+              "weight_mean": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "model_seed": 2026092703,
+      "source_count": 27000,
+      "dimension": 160,
+      "partition_counts": [
+        9000,
+        9000,
+        9000
+      ],
+      "pairs": [
+        {
+          "indices": [
+            0,
+            1
+          ],
+          "TX": [
+            "14-10",
+            "14-7"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.1435514580654268,
+              "cross_RX_signal": 0.14093575753636123,
+              "same_RX_day_signal": 0.1609274505282571,
+              "within_TX_variance": 0.042740654342000486,
+              "SNR": 3.297463731103109,
+              "per_TX_RX_spread": [
+                0.010994529738473622,
+                0.011674975551368417
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.07801093158091586,
+                0.0828389881705946
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.036490273984258255,
+              "cross_RX_signal": 0.03581898634024337,
+              "same_RX_day_signal": 0.04101365609289549,
+              "within_TX_variance": 0.012255265806097971,
+              "SNR": 2.922742509788778,
+              "per_TX_RX_spread": [
+                0.0027830133067391232,
+                0.0029534712761295303
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.077696595886421,
+                0.08245546783693442
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.036433887862289405,
+              "cross_RX_signal": 0.03561403404108307,
+              "same_RX_day_signal": 0.04172377791817262,
+              "within_TX_variance": 0.012709436688690703,
+              "SNR": 2.8021725048423014,
+              "per_TX_RX_spread": [
+                0.0033354060226582034,
+                0.0034693857991004726
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.09365426053141294,
+                0.0974162543647348
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.04291466193673801,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000013575295356710091,
+              "eigenvalue_max": 0.00907851842045314,
+              "effective_rank": 11.422362752223206,
+              "weight_min": 0.25,
+              "weight_max": 1.6820935126131442,
+              "weight_mean": 0.9999999999999997
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.02844495659324972,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000012248565892385858,
+              "eigenvalue_max": 0.00409328460345094,
+              "effective_rank": 15.011207992813222,
+              "weight_min": 0.25,
+              "weight_max": 1.794044600247698,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            0,
+            2
+          ],
+          "TX": [
+            "14-10",
+            "20-15"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.21843827928427328,
+              "cross_RX_signal": 0.21442509608022292,
+              "same_RX_day_signal": 0.24190399967428566,
+              "within_TX_variance": 0.039477653290999434,
+              "SNR": 5.431556290837328,
+              "per_TX_RX_spread": [
+                0.010994529738473622,
+                0.01586406431343095
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.05127445406091941,
+                0.07398417724152831
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.0555898489330961,
+              "cross_RX_signal": 0.05457206803543292,
+              "same_RX_day_signal": 0.06166751211926855,
+              "within_TX_variance": 0.01125180155695784,
+              "SNR": 4.850073808997004,
+              "per_TX_RX_spread": [
+                0.002779902618313461,
+                0.003983641593097312
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.05094002698428997,
+                0.07299781255331549
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.05542667595402524,
+              "cross_RX_signal": 0.05413952522860355,
+              "same_RX_day_signal": 0.06287887403572932,
+              "within_TX_variance": 0.011863327592116422,
+              "SNR": 4.563603660795903,
+              "per_TX_RX_spread": [
+                0.0032799747723115816,
+                0.004835759907566047
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.060583737268879334,
+                0.08932032350019886
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.03942721694515014,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000011123525596878809,
+              "eigenvalue_max": 0.007744830157547462,
+              "effective_rank": 12.537197435159486,
+              "weight_min": 0.25,
+              "weight_max": 1.6689939522772448,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.022310108284025177,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000010169511998082895,
+              "eigenvalue_max": 0.003006478088797147,
+              "effective_rank": 16.466693254671963,
+              "weight_min": 0.25,
+              "weight_max": 1.8141167618913807,
+              "weight_mean": 0.9999999999999997
+            }
+          }
+        },
+        {
+          "indices": [
+            0,
+            3
+          ],
+          "TX": [
+            "14-10",
+            "20-19"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.14431092507199528,
+              "cross_RX_signal": 0.1418669833616834,
+              "same_RX_day_signal": 0.15834706333618537,
+              "within_TX_variance": 0.042109104856160595,
+              "SNR": 3.3690334631021766,
+              "per_TX_RX_spread": [
+                0.010994529738473622,
+                0.015293396806926735
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.07749886180665144,
+                0.10780095864826361
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.036491816231866855,
+              "cross_RX_signal": 0.03586096186112535,
+              "same_RX_day_signal": 0.04017110153158034,
+              "within_TX_variance": 0.012107652179267282,
+              "SNR": 2.9618427528445523,
+              "per_TX_RX_spread": [
+                0.002782102942899234,
+                0.0038628760163845373
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.07758026551750526,
+                0.1077181373813635
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.036548199632545075,
+              "cross_RX_signal": 0.035781363022011944,
+              "same_RX_day_signal": 0.04080495903449795,
+              "within_TX_variance": 0.012420648676431383,
+              "SNR": 2.8807966438909376,
+              "per_TX_RX_spread": [
+                0.003309466499926226,
+                0.004310233896855366
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.09249134802076465,
+                0.12046030482974616
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.042125107321941566,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000013159143574507582,
+              "eigenvalue_max": 0.010938686648373374,
+              "effective_rank": 9.261588355275931,
+              "weight_min": 0.25,
+              "weight_max": 1.6781928993458604,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.026745230114671753,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000012436432906620655,
+              "eigenvalue_max": 0.004331343319698928,
+              "effective_rank": 14.992444020556244,
+              "weight_min": 0.25,
+              "weight_max": 1.8147482386867502,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            0,
+            4
+          ],
+          "TX": [
+            "14-10",
+            "6-15"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.2568316108539767,
+              "cross_RX_signal": 0.25098468605308266,
+              "same_RX_day_signal": 0.28489980429995587,
+              "within_TX_variance": 0.04587943348564092,
+              "SNR": 5.470527140044883,
+              "per_TX_RX_spread": [
+                0.010994529738473622,
+                0.022881920253575404
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.0438055799792833,
+                0.0911685912531569
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.06476973330510213,
+              "cross_RX_signal": 0.06329284972541933,
+              "same_RX_day_signal": 0.07194392506640333,
+              "within_TX_variance": 0.012998134737391634,
+              "SNR": 4.8693794151360255,
+              "per_TX_RX_spread": [
+                0.0027803090994106545,
+                0.005745274196947691
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.04392769659562416,
+                0.09077287911465778
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.0652275959264169,
+              "cross_RX_signal": 0.06352123246741034,
+              "same_RX_day_signal": 0.07336568146284524,
+              "within_TX_variance": 0.013375210743230757,
+              "SNR": 4.749176195190694,
+              "per_TX_RX_spread": [
+                0.0033251566441347496,
+                0.006366517751048223
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.05234716826126958,
+                0.10022660933593462
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.04655176570861043,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000012145765215191425,
+              "eigenvalue_max": 0.011375295727901887,
+              "effective_rank": 9.962602491622011,
+              "weight_min": 0.25,
+              "weight_max": 1.627947544122014,
+              "weight_mean": 0.9999999999999997
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.027308538213412302,
+              "dimension": 160,
+              "eigenvalue_min": 0.000001186277909824711,
+              "eigenvalue_max": 0.004065945074722399,
+              "effective_rank": 15.80070613599056,
+              "weight_min": 0.25,
+              "weight_max": 1.7800884751645514,
+              "weight_mean": 0.9999999999999997
+            }
+          }
+        },
+        {
+          "indices": [
+            0,
+            5
+          ],
+          "TX": [
+            "14-10",
+            "8-20"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.31550577676279296,
+              "cross_RX_signal": 0.309734652909853,
+              "same_RX_day_signal": 0.34417193672418545,
+              "within_TX_variance": 0.03756296229954611,
+              "SNR": 8.2457461805028,
+              "per_TX_RX_spread": [
+                0.010994529738473622,
+                0.018504142838811317
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.035496608581518756,
+                0.05974191994654492
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.08015349107800912,
+              "cross_RX_signal": 0.07869932616423278,
+              "same_RX_day_signal": 0.08748939145888901,
+              "within_TX_variance": 0.010634622339394132,
+              "SNR": 7.400293461546315,
+              "per_TX_RX_spread": [
+                0.002773844787451104,
+                0.0046436613969456884
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.035246105940761656,
+                0.059005097289589456
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.08000084317228615,
+              "cross_RX_signal": 0.0782818511361666,
+              "same_RX_day_signal": 0.08851086255861633,
+              "within_TX_variance": 0.011176300549081522,
+              "SNR": 7.004272191176881,
+              "per_TX_RX_spread": [
+                0.0033234771269841034,
+                0.0054859552672745105
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.042455270011475754,
+                0.07007952913290233
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.037772200701417055,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000010417518683857037,
+              "eigenvalue_max": 0.0076140491791297634,
+              "effective_rank": 11.034942012768187,
+              "weight_min": 0.25,
+              "weight_max": 1.625497040647623,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.02033801347245217,
+              "dimension": 160,
+              "eigenvalue_min": 9.323810023864319e-7,
+              "eigenvalue_max": 0.002858506076317262,
+              "effective_rank": 15.889697952040335,
+              "weight_min": 0.25,
+              "weight_max": 1.7911052993458816,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            1,
+            2
+          ],
+          "TX": [
+            "14-7",
+            "20-15"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.21089269229128044,
+              "cross_RX_signal": 0.20687364539176864,
+              "same_RX_day_signal": 0.23425192275811177,
+              "within_TX_variance": 0.04086027019078933,
+              "SNR": 5.062953436817993,
+              "per_TX_RX_spread": [
+                0.011674975551368417,
+                0.01586406431343095
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.056435296672318204,
+                0.07668480092468158
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.05346596804651218,
+              "cross_RX_signal": 0.05244797408602372,
+              "same_RX_day_signal": 0.05952901542531683,
+              "within_TX_variance": 0.01165262140991293,
+              "SNR": 4.500959246938721,
+              "per_TX_RX_spread": [
+                0.0029471952397495662,
+                0.003987311533797916
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.056192737490978355,
+                0.07602412873484947
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.05342841947243879,
+              "cross_RX_signal": 0.05214600887200148,
+              "same_RX_day_signal": 0.06097958988727144,
+              "within_TX_variance": 0.01238317798821982,
+              "SNR": 4.211036045965603,
+              "per_TX_RX_spread": [
+                0.0034746391439239403,
+                0.004925613986216819
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.06663288752266451,
+                0.09445812043463035
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.04115874287119711,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000011649505333253819,
+              "eigenvalue_max": 0.008911983863606952,
+              "effective_rank": 11.952229012497327,
+              "weight_min": 0.25,
+              "weight_max": 1.6729576066204395,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.023583157221578707,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000010436233754251983,
+              "eigenvalue_max": 0.0029561052578882634,
+              "effective_rank": 16.472444053938077,
+              "weight_min": 0.25,
+              "weight_max": 1.8115064392788358,
+              "weight_mean": 0.9999999999999998
+            }
+          }
+        },
+        {
+          "indices": [
+            1,
+            3
+          ],
+          "TX": [
+            "14-7",
+            "20-19"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.1341987802117152,
+              "cross_RX_signal": 0.13022262968343987,
+              "same_RX_day_signal": 0.15396296775346255,
+              "within_TX_variance": 0.04349172175595049,
+              "SNR": 2.994193479259601,
+              "per_TX_RX_spread": [
+                0.011674975551368417,
+                0.015293396806926735
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.08965396859016969,
+                0.11744039299547
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.03367610901847007,
+              "cross_RX_signal": 0.03266235663688166,
+              "same_RX_day_signal": 0.03878798479732401,
+              "within_TX_variance": 0.012454886153390682,
+              "SNR": 2.6224532472333966,
+              "per_TX_RX_spread": [
+                0.0029503059646153276,
+                0.0038612819021514463
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.09032740648247967,
+                0.11821810486850683
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.033763534672976415,
+              "cross_RX_signal": 0.03263458763914798,
+              "same_RX_day_signal": 0.0394805759591265,
+              "within_TX_variance": 0.012823040555409962,
+              "SNR": 2.5449960559767275,
+              "per_TX_RX_spread": [
+                0.0034696710980645406,
+                0.004322135809148376
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.10631882763250772,
+                0.1324403377465571
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.04385663324798854,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000012262281479875645,
+              "eigenvalue_max": 0.009790896264566838,
+              "effective_rank": 10.330160925641852,
+              "weight_min": 0.25,
+              "weight_max": 1.6729650719763565,
+              "weight_mean": 0.9999999999999998
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.028018279052225283,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000011649242493564645,
+              "eigenvalue_max": 0.004200486709022286,
+              "effective_rank": 15.038979652382347,
+              "weight_min": 0.25,
+              "weight_max": 1.8073640665043027,
+              "weight_mean": 0.9999999999999997
+            }
+          }
+        },
+        {
+          "indices": [
+            1,
+            4
+          ],
+          "TX": [
+            "14-7",
+            "6-15"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.21674174615956265,
+              "cross_RX_signal": 0.21192064120190582,
+              "same_RX_day_signal": 0.24073601889788143,
+              "within_TX_variance": 0.04726205038543082,
+              "SNR": 4.483949373200137,
+              "per_TX_RX_spread": [
+                0.011674975551368417,
+                0.022881920253575404
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.0550912619231138,
+                0.1079740044377028
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.055019788995131436,
+              "cross_RX_signal": 0.053796052468604985,
+              "same_RX_day_signal": 0.06118977196257117,
+              "within_TX_variance": 0.01337163446450915,
+              "SNR": 4.023147103773281,
+              "per_TX_RX_spread": [
+                0.0029526257502084474,
+                0.00574887635870096
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.05488554670310763,
+                0.10686427897392595
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.05518969172555942,
+              "cross_RX_signal": 0.053781196683129105,
+              "same_RX_day_signal": 0.062265045894799816,
+              "within_TX_variance": 0.013770761044607551,
+              "SNR": 3.9054629231395395,
+              "per_TX_RX_spread": [
+                0.0034693202709071224,
+                0.006328763788935847
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.06450805271864526,
+                0.11767614295055559
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.048283291634657395,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000012337022454791834,
+              "eigenvalue_max": 0.01171744393782253,
+              "effective_rank": 9.774606709188348,
+              "weight_min": 0.25,
+              "weight_max": 1.6254807495397474,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.02858158715096583,
+              "dimension": 160,
+              "eigenvalue_min": 0.000001144369325207817,
+              "eigenvalue_max": 0.004179784987428018,
+              "effective_rank": 15.378100923710365,
+              "weight_min": 0.25,
+              "weight_max": 1.7754332120524063,
+              "weight_mean": 0.9999999999999997
+            }
+          }
+        },
+        {
+          "indices": [
+            1,
+            5
+          ],
+          "TX": [
+            "14-7",
+            "8-20"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.2810281953142981,
+              "cross_RX_signal": 0.27612734261887173,
+              "same_RX_day_signal": 0.3063602516209193,
+              "within_TX_variance": 0.038945579199336,
+              "SNR": 7.09008180891503,
+              "per_TX_RX_spread": [
+                0.011674975551368417,
+                0.018504142838811317
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.04228112812240746,
+                0.06701307687718523
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.07105674867421233,
+              "cross_RX_signal": 0.0698191732770641,
+              "same_RX_day_signal": 0.07757541521235291,
+              "within_TX_variance": 0.011039102563396512,
+              "SNR": 6.324714611183224,
+              "per_TX_RX_spread": [
+                0.0029449080928252644,
+                0.004645754135719187
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.04217907423708609,
+                0.06653980443571561
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.07093572816785873,
+              "cross_RX_signal": 0.06941738727703867,
+              "same_RX_day_signal": 0.07880582962485591,
+              "within_TX_variance": 0.011660471757081453,
+              "SNR": 5.953222881817041,
+              "per_TX_RX_spread": [
+                0.0034924680720299474,
+                0.005549085804101794
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.05031114262615237,
+                0.07993798127198136
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.03950372662746403,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000010179812369413657,
+              "eigenvalue_max": 0.008724108483011687,
+              "effective_rank": 10.778153095332875,
+              "weight_min": 0.25,
+              "weight_max": 1.6359089089776897,
+              "weight_mean": 0.9999999999999998
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.021611062410005703,
+              "dimension": 160,
+              "eigenvalue_min": 9.363131361373912e-7,
+              "eigenvalue_max": 0.00296649627039628,
+              "effective_rank": 15.74505579028218,
+              "weight_min": 0.25,
+              "weight_max": 1.794221750464943,
+              "weight_mean": 0.9999999999999998
+            }
+          }
+        },
+        {
+          "indices": [
+            2,
+            3
+          ],
+          "TX": [
+            "20-15",
+            "20-19"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.22853958145162628,
+              "cross_RX_signal": 0.22309023569462139,
+              "same_RX_day_signal": 0.2558123371610689,
+              "within_TX_variance": 0.040228720704949435,
+              "SNR": 5.5455463605427076,
+              "per_TX_RX_spread": [
+                0.01586406431343095,
+                0.015293396806926735
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.07111052737936313,
+                0.06855251535016174
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.05793163868215009,
+              "cross_RX_signal": 0.05655565328136204,
+              "same_RX_day_signal": 0.06494662116775031,
+              "within_TX_variance": 0.011502648000959778,
+              "SNR": 4.916750758316089,
+              "per_TX_RX_spread": [
+                0.003984175618357648,
+                0.0038588336146504186
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.07044699136506369,
+                0.06823073186782726
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.05794798435896881,
+              "cross_RX_signal": 0.05625544473423688,
+              "same_RX_day_signal": 0.06651329726891987,
+              "within_TX_variance": 0.01214863371295953,
+              "SNR": 4.630598474149936,
+              "per_TX_RX_spread": [
+                0.0049694672509026944,
+                0.004377340700770627
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.08833753380458644,
+                0.07781185841566357
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.040369188256400665,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000012108046164554995,
+              "eigenvalue_max": 0.008827833986957714,
+              "effective_rank": 11.12797822263402,
+              "weight_min": 0.25,
+              "weight_max": 1.6663534382611624,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.021883430743000736,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000011097546872678937,
+              "eigenvalue_max": 0.0029045621272878455,
+              "effective_rank": 17.049256490733885,
+              "weight_min": 0.25,
+              "weight_max": 1.8397288837068586,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            2,
+            4
+          ],
+          "TX": [
+            "20-15",
+            "6-15"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.21906910304783447,
+              "cross_RX_signal": 0.2113763666848653,
+              "same_RX_day_signal": 0.25595844989653044,
+              "within_TX_variance": 0.04399904933442976,
+              "SNR": 4.804112131565099,
+              "per_TX_RX_spread": [
+                0.01586406431343095,
+                0.022881920253575404
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.07505126785097128,
+                0.1082520274732954
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.05578419983751515,
+              "cross_RX_signal": 0.053848711200466894,
+              "same_RX_day_signal": 0.06519523055062663,
+              "within_TX_variance": 0.012351470883251134,
+              "SNR": 4.359700290714924,
+              "per_TX_RX_spread": [
+                0.003984990649055674,
+                0.005744998812506383
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.0740034544971825,
+                0.10668776809010372
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.05599038059737157,
+              "cross_RX_signal": 0.053713102940914546,
+              "same_RX_day_signal": 0.06706513207165053,
+              "within_TX_variance": 0.01304952676396428,
+              "SNR": 4.116095848720049,
+              "per_TX_RX_spread": [
+                0.004945139979620117,
+                0.0064297646202305745
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.09206580347927147,
+                0.11970570062398815
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.04479584664306952,
+              "dimension": 160,
+              "eigenvalue_min": 9.981163311939905e-7,
+              "eigenvalue_max": 0.010643745568997633,
+              "effective_rank": 10.171626455013039,
+              "weight_min": 0.25,
+              "weight_max": 1.594771202767655,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.022446738841741285,
+              "dimension": 160,
+              "eigenvalue_min": 9.431730750310742e-7,
+              "eigenvalue_max": 0.003302944290885809,
+              "effective_rank": 16.02298131948683,
+              "weight_min": 0.25,
+              "weight_max": 1.7727286633155934,
+              "weight_mean": 0.9999999999999998
+            }
+          }
+        },
+        {
+          "indices": [
+            2,
+            5
+          ],
+          "TX": [
+            "20-15",
+            "8-20"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.21656458388453587,
+              "cross_RX_signal": 0.21128948315567966,
+              "same_RX_day_signal": 0.24428472999255588,
+              "within_TX_variance": 0.03568257814833495,
+              "SNR": 5.921362584209433,
+              "per_TX_RX_spread": [
+                0.01586406431343095,
+                0.018504142838811317
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.07508212939184572,
+                0.08757720716831574
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.054727921167086316,
+              "cross_RX_signal": 0.05340103065722233,
+              "same_RX_day_signal": 0.0618469614621366,
+              "within_TX_variance": 0.009976236756992435,
+              "SNR": 5.3528231093546434,
+              "per_TX_RX_spread": [
+                0.003981241442421704,
+                0.004642625067829885
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.07455364425411616,
+                0.08693886636066235
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.054548233498981975,
+              "cross_RX_signal": 0.05293212531708715,
+              "same_RX_day_signal": 0.06316852356226592,
+              "within_TX_variance": 0.010683679259800639,
+              "SNR": 4.954484689207609,
+              "per_TX_RX_spread": [
+                0.004883943460332238,
+                0.005327775291895794
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.0922680400810515,
+                0.10065296377162324
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.03601628163587614,
+              "dimension": 160,
+              "eigenvalue_min": 6.925959003416575e-7,
+              "eigenvalue_max": 0.008211313435817965,
+              "effective_rank": 10.106365025817995,
+              "weight_min": 0.25,
+              "weight_max": 1.5886872630975424,
+              "weight_mean": 0.9999999999999997
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.015476214100781158,
+              "dimension": 160,
+              "eigenvalue_min": 6.566822410672939e-7,
+              "eigenvalue_max": 0.0022208716027663504,
+              "effective_rank": 15.889993874378876,
+              "weight_min": 0.25,
+              "weight_max": 1.7980064436954373,
+              "weight_mean": 0.9999999999999998
+            }
+          }
+        },
+        {
+          "indices": [
+            3,
+            4
+          ],
+          "TX": [
+            "20-19",
+            "6-15"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.20671688278160755,
+              "cross_RX_signal": 0.20134020344065934,
+              "same_RX_day_signal": 0.23066242847397075,
+              "within_TX_variance": 0.04663050089959092,
+              "SNR": 4.317779126460674,
+              "per_TX_RX_spread": [
+                0.015293396806926735,
+                0.022881920253575404
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.07595798824865165,
+                0.11364804377144357
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.05229898193495516,
+              "cross_RX_signal": 0.05093841168792949,
+              "same_RX_day_signal": 0.05842721460051911,
+              "within_TX_variance": 0.013231881936038827,
+              "SNR": 3.849672475476962,
+              "per_TX_RX_spread": [
+                0.0038637435726978724,
+                0.005746147712613473
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.07585127695713835,
+                0.11280578883803509
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.052735205460235884,
+              "cross_RX_signal": 0.051154754689536744,
+              "same_RX_day_signal": 0.05976660758247108,
+              "within_TX_variance": 0.013555838613084516,
+              "SNR": 3.773632613194479,
+              "per_TX_RX_spread": [
+                0.004360452870948668,
+                0.006381452190547622
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.0852404218808728,
+                0.12474797756879659
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.047493737019860954,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000012500414424000095,
+              "eigenvalue_max": 0.014702746385747062,
+              "effective_rank": 7.791579545418729,
+              "weight_min": 0.25,
+              "weight_max": 1.623978377542788,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.02688186067238786,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000012056159628142157,
+              "eigenvalue_max": 0.004069509778662261,
+              "effective_rank": 15.831287917727407,
+              "weight_min": 0.25,
+              "weight_max": 1.8004169086508024,
+              "weight_mean": 1
+            }
+          }
+        },
+        {
+          "indices": [
+            3,
+            5
+          ],
+          "TX": [
+            "20-19",
+            "8-20"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.35482724944918803,
+              "cross_RX_signal": 0.34758820384666445,
+              "same_RX_day_signal": 0.3874318345459496,
+              "within_TX_variance": 0.03831402971349611,
+              "SNR": 9.072086816392131,
+              "per_TX_RX_spread": [
+                0.015293396806926735,
+                0.018504142838811317
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.043998607080674365,
+                0.05323581938060896
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.0901157381384451,
+              "cross_RX_signal": 0.08829300691454897,
+              "same_RX_day_signal": 0.09844145559993996,
+              "within_TX_variance": 0.010896169227935888,
+              "SNR": 8.103123682053415,
+              "per_TX_RX_spread": [
+                0.0038540242488901227,
+                0.004643577813751272
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.043650390711238246,
+                0.05259281539981284
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.08977289038683015,
+              "cross_RX_signal": 0.08762287178853406,
+              "same_RX_day_signal": 0.09950118977858105,
+              "within_TX_variance": 0.011406515301302926,
+              "SNR": 7.681826524050269,
+              "per_TX_RX_spread": [
+                0.004401535434612644,
+                0.00551556997265706
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.05023272285842393,
+                0.062946692570955
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.03871417201266758,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000010512418265426786,
+              "eigenvalue_max": 0.00855570906595095,
+              "effective_rank": 9.819506290979385,
+              "weight_min": 0.25,
+              "weight_max": 1.633137979699678,
+              "weight_mean": 0.9999999999999997
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.019911335931427736,
+              "dimension": 160,
+              "eigenvalue_min": 0.0000010091714180621647,
+              "eigenvalue_max": 0.002725953618214014,
+              "effective_rank": 16.560356637667983,
+              "weight_min": 0.25,
+              "weight_max": 1.8281541326683926,
+              "weight_mean": 0.9999999999999998
+            }
+          }
+        },
+        {
+          "indices": [
+            4,
+            5
+          ],
+          "TX": [
+            "6-15",
+            "8-20"
+          ],
+          "calibration_A_count": 3000,
+          "evaluation_B_count": 3000,
+          "evaluation_C_count": 3000,
+          "metrics": {
+            "RAW": {
+              "global_class_signal": 0.27048621797710304,
+              "cross_RX_signal": 0.2631271124169102,
+              "same_RX_day_signal": 0.30332975445636096,
+              "within_TX_variance": 0.042084358342976434,
+              "SNR": 6.252373156613048,
+              "per_TX_RX_spread": [
+                0.022881920253575404,
+                0.018504142838811317
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.08696146909148715,
+                0.07032396878012531
+              ]
+            },
+            "TX": {
+              "global_class_signal": 0.06856773581141978,
+              "cross_RX_signal": 0.06671893877682675,
+              "same_RX_day_signal": 0.07693197986757856,
+              "within_TX_variance": 0.011714365208937203,
+              "SNR": 5.695480513611193,
+              "per_TX_RX_spread": [
+                0.005743152409577179,
+                0.0046458506694463265
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.08607979255767072,
+                0.06963316195700572
+              ]
+            },
+            "TX_RX_DAY": {
+              "global_class_signal": 0.06894378844180936,
+              "cross_RX_signal": 0.06673135111781135,
+              "same_RX_day_signal": 0.07886123960503605,
+              "within_TX_variance": 0.01227533518781097,
+              "SNR": 5.436214172308185,
+              "per_TX_RX_spread": [
+                0.006452369243198858,
+                0.005487208133710172
+              ],
+              "per_TX_RX_spread_to_signal": [
+                0.09669172188357876,
+                0.0822283385814074
+              ]
+            }
+          },
+          "precision_summary": {
+            "TX": {
+              "zero_trace_fallback": false,
+              "trace": 0.043140830399336444,
+              "dimension": 160,
+              "eigenvalue_min": 8.643520984616471e-7,
+              "eigenvalue_max": 0.01077231218167398,
+              "effective_rank": 8.997247691193138,
+              "weight_min": 0.25,
+              "weight_max": 1.5512534838890015,
+              "weight_mean": 1
+            },
+            "TX_RX_DAY": {
+              "zero_trace_fallback": false,
+              "trace": 0.02047464403016828,
+              "dimension": 160,
+              "eigenvalue_min": 8.235832294607511e-7,
+              "eigenvalue_max": 0.003204175232003305,
+              "effective_rank": 15.049261328724503,
+              "weight_min": 0.25,
+              "weight_max": 1.7429420577789114,
+              "weight_mean": 1
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "decision": {
+    "status": "SOURCE_DIAGNOSTIC_DECISION",
+    "primary": "TX precision vs RAW for source-fixed weak pair1/3; TX_RX_DAY explanatory only",
+    "PASS": false,
+    "rows": [
+      {
+        "seed": 2026092701,
+        "PASS": false,
+        "SNR_ratio": 0.8916458977235023,
+        "per_TX_RX_spread_ratio": [
+          1.0100222792692266,
+          1.003077072353644
+        ]
+      },
+      {
+        "seed": 2026092702,
+        "PASS": false,
+        "SNR_ratio": 0.8966509550198207,
+        "per_TX_RX_spread_ratio": [
+          1.007353768430041,
+          1.0012021720176083
+        ]
+      },
+      {
+        "seed": 2026092703,
+        "PASS": false,
+        "SNR_ratio": 0.8758462889585453,
+        "per_TX_RX_spread_ratio": [
+          1.0075115235042011,
+          1.006622183843227
+        ]
+      }
+    ],
+    "target_access": false,
+    "rule": "All3 existing BASE model seeds: crossRX class-difference signal positive, SNR>=1.10xRAW and each weakTX RXspread/signal<=.95xRAW. This only motivates a separately preregistered L-only feature-loss study, never classifier substitution or target benefit."
+  },
+  "seconds": 4.182273800019175,
+  "source_feature_rows": 81000,
+  "unique_source_packets": 27000,
+  "model_forwards": 0,
+  "IQ_reads": 0,
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "optimizer_updates": 0,
+  "head_fit_updates": 0,
+  "classifier_decisions": 0,
+  "precision_matrices_exported": 0,
+  "limitations": [
+    "Read-only scatter statistics in seen source receivers; not fitted default-head or prototype predictions.",
+    "Three model seeds share the same source packets; A/B/C have disjoint cache rows, not independent acquisition conditions.",
+    "A estimates covariance; only B/C estimate signals and RX dispersion. No V-derived matrix enters training or deployment.",
+    "Fixed shrinkage and bounded precision are descriptive hypotheses, not a guaranteed Fisher-optimal model or target improvement."
+  ],
+  "analysis_code_commit": "e3afbf53aec2a12b15826ab4ab626f152e3e2c71"
+}

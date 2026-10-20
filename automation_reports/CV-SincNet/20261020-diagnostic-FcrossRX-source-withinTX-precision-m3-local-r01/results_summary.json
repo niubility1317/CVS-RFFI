@@ -1,0 +1,287 @@
+{
+  "run_id": "20261020-diagnostic-FcrossRX-source-withinTX-precision-m3-local-r01",
+  "status": "ANALYZED_NOT_ADVANCED",
+  "primary_decision": {
+    "status": "SOURCE_DIAGNOSTIC_DECISION",
+    "primary": "TX precision vs RAW for source-fixed weak pair1/3; TX_RX_DAY explanatory only",
+    "PASS": false,
+    "rows": [
+      {
+        "seed": 2026092701,
+        "PASS": false,
+        "SNR_ratio": 0.8916458977235023,
+        "per_TX_RX_spread_ratio": [
+          1.0100222792692266,
+          1.003077072353644
+        ]
+      },
+      {
+        "seed": 2026092702,
+        "PASS": false,
+        "SNR_ratio": 0.8966509550198207,
+        "per_TX_RX_spread_ratio": [
+          1.007353768430041,
+          1.0012021720176083
+        ]
+      },
+      {
+        "seed": 2026092703,
+        "PASS": false,
+        "SNR_ratio": 0.8758462889585453,
+        "per_TX_RX_spread_ratio": [
+          1.0075115235042011,
+          1.006622183843227
+        ]
+      }
+    ],
+    "target_access": false,
+    "rule": "All3 existing BASE model seeds: crossRX class-difference signal positive, SNR>=1.10xRAW and each weakTX RXspread/signal<=.95xRAW. This only motivates a separately preregistered L-only feature-loss study, never classifier substitution or target benefit."
+  },
+  "weak_pair_rows": [
+    {
+      "seed": 2026092701,
+      "PASS": false,
+      "SNR_ratio": 0.8916458977235023,
+      "per_TX_RX_spread_ratio": [
+        1.0100222792692266,
+        1.003077072353644
+      ],
+      "weak_pair_metrics": {
+        "RAW": {
+          "global_class_signal": 0.13678365494408623,
+          "cross_RX_signal": 0.13155022423652335,
+          "same_RX_day_signal": 0.16231013537601677,
+          "within_TX_variance": 0.04714314126750774,
+          "SNR": 2.7904424843066438,
+          "per_TX_RX_spread": [
+            0.010088432562400539,
+            0.020203209747412874
+          ],
+          "per_TX_RX_spread_to_signal": [
+            0.07668882832355983,
+            0.1535779194955085
+          ]
+        },
+        "TX": {
+          "global_class_signal": 0.03430923724646766,
+          "cross_RX_signal": 0.032985778609208476,
+          "same_RX_day_signal": 0.040834530452406606,
+          "within_TX_variance": 0.013257488179556189,
+          "SNR": 2.4880865939653973,
+          "per_TX_RX_spread": [
+            0.002554993478555835,
+            0.005081475353350697
+          ],
+          "per_TX_RX_spread_to_signal": [
+            0.07745742517784832,
+            0.1540504898657183
+          ]
+        },
+        "TX_RX_DAY": {
+          "global_class_signal": 0.034353057043788465,
+          "cross_RX_signal": 0.03294635637116798,
+          "same_RX_day_signal": 0.04131694182042299,
+          "within_TX_variance": 0.013545663666520161,
+          "SNR": 2.4322437927201093,
+          "per_TX_RX_spread": [
+            0.0029470248347656046,
+            0.0055780153660586595
+          ],
+          "per_TX_RX_spread_to_signal": [
+            0.0894491882976354,
+            0.16930598647139303
+          ]
+        }
+      },
+      "precision_summary": {
+        "TX": {
+          "zero_trace_fallback": false,
+          "trace": 0.04818154753854549,
+          "dimension": 160,
+          "eigenvalue_min": 0.0000011723535466646672,
+          "eigenvalue_max": 0.011668994125671881,
+          "effective_rank": 9.956647661120044,
+          "weight_min": 0.25,
+          "weight_max": 1.6120744204359112,
+          "weight_mean": 1
+        },
+        "TX_RX_DAY": {
+          "zero_trace_fallback": false,
+          "trace": 0.03001155645552888,
+          "dimension": 160,
+          "eigenvalue_min": 0.0000011052931290768039,
+          "eigenvalue_max": 0.004533008220145314,
+          "effective_rank": 15.285480414355513,
+          "weight_min": 0.25,
+          "weight_max": 1.7354354096864437,
+          "weight_mean": 1
+        }
+      }
+    },
+    {
+      "seed": 2026092702,
+      "PASS": false,
+      "SNR_ratio": 0.8966509550198207,
+      "per_TX_RX_spread_ratio": [
+        1.007353768430041,
+        1.0012021720176083
+      ],
+      "weak_pair_metrics": {
+        "RAW": {
+          "global_class_signal": 0.1523802618067402,
+          "cross_RX_signal": 0.14540433896182045,
+          "same_RX_day_signal": 0.1863237530393551,
+          "within_TX_variance": 0.06729465380250947,
+          "SNR": 2.1607115981091236,
+          "per_TX_RX_spread": [
+            0.019708714740190862,
+            0.04004818029769862
+          ],
+          "per_TX_RX_spread_to_signal": [
+            0.1355441995810447,
+            0.2754263083456833
+          ]
+        },
+        "TX": {
+          "global_class_signal": 0.03826550809081487,
+          "cross_RX_signal": 0.03649158002290542,
+          "same_RX_day_signal": 0.04698844288113358,
+          "within_TX_variance": 0.018835295994517935,
+          "SNR": 1.9374041179669488,
+          "per_TX_RX_spread": [
+            0.004982595376885496,
+            0.010062823891202421
+          ],
+          "per_TX_RX_spread_to_signal": [
+            0.13654096023679896,
+            0.2757574181464897
+          ]
+        },
+        "TX_RX_DAY": {
+          "global_class_signal": 0.03827834008739152,
+          "cross_RX_signal": 0.03638455759135058,
+          "same_RX_day_signal": 0.04761581912287696,
+          "within_TX_variance": 0.01898586030850459,
+          "SNR": 1.916402891421905,
+          "per_TX_RX_spread": [
+            0.00547006053418855,
+            0.010565977509033037
+          ],
+          "per_TX_RX_spread_to_signal": [
+            0.15034016891520224,
+            0.29039730612376075
+          ]
+        }
+      },
+      "precision_summary": {
+        "TX": {
+          "zero_trace_fallback": false,
+          "trace": 0.06751947357527964,
+          "dimension": 160,
+          "eigenvalue_min": 0.0000012981484750912673,
+          "eigenvalue_max": 0.030378266743374058,
+          "effective_rank": 4.450498014250304,
+          "weight_min": 0.25,
+          "weight_max": 1.5825922142916369,
+          "weight_mean": 1
+        },
+        "TX_RX_DAY": {
+          "zero_trace_fallback": false,
+          "trace": 0.03361155420674515,
+          "dimension": 160,
+          "eigenvalue_min": 0.0000012092831193708074,
+          "eigenvalue_max": 0.006750421095714529,
+          "effective_rank": 12.87835376536084,
+          "weight_min": 0.25,
+          "weight_max": 1.797702010227907,
+          "weight_mean": 1
+        }
+      }
+    },
+    {
+      "seed": 2026092703,
+      "PASS": false,
+      "SNR_ratio": 0.8758462889585453,
+      "per_TX_RX_spread_ratio": [
+        1.0075115235042011,
+        1.006622183843227
+      ],
+      "weak_pair_metrics": {
+        "RAW": {
+          "global_class_signal": 0.1341987802117152,
+          "cross_RX_signal": 0.13022262968343987,
+          "same_RX_day_signal": 0.15396296775346255,
+          "within_TX_variance": 0.04349172175595049,
+          "SNR": 2.994193479259601,
+          "per_TX_RX_spread": [
+            0.011674975551368417,
+            0.015293396806926735
+          ],
+          "per_TX_RX_spread_to_signal": [
+            0.08965396859016969,
+            0.11744039299547
+          ]
+        },
+        "TX": {
+          "global_class_signal": 0.03367610901847007,
+          "cross_RX_signal": 0.03266235663688166,
+          "same_RX_day_signal": 0.03878798479732401,
+          "within_TX_variance": 0.012454886153390682,
+          "SNR": 2.6224532472333966,
+          "per_TX_RX_spread": [
+            0.0029503059646153276,
+            0.0038612819021514463
+          ],
+          "per_TX_RX_spread_to_signal": [
+            0.09032740648247967,
+            0.11821810486850683
+          ]
+        },
+        "TX_RX_DAY": {
+          "global_class_signal": 0.033763534672976415,
+          "cross_RX_signal": 0.03263458763914798,
+          "same_RX_day_signal": 0.0394805759591265,
+          "within_TX_variance": 0.012823040555409962,
+          "SNR": 2.5449960559767275,
+          "per_TX_RX_spread": [
+            0.0034696710980645406,
+            0.004322135809148376
+          ],
+          "per_TX_RX_spread_to_signal": [
+            0.10631882763250772,
+            0.1324403377465571
+          ]
+        }
+      },
+      "precision_summary": {
+        "TX": {
+          "zero_trace_fallback": false,
+          "trace": 0.04385663324798854,
+          "dimension": 160,
+          "eigenvalue_min": 0.0000012262281479875645,
+          "eigenvalue_max": 0.009790896264566838,
+          "effective_rank": 10.330160925641852,
+          "weight_min": 0.25,
+          "weight_max": 1.6729650719763565,
+          "weight_mean": 0.9999999999999998
+        },
+        "TX_RX_DAY": {
+          "zero_trace_fallback": false,
+          "trace": 0.028018279052225283,
+          "dimension": 160,
+          "eigenvalue_min": 0.0000011649242493564645,
+          "eigenvalue_max": 0.004200486709022286,
+          "effective_rank": 15.038979652382347,
+          "weight_min": 0.25,
+          "weight_max": 1.8073640665043027,
+          "weight_mean": 0.9999999999999997
+        }
+      }
+    }
+  ],
+  "seconds": 4.182273800019175,
+  "source_feature_rows": 81000,
+  "unique_source_packets": 27000,
+  "cost": "CPU2threads; no GPU/model/IQ/test",
+  "conclusion": "All3 primary TX covariance precision comparisons fail the fixed source-only rule. No training launched and no target access. TX_RX_DAY remains explanatory only, not a fallback candidate."
+}
