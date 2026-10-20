@@ -19,7 +19,8 @@ VIEWS = ('clean',)
 read, write = old.read, old.write
 SEED = 2026092701
 STEPS = 222
-GPU_IDS = (4,)
+GPU_IDS = tuple(range(8))
+MAX_TOTAL_GPU_PROCESSES = 3
 
 
 def rows():

@@ -1,4 +1,4 @@
-"""One immutable run; serial GPU4 workers, then independent CPU truth-last."""
+"""Two distinct least-loaded GPUs; preserve the run's frozen scientific rows."""
 import argparse
 import json
 import os
@@ -24,10 +24,10 @@ def worker(row):
     with lock(d.BASE / (row + '.owner.lock'), nonblocking=True):
         gpu = int(os.environ['CUDA_VISIBLE_DEVICES'])
         if gpu not in d.GPU_IDS:
-            raise ValueError('Only registered GPU4')
+            raise ValueError('GPU outside registered pool')
         with lock(Path(d.PROJECT) / 'runs/receiver_residual_capacity4.lock'):
-            if len(capacity()[gpu]['pids'] | {os.getpid()}) > 1:
-                raise ValueError('GPU must have no other compute owner at worker start')
+            if len(capacity()[gpu]['pids'] | {os.getpid()}) > d.MAX_TOTAL_GPU_PROCESSES:
+                raise ValueError('Total process capacity includes every owner')
         from .observer import train
         train(d.config(next(r for r in d.rows() if r['row_id'] == row)))
     execute('predict', row)
@@ -48,35 +48,50 @@ def collect():
             model_seed_count=1, views=list(d.VIEWS), newly_trained_epochs=70, cumulative_epochs_per_model=50))
 
 
-def dispatch():
-    if d.BASE.exists():
-        raise FileExistsError('Reconcile existing run; never overwrite or duplicate')
-    d.BASE.mkdir()
-    (d.BASE / 'logs').mkdir()
+def dispatch(adopt=False):
+    if adopt:
+        previous=d.read(d.BASE/'dispatcher.json')
+        if Path('/proc',str(previous['pid'])).exists():
+            raise RuntimeError('Original controller still alive; do not duplicate')
+        state=d.read(d.BASE/'queue_state.json')
+        if state['active'] is not None or state['completed'] or (d.BASE/'launch.json').exists():
+            raise RuntimeError('Adopt only the verified untouched pending queue')
+        if state['pending']!=d.rows() or any(d.row_root(r['row_id']).exists() for r in d.rows()):
+            raise RuntimeError('Existing row output or pending matrix differs')
+        if any(d.read(d.BASE/name)['status']!='PASS' for name in ['real_checkpoint_smoke.json','synthetic_smoke.json']):
+            raise ValueError('Original launcher smoke did not pass')
+    else:
+        if d.BASE.exists():
+            raise FileExistsError('Reconcile existing run; never overwrite or duplicate')
+        d.BASE.mkdir()
+        (d.BASE / 'logs').mkdir()
     d.write(d.BASE / 'dispatcher.json', dict(pid=os.getpid(), cwd=os.getcwd(), argv=sys.argv, owner=d.OWNER))
     try:
-        from .preflight import smoke
-        smoke()
+        if not adopt:
+            from .preflight import smoke
+            smoke()
         pending = d.rows()
-        child = None
+        active = {}
         launched = []
         completed = []
-        active_row = None
-        while pending or child is not None:
-            if child is not None and child.poll() is not None:
+        while pending or active:
+            for active_row,info in list(active.items()):
+                child=info['child']
+                if child.poll() is None:continue
                 code = child.returncode
                 done = d.row_root(active_row) / 'complete.json'
                 if code or not done.is_file() or d.read(done)['status'] != 'TRAINED_AND_SCORED':
                     raise RuntimeError(f'Worker {active_row} failed with {code}; preserve artifacts; no auto-retry')
                 completed.append(active_row)
-                child = None
-                active_row = None
-            if pending and child is None:
+                del active[active_row]
+            if pending and len(active)<2:
                 with lock(Path(d.PROJECT) / 'runs/receiver_residual_capacity4.lock'):
                     states = capacity()
-                    slots = [g for g in d.GPU_IDS if len(states[g]['pids']) == 0 and states[g]['free_mb'] >= 12000]
-                    if slots:
-                        gpu = slots[0]
+                    used={v['gpu'] for v in active.values()}
+                    slots=sorted((len(states[g]['pids']),-states[g]['free_mb'],g) for g in d.GPU_IDS
+                          if g not in used and len(states[g]['pids'])<d.MAX_TOTAL_GPU_PROCESSES and states[g]['free_mb']>=12000)
+                    while slots and pending and len(active)<2:
+                        gpu=slots.pop(0)[2]
                         row = pending.pop(0)
                         active_row = row['row_id']
                         cmd = [sys.executable, '-u', str(d.ROOT / 'experiments/cvs_t1_e50/runner.py'),
@@ -86,10 +101,11 @@ def dispatch():
                             child = subprocess.Popen(cmd, cwd=d.ROOT, env=dict(os.environ, CUDA_VISIBLE_DEVICES=str(gpu)),
                                     stdin=subprocess.DEVNULL, stdout=handle, stderr=subprocess.STDOUT, start_new_session=True)
                         launched.append(dict(row_id=active_row, pid=child.pid, gpu=gpu, cwd=str(d.ROOT), argv=cmd, log=str(log)))
+                        active[active_row]=dict(child=child,gpu=gpu)
                         d.write(d.BASE / 'launch.json', dict(rows=launched))
-            d.write(d.BASE / 'queue_state.json', dict(active=active_row, pending=pending, completed=completed,
-                    updated_at=time.time(), GPU_IDS=list(d.GPU_IDS), maximum_own_workers=1))
-            if pending or child is not None:
+            d.write(d.BASE / 'queue_state.json', dict(active=list(active), pending=pending, completed=completed,
+                    updated_at=time.time(), GPU_IDS=list(d.GPU_IDS), maximum_own_workers=2))
+            if pending or active:
                 time.sleep(5)
         collect()
     except BaseException as error:
@@ -102,6 +118,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--mode', choices=['worker', 'predict', 'score'])
     parser.add_argument('--row')
+    parser.add_argument('--adopt-empty-queue',action='store_true')
     args = parser.parse_args()
     if args.mode and args.row not in {r['row_id'] for r in d.rows()}:
         raise ValueError('Unregistered row')
@@ -113,7 +130,8 @@ def main():
         execute('score', args.row)
     elif args.mode == 'score':
         from .evaluate import score
-        score(args.row)
+        with lock(d.BASE/'CPU_scorer.lock'):
+            score(args.row)
         d.write(d.row_root(args.row) / 'complete.json', dict(status='TRAINED_AND_SCORED', row_id=args.row))
     else:
-        dispatch()
+        dispatch(args.adopt_empty_queue)
