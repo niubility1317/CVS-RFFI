@@ -471,6 +471,20 @@
     "models_strict_loaded": true,
     "target_feedback": false,
     "long_term_goal_complete": false,
-    "numeric_target_rows": []
+    "numeric_target_rows": [],
+    "complete_detail": {
+      "small_failed_scenes": [
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban"
+      ],
+      "small_parameters": 236355,
+      "small_maximum_drop_pp": 1.8357142857142856,
+      "small_source_IQ_worse_epochs": 20,
+      "all_new_versions_formal7": true,
+      "additional_IQ_F_truth_reads": 0
+    }
   }
 }

@@ -145,6 +145,10 @@ activation500_identity：全部20轮已核对，19700更新，L126000/U1134000�
 |practical_mid_urban|0.0452823117|0.0373172127|0.120130092|0.357823253|
 |practical_low_urban|0.0684273764|0.0609302968|0.137396529|0.426432937|
 
-完整逐TX/RX/day、repair/damage、confusion、波形及F配对clean几何见[结果](../automation_reports/CV-SincNet/20261021-phase1-restoration-R46-activation-factor-s2026092701-m2-r23/results.json)和[逐组CSV](../automation_reports/CV-SincNet/20261021-phase1-restoration-R46-activation-factor-s2026092701-m2-r23/row_metrics.csv)。NMSE、F几何和准确率不能单独证明每个细节来自真实TX。
+完整逐TX/RX/day、repair/damage、confusion、波形及F配对clean几何见[结果](results.json)和[逐组CSV](row_metrics.csv)。NMSE、F几何和准确率不能单独证明每个细节来自真实TX。
 
 独立权重：local_artifacts/pamf_restoration/r46_activation_factor_20261021_r23/models/<arm>/final.pt，使用experiments.pamf_r46_activation_factor.runtime.load_checkpoint；float32[B,2,256]输入/同形输出，恢复器运行无需F或teacher。数据、权重、原始日志和私有运行信息不入Git。
+
+## 两版进一步压缩失败分析
+
+小版236355减参32.5704%，但五景超过父0.8pp，最大下降1.835714pp；所有20轮源IQ拟合均弱于同组大版，原生B1仍更慢。完整逐TX/RX/day、MacroF1、源曲线及代价解释见[两版详细分析](../../../docs/PAMF_R46_ACTIVATION_FACTOR_R23_COMPLETE_DETAIL_20261021.md)。仅只读已有评分与完整源记录，无新增IQ/F/truth/预测/评分。R26/R28/R30原矩阵保持。
