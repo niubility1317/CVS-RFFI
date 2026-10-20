@@ -14,3 +14,6 @@
 
 
 实际启动状态：VERIFIED / WAITING_SOURCE：普通账户新release/归档单SHA/compile已核实，2Ls解析无query smoke PASS，0checkpoint/F/TX/V/target；实际CPU控制器PID/CWD/argv/空CUDA/2线程与等待日志增长已读回。等待R38两版source_complete，不读成绩；尚无解析关联结果。
+
+
+实际诊断完成：VERIFIED/ANALYZED:112fixedsourcefeaturecells;1260groups/252conditionalcontrols/84pairedchanges independentlyrecomputed;R17referenceunchanged;0F/checkpoint/neuralforward/fit/target;allCPUprocessesEXITED;goalactive。[完整报告](../automation_reports/CV-SincNet/20261020-diagnostic-restoration-IQ-compact-analytic-TX-s2026092701-m2-r39/report.md)。
