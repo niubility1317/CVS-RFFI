@@ -200,9 +200,17 @@ def report(local,output,analysis,artifacts):
     lines+=['','原R17逐景1pp是退化上限，性能提升、lowurban≥70%与其他五受损场景距rawclean84.6761904762%≤5pp分别判断。单seed、相关视图、已暴露且由用户指定父的工程基准；全部正负结果保留，不称新独立盲测。重建、识别率或F几何不能单独证明每个恢复细节来自输入TX。完整目标 ACTIVE。','',
         '旧每组件80+本次20=100、组件轮次和300、串行140 pass，原F50训练另计。相对M35增加20轮，另报告同增量R49控制，不能把追加预算收益全部归于减参。','',
         '独立权重位于local_artifacts/pamf_restoration/r46_group_drop_r62_20261021/models/<arm>/final.pt；运行experiments.pamf_r46_group_drop.runtime.load_checkpoint后输入float32[B,2,256]原生IQ，输出同形IQ。恢复器无需教师/F/源缓存，识别时同一恢复IQ接原冻结F50默认头与FFT/PA/时域/统计分支，无另训头。','']
+    passive_path=output/'passive_training_utilization.json'
+    passive=None
+    if passive_path.is_file():
+        observed=json.loads(passive_path.read_text(encoding='utf-8'))
+        if observed.get('status')!='VERIFIED_PASSIVE_SAMPLE' or observed.get('own_GPU_workers')!=2:
+            raise ValueError('Existing passive resource evidence differs')
+        passive=dict(summary=observed['summary'],samples=len(observed['samples']),scope=observed['scope'])
+        lines+=['','训练期间6次被动采样覆盖约25秒：GPU2整卡利用率均值'+str(passive['summary']['2']['card_utilization_mean_percent'])+'%，GPU3为'+str(passive['summary']['3']['card_utilization_mean_percent'])+'%。整卡值包含其他owner，不能归于本进程或作为独占加速证明；原始PID/采样留在本地，不写入公开结果。','']
     (folder/'report.md').write_text('\n'.join(lines),encoding='utf-8')
     public=dict(artifacts,models={a:dict(m,path=Path(m['path']).relative_to(local).as_posix()) for a,m in artifacts['models'].items()})
-    write(folder/'results.json',dict(analysis,model_artifacts=public))
+    write(folder/'results.json',dict(analysis,model_artifacts=public,passive_training_utilization=passive))
     records=[]
     for arm,row in analysis['rows'].items():
         for role in ('source','target'):
