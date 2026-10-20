@@ -255,7 +255,8 @@
     "actual_training_rows_verified": [
       "group_pruned",
       "low_rank"
-    ]
+    ],
+    "postlaunch_state": "VERIFIED_TWO_GPU_WORKERS_TRAINING"
   },
   "expected_artifacts": [
     "launch.json",
@@ -495,7 +496,8 @@
     "GPU2/3only;eachoneownGPUworker,max2acrossR55/R57;guardR55completeANDactualownedPIDexit;healthyothersunchanged.",
     "LocalpreSiLUfit doesnotguarantee fullG orTXidentification improvement;notnewblindvalidation/notcleanfree/notperdetailTXproof.",
     "REJECTED_EXTRA_GATE:extraapproval/signature/memberhash/repeatedreviewoutsideexhaustiveminimalworkflow.",
-    "Matched same-card source-only G and G+F;B1 warm16/64samples x3 alternating rounds;B32 warm4/16iterations x3;median,p90,p95,throughput,peak/resident memory;ConvLinearMAC excludes FFT/CG/norm"
+    "Matched same-card source-only G and G+F;B1 warm16/64samples x3 alternating rounds;B32 warm4/16iterations x3;median,p90,p95,throughput,peak/resident memory;ConvLinearMAC excludes FFT/CG/norm",
+    "VERIFIED/RUNNING：同128源received样本额外256父/256初始子G输入的一次GN校准完成（8.0063s），168原GN拟合的斜率/截距/岭系数/局部MSE独立NumPy复算通过；源calibration 0clean/TX/F/V/target/optimizer，父及未校正子图保持不变后才应用GN初始化。两行实际R46/F50/2Ls noquery smoke PASS、全组件有限非零梯度及严格独立权重重载一致。单归档SHA/compile、controller与两worker实际PID/CWD/argv/CPU2/GPU及首轮日志增长核实，GPU3gn_full/GPU2gn_half各一条；R55两行实际退出保护已通过。保持273765参数，不根据已完成R55正式分数修改本固定方案；仅说明实现运行正常，无R57正式识别收益结论。E20/4940后自动全七景/独立truth-last，原完整目标ACTIVE。"
   ],
   "reused_controls": [
     {
