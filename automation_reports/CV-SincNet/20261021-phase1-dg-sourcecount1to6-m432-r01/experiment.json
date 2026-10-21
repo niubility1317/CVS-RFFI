@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "用户明确要求1、2、3、4、5、6源接收机全部设计并运行；排除独立ResNet18 CE；保留方法自身CE、三种子、原生预算、拼接星地增强、监督/普通PL。用户随后明确要求其他显卡也启动以加速：允许GPU0至7中的实际空闲卡，每卡一个本任务worker，不干预已有任务。",
   "code": {
-    "commit": "actual commit in release_commit.txt/package.json",
+    "commit": "9500192b6a91365016006ea78fbebfda2afb2bed",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "existing N607 SDG-SEI Py3.8 torch1.11 + isolated NumPy1.23.5; no installation",
     "cwd": "local_artifacts/phase1_dg_sourcecount6_20261021/runtime.json#/release_root"
@@ -94,7 +94,14 @@
     "local_artifact_root": "local_artifacts/phase1_dg_sourcecount6_20261021",
     "runtime_ref": "local_artifacts/phase1_dg_sourcecount6_20261021/runtime.json",
     "launch_command": "python -u -m experiments.phase1_dg_sourcecount6.driver dispatch --config runtime.json",
-    "stop_rule": "two identical technical row failures stop unstarted work; healthy active rows finish; no performance-based stopping"
+    "stop_rule": "two identical technical row failures stop unstarted work; healthy active rows finish; no performance-based stopping",
+    "postlaunch_evidence_ref": "local_artifacts/phase1_dg_sourcecount6_20261021/postlaunch_verified.json",
+    "monitor": {
+      "kind": "thread heartbeat",
+      "id": "1-6",
+      "interval_minutes": 60,
+      "notify": "meaningful changes, completion, failure, required input"
+    }
   },
   "expected_artifacts": [
     "data_status.json",

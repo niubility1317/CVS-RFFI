@@ -71,3 +71,13 @@ PL 行同时使用上述星地拼接和最普通置信度伪标签：当前联�
 两个相同的技术失败指纹停止尚未启动行，已有健康行结束；保留全部 partial。错误角色/输出碰撞/非有限/无法生成合法预测是技术失败，负收益不是停止理由。技术恢复另立不可覆盖 run，先核实所属进程和产物。
 
 预期产物：data_status/data_handles、smoke/result、pipeline_state、逐行 source freeze 或 reused_source、七视图 prediction/complete、独立 scores、complete、summary.csv/json、逐行独立重算 audited_rows、final_report、completion。最终结果回写 IEEE 实验章节，不填造未完成结果。首次运行后按已完成同方法日志和实际可用 GPU 更新 ETA，估计不作为截止保证。
+
+## 发布与运行核验（2026-10-21 15:04，UTC+8）
+
+VERIFIED：代码 commit `9500192b6a91365016006ea78fbebfda2afb2bed` 已提交、push，并独立核对远端 OID；一个发布归档本地/远端 SHA 匹配，远端编译通过。聚焦协议负例测试 3 项通过；一次独立 P0/P1 审查发现派生矩阵过期，修正后与生成器完全一致，未增加重复全量审查。
+
+源数据构建 VALIDATED_ONCE，18 份源缓存/角色句柄，目标始终 144000 个物理样本；已复用全部接收 IQ。49 个真实源样本训练目标/checkpoint/no-query smoke 全部 PASS，随后自动开始正式训练。owner PID 69072 的 PID/CWD/argv 与六条首批 worker 已读回；训练日志增长已独立确认。GPU0、1、4、5、6、7 已启动，GPU2、3 继续其他恢复器研发，释放后可接入。首批 IB-RFF CE/Full 已完成源训练、七视图预测与独立评分，其余仍运行；当前不是全矩阵完成。
+
+ETA：按历史完整同方法三种子实测时长推算，6 张卡持续空闲约 8–12 小时（中心约 9 小时），即约 2026-10-21 23:00 至 2026-10-22 03:00（UTC+8）；若 8 卡持续可用约 6–9 小时，若降至 4 卡约 11–17 小时。包含七视图预测/评分和收尾，IB 早停、共享 CPU/存储与故障会影响时长；这是估计，不是保证。后续只按实际吞吐校准，不改变科学矩阵。
+
+已创建本线程每小时监控（automation `1-6`），无变化保持安静，仅完成、技术失败、需要输入或 ETA 显著变化时通知。完成后汇总并更新既有 IEEE 实验部分。执行证据与 ETA 明细分别见本地 `postlaunch_verified.json`、`eta_estimate.json`。
