@@ -1,1 +1,4 @@
 {"at": "2026-10-21T08:43:56+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-21T08:49:33+00:00", "status": "RUNNING", "note": "VERIFIED actualPID/CWD/argv/GPU,sourceCP+gradient smoke,PASS;actualscratch50/13L37U;E1 and step logs grown.", "evidence": "local_artifacts/cvs_sard_dura_train/readback_20261021T084843Z.json", "row_id": "SARD-s2026092701"}
+{"at": "2026-10-21T08:49:33+00:00", "status": "RUNNING", "note": "VERIFIED actualPID/CWD/argv/GPU,sourceCP+gradient smoke,PASS;actualscratch50/13L37U;E1 and step logs grown.", "evidence": "local_artifacts/cvs_sard_dura_train/readback_20261021T084843Z.json", "row_id": "SARD_DURA_AUG-s2026092701"}
+{"at": "2026-10-21T08:49:33+00:00", "status": "RUNNING", "note": "VERIFIED two matched rows GPU3/6,zero target access;auto raw+DURA all7 then independentCPUtruthlast.", "evidence": "local_artifacts/cvs_sard_dura_train/readback_20261021T084843Z.json", "row_id": null}

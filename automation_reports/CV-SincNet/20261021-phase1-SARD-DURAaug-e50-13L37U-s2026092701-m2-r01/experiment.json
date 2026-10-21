@@ -29,7 +29,7 @@
   "replaces_run_id": null,
   "authorization": "用户要求验证SARD增强样本更换为DURA输出，并明确从零E50、13L+37U。先seed2026092701匹配对照；原授权自动七景测试与余量GPU并行。",
   "code": {
-    "commit": null,
+    "commit": "94b7f8eff785369030eeef94899c4f59e4ff0b51",
     "checkout": "code/worktrees/phase1_urban_sigtime_20261014",
     "environment": "N607 ordinary account,CVS-RFFI Python3.10/Torch2.1;FP32/TF32off;CPU2",
     "cwd": "PROJECT/releases/cvs_SARD_DURAaug_E50_13L37U_20261021_r01"
@@ -106,7 +106,20 @@
     "local_artifact_root": "local_artifacts/cvs_sard_dura_train",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_sard_dura_train/runner.py",
     "stop_rule": "Own source/protocol/shape/seed/freeze/nonfinite/overwrite/unlaunchable/illegal prediction failure:preserve artifacts,stop pending,no automatic retry,no score-based stop,no unrelated intervention",
-    "status": "LOCAL_VERIFIED"
+    "status": "RUNNING",
+    "launch_verdict": "VERIFIED",
+    "evidence_ref": "local_artifacts/cvs_sard_dura_train/readback_20261021T084843Z.json",
+    "actual_GPU": {
+      "SARD": 3,
+      "SARD_DURA_AUG": 6
+    },
+    "completion_followup": {
+      "automation_id": "sard-dura-e50",
+      "kind": "heartbeat",
+      "interval_minutes": 15,
+      "status": "ACTIVE",
+      "purpose": "Finish existing training->14cells/row->independenttruthlast->report;quiet while unchanged;close on completion"
+    }
   },
   "expected_artifacts": [
     "launch.json",
@@ -180,7 +193,7 @@
         "<row>/scoring/scores.json",
         "<row>/complete.json"
       ],
-      "status": "LOCAL_VERIFIED",
+      "status": "RUNNING",
       "weight_decay": 0.0001,
       "calendar": {
         "label_epochs": 13,
@@ -208,7 +221,8 @@
         "target_G_training": 0,
         "clean_branch": "unchanged",
         "runtime_commit": "47c264286ca689f060a3f36aafb763fe209a6f06"
-      }
+      },
+      "physical_GPU": 3
     },
     {
       "row_id": "SARD_DURA_AUG-s2026092701",
@@ -244,7 +258,7 @@
         "<row>/scoring/scores.json",
         "<row>/complete.json"
       ],
-      "status": "LOCAL_VERIFIED",
+      "status": "RUNNING",
       "weight_decay": 0.0001,
       "calendar": {
         "label_epochs": 13,
@@ -272,7 +286,8 @@
         "target_G_training": 0,
         "clean_branch": "unchanged",
         "runtime_commit": "47c264286ca689f060a3f36aafb763fe209a6f06"
-      }
+      },
+      "physical_GPU": 6
     }
   ],
   "notes": [
