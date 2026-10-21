@@ -1,6 +1,6 @@
 # R28：冻结 prior 低秩卷积合并
 
-状态：VERIFIED_QUEUED_AFTER_REAL_SMOKE。新R28已发布并通过真实2Ls检查，两份完整299297权重导出/严格重载；等待R26实际进程完成，0新GPUworker，无新版正式分数。
+状态：VERIFIED / ANALYZED。
 
 用户要求压缩同时提升性能。本轮固定 BOTH R22 source-final E20/19700（complex625、complex625_identity，方法 e190cf5367b03da8aafced51276a8730ad8274fa），仅作冻结推理的代数变换，无新训练/选模/教师。它们原始训练仍来自用户指定原 R46 prune_refine350521 E20/4940、方法 bbb8daf817de050b958d217b70d4c33f4aefe341，源7/63/30物理角色及完整祖先契约保持。未来训练唯一初始化/教师仍为原350521，本次不把新学生变成训练父版。历史目标已暴露，属于工程执行比较。
 
@@ -33,3 +33,90 @@ R27原run在CPU首步F近零分量等价断言失败，已核实实际退出且0
 结果工具新增22项检查PASS，覆盖两版全七景、原预测一致性与混淆矩阵的相互核对、源/F权限边界、真实进程退出、完整299297部署参数、四模型成本及缺失/错误证据拒绝、公开逐TX/RX/day CSV和报告输出。仅以聚合artifact独立复算，不读新的IQ/truth或调参。
 
 单一本地完成owner只读等待实际controller/worker退出，之后收集完整source7/formal7/原预测差异/独立truth-last，取回两份合并后完整权重并CPU严格加载，检查组件参数/MAC/有限输出，再报告、提交推送并独立核对远端OID。没有重试、热改、目标重测或复制完成owner；原R23/R24/R26完成owner保持。完整70%/5pp/clean/TX真实性目标仍ACTIVE。
+
+
+## 完整正式结果
+
+两版均完成源1800×7和正式168000×7，所有新预测固定后比较旧R22原预测，再独立truth-last评分。实际controller/两worker退出，独立299297参数部署权重已取回并CPU严格加载。新增训练0，所有负结果保留。
+
+|版本|部署参数|较350521减参|父0.8pp|原R17历史1pp|原native分类保持|70%/5pp/clean保持|
+|---|---:|---:|---|---|---|---|
+|R22_complex625_priorcollapsed|299297|14.613675%|True|True|False|False/False/False|
+|R22_complex625_identity_priorcollapsed|299297|14.613675%|True|True|False|False/False/False|
+
+|版本|场景|准确率%|MacroF1%|较350521pp|较自身R22 native pp|修复/损坏/净纠错|
+|---|---|---:|---:|---:|---:|---|
+|R22_complex625_priorcollapsed|clean|84.542857|84.260260|+0.086310|+0.000000|248/472/-224|
+|R22_complex625_priorcollapsed|practical_high|82.053571|81.561357|-0.398810|+0.000000|73295/3876/+69419|
+|R22_complex625_priorcollapsed|practical_mid|80.845833|80.380230|-0.376190|+0.000000|73143/4382/+68761|
+|R22_complex625_priorcollapsed|practical_low_suburban|79.344643|78.917260|-0.275595|+0.000000|72801/5072/+67729|
+|R22_complex625_priorcollapsed|practical_high_urban|81.020833|80.566723|-0.366071|+0.000595|73793/4371/+69422|
+|R22_complex625_priorcollapsed|practical_mid_urban|74.251786|73.946401|-0.195238|+0.000000|74221/7410/+66811|
+|R22_complex625_priorcollapsed|practical_low_urban|67.465476|67.312300|-0.044643|+0.000000|72510/10071/+62439|
+|R22_complex625_identity_priorcollapsed|clean|84.605952|84.331257|+0.149405|+0.000000|211/329/-118|
+|R22_complex625_identity_priorcollapsed|practical_high|81.854167|81.337937|-0.598214|+0.000000|72735/3651/+69084|
+|R22_complex625_identity_priorcollapsed|practical_mid|80.692262|80.189302|-0.529762|+0.000000|72637/4134/+68503|
+|R22_complex625_identity_priorcollapsed|practical_low_suburban|79.269048|78.807012|-0.351190|+0.000000|72442/4840/+67602|
+|R22_complex625_identity_priorcollapsed|practical_high_urban|80.839881|80.338701|-0.547024|-0.000595|73192/4074/+69118|
+|R22_complex625_identity_priorcollapsed|practical_mid_urban|74.536310|74.180915|+0.089286|+0.000000|74215/6926/+67289|
+|R22_complex625_identity_priorcollapsed|practical_low_urban|68.055357|67.846422|+0.545238|-0.000595|72990/9560/+63430|
+
+容忍上限不代表性能提升；低urban70%、其他五景距rawclean≤5pp、clean保持和更强TX细节真实性分别判断。每版原R22源权重固定，目标结果未回流转换、选模或重跑。
+
+|版本|场景|argmax差异条数|IQ最大绝对差|F特征最大绝对差|logits最大绝对差|
+|---|---|---:|---:|---:|---:|
+|R22_complex625_priorcollapsed|clean|0|4.15742397e-06|0.000144481659|8.32080841e-05|
+|R22_complex625_priorcollapsed|practical_high|0|9.50694084e-06|0.000541120768|0.000227808952|
+|R22_complex625_priorcollapsed|practical_mid|0|8.80658627e-06|0.000190258026|0.000328540802|
+|R22_complex625_priorcollapsed|practical_low_suburban|0|1.22487545e-05|0.00126302242|0.000564932823|
+|R22_complex625_priorcollapsed|practical_high_urban|1|1.09672546e-05|0.000358736143|0.00022983551|
+|R22_complex625_priorcollapsed|practical_mid_urban|0|1.18017197e-05|0.000855326653|0.000871658325|
+|R22_complex625_priorcollapsed|practical_low_urban|1|1.52587891e-05|0.000518083572|0.000463724136|
+|R22_complex625_identity_priorcollapsed|clean|0|2.2649765e-06|0.000441789627|0.00013923645|
+|R22_complex625_identity_priorcollapsed|practical_high|0|9.7155571e-06|0.000366151333|0.00029706955|
+|R22_complex625_identity_priorcollapsed|practical_mid|0|1.20401382e-05|0.496560276|2.01859951|
+|R22_complex625_identity_priorcollapsed|practical_low_suburban|0|1.59740448e-05|0.114418805|0.311322331|
+|R22_complex625_identity_priorcollapsed|practical_high_urban|1|1.01625919e-05|0.000386357307|0.00059530139|
+|R22_complex625_identity_priorcollapsed|practical_mid_urban|0|1.69873238e-05|0.000711604953|0.000676691532|
+|R22_complex625_identity_priorcollapsed|practical_low_urban|1|1.67489052e-05|0.000773429871|0.0013435483|
+
+|版本|口径|原350521/原低秩/合并版中位ms|合并版p95ms|原低秩/合并版吞吐条/s|较原低秩延迟变化|
+|---|---|---|---:|---|---:|
+|R22_complex625_priorcollapsed|G_only_B1|40.681103/48.904638/44.895561|46.812998|20.421/22.201|-8.1977%|
+|R22_complex625_priorcollapsed|G_only_B32|56.776680/54.346703/56.551154|59.933159|586.297/561.966|+4.0563%|
+|R22_complex625_priorcollapsed|G_plus_F_B1|52.117525/60.398090/56.260586|58.195052|16.560/17.760|-6.8504%|
+|R22_complex625_priorcollapsed|G_plus_F_B32|66.224041/63.565267/65.761764|69.313803|501.705/484.415|+3.4555%|
+|R22_complex625_identity_priorcollapsed|G_only_B1|49.874842/59.078299/54.715077|57.135419|16.806/18.204|-7.3855%|
+|R22_complex625_identity_priorcollapsed|G_only_B32|61.696974/61.400331/63.483314|66.440632|518.621/501.930|+3.3925%|
+|R22_complex625_identity_priorcollapsed|G_plus_F_B1|64.268089/74.071619/69.306518|72.043302|13.515/14.392|-6.4331%|
+|R22_complex625_identity_priorcollapsed|G_plus_F_B32|74.383430/74.886134/76.378339|79.784889|427.143/416.434|+1.9926%|
+
+计时含完整coarse/action/3prior/6CG，G+F含原默认头；同卡64sourceV、B1/B32三轮交替，预加载GPU输入，不含传输/预处理/loader。四G一F驻留是共享suite，不称单模型部署显存；完整每轮median/p90/p95/吞吐/resident/peak/incremental保存在results.json。
+
+|版本|coarse/action/prior参数|完整权重字节|原低秩/合并版ConvLinearMAC|CPU转换秒|
+|---|---|---:|---|---:|
+|R22_complex625_priorcollapsed|106658/80045/112594|1546228|29727404/34949420|0.217154|
+|R22_complex625_identity_priorcollapsed|106658/80045/112594|1546228|29727404/34949420|0.309270|
+
+84次卷积调用减少、28组共享核保留，部署参数从278180增加至299297；MAC增加，不能用源压缩文件替代部署权重大小。MAC不含FFT/CG/norm/激活/访存/F。新训练轮次/更新/训练IQ均0；原R22继承E20/19700及其祖先成本不消失。
+
+|版本|场景|IQ NMSE|prefix232 NMSE|tail24 NMSE|FFTlogpower L1|
+|---|---|---:|---:|---:|---:|
+|R22_complex625_priorcollapsed|clean|0.000120223798|0.000124569531|7.31806504e-05|0.0139766876|
+|R22_complex625_priorcollapsed|practical_high|0.0156991854|0.00686451048|0.100724317|0.251369983|
+|R22_complex625_priorcollapsed|practical_mid|0.020635169|0.0118868575|0.104696311|0.28261748|
+|R22_complex625_priorcollapsed|practical_low_suburban|0.0261056982|0.0174254682|0.109384172|0.311600268|
+|R22_complex625_priorcollapsed|practical_high_urban|0.0209404714|0.0122333169|0.10457243|0.268439174|
+|R22_complex625_priorcollapsed|practical_mid_urban|0.0454998501|0.0373549089|0.122789368|0.355371237|
+|R22_complex625_priorcollapsed|practical_low_urban|0.0685784146|0.060784325|0.141185805|0.422803193|
+|R22_complex625_identity_priorcollapsed|clean|4.09193963e-05|4.21238256e-05|2.98536343e-05|0.0142119722|
+|R22_complex625_identity_priorcollapsed|practical_high|0.0158022363|0.00685482519|0.101531096|0.252665609|
+|R22_complex625_identity_priorcollapsed|practical_mid|0.0207823999|0.0119372401|0.105463065|0.283867598|
+|R22_complex625_identity_priorcollapsed|practical_low_suburban|0.0262748823|0.0175072867|0.110142551|0.31276679|
+|R22_complex625_identity_priorcollapsed|practical_high_urban|0.0210536215|0.0122395502|0.105404936|0.269757003|
+|R22_complex625_identity_priorcollapsed|practical_mid_urban|0.0457096435|0.0374773219|0.123765402|0.356823921|
+|R22_complex625_identity_priorcollapsed|practical_low_urban|0.0688387603|0.0609728321|0.142138958|0.424488008|
+
+[完整结果](results.json)与[全部逐TX/RX/day CSV](row_metrics.csv)保留混淆矩阵、净纠错、波形和F几何。浮点差异与分类差异分别报告；已暴露单seed工程基准，不称新盲测或TX逐细节真实性证明。
+
+独立完整权重：local_artifacts/pamf_restoration/r46_prior_collapse_20261021_r28/models/<arm>/final.pt；使用experiments.pamf_r46_prior_collapse.runtime.load_checkpoint加载，FP32[B,2,256]输入/同形输出，部署无需F/teacher/clean；权重、IQ和原始日志不入Git。

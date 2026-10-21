@@ -169,7 +169,8 @@
       "collector": "tools/complete_pamf_prior_collapse.py",
       "single_local_owner": "codex/root/R28",
       "remote_mutations": 0
-    }
+    },
+    "postlaunch_state": "VERIFIED_ALL_OWNED_HANDLES_EXITED"
   },
   "expected_artifacts": [
     "launch.json",
@@ -319,5 +320,18 @@
     "Main researches normalization slope caching;this group changes prior linear factor execution and openly increases deployed coefficients.",
     "Original25checks/P0P1PASS plus10targetedfixchecks and one targetedreviewPASS;onecodecommit/onepreflight/onearchiveSHA/compile/actualPIDpoststate;no extra approval/hashchain."
   ],
-  "registered_at": "2026-10-20T21:44:48+00:00"
+  "registered_at": "2026-10-20T21:44:48+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "accepted_compact_rows": [
+      "R22_complex625_priorcollapsed",
+      "R22_complex625_identity_priorcollapsed"
+    ],
+    "every_version_full7formal": true,
+    "models_strict_loaded": true,
+    "new_training_updates": 0,
+    "target_feedback": false,
+    "long_term_goal_complete": false,
+    "numeric_target_rows": []
+  }
 }
