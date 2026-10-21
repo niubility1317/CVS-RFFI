@@ -6,6 +6,16 @@ import numpy as np
 from .io import read, write
 
 
+def bind_classes(contract, metadata):
+    """Legacy F0 stores the ordered TX map in cache metadata, not its contract."""
+    classes = metadata.get('classes')
+    if not isinstance(classes, list) or len(classes) != contract['num_classes'] or len(set(classes)) != len(classes):
+        raise ValueError('Validated source class map differs')
+    if 'classes' in contract and contract['classes'] != classes:
+        raise ValueError('Contract/cache class order differs')
+    return dict(contract, classes=classes)
+
+
 def sample_id(dataset, tx, rx, day, eq, packet):
     key = '%s/%s/%s/%s/%s' % (tx, rx, day, eq, packet)
     if dataset != 'ManySig':
@@ -65,6 +75,7 @@ def prepare(rt, plan):
                             lookup[sid] = (tx, rx, day, eq, packet, serial)
                             serial += 1
             meta = read(Path(old['source_cache']) / 'metadata.json')
+            contract = bind_classes(contract, meta)
             role_roots = meta.get('role_cache_roots', {})
             if pid.startswith('m') and '-natural' in pid:
                 u_ref = counted.get(pid + '-pl')

@@ -1,1 +1,2 @@
 {"at": "2026-10-21T11:00:47+00:00", "status": "PLANNED", "evidence": ["docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md"], "note": "Design complete; new training NOT launched", "row_id": null}
+{"at": "2026-10-21T12:03:32+00:00", "status": "STOPPED_EARLY_SYSTEMIC_TECHNICAL_FAILURE", "row_id": null, "note": "No GPU worker started; source adapter legacy class-map KeyError. Immutable r01 retained, recovery r02.", "evidence": ["local_artifacts/cric_dura_comparison_20261021/failed_source_r01/latest_source_status.json"]}

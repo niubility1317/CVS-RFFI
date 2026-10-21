@@ -9,9 +9,21 @@ from experiments.cric_dura_comparison.f_data import context, SourceDataset
 from experiments.cric_dura_comparison.f_model import contrast
 from experiments.cric_dura_comparison.source_queue import allow_shared, row_configs
 from experiments.cric_dura_comparison.plan import make_plan
+from experiments.cric_dura_comparison.data import bind_classes
 
 
 class SourceContracts(unittest.TestCase):
+    def test_legacy_class_map_is_taken_from_validated_cache_metadata(self):
+        original = dict(num_classes=2, role_ids={'L_s':['a'], 'U_s':['b'], 'V':['c']})
+        normalized = bind_classes(original, dict(classes=['TX-A','TX-B']))
+        self.assertEqual(normalized['classes'], ['TX-A','TX-B'])
+        self.assertEqual(normalized['role_ids'], original['role_ids'])
+        self.assertNotIn('classes', original)
+        with self.assertRaisesRegex(ValueError, 'class'):
+            bind_classes(original, dict(classes=['TX-A']))
+        with self.assertRaisesRegex(ValueError, 'class'):
+            bind_classes(dict(original, classes=['TX-B','TX-A']), dict(classes=['TX-A','TX-B']))
+
     def test_supervised_does_not_open_U(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)

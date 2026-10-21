@@ -3,7 +3,7 @@ from copy import deepcopy
 from experiments.phase1_external_dg.plan import make_plan as external_plan, SEEDS, VIEWS
 from experiments.phase1_dg_sourcecount6.plan import counts, SOURCE_ORDER, TARGET
 
-RUN = '20261021-phase1-CRIC-DURA-comparison-m153-r01'
+RUN = '20261021-phase1-CRIC-DURA-comparison-m153-r02'
 ANALYSIS_RUN = '20261021-phase1-CRIC-DURA-F0-compare-m54-r01'
 F_RUN = '20261016-phase1-F-supcon-e50-clean-manysig-m9-r02'
 G_RUN = '20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69'
