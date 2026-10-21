@@ -27,3 +27,5 @@ MIX 保留 ORD128 对比。MIX_XRX 使用原 SAT192 关系函数，复用同一�
 接DURA测试的六环境均值：原匹配SARD78.5491%、全部替换75.5542%、MIX76.4947%、MIX_XRX76.4381%。两新行较匹配SARD分别−2.0544／−2.1110个百分点，clean分别−1.3863／−1.9792个百分点，low urban分别−1.4714／−1.5030个百分点，均未达到预登记条件。原输入六环境均值由全部替换34.0940%恢复到69.6048%／69.7368%，仍低于SARD71.8820%。没有按结果重选、重训或扩seed，没有更换PAMF／DURA默认版。逐景Accuracy／Macro-F1、逐RX/day/TX、净纠错和实际U／G开销见 [完整测试与训练报告](test_results.md)。本轮仅1Fseed和1固定G，不给跨seedSD。
 
 所有run所属worker与controller已自然退出，无技术失败。完整日志取回79个文件，保留N607原输出，不包含权重／IQ／预测数组的本地只读分析副本存于local_artifacts/cvs_sard_dura_mix。归档、完整日志和生成CSV不提交Git，仅提交本run报告与登记摘要。
+
+全部训练／测试／独立评分及完整分析已完成，结果报告提交 `4b7d851f1ec74cc3f130c658ab8adf46d1db1ca4` 已push并独立核实远端OID。完成回报心跳 `sard-dura-mix-e50` 已删除，独立核实本地automation定义已不存在，不再轮询。本轮负结果完整保留，没有扩seed、修改默认F/G或启动后续实验。

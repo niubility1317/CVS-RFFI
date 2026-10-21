@@ -117,8 +117,10 @@
       "automation_id": "sard-dura-mix-e50",
       "kind": "heartbeat",
       "interval_minutes": 15,
-      "status": "ACTIVE",
-      "purpose": "Complete existing source training/all14predictions/CPUtruthlast/full logs and detailed report;quiet while healthy;delete on completion"
+      "status": "DELETED",
+      "purpose": "Complete existing source training/all14predictions/CPUtruthlast/full logs and detailed report;quiet while healthy;delete on completion",
+      "closure": "All training,prediction,scoring,full-log analysis and report delivered;app deletion independently confirmed",
+      "report_delivery_commit": "4b7d851f1ec74cc3f130c658ab8adf46d1db1ca4"
     },
     "completion_verdict": "VERIFIED",
     "completion_evidence_ref": "local_artifacts/cvs_sard_dura_mix/readback_20261021T132314Z.json"
