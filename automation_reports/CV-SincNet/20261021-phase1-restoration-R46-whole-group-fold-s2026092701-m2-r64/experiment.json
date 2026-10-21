@@ -176,7 +176,7 @@
     "local_artifact_root": "local_artifacts/pamf_restoration/r46_group_fold_r64_20261021",
     "launch_command": "python -u -m experiments.pamf_r46_group_fold.runner run --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --compact-parent ../../runs/20261020-phase1-restoration-R44-pruned-refine-s2026092701-m2-r46 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261021-phase1-restoration-R46-whole-group-fold-s2026092701-m2-r64 --expected-commit 1c5ecf805afa9a15c23de8e3232b7cc83b37dad5",
     "stop_rule": "Technical failure preserves affectedoutputs,healthy peers unchanged;no automaticretry/hotedit/stop",
-    "postlaunch_state": "VERIFIED_ACTUAL_GPU_TRAINING",
+    "postlaunch_state": "VERIFIED_ALL_OWNED_PROCESSES_EXITED",
     "actual_training_rows_verified": [
       "fold_full",
       "fold_half"
@@ -431,7 +431,8 @@
     "OnlydirecthumanM35init/IQteacher;all63000source/E20/4940/globalmicro256/originalIQ+.05spec+1to.1teacher;allcoarse/action/priorjoint;0TX/F/V/targetoptimization.",
     "Everyfixedrowfull7formal regardlesssource;wholepredictionbeforeindependenttruthlast/samecardcost/negative results retained;exposedengineeringbenchmark,notnewblind/perdetailproof.",
     "PhysicalGPU3/2each1own/max2acrossR62R64;waitactualsamecardR62completion+PIDexit/capacity beforenewGPUallocation;healthyotherownersuntouched.",
-    "VERIFIED / TRAINING：方法 1c5ecf805afa9a15c23de8e3232b7cc83b37dad5 已普通账户发布，单归档SHA与compile通过。实际共享源校准/真实M35/F50/2Ls no-query smoke PASS；两行物理GPU3/2实际PID/CWD/argv/CUDA/CPU2、GPU PID、日志增长和有限epoch已核实。103处完整输入统计来自128源LU/256父G，只计一次校准成本，0clean/TX/F/V/target/optimizer；新推理参数0。两行248828/GN3/fullprior，补偿强度1/.5；核心22704e5在读取R62分数前固定，直接M35初始化/教师不变，原E20/4940与自动全7正式测试/独立truthlast/同卡成本不变，无源筛选。R62同卡旧GPU进程已实际EXITED，其他owner保持。无R64识别收益结论，完整目标ACTIVE。"
+    "VERIFIED / TRAINING：方法 1c5ecf805afa9a15c23de8e3232b7cc83b37dad5 已普通账户发布，单归档SHA与compile通过。实际共享源校准/真实M35/F50/2Ls no-query smoke PASS；两行物理GPU3/2实际PID/CWD/argv/CUDA/CPU2、GPU PID、日志增长和有限epoch已核实。103处完整输入统计来自128源LU/256父G，只计一次校准成本，0clean/TX/F/V/target/optimizer；新推理参数0。两行248828/GN3/fullprior，补偿强度1/.5；核心22704e5在读取R62分数前固定，直接M35初始化/教师不变，原E20/4940与自动全7正式测试/独立truthlast/同卡成本不变，无源筛选。R62同卡旧GPU进程已实际EXITED，其他owner保持。无R64识别收益结论，完整目标ACTIVE。",
+    "VERIFIED / ANALYZED：两行完整E20/4940、源1800×7、正式168000×7、逐行七预测固定后独立truth-last、全20轮/同卡成本/实际所属进程退出和独立权重CPU严格重载已核实。fold_full 248828参数，较指定M35七景提高1/下降6，low urban 66.508333%（较M35-1.001786pp）；较R62同图同训练预算提高5/下降2，low差+0.277381pp；70%=False、其他五景gap≤5pp=False；同卡G B1父/本版52.1396/51.6556ms，G+F B1父/本版63.0242/63.4523ms；fold_half 248828参数，较指定M35七景提高1/下降6，low urban 66.217857%（较M35-1.292262pp）；较R62同图同训练预算提高3/下降4，low差-0.013095pp；70%=False、其他五景gap≤5pp=False；同卡G B1父/本版49.5927/49.5229ms，G+F B1父/本版60.8301/60.9381ms。同GN3图/通道/训练预算下full源补偿相对half七景提高7/下降0，low urban差+0.290476pp；实际成本按同卡配对测量，不从相同图推定相同秒数。直接指定350521初始化/冻结IQ教师不变，全prior保留并更新，原pairedcleanIQ/谱/1→.1IQ教师，全组件联合；0TX/F/V/target优化/新推理参数；共享128源LU/256父G/103处输入统计及实测离线成本单列。全部正负结果保留，不把减参或1pp容差当作性能提升或逐细节TX真实性。完整目标ACTIVE。"
   ],
   "reused_controls": [
     {
@@ -446,5 +447,15 @@
       "target_results_used_for_selection": false
     }
   ],
-  "registered_at": "2026-10-20T23:29:34+00:00"
+  "registered_at": "2026-10-20T23:29:33+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "all_fixed_rows_scored": true,
+    "accepted_R17": [
+      "fold_full",
+      "fold_half"
+    ],
+    "accepted_R46": [],
+    "goal_complete": false
+  }
 }
