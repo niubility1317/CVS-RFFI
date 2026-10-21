@@ -96,6 +96,7 @@ def completed_metrics(value):
     result=dict(status='ANALYZED',run_id=d.RUN,method_commit=METHOD,baselines=bases,rows={},target_feedback=False,goal_complete=False,
         shared_source_training=training_metrics(shared['training_records'],shared['training_complete']),initialization=init,
         limitation='One model seed and one correlated source trajectory,three readouts;human-designated exposed engineering benchmark,not three independent trainings or a new blind test')
+    result['shared_source_training']['stdout_findings']=shared.get('stdout_findings',[])
     for arm in d.ARMS:
         row=value['rows'][arm]
         if row.get('complete',{}).get('status')!='ANALYZED' or row.get('failure') is not None or 'training_records' in row or 'training_complete' in row:raise ValueError('Frozen readout cannot be counted as another source training')

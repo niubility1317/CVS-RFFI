@@ -66,7 +66,8 @@ else:
    checkpoint_path=str(source/'final.pt'),stdout=log.read_text(errors='replace'))
  shared=root/'source_path'
  shared_source=dict(training_records=[json.loads(line) for line in (shared/'training.jsonl').read_text().splitlines() if line.strip()],
-  training_complete=read(shared/'training_complete.json'),initialization=read(shared/'initialization.json'),completion=read(root/'shared_source_complete.json'))
+  training_complete=read(shared/'training_complete.json'),initialization=read(shared/'initialization.json'),completion=read(root/'shared_source_complete.json'),
+  stdout=(root/'logs/worker-source_path.log').read_text(errors='replace'))
  baselines={name:{role:read(root.parent/run/arm/('target_confirmation/' if role=='target' else '')/'native_map_prior/summary.json')
   for role in ('source','target')} for name,run,arm in (('R17',R17,'unroll_unshared'),('R44',R44,'group_pruned'),('R46',R46,'prune_refine'))}
  print(json.dumps(dict(run_id=root.name,method_commit=METHOD,complete=read(root/'complete.json'),failure=failure,shared_source=shared_source,
@@ -78,7 +79,7 @@ else:
         return None
     folder = output/'collections'
     folder.mkdir(exist_ok=True)
-    for arm, row in value['rows'].items():
+    for row in [value['shared_source'],*value['rows'].values()]:
         # Keep raw output in the private collection; public results contain only
         # finding categories and counts, not raw log lines or runtime paths.
         findings = {}
@@ -200,7 +201,8 @@ def report(local,output,analysis,artifacts):
         for key,v in current.items():
             b=parent[key];lines.append(f"|{arm}|{key}|{b['median_ms']:.4f}/{v['median_ms']:.4f}|{v['p90_ms']:.4f}/{v['p95_ms']:.4f}|{v['throughput_samples_per_second']:.4f}|{b['incremental_peak_bytes']}/{v['incremental_peak_bytes']}|")
     lines+=['','同卡64条sourceV、G/G+原冻结F、B1/B32、三轮交替次序预热；同步预加载GPU输入，不含传输/前处理/loader。三G一F共享驻留suite，增量峰值对应当前前向，不当作独立部署显存。Conv/Linear MAC不含FFT/CG/norm/activation/F；不同GPU时段不据绝对时延排名。','',
-        '完整共享20轮首→末：'+'；'.join(k+f" {v['first']:.8g}→{v['last']:.8g}" for k,v in training['losses'].items())+f"；每轮中位{training['epoch_seconds_median']:.4f}s。",'',
+        '完整共享20轮首→末：'+'；'.join(k+f" {v['first']:.8g}→{v['last']:.8g}" for k,v in training['losses'].items())+f"；每轮中位{training['epoch_seconds_median']:.4f}s。",
+        '完整源训练日志类别：'+json.dumps(training['stdout_findings'],ensure_ascii=False)+'；各评测读出日志类别：'+json.dumps({a:r['stdout_findings'] for a,r in analysis['rows'].items()},ensure_ascii=False),'',
         'lowurban≥70%、其他五受损景距rawclean84.6761904762%≤5pp、识别率实际提升与原R17每景1pp退化上限分别报告。容差和减参不代表性能提升；单seed/相关轨迹/已暴露工程基准，不称新独立盲测。重建、识别率或F几何不能单独证明恢复的每个细节属于输入TX。完整目标ACTIVE。','',
         '独立权重位于local_artifacts/pamf_restoration/r46_weight_mean_r66_20261021/models/<readout>/final.pt。使用experiments.pamf_r46_weight_mean.runtime.load_checkpoint，输入float32[B,2,256]原生IQ，输出同形IQ；G推理无教师/均值器/历史状态/源缓存，原F50默认头从同一恢复IQ生成FFT/PA/时域/统计输入。','']
     (folder/'report.md').write_text('\n'.join(lines),encoding='utf-8')
