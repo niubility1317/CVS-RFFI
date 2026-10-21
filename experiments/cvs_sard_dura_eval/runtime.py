@@ -5,6 +5,12 @@ from . import plan as p
 def read(path):return json.loads(Path(path).read_text())
 def write(path,value):Path(path).write_text(json.dumps(value,allow_nan=False)+'\n')
 
+def native_source_logits(native,x):
+ import torch
+ # Original centered-Sinc needs ordinary versioned intermediates for its cache.
+ with torch.inference_mode(False),torch.no_grad():
+  return native.forward_identity_only(x)['tx_logits']
+
 def observations():
  import numpy as np
  from experiments.cvs_t1_e50_confirm.evaluate import observations as original
@@ -54,7 +60,7 @@ def smoke(r,reader,native,device):
  with torch.inference_mode():
   logits=reader(x)
   if logits.shape!=(2,6) or not torch.isfinite(logits).all():raise ValueError('Frozen original reader smoke failed')
-  if native is not None:torch.testing.assert_close(logits,native.forward_identity_only(x)['tx_logits'],atol=1e-5,rtol=2e-5)
+  if native is not None:torch.testing.assert_close(logits,native_source_logits(native,x),atol=1e-5,rtol=2e-5)
  if any(v.requires_grad or v.grad is not None for v in reader.parameters()) or any(not torch.equal(v,reader.state_dict()[k]) for k,v in before.items()):raise ValueError('Frozen reader state changed')
  return dict(status='PASS',real_source_Ls=2,target_reads=0,updates=0,head_fit_updates=0,seed=r['seed'],
   native_defaulthead_equivalence=native is not None,NOAS_existing_strict_reader=r['arm']=='NOAS',parameter_count=sum(x.numel() for x in reader.parameters()))

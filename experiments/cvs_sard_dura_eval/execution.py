@@ -13,7 +13,7 @@ def predict(r):
  import numpy as np,torch
  from .runtime import observations,load_reader,smoke,existing_predictions
  from experiments.pamf_r46_multipoint_fast.tensor_io import array_tensor
- out=p.BASE/r['row_id'];out.mkdir();pred=out/'prediction';pred.mkdir()
+ out=p.row_root(r);out.mkdir();pred=out/'prediction';pred.mkdir()
  reader,native=load_reader(r,'cuda:0')
  write(out/'smoke.json',smoke(r,reader,native,'cuda:0'));del native
  ids,raw,restored=observations();before={k:v.clone() for k,v in reader.state_dict().items()}
@@ -44,7 +44,7 @@ def predict(r):
 def preflight(r):
  import numpy as np
  from .runtime import observations,existing_predictions
- out=p.BASE/r['row_id']/'prediction';done=read(out/'complete.json');p.validate(done['policy']);ids,_,_=observations()
+ out=p.row_root(r)/'prediction';done=read(out/'complete.json');p.validate(done['policy']);ids,_,_=observations()
  if done['status']!='PREDICTIONS_COMPLETE' or done['row']!=r or done['views']!=list(p.VIEWS) or done['count']!=p.COUNT or done['truth_read'] or done['state_updates'] or done['head_fit_updates']:
   raise ValueError('Truth closed: incomplete fixed readout matrix')
  with np.load(out/'predictions.npz',allow_pickle=False) as f:
@@ -85,17 +85,17 @@ def score(r):
      f1=np.divide(2*np.diag(cm),den,out=np.zeros(6),where=den>0).mean()
      if abs(result['accuracy']-np.trace(cm)/cm.sum())>1e-12 or abs(result['macro_f1']-f1)>1e-12:raise ValueError('Independent metric recount mismatch')
      records.append(dict(row=r,readout=mode,view=view,dimension=dim,stratum=str(group),**result))
- out=p.BASE/r['row_id']/'scoring';out.mkdir()
+ out=p.row_root(r)/'scoring';out.mkdir()
  write(out/'scores.json',dict(results=records,paired=paired,truth_last=True,target_feedback=False))
  write(out/'complete.json',dict(status='SCORED_COMPLETE',row=r,views=list(p.VIEWS),metric_records=len(records),paired_records=len(paired),truth_last=True))
- write(p.BASE/r['row_id']/'complete.json',dict(status='ANALYZED',row=r,truth_last=True,all14cells_before_truth=True,training_updates=0))
+ write(p.row_root(r)/'complete.json',dict(status='ANALYZED',row=r,truth_last=True,all14cells_before_truth=True,training_updates=0))
 
 def collect():
  cells={};rows=[]
  for r in p.rows():
-  root=p.BASE/r['row_id'];done=read(root/'complete.json')
+  root=p.row_root(r);done=read(root/'complete.json')
   if done['status']!='ANALYZED':raise ValueError('Six complete rows required')
-  scores=read(root/'scoring/scores.json');rows.append(dict(row=r,scores=scores))
+  scores=read(root/'scoring/scores.json');rows.append(dict(row=r,artifact_root=str(root),scores=scores))
   for v in scores['results']:
    key=(r['arm'],v['readout'],v['view'],v['dimension'],v['stratum']);cells.setdefault(key,[]).append(dict(seed=r['seed'],accuracy=v['accuracy'],macro_f1=v['macro_f1'],count=v['query_count']))
  summary=[]
@@ -106,14 +106,26 @@ def collect():
    macro_f1_mean=statistics.mean(x['macro_f1'] for x in values),macro_f1_std=statistics.stdev(x['macro_f1'] for x in values)))
  write(p.BASE/'results.json',dict(rows=rows,summary=summary,std_ddof=1,shared_DURA_model_seed=2026092701,recognizer_model_seeds=list(p.SEEDS),
   restorer_seed_variability_tested=False,training_updates=0,target_feedback=False,benchmark_exposed=True,cached_DURA_output_reused=True))
- write(p.BASE/'complete.json',dict(status='ANALYZED',rows=[r['row_id'] for r in p.rows()],views=list(p.VIEWS),model_seed_count_per_arm=3,new_prediction_cells=47,reused_prediction_cells=37,truth_last=True,training_updates=0))
+ write(p.BASE/'complete.json',dict(status='ANALYZED',rows=[r['row_id'] for r in p.rows()],views=list(p.VIEWS),model_seed_count_per_arm=3,new_prediction_cells=47,reused_prediction_cells=37,
+  new_prediction_cells_this_run=21,previous_complete_NOAS_reused=3,truth_last=True,training_updates=0))
 
 def dispatch():
  from experiments.cvs_receiver_residual_capacity4.control import lock
  from experiments.cvs_multi_state_action.dispatch import capacity
  if p.BASE.exists():raise FileExistsError('Reconcile existing immutable run;never relaunch blindly')
  p.BASE.mkdir();(p.BASE/'logs').mkdir();write(p.BASE/'launch.json',dict(pid=os.getpid(),cwd=str(ROOT),argv=sys.argv,owner='codex/root/SARD-DURA',policy=p.policy()))
- pending=p.rows();active={};launched=[]
+ from .runtime import observations
+ ids,_,_=observations()
+ import numpy as np
+ for r in p.rows():
+  if r['arm']!='NOAS':continue
+  root=p.row_root(r);done=read(root/'complete.json');pred=read(root/'prediction/complete.json');scored=read(root/'scoring/complete.json')
+  if done['row']!=r or done['status']!='ANALYZED' or not done['truth_last'] or pred['row']!=r or pred['views']!=list(p.VIEWS) or pred['truth_read'] or pred['state_updates'] or pred['head_fit_updates'] or not scored['truth_last'] or scored['metric_records']!=252:
+   raise ValueError('Completed original NoAs row must be reused unchanged')
+  with np.load(root/'prediction/predictions.npz',allow_pickle=False) as f:
+   if not np.array_equal(f['ids'],ids):raise ValueError('Completed NoAs opaque IDs differ')
+ write(p.BASE/'reused_NOAS.json',dict(rows=[str(p.row_root(r)) for r in p.rows() if r['arm']=='NOAS'],prediction_repeated=False,scoring_repeated=False))
+ pending=p.pending_rows();active={};launched=[]
  try:
   while pending or active:
    for rid,info in list(active.items()):
@@ -140,6 +152,7 @@ def main():
  parser=argparse.ArgumentParser();parser.add_argument('--mode',choices=['worker','score']);parser.add_argument('--row');args=parser.parse_args();configure()
  if not args.mode:return dispatch()
  r=p.row(args.row)
+ if r['arm']=='NOAS':raise ValueError('Completed previous NoAs rows are read-only;never train/predict/score again')
  if args.mode=='worker':
   from experiments.cvs_receiver_residual_capacity4.control import lock
   from experiments.cvs_multi_state_action.dispatch import capacity
