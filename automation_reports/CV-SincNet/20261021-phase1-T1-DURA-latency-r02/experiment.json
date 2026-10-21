@@ -27,7 +27,7 @@
     "commit": "963d86c2e2487b49c0ef1f4bbc31559cf744a74d",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 CVS-RFFI Py3.10/Torch2.1 FP32/TF32off CPU2",
-    "cwd": "Immutable20261021-phase1-T1-DURA-complete-r01 release",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261021-phase1-T1-DURA-timing-recovery-r01",
     "entry": "experiments.cric_dura_comparison.timing_recovery"
   },
   "data": {
@@ -76,33 +76,36 @@
     "host": "N607 ordinary account",
     "launch_owner": "codex-root-timing-recovery-20261021",
     "gpu_policy": "Truly idle0/1/4/5/6/7,free>=22000MiB; own13GiB reservation explicitly excluded from model memory;95% processcap; independent pre/post per-round exclusivity.",
-    "remote_run_root": null,
-    "remote_log_root": null,
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-T1-DURA-latency-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-T1-DURA-latency-r02/timing.log",
     "local_artifact_root": "local_artifacts/cric_dura_comparison_20261021",
     "launch_command": "python -m experiments.cric_dura_comparison.timing_recovery dispatch --config runtime.json",
     "stop_rule": "2same technical fingerprints stop new launches; preserve healthy peers and outputs. No performance stops/target feedback."
   },
-  "expected_artifacts": [],
+  "expected_artifacts": [
+    "measurement/complete.json",
+    "measurement/samples.jsonl",
+    "measurement/summary.json",
+    "measurement/resolved.json",
+    "measurement/operator_profiles.json"
+  ],
   "metrics_plan": {
     "metric_names": [
-      "Accuracy",
-      "Macro-F1",
-      "worst RX",
-      "paired deltas",
-      "training and deployment cost"
+      "GPU wall median/P95",
+      "device median",
+      "transfer-inclusive median/P95",
+      "round-median SD",
+      "batch throughput",
+      "resident baseline/incremental peak",
+      "first-call setup"
     ],
     "dimensions": [
-      "data contract",
-      "regime",
-      "F seed",
-      "G seed",
-      "view",
-      "RX",
-      "TX",
-      "date"
+      "case",
+      "batch",
+      "round"
     ],
     "prediction_ref": null,
-    "scorer_ref": "Independent truth-last after all seven predictions per row"
+    "scorer_ref": "Source-only timing; no query prediction or truth-side scoring"
   },
   "rows": [
     {
@@ -121,14 +124,15 @@
       "seed_notes": "F model and native augmentation RNG seeded per model; deterministic stored split. As fixed channel20261016421/session20261016423; default concat2027. G data seeds and model replica offsets are separately resolved in config.",
       "data_overrides": {},
       "budget_ref": "B1/8/32/64/128;5rounds;B1warm100measure1000;others20/100;onlineG",
-      "output_root": "runs/<this run>/unified",
-      "log_path": "G-lineage/control-r01/logs/unified.log",
-      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-T1-DURA-latency-r02/measurement",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-T1-DURA-latency-r02/timing.log",
+      "command": "python -u -m experiments.cric_dura_comparison.timing_recovery worker --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261021-phase1-T1-DURA-timing-recovery-r01/runtime.json",
       "expected_artifacts": [
-        "source freeze when trained",
-        "all seven-view raw/G predictions",
-        "independent truth-last scores",
-        "cost telemetry"
+        "measurement/complete.json",
+        "measurement/samples.jsonl",
+        "measurement/summary.json",
+        "measurement/resolved.json",
+        "measurement/operator_profiles.json"
       ]
     }
   ],
@@ -136,10 +140,10 @@
   "research_plan": null,
   "registered_at": "2026-10-21T13:41:22+00:00",
   "runtime_evidence": {
-    "status": "VERIFIED_RUNNING",
-    "pid": 360693,
-    "gpu": 7,
-    "observed_measured_rounds": 26,
-    "evidence": "local_artifacts/cric_dura_comparison_20261021/latest_timing_recovery.json"
+    "status": "ANALYZED",
+    "case_rounds": 500,
+    "wall_calls": 140000,
+    "transfer_calls": 10000,
+    "evidence": "latency_verification.json"
   }
 }

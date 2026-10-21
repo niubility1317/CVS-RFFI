@@ -28,3 +28,5 @@ pdflatex main.tex
 2026-10-21 current entry: main.tex includes current_experiments.tex and cric_dura.tex. Independent ResNet18/50 CE/generic legacy studies are excluded from this current experimental chapter; experiments.tex is retained as historical source. Final T1 is13L37U and historical old no-As33L17U results are explicitly separated. New finalT1/DURA cells remain pending until scored.
 
 最终T1 F0 三seed七景子矩阵已闭合，tables/final_t1_f0.tex与source_data/final_t1_f0_*.csv为实际评分复算。其余17契约扩展、机制、时延尚在运行。旧no-As33L17U表保留独立历史标签，不能混为最终T1。
+
+2026-10-21 timing update: final T1+DURA unified timing-r02 complete (500 case-rounds,140000 GPU wall calls,10000 transfer calls). Tables/final_t1_latency.tex contains all B1 comparator calls, same-weight G/GF execution routes and default batch measurements. B1 4.541187ms GPU/P95 4.725135ms/CPU-transfer median4.611311ms; earlier4.531972ms retains historical F50 semantics. Other contract/mechanism experiments remain running.

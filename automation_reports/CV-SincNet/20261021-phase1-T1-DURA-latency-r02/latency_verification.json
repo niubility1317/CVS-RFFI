@@ -1,0 +1,79 @@
+{
+  "status": "VERIFIED",
+  "case_rounds": 500,
+  "case_batch_cells": 100,
+  "wall_calls": 140000,
+  "transfer_calls": 10000,
+  "round_summary_recomputed": true,
+  "source_IQ_only": true,
+  "exclusive_GPU": true,
+  "default_GF_B1": {
+    "case": "T4_graph_reuse_GF",
+    "batch": 1,
+    "rounds": 5,
+    "samples": 5000,
+    "median_ms": 4.541187430731952,
+    "P95_ms": 4.725135141052306,
+    "device_median_ms": 4.523871898651123,
+    "H2D_D2H_median_ms": 4.611310898326337,
+    "H2D_D2H_P95_ms": 4.974000283982605,
+    "round_median_mean_ms": 4.541265778243542,
+    "round_median_SD_ms": 0.008486681571484547,
+    "round_median_min_ms": 4.531598067842424,
+    "round_median_max_ms": 4.553029430098832,
+    "throughput_IQ_s": 220.20672241639213,
+    "cold_first_call_ms": 337.04905211925507,
+    "resident_baseline_min_bytes": 14081489920,
+    "resident_baseline_max_bytes": 14081491456,
+    "incremental_peak_max_bytes": 6656
+  },
+  "same_weight_native_GF_B1": {
+    "case": "T0_native_GF",
+    "batch": 1,
+    "rounds": 5,
+    "samples": 5000,
+    "median_ms": 37.18999703414738,
+    "P95_ms": 48.547368741128594,
+    "device_median_ms": 37.168046951293945,
+    "H2D_D2H_median_ms": 36.84818104375154,
+    "H2D_D2H_P95_ms": 40.40982329752296,
+    "round_median_mean_ms": 39.03754549100995,
+    "round_median_SD_ms": 4.728059136343248,
+    "round_median_min_ms": 36.247463431209326,
+    "round_median_max_ms": 47.440297435969114,
+    "throughput_IQ_s": 26.888950786465852,
+    "cold_first_call_ms": 50.283269956707954,
+    "resident_baseline_min_bytes": 14047386112,
+    "resident_baseline_max_bytes": 14081491456,
+    "incremental_peak_max_bytes": 1206272
+  },
+  "same_weight_GPU_speedup": 8.189487353564939,
+  "F_registered_parameters": 232993,
+  "G_registered_parameters": 266951,
+  "scheduler_reservation_bytes": 13958643712,
+  "operator_profiles": {
+    "T1_F": {
+      "conv_linear_MACs": 8855712,
+      "FFT_IFFT_calls": 4,
+      "parameters": 232993,
+      "FP32_parameter_bytes": 931972,
+      "note": "Conv/Linear real MAC convention only; functional cosine head, FFT complex arithmetic, CG reductions, normalization and elementwise work excluded. FFT counts are call counts at B1, not FLOPs."
+    },
+    "DURA_G": {
+      "conv_linear_MACs": 25068072,
+      "FFT_IFFT_calls": 43,
+      "parameters": 266951,
+      "FP32_parameter_bytes": 1067804,
+      "note": "Conv/Linear real MAC convention only; functional cosine head, FFT complex arithmetic, CG reductions, normalization and elementwise work excluded. FFT counts are call counts at B1, not FLOPs."
+    }
+  },
+  "limitations": [
+    "Fixed Fseed01/Gseed01, five timing rounds, not five model seeds.",
+    "Pooled median/P95 over all recorded calls; between-round sample SD computed from five round medians.",
+    "Resident baseline includes every co-resident benchmark model, Graph pools and 13GiB scheduling reservation; not per-model VRAM.",
+    "Transfer boundary returns CPU classes for logits and CPU restored IQ for G-only. GPU wall excludes transfer and includes Python dispatch/events/sync.",
+    "Cold first call is first call per case/batch after model loading and operator profiles; not a fresh process; model load includes F/G only.",
+    "Profiler is eager and counts G43 FFT/IFFT calls; optimized residual-reuse G has27 from implementation, not this eager count.",
+    "Samples verify finite outputs and per-round exclusivity; they do not independently establish route-wise argmax equivalence or new accuracy."
+  ]
+}
