@@ -6,6 +6,22 @@ from experiments.cric_dura_comparison.t1_model import pair
 
 
 class FinalT1(unittest.TestCase):
+    def test_native_baselines_namespace_exposes_frozen_external_models(self):
+        import tempfile,types,sys
+        from pathlib import Path
+        from experiments.cric_dura_comparison.timing import expose_external_baselines
+        original=sys.modules.get('baselines')
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);target=root/'baselines/riei_fd';target.mkdir(parents=True)
+            (target/'model.py').write_text('VALUE=18\n',encoding='utf-8')
+            pkg=types.ModuleType('baselines');pkg.__path__=['/original-native-baselines'];sys.modules['baselines']=pkg
+            try:
+                expose_external_baselines(root)
+                self.assertEqual(pkg.__path__,[str(root/'baselines'),'/original-native-baselines'])
+                expose_external_baselines(root);self.assertEqual(len(pkg.__path__),2)
+            finally:
+                if original is None:sys.modules.pop('baselines',None)
+                else:sys.modules['baselines']=original
     def test_final_matrix_reuses_five_source_and_preserves_trajectory(self):
         p=make_plan();h={pid:dict(classes=list(range(10 if v['dataset']=='ManyRx' else 6)),source_cache='/cache/'+pid,source_contract='/contract/'+pid) for pid,v in p['protocols'].items()}
         rows=final_t1_rows(dict(project='/project',code_commit='fixed',frozen_sources={}),p,h)

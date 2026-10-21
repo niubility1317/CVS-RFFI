@@ -29,3 +29,5 @@ Final T1 correction: 20(13L+7LU)+own10LU+own20LU, AsCE/KL0, sixL, nativeEMA/U, d
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 Final version correction and exact matrix: see docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md. Final T1 is13L37U, not old33L17U. Current state PLANNED until independent PID/log/CUDA evidence.
+
+时延兼容故障：统一面板因原生F的baselines命名空间遮挡外部RIEI模块失败，尚无计时样本。已本地复现，独立latency-r02恢复这一面板；旧失败行保留并明确替代，不重启主队列或健康worker。机制附面板无外部模型，不受同一导入错误影响。

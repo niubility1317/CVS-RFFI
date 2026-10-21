@@ -41,6 +41,14 @@ def exclusive():
     if set(pids)!={str(os.getpid())}:raise RuntimeError('TIMING_INVALID_SHARED_GPU: retain partial samples, no latency claim')
 
 
+def expose_external_baselines(release):
+    """Native F imported its own baselines package; extend only this namespace."""
+    import baselines
+    folder=str(Path(release)/'baselines')
+    if not Path(folder,'riei_fd','model.py').is_file():raise FileNotFoundError('Frozen comparator baselines missing')
+    if folder not in baselines.__path__:baselines.__path__.insert(0,folder)
+
+
 def run(c):
     from .frozen_inference import load_original_F,load_F,load_G
     from experiments.pamf_stage2_inference.engine import InferenceEngine
@@ -74,6 +82,7 @@ def run(c):
     import sys
     sys.path.insert(0,str(Path(__file__).resolve().parent/'vendor'))
     sys.path.insert(0,c['external_release'])
+    expose_external_baselines(c['external_release'])
     from experiments.phase1_external_dg_aug.source import frozen_model,forward
     external=[];mechanisms=[];mechanism_parameters={}
     for item in c['external_models']:
@@ -100,7 +109,8 @@ def run(c):
         torch=torch.__version__,CPU_threads=torch.get_num_threads(),precision='FP32',TF32=False,
         F_parameters=sum(p.numel() for p in reader.parameters()),G_parameters=sum(p.numel() for p in g.parameters()),
         mechanism_parameters=mechanism_parameters,model_load_seconds=load_seconds,cases=list(cases),source_IQ_only=True,restored_IQ_cache=False,
-        memory_note='All listed models/graphs resident; report resident baseline and incremental per-case peak, not absolute peak as isolated model memory'))
+        scheduler_reservation_bytes=c.get('scheduler_reservation_bytes',0),
+        memory_note='All listed models/graphs plus explicitly recorded scheduler VRAM reservation resident; incremental peak excludes baseline. Absolute peak is not isolated model memory.'))
     results=[]
     with (root/'samples.jsonl').open('x',encoding='utf-8') as stream:
         for batch in (1,8,32,64,128):
