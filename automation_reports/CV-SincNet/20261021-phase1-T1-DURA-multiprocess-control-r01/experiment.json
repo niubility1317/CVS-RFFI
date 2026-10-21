@@ -1,0 +1,146 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261021-phase1-T1-DURA-multiprocess-control-r01",
+  "group_id": "phase1-cric-dura-complete-system",
+  "display_name": "最终 T1＋DURA 多进程 GPU 调度接管",
+  "description": "Resource-only controller replacement; all 769 original jobs/configs, scientific worker release 3e880690, healthy PIDs, completed outputs and scientific budgets retained. No new model experiment.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "CRIC",
+    "DURA",
+    "complete-system",
+    "three-F-seeds",
+    "latency-ablation-design"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-T1-DURA-comparison-m153-r01",
+    "20261021-phase1-T1-DURA-F-ablation-m63-r01",
+    "20261021-phase1-T1-DURA-G-lineage-m35-r01",
+    "20261021-phase1-T1-DURA-G-ablation-m21-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-21明确要求每张卡可以多个进程；保留现有健康任务、五源结果复用及正式时延独占。",
+  "code": {
+    "commit": "SET_AT_COMMIT",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Py3.10/Torch2.1 FP32/TF32off CPU2",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261021-phase1-T1-DURA-multiprocess-control-r01",
+    "entry": "experiments.cric_dura_comparison.multiprocess_control"
+  },
+  "data": {
+    "dataset": "WiSig ManySig/ManyRx",
+    "version": null,
+    "representation": "equalized1 center256 float32 unitRMS",
+    "contract_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md",
+    "physical_ids_ref": "Existing17 source-only handles prepared under oldr02; same VALIDATED_ONCE physical roles and target received-IQ handles; no data revalidation",
+    "label_map_ref": "Existing native source-contract metadata; no posthoc head fitting",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": null,
+      "U_s": null,
+      "V": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Reuse existing VALIDATED_ONCE handles; new contracts bound before actual launch",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "Resource-only; original source training permissions and independent truth-last unchanged",
+    "query_use": "Original 249 same-row raw/G seven-view predictions then CPU truth-last; no extra query or score feedback",
+    "external_method_exception": null,
+    "claim_scope": "Previously exposed engineering benchmark; not independent blind or in-orbit validation"
+  },
+  "checkpoint": {
+    "initialization": "No new initialization; original registered769 jobs and exact 3e880690 scientific worker commands preserved",
+    "sources": [
+      "20261021-phase1-T1-AsKL0-e30plus20-m3-r01",
+      "20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261019-phase1-external-dg-concat-pl-m219-r03"
+    ],
+    "contract_check_ref": "Existing exact-contract F0 evidence; every new F/G/teacher must match its own contract",
+    "provenance_verdict": "F0 three exact-contract T1 checkpoints verified existing; new F/G cannot inherit different-contract state",
+    "selection_rule": "Fixed FINAL50 student; source-only freeze. Never select by target."
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex-root-multiprocess-control-20261021",
+    "gpu_policy": "GPU0..7: <=2 own workers/card, <=3 total compute apps, free>=12000MiB before launch, <=1 G/G_student/card. GPU2/3 <=1 own until external required360 ANALYZED. Timing exclusive and excludes2/3.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-T1-DURA-multiprocess-control-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-T1-DURA-multiprocess-control-r01/logs",
+    "local_artifact_root": "local_artifacts/cric_dura_comparison_20261021",
+    "launch_command": "python -u -m experiments.cric_dura_comparison.multiprocess_control --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261021-phase1-T1-DURA-multiprocess-control-r01/runtime.json",
+    "stop_rule": "2same technical fingerprints stop new launches; preserve healthy peers and outputs. No performance stops/target feedback."
+  },
+  "expected_artifacts": [
+    "adoption.json",
+    "pipeline_state.json",
+    "independent PID/CWD/argv/GPU/log-growth verification"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy",
+      "Macro-F1",
+      "worst RX",
+      "paired deltas",
+      "training and deployment cost"
+    ],
+    "dimensions": [
+      "data contract",
+      "regime",
+      "F seed",
+      "G seed",
+      "view",
+      "RX",
+      "TX",
+      "date"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "Independent truth-last after all seven predictions per row"
+  },
+  "rows": [
+    {
+      "row_id": "controller",
+      "method": "resource-only handover",
+      "purpose": "increase legal GPU concurrency without restarting scientific workers",
+      "config_ref": "experiments/cric_dura_comparison/multiprocess_control.py",
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No seed changes; original scientific rows retain all seeds.",
+      "data_overrides": {},
+      "budget_ref": "No new model budget; original769 jobs unchanged",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261021-phase1-T1-DURA-multiprocess-control-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261021-phase1-T1-DURA-multiprocess-control-r01/continuation.log",
+      "command": "python -u -m experiments.cric_dura_comparison.multiprocess_control --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261021-phase1-T1-DURA-multiprocess-control-r01/runtime.json",
+      "expected_artifacts": [
+        "adoption.json",
+        "pipeline_state.json",
+        "independent PID/CWD/argv/GPU/log-growth verification"
+      ]
+    }
+  ],
+  "notes": [
+    "Only verified original controller PID/CWD/full argv receives SIGTERM; detached scientific children adopted with exact original configs. CPU scorer also adopted. Old external controller, timing-r02 and other owners untouched.",
+    "Reuse previous scientific negative checks and actual-checkpoint no-query smoke PASS: only new scheduling code changes. Five source F0 reused; no m5 sourcecount training.",
+    "Known original unified timing failure retained and replaced only by independent latency-r02; never retried by this controller.",
+    "Two identical technical fingerprints stop new submissions, preserve healthy workers. F main/ablation slot alternation follows fixed IDs only. ETA recalibrated from actual throughput, no assumed 2x speedup."
+  ],
+  "research_plan": null,
+  "registered_at": "2026-10-21T14:37:57+00:00"
+}
