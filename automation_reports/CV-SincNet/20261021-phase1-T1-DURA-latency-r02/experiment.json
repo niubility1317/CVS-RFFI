@@ -24,7 +24,7 @@
   "replaces_run_id": "20261021-phase1-T1-DURA-latency-r01",
   "authorization": "用户2026-10-21指定CRIC+DURA完整方法，与当前对比配置比较，并详细设计机制时延与消融；五源数量扫点不新跑。",
   "code": {
-    "commit": "Actual pushed immutable timing-recovery Git commit",
+    "commit": "963d86c2e2487b49c0ef1f4bbc31559cf744a74d",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 CVS-RFFI Py3.10/Torch2.1 FP32/TF32off CPU2",
     "cwd": "Immutable20261021-phase1-T1-DURA-complete-r01 release",
@@ -134,5 +134,12 @@
   ],
   "notes": [],
   "research_plan": null,
-  "registered_at": "2026-10-21T13:41:22+00:00"
+  "registered_at": "2026-10-21T13:41:22+00:00",
+  "runtime_evidence": {
+    "status": "VERIFIED_RUNNING",
+    "pid": 360693,
+    "gpu": 7,
+    "observed_measured_rounds": 26,
+    "evidence": "local_artifacts/cric_dura_comparison_20261021/latest_timing_recovery.json"
+  }
 }

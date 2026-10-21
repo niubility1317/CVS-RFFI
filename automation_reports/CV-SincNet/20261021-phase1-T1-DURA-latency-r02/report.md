@@ -27,3 +27,5 @@ Only unified timing recovery; original failed namespace retained, all healthy sc
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+**VERIFIED / RUNNING**：GPU7、真实CUDA PID/CWD/命令均核实，已保存26个case-round。冻结F/G及8个外部Full/CE均实际前向，恢复后已进入正式计时。显存预约13GiB单列，不当作模型显存；不提前用部分计时填完整表。其余7卡科学训练继续，无健康进程被停止。
