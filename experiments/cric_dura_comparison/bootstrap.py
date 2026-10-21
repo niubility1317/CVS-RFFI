@@ -15,7 +15,7 @@ def activate(runtime):
     package.__path__ = [str(roots[k] / 'experiments') for k in ('F', 'AF', 'FOLD', 'BASE', 'G')] + [str(current / 'experiments')]
     # G's fixed channel implementation is used for source simulation. The
     # native F loader explicitly inserts its own immutable SSDG directory.
-    sys.path[:0] = [str(roots['G'] / 'code'), str(roots['BASE']), str(roots['BASE'] / 'code')]
+    sys.path[:0] = [str(roots['G'] / 'code'), str(roots['G']), str(roots['BASE']), str(roots['BASE'] / 'code')]
     return roots
 
 

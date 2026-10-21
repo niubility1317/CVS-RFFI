@@ -27,3 +27,5 @@ Continuation owns only this CRIC+DURA matrix; adopts existing healthy F workers 
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+**FAILED before G launch**：冻结G工具根未进入sys.path，真实无query smoke在导入阶段退出。未建立G数据/训练root，也未停止或接管F调度器，健康F继续。保留归档/日志；修复加入原不可变G根工具目录，五项负测及目标环境真实G两条Ls前向通过；新不可覆盖G-lineage-r02和continuation-r02恢复。

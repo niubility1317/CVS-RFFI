@@ -1,0 +1,913 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261021-phase1-CRIC-DURA-G-lineage-m35-r02",
+  "group_id": "phase1-cric-dura-complete-system",
+  "display_name": "DURA同源契约八阶段完整谱系：35条",
+  "description": "Continuation owns only this CRIC+DURA matrix; adopts existing healthy F workers without changing scientific code, alternates F/G/G-student jobs, predicts when dependencies ready, then independent scoring. Original360 comparator and other owners preserved. Recovery only adds the immutable G root to Python import search; scientific data, ancestry, recipe and budget unchanged.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "CRIC",
+    "DURA",
+    "complete-system",
+    "three-F-seeds",
+    "latency-ablation-design"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261019-phase1-external-dg-concat-pl-m219-r03",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261021-phase1-SARD-NoAs-DURA-e50-m6-r02"
+  ],
+  "replaces_run_id": "20261021-phase1-CRIC-DURA-G-lineage-m35-r01",
+  "authorization": "用户2026-10-21指定CRIC+DURA完整方法，与当前对比配置比较，并详细设计机制时延与消融；五源数量扫点不新跑。",
+  "code": {
+    "commit": "Resolved to actual pushed Git release commit",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python3.10/Torch2.1 FP32 TF32off CPU2",
+    "cwd": "Immutable continuation release",
+    "entry": "experiments.cric_dura_comparison.start_continuation"
+  },
+  "data": {
+    "dataset": "WiSig ManySig/ManyRx",
+    "version": null,
+    "representation": "equalized1 center256 float32 unitRMS",
+    "contract_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md",
+    "physical_ids_ref": "Existing source/target data-contract records; no IQ or truth opened for this design/aggregation",
+    "label_map_ref": "Existing native source-contract metadata; no posthoc head fitting",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": null,
+      "U_s": null,
+      "V": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Reuse existing VALIDATED_ONCE handles; new contracts bound before actual launch",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "G training TX-label-free/F-free; L or L+hidden U as registered",
+    "query_use": "Frozen prediction only. All same-row readouts/tasks/views complete before separate CPU truth-last.",
+    "external_method_exception": null,
+    "claim_scope": "Previously exposed engineering benchmark; not independent blind or in-orbit validation"
+  },
+  "checkpoint": {
+    "initialization": "Exact-contract scratch ancestry; F0 G mechanisms copy approved R65 unless registered random init arm",
+    "sources": [
+      "Own same-contract immediate parent only; F0 old R65/R69 only for exact F0 roles"
+    ],
+    "contract_check_ref": "Existing exact-contract F0 evidence; every new F/G/teacher must match its own contract",
+    "provenance_verdict": "New source contracts cannot inherit old G/F weights; cached simulation IQ may be selected by legal current L/LU IDs",
+    "selection_rule": "Fixed final stage20/4940; all registered variants test7views regardless source performance"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex-root-cric-dura-continuation-20261021",
+    "gpu_policy": "GPU0..7 one own/card; <=2 total compute apps and free>=12000MiB. Timing exclusive and excludes shared-policyGPU2/3.",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "local_artifacts/cric_dura_comparison_20261021",
+    "launch_command": "python -u -m experiments.cric_dura_comparison.start_continuation --config runtime.json",
+    "stop_rule": "Two same-fingerprint technical failures stop new launches; healthy peers retained. No performance-based stopping or target feedback."
+  },
+  "expected_artifacts": [],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy",
+      "Macro-F1",
+      "worst RX",
+      "paired deltas",
+      "training and deployment cost"
+    ],
+    "dimensions": [
+      "data contract",
+      "regime",
+      "F seed",
+      "G seed",
+      "view",
+      "RX",
+      "TX",
+      "date"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "Independent truth-last after all seven predictions per row"
+  },
+  "rows": [
+    {
+      "row_id": "F0-G-L-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/F0-G-L-s2026092701",
+      "log_path": "G-lineage control-r01/logs/F0-G-L-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "F1-G-L-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/F1-G-L-s2026092701",
+      "log_path": "G-lineage control-r01/logs/F1-G-L-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "F1-G-LU-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/F1-G-LU-s2026092701",
+      "log_path": "G-lineage control-r01/logs/F1-G-LU-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "F2-G-L-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/F2-G-L-s2026092701",
+      "log_path": "G-lineage control-r01/logs/F2-G-L-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "F2-G-LU-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/F2-G-LU-s2026092701",
+      "log_path": "G-lineage control-r01/logs/F2-G-LU-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "chrono-G-L-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/chrono-G-L-s2026092701",
+      "log_path": "G-lineage control-r01/logs/chrono-G-L-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "chrono-G-LU-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/chrono-G-LU-s2026092701",
+      "log_path": "G-lineage control-r01/logs/chrono-G-LU-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "ManyRx-G-L-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/ManyRx-G-L-s2026092701",
+      "log_path": "G-lineage control-r01/logs/ManyRx-G-L-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "ManyRx-G-LU-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/ManyRx-G-LU-s2026092701",
+      "log_path": "G-lineage control-r01/logs/ManyRx-G-LU-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "label01-G-L-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/label01-G-L-s2026092701",
+      "log_path": "G-lineage control-r01/logs/label01-G-L-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "label01-G-LU-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/label01-G-LU-s2026092701",
+      "log_path": "G-lineage control-r01/logs/label01-G-LU-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "label05-G-L-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/label05-G-L-s2026092701",
+      "log_path": "G-lineage control-r01/logs/label05-G-L-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "label05-G-LU-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/label05-G-LU-s2026092701",
+      "log_path": "G-lineage control-r01/logs/label05-G-LU-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "m1-natural-G-L-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/m1-natural-G-L-s2026092701",
+      "log_path": "G-lineage control-r01/logs/m1-natural-G-L-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "m1-natural-G-LU-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/m1-natural-G-LU-s2026092701",
+      "log_path": "G-lineage control-r01/logs/m1-natural-G-LU-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "m1-fixed-G-L-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/m1-fixed-G-L-s2026092701",
+      "log_path": "G-lineage control-r01/logs/m1-fixed-G-L-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "m1-fixed-G-LU-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/m1-fixed-G-LU-s2026092701",
+      "log_path": "G-lineage control-r01/logs/m1-fixed-G-LU-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "m2-natural-G-L-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/m2-natural-G-L-s2026092701",
+      "log_path": "G-lineage control-r01/logs/m2-natural-G-L-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "m2-natural-G-LU-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/m2-natural-G-LU-s2026092701",
+      "log_path": "G-lineage control-r01/logs/m2-natural-G-LU-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "m2-fixed-G-L-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/m2-fixed-G-L-s2026092701",
+      "log_path": "G-lineage control-r01/logs/m2-fixed-G-L-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "m2-fixed-G-LU-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/m2-fixed-G-LU-s2026092701",
+      "log_path": "G-lineage control-r01/logs/m2-fixed-G-LU-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "m3-natural-G-L-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/m3-natural-G-L-s2026092701",
+      "log_path": "G-lineage control-r01/logs/m3-natural-G-L-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "m3-natural-G-LU-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/m3-natural-G-LU-s2026092701",
+      "log_path": "G-lineage control-r01/logs/m3-natural-G-LU-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "m3-fixed-G-L-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/m3-fixed-G-L-s2026092701",
+      "log_path": "G-lineage control-r01/logs/m3-fixed-G-L-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "m3-fixed-G-LU-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/m3-fixed-G-LU-s2026092701",
+      "log_path": "G-lineage control-r01/logs/m3-fixed-G-LU-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "m4-natural-G-L-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/m4-natural-G-L-s2026092701",
+      "log_path": "G-lineage control-r01/logs/m4-natural-G-L-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "m4-natural-G-LU-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/m4-natural-G-LU-s2026092701",
+      "log_path": "G-lineage control-r01/logs/m4-natural-G-LU-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "m4-fixed-G-L-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/m4-fixed-G-L-s2026092701",
+      "log_path": "G-lineage control-r01/logs/m4-fixed-G-L-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "m4-fixed-G-LU-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/m4-fixed-G-LU-s2026092701",
+      "log_path": "G-lineage control-r01/logs/m4-fixed-G-LU-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "m6-natural-G-L-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/m6-natural-G-L-s2026092701",
+      "log_path": "G-lineage control-r01/logs/m6-natural-G-L-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "m6-natural-G-LU-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/m6-natural-G-LU-s2026092701",
+      "log_path": "G-lineage control-r01/logs/m6-natural-G-LU-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "m6-fixed-G-L-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/m6-fixed-G-L-s2026092701",
+      "log_path": "G-lineage control-r01/logs/m6-fixed-G-L-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "m6-fixed-G-LU-s2026092701",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/m6-fixed-G-LU-s2026092701",
+      "log_path": "G-lineage control-r01/logs/m6-fixed-G-LU-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "m3-natural-G-LU-s2026092702",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/m3-natural-G-LU-s2026092702",
+      "log_path": "G-lineage control-r01/logs/m3-natural-G-LU-s2026092702.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    },
+    {
+      "row_id": "m3-natural-G-LU-s2026092703",
+      "method": "DURA exact-contract full lineage",
+      "purpose": "fixed source-only training or frozen timing",
+      "config_ref": "experiments/cric_dura_comparison/continuation_setup.py",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original coarse/action data seed2026101901, later stages2026102001; G replica offsets by modelseed-seed01; cached scene draws fixed per physical ID/epoch; no target feedback. Timing fixed source IQ, no random target selection.",
+      "budget_ref": "8 serial stages: coarse/action/R17/R38/R44/R46/R65/R69; each20epochs/4940updates, total160epochs/39520updates",
+      "output_root": "runs/<registered run>/m3-natural-G-LU-s2026092703",
+      "log_path": "G-lineage control-r01/logs/m3-natural-G-LU-s2026092703.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable config>",
+      "expected_artifacts": [
+        "source checkpoint or timing samples",
+        "same-row frozen predictions and independent scores when applicable"
+      ]
+    }
+  ],
+  "notes": [],
+  "registered_at": "2026-10-21T12:54:18+00:00"
+}

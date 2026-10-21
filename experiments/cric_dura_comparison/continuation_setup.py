@@ -5,7 +5,7 @@ import subprocess
 from .io import read,write
 from .g_cache import prepare_index
 
-G_RUN='20261021-phase1-CRIC-DURA-G-lineage-m35-r01'
+G_RUN='20261021-phase1-CRIC-DURA-G-lineage-m35-r02'
 STUDENT_RUN='20261021-phase1-CRIC-DURA-G-ablation-m21-r01'
 TIMING_RUN='20261021-phase1-CRIC-DURA-latency-r01'
 

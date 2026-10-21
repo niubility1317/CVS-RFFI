@@ -10,7 +10,7 @@ from .publish import ROOT,CONNECTION,ssh
 from .plan import make_plan
 from .continuation_setup import G_RUN
 
-RELEASE='20261021-phase1-CRIC-DURA-continuation-r01'
+RELEASE='20261021-phase1-CRIC-DURA-continuation-r02'
 
 REMOTE=r'''
 import hashlib,json,os,subprocess,tarfile

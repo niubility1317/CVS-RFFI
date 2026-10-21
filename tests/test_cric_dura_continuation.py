@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+import sys,importlib
 import numpy as np
 from experiments.cric_dura_comparison.evaluation import VIEWS,preflight,score
 from experiments.cric_dura_comparison.g_cache import CacheView
@@ -9,6 +10,22 @@ from experiments.cric_dura_comparison.pipeline import block_failed_dependencies
 
 
 class ContinuationContracts(unittest.TestCase):
+    def test_frozen_G_root_is_available_to_its_tools_imports(self):
+        from experiments.cric_dura_comparison.bootstrap import activate
+        import experiments
+        old_paths=list(sys.path);old_namespace=list(experiments.__path__)
+        with tempfile.TemporaryDirectory() as folder:
+            roots={k:str(Path(folder)/k) for k in ('F','AF','BASE','FOLD','G')}
+            for path in roots.values():Path(path).mkdir()
+            (Path(roots['G'])/'_cric_frozen_tool_probe.py').write_text('VALUE=35\n',encoding='utf-8')
+            try:
+                activate(dict(frozen_sources=roots))
+                self.assertEqual(importlib.import_module('_cric_frozen_tool_probe').VALUE,35)
+                self.assertLess(sys.path.index(roots['G']),sys.path.index(roots['BASE']))
+            finally:
+                sys.path[:]=old_paths;experiments.__path__=old_namespace
+                sys.modules.pop('_cric_frozen_tool_probe',None)
+
     def test_cache_failure_blocks_only_dependent_closure(self):
         jobs=[dict(id='G',completion='/G/complete',dependencies=['/cache/complete']),
               dict(id='predict',completion='/P/complete',dependencies=['/G/complete']),
