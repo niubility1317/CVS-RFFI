@@ -1,6 +1,6 @@
 # SARD 混合增强修复验证
 
-状态：LOCAL_VERIFIED；尚无新训练或测试结果。代码和配置由本次 Git 提交固定，发布时回填实际 commit。
+状态：RUNNING／启动 VERIFIED；尚无新正式测试结果。实际代码／配置 commit `4f92ab1791999e0bfc1630201e602a8bf01fb675` 已 push，远端分支 OID 独立读回一致。
 
 用户在完整负结果和源域机制分析后要求修复并重新发布。上一轮的全部替换实现没有发现技术错误。本轮以源域完整日志中的增强难度降低、原始受损覆盖丢失以及恢复视图未进入跨 RX 对比为依据，检验新的训练设计；有效性尚待正式测试。
 
@@ -17,3 +17,7 @@ MIX 保留 ORD128 对比。MIX_XRX 使用原 SAT192 关系函数，复用同一�
 本地8项相关测试通过。launcher 首步执行真实源 checkpoint 无 query smoke、六前向默认头梯度与 DURA 冻结检查，并检查恢复 map 的实际对比辅助梯度仅在 MIX_XRX 中出现，PASS 后立即训练。当前普通 N607 预检查已通过。唯一独立 P0/P1 审查已完成，未发现阻塞问题。归档传输比对／远端编译及实际 PID/CWD/argv/GPU/日志增长证据将在发布登记中记录。
 
 本轮只有一个 F seed 和一个固定 G，属于已暴露 ManySig 工程基准的新方法验证，不能声称三种子稳定性、盲测、真实在轨或 Phase2 收益。保留当前固定 PAMF 识别器和 DURA 默认版本。
+
+启动独立核验 VERIFIED：一个归档SHA比对和14个Python文件远端编译通过；两row实际GPU0／GPU6，PID/CWD/argv/visibleGPU与nvidia-smi映射一致。两组真实源checkpoint无query smoke及768NN联合默认头梯度probe均PASS；两组G始终冻结，恢复map的对比辅助梯度在MIX为false、MIX_XRX为true。已各完成E1／222更新，完整step日志与stdout较前次增长。首轮As总14208，其中7104保留原受损、7104经过G；G更新／梯度／fallback／U的G调用均为0。实际初始化为无父F、own student EMA、数据角色EXACT_MATCH；native参数50/13/37、lr0.0002、wd0.0001。源域训练未访问target。
+
+已设置当前对话完成回报心跳 `sard-dura-mix-e50`，每15分钟短连接只读检查；健康状态无变化时保持安静。训练后的14单元预测和独立CPU评分由原队列自行执行，不依赖心跳启动；心跳负责取回完整日志、独立复算、报告和Git收尾，完成后删除。旧 `sard-dura-e50` 已关闭，本轮不会重新运行旧实验。

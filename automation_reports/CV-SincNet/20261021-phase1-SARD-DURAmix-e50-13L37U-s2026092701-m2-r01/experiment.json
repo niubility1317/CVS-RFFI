@@ -29,7 +29,7 @@
   "replaces_run_id": null,
   "authorization": "用户在完整负结果及源域机制分析后明确：修复问题，然后重新发布实验验证。原要求E50=13L37U、seed2026092701、余量GPU并行、自动七景测试保持。",
   "code": {
-    "commit": null,
+    "commit": "4f92ab1791999e0bfc1630201e602a8bf01fb675",
     "checkout": "code/worktrees/phase1_urban_sigtime_20261014",
     "environment": "N607 ordinary account,CVS-RFFI Python3.10/Torch2.1;FP32/TF32off;CPU2",
     "cwd": "PROJECT/releases/cvs_SARD_DURAmix_E50_13L37U_20261021_r01"
@@ -106,7 +106,20 @@
     "local_artifact_root": "local_artifacts/cvs_sard_dura_mix",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_sard_dura_mix/runner.py",
     "stop_rule": "Own source/protocol/shape/seed/freeze/nonfinite/overwrite/unlaunchable/illegal prediction failure:preserve artifacts,stop pending,no automatic retry,no score-based stop,no unrelated intervention",
-    "status": "LOCAL_VERIFIED"
+    "status": "RUNNING",
+    "launch_verdict": "VERIFIED",
+    "evidence_ref": "local_artifacts/cvs_sard_dura_mix/readback_20261021T112347Z.json",
+    "actual_GPU": {
+      "SARD_MIX": 0,
+      "SARD_MIX_XRX": 6
+    },
+    "completion_followup": {
+      "automation_id": "sard-dura-mix-e50",
+      "kind": "heartbeat",
+      "interval_minutes": 15,
+      "status": "ACTIVE",
+      "purpose": "Complete existing source training/all14predictions/CPUtruthlast/full logs and detailed report;quiet while healthy;delete on completion"
+    }
   },
   "expected_artifacts": [
     "launch.json",
@@ -180,7 +193,7 @@
         "<row>/scoring/scores.json",
         "<row>/complete.json"
       ],
-      "status": "LOCAL_VERIFIED",
+      "status": "RUNNING",
       "weight_decay": 0.0001,
       "calendar": {
         "label_epochs": 13,
@@ -213,7 +226,8 @@
         "As_KL": 0.0,
         "clean_branch": "unchanged",
         "membership": "arange64+step alternating parity;deterministic,metadata/label independent"
-      }
+      },
+      "physical_GPU": 0
     },
     {
       "row_id": "SARD_MIX_XRX-s2026092701",
@@ -249,7 +263,7 @@
         "<row>/scoring/scores.json",
         "<row>/complete.json"
       ],
-      "status": "LOCAL_VERIFIED",
+      "status": "RUNNING",
       "weight_decay": 0.0001,
       "calendar": {
         "label_epochs": 13,
@@ -282,7 +296,8 @@
         "As_KL": 0.0,
         "clean_branch": "unchanged",
         "membership": "arange64+step alternating parity;deterministic,metadata/label independent"
-      }
+      },
+      "physical_GPU": 6
     }
   ],
   "notes": [
