@@ -1,0 +1,289 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261021-phase1-SARD-DURAaug-e50-13L37U-s2026092701-m2-r01",
+  "group_id": "phase1-SARD-frozen-DURA-source-augmentation-13L37U",
+  "display_name": "SARD 恢复后增强：从零 E50＝13L＋37U 匹配对照",
+  "description": "仅将SARD的64个随机practical residual As槽改为固定DURA v1输出；原SARD匹配日程对照，同seed、默认头、loss和全部U机制。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "SARD-DURAaug",
+    "SARD13L37U",
+    "DURA恢复后增强"
+  ],
+  "tags": [
+    "SARD",
+    "DURA",
+    "13L37U",
+    "source-augmentation",
+    "matched-control",
+    "single-seed",
+    "clean-six-practical",
+    "default-head"
+  ],
+  "comparison_group_id": "SARD-vs-DURAaug-scratch50-13L37U",
+  "parent_run_ids": [
+    "20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01",
+    "20261021-phase1-restoration-stage2-graph-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户要求验证SARD增强样本更换为DURA输出，并明确从零E50、13L+37U。先seed2026092701匹配对照；原授权自动七景测试与余量GPU并行。",
+  "code": {
+    "commit": null,
+    "checkout": "code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 ordinary account,CVS-RFFI Python3.10/Torch2.1;FP32/TF32off;CPU2",
+    "cwd": "PROJECT/releases/cvs_SARD_DURAaug_E50_13L37U_20261021_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original source7/63/30;fixed existing formal168000x7;no resplit",
+    "representation": "Existing source IQ256,dataset equalized index1,Fs25MHz;practical residual/post_sync propagation receiver EQ=false/reference_snr_db30,complete original dependency graph;fixed received IQ untouched",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract.role_ids L_s/U_s/V;fixed formal received_views manifest and opaque168000 physical IDs,unchanged",
+    "label_map_ref": "Original map [14-10,14-7,20-15,20-19,6-15,8-20]",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "All six registered originalTX,unchanged source/target registered-class map",
+    "roles": {
+      "L_s": "6300 visibleTX full original source physical IDs",
+      "U_s": "56700 TX hidden; original old gate/ownEMA only",
+      "V": "27000 diagnostic only; no checkpoint selection"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "SameVALIDATED_ONCEall5sourceRX/day/physicalL6300 U56700hidden V27000;noLdev/noRXholdout",
+    "support_query_ref": null,
+    "leo_config_ref": "Training original L_s random low_suburban/mid_urban/low_urban residual/post_sync/noeq,then optional frozenDURA;test original raw and cachedDURA seven views",
+    "source_pool_label_ratio": 0.07
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only_after_both_readouts_all7fixed_perrow",
+    "external_method_exception": null,
+    "claim_scope": "Human-exposed ManySig engineering benchmark;single Fseed,one fixedGseed;not blind/real-orbit/Phase2"
+  },
+  "checkpoint": {
+    "initialization": "Both F models scratch,ownEMA initialized from each own student;no F training parent",
+    "sources": [
+      "DURA:PROJECT/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "Original same data role_ids checked by native against source_contract;DURA v1 prior verified same source lineage reused,TX/F-free R69sourceFINAL20/4940;runtime.validate_source/load_model",
+    "provenance_verdict": "VERIFIED existing fixedDURA provenance/contract;F parents absent;original E30 only no-query smoke,not initializer",
+    "selection_rule": "Fixed FINAL50 for every row,zero target selection,default head jointly trained"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/SARD-DURA-training",
+    "gpu_policy": "GPU0..7;least all-owner process count then greatest free memory;free>=12000MB,total<=3/card,own1/card,max2 distinctGPUs;one CPUscorer",
+    "remote_run_root": "PROJECT/runs/20261021-phase1-SARD-DURAaug-e50-13L37U-s2026092701-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261021-phase1-SARD-DURAaug-e50-13L37U-s2026092701-m2-r01/logs",
+    "local_artifact_root": "local_artifacts/cvs_sard_dura_train",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_sard_dura_train/runner.py",
+    "stop_rule": "Own source/protocol/shape/seed/freeze/nonfinite/overwrite/unlaunchable/illegal prediction failure:preserve artifacts,stop pending,no automatic retry,no score-based stop,no unrelated intervention",
+    "status": "LOCAL_VERIFIED"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "workers.json",
+    "queue.json",
+    "<row>/smoke.json",
+    "<row>/source/final_ssdg.pth",
+    "<row>/source/result.json",
+    "<row>/prediction/complete.json",
+    "<row>/scoring/scores.json",
+    "<row>/complete.json",
+    "results.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "repaired",
+      "damaged",
+      "net",
+      "matched augmentation differences",
+      "pseudo acceptance/exposure",
+      "training/G costs"
+    ],
+    "dimensions": [
+      "arm",
+      "raw/dura",
+      "scene",
+      "RX",
+      "day",
+      "TX"
+    ],
+    "prediction_ref": "PROJECT/runs/20261021-phase1-SARD-DURAaug-e50-13L37U-s2026092701-m2-r01/<row>/prediction",
+    "scorer_ref": "experiments/cvs_sard_dura_train/evaluate.py:score",
+    "model_seed_count_per_arm": 1,
+    "success_rule": "Report matched variant-minus-control for all7;positive indication if DURA-readout sixenvironment mean >=+0.5pp,clean>=-0.2pp,lowurban>0pp;all rows complete regardless;no automatic multiseed or target tuning"
+  },
+  "rows": [
+    {
+      "row_id": "SARD-s2026092701",
+      "method": "SARD original As",
+      "purpose": "matched control",
+      "config_ref": "experiments/cvs_sard_dura_train/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261021-phase1-SARD-DURAaug-e50-13L37U-s2026092701-m2-r01/SARD-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019844
+      },
+      "seed_notes": "Native seed controls init/dropout/loaders;data split392005;train421/val422/receiver423 fixed;support N/A;formal844 historical fixed byte metadata,no new test sampling;G seed2026092701 shared",
+      "k": null,
+      "scenario": "Training L_s original three practical residual random views;test clean+sixpractical × raw/DURA",
+      "optimizer": "AdamW,original CENTER_UNITS sinc physical clipping,ownEMA",
+      "lr": 0.0002,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50x222=11100 updates,13L+37U=2886+8214;L128x6=768 FNN/step;As64/step=710400;U unchanged256;native FINAL50;G0 vs710400trainIQ+setup",
+      "output_root": "PROJECT/runs/20261021-phase1-SARD-DURAaug-e50-13L37U-s2026092701-m2-r01/SARD-s2026092701",
+      "log_path": "PROJECT/runs/20261021-phase1-SARD-DURAaug-e50-13L37U-s2026092701-m2-r01/logs/SARD-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_sard_dura_train/runner.py --mode worker --row SARD-s2026092701",
+      "expected_artifacts": [
+        "<row>/smoke.json",
+        "<row>/source/final_ssdg.pth",
+        "<row>/source/result.json",
+        "<row>/prediction/complete.json",
+        "<row>/scoring/scores.json",
+        "<row>/complete.json"
+      ],
+      "status": "LOCAL_VERIFIED",
+      "weight_decay": 0.0001,
+      "calendar": {
+        "label_epochs": 13,
+        "pseudo_epochs": 37,
+        "optimizer_resets": 0,
+        "LR": "single cosine50",
+        "from_scratch": true
+      },
+      "original_recipe": {
+        "As_KL": 0.0,
+        "ordinary_KL": 1.0,
+        "raw_KL": 1.0,
+        "L_loss_scale": 1.25,
+        "LS": 0.01,
+        "temperature": 1.0,
+        "supcon": "original ORD/CROSS_RX",
+        "U_gate": "old",
+        "ownEMA": true
+      },
+      "restored_augmentation": {
+        "enabled": false,
+        "G_frozen": true,
+        "role": "L_s",
+        "U_G": 0,
+        "target_G_training": 0,
+        "clean_branch": "unchanged",
+        "runtime_commit": "47c264286ca689f060a3f36aafb763fe209a6f06"
+      }
+    },
+    {
+      "row_id": "SARD_DURA_AUG-s2026092701",
+      "method": "SARD DURA-restored As",
+      "purpose": "primary",
+      "config_ref": "experiments/cvs_sard_dura_train/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261021-phase1-SARD-DURAaug-e50-13L37U-s2026092701-m2-r01/SARD_DURA_AUG-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019844
+      },
+      "seed_notes": "Native seed controls init/dropout/loaders;data split392005;train421/val422/receiver423 fixed;support N/A;formal844 historical fixed byte metadata,no new test sampling;G seed2026092701 shared",
+      "k": null,
+      "scenario": "Training L_s original three practical residual random views;test clean+sixpractical × raw/DURA",
+      "optimizer": "AdamW,original CENTER_UNITS sinc physical clipping,ownEMA",
+      "lr": 0.0002,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50x222=11100 updates,13L+37U=2886+8214;L128x6=768 FNN/step;As64/step=710400;U unchanged256;native FINAL50;G0 vs710400trainIQ+setup",
+      "output_root": "PROJECT/runs/20261021-phase1-SARD-DURAaug-e50-13L37U-s2026092701-m2-r01/SARD_DURA_AUG-s2026092701",
+      "log_path": "PROJECT/runs/20261021-phase1-SARD-DURAaug-e50-13L37U-s2026092701-m2-r01/logs/SARD_DURA_AUG-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_sard_dura_train/runner.py --mode worker --row SARD_DURA_AUG-s2026092701",
+      "expected_artifacts": [
+        "<row>/smoke.json",
+        "<row>/source/final_ssdg.pth",
+        "<row>/source/result.json",
+        "<row>/prediction/complete.json",
+        "<row>/scoring/scores.json",
+        "<row>/complete.json"
+      ],
+      "status": "LOCAL_VERIFIED",
+      "weight_decay": 0.0001,
+      "calendar": {
+        "label_epochs": 13,
+        "pseudo_epochs": 37,
+        "optimizer_resets": 0,
+        "LR": "single cosine50",
+        "from_scratch": true
+      },
+      "original_recipe": {
+        "As_KL": 0.0,
+        "ordinary_KL": 1.0,
+        "raw_KL": 1.0,
+        "L_loss_scale": 1.25,
+        "LS": 0.01,
+        "temperature": 1.0,
+        "supcon": "original ORD/CROSS_RX",
+        "U_gate": "old",
+        "ownEMA": true
+      },
+      "restored_augmentation": {
+        "enabled": true,
+        "G_frozen": true,
+        "role": "L_s",
+        "U_G": 0,
+        "target_G_training": 0,
+        "clean_branch": "unchanged",
+        "runtime_commit": "47c264286ca689f060a3f36aafb763fe209a6f06"
+      }
+    }
+  ],
+  "notes": [
+    "FixedDURA v1 266951params;reuse=True,graph=True,native=False;FP32/TF32off;2prior/4CG/27FFT;zero G/teacher/head adaptation.",
+    "SARD here is new matched scratch50 13L37U;historical SARD E30+20 has optimizer/calendar history differences and is descriptive only. CRIC+DURA priorseed01 also descriptive.",
+    "Only L_s As64 passes G;ordinary/raw views and original unlabeled loop unchanged. U TX hidden. A normal detached clone after inference allows F gradients;G never receives TX labels/gradients.",
+    "Every row all14predictions fixed before separate CPUtruth;target results do not change sibling training/model/budget. All rows finish regardless of source or target scores.",
+    "One independent P0/P1 review completed without blockers;4focused boundary tests PASS. Explicit full native trainer import before restoration dependencies prevents SSDG inference-shim import collision.",
+    "REJECTED_EXTRA_GATE: separate design approval,full unrelated test suite,extra review/receipt/hash chain are NONBLOCKING by Exclusive Minimal Experiment Workflow.",
+    "One N607 ordinary direct preflight completed;launch archive singleSHA pair/compile and independent PID/CWD/argv/GPU/log-growth required at actual release.",
+    "Source L exposures=1420800,trainAs=710400 perrow;37 U epochs increase hiddenU exposure over scratch33L17U. Actual acceptance and all real F/G/setup costs retained in logs."
+  ],
+  "registered_at": "2026-10-21T08:43:56+00:00"
+}
