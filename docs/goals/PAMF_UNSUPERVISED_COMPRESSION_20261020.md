@@ -1,5 +1,7 @@
 # 无 TX 标签恢复器的压缩与性能联合优化
 
+2026-10-21 当前R66：VERIFIED / FORMAL_PREDICTING：一次源E20/4940已完成且实际源进程退出；全部L126000/U1134000，student/teacher各1260000，原M35 teacher未改、0TX/F/V/target优化。EMA2470次/末五轮均值5快照已固定，三个普通读出全部冻结。实际训练1534.196s只计一次，平均host enqueue26.078s不是隔离GPU新增耗时。final与late_mean的source七景已完成，现分别GPU3/2实际正式预测；step_ema同GPU3排队。当前未读取任何R66识别率，不宣称收益；七正式/独立truthlast/三权重/同卡成本与自动Git收尾保持，完整目标ACTIVE。[固定方案](../PAMF_R46_WEIGHT_MEAN_R66_20261021.md)。
+
 2026-10-21 R68 SYNTHETIC_PROTOTYPE_ONLY：现有273765图的源pairedclean重建尾部聚合，半全均值+半top50%或top25%重建均值，原IQ教师全均值及1→.1保持。仅当前detach IQ/谱误差排序，每条L/U权重≥.5且和为batch大小，0TX/RX/F/V/target/持久难度状态；不是旧F-semantic hardness模型，0旧权重继承。21合成检查覆盖数值/梯度/末batch/稳定同值/teacher与clean隔离，0真实IQ/checkpoint/训练/GPU。两比例及只读R66final控制在任何R66识别率读取前固定；完整pipeline/登记/唯一审查/实际发布尚未进行，不能宣称收益。R66/R67健康流程保持。未来两版均须完整七正式/成本，性能优先、原目标ACTIVE。[原型与边界](../PAMF_R46_RECONSTRUCTION_TAIL_R68_20261021.md)。
 
 R67已实际VERIFIED/WAITING_PARENT_FORMAL：CPU2/0GPU、真实2Ls解析no-query smoke、单archiveSHA/compile/实际PID/CWD/argv/空CUDA及日志增长核实。R66识别率未用于方案；M35/R53与七近期读出全部纳入，R66三读出共享一次源训练。复用84、新算196，总280固定后独立truth-last4536组/756条件对照/504配对差。无新恢复器/F/checkpoint/神经预测/训练/校准/头拟合，不改父，不作逐细节真实性证明。[R67固定评价](../PAMF_FOLD_DELAYED_MEAN_IDENTITY_R67_20261021.md)。

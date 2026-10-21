@@ -1,6 +1,6 @@
 # R66：同一次源训练的三个固定参数读出
 
-状态：VERIFIED / TRAINING：方法21141083f91ca7703b9242e5d90873666a8414b6已普通账户发布，单归档SHA/compile、真实2Ls/M35/F50零更新结构no-query smoke PASS。共享源进程GPU3实际PID/CWD/argv/CUDA/CPU2、GPU PID、有限epoch和日志增长已核实。一次273765图E20/4940，M35直接初值/全程冻结IQ教师，全部L/U且0TX/F/V/target优化，无新增校准/前向/推理参数。训练子进程实际退出后，三个固定读出final/late_mean/step_ema在GPU3/2各1/max2自动全七正式/独立truthlast、同卡成本及strict权重；共享训练成本只计一次，34项结果检查通过，自动收尾工具已固定。核心与窗口先于读取R65识别率固定，不依源分数筛选，不读取当前目标准确率调参。当前尚无R66识别收益结论；性能优先，完整目标ACTIVE。
+状态：VERIFIED / FORMAL_PREDICTING：一次源E20/4940已完成且实际源进程退出；全部L126000/U1134000，student/teacher各1260000，原M35 teacher未改、0TX/F/V/target优化。EMA2470次/末五轮均值5快照已固定，三个普通读出全部冻结。实际训练1534.196s只计一次，平均host enqueue26.078s不是隔离GPU新增耗时。final与late_mean的source七景已完成，现分别GPU3/2实际正式预测；step_ema同GPU3排队。当前未读取任何R66识别率，不宣称收益；七正式/独立truthlast/三权重/同卡成本与自动Git收尾保持，完整目标ACTIVE。
 
 只优化既有 273765 参数 GN4 U-Net/context/三 prior/六 CG 图，不增加恢复网络族或推理参数。假设来自源优化轨迹：同一训练路径的末次参数与固定后段参数平均，可能产生不同的恢复稳定性，需正式测试验证。不是从已暴露 target 准确率挑选权重、宽度、平均窗口或父。当前矩阵在读取 R65 任意识别率前固定。
 
