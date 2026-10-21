@@ -1,12 +1,12 @@
 # 无 TX 标签恢复器的压缩与性能联合优化
 
+二十五个固定新版的正式性能、郊区/urban 全场景和配对推理成本均已完整汇总，按预登记顺序保留全部结果；性能优先，不用通过退化容差、减参或提速替代逐场景性能改善。二十五行中相对指定父七景全部提高的版本为：R48 prune_refine（273765参数，low urban 68.257738%）、R60 context_hint（273765参数，low urban 68.232143%）。完整数据按固定矩阵顺序报告，不据此另选父、修改超参数或选择性重跑。只反映单 seed 工程基准，70%/5pp以逐行验收表为准；输入TX逐细节真实性尚未证明，原完整目标继续ACTIVE。 见[二十五版性能总表](../PAMF_R46_COMPRESSION_PERFORMANCE_20261020.md)。指定 350521 父版不变，原完整目标继续 ACTIVE。
+
 2026-10-21 当前R64：VERIFIED / ANALYZED：两行完整E20/4940、源1800×7、正式168000×7、逐行七预测固定后独立truth-last、全20轮/同卡成本/实际所属进程退出和独立权重CPU严格重载已核实。fold_full 248828参数，较指定M35七景提高1/下降6，low urban 66.508333%（较M35-1.001786pp）；较R62同图同训练预算提高5/下降2，low差+0.277381pp；70%=False、其他五景gap≤5pp=False；同卡G B1父/本版52.1396/51.6556ms，G+F B1父/本版63.0242/63.4523ms；fold_half 248828参数，较指定M35七景提高1/下降6，low urban 66.217857%（较M35-1.292262pp）；较R62同图同训练预算提高3/下降4，low差-0.013095pp；70%=False、其他五景gap≤5pp=False；同卡G B1父/本版49.5927/49.5229ms，G+F B1父/本版60.8301/60.9381ms。同GN3图/通道/训练预算下full源补偿相对half七景提高7/下降0，low urban差+0.290476pp；实际成本按同卡配对测量，不从相同图推定相同秒数。直接指定350521初始化/冻结IQ教师不变，全prior保留并更新，原pairedcleanIQ/谱/1→.1IQ教师，全组件联合；0TX/F/V/target优化/新推理参数；共享128源LU/256父G/103处输入统计及实测离线成本单列。全部正负结果保留，不把减参或1pp容差当作性能提升或逐细节TX真实性。完整目标ACTIVE。 [全部七景与成本](../PAMF_R46_WHOLE_GROUP_FOLD_R64_20261021.md)。
 
 2026-10-21 当前 R65：VERIFIED / WAITING_PREDECESSOR_ACTUAL_EXIT：方法4fd058f9bae79687f924e06d057e6a20083ff6dc已普通账户发布，单归档SHA比对/compile通过。真实M35/F50/2Ls双阶段no-query smoke PASS，epoch/update均0；密集与压缩图全部组件梯度有限且非零、strictportable reload与原F默认头保持。实际CPU2 controller和两等待worker PID/CWD/argv/环境、日志增长已核实，当前0新GPU/0训练epoch，等待R64同卡行完成且实际GPU进程退出后才分配物理GPU3/2；max2own GPU跨两run，其他owner不变。固定5+15/10+10/E20/4940、全部七正式/独立truthlast/同卡与分阶段成本自动执行，无源筛选；无新性能结论，完整目标ACTIVE。[固定方案](../PAMF_R46_DELAYED_PRUNE_R65_20261021.md)。
 
 2026-10-21 R65 LOCAL_VERIFIED：既有U-Net延后裁剪，指定M35直接初值/全程冻结IQ教师；两行dense5+compact15与dense10+compact10，合计E20/4940，最终273765/context185615，原M35通道图在训练前固定且不重选。只转换同row源训练状态、AdamW重置一次、全局LR/data/teacher日程不重启；分阶段计算成本单列。67+4checks/CLI/真实M35合成CPU/ONEP0P1PASS，core c3b12eaea先于R64源/目标准确率读取；0TX/F/V/target训练或新校准，全部L/U参加。首步真实2Ls/F50 noquery smoke；physicalGPU3/2各1/max2，等R64同卡complete且实际GPU PID退出后分配；两行自动全部7正式/独立truthlast/同卡成本，无源筛选。未发布，无新性能结论，性能优先/原完整目标ACTIVE。[R65固定方案](../PAMF_R46_DELAYED_PRUNE_R65_20261021.md)。
-
-二十三个固定新版的正式性能、郊区/urban 全场景和配对推理成本均已完整汇总，按预登记顺序保留全部结果；性能优先，不用通过退化容差、减参或提速替代逐场景性能改善。二十三行中相对指定父七景全部提高的版本为：R48 prune_refine（273765参数，low urban 68.257738%）、R60 context_hint（273765参数，low urban 68.232143%）。完整数据按固定矩阵顺序报告，不据此另选父、修改超参数或选择性重跑。只反映单 seed 工程基准，70%/5pp以逐行验收表为准；输入TX逐细节真实性尚未证明，原完整目标继续ACTIVE。 见[二十三版性能总表](../PAMF_R46_COMPRESSION_PERFORMANCE_20261020.md)。指定 350521 父版不变，原完整目标继续 ACTIVE。
 
 R63已完成VERIFIED/ANALYZED：140解析单元固定后truth；2016分组/336条件阴性对照/140配对差独立复算，R46父504记录与R56一致；0F/checkpoint/额外神经预测/训练/headfit/新校准/GPU，所属CPU进程EXITED。有限同TX关联不是识别率或逐细节真实性证明，不改变父实验，原目标ACTIVE。 [全部四候选固定关联](../PAMF_GROUP_FORMAL_IDENTITY_R63_20261021.md)。
 
