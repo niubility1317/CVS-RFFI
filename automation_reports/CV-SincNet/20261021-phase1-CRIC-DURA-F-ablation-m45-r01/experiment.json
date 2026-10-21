@@ -1,0 +1,1328 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261021-phase1-CRIC-DURA-F-ablation-m45-r01",
+  "group_id": "phase1-cric-dura-complete-system",
+  "display_name": "CRIC机制消融：15变体×3模型seed",
+  "description": "F0原生33L17U固定11100步，15个机制设置，三模型seed；接同一DURA并给raw读出，全部七景预测完成后独立truth-last。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "CRIC",
+    "DURA",
+    "complete-system",
+    "three-F-seeds",
+    "latency-ablation-design"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261019-phase1-external-dg-concat-pl-m219-r03",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261021-phase1-SARD-NoAs-DURA-e50-m6-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-21指定CRIC+DURA完整方法，与当前对比配置比较，并详细设计机制时延与消融；五源数量扫点不新跑。",
+  "code": {
+    "commit": "Resolved at immutable release from current pushed Git HEAD",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "N607 CVS-RFFI Python3.10/Torch2.1; FP32 TF32off; CPU2",
+    "cwd": "N607 immutable release root",
+    "entry": "experiments.cric_dura_comparison.source_queue dispatch"
+  },
+  "data": {
+    "dataset": "WiSig ManySig/ManyRx",
+    "version": null,
+    "representation": "equalized1 center256 float32 unitRMS",
+    "contract_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md",
+    "physical_ids_ref": "Existing source/target data-contract records; no IQ or truth opened for this design/aggregation",
+    "label_map_ref": "Existing native source-contract metadata; no posthoc head fitting",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": null,
+      "U_s": null,
+      "V": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Reuse existing VALIDATED_ONCE handles; new contracts bound before actual launch",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "Source-only training planned; target frozen inference only",
+    "query_use": "F source worker has no target/test/truth input. Evaluation released as separate stage after matching G; all readouts predicted before independent truth-last.",
+    "external_method_exception": null,
+    "claim_scope": "Previously exposed engineering benchmark; not independent blind or in-orbit validation"
+  },
+  "checkpoint": {
+    "initialization": "45 scratch models; no F weight inheritance; frozen G uses exact F0 L/U contract",
+    "sources": [
+      "F0 reuse only; new model initialization scratch"
+    ],
+    "contract_check_ref": "Existing exact-contract F0 evidence; every new F/G/teacher must match its own contract",
+    "provenance_verdict": "F source receives only its own source cache/role contract; no teacher or different-contract checkpoint.",
+    "selection_rule": "Frozen existing F0 scores; prospective fixed-final source schedule, no target selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex-root-cric-dura-source-20261021",
+    "gpu_policy": "GPU0..7, one own/card, at most 2 total compute apps/card, free>=12000MiB. User explicitly permits joining spare VRAM; preserve all healthy tasks. Timing exclusive GPU.",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "local_artifacts/cric_dura_comparison_20261021",
+    "launch_command": "python -u -m experiments.cric_dura_comparison.source_queue dispatch --config runtime.json",
+    "stop_rule": "No performance stopping. Two same-fingerprint source technical failures stop new launches; retain healthy peers and every artifact."
+  },
+  "expected_artifacts": [
+    "45 source checkpoints",
+    "raw/DURA 90 readouts x7views",
+    "training cost/acceptance",
+    "same-row scores"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy",
+      "Macro-F1",
+      "worst RX",
+      "paired deltas",
+      "training and deployment cost"
+    ],
+    "dimensions": [
+      "data contract",
+      "regime",
+      "F seed",
+      "G seed",
+      "view",
+      "RX",
+      "TX",
+      "date"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "Independent truth-last after all seven predictions per row"
+  },
+  "rows": [
+    {
+      "row_id": "F01-s2026092701",
+      "method": "CRIC+DURA F01",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092701,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F01-s2026092701",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F01-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F02-s2026092701",
+      "method": "CRIC+DURA F02",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092701,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F02-s2026092701",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F02-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F03-s2026092701",
+      "method": "CRIC+DURA F03",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092701,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F03-s2026092701",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F03-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F04-s2026092701",
+      "method": "CRIC+DURA F04",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092701,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F04-s2026092701",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F04-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F05-s2026092701",
+      "method": "CRIC+DURA F05",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092701,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F05-s2026092701",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F05-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F06-s2026092701",
+      "method": "CRIC+DURA F06",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092701,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F06-s2026092701",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F06-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F07-s2026092701",
+      "method": "CRIC+DURA F07",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092701,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F07-s2026092701",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F07-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F08-s2026092701",
+      "method": "CRIC+DURA F08",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092701,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F08-s2026092701",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F08-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F09-s2026092701",
+      "method": "CRIC+DURA F09",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092701,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F09-s2026092701",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F09-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F10-s2026092701",
+      "method": "CRIC+DURA F10",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092701,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F10-s2026092701",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F10-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F11-s2026092701",
+      "method": "CRIC+DURA F11",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092701,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F11-s2026092701",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F11-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F12-s2026092701",
+      "method": "CRIC+DURA F12",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092701,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F12-s2026092701",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F12-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F13-s2026092701",
+      "method": "CRIC+DURA F13",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092701,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F13-s2026092701",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F13-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F14-s2026092701",
+      "method": "CRIC+DURA F14",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092701,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F14-s2026092701",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F14-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F15-s2026092701",
+      "method": "CRIC+DURA F15",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026092701,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F15-s2026092701",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F15-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F01-s2026092702",
+      "method": "CRIC+DURA F01",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092702,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F01-s2026092702",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F01-s2026092702.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F02-s2026092702",
+      "method": "CRIC+DURA F02",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092702,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F02-s2026092702",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F02-s2026092702.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F03-s2026092702",
+      "method": "CRIC+DURA F03",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092702,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F03-s2026092702",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F03-s2026092702.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F04-s2026092702",
+      "method": "CRIC+DURA F04",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092702,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F04-s2026092702",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F04-s2026092702.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F05-s2026092702",
+      "method": "CRIC+DURA F05",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092702,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F05-s2026092702",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F05-s2026092702.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F06-s2026092702",
+      "method": "CRIC+DURA F06",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092702,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F06-s2026092702",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F06-s2026092702.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F07-s2026092702",
+      "method": "CRIC+DURA F07",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092702,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F07-s2026092702",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F07-s2026092702.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F08-s2026092702",
+      "method": "CRIC+DURA F08",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092702,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F08-s2026092702",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F08-s2026092702.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F09-s2026092702",
+      "method": "CRIC+DURA F09",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092702,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F09-s2026092702",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F09-s2026092702.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F10-s2026092702",
+      "method": "CRIC+DURA F10",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092702,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F10-s2026092702",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F10-s2026092702.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F11-s2026092702",
+      "method": "CRIC+DURA F11",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092702,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F11-s2026092702",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F11-s2026092702.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F12-s2026092702",
+      "method": "CRIC+DURA F12",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092702,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F12-s2026092702",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F12-s2026092702.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F13-s2026092702",
+      "method": "CRIC+DURA F13",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092702,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F13-s2026092702",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F13-s2026092702.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F14-s2026092702",
+      "method": "CRIC+DURA F14",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092702,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F14-s2026092702",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F14-s2026092702.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F15-s2026092702",
+      "method": "CRIC+DURA F15",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026092702,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F15-s2026092702",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F15-s2026092702.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F01-s2026092703",
+      "method": "CRIC+DURA F01",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092703,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F01-s2026092703",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F01-s2026092703.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F02-s2026092703",
+      "method": "CRIC+DURA F02",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092703,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F02-s2026092703",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F02-s2026092703.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F03-s2026092703",
+      "method": "CRIC+DURA F03",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092703,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F03-s2026092703",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F03-s2026092703.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F04-s2026092703",
+      "method": "CRIC+DURA F04",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092703,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F04-s2026092703",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F04-s2026092703.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F05-s2026092703",
+      "method": "CRIC+DURA F05",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092703,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F05-s2026092703",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F05-s2026092703.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F06-s2026092703",
+      "method": "CRIC+DURA F06",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092703,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F06-s2026092703",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F06-s2026092703.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F07-s2026092703",
+      "method": "CRIC+DURA F07",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092703,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F07-s2026092703",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F07-s2026092703.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F08-s2026092703",
+      "method": "CRIC+DURA F08",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092703,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F08-s2026092703",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F08-s2026092703.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F09-s2026092703",
+      "method": "CRIC+DURA F09",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092703,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F09-s2026092703",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F09-s2026092703.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F10-s2026092703",
+      "method": "CRIC+DURA F10",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092703,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F10-s2026092703",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F10-s2026092703.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F11-s2026092703",
+      "method": "CRIC+DURA F11",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092703,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F11-s2026092703",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F11-s2026092703.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F12-s2026092703",
+      "method": "CRIC+DURA F12",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092703,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F12-s2026092703",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F12-s2026092703.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F13-s2026092703",
+      "method": "CRIC+DURA F13",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092703,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F13-s2026092703",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F13-s2026092703.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F14-s2026092703",
+      "method": "CRIC+DURA F14",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092703,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F14-s2026092703",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F14-s2026092703.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    },
+    {
+      "row_id": "F15-s2026092703",
+      "method": "CRIC+DURA F15",
+      "purpose": "registered F mechanism ablation",
+      "config_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md#42",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026092703,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Source loader/model same seed; native ordinary augmentation follows original torch RNG; fixed satellite/eval seed; no target feedback.",
+      "epochs": 50,
+      "optimizer": "AdamW",
+      "lr": 0.0002,
+      "budget_ref": "11100 updates; same native 33L17U except pureCE-L F15 disables U",
+      "output_root": "runs/20261021-phase1-CRIC-DURA-F-ablation-m45-r01/F15-s2026092703",
+      "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r01/20261021-phase1-CRIC-DURA-F-ablation-m45-r01__F15-s2026092703.log",
+      "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <row config>",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "raw/DURA seven-view predictions",
+        "independent scores"
+      ]
+    }
+  ],
+  "notes": [],
+  "registered_at": "2026-10-21T11:58:12+00:00"
+}
