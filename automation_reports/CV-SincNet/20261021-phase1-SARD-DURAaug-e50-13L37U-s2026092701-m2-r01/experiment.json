@@ -106,7 +106,7 @@
     "local_artifact_root": "local_artifacts/cvs_sard_dura_train",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_sard_dura_train/runner.py",
     "stop_rule": "Own source/protocol/shape/seed/freeze/nonfinite/overwrite/unlaunchable/illegal prediction failure:preserve artifacts,stop pending,no automatic retry,no score-based stop,no unrelated intervention",
-    "status": "RUNNING",
+    "status": "ANALYZED",
     "launch_verdict": "VERIFIED",
     "evidence_ref": "local_artifacts/cvs_sard_dura_train/readback_20261021T084843Z.json",
     "actual_GPU": {
@@ -117,9 +117,12 @@
       "automation_id": "sard-dura-e50",
       "kind": "heartbeat",
       "interval_minutes": 15,
-      "status": "ACTIVE",
-      "purpose": "Finish existing training->14cells/row->independenttruthlast->report;quiet while unchanged;close on completion"
-    }
+      "status": "DELETED",
+      "purpose": "Finish existing training->14cells/row->independenttruthlast->report;quiet while unchanged;close on completion",
+      "closure": "All training/prediction/scoring/analysis complete;automation deletion independently confirmed"
+    },
+    "completion_verdict": "VERIFIED",
+    "completion_evidence_ref": "local_artifacts/cvs_sard_dura_train/readback_20261021T104305Z.json"
   },
   "expected_artifacts": [
     "launch.json",
@@ -193,7 +196,7 @@
         "<row>/scoring/scores.json",
         "<row>/complete.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "weight_decay": 0.0001,
       "calendar": {
         "label_epochs": 13,
@@ -258,7 +261,7 @@
         "<row>/scoring/scores.json",
         "<row>/complete.json"
       ],
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "weight_decay": 0.0001,
       "calendar": {
         "label_epochs": 13,
@@ -300,5 +303,274 @@
     "One N607 ordinary direct preflight completed;launch archive singleSHA pair/compile and independent PID/CWD/argv/GPU/log-growth required at actual release.",
     "Source L exposures=1420800,trainAs=710400 perrow;37 U epochs increase hiddenU exposure over scratch33L17U. Actual acceptance and all real F/G/setup costs retained in logs."
   ],
-  "registered_at": "2026-10-21T08:43:56+00:00"
+  "registered_at": "2026-10-21T08:43:56+00:00",
+  "results_summary": {
+    "status": "VERIFIED",
+    "model_seed": 2026092701,
+    "model_seed_count": 1,
+    "ddof": null,
+    "summary": {
+      "clean": {
+        "accuracy": {
+          "SARD_raw": 85.03214285714286,
+          "SARD_DURA_AUG_raw": 82.71785714285714,
+          "SARD_dura": 85.18095238095238,
+          "SARD_DURA_AUG_dura": 82.73392857142858
+        },
+        "macro_f1": {
+          "SARD_raw": 84.76349643990223,
+          "SARD_DURA_AUG_raw": 82.35325068840763,
+          "SARD_dura": 84.91933268998473,
+          "SARD_DURA_AUG_dura": 82.37502657095895
+        }
+      },
+      "practical_high": {
+        "accuracy": {
+          "SARD_raw": 81.52619047619048,
+          "SARD_DURA_AUG_raw": 36.829166666666666,
+          "SARD_dura": 83.19345238095238,
+          "SARD_DURA_AUG_dura": 80.06547619047619
+        },
+        "macro_f1": {
+          "SARD_raw": 81.31726662667127,
+          "SARD_DURA_AUG_raw": 31.211464199685217,
+          "SARD_dura": 82.91153506081042,
+          "SARD_DURA_AUG_dura": 79.53320293587961
+        }
+      },
+      "practical_mid": {
+        "accuracy": {
+          "SARD_raw": 79.04166666666667,
+          "SARD_DURA_AUG_raw": 36.19047619047619,
+          "SARD_dura": 81.9672619047619,
+          "SARD_DURA_AUG_dura": 78.73214285714286
+        },
+        "macro_f1": {
+          "SARD_raw": 78.84077828156241,
+          "SARD_DURA_AUG_raw": 30.99493759922617,
+          "SARD_dura": 81.7354108796165,
+          "SARD_DURA_AUG_dura": 78.23291821242563
+        }
+      },
+      "practical_low_suburban": {
+        "accuracy": {
+          "SARD_raw": 76.34761904761905,
+          "SARD_DURA_AUG_raw": 35.4875,
+          "SARD_dura": 80.36130952380952,
+          "SARD_DURA_AUG_dura": 77.1392857142857
+        },
+        "macro_f1": {
+          "SARD_raw": 76.12133570890221,
+          "SARD_DURA_AUG_raw": 30.71668837487281,
+          "SARD_dura": 80.20949826348067,
+          "SARD_DURA_AUG_dura": 76.72741951295025
+        }
+      },
+      "practical_high_urban": {
+        "accuracy": {
+          "SARD_raw": 78.15595238095237,
+          "SARD_DURA_AUG_raw": 36.102380952380955,
+          "SARD_dura": 82.10595238095239,
+          "SARD_DURA_AUG_dura": 78.87619047619047
+        },
+        "macro_f1": {
+          "SARD_raw": 77.95812225766107,
+          "SARD_DURA_AUG_raw": 31.058052524835734,
+          "SARD_dura": 81.8926182189036,
+          "SARD_DURA_AUG_dura": 78.40313334766657
+        }
+      },
+      "practical_mid_urban": {
+        "accuracy": {
+          "SARD_raw": 63.77738095238096,
+          "SARD_DURA_AUG_raw": 31.75952380952381,
+          "SARD_dura": 75.26309523809523,
+          "SARD_DURA_AUG_dura": 72.41250000000001
+        },
+        "macro_f1": {
+          "SARD_raw": 63.45649880582591,
+          "SARD_DURA_AUG_raw": 28.55226665725083,
+          "SARD_dura": 75.38711878957622,
+          "SARD_DURA_AUG_dura": 72.28014708029082
+        }
+      },
+      "practical_low_urban": {
+        "accuracy": {
+          "SARD_raw": 52.44345238095238,
+          "SARD_DURA_AUG_raw": 28.195238095238096,
+          "SARD_dura": 68.40357142857142,
+          "SARD_DURA_AUG_dura": 66.09940476190475
+        },
+        "macro_f1": {
+          "SARD_raw": 51.876779876526115,
+          "SARD_DURA_AUG_raw": 26.29104905287499,
+          "SARD_dura": 68.82990010705922,
+          "SARD_DURA_AUG_dura": 66.15613669384803
+        }
+      }
+    },
+    "averages": {
+      "六环境平均": {
+        "accuracy": {
+          "SARD_raw": 71.88204365079365,
+          "SARD_DURA_AUG_raw": 34.09404761904762,
+          "SARD_dura": 78.54910714285714,
+          "SARD_DURA_AUG_dura": 75.55416666666666
+        },
+        "macro_f1": {
+          "SARD_raw": 71.59513025952484,
+          "SARD_DURA_AUG_raw": 29.804076401457625,
+          "SARD_dura": 78.49434688657443,
+          "SARD_DURA_AUG_dura": 75.22215963051015
+        }
+      },
+      "七景平均": {
+        "accuracy": {
+          "SARD_raw": 73.76062925170068,
+          "SARD_DURA_AUG_raw": 41.04030612244898,
+          "SARD_dura": 79.49651360544217,
+          "SARD_DURA_AUG_dura": 76.5798469387755
+        },
+        "macro_f1": {
+          "SARD_raw": 73.47632542815018,
+          "SARD_DURA_AUG_raw": 37.31110129959334,
+          "SARD_dura": 79.41220200134734,
+          "SARD_DURA_AUG_dura": 76.24399776485998
+        }
+      }
+    },
+    "deltas": {
+      "clean": {
+        "raw": -2.3142857142857167,
+        "dura": -2.447023809523799
+      },
+      "practical_high": {
+        "raw": -44.69702380952381,
+        "dura": -3.12797619047619
+      },
+      "practical_mid": {
+        "raw": -42.85119047619048,
+        "dura": -3.235119047619037
+      },
+      "practical_low_suburban": {
+        "raw": -40.86011904761905,
+        "dura": -3.2220238095238187
+      },
+      "practical_high_urban": {
+        "raw": -42.053571428571416,
+        "dura": -3.229761904761915
+      },
+      "practical_mid_urban": {
+        "raw": -32.01785714285715,
+        "dura": -2.8505952380952237
+      },
+      "practical_low_urban": {
+        "raw": -24.248214285714283,
+        "dura": -2.3041666666666742
+      }
+    },
+    "preregistered_test": {
+      "six_mean_delta_pp": -2.9949404761904788,
+      "clean_delta_pp": -2.447023809523799,
+      "lowurban_delta_pp": -2.3041666666666742,
+      "passed": false
+    },
+    "training": {
+      "SARD": {
+        "epochs": 50,
+        "label_epochs": 13,
+        "pseudo_epochs": 37,
+        "updates": 11100,
+        "loader_exposures": {
+          "L": 1420800,
+          "U": 2097900
+        },
+        "unique_loader_samples": {
+          "L": 6300,
+          "U": 56700
+        },
+        "pseudo_exposures": 2097900,
+        "pseudo_accepted": 33778,
+        "acceptance_pct": 1.6100862767529434,
+        "final_pseudo_accepted": 931.0,
+        "final_pseudo_acceptance_pct": 1.6419753086419753,
+        "L_NN": 8524800,
+        "As_packets": 710400,
+        "G_train_IQ": 0,
+        "F_student_train_NN": 10622700,
+        "F_student_eval_NN": 1404002,
+        "F_teacher_train_NN": 0,
+        "F_teacher_eval_NN": 2097900,
+        "G_updates": 0,
+        "seconds": 6788.4957184791565,
+        "source_final": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.984037037037037,
+          "source_val_rx_accuracy": {
+            "1": 0.9961111111111111,
+            "3": 0.9551851851851851,
+            "4": 0.985,
+            "6": 0.9966666666666667,
+            "8": 0.9872222222222222
+          },
+          "source_val_worst_rx": 0.9551851851851851
+        },
+        "source_best_accuracy": 98.52222222222223,
+        "source_best_epoch": 41,
+        "final_training_loss": 0.48778210285010637,
+        "first_training_loss": 1.9229754714278486
+      },
+      "SARD_DURA_AUG": {
+        "epochs": 50,
+        "label_epochs": 13,
+        "pseudo_epochs": 37,
+        "updates": 11100,
+        "loader_exposures": {
+          "L": 1420800,
+          "U": 2097900
+        },
+        "unique_loader_samples": {
+          "L": 6300,
+          "U": 56700
+        },
+        "pseudo_exposures": 2097900,
+        "pseudo_accepted": 33357,
+        "acceptance_pct": 1.59001859001859,
+        "final_pseudo_accepted": 916.0,
+        "final_pseudo_acceptance_pct": 1.6155202821869488,
+        "L_NN": 8524800,
+        "As_packets": 710400,
+        "G_train_IQ": 710400,
+        "F_student_train_NN": 10622700,
+        "F_student_eval_NN": 1404002,
+        "F_teacher_train_NN": 0,
+        "F_teacher_eval_NN": 2097900,
+        "G_updates": 0,
+        "seconds": 6016.164884567261,
+        "source_final": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9845555555555555,
+          "source_val_rx_accuracy": {
+            "1": 0.9957407407407407,
+            "3": 0.9568518518518518,
+            "4": 0.9837037037037037,
+            "6": 0.9975925925925926,
+            "8": 0.9888888888888889
+          },
+          "source_val_worst_rx": 0.9568518518518518
+        },
+        "source_best_accuracy": 98.49259259259259,
+        "source_best_epoch": 41,
+        "final_training_loss": 0.38033798390680607,
+        "first_training_loss": 1.7565587342859388
+      }
+    },
+    "confusion_matrices_recounted": 504,
+    "paired_records_recounted": 252,
+    "new_target_F_NN": 4704000,
+    "new_G_target_NN": 0,
+    "all14cells_before_truth": true,
+    "report_ref": "test_results.md",
+    "full_logs_parsed": true
+  }
 }
