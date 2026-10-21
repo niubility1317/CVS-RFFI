@@ -22,6 +22,8 @@ F_RUN,F_SEED,VIEWS,KIND=baseline.F_RUN,baseline.F_SEED,baseline.VIEWS,baseline.K
 MODEL_SEED,DATA_SEED=baseline.MODEL_SEED,baseline.DATA_SEED
 SCORING_RUN=baseline.SCORING_RUN
 learning_rate,teacher_weight=baseline.learning_rate,baseline.teacher_weight
+parent=baseline.parent
+TASK={arm:False for arm in ARMS}
 STATIC_CONTROL=dict(run=static.RUN,commit='df36c3d3da4e026b747776b65b58d4921dc1a71e',
     row='prune_decay',parameters=273765,epochs=20,updates=4940,used_as_teacher=False)
 RETAIN_CONTROL=dict(run=baseline.RUN,commit='e96397bc3c7036f085317f9cc0e59074fb6ee24f',
@@ -59,7 +61,7 @@ def configuration():
         source_IQ_examples_per_row=1260000,teacher_IQ_examples_per_row=1260000,
         new_calibration_IQ=0,new_trainable_parameters=0,TX_labels_read=0,F_training_access=False,V_training=False,target_training=False,
         GPU=GPUS,max_own_GPU_workers=2,max_own_workers_per_card=1,
-        predecessor_by_GPU={3:'fold_full',2:'fold_half'},predecessor_run='20261021-phase1-restoration-R46-whole-group-fold-s2026092701-m2-r64',
+        predecessor_by_GPU={'3':'fold_full','2':'fold_half'},predecessor_run='20261021-phase1-restoration-R46-whole-group-fold-s2026092701-m2-r64',
         freeze_rule='Both fixedfinalE20/4940;automatic source1800x7/profile/formal168000x7 for each row regardless source scores;allseven predictions fixed before independent truthlast;no earlystop or source candidate gate',
         target_feedback=False,goal_complete=False)
     return value

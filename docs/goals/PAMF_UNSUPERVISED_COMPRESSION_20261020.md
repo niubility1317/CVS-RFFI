@@ -1,5 +1,7 @@
 # 无 TX 标签恢复器的压缩与性能联合优化
 
+2026-10-21 R65 LOCAL_VERIFIED：既有U-Net延后裁剪，指定M35直接初值/全程冻结IQ教师；两行dense5+compact15与dense10+compact10，合计E20/4940，最终273765/context185615，原M35通道图在训练前固定且不重选。只转换同row源训练状态、AdamW重置一次、全局LR/data/teacher日程不重启；分阶段计算成本单列。67+4checks/CLI/真实M35合成CPU/ONEP0P1PASS，core c3b12eaea先于R64源/目标准确率读取；0TX/F/V/target训练或新校准，全部L/U参加。首步真实2Ls/F50 noquery smoke；physicalGPU3/2各1/max2，等R64同卡complete且实际GPU PID退出后分配；两行自动全部7正式/独立truthlast/同卡成本，无源筛选。未发布，无新性能结论，性能优先/原完整目标ACTIVE。[R65固定方案](../PAMF_R46_DELAYED_PRUNE_R65_20261021.md)。
+
 二十三个固定新版的正式性能、郊区/urban 全场景和配对推理成本均已完整汇总，按预登记顺序保留全部结果；性能优先，不用通过退化容差、减参或提速替代逐场景性能改善。二十三行中相对指定父七景全部提高的版本为：R48 prune_refine（273765参数，low urban 68.257738%）、R60 context_hint（273765参数，low urban 68.232143%）。完整数据按固定矩阵顺序报告，不据此另选父、修改超参数或选择性重跑。只反映单 seed 工程基准，70%/5pp以逐行验收表为准；输入TX逐细节真实性尚未证明，原完整目标继续ACTIVE。 见[二十三版性能总表](../PAMF_R46_COMPRESSION_PERFORMANCE_20261020.md)。指定 350521 父版不变，原完整目标继续 ACTIVE。
 
 R63已完成VERIFIED/ANALYZED：140解析单元固定后truth；2016分组/336条件阴性对照/140配对差独立复算，R46父504记录与R56一致；0F/checkpoint/额外神经预测/训练/headfit/新校准/GPU，所属CPU进程EXITED。有限同TX关联不是识别率或逐细节真实性证明，不改变父实验，原目标ACTIVE。 [全部四候选固定关联](../PAMF_GROUP_FORMAL_IDENTITY_R63_20261021.md)。
