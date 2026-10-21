@@ -27,3 +27,5 @@
 相对同 seed 原 E30，六环境平均 Accuracy 69.996362%→70.601356%（+0.604993pp），七景等权平均 72.080641%→72.571797%（+0.491156pp）；三个 seed 的上述两项平均均提升。clean 84.586310%→84.394444%（−0.191865pp），样本 SD 0.502883→0.916493pp，存在 clean 损伤和更大 seed 波动。六场景各自均值均上升，mid／low urban 收益最大；不将该结果描述为全场景一致提升。
 
 完整逐种子 Accuracy、Macro-F1、均值±样本 SD、同 seed 配对差及 RX/day/TX 明细见 [三种子与原 E30 完整比较](test_results_three_seed_vs_E30.md)。本地逐 seed 分层数值另保存为 `test_results_by_stratum.csv`；权重、预测、原日志和私有运行证据保持原存储，不提交 Git。此次结果只作原暴露基准描述，不反馈调参或重跑。
+
+原 As 对照补充：已核实保留 As KL 的历史 AS30 三 seed 七景产物，另见 [原 As／T1 E30／T1 E50 比较](test_results_vs_original_As.md)。原 As 是 E30 历史参照，seed02／03 的 4 个 sequence_pool 初始张量不同；本次 E50 还增加 20 轮预算，因此不作纯 KL 因果归因。
