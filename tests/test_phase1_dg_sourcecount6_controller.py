@@ -1,8 +1,19 @@
 import unittest
-from experiments.phase1_dg_sourcecount6.rebalance import may_launch,worker_identity
+from experiments.phase1_dg_sourcecount6.rebalance import may_launch,worker_identity,active_rows
 
 
 class ResourcePolicyTests(unittest.TestCase):
+    def test_five_source_exclusion_preserves_every_other_recipe(self):
+        from experiments.phase1_dg_sourcecount6.plan import make_plan
+        original=make_plan()['rows']
+        selected=active_rows(original,[5])
+        self.assertEqual(len(selected),360)
+        self.assertEqual(set(r['source_count'] for r in selected),{1,2,3,4,6})
+        self.assertTrue(all(not r['reuse_parent_row_id'] for r in selected))
+        self.assertEqual(selected,[r for r in original if r['source_count']!=5])
+        self.assertEqual(active_rows(original,[]),original)
+        with self.assertRaises(ValueError):active_rows(original,[6])
+
     def test_only_two_newly_authorized_shared_cards(self):
         for gpu in range(8):
             self.assertTrue(may_launch(gpu,0,22000))

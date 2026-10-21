@@ -16,6 +16,11 @@ def may_launch(gpu,foreign_count,free_mib):
     return gpu in (2,3) and foreign_count==1 and free_mib>=12000
 
 
+def active_rows(rows,excluded):
+    if set(excluded)-{5}:raise ValueError('Only the user-excluded five-source scope may be removed')
+    return [r for r in rows if r['source_count'] not in excluded]
+
+
 def worker_identity(argv,cwd,rt):
     prefix=[rt['python'],'-u','-m','experiments.phase1_dg_sourcecount6.driver','worker','--config']
     if argv[:6]!=prefix or len(argv)!=7 or str(cwd)!=rt['release_root']:return None
@@ -43,12 +48,15 @@ def discover(rt,lookup):
 
 def adopt(c,control):
     rt=c['runtime'];root=Path(rt['run_root']);old=c['old_dispatcher_pid']
-    expected=[rt['python'],'-u','-m','experiments.phase1_dg_sourcecount6.driver','dispatch','--config',rt['runtime_file']]
+    expected=c.get('old_owner_argv') or [rt['python'],'-u','-m','experiments.phase1_dg_sourcecount6.driver','dispatch','--config',rt['runtime_file']]
+    expected_cwd=c.get('old_owner_cwd',rt['release_root'])
     proc=Path('/proc')/str(old)
     actual=[x.decode() for x in (proc/'cmdline').read_bytes().split(b'\0') if x]
-    if actual!=expected or os.readlink(str(proc/'cwd'))!=rt['release_root']:
+    if actual!=expected or os.readlink(str(proc/'cwd'))!=expected_cwd:
         raise ValueError('Queue-owner identity mismatch; no process touched')
     plan=read(rt['matrix']);lookup={r['row_id']:r for r in plan['rows']}
+    required=active_rows(plan['rows'],c.get('excluded_source_counts',[]))
+    required_ids={r['row_id'] for r in required}
     stopped=False;terminated=False
     try:
         os.kill(old,signal.SIGSTOP);stopped=True
@@ -63,7 +71,7 @@ def adopt(c,control):
         write(control/'takeover_snapshot.json',dict(old_state=state,adopted={str(g):dict(pid=x['pid'],row_id=x['row']['row_id']) for g,x in active.items()}))
         os.kill(old,signal.SIGTERM);terminated=True;os.kill(old,signal.SIGCONT)
         for _ in range(100):
-            if not process_alive(old,rt['release_root']):break
+            if not process_alive(old,expected_cwd):break
             time.sleep(.05)
         else:raise RuntimeError('Old queue still alive; no new rows launched')
     finally:
@@ -85,13 +93,18 @@ def adopt(c,control):
             d=read(done)
             if d['row_id']!=rid or d['status']!='ANALYZED':raise ValueError('Invalid existing row closure')
             state['rows'].setdefault(rid,{})['status']='ANALYZED'
+        elif rid not in required_ids:
+            state['rows'].setdefault(rid,{}).update(status='SKIPPED_USER',
+                reason='five-source results already exist; no new five-source work requested')
         elif rid in state['rows'] or (root/rid).exists():
             entry=state['rows'].setdefault(rid,{})
             logfile=entry.get('log',str(Path(rt['log_root'])/(rid+'.log')))
             fp=failure_fingerprint(logfile,rid);entry.update(status='FAILED',failure=fp,log=logfile);failures[fp]+=1
     pending=[r for r in plan['rows'] if r['row_id'] not in state['rows']]
     state.update(pid=os.getpid(),cwd=str(control),previous_dispatcher_pid=old,controller_commit=c['control_commit'],
-        worker_code_commit=rt['code_commit'],shared_gpus=[2,3],status='RUNNING',pending_rows=len(pending))
+        worker_code_commit=rt['code_commit'],shared_gpus=[2,3],status='RUNNING',pending_rows=len(pending),
+        excluded_source_counts=c.get('excluded_source_counts',[]),effective_required_rows=len(required),
+        effective_required_row_ids=sorted(required_ids))
     atomic(root/'pipeline_state.json',state)
     return state,active,pending,failures
 
@@ -139,9 +152,13 @@ def run(c):
         if pending or active:time.sleep(30)
     state['status']='PARTIAL' if failures or state.get('unstarted_rows') else 'TRAINING_PREDICTIONS_SCORING_DONE'
     atomic(root/'pipeline_state.json',state)
+    analysis_runtime=dict(rt,excluded_source_counts=c.get('excluded_source_counts',[]))
+    analysis_config=control/'analysis_runtime.json';write(analysis_config,analysis_runtime)
+    analysis_env=environment(rt)
+    analysis_env['PYTHONPATH']=str(control)+os.pathsep+analysis_env['PYTHONPATH']
     with (control/'analysis.log').open('x') as log:
-        subprocess.run([rt['python'],'-u','-m','experiments.phase1_dg_sourcecount6.driver','analysis','--config',rt['runtime_file']],
-            cwd=rt['release_root'],env=environment(rt),stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,check=True)
+        subprocess.run([rt['python'],'-u','-m','experiments.phase1_dg_sourcecount6.driver','analysis','--config',str(analysis_config)],
+            cwd=control,env=analysis_env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,check=True)
 
 
 if __name__=='__main__':
