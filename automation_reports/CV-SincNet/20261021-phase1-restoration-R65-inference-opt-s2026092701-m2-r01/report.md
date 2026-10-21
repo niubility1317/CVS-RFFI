@@ -1,6 +1,6 @@
 # R65 原权重推理优化
 
-状态：LOCAL_VERIFIED，尚未发布；没有新正式识别结论。
+状态：VERIFIED / WAITING_GPU_CAPACITY。归档一致、远端编译、控制器/两worker的PID/CWD/命令/CUDA/CPU线程和日志增长均已核实。当前等待GPU2/3容量，真实2Ls/F50 GPU smoke及新七景结果尚未产生。
 
 固定用户指定 R65 `prune_after10` 的原273765参数，新增训练/optimizer/TX标签/F优化均0。原checkpoint完整来源沿用原7/63/30物理源契约、源E20/4940冻结，加载时严格核对原R65元数据和共享权重别名。当前是已暴露工程基准的用户指定后续优化，不称独立盲测。
 
