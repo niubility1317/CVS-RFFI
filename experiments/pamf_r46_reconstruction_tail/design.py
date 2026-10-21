@@ -32,3 +32,37 @@ def configuration():
         known_related_work='Existing pamf_hardness_refine uses F-semantic loss and different parents;only the generic tail-aggregation idea is related,no weights/F/semantic loss inherited',
         hypothesis='Worst-source-reconstruction focus may change restoration stability;may chase noise or reduce other views;no recognition/identity/latency gain presumed',
         goal_complete=False)
+
+
+# Runtime plan retains the prototype's scientific constants; observed counters
+# are written by the trainer, never asserted as zero in a trained config.
+from experiments.pamf_r44_pruned_refine import design as parent
+from experiments.pamf_r46_multipoint_fast import design as original
+EPOCHS,UPDATES,BATCH,MICRO=20,4940,256,256
+GPUS=dict(tail_half=3,tail_quarter=2)
+PARAMETERS_BY_ARM={a:273765 for a in ARMS}
+CONTEXT_PARAMETERS_BY_ARM={a:185615 for a in ARMS}
+MODE={a:'R46_original_M35_static_prune_reconstruction_'+a for a in ARMS}
+IS_RETAIN={a:False for a in ARMS}
+TASK={a:False for a in ARMS}
+PARENT_RUN,PARENT_COMMIT,ACTION_RUN=original.PARENT_RUN,original.PARENT_COMMIT,original.ACTION_RUN
+F_RUN,F_SEED,VIEWS,KIND=original.F_RUN,original.F_SEED,original.VIEWS,original.KIND
+MODEL_SEED,DATA_SEED,SCORING_RUN=original.MODEL_SEED,original.DATA_SEED,original.SCORING_RUN
+learning_rate=original.learning_rate
+
+
+def runtime_configuration():
+    cfg=original.configuration()
+    for key in ('max_own_across_R48_R49','healthy_R48_unchanged','throughput_control'):cfg.pop(key,None)
+    prototype=configuration()
+    for key in ('stage','actual_source_epochs','actual_optimizer_updates','real_IQ_reads','GPU_launches'):prototype.pop(key,None)
+    cfg.update(prototype,schema='R46_source_reconstruction_tail_v1',parameters=PARAMETERS_BY_ARM,context_parameters=CONTEXT_PARAMETERS_BY_ARM,
+        GPU=GPUS,max_own_GPU_workers=2,max_own_workers_per_card=1,
+        widths={a:[12,16,28,40] for a in ARMS},context_widths={a:[12,16,28,40] for a in ARMS},spectral_widths={a:[8,12,16,28] for a in ARMS},
+        stage='SOURCE_ONLY_FIXED_BUDGET',objective=prototype['loss'],
+        predecessor_run=base.RUN,predecessor_commit=CONTROL['commit'],predecessor_by_GPU={'3':['final','step_ema'],'2':['late_mean']},
+        authorization='Persistent human goal:performance-first existing U-Net compression optimization;GPU2/3 each1/max2own;all healthy workers untouched',
+        freeze_rule='BothfixedfinalE20/4940;no source selection;automatic source/profile/all7formal then independent truthlast',
+        cost_plan='Same-card G/GplusF B1/B32 matched repeated profile;actual full training/aggregation enqueue/peak/exposures and formal prediction costs;no extra Gforward',
+        target_feedback=False,goal_complete=False)
+    return cfg
