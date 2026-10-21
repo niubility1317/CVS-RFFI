@@ -65,6 +65,7 @@ We compare RIEI~\cite{riei}, DRIFT-v2~\cite{drift}, IB-RFF~\cite{ibrff}, and SDG
 \begin{tabular}{lp{6.2cm}p{7.5cm}}\toprule
 Method & Maximum budget and optimizer & Freeze/native differences\\\midrule
 RIEI & E100; batch 64; SGD $10^{-4}$; momentum 0; constant LR & Final epoch; short 1-D stem; Full has 3 optimizer steps/batch versus 1 for CE; disentanglement weights 1.2/1.2. \\
+DRIFT-v2 & E100; batch 256; Adam $10^{-4}$; weight decay 0 & Final epoch; GRL/center/separation weights 1/0.01/0.02; batch centers; summed squared distance without feature normalization or cap. \\
 IB-RFF & FAN; 2 stages, each at most E200; batch 128; Adam $10^{-3}$ & Source-V minimum NLL per stage; LR factor 0.1, patience 5, floor $10^{-6}$; early-stop patience 10; stage-two HSIC 0.04 (Full) or 0 (CE). \\
 SDG & MACNN-S; E200; batch 32; Adam $10^{-3}$ & Source-V minimum NLL; Full native-view depths 2/1, contrastive weights 1/100. \\
 \bottomrule\end{tabular}\end{table*}

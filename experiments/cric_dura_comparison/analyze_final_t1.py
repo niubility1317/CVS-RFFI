@@ -2,7 +2,7 @@
 import argparse,csv,json,math,statistics
 from pathlib import Path
 from .io import read,write
-from .evaluation import VIEWS
+VIEWS=('clean','practical_high','practical_mid','practical_low_suburban','practical_high_urban','practical_mid_urban','practical_low_urban')
 
 
 def summarize(folder,output,paper):
