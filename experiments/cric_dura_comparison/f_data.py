@@ -74,7 +74,7 @@ def context(c):
     labeled = SourceDataset(root, 'L_s', contract)
     validation = SourceDataset(root, 'V', contract)
     # Disabled U is never opened or iterated, including strict supervised runs.
-    unlabeled = SourceDataset(root, 'U_s', contract) if c['regime'] != 'matched_sat_supervised' and c.get('ablation') != 'F15' else None
+    unlabeled = SourceDataset(root, 'U_s', contract) if c['regime'] != 'matched_sat_supervised' and c.get('ablation') not in ('F15','F20') else None
     train = FixedEpochLoader(labeled, 128, c['model_seed'], drop_last=True)
     unlab = FixedEpochLoader(unlabeled, 256 if c['regime'] == 'native_cric' else 128,
         c['model_seed'], drop_last=False) if unlabeled is not None else None

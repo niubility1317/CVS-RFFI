@@ -10,7 +10,7 @@ from .publish import ROOT,CONNECTION,ssh
 from .plan import make_plan
 from .continuation_setup import G_RUN
 
-RELEASE='20261021-phase1-CRIC-DURA-continuation-r02'
+RELEASE='20261021-phase1-T1-DURA-complete-r01'
 
 REMOTE=r'''
 import hashlib,json,os,subprocess,tarfile
@@ -45,7 +45,7 @@ def publish(repo,output):
     commit=git('rev-parse','HEAD').decode().strip();branch=git('branch','--show-current').decode().strip()
     if git('ls-remote','origin','refs/heads/'+branch).decode().split()[0]!=commit:raise ValueError('Upstream OID differs')
     source=json.loads((output/'runtime.json').read_text(encoding='utf-8'));p=source['project']
-    rt=dict(project=p,main_run=source['run_id'],release_root=p+'/releases/'+RELEASE,run_root=p+'/runs/'+G_RUN,
+    rt=dict(project=p,main_run=make_plan()['run_id'],release_root=p+'/releases/'+RELEASE,run_root=p+'/runs/'+G_RUN,final_t1=True,
         source_release=source['release_root'],source_runtime=source['release_root']+'/runtime.json',
         source_state=source['run_root']+'/source_pipeline_state.json',source_run_root=source['run_root'],source_log_root=source['log_root'],source_commit=source['code_commit'],
         runtime_file=p+'/releases/'+RELEASE+'/runtime.json',control_root=p+'/runs/'+G_RUN+'/control-r01',

@@ -33,3 +33,5 @@ Same authorized CRIC+DURA matrix; source smoke no_grad compatibility recovery, r
 ## F源队列已核实启动
 
 **VERIFIED / RUNNING**：实际源代码1172e25b；8张GPU各1条本任务，checkpoint/source检查PASS，首轮222步与日志增长已观察。当前首批8条为F机制消融，150主F位于同一队列，三seed均已登记。其他健康任务保留。G35完整谱系、G21学生、自动228行七景预测/评分与独占时延为独立后续阶段，尚未以本次F启动宣称完成。
+
+**方法范围纠正**：本run为误选的旧33L17U配方。只撤下179个未启动行；8健康行和已完成产物保留为历史对照。最终T1-E5013L37U另用不可覆盖run，不把旧结果改标T1。

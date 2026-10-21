@@ -2,23 +2,30 @@
   "schema": "pamf_selected_complete_method_v1",
   "name": "PAMF (CRIC + DURA v1.0)",
   "selected_on": "2026-10-21",
-  "scope": "Current chat comparison; preserve SARD/T1 and other owners' runs separately",
+  "scope": "Final PAMF selected by user: T1-E50 identification + DURA v1.0; supersedes mistaken old33L17U selection in this comparison",
   "F": {
     "name": "Cross-Receiver Identity Contrastive Learning",
     "chinese_name": "跨接收机身份对比学习",
-    "id": "cric_e50_33L17U",
-    "run": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
-    "rows": ["CROSS_RX-s2026092701", "CROSS_RX-s2026092702", "CROSS_RX-s2026092703"],
-    "commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+    "id": "pamf_t1_e50",
+    "run": "20261021-phase1-T1-AsKL0-e30plus20-m3-r01",
+    "rows": [
+      "E30PLUS20-s2026092701 (existing original single-seed run)",
+      "E30PLUS20-s2026092702",
+      "E30PLUS20-s2026092703"
+    ],
+    "commit": "971fd16ac342f3523c4e3112f437e678f32ca459",
     "epochs": 50,
-    "supervised_only_epochs": 33,
-    "joint_L_U_epochs": 17,
+    "supervised_only_epochs": 13,
+    "joint_L_U_epochs": 37,
     "updates": 11100,
     "steps_per_epoch": 222,
     "architecture": "SIG_TIME_X3; time/frequency/PA/reference residual fusion; centered Sinc and unit-aware updates; native joint cosine head",
-    "supervision": "Two actual ordinary-augmented L RDrop forwards; LS0.01; no As branch",
+    "supervision": "Six real labeled forwards: .5 RDord128 + .25 RDord64 + .25 CEpair_As64(KL0) + .25 RDraw128; same IQ within pair; total CE dose1.25; LS0.01",
     "contrast": {
-      "levels": ["time_down", "t2.pool"],
+      "levels": [
+        "time_down",
+        "t2.pool"
+      ],
       "positive": "same TX, different physical RX",
       "denominator": "positive set plus different TX; exclude same TX/same RX",
       "temperature": 0.2,
@@ -26,12 +33,32 @@
       "warm_epochs": 5,
       "ramp_epochs": 10,
       "extra_network_forwards": 0,
-      "single_source": "No eligible cross-RX positives; finite zero loss and report zero anchor coverage"
+      "single_source": "No eligible cross-RX positives; finite zero loss and report zero anchor coverage",
+      "scope": "Only original ordinary128 shallow/middle maps, two ordinary forwards; cumulative epoch warm/ramp"
     },
-    "SSL": "Original own EMA and original U gates/entropy; not ordinary PL",
-    "satellite_training": false,
+    "SSL": "Original ownEMA0.999 + rx/day quantile confidence + batch-neighbor + strong-agreement + PL0.16 + entropy0.01. User-fixed native exception, not ordinaryPL.",
+    "satellite_training": "Native final T1 As64 residual practical from raw source L, no As KL. Matched supervision/plainPL additionally use default concat satCE0.68; report recipe difference.",
     "default_head": "Jointly trained original cosine head; never fit or replace after freezing",
-    "deployment": "Single frozen student; no EMA, RDrop second pass, contrast loss or U gate execution"
+    "deployment": "Single frozen student; no EMA, RDrop second pass, contrast loss or U gate execution",
+    "definition": "configs/pamf_final_t1_e50.json in standard_ce_baselines_20261010",
+    "segments": [
+      {
+        "epochs": 20,
+        "L_only": 13,
+        "L_U": 7
+      },
+      {
+        "epochs": 10,
+        "L_only": 0,
+        "L_U": 10
+      },
+      {
+        "epochs": 20,
+        "L_only": 0,
+        "L_U": 20
+      }
+    ],
+    "continuation": "Strict own previous student AND own EMA; reset AdamW/cos20/cos10/cos20 and temporal state. New data contracts train every segment from matching scratch ancestry."
   },
   "G": {
     "frozen_definition": "experiments/pamf_stage2_inference/frozen_version.json",
@@ -41,7 +68,13 @@
     "prior_calls": 2,
     "CG_per_stage": 2,
     "FFT_IFFT_calls_G_only": 27,
-    "runtime": {"reuse": true, "graph": true, "native": false, "precision": "FP32", "TF32": false},
+    "runtime": {
+      "reuse": true,
+      "graph": true,
+      "native": false,
+      "precision": "FP32",
+      "TF32": false
+    },
     "training": "TX-label-free, F-free source L/U simulated IQ pairs; all ancestors must match the actual source contract"
   },
   "existing_evidence": {
@@ -50,9 +83,11 @@
     "G_seed_count": 1,
     "samples_per_view": 168000,
     "views": 7,
-    "uncertainty": "F-seed variation conditional on one frozen G; not three independently trained full systems"
+    "uncertainty": "F-seed variation conditional on one frozen G; not three independently trained full systems",
+    "scope": "HISTORICAL old33L17U noAs F + DURA only; MUST NOT label as final T1+DURA"
   },
   "contract_policy": "New RX/day/TX/role splits require exact-contract F and full G ancestry; no silent old-weight fallback",
   "prospective_plan": "experiments/cric_dura_comparison/plan.py",
-  "design": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md"
+  "design": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md",
+  "final_T1_evidence": "Three existing exact-contract final T1 checkpoints verified; new paired T1+DURA seven-view predictions/scores pending current immutable run"
 }

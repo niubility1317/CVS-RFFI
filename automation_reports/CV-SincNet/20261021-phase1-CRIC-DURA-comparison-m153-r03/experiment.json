@@ -399,7 +399,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F0-matched_sat_supervised-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F0-matched_sat_supervised-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -474,7 +474,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F0-matched_sat_supervised-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F0-matched_sat_supervised-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -549,7 +549,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F0-matched_sat_supervised-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F0-matched_sat_supervised-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -624,7 +624,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F0-matched_sat_plain_pl-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F0-matched_sat_plain_pl-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -699,7 +699,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F0-matched_sat_plain_pl-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F0-matched_sat_plain_pl-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -774,7 +774,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F0-matched_sat_plain_pl-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F0-matched_sat_plain_pl-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -924,7 +924,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F1-native_cric-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F1-native_cric-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -999,7 +999,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F1-native_cric-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F1-native_cric-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -1074,7 +1074,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F1-matched_sat_supervised-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F1-matched_sat_supervised-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -1149,7 +1149,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F1-matched_sat_supervised-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F1-matched_sat_supervised-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -1224,7 +1224,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F1-matched_sat_supervised-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F1-matched_sat_supervised-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -1299,7 +1299,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F1-matched_sat_plain_pl-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F1-matched_sat_plain_pl-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -1374,7 +1374,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F1-matched_sat_plain_pl-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F1-matched_sat_plain_pl-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -1449,7 +1449,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F1-matched_sat_plain_pl-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F1-matched_sat_plain_pl-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -1524,7 +1524,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F2-native_cric-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F2-native_cric-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -1599,7 +1599,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F2-native_cric-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F2-native_cric-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -1674,7 +1674,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F2-native_cric-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F2-native_cric-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -1749,7 +1749,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F2-matched_sat_supervised-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F2-matched_sat_supervised-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -1824,7 +1824,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F2-matched_sat_supervised-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F2-matched_sat_supervised-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -1899,7 +1899,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F2-matched_sat_supervised-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F2-matched_sat_supervised-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -1974,7 +1974,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F2-matched_sat_plain_pl-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F2-matched_sat_plain_pl-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -2049,7 +2049,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F2-matched_sat_plain_pl-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F2-matched_sat_plain_pl-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -2124,7 +2124,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F2-matched_sat_plain_pl-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/F2-matched_sat_plain_pl-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -2199,7 +2199,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/chrono-native_cric-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/chrono-native_cric-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -2274,7 +2274,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/chrono-native_cric-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/chrono-native_cric-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -2349,7 +2349,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/chrono-native_cric-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/chrono-native_cric-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -2424,7 +2424,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/chrono-matched_sat_supervised-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/chrono-matched_sat_supervised-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -2499,7 +2499,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/chrono-matched_sat_supervised-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/chrono-matched_sat_supervised-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -2574,7 +2574,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/chrono-matched_sat_supervised-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/chrono-matched_sat_supervised-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -2649,7 +2649,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/chrono-matched_sat_plain_pl-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/chrono-matched_sat_plain_pl-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -2724,7 +2724,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/chrono-matched_sat_plain_pl-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/chrono-matched_sat_plain_pl-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -2799,7 +2799,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/chrono-matched_sat_plain_pl-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/chrono-matched_sat_plain_pl-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -2894,7 +2894,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/ManyRx-native_cric-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/ManyRx-native_cric-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -2989,7 +2989,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/ManyRx-native_cric-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/ManyRx-native_cric-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -3084,7 +3084,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/ManyRx-native_cric-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/ManyRx-native_cric-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -3179,7 +3179,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/ManyRx-matched_sat_supervised-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/ManyRx-matched_sat_supervised-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -3274,7 +3274,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/ManyRx-matched_sat_supervised-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/ManyRx-matched_sat_supervised-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -3369,7 +3369,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/ManyRx-matched_sat_supervised-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/ManyRx-matched_sat_supervised-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -3464,7 +3464,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/ManyRx-matched_sat_plain_pl-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/ManyRx-matched_sat_plain_pl-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -3559,7 +3559,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/ManyRx-matched_sat_plain_pl-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/ManyRx-matched_sat_plain_pl-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -3654,7 +3654,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/ManyRx-matched_sat_plain_pl-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/ManyRx-matched_sat_plain_pl-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -3729,7 +3729,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label01-native_cric-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label01-native_cric-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -3804,7 +3804,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label01-native_cric-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label01-native_cric-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -3879,7 +3879,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label01-native_cric-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label01-native_cric-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -3954,7 +3954,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label01-matched_sat_supervised-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label01-matched_sat_supervised-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -4029,7 +4029,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label01-matched_sat_supervised-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label01-matched_sat_supervised-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -4104,7 +4104,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label01-matched_sat_supervised-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label01-matched_sat_supervised-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -4179,7 +4179,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label01-matched_sat_plain_pl-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label01-matched_sat_plain_pl-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -4254,7 +4254,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label01-matched_sat_plain_pl-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label01-matched_sat_plain_pl-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -4329,7 +4329,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label01-matched_sat_plain_pl-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label01-matched_sat_plain_pl-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -4404,7 +4404,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label05-native_cric-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label05-native_cric-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -4479,7 +4479,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label05-native_cric-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label05-native_cric-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -4554,7 +4554,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label05-native_cric-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label05-native_cric-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -4629,7 +4629,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label05-matched_sat_supervised-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label05-matched_sat_supervised-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -4704,7 +4704,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label05-matched_sat_supervised-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label05-matched_sat_supervised-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -4779,7 +4779,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label05-matched_sat_supervised-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label05-matched_sat_supervised-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -4854,7 +4854,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label05-matched_sat_plain_pl-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label05-matched_sat_plain_pl-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -4929,7 +4929,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label05-matched_sat_plain_pl-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label05-matched_sat_plain_pl-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -5004,7 +5004,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label05-matched_sat_plain_pl-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/label05-matched_sat_plain_pl-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -5072,7 +5072,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-natural-native_cric-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-natural-native_cric-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -5140,7 +5140,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-natural-native_cric-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-natural-native_cric-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -5208,7 +5208,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-natural-native_cric-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-natural-native_cric-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -5276,7 +5276,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-natural-matched_sat_supervised-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-natural-matched_sat_supervised-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -5344,7 +5344,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-natural-matched_sat_supervised-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-natural-matched_sat_supervised-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -5412,7 +5412,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-natural-matched_sat_supervised-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-natural-matched_sat_supervised-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -5480,7 +5480,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-natural-matched_sat_plain_pl-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-natural-matched_sat_plain_pl-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -5548,7 +5548,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-natural-matched_sat_plain_pl-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-natural-matched_sat_plain_pl-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -5616,7 +5616,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-natural-matched_sat_plain_pl-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-natural-matched_sat_plain_pl-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -5684,7 +5684,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-fixed-native_cric-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-fixed-native_cric-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -5752,7 +5752,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-fixed-native_cric-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-fixed-native_cric-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -5820,7 +5820,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-fixed-native_cric-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-fixed-native_cric-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -5888,7 +5888,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-fixed-matched_sat_supervised-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-fixed-matched_sat_supervised-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -5956,7 +5956,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-fixed-matched_sat_supervised-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-fixed-matched_sat_supervised-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -6024,7 +6024,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-fixed-matched_sat_supervised-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-fixed-matched_sat_supervised-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -6092,7 +6092,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-fixed-matched_sat_plain_pl-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-fixed-matched_sat_plain_pl-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -6160,7 +6160,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-fixed-matched_sat_plain_pl-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-fixed-matched_sat_plain_pl-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -6228,7 +6228,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-fixed-matched_sat_plain_pl-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m1-fixed-matched_sat_plain_pl-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -6297,7 +6297,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-natural-native_cric-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-natural-native_cric-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -6366,7 +6366,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-natural-native_cric-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-natural-native_cric-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -6435,7 +6435,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-natural-native_cric-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-natural-native_cric-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -6504,7 +6504,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-natural-matched_sat_supervised-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-natural-matched_sat_supervised-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -6573,7 +6573,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-natural-matched_sat_supervised-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-natural-matched_sat_supervised-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -6642,7 +6642,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-natural-matched_sat_supervised-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-natural-matched_sat_supervised-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -6711,7 +6711,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-natural-matched_sat_plain_pl-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-natural-matched_sat_plain_pl-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -6780,7 +6780,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-natural-matched_sat_plain_pl-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-natural-matched_sat_plain_pl-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -6849,7 +6849,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-natural-matched_sat_plain_pl-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-natural-matched_sat_plain_pl-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -6918,7 +6918,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-fixed-native_cric-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-fixed-native_cric-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -6987,7 +6987,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-fixed-native_cric-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-fixed-native_cric-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -7056,7 +7056,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-fixed-native_cric-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-fixed-native_cric-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -7125,7 +7125,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-fixed-matched_sat_supervised-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-fixed-matched_sat_supervised-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -7194,7 +7194,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-fixed-matched_sat_supervised-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-fixed-matched_sat_supervised-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -7263,7 +7263,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-fixed-matched_sat_supervised-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-fixed-matched_sat_supervised-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -7332,7 +7332,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-fixed-matched_sat_plain_pl-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-fixed-matched_sat_plain_pl-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -7401,7 +7401,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-fixed-matched_sat_plain_pl-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-fixed-matched_sat_plain_pl-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -7470,7 +7470,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-fixed-matched_sat_plain_pl-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m2-fixed-matched_sat_plain_pl-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -7540,7 +7540,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-natural-native_cric-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-natural-native_cric-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -7610,7 +7610,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-natural-native_cric-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-natural-native_cric-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -7680,7 +7680,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-natural-native_cric-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-natural-native_cric-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -7750,7 +7750,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-natural-matched_sat_supervised-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-natural-matched_sat_supervised-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -7820,7 +7820,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-natural-matched_sat_supervised-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-natural-matched_sat_supervised-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -7890,7 +7890,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-natural-matched_sat_supervised-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-natural-matched_sat_supervised-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -7960,7 +7960,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-natural-matched_sat_plain_pl-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-natural-matched_sat_plain_pl-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -8030,7 +8030,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-natural-matched_sat_plain_pl-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-natural-matched_sat_plain_pl-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -8100,7 +8100,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-natural-matched_sat_plain_pl-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-natural-matched_sat_plain_pl-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -8170,7 +8170,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-fixed-native_cric-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-fixed-native_cric-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -8240,7 +8240,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-fixed-native_cric-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-fixed-native_cric-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -8310,7 +8310,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-fixed-native_cric-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-fixed-native_cric-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -8380,7 +8380,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-fixed-matched_sat_supervised-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-fixed-matched_sat_supervised-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -8450,7 +8450,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-fixed-matched_sat_supervised-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-fixed-matched_sat_supervised-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -8520,7 +8520,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-fixed-matched_sat_supervised-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-fixed-matched_sat_supervised-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -8590,7 +8590,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-fixed-matched_sat_plain_pl-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-fixed-matched_sat_plain_pl-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -8660,7 +8660,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-fixed-matched_sat_plain_pl-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-fixed-matched_sat_plain_pl-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -8730,7 +8730,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-fixed-matched_sat_plain_pl-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m3-fixed-matched_sat_plain_pl-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -8801,7 +8801,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-natural-native_cric-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-natural-native_cric-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -8872,7 +8872,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-natural-native_cric-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-natural-native_cric-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -8943,7 +8943,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-natural-native_cric-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-natural-native_cric-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -9014,7 +9014,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-natural-matched_sat_supervised-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-natural-matched_sat_supervised-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -9085,7 +9085,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-natural-matched_sat_supervised-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-natural-matched_sat_supervised-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -9156,7 +9156,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-natural-matched_sat_supervised-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-natural-matched_sat_supervised-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -9227,7 +9227,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-natural-matched_sat_plain_pl-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-natural-matched_sat_plain_pl-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -9298,7 +9298,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-natural-matched_sat_plain_pl-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-natural-matched_sat_plain_pl-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -9369,7 +9369,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-natural-matched_sat_plain_pl-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-natural-matched_sat_plain_pl-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -9440,7 +9440,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-fixed-native_cric-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-fixed-native_cric-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -9511,7 +9511,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-fixed-native_cric-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-fixed-native_cric-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -9582,7 +9582,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-fixed-native_cric-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-fixed-native_cric-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -9653,7 +9653,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-fixed-matched_sat_supervised-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-fixed-matched_sat_supervised-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -9724,7 +9724,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-fixed-matched_sat_supervised-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-fixed-matched_sat_supervised-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -9795,7 +9795,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-fixed-matched_sat_supervised-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-fixed-matched_sat_supervised-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -9866,7 +9866,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-fixed-matched_sat_plain_pl-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-fixed-matched_sat_plain_pl-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -9937,7 +9937,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-fixed-matched_sat_plain_pl-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-fixed-matched_sat_plain_pl-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -10008,7 +10008,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-fixed-matched_sat_plain_pl-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m4-fixed-matched_sat_plain_pl-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -10081,7 +10081,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-natural-native_cric-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-natural-native_cric-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -10154,7 +10154,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-natural-native_cric-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-natural-native_cric-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -10227,7 +10227,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-natural-native_cric-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-natural-native_cric-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -10300,7 +10300,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-natural-matched_sat_supervised-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-natural-matched_sat_supervised-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -10373,7 +10373,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-natural-matched_sat_supervised-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-natural-matched_sat_supervised-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -10446,7 +10446,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-natural-matched_sat_supervised-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-natural-matched_sat_supervised-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -10519,7 +10519,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-natural-matched_sat_plain_pl-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-natural-matched_sat_plain_pl-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -10592,7 +10592,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-natural-matched_sat_plain_pl-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-natural-matched_sat_plain_pl-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -10665,7 +10665,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-natural-matched_sat_plain_pl-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-natural-matched_sat_plain_pl-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -10738,7 +10738,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-fixed-native_cric-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-fixed-native_cric-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -10811,7 +10811,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-fixed-native_cric-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-fixed-native_cric-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -10884,7 +10884,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-fixed-native_cric-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-fixed-native_cric-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -10957,7 +10957,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-fixed-matched_sat_supervised-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-fixed-matched_sat_supervised-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -11030,7 +11030,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-fixed-matched_sat_supervised-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-fixed-matched_sat_supervised-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -11103,7 +11103,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-fixed-matched_sat_supervised-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-fixed-matched_sat_supervised-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -11176,7 +11176,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-fixed-matched_sat_plain_pl-s2026092701",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-fixed-matched_sat_plain_pl-s2026092701.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -11249,7 +11249,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-fixed-matched_sat_plain_pl-s2026092702",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-fixed-matched_sat_plain_pl-s2026092702.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -11322,7 +11322,7 @@
       "output_root": "runs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-fixed-matched_sat_plain_pl-s2026092703",
       "log_path": "logs/20261021-phase1-CRIC-DURA-comparison-m153-r03/m6-fixed-matched_sat_plain_pl-s2026092703.log",
       "command": "python -u -m experiments.cric_dura_comparison.source_queue worker --config <source config>",
-      "launch_status": "SOURCE_READY_NOT_LAUNCHED",
+      "launch_status": "SKIPPED_SUPERSEDED_FINAL_T1",
       "expected_artifacts": [
         "source/freeze",
         "seven-view predictions",
@@ -19030,5 +19030,11 @@
     "no_target_feedback": true,
     "implementation_status": "Source adapter repaired for legacy class-map schema; G/prediction/timing separate forthcoming stages"
   },
-  "registered_at": "2026-10-21T12:08:01+00:00"
+  "registered_at": "2026-10-21T12:08:01+00:00",
+  "method_scope_correction": {
+    "reason": "Final T1-E50 13L+37U supersedes mistaken old CRIC 33L+17U; preserve all started rows as historical controls",
+    "replacement": "20261021-phase1-T1-DURA-comparison-m153-r01",
+    "unstarted_status": "SKIPPED_SUPERSEDED_FINAL_T1",
+    "healthy_started_preserved": true
+  }
 }

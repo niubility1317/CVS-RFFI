@@ -46,6 +46,21 @@ def arguments(c, device):
     a.lambda_sat_cls = a.lambda_sat_cons = 0.
     a.sat_training_mode = 'disabled'
     a.use_sat_consistency = False
+    if c.get('method_id')=='pamf_t1_e50':
+        a.epochs=c.get('segment_epochs',20)
+        a.label_epochs=13 if not c.get('step_offset',0) else 0
+        a.pseudo_epochs=a.epochs-a.label_epochs
+        a.use_unlabeled=a.use_ema_teacher=c['regime']=='native_cric' and c.get('ablation') not in ('F15','F20','F21')
+        a.lambda_u=.16 if a.use_unlabeled else 0.
+        a.lambda_ent=.01 if a.use_unlabeled and c.get('ablation')!='F14' else 0.
+        if c.get('ablation')=='F11':a.use_ema_teacher=False
+        if not a.use_unlabeled:a.label_epochs,a.pseudo_epochs=a.epochs,0
+        if c.get('ablation')=='F15':a.label_smoothing=0.
+        a.from_scratch=not bool(c.get('parent_source'))
+        a.a1_scratch_only=a.from_scratch
+        a.baseline_ckpt=str(Path(c['parent_source'])/'final_ssdg.pth') if c.get('parent_source') else ''
+        a.teacher_ckpt=''
+        a.lambda_dom=0.
     return a
 
 
@@ -77,6 +92,14 @@ def train(c, device='cuda:0', smoke_steps=None):
     from .f_optimizer import native_scope
     ctx = context(c)
     a = arguments(c, device)
+    is_t1=c.get('method_id')=='pamf_t1_e50'
+    parent=None
+    if c.get('parent_source'):
+        previous=read(Path(c['parent_source'])/'complete.json')
+        if not is_t1 or previous['source_contract']!=c['source_contract'] or previous['config']['model_seed']!=c['model_seed'] or previous['config']['ablation']!=c.get('ablation'):
+            raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH')
+        parent=torch.load(Path(c['parent_source'])/'final_ssdg.pth',map_location='cpu',weights_only=False)
+        if previous['target_access'] or parent.get('ema_model') is None and a.use_ema_teacher:raise ValueError('Own segment EMA provenance missing')
     if smoke_steps is not None:
         if device != 'cpu' or smoke_steps != 2:
             raise ValueError('Only the bounded local CPU integration smoke may shorten execution')
@@ -95,6 +118,27 @@ def train(c, device='cuda:0', smoke_steps=None):
     start = time.perf_counter()
     with class_dimension(c), installed(original_config(c['model_seed'])) as native:
         saved = {name: getattr(native, name) for name in ('_build_ssdg_wisig_data', 'build_baseline_model', '_detach_log_mapping', '_write_ssdg_epoch_telemetry', '_evaluate_zid_leakage_probes', '_muse_epoch_pairs')}
+        saved.update({name:getattr(native,name) for name in ('deepcopy','configure_augmentor_for_epoch','load_checkpoint','_resolve_phase1_terminal_status')})
+        if is_t1:
+            def copied(value,*args,**kwargs):
+                result=saved['deepcopy'](value,*args,**kwargs)
+                if value is getattr(owner,'model',None) and parent is not None and a.use_ema_teacher:
+                    result.load_state_dict(parent['ema_model'],strict=True)
+                return result
+            native.deepcopy=copied
+            def own_load(path,dev):
+                if a.baseline_ckpt and str(path)==a.baseline_ckpt:return parent
+                if Path(path).parent!=out:raise ValueError('Unexpected external checkpoint read')
+                return saved['load_checkpoint'](path,dev)
+            native.load_checkpoint=own_load
+            if c.get('step_offset',0):
+                from types import SimpleNamespace
+                prior=SimpleNamespace(**parent['args']);prior.epochs=20;prior.label_epochs=13;prior.pseudo_epochs=7
+                native.configure_augmentor_for_epoch=lambda obj,cfg,epoch,args:saved['configure_augmentor_for_epoch'](obj,cfg,13,prior)
+            def terminal(**kwargs):
+                kwargs['mechanism_gates_required']=False
+                return saved['_resolve_phase1_terminal_status'](**kwargs)
+            native._resolve_phase1_terminal_status=terminal
         def pairs(labeled, unlabeled, **kwargs):
             # Fixed L has exactly 222 steps already. A supervised row must not
             # open a dummy U dataset just to supply the old U-derived length.
@@ -105,8 +149,12 @@ def train(c, device='cuda:0', smoke_steps=None):
             write(out / 'source_contract.json', ctx['source_contract'])
             return ctx
         def model(args, dev):
-            value = install(saved['build_baseline_model'](args, dev), c).to(dev)
-            if c['regime'] == 'matched_sat_plain_pl':
+            installer=install
+            if is_t1:
+                from .t1_model import install as installer
+            value = installer(saved['build_baseline_model'](args, dev), c).to(dev)
+            if parent is not None:value.load_state_dict(parent['model'],strict=True)
+            if c['regime'] == 'matched_sat_plain_pl' or c.get('ablation')=='F21':
                 value._cd_U_loader = ctx['unlabeled_loader']
                 value._cd_U_iter = iter(ctx['unlabeled_loader'])
             owner.model = value
@@ -139,6 +187,7 @@ def train(c, device='cuda:0', smoke_steps=None):
             saved['_write_ssdg_epoch_telemetry'](cp, jp, rows)
             m = owner.model
             write(out / 'progress.json', dict(epoch=len(rows), updates=state['steps'],
+                cumulative_epoch=len(rows)+c.get('epoch_offset',0),cumulative_updates=state['steps']+c.get('step_offset',0),
                 CRIC_calls=m._cd_calls, extra_L=m._cd_extra_L,
                 PL_seen=m._cd_U_seen, PL_accepted=m._cd_U_accepted,
                 L_actual=ctx['train_loader'].actual_examples,
@@ -160,11 +209,11 @@ def train(c, device='cuda:0', smoke_steps=None):
                 setattr(native, name, value)
             metrics.close()
     value = torch.load(out / 'final_ssdg.pth', map_location='cpu', weights_only=False)
-    expected_steps, expected_epoch = (4, 2) if smoke_steps is not None else (11100, 50)
+    expected_steps, expected_epoch = (4, 2) if smoke_steps is not None else (a.epochs*222, a.epochs)
     if state['steps'] != expected_steps or owner.model._cd_calls != expected_steps or value['epoch'] != expected_epoch or value['a1_ema_successful_updates'] != expected_steps:
         raise ValueError('Complete fixed F budget missing')
     write(out / 'complete.json', dict(status='LOCAL_SYNTHETIC_SMOKE_ONLY' if smoke_steps is not None else 'SOURCE_FROZEN', epoch=expected_epoch, updates=expected_steps,
         model_calls=owner.model._cd_calls, source_contract=c['source_contract'], config=c,
         source_roles=ctx['source_contract']['counts'], checkpoint='final_ssdg.pth',
-        initialization='scratch', ancestors=[], head_fit_updates=0, U_truth_read=False,
+        initialization='own_previous_segment' if parent is not None else 'scratch', ancestors=[c['parent_source']] if parent is not None else [], head_fit_updates=0, U_truth_read=False,
         target_access=False, seconds=time.perf_counter() - start))

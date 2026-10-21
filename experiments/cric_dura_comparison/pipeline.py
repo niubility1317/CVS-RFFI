@@ -47,11 +47,11 @@ def run(rt):
     jobs=read(rt['jobs'])
     if len({j['id'] for j in jobs})!=len(jobs):raise ValueError('Duplicate continuation jobs')
     previous=read(rt['source_state'])
-    adopted={k:v for k,v in previous['rows'].items() if v['status']=='RUNNING' and alive(v['pid'])}
+    adopted={} if rt.get('final_t1') else {k:v for k,v in previous['rows'].items() if v['status']=='RUNNING' and alive(v['pid'])}
     pid=previous['pid'];process=Path('/proc')/str(pid)
     # Only this source dispatcher is replaced. Its detached workers continue
     # unchanged, and are adopted from the exact row/config mapping below.
-    if alive(pid):
+    if alive(pid) and not rt.get('final_t1'):
         argv=(process/'cmdline').read_bytes().replace(bytes([0]),b' ').decode()
         if os.readlink(process/'cwd')!=rt['source_release'] or 'source_queue dispatch' not in argv or rt['source_runtime'] not in argv:
             raise ValueError('Source controller identity mismatch; no process stopped')
@@ -64,6 +64,7 @@ def run(rt):
     # Reconcile the stopped dispatcher's pre-CUDA/state-write gap from exact
     # config paths. Detached healthy workers are never stopped or relaunched.
     for proc in Path('/proc').iterdir():
+        if rt.get('final_t1'):break
         if not proc.name.isdigit() or not alive(int(proc.name)):continue
         try:
             args=proc.joinpath('cmdline').read_bytes().split(bytes([0]))
@@ -100,7 +101,7 @@ def run(rt):
         if cfg not in command:raise ValueError('Adopted worker config mismatch')
         active[item['gpu']]=(key,item['pid'])
         state['jobs'][key]=dict(status='RUNNING',pid=item['pid'],gpu=item['gpu'],adopted=True,log=item['log'])
-    write(Path(rt['source_run_root'])/'continuation_owner.json',dict(pid=os.getpid(),control_root=str(root),runtime=rt['runtime_file'],source_dispatcher_stopped=pid,healthy_workers_adopted=list(adopted)))
+    if not rt.get('final_t1'):write(Path(rt['source_run_root'])/'continuation_owner.json',dict(pid=os.getpid(),control_root=str(root),runtime=rt['runtime_file'],source_dispatcher_stopped=pid,healthy_workers_adopted=list(adopted)))
     write(root/'adoption.json',dict(status='ADOPTED_HEALTHY_SOURCE_WORKERS',source_pid=pid,workers=adopted))
     for job in jobs:
         if job['id'] not in state['jobs']:
@@ -180,7 +181,7 @@ def run(rt):
 def launch(rt,job,gpu):
     path=Path(rt['control_root'])/'logs'/(job['log_name']+'.log');path.parent.mkdir(exist_ok=True)
     log=path.open('x')
-    if job['kind']=='F':
+    if job['kind']=='F' and not rt.get('final_t1'):
         cmd=[rt['python'],'-u','-m','experiments.cric_dura_comparison.source_queue','worker','--config',job['config']]
         cwd=rt['source_release']
     else:
@@ -198,7 +199,10 @@ def worker(c):
         import torch
         torch.cuda.init();torch.cuda.set_per_process_memory_fraction(.45)
         reserve=torch.empty(1,device='cuda:0')
-    if c['stage']=='G':
+    if c['stage']=='F':
+        from .t1_train import train
+        train(c)
+    elif c['stage']=='G':
         from .g_train import train
         train(c)
     elif c['stage']=='G_student':

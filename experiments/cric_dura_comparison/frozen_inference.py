@@ -32,15 +32,26 @@ def load_F(folder, expected_contract, device):
     if done.get('status') != 'SOURCE_FROZEN' or done.get('updates') != 11100 or done.get('epoch') != 50 or done.get('target_access') is not False:
         raise ValueError('Complete source-only fixed-final F required')
     c = done['config']
-    if read(c['source_contract']) != expected_contract or done.get('initialization') != 'scratch' or done.get('ancestors') != []:
+    t1=c.get('method_id')=='pamf_t1_e50'
+    if read(c['source_contract']) != expected_contract or (not t1 and (done.get('initialization') != 'scratch' or done.get('ancestors') != [])):
         raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH')
+    if t1:
+        if done.get('initialization')!='same_contract_scratch20_own10_own20' or len(done.get('segments',[]))!=3:raise ValueError('T1 trajectory missing')
+        previous=None
+        for epochs,offset,s in zip((20,10,20),(0,20,30),done['segments']):
+            cfg=s['config'];p=Path(s['folder'])
+            if s['status']!='SOURCE_FROZEN' or s['updates']!=epochs*222 or s['epoch']!=epochs or s['target_access'] or cfg['parent_source']!=previous or cfg['step_offset']!=offset*222 or read(cfg['source_contract'])!=expected_contract:raise ValueError('T1 segment ancestry/roles differ')
+            cp=torch.load(p/'final_ssdg.pth',map_location='cpu',weights_only=False)
+            if cp['args']['baseline_ckpt']!=('' if previous is None else previous+'/final_ssdg.pth') or cp['args']['teacher_ckpt'] or cp['a1_ema_successful_updates']!=epochs*222:raise ValueError('T1 segment checkpoint differs')
+            previous=str(p)
     payload = torch.load(folder / 'final_ssdg.pth', map_location='cpu', weights_only=False)
-    if payload.get('run_id') != c['run_id'] or payload.get('candidate_id') != c['row_id'] or payload.get('epoch') != 50 or payload.get('a1_ema_successful_updates') != 11100:
+    if payload.get('run_id') != c['run_id'] or payload.get('candidate_id') != c['row_id'] or payload.get('epoch') != (20 if t1 else 50) or payload.get('a1_ema_successful_updates') != (4440 if t1 else 11100):
         raise ValueError('F checkpoint belongs to a different source row')
     return reader_from_payload(c, payload, device), c
 
 
-def load_original_F(seed, expected_contract, device, arm='CROSS_RX'):
+def load_original_F(seed, expected_contract, device, arm='T1'):
+    if arm=='T1':return load_original_T1(seed,expected_contract,device)
     from experiments.cvs_f_supcon50 import design, model
     c = design.config(dict(row_id=arm+'-s%d'%seed, arm=arm, model_seed=seed))
     folder = Path(c['baseline_reference']['source'] if arm=='BASE' else c['output_root'])
@@ -61,6 +72,32 @@ def load_original_F(seed, expected_contract, device, arm='CROSS_RX'):
     reader=net.id_backbone.encoder
     reader.core.id_backbone.sinc._filters=MethodType(frozen_filters,reader.core.id_backbone.sinc)
     return reader.eval().requires_grad_(False)
+
+
+def load_original_T1(seed,expected_contract,device):
+    from experiments.cvs_f_supcon50 import design
+    project=Path(design.PROJECT)
+    run='20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01' if seed==2026092701 else '20261021-phase1-T1-AsKL0-e30plus20-m3-r01'
+    folder=project/'runs'/run/('E30PLUS20-s%d'%seed)/'source'
+    final=folder;chain=[]
+    while True:
+        done=read(folder/'completion.json');init=read(folder/'initialization.json');actual=read(folder/'source_contract.json');cfg=done['config']
+        if any(actual[k]!=expected_contract[k] for k in ('role_ids','counts','source_rxs','source_days')) or cfg['model_seed']!=seed or done['target_access'] or init['target_contact']:
+            raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH')
+        cp=torch.load(folder/'final_ssdg.pth',map_location='cpu',weights_only=False)
+        if cp['run_id']!=cfg['run_id'] or cp['candidate_id']!=cfg['row_id'] or cp['epoch']!=cfg['epochs'] or cp['a1_ema_successful_updates']!=cfg['updates'] or cp['checkpoint_selection']!='final_only' or cp['args']['teacher_ckpt']:
+            raise ValueError('T1 fixed source checkpoint identity differs')
+        chain.append(cfg)
+        if cfg['segment']==20:
+            if cp['args']['baseline_ckpt'] or not init['scratch_only']:raise ValueError('T1 source ancestor is not scratch')
+            break
+        parent=Path(cfg['parent_source'])
+        if cp['args']['baseline_ckpt']!=str(parent/'final_ssdg.pth') or init['checkpoint_sources']!=[str(parent/'final_ssdg.pth')]:raise ValueError('T1 own parent differs')
+        folder=parent
+    if [c['epochs'] for c in chain]!=[20,10,20] or sum(c['label_epochs'] for c in chain)!=13 or sum(c['pseudo_epochs'] for c in chain)!=37 or any(c['temperature']['As_KL']!=0 for c in chain):raise ValueError('Final T1 13L37U trajectory differs')
+    payload=torch.load(final/'final_ssdg.pth',map_location='cpu',weights_only=False)
+    c=dict(model_seed=seed,run_id=run,row_id='E30PLUS20-s%d'%seed,output_root=str(final),source_rxs=expected_contract['source_rxs'],source_days=expected_contract['source_days'],num_classes=6,regime='native_cric',satellite_concat=False,ablation=None)
+    return reader_from_payload(c,payload,device)
 
 
 def load_G(spec, expected_contract, device):

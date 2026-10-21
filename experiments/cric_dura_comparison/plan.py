@@ -3,9 +3,9 @@ from copy import deepcopy
 from experiments.phase1_external_dg.plan import make_plan as external_plan, SEEDS, VIEWS
 from experiments.phase1_dg_sourcecount6.plan import counts, SOURCE_ORDER, TARGET
 
-RUN = '20261021-phase1-CRIC-DURA-comparison-m153-r03'
+RUN = '20261021-phase1-T1-DURA-comparison-m153-r01'
 ANALYSIS_RUN = '20261021-phase1-CRIC-DURA-F0-compare-m54-r01'
-F_RUN = '20261016-phase1-F-supcon-e50-clean-manysig-m9-r02'
+F_RUN = '20261021-phase1-T1-AsKL0-e30plus20-m3-r01'
 G_RUN = '20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69'
 REGIMES = ('native_cric', 'matched_sat_supervised', 'matched_sat_plain_pl')
 
@@ -44,10 +44,11 @@ def make_plan():
                     display_method='CRIC+DURA' if native else
                         ('PAMF-Sup+DURA-L' if sup else 'PAMF-PL+DURA-LU'),
                     status='FROZEN_RESULT_REUSE' if reuse else 'PLANNED_NOT_LAUNCHED',
-                    epochs=50, steps_per_logical_epoch=222, optimizer_updates=11100,
+                    epochs=50, steps_per_logical_epoch=222, optimizer_updates=11100,method_id='pamf_t1_e50',
+                    trajectory=[20,10,20],supervised_only_epochs=13 if native else (50 if sup else 0),
                     logical_epoch_note='Update-defined epochs; not guaranteed dataset passes on changed contracts',
                     labeled_batch=128, unlabeled_batch=256 if native else (0 if sup else 128),
-                    U_use=not sup, U_start_epoch=34 if native else (None if sup else 1),
+                    U_use=not sup, U_start_epoch=14 if native else (None if sup else 1),
                     satellite_concat=not native, satellite_CE_weight=0.0 if native else .68,
                     satellite_consistency_weight=0.0,
                     own_EMA=native, native_U_gate=native,
@@ -84,7 +85,7 @@ def make_plan():
         status='DESIGN_COMPLETE_NOT_LAUNCHED', protocols=protocols, rows=rows,
         G_training_pipelines=g_jobs, views=list(VIEWS), excluded_source_counts=[5],
         note='Exclusion applies to new source-count sweep; existing F0 five-source results remain historical main comparison',
-        expected_F_models=153, reused_F_models=3, new_F_training=150,
+        expected_F_models=153, reused_F_models=3, new_F_training=150,new_F_ablation_training=63,
         G_pipeline_count=36, reused_G_pipelines=1, new_G_pipelines=35,
         core_native_F_models=51, additional_matched_control_F_models=102,
         planned_logical_view_cells=2541, reused_logical_view_cells=42,
@@ -111,7 +112,7 @@ def validate(p):
         assert r['optimizer_updates'] == 11100 and r['default_head_joint']
         assert not r['posthoc_head_fit'] and r['no_cross_contract_checkpoint']
         if r['regime'] == 'native_cric':
-            assert r['own_EMA'] and not r['satellite_concat'] and r['U_start_epoch'] == 34
+            assert r['own_EMA'] and not r['satellite_concat'] and r['U_start_epoch'] == 14
         if r['regime'] == 'matched_sat_supervised':
             assert not r['U_use'] and r['G_source_roles'] == 'L_s'
         if r['regime'] == 'matched_sat_plain_pl':

@@ -5,18 +5,41 @@ import subprocess
 from .io import read,write
 from .g_cache import prepare_index
 
-G_RUN='20261021-phase1-CRIC-DURA-G-lineage-m35-r02'
-STUDENT_RUN='20261021-phase1-CRIC-DURA-G-ablation-m21-r01'
-TIMING_RUN='20261021-phase1-CRIC-DURA-latency-r01'
+G_RUN='20261021-phase1-T1-DURA-G-lineage-m35-r01'
+STUDENT_RUN='20261021-phase1-T1-DURA-G-ablation-m21-r01'
+TIMING_RUN='20261021-phase1-T1-DURA-latency-r01'
+F_ABLATION_RUN='20261021-phase1-T1-DURA-F-ablation-m63-r01'
+
+
+def final_t1_rows(rt,plan,handles):
+    rows=[]
+    for r in plan['rows']:
+        if r['status']=='FROZEN_RESULT_REUSE':continue
+        p=plan['protocols'][r['protocol_id']];h=handles[r['protocol_id']]
+        rows.append(dict(r,run_id=plan['run_id'],num_classes=len(h['classes']),source_rxs=sorted(p['source_rxs']),source_days=p['source_days'],
+            source_cache=h['source_cache'],source_contract=h['source_contract'],output_root=str(Path(rt['project'])/'runs'/plan['run_id']/r['row_id']/'source'),
+            code_commit=rt['code_commit'],frozen_sources=rt['frozen_sources'],ablation=None))
+    native=next(r for r in plan['rows'] if r['protocol_id']=='F0' and r['regime']=='native_cric')
+    for seed in (2026092701,2026092702,2026092703):
+        for number in range(1,22):
+            r=dict(native,row_id='F%02d-s%d'%(number,seed),model_seed=seed,status='PLANNED_NOT_LAUNCHED')
+            rows.append(dict(r,run_id=F_ABLATION_RUN,num_classes=6,source_rxs=plan['protocols']['F0']['source_rxs'],source_days=plan['protocols']['F0']['source_days'],
+                source_cache=handles['F0']['source_cache'],source_contract=handles['F0']['source_contract'],
+                output_root=str(Path(rt['project'])/'runs'/F_ABLATION_RUN/r['row_id']/'source'),code_commit=rt['code_commit'],
+                frozen_sources=rt['frozen_sources'],ablation='F%02d'%number,U_start_epoch=14))
+    rows.sort(key=lambda c:(c['model_seed'],c['regime']!='native_cric',bool(c.get('ablation')),c['protocol_id'],c['row_id']))
+    if len(rows)!=213:raise ValueError('150 T1 comparison plus 63 mechanism rows required')
+    return rows
 
 
 def prepare(rt):
     from .g_ablation import ARMS
     plan=read(rt['matrix']);source=read(rt['source_runtime'])
     handles=read(source['reused_source_handles'])
-    frows=read(Path(source['run_root'])/'F_source_rows.json')
     cache=prepare_index(rt,handles,plan['protocols'])
     configs=Path(rt['run_root'])/'configs';configs.mkdir(parents=True,exist_ok=False)
+    frows=final_t1_rows(rt,plan,handles)
+    write(Path(rt['run_root'])/'F_source_rows.json',frows)
     common=dict(code_commit=rt['code_commit'],frozen_sources=rt['frozen_sources'])
     jobs=[]
     def add(key,kind,c,completion,statuses,dependencies=(),cwd=None,exclusive=False):
@@ -27,7 +50,7 @@ def prepare(rt):
         jobs.append(dict(id=key,kind=kind,config=str(path),completion=str(completion),successful_statuses=list(statuses),
             dependencies=list(map(str,dependencies)),log_name=name,exclusive=exclusive))
     for c in frows:
-        cfg=Path(source['run_root'])/'F_source_configs'/(c['run_id']+'__'+c['row_id']+'.json')
+        cfg=configs/(c['run_id']+'__'+c['row_id']+'.json');write(cfg,dict(c,stage='F'))
         add(c['run_id']+'/'+c['row_id'],'F',str(cfg),Path(c['output_root'])/'complete.json',['SOURCE_FROZEN'])
     g_specs={};g_done={}
     original=dict(kind='original_F0_LU',roles='LU',source_contract=handles['F0']['source_contract'],checkpoint=rt['original_G_checkpoint'])
@@ -63,13 +86,16 @@ def prepare(rt):
             readouts['DURA-'+role]=g_specs[(pid,role,2026092701)];dependencies+=g_done[(pid,role,2026092701)]
         evaluation(key,c['run_id'],c['row_id'],pid,seed,c['output_root'],readouts,dependencies)
     for seed in (2026092701,2026092702,2026092703):
+        row='F0-native_cric-s%d'%seed
+        evaluation(rt['main_run']+'/'+row,rt['main_run'],row,'F0',seed,None,{'raw':None,'DURA-LU':original},[],original_arm='T1')
+    for seed in (2026092701,2026092702,2026092703):
         for arm in ARMS:
             row=arm+'-s%d'%seed;root=Path(rt['project'])/'runs'/STUDENT_RUN/row/'source'
             c=dict(run_id=STUDENT_RUN,row_id=row,arm=arm,model_seed=seed,output_root=str(root),cache=cache['F0-LU'],
                 teacher_checkpoint=rt['original_R65_checkpoint'],teacher_source_contract=handles['F0']['source_contract'])
             add(STUDENT_RUN+'/'+row,'G_student',c,root/'complete.json',['SOURCE_FROZEN'])
             variant=dict(kind='G_ablation',roles='LU',checkpoint=str(root/'final.pt'),arm=arm)
-            evaluation(STUDENT_RUN+'/'+row,STUDENT_RUN,row,'F0',seed,None,{'raw':None,arm:variant},[root/'complete.json'],original_arm='CROSS_RX')
+            evaluation(STUDENT_RUN+'/'+row,STUDENT_RUN,row,'F0',seed,None,{'raw':None,arm:variant},[root/'complete.json'],original_arm='T1')
     # Existing BASE/ALL_TX models are frozen references, not extra F training.
     for arm in ('BASE','ALL_TX'):
         for seed in (2026092701,2026092702,2026092703):
@@ -92,6 +118,17 @@ def prepare(rt):
     timing=dict(run_id=TIMING_RUN,output_root=str(timing_root),source_contract=handles['F0']['source_contract'],
         source_cache=handles['F0']['source_cache'],G=original,external_release=rt['external_release'],external_models=external)
     add(TIMING_RUN,'timing',timing,timing_root/'complete.json',['TIMING_COMPLETE'],exclusive=True)
+    structural=[];gvariants=[];dependencies=[]
+    for arm in ('F06','F07','F08','F09','F10'):
+        folder=Path(rt['project'])/'runs'/F_ABLATION_RUN/(arm+'-s2026092701')/'source'
+        structural.append(dict(name=arm,source_output=str(folder)));dependencies.append(folder/'complete.json')
+    for arm in ARMS:
+        folder=Path(rt['project'])/'runs'/STUDENT_RUN/(arm+'-s2026092701')/'source'
+        gvariants.append(dict(name=arm,spec=dict(kind='G_ablation',roles='LU',checkpoint=str(folder/'final.pt'),arm=arm)))
+        dependencies.append(folder/'complete.json')
+    mechanism_root=timing_root/'mechanisms'
+    mechanism=dict(timing,output_root=str(mechanism_root),external_models=[],F_mechanisms=structural,G_mechanisms=gvariants)
+    add(TIMING_RUN+'/mechanisms','timing',mechanism,mechanism_root/'complete.json',['TIMING_COMPLETE'],dependencies,exclusive=True)
     write(rt['jobs'],jobs)
     write(Path(rt['run_root'])/'prepared.json',dict(status='CONTINUATION_PREPARED',jobs=len(jobs),
         counts={kind:sum(j['kind']==kind for j in jobs) for kind in ('F','G','G_student','predict','score','timing')},target_data_feedback=False))
