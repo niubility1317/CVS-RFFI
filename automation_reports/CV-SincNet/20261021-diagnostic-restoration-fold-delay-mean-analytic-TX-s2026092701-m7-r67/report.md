@@ -1,6 +1,6 @@
 # R67：近期裁剪与轨迹平均版的固定无 F 身份诊断
 
-状态：LOCAL_VERIFIED，尚未发布。33 项聚焦检查、CLI 和唯一一次独立 P0/P1 审查通过。R66正在源训练，尚未读取任何R66识别率。全部已有方法、权重、正式预测与评分保持；本诊断不训练或选择恢复器。
+状态：**VERIFIED / WAITING_PARENT_FORMAL**，已发布。33 项聚焦检查、CLI 和唯一一次独立 P0/P1 审查通过。R66正在源训练，尚未读取任何R66识别率。全部已有方法、权重、正式预测与评分保持；本诊断不训练或选择恢复器。
 
 固定纳入R64整组折叠full/half、R65延迟裁剪5+15/10+10、R66同一源轨迹的final/late_mean/step_ema七个新读出，另列指定M35和R53静态同图控制。负结果同样纳入，不按源域或测试表现筛选。R66三个读出共享一次源E20，不能当作三次独立训练或三个seed；本诊断源训练成本为零。
 
@@ -15,3 +15,6 @@ clean参考每TX/RX/day最多2条，按opaque physicalID排序，参考RX和day�
 停止规则：父技术失败、方法/路径/物理ID/旧源校准不符、缺失或非有限输入/特征、输出冲突时保留产物并记录技术失败，不自动重试，不停止/修改健康父任务。代码Git固定、最小聚焦否定检查、一次限P0/P1审查、普通账户一次预检/单归档SHA/compile及真实两条Ls解析no-query smoke后自动继续。
 
 方法 commit `ed3f19436e3f8d4b3ef19875554ca84b84340d44`；准确命令/环境/CWD/路径见[登记](experiment.json)。
+
+
+VERIFIED / WAITING_PARENT_FORMAL：普通账户、单归档SHA、compile、真实2Ls无参数解析no-query smoke、实际PID/CWD/argv/空CUDA/CPU2及日志增长已核实。等待R64/R65/R66全部七景正式评分；复用R56raw/M35/R53共84单元，新算七读出196单元，总280先于truth固定。0F/checkpoint/新神经预测/训练/新校准/头拟合/GPU，不改变父实验或选择；无新统计结论，目标ACTIVE。
