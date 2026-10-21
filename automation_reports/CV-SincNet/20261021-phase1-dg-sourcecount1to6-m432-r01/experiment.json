@@ -88,7 +88,7 @@
   "execution": {
     "host": "N607 ordinary account",
     "launch_owner": "codex-root-sourcecount6-20261021",
-    "gpu_policy": "all physical0..7 authorized; one own worker per idle card; wait for occupied cards; preserve unrelated workloads",
+    "gpu_policy": "GPU0..7; one own worker/card; GPUs2/3 may share with one foreign compute process if >=12000MiB free; other cards require idle; preserve existing workers",
     "remote_run_root": "local_artifacts/phase1_dg_sourcecount6_20261021/runtime.json#/run_root",
     "remote_log_root": "local_artifacts/phase1_dg_sourcecount6_20261021/runtime.json#/log_root",
     "local_artifact_root": "local_artifacts/phase1_dg_sourcecount6_20261021",
@@ -101,7 +101,8 @@
       "id": "1-6",
       "interval_minutes": 60,
       "notify": "meaningful changes, completion, failure, required input"
-    }
+    },
+    "controller_runtime_ref": "local_artifacts/phase1_dg_sourcecount6_20261021/controller_runtime.json"
   },
   "expected_artifacts": [
     "data_status.json",

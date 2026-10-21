@@ -81,3 +81,9 @@ VERIFIED：代码 commit `9500192b6a91365016006ea78fbebfda2afb2bed` 已提交、
 ETA：按历史完整同方法三种子实测时长推算，6 张卡持续空闲约 8–12 小时（中心约 9 小时），即约 2026-10-21 23:00 至 2026-10-22 03:00（UTC+8）；若 8 卡持续可用约 6–9 小时，若降至 4 卡约 11–17 小时。包含七视图预测/评分和收尾，IB 早停、共享 CPU/存储与故障会影响时长；这是估计，不是保证。后续只按实际吞吐校准，不改变科学矩阵。
 
 已创建本线程每小时监控（automation `1-6`），无变化保持安静，仅完成、技术失败、需要输入或 ETA 显著变化时通知。完成后汇总并更新既有 IEEE 实验部分。执行证据与 ETA 明细分别见本地 `postlaunch_verified.json`、`eta_estimate.json`。
+
+## GPU2、3 并行接入（2026-10-21，用户追加授权）
+
+用户明确要求剩下两张卡也跑实验。实测两卡各有约22GB空闲显存，允许与原有各一条恢复器任务共享；每卡最多一个本run worker，GPU2/3需至少12000MiB余量、最多一条其他计算进程，其他卡仍要求空闲。只切换本run队列控制器并接管全部健康行，不停止或重启训练/预测worker，不改矩阵、预算、seed、配方或既有产物。
+
+控制器独立不可覆盖release为20261021-phase1-dg-sourcecount1to6-control-r02，使用现有SDG-SEI环境，CWD为该控制器release。命令：python -u -m experiments.phase1_dg_sourcecount6.rebalance --config controller_runtime.json。实际训练和预测继续从原9500192代码release启动；原数据VALIDATED_ONCE和49例smoke复用，不增加数据重验或科学选模。控制器先精确核实原dispatcher PID/CWD/argv，暂停派发并收集所有实际存活worker以覆盖Popen/状态写回间隙，只终止原排队控制器；独立保存接管快照，随后采用旧worker并接续未启动行，失败保留产物。资源规则和所属进程识别的2项聚焦检查通过。
