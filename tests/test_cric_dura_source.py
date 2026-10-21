@@ -10,9 +10,24 @@ from experiments.cric_dura_comparison.f_model import contrast
 from experiments.cric_dura_comparison.source_queue import allow_shared, row_configs
 from experiments.cric_dura_comparison.plan import make_plan
 from experiments.cric_dura_comparison.data import bind_classes
+from experiments.cric_dura_comparison.smoke import forward_source
 
 
 class SourceContracts(unittest.TestCase):
+    def test_native_source_smoke_retains_tensor_version_counters(self):
+        class Versioned(torch.nn.Module):
+            def forward(self, x):
+                value = x + 1
+                _ = value._version
+                return value
+        net=Versioned()
+        with torch.inference_mode():
+            with self.assertRaisesRegex(RuntimeError, 'version counter'):
+                net(torch.zeros(2))
+        result=forward_source(net,torch.zeros(2,requires_grad=True))
+        self.assertTrue(torch.equal(result,torch.ones(2)))
+        self.assertFalse(result.requires_grad)
+
     def test_legacy_class_map_is_taken_from_validated_cache_metadata(self):
         original = dict(num_classes=2, role_ids={'L_s':['a'], 'U_s':['b'], 'V':['c']})
         normalized = bind_classes(original, dict(classes=['TX-A','TX-B']))

@@ -29,3 +29,7 @@ Same authorized CRIC+DURA matrix; source stage recovery for legacy metadata clas
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 源阶段恢复：150主F＋45独立F机制消融（子run沿用未启动r01），不新做m5源数量，保持原33L17U、匹配sat监督/普通PL及三seed。G完整谱系、七景自动预测与评分、时延仍须独立完成。源训练后只标等待匹配G，不宣称实验完成。
+
+## 源smoke技术失败
+
+**FAILED**。实际commit42a0642b，PID283016已退出，17/17数据绑定全部完成；真实F checkpoint无query smoke在inference_mode下触发原Sinc计算tensor无_version错误。未进行GPU训练或目标访问，全部数据与日志保留。smoke改为原训练相同no_grad；7项相关测试通过。r03直接复用本run完整source handles，配方、矩阵、seed、预算不变。

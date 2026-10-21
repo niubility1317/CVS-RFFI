@@ -71,6 +71,8 @@ def publish(repo, output):
         old_data_handles=old['parent_run_root'] + '/data_handles.json', count_data_handles=old['run_root'] + '/data_handles.json',
         launch_owner='codex-root-cric-dura-source-20261021', stage='F_source',
         GPU_policy='one own/card; at most two total compute apps; free>=12000MiB; no healthy process changes')
+    if RUN.endswith('-r03'):
+        rt['reused_source_handles'] = project + '/runs/20261021-phase1-CRIC-DURA-comparison-m153-r02/data/handles.json'
     # Only this source stage is released here. G/prediction workers are separate
     # immutable releases; frozen source outputs must never be relabelled scored.
     names = ['__init__.py', 'bootstrap.py', 'io.py', 'data.py', 'f_data.py', 'f_model.py',

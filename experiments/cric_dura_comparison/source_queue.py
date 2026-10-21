@@ -86,7 +86,7 @@ def run(rt):
     write(root / 'launch.json', dict(pid=os.getpid(), cwd=os.getcwd(), argv=sys.argv,
         owner=rt['launch_owner'], code_commit=rt['code_commit'], stage='F_source', user_shared_GPU_authorization=True))
     plan = read(rt['matrix'])
-    handles = prepare(rt, plan)
+    handles = read(rt['reused_source_handles']) if rt.get('reused_source_handles') else prepare(rt, plan)
     from .smoke import run as source_smoke
     source_smoke(rt, handles)
     rows = row_configs(rt, plan, handles)

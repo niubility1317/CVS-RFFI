@@ -3,6 +3,14 @@ from pathlib import Path
 from .io import read, write, tensor
 
 
+def forward_source(net, x):
+    import torch
+    # The immutable native Sinc reads _version on computed physical-frequency
+    # tensors. no_grad keeps those counters, unlike inference_mode.
+    with torch.no_grad():
+        return net(x)
+
+
 def run(rt, handles):
     from .bootstrap import activate, numerical_policy
     activate(rt)
@@ -24,8 +32,7 @@ def run(rt, handles):
     net = model.build(c, 'cpu').eval().requires_grad_(False)
     net.load_state_dict(ck['model'], strict=True)
     x = np.load(Path(handles['F0']['source_cache']) / 'L_s_x.npy', mmap_mode='r')[:2]
-    with torch.inference_mode():
-        out = net(tensor(x))
+    out = forward_source(net, tensor(x))
     if out.shape != (2, 6) or not bool(torch.isfinite(out).all()):
         raise ValueError('Actual frozen F source smoke failed')
     write(Path(rt['run_root']) / 'real_checkpoint_smoke.json', dict(status='PASS', checkpoint=str(source / 'final_ssdg.pth'),
