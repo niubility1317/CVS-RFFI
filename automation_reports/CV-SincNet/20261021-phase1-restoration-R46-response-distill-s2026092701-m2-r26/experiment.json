@@ -200,7 +200,8 @@
         "all_available_records_audited": true,
         "formal_results": false
       }
-    }
+    },
+    "postlaunch_state": "VERIFIED_ALL_OWNED_HANDLES_EXITED"
   },
   "expected_artifacts": [
     "launch.json",
@@ -362,5 +363,17 @@
     "37focusedtests and uniqueindependentP0/P1review PASS;realparent/F50/2Ls smoke is launcherfirststep and continues onPASS.",
     "REJECTED_EXTRA_GATE:separate generic design/spec approvals and blanket wholeproject tests are NONBLOCKING under ExclusiveMinimalWorkflow;existing relevant checks suffice."
   ],
-  "registered_at": "2026-10-20T21:07:57+00:00"
+  "registered_at": "2026-10-20T21:07:57+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "accepted_compact_rows": [
+      "pair_aug_control",
+      "odd_response"
+    ],
+    "every_version_full7formal": true,
+    "models_strict_loaded": true,
+    "target_feedback": false,
+    "long_term_goal_complete": false,
+    "numeric_target_rows": []
+  }
 }
