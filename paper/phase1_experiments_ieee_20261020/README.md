@@ -6,7 +6,7 @@
 
 ## 并入论文
 
-1. 将 `experiments.tex`、`tables/`、`images/` 复制到正文工程，合并 `references.bib` 条目。
+1. 将 `experiments.tex`、`cric_dura.tex`、`tables/`、`images/` 复制到正文工程，合并 `references.bib` 条目。
 2. 在正文中使用 `\input{experiments}`。
 3. 预导言区需要 `amsmath, amssymb, graphicx, booktabs, array, cite, url`，并定义：`\newcommand{\pmv}[2]{\ensuremath{#1\,\pm\,#2}}`。`hyperref` 可按全文已有设置保留。
 
@@ -19,7 +19,7 @@ pdflatex main.tex
 pdflatex main.tex
 ```
 
-四幅PDF矢量图、三张输入CSV及生成表格的 `build_tables.py` 一并放入ZIP。`python build_tables.py` 可以从冻结评分重建表格，不训练、不重新评分。完整原始分层结果与实际训练明细沿用已完成实验交付包；本章没有填入PAMF成绩。
+四幅PDF矢量图、输入CSV及生成表格的 `build_tables.py` 一并放入ZIP。`python build_tables.py` 可以从冻结评分重建外部方法表格，不训练、不重新评分。新增 `cric_dura.tex` 纳入已有 F0 完整 CRIC＋DURA 三F种子／单G七景成绩，并将未测的跨配置、机制和时延设计明确标为 prospective。复算器为仓库 `experiments/cric_dura_comparison/build.py`，不访问IQ、模型或truth；其小型逐seed、汇总和配对差CSV位于source_data。完整原始分层结果与训练明细沿用已完成实验交付包。
 
 图形、CSV、PDF编译产物不提交Git；章节、表格、生成器、引用及IEEEtran未修改发行文件进入Git。IEEEtran类/样式保留原版权与许可头。格式参考：https://template-selector.ieee.org/ 。
 

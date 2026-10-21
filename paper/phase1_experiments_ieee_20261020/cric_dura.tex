@@ -1,0 +1,70 @@
+% Completed frozen F0 results and explicitly prospective experiment settings.
+\subsection{Complete PAMF: CRIC with DURA}
+\label{sec:cric-dura}
+The user-designated complete PAMF system applies the frozen DURA v1.0 restorer to each received IQ window, followed by CRIC and its original jointly trained cosine classifier. This includes clean observations; the system does not use the true channel scene to decide whether restoration is applied. CRIC denotes Cross-Receiver Identity Contrastive Learning, the original E50 model with 33 labeled-only epochs and 17 joint labeled/unlabeled epochs. It is distinct from the later SARD/T1 schedule with 13 labeled-only and 37 joint epochs.
+
+CRIC retains three SIG\_TIME paths, time/frequency/PA residual fusion, reference-response features, centered and unit-aware Sinc optimization, R-Drop, label smoothing 0.01, and its original EMA-based unlabeled selection. Cross-RX contrast uses actual labeled features from shallow and intermediate layers, with same-TX/different-physical-RX positives and different-TX negatives. Same-TX/same-RX pairs are excluded. Temperature is 0.2; weight is zero for five epochs and rises linearly over ten epochs to 0.1. The two existing R-Drop forwards supply both levels; contrast adds no network forward. The original CRIC has no satellite training branch. It is preserved as a complete frozen recipe, rather than silently replacing its EMA/gates with ordinary PL or adding SARD augmentation.
+
+DURA uses two learned-prior stages and two conjugate-gradient updates per stage. Its 266951 unique parameters predict a coarse restoration and a current-window real-linear action, with a main and conjugate-image response. The fixed runtime uses residual reuse and CUDA Graphs in FP32 with TF32 disabled. Its 27 FFT/IFFT calls describe G only. Restorer training uses source IQ and simulated pairs without TX labels, identity-model weights/outputs, or target observations. All training ancestors are subject to the same source contract.
+
+\input{tables/cric_full_f0}
+
+\subsubsection{Completed F0 Comparison}
+Table~\ref{tab:cric-full-f0} combines existing immutable scores; it entails no new training or target-truth access. Its 18 method/recipe readouts each have three F seeds and seven views, giving 378 score cells on the same 168000 target packets per view. CRIC+DURA obtains clean accuracy $85.1429\pm0.4055\%$, six-satellite-view mean $78.1249\pm0.3416\%$, and low-urban accuracy $68.1339\pm0.6603\%$. The corresponding un-restored CRIC values are $85.1139\pm0.3799\%$, $43.9855\pm5.7410\%$, and $33.6470\pm2.9346\%$. Six-view means are formed within each seed before computing the cross-seed sample SD.
+
+All three CRIC seeds share one frozen G, so their SD estimates F-seed variation conditional on G, not variability of three independently trained complete systems. The table compares complete native recipes on a common data split: external supervised/ordinary-PL runs use satellite concatenation, whereas original CRIC uses its native unlabeled mechanism and no As branch. Their difference cannot be attributed solely to cross-RX contrast. CE controls stronger than their Full counterparts remain visible. Additional matched controls below are prospective; no results are inferred for untested data contracts.
+
+\subsubsection{Prospective Coverage and Data-Matched Controls}
+The extended design covers F0/F1/F2, chronological D3, ManyRx, label fractions 1/5\%, and ten source-count conditions. The latter use $m\in\{1,2,3,4,6\}$ along the fixed order $(1,3,4,6,8,11)$, under natural or fixed annotation budgets. Their target set is always $(0,2,5,7,9,10)$, six RX and 144000 packets. No new five-source sweep point is trained or queued. Existing F0 five-source results use seven target RX and must not be inserted into this curve.
+
+For natural budgets, $(|L|,|U|,|V|)=(1260m,11340m,5400m)$. The fixed-budget setting uses $(1080,12600m-1080,5400)$, with surplus V excluded. A single source provides no cross-RX positive: contrast is finite zero and effective-anchor coverage is explicitly zero, rather than inventing RX domains from dates or augmentation. Because U still grows with m, the semi-supervised curve does not isolate receiver diversity alone. The strict-supervised fixed-budget curve is the cleaner control for annotation and update count.
+
+Each of the 17 data conditions has native CRIC+DURA, a satellite-concatenated supervised control, and its ordinary-PL control, each with three F seeds. The latter two preserve the same representation and supervised regularizers; PL alone adds current-student hard labels at threshold 0.95, weight one, and U/L ratio one, without EMA or complex gating. They are named PAMF-Sup and PAMF-PL, not relabeled as original CRIC. F training fixes 11100 updates (50 logical epochs of 222 steps), with L batch128. On changed source pools, logical epochs are not claimed to be full dataset passes. Native CRIC retains the 33/17 schedule and U batch256; matched PL starts in the first batch with U batch128. Actual unique observations, repeats, partial batches, and acceptance are reported.
+
+The 153 F instances comprise three exact-contract F0 reuses and 150 planned new models. G-L is trained using L only for a strict-supervised complete system; G-LU uses L plus TX-hidden U. An F without PL attached to G-LU is additionally evaluated, but is described as F-supervised/G-unlabeled, not a supervised system. Each contract initially fixes one G seed shared across F seeds. Two further G seeds at the predetermined three-source natural condition yield a $3\times3$ crossed F/G sensitivity panel. This gives 36 G sources, one existing reuse and 35 planned new complete training lineages. Changing RX, date, TX or physical roles requires matching F and all G ancestors; an F0 teacher cannot initialize another contract. These extensions have not yet been launched.
+
+\subsection{Prospective Mechanism and Efficiency Experiments}
+\label{sec:cric-ablation}
+All new settings are fixed before additional target predictions and retain clean plus six practical views. Predictions for all views of each row precede independent truth-side scoring. We report Accuracy, Macro-F1, worst-RX accuracy, seed-paired differences, and repaired/newly introduced errors on the same physical observations. Target scores do not select epochs, variants, seeds, or reruns.
+
+\subsubsection{Identification and Restoration Contributions}
+The principal F0 factorial is BASE versus CRIC, crossed with raw versus DURA. BASE retains the original R-Drop/SSL recipe but lacks the added contrast; it is not pure CE. Existing BASE, ALL\_TX and CROSS\_RX each have three E50 models. Their two readouts yield 18 frozen model/readout combinations and 126 view cells; missing seven-view predictions must be completed rather than inferred from existing clean results. The interaction is
+\begin{equation}
+\begin{split}
+I={}&(A_{\mathrm{CRIC},G}-A_{\mathrm{CRIC},raw})\\
+&-(A_{\mathrm{BASE},G}-A_{\mathrm{BASE},raw}).
+\end{split}
+\end{equation}
+ALL\_TX with the same G tests whether restricting positives to different physical RX improves on ordinary same-TX contrast.
+
+F ablations separately use shallow-only, intermediate-only, and final-embedding-only contrast; zero R-Drop KL with two CE forwards; one CE forward; one SIG\_TIME projection; removal of the time coordinate; removal of SIG\_TIME, PA or reference response; student-generated rather than EMA pseudo labels; removal of neighbor or strong-agreement selection; removal of the U entropy term; and a same-representation CE-only labeled reference. The first fourteen settings preserve unaffected components; the CE-only reference changes the complete training recipe and is not a single-factor effect. These 15 prospective variants use three seeds each, separately from the 153-instance comparison matrix. Structural removals require matched training; frozen branch masking is only a sensitivity diagnostic.
+
+G ablations include coarse-only, priors without CG, no conjugate-image term, and omission of the backprojected-residual prior input. Initialization copying and stage-IQ distillation are crossed in a $2\times2$ design so their effects are not conflated. Four structural and three additional initialization/distillation settings give 21 planned final-student runs over three seeds, with teacher ancestry and cost reported separately. Frozen-weight solver sensitivity uses CG counts 1/2/4 per stage, prior-scale multipliers 0.5/1/2, and a one-stage path. These are distinct runtime variants requiring formal seven-view tests, not evidence for a retrained causal ablation or permission to replace the default according to target rank.
+
+\subsubsection{Latency Boundary and Repetition}
+We measure F alone, G alone, and the actual online G+F call. Three boundaries are separated: synchronized GPU-resident calls including input replacement, owned outputs and validity checks; pinned-CPU IQ to CPU class including H2D/D2H; and cold loading/warmup/Graph capture. Cached restored-IQ reads never replace G in a complete-system timing. Module profiles are separate diagnostics; their medians are not added to synthesize end-to-end latency.
+
+The common benchmark uses one exclusive RTX3090, the same Python3.10/Torch2.1 stack, two CPU threads, FP32 and both TF32 flags disabled. Existing Torch1.11 comparator costs are not ranked directly against DURA's Torch2.1 timing. Every method has an eager result and, where supported, a Graph result; unsupported capture is reported as N/A with its reason. Healthy training is not interrupted to obtain a timing GPU.
+
+Batches are 1/8/32/64/128. Five balanced-order rounds use 100 warmups and 1000 measured calls per round for B1, or 20 warmups and 100 measured calls for larger batches. We report synchronized median/P95, sample counts, between-round variation, whole-batch latency, throughput, resident/incremental peak memory, and cold setup. CUDA-event device time is a separate metric. Actual input replacement, output ownership, numerical/argmax agreement and unchanged frozen state are checked without query access. Three model seeds and five timing rounds describe different sources of variability. Amortized batch time is not single-observation waiting latency.
+
+\begin{table}[t]
+\centering\footnotesize
+\caption{Same-weight DURA execution ablation. T1--T4 isolate the RR/Graph interaction; T0--T1 also changes tensorization and synchronization.}
+\label{tab:dura-execution}
+\begin{tabular}{lccc}
+\toprule
+Path & Tensorized checks & RR & Graph\\
+\midrule
+T0 native & No & Native & No\\
+T1 & Yes & No & No\\
+T2 & Yes & Yes & No\\
+T3 & Yes & No & Yes\\
+T4 default & Yes & Yes & Yes\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:dura-execution} is measured for G and G+F. The earlier seed01 B1 online G+F median 4.531972ms (P95 4.990450ms) is a historical GPU-resident measurement including engine copies/checks, excluding transfer, queueing and first capture. It is not the result of this prospective common-stack benchmark. A 256-sample window at 25MS/s spans 10.24$\mu$s, so this latency alone does not establish continuous full-rate real-time processing.
+
+Deployment counts include the learned frozen classifier even when exported as a buffer, and exclude optimizer, EMA and unused training branches. Convolution/linear MACs, FFT/IFFT counts and complex solver costs are reported separately. R-Drop's second pass, contrast construction, EMA, U gates and entropy are training-only; their per-step forward/backward/optimizer time and memory are measured during training, not assigned fictional inference passes. Contrast reuses F forwards but still incurs descriptor/similarity computation. Total training cost includes all G ancestors and teachers, unique/repeated L/U exposures, simulation, prediction and failed attempts. Pending timings and ablation scores remain unreported until measured.

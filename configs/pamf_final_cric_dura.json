@@ -1,0 +1,58 @@
+{
+  "schema": "pamf_selected_complete_method_v1",
+  "name": "PAMF (CRIC + DURA v1.0)",
+  "selected_on": "2026-10-21",
+  "scope": "Current chat comparison; preserve SARD/T1 and other owners' runs separately",
+  "F": {
+    "name": "Cross-Receiver Identity Contrastive Learning",
+    "chinese_name": "跨接收机身份对比学习",
+    "id": "cric_e50_33L17U",
+    "run": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+    "rows": ["CROSS_RX-s2026092701", "CROSS_RX-s2026092702", "CROSS_RX-s2026092703"],
+    "commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+    "epochs": 50,
+    "supervised_only_epochs": 33,
+    "joint_L_U_epochs": 17,
+    "updates": 11100,
+    "steps_per_epoch": 222,
+    "architecture": "SIG_TIME_X3; time/frequency/PA/reference residual fusion; centered Sinc and unit-aware updates; native joint cosine head",
+    "supervision": "Two actual ordinary-augmented L RDrop forwards; LS0.01; no As branch",
+    "contrast": {
+      "levels": ["time_down", "t2.pool"],
+      "positive": "same TX, different physical RX",
+      "denominator": "positive set plus different TX; exclude same TX/same RX",
+      "temperature": 0.2,
+      "max_weight": 0.1,
+      "warm_epochs": 5,
+      "ramp_epochs": 10,
+      "extra_network_forwards": 0,
+      "single_source": "No eligible cross-RX positives; finite zero loss and report zero anchor coverage"
+    },
+    "SSL": "Original own EMA and original U gates/entropy; not ordinary PL",
+    "satellite_training": false,
+    "default_head": "Jointly trained original cosine head; never fit or replace after freezing",
+    "deployment": "Single frozen student; no EMA, RDrop second pass, contrast loss or U gate execution"
+  },
+  "G": {
+    "frozen_definition": "experiments/pamf_stage2_inference/frozen_version.json",
+    "name": "DURA v1.0",
+    "id": "dura_v1",
+    "parameters": 266951,
+    "prior_calls": 2,
+    "CG_per_stage": 2,
+    "FFT_IFFT_calls_G_only": 27,
+    "runtime": {"reuse": true, "graph": true, "native": false, "precision": "FP32", "TF32": false},
+    "training": "TX-label-free, F-free source L/U simulated IQ pairs; all ancestors must match the actual source contract"
+  },
+  "existing_evidence": {
+    "run": "20261021-phase1-SARD-NoAs-DURA-e50-m6-r02",
+    "F_seed_count": 3,
+    "G_seed_count": 1,
+    "samples_per_view": 168000,
+    "views": 7,
+    "uncertainty": "F-seed variation conditional on one frozen G; not three independently trained full systems"
+  },
+  "contract_policy": "New RX/day/TX/role splits require exact-contract F and full G ancestry; no silent old-weight fallback",
+  "prospective_plan": "experiments/cric_dura_comparison/plan.py",
+  "design": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md"
+}

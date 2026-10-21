@@ -1,0 +1,1086 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261021-phase1-CRIC-DURA-F0-compare-m54-r01",
+  "group_id": "phase1-cric-dura-complete-system",
+  "display_name": "CRIC+DURA五源冻结结果并表",
+  "description": "仅从已有评分复算18种配方、54模型读出、378格，无新训练/目标访问。",
+  "kind": "analysis",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "CRIC",
+    "DURA",
+    "complete-system",
+    "three-F-seeds",
+    "latency-ablation-design"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261019-phase1-external-dg-concat-pl-m219-r03",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "20261021-phase1-SARD-NoAs-DURA-e50-m6-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-21指定CRIC+DURA完整方法，与当前对比配置比较，并详细设计机制时延与消融；五源数量扫点不新跑。",
+  "code": {
+    "commit": "Design/aggregation delivery Git commit; no new training code released",
+    "checkout": "github_publish/CVS-RFFI-repo",
+    "environment": "Local verified Python, standard library only",
+    "cwd": "E:/type10-7",
+    "entry": "experiments.cric_dura_comparison"
+  },
+  "data": {
+    "dataset": "WiSig ManySig/ManyRx",
+    "version": null,
+    "representation": "equalized1 center256 float32 unitRMS",
+    "contract_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md",
+    "physical_ids_ref": "Existing source/target data-contract records; no IQ or truth opened for this design/aggregation",
+    "label_map_ref": "Existing native source-contract metadata; no posthoc head fitting",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": null,
+      "U_s": null,
+      "V": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Reuse existing VALIDATED_ONCE handles; new contracts bound before actual launch",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "Frozen-score-only analysis",
+    "query_use": "No query IQ/truth reads by aggregation",
+    "external_method_exception": null,
+    "claim_scope": "Previously exposed engineering benchmark; not independent blind or in-orbit validation"
+  },
+  "checkpoint": {
+    "initialization": "No models loaded for this local delivery",
+    "sources": [
+      "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+    ],
+    "contract_check_ref": "Existing exact-contract F0 evidence; every new F/G/teacher must match its own contract",
+    "provenance_verdict": "F0 reuse references retained; prospective cross-contract sources prohibited",
+    "selection_rule": "Frozen existing F0 scores; prospective fixed-final source schedule, no target selection"
+  },
+  "execution": {
+    "host": "Local aggregation; prospective N607 training not launched",
+    "launch_owner": "codex-root-cric-dura-design-20261021",
+    "gpu_policy": "No GPU used by aggregation/design; new train queues independent of active 360-row comparison; official timing exclusive GPU",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "local_artifacts/cric_dura_comparison_20261021",
+    "launch_command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+    "stop_rule": "Design has no worker; future technical failures preserve outputs/healthy peers; no performance stopping"
+  },
+  "expected_artifacts": [
+    "final_analysis.md",
+    "f0_per_seed_scores.csv",
+    "f0_method_summary.csv",
+    "IEEE table"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy",
+      "Macro-F1",
+      "worst RX",
+      "paired deltas",
+      "training and deployment cost"
+    ],
+    "dimensions": [
+      "data contract",
+      "regime",
+      "F seed",
+      "G seed",
+      "view",
+      "RX",
+      "TX",
+      "date"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "No new scoring: aggregate immutable existing scores"
+  },
+  "rows": [
+    {
+      "row_id": "cric-raw-native-ssl-s2026092701",
+      "method": "CRIC raw",
+      "purpose": "existing_frozen_scores_Native SSL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/0",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "cric-raw-native-ssl-s2026092702",
+      "method": "CRIC raw",
+      "purpose": "existing_frozen_scores_Native SSL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/1",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "cric-raw-native-ssl-s2026092703",
+      "method": "CRIC raw",
+      "purpose": "existing_frozen_scores_Native SSL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/2",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "cric-dura-native-ssl-s2026092701",
+      "method": "CRIC+DURA",
+      "purpose": "existing_frozen_scores_Native SSL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/3",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "cric-dura-native-ssl-s2026092702",
+      "method": "CRIC+DURA",
+      "purpose": "existing_frozen_scores_Native SSL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/4",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "cric-dura-native-ssl-s2026092703",
+      "method": "CRIC+DURA",
+      "purpose": "existing_frozen_scores_Native SSL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/5",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "drift-ce-pl-s2026092701",
+      "method": "DRIFT CE",
+      "purpose": "existing_frozen_scores_PL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/6",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "drift-ce-pl-s2026092702",
+      "method": "DRIFT CE",
+      "purpose": "existing_frozen_scores_PL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/7",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "drift-ce-pl-s2026092703",
+      "method": "DRIFT CE",
+      "purpose": "existing_frozen_scores_PL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/8",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "drift-ce-supervised-s2026092701",
+      "method": "DRIFT CE",
+      "purpose": "existing_frozen_scores_Supervised",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/9",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "drift-ce-supervised-s2026092702",
+      "method": "DRIFT CE",
+      "purpose": "existing_frozen_scores_Supervised",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/10",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "drift-ce-supervised-s2026092703",
+      "method": "DRIFT CE",
+      "purpose": "existing_frozen_scores_Supervised",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/11",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "drift-full-pl-s2026092701",
+      "method": "DRIFT Full",
+      "purpose": "existing_frozen_scores_PL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/12",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "drift-full-pl-s2026092702",
+      "method": "DRIFT Full",
+      "purpose": "existing_frozen_scores_PL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/13",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "drift-full-pl-s2026092703",
+      "method": "DRIFT Full",
+      "purpose": "existing_frozen_scores_PL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/14",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "drift-full-supervised-s2026092701",
+      "method": "DRIFT Full",
+      "purpose": "existing_frozen_scores_Supervised",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/15",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "drift-full-supervised-s2026092702",
+      "method": "DRIFT Full",
+      "purpose": "existing_frozen_scores_Supervised",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/16",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "drift-full-supervised-s2026092703",
+      "method": "DRIFT Full",
+      "purpose": "existing_frozen_scores_Supervised",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/17",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "ib-rff-ce-pl-s2026092701",
+      "method": "IB-RFF CE",
+      "purpose": "existing_frozen_scores_PL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/18",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "ib-rff-ce-pl-s2026092702",
+      "method": "IB-RFF CE",
+      "purpose": "existing_frozen_scores_PL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/19",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "ib-rff-ce-pl-s2026092703",
+      "method": "IB-RFF CE",
+      "purpose": "existing_frozen_scores_PL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/20",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "ib-rff-ce-supervised-s2026092701",
+      "method": "IB-RFF CE",
+      "purpose": "existing_frozen_scores_Supervised",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/21",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "ib-rff-ce-supervised-s2026092702",
+      "method": "IB-RFF CE",
+      "purpose": "existing_frozen_scores_Supervised",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/22",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "ib-rff-ce-supervised-s2026092703",
+      "method": "IB-RFF CE",
+      "purpose": "existing_frozen_scores_Supervised",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/23",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "ib-rff-full-pl-s2026092701",
+      "method": "IB-RFF Full",
+      "purpose": "existing_frozen_scores_PL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/24",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "ib-rff-full-pl-s2026092702",
+      "method": "IB-RFF Full",
+      "purpose": "existing_frozen_scores_PL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/25",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "ib-rff-full-pl-s2026092703",
+      "method": "IB-RFF Full",
+      "purpose": "existing_frozen_scores_PL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/26",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "ib-rff-full-supervised-s2026092701",
+      "method": "IB-RFF Full",
+      "purpose": "existing_frozen_scores_Supervised",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/27",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "ib-rff-full-supervised-s2026092702",
+      "method": "IB-RFF Full",
+      "purpose": "existing_frozen_scores_Supervised",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/28",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "ib-rff-full-supervised-s2026092703",
+      "method": "IB-RFF Full",
+      "purpose": "existing_frozen_scores_Supervised",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/29",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "riei-ce-pl-s2026092701",
+      "method": "RIEI CE",
+      "purpose": "existing_frozen_scores_PL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/30",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "riei-ce-pl-s2026092702",
+      "method": "RIEI CE",
+      "purpose": "existing_frozen_scores_PL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/31",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "riei-ce-pl-s2026092703",
+      "method": "RIEI CE",
+      "purpose": "existing_frozen_scores_PL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/32",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "riei-ce-supervised-s2026092701",
+      "method": "RIEI CE",
+      "purpose": "existing_frozen_scores_Supervised",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/33",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "riei-ce-supervised-s2026092702",
+      "method": "RIEI CE",
+      "purpose": "existing_frozen_scores_Supervised",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/34",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "riei-ce-supervised-s2026092703",
+      "method": "RIEI CE",
+      "purpose": "existing_frozen_scores_Supervised",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/35",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "riei-full-pl-s2026092701",
+      "method": "RIEI Full",
+      "purpose": "existing_frozen_scores_PL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/36",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "riei-full-pl-s2026092702",
+      "method": "RIEI Full",
+      "purpose": "existing_frozen_scores_PL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/37",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "riei-full-pl-s2026092703",
+      "method": "RIEI Full",
+      "purpose": "existing_frozen_scores_PL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/38",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "riei-full-supervised-s2026092701",
+      "method": "RIEI Full",
+      "purpose": "existing_frozen_scores_Supervised",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/39",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "riei-full-supervised-s2026092702",
+      "method": "RIEI Full",
+      "purpose": "existing_frozen_scores_Supervised",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/40",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "riei-full-supervised-s2026092703",
+      "method": "RIEI Full",
+      "purpose": "existing_frozen_scores_Supervised",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/41",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "sdg-ce-pl-s2026092701",
+      "method": "SDG CE",
+      "purpose": "existing_frozen_scores_PL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/42",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "sdg-ce-pl-s2026092702",
+      "method": "SDG CE",
+      "purpose": "existing_frozen_scores_PL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/43",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "sdg-ce-pl-s2026092703",
+      "method": "SDG CE",
+      "purpose": "existing_frozen_scores_PL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/44",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "sdg-ce-supervised-s2026092701",
+      "method": "SDG CE",
+      "purpose": "existing_frozen_scores_Supervised",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/45",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "sdg-ce-supervised-s2026092702",
+      "method": "SDG CE",
+      "purpose": "existing_frozen_scores_Supervised",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/46",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "sdg-ce-supervised-s2026092703",
+      "method": "SDG CE",
+      "purpose": "existing_frozen_scores_Supervised",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/47",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "sdg-full-pl-s2026092701",
+      "method": "SDG Full",
+      "purpose": "existing_frozen_scores_PL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/48",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "sdg-full-pl-s2026092702",
+      "method": "SDG Full",
+      "purpose": "existing_frozen_scores_PL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/49",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "sdg-full-pl-s2026092703",
+      "method": "SDG Full",
+      "purpose": "existing_frozen_scores_PL",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/50",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "sdg-full-supervised-s2026092701",
+      "method": "SDG Full",
+      "purpose": "existing_frozen_scores_Supervised",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/51",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "sdg-full-supervised-s2026092702",
+      "method": "SDG Full",
+      "purpose": "existing_frozen_scores_Supervised",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/52",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    },
+    {
+      "row_id": "sdg-full-supervised-s2026092703",
+      "method": "SDG Full",
+      "purpose": "existing_frozen_scores_Supervised",
+      "config_ref": "paper/phase1_experiments_ieee_20261020/source_data/cric_f0_per_seed_54x7.csv",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Existing frozen row; no new RNG or support; original per-run augmentation preserved.",
+      "output_root": "local_artifacts/cric_dura_comparison_20261021/53",
+      "command": "python -X utf8 -m experiments.cric_dura_comparison.build",
+      "budget_ref": "No training or prediction; existing-score aggregation only"
+    }
+  ],
+  "notes": [],
+  "registered_at": "2026-10-21T11:00:47+00:00"
+}

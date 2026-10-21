@@ -34,7 +34,7 @@ Each all-date ManySig target set contains 168\,000 packets, including 126\,000 o
 ManyRx extends the setting to 10 TX and 16 source/16 target RX. Its actual source pool contains 93\,384 packets; per cell, $\lfloor0.07n\rfloor$, $\lfloor0.63n\rfloor$, and the remainder define L/U/V. The target set contains 123\,021 packets. Missing and non-full cells are retained. ManyRx and ManySig belong to the same WiSig acquisition system and may overlap in devices/signals~\cite{wisig}; this is a scale extension, not an independent capture campaign.
 
 \subsubsection{Matched Satellite Augmentation and Ordinary PL}
-All formal rows use clean-plus-satellite concatenation. For a labeled batch and its satellite view $\widetilde x_i$, the identity objective is
+All external comparator rows in this completed suite use clean-plus-satellite concatenation. The separately fixed CRIC recipe introduced below retains its original training configuration. For a labeled batch and its satellite view $\widetilde x_i$, the comparator identity objective is
 \begin{equation}
 \mathcal L_{\rm cls}=\frac1B\sum_{i=1}^{B}\left[\ell(f_\theta(x_i),y_i)+0.68\ell(f_\theta(\widetilde x_i),y_i)\right].
 \label{eq:concat}
@@ -146,3 +146,5 @@ We distinguish source-training cost from deployment calls. RIEI Full performs th
 For frozen inference, 96 models (32 configurations, three seeds) are measured serially on one RTX3090. Batch1/128 each use FP32, TF32 disabled, 100 warmups, and 1000 synchronized calls. All 192\,000 timings and 64 seed-group summaries are independently recomputed; no target input, fitting, or parameter/buffer update occurs. Table~\ref{tab:inference} reports representative identity-path costs. MACs include convolution/matrix products only; GPU-resident synthetic-input timing excludes transfer/preprocessing and is not flight-hardware latency.
 
 All 219 performance rows and 96 cost rows are complete. Three model seeds, overlapping WiSig subsets, substantial source-validation labels, and simulated residual-channel observations delimit the evidence. The benchmark had historical target exposure; fixing the later matrix does not make it a new blind test. No present target score changes training or selection. Negative effects, stronger CE controls, zero PL acceptance, and non-monotonic curves remain part of the experimental results.
+
+\input{cric_dura}
