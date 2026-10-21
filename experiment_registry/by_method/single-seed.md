@@ -33,3 +33,4 @@
 |Raw IQ 适配器：冻结源拟合诊断预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01/report.md)|
 |T1 去除 As 独立 KL：两条 E50 路径|managed_run|[打开](../../automation_reports/CV-SincNet/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01/report.md)|
 |SARD 的 DURA 恢复后增强：从零 E50＝13L＋37U|managed_run|[打开](../../automation_reports/CV-SincNet/20261021-phase1-SARD-DURAaug-e50-13L37U-s2026092701-m2-r01/report.md)|
+|SARD 混合增强修复验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261021-phase1-SARD-DURAmix-e50-13L37U-s2026092701-m2-r01/report.md)|

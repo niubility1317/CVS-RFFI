@@ -1,0 +1,301 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261021-phase1-SARD-DURAmix-e50-13L37U-s2026092701-m2-r01",
+  "group_id": "phase1-SARD-DURA-mixed-coverage-13L37U",
+  "display_name": "SARD 修复验证：保留受损增强＋DURA混合及跨RX对比消融",
+  "description": "单seed从零E50=13L37U。两组均As64=原始受损32+DURA恢复32；MIX保留ORD128，MIX_XRX改为SAT192复用实际增强特征；复用已完成同日程SARD对照。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "SARD-DURAmix",
+    "SARD-MIX-XRX",
+    "保留原As的DURA混合增强"
+  ],
+  "tags": [
+    "SARD",
+    "DURA",
+    "13L37U",
+    "mixed-augmentation",
+    "CROSS_RX",
+    "matched-control",
+    "single-seed",
+    "clean-six-practical",
+    "default-head"
+  ],
+  "comparison_group_id": "SARD-MIX-vs-MIX_XRX-scratch50-13L37U",
+  "parent_run_ids": [
+    "20261021-phase1-SARD-DURAaug-e50-13L37U-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户在完整负结果及源域机制分析后明确：修复问题，然后重新发布实验验证。原要求E50=13L37U、seed2026092701、余量GPU并行、自动七景测试保持。",
+  "code": {
+    "commit": null,
+    "checkout": "code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 ordinary account,CVS-RFFI Python3.10/Torch2.1;FP32/TF32off;CPU2",
+    "cwd": "PROJECT/releases/cvs_SARD_DURAmix_E50_13L37U_20261021_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original source7/63/30;fixed existing formal168000x7;no resplit",
+    "representation": "Existing source IQ256,dataset equalized index1,Fs25MHz;practical residual/post_sync propagation receiver EQ=false/reference_snr_db30,complete original dependency graph;fixed received IQ untouched",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract.role_ids L_s/U_s/V;fixed formal received_views manifest and opaque168000 physical IDs,unchanged",
+    "label_map_ref": "Original map [14-10,14-7,20-15,20-19,6-15,8-20]",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "All six registered originalTX,unchanged source/target registered-class map",
+    "roles": {
+      "L_s": "6300 visibleTX full original source physical IDs",
+      "U_s": "56700 TX hidden; original old gate/ownEMA only",
+      "V": "27000 diagnostic only; no checkpoint selection"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "SameVALIDATED_ONCEall5sourceRX/day/physicalL6300 U56700hidden V27000;noLdev/noRXholdout",
+    "support_query_ref": null,
+    "leo_config_ref": "Original L_s practical generator unchanged;As64 holds32raw+32frozenG;slot parity rotates with step independently of TX/RX/day;formal raw+cachedDURA7 unchanged",
+    "source_pool_label_ratio": 0.07
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only_after_both_readouts_all7fixed_perrow",
+    "external_method_exception": null,
+    "claim_scope": "Human-exposed ManySig engineering benchmark;single Fseed,one fixedGseed;not blind/real-orbit/Phase2"
+  },
+  "checkpoint": {
+    "initialization": "Both F scratch and ownEMA;no F initializer. Same fixed frozen DURA v1.0 already verified in prior run.",
+    "sources": [
+      "DURA:PROJECT/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "Original same data role_ids checked by native against source_contract;DURA v1 prior verified same source lineage reused,TX/F-free R69sourceFINAL20/4940;runtime.validate_source/load_model",
+    "provenance_verdict": "VERIFIED existing fixedDURA provenance/contract;F parents absent;original E30 only no-query smoke,not initializer",
+    "selection_rule": "Fixed FINAL50 for both new rows;all rows automatically tested irrespective of scores;default head joint training"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/SARD-DURA-mixed-training",
+    "gpu_policy": "GPU0..7;least all-owner process count then greatest free memory;free>=12000MB,total<=3/card,own1/card,max2 distinctGPUs;one CPUscorer",
+    "remote_run_root": "PROJECT/runs/20261021-phase1-SARD-DURAmix-e50-13L37U-s2026092701-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261021-phase1-SARD-DURAmix-e50-13L37U-s2026092701-m2-r01/logs",
+    "local_artifact_root": "local_artifacts/cvs_sard_dura_mix",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_sard_dura_mix/runner.py",
+    "stop_rule": "Own source/protocol/shape/seed/freeze/nonfinite/overwrite/unlaunchable/illegal prediction failure:preserve artifacts,stop pending,no automatic retry,no score-based stop,no unrelated intervention",
+    "status": "LOCAL_VERIFIED"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "workers.json",
+    "queue.json",
+    "<row>/smoke.json",
+    "<row>/source/final_ssdg.pth",
+    "<row>/source/result.json",
+    "<row>/prediction/complete.json",
+    "<row>/scoring/scores.json",
+    "<row>/complete.json",
+    "results.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "repaired",
+      "damaged",
+      "net",
+      "matched augmentation differences",
+      "pseudo acceptance/exposure",
+      "training/G costs"
+    ],
+    "dimensions": [
+      "arm",
+      "raw/dura",
+      "scene",
+      "RX",
+      "day",
+      "TX"
+    ],
+    "prediction_ref": "PROJECT/runs/20261021-phase1-SARD-DURAmix-e50-13L37U-s2026092701-m2-r01/<row>/prediction",
+    "scorer_ref": "experiments/cvs_sard_dura_mix/evaluate.py:score",
+    "model_seed_count_per_arm": 1,
+    "success_rule": "Report both new rows versus reused same-calendar SARD control,all7raw/DURA. Positive indication pernewrow if DURA sixscene mean>=+0.5pp,clean>=-0.2pp,lowurban>0pp versus SARD. MIX_XRX-minus-MIX estimates expanded contrastive view membership+anchor count,not restored-only or count-matched effect. Complete all rows,no target retuning/automatic seeds."
+  },
+  "rows": [
+    {
+      "row_id": "SARD_MIX-s2026092701",
+      "method": "SARD raw32+DURA32 ORD128",
+      "purpose": "mixed augmentation ablation",
+      "config_ref": "experiments/cvs_sard_dura_mix/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261021-phase1-SARD-DURAmix-e50-13L37U-s2026092701-m2-r01/SARD_MIX-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019844
+      },
+      "seed_notes": "Native seed controls init/dropout/loaders;data split392005;train421/val422/receiver423 fixed;support N/A;formal844 historical fixed byte metadata,no new test sampling;G seed2026092701 shared",
+      "k": null,
+      "scenario": "Training L_s original three practical residual random views;test clean+sixpractical × raw/DURA",
+      "optimizer": "AdamW,original CENTER_UNITS sinc physical clipping,ownEMA",
+      "lr": 0.0002,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50x222=11100;13L+37U;L128x6=768FNN/step unchanged;As64=32raw+32G;355200GtrainIQ+setup;1420800L exposure;2097900U exposure,original U mechanisms",
+      "output_root": "PROJECT/runs/20261021-phase1-SARD-DURAmix-e50-13L37U-s2026092701-m2-r01/SARD_MIX-s2026092701",
+      "log_path": "PROJECT/runs/20261021-phase1-SARD-DURAmix-e50-13L37U-s2026092701-m2-r01/logs/SARD_MIX-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_sard_dura_mix/runner.py --mode worker --row SARD_MIX-s2026092701",
+      "expected_artifacts": [
+        "<row>/smoke.json",
+        "<row>/source/final_ssdg.pth",
+        "<row>/source/result.json",
+        "<row>/prediction/complete.json",
+        "<row>/scoring/scores.json",
+        "<row>/complete.json"
+      ],
+      "status": "LOCAL_VERIFIED",
+      "weight_decay": 0.0001,
+      "calendar": {
+        "label_epochs": 13,
+        "pseudo_epochs": 37,
+        "optimizer_resets": 0,
+        "LR": "single cosine50",
+        "from_scratch": true
+      },
+      "original_recipe": {
+        "As_KL": 0.0,
+        "ordinary_KL": 1.0,
+        "raw_KL": 1.0,
+        "L_loss_scale": 1.25,
+        "LS": 0.01,
+        "temperature": 1.0,
+        "supcon": "ORD128 sameTX,differentRX,shallow+middle;original loss,temp,schedule",
+        "U_gate": "old",
+        "ownEMA": true
+      },
+      "restored_augmentation": {
+        "enabled": true,
+        "raw_As_slots": 32,
+        "DURA_As_slots": 32,
+        "role": "L_s",
+        "G_frozen": true,
+        "U_G": 0,
+        "target_G_training": 0,
+        "runtime_commit": "47c264286ca689f060a3f36aafb763fe209a6f06",
+        "crossview_mode": "ORD128",
+        "As_KL": 0.0,
+        "clean_branch": "unchanged",
+        "membership": "arange64+step alternating parity;deterministic,metadata/label independent"
+      }
+    },
+    {
+      "row_id": "SARD_MIX_XRX-s2026092701",
+      "method": "SARD raw32+DURA32 SAT192",
+      "purpose": "expanded crossRX contrastive view coverage ablation",
+      "config_ref": "experiments/cvs_sard_dura_mix/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261021-phase1-SARD-DURAmix-e50-13L37U-s2026092701-m2-r01/SARD_MIX_XRX-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019844
+      },
+      "seed_notes": "Native seed controls init/dropout/loaders;data split392005;train421/val422/receiver423 fixed;support N/A;formal844 historical fixed byte metadata,no new test sampling;G seed2026092701 shared",
+      "k": null,
+      "scenario": "Training L_s original three practical residual random views;test clean+sixpractical × raw/DURA",
+      "optimizer": "AdamW,original CENTER_UNITS sinc physical clipping,ownEMA",
+      "lr": 0.0002,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "50x222=11100;13L+37U;L128x6=768FNN/step unchanged;As64=32raw+32G;355200GtrainIQ+setup;1420800L exposure;2097900U exposure,original U mechanisms",
+      "output_root": "PROJECT/runs/20261021-phase1-SARD-DURAmix-e50-13L37U-s2026092701-m2-r01/SARD_MIX_XRX-s2026092701",
+      "log_path": "PROJECT/runs/20261021-phase1-SARD-DURAmix-e50-13L37U-s2026092701-m2-r01/logs/SARD_MIX_XRX-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_sard_dura_mix/runner.py --mode worker --row SARD_MIX_XRX-s2026092701",
+      "expected_artifacts": [
+        "<row>/smoke.json",
+        "<row>/source/final_ssdg.pth",
+        "<row>/source/result.json",
+        "<row>/prediction/complete.json",
+        "<row>/scoring/scores.json",
+        "<row>/complete.json"
+      ],
+      "status": "LOCAL_VERIFIED",
+      "weight_decay": 0.0001,
+      "calendar": {
+        "label_epochs": 13,
+        "pseudo_epochs": 37,
+        "optimizer_resets": 0,
+        "LR": "single cosine50",
+        "from_scratch": true
+      },
+      "original_recipe": {
+        "As_KL": 0.0,
+        "ordinary_KL": 1.0,
+        "raw_KL": 1.0,
+        "L_loss_scale": 1.25,
+        "LS": 0.01,
+        "temperature": 1.0,
+        "supcon": "SAT192 sameTX,differentRX,shallow+middle;original loss,temp,schedule",
+        "U_gate": "old",
+        "ownEMA": true
+      },
+      "restored_augmentation": {
+        "enabled": true,
+        "raw_As_slots": 32,
+        "DURA_As_slots": 32,
+        "role": "L_s",
+        "G_frozen": true,
+        "U_G": 0,
+        "target_G_training": 0,
+        "runtime_commit": "47c264286ca689f060a3f36aafb763fe209a6f06",
+        "crossview_mode": "SAT192",
+        "As_KL": 0.0,
+        "clean_branch": "unchanged",
+        "membership": "arange64+step alternating parity;deterministic,metadata/label independent"
+      }
+    }
+  ],
+  "notes": [
+    "This is an explicitly authorized new method investigation after negative engineering benchmark evidence,not a technical rerun of the completed replacement run. Old outputs and default PAMF final recognizer stay preserved.",
+    "Source-only mechanism evidence in prior mechanism_analysis.md:loss and mixed IQ difficulty collapsed;SC remained ORD128;full paired source batch IDs and channel records matched. No target input/metrics used by new training or checkpoint selection.",
+    "Both new rows preserve half original damaged IQ and half restored IQ within existing As64;sixL FNN,loss coefficients,AsKL0,ordinary/raw KL,oldU/ownEMA,defaulthead unchanged. G receives no TXlabels,gradients or updates.",
+    "MIX_XRX uses existing SAT192 relations onactual32raw+32restored extra anchors in shallow/middle;excludes sameRX positives. Anchor count128→192 also changes,so this is not a count-matched restored-only contrastive ablation. Contrastive FLOPs may rise despite unchanged F forwards.",
+    "G graph32 setup counted;G wall telemetry excludes initial model load and includes32graph setup,not isolated benchmark speed. Both rows use same G path/membership. No online G+F latency claim from cached target IQ.",
+    "Reused prior same-calendar SARD seed01 is fixed before launch;old fullreplacement and oldSARD E30+20/CRIC references descriptive only. Current PAMF deployment version is not replaced by this run.",
+    "Fixed source roles/physical IDs/received views/G lineage alreadyVALIDATED_ONCE and unchanged;fixed DURA sourceFINAL20/4940,266951params;runtime47c264.. graph/reuse/nativeFalse FP32 TF32off.",
+    "8focused boundary,mixture,RNG,gradient,geometry,truthclosure testsPASS. One independent P0/P1 reviewer /root/t1_e50_review found no blockers. Fresh ordinary N607 direct preflight PASS. No additional gates.",
+    "First launcher stage real source checkpoint noquery smoke;synthetic sixL defaulthead gradient plus32G frozenstate and actual auxiliary map gradient checks;PASS immediately continues. Every row all14predictions fixed before separate CPUtruth.",
+    "Source/target exposed ManySig engineering benchmark,one Fseed+one fixedGseed;no multi-seedSD,blind generalization,real-orbit orPhase2 claim. All rows finish regardless of source/target score;no automaticseed expansion."
+  ],
+  "registered_at": "2026-10-21T11:18:25+00:00"
+}
