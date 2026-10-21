@@ -101,3 +101,11 @@ VERIFIED：控制器代码 `ed32dece2b34a0464c2bff6b5b80e1580376085e` 已提交�
 VERIFIED：control-r03代码 `e72bd3746a00146c4e8e1d29eb548727df1f38b3` 已提交推送并独立核对远端OID，归档传输匹配、远端编译通过。新owner PID 128413 的实际PID/CWD/argv已读回。全部24次五源固定预算训练已取消；共56个未启动五源行标为SKIPPED_USER，16个已完成五源实例保留历史。本次有效必需360行，核验时完成67行、8行运行，运行中没有五源，健康worker未重启。最终统计仅按360有效行，不将撤下行当失败或缺项。
 
 ETA更新（UTC+8）：剔除已完成和被撤下行后，剩余约5至10小时，中心估计约6.3小时（约10月21日22:40；偏慢情形约22日02:00）。依据同方法历史三种子训练/七视图评分成本并为两卡共享保留吞吐余量；运行中行保守按整行估计。不是截止保证，详情见eta_remaining_scope.json。每小时监控已更新为360行范围及control-r03，不补跑五源。
+
+## 全部逐行训练、预测和评分闭合（2026-10-22，UTC+8）
+
+**VERIFIED**：有效360/360行全部ANALYZED，覆盖1/2/3/4/6源、四方法Full/自身CE、三seed及全部七视图；无失败，56行SKIPPED_USER与16行既有五源历史保留。新发布的正式源数量实例仍为360次训练。
+
+独立CPU最终汇总仍在control-r03原owner内运行，analysis.log尚无输出，summary/completion尚未生成；不得将逐行闭合冒充最终汇总交付。完整曲线/配对收益/训练曝光汇总程序已准备在experiments/phase1_dg_sourcecount6/curves.py，待原审计的audited_rows.json完成后直接分析，不重复启动审计或训练。
+
+外部有效行闭合后，PAMF资源controller已自动放开GPU2/3第二个槽；当前8卡每卡2条、16条PAMF活动worker，健康任务继续。
