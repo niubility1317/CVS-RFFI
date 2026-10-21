@@ -1,0 +1,1 @@
+from experiments.cvs_t1_e50.evaluation_plan import VIEWS,require_seven_views
