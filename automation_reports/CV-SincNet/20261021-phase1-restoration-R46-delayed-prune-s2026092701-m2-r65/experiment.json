@@ -432,5 +432,18 @@
       "target_results_used_for_selection": false
     }
   ],
-  "registered_at": "2026-10-21T00:02:21+00:00"
+  "registered_at": "2026-10-21T00:02:21+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "all_fixed_rows_scored": true,
+    "accepted_R17": [
+      "prune_after5",
+      "prune_after10"
+    ],
+    "accepted_R46": [
+      "prune_after5",
+      "prune_after10"
+    ],
+    "goal_complete": false
+  }
 }

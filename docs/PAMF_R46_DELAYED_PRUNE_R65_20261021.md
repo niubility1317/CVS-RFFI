@@ -1,6 +1,6 @@
 # R65：固定总预算内延后裁剪既有 U-Net
 
-状态：VERIFIED / TRAINING：方法 4fd058f9bae79687f924e06d057e6a20083ff6dc 已普通账户发布，单归档SHA/compile与真实M35/F50/2Ls双阶段零更新no-query smoke PASS。R64同卡行已完成并实际退出；两行物理GPU3/2的实际PID/CWD/argv/CUDA/CPU2、GPU PID、日志增长和有限epoch已核实，每卡1/max2own，其他owner不变。原M35直接初始化/全程冻结IQ教师与训练前固定GN4通道图不变；5+15/10+10合计E20/4940，最终273765，AdamW仅转换时重置一次，global LR/data/teacher日程继续。全L/U且0TX/F/V/target优化，无新校准；全部七正式/独立truthlast/同卡及分阶段成本、strict权重和报告由现有owner自动收尾。core c3b12eaea固定早于读取R64源或目标准确率，当前无R65识别收益结论；性能优先，完整目标ACTIVE。
+状态：VERIFIED / ANALYZED：两行完整E20/4940、source1800×7与正式168000×7、逐行全预测固定后独立truth-last、全部20轮/源转换曝光/同卡成本、实际所属进程退出和独立权重CPU严格重载均已核实。prune_after5 273765参数，较M35七景提高6/下降1，lowurban 67.698810%（较M35+0.188690pp）；70%=False、其他五景5pp=False；dense/compact 5/15轮，实际405.952/1141.951s；prune_after10 273765参数，较M35七景提高7/下降0，lowurban 68.024405%（较M35+0.514286pp）；70%=False、其他五景5pp=False；dense/compact 10/10轮，实际810.412/760.030s。指定M35直接初值和全程冻结IQ教师不变；通道图在训练前固定，转换只用同row源训练状态，AdamW重置一次而全局LR/data/teacher日程不重启，分阶段成本完整计入。全部L/U参加，0TX/F/V/target训练、新校准或外部学生继承。全部正负结果保留，不以容差、减参或源重建代替识别提升或逐细节TX真实性；完整目标ACTIVE。
 
 研究问题来自源域重建目标和不可逆结构裁剪：在原 M35 完整图上先做部分源更新，再裁剪并继续训练，是否比初始化时就移除通道更有利。此问题和矩阵在读取 R64 源/正式成绩前固定，不因其他已暴露目标分数挑选宽度、裁剪图、父权重或教师。不是新的恢复网络路线。
 
@@ -15,3 +15,5 @@
 无监督边界：source 原始 L6300/U56700 的 TX 真值均隐藏，两者完整参加，允许原合法配对 clean 自监督。G 的优化/初始化/裁剪不读 TX、F 权重/输出、V 或 target。冻结 F50 默认头只用于合法 no-query smoke 和冻结评测。最终仍由同一恢复 IQ 统一进入 PAMF 的 FFT、PA、时域及统计分支。
 
 发布前执行既有最小流程。拟用物理 GPU3/2，每卡最多一条本任务 GPU worker，总计最多两条；必须先观察 R64 同卡 row complete 和所属实际 GPU PID 退出，再按共享容量分配。当前 R64 和其他 owner 保持。每行 E20 后自动 source1800×7、同卡 G/G+F 成本与正式168000×7，全部七视图 prediction 固定后才独立 truth-last；源无收益不取消正式测试。未发布前不预报识别提升或提速。
+
+全部七场景与成本见[正式报告](../automation_reports/CV-SincNet/20261021-phase1-restoration-R46-delayed-prune-s2026092701-m2-r65/report.md)。

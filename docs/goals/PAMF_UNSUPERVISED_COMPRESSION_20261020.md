@@ -1,5 +1,7 @@
 # 无 TX 标签恢复器的压缩与性能联合优化
 
+2026-10-21 当前R65：VERIFIED / ANALYZED：两行完整E20/4940、source1800×7与正式168000×7、逐行全预测固定后独立truth-last、全部20轮/源转换曝光/同卡成本、实际所属进程退出和独立权重CPU严格重载均已核实。prune_after5 273765参数，较M35七景提高6/下降1，lowurban 67.698810%（较M35+0.188690pp）；70%=False、其他五景5pp=False；dense/compact 5/15轮，实际405.952/1141.951s；prune_after10 273765参数，较M35七景提高7/下降0，lowurban 68.024405%（较M35+0.514286pp）；70%=False、其他五景5pp=False；dense/compact 10/10轮，实际810.412/760.030s。指定M35直接初值和全程冻结IQ教师不变；通道图在训练前固定，转换只用同row源训练状态，AdamW重置一次而全局LR/data/teacher日程不重启，分阶段成本完整计入。全部L/U参加，0TX/F/V/target训练、新校准或外部学生继承。全部正负结果保留，不以容差、减参或源重建代替识别提升或逐细节TX真实性；完整目标ACTIVE。[全部正式结果](../PAMF_R46_DELAYED_PRUNE_R65_20261021.md)。
+
 2026-10-21 R66 LOCAL_VERIFIED：现有273765静态GN4图，单源E20/4940轨迹共享final/末16至20轮均值/11至20轮decay.99参数EMA三个固定读出；M35直接初值/全程冻结IQ教师，0TX/F/V/target优化，无新增推理参数/额外G前向/校准。source/teacher各1260000及L126000/U1134000只计一次，平均开销及三读出source/profile/正式成本分列。58checks/CLI/真实M35合成CPU/ONEP0P1PASS，core91b30e7/alias566b5ba先于任何R65识别率读取；未发布，无新效果结论。sourceGPU3等R65同卡实际退出，source子进程退出后读出GPU3/2各1/max2、stepEMA同卡排队；全部自动七正式/独立truthlast，无源筛选。性能优先，完整目标ACTIVE。[固定方案](../PAMF_R46_WEIGHT_MEAN_R66_20261021.md)。
 
 2026-10-21 R66 CPU_PROTOTYPE：既有273765静态GN4图，同一次源轨迹固定输出final/末16至20轮参数等权均值/11至20轮decay0.99参数EMA；教师始终原M35，全部读出都正式测试，无源筛选。训练总E20/4940和全部L/U曝光只计一次，平均额外时间显存及三个评测成本分别列账；0新增推理参数/G前向/校准或TX/F/V/target优化。16checks和真实M35合成CPU原型通过，714唯一参数/770别名路径，父与源权重不变；合成通知不是真实训练。当前未登记/发布/训练，无新性能结论，core在读取R65识别率前固定，性能优先/完整目标ACTIVE。[固定原型](../PAMF_R46_WEIGHT_MEAN_R66_20261021.md)。
