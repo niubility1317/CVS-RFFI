@@ -1,6 +1,6 @@
 # R66：同一次源训练的三个固定参数读出
 
-状态：VERIFIED / FORMAL_PREDICTING：一次源E20/4940已完成且实际源进程退出；全部L126000/U1134000，student/teacher各1260000，原M35 teacher未改、0TX/F/V/target优化。EMA2470次/末五轮均值5快照已固定，三个普通读出全部冻结。实际训练1534.196s只计一次，平均host enqueue26.078s不是隔离GPU新增耗时。final与late_mean的source七景已完成，现分别GPU3/2实际正式预测；step_ema同GPU3排队。当前未读取任何R66识别率，不宣称收益；七正式/独立truthlast/三权重/同卡成本与自动Git收尾保持，完整目标ACTIVE。
+状态：VERIFIED / ANALYZED：一次源E20/4940，三个固定读出全部source1800×7与正式168000×7、每读出七预测固定后独立truthlast，实际所属进程退出和三份独立权重CPU严格重载均核实。final lowurban68.475595%/较M35+0.965476pp，七景较M35提高7/下降0，70%=False、其他五景5pp=False；late_mean lowurban67.292857%/较M35-0.217262pp，七景较M35提高4/下降3，70%=False、其他五景5pp=False；step_ema lowurban67.442857%/较M35-0.067262pp，七景较M35提高2/下降5，70%=False、其他五景5pp=False。每版273765参数，源L126000/U1134000、student/teacher各1260000曝光与训练1534.196s只计一次，三个相关读出不当作三次训练或三个seed，平均/导出显存及各读出预测成本分开。M35直接初值/冻结IQ教师，714唯一参数平均/770共享别名保留，原pairedclean自监督，0TX/F/V/target优化、新校准或额外G前向。全部正负结果保留，容差或减参不代表性能提升，逐细节输入TX真实性仍未证明；完整目标ACTIVE。
 
 只优化既有 273765 参数 GN4 U-Net/context/三 prior/六 CG 图，不增加恢复网络族或推理参数。假设来自源优化轨迹：同一训练路径的末次参数与固定后段参数平均，可能产生不同的恢复稳定性，需正式测试验证。不是从已暴露 target 准确率挑选权重、宽度、平均窗口或父。当前矩阵在读取 R65 任意识别率前固定。
 
@@ -17,3 +17,5 @@
 训练成本只计一条源轨迹：L126000/U1134000、source/teacher 各1260000输入；三个相关读出不能称三个独立训练，也不能把成本重复计三次。平均计算的额外训练时间/显存、每读出的 source/profile/正式预测成本分别报告。完整轨迹、所有读出正负结果保留。
 
 后续发布沿用最小流程。拟单 GPU3 承担共享训练，等 R65 同卡 row complete 且实际旧 worker 退出后分配；训练进程退出后，三个固定读出在 GPU3/2 每卡一条、总数最多两条进行 source1800×7、同卡成本、正式168000×7。同卡 `final`/`step_ema` 串行，其他 owner 保持。每读出全部七预测固定后才独立 truth-last；冻结 F50/default head 与 FFT/PA/时域/统计分支保持。具体 launcher 和登记尚未实施，当前不占新 GPU。
+
+全部七场景与共享成本见[正式报告](../automation_reports/CV-SincNet/20261021-phase1-restoration-R46-weight-mean-s2026092701-m3-r66/report.md)。
