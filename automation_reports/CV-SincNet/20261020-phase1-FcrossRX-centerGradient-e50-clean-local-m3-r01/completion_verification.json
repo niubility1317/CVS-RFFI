@@ -1,0 +1,73 @@
+{
+  "status": "VERIFIED",
+  "execution_code_commit": "67afd61dad3f313c0919d5c08349e2ad4a1ff0f6",
+  "run_id": "20261020-phase1-FcrossRX-centerGradient-e50-clean-local-m3-r01",
+  "all_three_rows_complete": true,
+  "three_seeds_each_condition": true,
+  "live_owned_workers": 0,
+  "rows": [
+    {
+      "row_id": "CENTER_GRAD-s2026092701",
+      "checkpoint_and_actual_args_verified": true,
+      "default_head_joint_updated": true,
+      "deployed_core_feature_parameter_tensors_changed": 54,
+      "prediction_without_truth_or_fitting": true,
+      "independent_CPU_truth_last": true,
+      "opaque_ID_coverage_and_correctness_mean_verified": true,
+      "all_worker_exits_zero": true,
+      "prediction_completed_before_score": true,
+      "source_seconds": 5606.006877660751,
+      "prediction_seconds": 40.84040690003894,
+      "peak_cuda_MiB": 1972.05126953125
+    },
+    {
+      "row_id": "CENTER_GRAD-s2026092702",
+      "checkpoint_and_actual_args_verified": true,
+      "default_head_joint_updated": true,
+      "deployed_core_feature_parameter_tensors_changed": 54,
+      "prediction_without_truth_or_fitting": true,
+      "independent_CPU_truth_last": true,
+      "opaque_ID_coverage_and_correctness_mean_verified": true,
+      "all_worker_exits_zero": true,
+      "prediction_completed_before_score": true,
+      "source_seconds": 5509.203616857529,
+      "prediction_seconds": 33.66620640002657,
+      "peak_cuda_MiB": 1972.05126953125
+    },
+    {
+      "row_id": "CENTER_GRAD-s2026092703",
+      "checkpoint_and_actual_args_verified": true,
+      "default_head_joint_updated": true,
+      "deployed_core_feature_parameter_tensors_changed": 54,
+      "prediction_without_truth_or_fitting": true,
+      "independent_CPU_truth_last": true,
+      "opaque_ID_coverage_and_correctness_mean_verified": true,
+      "all_worker_exits_zero": true,
+      "prediction_completed_before_score": true,
+      "source_seconds": 4227.948871135712,
+      "prediction_seconds": 32.013528499985114,
+      "peak_cuda_MiB": 1972.05126953125
+    }
+  ],
+  "full50_epoch_11100_native_and_auxiliary_logs_verified": true,
+  "statistic_backward_objectives_per_model": 39960,
+  "independent_confusion_metric_and_pair_statistics_check": true,
+  "IQ_reads": 0,
+  "truth_reads": 0,
+  "model_forwards": 0,
+  "optimizer_updates": 0,
+  "head_fit_updates": 0,
+  "scientific_verdict": {
+    "PASS": false,
+    "both_weak_means_positive_and_each2of3": false,
+    "weakmean_positive3of3": false,
+    "other_TX_overall_worstRX_health": false,
+    "all3_required": true,
+    "rule": "Both weakTX mean>0 and >=2/3positive; weakmean>0 all3; overallmean>=BASE; eachotherTXmean>=BASE-.25pp; worstRXmean>=BASE-.5pp. Fixed before target; no target-driven tuning/ranking/retraining."
+  },
+  "secondary_status": {
+    "STAT_GRAD": "PENDING_OTHER_FIXED_MATRIX",
+    "NORM_ONLY": "PENDING_OTHER_FIXED_MATRIX"
+  },
+  "goal_completion_not_inferred_from_artifact_completion": true
+}

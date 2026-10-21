@@ -1,0 +1,860 @@
+{
+  "status": "ARTIFACTS_COMPLETE",
+  "run_id": "20261020-phase1-FcrossRX-centerGradient-e50-clean-local-m3-r01",
+  "reference_run": "20261019-phase1-FcrossRX-TXrisk-geometry-e50-clean-local-m4-r01",
+  "records": [
+    {
+      "row_id": "CENTER_GRAD-s2026092701",
+      "treatment": "CENTER_GRAD",
+      "model_seed": 2026092701,
+      "current": {
+        "count": 168000,
+        "accuracy": 0.8528214285714286,
+        "macro_f1": 0.8501022090645324,
+        "confusion": [
+          [
+            27097,
+            133,
+            167,
+            329,
+            116,
+            158
+          ],
+          [
+            522,
+            18239,
+            126,
+            8995,
+            59,
+            59
+          ],
+          [
+            899,
+            266,
+            21503,
+            37,
+            143,
+            5152
+          ],
+          [
+            1829,
+            4483,
+            770,
+            20717,
+            26,
+            175
+          ],
+          [
+            10,
+            23,
+            15,
+            7,
+            27931,
+            14
+          ],
+          [
+            21,
+            35,
+            111,
+            8,
+            38,
+            27787
+          ]
+        ],
+        "per_TX_recall": [
+          0.96775,
+          0.6513928571428571,
+          0.7679642857142858,
+          0.7398928571428571,
+          0.9975357142857143,
+          0.9923928571428572
+        ],
+        "receiver_accuracy": {
+          "1-1": 0.8084166666666667,
+          "14-7": 0.7696666666666667,
+          "2-1": 0.9225416666666667,
+          "20-1": 0.8410416666666667,
+          "7-14": 0.9092083333333333,
+          "7-7": 0.8914583333333334,
+          "8-8": 0.8274166666666667
+        },
+        "day_accuracy": {
+          "2021_03_01": 0.8297142857142857,
+          "2021_03_08": 0.8692380952380953,
+          "2021_03_15": 0.8229761904761905,
+          "2021_03_23": 0.8893571428571428
+        },
+        "worst_RX": 0.7696666666666667,
+        "worst_day": 0.8229761904761905
+      },
+      "reused_BASE": {
+        "count": 168000,
+        "accuracy": 0.8513928571428572,
+        "macro_f1": 0.848641811997774,
+        "confusion": [
+          [
+            27043,
+            141,
+            201,
+            332,
+            121,
+            162
+          ],
+          [
+            573,
+            18460,
+            107,
+            8726,
+            60,
+            74
+          ],
+          [
+            712,
+            309,
+            21268,
+            45,
+            114,
+            5552
+          ],
+          [
+            1935,
+            4493,
+            857,
+            20572,
+            27,
+            116
+          ],
+          [
+            8,
+            23,
+            12,
+            10,
+            27932,
+            15
+          ],
+          [
+            21,
+            39,
+            138,
+            4,
+            39,
+            27759
+          ]
+        ],
+        "per_TX_recall": [
+          0.9658214285714286,
+          0.6592857142857143,
+          0.7595714285714286,
+          0.7347142857142858,
+          0.9975714285714286,
+          0.9913928571428572
+        ],
+        "receiver_accuracy": {
+          "1-1": 0.80575,
+          "14-7": 0.764,
+          "2-1": 0.924125,
+          "20-1": 0.8407083333333333,
+          "7-14": 0.9156666666666666,
+          "7-7": 0.8860416666666666,
+          "8-8": 0.8234583333333333
+        },
+        "day_accuracy": {
+          "2021_03_01": 0.8238571428571428,
+          "2021_03_08": 0.8675,
+          "2021_03_15": 0.8291904761904761,
+          "2021_03_23": 0.8850238095238095
+        },
+        "worst_RX": 0.764,
+        "worst_day": 0.8238571428571428
+      }
+    },
+    {
+      "row_id": "CENTER_GRAD-s2026092702",
+      "treatment": "CENTER_GRAD",
+      "model_seed": 2026092702,
+      "current": {
+        "count": 168000,
+        "accuracy": 0.8419940476190476,
+        "macro_f1": 0.8385193899336211,
+        "confusion": [
+          [
+            27045,
+            136,
+            151,
+            501,
+            91,
+            76
+          ],
+          [
+            683,
+            15226,
+            147,
+            11822,
+            68,
+            54
+          ],
+          [
+            736,
+            70,
+            23032,
+            74,
+            296,
+            3792
+          ],
+          [
+            1914,
+            5020,
+            360,
+            20580,
+            12,
+            114
+          ],
+          [
+            9,
+            18,
+            9,
+            19,
+            27928,
+            17
+          ],
+          [
+            19,
+            18,
+            115,
+            22,
+            182,
+            27644
+          ]
+        ],
+        "per_TX_recall": [
+          0.9658928571428571,
+          0.5437857142857143,
+          0.8225714285714286,
+          0.735,
+          0.9974285714285714,
+          0.9872857142857143
+        ],
+        "receiver_accuracy": {
+          "1-1": 0.7975,
+          "14-7": 0.7272916666666667,
+          "2-1": 0.9053333333333333,
+          "20-1": 0.800125,
+          "7-14": 0.923125,
+          "7-7": 0.8875833333333333,
+          "8-8": 0.853
+        },
+        "day_accuracy": {
+          "2021_03_01": 0.8072380952380952,
+          "2021_03_08": 0.8706190476190476,
+          "2021_03_15": 0.8090714285714286,
+          "2021_03_23": 0.8810476190476191
+        },
+        "worst_RX": 0.7272916666666667,
+        "worst_day": 0.8072380952380952
+      },
+      "reused_BASE": {
+        "count": 168000,
+        "accuracy": 0.8442142857142857,
+        "macro_f1": 0.8415759235654631,
+        "confusion": [
+          [
+            26809,
+            230,
+            122,
+            700,
+            68,
+            71
+          ],
+          [
+            598,
+            16071,
+            62,
+            11176,
+            51,
+            42
+          ],
+          [
+            772,
+            76,
+            22534,
+            67,
+            211,
+            4340
+          ],
+          [
+            1819,
+            4886,
+            371,
+            20801,
+            18,
+            105
+          ],
+          [
+            12,
+            37,
+            7,
+            21,
+            27907,
+            16
+          ],
+          [
+            21,
+            24,
+            103,
+            20,
+            126,
+            27706
+          ]
+        ],
+        "per_TX_recall": [
+          0.9574642857142858,
+          0.5739642857142857,
+          0.8047857142857143,
+          0.7428928571428571,
+          0.9966785714285714,
+          0.9895
+        ],
+        "receiver_accuracy": {
+          "1-1": 0.806375,
+          "14-7": 0.748,
+          "2-1": 0.9030416666666666,
+          "20-1": 0.802375,
+          "7-14": 0.9151666666666667,
+          "7-7": 0.8883333333333333,
+          "8-8": 0.8462083333333333
+        },
+        "day_accuracy": {
+          "2021_03_01": 0.8135,
+          "2021_03_08": 0.8685,
+          "2021_03_15": 0.818595238095238,
+          "2021_03_23": 0.8762619047619048
+        },
+        "worst_RX": 0.748,
+        "worst_day": 0.8135
+      }
+    },
+    {
+      "row_id": "CENTER_GRAD-s2026092703",
+      "treatment": "CENTER_GRAD",
+      "model_seed": 2026092703,
+      "current": {
+        "count": 168000,
+        "accuracy": 0.8466547619047619,
+        "macro_f1": 0.8426643877456894,
+        "confusion": [
+          [
+            26985,
+            91,
+            259,
+            531,
+            45,
+            89
+          ],
+          [
+            907,
+            15526,
+            143,
+            11293,
+            91,
+            40
+          ],
+          [
+            1062,
+            70,
+            22906,
+            61,
+            233,
+            3668
+          ],
+          [
+            2034,
+            2961,
+            1253,
+            21615,
+            13,
+            124
+          ],
+          [
+            51,
+            40,
+            267,
+            20,
+            27596,
+            26
+          ],
+          [
+            17,
+            18,
+            282,
+            21,
+            52,
+            27610
+          ]
+        ],
+        "per_TX_recall": [
+          0.96375,
+          0.5545,
+          0.8180714285714286,
+          0.7719642857142858,
+          0.9855714285714285,
+          0.9860714285714286
+        ],
+        "receiver_accuracy": {
+          "1-1": 0.7817916666666667,
+          "14-7": 0.7753333333333333,
+          "2-1": 0.9043333333333333,
+          "20-1": 0.8088333333333333,
+          "7-14": 0.9130416666666666,
+          "7-7": 0.8854166666666666,
+          "8-8": 0.8578333333333333
+        },
+        "day_accuracy": {
+          "2021_03_01": 0.8073809523809524,
+          "2021_03_08": 0.8716428571428572,
+          "2021_03_15": 0.8280238095238095,
+          "2021_03_23": 0.8795714285714286
+        },
+        "worst_RX": 0.7753333333333333,
+        "worst_day": 0.8073809523809524
+      },
+      "reused_BASE": {
+        "count": 168000,
+        "accuracy": 0.8472440476190476,
+        "macro_f1": 0.8435637849175182,
+        "confusion": [
+          [
+            27027,
+            94,
+            250,
+            513,
+            50,
+            66
+          ],
+          [
+            797,
+            16103,
+            209,
+            10769,
+            82,
+            40
+          ],
+          [
+            999,
+            80,
+            22763,
+            55,
+            223,
+            3880
+          ],
+          [
+            2389,
+            2824,
+            1335,
+            21302,
+            10,
+            140
+          ],
+          [
+            26,
+            78,
+            272,
+            30,
+            27566,
+            28
+          ],
+          [
+            22,
+            20,
+            302,
+            21,
+            59,
+            27576
+          ]
+        ],
+        "per_TX_recall": [
+          0.96525,
+          0.5751071428571428,
+          0.8129642857142857,
+          0.7607857142857143,
+          0.9845,
+          0.9848571428571429
+        ],
+        "receiver_accuracy": {
+          "1-1": 0.7922916666666666,
+          "14-7": 0.7761666666666667,
+          "2-1": 0.9084166666666667,
+          "20-1": 0.8151666666666667,
+          "7-14": 0.904875,
+          "7-7": 0.8754583333333333,
+          "8-8": 0.8583333333333333
+        },
+        "day_accuracy": {
+          "2021_03_01": 0.8121904761904762,
+          "2021_03_08": 0.8745238095238095,
+          "2021_03_15": 0.8244523809523809,
+          "2021_03_23": 0.8778095238095238
+        },
+        "worst_RX": 0.7761666666666667,
+        "worst_day": 0.8121904761904762
+      }
+    }
+  ],
+  "paired": [
+    {
+      "row_id": "CENTER_GRAD-s2026092701",
+      "treatment": "CENTER_GRAD",
+      "model_seed": 2026092701,
+      "accuracy_pp": 0.14285714285714457,
+      "macro_f1_pp": 0.14603970667583788,
+      "per_TX_pp": [
+        0.19285714285713906,
+        -0.7892857142857146,
+        0.8392857142857202,
+        0.5178571428571366,
+        -0.003571428571425006,
+        0.10000000000000009
+      ],
+      "weak_TX_mean_pp": -0.135714285714289,
+      "other_TX_mean_pp": 0.2821428571428586,
+      "worst_RX_pp": 0.5666666666666709,
+      "worst_day_pp": -0.08809523809523157
+    },
+    {
+      "row_id": "CENTER_GRAD-s2026092702",
+      "treatment": "CENTER_GRAD",
+      "model_seed": 2026092702,
+      "accuracy_pp": -0.22202380952380807,
+      "macro_f1_pp": -0.30565336318419956,
+      "per_TX_pp": [
+        0.8428571428571341,
+        -3.017857142857139,
+        1.7785714285714294,
+        -0.7892857142857146,
+        0.07500000000000284,
+        -0.22142857142857242
+      ],
+      "weak_TX_mean_pp": -1.9035714285714267,
+      "other_TX_mean_pp": 0.6187499999999985,
+      "worst_RX_pp": -2.070833333333333,
+      "worst_day_pp": -0.6261904761904802
+    },
+    {
+      "row_id": "CENTER_GRAD-s2026092703",
+      "treatment": "CENTER_GRAD",
+      "model_seed": 2026092703,
+      "accuracy_pp": -0.05892857142857366,
+      "macro_f1_pp": -0.08993971718287419,
+      "per_TX_pp": [
+        -0.15000000000000568,
+        -2.0607142857142824,
+        0.5107142857142866,
+        1.1178571428571482,
+        0.1071428571428501,
+        0.12142857142857233
+      ],
+      "weak_TX_mean_pp": -0.4714285714285671,
+      "other_TX_mean_pp": 0.14732142857142583,
+      "worst_RX_pp": -0.08333333333333526,
+      "worst_day_pp": -0.4809523809523819
+    }
+  ],
+  "by_arm": {
+    "CENTER_GRAD": {
+      "paired_summary": {
+        "metrics": {
+          "accuracy_pp": {
+            "n": 3,
+            "mean": -0.04603174603174572,
+            "sample_SD": 0.1827820380442098,
+            "positive_count": 1
+          },
+          "macro_f1_pp": {
+            "n": 3,
+            "mean": -0.08318445789707862,
+            "sample_SD": 0.2259222930255222,
+            "positive_count": 1
+          },
+          "weak_TX_mean_pp": {
+            "n": 3,
+            "mean": -0.8369047619047609,
+            "sample_SD": 0.93888729554803,
+            "positive_count": 0
+          },
+          "other_TX_mean_pp": {
+            "n": 3,
+            "mean": 0.34940476190476094,
+            "sample_SD": 0.2428051633799117,
+            "positive_count": 3
+          },
+          "worst_RX_pp": {
+            "n": 3,
+            "mean": -0.5291666666666658,
+            "sample_SD": 1.3741095601637217,
+            "positive_count": 1
+          },
+          "worst_day_pp": {
+            "n": 3,
+            "mean": -0.3984126984126979,
+            "sample_SD": 0.27838143025444323,
+            "positive_count": 0
+          }
+        },
+        "per_TX": [
+          {
+            "TX": "14-10",
+            "n": 3,
+            "mean": 0.29523809523808914,
+            "sample_SD": 0.5042843653023892,
+            "positive_count": 2
+          },
+          {
+            "TX": "14-7",
+            "n": 3,
+            "mean": -1.9559523809523787,
+            "sample_SD": 1.117973141707003,
+            "positive_count": 0
+          },
+          {
+            "TX": "20-15",
+            "n": 3,
+            "mean": 1.0428571428571454,
+            "sample_SD": 0.657986647715155,
+            "positive_count": 3
+          },
+          {
+            "TX": "20-19",
+            "n": 3,
+            "mean": 0.28214285714285675,
+            "sample_SD": 0.9751765931128091,
+            "positive_count": 2
+          },
+          {
+            "TX": "6-15",
+            "n": 3,
+            "mean": 0.05952380952380931,
+            "sample_SD": 0.05695654149478445,
+            "positive_count": 2
+          },
+          {
+            "TX": "8-20",
+            "n": 3,
+            "mean": 0.0,
+            "sample_SD": 0.1920618522821259,
+            "positive_count": 2
+          }
+        ]
+      },
+      "absolute": {
+        "accuracy": {
+          "n": 3,
+          "mean": 84.7156746031746,
+          "sample_SD": 0.5431117345427524,
+          "positive_count": 3
+        },
+        "macro_f1": {
+          "n": 3,
+          "mean": 84.37619955812809,
+          "sample_SD": 0.5868899554040369,
+          "positive_count": 3
+        },
+        "worst_RX": {
+          "n": 3,
+          "mean": 75.74305555555556,
+          "sample_SD": 2.6254375737586466,
+          "positive_count": 3
+        },
+        "worst_day": {
+          "n": 3,
+          "mean": 81.2531746031746,
+          "sample_SD": 0.9045436244628088,
+          "positive_count": 3
+        }
+      }
+    }
+  },
+  "secondary_companion_run": "20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01",
+  "secondary_comparisons": {
+    "STAT_GRAD": {
+      "status": "PENDING_OTHER_FIXED_MATRIX",
+      "n": 0
+    },
+    "NORM_ONLY": {
+      "status": "PENDING_OTHER_FIXED_MATRIX",
+      "n": 0
+    }
+  },
+  "scientific_verdict": {
+    "PASS": false,
+    "both_weak_means_positive_and_each2of3": false,
+    "weakmean_positive3of3": false,
+    "other_TX_overall_worstRX_health": false,
+    "all3_required": true,
+    "rule": "Both weakTX mean>0 and >=2/3positive; weakmean>0 all3; overallmean>=BASE; eachotherTXmean>=BASE-.25pp; worstRXmean>=BASE-.5pp. Fixed before target; no target-driven tuning/ranking/retraining."
+  },
+  "cost": [
+    {
+      "row_id": "CENTER_GRAD-s2026092701",
+      "epochs": 50,
+      "optimizer_steps": 11100,
+      "source_seconds": 5606.006877660751,
+      "prediction_seconds": 40.84040690003894,
+      "peak_cuda_MiB": 1972.05126953125,
+      "source_packet_reads": {
+        "L_s": 1420800,
+        "U_s": 963900,
+        "V": 2754000
+      },
+      "statistic_observation": {
+        "status": "VERIFIED",
+        "policy": "CENTER_GRAD",
+        "calls": 11100,
+        "applied_calls": 9990,
+        "actual_layer_forward_objectives": 39960,
+        "backward_calls": 39960,
+        "valid_anchors": 5114880,
+        "gradient_means": {
+          "native_descriptor_grad_norm": 0.011639674768035718,
+          "policy_descriptor_grad_norm": 0.01160195087143805,
+          "delivered_descriptor_grad_norm": 0.01160195087143805,
+          "norm_ratio": 0.9971779298063393,
+          "translation_removed_norm": 0.0009028655732391099,
+          "scale_removed_norm": 0.0
+        },
+        "clamped_channel_occurrences": 0,
+        "extra_model_forwards": 0,
+        "extra_L_packets": 0,
+        "extra_optimizer_updates": 0,
+        "extra_parameters": 0,
+        "head_fit_updates": 0,
+        "default_head_direct_aux_gradient": false,
+        "U_truth_read": false,
+        "temperature": 0.2,
+        "layers": [
+          "time_down",
+          "t2.pool"
+        ],
+        "forward_exact_native": true
+      },
+      "BASE_training_reused": true
+    },
+    {
+      "row_id": "CENTER_GRAD-s2026092702",
+      "epochs": 50,
+      "optimizer_steps": 11100,
+      "source_seconds": 5509.203616857529,
+      "prediction_seconds": 33.66620640002657,
+      "peak_cuda_MiB": 1972.05126953125,
+      "source_packet_reads": {
+        "L_s": 1420800,
+        "U_s": 963900,
+        "V": 2754000
+      },
+      "statistic_observation": {
+        "status": "VERIFIED",
+        "policy": "CENTER_GRAD",
+        "calls": 11100,
+        "applied_calls": 9990,
+        "actual_layer_forward_objectives": 39960,
+        "backward_calls": 39960,
+        "valid_anchors": 5114880,
+        "gradient_means": {
+          "native_descriptor_grad_norm": 0.011574893487773876,
+          "policy_descriptor_grad_norm": 0.011534445733536973,
+          "delivered_descriptor_grad_norm": 0.011534445733536973,
+          "norm_ratio": 0.9970035151885198,
+          "translation_removed_norm": 0.0009335042400424799,
+          "scale_removed_norm": 0.0
+        },
+        "clamped_channel_occurrences": 0,
+        "extra_model_forwards": 0,
+        "extra_L_packets": 0,
+        "extra_optimizer_updates": 0,
+        "extra_parameters": 0,
+        "head_fit_updates": 0,
+        "default_head_direct_aux_gradient": false,
+        "U_truth_read": false,
+        "temperature": 0.2,
+        "layers": [
+          "time_down",
+          "t2.pool"
+        ],
+        "forward_exact_native": true
+      },
+      "BASE_training_reused": true
+    },
+    {
+      "row_id": "CENTER_GRAD-s2026092703",
+      "epochs": 50,
+      "optimizer_steps": 11100,
+      "source_seconds": 4227.948871135712,
+      "prediction_seconds": 32.013528499985114,
+      "peak_cuda_MiB": 1972.05126953125,
+      "source_packet_reads": {
+        "L_s": 1420800,
+        "U_s": 963900,
+        "V": 2754000
+      },
+      "statistic_observation": {
+        "status": "VERIFIED",
+        "policy": "CENTER_GRAD",
+        "calls": 11100,
+        "applied_calls": 9990,
+        "actual_layer_forward_objectives": 39960,
+        "backward_calls": 39960,
+        "valid_anchors": 5114880,
+        "gradient_means": {
+          "native_descriptor_grad_norm": 0.012293114154129984,
+          "policy_descriptor_grad_norm": 0.012255952750430307,
+          "delivered_descriptor_grad_norm": 0.012255952750430307,
+          "norm_ratio": 0.997363391734876,
+          "translation_removed_norm": 0.0009210137646810003,
+          "scale_removed_norm": 0.0
+        },
+        "clamped_channel_occurrences": 0,
+        "extra_model_forwards": 0,
+        "extra_L_packets": 0,
+        "extra_optimizer_updates": 0,
+        "extra_parameters": 0,
+        "head_fit_updates": 0,
+        "default_head_direct_aux_gradient": false,
+        "U_truth_read": false,
+        "temperature": 0.2,
+        "layers": [
+          "time_down",
+          "t2.pool"
+        ],
+        "forward_exact_native": true
+      },
+      "BASE_training_reused": true
+    }
+  ],
+  "all_three_seeds_required": true,
+  "source_expansion": {
+    "status": "FIXED_THREE_SEED_MATRIX",
+    "user_authorization": "Active weakTX feature-learning goal; user requires three model seeds, default head jointly trained, no satellite augmentation and clean-only testing",
+    "source_gate_applied": false,
+    "fixed_rows": [
+      {
+        "row_id": "CENTER_GRAD-s2026092701",
+        "treatment": "CENTER_GRAD",
+        "model_seed": 2026092701
+      },
+      {
+        "row_id": "CENTER_GRAD-s2026092702",
+        "treatment": "CENTER_GRAD",
+        "model_seed": 2026092702
+      },
+      {
+        "row_id": "CENTER_GRAD-s2026092703",
+        "treatment": "CENTER_GRAD",
+        "model_seed": 2026092703
+      }
+    ],
+    "baseline_reused": true,
+    "target_feedback": false
+  },
+  "head_fit_updates": 0,
+  "target_feedback": false,
+  "truth_last": true,
+  "limitation": "Exposed exploratory Phase1 clean benchmark. Source errors chose weakTX1/3 before this fixed matrix. All3rows run regardless performance; matched local BASE3 reused. No independent blind-test/Phase2/satellite claim. Mean-only partial derivative retains stopped-std scale behavior. Secondary full-statistics comparisons are not magnitude-controlled."
+}

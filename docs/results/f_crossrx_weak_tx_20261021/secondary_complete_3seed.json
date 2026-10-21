@@ -1,0 +1,293 @@
+{
+  "status": "COMPLETE_3SEED_SUPPLEMENT_AFTER_COMPANION_FINISHED",
+  "primary_run": "20261020-phase1-FcrossRX-centerGradient-e50-clean-local-m3-r01",
+  "companion_run": "20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01",
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "no_model_or_prediction_updates": true,
+  "original_automatic_secondary_snapshot": "PENDING_OTHER_FIXED_MATRIX retained in original result.json",
+  "comparisons": {
+    "STAT_GRAD": {
+      "paired": [
+        {
+          "model_seed": 2026092701,
+          "accuracy_pp": -0.15297619047618394,
+          "macro_f1_pp": -0.14244041833655352,
+          "per_TX_pp": [
+            -0.014285714285711126,
+            -0.8142857142857229,
+            -0.5928571428571394,
+            0.553571428571431,
+            -0.03928571428570837,
+            -0.01071428571428612
+          ],
+          "weak_TX_mean_pp": -0.13035714285714595,
+          "other_TX_mean_pp": -0.16428571428571126,
+          "worst_RX_pp": 0.17500000000000293,
+          "worst_day_pp": -0.04999999999999449
+        },
+        {
+          "model_seed": 2026092702,
+          "accuracy_pp": 0.2910714285714322,
+          "macro_f1_pp": 0.2806525658601955,
+          "per_TX_pp": [
+            0.14999999999999458,
+            0.2571428571428558,
+            0.38928571428571423,
+            0.9464285714285703,
+            -0.02142857142857224,
+            0.02500000000000835
+          ],
+          "weak_TX_mean_pp": 0.601785714285713,
+          "other_TX_mean_pp": 0.13571428571428623,
+          "worst_RX_pp": 1.22916666666667,
+          "worst_day_pp": 0.76666666666666
+        },
+        {
+          "model_seed": 2026092703,
+          "accuracy_pp": 0.12619047619046864,
+          "macro_f1_pp": 0.16554033142760494,
+          "per_TX_pp": [
+            -0.19642857142857517,
+            1.3571428571428568,
+            -0.5892857142857144,
+            0.2535714285714308,
+            -0.017857142857147235,
+            -0.04999999999999449
+          ],
+          "weak_TX_mean_pp": 0.8053571428571438,
+          "other_TX_mean_pp": -0.21339285714285783,
+          "worst_RX_pp": 0.3041666666666609,
+          "worst_day_pp": 0.04761904761905189
+        }
+      ],
+      "summary": {
+        "metrics": {
+          "accuracy_pp": {
+            "n": 3,
+            "mean": 0.08809523809523896,
+            "sample_SD": 0.22446159442009983,
+            "positive_count": 2
+          },
+          "macro_f1_pp": {
+            "n": 3,
+            "mean": 0.10125082631708231,
+            "sample_SD": 0.21875048267294078,
+            "positive_count": 2
+          },
+          "weak_TX_mean_pp": {
+            "n": 3,
+            "mean": 0.42559523809523697,
+            "sample_SD": 0.49211037283075115,
+            "positive_count": 2
+          },
+          "other_TX_mean_pp": {
+            "n": 3,
+            "mean": -0.08065476190476095,
+            "sample_SD": 0.18898293956222129,
+            "positive_count": 1
+          },
+          "worst_RX_pp": {
+            "n": 3,
+            "mean": 0.5694444444444446,
+            "sample_SD": 0.5749748384188802,
+            "positive_count": 3
+          },
+          "worst_day_pp": {
+            "n": 3,
+            "mean": 0.2547619047619058,
+            "sample_SD": 0.44600138291274916,
+            "positive_count": 2
+          }
+        },
+        "per_TX": [
+          {
+            "TX": "14-10",
+            "n": 3,
+            "mean": -0.020238095238097237,
+            "sample_SD": 0.17329097467774154,
+            "positive_count": 1
+          },
+          {
+            "TX": "14-7",
+            "n": 3,
+            "mean": 0.2666666666666632,
+            "sample_SD": 1.085745613583115,
+            "positive_count": 2
+          },
+          {
+            "TX": "20-15",
+            "n": 3,
+            "mean": -0.2642857142857132,
+            "sample_SD": 0.5660122772159474,
+            "positive_count": 1
+          },
+          {
+            "TX": "20-19",
+            "n": 3,
+            "mean": 0.5845238095238107,
+            "sample_SD": 0.3474640880968933,
+            "positive_count": 3
+          },
+          {
+            "TX": "6-15",
+            "n": 3,
+            "mean": -0.026190476190475948,
+            "sample_SD": 0.01148053662022458,
+            "positive_count": 0
+          },
+          {
+            "TX": "8-20",
+            "n": 3,
+            "mean": -0.011904761904757422,
+            "sample_SD": 0.0375141696585459,
+            "positive_count": 1
+          }
+        ]
+      }
+    },
+    "NORM_ONLY": {
+      "paired": [
+        {
+          "model_seed": 2026092701,
+          "accuracy_pp": 0.033333333333340764,
+          "macro_f1_pp": 0.027570009741395562,
+          "per_TX_pp": [
+            0.18928571428571406,
+            -1.1678571428571427,
+            0.9071428571428619,
+            0.19285714285713906,
+            0,
+            0.07857142857142785
+          ],
+          "weak_TX_mean_pp": -0.4875000000000018,
+          "other_TX_mean_pp": 0.29375000000000095,
+          "worst_RX_pp": 0.22916666666666918,
+          "worst_day_pp": -0.1523809523809483
+        },
+        {
+          "model_seed": 2026092702,
+          "accuracy_pp": -0.2339285714285766,
+          "macro_f1_pp": -0.29888925589036663,
+          "per_TX_pp": [
+            0.4749999999999921,
+            -2.210714285714288,
+            1.0607142857142926,
+            -0.7142857142857117,
+            0.014285714285711126,
+            -0.028571428571422253
+          ],
+          "weak_TX_mean_pp": -1.4625,
+          "other_TX_mean_pp": 0.3803571428571434,
+          "worst_RX_pp": -1.9208333333333383,
+          "worst_day_pp": -0.364285714285717
+        },
+        {
+          "model_seed": 2026092703,
+          "accuracy_pp": -0.05297619047619495,
+          "macro_f1_pp": -0.05576213730350554,
+          "per_TX_pp": [
+            -0.13214285714285845,
+            -0.4821428571428532,
+            -0.2178571428571474,
+            0.43928571428571983,
+            -0.08571428571428896,
+            0.1607142857142918
+          ],
+          "weak_TX_mean_pp": -0.02142857142856669,
+          "other_TX_mean_pp": -0.06875000000000075,
+          "worst_RX_pp": -0.15000000000000568,
+          "worst_day_pp": -0.43333333333333
+        }
+      ],
+      "summary": {
+        "metrics": {
+          "accuracy_pp": {
+            "n": 3,
+            "mean": -0.08452380952381026,
+            "sample_SD": 0.13639527350653372,
+            "positive_count": 1
+          },
+          "macro_f1_pp": {
+            "n": 3,
+            "mean": -0.1090271278174922,
+            "sample_SD": 0.16962247032763283,
+            "positive_count": 1
+          },
+          "weak_TX_mean_pp": {
+            "n": 3,
+            "mean": -0.6571428571428561,
+            "sample_SD": 0.7353609588466885,
+            "positive_count": 0
+          },
+          "other_TX_mean_pp": {
+            "n": 3,
+            "mean": 0.20178571428571454,
+            "sample_SD": 0.23825905822556045,
+            "positive_count": 2
+          },
+          "worst_RX_pp": {
+            "n": 3,
+            "mean": -0.6138888888888916,
+            "sample_SD": 1.1476147767983522,
+            "positive_count": 1
+          },
+          "worst_day_pp": {
+            "n": 3,
+            "mean": -0.3166666666666651,
+            "sample_SD": 0.14640437275850818,
+            "positive_count": 0
+          }
+        },
+        "per_TX": [
+          {
+            "TX": "14-10",
+            "n": 3,
+            "mean": 0.17738095238094923,
+            "sample_SD": 0.3037464481469747,
+            "positive_count": 2
+          },
+          {
+            "TX": "14-7",
+            "n": 3,
+            "mean": -1.2869047619047613,
+            "sample_SD": 0.870413147659807,
+            "positive_count": 0
+          },
+          {
+            "TX": "20-15",
+            "n": 3,
+            "mean": 0.5833333333333357,
+            "sample_SD": 0.698087158077068,
+            "positive_count": 2
+          },
+          {
+            "TX": "20-19",
+            "n": 3,
+            "mean": -0.02738095238095095,
+            "sample_SD": 0.6075033943523771,
+            "positive_count": 2
+          },
+          {
+            "TX": "6-15",
+            "n": 3,
+            "mean": -0.023809523809525945,
+            "sample_SD": 0.05408484138857478,
+            "positive_count": 1
+          },
+          {
+            "TX": "8-20",
+            "n": 3,
+            "mean": 0.07023809523809914,
+            "sample_SD": 0.09491761554894075,
+            "positive_count": 2
+          }
+        ]
+      }
+    }
+  },
+  "limitation": "Both contrasts were preregistered. CENTER minus STAT changes gradient direction and magnitude; no isolated scale-causality claim. Exposed benchmark, no tuning or reordering."
+}

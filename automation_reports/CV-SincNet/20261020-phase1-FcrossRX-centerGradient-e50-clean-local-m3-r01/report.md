@@ -1,5 +1,8 @@
 # F跨RX：均值梯度、标准差停止的固定三种子消融
 
+**2026-10-21 完整终态：** 固定 CENTER_GRAD 三种子全部完成，独立核对 VERIFIED。整体均差 −0.0460pp，两弱 TX 均差 −0.8369pp，TX14-7 均差 −1.9560pp 且 0/3 正差；原预登记主判断未通过。原自动汇总时其他条件未齐的次级比较保持原快照，现另补 secondary_complete_3seed.json，不改训练、选模或预测。 每行固定 final50、clean168000、原默认头与独立 truth-last；完整日志及实际 checkpoint/ID/指标/退出时序核对见 completion_verification.json，完整结果见 results.md/json。此前首种子与等待记录保留为历史，最新状态以本段为准。目标尚未达成。
+
+
 此补充组在任何新目标成绩读取前固定，原STAT_GRAD/NORM_ONLY六行及其不可变release/PID/配方保持。完整统计导数同时改变均值与标准差的梯度，原范数控制不能单独说明二者作用；CENTER_GRAD只保留均值导数，当前标准差继续按原方式停止梯度。描述子辅助梯度为g_native−mean_batch(g_native)，原尺度方向响应保留；这不是完整重算std前向的总导数，也不是梯度范数匹配。数学性质不等于RX因素被消除或目标收益。
 
 固定CENTER_GRAD2026092701/02/03，共3行，均从零50＝33L＋17U/11100更新。原F三路SIG_TIME、统一Sinc、旧门控/ownEMA/cos、RDrop1、LS.01和普通增强不变；默认分类头正常联合训练，无另训头/投影/参数/额外网络前向。两次实际RDrop共用原同一次增强IQ；新SC仅消费可见TX的L128，U真值隐藏。保留原跨RX同TX正对/异TX负对、温度0.2、warm5/ramp10/max0.1。匹配BASE三种子复用，不重复训练。

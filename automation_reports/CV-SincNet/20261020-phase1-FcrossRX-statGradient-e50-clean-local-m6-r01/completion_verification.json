@@ -1,0 +1,116 @@
+{
+  "status": "VERIFIED",
+  "execution_code_commit": "7b5532e9ff3845c23c7c229385ff5763254d31c3",
+  "run_id": "20261020-phase1-FcrossRX-statGradient-e50-clean-local-m6-r01",
+  "all_six_rows_complete": true,
+  "three_seeds_each_condition": true,
+  "live_owned_workers": 0,
+  "rows": [
+    {
+      "row_id": "STAT_GRAD-s2026092701",
+      "checkpoint_and_actual_args_verified": true,
+      "default_head_joint_updated": true,
+      "deployed_core_feature_parameter_tensors_changed": 54,
+      "prediction_without_truth_or_fitting": true,
+      "independent_CPU_truth_last": true,
+      "opaque_ID_coverage_and_correctness_mean_verified": true,
+      "all_worker_exits_zero": true,
+      "prediction_completed_before_score": true,
+      "source_seconds": 5709.621791362762,
+      "prediction_seconds": 36.38068020000355,
+      "peak_cuda_MiB": 1972.05126953125
+    },
+    {
+      "row_id": "NORM_ONLY-s2026092701",
+      "checkpoint_and_actual_args_verified": true,
+      "default_head_joint_updated": true,
+      "deployed_core_feature_parameter_tensors_changed": 54,
+      "prediction_without_truth_or_fitting": true,
+      "independent_CPU_truth_last": true,
+      "opaque_ID_coverage_and_correctness_mean_verified": true,
+      "all_worker_exits_zero": true,
+      "prediction_completed_before_score": true,
+      "source_seconds": 5138.391426086426,
+      "prediction_seconds": 36.63411600003019,
+      "peak_cuda_MiB": 1972.05126953125
+    },
+    {
+      "row_id": "STAT_GRAD-s2026092702",
+      "checkpoint_and_actual_args_verified": true,
+      "default_head_joint_updated": true,
+      "deployed_core_feature_parameter_tensors_changed": 54,
+      "prediction_without_truth_or_fitting": true,
+      "independent_CPU_truth_last": true,
+      "opaque_ID_coverage_and_correctness_mean_verified": true,
+      "all_worker_exits_zero": true,
+      "prediction_completed_before_score": true,
+      "source_seconds": 5508.184396743774,
+      "prediction_seconds": 34.93505989998812,
+      "peak_cuda_MiB": 1972.05126953125
+    },
+    {
+      "row_id": "NORM_ONLY-s2026092702",
+      "checkpoint_and_actual_args_verified": true,
+      "default_head_joint_updated": true,
+      "deployed_core_feature_parameter_tensors_changed": 54,
+      "prediction_without_truth_or_fitting": true,
+      "independent_CPU_truth_last": true,
+      "opaque_ID_coverage_and_correctness_mean_verified": true,
+      "all_worker_exits_zero": true,
+      "prediction_completed_before_score": true,
+      "source_seconds": 4246.702179670334,
+      "prediction_seconds": 30.40298569999868,
+      "peak_cuda_MiB": 1972.05126953125
+    },
+    {
+      "row_id": "STAT_GRAD-s2026092703",
+      "checkpoint_and_actual_args_verified": true,
+      "default_head_joint_updated": true,
+      "deployed_core_feature_parameter_tensors_changed": 54,
+      "prediction_without_truth_or_fitting": true,
+      "independent_CPU_truth_last": true,
+      "opaque_ID_coverage_and_correctness_mean_verified": true,
+      "all_worker_exits_zero": true,
+      "prediction_completed_before_score": true,
+      "source_seconds": 4133.893942117691,
+      "prediction_seconds": 29.671620200038888,
+      "peak_cuda_MiB": 1972.05126953125
+    },
+    {
+      "row_id": "NORM_ONLY-s2026092703",
+      "checkpoint_and_actual_args_verified": true,
+      "default_head_joint_updated": true,
+      "deployed_core_feature_parameter_tensors_changed": 54,
+      "prediction_without_truth_or_fitting": true,
+      "independent_CPU_truth_last": true,
+      "opaque_ID_coverage_and_correctness_mean_verified": true,
+      "all_worker_exits_zero": true,
+      "prediction_completed_before_score": true,
+      "source_seconds": 4131.04514670372,
+      "prediction_seconds": 28.159998500021175,
+      "peak_cuda_MiB": 1972.05126953125
+    }
+  ],
+  "full50_epoch_11100_native_and_auxiliary_logs_verified": true,
+  "statistic_backward_objectives_per_model": 39960,
+  "independent_confusion_metric_and_pair_statistics_check": true,
+  "IQ_reads": 0,
+  "truth_reads": 0,
+  "model_forwards": 0,
+  "optimizer_updates": 0,
+  "head_fit_updates": 0,
+  "scientific_verdict": {
+    "primary_STAT_GRAD_vs_BASE": {
+      "PASS": false,
+      "both_weak_means_positive_and_each2of3": false,
+      "weakmean_positive3of3": false,
+      "other_TX_overall_worstRX_health": false
+    },
+    "direction_vs_NORM_ONLY": {
+      "PASS": false
+    },
+    "all3_required": true,
+    "rule": "Primary: each weakTX mean>0 and at least2/3positive; weakmean>0 all3; overallmean>=BASE; each otherTX mean>=BASE-.25pp; worstRXmean>=BASE-.5pp. Attribution separately: STAT_GRAD-NORM_ONLY weakmean>0 and >=2/3positive. Fixed before target; no target-driven retuning/ranking/retraining."
+  },
+  "goal_completion_not_inferred_from_artifact_completion": true
+}
