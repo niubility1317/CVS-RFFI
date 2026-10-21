@@ -41,3 +41,4 @@
 |raw IQ 补充特征通路：E20＋10 预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-F-rawIQ-dualTeacher-e20plus10-s2026092701-m4-r01/report.md)|
 |Raw IQ 适配器：冻结源拟合诊断预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-F-rawIQAdapter-sourceFit-e30-s2026092701-m6-r01/report.md)|
 |T1 去除 As 独立 KL：两条 E50 路径|managed_run|[打开](../../automation_reports/CV-SincNet/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01/report.md)|
+|T1 续训 E30＋20：三模型种子复现|managed_run|[打开](../../automation_reports/CV-SincNet/20261021-phase1-T1-AsKL0-e30plus20-m3-r01/report.md)|

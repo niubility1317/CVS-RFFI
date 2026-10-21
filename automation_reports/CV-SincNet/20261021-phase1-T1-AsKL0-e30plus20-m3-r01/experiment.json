@@ -1,0 +1,274 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261021-phase1-T1-AsKL0-e30plus20-m3-r01",
+  "group_id": "phase1-T1-AsKL0-E30plus20-three-seed",
+  "display_name": "T1续训E30＋20：三模型种子复现",
+  "description": "复用seed01完整E50/all7；新增seed02/03从各自原T1 E30学生及自身EMA续20，累计E50；原AsKL0/sixL/U/默认头配方保持，自动七视图独立truth-last，三seed均值/样本SD和同seed E30配对差。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "T1-E30PLUS20-m3"
+  ],
+  "tags": [
+    "phase1",
+    "T1",
+    "As-KL0",
+    "E30plus20",
+    "three-seed",
+    "default-head",
+    "clean-six-practical"
+  ],
+  "comparison_group_id": "T1-E30plus20-three-seed-original-physical-split",
+  "parent_run_ids": [
+    "20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01",
+    "20261019-phase1-FcrossRX-sameAsKD-confirm-e30-m6-r02"
+  ],
+  "authorization": "2026-10-21 用户明确“续训E30＋20整体略优跑三种子”。复用已完成2026092701，新增2026092702/03两条同seed E30→20续训；沿现有自动clean＋六practical测试及最少总进程优先、两卡并行授权。",
+  "code": {
+    "commit": "fe13988582fe73f074706743c9e6e1f248052cce",
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 ordinary CVS-RFFI Python3.10/Torch2.1 fullFP32 CPU2;reuse released original runtime",
+    "cwd": "PROJECT/releases/cvs_T1_AsKL0_E30plus20_m3_20261021_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original full-source physical roles,split392005;reuse fixed source/cache and formal received views",
+    "representation": "Existing source IQ256,dataset equalized index1,Fs25MHz;practical residual/post_sync propagation receiver EQ=false/reference_snr_db30,complete original dependency graph;fixed received IQ untouched",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract.role_ids L_s/U_s/V;fixed formal received_views manifest and opaque168000 physical IDs,unchanged",
+    "label_map_ref": "Original map [14-10,14-7,20-15,20-19,6-15,8-20]",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "All six registered originalTX,unchanged source/target registered-class map",
+    "roles": {
+      "L_s": "6300 visibleTX full original source physical IDs",
+      "U_s": "56700 TX hidden; original old gate/ownEMA only",
+      "V": "27000 diagnostic only; no checkpoint selection"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "SameVALIDATED_ONCEall5sourceRX/day/physicalL6300 U56700hidden V27000;noLdev/noRXholdout",
+    "support_query_ref": null,
+    "leo_config_ref": "Original T1 full practical As on raw L64/update retained; exact original fullsource_concat20/channel.py with cumulative epoch/step bounds extended to50/11100; same physical-session hardware, seeds and namespace. Test clean+sixpractical; no restoration or KD.",
+    "source_pool_label_ratio": 0.07
+  },
+  "permissions": {
+    "regime": "source_train_then_frozen_truthlast",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "User-selected seed expansion after observed seed01 target comparison;descriptive replication on exposed benchmark,not fresh independent blind confirmation;all negative results retained"
+  },
+  "checkpoint": {
+    "initialization": "seed01 completed E50 reuse;new02/03 own original T1 FINAL30 student+ownEMA;reset AdamW/cos20/temporal cache;no scratch50,no KD",
+    "sources": [
+      "PROJECT/runs/20261019-phase1-FcrossRX-sameAsKD-confirm-e30-m6-r02/T1-s2026092702/source/final_ssdg.pth",
+      "PROJECT/runs/20261019-phase1-FcrossRX-sameAsKD-confirm-e30-m6-r02/T1-s2026092703/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "cvs_same_as_kd_confirm86.model.own_model validates exact source roles/scratch20→own10/fixedFINAL;new source.original_parent verifies actual native seed/T1 candidate/ownEMA",
+    "provenance_verdict": "VERIFIED: same-seed original T1 E30 students and own EMA, exact original data roles/scratch20→own10/source-only fixedFINAL checked;launcher real-checkpoint and both-seed synthetic sixL smokes PASS;no query/no updates in smoke.",
+    "selection_rule": "Fixed FINAL50,sourceV health only;automaticall7,no target selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/T1-e50-three-seed",
+    "gpu_policy": "all8GPUs sorted by all-owner process count then free memory;free>=12000MB;total<=3/GPU;one own/GPU;two new GPU workers on distinct cards;CPUscorer1;preserve others",
+    "remote_run_root": "PROJECT/runs/20261021-phase1-T1-AsKL0-e30plus20-m3-r01",
+    "remote_log_root": "PROJECT/runs/20261021-phase1-T1-AsKL0-e30plus20-m3-r01/logs",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261021-phase1-T1-AsKL0-e30plus20-m3-r01",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_t1_e50_confirm/runner.py",
+    "stop_rule": "Only own protocol/physicalroles/parentseed/EMA/head/nonfinite/outputcollision/unlaunchable/illegalprediction systemic failure;preserve artifacts and healthy other workers,no automatic retry;negative science finishesall7",
+    "status": "RUNNING",
+    "actual_gpu_assignment": {
+      "2026092702": 0,
+      "2026092703": 1
+    }
+  },
+  "expected_artifacts": [
+    "real_checkpoint_smoke.json",
+    "synthetic_smoke.json",
+    "reused_seed01.json",
+    "two new rows source checkpoints/resolved config/full step/epoch logs",
+    "two new rows all7 fixed predictions and independent scores",
+    "results.json with3seeds mean/sampleSD/ddof1 and same-seed parentE30 paired deltas",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macroF1",
+      "worstRX",
+      "perRX/day/TX",
+      "actual exposures",
+      "wall time"
+    ],
+    "dimensions": [
+      "row",
+      "scene",
+      "RX",
+      "day",
+      "TX"
+    ],
+    "prediction_ref": "PROJECT/runs/20261021-phase1-T1-AsKL0-e30plus20-m3-r01/<row>/prediction;seed01 existingroot",
+    "scorer_ref": "experiments/cvs_t1_e50_confirm/evaluate.py:score",
+    "model_seed_count": 3,
+    "std_ddof": 1,
+    "summary_ref": "PROJECT/runs/20261021-phase1-T1-AsKL0-e30plus20-m3-r01/results.json"
+  },
+  "rows": [
+    {
+      "row_id": "E30PLUS20-s2026092701",
+      "method": "OriginalT1 AsKL0 E30plus20",
+      "purpose": "Completed seed01 read-only reuse",
+      "config_ref": "experiments/cvs_t1_e50_confirm/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01/E30PLUS20-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019844
+      },
+      "seed_notes": "Original P86 native model seed preserved;split392005 and augmentation train421/val422/receiver423 fixed;formal receivedIQ not resampled,evaluation844 retained historical metadata,not a new random evaluation draw;data seed not separate from split;support inapplicable",
+      "k": null,
+      "scenario": "clean + practical_high,practical_mid,practical_low_suburban,practical_high_urban,practical_mid_urban,practical_low_urban;168000 fixed samples per view",
+      "optimizer": "CENTER_UNITS AdamW lr2e-4 wd1e-4 min1e-6; resetcos20; label/pseudo=0/20",
+      "lr": 0.0002,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Reuse fullE50/all7;0newupdates/0newprediction/0newscore",
+      "output_root": "PROJECT/runs/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01/E30PLUS20-s2026092701",
+      "log_path": "PROJECT/runs/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01/logs/E30PLUS20-s2026092701.log",
+      "command": "Read-only completed seed01 reuse;never launch",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "prediction/complete.json",
+        "scoring/complete.json"
+      ],
+      "status": "REUSED_COMPLETE"
+    },
+    {
+      "row_id": "E30PLUS20-s2026092702",
+      "method": "OriginalT1 AsKL0 E30plus20",
+      "purpose": "New same-seed originalT1 E30 plus20",
+      "config_ref": "experiments/cvs_t1_e50_confirm/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261021-phase1-T1-AsKL0-e30plus20-m3-r01/E30PLUS20-s2026092702/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019844
+      },
+      "seed_notes": "Original P86 native model seed preserved;split392005 and augmentation train421/val422/receiver423 fixed;formal receivedIQ not resampled,evaluation844 retained historical metadata,not a new random evaluation draw;data seed not separate from split;support inapplicable",
+      "k": null,
+      "scenario": "clean + practical_high,practical_mid,practical_low_suburban,practical_high_urban,practical_mid_urban,practical_low_urban;168000 fixed samples per view",
+      "optimizer": "CENTER_UNITS AdamW lr2e-4 wd1e-4 min1e-6; resetcos20; label/pseudo=0/20",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "OwnE30 parent+20=50;4440newupdates;3409920LNN/284160AsIQ;nativeU/EMA measured separately",
+      "output_root": "PROJECT/runs/20261021-phase1-T1-AsKL0-e30plus20-m3-r01/E30PLUS20-s2026092702",
+      "log_path": "PROJECT/runs/20261021-phase1-T1-AsKL0-e30plus20-m3-r01/logs/E30PLUS20-s2026092702.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_t1_e50_confirm/runner.py --mode worker --row E30PLUS20-s2026092702",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "prediction/complete.json",
+        "scoring/complete.json"
+      ],
+      "status": "RUNNING"
+    },
+    {
+      "row_id": "E30PLUS20-s2026092703",
+      "method": "OriginalT1 AsKL0 E30plus20",
+      "purpose": "New same-seed originalT1 E30 plus20",
+      "config_ref": "experiments/cvs_t1_e50_confirm/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261021-phase1-T1-AsKL0-e30plus20-m3-r01/E30PLUS20-s2026092703/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019844
+      },
+      "seed_notes": "Original P86 native model seed preserved;split392005 and augmentation train421/val422/receiver423 fixed;formal receivedIQ not resampled,evaluation844 retained historical metadata,not a new random evaluation draw;data seed not separate from split;support inapplicable",
+      "k": null,
+      "scenario": "clean + practical_high,practical_mid,practical_low_suburban,practical_high_urban,practical_mid_urban,practical_low_urban;168000 fixed samples per view",
+      "optimizer": "CENTER_UNITS AdamW lr2e-4 wd1e-4 min1e-6; resetcos20; label/pseudo=0/20",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "OwnE30 parent+20=50;4440newupdates;3409920LNN/284160AsIQ;nativeU/EMA measured separately",
+      "output_root": "PROJECT/runs/20261021-phase1-T1-AsKL0-e30plus20-m3-r01/E30PLUS20-s2026092703",
+      "log_path": "PROJECT/runs/20261021-phase1-T1-AsKL0-e30plus20-m3-r01/logs/E30PLUS20-s2026092703.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_t1_e50_confirm/runner.py --mode worker --row E30PLUS20-s2026092703",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "prediction/complete.json",
+        "scoring/complete.json"
+      ],
+      "status": "RUNNING"
+    }
+  ],
+  "notes": [
+    "Only2newE20 tails=40newmodelEpoch/8880updates;three models cumulative50each;seed01 completed result reused without any retraining/prediction/scoring.",
+    "Same T1 objective and original practical As training augmentation;As independentKL0,ordinary/rawKL and ownEMA retained;no KD/CSIL teacher or classifier changes.",
+    "P86 seed definition retained:original backbone/native model seeds vary;its sequence_pool projection subinitialization convention inherited. Full same-seed E30 student and ownEMA are loaded strictly.",
+    "User explicitly picked this route after seed01 exposed-target comparison;do not describe new seeds as an independent blind source-selected confirmation. Fixed01/02/03 matrix,all negatives retained,no selective reruns.",
+    "Existing VALIDATED_ONCE source roles and fixed formal received views reused;no data rebuild,extrahashchain or repeated whole-method review. One focused seed/parent launch review completed with no P0/P1."
+  ],
+  "replaces_run_id": null,
+  "evaluation": {
+    "views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "per_view_count": 168000,
+    "predictions_per_row": 1176000,
+    "mode": "Frozen default head;all7 predictions complete before independent CPU truth-last scorer",
+    "code_commit": "fe13988582fe73f074706743c9e6e1f248052cce",
+    "runtime_ref": "experiments/cvs_t1_e50_confirm/dispatch.py:worker→predict→independentexecscore",
+    "training_code_commit": "fe13988582fe73f074706743c9e6e1f248052cce",
+    "automatic": true
+  },
+  "registered_at": "2026-10-21T02:08:06+00:00"
+}
