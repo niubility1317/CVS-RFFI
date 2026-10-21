@@ -37,6 +37,7 @@ def test_scalar_closed_form_mean_ema_aliases_and_unchanged_student():
         state=means.state_for(model,readout)
         assert torch.allclose(state['left.weight'],torch.full_like(state['left.weight'],want),atol=1e-7,rtol=1e-6)
         assert torch.equal(state['left.weight'],state['right.weight'])
+        assert state['left.weight'] is state['right.weight']
         assert torch.equal(state['fixed'],before['fixed'])
         fresh=Tiny();fresh.load_state_dict(state,strict=True)
         assert fresh.left.weight is fresh.right.weight

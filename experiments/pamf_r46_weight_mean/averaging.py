@@ -56,7 +56,8 @@ class SourceParameterMeans:
             raise ValueError('Only fixed buffers;no hidden normalization or calibration updates allowed')
         values=self.parameters if readout=='final' else self.mean if readout=='late_mean' else self.ema
         if any(not torch.isfinite(p).all() for p in values.values()):raise ValueError('Finite frozen readout parameters required')
-        state={n:values[first].detach().clone() for n,first in self.aliases.items()}
+        unique={n:p.detach().clone() for n,p in values.items()}
+        state={n:unique[first] for n,first in self.aliases.items()}
         state.update({n:b.detach().clone() for n,b in self.buffers.items()})
         if set(state)!=set(model.state_dict()):raise ValueError('Complete portable source state required')
         return state
