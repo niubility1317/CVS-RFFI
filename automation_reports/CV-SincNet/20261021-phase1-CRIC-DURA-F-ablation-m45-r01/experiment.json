@@ -3,7 +3,7 @@
   "run_id": "20261021-phase1-CRIC-DURA-F-ablation-m45-r01",
   "group_id": "phase1-cric-dura-complete-system",
   "display_name": "CRIC机制消融：15变体×3模型seed",
-  "description": "F0原生33L17U固定11100步，15个机制设置，三模型seed；接同一DURA并给raw读出，全部七景预测完成后独立truth-last。",
+  "description": "F source queue VERIFIED running: 150 main source trainings queued and 45 mechanism source trainings (first8 active); 3 F0 native models reused. G/prediction/timing continuation separately registered.",
   "kind": "cvs",
   "stage": "Phase1",
   "aliases": [],
@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-21指定CRIC+DURA完整方法，与当前对比配置比较，并详细设计机制时延与消融；五源数量扫点不新跑。",
   "code": {
-    "commit": "Resolved at immutable release from current pushed Git HEAD",
+    "commit": "1172e25bde0aed2b2d7080c7e40da3773aedf2b7",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 CVS-RFFI Python3.10/Torch2.1; FP32 TF32off; CPU2",
     "cwd": "N607 immutable release root",

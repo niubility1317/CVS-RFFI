@@ -29,3 +29,7 @@ Same authorized CRIC+DURA matrix; source smoke no_grad compatibility recovery, r
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 源阶段恢复：150主F＋45独立F机制消融（子run沿用未启动r01），不新做m5源数量，保持原33L17U、匹配sat监督/普通PL及三seed。G完整谱系、七景自动预测与评分、时延仍须独立完成。源训练后只标等待匹配G，不宣称实验完成。
+
+## F源队列已核实启动
+
+**VERIFIED / RUNNING**：实际源代码1172e25b；8张GPU各1条本任务，checkpoint/source检查PASS，首轮222步与日志增长已观察。当前首批8条为F机制消融，150主F位于同一队列，三seed均已登记。其他健康任务保留。G35完整谱系、G21学生、自动228行七景预测/评分与独占时延为独立后续阶段，尚未以本次F启动宣称完成。
