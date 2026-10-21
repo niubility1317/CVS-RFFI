@@ -1,0 +1,203 @@
+{
+  "schema": "pamf_final_identity_method_v1",
+  "name": "PAMF-T1-E50",
+  "method_id": "pamf_t1_e50",
+  "status": "USER_DESIGNATED_FINAL",
+  "designated_on": "2026-10-21",
+  "scope": "Identity network F; DURA v1.0 recovery network G remains independently fixed",
+  "checkpoint": {
+    "run_id": "20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01",
+    "row_id": "E30PLUS20-s2026092701",
+    "path": "runs/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01/E30PLUS20-s2026092701/source/final_ssdg.pth",
+    "state": "model (student)",
+    "model_seed": 2026092701,
+    "freeze": "fixed final cumulative E50; no epoch reselection",
+    "parent_run": "20261019-phase1-FcrossRX-AsTemperature-e30-s2026092701-m2-r02",
+    "parent_row": "T1-s2026092701",
+    "parent_state": "FINAL30 student and own EMA",
+    "new_weight_updates_for_this_designation": 0,
+    "preservation": "Reuse original immutable checkpoint; no overwrite or movement"
+  },
+  "implementation": {
+    "training_commit": "971fd16ac342f3523c4e3112f437e678f32ca459",
+    "scientific_commit": "ed652af1f7b427cb7cff293e6b6185ca76a32bec",
+    "seven_view_evaluation_commit": "ace90948e4dc62df5ec909176f2948802825a774",
+    "entry": "experiments.cvs_t1_e50.model.own_model",
+    "configuration_row": "E30PLUS20; never SCRATCH50",
+    "precision": "FP32",
+    "identity_input_policy": "Current native entry masks explicit CFO coordinate; internal CFO compensation retained"
+  },
+  "architecture": {
+    "base": "lite_d/no_dac time-frequency and PA residual fusion plus reference response",
+    "sequence": "SIG_TIME_X3",
+    "sequence_input_channels": 96,
+    "independent_projections": 3,
+    "local_dimension_each": 6,
+    "time_coordinate": "per-window relative 0..1",
+    "windows": 4,
+    "descriptor_each_window": 28,
+    "descriptor_kind": "7 first-level increments plus21 antisymmetric second-level areas",
+    "concatenated_descriptor": 336,
+    "embedding": 160,
+    "sequence_parameters": 55968,
+    "sequence_residual_gain_initial": 0.05,
+    "sequence_residual_gain_abs_bound": 0.2,
+    "head": "Original6x160 cosine scale30; joint training",
+    "Sinc_coordinates": "CENTER_25K",
+    "Sinc_optimizer": "CENTER_UNITS",
+    "ensemble": false
+  },
+  "training": {
+    "cumulative_epochs": 50,
+    "label_only_epochs": 13,
+    "joint_L_U_epochs": 37,
+    "stages": [
+      {
+        "epochs": 20,
+        "label": 13,
+        "joint": 7,
+        "updates": 4440
+      },
+      {
+        "epochs": 10,
+        "label": 0,
+        "joint": 10,
+        "updates": 2220
+      },
+      {
+        "epochs": 20,
+        "label": 0,
+        "joint": 20,
+        "updates": 4440
+      }
+    ],
+    "cumulative_updates": 11100,
+    "tail_optimizer": "Reset AdamW/cos20/temporal cache; strictly inherit student and ownEMA",
+    "base_lr": 0.0002,
+    "weight_decay": 0.0001,
+    "cosine_lr_min": 1e-06,
+    "label_batch": 128,
+    "U_batch": 256,
+    "label_identity_forwards_per_step": 6,
+    "label_smoothing": 0.01,
+    "As_temperature": 1,
+    "As_KL": 0,
+    "ordinary_raw_RDrop_KL_coefficient": 1,
+    "As_CE_retained": true,
+    "supervised_objective": "0.5 RD_ord128 +0.25 RD_ord64 +0.25 CEpair_As64 +0.25 RD_raw128 +lambda_RX L_RX",
+    "pseudo_CE_weight": 0.16,
+    "all_U_entropy_weight": 0.01,
+    "source_views": [
+      "practical_low_suburban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "SupCon": {
+      "mode": "ORD128 CROSS_RX",
+      "levels": [
+        "time_down",
+        "t2.pool"
+      ],
+      "positive": "sameTX differentRX; legal L only",
+      "temperature": 0.2,
+      "max_weight": 0.1,
+      "warm_epochs": 5,
+      "ramp_epochs": 10,
+      "no_extra_forward": true
+    }
+  },
+  "SSL": {
+    "teacher": "Own EMA, not external teacher",
+    "EMA_decay": 0.999,
+    "pseudo_labels": "Hard argmax of EMA on current U",
+    "confidence": {
+      "mode": "rx_day_quantile",
+      "quantile": 0.86,
+      "min": 0.92,
+      "max": 0.97
+    },
+    "temporal": {
+      "mode": "batch_neighbor",
+      "same_batch": true,
+      "same_stream": [
+        "rx_i",
+        "day_i",
+        "eq_i"
+      ],
+      "max_sig_i_gap": 2,
+      "max_base_index_gap": 2,
+      "both_min_conf": 0.8,
+      "agreement": "at least one matching-prediction neighbor",
+      "cross_epoch_bank": false
+    },
+    "strong_view": {
+      "noise_std": 0.015,
+      "gate": "Student strong-view argmax equals EMA pseudo"
+    },
+    "mask": "confidence AND batch_neighbor AND strong_agreement",
+    "domain_classifier_gate": false,
+    "PL_reduction": "Mean selected only; zero if empty",
+    "entropy_reduction": "Mean over all U strong-view outputs",
+    "U_truth_hidden": true
+  },
+  "data": {
+    "dataset": "ManySig equalized1 unitRMS IQ2x256",
+    "sample_rate_Hz": 25000000,
+    "split_seed": 392005,
+    "role_counts": {
+      "L": 6300,
+      "U": 56700,
+      "V": 27000
+    },
+    "source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "V": "Health only; no parameter updates or epoch selection",
+    "target": "Frozen prediction then independent truth-last; no target optimization"
+  },
+  "excluded": [
+    "As independent KL",
+    "T6 temperature",
+    "CSIL/MoPC distillation",
+    "MixStyle",
+    "Fishr",
+    "domain adversarial losses",
+    "epoch-bank",
+    "additional U feature alignment",
+    "U satellite consistency",
+    "DURA training"
+  ],
+  "evidence": {
+    "completed_seed": 2026092701,
+    "views": 7,
+    "count_each_view": 168000,
+    "report": "automation_reports/CV-SincNet/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01/report.md",
+    "comparison": "automation_reports/CV-SincNet/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01/test_results_comparison.md",
+    "clean_accuracy_percent": 85.24583333333334,
+    "lowurban_accuracy_percent": 52.41607142857143,
+    "benchmark": "Already exposed user-designated engineering benchmark; not a new blind test",
+    "three_seed_run": "20261021-phase1-T1-AsKL0-e30plus20-m3-r01",
+    "three_seed_completion_claim": false
+  },
+  "inference": {
+    "single_student": true,
+    "default_head": true,
+    "EMA_teacher": false,
+    "RDrop_second_forward": false,
+    "SupCon": false,
+    "U_gate": false,
+    "augmentation": false,
+    "query_state_update": false
+  },
+  "recovery_boundary": "DURA remains dura_v1. Earlier DURA+originalF50 latency4.531972ms and scores do not apply to DURA+PAMF-T1-E50 without a separate frozen joint test",
+  "mechanism_document": "docs/PAMF_FINAL_T1_E50.md"
+}

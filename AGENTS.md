@@ -1,3 +1,10 @@
+## PAMF最终识别器固定为T1续训E50（2026-10-21，用户最新要求）
+
+- 用户指定“T1：去除As独立KL，原E30续训20至E50”为PAMF最终识别方法，累计日程明确为 **13L＋37U**；37U阶段仍联合使用L/U。标识 `pamf_t1_e50`，定义见 `configs/pamf_final_t1_e50.json`，完整机制见 `docs/PAMF_FINAL_T1_E50.md`。这覆盖本对话此前原F50／33L＋17U作为当前识别器基底的约定；该特定T1配方继续保留旧U门控与自身EMA，不静默替换为普通PL。
+- 当前已完成默认单模型固定 `20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01/E30PLUS20-s2026092701/source/final_ssdg.pth` 的FINAL50学生；原同seed FINAL30学生/自身EMA续训，新增20轮/4440步，累计E50/11100。保留SIG_TIME_X3、CENTER_25K/CENTER_UNITS、ordinary/raw RDrop、As两次真实标签CE而As KL=0、LS0.01、ORD128浅中层CROSS_RX、原隐藏U门控/EMA/熵项及原默认头联合训练；不混入SCRATCH50的33L＋17U、T6、KD或另训头。
+- DURA v1.0继续固定为恢复器G，PAMF-T1-E50是识别器F。此前DURA＋原F50的4.531972ms与七景指标保持原配对语义，不自动改标成DURA＋T1-E50。新组合需独立冻结测试，不因本次版本指定而启动新实验。
+- 原T1三seed续训复现由其既有owner按原矩阵完成，保留健康进程，不重训或按目标结果替换默认单模型。本次只固定既有方法并分析，原权重和历史对照均保留，不扩展现有证据到其他数据契约或Phase2。
+
 ## 默认恢复器固定为 DURA v1.0（2026-10-21，用户最新要求）
 
 - 用户在完整七景与实际时延结果公布后明确固定 **DURA v1.0**，中文名“双阶段展开恢复网络”，部署标识 `dura_v1`。后续未限定的“恢复器／恢复网络／当前恢复版本”均指本版；定义见 `experiments/pamf_stage2_inference/frozen_version.json`，机制见 `docs/DURA_V1.md`。
