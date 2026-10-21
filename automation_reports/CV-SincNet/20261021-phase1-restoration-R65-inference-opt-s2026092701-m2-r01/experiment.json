@@ -281,5 +281,12 @@
     "Formal batch128 matches original; source tail8,target tail64;new/current input copied each replay and prior outputs owned.",
     "0 new weights/training;original R65/F50 and healthy owners unchanged;negative speed/accuracy outcomes retained;target never used for tuning/reordering/retry."
   ],
-  "registered_at": "2026-10-21T02:14:09+00:00"
+  "registered_at": "2026-10-21T02:14:09+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "all_versions_full7": true,
+    "new_training_updates": 0,
+    "target_feedback": false,
+    "long_term_goal_complete": false
+  }
 }
