@@ -1,6 +1,6 @@
 # R65：固定总预算内延后裁剪既有 U-Net
 
-状态：VERIFIED / WAITING_PREDECESSOR_ACTUAL_EXIT：方法4fd058f9bae79687f924e06d057e6a20083ff6dc已普通账户发布，单归档SHA比对/compile通过。真实M35/F50/2Ls双阶段no-query smoke PASS，epoch/update均0；密集与压缩图全部组件梯度有限且非零、strictportable reload与原F默认头保持。实际CPU2 controller和两等待worker PID/CWD/argv/环境、日志增长已核实，当前0新GPU/0训练epoch，等待R64同卡行完成且实际GPU进程退出后才分配物理GPU3/2；max2own GPU跨两run，其他owner不变。固定5+15/10+10/E20/4940、全部七正式/独立truthlast/同卡与分阶段成本自动执行，无源筛选；无新性能结论，完整目标ACTIVE。
+状态：VERIFIED / TRAINING：方法 4fd058f9bae79687f924e06d057e6a20083ff6dc 已普通账户发布，单归档SHA/compile与真实M35/F50/2Ls双阶段零更新no-query smoke PASS。R64同卡行已完成并实际退出；两行物理GPU3/2的实际PID/CWD/argv/CUDA/CPU2、GPU PID、日志增长和有限epoch已核实，每卡1/max2own，其他owner不变。原M35直接初始化/全程冻结IQ教师与训练前固定GN4通道图不变；5+15/10+10合计E20/4940，最终273765，AdamW仅转换时重置一次，global LR/data/teacher日程继续。全L/U且0TX/F/V/target优化，无新校准；全部七正式/独立truthlast/同卡及分阶段成本、strict权重和报告由现有owner自动收尾。core c3b12eaea固定早于读取R64源或目标准确率，当前无R65识别收益结论；性能优先，完整目标ACTIVE。
 
 研究问题来自源域重建目标和不可逆结构裁剪：在原 M35 完整图上先做部分源更新，再裁剪并继续训练，是否比初始化时就移除通道更有利。此问题和矩阵在读取 R64 源/正式成绩前固定，不因其他已暴露目标分数挑选宽度、裁剪图、父权重或教师。不是新的恢复网络路线。
 
