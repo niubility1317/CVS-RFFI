@@ -17,3 +17,5 @@
 当前状态：LOCAL_VERIFIED。71 项聚焦检查、CLI 和一次独立 P0/P1 审查通过；真实原R65权重合成前向/反向/严格重载通过。首步真实两条 L_s 与原 F50 无 query smoke 后自动继续。尚无本轮正式性能或提速结论。
 
 方法 commit `b2a2ce937a64654e17e84c2aa817b9da4257a48f`；状态 LOCAL_VERIFIED，待远端发布与首步真实2Ls/F50无query smoke。
+
+启动状态：VERIFIED / RUNNING。一次 archive SHA 比对、远端编译及首步真实两条 L_s/F50 无query smoke PASS；两阶段版和共享编码版的实际 PID/CWD/argv/CUDA/GPU、日志增长及首轮有限损失已核实。PCG与多相版同队列自动接续，未宣称已在GPU训练；全部自动七景正式测试与同卡测速保持，无当前正式效果结论。
