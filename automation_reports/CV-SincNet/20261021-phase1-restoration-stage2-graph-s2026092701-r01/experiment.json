@@ -250,5 +250,12 @@
     "Same InferenceEngine for actual predictions and timing; copy/owned outputs/validity included; GPU-preloaded input excludes host loader/transfer; capture setup separate.",
     "Residual reuse may change FP32 roundoff; no promised classification invariance. All results retained without target tuning."
   ],
-  "registered_at": "2026-10-21T03:04:00+00:00"
+  "registered_at": "2026-10-21T03:04:00+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "all_versions_full7": true,
+    "new_training_updates": 0,
+    "target_feedback": false,
+    "long_term_goal_complete": false
+  }
 }

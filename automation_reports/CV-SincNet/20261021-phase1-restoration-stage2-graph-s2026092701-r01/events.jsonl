@@ -1,3 +1,4 @@
 {"at": "2026-10-21T03:04:00+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-21T03:04:00+00:00", "status": "LOCAL_VERIFIED", "note": "14focusedchecksPASS; fixed combined candidate; no new training; not launched", "evidence": ["experiment.json", "report.md"], "row_id": null}
 {"at": "2026-10-21T03:06:34+00:00", "status": "RUNNING", "note": "VERIFIED GPU4/PID/CWD/argv/loggrowth/actual2LsF50smokePASS;automatic full7 truthlast", "evidence": ["experiment.json", "report.md"], "row_id": null}
+{"at": "2026-10-21T03:09:40+00:00", "status": "ANALYZED", "note": "Existing stage2 weights;source/formal7 scored;matched native timing;actual owned processes exited", "evidence": ["report.md", "results.json", "row_metrics.csv"], "row_id": "stage2_residual_graph"}
