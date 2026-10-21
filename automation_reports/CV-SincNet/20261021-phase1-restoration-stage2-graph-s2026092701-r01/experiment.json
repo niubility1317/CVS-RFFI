@@ -1,0 +1,254 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261021-phase1-restoration-stage2-graph-s2026092701-r01",
+  "group_id": "pamf-stage2-frozen-runtime",
+  "display_name": "两阶段蒸馏现有权重叠加图执行与残差复用",
+  "description": "保留R69 stage2全部266951参数，不新增训练，CUDA Graph/同步优化/残差复用联合运行；完整七景与同卡native实测。",
+  "kind": "cvs",
+  "stage": "Phase1-frozen-runtime-evaluation",
+  "aliases": [],
+  "tags": [
+    "stage2",
+    "frozen_weights",
+    "CUDA_graph",
+    "residual_reuse",
+    "zero_training"
+  ],
+  "comparison_group_id": "stage2_native_vs_combined",
+  "parent_run_ids": [
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户明确要求保留两阶段蒸馏现有权重，叠加CUDA Graph、同步优化和残差复用，直接启动七景与实际时延；物理GPU4每卡一本run worker，总1，其他owner不变。",
+  "code": {
+    "commit": "47c264286ca689f060a3f36aafb763fe209a6f06",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;FP32/TF32off/CPUthreads2",
+    "cwd": "releases/pamf_stage2_inference_opt_20261021_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "original validated source physical split; no resplit",
+    "representation": "Original63000sourceL6300/U56700/R07 cachedreceived1..20;1800sourceV7views;fixedR05formal168000x7",
+    "contract_ref": "data_caches/phase1_manysig_reference_20261019/source/source_contract.json",
+    "physical_ids_ref": "R07/cache/train6300L+56700U originalIDs;R07validation1800V;conditional R05 original168000IDs",
+    "label_map_ref": "0新TX/V/target训练标签；原F50源监督知识冻结；各row全7预测后独立truth-last评分",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "all original six TX; restoration training uses no TX labels",
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "source_cache/manifest.json: READY/EXACT_MATCH; reuse existing cache without new data validation",
+    "support_query_ref": null,
+    "leo_config_ref": "Unchanged code/leo_practical/channel.py;reuse R07 epoch01..20 and original sourceV;conditional original formal received bytes",
+    "restoration_train_counts": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "epochs_per_row": 20,
+      "updates_per_row": 4940,
+      "L_exposures_per_row": 126000,
+      "U_exposures_per_row": 1134000,
+      "source_IQ_examples_per_row": 1260000,
+      "teacher_IQ_examples_per_row": 1260000,
+      "global_batch": 256,
+      "microbatch": 256,
+      "TX_labels": 0,
+      "F_weight_loads": 0,
+      "F_output_reads": 0,
+      "V_training": 0,
+      "target_training": 0
+    },
+    "source_validation_panel": 1800,
+    "target_panel": "Allfour fixedfinalE20/4940;168000x7 each regardlesssourceperformance",
+    "actual_training_labels": "Original sourcepairedclean/received andfrozenhumanM35IQteacher;L/U TXhidden;0TX/F/V/targetoptimization;not cleanfree",
+    "augmentation": "OriginalR07 .15clean/.85residual cachedreceived,no newaugmentation or cleanconcatenation",
+    "runtime_inputs": "Current native IQ only;no teacher or source runtime access in deployment",
+    "new_calibration_IQ": 0,
+    "new_training_IQ_examples": 0,
+    "new_training_TX_labels": 0,
+    "smoke_Ls": 2,
+    "source_validation_count": 1800,
+    "formal_count": 168000,
+    "views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ]
+  },
+  "permissions": {
+    "regime": "Existing source-only two-stage weights; no training or F distillation",
+    "query_use": "Fixed Phase1 test-only seven views; all predictions fixed before independent CPU truth",
+    "external_method_exception": null,
+    "claim_scope": "User-designated already exposed single-seed engineering benchmark; no new blind validation or per-detail TX claim"
+  },
+  "checkpoint": {
+    "initialization": "Existing frozen R69 stage2 source-final E20/4940; no weight edits",
+    "sources": [
+      {
+        "run_id": "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+        "commit": "b2a2ce937a64654e17e84c2aa817b9da4257a48f",
+        "row": "stage2",
+        "epoch": 20,
+        "updates": 4940,
+        "parameters": 266951,
+        "path": "runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+      }
+    ],
+    "contract_check_ref": "Original source7/63/30 ancestry; strict original stage2 metadata/state/alias checks; source-only IQ teacher; no target/F training",
+    "provenance_verdict": "MATCHED_SOURCE_ONLY_ORIGINAL_STAGE2_NO_NEW_TRAINING",
+    "selection_rule": "User-designated existing stage2; no candidate selection, full seven views regardless source scores"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/stage2-inference",
+    "gpu_policy": "PhysicalGPU4;one own worker;allowner<1/free18GB under shared capacity lock;CPU2;independent scorer max1",
+    "remote_run_root": "runs/20261021-phase1-restoration-stage2-graph-s2026092701-r01",
+    "remote_log_root": "logs/20261021-phase1-restoration-stage2-graph-s2026092701-r01",
+    "local_artifact_root": "local_artifacts/pamf_restoration/stage2_inference_20261021",
+    "launch_command": "python -u -m experiments.pamf_stage2_inference.runner run --parent-run ../../runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69 --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261021-phase1-restoration-stage2-graph-s2026092701-r01 --expected-commit 47c264286ca689f060a3f36aafb763fe209a6f06",
+    "stop_rule": "Preserve technical failures; no automatic retry, output overwrite, or unrelated process intervention"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "comparison_plan.json",
+    "workers.json",
+    "stages.json",
+    "{arm}/smoke.json",
+    "{arm}/runtime_ready.json",
+    "{arm}/checkpoint_source.json",
+    "{arm}/standalone_graph_memory.json",
+    "{arm}/matched_inference_profile.json",
+    "{arm}/native_map_prior/prediction/complete.json",
+    "{arm}/native_map_prior/summary.json",
+    "{arm}/source_complete.json",
+    "{arm}/target_confirmation/native_map_prior/prediction/complete.json",
+    "{arm}/target_confirmation/native_map_prior/native_agreement.json",
+    "{arm}/target_confirmation/native_map_prior/summary.json",
+    "{arm}/assessment.json",
+    "{arm}/complete.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "repaired",
+      "damaged",
+      "net_repaired",
+      "IQ/features/logits_max_error",
+      "argmax_disagreements",
+      "median_ms",
+      "P90_ms",
+      "P95_ms",
+      "throughput",
+      "allocated/reserved_memory",
+      "capture_seconds"
+    ],
+    "dimensions": [
+      "sevenviews",
+      "TX",
+      "RX",
+      "day",
+      "batch1/8/32/128",
+      "G_only/G_plus_F",
+      "native/combined"
+    ],
+    "prediction_ref": "runs/20261021-phase1-restoration-stage2-graph-s2026092701-r01/<arm>/{native_map_prior,target_confirmation/native_map_prior}/prediction",
+    "scorer_ref": "experiments.pamf_stage2_inference.runner score_source/score_target; independent CPU after all seven predictions",
+    "acceptance": "Same stage2 accuracy differences and original R17 per-scene1pp separately; lowurban70 and otherfive rawclean5pp separately; no target feedback"
+  },
+  "rows": [
+    {
+      "row_id": "stage2_residual_graph",
+      "method": "stage2-inference/stage2_residual_graph",
+      "purpose": "Fixed-weight combined execution optimization",
+      "config_ref": "experiments/pamf_stage2_inference/design.py#configuration",
+      "resolved_config_ref": "runs/20261021-phase1-restoration-stage2-graph-s2026092701-r01/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2026101912,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Original stage2 model/split/data/augmentation/evaluation inherited; support null Phase1; no new training",
+      "k": null,
+      "scenario": "clean + six practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 new training updates; inherited R65 and stage2 E20/4940/F50 costs retained;2prior/4CG",
+      "output_root": "runs/20261021-phase1-restoration-stage2-graph-s2026092701-r01/stage2_residual_graph",
+      "log_path": "runs/20261021-phase1-restoration-stage2-graph-s2026092701-r01/logs/worker-stage2_residual_graph.log",
+      "command": "python -u -m experiments.pamf_stage2_inference.runner run --parent-run ../../runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69 --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261021-phase1-restoration-stage2-graph-s2026092701-r01 --expected-commit 47c264286ca689f060a3f36aafb763fe209a6f06",
+      "expected_artifacts": [
+        "launch.json",
+        "comparison_plan.json",
+        "workers.json",
+        "stages.json",
+        "{arm}/smoke.json",
+        "{arm}/runtime_ready.json",
+        "{arm}/checkpoint_source.json",
+        "{arm}/standalone_graph_memory.json",
+        "{arm}/matched_inference_profile.json",
+        "{arm}/native_map_prior/prediction/complete.json",
+        "{arm}/native_map_prior/summary.json",
+        "{arm}/source_complete.json",
+        "{arm}/target_confirmation/native_map_prior/prediction/complete.json",
+        "{arm}/target_confirmation/native_map_prior/native_agreement.json",
+        "{arm}/target_confirmation/native_map_prior/summary.json",
+        "{arm}/assessment.json",
+        "{arm}/complete.json",
+        "complete.json"
+      ],
+      "GPU": 4,
+      "parameters": 266951,
+      "FFT_calls": 27
+    }
+  ],
+  "notes": [
+    "14 focused checks PASS; one independent P0/P1 review before launch. Actual two Ls/F50 real-checkpoint smoke is first GPU step and proceeds immediately on PASS.",
+    "No retraining/no state updates; same F50 original defaulthead. B128 source tail8/target tail64. Original stage2 predictions reused for agreement; never rerun original target.",
+    "Same InferenceEngine for actual predictions and timing; copy/owned outputs/validity included; GPU-preloaded input excludes host loader/transfer; capture setup separate.",
+    "Residual reuse may change FP32 roundoff; no promised classification invariance. All results retained without target tuning."
+  ],
+  "registered_at": "2026-10-21T03:04:00+00:00"
+}
