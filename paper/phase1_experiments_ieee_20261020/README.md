@@ -30,3 +30,5 @@ pdflatex main.tex
 最终T1 F0 三seed七景子矩阵已闭合，tables/final_t1_f0.tex与source_data/final_t1_f0_*.csv为实际评分复算。其余17契约扩展、机制、时延尚在运行。旧no-As33L17U表保留独立历史标签，不能混为最终T1。
 
 2026-10-21 timing update: final T1+DURA unified timing-r02 complete (500 case-rounds,140000 GPU wall calls,10000 transfer calls). Tables/final_t1_latency.tex contains all B1 comparator calls, same-weight G/GF execution routes and default batch measurements. B1 4.541187ms GPU/P95 4.725135ms/CPU-transfer median4.611311ms; earlier4.531972ms retains historical F50 semantics. Other contract/mechanism experiments remain running.
+
+2026-10-22 source-count completion: sourcecount_results.tex reports all360 external models/2520 view cells,93,240 checked confusion matrices,6,440 matched audit statistics,10 vector-figure panels and Full/CE/PL paired gains. Natural/fixed and six-target vs seven-target F0 stay separate. PAMF extended contract/mechanism rows continue.

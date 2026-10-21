@@ -109,3 +109,11 @@ ETA更新（UTC+8）：剔除已完成和被撤下行后，剩余约5至10小时
 独立CPU最终汇总仍在control-r03原owner内运行，analysis.log尚无输出，summary/completion尚未生成；不得将逐行闭合冒充最终汇总交付。完整曲线/配对收益/训练曝光汇总程序已准备在experiments/phase1_dg_sourcecount6/curves.py，待原审计的audited_rows.json完成后直接分析，不重复启动审计或训练。
 
 外部有效行闭合后，PAMF资源controller已自动放开GPU2/3第二个槽；当前8卡每卡2条、16条PAMF活动worker，健康任务继续。
+
+## 最终源数量汇总完成（2026-10-22，UTC+8）
+
+**VERIFIED / ANALYZED**：control-r03原独立CPU审计完成，360/360有效行、360次新训练、0新五源复用、2520视图单元全部闭合；原16个五源历史和56个SKIPPED_USER保留。完整审计产物已取回。离线复算93,240份CM及6,440个汇总/配对统计量均一致，10组源数量/Full−CE/PL−监督矢量曲线已生成。
+
+详细结果见[sourcecount_results.md](sourcecount_results.md)、四份sourcecount_*.csv和[sourcecount_verification.json](sourcecount_verification.json)。120个预定clean/六景方法条件配对均值中67个Full−CE非正；120条PL训练有30条全程接受数为0，全部保留。统计仅描述固定链与共享目标集合，不当成独立假设检验。
+
+已汇入IEEE实验章节sourcecount_results.tex；图表和完整冻结聚合输入纳入新的不可覆盖阶段包r04，原r03保留。PAMF完整方法与机制矩阵仍在16并发运行，不据此宣称整项研究完成。

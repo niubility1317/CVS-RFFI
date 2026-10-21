@@ -44,7 +44,7 @@ def analyze(source,output):
     source=Path(source);out=Path(output);out.mkdir(parents=True,exist_ok=True)
     payload=read(source);assert payload['status']=='ANALYZED' and len(payload['rows'])==360
     expected={(m,b,r,f,v,s) for m in COUNTS for b,r in REGIMES for f in FAMILIES for v in ('ce','full') for s in SEEDS}
-    seen=set();series={};public=[];costs=[];matrices=0
+    seen=set();series={};public=[];costs=[];matrices=0;target_names=None
     for row in payload['rows']:
         c=row['config'];regime='pl' if c['U_s_use'] else 'supervised'
         key=(c['source_count'],c['label_budget'],regime,c['family'],c['variant'],c['model_seed'])
@@ -57,7 +57,9 @@ def analyze(source,output):
             total=[r for r in results if r['view']==view and r['dimension']=='overall'];assert len(total)==1
             total=total[0];assert total['count']==144000
             receivers=[r for r in results if r['view']==view and r['dimension']=='receiver']
-            assert len(receivers)==6 and {int(r['stratum']) for r in receivers}=={0,2,5,7,9,10}
+            names={r['stratum'] for r in receivers}
+            if target_names is None:target_names=names
+            assert len(receivers)==len(names)==6 and names==target_names
             assert all(r['count']==24000 for r in receivers)
             assert [[sum(r['confusion'][i][j] for r in receivers) for j in range(6)] for i in range(6)]==total['confusion']
             values[view]=dict(accuracy=statistics.mean(r['accuracy'] for r in receivers),macro_f1=total['macro_f1'],worst_rx=min(r['accuracy'] for r in receivers))
@@ -103,7 +105,7 @@ def analyze(source,output):
     nonwins=[r for r in dg if r['metric']=='accuracy' and r['view'] in ('clean','satellite_mean') and r['mean']<=0]
     zero_pl=[r for r in costs if r['regime']=='pl' and r['pl_accepted']==0]
     verify=dict(status='VERIFIED',rows=360,source_counts=list(COUNTS),excluded_source_counts=[5],new_training=360,reused=0,
-        raw_view_cells=2520,source_chain=[1,3,4,6,8,11],target_receivers=[0,2,5,7,9,10],packets_per_view=144000,seeds=list(SEEDS),
+        raw_view_cells=2520,source_chain=[1,3,4,6,8,11],target_receivers=[0,2,5,7,9,10],target_receiver_names=sorted(target_names),packets_per_view=144000,seeds=list(SEEDS),
         checked_confusion_matrices=matrices,summary_records=len(summary),DG_pair_records=len(dg),PL_pair_records=len(pl),
         core_DG_nonpositive_means=len(nonwins),core_DG_comparisons=120,zero_accepted_PL_rows=len(zero_pl),PL_rows=120,
         summed_worker_training_elapsed_hours=sum(r['training_seconds'] for r in costs)/3600,
@@ -138,7 +140,7 @@ def plot(summary,dg,pl,output):
     import matplotlib.pyplot as plt
     from matplotlib.lines import Line2D
     out=Path(output);out.mkdir(parents=True,exist_ok=True)
-    plt.rcParams.update({'font.family':'DejaVu Sans','font.size':8,'axes.labelsize':8,'axes.titlesize':8,'legend.fontsize':7,'pdf.fonttype':42,'ps.fonttype':42})
+    plt.rcParams.update({'font.family':'DejaVu Sans','font.size':11,'axes.labelsize':11,'axes.titlesize':11,'legend.fontsize':10,'pdf.fonttype':42,'ps.fonttype':42})
     colors=dict(zip(FAMILIES,('#0072B2','#D55E00','#009E73','#CC79A7')))
     titles=dict(clean='Clean',satellite_mean='Six-scene mean',practical_high='High suburban',practical_mid='Mid suburban',practical_low_suburban='Low suburban',practical_high_urban='High urban',practical_mid_urban='Mid urban',practical_low_urban='Low urban')
     def panel(ax,records,budget,regime,view,kind):
@@ -148,7 +150,7 @@ def plot(summary,dg,pl,output):
                 selected.sort(key=lambda r:r['source_count']);assert len(selected)==5
                 ax.errorbar([r['source_count'] for r in selected],[100*r['mean'] for r in selected],yerr=[100*r['sample_sd'] for r in selected],color=colors[family],ls='--' if variant=='ce' else '-',marker='o' if variant=='ce' else 's',ms=3,lw=1,capsize=2,elinewidth=.65)
         if kind!='accuracy':ax.axhline(0,color='.3',lw=.6)
-        ax.set_xticks(COUNTS);ax.set_xlabel('Source receivers');ax.grid(alpha=.18);ax.spines[['top','right']].set_visible(False)
+        ax.set_xticks(COUNTS);ax.set_xlabel('Source RX count');ax.grid(alpha=.18);ax.spines[['top','right']].set_visible(False)
         ax.set_title(titles[view]);ax.set_ylabel('RX-equal accuracy (%)' if kind=='accuracy' else ('Full − own CE (pp)' if kind=='dg' else 'PL − supervised (pp)'))
     legend=[Line2D([],[],color=colors[f],ls='--' if v=='ce' else '-',marker='o' if v=='ce' else 's',ms=3,label=LABELS[f]+(' CE' if v=='ce' else ' Full')) for f in FAMILIES for v in ('ce','full')]
     def save(fig,name,handles=legend):
@@ -159,7 +161,7 @@ def plot(summary,dg,pl,output):
         for col,(budget,regime) in enumerate(REGIMES):
             for row,view in enumerate(('clean','satellite_mean')):
                 panel(axes[row,col],records,budget,regime,view,kind)
-                axes[row,col].set_title(f'{budget.capitalize()} / {regime}: '+titles[view])
+                axes[row,col].set_title(f'{budget.capitalize()} / '+('PL' if regime=='pl' else 'supervised')+'\n'+titles[view])
         handles=legend if kind=='accuracy' else [Line2D([],[],color=colors[f],marker='s',label=LABELS[f]) for f in FAMILIES]
         save(fig,'sourcecount_'+kind+'_overview',handles)
         for budget,regime in REGIMES:
@@ -175,8 +177,38 @@ def plot(summary,dg,pl,output):
     save(fig,'sourcecount_pl_gain_all_scenes')
 
 
+def verify_audit(summary,dg,pl,path):
+    remote=read(path);assert remote['status']=='ANALYZED' and remote['rows']==remote['expected_rows']==360 and remote['excluded_source_counts']==[5]
+    lookup={(r['source_count'],r['budget'],r['regime'],r['family'],r['variant'],r['view'],r['metric']):r for r in summary}
+    matched=0
+    for r in remote['summary']:
+        a,b,c=r['group'].split('-');m=int(a[1:])
+        for metric,field in (('accuracy','equal_rx_accuracy'),('macro_f1','macro_f1'),('worst_rx','worst_rx')):
+            cell=lookup[m,b,c,r['family'],r['version'],r['view'],metric]
+            assert cell['actual_seeds']==r['actual_seeds']==3
+            for stat in ('mean','sample_sd'):
+                assert math.isclose(cell[stat],r[field+'_'+stat],abs_tol=1e-12);matched+=1
+    lookup={(r['source_count'],r['budget'],r['regime'],r['family'],r['view']):r for r in dg if r['metric']=='accuracy'}
+    for r in remote['dg_paired']:
+        a,b,c=r['group'].split('-');cell=lookup[int(a[1:]),b,c,r['family'],r['view']]
+        assert cell['actual_seeds']==r['actual_pairs']==3
+        for stat,field in (('mean','equal_rx_mean'),('sample_sd','equal_rx_sample_sd')):
+            assert math.isclose(cell[stat],r[field],abs_tol=1e-12);matched+=1
+    lookup={(r['source_count'],r['family'],r['variant'],r['view']):r for r in pl if r['metric']=='accuracy'}
+    for r in remote['pl_paired']:
+        cell=lookup[r['source_count'],r['family'],r['variant'],r['view']]
+        assert cell['actual_seeds']==r['actual_pairs']==3
+        for stat in ('mean','sample_sd'):
+            assert math.isclose(cell[stat],r[stat],abs_tol=1e-12);matched+=1
+    assert matched==6440
+    return matched
+
+
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--input',required=True);p.add_argument('--output',required=True);p.add_argument('--figures')
+    p=argparse.ArgumentParser();p.add_argument('--input',required=True);p.add_argument('--output',required=True);p.add_argument('--figures');p.add_argument('--audit-summary')
     a=p.parse_args();summary,dg,pl,verify=analyze(a.input,a.output)
-    if a.figures:plot(summary,dg,pl,a.figures)
+    if a.audit_summary:verify['remote_summary_and_pair_statistics_matched']=verify_audit(summary,dg,pl,a.audit_summary)
+    if a.figures:
+        plot(summary,dg,pl,a.figures);verify['figures']=len(list(Path(a.figures).glob('*.pdf')))
+    (Path(a.output)/'sourcecount_verification.json').write_text(json.dumps(verify,indent=2)+'\n',encoding='utf-8')
     print(json.dumps(verify))

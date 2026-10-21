@@ -28935,5 +28935,17 @@
       "m5-natural-pl-sdg-ce-s2026092701",
       "m5-natural-pl-sdg-full-s2026092701"
     ]
+  },
+  "runtime_evidence": {
+    "status": "ANALYZED",
+    "effective_expected": 360,
+    "effective_completed": 360,
+    "excluded_source_counts": [
+      5
+    ],
+    "historical_m5_completed": 16,
+    "skipped_user": 56,
+    "scientific_worker_commit": "9500192b6a91365016006ea78fbebfda2afb2bed",
+    "evidence": "sourcecount_verification.json"
   }
 }
