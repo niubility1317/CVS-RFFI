@@ -572,5 +572,19 @@
     "all14cells_before_truth": true,
     "report_ref": "test_results.md",
     "full_logs_parsed": true
+  },
+  "posthoc_analysis": {
+    "status": "SOURCE_LOG_AND_CODE_DIAGNOSIS_COMPLETE",
+    "report_ref": "mechanism_analysis.md",
+    "evidence_ref": "local_artifacts/cvs_sard_dura_train/component_diagnosis.json",
+    "new_training_updates": 0,
+    "new_F_G_forwards": 0,
+    "training_batch_sequence_matches": 19314,
+    "differing_scene_count_steps": 0,
+    "differing_ordinary_MSE_steps": 0,
+    "restored_labeled_CE_coefficient_share": 0.2,
+    "contrastive_mode": "ORD128",
+    "restored_contrastive_anchors": 0,
+    "limitation": "Hypotheses about receiver shortcuts/TX detail changes are not experimentally established;single seed;no new target optimization"
   }
 }
