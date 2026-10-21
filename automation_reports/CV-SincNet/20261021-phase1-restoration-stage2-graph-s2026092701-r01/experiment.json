@@ -2,11 +2,14 @@
   "schema": "experiment_record_v1",
   "run_id": "20261021-phase1-restoration-stage2-graph-s2026092701-r01",
   "group_id": "pamf-stage2-frozen-runtime",
-  "display_name": "PAMF-Lite2 v1.0（Graph-RR）：两阶段轻量恢复器",
+  "display_name": "DURA v1.0：双阶段展开恢复网络",
   "description": "保留R69 stage2全部266951参数，不新增训练，CUDA Graph/同步优化/残差复用联合运行；完整七景与同卡native实测。",
   "kind": "cvs",
   "stage": "Phase1-frozen-runtime-evaluation",
   "aliases": [
+    "DURA",
+    "DURA v1.0",
+    "dura_v1",
     "PAMF-Lite2",
     "PAMF-Lite2 v1.0",
     "pamf_lite2_v1_graph_rr"
@@ -17,7 +20,7 @@
     "CUDA_graph",
     "residual_reuse",
     "zero_training",
-    "PAMF-Lite2",
+    "DURA",
     "default_restorer"
   ],
   "comparison_group_id": "stage2_native_vs_combined",
@@ -265,8 +268,8 @@
     "long_term_goal_complete": false
   },
   "frozen_default_version": {
-    "name": "PAMF-Lite2 v1.0（Graph-RR）",
-    "deployment_id": "pamf_lite2_v1_graph_rr",
+    "name": "DURA v1.0",
+    "deployment_id": "dura_v1",
     "manifest": "experiments/pamf_stage2_inference/frozen_version.json",
     "designated_on": "2026-10-21",
     "no_new_training": true

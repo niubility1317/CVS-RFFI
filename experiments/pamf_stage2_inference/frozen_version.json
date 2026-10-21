@@ -1,8 +1,8 @@
 {
   "schema": "pamf_frozen_restorer_version_v1",
-  "deployment_id": "pamf_lite2_v1_graph_rr",
-  "name": "PAMF-Lite2 v1.0（Graph-RR）",
-  "chinese_name": "PAMF 两阶段轻量恢复器",
+  "deployment_id": "dura_v1",
+  "name": "DURA v1.0",
+  "chinese_name": "双阶段展开恢复网络",
   "version": "1.0.0",
   "runtime_variant": "Graph-RR",
   "status": "DEFAULT_FROZEN",
@@ -105,5 +105,14 @@
     "optimized_G_plus_F_P95_ms": 4.990450106561184
   },
   "future_default_policy": "Unqualified recovery network/restorer means this exact model, weights and runtime; modifications get a separate version/comparison and replace this default only on explicit user instruction; keep healthy existing runs unchanged",
-  "claim_boundary": "Seven-view frozen-F50 accuracy preserved; no claim of exact per-detail TX recovery, lowurban70 achieved, or validity on other/Phase2 data contracts"
+  "claim_boundary": "Seven-view frozen-F50 accuracy preserved; no claim of exact per-detail TX recovery, lowurban70 achieved, or validity on other/Phase2 data contracts",
+  "english_name": "Dual-stage Unrolled Restoration Architecture",
+  "aliases": [
+    "DURA",
+    "DURA v1.0",
+    "dura_v1",
+    "PAMF-Lite2",
+    "PAMF-Lite2 v1.0",
+    "pamf_lite2_v1_graph_rr"
+  ]
 }

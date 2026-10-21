@@ -1,4 +1,4 @@
-# PAMF-Lite2 v1.0（Graph-RR）：两阶段轻量恢复器
+# DURA v1.0：双阶段展开恢复网络
 
 状态：VERIFIED / ANALYZED，完整七场景与同卡时延均已完成，所属进程已退出。
 
@@ -41,4 +41,4 @@
 
 ## 默认版本指定（2026-10-21）
 
-用户将本次已完成版本固定命名为 **PAMF-Lite2 v1.0（Graph-RR）**，中文名“PAMF 两阶段轻量恢复器”，部署标识 `pamf_lite2_v1_graph_rr`。固定原权重与执行路径，不新增训练或测试。参见[版本与机制](../../../docs/PAMF_LITE2_V1.md)和[版本定义](../../../experiments/pamf_stage2_inference/frozen_version.json)。
+用户将本次已完成版本固定命名为 **DURA v1.0**，中文名“双阶段展开恢复网络”，部署标识 `dura_v1`。固定原权重与执行路径，不新增训练或测试。参见[版本与机制](../../../docs/DURA_V1.md)和[版本定义](../../../experiments/pamf_stage2_inference/frozen_version.json)。
