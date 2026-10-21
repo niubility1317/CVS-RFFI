@@ -1,0 +1,109 @@
+{
+  "schema": "pamf_frozen_restorer_version_v1",
+  "deployment_id": "pamf_lite2_v1_graph_rr",
+  "name": "PAMF-Lite2 v1.0（Graph-RR）",
+  "chinese_name": "PAMF 两阶段轻量恢复器",
+  "version": "1.0.0",
+  "runtime_variant": "Graph-RR",
+  "status": "DEFAULT_FROZEN",
+  "designated_on": "2026-10-21",
+  "authorization": "User explicitly fixes the completed existing two-stage-plus-graph/sync/residual-reuse version as the default recovery network after viewing its full results",
+  "architecture": {
+    "class_path": "experiments.pamf_r65_four_route.stage_polyphase.StageDistilled",
+    "parameters": 266951,
+    "prior_calls": 2,
+    "CG_per_stage": 2,
+    "total_CG_updates": 4,
+    "FFT_IFFT_calls": 27,
+    "ConvLinear_MAC_per_IQ": 25068072,
+    "input": "FP32[B,2,256] current received IQ",
+    "output": "FP32[B,2,256] restored IQ",
+    "context_estimates_per_observation": 1
+  },
+  "checkpoint": {
+    "run_id": "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+    "row_id": "stage2",
+    "relative_path": "runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt",
+    "epoch": 20,
+    "updates": 4940,
+    "model_seed": 2026092701,
+    "training_commit": "b2a2ce937a64654e17e84c2aa817b9da4257a48f",
+    "bytes": 1309284,
+    "selection": "User-designated existing source-final weights; no new selection or training at version freeze",
+    "preservation": "Keep original checkpoint immutable; no rename, move, overwrite or new weight generation"
+  },
+  "runtime": {
+    "commit": "47c264286ca689f060a3f36aafb763fe209a6f06",
+    "entry": "experiments.pamf_stage2_inference.engine.InferenceEngine",
+    "options": {
+      "reuse": true,
+      "graph": true,
+      "native": false
+    },
+    "module_state": "eval and requires_grad_(False)",
+    "precision": "FP32",
+    "TF32": false,
+    "device": "CUDA",
+    "release_directory": "releases/pamf_stage2_inference_20261021_r01",
+    "graph_keys": "device and input shape",
+    "current_input_copy": true,
+    "owned_output_clone": true,
+    "validity": "Accumulate on device; one final host check",
+    "inference_mode": true,
+    "native_fallback": false,
+    "validated_batches": [
+      1,
+      8,
+      32,
+      64,
+      128
+    ]
+  },
+  "training_permissions": {
+    "new_training_updates_at_acceleration_or_freeze": 0,
+    "restorer_training_TX_labels_read": 0,
+    "restorer_training_F_access": false,
+    "restorer_training_target_access": false,
+    "source_contract": "original7/63/30; provenance references retained in original R69 and evaluation records"
+  },
+  "verification": {
+    "run_id": "20261021-phase1-restoration-stage2-graph-s2026092701-r01",
+    "result_commit": "b108f574db15a09c855a394f408ccb8a4e80463c",
+    "count_per_view": 168000,
+    "view_count": 7,
+    "model_seed_count": 1,
+    "reader_run": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+    "reader_seed": 2026092701,
+    "reader_head": "checkpoint original defaulthead",
+    "independent_truthlast": true,
+    "all_predictions_before_truth": true,
+    "report": "automation_reports/CV-SincNet/20261021-phase1-restoration-stage2-graph-s2026092701-r01/report.md",
+    "results": "automation_reports/CV-SincNet/20261021-phase1-restoration-stage2-graph-s2026092701-r01/results.json",
+    "accuracy_percent": {
+      "clean": 84.67797619047619,
+      "practical_high": 82.825,
+      "practical_mid": 81.56071428571428,
+      "practical_low_suburban": 80.05833333333334,
+      "practical_high_urban": 81.74583333333334,
+      "practical_mid_urban": 75.48630952380952,
+      "practical_low_urban": 68.88988095238095
+    },
+    "argmax_changed": 2,
+    "changed_wrong_to_correct": 2,
+    "scene_accuracy_drop": false,
+    "benchmark_exposure": "Already exposed user-designated engineering benchmark; not a new independent blind test"
+  },
+  "timing": {
+    "hardware": "N607 RTX3090 physicalGPU4",
+    "batch": 1,
+    "alternating_rounds": 3,
+    "scope": "Steady-state GPU-preloaded InferenceEngine; includes copy/owned outputs/validity and synchronized call boundaries; excludes host loader/transfer/queue and first capture",
+    "native_G_ms": 31.938862055540085,
+    "optimized_G_ms": 3.95516911521554,
+    "native_G_plus_F_ms": 41.220935876481235,
+    "optimized_G_plus_F_ms": 4.531971993856132,
+    "optimized_G_plus_F_P95_ms": 4.990450106561184
+  },
+  "future_default_policy": "Unqualified recovery network/restorer means this exact model, weights and runtime; modifications get a separate version/comparison and replace this default only on explicit user instruction; keep healthy existing runs unchanged",
+  "claim_boundary": "Seven-view frozen-F50 accuracy preserved; no claim of exact per-detail TX recovery, lowurban70 achieved, or validity on other/Phase2 data contracts"
+}

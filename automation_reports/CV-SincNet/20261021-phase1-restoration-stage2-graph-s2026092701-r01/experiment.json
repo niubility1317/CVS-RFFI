@@ -2,17 +2,23 @@
   "schema": "experiment_record_v1",
   "run_id": "20261021-phase1-restoration-stage2-graph-s2026092701-r01",
   "group_id": "pamf-stage2-frozen-runtime",
-  "display_name": "两阶段蒸馏现有权重叠加图执行与残差复用",
+  "display_name": "PAMF-Lite2 v1.0（Graph-RR）：两阶段轻量恢复器",
   "description": "保留R69 stage2全部266951参数，不新增训练，CUDA Graph/同步优化/残差复用联合运行；完整七景与同卡native实测。",
   "kind": "cvs",
   "stage": "Phase1-frozen-runtime-evaluation",
-  "aliases": [],
+  "aliases": [
+    "PAMF-Lite2",
+    "PAMF-Lite2 v1.0",
+    "pamf_lite2_v1_graph_rr"
+  ],
   "tags": [
     "stage2",
     "frozen_weights",
     "CUDA_graph",
     "residual_reuse",
-    "zero_training"
+    "zero_training",
+    "PAMF-Lite2",
+    "default_restorer"
   ],
   "comparison_group_id": "stage2_native_vs_combined",
   "parent_run_ids": [
@@ -257,5 +263,12 @@
     "new_training_updates": 0,
     "target_feedback": false,
     "long_term_goal_complete": false
+  },
+  "frozen_default_version": {
+    "name": "PAMF-Lite2 v1.0（Graph-RR）",
+    "deployment_id": "pamf_lite2_v1_graph_rr",
+    "manifest": "experiments/pamf_stage2_inference/frozen_version.json",
+    "designated_on": "2026-10-21",
+    "no_new_training": true
   }
 }

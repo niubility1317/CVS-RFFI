@@ -1,4 +1,4 @@
-# 两阶段蒸馏现有权重联合推理优化
+# PAMF-Lite2 v1.0（Graph-RR）：两阶段轻量恢复器
 
 状态：VERIFIED / ANALYZED，完整七场景与同卡时延均已完成，所属进程已退出。
 
@@ -38,3 +38,7 @@
 方法commit `47c264286ca689f060a3f36aafb763fe209a6f06`。精确命令、环境/CWD、路径、六类seed、资源与停止规则见[experiment.json](experiment.json)。归档SHA一次比较、远端编译、PID/CWD/argv/GPU/日志增长已核实，唯一P0/P1审查PASS。
 
 这是已暴露、用户指定的单seed工程验证；不称新的盲测或逐细节TX真实性证明。入口experiments.pamf_stage2_inference.engine.InferenceEngine，使用原stage2 strict loader后冻结模型；不新增训练/调参/模型选择。
+
+## 默认版本指定（2026-10-21）
+
+用户将本次已完成版本固定命名为 **PAMF-Lite2 v1.0（Graph-RR）**，中文名“PAMF 两阶段轻量恢复器”，部署标识 `pamf_lite2_v1_graph_rr`。固定原权重与执行路径，不新增训练或测试。参见[版本与机制](../../../docs/PAMF_LITE2_V1.md)和[版本定义](../../../experiments/pamf_stage2_inference/frozen_version.json)。

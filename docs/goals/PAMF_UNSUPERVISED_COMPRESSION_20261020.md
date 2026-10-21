@@ -1,3 +1,9 @@
+## 2026-10-21 默认交付版本：PAMF-Lite2 v1.0（Graph-RR）
+
+用户已明确固定该版作为后续默认恢复器。现有 R69 `stage2` 源 E20/4940 权重，266951 参数，叠加 CUDA Graph、同步优化和残差复用；两 prior／四 CG／27 FFT-IFFT，新增训练为0。完整七景168000×7无下降，仅high urban两条错变对；clean84.677976%、lowurban68.889881%。同卡GPU4 B1 G+F 41.220936→4.531972ms，输入预加载GPU，图捕获另计。
+
+默认版本与机制以[固定说明](../PAMF_LITE2_V1.md)及[机器可读定义](../../experiments/pamf_stage2_inference/frozen_version.json)为准。后续未限定恢复器均指该确切权重和执行路径；新变体另编号，用户指定后才替换。历史原R17比较、逐版七景测试、TX无标签/F-free和当前完整性能目标均保持；低urban70%与其余五景5pp未全部完成。以下研究记录保留其历史顺序，不覆盖本次默认指定，也不热改其他健康run。
+
 # 无 TX 标签恢复器的压缩与性能联合优化
 
 R67已完成VERIFIED/ANALYZED：280解析单元固定后truth；4536分组/756条件阴性对照/504配对差独立复算，M35/R53共1008记录与R56一致；0F/checkpoint/额外神经预测/训练/headfit/新校准/GPU，所属CPU进程EXITED。有限同TX关联不是识别率或逐细节真实性证明，不改变父实验，原目标ACTIVE。 [全部九候选固定关联](../PAMF_FOLD_DELAYED_MEAN_IDENTITY_R67_20261021.md)。

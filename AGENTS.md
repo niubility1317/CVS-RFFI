@@ -1,3 +1,10 @@
+## 默认恢复器固定为 PAMF-Lite2 v1.0（2026-10-21，用户最新要求）
+
+- 用户在完整七景与实际时延结果公布后明确固定 **PAMF-Lite2 v1.0（Graph-RR）**，中文名“PAMF 两阶段轻量恢复器”，部署标识 `pamf_lite2_v1_graph_rr`。后续未限定的“恢复器／恢复网络／当前恢复版本”均指本版；定义见 `experiments/pamf_stage2_inference/frozen_version.json`，机制见 `docs/PAMF_LITE2_V1.md`。
+- 固定 R69 `20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt`，源 E20/4940、266951 参数；固定已验证执行 commit `47c264286ca689f060a3f36aafb763fe209a6f06` 和 `InferenceEngine(reuse=True, graph=True, native=False)`，FP32/TF32off，两 prior／四 CG／27 FFT-IFFT。原权重不可覆盖，不静默回退旧恢复器、native 或改变精度。
+- 验证 run 为 `20261021-phase1-restoration-stage2-graph-s2026092701-r01`，原 F50 seed2026092701/defaulthead，168000×7、独立 truth-last；B1 同卡 G+F 41.220936→4.531972 ms。七景无下降，high urban 两条错变对；low urban 68.889881%，70% 与其他五景 5pp 长期目标未全部达成。
+- 新网络、权重、求解预算或运行路径另记版本，明确比较，用户指定后才更换本默认。R17、R65 `prune_after10` 与两阶段 native 保留为历史对照；原 R17 科学容忍对照、TX 无标签／F-free 训练约束及逐版七景测试保持。其他 owner 的健康任务按原计划继续；本次固定不重训、不重测，不扩展现有证据到其他数据契约或 Phase2。
+
 ## 本对话恢复器改为压缩与性能联合优化（2026-10-20，用户最新要求）
 
 - 用户明确将后续研发改为前面最优 R17 恢复路线的压缩精简，并要求“压缩的同时也要优化”。完整恢复器的参数、计算、存储、实测延迟与正式识别性能共同报告；每场景最多下降 1 个百分点是容忍上限，不是性能优化目标。不得只凭网络更小、源域分数或教师拟合误差宣布成功。
