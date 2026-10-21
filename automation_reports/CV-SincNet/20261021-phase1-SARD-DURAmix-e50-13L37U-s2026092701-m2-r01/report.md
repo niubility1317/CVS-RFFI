@@ -1,6 +1,6 @@
 # SARD 混合增强修复验证
 
-状态：RUNNING／启动 VERIFIED；尚无新正式测试结果。实际代码／配置 commit `4f92ab1791999e0bfc1630201e602a8bf01fb675` 已 push，远端分支 OID 独立读回一致。
+状态：ANALYZED／最终 VERIFIED；两组完整训练、七景双读出及独立评分均完成。实际代码／配置 commit `4f92ab1791999e0bfc1630201e602a8bf01fb675` 已 push，远端分支 OID 独立读回一致。
 
 用户在完整负结果和源域机制分析后要求修复并重新发布。上一轮的全部替换实现没有发现技术错误。本轮以源域完整日志中的增强难度降低、原始受损覆盖丢失以及恢复视图未进入跨 RX 对比为依据，检验新的训练设计；有效性尚待正式测试。
 
@@ -21,3 +21,9 @@ MIX 保留 ORD128 对比。MIX_XRX 使用原 SAT192 关系函数，复用同一�
 启动独立核验 VERIFIED：一个归档SHA比对和14个Python文件远端编译通过；两row实际GPU0／GPU6，PID/CWD/argv/visibleGPU与nvidia-smi映射一致。两组真实源checkpoint无query smoke及768NN联合默认头梯度probe均PASS；两组G始终冻结，恢复map的对比辅助梯度在MIX为false、MIX_XRX为true。已各完成E1／222更新，完整step日志与stdout较前次增长。首轮As总14208，其中7104保留原受损、7104经过G；G更新／梯度／fallback／U的G调用均为0。实际初始化为无父F、own student EMA、数据角色EXACT_MATCH；native参数50/13/37、lr0.0002、wd0.0001。源域训练未访问target。
 
 已设置当前对话完成回报心跳 `sard-dura-mix-e50`，每15分钟短连接只读检查；健康状态无变化时保持安静。训练后的14单元预测和独立CPU评分由原队列自行执行，不依赖心跳启动；心跳负责取回完整日志、独立复算、报告和Git收尾，完成后删除。旧 `sard-dura-e50` 已关闭，本轮不会重新运行旧实验。
+
+最终独立核验 VERIFIED／ANALYZED：两组各50轮／11100更新，28个正式预测单元均168000物理样本，逐row全部14单元固定后独立CPU truth-last。新结果504个混淆矩阵与历史对照504个混淆矩阵、合计504项配对净纠错复算一致。两组全部50轮／11100步及19314个L/U批次、全部结构化记录与stdout已完整读取；物理批次／场景和普通增强与原SARD逐条一致，U标签始终隐藏，G冻结无梯度／更新／fallback。每组32raw＋32G实际总各355200；SAT192真实恢复对比map梯度和39960项层／相位对比记录均核实。
+
+接DURA测试的六环境均值：原匹配SARD78.5491%、全部替换75.5542%、MIX76.4947%、MIX_XRX76.4381%。两新行较匹配SARD分别−2.0544／−2.1110个百分点，clean分别−1.3863／−1.9792个百分点，low urban分别−1.4714／−1.5030个百分点，均未达到预登记条件。原输入六环境均值由全部替换34.0940%恢复到69.6048%／69.7368%，仍低于SARD71.8820%。没有按结果重选、重训或扩seed，没有更换PAMF／DURA默认版。逐景Accuracy／Macro-F1、逐RX/day/TX、净纠错和实际U／G开销见 [完整测试与训练报告](test_results.md)。本轮仅1Fseed和1固定G，不给跨seedSD。
+
+所有run所属worker与controller已自然退出，无技术失败。完整日志取回79个文件，保留N607原输出，不包含权重／IQ／预测数组的本地只读分析副本存于local_artifacts/cvs_sard_dura_mix。归档、完整日志和生成CSV不提交Git，仅提交本run报告与登记摘要。
