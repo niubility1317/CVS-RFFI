@@ -102,7 +102,21 @@
       "interval_minutes": 60,
       "notify": "meaningful changes, completion, failure, required input"
     },
-    "controller_runtime_ref": "local_artifacts/phase1_dg_sourcecount6_20261021/controller_runtime.json"
+    "controller_runtime_ref": "local_artifacts/phase1_dg_sourcecount6_20261021/controller_runtime.json",
+    "controller": {
+      "pid": 88810,
+      "commit": "ed32dece2b34a0464c2bff6b5b80e1580376085e",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261021-phase1-dg-sourcecount1to6-control-r02",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/SDG-SEI/bin/python",
+        "-u",
+        "-m",
+        "experiments.phase1_dg_sourcecount6.rebalance",
+        "--config",
+        "/home/szu2070436088/2510044040/CV-SincNet/releases/20261021-phase1-dg-sourcecount1to6-control-r02/controller_runtime.json"
+      ],
+      "evidence_ref": "local_artifacts/phase1_dg_sourcecount6_20261021/controller_verified.json"
+    }
   },
   "expected_artifacts": [
     "data_status.json",

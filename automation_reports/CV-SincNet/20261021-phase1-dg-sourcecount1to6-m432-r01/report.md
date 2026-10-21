@@ -87,3 +87,7 @@ ETA：按历史完整同方法三种子实测时长推算，6 张卡持续空闲
 用户明确要求剩下两张卡也跑实验。实测两卡各有约22GB空闲显存，允许与原有各一条恢复器任务共享；每卡最多一个本run worker，GPU2/3需至少12000MiB余量、最多一条其他计算进程，其他卡仍要求空闲。只切换本run队列控制器并接管全部健康行，不停止或重启训练/预测worker，不改矩阵、预算、seed、配方或既有产物。
 
 控制器独立不可覆盖release为20261021-phase1-dg-sourcecount1to6-control-r02，使用现有SDG-SEI环境，CWD为该控制器release。命令：python -u -m experiments.phase1_dg_sourcecount6.rebalance --config controller_runtime.json。实际训练和预测继续从原9500192代码release启动；原数据VALIDATED_ONCE和49例smoke复用，不增加数据重验或科学选模。控制器先精确核实原dispatcher PID/CWD/argv，暂停派发并收集所有实际存活worker以覆盖Popen/状态写回间隙，只终止原排队控制器；独立保存接管快照，随后采用旧worker并接续未启动行，失败保留产物。资源规则和所属进程识别的2项聚焦检查通过。
+
+VERIFIED：控制器代码 `ed32dece2b34a0464c2bff6b5b80e1580376085e` 已提交推送并核对远端OID；单归档传输匹配、远端编译通过。新owner PID 88810 的实际PID/CWD/argv已读回，原健康worker由新owner接管、没有重启。实际nvidia-smi计算进程已覆盖GPU0至7共8张卡；GPU2新增SDG Full、GPU3新增六源RIEI CE，训练日志已有输出。原恢复器PID22066/47255仍在GPU2/3运行。核验时已有35行完成、0失败；完整矩阵仍在运行。
+
+八卡独占的原敏感性估计约6至9小时；GPU2/3与恢复器共享，当前剩余时间粗估6至10小时，实际以共享负载和同方法日志吞吐校准，不能按8张独占卡线性承诺。每小时监控已更新为新owner和两卡共享规则，无变化保持安静。
