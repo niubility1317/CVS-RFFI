@@ -15,3 +15,5 @@
 精确逐行矩阵、命令、环境、路径、代码版本和预期产物见本 run 的 experiment.json。完成后报告七景 accuracy/MacroF1、逐TX/RX/day、净修复与损伤、相对 R65/原R17正确数差及原1pp容差、lowurban70%与其他五景5pp差距。仅减少参数、教师拟合更好或更快不能证明性能目标完成或每个恢复细节属于输入TX。
 
 当前状态：LOCAL_VERIFIED。71 项聚焦检查、CLI 和一次独立 P0/P1 审查通过；真实原R65权重合成前向/反向/严格重载通过。首步真实两条 L_s 与原 F50 无 query smoke 后自动继续。尚无本轮正式性能或提速结论。
+
+最终状态：VERIFIED / ANALYZED。四条固定路线各完整E20/4940、源1800×7、正式168000×7、独立truth-last、同卡G/G＋F四批量成本、实际进程退出及独立权重严格加载均核实。全部结果见[正式报告](../automation_reports/CV-SincNet/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/report.md)，性能与时延按各版分别判断，原完整目标未因减参/容差自动完成。

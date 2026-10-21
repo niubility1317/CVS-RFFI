@@ -139,16 +139,17 @@
     "local_artifact_root": "local_artifacts/pamf_restoration/r65_four_route_r69_20261021",
     "launch_command": "python -u -m experiments.pamf_r65_four_route.runner run --parent-run ../../runs/20261021-phase1-restoration-R46-delayed-prune-s2026092701-m2-r65 --teacher-run ../../runs/20261020-phase1-restoration-unrolled-selfsup-s2026092701-m2-r17 --parent-action ../../runs/20261019-phase1-restoration-learned-action-source-s2026092701-r07 --source-cache ../../data_caches/phase1_manysig_reference_20261019/source_cache --reader-folder ../../runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source --formal-reference ../../runs/20261019-phase1-restoration-formal-frozen-residual-s2026092701-r05/reference --formal-f50 ../../runs/20261019-phase1-restoration-formal-FcrossRX50-s2026092701-r09 --target-truth ../../runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json --output ../../runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69 --expected-commit b2a2ce937a64654e17e84c2aa817b9da4257a48f",
     "stop_rule": "Technical failure preserves affected outputs;healthy peerscontinue;no performance stop;noauto retry/hotedit",
-    "postlaunch_state": "VERIFIED_ACTUAL_GPU_TRAINING",
+    "postlaunch_state": "VERIFIED_ALL_ROWS_COMPLETE_ACTUAL_PROCESSES_EXITED",
     "actual_training_rows_verified": [
       "stage2",
-      "shared_context"
-    ],
-    "waiting_rows": [
+      "shared_context",
       "pcg1",
       "polyphase"
     ],
-    "postlaunch_evidence": "PID/CWD/argv/CUDA/GPU/loggrowth/finitefirstepoch;real2LsF50smokePASS"
+    "waiting_rows": [],
+    "postlaunch_evidence": "PID/CWD/argv/CUDA/GPU/loggrowth/finitefirstepoch;real2LsF50smokePASS",
+    "final_weights_verified": true,
+    "final_evidence": "Complete4xE20/4940;source1800x7/formal168000x7each;independenttruthlast;strictCPUweights;matchedfullchainlatency"
   },
   "expected_artifacts": [
     "launch.json",
@@ -417,5 +418,17 @@
     "Differentarchitecture/matrixmeanssameepochsnotcompute;MACexcludeCGpreconditionercostbutlatencyincludesall.",
     "SourceRX/dayandtargetphysicalIDs reuseoriginal;Phase2capsule/supportnullbecausePhase1restorationevaluation."
   ],
-  "registered_at": "2026-10-21T02:19:39+00:00"
+  "registered_at": "2026-10-21T02:19:39+00:00",
+  "scientific_outcome": {
+    "status": "ANALYZED",
+    "all_fixed_rows_scored": true,
+    "original_R17_accepted": [
+      "stage2",
+      "shared_context",
+      "pcg1",
+      "polyphase"
+    ],
+    "R65_all_views_nonregression": [],
+    "goal_complete": false
+  }
 }
