@@ -14,6 +14,10 @@ Table~\ref{tab:cric-full-f0} contains the historical no-As 33/17 identifier, not
 
 All three CRIC seeds share one frozen G, so their SD estimates F-seed variation conditional on G, not variability of three independently trained complete systems. This historical table compares complete native recipes on a common data split: external supervised/ordinary-PL runs use satellite concatenation, whereas original CRIC uses its native unlabeled mechanism and no As branch. Their difference cannot be attributed solely to cross-RX contrast. CE controls stronger than their Full counterparts remain visible. Additional matched controls below are prospective; no results are inferred for untested data contracts.
 
+\subsubsection{Completed Final-T1 F0 Submatrix}
+\input{tables/final_t1_f0}
+The final T1-E50 three-seed submatrix is now complete under the same five-source/seven-target receiver contract, with 168000 physical packets per view and independent truth-last scoring after all raw/G views. T1+DURA obtains clean accuracy $84.4839\pm0.9660\%$, six-view mean $77.6468\pm0.8461\%$ and low-urban accuracy $67.6562\pm0.7124\%$. The paired six-view gain over raw T1 is $7.0455\pm0.5949$ percentage points; raw T1 gives $70.6013\pm1.0624\%$. All confusion-derived accuracies/Macro-F1 values and paired repair/damage nets were independently recomputed from the completed scorer artifacts. These are three F seeds conditional on one fixed G. This completion does not imply that the remaining data conditions, mechanisms or latency panels are complete. The final recipe stays fixed; neither historical nor new target scores select replacements or reruns.
+
 \subsubsection{Prospective Coverage and Data-Matched Controls}
 The extended design covers F0/F1/F2, chronological D3, ManyRx, label fractions 1/5\%, and ten source-count conditions. The latter use $m\in\{1,2,3,4,6\}$ along the fixed order $(1,3,4,6,8,11)$, under natural or fixed annotation budgets. Their target set is always $(0,2,5,7,9,10)$, six RX and 144000 packets. No new five-source sweep point is trained or queued. Existing F0 five-source results use seven target RX and must not be inserted into this curve.
 

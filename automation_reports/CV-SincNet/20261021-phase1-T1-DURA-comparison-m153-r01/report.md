@@ -31,3 +31,7 @@ Final T1 correction: 20(13L+7LU)+own10LU+own20LU, AsCE/KL0, sixL, nativeEMA/U, d
 Final version correction and exact matrix: see docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md. Final T1 is13L37U, not old33L17U. Current state PLANNED until independent PID/log/CUDA evidence.
 
 时延兼容故障：统一面板因原生F的baselines命名空间遮挡外部RIEI模块失败，尚无计时样本。已本地复现，独立latency-r02恢复这一面板；旧失败行保留并明确替代，不重启主队列或健康worker。机制附面板无外部模型，不受同一导入错误影响。
+
+**VERIFIED / RUNNING**：8张卡均有本矩阵真实CUDA worker，F源训练/完整G谱系/G消融实际步数增长；不接管旧错误配方健康worker。当前首段F监督约85至90秒/轮，U和G后续阶段仍待校准；整批暂估3至7天。统一时延r01兼容失败已独立r02恢复等待独占卡，主队列不变。
+
+已闭合最终T1＋DURA的F0三Fseed/一个固定G、七景42读出格。详见[子矩阵结果](final_T1_F0_results.md)。clean84.4839±0.9660%，六景77.6468±0.8461%，lowurban67.6562±0.7124%；原T1 raw六景70.6013±1.0624%，配对增益7.0455±0.5949个百分点。只表示F0完成，不把17契约整批标ANALYZED，不按结果调整其他实验。

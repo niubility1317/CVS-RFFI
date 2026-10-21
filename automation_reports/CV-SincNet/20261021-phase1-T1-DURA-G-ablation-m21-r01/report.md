@@ -29,3 +29,5 @@ Final T1 correction: 20(13L+7LU)+own10LU+own20LU, AsCE/KL0, sixL, nativeEMA/U, d
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 Final version correction and exact matrix: see docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md. Final T1 is13L37U, not old33L17U. Current state PLANNED until independent PID/log/CUDA evidence.
+
+**VERIFIED / RUNNING**：8张卡均有本矩阵真实CUDA worker，F源训练/完整G谱系/G消融实际步数增长；不接管旧错误配方健康worker。当前首段F监督约85至90秒/轮，U和G后续阶段仍待校准；整批暂估3至7天。统一时延r01兼容失败已独立r02恢复等待独占卡，主队列不变。

@@ -24,3 +24,7 @@ pdflatex main.tex
 图形、CSV、PDF编译产物不提交Git；章节、表格、生成器、引用及IEEEtran未修改发行文件进入Git。IEEEtran类/样式保留原版权与许可头。格式参考：https://template-selector.ieee.org/ 。
 
 论文使用边界：5源/7目标RX；ManyRx16/16；监督和PL都使用拼接星地增强；训练标签与V标签分列；RIEI/DRIFT E100属于实现预算；未来结果仅D3；模拟残余信道不等于真实在轨。所有负结果与零PL接受保持。
+
+2026-10-21 current entry: main.tex includes current_experiments.tex and cric_dura.tex. Independent ResNet18/50 CE/generic legacy studies are excluded from this current experimental chapter; experiments.tex is retained as historical source. Final T1 is13L37U and historical old no-As33L17U results are explicitly separated. New finalT1/DURA cells remain pending until scored.
+
+最终T1 F0 三seed七景子矩阵已闭合，tables/final_t1_f0.tex与source_data/final_t1_f0_*.csv为实际评分复算。其余17契约扩展、机制、时延尚在运行。旧no-As33L17U表保留独立历史标签，不能混为最终T1。
