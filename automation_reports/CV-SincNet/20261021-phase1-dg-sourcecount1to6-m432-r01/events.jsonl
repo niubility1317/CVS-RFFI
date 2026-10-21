@@ -1,3 +1,4 @@
 {"at": "2026-10-21T06:53:00+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-21T07:05:25+00:00", "status": "RUNNING", "note": "VERIFIED：归档匹配、编译/49例真实checkpoint无query smoke通过，六卡0/1/4/5/6/7已启动且日志增长；每小时监控；384新训练+48复用，共432行，完整矩阵尚未完成。", "evidence": ["local_artifacts/phase1_dg_sourcecount6_20261021/postlaunch_verified.json"], "row_id": null}
 {"at": "2026-10-21T07:31:41+00:00", "status": "RUNNING", "note": "VERIFIED：用户要求剩余两卡也训练，队列接管保留健康worker；GPU0..7实际计算进程已核实，2/3共享且原恢复器PID均健康；科学代码9500192与配方不变。", "evidence": ["local_artifacts/phase1_dg_sourcecount6_20261021/controller_verified.json"], "row_id": null}
+{"at": "2026-10-21T08:26:09+00:00", "status": "RUNNING", "note": "VERIFIED：用户取消五源，24次未启动固定预算五源训练及其余五源复用队列已撤下；56行SKIPPED_USER，16已完成五源保留；当前360必需行，8健康行接管不重启，completion按360闭合。", "evidence": ["local_artifacts/phase1_dg_sourcecount6_20261021/scope_verified.json"], "row_id": null}

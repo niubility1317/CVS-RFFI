@@ -1,6 +1,6 @@
 # 1 至 6 个源接收机：四种域泛化方法的正式对比
 
-状态：PRE_REGISTERED，尚未宣称训练或测试完成。run `20261021-phase1-dg-sourcecount1to6-m432-r01`。逐行配方唯一维护于 `experiment.json`；可执行矩阵为 `experiments/phase1_dg_sourcecount6/matrix.json`。
+状态：RUNNING。当前必需矩阵为1/2/3/4/6源360行；五源已按用户要求退出后续队列。下文保留原432行初始设计，末尾记录当前生效范围与核验。run `20261021-phase1-dg-sourcecount1to6-m432-r01`。逐行配方唯一维护于 `experiment.json`；可执行矩阵为 `experiments/phase1_dg_sourcecount6/matrix.json`。
 
 ## 研究问题与预定解释
 
@@ -97,3 +97,7 @@ VERIFIED：控制器代码 `ed32dece2b34a0464c2bff6b5b80e1580376085e` 已提交�
 用户明确五源已有实验，本次不再跑五源数量。只从待执行队列撤下全部五源行：包含24次尚未启动的固定L/V五源训练和剩余自然预算五源CPU复用行；已经完成的五源产物保留为历史，不删除、不冒充新训练。当前必需矩阵仅m=1/2/3/4/6，360次新训练（自然预算240、固定L/V120），三seed和Full/自身CE、PL、星地增强、预算不变。原432行matrix作为不可变历史注册保留，controller_scope_runtime.json声明排除m=5，最终分析和completion按360必需行闭合，明确标注被用户撤下行与历史产物。
 
 新控制器control-r03仅撤下未启动项并接管现有健康worker，GPU0..7与2/3共享规则不变。精确命令与CWD见本地controller_scope_runtime.json/ controller_scope_submit.json；真实源数据和模型代码9500192不变，复用既有VALIDATED_ONCE与49例无query smoke，不重新训练或重新验证数据。控制器范围过滤、保留其他配方与所属进程识别3项聚焦检查通过。最终汇总使用control-r03的scope感知分析，缺五源不误报失败、不伪造五源固定预算结果；历史五源数据按原契约单列，不能静默混入不同目标集合。
+
+VERIFIED：control-r03代码 `e72bd3746a00146c4e8e1d29eb548727df1f38b3` 已提交推送并独立核对远端OID，归档传输匹配、远端编译通过。新owner PID 128413 的实际PID/CWD/argv已读回。全部24次五源固定预算训练已取消；共56个未启动五源行标为SKIPPED_USER，16个已完成五源实例保留历史。本次有效必需360行，核验时完成67行、8行运行，运行中没有五源，健康worker未重启。最终统计仅按360有效行，不将撤下行当失败或缺项。
+
+ETA更新（UTC+8）：剔除已完成和被撤下行后，剩余约5至10小时，中心估计约6.3小时（约10月21日22:40；偏慢情形约22日02:00）。依据同方法历史三种子训练/七视图评分成本并为两卡共享保留吞吐余量；运行中行保守按整行估计。不是截止保证，详情见eta_remaining_scope.json。每小时监控已更新为360行范围及control-r03，不补跑五源。
