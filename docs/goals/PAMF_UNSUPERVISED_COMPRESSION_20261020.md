@@ -1,5 +1,7 @@
 # 无 TX 标签恢复器的压缩与性能联合优化
 
+2026-10-21 R68 SYNTHETIC_PROTOTYPE_ONLY：现有273765图的源pairedclean重建尾部聚合，半全均值+半top50%或top25%重建均值，原IQ教师全均值及1→.1保持。仅当前detach IQ/谱误差排序，每条L/U权重≥.5且和为batch大小，0TX/RX/F/V/target/持久难度状态；不是旧F-semantic hardness模型，0旧权重继承。21合成检查覆盖数值/梯度/末batch/稳定同值/teacher与clean隔离，0真实IQ/checkpoint/训练/GPU。两比例及只读R66final控制在任何R66识别率读取前固定；完整pipeline/登记/唯一审查/实际发布尚未进行，不能宣称收益。R66/R67健康流程保持。未来两版均须完整七正式/成本，性能优先、原目标ACTIVE。[原型与边界](../PAMF_R46_RECONSTRUCTION_TAIL_R68_20261021.md)。
+
 R67已实际VERIFIED/WAITING_PARENT_FORMAL：CPU2/0GPU、真实2Ls解析no-query smoke、单archiveSHA/compile/实际PID/CWD/argv/空CUDA及日志增长核实。R66识别率未用于方案；M35/R53与七近期读出全部纳入，R66三读出共享一次源训练。复用84、新算196，总280固定后独立truth-last4536组/756条件对照/504配对差。无新恢复器/F/checkpoint/神经预测/训练/校准/头拟合，不改父，不作逐细节真实性证明。[R67固定评价](../PAMF_FOLD_DELAYED_MEAN_IDENTITY_R67_20261021.md)。
 
 2026-10-21 当前R66：VERIFIED / TRAINING：方法21141083f91ca7703b9242e5d90873666a8414b6已普通账户发布，单归档SHA/compile、真实2Ls/M35/F50零更新结构no-query smoke PASS。共享源进程GPU3实际PID/CWD/argv/CUDA/CPU2、GPU PID、有限epoch和日志增长已核实。一次273765图E20/4940，M35直接初值/全程冻结IQ教师，全部L/U且0TX/F/V/target优化，无新增校准/前向/推理参数。训练子进程实际退出后，三个固定读出final/late_mean/step_ema在GPU3/2各1/max2自动全七正式/独立truthlast、同卡成本及strict权重；共享训练成本只计一次，34项结果检查通过，自动收尾工具已固定。核心与窗口先于读取R65识别率固定，不依源分数筛选，不读取当前目标准确率调参。当前尚无R66识别收益结论；性能优先，完整目标ACTIVE。[固定矩阵](../PAMF_R46_WEIGHT_MEAN_R66_20261021.md)。
