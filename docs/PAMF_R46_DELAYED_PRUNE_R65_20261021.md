@@ -1,6 +1,6 @@
 # R65：固定总预算内延后裁剪既有 U-Net
 
-状态：**LOCAL_VERIFIED**，尚未登记或发布，无新识别/时延结论。67主检查及4实际前序句柄检查、CLI、真实指定M35合成CPU原型与唯一一次独立P0/P1审查通过。源训练优化0TX/F/V/target，原始core c3b12eaeac6110e910109a32aa086e0d20e0bc46在R64源或正式分数读取前固定；首步真实2Ls/F50双阶段零更新no-query smoke通过后立即继续。完整目标继续ACTIVE。
+状态：VERIFIED / WAITING_PREDECESSOR_ACTUAL_EXIT：方法4fd058f9bae79687f924e06d057e6a20083ff6dc已普通账户发布，单归档SHA比对/compile通过。真实M35/F50/2Ls双阶段no-query smoke PASS，epoch/update均0；密集与压缩图全部组件梯度有限且非零、strictportable reload与原F默认头保持。实际CPU2 controller和两等待worker PID/CWD/argv/环境、日志增长已核实，当前0新GPU/0训练epoch，等待R64同卡行完成且实际GPU进程退出后才分配物理GPU3/2；max2own GPU跨两run，其他owner不变。固定5+15/10+10/E20/4940、全部七正式/独立truthlast/同卡与分阶段成本自动执行，无源筛选；无新性能结论，完整目标ACTIVE。
 
 研究问题来自源域重建目标和不可逆结构裁剪：在原 M35 完整图上先做部分源更新，再裁剪并继续训练，是否比初始化时就移除通道更有利。此问题和矩阵在读取 R64 源/正式成绩前固定，不因其他已暴露目标分数挑选宽度、裁剪图、父权重或教师。不是新的恢复网络路线。
 
