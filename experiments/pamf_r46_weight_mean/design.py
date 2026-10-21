@@ -19,6 +19,8 @@ PARENT_RUN,PARENT_COMMIT,ACTION_RUN=baseline.PARENT_RUN,baseline.PARENT_COMMIT,b
 F_RUN,F_SEED,VIEWS,KIND=baseline.F_RUN,baseline.F_SEED,baseline.VIEWS,baseline.KIND
 MODEL_SEED,DATA_SEED,SCORING_RUN=baseline.MODEL_SEED,baseline.DATA_SEED,baseline.SCORING_RUN
 teacher_weight,learning_rate=baseline.teacher_weight,baseline.learning_rate
+parent=baseline.parent
+TASK={a:False for a in ARMS}
 
 
 def configuration():

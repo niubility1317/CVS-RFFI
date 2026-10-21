@@ -1,5 +1,7 @@
 # 无 TX 标签恢复器的压缩与性能联合优化
 
+2026-10-21 R66 LOCAL_VERIFIED：现有273765静态GN4图，单源E20/4940轨迹共享final/末16至20轮均值/11至20轮decay.99参数EMA三个固定读出；M35直接初值/全程冻结IQ教师，0TX/F/V/target优化，无新增推理参数/额外G前向/校准。source/teacher各1260000及L126000/U1134000只计一次，平均开销及三读出source/profile/正式成本分列。58checks/CLI/真实M35合成CPU/ONEP0P1PASS，core91b30e7/alias566b5ba先于任何R65识别率读取；未发布，无新效果结论。sourceGPU3等R65同卡实际退出，source子进程退出后读出GPU3/2各1/max2、stepEMA同卡排队；全部自动七正式/独立truthlast，无源筛选。性能优先，完整目标ACTIVE。[固定方案](../PAMF_R46_WEIGHT_MEAN_R66_20261021.md)。
+
 2026-10-21 R66 CPU_PROTOTYPE：既有273765静态GN4图，同一次源轨迹固定输出final/末16至20轮参数等权均值/11至20轮decay0.99参数EMA；教师始终原M35，全部读出都正式测试，无源筛选。训练总E20/4940和全部L/U曝光只计一次，平均额外时间显存及三个评测成本分别列账；0新增推理参数/G前向/校准或TX/F/V/target优化。16checks和真实M35合成CPU原型通过，714唯一参数/770别名路径，父与源权重不变；合成通知不是真实训练。当前未登记/发布/训练，无新性能结论，core在读取R65识别率前固定，性能优先/完整目标ACTIVE。[固定原型](../PAMF_R46_WEIGHT_MEAN_R66_20261021.md)。
 
 2026-10-21 当前R65：VERIFIED / TRAINING：方法 4fd058f9bae79687f924e06d057e6a20083ff6dc 已普通账户发布，单归档SHA/compile与真实M35/F50/2Ls双阶段零更新no-query smoke PASS。R64同卡行已完成并实际退出；两行物理GPU3/2的实际PID/CWD/argv/CUDA/CPU2、GPU PID、日志增长和有限epoch已核实，每卡1/max2own，其他owner不变。原M35直接初始化/全程冻结IQ教师与训练前固定GN4通道图不变；5+15/10+10合计E20/4940，最终273765，AdamW仅转换时重置一次，global LR/data/teacher日程继续。全L/U且0TX/F/V/target优化，无新校准；全部七正式/独立truthlast/同卡及分阶段成本、strict权重和报告由现有owner自动收尾。core c3b12eaea固定早于读取R64源或目标准确率，当前无R65识别收益结论；性能优先，完整目标ACTIVE。[固定矩阵](../PAMF_R46_DELAYED_PRUNE_R65_20261021.md)。
