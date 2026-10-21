@@ -1,0 +1,1693 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261021-phase1-SARD-NoAs-DURA-e50-m6-r02",
+  "group_id": "SARD-NoAs-E50-fixed-DURA-v1-three-seed",
+  "display_name": "SARD与无增强F50接DURA：修复native源检查并复用完整NoAs",
+  "description": "冻结SARD E30+20和原无sat CROSS_RX F50各3seed，复用固定DURA v1 graph/RR七景IQ及已有预测，只补47个F读出单元；逐row十四单元固定后独立truth-last，配对原输入/恢复后。 技术恢复仅改source smoke上下文；NoAs3行完成复用，新增21个SARD+DURA读出。",
+  "kind": "cvs",
+  "stage": "Phase1-frozen-readout",
+  "aliases": [
+    "SARD+DURA",
+    "NoAs+DURA",
+    "DURA-F50-m3"
+  ],
+  "tags": [
+    "phase1",
+    "SARD",
+    "NoAs",
+    "DURA",
+    "three-seed",
+    "default-head",
+    "clean-six-practical",
+    "zero-training"
+  ],
+  "comparison_group_id": "SARD-versus-NoAs-original-and-DURA-same-fixed-IQ",
+  "parent_run_ids": [
+    "20261021-phase1-T1-AsKL0-e30plus20-m3-r01",
+    "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+    "20261021-phase1-restoration-stage2-graph-s2026092701-r01",
+    "20261021-phase1-SARD-NoAs-DURA-e50-m6-r01"
+  ],
+  "replaces_run_id": "20261021-phase1-SARD-NoAs-DURA-e50-m6-r01",
+  "authorization": "用户要求“未使用星地增强的最好三种子是哪个？我要使用SARD和未使用星地增强的加入DURA查看测试性能”。沿本对话三seed/clean+六practical/普通N607/两卡最少进程优先授权；只评测，不重训。",
+  "code": {
+    "commit": "4f85eee2444c31f83981a736e45d6022be34cbe9",
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 ordinary CVS-RFFI/Python3.10/Torch2.1/FP32 TF32off CPU2;fixed released T1 and DURA dependencies",
+    "cwd": "PROJECT/releases/cvs_SARD_NoAs_DURA_E50_m6_20261021_r02"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original source7/63/30 + fixed formal168000x7 + original complete DURA v1 graph/RR restored IQ;no resplit/no resampling",
+    "representation": "Existing source IQ256,dataset equalized index1,Fs25MHz;practical residual/post_sync propagation receiver EQ=false/reference_snr_db30,complete original dependency graph;fixed received IQ untouched",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract.role_ids L_s/U_s/V;fixed formal received_views manifest and opaque168000 physical IDs,unchanged",
+    "label_map_ref": "Original map [14-10,14-7,20-15,20-19,6-15,8-20]",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "All six registered originalTX,unchanged source/target registered-class map",
+    "roles": {
+      "L_s": "6300 visibleTX full original source physical IDs",
+      "U_s": "56700 TX hidden; original old gate/ownEMA only",
+      "V": "27000 diagnostic only; no checkpoint selection"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "SameVALIDATED_ONCEall5sourceRX/day/physicalL6300 U56700hidden V27000;noLdev/noRXholdout",
+    "support_query_ref": null,
+    "leo_config_ref": "Reuse original formal received IQ and exact cached DURA v1 restored IQ;no new satellite simulation,restorer training or G inference",
+    "source_pool_label_ratio": 0.07
+  },
+  "permissions": {
+    "regime": "Frozen zero-update Phase1 readout of existing compliant F and G",
+    "query_use": "test_only;all14raw/restored prediction cells perrow fixed before separate CPU truth scorer",
+    "external_method_exception": null,
+    "claim_scope": "Human-selected historical best NoAs clean benchmark and named SARD;already exposed engineering comparison,not a new blind confirmation;one shared DURA model seed,three F model seeds;no target feedback"
+  },
+  "checkpoint": {
+    "initialization": "No training;original SARD FINAL50 students and original NoAs CROSS_RX FINAL50 defaultheads;DURA original restored IQ reused",
+    "sources": [
+      "SARD: PROJECT/runs/20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01/E30PLUS20-s2026092701/source/final_ssdg.pth",
+      "SARD: PROJECT/runs/20261021-phase1-T1-AsKL0-e30plus20-m3-r01/E30PLUS20-s2026092702/source/final_ssdg.pth",
+      "SARD: PROJECT/runs/20261021-phase1-T1-AsKL0-e30plus20-m3-r01/E30PLUS20-s2026092703/source/final_ssdg.pth",
+      "NoAs: PROJECT/runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source/final_ssdg.pth",
+      "NoAs: PROJECT/runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092702/source/final_ssdg.pth",
+      "NoAs: PROJECT/runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092703/source/final_ssdg.pth",
+      "DURA: PROJECT/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "Original full same-seed T1 own_model provenance;strict original F50 load_reader metadata/payload;check_contract actual role_ids/RX/day/classes;exact DURA source/runtime completion and opaque ID equality",
+    "provenance_verdict": "Existing immutable sources already verified;launcher-first actual checkpoint and source Ls smoke for each F,full native-defaulthead equivalence for SARD;no fallback",
+    "selection_rule": "Same pre-fixed six FINAL50 F and DURA v1;NoAs3 completed originalr01 rows read-only reused;only technical source-smoke context repair,not score-based selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/SARD-DURA",
+    "gpu_policy": "All8 sorted least all-owner process count then greatest freeMB;>=12000MB,total<=3/GPU,one own/GPU,two GPU workers,CPUscorer1;preserve others",
+    "remote_run_root": "PROJECT/runs/20261021-phase1-SARD-NoAs-DURA-e50-m6-r02",
+    "remote_log_root": "PROJECT/runs/20261021-phase1-SARD-NoAs-DURA-e50-m6-r02/logs",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261021-phase1-SARD-NoAs-DURA-e50-m6-r02",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_sard_dura_eval/runner.py",
+    "stop_rule": "Only own source/roles/seed/head/finite/outputcollision/unlaunchable/illegalprediction technical failure;preserve all outputs and other healthy workers;no automatic retry/no score-based stop",
+    "status": "ANALYZED"
+  },
+  "expected_artifacts": [
+    "launch.json",
+    "workers.json",
+    "queue.json",
+    "eachrow/smoke.json",
+    "eachrow/prediction/predictions.npz",
+    "eachrow/prediction/complete.json",
+    "eachrow/scoring/scores.json",
+    "eachrow/scoring/complete.json",
+    "eachrow/complete.json",
+    "results.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "repaired",
+      "damaged",
+      "net_repaired",
+      "paired differences",
+      "mean",
+      "sample SD(ddof1)",
+      "actual inference exposures"
+    ],
+    "dimensions": [
+      "arm",
+      "raw/dura",
+      "seed",
+      "scene",
+      "RX",
+      "day",
+      "TX"
+    ],
+    "prediction_ref": "PROJECT/runs/20261021-phase1-SARD-NoAs-DURA-e50-m6-r02/<SARDrow>/prediction;NoAs references originalr01 completed roots",
+    "scorer_ref": "experiments/cvs_sard_dura_eval/execution.py:score",
+    "model_seed_count_per_arm": 3,
+    "restorer_model_seed_count": 1,
+    "std_ddof": 1,
+    "summary_ref": "PROJECT/runs/20261021-phase1-SARD-NoAs-DURA-e50-m6-r02/results.json"
+  },
+  "rows": [
+    {
+      "row_id": "NOAS-s2026092701",
+      "method": "NOAS E50 raw vs DURA v1",
+      "purpose": "Frozen original defaulthead with shared complete DURA IQ;reuse existing target predictions",
+      "config": {
+        "schema": "F_paired_SupCon50_v1",
+        "run_id": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+        "stage": "repair",
+        "arm": "CROSS_RX",
+        "model_seed": 2026092701,
+        "row_id": "CROSS_RX-s2026092701",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "PROJECT/Dataset_WigSig/ManySig.pkl",
+        "output_root": "PROJECT/runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092701/source",
+        "epochs": 50,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_legacy_no_sat",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "launch_owner": "codex/root/F-paired-SupCon-20261016",
+        "label_epochs": 33,
+        "pseudo_epochs": 17,
+        "updates": 11100,
+        "legacy_reference_config": {
+          "schema": "legacy_no_sat_v1",
+          "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+          "stage": "repair",
+          "arm": "legacy_cosine_no_sat",
+          "model_seed": 2026092701,
+          "row_id": "legacy_cosine_no_sat-s2026092701",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "PROJECT/Dataset_WigSig/ManySig.pkl",
+          "output_root": "PROJECT/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+          "epochs": 200,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_legacy_no_sat",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06
+        },
+        "source_falsification": null,
+        "training_recipe": "F tripleSIG_TIME/unified full physical Sinc/RDrop1/ordinary actual augmented IQ/LS.01/oldgate-ownEMA-cos/defaultheadjoint; paired L-only shallow-middle SupCon; scratch50=33L+17U",
+        "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+        "explicit_CFO_identity_feature": false,
+        "feature_extractor": {
+          "arm": "SIG_TIME",
+          "layer": "t2",
+          "local_dimension": 6,
+          "local_projection": "learned 1x1 then tanh; shared across controls",
+          "windows": 4,
+          "random_directions": 14,
+          "random_direction_seed": 2026101307,
+          "random_direction_scales": [
+            0.5,
+            1,
+            2
+          ],
+          "descriptor_width": 28,
+          "output_embedding": 160,
+          "parameter_matched": true,
+          "intrinsic_descriptor_rank_matched": false,
+          "classifier_changed": false,
+          "gain_initial": 0.05,
+          "gain_bound": 0.2,
+          "time_coordinate": true,
+          "per_packet": true
+        },
+        "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+        "test_views": [
+          "clean"
+        ],
+        "checkpoint_selection": "final_only",
+        "goal": {
+          "primary": "CROSS_RX",
+          "clean_three_seed_mean": 0.84,
+          "matched_baseline": "BASE (F)",
+          "actual_target_accuracy_gain": true,
+          "feedback_to_training": false,
+          "head_fit_updates": 0
+        },
+        "budget_authorization": "User requests continued F training-mechanism optimization measured on targetclean;6new50 and3reusedF;no source performance gate",
+        "cost_claim": "6new50=300modelepochs/66600updates;3matchingF references reused/historical150epochs;no extra model or U forwards, no fittedhead",
+        "baseline_reference": {
+          "source": "PROJECT/runs/20261015-phase1-SIGTIME-RDrop-AF-e50-clean-manysig-m18-r02/F-s2026092701/source",
+          "original_row_id": "F-s2026092701",
+          "role": "Matched completed F final50; reference only, no inherited weight"
+        },
+        "baseline_reuse": false,
+        "readouts": [
+          "NATIVE_HEAD"
+        ],
+        "separate_head_training": false,
+        "mode": "RDROP",
+        "head_fit_updates": 0,
+        "training_mechanism": {
+          "mode": "RDROP",
+          "alpha": 1,
+          "label_smoothing": 0.01,
+          "use_aug": true,
+          "sinc_coordinates": "CENTER_25K",
+          "input": "Capture actual augmented native L forward input inside L-only context; second forward reuses identical augmented IQ, never pre-augmentation raw batch",
+          "objective": ".5*(smoothedCE1+smoothedCE2)+alpha*symKL(original logits1,logits2)",
+          "hook_correction": ".5*(smoothedCE2-native_identity_loss)+alpha*symKL",
+          "default_W_joint": true,
+          "extra_parameters": 0,
+          "extra_optimizer_steps": 0,
+          "extra_L_identity_forwards": 1420800,
+          "original_L_identity_forwards": 1420800,
+          "original_hidden_U_recipe_unchanged": true,
+          "no_new_U_consistency": true,
+          "augmentation_redraws_in_second_forward": 0
+        },
+        "combination": {
+          "SIG_TIME": "SIG_TIME_X3",
+          "Sinc_coordinates": "CENTER_25K",
+          "Sinc_optimizer": "CENTER_UNITS",
+          "s": 25000,
+          "Fs": 25000000,
+          "initial_q": 0,
+          "default_head_joint": true,
+          "MEAN_VAR": false,
+          "COV": false,
+          "ensemble": false
+        },
+        "sinc_optimizer_units": {
+          "mode": "CENTER_UNITS",
+          "sample_rate_Hz": 25000000,
+          "center_scale_Hz": 25000,
+          "lr": "alpha Fs/s",
+          "epsilon": "epsilon s/Fs",
+          "weight_decay": "q -= alpha lambda (q+p0/s); AdamW q decay0",
+          "gradient_clipping": "physical Hz globalclip5",
+          "native_cosine_schedule": "Original alpha cosine; one fixed mapping immediately before each actual step",
+          "extra_parameters": 0,
+          "extra_model_forwards_vs_RDrop": 0,
+          "extra_optimizer_steps": 0,
+          "diagnostic_epochs": [
+            1,
+            17,
+            33,
+            50
+          ]
+        },
+        "supcon": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "descriptor": "channel time mean/population std, current L-batch detached standardization floor1e-4, sampleL2 eps1e-4",
+          "positive": "sameTX differentRX",
+          "negative": "otherTX only; sameTX sameRX excluded in CROSS_RX denominator",
+          "two_forward_policy": "Mean of first/second losses, each mean of shallow/middle; reuse original actual augmented L IQ and RDrop forwards",
+          "invalid_anchor": "Exclude anchors without positive or otherTX negative; finite zero if none; sampler unchanged",
+          "U": "Original oldgate/ownEMA/cos untouched; no U TX labels or added U feature loss",
+          "extra_model_forwards": 0,
+          "extra_trainable_parameters": 0,
+          "default_head_direct_aux_gradient": false
+        },
+        "source_selection": "Fixedfinal50; sourceV health only; all3 seeds frozen before any new target summary; no source performance gate"
+      },
+      "config_ref": "experiments/cvs_sard_dura_eval/plan.py:rows",
+      "resolved_config_ref": "PROJECT/runs/20261021-phase1-SARD-NoAs-DURA-e50-m6-r01/NOAS-s2026092701/prediction/complete.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original split392005 and physicalroles; model/dropout/augmentation same seed; BASE matching existingF, no weight selection;No new augmentation/split/support/evaluation draws. Shared DURA seed2026092701 fixed;F seed varies.",
+      "k": null,
+      "scenario": "clean + practical_high,practical_mid,practical_low_suburban,practical_high_urban,practical_mid_urban,practical_low_urban;raw and fixed DURA IQ",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "r02 zero training/G;only21SARD-DURA cells new;NoAs3 whole rows fromr01 reused;chain47unique newF/37legacycells;sourceSARDsmoke12FNN",
+      "output_root": "PROJECT/runs/20261021-phase1-SARD-NoAs-DURA-e50-m6-r01/NOAS-s2026092701",
+      "log_path": "PROJECT/runs/20261021-phase1-SARD-NoAs-DURA-e50-m6-r01/logs/NOAS-s2026092701.log",
+      "command": "Read-only completed r01 NoAs row;never launch/predict/score again",
+      "expected_artifacts": [
+        "smoke.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "complete.json"
+      ],
+      "status": "ANALYZED"
+    },
+    {
+      "row_id": "NOAS-s2026092702",
+      "method": "NOAS E50 raw vs DURA v1",
+      "purpose": "Frozen original defaulthead with shared complete DURA IQ;reuse existing target predictions",
+      "config": {
+        "schema": "F_paired_SupCon50_v1",
+        "run_id": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+        "stage": "repair",
+        "arm": "CROSS_RX",
+        "model_seed": 2026092702,
+        "row_id": "CROSS_RX-s2026092702",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "PROJECT/Dataset_WigSig/ManySig.pkl",
+        "output_root": "PROJECT/runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092702/source",
+        "epochs": 50,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_legacy_no_sat",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "launch_owner": "codex/root/F-paired-SupCon-20261016",
+        "label_epochs": 33,
+        "pseudo_epochs": 17,
+        "updates": 11100,
+        "legacy_reference_config": {
+          "schema": "legacy_no_sat_v1",
+          "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+          "stage": "repair",
+          "arm": "legacy_cosine_no_sat",
+          "model_seed": 2026092702,
+          "row_id": "legacy_cosine_no_sat-s2026092702",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "PROJECT/Dataset_WigSig/ManySig.pkl",
+          "output_root": "PROJECT/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092702/source",
+          "epochs": 200,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_legacy_no_sat",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06
+        },
+        "source_falsification": null,
+        "training_recipe": "F tripleSIG_TIME/unified full physical Sinc/RDrop1/ordinary actual augmented IQ/LS.01/oldgate-ownEMA-cos/defaultheadjoint; paired L-only shallow-middle SupCon; scratch50=33L+17U",
+        "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+        "explicit_CFO_identity_feature": false,
+        "feature_extractor": {
+          "arm": "SIG_TIME",
+          "layer": "t2",
+          "local_dimension": 6,
+          "local_projection": "learned 1x1 then tanh; shared across controls",
+          "windows": 4,
+          "random_directions": 14,
+          "random_direction_seed": 2026101307,
+          "random_direction_scales": [
+            0.5,
+            1,
+            2
+          ],
+          "descriptor_width": 28,
+          "output_embedding": 160,
+          "parameter_matched": true,
+          "intrinsic_descriptor_rank_matched": false,
+          "classifier_changed": false,
+          "gain_initial": 0.05,
+          "gain_bound": 0.2,
+          "time_coordinate": true,
+          "per_packet": true
+        },
+        "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+        "test_views": [
+          "clean"
+        ],
+        "checkpoint_selection": "final_only",
+        "goal": {
+          "primary": "CROSS_RX",
+          "clean_three_seed_mean": 0.84,
+          "matched_baseline": "BASE (F)",
+          "actual_target_accuracy_gain": true,
+          "feedback_to_training": false,
+          "head_fit_updates": 0
+        },
+        "budget_authorization": "User requests continued F training-mechanism optimization measured on targetclean;6new50 and3reusedF;no source performance gate",
+        "cost_claim": "6new50=300modelepochs/66600updates;3matchingF references reused/historical150epochs;no extra model or U forwards, no fittedhead",
+        "baseline_reference": {
+          "source": "PROJECT/runs/20261015-phase1-SIGTIME-RDrop-AF-e50-clean-manysig-m18-r02/F-s2026092702/source",
+          "original_row_id": "F-s2026092702",
+          "role": "Matched completed F final50; reference only, no inherited weight"
+        },
+        "baseline_reuse": false,
+        "readouts": [
+          "NATIVE_HEAD"
+        ],
+        "separate_head_training": false,
+        "mode": "RDROP",
+        "head_fit_updates": 0,
+        "training_mechanism": {
+          "mode": "RDROP",
+          "alpha": 1,
+          "label_smoothing": 0.01,
+          "use_aug": true,
+          "sinc_coordinates": "CENTER_25K",
+          "input": "Capture actual augmented native L forward input inside L-only context; second forward reuses identical augmented IQ, never pre-augmentation raw batch",
+          "objective": ".5*(smoothedCE1+smoothedCE2)+alpha*symKL(original logits1,logits2)",
+          "hook_correction": ".5*(smoothedCE2-native_identity_loss)+alpha*symKL",
+          "default_W_joint": true,
+          "extra_parameters": 0,
+          "extra_optimizer_steps": 0,
+          "extra_L_identity_forwards": 1420800,
+          "original_L_identity_forwards": 1420800,
+          "original_hidden_U_recipe_unchanged": true,
+          "no_new_U_consistency": true,
+          "augmentation_redraws_in_second_forward": 0
+        },
+        "combination": {
+          "SIG_TIME": "SIG_TIME_X3",
+          "Sinc_coordinates": "CENTER_25K",
+          "Sinc_optimizer": "CENTER_UNITS",
+          "s": 25000,
+          "Fs": 25000000,
+          "initial_q": 0,
+          "default_head_joint": true,
+          "MEAN_VAR": false,
+          "COV": false,
+          "ensemble": false
+        },
+        "sinc_optimizer_units": {
+          "mode": "CENTER_UNITS",
+          "sample_rate_Hz": 25000000,
+          "center_scale_Hz": 25000,
+          "lr": "alpha Fs/s",
+          "epsilon": "epsilon s/Fs",
+          "weight_decay": "q -= alpha lambda (q+p0/s); AdamW q decay0",
+          "gradient_clipping": "physical Hz globalclip5",
+          "native_cosine_schedule": "Original alpha cosine; one fixed mapping immediately before each actual step",
+          "extra_parameters": 0,
+          "extra_model_forwards_vs_RDrop": 0,
+          "extra_optimizer_steps": 0,
+          "diagnostic_epochs": [
+            1,
+            17,
+            33,
+            50
+          ]
+        },
+        "supcon": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "descriptor": "channel time mean/population std, current L-batch detached standardization floor1e-4, sampleL2 eps1e-4",
+          "positive": "sameTX differentRX",
+          "negative": "otherTX only; sameTX sameRX excluded in CROSS_RX denominator",
+          "two_forward_policy": "Mean of first/second losses, each mean of shallow/middle; reuse original actual augmented L IQ and RDrop forwards",
+          "invalid_anchor": "Exclude anchors without positive or otherTX negative; finite zero if none; sampler unchanged",
+          "U": "Original oldgate/ownEMA/cos untouched; no U TX labels or added U feature loss",
+          "extra_model_forwards": 0,
+          "extra_trainable_parameters": 0,
+          "default_head_direct_aux_gradient": false
+        },
+        "source_selection": "Fixedfinal50; sourceV health only; all3 seeds frozen before any new target summary; no source performance gate"
+      },
+      "config_ref": "experiments/cvs_sard_dura_eval/plan.py:rows",
+      "resolved_config_ref": "PROJECT/runs/20261021-phase1-SARD-NoAs-DURA-e50-m6-r01/NOAS-s2026092702/prediction/complete.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original split392005 and physicalroles; model/dropout/augmentation same seed; BASE matching existingF, no weight selection;No new augmentation/split/support/evaluation draws. Shared DURA seed2026092701 fixed;F seed varies.",
+      "k": null,
+      "scenario": "clean + practical_high,practical_mid,practical_low_suburban,practical_high_urban,practical_mid_urban,practical_low_urban;raw and fixed DURA IQ",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "r02 zero training/G;only21SARD-DURA cells new;NoAs3 whole rows fromr01 reused;chain47unique newF/37legacycells;sourceSARDsmoke12FNN",
+      "output_root": "PROJECT/runs/20261021-phase1-SARD-NoAs-DURA-e50-m6-r01/NOAS-s2026092702",
+      "log_path": "PROJECT/runs/20261021-phase1-SARD-NoAs-DURA-e50-m6-r01/logs/NOAS-s2026092702.log",
+      "command": "Read-only completed r01 NoAs row;never launch/predict/score again",
+      "expected_artifacts": [
+        "smoke.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "complete.json"
+      ],
+      "status": "ANALYZED"
+    },
+    {
+      "row_id": "NOAS-s2026092703",
+      "method": "NOAS E50 raw vs DURA v1",
+      "purpose": "Frozen original defaulthead with shared complete DURA IQ;reuse existing target predictions",
+      "config": {
+        "schema": "F_paired_SupCon50_v1",
+        "run_id": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r02",
+        "stage": "repair",
+        "arm": "CROSS_RX",
+        "model_seed": 2026092703,
+        "row_id": "CROSS_RX-s2026092703",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "PROJECT/Dataset_WigSig/ManySig.pkl",
+        "output_root": "PROJECT/runs/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/CROSS_RX-s2026092703/source",
+        "epochs": 50,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_legacy_no_sat",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "launch_owner": "codex/root/F-paired-SupCon-20261016",
+        "label_epochs": 33,
+        "pseudo_epochs": 17,
+        "updates": 11100,
+        "legacy_reference_config": {
+          "schema": "legacy_no_sat_v1",
+          "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+          "stage": "repair",
+          "arm": "legacy_cosine_no_sat",
+          "model_seed": 2026092703,
+          "row_id": "legacy_cosine_no_sat-s2026092703",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "PROJECT/Dataset_WigSig/ManySig.pkl",
+          "output_root": "PROJECT/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092703/source",
+          "epochs": 200,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_legacy_no_sat",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06
+        },
+        "source_falsification": null,
+        "training_recipe": "F tripleSIG_TIME/unified full physical Sinc/RDrop1/ordinary actual augmented IQ/LS.01/oldgate-ownEMA-cos/defaultheadjoint; paired L-only shallow-middle SupCon; scratch50=33L+17U",
+        "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+        "explicit_CFO_identity_feature": false,
+        "feature_extractor": {
+          "arm": "SIG_TIME",
+          "layer": "t2",
+          "local_dimension": 6,
+          "local_projection": "learned 1x1 then tanh; shared across controls",
+          "windows": 4,
+          "random_directions": 14,
+          "random_direction_seed": 2026101307,
+          "random_direction_scales": [
+            0.5,
+            1,
+            2
+          ],
+          "descriptor_width": 28,
+          "output_embedding": 160,
+          "parameter_matched": true,
+          "intrinsic_descriptor_rank_matched": false,
+          "classifier_changed": false,
+          "gain_initial": 0.05,
+          "gain_bound": 0.2,
+          "time_coordinate": true,
+          "per_packet": true
+        },
+        "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+        "test_views": [
+          "clean"
+        ],
+        "checkpoint_selection": "final_only",
+        "goal": {
+          "primary": "CROSS_RX",
+          "clean_three_seed_mean": 0.84,
+          "matched_baseline": "BASE (F)",
+          "actual_target_accuracy_gain": true,
+          "feedback_to_training": false,
+          "head_fit_updates": 0
+        },
+        "budget_authorization": "User requests continued F training-mechanism optimization measured on targetclean;6new50 and3reusedF;no source performance gate",
+        "cost_claim": "6new50=300modelepochs/66600updates;3matchingF references reused/historical150epochs;no extra model or U forwards, no fittedhead",
+        "baseline_reference": {
+          "source": "PROJECT/runs/20261015-phase1-SIGTIME-RDrop-AF-e50-clean-manysig-m18-r02/F-s2026092703/source",
+          "original_row_id": "F-s2026092703",
+          "role": "Matched completed F final50; reference only, no inherited weight"
+        },
+        "baseline_reuse": false,
+        "readouts": [
+          "NATIVE_HEAD"
+        ],
+        "separate_head_training": false,
+        "mode": "RDROP",
+        "head_fit_updates": 0,
+        "training_mechanism": {
+          "mode": "RDROP",
+          "alpha": 1,
+          "label_smoothing": 0.01,
+          "use_aug": true,
+          "sinc_coordinates": "CENTER_25K",
+          "input": "Capture actual augmented native L forward input inside L-only context; second forward reuses identical augmented IQ, never pre-augmentation raw batch",
+          "objective": ".5*(smoothedCE1+smoothedCE2)+alpha*symKL(original logits1,logits2)",
+          "hook_correction": ".5*(smoothedCE2-native_identity_loss)+alpha*symKL",
+          "default_W_joint": true,
+          "extra_parameters": 0,
+          "extra_optimizer_steps": 0,
+          "extra_L_identity_forwards": 1420800,
+          "original_L_identity_forwards": 1420800,
+          "original_hidden_U_recipe_unchanged": true,
+          "no_new_U_consistency": true,
+          "augmentation_redraws_in_second_forward": 0
+        },
+        "combination": {
+          "SIG_TIME": "SIG_TIME_X3",
+          "Sinc_coordinates": "CENTER_25K",
+          "Sinc_optimizer": "CENTER_UNITS",
+          "s": 25000,
+          "Fs": 25000000,
+          "initial_q": 0,
+          "default_head_joint": true,
+          "MEAN_VAR": false,
+          "COV": false,
+          "ensemble": false
+        },
+        "sinc_optimizer_units": {
+          "mode": "CENTER_UNITS",
+          "sample_rate_Hz": 25000000,
+          "center_scale_Hz": 25000,
+          "lr": "alpha Fs/s",
+          "epsilon": "epsilon s/Fs",
+          "weight_decay": "q -= alpha lambda (q+p0/s); AdamW q decay0",
+          "gradient_clipping": "physical Hz globalclip5",
+          "native_cosine_schedule": "Original alpha cosine; one fixed mapping immediately before each actual step",
+          "extra_parameters": 0,
+          "extra_model_forwards_vs_RDrop": 0,
+          "extra_optimizer_steps": 0,
+          "diagnostic_epochs": [
+            1,
+            17,
+            33,
+            50
+          ]
+        },
+        "supcon": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "descriptor": "channel time mean/population std, current L-batch detached standardization floor1e-4, sampleL2 eps1e-4",
+          "positive": "sameTX differentRX",
+          "negative": "otherTX only; sameTX sameRX excluded in CROSS_RX denominator",
+          "two_forward_policy": "Mean of first/second losses, each mean of shallow/middle; reuse original actual augmented L IQ and RDrop forwards",
+          "invalid_anchor": "Exclude anchors without positive or otherTX negative; finite zero if none; sampler unchanged",
+          "U": "Original oldgate/ownEMA/cos untouched; no U TX labels or added U feature loss",
+          "extra_model_forwards": 0,
+          "extra_trainable_parameters": 0,
+          "default_head_direct_aux_gradient": false
+        },
+        "source_selection": "Fixedfinal50; sourceV health only; all3 seeds frozen before any new target summary; no source performance gate"
+      },
+      "config_ref": "experiments/cvs_sard_dura_eval/plan.py:rows",
+      "resolved_config_ref": "PROJECT/runs/20261021-phase1-SARD-NoAs-DURA-e50-m6-r01/NOAS-s2026092703/prediction/complete.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092703,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original split392005 and physicalroles; model/dropout/augmentation same seed; BASE matching existingF, no weight selection;No new augmentation/split/support/evaluation draws. Shared DURA seed2026092701 fixed;F seed varies.",
+      "k": null,
+      "scenario": "clean + practical_high,practical_mid,practical_low_suburban,practical_high_urban,practical_mid_urban,practical_low_urban;raw and fixed DURA IQ",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "r02 zero training/G;only21SARD-DURA cells new;NoAs3 whole rows fromr01 reused;chain47unique newF/37legacycells;sourceSARDsmoke12FNN",
+      "output_root": "PROJECT/runs/20261021-phase1-SARD-NoAs-DURA-e50-m6-r01/NOAS-s2026092703",
+      "log_path": "PROJECT/runs/20261021-phase1-SARD-NoAs-DURA-e50-m6-r01/logs/NOAS-s2026092703.log",
+      "command": "Read-only completed r01 NoAs row;never launch/predict/score again",
+      "expected_artifacts": [
+        "smoke.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "complete.json"
+      ],
+      "status": "ANALYZED"
+    },
+    {
+      "row_id": "SARD-s2026092701",
+      "method": "SARD E50 raw vs DURA v1",
+      "purpose": "Frozen original defaulthead with shared complete DURA IQ;reuse existing target predictions",
+      "config_ref": "experiments/cvs_sard_dura_eval/plan.py:rows",
+      "resolved_config_ref": "PROJECT/runs/20261021-phase1-SARD-NoAs-DURA-e50-m6-r02/SARD-s2026092701/prediction/complete.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019844
+      },
+      "seed_notes": "Original P86 native model seed preserved;split392005 and augmentation train421/val422/receiver423 fixed;formal receivedIQ not resampled,evaluation844 retained historical metadata,not a new random evaluation draw;data seed not separate from split;support inapplicable;No new augmentation/split/support/evaluation draws. Shared DURA seed2026092701 fixed;F seed varies.",
+      "k": null,
+      "scenario": "clean + practical_high,practical_mid,practical_low_suburban,practical_high_urban,practical_mid_urban,practical_low_urban;raw and fixed DURA IQ",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "r02 zero training/G;only21SARD-DURA cells new;NoAs3 whole rows fromr01 reused;chain47unique newF/37legacycells;sourceSARDsmoke12FNN",
+      "output_root": "PROJECT/runs/20261021-phase1-SARD-NoAs-DURA-e50-m6-r02/SARD-s2026092701",
+      "log_path": "PROJECT/runs/20261021-phase1-SARD-NoAs-DURA-e50-m6-r02/logs/SARD-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_sard_dura_eval/runner.py --mode worker --row SARD-s2026092701",
+      "expected_artifacts": [
+        "smoke.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "complete.json"
+      ],
+      "status": "ANALYZED"
+    },
+    {
+      "row_id": "SARD-s2026092702",
+      "method": "SARD E50 raw vs DURA v1",
+      "purpose": "Frozen original defaulthead with shared complete DURA IQ;reuse existing target predictions",
+      "config_ref": "experiments/cvs_sard_dura_eval/plan.py:rows",
+      "resolved_config_ref": "PROJECT/runs/20261021-phase1-SARD-NoAs-DURA-e50-m6-r02/SARD-s2026092702/prediction/complete.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019844
+      },
+      "seed_notes": "Original P86 native model seed preserved;split392005 and augmentation train421/val422/receiver423 fixed;formal receivedIQ not resampled,evaluation844 retained historical metadata,not a new random evaluation draw;data seed not separate from split;support inapplicable;No new augmentation/split/support/evaluation draws. Shared DURA seed2026092701 fixed;F seed varies.",
+      "k": null,
+      "scenario": "clean + practical_high,practical_mid,practical_low_suburban,practical_high_urban,practical_mid_urban,practical_low_urban;raw and fixed DURA IQ",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "r02 zero training/G;only21SARD-DURA cells new;NoAs3 whole rows fromr01 reused;chain47unique newF/37legacycells;sourceSARDsmoke12FNN",
+      "output_root": "PROJECT/runs/20261021-phase1-SARD-NoAs-DURA-e50-m6-r02/SARD-s2026092702",
+      "log_path": "PROJECT/runs/20261021-phase1-SARD-NoAs-DURA-e50-m6-r02/logs/SARD-s2026092702.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_sard_dura_eval/runner.py --mode worker --row SARD-s2026092702",
+      "expected_artifacts": [
+        "smoke.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "complete.json"
+      ],
+      "status": "ANALYZED"
+    },
+    {
+      "row_id": "SARD-s2026092703",
+      "method": "SARD E50 raw vs DURA v1",
+      "purpose": "Frozen original defaulthead with shared complete DURA IQ;reuse existing target predictions",
+      "config_ref": "experiments/cvs_sard_dura_eval/plan.py:rows",
+      "resolved_config_ref": "PROJECT/runs/20261021-phase1-SARD-NoAs-DURA-e50-m6-r02/SARD-s2026092703/prediction/complete.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 20261019844
+      },
+      "seed_notes": "Original P86 native model seed preserved;split392005 and augmentation train421/val422/receiver423 fixed;formal receivedIQ not resampled,evaluation844 retained historical metadata,not a new random evaluation draw;data seed not separate from split;support inapplicable;No new augmentation/split/support/evaluation draws. Shared DURA seed2026092701 fixed;F seed varies.",
+      "k": null,
+      "scenario": "clean + practical_high,practical_mid,practical_low_suburban,practical_high_urban,practical_mid_urban,practical_low_urban;raw and fixed DURA IQ",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "r02 zero training/G;only21SARD-DURA cells new;NoAs3 whole rows fromr01 reused;chain47unique newF/37legacycells;sourceSARDsmoke12FNN",
+      "output_root": "PROJECT/runs/20261021-phase1-SARD-NoAs-DURA-e50-m6-r02/SARD-s2026092703",
+      "log_path": "PROJECT/runs/20261021-phase1-SARD-NoAs-DURA-e50-m6-r02/logs/SARD-s2026092703.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_sard_dura_eval/runner.py --mode worker --row SARD-s2026092703",
+      "expected_artifacts": [
+        "smoke.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "complete.json"
+      ],
+      "status": "ANALYZED"
+    }
+  ],
+  "notes": [
+    "Best completed NoAs same-contract/defaulthead three-seed reference is original CROSS_RX F50,clean85.113889±0.379881%;selection is historical exposed-benchmark context,not fresh blind selection.",
+    "NoAs33L+17U versus SARD13L+37U both total50/11100;method comparison is not a pure satellite augmentation or KL causal ablation.",
+    "DURA v1 original stage2/266951parameters/E20-4940 graph+RR FP32 outputs are independent of F and reused across all F;no restorer weights/runtime/precision changes;no new latency claims.",
+    "NoAs01 raw7+DURA7,SARD raw21,NoAs02/03 clean2 reused=37;new DURA35 and raw12=47;6exportF source-smokes×2NN=12 +3SARDnative×2NN=6;18sourceFNN separately.",
+    "Original predictions/scores preserved;new row CPU scoring independently recounts fixed decisions and paired errors after all14cells ready;never updates F/G/head/state or target-dependent choices.",
+    "r01 source-onlySARD smoke version-counter error reproduced locally;native comparator now inference_mode(False)+no_grad;deployed reader/prediction unchanged. One targeted re-review PASS,5focused tests and7AST PASS.",
+    "All r01 NoAs3 rows/14cells each complete;read-only reuse withsame14celltruthlast/idscheck. r02 only launches3SARD with21newFcells/3528000targetFNN;chain total47unique newFcells/7896000targetFNN. No repeatedNoAs prediction/scoring.",
+    "r02 source smoke is3exportedF×2=6 plus3nativeF×2=6,12successfulsourceFNN. r01 successfulNoAs source6NN retained;failedSARDsmoke2exportedF pluspartialnative execution separately,zeroSARDtarget.",
+    "No new preflight requirement due unchanged verified directordinary session;existing one task preflight evidence retained. New archive SHA comparison/remotecompile once;no extra review/data validation."
+  ],
+  "registered_at": "2026-10-21T08:09:24+00:00",
+  "results_summary": {
+    "status": "VERIFIED",
+    "report_ref": "test_results.md",
+    "model_seed_count_per_arm": 3,
+    "DURA_model_seed_count": 1,
+    "std_ddof": 1,
+    "summary": {
+      "clean": {
+        "accuracy": {
+          "NOAS_raw": {
+            "mean": 85.1138888888889,
+            "sample_std": 0.37988146224715563,
+            "per_seed": [
+              84.67619047619047,
+              85.3577380952381,
+              85.3077380952381
+            ]
+          },
+          "SARD_raw": {
+            "mean": 84.39444444444445,
+            "sample_std": 0.9164927813843188,
+            "per_seed": [
+              85.24583333333334,
+              83.42440476190475,
+              84.51309523809523
+            ]
+          },
+          "NOAS_dura": {
+            "mean": 85.14285714285714,
+            "sample_std": 0.4055109490736308,
+            "per_seed": [
+              84.67797619047619,
+              85.32678571428572,
+              85.42380952380952
+            ]
+          },
+          "SARD_dura": {
+            "mean": 84.48392857142856,
+            "sample_std": 0.9659824871771122,
+            "per_seed": [
+              85.39464285714286,
+              83.47083333333333,
+              84.58630952380952
+            ]
+          }
+        },
+        "macro_f1": {
+          "NOAS_raw": {
+            "mean": 84.82497642410482,
+            "sample_std": 0.3691552423172641,
+            "per_seed": [
+              84.40030706853202,
+              85.0692101106274,
+              85.00541209315506
+            ]
+          },
+          "SARD_raw": {
+            "mean": 84.04676375670347,
+            "sample_std": 0.9898954936947248,
+            "per_seed": [
+              84.9731431419007,
+              83.00369561611052,
+              84.16345251209918
+            ]
+          },
+          "NOAS_dura": {
+            "mean": 84.85556193855759,
+            "sample_std": 0.3964880385717362,
+            "per_seed": [
+              84.4010324697455,
+              85.03533997781102,
+              85.13031336811623
+            ]
+          },
+          "SARD_dura": {
+            "mean": 84.1367363007336,
+            "sample_std": 1.0441672501923576,
+            "per_seed": [
+              85.12671503279793,
+              83.0457252665387,
+              84.23776860286416
+            ]
+          }
+        }
+      },
+      "practical_high": {
+        "accuracy": {
+          "NOAS_raw": {
+            "mean": 49.259126984126986,
+            "sample_std": 7.384279116200076,
+            "per_seed": [
+              40.7327380952381,
+              53.46666666666666,
+              53.57797619047619
+            ]
+          },
+          "SARD_raw": {
+            "mean": 79.94325396825397,
+            "sample_std": 1.295552681582601,
+            "per_seed": [
+              81.2982142857143,
+              79.81488095238095,
+              78.71666666666667
+            ]
+          },
+          "NOAS_dura": {
+            "mean": 82.79563492063492,
+            "sample_std": 0.34676710535896604,
+            "per_seed": [
+              82.825,
+              83.12678571428572,
+              82.43511904761904
+            ]
+          },
+          "SARD_dura": {
+            "mean": 82.30238095238096,
+            "sample_std": 0.8727430805763394,
+            "per_seed": [
+              83.28988095238095,
+              81.63452380952381,
+              81.98273809523809
+            ]
+          }
+        },
+        "macro_f1": {
+          "NOAS_raw": {
+            "mean": 43.02620665428764,
+            "sample_std": 6.885295026049113,
+            "per_seed": [
+              35.36957141205766,
+              48.70904312710461,
+              45.000005423700664
+            ]
+          },
+          "SARD_raw": {
+            "mean": 79.63353192920223,
+            "sample_std": 1.3777108379505383,
+            "per_seed": [
+              81.06179577882567,
+              79.52614042244464,
+              78.31265958633638
+            ]
+          },
+          "NOAS_dura": {
+            "mean": 82.31520369166023,
+            "sample_std": 0.37117126274455575,
+            "per_seed": [
+              82.41368893908756,
+              82.62720004468741,
+              81.90472209120573
+            ]
+          },
+          "SARD_dura": {
+            "mean": 81.87516348084453,
+            "sample_std": 0.9617720653202123,
+            "per_seed": [
+              82.96211653460755,
+              81.13444268961864,
+              81.52893121830743
+            ]
+          }
+        }
+      },
+      "practical_mid": {
+        "accuracy": {
+          "NOAS_raw": {
+            "mean": 47.73829365079365,
+            "sample_std": 6.7749534124266715,
+            "per_seed": [
+              39.916666666666664,
+              51.52023809523809,
+              51.777976190476195
+            ]
+          },
+          "SARD_raw": {
+            "mean": 77.54484126984127,
+            "sample_std": 1.231776218359652,
+            "per_seed": [
+              78.85059523809524,
+              77.38035714285715,
+              76.40357142857142
+            ]
+          },
+          "NOAS_dura": {
+            "mean": 81.4484126984127,
+            "sample_std": 0.2788214520376822,
+            "per_seed": [
+              81.56071428571428,
+              81.65357142857142,
+              81.13095238095238
+            ]
+          },
+          "SARD_dura": {
+            "mean": 80.99583333333334,
+            "sample_std": 0.8881257574865781,
+            "per_seed": [
+              81.98333333333333,
+              80.2625,
+              80.74166666666667
+            ]
+          }
+        },
+        "macro_f1": {
+          "NOAS_raw": {
+            "mean": 41.85453214381799,
+            "sample_std": 6.2808402449047325,
+            "per_seed": [
+              34.79957534673767,
+              46.837909792139044,
+              43.92611129257726
+            ]
+          },
+          "SARD_raw": {
+            "mean": 77.2685577830878,
+            "sample_std": 1.2873938733405752,
+            "per_seed": [
+              78.61471491368478,
+              77.1416282083789,
+              76.04933022719972
+            ]
+          },
+          "NOAS_dura": {
+            "mean": 80.99691740042987,
+            "sample_std": 0.29949793663445584,
+            "per_seed": [
+              81.15469581075759,
+              81.18453990978179,
+              80.65151648075023
+            ]
+          },
+          "SARD_dura": {
+            "mean": 80.62852864894695,
+            "sample_std": 0.9585740717666887,
+            "per_seed": [
+              81.6926047484697,
+              79.83253834615161,
+              80.36044285221956
+            ]
+          }
+        }
+      },
+      "practical_low_suburban": {
+        "accuracy": {
+          "NOAS_raw": {
+            "mean": 46.08988095238095,
+            "sample_std": 6.115026442994835,
+            "per_seed": [
+              39.029761904761905,
+              49.52202380952381,
+              49.71785714285714
+            ]
+          },
+          "SARD_raw": {
+            "mean": 75.09484126984127,
+            "sample_std": 1.1407915257301124,
+            "per_seed": [
+              76.23928571428571,
+              75.08749999999999,
+              73.95773809523808
+            ]
+          },
+          "NOAS_dura": {
+            "mean": 79.84761904761905,
+            "sample_std": 0.2507839183363746,
+            "per_seed": [
+              80.05833333333334,
+              79.91428571428571,
+              79.5702380952381
+            ]
+          },
+          "SARD_dura": {
+            "mean": 79.47361111111111,
+            "sample_std": 0.8663126266437434,
+            "per_seed": [
+              80.41845238095237,
+              78.71666666666667,
+              79.28571428571428
+            ]
+          }
+        },
+        "macro_f1": {
+          "NOAS_raw": {
+            "mean": 40.55241510840936,
+            "sample_std": 5.614992118943048,
+            "per_seed": [
+              34.21256297486714,
+              44.89828449414088,
+              42.546397856220075
+            ]
+          },
+          "SARD_raw": {
+            "mean": 74.83721599632854,
+            "sample_std": 1.1574765529439837,
+            "per_seed": [
+              75.96659214695102,
+              74.89150619480318,
+              73.65354964723142
+            ]
+          },
+          "NOAS_dura": {
+            "mean": 79.45691506653611,
+            "sample_std": 0.25255149831806006,
+            "per_seed": [
+              79.6766270890472,
+              79.51312298777573,
+              79.18099512278539
+            ]
+          },
+          "SARD_dura": {
+            "mean": 79.22225054092544,
+            "sample_std": 0.8962101333210792,
+            "per_seed": [
+              80.19376491801408,
+              78.42776618415658,
+              79.04522052060568
+            ]
+          }
+        }
+      },
+      "practical_high_urban": {
+        "accuracy": {
+          "NOAS_raw": {
+            "mean": 47.49146825396825,
+            "sample_std": 6.749527607276732,
+            "per_seed": [
+              39.698214285714286,
+              51.3172619047619,
+              51.45892857142857
+            ]
+          },
+          "SARD_raw": {
+            "mean": 76.60357142857143,
+            "sample_std": 1.2204327661208207,
+            "per_seed": [
+              77.92738095238096,
+              76.36011904761905,
+              75.52321428571429
+            ]
+          },
+          "NOAS_dura": {
+            "mean": 81.62400793650794,
+            "sample_std": 0.31576600195305177,
+            "per_seed": [
+              81.74583333333332,
+              81.86071428571428,
+              81.26547619047619
+            ]
+          },
+          "SARD_dura": {
+            "mean": 81.05575396825397,
+            "sample_std": 0.9454738995587252,
+            "per_seed": [
+              82.12797619047619,
+              80.34166666666667,
+              80.69761904761906
+            ]
+          }
+        },
+        "macro_f1": {
+          "NOAS_raw": {
+            "mean": 41.72428508405302,
+            "sample_std": 6.2956102958509925,
+            "per_seed": [
+              34.68159853844426,
+              46.80611983791427,
+              43.68513687580053
+            ]
+          },
+          "SARD_raw": {
+            "mean": 76.3174016746957,
+            "sample_std": 1.2834210763136213,
+            "per_seed": [
+              77.6970416916797,
+              76.09621235958424,
+              75.15895097282318
+            ]
+          },
+          "NOAS_dura": {
+            "mean": 81.18700046745246,
+            "sample_std": 0.3413641856637022,
+            "per_seed": [
+              81.36353332504703,
+              81.40394973270772,
+              80.79351834460266
+            ]
+          },
+          "SARD_dura": {
+            "mean": 80.70410118401888,
+            "sample_std": 1.0126076243327375,
+            "per_seed": [
+              81.85158900535058,
+              79.93586311976898,
+              80.3248514269371
+            ]
+          }
+        }
+      },
+      "practical_mid_urban": {
+        "accuracy": {
+          "NOAS_raw": {
+            "mean": 39.68710317460317,
+            "sample_std": 4.518667359956864,
+            "per_seed": [
+              34.483333333333334,
+              41.95892857142857,
+              42.61904761904762
+            ]
+          },
+          "SARD_raw": {
+            "mean": 62.6906746031746,
+            "sample_std": 0.9064716640579518,
+            "per_seed": [
+              63.702380952380956,
+              62.4172619047619,
+              61.95238095238095
+            ]
+          },
+          "NOAS_dura": {
+            "mean": 74.89960317460317,
+            "sample_std": 0.5298656711286966,
+            "per_seed": [
+              75.48630952380952,
+              74.75654761904762,
+              74.45595238095238
+            ]
+          },
+          "SARD_dura": {
+            "mean": 74.39722222222223,
+            "sample_std": 0.8082672174143841,
+            "per_seed": [
+              75.31785714285715,
+              73.80416666666667,
+              74.06964285714285
+            ]
+          }
+        },
+        "macro_f1": {
+          "NOAS_raw": {
+            "mean": 35.49357496208884,
+            "sample_std": 4.1106498329409105,
+            "per_seed": [
+              30.776198418340776,
+              38.30746753691791,
+              37.39705893100785
+            ]
+          },
+          "SARD_raw": {
+            "mean": 62.423531284502566,
+            "sample_std": 0.8385292954431444,
+            "per_seed": [
+              63.32252718864913,
+              62.28545933096207,
+              61.66260733389649
+            ]
+          },
+          "NOAS_dura": {
+            "mean": 74.68206027948754,
+            "sample_std": 0.5329434994026174,
+            "per_seed": [
+              75.27697203357441,
+              74.52094506839701,
+              74.24826373649123
+            ]
+          },
+          "SARD_dura": {
+            "mean": 74.44293470223231,
+            "sample_std": 0.7798290558728678,
+            "per_seed": [
+              75.32765642622539,
+              73.85537067324344,
+              74.14577700722809
+            ]
+          }
+        }
+      },
+      "practical_low_urban": {
+        "accuracy": {
+          "NOAS_raw": {
+            "mean": 33.64702380952381,
+            "sample_std": 2.9345737946095425,
+            "per_seed": [
+              30.299404761904764,
+              34.86607142857142,
+              35.775595238095235
+            ]
+          },
+          "SARD_raw": {
+            "mean": 51.73095238095238,
+            "sample_std": 0.6075456763620456,
+            "per_seed": [
+              52.41607142857143,
+              51.51904761904762,
+              51.25773809523809
+            ]
+          },
+          "NOAS_dura": {
+            "mean": 68.13392857142857,
+            "sample_std": 0.6603388036462124,
+            "per_seed": [
+              68.88988095238095,
+              67.8422619047619,
+              67.66964285714285
+            ]
+          },
+          "SARD_dura": {
+            "mean": 67.6561507936508,
+            "sample_std": 0.7123648112720186,
+            "per_seed": [
+              68.47678571428571,
+              67.19702380952381,
+              67.29464285714286
+            ]
+          }
+        },
+        "macro_f1": {
+          "NOAS_raw": {
+            "mean": 30.563536300418214,
+            "sample_std": 2.510840276722348,
+            "per_seed": [
+              27.664479157866722,
+              31.982739001928213,
+              32.0433907414597
+            ]
+          },
+          "SARD_raw": {
+            "mean": 51.35154875109687,
+            "sample_std": 0.4302487195321197,
+            "per_seed": [
+              51.77326747171019,
+              51.36812938545303,
+              50.913249396127384
+            ]
+          },
+          "NOAS_dura": {
+            "mean": 68.16183544097187,
+            "sample_std": 0.662492782937742,
+            "per_seed": [
+              68.92403673327348,
+              67.83715801659103,
+              67.72431157305108
+            ]
+          },
+          "SARD_dura": {
+            "mean": 68.0122368763653,
+            "sample_std": 0.6494330365210067,
+            "per_seed": [
+              68.75657942935463,
+              67.56114227136833,
+              67.71898892837292
+            ]
+          }
+        }
+      }
+    },
+    "averages": {
+      "六环境平均": {
+        "accuracy": {
+          "NOAS_raw": {
+            "mean": 43.9854828042328,
+            "sample_std": 5.740953672610144,
+            "per_seed": [
+              37.36001984126984,
+              47.108531746031744,
+              47.487896825396824
+            ]
+          },
+          "SARD_raw": {
+            "mean": 70.60135582010582,
+            "sample_std": 1.0623180845062505,
+            "per_seed": [
+              71.7389880952381,
+              70.42986111111111,
+              69.63521825396825
+            ]
+          },
+          "NOAS_dura": {
+            "mean": 78.12486772486773,
+            "sample_std": 0.34159551432522833,
+            "per_seed": [
+              78.42767857142857,
+              78.19236111111111,
+              77.75456349206348
+            ]
+          },
+          "SARD_dura": {
+            "mean": 77.6468253968254,
+            "sample_std": 0.8461045248577469,
+            "per_seed": [
+              78.60238095238095,
+              76.99275793650794,
+              77.3453373015873
+            ]
+          }
+        },
+        "macro_f1": {
+          "NOAS_raw": {
+            "mean": 38.86909170884584,
+            "sample_std": 5.2660247869619905,
+            "per_seed": [
+              32.917330974719036,
+              42.92359396502415,
+              40.76635018679435
+            ]
+          },
+          "SARD_raw": {
+            "mean": 70.30529790315228,
+            "sample_std": 1.0598215490803073,
+            "per_seed": [
+              71.40598986525008,
+              70.21817931693768,
+              69.2917245272691
+            ]
+          },
+          "NOAS_dura": {
+            "mean": 77.79998872442302,
+            "sample_std": 0.3612350132740534,
+            "per_seed": [
+              78.13492565513121,
+              77.84781929332345,
+              77.41722122481438
+            ]
+          },
+          "SARD_dura": {
+            "mean": 77.4808692388889,
+            "sample_std": 0.8742001830691432,
+            "per_seed": [
+              78.46405184367032,
+              76.79118721405126,
+              77.18736865894513
+            ]
+          }
+        }
+      },
+      "七景平均": {
+        "accuracy": {
+          "NOAS_raw": {
+            "mean": 49.860969387755105,
+            "sample_std": 4.974823888426307,
+            "per_seed": [
+              44.11947278911565,
+              52.57270408163265,
+              52.89073129251701
+            ]
+          },
+          "SARD_raw": {
+            "mean": 72.5717970521542,
+            "sample_std": 0.9854908199179235,
+            "per_seed": [
+              73.66853741496598,
+              72.28622448979591,
+              71.76062925170068
+            ]
+          },
+          "NOAS_dura": {
+            "mean": 79.12743764172336,
+            "sample_std": 0.24622951104688084,
+            "per_seed": [
+              79.32057823129252,
+              79.21156462585034,
+              78.85017006802721
+            ]
+          },
+          "SARD_dura": {
+            "mean": 78.6235544217687,
+            "sample_std": 0.8537706270269387,
+            "per_seed": [
+              79.57270408163265,
+              77.91819727891156,
+              78.3797619047619
+            ]
+          }
+        },
+        "macro_f1": {
+          "NOAS_raw": {
+            "mean": 45.43421809673999,
+            "sample_std": 4.566098559792894,
+            "per_seed": [
+              40.27204184526375,
+              48.944396271538906,
+              47.086216173417306
+            ]
+          },
+          "SARD_raw": {
+            "mean": 72.2683644536596,
+            "sample_std": 0.9832205822588591,
+            "per_seed": [
+              73.34415461905732,
+              72.04468164539094,
+              71.41625709653053
+            ]
+          },
+          "NOAS_dura": {
+            "mean": 78.80792775501367,
+            "sample_std": 0.2619407471553729,
+            "per_seed": [
+              79.03008377150468,
+              78.87460796253596,
+              78.51909153100037
+            ]
+          },
+          "SARD_dura": {
+            "mean": 78.431707390581,
+            "sample_std": 0.8896133645337315,
+            "per_seed": [
+              79.41586087068855,
+              77.6846926501209,
+              78.19456865093356
+            ]
+          }
+        }
+      }
+    },
+    "new_training_updates": 0,
+    "new_prediction_cells": 47,
+    "reused_prediction_cells": 37,
+    "source_F_NN": 18,
+    "new_prediction_cells_this_run": 21,
+    "previous_complete_NOAS_reused": 3,
+    "new_G_NN": 0,
+    "all14cells_before_each_row_truth": true
+  }
+}
