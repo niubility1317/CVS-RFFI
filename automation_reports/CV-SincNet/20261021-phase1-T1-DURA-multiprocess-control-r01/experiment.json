@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-21明确要求每张卡可以多个进程；保留现有健康任务、五源结果复用及正式时延独占。",
   "code": {
-    "commit": "SET_AT_COMMIT",
+    "commit": "d08de7e475ccdf89a287ef21823696c0226eb55c",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 CVS-RFFI Py3.10/Torch2.1 FP32/TF32off CPU2",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261021-phase1-T1-DURA-multiprocess-control-r01",
@@ -142,5 +142,23 @@
     "Two identical technical fingerprints stop new submissions, preserve healthy workers. F main/ablation slot alternation follows fixed IDs only. ETA recalibrated from actual throughput, no assumed 2x speedup."
   ],
   "research_plan": null,
-  "registered_at": "2026-10-21T14:37:57+00:00"
+  "registered_at": "2026-10-21T14:37:57+00:00",
+  "runtime_evidence": {
+    "status": "VERIFIED_RUNNING",
+    "pid": 393753,
+    "active_own_per_gpu": {
+      "5": 2,
+      "1": 2,
+      "6": 2,
+      "4": 2,
+      "3": 1,
+      "0": 2,
+      "2": 1,
+      "7": 2
+    },
+    "adopted_healthy_workers": 8,
+    "all_adopted_preserved": true,
+    "scientific_worker_commit": "3e8806900449e97f3e8fa62822322932168c6447",
+    "evidence": "local_artifacts/cric_dura_comparison_20261021/latest_multiprocess_verification.json"
+  }
 }

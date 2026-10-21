@@ -35,3 +35,11 @@ Resource-only controller replacement; all 769 original jobs/configs, scientific 
 每卡最多 2 条本 PAMF worker、3 条总计算进程，启动前空闲至少 12000 MiB；每卡最多 1 条 G/G_student。外部 360 行未全部 ANALYZED 前，GPU2/3 保留原对比队列容量。正式时延保持独占；本次检查已见独立时延 r02 的 500 个 case-round 全部完成，释放后的 GPU7 可正常参与多进程训练。
 
 只在 PID、完整命令和 CWD 全部匹配后撤下原健康调度器，扫描并接管其原 worker（包括 CPU scorer）。独立时延恢复、外部源数量队列和其他 owner 均保持。科学 smoke 复用原实际权重 no-query PASS；新增资源规则用聚焦测试与一次 P0/P1 审查验证。
+
+## 实际发布核验
+
+**VERIFIED / RUNNING**：资源控制代码 `d08de7e475ccdf89a287ef21823696c0226eb55c` 已提交、推送且 remote OID 一致；7 项聚焦测试及一次独立 P0/P1 审查通过。只停止经完整命令/CWD/PID 核实的原调度器，接管 8 条原健康 worker，全部保持原 PID 或正常完成；新 owner PID 393753。
+
+本次独立读回的每卡本 PAMF 进程数为 `{"0": 2, "1": 2, "2": 1, "3": 1, "4": 2, "5": 2, "6": 2, "7": 2}`，所有活动 worker 都使用原科学 release `3e880690` 的精确命令和 CWD；已有 9 条活动日志观察到增长。已完成结果和唯一已知旧 timing 导入失败均保留，无模型重训或重复发布。原正式时延 r02 已完成 500 个 case-round，后续独立汇总。
+
+多进程后的总 ETA 暂沿用 3 至 7 天保守区间，待新共享负载的完整 F/G 吞吐返回后更新，不将进程数增加解释为同比加速。
