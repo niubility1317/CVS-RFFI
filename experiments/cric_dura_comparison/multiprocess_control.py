@@ -15,12 +15,12 @@ from .source_queue import capacity
 HEAVY={'G','G_student'}
 
 
-def gpu_admits(gpu,job,active,jobs,apps,free,reserve_external=True):
+def gpu_admits(gpu,job,active,jobs,apps,free,reserve_external=True,own_limit=3,total_limit=3):
     owned=[jobs[key] for key,item in active.items() if item.get('gpu')==gpu]
     if any(j.get('exclusive') for j in owned):return False
     if job.get('exclusive'):return not owned and apps==0 and gpu not in (2,3)
-    limit=1 if reserve_external and gpu in (2,3) else 2
-    if len(owned)>=limit or apps>=3 or free<12000:return False
+    limit=1 if reserve_external and gpu in (2,3) else own_limit
+    if len(owned)>=limit or apps>=total_limit or free<12000:return False
     if job['kind'] in HEAVY and any(j['kind'] in HEAVY for j in owned):return False
     return True
 
@@ -50,8 +50,9 @@ def handover(rt,jobs):
     previous=read(rt['previous_state']);pid=previous['pid'];process=Path('/proc')/str(pid)
     if alive(pid):
         argv=[a.decode() for a in process.joinpath('cmdline').read_bytes().split(bytes([0])) if a]
-        expected=[rt['python'],'-u','-m','experiments.cric_dura_comparison.start_continuation','--config',rt['previous_runtime']]
-        if argv!=expected or os.readlink(process/'cwd')!=rt['worker_release']:
+        module=rt.get('previous_controller_module','experiments.cric_dura_comparison.start_continuation')
+        expected=[rt['python'],'-u','-m',module,'--config',rt['previous_runtime']]
+        if argv!=expected or os.readlink(process/'cwd')!=rt.get('previous_controller_cwd',rt['worker_release']):
             raise ValueError('Previous controller identity differs; no stop')
         os.kill(pid,signal.SIGTERM)
         for _ in range(50):
@@ -93,6 +94,8 @@ def failure(job,item):
 
 
 def run(rt):
+    own_limit=rt.get('max_own_per_gpu',3);total_limit=rt.get('max_compute_per_gpu',3)
+    if own_limit not in (2,3) or total_limit!=3:raise ValueError('Unsupported resource-only capacity')
     root=Path(rt['control_root']);root.mkdir(parents=True,exist_ok=False)
     jobs=read(rt['jobs']);by_id={j['id']:j for j in jobs}
     if len(by_id)!=len(jobs):raise ValueError('Duplicate registered jobs')
@@ -100,7 +103,7 @@ def run(rt):
     previous,active=handover(rt,jobs)
     state=dict(previous,pid=os.getpid(),owner=rt['launch_owner'],status='RUNNING',control_commit=rt['code_commit'],
         scientific_worker_commit=rt['worker_commit'],previous_owner_pid=previous['pid'],jobs=dict(previous['jobs']),
-        resource_policy='2own/card,3total,free>=12000MiB;at most1G/G_student per card;2/3 reserve external until complete;timingexclusive',adopted=len(active))
+        resource_policy=str(own_limit)+'own/card,3total,free>=12000MiB;at most1G/G_student per card;2/3 reserve external until complete;timingexclusive',adopted=len(active))
     failures=Counter(previous.get('failures',{}));cache_failures=dict(previous.get('cache_failures',{}));children={};logs={}
     for job in jobs:
         key=job['id'];old=state['jobs'].get(key,{})
@@ -154,7 +157,7 @@ def run(rt):
         reserve=external_pending(rt)
         for gpu in rt['allowed_gpus']:
             apps,free=capacity(gpu)
-            candidates=[j for j in eligible if j['kind']!='score' and gpu_admits(gpu,j,active,by_id,apps,free,reserve)]
+            candidates=[j for j in eligible if j['kind']!='score' and gpu_admits(gpu,j,active,by_id,apps,free,reserve,own_limit,total_limit)]
             if not candidates:continue
             job=next((j for j in candidates if j.get('exclusive')),None)
             if job is None:job=next((j for j in candidates if j['kind']=='predict'),None)

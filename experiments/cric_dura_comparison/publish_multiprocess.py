@@ -3,7 +3,7 @@ import argparse,hashlib,io,json,subprocess,tarfile
 from pathlib import Path
 from .publish import ROOT,CONNECTION,ssh
 
-RUN='20261021-phase1-T1-DURA-multiprocess-control-r01'
+RUN='20261022-phase1-T1-DURA-multiprocess-control-r02'
 
 REMOTE=r'''
 import hashlib,json,os,subprocess,tarfile
@@ -39,9 +39,11 @@ def publish(repo,output):
     if git('ls-remote','origin','refs/heads/'+branch).decode().split()[0]!=commit:raise ValueError('Upstream OID mismatch')
     previous=json.loads((output/'continuation_runtime.json').read_text(encoding='utf-8'));project=previous['project']
     rt=dict(previous,run_id=RUN,release_root=project+'/releases/'+RUN,control_root=project+'/runs/'+RUN,
-        runtime_file=project+'/releases/'+RUN+'/runtime.json',code_commit=commit,launch_owner='codex-root-multiprocess-control-20261021',
-        worker_release=previous['release_root'],worker_commit=previous['code_commit'],previous_state=previous['control_root']+'/pipeline_state.json',
+        runtime_file=project+'/releases/'+RUN+'/runtime.json',code_commit=commit,launch_owner='codex-root-multiprocess-control-20261022',
+        worker_release=previous.get('worker_release',previous['release_root']),worker_commit=previous.get('worker_commit',previous['code_commit']),previous_state=previous['control_root']+'/pipeline_state.json',
         previous_runtime=previous['runtime_file'],previous_control_root=previous['control_root'],
+        previous_controller_module='experiments.cric_dura_comparison.multiprocess_control' if 'worker_release' in previous else 'experiments.cric_dura_comparison.start_continuation',
+        previous_controller_cwd=previous['release_root'],max_own_per_gpu=3,max_compute_per_gpu=3,
         external_pipeline_state=project+'/runs/20261021-phase1-dg-sourcecount1to6-m432-r01/pipeline_state.json')
     if rt['worker_commit']!='3e8806900449e97f3e8fa62822322932168c6447':raise ValueError('Scientific worker release changed')
     names=('__init__.py','io.py','pipeline.py','source_queue.py','multiprocess_control.py')
@@ -53,10 +55,10 @@ def publish(repo,output):
         for name,blob in [(p,git('show',commit+':'+p)) for p in paths]+[('release_commit.txt',(commit+'\n').encode())]:
             member=tarfile.TarInfo(name);member.size=len(blob);member.mode=0o644;tar.addfile(member,io.BytesIO(blob))
     package=dict(runtime=rt,expected_user=project.split('/')[2],archive_remote=project+'/releases/'+archive.name,sha256=hashlib.sha256(archive.read_bytes()).hexdigest())
-    (output/'multiprocess_runtime.json').write_text(json.dumps(rt,indent=2)+'\n',encoding='utf-8')
+    (output/'multiprocess_r02_runtime.json').write_text(json.dumps(rt,indent=2)+'\n',encoding='utf-8')
     subprocess.run(['scp',*CONNECTION,str(archive),'N607:'+package['archive_remote']],check=True,timeout=60)
     receipt=ssh(REMOTE.replace('CONFIG',repr(package)))
-    (output/'multiprocess_submit.json').write_text(json.dumps(receipt,indent=2)+'\n',encoding='utf-8');print(json.dumps(receipt))
+    (output/'multiprocess_r02_submit.json').write_text(json.dumps(receipt,indent=2)+'\n',encoding='utf-8');print(json.dumps(receipt))
 
 
 if __name__=='__main__':
