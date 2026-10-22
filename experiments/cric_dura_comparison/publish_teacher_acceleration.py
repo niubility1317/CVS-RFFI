@@ -49,7 +49,11 @@ def publish(repo,output,previous_file,ssh_config):
     commit=git('rev-parse','HEAD').decode().strip();branch=git('branch','--show-current').decode().strip()
     if git('ls-remote','origin','refs/heads/'+branch).decode().split()[0]!=commit:raise ValueError('Remote OID differs')
     previous=json.loads(Path(previous_file).read_text(encoding='utf-8'));rt=runtime_for(previous,commit)
-    paths=[p for p in git('ls-tree','-r','--name-only','HEAD','experiments/cric_dura_comparison').decode().splitlines() if p.endswith('.py')]
+    paths=[p for p in git('ls-tree','-r','--name-only','HEAD','experiments/cric_dura_comparison').decode().splitlines()
+           if p.endswith('.py') or '/vendor/' in p]
+    required=('bootstrap.py','g_cache.py','g_lineage.py','g_train.py','pipeline.py','acceleration_smoke.py','teacher_targets.py')
+    if any('experiments/cric_dura_comparison/'+name not in paths for name in required):
+        raise ValueError('Committed baseline execution dependencies missing')
     if git('status','--porcelain','--',*paths).strip():raise ValueError('Uncommitted execution sources')
     archive=output/(RUN+'.tar.gz')
     if archive.exists():raise FileExistsError('Existing release archive; reconcile before retry')
