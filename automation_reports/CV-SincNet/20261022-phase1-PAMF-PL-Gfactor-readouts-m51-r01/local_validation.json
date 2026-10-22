@@ -8,8 +8,9 @@
   "new_G": 0,
   "new_cache": 0,
   "source_only_dependency_check": "PASS",
-  "real_checkpoint_smoke": "FIRST_LAUNCH_STEP_BEFORE_HANDOVER",
+  "real_checkpoint_smoke": "PASS, actual ordinaryPL F and exact-contract G-L, L-only no query",
   "regression_tests": 19,
   "all_relevant_tests": 27,
-  "isolated_release_import": "PASS without planner/vendor packages"
+  "isolated_release_import": "PASS without planner/vendor packages",
+  "publication": "VERIFIED"
 }

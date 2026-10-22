@@ -76,7 +76,7 @@
     "local_artifact_root": "local_artifacts/external_DURA_readouts_20261023",
     "launch_command": "F:/App/miniconda3/python.exe -X utf8 -m experiments.cric_dura_comparison.publish_external_dura --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output E:/type10-7/local_artifacts/external_DURA_readouts_20261023/control-r01 --previous E:/type10-7/local_artifacts/external_DURA_readouts_20261023/previous_runtime.json --ssh-config E:/type10-7/tools/n607_ssh_config --manifest E:/type10-7/local_artifacts/external_DURA_readouts_20261023/preflight.json --external-runtime E:/type10-7/local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/runtime.json --count-runtime E:/type10-7/local_artifacts/phase1_dg_sourcecount6_20261021/runtime.json",
     "stop_rule": "One source actual-checkpoint smoke, then immediate handoff on PASS. At most1G-heavy/card. Preserve healthy PIDs;2 same new technical fingerprints stop launches.",
-    "current_launch_owner": "20261023-phase1-external-DURA-control-r01",
+    "current_launch_owner": "20261023-phase1-PAMF-PL-Gfactor-control-r02",
     "launch_verification_ref": "automation_reports/CV-SincNet/20261023-phase1-external-DURA-control-r01/launch_verification.json",
     "gpu": "Existing authorized capacity only; formal timing exclusive and notGPU2/3"
   },

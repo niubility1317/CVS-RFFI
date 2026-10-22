@@ -1,0 +1,80 @@
+{
+  "status": "VERIFIED",
+  "observed_at_UTC": "2026-10-22T22:52:55.523270+00:00",
+  "owner": "20261023-phase1-PAMF-PL-Gfactor-control-r02",
+  "owner_PID": 1558142,
+  "execution_commit": "108d938f404b091099fc41972d9768365b38933c",
+  "PID_CWD_argv_release_match": true,
+  "archive_transfer_comparison_and_remote_compile": "PASS before submission",
+  "source_checkpoint_smoke": {
+    "status": "PASS",
+    "actual_PL_F_checkpoint": true,
+    "actual_same_contract_G_L": true,
+    "source_L_samples": 3,
+    "FP32_cache_copy_logits_exact": true,
+    "G_routes_close": true,
+    "target_reads": 0,
+    "U_IQ_reads": 0,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0
+  },
+  "adopted_healthy_workers": 25,
+  "same_PID_log_growth_workers": 23,
+  "log_observation_seconds": 154.77951955795288,
+  "healthy_worker_restarts": 0,
+  "old_jobs_exactly_preserved": true,
+  "previous_owner_retired_normally": true,
+  "active_GPU_workers_checked": 24,
+  "GPU_assignment_mismatches": 0,
+  "per_gpu_at_snapshot": {
+    "6": 3,
+    "4": 3,
+    "2": 3,
+    "3": 3,
+    "0": 3,
+    "7": 3,
+    "1": 3,
+    "5": 3
+  },
+  "effective_counts_at_snapshot": {
+    "COMPLETE": 1180,
+    "FAILED": 1,
+    "RUNNING": 24,
+    "QUEUED": 874
+  },
+  "new_groups": {
+    "20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01": {
+      "predict": {
+        "QUEUED": 51
+      },
+      "score": {
+        "QUEUED": 51
+      }
+    },
+    "20261023-phase1-PAMF-PL-Gfactor-analysis-m51-r01": {
+      "score": {
+        "QUEUED": 1
+      }
+    }
+  },
+  "new_jobs": 103,
+  "PL_F_models": 51,
+  "contracts": 17,
+  "F_seeds": 3,
+  "new_F": 0,
+  "new_G": 0,
+  "new_cache_jobs": 0,
+  "new_predict": 51,
+  "new_score": 51,
+  "CPU_aggregate": 1,
+  "performance_status": "PENDING_QUEUED",
+  "failed_prelaunch_controller": "20261023-phase1-PAMF-PL-Gfactor-control-r01 preserved; no handoff or model worker started",
+  "tests": {
+    "focused": 8,
+    "existing_path_regression": 19,
+    "total": 27,
+    "independent_P0_P1": "PASS; one targeted release-isolation fix review PASS"
+  },
+  "known_timing_failure": "Original baselines.riei_fd failure retained; completed latency-r02 substitution, no remeasurement",
+  "ETA": "Existing whole-delivery18-30h window anchored HongKong2026-10-23 01:20 retained; no per-hour reset or unmeasured speed claim"
+}

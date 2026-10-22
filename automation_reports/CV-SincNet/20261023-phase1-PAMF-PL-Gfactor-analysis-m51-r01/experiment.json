@@ -26,7 +26,7 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-22：再次检查实验完不完备，有没有缺什么实验没有安排得到，后续补上。按本线程三seed/保护健康任务/不补五源数量扫描要求安排。",
   "code": {
-    "commit": "Actual committed publication recorded in launch_verification.json",
+    "commit": "108d938f404b091099fc41972d9768365b38933c",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 CVS-RFFI Py3.10/Torch2.1 FP32/TF32off CPU2",
     "cwd": "PROJECT/releases/20261023-phase1-PAMF-PL-Gfactor-control-r02",
@@ -65,7 +65,7 @@
       "Existing17 G-L full lineages and shared external IQ caches"
     ],
     "contract_check_ref": "Resolve actual source config and all ancestors before each new load; no cross-contract fallback.",
-    "provenance_verdict": "Source contract metadata PASS; actual-checkpoint no-query smoke first at release",
+    "provenance_verdict": "PASS: actual source-only PL F plus same-contract G-L smoke, source/source-ancestor frozen loaders; existing validated handles reused",
     "selection_rule": "Original fixed final/source-native selection unchanged; no score-dependent choice"
   },
   "execution": {
@@ -77,7 +77,7 @@
     "local_artifact_root": "local_artifacts/PAMF_PL_Gfactor_20261023",
     "launch_command": "F:/App/miniconda3/python.exe -X utf8 -m experiments.cric_dura_comparison.publish_gfactor --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output E:/type10-7/local_artifacts/PAMF_PL_Gfactor_20261023/control-r02 --previous E:/type10-7/local_artifacts/PAMF_PL_Gfactor_20261023/previous_runtime.json --ssh-config E:/type10-7/tools/n607_ssh_config --manifest E:/type10-7/local_artifacts/PAMF_PL_Gfactor_20261023/dependencies.json",
     "stop_rule": "First real F/G-L L-only smoke PASS then immediate handoff. Existing26 global capacity; two same new technical fingerprints stop submissions; preserve healthy tasks.",
-    "current_launch_owner": "20261023-phase1-external-DURA-control-r02",
+    "current_launch_owner": "20261023-phase1-PAMF-PL-Gfactor-control-r02",
     "launch_verification_ref": "automation_reports/CV-SincNet/20261023-phase1-PAMF-PL-Gfactor-control-r02/launch_verification.json",
     "gpu": "Existing authorized capacity only; formal timing exclusive and notGPU2/3"
   },
@@ -139,7 +139,7 @@
     "docs/PAMF_PL_GFACTOR_READOUTS_20261023.md",
     "Only51 PL/G-L reads,51 independent scores,1 CPU aggregate=103 stages; no new training/cache or timing.",
     "Source-only dependency audit:50 F/raw complete,1 original healthy F awaited,9 G-L caches complete; remaining cache work already queued.",
-    "8 focused tests PASS; one independent P0/P1 review PASS after direct import/compile fixes. Real-checkpoint source smoke runs first before handoff. Performance pending."
+    "Publication VERIFIED, actual F/G-L source-only smoke PASS;27 relevant tests and one review plus direct release-isolation fix PASS. New51 predictions/51scores/CPU aggregate queued, performance pending."
   ],
   "registered_at": "2026-10-22T14:52:21+00:00"
 }

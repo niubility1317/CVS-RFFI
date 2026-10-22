@@ -26,7 +26,7 @@
   "replaces_run_id": "20261023-phase1-external-DURA-control-r01",
   "authorization": "用户2026-10-22：再次检查实验完不完备，有没有缺什么实验没有安排得到，后续补上。按本线程三seed/保护健康任务/不补五源数量扫描要求安排。",
   "code": {
-    "commit": "Actual committed publication recorded in launch_verification.json",
+    "commit": "52d20faf1add0b756e92c0e164c7491244bb81f0",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 CVS-RFFI Py3.10/Torch2.1 FP32/TF32off CPU2",
     "cwd": "PROJECT/releases/20261023-phase1-PAMF-PL-Gfactor-control-r01",
@@ -139,7 +139,8 @@
     "docs/PAMF_PL_GFACTOR_READOUTS_20261023.md",
     "Only51 PL/G-L reads,51 independent scores,1 CPU aggregate=103 stages; no new training/cache or timing.",
     "Source-only dependency audit:50 F/raw complete,1 original healthy F awaited,9 G-L caches complete; remaining cache work already queued.",
-    "7 focused tests PASS; one independent P0/P1 review PASS after direct import/compile fixes. Real-checkpoint source smoke runs first before handoff. Performance pending."
+    "7 focused tests PASS; one independent P0/P1 review PASS after direct import/compile fixes. Real-checkpoint source smoke runs first before handoff. Performance pending.",
+    "Actual r01 controller failed before handoff on planner dependency import; not a model-training failure. Preserved and replaced by control-r02."
   ],
   "registered_at": "2026-10-22T22:43:05+00:00"
 }
