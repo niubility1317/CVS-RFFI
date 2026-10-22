@@ -21,7 +21,7 @@
   "replaces_run_id": "20261022-phase1-T1-DURA-multiprocess-control-r02",
   "authorization": "用户要求按任务负载均衡并在允许范围增加进程，已确认 GPU0/6 3至4、总上限26、其他卡3、健康任务不动的方案。",
   "code": {
-    "commit": "pending_version_commit",
+    "commit": "320c71c496bd46cb0bcdc857071858be149ad493",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 CVS-RFFI Py3.10/Torch2.1 FP32/TF32off CPU2",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261022-phase1-T1-DURA-multiprocess-control-r03",

@@ -30,6 +30,8 @@ Resource-only handover of existing769 jobs. Baseline3/card; GPU0/6 fourth F only
 
 ## 已确认的资源方案与停止规则
 
+实际资源代码 commit：`320c71c496bd46cb0bcdc857071858be149ad493`；已提交、推送且远端分支 OID 与本地 HEAD 独立读回一致。一次独立 P0/P1 审查的原 P1 已完成唯一一次定点复审并确认解决。科学 worker commit 仍固定 `3e8806900449e97f3e8fa62822322932168c6447`。
+
 本次只更换资源调度器，原 769 个执行任务、数据句柄、三种子预算、源域冻结、七视图预测与独立 truth-last 全部保持。科学 worker 始终使用原 3e880690 release、完整命令和配置；现有健康 PID 不迁移、不重启，完成行直接复用。
 
 基础容量仍为每卡 3 条。仅 GPU0、GPU6 在至少 5 个观测点覆盖 120 秒且平均 GPU 利用率低于 85%、三条现有任务全为本 run F 训练、无外部进程时可补第 4 条 F；全机计算进程总量最多 26。按滚动 GPU 利用率从低到高安排新任务，其他卡不得加第 4 条，G/G_student 每卡最多 1 条，正式时延独占且排除 GPU2/3。
@@ -43,3 +45,13 @@ Resource-only handover of existing769 jobs. Baseline3/card; GPU0/6 fourth F only
 新增 11 项资源负测与既有 9 项所属进程保护测试已通过，共 20 项。独立审查发现的 P1（未进 CUDA 的自有 PID 与外部 CUDA PID 不能用数量 max 计数）已用失败回归复现并修复：使用实际 PID 并集，额外的实时容量变化保守计入。普通本地 Python 没有 pytest，验证使用标准库 unittest；不因此安装依赖或运行无关科学测试。科学输入与 worker 未变，复用原实际 checkpoint 无 query smoke PASS 和 VALIDATED_ONCE，不新增数据验证或 smoke 许可层。发布前仅对该 P1 定点复审。
 
 发布入口：experiments.cric_dura_comparison.publish_load_balance，参数指向隔离 Git 检出、原 r02 runtime 和本次独占 local_artifacts/cric_dura_load_balance_20261022。一次 release 归档只校验一次本地/远端 SHA，远端编译一次；发布回执不代表接管成功，随后独立核实 owner、原健康 worker、GPU 并发和日志。
+
+## 实际接管与首条增并发（2026-10-22 15:29）
+
+**VERIFIED / RUNNING**：新调度器 PID997687，旧 controller810247 已退出；原24条健康科学任务全部保持原PID、原完整命令和原3e880690 CWD，未迁移、重启或更改配置。20项聚焦测试通过；一次独立审查发现的PID并集计数P1已回归修复并定点复审通过。一次归档SHA比对及远端编译完成，代码320c71c496bd46cb0bcdc857071858be149ad493已推送并独立核对远端OID。
+
+GPU0的5点窗口平均利用率83.6%，满足准入，已补第4条F；实际每卡并发为0:4，1至7:3，总25条。GPU6现有G任务且利用率约97%，因此保持3条，不为凑26强行叠加。主机CPU55.6%，可用RAM362.5 GiB，IOwait0.0205%；新资源遥测无错误，原唯一旧时延失败仍保留，没有新增技术失败。
+
+首条第四槽的三条原F同阶段基线已记录，post轮次尚不足，吞吐代理为待测；不能把GPU利用率提高写成已证明加速。资源压力会暂停新GPU准入，同阶段耗时比中位数≥4/3会禁止后续补第四条，均不会终止健康训练。独立初始与增并发读回见local_artifacts/cric_dura_load_balance_20261022/verification_initial.json及verification_25workers.json；这些原始运行状态不提交Git。
+
+15:32 独立复核：GPU0保持4条、其他卡3条，总25；原24条中22条仍原PID运行，2条已正常完成且产物状态匹配，没有失联或重启。22条原日志观察到增长，活动任务完整命令/CWD均匹配，没有新增异常。CPU48.4%、可用RAM364.5 GiB、IOwait0.0249%，GPU0显存12416 MiB。第四槽任务PID998843已实际进入GPU，日志无异常；同阶段吞吐代理仍待足够完整轮次。最终证据verification_final.json保持在本地artifact目录，不提交原始运行状态。
