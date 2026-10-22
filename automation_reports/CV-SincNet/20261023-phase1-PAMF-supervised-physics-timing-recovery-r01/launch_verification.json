@@ -1,0 +1,67 @@
+{
+  "status": "VERIFIED",
+  "execution_commit": "6010ee710d3b963397855eeb4656f988750dc817",
+  "owner": "20261023-phase1-PAMF-physics-device-control-r01",
+  "PID": 1600435,
+  "actual_checkpoint_source_smoke": "PASS",
+  "source_samples": 4,
+  "target_reads": 0,
+  "U_IQ_reads": 0,
+  "new_jobs": 4,
+  "failed_F_replacements": 1,
+  "new_scientific_hypotheses": 0,
+  "new_G_training": 0,
+  "old_jobs_science_preserved": true,
+  "execution_only_migrations": [
+    "20261022-phase1-PAMF-supervised-physics-m24-r01/WRONG_REFERENCE-s2026092702",
+    "20261022-phase1-PAMF-supervised-physics-m24-r01/WRONG_REFERENCE-s2026092702/predict",
+    "20261022-phase1-PAMF-supervised-physics-m24-r01/WRONG_REFERENCE-s2026092703",
+    "20261022-phase1-PAMF-supervised-physics-m24-r01/WRONG_REFERENCE-s2026092703/predict"
+  ],
+  "old_outputs_preserved": true,
+  "adopted_healthy_workers": 24,
+  "same_PID_logs_grew": 22,
+  "log_growth_interval_seconds": 126.18523693084717,
+  "old_owner_retired_normally": true,
+  "effective_counts_snapshot": {
+    "COMPLETE": 1399,
+    "FAILED": 1,
+    "RUNNING": 26,
+    "QUEUED": 653
+  },
+  "pending_by_kind_snapshot": {
+    "F": 33,
+    "predict": 301,
+    "score": 333,
+    "timing": 2,
+    "G": 10
+  },
+  "per_GPU_snapshot": {
+    "6": 3,
+    "2": 3,
+    "5": 3,
+    "1": 3,
+    "7": 3,
+    "3": 3,
+    "0": 4,
+    "4": 3
+  },
+  "remaining_G_kind": "Shared frozen IQ inference caches only; all35 training lineages complete",
+  "replacements": [
+    {
+      "original": "20261022-phase1-PAMF-supervised-physics-m24-r01/WRONG_REFERENCE-s2026092701",
+      "replacement": "20261023-phase1-PAMF-physics-device-recovery-r01/WRONG_REFERENCE-s2026092701",
+      "old_source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/WRONG_REFERENCE-s2026092701/source",
+      "source_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261023-phase1-PAMF-physics-device-recovery-r01/WRONG_REFERENCE-s2026092701/source",
+      "scores": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261023-phase1-PAMF-physics-device-recovery-r01/WRONG_REFERENCE-s2026092701/scores/scores.json",
+      "scientific_recipe_unchanged": true,
+      "seed_unchanged": true
+    }
+  ],
+  "timing_replacement": "20261023-phase1-PAMF-supervised-physics-timing-recovery-r01",
+  "scientific_recipe_unchanged": true,
+  "new_performance": "PENDING",
+  "architecture_tests": 6,
+  "recovery_tests": 3,
+  "independent_P0_P1": "PASS"
+}

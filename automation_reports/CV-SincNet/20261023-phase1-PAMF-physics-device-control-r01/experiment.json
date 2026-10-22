@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-22要求补PAMF不采用半监督且不使用无标签数据的比较、网络对比SIG_TIME版本与物理感知机制消融。三seed，按现有容量保持全部健康任务。",
   "code": {
-    "commit": "Actual launch commit recorded in launch_verification.json",
+    "commit": "6010ee710d3b963397855eeb4656f988750dc817",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 CVS-RFFI Py3.10/Torch2.1 FP32/TF32off CPU2",
     "cwd": "PROJECT/releases/20261023-phase1-PAMF-physics-device-control-r01",
@@ -110,7 +110,7 @@
     "local_artifact_root": "local_artifacts/PAMF_physics_device_recovery_20261023",
     "launch_command": "F:/App/miniconda3/python.exe -X utf8 -m experiments.cric_dura_comparison.publish_physics_device_recovery --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output E:/type10-7/local_artifacts/PAMF_physics_device_recovery_20261023/control-r01 --previous E:/type10-7/local_artifacts/PAMF_physics_device_recovery_20261023/previous_runtime.json --ssh-config E:/type10-7/tools/n607_ssh_config",
     "stop_rule": "Real-checkpoint source smoke before handoff; preserve all healthy PIDs; two same unresolved technical fingerprints stop submissions; timing exclusive except GPU2/3.",
-    "current_launch_owner": "20261023-phase1-PAMF-PL-Gfactor-control-r02",
+    "current_launch_owner": "20261023-phase1-PAMF-physics-device-control-r01",
     "launch_verification_ref": "automation_reports/CV-SincNet/20261023-phase1-PAMF-physics-device-control-r01/launch_verification.json"
   },
   "expected_artifacts": [
@@ -223,7 +223,7 @@
   "notes": [
     "docs/PAMF_WRONG_REFERENCE_DEVICE_RECOVERY_20261023.md",
     "Original failed artifacts preserved. Only failed source row and unmeasured timing replaced.",
-    "6 architecture tests including native CUDA forward/backward and3 bounded recovery tests PASS. Independent P0/P1 review pending; real-checkpoint smoke first at launch."
+    "6 architecture tests including native CUDA forward/backward and3 bounded recovery tests PASS. Independent P0/P1 review PASS; real-checkpoint smoke first at launch."
   ],
   "research_plan": null,
   "runtime_evidence": {
