@@ -1,0 +1,17 @@
+contrast,view,mean_pp,sample_sd_pp,actual_pairs
+copy_effect_without_KD,clean,1.1251984126984145,0.9014588306914519,3
+copy_effect_without_KD,practical_high,0.6902777777777752,0.5394858418392263,3
+copy_effect_without_KD,practical_mid,1.5525793650793673,0.6868604872804549,3
+copy_effect_without_KD,practical_low_suburban,2.1446428571428604,0.8822386443078741,3
+copy_effect_without_KD,practical_high_urban,2.818253968253965,0.6596498647513759,3
+copy_effect_without_KD,practical_mid_urban,9.750198412698415,1.471015835998413,3
+copy_effect_without_KD,practical_low_urban,13.855357142857143,1.7304938149376363,3
+copy_effect_without_KD,six_view_mean,5.135218253968257,0.9465222564775883,3
+KD_effect_from_random,clean,0.051190476190489186,1.381468371375586,3
+KD_effect_from_random,practical_high,0.46349206349206423,1.4661593139818754,3
+KD_effect_from_random,practical_mid,0.7273809523809547,1.3673163224861105,3
+KD_effect_from_random,practical_low_suburban,0.816269841269848,1.1595828327437225,3
+KD_effect_from_random,practical_high_urban,1.400793650793645,1.3175312988862753,3
+KD_effect_from_random,practical_mid_urban,4.085714285714293,1.175414392358782,3
+KD_effect_from_random,practical_low_urban,4.967460317460322,1.2108831783526977,3
+KD_effect_from_random,six_view_mean,2.076851851851861,1.1183613647658917,3

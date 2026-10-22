@@ -1,0 +1,39 @@
+{
+  "status": "G_ABLATION_ACCURACY_ANALYZED",
+  "student_models": 21,
+  "arms": 7,
+  "paired_seed_runs": 3,
+  "student_epochs": 420,
+  "student_updates": 103740,
+  "student_raw_G_view_cells": 294,
+  "all_confusion_matrices_recomputed": 16128,
+  "all_pair_stratum_nets_recomputed": 8064,
+  "raw_confusions_identical_to_same_seed_final_T1": true,
+  "default_reference_G_models": 1,
+  "full_F_G_crossed_replication": false,
+  "all_source_TX_labels_F_reads_target_reads": 0,
+  "source_counts": {
+    "L_s": 6300,
+    "U_s": 56700,
+    "V": 27000
+  },
+  "source_receivers": [
+    1,
+    3,
+    4,
+    6,
+    8
+  ],
+  "source_days": [
+    1,
+    2,
+    3
+  ],
+  "target_receivers": 7,
+  "physical_samples_per_view": 168000,
+  "summed_incremental_student_elapsed_hours": 5.099863325647699,
+  "teacher_cost": "Shared original R65 ancestry excluded from incremental student time; not free or retrained21 times.",
+  "interpretation": "Each new arm uses three diagonal F-seed/G-student-seed pairs. Default uses three F seeds with one fixed historical G. This is not pure G-seed variability or a fully replicated2x2 copy/KD factorial.",
+  "timing_status": "Mechanism latency still queued; all G variants evaluated eager, default fixed Graph/reuse. Do not infer latency from parameter counts.",
+  "target_feedback": false
+}

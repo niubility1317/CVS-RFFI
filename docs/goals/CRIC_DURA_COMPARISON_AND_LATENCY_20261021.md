@@ -14,7 +14,7 @@ T1 从 matching scratch E20（13L＋7LU）开始，严格继承自身 FINAL20 �
 
 DURA 固定 266951 参数、两 prior／四 CG／27 FFT-IFFT，FP32／TF32off，`reuse=True,graph=True,native=False`。每个观测含 clean 均先经 G 再经最终 T1 默认头，不按场景或真值选择旁路。G 为 TX-free/F-free，仅用当前契约 L 或隐藏 TX 的 L＋U。35 条新 G 完整谱系依次 coarse/action/R17/R38/R44/R46/R65/R69，每段20轮／4940更新，累计160轮／39520更新；21个 G 机制学生各20轮／4940更新，父成本另报。旧 F0 G 仅在角色一致时复用。
 
-当前正式新队列共 213 次 F（150 主比较＋63 机制）、35 条 G 谱系、21 个 G 学生；249 行七景预测及独立评分，另有两套独占时延。逐行真相在各 run `experiment.json` 和实际 resolved configs。原外部 360 行比较继续健康运行，不重启、不改预算。
+当前正式新队列共 213 次 F（150 主比较＋63 机制）、35 条 G 谱系、21 个 G 学生；249 行七景预测及独立评分，另有两套独占时延。逐行真相在各 run `experiment.json` 和实际 resolved configs。原外部 360 行比较已全部ANALYZED并交付；PAMF继续原16并发，不据目标结果改预算或替换默认。
 
 用户进一步授权每卡多进程：GPU0 至7每卡最多两条本 PAMF 任务，所有计算进程最多三条且启动前空闲至少12000 MiB，同卡最多一条 G/G_student；原科学 worker 显存比例上限0.45。外部360行全部 ANALYZED 前 GPU2/3 保留每卡最多一条 PAMF 的原对比队列容量；原 worker 不重启，由资源专用 multiprocess-control-r01 接管。官方时延只用独占卡且排除 GPU2/3。技术错误两次相同指纹停止新提交，保留健康行和产物；所有读出/视图完成后独立 truth-last，不以目标分数筛选或重跑。
 
@@ -90,7 +90,7 @@ F0 下各行独立匹配20＋10＋20训练，三seed，共63次。全部给raw�
 
 单源物理RX无正对，CRIC有效anchor为0；日期与增强不伪装成新RX。SIG/PA/参考响应结构删除均重新训练，不能把冻结置零当作训练消融。保留无收益/负收益，不因测试表现取消行或换seed。
 
-G机制固定F0、原R65合法教师，四结构为coarse_only、prior_no_CG、no_image_action、no_innovation_input；另外copy_no_KD、random_with_KD、random_no_KD与默认复制＋KD形成初始化×KD的2×2。每个设置3个学生seed、各20轮／4940更新，共21次。祖先共享成本单列，不称21条全独立祖先谱系。no_image_action删除的是实际镜像算子作用，估计器参数仍在，不能按参数减少叙述。每版全部七景识别与clean损伤必须报告，波形误差不替代身份保真。
+G机制固定F0、原R65合法教师，四结构为coarse_only、prior_no_CG、no_image_action、no_innovation_input；另有copy_no_KD、random_with_KD、random_no_KD。七设置各3个学生seed、各20轮／4940更新，共21次。实际default复制＋KD仅复用一个既有G，配三个F；新G学生与同号F seed按对角配对，因此不是完整重复的初始化×KD 2×2，也不能把SD解释为纯G方差。不补造缺少的三G复制＋KD组或其交互；可报告无KD下的复制效应和随机初始化下的KD效应。祖先共享成本单列，不称21条全独立祖先谱系。no_image_action删除的是实际镜像算子作用，估计器参数仍在，不能按参数减少叙述。每版全部七景识别与clean损伤必须报告，波形误差不替代身份保真。
 
 ## 5. 时延、参数与训练成本
 

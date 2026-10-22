@@ -1597,24 +1597,21 @@
       ]
     }
   ],
-  "notes": [],
+  "notes": [
+    "Realized copy/KD panel uses one existing defaultG and three paired F/G-student seed runs per new arm; not a fully replicated2x2. No new model or default replacement is introduced from target results."
+  ],
   "research_plan": null,
   "registered_at": "2026-10-21T13:20:45+00:00",
   "runtime_evidence": {
-    "status": "VERIFIED_RUNNING",
-    "owner_pid": 341211,
-    "active_GPUs": [
-      0,
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      7
-    ],
-    "evidence": "local_artifacts/cric_dura_comparison_20261021/launch_verified.json",
-    "known_failed_diagnostic": "Unified latency-r01 only; independentr02 recovery; healthy science unchanged",
-    "completed_F0_final_T1_3seeds_7views": false
+    "status": "ACCURACY_ANALYZED",
+    "student_models": 21,
+    "epochs": 420,
+    "updates": 103740,
+    "raw_G_view_cells": 294,
+    "all_confusions_recomputed": 16128,
+    "all_stratum_pair_nets_recomputed": 8064,
+    "source_TX_F_target_reads": 0,
+    "mechanism_timing": "PENDING_IN_SEPARATE_LATENCY_RUN",
+    "evidence": "G_ablation_verification.json"
   }
 }
