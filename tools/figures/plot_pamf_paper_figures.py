@@ -41,6 +41,8 @@ NAMES = dict(riei='RIEI', drift='DRIFT', ibrff='IB-RFF', sdg='SDG', pamf='PAMF',
     bilstm3='BiLSTM', transformer6='Transformer', resnet18_2d='ResNet-18-2D',
     resnet50_2d='ResNet-50-2D', cvresnet18_1d='Complex ResNet-18-1D', cvresnet18_2d='Complex ResNet-18-2D')
 BASELINES = tuple(k for k in NAMES if k not in (*FAMILIES, 'pamf'))
+NETWORKS = (*BASELINES, 'pamf')
+PAMF_RUN = '20261021-phase1-T1-DURA-comparison-m153-r01'
 G_NAMES = {'default': 'DURA', 'coarse_only': 'Coarse only', 'prior_no_CG': 'w/o CG',
     'no_image_action': 'w/o image action', 'no_innovation_input': 'w/o residual input',
     'copy_no_KD': 'Copy, w/o distillation', 'random_with_KD': 'Random + distillation',
@@ -65,7 +67,7 @@ def write_csv(path, rows):
 
 
 def prepare(data):
-    if data.get('schema') == 'pamf_manuscript_figures_v2': return data
+    if data.get('schema') in ('pamf_manuscript_figures_v2', 'pamf_manuscript_figures_v3'): return data
     if data.get('schema') != 'pamf_unified_figures_v1': raise ValueError('Unsupported scored snapshot')
     # Omit superseded PAMF models from the new deliverable, retaining original evidence elsewhere.
     baselines = [r for r in data['history'] if r['variant'] in BASELINES]
@@ -78,6 +80,43 @@ def prepare(data):
         g_summary=data['g_summary'],
         latency=[r for r in data['latency'] if r['case'] in SYSTEM_CASES
                  or (r['case'] in ROUTES and int(r['batch']) == 1)])
+
+
+def include_pamf(data, score_folder, profile_path):
+    if data['schema'] == 'pamf_manuscript_figures_v3': return data
+    if score_folder is None or profile_path is None:
+        raise ValueError('Current PAMF scored rows and verified parameter profile are required')
+    rows = []
+    for seed in SEEDS3:
+        frozen = load(score_folder / (str(seed) + '.json'))
+        complete, scores = frozen['complete'], frozen['scores']
+        if (complete['status'] != 'SCORED_COMPLETE' or scores['status'] != 'SCORED'
+                or complete['run_id'] != PAMF_RUN or scores['run_id'] != PAMF_RUN
+                or int(scores['model_seed']) != seed
+                or scores['row_id'] != 'F0-native_cric-s' + str(seed)):
+            raise ValueError('PAMF row is not the frozen current T1-E50 comparison')
+        results = [r for r in scores['results'] if r['test'] == 'main'
+                   and r['readout'] == 'DURA-LU' and r['view'] == 'clean'
+                   and r['dimension'] in ('overall', 'receiver', 'transmitter')]
+        rows.append(dict(variant='pamf', seed=seed, run_id=PAMF_RUN,
+            readout='DURA-LU', view='clean', results=results))
+    profile = load(profile_path)
+    if (profile['status'] != 'VERIFIED' or profile['F_registered_parameters'] != 232993
+            or profile['G_registered_parameters'] != 266951):
+        raise ValueError('Current T1-E50/DURA parameter profile changed')
+    data = dict(data, schema='pamf_manuscript_figures_v3', pamf=rows,
+        parameters=dict(data['parameters'], pamf=499944),
+        pamf_definition=dict(recognizer='T1-E50', schedule='13L+37U', restorer='DURA v1.0',
+            F_parameters=232993, G_parameters=266951, total_parameters=499944,
+            F_model_seeds=list(SEEDS3), shared_fixed_G=True,
+            scored_run=PAMF_RUN, readout='DURA-LU', view='clean'),
+        pamf_resource_gaps={
+            'p95_ms': 'No matched CPU-input-to-returned-label benchmark.',
+            'end_to_end_throughput_samples_s': 'Only a different GPU-wall timing boundary is available.',
+            'gpu_peak_allocated_mib': 'Available baseline includes all benchmark models, graph pools and a 13 GiB reservation.',
+            'cpu_peak_rss_mib': 'No isolated process RSS measurement.',
+            'model_storage_mib': 'No matching serialized FP32 state-dictionary measurement; parameter bytes are not file size.'})
+    return data
 
 
 def matrix(rows, fields, value, keys):
@@ -96,7 +135,7 @@ def matrix(rows, fields, value, keys):
 
 
 def validate(data):
-    if data['schema'] != 'pamf_manuscript_figures_v2': raise ValueError('Wrong figure schema')
+    if data['schema'] != 'pamf_manuscript_figures_v3': raise ValueError('Current PAMF must be included')
     keys = [(f, r) for f in FAMILIES for r in ('full', 'full_pl')] + [('pamf', 'pamf')]
     external = matrix(data['external'], ('family', 'regime'), 'accuracy_pct', keys)
     t1 = matrix(data['t1'], ('readout',), 'accuracy', ('raw', 'DURA-LU'))
@@ -109,9 +148,12 @@ def validate(data):
             and np.allclose(g['default'], t1['DURA-LU'], atol=1e-10, rtol=0)):
         raise ValueError('Restoration controls mismatch')
     index = {}
-    for row in data['baselines']:
+    if len(data['pamf']) != 3 or data['parameters']['pamf'] != 499944:
+        raise ValueError('Expected the current three-seed PAMF and complete F+G parameters')
+    for row in data['baselines'] + data['pamf']:
         k, seed = row['variant'], int(row['seed'])
-        if k not in BASELINES or seed not in SEEDS8: raise ValueError('Excluded/unknown baseline')
+        if k not in NETWORKS or seed not in (SEEDS3 if k == 'pamf' else SEEDS8):
+            raise ValueError('Excluded/unknown network')
         for score in row['results']:
             dim, stratum = score['dimension'], score['stratum']
             key = k, seed, dim, stratum
@@ -121,10 +163,30 @@ def validate(data):
             if cm.shape != (6, 6) or cm.sum() != expected: raise ValueError('Baseline count mismatch')
             if abs(100 * cm.trace() / cm.sum() - 100 * score['accuracy']) > 1e-8:
                 raise ValueError('Confusion/accuracy mismatch')
+            denom = cm.sum(axis=0) + cm.sum(axis=1)
+            f1 = np.divide(2 * np.diag(cm), denom, out=np.zeros(6), where=denom != 0).mean()
+            if abs(f1 - score['macro_f1']) > 1e-10:
+                raise ValueError('Confusion/Macro-F1 mismatch')
             index[key] = score
     if len(data['baselines']) != 96: raise ValueError('Expected 12 baselines with eight seeds each')
     def values(k, field='accuracy', dim='overall', stratum='ALL'):
-        return np.array([100 * index[k, s, dim, stratum][field] for s in SEEDS8])
+        return np.array([100 * index[k, s, dim, stratum][field]
+                         for s in (SEEDS3 if k == 'pamf' else SEEDS8)])
+    receivers = {r['stratum'] for r in data['baselines'][0]['results'] if r['dimension'] == 'receiver'}
+    for seed in SEEDS3:
+        pamf_results = data['pamf'][SEEDS3.index(seed)]['results']
+        if ({r['stratum'] for r in pamf_results if r['dimension'] == 'receiver'} != receivers
+                or len(pamf_results) != 14):
+            raise ValueError('PAMF receiver/overall score panel is incomplete')
+        cm = sum((np.array(index['pamf', seed, 'receiver', rx]['confusion']) for rx in receivers),
+                 start=np.zeros((6, 6), dtype=np.int64))
+        if not np.array_equal(cm, index['pamf', seed, 'overall', 'ALL']['confusion']):
+            raise ValueError('PAMF receiver scores do not sum to the overall confusion matrix')
+    for field in ('accuracy', 'macro_f1'):
+        expected = [float(next(r[field] for r in data['t1'] if int(r['seed']) == s
+                              and r['view'] == 'clean' and r['readout'] == 'DURA-LU')) for s in SEEDS3]
+        if not np.allclose(values('pamf', field), expected, atol=1e-10, rtol=0):
+            raise ValueError('PAMF network figure disagrees with the published T1+DURA control')
     for r in data['baseline_summary']:
         if not np.allclose(describe(values(r['variant'])),
             [float(r['accuracy_pct']), float(r['accuracy_sd_pp'])], atol=1e-8, rtol=0):
@@ -233,15 +295,17 @@ def scatter_balance(external, regime):
 
 
 def ranked_bars(items, unit, metric, lower=True, digits=2, panel=''):
-    items = sorted(items, key=lambda r: (r['value'] if lower else -r['value'], r['label']))
+    missing = [r for r in items if r['value'] is None]
+    items = sorted([r for r in items if r['value'] is not None],
+                   key=lambda r: (r['value'] if lower else -r['value'], r['label']))
     if not items or any(not math.isfinite(r['value']) or r['value'] <= 0 for r in items):
         raise ValueError('Resource values must be finite and positive')
     best = items[0]['value']
     normalized = [100 * r['value'] / best for r in items]
-    n = len(items); height = max(79, 29 + 7.6 * n)
+    n = len(items) + len(missing); height = max(79, 29 + 7.6 * n)
     fig, ax = canvas('', height, (.315, .15, .63, .73))
     extent = max(normalized)
-    ax.set(yticks=range(n), yticklabels=[r['label'] for r in items],
+    ax.set(yticks=range(n), yticklabels=[r['label'] for r in items + missing],
         ylim=(n - .4, -.6), xlim=(0, extent * 1.25),
         xlabel=f'{metric} / {"minimum" if lower else "maximum"} (%)')
     ticks = MaxNLocator(nbins=5).tick_values(0, extent * 1.25)
@@ -255,28 +319,35 @@ def ranked_bars(items, unit, metric, lower=True, digits=2, panel=''):
             ha='left', va='center', fontsize=8.4, color=INK)
         ax.get_yticklabels()[i].set_color(c)
         records.append(dict(panel=panel, rank=i + 1, model=item['label'], metric=metric, value=item['value'],
-            unit=unit, lower_is_better=lower, relative_to_best_pct=ratio))
+            unit=unit, lower_is_better=lower, relative_to_best_pct=ratio, measurement_status='measured'))
+    if missing:
+        ax.axhline(len(items) - .5, color=MUTED, lw=.55, ls=(0, (3, 3)))
+    for i, item in enumerate(missing, len(items)):
+        ax.get_yticklabels()[i].set_color(item['color'])
+        ax.text(extent * .018, i, 'Not measured', color=item['color'], va='center', fontsize=8.4)
+        records.append(dict(panel=panel, rank='', model=item['label'], metric=metric, value='',
+            unit=unit, lower_is_better=lower, relative_to_best_pct='', measurement_status='unavailable'))
     return fig, records
 
 
 def parameter_scatter(data, values):
-    order = sorted(BASELINES, key=lambda k: data['parameters'][k])
-    fig, ax = canvas('', 118, (.105, .15, .575, .73))
-    offsets = {'resnet18': (-13, -15), 'densenet121': (-12, 14), 'resnet34': (-1, -23),
+    order = sorted(NETWORKS, key=lambda k: data['parameters'][k])
+    fig, ax = canvas('', 124, (.105, .15, .575, .73))
+    offsets = {'pamf': (6, -12), 'resnet18': (-13, -15), 'densenet121': (-12, 14), 'resnet34': (-1, -23),
         'cvresnet18_1d': (7, 11), 'resnet18_2d': (-15, -13), 'bilstm3': (-4, -17),
         'resnet50': (-4, 12), 'transformer6': (6, -6), 'cvresnet18_2d': (-13, -15),
         'resnet50_2d': (4, 12), 'convnext_tiny': (7, -12), 'vgg16_bn': (6, 9)}
     for number, k in enumerate(order, 1):
         x = data['parameters'][k] / 1e6; m, sd = describe(values(k)); c = color(k)
-        marker = '^' if k.startswith('cvresnet') else 's' if k.endswith('_2d') else 'D' if k in ('bilstm3', 'transformer6') else 'o'
-        ax.errorbar(x, m, yerr=sd, fmt=marker, color=c, mfc='white', ms=5,
+        marker = 'D' if k == 'pamf' else '^' if k.startswith('cvresnet') else 's' if k.endswith('_2d') else 'D' if k in ('bilstm3', 'transformer6') else 'o'
+        ax.errorbar(x, m, yerr=sd, fmt=marker, color=c, mfc=c if k == 'pamf' else 'white', ms=5,
                     capsize=2, lw=.75)
         ax.annotate(str(number), (x, m), xytext=offsets[k], textcoords='offset points',
                     color=c, fontsize=8.6, weight='bold')
         # A fixed key replaces long, crossing annotation leaders.
-        fig.text(.72, .848 - (number - 1) * .055,
+        fig.text(.72, .848 - (number - 1) * .052,
                  f'{number:>2}  {NAMES[k]}', color=c, fontsize=7.9, va='center')
-    ax.set(xlim=(0, 41), ylim=(25, 84), xticks=[0, 10, 20, 30, 40],
+    ax.set(xlim=(0, 41), ylim=(25, 89), xticks=[0, 10, 20, 30, 40],
         yticks=[30, 40, 50, 60, 70, 80], xlabel='Parameters (million)', ylabel='Accuracy (%)')
     grid(ax, 'both')
     return fig
@@ -408,22 +479,30 @@ def render(data, out, preview_only, dpi):
     save(fig, 'system_throughput', 'Batch-128 inference throughput',
         'Throughput=batch/pooled median GPU-wall time. B128; sorted highest first and normalized to the maximum. '
         'These are source-input runtime measurements, not additional scientific evaluations.', ['latency.csv', 'resource_rankings.csv'])
-    order = sorted(BASELINES, key=lambda k: -values(k).mean())
+    network_caption = ('PAMF is the current T1-E50 (13L+37U)+fixed DURA v1.0, three F seeds sharing one G. '
+        'The twelve baseline networks use E200 pure CE, eight seeds each. All seeds are retained, including '
+        'collapsed runs. Each clean evaluation contains 168000 packets. Training recipes and budgets differ; '
+        'this is a cross-recipe comparison, not a matched-budget architecture ablation. '
+        'Dots show model seeds; diamonds and whiskers show the mean and sample SD (ddof=1).')
     for field, slug, title in [('accuracy', 'network_accuracy', 'Classification accuracy of neural networks'),
         ('macro_f1', 'network_macro_f1', 'Macro-F1 scores of neural networks')]:
+        order = sorted(NETWORKS, key=lambda k: -values(k, field).mean())
         save(forest([NAMES[k] for k in order], [values(k, field) for k in order], [color(k) for k in order],
-            'Accuracy (%)' if field == 'accuracy' else 'Macro-F1 (%)'), slug, title,
-            'Twelve baseline networks, E200 pure CE, eight seeds each, 168000 clean packets; all seeds retained, '
-            'including collapsed runs. Source data and budget differ from the current PAMF recipe.', ['baseline_per_seed.csv'])
+            'Accuracy (%)' if field == 'accuracy' else 'Macro-F1 (%)', highlights=(order.index('pamf'),)),
+            slug, title, network_caption, ['network_per_seed.csv', 'network_summary.csv'])
+    order = sorted(NETWORKS, key=lambda k: -values(k).mean())
     receivers = [r['stratum'] for r in data['baselines'][0]['results'] if r['dimension'] == 'receiver']
     save(heatmap(np.array([[values(k, dim='receiver', stratum=r).mean() for r in receivers] for k in order]),
-        [NAMES[k] for k in order], receivers, row_colors=[color(k) for k in order], height=134),
+        [NAMES[k] for k in order], receivers, row_colors=[color(k) for k in order], height=141),
         'network_receiver_accuracy', 'Recognition accuracy across receivers',
-        'Eight-seed mean accuracy; 24000 packets per receiver and model. Shared absolute 0–100% color scale.', ['baseline_per_seed.csv'])
+        'Mean accuracy across three PAMF F seeds or eight baseline seeds; 24000 packets per receiver and model. '
+        'Shared absolute 0–100% color scale. ' + network_caption, ['network_per_seed.csv'])
     save(parameter_scatter(data, values), 'parameters_accuracy', 'Model size and recognition accuracy',
-        'E200 baseline networks; mean ± sample SD across eight seeds. Actual parameter and accuracy coordinates '
-        'are unchanged. Numbered labels map to the right-hand key; no annotation leader lines are used. '
-        'The x axis is linear, and the y range retains every full mean±SD interval.', ['baseline_summary.csv'])
+        'Current PAMF includes 232993 F and 266951 G parameters, total 499944. '
+        'Mean ± sample SD across three PAMF F seeds or eight baseline seeds. '
+        'Numbered labels map to the right-hand key; no annotation leader lines are used. '
+        'The x axis is linear, and the y range retains every full mean±SD interval. ' + network_caption,
+        ['network_summary.csv'])
     pairs = [('ResNet-18', 'resnet18', 'resnet18_2d'), ('ResNet-50', 'resnet50', 'resnet50_2d'),
              ('Complex ResNet-18', 'cvresnet18_1d', 'cvresnet18_2d')]
     save(forest([p[0] for p in pairs], [values(a) - values(b) for _, a, b in pairs],
@@ -446,8 +525,10 @@ def render(data, out, preview_only, dpi):
         (1, 'cpu_peak_rss_mib', 'MiB', 'Process RSS', True, 1, 2, 'Peak CPU memory of neural networks'),
         (1, 'model_storage_mib', 'MiB', 'FP32 storage', True, 1, 2, 'FP32 model storage of neural networks')]
     for batch, metric, unit, name, lower, factor, digits, title in specs:
-        fig, table = ranked_bars([dict(label=NAMES[k], value=float(deployed[k, batch][metric]) * factor,
-            color=color(k)) for k in BASELINES], unit, name, lower, digits, 'baseline_' + metric)
+        items = [dict(label=NAMES[k], value=float(deployed[k, batch][metric]) * factor,
+            color=color(k)) for k in BASELINES]
+        items.append(dict(label='PAMF', value=None, color=COLORS['pamf']))
+        fig, table = ranked_bars(items, unit, name, lower, digits, 'baseline_' + metric)
         resources.extend(table)
         save(fig, metric, title,
             'Twelve baseline networks, eight checkpoints, RTX3090/FP32. '
@@ -455,7 +536,27 @@ def render(data, out, preview_only, dpi):
             'to the GPU-wall timing boundary. B1 has 2400 pooled requests; B128 has 800. '
             'Memory is the original inference-window peak, process RSS includes runtime, and storage '
             'is serialized FP32 state including buffers. The best model is first; bar lengths equal actual value/best×100. '
-            'Right-hand labels give actual measurements, not normalized scores.', ['deployment.csv', 'resource_rankings.csv'])
+            'Right-hand labels give actual measurements, not normalized scores. '
+            'Current PAMF is shown as an unranked missing-data row, with no zero-length substitute bar. '
+            + data['pamf_resource_gaps'][metric]
+            + ' Its separate GPU-wall latency and throughput are reported in Figs. 17 and 19.',
+            ['deployment.csv', 'resource_rankings.csv', 'pamf_resource_gaps.csv'])
+    fig, table = ranked_bars([dict(label=NAMES[k], value=data['parameters'][k] / 1e6,
+        color=color(k)) for k in NETWORKS], 'M', 'Parameters', True, 3, 'network_parameters')
+    resources.extend(table)
+    save(fig, 'network_parameters', 'Parameter counts of neural networks',
+        'Registered parameter counts, including each default classifier. Current PAMF includes the full '
+        'T1-E50 recognizer (232993) and DURA v1.0 restorer (266951), total 499944; optimizer state is excluded. '
+        'All thirteen systems are measured quantities, ranked from smallest to largest with true proportional bars.',
+        ['network_summary.csv', 'resource_rankings.csv'])
+    cm = np.array([index['pamf', s, 'overall', 'ALL']['confusion'] for s in SEEDS3], float)
+    # The scored artifact uses checkpoint class IDs; retain those IDs without inventing a physical TX mapping.
+    tx_ids = [str(i) for i in range(6)]
+    save(heatmap((100 * cm / cm.sum(axis=2, keepdims=True)).mean(axis=0), tx_ids, tx_ids,
+        height=114, confusion=True), 'pamf_confusion', 'Confusion matrix of PAMF',
+        'Current T1-E50+DURA, three-seed mean of row-normalized confusion matrices, not an ensemble. '
+        '28000 packets per true class and F seed. Axes retain the frozen checkpoint class IDs 0–5. '
+        'The default G is shared by the three F models.', ['pamf_clean_scores.json', 'network_per_seed.csv'])
     write_csv(out / 'source_data/resource_rankings.csv', resources)
     return records
 
@@ -469,9 +570,19 @@ def tables(data, root):
         parameters=data['parameters'][k], accuracy_pct=describe(values(k))[0],
         accuracy_sample_sd_pp=describe(values(k))[1], macro_f1_pct=describe(values(k, 'macro_f1'))[0],
         macro_f1_sample_sd_pp=describe(values(k, 'macro_f1'))[1]) for k in BASELINES])
-    write_csv(root / 'baseline_per_seed.csv', [dict(model=k, model_seed=s, dimension=dim, stratum=stratum,
+    per_seed = [dict(model=k, model_seed=s, dimension=dim, stratum=stratum,
         count=int(np.array(r['confusion']).sum()), accuracy_pct=100 * r['accuracy'],
-        macro_f1_pct=100 * r['macro_f1']) for (k, s, dim, stratum), r in index.items()])
+        macro_f1_pct=100 * r['macro_f1']) for (k, s, dim, stratum), r in index.items()]
+    write_csv(root / 'baseline_per_seed.csv', [r for r in per_seed if r['model'] != 'pamf'])
+    write_csv(root / 'network_per_seed.csv', per_seed)
+    write_csv(root / 'network_summary.csv', [dict(model=k, display_name=NAMES[k],
+        n=3 if k == 'pamf' else 8, recipe='T1-E50+DURA v1.0' if k == 'pamf' else 'E200 pure CE',
+        parameters=data['parameters'][k], accuracy_pct=describe(values(k))[0],
+        accuracy_sample_sd_pp=describe(values(k))[1], macro_f1_pct=describe(values(k, 'macro_f1'))[0],
+        macro_f1_sample_sd_pp=describe(values(k, 'macro_f1'))[1]) for k in NETWORKS])
+    write_json(root / 'pamf_clean_scores.json', data['pamf'])
+    write_csv(root / 'pamf_resource_gaps.csv', [dict(model='PAMF', metric=k,
+        status='unavailable', reason=v) for k, v in data['pamf_resource_gaps'].items()])
 
 
 def finish(out, data, records, dpi):
@@ -493,9 +604,13 @@ def finish(out, data, records, dpi):
 
 共 {len(records)} 张独立图，统一使用 Times New Roman。图内只保留简洁的 Fig. 编号与标题、坐标、数据和必要图例；副标题与图下说明已移除。完整统计定义放在 captions_en.md。
 
-旧 PAMF 版本及其专属诊断未进入本包；其他神经网络的对比和资源测量保留。模型参数与准确率图使用数字索引及右侧名称表，没有交叉指示线。Full 与 Full＋PL 的散点图分别展示，使用相同坐标范围，原始坐标和误差线不变。
+旧 PAMF 版本及其专属诊断未进入本包。当前 PAMF＝T1-E50（13L＋37U）＋DURA v1.0，已加入总体准确率、Macro-F1、各接收机、参数量与准确率、参数数量图，并增加当前 PAMF 的混淆矩阵。PAMF 使用三个 F 种子及一个固定 G；其他网络使用 E200 纯 CE 的八个种子，训练配方和预算不同，完整统计口径见图注。
 
-全部资源图使用从零开始的线性横向柱状图。越小越好的指标升序排列，越大越好的指标降序排列，最优方法总在顶部。柱长＝实际值／最优值×100%，柱右给出原始测量及单位。时延口径和模型训练预算的差别见英文图注。
+模型参数与准确率图使用数字索引及右侧名称表，没有交叉指示线。Full 与 Full＋PL 的散点图分别展示，使用相同坐标范围，原始坐标和误差线不变。
+
+资源图使用从零开始的线性横向柱状图。越小越好的指标升序排列，越大越好的指标降序排列，最优方法总在顶部。柱长＝实际值／最优值×100%，柱右给出原始测量及单位。PAMF 的完整参数量为 499,944，包含 F 的 232,993 和 G 的 266,951 个参数。
+
+旧网络端到端时延、吞吐量、GPU 显存、CPU 内存、序列化模型存储五张图缺少同口径的当前 PAMF 测量，已在图中列出 PAMF 并标明 Not measured，不画虚构柱、不参与排名。PAMF 已有的同口径系统 GPU 时延和吞吐量在图 17、19 展示。已有混合进程显存含其他模型、Graph 池和 13 GiB 预约，不能冒充 PAMF 单模型显存；参数字节数也不能冒充序列化文件大小。缺项及原因见 source_data/pamf_resource_gaps.csv。
 
 png/、tiff/ 为 {dpi} dpi 位图，分别打包；svg/、pdf/ 为可编辑矢量图；all_figures.pdf 为逐页合集。source_data/ 提供本包实际使用的逐种子结果、汇总和资源排序。
 
@@ -510,6 +625,9 @@ png/、tiff/ 为 {dpi} dpi 位图，分别打包；svg/、pdf/ 为可编辑矢�
         snapshot_hkt=data['snapshot_hkt'], figure_count=len(records), font=FONT,
         raster_dpi=dpi, figures=records, excluded_superseded_pamf_results=True,
         resource_sort='best_first', resource_bar_length='actual_value/best_value*100',
+        current_pamf_in_network_accuracy=True, current_pamf_in_network_macro_f1=True,
+        current_pamf_in_receiver_accuracy=True, current_pamf_in_parameter_comparisons=True,
+        current_pamf_confusion_matrix=True, unmeasured_pamf_resources=list(data['pamf_resource_gaps']),
         no_subtitles=True, no_figure_footnotes=True, no_leader_lines=True))
     shutil.copyfile(Path(__file__), out / 'reproduce.py')
     shutil.copyfile(Path(__file__).with_name('paper_publication_style.py'), out / 'paper_publication_style.py')
@@ -535,9 +653,13 @@ def main():
     p.add_argument('--source', required=True, type=Path)
     p.add_argument('--output', required=True, type=Path)
     p.add_argument('--dpi', type=int, default=4800)
+    p.add_argument('--pamf-scores', type=Path, help='Directory of the three frozen current PAMF score JSONs')
+    p.add_argument('--pamf-profile', type=Path, help='Verified current F/G parameter profile JSON')
     p.add_argument('--preview-only', action='store_true')
     p.add_argument('--resume-render', action='store_true')
-    args = p.parse_args(); data = prepare(load(args.source / 'scores.json')); validate(data)
+    args = p.parse_args()
+    data = include_pamf(prepare(load(args.source / 'scores.json')), args.pamf_scores, args.pamf_profile)
+    validate(data)
     out = args.output.resolve(); repair = args.resume_render
     if repair:
         if (args.source.resolve() != out / 'source_data' or not out.exists()
