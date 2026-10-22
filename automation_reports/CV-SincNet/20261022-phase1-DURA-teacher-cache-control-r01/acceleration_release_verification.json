@@ -1,0 +1,52 @@
+{
+  "status": "VERIFIED",
+  "execution_commit": "34d1357614be0d813cc1e68d8526612d3abdfcb8",
+  "baseline_science_commit": "3e8806900449e97f3e8fa62822322932168c6447",
+  "prelaunch_source_smoke": "PASS",
+  "prelaunch_smoke_torch": "2.1.0+cu121",
+  "original_job_count": 769,
+  "extra_scientific_rows": 0,
+  "adopted_healthy_workers": 25,
+  "same_PID_or_normally_completed": true,
+  "postlaunch_log_growth_workers": 22,
+  "admitted_G_rows": [
+    {
+      "row": "m6-natural-G-L-s2026092701",
+      "status": "QUEUED"
+    },
+    {
+      "row": "m6-natural-G-LU-s2026092701",
+      "status": "QUEUED"
+    },
+    {
+      "row": "m6-fixed-G-L-s2026092701",
+      "status": "QUEUED"
+    },
+    {
+      "row": "m6-fixed-G-LU-s2026092701",
+      "status": "QUEUED"
+    },
+    {
+      "row": "m3-natural-G-LU-s2026092702",
+      "status": "QUEUED"
+    },
+    {
+      "row": "m3-natural-G-LU-s2026092703",
+      "status": "QUEUED"
+    }
+  ],
+  "accelerated_G_running": 0,
+  "GPU_workers": 25,
+  "counts": {
+    "COMPLETE": 489,
+    "RUNNING": 25,
+    "QUEUED": 254,
+    "FAILED": 1
+  },
+  "new_technical_failures": 0,
+  "known_timing_failure": "Original import error retained; independent timing-r02 already completed replacement",
+  "old_resource_owner_retired": true,
+  "unchanged_scientific_configs": true,
+  "monitor": "ACTIVE hourly, compact check only, silent without meaningful change",
+  "runtime_limit": "Queued accelerated G rows have not reached a legal G slot at final readback; no N607 E20 speedup claimed."
+}

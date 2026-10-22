@@ -21,7 +21,7 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-22明确要求根据多教师重复计算分析完成DURA训练加速；健康任务和现有权重保留。",
   "code": {
-    "commit": "SET_AT_COMMIT",
+    "commit": "34d1357614be0d813cc1e68d8526612d3abdfcb8",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "Local Torch2.10 CUDA12.8 FP32/TF32off; release compatibility smoke N607 Torch2.1",
     "cwd": "E:/type10-7",

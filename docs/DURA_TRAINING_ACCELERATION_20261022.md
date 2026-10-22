@@ -44,3 +44,13 @@ F、健康 G、预测和 scorer 仍用原 3e880690 release。资源沿用 r03，
 只对未启动完整谱系启用 epoch 缓存及已验证的执行优化；共享生产者接口可用，当前已闭合学生不为展示加速而重跑。后续原矩阵继续冻结 raw/G 七视图后独立 truth-last，不用目标结果决定是否采用缓存。
 
 初始重复预测分析见 [DURA_MULTI_TEACHER_TRAINING_ANALYSIS.md](DURA_MULTI_TEACHER_TRAINING_ANALYSIS.md)。逐轮实数和等价摘要见对应登记目录的 training_acceleration_timing.csv 与 training_acceleration_verification.json。实际接管、首轮缓存命中和 N607 阶段耗时另在发布后记录。
+
+## 发布与独立回读
+
+执行发布 **VERIFIED**，Git `34d1357614be0d813cc1e68d8526612d3abdfcb8`；N607 Torch 2.1.0+cu121 实际 R17 checkpoint 的 CPU 无 query smoke PASS。原 25 条健康 worker 已接管，保留原 PID 或自然完成；延时回读有 22 条同 PID 日志增长。原 769 个 job ID 完整保留，无新增科学训练行。
+
+6 条未启动 G 已切换执行配置：m6-natural-L/LU、m6-fixed-L/LU（seed01），以及 m3-natural-LU（seed02/03）。最终回读仍为 QUEUED，等待现有 G 自然完成或合法 G 槽位；新执行 owner 正常运行，实际缓存训练尚未启动。不得将“执行发布成功”写成“6 条加速训练已完成/已运行”。
+
+GPU 当前 25 个 worker，原并发策略保持。原 timing 导入失败由已完成 r02 替代，无新增故障。小时监控已更新并独立读回 ACTIVE；接下来记录新 G 的缓存样本/调用/命中和真实阶段耗时，再更新整体 ETA。
+
+本机完整共享测试含首次生成速度比为 1.183，短测负收益也保留；不能直接套用到 N607 全谱系或总矩阵。实测摘要见 training_acceleration_results.md。

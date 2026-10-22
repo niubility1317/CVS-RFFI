@@ -22,7 +22,7 @@
   "replaces_run_id": "20261022-phase1-T1-DURA-multiprocess-control-r03",
   "authorization": "用户2026-10-22明确要求实现DURA训练加速；只接管本任务资源controller，保护健康worker和已完成行。",
   "code": {
-    "commit": "SET_AT_COMMIT",
+    "commit": "34d1357614be0d813cc1e68d8526612d3abdfcb8",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 CVS-RFFI Py3.10/Torch2.1 FP32/TF32off CPU2",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261022-phase1-T1-DURA-multiprocess-control-r03",
