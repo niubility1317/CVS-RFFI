@@ -1,0 +1,222 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261022-phase1-PAMF-completeness-timing-r01",
+  "group_id": "phase1-pamf-completeness-followup",
+  "display_name": "PAMF新增三结构的独占时延150case-round",
+  "description": "2026-10-22按实际有效配置审计后的固定补充；当前PLANNED_NOT_PUBLISHED，不改变健康队列。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "PAMF",
+    "completeness",
+    "fixed-prospective-controls",
+    "three-F-seeds",
+    "no-current-queue-mutation"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-T1-DURA-comparison-m153-r01",
+    "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01",
+    "20261022-phase1-T1-DURA-F0-controls-binding-m6-r01",
+    "20261021-phase1-T1-DURA-G-lineage-m35-r01",
+    "20261019-phase1-external-dg-concat-pl-m219-r03"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-22：再次检查实验完不完备，有没有缺什么实验没有安排得到，后续补上。按本线程三seed/保护健康任务/不补五源数量扫描要求安排。",
+  "code": {
+    "commit": "Git commit containing this frozen matrix; actual execution commit must be recorded at later release",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 CVS-RFFI Py3.10/Torch2.1 FP32/TF32off CPU2",
+    "cwd": "Future immutable release, not yet created",
+    "entry": "experiments.cric_dura_comparison.completeness (planner only; not a launch command)"
+  },
+  "data": {
+    "dataset": "WiSig ManySig",
+    "version": null,
+    "representation": "equalized1 center256 FP32 unitRMS",
+    "contract_ref": "Existing17 VALIDATED_ONCE handles; per-row planned_config/protocol reference",
+    "physical_ids_ref": "Existing ID-bound source and frozen received-IQ indexes; no membership/byte changes",
+    "label_map_ref": "Existing native source-contract metadata; no posthoc head fitting",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Six registered TX in source-contract classes, same mapping in all predictions",
+    "roles": null,
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Reuse existing VALIDATED_ONCE; actual checkpoint role/ancestry compatibility before loading",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "Per row: strict L-only architecture/external system; fixed native T1 exceptions; PL/G crossed readouts explicitly labeled.",
+    "query_use": "No score/truth reads for planning or source diagnostics. All7view decisions frozen before independent CPU truth-last.",
+    "external_method_exception": null,
+    "claim_scope": "Phase1 exposed engineering benchmark; no new blind-test, hardware identifiability or in-orbit claim"
+  },
+  "checkpoint": {
+    "initialization": "New15F: scratch+own20/10/20 only. Other rows reuse exact-contract frozen F/G; no new G.",
+    "sources": [
+      "Actual row source references in planned_config; F0 must use input-binding replacements.",
+      "External F0 supervised weights and frozen raw predictions retain native budgets/heads.",
+      "G-L all ancestors L-only; G-LU explicitly separate."
+    ],
+    "contract_check_ref": "Resolve actual source config and all ancestors before each new load; no cross-contract fallback.",
+    "provenance_verdict": "Pending actual new-source load at future release; existing validated handles reused.",
+    "selection_rule": "Fixed final/source-native selection; no target-driven selection, tuning or reruns"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "Pending unique follow-up owner after current science/prediction scope closes",
+    "gpu_policy": "Existing r03: baseline3/card, fourthF only0/6, global26, G<=1/card; all healthy PIDs preserved; timingexclusive not2/3.",
+    "remote_run_root": "PROJECT/runs/20261022-phase1-PAMF-completeness-timing-r01",
+    "remote_log_root": "Future immutable follow-up controller/logs",
+    "local_artifact_root": "local_artifacts/PAMF_completeness_20261022",
+    "launch_command": "NOT_IMPLEMENTED_NO_GPU_SUBMISSION; completeness.py only generates and validates the frozen plan",
+    "stop_rule": "At future launch use project eight-step minimum; two same technical fingerprints stop new submissions; no healthy-worker interruption.",
+    "current_launch_owner": "20261022-phase1-T1-DURA-stop-invalid-F-control-r01",
+    "launch_verification_ref": "automation_reports/CV-SincNet/20261022-phase1-PAMF-supervised-control-r01/launch_verification.json",
+    "gpu": "Existing authorized capacity only; formal timing exclusive and notGPU2/3"
+  },
+  "expected_artifacts": [
+    "Fixed prospective matrix and permission/source references",
+    "Future actual execution commit and immutable publication evidence before RUNNING",
+    "All declared raw/G7view predictions or source-only diagnostics; independent truth-last scores if applicable",
+    "Per-seed/scene/RX/TX/day Accuracy/Macro-F1, paired deltas and full parent/incremental cost",
+    "IEEE experiments and a new non-overwriting export after actual completion"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy",
+      "Macro-F1",
+      "worst RX",
+      "paired deltas",
+      "training and deployment cost"
+    ],
+    "dimensions": [
+      "data contract",
+      "regime",
+      "F seed",
+      "G seed",
+      "view",
+      "RX",
+      "TX",
+      "date"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "Independent truth-last after all seven predictions per row"
+  },
+  "rows": [
+    {
+      "row_id": "three-new-structures",
+      "method": "exclusive_timing",
+      "purpose": "PAMF新增三结构的独占时延150case-round",
+      "config_ref": "automation_reports/CV-SincNet/20261022-phase1-PAMF-completeness-timing-r01/experiment.json#/rows/0/planned_config",
+      "planned_config": {
+        "row_id": "three-new-structures",
+        "kind": "exclusive_timing",
+        "protocol_id": "F0",
+        "model_seed": 2026092701,
+        "arms": [
+          "SINC_FIXED_INIT",
+          "FIR_SINC_INIT",
+          "PA_LINEAR_LIFT"
+        ],
+        "readers": [
+          "F",
+          "DURA-L+F"
+        ],
+        "batches": [
+          1,
+          8,
+          32,
+          64,
+          128
+        ],
+        "rounds": 5,
+        "case_rounds": 150,
+        "precision": "FP32/TF32off",
+        "source_role": "L_s",
+        "GPU": "Exclusive existing N607 GPU, excluding2/3; never interrupt healthy training.",
+        "reuse": "Existing X3_CE timing baseline from supervised-physics panel; no uniform500 or earlier450 remeasurement.",
+        "metrics": [
+          "registered/deployed/trainable parameters separately",
+          "weight bytes",
+          "incremental memory",
+          "synchronized wall median/P95",
+          "throughput",
+          "load/capture overhead"
+        ]
+      },
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Model seeds2026092701/02/03; ordinary augmentation follows model seed; stored observations fixed. Existing G seed01 shared. Timing rounds are not seeds.",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-completeness-timing-r01/three-new-structures",
+      "log_path": "Future immutable follow-up controller/logs/20261022-phase1-PAMF-completeness-timing-r01__three-new-structures.log",
+      "command": "NOT_IMPLEMENTED_NO_GPU_SUBMISSION",
+      "budget_ref": "No new training; see planned_config for frozen readout/diagnostic/timing count"
+    }
+  ],
+  "notes": [
+    "PLANNED_NOT_PUBLISHED; implementation and publication still pending. No GPU run or result is asserted.",
+    "docs/PAMF_EXPERIMENT_COMPLETENESS_AUDIT_20261022.md fixes the scientific questions and boundaries.",
+    "15 new F +90prediction +90score +15source-only +1timing=211 future stage jobs in five runs; no new G.",
+    "No target score was used to decide the supplement. Existing frozen negative/zero results remain unchanged."
+  ],
+  "registered_at": "2026-10-22T14:52:38+00:00"
+}

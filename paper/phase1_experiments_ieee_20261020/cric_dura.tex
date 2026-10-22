@@ -98,3 +98,5 @@ F and G contain 232993 and 266951 registered learned parameters, respectively (4
 Deployment counts include the learned frozen classifier and exclude optimizer, EMA and unused training branches. Convolution/linear MACs, FFT/IFFT counts and complex solver costs are reported separately. R-Drop second passes, contrast construction, EMA, U gates and entropy are training-only. Their actual forward exposures and segment/epoch/total wall times are logged and compared through the matched ablations; they do not create deployment inference passes. Contrast reuses F forwards but still incurs descriptor/similarity computation. Total training cost includes all G ancestors and teachers, unique/repeated L/U exposures, simulation, prediction and failed attempts. The unified timing and G-mechanism accuracy panels are complete; mechanism-specific timing, F-mechanism accuracy and extended data-contract panels remain pending.
 
 \input{supervised_physics_design}
+
+\input{completeness_design}

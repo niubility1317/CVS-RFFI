@@ -1,0 +1,26 @@
+\subsubsection{Prospective Attribution Controls}
+A configuration-only coverage audit confirms all 153 main logical rows and the eight supervised architecture controls are registered. It identifies attribution gaps independently of target scores. The follow-up in Table~\ref{tab:completeness-followup} is frozen as a prospective plan; implementation and GPU publication remain pending. Existing healthy jobs and the user-excluded five-source count sweep are unchanged.
+
+\begin{table}[t]
+\centering\footnotesize
+\caption{Registered follow-up, not yet published to GPUs. Readout rows are distinguished from new training.}
+\label{tab:completeness-followup}
+\begin{tabular}{p{0.54\columnwidth}rr}
+\toprule
+Control & New F & Target rows\\
+\midrule
+T1 same-TX positives: any RX / within RX, three seeds each & 6 & 6\\
+Fixed-initial Sinc / Sinc-initialized FIR / linear PA lift, three seeds each & 9 & 9\\
+PL-F with G-L: 17 contracts, three F seeds & 0 & 51\\
+External Full/CE with common G-L: four methods, three seeds & 0 & 24\\
+\midrule
+Total & 15 & 90\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The positive-pair controls retain final T1's layers, objective weights, schedule and native U mechanism; only labeled-source pair membership changes. Self-pairs and duplicate physical IDs are excluded. The three structure controls instead use strict L-only CE and the default satellite concatenation, with the existing corrected F15 as baseline. Fixed-initial Sinc tests frequency adaptation. The unconstrained FIR shares the identical scratch-initial 24-by-79 kernels across I/Q, but has 1896 trainable taps versus 48 Sinc coordinates; it is not parameter matched and uses ordinary optimizer units. The PA control repeats order-one delayed IQ into the original polynomial width while retaining the gate, statistics and all trainable projections; input rank changes and the remaining PA path is still nonlinear.
+
+Supervised F already has G-L and G-LU readouts. Adding PL-F with G-L closes the F-data-permission by G-data-permission factorial at every contract, without retraining F or G. The external readouts test common frozen restoration under the same L-only permission, preserving native weights, heads, normalization and training budgets. Their raw decisions are reused; no target adaptation or scene-dependent bypass is introduced.
+
+Fifteen further frozen L-only diagnostics compare T1 and corrected F01/F02/F03/F16 on identical physical IDs, without fitted probes or query access. Three new deployment structures require 150 additional exclusive case-rounds; the completed uniform panel and previously scheduled structure panel are not remeasured. The follow-up adds 750 F model-epochs and 166500 updates, zero new G lineages, and 211 stage tasks including source diagnostics and timing. All numerical results remain pending; the earlier completion estimate covers only the already published scope.
