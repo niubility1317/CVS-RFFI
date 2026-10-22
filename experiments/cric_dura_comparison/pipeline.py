@@ -199,7 +199,11 @@ def worker(c):
         import torch
         torch.cuda.init();torch.cuda.set_per_process_memory_fraction(.45)
         reserve=torch.empty(1,device='cuda:0')
-    if c.get('external_action'):
+    if c.get('pamf_gfactor_action'):
+        if c['pamf_gfactor_action']!='predict' or c['stage']!='predict':raise ValueError('Invalid PL Gfactor stage')
+        from .pamf_gfactor import predict as gfactor_predict
+        gfactor_predict(c)
+    elif c.get('external_action'):
         from . import external_dura
         if c['external_action']=='cache' and c['stage']=='G':external_dura.cache(c)
         elif c['external_action']=='predict' and c['stage']=='predict':external_dura.predict(c)
@@ -217,7 +221,10 @@ def worker(c):
         from .evaluation import predict
         predict(c)
     elif c['stage']=='score':
-        if c.get('analysis_kind')=='core_factorial':
+        if c.get('analysis_kind')=='pamf_gfactor':
+            from .analyze_gfactor import run as analyze_gfactor
+            analyze_gfactor(c)
+        elif c.get('analysis_kind')=='core_factorial':
             from .analyze_core import run as analyze_core
             analyze_core(c)
         elif c.get('analysis_kind')=='external_dura':

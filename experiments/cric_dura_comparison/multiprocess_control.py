@@ -128,9 +128,20 @@ def run(rt):
         from .external_dura_extension import recovery_needed
         recovery_needed(read(rt['previous_state']))
         external_smoke(rt,root/'prelaunch_external_DURA_smoke.json')
+    if rt.get('pamf_gfactor_extension'):
+        from .bootstrap import activate,numerical_policy
+        activate(rt);numerical_policy()
+        from .pamf_gfactor import smoke as gfactor_smoke
+        gfactor_smoke(rt,root/'prelaunch_PAMF_PL_G_L_smoke.json')
     previous,active=handover(rt,jobs)
     if balance:balance.restore_handover(previous.get('load_balance',{}))
     admitted=previous.get('accelerated_G_jobs',[])
+    if rt.get('pamf_gfactor_extension'):
+        from .pamf_gfactor_extension import prepare as extend_gfactor
+        jobs=extend_gfactor(rt,jobs,previous,active)
+        by_id={j['id']:j for j in jobs}
+        if len(by_id)!=len(jobs):raise ValueError('Duplicate PL Gfactor readouts')
+        write(rt['jobs'],jobs)
     if rt.get('external_dura_extension'):
         from .external_dura_extension import prepare as extend_external
         jobs=extend_external(rt,jobs,previous,active)

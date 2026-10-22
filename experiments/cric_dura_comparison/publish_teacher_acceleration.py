@@ -51,7 +51,7 @@ def publish(repo,output,previous_file,ssh_config,runtime_factory=None):
     previous=json.loads(Path(previous_file).read_text(encoding='utf-8'));rt=(runtime_factory or runtime_for)(previous,commit)
     paths=[p for p in git('ls-tree','-r','--name-only','HEAD','experiments/cric_dura_comparison').decode().splitlines()
            if p.endswith('.py') or '/vendor/' in p]
-    if rt.get('supervised_extension') or rt.get('external_dura_extension'):
+    if rt.get('supervised_extension') or rt.get('external_dura_extension') or rt.get('pamf_gfactor_extension'):
         dependency='experiments/phase1_external_dg_aug/augmentation.py'
         if not git('ls-tree','--name-only','HEAD',dependency).strip():raise ValueError('Committed default concat dependency missing')
         paths.append(dependency)
