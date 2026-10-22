@@ -1,0 +1,77 @@
+# DURA 教师缓存执行接管，仅未启动 G 行
+
+- run_id：`20261022-phase1-DURA-teacher-cache-control-r01`
+- group_id：`phase1-cric-dura-complete-system`；类别：`diagnostic`；阶段：`Phase1`
+- 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
+- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+
+## 目的与对照
+
+Execution-only acceleration and same original job ownership. No scientific rows added or repeated.
+
+## 数据、seed与模型来源
+
+实际数据契约、权限例外、完整seed角色、checkpoint来源和选择规则见experiment.json。
+逐行配置通过config_ref/resolved_config_ref定位；待补项必须在对应生命周期补齐。
+
+## 执行与存储
+
+命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
+实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
+
+## 结果与覆盖
+
+尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+
+## 交接
+
+记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 执行加速最小预登记
+
+# DURA 冻结教师训练执行加速
+
+本次只改变执行方式，保留原逐级教师 R17→R38→R44→R46→R65→R69。G 每阶段 E20/4940、每轮 247 次学生更新、批次顺序、重复曝光、micro64 累积、尾批分母、优化器和学习率均保持原配方。FP32/TF32off，不替换教师或重选模型。
+
+## 实现
+
+- 按教师权重路径、完整源契约/角色、epoch 和物理 ID 绑定目标。轮内只对首次遇到的唯一输入前向，后续按原顺序读取目标。无重复的小池判断不启用缓存。缓存最多 512 MiB；小于 64 MiB 优先显存，其余内存。
+- 多学生共享采用单一显式生产者。写完目标后才发布 complete；读者拒绝未完成、教师/契约/ID/epoch 不匹配的缓存。last2 阶段 FP32 目标可供合法 R69 学生复用；没有教师的消融不执行教师前向。
+- action 只缓存冻结 coarse；R17 只缓存冻结 coarse/action 的上下文。当前 prior、可微 CG 和 R38 之后更新中的学生上下文继续在线计算。
+- R38/R44 跳过实际系数为零的谱损失 FFT；微批有限值检查合并到 optimizer.step 前，GPU 累加日志标量，减少主机同步。不修改非零损失和反向。
+- 学生训练图和教师 CUDA Graph 尚未加入本次训练实现。轮内缓存已提供独立实测收益，不把推理图性能转称训练收益。
+
+## 源侧等价与实测
+
+固定已完成 label01 L-only 谱系的真实教师权重，输入为 630 条固定合成 IQ，不访问 target、F 或 TX 真值。七阶段目标/损失、首步梯度及六次参数更新均通过对照；23 项聚焦测试通过。最大权重绝对差低于 1.2e-7。此数值等价检验不声称跨硬件逐位相同。
+
+本机 RTX 5070 Ti，Torch 2.10.0+cu128，FP32/TF32off；每轮 12 次完整更新，两次 AB/BA 计时，包含首次缓存构建、读取、传输、学生反向和优化器；不含模型载入与合成数据准备。桌面 GPU 有共享负载。
+
+| 阶段 | 在线耗时 / 加速耗时 |
+| --- | --- |
+| action | 1.185 至 1.370 |
+| r17 | 1.046 至 1.343 |
+| r38 | 1.223 至 1.305 |
+| r44 | 1.172 至 1.196 |
+| r46 | 1.225 至 1.239 |
+| r65 | 1.101 至 1.246 |
+| r69 | 1.209 至 1.275 |
+
+这些是本机短程更新速度比，不是 RTX 3090 全谱系 E20 实测，也不能按各阶段倍数推算整批完成时间。
+
+共享缓存保留正负两种结果：
+
+- 12 次更新 × 2 个学生：在线 9.170 s；共享含首次构建 35.926 s，速度比 0.255。首次构建 29.128 s。
+
+首次构建、磁盘写入/读取有成本；不得把教师预测次数减少直接解释为训练倍数。
+
+## 接入范围与保护
+
+执行 owner `20261022-phase1-DURA-teacher-cache-control-r01` 先做 N607 Torch 2.1 实际 checkpoint 无 query smoke，PASS 后才精确撤下旧资源控制器。先用原配置扫描并接管全部健康 PID，再将仍 QUEUED、无模型输出目录的 G 行迁移到新执行 release。同一原 job ID、原数据契约、原输出路径、原依赖和原后续七景测试保留；不重跑已完成 21 个学生和五源结果。
+
+F、健康 G、预测和 scorer 仍用原 3e880690 release。资源沿用 r03，保留第四槽禁入决定与试运行 cohort；新遥测重新预热。GPU0/6 才可能第四条 F，总 compute≤26，同卡 G≤1；不停止健康训练。两次同技术指纹停止新派发。
+
+只对未启动完整谱系启用 epoch 缓存及已验证的执行优化；共享生产者接口可用，当前已闭合学生不为展示加速而重跑。后续原矩阵继续冻结 raw/G 七视图后独立 truth-last，不用目标结果决定是否采用缓存。
+
+初始重复预测分析见 [DURA_MULTI_TEACHER_TRAINING_ANALYSIS.md](DURA_MULTI_TEACHER_TRAINING_ANALYSIS.md)。逐轮实数和等价摘要见对应登记目录的 training_acceleration_timing.csv 与 training_acceleration_verification.json。实际接管、首轮缓存命中和 N607 阶段耗时另在发布后记录。

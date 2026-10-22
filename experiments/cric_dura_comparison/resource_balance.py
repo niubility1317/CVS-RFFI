@@ -20,6 +20,11 @@ class LoadPolicy:
         self.now = 0
         self.last_error = None
 
+    def restore_handover(self, previous):
+        """Retain slowdown decisions/cohorts; fresh telemetry warms up again."""
+        self.disabled = {int(gpu): reason for gpu, reason in previous.get('disabled_fourth_slots', {}).items()}
+        self.trials = {int(gpu): dict(trial) for gpu, trial in previous.get('trials', {}).items()}
+
     def observe(self, host, devices, now):
         self.host = dict(host)
         self.devices = devices

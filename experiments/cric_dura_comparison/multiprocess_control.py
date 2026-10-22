@@ -28,7 +28,7 @@ def gpu_admits(gpu,job,active,jobs,apps,free,reserve_external=True,own_limit=3,t
 
 def command_for(rt,job,gpu):
     cmd=[rt['python'],'-u','-m','experiments.cric_dura_comparison.pipeline','worker','--config',job['config']]
-    cwd=rt['worker_release']
+    cwd=job.get('worker_release',rt['worker_release'])
     env=dict(os.environ,PYTHONPATH=cwd,CUDA_VISIBLE_DEVICES='' if gpu is None else str(gpu),OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2')
     return cmd,cwd,env
 
@@ -39,7 +39,7 @@ def inspect_worker(rt,job,pid):
     try:
         args=[v.decode() for v in proc.joinpath('cmdline').read_bytes().split(bytes([0])) if v]
         if not args and not alive(pid):return None  # A worker may finish during handover.
-        if args!=command_for(rt,job,None)[0] or os.readlink(proc/'cwd')!=rt['worker_release']:
+        if args!=command_for(rt,job,None)[0] or os.readlink(proc/'cwd')!=command_for(rt,job,None)[1]:
             raise ValueError('Owned worker PID/CWD/argv mismatch: '+job['id'])
         env=dict(s.split(b'=',1) for s in proc.joinpath('environ').read_bytes().split(bytes([0])) if b'=' in s)
         raw=env.get(b'CUDA_VISIBLE_DEVICES',b'').decode()
@@ -99,12 +99,22 @@ def run(rt):
     balance=LoadPolicy(rt['load_balance']) if rt.get('load_balance') else None
     if own_limit not in (2,3) or total_limit!=3:raise ValueError('Unsupported baseline resource capacity')
     root=Path(rt['control_root']);root.mkdir(parents=True,exist_ok=False)
-    jobs=read(rt['jobs']);by_id={j['id']:j for j in jobs}
+    jobs=read(rt.get('source_jobs',rt['jobs']));by_id={j['id']:j for j in jobs}
     if len(by_id)!=len(jobs):raise ValueError('Duplicate registered jobs')
     if len({j['config'] for j in jobs})!=len(jobs):raise ValueError('Duplicate registered worker configs')
+    if rt.get('G_teacher_acceleration'):
+        from .acceleration_smoke import run as acceleration_smoke
+        acceleration_smoke(rt,root/'prelaunch_source_smoke.json')
     previous,active=handover(rt,jobs)
+    if balance:balance.restore_handover(previous.get('load_balance',{}))
+    if rt.get('G_teacher_acceleration'):
+        from .execution_migration import promote_pending_G
+        admitted=promote_pending_G(rt,jobs,previous,active)
+        write(rt['jobs'],jobs)
+    else:admitted=[]
     state=dict(previous,pid=os.getpid(),owner=rt['launch_owner'],status='RUNNING',control_commit=rt['code_commit'],
         scientific_worker_commit=rt['worker_commit'],previous_owner_pid=previous['pid'],jobs=dict(previous['jobs']),
+        accelerated_G_jobs=admitted,accelerated_G_commit=rt['code_commit'] if admitted else None,
         resource_policy=str(own_limit)+'own/card,3total,free>=12000MiB;at most1G/G_student per card;2/3 reserve external until complete;timingexclusive',adopted=len(active))
     failures=Counter(previous.get('failures',{}));cache_failures=dict(previous.get('cache_failures',{}));children={};logs={}
     for job in jobs:

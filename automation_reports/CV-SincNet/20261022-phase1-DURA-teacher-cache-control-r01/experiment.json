@@ -1,0 +1,148 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261022-phase1-DURA-teacher-cache-control-r01",
+  "group_id": "phase1-cric-dura-complete-system",
+  "display_name": "DURA 教师缓存执行接管，仅未启动 G 行",
+  "description": "Execution-only acceleration and same original job ownership. No scientific rows added or repeated.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "CRIC",
+    "DURA",
+    "complete-system",
+    "three-F-seeds",
+    "latency-ablation-design"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261022-phase1-T1-DURA-multiprocess-control-r03",
+    "20261022-phase1-DURA-teacher-cache-accel-s2026092701-r01"
+  ],
+  "replaces_run_id": "20261022-phase1-T1-DURA-multiprocess-control-r03",
+  "authorization": "用户2026-10-22明确要求实现DURA训练加速；只接管本任务资源controller，保护健康worker和已完成行。",
+  "code": {
+    "commit": "SET_AT_COMMIT",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 CVS-RFFI Py3.10/Torch2.1 FP32/TF32off CPU2",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261022-phase1-T1-DURA-multiprocess-control-r03",
+    "entry": "experiments.cric_dura_comparison.multiprocess_control"
+  },
+  "data": {
+    "dataset": "WiSig ManySig/ManyRx",
+    "version": null,
+    "representation": "equalized1 center256 float32 unitRMS",
+    "contract_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md",
+    "physical_ids_ref": "Existing17 source-only handles prepared under oldr02; same VALIDATED_ONCE physical roles and target received-IQ handles; no data revalidation",
+    "label_map_ref": "Existing native source-contract metadata; no posthoc head fitting",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": null,
+      "U_s": null,
+      "V": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Reuse existing VALIDATED_ONCE handles; new contracts bound before actual launch",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "Resource-only; original source training permissions and independent truth-last unchanged",
+    "query_use": "Original 249 same-row raw/G seven-view predictions then CPU truth-last; no extra query or score feedback",
+    "external_method_exception": null,
+    "claim_scope": "Previously exposed engineering benchmark; not independent blind or in-orbit validation"
+  },
+  "checkpoint": {
+    "initialization": "Each original G lineage starts its own coarse stage; immediate-parent stages match that row source contract. No imported F0 teacher for other contracts.",
+    "sources": [
+      "Original per-row source-only G ancestry, unchanged"
+    ],
+    "contract_check_ref": "Original source_contract/allowed_roles checks in g_lineage.load and CacheView",
+    "provenance_verdict": "No checkpoint reuse across source contracts; unchanged original scientific ancestry",
+    "selection_rule": "Original fixed final E20/4940 per stage, no target-based selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex-dura-teacher-cache-20261022",
+    "gpu_policy": "Baseline3/card; GPU0/6 fourth F only with no G/predict/exclusive/foreign app on that card,5 samples spanning120s utilmean<85%; max26 total incl foreign. CPU<75%, availableRAM>=64GiB, IOwait<5%; free>=12000MiB and peak reservations F4096/G10240/predict2048 +3072MiB reserve. G<=1/card; timing exclusive excludes2/3. Runtime guard never kills a science worker.",
+    "remote_run_root": "<same N607 project>/runs/20261022-phase1-DURA-teacher-cache-control-r01",
+    "remote_log_root": "<same N607 project>/runs/20261022-phase1-DURA-teacher-cache-control-r01/logs",
+    "local_artifact_root": "local_artifacts/dura_training_acceleration_20261022",
+    "launch_command": "python -m experiments.cric_dura_comparison.publish_teacher_acceleration --repo <current committed worktree> --output <new local control folder> --previous <verified r03 runtime> --ssh-config tools/n607_ssh_config",
+    "stop_rule": "Before handover actual-checkpoint no-query smoke must pass. Retire only exact own r03 controller; adopt healthy worker PIDs. Same two technical fingerprints stop new launch; never restart healthy workers or repeat completed rows."
+  },
+  "expected_artifacts": [
+    "prelaunch_source_smoke.json",
+    "adoption.json",
+    "G_acceleration_admission.json",
+    "resolved_jobs.json",
+    "pipeline_state.json",
+    "original same-row checkpoints/predictions/scoring"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "GPU utilization",
+      "peak GPU memory",
+      "CPU busy",
+      "available RAM",
+      "same-phase epoch seconds",
+      "same-phase throughput proxy (not causal speedup)"
+    ],
+    "dimensions": [
+      "data contract",
+      "regime",
+      "F seed",
+      "G seed",
+      "view",
+      "RX",
+      "TX",
+      "date"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "Independent truth-last after all seven predictions per row"
+  },
+  "rows": [
+    {
+      "row_id": "unstarted-G-only",
+      "method": "epoch frozen teacher reuse",
+      "purpose": "Same original G lineage rows, execution-only",
+      "config_ref": "experiments/cric_dura_comparison/execution_migration.py",
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original registered row seeds2026092701/02/03 retained; not new repeats.",
+      "data_overrides": {},
+      "budget_ref": "Original35 G lineages; only still unstarted rows eligible. Each original stageE20/4940 and chainE160/39520 unchanged.",
+      "output_root": "Original per-job output paths; new resource control root only",
+      "log_path": "New control root logs for newly started rows",
+      "command": "python -m experiments.cric_dura_comparison.publish_teacher_acceleration --repo <current committed worktree> --output <new local control folder> --previous <verified r03 runtime> --ssh-config tools/n607_ssh_config",
+      "expected_artifacts": [
+        "prelaunch_source_smoke.json",
+        "adoption.json",
+        "G_acceleration_admission.json",
+        "resolved_jobs.json",
+        "pipeline_state.json",
+        "original same-row checkpoints/predictions/scoring"
+      ]
+    }
+  ],
+  "notes": [
+    "Original default scientific worker3e880690 retained for all nonmigrated rows. Accelerated G uses new per-job release; unchanged contract, seed, update budget and downstream evaluation.",
+    "No completed21 students rerun. Shared target producer ready but not scheduled against completed rows.",
+    "Adopt before migration; queued rows with any output directory are preserved. Restore existing resource slowdown decisions. No additional data validation or seal.",
+    "Resource GPU0/6 fourthF only, global26, baseline3/card, same G/predict/foreign/memory/host guards as r03."
+  ],
+  "research_plan": null,
+  "registered_at": "2026-10-22T11:44:36+00:00"
+}

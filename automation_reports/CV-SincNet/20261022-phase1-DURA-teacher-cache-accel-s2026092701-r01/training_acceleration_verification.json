@@ -1,0 +1,151 @@
+{
+  "status": "SOURCE_ONLY_EQUIVALENCE_PASS",
+  "device": "NVIDIA GeForce RTX 5070 Ti",
+  "torch": "2.10.0+cu128",
+  "precision": "FP32 TF32off",
+  "input": "synthetic fixed630 IQ, real source-only label01 L checkpoints",
+  "focused_tests": 23,
+  "independent_review": "PASS, no P0/P1; one targeted resource-handover fix review PASS",
+  "source_contract": "Original completed label01-G-L-s2026092701, allowed_roles L",
+  "checks": [
+    {
+      "stage": "r38",
+      "target_max_abs": 0.0,
+      "gradient": {
+        "max_abs": 1.4901161193847656e-08,
+        "relative_L2": 7.782684495490281e-08
+      },
+      "weights": {
+        "max_abs": 1.4901161193847656e-08,
+        "relative_L2": 1.7426768519728601e-09
+      },
+      "loss": {
+        "max_abs": 9.5367431640625e-07,
+        "relative_L2": 4.4894458065593535e-08
+      }
+    },
+    {
+      "stage": "r44",
+      "target_max_abs": 0.0,
+      "gradient": {
+        "max_abs": 1.4901161193847656e-08,
+        "relative_L2": 7.602078157992032e-08
+      },
+      "weights": {
+        "max_abs": 1.4901161193847656e-08,
+        "relative_L2": 1.5911774863053364e-09
+      },
+      "loss": {
+        "max_abs": 4.76837158203125e-07,
+        "relative_L2": 3.5326534381963e-08
+      }
+    },
+    {
+      "stage": "r46",
+      "target_max_abs": 0.0,
+      "gradient": {
+        "max_abs": 7.450580596923828e-09,
+        "relative_L2": 1.8224117385630983e-07
+      },
+      "weights": {
+        "max_abs": 5.960464477539063e-08,
+        "relative_L2": 2.6251544839340853e-09
+      },
+      "loss": {
+        "max_abs": 1.1920928955078125e-07,
+        "relative_L2": 8.061358368011194e-08
+      }
+    },
+    {
+      "stage": "r65",
+      "target_max_abs": 0.0,
+      "gradient": {
+        "max_abs": 2.60770320892334e-08,
+        "relative_L2": 4.1411434936101957e-07
+      },
+      "weights": {
+        "max_abs": 5.960464477539063e-08,
+        "relative_L2": 4.2558661316721225e-09
+      },
+      "loss": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0
+      }
+    },
+    {
+      "stage": "r69",
+      "target_max_abs": 0.0,
+      "gradient": {
+        "max_abs": 2.2351741790771484e-08,
+        "relative_L2": 4.086499491524937e-07
+      },
+      "weights": {
+        "max_abs": 1.1920928955078125e-07,
+        "relative_L2": 6.967556849817839e-09
+      },
+      "loss": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0
+      }
+    },
+    {
+      "stage": "r17",
+      "target_max_abs": null,
+      "gradient": {
+        "max_abs": 6.51925802230835e-09,
+        "relative_L2": 3.0570554651793406e-07
+      },
+      "weights": {
+        "max_abs": 2.899383844123804e-08,
+        "relative_L2": 9.517519824230313e-10
+      },
+      "loss": {
+        "max_abs": 1.1920928955078125e-07,
+        "relative_L2": 4.318950474580923e-08
+      }
+    },
+    {
+      "stage": "action",
+      "target_max_abs": null,
+      "gradient": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0
+      },
+      "weights": {
+        "max_abs": 1.4901161193847656e-08,
+        "relative_L2": 7.191277900590001e-10
+      },
+      "loss": {
+        "max_abs": 0.0,
+        "relative_L2": 0.0
+      }
+    }
+  ],
+  "timing_scope": "12 complete matched updates, two AB/BA rounds; cache creation/misses/gather/transfers/backward/optimizer included; fixture/model load excluded",
+  "claim_limit": "Local shared desktop engineering benchmark; not full E20 or N607 end-to-end speed. No target/F/TX truth reads.",
+  "target_reads": 0,
+  "F_reads": 0,
+  "TX_truth_reads": 0,
+  "shared_measurements": [
+    {
+      "output": "benchmark-shared-r01",
+      "updates_per_student": 12,
+      "students": 2,
+      "producer_seconds": 29.127560800057836,
+      "producer_bytes": 2580480,
+      "online_seconds": 9.169744999962859,
+      "accelerated_including_producer_seconds": 35.92577460000757,
+      "speedup": 0.2552413998600583
+    },
+    {
+      "output": "benchmark-shared-full-epoch-r01",
+      "updates_per_student": 247,
+      "students": 2,
+      "producer_seconds": 17.86422190000303,
+      "producer_bytes": 2580480,
+      "online_seconds": 146.46571319992654,
+      "accelerated_including_producer_seconds": 123.77646760002244,
+      "speedup": 1.1833082333002367
+    }
+  ]
+}

@@ -1,0 +1,145 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261022-phase1-DURA-teacher-cache-accel-s2026092701-r01",
+  "group_id": "phase1-cric-dura-complete-system",
+  "display_name": "DURA 冻结教师缓存与训练执行加速验证",
+  "description": "Source-only execution-equivalence and measured-speed diagnostic. Epoch/ID cache, shared frozen targets, actual frozen prefixes, zero-weight FFT skip and reduced host synchronizations; all student updates/denominators/order retained.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "CRIC",
+    "DURA",
+    "complete-system",
+    "three-F-seeds",
+    "latency-ablation-design"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-T1-DURA-G-lineage-m35-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-22明确要求根据多教师重复计算分析完成DURA训练加速；健康任务和现有权重保留。",
+  "code": {
+    "commit": "SET_AT_COMMIT",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "Local Torch2.10 CUDA12.8 FP32/TF32off; release compatibility smoke N607 Torch2.1",
+    "cwd": "E:/type10-7",
+    "entry": "experiments.cric_dura_comparison.benchmark_teacher_targets"
+  },
+  "data": {
+    "dataset": "WiSig ManySig/ManyRx",
+    "version": null,
+    "representation": "equalized1 center256 float32 unitRMS",
+    "contract_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md",
+    "physical_ids_ref": "Existing17 source-only handles prepared under oldr02; same VALIDATED_ONCE physical roles and target received-IQ handles; no data revalidation",
+    "label_map_ref": "Existing native source-contract metadata; no posthoc head fitting",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": null,
+      "U_s": null,
+      "V": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Reuse existing VALIDATED_ONCE handles; new contracts bound before actual launch",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "G source TX-free/F-free. Local checkpoint smoke uses synthetic IQ; no target or TX truth. Pending-row training retains exact source contract and truth-last.",
+    "query_use": "No new query for this technical diagnostic; original queued rows retain their already registered automatic evaluation.",
+    "external_method_exception": null,
+    "claim_scope": "Previously exposed engineering benchmark; not independent blind or in-orbit validation"
+  },
+  "checkpoint": {
+    "initialization": "Fixed-name completed label01-G-L-s2026092701 eight-stage source lineage, selected by small source-pool size only; no target-score selection.",
+    "sources": [
+      "20261021-phase1-T1-DURA-G-lineage-m35-r01/label01-G-L-s2026092701"
+    ],
+    "contract_check_ref": "Real checkpoint metadata verified source_contract and allowed_roles=L before loading",
+    "provenance_verdict": "Existing source-only label01 G ancestry; no F or target-trained checkpoint",
+    "selection_rule": "Fixed stage final E20/4940; selected by source-pool size, never target score"
+  },
+  "execution": {
+    "host": "Local engineering validation; formal pending-row execution on N607 after verification",
+    "launch_owner": "codex-load-balance-20261022",
+    "gpu_policy": "Local GPU0 only after verifying free capacity; N607 existing r03 policy for future unstarted rows. No healthy worker restart.",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "local_artifacts/dura_training_acceleration_20261022",
+    "launch_command": "python -m experiments.cric_dura_comparison.benchmark_teacher_targets --fixture <registered same-contract checkpoint fixture> --output <new output>",
+    "stop_rule": "Loss/target/gradient/update mismatch, forbidden input or nonfinite stops acceleration validation; preserve original healthy workers. Two same technical fingerprints stop new submissions."
+  },
+  "expected_artifacts": [
+    "unit-test results",
+    "real-checkpoint no-query equivalence",
+    "paired complete-update timing including cache construction",
+    "resource measurements"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "teacher target error",
+      "loss error",
+      "gradient error",
+      "weight update error",
+      "complete-update seconds",
+      "cache samples/calls/bytes",
+      "extra peak memory"
+    ],
+    "dimensions": [
+      "data contract",
+      "regime",
+      "F seed",
+      "G seed",
+      "view",
+      "RX",
+      "TX",
+      "date"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "Independent truth-last after all seven predictions per row"
+  },
+  "rows": [
+    {
+      "row_id": "source-only-acceleration",
+      "method": "frozen teacher target reuse",
+      "purpose": "Validate source-equivalent gradients and actual iteration throughput",
+      "config_ref": "experiments/cric_dura_comparison/teacher_targets.py",
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed existing checkpoint seed. Repeated timing rounds are not model seeds.",
+      "data_overrides": {},
+      "budget_ref": "Matched bounded source-only engineering iterations; no rerun of completed21 students, no change to existing E20/4940 or E50/11100 scientific rows.",
+      "output_root": "E:\\type10-7\\local_artifacts\\dura_training_acceleration_20261022\\benchmark",
+      "log_path": "E:\\type10-7\\local_artifacts\\dura_training_acceleration_20261022\\benchmark.log",
+      "command": "python -m experiments.cric_dura_comparison.benchmark_teacher_targets --fixture <registered same-contract checkpoint fixture> --output <new output>",
+      "expected_artifacts": [
+        "unit-test results",
+        "real-checkpoint no-query equivalence",
+        "paired complete-update timing including cache construction",
+        "resource measurements"
+      ]
+    }
+  ],
+  "notes": [
+    "No caching updating student context. Prefix reuse only action coarse/R17 frozen context. Original RNG/order/repeated exposure/partial-tail denominator retained.",
+    "FP32 targets; teacher identity/source role/epoch/physical-ID binding. Single explicit producer; incomplete or mismatched caches rejected; no extra hash/seal workflow.",
+    "Current completed21 G students and completed scientific rows never rerun. New implementation first validates on one fixed source-contract falsification case.",
+    "Speed claims must include teacher-cache construction/lookup/transfer; no inference from prediction counts alone. Local RTX5070Ti and remote RTX3090 evidence distinguished.",
+    "Shared benchmark includes two students at 12 updates and one complete logical epoch247 updates; no full scientific row retrained."
+  ],
+  "research_plan": null,
+  "registered_at": "2026-10-22T11:21:41+00:00"
+}
