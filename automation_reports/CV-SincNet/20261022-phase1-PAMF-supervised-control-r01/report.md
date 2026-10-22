@@ -35,3 +35,5 @@
 LOCAL_VERIFIED_NOT_PUBLISHED：15项聚焦回归与独立P0/P1审查通过；本地SHUFFLE_TIME CUDA图捕获与eager输出逐元素一致。此项不代表N607实际时延或目标结果。
 
 新增24训练／30预测／30独立评分／1时延，6个读出复用权重和raw。其余51主监督F及G-L链复用。远端发布未核实，原owner不作任何停止或改动。
+
+实际代码／配置提交 `250457d0793a4dba8bca553e056f8171ed5f4154` 已保留本地；Git 推送因网络不可达失败，remoteOID 未核实。新增实验未发布。独立审查 PASS，严格结构时延仅18case×5batch×5轮＝450case-round，不重复统一面板。

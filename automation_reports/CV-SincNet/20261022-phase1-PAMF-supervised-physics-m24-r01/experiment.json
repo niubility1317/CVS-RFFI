@@ -26,7 +26,7 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-22要求补PAMF不采用半监督且不使用无标签数据的比较、网络对比SIG_TIME版本与物理感知机制消融。三seed，按现有容量保持全部健康任务。",
   "code": {
-    "commit": "SET_AT_COMMIT",
+    "commit": "250457d0793a4dba8bca553e056f8171ed5f4154",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 CVS-RFFI Py3.10/Torch2.1 FP32/TF32off CPU2",
     "cwd": "PROJECT/releases/20261022-phase1-PAMF-supervised-control-r01",
@@ -1851,7 +1851,8 @@
   "notes": [
     "Detailed fixed design: docs/PAMF_SUPERVISED_PHYSICS_ABLATION_20261022.md",
     "24 new F,30 readout rows (6 reuse F/raw),85 new jobs. No new G or source-count5 sweep. Existing51 strict-supervised main F retained.",
-    "LOCAL_VERIFIED_NOT_PUBLISHED. SSH/Git network layer currently blocked; do not infer real GPU launch from local preparation."
+    "LOCAL_VERIFIED_NOT_PUBLISHED. SSH/Git network layer currently blocked; do not infer real GPU launch from local preparation.",
+    "Actual implementation/config commit 250457d0793a4dba8bca553e056f8171ed5f4154; local commit preserved; push FAILED, remote OID UNKNOWN, no N607 launch."
   ],
   "research_plan": null,
   "runtime_evidence": {
