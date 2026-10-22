@@ -29,5 +29,9 @@
     "CPU backward probes verify loss/gradient wiring on actual checkpoints; they are not training-speed or full-dataset accuracy measurements.",
     "No claim that simulated LEO conditions exhaust real satellite hardware or equal target practical conditions."
   ],
-  "ephemeral_method_native_optimizer_steps": 24
+  "ephemeral_method_native_optimizer_steps": 24,
+  "audit_code_commit": "159994ec7ac054e1ae6dc3430d4af6eb13343571",
+  "git_push_independent_OID_match": true,
+  "paper_compiled_pages": 10,
+  "paper_setup_visual_QA": "PASS; inspected pages1/2, no overfull boxes"
 }

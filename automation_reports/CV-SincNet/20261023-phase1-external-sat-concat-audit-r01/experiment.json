@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-23明确要求再次检查四个对比方法的星地拼接增强，异常时修复并考虑重发；本run先执行只读源侧核查，不据目标低分重跑。",
   "code": {
-    "commit": "SET_AT_COMMIT",
+    "commit": "159994ec7ac054e1ae6dc3430d4af6eb13343571",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "Verified Python; source logs stdlib; transient model probes existing N607 Torch environment CPU2",
     "cwd": "Local workspace; probes isolated within original immutable baseline release",
@@ -72,14 +72,15 @@
   "execution": {
     "host": "Local and ordinary N607 read-only source inspection",
     "launch_owner": "codex-four-baseline-concat-audit",
-    "launch_command": "F:/App/miniconda3/python.exe -X utf8 tools/audit_external_sat_concat_sources.py; then tools/audit_external_sat_concat_probe.py (source-only CPU)",
+    "launch_command": "F:/App/miniconda3/python.exe -X utf8 tools/audit_external_sat_concat_sources.py",
     "remote_run_root": null,
     "remote_log_root": null,
     "local_artifact_root": "local_artifacts/external_sat_concat_audit_20261023",
     "runtime_ref": "local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/runtime.json",
     "gpu_policy": "No additional N607 GPU training process; CPU2 source probes",
     "stop_rule": "Any missing source artifact, inconsistent loss/count or absent satellite gradient is reported; preserve all outputs and healthy workloads. Fix only a reproduced defect; no score-driven rerun.",
-    "postlaunch_evidence_ref": "local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/postlaunch_verified.json"
+    "postlaunch_evidence_ref": "local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/postlaunch_verified.json",
+    "probe_command": "F:/App/miniconda3/python.exe -X utf8 tools/audit_external_sat_concat_probe.py"
   },
   "expected_artifacts": [
     "source_audit_rows.csv",

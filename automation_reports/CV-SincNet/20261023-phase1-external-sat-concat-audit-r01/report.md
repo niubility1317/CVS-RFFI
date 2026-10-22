@@ -31,3 +31,5 @@ Source-only forensic audit of all four published native DG methods and own-CE co
 ## 核查完成
 
 见 [星地增强完整复核](augmentation_audit.md)。516模型／654阶段／57864记录及20实际checkpoint阶段反向检查均PASS。AUGMENTATION_EXECUTION_NORMAL；不需要修复或重发，不改变训练配方及健康任务。
+
+实际审计代码 commit `159994ec7ac054e1ae6dc3430d4af6eb13343571` 已提交、推送并独立核对远端 OID；IEEE 实验章节10页编译与设置页目检通过。既有训练、权重和增强配方保持。
