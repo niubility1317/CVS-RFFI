@@ -1,0 +1,148 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261022-phase1-T1-DURA-multiprocess-control-r03",
+  "group_id": "phase1-cric-dura-complete-system",
+  "display_name": "T1＋DURA 按负载均衡，GPU0/6 试增至四进程",
+  "description": "Resource-only handover of existing769 jobs. Baseline3/card; GPU0/6 fourth F only when admitted; global GPU capacity26, preserve all healthy scientific workers.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "CRIC",
+    "DURA",
+    "complete-system",
+    "three-F-seeds",
+    "latency-ablation-design"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261022-phase1-T1-DURA-multiprocess-control-r02"
+  ],
+  "replaces_run_id": "20261022-phase1-T1-DURA-multiprocess-control-r02",
+  "authorization": "用户要求按任务负载均衡并在允许范围增加进程，已确认 GPU0/6 3至4、总上限26、其他卡3、健康任务不动的方案。",
+  "code": {
+    "commit": "pending_version_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 CVS-RFFI Py3.10/Torch2.1 FP32/TF32off CPU2",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261022-phase1-T1-DURA-multiprocess-control-r03",
+    "entry": "experiments.cric_dura_comparison.multiprocess_control"
+  },
+  "data": {
+    "dataset": "WiSig ManySig/ManyRx",
+    "version": null,
+    "representation": "equalized1 center256 float32 unitRMS",
+    "contract_ref": "docs/goals/CRIC_DURA_COMPARISON_AND_LATENCY_20261021.md",
+    "physical_ids_ref": "Existing17 source-only handles prepared under oldr02; same VALIDATED_ONCE physical roles and target received-IQ handles; no data revalidation",
+    "label_map_ref": "Existing native source-contract metadata; no posthoc head fitting",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": null,
+      "U_s": null,
+      "V": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Reuse existing VALIDATED_ONCE handles; new contracts bound before actual launch",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "Resource-only; original source training permissions and independent truth-last unchanged",
+    "query_use": "Original 249 same-row raw/G seven-view predictions then CPU truth-last; no extra query or score feedback",
+    "external_method_exception": null,
+    "claim_scope": "Previously exposed engineering benchmark; not independent blind or in-orbit validation"
+  },
+  "checkpoint": {
+    "initialization": "No new initialization; original registered769 jobs and exact 3e880690 scientific worker commands preserved",
+    "sources": [
+      "20261021-phase1-T1-AsKL0-e30plus20-m3-r01",
+      "20261020-phase1-T1-AsKL0-e50-s2026092701-m2-r01",
+      "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69",
+      "20261019-phase1-external-dg-concat-pl-m219-r03"
+    ],
+    "contract_check_ref": "Existing exact-contract F0 evidence; every new F/G/teacher must match its own contract",
+    "provenance_verdict": "F0 three exact-contract T1 checkpoints verified existing; new F/G cannot inherit different-contract state",
+    "selection_rule": "Fixed FINAL50 student; source-only freeze. Never select by target."
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex-load-balance-20261022",
+    "gpu_policy": "Baseline3/card; GPU0/6 fourth F only with no G/predict/exclusive/foreign app on that card,5 samples spanning120s utilmean<85%; max26 total incl foreign. CPU<75%, availableRAM>=64GiB, IOwait<5%; free>=12000MiB and peak reservations F4096/G10240/predict2048 +3072MiB reserve. G<=1/card; timing exclusive excludes2/3. Runtime guard never kills a science worker.",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261022-phase1-T1-DURA-multiprocess-control-r03",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261022-phase1-T1-DURA-multiprocess-control-r03/logs",
+    "local_artifact_root": "local_artifacts/cric_dura_load_balance_20261022",
+    "launch_command": "python -u -m experiments.cric_dura_comparison.multiprocess_control --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261022-phase1-T1-DURA-multiprocess-control-r03/runtime.json",
+    "stop_rule": "2same technical fingerprints stop new launches; preserve healthy peers and outputs. No performance stops/target feedback."
+  },
+  "expected_artifacts": [
+    "adoption.json",
+    "pipeline_state.json",
+    "independent PID/CWD/argv/GPU/log-growth verification",
+    "pipeline_state.load_balance resource telemetry and same-phase throughput proxy"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "GPU utilization",
+      "peak GPU memory",
+      "CPU busy",
+      "available RAM",
+      "same-phase epoch seconds",
+      "same-phase throughput proxy (not causal speedup)"
+    ],
+    "dimensions": [
+      "data contract",
+      "regime",
+      "F seed",
+      "G seed",
+      "view",
+      "RX",
+      "TX",
+      "date"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "Independent truth-last after all seven predictions per row"
+  },
+  "rows": [
+    {
+      "row_id": "controller",
+      "method": "resource-only handover",
+      "purpose": "Increase selected low-load F-only cards from3 to4 without restarting science; balance future admissions by rollingGPU load; stop supplementing on pressure or >=4/3 same-phase slowdown.",
+      "config_ref": "experiments/cric_dura_comparison/multiprocess_control.py",
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "All original scientific seeds unchanged; no new science rows.",
+      "data_overrides": {},
+      "budget_ref": "Original769 jobs unchanged; unified failed timing row has existing completed r02 replacement.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261022-phase1-T1-DURA-multiprocess-control-r03",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261022-phase1-T1-DURA-multiprocess-control-r03/continuation.log",
+      "command": "python -u -m experiments.cric_dura_comparison.multiprocess_control --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261022-phase1-T1-DURA-multiprocess-control-r03/runtime.json",
+      "expected_artifacts": [
+        "adoption.json",
+        "pipeline_state.json",
+        "independent PID/CWD/argv/GPU/log-growth verification"
+      ]
+    }
+  ],
+  "notes": [
+    "All original science worker release3e880690, 769 jobs/configs/seed/budget, data handles and truth-last remain immutable. No new scientific experiment or repeated predictions.",
+    "User-approved resource-only replacement of exact verified r02 controller. Healthy worker PIDs adopted or naturally complete; no migration, kill or restart of science workers.",
+    "Measured2026-10-22 14:56 CPU53.4%, availableRAM358.1GiB, IOwait0.036%; GPU0/6 mean77.6/81.8%. F train3.28..3.63GiB, about1CPUcore and1.8..1.97GiBRSS; G stages0.93..1.80GiB but previous startuppeak9.22GiB; prediction0.86GiB but compute-heavy.",
+    "Conservative admission budgets F4GiB/G10GiB/predict2GiB plus3GiB card reserve. Only F may occupy fourth slot; all3 existing own workers must be F, apps countexact3. New G with3F forbidden by peak budget.",
+    "Keep baseline3 on othercards and CPU scorer<=1. Allocation order uses rolling GPU mean; CPU/RAM/IO failure pauses newGPU launches, never kills healthy work.",
+    "Same-phase speed guard compares3 preexisting F workers, each with>=3 post epochs; proxy=(4/3)/median(post/pre), and proxy<=1 disables future fourth-slot admissions. It is an engineering proxy, not measured causal aggregate throughput. If phase/cohort changes or data insufficient, report pending.",
+    "Reuse existing source-only no-query real-checkpoint smoke PASS and VALIDATED_ONCE handles because original scientific commands/inputs unchanged. Focused resource/protection tests and one independentP0/P1 review required; no extra seals/hashes/reviews."
+  ],
+  "research_plan": null,
+  "registered_at": "2026-10-22T07:21:14+00:00"
+}
