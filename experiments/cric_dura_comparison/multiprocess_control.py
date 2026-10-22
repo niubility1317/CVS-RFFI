@@ -16,6 +16,11 @@ from .resource_balance import LoadPolicy
 HEAVY={'G','G_student'}
 
 
+def completion_status(state):
+    effective=[v for k,v in state['jobs'].items() if k not in state.get('excluded_job_ids',[])]
+    return 'COMPLETE' if effective and all(v['status']=='COMPLETE' for v in effective) else 'PARTIAL_TECHNICAL_FAILURE'
+
+
 def gpu_admits(gpu,job,active,jobs,apps,free,reserve_external=True,own_limit=3,total_limit=3):
     owned=[jobs[key] for key,item in active.items() if item.get('gpu')==gpu]
     if any(j.get('exclusive') for j in owned):return False
@@ -105,16 +110,25 @@ def run(rt):
     if rt.get('G_teacher_acceleration'):
         from .acceleration_smoke import run as acceleration_smoke
         acceleration_smoke(rt,root/'prelaunch_source_smoke.json')
+    if rt.get('F_source_binding_recovery'):
+        from .f_binding_recovery import smoke as binding_smoke
+        binding_smoke(rt,root/'prelaunch_F_binding_smoke.json')
     previous,active=handover(rt,jobs)
     if balance:balance.restore_handover(previous.get('load_balance',{}))
     if rt.get('G_teacher_acceleration'):
         from .execution_migration import promote_pending_G
         admitted=promote_pending_G(rt,jobs,previous,active)
         write(rt['jobs'],jobs)
-    else:admitted=[]
+    else:admitted=previous.get('accelerated_G_jobs',[])
+    if rt.get('F_source_binding_recovery'):
+        from .f_binding_recovery import prepare as repair_F_binding
+        jobs=repair_F_binding(rt,jobs,previous,active)
+        by_id={j['id']:j for j in jobs}
+        if len(by_id)!=len(jobs):raise ValueError('Duplicate repaired jobs')
+        write(rt['jobs'],jobs)
     state=dict(previous,pid=os.getpid(),owner=rt['launch_owner'],status='RUNNING',control_commit=rt['code_commit'],
         scientific_worker_commit=rt['worker_commit'],previous_owner_pid=previous['pid'],jobs=dict(previous['jobs']),
-        accelerated_G_jobs=admitted,accelerated_G_commit=rt['code_commit'] if admitted else None,
+        accelerated_G_jobs=admitted,accelerated_G_commit=rt['code_commit'] if rt.get('G_teacher_acceleration') else previous.get('accelerated_G_commit'),
         resource_policy=str(own_limit)+'own/card,3total,free>=12000MiB;at most1G/G_student per card;2/3 reserve external until complete;timingexclusive',adopted=len(active))
     failures=Counter(previous.get('failures',{}));cache_failures=dict(previous.get('cache_failures',{}));children={};logs={}
     for job in jobs:
@@ -189,12 +203,13 @@ def run(rt):
             launch(job,gpu)
         state.update(counts=dict(Counter(v['status'] for v in state['jobs'].values())),failures=dict(failures),cache_failures=cache_failures,
             systemic_stop_new_launches=systemic,reserve_external_GPUs_2_3=reserve,active_own_per_gpu=dict(Counter(v['gpu'] for v in active.values() if v['gpu'] is not None)))
+        state['effective_counts']=dict(Counter(v['status'] for k,v in state['jobs'].items() if k not in state.get('excluded_job_ids',[])))
         if balance:
             state.update(load_balance=balance.snapshot(),resource_policy=balance.snapshot()['policy'])
         write(root/'pipeline_state.json',state,exclusive=False)
         if not active and (not pending or systemic):break
         time.sleep(30)
-    state['status']='COMPLETE' if all(v['status']=='COMPLETE' for v in state['jobs'].values()) else 'PARTIAL_TECHNICAL_FAILURE'
+    state['status']=completion_status(state)
     write(root/'pipeline_state.json',state,exclusive=False)
 
 

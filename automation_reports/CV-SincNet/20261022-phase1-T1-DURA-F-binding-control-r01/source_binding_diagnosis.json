@@ -1,0 +1,36 @@
+{
+  "verdict": "CONFIRMED_IQ_METADATA_ROW_ORDER_BUG",
+  "protocols_checked": 17,
+  "affected_protocols": [
+    "F0"
+  ],
+  "affected_F_rows": 69,
+  "affected_snapshot_statuses": {
+    "COMPLETE": 55,
+    "RUNNING": 3,
+    "QUEUED": 11
+  },
+  "parsed_source_epoch_records": 3138,
+  "source_rows_parsed": 78,
+  "positions": {
+    "L_s": 6298,
+    "U_s": 56699,
+    "V": 26999
+  },
+  "wrong_visible_labels_before": {
+    "L_s": 5291,
+    "V": 22564
+  },
+  "wrong_visible_labels_after": {
+    "L_s": 0,
+    "V": 0
+  },
+  "IQ_bytes_changed": false,
+  "role_membership_changed": false,
+  "label_values_changed": false,
+  "U_TX_truth_reads": 0,
+  "target_reads": 0,
+  "finding": "Legacy IQ storage order differs from hash-sorted declared source metadata. Exact ID lookup restores matching IQ/label/RX/day.",
+  "unaffected": "Other16 source contracts, fixed original finalT1 weights and exact-ID G CacheView. No new source-count5 sweep or G training.",
+  "recovery": "63 F mechanisms +6 F0 controls, three original seeds, fresh20+10+20/11100. All69 raw/G seven views then independent truth-last. Healthy old PIDs retained, unstarted invalid jobs withdrawn; original artifacts retained."
+}

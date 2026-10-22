@@ -74,7 +74,10 @@ def prepare_index(rt, handles, protocols):
         for j, sid in enumerate(ids):
             path, i, _, _ = records[sid]
             if path not in cache:
-                cache[path] = np.load(path, mmap_mode='r')
+                from .source_iq import aligned_source_iq
+                role=Path(path).name[:-6]
+                with np.load(Path(path).parent/(role+'_metadata.npz'),allow_pickle=False) as metadata:
+                    cache[path],_=aligned_source_iq(Path(path).parent,role,metadata['ids'])
             x[j] = cache[path][i]
             new_lookup[sid] = (dataset, j)
         x.flush()
