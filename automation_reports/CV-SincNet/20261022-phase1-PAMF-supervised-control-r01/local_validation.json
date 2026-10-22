@@ -1,7 +1,7 @@
 {
   "status": "LOCAL_PASS_NOT_PUBLISHED",
-  "focused_tests": 15,
-  "new_focused_tests": 7,
+  "focused_tests": 16,
+  "new_focused_tests": 8,
   "independent_review": "PASS; direct P0/P1 scope; two fixes verified",
   "graph_check": {
     "status": "PASS",
@@ -22,5 +22,10 @@
   "new_G_training": 0,
   "new_timing_case_rounds": 450,
   "remote_launch": "UNKNOWN_NOT_ATTEMPTED",
-  "network_state": "Automatic approval rejected pwsh outer execution; direct native clients also unable to connect. Healthy remote tasks untouched."
+  "network_state": "User-authorized bounded compatibility test PASS; network restored and previous local commits pushed/OID VERIFIED",
+  "known_pending_dependency_repair": {
+    "F": 9,
+    "predict": 9,
+    "science_unchanged": true
+  }
 }

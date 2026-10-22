@@ -4,10 +4,37 @@ import unittest
 from unittest.mock import patch
 from pathlib import Path
 from experiments.cric_dura_comparison.io import read,write
-from experiments.cric_dura_comparison.supervised_extension import prepare,RUN,READOUT,SEEDS
+from experiments.cric_dura_comparison.supervised_extension import prepare,repair_pending_concat,RUN,READOUT,SEEDS
 
 
 class SupervisedExtensionTests(unittest.TestCase):
+    def test_concat_dependency_only_moves_unstarted_consumers(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);jobs=[];state={'jobs':{}};snapshots={}
+            for i in range(9):
+                key='binding/'+str(i);path=root/(str(i)+'.json')
+                c=dict(satellite_concat=i<6,ablation=None if i<6 else 'F15',output_root=str(root/'outputs'/str(i)))
+                write(path,c);snapshots[str(path)]=c
+                for suffix,kind in (('','F'),('/predict','predict')):
+                    cfg=path
+                    if kind=='predict':
+                        cfg=root/(str(i)+'-predict.json');pc=dict(c,output_root=str(root/'predictions'/str(i)))
+                        write(cfg,pc);snapshots[str(cfg)]=pc
+                    jobs.append(dict(id=key+suffix,kind=kind,config=str(cfg),worker_release='old'))
+                    state['jobs'][key+suffix]={'status':'QUEUED'}
+            rt=dict(previous_controller_cwd='old',release_root='new',code_commit='new-code')
+            original=copy.deepcopy(jobs)
+            promoted=repair_pending_concat(rt,jobs,state,{'unrelated-healthy':{'pid':1}})
+            self.assertEqual(len(promoted),18)
+            self.assertTrue(all(j['worker_release']=='new' for j in jobs))
+            self.assertEqual({p:read(p) for p in snapshots},snapshots)
+            state['jobs']['binding/0']['status']='RUNNING'
+            with self.assertRaises(ValueError):repair_pending_concat(rt,original,state,{'binding/0':{'pid':2}})
+            state['jobs']['binding/0']['status']='QUEUED'
+            (root/'predictions/5').mkdir(parents=True)
+            with self.assertRaises(ValueError):repair_pending_concat(rt,original,state,{})
+            self.assertTrue(all(j['worker_release']=='old' for j in original))
+
     def test_supervised_owner_preserves_existing_accelerated_G_metadata(self):
         from experiments.cric_dura_comparison import multiprocess_control as control
         with tempfile.TemporaryDirectory() as directory:

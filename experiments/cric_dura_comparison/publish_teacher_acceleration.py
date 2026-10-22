@@ -51,6 +51,10 @@ def publish(repo,output,previous_file,ssh_config,runtime_factory=None):
     previous=json.loads(Path(previous_file).read_text(encoding='utf-8'));rt=(runtime_factory or runtime_for)(previous,commit)
     paths=[p for p in git('ls-tree','-r','--name-only','HEAD','experiments/cric_dura_comparison').decode().splitlines()
            if p.endswith('.py') or '/vendor/' in p]
+    if rt.get('supervised_extension'):
+        dependency='experiments/phase1_external_dg_aug/augmentation.py'
+        if not git('ls-tree','--name-only','HEAD',dependency).strip():raise ValueError('Committed default concat dependency missing')
+        paths.append(dependency)
     required=('bootstrap.py','g_cache.py','g_lineage.py','g_train.py','pipeline.py','acceleration_smoke.py','teacher_targets.py')
     if rt.get('F_source_binding_recovery'):
         required+=('source_iq.py','f_binding_recovery.py','publish_F_binding_repair.py')

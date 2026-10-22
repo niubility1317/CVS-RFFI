@@ -33,6 +33,10 @@ def smoke(rt,output):
             if a.use_unlabeled or a.use_ema_teacher:raise ValueError('Supervised smoke activated U/EMA')
             model=install(native.build_baseline_model(a,'cpu'),c)
         logits=model(x);loss=torch.nn.functional.cross_entropy(logits,y);loss.backward()
+        for progress,step in ((0.,1),(.8,9000)):
+            augmented,info=model._cd_augmentor(x,progress,step)
+            if augmented.shape!=x.shape or not torch.isfinite(augmented).all() or info['weight']!=.68:
+                raise ValueError('Default concat dependency/source simulation failed')
         head=model.id_backbone.encoder.core.id_backbone.cls_head.weight
         if logits.shape!=(4,6) or not torch.isfinite(logits).all() or head.grad is None or not torch.isfinite(head.grad).all():
             raise ValueError('Supervised actual-source architecture smoke failed')
@@ -48,6 +52,34 @@ def validate_supervised_source(source, readouts):
         if name=='raw':continue
         if spec.get('kind')!='contract_matched' or spec.get('roles')!='L':
             raise ValueError('Strict supervised system must not inherit a G-LU ancestor')
+
+
+def repair_pending_concat(rt,jobs,state,active):
+    """Only the prior repair release omitted this already-fixed dependency."""
+    legacy=rt.get('previous_controller_cwd')
+    if not legacy:return []
+    selected=[];excluded=set(state.get('excluded_job_ids',[]))
+    for j in jobs:
+        if j['kind']!='F' or j['id'] in excluded or j.get('worker_release')!=legacy:continue
+        c=read(j['config'])
+        if not (c.get('satellite_concat') or c.get('ablation')=='F15'):continue
+        if state['jobs'][j['id']]['status']!='QUEUED' or j['id'] in active or Path(c['output_root']).exists():
+            raise ValueError('Concat dependency row already started; preserve and reconcile immutable recovery')
+        selected.append(j['id'])
+    if len(selected)!=9:raise ValueError('Expected only9 unstarted repair F rows needing default concat')
+    consumers=[j for j in jobs if j['id'] in selected or any(j['id']==key+'/predict' for key in selected)]
+    if len(consumers)!=18:raise ValueError('Expected18 default concat consumers')
+    for j in consumers:
+        if (state['jobs'][j['id']]['status']!='QUEUED' or j['id'] in active
+                or Path(read(j['config'])['output_root']).exists()):
+            raise ValueError('Do not alter started concat consumers or existing outputs')
+    promoted=[]
+    for j in consumers:
+        old_release=j['worker_release']
+        j.update(worker_release=rt['release_root'],execution_commit=rt['code_commit'])
+        promoted.append(dict(id=j['id'],old_release=old_release,new_release=rt['release_root'],
+            config_unchanged=True,scientific_run_and_budget_unchanged=True))
+    return promoted
 
 
 def architecture_config(template, arm, seed, project, commit, frozen_sources):
@@ -68,6 +100,7 @@ def architecture_config(template, arm, seed, project, commit, frozen_sources):
 def prepare(rt,jobs,previous,active):
     """Run once after exact-owner handover, leaving every old job unchanged."""
     old_ids=[j['id'] for j in jobs]
+    dependency_repair=repair_pending_concat(rt,jobs,previous,active)
     configs=Path(rt['control_root'])/'supplement_configs'
     f15={};f20={};supervised={}
     for j in jobs:
@@ -132,6 +165,7 @@ def prepare(rt,jobs,previous,active):
     if [j['id'] for j in jobs[:len(old_ids)]]!=old_ids:raise ValueError('Old queue modified')
     previous['supervised_extension']=dict(new_F=24,new_readout_rows=30,new_jobs=85,
         trained=training,reused=reuse,existing_strict_supervised_F=51,new_G_training=0,
-        source_U_IQ_reads=0,healthy_PIDs_preserved=list(active),source_contract='F0 existing validated roles')
+        source_U_IQ_reads=0,healthy_PIDs_preserved=list(active),source_contract='F0 existing validated roles',
+        pending_concat_dependency_repair=dependency_repair)
     write(Path(rt['control_root'])/'supervised_extension.json',previous['supervised_extension'])
     return jobs
