@@ -23,7 +23,7 @@
   "replaces_run_id": "20261021-phase1-T1-DURA-F-ablation-m63-r01",
   "authorization": "用户2026-10-22明确要求优化修复F消融问题并重新发布实验；源侧定位错序技术故障，不按目标分数调参。",
   "code": {
-    "commit": "SET_AT_COMMIT",
+    "commit": "a462b7cf4c12a655e6c7a348ce2170a089f2d1cc",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 CVS-RFFI Py3.10/Torch2.1 FP32/TF32off CPU2",
     "cwd": "New immutable 20261022-phase1-T1-DURA-F-binding-control-r01 release",

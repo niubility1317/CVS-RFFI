@@ -1,0 +1,70 @@
+{
+  "status": "VERIFIED",
+  "execution_commit": "a462b7cf4c12a655e6c7a348ce2170a089f2d1cc",
+  "published_at_UTC": "2026-10-22T12:41:25.120571+00:00",
+  "source_snapshot_UTC": "2026-10-22T12:02:52.781594+00:00",
+  "actual_checkpoint_smoke": {
+    "status": "PASS",
+    "source_role": "L_s",
+    "samples": 256,
+    "old_binding_accuracy": 0.16015625,
+    "correct_binding_accuracy": 0.99609375,
+    "checkpoint": "Original fixed final T1 seed2026092701; full source ancestry checked",
+    "checkpoint_used_for_training_initialization": false,
+    "query_reads": 0,
+    "U_TX_truth_reads": 0,
+    "head_fit_updates": 0
+  },
+  "focused_tests": 29,
+  "independent_P0_P1_review": "PASS, direct completion-status and optional timing-import fixes reviewed",
+  "original_healthy_workers_adopted": 25,
+  "same_PID_or_natural_completion": true,
+  "postlaunch_log_growth_workers": 24,
+  "total_jobs": 977,
+  "original_jobs": 769,
+  "technical_replacement_jobs": 208,
+  "excluded_history_jobs": 208,
+  "counts": {
+    "COMPLETE": 516,
+    "RUNNING": 24,
+    "SKIPPED_INPUT_BINDING_REPLACED": 31,
+    "QUEUED": 405,
+    "FAILED": 1
+  },
+  "effective_counts": {
+    "COMPLETE": 351,
+    "RUNNING": 12,
+    "QUEUED": 405,
+    "FAILED": 1
+  },
+  "replacement_F_status_counts": {
+    "QUEUED": 69
+  },
+  "GPU_workers": 24,
+  "new_technical_failures": 0,
+  "source_configs_and_G_test_handles_unchanged": true,
+  "source_IQ_bytes_labels_and_role_membership_unchanged": true,
+  "unaffected_G_not_retrained": true,
+  "original_final_T1_reused": true,
+  "checkpoint_initialization": "fresh scratch20 and strict own10/20, no invalid weights",
+  "monitor": "ACTIVE hourly compact only; correct physical ID binding for69 replacement source training, existing truth-last afterwards",
+  "ETA": {
+    "timestamp": "2026-10-22 20:33 香港时间",
+    "estimate_hours": [
+      18,
+      30
+    ],
+    "new_model_epochs": 3450,
+    "new_updates": 765900,
+    "new_elapsed_worker_hours": [
+      105,
+      140
+    ],
+    "standalone_new_training_hours": [
+      7,
+      10
+    ],
+    "not_dedicated_GPU_hours": true
+  },
+  "scope": "New69F queued at final readback; actual checkpoint source verification is not new training/test accuracy. Old erroneous metrics retained INVALID_INPUT_BINDING. Sole old timing import failure already replaced by completed r02."
+}
