@@ -1,0 +1,272 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261023-phase1-external-sat-concat-audit-r01",
+  "group_id": "phase1-four-baseline-satellite-execution-audit",
+  "display_name": "四种对比方法星地拼接增强实际执行复核",
+  "description": "Source-only forensic audit of all four published native DG methods and own-CE controls, without target-score-driven reruns",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "RIEI",
+    "DRIFT",
+    "IB-RFF",
+    "SDG",
+    "source-only",
+    "satellite-concat",
+    "execution-audit"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261019-phase1-external-dg-concat-pl-m219-r03",
+    "20261021-phase1-dg-sourcecount1to6-m432-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-23明确要求再次检查四个对比方法的星地拼接增强，异常时修复并考虑重发；本run先执行只读源侧核查，不据目标低分重跑。",
+  "code": {
+    "commit": "SET_AT_COMMIT",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "Verified Python; source logs stdlib; transient model probes existing N607 Torch environment CPU2",
+    "cwd": "Local workspace; probes isolated within original immutable baseline release",
+    "entry": "experiments.phase1_external_dg_aug.concat_audit"
+  },
+  "data": {
+    "dataset": "ManySig/ManyRx, existing published contracts",
+    "version": "reuse existing VALIDATED_ONCE roles and seven observations; F0 PL exports legal U IQ only",
+    "representation": "equalized1,256 IQ,per-packet float32 unitRMS",
+    "contract_ref": "Parent experiment.json actual source-only physical-ID roles",
+    "physical_ids_ref": "Unchanged validated source L/U/V handles; U labels remain hidden",
+    "label_map_ref": "source metadata#/classes",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "roles": {
+      "L_s": "Only existing legal source roles",
+      "U_s": "Only for already-registered PL rows; no truth",
+      "V": "Logs only"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Reuse VALIDATED_ONCE; no data revalidation",
+    "support_query_ref": "Phase1 source-only audit; no target access",
+    "leo_config_ref": "default LEO_WEAK source concat; clean + six practical frozen evaluation",
+    "varying_roles_note": "Per-row protocol and actual counts below; F0_PL uses same physical roles as F0 with hidden U IQ enabled."
+  },
+  "permissions": {
+    "regime": "Existing source config/logs/selected checkpoint telemetry;20 transient source-only CPU stage-cases including24 method-native optimizer steps; no weight written back or GPU training",
+    "query_use": "No target prediction, target IQ or target truth read",
+    "external_method_exception": null,
+    "claim_scope": "Augmentation execution and loss/gradient path verification, not performance tuning"
+  },
+  "checkpoint": {
+    "initialization": "Existing same-row selected source checkpoint read only for diagnostics; no new experiment initialized",
+    "sources": [
+      "Registered parent native219 F0 seed01 full/CE, supervised/ordinaryPL, including IB stage1 and stage2"
+    ],
+    "contract_check_ref": "Selected payload/config/source-contract correspondence; original heads retained",
+    "provenance_verdict": "Source-only diagnostic, existing verified training provenance reused; no derived checkpoint persisted",
+    "selection_rule": "Existing frozen selection unchanged"
+  },
+  "execution": {
+    "host": "Local and ordinary N607 read-only source inspection",
+    "launch_owner": "codex-four-baseline-concat-audit",
+    "launch_command": "F:/App/miniconda3/python.exe -X utf8 tools/audit_external_sat_concat_sources.py; then tools/audit_external_sat_concat_probe.py (source-only CPU)",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "local_artifacts/external_sat_concat_audit_20261023",
+    "runtime_ref": "local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/runtime.json",
+    "gpu_policy": "No additional N607 GPU training process; CPU2 source probes",
+    "stop_rule": "Any missing source artifact, inconsistent loss/count or absent satellite gradient is reported; preserve all outputs and healthy workloads. Fix only a reproduced defect; no score-driven rerun.",
+    "postlaunch_evidence_ref": "local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/postlaunch_verified.json"
+  },
+  "expected_artifacts": [
+    "source_audit_rows.csv",
+    "method/regime summary",
+    "source-only real-checkpoint probe evidence",
+    "audit report and conditional relaunch decision"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Actual satellite examples",
+      "Selected checkpoint applied exposure",
+      "CE+.68sat+native+PL reconstruction",
+      "Satellite scalar and head/backbone gradients",
+      "Joined layout"
+    ],
+    "dimensions": [
+      "parent run",
+      "family",
+      "full/CE",
+      "sup/PL",
+      "model seed",
+      "contract",
+      "stage"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "No target scoring in this audit"
+  },
+  "rows": [
+    {
+      "row_id": "riei-source-audit",
+      "method": "riei",
+      "variant": "ce-pl",
+      "purpose": "Audit existing full/CE supervised/ordinaryPL source augmentation, stage logs and selected checkpoint telemetry; no new model training",
+      "config_ref": "Existing immutable row resolved_config.json / freeze.json; see source_audit_rows.csv",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/runtime.json#/run_root/F0-ibrff-ce-pl-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "family": "riei",
+        "source_contract": "Each already-validated existing immutable contract; no source/target membership change"
+      },
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": null,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Audit retains actual existing per-row three model seeds and original splits; not a new seed sweep. CPU probe source-only and no query.",
+      "epochs": 200,
+      "updates": null,
+      "optimizer": "Adam",
+      "lr": 0.001,
+      "budget_ref": "Read full available structured source logs; CPU transient backward probes only; no persisted model or target access",
+      "output_root": "automation_reports/CV-SincNet/20261023-phase1-external-sat-concat-audit-r01/riei",
+      "log_path": "local_artifacts/external_sat_concat_audit_20261023/source_audit.json",
+      "command": "python -u -m experiments.phase1_external_dg_aug.driver worker --config ROW.json",
+      "expected_artifacts": [
+        "Complete source-stage audit and selected-telemetry checks",
+        "Real-checkpoint source-only satellite-gradient and batch-layout probes"
+      ],
+      "stage_count": 2
+    },
+    {
+      "row_id": "drift-source-audit",
+      "method": "drift",
+      "variant": "ce-pl",
+      "purpose": "Audit existing full/CE supervised/ordinaryPL source augmentation, stage logs and selected checkpoint telemetry; no new model training",
+      "config_ref": "Existing immutable row resolved_config.json / freeze.json; see source_audit_rows.csv",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/runtime.json#/run_root/F0-ibrff-ce-pl-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "family": "drift",
+        "source_contract": "Each already-validated existing immutable contract; no source/target membership change"
+      },
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": null,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Audit retains actual existing per-row three model seeds and original splits; not a new seed sweep. CPU probe source-only and no query.",
+      "epochs": 200,
+      "updates": null,
+      "optimizer": "Adam",
+      "lr": 0.001,
+      "budget_ref": "Read full available structured source logs; CPU transient backward probes only; no persisted model or target access",
+      "output_root": "automation_reports/CV-SincNet/20261023-phase1-external-sat-concat-audit-r01/drift",
+      "log_path": "local_artifacts/external_sat_concat_audit_20261023/source_audit.json",
+      "command": "python -u -m experiments.phase1_external_dg_aug.driver worker --config ROW.json",
+      "expected_artifacts": [
+        "Complete source-stage audit and selected-telemetry checks",
+        "Real-checkpoint source-only satellite-gradient and batch-layout probes"
+      ],
+      "stage_count": 2
+    },
+    {
+      "row_id": "ibrff-source-audit",
+      "method": "ibrff",
+      "variant": "ce-pl",
+      "purpose": "Audit existing full/CE supervised/ordinaryPL source augmentation, stage logs and selected checkpoint telemetry; no new model training",
+      "config_ref": "Existing immutable row resolved_config.json / freeze.json; see source_audit_rows.csv",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/runtime.json#/run_root/F0-ibrff-ce-pl-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "family": "ibrff",
+        "source_contract": "Each already-validated existing immutable contract; no source/target membership change"
+      },
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": null,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Audit retains actual existing per-row three model seeds and original splits; not a new seed sweep. CPU probe source-only and no query.",
+      "epochs": 200,
+      "updates": null,
+      "optimizer": "Adam",
+      "lr": 0.001,
+      "budget_ref": "Read full available structured source logs; CPU transient backward probes only; no persisted model or target access",
+      "output_root": "automation_reports/CV-SincNet/20261023-phase1-external-sat-concat-audit-r01/ibrff",
+      "log_path": "local_artifacts/external_sat_concat_audit_20261023/source_audit.json",
+      "command": "python -u -m experiments.phase1_external_dg_aug.driver worker --config ROW.json",
+      "expected_artifacts": [
+        "Complete source-stage audit and selected-telemetry checks",
+        "Real-checkpoint source-only satellite-gradient and batch-layout probes"
+      ],
+      "stage_count": 2
+    },
+    {
+      "row_id": "sdg-source-audit",
+      "method": "sdg",
+      "variant": "ce-pl",
+      "purpose": "Audit existing full/CE supervised/ordinaryPL source augmentation, stage logs and selected checkpoint telemetry; no new model training",
+      "config_ref": "Existing immutable row resolved_config.json / freeze.json; see source_audit_rows.csv",
+      "resolved_config_ref": "local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/runtime.json#/run_root/F0-ibrff-ce-pl-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "family": "sdg",
+        "source_contract": "Each already-validated existing immutable contract; no source/target membership change"
+      },
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": null,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Audit retains actual existing per-row three model seeds and original splits; not a new seed sweep. CPU probe source-only and no query.",
+      "epochs": 200,
+      "updates": null,
+      "optimizer": "Adam",
+      "lr": 0.001,
+      "budget_ref": "Read full available structured source logs; CPU transient backward probes only; no persisted model or target access",
+      "output_root": "automation_reports/CV-SincNet/20261023-phase1-external-sat-concat-audit-r01/sdg",
+      "log_path": "local_artifacts/external_sat_concat_audit_20261023/source_audit.json",
+      "command": "python -u -m experiments.phase1_external_dg_aug.driver worker --config ROW.json",
+      "expected_artifacts": [
+        "Complete source-stage audit and selected-telemetry checks",
+        "Real-checkpoint source-only satellite-gradient and batch-layout probes"
+      ],
+      "stage_count": 2
+    }
+  ],
+  "notes": [
+    "No target scores/truth/views used for diagnosis; no task stopped or relaunched.",
+    "Audit scope516 published models:156 original-suite four-method rows +360 valid source-count rows. Independent ResNet controls and skipped5-source sweep excluded."
+  ],
+  "research_plan": {
+    "expected_training": 219,
+    "supervised": 192,
+    "ordinary_PL": 27,
+    "cost_rows": 96,
+    "PL": {
+      "threshold": 0.95,
+      "weight": 1.0,
+      "U_L_ratio": 1,
+      "teacher": false,
+      "strong_consistency": false
+    },
+    "satellite": {
+      "enabled_in_all_rows": true,
+      "identity_CE_weight": 0.68,
+      "consistency_weight": 0.0,
+      "first_batch": true
+    }
+  },
+  "registered_at": "2026-10-22T16:19:49+00:00"
+}

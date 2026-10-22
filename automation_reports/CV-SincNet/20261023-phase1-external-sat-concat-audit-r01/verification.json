@@ -1,0 +1,33 @@
+{
+  "status": "VERIFIED",
+  "scientific_verdict": "AUGMENTATION_EXECUTION_NORMAL",
+  "repair_required": false,
+  "relaunch_required": false,
+  "parent_runs": [
+    "20261019-phase1-external-dg-concat-pl-m219-r03",
+    "20261021-phase1-dg-sourcecount1to6-m432-r01"
+  ],
+  "source_models": 516,
+  "stage_logs": 654,
+  "full_source_records": 57864,
+  "matched_actual_frozen_configs": 516,
+  "selected_checkpoints_with_positive_augmentation": 516,
+  "real_checkpoint_stage_probes": 20,
+  "actual_LEO_channel_cases": 3,
+  "satellite_scalar_gradient": 0.68,
+  "concat_and_PL_joint_forward": "PASS; SDG native two-view offsets and IB-RFF both stages covered",
+  "target_reads": 0,
+  "N607_GPU_training_processes_started": 0,
+  "persisted_model_writes": 0,
+  "focused_audit_checker_tests": 3,
+  "source_only": true,
+  "unchanged_scientific_recipes": true,
+  "negative_target_scores_not_used": true,
+  "caveats": [
+    "IB-RFF early stopping under max-budget-relative schedule concentrates channel use in the initial .30 stage; not augmentation inactivity.",
+    "Probability applies to a batch; non-applied extra slots are registered clean duplicates. satellite_slots differ from actual_channel_examples.",
+    "CPU backward probes verify loss/gradient wiring on actual checkpoints; they are not training-speed or full-dataset accuracy measurements.",
+    "No claim that simulated LEO conditions exhaust real satellite hardware or equal target practical conditions."
+  ],
+  "ephemeral_method_native_optimizer_steps": 24
+}

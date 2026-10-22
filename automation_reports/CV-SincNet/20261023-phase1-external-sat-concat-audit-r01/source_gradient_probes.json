@@ -1,0 +1,623 @@
+{
+  "status": "PASS",
+  "cases": [
+    {
+      "satellite_head": [
+        "cls_head"
+      ],
+      "satellite_head_gradients": [
+        "cls_head.weight",
+        "cls_head.bias"
+      ],
+      "satellite_backbone_gradient_tensors": 23,
+      "satellite_gradient_norm": 5.448279969604854e+32,
+      "satellite_scalar_gradient": 0.6800000071525574,
+      "row_id": "F0-ibrff-ce-pl-s2026092701",
+      "family": "ibrff",
+      "variant": "ce",
+      "regime": "pl",
+      "stage": 1,
+      "status": "PASS",
+      "batch_size": 6,
+      "joined_examples": 18,
+      "satellite_offset": 6,
+      "joined_layout_matches": true,
+      "selected_checkpoint_telemetry_positive": true,
+      "satellite_CE": 1.4224859476089478,
+      "satellite_samples": 6,
+      "applied_samples": 6,
+      "PL_seen": 6,
+      "satellite_scenario": "leo_rain_weak",
+      "ephemeral_optimizer_steps": 1
+    },
+    {
+      "satellite_head": [
+        "cls_head"
+      ],
+      "satellite_head_gradients": [
+        "cls_head.weight",
+        "cls_head.bias"
+      ],
+      "satellite_backbone_gradient_tensors": 23,
+      "satellite_gradient_norm": 2442911.3012161613,
+      "satellite_scalar_gradient": 0.6800000071525574,
+      "row_id": "F0-ibrff-ce-pl-s2026092701",
+      "family": "ibrff",
+      "variant": "ce",
+      "regime": "pl",
+      "stage": 2,
+      "status": "PASS",
+      "batch_size": 6,
+      "joined_examples": 18,
+      "satellite_offset": 6,
+      "joined_layout_matches": true,
+      "selected_checkpoint_telemetry_positive": true,
+      "satellite_CE": 1.1099659204483032,
+      "satellite_samples": 6,
+      "applied_samples": 6,
+      "PL_seen": 6,
+      "satellite_scenario": "leo_low_elev_weak",
+      "ephemeral_optimizer_steps": 1
+    },
+    {
+      "satellite_head": [
+        "cls_head"
+      ],
+      "satellite_head_gradients": [
+        "cls_head.weight",
+        "cls_head.bias"
+      ],
+      "satellite_backbone_gradient_tensors": 23,
+      "satellite_gradient_norm": 1.5364517778244597e+35,
+      "satellite_scalar_gradient": 0.6800000071525574,
+      "row_id": "F0-ibrff-ce-s2026092701",
+      "family": "ibrff",
+      "variant": "ce",
+      "regime": "supervised",
+      "stage": 1,
+      "status": "PASS",
+      "batch_size": 6,
+      "joined_examples": 12,
+      "satellite_offset": 6,
+      "joined_layout_matches": true,
+      "selected_checkpoint_telemetry_positive": true,
+      "satellite_CE": 0.6476702690124512,
+      "satellite_samples": 6,
+      "applied_samples": 6,
+      "PL_seen": 0,
+      "satellite_scenario": "leo_rain_weak",
+      "ephemeral_optimizer_steps": 1
+    },
+    {
+      "satellite_head": [
+        "cls_head"
+      ],
+      "satellite_head_gradients": [
+        "cls_head.weight",
+        "cls_head.bias"
+      ],
+      "satellite_backbone_gradient_tensors": 23,
+      "satellite_gradient_norm": 8.459051181982378e+34,
+      "satellite_scalar_gradient": 0.6800000071525574,
+      "row_id": "F0-ibrff-ce-s2026092701",
+      "family": "ibrff",
+      "variant": "ce",
+      "regime": "supervised",
+      "stage": 2,
+      "status": "PASS",
+      "batch_size": 6,
+      "joined_examples": 12,
+      "satellite_offset": 6,
+      "joined_layout_matches": true,
+      "selected_checkpoint_telemetry_positive": true,
+      "satellite_CE": 0.5412083268165588,
+      "satellite_samples": 6,
+      "applied_samples": 6,
+      "PL_seen": 0,
+      "satellite_scenario": "leo_low_elev_weak",
+      "ephemeral_optimizer_steps": 1
+    },
+    {
+      "satellite_head": [
+        "cls_head"
+      ],
+      "satellite_head_gradients": [
+        "cls_head.weight",
+        "cls_head.bias"
+      ],
+      "satellite_backbone_gradient_tensors": 23,
+      "satellite_gradient_norm": 2.1500793205412912e+35,
+      "satellite_scalar_gradient": 0.6800000071525574,
+      "row_id": "F0-ibrff-full-pl-s2026092701",
+      "family": "ibrff",
+      "variant": "full",
+      "regime": "pl",
+      "stage": 1,
+      "status": "PASS",
+      "batch_size": 6,
+      "joined_examples": 18,
+      "satellite_offset": 6,
+      "joined_layout_matches": true,
+      "selected_checkpoint_telemetry_positive": true,
+      "satellite_CE": 1.4224859476089478,
+      "satellite_samples": 6,
+      "applied_samples": 6,
+      "PL_seen": 6,
+      "satellite_scenario": "leo_rain_weak",
+      "ephemeral_optimizer_steps": 1
+    },
+    {
+      "satellite_head": [
+        "cls_head"
+      ],
+      "satellite_head_gradients": [
+        "cls_head.weight",
+        "cls_head.bias"
+      ],
+      "satellite_backbone_gradient_tensors": 23,
+      "satellite_gradient_norm": 5.367647806509213e+33,
+      "satellite_scalar_gradient": 0.6800000071525574,
+      "row_id": "F0-ibrff-full-pl-s2026092701",
+      "family": "ibrff",
+      "variant": "full",
+      "regime": "pl",
+      "stage": 2,
+      "status": "PASS",
+      "batch_size": 6,
+      "joined_examples": 18,
+      "satellite_offset": 6,
+      "joined_layout_matches": true,
+      "selected_checkpoint_telemetry_positive": true,
+      "satellite_CE": 0.3453507423400879,
+      "satellite_samples": 6,
+      "applied_samples": 6,
+      "PL_seen": 6,
+      "satellite_scenario": "leo_low_elev_weak",
+      "ephemeral_optimizer_steps": 1
+    },
+    {
+      "satellite_head": [
+        "cls_head"
+      ],
+      "satellite_head_gradients": [
+        "cls_head.weight",
+        "cls_head.bias"
+      ],
+      "satellite_backbone_gradient_tensors": 23,
+      "satellite_gradient_norm": 1.3924977823886838e+35,
+      "satellite_scalar_gradient": 0.6800000071525574,
+      "row_id": "F0-ibrff-full-s2026092701",
+      "family": "ibrff",
+      "variant": "full",
+      "regime": "supervised",
+      "stage": 1,
+      "status": "PASS",
+      "batch_size": 6,
+      "joined_examples": 12,
+      "satellite_offset": 6,
+      "joined_layout_matches": true,
+      "selected_checkpoint_telemetry_positive": true,
+      "satellite_CE": 0.6476702690124512,
+      "satellite_samples": 6,
+      "applied_samples": 6,
+      "PL_seen": 0,
+      "satellite_scenario": "leo_rain_weak",
+      "ephemeral_optimizer_steps": 1
+    },
+    {
+      "satellite_head": [
+        "cls_head"
+      ],
+      "satellite_head_gradients": [
+        "cls_head.weight",
+        "cls_head.bias"
+      ],
+      "satellite_backbone_gradient_tensors": 23,
+      "satellite_gradient_norm": 4.7998664312836715e+33,
+      "satellite_scalar_gradient": 0.6800000071525574,
+      "row_id": "F0-ibrff-full-s2026092701",
+      "family": "ibrff",
+      "variant": "full",
+      "regime": "supervised",
+      "stage": 2,
+      "status": "PASS",
+      "batch_size": 6,
+      "joined_examples": 12,
+      "satellite_offset": 6,
+      "joined_layout_matches": true,
+      "selected_checkpoint_telemetry_positive": true,
+      "satellite_CE": 0.043547581881284714,
+      "satellite_samples": 6,
+      "applied_samples": 6,
+      "PL_seen": 0,
+      "satellite_scenario": "leo_low_elev_weak",
+      "ephemeral_optimizer_steps": 1
+    },
+    {
+      "satellite_head": [
+        "fc"
+      ],
+      "satellite_head_gradients": [
+        "fc.weight",
+        "fc.bias"
+      ],
+      "satellite_backbone_gradient_tensors": 58,
+      "satellite_gradient_norm": 93.37274933435401,
+      "satellite_scalar_gradient": 0.6800000071525574,
+      "row_id": "F0-sdg-ce-pl-s2026092701",
+      "family": "sdg",
+      "variant": "ce",
+      "regime": "pl",
+      "stage": 1,
+      "status": "PASS",
+      "batch_size": 6,
+      "joined_examples": 18,
+      "satellite_offset": 6,
+      "joined_layout_matches": true,
+      "selected_checkpoint_telemetry_positive": true,
+      "satellite_CE": 2.25659441947937,
+      "satellite_samples": 6,
+      "applied_samples": 6,
+      "PL_seen": 6,
+      "satellite_scenario": "leo_rain_weak",
+      "ephemeral_optimizer_steps": 1
+    },
+    {
+      "satellite_head": [
+        "fc"
+      ],
+      "satellite_head_gradients": [
+        "fc.weight",
+        "fc.bias"
+      ],
+      "satellite_backbone_gradient_tensors": 56,
+      "satellite_gradient_norm": 44.04391598999359,
+      "satellite_scalar_gradient": 0.6800000071525574,
+      "row_id": "F0-sdg-ce-s2026092701",
+      "family": "sdg",
+      "variant": "ce",
+      "regime": "supervised",
+      "stage": 1,
+      "status": "PASS",
+      "batch_size": 6,
+      "joined_examples": 12,
+      "satellite_offset": 6,
+      "joined_layout_matches": true,
+      "selected_checkpoint_telemetry_positive": true,
+      "satellite_CE": 1.1191836595535278,
+      "satellite_samples": 6,
+      "applied_samples": 6,
+      "PL_seen": 0,
+      "satellite_scenario": "leo_rain_weak",
+      "ephemeral_optimizer_steps": 1
+    },
+    {
+      "satellite_head": [
+        "fc"
+      ],
+      "satellite_head_gradients": [
+        "fc.weight",
+        "fc.bias"
+      ],
+      "satellite_backbone_gradient_tensors": 56,
+      "satellite_gradient_norm": 80.8888192851949,
+      "satellite_scalar_gradient": 0.6800000071525574,
+      "row_id": "F0-sdg-full-pl-s2026092701",
+      "family": "sdg",
+      "variant": "full",
+      "regime": "pl",
+      "stage": 1,
+      "status": "PASS",
+      "batch_size": 6,
+      "joined_examples": 24,
+      "satellite_offset": 12,
+      "joined_layout_matches": true,
+      "selected_checkpoint_telemetry_positive": true,
+      "satellite_CE": 3.046555757522583,
+      "satellite_samples": 6,
+      "applied_samples": 6,
+      "PL_seen": 6,
+      "satellite_scenario": "leo_rain_weak",
+      "ephemeral_optimizer_steps": 1
+    },
+    {
+      "satellite_head": [
+        "fc"
+      ],
+      "satellite_head_gradients": [
+        "fc.weight",
+        "fc.bias"
+      ],
+      "satellite_backbone_gradient_tensors": 54,
+      "satellite_gradient_norm": 42.48549066385203,
+      "satellite_scalar_gradient": 0.6800000071525574,
+      "row_id": "F0-sdg-full-s2026092701",
+      "family": "sdg",
+      "variant": "full",
+      "regime": "supervised",
+      "stage": 1,
+      "status": "PASS",
+      "batch_size": 6,
+      "joined_examples": 18,
+      "satellite_offset": 12,
+      "joined_layout_matches": true,
+      "selected_checkpoint_telemetry_positive": true,
+      "satellite_CE": 1.1481759548187256,
+      "satellite_samples": 6,
+      "applied_samples": 6,
+      "PL_seen": 0,
+      "satellite_scenario": "leo_rain_weak",
+      "ephemeral_optimizer_steps": 1
+    },
+    {
+      "satellite_head": [
+        "ec.net.6"
+      ],
+      "satellite_head_gradients": [
+        "ec.net.6.weight",
+        "ec.net.6.bias"
+      ],
+      "satellite_backbone_gradient_tensors": 64,
+      "satellite_gradient_norm": 40.16743396950304,
+      "satellite_scalar_gradient": 0.6800000071525574,
+      "row_id": "F0-riei-ce-pl-s2026092701",
+      "family": "riei",
+      "variant": "ce",
+      "regime": "pl",
+      "stage": 1,
+      "status": "PASS",
+      "batch_size": 6,
+      "joined_examples": 18,
+      "satellite_offset": 6,
+      "joined_layout_matches": true,
+      "selected_checkpoint_telemetry_positive": true,
+      "satellite_CE": 2.0674941539764404,
+      "satellite_samples": 6,
+      "applied_samples": 6,
+      "PL_seen": 6,
+      "satellite_scenario": "leo_rain_weak",
+      "ephemeral_optimizer_steps": 1
+    },
+    {
+      "satellite_head": [
+        "ec.net.6"
+      ],
+      "satellite_head_gradients": [
+        "ec.net.6.weight",
+        "ec.net.6.bias"
+      ],
+      "satellite_backbone_gradient_tensors": 64,
+      "satellite_gradient_norm": 34.43276474859802,
+      "satellite_scalar_gradient": 0.6800000071525574,
+      "row_id": "F0-riei-ce-s2026092701",
+      "family": "riei",
+      "variant": "ce",
+      "regime": "supervised",
+      "stage": 1,
+      "status": "PASS",
+      "batch_size": 6,
+      "joined_examples": 12,
+      "satellite_offset": 6,
+      "joined_layout_matches": true,
+      "selected_checkpoint_telemetry_positive": true,
+      "satellite_CE": 2.0131499767303467,
+      "satellite_samples": 6,
+      "applied_samples": 6,
+      "PL_seen": 0,
+      "satellite_scenario": "leo_rain_weak",
+      "ephemeral_optimizer_steps": 1
+    },
+    {
+      "satellite_head": [
+        "ec.net.6"
+      ],
+      "satellite_head_gradients": [
+        "ec.net.6.weight",
+        "ec.net.6.bias"
+      ],
+      "satellite_backbone_gradient_tensors": 64,
+      "satellite_gradient_norm": 32.10942316815991,
+      "satellite_scalar_gradient": 0.6800000071525574,
+      "row_id": "F0-riei-full-pl-s2026092701",
+      "family": "riei",
+      "variant": "full",
+      "regime": "pl",
+      "stage": 1,
+      "status": "PASS",
+      "batch_size": 6,
+      "joined_examples": 18,
+      "satellite_offset": 6,
+      "joined_layout_matches": true,
+      "selected_checkpoint_telemetry_positive": true,
+      "satellite_CE": 1.9009308815002441,
+      "satellite_samples": 6,
+      "applied_samples": 6,
+      "PL_seen": 6,
+      "satellite_scenario": "leo_rain_weak",
+      "ephemeral_optimizer_steps": 3
+    },
+    {
+      "satellite_head": [
+        "ec.net.6"
+      ],
+      "satellite_head_gradients": [
+        "ec.net.6.weight",
+        "ec.net.6.bias"
+      ],
+      "satellite_backbone_gradient_tensors": 64,
+      "satellite_gradient_norm": 24.831478258162193,
+      "satellite_scalar_gradient": 0.6800000071525574,
+      "row_id": "F0-riei-full-s2026092701",
+      "family": "riei",
+      "variant": "full",
+      "regime": "supervised",
+      "stage": 1,
+      "status": "PASS",
+      "batch_size": 6,
+      "joined_examples": 12,
+      "satellite_offset": 6,
+      "joined_layout_matches": true,
+      "selected_checkpoint_telemetry_positive": true,
+      "satellite_CE": 1.885359287261963,
+      "satellite_samples": 6,
+      "applied_samples": 6,
+      "PL_seen": 0,
+      "satellite_scenario": "leo_rain_weak",
+      "ephemeral_optimizer_steps": 3
+    },
+    {
+      "satellite_head": [
+        "tx_classifier.net.6"
+      ],
+      "satellite_head_gradients": [
+        "tx_classifier.net.6.weight",
+        "tx_classifier.net.6.bias"
+      ],
+      "satellite_backbone_gradient_tensors": 64,
+      "satellite_gradient_norm": 417.33757611562334,
+      "satellite_scalar_gradient": 0.6800000071525574,
+      "row_id": "F0-drift-ce-pl-s2026092701",
+      "family": "drift",
+      "variant": "ce",
+      "regime": "pl",
+      "stage": 1,
+      "status": "PASS",
+      "batch_size": 6,
+      "joined_examples": 18,
+      "satellite_offset": 6,
+      "joined_layout_matches": true,
+      "selected_checkpoint_telemetry_positive": true,
+      "satellite_CE": 1.5191048383712769,
+      "satellite_samples": 6,
+      "applied_samples": 6,
+      "PL_seen": 6,
+      "satellite_scenario": "leo_rain_weak",
+      "ephemeral_optimizer_steps": 1
+    },
+    {
+      "satellite_head": [
+        "tx_classifier.net.6"
+      ],
+      "satellite_head_gradients": [
+        "tx_classifier.net.6.weight",
+        "tx_classifier.net.6.bias"
+      ],
+      "satellite_backbone_gradient_tensors": 64,
+      "satellite_gradient_norm": 527.2892354116234,
+      "satellite_scalar_gradient": 0.6800000071525574,
+      "row_id": "F0-drift-ce-s2026092701",
+      "family": "drift",
+      "variant": "ce",
+      "regime": "supervised",
+      "stage": 1,
+      "status": "PASS",
+      "batch_size": 6,
+      "joined_examples": 12,
+      "satellite_offset": 6,
+      "joined_layout_matches": true,
+      "selected_checkpoint_telemetry_positive": true,
+      "satellite_CE": 2.3580756187438965,
+      "satellite_samples": 6,
+      "applied_samples": 6,
+      "PL_seen": 0,
+      "satellite_scenario": "leo_rain_weak",
+      "ephemeral_optimizer_steps": 1
+    },
+    {
+      "satellite_head": [
+        "tx_classifier.net.6"
+      ],
+      "satellite_head_gradients": [
+        "tx_classifier.net.6.weight",
+        "tx_classifier.net.6.bias"
+      ],
+      "satellite_backbone_gradient_tensors": 64,
+      "satellite_gradient_norm": 3509.79215283717,
+      "satellite_scalar_gradient": 0.6800000071525574,
+      "row_id": "F0-drift-full-pl-s2026092701",
+      "family": "drift",
+      "variant": "full",
+      "regime": "pl",
+      "stage": 1,
+      "status": "PASS",
+      "batch_size": 6,
+      "joined_examples": 18,
+      "satellite_offset": 6,
+      "joined_layout_matches": true,
+      "selected_checkpoint_telemetry_positive": true,
+      "satellite_CE": 4.841829776763916,
+      "satellite_samples": 6,
+      "applied_samples": 6,
+      "PL_seen": 6,
+      "satellite_scenario": "leo_rain_weak",
+      "ephemeral_optimizer_steps": 1
+    },
+    {
+      "satellite_head": [
+        "tx_classifier.net.6"
+      ],
+      "satellite_head_gradients": [
+        "tx_classifier.net.6.weight",
+        "tx_classifier.net.6.bias"
+      ],
+      "satellite_backbone_gradient_tensors": 64,
+      "satellite_gradient_norm": 11069.028247017395,
+      "satellite_scalar_gradient": 0.6800000071525574,
+      "row_id": "F0-drift-full-s2026092701",
+      "family": "drift",
+      "variant": "full",
+      "regime": "supervised",
+      "stage": 1,
+      "status": "PASS",
+      "batch_size": 6,
+      "joined_examples": 12,
+      "satellite_offset": 6,
+      "joined_layout_matches": true,
+      "selected_checkpoint_telemetry_positive": true,
+      "satellite_CE": 30.66461181640625,
+      "satellite_samples": 6,
+      "applied_samples": 6,
+      "PL_seen": 0,
+      "satellite_scenario": "leo_rain_weak",
+      "ephemeral_optimizer_steps": 1
+    }
+  ],
+  "channel_cases": [
+    {
+      "scenario": "leo_clear_weak",
+      "finite": true,
+      "shape": [
+        6,
+        2,
+        256
+      ],
+      "relative_L2_change": 1.267730155829132
+    },
+    {
+      "scenario": "leo_low_elev_weak",
+      "finite": true,
+      "shape": [
+        6,
+        2,
+        256
+      ],
+      "relative_L2_change": 1.547145108609291
+    },
+    {
+      "scenario": "leo_rain_weak",
+      "finite": true,
+      "shape": [
+        6,
+        2,
+        256
+      ],
+      "relative_L2_change": 1.2940557784447722
+    }
+  ],
+  "target_reads": 0,
+  "model_files_written": 0,
+  "device": "cpu",
+  "threads": 2,
+  "formal_training_started": 0,
+  "all_frozen_config_comparisons": 516
+}
