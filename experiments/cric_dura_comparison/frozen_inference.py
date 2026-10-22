@@ -32,6 +32,9 @@ def load_F(folder, expected_contract, device, require_no_unlabeled=False):
     if done.get('status') != 'SOURCE_FROZEN' or done.get('updates') != 11100 or done.get('epoch') != 50 or done.get('target_access') is not False:
         raise ValueError('Complete source-only fixed-final F required')
     c = done['config']
+    from .core_groups import validate_config,check_parent
+    grouped=validate_config(c)
+    require_no_unlabeled=require_no_unlabeled or (grouped is not None and not grouped[2])
     t1=c.get('method_id')=='pamf_t1_e50'
     if read(c['source_contract']) != expected_contract or (not t1 and (done.get('initialization') != 'scratch' or done.get('ancestors') != [])):
         raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH')
@@ -40,6 +43,7 @@ def load_F(folder, expected_contract, device, require_no_unlabeled=False):
         previous=None
         for epochs,offset,s in zip((20,10,20),(0,20,30),done['segments']):
             cfg=s['config'];p=Path(s['folder'])
+            check_parent(c,cfg)
             if s['status']!='SOURCE_FROZEN' or s['updates']!=epochs*222 or s['epoch']!=epochs or s['target_access'] or cfg['parent_source']!=previous or cfg['step_offset']!=offset*222 or read(cfg['source_contract'])!=expected_contract:raise ValueError('T1 segment ancestry/roles differ')
             cp=torch.load(p/'final_ssdg.pth',map_location='cpu',weights_only=False)
             if require_no_unlabeled and (cp['args'].get('use_unlabeled') is not False or cp['args'].get('use_ema_teacher') is not False):

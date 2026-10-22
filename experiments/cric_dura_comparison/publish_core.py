@@ -1,0 +1,23 @@
+"""Publish grouped objective cells while preserving mixed-release healthy jobs."""
+import argparse
+from .core_groups import CONTROL
+from .publish_teacher_acceleration import publish
+
+
+def runtime_for(previous,commit):
+    if previous.get('worker_commit')!='3e8806900449e97f3e8fa62822322932168c6447':
+        raise ValueError('Unexpected original scientific worker; reconcile owner')
+    project=previous['project'];control=project+'/runs/'+CONTROL
+    return dict(previous,run_id=CONTROL,release_root=project+'/releases/'+CONTROL,control_root=control,
+        runtime_file=project+'/releases/'+CONTROL+'/runtime.json',code_commit=commit,
+        launch_owner='codex-PAMF-three-core-20261022',source_jobs=previous['jobs'],jobs=control+'/resolved_jobs.json',
+        previous_state=previous['control_root']+'/pipeline_state.json',previous_runtime=previous['runtime_file'],
+        previous_control_root=previous['control_root'],previous_controller_cwd=previous['release_root'],
+        previous_controller_module='experiments.cric_dura_comparison.multiprocess_control',
+        F_source_binding_recovery=False,G_teacher_acceleration=False,supervised_extension=False,core_extension=True)
+
+
+if __name__=='__main__':
+    p=argparse.ArgumentParser()
+    for key in ('repo','output','previous','ssh-config'):p.add_argument('--'+key,required=True)
+    a=p.parse_args();publish(a.repo,a.output,a.previous,a.ssh_config,runtime_factory=runtime_for)

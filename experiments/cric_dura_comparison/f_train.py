@@ -96,6 +96,8 @@ def train(c, device='cuda:0', smoke_steps=None):
     parent=None
     if c.get('parent_source'):
         previous=read(Path(c['parent_source'])/'complete.json')
+        from .core_groups import check_parent
+        check_parent(c,previous['config'])
         if not is_t1 or previous['source_contract']!=c['source_contract'] or previous['config']['model_seed']!=c['model_seed'] or previous['config']['ablation']!=c.get('ablation'):
             raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH')
         parent=torch.load(Path(c['parent_source'])/'final_ssdg.pth',map_location='cpu',weights_only=False)

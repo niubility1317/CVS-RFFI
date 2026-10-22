@@ -118,6 +118,11 @@ def run(rt):
         activate(rt);numerical_policy()
         from .supervised_extension import smoke as supervised_smoke
         supervised_smoke(rt,root/'prelaunch_strict_supervised_smoke.json')
+    if rt.get('core_extension'):
+        from .bootstrap import activate,numerical_policy
+        activate(rt);numerical_policy()
+        from .core_extension import smoke as core_smoke
+        core_smoke(rt,root/'prelaunch_core_smoke.json')
     previous,active=handover(rt,jobs)
     if balance:balance.restore_handover(previous.get('load_balance',{}))
     admitted=previous.get('accelerated_G_jobs',[])
@@ -130,6 +135,12 @@ def run(rt):
         jobs=extend_supervised(rt,jobs,previous,active)
         by_id={j['id']:j for j in jobs}
         if len(by_id)!=len(jobs):raise ValueError('Duplicate supervised supplement jobs')
+        write(rt['jobs'],jobs)
+    if rt.get('core_extension'):
+        from .core_extension import prepare as extend_core
+        jobs=extend_core(rt,jobs,previous,active)
+        by_id={j['id']:j for j in jobs}
+        if len(by_id)!=len(jobs):raise ValueError('Duplicate core factorial jobs')
         write(rt['jobs'],jobs)
     if rt.get('F_source_binding_recovery'):
         from .f_binding_recovery import prepare as repair_F_binding

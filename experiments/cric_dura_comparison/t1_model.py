@@ -29,6 +29,8 @@ def hook(self,*,model,labeled_output,labels,extra,domains,optimizer_step,identit
     if self is not model or not self.training or labeled_count!=128 or optimizer_step!=self._feature_l_steps:
         raise ValueError('Ordered true L128 T1 update required')
     c=self._cd_config;arm=c.get('ablation');step=optimizer_step+c.get('step_offset',0);epoch=(step-1)//222+1
+    from .core_groups import validate_config
+    core=validate_config(c)
     pending=self._cd_pending
     if pending is None or pending['x'] is None:raise ValueError('Actual ordinary IQ absent')
     ordinary=pending['x'];first=labeled_output['tx_logits'];raw=labeled_inputs.detach()
@@ -39,7 +41,7 @@ def hook(self,*,model,labeled_output,labels,extra,domains,optimizer_step,identit
         total=total+.68*F.cross_entropy(combined[128:],labels);self._cd_extra_L+=256;self._cd_sat_seen+=128
         metrics=dict(T1_CE_control=1.,T1_L_packets=384)
     else:
-        single=arm=='F05';kl_weight=0. if arm=='F04' or single else 1.
+        single=arm=='F05';kl_weight=0. if arm=='F04' or single or (core is not None and not core[1]) else 1.
         if single:second=first;second_maps=pending['first']
         else:
             self._cd_phase='second'
@@ -72,7 +74,7 @@ def hook(self,*,model,labeled_output,labels,extra,domains,optimizer_step,identit
             raw_loss,_,_=pair(r0,r1,labels,kl_weight=kl_weight);self._cd_extra_L+=128*(1 if single else 2)
         total=.5*common+.25*ordinary_mixed+.25*as_loss+.25*raw_loss
         if appended is not None:total=total+.68*pair(m0[128:],m1[128:],labels,kl_weight=0.)[0]
-        weight=0. if arm=='F16' else .1*min(max((epoch-5)/10.,0.),1.)
+        weight=0. if arm=='F16' or (core is not None and not core[0]) else .1*min(max((epoch-5)/10.,0.),1.)
         stats=[];aux=first.sum()*0.
         if weight:
             rx=extra[1]['rx_i'].to(labels.device).long()
@@ -90,6 +92,7 @@ def hook(self,*,model,labeled_output,labels,extra,domains,optimizer_step,identit
             CRIC_total_anchors=sum(d['total_anchors'] for d in stats),T1_L_packets=128+self._cd_extra_L-self._cd_previous_extra)
     self._cd_previous_extra=self._cd_extra_L;self._cd_calls+=1
     metrics.update(T1_As_seen=self._cd_As_seen,T1_sat_seen=self._cd_sat_seen,T1_PL_seen=self._cd_U_seen,T1_PL_accepted=self._cd_U_accepted)
+    if core is not None:metrics.update({name:float(value) for name,value in zip(('core_A','core_B','core_C'),core)})
     return total-identity_loss,metrics
 
 
@@ -97,6 +100,8 @@ hook._accepts_labeled_inputs=True
 
 
 def install(model,c):
+    from .core_groups import validate_config
+    validate_config(c)
     model=install_backbone(model,c);model._source_labeled_feature_hook=MethodType(hook,model)
     model._cd_As_seen=model._cd_previous_extra=0
     if c.get('ablation')!='F15':

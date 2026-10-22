@@ -66,6 +66,8 @@ class FixedEpochLoader:
 
 
 def context(c):
+    from .core_groups import validate_config
+    validate_config(c)
     if any(c.get(k) for k in ('target_truth', 'truth', 'dataset_path', 'target_inputs', 'views_root')):
         raise ValueError('Source worker rejects dataset/target inputs')
     contract = read(c['source_contract'])

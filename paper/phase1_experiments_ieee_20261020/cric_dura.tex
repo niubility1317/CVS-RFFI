@@ -32,16 +32,14 @@ The 153 F instances comprise three exact-contract F0 reuses and 150 planned new 
 All new settings are fixed before additional target predictions and retain clean plus six practical views. Predictions for all views of each row precede independent truth-side scoring. We report Accuracy, Macro-F1, worst-RX accuracy, seed-paired differences, and repaired/newly introduced errors on the same physical observations. Target scores do not select epochs, variants, seeds, or reruns.
 
 \subsubsection{Identification and Restoration Contributions}
-The matched final-T1 F0 factorial is F16 (CRIC weight zero) versus full T1, crossed with raw versus DURA. Both retain the same staged T1 recipe. The old BASE/ALL\_TX models are historical 33/17 references, not matched final-T1 controls. Existing BASE, ALL\_TX and CROSS\_RX each have three E50 models. Their two readouts yield 18 frozen model/readout combinations and 126 view cells; missing seven-view predictions must be completed rather than inferred from existing clean results. The interaction is
+The matched final-T1 F0 restoration factorial is corrected F16 (CRIC weight zero) versus full T1, crossed with raw versus DURA. Both retain the same staged T1 recipe. The old BASE/ALL\_TX models use historical 33/17 training and do not identify a matched final-T1 effect. The interaction is
 \begin{equation}
 \begin{split}
 I={}&(A_{\mathrm{CRIC},G}-A_{\mathrm{CRIC},raw})\\
 &-(A_{\mathrm{F16},G}-A_{\mathrm{F16},raw}).
 \end{split}
 \end{equation}
-ALL\_TX with the same G tests whether restricting positives to different physical RX improves on ordinary same-TX contrast.
-
-F ablations separately use shallow-only, intermediate-only, and final-embedding-only contrast; zero R-Drop KL with two CE forwards; one CE forward; one SIG\_TIME projection; removal of the time coordinate; removal of SIG\_TIME, PA or reference response; student-generated rather than EMA pseudo labels; removal of neighbor or strong-agreement selection; removal of the U entropy term; and a same-representation CE-only labeled reference. The first fourteen settings preserve unaffected components; the CE-only reference changes the complete training recipe and is not a single-factor effect. These 15 variants, plus no cross-RX contrast, no As, restored As KL, no raw pair, no native U, and matched-calendar ordinary PL, give 21 variants using three seeds each, separately from the 153-instance comparison matrix. Structural removals require matched training; frozen branch masking is only a sensitivity diagnostic.
+The primary F mechanism study now uses three functional groups, with four main rows and a full eight-cell factorial, as specified below. Earlier layer, forward-route and gate-specific ablations remain supplementary diagnostics. Structural removals require matched training and are reported in a separate physical-structure panel; frozen branch masking is only a sensitivity diagnostic.
 
 G ablations include coarse-only, priors without CG, no conjugate-image term, and omission of the backprojected-residual prior input. Four structural and three initialization/distillation settings give 21 completed final-student runs. The realized initialization panel has three newly replicated cells and the existing single-G copied/distilled default; it is not a fully replicated $2\times2$ G-seed factorial. The two-stage four-CG default remains fixed, with teacher ancestry and incremental student cost reported separately.
 
@@ -96,6 +94,8 @@ Table~\ref{tab:final-t1-routes} separates residual reuse from Graph execution at
 F and G contain 232993 and 266951 registered learned parameters, respectively (499944 total). Separate eager profiling counts 8.856M and 25.068M Conv/Linear MACs. This excludes functional cosine-head arithmetic, FFT complex operations, CG reductions, normalization and elementwise operations; it is not total FLOPs. The eager G profile records 43 FFT/IFFT calls, whereas the residual-reuse deployment program uses 27. Recorded resident memory includes all benchmark models/Graph pools and the separately declared 13GiB scheduler reservation; it cannot represent an isolated model's VRAM requirement. The first default G+F B1 call takes 337.049ms after loading/profiling; it is not a fresh-process cold-start result. Timing samples establish finite outputs and per-round device exclusivity, but do not independently establish full-dataset route-wise prediction equivalence.
 
 Deployment counts include the learned frozen classifier and exclude optimizer, EMA and unused training branches. Convolution/linear MACs, FFT/IFFT counts and complex solver costs are reported separately. R-Drop second passes, contrast construction, EMA, U gates and entropy are training-only. Their actual forward exposures and segment/epoch/total wall times are logged and compared through the matched ablations; they do not create deployment inference passes. Contrast reuses F forwards but still incurs descriptor/similarity computation. Total training cost includes all G ancestors and teachers, unique/repeated L/U exposures, simulation, prediction and failed attempts. The unified timing and G-mechanism accuracy panels are complete; mechanism-specific timing, F-mechanism accuracy and extended data-contract panels remain pending.
+
+\input{core_mechanisms_design}
 
 \input{supervised_physics_design}
 

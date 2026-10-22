@@ -1,0 +1,738 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "focused_tests": 10,
+  "independent_P0_P1_review": "PASS; one review, no P0/P1 found",
+  "preflight": "PASS; current ordinary owner verified, new roots absent, healthy tasks preserved",
+  "actual_checkpoint_smoke": "PENDING_AT_LAUNCH",
+  "publication": "PENDING",
+  "new_F": 12,
+  "reused_F": 12,
+  "new_G": 0,
+  "new_jobs": 55,
+  "scientific_plan": {
+    "schema": "pamf_three_core_factorial_v1",
+    "rows": [
+      {
+        "row_id": "ABC000-s2026092701",
+        "bits": "000",
+        "model_seed": 2026092701,
+        "core_mechanisms": {
+          "cross_RX_identity": false,
+          "paired_prediction_consistency": false,
+          "selective_SSL": false
+        },
+        "source": "NEW_MATCHED_T1",
+        "new_F": true,
+        "epochs": 50,
+        "optimizer_updates": 11100,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "backbone": "Unchanged SIG_TIME_X3 PAMF/default joint head",
+        "CE_scaffold": "0.5CEpair ordinary128 +0.25CEpair ordinary64 +0.25CEpair As64 +0.25CEpair raw128; LS.01; As KL0",
+        "paired_KL": "0.5ordinary128 +0.25ordinary64 +0.25raw128; coefficient1",
+        "source_roles": "L only, U/EMA/entropy fully off",
+        "readouts": [
+          "raw",
+          "DURA-L",
+          "DURA-LU"
+        ],
+        "no_new_G": true
+      },
+      {
+        "row_id": "ABC000-s2026092702",
+        "bits": "000",
+        "model_seed": 2026092702,
+        "core_mechanisms": {
+          "cross_RX_identity": false,
+          "paired_prediction_consistency": false,
+          "selective_SSL": false
+        },
+        "source": "NEW_MATCHED_T1",
+        "new_F": true,
+        "epochs": 50,
+        "optimizer_updates": 11100,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "backbone": "Unchanged SIG_TIME_X3 PAMF/default joint head",
+        "CE_scaffold": "0.5CEpair ordinary128 +0.25CEpair ordinary64 +0.25CEpair As64 +0.25CEpair raw128; LS.01; As KL0",
+        "paired_KL": "0.5ordinary128 +0.25ordinary64 +0.25raw128; coefficient1",
+        "source_roles": "L only, U/EMA/entropy fully off",
+        "readouts": [
+          "raw",
+          "DURA-L",
+          "DURA-LU"
+        ],
+        "no_new_G": true
+      },
+      {
+        "row_id": "ABC000-s2026092703",
+        "bits": "000",
+        "model_seed": 2026092703,
+        "core_mechanisms": {
+          "cross_RX_identity": false,
+          "paired_prediction_consistency": false,
+          "selective_SSL": false
+        },
+        "source": "NEW_MATCHED_T1",
+        "new_F": true,
+        "epochs": 50,
+        "optimizer_updates": 11100,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "backbone": "Unchanged SIG_TIME_X3 PAMF/default joint head",
+        "CE_scaffold": "0.5CEpair ordinary128 +0.25CEpair ordinary64 +0.25CEpair As64 +0.25CEpair raw128; LS.01; As KL0",
+        "paired_KL": "0.5ordinary128 +0.25ordinary64 +0.25raw128; coefficient1",
+        "source_roles": "L only, U/EMA/entropy fully off",
+        "readouts": [
+          "raw",
+          "DURA-L",
+          "DURA-LU"
+        ],
+        "no_new_G": true
+      },
+      {
+        "row_id": "ABC001-s2026092701",
+        "bits": "001",
+        "model_seed": 2026092701,
+        "core_mechanisms": {
+          "cross_RX_identity": false,
+          "paired_prediction_consistency": false,
+          "selective_SSL": true
+        },
+        "source": "NEW_MATCHED_T1",
+        "new_F": true,
+        "epochs": 50,
+        "optimizer_updates": 11100,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "backbone": "Unchanged SIG_TIME_X3 PAMF/default joint head",
+        "CE_scaffold": "0.5CEpair ordinary128 +0.25CEpair ordinary64 +0.25CEpair As64 +0.25CEpair raw128; LS.01; As KL0",
+        "paired_KL": "0.5ordinary128 +0.25ordinary64 +0.25raw128; coefficient1",
+        "source_roles": "L+hiddenTX_U",
+        "readouts": [
+          "raw",
+          "DURA-L",
+          "DURA-LU"
+        ],
+        "no_new_G": true
+      },
+      {
+        "row_id": "ABC001-s2026092702",
+        "bits": "001",
+        "model_seed": 2026092702,
+        "core_mechanisms": {
+          "cross_RX_identity": false,
+          "paired_prediction_consistency": false,
+          "selective_SSL": true
+        },
+        "source": "NEW_MATCHED_T1",
+        "new_F": true,
+        "epochs": 50,
+        "optimizer_updates": 11100,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "backbone": "Unchanged SIG_TIME_X3 PAMF/default joint head",
+        "CE_scaffold": "0.5CEpair ordinary128 +0.25CEpair ordinary64 +0.25CEpair As64 +0.25CEpair raw128; LS.01; As KL0",
+        "paired_KL": "0.5ordinary128 +0.25ordinary64 +0.25raw128; coefficient1",
+        "source_roles": "L+hiddenTX_U",
+        "readouts": [
+          "raw",
+          "DURA-L",
+          "DURA-LU"
+        ],
+        "no_new_G": true
+      },
+      {
+        "row_id": "ABC001-s2026092703",
+        "bits": "001",
+        "model_seed": 2026092703,
+        "core_mechanisms": {
+          "cross_RX_identity": false,
+          "paired_prediction_consistency": false,
+          "selective_SSL": true
+        },
+        "source": "NEW_MATCHED_T1",
+        "new_F": true,
+        "epochs": 50,
+        "optimizer_updates": 11100,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "backbone": "Unchanged SIG_TIME_X3 PAMF/default joint head",
+        "CE_scaffold": "0.5CEpair ordinary128 +0.25CEpair ordinary64 +0.25CEpair As64 +0.25CEpair raw128; LS.01; As KL0",
+        "paired_KL": "0.5ordinary128 +0.25ordinary64 +0.25raw128; coefficient1",
+        "source_roles": "L+hiddenTX_U",
+        "readouts": [
+          "raw",
+          "DURA-L",
+          "DURA-LU"
+        ],
+        "no_new_G": true
+      },
+      {
+        "row_id": "ABC010-s2026092701",
+        "bits": "010",
+        "model_seed": 2026092701,
+        "core_mechanisms": {
+          "cross_RX_identity": false,
+          "paired_prediction_consistency": true,
+          "selective_SSL": false
+        },
+        "source": "NEW_MATCHED_T1",
+        "new_F": true,
+        "epochs": 50,
+        "optimizer_updates": 11100,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "backbone": "Unchanged SIG_TIME_X3 PAMF/default joint head",
+        "CE_scaffold": "0.5CEpair ordinary128 +0.25CEpair ordinary64 +0.25CEpair As64 +0.25CEpair raw128; LS.01; As KL0",
+        "paired_KL": "0.5ordinary128 +0.25ordinary64 +0.25raw128; coefficient1",
+        "source_roles": "L only, U/EMA/entropy fully off",
+        "readouts": [
+          "raw",
+          "DURA-L",
+          "DURA-LU"
+        ],
+        "no_new_G": true
+      },
+      {
+        "row_id": "ABC010-s2026092702",
+        "bits": "010",
+        "model_seed": 2026092702,
+        "core_mechanisms": {
+          "cross_RX_identity": false,
+          "paired_prediction_consistency": true,
+          "selective_SSL": false
+        },
+        "source": "NEW_MATCHED_T1",
+        "new_F": true,
+        "epochs": 50,
+        "optimizer_updates": 11100,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "backbone": "Unchanged SIG_TIME_X3 PAMF/default joint head",
+        "CE_scaffold": "0.5CEpair ordinary128 +0.25CEpair ordinary64 +0.25CEpair As64 +0.25CEpair raw128; LS.01; As KL0",
+        "paired_KL": "0.5ordinary128 +0.25ordinary64 +0.25raw128; coefficient1",
+        "source_roles": "L only, U/EMA/entropy fully off",
+        "readouts": [
+          "raw",
+          "DURA-L",
+          "DURA-LU"
+        ],
+        "no_new_G": true
+      },
+      {
+        "row_id": "ABC010-s2026092703",
+        "bits": "010",
+        "model_seed": 2026092703,
+        "core_mechanisms": {
+          "cross_RX_identity": false,
+          "paired_prediction_consistency": true,
+          "selective_SSL": false
+        },
+        "source": "NEW_MATCHED_T1",
+        "new_F": true,
+        "epochs": 50,
+        "optimizer_updates": 11100,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "backbone": "Unchanged SIG_TIME_X3 PAMF/default joint head",
+        "CE_scaffold": "0.5CEpair ordinary128 +0.25CEpair ordinary64 +0.25CEpair As64 +0.25CEpair raw128; LS.01; As KL0",
+        "paired_KL": "0.5ordinary128 +0.25ordinary64 +0.25raw128; coefficient1",
+        "source_roles": "L only, U/EMA/entropy fully off",
+        "readouts": [
+          "raw",
+          "DURA-L",
+          "DURA-LU"
+        ],
+        "no_new_G": true
+      },
+      {
+        "row_id": "ABC011-s2026092701",
+        "bits": "011",
+        "model_seed": 2026092701,
+        "core_mechanisms": {
+          "cross_RX_identity": false,
+          "paired_prediction_consistency": true,
+          "selective_SSL": true
+        },
+        "source": "REUSE_F16",
+        "new_F": false,
+        "epochs": 50,
+        "optimizer_updates": 11100,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "backbone": "Unchanged SIG_TIME_X3 PAMF/default joint head",
+        "CE_scaffold": "0.5CEpair ordinary128 +0.25CEpair ordinary64 +0.25CEpair As64 +0.25CEpair raw128; LS.01; As KL0",
+        "paired_KL": "0.5ordinary128 +0.25ordinary64 +0.25raw128; coefficient1",
+        "source_roles": "L+hiddenTX_U",
+        "readouts": [
+          "raw",
+          "DURA-L",
+          "DURA-LU"
+        ],
+        "no_new_G": true
+      },
+      {
+        "row_id": "ABC011-s2026092702",
+        "bits": "011",
+        "model_seed": 2026092702,
+        "core_mechanisms": {
+          "cross_RX_identity": false,
+          "paired_prediction_consistency": true,
+          "selective_SSL": true
+        },
+        "source": "REUSE_F16",
+        "new_F": false,
+        "epochs": 50,
+        "optimizer_updates": 11100,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "backbone": "Unchanged SIG_TIME_X3 PAMF/default joint head",
+        "CE_scaffold": "0.5CEpair ordinary128 +0.25CEpair ordinary64 +0.25CEpair As64 +0.25CEpair raw128; LS.01; As KL0",
+        "paired_KL": "0.5ordinary128 +0.25ordinary64 +0.25raw128; coefficient1",
+        "source_roles": "L+hiddenTX_U",
+        "readouts": [
+          "raw",
+          "DURA-L",
+          "DURA-LU"
+        ],
+        "no_new_G": true
+      },
+      {
+        "row_id": "ABC011-s2026092703",
+        "bits": "011",
+        "model_seed": 2026092703,
+        "core_mechanisms": {
+          "cross_RX_identity": false,
+          "paired_prediction_consistency": true,
+          "selective_SSL": true
+        },
+        "source": "REUSE_F16",
+        "new_F": false,
+        "epochs": 50,
+        "optimizer_updates": 11100,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "backbone": "Unchanged SIG_TIME_X3 PAMF/default joint head",
+        "CE_scaffold": "0.5CEpair ordinary128 +0.25CEpair ordinary64 +0.25CEpair As64 +0.25CEpair raw128; LS.01; As KL0",
+        "paired_KL": "0.5ordinary128 +0.25ordinary64 +0.25raw128; coefficient1",
+        "source_roles": "L+hiddenTX_U",
+        "readouts": [
+          "raw",
+          "DURA-L",
+          "DURA-LU"
+        ],
+        "no_new_G": true
+      },
+      {
+        "row_id": "ABC100-s2026092701",
+        "bits": "100",
+        "model_seed": 2026092701,
+        "core_mechanisms": {
+          "cross_RX_identity": true,
+          "paired_prediction_consistency": false,
+          "selective_SSL": false
+        },
+        "source": "NEW_MATCHED_T1",
+        "new_F": true,
+        "epochs": 50,
+        "optimizer_updates": 11100,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "backbone": "Unchanged SIG_TIME_X3 PAMF/default joint head",
+        "CE_scaffold": "0.5CEpair ordinary128 +0.25CEpair ordinary64 +0.25CEpair As64 +0.25CEpair raw128; LS.01; As KL0",
+        "paired_KL": "0.5ordinary128 +0.25ordinary64 +0.25raw128; coefficient1",
+        "source_roles": "L only, U/EMA/entropy fully off",
+        "readouts": [
+          "raw",
+          "DURA-L",
+          "DURA-LU"
+        ],
+        "no_new_G": true
+      },
+      {
+        "row_id": "ABC100-s2026092702",
+        "bits": "100",
+        "model_seed": 2026092702,
+        "core_mechanisms": {
+          "cross_RX_identity": true,
+          "paired_prediction_consistency": false,
+          "selective_SSL": false
+        },
+        "source": "NEW_MATCHED_T1",
+        "new_F": true,
+        "epochs": 50,
+        "optimizer_updates": 11100,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "backbone": "Unchanged SIG_TIME_X3 PAMF/default joint head",
+        "CE_scaffold": "0.5CEpair ordinary128 +0.25CEpair ordinary64 +0.25CEpair As64 +0.25CEpair raw128; LS.01; As KL0",
+        "paired_KL": "0.5ordinary128 +0.25ordinary64 +0.25raw128; coefficient1",
+        "source_roles": "L only, U/EMA/entropy fully off",
+        "readouts": [
+          "raw",
+          "DURA-L",
+          "DURA-LU"
+        ],
+        "no_new_G": true
+      },
+      {
+        "row_id": "ABC100-s2026092703",
+        "bits": "100",
+        "model_seed": 2026092703,
+        "core_mechanisms": {
+          "cross_RX_identity": true,
+          "paired_prediction_consistency": false,
+          "selective_SSL": false
+        },
+        "source": "NEW_MATCHED_T1",
+        "new_F": true,
+        "epochs": 50,
+        "optimizer_updates": 11100,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "backbone": "Unchanged SIG_TIME_X3 PAMF/default joint head",
+        "CE_scaffold": "0.5CEpair ordinary128 +0.25CEpair ordinary64 +0.25CEpair As64 +0.25CEpair raw128; LS.01; As KL0",
+        "paired_KL": "0.5ordinary128 +0.25ordinary64 +0.25raw128; coefficient1",
+        "source_roles": "L only, U/EMA/entropy fully off",
+        "readouts": [
+          "raw",
+          "DURA-L",
+          "DURA-LU"
+        ],
+        "no_new_G": true
+      },
+      {
+        "row_id": "ABC101-s2026092701",
+        "bits": "101",
+        "model_seed": 2026092701,
+        "core_mechanisms": {
+          "cross_RX_identity": true,
+          "paired_prediction_consistency": false,
+          "selective_SSL": true
+        },
+        "source": "REUSE_F04",
+        "new_F": false,
+        "epochs": 50,
+        "optimizer_updates": 11100,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "backbone": "Unchanged SIG_TIME_X3 PAMF/default joint head",
+        "CE_scaffold": "0.5CEpair ordinary128 +0.25CEpair ordinary64 +0.25CEpair As64 +0.25CEpair raw128; LS.01; As KL0",
+        "paired_KL": "0.5ordinary128 +0.25ordinary64 +0.25raw128; coefficient1",
+        "source_roles": "L+hiddenTX_U",
+        "readouts": [
+          "raw",
+          "DURA-L",
+          "DURA-LU"
+        ],
+        "no_new_G": true
+      },
+      {
+        "row_id": "ABC101-s2026092702",
+        "bits": "101",
+        "model_seed": 2026092702,
+        "core_mechanisms": {
+          "cross_RX_identity": true,
+          "paired_prediction_consistency": false,
+          "selective_SSL": true
+        },
+        "source": "REUSE_F04",
+        "new_F": false,
+        "epochs": 50,
+        "optimizer_updates": 11100,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "backbone": "Unchanged SIG_TIME_X3 PAMF/default joint head",
+        "CE_scaffold": "0.5CEpair ordinary128 +0.25CEpair ordinary64 +0.25CEpair As64 +0.25CEpair raw128; LS.01; As KL0",
+        "paired_KL": "0.5ordinary128 +0.25ordinary64 +0.25raw128; coefficient1",
+        "source_roles": "L+hiddenTX_U",
+        "readouts": [
+          "raw",
+          "DURA-L",
+          "DURA-LU"
+        ],
+        "no_new_G": true
+      },
+      {
+        "row_id": "ABC101-s2026092703",
+        "bits": "101",
+        "model_seed": 2026092703,
+        "core_mechanisms": {
+          "cross_RX_identity": true,
+          "paired_prediction_consistency": false,
+          "selective_SSL": true
+        },
+        "source": "REUSE_F04",
+        "new_F": false,
+        "epochs": 50,
+        "optimizer_updates": 11100,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "backbone": "Unchanged SIG_TIME_X3 PAMF/default joint head",
+        "CE_scaffold": "0.5CEpair ordinary128 +0.25CEpair ordinary64 +0.25CEpair As64 +0.25CEpair raw128; LS.01; As KL0",
+        "paired_KL": "0.5ordinary128 +0.25ordinary64 +0.25raw128; coefficient1",
+        "source_roles": "L+hiddenTX_U",
+        "readouts": [
+          "raw",
+          "DURA-L",
+          "DURA-LU"
+        ],
+        "no_new_G": true
+      },
+      {
+        "row_id": "ABC110-s2026092701",
+        "bits": "110",
+        "model_seed": 2026092701,
+        "core_mechanisms": {
+          "cross_RX_identity": true,
+          "paired_prediction_consistency": true,
+          "selective_SSL": false
+        },
+        "source": "REUSE_F20",
+        "new_F": false,
+        "epochs": 50,
+        "optimizer_updates": 11100,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "backbone": "Unchanged SIG_TIME_X3 PAMF/default joint head",
+        "CE_scaffold": "0.5CEpair ordinary128 +0.25CEpair ordinary64 +0.25CEpair As64 +0.25CEpair raw128; LS.01; As KL0",
+        "paired_KL": "0.5ordinary128 +0.25ordinary64 +0.25raw128; coefficient1",
+        "source_roles": "L only, U/EMA/entropy fully off",
+        "readouts": [
+          "raw",
+          "DURA-L",
+          "DURA-LU"
+        ],
+        "no_new_G": true
+      },
+      {
+        "row_id": "ABC110-s2026092702",
+        "bits": "110",
+        "model_seed": 2026092702,
+        "core_mechanisms": {
+          "cross_RX_identity": true,
+          "paired_prediction_consistency": true,
+          "selective_SSL": false
+        },
+        "source": "REUSE_F20",
+        "new_F": false,
+        "epochs": 50,
+        "optimizer_updates": 11100,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "backbone": "Unchanged SIG_TIME_X3 PAMF/default joint head",
+        "CE_scaffold": "0.5CEpair ordinary128 +0.25CEpair ordinary64 +0.25CEpair As64 +0.25CEpair raw128; LS.01; As KL0",
+        "paired_KL": "0.5ordinary128 +0.25ordinary64 +0.25raw128; coefficient1",
+        "source_roles": "L only, U/EMA/entropy fully off",
+        "readouts": [
+          "raw",
+          "DURA-L",
+          "DURA-LU"
+        ],
+        "no_new_G": true
+      },
+      {
+        "row_id": "ABC110-s2026092703",
+        "bits": "110",
+        "model_seed": 2026092703,
+        "core_mechanisms": {
+          "cross_RX_identity": true,
+          "paired_prediction_consistency": true,
+          "selective_SSL": false
+        },
+        "source": "REUSE_F20",
+        "new_F": false,
+        "epochs": 50,
+        "optimizer_updates": 11100,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "backbone": "Unchanged SIG_TIME_X3 PAMF/default joint head",
+        "CE_scaffold": "0.5CEpair ordinary128 +0.25CEpair ordinary64 +0.25CEpair As64 +0.25CEpair raw128; LS.01; As KL0",
+        "paired_KL": "0.5ordinary128 +0.25ordinary64 +0.25raw128; coefficient1",
+        "source_roles": "L only, U/EMA/entropy fully off",
+        "readouts": [
+          "raw",
+          "DURA-L",
+          "DURA-LU"
+        ],
+        "no_new_G": true
+      },
+      {
+        "row_id": "ABC111-s2026092701",
+        "bits": "111",
+        "model_seed": 2026092701,
+        "core_mechanisms": {
+          "cross_RX_identity": true,
+          "paired_prediction_consistency": true,
+          "selective_SSL": true
+        },
+        "source": "REUSE_T1",
+        "new_F": false,
+        "epochs": 50,
+        "optimizer_updates": 11100,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "backbone": "Unchanged SIG_TIME_X3 PAMF/default joint head",
+        "CE_scaffold": "0.5CEpair ordinary128 +0.25CEpair ordinary64 +0.25CEpair As64 +0.25CEpair raw128; LS.01; As KL0",
+        "paired_KL": "0.5ordinary128 +0.25ordinary64 +0.25raw128; coefficient1",
+        "source_roles": "L+hiddenTX_U",
+        "readouts": [
+          "raw",
+          "DURA-L",
+          "DURA-LU"
+        ],
+        "no_new_G": true
+      },
+      {
+        "row_id": "ABC111-s2026092702",
+        "bits": "111",
+        "model_seed": 2026092702,
+        "core_mechanisms": {
+          "cross_RX_identity": true,
+          "paired_prediction_consistency": true,
+          "selective_SSL": true
+        },
+        "source": "REUSE_T1",
+        "new_F": false,
+        "epochs": 50,
+        "optimizer_updates": 11100,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "backbone": "Unchanged SIG_TIME_X3 PAMF/default joint head",
+        "CE_scaffold": "0.5CEpair ordinary128 +0.25CEpair ordinary64 +0.25CEpair As64 +0.25CEpair raw128; LS.01; As KL0",
+        "paired_KL": "0.5ordinary128 +0.25ordinary64 +0.25raw128; coefficient1",
+        "source_roles": "L+hiddenTX_U",
+        "readouts": [
+          "raw",
+          "DURA-L",
+          "DURA-LU"
+        ],
+        "no_new_G": true
+      },
+      {
+        "row_id": "ABC111-s2026092703",
+        "bits": "111",
+        "model_seed": 2026092703,
+        "core_mechanisms": {
+          "cross_RX_identity": true,
+          "paired_prediction_consistency": true,
+          "selective_SSL": true
+        },
+        "source": "REUSE_T1",
+        "new_F": false,
+        "epochs": 50,
+        "optimizer_updates": 11100,
+        "trajectory": [
+          20,
+          10,
+          20
+        ],
+        "backbone": "Unchanged SIG_TIME_X3 PAMF/default joint head",
+        "CE_scaffold": "0.5CEpair ordinary128 +0.25CEpair ordinary64 +0.25CEpair As64 +0.25CEpair raw128; LS.01; As KL0",
+        "paired_KL": "0.5ordinary128 +0.25ordinary64 +0.25raw128; coefficient1",
+        "source_roles": "L+hiddenTX_U",
+        "readouts": [
+          "raw",
+          "DURA-L",
+          "DURA-LU"
+        ],
+        "no_new_G": true
+      }
+    ],
+    "main_table": [
+      "111",
+      "011",
+      "101",
+      "110"
+    ],
+    "full_factorial_cells": 8,
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "logical_models": 24,
+    "new_F": 12,
+    "reused_F": 12,
+    "new_F_epochs": 600,
+    "new_F_updates": 133200,
+    "new_G": 0,
+    "new_prediction_rows": 21,
+    "new_score_rows": 21,
+    "aggregate_CPU_jobs": 1,
+    "new_stage_jobs": 55,
+    "target_feedback_used": false,
+    "grouping_basis": "Domain identity objective / stochastic prediction consistency / selective unlabeled self-training; no result-dependent regrouping",
+    "claim": "Factorial effects of F training; fixed G-L/G-LU readouts reported separately; C-off+G-LU is not a fully L-only system"
+  }
+}

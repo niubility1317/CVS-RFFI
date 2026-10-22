@@ -212,8 +212,12 @@ def worker(c):
         from .evaluation import predict
         predict(c)
     elif c['stage']=='score':
-        from .evaluation import score
-        score(c)
+        if c.get('analysis_kind')=='core_factorial':
+            from .analyze_core import run as analyze_core
+            analyze_core(c)
+        else:
+            from .evaluation import score
+            score(c)
     elif c['stage']=='timing':
         from .timing import run as timing
         timing(c)
