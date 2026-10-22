@@ -1,0 +1,168 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261023-phase1-PAMF-core-source-diagnostic-recovery-m2-r01",
+  "group_id": "phase1-external-DURA-frozen-transfer",
+  "display_name": "PAMF 两条源物理诊断：类型兼容技术恢复",
+  "description": "User-authorized frozen restoration transfer. No new F/G training. All same-contract readouts are declared before target access.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "four-external-methods",
+    "DURA",
+    "fixed-G-L-LU",
+    "three-F-seeds",
+    "raw-reuse",
+    "no-retraining"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261022-phase1-PAMF-core-control-r02",
+    "20261019-phase1-external-dg-concat-pl-m219-r03",
+    "20261021-phase1-dg-sourcecount1to6-m432-r01",
+    "20261021-phase1-T1-DURA-G-lineage-m35-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-23：对比方法接入DURA恢复网络，查看对比性能，也安排；延续全部健康任务保护、三种子与现有配置。",
+  "code": {
+    "commit": "Actual publication Git commit recorded at verified launch",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 CVS-RFFI Py3.10/Torch2.1 FP32/TF32off CPU2",
+    "cwd": "PROJECT/releases/20261023-phase1-external-DURA-control-r01",
+    "entry": "experiments.cric_dura_comparison.publish_external_dura"
+  },
+  "data": {
+    "dataset": "WiSig ManySig/ManyRx;17 exact existing contracts",
+    "version": null,
+    "representation": "equalized1 center256 FP32 unitRMS",
+    "contract_ref": "docs/EXTERNAL_DURA_FROZEN_COMPARISON_20261023.md",
+    "physical_ids_ref": "Existing contract role IDs and received-IQ index; exact match confirmed source-only",
+    "label_map_ref": "Existing native source-contract metadata; no posthoc head fitting",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Native six/ten classes unchanged; no new data roles or target observations",
+    "roles": null,
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing VALIDATED_ONCE handles reused, source-role and checkpoint ancestry matching only",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "Supervised/ordinaryPL F by original row; DURA-L and DURA-LU explicitly separate. Only supervised F+G-L is fully supervised.",
+    "query_use": "All raw/G-L/G-LU seven-view decisions for a row freeze before independent CPU truth-last; no fitting or target feedback",
+    "external_method_exception": null,
+    "claim_scope": "Phase1 exposed engineering benchmark; no new blind-test, hardware identifiability or in-orbit claim"
+  },
+  "checkpoint": {
+    "initialization": "Reuse every existing frozen external F and same-contract G; no optimizer or model update",
+    "sources": [
+      "Original516 source-only frozen default-head models",
+      "Existing34 same-contract DURA-L/LU lineages, fixed seed01"
+    ],
+    "contract_check_ref": "Resolve actual source config and all ancestors before each new load; no cross-contract fallback.",
+    "provenance_verdict": "PASS physical source IDs/counts/RX/day/class mapping for all516; source checkpoint smoke pending first launch step",
+    "selection_rule": "Original native selection unchanged; no score-based method/seed/scenario selection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "20261023-phase1-external-DURA-control-r01",
+    "gpu_policy": "Existing r03: baseline3/card, fourthF only0/6, global26, G<=1/card; all healthy PIDs preserved; timingexclusive not2/3.",
+    "remote_run_root": "PROJECT/runs/20261023-phase1-PAMF-core-source-diagnostic-recovery-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261023-phase1-external-DURA-control-r01/logs",
+    "local_artifact_root": "local_artifacts/external_DURA_readouts_20261023",
+    "launch_command": "F:/App/miniconda3/python.exe -X utf8 -m experiments.cric_dura_comparison.publish_external_dura --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output E:/type10-7/local_artifacts/external_DURA_readouts_20261023/control-r01 --previous E:/type10-7/local_artifacts/external_DURA_readouts_20261023/previous_runtime.json --ssh-config E:/type10-7/tools/n607_ssh_config --manifest E:/type10-7/local_artifacts/external_DURA_readouts_20261023/preflight.json --external-runtime E:/type10-7/local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/runtime.json --count-runtime E:/type10-7/local_artifacts/phase1_dg_sourcecount6_20261021/runtime.json",
+    "stop_rule": "One source actual-checkpoint smoke, then immediate handoff on PASS. At most1G-heavy/card. Preserve healthy PIDs;2 same new technical fingerprints stop launches.",
+    "current_launch_owner": "20261022-phase1-PAMF-core-control-r02",
+    "launch_verification_ref": "automation_reports/CV-SincNet/20261023-phase1-external-DURA-control-r01/launch_verification.json",
+    "gpu": "Existing authorized capacity only; formal timing exclusive and notGPU2/3"
+  },
+  "expected_artifacts": [
+    "Frozen raw/G-L/G-LU predictions all declared tasks/views",
+    "Independent CPU CM Accuracy/MacroF1/net correction",
+    "Per-seed Full-CE/PL-Sup/LU-L contrasts with all signs",
+    "Native source cost reuse and one-time cache cost",
+    "IEEE experiments and new immutable export after completion"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy",
+      "Macro-F1",
+      "worst RX",
+      "paired deltas",
+      "training and deployment cost"
+    ],
+    "dimensions": [
+      "data contract",
+      "regime",
+      "F seed",
+      "G seed",
+      "view",
+      "RX",
+      "TX",
+      "date"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "Independent truth-last after all seven predictions per row"
+  },
+  "rows": [
+    {
+      "row_id": "ABC101-s2026092701",
+      "method": "Frozen_source_diagnostic_recovery",
+      "purpose": "Existing F/G reused; new immutable predictions/scores; fix NumPy2/Torch2.1 index bridge only",
+      "config_ref": "PROJECT/runs/20261023-phase1-external-DURA-control-r01/external_configs/20261023-phase1-PAMF-core-source-diagnostic-recovery-m2-r01__ABC101-s2026092701__predict.json",
+      "planned_config": {
+        "new_F": 0,
+        "new_G": 0
+      },
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Model seeds2026092701/02/03; ordinary augmentation follows model seed; stored observations fixed. Existing G seed01 shared. Timing rounds are not seeds.",
+      "output_root": "PROJECT/runs/20261023-phase1-PAMF-core-source-diagnostic-recovery-m2-r01/ABC101-s2026092701/predictions",
+      "log_path": "PROJECT/runs/20261023-phase1-external-DURA-control-r01/logs/20261023-phase1-PAMF-core-source-diagnostic-recovery-m2-r01.log",
+      "command": "pipeline worker --config 20261023-phase1-PAMF-core-source-diagnostic-recovery-m2-r01.json",
+      "budget_ref": "Existing F/G reused; new immutable predictions/scores; fix NumPy2/Torch2.1 index bridge only"
+    },
+    {
+      "row_id": "ABC111-s2026092701",
+      "method": "Frozen_source_diagnostic_recovery",
+      "purpose": "Existing F/G reused; new immutable predictions/scores; fix NumPy2/Torch2.1 index bridge only",
+      "config_ref": "PROJECT/runs/20261023-phase1-external-DURA-control-r01/external_configs/20261023-phase1-PAMF-core-source-diagnostic-recovery-m2-r01__ABC111-s2026092701__predict.json",
+      "planned_config": {
+        "new_F": 0,
+        "new_G": 0
+      },
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Model seeds2026092701/02/03; ordinary augmentation follows model seed; stored observations fixed. Existing G seed01 shared. Timing rounds are not seeds.",
+      "output_root": "PROJECT/runs/20261023-phase1-PAMF-core-source-diagnostic-recovery-m2-r01/ABC111-s2026092701/predictions",
+      "log_path": "PROJECT/runs/20261023-phase1-external-DURA-control-r01/logs/20261023-phase1-PAMF-core-source-diagnostic-recovery-m2-r01.log",
+      "command": "pipeline worker --config 20261023-phase1-PAMF-core-source-diagnostic-recovery-m2-r01.json",
+      "budget_ref": "Existing F/G reused; new immutable predictions/scores; fix NumPy2/Torch2.1 index bridge only"
+    }
+  ],
+  "notes": [
+    "docs/EXTERNAL_DURA_FROZEN_COMPARISON_20261023.md",
+    "516 existing models,34 shared restored-IQ caches,1548 model-readout cells;1067 inference/score/analysis jobs. No new source-count5 training.",
+    "Five source-diagnostic technical-recovery jobs replace only two known failed readouts, their scores and original analysis; bad artifacts remain historical.",
+    "Local focused tests PASS; one P0/P1 review in progress; actual-checkpoint source smoke executes first at release, before handoff; performance pending."
+  ],
+  "registered_at": "2026-10-22T17:08:02+00:00"
+}

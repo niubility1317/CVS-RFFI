@@ -3,7 +3,7 @@ import math
 import numpy as np
 import torch
 from torch.nn import functional as F
-from .io import read, write
+from .io import read, write, tensor
 
 
 def interventions(x):
@@ -51,7 +51,9 @@ def run(reader, c, output, device):
     groups = sorted(set(zip(m['y'].tolist(), m['rx_i'].tolist(), m['day_i'].tolist())))
     index = np.asarray([i for y, r, d in groups
         for i in np.flatnonzero((m['y']==y)&(m['rx_i']==r)&(m['day_i']==d))[:8]], dtype=np.int64)
-    x = data.x[index].to(device)
+    # Torch2.1 cannot index from NumPy2 scalars/arrays on the N607 environment.
+    # Preserve the exact indices and use the project's buffer bridge explicitly.
+    x = data.x.index_select(0, tensor(index, 'cpu')).to(device)
     def encode(value):
         return torch.cat([reader.features(part) for part in value.split(64)], 0)
     base = encode(x)
@@ -68,7 +70,7 @@ def run(reader, c, output, device):
             diff = response(value)-base_response
             item['reference_descriptor_relative_L2'] = float(diff.norm(dim=1).mean()/base_response.norm(dim=1).mean().clamp_min(1e-8))
         rows.append(item)
-    to_tensor = lambda key: torch.tensor(m[key][index], device=device)
+    to_tensor = lambda key: tensor(np.asarray(m[key][index], dtype=np.int64), device)
     write(output, dict(status='FROZEN_SOURCE_L_PHYSICS_DIAGNOSTICS', samples=len(index),
         groups=len(groups), samples_per_TX_RX_day_at_most=8,
         physical_ids=[str(v) for v in m['ids'][index]], source_IQ_binding=data.iq_binding,

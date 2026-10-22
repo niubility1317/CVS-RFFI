@@ -123,9 +123,20 @@ def run(rt):
         activate(rt);numerical_policy()
         from .core_extension import smoke as core_smoke
         core_smoke(rt,root/'prelaunch_core_smoke.json')
+    if rt.get('external_dura_extension'):
+        from .external_dura import smoke as external_smoke
+        from .external_dura_extension import recovery_needed
+        recovery_needed(read(rt['previous_state']))
+        external_smoke(rt,root/'prelaunch_external_DURA_smoke.json')
     previous,active=handover(rt,jobs)
     if balance:balance.restore_handover(previous.get('load_balance',{}))
     admitted=previous.get('accelerated_G_jobs',[])
+    if rt.get('external_dura_extension'):
+        from .external_dura_extension import prepare as extend_external
+        jobs=extend_external(rt,jobs,previous,active)
+        by_id={j['id']:j for j in jobs}
+        if len(by_id)!=len(jobs):raise ValueError('Duplicate external frozen readout jobs')
+        write(rt['jobs'],jobs)
     if rt.get('G_teacher_acceleration'):
         from .execution_migration import promote_pending_G
         admitted=promote_pending_G(rt,jobs,previous,active)

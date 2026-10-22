@@ -199,7 +199,12 @@ def worker(c):
         import torch
         torch.cuda.init();torch.cuda.set_per_process_memory_fraction(.45)
         reserve=torch.empty(1,device='cuda:0')
-    if c['stage']=='F':
+    if c.get('external_action'):
+        from . import external_dura
+        if c['external_action']=='cache' and c['stage']=='G':external_dura.cache(c)
+        elif c['external_action']=='predict' and c['stage']=='predict':external_dura.predict(c)
+        else:raise ValueError('Invalid frozen external action/stage')
+    elif c['stage']=='F':
         from .t1_train import train
         train(c)
     elif c['stage']=='G':
@@ -215,6 +220,9 @@ def worker(c):
         if c.get('analysis_kind')=='core_factorial':
             from .analyze_core import run as analyze_core
             analyze_core(c)
+        elif c.get('analysis_kind')=='external_dura':
+            from .analyze_external_dura import run as analyze_external
+            analyze_external(c)
         else:
             from .evaluation import score
             score(c)
