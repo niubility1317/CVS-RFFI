@@ -113,13 +113,24 @@ def run(rt):
     if rt.get('F_source_binding_recovery'):
         from .f_binding_recovery import smoke as binding_smoke
         binding_smoke(rt,root/'prelaunch_F_binding_smoke.json')
+    if rt.get('supervised_extension'):
+        from .bootstrap import activate,numerical_policy
+        activate(rt);numerical_policy()
+        from .supervised_extension import smoke as supervised_smoke
+        supervised_smoke(rt,root/'prelaunch_strict_supervised_smoke.json')
     previous,active=handover(rt,jobs)
     if balance:balance.restore_handover(previous.get('load_balance',{}))
+    admitted=previous.get('accelerated_G_jobs',[])
     if rt.get('G_teacher_acceleration'):
         from .execution_migration import promote_pending_G
         admitted=promote_pending_G(rt,jobs,previous,active)
         write(rt['jobs'],jobs)
-    else:admitted=previous.get('accelerated_G_jobs',[])
+    if rt.get('supervised_extension'):
+        from .supervised_extension import prepare as extend_supervised
+        jobs=extend_supervised(rt,jobs,previous,active)
+        by_id={j['id']:j for j in jobs}
+        if len(by_id)!=len(jobs):raise ValueError('Duplicate supervised supplement jobs')
+        write(rt['jobs'],jobs)
     if rt.get('F_source_binding_recovery'):
         from .f_binding_recovery import prepare as repair_F_binding
         jobs=repair_F_binding(rt,jobs,previous,active)

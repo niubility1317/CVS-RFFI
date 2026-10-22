@@ -46,8 +46,11 @@ def predict(c, device='cuda:0'):
     if c.get('original_arm'):
         reader=load_original_F(c['model_seed'],contract,device,c['original_arm'])
     else:
-        reader,source=load_F(c['source_output'],contract,device)
-        if (source['run_id'],source['row_id'],source['model_seed'])!=(c['run_id'],c.get('source_row_id',c['row_id']),c['model_seed']):raise ValueError('Different F source row')
+        reader,source=load_F(c['source_output'],contract,device,require_no_unlabeled=c.get('strict_supervised_system',False))
+        if (source['run_id'],source['row_id'],source['model_seed'])!=(c.get('source_run_id',c['run_id']),c.get('source_row_id',c['row_id']),c['model_seed']):raise ValueError('Different F source row')
+        if c.get('strict_supervised_system'):
+            from .supervised_extension import validate_supervised_source
+            validate_supervised_source(source, c['readouts'])
     models={};calls={}
     for name,spec in c['readouts'].items():
         if name=='raw':continue
@@ -55,6 +58,9 @@ def predict(c, device='cuda:0'):
         if not getattr(models[name],'_cd_eager_variant',False):
             calls[name]=InferenceEngine(models[name],reader,reuse=True,graph=True,native=False)
     out=Path(c['output_root']);out.mkdir(parents=True,exist_ok=False)
+    if c.get('source_physics_diagnostics'):
+        from .source_physics import run as source_physics
+        source_physics(reader,c,out/'source_physics.json',device)
     if c.get('source_cache'):
         actual=np.load(Path(c['source_cache'])/'L_s_x.npy',mmap_mode='r',allow_pickle=False)[:2]
         sample=tensor(actual,device)
@@ -67,6 +73,16 @@ def predict(c, device='cuda:0'):
     completed={}
     for task in tasks(c):
         manifest,ids,positions=handle(c['tests'][task]['views_root'],contract['classes'])
+        reused_raw=None
+        if c.get('raw_predictions_from'):
+            previous=Path(c['raw_predictions_from'])
+            finished=read(previous/'complete.json')
+            if (finished.get('status')!='ALL_PREDICTIONS_COMPLETE' or finished.get('truth_read') is not False
+                    or finished.get('run_id')!=c['source_run_id'] or finished.get('row_id')!=c['source_row_id']):
+                raise ValueError('Frozen raw reuse belongs to another F row')
+            with np.load(previous/task/'predictions.npz',allow_pickle=False) as archive:
+                if not np.array_equal(archive['ids'],ids):raise ValueError('Frozen raw physical IDs differ')
+                reused_raw={view:archive['raw__'+view].copy() for view in VIEWS}
         if task=='source_unseen_date' and manifest.get('diagnostic_unseen_date') is not True:raise ValueError('Unseen-date diagnostic handle differs')
         values={};seconds={}
         for view in VIEWS:
@@ -81,8 +97,7 @@ def predict(c, device='cuda:0'):
                 for start in range(0,len(ids),128):
                     selected=slice(start,start+128) if positions is None else positions[start:start+128]
                     x=tensor(np.ascontiguousarray(array[selected],dtype=np.float32),device)
-                    features=reader.features(x);raw=reader.classify_features(features)
-                    logits={'raw':raw}
+                    logits={} if reused_raw is not None else {'raw':reader.classify_features(reader.features(x))}
                     for name,call in calls.items():logits[name]=call(x)[3]
                     for name,model in models.items():
                         if name not in calls:
@@ -91,6 +106,7 @@ def predict(c, device='cuda:0'):
                     for name,value in logits.items():
                         if value.shape!=(len(x),len(contract['classes'])) or not bool(torch.isfinite(value).all()):raise FloatingPointError('Invalid frozen default-head output')
                         result[name].extend(value.argmax(1).cpu().tolist())
+            if reused_raw is not None:result['raw']=reused_raw[view].tolist()
             torch.cuda.synchronize()
             seconds[view]=time.perf_counter()-tic
             for name,v in result.items():values[name+'__'+view]=np.asarray(v,np.int64)

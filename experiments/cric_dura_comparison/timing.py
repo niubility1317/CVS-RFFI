@@ -70,20 +70,27 @@ def run(c):
     root=Path(c['output_root']);root.mkdir(parents=True,exist_ok=False)
     contract=read(c['source_contract'])
     data=np.load(Path(c['source_cache'])/'L_s_x.npy',mmap_mode='r',allow_pickle=False)[:128]
-    tic=time.perf_counter();reader=load_original_F(2026092701,contract,'cuda:0')
+    tic=time.perf_counter()
+    mechanism_only=c.get('mechanisms_only',False)
+    if mechanism_only:
+        if not c.get('F_mechanisms') or c['G'].get('roles')!='L':raise ValueError('L-only reference and G required')
+        reader,source=load_F(c['F_mechanisms'][0]['source_output'],contract,'cuda:0',require_no_unlabeled=True)
+        from .supervised_extension import validate_supervised_source
+        validate_supervised_source(source,{'raw':None,'DURA-L':c['G']})
+    else:reader=load_original_F(2026092701,contract,'cuda:0')
     g=load_G(c['G'],contract,'cuda:0');load_seconds=time.perf_counter()-tic
     cases={};engines=[]
     def f(x):
         features=reader.features(x);logits=reader.classify_features(features)
         return (logits,torch.isfinite(logits).all())
-    cases['F_eager']=lambda x:f(x)[0]
+    if not mechanism_only:cases['F_eager']=lambda x:f(x)[0]
     fgraph=GraphCache(f)
     def graph_f(x):
         logits,valid=fgraph(x)
         if not bool(valid):raise FloatingPointError('Nonfinite F timing')
         return logits
-    cases['F_graph']=graph_f
-    for name,native,reuse,graph in EXECUTIONS:
+    if not mechanism_only:cases['F_graph']=graph_f
+    for name,native,reuse,graph in (() if mechanism_only else EXECUTIONS):
         for mode,chosen in (('G',None),('GF',reader)):
             engine=InferenceEngine(g,chosen,native=native,reuse=reuse,graph=graph)
             engines.append(engine)
@@ -99,7 +106,9 @@ def run(c):
         net.requires_grad_(False);external.append(net)
         cases[item['name']]=(lambda x,net=net,sc=sc:forward(net,sc,x))
     for item in c.get('F_mechanisms',[]):
-        net,_=load_F(item['source_output'],contract,'cuda:0');mechanisms.append(net)
+        if mechanism_only and item is c['F_mechanisms'][0]:net=reader
+        else:net,_=load_F(item['source_output'],contract,'cuda:0',require_no_unlabeled=c.get('strict_supervised_system',False))
+        mechanisms.append(net)
         mechanism_parameters[item['name']]=sum(p.numel() for p in net.parameters())
         cases[item['name']+'_F']=(lambda x,net=net:net.classify_features(net.features(x)))
         engine=InferenceEngine(g,net,native=False,reuse=True,graph=True);engines.append(engine)
@@ -110,7 +119,7 @@ def run(c):
         cases[item['name']+'_G']=(lambda x,net=net:net(x))
         cases[item['name']+'_GF']=(lambda x,net=net:reader.classify_features(reader.features(net(x))))
     source_one=tensor(np.ascontiguousarray(data[:1]),'cuda:0')
-    profiles={'T1_F':profile_module(reader,source_one,lambda x:reader.classify_features(reader.features(x))),
+    profiles={('Lonly_X3_CE_F' if mechanism_only else 'T1_F'):profile_module(reader,source_one,lambda x:reader.classify_features(reader.features(x))),
         'DURA_G':profile_module(g,source_one,g)}
     write(root/'operator_profiles.json',profiles)
     write(root/'resolved.json',dict(config=c,device=torch.cuda.get_device_name(),python=__import__('sys').version,

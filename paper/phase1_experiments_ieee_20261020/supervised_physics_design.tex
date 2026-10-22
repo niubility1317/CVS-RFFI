@@ -1,0 +1,65 @@
+\subsection{Strictly Supervised Architecture and Physical-Prior Controls}
+The historical architecture comparison used the single-view SIG\_TIME
+extractor with labeled-source cross entropy, 200 epochs (10,000 updates),
+and eight model seeds. It used neither unlabeled IQ nor DURA. These results
+are distinct from the final T1 recognizer, which uses three independently
+learned SIG\_TIME views and the native semi-supervised schedule.
+
+We additionally preregister a labeled-only architecture panel on the
+five-source/seven-target F0 contract: 6,300 labeled training packets,
+27,000 source-validation packets, six transmitters, and 168,000 target
+packets. No unlabeled IQ is opened. Every new model uses the same
+20+10+20-epoch schedule, 11,100 updates, labeled batch size 128, joint
+default cosine classifier, and cross entropy with the default satellite
+concatenation weight 0.68. Label smoothing, CRIC, RDrop, EMA, and
+pseudo-labeling are disabled in this panel. The final native T1 method
+remains fixed.
+
+\begin{table}[t]
+\centering\small
+\caption{Preregistered labeled-only architecture controls. Equal size
+refers to trainable parameter count, not descriptor rank or runtime.}
+\label{tab:pamf_sup_physics_design}
+\begin{tabular}{p{0.25\columnwidth}p{0.63\columnwidth}}
+\hline
+Control & Changed factor \\\hline
+X3 CE & Full three-view architecture; reuse corrected F15 weights \\
+SIG\_TIME & Single view; reduced parameter count \\
+No time & Remove time coordinate; equal parameter count \\
+No signature & Remove the sequence residual branch \\
+No PA & Remove the PA branch and its statistics projection \\
+No reference & Remove the known-excitation response branch \\
+Covariance X3 & Unordered moments; equal parameter count \\
+Shuffled time & Fixed interior permutation; endpoints and parameters retained \\
+Wrong reference & Fixed spectral-phase-scrambled template; magnitude spectrum and parameters retained \\\hline
+\end{tabular}
+\end{table}
+
+The panel adds eight settings with three F seeds each; the full X3 CE
+reference reuses three corrected models. Three existing F20 models also
+receive a strictly labeled-only system readout. All system readouts use
+the same-contract DURA-L chain, including its labeled-only ancestors;
+a restorer trained on unlabeled source IQ is excluded from the strict
+supervision comparison. Variation over three F seeds is conditional on
+one shared G seed, rather than three independent end-to-end replicas.
+
+After freezing, source-only diagnostics select at most eight packets per
+TX/RX/day stratum. Eleven fixed conditions examine flat gain and phase,
+relative CFO, a delayed FIR echo, and energy-matched synthetic amplitude
+nonlinearity. We record deployed-feature displacement, default-head
+decision changes, relative-response displacement, and anchor-balanced
+same-TX/cross-RX versus different-TX/same-RX distances within each day.
+No probe is fitted and no target result controls training. Nonlinearity
+interventions test sensitivity; they are not assumed to preserve an
+unknown physical transmitter identity. These tests support an inductive
+bias claim, not identification of hardware parameters or complete
+receiver/channel disentanglement.
+
+All raw and DURA-L predictions over the seven declared views must finish
+before independent truth-side scoring. Accuracy, Macro-F1, per-RX/TX/day
+results, clean damage, net corrections, paired seed differences, and
+training/deployment cost will be retained, including negative results.
+The new timing panel measures only the nine supervised structures on an
+exclusive GPU; it does not repeat the completed uniform timing panel.
+This supplement is locally validated and registered; it has not yet been
+verified as launched on N607, and no new performance result is claimed.

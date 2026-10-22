@@ -26,7 +26,7 @@ def reader_from_payload(c, payload, device):
     return reader.to(device).eval().requires_grad_(False)
 
 
-def load_F(folder, expected_contract, device):
+def load_F(folder, expected_contract, device, require_no_unlabeled=False):
     folder = Path(folder)
     done = read(folder / 'complete.json')
     if done.get('status') != 'SOURCE_FROZEN' or done.get('updates') != 11100 or done.get('epoch') != 50 or done.get('target_access') is not False:
@@ -42,6 +42,8 @@ def load_F(folder, expected_contract, device):
             cfg=s['config'];p=Path(s['folder'])
             if s['status']!='SOURCE_FROZEN' or s['updates']!=epochs*222 or s['epoch']!=epochs or s['target_access'] or cfg['parent_source']!=previous or cfg['step_offset']!=offset*222 or read(cfg['source_contract'])!=expected_contract:raise ValueError('T1 segment ancestry/roles differ')
             cp=torch.load(p/'final_ssdg.pth',map_location='cpu',weights_only=False)
+            if require_no_unlabeled and (cp['args'].get('use_unlabeled') is not False or cp['args'].get('use_ema_teacher') is not False):
+                raise ValueError('Strict supervised F ancestor used U/EMA')
             if cp['args']['baseline_ckpt']!=('' if previous is None else previous+'/final_ssdg.pth') or cp['args']['teacher_ckpt'] or cp['a1_ema_successful_updates']!=epochs*222:raise ValueError('T1 segment checkpoint differs')
             previous=str(p)
     payload = torch.load(folder / 'final_ssdg.pth', map_location='cpu', weights_only=False)

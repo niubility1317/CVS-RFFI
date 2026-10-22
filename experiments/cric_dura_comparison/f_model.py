@@ -205,6 +205,10 @@ def install(model, c):
     if ablation in ('F09', 'F10'):
         from .structural import remove_branch
         remove_branch(ref, ablation)
+    if c.get('supervised_architecture'):
+        from .supervised_physics import install as install_supervised, validate_config
+        validate_config(c)
+        install_supervised(model, c['supervised_architecture'], c['model_seed'])
     model._cd_levels = ['time_down'] if ablation == 'F01' else ['t2.pool'] if ablation == 'F02' else [] if ablation in ('F03', 'F15') else ['time_down', 't2.pool']
     model._cd_config = deepcopy(c)
     model._cd_calls = model._cd_extra_L = model._cd_sat_seen = model._cd_sat_applied = model._cd_U_seen = model._cd_U_accepted = 0

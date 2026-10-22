@@ -1,0 +1,26 @@
+{
+  "status": "LOCAL_PASS_NOT_PUBLISHED",
+  "focused_tests": 15,
+  "new_focused_tests": 7,
+  "independent_review": "PASS; direct P0/P1 scope; two fixes verified",
+  "graph_check": {
+    "status": "PASS",
+    "model": "SHUFFLE_TIME",
+    "input": [
+      8,
+      2,
+      256
+    ],
+    "max_absolute_difference": 0,
+    "source_or_query_reads": 0,
+    "scope": "Local RTX5070Ti PyTorch2.10 CUDA graph executability, not latency benchmark or N607 timing"
+  },
+  "new_F_training": 24,
+  "reused_F_readout_rows": 6,
+  "new_readout_rows": 30,
+  "new_stage_jobs": 85,
+  "new_G_training": 0,
+  "new_timing_case_rounds": 450,
+  "remote_launch": "UNKNOWN_NOT_ATTEMPTED",
+  "network_state": "Automatic approval rejected pwsh outer execution; direct native clients also unable to connect. Healthy remote tasks untouched."
+}

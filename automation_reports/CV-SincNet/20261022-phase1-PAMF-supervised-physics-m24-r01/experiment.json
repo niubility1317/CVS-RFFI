@@ -1,0 +1,1875 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261022-phase1-PAMF-supervised-physics-m24-r01",
+  "group_id": "phase1-pamf-supervised-physics",
+  "display_name": "PAMF严格监督：SIG_TIME版本与物理结构消融24训练",
+  "description": "补齐严格不使用U的完整系统、当前预算单路SIG_TIME与物理归纳偏置对照；不改变最终native T1。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "PAMF",
+    "strict-supervised",
+    "L-only",
+    "SIG_TIME",
+    "physics-controls",
+    "default-head",
+    "three-F-seeds"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01",
+    "20261022-phase1-T1-DURA-F0-controls-binding-m6-r01",
+    "20261021-phase1-T1-DURA-G-lineage-m35-r01",
+    "20261014-phase1-sigtime-purece-e200-clean-manysig-m8-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-22要求补PAMF不采用半监督且不使用无标签数据的比较、网络对比SIG_TIME版本与物理感知机制消融。三seed，按现有容量保持全部健康任务。",
+  "code": {
+    "commit": "SET_AT_COMMIT",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 CVS-RFFI Py3.10/Torch2.1 FP32/TF32off CPU2",
+    "cwd": "PROJECT/releases/20261022-phase1-PAMF-supervised-control-r01",
+    "entry": "experiments.cric_dura_comparison.publish_supervised_extension"
+  },
+  "data": {
+    "dataset": "WiSig ManySig",
+    "version": null,
+    "representation": "equalized1 center256 FP32 unitRMS",
+    "contract_ref": "docs/PAMF_SUPERVISED_PHYSICS_ABLATION_20261022.md",
+    "physical_ids_ref": "Same validated F0 source physical-ID handle, IQ explicitly joined to storage index; seven-target168000 handle unchanged",
+    "label_map_ref": "Existing native source-contract metadata; no posthoc head fitting",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Six registered TX in source-contract classes, same mapping in all predictions",
+    "roles": {
+      "L_s": 6300,
+      "U_s": {
+        "split_count": 56700,
+        "training_and_diagnostic_reads": 0
+      },
+      "V": 27000
+    },
+    "train_ratio": {
+      "source_train_pool": 0.7,
+      "labeled_share_within_train_pool": 0.1,
+      "source_validation": 0.3
+    },
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing VALIDATED_ONCE handles; no data/schema/membership changes",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "Strict L_s-only F/G ancestry; V health only. No U IQ, EMA, PL or U entropy. G TX-free/F-free.",
+    "query_use": "Frozen raw/DURA-L seven-view predictions, then independent CPU truth-last; no score feedback",
+    "external_method_exception": null,
+    "claim_scope": "Exposed engineering benchmark and controlled sensitivity, not identifiable hardware recovery, strict disentanglement, Phase2 or in-orbit validation"
+  },
+  "checkpoint": {
+    "initialization": "24 F fresh scratch then strict own segments;6 F15/F20 reused; G exact-contract L-only full ancestry",
+    "sources": [
+      "Corrected F15/F20 three-seed rows for readout reuse only",
+      "Existing F0-G-L-s2026092701 full8stage E20/4940 each; no LU ancestor"
+    ],
+    "contract_check_ref": "Every F own segment inspected; strict loaded checkpoint use_unlabeled/use_ema_teacher=False; G actual payload roles L and same contract",
+    "provenance_verdict": "No cross-contract or U-trained initialization permitted; actual source smoke at launch",
+    "selection_rule": "Fixed final50, no source or target epoch reselection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex-PAMF-Lonly-physics-20261022",
+    "gpu_policy": "Existing r03: baseline3/card, fourthF only0/6, global26, G<=1/card; all healthy PIDs preserved; timingexclusive not2/3.",
+    "remote_run_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01",
+    "remote_log_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs",
+    "local_artifact_root": "local_artifacts/PAMF_supervised_physics_20261022",
+    "launch_command": "python -m experiments.cric_dura_comparison.publish_supervised_extension --repo <registeredworktree> --output <newlocalcontrol> --previous <verifiedruntime> --ssh-config tools/n607_ssh_config",
+    "stop_rule": "Actual checkpoint no-query smoke+8 architecture/sourceL smoke first; PASS continues. Two same technical fingerprints stop new submissions. Preserve all healthy workers; no target-driven tuning/reordering/retries."
+  },
+  "expected_artifacts": [
+    "Source50/11100 freeze or explicitly reused source/raw",
+    "Strict ancestry audit",
+    "Frozen sourceL physics diagnostics11conditions",
+    "Raw/DURA-L all7views predictions",
+    "Independent CPU scores/CM/net correction",
+    "Three-F-seed paired tables, training/cost telemetry",
+    "Exclusive structure timing; same routes and5 measurement rounds"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy",
+      "Macro-F1",
+      "worst RX",
+      "paired deltas",
+      "training and deployment cost"
+    ],
+    "dimensions": [
+      "data contract",
+      "regime",
+      "F seed",
+      "G seed",
+      "view",
+      "RX",
+      "TX",
+      "date"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "Independent truth-last after all seven predictions per row"
+  },
+  "rows": [
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "method": "SIG_TIME",
+      "purpose": "Strict L-only architecture/control; fixed default head; no target feedback",
+      "config_ref": "Generated immutable 20261022-phase1-PAMF-supervised-control-r01/supplement_configs/20261022-phase1-PAMF-supervised-physics-m24-r01__SIG_TIME-s2026092701.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "F model and ordinary augmentation follow model seed; fixed split392005; default concat2027; G-L fixedseed2026092701, all ancestors L-only. No U reads. Five timing rounds are not model seeds.",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "budget_ref": "F: scratch20+own10+own20=50 logical epochs/11100 updates/L128; lr2e-4 wd1e-4 cosine1e-6 reset eachsegment; LS0 CE+concat.68; no CRIC/RDrop/U/EMA",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/SIG_TIME-s2026092701",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs/20261022-phase1-PAMF-supervised-physics-m24-r01__SIG_TIME-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "expected_artifacts": [
+        "source freeze when trained",
+        "all seven-view raw/G predictions",
+        "independent truth-last scores",
+        "cost telemetry"
+      ]
+    },
+    {
+      "row_id": "NO_TIME-s2026092701",
+      "method": "NO_TIME",
+      "purpose": "Strict L-only architecture/control; fixed default head; no target feedback",
+      "config_ref": "Generated immutable 20261022-phase1-PAMF-supervised-control-r01/supplement_configs/20261022-phase1-PAMF-supervised-physics-m24-r01__NO_TIME-s2026092701.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "F model and ordinary augmentation follow model seed; fixed split392005; default concat2027; G-L fixedseed2026092701, all ancestors L-only. No U reads. Five timing rounds are not model seeds.",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "budget_ref": "F: scratch20+own10+own20=50 logical epochs/11100 updates/L128; lr2e-4 wd1e-4 cosine1e-6 reset eachsegment; LS0 CE+concat.68; no CRIC/RDrop/U/EMA",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/NO_TIME-s2026092701",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs/20261022-phase1-PAMF-supervised-physics-m24-r01__NO_TIME-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "expected_artifacts": [
+        "source freeze when trained",
+        "all seven-view raw/G predictions",
+        "independent truth-last scores",
+        "cost telemetry"
+      ]
+    },
+    {
+      "row_id": "NO_SIGNATURE-s2026092701",
+      "method": "NO_SIGNATURE",
+      "purpose": "Strict L-only architecture/control; fixed default head; no target feedback",
+      "config_ref": "Generated immutable 20261022-phase1-PAMF-supervised-control-r01/supplement_configs/20261022-phase1-PAMF-supervised-physics-m24-r01__NO_SIGNATURE-s2026092701.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "F model and ordinary augmentation follow model seed; fixed split392005; default concat2027; G-L fixedseed2026092701, all ancestors L-only. No U reads. Five timing rounds are not model seeds.",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "budget_ref": "F: scratch20+own10+own20=50 logical epochs/11100 updates/L128; lr2e-4 wd1e-4 cosine1e-6 reset eachsegment; LS0 CE+concat.68; no CRIC/RDrop/U/EMA",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/NO_SIGNATURE-s2026092701",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs/20261022-phase1-PAMF-supervised-physics-m24-r01__NO_SIGNATURE-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "expected_artifacts": [
+        "source freeze when trained",
+        "all seven-view raw/G predictions",
+        "independent truth-last scores",
+        "cost telemetry"
+      ]
+    },
+    {
+      "row_id": "NO_PA-s2026092701",
+      "method": "NO_PA",
+      "purpose": "Strict L-only architecture/control; fixed default head; no target feedback",
+      "config_ref": "Generated immutable 20261022-phase1-PAMF-supervised-control-r01/supplement_configs/20261022-phase1-PAMF-supervised-physics-m24-r01__NO_PA-s2026092701.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "F model and ordinary augmentation follow model seed; fixed split392005; default concat2027; G-L fixedseed2026092701, all ancestors L-only. No U reads. Five timing rounds are not model seeds.",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "budget_ref": "F: scratch20+own10+own20=50 logical epochs/11100 updates/L128; lr2e-4 wd1e-4 cosine1e-6 reset eachsegment; LS0 CE+concat.68; no CRIC/RDrop/U/EMA",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/NO_PA-s2026092701",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs/20261022-phase1-PAMF-supervised-physics-m24-r01__NO_PA-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "expected_artifacts": [
+        "source freeze when trained",
+        "all seven-view raw/G predictions",
+        "independent truth-last scores",
+        "cost telemetry"
+      ]
+    },
+    {
+      "row_id": "NO_REFERENCE-s2026092701",
+      "method": "NO_REFERENCE",
+      "purpose": "Strict L-only architecture/control; fixed default head; no target feedback",
+      "config_ref": "Generated immutable 20261022-phase1-PAMF-supervised-control-r01/supplement_configs/20261022-phase1-PAMF-supervised-physics-m24-r01__NO_REFERENCE-s2026092701.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "F model and ordinary augmentation follow model seed; fixed split392005; default concat2027; G-L fixedseed2026092701, all ancestors L-only. No U reads. Five timing rounds are not model seeds.",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "budget_ref": "F: scratch20+own10+own20=50 logical epochs/11100 updates/L128; lr2e-4 wd1e-4 cosine1e-6 reset eachsegment; LS0 CE+concat.68; no CRIC/RDrop/U/EMA",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/NO_REFERENCE-s2026092701",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs/20261022-phase1-PAMF-supervised-physics-m24-r01__NO_REFERENCE-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "expected_artifacts": [
+        "source freeze when trained",
+        "all seven-view raw/G predictions",
+        "independent truth-last scores",
+        "cost telemetry"
+      ]
+    },
+    {
+      "row_id": "COV_X3-s2026092701",
+      "method": "COV_X3",
+      "purpose": "Strict L-only architecture/control; fixed default head; no target feedback",
+      "config_ref": "Generated immutable 20261022-phase1-PAMF-supervised-control-r01/supplement_configs/20261022-phase1-PAMF-supervised-physics-m24-r01__COV_X3-s2026092701.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "F model and ordinary augmentation follow model seed; fixed split392005; default concat2027; G-L fixedseed2026092701, all ancestors L-only. No U reads. Five timing rounds are not model seeds.",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "budget_ref": "F: scratch20+own10+own20=50 logical epochs/11100 updates/L128; lr2e-4 wd1e-4 cosine1e-6 reset eachsegment; LS0 CE+concat.68; no CRIC/RDrop/U/EMA",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/COV_X3-s2026092701",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs/20261022-phase1-PAMF-supervised-physics-m24-r01__COV_X3-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "expected_artifacts": [
+        "source freeze when trained",
+        "all seven-view raw/G predictions",
+        "independent truth-last scores",
+        "cost telemetry"
+      ]
+    },
+    {
+      "row_id": "SHUFFLE_TIME-s2026092701",
+      "method": "SHUFFLE_TIME",
+      "purpose": "Strict L-only architecture/control; fixed default head; no target feedback",
+      "config_ref": "Generated immutable 20261022-phase1-PAMF-supervised-control-r01/supplement_configs/20261022-phase1-PAMF-supervised-physics-m24-r01__SHUFFLE_TIME-s2026092701.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "F model and ordinary augmentation follow model seed; fixed split392005; default concat2027; G-L fixedseed2026092701, all ancestors L-only. No U reads. Five timing rounds are not model seeds.",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "budget_ref": "F: scratch20+own10+own20=50 logical epochs/11100 updates/L128; lr2e-4 wd1e-4 cosine1e-6 reset eachsegment; LS0 CE+concat.68; no CRIC/RDrop/U/EMA",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/SHUFFLE_TIME-s2026092701",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs/20261022-phase1-PAMF-supervised-physics-m24-r01__SHUFFLE_TIME-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "expected_artifacts": [
+        "source freeze when trained",
+        "all seven-view raw/G predictions",
+        "independent truth-last scores",
+        "cost telemetry"
+      ]
+    },
+    {
+      "row_id": "WRONG_REFERENCE-s2026092701",
+      "method": "WRONG_REFERENCE",
+      "purpose": "Strict L-only architecture/control; fixed default head; no target feedback",
+      "config_ref": "Generated immutable 20261022-phase1-PAMF-supervised-control-r01/supplement_configs/20261022-phase1-PAMF-supervised-physics-m24-r01__WRONG_REFERENCE-s2026092701.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "F model and ordinary augmentation follow model seed; fixed split392005; default concat2027; G-L fixedseed2026092701, all ancestors L-only. No U reads. Five timing rounds are not model seeds.",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "budget_ref": "F: scratch20+own10+own20=50 logical epochs/11100 updates/L128; lr2e-4 wd1e-4 cosine1e-6 reset eachsegment; LS0 CE+concat.68; no CRIC/RDrop/U/EMA",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/WRONG_REFERENCE-s2026092701",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs/20261022-phase1-PAMF-supervised-physics-m24-r01__WRONG_REFERENCE-s2026092701.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "expected_artifacts": [
+        "source freeze when trained",
+        "all seven-view raw/G predictions",
+        "independent truth-last scores",
+        "cost telemetry"
+      ]
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "method": "SIG_TIME",
+      "purpose": "Strict L-only architecture/control; fixed default head; no target feedback",
+      "config_ref": "Generated immutable 20261022-phase1-PAMF-supervised-control-r01/supplement_configs/20261022-phase1-PAMF-supervised-physics-m24-r01__SIG_TIME-s2026092702.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "F model and ordinary augmentation follow model seed; fixed split392005; default concat2027; G-L fixedseed2026092701, all ancestors L-only. No U reads. Five timing rounds are not model seeds.",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "budget_ref": "F: scratch20+own10+own20=50 logical epochs/11100 updates/L128; lr2e-4 wd1e-4 cosine1e-6 reset eachsegment; LS0 CE+concat.68; no CRIC/RDrop/U/EMA",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/SIG_TIME-s2026092702",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs/20261022-phase1-PAMF-supervised-physics-m24-r01__SIG_TIME-s2026092702.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "expected_artifacts": [
+        "source freeze when trained",
+        "all seven-view raw/G predictions",
+        "independent truth-last scores",
+        "cost telemetry"
+      ]
+    },
+    {
+      "row_id": "NO_TIME-s2026092702",
+      "method": "NO_TIME",
+      "purpose": "Strict L-only architecture/control; fixed default head; no target feedback",
+      "config_ref": "Generated immutable 20261022-phase1-PAMF-supervised-control-r01/supplement_configs/20261022-phase1-PAMF-supervised-physics-m24-r01__NO_TIME-s2026092702.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "F model and ordinary augmentation follow model seed; fixed split392005; default concat2027; G-L fixedseed2026092701, all ancestors L-only. No U reads. Five timing rounds are not model seeds.",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "budget_ref": "F: scratch20+own10+own20=50 logical epochs/11100 updates/L128; lr2e-4 wd1e-4 cosine1e-6 reset eachsegment; LS0 CE+concat.68; no CRIC/RDrop/U/EMA",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/NO_TIME-s2026092702",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs/20261022-phase1-PAMF-supervised-physics-m24-r01__NO_TIME-s2026092702.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "expected_artifacts": [
+        "source freeze when trained",
+        "all seven-view raw/G predictions",
+        "independent truth-last scores",
+        "cost telemetry"
+      ]
+    },
+    {
+      "row_id": "NO_SIGNATURE-s2026092702",
+      "method": "NO_SIGNATURE",
+      "purpose": "Strict L-only architecture/control; fixed default head; no target feedback",
+      "config_ref": "Generated immutable 20261022-phase1-PAMF-supervised-control-r01/supplement_configs/20261022-phase1-PAMF-supervised-physics-m24-r01__NO_SIGNATURE-s2026092702.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "F model and ordinary augmentation follow model seed; fixed split392005; default concat2027; G-L fixedseed2026092701, all ancestors L-only. No U reads. Five timing rounds are not model seeds.",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "budget_ref": "F: scratch20+own10+own20=50 logical epochs/11100 updates/L128; lr2e-4 wd1e-4 cosine1e-6 reset eachsegment; LS0 CE+concat.68; no CRIC/RDrop/U/EMA",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/NO_SIGNATURE-s2026092702",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs/20261022-phase1-PAMF-supervised-physics-m24-r01__NO_SIGNATURE-s2026092702.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "expected_artifacts": [
+        "source freeze when trained",
+        "all seven-view raw/G predictions",
+        "independent truth-last scores",
+        "cost telemetry"
+      ]
+    },
+    {
+      "row_id": "NO_PA-s2026092702",
+      "method": "NO_PA",
+      "purpose": "Strict L-only architecture/control; fixed default head; no target feedback",
+      "config_ref": "Generated immutable 20261022-phase1-PAMF-supervised-control-r01/supplement_configs/20261022-phase1-PAMF-supervised-physics-m24-r01__NO_PA-s2026092702.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "F model and ordinary augmentation follow model seed; fixed split392005; default concat2027; G-L fixedseed2026092701, all ancestors L-only. No U reads. Five timing rounds are not model seeds.",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "budget_ref": "F: scratch20+own10+own20=50 logical epochs/11100 updates/L128; lr2e-4 wd1e-4 cosine1e-6 reset eachsegment; LS0 CE+concat.68; no CRIC/RDrop/U/EMA",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/NO_PA-s2026092702",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs/20261022-phase1-PAMF-supervised-physics-m24-r01__NO_PA-s2026092702.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "expected_artifacts": [
+        "source freeze when trained",
+        "all seven-view raw/G predictions",
+        "independent truth-last scores",
+        "cost telemetry"
+      ]
+    },
+    {
+      "row_id": "NO_REFERENCE-s2026092702",
+      "method": "NO_REFERENCE",
+      "purpose": "Strict L-only architecture/control; fixed default head; no target feedback",
+      "config_ref": "Generated immutable 20261022-phase1-PAMF-supervised-control-r01/supplement_configs/20261022-phase1-PAMF-supervised-physics-m24-r01__NO_REFERENCE-s2026092702.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "F model and ordinary augmentation follow model seed; fixed split392005; default concat2027; G-L fixedseed2026092701, all ancestors L-only. No U reads. Five timing rounds are not model seeds.",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "budget_ref": "F: scratch20+own10+own20=50 logical epochs/11100 updates/L128; lr2e-4 wd1e-4 cosine1e-6 reset eachsegment; LS0 CE+concat.68; no CRIC/RDrop/U/EMA",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/NO_REFERENCE-s2026092702",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs/20261022-phase1-PAMF-supervised-physics-m24-r01__NO_REFERENCE-s2026092702.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "expected_artifacts": [
+        "source freeze when trained",
+        "all seven-view raw/G predictions",
+        "independent truth-last scores",
+        "cost telemetry"
+      ]
+    },
+    {
+      "row_id": "COV_X3-s2026092702",
+      "method": "COV_X3",
+      "purpose": "Strict L-only architecture/control; fixed default head; no target feedback",
+      "config_ref": "Generated immutable 20261022-phase1-PAMF-supervised-control-r01/supplement_configs/20261022-phase1-PAMF-supervised-physics-m24-r01__COV_X3-s2026092702.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "F model and ordinary augmentation follow model seed; fixed split392005; default concat2027; G-L fixedseed2026092701, all ancestors L-only. No U reads. Five timing rounds are not model seeds.",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "budget_ref": "F: scratch20+own10+own20=50 logical epochs/11100 updates/L128; lr2e-4 wd1e-4 cosine1e-6 reset eachsegment; LS0 CE+concat.68; no CRIC/RDrop/U/EMA",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/COV_X3-s2026092702",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs/20261022-phase1-PAMF-supervised-physics-m24-r01__COV_X3-s2026092702.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "expected_artifacts": [
+        "source freeze when trained",
+        "all seven-view raw/G predictions",
+        "independent truth-last scores",
+        "cost telemetry"
+      ]
+    },
+    {
+      "row_id": "SHUFFLE_TIME-s2026092702",
+      "method": "SHUFFLE_TIME",
+      "purpose": "Strict L-only architecture/control; fixed default head; no target feedback",
+      "config_ref": "Generated immutable 20261022-phase1-PAMF-supervised-control-r01/supplement_configs/20261022-phase1-PAMF-supervised-physics-m24-r01__SHUFFLE_TIME-s2026092702.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "F model and ordinary augmentation follow model seed; fixed split392005; default concat2027; G-L fixedseed2026092701, all ancestors L-only. No U reads. Five timing rounds are not model seeds.",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "budget_ref": "F: scratch20+own10+own20=50 logical epochs/11100 updates/L128; lr2e-4 wd1e-4 cosine1e-6 reset eachsegment; LS0 CE+concat.68; no CRIC/RDrop/U/EMA",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/SHUFFLE_TIME-s2026092702",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs/20261022-phase1-PAMF-supervised-physics-m24-r01__SHUFFLE_TIME-s2026092702.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "expected_artifacts": [
+        "source freeze when trained",
+        "all seven-view raw/G predictions",
+        "independent truth-last scores",
+        "cost telemetry"
+      ]
+    },
+    {
+      "row_id": "WRONG_REFERENCE-s2026092702",
+      "method": "WRONG_REFERENCE",
+      "purpose": "Strict L-only architecture/control; fixed default head; no target feedback",
+      "config_ref": "Generated immutable 20261022-phase1-PAMF-supervised-control-r01/supplement_configs/20261022-phase1-PAMF-supervised-physics-m24-r01__WRONG_REFERENCE-s2026092702.json",
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "F model and ordinary augmentation follow model seed; fixed split392005; default concat2027; G-L fixedseed2026092701, all ancestors L-only. No U reads. Five timing rounds are not model seeds.",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "budget_ref": "F: scratch20+own10+own20=50 logical epochs/11100 updates/L128; lr2e-4 wd1e-4 cosine1e-6 reset eachsegment; LS0 CE+concat.68; no CRIC/RDrop/U/EMA",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/WRONG_REFERENCE-s2026092702",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs/20261022-phase1-PAMF-supervised-physics-m24-r01__WRONG_REFERENCE-s2026092702.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "expected_artifacts": [
+        "source freeze when trained",
+        "all seven-view raw/G predictions",
+        "independent truth-last scores",
+        "cost telemetry"
+      ]
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "method": "SIG_TIME",
+      "purpose": "Strict L-only architecture/control; fixed default head; no target feedback",
+      "config_ref": "Generated immutable 20261022-phase1-PAMF-supervised-control-r01/supplement_configs/20261022-phase1-PAMF-supervised-physics-m24-r01__SIG_TIME-s2026092703.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "F model and ordinary augmentation follow model seed; fixed split392005; default concat2027; G-L fixedseed2026092701, all ancestors L-only. No U reads. Five timing rounds are not model seeds.",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "budget_ref": "F: scratch20+own10+own20=50 logical epochs/11100 updates/L128; lr2e-4 wd1e-4 cosine1e-6 reset eachsegment; LS0 CE+concat.68; no CRIC/RDrop/U/EMA",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/SIG_TIME-s2026092703",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs/20261022-phase1-PAMF-supervised-physics-m24-r01__SIG_TIME-s2026092703.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "expected_artifacts": [
+        "source freeze when trained",
+        "all seven-view raw/G predictions",
+        "independent truth-last scores",
+        "cost telemetry"
+      ]
+    },
+    {
+      "row_id": "NO_TIME-s2026092703",
+      "method": "NO_TIME",
+      "purpose": "Strict L-only architecture/control; fixed default head; no target feedback",
+      "config_ref": "Generated immutable 20261022-phase1-PAMF-supervised-control-r01/supplement_configs/20261022-phase1-PAMF-supervised-physics-m24-r01__NO_TIME-s2026092703.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "F model and ordinary augmentation follow model seed; fixed split392005; default concat2027; G-L fixedseed2026092701, all ancestors L-only. No U reads. Five timing rounds are not model seeds.",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "budget_ref": "F: scratch20+own10+own20=50 logical epochs/11100 updates/L128; lr2e-4 wd1e-4 cosine1e-6 reset eachsegment; LS0 CE+concat.68; no CRIC/RDrop/U/EMA",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/NO_TIME-s2026092703",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs/20261022-phase1-PAMF-supervised-physics-m24-r01__NO_TIME-s2026092703.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "expected_artifacts": [
+        "source freeze when trained",
+        "all seven-view raw/G predictions",
+        "independent truth-last scores",
+        "cost telemetry"
+      ]
+    },
+    {
+      "row_id": "NO_SIGNATURE-s2026092703",
+      "method": "NO_SIGNATURE",
+      "purpose": "Strict L-only architecture/control; fixed default head; no target feedback",
+      "config_ref": "Generated immutable 20261022-phase1-PAMF-supervised-control-r01/supplement_configs/20261022-phase1-PAMF-supervised-physics-m24-r01__NO_SIGNATURE-s2026092703.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "F model and ordinary augmentation follow model seed; fixed split392005; default concat2027; G-L fixedseed2026092701, all ancestors L-only. No U reads. Five timing rounds are not model seeds.",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "budget_ref": "F: scratch20+own10+own20=50 logical epochs/11100 updates/L128; lr2e-4 wd1e-4 cosine1e-6 reset eachsegment; LS0 CE+concat.68; no CRIC/RDrop/U/EMA",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/NO_SIGNATURE-s2026092703",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs/20261022-phase1-PAMF-supervised-physics-m24-r01__NO_SIGNATURE-s2026092703.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "expected_artifacts": [
+        "source freeze when trained",
+        "all seven-view raw/G predictions",
+        "independent truth-last scores",
+        "cost telemetry"
+      ]
+    },
+    {
+      "row_id": "NO_PA-s2026092703",
+      "method": "NO_PA",
+      "purpose": "Strict L-only architecture/control; fixed default head; no target feedback",
+      "config_ref": "Generated immutable 20261022-phase1-PAMF-supervised-control-r01/supplement_configs/20261022-phase1-PAMF-supervised-physics-m24-r01__NO_PA-s2026092703.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "F model and ordinary augmentation follow model seed; fixed split392005; default concat2027; G-L fixedseed2026092701, all ancestors L-only. No U reads. Five timing rounds are not model seeds.",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "budget_ref": "F: scratch20+own10+own20=50 logical epochs/11100 updates/L128; lr2e-4 wd1e-4 cosine1e-6 reset eachsegment; LS0 CE+concat.68; no CRIC/RDrop/U/EMA",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/NO_PA-s2026092703",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs/20261022-phase1-PAMF-supervised-physics-m24-r01__NO_PA-s2026092703.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "expected_artifacts": [
+        "source freeze when trained",
+        "all seven-view raw/G predictions",
+        "independent truth-last scores",
+        "cost telemetry"
+      ]
+    },
+    {
+      "row_id": "NO_REFERENCE-s2026092703",
+      "method": "NO_REFERENCE",
+      "purpose": "Strict L-only architecture/control; fixed default head; no target feedback",
+      "config_ref": "Generated immutable 20261022-phase1-PAMF-supervised-control-r01/supplement_configs/20261022-phase1-PAMF-supervised-physics-m24-r01__NO_REFERENCE-s2026092703.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "F model and ordinary augmentation follow model seed; fixed split392005; default concat2027; G-L fixedseed2026092701, all ancestors L-only. No U reads. Five timing rounds are not model seeds.",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "budget_ref": "F: scratch20+own10+own20=50 logical epochs/11100 updates/L128; lr2e-4 wd1e-4 cosine1e-6 reset eachsegment; LS0 CE+concat.68; no CRIC/RDrop/U/EMA",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/NO_REFERENCE-s2026092703",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs/20261022-phase1-PAMF-supervised-physics-m24-r01__NO_REFERENCE-s2026092703.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "expected_artifacts": [
+        "source freeze when trained",
+        "all seven-view raw/G predictions",
+        "independent truth-last scores",
+        "cost telemetry"
+      ]
+    },
+    {
+      "row_id": "COV_X3-s2026092703",
+      "method": "COV_X3",
+      "purpose": "Strict L-only architecture/control; fixed default head; no target feedback",
+      "config_ref": "Generated immutable 20261022-phase1-PAMF-supervised-control-r01/supplement_configs/20261022-phase1-PAMF-supervised-physics-m24-r01__COV_X3-s2026092703.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "F model and ordinary augmentation follow model seed; fixed split392005; default concat2027; G-L fixedseed2026092701, all ancestors L-only. No U reads. Five timing rounds are not model seeds.",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "budget_ref": "F: scratch20+own10+own20=50 logical epochs/11100 updates/L128; lr2e-4 wd1e-4 cosine1e-6 reset eachsegment; LS0 CE+concat.68; no CRIC/RDrop/U/EMA",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/COV_X3-s2026092703",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs/20261022-phase1-PAMF-supervised-physics-m24-r01__COV_X3-s2026092703.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "expected_artifacts": [
+        "source freeze when trained",
+        "all seven-view raw/G predictions",
+        "independent truth-last scores",
+        "cost telemetry"
+      ]
+    },
+    {
+      "row_id": "SHUFFLE_TIME-s2026092703",
+      "method": "SHUFFLE_TIME",
+      "purpose": "Strict L-only architecture/control; fixed default head; no target feedback",
+      "config_ref": "Generated immutable 20261022-phase1-PAMF-supervised-control-r01/supplement_configs/20261022-phase1-PAMF-supervised-physics-m24-r01__SHUFFLE_TIME-s2026092703.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "F model and ordinary augmentation follow model seed; fixed split392005; default concat2027; G-L fixedseed2026092701, all ancestors L-only. No U reads. Five timing rounds are not model seeds.",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "budget_ref": "F: scratch20+own10+own20=50 logical epochs/11100 updates/L128; lr2e-4 wd1e-4 cosine1e-6 reset eachsegment; LS0 CE+concat.68; no CRIC/RDrop/U/EMA",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/SHUFFLE_TIME-s2026092703",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs/20261022-phase1-PAMF-supervised-physics-m24-r01__SHUFFLE_TIME-s2026092703.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "expected_artifacts": [
+        "source freeze when trained",
+        "all seven-view raw/G predictions",
+        "independent truth-last scores",
+        "cost telemetry"
+      ]
+    },
+    {
+      "row_id": "WRONG_REFERENCE-s2026092703",
+      "method": "WRONG_REFERENCE",
+      "purpose": "Strict L-only architecture/control; fixed default head; no target feedback",
+      "config_ref": "Generated immutable 20261022-phase1-PAMF-supervised-control-r01/supplement_configs/20261022-phase1-PAMF-supervised-physics-m24-r01__WRONG_REFERENCE-s2026092703.json",
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": 2027,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "F model and ordinary augmentation follow model seed; fixed split392005; default concat2027; G-L fixedseed2026092701, all ancestors L-only. No U reads. Five timing rounds are not model seeds.",
+      "data_overrides": {
+        "protocol_id": "F0",
+        "dataset": "ManySig",
+        "source_rxs": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "target_rxs": [
+          0,
+          2,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "target_days": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_per_thousand": 70,
+        "fixed_labels": null,
+        "diagnostic_day": null,
+        "split_seed": 392005,
+        "equalized": 1,
+        "out_len": 256,
+        "normalize": true,
+        "U_s_use": false,
+        "expected_counts": {
+          "L_s": 6300,
+          "U_s": 56700,
+          "V": 27000
+        },
+        "target_count": 168000,
+        "primary_endpoint": "all_target_dates"
+      },
+      "budget_ref": "F: scratch20+own10+own20=50 logical epochs/11100 updates/L128; lr2e-4 wd1e-4 cosine1e-6 reset eachsegment; LS0 CE+concat.68; no CRIC/RDrop/U/EMA",
+      "output_root": "PROJECT/runs/20261022-phase1-PAMF-supervised-physics-m24-r01/WRONG_REFERENCE-s2026092703",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-supervised-control-r01/logs/20261022-phase1-PAMF-supervised-physics-m24-r01__WRONG_REFERENCE-s2026092703.log",
+      "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
+      "expected_artifacts": [
+        "source freeze when trained",
+        "all seven-view raw/G predictions",
+        "independent truth-last scores",
+        "cost telemetry"
+      ]
+    }
+  ],
+  "notes": [
+    "Detailed fixed design: docs/PAMF_SUPERVISED_PHYSICS_ABLATION_20261022.md",
+    "24 new F,30 readout rows (6 reuse F/raw),85 new jobs. No new G or source-count5 sweep. Existing51 strict-supervised main F retained.",
+    "LOCAL_VERIFIED_NOT_PUBLISHED. SSH/Git network layer currently blocked; do not infer real GPU launch from local preparation."
+  ],
+  "research_plan": null,
+  "runtime_evidence": {
+    "status": "VERIFIED_RUNNING",
+    "owner_pid": 341211,
+    "active_GPUs": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "evidence": "local_artifacts/cric_dura_comparison_20261021/launch_verified.json",
+    "known_failed_diagnostic": "Unified latency-r01 only; independentr02 recovery; healthy science unchanged",
+    "completed_F0_final_T1_3seeds_7views": false
+  },
+  "registered_at": "2026-10-22T13:18:55+00:00"
+}
