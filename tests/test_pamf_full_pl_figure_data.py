@@ -82,6 +82,39 @@ class FigureDataTests(unittest.TestCase):
                 finally:
                     figure.plt.close(plot)
 
+    def test_scene_bars_show_four_pairs_and_one_pamf_with_correct_heights(self):
+        arrays = {key: np.array([[20 + 5 * i + seed + scene for scene in range(7)]
+                                for seed in range(3)], float)
+                  for i, key in enumerate(figure.KEYS)}
+        for scene_index, scene in enumerate(figure.SCENES):
+            with self.subTest(scene=scene):
+                plot = figure.grouped_scene_figure(arrays, scene)
+                try:
+                    self.assertEqual(figure.single_chart_count(plot), 1)
+                    bars = {bar.get_gid(): bar for bar in plot.axes[0].patches}
+                    self.assertEqual(len(bars), 9)
+                    self.assertEqual(set(bars), {f'{family}-{regime}' for family, regime in figure.KEYS})
+                    for key in figure.KEYS:
+                        bar = bars['-'.join(key)]
+                        self.assertAlmostEqual(bar.get_height(), arrays[key][:, scene_index].mean())
+                    for family in figure.FAMILIES:
+                        left = bars[f'{family}-full']
+                        right = bars[f'{family}-full_pl']
+                        self.assertLess(left.get_x() + left.get_width(), right.get_x())
+                        self.assertEqual(left.get_hatch(), '//')
+                        self.assertFalse(right.get_hatch())
+                finally:
+                    figure.plt.close(plot)
+
+    def test_all_seven_bar_figures_share_zero_based_percentage_axis(self):
+        arrays = figure.arrays_from_records(fixture())
+        for scene in figure.SCENES:
+            plot = figure.grouped_scene_figure(arrays, scene)
+            try:
+                self.assertEqual(tuple(plot.axes[0].get_ylim()), (0, 100))
+            finally:
+                figure.plt.close(plot)
+
 
 if __name__ == '__main__':
     unittest.main()

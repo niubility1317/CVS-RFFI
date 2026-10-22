@@ -2,6 +2,7 @@
 
 Use --source-csv from an exported bundle to redraw in a fresh output directory.
 The figures use fixed F0 rows, three model seeds, and all seven declared scenes.
+Use --layout scene-bars for seven separate grouped-bar figures.
 """
 from __future__ import annotations
 
@@ -23,7 +24,7 @@ plt.rcParams['svg.fonttype'] = 'none'
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap, Normalize
 from matplotlib.lines import Line2D
-from matplotlib.patches import Rectangle
+from matplotlib.patches import Patch, Rectangle
 from PIL import Image
 from pypdf import PdfReader
 
@@ -31,6 +32,10 @@ SEEDS = (2026092701, 2026092702, 2026092703)
 FAMILIES = ('riei', 'drift', 'ibrff', 'sdg')
 SCENES = ('clean', 'practical_high', 'practical_mid', 'practical_low_suburban',
           'practical_high_urban', 'practical_mid_urban', 'practical_low_urban')
+SCENE_TITLES = ('Clean', 'Suburban — High', 'Suburban — Mid', 'Suburban — Low',
+                'Urban — High', 'Urban — Mid', 'Urban — Low')
+SCENE_BAR_STEMS = ('Fig1_Clean', 'Fig2_Suburban_High', 'Fig3_Suburban_Mid',
+                   'Fig4_Suburban_Low', 'Fig5_Urban_High', 'Fig6_Urban_Mid', 'Fig7_Urban_Low')
 NAMES = dict(riei='RIEI', drift='DRIFT', ibrff='IB-RFF', sdg='SDG', pamf='PAMF')
 COLORS = dict(riei='#3F70AE', drift='#258F8F', ibrff='#8A6BB8',
               sdg='#B7832F', pamf='#CE4E43')
@@ -385,6 +390,56 @@ def scenario_figure(arrays):
     return fig
 
 
+def grouped_scene_figure(arrays, scene):
+    """One declared scene; four Full/PL pairs and one real PAMF readout."""
+    scene_index = SCENES.index(scene)
+    fig = plt.figure(figsize=(WIDTH_MM / 25.4, 116 / 25.4), dpi=120)
+    figure_header(fig, 'Recognition accuracy | ' + SCENE_TITLES[scene_index],
+        'F0 benchmark  |  6 TX  |  7 unseen RX  |  168,000 packets  |  3 model seeds')
+    ax = fig.add_axes((.105, .275, .845, .56), label='data')
+    ax.set(xlim=(-.57, 4.72), ylim=(0, 100), yticks=[0, 20, 40, 60, 80, 100],
+           ylabel='Test accuracy (%)')
+    ax.grid(axis='y', color=GRID, lw=.55)
+    ax.set_axisbelow(True)
+    ax.tick_params(axis='x', length=0, pad=8)
+    positions = [0, 1, 2, 3, 4.16]
+    ax.set_xticks(positions, [NAMES[family] for family in FAMILIES] + ['PAMF (ours)'])
+    ax.axvline(3.65, color='#D8DEE5', lw=.65, ls=(0, (3, 4)))
+    for family, center_x in zip((*FAMILIES, 'pamf'), positions):
+        regimes = ('pamf',) if family == 'pamf' else ('full', 'full_pl')
+        for regime in regimes:
+            key = (family, regime)
+            mean, sd = describe(arrays[key][:, scene_index])
+            offset = 0 if family == 'pamf' else (-.17 if regime == 'full' else .17)
+            color = COLORS[family]
+            rgb = np.asarray(matplotlib.colors.to_rgb(color))
+            face = .78 * np.ones(3) + .22 * rgb if regime == 'full' else color
+            bar = ax.bar(center_x + offset, mean, width=.285, yerr=sd,
+                color=face, edgecolor=color, linewidth=.85,
+                hatch='//' if regime == 'full' else None,
+                error_kw=dict(ecolor=INK, elinewidth=.85, capsize=2.2, capthick=.8),
+                zorder=3)[0]
+            bar.set_gid(f'{family}-{regime}')
+            ax.text(center_x + offset, mean + sd + 2.1, f'{mean:.2f}',
+                    ha='center', va='bottom', color=color, fontsize=7.2,
+                    weight='bold' if family == 'pamf' else 'normal')
+    for tick, family in zip(ax.get_xticklabels(), (*FAMILIES, 'pamf')):
+        tick.set_color(COLORS[family])
+        tick.set_fontsize(8)
+        if family == 'pamf':
+            tick.set_weight('bold')
+    handles = [Patch(facecolor='#E6EAF0', edgecolor=MUTED, linewidth=.75,
+                     hatch='//', label='Full'),
+               Patch(facecolor=MUTED, edgecolor=MUTED, label='Full + plain PL'),
+               Patch(facecolor=COLORS['pamf'], edgecolor=COLORS['pamf'],
+                     label='PAMF (T1 + DURA)')]
+    fig.legend(handles=handles, loc='center', bbox_to_anchor=(.525, .160),
+               ncol=3, handlelength=1.65, handleheight=.95,
+               handletextpad=.7, columnspacing=2.4)
+    shared_note(fig, 'Bars: mean test accuracy; whiskers: sample SD (n = 3). Values above bars are means (%).')
+    return fig
+
+
 def single_chart_count(fig):
     return sum(ax.get_label() != 'colorbar' for ax in fig.axes)
 
@@ -517,11 +572,59 @@ PAMF 是最终 T1＋固定 DURA，不将其标成普通 PL。全部重绘只改�
 """
 
 
+def scene_bar_captions():
+    captions = """# Seven independent scene-wise grouped-bar figures
+
+Each image contains one scene and exactly one data chart. RIEI, DRIFT, IB-RFF,
+and SDG each have two adjacent bars: Full on the left (light fill and hatching),
+Full + plain PL on the right (solid fill). PAMF (T1 + DURA) has one vermilion bar;
+there is no invented PAMF plain-PL variant. No CE-only or raw-T1 baseline is plotted.
+Family colors and method order are fixed across all seven images.
+
+Bar heights and numeric labels are mean test accuracy (%) across model seeds
+2026092701/02/03. Whiskers are sample SD (ddof=1), not confidence intervals.
+All charts use a zero-based 0–100% vertical axis. There are no significance tests
+or p-value symbols. Each scene uses the same 168000 physical packets across seven
+unseen RX (24000 per RX), so RX-balanced and packet-weighted accuracy coincide.
+The seven channel views are correlated, not independent experimental repeats.
+
+PAMF uses T1-E50 (13L+37U) and one fixed DURA v1.0 shared by three recognizer
+seeds; its SD is conditional on that G, not independent G variance. External Full
+and Full+PL share clean/satellite concatenation (satellite CE weight 0.68);
+plain PL has confidence threshold 0.95 and weight 1. PAMF retains its native T1
+recipe and is not labeled as a plain-PL extension. Native recipes and training
+budgets differ, so this is a system comparison, not equal-compute evidence or a
+single-component causal ablation.
+
+F0 has 6 TX, 5 source RX (1,3,4,6,8), and 7 disjoint target RX (0,2,5,7,9,10,11).
+Source dates are D1–D3; L/U/V=6300/56700/27000; split seed=392005.
+This is a score-only redraw of already completed, independent truth-last scoring.
+No IQ, checkpoint, prediction-array or truth access, new training, inference,
+tuning, model selection, or model replacement occurs in figure preparation.
+
+## Figure-to-scene mapping
+
+| File prefix | Observation condition | Registered scene |
+| --- | --- | --- |
+"""
+    for stem, title, scene in zip(SCENE_BAR_STEMS, SCENE_TITLES, SCENES):
+        captions += f'| `{stem}` | {title} | `{scene}` |\n'
+    return captions + """
+## 中文说明
+
+七个场景各一张独立分组柱状图，不拼接。四个外部方法均为左侧 Full、右侧 Full＋普通 PL；
+PAMF 单独使用朱红柱，不虚构 PAMF＋PL。方法顺序、配色、纵轴和统计口径跨图一致。
+浅色斜线与同色实心区分两种训练方式，黑白打印也能识别。柱高及柱顶数字为三个种子均值，
+误差线为样本标准差。189 条源评分数据与前版一致，PAMF 仍为三 F 种子共用一个固定 G。
+"""
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--external-rows', type=Path)
     parser.add_argument('--pamf-csv', type=Path)
     parser.add_argument('--source-csv', type=Path)
+    parser.add_argument('--layout', choices=('single-charts', 'scene-bars'), default='single-charts')
     parser.add_argument('--output', required=True, type=Path)
     args = parser.parse_args()
     if args.output.exists():
@@ -549,23 +652,45 @@ def main():
                 comparison='Full+PL minus Full', difference_pp=float(value)))
     write_csv(args.output / 'summary.csv', summary)
     write_csv(args.output / 'paired_pl_changes.csv', paired)
-    exported = [
-        export_figure(accuracy_figure(arrays), args.output, 'Fig1_SixScenario_Accuracy'),
-        export_figure(balance_figure(arrays), args.output, 'Fig2_Clean_Channel_Balance'),
-        export_figure(pl_effect_figure(arrays), args.output, 'Fig3_PlainPL_Increment',
-                      required_names=[NAMES[f] for f in FAMILIES]),
-        export_figure(scenario_figure(arrays), args.output, 'Fig4_SevenScene_Accuracy')]
-    (args.output / 'figure_captions.md').write_text(CAPTIONS, encoding='utf-8')
+    if args.layout == 'scene-bars':
+        exported = []
+        for scene, stem in zip(SCENES, SCENE_BAR_STEMS):
+            fig = grouped_scene_figure(arrays, scene)
+            ax = fig.axes[0]
+            bar_count = len(ax.patches)
+            limits = [float(value) for value in ax.get_ylim()]
+            if bar_count != 9 or limits != [0, 100]:
+                raise ValueError('Scene bars must have four Full/PL pairs, one PAMF, and shared 0–100% axis')
+            result = export_figure(fig, args.output, stem)
+            result.update(scene=scene, bar_count=bar_count, y_limits_pct=limits)
+            exported.append(result)
+        captions = scene_bar_captions()
+        redraw_option = '--layout scene-bars '
+        chart_description = ''.join(f'{stem}: one grouped-bar chart for {title}.\n'
+            for stem, title in zip(SCENE_BAR_STEMS, SCENE_TITLES))
+    else:
+        exported = [
+            export_figure(accuracy_figure(arrays), args.output, 'Fig1_SixScenario_Accuracy'),
+            export_figure(balance_figure(arrays), args.output, 'Fig2_Clean_Channel_Balance'),
+            export_figure(pl_effect_figure(arrays), args.output, 'Fig3_PlainPL_Increment',
+                          required_names=[NAMES[f] for f in FAMILIES]),
+            export_figure(scenario_figure(arrays), args.output, 'Fig4_SevenScene_Accuracy')]
+        captions = CAPTIONS
+        redraw_option = ''
+        chart_description = (
+            'Fig1_SixScenario_Accuracy: one forest plot of six-scenario mean accuracy.\n'
+            'Fig2_Clean_Channel_Balance: one scatter plot of clean and six-scenario accuracy.\n'
+            'Fig3_PlainPL_Increment: one forest plot of matched-seed PL changes.\n'
+            'Fig4_SevenScene_Accuracy: one heatmap of all seven scenes.\n')
+    (args.output / 'figure_captions.md').write_text(captions, encoding='utf-8')
     shutil.copyfile(__file__, args.output / 'reproduce.py')
     (args.output / 'README.md').write_text(
         '# Publication figure bundle — one chart per image\n\n'
         'Python only: matplotlib, numpy, Pillow, pypdf. No model or truth access.\n\n'
         'Redraw in a new directory:\n\n'
-        '```text\npython reproduce.py --source-csv source_data.csv --output NEW_FIGURES\n```\n\n'
-        'Fig1_SixScenario_Accuracy: one forest plot of six-scenario mean accuracy.\n'
-        'Fig2_Clean_Channel_Balance: one scatter plot of clean and six-scenario accuracy.\n'
-        'Fig3_PlainPL_Increment: one forest plot of matched-seed PL changes.\n'
-        'Fig4_SevenScene_Accuracy: one heatmap of all seven scenes.\n'
+        '```text\npython reproduce.py ' + redraw_option
+        + '--source-csv source_data.csv --output NEW_FIGURES\n```\n\n'
+        + chart_description +
         'Each image contains exactly one data chart; no composite panels or insets.\n'
         'All: 183 mm width, editable SVG/PDF, 600-dpi PNG/TIFF, color and grayscale previews.\n'
         'Palette: RIEI blue, DRIFT teal, IB-RFF violet, SDG ochre, PAMF vermilion.\n'
@@ -576,7 +701,7 @@ def main():
         numpy_version=np.__version__, series=9, trained_model_rows=27, score_rows=len(records),
         external_full_rows=12, external_full_pl_rows=12, pamf_F_seeds=3, pamf_fixed_G=1,
         own_CE_series=0, independent_scenes=False, model_or_truth_access=False,
-        layout='one data chart per image; colorbar is a scale legend', palette=COLORS,
+        layout=args.layout, one_chart_per_image=True, palette=COLORS,
         statistic='Mean and sample SD across 3 fixed model seeds; no inference tests', figures=exported,
         source_runs=[EXT_RUN, PAMF_RUN], comparison='same F0 test; different recipes and budgets')
     (args.output / 'validation.json').write_text(json.dumps(validation, indent=2), encoding='utf-8')

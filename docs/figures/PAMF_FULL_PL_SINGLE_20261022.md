@@ -68,3 +68,31 @@ python reproduce.py --source-csv source_data.csv --output NEW_FIGURES
 
 依赖：Python、matplotlib、numpy、Pillow、pypdf。未安装新软件。
 本次仅记录制图实现、针对性测试和本说明，不修改实验登记、其他 owner 的进程或实验配置。
+
+## 追加交付：七场景独立分组柱状图
+
+用户随后明确要求把七个场景各画成一张分组柱状图。本次追加交付为
+`exports/phase1_external_dg/20261022-pamf-seven-scene-grouped-bars-r01/` 及同名 ZIP。
+前述四张摘要图及其下载包保持原样。
+
+- 每图包含四组外部方法的 Full／Full＋PL 并排柱，以及一个 PAMF 朱红单柱，共 9 根柱。
+  Full 位于左侧，用浅色斜线；Full＋普通 PL 位于右侧，用同方法颜色的实心填充。
+  不虚构 PAMF＋PL，也不增添 CE-only 对照。
+- 方法顺序为 RIEI、DRIFT、IB-RFF、SDG、PAMF，沿用既有蓝、青、紫、金赭、朱红配色。
+  七图均为 183 × 116 mm，纵轴统一从 0% 至 100%，不截断柱高。
+- 文件前缀依次为 `Fig1_Clean`、`Fig2_Suburban_High`、`Fig3_Suburban_Mid`、
+  `Fig4_Suburban_Low`、`Fig5_Urban_High`、`Fig6_Urban_Mid`、`Fig7_Urban_Low`。
+  每图仍有可编辑 SVG/PDF、600 dpi PNG/TIFF、彩色及黑白预览。
+- 柱高与柱顶数字为三个模型种子的准确率均值，误差线为样本标准差（ddof=1）。
+  固定 G、相关视图、配方与预算不等的解释边界沿用前述约定。
+- 10 项针对性测试通过，包括七图的实际场景列、四对并排柱、唯一 PAMF 柱、统一零起点纵轴。
+  63 根场景柱的均值和标准差用标准库独立核算一致；189 条源记录、72 项汇总和 12 项配对差
+  与前版逐条一致。仅重绘，不重新训练、预测或评分。
+- 七张彩色预览已逐张检查，另抽查 low urban 黑白预览；斜线／实心编码、数值和图例可辨。
+  各格式读回、矢量文本、画布边界和分辨率检查通过；ZIP 共 49 个文件，读回无损坏。
+
+七张柱状图的复现命令：
+
+```text
+python reproduce.py --layout scene-bars --source-csv source_data.csv --output NEW_FIGURES
+```
