@@ -50,7 +50,9 @@ def install(model, arm, seed):
         bank = torch.complex(response.bank_real, response.bank_imag)
         g = torch.Generator().manual_seed(2026102208)
         angles = torch.rand(bank.shape[-1], dtype=torch.float64, generator=g) * (2 * torch.pi)
-        phase = torch.polar(torch.ones_like(angles), angles)
+        # Keep the registered CPU RNG and FP64 phase values; native training
+        # may already have placed the frozen reference bank on CUDA.
+        phase = torch.polar(torch.ones_like(angles), angles).to(bank.device)
         # Public, sample-independent phase scrambling; spectrum magnitudes and
         # all trainable projection dimensions remain identical to the real bank.
         wrong = torch.fft.ifft(torch.fft.fft(bank, dim=-1) * phase, dim=-1)

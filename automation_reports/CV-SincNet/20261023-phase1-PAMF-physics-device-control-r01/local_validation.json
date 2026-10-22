@@ -1,0 +1,12 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "architecture_tests": 6,
+  "recovery_tests": 3,
+  "independent_P0_P1": "PASS: bounded recovery and CUDA placement; no P0/P1",
+  "original_failed_rows": [
+    "20261022-phase1-PAMF-supervised-physics-m24-r01/WRONG_REFERENCE-s2026092701"
+  ],
+  "new_G_training": 0,
+  "scientific_change": false,
+  "actual_checkpoint_source_smoke": "FIRST_LAUNCH_STEP"
+}

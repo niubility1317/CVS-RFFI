@@ -86,6 +86,29 @@ class SupervisedPhysicsTests(unittest.TestCase):
         self.assertEqual(out['same_TX_cross_RX_distance'],0.)
         self.assertEqual(out['different_TX_same_RX_distance'],1.)
 
+    @unittest.skipUnless(torch.cuda.is_available(), 'CUDA is needed for the training-device regression')
+    def test_wrong_reference_installs_after_native_cuda_build(self):
+        from experiments.cric_dura_comparison.f_train import class_dimension,original_config,arguments
+        from experiments.cric_dura_comparison.f_model import install
+        from experiments.cvs_phase1_stack.runtime import installed
+        c=self.config('WRONG_REFERENCE')
+        torch.manual_seed(c['model_seed'])
+        with class_dimension(c),installed(original_config(c['model_seed'])) as native:
+            a=arguments(c,'cuda:0');a.input_len=256
+            # The real trainer builds the native model on CUDA before installing
+            # the registered architecture, unlike the original CPU-only smoke.
+            model=install(native.build_baseline_model(a,'cuda:0'),c).to('cuda:0')
+        response=model.id_backbone.encoder.response
+        self.assertEqual(response.bank_real.device,torch.device('cuda:0'))
+        self.assertEqual(response.bank_imag.device,torch.device('cuda:0'))
+        x=torch.randn(4,2,256,device='cuda:0')
+        logits=model(x)
+        torch.nn.functional.cross_entropy(logits,torch.arange(4,device='cuda:0')).backward()
+        head=model.id_backbone.encoder.core.id_backbone.cls_head.weight
+        self.assertTrue(torch.isfinite(logits).all())
+        self.assertIsNotNone(head.grad)
+        self.assertTrue(torch.isfinite(head.grad).all())
+
 
 def setUpModule():
     from experiments.cric_dura_comparison.bootstrap import activate,numerical_policy
