@@ -21,7 +21,7 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-22明确要求增加每张显卡进程数以加速完成；保留所有现有健康任务，科学矩阵和预算不变。",
   "code": {
-    "commit": "SET_AT_COMMIT",
+    "commit": "bed988c895da628d5ca9a4ecab34c018aa3cc6af",
     "checkout": "github_publish/CVS-RFFI-repo",
     "environment": "N607 CVS-RFFI Py3.10/Torch2.1 FP32/TF32off CPU2",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261022-phase1-T1-DURA-multiprocess-control-r02",
@@ -140,5 +140,23 @@
     "Two same technical fingerprints stop new launches, preserve active workers. Original known timing failure already has analyzed replacement; do not retry."
   ],
   "research_plan": null,
-  "registered_at": "2026-10-22T02:01:36+00:00"
+  "registered_at": "2026-10-22T02:01:36+00:00",
+  "runtime_evidence": {
+    "status": "VERIFIED_RUNNING",
+    "pid": 810247,
+    "active_own_per_gpu": {
+      "7": 3,
+      "0": 3,
+      "6": 3,
+      "2": 3,
+      "1": 3,
+      "5": 3,
+      "4": 3,
+      "3": 3
+    },
+    "adopted_healthy_workers": 16,
+    "all_adopted_preserved": true,
+    "scientific_worker_commit": "3e8806900449e97f3e8fa62822322932168c6447",
+    "evidence": "local_artifacts/cric_dura_comparison_20261021/latest_multiprocess_r02_verification.json"
+  }
 }
