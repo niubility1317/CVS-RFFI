@@ -1,10 +1,10 @@
 {
   "status": "LOCAL_VERIFIED",
-  "focused_tests": 10,
-  "independent_P0_P1_review": "PASS; one review, no P0/P1 found",
+  "focused_tests": 11,
+  "independent_P0_P1_review": "Original candidate PASS; one targeted smoke-API fix review PASS",
   "preflight": "PASS; current ordinary owner verified, new roots absent, healthy tasks preserved",
-  "actual_checkpoint_smoke": "PENDING_AT_LAUNCH",
-  "publication": "PENDING",
+  "actual_checkpoint_smoke": "r01 real checkpoint PASS; r02 full launch smoke pending",
+  "publication": "PENDING_R02",
   "new_F": 12,
   "reused_F": 12,
   "new_G": 0,
@@ -734,5 +734,6 @@
     "target_feedback_used": false,
     "grouping_basis": "Domain identity objective / stochastic prediction consistency / selective unlabeled self-training; no result-dependent regrouping",
     "claim": "Factorial effects of F training; fixed G-L/G-LU readouts reported separately; C-off+G-LU is not a fully L-only system"
-  }
+  },
+  "local_reproduction": "Actual ordinary IQ absent reproduced before fix; same regression PASS after outer model call"
 }

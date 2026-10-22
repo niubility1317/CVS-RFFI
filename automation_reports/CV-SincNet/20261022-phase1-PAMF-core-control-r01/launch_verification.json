@@ -1,0 +1,11 @@
+{
+  "status": "FAILED_BEFORE_HANDOFF",
+  "error": "ValueError: Actual ordinary IQ absent",
+  "layer": "New grouped-objective prelaunch smoke; outer forward hook bypassed by direct internal method",
+  "original_controller_untouched": true,
+  "new_F_started": 0,
+  "new_prediction_started": 0,
+  "real_checkpoint_source_check": "PASS",
+  "recovery": "20261022-phase1-PAMF-core-control-r02",
+  "fix": "Smoke first call uses model(...,return_aux=True), matching native trainer; no model/loss/budget changes"
+}

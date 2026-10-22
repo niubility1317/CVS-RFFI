@@ -53,7 +53,7 @@ def smoke(rt, output):
                 raise ValueError('Grouped SSL-off did not disable native U/EMA')
             model=install(native.build_baseline_model(args,'cpu'),c).train()
         with model._phase1_labeled_feature_context():
-            out=model.forward_identity_only(x,domain_labels=domains)
+            out=model(x,return_aux=True,domain_labels=domains)
         ce=F.cross_entropy(out['tx_logits'],y,label_smoothing=.01)
         correction,metrics=model._source_labeled_feature_hook(model=model,labeled_output=out,labels=y,
             extra=(None,metadata),domains=domains,optimizer_step=1,identity_loss=ce,labeled_count=128,labeled_inputs=x)

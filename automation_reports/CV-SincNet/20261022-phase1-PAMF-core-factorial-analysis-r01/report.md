@@ -35,3 +35,7 @@ Two supervised objectives and one complete native selective-SSL group; fixed CE 
 12 新 F、12 既有训练来源（含排队项）复用，21 新预测／21 独立评分／1 CPU 汇总，共 55 新阶段任务。G-L／G-LU 均使用同契约既有谱系，raw 与已有读出按来源复用，不新增 G 或部署计时。
 
 10 项聚焦测试和一次独立 P0/P1 审查 PASS；其中 grouped111/011/101/110 与原 full/F16/F04/F20 的损失和梯度逐元素一致，C=0 在读取数据前关闭 U。N607 只读 preflight PASS。当前仍为 LOCAL_VERIFIED，实际 checkpoint smoke、发布和接管待核实。
+
+## 发布前接口修复
+
+r01 在健康任务接管之前退出，真实 checkpoint 源检查已 PASS；新增分组 smoke 直接调用内部方法，未触发 ordinary IQ 捕获。已本地复现，改成原训练外层调用；11 项聚焦测试及一次原问题定点复核 PASS。科学训练不变，r02 使用新不可覆盖目录，旧失败产物保留。

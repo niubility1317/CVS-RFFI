@@ -2,7 +2,7 @@
 from itertools import product
 
 RUN = '20261022-phase1-PAMF-core-mechanisms-m24-r01'
-CONTROL = '20261022-phase1-PAMF-core-control-r01'
+CONTROL = '20261022-phase1-PAMF-core-control-r02'
 READOUT = '20261022-phase1-PAMF-core-G-L-readouts-m9-r01'
 ANALYSIS = '20261022-phase1-PAMF-core-factorial-analysis-r01'
 REPAIR = '20261022-phase1-T1-DURA-F-ablation-binding-m63-r01'

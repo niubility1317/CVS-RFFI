@@ -29,7 +29,7 @@
     "commit": "SET_AT_COMMIT",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 CVS-RFFI Py3.10/Torch2.1 FP32/TF32off CPU2",
-    "cwd": "PROJECT/releases/20261022-phase1-PAMF-core-control-r01",
+    "cwd": "PROJECT/releases/20261022-phase1-PAMF-core-control-r02",
     "entry": "experiments.cric_dura_comparison.publish_core"
   },
   "data": {
@@ -106,9 +106,9 @@
     "launch_owner": "codex-PAMF-three-core-20261022",
     "gpu_policy": "Existing r03: baseline3/card, fourthF only0/6, global26, G<=1/card; all healthy PIDs preserved; timingexclusive not2/3.",
     "remote_run_root": "PROJECT/runs/20261022-phase1-PAMF-core-factorial-analysis-r01/results",
-    "remote_log_root": "PROJECT/runs/20261022-phase1-PAMF-core-control-r01/logs",
+    "remote_log_root": "PROJECT/runs/20261022-phase1-PAMF-core-control-r02/logs",
     "local_artifact_root": "local_artifacts/PAMF_core_groups_20261022",
-    "launch_command": "F:/App/miniconda3/python.exe -X utf8 -m experiments.cric_dura_comparison.publish_core --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output E:/type10-7/local_artifacts/PAMF_core_groups_20261022/control-r01 --previous E:/type10-7/local_artifacts/PAMF_core_groups_20261022/previous_runtime.json --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "launch_command": "F:/App/miniconda3/python.exe -X utf8 -m experiments.cric_dura_comparison.publish_core --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output E:/type10-7/local_artifacts/PAMF_core_groups_20261022/control-r02 --previous E:/type10-7/local_artifacts/PAMF_core_groups_20261022/previous_runtime.json --ssh-config E:/type10-7/tools/n607_ssh_config",
     "stop_rule": "One real-checkpoint L-only no-query smoke plus four actual grouped-objective backward smoke cells before handoff; PASS continues. Preserve all healthy workers. Two same technical fingerprints stop new submissions; no target-driven tuning/reordering/reruns."
   },
   "expected_artifacts": [
@@ -146,7 +146,7 @@
       "row_id": "all24cells",
       "method": "CPU_core_factorial",
       "purpose": "Functional three-group factorial; grouping independent of target outcomes",
-      "config_ref": "20261022-phase1-PAMF-core-control-r01/core_configs/20261022-phase1-PAMF-core-factorial-analysis-r01.json",
+      "config_ref": "20261022-phase1-PAMF-core-control-r02/core_configs/20261022-phase1-PAMF-core-factorial-analysis-r01.json",
       "seeds": {
         "model": null,
         "split": 392005,
@@ -204,7 +204,7 @@
       },
       "budget_ref": "CPU only;24 cells x3 readouts x7 views; CM reconstruction and paired main/interaction effects; no training",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-core-factorial-analysis-r01/results",
-      "log_path": "PROJECT/runs/20261022-phase1-PAMF-core-control-r01/logs/20261022-phase1-PAMF-core-factorial-analysis-r01.log",
+      "log_path": "PROJECT/runs/20261022-phase1-PAMF-core-control-r02/logs/20261022-phase1-PAMF-core-factorial-analysis-r01.log",
       "command": "python -u -m experiments.cric_dura_comparison.pipeline worker --config <immutable row>",
       "expected_artifacts": [
         "Own staged F source freeze or explicit existing-source reuse",
@@ -235,7 +235,8 @@
     "24 logical F =12 new +12 existing completed/queued sources; no new G, source-count5 sweep or repeated uniform timing.",
     "55 appended jobs =12 F +21 predict +21 score +1 CPU factorial; old jobs preserved. Fine legacy rows become appendix diagnostics.",
     "Main table111/011/101/110; all8 cells predeclared, main and interaction effects computed per seed. Native T1 As/U exception retained; matched Sup/ordinaryPL and strict architecture controls remain separately registered.",
-    "LOCAL_VERIFIED; publication, actual checkpoint smoke and handoff verification pending."
+    "LOCAL_VERIFIED; publication, actual checkpoint smoke and handoff verification pending.",
+    "Recovery r02: initial r01 smoke failed before handoff; fixed outer-forward API only.11 focused tests PASS, including real-native smoke regression; targeted issue review PASS. Scientific matrix unchanged."
   ],
   "research_plan": null,
   "runtime_evidence": {
