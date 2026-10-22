@@ -1,7 +1,7 @@
 {
   "status": "LOCAL_VERIFIED",
-  "focused_tests": 7,
-  "independent_P0_P1": "PASS, one review plus direct import/3.10 syntax correction",
+  "focused_tests": 8,
+  "independent_P0_P1": "PASS initial review; one targeted release-dependency fix review PASS",
   "source_contracts": 17,
   "PL_F_models": 51,
   "new_F": 0,
@@ -10,5 +10,6 @@
   "source_only_dependency_check": "PASS",
   "real_checkpoint_smoke": "FIRST_LAUNCH_STEP_BEFORE_HANDOVER",
   "regression_tests": 19,
-  "all_relevant_tests": 26
+  "all_relevant_tests": 27,
+  "isolated_release_import": "PASS without planner/vendor packages"
 }

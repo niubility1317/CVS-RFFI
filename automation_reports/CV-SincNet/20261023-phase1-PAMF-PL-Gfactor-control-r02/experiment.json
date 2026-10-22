@@ -1,0 +1,146 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261023-phase1-PAMF-PL-Gfactor-control-r02",
+  "group_id": "phase1-pamf-PL-Gdata-fairness",
+  "display_name": "PAMF普通PL×G：冻结公平性读出与健康接管",
+  "description": "Publish only the already-registered51-row frozen PL/G-L supplement, no F/G retraining or new m5 sweep.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "PAMF",
+    "ordinary-PL",
+    "G-L-LU",
+    "data-matched-factorial",
+    "three-F-seeds",
+    "raw-reuse",
+    "no-retraining"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261021-phase1-T1-DURA-comparison-m153-r01",
+    "20261022-phase1-T1-DURA-F0-controls-binding-m6-r01",
+    "20261021-phase1-T1-DURA-G-lineage-m35-r01",
+    "20261023-phase1-external-DURA-IQ-cache-m34-r01"
+  ],
+  "replaces_run_id": "20261023-phase1-PAMF-PL-Gfactor-control-r01",
+  "authorization": "用户2026-10-22：再次检查实验完不完备，有没有缺什么实验没有安排得到，后续补上。按本线程三seed/保护健康任务/不补五源数量扫描要求安排。",
+  "code": {
+    "commit": "Actual committed publication recorded in launch_verification.json",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 CVS-RFFI Py3.10/Torch2.1 FP32/TF32off CPU2",
+    "cwd": "PROJECT/releases/20261023-phase1-PAMF-PL-Gfactor-control-r02",
+    "entry": "experiments.cric_dura_comparison.publish_gfactor"
+  },
+  "data": {
+    "dataset": "WiSig ManySig",
+    "version": null,
+    "representation": "equalized1 center256 FP32 unitRMS",
+    "contract_ref": "docs/PAMF_PL_GFACTOR_READOUTS_20261023.md",
+    "physical_ids_ref": "Existing17 validated contracts and identical received-IQ index per row; no new observation generation",
+    "label_map_ref": "Existing native source-contract metadata; no posthoc head fitting",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Six registered TX in source-contract classes, same mapping in all predictions",
+    "roles": null,
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing VALIDATED_ONCE; same original PL F and all G-L ancestors, checked by frozen loaders",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "Matched ordinaryPL F x G-L/LU; only Sup F+G-L is a fully L-only system.",
+    "query_use": "Predictors have no truth paths. Every same-row task/view decision freezes before independent CPU scoring; no target feedback.",
+    "external_method_exception": null,
+    "claim_scope": "Phase1 exposed engineering benchmark; no new blind-test, hardware identifiability or in-orbit claim"
+  },
+  "checkpoint": {
+    "initialization": "Reuse exact already-trained PL F and same-contract G-L IQ cache; never initialize another model",
+    "sources": [
+      "Per-row source references, F0 controls-binding-m6",
+      "Existing17 G-L full lineages and shared external IQ caches"
+    ],
+    "contract_check_ref": "Resolve actual source config and all ancestors before each new load; no cross-contract fallback.",
+    "provenance_verdict": "Source contract metadata PASS; actual-checkpoint no-query smoke first at release",
+    "selection_rule": "Original fixed final/source-native selection unchanged; no score-dependent choice"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "20261023-phase1-PAMF-PL-Gfactor-control-r02",
+    "gpu_policy": "Existing r03: baseline3/card, fourthF only0/6, global26, G<=1/card; all healthy PIDs preserved; timingexclusive not2/3.",
+    "remote_run_root": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02",
+    "remote_log_root": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs",
+    "local_artifact_root": "local_artifacts/PAMF_PL_Gfactor_20261023",
+    "launch_command": "F:/App/miniconda3/python.exe -X utf8 -m experiments.cric_dura_comparison.publish_gfactor --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output E:/type10-7/local_artifacts/PAMF_PL_Gfactor_20261023/control-r02 --previous E:/type10-7/local_artifacts/PAMF_PL_Gfactor_20261023/previous_runtime.json --ssh-config E:/type10-7/tools/n607_ssh_config --manifest E:/type10-7/local_artifacts/PAMF_PL_Gfactor_20261023/dependencies.json",
+    "stop_rule": "First real F/G-L L-only smoke PASS then immediate handoff. Existing26 global capacity; two same new technical fingerprints stop submissions; preserve healthy tasks.",
+    "current_launch_owner": "20261023-phase1-external-DURA-control-r02",
+    "launch_verification_ref": "automation_reports/CV-SincNet/20261023-phase1-PAMF-PL-Gfactor-control-r02/launch_verification.json",
+    "gpu": "Existing authorized capacity only; formal timing exclusive and notGPU2/3"
+  },
+  "expected_artifacts": [
+    "raw/G-L seven-view and chrono task decisions, raw reuse verified",
+    "Independent per-RX/TX/day CM Accuracy/MacroF1/net corrections",
+    "All17contracts Sup/PL x G-L/LU three-seed simple/interaction effects, negatives retained",
+    "Original F/G/shared-cache costs separate from new frozen readout cost",
+    "IEEE experiment update and next immutable export on completion"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy",
+      "Macro-F1",
+      "worst RX",
+      "paired deltas",
+      "training and deployment cost"
+    ],
+    "dimensions": [
+      "data contract",
+      "regime",
+      "F seed",
+      "G seed",
+      "view",
+      "RX",
+      "TX",
+      "date"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "Independent truth-last after all seven predictions per row"
+  },
+  "rows": [
+    {
+      "row_id": "ownership",
+      "method": "Healthy_owner_handoff",
+      "purpose": "Append103 frozen inference/score/analysis jobs; preserve all healthy PIDs",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/runtime.json",
+      "planned_config": {
+        "new_F": 0,
+        "new_G": 0
+      },
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": 2026102001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
+      "output_root": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02",
+      "log_path": "PROJECT/releases/20261023-phase1-PAMF-PL-Gfactor-control-r02/continuation.log",
+      "command": "F:/App/miniconda3/python.exe -X utf8 -m experiments.cric_dura_comparison.publish_gfactor --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output E:/type10-7/local_artifacts/PAMF_PL_Gfactor_20261023/control-r02 --previous E:/type10-7/local_artifacts/PAMF_PL_Gfactor_20261023/previous_runtime.json --ssh-config E:/type10-7/tools/n607_ssh_config --manifest E:/type10-7/local_artifacts/PAMF_PL_Gfactor_20261023/dependencies.json",
+      "budget_ref": "Append103 frozen inference/score/analysis jobs; preserve all healthy PIDs"
+    }
+  ],
+  "notes": [
+    "docs/PAMF_PL_GFACTOR_READOUTS_20261023.md",
+    "Only51 PL/G-L reads,51 independent scores,1 CPU aggregate=103 stages; no new training/cache or timing.",
+    "Source-only dependency audit:50 F/raw complete,1 original healthy F awaited,9 G-L caches complete; remaining cache work already queued.",
+    "8 focused tests PASS; one independent P0/P1 review PASS after direct import/compile fixes. Real-checkpoint source smoke runs first before handoff. Performance pending.",
+    "r01 failed before source smoke/handoff on omitted runtime planner dependency; preserved. r02 lightweight scope fix changes no F/G/data/scientific rows; actual previous healthy owner remains external-DURA-control-r01."
+  ],
+  "registered_at": "2026-10-22T22:48:14+00:00"
+}

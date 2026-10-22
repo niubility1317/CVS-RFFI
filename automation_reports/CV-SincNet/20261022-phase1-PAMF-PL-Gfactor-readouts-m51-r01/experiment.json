@@ -29,7 +29,7 @@
     "commit": "Actual committed publication recorded in launch_verification.json",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 CVS-RFFI Py3.10/Torch2.1 FP32/TF32off CPU2",
-    "cwd": "PROJECT/releases/20261023-phase1-PAMF-PL-Gfactor-control-r01",
+    "cwd": "PROJECT/releases/20261023-phase1-PAMF-PL-Gfactor-control-r02",
     "entry": "experiments.cric_dura_comparison.publish_gfactor"
   },
   "data": {
@@ -70,15 +70,15 @@
   },
   "execution": {
     "host": "N607",
-    "launch_owner": "20261023-phase1-PAMF-PL-Gfactor-control-r01",
+    "launch_owner": "20261023-phase1-PAMF-PL-Gfactor-control-r02",
     "gpu_policy": "Existing r03: baseline3/card, fourthF only0/6, global26, G<=1/card; all healthy PIDs preserved; timingexclusive not2/3.",
     "remote_run_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01",
-    "remote_log_root": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs",
+    "remote_log_root": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs",
     "local_artifact_root": "local_artifacts/PAMF_PL_Gfactor_20261023",
-    "launch_command": "F:/App/miniconda3/python.exe -X utf8 -m experiments.cric_dura_comparison.publish_gfactor --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output E:/type10-7/local_artifacts/PAMF_PL_Gfactor_20261023/control-r01 --previous E:/type10-7/local_artifacts/PAMF_PL_Gfactor_20261023/previous_runtime.json --ssh-config E:/type10-7/tools/n607_ssh_config --manifest E:/type10-7/local_artifacts/PAMF_PL_Gfactor_20261023/dependencies.json",
+    "launch_command": "F:/App/miniconda3/python.exe -X utf8 -m experiments.cric_dura_comparison.publish_gfactor --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output E:/type10-7/local_artifacts/PAMF_PL_Gfactor_20261023/control-r02 --previous E:/type10-7/local_artifacts/PAMF_PL_Gfactor_20261023/previous_runtime.json --ssh-config E:/type10-7/tools/n607_ssh_config --manifest E:/type10-7/local_artifacts/PAMF_PL_Gfactor_20261023/dependencies.json",
     "stop_rule": "First real F/G-L L-only smoke PASS then immediate handoff. Existing26 global capacity; two same new technical fingerprints stop submissions; preserve healthy tasks.",
-    "current_launch_owner": "20261023-phase1-external-DURA-control-r01",
-    "launch_verification_ref": "automation_reports/CV-SincNet/20261023-phase1-PAMF-PL-Gfactor-control-r01/launch_verification.json",
+    "current_launch_owner": "20261023-phase1-external-DURA-control-r02",
+    "launch_verification_ref": "automation_reports/CV-SincNet/20261023-phase1-PAMF-PL-Gfactor-control-r02/launch_verification.json",
     "gpu": "Existing authorized capacity only; formal timing exclusive and notGPU2/3"
   },
   "expected_artifacts": [
@@ -114,7 +114,7 @@
       "row_id": "F1-PL-G-L-s2026092701",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F1-PL-G-L-s2026092701__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F1-PL-G-L-s2026092701__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -186,7 +186,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/F1-PL-G-L-s2026092701/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F1-PL-G-L-s2026092701__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F1-PL-G-L-s2026092701__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F1-PL-G-L-s2026092701__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -194,7 +194,7 @@
       "row_id": "F1-PL-G-L-s2026092702",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F1-PL-G-L-s2026092702__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F1-PL-G-L-s2026092702__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -266,7 +266,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/F1-PL-G-L-s2026092702/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F1-PL-G-L-s2026092702__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F1-PL-G-L-s2026092702__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F1-PL-G-L-s2026092702__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -274,7 +274,7 @@
       "row_id": "F1-PL-G-L-s2026092703",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F1-PL-G-L-s2026092703__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F1-PL-G-L-s2026092703__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -346,7 +346,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/F1-PL-G-L-s2026092703/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F1-PL-G-L-s2026092703__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F1-PL-G-L-s2026092703__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F1-PL-G-L-s2026092703__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -354,7 +354,7 @@
       "row_id": "F2-PL-G-L-s2026092701",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F2-PL-G-L-s2026092701__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F2-PL-G-L-s2026092701__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -426,7 +426,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/F2-PL-G-L-s2026092701/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F2-PL-G-L-s2026092701__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F2-PL-G-L-s2026092701__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F2-PL-G-L-s2026092701__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -434,7 +434,7 @@
       "row_id": "F2-PL-G-L-s2026092702",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F2-PL-G-L-s2026092702__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F2-PL-G-L-s2026092702__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -506,7 +506,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/F2-PL-G-L-s2026092702/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F2-PL-G-L-s2026092702__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F2-PL-G-L-s2026092702__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F2-PL-G-L-s2026092702__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -514,7 +514,7 @@
       "row_id": "F2-PL-G-L-s2026092703",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F2-PL-G-L-s2026092703__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F2-PL-G-L-s2026092703__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -586,7 +586,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/F2-PL-G-L-s2026092703/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F2-PL-G-L-s2026092703__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F2-PL-G-L-s2026092703__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F2-PL-G-L-s2026092703__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -594,7 +594,7 @@
       "row_id": "ManyRx-PL-G-L-s2026092701",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__ManyRx-PL-G-L-s2026092701__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__ManyRx-PL-G-L-s2026092701__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -686,7 +686,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/ManyRx-PL-G-L-s2026092701/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__ManyRx-PL-G-L-s2026092701__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__ManyRx-PL-G-L-s2026092701__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__ManyRx-PL-G-L-s2026092701__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -694,7 +694,7 @@
       "row_id": "ManyRx-PL-G-L-s2026092702",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__ManyRx-PL-G-L-s2026092702__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__ManyRx-PL-G-L-s2026092702__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -786,7 +786,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/ManyRx-PL-G-L-s2026092702/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__ManyRx-PL-G-L-s2026092702__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__ManyRx-PL-G-L-s2026092702__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__ManyRx-PL-G-L-s2026092702__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -794,7 +794,7 @@
       "row_id": "ManyRx-PL-G-L-s2026092703",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__ManyRx-PL-G-L-s2026092703__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__ManyRx-PL-G-L-s2026092703__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -886,7 +886,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/ManyRx-PL-G-L-s2026092703/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__ManyRx-PL-G-L-s2026092703__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__ManyRx-PL-G-L-s2026092703__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__ManyRx-PL-G-L-s2026092703__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -894,7 +894,7 @@
       "row_id": "chrono-PL-G-L-s2026092701",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__chrono-PL-G-L-s2026092701__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__chrono-PL-G-L-s2026092701__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -966,7 +966,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/chrono-PL-G-L-s2026092701/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__chrono-PL-G-L-s2026092701__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__chrono-PL-G-L-s2026092701__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__chrono-PL-G-L-s2026092701__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -974,7 +974,7 @@
       "row_id": "chrono-PL-G-L-s2026092702",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__chrono-PL-G-L-s2026092702__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__chrono-PL-G-L-s2026092702__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -1046,7 +1046,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/chrono-PL-G-L-s2026092702/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__chrono-PL-G-L-s2026092702__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__chrono-PL-G-L-s2026092702__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__chrono-PL-G-L-s2026092702__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -1054,7 +1054,7 @@
       "row_id": "chrono-PL-G-L-s2026092703",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__chrono-PL-G-L-s2026092703__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__chrono-PL-G-L-s2026092703__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -1126,7 +1126,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/chrono-PL-G-L-s2026092703/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__chrono-PL-G-L-s2026092703__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__chrono-PL-G-L-s2026092703__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__chrono-PL-G-L-s2026092703__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -1134,7 +1134,7 @@
       "row_id": "label01-PL-G-L-s2026092701",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label01-PL-G-L-s2026092701__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label01-PL-G-L-s2026092701__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -1206,7 +1206,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/label01-PL-G-L-s2026092701/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label01-PL-G-L-s2026092701__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label01-PL-G-L-s2026092701__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label01-PL-G-L-s2026092701__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -1214,7 +1214,7 @@
       "row_id": "label01-PL-G-L-s2026092702",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label01-PL-G-L-s2026092702__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label01-PL-G-L-s2026092702__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -1286,7 +1286,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/label01-PL-G-L-s2026092702/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label01-PL-G-L-s2026092702__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label01-PL-G-L-s2026092702__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label01-PL-G-L-s2026092702__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -1294,7 +1294,7 @@
       "row_id": "label01-PL-G-L-s2026092703",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label01-PL-G-L-s2026092703__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label01-PL-G-L-s2026092703__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -1366,7 +1366,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/label01-PL-G-L-s2026092703/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label01-PL-G-L-s2026092703__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label01-PL-G-L-s2026092703__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label01-PL-G-L-s2026092703__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -1374,7 +1374,7 @@
       "row_id": "label05-PL-G-L-s2026092701",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label05-PL-G-L-s2026092701__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label05-PL-G-L-s2026092701__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -1446,7 +1446,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/label05-PL-G-L-s2026092701/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label05-PL-G-L-s2026092701__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label05-PL-G-L-s2026092701__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label05-PL-G-L-s2026092701__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -1454,7 +1454,7 @@
       "row_id": "label05-PL-G-L-s2026092702",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label05-PL-G-L-s2026092702__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label05-PL-G-L-s2026092702__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -1526,7 +1526,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/label05-PL-G-L-s2026092702/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label05-PL-G-L-s2026092702__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label05-PL-G-L-s2026092702__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label05-PL-G-L-s2026092702__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -1534,7 +1534,7 @@
       "row_id": "label05-PL-G-L-s2026092703",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label05-PL-G-L-s2026092703__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label05-PL-G-L-s2026092703__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -1606,7 +1606,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/label05-PL-G-L-s2026092703/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label05-PL-G-L-s2026092703__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label05-PL-G-L-s2026092703__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__label05-PL-G-L-s2026092703__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -1614,7 +1614,7 @@
       "row_id": "m1-fixed-PL-G-L-s2026092701",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-fixed-PL-G-L-s2026092701__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-fixed-PL-G-L-s2026092701__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -1680,7 +1680,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m1-fixed-PL-G-L-s2026092701/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-fixed-PL-G-L-s2026092701__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-fixed-PL-G-L-s2026092701__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-fixed-PL-G-L-s2026092701__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -1688,7 +1688,7 @@
       "row_id": "m1-fixed-PL-G-L-s2026092702",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-fixed-PL-G-L-s2026092702__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-fixed-PL-G-L-s2026092702__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -1754,7 +1754,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m1-fixed-PL-G-L-s2026092702/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-fixed-PL-G-L-s2026092702__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-fixed-PL-G-L-s2026092702__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-fixed-PL-G-L-s2026092702__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -1762,7 +1762,7 @@
       "row_id": "m1-fixed-PL-G-L-s2026092703",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-fixed-PL-G-L-s2026092703__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-fixed-PL-G-L-s2026092703__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -1828,7 +1828,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m1-fixed-PL-G-L-s2026092703/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-fixed-PL-G-L-s2026092703__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-fixed-PL-G-L-s2026092703__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-fixed-PL-G-L-s2026092703__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -1836,7 +1836,7 @@
       "row_id": "m1-natural-PL-G-L-s2026092701",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-natural-PL-G-L-s2026092701__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-natural-PL-G-L-s2026092701__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -1902,7 +1902,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m1-natural-PL-G-L-s2026092701/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-natural-PL-G-L-s2026092701__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-natural-PL-G-L-s2026092701__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-natural-PL-G-L-s2026092701__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -1910,7 +1910,7 @@
       "row_id": "m1-natural-PL-G-L-s2026092702",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-natural-PL-G-L-s2026092702__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-natural-PL-G-L-s2026092702__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -1976,7 +1976,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m1-natural-PL-G-L-s2026092702/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-natural-PL-G-L-s2026092702__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-natural-PL-G-L-s2026092702__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-natural-PL-G-L-s2026092702__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -1984,7 +1984,7 @@
       "row_id": "m1-natural-PL-G-L-s2026092703",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-natural-PL-G-L-s2026092703__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-natural-PL-G-L-s2026092703__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -2050,7 +2050,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m1-natural-PL-G-L-s2026092703/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-natural-PL-G-L-s2026092703__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-natural-PL-G-L-s2026092703__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m1-natural-PL-G-L-s2026092703__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -2058,7 +2058,7 @@
       "row_id": "m2-fixed-PL-G-L-s2026092701",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-fixed-PL-G-L-s2026092701__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-fixed-PL-G-L-s2026092701__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -2125,7 +2125,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m2-fixed-PL-G-L-s2026092701/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-fixed-PL-G-L-s2026092701__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-fixed-PL-G-L-s2026092701__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-fixed-PL-G-L-s2026092701__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -2133,7 +2133,7 @@
       "row_id": "m2-fixed-PL-G-L-s2026092702",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-fixed-PL-G-L-s2026092702__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-fixed-PL-G-L-s2026092702__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -2200,7 +2200,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m2-fixed-PL-G-L-s2026092702/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-fixed-PL-G-L-s2026092702__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-fixed-PL-G-L-s2026092702__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-fixed-PL-G-L-s2026092702__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -2208,7 +2208,7 @@
       "row_id": "m2-fixed-PL-G-L-s2026092703",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-fixed-PL-G-L-s2026092703__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-fixed-PL-G-L-s2026092703__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -2275,7 +2275,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m2-fixed-PL-G-L-s2026092703/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-fixed-PL-G-L-s2026092703__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-fixed-PL-G-L-s2026092703__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-fixed-PL-G-L-s2026092703__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -2283,7 +2283,7 @@
       "row_id": "m2-natural-PL-G-L-s2026092701",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-natural-PL-G-L-s2026092701__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-natural-PL-G-L-s2026092701__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -2350,7 +2350,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m2-natural-PL-G-L-s2026092701/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-natural-PL-G-L-s2026092701__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-natural-PL-G-L-s2026092701__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-natural-PL-G-L-s2026092701__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -2358,7 +2358,7 @@
       "row_id": "m2-natural-PL-G-L-s2026092702",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-natural-PL-G-L-s2026092702__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-natural-PL-G-L-s2026092702__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -2425,7 +2425,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m2-natural-PL-G-L-s2026092702/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-natural-PL-G-L-s2026092702__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-natural-PL-G-L-s2026092702__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-natural-PL-G-L-s2026092702__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -2433,7 +2433,7 @@
       "row_id": "m2-natural-PL-G-L-s2026092703",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-natural-PL-G-L-s2026092703__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-natural-PL-G-L-s2026092703__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -2500,7 +2500,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m2-natural-PL-G-L-s2026092703/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-natural-PL-G-L-s2026092703__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-natural-PL-G-L-s2026092703__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m2-natural-PL-G-L-s2026092703__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -2508,7 +2508,7 @@
       "row_id": "m3-fixed-PL-G-L-s2026092701",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-fixed-PL-G-L-s2026092701__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-fixed-PL-G-L-s2026092701__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -2576,7 +2576,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m3-fixed-PL-G-L-s2026092701/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-fixed-PL-G-L-s2026092701__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-fixed-PL-G-L-s2026092701__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-fixed-PL-G-L-s2026092701__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -2584,7 +2584,7 @@
       "row_id": "m3-fixed-PL-G-L-s2026092702",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-fixed-PL-G-L-s2026092702__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-fixed-PL-G-L-s2026092702__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -2652,7 +2652,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m3-fixed-PL-G-L-s2026092702/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-fixed-PL-G-L-s2026092702__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-fixed-PL-G-L-s2026092702__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-fixed-PL-G-L-s2026092702__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -2660,7 +2660,7 @@
       "row_id": "m3-fixed-PL-G-L-s2026092703",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-fixed-PL-G-L-s2026092703__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-fixed-PL-G-L-s2026092703__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -2728,7 +2728,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m3-fixed-PL-G-L-s2026092703/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-fixed-PL-G-L-s2026092703__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-fixed-PL-G-L-s2026092703__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-fixed-PL-G-L-s2026092703__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -2736,7 +2736,7 @@
       "row_id": "m3-natural-PL-G-L-s2026092701",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-natural-PL-G-L-s2026092701__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-natural-PL-G-L-s2026092701__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -2804,7 +2804,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m3-natural-PL-G-L-s2026092701/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-natural-PL-G-L-s2026092701__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-natural-PL-G-L-s2026092701__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-natural-PL-G-L-s2026092701__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -2812,7 +2812,7 @@
       "row_id": "m3-natural-PL-G-L-s2026092702",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-natural-PL-G-L-s2026092702__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-natural-PL-G-L-s2026092702__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -2880,7 +2880,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m3-natural-PL-G-L-s2026092702/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-natural-PL-G-L-s2026092702__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-natural-PL-G-L-s2026092702__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-natural-PL-G-L-s2026092702__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -2888,7 +2888,7 @@
       "row_id": "m3-natural-PL-G-L-s2026092703",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-natural-PL-G-L-s2026092703__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-natural-PL-G-L-s2026092703__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -2956,7 +2956,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m3-natural-PL-G-L-s2026092703/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-natural-PL-G-L-s2026092703__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-natural-PL-G-L-s2026092703__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m3-natural-PL-G-L-s2026092703__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -2964,7 +2964,7 @@
       "row_id": "m4-fixed-PL-G-L-s2026092701",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-fixed-PL-G-L-s2026092701__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-fixed-PL-G-L-s2026092701__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -3033,7 +3033,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m4-fixed-PL-G-L-s2026092701/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-fixed-PL-G-L-s2026092701__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-fixed-PL-G-L-s2026092701__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-fixed-PL-G-L-s2026092701__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -3041,7 +3041,7 @@
       "row_id": "m4-fixed-PL-G-L-s2026092702",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-fixed-PL-G-L-s2026092702__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-fixed-PL-G-L-s2026092702__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -3110,7 +3110,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m4-fixed-PL-G-L-s2026092702/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-fixed-PL-G-L-s2026092702__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-fixed-PL-G-L-s2026092702__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-fixed-PL-G-L-s2026092702__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -3118,7 +3118,7 @@
       "row_id": "m4-fixed-PL-G-L-s2026092703",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-fixed-PL-G-L-s2026092703__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-fixed-PL-G-L-s2026092703__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -3187,7 +3187,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m4-fixed-PL-G-L-s2026092703/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-fixed-PL-G-L-s2026092703__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-fixed-PL-G-L-s2026092703__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-fixed-PL-G-L-s2026092703__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -3195,7 +3195,7 @@
       "row_id": "m4-natural-PL-G-L-s2026092701",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-natural-PL-G-L-s2026092701__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-natural-PL-G-L-s2026092701__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -3264,7 +3264,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m4-natural-PL-G-L-s2026092701/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-natural-PL-G-L-s2026092701__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-natural-PL-G-L-s2026092701__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-natural-PL-G-L-s2026092701__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -3272,7 +3272,7 @@
       "row_id": "m4-natural-PL-G-L-s2026092702",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-natural-PL-G-L-s2026092702__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-natural-PL-G-L-s2026092702__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -3341,7 +3341,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m4-natural-PL-G-L-s2026092702/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-natural-PL-G-L-s2026092702__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-natural-PL-G-L-s2026092702__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-natural-PL-G-L-s2026092702__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -3349,7 +3349,7 @@
       "row_id": "m4-natural-PL-G-L-s2026092703",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-natural-PL-G-L-s2026092703__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-natural-PL-G-L-s2026092703__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -3418,7 +3418,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m4-natural-PL-G-L-s2026092703/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-natural-PL-G-L-s2026092703__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-natural-PL-G-L-s2026092703__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m4-natural-PL-G-L-s2026092703__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -3426,7 +3426,7 @@
       "row_id": "m6-fixed-PL-G-L-s2026092701",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-fixed-PL-G-L-s2026092701__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-fixed-PL-G-L-s2026092701__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -3497,7 +3497,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m6-fixed-PL-G-L-s2026092701/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-fixed-PL-G-L-s2026092701__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-fixed-PL-G-L-s2026092701__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-fixed-PL-G-L-s2026092701__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -3505,7 +3505,7 @@
       "row_id": "m6-fixed-PL-G-L-s2026092702",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-fixed-PL-G-L-s2026092702__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-fixed-PL-G-L-s2026092702__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -3576,7 +3576,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m6-fixed-PL-G-L-s2026092702/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-fixed-PL-G-L-s2026092702__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-fixed-PL-G-L-s2026092702__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-fixed-PL-G-L-s2026092702__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -3584,7 +3584,7 @@
       "row_id": "m6-fixed-PL-G-L-s2026092703",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-fixed-PL-G-L-s2026092703__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-fixed-PL-G-L-s2026092703__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -3655,7 +3655,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m6-fixed-PL-G-L-s2026092703/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-fixed-PL-G-L-s2026092703__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-fixed-PL-G-L-s2026092703__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-fixed-PL-G-L-s2026092703__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -3663,7 +3663,7 @@
       "row_id": "m6-natural-PL-G-L-s2026092701",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-natural-PL-G-L-s2026092701__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-natural-PL-G-L-s2026092701__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -3734,7 +3734,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m6-natural-PL-G-L-s2026092701/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-natural-PL-G-L-s2026092701__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-natural-PL-G-L-s2026092701__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-natural-PL-G-L-s2026092701__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -3742,7 +3742,7 @@
       "row_id": "m6-natural-PL-G-L-s2026092702",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-natural-PL-G-L-s2026092702__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-natural-PL-G-L-s2026092702__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -3813,7 +3813,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m6-natural-PL-G-L-s2026092702/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-natural-PL-G-L-s2026092702__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-natural-PL-G-L-s2026092702__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-natural-PL-G-L-s2026092702__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -3821,7 +3821,7 @@
       "row_id": "m6-natural-PL-G-L-s2026092703",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-natural-PL-G-L-s2026092703__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-natural-PL-G-L-s2026092703__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261021-phase1-T1-DURA-comparison-m153-r01",
@@ -3892,7 +3892,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/m6-natural-PL-G-L-s2026092703/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-natural-PL-G-L-s2026092703__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-natural-PL-G-L-s2026092703__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__m6-natural-PL-G-L-s2026092703__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -3900,7 +3900,7 @@
       "row_id": "F0-PL-G-L-s2026092701",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F0-PL-G-L-s2026092701__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F0-PL-G-L-s2026092701__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261022-phase1-T1-DURA-F0-controls-binding-m6-r01",
@@ -3972,7 +3972,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/F0-PL-G-L-s2026092701/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F0-PL-G-L-s2026092701__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F0-PL-G-L-s2026092701__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F0-PL-G-L-s2026092701__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -3980,7 +3980,7 @@
       "row_id": "F0-PL-G-L-s2026092702",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F0-PL-G-L-s2026092702__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F0-PL-G-L-s2026092702__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261022-phase1-T1-DURA-F0-controls-binding-m6-r01",
@@ -4052,7 +4052,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/F0-PL-G-L-s2026092702/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F0-PL-G-L-s2026092702__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F0-PL-G-L-s2026092702__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F0-PL-G-L-s2026092702__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     },
@@ -4060,7 +4060,7 @@
       "row_id": "F0-PL-G-L-s2026092703",
       "method": "PAMF_ordinary_PL_with_G_L",
       "purpose": "Fill only missing PL F/G-L cell, raw reused; F/G weights and budgets unchanged",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F0-PL-G-L-s2026092703__predict.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F0-PL-G-L-s2026092703__predict.json",
       "planned_config": {
         "source": {
           "source_run_id": "20261022-phase1-T1-DURA-F0-controls-binding-m6-r01",
@@ -4132,7 +4132,7 @@
       },
       "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01/F0-PL-G-L-s2026092703/predictions",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F0-PL-G-L-s2026092703__predict.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F0-PL-G-L-s2026092703__predict.log",
       "command": "pipeline worker --config 20261022-phase1-PAMF-PL-Gfactor-readouts-m51-r01__F0-PL-G-L-s2026092703__predict.json",
       "budget_ref": "No new F/G/cache training. Exact ordinaryPL source F/defaulthead, existing same-contract G-L FP32 IQ; all seven views and original chrono tasks."
     }
@@ -4141,7 +4141,7 @@
     "docs/PAMF_PL_GFACTOR_READOUTS_20261023.md",
     "Only51 PL/G-L reads,51 independent scores,1 CPU aggregate=103 stages; no new training/cache or timing.",
     "Source-only dependency audit:50 F/raw complete,1 original healthy F awaited,9 G-L caches complete; remaining cache work already queued.",
-    "7 focused tests PASS; one independent P0/P1 review PASS after direct import/compile fixes. Real-checkpoint source smoke runs first before handoff. Performance pending."
+    "8 focused tests PASS; one independent P0/P1 review PASS after direct import/compile fixes. Real-checkpoint source smoke runs first before handoff. Performance pending."
   ],
   "registered_at": "2026-10-22T14:52:21+00:00"
 }

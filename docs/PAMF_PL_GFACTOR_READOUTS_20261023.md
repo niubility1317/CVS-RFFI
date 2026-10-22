@@ -10,8 +10,12 @@
 
 监督 F+G-L 是全系统 L-only；监督 F+G-LU 与 PL F+G-L 都使用过无标签数据。PL F+G-L 不能称为严格监督。三个 F seed 条件于固定 G，不能冒称三个完整系统独立重复。F0 五源/七目标 168000 与源数量六目标 144000 保持分列，不新增五源数量扫点。缓存分类耗时不是在线 G+F 部署时延；G 祖先和一次共享缓存成本不按每个消费者重复记账，也不冒称为零。
 
-新唯一资源 owner 为 `20261023-phase1-PAMF-PL-Gfactor-control-r01`，CPU 汇总为 `20261023-phase1-PAMF-PL-Gfactor-analysis-m51-r01`。原 controller 经已验证 handover 退休，全部健康 worker 原 PID 或自然完成接续；旧 job、科学配置、CWD、输出与每 job release 不改变。资源保留基础 3/card、全机最多 26、仅 GPU0/6 合规时第四 F、G-heavy≤1/card、free≥12000 MiB 的原策略，不增加并发上限。两次同指纹新技术错误停止新提交，保留已有产物与所有健康任务；低分、负效应不是技术停止理由。
+新唯一资源 owner 为 `20261023-phase1-PAMF-PL-Gfactor-control-r02`，CPU 汇总为 `20261023-phase1-PAMF-PL-Gfactor-analysis-m51-r01`。原 controller 经已验证 handover 退休，全部健康 worker 原 PID 或自然完成接续；旧 job、科学配置、CWD、输出与每 job release 不改变。资源保留基础 3/card、全机最多 26、仅 GPU0/6 合规时第四 F、G-heavy≤1/card、free≥12000 MiB 的原策略，不增加并发上限。两次同指纹新技术错误停止新提交，保留已有产物与所有健康任务；低分、负效应不是技术停止理由。
 
 实现位于 `pamf_gfactor.py`、`pamf_gfactor_extension.py`、`analyze_gfactor.py`、`publish_gfactor.py`。聚焦测试验证固定 51 来源/F0 替代、无 truth 预测配置、原任务保持、raw/ID 错配拒绝、预测后独立评分、完整已知交互及不完整输入拒绝。一次独立 P0/P1 审查的本地无 Torch 导入问题已定点修复；发布器第一步对真实普通 PL F 和同契约 G-L 做 L-only 无 query smoke，PASS 后立即 handover/派发，不增加封签或额外审批。
 
 实际提交、精确命令、逐行配置与路径、发布及性能状态以三个 run 的 experiment.json、report.md、launch_verification.json 为准。本文件不声称新性能已经完成。
+
+## 发布接口的技术替代
+
+r01控制器在真实源smoke导入阶段因未打包的纯计划模块依赖退出，未接管或启动任何worker；原controller1336081和健康任务不受影响。失败release及输出保留。r02使用轻量gfactor_scope固定17契约标识和已有source映射，去除运行期对完整planner的依赖，模型/数据/预算/51行范围均不变。隔离发布包回归和8项聚焦测试PASS，发布采用新不可覆盖控制root，原51预测root从未创建。

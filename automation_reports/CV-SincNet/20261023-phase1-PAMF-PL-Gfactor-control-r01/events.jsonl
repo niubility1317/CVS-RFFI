@@ -1,1 +1,2 @@
 {"at": "2026-10-22T22:43:05+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-22T22:48:02+00:00", "status": "FAILED", "note": "Pre-handoff runtime planner dependency missing; no workers adopted; original owner healthy. Preserve failed r01 and use fixed new control-r02.", "evidence": ["automation_reports/CV-SincNet/20261023-phase1-PAMF-PL-Gfactor-control-r01/launch_verification.json"], "row_id": null}

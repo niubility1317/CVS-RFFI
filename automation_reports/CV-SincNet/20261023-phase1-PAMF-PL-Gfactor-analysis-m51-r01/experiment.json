@@ -29,7 +29,7 @@
     "commit": "Actual committed publication recorded in launch_verification.json",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 CVS-RFFI Py3.10/Torch2.1 FP32/TF32off CPU2",
-    "cwd": "PROJECT/releases/20261023-phase1-PAMF-PL-Gfactor-control-r01",
+    "cwd": "PROJECT/releases/20261023-phase1-PAMF-PL-Gfactor-control-r02",
     "entry": "experiments.cric_dura_comparison.publish_gfactor"
   },
   "data": {
@@ -70,15 +70,15 @@
   },
   "execution": {
     "host": "N607",
-    "launch_owner": "20261023-phase1-PAMF-PL-Gfactor-control-r01",
+    "launch_owner": "20261023-phase1-PAMF-PL-Gfactor-control-r02",
     "gpu_policy": "Existing r03: baseline3/card, fourthF only0/6, global26, G<=1/card; all healthy PIDs preserved; timingexclusive not2/3.",
     "remote_run_root": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-analysis-m51-r01",
-    "remote_log_root": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs",
+    "remote_log_root": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs",
     "local_artifact_root": "local_artifacts/PAMF_PL_Gfactor_20261023",
-    "launch_command": "F:/App/miniconda3/python.exe -X utf8 -m experiments.cric_dura_comparison.publish_gfactor --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output E:/type10-7/local_artifacts/PAMF_PL_Gfactor_20261023/control-r01 --previous E:/type10-7/local_artifacts/PAMF_PL_Gfactor_20261023/previous_runtime.json --ssh-config E:/type10-7/tools/n607_ssh_config --manifest E:/type10-7/local_artifacts/PAMF_PL_Gfactor_20261023/dependencies.json",
+    "launch_command": "F:/App/miniconda3/python.exe -X utf8 -m experiments.cric_dura_comparison.publish_gfactor --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output E:/type10-7/local_artifacts/PAMF_PL_Gfactor_20261023/control-r02 --previous E:/type10-7/local_artifacts/PAMF_PL_Gfactor_20261023/previous_runtime.json --ssh-config E:/type10-7/tools/n607_ssh_config --manifest E:/type10-7/local_artifacts/PAMF_PL_Gfactor_20261023/dependencies.json",
     "stop_rule": "First real F/G-L L-only smoke PASS then immediate handoff. Existing26 global capacity; two same new technical fingerprints stop submissions; preserve healthy tasks.",
-    "current_launch_owner": "20261023-phase1-external-DURA-control-r01",
-    "launch_verification_ref": "automation_reports/CV-SincNet/20261023-phase1-PAMF-PL-Gfactor-control-r01/launch_verification.json",
+    "current_launch_owner": "20261023-phase1-external-DURA-control-r02",
+    "launch_verification_ref": "automation_reports/CV-SincNet/20261023-phase1-PAMF-PL-Gfactor-control-r02/launch_verification.json",
     "gpu": "Existing authorized capacity only; formal timing exclusive and notGPU2/3"
   },
   "expected_artifacts": [
@@ -114,7 +114,7 @@
       "row_id": "all51pairedcells",
       "method": "CPU_permission_factorial",
       "purpose": "51paired F seeds x4 G-data cells, CM/net corrections and paired main/interaction effects",
-      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/gfactor_configs/20261023-phase1-PAMF-PL-Gfactor-analysis-m51-r01.json",
+      "config_ref": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/gfactor_configs/20261023-phase1-PAMF-PL-Gfactor-analysis-m51-r01.json",
       "planned_config": {
         "new_F": 0,
         "new_G": 0
@@ -124,13 +124,13 @@
         "model": null,
         "split": 392005,
         "data": 2026102001,
-        "augmentation": 2027,
+        "augmentation": null,
         "support": null,
         "evaluation": 2027
       },
-      "seed_notes": "Model seeds2026092701/02/03; ordinary augmentation follows model seed; stored observations fixed. Existing G seed01 shared. Timing rounds are not seeds.",
+      "seed_notes": "Frozen F model seed2026092701/02/03. Original F ordinary augmentation follows model seed, native As seed20261016421/session20261016423; no new training augmentation. Evaluation2027 and stored IQ unchanged; fixed G seed01.",
       "output_root": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-analysis-m51-r01/results",
-      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r01/logs/20261023-phase1-PAMF-PL-Gfactor-analysis-m51-r01.log",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-PL-Gfactor-control-r02/logs/20261023-phase1-PAMF-PL-Gfactor-analysis-m51-r01.log",
       "command": "pipeline worker --config 20261023-phase1-PAMF-PL-Gfactor-analysis-m51-r01.json",
       "budget_ref": "51paired F seeds x4 G-data cells, CM/net corrections and paired main/interaction effects"
     }
@@ -139,7 +139,7 @@
     "docs/PAMF_PL_GFACTOR_READOUTS_20261023.md",
     "Only51 PL/G-L reads,51 independent scores,1 CPU aggregate=103 stages; no new training/cache or timing.",
     "Source-only dependency audit:50 F/raw complete,1 original healthy F awaited,9 G-L caches complete; remaining cache work already queued.",
-    "7 focused tests PASS; one independent P0/P1 review PASS after direct import/compile fixes. Real-checkpoint source smoke runs first before handoff. Performance pending."
+    "8 focused tests PASS; one independent P0/P1 review PASS after direct import/compile fixes. Real-checkpoint source smoke runs first before handoff. Performance pending."
   ],
-  "registered_at": "2026-10-22T22:43:11+00:00"
+  "registered_at": "2026-10-22T14:52:21+00:00"
 }

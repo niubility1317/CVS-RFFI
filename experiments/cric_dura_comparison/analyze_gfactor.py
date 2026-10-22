@@ -6,14 +6,13 @@ import statistics
 from .io import read,write
 from .analyze_core import verified_metrics,key
 from .external_dura import VIEWS
-from .completeness import SEEDS
+from .gfactor_scope import SEEDS,PROTOCOL_IDS
 
 NAMES=('Sup+G-L','Sup+G-LU','PL+G-L','PL+G-LU')
 
 
 def run(c):
-    from .plan import make_plan
-    expected={(p,s) for p in make_plan()['protocols'] for s in SEEDS};cells=c['cells']
+    expected={(p,s) for p in PROTOCOL_IDS for s in SEEDS};cells=c['cells']
     if len(cells)!=51 or {(v['protocol_id'],v['model_seed']) for v in cells}!=expected:
         raise ValueError('Incomplete17-contract/three-seed permission factorial')
     cache={};values={};pairs=[];checked=0;costs=[];G_cache_cost={}

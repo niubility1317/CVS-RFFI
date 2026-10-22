@@ -33,6 +33,13 @@ class GfactorTests(unittest.TestCase):
     def test_local_publisher_needs_no_torch(self):
         script="import sys; import experiments.cric_dura_comparison.publish_gfactor; assert 'torch' not in sys.modules"
         subprocess.run([sys.executable,'-c',script],check=True,cwd=Path(__file__).resolve().parents[1],capture_output=True)
+    def test_release_runtime_does_not_need_unshipped_planner(self):
+        import shutil
+        root=Path(__file__).resolve().parents[1];release=self.root/'isolated';folder=release/'experiments/cric_dura_comparison';folder.mkdir(parents=True)
+        for source in (root/'experiments/cric_dura_comparison').glob('*.py'):shutil.copyfile(source,folder/source.name)
+        script="import sys;from experiments.cric_dura_comparison import publish_gfactor,analyze_gfactor;from experiments.cric_dura_comparison.gfactor_scope import PROTOCOL_IDS;assert len(PROTOCOL_IDS)==17;assert 'experiments.phase1_external_dg' not in sys.modules"
+        subprocess.run([sys.executable,'-I','-c',"import sys;sys.path.insert(0,"+repr(str(release))+");"+script],cwd=release,check=True,capture_output=True)
+        self.assertEqual(set(p.PROTOCOL_IDS),set(make_plan()['protocols']))
     def test_exact_scope_and_binding_replacement(self):
         c=cells(self.root);self.assertEqual(len(p.validate_cells(c)),51)
         bad=copy.deepcopy(c);f=next(v for v in bad if v['protocol_id']=='F0');f['source']['source_run_id']=p.main_source('F1','matched_sat_plain_pl',p.SEEDS[0])['run_id']

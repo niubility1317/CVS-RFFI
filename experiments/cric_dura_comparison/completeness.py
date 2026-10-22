@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 from .plan import make_plan
+from .gfactor_scope import main_source
 
 SEEDS = (2026092701, 2026092702, 2026092703)
 PREFIX = '20261022-phase1-'
@@ -37,13 +38,6 @@ PAIRINGS = {
     'ALL_RX_POS': 'same TX, any RX, different physical ID; exclude self and duplicate physical IDs',
     'WITHIN_RX_POS': 'same TX and same physical RX, different physical ID; exclude self and duplicate physical IDs',
 }
-
-
-def main_source(pid, regime, seed):
-    """The already-registered logical source, including the F0 binding repair."""
-    if pid == 'F0' and regime != 'native_cric':
-        return dict(run_id=REPAIRED_CONTROLS, row_id='F0-' + regime + '-s' + str(seed))
-    return dict(run_id=MAIN, row_id=pid + '-' + regime + '-s' + str(seed))
 
 
 def source_physics():

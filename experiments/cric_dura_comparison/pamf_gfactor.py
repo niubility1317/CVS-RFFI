@@ -3,16 +3,15 @@ from pathlib import Path
 import time
 from .io import read,write,tensor
 from .external_dura import VIEWS,cache_preflight,fp32_copy,tasks,reject_truth,handle
-from .completeness import GFACTOR,main_source,SEEDS
+from .gfactor_scope import GFACTOR,main_source,SEEDS,PROTOCOL_IDS
 
-CONTROL='20261023-phase1-PAMF-PL-Gfactor-control-r01'
+CONTROL='20261023-phase1-PAMF-PL-Gfactor-control-r02'
 ANALYSIS='20261023-phase1-PAMF-PL-Gfactor-analysis-m51-r01'
 READOUTS=('raw','DURA-L')
 
 
 def validate_cells(cells):
-    from .plan import make_plan
-    expected={(pid,seed) for pid in make_plan()['protocols'] for seed in SEEDS}
+    expected={(pid,seed) for pid in PROTOCOL_IDS for seed in SEEDS}
     if len(cells)!=51 or {(c['protocol_id'],c['model_seed']) for c in cells}!=expected:
         raise ValueError('Exactly17 contracts x3 existing PL F seeds are required')
     for c in cells:

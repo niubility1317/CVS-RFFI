@@ -1,0 +1,12 @@
+{
+  "status": "FAILED",
+  "execution_commit": "52d20faf1add0b756e92c0e164c7491244bb81f0",
+  "failure_layer": "release runtime metadata import before source smoke and handoff",
+  "fingerprint": "ModuleNotFoundError: No module named experiments.phase1_external_dg",
+  "owner_PID": 1553623,
+  "adopted_workers": 0,
+  "previous_owner_1336081_alive": true,
+  "new_model_workers": 0,
+  "replaced_by": "20261023-phase1-PAMF-PL-Gfactor-control-r02",
+  "old_release_preserved": true
+}
