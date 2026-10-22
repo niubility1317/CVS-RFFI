@@ -57,6 +57,13 @@ class FrozenExternalTests(unittest.TestCase):
         for key,bad in [('role_ids',{'L_s':['other'],'U_s':['b'],'V':['c']}),('source_rxs',[2])]:
             with self.assertRaisesRegex(ValueError,'CONTRACT_MISMATCH'):e.compatible_sources(dict(c,**{key:bad}),g,['TX'])
 
+    def test_native_prediction_template_gets_source_days_from_its_contract(self):
+        item=dict(protocol_id='chrono',model_seed=e.SEEDS[0],suite='native219',run_id='old',row_id='old-row',source_output='source',
+            source_contract='old-contract',classes=['a'],family='riei',variant='full',training_regime='supervised',prediction_output='raw')
+        with patch.object(e,'read',return_value={'source_days':[0,1,2]}):
+            c=e.model_config(item,{'source_contract':'G-contract'},{'external_releases':['old'],'frozen_sources':{},'code_commit':'fixed'})
+        self.assertEqual(c['source_days'],[0,1,2])
+
     def test_raw_reuse_requires_all_views_and_same_ids(self):
         with tempfile.TemporaryDirectory() as d:
             root=Path(d);ids=np.array(['a','b']);(root/'main').mkdir()

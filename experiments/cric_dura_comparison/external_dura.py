@@ -276,10 +276,12 @@ def smoke(rt, output):
 
 
 def model_config(item, template, rt):
+    source_days=template.get('source_days')
+    if source_days is None:source_days=read(template['source_contract'])['source_days']
     return dict(protocol_id=item['protocol_id'],model_seed=item['model_seed'],source_suite=item['suite'],
         source_run_id=item['run_id'],source_row_id=item['row_id'],source_output=item['source_output'],
         external_source_contract=item['source_contract'],source_contract=template['source_contract'],
         classes=item['classes'],family=item['family'],variant=item['variant'],training_regime=item['training_regime'],
-        source_days=template['source_days'],raw_predictions_from=item['prediction_output'],
+        source_days=source_days,raw_predictions_from=item['prediction_output'],
         readouts=list(READOUTS),external_releases=rt['external_releases'],
         frozen_sources=rt['frozen_sources'],code_commit=rt['code_commit'])

@@ -95,7 +95,7 @@ def prepare(rt, jobs, previous, active):
             tests={k:{'views_root':v['views_root']} for k,v in item['tests'].items()})
         deps=[cache_jobs[pid,n]['completion'] for n in READOUTS[1:]]+[str(Path(item['prediction_output'])/'complete.json')]
         pj=add(run+'/'+row+'/predict','predict',pc,root/'predictions/complete.json',deps,'ALL_PREDICTIONS_COMPLETE')
-        sc=dict(run_id=run,row_id=row,protocol_id=pid,model_seed=item['model_seed'],classes=item['classes'],source_days=t['source_days'],
+        sc=dict(run_id=run,row_id=row,protocol_id=pid,model_seed=item['model_seed'],classes=item['classes'],source_days=pc['source_days'],
             prediction_output=pc['output_root'],output_root=str(root/'scores'),readouts=list(READOUTS),tests=item['tests'])
         sj=add(run+'/'+row+'/score','score',sc,root/'scores/complete.json',[pj['completion']],'SCORED_COMPLETE')
         records.append(dict(run_id=run,row_id=row,protocol_id=pid,family=item['family'],variant=item['variant'],
