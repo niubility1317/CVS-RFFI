@@ -1,0 +1,15 @@
+\begin{table*}[t]\centering\footnotesize
+\caption{Completed DURA mechanism accuracy (\%, mean$\pm$sample SD of three paired runs). Each new G seed is paired with the same-number F seed; the default uses three F seeds and one fixed G. These are not pure G-seed SDs.}
+\label{tab:G-ablation-complete}
+\begin{tabular}{lrrrrr}\toprule
+G setting & G parameters & Clean & Six scenes & Low urban & Six-scene $\Delta$ vs default (pp)\\\midrule
+Raw T1 & 0 & $84.39\pm0.92$ & $70.60\pm1.06$ & $51.73\pm0.61$ & --\\
+Default DURA (one fixed G) & 266951 & $84.48\pm0.97$ & $77.65\pm0.85$ & $67.66\pm0.71$ & $+0.00\pm0.00$\\
+Coarse only & 106138 & $83.26\pm1.02$ & $72.11\pm0.77$ & $55.95\pm1.24$ & $-5.54\pm0.16$\\
+No CG & 266951 & $84.41\pm1.08$ & $76.94\pm1.08$ & $66.45\pm1.31$ & $-0.71\pm0.26$\\
+No image action & 266951 & $84.49\pm0.96$ & $77.32\pm1.10$ & $67.09\pm1.38$ & $-0.32\pm0.28$\\
+No residual input & 266951 & $84.38\pm0.94$ & $76.78\pm1.21$ & $66.65\pm1.53$ & $-0.87\pm0.36$\\
+Copy, no IQ distillation & 266951 & $84.44\pm1.04$ & $76.80\pm0.93$ & $66.91\pm1.43$ & $-0.85\pm0.13$\\
+Random + IQ distillation & 266951 & $83.37\pm1.48$ & $73.74\pm0.96$ & $58.02\pm2.46$ & $-3.91\pm0.29$\\
+Random, no IQ distillation & 266951 & $83.32\pm0.14$ & $71.66\pm1.05$ & $53.05\pm1.69$ & $-5.99\pm0.83$\\
+\bottomrule\end{tabular}\end{table*}

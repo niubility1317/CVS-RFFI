@@ -1,0 +1,56 @@
+\begin{table}[t]
+\centering\scriptsize
+\caption{Final T1/DURA B1 timing on an exclusive RTX3090. Pooled statistics over five rounds (5000 GPU calls/case); transfer columns use 100 calls/case. All times are ms.}
+\label{tab:final-t1-latency}
+\begin{tabular}{lrrrr}
+\toprule
+Call & GPU med. & P95 & Transfer med. & Round SD\\
+\midrule
+F eager & 7.578 & 7.995 & 7.679 & 0.122\\
+F Graph & 0.757 & 0.858 & 0.796 & 0.007\\
+G+F native & 37.190 & 48.547 & 36.848 & 4.728\\
+G default & 3.843 & 3.984 & 3.874 & 0.009\\
+G+F default & 4.541 & 4.725 & 4.611 & 0.008\\
+RIEI CE & 2.350 & 2.490 & 2.417 & 0.032\\
+RIEI Full & 2.352 & 2.734 & 2.456 & 0.011\\
+DRIFT CE & 2.409 & 4.274 & 2.482 & 0.041\\
+DRIFT Full & 2.408 & 2.605 & 2.476 & 0.035\\
+IB-RFF CE & 1.435 & 1.565 & 1.487 & 0.004\\
+IB-RFF Full & 1.456 & 2.168 & 1.506 & 0.019\\
+SDG CE & 3.026 & 3.168 & 3.107 & 0.036\\
+SDG Full & 3.054 & 5.008 & 3.105 & 0.049\\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{table}[t]
+\centering\footnotesize
+\caption{Same-weight execution ablation at B1 (ms). P95 is for the measured online G+F call.}
+\label{tab:final-t1-routes}
+\begin{tabular}{lrrr}
+\toprule
+Route & G median & G+F median & G+F P95\\
+\midrule
+T0 & 29.339 & 37.190 & 48.547\\
+T1 & 28.585 & 36.450 & 38.375\\
+T2 & 27.099 & 35.271 & 46.066\\
+T3 & 3.988 & 4.688 & 4.764\\
+T4 & 3.843 & 4.541 & 4.725\\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{table}[t]
+\centering\footnotesize
+\caption{Default online G+F batch timing. Batch latency is not single-packet waiting latency; the measured curve is nonmonotonic.}
+\label{tab:final-t1-batches}
+\begin{tabular}{rrrr}
+\toprule
+Batch & Median (ms) & P95 (ms) & IQ/s\\
+\midrule
+1 & 4.541 & 4.725 & 220.2\\
+8 & 13.747 & 13.853 & 581.9\\
+32 & 28.374 & 29.017 & 1127.8\\
+64 & 15.295 & 15.625 & 4184.5\\
+128 & 17.111 & 17.316 & 7480.5\\
+\bottomrule
+\end{tabular}
+\end{table}
