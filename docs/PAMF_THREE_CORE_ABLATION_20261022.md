@@ -71,3 +71,10 @@ A 保留原同 TX 跨 RX、两层／两前向、温度0.2、warm5/ramp10到0.1�
 主科学run为 `20261022-phase1-PAMF-core-mechanisms-m24-r01`，九个复用 G-L 读出为 `20261022-phase1-PAMF-core-G-L-readouts-m9-r01`，CPU汇总为 `20261022-phase1-PAMF-core-factorial-analysis-r01`。唯一资源owner为独立 `20261022-phase1-PAMF-core-control-r01`；实际发布后在各登记记录 Git、PID/CWD/argv/GPU与日志增长，不能把本地验证写成远端运行。
 
 新控制器先通过一次真实固定 checkpoint 无 query smoke和四个新增组合的实际源 L／默认头梯度检查，然后精确接管旧owner；保留健康worker原PID/CWD/配置和其 per-job release。核心12新F及 F04/F16/F20 依赖按本次主表范围固定优先，不依据目标得分。原预算、数据、其他owner及当前资源上限不改；同技术指纹两次停止新派发。全部预测和分析完成后汇入 IEEE 实验章节和新不可覆盖导出，相关权重／IQ／原始日志／私有runtime不提交。
+
+
+## 2026-10-23 完整结果
+
+8组合×3个实际F seed及raw/G-L/G-LU七景已全部ANALYZED。12新F、12复用；两条源物理诊断技术替代明确映射，旧失败保持历史。24,192份CM及全部配对效应/交互、净纠错、分段成本和24份L-only源诊断已独立复算；A/C在完整组合中未显示稳定正贡献，结果不改变预先固定分组、默认模型或队列。
+
+结果与六份公开小表见[完整三核心分析](../automation_reports/CV-SincNet/20261023-phase1-PAMF-core-factorial-recovery-r01/core_results.md)。IEEE实验章节已编译目检13页，新不可覆盖r06进度包已解包复现。其余F细诊断、严格监督结构、完整外部DURA读出、公平性补充和专用时延仍待闭合，不能把本组完成当成全部实验交付。

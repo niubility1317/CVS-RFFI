@@ -1,0 +1,38 @@
+{
+  "status": "ANALYZED",
+  "logical_models": 24,
+  "new_F": 12,
+  "reused_F": 12,
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "readouts": [
+    "raw",
+    "DURA-L",
+    "DURA-LU"
+  ],
+  "views": 7,
+  "readout_view_units": 504,
+  "source_score_files": 36,
+  "serialized_CMs_recomputed": 24192,
+  "replacements": [
+    {
+      "original_run": "20261022-phase1-PAMF-core-G-L-readouts-m9-r01",
+      "row_id": "ABC101-s2026092701",
+      "replacement_run": "20261023-phase1-PAMF-core-source-diagnostic-recovery-m2-r01"
+    },
+    {
+      "original_run": "20261022-phase1-PAMF-core-G-L-readouts-m9-r01",
+      "row_id": "ABC111-s2026092701",
+      "replacement_run": "20261023-phase1-PAMF-core-source-diagnostic-recovery-m2-r01"
+    }
+  ],
+  "old_aggregation": "20261022-phase1-PAMF-core-factorial-analysis-r01",
+  "replacement_aggregation": "20261023-phase1-PAMF-core-factorial-recovery-r01",
+  "whole_PAMF_complete": false,
+  "paper": "paper/phase1_experiments_ieee_20261020/main.pdf",
+  "paper_pages": 13,
+  "progress_export": "exports/phase1_external_dg/20261023-final-T1-DURA-experiments-progress-r06.zip"
+}

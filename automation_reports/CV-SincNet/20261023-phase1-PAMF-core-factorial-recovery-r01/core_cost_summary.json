@@ -1,0 +1,18 @@
+{
+  "logical_F_models": 24,
+  "new_F_models": 12,
+  "reused_F_models": 12,
+  "logical_F_epochs": 1200,
+  "logical_F_updates": 266400,
+  "new_F_epochs": 600,
+  "new_F_updates": 133200,
+  "new_F_shared_worker_hours": 20.45337871479278,
+  "all24_F_shared_worker_hours_including_original_T1": 40.62297695249688,
+  "source_physics_panels": 24,
+  "source_L_samples_per_panel": 720,
+  "source_interventions_per_panel": 11,
+  "G_training_in_this_panel": 0,
+  "head_fit_updates": 0,
+  "target_truth_reads_in_analysis": 0,
+  "caution": "Elapsed shared-worker cost under differing historical contention, not exclusive GPU-hours or sum of end-to-end completion times. G ancestors and other experiments are separate."
+}

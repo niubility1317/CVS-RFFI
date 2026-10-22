@@ -1,0 +1,49 @@
+{
+  "status": "VERIFIED",
+  "logical_cells": 24,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "readouts": 3,
+  "views": 7,
+  "serialized_CM_recomputed": 24192,
+  "raw_CM_reuse_verified": true,
+  "target_truth_reads": 0,
+  "score_feedback_used": false,
+  "conditional_on_fixed_G": true,
+  "independent_local_recalculation": true,
+  "all_five_remote_CSVs_equivalent": {
+    "core_per_seed.csv": {
+      "rows": 55296,
+      "numerically_equivalent": true,
+      "byte_identical": false
+    },
+    "core_summary.csv": {
+      "rows": 18432,
+      "numerically_equivalent": true,
+      "byte_identical": false
+    },
+    "core_paired_effects.csv": {
+      "rows": 23040,
+      "numerically_equivalent": true,
+      "byte_identical": false
+    },
+    "core_net_corrections.csv": {
+      "rows": 16128,
+      "numerically_equivalent": true,
+      "byte_identical": true
+    },
+    "core_F_cost.csv": {
+      "rows": 24,
+      "numerically_equivalent": true,
+      "byte_identical": true
+    }
+  },
+  "numeric_cells_compared": 512085,
+  "maximum_absolute_difference": 9.947598300641403e-14,
+  "cross_Python_absolute_tolerance": 1e-10,
+  "complete_source_score_files": 36,
+  "new_model_training_or_target_truth_reads": 0
+}

@@ -9,11 +9,11 @@ For switches $a,b,c\in\{0,1\}$, the objective is
 &+c(0.16\mathcal L_{\rm PL}+0.01\mathcal L_{\rm ent}).
 \end{split}
 \end{equation}
-The common labeled scaffold is $\mathcal L_{\rm MVCE}=0.5\mathcal C_{o128}+0.25\mathcal C_{o64}+0.25\mathcal C_{As64}+0.25\mathcal C_{r128}$, where each $\mathcal C$ averages the original two CE forwards with label smoothing 0.01. Disabling B retains these six labeled forwards and their CE dose; As KL remains zero. Disabling C removes the U loader, EMA and every unlabeled forward/update, rather than evaluating zero-weight unlabeled branches. All 50 epochs still train on L. Backbone, physical branches and the jointly trained default head are fixed. The native T1 As/U recipe is retained for this matched objective study; it does not acquire an additional concatenation loss. The separately registered matched Sup/ordinary-PL and strict architecture controls retain default satellite concatenation.
+The common labeled scaffold is $\mathcal L_{\rm MVCE}=0.5\mathcal C_{o128}+0.25\mathcal C_{o64}+0.25\mathcal C_{As64}+0.25\mathcal C_{r128}$, where each $\mathcal C$ averages the original two CE forwards with label smoothing 0.01. Disabling B retains the original labeled forward exposures (768 L-packet evaluations per update) and their CE dose; As KL remains zero. Disabling C removes the U loader, EMA and every unlabeled forward/update, rather than evaluating zero-weight unlabeled branches. All 50 epochs still train on L. Backbone, physical branches and the jointly trained default head are fixed. The native T1 As/U recipe is retained for this matched objective study; it does not acquire an additional concatenation loss. The separately registered matched Sup/ordinary-PL and strict architecture controls retain default satellite concatenation.
 
 \begin{table}[t]
 \centering\footnotesize
-\caption{Primary four-row ablation and the predeclared full factorial. Each cell has three F seeds. All new results are pending.}
+\caption{Primary four-row ablation and the predeclared full factorial. Each cell has three F seeds. All 24 logical models now have complete readouts and independent scores.}
 \label{tab:three-core-design}
 \begin{tabular}{ccp{0.58\columnwidth}}
 \toprule
@@ -32,7 +32,7 @@ ABC & Main table & Source / purpose\\
 \end{tabular}
 \end{table}
 
-The design contains 24 logical models, reusing 12 completed or already scheduled source rows and training only 12 missing combinations. Each new model follows scratch20 plus own10 plus own20, totaling E50/11100 updates; C=0 uses L throughout. Added training is 600 model-epochs/133200 updates. The fixed F0 contract contains L6300, hidden-label U56700 and V27000 from five source RX and three dates, with 168000 observations on seven disjoint target RX over four dates. This is a fixed-condition mechanism study, not a renewed five-source-count sweep.
+The design contains 24 logical models, reusing 12 source rows and newly training only 12 missing combinations. Each new model follows scratch20 plus own10 plus own20, totaling E50/11100 updates; C=0 uses L throughout. Added training is 600 model-epochs/133200 updates. The fixed F0 contract contains L6300, hidden-label U56700 and V27000 from five source RX and three dates, with 168000 observations on seven disjoint target RX over four dates. This is a fixed-condition mechanism study, not a renewed five-source-count sweep.
 
 Each cell has raw, fixed same-contract G-L and fixed same-contract G-LU readouts. Existing raw and available restoration decisions are reused; nine existing models receive the missing G-L readout. The extension therefore adds 12 F, 21 prediction, 21 independent scoring and one CPU aggregation job, with zero new G. Raw provides the primary F-objective attribution; G-L/G-LU are separately stratified. C=0 plus G-L is a strict L-only system, whereas C=0 plus G-LU is only a supervised F. Variation across three F seeds conditional on a fixed G is not three independently trained complete systems.
 

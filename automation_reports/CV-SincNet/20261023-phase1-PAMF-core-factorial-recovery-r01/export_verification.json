@@ -1,0 +1,20 @@
+{
+  "status": "VERIFIED",
+  "export": "exports/phase1_external_dg/20261023-final-T1-DURA-experiments-progress-r06.zip",
+  "bytes": 22989134,
+  "members": 452,
+  "prior_r05_preserved": true,
+  "IEEE_pages": 13,
+  "core_portable_reproduction": "VERIFIED_AFTER_ZIP_EXTRACTION",
+  "serialized_CMs_recomputed": 24192,
+  "numeric_cells_compared": 512085,
+  "full_CSVs_equivalent": 5,
+  "compact_CSVs_equivalent": 6,
+  "maximum_absolute_difference": 9.947598300641403e-14,
+  "cross_Python_tolerance": 1e-10,
+  "stdlib_only": true,
+  "IQ_or_weight_loading": false,
+  "target_truth_reads": 0,
+  "inherited_panels": "Four r05 panels copied with their previously verified code/inputs; not claimed newly recomputed here.",
+  "all_PAMF_complete": false
+}
