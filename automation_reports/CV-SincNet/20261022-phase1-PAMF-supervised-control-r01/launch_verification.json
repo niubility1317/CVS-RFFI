@@ -1,0 +1,110 @@
+{
+  "status": "VERIFIED_PUBLISHED_QUEUED",
+  "release_commit": "da8c217ba2701923255b7782bfc514f8d1591bc9",
+  "initial_owner": "20261022-phase1-PAMF-supervised-control-r01",
+  "initial_healthy_workers_adopted": 25,
+  "current_owner": "20261022-phase1-T1-DURA-stop-invalid-F-control-r01",
+  "current_owner_alive": true,
+  "current_GPU_workers": 25,
+  "normal_handoff_reconciled": true,
+  "all_worker_CWD_cmd_config_match": true,
+  "same_PID_log_growth": 17,
+  "log_growth_observation_seconds": 495.31399369239807,
+  "job_count": 1062,
+  "effective_stage_jobs": 854,
+  "new_F": 24,
+  "new_F_status": "QUEUED",
+  "new_readout_rows": 30,
+  "new_stage_jobs": 85,
+  "new_G_training": 0,
+  "pending_default_concat_consumers_promoted": 18,
+  "source_checkpoint_and_eight_structure_smoke": "PASS",
+  "source_U_IQ_reads": 0,
+  "target_reads_before_freeze": 0,
+  "model_performance_results": "PENDING",
+  "known_old_timing_failure": "Original r01 only, already covered by completed r02; not a new failure",
+  "training_wrapper_parameters": [
+    {
+      "architecture": "SIG_TIME",
+      "parameters": 863730,
+      "scope": "Training wrapper registered parameters; not deployed F parameter count"
+    },
+    {
+      "architecture": "NO_TIME",
+      "parameters": 900722,
+      "scope": "Training wrapper registered parameters; not deployed F parameter count"
+    },
+    {
+      "architecture": "NO_SIGNATURE",
+      "parameters": 844754,
+      "scope": "Training wrapper registered parameters; not deployed F parameter count"
+    },
+    {
+      "architecture": "NO_PA",
+      "parameters": 889682,
+      "scope": "Training wrapper registered parameters; not deployed F parameter count"
+    },
+    {
+      "architecture": "NO_REFERENCE",
+      "parameters": 887922,
+      "scope": "Training wrapper registered parameters; not deployed F parameter count"
+    },
+    {
+      "architecture": "COV_X3",
+      "parameters": 900722,
+      "scope": "Training wrapper registered parameters; not deployed F parameter count"
+    },
+    {
+      "architecture": "SHUFFLE_TIME",
+      "parameters": 900722,
+      "scope": "Training wrapper registered parameters; not deployed F parameter count"
+    },
+    {
+      "architecture": "WRONG_REFERENCE",
+      "parameters": 900722,
+      "scope": "Training wrapper registered parameters; not deployed F parameter count"
+    }
+  ],
+  "remaining_counts": {
+    "F": {
+      "COMPLETE": 111,
+      "RUNNING": 12,
+      "QUEUED": 114
+    },
+    "G": {
+      "COMPLETE": 24,
+      "RUNNING": 6,
+      "QUEUED": 5
+    },
+    "predict": {
+      "COMPLETE": 107,
+      "QUEUED": 172
+    },
+    "score": {
+      "COMPLETE": 107,
+      "QUEUED": 172
+    },
+    "G_student": {
+      "COMPLETE": 21
+    },
+    "timing": {
+      "FAILED": 1,
+      "QUEUED": 2
+    }
+  },
+  "ETA": {
+    "observed_at_UTC": "2026-10-22T13:52:11.819Z",
+    "hours": [
+      16,
+      24
+    ],
+    "earliest_UTC": "2026-10-23T05:52:11.819Z",
+    "latest_UTC": "2026-10-23T13:52:11.819Z",
+    "caveat": "Shared worker elapsed cost, not exclusive GPU-hours. CE uses prior identical execution-path timing only; old input-invalid accuracy is never used. New architecture timings remain to be measured. Full G chains, tests/CPU scoring/exclusive timing/export add dependency tails and overlap."
+  },
+  "paper": {
+    "pages": 9,
+    "status": "VERIFIED_COMPILED_AND_VISUALLY_CHECKED",
+    "source": "paper/phase1_experiments_ieee_20261020/supervised_physics_design.tex"
+  }
+}

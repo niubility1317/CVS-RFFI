@@ -1,0 +1,100 @@
+% Completed frozen F0 results and explicitly prospective experiment settings.
+\subsection{Complete PAMF: CRIC with DURA}
+\label{sec:cric-dura}
+The user-designated complete PAMF system applies the frozen DURA v1.0 restorer to each received IQ window, followed by CRIC and its original jointly trained cosine classifier. This includes clean observations; the system does not use the true channel scene to decide whether restoration is applied. CRIC denotes Cross-Receiver Identity Contrastive Learning. The final identification recipe is T1-E50: scratch20 (13 labeled-only and 7 joint epochs), own10 joint epochs, and own20 joint epochs. Student and own EMA states are strictly inherited, while AdamW, the segment cosine schedule and temporal state reset. The total is 13 labeled-only and 37 joint epochs, with labeled supervision retained throughout.
+
+The final T1 representation retains SIG\_TIME\_X3, time/frequency/PA fusion, reference response, unit-aware centered Sinc optimization and its jointly trained default cosine head. Each labeled batch uses three actual R-Drop pairs: ordinary128, mixed128 (ordinary64 plus As64), and raw128. The supervised objective is $0.5L_{RD,ord128}+0.25L_{RD,ord64}+0.25L_{CE,As64}+0.25L_{RD,raw128}$; As KL is zero, ordinary/raw KL is one and label smoothing is 0.01. The total CE dose is 1.25. As is generated from raw source IQ before ordinary augmentation. CRIC uses only the ordinary128 shallow/intermediate maps, averaged over the two ordinary forwards; temperature is 0.2, with cumulative warm5/ramp10 to weight0.1. Native T1 retains its ownEMA and original unlabeled gates, PL weight0.16 and entropy0.01 as the explicitly fixed final-method exception.
+
+DURA uses two learned-prior stages and two conjugate-gradient updates per stage. Its 266951 unique parameters predict a coarse restoration and a current-window real-linear action, with a main and conjugate-image response. The fixed runtime uses residual reuse and CUDA Graphs in FP32 with TF32 disabled. Its 27 FFT/IFFT calls describe G only. Restorer training uses source IQ and simulated pairs without TX labels, identity-model weights/outputs, or target observations. All training ancestors are subject to the same source contract.
+
+\input{tables/cric_full_f0}
+
+\subsubsection{Historical F0 Comparison: Old 33/17 Recipe}
+Table~\ref{tab:cric-full-f0} contains the historical no-As 33/17 identifier, not final T1; its values must not be relabeled as T1+DURA. It combines existing immutable scores; it entails no new training or target-truth access. Its 18 method/recipe readouts each have three F seeds and seven views, giving 378 score cells on the same 168000 target packets per view. CRIC+DURA obtains clean accuracy $85.1429\pm0.4055\%$, six-satellite-view mean $78.1249\pm0.3416\%$, and low-urban accuracy $68.1339\pm0.6603\%$. The corresponding un-restored CRIC values are $85.1139\pm0.3799\%$, $43.9855\pm5.7410\%$, and $33.6470\pm2.9346\%$. Six-view means are formed within each seed before computing the cross-seed sample SD.
+
+All three CRIC seeds share one frozen G, so their SD estimates F-seed variation conditional on G, not variability of three independently trained complete systems. This historical table compares complete native recipes on a common data split: external supervised/ordinary-PL runs use satellite concatenation, whereas original CRIC uses its native unlabeled mechanism and no As branch. Their difference cannot be attributed solely to cross-RX contrast. CE controls stronger than their Full counterparts remain visible. Additional matched controls below are prospective; no results are inferred for untested data contracts.
+
+\subsubsection{Completed Final-T1 F0 Submatrix}
+\input{tables/final_t1_f0}
+The final T1-E50 three-seed submatrix is now complete under the same five-source/seven-target receiver contract, with 168000 physical packets per view and independent truth-last scoring after all raw/G views. T1+DURA obtains clean accuracy $84.4839\pm0.9660\%$, six-view mean $77.6468\pm0.8461\%$ and low-urban accuracy $67.6562\pm0.7124\%$. The paired six-view gain over raw T1 is $7.0455\pm0.5949$ percentage points; raw T1 gives $70.6013\pm1.0624\%$. All confusion-derived accuracies/Macro-F1 values and paired repair/damage nets were independently recomputed from the completed scorer artifacts. These are three F seeds conditional on one fixed G. This completion does not imply that the remaining data conditions, mechanisms or latency panels are complete. The final recipe stays fixed; neither historical nor new target scores select replacements or reruns.
+
+\subsubsection{Prospective Coverage and Data-Matched Controls}
+The extended design covers F0/F1/F2, chronological D3, ManyRx, label fractions 1/5\%, and ten source-count conditions. The latter use $m\in\{1,2,3,4,6\}$ along the fixed order $(1,3,4,6,8,11)$, under natural or fixed annotation budgets. Their target set is always $(0,2,5,7,9,10)$, six RX and 144000 packets. No new five-source sweep point is trained or queued. Existing F0 five-source results use seven target RX and must not be inserted into this curve.
+
+For natural budgets, $(|L|,|U|,|V|)=(1260m,11340m,5400m)$. The fixed-budget setting uses $(1080,12600m-1080,5400)$, with surplus V excluded. A single source provides no cross-RX positive: contrast is finite zero and effective-anchor coverage is explicitly zero, rather than inventing RX domains from dates or augmentation. Because U still grows with m, the semi-supervised curve does not isolate receiver diversity alone. The strict-supervised fixed-budget curve controls annotation count and the maximum schedule; realized IB early-stopping updates still vary and are reported.
+
+Each of the 17 data conditions has final native T1+DURA, a satellite-concatenated supervised control, and its ordinary-PL control, each with three F seeds. The latter two preserve the same representation and supervised regularizers; PL alone adds current-student hard labels at threshold 0.95, weight one, and U/L ratio one, without EMA or complex gating. They are named PAMF-Sup and PAMF-PL, not relabeled as original CRIC. F training fixes 11100 updates (50 logical epochs of 222 steps), with L batch128. On changed source pools, logical epochs are not claimed to be full dataset passes. Final native T1 retains the staged 13/37 schedule and U batch256; matched PL starts in the first batch with U batch128. Actual unique observations, repeats, partial batches, and acceptance are reported.
+
+The 153 F instances comprise three exact-contract F0 reuses and 150 planned new models. G-L is trained using L only for a strict-supervised complete system; G-LU uses L plus TX-hidden U. An F without PL attached to G-LU is additionally evaluated, but is described as F-supervised/G-unlabeled, not a supervised system. Each contract initially fixes one G seed shared across F seeds. Two further G seeds at the predetermined three-source natural condition yield a $3\times3$ crossed F/G sensitivity panel. This gives 36 G sources, one existing reuse and 35 planned new complete training lineages. Changing RX, date, TX or physical roles requires matching F and all G ancestors; an F0 teacher cannot initialize another contract. The final T1 extension is registered separately from the superseded old-recipe queue; execution status is tied to its run evidence.
+
+\subsection{Mechanism and Efficiency Experiments}
+\label{sec:cric-ablation}
+All new settings are fixed before additional target predictions and retain clean plus six practical views. Predictions for all views of each row precede independent truth-side scoring. We report Accuracy, Macro-F1, worst-RX accuracy, seed-paired differences, and repaired/newly introduced errors on the same physical observations. Target scores do not select epochs, variants, seeds, or reruns.
+
+\subsubsection{Identification and Restoration Contributions}
+The matched final-T1 F0 factorial is F16 (CRIC weight zero) versus full T1, crossed with raw versus DURA. Both retain the same staged T1 recipe. The old BASE/ALL\_TX models are historical 33/17 references, not matched final-T1 controls. Existing BASE, ALL\_TX and CROSS\_RX each have three E50 models. Their two readouts yield 18 frozen model/readout combinations and 126 view cells; missing seven-view predictions must be completed rather than inferred from existing clean results. The interaction is
+\begin{equation}
+\begin{split}
+I={}&(A_{\mathrm{CRIC},G}-A_{\mathrm{CRIC},raw})\\
+&-(A_{\mathrm{F16},G}-A_{\mathrm{F16},raw}).
+\end{split}
+\end{equation}
+ALL\_TX with the same G tests whether restricting positives to different physical RX improves on ordinary same-TX contrast.
+
+F ablations separately use shallow-only, intermediate-only, and final-embedding-only contrast; zero R-Drop KL with two CE forwards; one CE forward; one SIG\_TIME projection; removal of the time coordinate; removal of SIG\_TIME, PA or reference response; student-generated rather than EMA pseudo labels; removal of neighbor or strong-agreement selection; removal of the U entropy term; and a same-representation CE-only labeled reference. The first fourteen settings preserve unaffected components; the CE-only reference changes the complete training recipe and is not a single-factor effect. These 15 variants, plus no cross-RX contrast, no As, restored As KL, no raw pair, no native U, and matched-calendar ordinary PL, give 21 variants using three seeds each, separately from the 153-instance comparison matrix. Structural removals require matched training; frozen branch masking is only a sensitivity diagnostic.
+
+G ablations include coarse-only, priors without CG, no conjugate-image term, and omission of the backprojected-residual prior input. Four structural and three initialization/distillation settings give 21 completed final-student runs. The realized initialization panel has three newly replicated cells and the existing single-G copied/distilled default; it is not a fully replicated $2\times2$ G-seed factorial. The two-stage four-CG default remains fixed, with teacher ancestry and incremental student cost reported separately.
+
+\subsubsection{Completed Restoration Mechanism Accuracy}
+\input{tables/G_ablation_complete}
+All 21 students complete 20 epochs/4940 updates on the same F0 source L/U IQ and fixed source-only R65 teacher. Each then completes raw/restored predictions in all seven views before independent truth-last scoring. We recomputed 16128 serialized confusion matrices (including repeated raw references) and 8064 stratum-level repair/damage nets. Every raw confusion matrix matches the existing same-seed final T1 reference. Each new G seed is paired diagonally with its same-number F seed, whereas the default uses three F seeds and one fixed G; the resulting SD is not isolated G-seed variance.
+
+Relative to the fixed default's six-view mean $77.6468\pm0.8461\%$, coarse-only obtains $72.1112\pm0.7660\%$; the paired difference is $-5.5356\pm0.1551$ percentage points. Without CG, without the conjugate-image term, and without backprojected-residual prior input, six-view means are $76.9395\pm1.0762\%$, $77.3227\pm1.1003\%$, and $76.7803\pm1.2053\%$. Their paired differences from the fixed default are $-0.7073\pm0.2566$, $-0.3241\pm0.2849$, and $-0.8665\pm0.3629$ points. These describe the declared training/readout comparison; they do not imply improvements in every clean/scene/seed cell.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{images/G_ablation/G_ablation_paired_vs_default.pdf}
+\caption{Restoration-mechanism differences from the fixed default DURA (mean$\pm$sample SD, three paired runs). Each new arm pairs the F and G student seeds diagonally; the default G is fixed. All readouts use the same seven-target F0 contract. The initialization panel does not supply three new copied-plus-distilled G replicas, so its full factorial interaction is not estimated.}
+\label{fig:G-ablation-complete}
+\end{figure*}
+
+Among the three newly replicated initialization/distillation cells, copying without distillation improves the six-view mean over random initialization without distillation by $5.1352\pm0.9465$ points. Adding IQ distillation to random initialization improves it by $2.0769\pm1.1184$ points. These are same-seed contrasts at the stated initialization/KD conditions. The single historical copied/distilled default does not provide the missing replicated fourth cell, so no copied-initialization KD effect or $2\times2$ interaction is inferred from it. The 21 students sum to 5.100 hours of incremental training elapsed time; shared teacher ancestry is excluded from that sum, not assigned zero cost. Coarse-only has 106138 registered G parameters; all other G arms retain 266951. Mechanism-specific measured latency remains pending and is not inferred from parameter counts or these accuracy results. The default and the remaining healthy queue are unchanged by target scores.
+
+\subsubsection{Latency Boundary and Repetition}
+We measure F alone, G alone, and the actual online G+F call. Three boundaries are separated: synchronized GPU-resident calls including input replacement, owned outputs and validity checks; pinned-CPU IQ to CPU class including H2D/D2H; and cold model loading and first-call/Graph setup. Cached restored-IQ reads never replace G in a complete-system timing. Module profiles are separate diagnostics; their medians are not added to synthesize end-to-end latency.
+
+The common benchmark uses one exclusive RTX3090, the same Python3.10/Torch2.1 stack, two CPU threads, FP32 and both TF32 flags disabled. Existing Torch1.11 comparator costs are not ranked directly against DURA's Torch2.1 timing. External comparison models use eager calls; F and G/GF additionally report the declared Graph routes. This fixed seed01 timing panel separates execution-route effects from the three-seed accuracy experiments. Healthy training is not interrupted to obtain a timing GPU.
+
+Batches are 1/8/32/64/128. Five balanced-order rounds use 100 warmups and 1000 measured calls per round for B1, or 20 warmups and 100 measured calls for larger batches. We report synchronized median/P95, sample counts, between-round variation, whole-batch latency, throughput, resident/incremental peak memory, and first-call setup. CUDA-event device time is a separate metric. The frozen inference implementation controls input replacement and output ownership; this panel records finite outputs and exclusive-device checks without query access. Numerical/argmax agreement requires separate same-weight validation and is not inferred from timing. Three model seeds and five timing rounds describe different sources of variability. Amortized batch time is not single-observation waiting latency.
+
+\begin{table}[t]
+\centering\footnotesize
+\caption{Same-weight DURA execution ablation. T1--T4 isolate the RR/Graph interaction; T0--T1 also changes tensorization and synchronization.}
+\label{tab:dura-execution}
+\begin{tabular}{lccc}
+\toprule
+Path & Tensorized checks & RR & Graph\\
+\midrule
+T0 native & No & Native & No\\
+T1 & Yes & No & No\\
+T2 & Yes & Yes & No\\
+T3 & Yes & No & Yes\\
+T4 default & Yes & Yes & Yes\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:dura-execution} is measured for G and G+F. For the historical old 33/17 F pairing, the earlier seed01 B1 online G+F median 4.531972ms (P95 4.990450ms) is a historical GPU-resident measurement including engine copies/checks, excluding transfer, queueing and first capture. It is not relabeled as final T1. A 256-sample window at 25MS/s spans 10.24$\mu$s, so this latency alone does not establish continuous full-rate real-time processing.
+
+\subsubsection{Completed Common-Stack Timing}
+The final-T1 unified panel is complete: 20 calls, five batch sizes and five rounds give 500 case-rounds, 140000 measured GPU calls and 10000 transfer-inclusive calls. Table~\ref{tab:final-t1-latency} reports pooled medians and P95; the last column is the sample SD of five round medians, not model-seed uncertainty. Default B1 online G+F takes 4.541187ms (P95 4.725135ms), or 4.611311ms including pinned CPU input and CPU class output. The round-median SD is 0.008487ms. Same-weight native G+F takes 37.189997ms, giving an 8.189-fold execution-route speedup. F alone takes 7.578455ms in eager mode or 0.756531ms with Graphs; the measured default G call is 3.843147ms. These separate module medians are not summed to define the online result.
+
+\input{tables/final_t1_latency}
+
+Table~\ref{tab:final-t1-routes} separates residual reuse from Graph execution at fixed weights. Comparator Full/CE models are all measured in eager mode on the common stack; native-method mechanisms absent at deployment therefore need not increase inference cost. This is a comparison of declared deployment routes, not a claim that every comparator has been equivalently optimized with Graphs. Table~\ref{tab:final-t1-batches} preserves the observed nonmonotonic batch curve: B32 takes 28.374ms, whereas B64 takes 15.295ms. No smoothing, replacement run or assumed monotonic scaling is applied. B128 yields 7480.5 IQ/s, but amortized throughput does not establish continuous full-rate operation.
+
+F and G contain 232993 and 266951 registered learned parameters, respectively (499944 total). Separate eager profiling counts 8.856M and 25.068M Conv/Linear MACs. This excludes functional cosine-head arithmetic, FFT complex operations, CG reductions, normalization and elementwise operations; it is not total FLOPs. The eager G profile records 43 FFT/IFFT calls, whereas the residual-reuse deployment program uses 27. Recorded resident memory includes all benchmark models/Graph pools and the separately declared 13GiB scheduler reservation; it cannot represent an isolated model's VRAM requirement. The first default G+F B1 call takes 337.049ms after loading/profiling; it is not a fresh-process cold-start result. Timing samples establish finite outputs and per-round device exclusivity, but do not independently establish full-dataset route-wise prediction equivalence.
+
+Deployment counts include the learned frozen classifier and exclude optimizer, EMA and unused training branches. Convolution/linear MACs, FFT/IFFT counts and complex solver costs are reported separately. R-Drop second passes, contrast construction, EMA, U gates and entropy are training-only. Their actual forward exposures and segment/epoch/total wall times are logged and compared through the matched ablations; they do not create deployment inference passes. Contrast reuses F forwards but still incurs descriptor/similarity computation. Total training cost includes all G ancestors and teachers, unique/repeated L/U exposures, simulation, prediction and failed attempts. The unified timing and G-mechanism accuracy panels are complete; mechanism-specific timing, F-mechanism accuracy and extended data-contract panels remain pending.
+
+\input{supervised_physics_design}

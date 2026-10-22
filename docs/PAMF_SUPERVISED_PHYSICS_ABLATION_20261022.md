@@ -17,7 +17,7 @@
 
 ## 严格监督的数据和预算
 
-“无半监督”在本矩阵中意味着 F **以及 G 的所有祖先**只使用 L_s，不能把没有使用 U 标签等同于没有使用 U IQ。DURA 是 TX-free/F-free 训练，但 G-LU 仍使用无标签数据，因此不属于严格监督系统。
+“无半监督”在本矩阵中意味着 F **以及 G 的所有祖先**只使用 L_s，不能把没有使用 U 标签等同于没有使用 U IQ。DURA 是 TX-free/F-free 训练，但 G-LU 仍使用无标签数据，因此不属于严格监督系统。DURA-L 仍以模拟配对／蒸馏方式训练，只是输入仅来自 L_s；本处“严格监督”指训练数据权限一致，并非改为读取 TX 标签训练恢复器。
 
 固定 F0：ManySig，源 RX 索引 1/3/4/6/8（5 台），源 day1/2/3，全部 6 TX；L_s=6300，V=27000。原 U_s=56700 保留在共同划分中，新增训练和诊断的 U IQ 使用数为 0。目标 RX0/2/5/7/9/10/11（7 台），四日，共 168000 物理包；center256、equalized1、单位 RMS。物理 ID、标签顺序与既有 VALIDATED_ONCE 契约复用，按实际存储 ID 对齐 IQ，不更改成员或标签。
 
@@ -94,3 +94,7 @@ PA 干预改变模拟发射非线性，不保证真实硬件身份标签保持�
 当前局部验证通过；发布与实际运行以新 run 的登记和独立 PID/CWD/argv/GPU/日志增长证据为准，不能把 PREPARED 写成 RUNNING。新 owner 仅在实际源 checkpoint smoke 与八结构 smoke PASS 后接管调度，旧科学 worker、CWD、参数、健康 PID 不变。相同技术指纹两次停止新提交，原产物不可覆盖；测试结果不进入参数、排队或选择性重跑。
 
 代码入口为 `experiments/cric_dura_comparison/publish_supervised_extension.py`；唯一矩阵见各 run 的 experiment.json。科学协议与数据权限不变。通用多阶段设计审批等不在项目最小流程白名单中，记为 REJECTED_EXTRA_GATE，不作为额外发布门槛。
+
+## 实际发布状态
+
+执行提交 `da8c217ba2701923255b7782bfc514f8d1591bc9` 已推送／OID核对，源L checkpoint和八结构 smoke PASS，单包传输及编译完成。24条新增F均已排队，另6组复用读出和专用时延已加入；尚无新增性能结果。当前正常handoff owner为 `20261022-phase1-T1-DURA-stop-invalid-F-control-r01`，25条有效GPU任务保持。完整证据见监督control登记的 launch_verification.json；后续使用当前runtime，不重启已退休owner。

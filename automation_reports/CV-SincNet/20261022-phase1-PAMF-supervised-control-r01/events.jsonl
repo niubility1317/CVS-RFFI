@@ -1,2 +1,3 @@
 {"at": "2026-10-22T13:19:12+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-22T13:24:43+00:00", "status": "LOCAL_VERIFIED", "note": "Local implementation/tests/review PASS; not published or launched; remote networking/outer shell approval unresolved.", "evidence": ["automation_reports/CV-SincNet/20261022-phase1-PAMF-supervised-control-r01/local_validation.json"], "row_id": null}
+{"at": "2026-10-22T14:04:34+00:00", "status": "REPLACED", "note": "Verified source smoke/25worker adoption; normal handoff reconciled to current stop-invalid-F owner.85supplement jobs preserved.", "evidence": ["automation_reports/CV-SincNet/20261022-phase1-PAMF-supervised-control-r01/launch_verification.json"], "row_id": null}

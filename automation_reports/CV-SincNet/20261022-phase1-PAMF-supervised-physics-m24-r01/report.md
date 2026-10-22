@@ -1,41 +1,23 @@
 # PAMF严格监督：SIG_TIME版本与物理结构消融24训练
 
-- run_id：`20261022-phase1-PAMF-supervised-physics-m24-r01`
-- group_id：`phase1-pamf-supervised-physics`；类别：`cvs`；阶段：`Phase1`
-- 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+当前：**QUEUED（发布已核实，尚无新增性能结果）**。执行代码提交 `da8c217ba2701923255b7782bfc514f8d1591bc9`，Git push与独立remoteOID、一次release归档传输校验、远端compile均已完成。
 
-## 目的与对照
+实际源checkpoint无query检查、八结构L_s输入／梯度与DefaultConcat首末段调用PASS。16项聚焦回归、限定P0/P1独立审查及本地SHUFFLE_TIME CUDA图捕获PASS。
 
-补齐严格不使用U的完整系统、当前预算单路SIG_TIME与物理归纳偏置对照；不改变最终native T1。
+## 矩阵与科学权限
 
-## 数据、seed与模型来源
+完整固定设置见[监督与物理消融设计](../../../docs/PAMF_SUPERVISED_PHYSICS_ABLATION_20261022.md)；逐行配置与六类seed以本目录experiment.json为准。新增8结构×3seed＝24训练；复用F15/F20各3权重加DURA-L读出，共30预测／评分行；9结构专用时延18case×5batch×5轮＝450case-round。追加85阶段任务，不重训G，不新增m5源数量扫点。
 
-实际数据契约、权限例外、完整seed角色、checkpoint来源和选择规则见experiment.json。
-逐行配置通过config_ref/resolved_config_ref定位；待补项必须在对应生命周期补齐。
+F0固定5源RX、3源日、6TX，L_s6300、V27000；U_s IQ使用0。目标7RX四日168000包，7视图全部raw/G-L预测后独立truth-last；不混入6目标RX的源数量曲线。新F纯CE＋默认sat拼接.68、LS0，无CRIC/RDrop/U/EMA；完整X3 CE复用修复F15，保留T1监督目标的F20单列。G-L仅用同契约L_s及完整L祖先，仍为TX-free/F-free恢复训练。每F从零20+own10+own20，共E50/11100，默认头联合训练。
 
-## 执行与存储
+## 实际运行证据
 
-命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
-实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
+原supervised-control-r01先完整接管25健康worker并加入全部85任务；随后由`20261022-phase1-T1-DURA-stop-invalid-F-control-r01`正常接管，当前PID1219178/CWD/argv及每worker配置均已核实。17条相同PID日志在约495秒观察中增长；新增24条F仍QUEUED，不能写作已GPU训练。18条尚未启动的DefaultConcat依赖消费者只改变执行release，原预算、配置和输出路径保持。未重复启动已退休控制器。
 
-## 结果与覆盖
+公开核验：[launch_verification.json](../20261022-phase1-PAMF-supervised-control-r01/launch_verification.json)。完整私有PID/命令/日志元数据保留在local_artifacts/PAMF_supervised_physics_20261022，不提交IQ、权重、原日志和私有runtime。原旧timing失败仍由已经完成的r02替代，不作为新失败重测。
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
-源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+## 剩余工作与交付
 
-## 交接
+截至2026-10-22 21:52香港时间的只读耗时汇总：剩余F126、完整G谱系11、预测172／评分172、专用时延2。约181.7共享worker小时的F训练在假设14至18个有效F槽位下为10.1至13.0小时；含G依赖、测试／CPU评分、独占时延与最终论文／导出的整体暂估16至24小时（香港10月23日约13:52至21:52）。新CE结构速度仍为同路径历史耗时代理；不得将共享worker小时称为独占GPU小时或将估计每小时重置。
 
-记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
-
-## 固定设计与当前状态
-
-详细设计：[监督与物理消融](../../../docs/PAMF_SUPERVISED_PHYSICS_ABLATION_20261022.md)。
-
-LOCAL_VERIFIED_NOT_PUBLISHED：15项聚焦回归与独立P0/P1审查通过；本地SHUFFLE_TIME CUDA图捕获与eager输出逐元素一致。此项不代表N607实际时延或目标结果。
-
-新增24训练／30预测／30独立评分／1时延，6个读出复用权重和raw。其余51主监督F及G-L链复用。远端发布未核实，原owner不作任何停止或改动。
-
-实际代码／配置提交 `250457d0793a4dba8bca553e056f8171ed5f4154` 已保留本地；Git 推送因网络不可达失败，remoteOID 未核实。新增实验未发布。独立审查 PASS，严格结构时延仅18case×5batch×5轮＝450case-round，不重复统一面板。
-
-用户已授权本次有界 shell 测试和 Python 发布调用，解释器测试及上游推送/OID核对已 VERIFIED。远端预检当前25条健康worker、输出根均未创建、磁盘约1703GiB；发现旧修复release缺默认拼接模块。新包包含同Git版本原增强模块，并只迁移9条未启动修复F及9条未启动预测的执行release，科学配置不变。
+IEEE实验章节已补严格监督／物理控制设置，9页PDF编译并目检无溢出；当前只公布设置，不填造新结果。完整源几何与11条件物理敏感性诊断、逐RX/TX/day、Accuracy/MacroF1、净纠错、三Fseed配对与成本在冻结评分后汇入。后续完成全部新旧科学矩阵和导出包后才结束automation1-6。
