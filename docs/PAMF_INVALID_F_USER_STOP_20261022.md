@@ -11,3 +11,11 @@ No model output is deleted or overwritten. No synthetic training-completion arti
 Preflight at 21:47 Hong Kong time found seven remaining historical workers: F13, F14, F16, F18, F19, F20 and F0 matched ordinary PL, all seed 2026092703. Eighteen valid workers were protected. Earlier F12/F17 had finished naturally before this stop. The live source controller had moved to the supervised-supplement owner; its complete resolved queue is retained.
 
 Private operational evidence is stored under `local_artifacts/stop_invalid_F_20261022/`; remote control paths and runtime state stay outside Git. Execution requires an explicit `--execute` option after the read-only preflight. Final completion must be independently checked against live process identities, CUDA process IDs, new controller state, unchanged failure counters, and continued valid-worker progress.
+
+## Execution and independent readback
+
+**VERIFIED**: at 21:48 Hong Kong time the seven remaining old rows received an explicit user stop. Independent readback at 21:48:57 found none of their PIDs alive and none in the CUDA process list. All seven were `STOPPED_BY_USER`; no excluded old row remained running.
+
+All eighteen valid workers retained their original PIDs. The replacement dispatcher was independently observed `RUNNING`, its repeated-failure stop flag remained false, and the only failure counter was the pre-existing latency-import failure. Newly dispatched valid CUDA workers demonstrated that the freed capacity was being reused. All logs, checkpoints, partial results, and old invalid scores were preserved.
+
+The local read-only monitor now follows recorded controller handovers, so a previously saved runtime pointer cannot falsely identify the retired dispatcher as the current owner. No recurring schedule or notification setting was changed.
