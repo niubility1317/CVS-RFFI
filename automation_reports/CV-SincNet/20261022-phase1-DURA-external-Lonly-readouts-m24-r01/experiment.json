@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-23：对比方法接入DURA恢复网络，查看对比性能，也安排；延续全部健康任务保护、三种子与现有配置。",
   "code": {
-    "commit": "Actual publication Git commit recorded at verified launch",
+    "commit": "117fbaecc1b2eda8080fb6503a16ce4006cc45ca",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 CVS-RFFI Py3.10/Torch2.1 FP32/TF32off CPU2",
     "cwd": "PROJECT/releases/20261023-phase1-external-DURA-control-r01",
@@ -76,7 +76,7 @@
     "local_artifact_root": "local_artifacts/external_DURA_readouts_20261023",
     "launch_command": "F:/App/miniconda3/python.exe -X utf8 -m experiments.cric_dura_comparison.publish_external_dura --repo E:/type10-7/code/worktrees/standard_ce_baselines_20261010 --output E:/type10-7/local_artifacts/external_DURA_readouts_20261023/control-r01 --previous E:/type10-7/local_artifacts/external_DURA_readouts_20261023/previous_runtime.json --ssh-config E:/type10-7/tools/n607_ssh_config --manifest E:/type10-7/local_artifacts/external_DURA_readouts_20261023/preflight.json --external-runtime E:/type10-7/local_artifacts/phase1_external_dg_aug_pl_gpu23_r3_20261019/runtime.json --count-runtime E:/type10-7/local_artifacts/phase1_dg_sourcecount6_20261021/runtime.json",
     "stop_rule": "One source actual-checkpoint smoke, then immediate handoff on PASS. At most1G-heavy/card. Preserve healthy PIDs;2 same new technical fingerprints stop launches.",
-    "current_launch_owner": "20261022-phase1-PAMF-core-control-r02",
+    "current_launch_owner": "20261023-phase1-external-DURA-control-r01",
     "launch_verification_ref": "automation_reports/CV-SincNet/20261023-phase1-external-DURA-control-r01/launch_verification.json",
     "gpu": "Existing authorized capacity only; formal timing exclusive and notGPU2/3"
   },
@@ -2130,7 +2130,7 @@
     "docs/EXTERNAL_DURA_FROZEN_COMPARISON_20261023.md",
     "516 existing models,34 shared restored-IQ caches,1548 model-readout cells;1067 inference/score/analysis jobs. No new source-count5 training.",
     "Five source-diagnostic technical-recovery jobs replace only two known failed readouts, their scores and original analysis; bad artifacts remain historical.",
-    "Local focused tests PASS; one P0/P1 review in progress; actual-checkpoint source smoke executes first at release, before handoff; performance pending."
+    "Actual publication VERIFIED; real checkpoint source-only smoke PASS;20 focused checks and one P0/P1 review PASS. Performance remains pending."
   ],
   "registered_at": "2026-10-22T14:52:27+00:00"
 }
