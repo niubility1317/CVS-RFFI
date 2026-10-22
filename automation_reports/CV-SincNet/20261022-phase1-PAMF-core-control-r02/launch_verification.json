@@ -1,0 +1,156 @@
+{
+  "status": "VERIFIED",
+  "owner": "20261022-phase1-PAMF-core-control-r02",
+  "pid": 1292720,
+  "execution_commit": "02944b236b4b7f1b6fdd1e2351e14553811632a4",
+  "controller_CWD_argv_verified": true,
+  "old_job_definitions_preserved": true,
+  "healthy_workers_adopted": 25,
+  "same_PID_log_growth": 24,
+  "log_growth_window_seconds": 184.18324279785156,
+  "GPU_compute_processes_present": true,
+  "per_GPU_own_workers": {
+    "3": 3,
+    "0": 4,
+    "1": 3,
+    "5": 3,
+    "7": 3,
+    "4": 3,
+    "2": 3,
+    "6": 3
+  },
+  "effective_counts": {
+    "COMPLETE": 458,
+    "RUNNING": 25,
+    "QUEUED": 425,
+    "FAILED": 1
+  },
+  "historical_jobs": 1117,
+  "logical_F_models": 24,
+  "new_F": 12,
+  "reused_F": 12,
+  "new_G": 0,
+  "new_prediction_rows": 21,
+  "new_score_rows": 21,
+  "new_CPU_aggregate": 1,
+  "new_jobs": 55,
+  "grouped_F_training_status": {
+    "QUEUED": 12
+  },
+  "readout_groups": {
+    "20261022-phase1-PAMF-core-mechanisms-m24-r01": {
+      "F": {
+        "QUEUED": 12
+      },
+      "predict": {
+        "QUEUED": 12
+      },
+      "score": {
+        "QUEUED": 12
+      }
+    },
+    "20261022-phase1-PAMF-core-G-L-readouts-m9-r01": {
+      "predict": {
+        "QUEUED": 9
+      },
+      "score": {
+        "QUEUED": 9
+      }
+    },
+    "20261022-phase1-PAMF-core-factorial-analysis-r01": {
+      "score": {
+        "QUEUED": 1
+      }
+    }
+  },
+  "real_checkpoint_no_query": "PASS",
+  "actual_native_missing_four_cell_smoke": {
+    "status": "PASS",
+    "real_checkpoint_no_query": true,
+    "missing_cells": [
+      {
+        "bits": "000",
+        "core": {
+          "core_A": 0.0,
+          "core_B": 0.0,
+          "core_C": 0.0
+        },
+        "native_U_enabled": false,
+        "native_EMA_enabled": false,
+        "L_forward_packets": 768,
+        "optimizer_updates": 0
+      },
+      {
+        "bits": "001",
+        "core": {
+          "core_A": 0.0,
+          "core_B": 0.0,
+          "core_C": 1.0
+        },
+        "native_U_enabled": true,
+        "native_EMA_enabled": true,
+        "L_forward_packets": 768,
+        "optimizer_updates": 0
+      },
+      {
+        "bits": "010",
+        "core": {
+          "core_A": 0.0,
+          "core_B": 1.0,
+          "core_C": 0.0
+        },
+        "native_U_enabled": false,
+        "native_EMA_enabled": false,
+        "L_forward_packets": 768,
+        "optimizer_updates": 0
+      },
+      {
+        "bits": "100",
+        "core": {
+          "core_A": 1.0,
+          "core_B": 0.0,
+          "core_C": 0.0
+        },
+        "native_U_enabled": false,
+        "native_EMA_enabled": false,
+        "L_forward_packets": 768,
+        "optimizer_updates": 0
+      }
+    ],
+    "source_role": "L_s",
+    "U_IQ_reads_in_smoke": 0,
+    "target_reads": 0,
+    "head_fit_updates": 0,
+    "real_training_budgets_unchanged": true
+  },
+  "focused_tests": 11,
+  "independent_review": "Original candidate PASS and one targeted smoke-API issue re-review PASS",
+  "initial_failed_release": "r01 failed before handoff; retained. No scientific jobs started by failed owner.",
+  "target_results": "PENDING; not read for grouping or priority",
+  "known_prior_failure": "Only historical uniform-timing-r01 import failure; already superseded by completed timing-r02. No scientific job retraining.",
+  "paper": {
+    "pages": 10,
+    "compiled": true,
+    "visual_QA": true,
+    "performance_tables": "PENDING"
+  },
+  "scope": {
+    "main": [
+      "111",
+      "011",
+      "101",
+      "110"
+    ],
+    "factorial": "8 cells x3 F seeds",
+    "appendix": "Previously published granular diagnostics retained; no healthy job cancelled",
+    "deferred": "Unpublished15 fine controls and associated150 timing case-rounds; no new fine training solely for source geometry",
+    "future_fairness": "PL x G-L51 and external common G-L24 readouts remain prospective"
+  },
+  "hourly_monitor": {
+    "status": "VERIFIED",
+    "automation": "1-6",
+    "hourly": true,
+    "unchanged_quiet": true,
+    "compact_checker_core_scope": "PASS"
+  }
+}

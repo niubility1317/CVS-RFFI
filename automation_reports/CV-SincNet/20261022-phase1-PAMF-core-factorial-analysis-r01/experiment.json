@@ -26,7 +26,7 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-22要求把 PAMF 细消融统合为两至三个核心机制，全面分析并安排发布。三模型种子、保留全部健康任务，复用已有权重与数据。",
   "code": {
-    "commit": "SET_AT_COMMIT",
+    "commit": "02944b236b4b7f1b6fdd1e2351e14553811632a4",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 CVS-RFFI Py3.10/Torch2.1 FP32/TF32off CPU2",
     "cwd": "PROJECT/releases/20261022-phase1-PAMF-core-control-r02",
@@ -236,7 +236,8 @@
     "55 appended jobs =12 F +21 predict +21 score +1 CPU factorial; old jobs preserved. Fine legacy rows become appendix diagnostics.",
     "Main table111/011/101/110; all8 cells predeclared, main and interaction effects computed per seed. Native T1 As/U exception retained; matched Sup/ordinaryPL and strict architecture controls remain separately registered.",
     "LOCAL_VERIFIED; publication, actual checkpoint smoke and handoff verification pending.",
-    "Recovery r02: initial r01 smoke failed before handoff; fixed outer-forward API only.11 focused tests PASS, including real-native smoke regression; targeted issue review PASS. Scientific matrix unchanged."
+    "Recovery r02: initial r01 smoke failed before handoff; fixed outer-forward API only.11 focused tests PASS, including real-native smoke regression; targeted issue review PASS. Scientific matrix unchanged.",
+    "VERIFIED release 20261022-phase1-PAMF-core-control-r02; real checkpoint and four native smoke cells PASS;55 appended jobs, healthy PID/CWD/config/log-growth checked. Performance pending."
   ],
   "research_plan": null,
   "runtime_evidence": {

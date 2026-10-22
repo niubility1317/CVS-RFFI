@@ -31,3 +31,7 @@ Two supervised objectives and one complete native selective-SSL group; fixed CE 
 ## 发布前接口修复
 
 r01 在健康任务接管之前退出，真实 checkpoint 源检查已 PASS；新增分组 smoke 直接调用内部方法，未触发 ordinary IQ 捕获。已本地复现，改成原训练外层调用；11 项聚焦测试及一次原问题定点复核 PASS。科学训练不变，r02 使用新不可覆盖目录，旧失败产物保留。
+
+## 实际发布核实
+
+RUNNING；执行 commit `02944b236b4b7f1b6fdd1e2351e14553811632a4`。55 新任务与不可覆盖输出已登记，真实 checkpoint／四组合实际前向反向 PASS。接管 25 条健康 worker，24 条相同 PID 日志跨 184.2 秒增长。旧任务定义完整保留。新增 F 当前 {"QUEUED": 12}；不宣称未完成性能。详见本 owner 的 launch_verification.json／scope_status.md。
