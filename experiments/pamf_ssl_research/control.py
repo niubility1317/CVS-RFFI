@@ -12,6 +12,7 @@ from .hard_pl import METHODS as HARD_METHODS
 from .hard_pl_early import METHODS as EARLY_METHODS
 from .hard_pl_guard import METHODS as GUARD_METHODS
 from .hard_pl_joint import METHODS as JOINT_METHODS
+from .hard_pl_complement import METHODS as COMP_METHODS
 
 
 def capacity(gpu, pending_pids=()):
@@ -47,6 +48,9 @@ def pending_gpu_pids(rt, methods, seed, active=()):
     elif methods == JOINT_METHODS:
         from .hard_pl_joint import reserved_predecessor_pids
         pending.update(reserved_predecessor_pids(rt, seed))
+    elif methods == COMP_METHODS:
+        from .hard_pl_complement import reserved_predecessor_pids
+        pending.update(reserved_predecessor_pids(rt, seed))
     return pending
 
 
@@ -54,9 +58,9 @@ def validate_rows(rows, methods=METHODS, gpu_by_seed=None):
     methods = tuple(methods)
     gpu_by_seed = GPU_BY_SEED if gpu_by_seed is None else gpu_by_seed
     from .view_anchor import RESOURCE_GPU_BY_SEED
-    if methods not in (METHODS, ('VIEWANCHOR',), ('PAIREDU',), ('UCRIC',), ('UMIX',), ('UGP',), ('UCMR',), ('UDAP',), ('UVB',), HARD_METHODS, EARLY_METHODS, GUARD_METHODS, JOINT_METHODS, ('HPL_NO_UAS',), ('HPL_LS2',), ('HPL_MS2',), ('HPL_NAMS2',)):
+    if methods not in (METHODS, ('VIEWANCHOR',), ('PAIREDU',), ('UCRIC',), ('UMIX',), ('UGP',), ('UCMR',), ('UDAP',), ('UVB',), HARD_METHODS, EARLY_METHODS, GUARD_METHODS, JOINT_METHODS, COMP_METHODS, ('HPL_NO_UAS',), ('HPL_LS2',), ('HPL_MS2',), ('HPL_NAMS2',)):
         raise ValueError('A declared complete three-seed matrix is required')
-    if gpu_by_seed != GPU_BY_SEED and (methods not in (('VIEWANCHOR',),('PAIREDU',),('UCRIC',),('UMIX',),('UGP',),('UCMR',),('UDAP',),('UVB',),HARD_METHODS,EARLY_METHODS,GUARD_METHODS,JOINT_METHODS,('HPL_NO_UAS',),('HPL_LS2',),('HPL_MS2',),('HPL_NAMS2',)) or gpu_by_seed != RESOURCE_GPU_BY_SEED):
+    if gpu_by_seed != GPU_BY_SEED and (methods not in (('VIEWANCHOR',),('PAIREDU',),('UCRIC',),('UMIX',),('UGP',),('UCMR',),('UDAP',),('UVB',),HARD_METHODS,EARLY_METHODS,GUARD_METHODS,JOINT_METHODS,COMP_METHODS,('HPL_NO_UAS',),('HPL_LS2',),('HPL_MS2',),('HPL_NAMS2',)) or gpu_by_seed != RESOURCE_GPU_BY_SEED):
         raise ValueError('Only the declared three-card seed allocation is supported')
     expected = {(seed, method) for seed in SEEDS for method in methods}
     if (len(rows) != len(expected) or {(r['model_seed'], r['method']) for r in rows} != expected
@@ -69,14 +73,14 @@ def run(rt):
     methods = tuple(rt.get('methods', METHODS))
     gpu_by_seed = {int(seed): gpu for seed, gpu in rt.get('gpu_by_seed', GPU_BY_SEED).items()}
     validate_rows(rt['rows'], methods, gpu_by_seed)
-    smoke_gpu = gpu_by_seed[SEEDS[0]]
+    smoke_seed=SEEDS[0];smoke_gpu = gpu_by_seed[smoke_seed];smoke_config=rt['runtime_file']
     worker = 'experiments.pamf_ssl_research.' + {
         ('VIEWANCHOR',):'view_anchor_worker',('PAIREDU',):'paired_u_worker',('UCRIC',):'u_cric_worker',
         ('UMIX',):'u_mixstyle_worker',('UGP',):'u_gradprotect_worker',('UCMR',):'u_cmr_worker',
         ('UDAP',):'u_dualanchor_worker',('UVB',):'u_viewbalance_worker',HARD_METHODS:'hard_pl_worker',
         ('HPL_NO_UAS',):'hard_pl_no_uas_worker',('HPL_LS2',):'hard_pl_ls_worker',('HPL_MS2',):'hard_pl_mixstyle_worker',
-        ('HPL_NAMS2',):'hard_pl_no_as_mixstyle_worker',EARLY_METHODS:'hard_pl_early_worker',GUARD_METHODS:'hard_pl_guard_worker',JOINT_METHODS:'hard_pl_joint_worker'}.get(methods,'worker')
-    process_limit = 3 if methods in (('UCRIC',),('UMIX',),('UGP',),('UCMR',),('UDAP',),('UVB',),HARD_METHODS,EARLY_METHODS,GUARD_METHODS,JOINT_METHODS,('HPL_NO_UAS',),('HPL_LS2',),('HPL_MS2',),('HPL_NAMS2',)) else 2
+        ('HPL_NAMS2',):'hard_pl_no_as_mixstyle_worker',EARLY_METHODS:'hard_pl_early_worker',GUARD_METHODS:'hard_pl_guard_worker',JOINT_METHODS:'hard_pl_joint_worker',COMP_METHODS:'hard_pl_complement_worker'}.get(methods,'worker')
+    process_limit = 3 if methods in (('UCRIC',),('UMIX',),('UGP',),('UCMR',),('UDAP',),('UVB',),HARD_METHODS,EARLY_METHODS,GUARD_METHODS,JOINT_METHODS,COMP_METHODS,('HPL_NO_UAS',),('HPL_LS2',),('HPL_MS2',),('HPL_NAMS2',)) else 2
     root = Path(rt['run_root'])
     root.mkdir(parents=True, exist_ok=False)
     logs = root / 'logs'
@@ -133,21 +137,29 @@ def run(rt):
         elif methods == JOINT_METHODS:
             from .hard_pl_joint import slot_ready as joint_slot_ready
             predecessor_ready = joint_slot_ready(rt,SEEDS[0])
-        pending = pending_gpu_pids(rt,methods,SEEDS[0])
+        elif methods == COMP_METHODS:
+            from .hard_pl_complement import smoke_slot,slot_ready as comp_slot_ready
+            selected=smoke_slot(rt,capacity);predecessor_ready=selected is not None
+            if selected:smoke_seed,smoke_gpu=selected
+        pending = pending_gpu_pids(rt,methods,smoke_seed)
         apps, free = capacity(smoke_gpu,pending) if pending else capacity(smoke_gpu)
         if predecessor_ready and apps < process_limit and free >= 10000:
             break
-        if methods not in (('VIEWANCHOR',),('PAIREDU',),('UCRIC',),('UMIX',),('UGP',),('UCMR',),('UDAP',),('UVB',),HARD_METHODS,EARLY_METHODS,GUARD_METHODS,JOINT_METHODS,('HPL_NO_UAS',),('HPL_LS2',),('HPL_MS2',),('HPL_NAMS2',)):
+        if methods not in (('VIEWANCHOR',),('PAIREDU',),('UCRIC',),('UMIX',),('UGP',),('UCMR',),('UDAP',),('UVB',),HARD_METHODS,EARLY_METHODS,GUARD_METHODS,JOINT_METHODS,COMP_METHODS,('HPL_NO_UAS',),('HPL_LS2',),('HPL_MS2',),('HPL_NAMS2',)):
             raise RuntimeError('Smoke GPU capacity changed; no workload modified')
         state.update(status='WAITING_FOR_SMOKE_GPU', predecessor_GPU_work_ready=predecessor_ready, observed_apps=apps,
                      observed_free_MiB=free, updated_unix=time.time())
         write(root / 'state.json', state, exclusive=False)
         time.sleep(20)
+    if methods == COMP_METHODS:
+        smoke_config=str(root/'smoke_runtime.json');selected=next(r for r in rt['rows'] if r['model_seed']==smoke_seed)
+        write(smoke_config,dict(rt,rows=[selected]+[r for r in rt['rows'] if r is not selected],runtime_file=smoke_config))
+        env['CUDA_VISIBLE_DEVICES']=str(smoke_gpu);state.update(smoke_model_seed=smoke_seed,smoke_gpu=smoke_gpu)
     state.update(status='SMOKE', updated_unix=time.time())
     write(root / 'state.json', state, exclusive=False)
     with (logs / 'smoke.log').open('x') as stream:
         result = subprocess.run([sys.executable, '-u', '-m', worker,
-            'smoke', '--config', rt['runtime_file']], cwd=rt['release_root'], env=env,
+            'smoke', '--config', smoke_config], cwd=rt['release_root'], env=env,
             stdin=subprocess.DEVNULL, stdout=stream, stderr=subprocess.STDOUT)
     if result.returncode or read(root / 'smoke.json').get('status') != 'PASS':
         screen=root/'source_style_identity.json'
@@ -226,13 +238,15 @@ def run(rt):
                     continue
                 if methods == JOINT_METHODS and not joint_slot_ready(rt,row['model_seed']):
                     continue
+                if methods == COMP_METHODS and not comp_slot_ready(rt,row['model_seed']):
+                    continue
                 apps, free = capacity(gpu,pending_gpu_pids(rt,methods,row['model_seed'],active.values()))
                 if apps >= process_limit or free < 10000 or sum(v['gpu'] == gpu for v in active.values()) >= 2:
                     continue
                 item = launch('row', row['row_config'], row_id, gpu)
                 active[row_id] = item
                 state['jobs'][row_id] = dict(status='RUNNING', pid=item['child'].pid, gpu=gpu, log=item['log'])
-        prior_scorer_finished = (methods not in (('PAIREDU',),('UCRIC',),('UMIX',),('UGP',),('UCMR',),('UDAP',),('UVB',),HARD_METHODS,EARLY_METHODS,GUARD_METHODS,JOINT_METHODS,('HPL_NO_UAS',),('HPL_LS2',),('HPL_MS2',),('HPL_NAMS2',)) or read(rt['prior_score_owner_state'])['status']
+        prior_scorer_finished = (methods not in (('PAIREDU',),('UCRIC',),('UMIX',),('UGP',),('UCMR',),('UDAP',),('UVB',),HARD_METHODS,EARLY_METHODS,GUARD_METHODS,JOINT_METHODS,COMP_METHODS,('HPL_NO_UAS',),('HPL_LS2',),('HPL_MS2',),('HPL_NAMS2',)) or read(rt['prior_score_owner_state'])['status']
                                  in ('ALL_SCORED','INCOMPLETE_TECHNICAL_FAILURE'))
         if score is None and prior_scorer_finished:
             pending = next((r for r in rt['rows'] if state['jobs'][r['row_id']]['status'] == 'PREDICTIONS_COMPLETE'), None)

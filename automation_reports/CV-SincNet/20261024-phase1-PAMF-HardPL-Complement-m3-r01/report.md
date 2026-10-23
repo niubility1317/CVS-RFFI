@@ -1,0 +1,17 @@
+# 剂量匹配的互补伪标签监督
+
+LOCAL_VERIFIED_NOT_LAUNCHED。57项相关检查及一次独立P0/P1PASS；真实原E20检查为首个释放且匹配seed/card的source-only步骤，通过即重载原父权重继续，不新增审批。
+
+固定HPL_E20_JOINT_COMP6G，seed2026092701/02/03，原同seed F21 E20独立own native10+20到E50/11100、13L37LU。只用原E20，严格核实实际source角色/物理ID契约、scratch继承、cfg/payload/默认头；不加载原E30或前一候选权重。沿用F0 VALIDATED_ONCE L6300/U56700/V27000，U TX隐藏，V无参数/归一化/EMA/原型/头更新，不读target训练。N607普通账户CVS-RFFI、FP32/TF32off、CPU2/worker，CWD PROJECT/releases/20261024-phase1-PAMF-HardPL-Complement-m3-r01；完整指令、路径、GPU、stop rule及预期产物在experiment.json。一个实际代码commit、一个archive一次传输比较、远端compile、独立PID/CWD/完整命令/GPU/日志增长确认，现有健康任务保持。
+
+源依据和固定设计见原Joint run的source_geometry_trajectory_A/B/C及complementary_U_followup_design.json。固定同源U960/V720及原E20共同伪标签/门控、只读CPU诊断显示浅中层改善不一定传到部署joint；Joint直接对比使源融合类间比例约0.771到0.804、RX/总散度约0.0859到0.0663。无签名视图仍来自同IQ/完整高可信伪标签，但原E20既有头U一致率约94-96%、CE.17-.22，完整视图仅.003-.004；参考响应交换则CE仍低。这里是机制诊断，不是U真实正确率、因果去RX或target成绩；历史测试暴露如实保留。本设计在读取GuardNAMS6G/Joint新target分数前固定。
+
+保持Joint6G的.95门控/weight6/LS.01、六U共享同伪类跨源RX style、无U物理信道、ordinary/raw RDrop1、AsKL0、浅中层CRIC.1、actualjoint CRIC.05、完整L梯度guard/native CENTER_UNITS AdamW/物理clip5/decay和默认头原位联合训练。唯一新因素是将ordinaryU CE系数.5中的.25转给同pass实际joint160减sequence_pool实际输出的CE，普通CE系数变.25、新maskedCE系数.25，总CE分母1.25和全部原KL/对比系数保持：newU=oldJointU+6*(.25/1.25)*(maskedCE-ordinaryCE)。两项CE均LS.01、同accepted mask/全batch分母、前两ordinaryU pass平均。保留完整签名部署和原完整视图训练，不能称删除签名网络。
+
+复用原两ordinaryU已有graph，只增加两次既有classify_features调用，没有新增骨干/teacher前向或新头。临时同pass sequence_pool hook准确退出，h-s的maskedCE对signature-only参数梯度为零、对core/reference及同一默认W有效；joint辅助仍训练signature。整个新U目标仅由完整当前L anchor消费一次，分组投影和范数帽1保持，不重复L/CE梯度，不承诺Adam步/L损失/target单调。首个真实E20 smoke核实这组梯度、实际保护后参数梯度等于显式期望、L768/U1536/额外headpacket512/rawAs128/Uphysical0/LPractical64、共享style/原joint和临时hook退出；探针丢弃后正式重载同seed原E20。
+
+每模型新增6660步/U1701000/学生U骨干10206000，新增既有head调用13320/packet-headviews3402000；累计U/teacher2097900、学生U骨干10602900，额外head视图另计。rawAs850500/style39960/sharedplan6660/jointcapture13320保持。两段实际状态和父/增量/累计墙钟必须报告，额外head/backward并非免费或相同FLOP；共享GPU墙钟不等独占小时。
+
+GPU5/6/7固定seed2701/02/03，每卡最多2本任务/含外部最多3进程/派发前空闲>=10000MiB。新row只接替同seed GuardNAMS全部GPU预测完成的卡位，并要求对应Joint已派发；两侧CUDA前pending PID均预留。首个释放且容量足够的seed/card先用其自己的原E20 smoke，临时smoke_runtime首row对齐该seed，正式三row映射不变。CPU唯一scorer排Joint终态后。两个相同技术失败停止新增派发、保留健康任务和产物，不按target停训、调参、重排或选择性重跑。
+
+固定最终E50学生，逐row自动raw和固定DURA v1.0各clean+六practical、168000/view，三seed共42cell；整row预测固定后独立truth-last。报告每seed/场景/TX/RX/day/RX×day、MacroF1、净纠错/损伤、U接受曝光及实际成本。复用完整同读出F20/F21；原raw目标clean同时>=+1pp、六景同时严格>+1.5pp，DURA参考不能替代。G固定R69/266951、FP32/TF32off/reuse+graph/nativeFalse，G原LU无TX标签/F-free权限保持，不参与新F训练、不套旧F50时延。goal ACTIVE。

@@ -1,0 +1,14 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "focused_tests": 57,
+  "independent_review": {
+    "status": "PASS",
+    "review_count": 1,
+    "reviewer": "/root/ssl_p0p1_review",
+    "scope": "Only P0/P1 defects directly making the next Complement run wrong,unauthorized,destructive,unlaunchable or unable to produce legal predictions",
+    "unresolved_P0_P1_findings": [],
+    "finding": "CE dose reallocation,same-pass scaled signature subtraction,fullL guard integration and temporary hooks are correct;first-ready seed/card mapping,starting PID reservation and scorer chain match the declared resource scope."
+  },
+  "real_checkpoint_smoke": "PENDING first released matching seed/card source-only realE20 proof",
+  "new_GuardNAMS_or_Joint_target_scores_read": false
+}

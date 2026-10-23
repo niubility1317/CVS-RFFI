@@ -241,3 +241,8 @@ HPL2 三seed双读出七景42cell已全部独立评分。为符合逐row自动�
 ## HPL_E20_LS6G 完整方法目标结果
 
 原注册三seed默认头/raw及固定DURA七景42cell、源新19980步全部核实。raw clean=85.101587%；DURA-LU clean=85.096627%；raw six_mean=69.936045%；DURA-LU six_mean=78.237996%；raw数值门槛未通过，ACTIVE。原六行矩阵继续，不把单方法完成称为全实验完成，不改冻结配方/父源/种子/顺序。
+
+
+## 固定源证据后的剂量匹配互补监督
+
+`20261024-phase1-PAMF-HardPL-Complement-m3-r01` 保留Joint6G三seed/原E20+30/E50/11100/.95/weight6/全部原RDrop及joint/浅中层/style/完整Lguard，只将ordinaryCE系数.5中的.25转给同pass joint减实际signature的CE，总分母1.25不变，部署完整签名和默认头不变。源C无签名视图CE.17-.22而完整仅.003-.004，暴露较弱路径；源诊断不是U真值或target收益。57检查与一次P0P1PASS，真实原E20检查首个释放匹配seed/card通过即重载继续，原三卡映射/2task上限保持，接替GuardNAMS并保留Joint。新增2既有head调用/步、无新骨干/teacher/头/推理参数；完整3seed raw+固定DURA七景42cell及原双raw目标保持。未读取GuardNAMS/Joint新target分数；goal ACTIVE。

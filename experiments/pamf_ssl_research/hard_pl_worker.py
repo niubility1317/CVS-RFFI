@@ -93,6 +93,16 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
                     or any(h.shape!=(256,160) or h.grad is None or not bool(torch.isfinite(h.grad).all())
                         or float(h.grad.norm())<=0 for h in obj.smoke_joint_features)):
                     raise ValueError('Actual U deployed joint features/signature gradients or original forward budget absent')
+            if c.get('hard_pl_complement'):
+                complement=state['U_complement'];g=obj.smoke_complement_gradients
+                if (complement['calls']!=1 or complement['extra_head_calls']!=2 or complement['extra_head_packet_views']!=512
+                    or complement['extra_backbone_forwards'] or complement['teacher_or_L_head_calls'] or complement['new_head']
+                    or complement['persistent_hooks'] or not complement['full_deployment_signature_retained']
+                    or complement['CE_dose_normalizer']!=1.25 or obj.complement_active
+                    or g['signature']>1e-7 or g['head']<=0 or g['core']<=0
+                    or len(obj.smoke_complement_features)!=2 or any(h.shape!=(256,160) or h.grad is None
+                        or not bool(torch.isfinite(h.grad).all()) or float(h.grad.norm())<=0 for h in obj.smoke_complement_features)):
+                    raise ValueError('Same-head complementary CE dose/bypass gradient or actual head-view budget differs')
             checked.append(dict(method=row['method'],model_seed=c['model_seed'],parent_epoch=parent_epoch,parent_updates=parent_epoch*222,L_forward_packets=768,
                 U_seen=256,U_accepted=state['accepted'],student_U_views=state['student_views'],
                 physical_U_generated=state['physical_seen'],physical_student_views=state['physical_student_views'],
@@ -110,6 +120,9 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
                 checked[-1].update(U_joint_contrast=state['U_joint_contrast'],
                     U_joint_signature_gradient_norm=obj.smoke_joint_signature_gradient,
                     joint160_gradient=True,joint_feature_wrapper_removed=True)
+            if c.get('hard_pl_complement'):
+                checked[-1].update(U_complement=state['U_complement'],complementary_gradient_norms=obj.smoke_complement_gradients,
+                    no_signature_masked_gradient=True,existing_core_and_head_masked_gradient=True,CE_total_dose_unchanged=True)
         del model,obj,holder,payload,ctx;gc.collect();torch.cuda.empty_cache()
     write(Path(rt['run_root'])/'smoke.json',dict(status='PASS',methods=checked,target_reads=0,U_truth_reads=0,
         probe_updates_discarded=True,formal_reload_original_parent_epoch=parent_epoch,
