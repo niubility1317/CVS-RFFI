@@ -1,0 +1,53 @@
+{
+  "status": "FIXED_SOURCE_HYPOTHESIS_NOT_IMPLEMENTED",
+  "recipe": {
+    "start_epoch": 31,
+    "parameter_groups": [
+      "t2",
+      "cls_head",
+      "other"
+    ],
+    "t2_name_contains": ".t2.",
+    "classifier_name_contains": ".cls_head.",
+    "anchors": [
+      "original_complete_T1_L",
+      "mean_true_label_CE_of_existing_two_raw_L_forwards"
+    ],
+    "views": [
+      "ordinary_noise",
+      "physical_practical"
+    ],
+    "exact_original_half_mask": true,
+    "full_U_batch_denominator": true,
+    "original_L_and_weighted_U_scalar_losses_unchanged": true,
+    "project_each_view_before_combination": true,
+    "U_projection": "closest_Euclidean_vector_with_nonnegative_dot_to_both_anchors",
+    "solver": "enumerate_none_first_second_both_active_and_zero_choose_closest_feasible",
+    "both_active_Gram_pseudoinverse_rtol": 1e-12,
+    "normalized_feasibility_tolerance": 1e-10,
+    "anchor_squared_norm_floor": 1e-12,
+    "tiny_either_anchor_drop_U": true,
+    "projected_view_squared_norm_floor": 1e-12,
+    "nonzero_view_norm_to_full_L": 0.5,
+    "missing_view_budget_not_redistributed": true,
+    "normalization_can_increase_or_decrease_view_magnitude": true,
+    "numerical_infeasible_after_cast_drop_view": true,
+    "extra_student_forwards": 0,
+    "new_inference_parameters": 0,
+    "G_training_reads": 0,
+    "no_higher_order_gradient": true
+  },
+  "parent": "original same-seed RXPSM E30",
+  "incremental_epochs": 20,
+  "total_epochs": 50,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "readouts": [
+    "raw",
+    "DURA-LU"
+  ],
+  "primary_goal": "raw clean>=+1pp andsix>+1.5pp againstboth F20/F21"
+}

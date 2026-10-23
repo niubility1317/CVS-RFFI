@@ -121,3 +121,8 @@ PAIREDU三seed已在各自GPU5/6/7实际续训，真实E30 no-query smoke和配�
 ## 双锚保护三seed已实际运行
 
 `20261023-phase1-PAMF-U-DualAnchor-m3-r01`执行commit `51e4ccfc45a77d7e39c387e1157f43faf05365e8`；102项检查／一次P0/P1审查／真实原E30 source-only smoke均PASS。raw CE0.171661，t2双边界、默认头raw边界、其余full-L边界均实际生效，真实参数梯度与预定组合一致，L768／U256／单次EMA／无教师梯度正确；probe丢弃，正式三seed重新加载原E30。三个PID／CWD／命令／实际GPU和完整step前缀增长已独立核验，每卡双锚＋CMR共两个本任务worker，其他owner保持，新版尚未访问目标；固定E50、raw＋同一DURA七景与独立评分继续。原goal ACTIVE。
+
+
+## 原E20视图梯度与下一条固定平衡方案
+
+原F20 L-only E20与RXPSM E20、三seed各4批只读CPU源诊断，24次中16次两个U对raw真实CE作用异号；physical梯度约ordinary中层5倍／头8至9.5倍，合并后9次仍隐藏负分支。没有目标／U真值／V或持久状态更新；两起点均有此现象，不据此更换原E30父。下一条`20261023-phase1-PAMF-U-ViewBalance-m3-r01`固定同RXPSM E30+20，原输入与scalar损失保持，将两个U贡献分别双锚投影，每个非零方向归一到0.5full-L范数；可放大亦可缩小，总U≤L，无新增F前向／头／推理参数。当前PLANNED，待实现／检查／一次审查，接CMR释放GPU槽，与UDAP每卡各一条；CPU评分在UDAP后。方法在CMR／UDAP目标成绩读取前固定，原goal ACTIVE。

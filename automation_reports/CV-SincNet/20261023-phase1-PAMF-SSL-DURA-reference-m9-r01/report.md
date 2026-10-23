@@ -44,3 +44,6 @@ ANALYZED：九个新F模型的raw复用和固定DURA读出均已完成七景独�
 
 
 新增 source_raw_gradient_diagnostic.md：只读CPU固定24批发现full-L投影后仍12次raw真实CE负内积，另L-only频谱干预有TX交互而暂缓。下一条双锚保护据此固定，尚未实现／发布；UGP／CMR健康任务及原目标不变。
+
+
+新增E20源视图贡献诊断见source_view_gradient_diagnostic.md／JSON；24次中16次两个U对raw参考作用异号，物理分支中层／头范数占优。不是目标因果证明；两个起点均有，保留原E30父。下一条UVB只按源证据固定分别投影及每视图半个L范数预算，当前PLANNED。
