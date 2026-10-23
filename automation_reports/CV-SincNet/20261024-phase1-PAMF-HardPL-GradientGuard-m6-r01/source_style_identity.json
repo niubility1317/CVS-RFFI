@@ -1,0 +1,73 @@
+{
+  "status": "PASS",
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "samples": 720,
+      "accepted": 661,
+      "accepted_raw_pseudo_correct": 661,
+      "accepted_raw_precision_percent": 100.0,
+      "style_eligible": 661,
+      "same_true_TX_pairs": 661,
+      "true_TX_pair_agreement_percent": 100.0,
+      "accepted_styled_prediction_correct": 661,
+      "accepted_styled_prediction_accuracy_percent": 100.0,
+      "accepted_prediction_changed": 0,
+      "style_applied": {
+        "time_down": 661,
+        "t2.pool": 661
+      },
+      "scientific_rule_pass": true
+    },
+    {
+      "model_seed": 2026092702,
+      "samples": 720,
+      "accepted": 665,
+      "accepted_raw_pseudo_correct": 663,
+      "accepted_raw_precision_percent": 99.69924812030075,
+      "style_eligible": 665,
+      "same_true_TX_pairs": 661,
+      "true_TX_pair_agreement_percent": 99.3984962406015,
+      "accepted_styled_prediction_correct": 663,
+      "accepted_styled_prediction_accuracy_percent": 99.69924812030075,
+      "accepted_prediction_changed": 0,
+      "style_applied": {
+        "time_down": 665,
+        "t2.pool": 665
+      },
+      "scientific_rule_pass": true
+    },
+    {
+      "model_seed": 2026092703,
+      "samples": 720,
+      "accepted": 665,
+      "accepted_raw_pseudo_correct": 664,
+      "accepted_raw_precision_percent": 99.84962406015038,
+      "style_eligible": 665,
+      "same_true_TX_pairs": 663,
+      "true_TX_pair_agreement_percent": 99.69924812030075,
+      "accepted_styled_prediction_correct": 664,
+      "accepted_styled_prediction_accuracy_percent": 99.84962406015038,
+      "accepted_prediction_changed": 0,
+      "style_applied": {
+        "time_down": 665,
+        "t2.pool": 665
+      },
+      "scientific_rule_pass": true
+    }
+  ],
+  "rule": "Each fixed seed: accepted raw V pseudo precision>=99%,true TX agreement of eligible same-pseudo cross-RX pairs>=99%,each actual style level applied>0;no threshold on styled classifier accuracy.",
+  "source_parent_epoch": 20,
+  "model_updates": 0,
+  "normalization_updates": 0,
+  "EMA_updates": 0,
+  "head_fit_updates": 0,
+  "U_truth_reads": 0,
+  "target_reads": 0,
+  "selection_seed": 2026102401,
+  "style_seed": "model_seed+20261024",
+  "both_style_levels_forced_in_diagnostic": true,
+  "interpretation": "Source pair identity diagnostic only.Frozen styled prediction errors do not prove wrong raw pseudo labels or invalid augmentation;no target accuracy claim.",
+  "reused_from_same_original_E20": true,
+  "gradient_guard_does_not_change_frozen_pair_screen": true
+}

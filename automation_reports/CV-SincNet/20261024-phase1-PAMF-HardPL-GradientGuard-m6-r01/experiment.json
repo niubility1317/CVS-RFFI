@@ -393,11 +393,11 @@
   ],
   "registered_at": "2026-10-23T20:16:12.123696+00:00",
   "launch_status": {
-    "status": "VERIFIED_WAITING_FOR_E20_SLOT",
-    "evidence": "queue_verification.json",
-    "source_smoke": "PENDING_FIRST_AVAILABLE_GPU_STEP",
-    "actual_GPU_workers": 0,
-    "queued_rows": 6
+    "status": "VERIFIED_GUARDED_LS_RUNNING_SUPERVISED_ARM_QUEUED",
+    "evidence": "source_activation.json",
+    "source_smoke": "PASS",
+    "actual_GPU_workers": 3,
+    "queued_rows": 3
   },
   "reporting_plan": {
     "complete_HPL2_early_readout": {

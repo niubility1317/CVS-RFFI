@@ -1,0 +1,69 @@
+{
+  "status": "ANALYZED_COMPLETE_METHOD",
+  "rows": [
+    {
+      "view": "clean",
+      "count": 504000,
+      "repairs": 831,
+      "damage": 674,
+      "net": 157,
+      "accuracy_delta_pp": 0.03115079365079365
+    },
+    {
+      "view": "practical_high",
+      "count": 504000,
+      "repairs": 35520,
+      "damage": 18936,
+      "net": 16584,
+      "accuracy_delta_pp": 3.2904761904761903
+    },
+    {
+      "view": "practical_mid",
+      "count": 504000,
+      "repairs": 45005,
+      "damage": 22898,
+      "net": 22107,
+      "accuracy_delta_pp": 4.3863095238095235
+    },
+    {
+      "view": "practical_low_suburban",
+      "count": 504000,
+      "repairs": 53565,
+      "damage": 27568,
+      "net": 25997,
+      "accuracy_delta_pp": 5.158134920634921
+    },
+    {
+      "view": "practical_high_urban",
+      "count": 504000,
+      "repairs": 49175,
+      "damage": 21869,
+      "net": 27306,
+      "accuracy_delta_pp": 5.417857142857143
+    },
+    {
+      "view": "practical_mid_urban",
+      "count": 504000,
+      "repairs": 99497,
+      "damage": 36919,
+      "net": 62578,
+      "accuracy_delta_pp": 12.416269841269841
+    },
+    {
+      "view": "practical_low_urban",
+      "count": 504000,
+      "repairs": 130630,
+      "damage": 47914,
+      "net": 82716,
+      "accuracy_delta_pp": 16.41190476190476
+    },
+    {
+      "view": "six_mean",
+      "count": 3024000,
+      "repairs": 413392,
+      "damage": 176104,
+      "net": 237288,
+      "accuracy_delta_pp": 7.8468253968253965
+    }
+  ]
+}

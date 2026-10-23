@@ -410,6 +410,21 @@
       "target_reads": 0,
       "U_truth_reads": 0,
       "selection_changed": false
+    },
+    "HPL_E20_LS2": {
+      "status": "VERIFIED_FULL_SOURCE_V",
+      "source_epoch": 50,
+      "samples_per_seed": 27000,
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "reference": "source_pseudo_quality_E50_HPL_E20_LS2.json",
+      "model_or_threshold_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0,
+      "selection_changed": false
     }
   },
   "reporting_plan": {
@@ -472,5 +487,25 @@
     "reference": "complete_method_reporting_plan.json",
     "all_three_seeds_and_both_seven_views_required": true,
     "whole_run_complete": false
+  },
+  "early_completed_methods": {
+    "HPL_E20_LS2": {
+      "status": "ANALYZED_COMPLETE_METHOD",
+      "models": 3,
+      "completed_readout_view_cells": 42,
+      "raw_method_goal_met": false,
+      "result_ref": "HPL_E20_LS2_target_results.md",
+      "summary_ref": "HPL_E20_LS2_target_summary.json",
+      "source_ref": "HPL_E20_LS2_source_training_complete.json",
+      "whole_run_complete": false
+    }
+  },
+  "matched_method_reports": {
+    "HPL_E20_LS2": {
+      "status": "VERIFIED_COMPLETE_MATCHED_METHODS",
+      "reference_run": "20261024-phase1-PAMF-HardPL-LS-m3-r01",
+      "reference_method": "HPL_LS2",
+      "reference": "HPL_E20_LS2_matched_comparison.md"
+    }
   }
 }

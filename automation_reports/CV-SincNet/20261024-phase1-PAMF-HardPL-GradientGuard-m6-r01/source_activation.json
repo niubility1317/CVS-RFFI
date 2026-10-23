@@ -1,0 +1,375 @@
+{
+  "status": "VERIFIED_GUARDED_LS_RUNNING_SUPERVISED_ARM_QUEUED",
+  "execution_commit": "03d563e7cc772f003270597584c587e3952397d4",
+  "observed_unix": 1792788814.8609865,
+  "controller_PID_CWD_command_verified": true,
+  "source_smoke": {
+    "status": "PASS",
+    "methods": [
+      {
+        "method": "HPL_E20_LS6G",
+        "model_seed": 2026092701,
+        "parent_epoch": 20,
+        "parent_updates": 4440,
+        "L_forward_packets": 768,
+        "U_seen": 256,
+        "U_accepted": 235,
+        "student_U_views": 256,
+        "physical_U_generated": 0,
+        "physical_student_views": 0,
+        "raw_U_As_seen": 0,
+        "U_As_raw_input_matches": false,
+        "source_Practical_generated": 64,
+        "contrast_anchors": {
+          "time_down": 0,
+          "t2.pool": 0
+        },
+        "shallow_middle_gradient": false,
+        "ordinary_raw_RDrop": false,
+        "As_KL_weight": 0,
+        "weight": 6.0,
+        "threshold": 0.95,
+        "EMA_updates": 0,
+        "finite_backward": true,
+        "default_head_gradient": true,
+        "feature_hooks_removed": true,
+        "U_label_smoothing": 0.01,
+        "U_gradient_guard": {
+          "recipe": {
+            "weight": 6.0,
+            "projection": "one_sided_per_group",
+            "groups": [
+              "t2",
+              "cls_head",
+              "other"
+            ],
+            "U_to_L_norm_cap": 1.0,
+            "tiny_L_squared_norm": 1e-12,
+            "anchor": "complete_current_L_objective",
+            "optimizer": "unchanged_native_Adam",
+            "extra_teacher_or_student_forward": false
+          },
+          "calls": 1,
+          "conflicts": {
+            "t2": 1,
+            "cls_head": 1,
+            "other": 1
+          },
+          "caps": {
+            "t2": 1,
+            "cls_head": 0,
+            "other": 0
+          },
+          "pending_U_loss": false
+        },
+        "gradient_guard_details": {
+          "t2": {
+            "L_norm": 0.18974337045837616,
+            "U_norm": 0.21034363336037376,
+            "applied_U_norm": 0.18974337045837616,
+            "dot_before": -0.014531755406888343,
+            "dot_after": 4.0520740372297376e-10,
+            "conflict": true,
+            "capped": true,
+            "tiny_L": false
+          },
+          "cls_head": {
+            "L_norm": 0.6488158852848492,
+            "U_norm": 0.3152122749605487,
+            "applied_U_norm": 0.3094887963694774,
+            "dot_before": -0.038796042161648316,
+            "dot_after": 4.3190612279133886e-10,
+            "conflict": true,
+            "capped": false,
+            "tiny_L": false
+          },
+          "other": {
+            "L_norm": 0.9529536825412243,
+            "U_norm": 0.9710058273506686,
+            "applied_U_norm": 0.8699121189739523,
+            "dot_before": -0.411103402960286,
+            "dot_after": -4.2532667274706375e-09,
+            "conflict": true,
+            "capped": false,
+            "tiny_L": false
+          }
+        },
+        "explicit_backward_matches": true,
+        "complete_L_anchor": true
+      },
+      {
+        "method": "HPL_E20_NAMS6G",
+        "model_seed": 2026092701,
+        "parent_epoch": 20,
+        "parent_updates": 4440,
+        "L_forward_packets": 768,
+        "U_seen": 256,
+        "U_accepted": 235,
+        "student_U_views": 1536,
+        "physical_U_generated": 0,
+        "physical_student_views": 0,
+        "raw_U_As_seen": 128,
+        "U_As_raw_input_matches": true,
+        "source_Practical_generated": 64,
+        "contrast_anchors": {
+          "time_down": 470,
+          "t2.pool": 470
+        },
+        "shallow_middle_gradient": true,
+        "ordinary_raw_RDrop": true,
+        "As_KL_weight": 0,
+        "weight": 6.0,
+        "threshold": 0.95,
+        "EMA_updates": 0,
+        "finite_backward": true,
+        "default_head_gradient": true,
+        "feature_hooks_removed": true,
+        "U_label_smoothing": 0.01,
+        "U_style": {
+          "recipe": {
+            "levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "alpha": 0.1,
+            "probability_per_level": 0.5,
+            "eps": 1e-06,
+            "accepted_only": true,
+            "same_hard_pseudo": true,
+            "different_source_RX": true,
+            "detached_moments": true
+          },
+          "calls": 6,
+          "seen": 1536,
+          "eligible": 1410,
+          "applied": {
+            "time_down": 1410,
+            "t2.pool": 1410
+          },
+          "persistent_hooks": false,
+          "teacher_or_L_style_calls": 0,
+          "partner_TX_truth_reads": 0,
+          "shared_six_forward_plan": true,
+          "plan_calls": 1,
+          "contrast_captures_after_style": true
+        },
+        "U_gradient_guard": {
+          "recipe": {
+            "weight": 6.0,
+            "projection": "one_sided_per_group",
+            "groups": [
+              "t2",
+              "cls_head",
+              "other"
+            ],
+            "U_to_L_norm_cap": 1.0,
+            "tiny_L_squared_norm": 1e-12,
+            "anchor": "complete_current_L_objective",
+            "optimizer": "unchanged_native_Adam",
+            "extra_teacher_or_student_forward": false
+          },
+          "calls": 1,
+          "conflicts": {
+            "t2": 1,
+            "cls_head": 1,
+            "other": 1
+          },
+          "caps": {
+            "t2": 1,
+            "cls_head": 0,
+            "other": 1
+          },
+          "pending_U_loss": false
+        },
+        "gradient_guard_details": {
+          "t2": {
+            "L_norm": 0.18974337067307004,
+            "U_norm": 0.41713066257210907,
+            "applied_U_norm": 0.18974337067307004,
+            "dot_before": -0.030033265519940348,
+            "dot_after": -1.7353497063404876e-10,
+            "conflict": true,
+            "capped": true,
+            "tiny_L": false
+          },
+          "cls_head": {
+            "L_norm": 0.6488158852848492,
+            "U_norm": 0.5866397274200412,
+            "applied_U_norm": 0.580370429200204,
+            "dot_before": -0.05549683816076116,
+            "dot_after": -3.9166364335790904e-09,
+            "conflict": true,
+            "capped": false,
+            "tiny_L": false
+          },
+          "other": {
+            "L_norm": 0.9529536844418254,
+            "U_norm": 1.8650745370208666,
+            "applied_U_norm": 0.9529536844418254,
+            "dot_before": -0.6612956273423398,
+            "dot_after": 6.384062648222085e-09,
+            "conflict": true,
+            "capped": true,
+            "tiny_L": false
+          }
+        },
+        "explicit_backward_matches": true,
+        "complete_L_anchor": true
+      }
+    ],
+    "target_reads": 0,
+    "U_truth_reads": 0,
+    "probe_updates_discarded": true,
+    "formal_reload_original_parent_epoch": 20,
+    "formal_reload_original_F21_E30": false,
+    "immediate_continuation": true
+  },
+  "source_identity_reference": "source_style_identity.json",
+  "actual_GPU_workers": 3,
+  "queued_rows": 3,
+  "rows": [
+    {
+      "row_id": "HPL_E20_LS6G-s2026092701",
+      "gpu": 5,
+      "status": "RUNNING",
+      "PID_CWD_command_GPU_verified": true,
+      "complete_source_records_checked": 332,
+      "native_step_log_growth": 379516,
+      "U_accepted": 79213,
+      "guard_calls": 332,
+      "guard_conflicts": {
+        "t2": 126,
+        "cls_head": 110,
+        "other": 111
+      },
+      "guard_caps": {
+        "t2": 107,
+        "cls_head": 46,
+        "other": 127
+      },
+      "healthy_old_NAMS_peer_verified": true,
+      "task_workers_this_card": 2,
+      "total_GPU_processes_this_card": 3
+    },
+    {
+      "row_id": "HPL_E20_NAMS6G-s2026092701",
+      "gpu": 5,
+      "status": "QUEUED",
+      "PID_CWD_command_GPU_verified": false,
+      "complete_source_records_checked": 0,
+      "native_step_log_growth": 0,
+      "U_accepted": 0,
+      "guard_calls": 0,
+      "guard_conflicts": {
+        "t2": 0,
+        "cls_head": 0,
+        "other": 0
+      },
+      "guard_caps": {
+        "t2": 0,
+        "cls_head": 0,
+        "other": 0
+      },
+      "healthy_old_NAMS_peer_verified": true,
+      "task_workers_this_card": 2,
+      "total_GPU_processes_this_card": 3
+    },
+    {
+      "row_id": "HPL_E20_LS6G-s2026092702",
+      "gpu": 6,
+      "status": "RUNNING",
+      "PID_CWD_command_GPU_verified": true,
+      "complete_source_records_checked": 367,
+      "native_step_log_growth": 441646,
+      "U_accepted": 88351,
+      "guard_calls": 367,
+      "guard_conflicts": {
+        "t2": 134,
+        "cls_head": 121,
+        "other": 117
+      },
+      "guard_caps": {
+        "t2": 153,
+        "cls_head": 74,
+        "other": 146
+      },
+      "healthy_old_NAMS_peer_verified": true,
+      "task_workers_this_card": 2,
+      "total_GPU_processes_this_card": 2
+    },
+    {
+      "row_id": "HPL_E20_NAMS6G-s2026092702",
+      "gpu": 6,
+      "status": "QUEUED",
+      "PID_CWD_command_GPU_verified": false,
+      "complete_source_records_checked": 0,
+      "native_step_log_growth": 0,
+      "U_accepted": 0,
+      "guard_calls": 0,
+      "guard_conflicts": {
+        "t2": 0,
+        "cls_head": 0,
+        "other": 0
+      },
+      "guard_caps": {
+        "t2": 0,
+        "cls_head": 0,
+        "other": 0
+      },
+      "healthy_old_NAMS_peer_verified": true,
+      "task_workers_this_card": 2,
+      "total_GPU_processes_this_card": 2
+    },
+    {
+      "row_id": "HPL_E20_LS6G-s2026092703",
+      "gpu": 7,
+      "status": "RUNNING",
+      "PID_CWD_command_GPU_verified": true,
+      "complete_source_records_checked": 336,
+      "native_step_log_growth": 379569,
+      "U_accepted": 80608,
+      "guard_calls": 336,
+      "guard_conflicts": {
+        "t2": 115,
+        "cls_head": 94,
+        "other": 83
+      },
+      "guard_caps": {
+        "t2": 141,
+        "cls_head": 60,
+        "other": 137
+      },
+      "healthy_old_NAMS_peer_verified": true,
+      "task_workers_this_card": 2,
+      "total_GPU_processes_this_card": 3
+    },
+    {
+      "row_id": "HPL_E20_NAMS6G-s2026092703",
+      "gpu": 7,
+      "status": "QUEUED",
+      "PID_CWD_command_GPU_verified": false,
+      "complete_source_records_checked": 0,
+      "native_step_log_growth": 0,
+      "U_accepted": 0,
+      "guard_calls": 0,
+      "guard_conflicts": {
+        "t2": 0,
+        "cls_head": 0,
+        "other": 0
+      },
+      "guard_caps": {
+        "t2": 0,
+        "cls_head": 0,
+        "other": 0
+      },
+      "healthy_old_NAMS_peer_verified": true,
+      "task_workers_this_card": 2,
+      "total_GPU_processes_this_card": 3
+    }
+  ],
+  "release_archive_comparison": "PASS one local/remote archive",
+  "remote_compile": "PASS",
+  "healthy_jobs_modified": false,
+  "new_candidate_target_reads": 0,
+  "goal_complete": false
+}

@@ -221,3 +221,8 @@ HPL2 三seed双读出七景42cell已全部独立评分。为符合逐row自动�
 ## HPL_NAMS2 完整双读出结果
 
 `20261024-phase1-PAMF-HardPL-NoAsMixStyle-m3-r01` 各方法三seed、共3模型，每景168000条，raw／同一DURA七景预测与独立truth-last全部42cell完成；全部新增13320条闭合训练记录已核对。HPL_NAMS2 / raw clean=85.311111%；HPL_NAMS2 / DURA-LU clean=85.400000%；HPL_NAMS2 / raw six_mean=70.572983%；HPL_NAMS2 / DURA-LU six_mean=77.825000%；原数值目标仍未满足，维持ACTIVE。全部结果、匹配基线、逐seed／场景／分层及成本均保存，不从本结果热改其他已固定方法、父权重或矩阵。
+
+
+## HPL_E20_LS2 完整方法目标结果
+
+原注册三seed默认头/raw及固定DURA七景42cell、源新19980步全部核实。raw clean=85.052778%；DURA-LU clean=85.083929%；raw six_mean=70.242956%；DURA-LU six_mean=78.089782%；raw数值门槛未通过，ACTIVE。原六行矩阵继续，不把单方法完成称为全实验完成，不改冻结配方/父源/种子/顺序。
