@@ -1,0 +1,313 @@
+{
+  "status": "FROZEN_SOURCE_E30_L_ONLY_SPECTRAL_STYLE",
+  "seconds": 27.96574169001542,
+  "bank_summary": {
+    "L_records": 6300,
+    "class_RX_day_cells": 90,
+    "min_cell_records": 70,
+    "max_cell_records": 70,
+    "frequency_bins": 16,
+    "receiver_effect_RMS": [
+      0.20130705833435059,
+      0.3091585040092468,
+      0.19660453498363495,
+      0.19669654965400696,
+      0.29565998911857605
+    ],
+    "pooled_RX_fraction_of_conditional_spectral_variation": 0.5550842894229624,
+    "leave_one_TX_out_cosine": [
+      0.7506512967645743,
+      0.7620803810712277,
+      0.706190584303773,
+      0.9120968267997215,
+      0.5924201193937869,
+      0.46908216513750733
+    ],
+    "uses_U_TX": false,
+    "uses_V_fit": false,
+    "interpretation": "Descriptive smooth log-power RX association,not identified causal hardware response"
+  },
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "role": "V",
+      "samples": 720,
+      "source_epoch": 30,
+      "teacher_student_agree": 720,
+      "transformed_exposures": 2880,
+      "gain_clip_fraction": 0.002734375,
+      "maximum_RMS_error": 1.7881393432617188e-07,
+      "mean_relative_IQ_squared_change": 0.026068470906466246,
+      "shifts": [
+        {
+          "cyclic_source_RX_shift": 1,
+          "student_raw_agree": 714,
+          "own_EMA_raw_agree": 714,
+          "mean_teacher_KL": 0.012517640367150307,
+          "correct": 701,
+          "repair": 1,
+          "damage": 4
+        },
+        {
+          "cyclic_source_RX_shift": 2,
+          "student_raw_agree": 714,
+          "own_EMA_raw_agree": 714,
+          "mean_teacher_KL": 0.01020888052880764,
+          "correct": 699,
+          "repair": 0,
+          "damage": 5
+        },
+        {
+          "cyclic_source_RX_shift": 3,
+          "student_raw_agree": 716,
+          "own_EMA_raw_agree": 716,
+          "mean_teacher_KL": 0.005055335350334644,
+          "correct": 704,
+          "repair": 2,
+          "damage": 2
+        },
+        {
+          "cyclic_source_RX_shift": 4,
+          "student_raw_agree": 711,
+          "own_EMA_raw_agree": 711,
+          "mean_teacher_KL": 0.014694960787892342,
+          "correct": 698,
+          "repair": 1,
+          "damage": 7
+        }
+      ],
+      "raw_correct": 704,
+      "own_EMA_correct": 704
+    },
+    {
+      "model_seed": 2026092701,
+      "role": "U_s",
+      "samples": 960,
+      "source_epoch": 30,
+      "teacher_student_agree": 959,
+      "transformed_exposures": 3840,
+      "gain_clip_fraction": 0.002734375,
+      "maximum_RMS_error": 1.7881393432617188e-07,
+      "mean_relative_IQ_squared_change": 0.02743476434079639,
+      "shifts": [
+        {
+          "cyclic_source_RX_shift": 1,
+          "student_raw_agree": 955,
+          "own_EMA_raw_agree": 954,
+          "mean_teacher_KL": 0.0102657126262784
+        },
+        {
+          "cyclic_source_RX_shift": 2,
+          "student_raw_agree": 957,
+          "own_EMA_raw_agree": 956,
+          "mean_teacher_KL": 0.007455641403794289
+        },
+        {
+          "cyclic_source_RX_shift": 3,
+          "student_raw_agree": 955,
+          "own_EMA_raw_agree": 956,
+          "mean_teacher_KL": 0.0044579110108315945
+        },
+        {
+          "cyclic_source_RX_shift": 4,
+          "student_raw_agree": 956,
+          "own_EMA_raw_agree": 957,
+          "mean_teacher_KL": 0.010523817501962185
+        }
+      ]
+    },
+    {
+      "model_seed": 2026092702,
+      "role": "V",
+      "samples": 720,
+      "source_epoch": 30,
+      "teacher_student_agree": 720,
+      "transformed_exposures": 2880,
+      "gain_clip_fraction": 0.002734375,
+      "maximum_RMS_error": 1.7881393432617188e-07,
+      "mean_relative_IQ_squared_change": 0.026068470906466246,
+      "shifts": [
+        {
+          "cyclic_source_RX_shift": 1,
+          "student_raw_agree": 712,
+          "own_EMA_raw_agree": 712,
+          "mean_teacher_KL": 0.010929609648883343,
+          "correct": 696,
+          "repair": 0,
+          "damage": 7
+        },
+        {
+          "cyclic_source_RX_shift": 2,
+          "student_raw_agree": 709,
+          "own_EMA_raw_agree": 709,
+          "mean_teacher_KL": 0.008194209076464176,
+          "correct": 698,
+          "repair": 2,
+          "damage": 7
+        },
+        {
+          "cyclic_source_RX_shift": 3,
+          "student_raw_agree": 714,
+          "own_EMA_raw_agree": 714,
+          "mean_teacher_KL": 0.005174271762371063,
+          "correct": 700,
+          "repair": 1,
+          "damage": 4
+        },
+        {
+          "cyclic_source_RX_shift": 4,
+          "student_raw_agree": 711,
+          "own_EMA_raw_agree": 711,
+          "mean_teacher_KL": 0.01071387343108654,
+          "correct": 697,
+          "repair": 1,
+          "damage": 7
+        }
+      ],
+      "raw_correct": 703,
+      "own_EMA_correct": 703
+    },
+    {
+      "model_seed": 2026092702,
+      "role": "U_s",
+      "samples": 960,
+      "source_epoch": 30,
+      "teacher_student_agree": 960,
+      "transformed_exposures": 3840,
+      "gain_clip_fraction": 0.002734375,
+      "maximum_RMS_error": 1.7881393432617188e-07,
+      "mean_relative_IQ_squared_change": 0.02743476434079639,
+      "shifts": [
+        {
+          "cyclic_source_RX_shift": 1,
+          "student_raw_agree": 956,
+          "own_EMA_raw_agree": 956,
+          "mean_teacher_KL": 0.008190602995455265
+        },
+        {
+          "cyclic_source_RX_shift": 2,
+          "student_raw_agree": 956,
+          "own_EMA_raw_agree": 956,
+          "mean_teacher_KL": 0.005885184742510319
+        },
+        {
+          "cyclic_source_RX_shift": 3,
+          "student_raw_agree": 955,
+          "own_EMA_raw_agree": 955,
+          "mean_teacher_KL": 0.004500597715377808
+        },
+        {
+          "cyclic_source_RX_shift": 4,
+          "student_raw_agree": 956,
+          "own_EMA_raw_agree": 956,
+          "mean_teacher_KL": 0.007502053398638964
+        }
+      ]
+    },
+    {
+      "model_seed": 2026092703,
+      "role": "V",
+      "samples": 720,
+      "source_epoch": 30,
+      "teacher_student_agree": 720,
+      "transformed_exposures": 2880,
+      "gain_clip_fraction": 0.002734375,
+      "maximum_RMS_error": 1.7881393432617188e-07,
+      "mean_relative_IQ_squared_change": 0.026068470906466246,
+      "shifts": [
+        {
+          "cyclic_source_RX_shift": 1,
+          "student_raw_agree": 715,
+          "own_EMA_raw_agree": 715,
+          "mean_teacher_KL": 0.013961154967546463,
+          "correct": 698,
+          "repair": 0,
+          "damage": 5
+        },
+        {
+          "cyclic_source_RX_shift": 2,
+          "student_raw_agree": 716,
+          "own_EMA_raw_agree": 716,
+          "mean_teacher_KL": 0.01053143385797739,
+          "correct": 699,
+          "repair": 0,
+          "damage": 4
+        },
+        {
+          "cyclic_source_RX_shift": 3,
+          "student_raw_agree": 717,
+          "own_EMA_raw_agree": 717,
+          "mean_teacher_KL": 0.005722383037209511,
+          "correct": 700,
+          "repair": 0,
+          "damage": 3
+        },
+        {
+          "cyclic_source_RX_shift": 4,
+          "student_raw_agree": 716,
+          "own_EMA_raw_agree": 716,
+          "mean_teacher_KL": 0.013596714474260807,
+          "correct": 699,
+          "repair": 0,
+          "damage": 4
+        }
+      ],
+      "raw_correct": 703,
+      "own_EMA_correct": 703
+    },
+    {
+      "model_seed": 2026092703,
+      "role": "U_s",
+      "samples": 960,
+      "source_epoch": 30,
+      "teacher_student_agree": 960,
+      "transformed_exposures": 3840,
+      "gain_clip_fraction": 0.002734375,
+      "maximum_RMS_error": 1.7881393432617188e-07,
+      "mean_relative_IQ_squared_change": 0.02743476434079639,
+      "shifts": [
+        {
+          "cyclic_source_RX_shift": 1,
+          "student_raw_agree": 955,
+          "own_EMA_raw_agree": 955,
+          "mean_teacher_KL": 0.010974109172821045
+        },
+        {
+          "cyclic_source_RX_shift": 2,
+          "student_raw_agree": 954,
+          "own_EMA_raw_agree": 954,
+          "mean_teacher_KL": 0.008065370842814445
+        },
+        {
+          "cyclic_source_RX_shift": 3,
+          "student_raw_agree": 953,
+          "own_EMA_raw_agree": 953,
+          "mean_teacher_KL": 0.005217856727540493
+        },
+        {
+          "cyclic_source_RX_shift": 4,
+          "student_raw_agree": 955,
+          "own_EMA_raw_agree": 955,
+          "mean_teacher_KL": 0.010693927295506
+        }
+      ]
+    }
+  ],
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "GPU_workers": 0,
+  "model_updates": 0,
+  "teacher_updates": 0,
+  "prototype_updates": 0,
+  "normalization_updates": 0,
+  "head_fit_updates": 0,
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "source_V_role_changed": false,
+  "live_jobs_changed": false,
+  "transform": "Single fixed 16-bin L-only class/day-balanced log-PSD RX effect;cyclic donor RX transfer;amplitude gain clipped[.5,2];packet RMS preserved.No fit on V/U or phase response estimate.",
+  "interpretation": "Frozen source diagnostic only,not target success,TX-truth-free U accuracy,matched training ablation or a new trained candidate."
+}

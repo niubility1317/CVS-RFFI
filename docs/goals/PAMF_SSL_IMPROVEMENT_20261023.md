@@ -106,3 +106,8 @@ PAIREDU三seed已在各自GPU5/6/7实际续训，真实E30 no-query smoke和配�
 ## 类别条件矩约束三seed已实际运行
 
 `20261023-phase1-PAMF-U-CMR-m3-r01` 以执行commit `a3371f1339f8687ee6593afb71b8e0a79574a9cd` 发布，93项聚焦检查／一次P0/P1审查／真实E30 source-only smoke均PASS。新增raw U256、两层各56个同伪类跨RX对，真实浅中层梯度有限非零，默认头／教师／单次EMA及hook清理正确；正式三个seed重新加载原E30续训。GPU5／6／7每卡CMR＋UGP两个本任务worker，其他owner保留，全部完整step前缀计数和系数逐条核对，新CMR目标尚未访问。原E50＋raw／同一DURA七景／独立评分和原goal ACTIVE保持。
+
+
+## 原始IQ身份梯度与双锚保护假设
+
+原E30三seed固定24个源L/U批次的CPU诊断中，full-L保护后的U仍12次与原有raw L两前向真实CE负内积，最小余弦−0.291；full-L与raw CE本身24次均正。无参数／教师／原型持久更新、U真值或目标。L-only频谱RX估计仍有TX交互，当前暂缓。下一条`20261023-phase1-PAMF-U-DualAnchor-m3-r01`预先固定原RXPSM E30+20，只把原U梯度投影到full-L与raw CE双非负半空间交集，再限制范数≤full-L；不加网络前向／头／推理参数，原L梯度和全部scalar损失保持。三个seed与raw＋同一DURA七景矩阵已登记，当前PLANNED；在UGP GPU完成槽位接续，与CMR每卡各一条，CPU评分在CMR后。方法在读取UGP／CMR目标成绩前固定，原goal ACTIVE。

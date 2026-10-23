@@ -41,3 +41,6 @@ ANALYZED：九个新F模型的raw复用和固定DURA读出均已完成七景独�
 
 
 新增只读 E30 源 RX 几何诊断见 source_receiver_geometry.md／e30_source_receiver_geometry.json；6个固定cohort、三层均覆盖30类×RX单元，类内接收机质心分组差显著可见但不是目标或因果证据。下一条 U-CMR 只据此预先固定 raw U 浅中层条件均值／标准差匹配，尚未实现或发布，不修改 UMIX／UGP。
+
+
+新增 source_raw_gradient_diagnostic.md：只读CPU固定24批发现full-L投影后仍12次raw真实CE负内积，另L-only频谱干预有TX交互而暂缓。下一条双锚保护据此固定，尚未实现／发布；UGP／CMR健康任务及原目标不变。
