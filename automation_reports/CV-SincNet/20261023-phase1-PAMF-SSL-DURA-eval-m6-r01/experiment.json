@@ -1,0 +1,347 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261023-phase1-PAMF-SSL-DURA-eval-m6-r01",
+  "group_id": "phase1-pamf-frozen-ssl-DURA-readouts",
+  "display_name": "PAMF 新半监督模型补 DURA v1.0：六模型冻结评估",
+  "description": "Evaluate all frozen PSM/RXPSM final students with the same frozen DURA; reuse the already completed F20/F21 raw+DURA controls. No training, tuning or model selection.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "PAMF",
+    "SSL",
+    "PSM",
+    "RXPSM",
+    "DURA",
+    "frozen-evaluation"
+  ],
+  "comparison_group_id": "ManySig-F0-T1-E50-defaulthead-raw-DURA",
+  "parent_run_ids": [
+    "20261023-phase1-PAMF-physical-softmatch-m6-r02",
+    "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户在本侧聊明确要求：补充接入 DURA 网络的星地性能。仅补冻结模型评估，不接管或修改主任务。",
+  "code": {
+    "commit": null,
+    "checkout": "code/worktrees/pamf_ssl_dura_eval_20261023",
+    "environment": "N607 ordinary account CVS-RFFI Py3.10/Torch2.1 FP32/TF32off, CPU2 per worker",
+    "cwd": "PROJECT/releases/20261023-phase1-PAMF-SSL-DURA-eval-m6-r01",
+    "entry": "experiments.pamf_ssl_research.dura_supplement"
+  },
+  "data": {
+    "dataset": "WiSig ManySig",
+    "version": "Existing validated F0 roles and physical-ID IQ binding",
+    "representation": "equalized1 center256 float32 unitRMS",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md; docs/goals/PAMF_SSL_IMPROVEMENT_20261023.md",
+    "physical_ids_ref": "Existing F0 source_contract.json role_ids; corrected physical-ID-aligned cache reader",
+    "label_map_ref": "Existing F0 six-TX class order, unchanged",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Existing six registered TX shared with corrected F20/F21",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3,
+      "labeled_share_of_training": 0.1
+    },
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Reuse existing Phase1 VALIDATED_ONCE handles. p2_min_v1/capsule_id/split_id not applicable to Phase1.",
+    "support_query_ref": "Phase1 frozen zero-adaptation evaluation; no support/query fitting",
+    "leo_config_ref": "Fixed received IQ: clean plus six practical, 168000 physical packets/view, eval seed2027; training source As unchanged"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Phase1 fixed F0 test, raw versus frozen common DURA-LU; all models/default heads frozen. DURA has source L/U IQ access, no TX truth/F/target training. F20 means supervised F, not an entirely L-only combined system. No Phase2 or orbital claims."
+  },
+  "checkpoint": {
+    "initialization": "No training: reuse fixed final E50/11100 students",
+    "sources": [
+      "20261023-phase1-PAMF-physical-softmatch-m6-r02/{PSM,RXPSM}-sSEED/source/final_ssdg.pth",
+      "Fixed DURA v1.0 R69 stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "Existing complete source-only segment chains; frozen_inference.load_F/load_G verify actual ancestry and matching F0 roles. DURA source contract, role_ids, counts, RX and days compared in preflight.",
+    "provenance_verdict": "F/G source contract fields match; actual payload/ancestry checked before target prediction. No model training or target-feedback selection.",
+    "selection_rule": "All six previously frozen final students, no choice among target results"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex-side-pamf-ssl-dura-20261023",
+    "gpu_policy": "Seeds 2026092701/02/03 on GPUs5/6/7 respectively; <=1 own worker/card, <=2 total compute workers/card including other owners, free>=12000MiB; one own independent CPU scorer.",
+    "remote_run_root": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-eval-m6-r01",
+    "remote_log_root": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-eval-m6-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_ssl_dura_eval_20261023",
+    "launch_command": "E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -X utf8 -m experiments.pamf_ssl_research.dura_supplement publish --repo E:/type10-7/code/worktrees/pamf_ssl_dura_eval_20261023 --context E:/type10-7/local_artifacts/pamf_ssl_research_20261023/baseline_context.json --output E:/type10-7/local_artifacts/pamf_ssl_dura_eval_20261023/release-r01 --ssh-config E:/type10-7/tools/n607_ssh_config",
+    "stop_rule": "Real frozen F+G L_s-only smoke first; PASS immediately continues. Smoke failure or two identical technical failures stop new dispatch; never stop or modify other owners. No performance-based retries, tuning, reranking, or candidate selection."
+  },
+  "expected_artifacts": [
+    "smoke.json: real frozen F+G, L_s IQ only, zero target reads",
+    "Per-row raw reused plus new DURA seven-view predictions, complete.json before separate truth scorer",
+    "Per-row scores/complete.json and scores.json, per-view/TX/RX/day/RX-day metrics and paired net corrections",
+    "Mean/sample SD and paired comparisons against common-G F20/F21 for all three seeds",
+    "PID/CWD/cmdline/GPU/log progress evidence; all partial outputs retained"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Accuracy",
+      "Macro-F1",
+      "paired_accuracy_pp",
+      "six_scene_mean",
+      "seed_sample_SD",
+      "paired_net_corrections"
+    ],
+    "dimensions": [
+      "method",
+      "model_seed",
+      "view",
+      "receiver",
+      "transmitter",
+      "date",
+      "receiver_date"
+    ],
+    "prediction_ref": "ROW/predictions/main/predictions.npz and complete.json",
+    "scorer_ref": "experiments.cric_dura_comparison.evaluation: each row all seven raw/G predictions fixed before independent CPU truth-last; no score collection until ALL_SCORED",
+    "goal_population": "Same fixed target test, 168000 records/view, all seven unseen target RX. Raw and DURA shown separately; shared-G paired F comparisons, no source V acceptance."
+  },
+  "rows": [
+    {
+      "row_id": "PSM-s2026092701",
+      "method": "PAMF PSM",
+      "purpose": "supplementary_frozen_DURA_evaluation",
+      "config_ref": "experiments/pamf_ssl_research/dura_supplement.py",
+      "resolved_config_ref": "PROJECT/releases/20261023-phase1-PAMF-SSL-DURA-eval-m6-r01/configs/PSM-s2026092701-predict.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "data: deterministic reuse of validated IQ/IDs; support: not applicable; source Practical hardware20261016423, ordinary RNG=model seed. No split sweep.",
+      "k": null,
+      "scenario": "clean plus six practical; raw reused, frozen DURA-LU evaluated",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 training updates; same frozen E50/11100 source student",
+      "output_root": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-eval-m6-r01/PSM-s2026092701",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-eval-m6-r01/logs/PSM-s2026092701-predict.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 python -u -m experiments.cric_dura_comparison.evaluation predict --config RELEASE/configs/PSM-s2026092701-predict.json",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "predictions/main/predictions.npz",
+        "scores/complete.json",
+        "scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "RXPSM-s2026092701",
+      "method": "PAMF RXPSM",
+      "purpose": "supplementary_frozen_DURA_evaluation",
+      "config_ref": "experiments/pamf_ssl_research/dura_supplement.py",
+      "resolved_config_ref": "PROJECT/releases/20261023-phase1-PAMF-SSL-DURA-eval-m6-r01/configs/RXPSM-s2026092701-predict.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "data: deterministic reuse of validated IQ/IDs; support: not applicable; source Practical hardware20261016423, ordinary RNG=model seed. No split sweep.",
+      "k": null,
+      "scenario": "clean plus six practical; raw reused, frozen DURA-LU evaluated",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 training updates; same frozen E50/11100 source student",
+      "output_root": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-eval-m6-r01/RXPSM-s2026092701",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-eval-m6-r01/logs/RXPSM-s2026092701-predict.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 python -u -m experiments.cric_dura_comparison.evaluation predict --config RELEASE/configs/RXPSM-s2026092701-predict.json",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "predictions/main/predictions.npz",
+        "scores/complete.json",
+        "scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "PSM-s2026092702",
+      "method": "PAMF PSM",
+      "purpose": "supplementary_frozen_DURA_evaluation",
+      "config_ref": "experiments/pamf_ssl_research/dura_supplement.py",
+      "resolved_config_ref": "PROJECT/releases/20261023-phase1-PAMF-SSL-DURA-eval-m6-r01/configs/PSM-s2026092702-predict.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "data: deterministic reuse of validated IQ/IDs; support: not applicable; source Practical hardware20261016423, ordinary RNG=model seed. No split sweep.",
+      "k": null,
+      "scenario": "clean plus six practical; raw reused, frozen DURA-LU evaluated",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 training updates; same frozen E50/11100 source student",
+      "output_root": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-eval-m6-r01/PSM-s2026092702",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-eval-m6-r01/logs/PSM-s2026092702-predict.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 python -u -m experiments.cric_dura_comparison.evaluation predict --config RELEASE/configs/PSM-s2026092702-predict.json",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "predictions/main/predictions.npz",
+        "scores/complete.json",
+        "scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "RXPSM-s2026092702",
+      "method": "PAMF RXPSM",
+      "purpose": "supplementary_frozen_DURA_evaluation",
+      "config_ref": "experiments/pamf_ssl_research/dura_supplement.py",
+      "resolved_config_ref": "PROJECT/releases/20261023-phase1-PAMF-SSL-DURA-eval-m6-r01/configs/RXPSM-s2026092702-predict.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "data: deterministic reuse of validated IQ/IDs; support: not applicable; source Practical hardware20261016423, ordinary RNG=model seed. No split sweep.",
+      "k": null,
+      "scenario": "clean plus six practical; raw reused, frozen DURA-LU evaluated",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 training updates; same frozen E50/11100 source student",
+      "output_root": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-eval-m6-r01/RXPSM-s2026092702",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-eval-m6-r01/logs/RXPSM-s2026092702-predict.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 python -u -m experiments.cric_dura_comparison.evaluation predict --config RELEASE/configs/RXPSM-s2026092702-predict.json",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "predictions/main/predictions.npz",
+        "scores/complete.json",
+        "scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "PSM-s2026092703",
+      "method": "PAMF PSM",
+      "purpose": "supplementary_frozen_DURA_evaluation",
+      "config_ref": "experiments/pamf_ssl_research/dura_supplement.py",
+      "resolved_config_ref": "PROJECT/releases/20261023-phase1-PAMF-SSL-DURA-eval-m6-r01/configs/PSM-s2026092703-predict.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "data: deterministic reuse of validated IQ/IDs; support: not applicable; source Practical hardware20261016423, ordinary RNG=model seed. No split sweep.",
+      "k": null,
+      "scenario": "clean plus six practical; raw reused, frozen DURA-LU evaluated",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 training updates; same frozen E50/11100 source student",
+      "output_root": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-eval-m6-r01/PSM-s2026092703",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-eval-m6-r01/logs/PSM-s2026092703-predict.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 python -u -m experiments.cric_dura_comparison.evaluation predict --config RELEASE/configs/PSM-s2026092703-predict.json",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "predictions/main/predictions.npz",
+        "scores/complete.json",
+        "scores/scores.json"
+      ]
+    },
+    {
+      "row_id": "RXPSM-s2026092703",
+      "method": "PAMF RXPSM",
+      "purpose": "supplementary_frozen_DURA_evaluation",
+      "config_ref": "experiments/pamf_ssl_research/dura_supplement.py",
+      "resolved_config_ref": "PROJECT/releases/20261023-phase1-PAMF-SSL-DURA-eval-m6-r01/configs/RXPSM-s2026092703-predict.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "data: deterministic reuse of validated IQ/IDs; support: not applicable; source Practical hardware20261016423, ordinary RNG=model seed. No split sweep.",
+      "k": null,
+      "scenario": "clean plus six practical; raw reused, frozen DURA-LU evaluated",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 training updates; same frozen E50/11100 source student",
+      "output_root": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-eval-m6-r01/RXPSM-s2026092703",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-eval-m6-r01/logs/RXPSM-s2026092703-predict.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 python -u -m experiments.cric_dura_comparison.evaluation predict --config RELEASE/configs/RXPSM-s2026092703-predict.json",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "predictions/main/predictions.npz",
+        "scores/complete.json",
+        "scores/scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Only this new six-row evaluation has a new launch owner. Existing baselines and raw SSL predictions reused; main continuation jobs untouched.",
+    "No new scientific candidate or model code. Unchanged frozen evaluation/loaders/engine reuse their prior independent review; four focused protocol-negative tests cover this supplement binding.",
+    "DURA is a single common fixed G; three-seed SD is conditional F variation, not G retraining variation.",
+    "PSM/RXPSM and baseline raw target scores were already exposed. This is a requested engineering supplement, not a fresh blind confirmation."
+  ],
+  "registered_at": "2026-10-23T11:31:48+00:00"
+}
