@@ -47,3 +47,6 @@ B阶段Joint固定E30六角色行、C阶段12角色行冻结头检查均完成�
 ## 固定原E20的源域信道学习难度诊断
 
 追加只读CPU2诊断，原三seed F21E20、同一既有U960/V720、raw gate0.95及原生Practical三景训练混合，在固定epoch21/step4441与epoch41/step8881模拟。固定aug gate网格0.8／0.9／0.95，各含仅置信与置信＋raw预测一致两种统计，共18条源role/view行。完整源权限、路径入口和停止规则见source_view_reliability_plan.json；6项相关检查通过。源V真值只统计，模型/归一化/EMA/原型/头更新与Utruth/target/G训练均0，不改现有健康任务、配方、父来源或冻结矩阵。raw伪标签是否正确与扰动后是否易于学习分别报告，后者不能当作U真实正确率或target表现。当前Joint/Complement目标分数未读取，历史目标暴露保留。
+
+
+原E20源域信道学习难度诊断完整18行返回，见source_view_reliability.md／JSON。nativeAs与raw标签一致率约74%至77%、hardCE约0.61至0.66；这不是U真值正确率。源依据固定下一独立原E20+30对照：只有当前eval学生对模拟As置信>=0.95且与raw伪标签同类时采用该As，否则精确raw回退，保留所有原acceptedU、原六前向和全部CE/KL权重。增加每步半U的无梯度As eval和模拟生成，成本/实际采用/回退须另计，无新头或推理参数；尚未实现/发布，完整定义见reliable_As_followup_design.json。本设计先于Joint／Complement／Path新目标分数读取，历史目标暴露保留，不改变正在运行的配方。

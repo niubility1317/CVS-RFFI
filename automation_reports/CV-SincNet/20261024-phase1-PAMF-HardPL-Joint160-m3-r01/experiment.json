@@ -316,9 +316,16 @@
     "not_launched": true
   },
   "native_view_reliability_diagnostic": {
-    "status": "FIXED_SOURCE_ONLY_NO_UPDATE_DIAGNOSTIC",
-    "reference": "source_view_reliability_plan.json",
+    "status": "VERIFIED_FROZEN_SOURCE_VIEW_RELIABILITY",
+    "reference": "source_view_reliability.json",
+    "summary_reference": "source_view_reliability.md",
+    "source_updates": 0,
     "target_reads": 0,
-    "source_updates": 0
+    "U_truth_reads": 0
+  },
+  "source_supported_reliable_As_followup": {
+    "status": "SOURCE_SUPPORTED_FIXED_FOLLOWUP_NOT_IMPLEMENTED",
+    "reference": "reliable_As_followup_design.json",
+    "new_target_scores_read": false
   }
 }
