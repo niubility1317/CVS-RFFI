@@ -15,3 +15,8 @@ LOCAL_VERIFIED_NOT_LAUNCHED。48 项相关检查及一次独立 P0/P1 PASS；真
 GPU5/6/7一seed一卡；每seed只接替 GuardLS 全部GPU预测完成的卡位，且 GuardNAMS已派发。旧两臂尚未CUDA的PID与新child预留计数，每卡最多2本任务、含外部最多3进程、派发前空闲≥10000MiB。唯一CPU scorer排 Guard6 终态后；不停止、重启或热改健康任务。两个相同技术失败停止新增派发、保留健康进程及产物，不按目标结果停止、调参、排序或选择性重跑。
 
 训练固定最终E50学生，自动raw和同一固定DURA v1.0各clean＋六practical，每view168000，三seed共42cell；该row所有预测固定后独立truth-last。报告每seed/场景/TX/RX/day/RX×day、Macro-F1、修复损伤/U曝光/实际成本；分别比较固定F20/F21和同恢复读出。原raw验收同时clean≥+1pp、六景均值严格>+1.5pp，DURA只作独立参考，G权限和Fseed SD范围保持，不套旧F50时延。已有历史及E20LS2目标结果已观察，不称独立盲测；新假设按固定源证据在新E20NAMS/Guard目标分数读取前冻结，goal ACTIVE。
+
+
+## 已发布并核实排队
+
+VERIFIED_CONTROLLER_QUEUED：执行 commit `77498c5a8b003f3afc71fab7ee96ca39662593fa`；单包传输对照及远端编译通过，独立核实控制器存活、CWD／完整命令／PID匹配发布目录，状态心跳继续增长。三模型仍排队，新GPU worker为0，实际原E20 joint／签名梯度 smoke尚待首卡位，不能标成训练或smoke成功。只接替同seed GuardLS全部GPU预测完成后的卡位并保留已派发GuardNAMS；原健康任务未改动。

@@ -1,0 +1,545 @@
+{
+  "status": "VERIFIED_COMPLETE_MATCHED_METHODS",
+  "candidate_run": "20261024-phase1-PAMF-HardPL-E20plus30-m6-r01",
+  "reference_run": "20261024-phase1-PAMF-HardPL-NoAsMixStyle-m3-r01",
+  "candidate_method": "HPL_E20_NAMS2",
+  "reference_method": "HPL_NAMS2",
+  "changed_factors": "Only new supervised-U/style mechanism exposure starts E21 rather than E31,same native20/10/20 total",
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "rows": [
+    {
+      "readout": "raw",
+      "view": "clean",
+      "count_per_seed": 168000,
+      "candidate_accuracy_percent": 85.24623015873016,
+      "reference_accuracy_percent": 85.31111111111112,
+      "paired_delta_pp_mean": -0.06488095238095236,
+      "paired_delta_pp_sample_sd": 0.5344339859834418,
+      "positive_seeds": 2,
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "candidate_correct": 143398,
+          "reference_correct": 143196,
+          "net_correct": 202,
+          "delta_pp": 0.12023809523809524
+        },
+        {
+          "model_seed": 2026092702,
+          "candidate_correct": 143809,
+          "reference_correct": 143217,
+          "net_correct": 592,
+          "delta_pp": 0.3523809523809524
+        },
+        {
+          "model_seed": 2026092703,
+          "candidate_correct": 142434,
+          "reference_correct": 143555,
+          "net_correct": -1121,
+          "delta_pp": -0.6672619047619047
+        }
+      ]
+    },
+    {
+      "readout": "raw",
+      "view": "practical_high",
+      "count_per_seed": 168000,
+      "candidate_accuracy_percent": 80.23035714285714,
+      "reference_accuracy_percent": 80.11626984126984,
+      "paired_delta_pp_mean": 0.11408730158730158,
+      "paired_delta_pp_sample_sd": 0.2125294541856433,
+      "positive_seeds": 2,
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "candidate_correct": 135776,
+          "reference_correct": 135976,
+          "net_correct": -200,
+          "delta_pp": -0.11904761904761904
+        },
+        {
+          "model_seed": 2026092702,
+          "candidate_correct": 133538,
+          "reference_correct": 133262,
+          "net_correct": 276,
+          "delta_pp": 0.16428571428571428
+        },
+        {
+          "model_seed": 2026092703,
+          "candidate_correct": 135047,
+          "reference_correct": 134548,
+          "net_correct": 499,
+          "delta_pp": 0.2970238095238095
+        }
+      ]
+    },
+    {
+      "readout": "raw",
+      "view": "practical_mid",
+      "count_per_seed": 168000,
+      "candidate_accuracy_percent": 77.73809523809524,
+      "reference_accuracy_percent": 77.56210317460318,
+      "paired_delta_pp_mean": 0.17599206349206348,
+      "paired_delta_pp_sample_sd": 0.24033568895659957,
+      "positive_seeds": 2,
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "candidate_correct": 131500,
+          "reference_correct": 131593,
+          "net_correct": -93,
+          "delta_pp": -0.055357142857142855
+        },
+        {
+          "model_seed": 2026092702,
+          "candidate_correct": 129240,
+          "reference_correct": 128973,
+          "net_correct": 267,
+          "delta_pp": 0.15892857142857142
+        },
+        {
+          "model_seed": 2026092703,
+          "candidate_correct": 131060,
+          "reference_correct": 130347,
+          "net_correct": 713,
+          "delta_pp": 0.4244047619047619
+        }
+      ]
+    },
+    {
+      "readout": "raw",
+      "view": "practical_low_suburban",
+      "count_per_seed": 168000,
+      "candidate_accuracy_percent": 75.25992063492063,
+      "reference_accuracy_percent": 75.12063492063493,
+      "paired_delta_pp_mean": 0.1392857142857143,
+      "paired_delta_pp_sample_sd": 0.1805632956652503,
+      "positive_seeds": 2,
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "candidate_correct": 126989,
+          "reference_correct": 127105,
+          "net_correct": -116,
+          "delta_pp": -0.06904761904761905
+        },
+        {
+          "model_seed": 2026092702,
+          "candidate_correct": 125400,
+          "reference_correct": 124979,
+          "net_correct": 421,
+          "delta_pp": 0.2505952380952381
+        },
+        {
+          "model_seed": 2026092703,
+          "candidate_correct": 126921,
+          "reference_correct": 126524,
+          "net_correct": 397,
+          "delta_pp": 0.2363095238095238
+        }
+      ]
+    },
+    {
+      "readout": "raw",
+      "view": "practical_high_urban",
+      "count_per_seed": 168000,
+      "candidate_accuracy_percent": 76.85396825396825,
+      "reference_accuracy_percent": 76.68511904761905,
+      "paired_delta_pp_mean": 0.16884920634920636,
+      "paired_delta_pp_sample_sd": 0.24400212506664168,
+      "positive_seeds": 2,
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "candidate_correct": 130078,
+          "reference_correct": 130233,
+          "net_correct": -155,
+          "delta_pp": -0.09226190476190477
+        },
+        {
+          "model_seed": 2026092702,
+          "candidate_correct": 127784,
+          "reference_correct": 127435,
+          "net_correct": 349,
+          "delta_pp": 0.20773809523809525
+        },
+        {
+          "model_seed": 2026092703,
+          "candidate_correct": 129482,
+          "reference_correct": 128825,
+          "net_correct": 657,
+          "delta_pp": 0.39107142857142857
+        }
+      ]
+    },
+    {
+      "readout": "raw",
+      "view": "practical_mid_urban",
+      "count_per_seed": 168000,
+      "candidate_accuracy_percent": 62.65892857142857,
+      "reference_accuracy_percent": 62.474801587301585,
+      "paired_delta_pp_mean": 0.18412698412698414,
+      "paired_delta_pp_sample_sd": 0.14774420257767706,
+      "positive_seeds": 3,
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "candidate_correct": 105976,
+          "reference_correct": 105925,
+          "net_correct": 51,
+          "delta_pp": 0.030357142857142857
+        },
+        {
+          "model_seed": 2026092702,
+          "candidate_correct": 103919,
+          "reference_correct": 103588,
+          "net_correct": 331,
+          "delta_pp": 0.19702380952380952
+        },
+        {
+          "model_seed": 2026092703,
+          "candidate_correct": 105906,
+          "reference_correct": 105360,
+          "net_correct": 546,
+          "delta_pp": 0.325
+        }
+      ]
+    },
+    {
+      "readout": "raw",
+      "view": "practical_low_urban",
+      "count_per_seed": 168000,
+      "candidate_accuracy_percent": 51.640079365079366,
+      "reference_accuracy_percent": 51.478968253968254,
+      "paired_delta_pp_mean": 0.1611111111111111,
+      "paired_delta_pp_sample_sd": 0.07882429847600494,
+      "positive_seeds": 3,
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "candidate_correct": 86896,
+          "reference_correct": 86690,
+          "net_correct": 206,
+          "delta_pp": 0.12261904761904761
+        },
+        {
+          "model_seed": 2026092702,
+          "candidate_correct": 85944,
+          "reference_correct": 85761,
+          "net_correct": 183,
+          "delta_pp": 0.10892857142857143
+        },
+        {
+          "model_seed": 2026092703,
+          "candidate_correct": 87426,
+          "reference_correct": 87003,
+          "net_correct": 423,
+          "delta_pp": 0.2517857142857143
+        }
+      ]
+    },
+    {
+      "readout": "raw",
+      "view": "six_mean",
+      "count_per_seed": 1008000,
+      "candidate_accuracy_percent": 70.73022486772487,
+      "reference_accuracy_percent": 70.57298280423281,
+      "paired_delta_pp_mean": 0.1572420634920635,
+      "paired_delta_pp_sample_sd": 0.17692038766114213,
+      "positive_seeds": 2,
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "candidate_correct": 717215,
+          "reference_correct": 717522,
+          "net_correct": -307,
+          "delta_pp": -0.030456349206349206
+        },
+        {
+          "model_seed": 2026092702,
+          "candidate_correct": 705825,
+          "reference_correct": 703998,
+          "net_correct": 1827,
+          "delta_pp": 0.18125
+        },
+        {
+          "model_seed": 2026092703,
+          "candidate_correct": 715842,
+          "reference_correct": 712607,
+          "net_correct": 3235,
+          "delta_pp": 0.3209325396825397
+        }
+      ]
+    },
+    {
+      "readout": "DURA-LU",
+      "view": "clean",
+      "count_per_seed": 168000,
+      "candidate_accuracy_percent": 85.33194444444445,
+      "reference_accuracy_percent": 85.4,
+      "paired_delta_pp_mean": -0.06805555555555554,
+      "paired_delta_pp_sample_sd": 0.5354233116310346,
+      "positive_seeds": 2,
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "candidate_correct": 143595,
+          "reference_correct": 143403,
+          "net_correct": 192,
+          "delta_pp": 0.11428571428571428
+        },
+        {
+          "model_seed": 2026092702,
+          "candidate_correct": 143960,
+          "reference_correct": 143368,
+          "net_correct": 592,
+          "delta_pp": 0.3523809523809524
+        },
+        {
+          "model_seed": 2026092703,
+          "candidate_correct": 142518,
+          "reference_correct": 143645,
+          "net_correct": -1127,
+          "delta_pp": -0.6708333333333333
+        }
+      ]
+    },
+    {
+      "readout": "DURA-LU",
+      "view": "practical_high",
+      "count_per_seed": 168000,
+      "candidate_accuracy_percent": 82.47916666666667,
+      "reference_accuracy_percent": 82.5938492063492,
+      "paired_delta_pp_mean": -0.11468253968253969,
+      "paired_delta_pp_sample_sd": 0.6449718121832612,
+      "positive_seeds": 2,
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "candidate_correct": 139037,
+          "reference_correct": 138914,
+          "net_correct": 123,
+          "delta_pp": 0.07321428571428572
+        },
+        {
+          "model_seed": 2026092702,
+          "candidate_correct": 139360,
+          "reference_correct": 138662,
+          "net_correct": 698,
+          "delta_pp": 0.4154761904761905
+        },
+        {
+          "model_seed": 2026092703,
+          "candidate_correct": 137298,
+          "reference_correct": 138697,
+          "net_correct": -1399,
+          "delta_pp": -0.8327380952380953
+        }
+      ]
+    },
+    {
+      "readout": "DURA-LU",
+      "view": "practical_mid",
+      "count_per_seed": 168000,
+      "candidate_accuracy_percent": 81.20079365079366,
+      "reference_accuracy_percent": 81.30238095238096,
+      "paired_delta_pp_mean": -0.10158730158730156,
+      "paired_delta_pp_sample_sd": 0.6271553915176041,
+      "positive_seeds": 2,
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "candidate_correct": 136950,
+          "reference_correct": 136854,
+          "net_correct": 96,
+          "delta_pp": 0.05714285714285714
+        },
+        {
+          "model_seed": 2026092702,
+          "candidate_correct": 137197,
+          "reference_correct": 136473,
+          "net_correct": 724,
+          "delta_pp": 0.430952380952381
+        },
+        {
+          "model_seed": 2026092703,
+          "candidate_correct": 135105,
+          "reference_correct": 136437,
+          "net_correct": -1332,
+          "delta_pp": -0.7928571428571428
+        }
+      ]
+    },
+    {
+      "readout": "DURA-LU",
+      "view": "practical_low_suburban",
+      "count_per_seed": 168000,
+      "candidate_accuracy_percent": 79.46944444444445,
+      "reference_accuracy_percent": 79.63313492063492,
+      "paired_delta_pp_mean": -0.1636904761904762,
+      "paired_delta_pp_sample_sd": 0.6402180728775174,
+      "positive_seeds": 2,
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "candidate_correct": 134049,
+          "reference_correct": 134023,
+          "net_correct": 26,
+          "delta_pp": 0.015476190476190477
+        },
+        {
+          "model_seed": 2026092702,
+          "candidate_correct": 134296,
+          "reference_correct": 133678,
+          "net_correct": 618,
+          "delta_pp": 0.3678571428571429
+        },
+        {
+          "model_seed": 2026092703,
+          "candidate_correct": 132181,
+          "reference_correct": 133650,
+          "net_correct": -1469,
+          "delta_pp": -0.8744047619047619
+        }
+      ]
+    },
+    {
+      "readout": "DURA-LU",
+      "view": "practical_high_urban",
+      "count_per_seed": 168000,
+      "candidate_accuracy_percent": 81.2845238095238,
+      "reference_accuracy_percent": 81.3406746031746,
+      "paired_delta_pp_mean": -0.056150793650793646,
+      "paired_delta_pp_sample_sd": 0.6046052634284469,
+      "positive_seeds": 2,
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "candidate_correct": 137015,
+          "reference_correct": 136842,
+          "net_correct": 173,
+          "delta_pp": 0.10297619047619047
+        },
+        {
+          "model_seed": 2026092702,
+          "candidate_correct": 137297,
+          "reference_correct": 136536,
+          "net_correct": 761,
+          "delta_pp": 0.4529761904761905
+        },
+        {
+          "model_seed": 2026092703,
+          "candidate_correct": 135362,
+          "reference_correct": 136579,
+          "net_correct": -1217,
+          "delta_pp": -0.7244047619047619
+        }
+      ]
+    },
+    {
+      "readout": "DURA-LU",
+      "view": "practical_mid_urban",
+      "count_per_seed": 168000,
+      "candidate_accuracy_percent": 74.32599206349207,
+      "reference_accuracy_percent": 74.48273809523809,
+      "paired_delta_pp_mean": -0.15674603174603174,
+      "paired_delta_pp_sample_sd": 0.6053993796818123,
+      "positive_seeds": 1,
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "candidate_correct": 125201,
+          "reference_correct": 125221,
+          "net_correct": -20,
+          "delta_pp": -0.011904761904761904
+        },
+        {
+          "model_seed": 2026092702,
+          "candidate_correct": 125913,
+          "reference_correct": 125303,
+          "net_correct": 610,
+          "delta_pp": 0.3630952380952381
+        },
+        {
+          "model_seed": 2026092703,
+          "candidate_correct": 123489,
+          "reference_correct": 124869,
+          "net_correct": -1380,
+          "delta_pp": -0.8214285714285714
+        }
+      ]
+    },
+    {
+      "readout": "DURA-LU",
+      "view": "practical_low_urban",
+      "count_per_seed": 168000,
+      "candidate_accuracy_percent": 67.47559523809524,
+      "reference_accuracy_percent": 67.59722222222223,
+      "paired_delta_pp_mean": -0.12162698412698414,
+      "paired_delta_pp_sample_sd": 0.45812508152798065,
+      "positive_seeds": 1,
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "candidate_correct": 113767,
+          "reference_correct": 113824,
+          "net_correct": -57,
+          "delta_pp": -0.033928571428571426
+        },
+        {
+          "model_seed": 2026092702,
+          "candidate_correct": 114309,
+          "reference_correct": 113828,
+          "net_correct": 481,
+          "delta_pp": 0.2863095238095238
+        },
+        {
+          "model_seed": 2026092703,
+          "candidate_correct": 112001,
+          "reference_correct": 113038,
+          "net_correct": -1037,
+          "delta_pp": -0.6172619047619048
+        }
+      ]
+    },
+    {
+      "readout": "DURA-LU",
+      "view": "six_mean",
+      "count_per_seed": 1008000,
+      "candidate_accuracy_percent": 77.70591931216931,
+      "reference_accuracy_percent": 77.825,
+      "paired_delta_pp_mean": -0.11908068783068783,
+      "paired_delta_pp_sample_sd": 0.5965309235110293,
+      "positive_seeds": 2,
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "candidate_correct": 786019,
+          "reference_correct": 785678,
+          "net_correct": 341,
+          "delta_pp": 0.03382936507936508
+        },
+        {
+          "model_seed": 2026092702,
+          "candidate_correct": 788372,
+          "reference_correct": 784480,
+          "net_correct": 3892,
+          "delta_pp": 0.3861111111111111
+        },
+        {
+          "model_seed": 2026092703,
+          "candidate_correct": 775436,
+          "reference_correct": 783270,
+          "net_correct": -7834,
+          "delta_pp": -0.7771825396825397
+        }
+      ]
+    }
+  ],
+  "main_raw_goal_unchanged": true,
+  "interpretation": "Same physical records paired across three F seeds;sample SD of paired differences,no independent-sample/statistical-significance claim;DURA remains separate from raw primary goal"
+}

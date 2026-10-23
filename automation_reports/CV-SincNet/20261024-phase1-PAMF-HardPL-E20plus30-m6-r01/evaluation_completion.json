@@ -1,0 +1,435 @@
+{
+  "status": "VERIFIED_COMPLETE",
+  "run_id": "20261024-phase1-PAMF-HardPL-E20plus30-m6-r01",
+  "training_execution_commit": "80fe494716b538b504a32efa9245d2e58925fc6f",
+  "completed_F_models": 6,
+  "readouts": [
+    "raw",
+    "DURA-LU"
+  ],
+  "views_per_readout": 7,
+  "count_per_view": 168000,
+  "completed_readout_view_cells": 84,
+  "reused_baseline_F_models": 6,
+  "baseline_U_exposure_and_acceptance": [
+    {
+      "method": "F20",
+      "model_seed": 2026092701,
+      "configured_U_batch": 256,
+      "stages": [
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 568320
+        },
+        {
+          "epoch": 10,
+          "updates": 2220,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 284160
+        },
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 568320
+        }
+      ],
+      "U_seen": 0,
+      "U_accepted": 0,
+      "U_acceptance_rate": null,
+      "training_seconds": 5859.2507663581055
+    },
+    {
+      "method": "F21",
+      "model_seed": 2026092701,
+      "configured_U_batch": 256,
+      "stages": [
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 396900,
+          "PL_accepted": 366736,
+          "U_actual": 396900,
+          "L_actual": 568320
+        },
+        {
+          "epoch": 10,
+          "updates": 2220,
+          "PL_seen": 567000,
+          "PL_accepted": 534715,
+          "U_actual": 567000,
+          "L_actual": 284160
+        },
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 1134000,
+          "PL_accepted": 1086483,
+          "U_actual": 1134000,
+          "L_actual": 568320
+        }
+      ],
+      "U_seen": 2097900,
+      "U_accepted": 1987934,
+      "U_acceptance_rate": 0.9475828209161542,
+      "training_seconds": 6064.280181294773
+    },
+    {
+      "method": "F20",
+      "model_seed": 2026092702,
+      "configured_U_batch": 256,
+      "stages": [
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 568320
+        },
+        {
+          "epoch": 10,
+          "updates": 2220,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 284160
+        },
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 568320
+        }
+      ],
+      "U_seen": 0,
+      "U_accepted": 0,
+      "U_acceptance_rate": null,
+      "training_seconds": 5679.993145135231
+    },
+    {
+      "method": "F21",
+      "model_seed": 2026092702,
+      "configured_U_batch": 256,
+      "stages": [
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 396900,
+          "PL_accepted": 368509,
+          "U_actual": 396900,
+          "L_actual": 568320
+        },
+        {
+          "epoch": 10,
+          "updates": 2220,
+          "PL_seen": 567000,
+          "PL_accepted": 536211,
+          "U_actual": 567000,
+          "L_actual": 284160
+        },
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 1134000,
+          "PL_accepted": 1087594,
+          "U_actual": 1134000,
+          "L_actual": 568320
+        }
+      ],
+      "U_seen": 2097900,
+      "U_accepted": 1992314,
+      "U_acceptance_rate": 0.9496706230039563,
+      "training_seconds": 6310.290091911098
+    },
+    {
+      "method": "F20",
+      "model_seed": 2026092703,
+      "configured_U_batch": 256,
+      "stages": [
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 568320
+        },
+        {
+          "epoch": 10,
+          "updates": 2220,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 284160
+        },
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 568320
+        }
+      ],
+      "U_seen": 0,
+      "U_accepted": 0,
+      "U_acceptance_rate": null,
+      "training_seconds": 5337.616240176139
+    },
+    {
+      "method": "F21",
+      "model_seed": 2026092703,
+      "configured_U_batch": 256,
+      "stages": [
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 396900,
+          "PL_accepted": 368417,
+          "U_actual": 396900,
+          "L_actual": 568320
+        },
+        {
+          "epoch": 10,
+          "updates": 2220,
+          "PL_seen": 567000,
+          "PL_accepted": 535239,
+          "U_actual": 567000,
+          "L_actual": 284160
+        },
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 1134000,
+          "PL_accepted": 1085559,
+          "U_actual": 1134000,
+          "L_actual": 568320
+        }
+      ],
+      "U_seen": 2097900,
+      "U_accepted": 1989215,
+      "U_acceptance_rate": 0.9481934315267648,
+      "training_seconds": 6044.307537698653
+    }
+  ],
+  "source_complete_reference": "source_training_complete.json",
+  "new_F_training_updates": 39960,
+  "reused_parent_training_updates": 26640,
+  "cumulative_F_training_updates": 66600,
+  "new_G_training_updates": 0,
+  "independent_truth_last": true,
+  "raw_goal_met": false,
+  "fixed_G_version": "dura_v1",
+  "fixed_G_parameters": 266951,
+  "G_runtime": {
+    "reuse": true,
+    "graph": true,
+    "native": false,
+    "precision": "FP32",
+    "TF32": false
+  },
+  "prediction_loop_metadata": [
+    {
+      "row_id": "HPL_E20_LS2-s2026092701",
+      "model_seed": 2026092701,
+      "seconds_by_view": {
+        "clean": 39.6738035317976,
+        "practical_high": 38.73533951793797,
+        "practical_mid": 38.00164791685529,
+        "practical_low_suburban": 39.56036599399522,
+        "practical_high_urban": 39.18201345298439,
+        "practical_mid_urban": 39.262172116898,
+        "practical_low_urban": 37.73357898299582
+      },
+      "source_graph_native_check": "PASS",
+      "count_per_view": 168000,
+      "truth_read": false,
+      "query_fit": false
+    },
+    {
+      "row_id": "HPL_E20_NAMS2-s2026092701",
+      "model_seed": 2026092701,
+      "seconds_by_view": {
+        "clean": 37.90115173510276,
+        "practical_high": 36.97703678300604,
+        "practical_mid": 36.1334740370512,
+        "practical_low_suburban": 36.21758992201649,
+        "practical_high_urban": 36.58226088993251,
+        "practical_mid_urban": 36.874458658043295,
+        "practical_low_urban": 38.32721838098951
+      },
+      "source_graph_native_check": "PASS",
+      "count_per_view": 168000,
+      "truth_read": false,
+      "query_fit": false
+    },
+    {
+      "row_id": "HPL_E20_LS2-s2026092702",
+      "model_seed": 2026092702,
+      "seconds_by_view": {
+        "clean": 41.1766586008016,
+        "practical_high": 38.799361523007974,
+        "practical_mid": 37.0589114241302,
+        "practical_low_suburban": 38.26105512585491,
+        "practical_high_urban": 38.392175312153995,
+        "practical_mid_urban": 38.518432102166116,
+        "practical_low_urban": 37.0553439410869
+      },
+      "source_graph_native_check": "PASS",
+      "count_per_view": 168000,
+      "truth_read": false,
+      "query_fit": false
+    },
+    {
+      "row_id": "HPL_E20_NAMS2-s2026092702",
+      "model_seed": 2026092702,
+      "seconds_by_view": {
+        "clean": 36.19960979488678,
+        "practical_high": 35.7039155960083,
+        "practical_mid": 36.04868507012725,
+        "practical_low_suburban": 35.86883235699497,
+        "practical_high_urban": 35.30317794904113,
+        "practical_mid_urban": 35.70968546299264,
+        "practical_low_urban": 36.00547402421944
+      },
+      "source_graph_native_check": "PASS",
+      "count_per_view": 168000,
+      "truth_read": false,
+      "query_fit": false
+    },
+    {
+      "row_id": "HPL_E20_LS2-s2026092703",
+      "model_seed": 2026092703,
+      "seconds_by_view": {
+        "clean": 38.228389986092225,
+        "practical_high": 37.78328273096122,
+        "practical_mid": 39.158206002088264,
+        "practical_low_suburban": 39.25677172304131,
+        "practical_high_urban": 39.34796985518187,
+        "practical_mid_urban": 37.7349590039812,
+        "practical_low_urban": 36.58860970498063
+      },
+      "source_graph_native_check": "PASS",
+      "count_per_view": 168000,
+      "truth_read": false,
+      "query_fit": false
+    },
+    {
+      "row_id": "HPL_E20_NAMS2-s2026092703",
+      "model_seed": 2026092703,
+      "seconds_by_view": {
+        "clean": 38.31474266201258,
+        "practical_high": 37.19439811096527,
+        "practical_mid": 38.33758749789558,
+        "practical_low_suburban": 37.279288065154105,
+        "practical_high_urban": 37.655394586967304,
+        "practical_mid_urban": 37.501184514025226,
+        "practical_low_urban": 37.781427280046046
+      },
+      "source_graph_native_check": "PASS",
+      "count_per_view": 168000,
+      "truth_read": false,
+      "query_fit": false
+    }
+  ],
+  "prediction_timing_scope": "Per-view batch128 combined raw and G+F prediction loop walltime; includes transfer/argmax/sync on shared GPUs, not B1 steady-state deployment latency",
+  "source_V_diagnostic_only": [
+    {
+      "row_id": "HPL_E20_LS2-s2026092701",
+      "source_V_diagnostics": [
+        {
+          "name": "source_V_diagnostic",
+          "metrics": {
+            "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+            "samples": 720,
+            "clean_accuracy": 0.9805555555555555,
+            "fixed_practical_mixture_accuracy": 0.7402777777777778
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "HPL_E20_NAMS2-s2026092701",
+      "source_V_diagnostics": [
+        {
+          "name": "source_V_diagnostic",
+          "metrics": {
+            "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+            "samples": 720,
+            "clean_accuracy": 0.9791666666666666,
+            "fixed_practical_mixture_accuracy": 0.7458333333333333
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "HPL_E20_LS2-s2026092702",
+      "source_V_diagnostics": [
+        {
+          "name": "source_V_diagnostic",
+          "metrics": {
+            "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+            "samples": 720,
+            "clean_accuracy": 0.9791666666666666,
+            "fixed_practical_mixture_accuracy": 0.75
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "HPL_E20_NAMS2-s2026092702",
+      "source_V_diagnostics": [
+        {
+          "name": "source_V_diagnostic",
+          "metrics": {
+            "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+            "samples": 720,
+            "clean_accuracy": 0.9791666666666666,
+            "fixed_practical_mixture_accuracy": 0.7416666666666667
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "HPL_E20_LS2-s2026092703",
+      "source_V_diagnostics": [
+        {
+          "name": "source_V_diagnostic",
+          "metrics": {
+            "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+            "samples": 720,
+            "clean_accuracy": 0.975,
+            "fixed_practical_mixture_accuracy": 0.7569444444444444
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "HPL_E20_NAMS2-s2026092703",
+      "source_V_diagnostics": [
+        {
+          "name": "source_V_diagnostic",
+          "metrics": {
+            "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+            "samples": 720,
+            "clean_accuracy": 0.9722222222222222,
+            "fixed_practical_mixture_accuracy": 0.7541666666666667
+          }
+        }
+      ]
+    }
+  ],
+  "no_target_parameter_updates": true,
+  "all_declared_seeds_preserved": true
+}

@@ -231,3 +231,8 @@ HPL2 三seed双读出七景42cell已全部独立评分。为符合逐row自动�
 ## 高纯度 PL 的部署融合特征跨 RX 对比
 
 `20261024-phase1-PAMF-HardPL-Joint160-m3-r01` 固定原E20续训native10+20到E50/11100，仅在既有GuardNAMS上加入joint160原生跨RX0.05/1.25。保持浅中层约束、.95／weight6、六U共享style、默认头和完整L梯度保护；复用前两ordinaryU forward，不增前向/头/G训练。原E20无更新源几何诊断显示style后pseudoCE仍约.003-.004，实际部署融合特征的源RX关联仍在；描述性关联变化部分由跨RX混合构造，不能当作已学会不变性或目标收益。48检查及一次P0P1PASS，原E20真实joint/sequence_pool梯度与guard smoke首卡通过即固定三seed，raw+固定DURA各七景。接替GuardLS释放卡位，排Guard唯一scorer后；健康旧任务保留。本矩阵在新E20NAMS/Guard目标分数读取前冻结，历史E20LS2暴露披露，raw双门槛和ACTIVE保持。
+
+
+## HPL_E20_LS2 / HPL_E20_NAMS2 完整双读出结果
+
+`20261024-phase1-PAMF-HardPL-E20plus30-m6-r01` 各方法三seed、共6模型，每景168000条，raw／同一DURA七景预测与独立truth-last全部84cell完成；全部新增39960条闭合训练记录已核对。HPL_E20_LS2 / raw clean=85.052778%；HPL_E20_NAMS2 / raw clean=85.246230%；HPL_E20_LS2 / DURA-LU clean=85.083929%；HPL_E20_NAMS2 / DURA-LU clean=85.331944%；HPL_E20_LS2 / raw six_mean=70.242956%；HPL_E20_NAMS2 / raw six_mean=70.730225%；HPL_E20_LS2 / DURA-LU six_mean=78.089782%；HPL_E20_NAMS2 / DURA-LU six_mean=77.705919%；原数值目标仍未满足，维持ACTIVE。全部结果、匹配基线、逐seed／场景／分层及成本均保存，不从本结果热改其他已固定方法、父权重或矩阵。

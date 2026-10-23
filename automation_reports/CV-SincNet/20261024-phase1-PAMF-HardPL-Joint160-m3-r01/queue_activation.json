@@ -1,0 +1,27 @@
+{
+  "status": "VERIFIED_CONTROLLER_QUEUED_FIRST_SOURCE_SMOKE_PENDING",
+  "execution_commit": "77498c5a8b003f3afc71fab7ee96ca39662593fa",
+  "run_id": "20261024-phase1-PAMF-HardPL-Joint160-m3-r01",
+  "controller_alive": true,
+  "controller_CWD_matches_release": true,
+  "controller_argv_matches_runtime": true,
+  "state_heartbeat_advanced": true,
+  "observed_unix": 1792791172.4449255,
+  "queued_models": 3,
+  "new_GPU_workers": 0,
+  "source_smoke": "PENDING",
+  "training_started": false,
+  "new_target_reads": 0,
+  "predecessor_GPU_work_ready": false,
+  "GPU_by_seed": {
+    "2026092701": 5,
+    "2026092702": 6,
+    "2026092703": 7
+  },
+  "prerelease_roots_absent": true,
+  "one_archive_transfer_comparison": "PASS",
+  "remote_compile": "PASS",
+  "identity_and_health_readback": "Independent /proc CWD/cmd/PID and evolving state;no exit-status-only success claim",
+  "prior_healthy_tasks_changed": false,
+  "goal_complete": false
+}

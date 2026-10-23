@@ -388,12 +388,10 @@
   ],
   "registered_at": "2026-10-23T19:46:30.754857+00:00",
   "launch_status": {
-    "status": "VERIFIED_BOTH_E20_ARMS_RUNNING",
-    "evidence": "source_six_worker_activation.json",
-    "source_smoke": "PASS",
-    "source_identity_screen": "PASS",
-    "actual_GPU_workers": 6,
-    "queued_rows": 0
+    "status": "VERIFIED_ALL_SCORED",
+    "source_rows_complete": 6,
+    "target_matrix_complete": true,
+    "evidence": "evaluation_completion.json"
   },
   "source_quality_diagnostics": {
     "HPL2": {
@@ -421,6 +419,21 @@
         2026092703
       ],
       "reference": "source_pseudo_quality_E50_HPL_E20_LS2.json",
+      "model_or_threshold_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0,
+      "selection_changed": false
+    },
+    "HPL_E20_NAMS2": {
+      "status": "VERIFIED_FULL_SOURCE_V",
+      "source_epoch": 50,
+      "samples_per_seed": 27000,
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "reference": "source_pseudo_quality_E50_HPL_E20_NAMS2.json",
       "model_or_threshold_updates": 0,
       "target_reads": 0,
       "U_truth_reads": 0,
@@ -506,6 +519,24 @@
       "reference_run": "20261024-phase1-PAMF-HardPL-LS-m3-r01",
       "reference_method": "HPL_LS2",
       "reference": "HPL_E20_LS2_matched_comparison.md"
+    },
+    "HPL_E20_NAMS2": {
+      "status": "VERIFIED_COMPLETE_MATCHED_METHODS",
+      "reference_run": "20261024-phase1-PAMF-HardPL-NoAsMixStyle-m3-r01",
+      "reference_method": "HPL_NAMS2",
+      "reference": "HPL_E20_NAMS2_matched_comparison.md"
     }
+  },
+  "result_summary": {
+    "status": "ANALYZED",
+    "goal_met": false,
+    "completed_F_models": 6,
+    "completed_readout_view_cells": 84,
+    "independent_truth_last": true,
+    "all_seed_and_scene_results_preserved": true,
+    "both_readouts_complete": true,
+    "summary_ref": "target_summary.json",
+    "details_ref": "target_results.md",
+    "cost_ref": "evaluation_completion.json"
   }
 }
