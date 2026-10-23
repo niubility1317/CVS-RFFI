@@ -1,0 +1,45 @@
+{
+  "methods": [
+    "HPL_E20_LS2",
+    "HPL_E20_NAMS2"
+  ],
+  "parent": "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01/F21-sSEED/source/segment20",
+  "only_new_factor": "New fixed mechanisms start E21 instead of E31;native10+20 continuation,not extra model epochs",
+  "original_recipe_references": [
+    "HPL_LS2",
+    "HPL_NAMS2"
+  ],
+  "gate": 0.95,
+  "weight": 2.0,
+  "U_CE_LS": 0.01,
+  "native_schedule": [
+    20,
+    10,
+    20
+  ],
+  "reused_prefix_epochs": 20,
+  "new_epochs": 30,
+  "total_epochs": 50,
+  "total_updates": 11100,
+  "source_E20_acceptance_precision": [
+    99.90021553444559,
+    99.86868284918424,
+    99.91642788920726
+  ],
+  "source_E20_coverage": [
+    92.7925925925926,
+    93.07407407407408,
+    93.06666666666666
+  ],
+  "source_basis": "Ordinary F21 E20 already has accepted source pseudo precision>=99% all seeds;using only final20 of37 U epochs leaves earlier high-purity records under the original objective.The E20 fork adds10 mechanism epochs within same E50 budget.",
+  "new_U_seen": 1701000,
+  "cumulative_U_seen": 2097900,
+  "new_calls": 6660,
+  "student_U_views": {
+    "HPL_E20_LS2": 2097900,
+    "HPL_E20_NAMS2": 10602900
+  },
+  "new_target_scores_read_before_freeze": false,
+  "source_criterion": "Real original E20 two-arm smoke;V720/seed raw accepted accuracy>=99% and eligible trueTX pair agreement>=99%;both style levels applied;no styled-accuracy gate.",
+  "limitations": "Source validation and greater mechanism exposure do not establish target gains.Historical benchmark exposure disclosed.No target-derived recipe,parent,seed,ordering or selective rerun."
+}

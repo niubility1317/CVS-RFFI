@@ -5,7 +5,7 @@ from pathlib import Path
 from experiments.cric_dura_comparison.io import read,write
 
 
-def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None):
+def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents_fn=None,parent_epoch=30):
     from experiments.cric_dura_comparison.bootstrap import activate,numerical_policy
     activate(rt);numerical_policy()
     import torch
@@ -15,6 +15,7 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None):
     from experiments.cvs_phase1_stack.runtime import installed as native_installed
     from experiments.cric_dura_comparison import t1_model
     from .hard_pl_train import source_parents,installed
+    if source_parents_fn is not None:source_parents=source_parents_fn
     if objective_cls is None:
         from .hard_pl_objective import HardPLObjective as objective_cls
     if validate_config is None:
@@ -22,7 +23,8 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None):
     checked=[]
     for row in rt['rows'][:max_rows]:
         c=read(row['train_config']);parents,_=source_parents(c,validate_config=validate_config);parent=parents[-1]['folder']
-        cfg=dict(c,segment_epochs=20,epoch_offset=30,step_offset=6660,parent_source=parent,hard_pl_smoke=True)
+        cfg=dict(c,segment_epochs=10 if parent_epoch==20 else 20,epoch_offset=parent_epoch,
+            step_offset=parent_epoch*222,parent_source=parent,hard_pl_smoke=True)
         payload=torch.load(Path(parent)/'final_ssdg.pth',map_location='cpu',weights_only=False)
         ctx=context(cfg);holder={};device='cuda:0';torch.manual_seed(c['model_seed'])
         with installed(cfg,holder,objective_cls=objective_cls),class_dimension(cfg),native_installed(original_config(c['model_seed'])) as native:
@@ -71,7 +73,7 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None):
                     or not all(h.grad is not None and bool(torch.isfinite(h.grad).all())
                                and float(h.grad.norm())>0 for h in obj.style_smoke_maps.values())):
                     raise ValueError('Actual accepted-only shallow/middle U style or finite gradient absent')
-            checked.append(dict(method=row['method'],model_seed=c['model_seed'],parent_epoch=30,parent_updates=6660,L_forward_packets=768,
+            checked.append(dict(method=row['method'],model_seed=c['model_seed'],parent_epoch=parent_epoch,parent_updates=parent_epoch*222,L_forward_packets=768,
                 U_seen=256,U_accepted=state['accepted'],student_U_views=state['student_views'],
                 physical_U_generated=state['physical_seen'],physical_student_views=state['physical_student_views'],
                 raw_U_As_seen=state['raw_As_seen'],U_As_raw_input_matches=bool(no_uas and obj.smoke_U_As_input_raw),

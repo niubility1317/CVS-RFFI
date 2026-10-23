@@ -12,10 +12,11 @@ from .hard_pl_mixstyle_objective import style_hooks
 from .u_mixstyle_objective import protected_partners
 
 
-def run(rt,device='cuda:0'):
+def run(rt,device='cuda:0',*,validate_config=validate,source_parents_fn=None,parent_epoch=30):
     rows=[]
     for row in rt['rows']:
-        c=read(row['train_config']);parents,contract=source_parents(c,validate_config=validate)
+        c=read(row['train_config']);loader=source_parents_fn or source_parents
+        parents,contract=loader(c,validate_config=validate_config)
         parent=parents[-1];payload=torch.load(Path(parent['folder'])/'final_ssdg.pth',map_location='cpu',weights_only=False)
         teacher=reader_from_payload(dict(parent['config'],parent_source=None),payload,device)
         data=SourceDataset(c['source_cache'],'V',contract);m=data.metadata;ids=[]
@@ -57,7 +58,7 @@ def run(rt,device='cuda:0'):
         del teacher,payload,data;gc.collect();torch.cuda.empty_cache()
     result=dict(status='PASS' if all(v['scientific_rule_pass'] for v in rows) else 'SCIENTIFIC_FALSIFIED',rows=rows,
         rule='Each fixed seed: accepted raw V pseudo precision>=99%,true TX agreement of eligible same-pseudo cross-RX pairs>=99%,each actual style level applied>0;no threshold on styled classifier accuracy.',
-        model_updates=0,normalization_updates=0,EMA_updates=0,head_fit_updates=0,U_truth_reads=0,target_reads=0,
+        source_parent_epoch=parent_epoch,model_updates=0,normalization_updates=0,EMA_updates=0,head_fit_updates=0,U_truth_reads=0,target_reads=0,
         selection_seed=2026102401,style_seed='model_seed+20261024',both_style_levels_forced_in_diagnostic=True,
         interpretation='Source pair identity diagnostic only.Frozen styled prediction errors do not prove wrong raw pseudo labels or invalid augmentation;no target accuracy claim.')
     write(Path(rt['run_root'])/'source_style_identity.json',result)
