@@ -1,0 +1,27 @@
+{
+  "status": "VERIFIED",
+  "CSV_files": [
+    "main_crossed_overall.csv",
+    "main_crossed_per_cell.csv",
+    "main_crossed_summary.csv",
+    "main_F_cost.csv",
+    "main_G_cost_summary.csv",
+    "main_G_stage_cost.csv",
+    "main_net_corrections.csv",
+    "main_paired.csv",
+    "main_paired_overall.csv",
+    "main_per_seed.csv",
+    "main_summary.csv",
+    "main_summary_overall.csv"
+  ],
+  "numeric_cells": 2234814,
+  "maximum_absolute_difference": 5.551115123125783e-14,
+  "tolerance": 1e-10,
+  "first_python": "3.13",
+  "independent_runtime": "3.10",
+  "all_main_confusions_recomputed": 122598,
+  "additional_crossed_confusions": 3612,
+  "net_strata": 70056,
+  "source_F_stages": 459,
+  "G_stages": 280
+}

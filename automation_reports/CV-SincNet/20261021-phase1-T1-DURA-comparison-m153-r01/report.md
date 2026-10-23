@@ -41,3 +41,7 @@ Final version correction and exact matrix: see docs/goals/CRIC_DURA_COMPARISON_A
 已只用源侧证据确认F0 IQ实际存储顺序与新metadata的物理ID顺序不一致，L_s6300条中5291条标签错配；按既有ID索引对齐后为0。旧F01至F21全部三seed的产物保留并标记INVALID_INPUT_BINDING，不能用于组件贡献；旧低分不是移除组件的有效负结果。6条F0匹配监督/普通PL控制有同一缺陷。
 
 技术替代为20261022-phase1-T1-DURA-F-ablation-binding-m63-r01及20261022-phase1-T1-DURA-F0-controls-binding-m6-r01；原63/6科学设置和三seed预算保持，从零训练，不继承错误checkpoint。原最终T1三seed及全部合法G/其他16源契约不重训。原运行健康PID保持，未启动错误下游撤下；新owner和分析replacement映射见20261022-phase1-T1-DURA-F-binding-control-r01。最终汇总必须按替代映射使用新预测/评分，旧结果单列历史，不混入正式表格。
+
+2026-10-23 完成记录：All153 logical scores including6 repaired F0 controls, complete strata/CMs and m3-natural3x3 crossed panel analyzed offline.
+
+[153条主比较完整分析](../20261021-phase1-T1-DURA-comparison-m153-r01/main_results.md)。122598主CM、70056净纠错、额外交叉3612CM复算通过；12份CSV的2234814个数值跨Python最大差5.55e-14。当前仅该已登记面板及G源训练闭合，剩余结构/细F、外部DURA、公平性和专用时延继续，不能标为整体全部完成。

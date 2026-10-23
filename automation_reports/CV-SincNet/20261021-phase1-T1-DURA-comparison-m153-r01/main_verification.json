@@ -1,0 +1,84 @@
+{
+  "status": "ANALYZED_MAIN153",
+  "logical_models": 153,
+  "protocols": [
+    "F0",
+    "F1",
+    "F2",
+    "ManyRx",
+    "chrono",
+    "label01",
+    "label05",
+    "m1-natural",
+    "m2-natural",
+    "m3-natural",
+    "m4-natural",
+    "m6-natural",
+    "m1-fixed",
+    "m2-fixed",
+    "m3-fixed",
+    "m4-fixed",
+    "m6-fixed"
+  ],
+  "regimes": [
+    "native_cric",
+    "matched_sat_supervised",
+    "matched_sat_plain_pl"
+  ],
+  "F_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "serialized_CM_recomputed": 122598,
+  "net_strata_recomputed": 70056,
+  "source_F_stage_metadata": 459,
+  "new_F_models": 150,
+  "reused_original_F_models": 3,
+  "all_updates": 11100,
+  "source_count_m5_excluded": true,
+  "classes_by_protocol": {
+    "F0": 6,
+    "F1": 6,
+    "F2": 6,
+    "ManyRx": 10,
+    "chrono": 6,
+    "label01": 6,
+    "label05": 6,
+    "m1-natural": 6,
+    "m2-natural": 6,
+    "m3-natural": 6,
+    "m4-natural": 6,
+    "m6-natural": 6,
+    "m1-fixed": 6,
+    "m2-fixed": 6,
+    "m3-fixed": 6,
+    "m4-fixed": 6,
+    "m6-fixed": 6
+  },
+  "target_truth_reads": 0,
+  "score_feedback_used": false,
+  "conditional_on_fixed_G_per_contract": true,
+  "all_F_shared_worker_seconds": 901052.5861427851,
+  "new_F_shared_worker_seconds": 884428.9220740863,
+  "m3_crossed": {
+    "contract": "m3-natural",
+    "F_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "G_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "crossed_cells": 9,
+    "new_score_rows": 6,
+    "reused_main_rows": 3,
+    "additional_serialized_CM_recomputed": 3612,
+    "same_F_raw_identical": true,
+    "diagonal_system_repeats": 3,
+    "full_grid_not9_independent_repeats": true
+  }
+}
