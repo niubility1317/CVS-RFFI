@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "用户 /goal 授权持续设计迭代 PAMF 半监督机制，使目标测试 clean 相对监督/普通PL均至少高1pp、六景均值均严格高1.5pp；三GPU每卡固定一个模型种子、最多两个本任务worker；追加要求同时报告单PAMF与固定DURA+PAMF。",
   "code": {
-    "commit": "ab13d3086b0e9a2733a24bfcad43c4d8bc26490e",
+    "commit": "a3371f1339f8687ee6593afb71b8e0a79574a9cd",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 ordinary account CVS-RFFI Py3.10/Torch2.1 FP32/TF32off, CPU2 per worker",
     "cwd": "PROJECT/releases/20261023-phase1-PAMF-U-CMR-m3-r01",
@@ -270,5 +270,12 @@
     "Gradient/compute changes and extra raw forward disclosed;not a same-FLOP or single-change control. Moment alignment can still remove useful variability;target benefit unproven.",
     "Recipe/source parents/matrix/resource fixed before UMIX or UGP target scores. Prior engineering benchmark exposure disclosed;no fresh blind-test claim."
   ],
-  "registered_at": "2026-10-23T14:08:34+00:00"
+  "registered_at": "2026-10-23T14:08:34+00:00",
+  "launch_status": {
+    "status": "VERIFIED_QUEUED",
+    "evidence": "queue_verification.json",
+    "source_smoke": "PENDING",
+    "training_started": false,
+    "target_prediction_started": false
+  }
 }
