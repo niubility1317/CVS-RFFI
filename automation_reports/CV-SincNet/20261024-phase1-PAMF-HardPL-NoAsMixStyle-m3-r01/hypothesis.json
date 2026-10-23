@@ -1,0 +1,36 @@
+{
+  "method": "HPL_NAMS2",
+  "matched_counterpart": "20261024-phase1-PAMF-HardPL-noUAs-m3-r01/HPL_NO_UAS-sSEED",
+  "parent": "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01/F21-sSEED/source/segment30",
+  "only_changed_factor": "Accepted-only same-pseudo cross-source-RX style in all six existing supervised U forwards",
+  "style": {
+    "levels": [
+      "time_down",
+      "t2.pool"
+    ],
+    "alpha": 0.1,
+    "probability_per_level": 0.5,
+    "eps": 1e-06,
+    "accepted_only": true,
+    "same_hard_pseudo": true,
+    "different_source_RX": true,
+    "detached_moments": true
+  },
+  "one_shared_plan_per_U_batch": true,
+  "style_before_contrast_capture": true,
+  "gate": 0.95,
+  "weight": 2.0,
+  "U_CE_LS": 0.01,
+  "U_forwards_per_record": 6,
+  "CE_normalizer": 1.25,
+  "As_KL": 0,
+  "ordinary_raw_RDrop_KL": 1.0,
+  "contrast_weight": 0.1,
+  "physical_U": false,
+  "original_L_unchanged": true,
+  "source_basis": "Original F21 fullV high-purity PL;source receiver/style interaction;source raw/ordinary versus physical-view difficulty motivated earlier fixed no-U-channel factor.Source pair identity rule now passed for unchanged original parents.No target-derived parameter or parent choice.",
+  "source_pair_reference": "20261024-phase1-PAMF-HardPL-MixStyle-m3-r02",
+  "source_rule_unchanged": true,
+  "new_target_reads": 0,
+  "limitations": "Reuses frozen single-forward V pairing diagnostic,not proof of six-view optimizer behavior.Real checkpoint joint six-forward smoke required.Pooled length1 layer mean interpolation;no target guarantee.Historical target benchmark already exposed."
+}

@@ -7,7 +7,7 @@ from .u_mixstyle_objective import protected_partners,mix_moments
 
 
 @contextmanager
-def style_hooks(backbone,prefix,recipe,partner,valid,lam,*,force=False,capture=None):
+def style_hooks(backbone,prefix,recipe,partner,valid,lam,*,force=False,capture=None,enabled_by_level=None,prepend=False):
     observed=set();handles=[];applied={}
     try:
         for name in recipe['levels']:
@@ -15,13 +15,14 @@ def style_hooks(backbone,prefix,recipe,partner,valid,lam,*,force=False,capture=N
                 if name in observed or not torch.is_tensor(output) or len(output)!=len(partner):
                     raise ValueError('Exactly one aligned U feature tensor per declared style level required')
                 observed.add(name)
-                enabled=force or bool(torch.rand((),device=output.device)<recipe['probability_per_level'])
+                enabled=force or (bool(enabled_by_level[name]) if enabled_by_level is not None
+                                  else bool(torch.rand((),device=output.device)<recipe['probability_per_level']))
                 value=mix_moments(output,partner,valid,lam,recipe['eps']) if enabled else output
                 applied[name]=int(valid.sum()) if enabled else 0
                 if capture is not None:
                     value.retain_grad();capture[name]=value
                 return value
-            handles.append(backbone.get_submodule(prefix+name).register_forward_hook(transform))
+            handles.append(backbone.get_submodule(prefix+name).register_forward_hook(transform,prepend=prepend))
         yield applied
         if observed!=set(recipe['levels']):raise ValueError('Actual shallow/middle style hooks missing')
     finally:
@@ -34,6 +35,7 @@ class HardPLMixStyleObjective(HardPLObjective):
         self.style_calls=self.style_seen=self.style_eligible=0
         self.style_applied={name:0 for name in c['hard_pl_mixstyle']['levels']}
         self.style_active=False
+        self.expected_style_forwards=1
 
     def loss(self,student,device):
         value=super().loss(student,device)
@@ -63,8 +65,10 @@ class HardPLMixStyleObjective(HardPLObjective):
 
     def state_dict(self):
         value=super().state_dict()
-        if (self.style_active or self.style_calls!=self.calls or self.style_seen!=self.seen
-            or self.style_eligible>self.accepted or any(v>self.style_eligible for v in self.style_applied.values())):
+        if (self.style_active or self.style_calls!=self.expected_style_forwards*self.calls
+            or self.style_seen!=self.expected_style_forwards*self.seen
+            or self.style_eligible>self.expected_style_forwards*self.accepted
+            or any(v>self.style_eligible for v in self.style_applied.values())):
             raise ValueError('Actual U style counters or transient-hook lifetime differ')
         value['U_style']=dict(recipe=self.c['hard_pl_mixstyle'],calls=self.style_calls,seen=self.style_seen,
             eligible=self.style_eligible,applied=dict(self.style_applied),persistent_hooks=False,

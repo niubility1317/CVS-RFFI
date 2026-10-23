@@ -65,7 +65,8 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None):
                 raise ValueError('Smoothed ordinary PL must keep L Practical64 and U physical0')
             if c.get('hard_pl_mixstyle'):
                 style=state['U_style']
-                if (style['calls']!=1 or style['seen']!=256 or style['eligible']<=0 or obj.style_active
+                style_passes=6 if mechanisms else 1
+                if (style['calls']!=style_passes or style['seen']!=256*style_passes or style['eligible']<=0 or obj.style_active
                     or not all(v>0 for v in style['applied'].values())
                     or not all(h.grad is not None and bool(torch.isfinite(h.grad).all())
                                and float(h.grad.norm())>0 for h in obj.style_smoke_maps.values())):

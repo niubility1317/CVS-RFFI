@@ -1,0 +1,338 @@
+{
+  "status": "FROZEN_F21_E30_SOURCE_VIEW_RELIABILITY",
+  "observed_unix": 1792773458.863066,
+  "seconds": 33.48527760617435,
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "role": "V",
+      "samples": 720,
+      "accepted": 674,
+      "source_epoch": 30,
+      "simulator_coverage": {
+        "practical_low_urban": 251,
+        "practical_low_suburban": 222,
+        "practical_mid_urban": 247
+      },
+      "views": {
+        "raw": {
+          "pseudo_agreement": 720,
+          "accepted_pseudo_agreement": 674,
+          "mean_confidence": 0.9808476567268372,
+          "confidence_ge95": 674,
+          "hard_CE_to_raw_pseudo_mean": 0.0244216937571764,
+          "hard_CE_to_raw_pseudo_mean_accepted": 0.0020971677731722593,
+          "correct": 704,
+          "confident_wrong_ge95": 0,
+          "accepted_view_correct": 674,
+          "correct_raw_pseudo_on_view_error": 0,
+          "raw_wrong_view_correct": 0,
+          "accepted_nonzero_gradient_records": 674,
+          "accepted_pseudo_vs_true_logit_gradient_negative": 0,
+          "accepted_pseudo_vs_true_logit_gradient_mean_cosine": 1.0
+        },
+        "ordinary": {
+          "pseudo_agreement": 719,
+          "accepted_pseudo_agreement": 674,
+          "mean_confidence": 0.980143129825592,
+          "confidence_ge95": 670,
+          "hard_CE_to_raw_pseudo_mean": 0.025509057566523552,
+          "hard_CE_to_raw_pseudo_mean_accepted": 0.0025682607665657997,
+          "correct": 703,
+          "confident_wrong_ge95": 0,
+          "accepted_view_correct": 674,
+          "correct_raw_pseudo_on_view_error": 0,
+          "raw_wrong_view_correct": 0,
+          "accepted_nonzero_gradient_records": 674,
+          "accepted_pseudo_vs_true_logit_gradient_negative": 0,
+          "accepted_pseudo_vs_true_logit_gradient_mean_cosine": 1.0
+        },
+        "physical": {
+          "pseudo_agreement": 546,
+          "accepted_pseudo_agreement": 523,
+          "mean_confidence": 0.7635839581489563,
+          "confidence_ge95": 368,
+          "hard_CE_to_raw_pseudo_mean": 0.6023522019386292,
+          "hard_CE_to_raw_pseudo_mean_accepted": 0.5618923306465149,
+          "correct": 540,
+          "confident_wrong_ge95": 0,
+          "accepted_view_correct": 523,
+          "correct_raw_pseudo_on_view_error": 151,
+          "raw_wrong_view_correct": 2,
+          "accepted_nonzero_gradient_records": 674,
+          "accepted_pseudo_vs_true_logit_gradient_negative": 0,
+          "accepted_pseudo_vs_true_logit_gradient_mean_cosine": 1.0
+        }
+      },
+      "raw_correct": 704,
+      "accepted_pseudo_correct": 674,
+      "accepted_pseudo_accuracy_percent": 100.0
+    },
+    {
+      "model_seed": 2026092701,
+      "role": "U_s",
+      "samples": 960,
+      "accepted": 915,
+      "source_epoch": 30,
+      "simulator_coverage": {
+        "practical_low_urban": 329,
+        "practical_low_suburban": 333,
+        "practical_mid_urban": 298
+      },
+      "views": {
+        "raw": {
+          "pseudo_agreement": 960,
+          "accepted_pseudo_agreement": 915,
+          "mean_confidence": 0.9855244755744934,
+          "confidence_ge95": 915,
+          "hard_CE_to_raw_pseudo_mean": 0.01888827048242092,
+          "hard_CE_to_raw_pseudo_mean_accepted": 0.0019716660026460886
+        },
+        "ordinary": {
+          "pseudo_agreement": 956,
+          "accepted_pseudo_agreement": 915,
+          "mean_confidence": 0.9855731725692749,
+          "confidence_ge95": 917,
+          "hard_CE_to_raw_pseudo_mean": 0.020696468651294708,
+          "hard_CE_to_raw_pseudo_mean_accepted": 0.0021260653156787157
+        },
+        "physical": {
+          "pseudo_agreement": 738,
+          "accepted_pseudo_agreement": 718,
+          "mean_confidence": 0.7730611562728882,
+          "confidence_ge95": 484,
+          "hard_CE_to_raw_pseudo_mean": 0.624178946018219,
+          "hard_CE_to_raw_pseudo_mean_accepted": 0.5898629426956177
+        }
+      }
+    },
+    {
+      "model_seed": 2026092702,
+      "role": "V",
+      "samples": 720,
+      "accepted": 681,
+      "source_epoch": 30,
+      "simulator_coverage": {
+        "practical_low_urban": 251,
+        "practical_low_suburban": 222,
+        "practical_mid_urban": 247
+      },
+      "views": {
+        "raw": {
+          "pseudo_agreement": 720,
+          "accepted_pseudo_agreement": 681,
+          "mean_confidence": 0.9816396236419678,
+          "confidence_ge95": 681,
+          "hard_CE_to_raw_pseudo_mean": 0.023849517107009888,
+          "hard_CE_to_raw_pseudo_mean_accepted": 0.0019022660562768579,
+          "correct": 702,
+          "confident_wrong_ge95": 3,
+          "accepted_view_correct": 678,
+          "correct_raw_pseudo_on_view_error": 0,
+          "raw_wrong_view_correct": 0,
+          "accepted_nonzero_gradient_records": 681,
+          "accepted_pseudo_vs_true_logit_gradient_negative": 3,
+          "accepted_pseudo_vs_true_logit_gradient_mean_cosine": 0.9920077919960022
+        },
+        "ordinary": {
+          "pseudo_agreement": 718,
+          "accepted_pseudo_agreement": 681,
+          "mean_confidence": 0.9814406633377075,
+          "confidence_ge95": 680,
+          "hard_CE_to_raw_pseudo_mean": 0.02586672268807888,
+          "hard_CE_to_raw_pseudo_mean_accepted": 0.0020896191708743572,
+          "correct": 702,
+          "confident_wrong_ge95": 2,
+          "accepted_view_correct": 678,
+          "correct_raw_pseudo_on_view_error": 0,
+          "raw_wrong_view_correct": 1,
+          "accepted_nonzero_gradient_records": 681,
+          "accepted_pseudo_vs_true_logit_gradient_negative": 3,
+          "accepted_pseudo_vs_true_logit_gradient_mean_cosine": 0.9920151233673096
+        },
+        "physical": {
+          "pseudo_agreement": 541,
+          "accepted_pseudo_agreement": 520,
+          "mean_confidence": 0.758484423160553,
+          "confidence_ge95": 354,
+          "hard_CE_to_raw_pseudo_mean": 0.60655677318573,
+          "hard_CE_to_raw_pseudo_mean_accepted": 0.5686454772949219,
+          "correct": 532,
+          "confident_wrong_ge95": 0,
+          "accepted_view_correct": 518,
+          "correct_raw_pseudo_on_view_error": 160,
+          "raw_wrong_view_correct": 1,
+          "accepted_nonzero_gradient_records": 681,
+          "accepted_pseudo_vs_true_logit_gradient_negative": 3,
+          "accepted_pseudo_vs_true_logit_gradient_mean_cosine": 0.994141697883606
+        }
+      },
+      "raw_correct": 702,
+      "accepted_pseudo_correct": 678,
+      "accepted_pseudo_accuracy_percent": 99.55947136563877
+    },
+    {
+      "model_seed": 2026092702,
+      "role": "U_s",
+      "samples": 960,
+      "accepted": 923,
+      "source_epoch": 30,
+      "simulator_coverage": {
+        "practical_low_urban": 329,
+        "practical_low_suburban": 333,
+        "practical_mid_urban": 298
+      },
+      "views": {
+        "raw": {
+          "pseudo_agreement": 960,
+          "accepted_pseudo_agreement": 923,
+          "mean_confidence": 0.9873708486557007,
+          "confidence_ge95": 923,
+          "hard_CE_to_raw_pseudo_mean": 0.016419541090726852,
+          "hard_CE_to_raw_pseudo_mean_accepted": 0.0018418346298858523
+        },
+        "ordinary": {
+          "pseudo_agreement": 959,
+          "accepted_pseudo_agreement": 923,
+          "mean_confidence": 0.9872869253158569,
+          "confidence_ge95": 925,
+          "hard_CE_to_raw_pseudo_mean": 0.016495825722813606,
+          "hard_CE_to_raw_pseudo_mean_accepted": 0.002086604479700327
+        },
+        "physical": {
+          "pseudo_agreement": 734,
+          "accepted_pseudo_agreement": 717,
+          "mean_confidence": 0.7671234011650085,
+          "confidence_ge95": 482,
+          "hard_CE_to_raw_pseudo_mean": 0.6137629151344299,
+          "hard_CE_to_raw_pseudo_mean_accepted": 0.5891558527946472
+        }
+      }
+    },
+    {
+      "model_seed": 2026092703,
+      "role": "V",
+      "samples": 720,
+      "accepted": 678,
+      "source_epoch": 30,
+      "simulator_coverage": {
+        "practical_low_urban": 251,
+        "practical_low_suburban": 222,
+        "practical_mid_urban": 247
+      },
+      "views": {
+        "raw": {
+          "pseudo_agreement": 720,
+          "accepted_pseudo_agreement": 678,
+          "mean_confidence": 0.9826005697250366,
+          "confidence_ge95": 678,
+          "hard_CE_to_raw_pseudo_mean": 0.022731516510248184,
+          "hard_CE_to_raw_pseudo_mean_accepted": 0.0022013792768120766,
+          "correct": 704,
+          "confident_wrong_ge95": 1,
+          "accepted_view_correct": 677,
+          "correct_raw_pseudo_on_view_error": 0,
+          "raw_wrong_view_correct": 0,
+          "accepted_nonzero_gradient_records": 678,
+          "accepted_pseudo_vs_true_logit_gradient_negative": 1,
+          "accepted_pseudo_vs_true_logit_gradient_mean_cosine": 0.9970511198043823
+        },
+        "ordinary": {
+          "pseudo_agreement": 719,
+          "accepted_pseudo_agreement": 678,
+          "mean_confidence": 0.9809423089027405,
+          "confidence_ge95": 676,
+          "hard_CE_to_raw_pseudo_mean": 0.024894505739212036,
+          "hard_CE_to_raw_pseudo_mean_accepted": 0.0025291049387305975,
+          "correct": 704,
+          "confident_wrong_ge95": 1,
+          "accepted_view_correct": 677,
+          "correct_raw_pseudo_on_view_error": 0,
+          "raw_wrong_view_correct": 0,
+          "accepted_nonzero_gradient_records": 678,
+          "accepted_pseudo_vs_true_logit_gradient_negative": 1,
+          "accepted_pseudo_vs_true_logit_gradient_mean_cosine": 0.9970517754554749
+        },
+        "physical": {
+          "pseudo_agreement": 544,
+          "accepted_pseudo_agreement": 525,
+          "mean_confidence": 0.7603548765182495,
+          "confidence_ge95": 348,
+          "hard_CE_to_raw_pseudo_mean": 0.6072689294815063,
+          "hard_CE_to_raw_pseudo_mean_accepted": 0.5595365762710571,
+          "correct": 537,
+          "confident_wrong_ge95": 0,
+          "accepted_view_correct": 524,
+          "correct_raw_pseudo_on_view_error": 153,
+          "raw_wrong_view_correct": 1,
+          "accepted_nonzero_gradient_records": 678,
+          "accepted_pseudo_vs_true_logit_gradient_negative": 1,
+          "accepted_pseudo_vs_true_logit_gradient_mean_cosine": 0.9978240728378296
+        }
+      },
+      "raw_correct": 704,
+      "accepted_pseudo_correct": 677,
+      "accepted_pseudo_accuracy_percent": 99.85250737463127
+    },
+    {
+      "model_seed": 2026092703,
+      "role": "U_s",
+      "samples": 960,
+      "accepted": 921,
+      "source_epoch": 30,
+      "simulator_coverage": {
+        "practical_low_urban": 329,
+        "practical_low_suburban": 333,
+        "practical_mid_urban": 298
+      },
+      "views": {
+        "raw": {
+          "pseudo_agreement": 960,
+          "accepted_pseudo_agreement": 921,
+          "mean_confidence": 0.9865490198135376,
+          "confidence_ge95": 921,
+          "hard_CE_to_raw_pseudo_mean": 0.017180386930704117,
+          "hard_CE_to_raw_pseudo_mean_accepted": 0.0022232504561543465
+        },
+        "ordinary": {
+          "pseudo_agreement": 957,
+          "accepted_pseudo_agreement": 921,
+          "mean_confidence": 0.9862898588180542,
+          "confidence_ge95": 921,
+          "hard_CE_to_raw_pseudo_mean": 0.0185138788074255,
+          "hard_CE_to_raw_pseudo_mean_accepted": 0.002475173445418477
+        },
+        "physical": {
+          "pseudo_agreement": 725,
+          "accepted_pseudo_agreement": 706,
+          "mean_confidence": 0.7690204381942749,
+          "confidence_ge95": 475,
+          "hard_CE_to_raw_pseudo_mean": 0.6117618680000305,
+          "hard_CE_to_raw_pseudo_mean_accepted": 0.5868530869483948
+        }
+      }
+    }
+  ],
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "teacher_method": "actual_F21_current_student_eval_hard_argmax",
+  "threshold": 0.95,
+  "U_sampling_seed": 2026102307,
+  "ordinary_noise_seed": 2026102313,
+  "physical_epoch": 31,
+  "physical_step": 6661,
+  "all_views_same_physical_records": true,
+  "GPU_workers": 0,
+  "model_updates": 0,
+  "teacher_updates": 0,
+  "prototype_updates": 0,
+  "normalization_updates": 0,
+  "head_fit_updates": 0,
+  "U_truth_reads": 0,
+  "target_reads": 0,
+  "live_jobs_changed": false,
+  "interpretation": "Paired source difficulty/CE and logit-gradient diagnosis only.A strong-view teacher error does not invalidate a correct raw pseudo label or prove removing that view improves target recognition.No parameter-gradient or Adam-step guarantee."
+}

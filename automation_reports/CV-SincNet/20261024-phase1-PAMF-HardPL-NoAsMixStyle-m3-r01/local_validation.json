@@ -1,0 +1,17 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "focused_tests": 48,
+  "independent_review": {
+    "status": "PASS",
+    "review_count": 1,
+    "initial_P0_P1_findings": 0,
+    "unresolved_P0_P1_findings": 0,
+    "targeted_recheck_count": 0,
+    "reviewer": "independent ssl_p0p1_review;read-only,no target-score access",
+    "scope": "Only defects directly making next real run wrong,unauthorized,destructive,unlaunchable or unable to produce legal predictions",
+    "evidence": "PASS0P0P1.Six U forwards share one style plan;style before actual CRIC capture;unchanged original-parent source diagnostic reuse and GPU starting-PID reservations checked."
+  },
+  "real_checkpoint_smoke": "PENDING_FIRST_GPU_STEP",
+  "source_pair_reference": "20261024-phase1-PAMF-HardPL-MixStyle-m3-r02",
+  "new_target_reads": 0
+}

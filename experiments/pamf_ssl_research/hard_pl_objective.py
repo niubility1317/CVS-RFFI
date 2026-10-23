@@ -80,7 +80,7 @@ class HardPLObjective:
                                 current[name]=output
                                 if self.c.get('hard_pl_smoke'):output.retain_grad()
                             handles.append(student.get_submodule(PREFIX+name).register_forward_hook(capture))
-                        outputs.append(student.forward_identity_only(ordinary,domain_labels=domain)['tx_logits'])
+                        outputs.append(self.unlabeled_student_forward(student,ordinary,domain,pseudo,accepted,batch[3]))
                     finally:
                         for handle in handles:handle.remove()
                     if set(current)!=set(self.contrast_anchors):raise ValueError('Actual U shallow/middle maps missing')
@@ -96,7 +96,7 @@ class HardPLObjective:
                 auxiliaries.append(value)
                 for stat in stats:self.contrast_anchors[stat['level']]+=stat['valid_anchors']
             aux=torch.stack(auxiliaries).mean()
-            more=[student.forward_identity_only(value,domain_labels=domain)['tx_logits'] for value in (mixed,mixed,x,x)]
+            more=[self.unlabeled_student_forward(student,value,domain,pseudo,accepted,batch[3]) for value in (mixed,mixed,x,x)]
             base,detail=mechanism_loss(*outputs,*more,pseudo,accepted,physical,aux);views=6*n
             if no_uas:self.raw_As_seen+=int(physical.sum())
             else:

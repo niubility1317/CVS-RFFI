@@ -196,3 +196,8 @@ HPL2 三seed双读出七景42cell已全部独立评分。为符合逐row自动�
 ## HPL_LS2 完整双读出结果
 
 `20261024-phase1-PAMF-HardPL-LS-m3-r01` 各方法三seed、共3模型，每景168000条，raw／同一DURA七景预测与独立truth-last全部42cell完成；全部新增13320条闭合训练记录已核对。HPL_LS2 / raw clean=85.070040%；HPL_LS2 / DURA-LU clean=85.100397%；HPL_LS2 / raw six_mean=70.300331%；HPL_LS2 / DURA-LU six_mean=78.131581%；原数值目标仍未满足，维持ACTIVE。全部结果、匹配基线、逐seed／场景／分层及成本均保存，不从本结果热改其他已固定方法、父权重或矩阵。
+
+
+## 监督 U 与统计混合的独立源因子组合
+
+`20261024-phase1-PAMF-HardPL-NoAsMixStyle-m3-r01` 固定原 F21 E30＋20，与 HPL_NO_UAS 匹配，只增加 accepted-only 同伪类跨源RX的浅中层MixStyle；一批的六前向共享同一计划，门控0.95／权重2／RDrop／LS0.01／AsKL0／对比0.1／CE剂量1.25保持。复用同父／数据／STYLE的既有源身份配对诊断，通过真实六前向smoke后用每卡第二名额与MS并行；48检查与一次P0/P1通过。完整双七景自动truth-last，不依已暴露目标分数选参数、父模型或种子。goal ACTIVE。
