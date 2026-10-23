@@ -1,0 +1,21 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "focused_tests": 166,
+  "independent_review": {
+    "status": "PASS",
+    "review_count": 1,
+    "initial_P0_P1_findings": 0,
+    "unresolved_P0_P1_findings": 0,
+    "targeted_recheck_count": 0,
+    "reviewer": "independent ssl_p0p1_review;read-only,no target-score access",
+    "scope": "Only defects directly making next real run wrong,unauthorized,destructive,unlaunchable or unable to produce legal predictions"
+  },
+  "method": "HPL_LS2",
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "real_source_checkpoint_smoke": "PENDING_FIRST_GPU_STEP",
+  "new_method_target_reads": 0
+}

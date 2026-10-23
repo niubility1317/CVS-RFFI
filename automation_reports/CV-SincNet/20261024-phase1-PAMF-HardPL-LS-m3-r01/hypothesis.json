@@ -1,0 +1,32 @@
+{
+  "method": "HPL_LS2",
+  "weight_parent": "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01/F21-sSEED/source/segment30",
+  "matched_counterpart": "20261024-phase1-PAMF-HardPL-T1U-m6-r01/HPL2-sSEED",
+  "only_changed_factor": "U hard-pseudo CE label_smoothing 0->.01",
+  "gate": 0.95,
+  "weight": 2.0,
+  "U_student_forwards_per_record": 1,
+  "unchanged": [
+    "current-student eval hard pseudo labels",
+    "full U batch denominator",
+    "original raw U IQ",
+    "original full supervised L",
+    "default joint head",
+    "fixed original F21 E30+20"
+  ],
+  "source_evidence": {
+    "full_V_precision_percent": [
+      99.88682485170153,
+      99.83656951632359,
+      99.90266692622153
+    ],
+    "all_source_gradient_probes": 24,
+    "hard_conflicts": 13,
+    "smoothed_conflicts": 8,
+    "cosine_improved": 19,
+    "weight2_U_L_norm_ratio_median": 0.2985184145548332
+  },
+  "source_diagnostic_is_exploratory": true,
+  "new_method_target_reads": 0,
+  "inference": "Supervised smoothing may reduce confidence-objective mismatch;source Euclidean alignment is not an Adam or target guarantee.No larger PL weight selected from low scalar loss."
+}

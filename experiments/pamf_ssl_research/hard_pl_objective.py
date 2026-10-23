@@ -51,8 +51,10 @@ class HardPLObjective:
         accepted=confidence>=self.settings['threshold'];detail={}
         if self.settings['method']=='HPL2':
             logits=student.forward_identity_only(x,domain_labels=domain)['tx_logits']
-            base=(F.cross_entropy(logits,pseudo,reduction='none')*accepted).mean();views=n
+            smoothing=self.c.get('hard_pl_label_smoothing',0.)
+            base=(F.cross_entropy(logits,pseudo,reduction='none',label_smoothing=smoothing)*accepted).mean();views=n
         else:
+            smoothing=.01
             step=student._feature_l_steps+self.c.get('step_offset',0);epoch=(step-1)//222+1
             meta={k:v.to(device) if torch.is_tensor(v) else v for k,v in batch[3].items()}
             rx=meta['rx_i'].long()
@@ -105,6 +107,7 @@ class HardPLObjective:
             HPL_student_views=self.student_views,HPL_physical_seen=self.physical_seen,
             HPL_physical_student_views=self.physical_student_views,HPL_EMA_updates=0.,
             HPL_raw_As_seen=self.raw_As_seen,
+            HPL_label_smoothing=smoothing,
             **{'HPL_'+key:value for key,value in detail.items()},
             **{'HPL_anchors_'+key:value for key,value in self.contrast_anchors.items()})
         return loss
@@ -114,4 +117,5 @@ class HardPLObjective:
             student_views=self.student_views,physical_seen=self.physical_seen,
             physical_student_views=self.physical_student_views,contrast_anchors=self.contrast_anchors,
             raw_As_seen=self.raw_As_seen,
+            label_smoothing=self.c.get('hard_pl_label_smoothing',0.) if self.settings['method']=='HPL2' else .01,
             EMA_updates=0,U_truth_read=False)

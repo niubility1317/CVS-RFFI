@@ -1,0 +1,1368 @@
+{
+  "status": "FROZEN_F21_E30_HARD_PL_SOURCE_GRADIENTS",
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "source_epoch": 30,
+      "probe": 1,
+      "L_records": 128,
+      "U_records": 256,
+      "U_accepted": 244,
+      "L_forward_packets": 768,
+      "L_loss": 0.43833601474761963,
+      "weight2_U_loss": 0.013832165859639645,
+      "gradients": {
+        "all": {
+          "L_norm": 1.1984003061969906,
+          "weight2_U_norm": 0.22696272268800025,
+          "dot": 0.04498291354854449,
+          "cosine": 0.16538310344847337,
+          "weight2_U_to_L_norm_ratio": 0.18938807134341018,
+          "parameters_with_gradient": 232993
+        },
+        "time_down": {
+          "L_norm": 0.0,
+          "weight2_U_norm": 0.0,
+          "dot": 0.0,
+          "cosine": null,
+          "weight2_U_to_L_norm_ratio": null,
+          "parameters_with_gradient": 0
+        },
+        "t2": {
+          "L_norm": 0.177666060604528,
+          "weight2_U_norm": 0.03704847630642685,
+          "dot": -0.000978636182536559,
+          "cosine": -0.14867790893097718,
+          "weight2_U_to_L_norm_ratio": 0.20852872056917007,
+          "parameters_with_gradient": 7464
+        },
+        "cls_head": {
+          "L_norm": 0.5616215869328813,
+          "weight2_U_norm": 0.07910021547176088,
+          "dot": 0.019076341160610875,
+          "cosine": 0.4294114514022321,
+          "weight2_U_to_L_norm_ratio": 0.14084254827835535,
+          "parameters_with_gradient": 1760
+        },
+        "other": {
+          "L_norm": 1.0436375126897757,
+          "weight2_U_norm": 0.20948184600495395,
+          "dot": 0.026885208570470175,
+          "cosine": 0.12297514309530312,
+          "weight2_U_to_L_norm_ratio": 0.20072280217779315,
+          "parameters_with_gradient": 223769
+        }
+      },
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    },
+    {
+      "model_seed": 2026092701,
+      "source_epoch": 30,
+      "probe": 2,
+      "L_records": 128,
+      "U_records": 256,
+      "U_accepted": 244,
+      "L_forward_packets": 768,
+      "L_loss": 0.41582247614860535,
+      "weight2_U_loss": 0.015280582010746002,
+      "gradients": {
+        "all": {
+          "L_norm": 1.1984541113012381,
+          "weight2_U_norm": 0.23422920646186907,
+          "dot": 0.05318421193021357,
+          "cosine": 0.1894611947673281,
+          "weight2_U_to_L_norm_ratio": 0.19544278270909468,
+          "parameters_with_gradient": 232993
+        },
+        "time_down": {
+          "L_norm": 0.0,
+          "weight2_U_norm": 0.0,
+          "dot": 0.0,
+          "cosine": null,
+          "weight2_U_to_L_norm_ratio": null,
+          "parameters_with_gradient": 0
+        },
+        "t2": {
+          "L_norm": 0.24317356618890607,
+          "weight2_U_norm": 0.03808937228496564,
+          "dot": -0.0026916025092046042,
+          "cosine": -0.29059674480384146,
+          "weight2_U_to_L_norm_ratio": 0.1566345095888277,
+          "parameters_with_gradient": 7464
+        },
+        "cls_head": {
+          "L_norm": 0.34402715230557773,
+          "weight2_U_norm": 0.0745691255830179,
+          "dot": 0.0009341441113977508,
+          "cosine": 0.036413473579058254,
+          "weight2_U_to_L_norm_ratio": 0.2167536052991039,
+          "parameters_with_gradient": 1760
+        },
+        "other": {
+          "L_norm": 1.1219644344088298,
+          "weight2_U_norm": 0.21875092317171665,
+          "dot": 0.05494167032802043,
+          "cosine": 0.22385813118878947,
+          "weight2_U_to_L_norm_ratio": 0.19497135244485525,
+          "parameters_with_gradient": 223769
+        }
+      },
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    },
+    {
+      "model_seed": 2026092701,
+      "source_epoch": 30,
+      "probe": 3,
+      "L_records": 128,
+      "U_records": 256,
+      "U_accepted": 245,
+      "L_forward_packets": 768,
+      "L_loss": 0.4237598180770874,
+      "weight2_U_loss": 0.022401830181479454,
+      "gradients": {
+        "all": {
+          "L_norm": 1.034361319028442,
+          "weight2_U_norm": 0.3044659171971446,
+          "dot": -0.082160645471528,
+          "cosine": -0.26088726970198783,
+          "weight2_U_to_L_norm_ratio": 0.2943516076984823,
+          "parameters_with_gradient": 232993
+        },
+        "time_down": {
+          "L_norm": 0.0,
+          "weight2_U_norm": 0.0,
+          "dot": 0.0,
+          "cosine": null,
+          "weight2_U_to_L_norm_ratio": null,
+          "parameters_with_gradient": 0
+        },
+        "t2": {
+          "L_norm": 0.12961554302578143,
+          "weight2_U_norm": 0.05123491869967649,
+          "dot": -0.00036421108914162597,
+          "cosine": -0.05484411458805307,
+          "weight2_U_to_L_norm_ratio": 0.3952837561270372,
+          "parameters_with_gradient": 7464
+        },
+        "cls_head": {
+          "L_norm": 0.41923928433042323,
+          "weight2_U_norm": 0.11859442458129997,
+          "dot": -0.005173513022876309,
+          "cosine": -0.10405412545540679,
+          "weight2_U_to_L_norm_ratio": 0.28288003775865106,
+          "parameters_with_gradient": 1760
+        },
+        "other": {
+          "L_norm": 0.9366651332159774,
+          "weight2_U_norm": 0.2756988217217593,
+          "dot": -0.07662292135951007,
+          "cosine": -0.296714958904321,
+          "weight2_U_to_L_norm_ratio": 0.2943408609383865,
+          "parameters_with_gradient": 223769
+        }
+      },
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    },
+    {
+      "model_seed": 2026092701,
+      "source_epoch": 30,
+      "probe": 4,
+      "L_records": 128,
+      "U_records": 256,
+      "U_accepted": 240,
+      "L_forward_packets": 768,
+      "L_loss": 0.39750391244888306,
+      "weight2_U_loss": 0.01968546025454998,
+      "gradients": {
+        "all": {
+          "L_norm": 0.6001965089975314,
+          "weight2_U_norm": 0.2708422169172068,
+          "dot": -0.0236004675278282,
+          "cosine": -0.1451813336195145,
+          "weight2_U_to_L_norm_ratio": 0.45125590178719405,
+          "parameters_with_gradient": 232993
+        },
+        "time_down": {
+          "L_norm": 0.0,
+          "weight2_U_norm": 0.0,
+          "dot": 0.0,
+          "cosine": null,
+          "weight2_U_to_L_norm_ratio": null,
+          "parameters_with_gradient": 0
+        },
+        "t2": {
+          "L_norm": 0.096923561532735,
+          "weight2_U_norm": 0.04831889743766514,
+          "dot": -0.000277887714481532,
+          "cosine": -0.05933664225959271,
+          "weight2_U_to_L_norm_ratio": 0.49852581429692816,
+          "parameters_with_gradient": 7464
+        },
+        "cls_head": {
+          "L_norm": 0.3571569032868014,
+          "weight2_U_norm": 0.08214407005889568,
+          "dot": -0.00827250909195383,
+          "cosine": -0.2819694044056918,
+          "weight2_U_to_L_norm_ratio": 0.22999435067039142,
+          "parameters_with_gradient": 1760
+        },
+        "other": {
+          "L_norm": 0.47252578666906236,
+          "weight2_U_norm": 0.2535214830526102,
+          "dot": -0.01505007072139284,
+          "cosine": -0.1256314175681557,
+          "weight2_U_to_L_norm_ratio": 0.5365241225028978,
+          "parameters_with_gradient": 223769
+        }
+      },
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    },
+    {
+      "model_seed": 2026092701,
+      "source_epoch": 30,
+      "probe": 5,
+      "L_records": 128,
+      "U_records": 256,
+      "U_accepted": 247,
+      "L_forward_packets": 768,
+      "L_loss": 0.3913400173187256,
+      "weight2_U_loss": 0.012522214092314243,
+      "gradients": {
+        "all": {
+          "L_norm": 0.5454372376879764,
+          "weight2_U_norm": 0.2169659191862526,
+          "dot": -0.008133066376533942,
+          "cosine": -0.06872551637960764,
+          "weight2_U_to_L_norm_ratio": 0.3977834738712329,
+          "parameters_with_gradient": 232993
+        },
+        "time_down": {
+          "L_norm": 0.0,
+          "weight2_U_norm": 0.0,
+          "dot": 0.0,
+          "cosine": null,
+          "weight2_U_to_L_norm_ratio": null,
+          "parameters_with_gradient": 0
+        },
+        "t2": {
+          "L_norm": 0.0990841321144871,
+          "weight2_U_norm": 0.03629704549339197,
+          "dot": -0.00028341670532492513,
+          "cosine": -0.07880432612572598,
+          "weight2_U_to_L_norm_ratio": 0.36632551266082064,
+          "parameters_with_gradient": 7464
+        },
+        "cls_head": {
+          "L_norm": 0.272892956563954,
+          "weight2_U_norm": 0.061567418069817234,
+          "dot": 0.003043980868706318,
+          "cosine": 0.1811751589022187,
+          "weight2_U_to_L_norm_ratio": 0.22561013975964808,
+          "parameters_with_gradient": 1760
+        },
+        "other": {
+          "L_norm": 0.4617505271005035,
+          "weight2_U_norm": 0.20485650492235405,
+          "dot": -0.010893630539915333,
+          "cosine": -0.11516366650619315,
+          "weight2_U_to_L_norm_ratio": 0.44365191353157996,
+          "parameters_with_gradient": 223769
+        }
+      },
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    },
+    {
+      "model_seed": 2026092701,
+      "source_epoch": 30,
+      "probe": 6,
+      "L_records": 128,
+      "U_records": 256,
+      "U_accepted": 242,
+      "L_forward_packets": 768,
+      "L_loss": 0.44806402921676636,
+      "weight2_U_loss": 0.02286248467862606,
+      "gradients": {
+        "all": {
+          "L_norm": 0.7369818628352207,
+          "weight2_U_norm": 0.570021736982981,
+          "dot": -0.05781052426371723,
+          "cosine": -0.1376127553764062,
+          "weight2_U_to_L_norm_ratio": 0.773454226933167,
+          "parameters_with_gradient": 232993
+        },
+        "time_down": {
+          "L_norm": 0.0,
+          "weight2_U_norm": 0.0,
+          "dot": 0.0,
+          "cosine": null,
+          "weight2_U_to_L_norm_ratio": null,
+          "parameters_with_gradient": 0
+        },
+        "t2": {
+          "L_norm": 0.10906483032151165,
+          "weight2_U_norm": 0.11965603831938879,
+          "dot": -0.0020824621531207316,
+          "cosine": -0.15957239724570585,
+          "weight2_U_to_L_norm_ratio": 1.0971092878121698,
+          "parameters_with_gradient": 7464
+        },
+        "cls_head": {
+          "L_norm": 0.41402282311400646,
+          "weight2_U_norm": 0.17325849985645667,
+          "dot": 0.0010622613987550833,
+          "cosine": 0.014808551085911838,
+          "weight2_U_to_L_norm_ratio": 0.41847572207087663,
+          "parameters_with_gradient": 1760
+        },
+        "other": {
+          "L_norm": 0.5998601761041652,
+          "weight2_U_norm": 0.5297062443980568,
+          "dot": -0.056790323509351585,
+          "cosine": -0.17872661058865344,
+          "weight2_U_to_L_norm_ratio": 0.8830495263717487,
+          "parameters_with_gradient": 223769
+        }
+      },
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    },
+    {
+      "model_seed": 2026092701,
+      "source_epoch": 30,
+      "probe": 7,
+      "L_records": 128,
+      "U_records": 256,
+      "U_accepted": 245,
+      "L_forward_packets": 768,
+      "L_loss": 0.4708387851715088,
+      "weight2_U_loss": 0.012714991346001625,
+      "gradients": {
+        "all": {
+          "L_norm": 0.9763716809186693,
+          "weight2_U_norm": 0.2589765910658166,
+          "dot": 0.0838619969521746,
+          "cosine": 0.3316572652767425,
+          "weight2_U_to_L_norm_ratio": 0.2652438575667672,
+          "parameters_with_gradient": 232993
+        },
+        "time_down": {
+          "L_norm": 0.0,
+          "weight2_U_norm": 0.0,
+          "dot": 0.0,
+          "cosine": null,
+          "weight2_U_to_L_norm_ratio": null,
+          "parameters_with_gradient": 0
+        },
+        "t2": {
+          "L_norm": 0.12487205856875244,
+          "weight2_U_norm": 0.03508145955804383,
+          "dot": 0.0003876282742370385,
+          "cosine": 0.08848558420473013,
+          "weight2_U_to_L_norm_ratio": 0.2809392265983072,
+          "parameters_with_gradient": 7464
+        },
+        "cls_head": {
+          "L_norm": 0.5304794831097688,
+          "weight2_U_norm": 0.05469206666891151,
+          "dot": 0.008141858656260182,
+          "cosine": 0.28062776177187365,
+          "weight2_U_to_L_norm_ratio": 0.10309930621311969,
+          "parameters_with_gradient": 1760
+        },
+        "other": {
+          "L_norm": 0.8101235376708558,
+          "weight2_U_norm": 0.25069292722139547,
+          "dot": 0.07533251002167739,
+          "cosine": 0.3709275628892137,
+          "weight2_U_to_L_norm_ratio": 0.3094502450109643,
+          "parameters_with_gradient": 223769
+        }
+      },
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    },
+    {
+      "model_seed": 2026092701,
+      "source_epoch": 30,
+      "probe": 8,
+      "L_records": 128,
+      "U_records": 256,
+      "U_accepted": 247,
+      "L_forward_packets": 768,
+      "L_loss": 0.4207986295223236,
+      "weight2_U_loss": 0.028387250378727913,
+      "gradients": {
+        "all": {
+          "L_norm": 0.7041828703430056,
+          "weight2_U_norm": 0.5454202937530839,
+          "dot": -0.048867223711462036,
+          "cosine": -0.12723333674186998,
+          "weight2_U_to_L_norm_ratio": 0.774543540781404,
+          "parameters_with_gradient": 232993
+        },
+        "time_down": {
+          "L_norm": 0.0,
+          "weight2_U_norm": 0.0,
+          "dot": 0.0,
+          "cosine": null,
+          "weight2_U_to_L_norm_ratio": null,
+          "parameters_with_gradient": 0
+        },
+        "t2": {
+          "L_norm": 0.10751958350282423,
+          "weight2_U_norm": 0.10136350289357622,
+          "dot": -0.000897009776752955,
+          "cosine": -0.08230533611347864,
+          "weight2_U_to_L_norm_ratio": 0.9427445642115391,
+          "parameters_with_gradient": 7464
+        },
+        "cls_head": {
+          "L_norm": 0.3828854136164024,
+          "weight2_U_norm": 0.18429752405611988,
+          "dot": -0.014308516799239102,
+          "cosine": -0.20277121114824972,
+          "weight2_U_to_L_norm_ratio": 0.4813385872170106,
+          "parameters_with_gradient": 1760
+        },
+        "other": {
+          "L_norm": 0.5811297738781673,
+          "weight2_U_norm": 0.5032327093359773,
+          "dot": -0.03366169713546997,
+          "cosine": -0.1151049550328182,
+          "weight2_U_to_L_norm_ratio": 0.8659558190895222,
+          "parameters_with_gradient": 223769
+        }
+      },
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    },
+    {
+      "model_seed": 2026092702,
+      "source_epoch": 30,
+      "probe": 1,
+      "L_records": 128,
+      "U_records": 256,
+      "U_accepted": 244,
+      "L_forward_packets": 768,
+      "L_loss": 0.4356301724910736,
+      "weight2_U_loss": 0.022488098591566086,
+      "gradients": {
+        "all": {
+          "L_norm": 0.8087547627397483,
+          "weight2_U_norm": 0.390131745639491,
+          "dot": -0.011918258748140134,
+          "cosine": -0.037773277362295764,
+          "weight2_U_to_L_norm_ratio": 0.48238571642889067,
+          "parameters_with_gradient": 232993
+        },
+        "time_down": {
+          "L_norm": 0.0,
+          "weight2_U_norm": 0.0,
+          "dot": 0.0,
+          "cosine": null,
+          "weight2_U_to_L_norm_ratio": null,
+          "parameters_with_gradient": 0
+        },
+        "t2": {
+          "L_norm": 0.10687669050573105,
+          "weight2_U_norm": 0.0709345771831116,
+          "dot": 0.00035031301107641896,
+          "cosine": 0.04620779941343813,
+          "weight2_U_to_L_norm_ratio": 0.6637048438481342,
+          "parameters_with_gradient": 7464
+        },
+        "cls_head": {
+          "L_norm": 0.3928094193053658,
+          "weight2_U_norm": 0.12642331128936285,
+          "dot": 0.0003498119434927477,
+          "cosine": 0.007044101072015955,
+          "weight2_U_to_L_norm_ratio": 0.321843889367334,
+          "parameters_with_gradient": 1760
+        },
+        "other": {
+          "L_norm": 0.6988293063300579,
+          "weight2_U_norm": 0.36219913180211044,
+          "dot": -0.012618383702709297,
+          "cosine": -0.049852301742432784,
+          "weight2_U_to_L_norm_ratio": 0.5182941363810568,
+          "parameters_with_gradient": 223769
+        }
+      },
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    },
+    {
+      "model_seed": 2026092702,
+      "source_epoch": 30,
+      "probe": 2,
+      "L_records": 128,
+      "U_records": 256,
+      "U_accepted": 250,
+      "L_forward_packets": 768,
+      "L_loss": 0.4691868722438812,
+      "weight2_U_loss": 0.01803288236260414,
+      "gradients": {
+        "all": {
+          "L_norm": 1.197505950577896,
+          "weight2_U_norm": 0.2893862501826802,
+          "dot": -0.00016574284793507347,
+          "cosine": -0.0004782767004958424,
+          "weight2_U_to_L_norm_ratio": 0.24165746319926623,
+          "parameters_with_gradient": 232993
+        },
+        "time_down": {
+          "L_norm": 0.0,
+          "weight2_U_norm": 0.0,
+          "dot": 0.0,
+          "cosine": null,
+          "weight2_U_to_L_norm_ratio": null,
+          "parameters_with_gradient": 0
+        },
+        "t2": {
+          "L_norm": 0.16712372653828483,
+          "weight2_U_norm": 0.05248388043654769,
+          "dot": -0.0002090302718811745,
+          "cosine": -0.02383115750267685,
+          "weight2_U_to_L_norm_ratio": 0.3140420664598132,
+          "parameters_with_gradient": 7464
+        },
+        "cls_head": {
+          "L_norm": 0.566867276134571,
+          "weight2_U_norm": 0.08857153457980921,
+          "dot": 0.007718081400501515,
+          "cosine": 0.15372121145351503,
+          "weight2_U_to_L_norm_ratio": 0.15624739389398595,
+          "parameters_with_gradient": 1760
+        },
+        "other": {
+          "L_norm": 1.0415141155765477,
+          "weight2_U_norm": 0.2704531888355037,
+          "dot": -0.007674793976555412,
+          "cosine": -0.027246420775713494,
+          "weight2_U_to_L_norm_ratio": 0.2596730901585427,
+          "parameters_with_gradient": 223769
+        }
+      },
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    },
+    {
+      "model_seed": 2026092702,
+      "source_epoch": 30,
+      "probe": 3,
+      "L_records": 128,
+      "U_records": 256,
+      "U_accepted": 244,
+      "L_forward_packets": 768,
+      "L_loss": 0.466839075088501,
+      "weight2_U_loss": 0.015319169498980045,
+      "gradients": {
+        "all": {
+          "L_norm": 1.2054483677915453,
+          "weight2_U_norm": 0.34047119639541595,
+          "dot": -0.051087163649338824,
+          "cosine": -0.12447519099356506,
+          "weight2_U_to_L_norm_ratio": 0.28244361641069693,
+          "parameters_with_gradient": 232993
+        },
+        "time_down": {
+          "L_norm": 0.0,
+          "weight2_U_norm": 0.0,
+          "dot": 0.0,
+          "cosine": null,
+          "weight2_U_to_L_norm_ratio": null,
+          "parameters_with_gradient": 0
+        },
+        "t2": {
+          "L_norm": 0.1159389565096941,
+          "weight2_U_norm": 0.056045295418634435,
+          "dot": -0.0002141347067134087,
+          "cosine": -0.03295478730658757,
+          "weight2_U_to_L_norm_ratio": 0.4834034832282476,
+          "parameters_with_gradient": 7464
+        },
+        "cls_head": {
+          "L_norm": 0.5656630621812043,
+          "weight2_U_norm": 0.10735489441454235,
+          "dot": -0.007398950459826875,
+          "cosine": -0.12184015705065086,
+          "weight2_U_to_L_norm_ratio": 0.18978593723369605,
+          "parameters_with_gradient": 1760
+        },
+        "other": {
+          "L_norm": 1.05815368725839,
+          "weight2_U_norm": 0.3182051022243458,
+          "dot": -0.043474078482798544,
+          "cosine": -0.12911434500666982,
+          "weight2_U_to_L_norm_ratio": 0.30071728337383136,
+          "parameters_with_gradient": 223769
+        }
+      },
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    },
+    {
+      "model_seed": 2026092702,
+      "source_epoch": 30,
+      "probe": 4,
+      "L_records": 128,
+      "U_records": 256,
+      "U_accepted": 244,
+      "L_forward_packets": 768,
+      "L_loss": 0.4659181237220764,
+      "weight2_U_loss": 0.02214302122592926,
+      "gradients": {
+        "all": {
+          "L_norm": 1.6203677107678383,
+          "weight2_U_norm": 0.358695190110301,
+          "dot": 0.1251286631046957,
+          "cosine": 0.21528693313250313,
+          "weight2_U_to_L_norm_ratio": 0.22136653780907994,
+          "parameters_with_gradient": 232993
+        },
+        "time_down": {
+          "L_norm": 0.0,
+          "weight2_U_norm": 0.0,
+          "dot": 0.0,
+          "cosine": null,
+          "weight2_U_to_L_norm_ratio": null,
+          "parameters_with_gradient": 0
+        },
+        "t2": {
+          "L_norm": 0.22771209715012264,
+          "weight2_U_norm": 0.0659050190390814,
+          "dot": 0.004466171070292925,
+          "cosine": 0.29759851600221315,
+          "weight2_U_to_L_norm_ratio": 0.28942256412329526,
+          "parameters_with_gradient": 7464
+        },
+        "cls_head": {
+          "L_norm": 0.35015277832591724,
+          "weight2_U_norm": 0.12552330171624324,
+          "dot": -0.0003515303027988453,
+          "cosine": -0.00799798964195701,
+          "weight2_U_to_L_norm_ratio": 0.3584815243116761,
+          "parameters_with_gradient": 1760
+        },
+        "other": {
+          "L_norm": 1.5656090670218854,
+          "weight2_U_norm": 0.3294884953985135,
+          "dot": 0.12101402233720158,
+          "cosine": 0.23459141432269748,
+          "weight2_U_to_L_norm_ratio": 0.2104538753248723,
+          "parameters_with_gradient": 223769
+        }
+      },
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    },
+    {
+      "model_seed": 2026092702,
+      "source_epoch": 30,
+      "probe": 5,
+      "L_records": 128,
+      "U_records": 256,
+      "U_accepted": 248,
+      "L_forward_packets": 768,
+      "L_loss": 0.431784451007843,
+      "weight2_U_loss": 0.014720394276082516,
+      "gradients": {
+        "all": {
+          "L_norm": 1.0371664806678325,
+          "weight2_U_norm": 0.23993163500888887,
+          "dot": 0.029334982751083358,
+          "cosine": 0.1178826393430998,
+          "weight2_U_to_L_norm_ratio": 0.23133377281378847,
+          "parameters_with_gradient": 232993
+        },
+        "time_down": {
+          "L_norm": 0.0,
+          "weight2_U_norm": 0.0,
+          "dot": 0.0,
+          "cosine": null,
+          "weight2_U_to_L_norm_ratio": null,
+          "parameters_with_gradient": 0
+        },
+        "t2": {
+          "L_norm": 0.14726305114377278,
+          "weight2_U_norm": 0.038251602953393554,
+          "dot": 0.0007011456154023633,
+          "cosine": 0.12447002848531552,
+          "weight2_U_to_L_norm_ratio": 0.25975017260812117,
+          "parameters_with_gradient": 7464
+        },
+        "cls_head": {
+          "L_norm": 0.4266648540054541,
+          "weight2_U_norm": 0.06400942866806925,
+          "dot": -0.004324640749891057,
+          "cosine": -0.15835041852678966,
+          "weight2_U_to_L_norm_ratio": 0.1500227358010862,
+          "parameters_with_gradient": 1760
+        },
+        "other": {
+          "L_norm": 0.9338013732830062,
+          "weight2_U_norm": 0.22804998879877622,
+          "dot": 0.03295847788557206,
+          "cosine": 0.15476850340345874,
+          "weight2_U_to_L_norm_ratio": 0.24421680597556944,
+          "parameters_with_gradient": 223769
+        }
+      },
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    },
+    {
+      "model_seed": 2026092702,
+      "source_epoch": 30,
+      "probe": 6,
+      "L_records": 128,
+      "U_records": 256,
+      "U_accepted": 248,
+      "L_forward_packets": 768,
+      "L_loss": 0.4550274908542633,
+      "weight2_U_loss": 0.012232066132128239,
+      "gradients": {
+        "all": {
+          "L_norm": 1.0130239264854128,
+          "weight2_U_norm": 0.2685582480119587,
+          "dot": 0.02573672266485542,
+          "cosine": 0.09460085130493179,
+          "weight2_U_to_L_norm_ratio": 0.26510553303878537,
+          "parameters_with_gradient": 232993
+        },
+        "time_down": {
+          "L_norm": 0.0,
+          "weight2_U_norm": 0.0,
+          "dot": 0.0,
+          "cosine": null,
+          "weight2_U_to_L_norm_ratio": null,
+          "parameters_with_gradient": 0
+        },
+        "t2": {
+          "L_norm": 0.17201259495074497,
+          "weight2_U_norm": 0.04515727964718356,
+          "dot": 0.0007345413596630481,
+          "cosine": 0.09456452285214963,
+          "weight2_U_to_L_norm_ratio": 0.262523099893436,
+          "parameters_with_gradient": 7464
+        },
+        "cls_head": {
+          "L_norm": 0.4219335258458951,
+          "weight2_U_norm": 0.06162574420045871,
+          "dot": 0.002042951704680459,
+          "cosine": 0.07856911989671843,
+          "weight2_U_to_L_norm_ratio": 0.14605557611690376,
+          "parameters_with_gradient": 1760
+        },
+        "other": {
+          "L_norm": 0.904765849586226,
+          "weight2_U_norm": 0.25746188129868547,
+          "dot": 0.022959229600511912,
+          "cosine": 0.09856169714329827,
+          "weight2_U_to_L_norm_ratio": 0.2845618912522282,
+          "parameters_with_gradient": 223769
+        }
+      },
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    },
+    {
+      "model_seed": 2026092702,
+      "source_epoch": 30,
+      "probe": 7,
+      "L_records": 128,
+      "U_records": 256,
+      "U_accepted": 244,
+      "L_forward_packets": 768,
+      "L_loss": 0.47271600365638733,
+      "weight2_U_loss": 0.020236819982528687,
+      "gradients": {
+        "all": {
+          "L_norm": 0.9659720841068546,
+          "weight2_U_norm": 0.4768819620431593,
+          "dot": 0.04800380527745727,
+          "cosine": 0.10420779199566864,
+          "weight2_U_to_L_norm_ratio": 0.49368089398161863,
+          "parameters_with_gradient": 232993
+        },
+        "time_down": {
+          "L_norm": 0.0,
+          "weight2_U_norm": 0.0,
+          "dot": 0.0,
+          "cosine": null,
+          "weight2_U_to_L_norm_ratio": null,
+          "parameters_with_gradient": 0
+        },
+        "t2": {
+          "L_norm": 0.14575564245115658,
+          "weight2_U_norm": 0.11121582900561074,
+          "dot": 0.00022471020240174953,
+          "cosine": 0.013862156941440667,
+          "weight2_U_to_L_norm_ratio": 0.7630293217834068,
+          "parameters_with_gradient": 7464
+        },
+        "cls_head": {
+          "L_norm": 0.4099503222728885,
+          "weight2_U_norm": 0.13371538188165918,
+          "dot": 0.006681887881418685,
+          "cosine": 0.12189519402694447,
+          "weight2_U_to_L_norm_ratio": 0.3261745987667498,
+          "parameters_with_gradient": 1760
+        },
+        "other": {
+          "L_norm": 0.8624372981473758,
+          "weight2_U_norm": 0.4440356311704839,
+          "dot": 0.04109720719363683,
+          "cosine": 0.10731661325404668,
+          "weight2_U_to_L_norm_ratio": 0.5148613494851492,
+          "parameters_with_gradient": 223769
+        }
+      },
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    },
+    {
+      "model_seed": 2026092702,
+      "source_epoch": 30,
+      "probe": 8,
+      "L_records": 128,
+      "U_records": 256,
+      "U_accepted": 239,
+      "L_forward_packets": 768,
+      "L_loss": 0.35646724700927734,
+      "weight2_U_loss": 0.015554890036582947,
+      "gradients": {
+        "all": {
+          "L_norm": 0.6570538456024365,
+          "weight2_U_norm": 0.25418019300349315,
+          "dot": 0.06605776872446183,
+          "cosine": 0.3955316432332014,
+          "weight2_U_to_L_norm_ratio": 0.3868483453900823,
+          "parameters_with_gradient": 232993
+        },
+        "time_down": {
+          "L_norm": 0.0,
+          "weight2_U_norm": 0.0,
+          "dot": 0.0,
+          "cosine": null,
+          "weight2_U_to_L_norm_ratio": null,
+          "parameters_with_gradient": 0
+        },
+        "t2": {
+          "L_norm": 0.113720210399778,
+          "weight2_U_norm": 0.03327106995627552,
+          "dot": 0.0011925662407377088,
+          "cosine": 0.3151941070015215,
+          "weight2_U_to_L_norm_ratio": 0.29256954273398417,
+          "parameters_with_gradient": 7464
+        },
+        "cls_head": {
+          "L_norm": 0.27661301250091924,
+          "weight2_U_norm": 0.06218354194525388,
+          "dot": 0.005209468513224014,
+          "cosine": 0.3028623970866522,
+          "weight2_U_to_L_norm_ratio": 0.22480338644606326,
+          "parameters_with_gradient": 1760
+        },
+        "other": {
+          "L_norm": 0.5850407772820173,
+          "weight2_U_norm": 0.24420035530359185,
+          "dot": 0.05965573397050009,
+          "cosine": 0.4175608418269287,
+          "weight2_U_to_L_norm_ratio": 0.4174074095110053,
+          "parameters_with_gradient": 223769
+        }
+      },
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    },
+    {
+      "model_seed": 2026092703,
+      "source_epoch": 30,
+      "probe": 1,
+      "L_records": 128,
+      "U_records": 256,
+      "U_accepted": 248,
+      "L_forward_packets": 768,
+      "L_loss": 0.43727779388427734,
+      "weight2_U_loss": 0.025431178510189056,
+      "gradients": {
+        "all": {
+          "L_norm": 1.1559238150249644,
+          "weight2_U_norm": 0.3452880933190664,
+          "dot": -0.05435552710441572,
+          "cosine": -0.1361861358901048,
+          "weight2_U_to_L_norm_ratio": 0.2987118085387048,
+          "parameters_with_gradient": 232993
+        },
+        "time_down": {
+          "L_norm": 0.0,
+          "weight2_U_norm": 0.0,
+          "dot": 0.0,
+          "cosine": null,
+          "weight2_U_to_L_norm_ratio": null,
+          "parameters_with_gradient": 0
+        },
+        "t2": {
+          "L_norm": 0.12040869396665177,
+          "weight2_U_norm": 0.06920769442786211,
+          "dot": 0.0017784191770538434,
+          "cosine": 0.21341350846302962,
+          "weight2_U_to_L_norm_ratio": 0.5747732339579215,
+          "parameters_with_gradient": 7464
+        },
+        "cls_head": {
+          "L_norm": 0.5997982621764937,
+          "weight2_U_norm": 0.09138787953268782,
+          "dot": -0.013867658005975565,
+          "cosine": -0.25299347433079766,
+          "weight2_U_to_L_norm_ratio": 0.152364361979089,
+          "parameters_with_gradient": 1760
+        },
+        "other": {
+          "L_norm": 0.9807668720186117,
+          "weight2_U_norm": 0.3257029596034014,
+          "dot": -0.042266288275493995,
+          "cosine": -0.13231424953066084,
+          "weight2_U_to_L_norm_ratio": 0.3320900908215226,
+          "parameters_with_gradient": 223769
+        }
+      },
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    },
+    {
+      "model_seed": 2026092703,
+      "source_epoch": 30,
+      "probe": 2,
+      "L_records": 128,
+      "U_records": 256,
+      "U_accepted": 244,
+      "L_forward_packets": 768,
+      "L_loss": 0.3892538547515869,
+      "weight2_U_loss": 0.014071534387767315,
+      "gradients": {
+        "all": {
+          "L_norm": 0.7305119060652441,
+          "weight2_U_norm": 0.21792997940424633,
+          "dot": 0.013100799802903207,
+          "cosine": 0.08229122621015243,
+          "weight2_U_to_L_norm_ratio": 0.2983250205709616,
+          "parameters_with_gradient": 232993
+        },
+        "time_down": {
+          "L_norm": 0.0,
+          "weight2_U_norm": 0.0,
+          "dot": 0.0,
+          "cosine": null,
+          "weight2_U_to_L_norm_ratio": null,
+          "parameters_with_gradient": 0
+        },
+        "t2": {
+          "L_norm": 0.11552653016635443,
+          "weight2_U_norm": 0.027192952980858994,
+          "dot": 0.0003087982189200756,
+          "cosine": 0.098296190169654,
+          "weight2_U_to_L_norm_ratio": 0.23538275530046673,
+          "parameters_with_gradient": 7464
+        },
+        "cls_head": {
+          "L_norm": 0.3243172255333056,
+          "weight2_U_norm": 0.05748813804749197,
+          "dot": 0.0031381995458624173,
+          "cosine": 0.1683186721627955,
+          "weight2_U_to_L_norm_ratio": 0.17725897214666522,
+          "parameters_with_gradient": 1760
+        },
+        "other": {
+          "L_norm": 0.6442977595438132,
+          "weight2_U_norm": 0.20844455669349712,
+          "dot": 0.00965380203812071,
+          "cosine": 0.07188217496824831,
+          "weight2_U_to_L_norm_ratio": 0.3235220883603315,
+          "parameters_with_gradient": 223769
+        }
+      },
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    },
+    {
+      "model_seed": 2026092703,
+      "source_epoch": 30,
+      "probe": 3,
+      "L_records": 128,
+      "U_records": 256,
+      "U_accepted": 242,
+      "L_forward_packets": 768,
+      "L_loss": 0.422932505607605,
+      "weight2_U_loss": 0.022174078971147537,
+      "gradients": {
+        "all": {
+          "L_norm": 0.8471041201484067,
+          "weight2_U_norm": 0.6282525390977943,
+          "dot": 0.073258610679484,
+          "cosine": 0.1376536183282802,
+          "weight2_U_to_L_norm_ratio": 0.741647365600971,
+          "parameters_with_gradient": 232993
+        },
+        "time_down": {
+          "L_norm": 0.0,
+          "weight2_U_norm": 0.0,
+          "dot": 0.0,
+          "cosine": null,
+          "weight2_U_to_L_norm_ratio": null,
+          "parameters_with_gradient": 0
+        },
+        "t2": {
+          "L_norm": 0.11798683064908017,
+          "weight2_U_norm": 0.11019354941464371,
+          "dot": -0.00030655243309680866,
+          "cosine": -0.02357843956883218,
+          "weight2_U_to_L_norm_ratio": 0.9339478720500981,
+          "parameters_with_gradient": 7464
+        },
+        "cls_head": {
+          "L_norm": 0.36065791211236076,
+          "weight2_U_norm": 0.17358082553947404,
+          "dot": 0.011275674581658205,
+          "cosine": 0.1801131077745973,
+          "weight2_U_to_L_norm_ratio": 0.48128938728341547,
+          "parameters_with_gradient": 1760
+        },
+        "other": {
+          "L_norm": 0.7573574906188912,
+          "weight2_U_norm": 0.5936567455653669,
+          "dot": 0.06228948853092266,
+          "cosine": 0.13854103657484426,
+          "weight2_U_to_L_norm_ratio": 0.783852741827703,
+          "parameters_with_gradient": 223769
+        }
+      },
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    },
+    {
+      "model_seed": 2026092703,
+      "source_epoch": 30,
+      "probe": 4,
+      "L_records": 128,
+      "U_records": 256,
+      "U_accepted": 245,
+      "L_forward_packets": 768,
+      "L_loss": 0.42270129919052124,
+      "weight2_U_loss": 0.015535390004515648,
+      "gradients": {
+        "all": {
+          "L_norm": 0.7823387920621848,
+          "weight2_U_norm": 0.4045608328240525,
+          "dot": -0.020292300362486027,
+          "cosine": -0.06411395709114077,
+          "weight2_U_to_L_norm_ratio": 0.5171171836662493,
+          "parameters_with_gradient": 232993
+        },
+        "time_down": {
+          "L_norm": 0.0,
+          "weight2_U_norm": 0.0,
+          "dot": 0.0,
+          "cosine": null,
+          "weight2_U_to_L_norm_ratio": null,
+          "parameters_with_gradient": 0
+        },
+        "t2": {
+          "L_norm": 0.14857193600495658,
+          "weight2_U_norm": 0.03959652969329871,
+          "dot": 0.0008158779333680154,
+          "cosine": 0.1386855711057463,
+          "weight2_U_to_L_norm_ratio": 0.26651419344752775,
+          "parameters_with_gradient": 7464
+        },
+        "cls_head": {
+          "L_norm": 0.3074137269403301,
+          "weight2_U_norm": 0.10238770810893125,
+          "dot": -0.0058311763204156,
+          "cosine": -0.18526146576184216,
+          "weight2_U_to_L_norm_ratio": 0.3330616011457582,
+          "parameters_with_gradient": 1760
+        },
+        "other": {
+          "L_norm": 0.7039013893193519,
+          "weight2_U_norm": 0.38938199691272185,
+          "dot": -0.015277001975438445,
+          "cosine": -0.055737879761237945,
+          "weight2_U_to_L_norm_ratio": 0.5531769120234876,
+          "parameters_with_gradient": 223769
+        }
+      },
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    },
+    {
+      "model_seed": 2026092703,
+      "source_epoch": 30,
+      "probe": 5,
+      "L_records": 128,
+      "U_records": 256,
+      "U_accepted": 245,
+      "L_forward_packets": 768,
+      "L_loss": 0.45074957609176636,
+      "weight2_U_loss": 0.01713039167225361,
+      "gradients": {
+        "all": {
+          "L_norm": 0.9234058530192977,
+          "weight2_U_norm": 0.274045669595709,
+          "dot": -0.054174543247698645,
+          "cosine": -0.21408177235370057,
+          "weight2_U_to_L_norm_ratio": 0.29677705496413165,
+          "parameters_with_gradient": 232993
+        },
+        "time_down": {
+          "L_norm": 0.0,
+          "weight2_U_norm": 0.0,
+          "dot": 0.0,
+          "cosine": null,
+          "weight2_U_to_L_norm_ratio": null,
+          "parameters_with_gradient": 0
+        },
+        "t2": {
+          "L_norm": 0.142636210018435,
+          "weight2_U_norm": 0.0469554826058407,
+          "dot": -1.4661390078481788e-05,
+          "cosine": -0.002189066976512581,
+          "weight2_U_to_L_norm_ratio": 0.32919749199569975,
+          "parameters_with_gradient": 7464
+        },
+        "cls_head": {
+          "L_norm": 0.31178825100809676,
+          "weight2_U_norm": 0.07287724888547434,
+          "dot": -0.003699142193423255,
+          "cosine": -0.1627980918537888,
+          "weight2_U_to_L_norm_ratio": 0.23373956090340878,
+          "parameters_with_gradient": 1760
+        },
+        "other": {
+          "L_norm": 0.8573921900246033,
+          "weight2_U_norm": 0.2599713797176484,
+          "dot": -0.0504607396641969,
+          "cosine": -0.22638547034123985,
+          "weight2_U_to_L_norm_ratio": 0.3032117422368734,
+          "parameters_with_gradient": 223769
+        }
+      },
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    },
+    {
+      "model_seed": 2026092703,
+      "source_epoch": 30,
+      "probe": 6,
+      "L_records": 128,
+      "U_records": 256,
+      "U_accepted": 245,
+      "L_forward_packets": 768,
+      "L_loss": 0.43418920040130615,
+      "weight2_U_loss": 0.015077025629580021,
+      "gradients": {
+        "all": {
+          "L_norm": 1.2989783896972154,
+          "weight2_U_norm": 0.2665092636046081,
+          "dot": 0.09172161091975875,
+          "cosine": 0.2649460434365377,
+          "weight2_U_to_L_norm_ratio": 0.20516835824091723,
+          "parameters_with_gradient": 232993
+        },
+        "time_down": {
+          "L_norm": 0.0,
+          "weight2_U_norm": 0.0,
+          "dot": 0.0,
+          "cosine": null,
+          "weight2_U_to_L_norm_ratio": null,
+          "parameters_with_gradient": 0
+        },
+        "t2": {
+          "L_norm": 0.1932990812837898,
+          "weight2_U_norm": 0.03737486403688882,
+          "dot": 0.0013339794959282563,
+          "cosine": 0.18464593153578104,
+          "weight2_U_to_L_norm_ratio": 0.1933525177081279,
+          "parameters_with_gradient": 7464
+        },
+        "cls_head": {
+          "L_norm": 0.5449447449790721,
+          "weight2_U_norm": 0.08666073763426985,
+          "dot": 0.010738971991733516,
+          "cosine": 0.2273986381447706,
+          "weight2_U_to_L_norm_ratio": 0.1590266507434583,
+          "parameters_with_gradient": 1760
+        },
+        "other": {
+          "L_norm": 1.1631919648084352,
+          "weight2_U_norm": 0.2492392899965389,
+          "dot": 0.079648659432097,
+          "cosine": 0.2747328375193698,
+          "weight2_U_to_L_norm_ratio": 0.21427184638228294,
+          "parameters_with_gradient": 223769
+        }
+      },
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    },
+    {
+      "model_seed": 2026092703,
+      "source_epoch": 30,
+      "probe": 7,
+      "L_records": 128,
+      "U_records": 256,
+      "U_accepted": 249,
+      "L_forward_packets": 768,
+      "L_loss": 0.441161572933197,
+      "weight2_U_loss": 0.014848320744931698,
+      "gradients": {
+        "all": {
+          "L_norm": 0.8582896638192019,
+          "weight2_U_norm": 0.3021168957796408,
+          "dot": -0.07226362126167625,
+          "cosine": -0.2786832232224363,
+          "weight2_U_to_L_norm_ratio": 0.3519987581293784,
+          "parameters_with_gradient": 232993
+        },
+        "time_down": {
+          "L_norm": 0.0,
+          "weight2_U_norm": 0.0,
+          "dot": 0.0,
+          "cosine": null,
+          "weight2_U_to_L_norm_ratio": null,
+          "parameters_with_gradient": 0
+        },
+        "t2": {
+          "L_norm": 0.1250673155808427,
+          "weight2_U_norm": 0.0400031808241781,
+          "dot": -0.0005940170339597367,
+          "cosine": -0.1187300211817105,
+          "weight2_U_to_L_norm_ratio": 0.3198531977630903,
+          "parameters_with_gradient": 7464
+        },
+        "cls_head": {
+          "L_norm": 0.41183277322671213,
+          "weight2_U_norm": 0.07996152529461828,
+          "dot": -0.0114510011733167,
+          "cosine": -0.34772945906906627,
+          "weight2_U_to_L_norm_ratio": 0.19416017979365577,
+          "parameters_with_gradient": 1760
+        },
+        "other": {
+          "L_norm": 0.7425719362382854,
+          "weight2_U_norm": 0.2885836424886771,
+          "dot": -0.060218603054399814,
+          "cosine": -0.2810091321815998,
+          "weight2_U_to_L_norm_ratio": 0.388627186681174,
+          "parameters_with_gradient": 223769
+        }
+      },
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    },
+    {
+      "model_seed": 2026092703,
+      "source_epoch": 30,
+      "probe": 8,
+      "L_records": 128,
+      "U_records": 256,
+      "U_accepted": 249,
+      "L_forward_packets": 768,
+      "L_loss": 0.43035632371902466,
+      "weight2_U_loss": 0.021361887454986572,
+      "gradients": {
+        "all": {
+          "L_norm": 0.8509189360951208,
+          "weight2_U_norm": 0.3484180098173989,
+          "dot": -0.0313682007551395,
+          "cosine": -0.10580369249819938,
+          "weight2_U_to_L_norm_ratio": 0.4094608722850782,
+          "parameters_with_gradient": 232993
+        },
+        "time_down": {
+          "L_norm": 0.0,
+          "weight2_U_norm": 0.0,
+          "dot": 0.0,
+          "cosine": null,
+          "weight2_U_to_L_norm_ratio": null,
+          "parameters_with_gradient": 0
+        },
+        "t2": {
+          "L_norm": 0.10784357245903574,
+          "weight2_U_norm": 0.05945915674006431,
+          "dot": -0.0006695689017254498,
+          "cosine": -0.10441965713931017,
+          "weight2_U_to_L_norm_ratio": 0.5513463193427666,
+          "parameters_with_gradient": 7464
+        },
+        "cls_head": {
+          "L_norm": 0.34777973906014614,
+          "weight2_U_norm": 0.1184404441982041,
+          "dot": -0.005250365112556918,
+          "cosine": -0.12746331250244866,
+          "weight2_U_to_L_norm_ratio": 0.3405616569794499,
+          "parameters_with_gradient": 1760
+        },
+        "other": {
+          "L_norm": 0.7690787038943294,
+          "weight2_U_norm": 0.32222907910834125,
+          "dot": -0.025448266740857123,
+          "cosine": -0.10268870863084997,
+          "weight2_U_to_L_norm_ratio": 0.4189806290002476,
+          "parameters_with_gradient": 223769
+        }
+      },
+      "optimizer_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    }
+  ],
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "probes_per_seed": 8,
+  "seconds": 56.88866122299805,
+  "all_group_weight2_U_L_ratio_median": 0.2985184145548332,
+  "GPU_workers": 0,
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "optimizer_updates": 0,
+  "EMA_updates": 0,
+  "prototype_updates": 0,
+  "head_fit_updates": 0,
+  "temporary_training_forward_buffers_discarded": true,
+  "live_jobs_changed": false,
+  "L_input_policy": "Raw L IQ controlled probe;internal original six L forwards retained.Not a replay of native ordinary augmentation.",
+  "interpretation": "Source Euclidean gradients before clipping/Adam at fixed original F21 E30,not target accuracy or optimizer-step influence."
+}

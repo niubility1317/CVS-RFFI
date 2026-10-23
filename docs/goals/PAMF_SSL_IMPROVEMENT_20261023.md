@@ -151,3 +151,8 @@ PAIREDU三seed已在各自GPU5/6/7实际续训，真实E30 no-query smoke和配�
 ## 高置信硬 PL 的 U 信道单因素对照（2026-10-24）
 
 登记 `20261024-phase1-PAMF-HardPL-noUAs-m3-r01`：实际 F21 E30 同记录源诊断显示 accepted U 的普通噪声 hard CE 约 0.002、信道约 0.59；这仅说明难度，不能证明原标签失效或目标收益。在任何新 HPL/UVB 目标成绩读取前，固定 HPL_NO_UAS 三 seed 对照；原 F21 E30＋20、阈值 0.95、权重 2、六次 U 前向、LS/RDrop/As KL0/浅中层跨 RX 与 CE 归一化 1.25 均保持，只把 U mixed-half 信道输入换成 exact raw，原 L 信道保持。160 检查 PASS，一次 P0/P1 审查和唯一 P1 定向复查关闭；等待同 seed HPL2/UVB GPU 完成与 HPLT1U 已派发的合法卡位，真实源 smoke 后继续。双七景完整评分并列 F20/F21 及 HPLT1U，目标仍 ACTIVE。
+
+
+## 普通硬 PL 的监督标签平滑单因素对照（2026-10-24）
+
+`20261024-phase1-PAMF-HardPL-LS-m3-r01` 在原 HPL2 上仅加入 U CE smoothing0.01，保留门控0.95/权重2/一次raw U学生前向；原 F21 同seed E30＋20、L及默认头保持。完整 HPL2 新增日志三模型各4440条显示 U/总损失比约2.7%，但原E30源24批梯度比中位0.2985，故保留权重2；同logits标签平滑使源方向冲突13/24→8/24，19批余弦改善。这是探索性源依据，不是Adam或目标效果保证。166检查及唯一独立P0/P1审查PASS，在任何新HPL/UVB目标成绩读取前固定三seed双七景矩阵；接替noUAs GPU完成卡位，实际源smoke后执行，完整truth-last再判断。目标仍ACTIVE。

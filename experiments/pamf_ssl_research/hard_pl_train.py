@@ -75,6 +75,7 @@ def train(c,device='cuda:0',*,validate_config=validate):
         U_seen=963900+state['seen'],U_accepted=sum(p['PL_accepted'] for p in prior_progress)+state['accepted'],
         physical_U_seen=state['physical_seen'],physical_student_U_views=state['physical_student_views'],
         raw_U_As_seen=state['raw_As_seen'],
+        pseudo_label_smoothing=state['label_smoothing'],
         student_U_views=963900+state['student_views'],teacher_eval_U_views=963900+state['seen'],
         U_truth_read=False,prototype_updates=0,hard_PL_calls=state['calls'],hard_PL_tail=state,
         threshold=.95,weight=2.,default_head_joint=True,new_inference_parameters=0)
