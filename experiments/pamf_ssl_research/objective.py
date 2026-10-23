@@ -132,6 +132,10 @@ class Objective:
             feature = (1 - F.cosine_similarity(output['z_id'], anchor, dim=1)) * prototype_valid
         ramp = min((self.current_epoch - self.c['U_start_epoch'] + 1) / settings['ramp_epochs'], 1.)
         loss = settings['unsupervised_weight'] * ramp * (weight * (ce + settings['prototype_feature_weight'] * feature)).mean()
+        contributions = getattr(self, 'unlabeled_view_contributions', None)
+        if contributions is not None:
+            contributions(weight * (ce + settings['prototype_feature_weight'] * feature), mask,
+                          settings['unsupervised_weight'] * ramp)
         view_settings = self.c.get('view_anchor')
         view_loss = None
         if view_settings and self.current_epoch >= view_settings['start_epoch']:

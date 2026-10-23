@@ -1,6 +1,6 @@
 # PAMF 双锚保护下的无标签视图梯度平衡
 
-状态：PLANNED。仅固定源依据、配方及完整矩阵；未实现、审查、发布、smoke、训练或访问本版目标。原CMR／UDAP继续运行。本假设在读取它们任何目标成绩前固定。
+状态：121项聚焦检查及一次独立P0/P1审查PASS／无发现。实现与固定源假设一致；尚未发布、真实smoke、训练或访问本版目标，原CMR／UDAP保持。本假设在读取它们任何目标成绩前固定。
 
 源依据见九模型reference的source_view_gradient_diagnostic.md／JSON。原F20 L-only E20和RXPSM E20共24个受控源L128／U256批次，物理U梯度范数约为普通U的5倍（中层）、8至9.5倍（默认头）；16次整体对raw真实CE作用方向相反，其中9次合并后非负但仍含负分支。这是实际分支贡献的描述，不隔离变换因果或预测目标涨幅。两个起点均有此现象，故不更换预先固定的原RXPSM E30。
 
@@ -15,3 +15,6 @@
 GPU5／6／7固定seed2026092701／02／03。等待同seed CMR的raw＋DURA全部14项GPU预测结束、UDAP已派发后，占空出的槽位；每卡最多两个本任务worker，含外部最多三个计算进程，派发free≥10000MiB。单CPU scorer等UDAP终态。不可覆盖root为PROJECT/runs/20261023-phase1-PAMF-U-ViewBalance-m3-r01；相同技术失败两次停止新派发并保留健康任务和全部产物，smokePASS立即续行。
 
 每行冻结后自动raw PAMF和固定DURA v1.0同一F各clean＋六Practical，每景168000，全14项决策固定后独立truth-last。复用同readout F20监督／F21普通PL三seed，报告逐seed／景／RX／TX／day、SD、配对纠错损伤、曝光与增量／累计成本。原raw clean至少+1pp、六景严格超过+1.5pp须同时超过两个基线，DURA单列参考；无目标反馈改规则／父来源／排序／选择性重跑，不称新独立盲测。
+
+
+121项检查覆盖解析投影与双视图抵消反例、正交／非正交／共线边界、普通分支增幅／物理分支缩幅、零视图预算不转移、总U范数与双内积、近零／非有限梯度、native原CE消除与上游缩放、原U scalar拆分／完整N分母／不等分mask、无新增学生前向、隐藏U拒绝、教师／曝光／默认网络状态往返，以及三seedGPU和单CPU评分接续／raw＋固定DURA完整报告和已有SSL回归。一次独立P0/P1审查PASS，未读目标或启动实验。首个真实原E30 source-only smoke将检查两类U128／L768、原raw真实CE、两个视图预算／双内积、全部实际参数梯度与显式组合一致、默认头／教师无梯度及单次EMA；probe丢弃，正式三个seed重新加载原E30。

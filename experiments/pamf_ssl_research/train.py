@@ -15,7 +15,12 @@ def installed(config, holder, *, parent_algorithm=None):
     objective_type = Objective
     if parent_algorithm is not None:
         from .view_anchor import validate as validate_view, PARENT_ALGORITHM
-        if config.get('u_dualanchor'):
+        if config.get('u_viewbalance'):
+            from .u_viewbalance import validate as validate_viewbalance
+            from .u_viewbalance_objective import ViewBalancedObjective
+            validate_viewbalance(config)
+            objective_type = ViewBalancedObjective
+        elif config.get('u_dualanchor'):
             from .u_dualanchor import validate as validate_dual
             from .u_dualanchor_objective import DualAnchorObjective
             validate_dual(config)
@@ -65,7 +70,7 @@ def installed(config, holder, *, parent_algorithm=None):
                 raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH: own SSL state')
             objective.load_state_dict(torch.load(Path(parent) / 'ssl_state.pt', map_location=next(model.parameters()).device, weights_only=False))
         model.__dict__['_pamf_ssl_objective'] = objective  # Training-only; never an inference module.
-        if c.get('u_dualanchor'):
+        if c.get('u_dualanchor') or c.get('u_viewbalance'):
             model.__dict__['_pamf_ssl_raw_L_observer'] = objective.observe_raw
         holder['objective'], holder['model'] = objective, model
         old_hook = model._source_labeled_feature_hook
@@ -76,7 +81,7 @@ def installed(config, holder, *, parent_algorithm=None):
             objective.labeled = (kwargs['labeled_inputs'], kwargs['labels'], kwargs['extra'][1]['rx_i'].to(kwargs['labels'].device))
             try:
                 value, metrics = old_hook(**kwargs)
-                if c.get('u_gradprotect') or c.get('u_dualanchor'):
+                if c.get('u_gradprotect') or c.get('u_dualanchor') or c.get('u_viewbalance'):
                     guided = objective.guide(kwargs['identity_loss'] + value, model)
                     value = guided - kwargs['identity_loss']
                 return value, dict(metrics, **objective.metrics)

@@ -3,7 +3,7 @@
   "run_id": "20261023-phase1-PAMF-U-ViewBalance-m3-r01",
   "group_id": "phase1-pamf-source-only-ssl-improvement",
   "display_name": "PAMF双锚保护下的无标签视图梯度平衡：固定源域假设",
-  "description": "PLANNED:original RXPSM E30+20;split exact original weighted U loss into ordinary and physical half contributions.Project each separately against full T1 L/raw true CE anchors,normalize each nonzero projected view to0.5full-L norm per group,then add originalL.No new views,head,teacher or inference parameters.",
+  "description": "Source-fixed original RXPSM E30+20.Exact original weighted U scalar split into ordinary/physical contributions,each projected against original full T1 L/raw true CE,each nonzero projected gradient normalized to0.5full-L norm before combining.Original L gradient/default joint head/teacher/views unchanged.No extra F forward,head,inference parameters or G training.",
   "kind": "cvs",
   "stage": "Phase1",
   "aliases": [],
@@ -23,11 +23,11 @@
   "replaces_run_id": null,
   "authorization": "用户 /goal 授权持续设计迭代 PAMF 半监督机制，使目标测试 clean 相对监督/普通PL均至少高1pp、六景均值均严格高1.5pp；三GPU每卡固定一个模型种子、最多两个本任务worker；追加要求同时报告单PAMF与固定DURA+PAMF。",
   "code": {
-    "commit": "d050ff7d041304f962849e61a8851151d6ebfe6a",
+    "commit": "f629778fcb8a1cdf8a28faf4813636b704b520dd",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 ordinary account CVS-RFFI Py3.10/Torch2.1 FP32/TF32off, CPU2 per worker",
     "cwd": "PROJECT/releases/20261023-phase1-PAMF-U-ViewBalance-m3-r01",
-    "entry": "experiments.pamf_ssl_research.u_viewbalance_worker"
+    "entry": "experiments.pamf_ssl_research.control"
   },
   "data": {
     "dataset": "WiSig ManySig",
@@ -105,7 +105,7 @@
     "remote_run_root": "PROJECT/runs/20261023-phase1-PAMF-U-ViewBalance-m3-r01",
     "remote_log_root": "PROJECT/runs/20261023-phase1-PAMF-U-ViewBalance-m3-r01/logs",
     "local_artifact_root": "local_artifacts/pamf_ssl_research_20261023/release-u-viewbalance-r01",
-    "launch_command": "NOT_LAUNCHED:implementation,focused checks,oneP0/P1review;realE30source smokePASS thenautomaticfixedtraining/dualreadout",
+    "launch_command": "python -m experiments.pamf_ssl_research.u_viewbalance_publish --repo code/worktrees/standard_ce_baselines_20261010 --context local_artifacts/pamf_ssl_research_20261023/viewanchor_context.json --output local_artifacts/pamf_ssl_research_20261023/release-u-viewbalance-r01 --ssh-config tools/n607_ssh_config",
     "stop_rule": "Real fixed E30 no-query U-gradient smoke first; PASS continues immediately. Two identical technical failure fingerprints stop new dispatch and preserve healthy jobs/artifacts. No performance-based stopping, tuning, reorder or selective rerun."
   },
   "expected_artifacts": [
@@ -155,9 +155,9 @@
   "rows": [
     {
       "row_id": "UVB-s2026092701",
-      "method": "PLANNED:per-view dual projection and fixed equal gradient-norm budget",
+      "method": "per-view dual projection and fixed equal gradient-norm budget",
       "purpose": "primary_predeclared",
-      "config_ref": "report.md andhypothesis.json;implementationpending",
+      "config_ref": "experiments/pamf_ssl_research/u_viewbalance.py",
       "resolved_config_ref": "PROJECT/runs/20261023-phase1-PAMF-U-ViewBalance-m3-r01/UVB-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
@@ -178,7 +178,7 @@
       "budget_ref": "Originalsame-seedRXPSME30/6660+20/4440=50/11100;13L37LU.Teacher/studentU2097900,physical1048950.4440rawanchors/two-viewguides,noextraFforward;extragradientcostreported.",
       "output_root": "PROJECT/runs/20261023-phase1-PAMF-U-ViewBalance-m3-r01/UVB-s2026092701",
       "log_path": "PROJECT/runs/20261023-phase1-PAMF-U-ViewBalance-m3-r01/logs/UVB-s2026092701-row.log",
-      "command": "NOT_LAUNCHED:implementationpending",
+      "command": "CUDA_VISIBLE_DEVICES=5 python -u -m experiments.pamf_ssl_research.u_viewbalance_worker row --config RELEASE/configs/UVB-s2026092701-row.json",
       "expected_artifacts": [
         "source/segment50/final_ssdg.pth",
         "source/segment50/ssl_state.pt",
@@ -191,9 +191,9 @@
     },
     {
       "row_id": "UVB-s2026092702",
-      "method": "PLANNED:per-view dual projection and fixed equal gradient-norm budget",
+      "method": "per-view dual projection and fixed equal gradient-norm budget",
       "purpose": "primary_predeclared",
-      "config_ref": "report.md andhypothesis.json;implementationpending",
+      "config_ref": "experiments/pamf_ssl_research/u_viewbalance.py",
       "resolved_config_ref": "PROJECT/runs/20261023-phase1-PAMF-U-ViewBalance-m3-r01/UVB-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
@@ -214,7 +214,7 @@
       "budget_ref": "Originalsame-seedRXPSME30/6660+20/4440=50/11100;13L37LU.Teacher/studentU2097900,physical1048950.4440rawanchors/two-viewguides,noextraFforward;extragradientcostreported.",
       "output_root": "PROJECT/runs/20261023-phase1-PAMF-U-ViewBalance-m3-r01/UVB-s2026092702",
       "log_path": "PROJECT/runs/20261023-phase1-PAMF-U-ViewBalance-m3-r01/logs/UVB-s2026092702-row.log",
-      "command": "NOT_LAUNCHED:implementationpending",
+      "command": "CUDA_VISIBLE_DEVICES=6 python -u -m experiments.pamf_ssl_research.u_viewbalance_worker row --config RELEASE/configs/UVB-s2026092702-row.json",
       "expected_artifacts": [
         "source/segment50/final_ssdg.pth",
         "source/segment50/ssl_state.pt",
@@ -227,9 +227,9 @@
     },
     {
       "row_id": "UVB-s2026092703",
-      "method": "PLANNED:per-view dual projection and fixed equal gradient-norm budget",
+      "method": "per-view dual projection and fixed equal gradient-norm budget",
       "purpose": "primary_predeclared",
-      "config_ref": "report.md andhypothesis.json;implementationpending",
+      "config_ref": "experiments/pamf_ssl_research/u_viewbalance.py",
       "resolved_config_ref": "PROJECT/runs/20261023-phase1-PAMF-U-ViewBalance-m3-r01/UVB-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
@@ -250,7 +250,7 @@
       "budget_ref": "Originalsame-seedRXPSME30/6660+20/4440=50/11100;13L37LU.Teacher/studentU2097900,physical1048950.4440rawanchors/two-viewguides,noextraFforward;extragradientcostreported.",
       "output_root": "PROJECT/runs/20261023-phase1-PAMF-U-ViewBalance-m3-r01/UVB-s2026092703",
       "log_path": "PROJECT/runs/20261023-phase1-PAMF-U-ViewBalance-m3-r01/logs/UVB-s2026092703-row.log",
-      "command": "NOT_LAUNCHED:implementationpending",
+      "command": "CUDA_VISIBLE_DEVICES=7 python -u -m experiments.pamf_ssl_research.u_viewbalance_worker row --config RELEASE/configs/UVB-s2026092703-row.json",
       "expected_artifacts": [
         "source/segment50/final_ssdg.pth",
         "source/segment50/ssl_state.pt",
@@ -263,7 +263,7 @@
     }
   ],
   "notes": [
-    "Source24 E20 view-gradient probes motivate view separation/norm allocation.Both original parents show pattern;fixed RXPSM E30 retained.No CMR/UDAP target results read.",
+    "Implemented exact source hypothesisf629778;121focused checksPASS and one read-only independent P0/P1 reviewPASS/no findings.RealE30 no-query smoke first after same-seed CMR GPU release;not yet launched/trained.",
     "Per-view original weightedU contributions divided by fullN,not reweighted scalar losses.Ugradient directionprojectedthenmayup/downnormalizeto0.5fullL each;originalglobalUlambda no longer determines resultingnorm abovefloor.Samplewiseconfidence stillaffectsdirection.",
     "Original L gradient/scalar and original U scalar retained;no extra Fforward,new teacher/head/inference parameter.No CMR/style/UCRIC/PAIR/Gtraining.",
     "Normalization may amplify noise despite bounded norm;Euclidean constraints do not guarantee Adam-step/source loss or target gain.",
