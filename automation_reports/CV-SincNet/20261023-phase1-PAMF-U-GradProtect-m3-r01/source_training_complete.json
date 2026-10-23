@@ -1,0 +1,326 @@
+{
+  "status": "VERIFIED_SOURCE_FINAL_EVALUATION_PENDING",
+  "run_id": "20261023-phase1-PAMF-U-GradProtect-m3-r01",
+  "execution_commit": "0aba8a89c8b74e3058a1bec727fef86805d75f6c",
+  "observed_unix": 1792767591.9522731,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "total_new_step_records": 13320,
+  "records_per_seed": 4440,
+  "cumulative_updates_per_seed": 11100,
+  "reused_parent_steps_per_seed": 6660,
+  "parent_full_log_reference": "20261023-phase1-PAMF-physical-softmatch-m6-r02/training_completion.json:RXPSM same-seed E20/E30",
+  "rows": [
+    {
+      "row_id": "UGP-s2026092701",
+      "source_epoch": 50,
+      "source_updates": 11100,
+      "new_step_records": 4440,
+      "all_complete_step_records_checked": true,
+      "gzip_closed": true,
+      "actual_adapter_SSL": {
+        "method": "pamf_u_gradprotect_v1",
+        "native_U_loop": false,
+        "own_EMA": true,
+        "cumulative_EMA_updates": 11100,
+        "U_seen": 2097900,
+        "physical_U_seen": 1048950,
+        "student_U_views": 2097900,
+        "effective_U_weight": 1995232.5453643799,
+        "effective_U_per_class": [
+          336789.84375,
+          331062.6875,
+          344163.125,
+          309972.09375,
+          326791.375,
+          346488.46875
+        ],
+        "U_truth_read": false,
+        "labeled_only_prototype_updates": true,
+        "u_gradprotect_calls": 4440,
+        "u_gradprotect_conflicts": {
+          "t2": 1756,
+          "cls_head": 1836,
+          "other": 1483
+        },
+        "u_gradprotect_caps": {
+          "t2": 75,
+          "cls_head": 174,
+          "other": 26
+        },
+        "extra_student_forwards": 0,
+        "extra_gradient_computation": true
+      },
+      "final_logged_losses_and_counters": {
+        "SSL_loss": 0.15668685734272003,
+        "SSL_seen": 2097900,
+        "SSL_physical_seen": 1048950,
+        "SSL_U_GP_calls": 4440,
+        "SSL_proto_coverage": 1.0,
+        "SSL_U_GP_t2_L_norm": 0.13826628849714895,
+        "SSL_U_GP_t2_U_norm": 0.0762120250685605,
+        "SSL_U_GP_t2_applied_U_norm": 0.0762120250685605,
+        "SSL_U_GP_t2_dot_before": 0.001268222643378555,
+        "SSL_U_GP_t2_dot_after": 0.001268222643378555,
+        "SSL_U_GP_t2_conflict": 0.0,
+        "SSL_U_GP_t2_capped": 0.0,
+        "SSL_U_GP_t2_tiny_L": 0.0,
+        "SSL_U_GP_t2_conflicts": 1756,
+        "SSL_U_GP_t2_caps": 75,
+        "SSL_U_GP_cls_head_L_norm": 0.32123025410575734,
+        "SSL_U_GP_cls_head_U_norm": 0.37671269564950427,
+        "SSL_U_GP_cls_head_applied_U_norm": 0.32123025410575734,
+        "SSL_U_GP_cls_head_dot_before": -0.01992565573740943,
+        "SSL_U_GP_cls_head_dot_after": -4.378644717856553e-11,
+        "SSL_U_GP_cls_head_conflict": 1.0,
+        "SSL_U_GP_cls_head_capped": 1.0,
+        "SSL_U_GP_cls_head_tiny_L": 0.0,
+        "SSL_U_GP_cls_head_conflicts": 1836,
+        "SSL_U_GP_cls_head_caps": 174,
+        "SSL_U_GP_other_L_norm": 0.7841797590039589,
+        "SSL_U_GP_other_U_norm": 0.5737985247406772,
+        "SSL_U_GP_other_applied_U_norm": 0.5737985247406772,
+        "SSL_U_GP_other_dot_before": 0.013026893209181366,
+        "SSL_U_GP_other_dot_after": 0.013026893209181366,
+        "SSL_U_GP_other_conflict": 0.0,
+        "SSL_U_GP_other_capped": 0.0,
+        "SSL_U_GP_other_tiny_L": 0.0,
+        "SSL_U_GP_other_conflicts": 1483,
+        "SSL_U_GP_other_caps": 26
+      },
+      "incremental_training_seconds": 3766.764070736943,
+      "parent_training_seconds": 4417.8696232249495,
+      "cumulative_training_seconds": 8184.633693961892,
+      "source_graph_native_IQ_check": "PASS",
+      "completed_prediction_views": [
+        {
+          "test": "main",
+          "view": "clean",
+          "count": 168000
+        }
+      ],
+      "prediction_complete": false
+    },
+    {
+      "row_id": "UGP-s2026092702",
+      "source_epoch": 50,
+      "source_updates": 11100,
+      "new_step_records": 4440,
+      "all_complete_step_records_checked": true,
+      "gzip_closed": true,
+      "actual_adapter_SSL": {
+        "method": "pamf_u_gradprotect_v1",
+        "native_U_loop": false,
+        "own_EMA": true,
+        "cumulative_EMA_updates": 11100,
+        "U_seen": 2097900,
+        "physical_U_seen": 1048950,
+        "student_U_views": 2097900,
+        "effective_U_weight": 1990828.3492660522,
+        "effective_U_per_class": [
+          336565.71875,
+          329851.9375,
+          344987.03125,
+          310805.84375,
+          321914.03125,
+          346737.1875
+        ],
+        "U_truth_read": false,
+        "labeled_only_prototype_updates": true,
+        "u_gradprotect_calls": 4440,
+        "u_gradprotect_conflicts": {
+          "t2": 1766,
+          "cls_head": 1846,
+          "other": 1519
+        },
+        "u_gradprotect_caps": {
+          "t2": 17,
+          "cls_head": 215,
+          "other": 22
+        },
+        "extra_student_forwards": 0,
+        "extra_gradient_computation": true
+      },
+      "final_logged_losses_and_counters": {
+        "SSL_loss": 0.11878196895122528,
+        "SSL_seen": 2097900,
+        "SSL_physical_seen": 1048950,
+        "SSL_U_GP_calls": 4440,
+        "SSL_proto_coverage": 1.0,
+        "SSL_U_GP_t2_L_norm": 0.09570149890451587,
+        "SSL_U_GP_t2_U_norm": 0.09877578713648309,
+        "SSL_U_GP_t2_applied_U_norm": 0.09570149890451587,
+        "SSL_U_GP_t2_dot_before": -0.0004328587860075809,
+        "SSL_U_GP_t2_dot_after": -1.328426233490436e-12,
+        "SSL_U_GP_t2_conflict": 1.0,
+        "SSL_U_GP_t2_capped": 1.0,
+        "SSL_U_GP_t2_tiny_L": 0.0,
+        "SSL_U_GP_t2_conflicts": 1766,
+        "SSL_U_GP_t2_caps": 17,
+        "SSL_U_GP_cls_head_L_norm": 0.55639151601437,
+        "SSL_U_GP_cls_head_U_norm": 0.3637676272032223,
+        "SSL_U_GP_cls_head_applied_U_norm": 0.3591519296161798,
+        "SSL_U_GP_cls_head_dot_before": -0.03213987895175282,
+        "SSL_U_GP_cls_head_dot_after": 1.8073895136739649e-09,
+        "SSL_U_GP_cls_head_conflict": 1.0,
+        "SSL_U_GP_cls_head_capped": 0.0,
+        "SSL_U_GP_cls_head_tiny_L": 0.0,
+        "SSL_U_GP_cls_head_conflicts": 1846,
+        "SSL_U_GP_cls_head_caps": 215,
+        "SSL_U_GP_other_L_norm": 0.6982676584815319,
+        "SSL_U_GP_other_U_norm": 0.7000327056465083,
+        "SSL_U_GP_other_applied_U_norm": 0.6510170108221055,
+        "SSL_U_GP_other_dot_before": -0.17969052417563133,
+        "SSL_U_GP_other_dot_after": -1.7946812248950873e-09,
+        "SSL_U_GP_other_conflict": 1.0,
+        "SSL_U_GP_other_capped": 0.0,
+        "SSL_U_GP_other_tiny_L": 0.0,
+        "SSL_U_GP_other_conflicts": 1519,
+        "SSL_U_GP_other_caps": 22
+      },
+      "incremental_training_seconds": 3492.4279953949153,
+      "parent_training_seconds": 5064.55442506494,
+      "cumulative_training_seconds": 8556.982420459855,
+      "source_graph_native_IQ_check": "PASS",
+      "completed_prediction_views": [
+        {
+          "test": "main",
+          "view": "clean",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_low_suburban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high_urban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid_urban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_low_urban",
+          "count": 168000
+        }
+      ],
+      "prediction_complete": true
+    },
+    {
+      "row_id": "UGP-s2026092703",
+      "source_epoch": 50,
+      "source_updates": 11100,
+      "new_step_records": 4440,
+      "all_complete_step_records_checked": true,
+      "gzip_closed": true,
+      "actual_adapter_SSL": {
+        "method": "pamf_u_gradprotect_v1",
+        "native_U_loop": false,
+        "own_EMA": true,
+        "cumulative_EMA_updates": 11100,
+        "U_seen": 2097900,
+        "physical_U_seen": 1048950,
+        "student_U_views": 2097900,
+        "effective_U_weight": 2005377.13596344,
+        "effective_U_per_class": [
+          338319.21875,
+          325197.3125,
+          343863.8125,
+          317895.78125,
+          334020.0625,
+          346114.9375
+        ],
+        "U_truth_read": false,
+        "labeled_only_prototype_updates": true,
+        "u_gradprotect_calls": 4440,
+        "u_gradprotect_conflicts": {
+          "t2": 1736,
+          "cls_head": 1869,
+          "other": 1462
+        },
+        "u_gradprotect_caps": {
+          "t2": 21,
+          "cls_head": 224,
+          "other": 24
+        },
+        "extra_student_forwards": 0,
+        "extra_gradient_computation": true
+      },
+      "final_logged_losses_and_counters": {
+        "SSL_loss": 0.18148480355739594,
+        "SSL_seen": 2097900,
+        "SSL_physical_seen": 1048950,
+        "SSL_U_GP_calls": 4440,
+        "SSL_proto_coverage": 1.0,
+        "SSL_U_GP_t2_L_norm": 0.1708746358259698,
+        "SSL_U_GP_t2_U_norm": 0.07862852400517145,
+        "SSL_U_GP_t2_applied_U_norm": 0.07862394151823081,
+        "SSL_U_GP_t2_dot_before": -0.0001450523042513309,
+        "SSL_U_GP_t2_dot_after": -8.88520316078955e-13,
+        "SSL_U_GP_t2_conflict": 1.0,
+        "SSL_U_GP_t2_capped": 0.0,
+        "SSL_U_GP_t2_tiny_L": 0.0,
+        "SSL_U_GP_t2_conflicts": 1736,
+        "SSL_U_GP_t2_caps": 21,
+        "SSL_U_GP_cls_head_L_norm": 0.9083605758616021,
+        "SSL_U_GP_cls_head_U_norm": 0.3254425358076911,
+        "SSL_U_GP_cls_head_applied_U_norm": 0.3209794422344915,
+        "SSL_U_GP_cls_head_dot_before": -0.04879039282193499,
+        "SSL_U_GP_cls_head_dot_after": 4.267681461586452e-10,
+        "SSL_U_GP_cls_head_conflict": 1.0,
+        "SSL_U_GP_cls_head_capped": 0.0,
+        "SSL_U_GP_cls_head_tiny_L": 0.0,
+        "SSL_U_GP_cls_head_conflicts": 1869,
+        "SSL_U_GP_cls_head_caps": 224,
+        "SSL_U_GP_other_L_norm": 1.9409001013033595,
+        "SSL_U_GP_other_U_norm": 0.45063019534048415,
+        "SSL_U_GP_other_applied_U_norm": 0.44735519164126825,
+        "SSL_U_GP_other_dot_before": -0.10525524190511003,
+        "SSL_U_GP_other_dot_after": -4.0847242091296334e-10,
+        "SSL_U_GP_other_conflict": 1.0,
+        "SSL_U_GP_other_capped": 0.0,
+        "SSL_U_GP_other_tiny_L": 0.0,
+        "SSL_U_GP_other_conflicts": 1462,
+        "SSL_U_GP_other_caps": 24
+      },
+      "incremental_training_seconds": 3756.691429444123,
+      "parent_training_seconds": 4894.10919757816,
+      "cumulative_training_seconds": 8650.800627022283,
+      "source_graph_native_IQ_check": "PASS",
+      "completed_prediction_views": [
+        {
+          "test": "main",
+          "view": "clean",
+          "count": 168000
+        }
+      ],
+      "prediction_complete": false
+    }
+  ],
+  "U_exposure_is_repeated": true,
+  "unique_U_records": 56700,
+  "source_U_TX_truth_read": false,
+  "source_V_not_target_acceptance": true,
+  "no_new_head_fit": true,
+  "shared_GPU_walltime_not_exclusive_GPU_hours": true,
+  "target_accuracy_not_read": true,
+  "goal_complete": false
+}
