@@ -291,3 +291,6 @@ Path run `20261024-phase1-PAMF-HardPL-PathComplement-m3-r01` 执行commit `cf679
 ## 可靠As＋原始输入回退实施矩阵
 
 `20261024-phase1-PAMF-HardPL-ReliableAs-m3-r01` 按此前commit346b3fc固定源设计实施；保留Joint6G原E20+30/E50/11100/.95/weight6/全部原CE/KL/joint/style/完整Lguard/defaulthead，只在固定半U采用currenteval无梯度高置信同raw伪类As，否则exactraw回退，原acceptedU不删。新增As850500生成/teacher eval，累计teacher2948400、学生U10602900；实际used/fallback及成本另计。77检查、一次P0P1PASS，首匹配释放Complement卡位原E20smoke通过即重载；健康Path保留，三卡2task上限、CPU单scorer接Path终态。完整3seed raw+固定DURA七景42cell和原双raw目标保持。当前未启动、source smoke PENDING；历史Joint等目标暴露如实保留，Complement/Path未读target，不改固定方案。goal ACTIVE。
+
+
+ReliableAs 发布后 VERIFIED：控制器存活及 CWD/完整命令匹配，执行 commit `0ffe0ba43a6b2ead84db96ff5b98494f29550594`；三 seed QUEUED、GPU worker 0、真实 E20 source smoke PENDING。等待对应 Complement GPU 预测完成并保留 Path 分发优先级，当前 6 个前序 worker 健康。见该 run 的 queue_observation.json，原 raw 双门槛尚未达到，目标继续 ACTIVE。

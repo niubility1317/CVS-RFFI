@@ -17,3 +17,8 @@ LOCAL_VERIFIED_NOT_LAUNCHED。77项相关检查和一次独立P0/P1PASS；真实
 GPU5/6/7固定seed2701/02/03，每卡最多2本任务、计入外部最多3进程，派发前free>=10000MiB。只接替同seed Complement完成全部GPU预测的卡位，同时保留健康Path；两侧pendingCUDA PID都预留。首释放且容量足够的匹配seed/card做其原E20 smoke，临时smoke_runtime首row对齐、正式三row映射不变。CPU唯一scorer接Path终态后。两个相同技术失败停止新增派发，保留健康任务/产物；不按target停训/调参/重排/选择性重跑。
 
 固定最终E50学生逐row自动raw及固定DURA各clean+六practical，168000/view，三seed42cell；整row全部prediction固定后独立truth-last。报告逐seed/景/TX/RX/day/RX×day、SD/MacroF1、净纠错/损伤、U实际采用/回退和teacher/学生曝光/成本。复用同读出完整F20/F21；原raw目标clean同时>=+1pp、六景同时严格>+1.5pp，DURA不能替代。G固定R69/266951、FP32/TF32off/reuse+graph/nativeFalse；原G的LU无TX标签/F-free约束保持，不参与新F训练，不套旧F50时延。goal ACTIVE。
+
+
+## 发布后独立核实
+
+VERIFIED：执行 commit `0ffe0ba43a6b2ead84db96ff5b98494f29550594` 的控制器存活，CWD 与完整命令匹配。三条 ReliableAs 行实际 QUEUED、训练 worker 0，原 E20 真实权重检查尚 PENDING；等待对应 seed Complement 全部 GPU 预测完成且 Path 已分发后释放第二卡位，固定 GPU5/6/7 对应三个 seed。已核实前序 Complement／Path 共 6 个健康进程的身份、GPU 和日志增长。排队不代表检查通过、训练启动或目标收益；全部 raw 与固定 DURA 七景测试和独立 truth-last 自动衔接。
