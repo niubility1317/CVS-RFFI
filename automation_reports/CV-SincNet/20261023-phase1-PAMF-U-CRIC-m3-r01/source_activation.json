@@ -1,0 +1,132 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "execution_commit": "b249b75123e24acadd80d744b2b0f6e5d79f265d",
+  "observed_unix": 1792759589.7366729,
+  "controller_PID_CWD_command_verified": true,
+  "own_GPU_workers_this_run": 3,
+  "own_GPU_workers_with_paired_U": 6,
+  "source_smoke": {
+    "status": "PASS",
+    "target_reads": 0,
+    "U_truth_reads": 0,
+    "checked": {
+      "parent_epoch": 30,
+      "parent_updates": 6660,
+      "EMA_updates_after_smoke": 6661,
+      "U_seen": 964156,
+      "physical_U_seen": 482078,
+      "L_forward_packets": 768,
+      "finite_backward": true,
+      "teacher_gradient": false,
+      "u_cric_loss": 0.19443292915821075,
+      "u_cric_seen": 256,
+      "u_cric_anchors": {
+        "time_down": 252,
+        "t2.pool": 252
+      },
+      "shallow_middle_gradients": true,
+      "feature_hooks_removed": true
+    }
+  },
+  "rows": [
+    {
+      "row_id": "UCRIC-s2026092701",
+      "gpu": 5,
+      "PID_CWD_command_verified": true,
+      "actual_GPU_verified": true,
+      "native_log_bytes": 6518,
+      "native_stdout_growth": 0,
+      "actual_step_log_growth": 190583,
+      "cumulative_updates": 6845,
+      "current_epoch": 31,
+      "all_flushed_step_prefix_records_checked": 185,
+      "gzip_closed": false,
+      "actual_source_counters": {
+        "SSL_loss": 0.33800485730171204,
+        "SSL_seen": 1011260,
+        "SSL_physical_seen": 505630,
+        "SSL_U_CRIC_loss": 0.17274928092956543,
+        "SSL_U_CRIC_calls": 185,
+        "SSL_U_CRIC_seen": 47360,
+        "SSL_U_CRIC_valid_time_down": 252,
+        "SSL_U_CRIC_valid_t2.pool": 252,
+        "SSL_proto_coverage": 1.0
+      },
+      "valid_anchors": {
+        "time_down": 46226,
+        "t2.pool": 46226
+      },
+      "existing_paired_U_worker_preserved": true,
+      "task_owned_GPU_workers_this_card": 2,
+      "total_GPU_processes_this_card": 3
+    },
+    {
+      "row_id": "UCRIC-s2026092702",
+      "gpu": 6,
+      "PID_CWD_command_verified": true,
+      "actual_GPU_verified": true,
+      "native_log_bytes": 6518,
+      "native_stdout_growth": 0,
+      "actual_step_log_growth": 190949,
+      "cumulative_updates": 6844,
+      "current_epoch": 31,
+      "all_flushed_step_prefix_records_checked": 184,
+      "gzip_closed": false,
+      "actual_source_counters": {
+        "SSL_loss": 0.35254064202308655,
+        "SSL_seen": 1011004,
+        "SSL_physical_seen": 505502,
+        "SSL_U_CRIC_loss": 0.1783200055360794,
+        "SSL_U_CRIC_calls": 184,
+        "SSL_U_CRIC_seen": 47104,
+        "SSL_U_CRIC_valid_time_down": 250,
+        "SSL_U_CRIC_valid_t2.pool": 250,
+        "SSL_proto_coverage": 1.0
+      },
+      "valid_anchors": {
+        "time_down": 46082,
+        "t2.pool": 46082
+      },
+      "existing_paired_U_worker_preserved": true,
+      "task_owned_GPU_workers_this_card": 2,
+      "total_GPU_processes_this_card": 2
+    },
+    {
+      "row_id": "UCRIC-s2026092703",
+      "gpu": 7,
+      "PID_CWD_command_verified": true,
+      "actual_GPU_verified": true,
+      "native_log_bytes": 6518,
+      "native_stdout_growth": 0,
+      "actual_step_log_growth": 189398,
+      "cumulative_updates": 6848,
+      "current_epoch": 31,
+      "all_flushed_step_prefix_records_checked": 188,
+      "gzip_closed": false,
+      "actual_source_counters": {
+        "SSL_loss": 0.34670424461364746,
+        "SSL_seen": 1012028,
+        "SSL_physical_seen": 506014,
+        "SSL_U_CRIC_loss": 0.17712752521038055,
+        "SSL_U_CRIC_calls": 188,
+        "SSL_U_CRIC_seen": 48128,
+        "SSL_U_CRIC_valid_time_down": 244,
+        "SSL_U_CRIC_valid_t2.pool": 244,
+        "SSL_proto_coverage": 1.0
+      },
+      "valid_anchors": {
+        "time_down": 47091,
+        "t2.pool": 47091
+      },
+      "existing_paired_U_worker_preserved": true,
+      "task_owned_GPU_workers_this_card": 2,
+      "total_GPU_processes_this_card": 3
+    }
+  ],
+  "verification_scope": "All complete flushed source-step prefix records, not full final20 log or accuracy evidence",
+  "release_archive_SHA_comparison": "PASS single local/remote archive",
+  "remote_compile": "PASS",
+  "healthy_other_owner_jobs_changed": false,
+  "new_method_target_reads": 0,
+  "goal_complete": false
+}

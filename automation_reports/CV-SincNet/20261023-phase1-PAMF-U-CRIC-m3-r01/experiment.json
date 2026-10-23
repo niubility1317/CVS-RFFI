@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "用户 /goal 授权持续设计迭代 PAMF 半监督机制，使目标测试 clean 相对监督/普通PL均至少高1pp、六景均值均严格高1.5pp；三GPU每卡固定一个模型种子、最多两个本任务worker；追加要求同时报告单PAMF与固定DURA+PAMF。",
   "code": {
-    "commit": "53cce03d39a8f58469e29c07821de9a05f49aed1",
+    "commit": "b249b75123e24acadd80d744b2b0f6e5d79f265d",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 ordinary account CVS-RFFI Py3.10/Torch2.1 FP32/TF32off, CPU2 per worker",
     "cwd": "PROJECT/releases/20261023-phase1-PAMF-U-CRIC-m3-r01",
@@ -270,5 +270,18 @@
     "G fixed original R69 DURA v1.0 (266951 parameters), original F0 LU source permission, Graph-RR reuse=True graph=True native=False FP32/TF32off, inference only. Same-G F20/F21 references reused. Raw goal cannot be replaced by DURA benefit.",
     "One immutable output root and sole launch owner. Preserve other owners and healthy PAIREDU. Stop new dispatch only after two identical technical failures, never based on target performance."
   ],
-  "registered_at": "2026-10-23T12:43:49+00:00"
+  "registered_at": "2026-10-23T12:43:49+00:00",
+  "launch_status": {
+    "status": "VERIFIED_RUNNING",
+    "evidence": "source_activation.json",
+    "source_smoke": "PASS",
+    "own_GPU_workers": 3,
+    "with_paired_U_workers": 6,
+    "actual_GPUs": [
+      5,
+      6,
+      7
+    ],
+    "new_method_target_reads": 0
+  }
 }

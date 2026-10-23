@@ -51,3 +51,8 @@ VIEWANCHOR r01 在任何 smoke／训练之前因原卡持续占用而被资源�
 VIEWANCHOR三seed raw已完整评分：clean84.379563%、六景71.946958%，对F20为-0.405754/+1.350761pp，对F21为-0.602183/+1.587599pp，原目标未达成。独立九模型DURA参考矩阵也已全齐：VIEWANCHOR组合84.448214%/77.521759%，监督组合84.857540%/77.854894%，普通PL组合85.029563%/78.074636%；三种新方法组合两个主指标均低于这两个对照。完整两套表与逐seed/景/RX/TX/day/净纠错、实际曝光和预测成本见`automation_reports/CV-SincNet/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/target_results.md`。
 
 PAIREDU三seed已在各自GPU5/6/7实际续训，真实E30 no-query smoke和配对梯度PASS，累计E31；指标及父权重在上述新目标读取前已经固定，保持原计划。原目标仍ACTIVE，不能以局部六景收益、DURA相对raw收益或source运行健康替代达标证据。
+
+
+## 无标签浅中层跨接收机扩展已实际运行
+
+`20261023-phase1-PAMF-U-CRIC-m3-r01` 已固定同原RXPSM E30分叉、保持原U输入/软CE/原型损失，新增原生time_down/t2.pool U对比，系数0.10及温度0.20复用L CRIC；50项检查、一次P0/P1审查、真实E30 source-only梯度smoke全部PASS。执行commit`b249b75123e24acadd80d744b2b0f6e5d79f265d`，三seed实际训练，新增损失及浅中层梯度非零，未访问新候选目标。GPU5/6/7各有原PAIR＋新UCRIC两条本任务worker；含外部MATLAB总数最多3，仍保留>=10000MiB派发门槛，不热改或停旧任务。PAIR已累计E39，新UCRIC在E31；两路最终均自动完成raw与同一固定DURA的七景预测及独立评分。此前三种方法负结果完整保留，原目标继续ACTIVE。
