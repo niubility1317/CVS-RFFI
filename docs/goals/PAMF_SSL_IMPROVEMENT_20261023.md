@@ -56,3 +56,8 @@ PAIREDU三seed已在各自GPU5/6/7实际续训，真实E30 no-query smoke和配�
 ## 无标签浅中层跨接收机扩展已实际运行
 
 `20261023-phase1-PAMF-U-CRIC-m3-r01` 已固定同原RXPSM E30分叉、保持原U输入/软CE/原型损失，新增原生time_down/t2.pool U对比，系数0.10及温度0.20复用L CRIC；50项检查、一次P0/P1审查、真实E30 source-only梯度smoke全部PASS。执行commit`b249b75123e24acadd80d744b2b0f6e5d79f265d`，三seed实际训练，新增损失及浅中层梯度非零，未访问新候选目标。GPU5/6/7各有原PAIR＋新UCRIC两条本任务worker；含外部MATLAB总数最多3，仍保留>=10000MiB派发门槛，不热改或停旧任务。PAIR已累计E39，新UCRIC在E31；两路最终均自动完成raw与同一固定DURA的七景预测及独立评分。此前三种方法负结果完整保留，原目标继续ACTIVE。
+
+
+## 源状态诊断与下一条预先固定假设
+
+九模型源状态未显示类别塌缩或缺失L-only类/RX原型；固定720条source-V E30 CPU诊断未支持换监督父来源，继续原RXPSM E30。现有DURA记录披露历史正式暴露后的人工父选择，尚不能确认适合作新F训练祖先，故仅保留用户指定冻结组合参考。实际诊断和边界见九模型reference报告source_decisions.md。下一条`20261023-phase1-PAMF-U-MixStyle-m3-r01`固定同TX预测跨RX的U浅中层统计混合（MixStyle p0.5/alpha0.1，置信>=0.5，仅student U，原E30+20），三seed及双读出矩阵已登记，尚未实现或启动；等待同seedPAIR GPU工作结束后用第二名额，UCRIC健康任务保留。新目标未访问，原goal保持ACTIVE。

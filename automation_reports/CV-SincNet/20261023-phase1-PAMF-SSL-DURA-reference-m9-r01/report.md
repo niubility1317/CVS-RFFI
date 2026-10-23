@@ -32,3 +32,6 @@ ANALYZED：九个新F模型的raw复用和固定DURA读出均已完成七景独�
 
 
 非阻断源域机制检查已完成：见source_state_diagnostic.md/json。九模型的有效类别权重未明显塌缩，RXPSM/VIEWANCHOR全30个标签类/源RX原型均覆盖；这是已有源状态证据，不是U正确率、目标性能或晋级依据。当前两路健康新训练不改动。
+
+
+补充E30 CPU source-V教师诊断和恢复器训练来源判断见source_decisions.md/e30_source_teacher_diagnostic.json；现有证据未支持换用监督E30父来源，G继续只作固定参考读出，当前健康训练保持。下一条U-MixStyle仅固定源域假设、尚未实现或启动。

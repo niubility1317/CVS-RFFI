@@ -1,0 +1,38 @@
+{
+  "status": "FIXED_SOURCE_HYPOTHESIS_NOT_IMPLEMENTED",
+  "recipe": {
+    "start_epoch": 31,
+    "levels": [
+      "time_down",
+      "t2.pool"
+    ],
+    "probability_per_level": 0.5,
+    "alpha": 0.1,
+    "eps": 1e-06,
+    "eligible_weight_min": 0.5,
+    "same_teacher_argmax": true,
+    "different_original_source_RX": true,
+    "random_uniform_eligible_partner": true,
+    "invalid_pair_identity": true,
+    "detached_moments": true,
+    "shared_partner_per_U_forward": true,
+    "shared_lambda_per_U_forward": true,
+    "teacher_and_L_hooks": false,
+    "new_student_forwards": 0,
+    "new_inference_parameters": 0,
+    "G_training_reads": 0
+  },
+  "parent": "original RXPSM E30",
+  "incremental_epochs": 20,
+  "total_epochs": 50,
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "primary_goal": "raw clean>=+1pp and six>+1.5pp against both F20/F21",
+  "readouts": [
+    "raw",
+    "DURA-LU"
+  ]
+}
