@@ -84,7 +84,7 @@ if rt.get('replaces_queued_runtime'):
  result=subprocess.run([rt['python'],'-m','experiments.pamf_ssl_research.queued_replacement','--runtime',rt['runtime_file']],
   cwd=release,env=env,check=True,text=True,capture_output=True)
  replacement=json.loads(result.stdout)
-command=[rt['python'],'-u','-m','experiments.pamf_ssl_research.control','--config',rt['runtime_file']]
+command=[rt['python'],'-u','-m',rt.get('controller_module','experiments.pamf_ssl_research.control'),'--config',rt['runtime_file']]
 log=release/'controller.log'
 with log.open('x') as stream:
  child=subprocess.Popen(command,cwd=release,env=env,stdin=subprocess.DEVNULL,stdout=stream,stderr=subprocess.STDOUT,start_new_session=True)

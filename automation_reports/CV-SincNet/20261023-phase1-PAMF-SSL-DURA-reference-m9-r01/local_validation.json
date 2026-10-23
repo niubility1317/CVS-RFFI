@@ -1,0 +1,18 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "focused_tests": {
+    "status": "PASS",
+    "total": 17
+  },
+  "independent_review": {
+    "P1_found": 1,
+    "issue": "Pending CUDA process reservation",
+    "fix": "Union registered CUDA PIDs and active child PIDs before dispatch",
+    "targeted_rereview": "PASS"
+  },
+  "baseline_rows_verified": 6,
+  "new_frozen_readout_rows": 9,
+  "training_updates": 0,
+  "real_F_G_source_only_smoke": "PENDING_FIRST_GPU_STEP",
+  "target_predictions_started": false
+}

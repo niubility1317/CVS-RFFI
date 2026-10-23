@@ -7,16 +7,16 @@ from experiments.cric_dura_comparison.io import read, write
 from .plan import METHODS, SEEDS, VIEWS
 
 
-def overall(path, expected=None):
+def overall(path, expected=None, readout='raw'):
     d = read(path)
     if d.get('truth_last') is not True or d.get('status') != 'SCORED':
         raise ValueError('Only independent truth-last scores are comparable')
     if expected and any(d.get(k) != v for k, v in expected.items()):
         raise ValueError('Scores belong to another run/row/model seed')
     rows = [r for r in d['results'] if r['dimension'] == 'overall' and r['stratum'] == 'ALL'
-            and r['test'] == 'main' and r['readout'] == 'raw']
+            and r['test'] == 'main' and r['readout'] == readout]
     if len(rows) != 7 or {r['view'] for r in rows} != set(VIEWS) or any(r['count'] != 168000 for r in rows):
-        raise ValueError('Full matched raw seven-view coverage required')
+        raise ValueError('Full matched seven-view coverage required for the requested readout')
     correct = {}
     for row in rows:
         cm = row['confusion']

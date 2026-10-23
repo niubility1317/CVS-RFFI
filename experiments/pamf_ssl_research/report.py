@@ -10,10 +10,10 @@ from .analyze import summarize, declared_methods
 from .plan import SEEDS, VIEWS
 
 
-def cells(value):
+def cells(value, readout='raw'):
     result = {}
     for r in value['results']:
-        if r['test'] != 'main' or r['readout'] != 'raw':
+        if r['test'] != 'main' or r['readout'] != readout:
             continue
         key = (r['view'], r['dimension'], r['stratum'])
         cm, n = r['confusion'], r['count']

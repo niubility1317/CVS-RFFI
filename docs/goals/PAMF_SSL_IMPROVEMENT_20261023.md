@@ -32,3 +32,8 @@ F0 每视图168000条、三个seed的准确率验收使用整数计数：clean�
 VIEWANCHOR r01 在任何 smoke／训练之前因原卡持续占用而被资源替代；记录和旧输出均保留，独立确认旧控制器退出。相同科学配方的新不可覆盖 run `20261023-phase1-PAMF-viewanchor-m3-r02` 已在 GPU5/6/7 各跑一个固定 seed，执行 commit 为 6226ad1e7cce97846702fe15ceba866d4acf64c9。真实 E30 no-query smoke PASS，三行 PID/CWD/命令／实际 GPU／日志增长均核实，首次 epoch 证据到累计 E32；部分 step 前缀确认 U 状态衔接和新增损失非零。当前仅有源训练证据，原目标保持 ACTIVE。
 
 源端后续“干净／信道配对 U”假设已记录在 `20261023-phase1-PAMF-paired-U-m3-r01/report.md`，只固定同一 E30 分叉、完整 clean student U 分支及其损失分解；尚未实现或启动。当前健康 VIEWANCHOR 训练保持原不可变 release。
+
+
+## 用户追加双 readout 测试（2026-10-23）
+
+用户明确要求同时报告 PAMF 单模型与固定 DURA v1.0＋同一 PAMF。新增独立冻结补测 `20261023-phase1-PAMF-SSL-DURA-reference-m9-r01`，覆盖 PSM、RXPSM、VIEWANCHOR 各三个固定模型种子、七景168000物理样本；原单模型预测和匹配 F20/F21 的既有 DURA 结果复用。健康续训不热改，G 不重训或调参。两套结果分别与相同 readout 的监督及普通 PL 对比，并报告 DURA 的纠错/损伤。原单模型 clean≥+1pp、六景>+1.5pp 验收保持，DURA 参考不替代该目标。完整矩阵与资源见新 run 的 experiment.json/report.md。

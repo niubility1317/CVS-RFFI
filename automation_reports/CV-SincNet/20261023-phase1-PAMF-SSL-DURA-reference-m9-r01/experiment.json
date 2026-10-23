@@ -1,0 +1,463 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261023-phase1-PAMF-SSL-DURA-reference-m9-r01",
+  "group_id": "phase1-pamf-source-only-ssl-improvement",
+  "display_name": "PAMF半监督：单模型与固定DURA组合三种子九模型补测",
+  "description": "Frozen raw prediction reuse plus user-fixed DURA v1.0 readout for every PSM/RXPSM/VIEWANCHOR seed; compare both against matched supervised and ordinary PL baselines.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "PAMF",
+    "SSL",
+    "DURA",
+    "frozen-evaluation",
+    "three-seeds"
+  ],
+  "comparison_group_id": "ManySig-F0-T1-E50-defaulthead-raw-and-DURA-v1",
+  "parent_run_ids": [
+    "20261023-phase1-PAMF-physical-softmatch-m6-r02",
+    "20261023-phase1-PAMF-viewanchor-m3-r02",
+    "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户2026-10-23明确要求测试结果不仅有单独PAMF，还有参考DURA+PAMF；沿用三张卡、每张一个种子、每卡最多两个本任务worker授权。",
+  "code": {
+    "commit": "72524bc3c5ff024047621e6013777d0a5ee3d276",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 ordinary account CVS-RFFI Py3.10/Torch2.1 FP32/TF32off, CPU2 per worker",
+    "cwd": "PROJECT/releases/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01",
+    "entry": "experiments.pamf_ssl_research.dura_reference_control"
+  },
+  "data": {
+    "dataset": "WiSig ManySig",
+    "version": "Existing validated F0 roles and physical-ID IQ binding",
+    "representation": "equalized1 center256 float32 unitRMS",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md; docs/goals/PAMF_SSL_IMPROVEMENT_20261023.md",
+    "physical_ids_ref": "Existing F0 source_contract.json role_ids; corrected physical-ID-aligned cache reader",
+    "label_map_ref": "Existing F0 six-TX class order, unchanged",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Existing six registered TX shared with corrected F20/F21",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3,
+      "labeled_share_of_training": 0.1
+    },
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Reuse existing Phase1 VALIDATED_ONCE handles. p2_min_v1/capsule_id/split_id not applicable to Phase1.",
+    "support_query_ref": "Phase1 frozen zero-adaptation evaluation; no support/query fitting",
+    "leo_config_ref": "Fixed received IQ: clean plus six practical, 168000 physical packets/view, eval seed2027; training source As unchanged"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Frozen Phase1 PAMF and fixed DURA v1.0 + same PAMF, no adaptation or training. Both matched baselines, seven views, all three seeds. Raw remains primary SSL goal; DURA reference never substitutes for raw acceptance. No Phase2/on-orbit claim."
+  },
+  "checkpoint": {
+    "initialization": "Existing source-final E50 students and user-fixed DURA v1.0; zero new model updates",
+    "sources": [
+      "PROJECT/runs/20261023-phase1-PAMF-physical-softmatch-m6-r02/{PSM,RXPSM}-sSEED/source/final_ssdg.pth",
+      "PROJECT/runs/20261023-phase1-PAMF-viewanchor-m3-r02/VIEWANCHOR-sSEED/source/final_ssdg.pth",
+      "PROJECT/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "Existing same F0 source_contract and VALIDATED_ONCE received IQ; load_F validates actual three-segment source ancestry/identity; load_G checks original F0 LU roles and R69 stage2 E20/4940,266951 parameters.",
+    "provenance_verdict": "Same-contract source-only F/G reuse; each F must be SOURCE_FROZEN E50/11100 with target_access=false before any new target prediction. Source-only real-checkpoint F/G smoke is first GPU step.",
+    "selection_rule": "Every predeclared method/seed, final E50 only; no target-based candidate/epoch/seed selection. Fixed G never trained, tuned or chosen from these results."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-ssl-dura-reference-20261023",
+    "gpu_policy": "GPU5/6/7 fixed seeds2026092701/02/03; launch only when total compute apps<2 and free>=10000MiB including existing training/foreign owner. <=2 own/card, <=6 total own GPU workers. Existing training/raw owners preserved. One independent CPU scorer; existing raw owner retains CPU scoring allocation until terminal.",
+    "remote_run_root": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01",
+    "remote_log_root": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_ssl_research_20261023/release-dura-reference-r01",
+    "launch_command": "python -m experiments.pamf_ssl_research.dura_reference_publish --repo code/worktrees/standard_ce_baselines_20261010 --context local_artifacts/pamf_ssl_research_20261023/dura_reference_context.json --output local_artifacts/pamf_ssl_research_20261023/release-dura-reference-r01 --ssh-config tools/n607_ssh_config",
+    "stop_rule": "Two identical technical failure fingerprints stop new GPU dispatch; preserve all healthy work and artifacts. No performance-based stop, reorder or selective rerun. Smoke failure stops before target."
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "state.json",
+    "ROW/predictions/source_execution_check.json",
+    "ROW/predictions/complete.json",
+    "ROW/predictions/main/predictions.npz",
+    "ROW/scores/scores.json",
+    "ROW/scores/complete.json",
+    "target-report/analysis.json",
+    "target-report/report.md",
+    "target-report/strata.csv",
+    "target-report/paired_raw.csv",
+    "target-report/per_seed.csv"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "paired_seed_delta_pp",
+      "repairs",
+      "damage",
+      "net_correct"
+    ],
+    "dimensions": [
+      "readout",
+      "method",
+      "model_seed",
+      "view",
+      "receiver",
+      "transmitter",
+      "date",
+      "receiver_date"
+    ],
+    "prediction_ref": "Canonical frozen default-head evaluator; reuse exact existing raw npz IDs, add only fixed DURA-LU predictions. All seven views fixed before independent truth-side scoring.",
+    "scorer_ref": "experiments.cric_dura_comparison.evaluation.score: preflight full prediction matrix before truth IO; separate CPU process. Existing F20/F21 scores reused, not rescored."
+  },
+  "rows": [
+    {
+      "row_id": "PSM-s2026092701",
+      "method": "PSM frozen default head, raw + fixed DURA v1.0 Graph-RR",
+      "purpose": "predeclared_frozen_reference",
+      "config_ref": "experiments/pamf_ssl_research/dura_reference.py",
+      "resolved_config_ref": "PROJECT/releases/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/configs/PSM-s2026092701-predict.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Fixed existing split392005/evaluation2027; no augmentation, data resampling, support or new model RNG. Model seed denotes existing F identity. Raw and DURA share exact physical IDs.",
+      "k": null,
+      "scenario": "raw and DURA-LU each clean + six practical;168000/view",
+      "optimizer": "Frozen evaluation, no optimizer",
+      "lr": "Not applicable: no parameter updates",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Zero training updates. Reuse existing source-final E50/11100 each model. New DURA readout:7x168000 predictions; raw predictions reused. FixedG E20/4940 training cost remains historical, no retraining.",
+      "output_root": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/PSM-s2026092701",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/logs/PSM-s2026092701-predict.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 python -u -m experiments.pamf_ssl_research.dura_reference_worker predict --config RELEASE/configs/PSM-s2026092701-predict.json",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "predictions/main/predictions.npz",
+        "predictions/source_execution_check.json",
+        "scores/scores.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "RXPSM-s2026092701",
+      "method": "RXPSM frozen default head, raw + fixed DURA v1.0 Graph-RR",
+      "purpose": "predeclared_frozen_reference",
+      "config_ref": "experiments/pamf_ssl_research/dura_reference.py",
+      "resolved_config_ref": "PROJECT/releases/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/configs/RXPSM-s2026092701-predict.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Fixed existing split392005/evaluation2027; no augmentation, data resampling, support or new model RNG. Model seed denotes existing F identity. Raw and DURA share exact physical IDs.",
+      "k": null,
+      "scenario": "raw and DURA-LU each clean + six practical;168000/view",
+      "optimizer": "Frozen evaluation, no optimizer",
+      "lr": "Not applicable: no parameter updates",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Zero training updates. Reuse existing source-final E50/11100 each model. New DURA readout:7x168000 predictions; raw predictions reused. FixedG E20/4940 training cost remains historical, no retraining.",
+      "output_root": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/RXPSM-s2026092701",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/logs/RXPSM-s2026092701-predict.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 python -u -m experiments.pamf_ssl_research.dura_reference_worker predict --config RELEASE/configs/RXPSM-s2026092701-predict.json",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "predictions/main/predictions.npz",
+        "predictions/source_execution_check.json",
+        "scores/scores.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "PSM-s2026092702",
+      "method": "PSM frozen default head, raw + fixed DURA v1.0 Graph-RR",
+      "purpose": "predeclared_frozen_reference",
+      "config_ref": "experiments/pamf_ssl_research/dura_reference.py",
+      "resolved_config_ref": "PROJECT/releases/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/configs/PSM-s2026092702-predict.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Fixed existing split392005/evaluation2027; no augmentation, data resampling, support or new model RNG. Model seed denotes existing F identity. Raw and DURA share exact physical IDs.",
+      "k": null,
+      "scenario": "raw and DURA-LU each clean + six practical;168000/view",
+      "optimizer": "Frozen evaluation, no optimizer",
+      "lr": "Not applicable: no parameter updates",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Zero training updates. Reuse existing source-final E50/11100 each model. New DURA readout:7x168000 predictions; raw predictions reused. FixedG E20/4940 training cost remains historical, no retraining.",
+      "output_root": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/PSM-s2026092702",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/logs/PSM-s2026092702-predict.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 python -u -m experiments.pamf_ssl_research.dura_reference_worker predict --config RELEASE/configs/PSM-s2026092702-predict.json",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "predictions/main/predictions.npz",
+        "predictions/source_execution_check.json",
+        "scores/scores.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "RXPSM-s2026092702",
+      "method": "RXPSM frozen default head, raw + fixed DURA v1.0 Graph-RR",
+      "purpose": "predeclared_frozen_reference",
+      "config_ref": "experiments/pamf_ssl_research/dura_reference.py",
+      "resolved_config_ref": "PROJECT/releases/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/configs/RXPSM-s2026092702-predict.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Fixed existing split392005/evaluation2027; no augmentation, data resampling, support or new model RNG. Model seed denotes existing F identity. Raw and DURA share exact physical IDs.",
+      "k": null,
+      "scenario": "raw and DURA-LU each clean + six practical;168000/view",
+      "optimizer": "Frozen evaluation, no optimizer",
+      "lr": "Not applicable: no parameter updates",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Zero training updates. Reuse existing source-final E50/11100 each model. New DURA readout:7x168000 predictions; raw predictions reused. FixedG E20/4940 training cost remains historical, no retraining.",
+      "output_root": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/RXPSM-s2026092702",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/logs/RXPSM-s2026092702-predict.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 python -u -m experiments.pamf_ssl_research.dura_reference_worker predict --config RELEASE/configs/RXPSM-s2026092702-predict.json",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "predictions/main/predictions.npz",
+        "predictions/source_execution_check.json",
+        "scores/scores.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "PSM-s2026092703",
+      "method": "PSM frozen default head, raw + fixed DURA v1.0 Graph-RR",
+      "purpose": "predeclared_frozen_reference",
+      "config_ref": "experiments/pamf_ssl_research/dura_reference.py",
+      "resolved_config_ref": "PROJECT/releases/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/configs/PSM-s2026092703-predict.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Fixed existing split392005/evaluation2027; no augmentation, data resampling, support or new model RNG. Model seed denotes existing F identity. Raw and DURA share exact physical IDs.",
+      "k": null,
+      "scenario": "raw and DURA-LU each clean + six practical;168000/view",
+      "optimizer": "Frozen evaluation, no optimizer",
+      "lr": "Not applicable: no parameter updates",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Zero training updates. Reuse existing source-final E50/11100 each model. New DURA readout:7x168000 predictions; raw predictions reused. FixedG E20/4940 training cost remains historical, no retraining.",
+      "output_root": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/PSM-s2026092703",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/logs/PSM-s2026092703-predict.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 python -u -m experiments.pamf_ssl_research.dura_reference_worker predict --config RELEASE/configs/PSM-s2026092703-predict.json",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "predictions/main/predictions.npz",
+        "predictions/source_execution_check.json",
+        "scores/scores.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "RXPSM-s2026092703",
+      "method": "RXPSM frozen default head, raw + fixed DURA v1.0 Graph-RR",
+      "purpose": "predeclared_frozen_reference",
+      "config_ref": "experiments/pamf_ssl_research/dura_reference.py",
+      "resolved_config_ref": "PROJECT/releases/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/configs/RXPSM-s2026092703-predict.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Fixed existing split392005/evaluation2027; no augmentation, data resampling, support or new model RNG. Model seed denotes existing F identity. Raw and DURA share exact physical IDs.",
+      "k": null,
+      "scenario": "raw and DURA-LU each clean + six practical;168000/view",
+      "optimizer": "Frozen evaluation, no optimizer",
+      "lr": "Not applicable: no parameter updates",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Zero training updates. Reuse existing source-final E50/11100 each model. New DURA readout:7x168000 predictions; raw predictions reused. FixedG E20/4940 training cost remains historical, no retraining.",
+      "output_root": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/RXPSM-s2026092703",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/logs/RXPSM-s2026092703-predict.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 python -u -m experiments.pamf_ssl_research.dura_reference_worker predict --config RELEASE/configs/RXPSM-s2026092703-predict.json",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "predictions/main/predictions.npz",
+        "predictions/source_execution_check.json",
+        "scores/scores.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "VIEWANCHOR-s2026092701",
+      "method": "VIEWANCHOR frozen default head, raw + fixed DURA v1.0 Graph-RR",
+      "purpose": "predeclared_frozen_reference",
+      "config_ref": "experiments/pamf_ssl_research/dura_reference.py",
+      "resolved_config_ref": "PROJECT/releases/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/configs/VIEWANCHOR-s2026092701-predict.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Fixed existing split392005/evaluation2027; no augmentation, data resampling, support or new model RNG. Model seed denotes existing F identity. Raw and DURA share exact physical IDs.",
+      "k": null,
+      "scenario": "raw and DURA-LU each clean + six practical;168000/view",
+      "optimizer": "Frozen evaluation, no optimizer",
+      "lr": "Not applicable: no parameter updates",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Zero training updates. Reuse existing source-final E50/11100 each model. New DURA readout:7x168000 predictions; raw predictions reused. FixedG E20/4940 training cost remains historical, no retraining.",
+      "output_root": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/VIEWANCHOR-s2026092701",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/logs/VIEWANCHOR-s2026092701-predict.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 python -u -m experiments.pamf_ssl_research.dura_reference_worker predict --config RELEASE/configs/VIEWANCHOR-s2026092701-predict.json",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "predictions/main/predictions.npz",
+        "predictions/source_execution_check.json",
+        "scores/scores.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "VIEWANCHOR-s2026092702",
+      "method": "VIEWANCHOR frozen default head, raw + fixed DURA v1.0 Graph-RR",
+      "purpose": "predeclared_frozen_reference",
+      "config_ref": "experiments/pamf_ssl_research/dura_reference.py",
+      "resolved_config_ref": "PROJECT/releases/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/configs/VIEWANCHOR-s2026092702-predict.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Fixed existing split392005/evaluation2027; no augmentation, data resampling, support or new model RNG. Model seed denotes existing F identity. Raw and DURA share exact physical IDs.",
+      "k": null,
+      "scenario": "raw and DURA-LU each clean + six practical;168000/view",
+      "optimizer": "Frozen evaluation, no optimizer",
+      "lr": "Not applicable: no parameter updates",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Zero training updates. Reuse existing source-final E50/11100 each model. New DURA readout:7x168000 predictions; raw predictions reused. FixedG E20/4940 training cost remains historical, no retraining.",
+      "output_root": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/VIEWANCHOR-s2026092702",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/logs/VIEWANCHOR-s2026092702-predict.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 python -u -m experiments.pamf_ssl_research.dura_reference_worker predict --config RELEASE/configs/VIEWANCHOR-s2026092702-predict.json",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "predictions/main/predictions.npz",
+        "predictions/source_execution_check.json",
+        "scores/scores.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "VIEWANCHOR-s2026092703",
+      "method": "VIEWANCHOR frozen default head, raw + fixed DURA v1.0 Graph-RR",
+      "purpose": "predeclared_frozen_reference",
+      "config_ref": "experiments/pamf_ssl_research/dura_reference.py",
+      "resolved_config_ref": "PROJECT/releases/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/configs/VIEWANCHOR-s2026092703-predict.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "Fixed existing split392005/evaluation2027; no augmentation, data resampling, support or new model RNG. Model seed denotes existing F identity. Raw and DURA share exact physical IDs.",
+      "k": null,
+      "scenario": "raw and DURA-LU each clean + six practical;168000/view",
+      "optimizer": "Frozen evaluation, no optimizer",
+      "lr": "Not applicable: no parameter updates",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Zero training updates. Reuse existing source-final E50/11100 each model. New DURA readout:7x168000 predictions; raw predictions reused. FixedG E20/4940 training cost remains historical, no retraining.",
+      "output_root": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/VIEWANCHOR-s2026092703",
+      "log_path": "PROJECT/runs/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/logs/VIEWANCHOR-s2026092703-predict.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 python -u -m experiments.pamf_ssl_research.dura_reference_worker predict --config RELEASE/configs/VIEWANCHOR-s2026092703-predict.json",
+      "expected_artifacts": [
+        "predictions/complete.json",
+        "predictions/main/predictions.npz",
+        "predictions/source_execution_check.json",
+        "scores/scores.json",
+        "scores/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Six completed PSM/RXPSM sources and three currently training VIEWANCHOR sources are all fixed, no new training or parent choice.",
+    "Matched F20/F21 baselines already have full same-DURA seven-view truth-last scores for all three seeds; reuse those exact artifacts.",
+    "Both raw and DURA are reported per seed/scene/RX/TX/day, with paired DURA-versus-raw repairs and damage. Raw-only integer goal remains unchanged.",
+    "Previously exposed engineering benchmark, no new independent blind-test claim. New combined scores never feed back to model training or candidate ranking.",
+    "Seventeen focused data/identity/truth/readout/integer/report/GPU reservation tests PASS. One independent P0/P1 review found one CUDA-registration reservation issue, fixed; one targeted re-review PASS. Real F/G source-only smoke remains first GPU step."
+  ],
+  "registered_at": "2026-10-23T11:30:09+00:00"
+}
