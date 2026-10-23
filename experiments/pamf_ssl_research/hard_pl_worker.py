@@ -45,13 +45,14 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
             total=ce+correction;total.backward();obj=holder['objective'];state=obj.state_dict()
             head=model.id_backbone.encoder.core.id_backbone.cls_head.weight;mechanisms=c['hard_pl']['method']=='HPLT1U'
             no_uas=bool(c.get('hard_pl_no_uas'));physical_enabled=mechanisms and not no_uas
+            reliable=bool(c.get('hard_pl_reliable_as'));ras=state.get('U_reliable_As',{})
             smoothing=c.get('hard_pl_label_smoothing',0.) if not mechanisms else .01
             if (not bool(torch.isfinite(total)) or head.grad is None or not bool(torch.isfinite(head.grad).all())
                 or float(head.grad.norm())<=0 or metrics['T1_L_packets']!=768 or state['calls']!=1 or state['seen']!=256
                 or not state['accepted'] or state['student_views']!=(1536 if mechanisms else 256)
                 or state['physical_seen']!=(128 if physical_enabled else 0)
-                or state['physical_student_views']!=(256 if physical_enabled else 0)
-                or state['raw_As_seen']!=(128 if no_uas else 0) or state['EMA_updates']!=0 or obj.capture_active
+                or state['physical_student_views']!=(2*ras['used'] if reliable else 256 if physical_enabled else 0)
+                or state['raw_As_seen']!=(ras['raw_fallback'] if reliable else 128 if no_uas else 0) or state['EMA_updates']!=0 or obj.capture_active
                 or state['label_smoothing']!=smoothing or metrics['HPL_label_smoothing']!=smoothing
                 or not torch.allclose(metrics['HPL_loss'],c['hard_pl']['weight']*metrics['HPL_base_loss'])):
                 raise ValueError('Actual hard-PL weight/default-head/L/U execution failed')
@@ -113,6 +114,17 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
                     or len(obj.smoke_path_features)!=4 or any(h.shape!=(256,160) or h.grad is None
                         or not bool(torch.isfinite(h.grad).all()) or float(h.grad.norm())<=0 for h in obj.smoke_path_features)):
                     raise ValueError('Existing-head full/masked/core CE dose,exclusive-branch bypass or actual view budget differs')
+            if reliable:
+                from .hard_pl_reliable_as_objective import view_mask
+                expected=view_mask(obj.smoke_ras_q,obj.smoke_ras_pseudo,obj.smoke_ras_raw_accepted,.95)
+                if (ras['calls']!=1 or ras['generated']!=128 or ras['teacher_As_views']!=128 or ras['used']+ras['raw_fallback']!=128
+                    or ras['used']!=int(expected.sum()) or not torch.equal(obj.smoke_ras_used,expected)
+                    or not 0<=ras['used']<=ras['raw_accepted_half']<=128 or not ras['all_raw_accepted_retained']
+                    or ras['extra_student_forwards'] or ras['new_head'] or ras['EMA_updates'] or ras['U_truth_read']
+                    or ras['teacher_eval_norm_updates'] or obj.ras_active or not obj.smoke_ras_exact_fallback
+                    or not obj.smoke_ras_eval_norm_unchanged or not obj.smoke_ras_training_restored
+                    or sum(model._cd_practical.coverage.values())!=192):
+                    raise ValueError('Actual As eligibility/exactraw fallback,teacher eval mode or added forward cost differs')
             checked.append(dict(method=row['method'],model_seed=c['model_seed'],parent_epoch=parent_epoch,parent_updates=parent_epoch*222,L_forward_packets=768,
                 U_seen=256,U_accepted=state['accepted'],student_U_views=state['student_views'],
                 physical_U_generated=state['physical_seen'],physical_student_views=state['physical_student_views'],
@@ -136,6 +148,10 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
             if c.get('hard_pl_path'):
                 checked[-1].update(U_path_complement=state['U_path_complement'],path_core_gradient_norms=obj.smoke_path_gradients,
                     core_CE_bypasses_exclusive_signature_and_response=True,existing_core_and_head_masked_gradient=True,CE_total_dose_unchanged=True)
+            if reliable:
+                checked[-1].update(U_reliable_As=ras,teacher_U_raw_views=256,teacher_U_As_views=128,teacher_U_total_views=384,
+                    all_raw_accepted_retained=True,As_gate_matches_frozen_predicate=True,exactraw_fallback=True,
+                    extra_teacher_eval_normalization_unchanged=True,student_training_mode_restored=True,CE_and_KL_coefficients_unchanged=True)
         del model,obj,holder,payload,ctx;gc.collect();torch.cuda.empty_cache()
     write(Path(rt['run_root'])/'smoke.json',dict(status='PASS',methods=checked,target_reads=0,U_truth_reads=0,
         probe_updates_discarded=True,formal_reload_original_parent_epoch=parent_epoch,

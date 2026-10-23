@@ -40,6 +40,12 @@ class HardPLObjective:
     def unlabeled_student_forward(self,student,x,domain,pseudo,accepted,metadata):
         return student.forward_identity_only(x,domain_labels=domain)['tx_logits']
 
+    def mixed_view(self,student,x,ordinary,physical,metadata,epoch,step,pseudo,accepted):
+        mixed=ordinary.clone()
+        selected={k:v[physical] if torch.is_tensor(v) and v.ndim and len(v)==len(x) else v for k,v in metadata.items()}
+        mixed[physical]=x[physical] if self.c.get('hard_pl_no_uas') else student._cd_practical(x[physical],selected,epoch,step)
+        return mixed
+
     def loss(self,student,device):
         try:batch=next(student._cd_U_iter)
         except StopIteration:
@@ -65,9 +71,8 @@ class HardPLObjective:
             physical=(torch.arange(n,device=device)+step).remainder(2).bool()
             no_uas=bool(self.c.get('hard_pl_no_uas'))
             with torch.no_grad():
-                ordinary=x+.015*torch.randn_like(x);mixed=ordinary.clone()
-                pm={k:v[physical] if torch.is_tensor(v) and v.ndim and len(v)==n else v for k,v in meta.items()}
-                mixed[physical]=x[physical] if no_uas else student._cd_practical(x[physical],pm,epoch,step)
+                ordinary=x+.015*torch.randn_like(x)
+                mixed=self.mixed_view(student,x,ordinary,physical,meta,epoch,step,pseudo,accepted)
                 if self.c.get('hard_pl_smoke'):
                     self.smoke_U_As_input_raw=bool(no_uas and torch.equal(mixed[physical],x[physical]))
             maps=[];outputs=[];self.capture_active=True

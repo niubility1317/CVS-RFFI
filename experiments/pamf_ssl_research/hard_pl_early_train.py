@@ -34,18 +34,21 @@ def source_parents(c,*,validate_config=validate):
 
 def aggregate(states,parents,*,weight=2.):
     mechanisms=states[0]['method']=='HPLT1U';factor=6 if mechanisms else 1
+    reliable='U_reliable_As' in states[0]
+    if any(('U_reliable_As' in s)!=reliable for s in states):raise ValueError('Matching As policy across both native segments required')
     keys=('calls','seen','accepted','student_views','physical_seen','physical_student_views','raw_As_seen')
     total={key:sum(s[key] for s in states) for key in keys}
     anchors={name:sum(s['contrast_anchors'][name] for s in states) for name in ('time_down','t2.pool')}
     if (total['seen']!=sum(s['calls'] for s in states)*56700//222 or total['student_views']!=factor*total['seen']
-        or total['physical_seen'] or total['physical_student_views']
-        or total['raw_As_seen']!=(total['seen']//2 if mechanisms else 0)
+        or total['physical_seen']!=(total['seen']//2 if reliable else 0)
+        or total['physical_student_views']!=(2*sum(s['U_reliable_As']['used'] for s in states) if reliable else 0)
+        or total['raw_As_seen']!=(sum(s['U_reliable_As']['raw_fallback'] for s in states) if reliable else total['seen']//2 if mechanisms else 0)
         or any(s['EMA_updates'] or s['U_truth_read'] or s['label_smoothing']!=.01 for s in states)):
         raise ValueError('Earlier-U segment calls,mask,view exposure or permissions differ')
     prior=read(Path(parents[0]['folder'])/'progress.json')
     actual=dict(method='earlier_original_F21_E20_plus_native10_plus20',native_U_loop=False,own_EMA=False,
         cumulative_EMA_updates=0,U_seen=prior['PL_seen']+total['seen'],U_accepted=prior['PL_accepted']+total['accepted'],
-        physical_U_seen=0,physical_student_U_views=0,raw_U_As_seen=total['raw_As_seen'],
+        physical_U_seen=total['physical_seen'],physical_student_U_views=total['physical_student_views'],raw_U_As_seen=total['raw_As_seen'],
         pseudo_label_smoothing=.01,student_U_views=prior['PL_seen']+total['student_views'],
         teacher_eval_U_views=prior['PL_seen']+total['seen'],U_truth_read=False,prototype_updates=0,
         hard_PL_calls=total['calls'],hard_PL_tail=dict(total,method=states[0]['method'],contrast_anchors=anchors,
@@ -94,6 +97,21 @@ def aggregate(states,parents,*,weight=2.):
             raise ValueError('Path complementary CE must keep the same dose with four existing-head views')
         for key in ('calls','extra_head_calls','extra_head_packet_views'):paths[key]=sum(v[key] for v in values)
         actual['U_path_complement']=paths;actual['hard_PL_tail']['U_path_complement']=paths
+    if reliable:
+        values=[s['U_reliable_As'] for s in states];ras=dict(values[0])
+        if any(v['recipe']!=ras['recipe'] or v['calls']!=s['calls'] or v['generated']!=s['seen']//2
+            or v['teacher_As_views']!=v['generated'] or v['used']+v['raw_fallback']!=v['generated']
+            or not 0<=v['used']<=v['raw_accepted_half']<=v['generated']
+            or not v['used']<=min(v['view_confident'],v['view_argmax_agree'])<=v['generated']
+            or s['physical_seen']!=v['generated'] or s['physical_student_views']!=2*v['used'] or s['raw_As_seen']!=v['raw_fallback']
+            or not v['all_raw_accepted_retained'] or v['extra_student_forwards'] or v['new_head'] or v['EMA_updates']
+            or v['U_truth_read'] or v['teacher_eval_norm_updates'] for s,v in zip(states,values)):
+            raise ValueError('Reliable As must retain all raw accepted U,exactraw fallback and actual eval/physical use counts')
+        for key in ('calls','generated','teacher_As_views','used','raw_fallback','raw_accepted_half','view_confident','view_argmax_agree'):
+            ras[key]=sum(v[key] for v in values)
+        actual['U_reliable_As']=ras;actual['hard_PL_tail']['U_reliable_As']=ras
+        actual['teacher_eval_U_raw_views']=actual['teacher_eval_U_views'];actual['teacher_eval_U_As_views']=ras['teacher_As_views']
+        actual['teacher_eval_U_views']+=ras['teacher_As_views']
     return actual
 
 

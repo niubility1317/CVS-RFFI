@@ -286,3 +286,8 @@ Joint固定最终E50学生fullV27000×3门控0.95伪标签精度99.9384%至99.95
 可靠As视图＋exactraw回退的下一独立原E20+30方案已于commit346b3fc2938e7b6fd52d803fca4db2e0267201a5、读取Joint／Complement／Path目标分数前固定，见Joint/reliable_As_followup_design.json；当前未实现/发布，不把设计当作结果。其完整源证据、旧目标暴露与额外半U teacher／模拟成本须如实保留。
 
 Path run `20261024-phase1-PAMF-HardPL-PathComplement-m3-r01` 执行commit `cf6794650506c4bca08425539efa3c3ae8d0b444` 真实原E20 smoke PASS：首释放seed2702/GPU6，coreCE对exclusive签名／参考梯度均0，对既有头1.257945958／主干2.296314741；完整joint签名辅助梯度0.370686237。原L768／U骨干1536、4额外既有头调用1024packet、CE总1.25与完整L guard显式梯度一致，探针丢弃、正式重载原E20。三个seed已经在GPU5/6/7实际产生原生Path/joint/style/guard步骤，独立进程身份／GPU／日志增长核实；当前前缀共1041条，不等完整训练或目标收益。健康Complement保持，三卡每卡2任务；raw＋固定DURA七景自动执行，默认部署T1E50/DURA版本不变。
+
+
+## 可靠As＋原始输入回退实施矩阵
+
+`20261024-phase1-PAMF-HardPL-ReliableAs-m3-r01` 按此前commit346b3fc固定源设计实施；保留Joint6G原E20+30/E50/11100/.95/weight6/全部原CE/KL/joint/style/完整Lguard/defaulthead，只在固定半U采用currenteval无梯度高置信同raw伪类As，否则exactraw回退，原acceptedU不删。新增As850500生成/teacher eval，累计teacher2948400、学生U10602900；实际used/fallback及成本另计。77检查、一次P0P1PASS，首匹配释放Complement卡位原E20smoke通过即重载；健康Path保留，三卡2task上限、CPU单scorer接Path终态。完整3seed raw+固定DURA七景42cell和原双raw目标保持。当前未启动、source smoke PENDING；历史Joint等目标暴露如实保留，Complement/Path未读target，不改固定方案。goal ACTIVE。
