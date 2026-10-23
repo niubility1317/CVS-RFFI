@@ -61,6 +61,31 @@ class TargetStratumReportingTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             save(root / 'state.json', dict(status='RUNNING'))
-            with self.assertRaisesRegex(ValueError, 'All six target-test'):
+            with self.assertRaisesRegex(ValueError, 'All declared target-test'):
                 report(dict(run_root=str(root)), root / 'report')
             self.assertFalse((root / 'report').exists())
+
+    def test_declared_continuation_is_reported_under_its_actual_method_name(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            rt = fixture(root, clean_added=(4, 1680, 3356), six_extra=1)
+            rt['methods'] = ['VIEWANCHOR']
+            rt['rows'] = [row for row in rt['rows'] if row['method'] == 'PSM']
+            for row in rt['rows']:
+                row['method'] = 'VIEWANCHOR'
+                config = json.loads(Path(row['score_config']).read_text())
+                config['row_id'] = 'VIEWANCHOR-s' + str(row['model_seed'])
+                save(Path(row['score_config']), config)
+                path = Path(config['output_root']) / 'scores.json'
+                value = json.loads(path.read_text())
+                value['row_id'] = config['row_id']
+                save(path, value)
+            add_receiver(rt)
+            report(rt, root / 'report')
+            value = json.loads((root / 'report/analysis.json').read_text())
+            self.assertEqual([v['method'] for v in value['verdicts']], ['VIEWANCHOR'])
+            self.assertTrue(value['goal_met'])
+            self.assertEqual({r['method'] for r in value['summary']}, {'F20', 'F21', 'VIEWANCHOR'})
+            text = (root / 'report/report.md').read_text(encoding='utf-8')
+            self.assertIn('| VIEWANCHOR |', text)
+            self.assertNotIn('| PSM |', text)

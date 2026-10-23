@@ -41,17 +41,24 @@ def counts(value, view):
     return value['correct_counts'][view], 168000
 
 
+def declared_methods(rt):
+    methods = tuple(rt.get('methods', METHODS))
+    if (methods not in (METHODS, ('VIEWANCHOR',)) or len(rt['rows']) != 3 * len(methods)
+            or {(r['method'], r['model_seed']) for r in rt['rows']}
+            != {(method, seed) for method in methods for seed in SEEDS}):
+        raise ValueError('Complete declared method/three-seed rows required exactly once')
+    return methods
+
+
 def summarize(rt, output):
     if read(Path(rt['run_root']) / 'state.json')['status'] != 'ALL_SCORED':
-        raise ValueError('All six predeclared rows must finish before overall analysis')
+        raise ValueError('All declared target-test rows must finish before overall analysis')
+    methods = declared_methods(rt)
     values = {}
     for seed in SEEDS:
         for arm, folder in rt['baseline_scores'][str(seed)].items():
             values[arm, seed] = overall(Path(folder) / 'scores.json',
                 dict(model_seed=seed, row_id=arm + '-s' + str(seed)))
-    if (len(rt['rows']) != 6 or {(r['method'], r['model_seed']) for r in rt['rows']}
-            != {(method, seed) for method in METHODS for seed in SEEDS}):
-        raise ValueError('All two-method/three-seed rows required exactly once')
     for row in rt['rows']:
         c = read(row['score_config'])
         if c['model_seed'] != row['model_seed'] or c['row_id'] != row['method'] + '-s' + str(row['model_seed']):
@@ -59,14 +66,14 @@ def summarize(rt, output):
         values[row['method'], row['model_seed']] = overall(Path(c['output_root']) / 'scores.json',
             {k: c[k] for k in ('run_id', 'row_id', 'model_seed')})
     result = []
-    for method in ('F20', 'F21') + METHODS:
+    for method in ('F20', 'F21') + methods:
         for view in (*VIEWS, 'six_mean'):
             x = [values[method, seed][view] for seed in SEEDS]
             n = sum(counts(values[method, seed], view)[0] for seed in SEEDS)
             denominator = 3 * counts(values[method, SEEDS[0]], view)[1]
             result.append(dict(method=method, view=view, mean=100. * n / denominator, sd=statistics.stdev(x)))
     verdicts = []
-    for method in METHODS:
+    for method in methods:
         differences, exact = {}, {}
         for arm in ('F20', 'F21'):
             differences[arm] = {}

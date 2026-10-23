@@ -6,8 +6,8 @@ import statistics
 from pathlib import Path
 
 from experiments.cric_dura_comparison.io import read, write
-from .analyze import summarize
-from .plan import METHODS, SEEDS, VIEWS
+from .analyze import summarize, declared_methods
+from .plan import SEEDS, VIEWS
 
 
 def cells(value):
@@ -39,7 +39,8 @@ def cells(value):
 
 def report(rt, output):
     if read(Path(rt['run_root']) / 'state.json')['status'] != 'ALL_SCORED':
-        raise ValueError('All six target-test rows must finish before reporting')
+        raise ValueError('All declared target-test rows must finish before reporting')
+    methods = declared_methods(rt)
     out = Path(output)
     if out.exists():
         raise FileExistsError('Preserve existing report output')
@@ -63,7 +64,7 @@ def report(rt, output):
         if len(denominators) != 1:
             raise ValueError('Matched target stratum denominators differ across methods/seeds')
         n = denominators.pop()
-        for method in ('F20', 'F21') + METHODS:
+        for method in ('F20', 'F21') + methods:
             correct = [data[method, seed][key][0] for seed in SEEDS]
             accuracy = [100. * c / n for c in correct]
             r = dict(method=method, view=view, dimension=dimension, stratum=stratum,
@@ -90,10 +91,10 @@ def report(rt, output):
     summary = {(r['method'], r['view']): r for r in analysis['summary']}
     text = ['# PAMF 目标测试集结果', '',
         '口径：同一固定 F0 目标测试集，每视图 168000 条物理样本；raw F 默认头，三个模型种子。表内为准确率均值 ± 模型种子样本 SD，单位为 %。源 V 不计入验收。', '',
-        '| 视图 | F20 监督 | F21 普通 PL | PSM | RXPSM |',
-        '|---|---:|---:|---:|---:|']
+        '| 视图 | F20 监督 | F21 普通 PL | ' + ' | '.join(methods) + ' |',
+        '|---|' + '---:|' * (2 + len(methods))]
     for view in (*VIEWS, 'six_mean'):
-        values = [summary[method, view] for method in ('F20', 'F21') + METHODS]
+        values = [summary[method, view] for method in ('F20', 'F21') + methods]
         text.append('| ' + view + ' | ' + ' | '.join(f"{r['mean']:.6f} ± {r['sd']:.6f}" for r in values) + ' |')
     text += ['', '目标要求同一方法相对两个对照：clean 至少 +1 个百分点，六景均值严格超过 +1.5 个百分点。验收按整数正确计数计算。', '']
     for verdict in analysis['verdicts']:
