@@ -104,9 +104,15 @@ def publish(repo, context_path, output, ssh_config, *, prepare_run=prepare, run_
     release = project + '/releases/' + run_id
     rt, configurations = prepare_run(context, project, release, commit)
     connection = ['-F', str(ssh_config), '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10']
-    preflight = ssh("from pathlib import Path\nimport json\npaths=" + repr([release, rt['run_root']]) + "\nprint(json.dumps({p:Path(p).exists() for p in paths}))\n", connection)
-    if any(preflight.values()):
+    preflight = ssh("from pathlib import Path\nimport json,subprocess\npaths=" + repr([release, rt['run_root']]) +
+        "\nprint(json.dumps(dict(paths={p:Path(p).exists() for p in paths},user=subprocess.check_output(['whoami'],text=True).strip()," +
+        "gpu=subprocess.check_output(['nvidia-smi','-i','0,1,2','--query-gpu=index,uuid,memory.free,utilization.gpu','--format=csv,noheader,nounits'],text=True)," +
+        "apps=subprocess.check_output(['nvidia-smi','--query-compute-apps=pid,gpu_uuid,used_memory','--format=csv,noheader,nounits'],text=True))))\n", connection)
+    (output / 'preflight.json').write_text(json.dumps(preflight, indent=2) + '\n', encoding='utf-8')
+    if any(preflight['paths'].values()):
         raise FileExistsError('Existing remote output/release; reconcile before retry')
+    if preflight['user'] != project.split('/')[2]:
+        raise ValueError('Ordinary account mismatch at preflight')
     names = git('ls-files', 'experiments/pamf_ssl_research', 'experiments/cric_dura_comparison',
                 'experiments/phase1_external_dg_aug/__init__.py', 'experiments/phase1_external_dg_aug/augmentation.py').decode().splitlines()
     names = [n for n in names if n.endswith('.py')]

@@ -1,4 +1,8 @@
 import unittest
+from unittest.mock import patch
+import json
+from pathlib import Path
+import tempfile
 
 from experiments.pamf_ssl_research.control import validate_rows
 from experiments.pamf_ssl_research.plan import configuration, SEEDS, GPU_BY_SEED, VIEWS
@@ -8,6 +12,31 @@ from tests.test_pamf_ssl_research import template
 
 
 class ViewAnchorReleaseTest(unittest.TestCase):
+    def test_busy_smoke_card_queues_without_touching_other_jobs(self):
+        from experiments.pamf_ssl_research.control import run
+        class SmokeReached(Exception):
+            pass
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            rt = dict(methods=['VIEWANCHOR'], run_root=str(root/'new_run'), release_root=str(root),
+                runtime_file=str(root/'runtime.json'), code_commit='c',
+                rows=[dict(row_id='VIEWANCHOR-s'+str(seed),model_seed=seed,method='VIEWANCHOR',gpu=GPU_BY_SEED[seed])
+                      for seed in SEEDS])
+            def stop_at_smoke(command, **kwargs):
+                self.assertIn('experiments.pamf_ssl_research.view_anchor_worker',command)
+                raise SmokeReached
+            with patch('experiments.pamf_ssl_research.control.capacity',side_effect=[(3,16000),(1,16000)]), \
+                 patch('experiments.pamf_ssl_research.control.time.sleep') as sleep, \
+                 patch('experiments.pamf_ssl_research.control.subprocess.run',side_effect=stop_at_smoke), \
+                 patch('experiments.pamf_ssl_research.control.subprocess.Popen') as launch:
+                with self.assertRaises(SmokeReached):
+                    run(rt)
+                sleep.assert_called_once_with(20)
+                launch.assert_not_called()
+            state=json.loads((root/'new_run/state.json').read_text())
+            self.assertEqual(state['status'],'SMOKE')
+            self.assertEqual({row['status'] for row in state['jobs'].values()},{'QUEUED'})
+
     def test_continuation_keeps_real_names_parents_and_separate_truth_side(self):
         context = {'_rxpsm_parents': {}, '_parent_timing': {}}
         for seed in SEEDS:

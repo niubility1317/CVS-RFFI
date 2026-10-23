@@ -41,8 +41,18 @@ def run(rt):
     write(root / 'state.json', state)
     env = dict(os.environ, PYTHONPATH=rt['release_root'], CUDA_VISIBLE_DEVICES='0',
                OMP_NUM_THREADS='2', MKL_NUM_THREADS='2', OPENBLAS_NUM_THREADS='2')
-    if capacity(0)[0] >= 2 or capacity(0)[1] < 10000:
-        raise RuntimeError('Smoke GPU capacity changed; no workload modified')
+    while True:
+        apps, free = capacity(0)
+        if apps < 2 and free >= 10000:
+            break
+        if methods != ('VIEWANCHOR',):
+            raise RuntimeError('Smoke GPU capacity changed; no workload modified')
+        state.update(status='WAITING_FOR_SMOKE_GPU', observed_apps=apps,
+                     observed_free_MiB=free, updated_unix=time.time())
+        write(root / 'state.json', state, exclusive=False)
+        time.sleep(20)
+    state.update(status='SMOKE', updated_unix=time.time())
+    write(root / 'state.json', state, exclusive=False)
     with (logs / 'smoke.log').open('x') as stream:
         result = subprocess.run([sys.executable, '-u', '-m', worker,
             'smoke', '--config', rt['runtime_file']], cwd=rt['release_root'], env=env,
