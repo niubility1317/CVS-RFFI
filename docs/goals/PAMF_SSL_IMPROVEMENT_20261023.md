@@ -111,3 +111,8 @@ PAIREDU三seed已在各自GPU5/6/7实际续训，真实E30 no-query smoke和配�
 ## 原始IQ身份梯度与双锚保护假设
 
 原E30三seed固定24个源L/U批次的CPU诊断中，full-L保护后的U仍12次与原有raw L两前向真实CE负内积，最小余弦−0.291；full-L与raw CE本身24次均正。无参数／教师／原型持久更新、U真值或目标。L-only频谱RX估计仍有TX交互，当前暂缓。下一条`20261023-phase1-PAMF-U-DualAnchor-m3-r01`预先固定原RXPSM E30+20，只把原U梯度投影到full-L与raw CE双非负半空间交集，再限制范数≤full-L；不加网络前向／头／推理参数，原L梯度和全部scalar损失保持。三个seed与raw＋同一DURA七景矩阵已登记，当前PLANNED；在UGP GPU完成槽位接续，与CMR每卡各一条，CPU评分在CMR后。方法在读取UGP／CMR目标成绩前固定，原goal ACTIVE。
+
+
+## UGP 完整双读出结果
+
+`20261023-phase1-PAMF-U-GradProtect-m3-r01` 已完成三 seed、每景 168000 条的 raw／同一 DURA 七景预测及独立 truth-last，42 项读出／场景完整，全部新增 13320 条闭合训练记录已核对。raw clean=84.295437%；DURA-LU clean=84.366468%；raw six_mean=71.818254%；DURA-LU six_mean=77.420007%；原数值目标仍未满足，维持 ACTIVE。完整负结果、两种匹配基线、逐 seed／场景／分层及成本均已保存，不从本结果修改已固定 UCRIC／UMIX 的方法、父权重或矩阵。
