@@ -37,6 +37,9 @@ class HardPLObjective:
         self.physical_seen=self.physical_student_views=self.raw_As_seen=0;self.metrics={};self.capture_active=False
         self.contrast_anchors={name:0 for name in ('time_down','t2.pool')}
 
+    def unlabeled_student_forward(self,student,x,domain,pseudo,accepted,metadata):
+        return student.forward_identity_only(x,domain_labels=domain)['tx_logits']
+
     def loss(self,student,device):
         try:batch=next(student._cd_U_iter)
         except StopIteration:
@@ -50,7 +53,7 @@ class HardPLObjective:
         finally:student.train(was)
         accepted=confidence>=self.settings['threshold'];detail={}
         if self.settings['method']=='HPL2':
-            logits=student.forward_identity_only(x,domain_labels=domain)['tx_logits']
+            logits=self.unlabeled_student_forward(student,x,domain,pseudo,accepted,batch[3])
             smoothing=self.c.get('hard_pl_label_smoothing',0.)
             base=(F.cross_entropy(logits,pseudo,reduction='none',label_smoothing=smoothing)*accepted).mean();views=n
         else:

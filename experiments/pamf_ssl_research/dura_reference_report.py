@@ -33,7 +33,7 @@ def report(rt, output):
     methods=tuple(rt.get('methods',METHODS))
     if methods==METHODS:
         validate_rows(rt['rows'])
-    elif methods in (('PAIREDU',), ('UCRIC',), ('UMIX',), ('UGP',), ('UCMR',), ('UDAP',), ('UVB',), ('HPL2','HPLT1U'), ('HPL_NO_UAS',), ('HPL_LS2',)):
+    elif methods in (('PAIREDU',), ('UCRIC',), ('UMIX',), ('UGP',), ('UCMR',), ('UDAP',), ('UVB',), ('HPL2','HPLT1U'), ('HPL_NO_UAS',), ('HPL_LS2',), ('HPL_MS2',)):
         if methods == ('PAIREDU',):
             from .paired_u import RUN, RESOURCE_GPU_BY_SEED
         elif methods == ('UCRIC',):
@@ -52,8 +52,10 @@ def report(rt, output):
             from .hard_pl import RUN, RESOURCE_GPU_BY_SEED
         elif methods == ('HPL_NO_UAS',):
             from .hard_pl_no_uas import RUN, RESOURCE_GPU_BY_SEED
-        else:
+        elif methods == ('HPL_LS2',):
             from .hard_pl_ls import RUN, RESOURCE_GPU_BY_SEED
+        else:
+            from .hard_pl_mixstyle import RUN, RESOURCE_GPU_BY_SEED
         from .control import validate_rows as validate_followup
         if rt['run_id']!=RUN:
             raise ValueError('Followup report belongs to another run')

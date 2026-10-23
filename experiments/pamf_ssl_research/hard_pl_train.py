@@ -35,11 +35,11 @@ def source_parents(c,*,validate_config=validate):
 
 
 @contextmanager
-def installed(c,holder):
+def installed(c,holder,*,objective_cls=HardPLObjective):
     from experiments.cric_dura_comparison import t1_model
     original_install,original_pl=t1_model.install,t1_model.plain_pl
     def install(model,cfg):
-        model=original_install(model,cfg);objective=HardPLObjective(cfg);holder.update(model=model,objective=objective)
+        model=original_install(model,cfg);objective=objective_cls(cfg);holder.update(model=model,objective=objective)
         old_hook=model._source_labeled_feature_hook
         def hook(self,**kwargs):
             value,metrics=old_hook(**kwargs)
@@ -53,14 +53,14 @@ def installed(c,holder):
     finally:t1_model.install,t1_model.plain_pl=original_install,original_pl
 
 
-def train(c,device='cuda:0',*,validate_config=validate):
+def train(c,device='cuda:0',*,validate_config=validate,objective_cls=HardPLObjective):
     parents,contract=source_parents(c,validate_config=validate_config)
     from experiments.cric_dura_comparison.f_train import train as segment
     root=Path(c['output_root']);root.mkdir(parents=True,exist_ok=False);write(root/'resolved_config.json',c)
     folder=root/'segment50';cfg=dict(c,output_root=str(folder),segment_epochs=20,epoch_offset=30,step_offset=6660,
         parent_source=str(Path(c['fork_parent_source'])/'segment30'))
     holder={};start=time.perf_counter()
-    with installed(cfg,holder):segment(cfg,device=device)
+    with installed(cfg,holder,objective_cls=objective_cls):segment(cfg,device=device)
     objective=holder['objective'];state=objective.state_dict();method=c['hard_pl']['method'];mechanisms=method=='HPLT1U'
     no_uas=bool(c.get('hard_pl_no_uas'));physical_enabled=mechanisms and not no_uas
     if (state['calls']!=4440 or state['seen']!=1134000 or state['EMA_updates']!=0 or state['U_truth_read']
@@ -79,6 +79,8 @@ def train(c,device='cuda:0',*,validate_config=validate):
         student_U_views=963900+state['student_views'],teacher_eval_U_views=963900+state['seen'],
         U_truth_read=False,prototype_updates=0,hard_PL_calls=state['calls'],hard_PL_tail=state,
         threshold=.95,weight=2.,default_head_joint=True,new_inference_parameters=0)
+    if 'U_style' in state:
+        actual['U_style']=state['U_style']
     done=read(folder/'complete.json');done['actual_adapter_SSL']=actual;write(folder/'complete.json',done,exclusive=False)
     segments=parents+[dict(folder=str(folder),**done)];seconds=time.perf_counter()-start
     parent_seconds=sum(p['seconds'] for p in parents)

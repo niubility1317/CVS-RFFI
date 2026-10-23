@@ -1,0 +1,17 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "focused_tests": 52,
+  "independent_review": {
+    "status": "PASS",
+    "review_count": 1,
+    "initial_P0_P1_findings": 0,
+    "unresolved_P0_P1_findings": 0,
+    "targeted_recheck_count": 0,
+    "reviewer": "independent ssl_p0p1_review;read-only,no target-score access",
+    "scope": "Only defects directly making next real run wrong,unauthorized,destructive,unlaunchable or unable to produce legal predictions",
+    "evidence": "Reviewed accepted-only partners,single U forward,detached moments,temporary hooks,frozen V source diagnostic,parent state,LS starting-PID reservation and dual-seven-view scoring interfaces.PASS0P0P1.No files changed or jobs started."
+  },
+  "real_checkpoint_smoke": "PENDING_FIRST_GPU_STEP",
+  "source_pair_screen": "PENDING_FIRST_GPU_STEP",
+  "new_candidate_target_reads": 0
+}

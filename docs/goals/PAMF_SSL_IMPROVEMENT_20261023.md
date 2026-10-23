@@ -181,3 +181,8 @@ HPL2 三seed双读出七景42cell已全部独立评分。为符合逐row自动�
 ## HPL_NO_UAS 完整双读出结果
 
 `20261024-phase1-PAMF-HardPL-noUAs-m3-r01` 各方法三seed、共3模型，每景168000条，raw／同一DURA七景预测与独立truth-last全部42cell完成；全部新增13320条闭合训练记录已核对。HPL_NO_UAS / raw clean=85.423016%；HPL_NO_UAS / DURA-LU clean=85.493849%；HPL_NO_UAS / raw six_mean=70.657242%；HPL_NO_UAS / DURA-LU six_mean=77.985648%；原数值目标仍未满足，维持ACTIVE。全部结果、匹配基线、逐seed／场景／分层及成本均保存，不从本结果热改其他已固定方法、父权重或矩阵。
+
+
+## 高纯度普通 PL 的跨源接收机统计混合
+
+`20261024-phase1-PAMF-HardPL-MixStyle-m3-r01` 固定原 F21 E30＋20，与 HPL_LS2 匹配，只在一次 U 学生前向的 time_down／t2.pool 加 accepted-only 同伪类跨源 RX 的统计混合，p0.5／Beta0.1／eps1e-6 沿原源研究设置。依据原 F21 完整 V 伪标签纯度及既有源接收机统计差异，保留门控0.95／权重2／LS0.01；不是依据目标成绩选择参数或父模型。52 检查和一次 P0/P1 PASS；真实 checkpoint smoke 及三个父模型 V720 冻结身份配对诊断通过后立即继续原三 seed／双七景矩阵。与健康 LS 共用第二卡位，goal ACTIVE。
