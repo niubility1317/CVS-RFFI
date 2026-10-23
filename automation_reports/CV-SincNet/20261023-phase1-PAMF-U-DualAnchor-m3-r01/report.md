@@ -1,6 +1,6 @@
 # PAMF 完整监督与 raw 身份双锚保护
 
-状态：VERIFIED_RUNNING。102 项聚焦检查、一次独立 P0/P1 审查及真实原E30 source-only smoke均PASS；三seed已按固定配方续训，原目标ACTIVE。原CMR健康任务保持。源 raw-gradient 证据见九模型 reference 的 source_raw_gradient_diagnostic.md／JSON；在读取 UGP／CMR 任何目标成绩前确定此方案。
+状态：ANALYZED。三个seed均完成E50／11100、raw与固定DURA各七景完整预测及独立truth-last。raw clean84.254762%、六景71.805324%；固定DURA组合84.336310%／77.429729%，原目标仍未满足。102项检查、一次独立P0/P1审查及真实原E30源检查均PASS，全部13320条新增训练记录已核验。原源raw-gradient依据和目标访问前固定配方保留；完整分层、成本及匹配对照见target_results.md。
 
 从原 RXPSM 同 seed E30／6660 学生及自身 EMA、原型和统计独立追加20轮／4440步，累计E50／11100、13L＋37LU。保留原 T1 六次 L 前向、全部有标签 scalar loss 与梯度、默认分类头联合训练；原 U 半普通噪声／半Practical、软CE、原型损失、EMA及置信规则不变。不叠加 CMR、MixStyle、UCRIC、PAIR 或恢复器训练。
 
@@ -28,3 +28,15 @@ raw CE 直接使用原 T1 最后两次 raw L 真实标签前向已有计算图�
 VERIFIED_SOURCE_FINAL：三行各新增20轮/4440步，累计E50/11100；逐条读取全部13320条新增闭合step记录，源U曝光2097900、物理U曝光1048950、学生U视图2097900和自身EMA11100次均符合预定，父前6660步复用原完整核验记录。无U真值/目标训练或另训头。完整源证据及已发生父阶段/增量/累计时间见source_training_complete.json；程序经过时间来自共享GPU，不能等同独占GPU小时。
 
 模型已按固定最终学生冻结，并已自动进入raw与固定DURA各七景预测；这是源训练完成，正式预测/独立评分尚未全部齐，不宣称整体实验完成或目标达成。部分目标成绩仍不读取，三seed全矩阵完成后统一分析。
+
+
+## 完整目标测试结果
+
+ANALYZED：各方法三个seed，共3模型、42项raw／固定DURA七景决策均完成独立truth-last评分，六个匹配监督／普通PL对照模型完整复用。逐景／seed／SD／Macro-F1／RX／TX／day、修复损伤及曝光／成本见target_results.md和附属完整表。原raw双门槛尚未满足，研发目标仍ACTIVE。
+
+UDAP / raw clean：84.254761905% ± 0.376409389%（三个模型 seed 样本 SD）。
+UDAP / DURA-LU clean：84.336309524% ± 0.412250405%（三个模型 seed 样本 SD）。
+UDAP / raw six_mean：71.805324074% ± 1.053763100%（三个模型 seed 样本 SD）。
+UDAP / DURA-LU six_mean：77.429728836% ± 0.295031232%（三个模型 seed 样本 SD）。
+
+不依据本结果热改健康旧任务或替换父来源。

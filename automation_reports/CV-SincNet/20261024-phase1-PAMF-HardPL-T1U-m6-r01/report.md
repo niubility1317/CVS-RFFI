@@ -1,6 +1,6 @@
 # 普通硬伪标签加权与 PAMF 监督机制扩展
 
-状态：VERIFIED_QUEUED。153项聚焦检查通过；一次独立P0/P1审查发现启动中GPU进程漏计P1，已按注册PID与同卡active子PID并集修复，唯一定向复查确认关闭。真实原F21 E30 source-only smoke待首GPU卡位；尚未训练或访问新版目标。
+状态：VERIFIED_HPL2_RUNNING_HPLT1U_QUEUED。153项聚焦检查通过；一次独立P0/P1审查发现启动中GPU进程漏计P1，已修复并定向复查关闭。两方法真实原F21 E30 source-only检查均PASS；HPL2三个正式进程已在GPU5／6／7训练，HPLT1U三个模型等待UVB卡位。尚无新版目标成绩，目标仍ACTIVE。
 
 用户明确要求先检查普通伪标签质量，高则提高权重并叠加监督机制，低则适度提高门控。本版按这一要求固定原普通PL F21 E30父权重，两个独立匹配变体均追加20轮到E50/11100，保留13L＋37LU、原默认头联合训练和原T1有标签六前向。
 
@@ -32,3 +32,10 @@ HPLT1U：同一hard PL门控与权重2；为U生成普通Gaussian.015视图，�
 ## 发布后实际排队证据
 
 执行commit `8624df76b2c2c8f9c731e246afe0227c9c84f793`；一次发布包本地／远端SHA对照与远端编译PASS。独立读回实际CPU控制器PID／CWD／完整命令、存活状态及同版本state，六row均QUEUED，无本run GPU子进程。源E30真实检查尚待GPU5上UDAP完成其全部14项预测后释放卡位；检查两方法PASS后继续，无需二次许可。原UDAP／UVB及其他owner保持，未将排队当作训练或目标收益。详见queue_verification.json。
+
+
+## 实际源检查与加权组训练
+
+VERIFIED_HPL2_RUNNING_HPLT1U_QUEUED：原F21 E30真实source-only检查同时覆盖两方法并PASS，probe丢弃。L768／U256、门控.95／权重2、无EMA、默认头真实梯度均正确；机制probe实际执行1536学生U视图、生成128物理样本并复用256视图、ordinary/raw RDrop、AsKL0和浅中层跨RX对比，hooks移除，真实两层梯度有限且非零。
+
+正式HPL2三个worker已分别重载原同seed E30，在GPU5／6／7接替UDAP空位；PID／CWD／完整命令／实际GPU及全部已刷盘step前缀增长独立核实，每卡HPL2＋UVB两条本任务，其他owner保留。三个HPLT1U仍QUEUED，待UVB释放卡位；未冒称六个新模型均已训练。实际执行commit `8624df76b2c2c8f9c731e246afe0227c9c84f793`，详见source_activation.json；目前只有源检查与训练前缀，尚无新版目标成绩。
