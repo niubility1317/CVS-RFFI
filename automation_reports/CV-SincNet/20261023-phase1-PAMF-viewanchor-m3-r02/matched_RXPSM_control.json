@@ -1,0 +1,52 @@
+{
+  "status": "ANALYZED",
+  "control": "Fixed original RXPSM same-seed E30-to-E50",
+  "comparisons": [
+    {
+      "model_seed": 2026092701,
+      "view": "clean",
+      "net_correct": -96,
+      "count": 168000,
+      "delta_pp": -0.05714285714285714
+    },
+    {
+      "model_seed": 2026092701,
+      "view": "six_mean",
+      "net_correct": -434,
+      "count": 1008000,
+      "delta_pp": -0.043055555555555555
+    },
+    {
+      "model_seed": 2026092702,
+      "view": "clean",
+      "net_correct": 510,
+      "count": 168000,
+      "delta_pp": 0.30357142857142855
+    },
+    {
+      "model_seed": 2026092702,
+      "view": "six_mean",
+      "net_correct": 665,
+      "count": 1008000,
+      "delta_pp": 0.06597222222222222
+    },
+    {
+      "model_seed": 2026092703,
+      "view": "clean",
+      "net_correct": 126,
+      "count": 168000,
+      "delta_pp": 0.075
+    },
+    {
+      "model_seed": 2026092703,
+      "view": "six_mean",
+      "net_correct": 2593,
+      "count": 1008000,
+      "delta_pp": 0.25724206349206347
+    }
+  ],
+  "mean_delta_pp": {
+    "clean": 0.10714285714285714,
+    "six_mean": 0.09338624338624338
+  }
+}

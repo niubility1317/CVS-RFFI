@@ -20,3 +20,10 @@
 真实 E30 学生／自身 EMA 的 source-only smoke PASS：累计 EMA 6660→6661，U 963900→964156，物理 U 481950→482078，新增特征损失 0.036681，L 前向包数 768，反向有限且 teacher 无梯度。smoke 只在内存测试，真实训练重新严格载入各自 E30/6660，并未继承 smoke 那一步。
 
 首次完整 epoch 读回为累计 E32；当时三行已完整刷新的新增 step 前缀为 661／661／658 条，新增特征项均为正且有限，跨 RX 原型覆盖 1.0，U 和物理计数严格等于 E30 父数加本段实际曝光，没有归零。这是活跃训练前缀，不是完整 20 轮或目标性能证明。详见 source_activation.json；之后仍按 E50 固定学生和原七景独立评分收尾。
+
+
+## 完整raw目标结果：尚未达标
+
+三个固定E50学生均完成七景预测和独立truth-last评分，随后才读取整体结果。clean84.379563%±0.266638%、六景71.946958%±0.965332%；对监督F20为-0.405754/+1.350761pp，对普通PL F21为-0.602183/+1.587599pp。clean对PL三个seed均下降，不能以六景对PL超过1.5pp宣布成功；完整目标仍未达成。
+
+匹配原RXPSM同一E30父权重续训对照约+0.107143pp clean、+0.093386pp六景，但距离目标仍有缺口。完整分层、逐seed/MacroF1、闭合训练记录及已发生父阶段成本见target_results.md、target_summary.json、target_per_seed.csv、target_strata.csv、training_completion.json、matched_RXPSM_control.json。单模型已分析，DURA组合补测仍在九行独立队列中，整体保持PARTIAL，不把组合视为已完成。

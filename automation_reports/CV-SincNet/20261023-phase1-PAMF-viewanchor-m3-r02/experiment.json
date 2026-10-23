@@ -264,5 +264,16 @@
     "own_GPU_workers": 3,
     "source_activation": "source_activation.json",
     "target_reads": 0
+  },
+  "result_summary": {
+    "status": "RAW_ANALYZED_DURA_PENDING",
+    "goal_met": false,
+    "completed_raw_rows": 3,
+    "completed_raw_views": 21,
+    "DURA_reference_run": "20261023-phase1-PAMF-SSL-DURA-reference-m9-r01",
+    "DURA_status": "PENDING",
+    "raw_summary_ref": "target_summary.json",
+    "raw_details_ref": "target_results.md",
+    "training_ref": "training_completion.json"
   }
 }

@@ -1,0 +1,520 @@
+{
+  "status": "VERIFIED_SOURCE_FINAL",
+  "run_id": "20261023-phase1-PAMF-viewanchor-m3-r02",
+  "incremental_step_records": 13320,
+  "incremental_records_per_seed": 4440,
+  "cumulative_updates_per_seed": 11100,
+  "reused_verified_parent_records_per_seed": 6660,
+  "parent_record_reference": "20261023-phase1-PAMF-physical-softmatch-m6-r02/training_completion.json: same-seed RXPSM first20+10",
+  "full_incremental_logs": [
+    {
+      "row_id": "VIEWANCHOR-s2026092701",
+      "complete_records": 4440,
+      "closed_gzip": true,
+      "last": {
+        "SSL_loss": 0.18033327162265778,
+        "SSL_seen": 2097900,
+        "SSL_weight_mean": 0.9846070408821106,
+        "SSL_physical_seen": 1048950,
+        "SSL_proto_coverage": 1.0,
+        "SSL_view_anchor_loss": 0.02445959858596325,
+        "SSL_view_anchor_calls": 4440,
+        "SSL_view_anchor_physical_seen": 567000
+      },
+      "cumulative_updates": 11100,
+      "min_view_anchor_loss": 0.01874638721346855,
+      "max_view_anchor_loss": 0.038843341171741486
+    },
+    {
+      "row_id": "VIEWANCHOR-s2026092702",
+      "complete_records": 4440,
+      "closed_gzip": true,
+      "last": {
+        "SSL_loss": 0.13477826118469238,
+        "SSL_seen": 2097900,
+        "SSL_weight_mean": 0.9755303859710693,
+        "SSL_physical_seen": 1048950,
+        "SSL_proto_coverage": 1.0,
+        "SSL_view_anchor_loss": 0.018056495115160942,
+        "SSL_view_anchor_calls": 4440,
+        "SSL_view_anchor_physical_seen": 567000
+      },
+      "cumulative_updates": 11100,
+      "min_view_anchor_loss": 0.016128411516547203,
+      "max_view_anchor_loss": 0.033950407058000565
+    },
+    {
+      "row_id": "VIEWANCHOR-s2026092703",
+      "complete_records": 4440,
+      "closed_gzip": true,
+      "last": {
+        "SSL_loss": 0.1991906464099884,
+        "SSL_seen": 2097900,
+        "SSL_weight_mean": 0.963783860206604,
+        "SSL_physical_seen": 1048950,
+        "SSL_proto_coverage": 1.0,
+        "SSL_view_anchor_loss": 0.016553562134504318,
+        "SSL_view_anchor_calls": 4440,
+        "SSL_view_anchor_physical_seen": 567000
+      },
+      "cumulative_updates": 11100,
+      "min_view_anchor_loss": 0.013655632734298706,
+      "max_view_anchor_loss": 0.03244030848145485
+    }
+  ],
+  "actual_training_costs": [
+    {
+      "row_id": "VIEWANCHOR-s2026092701",
+      "training": {
+        "status": "SOURCE_FROZEN",
+        "epoch": 50,
+        "updates": 11100,
+        "seconds": 3244.4407345729414,
+        "actual_adapter_SSL": {
+          "method": "pamf_rxpsm_viewanchor_v1",
+          "native_U_loop": false,
+          "own_EMA": true,
+          "cumulative_EMA_updates": 11100,
+          "U_seen": 2097900,
+          "physical_U_seen": 1048950,
+          "effective_U_weight": 1993330.3919143677,
+          "effective_U_per_class": [
+            336454.84375,
+            330542.625,
+            343944.4375,
+            309082.1875,
+            326949.5,
+            346400.46875
+          ],
+          "U_truth_read": false,
+          "labeled_only_prototype_updates": true,
+          "view_anchor_calls": 4440,
+          "view_anchor_physical_seen": 567000
+        },
+        "head_fit_updates": 0,
+        "U_truth_read": false,
+        "target_access": false,
+        "incremental_epochs": 20,
+        "incremental_updates": 4440,
+        "parent_prefix_native_seconds": 4416.363635185873,
+        "parent_prefix_training_seconds": 4417.8696232249495,
+        "cumulative_training_seconds": 7662.310357797891,
+        "parent_run_id": "20261023-phase1-PAMF-physical-softmatch-m6-r02",
+        "parent_selection": "Fixed RXPSM E30 before target scoring"
+      },
+      "segments": [
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 2227.829735412961,
+          "actual_adapter_SSL": {
+            "method": "pamf_rxpsm_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 4440,
+            "U_seen": 396900,
+            "physical_U_seen": 198450,
+            "effective_U_weight": 374680.31732940674,
+            "effective_U_per_class": [
+              63498.94921875,
+              61906.82421875,
+              65061.47265625,
+              57205.70703125,
+              61428.36328125,
+              65579.65625
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": true
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        },
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 10,
+          "updates": 2220,
+          "seconds": 2188.5338997729123,
+          "actual_adapter_SSL": {
+            "method": "pamf_rxpsm_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 6660,
+            "U_seen": 963900,
+            "physical_U_seen": 481950,
+            "effective_U_weight": 911637.6735458374,
+            "effective_U_per_class": [
+              154386.6875,
+              150957.890625,
+              157993.703125,
+              139769.390625,
+              149277.265625,
+              159258.890625
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": true
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        },
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 3243.3473681882024,
+          "actual_adapter_SSL": {
+            "method": "pamf_rxpsm_viewanchor_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 11100,
+            "U_seen": 2097900,
+            "physical_U_seen": 1048950,
+            "effective_U_weight": 1993330.3919143677,
+            "effective_U_per_class": [
+              336454.84375,
+              330542.625,
+              343944.4375,
+              309082.1875,
+              326949.5,
+              346400.46875
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": true,
+            "view_anchor_calls": 4440,
+            "view_anchor_physical_seen": 567000
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        }
+      ],
+      "source_V_diagnostics": [
+        {
+          "name": "source_V_diagnostic",
+          "metrics": {
+            "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+            "samples": 720,
+            "clean_accuracy": 0.9819444444444444,
+            "fixed_practical_mixture_accuracy": 0.7555555555555555,
+            "model_state_updates": 0,
+            "prototype_updates": 0,
+            "teacher_updates": 0,
+            "target_reads": 0,
+            "U_truth_reads": 0,
+            "head_fit_updates": 0,
+            "simulator_scene_coverage": {
+              "practical_low_suburban": 232,
+              "practical_mid_urban": 231,
+              "practical_low_urban": 257
+            }
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "VIEWANCHOR-s2026092702",
+      "training": {
+        "status": "SOURCE_FROZEN",
+        "epoch": 50,
+        "updates": 11100,
+        "seconds": 3461.493530183099,
+        "actual_adapter_SSL": {
+          "method": "pamf_rxpsm_viewanchor_v1",
+          "native_U_loop": false,
+          "own_EMA": true,
+          "cumulative_EMA_updates": 11100,
+          "U_seen": 2097900,
+          "physical_U_seen": 1048950,
+          "effective_U_weight": 1988640.7237091064,
+          "effective_U_per_class": [
+            336231.65625,
+            329030.84375,
+            344725.15625,
+            310412.65625,
+            321621.78125,
+            346658.71875
+          ],
+          "U_truth_read": false,
+          "labeled_only_prototype_updates": true,
+          "view_anchor_calls": 4440,
+          "view_anchor_physical_seen": 567000
+        },
+        "head_fit_updates": 0,
+        "U_truth_read": false,
+        "target_access": false,
+        "incremental_epochs": 20,
+        "incremental_updates": 4440,
+        "parent_prefix_native_seconds": 5062.711538728094,
+        "parent_prefix_training_seconds": 5064.55442506494,
+        "cumulative_training_seconds": 8526.04795524804,
+        "parent_run_id": "20261023-phase1-PAMF-physical-softmatch-m6-r02",
+        "parent_selection": "Fixed RXPSM E30 before target scoring"
+      },
+      "segments": [
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 2243.238823018968,
+          "actual_adapter_SSL": {
+            "method": "pamf_rxpsm_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 4440,
+            "U_seen": 396900,
+            "physical_U_seen": 198450,
+            "effective_U_weight": 374091.7329483032,
+            "effective_U_per_class": [
+              63695.84765625,
+              61807.1484375,
+              65193.234375,
+              57718.7734375,
+              60020.5859375,
+              65656.6796875
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": true
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        },
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 10,
+          "updates": 2220,
+          "seconds": 2819.4727157091256,
+          "actual_adapter_SSL": {
+            "method": "pamf_rxpsm_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 6660,
+            "U_seen": 963900,
+            "physical_U_seen": 481950,
+            "effective_U_weight": 910399.1828994751,
+            "effective_U_per_class": [
+              154437.40625,
+              150220.828125,
+              158400.796875,
+              141100.4375,
+              146820.90625,
+              159424.734375
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": true
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        },
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 3460.151908988133,
+          "actual_adapter_SSL": {
+            "method": "pamf_rxpsm_viewanchor_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 11100,
+            "U_seen": 2097900,
+            "physical_U_seen": 1048950,
+            "effective_U_weight": 1988640.7237091064,
+            "effective_U_per_class": [
+              336231.65625,
+              329030.84375,
+              344725.15625,
+              310412.65625,
+              321621.78125,
+              346658.71875
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": true,
+            "view_anchor_calls": 4440,
+            "view_anchor_physical_seen": 567000
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        }
+      ],
+      "source_V_diagnostics": [
+        {
+          "name": "source_V_diagnostic",
+          "metrics": {
+            "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+            "samples": 720,
+            "clean_accuracy": 0.9791666666666666,
+            "fixed_practical_mixture_accuracy": 0.7652777777777777,
+            "model_state_updates": 0,
+            "prototype_updates": 0,
+            "teacher_updates": 0,
+            "target_reads": 0,
+            "U_truth_reads": 0,
+            "head_fit_updates": 0,
+            "simulator_scene_coverage": {
+              "practical_low_suburban": 232,
+              "practical_mid_urban": 231,
+              "practical_low_urban": 257
+            }
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "VIEWANCHOR-s2026092703",
+      "training": {
+        "status": "SOURCE_FROZEN",
+        "epoch": 50,
+        "updates": 11100,
+        "seconds": 3204.5700452399906,
+        "actual_adapter_SSL": {
+          "method": "pamf_rxpsm_viewanchor_v1",
+          "native_U_loop": false,
+          "own_EMA": true,
+          "cumulative_EMA_updates": 11100,
+          "U_seen": 2097900,
+          "physical_U_seen": 1048950,
+          "effective_U_weight": 2002475.5944595337,
+          "effective_U_per_class": [
+            338118.75,
+            324651.84375,
+            343467.84375,
+            316390.5625,
+            333833.59375,
+            346058.5
+          ],
+          "U_truth_read": false,
+          "labeled_only_prototype_updates": true,
+          "view_anchor_calls": 4440,
+          "view_anchor_physical_seen": 567000
+        },
+        "head_fit_updates": 0,
+        "U_truth_read": false,
+        "target_access": false,
+        "incremental_epochs": 20,
+        "incremental_updates": 4440,
+        "parent_prefix_native_seconds": 4891.936388915172,
+        "parent_prefix_training_seconds": 4894.10919757816,
+        "cumulative_training_seconds": 8098.679242818151,
+        "parent_run_id": "20261023-phase1-PAMF-physical-softmatch-m6-r02",
+        "parent_selection": "Fixed RXPSM E30 before target scoring"
+      },
+      "segments": [
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 2212.282018410042,
+          "actual_adapter_SSL": {
+            "method": "pamf_rxpsm_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 4440,
+            "U_seen": 396900,
+            "physical_U_seen": 198450,
+            "effective_U_weight": 377773.1004257202,
+            "effective_U_per_class": [
+              63837.16015625,
+              60539.609375,
+              64981.765625,
+              59776.734375,
+              63092.703125,
+              65545.7890625
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": true
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        },
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 10,
+          "updates": 2220,
+          "seconds": 2679.65437050513,
+          "actual_adapter_SSL": {
+            "method": "pamf_rxpsm_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 6660,
+            "U_seen": 963900,
+            "physical_U_seen": 481950,
+            "effective_U_weight": 918263.2018585205,
+            "effective_U_per_class": [
+              155183.890625,
+              147856.203125,
+              157889.234375,
+              144982.078125,
+              153235.515625,
+              159123.140625
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": true
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        },
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 3203.820390875917,
+          "actual_adapter_SSL": {
+            "method": "pamf_rxpsm_viewanchor_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 11100,
+            "U_seen": 2097900,
+            "physical_U_seen": 1048950,
+            "effective_U_weight": 2002475.5944595337,
+            "effective_U_per_class": [
+              338118.75,
+              324651.84375,
+              343467.84375,
+              316390.5625,
+              333833.59375,
+              346058.5
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": true,
+            "view_anchor_calls": 4440,
+            "view_anchor_physical_seen": 567000
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        }
+      ],
+      "source_V_diagnostics": [
+        {
+          "name": "source_V_diagnostic",
+          "metrics": {
+            "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+            "samples": 720,
+            "clean_accuracy": 0.975,
+            "fixed_practical_mixture_accuracy": 0.7638888888888888,
+            "model_state_updates": 0,
+            "prototype_updates": 0,
+            "teacher_updates": 0,
+            "target_reads": 0,
+            "U_truth_reads": 0,
+            "head_fit_updates": 0,
+            "simulator_scene_coverage": {
+              "practical_low_suburban": 232,
+              "practical_mid_urban": 231,
+              "practical_low_urban": 257
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "U_exposure_is_repeated_samples": true,
+  "source_V_excluded_from_target_acceptance": true,
+  "shared_GPU_walltime_not_exclusive_GPU_hours": true
+}
