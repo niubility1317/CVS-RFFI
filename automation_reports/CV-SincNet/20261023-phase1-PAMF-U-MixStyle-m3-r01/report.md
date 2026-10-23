@@ -33,3 +33,15 @@ PAIR 三 seed 全部 14 项预测完成后释放了原槽位；UMIX 在 GPU5／6
 VERIFIED_SOURCE_FINAL：三行各新增20轮/4440步，累计E50/11100；逐条读取全部13320条新增闭合step记录，源U曝光2097900、物理U曝光1048950、学生U视图2097900和自身EMA11100次均符合预定，父前6660步复用原完整核验记录。无U真值/目标训练或另训头。完整源证据及已发生父阶段/增量/累计时间见source_training_complete.json；程序经过时间来自共享GPU，不能等同独占GPU小时。
 
 模型已按固定最终学生冻结，并已自动进入raw与固定DURA各七景预测；这是源训练完成，正式预测/独立评分尚未全部齐，不宣称整体实验完成或目标达成。部分目标成绩仍不读取，三seed全矩阵完成后统一分析。
+
+
+## 完整目标测试结果
+
+ANALYZED：三个 seed 的 raw 与固定 DURA 各七景、共 42 项读出／场景均完成独立 truth-last 评分，六个匹配监督／普通 PL 对照模型完整复用。逐景／逐 seed／SD／Macro-F1／RX／TX／day／配对修复损伤、实际曝光与成本见 target_results.md、target_summary.json、target_per_seed.csv、target_strata.csv、target_paired_raw.csv、restoration_effects.json、evaluation_completion.json。原 raw 双门槛尚未满足，研发目标仍 ACTIVE。
+
+raw clean：84.362896825% ± 0.397129695%（三个模型 seed 样本 SD）。
+DURA-LU clean：84.433134921% ± 0.447926192%（三个模型 seed 样本 SD）。
+raw six_mean：72.000892857% ± 1.012286362%（三个模型 seed 样本 SD）。
+DURA-LU six_mean：77.554133598% ± 0.232519585%（三个模型 seed 样本 SD）。
+
+不依据本结果热改健康旧任务或替换父来源。
