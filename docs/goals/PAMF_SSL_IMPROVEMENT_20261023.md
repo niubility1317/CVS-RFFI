@@ -262,3 +262,8 @@ Guard run `20261024-phase1-PAMF-HardPL-GradientGuard-m6-r01` 全6模型／84项 
 Complement run `20261024-phase1-PAMF-HardPL-Complement-m3-r01` 执行commit `7d58c705b65dfd0afa02ee8b7cb079e4e1b8468a` 在新GuardNAMS／Joint目标分数读取前固定并发布。真实原E20 source smoke PASS：首释放seed2026092702／GPU6；无签名CE实际signature梯度0，既有头0.829442375、主干2.382877837，完整joint签名辅助梯度0.370686237。普通CE0.5分配为完整融合0.25＋无签名0.25，总CE剂量1.25保持；两次既有头调用512条既有特征，U骨干1536与原L768保持。探针丢弃，正式行重新加载原E20。
 
 三个正式seed已经分别在GPU5/6/7实际产生互补CE／joint／共享style／完整L guard原生步骤，独立PID/CWD/cmdline/GPU/loggrowth核实；当前前缀合计547步，非完整训练或目标收益。训练后raw＋固定DURA七景自动独立truth-last，健康Joint与前序任务未改变。部署T1E50/DURA默认版本保持。
+
+
+## 主干互补监督固定矩阵
+
+`20261024-phase1-PAMF-HardPL-PathComplement-m3-r01` 根据此前冻结源C的core-only CE.29-.37比去签名.17-.22更高，保持原E20+30/E50/11100/.95/weight6/完整Lguard/style/RDrop/浅中层与joint对比，仅将ordinaryCE.5分为full.25＋noSig.125＋core.125，总CE1.25不变，既有头与完整部署不变。每步4额外既有头调用，无额外骨干/teacher/头/推理参数。66检查及一次P0P1PASS；首匹配释放Joint卡位原E20smoke通过即重载，健康Complement保留、三卡2task上限、单CPUscorer接Complement。全3seed raw+固定DURA七景42cell及原双raw目标保持。历史GuardNAMS目标已知，尚未读取Joint/Complement目标；源V无更新，U实际正确率UNKNOWN。未启动/未达标，goal ACTIVE。

@@ -12,6 +12,7 @@ from .hard_pl_early import METHODS as EARLY_METHODS
 from .hard_pl_guard import METHODS as GUARD_METHODS
 from .hard_pl_joint import METHODS as JOINT_METHODS
 from .hard_pl_complement import METHODS as COMP_METHODS
+from .hard_pl_path import METHODS as PATH_METHODS
 from .report import cells
 
 
@@ -37,7 +38,7 @@ def report(rt, output):
     methods=tuple(rt.get('methods',METHODS))
     if methods==METHODS:
         validate_rows(rt['rows'])
-    elif methods in (('PAIREDU',), ('UCRIC',), ('UMIX',), ('UGP',), ('UCMR',), ('UDAP',), ('UVB',), ('HPL2','HPLT1U'), EARLY_METHODS, GUARD_METHODS, JOINT_METHODS, COMP_METHODS, ('HPL_NO_UAS',), ('HPL_LS2',), ('HPL_MS2',), ('HPL_NAMS2',)):
+    elif methods in (('PAIREDU',), ('UCRIC',), ('UMIX',), ('UGP',), ('UCMR',), ('UDAP',), ('UVB',), ('HPL2','HPLT1U'), EARLY_METHODS, GUARD_METHODS, JOINT_METHODS, COMP_METHODS, PATH_METHODS, ('HPL_NO_UAS',), ('HPL_LS2',), ('HPL_MS2',), ('HPL_NAMS2',)):
         if methods == ('PAIREDU',):
             from .paired_u import RUN, RESOURCE_GPU_BY_SEED
         elif methods == ('UCRIC',):
@@ -68,6 +69,8 @@ def report(rt, output):
             from .hard_pl_joint import RUN, RESOURCE_GPU_BY_SEED
         elif methods == COMP_METHODS:
             from .hard_pl_complement import RUN, RESOURCE_GPU_BY_SEED
+        elif methods == PATH_METHODS:
+            from .hard_pl_path import RUN, RESOURCE_GPU_BY_SEED
         else:
             from .hard_pl_early import RUN, RESOURCE_GPU_BY_SEED
         from .control import validate_rows as validate_followup

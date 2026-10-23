@@ -103,6 +103,16 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
                     or len(obj.smoke_complement_features)!=2 or any(h.shape!=(256,160) or h.grad is None
                         or not bool(torch.isfinite(h.grad).all()) or float(h.grad.norm())<=0 for h in obj.smoke_complement_features)):
                     raise ValueError('Same-head complementary CE dose/bypass gradient or actual head-view budget differs')
+            if c.get('hard_pl_path'):
+                paths=state['U_path_complement'];g=obj.smoke_path_gradients
+                if (paths['calls']!=1 or paths['extra_head_calls']!=4 or paths['extra_head_packet_views']!=1024
+                    or paths['extra_backbone_forwards'] or paths['teacher_or_L_head_calls'] or paths['new_head'] or paths['persistent_hooks']
+                    or not paths['full_deployment_signature_retained'] or not paths['full_deployment_response_retained']
+                    or paths['CE_dose_normalizer']!=1.25 or obj.path_active
+                    or max(g['signature'],g['response'])>1e-7 or min(g['head'],g['core'])<=0
+                    or len(obj.smoke_path_features)!=4 or any(h.shape!=(256,160) or h.grad is None
+                        or not bool(torch.isfinite(h.grad).all()) or float(h.grad.norm())<=0 for h in obj.smoke_path_features)):
+                    raise ValueError('Existing-head full/masked/core CE dose,exclusive-branch bypass or actual view budget differs')
             checked.append(dict(method=row['method'],model_seed=c['model_seed'],parent_epoch=parent_epoch,parent_updates=parent_epoch*222,L_forward_packets=768,
                 U_seen=256,U_accepted=state['accepted'],student_U_views=state['student_views'],
                 physical_U_generated=state['physical_seen'],physical_student_views=state['physical_student_views'],
@@ -123,6 +133,9 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
             if c.get('hard_pl_complement'):
                 checked[-1].update(U_complement=state['U_complement'],complementary_gradient_norms=obj.smoke_complement_gradients,
                     no_signature_masked_gradient=True,existing_core_and_head_masked_gradient=True,CE_total_dose_unchanged=True)
+            if c.get('hard_pl_path'):
+                checked[-1].update(U_path_complement=state['U_path_complement'],path_core_gradient_norms=obj.smoke_path_gradients,
+                    core_CE_bypasses_exclusive_signature_and_response=True,existing_core_and_head_masked_gradient=True,CE_total_dose_unchanged=True)
         del model,obj,holder,payload,ctx;gc.collect();torch.cuda.empty_cache()
     write(Path(rt['run_root'])/'smoke.json',dict(status='PASS',methods=checked,target_reads=0,U_truth_reads=0,
         probe_updates_discarded=True,formal_reload_original_parent_epoch=parent_epoch,

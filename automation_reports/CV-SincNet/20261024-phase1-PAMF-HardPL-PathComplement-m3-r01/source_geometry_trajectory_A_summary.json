@@ -1,0 +1,342 @@
+{
+  "status": "VERIFIED_SOURCE_GEOMETRY_TRAJECTORY_PHASE_A",
+  "rows": [
+    {
+      "profile": "F21_E20",
+      "role": "V",
+      "level": "time_down",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "mean_TX_fraction_of_total": 0.4215989527520947,
+      "mean_RX_fraction_of_TX_residual": 0.4079853293437337,
+      "mean_RX_fraction_of_total": 0.23609596903270333,
+      "mean_norm_relative_to_joint": null
+    },
+    {
+      "profile": "F21_E20",
+      "role": "V",
+      "level": "t2.pool",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "mean_TX_fraction_of_total": 0.4977053096748227,
+      "mean_RX_fraction_of_TX_residual": 0.3908764571769983,
+      "mean_RX_fraction_of_total": 0.19643614128539888,
+      "mean_norm_relative_to_joint": null
+    },
+    {
+      "profile": "F21_E20",
+      "role": "V",
+      "level": "joint160",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "mean_TX_fraction_of_total": 0.7821802293240343,
+      "mean_RX_fraction_of_TX_residual": 0.4086593119848827,
+      "mean_RX_fraction_of_total": 0.08904080708116226,
+      "mean_norm_relative_to_joint": null
+    },
+    {
+      "profile": "F21_E20",
+      "role": "V",
+      "level": "core160",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "mean_TX_fraction_of_total": 0.7611676244196975,
+      "mean_RX_fraction_of_TX_residual": 0.4712850198503886,
+      "mean_RX_fraction_of_total": 0.11343594948328649,
+      "mean_norm_relative_to_joint": 1.0972269376118977
+    },
+    {
+      "profile": "F21_E20",
+      "role": "V",
+      "level": "signature160",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "mean_TX_fraction_of_total": 0.7473690565985018,
+      "mean_RX_fraction_of_TX_residual": 0.27490808922209287,
+      "mean_RX_fraction_of_total": 0.06958426466336447,
+      "mean_norm_relative_to_joint": 0.13811139265696207
+    },
+    {
+      "profile": "F21_E20",
+      "role": "V",
+      "level": "reference160",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "mean_TX_fraction_of_total": 0.22737199402363387,
+      "mean_RX_fraction_of_TX_residual": 0.3111697314144808,
+      "mean_RX_fraction_of_total": 0.24012403884716751,
+      "mean_norm_relative_to_joint": 0.1948932409286499
+    },
+    {
+      "profile": "F21_E30",
+      "role": "V",
+      "level": "time_down",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "mean_TX_fraction_of_total": 0.47463226046900026,
+      "mean_RX_fraction_of_TX_residual": 0.37351942727490517,
+      "mean_RX_fraction_of_total": 0.19630373004159501,
+      "mean_norm_relative_to_joint": null
+    },
+    {
+      "profile": "F21_E30",
+      "role": "V",
+      "level": "t2.pool",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "mean_TX_fraction_of_total": 0.5628294341090011,
+      "mean_RX_fraction_of_TX_residual": 0.36154352495536807,
+      "mean_RX_fraction_of_total": 0.15813952500713346,
+      "mean_norm_relative_to_joint": null
+    },
+    {
+      "profile": "F21_E30",
+      "role": "V",
+      "level": "joint160",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "mean_TX_fraction_of_total": 0.7818410112521718,
+      "mean_RX_fraction_of_TX_residual": 0.38675556678179196,
+      "mean_RX_fraction_of_total": 0.08444333753877391,
+      "mean_norm_relative_to_joint": null
+    },
+    {
+      "profile": "F21_E30",
+      "role": "V",
+      "level": "core160",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "mean_TX_fraction_of_total": 0.7681503348970384,
+      "mean_RX_fraction_of_TX_residual": 0.4564590289296252,
+      "mean_RX_fraction_of_total": 0.10722644942618403,
+      "mean_norm_relative_to_joint": 1.0790958404541016
+    },
+    {
+      "profile": "F21_E30",
+      "role": "V",
+      "level": "signature160",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "mean_TX_fraction_of_total": 0.73671210938835,
+      "mean_RX_fraction_of_TX_residual": 0.2863726239062021,
+      "mean_RX_fraction_of_total": 0.07558967475642256,
+      "mean_norm_relative_to_joint": 0.16583395997683206
+    },
+    {
+      "profile": "F21_E30",
+      "role": "V",
+      "level": "reference160",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "mean_TX_fraction_of_total": 0.20652532647269747,
+      "mean_RX_fraction_of_TX_residual": 0.32587959665365557,
+      "mean_RX_fraction_of_total": 0.25841845407227737,
+      "mean_norm_relative_to_joint": 0.19999671479066214
+    },
+    {
+      "profile": "EARLY_NAMS_E30",
+      "role": "V",
+      "level": "time_down",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "mean_TX_fraction_of_total": 0.5328236930088082,
+      "mean_RX_fraction_of_TX_residual": 0.36392865215641756,
+      "mean_RX_fraction_of_total": 0.1701466645215325,
+      "mean_norm_relative_to_joint": null
+    },
+    {
+      "profile": "EARLY_NAMS_E30",
+      "role": "V",
+      "level": "t2.pool",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "mean_TX_fraction_of_total": 0.6393026382598535,
+      "mean_RX_fraction_of_TX_residual": 0.34515638075892574,
+      "mean_RX_fraction_of_total": 0.12448696368344114,
+      "mean_norm_relative_to_joint": null
+    },
+    {
+      "profile": "EARLY_NAMS_E30",
+      "role": "V",
+      "level": "joint160",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "mean_TX_fraction_of_total": 0.7702351662847745,
+      "mean_RX_fraction_of_TX_residual": 0.3733563004481136,
+      "mean_RX_fraction_of_total": 0.08599549033524342,
+      "mean_norm_relative_to_joint": null
+    },
+    {
+      "profile": "EARLY_NAMS_E30",
+      "role": "V",
+      "level": "core160",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "mean_TX_fraction_of_total": 0.7507743146249723,
+      "mean_RX_fraction_of_TX_residual": 0.43316422824337697,
+      "mean_RX_fraction_of_total": 0.10990085008796684,
+      "mean_norm_relative_to_joint": 1.023831566174825
+    },
+    {
+      "profile": "EARLY_NAMS_E30",
+      "role": "V",
+      "level": "signature160",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "mean_TX_fraction_of_total": 0.7397691138156951,
+      "mean_RX_fraction_of_TX_residual": 0.31109385455647154,
+      "mean_RX_fraction_of_total": 0.08110938111315219,
+      "mean_norm_relative_to_joint": 0.1512066771586736
+    },
+    {
+      "profile": "EARLY_NAMS_E30",
+      "role": "V",
+      "level": "reference160",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "mean_TX_fraction_of_total": 0.19894886383282787,
+      "mean_RX_fraction_of_TX_residual": 0.43787425977875066,
+      "mean_RX_fraction_of_total": 0.35134250906974224,
+      "mean_norm_relative_to_joint": 0.1490203688542048
+    },
+    {
+      "profile": "GUARD_NAMS_E30",
+      "role": "V",
+      "level": "time_down",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "mean_TX_fraction_of_total": 0.5543187553991923,
+      "mean_RX_fraction_of_TX_residual": 0.36220564569405983,
+      "mean_RX_fraction_of_total": 0.16164734722036217,
+      "mean_norm_relative_to_joint": null
+    },
+    {
+      "profile": "GUARD_NAMS_E30",
+      "role": "V",
+      "level": "t2.pool",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "mean_TX_fraction_of_total": 0.6714980504239854,
+      "mean_RX_fraction_of_TX_residual": 0.3412745029136133,
+      "mean_RX_fraction_of_total": 0.11209447822923432,
+      "mean_norm_relative_to_joint": null
+    },
+    {
+      "profile": "GUARD_NAMS_E30",
+      "role": "V",
+      "level": "joint160",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "mean_TX_fraction_of_total": 0.7713301862728931,
+      "mean_RX_fraction_of_TX_residual": 0.37452987265341037,
+      "mean_RX_fraction_of_total": 0.0859001277839267,
+      "mean_norm_relative_to_joint": null
+    },
+    {
+      "profile": "GUARD_NAMS_E30",
+      "role": "V",
+      "level": "core160",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "mean_TX_fraction_of_total": 0.7491504443806519,
+      "mean_RX_fraction_of_TX_residual": 0.4343717892097998,
+      "mean_RX_fraction_of_total": 0.1111747784855748,
+      "mean_norm_relative_to_joint": 0.9968815247217814
+    },
+    {
+      "profile": "GUARD_NAMS_E30",
+      "role": "V",
+      "level": "signature160",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "mean_TX_fraction_of_total": 0.7515789273210729,
+      "mean_RX_fraction_of_TX_residual": 0.3127051657332009,
+      "mean_RX_fraction_of_total": 0.07777434035604,
+      "mean_norm_relative_to_joint": 0.1487477719783783
+    },
+    {
+      "profile": "GUARD_NAMS_E30",
+      "role": "V",
+      "level": "reference160",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "mean_TX_fraction_of_total": 0.18070040831443815,
+      "mean_RX_fraction_of_TX_residual": 0.5410100106470317,
+      "mean_RX_fraction_of_total": 0.4436245050074734,
+      "mean_norm_relative_to_joint": 0.14188637336095175
+    }
+  ],
+  "scope": "Mean descriptive per-model source V720 summaries,all3F seeds;full U/V and both normalizations preserved in phaseA JSON,not a target metric"
+}

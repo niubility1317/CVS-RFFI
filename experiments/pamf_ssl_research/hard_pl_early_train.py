@@ -85,6 +85,15 @@ def aggregate(states,parents,*,weight=2.):
             raise ValueError('Complementary CE must reallocate the same dose using two existing-head views')
         for key in ('calls','extra_head_calls','extra_head_packet_views'):complement[key]=sum(v[key] for v in values)
         actual['U_complement']=complement;actual['hard_PL_tail']['U_complement']=complement
+    if 'U_path_complement' in states[0]:
+        values=[s['U_path_complement'] for s in states];paths=dict(values[0])
+        if any(v['recipe']!=paths['recipe'] or v['calls']!=s['calls'] or v['extra_head_calls']!=4*s['calls']
+            or v['extra_head_packet_views']!=4*s['seen'] or v['extra_backbone_forwards'] or v['teacher_or_L_head_calls']
+            or v['new_head'] or v['persistent_hooks'] or not v['full_deployment_signature_retained']
+            or not v['full_deployment_response_retained'] or v['CE_dose_normalizer']!=1.25 for s,v in zip(states,values)):
+            raise ValueError('Path complementary CE must keep the same dose with four existing-head views')
+        for key in ('calls','extra_head_calls','extra_head_packet_views'):paths[key]=sum(v[key] for v in values)
+        actual['U_path_complement']=paths;actual['hard_PL_tail']['U_path_complement']=paths
     return actual
 
 
