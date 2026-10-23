@@ -22,3 +22,10 @@ GPU5/6/7固定seed2701/02/03，每卡最多2本任务、含外部最多3进程�
 ## 发布后独立核实
 
 VERIFIED：执行commit `cf6794650506c4bca08425539efa3c3ae8d0b444` 的控制器实际存活，CWD与完整命令匹配。当前等待同seed Joint完成全部GPU预测，三条Path行QUEUED、GPU训练worker0，真实原E20 source smoke仍PENDING；不能把提交或排队当作smoke通过或训练启动。原Joint三个seed实际E46／48／46，健康Complement为E26／27／26，全部进程身份／GPU／日志增长核实且未改变。释放匹配卡位后自动先检查、通过即正式重载原E20续行；raw＋固定DURA七景和truth-last在原冻结矩阵内自动执行。
+
+
+## 主干互补真实权重检查与三种子实际启动
+
+VERIFIED：执行commit `cf6794650506c4bca08425539efa3c3ae8d0b444`。首释放seed2026092702／GPU6原E20source smoke PASS；正式三seed/card映射保持。主干CE实际梯度范数：exclusive签名0、exclusive参考0、既有头1.25794596、主干2.29631474；完整joint签名辅助梯度0.370686237。普通CE0.5分为full0.25＋noSig0.125＋core0.125，CE总分母1.25保持；4既有头调用1024条既有特征、U骨干1536／原L768／rawAs128／Uphysical0／LPractical64保持，完整L guard与显式梯度一致，临时hook／wrapper退出。探针丢弃，正式行重新加载原E20。
+
+三个seed已在GPU5/6/7实际产生主干互补CE／joint／style／guard原生步骤，进程／CWD／完整命令／GPU／日志增长独立核实，当前为源训练前缀；并非完整训练或目标收益。健康Complement及前序任务保持，固定raw＋DURA七景及truth-last自动继续，goal ACTIVE。

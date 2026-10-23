@@ -270,3 +270,19 @@ Complement run `20261024-phase1-PAMF-HardPL-Complement-m3-r01` 执行commit `7d5
 
 
 PathComplement发布后VERIFIED控制器存活/CWD/完整命令，执行commit `cf6794650506c4bca08425539efa3c3ae8d0b444`，3rowQUEUED、GPUworker0、原E20smokePENDING；等待Joint全部GPU预测释放对应卡位，健康Joint和Complement六worker日志继续增长。见该run queue_observation.json；不把排队当作训练或目标达成。
+
+
+## HPL_E20_NAMS_JOINT6G 完整双读出结果
+
+`20261024-phase1-PAMF-HardPL-Joint160-m3-r01` 各方法三seed、共3模型，每景168000条，raw／同一DURA七景预测与独立truth-last全部42cell完成；全部新增19980条闭合训练记录已核对。HPL_E20_NAMS_JOINT6G / raw clean=85.641667%；HPL_E20_NAMS_JOINT6G / DURA-LU clean=85.685516%；HPL_E20_NAMS_JOINT6G / raw six_mean=70.171230%；HPL_E20_NAMS_JOINT6G / DURA-LU six_mean=78.080754%；原数值目标仍未满足，维持ACTIVE。全部结果、匹配基线、逐seed／场景／分层及成本均保存，不从本结果热改其他已固定方法、父权重或矩阵。
+
+
+## Joint 三seed完整闭合与 Path 实际三卡训练
+
+Joint run `20261024-phase1-PAMF-HardPL-Joint160-m3-r01` 三模型原E20独立10＋20全部E50/11100，新增19980条源步骤闭合；每模型实际6660joint/guard、13320捕获批／3402000已有U特征，默认头、L/U联合及固定source权限均核实。全部raw＋固定DURA七景42cell独立truth-last完成。raw clean431634/504000＝85.641666667%，六景2121978/3024000＝70.171230159%；对F21为＋0.659920635／−0.188128307pp，对F20为＋0.856349206／−0.424966931pp。DURA为85.685515873／78.080753968%，对相同DURA＋F21为＋0.655952381／＋0.006117725pp。原raw双门槛未达，goal ACTIVE；不挑单seed或以DURA替代raw。完整逐景／seed／TX／RX／day、SD／MacroF1、修复损伤、成本及与GuardNAMS的固定匹配比较见该run结果。
+
+Joint固定最终E50学生fullV27000×3门控0.95伪标签精度99.9384%至99.9574%、覆盖95.5111%至96.1741%；U实际正确率UNKNOWN，源健康不等目标收益。源view诊断在analysiscommit a7d299897387af9e335155c8b327a7e72a8873bb完整18行返回，39.837秒／CPU2、无V状态更新／Utruth／target／G训练。高纯raw标签经原训练信道后模型一致率约74%至77%、hardCE约0.61至0.66；只保留高置信同类视图会剩全部U约43%至46%，不是标签真值改变。
+
+可靠As视图＋exactraw回退的下一独立原E20+30方案已于commit346b3fc2938e7b6fd52d803fca4db2e0267201a5、读取Joint／Complement／Path目标分数前固定，见Joint/reliable_As_followup_design.json；当前未实现/发布，不把设计当作结果。其完整源证据、旧目标暴露与额外半U teacher／模拟成本须如实保留。
+
+Path run `20261024-phase1-PAMF-HardPL-PathComplement-m3-r01` 执行commit `cf6794650506c4bca08425539efa3c3ae8d0b444` 真实原E20 smoke PASS：首释放seed2702/GPU6，coreCE对exclusive签名／参考梯度均0，对既有头1.257945958／主干2.296314741；完整joint签名辅助梯度0.370686237。原L768／U骨干1536、4额外既有头调用1024packet、CE总1.25与完整L guard显式梯度一致，探针丢弃、正式重载原E20。三个seed已经在GPU5/6/7实际产生原生Path/joint/style/guard步骤，独立进程身份／GPU／日志增长核实；当前前缀共1041条，不等完整训练或目标收益。健康Complement保持，三卡每卡2任务；raw＋固定DURA七景自动执行，默认部署T1E50/DURA版本不变。
