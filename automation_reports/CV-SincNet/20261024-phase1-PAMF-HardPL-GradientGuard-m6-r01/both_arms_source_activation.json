@@ -1,0 +1,192 @@
+{
+  "status": "VERIFIED_BOTH_ARMS_ALL3_SEEDS_SOURCE_RUNNING",
+  "run_id": "20261024-phase1-PAMF-HardPL-GradientGuard-m6-r01",
+  "execution_commit": "03d563e7cc772f003270597584c587e3952397d4",
+  "observed_unix": 1792791436.0688798,
+  "source_prefix_observed_unix": 1792791247.9670134,
+  "rows": [
+    {
+      "row_id": "HPL_E20_LS6G-s2026092701",
+      "method": "HPL_E20_LS6G",
+      "model_seed": 2026092701,
+      "gpu": 5,
+      "process_identity_verified": true,
+      "log_bytes": 118036,
+      "log_growth_bytes": 29876,
+      "latest_logged_epoch": 41,
+      "checked_source_step_records": 4372,
+      "actual_guard_calls": 4372,
+      "guard_conflicts": {
+        "t2": 1957,
+        "cls_head": 1674,
+        "other": 1671
+      },
+      "guard_caps": {
+        "t2": 1239,
+        "cls_head": 402,
+        "other": 1402
+      },
+      "student_U_views": "one raw U student pass",
+      "source_complete": false,
+      "target_scores_read": false
+    },
+    {
+      "row_id": "HPL_E20_NAMS6G-s2026092701",
+      "method": "HPL_E20_NAMS6G",
+      "model_seed": 2026092701,
+      "gpu": 5,
+      "process_identity_verified": true,
+      "log_bytes": 16670,
+      "log_growth_bytes": 16670,
+      "latest_logged_epoch": 22,
+      "checked_source_step_records": 253,
+      "actual_guard_calls": 253,
+      "guard_conflicts": {
+        "t2": 89,
+        "cls_head": 84,
+        "other": 68
+      },
+      "guard_caps": {
+        "t2": 189,
+        "cls_head": 83,
+        "other": 174
+      },
+      "student_U_views": "six existing views per U packet",
+      "source_complete": false,
+      "target_scores_read": false
+    },
+    {
+      "row_id": "HPL_E20_LS6G-s2026092702",
+      "method": "HPL_E20_LS6G",
+      "model_seed": 2026092702,
+      "gpu": 6,
+      "process_identity_verified": true,
+      "log_bytes": 127996,
+      "log_growth_bytes": 34857,
+      "latest_logged_epoch": 43,
+      "checked_source_step_records": 4873,
+      "actual_guard_calls": 4873,
+      "guard_conflicts": {
+        "t2": 2051,
+        "cls_head": 1714,
+        "other": 1704
+      },
+      "guard_caps": {
+        "t2": 1770,
+        "cls_head": 574,
+        "other": 1699
+      },
+      "student_U_views": "one raw U student pass",
+      "source_complete": false,
+      "target_scores_read": false
+    },
+    {
+      "row_id": "HPL_E20_NAMS6G-s2026092702",
+      "method": "HPL_E20_NAMS6G",
+      "model_seed": 2026092702,
+      "gpu": 6,
+      "process_identity_verified": true,
+      "log_bytes": 36600,
+      "log_growth_bytes": 24912,
+      "latest_logged_epoch": 26,
+      "checked_source_step_records": 1197,
+      "actual_guard_calls": 1197,
+      "guard_conflicts": {
+        "t2": 490,
+        "cls_head": 445,
+        "other": 392
+      },
+      "guard_caps": {
+        "t2": 989,
+        "cls_head": 339,
+        "other": 781
+      },
+      "student_U_views": "six existing views per U packet",
+      "source_complete": false,
+      "target_scores_read": false
+    },
+    {
+      "row_id": "HPL_E20_LS6G-s2026092703",
+      "method": "HPL_E20_LS6G",
+      "model_seed": 2026092703,
+      "gpu": 7,
+      "process_identity_verified": true,
+      "log_bytes": 118036,
+      "log_growth_bytes": 29876,
+      "latest_logged_epoch": 41,
+      "checked_source_step_records": 4489,
+      "actual_guard_calls": 4489,
+      "guard_conflicts": {
+        "t2": 1901,
+        "cls_head": 1521,
+        "other": 1478
+      },
+      "guard_caps": {
+        "t2": 1479,
+        "cls_head": 482,
+        "other": 1424
+      },
+      "student_U_views": "one raw U student pass",
+      "source_complete": false,
+      "target_scores_read": false
+    },
+    {
+      "row_id": "HPL_E20_NAMS6G-s2026092703",
+      "method": "HPL_E20_NAMS6G",
+      "model_seed": 2026092703,
+      "gpu": 7,
+      "process_identity_verified": true,
+      "log_bytes": 26634,
+      "log_growth_bytes": 26634,
+      "latest_logged_epoch": 24,
+      "checked_source_step_records": 799,
+      "actual_guard_calls": 799,
+      "guard_conflicts": {
+        "t2": 311,
+        "cls_head": 251,
+        "other": 223
+      },
+      "guard_caps": {
+        "t2": 674,
+        "cls_head": 218,
+        "other": 510
+      },
+      "student_U_views": "six existing views per U packet",
+      "source_complete": false,
+      "target_scores_read": false
+    }
+  ],
+  "GPU": [
+    {
+      "gpu": 5,
+      "task_GPU_workers": 2,
+      "total_compute_processes": 3,
+      "used_MiB": 8644,
+      "free_MiB": 15481
+    },
+    {
+      "gpu": 6,
+      "task_GPU_workers": 2,
+      "total_compute_processes": 2,
+      "used_MiB": 7883,
+      "free_MiB": 16242
+    },
+    {
+      "gpu": 7,
+      "task_GPU_workers": 2,
+      "total_compute_processes": 3,
+      "used_MiB": 9010,
+      "free_MiB": 15115
+    }
+  ],
+  "actual_task_GPU_workers": 6,
+  "queued_rows": 0,
+  "source_smoke": "PASS",
+  "checked_source_prefix_records": 15983,
+  "all_training_complete": false,
+  "target_matrix_complete": false,
+  "target_scores_read": false,
+  "U_truth_reads": false,
+  "other_healthy_jobs_changed": false,
+  "goal_complete": false
+}

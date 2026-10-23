@@ -393,11 +393,12 @@
   ],
   "registered_at": "2026-10-23T20:16:12.123696+00:00",
   "launch_status": {
-    "status": "VERIFIED_GUARDED_LS_RUNNING_SUPERVISED_ARM_QUEUED",
-    "evidence": "source_activation.json",
+    "status": "VERIFIED_BOTH_ARMS_ALL3_SEEDS_SOURCE_RUNNING",
+    "evidence": "both_arms_source_activation.json",
     "source_smoke": "PASS",
-    "actual_GPU_workers": 3,
-    "queued_rows": 3
+    "actual_GPU_workers": 6,
+    "queued_rows": 0,
+    "target_matrix_complete": false
   },
   "reporting_plan": {
     "complete_HPL2_early_readout": {
