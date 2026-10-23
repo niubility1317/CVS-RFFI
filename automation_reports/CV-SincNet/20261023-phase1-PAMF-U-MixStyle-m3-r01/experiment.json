@@ -12,8 +12,8 @@
     "SSL",
     "U-MixStyle",
     "fixed-E30-parent",
-    "source-hypothesis-not-implemented",
-    "raw-and-DURA"
+    "raw-and-DURA",
+    "source-fixed-moment-mixing"
   ],
   "comparison_group_id": "ManySig-F0-T1-E50-defaulthead-raw-and-DURA-v1",
   "parent_run_ids": [
@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "用户 /goal 授权持续设计迭代 PAMF 半监督机制，使目标测试 clean 相对监督/普通PL均至少高1pp、六景均值均严格高1.5pp；三GPU每卡固定一个模型种子、最多两个本任务worker；追加要求同时报告单PAMF与固定DURA+PAMF。",
   "code": {
-    "commit": "13dcd1e6fae05fd5e5bc0294c3624377d7e6aef2",
+    "commit": "68ed7530a3c3caf96f7a54e1cfe4fc3c2a00d2f7",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 ordinary account CVS-RFFI Py3.10/Torch2.1 FP32/TF32off, CPU2 per worker",
     "cwd": "PROJECT/releases/20261023-phase1-PAMF-U-MixStyle-m3-r01",
@@ -269,5 +269,12 @@
     "Recipe/parent/resource fixed before PAIREDU and UCRIC target access. Earlier engineering scores already exposed;do not claim a fresh blind benchmark.",
     "DURA remains common frozen reference only;no G or historical F teacher inheritance in new training. Real source smoke forces both style hooks for branch coverage;formal3 seeds reload original E30 and retain independent p0.5. Actual execution commit resolved by immutable release."
   ],
-  "registered_at": "2026-10-23T13:05:10+00:00"
+  "registered_at": "2026-10-23T13:05:10+00:00",
+  "launch_status": {
+    "status": "VERIFIED_QUEUED",
+    "evidence": "queue_verification.json",
+    "source_smoke": "PENDING",
+    "training_started": false,
+    "target_prediction_started": false
+  }
 }

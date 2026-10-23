@@ -1,0 +1,21 @@
+{
+  "status": "VERIFIED_QUEUED",
+  "execution_commit": "68ed7530a3c3caf96f7a54e1cfe4fc3c2a00d2f7",
+  "observed_unix": 1792761294.3417804,
+  "controller_PID_CWD_full_command_verified": true,
+  "controller_live": true,
+  "GPU_predecessor_ready": false,
+  "actual_new_GPU_workers": 0,
+  "source_smoke": "PENDING_FIRST_GPU_STEP",
+  "training_started": false,
+  "target_prediction_started": false,
+  "release_archive_SHA_comparison": "PASS single local/remote archive",
+  "remote_compile": "PASS",
+  "readouts": [
+    "raw",
+    "DURA-LU"
+  ],
+  "views_per_readout": 7,
+  "models": 3,
+  "existing_healthy_releases_modified": false
+}

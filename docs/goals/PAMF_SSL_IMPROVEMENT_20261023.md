@@ -61,3 +61,8 @@ PAIREDU三seed已在各自GPU5/6/7实际续训，真实E30 no-query smoke和配�
 ## 源状态诊断与下一条预先固定假设
 
 九模型源状态未显示类别塌缩或缺失L-only类/RX原型；固定720条source-V E30 CPU诊断未支持换监督父来源，继续原RXPSM E30。现有DURA记录披露历史正式暴露后的人工父选择，尚不能确认适合作新F训练祖先，故仅保留用户指定冻结组合参考。实际诊断和边界见九模型reference报告source_decisions.md。下一条`20261023-phase1-PAMF-U-MixStyle-m3-r01`固定同TX预测跨RX的U浅中层统计混合（MixStyle p0.5/alpha0.1，置信>=0.5，仅student U，原E30+20），三seed及双读出矩阵已登记，尚未实现或启动；等待同seedPAIR GPU工作结束后用第二名额，UCRIC健康任务保留。新目标未访问，原goal保持ACTIVE。
+
+
+## 标签保护U统计混合已发布等待
+
+`20261023-phase1-PAMF-U-MixStyle-m3-r01`严格实现13dcd1e6预先固定假设，61项聚焦检查、一次独立P0/P1审查PASS，执行commit`68ed7530a3c3caf96f7a54e1cfe4fc3c2a00d2f7`。CPU控制器已独立核实，三行排队等待同seedPAIR全部GPU预测完成，再与已派发的UCRIC共用最多两个本任务名额/card；无新GPU smoke/训练/目标读取。原E30+20及raw/DURA双七景自动收尾不变。当前两路健康训练不热改或停止，性能目标仍ACTIVE。

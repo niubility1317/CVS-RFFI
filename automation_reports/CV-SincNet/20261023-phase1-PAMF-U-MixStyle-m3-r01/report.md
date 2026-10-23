@@ -1,6 +1,6 @@
 # PAMF 无标签特征统计混合：固定源域假设
 
-状态：实现及61项聚焦检查完成，一次独立P0/P1审查PASS/无发现；尚未发布、真实smoke、训练或读取本版目标。原先固定的配方/父来源/三seed矩阵逐项相同，PAIR/UCRIC六条健康任务保持原计划。
+状态：VERIFIED_QUEUED。61项聚焦检查及一次独立P0/P1审查PASS；已发布并核实CPU队列控制器。等待同seed前序GPU工作完成，尚未实际source smoke、训练或目标预测。原先固定的科学配方和健康旧任务保持。
 
 源依据：固定720条V中，既有RXPSM E30自身EMA的伪标签没有显示明显劣于监督E30；此前九模型加权类别分布及L-only原型覆盖正常。下一条研究因此保持原RXPSM E30状态，从低层接收风格变化检验U的作用，不换父来源、不强化类别配额、不加载G训练视图。
 
@@ -16,3 +16,6 @@ GPU5/6/7固定seed2026092701/02/03。先等待同seed PAIREDU的全部14项预�
 
 
 实现严格核对hypothesis.json与RECIPE相同。61项检查覆盖同类跨RX置信配对、统计凸组合/常量/无partner、只传学生内容梯度、临时hooks作用域与异常清理、隐藏U真值拒绝、原EMA/曝光状态往返、无新增模型参数、GPU双owner先后条件、双读出和真实方法名称、其他候选回归。实际E30 source-only smoke会临时强制两层启用以覆盖两个真实梯度分支；probe丢弃，正式3seed重新加载原E30，以各层0.5独立启用概率训练。未把local模拟检查当作真实训练或目标收益。
+
+
+实际不可变执行commit `68ed7530a3c3caf96f7a54e1cfe4fc3c2a00d2f7`，一次发布包本地/远端SHA比较与远端编译PASS；独立读回CPU控制器PID/CWD/完整命令及实时存活状态。三seed行均QUEUED，没有新GPU子进程，source smoke尚未开始；不会把local检查或排队当成训练完成。队列等待同seed PAIREDU全14项预测完成释放GPU，UCRIC已派发后才可占第二个任务名额；source smoke PASS后自动开始原E30+20及两套七景预测/独立评分。首次source smoke临时强制两个特征层位覆盖，正式三seed重新载原E30、各层独立0.5启用，假设参数不变。证据见queue_verification.json。
