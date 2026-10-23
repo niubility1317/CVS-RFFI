@@ -1,0 +1,25 @@
+{
+  "status": "VERIFIED",
+  "runtime_versions": [
+    "Python3.13",
+    "Python3.10"
+  ],
+  "csv_files": [
+    "F_ablation_F_cost.csv",
+    "F_ablation_F_stage_cost.csv",
+    "F_ablation_factorial_per_seed.csv",
+    "F_ablation_factorial_summary.csv",
+    "F_ablation_factorial_summary_overall.csv",
+    "F_ablation_net_corrections.csv",
+    "F_ablation_paired.csv",
+    "F_ablation_paired_overall.csv",
+    "F_ablation_per_seed.csv",
+    "F_ablation_summary.csv",
+    "F_ablation_summary_overall.csv"
+  ],
+  "numeric_cells": 827781,
+  "maximum_absolute_difference": 7.105427357601002e-14,
+  "tolerance": 1e-10,
+  "comparison": "All CSV values, not byte equality",
+  "corrected_F_models": 63
+}

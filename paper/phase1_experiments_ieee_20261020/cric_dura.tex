@@ -41,6 +41,8 @@ I={}&(A_{\mathrm{CRIC},G}-A_{\mathrm{CRIC},raw})\\
 &-(A_{\mathrm{F16},G}-A_{\mathrm{F16},raw}).
 \end{split}
 \end{equation}
+\input{F16_factorial_results}
+
 The primary F mechanism study now uses three functional groups, with four main rows and a full eight-cell factorial, as specified below. Earlier layer, forward-route and gate-specific ablations remain supplementary diagnostics. Structural removals require matched training and are reported in a separate physical-structure panel; frozen branch masking is only a sensitivity diagnostic.
 
 G ablations include coarse-only, priors without CG, no conjugate-image term, and omission of the backprojected-residual prior input. Four structural and three initialization/distillation settings give 21 completed final-student runs. The realized initialization panel has three newly replicated cells and the existing single-G copied/distilled default; it is not a fully replicated $2\times2$ G-seed factorial. The two-stage four-CG default remains fixed, with teacher ancestry and incremental student cost reported separately.
