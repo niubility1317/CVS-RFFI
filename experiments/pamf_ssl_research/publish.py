@@ -89,7 +89,7 @@ print(json.dumps(receipt))
 '''
 
 
-def publish(repo, context_path, output, ssh_config):
+def publish(repo, context_path, output, ssh_config, *, prepare_run=prepare, run_id=RUN):
     repo, output = Path(repo), Path(output)
     output.mkdir(parents=True, exist_ok=False)
     def git(*args):
@@ -101,8 +101,8 @@ def publish(repo, context_path, output, ssh_config):
     context = json.loads(Path(context_path).read_text(encoding='utf-8'))
     source = context[str(SEEDS[0])]['F21']['train']['output_root']
     project = source.split('/runs/', 1)[0]
-    release = project + '/releases/' + RUN
-    rt, configurations = prepare(context, project, release, commit)
+    release = project + '/releases/' + run_id
+    rt, configurations = prepare_run(context, project, release, commit)
     connection = ['-F', str(ssh_config), '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10']
     preflight = ssh("from pathlib import Path\nimport json\npaths=" + repr([release, rt['run_root']]) + "\nprint(json.dumps({p:Path(p).exists() for p in paths}))\n", connection)
     if any(preflight.values()):
@@ -112,7 +112,7 @@ def publish(repo, context_path, output, ssh_config):
     names = [n for n in names if n.endswith('.py')]
     if git('status', '--porcelain', '--', *names).strip():
         raise ValueError('Uncommitted execution source')
-    archive = output / (RUN + '.tar.gz')
+    archive = output / (run_id + '.tar.gz')
     with tarfile.open(archive, 'w:gz') as tar:
         for name in names:
             blob = git('show', commit + ':' + name)

@@ -17,16 +17,21 @@ def capacity(gpu):
     return len(apps), free
 
 
-def validate_rows(rows):
-    expected = {(seed, method) for seed in SEEDS for method in METHODS}
-    if (len(rows) != 6 or {(r['model_seed'], r['method']) for r in rows} != expected
+def validate_rows(rows, methods=METHODS):
+    methods = tuple(methods)
+    if methods not in (METHODS, ('VIEWANCHOR',)):
+        raise ValueError('A declared complete three-seed matrix is required')
+    expected = {(seed, method) for seed in SEEDS for method in methods}
+    if (len(rows) != len(expected) or {(r['model_seed'], r['method']) for r in rows} != expected
             or any(r['gpu'] != GPU_BY_SEED[r['model_seed']] for r in rows)
-            or len({r['row_id'] for r in rows}) != 6):
-        raise ValueError('Exactly two methods on each of three seed-pinned cards required')
+            or len({r['row_id'] for r in rows}) != len(expected)):
+        raise ValueError('Complete declared methods on each of three seed-pinned cards required')
 
 
 def run(rt):
-    validate_rows(rt['rows'])
+    methods = tuple(rt.get('methods', METHODS))
+    validate_rows(rt['rows'], methods)
+    worker = 'experiments.pamf_ssl_research.' + ('view_anchor_worker' if methods == ('VIEWANCHOR',) else 'worker')
     root = Path(rt['run_root'])
     root.mkdir(parents=True, exist_ok=False)
     logs = root / 'logs'
@@ -39,7 +44,7 @@ def run(rt):
     if capacity(0)[0] >= 2 or capacity(0)[1] < 10000:
         raise RuntimeError('Smoke GPU capacity changed; no workload modified')
     with (logs / 'smoke.log').open('x') as stream:
-        result = subprocess.run([sys.executable, '-u', '-m', 'experiments.pamf_ssl_research.worker',
+        result = subprocess.run([sys.executable, '-u', '-m', worker,
             'smoke', '--config', rt['runtime_file']], cwd=rt['release_root'], env=env,
             stdin=subprocess.DEVNULL, stdout=stream, stderr=subprocess.STDOUT)
     if result.returncode or read(root / 'smoke.json').get('status') != 'PASS':
@@ -52,7 +57,7 @@ def run(rt):
         path = logs / (row_id + '-' + action + '.log')
         stream = path.open('x')
         e = dict(env, CUDA_VISIBLE_DEVICES='' if gpu is None else str(gpu))
-        child = subprocess.Popen([sys.executable, '-u', '-m', 'experiments.pamf_ssl_research.worker',
+        child = subprocess.Popen([sys.executable, '-u', '-m', worker,
             action, '--config', config], cwd=rt['release_root'], env=e, stdin=subprocess.DEVNULL,
             stdout=stream, stderr=subprocess.STDOUT, start_new_session=True)
         stream.close()
