@@ -76,3 +76,26 @@ HPL2 / raw six_mean=70.187533069% ± 0.946805077%（三个F seed样本SD）。
 HPL2 / DURA-LU six_mean=78.078670635% ± 0.198240426%（三个F seed样本SD）。
 
 本方法原raw目标未同时满足，goal ACTIVE；其他已冻结方法保持，无目标反馈调整。
+
+
+## 两方法六模型源训练完整，正式评测继续
+
+VERIFIED_SOURCE_FINAL：HPL2／HPLT1U各三seed，每行新增20轮／4440步到累计E50／11100，全部26640条新增闭合step记录逐条核对。两者实际门控.95、权重2，无EMA／原型／U真值／G训练或另训头；每模型累计U2097900。HPL2累计学生U2097900，HPLT1U7767900；后者physicalU生成567000、两次复用1134000学生物理视图、AsKL0和CE剂量归一化1.25均实际符合预定。逐行完整曝光、接受量、RDrop／对比调用与增量／父／累计经过时间见source_training_complete.json，共享GPU墙钟不视为独占GPU小时。
+
+固定最终学生已自动接续raw与同一DURA各七景完整预测，全部决策固定后独立truth-last；本版全矩阵尚未齐，不读取部分目标成绩，不宣称目标达成。
+
+
+## 完整目标测试结果
+
+ANALYZED：各方法三个seed，共6模型、84项raw／固定DURA七景决策均完成独立truth-last评分，六个匹配监督／普通PL对照模型完整复用。逐景／seed／SD／Macro-F1／RX／TX／day、修复损伤及曝光／成本见target_results.md和附属完整表。原raw双门槛尚未满足，研发目标仍ACTIVE。
+
+HPL2 / raw clean：85.075595238% ± 0.075693599%（三个模型 seed 样本 SD）。
+HPLT1U / raw clean：84.867063492% ± 0.133795348%（三个模型 seed 样本 SD）。
+HPL2 / DURA-LU clean：85.103769841% ± 0.060010904%（三个模型 seed 样本 SD）。
+HPLT1U / DURA-LU clean：84.949404762% ± 0.150093272%（三个模型 seed 样本 SD）。
+HPL2 / raw six_mean：70.187533069% ± 0.946805077%（三个模型 seed 样本 SD）。
+HPLT1U / raw six_mean：71.974702381% ± 0.790518926%（三个模型 seed 样本 SD）。
+HPL2 / DURA-LU six_mean：78.078670635% ± 0.198240426%（三个模型 seed 样本 SD）。
+HPLT1U / DURA-LU six_mean：77.508928571% ± 0.233547992%（三个模型 seed 样本 SD）。
+
+不依据本结果热改健康旧任务或替换父来源。

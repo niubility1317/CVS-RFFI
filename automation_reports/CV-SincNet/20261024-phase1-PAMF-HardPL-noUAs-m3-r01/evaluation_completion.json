@@ -1,0 +1,342 @@
+{
+  "status": "VERIFIED_COMPLETE",
+  "run_id": "20261024-phase1-PAMF-HardPL-noUAs-m3-r01",
+  "training_execution_commit": "5b2578b2d8f01258c491d0064a13ef614c7e0c21",
+  "completed_F_models": 3,
+  "readouts": [
+    "raw",
+    "DURA-LU"
+  ],
+  "views_per_readout": 7,
+  "count_per_view": 168000,
+  "completed_readout_view_cells": 42,
+  "reused_baseline_F_models": 6,
+  "baseline_U_exposure_and_acceptance": [
+    {
+      "method": "F20",
+      "model_seed": 2026092701,
+      "configured_U_batch": 256,
+      "stages": [
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 568320
+        },
+        {
+          "epoch": 10,
+          "updates": 2220,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 284160
+        },
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 568320
+        }
+      ],
+      "U_seen": 0,
+      "U_accepted": 0,
+      "U_acceptance_rate": null,
+      "training_seconds": 5859.2507663581055
+    },
+    {
+      "method": "F21",
+      "model_seed": 2026092701,
+      "configured_U_batch": 256,
+      "stages": [
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 396900,
+          "PL_accepted": 366736,
+          "U_actual": 396900,
+          "L_actual": 568320
+        },
+        {
+          "epoch": 10,
+          "updates": 2220,
+          "PL_seen": 567000,
+          "PL_accepted": 534715,
+          "U_actual": 567000,
+          "L_actual": 284160
+        },
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 1134000,
+          "PL_accepted": 1086483,
+          "U_actual": 1134000,
+          "L_actual": 568320
+        }
+      ],
+      "U_seen": 2097900,
+      "U_accepted": 1987934,
+      "U_acceptance_rate": 0.9475828209161542,
+      "training_seconds": 6064.280181294773
+    },
+    {
+      "method": "F20",
+      "model_seed": 2026092702,
+      "configured_U_batch": 256,
+      "stages": [
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 568320
+        },
+        {
+          "epoch": 10,
+          "updates": 2220,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 284160
+        },
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 568320
+        }
+      ],
+      "U_seen": 0,
+      "U_accepted": 0,
+      "U_acceptance_rate": null,
+      "training_seconds": 5679.993145135231
+    },
+    {
+      "method": "F21",
+      "model_seed": 2026092702,
+      "configured_U_batch": 256,
+      "stages": [
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 396900,
+          "PL_accepted": 368509,
+          "U_actual": 396900,
+          "L_actual": 568320
+        },
+        {
+          "epoch": 10,
+          "updates": 2220,
+          "PL_seen": 567000,
+          "PL_accepted": 536211,
+          "U_actual": 567000,
+          "L_actual": 284160
+        },
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 1134000,
+          "PL_accepted": 1087594,
+          "U_actual": 1134000,
+          "L_actual": 568320
+        }
+      ],
+      "U_seen": 2097900,
+      "U_accepted": 1992314,
+      "U_acceptance_rate": 0.9496706230039563,
+      "training_seconds": 6310.290091911098
+    },
+    {
+      "method": "F20",
+      "model_seed": 2026092703,
+      "configured_U_batch": 256,
+      "stages": [
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 568320
+        },
+        {
+          "epoch": 10,
+          "updates": 2220,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 284160
+        },
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 568320
+        }
+      ],
+      "U_seen": 0,
+      "U_accepted": 0,
+      "U_acceptance_rate": null,
+      "training_seconds": 5337.616240176139
+    },
+    {
+      "method": "F21",
+      "model_seed": 2026092703,
+      "configured_U_batch": 256,
+      "stages": [
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 396900,
+          "PL_accepted": 368417,
+          "U_actual": 396900,
+          "L_actual": 568320
+        },
+        {
+          "epoch": 10,
+          "updates": 2220,
+          "PL_seen": 567000,
+          "PL_accepted": 535239,
+          "U_actual": 567000,
+          "L_actual": 284160
+        },
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 1134000,
+          "PL_accepted": 1085559,
+          "U_actual": 1134000,
+          "L_actual": 568320
+        }
+      ],
+      "U_seen": 2097900,
+      "U_accepted": 1989215,
+      "U_acceptance_rate": 0.9481934315267648,
+      "training_seconds": 6044.307537698653
+    }
+  ],
+  "source_complete_reference": "source_training_complete.json",
+  "new_F_training_updates": 13320,
+  "reused_parent_training_updates": 19980,
+  "cumulative_F_training_updates": 33300,
+  "new_G_training_updates": 0,
+  "independent_truth_last": true,
+  "raw_goal_met": false,
+  "fixed_G_version": "dura_v1",
+  "fixed_G_parameters": 266951,
+  "G_runtime": {
+    "reuse": true,
+    "graph": true,
+    "native": false,
+    "precision": "FP32",
+    "TF32": false
+  },
+  "prediction_loop_metadata": [
+    {
+      "row_id": "HPL_NO_UAS-s2026092701",
+      "model_seed": 2026092701,
+      "seconds_by_view": {
+        "clean": 38.9030834690202,
+        "practical_high": 38.772297494113445,
+        "practical_mid": 38.970896320883185,
+        "practical_low_suburban": 38.65078127500601,
+        "practical_high_urban": 39.12793438206427,
+        "practical_mid_urban": 37.15714474511333,
+        "practical_low_urban": 40.08344063698314
+      },
+      "source_graph_native_check": "PASS",
+      "count_per_view": 168000,
+      "truth_read": false,
+      "query_fit": false
+    },
+    {
+      "row_id": "HPL_NO_UAS-s2026092702",
+      "model_seed": 2026092702,
+      "seconds_by_view": {
+        "clean": 36.28198631899431,
+        "practical_high": 35.22260898514651,
+        "practical_mid": 35.16579605313018,
+        "practical_low_suburban": 35.64622108498588,
+        "practical_high_urban": 35.82163596013561,
+        "practical_mid_urban": 35.441126933088526,
+        "practical_low_urban": 49.70441292808391
+      },
+      "source_graph_native_check": "PASS",
+      "count_per_view": 168000,
+      "truth_read": false,
+      "query_fit": false
+    },
+    {
+      "row_id": "HPL_NO_UAS-s2026092703",
+      "model_seed": 2026092703,
+      "seconds_by_view": {
+        "clean": 38.49545578495599,
+        "practical_high": 37.32349324203096,
+        "practical_mid": 38.5466312400531,
+        "practical_low_suburban": 37.91193765611388,
+        "practical_high_urban": 37.272374865133315,
+        "practical_mid_urban": 38.059841368114576,
+        "practical_low_urban": 37.433042395161465
+      },
+      "source_graph_native_check": "PASS",
+      "count_per_view": 168000,
+      "truth_read": false,
+      "query_fit": false
+    }
+  ],
+  "prediction_timing_scope": "Per-view batch128 combined raw and G+F prediction loop walltime; includes transfer/argmax/sync on shared GPUs, not B1 steady-state deployment latency",
+  "source_V_diagnostic_only": [
+    {
+      "row_id": "HPL_NO_UAS-s2026092701",
+      "source_V_diagnostics": [
+        {
+          "name": "source_V_diagnostic",
+          "metrics": {
+            "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+            "samples": 720,
+            "clean_accuracy": 0.9819444444444444,
+            "fixed_practical_mixture_accuracy": 0.7430555555555556
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "HPL_NO_UAS-s2026092702",
+      "source_V_diagnostics": [
+        {
+          "name": "source_V_diagnostic",
+          "metrics": {
+            "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+            "samples": 720,
+            "clean_accuracy": 0.9763888888888889,
+            "fixed_practical_mixture_accuracy": 0.7430555555555556
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "HPL_NO_UAS-s2026092703",
+      "source_V_diagnostics": [
+        {
+          "name": "source_V_diagnostic",
+          "metrics": {
+            "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+            "samples": 720,
+            "clean_accuracy": 0.975,
+            "fixed_practical_mixture_accuracy": 0.7472222222222222
+          }
+        }
+      ]
+    }
+  ],
+  "no_target_parameter_updates": true,
+  "all_declared_seeds_preserved": true
+}

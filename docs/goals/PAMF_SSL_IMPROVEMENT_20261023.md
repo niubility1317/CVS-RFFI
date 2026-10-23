@@ -171,3 +171,13 @@ HPL2 三seed双读出七景42cell已全部独立评分。为符合逐row自动�
 ## HPL2 完整方法目标结果
 
 原注册三seed E50默认头、raw／固定DURA七景42cell全部独立评分。HPL2 / raw clean=85.075595%；HPL2 / DURA-LU clean=85.103770%；HPL2 / raw six_mean=70.187533%；HPL2 / DURA-LU six_mean=78.078671%；raw相对F21 clean+0.093849pp、六景−0.171825pp；原双目标未达到，goal ACTIVE。报告时序调整先于HPL2读分登记；原六模型总报告与全部健康训练／后续已冻结noUAs和LS保持，不依据本结果改配方或父源。完整证据见该run的HPL2_target_results.md，不能把单方法完成称为整个六模型实验完成。
+
+
+## HPL2 / HPLT1U 完整双读出结果
+
+`20261024-phase1-PAMF-HardPL-T1U-m6-r01` 各方法三seed、共6模型，每景168000条，raw／同一DURA七景预测与独立truth-last全部84cell完成；全部新增26640条闭合训练记录已核对。HPL2 / raw clean=85.075595%；HPLT1U / raw clean=84.867063%；HPL2 / DURA-LU clean=85.103770%；HPLT1U / DURA-LU clean=84.949405%；HPL2 / raw six_mean=70.187533%；HPLT1U / raw six_mean=71.974702%；HPL2 / DURA-LU six_mean=78.078671%；HPLT1U / DURA-LU six_mean=77.508929%；原数值目标仍未满足，维持ACTIVE。全部结果、匹配基线、逐seed／场景／分层及成本均保存，不从本结果热改其他已固定方法、父权重或矩阵。
+
+
+## HPL_NO_UAS 完整双读出结果
+
+`20261024-phase1-PAMF-HardPL-noUAs-m3-r01` 各方法三seed、共3模型，每景168000条，raw／同一DURA七景预测与独立truth-last全部42cell完成；全部新增13320条闭合训练记录已核对。HPL_NO_UAS / raw clean=85.423016%；HPL_NO_UAS / DURA-LU clean=85.493849%；HPL_NO_UAS / raw six_mean=70.657242%；HPL_NO_UAS / DURA-LU six_mean=77.985648%；原数值目标仍未满足，维持ACTIVE。全部结果、匹配基线、逐seed／场景／分层及成本均保存，不从本结果热改其他已固定方法、父权重或矩阵。
