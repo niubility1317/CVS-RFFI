@@ -90,3 +90,6 @@ HPL_E20_NAMS_JOINT6G 固定匹配比较完成，见 HPL_E20_NAMS_JOINT6G_matched
 ## 源域互补分支诊断 D 预登记
 
 固定比较 Joint／Complement／Path 三个方法各三 seed 的既有 own E30 默认头，复用原 E20 硬伪类、接受掩码、U960／V720 与七种既有头特征干预；合计 18 个 source role 行。检查互补 CE 是否改善无签名／主干识别裕量及完整融合，不据此选择目标 checkpoint、门槛或重排当前矩阵。已知 Joint 及此前完整目标结果，尚未读取 Complement／Path 目标分数；只作源域机制解释。源 V 不更新模型或归一化，U 真值隐藏；CPU2、GPU0，无 G、额外训练或新头。命令、固定模型和输出见 source_geometry_trajectory_plan.json 的 phase_D_registration，检查数 8。
+
+
+源域诊断 D 已 VERIFIED 完成，18行／三方法各三seed、20.490 s、无任何训练或目标读取。全部既有头干预、固定源角色和几何见 source_geometry_trajectory_D.md；不据此改变已发布方法或声称目标收益。

@@ -1,0 +1,1730 @@
+{
+  "status": "VERIFIED_COMPLETE_FIXED_SOURCE_D",
+  "analysis_code_commit": "3e7a7293bb1d16134bcbba718dca21c0d5d908cc",
+  "source_seconds": 20.48974399198778,
+  "profiles": [
+    "JOINT_E30",
+    "COMPLEMENT_E30",
+    "PATH_E30"
+  ],
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "rows": [
+    {
+      "profile": "JOINT_E30",
+      "role": "U_s",
+      "source_epoch": 30,
+      "cohort_samples_per_seed": 960,
+      "source_raw_prediction_agreement_or_V_correct": 2703,
+      "geometry_mean": {
+        "joint160": {
+          "class_fraction_of_total": 0.8507469295847099,
+          "conditional_RX_fraction_of_total": 0.060584462841555546
+        },
+        "core160": {
+          "class_fraction_of_total": 0.8265869822453431,
+          "conditional_RX_fraction_of_total": 0.08548281960953158
+        },
+        "signature160": {
+          "class_fraction_of_total": 0.8529418139288982,
+          "conditional_RX_fraction_of_total": 0.05397493108840784
+        },
+        "reference160": {
+          "class_fraction_of_total": 0.1975720140796608,
+          "conditional_RX_fraction_of_total": 0.4935371163553126
+        }
+      },
+      "branch_relative_norm_mean": {
+        "core160": 0.997978925704956,
+        "signature160": 0.16017361481984457,
+        "reference160": 0.1400659034649531
+      },
+      "fixed_head_interventions": [
+        {
+          "intervention": "joint",
+          "samples_selected": 2703,
+          "label_agreements": 2703,
+          "label_agreement_percent": 100.0,
+          "mean_label_CE": 0.0041928306904862956,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "joint",
+              "samples_selected": 898,
+              "label_agreements": 898,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.004375589080154896,
+              "mean_relative_feature_displacement": 0.0
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "joint",
+              "samples_selected": 902,
+              "label_agreements": 902,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.00415406608954072,
+              "mean_relative_feature_displacement": 0.0
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "joint",
+              "samples_selected": 903,
+              "label_agreements": 903,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.004049805924296379,
+              "mean_relative_feature_displacement": 0.0
+            }
+          ]
+        },
+        {
+          "intervention": "without_reference",
+          "samples_selected": 2703,
+          "label_agreements": 2701,
+          "label_agreement_percent": 99.9260081391047,
+          "mean_label_CE": 0.011574750639018618,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "without_reference",
+              "samples_selected": 898,
+              "label_agreements": 896,
+              "label_agreement_percent": 99.77728285077951,
+              "mean_label_CE": 0.013271364383399487,
+              "mean_relative_feature_displacement": 0.13274431228637695
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "without_reference",
+              "samples_selected": 902,
+              "label_agreements": 902,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.010897201485931873,
+              "mean_relative_feature_displacement": 0.1407948136329651
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "without_reference",
+              "samples_selected": 903,
+              "label_agreements": 903,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.010564330033957958,
+              "mean_relative_feature_displacement": 0.1445891261100769
+            }
+          ]
+        },
+        {
+          "intervention": "without_signature",
+          "samples_selected": 2703,
+          "label_agreements": 2550,
+          "label_agreement_percent": 94.33962264150944,
+          "mean_label_CE": 0.27905309331492056,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "without_signature",
+              "samples_selected": 898,
+              "label_agreements": 844,
+              "label_agreement_percent": 93.98663697104676,
+              "mean_label_CE": 0.2792724072933197,
+              "mean_relative_feature_displacement": 0.1564817577600479
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "without_signature",
+              "samples_selected": 902,
+              "label_agreements": 855,
+              "label_agreement_percent": 94.78935698447893,
+              "mean_label_CE": 0.2662464678287506,
+              "mean_relative_feature_displacement": 0.16191814839839935
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "without_signature",
+              "samples_selected": 903,
+              "label_agreements": 851,
+              "label_agreement_percent": 94.24141749723145,
+              "mean_label_CE": 0.291627436876297,
+              "mean_relative_feature_displacement": 0.16171279549598694
+            }
+          ]
+        },
+        {
+          "intervention": "core_only",
+          "samples_selected": 2703,
+          "label_agreements": 2427,
+          "label_agreement_percent": 89.78912319644839,
+          "mean_label_CE": 0.4545605011529672,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "core_only",
+              "samples_selected": 898,
+              "label_agreements": 809,
+              "label_agreement_percent": 90.0890868596882,
+              "mean_label_CE": 0.4592079520225525,
+              "mean_relative_feature_displacement": 0.21963708102703094
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "core_only",
+              "samples_selected": 902,
+              "label_agreements": 818,
+              "label_agreement_percent": 90.68736141906874,
+              "mean_label_CE": 0.4289744794368744,
+              "mean_relative_feature_displacement": 0.22535477578639984
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "core_only",
+              "samples_selected": 903,
+              "label_agreements": 800,
+              "label_agreement_percent": 88.59357696566998,
+              "mean_label_CE": 0.47549647092819214,
+              "mean_relative_feature_displacement": 0.22719798982143402
+            }
+          ]
+        },
+        {
+          "intervention": "reference_swap",
+          "samples_selected": 2703,
+          "label_agreements": 2702,
+          "label_agreement_percent": 99.96300406955235,
+          "mean_label_CE": 0.0064098574348618225,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "reference_swap",
+              "samples_selected": 898,
+              "label_agreements": 897,
+              "label_agreement_percent": 99.88864142538975,
+              "mean_label_CE": 0.006878592539578676,
+              "mean_relative_feature_displacement": 0.162109375
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "reference_swap",
+              "samples_selected": 902,
+              "label_agreements": 902,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.006516355089843273,
+              "mean_relative_feature_displacement": 0.17943333089351654
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "reference_swap",
+              "samples_selected": 903,
+              "label_agreements": 903,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.0058373380452394485,
+              "mean_relative_feature_displacement": 0.18619179725646973
+            }
+          ]
+        },
+        {
+          "intervention": "signature_swap",
+          "samples_selected": 2703,
+          "label_agreements": 2702,
+          "label_agreement_percent": 99.96300406955235,
+          "mean_label_CE": 0.0064239084961453035,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "signature_swap",
+              "samples_selected": 898,
+              "label_agreements": 898,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.006161597557365894,
+              "mean_relative_feature_displacement": 0.08223468065261841
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "signature_swap",
+              "samples_selected": 902,
+              "label_agreements": 901,
+              "label_agreement_percent": 99.88913525498891,
+              "mean_label_CE": 0.006137864198535681,
+              "mean_relative_feature_displacement": 0.08440003544092178
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "signature_swap",
+              "samples_selected": 903,
+              "label_agreements": 903,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.006970494519919157,
+              "mean_relative_feature_displacement": 0.07949043065309525
+            }
+          ]
+        },
+        {
+          "intervention": "late_swap",
+          "samples_selected": 2703,
+          "label_agreements": 2702,
+          "label_agreement_percent": 99.96300406955235,
+          "mean_label_CE": 0.007994786170878058,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "late_swap",
+              "samples_selected": 898,
+              "label_agreements": 898,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.007045983802527189,
+              "mean_relative_feature_displacement": 0.18460389971733093
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "late_swap",
+              "samples_selected": 902,
+              "label_agreements": 901,
+              "label_agreement_percent": 99.88913525498891,
+              "mean_label_CE": 0.00886071939021349,
+              "mean_relative_feature_displacement": 0.19409963488578796
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "late_swap",
+              "samples_selected": 903,
+              "label_agreements": 903,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.008073360659182072,
+              "mean_relative_feature_displacement": 0.20340850949287415
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "profile": "JOINT_E30",
+      "role": "V",
+      "source_epoch": 30,
+      "cohort_samples_per_seed": 720,
+      "source_raw_prediction_agreement_or_V_correct": 2099,
+      "geometry_mean": {
+        "joint160": {
+          "class_fraction_of_total": 0.8040354530580794,
+          "conditional_RX_fraction_of_total": 0.06625343530701065
+        },
+        "core160": {
+          "class_fraction_of_total": 0.7733063240317349,
+          "conditional_RX_fraction_of_total": 0.0950639045777942
+        },
+        "signature160": {
+          "class_fraction_of_total": 0.7909108702108292,
+          "conditional_RX_fraction_of_total": 0.05731082296118301
+        },
+        "reference160": {
+          "class_fraction_of_total": 0.1720076148067099,
+          "conditional_RX_fraction_of_total": 0.48702770696892334
+        }
+      },
+      "branch_relative_norm_mean": {
+        "core160": 0.9940138061841329,
+        "signature160": 0.15881099800268808,
+        "reference160": 0.1387884964545568
+      },
+      "fixed_head_interventions": [
+        {
+          "intervention": "joint",
+          "samples_selected": 1991,
+          "label_agreements": 1988,
+          "label_agreement_percent": 99.84932194876946,
+          "mean_label_CE": 0.012871890840911606,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "joint",
+              "samples_selected": 661,
+              "label_agreements": 661,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.003855397691950202,
+              "mean_relative_feature_displacement": 0.0
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "joint",
+              "samples_selected": 665,
+              "label_agreements": 663,
+              "label_agreement_percent": 99.69924812030075,
+              "mean_label_CE": 0.021795306354761124,
+              "mean_relative_feature_displacement": 0.0
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "joint",
+              "samples_selected": 665,
+              "label_agreements": 664,
+              "label_agreement_percent": 99.84962406015038,
+              "mean_label_CE": 0.012910733930766582,
+              "mean_relative_feature_displacement": 0.0
+            }
+          ]
+        },
+        {
+          "intervention": "without_reference",
+          "samples_selected": 1991,
+          "label_agreements": 1987,
+          "label_agreement_percent": 99.79909593169262,
+          "mean_label_CE": 0.02032624545499181,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "without_reference",
+              "samples_selected": 661,
+              "label_agreements": 660,
+              "label_agreement_percent": 99.84871406959152,
+              "mean_label_CE": 0.011482435278594494,
+              "mean_relative_feature_displacement": 0.13073256611824036
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "without_reference",
+              "samples_selected": 665,
+              "label_agreements": 663,
+              "label_agreement_percent": 99.69924812030075,
+              "mean_label_CE": 0.02747575007379055,
+              "mean_relative_feature_displacement": 0.13888615369796753
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "without_reference",
+              "samples_selected": 665,
+              "label_agreements": 664,
+              "label_agreement_percent": 99.84962406015038,
+              "mean_label_CE": 0.02196735516190529,
+              "mean_relative_feature_displacement": 0.14272817969322205
+            }
+          ]
+        },
+        {
+          "intervention": "without_signature",
+          "samples_selected": 1991,
+          "label_agreements": 1905,
+          "label_agreement_percent": 95.68056253139126,
+          "mean_label_CE": 0.2635257215819605,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "without_signature",
+              "samples_selected": 661,
+              "label_agreements": 635,
+              "label_agreement_percent": 96.06656580937972,
+              "mean_label_CE": 0.249371737241745,
+              "mean_relative_feature_displacement": 0.15421420335769653
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "without_signature",
+              "samples_selected": 665,
+              "label_agreements": 636,
+              "label_agreement_percent": 95.6390977443609,
+              "mean_label_CE": 0.2593320906162262,
+              "mean_relative_feature_displacement": 0.16014038026332855
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "without_signature",
+              "samples_selected": 665,
+              "label_agreements": 634,
+              "label_agreement_percent": 95.33834586466166,
+              "mean_label_CE": 0.2817882001399994,
+              "mean_relative_feature_displacement": 0.16074249148368835
+            }
+          ]
+        },
+        {
+          "intervention": "core_only",
+          "samples_selected": 1991,
+          "label_agreements": 1802,
+          "label_agreement_percent": 90.50728277247615,
+          "mean_label_CE": 0.42998033285979226,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "core_only",
+              "samples_selected": 661,
+              "label_agreements": 599,
+              "label_agreement_percent": 90.62027231467474,
+              "mean_label_CE": 0.4164961874485016,
+              "mean_relative_feature_displacement": 0.21678543090820312
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "core_only",
+              "samples_selected": 665,
+              "label_agreements": 606,
+              "label_agreement_percent": 91.12781954887218,
+              "mean_label_CE": 0.4193111062049866,
+              "mean_relative_feature_displacement": 0.22262880206108093
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "core_only",
+              "samples_selected": 665,
+              "label_agreements": 597,
+              "label_agreement_percent": 89.77443609022556,
+              "mean_label_CE": 0.454052597284317,
+              "mean_relative_feature_displacement": 0.2261679768562317
+            }
+          ]
+        },
+        {
+          "intervention": "reference_swap",
+          "samples_selected": 1991,
+          "label_agreements": 1988,
+          "label_agreement_percent": 99.84932194876946,
+          "mean_label_CE": 0.016306845797295997,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "reference_swap",
+              "samples_selected": 661,
+              "label_agreements": 661,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.005609159357845783,
+              "mean_relative_feature_displacement": 0.16464978456497192
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "reference_swap",
+              "samples_selected": 665,
+              "label_agreements": 663,
+              "label_agreement_percent": 99.69924812030075,
+              "mean_label_CE": 0.02520599029958248,
+              "mean_relative_feature_displacement": 0.17579859495162964
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "reference_swap",
+              "samples_selected": 665,
+              "label_agreements": 664,
+              "label_agreement_percent": 99.84962406015038,
+              "mean_label_CE": 0.018041040748357773,
+              "mean_relative_feature_displacement": 0.1781454235315323
+            }
+          ]
+        },
+        {
+          "intervention": "signature_swap",
+          "samples_selected": 1991,
+          "label_agreements": 1988,
+          "label_agreement_percent": 99.84932194876946,
+          "mean_label_CE": 0.016707461611248482,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "signature_swap",
+              "samples_selected": 661,
+              "label_agreements": 661,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.007035096175968647,
+              "mean_relative_feature_displacement": 0.08178544789552689
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "signature_swap",
+              "samples_selected": 665,
+              "label_agreements": 663,
+              "label_agreement_percent": 99.69924812030075,
+              "mean_label_CE": 0.027177084237337112,
+              "mean_relative_feature_displacement": 0.08318337053060532
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "signature_swap",
+              "samples_selected": 665,
+              "label_agreements": 664,
+              "label_agreement_percent": 99.84962406015038,
+              "mean_label_CE": 0.015852024778723717,
+              "mean_relative_feature_displacement": 0.07927438616752625
+            }
+          ]
+        },
+        {
+          "intervention": "late_swap",
+          "samples_selected": 1991,
+          "label_agreements": 1988,
+          "label_agreement_percent": 99.84932194876946,
+          "mean_label_CE": 0.01933064824882343,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "late_swap",
+              "samples_selected": 661,
+              "label_agreements": 661,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.007323315367102623,
+              "mean_relative_feature_displacement": 0.1861862689256668
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "late_swap",
+              "samples_selected": 665,
+              "label_agreements": 663,
+              "label_agreement_percent": 99.69924812030075,
+              "mean_label_CE": 0.029586253687739372,
+              "mean_relative_feature_displacement": 0.19198407232761383
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "late_swap",
+              "samples_selected": 665,
+              "label_agreements": 664,
+              "label_agreement_percent": 99.84962406015038,
+              "mean_label_CE": 0.021010151132941246,
+              "mean_relative_feature_displacement": 0.19719034433364868
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "profile": "COMPLEMENT_E30",
+      "role": "U_s",
+      "source_epoch": 30,
+      "cohort_samples_per_seed": 960,
+      "source_raw_prediction_agreement_or_V_correct": 2703,
+      "geometry_mean": {
+        "joint160": {
+          "class_fraction_of_total": 0.8698341500497588,
+          "conditional_RX_fraction_of_total": 0.05246431156799186
+        },
+        "core160": {
+          "class_fraction_of_total": 0.8765274161904258,
+          "conditional_RX_fraction_of_total": 0.05330738444521936
+        },
+        "signature160": {
+          "class_fraction_of_total": 0.807018139466553,
+          "conditional_RX_fraction_of_total": 0.07257160741777001
+        },
+        "reference160": {
+          "class_fraction_of_total": 0.22385170490169617,
+          "conditional_RX_fraction_of_total": 0.36527111179499916
+        }
+      },
+      "branch_relative_norm_mean": {
+        "core160": 0.9667948087056478,
+        "signature160": 0.1481562703847885,
+        "reference160": 0.14495446781317392
+      },
+      "fixed_head_interventions": [
+        {
+          "intervention": "joint",
+          "samples_selected": 2703,
+          "label_agreements": 2703,
+          "label_agreement_percent": 100.0,
+          "mean_label_CE": 0.0019696186372615424,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "joint",
+              "samples_selected": 898,
+              "label_agreements": 898,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.0023373498115688562,
+              "mean_relative_feature_displacement": 0.0
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "joint",
+              "samples_selected": 902,
+              "label_agreements": 902,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.001539632910862565,
+              "mean_relative_feature_displacement": 0.0
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "joint",
+              "samples_selected": 903,
+              "label_agreements": 903,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.0020334331784397364,
+              "mean_relative_feature_displacement": 0.0
+            }
+          ]
+        },
+        {
+          "intervention": "without_reference",
+          "samples_selected": 2703,
+          "label_agreements": 2701,
+          "label_agreement_percent": 99.9260081391047,
+          "mean_label_CE": 0.0072821269106068875,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "without_reference",
+              "samples_selected": 898,
+              "label_agreements": 896,
+              "label_agreement_percent": 99.77728285077951,
+              "mean_label_CE": 0.008735266514122486,
+              "mean_relative_feature_displacement": 0.13543860614299774
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "without_reference",
+              "samples_selected": 902,
+              "label_agreements": 902,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.006277813576161861,
+              "mean_relative_feature_displacement": 0.1584496647119522
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "without_reference",
+              "samples_selected": 903,
+              "label_agreements": 903,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.006840234622359276,
+              "mean_relative_feature_displacement": 0.1378166526556015
+            }
+          ]
+        },
+        {
+          "intervention": "without_signature",
+          "samples_selected": 2703,
+          "label_agreements": 2682,
+          "label_agreement_percent": 99.22308546059934,
+          "mean_label_CE": 0.037306117156435725,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "without_signature",
+              "samples_selected": 898,
+              "label_agreements": 886,
+              "label_agreement_percent": 98.66369710467706,
+              "mean_label_CE": 0.03928015008568764,
+              "mean_relative_feature_displacement": 0.1360204815864563
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "without_signature",
+              "samples_selected": 902,
+              "label_agreements": 896,
+              "label_agreement_percent": 99.33481152993349,
+              "mean_label_CE": 0.03662383556365967,
+              "mean_relative_feature_displacement": 0.15184879302978516
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "without_signature",
+              "samples_selected": 903,
+              "label_agreements": 900,
+              "label_agreement_percent": 99.66777408637874,
+              "mean_label_CE": 0.0360245406627655,
+              "mean_relative_feature_displacement": 0.1547391414642334
+            }
+          ]
+        },
+        {
+          "intervention": "core_only",
+          "samples_selected": 2703,
+          "label_agreements": 2636,
+          "label_agreement_percent": 97.5212726600074,
+          "mean_label_CE": 0.08363244745672256,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "core_only",
+              "samples_selected": 898,
+              "label_agreements": 871,
+              "label_agreement_percent": 96.99331848552339,
+              "mean_label_CE": 0.08597218245267868,
+              "mean_relative_feature_displacement": 0.19862927496433258
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "core_only",
+              "samples_selected": 902,
+              "label_agreements": 878,
+              "label_agreement_percent": 97.33924611973393,
+              "mean_label_CE": 0.08723797649145126,
+              "mean_relative_feature_displacement": 0.21727365255355835
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "core_only",
+              "samples_selected": 903,
+              "label_agreements": 887,
+              "label_agreement_percent": 98.2281284606866,
+              "mean_label_CE": 0.07770413160324097,
+              "mean_relative_feature_displacement": 0.20657971501350403
+            }
+          ]
+        },
+        {
+          "intervention": "reference_swap",
+          "samples_selected": 2703,
+          "label_agreements": 2702,
+          "label_agreement_percent": 99.96300406955235,
+          "mean_label_CE": 0.0036361088690803124,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "reference_swap",
+              "samples_selected": 898,
+              "label_agreements": 897,
+              "label_agreement_percent": 99.88864142538975,
+              "mean_label_CE": 0.004077143035829067,
+              "mean_relative_feature_displacement": 0.1507369726896286
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "reference_swap",
+              "samples_selected": 902,
+              "label_agreements": 902,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.0029924288392066956,
+              "mean_relative_feature_displacement": 0.1786746382713318
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "reference_swap",
+              "samples_selected": 903,
+              "label_agreements": 903,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.003840483957901597,
+              "mean_relative_feature_displacement": 0.17696937918663025
+            }
+          ]
+        },
+        {
+          "intervention": "signature_swap",
+          "samples_selected": 2703,
+          "label_agreements": 2703,
+          "label_agreement_percent": 100.0,
+          "mean_label_CE": 0.003043369201859208,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "signature_swap",
+              "samples_selected": 898,
+              "label_agreements": 898,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.003174888202920556,
+              "mean_relative_feature_displacement": 0.08198746293783188
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "signature_swap",
+              "samples_selected": 902,
+              "label_agreements": 902,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.002861650427803397,
+              "mean_relative_feature_displacement": 0.08699452877044678
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "signature_swap",
+              "samples_selected": 903,
+              "label_agreements": 903,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.0030940959695726633,
+              "mean_relative_feature_displacement": 0.08048082888126373
+            }
+          ]
+        },
+        {
+          "intervention": "late_swap",
+          "samples_selected": 2703,
+          "label_agreements": 2703,
+          "label_agreement_percent": 100.0,
+          "mean_label_CE": 0.0043813136030337214,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "late_swap",
+              "samples_selected": 898,
+              "label_agreements": 898,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.0036986202467232943,
+              "mean_relative_feature_displacement": 0.17765697836875916
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "late_swap",
+              "samples_selected": 902,
+              "label_agreements": 902,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.005146748851984739,
+              "mean_relative_feature_displacement": 0.202412948012352
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "late_swap",
+              "samples_selected": 903,
+              "label_agreements": 903,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.004295639228075743,
+              "mean_relative_feature_displacement": 0.19829323887825012
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "profile": "COMPLEMENT_E30",
+      "role": "V",
+      "source_epoch": 30,
+      "cohort_samples_per_seed": 720,
+      "source_raw_prediction_agreement_or_V_correct": 2097,
+      "geometry_mean": {
+        "joint160": {
+          "class_fraction_of_total": 0.821783388011699,
+          "conditional_RX_fraction_of_total": 0.058497528008743624
+        },
+        "core160": {
+          "class_fraction_of_total": 0.8277955418465957,
+          "conditional_RX_fraction_of_total": 0.061538937376007186
+        },
+        "signature160": {
+          "class_fraction_of_total": 0.7483615391016485,
+          "conditional_RX_fraction_of_total": 0.07295192258853508
+        },
+        "reference160": {
+          "class_fraction_of_total": 0.20682818597061733,
+          "conditional_RX_fraction_of_total": 0.3503705818068507
+        }
+      },
+      "branch_relative_norm_mean": {
+        "core160": 0.962653636932373,
+        "signature160": 0.1468193084001541,
+        "reference160": 0.14276913305123648
+      },
+      "fixed_head_interventions": [
+        {
+          "intervention": "joint",
+          "samples_selected": 1991,
+          "label_agreements": 1988,
+          "label_agreement_percent": 99.84932194876946,
+          "mean_label_CE": 0.011330952217144257,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "joint",
+              "samples_selected": 661,
+              "label_agreements": 661,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.0019529828568920493,
+              "mean_relative_feature_displacement": 0.0
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "joint",
+              "samples_selected": 665,
+              "label_agreements": 663,
+              "label_agreement_percent": 99.69924812030075,
+              "mean_label_CE": 0.021780453622341156,
+              "mean_relative_feature_displacement": 0.0
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "joint",
+              "samples_selected": 665,
+              "label_agreements": 664,
+              "label_agreement_percent": 99.84962406015038,
+              "mean_label_CE": 0.010203011333942413,
+              "mean_relative_feature_displacement": 0.0
+            }
+          ]
+        },
+        {
+          "intervention": "without_reference",
+          "samples_selected": 1991,
+          "label_agreements": 1986,
+          "label_agreement_percent": 99.74886991461577,
+          "mean_label_CE": 0.016953476212566997,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "without_reference",
+              "samples_selected": 661,
+              "label_agreements": 660,
+              "label_agreement_percent": 99.84871406959152,
+              "mean_label_CE": 0.008439798839390278,
+              "mean_relative_feature_displacement": 0.13197514414787292
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "without_reference",
+              "samples_selected": 665,
+              "label_agreements": 662,
+              "label_agreement_percent": 99.54887218045113,
+              "mean_label_CE": 0.025618067011237144,
+              "mean_relative_feature_displacement": 0.15447476506233215
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "without_reference",
+              "samples_selected": 665,
+              "label_agreements": 664,
+              "label_agreement_percent": 99.84962406015038,
+              "mean_label_CE": 0.016751352697610855,
+              "mean_relative_feature_displacement": 0.13627785444259644
+            }
+          ]
+        },
+        {
+          "intervention": "without_signature",
+          "samples_selected": 1991,
+          "label_agreements": 1969,
+          "label_agreement_percent": 98.89502762430939,
+          "mean_label_CE": 0.04110609888768507,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "without_signature",
+              "samples_selected": 661,
+              "label_agreements": 656,
+              "label_agreement_percent": 99.24357034795764,
+              "mean_label_CE": 0.030984893441200256,
+              "mean_relative_feature_displacement": 0.13371744751930237
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "without_signature",
+              "samples_selected": 665,
+              "label_agreements": 656,
+              "label_agreement_percent": 98.64661654135338,
+              "mean_label_CE": 0.04891278222203255,
+              "mean_relative_feature_displacement": 0.14978809654712677
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "without_signature",
+              "samples_selected": 665,
+              "label_agreements": 657,
+              "label_agreement_percent": 98.796992481203,
+              "mean_label_CE": 0.04335974156856537,
+              "mean_relative_feature_displacement": 0.15407536923885345
+            }
+          ]
+        },
+        {
+          "intervention": "core_only",
+          "samples_selected": 1991,
+          "label_agreements": 1943,
+          "label_agreement_percent": 97.5891511803114,
+          "mean_label_CE": 0.08507094665096969,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "core_only",
+              "samples_selected": 661,
+              "label_agreements": 647,
+              "label_agreement_percent": 97.88199697428139,
+              "mean_label_CE": 0.07544218748807907,
+              "mean_relative_feature_displacement": 0.1954227089881897
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "core_only",
+              "samples_selected": 665,
+              "label_agreements": 646,
+              "label_agreement_percent": 97.14285714285714,
+              "mean_label_CE": 0.09531541168689728,
+              "mean_relative_feature_displacement": 0.21308793127536774
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "core_only",
+              "samples_selected": 665,
+              "label_agreements": 650,
+              "label_agreement_percent": 97.74436090225564,
+              "mean_label_CE": 0.0843973234295845,
+              "mean_relative_feature_displacement": 0.2074577659368515
+            }
+          ]
+        },
+        {
+          "intervention": "reference_swap",
+          "samples_selected": 1991,
+          "label_agreements": 1988,
+          "label_agreement_percent": 99.84932194876946,
+          "mean_label_CE": 0.014390548884107098,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "reference_swap",
+              "samples_selected": 661,
+              "label_agreements": 661,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.002979074139147997,
+              "mean_relative_feature_displacement": 0.15264447033405304
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "reference_swap",
+              "samples_selected": 665,
+              "label_agreements": 663,
+              "label_agreement_percent": 99.69924812030075,
+              "mean_label_CE": 0.025088082998991013,
+              "mean_relative_feature_displacement": 0.17392119765281677
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "reference_swap",
+              "samples_selected": 665,
+              "label_agreements": 664,
+              "label_agreement_percent": 99.84962406015038,
+              "mean_label_CE": 0.015035849064588547,
+              "mean_relative_feature_displacement": 0.17104043066501617
+            }
+          ]
+        },
+        {
+          "intervention": "signature_swap",
+          "samples_selected": 1991,
+          "label_agreements": 1988,
+          "label_agreement_percent": 99.84932194876946,
+          "mean_label_CE": 0.013678043249981418,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "signature_swap",
+              "samples_selected": 661,
+              "label_agreements": 661,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.004049741663038731,
+              "mean_relative_feature_displacement": 0.08065839111804962
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "signature_swap",
+              "samples_selected": 665,
+              "label_agreements": 663,
+              "label_agreement_percent": 99.69924812030075,
+              "mean_label_CE": 0.02476234920322895,
+              "mean_relative_feature_displacement": 0.08365516364574432
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "signature_swap",
+              "samples_selected": 665,
+              "label_agreements": 664,
+              "label_agreement_percent": 99.84962406015038,
+              "mean_label_CE": 0.01216412428766489,
+              "mean_relative_feature_displacement": 0.07926031202077866
+            }
+          ]
+        },
+        {
+          "intervention": "late_swap",
+          "samples_selected": 1991,
+          "label_agreements": 1988,
+          "label_agreement_percent": 99.84932194876946,
+          "mean_label_CE": 0.01670709149823124,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "late_swap",
+              "samples_selected": 661,
+              "label_agreements": 661,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.005085265263915062,
+              "mean_relative_feature_displacement": 0.17912684381008148
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "late_swap",
+              "samples_selected": 665,
+              "label_agreements": 663,
+              "label_agreement_percent": 99.69924812030075,
+              "mean_label_CE": 0.02733006328344345,
+              "mean_relative_feature_displacement": 0.19764262437820435
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "late_swap",
+              "samples_selected": 665,
+              "label_agreements": 664,
+              "label_agreement_percent": 99.84962406015038,
+              "mean_label_CE": 0.017636040225625038,
+              "mean_relative_feature_displacement": 0.1940285563468933
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "profile": "PATH_E30",
+      "role": "U_s",
+      "source_epoch": 30,
+      "cohort_samples_per_seed": 960,
+      "source_raw_prediction_agreement_or_V_correct": 2703,
+      "geometry_mean": {
+        "joint160": {
+          "class_fraction_of_total": 0.8775948189494663,
+          "conditional_RX_fraction_of_total": 0.04992768727051658
+        },
+        "core160": {
+          "class_fraction_of_total": 0.8836780747990145,
+          "conditional_RX_fraction_of_total": 0.048214711310875236
+        },
+        "signature160": {
+          "class_fraction_of_total": 0.8078172494397441,
+          "conditional_RX_fraction_of_total": 0.07109108820345793
+        },
+        "reference160": {
+          "class_fraction_of_total": 0.14562818155811325,
+          "conditional_RX_fraction_of_total": 0.49614984418636326
+        }
+      },
+      "branch_relative_norm_mean": {
+        "core160": 0.884627083937327,
+        "signature160": 0.13906305531660715,
+        "reference160": 0.13294216245412827
+      },
+      "fixed_head_interventions": [
+        {
+          "intervention": "joint",
+          "samples_selected": 2703,
+          "label_agreements": 2703,
+          "label_agreement_percent": 100.0,
+          "mean_label_CE": 0.0019400242794976273,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "joint",
+              "samples_selected": 898,
+              "label_agreements": 898,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.002025163033977151,
+              "mean_relative_feature_displacement": 0.0
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "joint",
+              "samples_selected": 902,
+              "label_agreements": 902,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.0017498057568445802,
+              "mean_relative_feature_displacement": 0.0
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "joint",
+              "samples_selected": 903,
+              "label_agreements": 903,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.0020453648176044226,
+              "mean_relative_feature_displacement": 0.0
+            }
+          ]
+        },
+        {
+          "intervention": "without_reference",
+          "samples_selected": 2703,
+          "label_agreements": 2702,
+          "label_agreement_percent": 99.96300406955235,
+          "mean_label_CE": 0.003771258973166115,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "without_reference",
+              "samples_selected": 898,
+              "label_agreements": 897,
+              "label_agreement_percent": 99.88864142538975,
+              "mean_label_CE": 0.004031704738736153,
+              "mean_relative_feature_displacement": 0.1193961501121521
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "without_reference",
+              "samples_selected": 902,
+              "label_agreements": 902,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.0035434162709861994,
+              "mean_relative_feature_displacement": 0.1379217654466629
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "without_reference",
+              "samples_selected": 903,
+              "label_agreements": 903,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.0037398457061499357,
+              "mean_relative_feature_displacement": 0.14363157749176025
+            }
+          ]
+        },
+        {
+          "intervention": "without_signature",
+          "samples_selected": 2703,
+          "label_agreements": 2690,
+          "label_agreement_percent": 99.51905290418054,
+          "mean_label_CE": 0.034079771389674135,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "without_signature",
+              "samples_selected": 898,
+              "label_agreements": 892,
+              "label_agreement_percent": 99.33184855233853,
+              "mean_label_CE": 0.033981677144765854,
+              "mean_relative_feature_displacement": 0.12791107594966888
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "without_signature",
+              "samples_selected": 902,
+              "label_agreements": 897,
+              "label_agreement_percent": 99.44567627494457,
+              "mean_label_CE": 0.035381220281124115,
+              "mean_relative_feature_displacement": 0.14202731847763062
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "without_signature",
+              "samples_selected": 903,
+              "label_agreements": 901,
+              "label_agreement_percent": 99.77851605758582,
+              "mean_label_CE": 0.03287731483578682,
+              "mean_relative_feature_displacement": 0.14496438205242157
+            }
+          ]
+        },
+        {
+          "intervention": "core_only",
+          "samples_selected": 2703,
+          "label_agreements": 2664,
+          "label_agreement_percent": 98.55715871254162,
+          "mean_label_CE": 0.04754988733118126,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "core_only",
+              "samples_selected": 898,
+              "label_agreements": 882,
+              "label_agreement_percent": 98.21826280623608,
+              "mean_label_CE": 0.04778066277503967,
+              "mean_relative_feature_displacement": 0.18897785246372223
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "core_only",
+              "samples_selected": 902,
+              "label_agreements": 887,
+              "label_agreement_percent": 98.33702882483371,
+              "mean_label_CE": 0.05024413391947746,
+              "mean_relative_feature_displacement": 0.21444156765937805
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "core_only",
+              "samples_selected": 903,
+              "label_agreements": 895,
+              "label_agreement_percent": 99.1140642303433,
+              "mean_label_CE": 0.04462912678718567,
+              "mean_relative_feature_displacement": 0.22541691362857819
+            }
+          ]
+        },
+        {
+          "intervention": "reference_swap",
+          "samples_selected": 2703,
+          "label_agreements": 2702,
+          "label_agreement_percent": 99.96300406955235,
+          "mean_label_CE": 0.003442930435445511,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "reference_swap",
+              "samples_selected": 898,
+              "label_agreements": 897,
+              "label_agreement_percent": 99.88864142538975,
+              "mean_label_CE": 0.003625387093052268,
+              "mean_relative_feature_displacement": 0.14007605612277985
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "reference_swap",
+              "samples_selected": 902,
+              "label_agreements": 902,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.003154054516926408,
+              "mean_relative_feature_displacement": 0.16253511607646942
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "reference_swap",
+              "samples_selected": 903,
+              "label_agreements": 903,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.0035500400699675083,
+              "mean_relative_feature_displacement": 0.1675865352153778
+            }
+          ]
+        },
+        {
+          "intervention": "signature_swap",
+          "samples_selected": 2703,
+          "label_agreements": 2703,
+          "label_agreement_percent": 100.0,
+          "mean_label_CE": 0.0029282045362519307,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "signature_swap",
+              "samples_selected": 898,
+              "label_agreements": 898,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.002889533992856741,
+              "mean_relative_feature_displacement": 0.0780581459403038
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "signature_swap",
+              "samples_selected": 902,
+              "label_agreements": 902,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.002952486276626587,
+              "mean_relative_feature_displacement": 0.08147165179252625
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "signature_swap",
+              "samples_selected": 903,
+              "label_agreements": 903,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.0029424061067402363,
+              "mean_relative_feature_displacement": 0.0765266865491867
+            }
+          ]
+        },
+        {
+          "intervention": "late_swap",
+          "samples_selected": 2703,
+          "label_agreements": 2703,
+          "label_agreement_percent": 100.0,
+          "mean_label_CE": 0.004014243900929579,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "late_swap",
+              "samples_selected": 898,
+              "label_agreements": 898,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.0035649575293064117,
+              "mean_relative_feature_displacement": 0.1650771051645279
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "late_swap",
+              "samples_selected": 902,
+              "label_agreements": 902,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.004609441384673119,
+              "mean_relative_feature_displacement": 0.18494758009910583
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "late_swap",
+              "samples_selected": 903,
+              "label_agreements": 903,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.003866504179313779,
+              "mean_relative_feature_displacement": 0.18825915455818176
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "profile": "PATH_E30",
+      "role": "V",
+      "source_epoch": 30,
+      "cohort_samples_per_seed": 720,
+      "source_raw_prediction_agreement_or_V_correct": 2095,
+      "geometry_mean": {
+        "joint160": {
+          "class_fraction_of_total": 0.826164638924238,
+          "conditional_RX_fraction_of_total": 0.05562399989913057
+        },
+        "core160": {
+          "class_fraction_of_total": 0.8323568395057664,
+          "conditional_RX_fraction_of_total": 0.055897154125078834
+        },
+        "signature160": {
+          "class_fraction_of_total": 0.7476402173878085,
+          "conditional_RX_fraction_of_total": 0.07224198564387603
+        },
+        "reference160": {
+          "class_fraction_of_total": 0.13050221644928384,
+          "conditional_RX_fraction_of_total": 0.48565475849967715
+        }
+      },
+      "branch_relative_norm_mean": {
+        "core160": 0.882833997408549,
+        "signature160": 0.13808737198511759,
+        "reference160": 0.13306573033332825
+      },
+      "fixed_head_interventions": [
+        {
+          "intervention": "joint",
+          "samples_selected": 1991,
+          "label_agreements": 1988,
+          "label_agreement_percent": 99.84932194876946,
+          "mean_label_CE": 0.010670620299635305,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "joint",
+              "samples_selected": 661,
+              "label_agreements": 661,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.0018496399279683828,
+              "mean_relative_feature_displacement": 0.0
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "joint",
+              "samples_selected": 665,
+              "label_agreements": 663,
+              "label_agreement_percent": 99.69924812030075,
+              "mean_label_CE": 0.020231621339917183,
+              "mean_relative_feature_displacement": 0.0
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "joint",
+              "samples_selected": 665,
+              "label_agreements": 664,
+              "label_agreement_percent": 99.84962406015038,
+              "mean_label_CE": 0.009877541102468967,
+              "mean_relative_feature_displacement": 0.0
+            }
+          ]
+        },
+        {
+          "intervention": "without_reference",
+          "samples_selected": 1991,
+          "label_agreements": 1988,
+          "label_agreement_percent": 99.84932194876946,
+          "mean_label_CE": 0.01312433477137509,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "without_reference",
+              "samples_selected": 661,
+              "label_agreements": 661,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.0040224408730864525,
+              "mean_relative_feature_displacement": 0.11951244622468948
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "without_reference",
+              "samples_selected": 665,
+              "label_agreements": 663,
+              "label_agreement_percent": 99.69924812030075,
+              "mean_label_CE": 0.022305401042103767,
+              "mean_relative_feature_displacement": 0.1381782740354538
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "without_reference",
+              "samples_selected": 665,
+              "label_agreements": 664,
+              "label_agreement_percent": 99.84962406015038,
+              "mean_label_CE": 0.012990414164960384,
+              "mean_relative_feature_displacement": 0.14468136429786682
+            }
+          ]
+        },
+        {
+          "intervention": "without_signature",
+          "samples_selected": 1991,
+          "label_agreements": 1970,
+          "label_agreement_percent": 98.94525364138624,
+          "mean_label_CE": 0.03744613333586051,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "without_signature",
+              "samples_selected": 661,
+              "label_agreements": 657,
+              "label_agreement_percent": 99.39485627836612,
+              "mean_label_CE": 0.02717292308807373,
+              "mean_relative_feature_displacement": 0.12600500881671906
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "without_signature",
+              "samples_selected": 665,
+              "label_agreements": 656,
+              "label_agreement_percent": 98.64661654135338,
+              "mean_label_CE": 0.044312503188848495,
+              "mean_relative_feature_displacement": 0.1403365582227707
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "without_signature",
+              "samples_selected": 665,
+              "label_agreements": 657,
+              "label_agreement_percent": 98.796992481203,
+              "mean_label_CE": 0.04079117998480797,
+              "mean_relative_feature_displacement": 0.1444440484046936
+            }
+          ]
+        },
+        {
+          "intervention": "core_only",
+          "samples_selected": 1991,
+          "label_agreements": 1962,
+          "label_agreement_percent": 98.54344550477147,
+          "mean_label_CE": 0.05157506000952227,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "core_only",
+              "samples_selected": 661,
+              "label_agreements": 653,
+              "label_agreement_percent": 98.78971255673223,
+              "mean_label_CE": 0.042311590164899826,
+              "mean_relative_feature_displacement": 0.18850257992744446
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "core_only",
+              "samples_selected": 665,
+              "label_agreements": 654,
+              "label_agreement_percent": 98.34586466165413,
+              "mean_label_CE": 0.05704354867339134,
+              "mean_relative_feature_displacement": 0.21375340223312378
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "core_only",
+              "samples_selected": 665,
+              "label_agreements": 655,
+              "label_agreement_percent": 98.49624060150376,
+              "mean_label_CE": 0.0553143210709095,
+              "mean_relative_feature_displacement": 0.2274601012468338
+            }
+          ]
+        },
+        {
+          "intervention": "reference_swap",
+          "samples_selected": 1991,
+          "label_agreements": 1988,
+          "label_agreement_percent": 99.84932194876946,
+          "mean_label_CE": 0.013610095236149193,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "reference_swap",
+              "samples_selected": 661,
+              "label_agreements": 661,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.002648822031915188,
+              "mean_relative_feature_displacement": 0.14078155159950256
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "reference_swap",
+              "samples_selected": 665,
+              "label_agreements": 663,
+              "label_agreement_percent": 99.69924812030075,
+              "mean_label_CE": 0.02361169084906578,
+              "mean_relative_feature_displacement": 0.15870632231235504
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "reference_swap",
+              "samples_selected": 665,
+              "label_agreements": 664,
+              "label_agreement_percent": 99.84962406015038,
+              "mean_label_CE": 0.0145038403570652,
+              "mean_relative_feature_displacement": 0.16414028406143188
+            }
+          ]
+        },
+        {
+          "intervention": "signature_swap",
+          "samples_selected": 1991,
+          "label_agreements": 1988,
+          "label_agreement_percent": 99.84932194876946,
+          "mean_label_CE": 0.012992194364205683,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "signature_swap",
+              "samples_selected": 661,
+              "label_agreements": 661,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.004015179816633463,
+              "mean_relative_feature_displacement": 0.07716977596282959
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "signature_swap",
+              "samples_selected": 665,
+              "label_agreements": 663,
+              "label_agreement_percent": 99.69924812030075,
+              "mean_label_CE": 0.022836899384856224,
+              "mean_relative_feature_displacement": 0.07861675322055817
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "signature_swap",
+              "samples_selected": 665,
+              "label_agreements": 664,
+              "label_agreement_percent": 99.84962406015038,
+              "mean_label_CE": 0.012070506811141968,
+              "mean_relative_feature_displacement": 0.0751989558339119
+            }
+          ]
+        },
+        {
+          "intervention": "late_swap",
+          "samples_selected": 1991,
+          "label_agreements": 1988,
+          "label_agreement_percent": 99.84932194876946,
+          "mean_label_CE": 0.015852429524685258,
+          "per_seed": [
+            {
+              "model_seed": 2026092701,
+              "intervention": "late_swap",
+              "samples_selected": 661,
+              "label_agreements": 661,
+              "label_agreement_percent": 100.0,
+              "mean_label_CE": 0.004937710240483284,
+              "mean_relative_feature_displacement": 0.16548366844654083
+            },
+            {
+              "model_seed": 2026092702,
+              "intervention": "late_swap",
+              "samples_selected": 665,
+              "label_agreements": 663,
+              "label_agreement_percent": 99.69924812030075,
+              "mean_label_CE": 0.025851551443338394,
+              "mean_relative_feature_displacement": 0.18101534247398376
+            },
+            {
+              "model_seed": 2026092703,
+              "intervention": "late_swap",
+              "samples_selected": 665,
+              "label_agreements": 664,
+              "label_agreement_percent": 99.84962406015038,
+              "mean_label_CE": 0.016702374443411827,
+              "mean_relative_feature_displacement": 0.18584319949150085
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "full_evidence": "source_geometry_trajectory_D.json",
+  "scope": "Frozen ownE30/CPU2;U labels fixed originalE20 pseudolabels,not actualUtruth;V labels only diagnose with frozen pseudo-only partners",
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "model_updates": 0,
+  "normalization_updates": 0,
+  "head_fit_updates": 0,
+  "new_candidate_or_selection": false,
+  "goal_complete": false
+}

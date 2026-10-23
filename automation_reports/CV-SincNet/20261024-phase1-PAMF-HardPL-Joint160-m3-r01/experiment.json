@@ -362,5 +362,14 @@
       "reference_method": "HPL_E20_NAMS6G",
       "reference": "HPL_E20_NAMS_JOINT6G_matched_comparison.md"
     }
+  },
+  "source_diagnostics": {
+    "phase_D": {
+      "status": "VERIFIED_COMPLETE_FIXED_SOURCE_D",
+      "reference": "source_geometry_trajectory_D.md",
+      "analysis_code_commit": "3e7a7293bb1d16134bcbba718dca21c0d5d908cc",
+      "target_reads": 0,
+      "U_truth_reads": 0
+    }
   }
 }
