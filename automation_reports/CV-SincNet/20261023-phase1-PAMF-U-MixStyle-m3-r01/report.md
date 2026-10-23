@@ -1,6 +1,6 @@
 # PAMF 无标签特征统计混合：固定源域假设
 
-状态：VERIFIED_QUEUED。61项聚焦检查及一次独立P0/P1审查PASS；已发布并核实CPU队列控制器。等待同seed前序GPU工作完成，尚未实际source smoke、训练或目标预测。原先固定的科学配方和健康旧任务保持。
+状态：VERIFIED_RUNNING。61 项聚焦检查、一次独立 P0/P1 审查及真实 E30 source-only 梯度检查均 PASS；三个 seed 已按原配方实际续训，健康 UCRIC 并行保留，原目标仍 ACTIVE。
 
 源依据：固定720条V中，既有RXPSM E30自身EMA的伪标签没有显示明显劣于监督E30；此前九模型加权类别分布及L-only原型覆盖正常。下一条研究因此保持原RXPSM E30状态，从低层接收风格变化检验U的作用，不换父来源、不强化类别配额、不加载G训练视图。
 
@@ -19,3 +19,10 @@ GPU5/6/7固定seed2026092701/02/03。先等待同seed PAIREDU的全部14项预�
 
 
 实际不可变执行commit `68ed7530a3c3caf96f7a54e1cfe4fc3c2a00d2f7`，一次发布包本地/远端SHA比较与远端编译PASS；独立读回CPU控制器PID/CWD/完整命令及实时存活状态。三seed行均QUEUED，没有新GPU子进程，source smoke尚未开始；不会把local检查或排队当成训练完成。队列等待同seed PAIREDU全14项预测完成释放GPU，UCRIC已派发后才可占第二个任务名额；source smoke PASS后自动开始原E30+20及两套七景预测/独立评分。首次source smoke临时强制两个特征层位覆盖，正式三seed重新载原E30、各层独立0.5启用，假设参数不变。证据见queue_verification.json。
+
+
+## 已核实实际训练
+
+执行 commit `68ed7530a3c3caf96f7a54e1cfe4fc3c2a00d2f7`；独立核实控制器和三条 worker 的 PID／CWD／完整命令、实际 GPU 与真实 step 日志增长。真实同契约 E30 学生／自身 EMA probe 通过 768 条 L、256 条 U 前向／反向，246 条可配对 U，浅、中层各应用 246 条，有限非零梯度，教师无梯度且临时 hooks 清理。smoke 为覆盖梯度暂时强制两个层位，probe 丢弃；正式三 seed 重新加载原 E30，仍各层独立 0.5 启用。逐条核对全部已刷盘的完整 step 前缀，可配对及两层实际启用均非零、曝光计数准确；此时 gzip 未关闭，只是前缀证据，不宣称 4440 步完成或收益。源运行证据见 source_activation.json。
+
+PAIR 三 seed 全部 14 项预测完成后释放了原槽位；UMIX 在 GPU5／6／7 各与健康 UCRIC 共占本任务两个名额，含其他 owner 的卡上总计算进程最多三个。旧任务不热改或停止，后续固定 E50 学生自动完成 raw／同一 DURA 各七景并独立评分。

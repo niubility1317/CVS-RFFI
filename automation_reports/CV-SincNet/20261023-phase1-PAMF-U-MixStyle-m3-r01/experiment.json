@@ -271,10 +271,16 @@
   ],
   "registered_at": "2026-10-23T13:05:10+00:00",
   "launch_status": {
-    "status": "VERIFIED_QUEUED",
-    "evidence": "queue_verification.json",
-    "source_smoke": "PENDING",
-    "training_started": false,
-    "target_prediction_started": false
+    "status": "VERIFIED_RUNNING",
+    "evidence": "source_activation.json",
+    "source_smoke": "PASS",
+    "own_GPU_workers": 3,
+    "with_UCRIC_workers": 6,
+    "actual_GPUs": [
+      5,
+      6,
+      7
+    ],
+    "new_method_target_reads": 0
   }
 }

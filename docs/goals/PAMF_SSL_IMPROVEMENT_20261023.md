@@ -71,3 +71,8 @@ PAIREDU三seed已在各自GPU5/6/7实际续训，真实E30 no-query smoke和配�
 ## PAIREDU 完整双读出结果
 
 `20261023-phase1-PAMF-paired-U-m3-r01` 已完成三 seed、每景 168000 条的 raw／同一 DURA 七景预测及独立 truth-last，42 项读出／场景完整，全部新增 13320 条闭合训练记录已核对。raw clean=84.543849%；DURA-LU clean=84.620437%；raw six_mean=71.978307%；DURA-LU six_mean=77.507606%；原数值目标仍未满足，维持 ACTIVE。完整负结果、两种匹配基线、逐 seed／场景／分层及成本均已保存，不从本结果修改已固定 UCRIC／UMIX 的方法、父权重或矩阵。
+
+
+## 无标签特征统计混合实际运行
+
+`20261023-phase1-PAMF-U-MixStyle-m3-r01` 已通过真实 E30 source-only smoke，三个 seed 在 GPU5／6／7 各接续已完成预测的 PAIR 名额，与 UCRIC 并行，每卡本任务两条、含外部最多三条。正式配方仍是原 E30＋20、原 U 输入与损失、time_down／t2.pool 同伪类跨源 RX 的停止统计梯度混合，每层独立 p=0.5、alpha=0.1；完整前缀计数与实际启用已核对，无新目标访问。一次 61 项检查／P0/P1 审查及真实 source-only 检查全部 PASS，未从刚完成 PAIR 的结果修改原假设、系数、父来源或测试矩阵。执行 commit `68ed7530a3c3caf96f7a54e1cfe4fc3c2a00d2f7`。

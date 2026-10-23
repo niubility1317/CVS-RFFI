@@ -1,0 +1,146 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "execution_commit": "68ed7530a3c3caf96f7a54e1cfe4fc3c2a00d2f7",
+  "observed_unix": 1792762483.8189793,
+  "controller_PID_CWD_command_verified": true,
+  "own_GPU_workers_this_run": 3,
+  "own_GPU_workers_with_UCRIC": 6,
+  "source_smoke": {
+    "status": "PASS",
+    "target_reads": 0,
+    "U_truth_reads": 0,
+    "checked": {
+      "parent_epoch": 30,
+      "parent_updates": 6660,
+      "EMA_updates_after_smoke": 6661,
+      "U_seen": 964156,
+      "physical_U_seen": 482078,
+      "L_forward_packets": 768,
+      "finite_backward": true,
+      "teacher_gradient": false,
+      "u_mixstyle_seen": 256,
+      "u_mixstyle_eligible": 246,
+      "u_mixstyle_applied": {
+        "time_down": 246,
+        "t2.pool": 246
+      },
+      "shallow_middle_gradients": true,
+      "source_smoke_force_both_hooks": true,
+      "formal_probability_per_level": 0.5,
+      "feature_hooks_removed": true
+    }
+  },
+  "rows": [
+    {
+      "row_id": "UMIX-s2026092701",
+      "gpu": 5,
+      "PID_CWD_command_verified": true,
+      "actual_GPU_verified": true,
+      "native_stdout_bytes": 16426,
+      "native_stdout_growth": 9884,
+      "actual_step_log_growth": 445621,
+      "cumulative_updates": 7150,
+      "current_epoch": 33,
+      "all_flushed_step_prefix_records_checked": 490,
+      "gzip_closed": false,
+      "actual_source_counters": {
+        "SSL_loss": 0.15409567952156067,
+        "SSL_seen": 1089076,
+        "SSL_physical_seen": 544538,
+        "SSL_U_MIX_calls": 490,
+        "SSL_U_MIX_seen": 125176,
+        "SSL_U_MIX_eligible": 118914,
+        "SSL_U_MIX_last_eligible": 239,
+        "SSL_U_MIX_applied_time_down": 58983,
+        "SSL_U_MIX_applied_t2.pool": 61751,
+        "SSL_U_MIX_last_applied_time_down": 0,
+        "SSL_U_MIX_last_applied_t2.pool": 0,
+        "SSL_proto_coverage": 1.0
+      },
+      "eligible": 118914,
+      "applied_by_layer": {
+        "time_down": 58983,
+        "t2.pool": 61751
+      },
+      "existing_UCRIC_worker_preserved": true,
+      "task_owned_GPU_workers_this_card": 2,
+      "total_GPU_processes_this_card": 3
+    },
+    {
+      "row_id": "UMIX-s2026092702",
+      "gpu": 6,
+      "PID_CWD_command_verified": true,
+      "actual_GPU_verified": true,
+      "native_stdout_bytes": 16426,
+      "native_stdout_growth": 9884,
+      "actual_step_log_growth": 477342,
+      "cumulative_updates": 7180,
+      "current_epoch": 33,
+      "all_flushed_step_prefix_records_checked": 520,
+      "gzip_closed": false,
+      "actual_source_counters": {
+        "SSL_loss": 0.16196531057357788,
+        "SSL_seen": 1096756,
+        "SSL_physical_seen": 548378,
+        "SSL_U_MIX_calls": 520,
+        "SSL_U_MIX_seen": 132856,
+        "SSL_U_MIX_eligible": 125952,
+        "SSL_U_MIX_last_eligible": 241,
+        "SSL_U_MIX_applied_time_down": 59432,
+        "SSL_U_MIX_applied_t2.pool": 61073,
+        "SSL_U_MIX_last_applied_time_down": 0,
+        "SSL_U_MIX_last_applied_t2.pool": 241,
+        "SSL_proto_coverage": 1.0
+      },
+      "eligible": 125952,
+      "applied_by_layer": {
+        "time_down": 59432,
+        "t2.pool": 61073
+      },
+      "existing_UCRIC_worker_preserved": true,
+      "task_owned_GPU_workers_this_card": 2,
+      "total_GPU_processes_this_card": 2
+    },
+    {
+      "row_id": "UMIX-s2026092703",
+      "gpu": 7,
+      "PID_CWD_command_verified": true,
+      "actual_GPU_verified": true,
+      "native_stdout_bytes": 16426,
+      "native_stdout_growth": 9884,
+      "actual_step_log_growth": 446139,
+      "cumulative_updates": 7165,
+      "current_epoch": 33,
+      "all_flushed_step_prefix_records_checked": 505,
+      "gzip_closed": false,
+      "actual_source_counters": {
+        "SSL_loss": 0.15361419320106506,
+        "SSL_seen": 1092916,
+        "SSL_physical_seen": 546458,
+        "SSL_U_MIX_calls": 505,
+        "SSL_U_MIX_seen": 129016,
+        "SSL_U_MIX_eligible": 123476,
+        "SSL_U_MIX_last_eligible": 243,
+        "SSL_U_MIX_applied_time_down": 62839,
+        "SSL_U_MIX_applied_t2.pool": 62080,
+        "SSL_U_MIX_last_applied_time_down": 243,
+        "SSL_U_MIX_last_applied_t2.pool": 243,
+        "SSL_proto_coverage": 1.0
+      },
+      "eligible": 123476,
+      "applied_by_layer": {
+        "time_down": 62839,
+        "t2.pool": 62080
+      },
+      "existing_UCRIC_worker_preserved": true,
+      "task_owned_GPU_workers_this_card": 2,
+      "total_GPU_processes_this_card": 3
+    }
+  ],
+  "verification_scope": "All complete flushed source-step prefix records; not full final20 logs or target accuracy evidence",
+  "release_archive_SHA_comparison": "PASS single local/remote archive",
+  "remote_compile": "PASS",
+  "healthy_other_owner_jobs_changed": false,
+  "new_method_target_reads": 0,
+  "goal_complete": false
+}
