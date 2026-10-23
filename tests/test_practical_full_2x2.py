@@ -35,6 +35,16 @@ class Scope(unittest.TestCase):
         self.assertTrue(np.array_equal(a,b));self.assertEqual(s,t);self.assertEqual(np.float32,a.dtype)
 
 class Permissions(unittest.TestCase):
+    def test_runner_bootstrap_precedes_legacy_plan_import(self):
+        import ast
+        source=Path(__file__).resolve().parents[1]/'experiments/practical_full_2x2/runner.py'
+        tree=ast.parse(source.read_text())
+        imports=[n for n in tree.body if isinstance(n,ast.ImportFrom)]
+        self.assertFalse(any(n.module in ('cache','plan') for n in imports))
+        dispatch=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='dispatch')
+        first_call=next(n for n in dispatch.body if isinstance(n,ast.Expr) and isinstance(n.value,ast.Call))
+        self.assertEqual('activate',first_call.value.func.id)
+
     def test_supervised_never_opens_U(self):
         from experiments.practical_full_2x2.source import array_loader
         with tempfile.TemporaryDirectory() as root:

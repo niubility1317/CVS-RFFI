@@ -38,3 +38,7 @@
 10项聚焦本地检查PASS，包括route、矩阵/预算/RX、禁U/禁truth、无增强冻结读取与缓存同函数乱序消费。管理Python未安装Torch的初次环境检查不算模型失败；实际检查使用现有phase1-cu128环境。唯一独立P0/P1审查3个直接配置问题已修复并定点确认，无未解决P0/P1。真实checkpoint/source smoke是远端launch第一步之一，PASS后自动继续，当前不提前宣称通过。
 
 用户最新要求保留三张卡：仅GPU0–4，每卡最多3、最多15个本任务GPU进程；GPU5/6/7保留。正式资源准入仍计入其它owner、显存/CPU/RAM/IO guard。没有停止、热改或重启任何旧健康任务。无已有正式新性能。
+
+## 启动包装技术恢复
+
+首次release在控制器导入plan前尚未接入历史Full方法namespace，ModuleNotFoundError退出；PID1906598已独立核实结束，0数据准备、0科学worker、0GPU训练、未建立run root。旧release、归档和日志保留。修复仅将bootstrap提前到导入plan/cache之前，并增加该有界导入回归测试；11项聚焦检查PASS。新不可覆盖control-r02使用同一登记600F/4G科学矩阵，保留GPU5/6/7，不重新创建第二份模型矩阵。

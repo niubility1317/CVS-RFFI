@@ -21715,7 +21715,8 @@
     "Only the documented matched CE slots differ; no CE-only external variants. Test scenes remain all six practical plus clean.",
     "Existing historical runs and results preserved. No model result used for grouping, schedule, RX selection or order.",
     "Code commit is recorded from release HEAD after the actual source/config commit. The execution archive is built only from that commit.",
-    "Latest user steering: reserve three cards, GPU5/6/7; no jobs on these devices, including restoration caches. No fourth-slot pilot in this release."
+    "Latest user steering: reserve three cards, GPU5/6/7; no jobs on these devices, including restoration caches. No fourth-slot pilot in this release.",
+    "Initial immutable release exited at pre-bootstrap import before any scientific worker or run root. Preserved release/archive; fixed activation order in new control-r02, scientific outputs have not existed."
   ],
   "matrix": {
     "schema": "practical_full_factorial_v1",

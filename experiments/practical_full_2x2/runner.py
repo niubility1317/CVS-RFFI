@@ -4,7 +4,6 @@ from collections import Counter
 import os,subprocess,sys,time
 from pathlib import Path
 from experiments.cric_dura_comparison.io import read,write
-from .cache import atomic
 
 def activate(c):
     from experiments.cric_dura_comparison.bootstrap import activate as base,numerical_policy
@@ -43,10 +42,13 @@ def launch(rt,job,gpu):
     return child,dict(status='RUNNING',pid=child.pid,gpu=gpu,log=str(log),started_at=time.time())
 
 def dispatch(rt):
+    # Historical Full packages are supplied by the immutable external releases.
+    # Activate those namespace paths BEFORE importing plan/cache dependencies.
+    activate(rt)
     from .plan import validate
     from .prepare import prepare
     from .smoke import run as smoke
-    from .cache import Reader
+    from .cache import Reader,atomic
     from experiments.cric_dura_comparison.pipeline import alive,done,ready,block_failed_dependencies
     from experiments.cric_dura_comparison.resource_balance import LoadPolicy
     from experiments.cric_dura_comparison.source_queue import capacity
@@ -56,7 +58,7 @@ def dispatch(rt):
     state=dict(status='PREPARING_DATA',pid=os.getpid(),cwd=os.getcwd(),argv=sys.argv,code_commit=rt['code_commit'],
         owner=rt['launch_owner'],started_at=time.time(),jobs={},new_F=600,new_G=4)
     atomic(root/'pipeline_state.json',state)
-    activate(rt);jobs=prepare(rt,p);by={j['id']:j for j in jobs}
+    jobs=prepare(rt,p);by={j['id']:j for j in jobs}
     # One real-checkpoint, source-only smoke; no target is read before training.
     smoke(rt,jobs,root/'source_smoke.json')
     env=dict(os.environ,PYTHONPATH=rt['release_root'],CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='1',MKL_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1')
