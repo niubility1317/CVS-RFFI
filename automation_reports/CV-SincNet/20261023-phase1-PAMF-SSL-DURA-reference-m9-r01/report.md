@@ -38,3 +38,6 @@ ANALYZED：九个新F模型的raw复用和固定DURA读出均已完成七景独�
 
 
 补充 E30 源 L/U 只读 CPU 梯度诊断见 source_gradient_diagnostic.md／e30_source_gradient_diagnostic.json。24 个受控批次整体13个负内积，不是 Adam 或目标损伤因果证明。下一条 U-GradProtect 据此预先固定原 E30+20 的单侧 U 投影和各组范数上限1，只是 PLANNED，未实现或发布。
+
+
+新增只读 E30 源 RX 几何诊断见 source_receiver_geometry.md／e30_source_receiver_geometry.json；6个固定cohort、三层均覆盖30类×RX单元，类内接收机质心分组差显著可见但不是目标或因果证据。下一条 U-CMR 只据此预先固定 raw U 浅中层条件均值／标准差匹配，尚未实现或发布，不修改 UMIX／UGP。

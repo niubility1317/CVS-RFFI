@@ -1,0 +1,42 @@
+{
+  "status": "FIXED_SOURCE_HYPOTHESIS_NOT_IMPLEMENTED",
+  "recipe": {
+    "start_epoch": 31,
+    "weight": 0.1,
+    "levels": [
+      "time_down",
+      "t2.pool"
+    ],
+    "eligible_weight_min": 0.5,
+    "min_effective_samples": 4.0,
+    "descriptor_std_floor": 0.0001,
+    "moment_eps": 1e-06,
+    "descriptor": "temporal_mean_and_population_std",
+    "detached_global_batch_standardization": true,
+    "weighted_population_mean_std": true,
+    "effective_sample_size": "sum_w_squared_over_sum_squared_w",
+    "pairing": "same_existing_target_argmax_different_original_source_RX",
+    "pair_penalty": "mean_over_dimensions((mean_r-mean_s)^2+(std_r-std_s)^2)",
+    "aggregation": "mean_pairs_per_valid_class_then_mean_classes_then_mean_levels",
+    "targets_and_confidence_detached": true,
+    "raw_U_student": true,
+    "extra_student_forwards": 1,
+    "teacher_and_L_unchanged": true,
+    "new_inference_parameters": 0,
+    "moment_EMA_bank": false,
+    "G_training_reads": 0
+  },
+  "parent": "original same-seed RXPSM E30",
+  "incremental_epochs": 20,
+  "total_epochs": 50,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "readouts": [
+    "raw",
+    "DURA-LU"
+  ],
+  "primary_goal": "raw clean>=+1pp andsix>+1.5pp againstboth F20/F21"
+}

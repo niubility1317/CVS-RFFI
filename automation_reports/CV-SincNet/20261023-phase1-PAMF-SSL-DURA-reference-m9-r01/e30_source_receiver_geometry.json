@@ -1,0 +1,4175 @@
+{
+  "status": "FROZEN_SOURCE_E30_RECEIVER_GEOMETRY",
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "role": "U_s",
+      "source_epoch": 30,
+      "samples": 960,
+      "label_semantics": "detached own-EMA/L-only-prototype predicted TX,never U truth",
+      "weight_sum": 921.734375,
+      "positive_weight_records": 941,
+      "class_counts": [
+        157,
+        165,
+        171,
+        171,
+        138,
+        158
+      ],
+      "student_agreement_with_labels": 960,
+      "geometry": {
+        "time_down": {
+          "samples": 960,
+          "descriptor_dimension": 96,
+          "total_scatter": 909.4413472060016,
+          "class_between_scatter": 427.0088339958555,
+          "class_within_scatter": 482.43251321014606,
+          "conditional_RX_between_scatter": 194.55167022586474,
+          "class_fraction_of_total": 0.4695287225588742,
+          "conditional_RX_fraction_of_class_residual": 0.40327230213258586,
+          "conditional_RX_fraction_of_total": 0.21392437326889643,
+          "covered_class_RX_cells": 30,
+          "cells": [
+            {
+              "class_index": 0,
+              "source_RX": 1,
+              "count": 29,
+              "effective_weight": 27.41649441421032,
+              "centroid_squared_offset": 0.15784870818146574
+            },
+            {
+              "class_index": 0,
+              "source_RX": 3,
+              "count": 34,
+              "effective_weight": 33.14517679810524,
+              "centroid_squared_offset": 0.1315203585111221
+            },
+            {
+              "class_index": 0,
+              "source_RX": 4,
+              "count": 37,
+              "effective_weight": 36.916526198387146,
+              "centroid_squared_offset": 0.10197218485417167
+            },
+            {
+              "class_index": 0,
+              "source_RX": 6,
+              "count": 31,
+              "effective_weight": 30.875698506832123,
+              "centroid_squared_offset": 0.11871075499127251
+            },
+            {
+              "class_index": 0,
+              "source_RX": 8,
+              "count": 26,
+              "effective_weight": 25.703142285346985,
+              "centroid_squared_offset": 0.08186681901130824
+            },
+            {
+              "class_index": 1,
+              "source_RX": 1,
+              "count": 29,
+              "effective_weight": 27.489120662212372,
+              "centroid_squared_offset": 0.2702775844071912
+            },
+            {
+              "class_index": 1,
+              "source_RX": 3,
+              "count": 28,
+              "effective_weight": 23.691638588905334,
+              "centroid_squared_offset": 0.19534474312028532
+            },
+            {
+              "class_index": 1,
+              "source_RX": 4,
+              "count": 26,
+              "effective_weight": 26.0,
+              "centroid_squared_offset": 0.20498444842787977
+            },
+            {
+              "class_index": 1,
+              "source_RX": 6,
+              "count": 46,
+              "effective_weight": 44.97444003820419,
+              "centroid_squared_offset": 0.18680245376075802
+            },
+            {
+              "class_index": 1,
+              "source_RX": 8,
+              "count": 36,
+              "effective_weight": 33.96437853574753,
+              "centroid_squared_offset": 0.18540766984963974
+            },
+            {
+              "class_index": 2,
+              "source_RX": 1,
+              "count": 39,
+              "effective_weight": 39.0,
+              "centroid_squared_offset": 0.30538446608670516
+            },
+            {
+              "class_index": 2,
+              "source_RX": 3,
+              "count": 38,
+              "effective_weight": 36.79918577289209,
+              "centroid_squared_offset": 0.28159998587953133
+            },
+            {
+              "class_index": 2,
+              "source_RX": 4,
+              "count": 38,
+              "effective_weight": 37.96395045518875,
+              "centroid_squared_offset": 0.18042064472236488
+            },
+            {
+              "class_index": 2,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.5294454037343372
+            },
+            {
+              "class_index": 2,
+              "source_RX": 8,
+              "count": 32,
+              "effective_weight": 31.999638080596924,
+              "centroid_squared_offset": 0.42307959340025875
+            },
+            {
+              "class_index": 3,
+              "source_RX": 1,
+              "count": 33,
+              "effective_weight": 32.324597001075745,
+              "centroid_squared_offset": 0.2369725833030231
+            },
+            {
+              "class_index": 3,
+              "source_RX": 3,
+              "count": 27,
+              "effective_weight": 23.296558149158955,
+              "centroid_squared_offset": 0.11812010276464102
+            },
+            {
+              "class_index": 3,
+              "source_RX": 4,
+              "count": 41,
+              "effective_weight": 39.68411472439766,
+              "centroid_squared_offset": 0.10360387894957032
+            },
+            {
+              "class_index": 3,
+              "source_RX": 6,
+              "count": 42,
+              "effective_weight": 42.0,
+              "centroid_squared_offset": 0.09872284252976235
+            },
+            {
+              "class_index": 3,
+              "source_RX": 8,
+              "count": 28,
+              "effective_weight": 23.72061711549759,
+              "centroid_squared_offset": 0.4269341445685959
+            },
+            {
+              "class_index": 4,
+              "source_RX": 1,
+              "count": 28,
+              "effective_weight": 28.0,
+              "centroid_squared_offset": 0.04808188280843667
+            },
+            {
+              "class_index": 4,
+              "source_RX": 3,
+              "count": 29,
+              "effective_weight": 21.667101518251002,
+              "centroid_squared_offset": 0.16463712310456832
+            },
+            {
+              "class_index": 4,
+              "source_RX": 4,
+              "count": 25,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.06399874883888433
+            },
+            {
+              "class_index": 4,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.04643889198046323
+            },
+            {
+              "class_index": 4,
+              "source_RX": 8,
+              "count": 32,
+              "effective_weight": 30.0,
+              "centroid_squared_offset": 0.09795921961254293
+            },
+            {
+              "class_index": 5,
+              "source_RX": 1,
+              "count": 34,
+              "effective_weight": 34.0,
+              "centroid_squared_offset": 0.2339008628871397
+            },
+            {
+              "class_index": 5,
+              "source_RX": 3,
+              "count": 36,
+              "effective_weight": 33.99483805894852,
+              "centroid_squared_offset": 0.39221094507776094
+            },
+            {
+              "class_index": 5,
+              "source_RX": 4,
+              "count": 25,
+              "effective_weight": 23.083299860358238,
+              "centroid_squared_offset": 0.2013970151018989
+            },
+            {
+              "class_index": 5,
+              "source_RX": 6,
+              "count": 25,
+              "effective_weight": 25.0,
+              "centroid_squared_offset": 0.36955204348888254
+            },
+            {
+              "class_index": 5,
+              "source_RX": 8,
+              "count": 38,
+              "effective_weight": 37.02389849163592,
+              "centroid_squared_offset": 0.38906269481856437
+            }
+          ]
+        },
+        "t2.pool": {
+          "samples": 960,
+          "descriptor_dimension": 192,
+          "total_scatter": 914.8123893166264,
+          "class_between_scatter": 490.30238696077606,
+          "class_within_scatter": 424.51000235585036,
+          "conditional_RX_between_scatter": 163.96593278261676,
+          "class_fraction_of_total": 0.5359594958339344,
+          "conditional_RX_fraction_of_class_residual": 0.38624751330398677,
+          "conditional_RX_fraction_of_total": 0.17923449080647114,
+          "covered_class_RX_cells": 30,
+          "cells": [
+            {
+              "class_index": 0,
+              "source_RX": 1,
+              "count": 29,
+              "effective_weight": 27.41649441421032,
+              "centroid_squared_offset": 0.1855698953567219
+            },
+            {
+              "class_index": 0,
+              "source_RX": 3,
+              "count": 34,
+              "effective_weight": 33.14517679810524,
+              "centroid_squared_offset": 0.07155292808933808
+            },
+            {
+              "class_index": 0,
+              "source_RX": 4,
+              "count": 37,
+              "effective_weight": 36.916526198387146,
+              "centroid_squared_offset": 0.08715479103249696
+            },
+            {
+              "class_index": 0,
+              "source_RX": 6,
+              "count": 31,
+              "effective_weight": 30.875698506832123,
+              "centroid_squared_offset": 0.10403834242758603
+            },
+            {
+              "class_index": 0,
+              "source_RX": 8,
+              "count": 26,
+              "effective_weight": 25.703142285346985,
+              "centroid_squared_offset": 0.1450084032776395
+            },
+            {
+              "class_index": 1,
+              "source_RX": 1,
+              "count": 29,
+              "effective_weight": 27.489120662212372,
+              "centroid_squared_offset": 0.17547076508057013
+            },
+            {
+              "class_index": 1,
+              "source_RX": 3,
+              "count": 28,
+              "effective_weight": 23.691638588905334,
+              "centroid_squared_offset": 0.17245717158716956
+            },
+            {
+              "class_index": 1,
+              "source_RX": 4,
+              "count": 26,
+              "effective_weight": 26.0,
+              "centroid_squared_offset": 0.15370326374684767
+            },
+            {
+              "class_index": 1,
+              "source_RX": 6,
+              "count": 46,
+              "effective_weight": 44.97444003820419,
+              "centroid_squared_offset": 0.12987141043889883
+            },
+            {
+              "class_index": 1,
+              "source_RX": 8,
+              "count": 36,
+              "effective_weight": 33.96437853574753,
+              "centroid_squared_offset": 0.14013349713147877
+            },
+            {
+              "class_index": 2,
+              "source_RX": 1,
+              "count": 39,
+              "effective_weight": 39.0,
+              "centroid_squared_offset": 0.25251127451524485
+            },
+            {
+              "class_index": 2,
+              "source_RX": 3,
+              "count": 38,
+              "effective_weight": 36.79918577289209,
+              "centroid_squared_offset": 0.19622272327986312
+            },
+            {
+              "class_index": 2,
+              "source_RX": 4,
+              "count": 38,
+              "effective_weight": 37.96395045518875,
+              "centroid_squared_offset": 0.17552869785450875
+            },
+            {
+              "class_index": 2,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.3930161904351372
+            },
+            {
+              "class_index": 2,
+              "source_RX": 8,
+              "count": 32,
+              "effective_weight": 31.999638080596924,
+              "centroid_squared_offset": 0.3302930918521906
+            },
+            {
+              "class_index": 3,
+              "source_RX": 1,
+              "count": 33,
+              "effective_weight": 32.324597001075745,
+              "centroid_squared_offset": 0.16640485652356493
+            },
+            {
+              "class_index": 3,
+              "source_RX": 3,
+              "count": 27,
+              "effective_weight": 23.296558149158955,
+              "centroid_squared_offset": 0.12483977631645711
+            },
+            {
+              "class_index": 3,
+              "source_RX": 4,
+              "count": 41,
+              "effective_weight": 39.68411472439766,
+              "centroid_squared_offset": 0.11138728403808726
+            },
+            {
+              "class_index": 3,
+              "source_RX": 6,
+              "count": 42,
+              "effective_weight": 42.0,
+              "centroid_squared_offset": 0.09894861794275689
+            },
+            {
+              "class_index": 3,
+              "source_RX": 8,
+              "count": 28,
+              "effective_weight": 23.72061711549759,
+              "centroid_squared_offset": 0.3398113257894424
+            },
+            {
+              "class_index": 4,
+              "source_RX": 1,
+              "count": 28,
+              "effective_weight": 28.0,
+              "centroid_squared_offset": 0.05648096743183036
+            },
+            {
+              "class_index": 4,
+              "source_RX": 3,
+              "count": 29,
+              "effective_weight": 21.667101518251002,
+              "centroid_squared_offset": 0.1267762976302888
+            },
+            {
+              "class_index": 4,
+              "source_RX": 4,
+              "count": 25,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.07116560164168209
+            },
+            {
+              "class_index": 4,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.05527100402877372
+            },
+            {
+              "class_index": 4,
+              "source_RX": 8,
+              "count": 32,
+              "effective_weight": 30.0,
+              "centroid_squared_offset": 0.12023404699268317
+            },
+            {
+              "class_index": 5,
+              "source_RX": 1,
+              "count": 34,
+              "effective_weight": 34.0,
+              "centroid_squared_offset": 0.19950538315746535
+            },
+            {
+              "class_index": 5,
+              "source_RX": 3,
+              "count": 36,
+              "effective_weight": 33.99483805894852,
+              "centroid_squared_offset": 0.32121641178571875
+            },
+            {
+              "class_index": 5,
+              "source_RX": 4,
+              "count": 25,
+              "effective_weight": 23.083299860358238,
+              "centroid_squared_offset": 0.3601789401009205
+            },
+            {
+              "class_index": 5,
+              "source_RX": 6,
+              "count": 25,
+              "effective_weight": 25.0,
+              "centroid_squared_offset": 0.29407437300460204
+            },
+            {
+              "class_index": 5,
+              "source_RX": 8,
+              "count": 38,
+              "effective_weight": 37.02389849163592,
+              "centroid_squared_offset": 0.2659581467346543
+            }
+          ]
+        },
+        "joint160": {
+          "samples": 960,
+          "descriptor_dimension": 160,
+          "total_scatter": 916.8193446274549,
+          "class_between_scatter": 724.7588299362712,
+          "class_within_scatter": 192.06051469118378,
+          "conditional_RX_between_scatter": 73.63577371782264,
+          "class_fraction_of_total": 0.7905143299858856,
+          "conditional_RX_fraction_of_class_residual": 0.38339881487989563,
+          "conditional_RX_fraction_of_total": 0.0803165576177324,
+          "covered_class_RX_cells": 30,
+          "cells": [
+            {
+              "class_index": 0,
+              "source_RX": 1,
+              "count": 29,
+              "effective_weight": 27.41649441421032,
+              "centroid_squared_offset": 0.10603967543856786
+            },
+            {
+              "class_index": 0,
+              "source_RX": 3,
+              "count": 34,
+              "effective_weight": 33.14517679810524,
+              "centroid_squared_offset": 0.1102610825639363
+            },
+            {
+              "class_index": 0,
+              "source_RX": 4,
+              "count": 37,
+              "effective_weight": 36.916526198387146,
+              "centroid_squared_offset": 0.05180266368874879
+            },
+            {
+              "class_index": 0,
+              "source_RX": 6,
+              "count": 31,
+              "effective_weight": 30.875698506832123,
+              "centroid_squared_offset": 0.0466653985303095
+            },
+            {
+              "class_index": 0,
+              "source_RX": 8,
+              "count": 26,
+              "effective_weight": 25.703142285346985,
+              "centroid_squared_offset": 0.09058337437779002
+            },
+            {
+              "class_index": 1,
+              "source_RX": 1,
+              "count": 29,
+              "effective_weight": 27.489120662212372,
+              "centroid_squared_offset": 0.07009608877690804
+            },
+            {
+              "class_index": 1,
+              "source_RX": 3,
+              "count": 28,
+              "effective_weight": 23.691638588905334,
+              "centroid_squared_offset": 0.10502214597296008
+            },
+            {
+              "class_index": 1,
+              "source_RX": 4,
+              "count": 26,
+              "effective_weight": 26.0,
+              "centroid_squared_offset": 0.05908089980506741
+            },
+            {
+              "class_index": 1,
+              "source_RX": 6,
+              "count": 46,
+              "effective_weight": 44.97444003820419,
+              "centroid_squared_offset": 0.028247896043548007
+            },
+            {
+              "class_index": 1,
+              "source_RX": 8,
+              "count": 36,
+              "effective_weight": 33.96437853574753,
+              "centroid_squared_offset": 0.09770684584464917
+            },
+            {
+              "class_index": 2,
+              "source_RX": 1,
+              "count": 39,
+              "effective_weight": 39.0,
+              "centroid_squared_offset": 0.07247958805946683
+            },
+            {
+              "class_index": 2,
+              "source_RX": 3,
+              "count": 38,
+              "effective_weight": 36.79918577289209,
+              "centroid_squared_offset": 0.08462339652366897
+            },
+            {
+              "class_index": 2,
+              "source_RX": 4,
+              "count": 38,
+              "effective_weight": 37.96395045518875,
+              "centroid_squared_offset": 0.08112964634573949
+            },
+            {
+              "class_index": 2,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.11650108695184239
+            },
+            {
+              "class_index": 2,
+              "source_RX": 8,
+              "count": 32,
+              "effective_weight": 31.999638080596924,
+              "centroid_squared_offset": 0.08753481164488308
+            },
+            {
+              "class_index": 3,
+              "source_RX": 1,
+              "count": 33,
+              "effective_weight": 32.324597001075745,
+              "centroid_squared_offset": 0.02781139286520854
+            },
+            {
+              "class_index": 3,
+              "source_RX": 3,
+              "count": 27,
+              "effective_weight": 23.296558149158955,
+              "centroid_squared_offset": 0.20413902130029107
+            },
+            {
+              "class_index": 3,
+              "source_RX": 4,
+              "count": 41,
+              "effective_weight": 39.68411472439766,
+              "centroid_squared_offset": 0.042691066267014854
+            },
+            {
+              "class_index": 3,
+              "source_RX": 6,
+              "count": 42,
+              "effective_weight": 42.0,
+              "centroid_squared_offset": 0.057856182849238186
+            },
+            {
+              "class_index": 3,
+              "source_RX": 8,
+              "count": 28,
+              "effective_weight": 23.72061711549759,
+              "centroid_squared_offset": 0.21470207706630778
+            },
+            {
+              "class_index": 4,
+              "source_RX": 1,
+              "count": 28,
+              "effective_weight": 28.0,
+              "centroid_squared_offset": 0.04760810947468859
+            },
+            {
+              "class_index": 4,
+              "source_RX": 3,
+              "count": 29,
+              "effective_weight": 21.667101518251002,
+              "centroid_squared_offset": 0.07313516961192813
+            },
+            {
+              "class_index": 4,
+              "source_RX": 4,
+              "count": 25,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.03764721265627984
+            },
+            {
+              "class_index": 4,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.05154396317012526
+            },
+            {
+              "class_index": 4,
+              "source_RX": 8,
+              "count": 32,
+              "effective_weight": 30.0,
+              "centroid_squared_offset": 0.04776469292285634
+            },
+            {
+              "class_index": 5,
+              "source_RX": 1,
+              "count": 34,
+              "effective_weight": 34.0,
+              "centroid_squared_offset": 0.15389181330885127
+            },
+            {
+              "class_index": 5,
+              "source_RX": 3,
+              "count": 36,
+              "effective_weight": 33.99483805894852,
+              "centroid_squared_offset": 0.06602245632159405
+            },
+            {
+              "class_index": 5,
+              "source_RX": 4,
+              "count": 25,
+              "effective_weight": 23.083299860358238,
+              "centroid_squared_offset": 0.11028587347085925
+            },
+            {
+              "class_index": 5,
+              "source_RX": 6,
+              "count": 25,
+              "effective_weight": 25.0,
+              "centroid_squared_offset": 0.0795754887167863
+            },
+            {
+              "class_index": 5,
+              "source_RX": 8,
+              "count": 38,
+              "effective_weight": 37.02389849163592,
+              "centroid_squared_offset": 0.07723784552666761
+            }
+          ]
+        }
+      }
+    },
+    {
+      "model_seed": 2026092701,
+      "role": "V",
+      "source_epoch": 30,
+      "samples": 720,
+      "label_semantics": "legal V true TX;diagnostic only",
+      "weight_sum": 720.0,
+      "positive_weight_records": 720,
+      "class_counts": [
+        120,
+        120,
+        120,
+        120,
+        120,
+        120
+      ],
+      "student_agreement_with_labels": 704,
+      "geometry": {
+        "time_down": {
+          "samples": 720,
+          "descriptor_dimension": 96,
+          "total_scatter": 712.1197973330411,
+          "class_between_scatter": 321.6268917808869,
+          "class_within_scatter": 390.4929055521542,
+          "conditional_RX_between_scatter": 145.76626945314845,
+          "class_fraction_of_total": 0.4516471708628399,
+          "conditional_RX_fraction_of_class_residual": 0.37328788149694037,
+          "conditional_RX_fraction_of_total": 0.2046934659014642,
+          "covered_class_RX_cells": 30,
+          "cells": [
+            {
+              "class_index": 0,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.2318653711661262
+            },
+            {
+              "class_index": 0,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.09749679795343139
+            },
+            {
+              "class_index": 0,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.13251360890391567
+            },
+            {
+              "class_index": 0,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.178551695079129
+            },
+            {
+              "class_index": 0,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.08143051531477367
+            },
+            {
+              "class_index": 1,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.16547917846920954
+            },
+            {
+              "class_index": 1,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.12253496103656292
+            },
+            {
+              "class_index": 1,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.19201286823046834
+            },
+            {
+              "class_index": 1,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.21020030131644526
+            },
+            {
+              "class_index": 1,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.21799662652551782
+            },
+            {
+              "class_index": 2,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.32451135248194807
+            },
+            {
+              "class_index": 2,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.24356420313605182
+            },
+            {
+              "class_index": 2,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.1523450880032647
+            },
+            {
+              "class_index": 2,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.48692982027823384
+            },
+            {
+              "class_index": 2,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.4334485268326828
+            },
+            {
+              "class_index": 3,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.18279540298768338
+            },
+            {
+              "class_index": 3,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.07895497112587359
+            },
+            {
+              "class_index": 3,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.14430148346437893
+            },
+            {
+              "class_index": 3,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.14613396119821162
+            },
+            {
+              "class_index": 3,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.23228456278486162
+            },
+            {
+              "class_index": 4,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.063058028195628
+            },
+            {
+              "class_index": 4,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.18490888243527898
+            },
+            {
+              "class_index": 4,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.07156248274700357
+            },
+            {
+              "class_index": 4,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.05871733243491864
+            },
+            {
+              "class_index": 4,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.1394435709354476
+            },
+            {
+              "class_index": 5,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.25196140605668443
+            },
+            {
+              "class_index": 5,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.34724304156793645
+            },
+            {
+              "class_index": 5,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.24539513755179945
+            },
+            {
+              "class_index": 5,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.21276142357114808
+            },
+            {
+              "class_index": 5,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.4431919587632378
+            }
+          ]
+        },
+        "t2.pool": {
+          "samples": 720,
+          "descriptor_dimension": 192,
+          "total_scatter": 715.7352271141599,
+          "class_between_scatter": 365.52981562145965,
+          "class_within_scatter": 350.20541149270014,
+          "conditional_RX_between_scatter": 125.13110968171814,
+          "class_fraction_of_total": 0.5107053583142381,
+          "conditional_RX_fraction_of_class_residual": 0.3573077558920772,
+          "conditional_RX_fraction_of_total": 0.1748287703907575,
+          "covered_class_RX_cells": 30,
+          "cells": [
+            {
+              "class_index": 0,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.1870639504746862
+            },
+            {
+              "class_index": 0,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.07000695233971166
+            },
+            {
+              "class_index": 0,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.11415042645883429
+            },
+            {
+              "class_index": 0,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.15380305952337694
+            },
+            {
+              "class_index": 0,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.1551600576858384
+            },
+            {
+              "class_index": 1,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.1123305634805336
+            },
+            {
+              "class_index": 1,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.10267690374547245
+            },
+            {
+              "class_index": 1,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.13525302519538082
+            },
+            {
+              "class_index": 1,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.1390321009548881
+            },
+            {
+              "class_index": 1,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.13648423786080538
+            },
+            {
+              "class_index": 2,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.27037373542871324
+            },
+            {
+              "class_index": 2,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.20408801988302916
+            },
+            {
+              "class_index": 2,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.14976772733901444
+            },
+            {
+              "class_index": 2,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.3883546335974811
+            },
+            {
+              "class_index": 2,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.33064775663664586
+            },
+            {
+              "class_index": 3,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.1395011575518036
+            },
+            {
+              "class_index": 3,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.08304362249207442
+            },
+            {
+              "class_index": 3,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.15688429618049649
+            },
+            {
+              "class_index": 3,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.14753820826532515
+            },
+            {
+              "class_index": 3,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.19063549270307117
+            },
+            {
+              "class_index": 4,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.07349802839002896
+            },
+            {
+              "class_index": 4,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.153328522995497
+            },
+            {
+              "class_index": 4,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.07129994931931853
+            },
+            {
+              "class_index": 4,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.06119329942720378
+            },
+            {
+              "class_index": 4,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.13973954514546666
+            },
+            {
+              "class_index": 5,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.21204365886296572
+            },
+            {
+              "class_index": 5,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.34248898192306465
+            },
+            {
+              "class_index": 5,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.3090838158640598
+            },
+            {
+              "class_index": 5,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.18697380473776096
+            },
+            {
+              "class_index": 5,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.2973507022757081
+            }
+          ]
+        },
+        "joint160": {
+          "samples": 720,
+          "descriptor_dimension": 160,
+          "total_scatter": 716.6565543868417,
+          "class_between_scatter": 534.1577472409413,
+          "class_within_scatter": 182.49880714590034,
+          "conditional_RX_between_scatter": 63.00881728535811,
+          "class_fraction_of_total": 0.745346908461553,
+          "conditional_RX_fraction_of_class_residual": 0.34525605000248105,
+          "conditional_RX_fraction_of_total": 0.0879205205054844,
+          "covered_class_RX_cells": 30,
+          "cells": [
+            {
+              "class_index": 0,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.09777535205964444
+            },
+            {
+              "class_index": 0,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.10608555361099632
+            },
+            {
+              "class_index": 0,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.06679360505383118
+            },
+            {
+              "class_index": 0,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.06159466499507702
+            },
+            {
+              "class_index": 0,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.09081147764653441
+            },
+            {
+              "class_index": 1,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.055812609766934744
+            },
+            {
+              "class_index": 1,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.09036185341793707
+            },
+            {
+              "class_index": 1,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.06553982076299587
+            },
+            {
+              "class_index": 1,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.03383296303292812
+            },
+            {
+              "class_index": 1,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.09036682430694593
+            },
+            {
+              "class_index": 2,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.07308820923517151
+            },
+            {
+              "class_index": 2,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.0980951135988548
+            },
+            {
+              "class_index": 2,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.077056637625374
+            },
+            {
+              "class_index": 2,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.09328174400628457
+            },
+            {
+              "class_index": 2,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.08631743074720377
+            },
+            {
+              "class_index": 3,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.07711275692440109
+            },
+            {
+              "class_index": 3,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.20078074775106639
+            },
+            {
+              "class_index": 3,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.07313169437036131
+            },
+            {
+              "class_index": 3,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.11207969576077195
+            },
+            {
+              "class_index": 3,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.1618164533739515
+            },
+            {
+              "class_index": 4,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.06560621656102132
+            },
+            {
+              "class_index": 4,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.11300421997344279
+            },
+            {
+              "class_index": 4,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.04917102010678685
+            },
+            {
+              "class_index": 4,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.05901864103790848
+            },
+            {
+              "class_index": 4,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.07072155841671623
+            },
+            {
+              "class_index": 5,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.15764059581618958
+            },
+            {
+              "class_index": 5,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.06393403583943308
+            },
+            {
+              "class_index": 5,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.09872097047495745
+            },
+            {
+              "class_index": 5,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.050829332329741864
+            },
+            {
+              "class_index": 5,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.08498558828645807
+            }
+          ]
+        }
+      }
+    },
+    {
+      "model_seed": 2026092702,
+      "role": "U_s",
+      "source_epoch": 30,
+      "samples": 960,
+      "label_semantics": "detached own-EMA/L-only-prototype predicted TX,never U truth",
+      "weight_sum": 920.2950439453125,
+      "positive_weight_records": 945,
+      "class_counts": [
+        161,
+        162,
+        171,
+        174,
+        135,
+        157
+      ],
+      "student_agreement_with_labels": 960,
+      "geometry": {
+        "time_down": {
+          "samples": 960,
+          "descriptor_dimension": 96,
+          "total_scatter": 908.3212975908373,
+          "class_between_scatter": 410.10984901008976,
+          "class_within_scatter": 498.2114485807475,
+          "conditional_RX_between_scatter": 211.65895179644957,
+          "class_fraction_of_total": 0.4515030640565559,
+          "conditional_RX_fraction_of_class_residual": 0.42483759134680943,
+          "conditional_RX_fraction_of_total": 0.23302211712731802,
+          "covered_class_RX_cells": 30,
+          "cells": [
+            {
+              "class_index": 0,
+              "source_RX": 1,
+              "count": 29,
+              "effective_weight": 28.003790080547333,
+              "centroid_squared_offset": 0.22992871822085786
+            },
+            {
+              "class_index": 0,
+              "source_RX": 3,
+              "count": 37,
+              "effective_weight": 31.887643460184336,
+              "centroid_squared_offset": 0.16127272393532802
+            },
+            {
+              "class_index": 0,
+              "source_RX": 4,
+              "count": 37,
+              "effective_weight": 36.961572766304016,
+              "centroid_squared_offset": 0.08859604977187707
+            },
+            {
+              "class_index": 0,
+              "source_RX": 6,
+              "count": 31,
+              "effective_weight": 30.89819997549057,
+              "centroid_squared_offset": 0.11934501964852831
+            },
+            {
+              "class_index": 0,
+              "source_RX": 8,
+              "count": 27,
+              "effective_weight": 26.589248478412628,
+              "centroid_squared_offset": 0.10082744337652343
+            },
+            {
+              "class_index": 1,
+              "source_RX": 1,
+              "count": 28,
+              "effective_weight": 26.0183620788157,
+              "centroid_squared_offset": 0.2668652754798314
+            },
+            {
+              "class_index": 1,
+              "source_RX": 3,
+              "count": 28,
+              "effective_weight": 24.80282098054886,
+              "centroid_squared_offset": 0.18132769377086344
+            },
+            {
+              "class_index": 1,
+              "source_RX": 4,
+              "count": 26,
+              "effective_weight": 26.0,
+              "centroid_squared_offset": 0.20357711462556652
+            },
+            {
+              "class_index": 1,
+              "source_RX": 6,
+              "count": 45,
+              "effective_weight": 44.846010982990265,
+              "centroid_squared_offset": 0.17600678235280642
+            },
+            {
+              "class_index": 1,
+              "source_RX": 8,
+              "count": 35,
+              "effective_weight": 33.83994996547699,
+              "centroid_squared_offset": 0.15631313886516096
+            },
+            {
+              "class_index": 2,
+              "source_RX": 1,
+              "count": 39,
+              "effective_weight": 39.0,
+              "centroid_squared_offset": 0.3649443701411952
+            },
+            {
+              "class_index": 2,
+              "source_RX": 3,
+              "count": 38,
+              "effective_weight": 37.893867552280426,
+              "centroid_squared_offset": 0.33668168918615704
+            },
+            {
+              "class_index": 2,
+              "source_RX": 4,
+              "count": 38,
+              "effective_weight": 37.986343562603,
+              "centroid_squared_offset": 0.28387316626104564
+            },
+            {
+              "class_index": 2,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.4807761812317193
+            },
+            {
+              "class_index": 2,
+              "source_RX": 8,
+              "count": 32,
+              "effective_weight": 32.0,
+              "centroid_squared_offset": 0.38235917732855457
+            },
+            {
+              "class_index": 3,
+              "source_RX": 1,
+              "count": 34,
+              "effective_weight": 32.00215976801701,
+              "centroid_squared_offset": 0.25066870486455345
+            },
+            {
+              "class_index": 3,
+              "source_RX": 3,
+              "count": 27,
+              "effective_weight": 23.677967622876167,
+              "centroid_squared_offset": 0.12311751137594727
+            },
+            {
+              "class_index": 3,
+              "source_RX": 4,
+              "count": 42,
+              "effective_weight": 39.27170041203499,
+              "centroid_squared_offset": 0.11050671644380584
+            },
+            {
+              "class_index": 3,
+              "source_RX": 6,
+              "count": 43,
+              "effective_weight": 42.015759183093905,
+              "centroid_squared_offset": 0.10636677801049281
+            },
+            {
+              "class_index": 3,
+              "source_RX": 8,
+              "count": 28,
+              "effective_weight": 23.37163119390607,
+              "centroid_squared_offset": 0.5568557475206424
+            },
+            {
+              "class_index": 4,
+              "source_RX": 1,
+              "count": 28,
+              "effective_weight": 28.0,
+              "centroid_squared_offset": 0.06921893220661986
+            },
+            {
+              "class_index": 4,
+              "source_RX": 3,
+              "count": 27,
+              "effective_weight": 19.496654637390748,
+              "centroid_squared_offset": 0.17604522428439198
+            },
+            {
+              "class_index": 4,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.09253932846119012
+            },
+            {
+              "class_index": 4,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.051972119448993596
+            },
+            {
+              "class_index": 4,
+              "source_RX": 8,
+              "count": 32,
+              "effective_weight": 30.022025007754564,
+              "centroid_squared_offset": 0.10454008789636363
+            },
+            {
+              "class_index": 5,
+              "source_RX": 1,
+              "count": 34,
+              "effective_weight": 34.0,
+              "centroid_squared_offset": 0.3400891553989305
+            },
+            {
+              "class_index": 5,
+              "source_RX": 3,
+              "count": 35,
+              "effective_weight": 34.0,
+              "centroid_squared_offset": 0.46480675243706615
+            },
+            {
+              "class_index": 5,
+              "source_RX": 4,
+              "count": 25,
+              "effective_weight": 23.709314703941345,
+              "centroid_squared_offset": 0.16172607207899387
+            },
+            {
+              "class_index": 5,
+              "source_RX": 6,
+              "count": 25,
+              "effective_weight": 25.0,
+              "centroid_squared_offset": 0.38252864118402763
+            },
+            {
+              "class_index": 5,
+              "source_RX": 8,
+              "count": 38,
+              "effective_weight": 37.0,
+              "centroid_squared_offset": 0.3639823585547218
+            }
+          ]
+        },
+        "t2.pool": {
+          "samples": 960,
+          "descriptor_dimension": 192,
+          "total_scatter": 913.5605442686792,
+          "class_between_scatter": 462.8799755658081,
+          "class_within_scatter": 450.68056870287114,
+          "conditional_RX_between_scatter": 173.161845623524,
+          "class_fraction_of_total": 0.5066768464003132,
+          "conditional_RX_fraction_of_class_residual": 0.38422301214785176,
+          "conditional_RX_fraction_of_total": 0.189546108038349,
+          "covered_class_RX_cells": 30,
+          "cells": [
+            {
+              "class_index": 0,
+              "source_RX": 1,
+              "count": 29,
+              "effective_weight": 28.003790080547333,
+              "centroid_squared_offset": 0.1602411909193984
+            },
+            {
+              "class_index": 0,
+              "source_RX": 3,
+              "count": 37,
+              "effective_weight": 31.887643460184336,
+              "centroid_squared_offset": 0.12647840182207626
+            },
+            {
+              "class_index": 0,
+              "source_RX": 4,
+              "count": 37,
+              "effective_weight": 36.961572766304016,
+              "centroid_squared_offset": 0.10386821772529171
+            },
+            {
+              "class_index": 0,
+              "source_RX": 6,
+              "count": 31,
+              "effective_weight": 30.89819997549057,
+              "centroid_squared_offset": 0.10912749443500763
+            },
+            {
+              "class_index": 0,
+              "source_RX": 8,
+              "count": 27,
+              "effective_weight": 26.589248478412628,
+              "centroid_squared_offset": 0.16776587772139778
+            },
+            {
+              "class_index": 1,
+              "source_RX": 1,
+              "count": 28,
+              "effective_weight": 26.0183620788157,
+              "centroid_squared_offset": 0.14576684060819978
+            },
+            {
+              "class_index": 1,
+              "source_RX": 3,
+              "count": 28,
+              "effective_weight": 24.80282098054886,
+              "centroid_squared_offset": 0.1681514481109847
+            },
+            {
+              "class_index": 1,
+              "source_RX": 4,
+              "count": 26,
+              "effective_weight": 26.0,
+              "centroid_squared_offset": 0.21842626058758954
+            },
+            {
+              "class_index": 1,
+              "source_RX": 6,
+              "count": 45,
+              "effective_weight": 44.846010982990265,
+              "centroid_squared_offset": 0.12011247506227336
+            },
+            {
+              "class_index": 1,
+              "source_RX": 8,
+              "count": 35,
+              "effective_weight": 33.83994996547699,
+              "centroid_squared_offset": 0.13533639526593932
+            },
+            {
+              "class_index": 2,
+              "source_RX": 1,
+              "count": 39,
+              "effective_weight": 39.0,
+              "centroid_squared_offset": 0.2583913540969048
+            },
+            {
+              "class_index": 2,
+              "source_RX": 3,
+              "count": 38,
+              "effective_weight": 37.893867552280426,
+              "centroid_squared_offset": 0.19858657535592533
+            },
+            {
+              "class_index": 2,
+              "source_RX": 4,
+              "count": 38,
+              "effective_weight": 37.986343562603,
+              "centroid_squared_offset": 0.1755067300331293
+            },
+            {
+              "class_index": 2,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.3977840757156025
+            },
+            {
+              "class_index": 2,
+              "source_RX": 8,
+              "count": 32,
+              "effective_weight": 32.0,
+              "centroid_squared_offset": 0.3853291397968897
+            },
+            {
+              "class_index": 3,
+              "source_RX": 1,
+              "count": 34,
+              "effective_weight": 32.00215976801701,
+              "centroid_squared_offset": 0.1473010581818454
+            },
+            {
+              "class_index": 3,
+              "source_RX": 3,
+              "count": 27,
+              "effective_weight": 23.677967622876167,
+              "centroid_squared_offset": 0.15398219066142232
+            },
+            {
+              "class_index": 3,
+              "source_RX": 4,
+              "count": 42,
+              "effective_weight": 39.27170041203499,
+              "centroid_squared_offset": 0.10773035188792623
+            },
+            {
+              "class_index": 3,
+              "source_RX": 6,
+              "count": 43,
+              "effective_weight": 42.015759183093905,
+              "centroid_squared_offset": 0.09266327971315959
+            },
+            {
+              "class_index": 3,
+              "source_RX": 8,
+              "count": 28,
+              "effective_weight": 23.37163119390607,
+              "centroid_squared_offset": 0.37487119602299107
+            },
+            {
+              "class_index": 4,
+              "source_RX": 1,
+              "count": 28,
+              "effective_weight": 28.0,
+              "centroid_squared_offset": 0.051046321830540205
+            },
+            {
+              "class_index": 4,
+              "source_RX": 3,
+              "count": 27,
+              "effective_weight": 19.496654637390748,
+              "centroid_squared_offset": 0.19196135720518545
+            },
+            {
+              "class_index": 4,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.0762833921493713
+            },
+            {
+              "class_index": 4,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.05757453254000343
+            },
+            {
+              "class_index": 4,
+              "source_RX": 8,
+              "count": 32,
+              "effective_weight": 30.022025007754564,
+              "centroid_squared_offset": 0.1017168380873367
+            },
+            {
+              "class_index": 5,
+              "source_RX": 1,
+              "count": 34,
+              "effective_weight": 34.0,
+              "centroid_squared_offset": 0.2618945840904945
+            },
+            {
+              "class_index": 5,
+              "source_RX": 3,
+              "count": 35,
+              "effective_weight": 34.0,
+              "centroid_squared_offset": 0.39339943564372565
+            },
+            {
+              "class_index": 5,
+              "source_RX": 4,
+              "count": 25,
+              "effective_weight": 23.709314703941345,
+              "centroid_squared_offset": 0.24751731995688664
+            },
+            {
+              "class_index": 5,
+              "source_RX": 6,
+              "count": 25,
+              "effective_weight": 25.0,
+              "centroid_squared_offset": 0.27993446027432406
+            },
+            {
+              "class_index": 5,
+              "source_RX": 8,
+              "count": 38,
+              "effective_weight": 37.0,
+              "centroid_squared_offset": 0.30767203321722175
+            }
+          ]
+        },
+        "joint160": {
+          "samples": 960,
+          "descriptor_dimension": 160,
+          "total_scatter": 916.4549340236252,
+          "class_between_scatter": 705.0566804142431,
+          "class_within_scatter": 211.39825360938198,
+          "conditional_RX_between_scatter": 84.82763349074918,
+          "class_fraction_of_total": 0.7693304430352573,
+          "conditional_RX_fraction_of_class_residual": 0.4012693200743853,
+          "conditional_RX_fraction_of_total": 0.09256061628510193,
+          "covered_class_RX_cells": 30,
+          "cells": [
+            {
+              "class_index": 0,
+              "source_RX": 1,
+              "count": 29,
+              "effective_weight": 28.003790080547333,
+              "centroid_squared_offset": 0.0976801262352564
+            },
+            {
+              "class_index": 0,
+              "source_RX": 3,
+              "count": 37,
+              "effective_weight": 31.887643460184336,
+              "centroid_squared_offset": 0.11043798496966195
+            },
+            {
+              "class_index": 0,
+              "source_RX": 4,
+              "count": 37,
+              "effective_weight": 36.961572766304016,
+              "centroid_squared_offset": 0.049324084826788225
+            },
+            {
+              "class_index": 0,
+              "source_RX": 6,
+              "count": 31,
+              "effective_weight": 30.89819997549057,
+              "centroid_squared_offset": 0.03916123424233046
+            },
+            {
+              "class_index": 0,
+              "source_RX": 8,
+              "count": 27,
+              "effective_weight": 26.589248478412628,
+              "centroid_squared_offset": 0.10978895578007378
+            },
+            {
+              "class_index": 1,
+              "source_RX": 1,
+              "count": 28,
+              "effective_weight": 26.0183620788157,
+              "centroid_squared_offset": 0.06484760203575257
+            },
+            {
+              "class_index": 1,
+              "source_RX": 3,
+              "count": 28,
+              "effective_weight": 24.80282098054886,
+              "centroid_squared_offset": 0.1258529557102393
+            },
+            {
+              "class_index": 1,
+              "source_RX": 4,
+              "count": 26,
+              "effective_weight": 26.0,
+              "centroid_squared_offset": 0.09088110655386385
+            },
+            {
+              "class_index": 1,
+              "source_RX": 6,
+              "count": 45,
+              "effective_weight": 44.846010982990265,
+              "centroid_squared_offset": 0.05039964325809072
+            },
+            {
+              "class_index": 1,
+              "source_RX": 8,
+              "count": 35,
+              "effective_weight": 33.83994996547699,
+              "centroid_squared_offset": 0.11596391203591311
+            },
+            {
+              "class_index": 2,
+              "source_RX": 1,
+              "count": 39,
+              "effective_weight": 39.0,
+              "centroid_squared_offset": 0.08094284280979094
+            },
+            {
+              "class_index": 2,
+              "source_RX": 3,
+              "count": 38,
+              "effective_weight": 37.893867552280426,
+              "centroid_squared_offset": 0.08272987676808649
+            },
+            {
+              "class_index": 2,
+              "source_RX": 4,
+              "count": 38,
+              "effective_weight": 37.986343562603,
+              "centroid_squared_offset": 0.08303679278411011
+            },
+            {
+              "class_index": 2,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.127477559277102
+            },
+            {
+              "class_index": 2,
+              "source_RX": 8,
+              "count": 32,
+              "effective_weight": 32.0,
+              "centroid_squared_offset": 0.12406325236441754
+            },
+            {
+              "class_index": 3,
+              "source_RX": 1,
+              "count": 34,
+              "effective_weight": 32.00215976801701,
+              "centroid_squared_offset": 0.028761091375548907
+            },
+            {
+              "class_index": 3,
+              "source_RX": 3,
+              "count": 27,
+              "effective_weight": 23.677967622876167,
+              "centroid_squared_offset": 0.1868755529728362
+            },
+            {
+              "class_index": 3,
+              "source_RX": 4,
+              "count": 42,
+              "effective_weight": 39.27170041203499,
+              "centroid_squared_offset": 0.0371183212493599
+            },
+            {
+              "class_index": 3,
+              "source_RX": 6,
+              "count": 43,
+              "effective_weight": 42.015759183093905,
+              "centroid_squared_offset": 0.0634623488516092
+            },
+            {
+              "class_index": 3,
+              "source_RX": 8,
+              "count": 28,
+              "effective_weight": 23.37163119390607,
+              "centroid_squared_offset": 0.22723540328972688
+            },
+            {
+              "class_index": 4,
+              "source_RX": 1,
+              "count": 28,
+              "effective_weight": 28.0,
+              "centroid_squared_offset": 0.06281933497093123
+            },
+            {
+              "class_index": 4,
+              "source_RX": 3,
+              "count": 27,
+              "effective_weight": 19.496654637390748,
+              "centroid_squared_offset": 0.24385227439583018
+            },
+            {
+              "class_index": 4,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.05319182098343156
+            },
+            {
+              "class_index": 4,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.044417510388977496
+            },
+            {
+              "class_index": 4,
+              "source_RX": 8,
+              "count": 32,
+              "effective_weight": 30.022025007754564,
+              "centroid_squared_offset": 0.08771492297041657
+            },
+            {
+              "class_index": 5,
+              "source_RX": 1,
+              "count": 34,
+              "effective_weight": 34.0,
+              "centroid_squared_offset": 0.15300925138414498
+            },
+            {
+              "class_index": 5,
+              "source_RX": 3,
+              "count": 35,
+              "effective_weight": 34.0,
+              "centroid_squared_offset": 0.05903187164413155
+            },
+            {
+              "class_index": 5,
+              "source_RX": 4,
+              "count": 25,
+              "effective_weight": 23.709314703941345,
+              "centroid_squared_offset": 0.1067949425676043
+            },
+            {
+              "class_index": 5,
+              "source_RX": 6,
+              "count": 25,
+              "effective_weight": 25.0,
+              "centroid_squared_offset": 0.11216398085456822
+            },
+            {
+              "class_index": 5,
+              "source_RX": 8,
+              "count": 38,
+              "effective_weight": 37.0,
+              "centroid_squared_offset": 0.10734407145396999
+            }
+          ]
+        }
+      }
+    },
+    {
+      "model_seed": 2026092702,
+      "role": "V",
+      "source_epoch": 30,
+      "samples": 720,
+      "label_semantics": "legal V true TX;diagnostic only",
+      "weight_sum": 720.0,
+      "positive_weight_records": 720,
+      "class_counts": [
+        120,
+        120,
+        120,
+        120,
+        120,
+        120
+      ],
+      "student_agreement_with_labels": 703,
+      "geometry": {
+        "time_down": {
+          "samples": 720,
+          "descriptor_dimension": 96,
+          "total_scatter": 712.3379344794018,
+          "class_between_scatter": 308.95073123126554,
+          "class_within_scatter": 403.38720324813636,
+          "conditional_RX_between_scatter": 157.84464509079652,
+          "class_fraction_of_total": 0.4337137140633344,
+          "conditional_RX_fraction_of_class_residual": 0.39129809726190357,
+          "conditional_RX_fraction_of_total": 0.22158674619252752,
+          "covered_class_RX_cells": 30,
+          "cells": [
+            {
+              "class_index": 0,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.28212925747643824
+            },
+            {
+              "class_index": 0,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.11752706752644629
+            },
+            {
+              "class_index": 0,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.11575217982384502
+            },
+            {
+              "class_index": 0,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.16595365899319475
+            },
+            {
+              "class_index": 0,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.1147818841970038
+            },
+            {
+              "class_index": 1,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.16308045656403353
+            },
+            {
+              "class_index": 1,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.11197305612789003
+            },
+            {
+              "class_index": 1,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.17305063490805705
+            },
+            {
+              "class_index": 1,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.193881522125858
+            },
+            {
+              "class_index": 1,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.19039081254688806
+            },
+            {
+              "class_index": 2,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.3673254154461482
+            },
+            {
+              "class_index": 2,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.3356326971476731
+            },
+            {
+              "class_index": 2,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.26788289478158644
+            },
+            {
+              "class_index": 2,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.4484176211190962
+            },
+            {
+              "class_index": 2,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.42422422232083307
+            },
+            {
+              "class_index": 3,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.1872195546165762
+            },
+            {
+              "class_index": 3,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.07633327412910497
+            },
+            {
+              "class_index": 3,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.14946982158228397
+            },
+            {
+              "class_index": 3,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.1572280724550925
+            },
+            {
+              "class_index": 3,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.32469547261551024
+            },
+            {
+              "class_index": 4,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.08511792182855463
+            },
+            {
+              "class_index": 4,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.16444442183990807
+            },
+            {
+              "class_index": 4,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.09330367175843152
+            },
+            {
+              "class_index": 4,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.0703929057495119
+            },
+            {
+              "class_index": 4,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.12696225630179636
+            },
+            {
+              "class_index": 5,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.3552960794083821
+            },
+            {
+              "class_index": 5,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.46263799541744166
+            },
+            {
+              "class_index": 5,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.19546170753767678
+            },
+            {
+              "class_index": 5,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.25795829432209305
+            },
+            {
+              "class_index": 5,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.3983353814491653
+            }
+          ]
+        },
+        "t2.pool": {
+          "samples": 720,
+          "descriptor_dimension": 192,
+          "total_scatter": 716.0424786567784,
+          "class_between_scatter": 344.56577672188195,
+          "class_within_scatter": 371.47670193489637,
+          "conditional_RX_between_scatter": 134.21239488852083,
+          "class_fraction_of_total": 0.4812085693131666,
+          "conditional_RX_fraction_of_class_residual": 0.3612942458825921,
+          "conditional_RX_fraction_of_total": 0.1874363587203505,
+          "covered_class_RX_cells": 30,
+          "cells": [
+            {
+              "class_index": 0,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.17847417748987993
+            },
+            {
+              "class_index": 0,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.10106655445752043
+            },
+            {
+              "class_index": 0,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.12501405183565542
+            },
+            {
+              "class_index": 0,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.1520305237887447
+            },
+            {
+              "class_index": 0,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.1543557465880659
+            },
+            {
+              "class_index": 1,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.09824857215933651
+            },
+            {
+              "class_index": 1,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.12578996465299574
+            },
+            {
+              "class_index": 1,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.19210914609907465
+            },
+            {
+              "class_index": 1,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.15211879083670518
+            },
+            {
+              "class_index": 1,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.13994613066984826
+            },
+            {
+              "class_index": 2,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.26993968600344387
+            },
+            {
+              "class_index": 2,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.21117330697606362
+            },
+            {
+              "class_index": 2,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.1755610575786406
+            },
+            {
+              "class_index": 2,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.3863822220253782
+            },
+            {
+              "class_index": 2,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.4024601536057339
+            },
+            {
+              "class_index": 3,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.12111624261424626
+            },
+            {
+              "class_index": 3,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.11188860805310513
+            },
+            {
+              "class_index": 3,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.14425482161261113
+            },
+            {
+              "class_index": 3,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.14412661520239034
+            },
+            {
+              "class_index": 3,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.24640800243383337
+            },
+            {
+              "class_index": 4,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.06959150403564977
+            },
+            {
+              "class_index": 4,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.21768581065586212
+            },
+            {
+              "class_index": 4,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.0880133212638737
+            },
+            {
+              "class_index": 4,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.07520534765368637
+            },
+            {
+              "class_index": 4,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.11856885909937168
+            },
+            {
+              "class_index": 5,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.2634049967215822
+            },
+            {
+              "class_index": 5,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.3466460703546361
+            },
+            {
+              "class_index": 5,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.23703580710496627
+            },
+            {
+              "class_index": 5,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.20970311888240253
+            },
+            {
+              "class_index": 5,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.3338639098997311
+            }
+          ]
+        },
+        "joint160": {
+          "samples": 720,
+          "descriptor_dimension": 160,
+          "total_scatter": 717.6857949963369,
+          "class_between_scatter": 517.6074454299057,
+          "class_within_scatter": 200.0783495664311,
+          "conditional_RX_between_scatter": 70.36689781093615,
+          "class_fraction_of_total": 0.7212173475337458,
+          "conditional_RX_fraction_of_class_residual": 0.3516967126299318,
+          "conditional_RX_fraction_of_total": 0.09804694241063432,
+          "covered_class_RX_cells": 30,
+          "cells": [
+            {
+              "class_index": 0,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.07709525698326981
+            },
+            {
+              "class_index": 0,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.1005070795551512
+            },
+            {
+              "class_index": 0,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.057692768674450674
+            },
+            {
+              "class_index": 0,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.05996019558334965
+            },
+            {
+              "class_index": 0,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.10212153660022004
+            },
+            {
+              "class_index": 1,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.051755997025636505
+            },
+            {
+              "class_index": 1,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.11103798151996042
+            },
+            {
+              "class_index": 1,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.0962889729516363
+            },
+            {
+              "class_index": 1,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.05409585767979849
+            },
+            {
+              "class_index": 1,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.1106822212586957
+            },
+            {
+              "class_index": 2,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.08279742357138942
+            },
+            {
+              "class_index": 2,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.10636017446495687
+            },
+            {
+              "class_index": 2,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.08802460925746644
+            },
+            {
+              "class_index": 2,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.10067328850959731
+            },
+            {
+              "class_index": 2,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.1163934352081832
+            },
+            {
+              "class_index": 3,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.06982753422333149
+            },
+            {
+              "class_index": 3,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.1786661075005182
+            },
+            {
+              "class_index": 3,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.05691443577336784
+            },
+            {
+              "class_index": 3,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.10359085913015711
+            },
+            {
+              "class_index": 3,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.15091010383982353
+            },
+            {
+              "class_index": 4,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.08226290251573241
+            },
+            {
+              "class_index": 4,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.232518622720374
+            },
+            {
+              "class_index": 4,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.06970992625850679
+            },
+            {
+              "class_index": 4,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.046977201931293545
+            },
+            {
+              "class_index": 4,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.11702489812286611
+            },
+            {
+              "class_index": 5,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.1494474231732274
+            },
+            {
+              "class_index": 5,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.06457673108927653
+            },
+            {
+              "class_index": 5,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.08939689708851564
+            },
+            {
+              "class_index": 5,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.0720606353948104
+            },
+            {
+              "class_index": 5,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.13258299785010946
+            }
+          ]
+        }
+      }
+    },
+    {
+      "model_seed": 2026092703,
+      "role": "U_s",
+      "source_epoch": 30,
+      "samples": 960,
+      "label_semantics": "detached own-EMA/L-only-prototype predicted TX,never U truth",
+      "weight_sum": 926.5482177734375,
+      "positive_weight_records": 939,
+      "class_counts": [
+        158,
+        162,
+        171,
+        175,
+        136,
+        158
+      ],
+      "student_agreement_with_labels": 960,
+      "geometry": {
+        "time_down": {
+          "samples": 960,
+          "descriptor_dimension": 96,
+          "total_scatter": 914.6293807018444,
+          "class_between_scatter": 418.4060240762493,
+          "class_within_scatter": 496.2233566255951,
+          "conditional_RX_between_scatter": 204.31778322936296,
+          "class_fraction_of_total": 0.457459636552659,
+          "conditional_RX_fraction_of_class_residual": 0.4117455990358038,
+          "conditional_RX_fraction_of_total": 0.22338860694872814,
+          "covered_class_RX_cells": 30,
+          "cells": [
+            {
+              "class_index": 0,
+              "source_RX": 1,
+              "count": 29,
+              "effective_weight": 28.622106969356537,
+              "centroid_squared_offset": 0.22522257737520346
+            },
+            {
+              "class_index": 0,
+              "source_RX": 3,
+              "count": 34,
+              "effective_weight": 32.377729296684265,
+              "centroid_squared_offset": 0.14747172863017238
+            },
+            {
+              "class_index": 0,
+              "source_RX": 4,
+              "count": 37,
+              "effective_weight": 37.0,
+              "centroid_squared_offset": 0.10648456451591373
+            },
+            {
+              "class_index": 0,
+              "source_RX": 6,
+              "count": 31,
+              "effective_weight": 30.952054798603058,
+              "centroid_squared_offset": 0.10348468746254375
+            },
+            {
+              "class_index": 0,
+              "source_RX": 8,
+              "count": 27,
+              "effective_weight": 26.66318303346634,
+              "centroid_squared_offset": 0.1276304876766522
+            },
+            {
+              "class_index": 1,
+              "source_RX": 1,
+              "count": 28,
+              "effective_weight": 26.69906222820282,
+              "centroid_squared_offset": 0.22137911243013803
+            },
+            {
+              "class_index": 1,
+              "source_RX": 3,
+              "count": 28,
+              "effective_weight": 22.223483502864838,
+              "centroid_squared_offset": 0.19701552905487374
+            },
+            {
+              "class_index": 1,
+              "source_RX": 4,
+              "count": 26,
+              "effective_weight": 26.0,
+              "centroid_squared_offset": 0.22332648343685108
+            },
+            {
+              "class_index": 1,
+              "source_RX": 6,
+              "count": 45,
+              "effective_weight": 44.56404775381088,
+              "centroid_squared_offset": 0.12893638996464238
+            },
+            {
+              "class_index": 1,
+              "source_RX": 8,
+              "count": 35,
+              "effective_weight": 33.9827384352684,
+              "centroid_squared_offset": 0.15297376846556665
+            },
+            {
+              "class_index": 2,
+              "source_RX": 1,
+              "count": 39,
+              "effective_weight": 39.0,
+              "centroid_squared_offset": 0.3520742018142812
+            },
+            {
+              "class_index": 2,
+              "source_RX": 3,
+              "count": 38,
+              "effective_weight": 37.4686336517334,
+              "centroid_squared_offset": 0.3037360613368501
+            },
+            {
+              "class_index": 2,
+              "source_RX": 4,
+              "count": 38,
+              "effective_weight": 37.999891102313995,
+              "centroid_squared_offset": 0.3296531450731445
+            },
+            {
+              "class_index": 2,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.5333626907499016
+            },
+            {
+              "class_index": 2,
+              "source_RX": 8,
+              "count": 32,
+              "effective_weight": 32.0,
+              "centroid_squared_offset": 0.45527874667647333
+            },
+            {
+              "class_index": 3,
+              "source_RX": 1,
+              "count": 34,
+              "effective_weight": 32.027017295360565,
+              "centroid_squared_offset": 0.2178188334857732
+            },
+            {
+              "class_index": 3,
+              "source_RX": 3,
+              "count": 28,
+              "effective_weight": 24.933330856263638,
+              "centroid_squared_offset": 0.08674014747889519
+            },
+            {
+              "class_index": 3,
+              "source_RX": 4,
+              "count": 42,
+              "effective_weight": 39.883605412673205,
+              "centroid_squared_offset": 0.10286226536166199
+            },
+            {
+              "class_index": 3,
+              "source_RX": 6,
+              "count": 43,
+              "effective_weight": 42.0,
+              "centroid_squared_offset": 0.09739835972752119
+            },
+            {
+              "class_index": 3,
+              "source_RX": 8,
+              "count": 28,
+              "effective_weight": 24.68063035234809,
+              "centroid_squared_offset": 0.4765819799751282
+            },
+            {
+              "class_index": 4,
+              "source_RX": 1,
+              "count": 28,
+              "effective_weight": 28.0,
+              "centroid_squared_offset": 0.051675969450376995
+            },
+            {
+              "class_index": 4,
+              "source_RX": 3,
+              "count": 28,
+              "effective_weight": 24.115570604801178,
+              "centroid_squared_offset": 0.17024166219405912
+            },
+            {
+              "class_index": 4,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.0752384597040252
+            },
+            {
+              "class_index": 4,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.07950234756075693
+            },
+            {
+              "class_index": 4,
+              "source_RX": 8,
+              "count": 32,
+              "effective_weight": 30.0,
+              "centroid_squared_offset": 0.10851473224189258
+            },
+            {
+              "class_index": 5,
+              "source_RX": 1,
+              "count": 34,
+              "effective_weight": 34.0,
+              "centroid_squared_offset": 0.30009262553243643
+            },
+            {
+              "class_index": 5,
+              "source_RX": 3,
+              "count": 36,
+              "effective_weight": 33.833358347415924,
+              "centroid_squared_offset": 0.342605783162963
+            },
+            {
+              "class_index": 5,
+              "source_RX": 4,
+              "count": 25,
+              "effective_weight": 23.52367228269577,
+              "centroid_squared_offset": 0.23745472222645786
+            },
+            {
+              "class_index": 5,
+              "source_RX": 6,
+              "count": 25,
+              "effective_weight": 25.0,
+              "centroid_squared_offset": 0.34322091937757215
+            },
+            {
+              "class_index": 5,
+              "source_RX": 8,
+              "count": 38,
+              "effective_weight": 36.9980765581131,
+              "centroid_squared_offset": 0.34936563112317215
+            }
+          ]
+        },
+        "t2.pool": {
+          "samples": 960,
+          "descriptor_dimension": 192,
+          "total_scatter": 922.926424084916,
+          "class_between_scatter": 474.27318425896306,
+          "class_within_scatter": 448.65323982595294,
+          "conditional_RX_between_scatter": 166.80302842912988,
+          "class_fraction_of_total": 0.5138797328608358,
+          "conditional_RX_fraction_of_class_residual": 0.37178607802729374,
+          "conditional_RX_fraction_of_total": 0.1807327475692502,
+          "covered_class_RX_cells": 30,
+          "cells": [
+            {
+              "class_index": 0,
+              "source_RX": 1,
+              "count": 29,
+              "effective_weight": 28.622106969356537,
+              "centroid_squared_offset": 0.1918106805742299
+            },
+            {
+              "class_index": 0,
+              "source_RX": 3,
+              "count": 34,
+              "effective_weight": 32.377729296684265,
+              "centroid_squared_offset": 0.11235206415062633
+            },
+            {
+              "class_index": 0,
+              "source_RX": 4,
+              "count": 37,
+              "effective_weight": 37.0,
+              "centroid_squared_offset": 0.09803708974743963
+            },
+            {
+              "class_index": 0,
+              "source_RX": 6,
+              "count": 31,
+              "effective_weight": 30.952054798603058,
+              "centroid_squared_offset": 0.10461171466193404
+            },
+            {
+              "class_index": 0,
+              "source_RX": 8,
+              "count": 27,
+              "effective_weight": 26.66318303346634,
+              "centroid_squared_offset": 0.12728204675089844
+            },
+            {
+              "class_index": 1,
+              "source_RX": 1,
+              "count": 28,
+              "effective_weight": 26.69906222820282,
+              "centroid_squared_offset": 0.19531075987870095
+            },
+            {
+              "class_index": 1,
+              "source_RX": 3,
+              "count": 28,
+              "effective_weight": 22.223483502864838,
+              "centroid_squared_offset": 0.13851434051880346
+            },
+            {
+              "class_index": 1,
+              "source_RX": 4,
+              "count": 26,
+              "effective_weight": 26.0,
+              "centroid_squared_offset": 0.15255677018107328
+            },
+            {
+              "class_index": 1,
+              "source_RX": 6,
+              "count": 45,
+              "effective_weight": 44.56404775381088,
+              "centroid_squared_offset": 0.12371592175725254
+            },
+            {
+              "class_index": 1,
+              "source_RX": 8,
+              "count": 35,
+              "effective_weight": 33.9827384352684,
+              "centroid_squared_offset": 0.13875858288680348
+            },
+            {
+              "class_index": 2,
+              "source_RX": 1,
+              "count": 39,
+              "effective_weight": 39.0,
+              "centroid_squared_offset": 0.27619189586787374
+            },
+            {
+              "class_index": 2,
+              "source_RX": 3,
+              "count": 38,
+              "effective_weight": 37.4686336517334,
+              "centroid_squared_offset": 0.2068028594031172
+            },
+            {
+              "class_index": 2,
+              "source_RX": 4,
+              "count": 38,
+              "effective_weight": 37.999891102313995,
+              "centroid_squared_offset": 0.24851822487727412
+            },
+            {
+              "class_index": 2,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.35989996010099046
+            },
+            {
+              "class_index": 2,
+              "source_RX": 8,
+              "count": 32,
+              "effective_weight": 32.0,
+              "centroid_squared_offset": 0.3711434213305051
+            },
+            {
+              "class_index": 3,
+              "source_RX": 1,
+              "count": 34,
+              "effective_weight": 32.027017295360565,
+              "centroid_squared_offset": 0.1643205902374957
+            },
+            {
+              "class_index": 3,
+              "source_RX": 3,
+              "count": 28,
+              "effective_weight": 24.933330856263638,
+              "centroid_squared_offset": 0.13283361370360708
+            },
+            {
+              "class_index": 3,
+              "source_RX": 4,
+              "count": 42,
+              "effective_weight": 39.883605412673205,
+              "centroid_squared_offset": 0.12525106810555398
+            },
+            {
+              "class_index": 3,
+              "source_RX": 6,
+              "count": 43,
+              "effective_weight": 42.0,
+              "centroid_squared_offset": 0.08398003207619627
+            },
+            {
+              "class_index": 3,
+              "source_RX": 8,
+              "count": 28,
+              "effective_weight": 24.68063035234809,
+              "centroid_squared_offset": 0.33254140517095615
+            },
+            {
+              "class_index": 4,
+              "source_RX": 1,
+              "count": 28,
+              "effective_weight": 28.0,
+              "centroid_squared_offset": 0.04900383490047261
+            },
+            {
+              "class_index": 4,
+              "source_RX": 3,
+              "count": 28,
+              "effective_weight": 24.115570604801178,
+              "centroid_squared_offset": 0.14783860212062272
+            },
+            {
+              "class_index": 4,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.07720428510323957
+            },
+            {
+              "class_index": 4,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.07963221156063773
+            },
+            {
+              "class_index": 4,
+              "source_RX": 8,
+              "count": 32,
+              "effective_weight": 30.0,
+              "centroid_squared_offset": 0.12199801959880799
+            },
+            {
+              "class_index": 5,
+              "source_RX": 1,
+              "count": 34,
+              "effective_weight": 34.0,
+              "centroid_squared_offset": 0.20506845331400206
+            },
+            {
+              "class_index": 5,
+              "source_RX": 3,
+              "count": 36,
+              "effective_weight": 33.833358347415924,
+              "centroid_squared_offset": 0.2767805253724227
+            },
+            {
+              "class_index": 5,
+              "source_RX": 4,
+              "count": 25,
+              "effective_weight": 23.52367228269577,
+              "centroid_squared_offset": 0.2432349370378421
+            },
+            {
+              "class_index": 5,
+              "source_RX": 6,
+              "count": 25,
+              "effective_weight": 25.0,
+              "centroid_squared_offset": 0.28358860521836887
+            },
+            {
+              "class_index": 5,
+              "source_RX": 8,
+              "count": 38,
+              "effective_weight": 36.9980765581131,
+              "centroid_squared_offset": 0.2604465840291844
+            }
+          ]
+        },
+        "joint160": {
+          "samples": 960,
+          "descriptor_dimension": 160,
+          "total_scatter": 924.3527433818513,
+          "class_between_scatter": 706.8760210119863,
+          "class_within_scatter": 217.47672236986477,
+          "conditional_RX_between_scatter": 84.62327748713206,
+          "class_fraction_of_total": 0.764725399554502,
+          "conditional_RX_fraction_of_class_residual": 0.3891141845664403,
+          "conditional_RX_fraction_of_total": 0.0915486843015449,
+          "covered_class_RX_cells": 30,
+          "cells": [
+            {
+              "class_index": 0,
+              "source_RX": 1,
+              "count": 29,
+              "effective_weight": 28.622106969356537,
+              "centroid_squared_offset": 0.08912637327032281
+            },
+            {
+              "class_index": 0,
+              "source_RX": 3,
+              "count": 34,
+              "effective_weight": 32.377729296684265,
+              "centroid_squared_offset": 0.10528532105472121
+            },
+            {
+              "class_index": 0,
+              "source_RX": 4,
+              "count": 37,
+              "effective_weight": 37.0,
+              "centroid_squared_offset": 0.057606656148262034
+            },
+            {
+              "class_index": 0,
+              "source_RX": 6,
+              "count": 31,
+              "effective_weight": 30.952054798603058,
+              "centroid_squared_offset": 0.03335902234097728
+            },
+            {
+              "class_index": 0,
+              "source_RX": 8,
+              "count": 27,
+              "effective_weight": 26.66318303346634,
+              "centroid_squared_offset": 0.09716105269103537
+            },
+            {
+              "class_index": 1,
+              "source_RX": 1,
+              "count": 28,
+              "effective_weight": 26.69906222820282,
+              "centroid_squared_offset": 0.07701258482882478
+            },
+            {
+              "class_index": 1,
+              "source_RX": 3,
+              "count": 28,
+              "effective_weight": 22.223483502864838,
+              "centroid_squared_offset": 0.12468599092603455
+            },
+            {
+              "class_index": 1,
+              "source_RX": 4,
+              "count": 26,
+              "effective_weight": 26.0,
+              "centroid_squared_offset": 0.07385305652412699
+            },
+            {
+              "class_index": 1,
+              "source_RX": 6,
+              "count": 45,
+              "effective_weight": 44.56404775381088,
+              "centroid_squared_offset": 0.0420382093025137
+            },
+            {
+              "class_index": 1,
+              "source_RX": 8,
+              "count": 35,
+              "effective_weight": 33.9827384352684,
+              "centroid_squared_offset": 0.11874978364958146
+            },
+            {
+              "class_index": 2,
+              "source_RX": 1,
+              "count": 39,
+              "effective_weight": 39.0,
+              "centroid_squared_offset": 0.06951624954288849
+            },
+            {
+              "class_index": 2,
+              "source_RX": 3,
+              "count": 38,
+              "effective_weight": 37.4686336517334,
+              "centroid_squared_offset": 0.09464192644367145
+            },
+            {
+              "class_index": 2,
+              "source_RX": 4,
+              "count": 38,
+              "effective_weight": 37.999891102313995,
+              "centroid_squared_offset": 0.10739016173899321
+            },
+            {
+              "class_index": 2,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.11035400963132035
+            },
+            {
+              "class_index": 2,
+              "source_RX": 8,
+              "count": 32,
+              "effective_weight": 32.0,
+              "centroid_squared_offset": 0.10463712783285002
+            },
+            {
+              "class_index": 3,
+              "source_RX": 1,
+              "count": 34,
+              "effective_weight": 32.027017295360565,
+              "centroid_squared_offset": 0.03653342079662007
+            },
+            {
+              "class_index": 3,
+              "source_RX": 3,
+              "count": 28,
+              "effective_weight": 24.933330856263638,
+              "centroid_squared_offset": 0.15356032963371113
+            },
+            {
+              "class_index": 3,
+              "source_RX": 4,
+              "count": 42,
+              "effective_weight": 39.883605412673205,
+              "centroid_squared_offset": 0.04954408593308922
+            },
+            {
+              "class_index": 3,
+              "source_RX": 6,
+              "count": 43,
+              "effective_weight": 42.0,
+              "centroid_squared_offset": 0.0458676362154118
+            },
+            {
+              "class_index": 3,
+              "source_RX": 8,
+              "count": 28,
+              "effective_weight": 24.68063035234809,
+              "centroid_squared_offset": 0.2188636393517793
+            },
+            {
+              "class_index": 4,
+              "source_RX": 1,
+              "count": 28,
+              "effective_weight": 28.0,
+              "centroid_squared_offset": 0.07870014742310395
+            },
+            {
+              "class_index": 4,
+              "source_RX": 3,
+              "count": 28,
+              "effective_weight": 24.115570604801178,
+              "centroid_squared_offset": 0.12083428433403309
+            },
+            {
+              "class_index": 4,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.0837030449700984
+            },
+            {
+              "class_index": 4,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.09199545428097256
+            },
+            {
+              "class_index": 4,
+              "source_RX": 8,
+              "count": 32,
+              "effective_weight": 30.0,
+              "centroid_squared_offset": 0.1347377503541513
+            },
+            {
+              "class_index": 5,
+              "source_RX": 1,
+              "count": 34,
+              "effective_weight": 34.0,
+              "centroid_squared_offset": 0.14643755881060128
+            },
+            {
+              "class_index": 5,
+              "source_RX": 3,
+              "count": 36,
+              "effective_weight": 33.833358347415924,
+              "centroid_squared_offset": 0.0784495639048623
+            },
+            {
+              "class_index": 5,
+              "source_RX": 4,
+              "count": 25,
+              "effective_weight": 23.52367228269577,
+              "centroid_squared_offset": 0.11066094416332672
+            },
+            {
+              "class_index": 5,
+              "source_RX": 6,
+              "count": 25,
+              "effective_weight": 25.0,
+              "centroid_squared_offset": 0.08430321303852245
+            },
+            {
+              "class_index": 5,
+              "source_RX": 8,
+              "count": 38,
+              "effective_weight": 36.9980765581131,
+              "centroid_squared_offset": 0.10526101080894842
+            }
+          ]
+        }
+      }
+    },
+    {
+      "model_seed": 2026092703,
+      "role": "V",
+      "source_epoch": 30,
+      "samples": 720,
+      "label_semantics": "legal V true TX;diagnostic only",
+      "weight_sum": 720.0,
+      "positive_weight_records": 720,
+      "class_counts": [
+        120,
+        120,
+        120,
+        120,
+        120,
+        120
+      ],
+      "student_agreement_with_labels": 703,
+      "geometry": {
+        "time_down": {
+          "samples": 720,
+          "descriptor_dimension": 96,
+          "total_scatter": 712.6292956073655,
+          "class_between_scatter": 318.80357272715946,
+          "class_within_scatter": 393.82572288020606,
+          "conditional_RX_between_scatter": 150.34959655044548,
+          "class_fraction_of_total": 0.4473624290949854,
+          "conditional_RX_fraction_of_class_residual": 0.3817668268361913,
+          "conditional_RX_fraction_of_total": 0.2109786918348681,
+          "covered_class_RX_cells": 30,
+          "cells": [
+            {
+              "class_index": 0,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.2583451836720727
+            },
+            {
+              "class_index": 0,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.10530258697760767
+            },
+            {
+              "class_index": 0,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.13378474038535
+            },
+            {
+              "class_index": 0,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.15495641790949666
+            },
+            {
+              "class_index": 0,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.1255700315022386
+            },
+            {
+              "class_index": 1,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.12930470577721495
+            },
+            {
+              "class_index": 1,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.10711340182662754
+            },
+            {
+              "class_index": 1,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.17866840590160885
+            },
+            {
+              "class_index": 1,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.15991364135334019
+            },
+            {
+              "class_index": 1,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.17792418960291176
+            },
+            {
+              "class_index": 2,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.3578999807141379
+            },
+            {
+              "class_index": 2,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.26169964404041623
+            },
+            {
+              "class_index": 2,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.27620314898678944
+            },
+            {
+              "class_index": 2,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.49795148174501447
+            },
+            {
+              "class_index": 2,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.47012693853970244
+            },
+            {
+              "class_index": 3,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.1506546138441497
+            },
+            {
+              "class_index": 3,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.07646258555444554
+            },
+            {
+              "class_index": 3,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.14764421468096908
+            },
+            {
+              "class_index": 3,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.15074829486130784
+            },
+            {
+              "class_index": 3,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.26060648244991347
+            },
+            {
+              "class_index": 4,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.0686826538858351
+            },
+            {
+              "class_index": 4,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.18264455309134514
+            },
+            {
+              "class_index": 4,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.08269993419237175
+            },
+            {
+              "class_index": 4,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.10469161124223338
+            },
+            {
+              "class_index": 4,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.12802435094579612
+            },
+            {
+              "class_index": 5,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.3400832654496013
+            },
+            {
+              "class_index": 5,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.3128851068381705
+            },
+            {
+              "class_index": 5,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.2588335273727653
+            },
+            {
+              "class_index": 5,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.2202443895450045
+            },
+            {
+              "class_index": 5,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.384896440046793
+            }
+          ]
+        },
+        "t2.pool": {
+          "samples": 720,
+          "descriptor_dimension": 192,
+          "total_scatter": 717.7935140601319,
+          "class_between_scatter": 355.4007872367238,
+          "class_within_scatter": 362.3927268234081,
+          "conditional_RX_between_scatter": 123.91551123840443,
+          "class_fraction_of_total": 0.4951295606259138,
+          "conditional_RX_fraction_of_class_residual": 0.3419370811456372,
+          "conditional_RX_fraction_of_total": 0.1726339243962904,
+          "covered_class_RX_cells": 30,
+          "cells": [
+            {
+              "class_index": 0,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.19862821740166917
+            },
+            {
+              "class_index": 0,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.09565924757087918
+            },
+            {
+              "class_index": 0,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.11468004933028979
+            },
+            {
+              "class_index": 0,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.1485106085748752
+            },
+            {
+              "class_index": 0,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.10607243247484344
+            },
+            {
+              "class_index": 1,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.13232157771278238
+            },
+            {
+              "class_index": 1,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.08850601463848429
+            },
+            {
+              "class_index": 1,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.13273742438531214
+            },
+            {
+              "class_index": 1,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.15689275793274632
+            },
+            {
+              "class_index": 1,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.14222738004085925
+            },
+            {
+              "class_index": 2,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.3036763056873602
+            },
+            {
+              "class_index": 2,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.18917757867760143
+            },
+            {
+              "class_index": 2,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.2183088820673002
+            },
+            {
+              "class_index": 2,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.3574965905020734
+            },
+            {
+              "class_index": 2,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.36557457787264824
+            },
+            {
+              "class_index": 3,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.12719617303820901
+            },
+            {
+              "class_index": 3,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.1146629553177003
+            },
+            {
+              "class_index": 3,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.15792240376698793
+            },
+            {
+              "class_index": 3,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.13657997002333375
+            },
+            {
+              "class_index": 3,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.191049807989865
+            },
+            {
+              "class_index": 4,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.06762843291386884
+            },
+            {
+              "class_index": 4,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.1743738775680304
+            },
+            {
+              "class_index": 4,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.07994926644250795
+            },
+            {
+              "class_index": 4,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.09730576258425602
+            },
+            {
+              "class_index": 4,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.13394877402758618
+            },
+            {
+              "class_index": 5,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.20604731375057966
+            },
+            {
+              "class_index": 5,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.2645688880126814
+            },
+            {
+              "class_index": 5,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.19916507803382016
+            },
+            {
+              "class_index": 5,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.18200207830902096
+            },
+            {
+              "class_index": 5,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.28027587495201284
+            }
+          ]
+        },
+        "joint160": {
+          "samples": 720,
+          "descriptor_dimension": 160,
+          "total_scatter": 718.805544011931,
+          "class_between_scatter": 516.7174644422589,
+          "class_within_scatter": 202.08807956967203,
+          "conditional_RX_between_scatter": 68.24766739813953,
+          "class_fraction_of_total": 0.7188557026956963,
+          "conditional_RX_fraction_of_class_residual": 0.3377124842962863,
+          "conditional_RX_fraction_of_total": 0.09494593908837008,
+          "covered_class_RX_cells": 30,
+          "cells": [
+            {
+              "class_index": 0,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.08956751264105521
+            },
+            {
+              "class_index": 0,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.09974515567294293
+            },
+            {
+              "class_index": 0,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.0705038142959746
+            },
+            {
+              "class_index": 0,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.045256640171860874
+            },
+            {
+              "class_index": 0,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.08939724129968699
+            },
+            {
+              "class_index": 1,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.06307605475324951
+            },
+            {
+              "class_index": 1,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.10700767345158346
+            },
+            {
+              "class_index": 1,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.0847562440106679
+            },
+            {
+              "class_index": 1,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.0572183898404362
+            },
+            {
+              "class_index": 1,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.11115938100563692
+            },
+            {
+              "class_index": 2,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.07103624340215973
+            },
+            {
+              "class_index": 2,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.10560938987091098
+            },
+            {
+              "class_index": 2,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.09678161077490219
+            },
+            {
+              "class_index": 2,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.08717911920916
+            },
+            {
+              "class_index": 2,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.09397893860142555
+            },
+            {
+              "class_index": 3,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.07055625768817193
+            },
+            {
+              "class_index": 3,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.11715070787442602
+            },
+            {
+              "class_index": 3,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.06087877773796041
+            },
+            {
+              "class_index": 3,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.07772352936358005
+            },
+            {
+              "class_index": 3,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.16136402746640136
+            },
+            {
+              "class_index": 4,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.09806525061017697
+            },
+            {
+              "class_index": 4,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.14275140796425212
+            },
+            {
+              "class_index": 4,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.08988349515085145
+            },
+            {
+              "class_index": 4,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.09236844996954226
+            },
+            {
+              "class_index": 4,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.19358419573838043
+            },
+            {
+              "class_index": 5,
+              "source_RX": 1,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.14082623540088107
+            },
+            {
+              "class_index": 5,
+              "source_RX": 3,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.07331353245295308
+            },
+            {
+              "class_index": 5,
+              "source_RX": 4,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.09093430984994516
+            },
+            {
+              "class_index": 5,
+              "source_RX": 6,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.050242514845267636
+            },
+            {
+              "class_index": 5,
+              "source_RX": 8,
+              "count": 24,
+              "effective_weight": 24.0,
+              "centroid_squared_offset": 0.11173670714137082
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "seconds": 9.141253940062597,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "U_sampling_seed": 2026102307,
+  "GPU_workers": 0,
+  "model_updates": 0,
+  "teacher_updates": 0,
+  "prototype_updates": 0,
+  "normalization_updates": 0,
+  "head_fit_updates": 0,
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "source_V_role_changed": false,
+  "live_jobs_changed": false,
+  "interpretation": "Descriptive source weighted scatter of frozen features,not causal nuisance isolation,independent-sample significance,U pseudo correctness or target accuracy proof.No fitted classifier or projection."
+}

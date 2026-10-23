@@ -91,3 +91,8 @@ PAIREDU三seed已在各自GPU5/6/7实际续训，真实E30 no-query smoke和配�
 ## 梯度保护三 seed 已实际启动
 
 `20261023-phase1-PAMF-U-GradProtect-m3-r01` 已以 commit `0aba8a89c8b74e3058a1bec727fef86805d75f6c` 发布，80项检查／一次P0/P1审查／真实E30 source-only smoke全部PASS。真实反向 .grad 逐参数符合显式保护梯度，三个组的冲突均被处理，默认头／教师／单次EMA权限正确；正式三seed已重新载原E30续训，每卡UGP＋UMIX两个本任务worker，含外部最多三个。实际step前缀约束与曝光计数逐条核对，新目标未访问。后续固定E50＋raw／同一DURA七景及独立评分不变，原goal保持ACTIVE。
+
+
+## 源接收机差异与预先固定的类别条件矩约束
+
+原E30三seed sourceU960／V720冻结描述子中，浅／中层同类RX质心差对应约34%至42%类内散布，30个类×源RX单元齐；没有新头、参数／教师／原型更新、U真值或目标访问。完整比例和边界见九模型reference源接收机附录。独立下一条 `20261023-phase1-PAMF-U-CMR-m3-r01` 固定原RXPSM E30+20，原损失／输入／教师保持，新增一次raw U学生前向，对浅中层同伪类不同源RX的置信加权均值／标准差做0.1矩约束，权重>=0.5、ESS>=4，无矩EMA库或新推理参数。三seed、最终E50、raw＋同一DURA七景、双基线及成本完整登记，当前只是PLANNED。等待同seedUMIX GPU结束后与UGP各占每卡一槽，CPU评分在UGP后；UMIX／UGP健康训练保持，矩阵在它们的目标成绩读取前固定。原goal仍ACTIVE。
