@@ -28,3 +28,8 @@ GPU5/6/7 一 seed 一卡，新行等待同 seed HPL_NO_UAS 全部14项 GPU 预�
 ## 发布后实际排队证据
 
 执行 commit `b981bad253b144791579421ad18e3f4cfa480408`；一次 archive 本地／远端 SHA 对照及远端 compile PASS。独立读回实际 CPU 控制器 PID／CWD／完整命令、存活和同版本 state，三 row 均 QUEUED、GPU 子进程 0。等待同 seed noUAs 完成全部 GPU 预测后执行真实原 F21 source-only smoke，PASS 立即正式重载对应父权重继续；前序 HPLT1U 启动中 PID 计入容量。现有六条健康训练及其他 owner 保留。源机制和矩阵在本轮 UVB 目标成绩读取前已冻结；排队不等于训练成功或目标提升。
+
+
+## 实际源检查与三卡标签平滑训练
+
+VERIFIED_LS_RUNNING：真实原 F21 E30 source-only smoke PASS，U CE 标签平滑0.01、门控0.95／权重2、一次U学生前向、Uphysical0、原LPractical64、L768／U256、无EMA和有限默认头梯度均核实。probe丢弃，正式三个seed重载原对应E30；GPU5／6／7真实PID／CWD／命令／GPU与全部已刷盘step增长确认，前序健康HPLT1U保留，未占用超过两条本任务/card。执行commit `b981bad253b144791579421ad18e3f4cfa480408`；详见source_activation.json。此为源前缀，未宣称目标收益。

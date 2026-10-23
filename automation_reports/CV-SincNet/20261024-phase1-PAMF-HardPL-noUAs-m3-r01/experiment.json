@@ -281,10 +281,28 @@
   ],
   "registered_at": "2026-10-23T16:58:55.009216+00:00",
   "launch_status": {
-    "status": "VERIFIED_NO_UAS_RUNNING",
+    "status": "VERIFIED_SOURCE_FINAL_EVALUATION_RUNNING",
+    "evidence": "source_training_complete.json",
     "source_smoke": "PASS",
-    "evidence": "source_activation.json",
-    "actual_GPU_workers": 3,
-    "new_target_reads": 0
+    "source_rows_complete": 3,
+    "new_training_complete": true,
+    "target_matrix_complete": false
+  },
+  "source_quality_diagnostics": {
+    "HPL_NO_UAS": {
+      "status": "VERIFIED_FULL_SOURCE_V",
+      "source_epoch": 50,
+      "samples_per_seed": 27000,
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "reference": "source_pseudo_quality_E50_HPL_NO_UAS.json",
+      "model_or_threshold_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0,
+      "selection_changed": false
+    }
   }
 }
