@@ -1,0 +1,18 @@
+# PAMF 半监督收益目标
+
+用户于 2026-10-23 要求设计并验证适合 PAMF 的半监督方法，超过 PAMF 监督版与 PAMF 监督部分＋普通伪标签版。提升单位固定为百分点。完成条件是同一方法、同一数据契约、相同默认分类头和 E50/11100 更新预算下，三个配对 F 模型种子的 raw clean 均值相对两个对照分别至少提高 1 个百分点，六种 practical 场景的种子内均值相对两个对照分别严格提高 1.5 个百分点。最终以未四舍五入的对照计数计算；用户表格对应近似门槛为 clean ≥85.98%、六景均值 >72.10%。两个指标必须由同一方法同时满足，不能拼接候选或种子。
+
+原数据为 ManySig F0：六 TX，源 RX1/3/4/6/8、源 day1/2/3，L6300/U56700/V27000，目标七 RX、四日期、168000 物理样本。raw clean 与六 practical 是主验收口径；DURA 读出不用于替代 raw 半监督收益。本研究不自动替换当前 PAMF-T1-E50 或 DURA v1.0 默认版本。
+
+资源使用 N607 的 3 张显卡，模型种子 2026092701/02/03 各固定一张卡，每卡最多 2 个训练或预测 worker，总计最多 6 个；独立 CPU scorer 最多 1 个。首轮绑定 GPU0/1/2，启动前核实容量，不停止其他 owner 的健康进程。具体参数、命令、输出和技术停止规则见唯一首轮 run：`20261023-phase1-PAMF-physical-softmatch-m6-r01`。
+
+首轮路线为 PSM（物理视图软匹配）及 RXPSM（增加跨接收机标签原型参考），每条路线三个实际 F 种子。两者从零训练并保留原 20＋10＋20 三段日程、13L＋37LU、监督成对 CE/KL/CRIC 和默认头；不继承按目标成绩挑出的模型。已有正确输入绑定的 F20 监督对照及 F21 普通 PL 对照直接复用。
+
+后续迭代只能基于合法源域训练、V 诊断和机制证据；参数及矩阵先于新目标访问冻结，不把目标差距变成调参反馈。科学负结果完整保留，不能作为技术故障终止健康任务。全部目标预测冻结后独立评分并报告每 seed、每场景、RX/TX/day、均值与样本 SD、配对差、无标签有效曝光和实测成本。未达到两项门槛时目标保持未完成，不将已实现、已启动或仅源域提升写成成功。
+
+普通固定阈值 PL 是必须保留的对照。仅降低阈值无法单独检验物理鲁棒性与身份参考；实例记忆队列更大且可能强化同 RX 邻近关系。首轮因此选择连续权重＋同记录信道视图，再用其他源 RX 的 L_s 原型隔离验证跨 RX 身份证据。它们是研究假设，文献不能证明本项目的预期涨幅。
+
+参考：
+
+- Chen et al., SoftMatch: Addressing the Quantity-Quality Trade-off in Semi-supervised Learning, ICLR 2023, https://arxiv.org/abs/2301.10921 。本研究仅借鉴单边高斯置信加权，不声称完整复现或原创该加权函数。
+- Zheng et al., SimMatch: Semi-Supervised Learning With Similarity Matching, CVPR 2022, https://openaccess.thecvf.com/content/CVPR2022/html/Zheng_SimMatch_Semi-Supervised_Learning_With_Similarity_Matching_CVPR_2022_paper.html 。本研究使用标签来源受限、排除自身 RX 的类别原型，不声称其等于论文的实例记忆匹配。
