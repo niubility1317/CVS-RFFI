@@ -1,0 +1,159 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "execution_commit": "de92f461949dbb0163745c0cde009a433e6fc854",
+  "observed_unix": 1792757651.2512887,
+  "controller_PID_CWD_command_verified": true,
+  "own_GPU_workers": 3,
+  "rows": [
+    {
+      "row_id": "PAIREDU-s2026092701",
+      "actual_GPU": 5,
+      "PID_CWD_command_GPU_verified": true,
+      "log_growth_bytes": 4944,
+      "source_epoch_progress": [
+        {
+          "epoch": 1,
+          "updates": 222,
+          "cumulative_epoch": 31,
+          "cumulative_updates": 6882,
+          "CRIC_calls": 222,
+          "extra_L": 142080,
+          "PL_seen": 56700,
+          "PL_accepted": 53870,
+          "L_actual": 28416,
+          "U_actual": 56700,
+          "seconds": 221.4762738449499
+        }
+      ],
+      "live_step_prefix": {
+        "row_id": "PAIREDU-s2026092701",
+        "complete_records": 111,
+        "closed_gzip": false,
+        "last": {
+          "SSL_loss": 0.20054051280021667,
+          "SSL_seen": 992316,
+          "SSL_physical_seen": 510366,
+          "SSL_paired_calls": 111,
+          "SSL_paired_clean_seen": 28416,
+          "SSL_paired_physical_seen": 28416,
+          "SSL_student_U_views": 1020732,
+          "SSL_proto_coverage": 1.0,
+          "SSL_pair_clean_CE": 0.02094830386340618,
+          "SSL_pair_physical_CE": 0.14016664028167725,
+          "SSL_pair_clean_prototype": 0.003753345925360918,
+          "SSL_pair_physical_prototype": 0.003915014211088419,
+          "SSL_pair_physical_feature": 0.031757205724716187
+        },
+        "cumulative_updates": 6771
+      }
+    },
+    {
+      "row_id": "PAIREDU-s2026092702",
+      "actual_GPU": 6,
+      "PID_CWD_command_GPU_verified": true,
+      "log_growth_bytes": 4944,
+      "source_epoch_progress": [
+        {
+          "epoch": 1,
+          "updates": 222,
+          "cumulative_epoch": 31,
+          "cumulative_updates": 6882,
+          "CRIC_calls": 222,
+          "extra_L": 142080,
+          "PL_seen": 56700,
+          "PL_accepted": 53743,
+          "L_actual": 28416,
+          "U_actual": 56700,
+          "seconds": 217.82993743708357
+        }
+      ],
+      "live_step_prefix": {
+        "row_id": "PAIREDU-s2026092702",
+        "complete_records": 111,
+        "closed_gzip": false,
+        "last": {
+          "SSL_loss": 0.23024863004684448,
+          "SSL_seen": 992316,
+          "SSL_physical_seen": 510366,
+          "SSL_paired_calls": 111,
+          "SSL_paired_clean_seen": 28416,
+          "SSL_paired_physical_seen": 28416,
+          "SSL_student_U_views": 1020732,
+          "SSL_proto_coverage": 1.0,
+          "SSL_pair_clean_CE": 0.022984318435192108,
+          "SSL_pair_physical_CE": 0.17157141864299774,
+          "SSL_pair_clean_prototype": 0.0035120260436087847,
+          "SSL_pair_physical_prototype": 0.0035241213627159595,
+          "SSL_pair_physical_feature": 0.028656750917434692
+        },
+        "cumulative_updates": 6771
+      }
+    },
+    {
+      "row_id": "PAIREDU-s2026092703",
+      "actual_GPU": 7,
+      "PID_CWD_command_GPU_verified": true,
+      "log_growth_bytes": 4944,
+      "source_epoch_progress": [
+        {
+          "epoch": 1,
+          "updates": 222,
+          "cumulative_epoch": 31,
+          "cumulative_updates": 6882,
+          "CRIC_calls": 222,
+          "extra_L": 142080,
+          "PL_seen": 56700,
+          "PL_accepted": 54235,
+          "L_actual": 28416,
+          "U_actual": 56700,
+          "seconds": 217.98655703105032
+        }
+      ],
+      "live_step_prefix": {
+        "row_id": "PAIREDU-s2026092703",
+        "complete_records": 112,
+        "closed_gzip": false,
+        "last": {
+          "SSL_loss": 0.20994609594345093,
+          "SSL_seen": 992572,
+          "SSL_physical_seen": 510622,
+          "SSL_paired_calls": 112,
+          "SSL_paired_clean_seen": 28672,
+          "SSL_paired_physical_seen": 28672,
+          "SSL_student_U_views": 1021244,
+          "SSL_proto_coverage": 1.0,
+          "SSL_pair_clean_CE": 0.021742090582847595,
+          "SSL_pair_physical_CE": 0.1527668833732605,
+          "SSL_pair_clean_prototype": 0.0037083637434989214,
+          "SSL_pair_physical_prototype": 0.0035295330453664064,
+          "SSL_pair_physical_feature": 0.028199229389429092
+        },
+        "cumulative_updates": 6772
+      }
+    }
+  ],
+  "source_smoke": {
+    "status": "PASS",
+    "method": "PAIREDU",
+    "target_reads": 0,
+    "U_truth_reads": 0,
+    "checked": {
+      "parent_epoch": 30,
+      "parent_updates": 6660,
+      "EMA_updates_after_smoke": 6661,
+      "U_seen": 964156,
+      "physical_U_seen": 482206,
+      "L_forward_packets": 768,
+      "finite_backward": true,
+      "teacher_gradient": false,
+      "student_U_views": 964412,
+      "paired_clean_seen": 256,
+      "paired_physical_seen": 256,
+      "physical_feature_loss": 0.0340585820376873
+    },
+    "immediate_continuation": true
+  },
+  "no_new_method_target_reads": true,
+  "partial_training_only": true,
+  "prior_GPU_work_handoff_completed": true
+}

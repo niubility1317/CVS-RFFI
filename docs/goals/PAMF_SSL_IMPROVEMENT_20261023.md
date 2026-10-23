@@ -44,3 +44,10 @@ VIEWANCHOR r01 在任何 smoke／训练之前因原卡持续占用而被资源�
 ## 配对U方案已实现并发布排队
 
 `20261023-phase1-PAMF-paired-U-m3-r01`：沿用此前源端固定假设，43项检查与一次限定P0/P1审查PASS，执行commit`de92f461949dbb0163745c0cde009a433e6fc854`。原RXPSM各seed E30学生/自身EMA/统计/标签原型独立追加20轮，full-U原IQ与同记录Practical输入concat，固定损失系数与实际曝光见该run的experiment.json/report.md。每seed在其九模型参考预测三行全部释放GPU后自动接续，不热改旧训练；最终E50同时测试raw与固定DURA v1.0。控制器已核实存活、三行排队，source smoke尚未开始；目标仍未证明达成。
+
+
+## 当前已完成结果与配对训练（双读出）
+
+VIEWANCHOR三seed raw已完整评分：clean84.379563%、六景71.946958%，对F20为-0.405754/+1.350761pp，对F21为-0.602183/+1.587599pp，原目标未达成。独立九模型DURA参考矩阵也已全齐：VIEWANCHOR组合84.448214%/77.521759%，监督组合84.857540%/77.854894%，普通PL组合85.029563%/78.074636%；三种新方法组合两个主指标均低于这两个对照。完整两套表与逐seed/景/RX/TX/day/净纠错、实际曝光和预测成本见`automation_reports/CV-SincNet/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/target_results.md`。
+
+PAIREDU三seed已在各自GPU5/6/7实际续训，真实E30 no-query smoke和配对梯度PASS，累计E31；指标及父权重在上述新目标读取前已经固定，保持原计划。原目标仍ACTIVE，不能以局部六景收益、DURA相对raw收益或source运行健康替代达标证据。

@@ -1,6 +1,6 @@
 # PAMF 干净／信道配对 U：源域后续假设
 
-状态：已发布，CPU控制器身份核实且正在等待前序同卡预测；尚未开始本版source smoke、训练或目标访问。当前 VIEWANCHOR 三个健康任务继续原配方。本假设在首轮 PSM/RXPSM 目标结果已经公开、任何 VIEWANCHOR 目标访问之前记录；不声称全新独立盲测。下列系数由现有源端视图和损失质量分解固定，不从目标分数搜索或选择父模型。
+状态：真实E30 source-only smoke已PASS，三种子正在GPU5/6/7续训；本版目标预测和评分尚未开始。当前 VIEWANCHOR 三个健康任务继续原配方。本假设在首轮 PSM/RXPSM 目标结果已经公开、任何 VIEWANCHOR 目标访问之前记录；不声称全新独立盲测。下列系数由现有源端视图和损失质量分解固定，不从目标分数搜索或选择父模型。
 
 当前 RXPSM／VIEWANCHOR 对每批 256 个 U，只让 student 看到 128 个普通噪声视图和 128 个物理信道视图，teacher 看到全部原 U。源端日志确认 U 损失、0.10 物理特征项、其他 RX 标签原型和连续计数均实际工作。它没有完整的 256 条原 U student 分类分支；这个结构事实不是 clean 损伤的因果证明，也不证明新增分支必然有效。
 
@@ -33,3 +33,10 @@ E31 起，对于每个真实 U IQ 同时给 student 原 IQ 和一个同记录的
 ## 实际发布
 
 VERIFIED_QUEUED：执行commit `de92f461949dbb0163745c0cde009a433e6fc854`，一次发布包本地/远端SHA对照与远端编译PASS。独立读回CPU控制器PID/CWD/完整命令与实时进程，确认三行仍QUEUED、无本版GPU worker，正在等待前序同seed三条DURA预测完成；资源等待符合预登记，没有重复启动或接管其他健康任务。真实E30 source-only smoke是该控制器获得预定GPU资源后的首个步骤，当前尚未执行，不把排队或本地检查当作实际训练完成。证据见queue_verification.json。
+
+
+## 实际配对训练已启动
+
+VERIFIED_RUNNING：首个真实E30学生/自身EMA的source-only smoke PASS，768条L前向、256条唯一U/512条student视图，teacher无梯度，默认头有限反向；smoke后EMA6661，U964156、物理U482206、student视图964412，均符合固定父状态续接。smoke不写回父模型，正式三seed重新加载原E30。
+
+独立核实三个worker的PID/CWD/完整命令与GPU5/6/7实际归属，日志跨观测均增长，三seed均已完成首个新增epoch，即累计E31/6882更新；另完整读取当时已刷新的111/111/112条连续step前缀，真实clean/physical CE、双原型项和物理特征项均有限、正值，唯一U和两student视图的连续计数逐条匹配，源U TX仍隐藏。该前缀不是最终4440步完成证明，完整训练和目标指标仍待后续验证。source_activation.json保留实际时刻及分阶段范围，避免把source运行健康当作测试成功。
