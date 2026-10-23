@@ -17,7 +17,7 @@ def collect(contexts,plan,phase,analysis_commit):
     from experiments.pamf_ssl_research.hard_pl_early import validate as early_validate
     from experiments.pamf_ssl_research.hard_pl_guard import validate as guard_validate
     from experiments.pamf_ssl_research.hard_pl_joint import validate as joint_validate
-    from experiments.pamf_ssl_research.source_geometry import LEVELS,fixed_indices,capture_deployed,describe
+    from experiments.pamf_ssl_research.source_geometry import LEVELS,fixed_indices,capture_deployed,describe,fixed_head_interventions
     torch.set_num_threads(2)
     def config(key,method,seed):
         rows=[r for r in contexts[key]['rows'] if r['method']==method and r['model_seed']==seed]
@@ -71,7 +71,15 @@ def collect(contexts,plan,phase,analysis_commit):
                 _,logits=capture_deployed(reference,x[begin:begin+256]);q.append(logits.softmax(1))
             q=torch.cat(q);accepted=q.max(1).values>=.95 if role=='U_s' else torch.ones(len(x),dtype=torch.bool)
             labels=q.argmax(1) if role=='U_s' else torch.tensor(data.metadata['y'][ix].tolist(),dtype=torch.long)
-            cohorts[role]=dict(x=x,rx=rx,labels=labels,accepted=accepted,reference_q=q);del data
+            cohorts[role]=dict(x=x,rx=rx,labels=labels,accepted=accepted,reference_q=q)
+            if phase=='C':
+                from experiments.pamf_ssl_research.u_mixstyle_objective import protected_partners
+                reference_accepted=q.max(1).values>=.95;torch.manual_seed(seed+2026102501)
+                partner,valid=protected_partners(q,reference_accepted.float(),rx,list((1,3,4,6,8)),1.)
+                if bool((valid&(~reference_accepted|~reference_accepted[partner]|(q.argmax(1)!=q.argmax(1)[partner])|(rx==rx[partner]))).any()):
+                    raise ValueError('Frozen source intervention partner violates reference pseudo identity/RX')
+                cohorts[role].update(partner=partner,valid=valid,reference_accepted=reference_accepted)
+            del data
         del reference;gc.collect()
         for profile in profiles:
             reader,c=load(profile,seed,contract)
@@ -82,13 +90,20 @@ def collect(contexts,plan,phase,analysis_commit):
                     for name in LEVELS:values[name].append(features[name])
                 features={name:torch.cat(parts) for name,parts in values.items()};q=torch.cat(probabilities)
                 y=cohort['labels'];accepted=cohort['accepted'];pred=q.argmax(1);confidence=q.max(1).values
+                extra={}
+                if phase=='C':
+                    extra['fixed_head_interventions']=fixed_head_interventions(reader,features,y,cohort['partner'],cohort['valid'])
+                    valid=cohort['valid'];partner=cohort['partner']
+                    extra['source_pair_diagnostic']=dict(eligible=int(valid.sum()),reference_accepted=int(cohort['reference_accepted'].sum()),
+                        true_TX_pair_agreements=int((y[valid]==y[partner[valid]]).sum()) if role=='V' else None,
+                        U_TX_truth_read=False,partner_chosen_without_V_truth=True)
                 rows.append(dict(profile=profile,model_seed=seed,role=role,source_epoch=20 if profile=='F21_E20' else 30,
                     source_run_id=c['run_id'],source_row_id=c['row_id'],source_code_commit=c.get('code_commit'),
                     samples=len(x),common_reference_selected=int(accepted.sum()),own_acceptance=int((confidence>=.95).sum()),
                     common_selected_prediction_agreement_or_V_correct=int(((pred==y)&accepted).sum()),
                     mean_common_reference_label_CE=float(-q[accepted,y[accepted]].clamp_min(1e-12).log().mean()) if accepted.any() else None,
                     labels='Fixed originalE20 raw pseudo TX;U truth hidden' if role=='U_s' else 'Fixed sourceV true TX,diagnostic only,all720',
-                    **describe(features,y,cohort['rx'],accepted)))
+                    **describe(features,y,cohort['rx'],accepted),**extra))
             del reader;gc.collect()
         del cohorts
     return dict(status='VERIFIED_SOURCE_GEOMETRY_TRAJECTORY_PHASE_'+phase,analysis_code_commit=analysis_commit,

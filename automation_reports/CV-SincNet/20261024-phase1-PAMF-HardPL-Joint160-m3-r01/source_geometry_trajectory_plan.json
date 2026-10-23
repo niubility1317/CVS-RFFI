@@ -15,15 +15,21 @@
     ],
     "B": [
       "JOINT_E30"
+    ],
+    "C": [
+      "F21_E20",
+      "GUARD_NAMS_E30"
     ]
   },
   "expected_source_models_by_phase": {
     "A": 12,
-    "B": 3
+    "B": 3,
+    "C": 6
   },
   "expected_role_rows_by_phase": {
     "A": 24,
-    "B": 6
+    "B": 6,
+    "C": 12
   },
   "parent_reference": "Fixed original same-seed F21 E20;original F21E30 and own10 continuation checkpoints,never target-selected models",
   "U_s": {
@@ -87,5 +93,34 @@
   ],
   "execution": "N607 ordinary account,existing Joint release/model dependencies;committed analysis/config passed over UTF8 stdin,CPU2/noCUDA;read-only source checkpoints and existing validated roles.Local immutable aggregate outputs per phase.",
   "command": "python local_artifacts/pamf_ssl_research_20261023/collect_source_geometry_trajectory.py --phase A (then fixed phase B)",
-  "goal_complete": false
+  "goal_complete": false,
+  "fixed_head_interventions": {
+    "status": "REGISTERED_BEFORE_INTERVENTION_READ",
+    "profiles": [
+      "F21_E20",
+      "GUARD_NAMS_E30"
+    ],
+    "interventions": [
+      "joint",
+      "without_reference",
+      "without_signature",
+      "core_only",
+      "reference_swap",
+      "signature_swap",
+      "late_swap"
+    ],
+    "partners": "Same originalE20 raw pseudo class,accepted confidence>=.95 at both endpoints,different sourceRX;seed model_seed+2026102501;one fixed plan per role reused across profiles",
+    "V_truth": "Only report actual sourceV pair agreement and source classifier output;never choose a partner or update state with V truth",
+    "objective": "Distinguish possible receiver compensation from weak identity information;assess latent RX perturbation with the frozen existing head,not train or replace any head",
+    "costs": "No additional backbone inference beyond the fixed capture;seven frozen default-head evaluations per captured cohort",
+    "updates": 0,
+    "new_heads": 0,
+    "new_GPU_workers": 0,
+    "U_truth_reads": 0,
+    "target_reads": 0,
+    "limitations": "Synthetic latent combinations need not be physically realizable;source head changes do not establish target gains.No case selection or hyperparameter change based on target.",
+    "source_hypothesis": "Same-pseudo crossRX reference-response recomposition is a possible independent U augmentation because reference160 has lower sourceTX separation and stronger sourceRX association than signature160;first diagnose compensation,do not delete it or launch training from this observation alone",
+    "candidate_launch_authorized_by_this_diagnostic": false,
+    "focused_source_suite_checks": 8
+  }
 }

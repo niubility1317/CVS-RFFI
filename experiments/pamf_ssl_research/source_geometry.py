@@ -101,3 +101,28 @@ def describe(features,labels,rx,accepted):
             selected_mean_norm_relative_to_joint=float(ratios[selected].mean()) if selected.any() else None)
     return dict(geometry=values,branch_contributions=contributions,
         interpretation='Descriptive source geometry on the same fixed cohort and fixed reference acceptance/classes;unit-only and cohort-normalized summaries are not causal RX nuisance isolation or target gains. A zero-spread/collapsed branch is not evidence of useful invariance. U classes remain reference pseudo labels;no probe/projection fitted.')
+
+
+def fixed_head_interventions(reader,features,labels,partner,valid):
+    if reader.training or any(p.requires_grad for p in reader.parameters()):raise ValueError('Only frozen existing default head permitted')
+    if set(features)!=set(LEVELS):raise ValueError('Actual deployed additive features required')
+    h=features['joint160'];s=features['signature160'];r=features['reference160'];core=features['core160'];n=len(h)
+    if (h.shape!=(n,160) or any(v.shape!=h.shape for v in (s,r,core)) or labels.shape!=(n,)
+        or labels.dtype!=torch.long or partner.shape!=(n,) or partner.dtype!=torch.long
+        or valid.shape!=(n,) or valid.dtype!=torch.bool or (n and (int(partner.min())<0 or int(partner.max())>=n))):
+        raise ValueError('Aligned fixed same-pseudo/sourceRX partner indices and existing160 features required')
+    cases=dict(joint=h,without_reference=h-r,without_signature=h-s,core_only=core,
+        reference_swap=h-r+r[partner],signature_swap=h-s+s[partner],late_swap=core+s[partner]+r[partner])
+    count=int(valid.sum());rows=[]
+    with torch.inference_mode():
+        for name,value in cases.items():
+            logits=reader.classify_features(value)
+            if logits.shape!=(n,6) or not torch.isfinite(logits).all():raise ValueError('Existing default-head intervention produced nonfinite logits')
+            selected=logits[valid];y=labels[valid]
+            rows.append(dict(intervention=name,samples_selected=count,
+                label_agreements=int((selected.argmax(1)==y).sum()),
+                label_agreement_percent=100*float((selected.argmax(1)==y).double().mean()) if count else None,
+                mean_label_CE=float(F.cross_entropy(selected,y)) if count else None,
+                mean_relative_feature_displacement=float(((value[valid]-h[valid]).norm(dim=1)/h[valid].norm(dim=1).clamp_min(1e-12)).mean()) if count else None))
+    return dict(rows=rows,extra_backbone_forwards=0,existing_head_forward_calls=len(cases),head_fit_updates=0,
+        interpretation='Frozen existing-head source interventions only;partners chosen by reference pseudo labels and RX,never sourceV truth.No fitted or replacement head,no model update.These synthetic latent combinations do not prove physical realizability or target gains.')

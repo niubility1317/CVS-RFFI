@@ -32,3 +32,8 @@ VERIFIED：发布commit `77498c5a8b003f3afc71fab7ee96ca39662593fa` 的真实原E
 ## 固定源特征轨迹诊断
 
 额外的只读源诊断，不改变或阻挡现有训练／冻结／测试。矩阵预定原F21 E20、原F21 E30、EarlyNAMS E30、GuardNAMS E30各三seed（A阶段24个角色行），以及当前Joint固定own E30三seed（B阶段6行）；不按目标分数挑checkpoint。所有模型用相同U960／V720物理源cohort，U统一用原同seedE20伪标签及0.95接受集合，V用全部720真标签仅作不更新诊断。检查实际部署eval特征，无临时style扰动，分别报告浅中层、joint、主干残量、实际签名与含gain的参考响应贡献；同时保留TX分离／总散度／分支幅度，不能将坍塌或接收机关联降低当成成功。unit-only和全cohort CRIC式标准化均为描述性统计，不拟合头／投影、不读U真值／target，不作候选晋级门槛。6项相关检查通过；代码配置以Git版本固定，实际checkpoint严格继承检查及sourceL2 no-query调用在CPU诊断中完成。完整矩阵、指令和边界见source_geometry_trajectory_plan.json。
+
+
+## 固定源轨迹 A 阶段完成及冻结头干预
+
+A阶段24角色行完成，只读CPU24.025秒，完整源统计见source_geometry_trajectory_A.md/json。U共用原E20接受/伪类、V720全保留，浅中层TX分离提高而joint没有同步改善；参考响应强RX关联可能同时起补偿作用，不能由此删除。预定C阶段仅原E20与GuardNAMS E30各三seed、12角色行，冻结同一默认头，检查零分支及同伪类跨RX分支交换；不另拟合头、不新增骨干前向/训练/GPUworker、不读U真值/target、不作晋级或正式性能替代。八项相关源/冻结头检查通过。当前GPU训练及七景truth-last不变，B阶段固定Joint E30诊断在对应原生阶段冻结后继续。

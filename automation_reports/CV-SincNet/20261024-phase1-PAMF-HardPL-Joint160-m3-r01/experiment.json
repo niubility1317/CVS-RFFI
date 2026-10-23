@@ -299,10 +299,12 @@
     "target_matrix_complete": false
   },
   "frozen_source_geometry_trajectory": {
-    "status": "REGISTERED_SOURCE_ONLY_DIAGNOSTIC",
+    "status": "PHASE_A_SOURCE_COMPLETE_B_PENDING_C_REGISTERED",
     "plan": "source_geometry_trajectory_plan.json",
     "primary_training_or_evaluation_changed": false,
     "source_V_updates": 0,
-    "new_GPU_workers": 0
+    "new_GPU_workers": 0,
+    "phase_A_result": "source_geometry_trajectory_A.md",
+    "phase_C_registered": true
   }
 }

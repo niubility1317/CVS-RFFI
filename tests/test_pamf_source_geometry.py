@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 import torch
 from torch import nn
-from experiments.pamf_ssl_research.source_geometry import fixed_indices,geometry,capture_deployed,describe,LEVELS
+from experiments.pamf_ssl_research.source_geometry import fixed_indices,geometry,capture_deployed,describe,fixed_head_interventions,LEVELS
 
 
 def test_fixed_source_cohort_has_no_U_truth_and_all_existing_cells():
@@ -71,3 +71,37 @@ def test_capture_rejects_trainable_or_training_reader_and_removes_hooks_on_failu
     model.features=fail
     with pytest.raises(RuntimeError,match='source forward failed'):capture_deployed(model,x)
     assert all(not m._forward_hooks for m in model.modules())
+
+
+class FixedHead(nn.Module):
+    def __init__(self):
+        super().__init__();self.head=nn.Linear(160,6,bias=False);self.head_calls=0
+        with torch.no_grad():self.head.weight.zero_();self.head.weight[:,:6].copy_(torch.eye(6))
+    def classify_features(self,x):self.head_calls+=1;return self.head(x)
+
+
+def intervention_fixture():
+    model=FixedHead().eval().requires_grad_(False);core=torch.zeros(4,160);core[:2,0]=4;core[2:,1]=4
+    reference=torch.zeros_like(core);reference[:,8]=torch.tensor([.8,-.8,.8,-.8])
+    signature=torch.zeros_like(core);signature[:2,9]=.2;signature[2:,9]=-.2
+    features=dict(core160=core,reference160=reference,signature160=signature,joint160=core+reference+signature,
+        time_down=torch.zeros(4,8),**{'t2.pool':torch.zeros(4,8)})
+    return model,features,torch.tensor([0,0,1,1]),torch.tensor([1,0,3,2]),torch.ones(4,dtype=torch.bool)
+
+
+def test_frozen_head_interventions_change_RX_components_without_refitting_or_backbone_calls():
+    model,features,y,partner,valid=intervention_fixture();before=deepcopy(model.state_dict())
+    result=fixed_head_interventions(model,features,y,partner,valid)
+    assert model.head_calls==7 and result['existing_head_forward_calls']==7 and result['extra_backbone_forwards']==0
+    assert all(r['label_agreements']==4 and r['mean_label_CE']>0 for r in result['rows'])
+    swap=next(r for r in result['rows'] if r['intervention']=='reference_swap')
+    same=next(r for r in result['rows'] if r['intervention']=='joint')
+    assert swap['mean_relative_feature_displacement']>0 and same['mean_relative_feature_displacement']==0
+    for key,value in before.items():torch.testing.assert_close(value,model.state_dict()[key])
+
+
+def test_head_intervention_rejects_bad_partner_or_trainable_state():
+    model,features,y,partner,valid=intervention_fixture();bad=partner.clone();bad[0]=4
+    with pytest.raises(ValueError,match='partner indices'):fixed_head_interventions(model,features,y,bad,valid)
+    model.train()
+    with pytest.raises(ValueError,match='frozen'):fixed_head_interventions(model,features,y,partner,valid)
