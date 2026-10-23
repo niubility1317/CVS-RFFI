@@ -1,0 +1,73 @@
+{
+  "status": "VERIFIED_CONTROLLER_QUEUED",
+  "observed_at": "2026-10-23T11:36:52.536957+00:00",
+  "execution_commit": "e01ac1f474ef8083e4b9ab62ba78549d286eb0e8",
+  "controller_identity": "Independent PID/CWD/argv match immutable release and runtime",
+  "controller_pid": 2023417,
+  "row_counts": {
+    "QUEUED": 6
+  },
+  "source_smoke": "NOT_STARTED",
+  "archive_transfer": "One local/remote archive comparison passed by release publisher",
+  "remote_compile": "PASS before dispatch",
+  "rows": [
+    {
+      "row_id": "PSM-s2026092701",
+      "status": "QUEUED",
+      "pid": null,
+      "gpu": null,
+      "log_bytes": null
+    },
+    {
+      "row_id": "RXPSM-s2026092701",
+      "status": "QUEUED",
+      "pid": null,
+      "gpu": null,
+      "log_bytes": null
+    },
+    {
+      "row_id": "PSM-s2026092702",
+      "status": "QUEUED",
+      "pid": null,
+      "gpu": null,
+      "log_bytes": null
+    },
+    {
+      "row_id": "RXPSM-s2026092702",
+      "status": "QUEUED",
+      "pid": null,
+      "gpu": null,
+      "log_bytes": null
+    },
+    {
+      "row_id": "PSM-s2026092703",
+      "status": "QUEUED",
+      "pid": null,
+      "gpu": null,
+      "log_bytes": null
+    },
+    {
+      "row_id": "RXPSM-s2026092703",
+      "status": "QUEUED",
+      "pid": null,
+      "gpu": null,
+      "log_bytes": null
+    }
+  ],
+  "GPU_capacity": [
+    {
+      "gpu": 5,
+      "total_compute_processes": 2
+    },
+    {
+      "gpu": 6,
+      "total_compute_processes": 2
+    },
+    {
+      "gpu": 7,
+      "total_compute_processes": 2
+    }
+  ],
+  "target_scores_collected": false,
+  "foreign_processes_modified": 0
+}

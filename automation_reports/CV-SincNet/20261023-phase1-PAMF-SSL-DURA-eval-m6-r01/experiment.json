@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "用户在本侧聊明确要求：补充接入 DURA 网络的星地性能。仅补冻结模型评估，不接管或修改主任务。",
   "code": {
-    "commit": null,
+    "commit": "e01ac1f474ef8083e4b9ab62ba78549d286eb0e8",
     "checkout": "code/worktrees/pamf_ssl_dura_eval_20261023",
     "environment": "N607 ordinary account CVS-RFFI Py3.10/Torch2.1 FP32/TF32off, CPU2 per worker",
     "cwd": "PROJECT/releases/20261023-phase1-PAMF-SSL-DURA-eval-m6-r01",
@@ -343,5 +343,10 @@
     "DURA is a single common fixed G; three-seed SD is conditional F variation, not G retraining variation.",
     "PSM/RXPSM and baseline raw target scores were already exposed. This is a requested engineering supplement, not a fresh blind confirmation."
   ],
-  "registered_at": "2026-10-23T11:31:48+00:00"
+  "registered_at": "2026-10-23T11:31:48+00:00",
+  "launch_status": {
+    "status": "VERIFIED_CONTROLLER_QUEUED",
+    "observed_at": "2026-10-23T11:36:52.536957+00:00",
+    "evidence": "launch_verification.json"
+  }
 }

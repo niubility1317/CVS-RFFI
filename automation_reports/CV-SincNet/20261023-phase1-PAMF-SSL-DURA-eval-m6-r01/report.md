@@ -1,6 +1,6 @@
 # PAMF 半监督模型接入 DURA 的补充评估
 
-状态：LOCAL_VERIFIED，尚未启动。用户在侧聊要求补充接入 DURA 的星地性能，本次只评估已有冻结模型，不改动主任务。
+状态：VERIFIED_CONTROLLER_QUEUED。用户在侧聊要求补充接入 DURA 的星地性能，本次只评估已有冻结模型，不改动主任务。
 
 固定 PSM、RXPSM 各三个 E50/11100 学生和默认联合分类头，接入同一 DURA v1.0：R69 stage2/native_map_prior/final.pt，266951 参数，InferenceEngine(reuse=True, graph=True, native=False)，FP32、TF32off。监督 F20 和普通 PL F21 的相同 G 七景结果已完成，直接复用；新六行的 raw 决策也复用原物理 ID 对齐的冻结预测。监督 F20 指识别器监督训练，公共 G 使用过合法 L/U IQ，不标为整个系统仅 L 训练。
 
@@ -18,3 +18,7 @@ E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -X utf8 -m experiments.pa
 ```
 
 工作目录为 code/worktrees/pamf_ssl_dura_eval_20261023；远端 release/output 使用本 run ID 且不可覆盖。此时没有新 DURA 目标分数，不宣称完成。
+
+## 已核实启动状态
+
+观测时间 2026-10-23T11:36:52.536957+00:00，执行 commit `e01ac1f474ef8083e4b9ab62ba78549d286eb0e8`。一次归档传输比较、远端编译完成；独立读回核实控制器 PID／CWD／命令匹配，状态心跳继续。六行均 QUEUED，当前每卡已有两个总计算进程，尚未开始本 run 的 GPU smoke 或预测。队列等待容量后自动继续。尚未收集新 DURA 目标评分，不宣称评估完成；其他 owner 保持原运行。
