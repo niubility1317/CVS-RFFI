@@ -1,1 +1,2 @@
 {"at": "2026-10-23T14:54:31+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-23T15:04:11+00:00", "status": "LOCAL_VERIFIED", "note": "102 focused checks and one independent P0/P1 review PASS/no findings;source-fixed dual-anchor recipe unchanged.No real smoke/training/target yet.First source-only smoke then automatic full training/dual-readout evaluation.", "evidence": ["local_validation.json"], "row_id": null}

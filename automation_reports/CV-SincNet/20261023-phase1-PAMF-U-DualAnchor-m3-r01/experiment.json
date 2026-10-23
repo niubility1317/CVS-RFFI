@@ -3,7 +3,7 @@
   "run_id": "20261023-phase1-PAMF-U-DualAnchor-m3-r01",
   "group_id": "phase1-pamf-source-only-ssl-improvement",
   "display_name": "PAMF完整监督与raw身份双锚保护的无标签学习：固定源域假设",
-  "description": "PLANNED:fixed original RXPSM E30+20;keep original full T1 L and weighted U scalar losses.Separately retain original raw-L true-label CE gradient.Project only U to the intersection of both nonnegative anchor halfspaces per parameter group,then cap by full-L norm.No extra F forward,teacher,head or inference parameters.",
+  "description": "Source-fixed full-T1-L/raw-L-true-CE dual anchors for original RXPSM E30+20.Original L and weighted U scalar losses unchanged;only U gradient projected to both nonnegative halfspaces and capped by full-L norm.No extra F forward,teacher,head,inference parameters or G training.",
   "kind": "cvs",
   "stage": "Phase1",
   "aliases": [],
@@ -23,11 +23,11 @@
   "replaces_run_id": null,
   "authorization": "用户 /goal 授权持续设计迭代 PAMF 半监督机制，使目标测试 clean 相对监督/普通PL均至少高1pp、六景均值均严格高1.5pp；三GPU每卡固定一个模型种子、最多两个本任务worker；追加要求同时报告单PAMF与固定DURA+PAMF。",
   "code": {
-    "commit": "91931c1569db201d7a016e8d8cc680a3889c5b51",
+    "commit": "6444753431afddca87b6fcc79f5ace558c44dca4",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 ordinary account CVS-RFFI Py3.10/Torch2.1 FP32/TF32off, CPU2 per worker",
     "cwd": "PROJECT/releases/20261023-phase1-PAMF-U-DualAnchor-m3-r01",
-    "entry": "experiments.pamf_ssl_research.u_dualanchor_worker"
+    "entry": "experiments.pamf_ssl_research.control"
   },
   "data": {
     "dataset": "WiSig ManySig",
@@ -105,7 +105,7 @@
     "remote_run_root": "PROJECT/runs/20261023-phase1-PAMF-U-DualAnchor-m3-r01",
     "remote_log_root": "PROJECT/runs/20261023-phase1-PAMF-U-DualAnchor-m3-r01/logs",
     "local_artifact_root": "local_artifacts/pamf_ssl_research_20261023/release-u-dualanchor-r01",
-    "launch_command": "NOT_LAUNCHED:implementation,focused checks,one P0/P1 review;source smoke PASS then immediately fixed training/evaluation",
+    "launch_command": "python -m experiments.pamf_ssl_research.u_dualanchor_publish --repo code/worktrees/standard_ce_baselines_20261010 --context local_artifacts/pamf_ssl_research_20261023/viewanchor_context.json --output local_artifacts/pamf_ssl_research_20261023/release-u-dualanchor-r01 --ssh-config tools/n607_ssh_config",
     "stop_rule": "Real fixed E30 no-query U-gradient smoke first; PASS continues immediately. Two identical technical failure fingerprints stop new dispatch and preserve healthy jobs/artifacts. No performance-based stopping, tuning, reorder or selective rerun."
   },
   "expected_artifacts": [
@@ -154,9 +154,9 @@
   "rows": [
     {
       "row_id": "UDAP-s2026092701",
-      "method": "PLANNED:U gradient projection against both full T1 L and existing raw-L true CE",
+      "method": "U gradient projection against both full T1 L and existing raw-L true CE",
       "purpose": "primary_predeclared",
-      "config_ref": "report.md and hypothesis.json;implementation pending",
+      "config_ref": "experiments/pamf_ssl_research/u_dualanchor.py",
       "resolved_config_ref": "PROJECT/runs/20261023-phase1-PAMF-U-DualAnchor-m3-r01/UDAP-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
@@ -177,7 +177,7 @@
       "budget_ref": "Original RXPSM E30/6660+20/4440=50/11100;13L+37LU.Teacher/studentU2097900,physical1048950.4440 dual-anchor updates;no extra F forward;extra gradient cost reported.",
       "output_root": "PROJECT/runs/20261023-phase1-PAMF-U-DualAnchor-m3-r01/UDAP-s2026092701",
       "log_path": "PROJECT/runs/20261023-phase1-PAMF-U-DualAnchor-m3-r01/logs/UDAP-s2026092701-row.log",
-      "command": "NOT_LAUNCHED:implementation pending",
+      "command": "CUDA_VISIBLE_DEVICES=5 python -u -m experiments.pamf_ssl_research.u_dualanchor_worker row --config RELEASE/configs/UDAP-s2026092701-row.json",
       "expected_artifacts": [
         "source/segment50/final_ssdg.pth",
         "source/segment50/ssl_state.pt",
@@ -190,9 +190,9 @@
     },
     {
       "row_id": "UDAP-s2026092702",
-      "method": "PLANNED:U gradient projection against both full T1 L and existing raw-L true CE",
+      "method": "U gradient projection against both full T1 L and existing raw-L true CE",
       "purpose": "primary_predeclared",
-      "config_ref": "report.md and hypothesis.json;implementation pending",
+      "config_ref": "experiments/pamf_ssl_research/u_dualanchor.py",
       "resolved_config_ref": "PROJECT/runs/20261023-phase1-PAMF-U-DualAnchor-m3-r01/UDAP-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
@@ -213,7 +213,7 @@
       "budget_ref": "Original RXPSM E30/6660+20/4440=50/11100;13L+37LU.Teacher/studentU2097900,physical1048950.4440 dual-anchor updates;no extra F forward;extra gradient cost reported.",
       "output_root": "PROJECT/runs/20261023-phase1-PAMF-U-DualAnchor-m3-r01/UDAP-s2026092702",
       "log_path": "PROJECT/runs/20261023-phase1-PAMF-U-DualAnchor-m3-r01/logs/UDAP-s2026092702-row.log",
-      "command": "NOT_LAUNCHED:implementation pending",
+      "command": "CUDA_VISIBLE_DEVICES=6 python -u -m experiments.pamf_ssl_research.u_dualanchor_worker row --config RELEASE/configs/UDAP-s2026092702-row.json",
       "expected_artifacts": [
         "source/segment50/final_ssdg.pth",
         "source/segment50/ssl_state.pt",
@@ -226,9 +226,9 @@
     },
     {
       "row_id": "UDAP-s2026092703",
-      "method": "PLANNED:U gradient projection against both full T1 L and existing raw-L true CE",
+      "method": "U gradient projection against both full T1 L and existing raw-L true CE",
       "purpose": "primary_predeclared",
-      "config_ref": "report.md and hypothesis.json;implementation pending",
+      "config_ref": "experiments/pamf_ssl_research/u_dualanchor.py",
       "resolved_config_ref": "PROJECT/runs/20261023-phase1-PAMF-U-DualAnchor-m3-r01/UDAP-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
@@ -249,7 +249,7 @@
       "budget_ref": "Original RXPSM E30/6660+20/4440=50/11100;13L+37LU.Teacher/studentU2097900,physical1048950.4440 dual-anchor updates;no extra F forward;extra gradient cost reported.",
       "output_root": "PROJECT/runs/20261023-phase1-PAMF-U-DualAnchor-m3-r01/UDAP-s2026092703",
       "log_path": "PROJECT/runs/20261023-phase1-PAMF-U-DualAnchor-m3-r01/logs/UDAP-s2026092703-row.log",
-      "command": "NOT_LAUNCHED:implementation pending",
+      "command": "CUDA_VISIBLE_DEVICES=7 python -u -m experiments.pamf_ssl_research.u_dualanchor_worker row --config RELEASE/configs/UDAP-s2026092703-row.json",
       "expected_artifacts": [
         "source/segment50/final_ssdg.pth",
         "source/segment50/ssl_state.pt",
@@ -262,7 +262,7 @@
     }
   ],
   "notes": [
-    "24 fixed E30 source probes only;full-L guided U still conflicts raw true CE in12/24 overall.No UGP/CMR target scores used.",
+    "Implemented exact source hypothesis90350e7;102 focused checks PASS.One independent read-only P0/P1 review PASS/no findings.Real E30 no-query smoke first on the vacated UGP GPU slot;not yet launched/trained.",
     "Only U gradient changed by projection to both anchor halfspaces and full-L norm cap;original L scalar/gradient,weighted U scalar,teacher/views/prototypes remain.No new head/F forward/inference parameter.",
     "Source Euclidean descent constraints do not guarantee native Adam/preconditioned parameter-step descent or target gain.",
     "Three formal seeds reload original same-seed E30;no chained tested candidate.No combination with CMR,MixStyle,UCRIC,paired U or G training.",

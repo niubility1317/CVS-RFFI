@@ -71,7 +71,9 @@ def hook(self,*,model,labeled_output,labels,extra,domains,optimizer_step,identit
         else:
             r0=self.forward_identity_only(raw,domain_labels=domains)['tx_logits']
             r1=r0 if single else self.forward_identity_only(raw,domain_labels=domains)['tx_logits']
-            raw_loss,_,_=pair(r0,r1,labels,kl_weight=kl_weight);self._cd_extra_L+=128*(1 if single else 2)
+            raw_loss,raw_ce,_=pair(r0,r1,labels,kl_weight=kl_weight);self._cd_extra_L+=128*(1 if single else 2)
+            raw_observer=getattr(self,'_pamf_ssl_raw_L_observer',None)
+            if raw_observer is not None:raw_observer(raw_ce)
         total=.5*common+.25*ordinary_mixed+.25*as_loss+.25*raw_loss
         if appended is not None:total=total+.68*pair(m0[128:],m1[128:],labels,kl_weight=0.)[0]
         weight=0. if arm=='F16' or (core is not None and not core[0]) else .1*min(max((epoch-5)/10.,0.),1.)

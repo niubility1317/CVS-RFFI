@@ -6,7 +6,7 @@ from pathlib import Path
 from experiments.cric_dura_comparison.io import read, write
 
 
-def smoke(rt, *, paired=False, u_cric=False, u_mixstyle=False, u_gradprotect=False, u_cmr=False):
+def smoke(rt, *, paired=False, u_cric=False, u_mixstyle=False, u_gradprotect=False, u_cmr=False, u_dualanchor=False):
     from experiments.cric_dura_comparison.bootstrap import activate, numerical_policy
     activate(rt)
     numerical_policy()
@@ -21,7 +21,10 @@ def smoke(rt, *, paired=False, u_cric=False, u_mixstyle=False, u_gradprotect=Fal
     from .view_anchor_train import source_parents
 
     c = read(rt['rows'][0]['train_config'])
-    if u_cmr:
+    if u_dualanchor:
+        from .u_dualanchor import validate as validate_dual
+        parents, _ = source_parents(c, validate_config=validate_dual)
+    elif u_cmr:
         from .u_cmr import validate as validate_u_cmr
         parents, _ = source_parents(c, validate_config=validate_u_cmr)
     elif u_gradprotect:
@@ -48,6 +51,8 @@ def smoke(rt, *, paired=False, u_cric=False, u_mixstyle=False, u_gradprotect=Fal
         cfg['u_gradprotect_smoke'] = True
     if u_cmr:
         cfg['u_cmr_smoke'] = True
+    if u_dualanchor:
+        cfg['u_dualanchor_smoke'] = True
     payload = torch.load(Path(parent) / 'final_ssdg.pth', map_location='cpu', weights_only=False)
     device = 'cuda:0'
     ctx = context(c)
@@ -83,7 +88,20 @@ def smoke(rt, *, paired=False, u_cric=False, u_mixstyle=False, u_gradprotect=Fal
         total.backward()
         objective = holder['objective']
         head = model.id_backbone.encoder.core.id_backbone.cls_head.weight
-        if u_cmr:
+        if u_dualanchor:
+            expected = objective._smoke_expected
+            gradient_matches = all((p.grad is None if expected[n] is None else
+                p.grad is not None and torch.allclose(p.grad,expected[n],atol=1e-5,rtol=1e-5))
+                for n,p in model.named_parameters() if p.requires_grad)
+            constraints = all(v['applied_U_norm']<=v['full_L_norm']*(1+1e-6)+1e-8
+                and v['full_dot_after']>=-1e-6*max(1.,v['full_L_norm']*v['applied_U_norm'])
+                and v['raw_dot_after']>=-1e-6*max(1.,v['raw_L_norm']*v['applied_U_norm'])
+                for v in objective._smoke_detail.values())
+            mechanism_ok = (objective.u_dualanchor_calls==objective.u_dualanchor_raw_calls==1
+                and objective.pending_gradient_loss is None and objective.pending_raw_anchor is None
+                and gradient_matches and constraints and objective.physical_seen==482078
+                and objective._smoke_raw_value>0 and all(v['raw_L_norm']>0 for v in objective._smoke_detail.values()))
+        elif u_cmr:
             mechanism_ok = (objective.u_cmr_calls==1 and objective.u_cmr_seen==256
                 and objective.u_cmr_eligible>0 and not objective._raw_context_active
                 and all(count>0 for count in objective.u_cmr_pairs.values())
@@ -133,7 +151,11 @@ def smoke(rt, *, paired=False, u_cric=False, u_mixstyle=False, u_gradprotect=Fal
         checked = dict(parent_epoch=30, parent_updates=6660, EMA_updates_after_smoke=6661,
             U_seen=objective.seen, physical_U_seen=objective.physical_seen,
             L_forward_packets=768, finite_backward=True, teacher_gradient=False)
-        if u_cmr:
+        if u_dualanchor:
+            checked.update(u_dualanchor_calls=objective.u_dualanchor_calls,raw_L_anchor_calls=objective.u_dualanchor_raw_calls,
+                raw_L_CE=objective._smoke_raw_value,protected_gradient_matches=gradient_matches,
+                both_anchor_constraints=constraints,group_details=objective._smoke_detail,no_extra_student_forward=True)
+        elif u_cmr:
             checked.update(u_cmr_calls=objective.u_cmr_calls,extra_raw_U_seen=objective.u_cmr_seen,
                 moment_eligible=objective.u_cmr_eligible,moment_pairs=objective.u_cmr_pairs,
                 shallow_middle_gradients=True,feature_hooks_removed=not objective._raw_context_active,
@@ -155,7 +177,7 @@ def smoke(rt, *, paired=False, u_cric=False, u_mixstyle=False, u_gradprotect=Fal
         else:
             checked.update(view_anchor_loss=float(metrics['SSL_view_anchor_loss']), view_anchor_physical_seen=128)
     write(Path(rt['run_root']) / 'smoke.json', dict(status='PASS', real_checkpoint=parent + '/final_ssdg.pth',
-        target_reads=0, U_truth_reads=0, method='UCMR' if u_cmr else 'UGP' if u_gradprotect else 'UMIX' if u_mixstyle else 'UCRIC' if u_cric else 'PAIREDU' if paired else 'VIEWANCHOR',
+        target_reads=0, U_truth_reads=0, method='UDAP' if u_dualanchor else 'UCMR' if u_cmr else 'UGP' if u_gradprotect else 'UMIX' if u_mixstyle else 'UCRIC' if u_cric else 'PAIREDU' if paired else 'VIEWANCHOR',
         checked=checked, immediate_continuation=True))
 
 
