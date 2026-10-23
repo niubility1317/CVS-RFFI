@@ -76,3 +76,8 @@ PAIREDU三seed已在各自GPU5/6/7实际续训，真实E30 no-query smoke和配�
 ## 无标签特征统计混合实际运行
 
 `20261023-phase1-PAMF-U-MixStyle-m3-r01` 已通过真实 E30 source-only smoke，三个 seed 在 GPU5／6／7 各接续已完成预测的 PAIR 名额，与 UCRIC 并行，每卡本任务两条、含外部最多三条。正式配方仍是原 E30＋20、原 U 输入与损失、time_down／t2.pool 同伪类跨源 RX 的停止统计梯度混合，每层独立 p=0.5、alpha=0.1；完整前缀计数与实际启用已核对，无新目标访问。一次 61 项检查／P0/P1 审查及真实 source-only 检查全部 PASS，未从刚完成 PAIR 的结果修改原假设、系数、父来源或测试矩阵。执行 commit `68ed7530a3c3caf96f7a54e1cfe4fc3c2a00d2f7`。
+
+
+## 源域梯度冲突与下一条固定假设
+
+原 E30 同 seed 的24个 CPU 源 L/U 受控批次中整体13个负梯度内积，中层与默认头各14个；无 optimizer／EMA／保存参数更新、U 真值或目标。具体输入、局限和数值见九模型reference源梯度附录。下一条 `20261023-phase1-PAMF-U-GradProtect-m3-r01` 固定原 RXPSM E30+20，现有教师/输入/损失保持，仅对 t2／默认头／其余参数分别单侧投影负内积 U 梯度，再限制 U 范数<=L；近零 L 组 U 置零。三 seed、固定最终E50、raw＋同一DURA七景及普通PL／监督对照登记完整，当前只是 PLANNED。等同 seed UCRIC GPU 完成后与 UMIX 各占每卡一个名额，CPU评分在UMIX之后。此假设在UCRIC／UMIX目标成绩读取前固定，不由刚完成PAIR或后续测试分数修改规则或父来源；原goal保持ACTIVE。

@@ -35,3 +35,6 @@ ANALYZED：九个新F模型的raw复用和固定DURA读出均已完成七景独�
 
 
 补充E30 CPU source-V教师诊断和恢复器训练来源判断见source_decisions.md/e30_source_teacher_diagnostic.json；现有证据未支持换用监督E30父来源，G继续只作固定参考读出，当前健康训练保持。下一条U-MixStyle仅固定源域假设、尚未实现或启动。
+
+
+补充 E30 源 L/U 只读 CPU 梯度诊断见 source_gradient_diagnostic.md／e30_source_gradient_diagnostic.json。24 个受控批次整体13个负内积，不是 Adam 或目标损伤因果证明。下一条 U-GradProtect 据此预先固定原 E30+20 的单侧 U 投影和各组范数上限1，只是 PLANNED，未实现或发布。
