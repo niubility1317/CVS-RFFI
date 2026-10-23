@@ -267,3 +267,6 @@ Complement run `20261024-phase1-PAMF-HardPL-Complement-m3-r01` 执行commit `7d5
 ## 主干互补监督固定矩阵
 
 `20261024-phase1-PAMF-HardPL-PathComplement-m3-r01` 根据此前冻结源C的core-only CE.29-.37比去签名.17-.22更高，保持原E20+30/E50/11100/.95/weight6/完整Lguard/style/RDrop/浅中层与joint对比，仅将ordinaryCE.5分为full.25＋noSig.125＋core.125，总CE1.25不变，既有头与完整部署不变。每步4额外既有头调用，无额外骨干/teacher/头/推理参数。66检查及一次P0P1PASS；首匹配释放Joint卡位原E20smoke通过即重载，健康Complement保留、三卡2task上限、单CPUscorer接Complement。全3seed raw+固定DURA七景42cell及原双raw目标保持。历史GuardNAMS目标已知，尚未读取Joint/Complement目标；源V无更新，U实际正确率UNKNOWN。未启动/未达标，goal ACTIVE。
+
+
+PathComplement发布后VERIFIED控制器存活/CWD/完整命令，执行commit `cf6794650506c4bca08425539efa3c3ae8d0b444`，3rowQUEUED、GPUworker0、原E20smokePENDING；等待Joint全部GPU预测释放对应卡位，健康Joint和Complement六worker日志继续增长。见该run queue_observation.json；不把排队当作训练或目标达成。

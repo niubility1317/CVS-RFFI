@@ -17,3 +17,8 @@ LOCAL_VERIFIED_NOT_LAUNCHED。66项相关检查及一次独立P0/P1PASS。真实
 GPU5/6/7固定seed2701/02/03，每卡最多2本任务、含外部最多3进程，派发前free>=10000MiB。只接替同seed Joint全部GPU预测完成的卡位，并要求同seed Complement已派发；两前序pendingCUDA PID均预留。首个释放且容量足够的匹配seed/card跑其原E20 smoke，smoke_runtime仅临时首row顺序，正式映射/种子/预算不变。CPU唯一scorer接Complement终态后。两个相同技术失败停止新增派发，保留健康任务/产物；无target驱动停训、调参、重排或选择性重跑。
 
 固定最终E50学生，逐row自动raw和固定DURA v1.0各clean+六practical，168000/view，三seed共42cell；整row全部预测固定后独立truth-last。报告逐seed/景/TX/RX/day/RX×day、MacroF1、净纠错/损伤、U接受曝光与实际成本。复用同读出F20/F21，原raw目标clean同时>=+1pp、六景同时严格>+1.5pp，DURA不能替代。G固定R69/266951、FP32/TF32off/reuse+graph/nativeFalse，G原LU无TX标签/F-free约束保持，不参与新F训练，不套旧F50时延。goal ACTIVE。
+
+
+## 发布后独立核实
+
+VERIFIED：执行commit `cf6794650506c4bca08425539efa3c3ae8d0b444` 的控制器实际存活，CWD与完整命令匹配。当前等待同seed Joint完成全部GPU预测，三条Path行QUEUED、GPU训练worker0，真实原E20 source smoke仍PENDING；不能把提交或排队当作smoke通过或训练启动。原Joint三个seed实际E46／48／46，健康Complement为E26／27／26，全部进程身份／GPU／日志增长核实且未改变。释放匹配卡位后自动先检查、通过即正式重载原E20续行；raw＋固定DURA七景和truth-last在原冻结矩阵内自动执行。
