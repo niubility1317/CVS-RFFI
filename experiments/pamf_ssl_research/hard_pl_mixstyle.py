@@ -4,7 +4,7 @@ from .hard_pl_ls import configuration as ls_configuration,validate as ls_validat
 from .hard_pl import PARENT_RUN,SEEDS,RESOURCE_GPU_BY_SEED
 from .hard_pl_no_uas import RUN as NO_UAS_RUN
 
-RUN='20261024-phase1-PAMF-HardPL-MixStyle-m3-r01'
+RUN='20261024-phase1-PAMF-HardPL-MixStyle-m3-r02'
 METHOD='HPL_MS2'
 STYLE=dict(levels=['time_down','t2.pool'],alpha=.1,probability_per_level=.5,eps=1e-6,
     accepted_only=True,same_hard_pseudo=True,different_source_RX=True,detached_moments=True)

@@ -30,7 +30,7 @@ def run(rt,device='cuda:0'):
         applied={name:0 for name in c['hard_pl_mixstyle']['levels']}
         with torch.inference_mode():
             for begin in range(0,720,256):
-                ix=ids[begin:begin+256];x=data.x[ix].to(device);rx=torch.tensor(m['rx_i'][ix].tolist(),device=device)
+                ix=ids[begin:begin+256].tolist();x=data.x[ix].to(device);rx=torch.tensor(m['rx_i'][ix].tolist(),device=device)
                 truth=torch.tensor(m['y'][ix].tolist(),device=device)
                 q=teacher.classify_features(teacher.features(x)).softmax(1);confidence,pseudo=q.max(1)
                 accepted=confidence>=.95

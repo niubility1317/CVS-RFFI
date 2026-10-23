@@ -186,3 +186,8 @@ HPL2 三seed双读出七景42cell已全部独立评分。为符合逐row自动�
 ## 高纯度普通 PL 的跨源接收机统计混合
 
 `20261024-phase1-PAMF-HardPL-MixStyle-m3-r01` 固定原 F21 E30＋20，与 HPL_LS2 匹配，只在一次 U 学生前向的 time_down／t2.pool 加 accepted-only 同伪类跨源 RX 的统计混合，p0.5／Beta0.1／eps1e-6 沿原源研究设置。依据原 F21 完整 V 伪标签纯度及既有源接收机统计差异，保留门控0.95／权重2／LS0.01；不是依据目标成绩选择参数或父模型。52 检查和一次 P0/P1 PASS；真实 checkpoint smoke 及三个父模型 V720 冻结身份配对诊断通过后立即继续原三 seed／双七景矩阵。与健康 LS 共用第二卡位，goal ACTIVE。
+
+
+## 特征统计混合的同配方技术恢复
+
+原 r01 真实 F21 checkpoint smoke PASS，随后冻结源诊断的 NumPy→Torch 索引类型不兼容，正式三行仍无 PID、无训练／目标访问。保留原产物，`20261024-phase1-PAMF-HardPL-MixStyle-m3-r02` 仅换 Python int 列表索引；配方、父模型、资源和矩阵不变，8 项定向检查及唯一 P1 定向复查关闭。新真实 smoke／源身份配对诊断通过后自动继续。

@@ -1,0 +1,291 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261024-phase1-PAMF-HardPL-MixStyle-m3-r02",
+  "group_id": "phase1-pamf-source-only-ssl-improvement",
+  "display_name": "PAMF 高纯度硬伪标签：同伪类跨接收机特征统计混合",
+  "description": "Original F21 E30+20.Only add accepted same-hard-pseudo/different-source-RX detached-moment style mixing to HPL_LS2 single U student forward;gate.95 weight2 U-LS.01 and original L/default head unchanged.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "PAMF",
+    "SSL",
+    "ordinary-hard-PL",
+    "weight2",
+    "label-smoothing",
+    "accepted-MixStyle",
+    "source-RX",
+    "raw-and-DURA"
+  ],
+  "comparison_group_id": "ManySig-F0-T1-E50-defaulthead-raw-and-DURA-v1",
+  "parent_run_ids": [
+    "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户 /goal 授权持续设计迭代 PAMF 半监督机制，使目标测试 clean 相对监督/普通PL均至少高1pp、六景均值均严格高1.5pp；三GPU每卡固定一个模型种子、最多两个本任务worker；追加要求同时报告单PAMF与固定DURA+PAMF。 用户2026-10-24进一步要求先核实普通PL正确率；高则加权并叠加监督机制，低则适度提高门控。",
+  "code": {
+    "commit": "f27a2ce85f2386ce2f9f713fc2b75b7176e15968",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 ordinary account CVS-RFFI Py3.10/Torch2.1 FP32/TF32off, CPU2 per worker",
+    "cwd": "PROJECT/releases/20261024-phase1-PAMF-HardPL-MixStyle-m3-r02",
+    "entry": "experiments.pamf_ssl_research.control"
+  },
+  "data": {
+    "dataset": "WiSig ManySig",
+    "version": "Existing validated F0 roles and physical-ID IQ binding",
+    "representation": "equalized1 center256 float32 unitRMS",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md; docs/goals/PAMF_SSL_IMPROVEMENT_20261023.md",
+    "physical_ids_ref": "Existing F0 source_contract.json role_ids; corrected physical-ID-aligned cache reader",
+    "label_map_ref": "Existing F0 six-TX class order, unchanged",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Existing six registered TX shared with corrected F20/F21",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3,
+      "labeled_share_of_training": 0.1
+    },
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Reuse existing Phase1 VALIDATED_ONCE handles. p2_min_v1/capsule_id/split_id not applicable to Phase1.",
+    "support_query_ref": "Phase1 frozen zero-adaptation evaluation; no support/query fitting",
+    "leo_config_ref": "Fixed clean+six practical168000/view;original L As unchanged.U raw IQ,one student forward,transient accepted-only feature style;no U physical generator."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Same fixed F0 Phase1 unseen-RX target test; source-only L/U training, hidden U TX; raw primary SSL goal and fixed common DURA v1.0 reference. No fitted head/adaptation/Phase2/orbital claim. DURA original LU source permission retained; G never used for new F training."
+  },
+  "checkpoint": {
+    "initialization": "Same-seed original ordinary-PL F21 scratch20+own10 prefix,independent20;50/11100 total",
+    "sources": [
+      "PROJECT/runs/20261022-phase1-T1-DURA-F-ablation-binding-m63-r01/F21-sSEED/source/segment20/final_ssdg.pth",
+      "PROJECT/runs/20261022-phase1-T1-DURA-F-ablation-binding-m63-r01/F21-sSEED/source/segment30/final_ssdg.pth",
+      "Frozen reference only:PROJECT/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "Source parents actual metadata/checkpoint ancestry/default-head/seed/data roles checked by source_parents; original prefix target_access=false, U_truth_read=false, no fitted head. G source roles checked before frozen prediction. Existing VALIDATED_ONCE handles reused.",
+    "provenance_verdict": "Actual F21 E20/E30 configs,payload,ancestry,source contracts and default head verified;no EMA/external teacher;source-only fixed-final prefix.",
+    "selection_rule": "Original F21 same-seed E20/E30 chain only;not any new candidate weights.Fixed final E50/11100.No target selection."
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex-pamf-hard-PL-MixStyle-20261024",
+    "gpu_policy": "GPU5/6/7 pinned seed2701/02/03;one new worker/card only after same-seed HardPL6 and NoAs all GPU predictions complete,LS dispatched or GPU complete.Reserve RUNNING LS PID before CUDA.At most2 task workers/card,3total processes including foreign and starting PIDs,free>=10000MiB.One independent CPU scorer after LS terminal.Preserve all healthy jobs.",
+    "remote_run_root": "PROJECT/runs/20261024-phase1-PAMF-HardPL-MixStyle-m3-r02",
+    "remote_log_root": "PROJECT/runs/20261024-phase1-PAMF-HardPL-MixStyle-m3-r02/logs",
+    "local_artifact_root": "local_artifacts/pamf_ssl_research_20261023/release-hard-pl-mixstyle-r02",
+    "launch_command": "python -m experiments.pamf_ssl_research.hard_pl_mixstyle_publish --repo code/worktrees/standard_ce_baselines_20261010 --context local_artifacts/pamf_ssl_research_20261023/viewanchor_context.json --output local_artifacts/pamf_ssl_research_20261023/release-hard-pl-mixstyle-r02 --ssh-config tools/n607_ssh_config",
+    "stop_rule": "First released GPU5 slot:real original F21 E30 no-query forward/backward smoke and frozen source V720/seed identity-pair screen.PASS immediately continues formal3seed with original-parent reload.Scientific screen failure stops new candidate before formal training/predictions,retains all records.Two identical technical failure fingerprints stop new dispatch;healthy jobs and outputs preserved.No target-performance stop,reorder,tuning or selective rerun."
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "state.json",
+    "ROW/source/segment50/final_ssdg.pth",
+    "ROW/source/segment50/hard_pl_state.json",
+    "ROW/source/complete.json",
+    "ROW/source/source_V_diagnostic.json",
+    "ROW/predictions/source_execution_check.json",
+    "ROW/predictions/main/predictions.npz",
+    "ROW/predictions/complete.json",
+    "ROW/scores/scores.json",
+    "ROW/scores/complete.json",
+    "target-report/analysis.json",
+    "target-report/strata.csv",
+    "target-report/paired_raw.csv",
+    "target-report/per_seed.csv"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "paired_seed_delta_pp",
+      "repairs",
+      "damage",
+      "net_correct",
+      "source_V_pseudo_precision_and_coverage",
+      "source_identity_pair_agreement",
+      "actual_U_acceptance",
+      "U_exposure",
+      "student_U_views",
+      "actual_style_eligible_and_applied_by_level",
+      "U_label_smoothing",
+      "incremental_and_cumulative_training_seconds"
+    ],
+    "dimensions": [
+      "readout",
+      "model_seed",
+      "view",
+      "receiver",
+      "transmitter",
+      "date",
+      "receiver_date"
+    ],
+    "prediction_ref": "Each fixed final E50 default head raw + fixed DURA-LU, each clean plus six practical,168000 per view. Full two-readout seven-view predictions fixed before truth.",
+    "scorer_ref": "Canonical independent CPU truth-last preflight and scorer; frozen source V diagnostic only. Exact raw integer clean>=+1pp and six>+1.5pp against BOTH F20/F21. DURA shown with matched same-G controls, never substitutes for raw goal."
+  },
+  "rows": [
+    {
+      "row_id": "HPL_MS2-s2026092701",
+      "method": "HPL_MS2",
+      "purpose": "primary_predeclared",
+      "config_ref": "experiments/pamf_ssl_research/hard_pl_mixstyle.py",
+      "resolved_config_ref": "PROJECT/runs/20261024-phase1-PAMF-HardPL-MixStyle-m3-r02/HPL_MS2-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "data: deterministic reuse of validated IQ/IDs; support: not applicable; source Practical hardware20261016423, ordinary RNG=model seed. No split sweep.",
+      "k": null,
+      "scenario": "raw and fixed DURA-LU each clean plus six practical",
+      "optimizer": "AdamW CENTER_UNITS physical clip5; reset at20/30",
+      "lr": "2e-4 cosine to1e-6 per20/10/20 segment",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "OriginalF21 E30/6660+20/4440=E50/11100,13L37LU.CumulativeU2097900/studentU2097900,Uphysical0/rawUAs0;one current-student eval and one raw U student forward with transient style.",
+      "output_root": "PROJECT/runs/20261024-phase1-PAMF-HardPL-MixStyle-m3-r02/HPL_MS2-s2026092701",
+      "log_path": "PROJECT/runs/20261024-phase1-PAMF-HardPL-MixStyle-m3-r02/logs/HPL_MS2-s2026092701-row.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 python -u -m experiments.pamf_ssl_research.hard_pl_mixstyle_worker row --config RELEASE/configs/HPL_MS2-s2026092701-row.json",
+      "expected_artifacts": [
+        "source/segment50/final_ssdg.pth",
+        "source/segment50/hard_pl_state.json",
+        "source/complete.json",
+        "source/source_V_diagnostic.json",
+        "predictions/source_execution_check.json",
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "HPL_MS2-s2026092702",
+      "method": "HPL_MS2",
+      "purpose": "primary_predeclared",
+      "config_ref": "experiments/pamf_ssl_research/hard_pl_mixstyle.py",
+      "resolved_config_ref": "PROJECT/runs/20261024-phase1-PAMF-HardPL-MixStyle-m3-r02/HPL_MS2-s2026092702/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "data: deterministic reuse of validated IQ/IDs; support: not applicable; source Practical hardware20261016423, ordinary RNG=model seed. No split sweep.",
+      "k": null,
+      "scenario": "raw and fixed DURA-LU each clean plus six practical",
+      "optimizer": "AdamW CENTER_UNITS physical clip5; reset at20/30",
+      "lr": "2e-4 cosine to1e-6 per20/10/20 segment",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "OriginalF21 E30/6660+20/4440=E50/11100,13L37LU.CumulativeU2097900/studentU2097900,Uphysical0/rawUAs0;one current-student eval and one raw U student forward with transient style.",
+      "output_root": "PROJECT/runs/20261024-phase1-PAMF-HardPL-MixStyle-m3-r02/HPL_MS2-s2026092702",
+      "log_path": "PROJECT/runs/20261024-phase1-PAMF-HardPL-MixStyle-m3-r02/logs/HPL_MS2-s2026092702-row.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 python -u -m experiments.pamf_ssl_research.hard_pl_mixstyle_worker row --config RELEASE/configs/HPL_MS2-s2026092702-row.json",
+      "expected_artifacts": [
+        "source/segment50/final_ssdg.pth",
+        "source/segment50/hard_pl_state.json",
+        "source/complete.json",
+        "source/source_V_diagnostic.json",
+        "predictions/source_execution_check.json",
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "HPL_MS2-s2026092703",
+      "method": "HPL_MS2",
+      "purpose": "primary_predeclared",
+      "config_ref": "experiments/pamf_ssl_research/hard_pl_mixstyle.py",
+      "resolved_config_ref": "PROJECT/runs/20261024-phase1-PAMF-HardPL-MixStyle-m3-r02/HPL_MS2-s2026092703/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "data: deterministic reuse of validated IQ/IDs; support: not applicable; source Practical hardware20261016423, ordinary RNG=model seed. No split sweep.",
+      "k": null,
+      "scenario": "raw and fixed DURA-LU each clean plus six practical",
+      "optimizer": "AdamW CENTER_UNITS physical clip5; reset at20/30",
+      "lr": "2e-4 cosine to1e-6 per20/10/20 segment",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "OriginalF21 E30/6660+20/4440=E50/11100,13L37LU.CumulativeU2097900/studentU2097900,Uphysical0/rawUAs0;one current-student eval and one raw U student forward with transient style.",
+      "output_root": "PROJECT/runs/20261024-phase1-PAMF-HardPL-MixStyle-m3-r02/HPL_MS2-s2026092703",
+      "log_path": "PROJECT/runs/20261024-phase1-PAMF-HardPL-MixStyle-m3-r02/logs/HPL_MS2-s2026092703-row.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 python -u -m experiments.pamf_ssl_research.hard_pl_mixstyle_worker row --config RELEASE/configs/HPL_MS2-s2026092703-row.json",
+      "expected_artifacts": [
+        "source/segment50/final_ssdg.pth",
+        "source/segment50/hard_pl_state.json",
+        "source/complete.json",
+        "source/source_V_diagnostic.json",
+        "predictions/source_execution_check.json",
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "User-directed high-purity ordinary PL plus supervised mechanisms;this candidate is a fixed source-based feature style experiment,not target-feedback tuning or selection of a prior winner.",
+    "52 focused checks PASS;one independent P0/P1 review PASS.Real original F21 checkpoint smoke and source pair screen are launcher first step.",
+    "Gate.95,weight2,U CE LS.01;one unmodified raw U IQ student forward has temporary two-level feature hooks.Teacher/L/inference untouched.Rejected samples neither supply nor receive style.",
+    "Same predicted TX and different original source RX partners;both raw accepted.Detached temporal moments;shared partner/Beta lambda,independent p.5 per layer.Existing source preset alpha.1 eps1e-6.",
+    "At t2.pool temporal length1,moment mixing becomes feature-mean interpolation;do not claim nondegenerate temporal variance there.",
+    "No EMA/prototypes/U truth/U physical generation/G training/new inference parameters or separately fitted head.Fixed original F21 parents,not LS or other candidate checkpoints.",
+    "Source V720/seed sampling uses available V labels solely for balanced frozen diagnosis.Partner selection uses raw pseudo labels,acceptance and source RX;V truth only scores pair identity,no model/norm updates.",
+    "Formal cumulative13L37LU/E50/11100,uniqueU56700,U seen/studentU2097900,tail4440calls/1134000 U.No change to healthy LS or completed other runs.",
+    "Automatic raw plus fixedDURA seven views,3seeds42cells,168000/view,truth-last,F20/F21 comparisons,source/cost/strata details.Complete LS matched comparison after both full target matrices complete.",
+    "Historical benchmark exposure disclosed.No new independent blind-test claim.No model selection,hyperparameter changes,ordering or selective rerun from scores.Main raw goal unchanged and ACTIVE.",
+    "Technical-only recovery of r01 before formal training:source tensor indices are native Python int lists.Original52 checks and8 recovery checks PASS;one original review plus sole targeted P1 recheck closed.No recipe/parameter/matrix change."
+  ],
+  "registered_at": "2026-10-23T19:01:43.203487+00:00",
+  "launch_status": {
+    "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+    "source_smoke": "PENDING_FIRST_GPU_STEP",
+    "source_pair_screen": "PENDING_FIRST_GPU_STEP",
+    "training_started": false,
+    "new_candidate_target_reads": 0,
+    "technical_recovery_of": "20261024-phase1-PAMF-HardPL-MixStyle-m3-r01"
+  }
+}

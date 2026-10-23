@@ -33,3 +33,10 @@ GPU5/6/7 一 seed 一卡，新行等待同 seed HPL_NO_UAS 全部14项 GPU 预�
 ## 实际源检查与三卡标签平滑训练
 
 VERIFIED_LS_RUNNING：真实原 F21 E30 source-only smoke PASS，U CE 标签平滑0.01、门控0.95／权重2、一次U学生前向、Uphysical0、原LPractical64、L768／U256、无EMA和有限默认头梯度均核实。probe丢弃，正式三个seed重载原对应E30；GPU5／6／7真实PID／CWD／命令／GPU与全部已刷盘step增长确认，前序健康HPLT1U保留，未占用超过两条本任务/card。执行commit `b981bad253b144791579421ad18e3f4cfa480408`；详见source_activation.json。此为源前缀，未宣称目标收益。
+
+
+## 三模型源训练完整，正式评测继续
+
+VERIFIED_SOURCE_FINAL：HPL_LS2 三 seed 均新增 20 轮／4440 步至 E50／11100，全部 13320 条新增闭合记录逐条核对。门控 0.95、权重 2、新增 U CE 标签平滑 0.01、一次 raw U 学生前向，无 EMA／原型／U 真值／G 训练或另训头。每模型累计 U2097900、学生 U2097900，U physical／raw-As 均 0；原 L 信道和机制保持。实际接受量和父／增量／累计经过时间见 source_training_complete.json，共享 GPU 墙钟不视为独占 GPU 小时。
+
+冻结学生已自动接续 raw 与同一 DURA 各七景完整预测，全部决策固定后独立 truth-last；不读取部分目标成绩，不宣称目标达成。

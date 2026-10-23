@@ -1,6 +1,6 @@
 # 高纯度普通硬伪标签的同伪类跨接收机统计混合
 
-状态：LOCAL_VERIFIED_NOT_LAUNCHED。52 项聚焦检查通过，一次独立 P0/P1 审查 PASS；真实原 F21 E30 source-only 检查及配对身份诊断为发布后第一步。
+状态：VERIFIED_FAILED_TECHNICAL_BEFORE_TRAINING。52 项聚焦检查通过，一次独立 P0/P1 审查 PASS；真实原 F21 E30 source-only 检查及配对身份诊断为发布后第一步。
 
 原 F21 E30 完整源 V 各 27000 条，阈值 0.95 接受后精度 99.8868%／99.8366%／99.9027%，覆盖约 95%；这是源验证估计，U 真值隐藏。依据既有源接收机统计差异与标签平滑梯度诊断，登记一个固定特征增强假设。与 HPL_LS2 比较项相比，只在一次 raw U 学生前向内引入 MixStyle；仍用原 F21 同 seed E30 父权重，不继承新候选或按目标成绩选父模型。
 
@@ -13,3 +13,8 @@
 环境、CWD、命令和不可覆盖 root 见 experiment.json：N607 普通账户、固定 CVS-RFFI 环境、FP32／TF32off。一次代码 Git commit、一次发布 archive 的本地／远端 SHA 对照、一次远端编译。两个相同技术失败停止新增派发并保留健康进程／产物；无目标表现停止、调参、重排或选择性重跑。固定最终模型后逐 row 自动 raw 与同一 DURA v1.0 各 clean＋六 practical，每景 168000，共 42 项；全部预测固定后独立 truth-last。DURA 是冻结参考，不用于新 F 训练；G＋F20 含 G 的无标签源权限。
 
 完整保留逐 seed／场景／TX／RX／day、修复损伤、实际接受和混合次数、训练／预测成本、F20/F21 及完整 LS 匹配比较。主目标仍为 raw clean 同时比两个对照至少高 1 pp、六景均值严格高 1.5 pp，当前 ACTIVE。既有目标暴露如实披露，本候选不由目标成绩反馈选择参数、父模型或种子，不宣称新的独立盲测。预期产物含 smoke/source_style_identity、全部 step/source state、E50 checkpoint、源验证诊断、graph/native 源检查、双七景 predictions/scores 和完整报告。
+
+
+## 启动后技术失败与同配方恢复
+
+真实原 F21 E30 前向／反向 smoke PASS；随后冻结源 V 诊断对 Torch 使用 NumPy 整数索引时发生类型兼容错误。独立读回控制器已退出，三正式行仍 QUEUED 且无 PID；没有正式训练或目标预测。改用 Python int 列表索引，8 项定向检查及一次 P1 定向复查通过。保留原 root，新 `20261024-phase1-PAMF-HardPL-MixStyle-m3-r02` 只修正技术路径，配方／参数／父模型／种子／矩阵不变，见 technical_failure.json。

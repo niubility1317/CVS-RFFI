@@ -1,0 +1,39 @@
+{
+  "method": "HPL_MS2",
+  "matched_counterpart": "20261024-phase1-PAMF-HardPL-LS-m3-r01/HPL_LS2-sSEED",
+  "parent": "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01/F21-sSEED/source/segment30",
+  "only_changed_factor": "Transient accepted-only same-pseudo cross-source-RX MixStyle in the single raw U student forward",
+  "recipe": {
+    "levels": [
+      "time_down",
+      "t2.pool"
+    ],
+    "alpha": 0.1,
+    "probability_per_level": 0.5,
+    "eps": 1e-06,
+    "accepted_only": true,
+    "same_hard_pseudo": true,
+    "different_source_RX": true,
+    "detached_moments": true
+  },
+  "gate": 0.95,
+  "PL_weight": 2.0,
+  "U_CE_label_smoothing": 0.01,
+  "student_U_forwards_per_record": 1,
+  "source_basis": "Original F21 E30 full source V accepted pseudo precision99.84-99.90% with~95% coverage;prior source receiver/style interaction and paired source smoothing diagnostics support a style-augmentation experiment without raising the gate.",
+  "parameter_origin": "Existing source-research preset p=.5/Beta(.1,.1)/eps1e-6/time_down+t2.pool;not chosen from target scores.",
+  "source_screen": {
+    "samples_per_seed": 720,
+    "balanced": "6TX x5sourceRX x3day x8",
+    "selection_seed": 2026102401,
+    "model_frozen": true,
+    "no_state_updates": true,
+    "forced_both_levels": true,
+    "rule": "All3 fixed seeds: accepted raw pseudo precision>=99%,true-TX agreement of eligible same-pseudo different-RX pairs>=99%,both actual levels applied>0.No gate on styled prediction accuracy."
+  },
+  "historical_target_exposure_disclosed": true,
+  "new_candidate_target_reads": 0,
+  "limitations": "Source pair agreement is not U ground-truth accuracy or proof of augmentation identity;pooled T2 length1 reduces moment mixing to feature-mean interpolation.Source classification errors on the mixed features do not invalidate a correct raw pseudo label.No target guarantee.",
+  "technical_recovery_of": "20261024-phase1-PAMF-HardPL-MixStyle-m3-r01",
+  "recipe_unchanged": true
+}

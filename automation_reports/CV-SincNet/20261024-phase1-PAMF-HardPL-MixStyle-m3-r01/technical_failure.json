@@ -1,0 +1,80 @@
+{
+  "status": "VERIFIED_FAILED_TECHNICAL_BEFORE_TRAINING",
+  "run_id": "20261024-phase1-PAMF-HardPL-MixStyle-m3-r01",
+  "execution_commit": "187666faf3f3f00646e64a881b1226beefda918d",
+  "failed_layer": "Frozen source V identity-pair diagnostic,source tensor indexing",
+  "error": "RuntimeError:Could not infer dtype of numpy.int64",
+  "controller_dead_verified": true,
+  "queued_rows_without_PID": 3,
+  "formal_training_started": false,
+  "new_target_reads": 0,
+  "real_original_F21_checkpoint_smoke": "PASS",
+  "real_smoke": {
+    "status": "PASS",
+    "methods": [
+      {
+        "method": "HPL_MS2",
+        "model_seed": 2026092701,
+        "parent_epoch": 30,
+        "parent_updates": 6660,
+        "L_forward_packets": 768,
+        "U_seen": 256,
+        "U_accepted": 244,
+        "student_U_views": 256,
+        "physical_U_generated": 0,
+        "physical_student_views": 0,
+        "raw_U_As_seen": 0,
+        "U_As_raw_input_matches": false,
+        "source_Practical_generated": 64,
+        "contrast_anchors": {
+          "time_down": 0,
+          "t2.pool": 0
+        },
+        "shallow_middle_gradient": false,
+        "ordinary_raw_RDrop": false,
+        "As_KL_weight": 0,
+        "weight": 2.0,
+        "threshold": 0.95,
+        "EMA_updates": 0,
+        "finite_backward": true,
+        "default_head_gradient": true,
+        "feature_hooks_removed": true,
+        "U_label_smoothing": 0.01,
+        "U_style": {
+          "recipe": {
+            "levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "alpha": 0.1,
+            "probability_per_level": 0.5,
+            "eps": 1e-06,
+            "accepted_only": true,
+            "same_hard_pseudo": true,
+            "different_source_RX": true,
+            "detached_moments": true
+          },
+          "calls": 1,
+          "seen": 256,
+          "eligible": 244,
+          "applied": {
+            "time_down": 244,
+            "t2.pool": 244
+          },
+          "persistent_hooks": false,
+          "teacher_or_L_style_calls": 0,
+          "partner_TX_truth_reads": 0
+        }
+      }
+    ],
+    "target_reads": 0,
+    "U_truth_reads": 0,
+    "probe_updates_discarded": true,
+    "formal_reload_original_F21_E30": true,
+    "immediate_continuation": true
+  },
+  "fix": "Convert fixed NumPy sample indices to Python int list before indexing source Torch tensor;no recipe change",
+  "recovery_run": "20261024-phase1-PAMF-HardPL-MixStyle-m3-r02",
+  "old_release_and_output_preserved": true,
+  "healthy_jobs_changed": false
+}

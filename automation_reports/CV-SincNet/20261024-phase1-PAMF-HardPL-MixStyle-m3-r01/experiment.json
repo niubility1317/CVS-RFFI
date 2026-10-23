@@ -280,10 +280,11 @@
   ],
   "registered_at": "2026-10-23T18:55:34.590429+00:00",
   "launch_status": {
-    "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
-    "source_smoke": "PENDING_FIRST_GPU_STEP",
-    "source_pair_screen": "PENDING_FIRST_GPU_STEP",
+    "status": "VERIFIED_FAILED_TECHNICAL_BEFORE_TRAINING",
+    "evidence": "technical_failure.json",
     "training_started": false,
-    "new_candidate_target_reads": 0
+    "actual_formal_GPU_children": 0,
+    "new_candidate_target_reads": 0,
+    "recovery_run": "20261024-phase1-PAMF-HardPL-MixStyle-m3-r02"
   }
 }
