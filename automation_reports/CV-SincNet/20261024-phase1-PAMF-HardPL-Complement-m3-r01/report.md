@@ -15,3 +15,10 @@ LOCAL_VERIFIED_NOT_LAUNCHED。57项相关检查及一次独立P0/P1PASS；真实
 GPU5/6/7固定seed2701/02/03，每卡最多2本任务/含外部最多3进程/派发前空闲>=10000MiB。新row只接替同seed GuardNAMS全部GPU预测完成的卡位，并要求对应Joint已派发；两侧CUDA前pending PID均预留。首个释放且容量足够的seed/card先用其自己的原E20 smoke，临时smoke_runtime首row对齐该seed，正式三row映射不变。CPU唯一scorer排Joint终态后。两个相同技术失败停止新增派发、保留健康任务和产物，不按target停训、调参、重排或选择性重跑。
 
 固定最终E50学生，逐row自动raw和固定DURA v1.0各clean+六practical、168000/view，三seed共42cell；整row预测固定后独立truth-last。报告每seed/场景/TX/RX/day/RX×day、MacroF1、净纠错/损伤、U接受曝光及实际成本。复用完整同读出F20/F21；原raw目标clean同时>=+1pp、六景同时严格>+1.5pp，DURA参考不能替代。G固定R69/266951、FP32/TF32off/reuse+graph/nativeFalse，G原LU无TX标签/F-free权限保持，不参与新F训练、不套旧F50时延。goal ACTIVE。
+
+
+## 真实权重检查与三种子实际启动
+
+VERIFIED：执行 commit `7d58c705b65dfd0afa02ee8b7cb079e4e1b8468a`。先释放的 seed 2026092702／GPU6 完成真实原 E20 source smoke PASS；正式 seed／卡映射保持不变。无签名 CE 的实际梯度范数：签名 0、既有头 0.829442375、主干 2.38287784；完整 joint 对比的签名梯度 0.370686237。普通 CE 0.5 分配为完整融合 0.25＋无签名 0.25，总剂量1.25保持；两次既有头调用512条已有特征，U骨干仍1536条，原L768／rawAs128／Uphysical0／LPractical64、完整L guard与显式梯度一致，临时hook／wrapper退出。探针更新丢弃，正式训练重新加载原E20。
+
+三个种子已分别在GPU5/6/7产生实际互补CE／joint／style／guard步骤。进程、CWD、完整命令、GPU与日志增长独立核实，计数见source_activation.json。当前仅是训练前缀；尚无本版目标测试收益，raw＋固定DURA七景及独立truth-last自动续行。前序健康任务保持。

@@ -1,0 +1,294 @@
+{
+  "status": "ANALYZED",
+  "rows": [
+    {
+      "method": "F20",
+      "view": "clean",
+      "count": 504000,
+      "repairs": 1012,
+      "damage": 648,
+      "net": 364,
+      "accuracy_delta_pp": 0.07222222222222222
+    },
+    {
+      "method": "F20",
+      "view": "practical_high",
+      "count": 504000,
+      "repairs": 33586,
+      "damage": 20738,
+      "net": 12848,
+      "accuracy_delta_pp": 2.549206349206349
+    },
+    {
+      "method": "F20",
+      "view": "practical_mid",
+      "count": 504000,
+      "repairs": 42705,
+      "damage": 23995,
+      "net": 18710,
+      "accuracy_delta_pp": 3.7123015873015874
+    },
+    {
+      "method": "F20",
+      "view": "practical_low_suburban",
+      "count": 504000,
+      "repairs": 51327,
+      "damage": 28311,
+      "net": 23016,
+      "accuracy_delta_pp": 4.566666666666666
+    },
+    {
+      "method": "F20",
+      "view": "practical_high_urban",
+      "count": 504000,
+      "repairs": 47179,
+      "damage": 23349,
+      "net": 23830,
+      "accuracy_delta_pp": 4.728174603174603
+    },
+    {
+      "method": "F20",
+      "view": "practical_mid_urban",
+      "count": 504000,
+      "repairs": 97615,
+      "damage": 37472,
+      "net": 60143,
+      "accuracy_delta_pp": 11.93313492063492
+    },
+    {
+      "method": "F20",
+      "view": "practical_low_urban",
+      "count": 504000,
+      "repairs": 128789,
+      "damage": 47833,
+      "net": 80956,
+      "accuracy_delta_pp": 16.062698412698413
+    },
+    {
+      "method": "F20",
+      "view": "six_mean",
+      "count": 3024000,
+      "repairs": 401201,
+      "damage": 181698,
+      "net": 219503,
+      "accuracy_delta_pp": 7.2586970899470895
+    },
+    {
+      "method": "F21",
+      "view": "clean",
+      "count": 504000,
+      "repairs": 908,
+      "damage": 667,
+      "net": 241,
+      "accuracy_delta_pp": 0.047817460317460314
+    },
+    {
+      "method": "F21",
+      "view": "practical_high",
+      "count": 504000,
+      "repairs": 35409,
+      "damage": 20060,
+      "net": 15349,
+      "accuracy_delta_pp": 3.045436507936508
+    },
+    {
+      "method": "F21",
+      "view": "practical_mid",
+      "count": 504000,
+      "repairs": 44688,
+      "damage": 23567,
+      "net": 21121,
+      "accuracy_delta_pp": 4.190674603174603
+    },
+    {
+      "method": "F21",
+      "view": "practical_low_suburban",
+      "count": 504000,
+      "repairs": 53113,
+      "damage": 28021,
+      "net": 25092,
+      "accuracy_delta_pp": 4.978571428571429
+    },
+    {
+      "method": "F21",
+      "view": "practical_high_urban",
+      "count": 504000,
+      "repairs": 48971,
+      "damage": 22657,
+      "net": 26314,
+      "accuracy_delta_pp": 5.221031746031746
+    },
+    {
+      "method": "F21",
+      "view": "practical_mid_urban",
+      "count": 504000,
+      "repairs": 99387,
+      "damage": 36917,
+      "net": 62470,
+      "accuracy_delta_pp": 12.39484126984127
+    },
+    {
+      "method": "F21",
+      "view": "practical_low_urban",
+      "count": 504000,
+      "repairs": 130533,
+      "damage": 47569,
+      "net": 82964,
+      "accuracy_delta_pp": 16.461111111111112
+    },
+    {
+      "method": "F21",
+      "view": "six_mean",
+      "count": 3024000,
+      "repairs": 412101,
+      "damage": 178791,
+      "net": 233310,
+      "accuracy_delta_pp": 7.715277777777778
+    },
+    {
+      "method": "HPL_E20_LS6G",
+      "view": "clean",
+      "count": 504000,
+      "repairs": 714,
+      "damage": 739,
+      "net": -25,
+      "accuracy_delta_pp": -0.00496031746031746
+    },
+    {
+      "method": "HPL_E20_LS6G",
+      "view": "practical_high",
+      "count": 504000,
+      "repairs": 37224,
+      "damage": 18269,
+      "net": 18955,
+      "accuracy_delta_pp": 3.7609126984126986
+    },
+    {
+      "method": "HPL_E20_LS6G",
+      "view": "practical_mid",
+      "count": 504000,
+      "repairs": 47119,
+      "damage": 22511,
+      "net": 24608,
+      "accuracy_delta_pp": 4.882539682539683
+    },
+    {
+      "method": "HPL_E20_LS6G",
+      "view": "practical_low_suburban",
+      "count": 504000,
+      "repairs": 55780,
+      "damage": 27483,
+      "net": 28297,
+      "accuracy_delta_pp": 5.614484126984127
+    },
+    {
+      "method": "HPL_E20_LS6G",
+      "view": "practical_high_urban",
+      "count": 504000,
+      "repairs": 51024,
+      "damage": 21329,
+      "net": 29695,
+      "accuracy_delta_pp": 5.891865079365079
+    },
+    {
+      "method": "HPL_E20_LS6G",
+      "view": "practical_mid_urban",
+      "count": 504000,
+      "repairs": 101515,
+      "damage": 36860,
+      "net": 64655,
+      "accuracy_delta_pp": 12.828373015873016
+    },
+    {
+      "method": "HPL_E20_LS6G",
+      "view": "practical_low_urban",
+      "count": 504000,
+      "repairs": 132699,
+      "damage": 47858,
+      "net": 84841,
+      "accuracy_delta_pp": 16.833531746031746
+    },
+    {
+      "method": "HPL_E20_LS6G",
+      "view": "six_mean",
+      "count": 3024000,
+      "repairs": 425361,
+      "damage": 174310,
+      "net": 251051,
+      "accuracy_delta_pp": 8.301951058201059
+    },
+    {
+      "method": "HPL_E20_NAMS6G",
+      "view": "clean",
+      "count": 504000,
+      "repairs": 902,
+      "damage": 687,
+      "net": 215,
+      "accuracy_delta_pp": 0.04265873015873016
+    },
+    {
+      "method": "HPL_E20_NAMS6G",
+      "view": "practical_high",
+      "count": 504000,
+      "repairs": 38814,
+      "damage": 23648,
+      "net": 15166,
+      "accuracy_delta_pp": 3.009126984126984
+    },
+    {
+      "method": "HPL_E20_NAMS6G",
+      "view": "practical_mid",
+      "count": 504000,
+      "repairs": 48150,
+      "damage": 27064,
+      "net": 21086,
+      "accuracy_delta_pp": 4.1837301587301585
+    },
+    {
+      "method": "HPL_E20_NAMS6G",
+      "view": "practical_low_suburban",
+      "count": 504000,
+      "repairs": 56202,
+      "damage": 31601,
+      "net": 24601,
+      "accuracy_delta_pp": 4.881150793650794
+    },
+    {
+      "method": "HPL_E20_NAMS6G",
+      "view": "practical_high_urban",
+      "count": 504000,
+      "repairs": 52523,
+      "damage": 26373,
+      "net": 26150,
+      "accuracy_delta_pp": 5.188492063492063
+    },
+    {
+      "method": "HPL_E20_NAMS6G",
+      "view": "practical_mid_urban",
+      "count": 504000,
+      "repairs": 101947,
+      "damage": 40588,
+      "net": 61359,
+      "accuracy_delta_pp": 12.174404761904762
+    },
+    {
+      "method": "HPL_E20_NAMS6G",
+      "view": "practical_low_urban",
+      "count": 504000,
+      "repairs": 132646,
+      "damage": 50240,
+      "net": 82406,
+      "accuracy_delta_pp": 16.350396825396825
+    },
+    {
+      "method": "HPL_E20_NAMS6G",
+      "view": "six_mean",
+      "count": 3024000,
+      "repairs": 430282,
+      "damage": 199514,
+      "net": 230768,
+      "accuracy_delta_pp": 7.631216931216931
+    }
+  ],
+  "scope": "DURA versus same frozen F raw; all three seeds"
+}

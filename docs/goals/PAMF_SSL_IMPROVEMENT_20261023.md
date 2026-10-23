@@ -246,3 +246,19 @@ HPL2 三seed双读出七景42cell已全部独立评分。为符合逐row自动�
 ## 固定源证据后的剂量匹配互补监督
 
 `20261024-phase1-PAMF-HardPL-Complement-m3-r01` 保留Joint6G三seed/原E20+30/E50/11100/.95/weight6/全部原RDrop及joint/浅中层/style/完整Lguard，只将ordinaryCE系数.5中的.25转给同pass joint减实际signature的CE，总分母1.25不变，部署完整签名和默认头不变。源C无签名视图CE.17-.22而完整仅.003-.004，暴露较弱路径；源诊断不是U真值或target收益。57检查与一次P0P1PASS，真实原E20检查首个释放匹配seed/card通过即重载继续，原三卡映射/2task上限保持，接替GuardNAMS并保留Joint。新增2既有head调用/步、无新骨干/teacher/头/推理参数；完整3seed raw+固定DURA七景42cell及原双raw目标保持。未读取GuardNAMS/Joint新target分数；goal ACTIVE。
+
+
+## HPL_E20_LS6G / HPL_E20_NAMS6G 完整双读出结果
+
+`20261024-phase1-PAMF-HardPL-GradientGuard-m6-r01` 各方法三seed、共6模型，每景168000条，raw／同一DURA七景预测与独立truth-last全部84cell完成；全部新增39960条闭合训练记录已核对。HPL_E20_LS6G / raw clean=85.101587%；HPL_E20_NAMS6G / raw clean=85.500794%；HPL_E20_LS6G / DURA-LU clean=85.096627%；HPL_E20_NAMS6G / DURA-LU clean=85.543452%；HPL_E20_LS6G / raw six_mean=69.936045%；HPL_E20_NAMS6G / raw six_mean=70.283433%；HPL_E20_LS6G / DURA-LU six_mean=78.237996%；HPL_E20_NAMS6G / DURA-LU six_mean=77.914649%；原数值目标仍未满足，维持ACTIVE。全部结果、匹配基线、逐seed／场景／分层及成本均保存，不从本结果热改其他已固定方法、父权重或矩阵。
+
+
+## 20261024 Guard 全六模型闭合与 Complement 实际启动
+
+Guard run `20261024-phase1-PAMF-HardPL-GradientGuard-m6-r01` 全6模型／84项 raw 与固定DURA七景完成，全部39960条新增源步骤闭合核对；原先先行LS6G三seed结果逐项一致并保留。NAMS6G原始clean430924/504000＝85.500793651%，六景2125371/3024000＝70.283432540%；相对F21为＋0.519047619／−0.075925926pp。固定DURA为85.543452381／77.914649471%，相对相同DURA＋F21为＋0.513888889／−0.159986772pp。双主目标未达，goal ACTIVE。完整逐景／seed／TX／RX／day、净纠错、成本与匹配比较见该run报告。
+
+固定权重2→6＋完整L梯度保护组合对同E20的NAMS2，raw clean＋0.254563492pp（三seed均正），raw六景−0.446792328pp（三seed均负）；DURA clean＋0.211507937pp、六景＋0.208730159pp。组合差异不解释为单独权重或保护的因果效应。冻结最终学生fullV27000×3门控0.95精度99.8954%至99.9613%、覆盖95.6222%至96.1778%；U实测准确率UNKNOWN，无目标反馈改变已冻结矩阵。
+
+Complement run `20261024-phase1-PAMF-HardPL-Complement-m3-r01` 执行commit `7d58c705b65dfd0afa02ee8b7cb079e4e1b8468a` 在新GuardNAMS／Joint目标分数读取前固定并发布。真实原E20 source smoke PASS：首释放seed2026092702／GPU6；无签名CE实际signature梯度0，既有头0.829442375、主干2.382877837，完整joint签名辅助梯度0.370686237。普通CE0.5分配为完整融合0.25＋无签名0.25，总CE剂量1.25保持；两次既有头调用512条既有特征，U骨干1536与原L768保持。探针丢弃，正式行重新加载原E20。
+
+三个正式seed已经分别在GPU5/6/7实际产生互补CE／joint／共享style／完整L guard原生步骤，独立PID/CWD/cmdline/GPU/loggrowth核实；当前前缀合计547步，非完整训练或目标收益。训练后raw＋固定DURA七景自动独立truth-last，健康Joint与前序任务未改变。部署T1E50/DURA默认版本保持。

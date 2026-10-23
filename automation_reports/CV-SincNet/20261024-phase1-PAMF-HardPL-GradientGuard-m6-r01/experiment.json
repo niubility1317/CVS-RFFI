@@ -393,16 +393,10 @@
   ],
   "registered_at": "2026-10-23T20:16:12.123696+00:00",
   "launch_status": {
-    "status": "VERIFIED_LS6G_COMPLETE_NAMS6G_TRAINING",
-    "source_smoke": "PASS",
-    "source_rows_complete": 3,
-    "target_rows_complete": 3,
-    "whole_run_complete": false,
-    "remaining_rows": 3,
-    "remaining_method": "HPL_E20_NAMS6G",
-    "remaining_live_GPU_workers_at_observation": 3,
-    "observed_unix": 1792792885.8323548,
-    "evidence": "HPL_E20_LS6G_evaluation_completion.json"
+    "status": "VERIFIED_ALL_SCORED",
+    "source_rows_complete": 6,
+    "target_matrix_complete": true,
+    "evidence": "evaluation_completion.json"
   },
   "reporting_plan": {
     "complete_HPL2_early_readout": {
@@ -489,6 +483,21 @@
       "target_reads": 0,
       "U_truth_reads": 0,
       "selection_changed": false
+    },
+    "HPL_E20_NAMS6G": {
+      "status": "VERIFIED_FULL_SOURCE_V",
+      "source_epoch": 50,
+      "samples_per_seed": 27000,
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "reference": "source_pseudo_quality_E50_HPL_E20_NAMS6G.json",
+      "model_or_threshold_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0,
+      "selection_changed": false
     }
   },
   "early_completed_methods": {
@@ -509,6 +518,24 @@
       "reference_run": "20261024-phase1-PAMF-HardPL-E20plus30-m6-r01",
       "reference_method": "HPL_E20_LS2",
       "reference": "HPL_E20_LS6G_matched_comparison.md"
+    },
+    "HPL_E20_NAMS6G": {
+      "status": "VERIFIED_COMPLETE_MATCHED_METHODS",
+      "reference_run": "20261024-phase1-PAMF-HardPL-E20plus30-m6-r01",
+      "reference_method": "HPL_E20_NAMS2",
+      "reference": "HPL_E20_NAMS6G_matched_comparison.md"
     }
+  },
+  "result_summary": {
+    "status": "ANALYZED",
+    "goal_met": false,
+    "completed_F_models": 6,
+    "completed_readout_view_cells": 84,
+    "independent_truth_last": true,
+    "all_seed_and_scene_results_preserved": true,
+    "both_readouts_complete": true,
+    "summary_ref": "target_summary.json",
+    "details_ref": "target_results.md",
+    "cost_ref": "evaluation_completion.json"
   }
 }
