@@ -1,13 +1,15 @@
 {
-  "status": "VERIFIED_CONTROLLER_QUEUED",
-  "observed_at": "2026-10-23T11:36:52.536957+00:00",
+  "status": "VERIFIED_RUNNING",
+  "observed_at": "2026-10-23T11:41:42.784726+00:00",
   "execution_commit": "e01ac1f474ef8083e4b9ab62ba78549d286eb0e8",
   "controller_identity": "Independent PID/CWD/argv match immutable release and runtime",
   "controller_pid": 2023417,
   "row_counts": {
-    "QUEUED": 6
+    "QUEUED": 4,
+    "SCORED": 1,
+    "PREDICTING": 1
   },
-  "source_smoke": "NOT_STARTED",
+  "source_smoke": "PASS",
   "archive_transfer": "One local/remote archive comparison passed by release publisher",
   "remote_compile": "PASS before dispatch",
   "rows": [
@@ -27,17 +29,17 @@
     },
     {
       "row_id": "PSM-s2026092702",
-      "status": "QUEUED",
-      "pid": null,
+      "status": "SCORED",
+      "pid": 2028745,
       "gpu": null,
-      "log_bytes": null
+      "log_bytes": 33
     },
     {
       "row_id": "RXPSM-s2026092702",
-      "status": "QUEUED",
-      "pid": null,
-      "gpu": null,
-      "log_bytes": null
+      "status": "PREDICTING",
+      "pid": 2028736,
+      "gpu": 6,
+      "log_bytes": 179
     },
     {
       "row_id": "PSM-s2026092703",

@@ -341,12 +341,15 @@
     "Only this new six-row evaluation has a new launch owner. Existing baselines and raw SSL predictions reused; main continuation jobs untouched.",
     "No new scientific candidate or model code. Unchanged frozen evaluation/loaders/engine reuse their prior independent review; four focused protocol-negative tests cover this supplement binding.",
     "DURA is a single common fixed G; three-seed SD is conditional F variation, not G retraining variation.",
-    "PSM/RXPSM and baseline raw target scores were already exposed. This is a requested engineering supplement, not a fresh blind confirmation."
+    "PSM/RXPSM and baseline raw target scores were already exposed. This is a requested engineering supplement, not a fresh blind confirmation.",
+    "User-authorized duplicate dispatch cancellation: nine-row reference run remains the sole forward owner. Four queued rows cancelled, one completed side score retained without selection use, one existing predictor allowed to finish. All outputs retained; no GPU child signaled."
   ],
   "registered_at": "2026-10-23T11:31:48+00:00",
   "launch_status": {
-    "status": "VERIFIED_CONTROLLER_QUEUED",
-    "observed_at": "2026-10-23T11:36:52.536957+00:00",
-    "evidence": "launch_verification.json"
+    "status": "CANCELLED_DUPLICATE_DISPATCH",
+    "evidence": "cancellation_verification.json",
+    "replacement_run_id": "20261023-phase1-PAMF-SSL-DURA-reference-m9-r01",
+    "completed_partial_artifacts_retained": true,
+    "no_remaining_new_dispatch": true
   }
 }

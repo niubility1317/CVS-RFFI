@@ -22,3 +22,14 @@ E:/type10-7/local_envs/phase1-cu128/Scripts/python.exe -X utf8 -m experiments.pa
 ## 已核实启动状态
 
 观测时间 2026-10-23T11:36:52.536957+00:00，执行 commit `e01ac1f474ef8083e4b9ab62ba78549d286eb0e8`。一次归档传输比较、远端编译完成；独立读回核实控制器 PID／CWD／命令匹配，状态心跳继续。六行均 QUEUED，当前每卡已有两个总计算进程，尚未开始本 run 的 GPU smoke 或预测。队列等待容量后自动继续。尚未收集新 DURA 目标评分，不宣称评估完成；其他 owner 保持原运行。
+
+## 已核实启动状态
+
+观测时间 2026-10-23T11:41:42.784726+00:00，执行 commit `e01ac1f474ef8083e4b9ab62ba78549d286eb0e8`。一次归档传输比较、远端编译完成；独立读回核实控制器 PID／CWD／命令匹配，状态心跳继续。各行的实际状态见 launch_verification.json。尚未收集新 DURA 目标评分，不宣称评估完成；其他 owner 保持原运行。
+
+
+## 用户取消重复派发
+
+VERIFIED：本侧聊六模型队列与已先启动的九模型补测指向同一 PSM/RXPSM 最终权重及测试样本。用户明确选择取消重复六模型队列、保留九模型队列与全部训练。确认期间侧队列已完成 seed2 的 PSM 评分并开始 RXPSM 预测，因此仅停止经 PID/CWD/完整命令核实的 CPU 调度器，取消另外四条尚未开始的预测；已完成产物保留，正在预测的子进程不接收信号并继续完成。独立后态确认控制器已退出，三个 VIEWANCHOR 训练进程及两条主控制器均保持原身份。
+
+后续统一结果由 `20261023-phase1-PAMF-SSL-DURA-reference-m9-r01` 的原定九行产生。本侧聊部分评分不读取、不用于选模、调参或挑选结果；重叠工作及其额外推理成本如实保留。本队列不能再按旧 RUNNING 状态恢复，远端 cancellation.json/handoff.json 已标明用户取消和替代 owner。公开证据见 cancellation_verification.json。

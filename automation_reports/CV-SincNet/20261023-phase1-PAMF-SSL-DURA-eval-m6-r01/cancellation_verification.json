@@ -1,0 +1,23 @@
+{
+  "status": "VERIFIED_CANCELLED_DUPLICATE_DISPATCH",
+  "run_id": "20261023-phase1-PAMF-SSL-DURA-eval-m6-r01",
+  "replacement_run_id": "20261023-phase1-PAMF-SSL-DURA-reference-m9-r01",
+  "authorization": "User explicitly selected cancel duplicate six-model queue; preserve nine-model owner and all training",
+  "controller_PID_CWD_command_verified": true,
+  "controller_exit_independently_verified": true,
+  "pending_rows_cancelled": [
+    "PSM-s2026092701",
+    "RXPSM-s2026092701",
+    "PSM-s2026092703",
+    "RXPSM-s2026092703"
+  ],
+  "cancelled_before_prediction": 4,
+  "completed_side_score_rows_retained": 1,
+  "running_side_predictor_preserved": true,
+  "GPU_child_signals_sent": 0,
+  "all_outputs_preserved": true,
+  "protected_training_and_main_controller_count": 5,
+  "scientific_matrix_unchanged": true,
+  "side_scores_read_for_selection": false,
+  "condition_change": "During confirmation, the side dispatcher started two seed2 rows. Stop only the duplicate CPU dispatcher and its remaining queued submissions; retain one completed score and allow the other existing predictor to finish. No GPU child stopped."
+}
