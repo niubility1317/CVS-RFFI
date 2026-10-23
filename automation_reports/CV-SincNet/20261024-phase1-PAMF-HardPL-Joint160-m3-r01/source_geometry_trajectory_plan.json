@@ -1,0 +1,91 @@
+{
+  "status": "REGISTERED_SOURCE_ONLY_DIAGNOSTIC",
+  "run_context": "20261024-phase1-PAMF-HardPL-Joint160-m3-r01",
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "profiles_by_phase": {
+    "A": [
+      "F21_E20",
+      "F21_E30",
+      "EARLY_NAMS_E30",
+      "GUARD_NAMS_E30"
+    ],
+    "B": [
+      "JOINT_E30"
+    ]
+  },
+  "expected_source_models_by_phase": {
+    "A": 12,
+    "B": 3
+  },
+  "expected_role_rows_by_phase": {
+    "A": 24,
+    "B": 6
+  },
+  "parent_reference": "Fixed original same-seed F21 E20;original F21E30 and own10 continuation checkpoints,never target-selected models",
+  "U_s": {
+    "samples_per_seed": 960,
+    "sampling": "64 per existing sourceRX/day,seed2026102307;order seed2026102401",
+    "labels": "Frozen original same-seed E20 raw eval argmax",
+    "accepted": "Original same-seed E20 confidence>=.95,fixed across every comparator",
+    "TX_truth": "HIDDEN"
+  },
+  "V": {
+    "samples_per_seed": 720,
+    "sampling": "8 per TX/sourceRX/day,all sixTX/fiveRX/three days,order seed2026102401",
+    "labels": "Source V truth only for frozen descriptive diagnosis",
+    "accepted": "All720,common across comparators",
+    "state_updates": 0
+  },
+  "levels": [
+    "time_down",
+    "t2.pool",
+    "joint160",
+    "core160",
+    "signature160",
+    "reference160"
+  ],
+  "forward": "One actual frozen deployed features call per source batch;capture existing time_down/t2.pool/sequence_pool/response_projection;actual reference contribution includes response_gain.tanh;core=joint-signature-reference",
+  "normalizations": [
+    "unit_only",
+    "cohort_native_cric"
+  ],
+  "metrics": [
+    "TX between/within scatter",
+    "TX-conditional RX scatter",
+    "total spread and class separation",
+    "actual branch norm relative to joint",
+    "fixed-cohort source prediction agreement/CE"
+  ],
+  "anti_collapse": "Report full TX separation and raw branch norm;zero spread/empty selection gets explicit status and null ratios,not successful invariance",
+  "source_checkpoint_checks": "Existing strict source_parents,data contract,seed/source run/config,native epoch/offset/steps,and actual payload ancestry;own30=original20+native10/2220,frozen defaulthead",
+  "updates": {
+    "model": 0,
+    "normalization": 0,
+    "EMA": 0,
+    "prototype": 0,
+    "head_fit": 0
+  },
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "G_reads": 0,
+  "GPU_workers": 0,
+  "CPU_threads": 2,
+  "timing": "PhaseA fixed existing source checkpoints now;PhaseB only after all three already running Joint ownE30 checkpoints freeze.Never wait/stop/change the GPU training or target test pipeline for this diagnostic.",
+  "purpose": "Explain whether current supervised-U mechanisms learn different deployed source geometry and where RX association lies;no classifier/projection fitted,no checkpoint/threshold/route selection or target-feedback tuning",
+  "interpretation": "Source descriptive association is not causal nuisance isolation,U actual accuracy,statistical significance or target gains;raw eval features remove the constructed run-time style perturbation present in the earlier diagnostic",
+  "historical_exposure": "Earlier benchmarks and complete GuardLS6G target results already observed;source-only fixed analysis,not a new blind test.No GuardNAMS6G or Joint target scores read.",
+  "scientific_thresholds": null,
+  "performance_stop_rule": null,
+  "focused_tests": 6,
+  "code_refs": [
+    "experiments/pamf_ssl_research/source_geometry.py",
+    "experiments/pamf_ssl_research/source_trajectory.py"
+  ],
+  "execution": "N607 ordinary account,existing Joint release/model dependencies;committed analysis/config passed over UTF8 stdin,CPU2/noCUDA;read-only source checkpoints and existing validated roles.Local immutable aggregate outputs per phase.",
+  "command": "python local_artifacts/pamf_ssl_research_20261023/collect_source_geometry_trajectory.py --phase A (then fixed phase B)",
+  "goal_complete": false
+}

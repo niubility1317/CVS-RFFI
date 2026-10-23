@@ -297,5 +297,12 @@
     "actual_GPU_workers": 3,
     "queued_rows": 0,
     "target_matrix_complete": false
+  },
+  "frozen_source_geometry_trajectory": {
+    "status": "REGISTERED_SOURCE_ONLY_DIAGNOSTIC",
+    "plan": "source_geometry_trajectory_plan.json",
+    "primary_training_or_evaluation_changed": false,
+    "source_V_updates": 0,
+    "new_GPU_workers": 0
   }
 }

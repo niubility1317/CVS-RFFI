@@ -27,3 +27,8 @@ VERIFIED_CONTROLLER_QUEUED：执行 commit `77498c5a8b003f3afc71fab7ee96ca396625
 VERIFIED：发布commit `77498c5a8b003f3afc71fab7ee96ca39662593fa` 的真实原E20 GPU source smoke PASS。实际joint160两次捕获512条已有Upacket，跨RX有效anchors=470；实际签名sequence_pool辅助梯度范数=0.435258482且有限非零，原L768／U1536／rawAs128／Uphysical0／LPractical64、共享style计划、完整L guard参数梯度与显式期望相同及临时wrapper退出均符合。探针丢弃，正式行重新加载原E20。
 
 三个seed已按GPU5/6/7启动并实际产生原生joint／guard源步骤；独立核实进程／CWD／完整命令／GPU及日志增长，逐行现有U复用计数见source_activation.json。只按原矩阵接替释放卡位；当前是训练前缀，不代表全部源训练结束或目标收益。训练、raw＋固定DURA七景及truth-last继续自动执行，goal ACTIVE。
+
+
+## 固定源特征轨迹诊断
+
+额外的只读源诊断，不改变或阻挡现有训练／冻结／测试。矩阵预定原F21 E20、原F21 E30、EarlyNAMS E30、GuardNAMS E30各三seed（A阶段24个角色行），以及当前Joint固定own E30三seed（B阶段6行）；不按目标分数挑checkpoint。所有模型用相同U960／V720物理源cohort，U统一用原同seedE20伪标签及0.95接受集合，V用全部720真标签仅作不更新诊断。检查实际部署eval特征，无临时style扰动，分别报告浅中层、joint、主干残量、实际签名与含gain的参考响应贡献；同时保留TX分离／总散度／分支幅度，不能将坍塌或接收机关联降低当成成功。unit-only和全cohort CRIC式标准化均为描述性统计，不拟合头／投影、不读U真值／target，不作候选晋级门槛。6项相关检查通过；代码配置以Git版本固定，实际checkpoint严格继承检查及sourceL2 no-query调用在CPU诊断中完成。完整矩阵、指令和边界见source_geometry_trajectory_plan.json。
