@@ -1,0 +1,16 @@
+{
+  "status": "SOURCE_DIAGNOSTIC_FIXED_BEFORE_READ",
+  "parent": "Original F21 E20 only",
+  "run_context": "20261024-phase1-PAMF-HardPL-GradientGuard-m6-r01",
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "U_samples_per_seed": 960,
+  "V_samples_per_seed": 720,
+  "method_updates": 0,
+  "GPU_workers": 0,
+  "source_only": true,
+  "purpose": "Descriptive magnitude/receiver geometry of the already frozen U style recipe,no new method selection or run changes"
+}

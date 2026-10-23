@@ -1,0 +1,660 @@
+{
+  "status": "FROZEN_F21_E20_STYLE_GEOMETRY",
+  "source_parent_epoch": 20,
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "role": "U_s",
+      "source_epoch": 20,
+      "samples": 960,
+      "accepted": 898,
+      "eligible": 898,
+      "label_semantics": "Detached current raw eval pseudo TX,hidden U truth",
+      "accepted_raw_correct": null,
+      "accepted_styled_correct": null,
+      "accepted_prediction_changed": 0,
+      "mean_raw_pseudo_CE": 0.003869393974247019,
+      "mean_styled_pseudo_CE": 0.004038004232861142,
+      "relative_feature_displacement": {
+        "time_down": {
+          "mean": 0.0727852492558271,
+          "median": 0.04959854483604431
+        },
+        "t2.pool": {
+          "mean": 0.08864993456628538,
+          "median": 0.07035341486334801
+        },
+        "joint160": {
+          "mean": 0.06796000670243812,
+          "median": 0.04557670094072819
+        }
+      },
+      "geometry": {
+        "raw": {
+          "time_down": {
+            "samples": 960,
+            "descriptor_dimension": 96,
+            "total_scatter": 887.2261372405932,
+            "class_between_scatter": 383.7137625298555,
+            "class_within_scatter": 503.5123747107376,
+            "conditional_RX_between_scatter": 222.82981055214202,
+            "class_fraction_of_total": 0.43248699111058997,
+            "conditional_RX_fraction_of_class_residual": 0.44255081253992085,
+            "conditional_RX_fraction_of_total": 0.2511533432109837,
+            "covered_class_RX_cells": 30
+          },
+          "t2.pool": {
+            "samples": 960,
+            "descriptor_dimension": 192,
+            "total_scatter": 892.7686921040041,
+            "class_between_scatter": 426.7784077718687,
+            "class_within_scatter": 465.99028433213545,
+            "conditional_RX_between_scatter": 192.91171784909383,
+            "class_fraction_of_total": 0.47803917358041786,
+            "conditional_RX_fraction_of_class_residual": 0.4139822745995186,
+            "conditional_RX_fraction_of_total": 0.2160825301730231,
+            "covered_class_RX_cells": 30
+          },
+          "joint160": {
+            "samples": 960,
+            "descriptor_dimension": 160,
+            "total_scatter": 894.1100643334742,
+            "class_between_scatter": 715.6918671271292,
+            "class_within_scatter": 178.41819720634496,
+            "conditional_RX_between_scatter": 64.99973881089964,
+            "class_fraction_of_total": 0.8004516397661298,
+            "conditional_RX_fraction_of_class_residual": 0.36431115115307366,
+            "conditional_RX_fraction_of_total": 0.07269769282750949,
+            "covered_class_RX_cells": 30
+          }
+        },
+        "style": {
+          "time_down": {
+            "samples": 960,
+            "descriptor_dimension": 96,
+            "total_scatter": 886.7254646179924,
+            "class_between_scatter": 400.66258480709485,
+            "class_within_scatter": 486.06287981089764,
+            "conditional_RX_between_scatter": 39.95719030439213,
+            "class_fraction_of_total": 0.45184513222444006,
+            "conditional_RX_fraction_of_class_residual": 0.08220580497720262,
+            "conditional_RX_fraction_of_total": 0.04506151215766197,
+            "covered_class_RX_cells": 30
+          },
+          "t2.pool": {
+            "samples": 960,
+            "descriptor_dimension": 192,
+            "total_scatter": 892.6323026288894,
+            "class_between_scatter": 441.8018182583596,
+            "class_within_scatter": 450.8304843705298,
+            "conditional_RX_between_scatter": 38.153812070814496,
+            "class_fraction_of_total": 0.49494267343587056,
+            "conditional_RX_fraction_of_class_residual": 0.0846300625036184,
+            "conditional_RX_fraction_of_total": 0.042743033115032684,
+            "covered_class_RX_cells": 30
+          },
+          "joint160": {
+            "samples": 960,
+            "descriptor_dimension": 160,
+            "total_scatter": 893.8050123317481,
+            "class_between_scatter": 717.1476033488852,
+            "class_within_scatter": 176.65740898286276,
+            "conditional_RX_between_scatter": 58.501582184259746,
+            "class_fraction_of_total": 0.8023535261656218,
+            "conditional_RX_fraction_of_class_residual": 0.33115838458796193,
+            "conditional_RX_fraction_of_total": 0.06545228699449951,
+            "covered_class_RX_cells": 30
+          }
+        }
+      }
+    },
+    {
+      "model_seed": 2026092701,
+      "role": "V",
+      "source_epoch": 20,
+      "samples": 720,
+      "accepted": 661,
+      "eligible": 661,
+      "label_semantics": "Source V true TX,diagnostic only",
+      "accepted_raw_correct": 661,
+      "accepted_styled_correct": 661,
+      "accepted_prediction_changed": 0,
+      "mean_raw_pseudo_CE": 0.0035313786989500124,
+      "mean_styled_pseudo_CE": 0.0038033937141188404,
+      "relative_feature_displacement": {
+        "time_down": {
+          "mean": 0.0739916273877348,
+          "median": 0.05470120906829834
+        },
+        "t2.pool": {
+          "mean": 0.09047867024879531,
+          "median": 0.08210007101297379
+        },
+        "joint160": {
+          "mean": 0.07252897184751275,
+          "median": 0.049118898808956146
+        }
+      },
+      "geometry": {
+        "raw": {
+          "time_down": {
+            "samples": 720,
+            "descriptor_dimension": 96,
+            "total_scatter": 654.4302874840569,
+            "class_between_scatter": 292.87950218850534,
+            "class_within_scatter": 361.55078529555146,
+            "conditional_RX_between_scatter": 163.43617365759462,
+            "class_fraction_of_total": 0.44753353839180376,
+            "conditional_RX_fraction_of_class_residual": 0.45204209285285585,
+            "conditional_RX_fraction_of_total": 0.2497380955363809,
+            "covered_class_RX_cells": 30
+          },
+          "t2.pool": {
+            "samples": 720,
+            "descriptor_dimension": 192,
+            "total_scatter": 658.180352423331,
+            "class_between_scatter": 322.8462105040443,
+            "class_within_scatter": 335.3341419192866,
+            "conditional_RX_between_scatter": 144.49981558269124,
+            "class_fraction_of_total": 0.49051329064346605,
+            "conditional_RX_fraction_of_class_residual": 0.43091292391417657,
+            "conditional_RX_fraction_of_total": 0.21954440762423624,
+            "covered_class_RX_cells": 30
+          },
+          "joint160": {
+            "samples": 720,
+            "descriptor_dimension": 160,
+            "total_scatter": 658.6201523923584,
+            "class_between_scatter": 532.8954007742174,
+            "class_within_scatter": 125.72475161814094,
+            "conditional_RX_between_scatter": 49.68943602811026,
+            "class_fraction_of_total": 0.8091088601503295,
+            "conditional_RX_fraction_of_class_residual": 0.3952239745044803,
+            "conditional_RX_fraction_of_total": 0.07544475498907734,
+            "covered_class_RX_cells": 30
+          }
+        },
+        "style": {
+          "time_down": {
+            "samples": 720,
+            "descriptor_dimension": 96,
+            "total_scatter": 654.5565073196736,
+            "class_between_scatter": 298.9285399550844,
+            "class_within_scatter": 355.62796736458927,
+            "conditional_RX_between_scatter": 31.825326747964688,
+            "class_fraction_of_total": 0.4566886687585753,
+            "conditional_RX_fraction_of_class_residual": 0.08949050600212612,
+            "conditional_RX_fraction_of_total": 0.04862120594948385,
+            "covered_class_RX_cells": 30
+          },
+          "t2.pool": {
+            "samples": 720,
+            "descriptor_dimension": 192,
+            "total_scatter": 658.3659532161284,
+            "class_between_scatter": 329.70836976508065,
+            "class_within_scatter": 328.65758345104786,
+            "conditional_RX_between_scatter": 29.612434348558917,
+            "class_fraction_of_total": 0.5007980260134198,
+            "conditional_RX_fraction_of_class_residual": 0.09010117471690582,
+            "conditional_RX_fraction_of_total": 0.04497868427718914,
+            "covered_class_RX_cells": 30
+          },
+          "joint160": {
+            "samples": 720,
+            "descriptor_dimension": 160,
+            "total_scatter": 658.6936784398877,
+            "class_between_scatter": 531.2886119801674,
+            "class_within_scatter": 127.40506645972017,
+            "conditional_RX_between_scatter": 44.70478308949352,
+            "class_fraction_of_total": 0.806579187519336,
+            "conditional_RX_fraction_of_class_residual": 0.3508870120453741,
+            "conditional_RX_fraction_of_total": 0.06786885095872872,
+            "covered_class_RX_cells": 30
+          }
+        }
+      }
+    },
+    {
+      "model_seed": 2026092702,
+      "role": "U_s",
+      "source_epoch": 20,
+      "samples": 960,
+      "accepted": 902,
+      "eligible": 902,
+      "label_semantics": "Detached current raw eval pseudo TX,hidden U truth",
+      "accepted_raw_correct": null,
+      "accepted_styled_correct": null,
+      "accepted_prediction_changed": 0,
+      "mean_raw_pseudo_CE": 0.0033745902622403408,
+      "mean_styled_pseudo_CE": 0.0037355109772061585,
+      "relative_feature_displacement": {
+        "time_down": {
+          "mean": 0.06971548772409758,
+          "median": 0.04518972150981426
+        },
+        "t2.pool": {
+          "mean": 0.07798379846140026,
+          "median": 0.05790702812373638
+        },
+        "joint160": {
+          "mean": 0.05518851629202869,
+          "median": 0.03481354005634785
+        }
+      },
+      "geometry": {
+        "raw": {
+          "time_down": {
+            "samples": 960,
+            "descriptor_dimension": 96,
+            "total_scatter": 889.4797516837314,
+            "class_between_scatter": 368.07048795939374,
+            "class_within_scatter": 521.4092637243374,
+            "conditional_RX_between_scatter": 237.73262318882175,
+            "class_fraction_of_total": 0.4138042347368319,
+            "conditional_RX_fraction_of_class_residual": 0.4559424615718144,
+            "conditional_RX_fraction_of_total": 0.26727154017706223,
+            "covered_class_RX_cells": 30
+          },
+          "t2.pool": {
+            "samples": 960,
+            "descriptor_dimension": 192,
+            "total_scatter": 896.2670440742817,
+            "class_between_scatter": 395.92652571096914,
+            "class_within_scatter": 500.3405183633125,
+            "conditional_RX_between_scatter": 204.97798852491925,
+            "class_fraction_of_total": 0.44175062368817297,
+            "conditional_RX_fraction_of_class_residual": 0.4096769719858636,
+            "conditional_RX_fraction_of_total": 0.22870191410042617,
+            "covered_class_RX_cells": 30
+          },
+          "joint160": {
+            "samples": 960,
+            "descriptor_dimension": 160,
+            "total_scatter": 898.8878509258342,
+            "class_between_scatter": 698.7472553112648,
+            "class_within_scatter": 200.14059561456952,
+            "conditional_RX_between_scatter": 81.57200005220864,
+            "class_fraction_of_total": 0.7773464226839543,
+            "conditional_RX_fraction_of_class_residual": 0.4075734850379874,
+            "conditional_RX_fraction_of_total": 0.09074769446287578,
+            "covered_class_RX_cells": 30
+          }
+        },
+        "style": {
+          "time_down": {
+            "samples": 960,
+            "descriptor_dimension": 96,
+            "total_scatter": 889.4555620077863,
+            "class_between_scatter": 387.7265314431528,
+            "class_within_scatter": 501.72903056463355,
+            "conditional_RX_between_scatter": 49.91687144657113,
+            "class_fraction_of_total": 0.43591444924795314,
+            "conditional_RX_fraction_of_class_residual": 0.09948970142388593,
+            "conditional_RX_fraction_of_total": 0.0561207030218494,
+            "covered_class_RX_cells": 30
+          },
+          "t2.pool": {
+            "samples": 960,
+            "descriptor_dimension": 192,
+            "total_scatter": 896.5438516229062,
+            "class_between_scatter": 417.4779980295943,
+            "class_within_scatter": 479.0658535933119,
+            "conditional_RX_between_scatter": 41.24766022787482,
+            "class_fraction_of_total": 0.46565262510459887,
+            "conditional_RX_fraction_of_class_residual": 0.08610018835299987,
+            "conditional_RX_fraction_of_total": 0.046007409624425066,
+            "covered_class_RX_cells": 30
+          },
+          "joint160": {
+            "samples": 960,
+            "descriptor_dimension": 160,
+            "total_scatter": 898.730428788142,
+            "class_between_scatter": 701.2289861851478,
+            "class_within_scatter": 197.50144260299433,
+            "conditional_RX_between_scatter": 70.51724223743204,
+            "class_fraction_of_total": 0.7802439571682164,
+            "conditional_RX_fraction_of_class_residual": 0.3570467198013415,
+            "conditional_RX_fraction_of_total": 0.0784631742496115,
+            "covered_class_RX_cells": 30
+          }
+        }
+      }
+    },
+    {
+      "model_seed": 2026092702,
+      "role": "V",
+      "source_epoch": 20,
+      "samples": 720,
+      "accepted": 665,
+      "eligible": 665,
+      "label_semantics": "Source V true TX,diagnostic only",
+      "accepted_raw_correct": 663,
+      "accepted_styled_correct": 663,
+      "accepted_prediction_changed": 0,
+      "mean_raw_pseudo_CE": 0.003383283806637597,
+      "mean_styled_pseudo_CE": 0.0037267932992169944,
+      "relative_feature_displacement": {
+        "time_down": {
+          "mean": 0.07110463008411623,
+          "median": 0.04889041557908058
+        },
+        "t2.pool": {
+          "mean": 0.07880976208127627,
+          "median": 0.06547112762928009
+        },
+        "joint160": {
+          "mean": 0.056193908522938374,
+          "median": 0.035989269614219666
+        }
+      },
+      "geometry": {
+        "raw": {
+          "time_down": {
+            "samples": 720,
+            "descriptor_dimension": 96,
+            "total_scatter": 657.3643230662032,
+            "class_between_scatter": 281.3294297177636,
+            "class_within_scatter": 376.03489334843954,
+            "conditional_RX_between_scatter": 177.1658198462854,
+            "class_fraction_of_total": 0.42796577156109356,
+            "conditional_RX_fraction_of_class_residual": 0.47114196841866185,
+            "conditional_RX_fraction_of_total": 0.2695093323895569,
+            "covered_class_RX_cells": 30
+          },
+          "t2.pool": {
+            "samples": 720,
+            "descriptor_dimension": 192,
+            "total_scatter": 661.8450259610281,
+            "class_between_scatter": 296.64220759489103,
+            "class_within_scatter": 365.2028183661371,
+            "conditional_RX_between_scatter": 156.30868206744842,
+            "class_fraction_of_total": 0.4482049361391717,
+            "conditional_RX_fraction_of_class_residual": 0.42800513634245796,
+            "conditional_RX_fraction_of_total": 0.23617112154084913,
+            "covered_class_RX_cells": 30
+          },
+          "joint160": {
+            "samples": 720,
+            "descriptor_dimension": 160,
+            "total_scatter": 663.54220149937,
+            "class_between_scatter": 515.6553534579439,
+            "class_within_scatter": 147.88684804142616,
+            "conditional_RX_between_scatter": 61.86135606567911,
+            "class_fraction_of_total": 0.7771251810250286,
+            "conditional_RX_fraction_of_class_residual": 0.41830194425639844,
+            "conditional_RX_fraction_of_total": 0.09322897010302343,
+            "covered_class_RX_cells": 30
+          }
+        },
+        "style": {
+          "time_down": {
+            "samples": 720,
+            "descriptor_dimension": 96,
+            "total_scatter": 658.3269861163307,
+            "class_between_scatter": 289.8274573475293,
+            "class_within_scatter": 368.4995287688014,
+            "conditional_RX_between_scatter": 39.5703305825797,
+            "class_fraction_of_total": 0.44024848359522495,
+            "conditional_RX_fraction_of_class_residual": 0.10738230986288816,
+            "conditional_RX_fraction_of_total": 0.06010741078079908,
+            "covered_class_RX_cells": 30
+          },
+          "t2.pool": {
+            "samples": 720,
+            "descriptor_dimension": 192,
+            "total_scatter": 662.3202549049822,
+            "class_between_scatter": 306.120133181031,
+            "class_within_scatter": 356.2001217239512,
+            "conditional_RX_between_scatter": 35.745106150588974,
+            "class_fraction_of_total": 0.4621935248302917,
+            "conditional_RX_fraction_of_class_residual": 0.10035119016127343,
+            "conditional_RX_fraction_of_total": 0.05396951985971958,
+            "covered_class_RX_cells": 30
+          },
+          "joint160": {
+            "samples": 720,
+            "descriptor_dimension": 160,
+            "total_scatter": 663.5368340124055,
+            "class_between_scatter": 516.4162644949821,
+            "class_within_scatter": 147.12056951742352,
+            "conditional_RX_between_scatter": 54.074180399026034,
+            "class_fraction_of_total": 0.7782782176118458,
+            "conditional_RX_fraction_of_class_residual": 0.36755010245268266,
+            "conditional_RX_fraction_of_total": 0.08149386383275757,
+            "covered_class_RX_cells": 30
+          }
+        }
+      }
+    },
+    {
+      "model_seed": 2026092703,
+      "role": "U_s",
+      "source_epoch": 20,
+      "samples": 960,
+      "accepted": 903,
+      "eligible": 903,
+      "label_semantics": "Detached current raw eval pseudo TX,hidden U truth",
+      "accepted_raw_correct": null,
+      "accepted_styled_correct": null,
+      "accepted_prediction_changed": 0,
+      "mean_raw_pseudo_CE": 0.004145417766688207,
+      "mean_styled_pseudo_CE": 0.004274008549926521,
+      "relative_feature_displacement": {
+        "time_down": {
+          "mean": 0.06228742063208402,
+          "median": 0.04432779550552368
+        },
+        "t2.pool": {
+          "mean": 0.08784344588644882,
+          "median": 0.07090287655591965
+        },
+        "joint160": {
+          "mean": 0.05005273960738288,
+          "median": 0.03345676511526108
+        }
+      },
+      "geometry": {
+        "raw": {
+          "time_down": {
+            "samples": 960,
+            "descriptor_dimension": 96,
+            "total_scatter": 891.1710722968508,
+            "class_between_scatter": 387.1301718182204,
+            "class_within_scatter": 504.0409004786303,
+            "conditional_RX_between_scatter": 227.25063470666439,
+            "class_fraction_of_total": 0.43440612453953914,
+            "conditional_RX_fraction_of_class_residual": 0.4508575286070442,
+            "conditional_RX_fraction_of_total": 0.2550022568853837,
+            "covered_class_RX_cells": 30
+          },
+          "t2.pool": {
+            "samples": 960,
+            "descriptor_dimension": 192,
+            "total_scatter": 900.1033195532153,
+            "class_between_scatter": 396.558118525534,
+            "class_within_scatter": 503.5452010276814,
+            "conditional_RX_between_scatter": 209.8280842319545,
+            "class_fraction_of_total": 0.44056955452888863,
+            "conditional_RX_fraction_of_class_residual": 0.41670158667725965,
+            "conditional_RX_fraction_of_total": 0.2331155542633783,
+            "covered_class_RX_cells": 30
+          },
+          "joint160": {
+            "samples": 960,
+            "descriptor_dimension": 160,
+            "total_scatter": 901.0264437332703,
+            "class_between_scatter": 703.8359348335362,
+            "class_within_scatter": 197.19050889973408,
+            "conditional_RX_between_scatter": 74.82408739111867,
+            "class_fraction_of_total": 0.7811490325603494,
+            "conditional_RX_fraction_of_class_residual": 0.3794507545450103,
+            "conditional_RX_fraction_of_total": 0.08304316472788088,
+            "covered_class_RX_cells": 30
+          }
+        },
+        "style": {
+          "time_down": {
+            "samples": 960,
+            "descriptor_dimension": 96,
+            "total_scatter": 891.1030929207258,
+            "class_between_scatter": 410.13389696032436,
+            "class_within_scatter": 480.96919596040146,
+            "conditional_RX_between_scatter": 47.06926839514858,
+            "class_fraction_of_total": 0.46025415041041795,
+            "conditional_RX_fraction_of_class_residual": 0.09786337418378833,
+            "conditional_RX_fraction_of_total": 0.05282135004253201,
+            "covered_class_RX_cells": 30
+          },
+          "t2.pool": {
+            "samples": 960,
+            "descriptor_dimension": 192,
+            "total_scatter": 900.1812077896652,
+            "class_between_scatter": 425.40877061690736,
+            "class_within_scatter": 474.77243717275775,
+            "conditional_RX_between_scatter": 46.59851983589232,
+            "class_fraction_of_total": 0.4725812613456686,
+            "conditional_RX_fraction_of_class_residual": 0.09814916829077903,
+            "conditional_RX_fraction_of_total": 0.05176571053989437,
+            "covered_class_RX_cells": 30
+          },
+          "joint160": {
+            "samples": 960,
+            "descriptor_dimension": 160,
+            "total_scatter": 900.9815409420619,
+            "class_between_scatter": 703.8252374702613,
+            "class_within_scatter": 197.15630347180056,
+            "conditional_RX_between_scatter": 69.6253625195808,
+            "class_fraction_of_total": 0.7811760901719974,
+            "conditional_RX_fraction_of_class_residual": 0.353148041901381,
+            "conditional_RX_fraction_of_total": 0.07727723527696347,
+            "covered_class_RX_cells": 30
+          }
+        }
+      }
+    },
+    {
+      "model_seed": 2026092703,
+      "role": "V",
+      "source_epoch": 20,
+      "samples": 720,
+      "accepted": 665,
+      "eligible": 665,
+      "label_semantics": "Source V true TX,diagnostic only",
+      "accepted_raw_correct": 664,
+      "accepted_styled_correct": 664,
+      "accepted_prediction_changed": 0,
+      "mean_raw_pseudo_CE": 0.00398704250737386,
+      "mean_styled_pseudo_CE": 0.004164987027803377,
+      "relative_feature_displacement": {
+        "time_down": {
+          "mean": 0.06210755208030137,
+          "median": 0.04090074449777603
+        },
+        "t2.pool": {
+          "mean": 0.08736870584631325,
+          "median": 0.06239715591073036
+        },
+        "joint160": {
+          "mean": 0.05005375238749581,
+          "median": 0.033341165632009506
+        }
+      },
+      "geometry": {
+        "raw": {
+          "time_down": {
+            "samples": 720,
+            "descriptor_dimension": 96,
+            "total_scatter": 657.3459551931121,
+            "class_between_scatter": 300.6830883771756,
+            "class_within_scatter": 356.6628668159366,
+            "conditional_RX_between_scatter": 166.09546302951952,
+            "class_fraction_of_total": 0.45741985023524223,
+            "conditional_RX_fraction_of_class_residual": 0.46569317549739936,
+            "conditional_RX_fraction_of_total": 0.2526758729058046,
+            "covered_class_RX_cells": 30
+          },
+          "t2.pool": {
+            "samples": 720,
+            "descriptor_dimension": 192,
+            "total_scatter": 663.1407162386005,
+            "class_between_scatter": 305.04335232188566,
+            "class_within_scatter": 358.0973639167148,
+            "conditional_RX_between_scatter": 154.29478614752747,
+            "class_fraction_of_total": 0.459997923294654,
+            "conditional_RX_fraction_of_class_residual": 0.4308738396170179,
+            "conditional_RX_fraction_of_total": 0.23267276819119584,
+            "covered_class_RX_cells": 30
+          },
+          "joint160": {
+            "samples": 720,
+            "descriptor_dimension": 160,
+            "total_scatter": 663.8513269988869,
+            "class_between_scatter": 519.3534921416082,
+            "class_within_scatter": 144.49783485727863,
+            "conditional_RX_between_scatter": 57.31194031011274,
+            "class_fraction_of_total": 0.7823340423065525,
+            "conditional_RX_fraction_of_class_residual": 0.39662836724661016,
+            "conditional_RX_fraction_of_total": 0.08633249340512178,
+            "covered_class_RX_cells": 30
+          }
+        },
+        "style": {
+          "time_down": {
+            "samples": 720,
+            "descriptor_dimension": 96,
+            "total_scatter": 657.8301756421142,
+            "class_between_scatter": 312.85965026565947,
+            "class_within_scatter": 344.97052537645476,
+            "conditional_RX_between_scatter": 40.04056328356832,
+            "class_fraction_of_total": 0.4755933398164264,
+            "conditional_RX_fraction_of_class_residual": 0.11606951996804189,
+            "conditional_RX_fraction_of_total": 0.06086762931555146,
+            "covered_class_RX_cells": 30
+          },
+          "t2.pool": {
+            "samples": 720,
+            "descriptor_dimension": 192,
+            "total_scatter": 663.3588256400583,
+            "class_between_scatter": 321.2447302193559,
+            "class_within_scatter": 342.1140954207024,
+            "conditional_RX_between_scatter": 38.32170619168309,
+            "class_fraction_of_total": 0.48426992722889445,
+            "conditional_RX_fraction_of_class_residual": 0.11201440310303018,
+            "conditional_RX_fraction_of_total": 0.057769196263737714,
+            "covered_class_RX_cells": 30
+          },
+          "joint160": {
+            "samples": 720,
+            "descriptor_dimension": 160,
+            "total_scatter": 663.8201892344389,
+            "class_between_scatter": 519.1212520199805,
+            "class_within_scatter": 144.69893721445834,
+            "conditional_RX_between_scatter": 53.25468989045399,
+            "class_fraction_of_total": 0.7820208852319862,
+            "conditional_RX_fraction_of_class_residual": 0.3680378786163799,
+            "conditional_RX_fraction_of_total": 0.08022457098189617,
+            "covered_class_RX_cells": 30
+          }
+        }
+      }
+    }
+  ],
+  "seconds": 9.111297554103658,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "GPU_workers": 0,
+  "model_updates": 0,
+  "normalization_updates": 0,
+  "EMA_updates": 0,
+  "prototype_updates": 0,
+  "head_fit_updates": 0,
+  "U_truth_reads": 0,
+  "target_reads": 0,
+  "current_healthy_jobs_changed": false,
+  "source_V_role_changed": false,
+  "recipe": "Existing same-pseudo different-sourceRX accepted MixStyle p forced1 diagnostic,Beta.1,both levels;formal training p.5 unchanged",
+  "interpretation": "Source accepted-cohort descriptive geometry,not nuisance identification,U correctness,statistical significance or target gains;no classifier/projection fitted. Post-style RX retains the original IQ receiver tag while styles are mixed across receivers;the drop in descriptive RX association is constructed perturbation,not learned invariance or proof of isolated nuisance. All U class groups are pseudo labels;U accuracy remains unknown."
+}

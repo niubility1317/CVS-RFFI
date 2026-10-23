@@ -226,3 +226,8 @@ HPL2 三seed双读出七景42cell已全部独立评分。为符合逐row自动�
 ## HPL_E20_LS2 完整方法目标结果
 
 原注册三seed默认头/raw及固定DURA七景42cell、源新19980步全部核实。raw clean=85.052778%；DURA-LU clean=85.083929%；raw six_mean=70.242956%；DURA-LU six_mean=78.089782%；raw数值门槛未通过，ACTIVE。原六行矩阵继续，不把单方法完成称为全实验完成，不改冻结配方/父源/种子/顺序。
+
+
+## 高纯度 PL 的部署融合特征跨 RX 对比
+
+`20261024-phase1-PAMF-HardPL-Joint160-m3-r01` 固定原E20续训native10+20到E50/11100，仅在既有GuardNAMS上加入joint160原生跨RX0.05/1.25。保持浅中层约束、.95／weight6、六U共享style、默认头和完整L梯度保护；复用前两ordinaryU forward，不增前向/头/G训练。原E20无更新源几何诊断显示style后pseudoCE仍约.003-.004，实际部署融合特征的源RX关联仍在；描述性关联变化部分由跨RX混合构造，不能当作已学会不变性或目标收益。48检查及一次P0P1PASS，原E20真实joint/sequence_pool梯度与guard smoke首卡通过即固定三seed，raw+固定DURA各七景。接替GuardLS释放卡位，排Guard唯一scorer后；健康旧任务保留。本矩阵在新E20NAMS/Guard目标分数读取前冻结，历史E20LS2暴露披露，raw双门槛和ACTIVE保持。

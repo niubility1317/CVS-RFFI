@@ -85,6 +85,14 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
                 if any(d['applied_U_norm']>d['L_norm']*(1+1e-6)+1e-8 or
                     d['dot_after'] < -1e-5*(d['L_norm']*d['applied_U_norm']+1e-12) for d in details.values()):
                     raise ValueError('Real gradient projection or norm cap differs')
+            if c.get('hard_pl_joint_contrast'):
+                joint=state['U_joint_contrast']
+                if (joint['calls']!=1 or joint['captures']!=2 or joint['captured_packets']!=512 or joint['anchors']<=0 or joint['extra_forward_calls']
+                    or joint['teacher_or_L_captures'] or joint['persistent_feature_wrapper'] or obj.joint_active
+                    or obj.smoke_joint_signature_gradient<=0 or len(obj.smoke_joint_features)!=2
+                    or any(h.shape!=(256,160) or h.grad is None or not bool(torch.isfinite(h.grad).all())
+                        or float(h.grad.norm())<=0 for h in obj.smoke_joint_features)):
+                    raise ValueError('Actual U deployed joint features/signature gradients or original forward budget absent')
             checked.append(dict(method=row['method'],model_seed=c['model_seed'],parent_epoch=parent_epoch,parent_updates=parent_epoch*222,L_forward_packets=768,
                 U_seen=256,U_accepted=state['accepted'],student_U_views=state['student_views'],
                 physical_U_generated=state['physical_seen'],physical_student_views=state['physical_student_views'],
@@ -98,6 +106,10 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
             if c.get('hard_pl_gradient_guard'):
                 checked[-1].update(U_gradient_guard=state['U_gradient_guard'],gradient_guard_details=obj.smoke_guard_details,
                     explicit_backward_matches=True,complete_L_anchor=True)
+            if c.get('hard_pl_joint_contrast'):
+                checked[-1].update(U_joint_contrast=state['U_joint_contrast'],
+                    U_joint_signature_gradient_norm=obj.smoke_joint_signature_gradient,
+                    joint160_gradient=True,joint_feature_wrapper_removed=True)
         del model,obj,holder,payload,ctx;gc.collect();torch.cuda.empty_cache()
     write(Path(rt['run_root'])/'smoke.json',dict(status='PASS',methods=checked,target_reads=0,U_truth_reads=0,
         probe_updates_discarded=True,formal_reload_original_parent_epoch=parent_epoch,

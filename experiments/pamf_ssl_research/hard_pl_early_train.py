@@ -69,6 +69,13 @@ def aggregate(states,parents,*,weight=2.):
         guard['calls']=sum(g['calls'] for g in guards)
         for key in ('conflicts','caps'):guard[key]={group:sum(g[key][group] for g in guards) for group in guard[key]}
         actual['U_gradient_guard']=guard;actual['hard_PL_tail']['U_gradient_guard']=guard
+    if 'U_joint_contrast' in states[0]:
+        values=[s['U_joint_contrast'] for s in states];joint=dict(values[0])
+        if any(v['recipe']!=joint['recipe'] or v['calls']!=s['calls'] or v['captures']!=2*s['calls'] or v['captured_packets']!=2*s['seen']
+            or v['extra_forward_calls'] or v['teacher_or_L_captures'] or v['persistent_feature_wrapper'] for s,v in zip(states,values)):
+            raise ValueError('Current U joint objective must reuse exactly two existing ordinary student forwards')
+        for key in ('calls','captures','captured_packets','anchors'):joint[key]=sum(v[key] for v in values)
+        actual['U_joint_contrast']=joint;actual['hard_PL_tail']['U_joint_contrast']=joint
     return actual
 
 
