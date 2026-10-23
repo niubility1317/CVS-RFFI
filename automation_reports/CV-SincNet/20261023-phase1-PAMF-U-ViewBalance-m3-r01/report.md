@@ -1,6 +1,6 @@
 # PAMF 双锚保护下的无标签视图梯度平衡
 
-状态：121项聚焦检查及一次独立P0/P1审查PASS／无发现。实现与固定源假设一致；尚未发布、真实smoke、训练或访问本版目标，原CMR／UDAP保持。本假设在读取它们任何目标成绩前固定。
+状态：VERIFIED_RUNNING。121项检查、一次独立P0/P1审查和真实原E30 source-only smoke均PASS；三seed按固定配方续训，目标ACTIVE。CMR完成对应GPU预测后已让出卡位，UDAP健康任务保持；本假设在读取CMR／UDAP任何目标成绩前固定。
 
 源依据见九模型reference的source_view_gradient_diagnostic.md／JSON。原F20 L-only E20和RXPSM E20共24个受控源L128／U256批次，物理U梯度范数约为普通U的5倍（中层）、8至9.5倍（默认头）；16次整体对raw真实CE作用方向相反，其中9次合并后非负但仍含负分支。这是实际分支贡献的描述，不隔离变换因果或预测目标涨幅。两个起点均有此现象，故不更换预先固定的原RXPSM E30。
 
@@ -18,3 +18,10 @@ GPU5／6／7固定seed2026092701／02／03。等待同seed CMR的raw＋DURA全�
 
 
 121项检查覆盖解析投影与双视图抵消反例、正交／非正交／共线边界、普通分支增幅／物理分支缩幅、零视图预算不转移、总U范数与双内积、近零／非有限梯度、native原CE消除与上游缩放、原U scalar拆分／完整N分母／不等分mask、无新增学生前向、隐藏U拒绝、教师／曝光／默认网络状态往返，以及三seedGPU和单CPU评分接续／raw＋固定DURA完整报告和已有SSL回归。一次独立P0/P1审查PASS，未读目标或启动实验。首个真实原E30 source-only smoke将检查两类U128／L768、原raw真实CE、两个视图预算／双内积、全部实际参数梯度与显式组合一致、默认头／教师无梯度及单次EMA；probe丢弃，正式三个seed重新加载原E30。
+
+
+## 已核实三卡实际训练
+
+实际执行commit `81c4e8ba596412d850e478e45bef23c6d5fcbec8`；一次发布包SHA本地／远端比较和远端编译PASS。独立核实CPU控制器与三个worker的PID／CWD／完整命令、实际GPU及step日志增长。真实原E30 probe raw CE0.171661，两类U各128、L768，普通／物理U各组均实际完成双锚投影和半L梯度预算分配；全部参数真实反向梯度与显式组合一致，默认头／教师无梯度／单次EMA正确。probe丢弃，正式三个seed重新加载原同seed E30。
+
+逐条检查全部已刷盘完整step前缀，原U／physical曝光、两个view seen、原U标量精确拆分、各组每视图双内积／半范数／总U上界、激活集合和放大／丢弃累计计数正确；gzip尚未闭合，不宣称完整训练或性能收益。详见source_activation.json。GPU5／6／7每卡UVB与UDAP各一条本任务worker，含其他owner总GPU进程最多三个，未停止或热改其他健康任务。梯度归一化会放大或缩小原U方向，原全局U系数不再直接控制归一化后的范数，噪声可能被放大。固定最终E50学生继续自动raw／同一DURA各七景，完整预测后独立truth-last，CPU评分在UDAP之后。

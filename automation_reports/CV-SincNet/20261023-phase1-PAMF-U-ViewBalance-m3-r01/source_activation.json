@@ -1,0 +1,809 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "execution_commit": "81c4e8ba596412d850e478e45bef23c6d5fcbec8",
+  "observed_unix": 1792770280.5840335,
+  "controller_PID_CWD_command_verified": true,
+  "own_GPU_workers_this_run": 3,
+  "own_GPU_workers_with_UDAP": 6,
+  "source_smoke": {
+    "status": "PASS",
+    "target_reads": 0,
+    "U_truth_reads": 0,
+    "checked": {
+      "parent_epoch": 30,
+      "parent_updates": 6660,
+      "EMA_updates_after_smoke": 6661,
+      "U_seen": 964156,
+      "physical_U_seen": 482078,
+      "L_forward_packets": 768,
+      "finite_backward": true,
+      "teacher_gradient": false,
+      "u_viewbalance_calls": 1,
+      "raw_L_anchor_calls": 1,
+      "raw_L_CE": 0.17166145145893097,
+      "view_seen": {
+        "ordinary": 128,
+        "physical": 128
+      },
+      "protected_gradient_matches": true,
+      "view_norm_and_both_anchor_constraints": true,
+      "group_details": {
+        "t2": {
+          "full_L_norm": 0.18088653410792427,
+          "raw_L_norm": 0.15528681345724143,
+          "tiny_anchor": false,
+          "ordinary": {
+            "U_norm": 0.021514333070228046,
+            "projected_U_norm": 0.019504616270224647,
+            "applied_U_norm": 0.09044326997170052,
+            "scale": 4.637018529404806,
+            "full_dot_before": -0.001624964071163433,
+            "raw_dot_before": -0.0011185199532458452,
+            "full_dot_after": -2.4445819045930796e-10,
+            "raw_dot_after": -1.2281943368688993e-10,
+            "active_set": "both",
+            "tiny_projected": false,
+            "numerical_fallback": false
+          },
+          "physical": {
+            "U_norm": 0.05519439948650842,
+            "projected_U_norm": 0.055115616055573385,
+            "applied_U_norm": 0.0904432691961708,
+            "scale": 1.6409735303106778,
+            "full_dot_before": -0.0005057560216494158,
+            "raw_dot_before": -0.000406542533062897,
+            "full_dot_after": 1.3713208811495705e-11,
+            "raw_dot_after": 5.196618783616207e-12,
+            "active_set": "both",
+            "tiny_projected": false,
+            "numerical_fallback": false
+          },
+          "total_U_norm": 0.1262011107577043,
+          "full_dot_after": -2.3668829488235495e-10,
+          "raw_dot_after": -1.204133587849913e-10
+        },
+        "cls_head": {
+          "full_L_norm": 0.5346498207132578,
+          "raw_L_norm": 0.4944415383641116,
+          "tiny_anchor": false,
+          "ordinary": {
+            "U_norm": 0.02822062954898159,
+            "projected_U_norm": 0.02056900516463284,
+            "applied_U_norm": 0.26732491935646796,
+            "scale": 12.996491965312835,
+            "full_dot_before": -0.009835508683962914,
+            "raw_dot_before": -0.00936760117869866,
+            "full_dot_after": -4.547007476791954e-10,
+            "raw_dot_after": 1.0455744230082652e-10,
+            "active_set": "both",
+            "tiny_projected": false,
+            "numerical_fallback": false
+          },
+          "physical": {
+            "U_norm": 0.22241050946181237,
+            "projected_U_norm": 0.21993696982226946,
+            "applied_U_norm": 0.26732491651006834,
+            "scale": 1.2154614595838686,
+            "full_dot_before": -0.0031175861375016393,
+            "raw_dot_before": -0.01635521370053378,
+            "full_dot_after": 0.014989290638242295,
+            "raw_dot_after": -6.362428965568569e-10,
+            "active_set": "raw",
+            "tiny_projected": false,
+            "numerical_fallback": false
+          },
+          "total_U_norm": 0.44753096189676056,
+          "full_dot_after": 0.014989289921280468,
+          "raw_dot_after": -8.498279852929363e-10
+        },
+        "other": {
+          "full_L_norm": 0.9519662247285409,
+          "raw_L_norm": 0.8270323063276609,
+          "tiny_anchor": false,
+          "ordinary": {
+            "U_norm": 0.09927604315096551,
+            "projected_U_norm": 0.08852308722619237,
+            "applied_U_norm": 0.4759830975673829,
+            "scale": 5.376937556956731,
+            "full_dot_before": -0.041374907573214,
+            "raw_dot_before": -0.035499568426865774,
+            "full_dot_after": 3.3325462832009545e-09,
+            "raw_dot_after": 3.252978808499654e-09,
+            "active_set": "both",
+            "tiny_projected": false,
+            "numerical_fallback": false
+          },
+          "physical": {
+            "U_norm": 0.25783846365896235,
+            "projected_U_norm": 0.25783846365896235,
+            "applied_U_norm": 0.4759831016336075,
+            "scale": 1.8460516154558055,
+            "full_dot_before": 0.005400789916520213,
+            "raw_dot_before": 0.014748768218040734,
+            "full_dot_after": 0.009970136761130156,
+            "raw_dot_after": 0.02722698686430971,
+            "active_set": "none",
+            "tiny_projected": false,
+            "numerical_fallback": false
+          },
+          "total_U_norm": 0.6599196472181731,
+          "full_dot_after": 0.0099701401709227,
+          "raw_dot_after": 0.027226990137216755
+        }
+      },
+      "no_extra_student_forward": true
+    }
+  },
+  "rows": [
+    {
+      "row_id": "UVB-s2026092701",
+      "gpu": 5,
+      "PID_CWD_command_verified": true,
+      "actual_GPU_verified": true,
+      "native_stdout_bytes": 6558,
+      "native_stdout_growth": 0,
+      "actual_step_log_growth": 522712,
+      "cumulative_updates": 6771,
+      "all_flushed_step_prefix_records_checked": 111,
+      "gzip_closed": false,
+      "source_gradient_and_exposure_last": {
+        "SSL_loss": 0.15050286054611206,
+        "SSL_seen": 992316,
+        "SSL_physical_seen": 496158,
+        "SSL_U_VB_calls": 111,
+        "SSL_U_VB_raw_calls": 111,
+        "SSL_U_VB_raw_CE": 0.09656988084316254,
+        "SSL_U_VB_ordinary_scalar": 0.012145385146141052,
+        "SSL_U_VB_physical_scalar": 0.138357475399971,
+        "SSL_U_VB_ordinary_seen": 14208,
+        "SSL_U_VB_physical_seen": 14208,
+        "SSL_U_VB_t2_full_L_norm": 0.17458222934935042,
+        "SSL_U_VB_t2_raw_L_norm": 0.056925538967213786,
+        "SSL_U_VB_t2_tiny_anchor": 0.0,
+        "SSL_U_VB_t2_total_U_norm": 0.12189876580663271,
+        "SSL_U_VB_t2_full_dot_after": 0.00373328409996833,
+        "SSL_U_VB_t2_raw_dot_after": 5.394310347832268e-11,
+        "SSL_U_VB_cls_head_full_L_norm": 0.5091798236468039,
+        "SSL_U_VB_cls_head_raw_L_norm": 0.16897561518024365,
+        "SSL_U_VB_cls_head_tiny_anchor": 0.0,
+        "SSL_U_VB_cls_head_total_U_norm": 0.4325251505964872,
+        "SSL_U_VB_cls_head_full_dot_after": 0.08359785262980512,
+        "SSL_U_VB_cls_head_raw_dot_after": -2.446980419803851e-10,
+        "SSL_U_VB_other_full_L_norm": 0.8605441380032713,
+        "SSL_U_VB_other_raw_L_norm": 0.31437321514974254,
+        "SSL_U_VB_other_tiny_anchor": 0.0,
+        "SSL_U_VB_other_total_U_norm": 0.7291025204423278,
+        "SSL_U_VB_other_full_dot_after": 0.11072763720054735,
+        "SSL_U_VB_other_raw_dot_after": 2.141650096564768e-09,
+        "SSL_U_VB_t2_ordinary_U_norm": 0.005326391192295943,
+        "SSL_U_VB_t2_ordinary_projected_U_norm": 0.005261450072391534,
+        "SSL_U_VB_t2_ordinary_applied_U_norm": 0.08729111034780127,
+        "SSL_U_VB_t2_ordinary_scale": 16.590695240598947,
+        "SSL_U_VB_t2_ordinary_full_dot_before": 0.000144550383219235,
+        "SSL_U_VB_t2_ordinary_raw_dot_before": -4.720312450529236e-05,
+        "SSL_U_VB_t2_ordinary_full_dot_after": 0.0037332839432159047,
+        "SSL_U_VB_t2_ordinary_raw_dot_after": 1.8562290515566427e-11,
+        "SSL_U_VB_t2_ordinary_tiny_projected": 0.0,
+        "SSL_U_VB_t2_ordinary_numerical_fallback": 0.0,
+        "SSL_U_VB_t2_ordinary_active_set": 2,
+        "SSL_U_VB_t2_ordinary_upscaled": 111,
+        "SSL_U_VB_t2_ordinary_dropped": 0,
+        "SSL_U_VB_t2_physical_U_norm": 0.07662429650634775,
+        "SSL_U_VB_t2_physical_projected_U_norm": 0.07307442184513577,
+        "SSL_U_VB_t2_physical_applied_U_norm": 0.08729111434456069,
+        "SSL_U_VB_t2_physical_scale": 1.1945508766346233,
+        "SSL_U_VB_t2_physical_full_dot_before": -0.004023038891058793,
+        "SSL_U_VB_t2_physical_raw_dot_before": -0.0007589260543563337,
+        "SSL_U_VB_t2_physical_full_dot_after": 1.6346607723568933e-10,
+        "SSL_U_VB_t2_physical_raw_dot_after": 3.5364033434888724e-11,
+        "SSL_U_VB_t2_physical_tiny_projected": 0.0,
+        "SSL_U_VB_t2_physical_numerical_fallback": 0.0,
+        "SSL_U_VB_t2_physical_active_set": 3,
+        "SSL_U_VB_t2_physical_upscaled": 79,
+        "SSL_U_VB_t2_physical_dropped": 0,
+        "SSL_U_VB_cls_head_ordinary_U_norm": 0.015337270518823698,
+        "SSL_U_VB_cls_head_ordinary_projected_U_norm": 0.014395145253308067,
+        "SSL_U_VB_cls_head_ordinary_applied_U_norm": 0.25458991706002626,
+        "SSL_U_VB_cls_head_ordinary_scale": 17.685817499124997,
+        "SSL_U_VB_cls_head_ordinary_full_dot_before": 0.0004050184325529776,
+        "SSL_U_VB_cls_head_ordinary_raw_dot_before": -0.0008943210761324827,
+        "SSL_U_VB_cls_head_ordinary_full_dot_after": 0.02953026270727402,
+        "SSL_U_VB_cls_head_ordinary_raw_dot_after": -1.6666032033704932e-10,
+        "SSL_U_VB_cls_head_ordinary_tiny_projected": 0.0,
+        "SSL_U_VB_cls_head_ordinary_numerical_fallback": 0.0,
+        "SSL_U_VB_cls_head_ordinary_active_set": 2,
+        "SSL_U_VB_cls_head_ordinary_upscaled": 111,
+        "SSL_U_VB_cls_head_ordinary_dropped": 0,
+        "SSL_U_VB_cls_head_physical_U_norm": 0.2352064355469088,
+        "SSL_U_VB_cls_head_physical_projected_U_norm": 0.23422905894062238,
+        "SSL_U_VB_cls_head_physical_applied_U_norm": 0.2545899030753986,
+        "SSL_U_VB_cls_head_physical_scale": 1.0869271002277352,
+        "SSL_U_VB_cls_head_physical_full_dot_before": 0.04462511675022279,
+        "SSL_U_VB_cls_head_physical_raw_dot_before": -0.0036194530784797218,
+        "SSL_U_VB_cls_head_physical_full_dot_after": 0.054067591116057856,
+        "SSL_U_VB_cls_head_physical_raw_dot_after": -1.8820020962454658e-10,
+        "SSL_U_VB_cls_head_physical_tiny_projected": 0.0,
+        "SSL_U_VB_cls_head_physical_numerical_fallback": 0.0,
+        "SSL_U_VB_cls_head_physical_active_set": 2,
+        "SSL_U_VB_cls_head_physical_upscaled": 55,
+        "SSL_U_VB_cls_head_physical_dropped": 0,
+        "SSL_U_VB_other_ordinary_U_norm": 0.03844833959600224,
+        "SSL_U_VB_other_ordinary_projected_U_norm": 0.03805444484534422,
+        "SSL_U_VB_other_ordinary_applied_U_norm": 0.4302720696764447,
+        "SSL_U_VB_other_ordinary_scale": 11.30674933638606,
+        "SSL_U_VB_other_ordinary_full_dot_before": 0.004237988320199762,
+        "SSL_U_VB_other_ordinary_raw_dot_before": -0.0017257355582580133,
+        "SSL_U_VB_other_ordinary_full_dot_after": 0.08212549967697141,
+        "SSL_U_VB_other_ordinary_raw_dot_after": 1.0705999954200416e-09,
+        "SSL_U_VB_other_ordinary_tiny_projected": 0.0,
+        "SSL_U_VB_other_ordinary_numerical_fallback": 0.0,
+        "SSL_U_VB_other_ordinary_active_set": 2,
+        "SSL_U_VB_other_ordinary_upscaled": 111,
+        "SSL_U_VB_other_ordinary_dropped": 0,
+        "SSL_U_VB_other_physical_U_norm": 0.4355096869610304,
+        "SSL_U_VB_other_physical_projected_U_norm": 0.42184916586415333,
+        "SSL_U_VB_other_physical_applied_U_norm": 0.43027206036945104,
+        "SSL_U_VB_other_physical_scale": 1.0199666227150839,
+        "SSL_U_VB_other_physical_full_dot_before": -0.031602411486756625,
+        "SSL_U_VB_other_physical_raw_dot_before": -0.034022050782927415,
+        "SSL_U_VB_other_physical_full_dot_after": 0.028602137615761507,
+        "SSL_U_VB_other_physical_raw_dot_after": 1.1228302133632533e-09,
+        "SSL_U_VB_other_physical_tiny_projected": 0.0,
+        "SSL_U_VB_other_physical_numerical_fallback": 0.0,
+        "SSL_U_VB_other_physical_active_set": 2,
+        "SSL_U_VB_other_physical_upscaled": 80,
+        "SSL_U_VB_other_physical_dropped": 0
+      },
+      "active_sets": {
+        "t2": {
+          "ordinary": {
+            "none": 49,
+            "full": 20,
+            "raw": 28,
+            "both": 14,
+            "zero": 0,
+            "tiny": 0
+          },
+          "physical": {
+            "none": 47,
+            "full": 24,
+            "raw": 25,
+            "both": 15,
+            "zero": 0,
+            "tiny": 0
+          }
+        },
+        "cls_head": {
+          "ordinary": {
+            "none": 51,
+            "full": 16,
+            "raw": 28,
+            "both": 16,
+            "zero": 0,
+            "tiny": 0
+          },
+          "physical": {
+            "none": 59,
+            "full": 19,
+            "raw": 19,
+            "both": 14,
+            "zero": 0,
+            "tiny": 0
+          }
+        },
+        "other": {
+          "ordinary": {
+            "none": 66,
+            "full": 16,
+            "raw": 24,
+            "both": 5,
+            "zero": 0,
+            "tiny": 0
+          },
+          "physical": {
+            "none": 59,
+            "full": 19,
+            "raw": 23,
+            "both": 10,
+            "zero": 0,
+            "tiny": 0
+          }
+        }
+      },
+      "numerical_fallbacks": {
+        "t2": {
+          "ordinary": 0,
+          "physical": 0
+        },
+        "cls_head": {
+          "ordinary": 0,
+          "physical": 0
+        },
+        "other": {
+          "ordinary": 0,
+          "physical": 0
+        }
+      },
+      "upscaled": {
+        "t2": {
+          "ordinary": 111,
+          "physical": 79
+        },
+        "cls_head": {
+          "ordinary": 111,
+          "physical": 55
+        },
+        "other": {
+          "ordinary": 111,
+          "physical": 80
+        }
+      },
+      "dropped": {
+        "t2": {
+          "ordinary": 0,
+          "physical": 0
+        },
+        "cls_head": {
+          "ordinary": 0,
+          "physical": 0
+        },
+        "other": {
+          "ordinary": 0,
+          "physical": 0
+        }
+      },
+      "existing_UDAP_worker_preserved": true,
+      "task_owned_GPU_workers_this_card": 2,
+      "total_GPU_processes_this_card": 3
+    },
+    {
+      "row_id": "UVB-s2026092702",
+      "gpu": 6,
+      "PID_CWD_command_verified": true,
+      "actual_GPU_verified": true,
+      "native_stdout_bytes": 6558,
+      "native_stdout_growth": 0,
+      "actual_step_log_growth": 653415,
+      "cumulative_updates": 6801,
+      "all_flushed_step_prefix_records_checked": 141,
+      "gzip_closed": false,
+      "source_gradient_and_exposure_last": {
+        "SSL_loss": 0.1645040214061737,
+        "SSL_seen": 999996,
+        "SSL_physical_seen": 499998,
+        "SSL_U_VB_calls": 141,
+        "SSL_U_VB_raw_calls": 141,
+        "SSL_U_VB_raw_CE": 0.10978170484304428,
+        "SSL_U_VB_ordinary_scalar": 0.015743467956781387,
+        "SSL_U_VB_physical_scalar": 0.14876054227352142,
+        "SSL_U_VB_ordinary_seen": 18048,
+        "SSL_U_VB_physical_seen": 18048,
+        "SSL_U_VB_t2_full_L_norm": 0.19688168536503034,
+        "SSL_U_VB_t2_raw_L_norm": 0.05367209037676059,
+        "SSL_U_VB_t2_tiny_anchor": 0.0,
+        "SSL_U_VB_t2_total_U_norm": 0.14427143842170584,
+        "SSL_U_VB_t2_full_dot_after": 0.003887007748078926,
+        "SSL_U_VB_t2_raw_dot_after": 0.0007245440975717506,
+        "SSL_U_VB_cls_head_full_L_norm": 0.4807773474617635,
+        "SSL_U_VB_cls_head_raw_L_norm": 0.1932777073278709,
+        "SSL_U_VB_cls_head_tiny_anchor": 0.0,
+        "SSL_U_VB_cls_head_total_U_norm": 0.4083430741161223,
+        "SSL_U_VB_cls_head_full_dot_after": 0.06256982868938356,
+        "SSL_U_VB_cls_head_raw_dot_after": 0.008585426842383627,
+        "SSL_U_VB_other_full_L_norm": 1.0409698280591642,
+        "SSL_U_VB_other_raw_L_norm": 0.3868587009861128,
+        "SSL_U_VB_other_tiny_anchor": 0.0,
+        "SSL_U_VB_other_total_U_norm": 0.7372919059528162,
+        "SSL_U_VB_other_full_dot_after": 0.21120664966717567,
+        "SSL_U_VB_other_raw_dot_after": 0.03476406864828438,
+        "SSL_U_VB_t2_ordinary_U_norm": 0.02958251458366526,
+        "SSL_U_VB_t2_ordinary_projected_U_norm": 0.02958251458366526,
+        "SSL_U_VB_t2_ordinary_applied_U_norm": 0.09844084211769691,
+        "SSL_U_VB_t2_ordinary_scale": 3.3276698775590834,
+        "SSL_U_VB_t2_ordinary_full_dot_before": 0.0011680869418421414,
+        "SSL_U_VB_t2_ordinary_raw_dot_before": 0.0002177331619823873,
+        "SSL_U_VB_t2_ordinary_full_dot_after": 0.003887007715894201,
+        "SSL_U_VB_t2_ordinary_raw_dot_after": 0.0007245440806068131,
+        "SSL_U_VB_t2_ordinary_tiny_projected": 0.0,
+        "SSL_U_VB_t2_ordinary_numerical_fallback": 0.0,
+        "SSL_U_VB_t2_ordinary_active_set": 0,
+        "SSL_U_VB_t2_ordinary_upscaled": 141,
+        "SSL_U_VB_t2_ordinary_dropped": 0,
+        "SSL_U_VB_t2_physical_U_norm": 0.0561189698389366,
+        "SSL_U_VB_t2_physical_projected_U_norm": 0.05546771870430582,
+        "SSL_U_VB_t2_physical_applied_U_norm": 0.0984408440925485,
+        "SSL_U_VB_t2_physical_scale": 1.774741146418799,
+        "SSL_U_VB_t2_physical_full_dot_before": -0.0010043995796466991,
+        "SSL_U_VB_t2_physical_raw_dot_before": -0.00044763364192312855,
+        "SSL_U_VB_t2_physical_full_dot_after": 4.418102830198306e-11,
+        "SSL_U_VB_t2_physical_raw_dot_after": 1.5533770647004844e-11,
+        "SSL_U_VB_t2_physical_tiny_projected": 0.0,
+        "SSL_U_VB_t2_physical_numerical_fallback": 0.0,
+        "SSL_U_VB_t2_physical_active_set": 3,
+        "SSL_U_VB_t2_physical_upscaled": 112,
+        "SSL_U_VB_t2_physical_dropped": 0,
+        "SSL_U_VB_cls_head_ordinary_U_norm": 0.03646003235796777,
+        "SSL_U_VB_cls_head_ordinary_projected_U_norm": 0.03646003235796777,
+        "SSL_U_VB_cls_head_ordinary_applied_U_norm": 0.24038867664018207,
+        "SSL_U_VB_cls_head_ordinary_scale": 6.593210652440591,
+        "SSL_U_VB_cls_head_ordinary_full_dot_before": 0.0037891375852013576,
+        "SSL_U_VB_cls_head_ordinary_raw_dot_before": 0.0013021617424316722,
+        "SSL_U_VB_cls_head_ordinary_full_dot_after": 0.02498258264287179,
+        "SSL_U_VB_cls_head_ordinary_raw_dot_after": 0.008585426687719637,
+        "SSL_U_VB_cls_head_ordinary_tiny_projected": 0.0,
+        "SSL_U_VB_cls_head_ordinary_numerical_fallback": 0.0,
+        "SSL_U_VB_cls_head_ordinary_active_set": 0,
+        "SSL_U_VB_cls_head_ordinary_upscaled": 141,
+        "SSL_U_VB_cls_head_ordinary_dropped": 0,
+        "SSL_U_VB_cls_head_physical_U_norm": 0.24457348988449817,
+        "SSL_U_VB_cls_head_physical_projected_U_norm": 0.2252494652315508,
+        "SSL_U_VB_cls_head_physical_applied_U_norm": 0.24038866136222348,
+        "SSL_U_VB_cls_head_physical_scale": 1.067210852126855,
+        "SSL_U_VB_cls_head_physical_full_dot_before": 0.01624087221343875,
+        "SSL_U_VB_cls_head_physical_raw_dot_before": -0.01841609991666523,
+        "SSL_U_VB_cls_head_physical_full_dot_after": 0.037587246078327606,
+        "SSL_U_VB_cls_head_physical_raw_dot_after": 1.152574183351505e-10,
+        "SSL_U_VB_cls_head_physical_tiny_projected": 0.0,
+        "SSL_U_VB_cls_head_physical_numerical_fallback": 0.0,
+        "SSL_U_VB_cls_head_physical_active_set": 2,
+        "SSL_U_VB_cls_head_physical_upscaled": 78,
+        "SSL_U_VB_cls_head_physical_dropped": 0,
+        "SSL_U_VB_other_ordinary_U_norm": 0.1313543808750041,
+        "SSL_U_VB_other_ordinary_projected_U_norm": 0.1313543808750041,
+        "SSL_U_VB_other_ordinary_applied_U_norm": 0.5204849192449367,
+        "SSL_U_VB_other_ordinary_scale": 3.9624480779584497,
+        "SSL_U_VB_other_ordinary_full_dot_before": 0.03162354271559462,
+        "SSL_U_VB_other_ordinary_raw_dot_before": 0.008773380978893127,
+        "SSL_U_VB_other_ordinary_full_dot_after": 0.12530664733645014,
+        "SSL_U_VB_other_ordinary_raw_dot_after": 0.03476406699864639,
+        "SSL_U_VB_other_ordinary_tiny_projected": 0.0,
+        "SSL_U_VB_other_ordinary_numerical_fallback": 0.0,
+        "SSL_U_VB_other_ordinary_active_set": 0,
+        "SSL_U_VB_other_ordinary_upscaled": 141,
+        "SSL_U_VB_other_ordinary_dropped": 0,
+        "SSL_U_VB_other_physical_U_norm": 0.30057488265819526,
+        "SSL_U_VB_other_physical_projected_U_norm": 0.2948284367854483,
+        "SSL_U_VB_other_physical_applied_U_norm": 0.5204849008877835,
+        "SSL_U_VB_other_physical_scale": 1.7653823345688593,
+        "SSL_U_VB_other_physical_full_dot_before": 0.03188609675119407,
+        "SSL_U_VB_other_physical_raw_dot_before": -0.02262859855497678,
+        "SSL_U_VB_other_physical_full_dot_after": 0.08590000208178802,
+        "SSL_U_VB_other_physical_raw_dot_after": 1.6325416139043882e-09,
+        "SSL_U_VB_other_physical_tiny_projected": 0.0,
+        "SSL_U_VB_other_physical_numerical_fallback": 0.0,
+        "SSL_U_VB_other_physical_active_set": 2,
+        "SSL_U_VB_other_physical_upscaled": 111,
+        "SSL_U_VB_other_physical_dropped": 0
+      },
+      "active_sets": {
+        "t2": {
+          "ordinary": {
+            "none": 83,
+            "full": 14,
+            "raw": 30,
+            "both": 14,
+            "zero": 0,
+            "tiny": 0
+          },
+          "physical": {
+            "none": 75,
+            "full": 15,
+            "raw": 34,
+            "both": 17,
+            "zero": 0,
+            "tiny": 0
+          }
+        },
+        "cls_head": {
+          "ordinary": {
+            "none": 83,
+            "full": 20,
+            "raw": 27,
+            "both": 11,
+            "zero": 0,
+            "tiny": 0
+          },
+          "physical": {
+            "none": 85,
+            "full": 15,
+            "raw": 21,
+            "both": 20,
+            "zero": 0,
+            "tiny": 0
+          }
+        },
+        "other": {
+          "ordinary": {
+            "none": 99,
+            "full": 9,
+            "raw": 21,
+            "both": 12,
+            "zero": 0,
+            "tiny": 0
+          },
+          "physical": {
+            "none": 82,
+            "full": 13,
+            "raw": 30,
+            "both": 16,
+            "zero": 0,
+            "tiny": 0
+          }
+        }
+      },
+      "numerical_fallbacks": {
+        "t2": {
+          "ordinary": 0,
+          "physical": 0
+        },
+        "cls_head": {
+          "ordinary": 0,
+          "physical": 0
+        },
+        "other": {
+          "ordinary": 0,
+          "physical": 0
+        }
+      },
+      "upscaled": {
+        "t2": {
+          "ordinary": 141,
+          "physical": 112
+        },
+        "cls_head": {
+          "ordinary": 141,
+          "physical": 78
+        },
+        "other": {
+          "ordinary": 141,
+          "physical": 111
+        }
+      },
+      "dropped": {
+        "t2": {
+          "ordinary": 0,
+          "physical": 0
+        },
+        "cls_head": {
+          "ordinary": 0,
+          "physical": 0
+        },
+        "other": {
+          "ordinary": 0,
+          "physical": 0
+        }
+      },
+      "existing_UDAP_worker_preserved": true,
+      "task_owned_GPU_workers_this_card": 2,
+      "total_GPU_processes_this_card": 2
+    },
+    {
+      "row_id": "UVB-s2026092703",
+      "gpu": 7,
+      "PID_CWD_command_verified": true,
+      "actual_GPU_verified": true,
+      "native_stdout_bytes": 6558,
+      "native_stdout_growth": 6558,
+      "actual_step_log_growth": 292531,
+      "cumulative_updates": 6705,
+      "all_flushed_step_prefix_records_checked": 45,
+      "gzip_closed": false,
+      "source_gradient_and_exposure_last": {
+        "SSL_loss": 0.14237305521965027,
+        "SSL_seen": 975420,
+        "SSL_physical_seen": 487710,
+        "SSL_U_VB_calls": 45,
+        "SSL_U_VB_raw_calls": 45,
+        "SSL_U_VB_raw_CE": 0.12329455465078354,
+        "SSL_U_VB_ordinary_scalar": 0.014344582334160805,
+        "SSL_U_VB_physical_scalar": 0.12802845239639282,
+        "SSL_U_VB_ordinary_seen": 5760,
+        "SSL_U_VB_physical_seen": 5760,
+        "SSL_U_VB_t2_full_L_norm": 0.13899107022538967,
+        "SSL_U_VB_t2_raw_L_norm": 0.08386828676582356,
+        "SSL_U_VB_t2_tiny_anchor": 0.0,
+        "SSL_U_VB_t2_total_U_norm": 0.10880388018953974,
+        "SSL_U_VB_t2_full_dot_after": 6.9933302519609e-05,
+        "SSL_U_VB_t2_raw_dot_after": 0.002165655537147629,
+        "SSL_U_VB_cls_head_full_L_norm": 0.43461045405805276,
+        "SSL_U_VB_cls_head_raw_L_norm": 0.2694720576505354,
+        "SSL_U_VB_cls_head_tiny_anchor": 0.0,
+        "SSL_U_VB_cls_head_total_U_norm": 0.38981659126865825,
+        "SSL_U_VB_cls_head_full_dot_after": 0.0003013698651939147,
+        "SSL_U_VB_cls_head_raw_dot_after": 0.0381600374325107,
+        "SSL_U_VB_other_full_L_norm": 1.1006868473383506,
+        "SSL_U_VB_other_raw_L_norm": 0.637243326878258,
+        "SSL_U_VB_other_tiny_anchor": 0.0,
+        "SSL_U_VB_other_total_U_norm": 0.9340893027102322,
+        "SSL_U_VB_other_full_dot_after": 0.2736909954143223,
+        "SSL_U_VB_other_raw_dot_after": 0.24642941914355784,
+        "SSL_U_VB_t2_ordinary_U_norm": 0.008923416231674315,
+        "SSL_U_VB_t2_ordinary_projected_U_norm": 0.008861435983988374,
+        "SSL_U_VB_t2_ordinary_applied_U_norm": 0.06949553470612782,
+        "SSL_U_VB_t2_ordinary_scale": 7.842468787030174,
+        "SSL_U_VB_t2_ordinary_full_dot_before": -0.00014592802168201128,
+        "SSL_U_VB_t2_ordinary_raw_dot_before": 0.00010294189136196169,
+        "SSL_U_VB_t2_ordinary_full_dot_after": -7.694459286844597e-12,
+        "SSL_U_VB_t2_ordinary_raw_dot_after": 0.0011108863227766758,
+        "SSL_U_VB_t2_ordinary_tiny_projected": 0.0,
+        "SSL_U_VB_t2_ordinary_numerical_fallback": 0.0,
+        "SSL_U_VB_t2_ordinary_active_set": 1,
+        "SSL_U_VB_t2_ordinary_upscaled": 45,
+        "SSL_U_VB_t2_ordinary_dropped": 0,
+        "SSL_U_VB_t2_physical_U_norm": 0.05701381047005668,
+        "SSL_U_VB_t2_physical_projected_U_norm": 0.05701381047005668,
+        "SSL_U_VB_t2_physical_applied_U_norm": 0.06949553849670886,
+        "SSL_U_VB_t2_physical_scale": 1.2189245823026245,
+        "SSL_U_VB_t2_physical_full_dot_before": 5.737295553216735e-05,
+        "SSL_U_VB_t2_physical_raw_dot_before": 0.0008653276671079131,
+        "SSL_U_VB_t2_physical_full_dot_after": 6.99333087776405e-05,
+        "SSL_U_VB_t2_physical_raw_dot_after": 0.0010547692172791494,
+        "SSL_U_VB_t2_physical_tiny_projected": 0.0,
+        "SSL_U_VB_t2_physical_numerical_fallback": 0.0,
+        "SSL_U_VB_t2_physical_active_set": 0,
+        "SSL_U_VB_t2_physical_upscaled": 34,
+        "SSL_U_VB_t2_physical_dropped": 0,
+        "SSL_U_VB_cls_head_ordinary_U_norm": 0.018431061344161174,
+        "SSL_U_VB_cls_head_ordinary_projected_U_norm": 0.018431061344161174,
+        "SSL_U_VB_cls_head_ordinary_applied_U_norm": 0.21730521595144078,
+        "SSL_U_VB_cls_head_ordinary_scale": 11.790163516430761,
+        "SSL_U_VB_cls_head_ordinary_full_dot_before": 2.556112624637798e-05,
+        "SSL_U_VB_cls_head_ordinary_raw_dot_before": 0.0019041947029311687,
+        "SSL_U_VB_cls_head_ordinary_full_dot_after": 0.00030137008947661917,
+        "SSL_U_VB_cls_head_ordinary_raw_dot_after": 0.02245076569112506,
+        "SSL_U_VB_cls_head_ordinary_tiny_projected": 0.0,
+        "SSL_U_VB_cls_head_ordinary_numerical_fallback": 0.0,
+        "SSL_U_VB_cls_head_ordinary_active_set": 0,
+        "SSL_U_VB_cls_head_ordinary_upscaled": 45,
+        "SSL_U_VB_cls_head_ordinary_dropped": 0,
+        "SSL_U_VB_cls_head_physical_U_norm": 0.18861809459641593,
+        "SSL_U_VB_cls_head_physical_projected_U_norm": 0.188064968738973,
+        "SSL_U_VB_cls_head_physical_applied_U_norm": 0.2173052226572365,
+        "SSL_U_VB_cls_head_physical_scale": 1.1554795584000428,
+        "SSL_U_VB_cls_head_physical_full_dot_before": -0.006273345673705512,
+        "SSL_U_VB_cls_head_physical_raw_dot_before": 0.011011495234636369,
+        "SSL_U_VB_cls_head_physical_full_dot_after": -6.945175509053209e-11,
+        "SSL_U_VB_cls_head_physical_raw_dot_after": 0.01570927184589244,
+        "SSL_U_VB_cls_head_physical_tiny_projected": 0.0,
+        "SSL_U_VB_cls_head_physical_numerical_fallback": 0.0,
+        "SSL_U_VB_cls_head_physical_active_set": 1,
+        "SSL_U_VB_cls_head_physical_upscaled": 24,
+        "SSL_U_VB_cls_head_physical_dropped": 0,
+        "SSL_U_VB_other_ordinary_U_norm": 0.04816043978393181,
+        "SSL_U_VB_other_ordinary_projected_U_norm": 0.04816043978393181,
+        "SSL_U_VB_other_ordinary_applied_U_norm": 0.5503434025609251,
+        "SSL_U_VB_other_ordinary_scale": 11.427292319967378,
+        "SSL_U_VB_other_ordinary_full_dot_before": 0.009351052932401582,
+        "SSL_U_VB_other_ordinary_raw_dot_before": 0.009480531772087762,
+        "SSL_U_VB_other_ordinary_full_dot_after": 0.10685721118323668,
+        "SSL_U_VB_other_ordinary_raw_dot_after": 0.10833680360524164,
+        "SSL_U_VB_other_ordinary_tiny_projected": 0.0,
+        "SSL_U_VB_other_ordinary_numerical_fallback": 0.0,
+        "SSL_U_VB_other_ordinary_active_set": 0,
+        "SSL_U_VB_other_ordinary_upscaled": 45,
+        "SSL_U_VB_other_ordinary_dropped": 0,
+        "SSL_U_VB_other_physical_U_norm": 0.354902174013598,
+        "SSL_U_VB_other_physical_projected_U_norm": 0.354902174013598,
+        "SSL_U_VB_other_physical_applied_U_norm": 0.5503434409673518,
+        "SSL_U_VB_other_physical_scale": 1.5506904830853163,
+        "SSL_U_VB_other_physical_full_dot_before": 0.10758676933280184,
+        "SSL_U_VB_other_physical_raw_dot_before": 0.08905233688953307,
+        "SSL_U_VB_other_physical_full_dot_after": 0.16683378443913602,
+        "SSL_U_VB_other_physical_raw_dot_after": 0.1380926155985798,
+        "SSL_U_VB_other_physical_tiny_projected": 0.0,
+        "SSL_U_VB_other_physical_numerical_fallback": 0.0,
+        "SSL_U_VB_other_physical_active_set": 0,
+        "SSL_U_VB_other_physical_upscaled": 40,
+        "SSL_U_VB_other_physical_dropped": 0
+      },
+      "active_sets": {
+        "t2": {
+          "ordinary": {
+            "none": 25,
+            "full": 7,
+            "raw": 6,
+            "both": 7,
+            "zero": 0,
+            "tiny": 0
+          },
+          "physical": {
+            "none": 18,
+            "full": 10,
+            "raw": 10,
+            "both": 7,
+            "zero": 0,
+            "tiny": 0
+          }
+        },
+        "cls_head": {
+          "ordinary": {
+            "none": 28,
+            "full": 7,
+            "raw": 5,
+            "both": 5,
+            "zero": 0,
+            "tiny": 0
+          },
+          "physical": {
+            "none": 19,
+            "full": 12,
+            "raw": 10,
+            "both": 4,
+            "zero": 0,
+            "tiny": 0
+          }
+        },
+        "other": {
+          "ordinary": {
+            "none": 30,
+            "full": 5,
+            "raw": 7,
+            "both": 3,
+            "zero": 0,
+            "tiny": 0
+          },
+          "physical": {
+            "none": 27,
+            "full": 5,
+            "raw": 7,
+            "both": 6,
+            "zero": 0,
+            "tiny": 0
+          }
+        }
+      },
+      "numerical_fallbacks": {
+        "t2": {
+          "ordinary": 0,
+          "physical": 0
+        },
+        "cls_head": {
+          "ordinary": 0,
+          "physical": 0
+        },
+        "other": {
+          "ordinary": 0,
+          "physical": 0
+        }
+      },
+      "upscaled": {
+        "t2": {
+          "ordinary": 45,
+          "physical": 34
+        },
+        "cls_head": {
+          "ordinary": 45,
+          "physical": 24
+        },
+        "other": {
+          "ordinary": 45,
+          "physical": 40
+        }
+      },
+      "dropped": {
+        "t2": {
+          "ordinary": 0,
+          "physical": 0
+        },
+        "cls_head": {
+          "ordinary": 0,
+          "physical": 0
+        },
+        "other": {
+          "ordinary": 0,
+          "physical": 0
+        }
+      },
+      "existing_UDAP_worker_preserved": true,
+      "task_owned_GPU_workers_this_card": 2,
+      "total_GPU_processes_this_card": 3
+    }
+  ],
+  "verification_scope": "Every complete flushed source step prefix,not full4440-step logs or target accuracy",
+  "release_archive_SHA_comparison": "PASS single local/remote archive",
+  "remote_compile": "PASS",
+  "original_global_U_lambda_controls_final_view_norm": false,
+  "healthy_other_owner_jobs_changed": false,
+  "new_method_target_reads": 0,
+  "goal_complete": false
+}

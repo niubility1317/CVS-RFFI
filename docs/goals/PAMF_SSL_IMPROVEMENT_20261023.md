@@ -126,3 +126,13 @@ PAIREDU三seed已在各自GPU5/6/7实际续训，真实E30 no-query smoke和配�
 ## 原E20视图梯度与下一条固定平衡方案
 
 原F20 L-only E20与RXPSM E20、三seed各4批只读CPU源诊断，24次中16次两个U对raw真实CE作用异号；physical梯度约ordinary中层5倍／头8至9.5倍，合并后9次仍隐藏负分支。没有目标／U真值／V或持久状态更新；两起点均有此现象，不据此更换原E30父。下一条`20261023-phase1-PAMF-U-ViewBalance-m3-r01`固定同RXPSM E30+20，原输入与scalar损失保持，将两个U贡献分别双锚投影，每个非零方向归一到0.5full-L范数；可放大亦可缩小，总U≤L，无新增F前向／头／推理参数。当前PLANNED，待实现／检查／一次审查，接CMR释放GPU槽，与UDAP每卡各一条；CPU评分在UDAP后。方法在CMR／UDAP目标成绩读取前固定，原goal ACTIVE。
+
+
+## UCMR 完整双读出结果
+
+`20261023-phase1-PAMF-U-CMR-m3-r01` 已完成三 seed、每景 168000 条的 raw／同一 DURA 七景预测及独立 truth-last，42 项读出／场景完整，全部新增 13320 条闭合训练记录已核对。raw clean=84.336508%；DURA-LU clean=84.455159%；raw six_mean=71.944147%；DURA-LU six_mean=77.175198%；原数值目标仍未满足，维持 ACTIVE。完整负结果、两种匹配基线、逐 seed／场景／分层及成本均已保存，不从本结果修改已固定 UCRIC／UMIX 的方法、父权重或矩阵。
+
+
+## 视图平衡三seed实际运行
+
+`20261023-phase1-PAMF-U-ViewBalance-m3-r01`执行commit `81c4e8ba596412d850e478e45bef23c6d5fcbec8`；121项检查／一次P0/P1审查／真实原E30 source-only smoke均PASS。原raw CE、普通／物理各128和每视图双锚／半L预算实际生效，全部参数梯度、L768、单次EMA及无教师梯度正确；probe丢弃，正式三seed重载原E30。三个worker的PID／CWD／命令／实际GPU及完整step前缀增长已独立核验，每卡UVB＋UDAP共两条本任务worker；CMR对应GPU预测完成后交接，其他owner保持。原全局U系数不再控制归一化后范数，放大噪声风险披露；未宣称目标收益。新版尚无目标访问，固定E50、双读出七景和独立评分继续，原goal ACTIVE。

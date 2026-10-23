@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "用户 /goal 授权持续设计迭代 PAMF 半监督机制，使目标测试 clean 相对监督/普通PL均至少高1pp、六景均值均严格高1.5pp；三GPU每卡固定一个模型种子、最多两个本任务worker；追加要求同时报告单PAMF与固定DURA+PAMF。",
   "code": {
-    "commit": "f629778fcb8a1cdf8a28faf4813636b704b520dd",
+    "commit": "81c4e8ba596412d850e478e45bef23c6d5fcbec8",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 ordinary account CVS-RFFI Py3.10/Torch2.1 FP32/TF32off, CPU2 per worker",
     "cwd": "PROJECT/releases/20261023-phase1-PAMF-U-ViewBalance-m3-r01",
@@ -263,12 +263,25 @@
     }
   ],
   "notes": [
-    "Implemented exact source hypothesisf629778;121focused checksPASS and one read-only independent P0/P1 reviewPASS/no findings.RealE30 no-query smoke first after same-seed CMR GPU release;not yet launched/trained.",
+    "121 focused checks and one P0/P1 review PASS;real original E30 source smoke PASS.Three formal workers independently verified,original same-seed E30 reloaded.No UVB target access;hypothesis fixed before CMR/UDAP target result access.",
     "Per-view original weightedU contributions divided by fullN,not reweighted scalar losses.Ugradient directionprojectedthenmayup/downnormalizeto0.5fullL each;originalglobalUlambda no longer determines resultingnorm abovefloor.Samplewiseconfidence stillaffectsdirection.",
     "Original L gradient/scalar and original U scalar retained;no extra Fforward,new teacher/head/inference parameter.No CMR/style/UCRIC/PAIR/Gtraining.",
     "Normalization may amplify noise despite bounded norm;Euclidean constraints do not guarantee Adam-step/source loss or target gain.",
     "Original E30+20,three seeds,default jointhead,finalE50;raw+sameDURA7views/independenttruthlast.SourceVdiagnostic only,noselection/earlystop.",
     "Historicalbenchmarkexposuredisclosed.Notfreshindependentblindtest.Notargetfeedbacktuning,parent/order/seedselection orselectivererun."
   ],
-  "registered_at": "2026-10-23T15:25:45+00:00"
+  "registered_at": "2026-10-23T15:25:45+00:00",
+  "launch_status": {
+    "status": "VERIFIED_RUNNING",
+    "evidence": "source_activation.json",
+    "source_smoke": "PASS",
+    "own_GPU_workers": 3,
+    "with_UDAP_workers": 6,
+    "actual_GPUs": [
+      5,
+      6,
+      7
+    ],
+    "new_method_target_reads": 0
+  }
 }
