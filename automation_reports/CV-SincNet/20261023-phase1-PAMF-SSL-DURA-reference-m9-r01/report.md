@@ -17,3 +17,8 @@ G 始终是用户固定的 R69 stage2 E20/4940、266951 参数 DURA v1.0，来�
 VERIFIED：执行 commit `0897d2220f6ce311cdce9991e920ec4071bc66b3`，一次发布包本地/远端 SHA 对照和远端编译均 PASS。独立读回控制器及预测 worker 的 PID/CWD/命令与实际 GPU，确认首条 PSM seed2026092702 的 DURA 预测已在 GPU6 运行；其他行按固定种子卡排队。真实 F/G 的两条合法 L_s IQ no-query smoke PASS，source graph/native IQ 容限1e-5，target/truth读取均为0，固定266951参数G、Graph-RR、FP32/TF32off。每行预测前同样执行 source 检查。健康 VIEWANCHOR 训练保持原流程，未修改其发布。
 
 目标预测、评分与双 readout 汇总尚在进行，不把启动或 smoke 当作性能完成。实际运行证据见 launch_verification.json；私有路径、账号、原始运行日志和训练权重不进入 Git。
+
+
+## 重复侧队列已处理
+
+用户已授权取消侧聊刚建立的重叠六模型派发队列。独立核实其 CPU 控制器已退出，四条未开始行已取消；侧队列的一条已评分和一条已经启动的预测保留，预测子进程正常完成，未停止任何 GPU 子进程或健康训练。本 run 的九行、checkpoint、七景、评分与目标判定均保持原定配置；侧队列部分分数不读取或参与结果选择，重复计算成本另记。取消证据位于相邻 `20261023-phase1-PAMF-SSL-DURA-eval-m6-r01/cancellation_verification.json`。当前主队列已有两行完成七景预测，尚未进入本 run 的完整评分。
