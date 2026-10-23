@@ -32,3 +32,8 @@ HPL_NO_UAS 从原 F21 同 seed E30 独立追加 20 轮至 E50/11100，累计 13L
 ## 发布后实际排队证据
 
 执行 commit `5b2578b2d8f01258c491d0064a13ef614c7e0c21`；一次发布 archive 本地／远端 SHA 比较与远端 compile PASS。独立读回实际 CPU 控制器 PID／CWD／完整命令、存活和同版本 state，三 row 均 QUEUED、实际 GPU 子进程 0。首 GPU5 的真实原 F21 E30 source smoke 待同 seed HPL2／UVB 全部 GPU 预测完成、HPLT1U 已派发后执行，PASS 立即继续；前序启动中 PID 计入容量。现有健康训练和其他 owner 未修改。排队不视为训练成功或目标收益，详见 queue_verification.json。
+
+
+## 实际源检查与三卡训练
+
+VERIFIED_NO_UAS_RUNNING：真实原 F21 E30 source-only smoke PASS，U As 输入逐值等于 raw，U 信道生成 0、原 L 信道生成 64；L768／U256、学生 U1536、raw-As128、门控 0.95、权重 2、无 EMA、As KL0、浅中层真实梯度与默认头梯度均核实。probe 丢弃，正式三 seed 各重载原同 seed E30，GPU5／6／7 已有真实 PID／CWD／完整命令／GPU 和全部已刷盘记录增长证据，前序 HPLT1U 保留。执行 commit `5b2578b2d8f01258c491d0064a13ef614c7e0c21`，详见 source_activation.json；训练前缀不视为源训练完成或目标收益。

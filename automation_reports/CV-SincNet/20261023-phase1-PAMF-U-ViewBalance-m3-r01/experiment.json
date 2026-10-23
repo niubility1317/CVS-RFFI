@@ -272,16 +272,21 @@
   ],
   "registered_at": "2026-10-23T15:25:45+00:00",
   "launch_status": {
-    "status": "VERIFIED_RUNNING",
-    "evidence": "source_activation.json",
-    "source_smoke": "PASS",
-    "own_GPU_workers": 3,
-    "with_UDAP_workers": 6,
-    "actual_GPUs": [
-      5,
-      6,
-      7
-    ],
-    "new_method_target_reads": 0
+    "status": "VERIFIED_ALL_SCORED",
+    "source_rows_complete": 3,
+    "target_matrix_complete": true,
+    "evidence": "evaluation_completion.json"
+  },
+  "result_summary": {
+    "status": "ANALYZED",
+    "goal_met": false,
+    "completed_F_models": 3,
+    "completed_readout_view_cells": 42,
+    "independent_truth_last": true,
+    "all_seed_and_scene_results_preserved": true,
+    "both_readouts_complete": true,
+    "summary_ref": "target_summary.json",
+    "details_ref": "target_results.md",
+    "cost_ref": "evaluation_completion.json"
   }
 }

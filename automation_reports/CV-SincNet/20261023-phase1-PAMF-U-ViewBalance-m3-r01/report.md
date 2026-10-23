@@ -25,3 +25,22 @@ GPU5／6／7固定seed2026092701／02／03。等待同seed CMR的raw＋DURA全�
 实际执行commit `81c4e8ba596412d850e478e45bef23c6d5fcbec8`；一次发布包SHA本地／远端比较和远端编译PASS。独立核实CPU控制器与三个worker的PID／CWD／完整命令、实际GPU及step日志增长。真实原E30 probe raw CE0.171661，两类U各128、L768，普通／物理U各组均实际完成双锚投影和半L梯度预算分配；全部参数真实反向梯度与显式组合一致，默认头／教师无梯度／单次EMA正确。probe丢弃，正式三个seed重新加载原同seed E30。
 
 逐条检查全部已刷盘完整step前缀，原U／physical曝光、两个view seen、原U标量精确拆分、各组每视图双内积／半范数／总U上界、激活集合和放大／丢弃累计计数正确；gzip尚未闭合，不宣称完整训练或性能收益。详见source_activation.json。GPU5／6／7每卡UVB与UDAP各一条本任务worker，含其他owner总GPU进程最多三个，未停止或热改其他健康任务。梯度归一化会放大或缩小原U方向，原全局U系数不再直接控制归一化后的范数，噪声可能被放大。固定最终E50学生继续自动raw／同一DURA各七景，完整预测后独立truth-last，CPU评分在UDAP之后。
+
+
+## 三seed源训练完整，正式评测继续
+
+VERIFIED_SOURCE_FINAL：三行各新增20轮/4440步，累计E50/11100；逐条读取全部13320条新增闭合step记录，源U曝光2097900、物理U曝光1048950、学生U视图2097900和自身EMA11100次均符合预定，父前6660步复用原完整核验记录。无U真值/目标训练或另训头。完整源证据及已发生父阶段/增量/累计时间见source_training_complete.json；程序经过时间来自共享GPU，不能等同独占GPU小时。
+
+模型已按固定最终学生冻结，并已自动进入raw与固定DURA各七景预测；这是源训练完成，正式预测/独立评分尚未全部齐，不宣称整体实验完成或目标达成。部分目标成绩仍不读取，三seed全矩阵完成后统一分析。
+
+
+## 完整目标测试结果
+
+ANALYZED：各方法三个seed，共3模型、42项raw／固定DURA七景决策均完成独立truth-last评分，六个匹配监督／普通PL对照模型完整复用。逐景／seed／SD／Macro-F1／RX／TX／day、修复损伤及曝光／成本见target_results.md和附属完整表。原raw双门槛尚未满足，研发目标仍ACTIVE。
+
+UVB / raw clean：84.611706349% ± 0.226492853%（三个模型 seed 样本 SD）。
+UVB / DURA-LU clean：84.636904762% ± 0.188664186%（三个模型 seed 样本 SD）。
+UVB / raw six_mean：71.675429894% ± 0.887589290%（三个模型 seed 样本 SD）。
+UVB / DURA-LU six_mean：77.545337302% ± 0.383196721%（三个模型 seed 样本 SD）。
+
+不依据本结果热改健康旧任务或替换父来源。

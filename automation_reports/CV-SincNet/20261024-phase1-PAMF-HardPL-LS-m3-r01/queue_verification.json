@@ -1,0 +1,14 @@
+{
+  "status": "VERIFIED_QUEUED",
+  "execution_commit": "b981bad253b144791579421ad18e3f4cfa480408",
+  "observed_unix": 1792776193.7903583,
+  "controller_PID_CWD_full_command_verified": true,
+  "actual_GPU_children": 0,
+  "models_queued": 3,
+  "training_started": false,
+  "new_target_reads": 0,
+  "source_smoke": "PENDING same-seed noUAs all14 GPU prediction completion and HPLT1U dispatch;real original F21 checkpoint first",
+  "release_archive_SHA_comparison": "PASS single local/remote archive",
+  "remote_compile": "PASS",
+  "healthy_other_jobs_modified": false
+}

@@ -156,3 +156,8 @@ PAIREDU三seed已在各自GPU5/6/7实际续训，真实E30 no-query smoke和配�
 ## 普通硬 PL 的监督标签平滑单因素对照（2026-10-24）
 
 `20261024-phase1-PAMF-HardPL-LS-m3-r01` 在原 HPL2 上仅加入 U CE smoothing0.01，保留门控0.95/权重2/一次raw U学生前向；原 F21 同seed E30＋20、L及默认头保持。完整 HPL2 新增日志三模型各4440条显示 U/总损失比约2.7%，但原E30源24批梯度比中位0.2985，故保留权重2；同logits标签平滑使源方向冲突13/24→8/24，19批余弦改善。这是探索性源依据，不是Adam或目标效果保证。166检查及唯一独立P0/P1审查PASS，在任何新HPL/UVB目标成绩读取前固定三seed双七景矩阵；接替noUAs GPU完成卡位，实际源smoke后执行，完整truth-last再判断。目标仍ACTIVE。
+
+
+## UVB 完整双读出结果
+
+`20261023-phase1-PAMF-U-ViewBalance-m3-r01` 各方法三seed、共3模型，每景168000条，raw／同一DURA七景预测与独立truth-last全部42cell完成；全部新增13320条闭合训练记录已核对。UVB / raw clean=84.611706%；UVB / DURA-LU clean=84.636905%；UVB / raw six_mean=71.675430%；UVB / DURA-LU six_mean=77.545337%；原数值目标仍未满足，维持ACTIVE。全部结果、匹配基线、逐seed／场景／分层及成本均保存，不从本结果热改其他已固定方法、父权重或矩阵。

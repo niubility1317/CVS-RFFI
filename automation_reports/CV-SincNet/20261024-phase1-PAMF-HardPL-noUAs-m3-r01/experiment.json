@@ -281,12 +281,10 @@
   ],
   "registered_at": "2026-10-23T16:58:55.009216+00:00",
   "launch_status": {
-    "status": "VERIFIED_QUEUED",
-    "evidence": "queue_verification.json",
-    "source_smoke": "PENDING",
-    "training_started": false,
-    "models_queued": 3,
-    "actual_GPU_children": 0,
+    "status": "VERIFIED_NO_UAS_RUNNING",
+    "source_smoke": "PASS",
+    "evidence": "source_activation.json",
+    "actual_GPU_workers": 3,
     "new_target_reads": 0
   }
 }

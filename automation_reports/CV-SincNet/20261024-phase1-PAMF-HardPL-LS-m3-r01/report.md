@@ -1,6 +1,6 @@
 # 加权普通硬伪标签：只加入监督端标签平滑
 
-状态：LOCAL_VERIFIED_NOT_LAUNCHED。166 项相关检查通过，一次独立 P0/P1 审查 PASS、无 P0/P1。真实原 F21 E30 source-only smoke 待首卡位；没有新训练或目标成绩读取。
+状态：VERIFIED_QUEUED。166 项相关检查通过，一次独立 P0/P1 审查 PASS、无 P0/P1。真实原 F21 E30 source-only smoke 待首卡位；没有新训练或目标成绩读取。
 
 用户要求基于高纯度普通 PL 提高权重并引入监督机制。本版以 HPL2 为匹配项，只在 U 硬伪标签交叉熵加入与监督端相同的标签平滑 0.01；保留阈值 0.95、权重 2、当前学生 eval 硬标签、完整 U 批分母、raw IQ 和一次 U 学生前向。原 L 六前向、As、RDrop、跨 RX 对比与联合默认头保持。没有新增 U 视图、KL、对比、EMA、原型、G 或另训头。
 
@@ -23,3 +23,8 @@ GPU5/6/7 一 seed 一卡，新行等待同 seed HPL_NO_UAS 全部14项 GPU 预�
 每 row 源域固定最终 checkpoint 后自动 raw PAMF 与同一冻结 DURA v1.0 各 clean＋六 practical，每景168000条，共42个正式cell。全部预测固定后独立 truth-last；完整矩阵后报告逐景/seed/TX/RX/day、修复损伤、F20/F21 配对差和训练成本，两个完整矩阵均评分后再列 HPL2 单因素差。DURA 单 G seed 仅冻结参考，不用于 F 训练；G＋F20 不称全流程仅 L。
 
 主目标仍为 raw clean 同时超过 F20/F21 至少1个百分点，六景均值同时严格超过1.5个百分点；DURA 不能替代。目标 ACTIVE，尚无达标方法；历史测试暴露如实披露，不称全新独立盲测。预期产物为 source/state/smoke、E50默认头checkpoint、全部step记录、hard_pl_state、源V诊断、source_execution_check、双七景预测/独立scores/完整汇总。排队、本地通过、源梯度改善均不视为训练成功或目标达成。
+
+
+## 发布后实际排队证据
+
+执行 commit `b981bad253b144791579421ad18e3f4cfa480408`；一次 archive 本地／远端 SHA 对照及远端 compile PASS。独立读回实际 CPU 控制器 PID／CWD／完整命令、存活和同版本 state，三 row 均 QUEUED、GPU 子进程 0。等待同 seed noUAs 完成全部 GPU 预测后执行真实原 F21 source-only smoke，PASS 立即正式重载对应父权重继续；前序 HPLT1U 启动中 PID 计入容量。现有六条健康训练及其他 owner 保留。源机制和矩阵在本轮 UVB 目标成绩读取前已冻结；排队不等于训练成功或目标提升。
