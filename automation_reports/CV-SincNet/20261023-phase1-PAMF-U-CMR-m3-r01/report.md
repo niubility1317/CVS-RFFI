@@ -1,6 +1,6 @@
 # PAMF 无标签类别条件接收机矩匹配：固定源域假设
 
-状态：PLANNED。固定源域依据、方法、三 seed 和双读出矩阵；尚未实现、审查、发布、真实 smoke、训练或访问本版目标。UMIX／UGP 六条健康训练保持。
+状态：93 项聚焦检查及一次独立 P0/P1 审查 PASS／无发现；实现与原源域固定配方一致。尚未发布、真实 smoke、训练或目标预测，原 UMIX／UGP 健康任务保持。
 
 源依据：原 E30 三 seed 只读 CPU 特征诊断中，source U／V 的浅层、中层同类 RX 质心差分别对应约 34% 至 42% 的类内散布；均有 30 个类别×源 RX 单元。固定 source V 使用合法真值，U 仅用原 EMA＋L-only 原型的伪类与连续置信权重，不读取 U TX 真值。具体规范、分母和局限见九模型 reference 的 source_receiver_geometry.md／e30_source_receiver_geometry.json；比例是描述性分解，不是纯 RX 因果效应或目标收益证据。
 
@@ -15,3 +15,6 @@
 GPU5／6／7 固定 seed2026092701／02／03。等待同 seed UMIX 的 raw＋DURA 全14项GPU预测结束、UGP已派发后，占空出的第二名额；每卡本任务最多两个 worker，含外部最多三个计算进程，派发 free>=10000MiB。单 CPU scorer 等 UGP 终态后接续。不可覆盖 root `PROJECT/runs/20261023-phase1-PAMF-U-CMR-m3-r01`；相同技术失败两次停止新派发、保留健康任务和全部产物；source smoke PASS立即正式续行，不按源或目标微小涨跌停止。
 
 每行训练冻结后自动完成 raw PAMF 和用户固定 DURA v1.0 同一 F，各 clean＋六 Practical，每景168000；全14项决策固定后独立 truth-last。沿用同 readout 的 F20监督／F21普通PL三seed对照，逐seed／景／RX／TX／day、SD、配对纠错／损伤、曝光和实际成本完整报告。原 raw clean 至少+1pp、六景严格超过+1.5pp 对两个基线同时成立才满足 goal；DURA 结果并列参考。该假设在 UMIX／UGP 目标成绩读取前固定，不由后续分数修改参数、父来源、矩阵或选择性重跑，不声称新独立盲测。
+
+
+93 项检查覆盖条件均值／标准差的解析值、原始权重ESS、置信排除／常量／缺对、按类平均而非大类加权、只传学生梯度、额外一次前向确为raw U、临时hooks正常／异常清理、隐藏 U 真值拒绝、原教师／曝光状态往返、无新增网络参数、固定父配置、GPU双owner顺序、独立CPU评分和raw＋同一DURA方法名，以及已有方案回归。一次独立P0/P1审查PASS，无发现。真实E30 no-query smoke将检查两层矩损失非零、真实梯度有限非零、extra raw U256和原L768／teacher权限；probe丢弃，正式3seed重新加载原E30。尚不把local检查当作真实训练或目标收益。

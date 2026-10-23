@@ -3,7 +3,7 @@
   "run_id": "20261023-phase1-PAMF-U-CMR-m3-r01",
   "group_id": "phase1-pamf-source-only-ssl-improvement",
   "display_name": "PAMF无标签类别条件接收机矩匹配：固定源域假设",
-  "description": "PLANNED:original RXPSM E30+20;retain existing U input/soft CE/prototype/own EMA and T1 L recipe.Add one raw U student forward,match confidence-weighted per-pseudo-class mean/std across source RX at shallow/middle descriptors.No new head,teacher,inference parameter,G or target input.",
+  "description": "Source-fixed raw-U conditional moments from original RXPSM E30+20;existing U inputs/soft CE/prototype/EMA and original T1 L/default joint head unchanged.One additional raw U student forward,shallow/middle mean/std descriptor matching by same detached teacher pseudo class across original sourceRX,confidence>=0.5/ESS>=4. No new head,teacher,moment bank,inference parameter or G training.",
   "kind": "cvs",
   "stage": "Phase1",
   "aliases": [],
@@ -23,11 +23,11 @@
   "replaces_run_id": null,
   "authorization": "用户 /goal 授权持续设计迭代 PAMF 半监督机制，使目标测试 clean 相对监督/普通PL均至少高1pp、六景均值均严格高1.5pp；三GPU每卡固定一个模型种子、最多两个本任务worker；追加要求同时报告单PAMF与固定DURA+PAMF。",
   "code": {
-    "commit": "57088487e5b36a118b86ba835e7c8f1a7bf058a1",
+    "commit": "ab13d3086b0e9a2733a24bfcad43c4d8bc26490e",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 ordinary account CVS-RFFI Py3.10/Torch2.1 FP32/TF32off, CPU2 per worker",
     "cwd": "PROJECT/releases/20261023-phase1-PAMF-U-CMR-m3-r01",
-    "entry": "experiments.pamf_ssl_research.u_cmr_worker"
+    "entry": "experiments.pamf_ssl_research.control"
   },
   "data": {
     "dataset": "WiSig ManySig",
@@ -105,7 +105,7 @@
     "remote_run_root": "PROJECT/runs/20261023-phase1-PAMF-U-CMR-m3-r01",
     "remote_log_root": "PROJECT/runs/20261023-phase1-PAMF-U-CMR-m3-r01/logs",
     "local_artifact_root": "local_artifacts/pamf_ssl_research_20261023/release-u-cmr-r01",
-    "launch_command": "NOT_LAUNCHED:implementation,focused checks,one P0/P1 review then real-source smoke and frozen full evaluation",
+    "launch_command": "python -m experiments.pamf_ssl_research.u_cmr_publish --repo code/worktrees/standard_ce_baselines_20261010 --context local_artifacts/pamf_ssl_research_20261023/viewanchor_context.json --output local_artifacts/pamf_ssl_research_20261023/release-u-cmr-r01 --ssh-config tools/n607_ssh_config",
     "stop_rule": "Real fixed E30 no-query U-gradient smoke first; PASS continues immediately. Two identical technical failure fingerprints stop new dispatch and preserve healthy jobs/artifacts. No performance-based stopping, tuning, reorder or selective rerun."
   },
   "expected_artifacts": [
@@ -155,9 +155,9 @@
   "rows": [
     {
       "row_id": "UCMR-s2026092701",
-      "method": "PLANNED:confidence-protected pseudo-class conditional cross-source-RX mean/std matching",
+      "method": "confidence-protected pseudo-class conditional cross-source-RX mean/std matching",
       "purpose": "primary_predeclared",
-      "config_ref": "report.md andhypothesis.json;implementation pending",
+      "config_ref": "experiments/pamf_ssl_research/u_cmr.py",
       "resolved_config_ref": "PROJECT/runs/20261023-phase1-PAMF-U-CMR-m3-r01/UCMR-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
@@ -178,7 +178,7 @@
       "budget_ref": "Original RXPSM E30/6660+20/4440=50/11100,13L+37LU. Teacher U2097900,student U3231900,physical1048950;extra raw U1134000,CMR4440calls,actual eligible/pair exposure and additional compute reported.",
       "output_root": "PROJECT/runs/20261023-phase1-PAMF-U-CMR-m3-r01/UCMR-s2026092701",
       "log_path": "PROJECT/runs/20261023-phase1-PAMF-U-CMR-m3-r01/logs/UCMR-s2026092701-row.log",
-      "command": "NOT_LAUNCHED:implementation pending",
+      "command": "CUDA_VISIBLE_DEVICES=5 python -u -m experiments.pamf_ssl_research.u_cmr_worker row --config RELEASE/configs/UCMR-s2026092701-row.json",
       "expected_artifacts": [
         "source/segment50/final_ssdg.pth",
         "source/segment50/ssl_state.pt",
@@ -191,9 +191,9 @@
     },
     {
       "row_id": "UCMR-s2026092702",
-      "method": "PLANNED:confidence-protected pseudo-class conditional cross-source-RX mean/std matching",
+      "method": "confidence-protected pseudo-class conditional cross-source-RX mean/std matching",
       "purpose": "primary_predeclared",
-      "config_ref": "report.md andhypothesis.json;implementation pending",
+      "config_ref": "experiments/pamf_ssl_research/u_cmr.py",
       "resolved_config_ref": "PROJECT/runs/20261023-phase1-PAMF-U-CMR-m3-r01/UCMR-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
@@ -214,7 +214,7 @@
       "budget_ref": "Original RXPSM E30/6660+20/4440=50/11100,13L+37LU. Teacher U2097900,student U3231900,physical1048950;extra raw U1134000,CMR4440calls,actual eligible/pair exposure and additional compute reported.",
       "output_root": "PROJECT/runs/20261023-phase1-PAMF-U-CMR-m3-r01/UCMR-s2026092702",
       "log_path": "PROJECT/runs/20261023-phase1-PAMF-U-CMR-m3-r01/logs/UCMR-s2026092702-row.log",
-      "command": "NOT_LAUNCHED:implementation pending",
+      "command": "CUDA_VISIBLE_DEVICES=6 python -u -m experiments.pamf_ssl_research.u_cmr_worker row --config RELEASE/configs/UCMR-s2026092702-row.json",
       "expected_artifacts": [
         "source/segment50/final_ssdg.pth",
         "source/segment50/ssl_state.pt",
@@ -227,9 +227,9 @@
     },
     {
       "row_id": "UCMR-s2026092703",
-      "method": "PLANNED:confidence-protected pseudo-class conditional cross-source-RX mean/std matching",
+      "method": "confidence-protected pseudo-class conditional cross-source-RX mean/std matching",
       "purpose": "primary_predeclared",
-      "config_ref": "report.md andhypothesis.json;implementation pending",
+      "config_ref": "experiments/pamf_ssl_research/u_cmr.py",
       "resolved_config_ref": "PROJECT/runs/20261023-phase1-PAMF-U-CMR-m3-r01/UCMR-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
@@ -250,7 +250,7 @@
       "budget_ref": "Original RXPSM E30/6660+20/4440=50/11100,13L+37LU. Teacher U2097900,student U3231900,physical1048950;extra raw U1134000,CMR4440calls,actual eligible/pair exposure and additional compute reported.",
       "output_root": "PROJECT/runs/20261023-phase1-PAMF-U-CMR-m3-r01/UCMR-s2026092703",
       "log_path": "PROJECT/runs/20261023-phase1-PAMF-U-CMR-m3-r01/logs/UCMR-s2026092703-row.log",
-      "command": "NOT_LAUNCHED:implementation pending",
+      "command": "CUDA_VISIBLE_DEVICES=7 python -u -m experiments.pamf_ssl_research.u_cmr_worker row --config RELEASE/configs/UCMR-s2026092703-row.json",
       "expected_artifacts": [
         "source/segment50/final_ssdg.pth",
         "source/segment50/ssl_state.pt",
@@ -263,7 +263,7 @@
     }
   ],
   "notes": [
-    "PLANNED only;new raw-U moment route based on frozen source geometry.No new implementation/real smoke/training or target access yet.",
+    "Implemented against exact source hypothesis ab13d308;93 focused checks PASS and one independent P0/P1 review PASS/no findings.Real E30 no-query smoke first after GPU predecessor release;not yet launched or trained.",
     "Existing weighted U objective and T1 L graph unchanged;one extra raw U student forward for conditional mean/std only.No UCRIC,style,PAIR,UGP combination.No G training or new classifier.",
     "Moment groups use detached existing target argmax andconfidence>=0.5;sourceRX metadata only;effective sample size>=4.Current-batch population moments,no fitted or EMA moment bank.",
     "Original E30+20/full3seeds and fixed final student,sourceV diagnostic only,no scientific early stopping or candidate selection.Raw+commonG each7views then truth-last.",

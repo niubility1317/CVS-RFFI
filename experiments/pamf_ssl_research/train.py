@@ -15,7 +15,12 @@ def installed(config, holder, *, parent_algorithm=None):
     objective_type = Objective
     if parent_algorithm is not None:
         from .view_anchor import validate as validate_view, PARENT_ALGORITHM
-        if config.get('u_gradprotect'):
+        if config.get('u_cmr'):
+            from .u_cmr import validate as validate_u_cmr
+            from .u_cmr_objective import UnlabeledReceiverMomentsObjective
+            validate_u_cmr(config)
+            objective_type = UnlabeledReceiverMomentsObjective
+        elif config.get('u_gradprotect'):
             from .u_gradprotect import validate as validate_u_gradprotect
             from .u_gradprotect_objective import GradientProtectedObjective
             validate_u_gradprotect(config)

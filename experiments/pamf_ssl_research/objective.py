@@ -141,6 +141,9 @@ class Objective:
         extension = getattr(self, 'unlabeled_feature_loss', None)
         if extension is not None:
             loss = loss + extension(output, target, weight, rx)
+        source_extension = getattr(self, 'unlabeled_source_loss', None)
+        if source_extension is not None:
+            loss = loss + source_extension(student, x, domain, target, weight, rx)
         self.seen += n
         physical_count = int(mask.sum())
         self.physical_seen += physical_count
