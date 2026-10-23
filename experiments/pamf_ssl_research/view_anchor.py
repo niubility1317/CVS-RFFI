@@ -35,3 +35,15 @@ def validate(c):
                 '/runs/' + PARENT_RUN + '/RXPSM-s' + str(c['model_seed']) + '/source')):
         raise ValueError('Fixed physical-feature follow-up and own-seed parent required')
     return c
+
+
+def physical_alignment(student_features, teacher_features, weight, physical_mask):
+    """Only physical student rows receive this gradient; references remain detached."""
+    import torch
+    from torch.nn import functional as F
+    if (student_features.ndim != 2 or student_features.shape != teacher_features.shape
+            or weight.shape != student_features.shape[:1]
+            or physical_mask.shape != weight.shape or physical_mask.dtype != torch.bool):
+        raise ValueError('Aligned physical feature pairs and weights required')
+    distance = 1 - F.cosine_similarity(student_features, teacher_features.detach(), dim=1)
+    return (distance * weight.detach() * physical_mask).sum() / physical_mask.sum().clamp_min(1)

@@ -1,0 +1,20 @@
+{
+  "status": "CORE_VERIFIED_NOT_RELEASED",
+  "hypothesis_commit": "5e52e4ebd383ba6990e9afd38a563798368f1603",
+  "focused_tests": {
+    "status": "PASS",
+    "total": 14,
+    "existing_SSL_regressions": 9,
+    "new_view_anchor_cases": 5
+  },
+  "independent_P0P1_review": {
+    "status": "PASS",
+    "findings": 0,
+    "scope": "Core objective, fixed source prefix, state continuity and frozen load_F ancestry"
+  },
+  "real_E30_no_query_smoke": "PENDING_BEFORE_ANY_RELEASE",
+  "candidate_launched": false,
+  "candidate_target_reads": 0,
+  "current_r02_release_changed": false,
+  "scope": "Preparation only. No effectiveness claim; original target-test success criteria unchanged."
+}

@@ -67,6 +67,7 @@ class Objective:
         self.per_class = torch.zeros(6, device=self.mean.device)
         self.metrics = {}
         self.labeled = None
+        self.view_anchor_calls = self.view_anchor_physical_seen = 0
 
     @torch.no_grad()
     def after_update(self, student):
@@ -129,8 +130,18 @@ class Objective:
             feature = (1 - F.cosine_similarity(output['z_id'], anchor, dim=1)) * prototype_valid
         ramp = min((self.current_epoch - self.c['U_start_epoch'] + 1) / settings['ramp_epochs'], 1.)
         loss = settings['unsupervised_weight'] * ramp * (weight * (ce + settings['prototype_feature_weight'] * feature)).mean()
+        view_settings = self.c.get('view_anchor')
+        view_loss = None
+        if view_settings and self.current_epoch >= view_settings['start_epoch']:
+            from .view_anchor import physical_alignment
+            view_loss = view_settings['weight'] * physical_alignment(output['z_id'], z, weight, mask)
+            loss = loss + view_loss
         self.seen += n
-        self.physical_seen += int(mask.sum())
+        physical_count = int(mask.sum())
+        self.physical_seen += physical_count
+        if view_loss is not None:
+            self.view_anchor_calls += 1
+            self.view_anchor_physical_seen += physical_count
         self.effective += float(weight.sum())
         self.calls += 1
         self.per_class.scatter_add_(0, target.argmax(1), weight)
@@ -142,17 +153,27 @@ class Objective:
                             SSL_proto_coverage=prototype_valid.float().mean(),
                             SSL_physical_seen=self.physical_seen, SSL_seen=self.seen,
                             SSL_effective=self.effective, SSL_entropy_weight=0.)
+        if view_settings:
+            self.metrics.update(SSL_view_anchor_loss=0. if view_loss is None else view_loss.detach(),
+                SSL_view_anchor_calls=self.view_anchor_calls,
+                SSL_view_anchor_physical_seen=self.view_anchor_physical_seen)
         return loss
 
     def state_dict(self):
-        return dict(teacher=self.teacher.state_dict(), mean=self.mean, variance=self.variance,
+        value = dict(teacher=self.teacher.state_dict(), mean=self.mean, variance=self.variance,
                     centers=self.bank.centers, counts=self.bank.counts, ema_updates=self.ema_updates,
                     seen=self.seen, physical_seen=self.physical_seen, calls=self.calls,
                     effective=self.effective, per_class=self.per_class, method=self.c['ssl_method'])
+        if self.c.get('view_anchor'):
+            value.update(view_anchor=self.c['view_anchor'], view_anchor_calls=self.view_anchor_calls,
+                         view_anchor_physical_seen=self.view_anchor_physical_seen)
+        return value
 
     def load_state_dict(self, state):
         if state['method'] != self.c['ssl_method']:
             raise ValueError('Own SSL state belongs to another method')
+        if state.get('view_anchor') and state['view_anchor'] != self.c.get('view_anchor'):
+            raise ValueError('Physical feature state belongs to another recipe')
         self.teacher.load_state_dict(state['teacher'], strict=True)
         for name in ('mean', 'variance', 'per_class'):
             getattr(self, name).copy_(state[name])
@@ -160,3 +181,5 @@ class Objective:
         self.bank.counts.copy_(state['counts'])
         for name in ('ema_updates', 'seen', 'physical_seen', 'calls', 'effective'):
             setattr(self, name, state[name])
+        self.view_anchor_calls = state.get('view_anchor_calls', 0)
+        self.view_anchor_physical_seen = state.get('view_anchor_physical_seen', 0)

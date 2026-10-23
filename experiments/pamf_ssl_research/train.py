@@ -11,7 +11,14 @@ from .objective import Objective
 
 
 @contextmanager
-def installed(config, holder):
+def installed(config, holder, *, parent_algorithm=None):
+    if parent_algorithm is not None:
+        from .view_anchor import validate as validate_view, PARENT_ALGORITHM
+        validate_view(config)
+        if (parent_algorithm != PARENT_ALGORITHM or config.get('epoch_offset') != 30
+                or config.get('step_offset') != 6660
+                or config.get('parent_source') != str(Path(config['fork_parent_source']) / 'segment30')):
+            raise ValueError('Only the declared RXPSM E30 to physical-feature transition is supported')
     from experiments.cric_dura_comparison import t1_model, f_optimizer
     original_install, original_pl, original_scope = t1_model.install, t1_model.plain_pl, f_optimizer.native_scope
 
@@ -21,7 +28,8 @@ def installed(config, holder):
         parent = c.get('parent_source')
         if parent:
             previous = read(Path(parent) / 'complete.json')['config']
-            if any(previous.get(k) != c.get(k) for k in ('algorithm_id', 'ssl', 'source_contract', 'model_seed')):
+            if (previous.get('algorithm_id') != (parent_algorithm or c['algorithm_id'])
+                    or any(previous.get(k) != c.get(k) for k in ('ssl', 'source_contract', 'model_seed'))):
                 raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH: own SSL state')
             objective.load_state_dict(torch.load(Path(parent) / 'ssl_state.pt', map_location=next(model.parameters()).device, weights_only=False))
         model.__dict__['_pamf_ssl_objective'] = objective  # Training-only; never an inference module.
