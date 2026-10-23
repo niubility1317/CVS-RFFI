@@ -1,6 +1,6 @@
 # PAMF 无标签类别条件接收机矩匹配：固定源域假设
 
-状态：VERIFIED_QUEUED。93 项检查及一次 P0/P1 审查 PASS；已发布并核实 CPU 控制器。等待 UMIX GPU 预测完成释放名额，真实 E30 smoke、正式训练及目标预测尚未开始。
+状态：VERIFIED_RUNNING。93 项检查、一次 P0/P1 审查及真实 E30 source-only 梯度检查 PASS；三 seed 按原固定配方续训，原目标仍 ACTIVE。
 
 源依据：原 E30 三 seed 只读 CPU 特征诊断中，source U／V 的浅层、中层同类 RX 质心差分别对应约 34% 至 42% 的类内散布；均有 30 个类别×源 RX 单元。固定 source V 使用合法真值，U 仅用原 EMA＋L-only 原型的伪类与连续置信权重，不读取 U TX 真值。具体规范、分母和局限见九模型 reference 的 source_receiver_geometry.md／e30_source_receiver_geometry.json；比例是描述性分解，不是纯 RX 因果效应或目标收益证据。
 
@@ -21,3 +21,10 @@ GPU5／6／7 固定 seed2026092701／02／03。等待同 seed UMIX 的 raw＋DUR
 
 
 实际不可变执行 commit `a3371f1339f8687ee6593afb71b8e0a79574a9cd`，一次发布包 SHA 本地／远端比较、远端编译 PASS。独立读回 CPU 控制器 PID／CWD／完整命令及存活状态，三 seed 均 QUEUED，无新 GPU 子进程，source smoke 尚未开始；证据见 queue_verification.json。当前 UMIX 正在完成双七景预测，UGP 健康训练保留。UMIX 同 seed 全14项 GPU 预测结束且 UGP 已派发后，UCMR 才占第二名额；首个真实 E30 source-only smoke PASS 即续行。没有将排队或本地检查当成训练／目标完成。
+
+
+## 已核实实际 raw U 矩约束训练
+
+实际执行 commit `a3371f1339f8687ee6593afb71b8e0a79574a9cd`；一次发布包 SHA 本地／远端对照及远端编译 PASS。独立核实控制器和三个 worker 的 PID／CWD／完整命令、实际 GPU 与原生 step 日志增长。真实 E30 probe 保留 L768／原U256，新增raw U256，246条可用记录，两层各56个同伪类跨RX对；浅、中层真实梯度有限非零、临时hooks已清理、默认头梯度有限且教师无梯度，EMA仅一次。probe丢弃，正式三seed重新载原E30。已逐条核对全部刷盘的完整step前缀，U／extra raw曝光、固定0.1系数／两层平均、可用记录和各层pair累计计数准确，新增损失有限。gzip尚未关闭，只是前缀证据，不宣称完整训练或收益。详见source_activation.json。
+
+UMIX三seed双七景GPU预测均完成后，CMR在GPU5／6／7各接续原槽位，与原UGP每卡各一条本任务worker，含其他owner总计算进程最多三个。没有停止或热改旧任务；后续最终E50学生自动完成raw／同一DURA各七景，CPU评分器等UGP终态后接续。
