@@ -1,0 +1,48 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "focused_tests": 61,
+  "independent_P0_P1_review": {
+    "status": "PASS",
+    "findings": 0,
+    "scope": "Direct next-run P0/P1 only,read-only,no target scores"
+  },
+  "real_source_checkpoint_smoke": "PENDING_FIRST_GPU_STEP",
+  "recipe_matches_source_hypothesis": true,
+  "hypothesis_commit": "13dcd1e6fae05fd5e5bc0294c3624377d7e6aef2",
+  "recipe": {
+    "start_epoch": 31,
+    "levels": [
+      "time_down",
+      "t2.pool"
+    ],
+    "probability_per_level": 0.5,
+    "alpha": 0.1,
+    "eps": 1e-06,
+    "eligible_weight_min": 0.5,
+    "same_teacher_argmax": true,
+    "different_original_source_RX": true,
+    "random_uniform_eligible_partner": true,
+    "invalid_pair_identity": true,
+    "detached_moments": true,
+    "shared_partner_per_U_forward": true,
+    "shared_lambda_per_U_forward": true,
+    "teacher_and_L_hooks": false,
+    "new_student_forwards": 0,
+    "new_inference_parameters": 0,
+    "G_training_reads": 0
+  },
+  "methods": [
+    "UMIX"
+  ],
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "readouts": [
+    "raw",
+    "DURA-LU"
+  ],
+  "new_target_reads": 0,
+  "G_training_reads": 0
+}

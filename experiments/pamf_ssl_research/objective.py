@@ -122,7 +122,9 @@ class Objective:
             physical_meta = {k: v[mask] if torch.is_tensor(v) and v.ndim and len(v) == n else v
                              for k, v in meta.items()}
             strong[mask] = student._cd_practical(x[mask], physical_meta, self.current_epoch, self.current_step)
-        output = student.forward_identity_only(strong, domain_labels=domain)
+        student_forward = getattr(self, 'unlabeled_student_forward', None)
+        output = (student_forward(student, strong, domain, target, weight, rx) if student_forward is not None
+                  else student.forward_identity_only(strong, domain_labels=domain))
         ce = -(target * output['tx_logits'].log_softmax(1)).sum(1)
         feature = ce * 0.
         if centers is not None:

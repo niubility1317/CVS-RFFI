@@ -1,6 +1,6 @@
 # PAMF 无标签特征统计混合：固定源域假设
 
-状态：PLANNED。只固定研究假设和三seed矩阵，尚未实现、审查、发布、smoke、训练或读取本版目标。正在运行的PAIR/UCRIC六条任务保持原计划。
+状态：实现及61项聚焦检查完成，一次独立P0/P1审查PASS/无发现；尚未发布、真实smoke、训练或读取本版目标。原先固定的配方/父来源/三seed矩阵逐项相同，PAIR/UCRIC六条健康任务保持原计划。
 
 源依据：固定720条V中，既有RXPSM E30自身EMA的伪标签没有显示明显劣于监督E30；此前九模型加权类别分布及L-only原型覆盖正常。下一条研究因此保持原RXPSM E30状态，从低层接收风格变化检验U的作用，不换父来源、不强化类别配额、不加载G训练视图。
 
@@ -13,3 +13,6 @@ GPU5/6/7固定seed2026092701/02/03。先等待同seed PAIREDU的全部14项预�
 最终学生自动完成raw及固定DURA v1.0各clean+六practical、168000物理样本/景，全部14项预测固定后独立truth-last。沿用同readout监督F20/普通PL F21三seed对照，完整报告逐seed/景/RX/TX/day、SD、配对差、DURA净纠错、曝光和实测成本。原raw双阈值同时满足才算goal达成，不以本假设、源V或组合参考代替。
 
 参考：[MixStyle官方代码](https://github.com/KaiyangZhou/mixstyle-release)、[ICLR2021论文](https://openreview.net/forum?id=6xHJ37MVxxp)。借鉴低层统计混合和固定默认p/alpha；标签保护与1D层位是本项目待检验改动，不称完整复现或已验证收益。方法/父权重/系数/种子/资源在新目标访问前固定，原基准历史暴露如实保留，不根据PAIR/UCRIC后续目标成绩改动本方案或选择性重跑。
+
+
+实现严格核对hypothesis.json与RECIPE相同。61项检查覆盖同类跨RX置信配对、统计凸组合/常量/无partner、只传学生内容梯度、临时hooks作用域与异常清理、隐藏U真值拒绝、原EMA/曝光状态往返、无新增模型参数、GPU双owner先后条件、双读出和真实方法名称、其他候选回归。实际E30 source-only smoke会临时强制两层启用以覆盖两个真实梯度分支；probe丢弃，正式3seed重新加载原E30，以各层0.5独立启用概率训练。未把local模拟检查当作真实训练或目标收益。

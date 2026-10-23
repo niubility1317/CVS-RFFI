@@ -3,7 +3,7 @@
   "run_id": "20261023-phase1-PAMF-U-MixStyle-m3-r01",
   "group_id": "phase1-pamf-source-only-ssl-improvement",
   "display_name": "PAMF同预测TX跨RX无标签特征统计混合：源域固定假设",
-  "description": "PLANNED source hypothesis only: same original RXPSM E30/6660 prefixes, final20;retain existing U soft CE/prototype/own EMA and input views;mix detached temporal feature mean/std at time_down/t2.pool only for high-confidence same-predicted-TX different-source-RX U pairs.No G training source or extra head/forward.",
+  "description": "Source-fixed U moment-mixing implementation: original RXPSM E30+20, same U inputs/soft CE/L-only references/own EMA. Identity-protected same teacher class and different source RX, detached moments at time_down/t2.pool, independent p0.5,shared partner/lambda Beta0.1. Joint original head;raw+same frozen DURA.",
   "kind": "cvs",
   "stage": "Phase1",
   "aliases": [],
@@ -23,11 +23,11 @@
   "replaces_run_id": null,
   "authorization": "用户 /goal 授权持续设计迭代 PAMF 半监督机制，使目标测试 clean 相对监督/普通PL均至少高1pp、六景均值均严格高1.5pp；三GPU每卡固定一个模型种子、最多两个本任务worker；追加要求同时报告单PAMF与固定DURA+PAMF。",
   "code": {
-    "commit": "b32951058b782bf42a185ef45bff4abb88e29666",
+    "commit": "13dcd1e6fae05fd5e5bc0294c3624377d7e6aef2",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 ordinary account CVS-RFFI Py3.10/Torch2.1 FP32/TF32off, CPU2 per worker",
     "cwd": "PROJECT/releases/20261023-phase1-PAMF-U-MixStyle-m3-r01",
-    "entry": "experiments.pamf_ssl_research.u_mixstyle_worker"
+    "entry": "experiments.pamf_ssl_research.control"
   },
   "data": {
     "dataset": "WiSig ManySig",
@@ -101,11 +101,11 @@
   "execution": {
     "host": "N607 ordinary account",
     "launch_owner": "codex-pamf-U-MixStyle-20261023",
-    "gpu_policy": "Planned GPU5/6/7 fixed seeds2026092701/02/03. Wait per seed until PAIREDU GPU row finishes and UCRIC first dispatch is settled; one new worker/card then uses the freed task slot alongside UCRIC. At most2 task-owned/card and3 total compute apps incl foreign;free>=10000MiB. One CPU scorer after UCRIC owner terminal. No healthy jobs stopped, hot-edited or resubmitted.",
+    "gpu_policy": "GPU5/6/7 fixed seeds2026092701/02/03. Wait per seed until PAIREDU GPU row finishes and UCRIC first dispatch is settled; one new worker/card then uses the freed task slot alongside UCRIC. At most2 task-owned/card and3 total compute apps incl foreign;free>=10000MiB. One CPU scorer after UCRIC owner terminal. No healthy jobs stopped, hot-edited or resubmitted.",
     "remote_run_root": "PROJECT/runs/20261023-phase1-PAMF-U-MixStyle-m3-r01",
     "remote_log_root": "PROJECT/runs/20261023-phase1-PAMF-U-MixStyle-m3-r01/logs",
     "local_artifact_root": "local_artifacts/pamf_ssl_research_20261023/release-u-mixstyle-r01",
-    "launch_command": "NOT_LAUNCHED: future u_mixstyle_publish after implementation, focused checks, one P0/P1 review and real E30 source smoke",
+    "launch_command": "python -m experiments.pamf_ssl_research.u_mixstyle_publish --repo code/worktrees/standard_ce_baselines_20261010 --context local_artifacts/pamf_ssl_research_20261023/viewanchor_context.json --output local_artifacts/pamf_ssl_research_20261023/release-u-mixstyle-r01 --ssh-config tools/n607_ssh_config",
     "stop_rule": "Real fixed E30 no-query U-gradient smoke first; PASS continues immediately. Two identical technical failure fingerprints stop new dispatch and preserve healthy jobs/artifacts. No performance-based stopping, tuning, reorder or selective rerun."
   },
   "expected_artifacts": [
@@ -154,9 +154,9 @@
   "rows": [
     {
       "row_id": "UMIX-s2026092701",
-      "method": "PLANNED:confidence-protected same-predicted-TX cross-source-RX temporal moment mixing on U shallow/middle features",
+      "method": "confidence-protected same-predicted-TX cross-source-RX temporal moment mixing on U shallow/middle features",
       "purpose": "primary_predeclared",
-      "config_ref": "report.md fixed recipe; implementation pending",
+      "config_ref": "experiments/pamf_ssl_research/u_mixstyle.py",
       "resolved_config_ref": "PROJECT/runs/20261023-phase1-PAMF-U-MixStyle-m3-r01/UMIX-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
@@ -177,7 +177,7 @@
       "budget_ref": "Fixed original RXPSM E30/6660+20/4440=50/11100,13L+37LU. U teacher/student2097900,physical1048950;new style hooks4440 U batches/1134000 records,actual eligible and applied exposures per level reported. No extra student forward or fitted head.",
       "output_root": "PROJECT/runs/20261023-phase1-PAMF-U-MixStyle-m3-r01/UMIX-s2026092701",
       "log_path": "PROJECT/runs/20261023-phase1-PAMF-U-MixStyle-m3-r01/logs/UMIX-s2026092701-row.log",
-      "command": "NOT_LAUNCHED: implementation pending",
+      "command": "CUDA_VISIBLE_DEVICES=5 python -u -m experiments.pamf_ssl_research.u_mixstyle_worker row --config RELEASE/configs/UMIX-s2026092701-row.json",
       "expected_artifacts": [
         "source/segment50/final_ssdg.pth",
         "source/segment50/ssl_state.pt",
@@ -190,9 +190,9 @@
     },
     {
       "row_id": "UMIX-s2026092702",
-      "method": "PLANNED:confidence-protected same-predicted-TX cross-source-RX temporal moment mixing on U shallow/middle features",
+      "method": "confidence-protected same-predicted-TX cross-source-RX temporal moment mixing on U shallow/middle features",
       "purpose": "primary_predeclared",
-      "config_ref": "report.md fixed recipe; implementation pending",
+      "config_ref": "experiments/pamf_ssl_research/u_mixstyle.py",
       "resolved_config_ref": "PROJECT/runs/20261023-phase1-PAMF-U-MixStyle-m3-r01/UMIX-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
@@ -213,7 +213,7 @@
       "budget_ref": "Fixed original RXPSM E30/6660+20/4440=50/11100,13L+37LU. U teacher/student2097900,physical1048950;new style hooks4440 U batches/1134000 records,actual eligible and applied exposures per level reported. No extra student forward or fitted head.",
       "output_root": "PROJECT/runs/20261023-phase1-PAMF-U-MixStyle-m3-r01/UMIX-s2026092702",
       "log_path": "PROJECT/runs/20261023-phase1-PAMF-U-MixStyle-m3-r01/logs/UMIX-s2026092702-row.log",
-      "command": "NOT_LAUNCHED: implementation pending",
+      "command": "CUDA_VISIBLE_DEVICES=6 python -u -m experiments.pamf_ssl_research.u_mixstyle_worker row --config RELEASE/configs/UMIX-s2026092702-row.json",
       "expected_artifacts": [
         "source/segment50/final_ssdg.pth",
         "source/segment50/ssl_state.pt",
@@ -226,9 +226,9 @@
     },
     {
       "row_id": "UMIX-s2026092703",
-      "method": "PLANNED:confidence-protected same-predicted-TX cross-source-RX temporal moment mixing on U shallow/middle features",
+      "method": "confidence-protected same-predicted-TX cross-source-RX temporal moment mixing on U shallow/middle features",
       "purpose": "primary_predeclared",
-      "config_ref": "report.md fixed recipe; implementation pending",
+      "config_ref": "experiments/pamf_ssl_research/u_mixstyle.py",
       "resolved_config_ref": "PROJECT/runs/20261023-phase1-PAMF-U-MixStyle-m3-r01/UMIX-s2026092703/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
@@ -249,7 +249,7 @@
       "budget_ref": "Fixed original RXPSM E30/6660+20/4440=50/11100,13L+37LU. U teacher/student2097900,physical1048950;new style hooks4440 U batches/1134000 records,actual eligible and applied exposures per level reported. No extra student forward or fitted head.",
       "output_root": "PROJECT/runs/20261023-phase1-PAMF-U-MixStyle-m3-r01/UMIX-s2026092703",
       "log_path": "PROJECT/runs/20261023-phase1-PAMF-U-MixStyle-m3-r01/logs/UMIX-s2026092703-row.log",
-      "command": "NOT_LAUNCHED: implementation pending",
+      "command": "CUDA_VISIBLE_DEVICES=7 python -u -m experiments.pamf_ssl_research.u_mixstyle_worker row --config RELEASE/configs/UMIX-s2026092703-row.json",
       "expected_artifacts": [
         "source/segment50/final_ssdg.pth",
         "source/segment50/ssl_state.pt",
@@ -262,12 +262,12 @@
     }
   ],
   "notes": [
-    "PLANNED hypothesis,not implemented/reviewed/launched.No real source smoke,training or new target access for this method yet.",
+    "Implemented against exact hypothesis in13dcd1e6;61 focused checks PASS,one independent P0/P1 review PASS/no findings.Real E30 source-only smoke first after release;not yet launched or trained.",
     "Official MixStyle p0.5/alpha0.1,eps1e-6;adapted to1D temporal mean/population std and sourceU identity protection.Not full StyleMatch or a guaranteed performance claim.",
     "Only sourceU student feature hooks modify outputs;teacher and all L forwards remain unmodified. Pair eligibility uses detached current existing sharpened own-teacher/L-only cross-RX prototype targets,weights>=0.5,sameargmax anddifferentoriginalphysicalsourceRX;noUtruth or targetmetadata.",
     "Fixed all3 seeds/no source candidate selection/no early stopping. Complete raw+fixedDURA each7views before independent truth-last. Raw goal unchanged.",
     "Recipe/parent/resource fixed before PAIREDU and UCRIC target access. Earlier engineering scores already exposed;do not claim a fresh blind benchmark.",
-    "DURA remains common frozen reference only;no G or historical F teacher inheritance in new training. Actual execution commit/environment/command/validation must be resolved before launch."
+    "DURA remains common frozen reference only;no G or historical F teacher inheritance in new training. Real source smoke forces both style hooks for branch coverage;formal3 seeds reload original E30 and retain independent p0.5. Actual execution commit resolved by immutable release."
   ],
   "registered_at": "2026-10-23T13:05:10+00:00"
 }

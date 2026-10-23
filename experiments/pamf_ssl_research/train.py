@@ -15,7 +15,12 @@ def installed(config, holder, *, parent_algorithm=None):
     objective_type = Objective
     if parent_algorithm is not None:
         from .view_anchor import validate as validate_view, PARENT_ALGORITHM
-        if config.get('u_cric'):
+        if config.get('u_mixstyle'):
+            from .u_mixstyle import validate as validate_u_mixstyle
+            from .u_mixstyle_objective import UnlabeledMixStyleObjective
+            validate_u_mixstyle(config)
+            objective_type = UnlabeledMixStyleObjective
+        elif config.get('u_cric'):
             from .u_cric import validate as validate_u_cric
             from .u_cric_objective import UnlabeledCRICObjective
             validate_u_cric(config)

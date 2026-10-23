@@ -6,7 +6,7 @@ from pathlib import Path
 from experiments.cric_dura_comparison.io import read, write
 
 
-def smoke(rt, *, paired=False, u_cric=False):
+def smoke(rt, *, paired=False, u_cric=False, u_mixstyle=False):
     from experiments.cric_dura_comparison.bootstrap import activate, numerical_policy
     activate(rt)
     numerical_policy()
@@ -21,7 +21,10 @@ def smoke(rt, *, paired=False, u_cric=False):
     from .view_anchor_train import source_parents
 
     c = read(rt['rows'][0]['train_config'])
-    if u_cric:
+    if u_mixstyle:
+        from .u_mixstyle import validate as validate_u_mixstyle
+        parents, _ = source_parents(c, validate_config=validate_u_mixstyle)
+    elif u_cric:
         from .u_cric import validate as validate_u_cric
         parents, _ = source_parents(c, validate_config=validate_u_cric)
     elif paired:
@@ -33,6 +36,8 @@ def smoke(rt, *, paired=False, u_cric=False):
     cfg = dict(c, segment_epochs=20, epoch_offset=30, step_offset=6660, parent_source=parent)
     if u_cric:
         cfg['u_cric_smoke'] = True
+    if u_mixstyle:
+        cfg['u_mixstyle_smoke'] = True  # Cover both hooks; formal recipe retains p=.5.
     payload = torch.load(Path(parent) / 'final_ssdg.pth', map_location='cpu', weights_only=False)
     device = 'cuda:0'
     ctx = context(c)
@@ -68,7 +73,14 @@ def smoke(rt, *, paired=False, u_cric=False):
         total.backward()
         objective = holder['objective']
         head = model.id_backbone.encoder.core.id_backbone.cls_head.weight
-        if u_cric:
+        if u_mixstyle:
+            mechanism_ok = (objective.u_mixstyle_calls == 1 and objective.u_mixstyle_seen == 256
+                            and objective.u_mixstyle_eligible > 0 and objective.physical_seen == 482078
+                            and all(count == objective.u_mixstyle_eligible for count in objective.u_mixstyle_applied.values())
+                            and not objective._style_context_active
+                            and all(h.grad is not None and bool(torch.isfinite(h.grad).all())
+                                    and float(h.grad.norm()) > 0 for h in objective._smoke_maps.values()))
+        elif u_cric:
             mechanism_ok = (float(metrics['SSL_U_CRIC_loss']) > 0 and objective.u_cric_calls == 1
                             and objective.u_cric_seen == 256 and objective.physical_seen == 482078
                             and all(count > 0 for count in objective.u_cric_anchors.values())
@@ -95,7 +107,11 @@ def smoke(rt, *, paired=False, u_cric=False):
         checked = dict(parent_epoch=30, parent_updates=6660, EMA_updates_after_smoke=6661,
             U_seen=objective.seen, physical_U_seen=objective.physical_seen,
             L_forward_packets=768, finite_backward=True, teacher_gradient=False)
-        if u_cric:
+        if u_mixstyle:
+            checked.update(u_mixstyle_seen=256,u_mixstyle_eligible=objective.u_mixstyle_eligible,
+                u_mixstyle_applied=objective.u_mixstyle_applied,shallow_middle_gradients=True,
+                source_smoke_force_both_hooks=True,formal_probability_per_level=.5,feature_hooks_removed=True)
+        elif u_cric:
             checked.update(u_cric_loss=float(metrics['SSL_U_CRIC_loss']), u_cric_seen=256,
                 u_cric_anchors=objective.u_cric_anchors, shallow_middle_gradients=True, feature_hooks_removed=True)
         elif paired:
@@ -104,7 +120,7 @@ def smoke(rt, *, paired=False, u_cric=False):
         else:
             checked.update(view_anchor_loss=float(metrics['SSL_view_anchor_loss']), view_anchor_physical_seen=128)
     write(Path(rt['run_root']) / 'smoke.json', dict(status='PASS', real_checkpoint=parent + '/final_ssdg.pth',
-        target_reads=0, U_truth_reads=0, method='UCRIC' if u_cric else 'PAIREDU' if paired else 'VIEWANCHOR',
+        target_reads=0, U_truth_reads=0, method='UMIX' if u_mixstyle else 'UCRIC' if u_cric else 'PAIREDU' if paired else 'VIEWANCHOR',
         checked=checked, immediate_continuation=True))
 
 
