@@ -1,0 +1,279 @@
+{
+  "status": "VERIFIED_SOURCE_FINAL_EVALUATION_PENDING",
+  "run_id": "20261023-phase1-PAMF-U-CMR-m3-r01",
+  "execution_commit": "a3371f1339f8687ee6593afb71b8e0a79574a9cd",
+  "observed_unix": 1792769987.0971565,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "total_new_step_records": 13320,
+  "records_per_seed": 4440,
+  "cumulative_updates_per_seed": 11100,
+  "reused_parent_steps_per_seed": 6660,
+  "parent_full_log_reference": "20261023-phase1-PAMF-physical-softmatch-m6-r02/training_completion.json:RXPSM same-seed E20/E30",
+  "rows": [
+    {
+      "row_id": "UCMR-s2026092701",
+      "source_epoch": 50,
+      "source_updates": 11100,
+      "new_step_records": 4440,
+      "all_complete_step_records_checked": true,
+      "gzip_closed": true,
+      "actual_adapter_SSL": {
+        "method": "pamf_u_cmr_v1",
+        "native_U_loop": false,
+        "own_EMA": true,
+        "cumulative_EMA_updates": 11100,
+        "U_seen": 2097900,
+        "physical_U_seen": 1048950,
+        "student_U_views": 3231900,
+        "effective_U_weight": 1993481.0702209473,
+        "effective_U_per_class": [
+          336639.4375,
+          330946.28125,
+          344127.46875,
+          308943.25,
+          326449.78125,
+          346413.65625
+        ],
+        "U_truth_read": false,
+        "labeled_only_prototype_updates": true,
+        "u_cmr_calls": 4440,
+        "u_cmr_seen": 1134000,
+        "u_cmr_eligible": 1082287,
+        "u_cmr_pairs": {
+          "time_down": 239031,
+          "t2.pool": 239031
+        },
+        "extra_student_forwards": 1,
+        "extra_raw_U_seen": 1134000
+      },
+      "final_logged_losses_and_counters": {
+        "SSL_loss": 0.209609717130661,
+        "SSL_seen": 2097900,
+        "SSL_physical_seen": 1048950,
+        "SSL_U_CMR_loss": 0.05343348905444145,
+        "SSL_U_CMR_calls": 4440,
+        "SSL_U_CMR_seen": 1134000,
+        "SSL_U_CMR_eligible": 1082287,
+        "SSL_proto_coverage": 1.0,
+        "SSL_U_CMR_time_down_eligible": 123,
+        "SSL_U_CMR_time_down_valid_cells": 17,
+        "SSL_U_CMR_time_down_valid_classes": 5,
+        "SSL_U_CMR_time_down_receiver_pairs": 19,
+        "SSL_U_CMR_time_down_mean_loss": 0.43573832511901855,
+        "SSL_U_CMR_time_down_std_loss": 0.1815045326948166,
+        "SSL_U_CMR_time_down_pairs_total": 239031,
+        "SSL_U_CMR_t2.pool_eligible": 123,
+        "SSL_U_CMR_t2.pool_valid_cells": 17,
+        "SSL_U_CMR_t2.pool_valid_classes": 5,
+        "SSL_U_CMR_t2.pool_receiver_pairs": 19,
+        "SSL_U_CMR_t2.pool_mean_loss": 0.3339782953262329,
+        "SSL_U_CMR_t2.pool_std_loss": 0.11744866520166397,
+        "SSL_U_CMR_t2.pool_pairs_total": 239031
+      },
+      "incremental_training_seconds": 4036.686495451024,
+      "parent_training_seconds": 4417.8696232249495,
+      "cumulative_training_seconds": 8454.556118675973,
+      "source_graph_native_IQ_check": "PASS",
+      "completed_prediction_views": [
+        {
+          "test": "main",
+          "view": "clean",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid",
+          "count": 168000
+        }
+      ],
+      "prediction_complete": false
+    },
+    {
+      "row_id": "UCMR-s2026092702",
+      "source_epoch": 50,
+      "source_updates": 11100,
+      "new_step_records": 4440,
+      "all_complete_step_records_checked": true,
+      "gzip_closed": true,
+      "actual_adapter_SSL": {
+        "method": "pamf_u_cmr_v1",
+        "native_U_loop": false,
+        "own_EMA": true,
+        "cumulative_EMA_updates": 11100,
+        "U_seen": 2097900,
+        "physical_U_seen": 1048950,
+        "student_U_views": 3231900,
+        "effective_U_weight": 1988487.7182922363,
+        "effective_U_per_class": [
+          336675.375,
+          329691.0,
+          345041.21875,
+          307809.0,
+          322524.5625,
+          346782.75
+        ],
+        "U_truth_read": false,
+        "labeled_only_prototype_updates": true,
+        "u_cmr_calls": 4440,
+        "u_cmr_seen": 1134000,
+        "u_cmr_eligible": 1077157,
+        "u_cmr_pairs": {
+          "time_down": 236897,
+          "t2.pool": 236897
+        },
+        "extra_student_forwards": 1,
+        "extra_raw_U_seen": 1134000
+      },
+      "final_logged_losses_and_counters": {
+        "SSL_loss": 0.18593403697013855,
+        "SSL_seen": 2097900,
+        "SSL_physical_seen": 1048950,
+        "SSL_U_CMR_loss": 0.0524958074092865,
+        "SSL_U_CMR_calls": 4440,
+        "SSL_U_CMR_seen": 1134000,
+        "SSL_U_CMR_eligible": 1077157,
+        "SSL_proto_coverage": 1.0,
+        "SSL_U_CMR_time_down_eligible": 120,
+        "SSL_U_CMR_time_down_valid_cells": 19,
+        "SSL_U_CMR_time_down_valid_classes": 5,
+        "SSL_U_CMR_time_down_receiver_pairs": 24,
+        "SSL_U_CMR_time_down_mean_loss": 0.45183324813842773,
+        "SSL_U_CMR_time_down_std_loss": 0.15767797827720642,
+        "SSL_U_CMR_time_down_pairs_total": 236897,
+        "SSL_U_CMR_t2.pool_eligible": 120,
+        "SSL_U_CMR_t2.pool_valid_cells": 19,
+        "SSL_U_CMR_t2.pool_valid_classes": 5,
+        "SSL_U_CMR_t2.pool_receiver_pairs": 24,
+        "SSL_U_CMR_t2.pool_mean_loss": 0.33220553398132324,
+        "SSL_U_CMR_t2.pool_std_loss": 0.10819926112890244,
+        "SSL_U_CMR_t2.pool_pairs_total": 236897
+      },
+      "incremental_training_seconds": 3748.0864599510096,
+      "parent_training_seconds": 5064.55442506494,
+      "cumulative_training_seconds": 8812.64088501595,
+      "source_graph_native_IQ_check": "PASS",
+      "completed_prediction_views": [
+        {
+          "test": "main",
+          "view": "clean",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_low_suburban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high_urban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid_urban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_low_urban",
+          "count": 168000
+        }
+      ],
+      "prediction_complete": true
+    },
+    {
+      "row_id": "UCMR-s2026092703",
+      "source_epoch": 50,
+      "source_updates": 11100,
+      "new_step_records": 4440,
+      "all_complete_step_records_checked": true,
+      "gzip_closed": true,
+      "actual_adapter_SSL": {
+        "method": "pamf_u_cmr_v1",
+        "native_U_loop": false,
+        "own_EMA": true,
+        "cumulative_EMA_updates": 11100,
+        "U_seen": 2097900,
+        "physical_U_seen": 1048950,
+        "student_U_views": 3231900,
+        "effective_U_weight": 2001693.6689071655,
+        "effective_U_per_class": [
+          338118.09375,
+          323462.5625,
+          343840.15625,
+          316425.71875,
+          333686.25,
+          346198.5
+        ],
+        "U_truth_read": false,
+        "labeled_only_prototype_updates": true,
+        "u_cmr_calls": 4440,
+        "u_cmr_seen": 1134000,
+        "u_cmr_eligible": 1085198,
+        "u_cmr_pairs": {
+          "time_down": 239266,
+          "t2.pool": 239266
+        },
+        "extra_student_forwards": 1,
+        "extra_raw_U_seen": 1134000
+      },
+      "final_logged_losses_and_counters": {
+        "SSL_loss": 0.2212049663066864,
+        "SSL_seen": 2097900,
+        "SSL_physical_seen": 1048950,
+        "SSL_U_CMR_loss": 0.05330013111233711,
+        "SSL_U_CMR_calls": 4440,
+        "SSL_U_CMR_seen": 1134000,
+        "SSL_U_CMR_eligible": 1085198,
+        "SSL_proto_coverage": 1.0,
+        "SSL_U_CMR_time_down_eligible": 119,
+        "SSL_U_CMR_time_down_valid_cells": 16,
+        "SSL_U_CMR_time_down_valid_classes": 5,
+        "SSL_U_CMR_time_down_receiver_pairs": 16,
+        "SSL_U_CMR_time_down_mean_loss": 0.4929947853088379,
+        "SSL_U_CMR_time_down_std_loss": 0.10807742923498154,
+        "SSL_U_CMR_time_down_pairs_total": 239266,
+        "SSL_U_CMR_t2.pool_eligible": 119,
+        "SSL_U_CMR_t2.pool_valid_cells": 16,
+        "SSL_U_CMR_t2.pool_valid_classes": 5,
+        "SSL_U_CMR_t2.pool_receiver_pairs": 16,
+        "SSL_U_CMR_t2.pool_mean_loss": 0.374097615480423,
+        "SSL_U_CMR_t2.pool_std_loss": 0.09083276242017746,
+        "SSL_U_CMR_t2.pool_pairs_total": 239266
+      },
+      "incremental_training_seconds": 4133.501507959794,
+      "parent_training_seconds": 4894.10919757816,
+      "cumulative_training_seconds": 9027.610705537954,
+      "source_graph_native_IQ_check": "PASS",
+      "completed_prediction_views": [],
+      "prediction_complete": false
+    }
+  ],
+  "U_exposure_is_repeated": true,
+  "unique_U_records": 56700,
+  "source_U_TX_truth_read": false,
+  "source_V_not_target_acceptance": true,
+  "no_new_head_fit": true,
+  "shared_GPU_walltime_not_exclusive_GPU_hours": true,
+  "target_accuracy_not_read": true,
+  "goal_complete": false
+}
