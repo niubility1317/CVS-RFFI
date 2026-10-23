@@ -266,14 +266,15 @@
     "target_reads": 0
   },
   "result_summary": {
-    "status": "RAW_ANALYZED_DURA_PENDING",
+    "status": "RAW_AND_DURA_ANALYZED",
     "goal_met": false,
     "completed_raw_rows": 3,
     "completed_raw_views": 21,
     "DURA_reference_run": "20261023-phase1-PAMF-SSL-DURA-reference-m9-r01",
-    "DURA_status": "PENDING",
+    "DURA_status": "ANALYZED",
     "raw_summary_ref": "target_summary.json",
     "raw_details_ref": "target_results.md",
-    "training_ref": "training_completion.json"
+    "training_ref": "training_completion.json",
+    "both_readouts_complete": true
   }
 }

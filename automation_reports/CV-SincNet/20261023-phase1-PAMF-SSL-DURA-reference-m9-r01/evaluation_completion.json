@@ -1,0 +1,398 @@
+{
+  "status": "VERIFIED_COMPLETE",
+  "run_id": "20261023-phase1-PAMF-SSL-DURA-reference-m9-r01",
+  "new_F_training_updates": 0,
+  "new_G_training_updates": 0,
+  "new_source_models_evaluated": 9,
+  "reused_baseline_models": 6,
+  "readouts": [
+    "raw",
+    "DURA-LU"
+  ],
+  "views_per_readout": 7,
+  "count_per_view": 168000,
+  "completed_new_readout_view_cells": 126,
+  "new_DURA_prediction_cells": 63,
+  "existing_raw_prediction_cells_reused": 63,
+  "independent_truth_last": true,
+  "raw_goal_met": false,
+  "fixed_G_version": "dura_v1",
+  "fixed_G_parameters": 266951,
+  "G_runtime": {
+    "reuse": true,
+    "graph": true,
+    "native": false,
+    "precision": "FP32",
+    "TF32": false
+  },
+  "prediction_loop_metadata": [
+    {
+      "row_id": "PSM-s2026092701",
+      "model_seed": 2026092701,
+      "seconds_by_view": {
+        "clean": 22.5120864410419,
+        "practical_high": 21.952830194029957,
+        "practical_mid": 22.300877881934866,
+        "practical_low_suburban": 22.33976379293017,
+        "practical_high_urban": 22.339783045928925,
+        "practical_mid_urban": 22.295657387003303,
+        "practical_low_urban": 22.298893233994022
+      },
+      "raw_reused": true,
+      "source_graph_native_check": "PASS",
+      "count_per_view": 168000,
+      "new_training_updates": 0
+    },
+    {
+      "row_id": "RXPSM-s2026092701",
+      "model_seed": 2026092701,
+      "seconds_by_view": {
+        "clean": 22.69735241215676,
+        "practical_high": 22.031347763026133,
+        "practical_mid": 22.035762529121712,
+        "practical_low_suburban": 22.05807985807769,
+        "practical_high_urban": 22.048005355987698,
+        "practical_mid_urban": 22.168720179935917,
+        "practical_low_urban": 22.021613413933665
+      },
+      "raw_reused": true,
+      "source_graph_native_check": "PASS",
+      "count_per_view": 168000,
+      "new_training_updates": 0
+    },
+    {
+      "row_id": "PSM-s2026092702",
+      "model_seed": 2026092702,
+      "seconds_by_view": {
+        "clean": 23.281531298998743,
+        "practical_high": 22.877392437076196,
+        "practical_mid": 22.66547405719757,
+        "practical_low_suburban": 22.690575271146372,
+        "practical_high_urban": 23.775389082031325,
+        "practical_mid_urban": 22.749246129998937,
+        "practical_low_urban": 22.866752028930932
+      },
+      "raw_reused": true,
+      "source_graph_native_check": "PASS",
+      "count_per_view": 168000,
+      "new_training_updates": 0
+    },
+    {
+      "row_id": "RXPSM-s2026092702",
+      "model_seed": 2026092702,
+      "seconds_by_view": {
+        "clean": 23.693780686939135,
+        "practical_high": 22.94291315996088,
+        "practical_mid": 22.897412690799683,
+        "practical_low_suburban": 22.909849375952035,
+        "practical_high_urban": 22.911606247071177,
+        "practical_mid_urban": 22.793503538006917,
+        "practical_low_urban": 22.79950446006842
+      },
+      "raw_reused": true,
+      "source_graph_native_check": "PASS",
+      "count_per_view": 168000,
+      "new_training_updates": 0
+    },
+    {
+      "row_id": "PSM-s2026092703",
+      "model_seed": 2026092703,
+      "seconds_by_view": {
+        "clean": 23.123575804987922,
+        "practical_high": 22.41772359283641,
+        "practical_mid": 22.691752276849,
+        "practical_low_suburban": 22.462988113984466,
+        "practical_high_urban": 23.12356094107963,
+        "practical_mid_urban": 22.4925593722146,
+        "practical_low_urban": 22.773240467067808
+      },
+      "raw_reused": true,
+      "source_graph_native_check": "PASS",
+      "count_per_view": 168000,
+      "new_training_updates": 0
+    },
+    {
+      "row_id": "RXPSM-s2026092703",
+      "model_seed": 2026092703,
+      "seconds_by_view": {
+        "clean": 23.483816617866978,
+        "practical_high": 22.411443048156798,
+        "practical_mid": 21.245140570914373,
+        "practical_low_suburban": 23.007802608888596,
+        "practical_high_urban": 22.211818799143657,
+        "practical_mid_urban": 23.004354452947155,
+        "practical_low_urban": 22.643511425936595
+      },
+      "raw_reused": true,
+      "source_graph_native_check": "PASS",
+      "count_per_view": 168000,
+      "new_training_updates": 0
+    },
+    {
+      "row_id": "VIEWANCHOR-s2026092701",
+      "model_seed": 2026092701,
+      "seconds_by_view": {
+        "clean": 22.668083633994684,
+        "practical_high": 21.819066354073584,
+        "practical_mid": 21.74628563085571,
+        "practical_low_suburban": 21.63419214100577,
+        "practical_high_urban": 21.625880375970155,
+        "practical_mid_urban": 21.652601283043623,
+        "practical_low_urban": 21.637368994997814
+      },
+      "raw_reused": true,
+      "source_graph_native_check": "PASS",
+      "count_per_view": 168000,
+      "new_training_updates": 0
+    },
+    {
+      "row_id": "VIEWANCHOR-s2026092702",
+      "model_seed": 2026092702,
+      "seconds_by_view": {
+        "clean": 20.67007090104744,
+        "practical_high": 19.88197266496718,
+        "practical_mid": 19.936765518970788,
+        "practical_low_suburban": 19.956770861987025,
+        "practical_high_urban": 19.912431318080053,
+        "practical_mid_urban": 19.90297552710399,
+        "practical_low_urban": 19.847340722102672
+      },
+      "raw_reused": true,
+      "source_graph_native_check": "PASS",
+      "count_per_view": 168000,
+      "new_training_updates": 0
+    },
+    {
+      "row_id": "VIEWANCHOR-s2026092703",
+      "model_seed": 2026092703,
+      "seconds_by_view": {
+        "clean": 22.745027733035386,
+        "practical_high": 23.251814565155655,
+        "practical_mid": 22.179906552890316,
+        "practical_low_suburban": 23.00732441106811,
+        "practical_high_urban": 23.1261456720531,
+        "practical_mid_urban": 22.436906156130135,
+        "practical_low_urban": 22.29990096203983
+      },
+      "raw_reused": true,
+      "source_graph_native_check": "PASS",
+      "count_per_view": 168000,
+      "new_training_updates": 0
+    }
+  ],
+  "prediction_timing_scope": "Per-view batch128 frozen G+F prediction loop walltime; includes input transfer/argmax/sync,not B1 steady-state latency",
+  "baseline_actual_U_exposure_and_acceptance": [
+    {
+      "method": "F20",
+      "model_seed": 2026092701,
+      "configured_U_batch": 256,
+      "stages": [
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 568320
+        },
+        {
+          "epoch": 10,
+          "updates": 2220,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 284160
+        },
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 568320
+        }
+      ],
+      "U_seen": 0,
+      "U_accepted": 0,
+      "U_acceptance_rate": null,
+      "training_seconds": 5859.2507663581055
+    },
+    {
+      "method": "F21",
+      "model_seed": 2026092701,
+      "configured_U_batch": 256,
+      "stages": [
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 396900,
+          "PL_accepted": 366736,
+          "U_actual": 396900,
+          "L_actual": 568320
+        },
+        {
+          "epoch": 10,
+          "updates": 2220,
+          "PL_seen": 567000,
+          "PL_accepted": 534715,
+          "U_actual": 567000,
+          "L_actual": 284160
+        },
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 1134000,
+          "PL_accepted": 1086483,
+          "U_actual": 1134000,
+          "L_actual": 568320
+        }
+      ],
+      "U_seen": 2097900,
+      "U_accepted": 1987934,
+      "U_acceptance_rate": 0.9475828209161542,
+      "training_seconds": 6064.280181294773
+    },
+    {
+      "method": "F20",
+      "model_seed": 2026092702,
+      "configured_U_batch": 256,
+      "stages": [
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 568320
+        },
+        {
+          "epoch": 10,
+          "updates": 2220,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 284160
+        },
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 568320
+        }
+      ],
+      "U_seen": 0,
+      "U_accepted": 0,
+      "U_acceptance_rate": null,
+      "training_seconds": 5679.993145135231
+    },
+    {
+      "method": "F21",
+      "model_seed": 2026092702,
+      "configured_U_batch": 256,
+      "stages": [
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 396900,
+          "PL_accepted": 368509,
+          "U_actual": 396900,
+          "L_actual": 568320
+        },
+        {
+          "epoch": 10,
+          "updates": 2220,
+          "PL_seen": 567000,
+          "PL_accepted": 536211,
+          "U_actual": 567000,
+          "L_actual": 284160
+        },
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 1134000,
+          "PL_accepted": 1087594,
+          "U_actual": 1134000,
+          "L_actual": 568320
+        }
+      ],
+      "U_seen": 2097900,
+      "U_accepted": 1992314,
+      "U_acceptance_rate": 0.9496706230039563,
+      "training_seconds": 6310.290091911098
+    },
+    {
+      "method": "F20",
+      "model_seed": 2026092703,
+      "configured_U_batch": 256,
+      "stages": [
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 568320
+        },
+        {
+          "epoch": 10,
+          "updates": 2220,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 284160
+        },
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 0,
+          "PL_accepted": 0,
+          "U_actual": 0,
+          "L_actual": 568320
+        }
+      ],
+      "U_seen": 0,
+      "U_accepted": 0,
+      "U_acceptance_rate": null,
+      "training_seconds": 5337.616240176139
+    },
+    {
+      "method": "F21",
+      "model_seed": 2026092703,
+      "configured_U_batch": 256,
+      "stages": [
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 396900,
+          "PL_accepted": 368417,
+          "U_actual": 396900,
+          "L_actual": 568320
+        },
+        {
+          "epoch": 10,
+          "updates": 2220,
+          "PL_seen": 567000,
+          "PL_accepted": 535239,
+          "U_actual": 567000,
+          "L_actual": 284160
+        },
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "PL_seen": 1134000,
+          "PL_accepted": 1085559,
+          "U_actual": 1134000,
+          "L_actual": 568320
+        }
+      ],
+      "U_seen": 2097900,
+      "U_accepted": 1989215,
+      "U_acceptance_rate": 0.9481934315267648,
+      "training_seconds": 6044.307537698653
+    }
+  ],
+  "training_costs_reused_from_original_source_runs": true,
+  "side_duplicate_scores_used": false
+}

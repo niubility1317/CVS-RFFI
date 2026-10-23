@@ -27,3 +27,6 @@
 三个固定E50学生均完成七景预测和独立truth-last评分，随后才读取整体结果。clean84.379563%±0.266638%、六景71.946958%±0.965332%；对监督F20为-0.405754/+1.350761pp，对普通PL F21为-0.602183/+1.587599pp。clean对PL三个seed均下降，不能以六景对PL超过1.5pp宣布成功；完整目标仍未达成。
 
 匹配原RXPSM同一E30父权重续训对照约+0.107143pp clean、+0.093386pp六景，但距离目标仍有缺口。完整分层、逐seed/MacroF1、闭合训练记录及已发生父阶段成本见target_results.md、target_summary.json、target_per_seed.csv、target_strata.csv、training_completion.json、matched_RXPSM_control.json。单模型已分析，DURA组合补测仍在九行独立队列中，整体保持PARTIAL，不把组合视为已完成。
+
+
+固定DURA同模型参考补测现已完成，完整双读出三seed七景结果见相邻`20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/target_results.md`。所有本run方法的两个组合主指标均低于共同G下的监督及普通PL对照，不能以raw六景部分收益宣布整体目标达成。此补测不替换本页raw结果，不更新默认PAMF或DURA版本。

@@ -466,5 +466,17 @@
     "source_smoke": "PASS",
     "own_GPU_prediction_workers": 1,
     "metrics": "PENDING"
+  },
+  "result_summary": {
+    "status": "ANALYZED",
+    "goal_met": false,
+    "completed_new_rows": 9,
+    "completed_new_cells": 126,
+    "raw_reused": true,
+    "independent_truth_last": true,
+    "all_seed_and_scene_results_preserved": true,
+    "summary_ref": "target_summary.json",
+    "details_ref": "target_results.md",
+    "cost_ref": "evaluation_completion.json"
   }
 }
