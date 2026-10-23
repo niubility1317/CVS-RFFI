@@ -1,0 +1,1134 @@
+{
+  "status": "SOURCE_ONLY_EXISTING_STATE_AUDIT",
+  "observed_unix": 1792759893.871089,
+  "rows": [
+    {
+      "method": "PSM",
+      "model_seed": 2026092701,
+      "source_stages": [
+        {
+          "cumulative_updates": 4440,
+          "U_seen": 396900,
+          "physical_U_seen": 198450,
+          "effective_U_mass": 377715.21283721924,
+          "effective_U_per_class": [
+            63644.62109375,
+            62262.6171875,
+            65106.68359375,
+            57759.4921875,
+            63347.8984375,
+            65594.5625
+          ],
+          "float32_class_accumulator_minus_batch_mass": 0.6621627807617188,
+          "relative_float32_accumulator_drift": 1.7530741634361586e-06,
+          "effective_U_class_fraction": [
+            0.16849866607737893,
+            0.16483982090374147,
+            0.1723694657889346,
+            0.15291783059819766,
+            0.1677130950281081,
+            0.17366112160363925
+          ],
+          "class_mass_max_over_min": 1.1356499168494356,
+          "normalized_class_entropy": 0.9995267507524722,
+          "teacher_confidence_running_mean": 0.9704131484031677,
+          "teacher_confidence_running_variance": 0.00750178936868906,
+          "L_only_prototype": {
+            "ready": false,
+            "visible_L_update_count": 0
+          }
+        },
+        {
+          "cumulative_updates": 6660,
+          "U_seen": 963900,
+          "physical_U_seen": 481950,
+          "effective_U_mass": 919089.4317932129,
+          "effective_U_per_class": [
+            154696.828125,
+            151780.546875,
+            158175.859375,
+            141222.578125,
+            153914.84375,
+            159305.765625
+          ],
+          "float32_class_accumulator_minus_batch_mass": 6.990081787109375,
+          "relative_float32_accumulator_drift": 7.605442457836989e-06,
+          "effective_U_class_fraction": [
+            0.1683140358760305,
+            0.16514104860223539,
+            0.1720993092893494,
+            0.1536537133252018,
+            0.16746321722807544,
+            0.17332867567910745
+          ],
+          "class_mass_max_over_min": 1.1280474251361852,
+          "normalized_class_entropy": 0.9995770665670517,
+          "teacher_confidence_running_mean": 0.9795156121253967,
+          "teacher_confidence_running_variance": 0.006313157733529806,
+          "L_only_prototype": {
+            "ready": false,
+            "visible_L_update_count": 0
+          }
+        },
+        {
+          "cumulative_updates": 11100,
+          "U_seen": 2097900,
+          "physical_U_seen": 1048950,
+          "effective_U_mass": 2011068.6958694458,
+          "effective_U_per_class": [
+            337495.6875,
+            332807.0,
+            344776.40625,
+            312918.3125,
+            336425.5625,
+            346678.28125
+          ],
+          "float32_class_accumulator_minus_batch_mass": 32.55413055419922,
+          "relative_float32_accumulator_drift": 1.6187478140882247e-05,
+          "effective_U_class_fraction": [
+            0.16781635807744638,
+            0.1654849550712576,
+            0.1714366227210092,
+            0.15559550395585503,
+            0.1672842491147574,
+            0.1723823110596744
+          ],
+          "class_mass_max_over_min": 1.10788748181684,
+          "normalized_class_entropy": 0.9996930650011736,
+          "teacher_confidence_running_mean": 0.9853159189224243,
+          "teacher_confidence_running_variance": 0.004927522968500853,
+          "L_only_prototype": {
+            "ready": false,
+            "visible_L_update_count": 0
+          }
+        }
+      ],
+      "source_V_diagnostic": {
+        "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+        "samples": 720,
+        "clean_accuracy": 0.9819444444444444,
+        "fixed_practical_mixture_accuracy": 0.7527777777777778,
+        "model_state_updates": 0,
+        "prototype_updates": 0,
+        "teacher_updates": 0,
+        "target_reads": 0,
+        "U_truth_reads": 0,
+        "head_fit_updates": 0
+      }
+    },
+    {
+      "method": "RXPSM",
+      "model_seed": 2026092701,
+      "source_stages": [
+        {
+          "cumulative_updates": 4440,
+          "U_seen": 396900,
+          "physical_U_seen": 198450,
+          "effective_U_mass": 374680.31732940674,
+          "effective_U_per_class": [
+            63498.94921875,
+            61906.82421875,
+            65061.47265625,
+            57205.70703125,
+            61428.36328125,
+            65579.65625
+          ],
+          "float32_class_accumulator_minus_batch_mass": 0.6553268432617188,
+          "relative_float32_accumulator_drift": 1.7490292736289553e-06,
+          "effective_U_class_fraction": [
+            0.1694747100942511,
+            0.16522542839544255,
+            0.17364498708062356,
+            0.15267844167718977,
+            0.1639484461827937,
+            0.1750279865696993
+          ],
+          "class_mass_max_over_min": 1.1463831084925762,
+          "normalized_class_entropy": 0.9994381906582647,
+          "teacher_confidence_running_mean": 0.9697884321212769,
+          "teacher_confidence_running_variance": 0.0075931367464363575,
+          "L_only_prototype": {
+            "ready": true,
+            "visible_L_update_count": 198912,
+            "cross_RX_same_TX_cosine_mean": 0.977956656117313,
+            "other_RX_L_class_reference_margin_mean": 0.10450891570097284,
+            "other_RX_L_class_reference_margin_min": 0.02320481065605906,
+            "wrong_class_reference_at_least_true_count": 0,
+            "L_class_RX_anchor_count": 30
+          }
+        },
+        {
+          "cumulative_updates": 6660,
+          "U_seen": 963900,
+          "physical_U_seen": 481950,
+          "effective_U_mass": 911637.6735458374,
+          "effective_U_per_class": [
+            154386.6875,
+            150957.890625,
+            157993.703125,
+            139769.390625,
+            149277.265625,
+            159258.890625
+          ],
+          "float32_class_accumulator_minus_batch_mass": 6.154579162597656,
+          "relative_float32_accumulator_drift": 6.751124203390222e-06,
+          "effective_U_class_fraction": [
+            0.16934978632777106,
+            0.16558867176831413,
+            0.1733063925304573,
+            0.15331578661862616,
+            0.16374516123475785,
+            0.1746942015200735
+          ],
+          "class_mass_max_over_min": 1.1394404018852036,
+          "normalized_class_entropy": 0.9994858804434089,
+          "teacher_confidence_running_mean": 0.9778050184249878,
+          "teacher_confidence_running_variance": 0.0066061560064554214,
+          "L_only_prototype": {
+            "ready": true,
+            "visible_L_update_count": 483072,
+            "cross_RX_same_TX_cosine_mean": 0.9778392302537714,
+            "other_RX_L_class_reference_margin_mean": 0.1416698128495414,
+            "other_RX_L_class_reference_margin_min": 0.027988516057456225,
+            "wrong_class_reference_at_least_true_count": 0,
+            "L_class_RX_anchor_count": 30
+          }
+        },
+        {
+          "cumulative_updates": 11100,
+          "U_seen": 2097900,
+          "physical_U_seen": 1048950,
+          "effective_U_mass": 1995099.360321045,
+          "effective_U_per_class": [
+            336801.03125,
+            331102.875,
+            344162.6875,
+            309833.625,
+            326745.03125,
+            346493.59375
+          ],
+          "float32_class_accumulator_minus_batch_mass": 39.483428955078125,
+          "relative_float32_accumulator_drift": 1.979020681392258e-05,
+          "effective_U_class_fraction": [
+            0.16881082351991072,
+            0.16595480361540627,
+            0.1725006199834808,
+            0.15529426734915677,
+            0.16377057279675852,
+            0.17366891273528692
+          ],
+          "class_mass_max_over_min": 1.1183214660771568,
+          "normalized_class_entropy": 0.9996184147917752,
+          "teacher_confidence_running_mean": 0.98316490650177,
+          "teacher_confidence_running_variance": 0.005321040749549866,
+          "L_only_prototype": {
+            "ready": true,
+            "visible_L_update_count": 1051392,
+            "cross_RX_same_TX_cosine_mean": 0.9760682714876269,
+            "other_RX_L_class_reference_margin_mean": 0.2061181705100618,
+            "other_RX_L_class_reference_margin_min": 0.03682685630364846,
+            "wrong_class_reference_at_least_true_count": 0,
+            "L_class_RX_anchor_count": 30
+          }
+        }
+      ],
+      "source_V_diagnostic": {
+        "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+        "samples": 720,
+        "clean_accuracy": 0.9819444444444444,
+        "fixed_practical_mixture_accuracy": 0.7541666666666667,
+        "model_state_updates": 0,
+        "prototype_updates": 0,
+        "teacher_updates": 0,
+        "target_reads": 0,
+        "U_truth_reads": 0,
+        "head_fit_updates": 0
+      }
+    },
+    {
+      "method": "PSM",
+      "model_seed": 2026092702,
+      "source_stages": [
+        {
+          "cumulative_updates": 4440,
+          "U_seen": 396900,
+          "physical_U_seen": 198450,
+          "effective_U_mass": 378277.2366409302,
+          "effective_U_per_class": [
+            63722.36328125,
+            61996.0234375,
+            65178.31640625,
+            58307.60546875,
+            63407.61328125,
+            65665.8203125
+          ],
+          "float32_class_accumulator_minus_batch_mass": 0.5055465698242188,
+          "relative_float32_accumulator_drift": 1.3364445989756865e-06,
+          "effective_U_class_fraction": [
+            0.16845390615043085,
+            0.16389022277385432,
+            0.1723028059471266,
+            0.15413966767267215,
+            0.16762184556399543,
+            0.1735915518919207
+          ],
+          "class_mass_max_over_min": 1.1261964847397763,
+          "normalized_class_entropy": 0.9995787805208927,
+          "teacher_confidence_running_mean": 0.9709205627441406,
+          "teacher_confidence_running_variance": 0.007345713675022125,
+          "L_only_prototype": {
+            "ready": false,
+            "visible_L_update_count": 0
+          }
+        },
+        {
+          "cumulative_updates": 6660,
+          "U_seen": 963900,
+          "physical_U_seen": 481950,
+          "effective_U_mass": 920337.9433441162,
+          "effective_U_per_class": [
+            154640.484375,
+            150807.765625,
+            158451.640625,
+            142830.640625,
+            154165.734375,
+            159447.0625
+          ],
+          "float32_class_accumulator_minus_batch_mass": 5.3847808837890625,
+          "relative_float32_accumulator_drift": 5.8508735000352825e-06,
+          "effective_U_class_fraction": [
+            0.16802477906809676,
+            0.16386033452563634,
+            0.1721657948537649,
+            0.15519278106354772,
+            0.16750893896202765,
+            0.17324737152692662
+          ],
+          "class_mass_max_over_min": 1.1163365353700696,
+          "normalized_class_entropy": 0.9996351508391604,
+          "teacher_confidence_running_mean": 0.9801691174507141,
+          "teacher_confidence_running_variance": 0.006068079732358456,
+          "L_only_prototype": {
+            "ready": false,
+            "visible_L_update_count": 0
+          }
+        },
+        {
+          "cumulative_updates": 11100,
+          "U_seen": 2097900,
+          "physical_U_seen": 1048950,
+          "effective_U_mass": 2012478.5499649048,
+          "effective_U_per_class": [
+            337101.6875,
+            331185.625,
+            345280.53125,
+            315434.125,
+            336690.15625,
+            346814.25
+          ],
+          "float32_class_accumulator_minus_batch_mass": 27.825035095214844,
+          "relative_float32_accumulator_drift": 1.3826251760894583e-05,
+          "effective_U_class_fraction": [
+            0.1675034134985038,
+            0.1645637644253425,
+            0.1715674223640658,
+            0.15673695692019857,
+            0.1672989265686177,
+            0.17232951622327158
+          ],
+          "class_mass_max_over_min": 1.0994823404094278,
+          "normalized_class_entropy": 0.9997293391935019,
+          "teacher_confidence_running_mean": 0.9855585694313049,
+          "teacher_confidence_running_variance": 0.004877365194261074,
+          "L_only_prototype": {
+            "ready": false,
+            "visible_L_update_count": 0
+          }
+        }
+      ],
+      "source_V_diagnostic": {
+        "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+        "samples": 720,
+        "clean_accuracy": 0.9791666666666666,
+        "fixed_practical_mixture_accuracy": 0.7652777777777777,
+        "model_state_updates": 0,
+        "prototype_updates": 0,
+        "teacher_updates": 0,
+        "target_reads": 0,
+        "U_truth_reads": 0,
+        "head_fit_updates": 0
+      }
+    },
+    {
+      "method": "RXPSM",
+      "model_seed": 2026092702,
+      "source_stages": [
+        {
+          "cumulative_updates": 4440,
+          "U_seen": 396900,
+          "physical_U_seen": 198450,
+          "effective_U_mass": 374091.7329483032,
+          "effective_U_per_class": [
+            63695.84765625,
+            61807.1484375,
+            65193.234375,
+            57718.7734375,
+            60020.5859375,
+            65656.6796875
+          ],
+          "float32_class_accumulator_minus_batch_mass": 0.5365829467773438,
+          "relative_float32_accumulator_drift": 1.434361947932957e-06,
+          "effective_U_class_fraction": [
+            0.17026774633986158,
+            0.16521899400633538,
+            0.17427046663297607,
+            0.15429020629007795,
+            0.16044326714558357,
+            0.17550931958516544
+          ],
+          "class_mass_max_over_min": 1.1375272857902197,
+          "normalized_class_entropy": 0.9994221576489651,
+          "teacher_confidence_running_mean": 0.9706782102584839,
+          "teacher_confidence_running_variance": 0.0073913829401135445,
+          "L_only_prototype": {
+            "ready": true,
+            "visible_L_update_count": 198912,
+            "cross_RX_same_TX_cosine_mean": 0.9779899097064211,
+            "other_RX_L_class_reference_margin_mean": 0.09530081535603109,
+            "other_RX_L_class_reference_margin_min": -0.013186863722111086,
+            "wrong_class_reference_at_least_true_count": 1,
+            "L_class_RX_anchor_count": 30
+          }
+        },
+        {
+          "cumulative_updates": 6660,
+          "U_seen": 963900,
+          "physical_U_seen": 481950,
+          "effective_U_mass": 910399.1828994751,
+          "effective_U_per_class": [
+            154437.40625,
+            150220.828125,
+            158400.796875,
+            141100.4375,
+            146820.90625,
+            159424.734375
+          ],
+          "float32_class_accumulator_minus_batch_mass": 5.926475524902344,
+          "relative_float32_accumulator_drift": 6.509754881399906e-06,
+          "effective_U_class_fraction": [
+            0.16963591774657596,
+            0.1650043772580843,
+            0.1739893540181726,
+            0.1549864297190363,
+            0.1612698618868623,
+            0.17511405937126856
+          ],
+          "class_mass_max_over_min": 1.12986704506143,
+          "normalized_class_entropy": 0.9994914227350163,
+          "teacher_confidence_running_mean": 0.9786925911903381,
+          "teacher_confidence_running_variance": 0.006330932956188917,
+          "L_only_prototype": {
+            "ready": true,
+            "visible_L_update_count": 483072,
+            "cross_RX_same_TX_cosine_mean": 0.9783151148307928,
+            "other_RX_L_class_reference_margin_mean": 0.10789123642314356,
+            "other_RX_L_class_reference_margin_min": 0.02256942807492368,
+            "wrong_class_reference_at_least_true_count": 0,
+            "L_class_RX_anchor_count": 30
+          }
+        },
+        {
+          "cumulative_updates": 11100,
+          "U_seen": 2097900,
+          "physical_U_seen": 1048950,
+          "effective_U_mass": 1990886.3247909546,
+          "effective_U_per_class": [
+            336559.84375,
+            329871.59375,
+            345007.03125,
+            310797.40625,
+            321945.625,
+            346739.8125
+          ],
+          "float32_class_accumulator_minus_batch_mass": 34.987709045410156,
+          "relative_float32_accumulator_drift": 1.757393609556483e-05,
+          "effective_U_class_fraction": [
+            0.16904728561440824,
+            0.16568791125942603,
+            0.17329013913501917,
+            0.156107327948452,
+            0.16170685550386363,
+            0.17416048053883093
+          ],
+          "class_mass_max_over_min": 1.1156457728642966,
+          "normalized_class_entropy": 0.999591439110715,
+          "teacher_confidence_running_mean": 0.9837332367897034,
+          "teacher_confidence_running_variance": 0.005210584960877895,
+          "L_only_prototype": {
+            "ready": true,
+            "visible_L_update_count": 1051392,
+            "cross_RX_same_TX_cosine_mean": 0.9717157517694381,
+            "other_RX_L_class_reference_margin_mean": 0.12940625529629515,
+            "other_RX_L_class_reference_margin_min": 0.015965287437325282,
+            "wrong_class_reference_at_least_true_count": 0,
+            "L_class_RX_anchor_count": 30
+          }
+        }
+      ],
+      "source_V_diagnostic": {
+        "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+        "samples": 720,
+        "clean_accuracy": 0.9805555555555555,
+        "fixed_practical_mixture_accuracy": 0.7722222222222223,
+        "model_state_updates": 0,
+        "prototype_updates": 0,
+        "teacher_updates": 0,
+        "target_reads": 0,
+        "U_truth_reads": 0,
+        "head_fit_updates": 0
+      }
+    },
+    {
+      "method": "PSM",
+      "model_seed": 2026092703,
+      "source_stages": [
+        {
+          "cumulative_updates": 4440,
+          "U_seen": 396900,
+          "physical_U_seen": 198450,
+          "effective_U_mass": 378488.6976928711,
+          "effective_U_per_class": [
+            63835.33203125,
+            60640.265625,
+            64947.171875,
+            59923.21484375,
+            63580.56640625,
+            65562.84375
+          ],
+          "float32_class_accumulator_minus_batch_mass": 0.69683837890625,
+          "relative_float32_accumulator_drift": 1.8411074971430385e-06,
+          "effective_U_class_fraction": [
+            0.16865817894397944,
+            0.16021655164235582,
+            0.17159575093361734,
+            0.15832204471135436,
+            0.16798506728304238,
+            0.17322240648565068
+          ],
+          "class_mass_max_over_min": 1.0941142580710224,
+          "normalized_class_entropy": 0.9996900057077992,
+          "teacher_confidence_running_mean": 0.9709108471870422,
+          "teacher_confidence_running_variance": 0.007235911209136248,
+          "L_only_prototype": {
+            "ready": false,
+            "visible_L_update_count": 0
+          }
+        },
+        {
+          "cumulative_updates": 6660,
+          "U_seen": 963900,
+          "physical_U_seen": 481950,
+          "effective_U_mass": 920814.2361602783,
+          "effective_U_per_class": [
+            155247.453125,
+            148325.046875,
+            157934.578125,
+            145598.703125,
+            154551.359375,
+            159161.921875
+          ],
+          "float32_class_accumulator_minus_batch_mass": 4.8263397216796875,
+          "relative_float32_accumulator_drift": 5.241382606990459e-06,
+          "effective_U_class_fraction": [
+            0.16859713210487537,
+            0.16107947034925768,
+            0.17151532212659856,
+            0.15811868916973035,
+            0.16784118147532376,
+            0.17284820477421425
+          ],
+          "class_mass_max_over_min": 1.0931548046712727,
+          "normalized_class_entropy": 0.9997119434922623,
+          "teacher_confidence_running_mean": 0.9805293083190918,
+          "teacher_confidence_running_variance": 0.005893029272556305,
+          "L_only_prototype": {
+            "ready": false,
+            "visible_L_update_count": 0
+          }
+        },
+        {
+          "cumulative_updates": 11100,
+          "U_seen": 2097900,
+          "physical_U_seen": 1048950,
+          "effective_U_mass": 2012703.404724121,
+          "effective_U_per_class": [
+            338547.125,
+            326421.46875,
+            344235.5625,
+            319467.65625,
+            337850.375,
+            346209.03125
+          ],
+          "float32_class_accumulator_minus_batch_mass": 27.81402587890625,
+          "relative_float32_accumulator_drift": 1.3819237257522644e-05,
+          "effective_U_class_fraction": [
+            0.16820284886834197,
+            0.16217837022109835,
+            0.17102907695434186,
+            0.1587234566016243,
+            0.16785667746030236,
+            0.17200956989429117
+          ],
+          "class_mass_max_over_min": 1.0837060480985703,
+          "normalized_class_entropy": 0.9997734157898587,
+          "teacher_confidence_running_mean": 0.985464870929718,
+          "teacher_confidence_running_variance": 0.004675370175391436,
+          "L_only_prototype": {
+            "ready": false,
+            "visible_L_update_count": 0
+          }
+        }
+      ],
+      "source_V_diagnostic": {
+        "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+        "samples": 720,
+        "clean_accuracy": 0.9722222222222222,
+        "fixed_practical_mixture_accuracy": 0.7611111111111111,
+        "model_state_updates": 0,
+        "prototype_updates": 0,
+        "teacher_updates": 0,
+        "target_reads": 0,
+        "U_truth_reads": 0,
+        "head_fit_updates": 0
+      }
+    },
+    {
+      "method": "RXPSM",
+      "model_seed": 2026092703,
+      "source_stages": [
+        {
+          "cumulative_updates": 4440,
+          "U_seen": 396900,
+          "physical_U_seen": 198450,
+          "effective_U_mass": 377773.1004257202,
+          "effective_U_per_class": [
+            63837.16015625,
+            60539.609375,
+            64981.765625,
+            59776.734375,
+            63092.703125,
+            65545.7890625
+          ],
+          "float32_class_accumulator_minus_batch_mass": 0.6612930297851562,
+          "relative_float32_accumulator_drift": 1.750503222807372e-06,
+          "effective_U_class_fraction": [
+            0.1689825144705956,
+            0.16025361078430675,
+            0.17201238468588637,
+            0.15823421431661888,
+            0.16701187196788983,
+            0.17350540377470258
+          ],
+          "class_mass_max_over_min": 1.096510034343943,
+          "normalized_class_entropy": 0.9996753856731262,
+          "teacher_confidence_running_mean": 0.9707099199295044,
+          "teacher_confidence_running_variance": 0.007236718200147152,
+          "L_only_prototype": {
+            "ready": true,
+            "visible_L_update_count": 198912,
+            "cross_RX_same_TX_cosine_mean": 0.9855656349114258,
+            "other_RX_L_class_reference_margin_mean": 0.07775448876505493,
+            "other_RX_L_class_reference_margin_min": 0.02382199578480726,
+            "wrong_class_reference_at_least_true_count": 0,
+            "L_class_RX_anchor_count": 30
+          }
+        },
+        {
+          "cumulative_updates": 6660,
+          "U_seen": 963900,
+          "physical_U_seen": 481950,
+          "effective_U_mass": 918263.2018585205,
+          "effective_U_per_class": [
+            155183.890625,
+            147856.203125,
+            157889.234375,
+            144982.078125,
+            153235.515625,
+            159123.140625
+          ],
+          "float32_class_accumulator_minus_batch_mass": 6.8606414794921875,
+          "relative_float32_accumulator_drift": 7.471323543845141e-06,
+          "effective_U_class_fraction": [
+            0.16899591630212818,
+            0.16101603347762414,
+            0.17194204714149658,
+            0.15788609913981597,
+            0.16687412764804144,
+            0.17328577629089373
+          ],
+          "class_mass_max_over_min": 1.0975366244082108,
+          "normalized_class_entropy": 0.9996868770945881,
+          "teacher_confidence_running_mean": 0.9791018962860107,
+          "teacher_confidence_running_variance": 0.006078598089516163,
+          "L_only_prototype": {
+            "ready": true,
+            "visible_L_update_count": 483072,
+            "cross_RX_same_TX_cosine_mean": 0.9848044366266716,
+            "other_RX_L_class_reference_margin_mean": 0.08576765966988399,
+            "other_RX_L_class_reference_margin_min": 0.0398515106762759,
+            "wrong_class_reference_at_least_true_count": 0,
+            "L_class_RX_anchor_count": 30
+          }
+        },
+        {
+          "cumulative_updates": 11100,
+          "U_seen": 2097900,
+          "physical_U_seen": 1048950,
+          "effective_U_mass": 2005277.9652786255,
+          "effective_U_per_class": [
+            338292.875,
+            325142.0625,
+            343832.0,
+            317792.84375,
+            334136.03125,
+            346118.03125
+          ],
+          "float32_class_accumulator_minus_batch_mass": 35.87847137451172,
+          "relative_float32_accumulator_drift": 1.789201895983859e-05,
+          "effective_U_class_fraction": [
+            0.1686982195103095,
+            0.16214023730668217,
+            0.17146044299830063,
+            0.15847536521052355,
+            0.16662530520666785,
+            0.17260042976751627
+          ],
+          "class_mass_max_over_min": 1.0891309796839943,
+          "normalized_class_entropy": 0.9997478868102577,
+          "teacher_confidence_running_mean": 0.9834792613983154,
+          "teacher_confidence_running_variance": 0.0050187488086521626,
+          "L_only_prototype": {
+            "ready": true,
+            "visible_L_update_count": 1051392,
+            "cross_RX_same_TX_cosine_mean": 0.982216269235831,
+            "other_RX_L_class_reference_margin_mean": 0.0945517340140063,
+            "other_RX_L_class_reference_margin_min": 0.04981193334352385,
+            "wrong_class_reference_at_least_true_count": 0,
+            "L_class_RX_anchor_count": 30
+          }
+        }
+      ],
+      "source_V_diagnostic": {
+        "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+        "samples": 720,
+        "clean_accuracy": 0.975,
+        "fixed_practical_mixture_accuracy": 0.7625,
+        "model_state_updates": 0,
+        "prototype_updates": 0,
+        "teacher_updates": 0,
+        "target_reads": 0,
+        "U_truth_reads": 0,
+        "head_fit_updates": 0
+      }
+    },
+    {
+      "method": "VIEWANCHOR",
+      "model_seed": 2026092701,
+      "source_stages": [
+        {
+          "cumulative_updates": 4440,
+          "U_seen": 396900,
+          "physical_U_seen": 198450,
+          "effective_U_mass": 374680.31732940674,
+          "effective_U_per_class": [
+            63498.94921875,
+            61906.82421875,
+            65061.47265625,
+            57205.70703125,
+            61428.36328125,
+            65579.65625
+          ],
+          "float32_class_accumulator_minus_batch_mass": 0.6553268432617188,
+          "relative_float32_accumulator_drift": 1.7490292736289553e-06,
+          "effective_U_class_fraction": [
+            0.1694747100942511,
+            0.16522542839544255,
+            0.17364498708062356,
+            0.15267844167718977,
+            0.1639484461827937,
+            0.1750279865696993
+          ],
+          "class_mass_max_over_min": 1.1463831084925762,
+          "normalized_class_entropy": 0.9994381906582647,
+          "teacher_confidence_running_mean": 0.9697884321212769,
+          "teacher_confidence_running_variance": 0.0075931367464363575,
+          "L_only_prototype": {
+            "ready": true,
+            "visible_L_update_count": 198912,
+            "cross_RX_same_TX_cosine_mean": 0.977956656117313,
+            "other_RX_L_class_reference_margin_mean": 0.10450891570097284,
+            "other_RX_L_class_reference_margin_min": 0.02320481065605906,
+            "wrong_class_reference_at_least_true_count": 0,
+            "L_class_RX_anchor_count": 30
+          }
+        },
+        {
+          "cumulative_updates": 6660,
+          "U_seen": 963900,
+          "physical_U_seen": 481950,
+          "effective_U_mass": 911637.6735458374,
+          "effective_U_per_class": [
+            154386.6875,
+            150957.890625,
+            157993.703125,
+            139769.390625,
+            149277.265625,
+            159258.890625
+          ],
+          "float32_class_accumulator_minus_batch_mass": 6.154579162597656,
+          "relative_float32_accumulator_drift": 6.751124203390222e-06,
+          "effective_U_class_fraction": [
+            0.16934978632777106,
+            0.16558867176831413,
+            0.1733063925304573,
+            0.15331578661862616,
+            0.16374516123475785,
+            0.1746942015200735
+          ],
+          "class_mass_max_over_min": 1.1394404018852036,
+          "normalized_class_entropy": 0.9994858804434089,
+          "teacher_confidence_running_mean": 0.9778050184249878,
+          "teacher_confidence_running_variance": 0.0066061560064554214,
+          "L_only_prototype": {
+            "ready": true,
+            "visible_L_update_count": 483072,
+            "cross_RX_same_TX_cosine_mean": 0.9778392302537714,
+            "other_RX_L_class_reference_margin_mean": 0.1416698128495414,
+            "other_RX_L_class_reference_margin_min": 0.027988516057456225,
+            "wrong_class_reference_at_least_true_count": 0,
+            "L_class_RX_anchor_count": 30
+          }
+        },
+        {
+          "cumulative_updates": 11100,
+          "U_seen": 2097900,
+          "physical_U_seen": 1048950,
+          "effective_U_mass": 1993330.3919143677,
+          "effective_U_per_class": [
+            336454.84375,
+            330542.625,
+            343944.4375,
+            309082.1875,
+            326949.5,
+            346400.46875
+          ],
+          "float32_class_accumulator_minus_batch_mass": 43.67058563232422,
+          "relative_float32_accumulator_drift": 2.19083528799175e-05,
+          "effective_U_class_fraction": [
+            0.16878660662817768,
+            0.16582067120179558,
+            0.17254385113682094,
+            0.15505478540859663,
+            0.16401813696218895,
+            0.17377594866242022
+          ],
+          "class_mass_max_over_min": 1.1207390226911733,
+          "normalized_class_entropy": 0.9996076942528155,
+          "teacher_confidence_running_mean": 0.9812330007553101,
+          "teacher_confidence_running_variance": 0.005793326068669558,
+          "L_only_prototype": {
+            "ready": true,
+            "visible_L_update_count": 1051392,
+            "cross_RX_same_TX_cosine_mean": 0.9824977837899552,
+            "other_RX_L_class_reference_margin_mean": 0.18308385425370519,
+            "other_RX_L_class_reference_margin_min": 0.03423407262854106,
+            "wrong_class_reference_at_least_true_count": 0,
+            "L_class_RX_anchor_count": 30
+          }
+        }
+      ],
+      "source_V_diagnostic": {
+        "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+        "samples": 720,
+        "clean_accuracy": 0.9819444444444444,
+        "fixed_practical_mixture_accuracy": 0.7555555555555555,
+        "model_state_updates": 0,
+        "prototype_updates": 0,
+        "teacher_updates": 0,
+        "target_reads": 0,
+        "U_truth_reads": 0,
+        "head_fit_updates": 0
+      }
+    },
+    {
+      "method": "VIEWANCHOR",
+      "model_seed": 2026092702,
+      "source_stages": [
+        {
+          "cumulative_updates": 4440,
+          "U_seen": 396900,
+          "physical_U_seen": 198450,
+          "effective_U_mass": 374091.7329483032,
+          "effective_U_per_class": [
+            63695.84765625,
+            61807.1484375,
+            65193.234375,
+            57718.7734375,
+            60020.5859375,
+            65656.6796875
+          ],
+          "float32_class_accumulator_minus_batch_mass": 0.5365829467773438,
+          "relative_float32_accumulator_drift": 1.434361947932957e-06,
+          "effective_U_class_fraction": [
+            0.17026774633986158,
+            0.16521899400633538,
+            0.17427046663297607,
+            0.15429020629007795,
+            0.16044326714558357,
+            0.17550931958516544
+          ],
+          "class_mass_max_over_min": 1.1375272857902197,
+          "normalized_class_entropy": 0.9994221576489651,
+          "teacher_confidence_running_mean": 0.9706782102584839,
+          "teacher_confidence_running_variance": 0.0073913829401135445,
+          "L_only_prototype": {
+            "ready": true,
+            "visible_L_update_count": 198912,
+            "cross_RX_same_TX_cosine_mean": 0.9779899097064211,
+            "other_RX_L_class_reference_margin_mean": 0.09530081535603109,
+            "other_RX_L_class_reference_margin_min": -0.013186863722111086,
+            "wrong_class_reference_at_least_true_count": 1,
+            "L_class_RX_anchor_count": 30
+          }
+        },
+        {
+          "cumulative_updates": 6660,
+          "U_seen": 963900,
+          "physical_U_seen": 481950,
+          "effective_U_mass": 910399.1828994751,
+          "effective_U_per_class": [
+            154437.40625,
+            150220.828125,
+            158400.796875,
+            141100.4375,
+            146820.90625,
+            159424.734375
+          ],
+          "float32_class_accumulator_minus_batch_mass": 5.926475524902344,
+          "relative_float32_accumulator_drift": 6.509754881399906e-06,
+          "effective_U_class_fraction": [
+            0.16963591774657596,
+            0.1650043772580843,
+            0.1739893540181726,
+            0.1549864297190363,
+            0.1612698618868623,
+            0.17511405937126856
+          ],
+          "class_mass_max_over_min": 1.12986704506143,
+          "normalized_class_entropy": 0.9994914227350163,
+          "teacher_confidence_running_mean": 0.9786925911903381,
+          "teacher_confidence_running_variance": 0.006330932956188917,
+          "L_only_prototype": {
+            "ready": true,
+            "visible_L_update_count": 483072,
+            "cross_RX_same_TX_cosine_mean": 0.9783151148307928,
+            "other_RX_L_class_reference_margin_mean": 0.10789123642314356,
+            "other_RX_L_class_reference_margin_min": 0.02256942807492368,
+            "wrong_class_reference_at_least_true_count": 0,
+            "L_class_RX_anchor_count": 30
+          }
+        },
+        {
+          "cumulative_updates": 11100,
+          "U_seen": 2097900,
+          "physical_U_seen": 1048950,
+          "effective_U_mass": 1988640.7237091064,
+          "effective_U_per_class": [
+            336231.65625,
+            329030.84375,
+            344725.15625,
+            310412.65625,
+            321621.78125,
+            346658.71875
+          ],
+          "float32_class_accumulator_minus_batch_mass": 40.08879089355469,
+          "relative_float32_accumulator_drift": 2.015889065108916e-05,
+          "effective_U_class_fraction": [
+            0.1690727109833771,
+            0.16545181191564395,
+            0.17334363266503333,
+            0.15608973260006248,
+            0.16172619518850012,
+            0.17431591664738305
+          ],
+          "class_mass_max_over_min": 1.1167673474976103,
+          "normalized_class_entropy": 0.9995850266744296,
+          "teacher_confidence_running_mean": 0.9819000959396362,
+          "teacher_confidence_running_variance": 0.005650580395013094,
+          "L_only_prototype": {
+            "ready": true,
+            "visible_L_update_count": 1051392,
+            "cross_RX_same_TX_cosine_mean": 0.9751790709041378,
+            "other_RX_L_class_reference_margin_mean": 0.11814277031510012,
+            "other_RX_L_class_reference_margin_min": 0.00553904628264823,
+            "wrong_class_reference_at_least_true_count": 0,
+            "L_class_RX_anchor_count": 30
+          }
+        }
+      ],
+      "source_V_diagnostic": {
+        "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+        "samples": 720,
+        "clean_accuracy": 0.9791666666666666,
+        "fixed_practical_mixture_accuracy": 0.7652777777777777,
+        "model_state_updates": 0,
+        "prototype_updates": 0,
+        "teacher_updates": 0,
+        "target_reads": 0,
+        "U_truth_reads": 0,
+        "head_fit_updates": 0
+      }
+    },
+    {
+      "method": "VIEWANCHOR",
+      "model_seed": 2026092703,
+      "source_stages": [
+        {
+          "cumulative_updates": 4440,
+          "U_seen": 396900,
+          "physical_U_seen": 198450,
+          "effective_U_mass": 377773.1004257202,
+          "effective_U_per_class": [
+            63837.16015625,
+            60539.609375,
+            64981.765625,
+            59776.734375,
+            63092.703125,
+            65545.7890625
+          ],
+          "float32_class_accumulator_minus_batch_mass": 0.6612930297851562,
+          "relative_float32_accumulator_drift": 1.750503222807372e-06,
+          "effective_U_class_fraction": [
+            0.1689825144705956,
+            0.16025361078430675,
+            0.17201238468588637,
+            0.15823421431661888,
+            0.16701187196788983,
+            0.17350540377470258
+          ],
+          "class_mass_max_over_min": 1.096510034343943,
+          "normalized_class_entropy": 0.9996753856731262,
+          "teacher_confidence_running_mean": 0.9707099199295044,
+          "teacher_confidence_running_variance": 0.007236718200147152,
+          "L_only_prototype": {
+            "ready": true,
+            "visible_L_update_count": 198912,
+            "cross_RX_same_TX_cosine_mean": 0.9855656349114258,
+            "other_RX_L_class_reference_margin_mean": 0.07775448876505493,
+            "other_RX_L_class_reference_margin_min": 0.02382199578480726,
+            "wrong_class_reference_at_least_true_count": 0,
+            "L_class_RX_anchor_count": 30
+          }
+        },
+        {
+          "cumulative_updates": 6660,
+          "U_seen": 963900,
+          "physical_U_seen": 481950,
+          "effective_U_mass": 918263.2018585205,
+          "effective_U_per_class": [
+            155183.890625,
+            147856.203125,
+            157889.234375,
+            144982.078125,
+            153235.515625,
+            159123.140625
+          ],
+          "float32_class_accumulator_minus_batch_mass": 6.8606414794921875,
+          "relative_float32_accumulator_drift": 7.471323543845141e-06,
+          "effective_U_class_fraction": [
+            0.16899591630212818,
+            0.16101603347762414,
+            0.17194204714149658,
+            0.15788609913981597,
+            0.16687412764804144,
+            0.17328577629089373
+          ],
+          "class_mass_max_over_min": 1.0975366244082108,
+          "normalized_class_entropy": 0.9996868770945881,
+          "teacher_confidence_running_mean": 0.9791018962860107,
+          "teacher_confidence_running_variance": 0.006078598089516163,
+          "L_only_prototype": {
+            "ready": true,
+            "visible_L_update_count": 483072,
+            "cross_RX_same_TX_cosine_mean": 0.9848044366266716,
+            "other_RX_L_class_reference_margin_mean": 0.08576765966988399,
+            "other_RX_L_class_reference_margin_min": 0.0398515106762759,
+            "wrong_class_reference_at_least_true_count": 0,
+            "L_class_RX_anchor_count": 30
+          }
+        },
+        {
+          "cumulative_updates": 11100,
+          "U_seen": 2097900,
+          "physical_U_seen": 1048950,
+          "effective_U_mass": 2002475.5944595337,
+          "effective_U_per_class": [
+            338118.75,
+            324651.84375,
+            343467.84375,
+            316390.5625,
+            333833.59375,
+            346058.5
+          ],
+          "float32_class_accumulator_minus_batch_mass": 45.499290466308594,
+          "relative_float32_accumulator_drift": 2.2721520597902123e-05,
+          "effective_U_class_fraction": [
+            0.16884653602665703,
+            0.16212156004910996,
+            0.17151771575439864,
+            0.1579961197350059,
+            0.16670665532159265,
+            0.17281141311323578
+          ],
+          "class_mass_max_over_min": 1.0937699824722174,
+          "normalized_class_entropy": 0.9997275725135433,
+          "teacher_confidence_running_mean": 0.9814520478248596,
+          "teacher_confidence_running_variance": 0.005482707638293505,
+          "L_only_prototype": {
+            "ready": true,
+            "visible_L_update_count": 1051392,
+            "cross_RX_same_TX_cosine_mean": 0.9855293189201823,
+            "other_RX_L_class_reference_margin_mean": 0.08193558459337517,
+            "other_RX_L_class_reference_margin_min": 0.04428822779038233,
+            "wrong_class_reference_at_least_true_count": 0,
+            "L_class_RX_anchor_count": 30
+          }
+        }
+      ],
+      "source_V_diagnostic": {
+        "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+        "samples": 720,
+        "clean_accuracy": 0.975,
+        "fixed_practical_mixture_accuracy": 0.7638888888888888,
+        "model_state_updates": 0,
+        "prototype_updates": 0,
+        "teacher_updates": 0,
+        "target_reads": 0,
+        "U_truth_reads": 0,
+        "head_fit_updates": 0
+      }
+    }
+  ],
+  "target_files_read": 0,
+  "new_GPU_processes": 0,
+  "model_or_teacher_updates": 0,
+  "U_truth_reads": 0,
+  "interpretation": {
+    "scope": "Nine fixed final models, three source segment states each; VIEWANCHOR reuses the RXPSM E20/E30 states. No new training, forward, model selection, target read or U truth.",
+    "class_mass": "Confidence-weighted teacher predictions, not ground-truth class accuracy or exact integer counts. Fractions normalized by the stored per-class sum.",
+    "floating_accumulators": "per_class is float32 scatter accumulation; effective is the sum of per-batch weight sums. Their actual small drift is retained per stage; neither is substituted for integer U exposure or target correct counts.",
+    "prototype_scope": "L-only teacher final-feature class centers per physical source RX. Ready means every class in each source RX has visible-L updates. Same-TX cosine and nearest wrong-class margins summarize these centers, not per-U correctness or target separability.",
+    "source_V": "Existing fixed720 source-V diagnostic; source validation is not the target performance goal and no candidate is promoted by it.",
+    "decision": "No evidence of severe source class-mass collapse or missing RX-class prototypes. Keep both independently preregistered live candidates unchanged and await complete frozen dual-readout target evaluation."
+  }
+}

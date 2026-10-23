@@ -29,3 +29,6 @@ VERIFIED：执行 commit `0897d2220f6ce311cdce9991e920ec4071bc66b3`，一次发�
 ANALYZED：九个新F模型的raw复用和固定DURA读出均已完成七景独立truth-last评分，六个匹配对照完整结果复用，所有三seed均保留。完整两套表、逐seed/MacroF1、逐RX/TX/day/修复损伤和实际曝光/预测成本见target_results.md、target_summary.json、target_per_seed.csv、target_strata.csv、target_paired_raw.csv、restoration_effects.json、evaluation_completion.json。
 
 三种新方法raw的clean均低于监督/普通PL；接同一DURA后，clean和六景两个主指标仍均低于这两个对照。VIEWANCHOR组合为clean84.448214%、六景77.521759%，监督组合84.857540%/77.854894%，普通PL组合85.029563%/78.074636%。本轮测试已闭合，但原研发目标仍未达成；已固定的配对U方案继续原训练，不从本结果调参或换父权重。
+
+
+非阻断源域机制检查已完成：见source_state_diagnostic.md/json。九模型的有效类别权重未明显塌缩，RXPSM/VIEWANCHOR全30个标签类/源RX原型均覆盖；这是已有源状态证据，不是U正确率、目标性能或晋级依据。当前两路健康新训练不改动。
