@@ -1,0 +1,100 @@
+{
+  "status": "VERIFIED",
+  "observed_at": "2026-10-23T09:11:28.769647+00:00",
+  "execution_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+  "owner_pid": 1925715,
+  "owner_CWD_argv_verified": true,
+  "previous_owner_retired": true,
+  "healthy_G_original_PID_CWD_config_preserved": true,
+  "source_smoke": {
+    "status": "PASS",
+    "real_final_T1_checkpoint": true,
+    "real_G_checkpoints": [
+      "DURA-L",
+      "DURA-LU"
+    ],
+    "source_samples": 12,
+    "Full_steps": [
+      {
+        "family": "riei",
+        "native_loss": -1.283255696296692,
+        "finite": true,
+        "default_head_joint": true
+      },
+      {
+        "family": "drift",
+        "native_loss": 2.7290797233581543,
+        "finite": true,
+        "default_head_joint": true
+      },
+      {
+        "family": "ibrff",
+        "native_loss": 0.0,
+        "finite": true,
+        "default_head_joint": true
+      },
+      {
+        "family": "sdg",
+        "native_loss": 7.3282880783081055,
+        "finite": true,
+        "default_head_joint": true
+      }
+    ],
+    "deterministic_FP32_transform": true,
+    "target_reads": 0,
+    "U_truth_reads": 0,
+    "formal_training_updates": 0,
+    "smoke_only_disposable_models": true
+  },
+  "prepared_source_contracts": 11,
+  "effective_counts": {
+    "RUNNING": 9,
+    "QUEUED": 1870,
+    "COMPLETE": 1
+  },
+  "remaining_by_kind": {
+    "G": 4,
+    "F": 600,
+    "cache": 21,
+    "predict": 627,
+    "score": 627
+  },
+  "observation_gap_seconds": 193.9154450893402,
+  "same_PID_workers": 9,
+  "same_PID_logs_growing": 9,
+  "growing_F_workers": 6,
+  "gpu_own_workers": 9,
+  "gpu_own_counts": {
+    "2": 1,
+    "1": 1,
+    "0": 1,
+    "4": 3,
+    "3": 3
+  },
+  "allowed_gpus": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "reserved_gpus": [
+    5,
+    6,
+    7
+  ],
+  "max_own_per_gpu": 3,
+  "max_own_total": 15,
+  "other_owners_preserved": true,
+  "unresolved_failures": {},
+  "known_startup_failure_resolved_by_six_replacements": true,
+  "scientific_new_F": 600,
+  "scientific_new_G": 4,
+  "reused_native_T1_F_readout_only": 27,
+  "logical_prediction_rows": 627,
+  "effective_stage_jobs": 1880,
+  "formal_performance_available": false,
+  "measured_end_to_end_speedup_available": false,
+  "tests_passed": 14,
+  "independent_P0_P1": "PASS; direct configuration and recovery issues fixed and confirmed"
+}
