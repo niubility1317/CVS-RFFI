@@ -1,6 +1,6 @@
 # 普通硬伪标签加权与 PAMF 监督机制扩展
 
-状态：LOCAL_VERIFIED_NOT_LAUNCHED。153项聚焦检查通过；一次独立P0/P1审查发现启动中GPU进程漏计P1，已按注册PID与同卡active子PID并集修复，唯一定向复查确认关闭。真实原F21 E30 source-only smoke待首GPU卡位；尚未训练或访问新版目标。
+状态：VERIFIED_QUEUED。153项聚焦检查通过；一次独立P0/P1审查发现启动中GPU进程漏计P1，已按注册PID与同卡active子PID并集修复，唯一定向复查确认关闭。真实原F21 E30 source-only smoke待首GPU卡位；尚未训练或访问新版目标。
 
 用户明确要求先检查普通伪标签质量，高则提高权重并叠加监督机制，低则适度提高门控。本版按这一要求固定原普通PL F21 E30父权重，两个独立匹配变体均追加20轮到E50/11100，保留13L＋37LU、原默认头联合训练和原T1有标签六前向。
 
@@ -27,3 +27,8 @@ HPLT1U：同一hard PL门控与权重2；为U生成普通Gaussian.015视图，�
 每row冻结最终E50学生后自动PAMF raw及同一固定DURA v1.0各clean＋六practical，共14项168000条预测，完整后独立truth-last。单CPU scorer在UVB终态后串行。本版6row共84个正式预测cell，F20/F21两readout原同seed对照复用。DURA仅冻结参考，G+F20不称全流程L-only。最终报告每景/seed/TX/RX/day、净纠错、接受率及增量/累计时间。raw clean至少+1pp、六景严格+1.5pp须同时超过两对照，DURA不替代raw主目标；目标仍ACTIVE。历史测试暴露如实披露，不宣称新的独立盲测。
 
 预期产物：smoke/state、六行source/segment50/final_ssdg.pth与hard_pl_state.json、source完整记录/step日志、source_V_diagnostic、prediction/source_execution_check及14项决策、独立scores和完整汇总。真实PID/CWD/完整命令/实际GPU/日志增长须启动后核实；本地通过和排队不等于实际训练或收益。
+
+
+## 发布后实际排队证据
+
+执行commit `8624df76b2c2c8f9c731e246afe0227c9c84f793`；一次发布包本地／远端SHA对照与远端编译PASS。独立读回实际CPU控制器PID／CWD／完整命令、存活状态及同版本state，六row均QUEUED，无本run GPU子进程。源E30真实检查尚待GPU5上UDAP完成其全部14项预测后释放卡位；检查两方法PASS后继续，无需二次许可。原UDAP／UVB及其他owner保持，未将排队当作训练或目标收益。详见queue_verification.json。

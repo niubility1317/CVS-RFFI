@@ -1,0 +1,14 @@
+{
+  "status": "VERIFIED_QUEUED",
+  "execution_commit": "8624df76b2c2c8f9c731e246afe0227c9c84f793",
+  "observed_unix": 1792772184.9370532,
+  "controller_PID_CWD_full_command_verified": true,
+  "actual_GPU_children": 0,
+  "models_queued": 6,
+  "training_started": false,
+  "new_target_reads": 0,
+  "source_smoke": "PENDING_FIRST_UDAP_GPU5_RELEASE;both methods checked before dispatch",
+  "release_archive_SHA_comparison": "PASS single local/remote archive",
+  "remote_compile": "PASS",
+  "healthy_UDAP_UVB_and_foreign_jobs_modified": false
+}

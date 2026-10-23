@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "用户 /goal 授权持续设计迭代 PAMF 半监督机制，使目标测试 clean 相对监督/普通PL均至少高1pp、六景均值均严格高1.5pp；三GPU每卡固定一个模型种子、最多两个本任务worker；追加要求同时报告单PAMF与固定DURA+PAMF。 用户2026-10-24进一步要求先核实普通PL正确率；高则加权并叠加监督机制，低则适度提高门控。",
   "code": {
-    "commit": "69a4523ba95173b59a6d35ba07814ad9642816e0",
+    "commit": "8624df76b2c2c8f9c731e246afe0227c9c84f793",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 ordinary account CVS-RFFI Py3.10/Torch2.1 FP32/TF32off, CPU2 per worker",
     "cwd": "PROJECT/releases/20261024-phase1-PAMF-HardPL-T1U-m6-r01",
@@ -385,9 +385,12 @@
   ],
   "registered_at": "2026-10-23T16:14:20.668857+00:00",
   "launch_status": {
-    "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
-    "source_smoke": "PENDING_FIRST_GPU_STEP",
+    "status": "VERIFIED_QUEUED",
+    "evidence": "queue_verification.json",
+    "source_smoke": "PENDING",
     "training_started": false,
-    "new_method_target_reads": 0
+    "models_queued": 6,
+    "actual_GPU_children": 0,
+    "new_target_reads": 0
   }
 }
