@@ -15,7 +15,12 @@ def installed(config, holder, *, parent_algorithm=None):
     objective_type = Objective
     if parent_algorithm is not None:
         from .view_anchor import validate as validate_view, PARENT_ALGORITHM
-        if config.get('paired_u'):
+        if config.get('u_cric'):
+            from .u_cric import validate as validate_u_cric
+            from .u_cric_objective import UnlabeledCRICObjective
+            validate_u_cric(config)
+            objective_type = UnlabeledCRICObjective
+        elif config.get('paired_u'):
             from .paired_u import validate as validate_pair
             from .paired_u_objective import PairedObjective
             validate_pair(config)

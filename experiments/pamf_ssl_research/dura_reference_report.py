@@ -33,11 +33,14 @@ def report(rt, output):
     methods=tuple(rt.get('methods',METHODS))
     if methods==METHODS:
         validate_rows(rt['rows'])
-    elif methods==('PAIREDU',):
-        from .paired_u import RUN, RESOURCE_GPU_BY_SEED
+    elif methods in (('PAIREDU',), ('UCRIC',)):
+        if methods == ('PAIREDU',):
+            from .paired_u import RUN, RESOURCE_GPU_BY_SEED
+        else:
+            from .u_cric import RUN, RESOURCE_GPU_BY_SEED
         from .control import validate_rows as validate_followup
         if rt['run_id']!=RUN:
-            raise ValueError('Paired-U report belongs to another run')
+            raise ValueError('Followup report belongs to another run')
         validate_followup(rt['rows'],methods,RESOURCE_GPU_BY_SEED)
     else:
         raise ValueError('Exact declared dual-readout method matrix required')

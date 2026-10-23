@@ -1,0 +1,34 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "focused_tests": 50,
+  "independent_P0_P1_review": {
+    "status": "PASS",
+    "findings": 0,
+    "scope": "Direct next-run P0/P1 only; no target scores read; read-only independent reviewer"
+  },
+  "real_source_checkpoint_smoke": "PENDING_FIRST_GPU_STEP",
+  "recipe": {
+    "start_epoch": 31,
+    "weight": 0.1,
+    "temperature": 0.2,
+    "levels": [
+      "time_down",
+      "t2.pool"
+    ],
+    "positives": "same_teacher_argmax_other_source_RX",
+    "negatives": "different_teacher_argmax",
+    "pair_soft_probability": true,
+    "anchor_and_neighbor_confidence": true,
+    "teacher_detached": true
+  },
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "readouts": [
+    "raw",
+    "DURA-LU"
+  ],
+  "target_reads": 0
+}

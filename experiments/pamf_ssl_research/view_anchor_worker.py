@@ -6,7 +6,7 @@ from pathlib import Path
 from experiments.cric_dura_comparison.io import read, write
 
 
-def smoke(rt, *, paired=False):
+def smoke(rt, *, paired=False, u_cric=False):
     from experiments.cric_dura_comparison.bootstrap import activate, numerical_policy
     activate(rt)
     numerical_policy()
@@ -21,13 +21,18 @@ def smoke(rt, *, paired=False):
     from .view_anchor_train import source_parents
 
     c = read(rt['rows'][0]['train_config'])
-    if paired:
+    if u_cric:
+        from .u_cric import validate as validate_u_cric
+        parents, _ = source_parents(c, validate_config=validate_u_cric)
+    elif paired:
         from .paired_u import validate as validate_pair
         parents, _ = source_parents(c, validate_config=validate_pair)
     else:
         parents, _ = source_parents(c)
     parent = parents[-1]['folder']
     cfg = dict(c, segment_epochs=20, epoch_offset=30, step_offset=6660, parent_source=parent)
+    if u_cric:
+        cfg['u_cric_smoke'] = True
     payload = torch.load(Path(parent) / 'final_ssdg.pth', map_location='cpu', weights_only=False)
     device = 'cuda:0'
     ctx = context(c)
@@ -63,12 +68,20 @@ def smoke(rt, *, paired=False):
         total.backward()
         objective = holder['objective']
         head = model.id_backbone.encoder.core.id_backbone.cls_head.weight
-        mechanism_ok = (float(metrics['SSL_pair_physical_feature']) > 0
-                        and objective.paired_calls == 1 and objective.paired_clean_seen == 256
-                        and objective.paired_physical_seen == 256 and objective.student_U_views == 964412
-                        and objective.physical_seen == 482206) if paired else (
-                        float(metrics['SSL_view_anchor_loss']) > 0 and objective.view_anchor_calls == 1
-                        and objective.view_anchor_physical_seen == 128)
+        if u_cric:
+            mechanism_ok = (float(metrics['SSL_U_CRIC_loss']) > 0 and objective.u_cric_calls == 1
+                            and objective.u_cric_seen == 256 and objective.physical_seen == 482078
+                            and all(count > 0 for count in objective.u_cric_anchors.values())
+                            and all(h.grad is not None and bool(torch.isfinite(h.grad).all())
+                                    and float(h.grad.norm()) > 0 for h in objective._smoke_maps.values()))
+        elif paired:
+            mechanism_ok = (float(metrics['SSL_pair_physical_feature']) > 0
+                            and objective.paired_calls == 1 and objective.paired_clean_seen == 256
+                            and objective.paired_physical_seen == 256 and objective.student_U_views == 964412
+                            and objective.physical_seen == 482206)
+        else:
+            mechanism_ok = (float(metrics['SSL_view_anchor_loss']) > 0 and objective.view_anchor_calls == 1
+                            and objective.view_anchor_physical_seen == 128)
         if (not bool(torch.isfinite(total)) or head.grad is None or not bool(torch.isfinite(head.grad).all())
                 or metrics['T1_L_packets'] != 768 or not mechanism_ok
                 or objective.seen != 964156
@@ -82,13 +95,17 @@ def smoke(rt, *, paired=False):
         checked = dict(parent_epoch=30, parent_updates=6660, EMA_updates_after_smoke=6661,
             U_seen=objective.seen, physical_U_seen=objective.physical_seen,
             L_forward_packets=768, finite_backward=True, teacher_gradient=False)
-        if paired:
+        if u_cric:
+            checked.update(u_cric_loss=float(metrics['SSL_U_CRIC_loss']), u_cric_seen=256,
+                u_cric_anchors=objective.u_cric_anchors, shallow_middle_gradients=True, feature_hooks_removed=True)
+        elif paired:
             checked.update(student_U_views=objective.student_U_views, paired_clean_seen=256,
                            paired_physical_seen=256, physical_feature_loss=float(metrics['SSL_pair_physical_feature']))
         else:
             checked.update(view_anchor_loss=float(metrics['SSL_view_anchor_loss']), view_anchor_physical_seen=128)
     write(Path(rt['run_root']) / 'smoke.json', dict(status='PASS', real_checkpoint=parent + '/final_ssdg.pth',
-        target_reads=0, U_truth_reads=0, method='PAIREDU' if paired else 'VIEWANCHOR', checked=checked, immediate_continuation=True))
+        target_reads=0, U_truth_reads=0, method='UCRIC' if u_cric else 'PAIREDU' if paired else 'VIEWANCHOR',
+        checked=checked, immediate_continuation=True))
 
 
 def train_and_predict(row):

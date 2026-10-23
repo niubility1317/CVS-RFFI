@@ -21,9 +21,9 @@ def validate_rows(rows, methods=METHODS, gpu_by_seed=None):
     methods = tuple(methods)
     gpu_by_seed = GPU_BY_SEED if gpu_by_seed is None else gpu_by_seed
     from .view_anchor import RESOURCE_GPU_BY_SEED
-    if methods not in (METHODS, ('VIEWANCHOR',), ('PAIREDU',)):
+    if methods not in (METHODS, ('VIEWANCHOR',), ('PAIREDU',), ('UCRIC',)):
         raise ValueError('A declared complete three-seed matrix is required')
-    if gpu_by_seed != GPU_BY_SEED and (methods not in (('VIEWANCHOR',),('PAIREDU',)) or gpu_by_seed != RESOURCE_GPU_BY_SEED):
+    if gpu_by_seed != GPU_BY_SEED and (methods not in (('VIEWANCHOR',),('PAIREDU',),('UCRIC',)) or gpu_by_seed != RESOURCE_GPU_BY_SEED):
         raise ValueError('Only the declared three-card seed allocation is supported')
     expected = {(seed, method) for seed in SEEDS for method in methods}
     if (len(rows) != len(expected) or {(r['model_seed'], r['method']) for r in rows} != expected
@@ -38,7 +38,8 @@ def run(rt):
     validate_rows(rt['rows'], methods, gpu_by_seed)
     smoke_gpu = gpu_by_seed[SEEDS[0]]
     worker = 'experiments.pamf_ssl_research.' + {
-        ('VIEWANCHOR',):'view_anchor_worker',('PAIREDU',):'paired_u_worker'}.get(methods,'worker')
+        ('VIEWANCHOR',):'view_anchor_worker',('PAIREDU',):'paired_u_worker',('UCRIC',):'u_cric_worker'}.get(methods,'worker')
+    process_limit = 3 if methods == ('UCRIC',) else 2
     root = Path(rt['run_root'])
     root.mkdir(parents=True, exist_ok=False)
     logs = root / 'logs'
@@ -53,10 +54,13 @@ def run(rt):
         if methods == ('PAIREDU',):
             from .paired_u import reference_gpu_work_finished
             predecessor_ready = reference_gpu_work_finished(rt, SEEDS[0])
+        elif methods == ('UCRIC',):
+            from .u_cric import paired_dispatch_settled
+            predecessor_ready = paired_dispatch_settled(rt, SEEDS[0])
         apps, free = capacity(smoke_gpu)
-        if predecessor_ready and apps < 2 and free >= 10000:
+        if predecessor_ready and apps < process_limit and free >= 10000:
             break
-        if methods not in (('VIEWANCHOR',),('PAIREDU',)):
+        if methods not in (('VIEWANCHOR',),('PAIREDU',),('UCRIC',)):
             raise RuntimeError('Smoke GPU capacity changed; no workload modified')
         state.update(status='WAITING_FOR_SMOKE_GPU', predecessor_GPU_work_ready=predecessor_ready, observed_apps=apps,
                      observed_free_MiB=free, updated_unix=time.time())
@@ -115,13 +119,15 @@ def run(rt):
                     continue
                 if methods == ('PAIREDU',) and not reference_gpu_work_finished(rt, row['model_seed']):
                     continue
+                if methods == ('UCRIC',) and not paired_dispatch_settled(rt, row['model_seed']):
+                    continue
                 apps, free = capacity(gpu)
-                if apps >= 2 or free < 10000 or sum(v['gpu'] == gpu for v in active.values()) >= 2:
+                if apps >= process_limit or free < 10000 or sum(v['gpu'] == gpu for v in active.values()) >= 2:
                     continue
                 item = launch('row', row['row_config'], row_id, gpu)
                 active[row_id] = item
                 state['jobs'][row_id] = dict(status='RUNNING', pid=item['child'].pid, gpu=gpu, log=item['log'])
-        prior_scorer_finished = (methods != ('PAIREDU',) or read(rt['prior_score_owner_state'])['status']
+        prior_scorer_finished = (methods not in (('PAIREDU',),('UCRIC',)) or read(rt['prior_score_owner_state'])['status']
                                  in ('ALL_SCORED','INCOMPLETE_TECHNICAL_FAILURE'))
         if score is None and prior_scorer_finished:
             pending = next((r for r in rt['rows'] if state['jobs'][r['row_id']]['status'] == 'PREDICTIONS_COMPLETE'), None)

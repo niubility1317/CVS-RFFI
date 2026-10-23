@@ -136,6 +136,9 @@ class Objective:
             from .view_anchor import physical_alignment
             view_loss = view_settings['weight'] * physical_alignment(output['z_id'], z, weight, mask)
             loss = loss + view_loss
+        extension = getattr(self, 'unlabeled_feature_loss', None)
+        if extension is not None:
+            loss = loss + extension(output, target, weight, rx)
         self.seen += n
         physical_count = int(mask.sum())
         self.physical_seen += physical_count
