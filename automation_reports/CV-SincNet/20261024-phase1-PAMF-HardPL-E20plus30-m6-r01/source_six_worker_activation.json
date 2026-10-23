@@ -1,0 +1,104 @@
+{
+  "status": "VERIFIED_BOTH_E20_ARMS_RUNNING",
+  "execution_commit": "80fe494716b538b504a32efa9245d2e58925fc6f",
+  "observed_unix": 1792786641.682055,
+  "actual_GPU_workers": 6,
+  "rows": [
+    {
+      "row_id": "HPL_E20_LS2-s2026092701",
+      "gpu": 5,
+      "PID_CWD_full_command_GPU_verified": true,
+      "checked_native_records": 3179,
+      "native_step_log_growth": 2738562,
+      "row_log_growth": 71333,
+      "cumulative_updates": 7619,
+      "U_accepted": 765398,
+      "style_eligible": 0,
+      "style_applied": {},
+      "current_task_workers_this_card": 2,
+      "total_GPU_processes_this_card": 3
+    },
+    {
+      "row_id": "HPL_E20_NAMS2-s2026092701",
+      "gpu": 5,
+      "PID_CWD_full_command_GPU_verified": true,
+      "checked_native_records": 328,
+      "native_step_log_growth": 632751,
+      "row_log_growth": 11638,
+      "cumulative_updates": 4768,
+      "U_accepted": 77374,
+      "style_eligible": 464244,
+      "style_applied": {
+        "time_down": 246042,
+        "t2.pool": 227124
+      },
+      "current_task_workers_this_card": 2,
+      "total_GPU_processes_this_card": 3
+    },
+    {
+      "row_id": "HPL_E20_LS2-s2026092702",
+      "gpu": 6,
+      "PID_CWD_full_command_GPU_verified": true,
+      "checked_native_records": 3295,
+      "native_step_log_growth": 2702872,
+      "row_log_growth": 71333,
+      "cumulative_updates": 7735,
+      "U_accepted": 796920,
+      "style_eligible": 0,
+      "style_applied": {},
+      "current_task_workers_this_card": 2,
+      "total_GPU_processes_this_card": 2
+    },
+    {
+      "row_id": "HPL_E20_NAMS2-s2026092702",
+      "gpu": 6,
+      "PID_CWD_full_command_GPU_verified": true,
+      "checked_native_records": 883,
+      "native_step_log_growth": 1711747,
+      "row_log_growth": 21582,
+      "cumulative_updates": 5323,
+      "U_accepted": 209981,
+      "style_eligible": 1259886,
+      "style_applied": {
+        "time_down": 646806,
+        "t2.pool": 665862
+      },
+      "current_task_workers_this_card": 2,
+      "total_GPU_processes_this_card": 2
+    },
+    {
+      "row_id": "HPL_E20_LS2-s2026092703",
+      "gpu": 7,
+      "PID_CWD_full_command_GPU_verified": true,
+      "checked_native_records": 3264,
+      "native_step_log_growth": 2340280,
+      "row_log_growth": 71333,
+      "cumulative_updates": 7704,
+      "U_accepted": 786643,
+      "style_eligible": 0,
+      "style_applied": {},
+      "current_task_workers_this_card": 2,
+      "total_GPU_processes_this_card": 3
+    },
+    {
+      "row_id": "HPL_E20_NAMS2-s2026092703",
+      "gpu": 7,
+      "PID_CWD_full_command_GPU_verified": true,
+      "checked_native_records": 656,
+      "native_step_log_growth": 1267617,
+      "row_log_growth": 16610,
+      "cumulative_updates": 5096,
+      "U_accepted": 155332,
+      "style_eligible": 931992,
+      "style_applied": {
+        "time_down": 431046,
+        "t2.pool": 456648
+      },
+      "current_task_workers_this_card": 2,
+      "total_GPU_processes_this_card": 3
+    }
+  ],
+  "source_prefix_only": true,
+  "target_reads": 0,
+  "healthy_jobs_modified": false
+}

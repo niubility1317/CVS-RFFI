@@ -388,12 +388,12 @@
   ],
   "registered_at": "2026-10-23T19:46:30.754857+00:00",
   "launch_status": {
-    "status": "VERIFIED_E20_LS_RUNNING_SECOND_ARM_QUEUED",
-    "evidence": "source_activation.json",
+    "status": "VERIFIED_BOTH_E20_ARMS_RUNNING",
+    "evidence": "source_six_worker_activation.json",
     "source_smoke": "PASS",
     "source_identity_screen": "PASS",
-    "actual_GPU_workers": 3,
-    "queued_rows": 3
+    "actual_GPU_workers": 6,
+    "queued_rows": 0
   },
   "source_quality_diagnostics": {
     "HPL2": {

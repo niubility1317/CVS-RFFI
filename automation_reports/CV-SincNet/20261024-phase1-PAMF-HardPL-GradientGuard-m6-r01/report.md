@@ -15,3 +15,8 @@ LOCAL_VERIFIED_NOT_LAUNCHED。49 项相关检查及一次独立 P0/P1 PASS；真
 GPU5/6/7分别固定种子，每卡最多两条本任务、含外部最多三进程、派发前空闲≥10000MiB。guardLS只在同seed旧E20LS的raw/DURA完整预测结束且旧E20NAMS已派发后启动，guardNAMS在旧E20NAMS完整GPU预测结束且新guardLS已派发后启动；旧两臂未CUDA启动PID与新children均预留计数。CPU唯一scorer排旧E20六行终态之后。不会改动旧队列或停止健康任务。
 
 每row训练冻结后自动raw与固定DURA v1.0各七景、168000条/view，六模型共84 cell；所有该row决策冻结后独立truth-last。保留完整各seed/场景/TX/RX/day/RX×day、Macro-F1、raw/恢复配对修复损伤、U接受曝光与实际成本。固定F20/F21参照均完整复用，原raw验收clean同时≥+1pp、六景均值同时严格>+1.5pp；DURA只作独立参考，G不参与训练、其源U权限与三个F seed的SD范围如实保留。不套用旧F50的部署时延。当前历史测试暴露已披露，不称独立盲测；源诊断及数学约束不证明目标达标，goal ACTIVE。预期产物：真实smoke、源诊断复用、segment30/50全部6660条/模型训练记录与guard/style状态、final E50 checkpoint及继承、source/native检查、双七景固定predictions、独立scores及完整同row报告。
+
+
+## 实际发布与等待状态
+
+VERIFIED：执行 commit `03d563e7cc772f003270597584c587e3952397d4`，单archive传输对照与远端compile通过，远端controller实际PID/CWD/完整命令已独立确认，六行均等待预登记旧E20卡位，尚未占用新GPU或完成真实smoke。旧E20两机制六条GPU worker的PID/CWD/命令/GPU、全部已刷盘原生记录及日志增长同时核实；LS自己的10轮阶段已闭合并继续20轮，NAMS源机制实际执行，每卡两本任务／含外部最多三进程。旧任务保持；新smoke通过后自动独立续训，不能把排队声明为训练或目标成功。

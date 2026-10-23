@@ -20,3 +20,8 @@ GPU5／6／7固定seed2026092701／02／03。LS臂等待同seed MS全部GPU预�
 VERIFIED：执行 commit `80fe494716b538b504a32efa9245d2e58925fc6f`，一次 archive 传输对照、远端 compile、真实原 F21 E20 两机制 smoke 及固定源 V720/seed 配对规则均 PASS。三个 E20 LS seed 已在 GPU5/6/7 实际运行，PID/CWD/完整命令/GPU及原生日志增长已独立核实；同 seed 的原 NAMS 健康任务保持，第二机制三行按预登记等待交接，每卡最多两条本任务。源诊断所有 seed 的伪标签精度及同真实 TX 配对均≥99%，源 V 无状态更新。两次 smoke 的 parent_epoch=20、parent_updates=4440；smoke 共用旧接口中的 formal_reload_original_F21_E30 仅是旧字段名，实际父权重与正式 reload 均严格为 E20，并未继承原 E30。
 
 新方法仍累计 E50/11100，新增30轮/6660步，原生10＋20相衔接；不增加模型预算。全部正式 raw/DURA 七景会按队列自动完成后独立评分，目前无本候选目标分数。
+
+
+## 两机制六条真实训练均已启动
+
+VERIFIED：旧NAMS逐seed全部GPU预测完成后，三个E20 NAMS新worker已按约定接替，各卡LS/NAMS两条真实训练健康，PID/CWD/命令/GPU与原生step、日志增长逐条确认。LS自己的native10段2220步已闭合并进入自己的20段；不是继承原E30。逐行实际曝光、RDrop／跨RX／六前向共享style计数见source_six_worker_activation.json；目前仅源训练前缀，无本候选目标成绩。
