@@ -1,0 +1,238 @@
+{
+  "status": "COMPLETE_SOURCE_STRUCTURED_LOG_DIAGNOSTIC",
+  "original_models": 9,
+  "original_step_records": 99900,
+  "original_epoch_records": 450,
+  "additional_F12_models": 3,
+  "additional_F12_step_records": 33300,
+  "total_step_records": 133200,
+  "rows": [
+    {
+      "method": "native",
+      "seed": 2026092701,
+      "parsed_steps": 11100,
+      "parsed_epochs": 50,
+      "U_seen": 2097900.0,
+      "U_selected": 32928.0,
+      "U_acceptance": 0.015695695695695695,
+      "active_U_steps": 8214,
+      "zero_selection_active_steps": 1006,
+      "numeric_nonfinite_fields": 0,
+      "stdout_logs": 0,
+      "mean_active_teacher_confidence": 0.9793406285768244
+    },
+    {
+      "method": "native",
+      "seed": 2026092702,
+      "parsed_steps": 11100,
+      "parsed_epochs": 50,
+      "U_seen": 2097900.0,
+      "U_selected": 32654.0,
+      "U_acceptance": 0.015565088898422232,
+      "active_U_steps": 8214,
+      "zero_selection_active_steps": 994,
+      "numeric_nonfinite_fields": 0,
+      "stdout_logs": 0,
+      "mean_active_teacher_confidence": 0.9798765787539587
+    },
+    {
+      "method": "native",
+      "seed": 2026092703,
+      "parsed_steps": 11100,
+      "parsed_epochs": 50,
+      "U_seen": 2097900.0,
+      "U_selected": 33088.0,
+      "U_acceptance": 0.015771962438629106,
+      "active_U_steps": 8214,
+      "zero_selection_active_steps": 949,
+      "numeric_nonfinite_fields": 0,
+      "stdout_logs": 0,
+      "mean_active_teacher_confidence": 0.9795249626820529
+    },
+    {
+      "method": "F20",
+      "seed": 2026092701,
+      "parsed_steps": 11100,
+      "parsed_epochs": 50,
+      "U_seen": 0.0,
+      "U_selected": 0.0,
+      "U_acceptance": null,
+      "active_U_steps": 0,
+      "zero_selection_active_steps": 0,
+      "numeric_nonfinite_fields": 0,
+      "stdout_logs": 0
+    },
+    {
+      "method": "F20",
+      "seed": 2026092702,
+      "parsed_steps": 11100,
+      "parsed_epochs": 50,
+      "U_seen": 0.0,
+      "U_selected": 0.0,
+      "U_acceptance": null,
+      "active_U_steps": 0,
+      "zero_selection_active_steps": 0,
+      "numeric_nonfinite_fields": 0,
+      "stdout_logs": 0
+    },
+    {
+      "method": "F20",
+      "seed": 2026092703,
+      "parsed_steps": 11100,
+      "parsed_epochs": 50,
+      "U_seen": 0.0,
+      "U_selected": 0.0,
+      "U_acceptance": null,
+      "active_U_steps": 0,
+      "zero_selection_active_steps": 0,
+      "numeric_nonfinite_fields": 0,
+      "stdout_logs": 0
+    },
+    {
+      "method": "F21",
+      "seed": 2026092701,
+      "parsed_steps": 11100,
+      "parsed_epochs": 50,
+      "U_seen": 2097900.0,
+      "U_selected": 1987934.0,
+      "U_acceptance": 0.9475828209161542,
+      "active_U_steps": 8214,
+      "zero_selection_active_steps": 0,
+      "numeric_nonfinite_fields": 0,
+      "stdout_logs": 0
+    },
+    {
+      "method": "F21",
+      "seed": 2026092702,
+      "parsed_steps": 11100,
+      "parsed_epochs": 50,
+      "U_seen": 2097900.0,
+      "U_selected": 1992314.0,
+      "U_acceptance": 0.9496706230039563,
+      "active_U_steps": 8214,
+      "zero_selection_active_steps": 0,
+      "numeric_nonfinite_fields": 0,
+      "stdout_logs": 0
+    },
+    {
+      "method": "F21",
+      "seed": 2026092703,
+      "parsed_steps": 11100,
+      "parsed_epochs": 50,
+      "U_seen": 2097900.0,
+      "U_selected": 1989215.0,
+      "U_acceptance": 0.9481934315267648,
+      "active_U_steps": 8214,
+      "zero_selection_active_steps": 0,
+      "numeric_nonfinite_fields": 0,
+      "stdout_logs": 0
+    },
+    {
+      "method": "F12_without_temporal_gate",
+      "seed": 2026092701,
+      "steps": 11100,
+      "active_U_steps": 8214,
+      "U_seen": 2097900,
+      "U_selected": 1905751,
+      "U_acceptance": 0.9084088850755517,
+      "zero_selection_active_steps": 0,
+      "mean_teacher_confidence": 0.9792157226535332,
+      "source_contract_matches": true,
+      "segments": [
+        {
+          "epoch": 20,
+          "steps": 4440,
+          "total": 396900,
+          "selected": 340462
+        },
+        {
+          "epoch": 10,
+          "steps": 2220,
+          "total": 567000,
+          "selected": 510359
+        },
+        {
+          "epoch": 20,
+          "steps": 4440,
+          "total": 1134000,
+          "selected": 1054930
+        }
+      ]
+    },
+    {
+      "method": "F12_without_temporal_gate",
+      "seed": 2026092702,
+      "steps": 11100,
+      "active_U_steps": 8214,
+      "U_seen": 2097900,
+      "U_selected": 1907751,
+      "U_acceptance": 0.9093622193622194,
+      "zero_selection_active_steps": 0,
+      "mean_teacher_confidence": 0.9798503685293622,
+      "source_contract_matches": true,
+      "segments": [
+        {
+          "epoch": 20,
+          "steps": 4440,
+          "total": 396900,
+          "selected": 339266
+        },
+        {
+          "epoch": 10,
+          "steps": 2220,
+          "total": 567000,
+          "selected": 511603
+        },
+        {
+          "epoch": 20,
+          "steps": 4440,
+          "total": 1134000,
+          "selected": 1056882
+        }
+      ]
+    },
+    {
+      "method": "F12_without_temporal_gate",
+      "seed": 2026092703,
+      "steps": 11100,
+      "active_U_steps": 8214,
+      "U_seen": 2097900,
+      "U_selected": 1909947,
+      "U_acceptance": 0.9104089804089804,
+      "zero_selection_active_steps": 0,
+      "mean_teacher_confidence": 0.9798457692407883,
+      "source_contract_matches": true,
+      "segments": [
+        {
+          "epoch": 20,
+          "steps": 4440,
+          "total": 396900,
+          "selected": 341632
+        },
+        {
+          "epoch": 10,
+          "steps": 2220,
+          "total": 567000,
+          "selected": 513149
+        },
+        {
+          "epoch": 20,
+          "steps": 4440,
+          "total": 1134000,
+          "selected": 1055166
+        }
+      ]
+    }
+  ],
+  "target_metrics_read": false,
+  "U_truth_read": false,
+  "conclusion": "The original temporal-neighbor requirement severely limits hard-pseudo-label CE exposure; removing only that requirement raises historical matched F12 source acceptance to about91%. This does not establish pseudo-label precision or target benefit.",
+  "normalization": "Original native PL CE is averaged over accepted samples; acceptance fraction is NOT an additional explicit multiplier. Entropy applies to all U. Ordinary F21 PL is logged within the labeled hook, so native loss_unlabeled=0 does not mean U is unused.",
+  "limitations": [
+    "Counts are repeated exposures, not unique packets.",
+    "U TX truth remains hidden; pseudo_correct=0 is an unavailable diagnostic, not zero precision.",
+    "Original stdout logs were not located in source/row/run directories; all specified structured step logs and the original nine models’ epoch logs were parsed.",
+    "Entropy gradients and detailed per-gate survival were not logged; source exposure does not identify every cause of target generalization.",
+    "The six current PSM/RXPSM runs remain unchanged. New diagnostics use source logs only; no F12 target scores were read."
+  ]
+}
