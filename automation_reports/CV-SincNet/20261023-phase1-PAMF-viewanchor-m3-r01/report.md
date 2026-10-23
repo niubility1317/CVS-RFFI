@@ -20,3 +20,9 @@
 核心训练/继承接口已实现。9项已有SSL回归和5项新增聚焦检查共14项PASS，覆盖物理子集梯度、教师及权重stop-gradient、E31启用及精确新增项、状态往返、错误seed/角色/目标输入拒绝。一次独立P0/P1静态审查无发现，并确认真实三段ancestry可满足现有load_F；没有读取目标或scores，没有运行本版训练。
 
 该状态只表示实现准备，不等于已发布或有效。三行独立 VIEWANCHOR 发布配置和 E30 学生／自身 EMA 的真实权重 smoke 接口已接入原调度器；另两项聚焦检查确认完整种子矩阵、GPU 绑定、父来源、预测侧无 truth、评分侧独立及真实方法名，共 16 项 PASS。真实 E30 checkpoint no-query smoke 将作为需要启动本版时的发布首步，PASS 后立即继续训练和七景预测评分。r02 六个健康任务的不可变 release 没有改变；本版未替换默认 PAMF 或 DURA。
+
+## 发布预登记
+
+当前状态为 LOCAL_VERIFIED，未提交到 N607。真实执行配置由已提交的 `experiments.pamf_ssl_research.view_anchor_publish` 生成；精确发布命令、代码 commit、环境和 CWD、独占输入／输出／日志路径及三行 GPU 矩阵以 `experiment.json` 的 `code`、`execution`、`rows` 为唯一维护位置。原环境 FP32/TF32off，源域数据权限、默认分类头和上述科学停止规则保持。
+
+验收和逐 RX/TX/day 报告已支持真实 VIEWANCHOR 名称，不冒充 PSM/RXPSM；5 项整数边界及数据排除检查、4 项完整分层报告检查共 9 项 PASS。包括 clean 精确 +1 pp、六景精确 +1.5 pp 不通过、源 V 不可替代目标测试、缺失 seed／分层不静默求均值。准备记录没有新训练或效果声明。
