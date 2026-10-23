@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "focused_tests": 9,
+  "CUDA_mixed_device_regression": "FAIL before fix; PASS after fix",
+  "prepared_rows": 6,
+  "training_target_truth_free": true,
+  "source_model_budget": "50 epochs/11100 updates per row; no shortened real training",
+  "independent_P0P1_review": "No P0/P1 found; subsequent real GPU smoke exposed device placement bug",
+  "targeted_device_fix_re_review": "PASS, no P0/P1 related to device placement",
+  "remote_real_checkpoint_and_full_U_backward_smoke": "PASS; two methods; each L768 forward packets/U256 IQ/128 physical views; no target or U truth"
+}

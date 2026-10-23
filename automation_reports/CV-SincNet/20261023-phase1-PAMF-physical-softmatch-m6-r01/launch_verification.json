@@ -1,0 +1,16 @@
+{
+  "status": "FAILED",
+  "run_id": "20261023-phase1-PAMF-physical-softmatch-m6-r01",
+  "code_commit": "b1486dee00d6a130e2adff8d908671b57e67b8ee",
+  "release_landed": "VERIFIED",
+  "remote_compile": "PASS",
+  "source_smoke": "FAILED",
+  "controller_alive": false,
+  "formal_training_rows_started": 0,
+  "target_predictions_started": 0,
+  "failure_layer": "GPU source-only smoke: dynamically installed feature layers remained on CPU",
+  "error": "RuntimeError: Input type (torch.cuda.FloatTensor) and weight type (torch.FloatTensor) should be the same",
+  "outputs_preserved": true,
+  "unrelated_processes_changed": false,
+  "replacement": "20261023-phase1-PAMF-physical-softmatch-m6-r02"
+}
