@@ -20,10 +20,10 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-23明确要求按更新后的方案发布并优化训练加速；600新F+4完整G，禁止固定L/V/chrono/m5/外部CE扩展。",
   "code": {
-    "commit": null,
+    "commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 existing SDG-SEI/CVS-RFFI; FP32 TF32off",
-    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261023-phase1-practical-residual-full2x2-m600-r01"
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261023-phase1-practical-residual-control-r04"
   },
   "data": {
     "dataset": "ManySig + ManyRx",
@@ -77,7 +77,7 @@
   "execution": {
     "host": "N607 ordinary account",
     "launch_owner": "codex-practical-Full2x2-20261023",
-    "gpu_policy": "Only GPU0-4, max3/card and15 own GPU compute. GPU5/6/7 reserved by user. G/G-heavy<=1/card; free>=12000MiB; CPU<75%, RAM>=64GiB, IOwait<5%; preserve others.",
+    "gpu_policy": "Only physical GPU0-4; GPU5/6/7 reserved; <=3 own/card and <=3 total compute/card including other owners; <=15 own total; G/G-heavy<=1/card; free>=12000MiB; CPU<75%, RAM>=64GiB, IOwait<5%; preserve other owners",
     "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261023-phase1-practical-residual-control-r04",
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261023-phase1-practical-residual-control-r04/logs",
     "local_artifact_root": "local_artifacts/external_practical_residual_2x2_design_20261023",

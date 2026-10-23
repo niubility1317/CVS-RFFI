@@ -48,3 +48,12 @@ control-r02已完成11源合同、三种泛化句柄和ManyRx源RX/D0的31279条
 ## 旧Torch执行API兼容恢复
 
 r03真实checkpoint、同合同G-L/G-LU和四Full源侧梯度smoke已PASS；G和缓存已GPU运行。两个F在Torch1.11.0/NumPy1.24.4的精度设置API处、创建模型/输出前失败，2同指纹正确停止新派发。新r04保留健康科学worker和CPU producer原PID/CWD/config；仅替代2个失败F及各预测/评分6阶段，598未启动F只切换执行release。旧失败及阻塞记录保留排除，有效600F/4G不变。通过TF32关闭flags保持原FP32，老Torch缺少的新API仅做功能存在判断，不降精度、不改训练。复用源smoke与全部数据；新增两环境精度与输入复制检查。
+
+## 实际发布核验
+
+状态 **VERIFIED / RUNNING**。实际执行 commit `dd2f4bfb389a9ff684fcb0d071d194543699d895`，owner PID 1925715，CWD/argv和物理GPU独立核对通过；旧r03 controller正常交接退出，健康G与CPU增强producer保留原PID/CWD/config。
+
+两次观测间隔 193.9 秒，9 条相同 PID、9 条日志增长，其中 6 条为实际外部 Full F 训练。11合同已准备，真实checkpoint/source smoke PASS，U真值/target读取0。当前本任务 9 个GPU worker；GPU0–4分别为 {2: 1, 1: 1, 0: 1, 4: 3, 3: 3}，5/6/7保留，其他owner不动。无未解决失败。
+
+有效阶段状态：`{"RUNNING": 9, "QUEUED": 1870, "COMPLETE": 1}`。600新F+4完整G保持，27既有T1只补读出；1880逻辑阶段、627行冻结预测/独立评分。14项聚焦检查和限定P0/P1/直接修复复核通过。尚无正式新性能或整链加速倍数；加速仅按后续真实吞吐校准。
+私有逐进程证据保存在 local_artifacts/external_practical_residual_2x2_design_20261023/verification_1792746688.json；公开摘要为 launch_verification.json。

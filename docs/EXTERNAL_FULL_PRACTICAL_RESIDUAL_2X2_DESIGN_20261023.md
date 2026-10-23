@@ -1,6 +1,6 @@
 # 四种完整对比方法：practical residual × 普通 PL 重跑方案
 
-日期：2026-10-23（香港）。状态：**已获用户授权并实现发布；G/恢复缓存已运行，外部F的旧Torch执行兼容恢复中。**
+日期：2026-10-23（香港）。状态：**已实际发布并核验 RUNNING；外部 Full F、新 G 与缓存均已产生训练或执行进度。GPU 5、6、7 保留。**
 
 本次范围修订：用户已取消固定 L=1080、V=5400 的源数量实验，四种外部方法和 PAMF 建议补充均移除该组。用户随后明确保持原训练划分，将后续测试按“仅跨日、仅跨接收机、跨日又跨接收机”分别统计；因此也移除独立 chrono 训练项目，不改变源日期，不将旧权重改标为新的日期合同。
 
@@ -169,3 +169,6 @@ A、B、C、D 各 132 个 Full F，合计 528 次从零模型训练；不续训�
 - practical 引擎：Git 承载检出 `code/worktrees/standard_ce_baselines_20261010/code/leo_practical/{channel,residual,batch}.py`；旧三场景适配：`baselines/common/practical_source.py`。
 - 最终 T1 的三个 As 场景：`experiments/cric_dura_comparison/t1_practical.py`；PAMF 的附加拼接调用：`t1_model.py`、`f_model.py`。
 - 原数据条件与预算：`experiments/phase1_external_dg/plan.py`、`experiments/phase1_dg_sourcecount6/plan.py`，以及已有各契约记录。
+
+
+实际发布核验见 [launch_verification.json](../automation_reports/CV-SincNet/20261023-phase1-practical-residual-control-r04/launch_verification.json)。当前执行 `dd2f4bfb389a9ff684fcb0d071d194543699d895`；原G/cache保持既有release，失败启动6阶段按technical_recovery映射替代，科学矩阵不变。保留三张卡后按GPU0–4实际可用槽位运行，其他owner已占槽计入每卡总量。
