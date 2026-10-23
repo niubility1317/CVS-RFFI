@@ -5,6 +5,7 @@ from collections import defaultdict
 import csv
 import json
 import math
+import re
 from pathlib import Path
 import xml.etree.ElementTree as ET
 import zipfile
@@ -72,6 +73,7 @@ def verify(root,archives=False):
     assert manifest['font']=='Times New Roman' and manifest['dpi']==4800
     Image.MAX_IMAGE_PIXELS=1_500_000_000
     fonts=set()
+    figure_text={}
     for r in figures:
         stem=r['stem']
         assert r['data_charts']==1 and r['no_subtitle'] and r['no_footer'] and r['canvas_clipping_checked']
@@ -85,17 +87,45 @@ def verify(root,archives=False):
         svg=ET.parse(root/'svg'/(stem+'.svg')).getroot();ns='{http://www.w3.org/2000/svg}'
         assert svg.findall('.//'+ns+'text') and not svg.findall('.//'+ns+'image')
         pdf=PdfReader(root/'pdf'/(stem+'.pdf'));page=pdf.pages[0];text=page.extract_text()
+        figure_text[r['number']]=text
         assert len(pdf.pages)==1 and f'Fig. {r["number"]}.' in text
         assert not any(token in text for token in ('Historical','historical','PAMF residual','PAMF SIG_TIME','Whiskers:'))
+        assert not re.search(r'\bF(?:0[1-9]|1[0-9]|2[01])\b|T1 \+ G-L|\bG-LU?\b',text),stem
         for item in page['/Resources'].get_object()['/Font'].get_object().values():
             font=str(item.get_object()['/BaseFont']);assert 'TimesNewRoman' in font;fonts.add(font)
     assert len(PdfReader(root/'all_figures.pdf').pages)==40
+    main=[r for r in figures if r['role']=='main'];supp=[r for r in figures if r['role']=='supplementary']
+    assert len(main)==18 and len(supp)==22
+    assert len(PdfReader(root/'main_figures.pdf').pages)==len(main)
+    assert len(PdfReader(root/'supplementary_figures.pdf').pages)==len(supp)
+    assert next(r for r in figures if r['number']==13)['role']=='main'
+    assert all(next(r for r in figures if r['number']==i)['role']=='supplementary' for i in (12,14,15,16,40))
+    for i in (2,3,5,6,17,24):
+        assert all(k in figure_text[i] for k in ('Before (%)','After (%)','Change (pp)'))
+    assert '70.60' in figure_text[2] and '77.65' in figure_text[2]
+    for i in (7,8,9,10):assert 'not tested' in figure_text[i]
+    for name in ('Complete recognizer','Remove cross-receiver','Remove paired consistency','Remove selective self-'):
+        assert name in figure_text[13],name
+    assert all(s in figure_text[13] for s in ('77.65','78.06','76.63','77.85'))
+    assert '84.39' in figure_text[14] and 'Clean accuracy (%)' in figure_text[14]
+    assert 'Accuracy difference' not in figure_text[14] and 'T1 minus variant' not in figure_text[14]
+    assert 'no restoration' in figure_text[28] and '→' in figure_text[28]
+    with (root/'experiment_names.csv').open(encoding='utf-8-sig') as stream:names=list(csv.DictReader(stream))
+    assert len(names)==71 and len({(r['group'],r['original_id']) for r in names})==71
+    assert all(r['figure_name'] and r['chinese_name'] and r['comparison_reference'] for r in names)
     report=PdfReader(root/'PAMF_结果总结_20261023.pdf');assert len(report.pages)==12
     text='\n'.join(p.extract_text() for p in report.pages)
     for token in ('84.48','77.65','11.47','-0.1336','-0.1646','2.34','217','1,850'):
         assert token in text,token
     assert all(len(p.extract_text())>300 for p in report.pages)
     assert all(len(p.images)==0 for p in report.pages),'Scientific report figures must remain vectors'
+    assert '补充：二十一项识别器细诊断' in report.pages[-1].extract_text()
+    guide=PdfReader(root/'PAMF_逐图说明_20261023.pdf');assert len(guide.pages)==41,len(guide.pages)
+    assert all(len(p.images)==0 for p in guide.pages)
+    explanations=read(root/'analysis/figure_explanations.json');assert len(explanations)==40
+    for i,p in enumerate(guide.pages[1:],1):
+        text=p.extract_text();assert f'Fig. {i}' in text and all(s in text for s in ('问题：','读法：','结果：','边界：')),(i,text[:80])
+        assert all(explanations[i-1][k] for k in ('question','encoding','result','boundary'))
     with (root/'source_data/resource_rankings.csv').open(encoding='utf-8-sig') as stream:
         resources=list(csv.DictReader(stream))
     groups=defaultdict(list)
@@ -112,6 +142,10 @@ def verify(root,archives=False):
         actual_three_F_seeds=True,six_scene_SD_reconciled=True,negative_effects_retained=True,
         resource_panels=7,resource_rows=47,best_first_true_proportions=True,
         timing_cohorts_separate=True,no_new_models_inference_or_truth_access=True)
+    result.update(main_figures=len(main),supplementary_figures=len(supp),guide_pages=len(guide.pages),
+        semantic_experiment_names=71,primary_three_module_ablation=True,
+        absolute_endpoints_with_paired_differences=True,five_source_condition_explicitly_unmeasured=True,
+        all_40_figures_explained=True)
     if archives:
         stems={r['stem'] for r in figures}
         for kind in ('PNG','TIFF'):

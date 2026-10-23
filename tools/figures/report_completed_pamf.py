@@ -22,6 +22,7 @@ from PIL import Image as PILImage
 from pypdf import PdfReader, PdfWriter, Transformation
 from collect_completed_pamf import PROTOCOLS, SIX, VIEWS, read, write
 from analyze_completed_pamf import one, rows
+from pamf_experiment_names import PROTOCOL_CN, CORE_CN, FINE_CN, ARCH_CN, G_CN, FAIR_CN
 
 
 def pm(r,digits=2):
@@ -43,15 +44,15 @@ def build(root):
     blocks.append(dict(type='title',text='PAMF Phase1 实验结果与结论'))
     p('数据截至 2026 年 10 月 23 日。当前方法固定为 T1-E50（13L＋37U）识别器与 DURA v1.0 恢复器；本报告汇总近期已完成的有效实验，不改变默认方法。')
     heading('主要结论')
-    p('最充分的正面证据来自 DURA 的信道鲁棒性增益；PAMF 完整系统也保持了对外部方法的优势。训练机制的结论应更克制：成对一致性 B 有较一致的条件收益，CRIC A、原生选择性半监督 C 以及它们与恢复器的协同，尚未显示稳定的普遍正贡献。')
-    table(['F0 指标','结果'],[
+    p('最充分的正面证据来自 DURA 的信道鲁棒性增益；PAMF 完整系统也保持了对外部方法的优势。综合模块消融已完成：跨接收机身份对比、成对预测一致性、选择性半监督自训练，八种组合各三个识别器种子。成对预测一致性有较一致的条件收益，其余两组及正协同尚未显示稳定的普遍正贡献。21 项细诊断移至补充部分。')
+    table(['主接收机划分指标','结果'],[
         ['PAMF clean 准确率',pm(main(v='clean'))+'%'],
         ['PAMF 六景平均准确率',pm(main())+'%'],
         ['PAMF clean Macro-F1',pm(one(t,'main',protocol='F0',regime='native_cric',readout='DURA-LU',
             test='main',dimension='overall',stratum='ALL',metric='macro_f1',view='clean'))+'%'],
         ['PAMF 六景平均 Macro-F1',pm(one(t,'main',protocol='F0',regime='native_cric',readout='DURA-LU',
             test='main',dimension='overall',stratum='ALL',metric='macro_f1',view=SIX))+'%'],
-        ['DURA 相对 raw 的六景增益',pm(f['final_F0_gain'])+' pp'],
+        ['无恢复器 → DURA：六景准确率',pm(main(ro='raw'))+'% → '+pm(main())+'%'],
         ['PAMF low urban 准确率',pm(main(v='practical_low_urban'))+'%']], [87,78])
     p('DURA-LU 在 17/17 个数据契约上提高了原生 T1 的六景均值，增益为 0.99 至 8.67 个百分点；但 5/17 个契约的 clean 均值变化非正，不能写成“所有条件无损”。')
     p(f'给外部方法同样接入 DURA 后，F0 最强的 SDG Full＋PL 六景均值为 {pm(f["external_F0_best_full"])}%，PAMF 为 {pm(main())}%，均值高 {f["native_vs_best_external_F0_GLU_pp"]:.2f} 个百分点。这是完整注册配方的比较，不是某一个训练组件的贡献。')
@@ -71,22 +72,22 @@ def build(root):
     p('最终完整归档确认有效阶段全部结束：运行与排队均为 0。217 个排除历史阶段、旧输入绑定错误和已被 r02 替代的旧时延失败均不进入有效结论。不同面板会复用同一权重，逻辑模型数和成本不能直接跨面板相加。')
     p('除注明的配对 G 学生与 m3 对角完整系统外，均为三个 F seed 条件于同一固定 G 的结果。六景均值先在每个 seed 内平均，再计算三个 seed 的样本标准差。文中“±”和图中误差线均为样本标准差，不是置信区间或显著性检验。')
     p('F0 每景为 168,000 条物理观测、七个目标接收机；源数量曲线为固定六个目标接收机、每景 144,000 条观测。曲线仅使用 m＝1、2、3、4、6，不插入 F0 的五源结果。ManyRx 使用其原登记 10 类，其余契约为 6 类，不把异质契约混成一个总体平均。')
-    p('G-L 与 G-LU 指恢复器及其祖先使用 L 或 L/U 源 IQ；G 不读取 TX 标签、训练好的 F 或目标数据。只有监督 F＋G-L 是完整 L-only 系统；普通 PL F＋G-L 仍通过 F 使用 U。所有测试预测先冻结，再独立 truth-last 评分。')
+    p('图例统一使用“无恢复器”“DURA：标注源样本池”“DURA：全源样本池”。原 G-L 表示恢复器及祖先只使用 L 的 IQ，原 G-LU 使用 L＋U 的 IQ；两者均不读取 TX 标签、训练好的识别器或目标数据。只有监督识别器＋标注池恢复器才是完整 L-only 系统。实验命名说明.md 和 experiment_names.csv 保存新旧名称映射。')
     page();heading('2. 当前最终 PAMF 的七景表现')
     scene_cn=['Clean','郊区 high','郊区 mid','郊区 low','Urban high','Urban mid','Urban low']
-    table(['场景','raw T1 (%)','T1＋G-L (%)','PAMF：T1＋G-LU (%)'],[
+    table(['场景','无恢复器 (%)','DURA：标注池 (%)','PAMF 完整系统 (%)'],[
         [label,pm(main(ro='raw',v=v)),pm(one(t,'core',bits='111',readout='DURA-L',view=v,**common)),pm(main(v=v))]
         for label,v in zip(scene_cn,VIEWS)], [34,43,43,45])
     p('六景平均由 '+pm(main(ro='raw'))+'% 提升至 '+pm(main())+'%，配对增益为 '+pm(f['final_F0_gain'])+' 个百分点。clean 的配对变化为 +0.0895 ± 0.0531 个百分点，保持较好；low urban 仍是最主要的性能缺口。')
     image(1,'final_channels')
     p('目标检查以同一原生 T1 的 raw clean 均值 84.3944% 为参照：郊区 high/mid/low 与 urban high 的差距均在 5 个百分点以内；urban mid 的差距为 9.9972 个百分点。不能使用旧 F50 或其他契约的分数替换当前最终 T1。')
     page();heading('3. 十七个数据契约：增益稳定，但原生配方并非处处最好')
-    table(['契约','raw 六景 (%)','PAMF 六景 (%)','恢复增益 (pp)'],[
-        [protocol,pm(main(p=protocol,ro='raw')),pm(main(p=protocol)),pm(one(t,'main_effects',protocol=protocol,
-            effect='native_cric_G_minus_raw',readout='DURA-LU',view=SIX,**common))] for protocol in PROTOCOLS], [31,44,45,45])
+    table(['数据条件','无恢复器六景 (%)','PAMF 六景 (%)','配对变化 (pp)'],[
+        [PROTOCOL_CN[protocol],pm(main(p=protocol,ro='raw')),pm(main(p=protocol)),pm(one(t,'main_effects',protocol=protocol,
+            effect='native_cric_G_minus_raw',readout='DURA-LU',view=SIX,**common))] for protocol in PROTOCOLS], [51,38,38,38])
     p('所有 17 个契约的六景均值增益为正；clean 的变化并非全部为正，m1-fixed 为 −0.6044 ± 0.2159 个百分点。原生 T1＋G-LU 相对监督控制在 3/17 个契约非正，相对普通 PL 在 5/17 个契约非正，不能概括为原生半监督配方全面占优。')
     p('自然预算与固定预算源数量曲线分开作图，保留非单调变化。m3-natural 的完整 3×3 F/G 交叉中，三组联合 F/G 种子对角结果为 clean 82.1000 ± 1.2192%、六景 72.8219 ± 1.0367%；九格不是九个独立完整系统，也不代表其他 16 契约的 G 方差。')
-    p('对应图 2 至图 6 分别展示六景恢复增益、clean 变化和两组配方差；全部图表保留在单独的矢量合集。')
+    p('图 2、3、5、6 同时展示两端实际准确率，增幅仅作辅助。图 7 至图 10 是固定六个目标接收机的源数量曲线，仅测 1、2、3、4、6，5 的刻度明确标记未测试；4 至 6 的虚线只连接已测点，不是五源实测值。F0 虽为五源，但目标集合不同，不能拼入或插值补造。')
     page();heading('4. 外部方法接入同一恢复器后，PAMF 仍有完整系统优势')
     names={'riei':'RIEI','drift':'DRIFT','ibrff':'IB-RFF','sdg':'SDG'}
     ext_rows=[]
@@ -95,25 +96,22 @@ def build(root):
             ext_rows.append([names[fam]+' '+label]+[pm(one(t,'external_full',protocol='F0',family=fam,
                 regime=reg,variant='full',readout=ro,test='main',view=SIX,metric='accuracy')) for ro in ('raw','DURA-L','DURA-LU')])
     ext_rows.append(['PAMF 原生 T1',pm(main(ro='raw')),pm(one(t,'core',bits='111',readout='DURA-L',view=SIX,**common)),pm(main())])
-    table(['F0 方法','raw 六景 (%)','G-L 六景 (%)','G-LU 六景 (%)'],ext_rows,[45,40,40,40])
+    table(['主划分方法','无恢复器六景 (%)','标注池 DURA (%)','全源池 DURA (%)'],ext_rows,[45,40,40,40])
     p('DURA-LU 对全部 86 个已登记 Full/Full＋PL 主任务条件的六景均值均有正增益；G-L 为 84/86。G-LU 比 G-L 更好的条件为 55/86，因此“使用更多无标签源 IQ”也不是普遍正收益。未登记的外部 PL 条件显示为 N/A，不填成 0，也不补造实验。')
     image(26,'external_F0_DURA-LU')
     p('公平的全 L 比较另列：F0 监督 PAMF＋G-L 为 '+pm(gf('Sup+G-L'))+'%，外部 Full＋G-L 中最高为 SDG 的 '+pm(one(t,'external_full',protocol='F0',family='sdg',regime='supervised',variant='full',readout='DURA-L',test='main',view=SIX,metric='accuracy'))+'%。原生 T1、普通 PL 控制和 F20 监督正则配方不能互相改标。')
     page();heading('5. 核心机制：支持 B 的条件收益，不支持稳定正协同')
     p('A 为同 TX 跨 RX 的 CRIC；B 为 ordinary/raw 成对随机预测的对称 KL；C 为 own EMA、原生门控、伪标签和无标签熵。八组合保留相同 CE 剂量和部署骨架，000 不是 F15 的独立 CE 配方。')
-    table(['机制：完整 111 减移除项','raw clean (pp)','raw 六景 (pp)','G-LU 六景 (pp)'],[
-        [label,pm(one(t,'core_effects',effect=e,readout='raw',view='clean',**common)),
-         pm(one(t,'core_effects',effect=e,readout='raw',view=SIX,**common)),
-         pm(one(t,'core_effects',effect=e,readout='DURA-LU',view=SIX,**common))]
-        for label,e in [('A：CRIC','A_at_other_groups_on'),('B：成对一致性','B_at_other_groups_on'),('C：选择性半监督','C_at_other_groups_on')]], [48,39,39,39])
+    table(['综合模块设置','无恢复 clean (%)','无恢复六景 (%)','完整 DURA 六景 (%)'],[
+        [CORE_CN[b]]+[pm(one(t,'core',bits=b,readout=r,view=v,**common))
+          for r,v in [('raw','clean'),('raw',SIX),('DURA-LU',SIX)]] for b in ('111','011','101','110')], [48,39,39,39])
+    p('三组分别整体启停：跨接收机身份对比包括同 TX／不同物理 RX 正对、浅中层约束；成对预测一致性包括 ordinary/raw 各槽全部对称 KL；选择性自训练包括 EMA 教师、全部筛选、伪标签和无标签熵。共同监督 CE 剂量与部署骨架固定。主表四行，完整八组合放补充图 12；并非把 21 个细项重新改个组名。')
     p('B 的 raw clean 差在 3/3 seed 为正，接入 G-L/G-LU 后的六景差也在 3/3 为正；raw 六景差本身很小。A 与 C 在完整组合中未显示稳定正贡献。A 的边际 clean 效应与条件效应方向不同，说明机制依赖上下文，不能用某个正的边际均值代替完整组合的负差。')
     image(13,'core_contributions')
     p('匹配最终 T1 与修复 F16 的 CRIC×G 四格：G 在 T1 和 F16 中的六景增益分别为 +7.0455 ± 0.5949 和 +7.0675 ± 0.7913 个百分点；交互为 −0.0220 ± 1.2449 个百分点。当前证据不支持稳定正协同，标准差也不构成显著性检验。')
     page();heading('6. 二十一项细 F 诊断：完整保留正负结果')
-    fine_cn=['浅层 CRIC','中层 CRIC','末层 CRIC','关闭成对 KL','单次随机前向','单个 signature 视图','去时间坐标',
-        '去 signature 分支','去 PA 分支','去参考分支','student 作为 PL 源','去相邻批门控','去强视图门控','去 U 熵项',
-        'CE＋默认增强配方','关闭 CRIC','As 视图换 raw','恢复 As KL','减少 raw CE 剂量','监督 T1 配方','普通 PL 代替原生 SSL']
-    table(['设置','改变','raw clean (%)','raw 六景 (%)','G-LU 六景 (%)'],[
+    fine_cn=FINE_CN
+    table(['原 ID','细项改变','无恢复 clean (%)','无恢复六景 (%)','完整 DURA 六景 (%)'],[
         [f'F{i:02d}',label,pm(one(t,'fine',arm=f'F{i:02d}',readout='raw',view='clean',**common)),
          pm(one(t,'fine',arm=f'F{i:02d}',readout='raw',view=SIX,**common)),
          pm(one(t,'fine',arm=f'F{i:02d}',readout='DURA-LU',view=SIX,**common))]
@@ -121,10 +119,9 @@ def build(root):
     p('F17 把 As 视图替换为 raw 后，raw 六景降至 41.5403 ± 4.1600%，但加 G 后恢复到 77.9813 ± 0.4494%。因此恢复器会遮蔽部分 raw 敏感性，不能只根据恢复后的接近分数判断训练结构没有作用。')
     p('F15 与最终 T1 的 raw 六景差约 24.25 个百分点，不能全部归于半监督：两者增强、损失和前向剂量不同。F05 改变随机前向与计算，F19 同时降低 CE 剂量和计算。F21 的普通 PL 接受率为 94.8482 ± 0.1073%；原生门控完整接受率在此次紧凑元数据中缺失，保持留空。')
     page();heading('7. 匹配监督结构：分支有作用，精细物理设计的必要性尚不充分')
-    arch_names={'X3_CE':'完整 X3-CE','SIG_TIME':'单 signature 视图','NO_TIME':'去时间坐标','SHUFFLE_TIME':'打乱时间坐标',
-        'NO_SIGNATURE':'去 signature','NO_PA':'去 PA','NO_REFERENCE':'去参考分支','WRONG_REFERENCE':'扰动参考','COV_X3':'协方差替代'}
+    arch_names=ARCH_CN
     arch_order=list(arch_names)
-    table(['严格 L-only 结构','raw clean (%)','raw 六景 (%)','G-L 六景 (%)'],[
+    table(['匹配纯监督结构','无恢复 clean (%)','无恢复六景 (%)','标注池 DURA (%)'],[
         [arch_names[a]]+[pm(one(t,'physics',architecture=a,readout=ro,test='main',view=v,metric='accuracy'))
             for ro,v in [('raw','clean'),('raw',SIX),('DURA-L',SIX)]] for a in arch_order],[45,40,40,40])
     p('本面板是匹配 CE＋sat.68、LS0、无 U/EMA/CRIC/RDrop 的 50 轮结构消融。去 PA、signature 和参考分支分别使恢复后六景均值低约 2.79、2.17 和 1.48 个百分点；去 PA 对 raw 鲁棒性的影响更大。')
@@ -132,21 +129,20 @@ def build(root):
     image(19,'physics_GL_channels')
     p('源侧诊断只使用同一 720 条 L、90 个 TX/RX/day 层和 11 项固定干预，不拟合额外分类头。CFO 下的翻转和特征几何只说明敏感性与归纳偏置；模拟 PA 不保证身份保持，不能据此宣称完成真实硬件解耦或完全接收机不变。')
     page();heading('8. 无标签数据公平性：区分 F、G 与完整系统')
-    table(['F0 普通 PL × G 四格','clean (%)','六景 (%)'],[[cell,pm(gf(cell,'clean')),pm(gf(cell))]
+    table(['普通伪标签与恢复器数据条件','clean (%)','六景 (%)'],[[FAIR_CN[cell],pm(gf(cell,'clean')),pm(gf(cell))]
         for cell in ('Sup+G-L','PL+G-L','Sup+G-LU','PL+G-LU')],[65,50,50])
     p('F0 中，普通 PL 相对监督的六景差在 G-L、G-LU 下分别为 −0.1336 ± 0.5513 和 −0.1646 ± 0.1338 个百分点。给 G 增加 U 在这两种 F 配方下分别带来 +0.9401 ± 0.3669 和 +0.9091 ± 0.2949 个百分点；交互为 −0.0310 ± 0.4201。')
     p('跨 17 个契约，普通 PL 的均值提升在两种 G 条件下都是 13/17 为正；G 增加 U 的均值提升在监督 F 下为 13/17、PL F 下为 12/17。交互仅 5/17 为正，不支持“F 与 G 使用 U 必然正协同”。')
     image(30,'fairness_effects',155)
     p('另外，严格全 L 的 F15 CE＋G-L 六景为 74.4888 ± 1.1408%，F20 监督 T1＋G-L 为 76.8537 ± 0.5918%；两者前向剂量为每更新 384/768 个 L-packet，配方差值不能当作一个正则项的因果贡献。它们不是上表的匹配监督控制。')
     page();heading('9. 恢复器机制：完整恢复优于极简版本，初始化与蒸馏有条件收益')
-    g_names={'raw':'Raw T1','default':'默认 DURA','coarse_only':'仅 coarse','prior_no_CG':'去 CG','no_image_action':'去 image action',
-        'no_innovation_input':'去 residual input','copy_no_KD':'复制、不蒸馏','random_with_KD':'随机初始化＋蒸馏','random_no_KD':'随机、不蒸馏'}
+    g_names=G_CN
     g_table=[]
     for arm,label in g_names.items():
         r=one(t,'G_summary',arm=arm,view='six_view_mean');c=one(t,'G_summary',arm=arm,view='clean')
         g_table.append([label,str(r['G_parameters']),f'{float(c["accuracy_mean"]):.2f} ± {float(c["accuracy_sd"]):.2f}',
             f'{float(r["accuracy_mean"]):.2f} ± {float(r["accuracy_sd"]):.2f}'])
-    table(['G 设置','G 参数','clean (%)','六景 (%)'],g_table,[53,27,42,43])
+    table(['恢复器设置','恢复器参数','clean (%)','六景 (%)'],g_table,[53,27,42,43])
     p('仅 coarse 比默认 DURA 低 5.54 个百分点；去 CG、去 residual input 分别低约 0.71、0.87 个百分点。完整物理求解与 prior 具有实际收益，不能只凭更小参数量判断压缩成功。')
     copy=one(t,'G_init_KD',contrast='copy_effect_without_KD',view='six_view_mean')
     kd=one(t,'G_init_KD',contrast='KD_effect_from_random',view='six_view_mean')
@@ -188,10 +184,20 @@ def build(root):
         ['全 L 与 G 消融','Lonly.csv；G_summary.csv；G_init_KD.csv'],
         ['外部 DURA 与公平性','external_full_seed.csv；external_full.csv；gfactor.csv'],
         ['效率','unified_timing.csv；fine_timing.csv；structure_timing.csv']], [52,113])
+    # The fine diagnostics are supplementary, after the complete main argument.
+    start=next(i-1 for i,b in enumerate(blocks) if b['type']=='heading' and b['text'].startswith('6. 二十一'))
+    end=next(i-1 for i,b in enumerate(blocks) if b['type']=='heading' and b['text'].startswith('7. 匹配'))
+    appendix=blocks[start:end];del blocks[start:end]
+    appendix[1]['text']='补充：二十一项识别器细诊断（非综合模块主消融）'
+    blocks.extend(appendix)
+    counter=0
+    for b in blocks:
+        if b['type']=='heading' and b['text'][:1].isdigit():
+            counter+=1;b['text']=str(counter)+'. '+b['text'].split('. ',1)[1]
     return blocks
 
 
-def render(root,blocks):
+def render(root,blocks,filename='PAMF_结果总结_20261023',document_title='PAMF Phase1 实验结果与结论'):
     fonts=Path('C:/Windows/Fonts')
     pdfmetrics.registerFont(TTFont('CN',str(fonts/'simsun.ttc'),subfontIndex=0))
     pdfmetrics.registerFont(TTFont('TNR',str(fonts/'times.ttf')))
@@ -246,10 +252,10 @@ def render(root,blocks):
         canvas.setFillColor(muted);canvas.setFont('TNR',8)
         canvas.drawString(20*mm,11.5*mm,'PAMF Phase1 | 2026-10-23')
         canvas.drawRightString(190*mm,11.5*mm,str(doc.page));canvas.restoreState()
-    report=root/'PAMF_结果总结_20261023.pdf'
-    layout=root/'analysis/report_layout.pdf'
+    report=root/(filename+'.pdf')
+    layout=root/'analysis'/(filename+'_layout.pdf')
     doc=SimpleDocTemplate(str(layout),pagesize=A4,rightMargin=20*mm,leftMargin=20*mm,
-        topMargin=17*mm,bottomMargin=21*mm,title='PAMF Phase1 实验结果与结论',author='PAMF research results')
+        topMargin=17*mm,bottomMargin=21*mm,title=document_title,author='PAMF research results')
     doc.build(story,onFirstPage=footer,onLaterPages=footer)
     # Merge the original scientific PDF pages into the reserved boxes. Text and
     # marks remain vectors rather than downsampling the report to preview DPI.
@@ -260,11 +266,11 @@ def render(root,blocks):
             vector=PdfReader(path).pages[0]
             transform=Transformation().scale(w/float(vector.mediabox.width),h/float(vector.mediabox.height)).translate(x,y)
             writer.pages[page].merge_transformed_page(vector,transform,over=False)
-        writer.add_metadata({'/Title':'PAMF Phase1 实验结果与结论','/Author':'PAMF research results'})
+        writer.add_metadata({'/Title':document_title,'/Author':'PAMF research results'})
         with report.open('wb') as out:writer.write(out)
     layout.unlink()
-    (root/'PAMF_结果总结_20261023.md').write_text('\n'.join(md),encoding='utf-8')
-    write(root/'analysis/report_content.json',blocks)
+    (root/(filename+'.md')).write_text('\n'.join(md),encoding='utf-8')
+    write(root/'analysis'/('report_content.json' if filename=='PAMF_结果总结_20261023' else filename+'_content.json'),blocks)
     print(json.dumps(dict(status='REPORT_CREATED',path=str(report)),ensure_ascii=False))
 
 

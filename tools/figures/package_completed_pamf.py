@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import shutil
 import zipfile
+from pypdf import PdfReader
 from verify_completed_pamf import verify
 
 
@@ -16,7 +17,8 @@ def package(root,project):
     code=root/'reproduce';code.mkdir(exist_ok=True)
     for name in ('collect_completed_pamf.py','analyze_completed_pamf.py','plot_completed_pamf.py',
                  'report_completed_pamf.py','verify_completed_pamf.py','package_completed_pamf.py',
-                 'paper_publication_style.py','plot_pamf_paper_figures.py'):
+                 'paper_publication_style.py','plot_pamf_paper_figures.py','pamf_experiment_names.py',
+                 'explain_completed_pamf.py'):
         shutil.copyfile(Path(__file__).with_name(name),code/name)
     (root/'README_zh.md').write_text('''# PAMF Phase1 已完成实验汇总
 
@@ -24,16 +26,21 @@ def package(root,project):
 
 ## 交付内容
 
-- `PAMF_结果总结_20261023.pdf`：12 页中文总结，含完整面板说明、主要结果表、负结果、证据边界和论文结论；科研图为嵌入的原始矢量 PDF。
+- `PAMF_结果总结_20261023.pdf`：中文结果总结，主文突出三个综合模块的四行消融，21 项细诊断移到补充部分；科研图保留原始矢量。
 - `PAMF_结果总结_20261023.md`：可编辑的同内容文本。
+- `PAMF_逐图说明_20261023.pdf` 及 `.md`：每张图的研究问题、坐标／图例、结果和边界，并解释源数量图为何没有五源点。
+- `main_figures.pdf`、`supplementary_figures.pdf`：主图和补充图分开，保留原 Fig. 编号用于追溯。
 - `all_figures.pdf`：40 页矢量图合集。
+- `实验命名说明.md`、`experiment_names.csv`：语义命名与原始 ID 对照；原 run、权重和评分目录不改名。
 - `pdf/`、`svg/`：40 张独立矢量图，Times New Roman，SVG 文字可编辑。
 - `png/`、`tiff/`：40 张 4800 dpi 位图，183 mm 宽对应 34,582 像素；TIFF 使用 LZW。
 - `captions_en.md`：英文图注、统计定义与数据口径，独立于图片；图内无说明性副标题或图下说明。
 - `source_data/`、`analysis/`：冻结汇总、逐种子聚合、配对效应、结论数据与来源记录。
 - `reproduce/`：仅做读取、统计、制图和导出的 Python 源码。
 
-40 张图均为单一数据图；资源图使用从零开始的线性横向柱，最优在上、柱长为实际值／最优值×100%，柱右标出实际数值。相近结构的准确率点图使用适当的数值范围；F01–F14 另有独立细节图，完整 F01–F21 结果仍保留。
+40 张图均为单一数据图。恢复与训练对照同时展示两端实际准确率，增幅仅作辅助；细诊断改为实际准确率及完整识别器参照。资源图从零开始，最优在上、柱长为实际值／最优值×100%，柱右标实际数值。
+
+主模块消融为图 13：完整识别器、去跨接收机身份对比、去成对预测一致性、去整组选择性自训练。图 12 的八组合及图 14/15/16/40 的细项为补充。源数量图 7 至 10 明示五源未测试；不能用目标集合不同的五源主实验拼入，也不插值造点。
 
 ## 主要结论
 
@@ -63,7 +70,8 @@ ManyRx 为其原登记 10 类，其余契约 6 类；F0 每景 168000 包/七目
 2. `python reproduce/analyze_completed_pamf.py --source NEW/source_data/snapshot.json --output NEW/analysis`
 3. `python reproduce/plot_completed_pamf.py --source NEW/source_data/snapshot.json --output NEW --dpi 4800`
 4. `python reproduce/report_completed_pamf.py --root NEW`
-5. `python reproduce/verify_completed_pamf.py --root NEW`
+5. `python reproduce/explain_completed_pamf.py --root NEW`
+6. `python reproduce/verify_completed_pamf.py --root NEW`
 
 `collect_completed_pamf.py` 仅用于在原项目中从既有已完成评分重新汇集；普通重绘不需要原项目或服务器。完整 RX/TX/day 分层与大混淆矩阵输入保留在原实验产物，本包提供图表使用的 overall 与逐 seed 汇总，不复制 IQ、权重、运行日志或私有控制器状态。
 ''',encoding='utf-8')
@@ -84,7 +92,9 @@ ManyRx 为其原登记 10 类，其余契约 6 类；F0 每景 168000 包/七目
             if z.testzip() is not None:raise ValueError('Archive readback failed')
         outputs[kind]=dict(file=archive.name,bytes=archive.stat().st_size)
     verify(root,archives=True)
-    delivery=dict(status='VERIFIED',as_of_hkt='2026-10-23',report_pages=12,figures=40,dpi=4800,
+    delivery=dict(status='VERIFIED',as_of_hkt='2026-10-23',
+        report_pages=len(PdfReader(root/'PAMF_结果总结_20261023.pdf').pages),
+        guide_pages=len(PdfReader(root/'PAMF_逐图说明_20261023.pdf').pages),figures=40,dpi=4800,
         archives=outputs,negative_results_retained=True,new_training_or_inference=False,
         vector_report=True,archive_readback_verified=True)
     (root/'delivery_manifest.json').write_text(json.dumps(delivery,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
