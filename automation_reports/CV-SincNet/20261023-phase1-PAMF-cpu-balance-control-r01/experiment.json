@@ -15,7 +15,7 @@
   "replaces_run_id": "20261023-phase1-PAMF-physics-device-control-r01",
   "authorization": "User requested uniform task distribution and faster completion on 2026-10-23 in task 01a09085-1de1-7f02-a089-94fc3dc3f851.",
   "code": {
-    "commit": "Resource release commit resolved from the committed current HEAD by publisher and recorded in runtime/submit evidence",
+    "commit": "4ce21e7955003375d804dbecc12b745561b2c1b0",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 ordinary account; unchanged CVS-RFFI Python; each scorer2 CPU threads and CUDA disabled",
     "cwd": "PROJECT/releases/20261023-phase1-PAMF-cpu-balance-control-r01",
@@ -120,5 +120,17 @@
     "Scope and focused validation: docs/PAMF_CPU_SCORE_BALANCE_20261023.md",
     "Existing known replaced historical failure is preserved, not reset; old seven user-stopped invalid F rows remain stopped."
   ],
-  "registered_at": "2026-10-23T02:34:23+00:00"
+  "registered_at": "2026-10-23T02:34:23+00:00",
+  "runtime_evidence": {
+    "status": "VERIFIED_COMPLETE_WITH_REPLACED_HISTORICAL_FAILURE",
+    "existing_job_count": 2296,
+    "cpu_score_limit": 4,
+    "poll_seconds": 1,
+    "scientific_jobs_changed": false,
+    "evidence": "local_artifacts/cpu_score_balance_20261023/verification_first.json",
+    "final_evidence": "local_artifacts/cpu_score_balance_20261023/completion_artifact.json",
+    "remaining_stages": 0,
+    "completed_after_handover": 33,
+    "completion_seconds": 102.969
+  }
 }

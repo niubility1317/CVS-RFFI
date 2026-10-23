@@ -24,3 +24,15 @@ Exact local command: verified Python `-m experiments.cric_dura_comparison.publis
 Stop rule remains the existing two-identical-unresolved-technical-fingerprints rule. No automatic retry of old failures or stopped input-invalid rows. Post-release verification must independently confirm dispatcher identity, actual CPU worker concurrency, log/completion growth, no CUDA score workers and preservation of the scientific job count/configuration. Actual throughput, not occupancy, determines the reported speedup.
 
 Local verification: five new CPU scheduling/handover tests and eleven existing GPU admission regressions PASS. The new tests were first observed failing on the missing behavior. One independent P0/P1 review returned PASS, checking ownership, dependencies, capacity, original scientific releases and output preservation; it made no edits or remote changes.
+
+## Verified result
+
+Execution commit `4ce21e7955003375d804dbecc12b745561b2c1b0` was published with one archive comparison and remote compile. Independent readback observed four real CPU score workers with CUDA disabled and two threads each; the old dispatcher retired without terminating a live science worker. The full 2296-job resolved list and original scientific execution releases were retained.
+
+At first readback, CPU busy was 30.4%, available RAM 396.7 GiB, no additional failure, and remaining stages had fallen from 33 at handover to eight. At the 10:38:03 server readback, all 33 remaining stages had completed within 154 seconds of submission. This is an observed upper bound, not an isolated matched-compute speedup experiment. Both aggregation jobs, all 516 external scores, all 51 PL/G-factor scores and the device-recovery score were complete. The effective final count was 2078 complete plus the single historical failed unified-timing job; no queued or running stages and no CUDA process remained.
+
+Independent completion-artifact readback further located the final state write at 10:37:12 server time, 102.969 seconds after the submit artifact. Thus the actual remaining queue completed in approximately 103 seconds after handover; the earlier 154-second statement was the first observation's conservative upper bound.
+
+The controller's final `PARTIAL_TECHNICAL_FAILURE` status preserves the old RIEI import failure. Its independently completed latency-r02 replacement remains the valid result; this warning is not a new parallel-scoring fault and was not erased to manufacture success. All seven user-stopped input-invalid F rows remain stopped. This delivery closes server-side computation/scoring only, not subsequent manuscript/figure/export acceptance.
+
+Evidence: `local_artifacts/cpu_score_balance_20261023/verification_first.json` and `verification_final.json`; immutable launch archive/runtime/submit under its `release-r01` folder. No IQ, truth arrays, checkpoints or raw runtime files are committed.
