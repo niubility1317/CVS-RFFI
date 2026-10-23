@@ -1,6 +1,6 @@
 # PAMF 有标签梯度保护：固定源域假设
 
-状态：PLANNED。只固定源域依据、算法与三 seed 矩阵，尚未实现、审查、发布、smoke、训练或访问本版目标。原 UCRIC／UMIX 健康任务保持。
+状态：实现与 80 项聚焦检查 PASS，唯一一次独立 P0/P1 审查 PASS／无发现。尚未发布、真实 smoke、训练或目标预测；原固定配方、父来源及矩阵保持。
 
 源依据：同原 RXPSM E30 的 24 个受控源域梯度 probe 中，整体 13 个、中层 t2 和默认分类头各 14 个出现 L/U 负内积；最大 U/L 范数比在 t2 为 1.171557、分类头为 1.022838。源类别覆盖、原型覆盖和教师 source-V 诊断没有要求更换原父来源。原始证据与局限见九模型 reference 的 source_gradient_diagnostic.md／e30_source_gradient_diagnostic.json。
 
@@ -17,3 +17,6 @@ GPU5／6／7 对应 seed2026092701／02／03。等待同 seed UCRIC 的 raw＋DU
 每行冻结后自动完成 PAMF raw 和用户固定 DURA v1.0 同一 F 各 clean＋六 Practical，每景168000；全部14项决策固定后独立 truth-last。沿用同 readout 的 F20 监督／F21 普通 PL 三 seed 基线，逐 seed／景／RX／TX／day、SD、配对纠错损伤、曝光及增量／累计成本全部报告。原 raw clean 至少 +1pp、六景严格超过 +1.5pp 对两个基线同时成立才满足 goal，DURA 不能替代。
 
 投影思想参考 [Gradient Surgery for Multi-Task Learning（NeurIPS 2020）](https://proceedings.neurips.cc/paper_files/paper/2020/hash/3fe78a8acf5fda99de95303940a2420c-Abstract.html)。本版为有标签优先的单侧投影加固定范数上限，是本项目待检验改动，不称原 PCGrad 完整复现。固定规则、父来源和矩阵在 UCRIC／UMIX 目标成绩读取前登记；不由其测试结果修改或选择性重跑，不声称新独立盲测。
+
+
+80 项检查覆盖投影及范数上限的解析例子、近零 L、组间隔离、缺失／非有限梯度、native identity_loss＋correction 抵消与上游缩放、隐藏 U 真值拒绝、原 EMA／曝光状态往返、无新增网络参数、原始父配置及双 owner GPU 等待、单 CPU scorer、raw＋同一 DURA 实际方法名，以及此前 PSM／PAIR／VIEW／UCRIC／UMIX 回归。显式梯度桥接只改变合并梯度，标量仍为 L＋U。真实 E30 source-only smoke 将逐参数核对普通 backward 的 .grad 与预制保护梯度，并核对每组约束、原默认头／教师权限；probe 丢弃，正式三 seed 重新加载原 E30。数学性质不等于 Adam 或目标准确率保证。

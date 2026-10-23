@@ -6,7 +6,7 @@ from pathlib import Path
 from experiments.cric_dura_comparison.io import read, write
 
 
-def smoke(rt, *, paired=False, u_cric=False, u_mixstyle=False):
+def smoke(rt, *, paired=False, u_cric=False, u_mixstyle=False, u_gradprotect=False):
     from experiments.cric_dura_comparison.bootstrap import activate, numerical_policy
     activate(rt)
     numerical_policy()
@@ -21,7 +21,10 @@ def smoke(rt, *, paired=False, u_cric=False, u_mixstyle=False):
     from .view_anchor_train import source_parents
 
     c = read(rt['rows'][0]['train_config'])
-    if u_mixstyle:
+    if u_gradprotect:
+        from .u_gradprotect import validate as validate_u_gradprotect
+        parents, _ = source_parents(c, validate_config=validate_u_gradprotect)
+    elif u_mixstyle:
         from .u_mixstyle import validate as validate_u_mixstyle
         parents, _ = source_parents(c, validate_config=validate_u_mixstyle)
     elif u_cric:
@@ -38,6 +41,8 @@ def smoke(rt, *, paired=False, u_cric=False, u_mixstyle=False):
         cfg['u_cric_smoke'] = True
     if u_mixstyle:
         cfg['u_mixstyle_smoke'] = True  # Cover both hooks; formal recipe retains p=.5.
+    if u_gradprotect:
+        cfg['u_gradprotect_smoke'] = True
     payload = torch.load(Path(parent) / 'final_ssdg.pth', map_location='cpu', weights_only=False)
     device = 'cuda:0'
     ctx = context(c)
@@ -73,7 +78,17 @@ def smoke(rt, *, paired=False, u_cric=False, u_mixstyle=False):
         total.backward()
         objective = holder['objective']
         head = model.id_backbone.encoder.core.id_backbone.cls_head.weight
-        if u_mixstyle:
+        if u_gradprotect:
+            expected = objective._smoke_expected
+            gradient_matches = all((p.grad is None if expected[n] is None else
+                p.grad is not None and torch.allclose(p.grad,expected[n],atol=1e-5,rtol=1e-5))
+                for n,p in model.named_parameters() if p.requires_grad)
+            constraints = all(v['applied_U_norm']<=v['L_norm']*(1+1e-6)+1e-8
+                and v['dot_after']>=-1e-6*max(1.,v['L_norm']*v['applied_U_norm'])
+                for v in objective._smoke_detail.values())
+            mechanism_ok = (objective.u_gradprotect_calls==1 and objective.pending_gradient_loss is None
+                and gradient_matches and constraints and objective.physical_seen==482078)
+        elif u_mixstyle:
             mechanism_ok = (objective.u_mixstyle_calls == 1 and objective.u_mixstyle_seen == 256
                             and objective.u_mixstyle_eligible > 0 and objective.physical_seen == 482078
                             and all(count == objective.u_mixstyle_eligible for count in objective.u_mixstyle_applied.values())
@@ -107,7 +122,11 @@ def smoke(rt, *, paired=False, u_cric=False, u_mixstyle=False):
         checked = dict(parent_epoch=30, parent_updates=6660, EMA_updates_after_smoke=6661,
             U_seen=objective.seen, physical_U_seen=objective.physical_seen,
             L_forward_packets=768, finite_backward=True, teacher_gradient=False)
-        if u_mixstyle:
+        if u_gradprotect:
+            checked.update(u_gradprotect_calls=objective.u_gradprotect_calls,
+                protected_gradient_matches=gradient_matches,group_constraints=constraints,
+                group_details=objective._smoke_detail,no_extra_student_forward=True)
+        elif u_mixstyle:
             checked.update(u_mixstyle_seen=256,u_mixstyle_eligible=objective.u_mixstyle_eligible,
                 u_mixstyle_applied=objective.u_mixstyle_applied,shallow_middle_gradients=True,
                 source_smoke_force_both_hooks=True,formal_probability_per_level=.5,feature_hooks_removed=True)
@@ -120,7 +139,7 @@ def smoke(rt, *, paired=False, u_cric=False, u_mixstyle=False):
         else:
             checked.update(view_anchor_loss=float(metrics['SSL_view_anchor_loss']), view_anchor_physical_seen=128)
     write(Path(rt['run_root']) / 'smoke.json', dict(status='PASS', real_checkpoint=parent + '/final_ssdg.pth',
-        target_reads=0, U_truth_reads=0, method='UMIX' if u_mixstyle else 'UCRIC' if u_cric else 'PAIREDU' if paired else 'VIEWANCHOR',
+        target_reads=0, U_truth_reads=0, method='UGP' if u_gradprotect else 'UMIX' if u_mixstyle else 'UCRIC' if u_cric else 'PAIREDU' if paired else 'VIEWANCHOR',
         checked=checked, immediate_continuation=True))
 
 

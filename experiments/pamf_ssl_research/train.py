@@ -15,7 +15,12 @@ def installed(config, holder, *, parent_algorithm=None):
     objective_type = Objective
     if parent_algorithm is not None:
         from .view_anchor import validate as validate_view, PARENT_ALGORITHM
-        if config.get('u_mixstyle'):
+        if config.get('u_gradprotect'):
+            from .u_gradprotect import validate as validate_u_gradprotect
+            from .u_gradprotect_objective import GradientProtectedObjective
+            validate_u_gradprotect(config)
+            objective_type = GradientProtectedObjective
+        elif config.get('u_mixstyle'):
             from .u_mixstyle import validate as validate_u_mixstyle
             from .u_mixstyle_objective import UnlabeledMixStyleObjective
             validate_u_mixstyle(config)
@@ -59,6 +64,9 @@ def installed(config, holder, *, parent_algorithm=None):
             objective.labeled = (kwargs['labeled_inputs'], kwargs['labels'], kwargs['extra'][1]['rx_i'].to(kwargs['labels'].device))
             try:
                 value, metrics = old_hook(**kwargs)
+                if c.get('u_gradprotect'):
+                    guided = objective.guide(kwargs['identity_loss'] + value, model)
+                    value = guided - kwargs['identity_loss']
                 return value, dict(metrics, **objective.metrics)
             finally:
                 objective.labeled = None

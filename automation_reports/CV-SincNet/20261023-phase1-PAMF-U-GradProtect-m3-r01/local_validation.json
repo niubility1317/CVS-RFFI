@@ -1,0 +1,48 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "focused_tests": 80,
+  "independent_P0_P1_review": {
+    "status": "PASS",
+    "findings": 0,
+    "scope": "Direct next-run P0/P1 only,read-only,no training or target predictions"
+  },
+  "real_source_checkpoint_smoke": "PENDING_FIRST_GPU_STEP",
+  "recipe_matches_source_hypothesis": true,
+  "hypothesis_commit": "fa5ff37bd52e2e433e4ff25baf899afb07d0c60c",
+  "recipe": {
+    "start_epoch": 31,
+    "parameter_groups": [
+      "t2",
+      "cls_head",
+      "other"
+    ],
+    "t2_name_contains": ".t2.",
+    "classifier_name_contains": ".cls_head.",
+    "one_sided_U_projection": true,
+    "protect_original_T1_L": true,
+    "weighted_U_loss_unchanged": true,
+    "projection_if_dot_negative": true,
+    "norm_cap_U_to_L": 1.0,
+    "L_squared_norm_floor": 1e-12,
+    "zero_or_tiny_L_group_drop_U": true,
+    "cap_after_projection": true,
+    "extra_student_forwards": 0,
+    "new_inference_parameters": 0,
+    "G_training_reads": 0,
+    "no_higher_order_gradient": true
+  },
+  "methods": [
+    "UGP"
+  ],
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "readouts": [
+    "raw",
+    "DURA-LU"
+  ],
+  "new_target_reads": 0,
+  "G_training_reads": 0
+}
