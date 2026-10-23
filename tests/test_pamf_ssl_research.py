@@ -12,6 +12,18 @@ def template():
 
 
 class SSLResearchTest(unittest.TestCase):
+    @unittest.skipUnless(torch.cuda.is_available(), 'CUDA required for mixed-device regression')
+    def test_teacher_moves_dynamic_cpu_layers_to_the_student_device(self):
+        student = torch.nn.Module()
+        student.id_backbone = torch.nn.Module()
+        encoder = torch.nn.Module()
+        encoder.old_layer = torch.nn.Linear(2, 160).to('cuda:0')
+        encoder.dynamic_layer = torch.nn.Linear(160, 6)  # Existing installer adds CPU modules.
+        student.id_backbone.encoder = encoder
+        c = configuration(template(), METHODS[0], SEEDS[0], '/p', 'c')
+        objective = Objective(student, c)
+        self.assertTrue(all(p.device.type == 'cuda' for p in objective.teacher.parameters()))
+
     def test_actual_unlabeled_loss_backward_and_own_state_round_trip(self):
         import io
         class Encoder(torch.nn.Module):

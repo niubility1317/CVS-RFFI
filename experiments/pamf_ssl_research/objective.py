@@ -56,7 +56,8 @@ class ReceiverPrototypes:
 class Objective:
     def __init__(self, student, config):
         self.c = config
-        self.teacher = deepcopy(student.id_backbone.encoder).eval().requires_grad_(False)
+        device = next(student.parameters()).device
+        self.teacher = deepcopy(student.id_backbone.encoder).to(device).eval().requires_grad_(False)
         self.mean = torch.tensor(.95, device=next(student.parameters()).device)
         self.variance = torch.tensor(.01, device=self.mean.device)
         self.bank = ReceiverPrototypes(config['source_rxs'], 6, 160, self.mean.device,

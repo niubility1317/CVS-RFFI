@@ -1,7 +1,7 @@
 """Predeclared paired experiments; training does not consume target scores."""
 from copy import deepcopy
 
-RUN = '20261023-phase1-PAMF-physical-softmatch-m6-r01'
+RUN = '20261023-phase1-PAMF-physical-softmatch-m6-r02'
 SEEDS = (2026092701, 2026092702, 2026092703)
 METHODS = ('PSM', 'RXPSM')
 GPU_BY_SEED = dict(zip(SEEDS, (0, 1, 2)))

@@ -40,7 +40,7 @@ def smoke(rt):
             a.input_len = 256
             if a.use_unlabeled or a.use_ema_teacher:
                 raise ValueError('Native U loop must be disabled for the new adapter')
-            model = t1_model.install(native.build_baseline_model(a, device), c).train()
+            model = t1_model.install(native.build_baseline_model(a, device), c).to(device).train()
             # Bounded smoke only: exercise nonzero U gradients without a 13-epoch warmup.
             # Real experiment initialization remains scratch, as train.py specifies.
             holder['objective'].teacher.load_state_dict(real_teacher_state, strict=True)
