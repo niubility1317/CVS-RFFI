@@ -1,0 +1,24 @@
+{
+  "status": "VERIFIED",
+  "runtime_versions": [
+    "Python3.13",
+    "Python3.10"
+  ],
+  "csv_files": [
+    "Lonly_F_cost.csv",
+    "Lonly_G_cost.csv",
+    "Lonly_net_corrections.csv",
+    "Lonly_paired.csv",
+    "Lonly_paired_overall.csv",
+    "Lonly_per_seed.csv",
+    "Lonly_source_geometry.csv",
+    "Lonly_source_sensitivity.csv",
+    "Lonly_summary.csv",
+    "Lonly_summary_overall.csv"
+  ],
+  "numeric_cells": 63934,
+  "maximum_absolute_difference": 4.618527782440651e-14,
+  "tolerance": 1e-10,
+  "comparison": "All CSV values, not byte equality",
+  "logical_models": 6
+}

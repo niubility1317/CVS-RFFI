@@ -1,0 +1,29 @@
+{
+  "status": "ANALYZED_LONLY6",
+  "run_id": "20261022-phase1-PAMF-supervised-Lonly-readouts-m6-r01",
+  "actual_F_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "logical_F_models": 6,
+  "frozen_score_files": 6,
+  "raw_G_seven_view_cells": 84,
+  "serialized_CM_recomputed": 4032,
+  "net_correction_strata": 2016,
+  "raw_CM_exact_reuse": true,
+  "new_F_training": 0,
+  "new_G_training": 0,
+  "F_source_stages": 18,
+  "source_U_IQ_exposures": 0,
+  "physics_panels": 6,
+  "source_L_samples_per_panel": 720,
+  "source_TX_RX_day_groups": 90,
+  "source_interventions_per_panel": 11,
+  "source_fitted_probe_updates": 0,
+  "target_truth_reads_by_analysis": 0,
+  "target_feedback_used": false,
+  "conditional_on_one_fixed_G": true,
+  "reused_F_shared_worker_seconds": 24610.386625464773,
+  "reused_G_shared_worker_seconds": 17373.450398541987
+}
