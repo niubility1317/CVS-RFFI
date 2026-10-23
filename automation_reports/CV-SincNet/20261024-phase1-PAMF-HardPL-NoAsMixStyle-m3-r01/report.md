@@ -13,3 +13,8 @@
 环境/CWD/命令/不可覆盖路径见experiment.json：N607普通账户、固定CVS-RFFI环境、FP32/TF32off。一代码Git commit、单archive本地/远端SHA比较和远端compile；两个相同技术失败停止新增派发，保留健康进程与产物。无目标成绩停止、调参、重排或选择性重跑。冻结后每row自动raw与固定DURA v1.0各clean＋六practical、168000条/景、三个seed共42cell，全部预测固定后独立truth-last。完整F20/F21及NoAs匹配差、seed/景/TX/RX/day、修复损伤、实际接受／混合与训练预测成本均保留。DURA只作冻结参考、不用于F训练；G＋F20仍含G的U源权限。
 
 原raw目标继续要求clean同时比F20/F21至少高1pp、六景均值严格高1.5pp，当前ACTIVE。历史测试暴露如实披露，不声称新的独立盲测。预期保留smoke、复用源身份检查、全部step与hard_pl_state、E50源checkpoint、默认头源诊断、graph/native源检查、双七景predictions/scores及完整报告。源配对通过、排队或训练启动均不替代目标收益。
+
+
+## 实际源诊断与三卡训练
+
+VERIFIED_NOAS_MIXSTYLE_RUNNING：执行 commit `810019e38bd7f0fe4f9bdd8fffb0c28c6016743c`，单次 archive 对照及远端 compile PASS。真实 F21 E30 检查通过，两层实际 U 混合／有限梯度、权重2／门控0.95／LS0.01、六次U学生前向／一次共享计划／原RDrop与AsKL0／实际混合后跨RX捕获／rawAs128、原L768／信道64及临时hook移除均核实。已精确核对原父路径／数据handles／STYLE，复用固定源 V720 三seed接受后伪标签精度100%／99.5595%／99.8525%，同真实 TX 配对100%／99.2658%／99.7050%，满足原先≥99%源规则；不替代完整 V27000 的99.84至99.90%纯度，也不代表U或目标正确率。源证据不能保证目标收益。探针丢弃，正式重载原父权重，三GPU实际PID／CWD／命令／GPU与每条已刷盘step增长均独立确认，源训练继续。当前MS健康peer及每卡两本任务／含外部最多三进程均独立核对。详细源检查见 source_style_identity.json、source_activation.json。

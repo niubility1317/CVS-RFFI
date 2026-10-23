@@ -5,12 +5,13 @@ import statistics
 import tempfile
 import pytest
 from experiments.pamf_ssl_research.matched_report import (
-    DATA_KEYS,HARD_RUN,PAIRS,READOUTS,SEEDS,VIEWS,compare,complete_report)
+    DATA_KEYS,HARD_RUN,PAIRS,REFERENCES,READOUTS,SEEDS,VIEWS,compare,complete_report)
 
 
 def fixture(run=next(iter(PAIRS))):
     method,control,_=PAIRS[run];summaries=[];specs=[];completions=[]
-    for candidate,name,rid in ((True,method,run),(False,control,HARD_RUN)):
+    reference=REFERENCES.get(run,HARD_RUN);models=6 if reference==HARD_RUN else 3
+    for candidate,name,rid in ((True,method,run),(False,control,reference)):
         rows=[]
         for readout in READOUTS:
             for view in VIEWS:
@@ -23,14 +24,14 @@ def fixture(run=next(iter(PAIRS))):
         specs.append(dict(run_id=rid,data={key:'same:'+key for key in DATA_KEYS}))
         completions.append(dict(run_id=rid,status='VERIFIED_COMPLETE',independent_truth_last=True,
             readouts=list(READOUTS),views_per_readout=7,count_per_view=168000,
-            completed_F_models=3 if candidate else 6,completed_readout_view_cells=42 if candidate else 84))
+            completed_F_models=3 if candidate else models,completed_readout_view_cells=42 if candidate else 14*models))
     return summaries,specs,completions
 
 
 @pytest.mark.parametrize('run',tuple(PAIRS))
 def test_exact_three_seed_paired_delta_SD_and_both_full_readouts(run):
     summaries,specs,done=fixture(run);result=compare(*summaries,*specs,*done)
-    assert len(result['rows'])==16 and result['reference_run']==HARD_RUN
+    assert len(result['rows'])==16 and result['reference_run']==REFERENCES.get(run,HARD_RUN)
     for row in result['rows']:
         expected=[100.*(10*(i+1))/168000 for i in range(3)]
         assert row['paired_delta_pp_mean']==pytest.approx(statistics.mean(expected))

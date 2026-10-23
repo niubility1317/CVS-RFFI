@@ -9,6 +9,12 @@ HARD_RUN='20261024-phase1-PAMF-HardPL-T1U-m6-r01'
 PAIRS={
     '20261024-phase1-PAMF-HardPL-noUAs-m3-r01':('HPL_NO_UAS','HPLT1U','Only U channel transform removed'),
     '20261024-phase1-PAMF-HardPL-LS-m3-r01':('HPL_LS2','HPL2','Only U CE label smoothing0->.01'),
+    '20261024-phase1-PAMF-HardPL-MixStyle-m3-r02':('HPL_MS2','HPL_LS2','Only accepted same-pseudo cross-RX U feature style'),
+    '20261024-phase1-PAMF-HardPL-NoAsMixStyle-m3-r01':('HPL_NAMS2','HPL_NO_UAS','Only shared accepted U feature style in existing six forwards'),
+}
+REFERENCES={
+    '20261024-phase1-PAMF-HardPL-MixStyle-m3-r02':'20261024-phase1-PAMF-HardPL-LS-m3-r01',
+    '20261024-phase1-PAMF-HardPL-NoAsMixStyle-m3-r01':'20261024-phase1-PAMF-HardPL-noUAs-m3-r01',
 }
 SEEDS=(2026092701,2026092702,2026092703)
 VIEWS=('clean','practical_high','practical_mid','practical_low_suburban',
@@ -20,14 +26,15 @@ DATA_KEYS=('dataset','version','representation','physical_ids_ref','label_map_re
 
 def compare(candidate,reference,candidate_spec,reference_spec,candidate_completion,reference_completion):
     run=candidate['run_id'];method,control,factor=PAIRS[run]
-    if reference['run_id']!=HARD_RUN:raise ValueError('Fixed matched hard-PL reference required')
+    reference_run=REFERENCES.get(run,HARD_RUN);reference_models=6 if reference_run==HARD_RUN else 3
+    if reference['run_id']!=reference_run:raise ValueError('Fixed matched hard-PL reference required')
     for summary,spec,completion in ((candidate,candidate_spec,candidate_completion),(reference,reference_spec,reference_completion)):
         if (summary['model_seeds']!=list(SEEDS) or spec['run_id']!=summary['run_id']
             or completion['run_id']!=summary['run_id'] or completion['status']!='VERIFIED_COMPLETE'
             or completion['independent_truth_last'] is not True or completion['readouts']!=list(READOUTS)
             or completion['views_per_readout']!=7 or completion['count_per_view']!=168000
-            or completion['completed_F_models']!=(3 if summary is candidate else 6)
-            or completion['completed_readout_view_cells']!=(42 if summary is candidate else 84)):
+            or completion['completed_F_models']!=(3 if summary is candidate else reference_models)
+            or completion['completed_readout_view_cells']!=(42 if summary is candidate else 14*reference_models)):
             raise ValueError('Both fixed three-seed full target matrices must be complete')
     if candidate['class_order']!=reference['class_order'] or len(candidate['class_order'])!=6:
         raise ValueError('Matched class order differs')
@@ -65,7 +72,7 @@ def compare(candidate,reference,candidate_spec,reference_spec,candidate_completi
                 positive_seeds=sum(value>0 for value in deltas),net_correct_total=sum(left)-sum(right),
                 per_seed=[dict(model_seed=seed,candidate_correct=a,reference_correct=b,net_correct=a-b,delta_pp=delta)
                           for seed,a,b,delta in zip(SEEDS,left,right,deltas)]))
-    return dict(status='VERIFIED_PAIRED_MATCHED_COMPARISON',candidate_run=run,reference_run=HARD_RUN,
+    return dict(status='VERIFIED_PAIRED_MATCHED_COMPARISON',candidate_run=run,reference_run=reference_run,
         candidate_method=method,reference_method=control,changed_factor=factor,model_seeds=list(SEEDS),rows=rows,
         primary_goal_unchanged='Raw clean>=+1pp and six>+1.5pp against both F20/F21;this ablation does not replace that goal',
         interpretation='Differences and sample SD paired across three F seeds on the same fixed physical target records;no independent-sample or statistical-significance claim')
@@ -82,7 +89,7 @@ def markdown(result):
 
 def complete_report(report_root,run):
     if run not in PAIRS:raise ValueError('Declared hard-PL ablation required')
-    root=Path(report_root);folders=(root/run,root/HARD_RUN)
+    root=Path(report_root);folders=(root/run,root/REFERENCES.get(run,HARD_RUN))
     completions=[]
     # Inspect completion metadata before opening either score summary.
     for folder in folders:
