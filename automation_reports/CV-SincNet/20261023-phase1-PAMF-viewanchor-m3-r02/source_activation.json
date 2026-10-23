@@ -1,0 +1,68 @@
+{
+  "status": "VERIFIED_PARTIAL_SOURCE_PREFIX",
+  "observed_unix": 1792754047.1268003,
+  "rows": [
+    {
+      "row_id": "VIEWANCHOR-s2026092701",
+      "gpu": 5,
+      "complete_records": 661,
+      "bytes": 1238339,
+      "closed_gzip": false,
+      "last": {
+        "SSL_loss": 0.17986208200454712,
+        "SSL_seen": 1132852,
+        "SSL_weight_mean": 0.9622049331665039,
+        "SSL_physical_seen": 566426,
+        "SSL_proto_coverage": 1.0,
+        "SSL_view_anchor_loss": 0.02680456079542637,
+        "SSL_view_anchor_calls": 661,
+        "SSL_view_anchor_physical_seen": 84476
+      },
+      "cumulative_updates": 7321,
+      "min_view_anchor_loss": 0.02415497414767742,
+      "max_view_anchor_loss": 0.038843341171741486
+    },
+    {
+      "row_id": "VIEWANCHOR-s2026092702",
+      "gpu": 6,
+      "complete_records": 661,
+      "bytes": 1237582,
+      "closed_gzip": false,
+      "last": {
+        "SSL_loss": 0.20254336297512054,
+        "SSL_seen": 1132852,
+        "SSL_weight_mean": 0.9304208159446716,
+        "SSL_physical_seen": 566426,
+        "SSL_proto_coverage": 1.0,
+        "SSL_view_anchor_loss": 0.02271999791264534,
+        "SSL_view_anchor_calls": 661,
+        "SSL_view_anchor_physical_seen": 84476
+      },
+      "cumulative_updates": 7321,
+      "min_view_anchor_loss": 0.02019128017127514,
+      "max_view_anchor_loss": 0.033950407058000565
+    },
+    {
+      "row_id": "VIEWANCHOR-s2026092703",
+      "gpu": 7,
+      "complete_records": 658,
+      "bytes": 1239203,
+      "closed_gzip": false,
+      "last": {
+        "SSL_loss": 0.17683082818984985,
+        "SSL_seen": 1132084,
+        "SSL_weight_mean": 0.9309152364730835,
+        "SSL_physical_seen": 566042,
+        "SSL_proto_coverage": 1.0,
+        "SSL_view_anchor_loss": 0.022849231958389282,
+        "SSL_view_anchor_calls": 658,
+        "SSL_view_anchor_physical_seen": 84092
+      },
+      "cumulative_updates": 7318,
+      "min_view_anchor_loss": 0.019890442490577698,
+      "max_view_anchor_loss": 0.03244030848145485
+    }
+  ],
+  "target_reads": 0,
+  "U_truth_reads": 0
+}

@@ -1,0 +1,58 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "observed_at": "2026-10-23T11:14:05.735896+00:00",
+  "code_commit": "6226ad1e7cce97846702fe15ceba866d4acf64c9",
+  "controller_PID_CWD_argv_verified": true,
+  "rows": [
+    {
+      "row_id": "VIEWANCHOR-s2026092701",
+      "gpu": 5,
+      "identity_verified": true,
+      "actual_GPU_verified": true,
+      "log_growth_bytes": 9908,
+      "cumulative_epoch": 32
+    },
+    {
+      "row_id": "VIEWANCHOR-s2026092702",
+      "gpu": 6,
+      "identity_verified": true,
+      "actual_GPU_verified": true,
+      "log_growth_bytes": 9908,
+      "cumulative_epoch": 32
+    },
+    {
+      "row_id": "VIEWANCHOR-s2026092703",
+      "gpu": 7,
+      "identity_verified": true,
+      "actual_GPU_verified": true,
+      "log_growth_bytes": 9908,
+      "cumulative_epoch": 32
+    }
+  ],
+  "archive_transfer": "PASS: single archive comparison on release path",
+  "remote_compile": "PASS before submission",
+  "source_smoke": {
+    "status": "PASS",
+    "target_reads": 0,
+    "U_truth_reads": 0,
+    "method": "VIEWANCHOR",
+    "checked": {
+      "parent_epoch": 30,
+      "parent_updates": 6660,
+      "EMA_updates_after_smoke": 6661,
+      "U_seen": 964156,
+      "physical_U_seen": 482078,
+      "view_anchor_loss": 0.03668104484677315,
+      "view_anchor_physical_seen": 128,
+      "L_forward_packets": 768,
+      "finite_backward": true,
+      "teacher_gradient": false
+    },
+    "immediate_continuation": true
+  },
+  "previous_queue_controller_alive": false,
+  "previous_queue_GPU_workers": 0,
+  "source_training_started": true,
+  "target_reads": 0,
+  "default_models_unchanged": true
+}

@@ -25,3 +25,10 @@ F0 每视图168000条、三个seed的准确率验收使用整数计数：clean�
 首轮 `20261023-phase1-PAMF-physical-softmatch-m6-r02` 的六行、42 个 raw 目标视图均完成独立 truth-last 评分。PSM 的 clean／六景三种子均值为 84.222619%／71.897288%，RXPSM 为 84.272421%／71.853571%，两者均未达到完整目标。完整逐种子、景、RX/TX/day 和实际训练成本见该 run 的 target_results.md 及配套汇总文件。该 run 为 ANALYZED，整体 goal 继续 ACTIVE，原 PAMF/DURA 默认版本不变。
 
 后续 `20261023-phase1-PAMF-viewanchor-m3-r01` 已在首轮目标分数读取前固定 RXPSM E30 父来源、0.10 物理特征一致性和三个 seed，独立续训 20 轮，累计仍为 50。新调度器已独立核实，当前 QUEUED 等待 GPU 容量，尚未 smoke 或训练。不会因本轮目标分数改动这套配方、挑 seed 或选择性重跑。原目标仍为同一方法相对两个对照 clean 至少 +1 pp、六景平均严格超过 +1.5 pp，验收只看目标测试。
+
+
+## 第二轮已实际启动
+
+VIEWANCHOR r01 在任何 smoke／训练之前因原卡持续占用而被资源替代；记录和旧输出均保留，独立确认旧控制器退出。相同科学配方的新不可覆盖 run `20261023-phase1-PAMF-viewanchor-m3-r02` 已在 GPU5/6/7 各跑一个固定 seed，执行 commit 为 6226ad1e7cce97846702fe15ceba866d4acf64c9。真实 E30 no-query smoke PASS，三行 PID/CWD/命令／实际 GPU／日志增长均核实，首次 epoch 证据到累计 E32；部分 step 前缀确认 U 状态衔接和新增损失非零。当前仅有源训练证据，原目标保持 ACTIVE。
+
+源端后续“干净／信道配对 U”假设已记录在 `20261023-phase1-PAMF-paired-U-m3-r01/report.md`，只固定同一 E30 分叉、完整 clean student U 分支及其损失分解；尚未实现或启动。当前健康 VIEWANCHOR 训练保持原不可变 release。

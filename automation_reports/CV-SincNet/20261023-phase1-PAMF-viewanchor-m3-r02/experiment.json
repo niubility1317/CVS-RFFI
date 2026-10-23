@@ -23,7 +23,7 @@
   "replaces_run_id": "20261023-phase1-PAMF-viewanchor-m3-r01",
   "authorization": "用户2026-10-23 /goal要求设计迭代PAMF半监督方法，使clean相对监督与普通PL均至少高1个百分点、六景平均均严格高1.5个百分点；并分配3GPU，每GPU固定1seed、最多并发2worker。",
   "code": {
-    "commit": "36288fada22d2685f9fd12f234c6f607120b36b9",
+    "commit": "6226ad1e7cce97846702fe15ceba866d4acf64c9",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 ordinary account CVS-RFFI Py3.10/Torch2.1 FP32/TF32off, CPU2 per worker",
     "cwd": "PROJECT/releases/20261023-phase1-PAMF-viewanchor-m3-r02",
@@ -251,5 +251,18 @@
     "Twenty-one focused SSL/ancestry/launch/resource cases PASS; integer goal/report checks unchanged.",
     "Goal remains raw target clean>=+1pp and six mean>+1.5pp against BOTH F20/F21, same three seeds. Matched RXPSM E30-to-E50 control already fixed in original design."
   ],
-  "registered_at": "2026-10-23T11:06:00+00:00"
+  "registered_at": "2026-10-23T11:06:00+00:00",
+  "launch_status": {
+    "status": "VERIFIED_RUNNING",
+    "evidence": "launch_verification.json",
+    "source_smoke": "PASS",
+    "actual_GPUs": [
+      5,
+      6,
+      7
+    ],
+    "own_GPU_workers": 3,
+    "source_activation": "source_activation.json",
+    "target_reads": 0
+  }
 }

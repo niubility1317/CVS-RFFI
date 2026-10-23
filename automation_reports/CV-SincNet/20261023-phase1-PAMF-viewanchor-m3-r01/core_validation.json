@@ -1,5 +1,5 @@
 {
-  "status": "RELEASED_QUEUE_WAITING_SOURCE_SMOKE",
+  "status": "REPLACED_BEFORE_GPU_RESOURCE_CHANGE",
   "hypothesis_commit": "5e52e4ebd383ba6990e9afd38a563798368f1603",
   "focused_tests": {
     "status": "PASS",
@@ -13,17 +13,18 @@
     "findings": 0,
     "scope": "Core objective, fixed source prefix, state continuity and frozen load_F ancestry"
   },
-  "real_E30_no_query_smoke": "PENDING_GPU_CAPACITY",
+  "real_E30_no_query_smoke": "NOT_STARTED",
   "release_interfaces": "Three genuine VIEWANCHOR rows, fixed E30 student/own EMA source smoke, same automatic seven-view truth-last runner; not submitted",
   "candidate_launched": true,
   "candidate_target_reads": 0,
   "current_r02_release_changed": false,
-  "scope": "Preparation only. No effectiveness claim; original target-test success criteria unchanged.",
+  "scope": "Own unstarted CPU queue replaced only for available three-card allocation. No model/target result.",
   "candidate_training_started": false,
   "own_GPU_workers": 0,
   "source_smoke_is_first_GPU_step": true,
   "integer_goal_and_reporting_tests": {
     "status": "PASS",
     "total": 9
-  }
+  },
+  "replaced_by_run_id": "20261023-phase1-PAMF-viewanchor-m3-r02"
 }
