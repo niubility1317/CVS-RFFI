@@ -206,3 +206,8 @@ HPL2 三seed双读出七景42cell已全部独立评分。为符合逐row自动�
 ## E20 后提前利用高纯度 U 的固定匹配矩阵
 
 原F21 E20完整V27000/seed在.95门控后已达99.9002%／99.8687%／99.9164%，覆盖约93%，无状态更新／U真值／目标读取。`20261024-phase1-PAMF-HardPL-E20plus30-m6-r01` 固定同seed原E20父权重、自己native10＋20，比较HPL_E20_LS2与HPL_E20_NAMS2；原机制参数不变，只将新机制暴露从20轮增为30轮，累计仍E50／11100、13L37LU。原E30不作初始化。48检查与一次P0/P1PASS，真实E20两臂smoke／新的V720配对规则通过后自动六行三seed双七景。接替当前MS／NAMS释放卡位；当前两条方法目标分数尚未读取，不以其修改矩阵。goal ACTIVE。
+
+
+## HPL_MS2 完整双读出结果
+
+`20261024-phase1-PAMF-HardPL-MixStyle-m3-r02` 各方法三seed、共3模型，每景168000条，raw／同一DURA七景预测与独立truth-last全部42cell完成；全部新增13320条闭合训练记录已核对。HPL_MS2 / raw clean=84.996429%；HPL_MS2 / DURA-LU clean=85.043254%；HPL_MS2 / raw six_mean=70.328340%；HPL_MS2 / DURA-LU six_mean=78.075860%；原数值目标仍未满足，维持ACTIVE。全部结果、匹配基线、逐seed／场景／分层及成本均保存，不从本结果热改其他已固定方法、父权重或矩阵。

@@ -13,3 +13,10 @@
 GPU5／6／7固定seed2026092701／02／03。LS臂等待同seed MS全部GPU预测完成，NAMS臂等待旧NAMS全部GPU预测完成且新LS已派发；旧NAMS启动未CUDA的PID与本控制器pending PID纳入容量并集。每卡最多两条本任务、含外部最多三条、空闲≥10000MiB；CPU唯一scorer排旧NAMS终态之后。环境/CWD/命令及不可覆盖发布／输出root见experiment.json：N607普通账户、固定CVS-RFFI环境、FP32／TF32off，一代码Git commit、单archive本地远端SHA对照和远端compile。不停止、重启或热改其他健康任务。
 
 每row冻结最终学生后自动raw与同一DURA v1.0各clean＋六practical，168000条/景，六模型共84cell；全row预测固定后独立truth-last。完整报告F20/F21及两臂对照、三seed／场景／TX／RX／day、修复损伤、接受／曝光与成本；DURA只作冻结参考，不用于新F训练，G＋F20仍含G的源U权限。原raw验收为clean同时比两对照至少高1pp、六景均值严格高1.5pp，当前ACTIVE。源纯度和更长机制暴露不证明目标收益；既有测试暴露如实披露，不称新的独立盲测，无目标调参、重排或选择性重跑。预期保留smoke/E20源配对、全部新segment30/50的6660条step记录、两段hard_pl_state、最终E50 checkpoint/完整继承、source graph/native检查、双七景predictions/scores及完整报告。
+
+
+## 实际三卡启动
+
+VERIFIED：执行 commit `80fe494716b538b504a32efa9245d2e58925fc6f`，一次 archive 传输对照、远端 compile、真实原 F21 E20 两机制 smoke 及固定源 V720/seed 配对规则均 PASS。三个 E20 LS seed 已在 GPU5/6/7 实际运行，PID/CWD/完整命令/GPU及原生日志增长已独立核实；同 seed 的原 NAMS 健康任务保持，第二机制三行按预登记等待交接，每卡最多两条本任务。源诊断所有 seed 的伪标签精度及同真实 TX 配对均≥99%，源 V 无状态更新。两次 smoke 的 parent_epoch=20、parent_updates=4440；smoke 共用旧接口中的 formal_reload_original_F21_E30 仅是旧字段名，实际父权重与正式 reload 均严格为 E20，并未继承原 E30。
+
+新方法仍累计 E50/11100，新增30轮/6660步，原生10＋20相衔接；不增加模型预算。全部正式 raw/DURA 七景会按队列自动完成后独立评分，目前无本候选目标分数。

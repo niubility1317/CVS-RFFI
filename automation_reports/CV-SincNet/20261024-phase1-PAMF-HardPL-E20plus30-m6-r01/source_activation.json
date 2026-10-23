@@ -1,0 +1,193 @@
+{
+  "status": "VERIFIED_E20_LS_RUNNING_SECOND_ARM_QUEUED",
+  "execution_commit": "80fe494716b538b504a32efa9245d2e58925fc6f",
+  "observed_unix": 1792785157.9833815,
+  "controller_PID_CWD_command_verified": true,
+  "source_smoke": {
+    "status": "PASS",
+    "methods": [
+      {
+        "method": "HPL_E20_LS2",
+        "model_seed": 2026092701,
+        "parent_epoch": 20,
+        "parent_updates": 4440,
+        "L_forward_packets": 768,
+        "U_seen": 256,
+        "U_accepted": 235,
+        "student_U_views": 256,
+        "physical_U_generated": 0,
+        "physical_student_views": 0,
+        "raw_U_As_seen": 0,
+        "U_As_raw_input_matches": false,
+        "source_Practical_generated": 64,
+        "contrast_anchors": {
+          "time_down": 0,
+          "t2.pool": 0
+        },
+        "shallow_middle_gradient": false,
+        "ordinary_raw_RDrop": false,
+        "As_KL_weight": 0,
+        "weight": 2.0,
+        "threshold": 0.95,
+        "EMA_updates": 0,
+        "finite_backward": true,
+        "default_head_gradient": true,
+        "feature_hooks_removed": true,
+        "U_label_smoothing": 0.01
+      },
+      {
+        "method": "HPL_E20_NAMS2",
+        "model_seed": 2026092701,
+        "parent_epoch": 20,
+        "parent_updates": 4440,
+        "L_forward_packets": 768,
+        "U_seen": 256,
+        "U_accepted": 235,
+        "student_U_views": 1536,
+        "physical_U_generated": 0,
+        "physical_student_views": 0,
+        "raw_U_As_seen": 128,
+        "U_As_raw_input_matches": true,
+        "source_Practical_generated": 64,
+        "contrast_anchors": {
+          "time_down": 470,
+          "t2.pool": 470
+        },
+        "shallow_middle_gradient": true,
+        "ordinary_raw_RDrop": true,
+        "As_KL_weight": 0,
+        "weight": 2.0,
+        "threshold": 0.95,
+        "EMA_updates": 0,
+        "finite_backward": true,
+        "default_head_gradient": true,
+        "feature_hooks_removed": true,
+        "U_label_smoothing": 0.01,
+        "U_style": {
+          "recipe": {
+            "levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "alpha": 0.1,
+            "probability_per_level": 0.5,
+            "eps": 1e-06,
+            "accepted_only": true,
+            "same_hard_pseudo": true,
+            "different_source_RX": true,
+            "detached_moments": true
+          },
+          "calls": 6,
+          "seen": 1536,
+          "eligible": 1410,
+          "applied": {
+            "time_down": 1410,
+            "t2.pool": 1410
+          },
+          "persistent_hooks": false,
+          "teacher_or_L_style_calls": 0,
+          "partner_TX_truth_reads": 0,
+          "shared_six_forward_plan": true,
+          "plan_calls": 1,
+          "contrast_captures_after_style": true
+        }
+      }
+    ],
+    "target_reads": 0,
+    "U_truth_reads": 0,
+    "probe_updates_discarded": true,
+    "formal_reload_original_F21_E30": true,
+    "immediate_continuation": true
+  },
+  "source_smoke_legacy_reload_field": "formal_reload_original_F21_E30 is a legacy key; each smoke method records actual E20/4440, and formal source loader strictly reloads original E20",
+  "actual_parent_epoch": 20,
+  "formal_reload_original_F21_E20": true,
+  "source_style_identity": "source_style_identity.json",
+  "actual_GPU_workers": 3,
+  "queued_GPU_rows": 3,
+  "rows": [
+    {
+      "row_id": "HPL_E20_LS2-s2026092701",
+      "gpu": 5,
+      "status": "RUNNING",
+      "PID_CWD_command_GPU_verified": true,
+      "actual_log_growth": 4968,
+      "source_records_checked": 358,
+      "cumulative_updates": 4798,
+      "U_accepted": 84897,
+      "healthy_NAMS_peer_verified": true,
+      "task_workers_this_card": 2,
+      "total_GPU_processes_this_card": 3
+    },
+    {
+      "row_id": "HPL_E20_NAMS2-s2026092701",
+      "gpu": 5,
+      "status": "QUEUED",
+      "PID_CWD_command_GPU_verified": false,
+      "actual_log_growth": 0,
+      "source_records_checked": 0,
+      "cumulative_updates": 4440,
+      "U_accepted": 0,
+      "healthy_NAMS_peer_verified": true,
+      "task_workers_this_card": 2,
+      "total_GPU_processes_this_card": 3
+    },
+    {
+      "row_id": "HPL_E20_LS2-s2026092702",
+      "gpu": 6,
+      "status": "RUNNING",
+      "PID_CWD_command_GPU_verified": true,
+      "actual_log_growth": 4968,
+      "source_records_checked": 375,
+      "cumulative_updates": 4815,
+      "U_accepted": 89576,
+      "healthy_NAMS_peer_verified": true,
+      "task_workers_this_card": 2,
+      "total_GPU_processes_this_card": 2
+    },
+    {
+      "row_id": "HPL_E20_NAMS2-s2026092702",
+      "gpu": 6,
+      "status": "QUEUED",
+      "PID_CWD_command_GPU_verified": false,
+      "actual_log_growth": 0,
+      "source_records_checked": 0,
+      "cumulative_updates": 4440,
+      "U_accepted": 0,
+      "healthy_NAMS_peer_verified": true,
+      "task_workers_this_card": 2,
+      "total_GPU_processes_this_card": 2
+    },
+    {
+      "row_id": "HPL_E20_LS2-s2026092703",
+      "gpu": 7,
+      "status": "RUNNING",
+      "PID_CWD_command_GPU_verified": true,
+      "actual_log_growth": 4968,
+      "source_records_checked": 323,
+      "cumulative_updates": 4763,
+      "U_accepted": 76778,
+      "healthy_NAMS_peer_verified": true,
+      "task_workers_this_card": 2,
+      "total_GPU_processes_this_card": 3
+    },
+    {
+      "row_id": "HPL_E20_NAMS2-s2026092703",
+      "gpu": 7,
+      "status": "QUEUED",
+      "PID_CWD_command_GPU_verified": false,
+      "actual_log_growth": 0,
+      "source_records_checked": 0,
+      "cumulative_updates": 4440,
+      "U_accepted": 0,
+      "healthy_NAMS_peer_verified": true,
+      "task_workers_this_card": 2,
+      "total_GPU_processes_this_card": 3
+    }
+  ],
+  "release_archive_SHA_comparison": "PASS single local/remote archive",
+  "remote_compile": "PASS",
+  "healthy_other_jobs_modified": false,
+  "new_candidate_target_reads": 0,
+  "goal_complete": false
+}
