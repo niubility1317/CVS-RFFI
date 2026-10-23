@@ -10,8 +10,8 @@ from .train import installed
 from .view_anchor import validate, PARENT_RUN, PARENT_ALGORITHM
 
 
-def validate_parent_metadata(c, parents, contract):
-    validate(c)
+def validate_parent_metadata(c, parents, contract, *, validate_config=validate):
+    validate_config(c)
     if len(parents) != 2:
         raise ValueError('Fixed source E20/E30 ancestry required')
     previous = None
@@ -33,16 +33,16 @@ def validate_parent_metadata(c, parents, contract):
     return parents
 
 
-def source_parents(c):
+def source_parents(c, *, validate_config=validate):
     """No target inputs, truth, scores or final50 selection are read."""
-    validate(c)
+    validate_config(c)
     contract = read(c['source_contract'])
     parents = []
     for end in (20, 30):
         folder = Path(c['fork_parent_source']) / ('segment%d' % end)
         done = read(folder / 'complete.json')
         parents.append((folder, done, read(done['config']['source_contract'])))
-    validate_parent_metadata(c, parents, contract)
+    validate_parent_metadata(c, parents, contract, validate_config=validate_config)
     previous = None
     for folder, done, _ in parents:
         payload = torch.load(folder / 'final_ssdg.pth', map_location='cpu', weights_only=False)

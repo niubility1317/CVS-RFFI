@@ -12,9 +12,16 @@ from .objective import Objective
 
 @contextmanager
 def installed(config, holder, *, parent_algorithm=None):
+    objective_type = Objective
     if parent_algorithm is not None:
         from .view_anchor import validate as validate_view, PARENT_ALGORITHM
-        validate_view(config)
+        if config.get('paired_u'):
+            from .paired_u import validate as validate_pair
+            from .paired_u_objective import PairedObjective
+            validate_pair(config)
+            objective_type = PairedObjective
+        else:
+            validate_view(config)
         if (parent_algorithm != PARENT_ALGORITHM or config.get('epoch_offset') != 30
                 or config.get('step_offset') != 6660
                 or config.get('parent_source') != str(Path(config['fork_parent_source']) / 'segment30')):
@@ -24,7 +31,7 @@ def installed(config, holder, *, parent_algorithm=None):
 
     def model_install(model, c):
         model = original_install(model, c)
-        objective = Objective(model, c)
+        objective = objective_type(model, c)
         parent = c.get('parent_source')
         if parent:
             previous = read(Path(parent) / 'complete.json')['config']

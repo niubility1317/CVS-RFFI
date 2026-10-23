@@ -1,0 +1,37 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "focused_tests": {
+    "status": "PASS",
+    "total": 43
+  },
+  "independent_P0_P1_review": {
+    "status": "PASS",
+    "findings": 0
+  },
+  "source_E30_smoke": "PENDING_FIRST_GPU_STEP",
+  "new_training_started": false,
+  "target_reads": 0,
+  "recipe": {
+    "start_epoch": 31,
+    "clean_CE": 0.5,
+    "physical_CE": 0.25,
+    "clean_prototype": 0.0125,
+    "physical_prototype": 0.0125,
+    "physical_feature": 0.1,
+    "all_U_paired": true,
+    "teacher_detached": true
+  },
+  "GPU_predecessor": "20261023-phase1-PAMF-SSL-DURA-reference-m9-r01",
+  "methods": [
+    "PAIREDU"
+  ],
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "readouts": [
+    "raw",
+    "DURA-LU"
+  ]
+}

@@ -30,7 +30,17 @@ def verdict(data, method, readout):
 
 
 def report(rt, output):
-    validate_rows(rt['rows'])
+    methods=tuple(rt.get('methods',METHODS))
+    if methods==METHODS:
+        validate_rows(rt['rows'])
+    elif methods==('PAIREDU',):
+        from .paired_u import RUN, RESOURCE_GPU_BY_SEED
+        from .control import validate_rows as validate_followup
+        if rt['run_id']!=RUN:
+            raise ValueError('Paired-U report belongs to another run')
+        validate_followup(rt['rows'],methods,RESOURCE_GPU_BY_SEED)
+    else:
+        raise ValueError('Exact declared dual-readout method matrix required')
     if read(Path(rt['run_root']) / 'state.json')['status'] != 'ALL_SCORED':
         raise ValueError('Complete supplemental matrix required before result analysis')
     out = Path(output)
@@ -65,7 +75,7 @@ def report(rt, output):
             raise ValueError('Readout/method/seed stratum denominators differ')
         n = denominators.pop()
         for readout in READOUTS:
-            for method in ('F20', 'F21') + METHODS:
+            for method in ('F20', 'F21') + methods:
                 correct = [data[readout, method, seed][key][0] for seed in SEEDS]
                 row = dict(readout=readout, method=method, view=key[0], dimension=key[1], stratum=key[2],
                     count_per_seed=n, correct_total=sum(correct), mean_accuracy_percent=100. * sum(correct)/(3*n),
@@ -94,7 +104,7 @@ def report(rt, output):
             pairs.append(dict(method=method, model_seed=seed, **pair))
         if present != {k for k in keys if k[0] in VIEWS}:
             raise ValueError('Complete seven-view DURA/raw repair evidence required')
-    verdicts = [verdict(data, method, readout) for readout in READOUTS for method in METHODS]
+    verdicts = [verdict(data, method, readout) for readout in READOUTS for method in methods]
     goal_met = any(v['thresholds_pass'] for v in verdicts if v['readout'] == 'raw')
     summary = [row for row in rows if row['dimension'] == 'overall' and row['stratum'] == 'ALL']
     per_seed = []
@@ -118,10 +128,10 @@ def report(rt, output):
         '同一固定 unseen-RX 测试集，每景 168000 条物理样本，三个模型种子。表内为准确率均值 ± 样本 SD（%）。两个 readout 分别对同 readout 的监督 F20、普通 PL F21 比较。', '']
     for readout in READOUTS:
         text += [('PAMF 单模型' if readout == 'raw' else '固定 DURA v1.0＋同一 PAMF'), '',
-            '| 视图 | F20 监督 | F21 普通 PL | PSM | RXPSM | VIEWANCHOR |', '|---|' + '---:|'*5]
+            '| 视图 | F20 监督 | F21 普通 PL | '+' | '.join(methods)+' |', '|---|' + '---:|'*(2+len(methods))]
         for view in (*VIEWS, 'six_mean'):
             values = [next(r for r in summary if r['readout'] == readout and r['method'] == method and r['view'] == view)
-                      for method in ('F20', 'F21') + METHODS]
+                      for method in ('F20', 'F21') + methods]
             text.append('| ' + view + ' | ' + ' | '.join(f"{r['mean_accuracy_percent']:.6f} ± {r['sample_sd_percent']:.6f}" for r in values) + ' |')
         text.append('')
     text += ['原始研发目标继续按 PAMF 单模型的整数正确数验收：对两个对照，clean 均至少 +1 pp，六景平均均严格超过 +1.5 pp。DURA 组合为并列参考，不替代单模型验收。', '']

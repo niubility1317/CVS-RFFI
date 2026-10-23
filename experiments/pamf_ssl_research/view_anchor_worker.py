@@ -6,7 +6,7 @@ from pathlib import Path
 from experiments.cric_dura_comparison.io import read, write
 
 
-def smoke(rt):
+def smoke(rt, *, paired=False):
     from experiments.cric_dura_comparison.bootstrap import activate, numerical_policy
     activate(rt)
     numerical_policy()
@@ -21,7 +21,11 @@ def smoke(rt):
     from .view_anchor_train import source_parents
 
     c = read(rt['rows'][0]['train_config'])
-    parents, _ = source_parents(c)
+    if paired:
+        from .paired_u import validate as validate_pair
+        parents, _ = source_parents(c, validate_config=validate_pair)
+    else:
+        parents, _ = source_parents(c)
     parent = parents[-1]['folder']
     cfg = dict(c, segment_epochs=20, epoch_offset=30, step_offset=6660, parent_source=parent)
     payload = torch.load(Path(parent) / 'final_ssdg.pth', map_location='cpu', weights_only=False)
@@ -59,10 +63,15 @@ def smoke(rt):
         total.backward()
         objective = holder['objective']
         head = model.id_backbone.encoder.core.id_backbone.cls_head.weight
+        mechanism_ok = (float(metrics['SSL_pair_physical_feature']) > 0
+                        and objective.paired_calls == 1 and objective.paired_clean_seen == 256
+                        and objective.paired_physical_seen == 256 and objective.student_U_views == 964412
+                        and objective.physical_seen == 482206) if paired else (
+                        float(metrics['SSL_view_anchor_loss']) > 0 and objective.view_anchor_calls == 1
+                        and objective.view_anchor_physical_seen == 128)
         if (not bool(torch.isfinite(total)) or head.grad is None or not bool(torch.isfinite(head.grad).all())
-                or metrics['T1_L_packets'] != 768 or float(metrics['SSL_view_anchor_loss']) <= 0
-                or objective.seen != 964156 or objective.view_anchor_calls != 1
-                or objective.view_anchor_physical_seen != 128
+                or metrics['T1_L_packets'] != 768 or not mechanism_ok
+                or objective.seen != 964156
                 or any(parameter.grad is not None for parameter in objective.teacher.parameters())):
             raise ValueError('Real E30 student/own-EMA physical-view backward failed')
         objective.after_update(model)
@@ -72,10 +81,14 @@ def smoke(rt):
             raise ValueError('Own E30 teacher state did not continue')
         checked = dict(parent_epoch=30, parent_updates=6660, EMA_updates_after_smoke=6661,
             U_seen=objective.seen, physical_U_seen=objective.physical_seen,
-            view_anchor_loss=float(metrics['SSL_view_anchor_loss']), view_anchor_physical_seen=128,
             L_forward_packets=768, finite_backward=True, teacher_gradient=False)
+        if paired:
+            checked.update(student_U_views=objective.student_U_views, paired_clean_seen=256,
+                           paired_physical_seen=256, physical_feature_loss=float(metrics['SSL_pair_physical_feature']))
+        else:
+            checked.update(view_anchor_loss=float(metrics['SSL_view_anchor_loss']), view_anchor_physical_seen=128)
     write(Path(rt['run_root']) / 'smoke.json', dict(status='PASS', real_checkpoint=parent + '/final_ssdg.pth',
-        target_reads=0, U_truth_reads=0, method='VIEWANCHOR', checked=checked, immediate_continuation=True))
+        target_reads=0, U_truth_reads=0, method='PAIREDU' if paired else 'VIEWANCHOR', checked=checked, immediate_continuation=True))
 
 
 def train_and_predict(row):
