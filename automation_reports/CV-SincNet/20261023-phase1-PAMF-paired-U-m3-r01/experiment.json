@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "用户 /goal 授权持续设计迭代 PAMF 半监督机制，使目标测试 clean 相对监督/普通PL均至少高1pp、六景均值均严格高1.5pp；三GPU每卡固定一个模型种子、最多两个本任务worker；追加要求同时报告单PAMF与固定DURA+PAMF。",
   "code": {
-    "commit": "da8d27626448fc5a109f374e11f770cb0eb94962",
+    "commit": "de92f461949dbb0163745c0cde009a433e6fc854",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 ordinary account CVS-RFFI Py3.10/Torch2.1 FP32/TF32off, CPU2 per worker",
     "cwd": "PROJECT/releases/20261023-phase1-PAMF-paired-U-m3-r01",
@@ -269,5 +269,12 @@
     "Existing exposed engineering benchmark, not a fresh blind test. No result feedback to other healthy runs or candidate parameters. All three seeds and all14 readout/view cells reported per row.",
     "Prepared and source-defined before VIEWANCHOR target access; stop only for systemic technical failure, never early for target performance. Goal remains unachieved until raw clean and six thresholds both pass against both baselines."
   ],
-  "registered_at": "2026-10-23T11:56:53+00:00"
+  "registered_at": "2026-10-23T11:56:53+00:00",
+  "launch_status": {
+    "status": "VERIFIED_QUEUED",
+    "evidence": "queue_verification.json",
+    "source_smoke": "PENDING_FIRST_GPU_STEP",
+    "training_started": false,
+    "target_prediction_started": false
+  }
 }

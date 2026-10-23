@@ -1,6 +1,6 @@
 # PAMF 干净／信道配对 U：源域后续假设
 
-状态：实现及本地检查完成，已补全三种子登记；尚未发布、未训练、未读取本版目标。当前 VIEWANCHOR 三个健康任务继续原配方。本假设在首轮 PSM/RXPSM 目标结果已经公开、任何 VIEWANCHOR 目标访问之前记录；不声称全新独立盲测。下列系数由现有源端视图和损失质量分解固定，不从目标分数搜索或选择父模型。
+状态：已发布，CPU控制器身份核实且正在等待前序同卡预测；尚未开始本版source smoke、训练或目标访问。当前 VIEWANCHOR 三个健康任务继续原配方。本假设在首轮 PSM/RXPSM 目标结果已经公开、任何 VIEWANCHOR 目标访问之前记录；不声称全新独立盲测。下列系数由现有源端视图和损失质量分解固定，不从目标分数搜索或选择父模型。
 
 当前 RXPSM／VIEWANCHOR 对每批 256 个 U，只让 student 看到 128 个普通噪声视图和 128 个物理信道视图，teacher 看到全部原 U。源端日志确认 U 损失、0.10 物理特征项、其他 RX 标签原型和连续计数均实际工作。它没有完整的 256 条原 U student 分类分支；这个结构事实不是 clean 损伤的因果证明，也不证明新增分支必然有效。
 
@@ -28,3 +28,8 @@ E31 起，对于每个真实 U IQ 同时给 student 原 IQ 和一个同记录的
 新队列对每个seed先等待九模型DURA参考队列中同seed的PSM/RXPSM/VIEWANCHOR三条GPU预测全部结束，才在该seed固定卡上执行真实E30 checkpoint no-query smoke并续训；既有训练及不可变release不热改。先前队列保留单CPU评分资源至终态，新队列随后以独立单CPU scorer评分。卡上总计算进程少于两个且空闲显存至少10000MiB，计入其他owner。
 
 用户已追加默认两套正式读出：每个本版E50学生在clean加六种practical上，分别预测raw PAMF与固定DURA v1.0＋同一PAMF，每景168000条；全部14个readout/视图预测固定后独立truth-last。监督F20/普通PL F21相同readout三seed既有结果复用。逐seed/场景/RX/TX/day/净纠错和增量/累计成本完整报告，raw按原目标验收，DURA仅作并列参考。
+
+
+## 实际发布
+
+VERIFIED_QUEUED：执行commit `de92f461949dbb0163745c0cde009a433e6fc854`，一次发布包本地/远端SHA对照与远端编译PASS。独立读回CPU控制器PID/CWD/完整命令与实时进程，确认三行仍QUEUED、无本版GPU worker，正在等待前序同seed三条DURA预测完成；资源等待符合预登记，没有重复启动或接管其他健康任务。真实E30 source-only smoke是该控制器获得预定GPU资源后的首个步骤，当前尚未执行，不把排队或本地检查当作实际训练完成。证据见queue_verification.json。

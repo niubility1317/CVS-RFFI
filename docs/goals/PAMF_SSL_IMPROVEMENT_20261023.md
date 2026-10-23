@@ -39,3 +39,8 @@ VIEWANCHOR r01 在任何 smoke／训练之前因原卡持续占用而被资源�
 用户明确要求同时报告 PAMF 单模型与固定 DURA v1.0＋同一 PAMF。新增独立冻结补测 `20261023-phase1-PAMF-SSL-DURA-reference-m9-r01`，覆盖 PSM、RXPSM、VIEWANCHOR 各三个固定模型种子、七景168000物理样本；原单模型预测和匹配 F20/F21 的既有 DURA 结果复用。健康续训不热改，G 不重训或调参。两套结果分别与相同 readout 的监督及普通 PL 对比，并报告 DURA 的纠错/损伤。原单模型 clean≥+1pp、六景>+1.5pp 验收保持，DURA 参考不替代该目标。完整矩阵与资源见新 run 的 experiment.json/report.md。
 
 后续每个新 PAMF 半监督候选均默认完成单模型 raw 与固定 DURA v1.0＋同一模型两套正式测试，分别与相同 readout 的监督版、普通 PL 版比较。各自覆盖原定全部模型种子、clean 与六种 practical；旧权重/已有预测合法则复用，新增组合单独登记，不热改健康任务。两套均报告逐景、逐 seed 和配对差，DURA 增加同模型 raw 的纠错/损伤计数；主 SSL 目标仍按单模型验收。
+
+
+## 配对U方案已实现并发布排队
+
+`20261023-phase1-PAMF-paired-U-m3-r01`：沿用此前源端固定假设，43项检查与一次限定P0/P1审查PASS，执行commit`de92f461949dbb0163745c0cde009a433e6fc854`。原RXPSM各seed E30学生/自身EMA/统计/标签原型独立追加20轮，full-U原IQ与同记录Practical输入concat，固定损失系数与实际曝光见该run的experiment.json/report.md。每seed在其九模型参考预测三行全部释放GPU后自动接续，不热改旧训练；最终E50同时测试raw与固定DURA v1.0。控制器已核实存活、三行排队，source smoke尚未开始；目标仍未证明达成。
