@@ -1,0 +1,145 @@
+{
+  "status": "VERIFIED_HPL2_SCORED_HPLT1U_RUNNING",
+  "execution_commit": "8624df76b2c2c8f9c731e246afe0227c9c84f793",
+  "observed_unix": 1792777299.770682,
+  "controller_PID_CWD_command_verified": true,
+  "rows": [
+    {
+      "row_id": "HPLT1U-s2026092701",
+      "gpu": 5,
+      "PID_CWD_full_command_verified": true,
+      "actual_GPU_verified": true,
+      "all_flushed_step_prefix_records_checked": 1326,
+      "actual_step_log_growth": 143017,
+      "cumulative_updates": 7986,
+      "U_accepted": 319147,
+      "source_loss_and_exposure_last": {
+        "HPL_loss": 0.48513761162757874,
+        "HPL_base_loss": 0.24256880581378937,
+        "HPL_weight": 2.0,
+        "HPL_calls": 1326,
+        "HPL_seen": 338796,
+        "HPL_accepted": 319147,
+        "HPL_confidence": 0.9763956069946289,
+        "HPL_student_views": 2032776,
+        "HPL_physical_seen": 169398,
+        "HPL_physical_student_views": 338796,
+        "HPL_EMA_updates": 0.0,
+        "HPL_anchors_time_down": 638294,
+        "HPL_anchors_t2.pool": 638294,
+        "T1_L_packets": 768,
+        "HPL_ordinary_KL": 0.005455126985907555,
+        "HPL_raw_KL": 0.005727941170334816,
+        "HPL_As_KL": 0.07635243237018585,
+        "HPL_As_KL_weight": 0.0,
+        "HPL_contrast": 0.7302368879318237,
+        "HPL_CE_normalizer": 1.25
+      },
+      "source_mechanisms": {
+        "contrast_anchors": {
+          "time_down": 638294,
+          "t2.pool": 638294
+        },
+        "steps_with_both_RDrop_positive": 1326,
+        "steps_with_contrast": 1326
+      },
+      "noUAs_peer_preserved": true,
+      "task_workers_this_card": 2,
+      "total_GPU_processes_this_card": 3
+    },
+    {
+      "row_id": "HPLT1U-s2026092702",
+      "gpu": 6,
+      "PID_CWD_full_command_verified": true,
+      "actual_GPU_verified": true,
+      "all_flushed_step_prefix_records_checked": 2691,
+      "actual_step_log_growth": 174586,
+      "cumulative_updates": 9351,
+      "U_accepted": 652269,
+      "source_loss_and_exposure_last": {
+        "HPL_loss": 0.46344509720802307,
+        "HPL_base_loss": 0.23172254860401154,
+        "HPL_weight": 2.0,
+        "HPL_calls": 2691,
+        "HPL_seen": 687312,
+        "HPL_accepted": 652269,
+        "HPL_confidence": 0.9846174716949463,
+        "HPL_student_views": 4123872,
+        "HPL_physical_seen": 343656,
+        "HPL_physical_student_views": 687312,
+        "HPL_EMA_updates": 0.0,
+        "HPL_anchors_time_down": 1304538,
+        "HPL_anchors_t2.pool": 1304538,
+        "T1_L_packets": 768,
+        "HPL_ordinary_KL": 0.006081202998757362,
+        "HPL_raw_KL": 0.006187645718455315,
+        "HPL_As_KL": 0.06500919908285141,
+        "HPL_As_KL_weight": 0.0,
+        "HPL_contrast": 0.691375732421875,
+        "HPL_CE_normalizer": 1.25
+      },
+      "source_mechanisms": {
+        "contrast_anchors": {
+          "time_down": 1304538,
+          "t2.pool": 1304538
+        },
+        "steps_with_both_RDrop_positive": 2691,
+        "steps_with_contrast": 2691
+      },
+      "noUAs_peer_preserved": true,
+      "task_workers_this_card": 2,
+      "total_GPU_processes_this_card": 2
+    },
+    {
+      "row_id": "HPLT1U-s2026092703",
+      "gpu": 7,
+      "PID_CWD_full_command_verified": true,
+      "actual_GPU_verified": true,
+      "all_flushed_step_prefix_records_checked": 1300,
+      "actual_step_log_growth": 173395,
+      "cumulative_updates": 7960,
+      "U_accepted": 313328,
+      "source_loss_and_exposure_last": {
+        "HPL_loss": 0.4927748143672943,
+        "HPL_base_loss": 0.24638740718364716,
+        "HPL_weight": 2.0,
+        "HPL_calls": 1300,
+        "HPL_seen": 332140,
+        "HPL_accepted": 313328,
+        "HPL_confidence": 0.9828252196311951,
+        "HPL_student_views": 1992840,
+        "HPL_physical_seen": 166070,
+        "HPL_physical_student_views": 332140,
+        "HPL_EMA_updates": 0.0,
+        "HPL_anchors_time_down": 626656,
+        "HPL_anchors_t2.pool": 626656,
+        "T1_L_packets": 768,
+        "HPL_ordinary_KL": 0.0067377956584095955,
+        "HPL_raw_KL": 0.005950828082859516,
+        "HPL_As_KL": 0.04543009027838707,
+        "HPL_As_KL_weight": 0.0,
+        "HPL_contrast": 0.7713395953178406,
+        "HPL_CE_normalizer": 1.25
+      },
+      "source_mechanisms": {
+        "contrast_anchors": {
+          "time_down": 626656,
+          "t2.pool": 626656
+        },
+        "steps_with_both_RDrop_positive": 1300,
+        "steps_with_contrast": 1300
+      },
+      "noUAs_peer_preserved": true,
+      "task_workers_this_card": 2,
+      "total_GPU_processes_this_card": 3
+    }
+  ],
+  "actual_HPLT1U_GPU_workers": 3,
+  "HPL2_rows_scored": 3,
+  "HPL2_target_metrics_read": false,
+  "scope": "Only flushed source prefixes,not full training or target performance",
+  "real_source_smoke_reference": "source_activation.json:source_smoke.methods[method=HPLT1U]",
+  "new_target_scores_read": false,
+  "healthy_other_owner_jobs_modified": false,
+  "goal_complete": false
+}

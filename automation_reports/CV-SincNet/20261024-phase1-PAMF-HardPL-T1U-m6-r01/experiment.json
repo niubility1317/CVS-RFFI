@@ -385,11 +385,29 @@
   ],
   "registered_at": "2026-10-23T16:14:20.668857+00:00",
   "launch_status": {
-    "status": "VERIFIED_HPL2_RUNNING_HPLT1U_QUEUED",
+    "status": "VERIFIED_HPL2_SCORED_HPLT1U_RUNNING",
     "source_smoke": "PASS_BOTH_METHODS",
-    "evidence": "source_activation.json",
-    "actual_HPL2_GPU_workers": 3,
-    "queued_HPLT1U_models": 3,
-    "new_target_reads": 0
+    "evidence": "supervised_U_activation.json",
+    "HPL2_rows_scored": 3,
+    "actual_HPLT1U_GPU_workers": 3,
+    "target_full_six_model_matrix_complete": false,
+    "target_metrics_read": false
+  },
+  "source_quality_diagnostics": {
+    "HPL2": {
+      "status": "VERIFIED_FULL_SOURCE_V",
+      "source_epoch": 50,
+      "samples_per_seed": 27000,
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "reference": "source_pseudo_quality_E50_HPL2.json",
+      "model_or_threshold_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0,
+      "selection_changed": false
+    }
   }
 }
