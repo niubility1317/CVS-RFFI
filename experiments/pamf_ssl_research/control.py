@@ -8,22 +8,25 @@ import sys
 import time
 from experiments.cric_dura_comparison.io import read, write
 from .plan import GPU_BY_SEED, METHODS, SEEDS
+from .hard_pl import METHODS as HARD_METHODS
 
 
-def capacity(gpu):
+def capacity(gpu, pending_pids=()):
     args = ['nvidia-smi', '-i', str(gpu)]
     apps = subprocess.check_output(args + ['--query-compute-apps=pid', '--format=csv,noheader,nounits'], text=True).strip().splitlines()
     free = int(subprocess.check_output(args + ['--query-gpu=memory.free', '--format=csv,noheader,nounits'], text=True).strip())
-    return len(apps), free
+    # Dispatched children reserve a slot before their first CUDA context.
+    registered={int(pid.strip()) for pid in apps if pid.strip().isdigit()}
+    return len(registered | set(pending_pids)), free
 
 
 def validate_rows(rows, methods=METHODS, gpu_by_seed=None):
     methods = tuple(methods)
     gpu_by_seed = GPU_BY_SEED if gpu_by_seed is None else gpu_by_seed
     from .view_anchor import RESOURCE_GPU_BY_SEED
-    if methods not in (METHODS, ('VIEWANCHOR',), ('PAIREDU',), ('UCRIC',), ('UMIX',), ('UGP',), ('UCMR',), ('UDAP',), ('UVB',)):
+    if methods not in (METHODS, ('VIEWANCHOR',), ('PAIREDU',), ('UCRIC',), ('UMIX',), ('UGP',), ('UCMR',), ('UDAP',), ('UVB',), HARD_METHODS):
         raise ValueError('A declared complete three-seed matrix is required')
-    if gpu_by_seed != GPU_BY_SEED and (methods not in (('VIEWANCHOR',),('PAIREDU',),('UCRIC',),('UMIX',),('UGP',),('UCMR',),('UDAP',),('UVB',)) or gpu_by_seed != RESOURCE_GPU_BY_SEED):
+    if gpu_by_seed != GPU_BY_SEED and (methods not in (('VIEWANCHOR',),('PAIREDU',),('UCRIC',),('UMIX',),('UGP',),('UCMR',),('UDAP',),('UVB',),HARD_METHODS) or gpu_by_seed != RESOURCE_GPU_BY_SEED):
         raise ValueError('Only the declared three-card seed allocation is supported')
     expected = {(seed, method) for seed in SEEDS for method in methods}
     if (len(rows) != len(expected) or {(r['model_seed'], r['method']) for r in rows} != expected
@@ -40,8 +43,8 @@ def run(rt):
     worker = 'experiments.pamf_ssl_research.' + {
         ('VIEWANCHOR',):'view_anchor_worker',('PAIREDU',):'paired_u_worker',('UCRIC',):'u_cric_worker',
         ('UMIX',):'u_mixstyle_worker',('UGP',):'u_gradprotect_worker',('UCMR',):'u_cmr_worker',
-        ('UDAP',):'u_dualanchor_worker',('UVB',):'u_viewbalance_worker'}.get(methods,'worker')
-    process_limit = 3 if methods in (('UCRIC',),('UMIX',),('UGP',),('UCMR',),('UDAP',),('UVB',)) else 2
+        ('UDAP',):'u_dualanchor_worker',('UVB',):'u_viewbalance_worker',HARD_METHODS:'hard_pl_worker'}.get(methods,'worker')
+    process_limit = 3 if methods in (('UCRIC',),('UMIX',),('UGP',),('UCMR',),('UDAP',),('UVB',),HARD_METHODS) else 2
     root = Path(rt['run_root'])
     root.mkdir(parents=True, exist_ok=False)
     logs = root / 'logs'
@@ -74,10 +77,13 @@ def run(rt):
         elif methods == ('UVB',):
             from .u_viewbalance import second_slot_ready
             predecessor_ready = second_slot_ready(rt, SEEDS[0])
+        elif methods == HARD_METHODS:
+            from .hard_pl import slot_ready as hard_slot_ready
+            predecessor_ready = hard_slot_ready(rt,SEEDS[0],'HPL2',state['jobs'])
         apps, free = capacity(smoke_gpu)
         if predecessor_ready and apps < process_limit and free >= 10000:
             break
-        if methods not in (('VIEWANCHOR',),('PAIREDU',),('UCRIC',),('UMIX',),('UGP',),('UCMR',),('UDAP',),('UVB',)):
+        if methods not in (('VIEWANCHOR',),('PAIREDU',),('UCRIC',),('UMIX',),('UGP',),('UCMR',),('UDAP',),('UVB',),HARD_METHODS):
             raise RuntimeError('Smoke GPU capacity changed; no workload modified')
         state.update(status='WAITING_FOR_SMOKE_GPU', predecessor_GPU_work_ready=predecessor_ready, observed_apps=apps,
                      observed_free_MiB=free, updated_unix=time.time())
@@ -148,13 +154,15 @@ def run(rt):
                     continue
                 if methods == ('UVB',) and not second_slot_ready(rt, row['model_seed']):
                     continue
-                apps, free = capacity(gpu)
+                if methods == HARD_METHODS and not hard_slot_ready(rt,row['model_seed'],row['method'],state['jobs']):
+                    continue
+                apps, free = capacity(gpu,[v['child'].pid for v in active.values() if v['gpu']==gpu])
                 if apps >= process_limit or free < 10000 or sum(v['gpu'] == gpu for v in active.values()) >= 2:
                     continue
                 item = launch('row', row['row_config'], row_id, gpu)
                 active[row_id] = item
                 state['jobs'][row_id] = dict(status='RUNNING', pid=item['child'].pid, gpu=gpu, log=item['log'])
-        prior_scorer_finished = (methods not in (('PAIREDU',),('UCRIC',),('UMIX',),('UGP',),('UCMR',),('UDAP',),('UVB',)) or read(rt['prior_score_owner_state'])['status']
+        prior_scorer_finished = (methods not in (('PAIREDU',),('UCRIC',),('UMIX',),('UGP',),('UCMR',),('UDAP',),('UVB',),HARD_METHODS) or read(rt['prior_score_owner_state'])['status']
                                  in ('ALL_SCORED','INCOMPLETE_TECHNICAL_FAILURE'))
         if score is None and prior_scorer_finished:
             pending = next((r for r in rt['rows'] if state['jobs'][r['row_id']]['status'] == 'PREDICTIONS_COMPLETE'), None)

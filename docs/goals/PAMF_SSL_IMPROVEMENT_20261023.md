@@ -136,3 +136,8 @@ PAIREDU三seed已在各自GPU5/6/7实际续训，真实E30 no-query smoke和配�
 ## 视图平衡三seed实际运行
 
 `20261023-phase1-PAMF-U-ViewBalance-m3-r01`执行commit `81c4e8ba596412d850e478e45bef23c6d5fcbec8`；121项检查／一次P0/P1审查／真实原E30 source-only smoke均PASS。原raw CE、普通／物理各128和每视图双锚／半L预算实际生效，全部参数梯度、L768、单次EMA及无教师梯度正确；probe丢弃，正式三seed重载原E30。三个worker的PID／CWD／命令／实际GPU及完整step前缀增长已独立核验，每卡UVB＋UDAP共两条本任务worker；CMR对应GPU预测完成后交接，其他owner保持。原全局U系数不再控制归一化后范数，放大噪声风险披露；未宣称目标收益。新版尚无目标访问，固定E50、双读出七景和独立评分继续，原goal ACTIVE。
+
+
+## 用户指定普通PL加权与监督机制用于U（2026-10-24）
+
+实际原F21 E30在完整源V各27000条，.95接受后正确99.8868%/99.8366%/99.9027%，覆盖94.9037%/95.1815%/95.1296%；.98只增加少量纯度但减少正确样本覆盖，按预先源规则保留.95。U真值隐藏，不能称U实测精度。登记`20261024-phase1-PAMF-HardPL-T1U-m6-r01`，HPL2权重1→2与HPLT1U权重2＋U六视图监督/RDrop/AsKL0/LS.01/浅中层跨RX对比，CE剂量归一化1.25，均原F21同seed E30＋20到E50/11100；每seed各两候选。153项检查和一次P0/P1审查/一次P1定向修复复查PASS；待UDAP/UVB合法卡位，真实源smoke后自动训练及双七景独立评分。不以源V或本地检查宣布目标收益，goal ACTIVE。

@@ -1,0 +1,34 @@
+{
+  "methods": [
+    "HPL2",
+    "HPLT1U"
+  ],
+  "recipe": {
+    "threshold": 0.95,
+    "weight": 2.0,
+    "teacher": "current_student_eval_no_update",
+    "hard_targets": true,
+    "EMA": false,
+    "prototype": false,
+    "U_truth": false,
+    "start_epoch": 31,
+    "default_head_joint": true,
+    "ordinary_noise_std": 0.015,
+    "T1_U_CE_normalizer": 1.25,
+    "LS": 0.01,
+    "ordinary_raw_KL": 1.0,
+    "As_KL": 0.0,
+    "contrast_weight": 0.1,
+    "contrast_levels": [
+      "time_down",
+      "t2.pool"
+    ],
+    "contrast_only_accepted": true,
+    "physical_fraction": 0.5,
+    "contrast_same_pseudo_different_RX": true
+  },
+  "source_gate_rule": "Keep .95 if accepted accuracy >=99% in each of the three E30 source-V rows;otherwise use .98 only if all three >=99%;otherwise do not start stronger pseudo training pending source diagnosis.",
+  "original_parent": "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01/F21-sSEED/source/segment30",
+  "new_method_target_reads": 0,
+  "reason": "User-directed transfer of PAMF supervised mechanisms to high-purity ordinary hard pseudo labels;no target-score feedback"
+}

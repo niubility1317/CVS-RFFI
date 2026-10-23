@@ -1,0 +1,381 @@
+{
+  "status": "FROZEN_SOURCE_E30_VIEW_RELIABILITY",
+  "observed_unix": 1792770685.8285794,
+  "seconds": 38.77562732202932,
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "role": "V",
+      "samples": 720,
+      "source_epoch": 30,
+      "raw_E30_frozen_weight_sum": 677.3656005859375,
+      "accepted_ge_half": 677,
+      "actual_simulator_coverage": {
+        "practical_low_urban": 251,
+        "practical_low_suburban": 222,
+        "practical_mid_urban": 247
+      },
+      "views": {
+        "raw": {
+          "pseudo_agreement": 719,
+          "confidence_mean": 0.9761386513710022,
+          "confidence_ge95": 662,
+          "JS_mean": 0.0018461867002770305,
+          "raw_weight_on_disagreement": 0.0,
+          "soft_CE_to_raw_pseudo_mean": 0.06976434588432312,
+          "equal_view_teacher_mixture_changed": 0,
+          "correct": 704,
+          "confident_wrong_ge95": 0,
+          "raw_correct_view_wrong": 0,
+          "raw_wrong_view_correct": 0,
+          "equal_view_teacher_mixture_correct": 705,
+          "equal_mixture_corrected_raw_pseudo": 0,
+          "equal_mixture_damaged_raw_pseudo": 0,
+          "pseudo_vs_true_CE_logit_gradient_negative": 447,
+          "pseudo_vs_true_CE_logit_gradient_cosine_mean": -0.20484627783298492,
+          "correct_raw_pseudo_on_view_error": 1
+        },
+        "ordinary": {
+          "pseudo_agreement": 716,
+          "confidence_mean": 0.9753560423851013,
+          "confidence_ge95": 664,
+          "JS_mean": 0.0021605179645121098,
+          "raw_weight_on_disagreement": 0.0,
+          "soft_CE_to_raw_pseudo_mean": 0.0708247646689415,
+          "equal_view_teacher_mixture_changed": 0,
+          "correct": 703,
+          "confident_wrong_ge95": 0,
+          "raw_correct_view_wrong": 1,
+          "raw_wrong_view_correct": 0,
+          "equal_view_teacher_mixture_correct": 705,
+          "equal_mixture_corrected_raw_pseudo": 0,
+          "equal_mixture_damaged_raw_pseudo": 0,
+          "pseudo_vs_true_CE_logit_gradient_negative": 446,
+          "pseudo_vs_true_CE_logit_gradient_cosine_mean": -0.19528579711914062,
+          "correct_raw_pseudo_on_view_error": 2
+        },
+        "physical": {
+          "pseudo_agreement": 555,
+          "confidence_mean": 0.7621899843215942,
+          "confidence_ge95": 373,
+          "JS_mean": 0.13420923054218292,
+          "raw_weight_on_disagreement": 142.33169555664062,
+          "soft_CE_to_raw_pseudo_mean": 0.5894759297370911,
+          "equal_view_teacher_mixture_changed": 4,
+          "correct": 549,
+          "confident_wrong_ge95": 0,
+          "raw_correct_view_wrong": 157,
+          "raw_wrong_view_correct": 2,
+          "equal_view_teacher_mixture_correct": 705,
+          "equal_mixture_corrected_raw_pseudo": 1,
+          "equal_mixture_damaged_raw_pseudo": 1,
+          "pseudo_vs_true_CE_logit_gradient_negative": 136,
+          "pseudo_vs_true_CE_logit_gradient_cosine_mean": 0.6340309381484985,
+          "correct_raw_pseudo_on_view_error": 157
+        }
+      },
+      "raw_pseudo_correct": 705,
+      "raw_pseudo_wrong_weight": 1.4410802125930786
+    },
+    {
+      "model_seed": 2026092701,
+      "role": "U_s",
+      "samples": 960,
+      "source_epoch": 30,
+      "raw_E30_frozen_weight_sum": 921.734375,
+      "accepted_ge_half": 922,
+      "actual_simulator_coverage": {
+        "practical_low_urban": 329,
+        "practical_low_suburban": 333,
+        "practical_mid_urban": 298
+      },
+      "views": {
+        "raw": {
+          "pseudo_agreement": 959,
+          "confidence_mean": 0.9816405177116394,
+          "confidence_ge95": 905,
+          "JS_mean": 0.0014323986833915114,
+          "raw_weight_on_disagreement": 0.0,
+          "soft_CE_to_raw_pseudo_mean": 0.061435334384441376,
+          "equal_view_teacher_mixture_changed": 0
+        },
+        "ordinary": {
+          "pseudo_agreement": 958,
+          "confidence_mean": 0.9818060994148254,
+          "confidence_ge95": 904,
+          "JS_mean": 0.0016455800505355,
+          "raw_weight_on_disagreement": 0.0,
+          "soft_CE_to_raw_pseudo_mean": 0.06221307814121246,
+          "equal_view_teacher_mixture_changed": 1
+        },
+        "physical": {
+          "pseudo_agreement": 743,
+          "confidence_mean": 0.7726036906242371,
+          "confidence_ge95": 493,
+          "JS_mean": 0.13711978495121002,
+          "raw_weight_on_disagreement": 196.74159240722656,
+          "soft_CE_to_raw_pseudo_mean": 0.6077435612678528,
+          "equal_view_teacher_mixture_changed": 6
+        }
+      }
+    },
+    {
+      "model_seed": 2026092702,
+      "role": "V",
+      "samples": 720,
+      "source_epoch": 30,
+      "raw_E30_frozen_weight_sum": 677.8869018554688,
+      "accepted_ge_half": 679,
+      "actual_simulator_coverage": {
+        "practical_low_urban": 251,
+        "practical_low_suburban": 222,
+        "practical_mid_urban": 247
+      },
+      "views": {
+        "raw": {
+          "pseudo_agreement": 718,
+          "confidence_mean": 0.9768849015235901,
+          "confidence_ge95": 674,
+          "JS_mean": 0.0015449109487235546,
+          "raw_weight_on_disagreement": 0.0,
+          "soft_CE_to_raw_pseudo_mean": 0.06960306316614151,
+          "equal_view_teacher_mixture_changed": 1,
+          "correct": 703,
+          "confident_wrong_ge95": 2,
+          "raw_correct_view_wrong": 0,
+          "raw_wrong_view_correct": 0,
+          "equal_view_teacher_mixture_correct": 703,
+          "equal_mixture_corrected_raw_pseudo": 1,
+          "equal_mixture_damaged_raw_pseudo": 0,
+          "pseudo_vs_true_CE_logit_gradient_negative": 563,
+          "pseudo_vs_true_CE_logit_gradient_cosine_mean": -0.4999808073043823,
+          "correct_raw_pseudo_on_view_error": 0
+        },
+        "ordinary": {
+          "pseudo_agreement": 716,
+          "confidence_mean": 0.9766653180122375,
+          "confidence_ge95": 670,
+          "JS_mean": 0.0018045874312520027,
+          "raw_weight_on_disagreement": 0.0,
+          "soft_CE_to_raw_pseudo_mean": 0.07049887627363205,
+          "equal_view_teacher_mixture_changed": 1,
+          "correct": 702,
+          "confident_wrong_ge95": 2,
+          "raw_correct_view_wrong": 1,
+          "raw_wrong_view_correct": 0,
+          "equal_view_teacher_mixture_correct": 703,
+          "equal_mixture_corrected_raw_pseudo": 1,
+          "equal_mixture_damaged_raw_pseudo": 0,
+          "pseudo_vs_true_CE_logit_gradient_negative": 557,
+          "pseudo_vs_true_CE_logit_gradient_cosine_mean": -0.48771965503692627,
+          "correct_raw_pseudo_on_view_error": 1
+        },
+        "physical": {
+          "pseudo_agreement": 550,
+          "confidence_mean": 0.7561736106872559,
+          "confidence_ge95": 370,
+          "JS_mean": 0.13574814796447754,
+          "raw_weight_on_disagreement": 149.3111572265625,
+          "soft_CE_to_raw_pseudo_mean": 0.5918918251991272,
+          "equal_view_teacher_mixture_changed": 3,
+          "correct": 543,
+          "confident_wrong_ge95": 0,
+          "raw_correct_view_wrong": 161,
+          "raw_wrong_view_correct": 1,
+          "equal_view_teacher_mixture_correct": 703,
+          "equal_mixture_corrected_raw_pseudo": 1,
+          "equal_mixture_damaged_raw_pseudo": 0,
+          "pseudo_vs_true_CE_logit_gradient_negative": 189,
+          "pseudo_vs_true_CE_logit_gradient_cosine_mean": 0.5160477757453918,
+          "correct_raw_pseudo_on_view_error": 160
+        }
+      },
+      "raw_pseudo_correct": 702,
+      "raw_pseudo_wrong_weight": 2.9121859073638916
+    },
+    {
+      "model_seed": 2026092702,
+      "role": "U_s",
+      "samples": 960,
+      "source_epoch": 30,
+      "raw_E30_frozen_weight_sum": 920.2950439453125,
+      "accepted_ge_half": 920,
+      "actual_simulator_coverage": {
+        "practical_low_urban": 329,
+        "practical_low_suburban": 333,
+        "practical_mid_urban": 298
+      },
+      "views": {
+        "raw": {
+          "pseudo_agreement": 960,
+          "confidence_mean": 0.9834346175193787,
+          "confidence_ge95": 909,
+          "JS_mean": 0.0013464965159073472,
+          "raw_weight_on_disagreement": 0.0,
+          "soft_CE_to_raw_pseudo_mean": 0.058417096734046936,
+          "equal_view_teacher_mixture_changed": 0
+        },
+        "ordinary": {
+          "pseudo_agreement": 960,
+          "confidence_mean": 0.9833468198776245,
+          "confidence_ge95": 911,
+          "JS_mean": 0.0015060611767694354,
+          "raw_weight_on_disagreement": 0.0,
+          "soft_CE_to_raw_pseudo_mean": 0.05891121178865433,
+          "equal_view_teacher_mixture_changed": 0
+        },
+        "physical": {
+          "pseudo_agreement": 739,
+          "confidence_mean": 0.7696202397346497,
+          "confidence_ge95": 501,
+          "JS_mean": 0.13603036105632782,
+          "raw_weight_on_disagreement": 201.08168029785156,
+          "soft_CE_to_raw_pseudo_mean": 0.5995481014251709,
+          "equal_view_teacher_mixture_changed": 4
+        }
+      }
+    },
+    {
+      "model_seed": 2026092703,
+      "role": "V",
+      "samples": 720,
+      "source_epoch": 30,
+      "raw_E30_frozen_weight_sum": 684.6021728515625,
+      "accepted_ge_half": 687,
+      "actual_simulator_coverage": {
+        "practical_low_urban": 251,
+        "practical_low_suburban": 222,
+        "practical_mid_urban": 247
+      },
+      "views": {
+        "raw": {
+          "pseudo_agreement": 720,
+          "confidence_mean": 0.9794224500656128,
+          "confidence_ge95": 671,
+          "JS_mean": 0.0017159832641482353,
+          "raw_weight_on_disagreement": 0.0,
+          "soft_CE_to_raw_pseudo_mean": 0.06961684674024582,
+          "equal_view_teacher_mixture_changed": 0,
+          "correct": 703,
+          "confident_wrong_ge95": 0,
+          "raw_correct_view_wrong": 0,
+          "raw_wrong_view_correct": 0,
+          "equal_view_teacher_mixture_correct": 703,
+          "equal_mixture_corrected_raw_pseudo": 0,
+          "equal_mixture_damaged_raw_pseudo": 0,
+          "pseudo_vs_true_CE_logit_gradient_negative": 554,
+          "pseudo_vs_true_CE_logit_gradient_cosine_mean": -0.4936327636241913,
+          "correct_raw_pseudo_on_view_error": 0
+        },
+        "ordinary": {
+          "pseudo_agreement": 718,
+          "confidence_mean": 0.9781467914581299,
+          "confidence_ge95": 669,
+          "JS_mean": 0.002176504349336028,
+          "raw_weight_on_disagreement": 0.0,
+          "soft_CE_to_raw_pseudo_mean": 0.07116707414388657,
+          "equal_view_teacher_mixture_changed": 0,
+          "correct": 701,
+          "confident_wrong_ge95": 0,
+          "raw_correct_view_wrong": 2,
+          "raw_wrong_view_correct": 0,
+          "equal_view_teacher_mixture_correct": 703,
+          "equal_mixture_corrected_raw_pseudo": 0,
+          "equal_mixture_damaged_raw_pseudo": 0,
+          "pseudo_vs_true_CE_logit_gradient_negative": 550,
+          "pseudo_vs_true_CE_logit_gradient_cosine_mean": -0.47461336851119995,
+          "correct_raw_pseudo_on_view_error": 2
+        },
+        "physical": {
+          "pseudo_agreement": 557,
+          "confidence_mean": 0.7608927488327026,
+          "confidence_ge95": 368,
+          "JS_mean": 0.13471098244190216,
+          "raw_weight_on_disagreement": 144.82980346679688,
+          "soft_CE_to_raw_pseudo_mean": 0.591914713382721,
+          "equal_view_teacher_mixture_changed": 1,
+          "correct": 550,
+          "confident_wrong_ge95": 0,
+          "raw_correct_view_wrong": 154,
+          "raw_wrong_view_correct": 1,
+          "equal_view_teacher_mixture_correct": 703,
+          "equal_mixture_corrected_raw_pseudo": 0,
+          "equal_mixture_damaged_raw_pseudo": 0,
+          "pseudo_vs_true_CE_logit_gradient_negative": 194,
+          "pseudo_vs_true_CE_logit_gradient_cosine_mean": 0.4807124137878418,
+          "correct_raw_pseudo_on_view_error": 154
+        }
+      },
+      "raw_pseudo_correct": 703,
+      "raw_pseudo_wrong_weight": 3.1000516414642334
+    },
+    {
+      "model_seed": 2026092703,
+      "role": "U_s",
+      "samples": 960,
+      "source_epoch": 30,
+      "raw_E30_frozen_weight_sum": 926.5482177734375,
+      "accepted_ge_half": 929,
+      "actual_simulator_coverage": {
+        "practical_low_urban": 329,
+        "practical_low_suburban": 333,
+        "practical_mid_urban": 298
+      },
+      "views": {
+        "raw": {
+          "pseudo_agreement": 960,
+          "confidence_mean": 0.9834116101264954,
+          "confidence_ge95": 912,
+          "JS_mean": 0.0014603788731619716,
+          "raw_weight_on_disagreement": 0.0,
+          "soft_CE_to_raw_pseudo_mean": 0.06313003599643707,
+          "equal_view_teacher_mixture_changed": 0
+        },
+        "ordinary": {
+          "pseudo_agreement": 957,
+          "confidence_mean": 0.9828402996063232,
+          "confidence_ge95": 909,
+          "JS_mean": 0.0017900381935760379,
+          "raw_weight_on_disagreement": 0.0,
+          "soft_CE_to_raw_pseudo_mean": 0.06429900228977203,
+          "equal_view_teacher_mixture_changed": 1
+        },
+        "physical": {
+          "pseudo_agreement": 740,
+          "confidence_mean": 0.7718632817268372,
+          "confidence_ge95": 500,
+          "JS_mean": 0.13509832322597504,
+          "raw_weight_on_disagreement": 205.4661407470703,
+          "soft_CE_to_raw_pseudo_mean": 0.5964170694351196,
+          "equal_view_teacher_mixture_changed": 3
+        }
+      }
+    }
+  ],
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "U_sampling_seed": 2026102307,
+  "ordinary_noise_seed": 2026102313,
+  "physical_simulator_epoch": 31,
+  "physical_simulator_step": 6661,
+  "all_views_same_physical_records": true,
+  "raw_gate_frozen_E30_no_moment_update": true,
+  "teacher_mixture_predeclared_equal_no_search": true,
+  "GPU_workers": 0,
+  "model_updates": 0,
+  "teacher_updates": 0,
+  "prototype_updates": 0,
+  "normalization_updates": 0,
+  "head_fit_updates": 0,
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "source_V_role_changed": false,
+  "live_jobs_changed": false,
+  "interpretation": "Frozen source teacher difficulty/calibration and one prespecified equal-view mixture,not target performance or proof that correct raw pseudo labels become invalid on hard views.Logit gradients are per-record diagnostics,not parameter/Adam update guarantees.",
+  "teacher_method": "original_RXPSM_own_EMA",
+  "source_parent_run": "20261023-phase1-PAMF-physical-softmatch-m6-r02",
+  "used_for_F21_threshold_decision": false
+}

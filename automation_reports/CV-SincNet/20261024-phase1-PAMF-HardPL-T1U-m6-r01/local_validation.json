@@ -1,0 +1,49 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "focused_tests": 153,
+  "independent_review": {
+    "status": "PASS",
+    "review_count": 1,
+    "initial_P1_findings": 1,
+    "unresolved_P0_P1_findings": 0,
+    "targeted_recheck_count": 1,
+    "targeted_recheck": "P1 closed:registered GPU PID union same-card active child PID;existing per-card max2 retained",
+    "scope": "Only defects making next real run wrong,unauthorized,destructive,unlaunchable or unable to produce legal predictions",
+    "reviewer": "independent ssl_p0p1_review;read-only,no target-score access"
+  },
+  "recipe": {
+    "threshold": 0.95,
+    "weight": 2.0,
+    "teacher": "current_student_eval_no_update",
+    "hard_targets": true,
+    "EMA": false,
+    "prototype": false,
+    "U_truth": false,
+    "start_epoch": 31,
+    "default_head_joint": true,
+    "ordinary_noise_std": 0.015,
+    "T1_U_CE_normalizer": 1.25,
+    "LS": 0.01,
+    "ordinary_raw_KL": 1.0,
+    "As_KL": 0.0,
+    "contrast_weight": 0.1,
+    "contrast_levels": [
+      "time_down",
+      "t2.pool"
+    ],
+    "contrast_only_accepted": true,
+    "physical_fraction": 0.5,
+    "contrast_same_pseudo_different_RX": true
+  },
+  "methods": [
+    "HPL2",
+    "HPLT1U"
+  ],
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "real_source_checkpoint_smoke": "PENDING_FIRST_GPU_STEP",
+  "new_method_target_reads": 0
+}

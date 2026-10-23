@@ -1,0 +1,29 @@
+# 普通硬伪标签加权与 PAMF 监督机制扩展
+
+状态：LOCAL_VERIFIED_NOT_LAUNCHED。153项聚焦检查通过；一次独立P0/P1审查发现启动中GPU进程漏计P1，已按注册PID与同卡active子PID并集修复，唯一定向复查确认关闭。真实原F21 E30 source-only smoke待首GPU卡位；尚未训练或访问新版目标。
+
+用户明确要求先检查普通伪标签质量，高则提高权重并叠加监督机制，低则适度提高门控。本版按这一要求固定原普通PL F21 E30父权重，两个独立匹配变体均追加20轮到E50/11100，保留13L＋37LU、原默认头联合训练和原T1有标签六前向。
+
+## 普通伪标签质量
+
+三seed各完整源V27000条，实际原F21 E30学生eval前向、硬argmax、置信阈值；模型/EMA/原型/归一化均无更新，未读取U真值或target。原.95接受率94.9037%/95.1815%/95.1296%，接受后正确率99.8868%/99.8366%/99.9027%，错误29/42/25条。提高到.98接受率92.6926%/93.0556%/92.8259%，正确率99.9680%/99.9403%/99.9721%，错误8/15/7条。按诊断前固定的各seed接受正确率≥99%规则保留.95，避免额外丢弃正确样本。完整分TX/RX/day见source_pseudo_quality.json。来源是源V估计，不能冒称全部历史U伪标签实测正确率或目标效果。
+
+## 两组方法
+
+附属文件source_view_reliability.json来自原RXPSM E30自身EMA的固定同记录三视图诊断，不是普通F21或本版新模型结果，也未用于本版门控判定。物理视图上的教师错误不代表clean伪标签失效；其梯度统计仅为logit层诊断，不是参数梯度或Adam步保证。
+
+HPL2：仅把原普通硬PL masked CE从1提高到2，eval当前学生产生硬标签、阈值.95、分母仍为完整U批。
+
+HPLT1U：同一hard PL门控与权重2；为U生成普通Gaussian.015视图，原生Practical residual/post_sync/noEQ作用于交替半批（low suburban/mid urban/low urban）。ordinary/mixed/raw各两次真实学生前向；ordinary/raw RDrop系数1，As两次CE且独立KL0，LS.01；仅通过门控的样本进入time_down/t2.pool、同伪TX不同源RX的原监督对比。拒绝样本不计CE/KL或对比统计，原网络训练前向行为保留。整体U目标为2×[.5ordinary-pair＋.25mixed-ordinary-pair＋.25As-pair＋.25raw-pair＋.1CRIC]/1.25，使总CE剂量与HPL2可比；LS与RDrop/CRIC属于显式机制差异。U噪声视图不冒称与L原生增强完全相同。
+
+每U记录一次当前学生eval，无EMA、软原型或G训练；HPL2一次学生U前向，HPLT1U六次。父U曝光963900，新20轮1134000，累计2097900（重复使用，uniqueU56700）；HPL2累计学生U视图2097900，HPLT1U7767900。机制组新生成physicalU567000，两次复用形成1134000学生物理视图；训练时间和成本单列。提高剂量可能放大剩余错误，源V高纯度不保证目标泛化收益。
+
+## 固定矩阵与发布
+
+六模型：HPL2/HPLT1U×seed2026092701/02/03，GPU5/6/7一seed一卡，最多两条本任务/card。HPL2接替同seed UDAP全部14项GPU预测完成的卡位；HPLT1U等待同seed UVB及UDAP GPU工作完成、HPL2已派发。计入已注册以及本控制器已派发未CUDA的子进程，含其他owner总数最多3、free≥10000MiB；不停止、重启或热改健康任务。
+
+代码入口control及hard_pl_worker，发布命令见experiment.json；Windows本地Git承载与N607普通账户CVS-RFFI Py3.10/Torch2.1环境，FP32/TF32off。不可覆盖root为PROJECT/releases/20261024-phase1-PAMF-HardPL-T1U-m6-r01及PROJECT/runs/20261024-phase1-PAMF-HardPL-T1U-m6-r01。一次Git代码版本、一次发布archive本地/远端SHA比较、一次远端compile；首GPU顺序检查两方法的真实同seed F21 E30默认头、L768/U256、权重2、六U前向、浅中层真实梯度、As KL0及无EMA，PASS立即训练；probe丢弃，正式各seed重载原F21 E30。连续两次同技术失败停止新派发，健康进程和产物保留；无性能停止或目标反馈调参。
+
+每row冻结最终E50学生后自动PAMF raw及同一固定DURA v1.0各clean＋六practical，共14项168000条预测，完整后独立truth-last。单CPU scorer在UVB终态后串行。本版6row共84个正式预测cell，F20/F21两readout原同seed对照复用。DURA仅冻结参考，G+F20不称全流程L-only。最终报告每景/seed/TX/RX/day、净纠错、接受率及增量/累计时间。raw clean至少+1pp、六景严格+1.5pp须同时超过两对照，DURA不替代raw主目标；目标仍ACTIVE。历史测试暴露如实披露，不宣称新的独立盲测。
+
+预期产物：smoke/state、六行source/segment50/final_ssdg.pth与hard_pl_state.json、source完整记录/step日志、source_V_diagnostic、prediction/source_execution_check及14项决策、独立scores和完整汇总。真实PID/CWD/完整命令/实际GPU/日志增长须启动后核实；本地通过和排队不等于实际训练或收益。
