@@ -146,3 +146,8 @@ PAIREDU三seed已在各自GPU5/6/7实际续训，真实E30 no-query smoke和配�
 ## UDAP 完整双读出结果
 
 `20261023-phase1-PAMF-U-DualAnchor-m3-r01` 各方法三seed、共3模型，每景168000条，raw／同一DURA七景预测与独立truth-last全部42cell完成；全部新增13320条闭合训练记录已核对。UDAP / raw clean=84.254762%；UDAP / DURA-LU clean=84.336310%；UDAP / raw six_mean=71.805324%；UDAP / DURA-LU six_mean=77.429729%；原数值目标仍未满足，维持ACTIVE。全部结果、匹配基线、逐seed／场景／分层及成本均保存，不从本结果热改其他已固定方法、父权重或矩阵。
+
+
+## 高置信硬 PL 的 U 信道单因素对照（2026-10-24）
+
+登记 `20261024-phase1-PAMF-HardPL-noUAs-m3-r01`：实际 F21 E30 同记录源诊断显示 accepted U 的普通噪声 hard CE 约 0.002、信道约 0.59；这仅说明难度，不能证明原标签失效或目标收益。在任何新 HPL/UVB 目标成绩读取前，固定 HPL_NO_UAS 三 seed 对照；原 F21 E30＋20、阈值 0.95、权重 2、六次 U 前向、LS/RDrop/As KL0/浅中层跨 RX 与 CE 归一化 1.25 均保持，只把 U mixed-half 信道输入换成 exact raw，原 L 信道保持。160 检查 PASS，一次 P0/P1 审查和唯一 P1 定向复查关闭；等待同 seed HPL2/UVB GPU 完成与 HPLT1U 已派发的合法卡位，真实源 smoke 后继续。双七景完整评分并列 F20/F21 及 HPLT1U，目标仍 ACTIVE。

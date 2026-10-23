@@ -97,14 +97,14 @@ class HardPLControlTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError,'probe'):objective.loss(model,'cpu')
         self.assertTrue(model.training)
 
-    def test_six_U_passes_gate_contrast_and_remove_feature_hooks(self):
+    def test_six_U_passes_gate_contrast_and_remove_feature_hooks(self,no_uas=False):
         from experiments.cric_dura_comparison.f_model import contrast
         class Model(nn.Module):
             def __init__(self):
                 super().__init__();self.id_backbone=nn.Module();self.id_backbone.encoder=nn.Module()
                 self.id_backbone.encoder.core=nn.Module();core=nn.Module();self.id_backbone.encoder.core.id_backbone=core
                 core.time_down=nn.Conv1d(2,4,1);core.t2=nn.Module();core.t2.pool=nn.Conv1d(4,4,1);core.cls_head=nn.Linear(4,6)
-                self._feature_l_steps=1;self._cd_U_seen=self._cd_U_accepted=self.student_calls=0
+                self._feature_l_steps=1;self._cd_U_seen=self._cd_U_accepted=self.student_calls=0;self.inputs=[]
                 self._cd_practical=lambda x,meta,epoch,step:x*1.5
             def forward(self,x):
                 if not self.training:
@@ -112,23 +112,34 @@ class HardPLControlTests(unittest.TestCase):
                 core=self.id_backbone.encoder.core.id_backbone
                 h=core.t2.pool(core.time_down(x));return core.cls_head(F.dropout(h.mean(-1),p=.1,training=True))
             def forward_identity_only(self,x,domain_labels=None):
-                self.student_calls+=1;return dict(tx_logits=self(x))
+                self.student_calls+=1;self.inputs.append(x.detach().clone());return dict(tx_logits=self(x))
         torch.manual_seed(17);model=Model().train();x=torch.randn(12,2,8)
+        if no_uas:
+            model._cd_practical=lambda *args:(_ for _ in ()).throw(AssertionError('U channel must not execute'))
         model._cd_U_loader=[(x,torch.full((12,),-1),torch.zeros(12,dtype=torch.long),dict(rx_i=torch.tensor([1,3]*6)))]
         model._cd_U_iter=iter(model._cd_U_loader)
         objective=HardPLObjective(dict(hard_pl=dict(method='HPLT1U',threshold=.95,weight=2.),
-            step_offset=6660,source_rxs=[1,3],hard_pl_smoke=True))
+            step_offset=6660,source_rxs=[1,3],hard_pl_smoke=True,hard_pl_no_uas=no_uas))
         seen=[]
         def capture(maps,y,rx):
             seen.append((len(y),{key:len(h) for key,h in maps.items()}));return contrast(maps,y,rx)
         with patch('experiments.pamf_ssl_research.hard_pl_objective.contrast',side_effect=capture):
             loss=objective.loss(model,'cpu');loss.backward()
         self.assertEqual(model.student_calls,6);self.assertEqual(objective.accepted,6)
-        self.assertEqual(objective.student_views,72);self.assertEqual(objective.physical_seen,6)
-        self.assertEqual(objective.physical_student_views,12);self.assertEqual(len(seen),2)
+        self.assertEqual(objective.student_views,72);self.assertEqual(objective.physical_seen,0 if no_uas else 6)
+        self.assertEqual(objective.physical_student_views,0 if no_uas else 12);self.assertEqual(len(seen),2)
+        self.assertEqual(objective.raw_As_seen,6 if no_uas else 0)
         self.assertTrue(all(n==6 and set(v.values())=={6} for n,v in seen))
         self.assertTrue(all(not module._forward_hooks for module in model.modules()))
         self.assertFalse(objective.capture_active);self.assertTrue(torch.isfinite(loss))
+        if no_uas:
+            mask=(torch.arange(12)+6661).remainder(2).bool()
+            self.assertTrue(torch.equal(model.inputs[2][mask],x[mask]))
+            self.assertTrue(torch.equal(model.inputs[2][~mask],model.inputs[0][~mask]))
+            self.assertTrue(objective.smoke_U_As_input_raw)
+
+    def test_no_U_channel_keeps_six_passes_and_exact_raw_As_input(self):
+        self.test_six_U_passes_gate_contrast_and_remove_feature_hooks(no_uas=True)
 
 
 if __name__=='__main__':unittest.main()

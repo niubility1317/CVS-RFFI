@@ -1,0 +1,22 @@
+{
+  "method": "HPL_NO_UAS",
+  "matched_counterpart": "20261024-phase1-PAMF-HardPL-T1U-m6-r01/HPLT1U-sSEED",
+  "weight_parent": "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01/F21-sSEED/source/segment30",
+  "only_changed_training_factor": "U mixed-half As input uses exact raw IQ;skip U Practical generation",
+  "unchanged": [
+    "gate.95",
+    "hard PL weight2",
+    "six U student forwards",
+    "CE normalizer1.25",
+    "LS.01",
+    "ordinary/raw RDrop1",
+    "As CE twice and KL0",
+    "accepted-only shallow/middle cross-RX contrast",
+    "full supervised L As",
+    "joint default head",
+    "same original F21 E30 parent and20epoch increment"
+  ],
+  "source_diagnostic": "Frozen actual F21 student,V720 and hidden-label U960 per seed,same-record raw/noise/physical views;no updates or target reads",
+  "inference": "Strong U view is much harder;compare removing that transform without changing objective dose.This does not prove invalid raw pseudo labels or target improvement.",
+  "new_method_target_reads": 0
+}

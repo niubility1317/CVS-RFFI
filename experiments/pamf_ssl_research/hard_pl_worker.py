@@ -5,7 +5,7 @@ from pathlib import Path
 from experiments.cric_dura_comparison.io import read,write
 
 
-def smoke(rt):
+def smoke(rt,*,validate_config=None,max_rows=2):
     from experiments.cric_dura_comparison.bootstrap import activate,numerical_policy
     activate(rt);numerical_policy()
     import torch
@@ -15,9 +15,11 @@ def smoke(rt):
     from experiments.cvs_phase1_stack.runtime import installed as native_installed
     from experiments.cric_dura_comparison import t1_model
     from .hard_pl_train import source_parents,installed
+    if validate_config is None:
+        from .hard_pl import validate as validate_config
     checked=[]
-    for row in rt['rows'][:2]:
-        c=read(row['train_config']);parents,_=source_parents(c);parent=parents[-1]['folder']
+    for row in rt['rows'][:max_rows]:
+        c=read(row['train_config']);parents,_=source_parents(c,validate_config=validate_config);parent=parents[-1]['folder']
         cfg=dict(c,segment_epochs=20,epoch_offset=30,step_offset=6660,parent_source=parent,hard_pl_smoke=True)
         payload=torch.load(Path(parent)/'final_ssdg.pth',map_location='cpu',weights_only=False)
         ctx=context(cfg);holder={};device='cuda:0';torch.manual_seed(c['model_seed'])
@@ -38,10 +40,13 @@ def smoke(rt):
                 extra=(None,meta),domains=domain,optimizer_step=1,identity_loss=ce,labeled_count=128,labeled_inputs=x)
             total=ce+correction;total.backward();obj=holder['objective'];state=obj.state_dict()
             head=model.id_backbone.encoder.core.id_backbone.cls_head.weight;mechanisms=c['hard_pl']['method']=='HPLT1U'
+            no_uas=bool(c.get('hard_pl_no_uas'));physical_enabled=mechanisms and not no_uas
             if (not bool(torch.isfinite(total)) or head.grad is None or not bool(torch.isfinite(head.grad).all())
                 or float(head.grad.norm())<=0 or metrics['T1_L_packets']!=768 or state['calls']!=1 or state['seen']!=256
                 or not state['accepted'] or state['student_views']!=(1536 if mechanisms else 256)
-                or state['physical_seen']!=(128 if mechanisms else 0) or state['EMA_updates']!=0 or obj.capture_active
+                or state['physical_seen']!=(128 if physical_enabled else 0)
+                or state['physical_student_views']!=(256 if physical_enabled else 0)
+                or state['raw_As_seen']!=(128 if no_uas else 0) or state['EMA_updates']!=0 or obj.capture_active
                 or not torch.allclose(metrics['HPL_loss'],2*metrics['HPL_base_loss'])):
                 raise ValueError('Actual hard-PL weight/default-head/L/U execution failed')
             if mechanisms and (any(v<=0 for v in state['contrast_anchors'].values())
@@ -49,9 +54,14 @@ def smoke(rt):
                            for maps in obj.smoke_maps for h in maps.values())
                 or metrics['HPL_As_KL_weight']!=0 or metrics['HPL_ordinary_KL']<=0 or metrics['HPL_raw_KL']<=0):
                 raise ValueError('Actual shallow/middle contrast or paired-dropout mechanism absent')
-            checked.append(dict(method=state['method'],parent_epoch=30,parent_updates=6660,L_forward_packets=768,
+            if no_uas and not obj.smoke_U_As_input_raw:raise ValueError('Actual U As branch must use exact raw IQ')
+            if no_uas and sum(model._cd_practical.coverage.values())!=64:
+                raise ValueError('Original labeled As64 must remain;U Practical must not execute')
+            checked.append(dict(method=row['method'],model_seed=c['model_seed'],parent_epoch=30,parent_updates=6660,L_forward_packets=768,
                 U_seen=256,U_accepted=state['accepted'],student_U_views=state['student_views'],
                 physical_U_generated=state['physical_seen'],physical_student_views=state['physical_student_views'],
+                raw_U_As_seen=state['raw_As_seen'],U_As_raw_input_matches=bool(no_uas and obj.smoke_U_As_input_raw),
+                source_Practical_generated=sum(model._cd_practical.coverage.values()),
                 contrast_anchors=state['contrast_anchors'],shallow_middle_gradient=mechanisms,
                 ordinary_raw_RDrop=mechanisms,As_KL_weight=0,weight=2.,threshold=.95,
                 EMA_updates=0,finite_backward=True,default_head_gradient=True,feature_hooks_removed=True))

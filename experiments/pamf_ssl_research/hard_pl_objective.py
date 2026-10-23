@@ -34,7 +34,7 @@ class HardPLObjective:
     ema_updates=0
     def __init__(self,c):
         self.c=c;self.settings=c['hard_pl'];self.calls=self.seen=self.accepted=self.student_views=0
-        self.physical_seen=self.physical_student_views=0;self.metrics={};self.capture_active=False
+        self.physical_seen=self.physical_student_views=self.raw_As_seen=0;self.metrics={};self.capture_active=False
         self.contrast_anchors={name:0 for name in ('time_down','t2.pool')}
 
     def loss(self,student,device):
@@ -58,10 +58,13 @@ class HardPLObjective:
             rx=meta['rx_i'].long()
             if set(rx.tolist())-set(self.c['source_rxs']):raise ValueError('Non-source U RX')
             physical=(torch.arange(n,device=device)+step).remainder(2).bool()
+            no_uas=bool(self.c.get('hard_pl_no_uas'))
             with torch.no_grad():
                 ordinary=x+.015*torch.randn_like(x);mixed=ordinary.clone()
                 pm={k:v[physical] if torch.is_tensor(v) and v.ndim and len(v)==n else v for k,v in meta.items()}
-                mixed[physical]=student._cd_practical(x[physical],pm,epoch,step)
+                mixed[physical]=x[physical] if no_uas else student._cd_practical(x[physical],pm,epoch,step)
+                if self.c.get('hard_pl_smoke'):
+                    self.smoke_U_As_input_raw=bool(no_uas and torch.equal(mixed[physical],x[physical]))
             maps=[];outputs=[];self.capture_active=True
             try:
                 for _ in range(2):
@@ -90,7 +93,9 @@ class HardPLObjective:
             aux=torch.stack(auxiliaries).mean()
             more=[student.forward_identity_only(value,domain_labels=domain)['tx_logits'] for value in (mixed,mixed,x,x)]
             base,detail=mechanism_loss(*outputs,*more,pseudo,accepted,physical,aux);views=6*n
-            self.physical_seen+=int(physical.sum());self.physical_student_views+=2*int(physical.sum())
+            if no_uas:self.raw_As_seen+=int(physical.sum())
+            else:
+                self.physical_seen+=int(physical.sum());self.physical_student_views+=2*int(physical.sum())
             if self.c.get('hard_pl_smoke'):self.smoke_maps=maps
         loss=self.settings['weight']*base
         self.calls+=1;self.seen+=n;self.accepted+=int(accepted.sum());self.student_views+=views
@@ -99,6 +104,7 @@ class HardPLObjective:
             HPL_calls=self.calls,HPL_seen=self.seen,HPL_accepted=self.accepted,HPL_confidence=confidence.mean(),
             HPL_student_views=self.student_views,HPL_physical_seen=self.physical_seen,
             HPL_physical_student_views=self.physical_student_views,HPL_EMA_updates=0.,
+            HPL_raw_As_seen=self.raw_As_seen,
             **{'HPL_'+key:value for key,value in detail.items()},
             **{'HPL_anchors_'+key:value for key,value in self.contrast_anchors.items()})
         return loss
@@ -107,4 +113,5 @@ class HardPLObjective:
         return dict(method=self.settings['method'],calls=self.calls,seen=self.seen,accepted=self.accepted,
             student_views=self.student_views,physical_seen=self.physical_seen,
             physical_student_views=self.physical_student_views,contrast_anchors=self.contrast_anchors,
+            raw_As_seen=self.raw_As_seen,
             EMA_updates=0,U_truth_read=False)

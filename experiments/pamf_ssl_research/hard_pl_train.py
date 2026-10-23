@@ -10,8 +10,8 @@ from .hard_pl import validate,PARENT_RUN
 from .hard_pl_objective import HardPLObjective
 
 
-def source_parents(c):
-    validate(c);contract=read(c['source_contract']);parents=[];previous=None
+def source_parents(c,*,validate_config=validate):
+    validate_config(c);contract=read(c['source_contract']);parents=[];previous=None
     for end,epochs,offset in ((20,20,0),(30,10,20)):
         path=Path(c['fork_parent_source'])/('segment%d'%end);done=read(path/'complete.json');pc=done['config']
         if (done['status']!='SOURCE_FROZEN' or done['epoch']!=epochs or done['updates']!=epochs*222
@@ -53,8 +53,8 @@ def installed(c,holder):
     finally:t1_model.install,t1_model.plain_pl=original_install,original_pl
 
 
-def train(c,device='cuda:0'):
-    parents,contract=source_parents(c)
+def train(c,device='cuda:0',*,validate_config=validate):
+    parents,contract=source_parents(c,validate_config=validate_config)
     from experiments.cric_dura_comparison.f_train import train as segment
     root=Path(c['output_root']);root.mkdir(parents=True,exist_ok=False);write(root/'resolved_config.json',c)
     folder=root/'segment50';cfg=dict(c,output_root=str(folder),segment_epochs=20,epoch_offset=30,step_offset=6660,
@@ -62,16 +62,19 @@ def train(c,device='cuda:0'):
     holder={};start=time.perf_counter()
     with installed(cfg,holder):segment(cfg,device=device)
     objective=holder['objective'];state=objective.state_dict();method=c['hard_pl']['method'];mechanisms=method=='HPLT1U'
+    no_uas=bool(c.get('hard_pl_no_uas'));physical_enabled=mechanisms and not no_uas
     if (state['calls']!=4440 or state['seen']!=1134000 or state['EMA_updates']!=0 or state['U_truth_read']
         or state['student_views']!=1134000*(6 if mechanisms else 1)
-        or state['physical_seen']!=(567000 if mechanisms else 0)
-        or state['physical_student_views']!=(1134000 if mechanisms else 0) or objective.capture_active):
+        or state['physical_seen']!=(567000 if physical_enabled else 0)
+        or state['physical_student_views']!=(1134000 if physical_enabled else 0)
+        or state['raw_As_seen']!=(567000 if no_uas else 0) or objective.capture_active):
         raise ValueError('Fixed ordinary-PL continuation execution differs')
     write(folder/'hard_pl_state.json',state)
     prior_progress=[read(Path(p['folder'])/'progress.json') for p in parents]
     actual=dict(method=c['algorithm_id'],native_U_loop=False,own_EMA=False,cumulative_EMA_updates=0,
         U_seen=963900+state['seen'],U_accepted=sum(p['PL_accepted'] for p in prior_progress)+state['accepted'],
         physical_U_seen=state['physical_seen'],physical_student_U_views=state['physical_student_views'],
+        raw_U_As_seen=state['raw_As_seen'],
         student_U_views=963900+state['student_views'],teacher_eval_U_views=963900+state['seen'],
         U_truth_read=False,prototype_updates=0,hard_PL_calls=state['calls'],hard_PL_tail=state,
         threshold=.95,weight=2.,default_head_joint=True,new_inference_parameters=0)
