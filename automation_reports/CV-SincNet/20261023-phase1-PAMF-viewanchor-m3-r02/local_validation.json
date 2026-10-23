@@ -1,0 +1,27 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "scientific_method_unchanged": true,
+  "hypothesis_commit": "5e52e4ebd383ba6990e9afd38a563798368f1603",
+  "focused_tests": {
+    "status": "PASS",
+    "total": 21,
+    "original_SSL": 9,
+    "physical_anchor": 5,
+    "release": 3,
+    "resource_replacement": 4
+  },
+  "independent_core_review": "PASS previously",
+  "targeted_resource_review": {
+    "status": "PASS",
+    "P0_P1_findings": 0
+  },
+  "real_E30_no_query_smoke": "PENDING_FIRST_GPU_STEP",
+  "training_started": false,
+  "target_reads": 0,
+  "gpu_by_seed": {
+    "2026092701": 5,
+    "2026092702": 6,
+    "2026092703": 7
+  },
+  "replaces_only_unstarted_CPU_queue": true
+}

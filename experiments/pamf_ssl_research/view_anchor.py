@@ -3,7 +3,9 @@ from copy import deepcopy
 
 from .plan import SEEDS, validate as validate_scaffold
 
-RUN = '20261023-phase1-PAMF-viewanchor-m3-r01'
+RUN = '20261023-phase1-PAMF-viewanchor-m3-r02'
+PREVIOUS_RUN = '20261023-phase1-PAMF-viewanchor-m3-r01'
+RESOURCE_GPU_BY_SEED = dict(zip(SEEDS, (5, 6, 7)))
 PARENT_RUN = '20261023-phase1-PAMF-physical-softmatch-m6-r02'
 ALGORITHM = 'pamf_rxpsm_viewanchor_v1'
 PARENT_ALGORITHM = 'pamf_rxpsm_v1'

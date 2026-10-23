@@ -6,7 +6,7 @@ import tempfile
 
 from experiments.pamf_ssl_research.control import validate_rows
 from experiments.pamf_ssl_research.plan import configuration, SEEDS, GPU_BY_SEED, VIEWS
-from experiments.pamf_ssl_research.view_anchor import RUN, PARENT_RUN
+from experiments.pamf_ssl_research.view_anchor import RUN, PARENT_RUN, RESOURCE_GPU_BY_SEED
 from experiments.pamf_ssl_research.view_anchor_publish import prepare
 from tests.test_pamf_ssl_research import template
 
@@ -51,11 +51,12 @@ class ViewAnchorReleaseTest(unittest.TestCase):
         self.assertEqual(len(rt['rows']), 3)
         self.assertEqual(rt['methods'], ['VIEWANCHOR'])
         self.assertEqual(rt['max_total_workers'], 3)
+        self.assertEqual(rt['allowed_gpus'], [5, 6, 7])
         for row in rt['rows']:
             seed = row['model_seed']
             row_id = 'VIEWANCHOR-s' + str(seed)
             self.assertEqual(row['row_id'], row_id)
-            self.assertEqual(row['gpu'], GPU_BY_SEED[seed])
+            self.assertEqual(row['gpu'], RESOURCE_GPU_BY_SEED[seed])
             train = blobs['configs/' + row_id + '-train.json']
             prediction = blobs['configs/' + row_id + '-predict.json']
             score = blobs['configs/' + row_id + '-score.json']

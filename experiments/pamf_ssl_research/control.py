@@ -17,32 +17,38 @@ def capacity(gpu):
     return len(apps), free
 
 
-def validate_rows(rows, methods=METHODS):
+def validate_rows(rows, methods=METHODS, gpu_by_seed=None):
     methods = tuple(methods)
+    gpu_by_seed = GPU_BY_SEED if gpu_by_seed is None else gpu_by_seed
+    from .view_anchor import RESOURCE_GPU_BY_SEED
     if methods not in (METHODS, ('VIEWANCHOR',)):
         raise ValueError('A declared complete three-seed matrix is required')
+    if gpu_by_seed != GPU_BY_SEED and (methods != ('VIEWANCHOR',) or gpu_by_seed != RESOURCE_GPU_BY_SEED):
+        raise ValueError('Only the declared three-card seed allocation is supported')
     expected = {(seed, method) for seed in SEEDS for method in methods}
     if (len(rows) != len(expected) or {(r['model_seed'], r['method']) for r in rows} != expected
-            or any(r['gpu'] != GPU_BY_SEED[r['model_seed']] for r in rows)
+            or any(r['gpu'] != gpu_by_seed[r['model_seed']] for r in rows)
             or len({r['row_id'] for r in rows}) != len(expected)):
         raise ValueError('Complete declared methods on each of three seed-pinned cards required')
 
 
 def run(rt):
     methods = tuple(rt.get('methods', METHODS))
-    validate_rows(rt['rows'], methods)
+    gpu_by_seed = {int(seed): gpu for seed, gpu in rt.get('gpu_by_seed', GPU_BY_SEED).items()}
+    validate_rows(rt['rows'], methods, gpu_by_seed)
+    smoke_gpu = gpu_by_seed[SEEDS[0]]
     worker = 'experiments.pamf_ssl_research.' + ('view_anchor_worker' if methods == ('VIEWANCHOR',) else 'worker')
     root = Path(rt['run_root'])
     root.mkdir(parents=True, exist_ok=False)
     logs = root / 'logs'
     logs.mkdir()
     state = dict(status='SMOKE', controller_pid=os.getpid(), code_commit=rt['code_commit'],
-                 gpu_by_seed=GPU_BY_SEED, jobs={r['row_id']: dict(status='QUEUED') for r in rt['rows']})
+                 gpu_by_seed=gpu_by_seed, jobs={r['row_id']: dict(status='QUEUED') for r in rt['rows']})
     write(root / 'state.json', state)
-    env = dict(os.environ, PYTHONPATH=rt['release_root'], CUDA_VISIBLE_DEVICES='0',
+    env = dict(os.environ, PYTHONPATH=rt['release_root'], CUDA_VISIBLE_DEVICES=str(smoke_gpu),
                OMP_NUM_THREADS='2', MKL_NUM_THREADS='2', OPENBLAS_NUM_THREADS='2')
     while True:
-        apps, free = capacity(0)
+        apps, free = capacity(smoke_gpu)
         if apps < 2 and free >= 10000:
             break
         if methods != ('VIEWANCHOR',):

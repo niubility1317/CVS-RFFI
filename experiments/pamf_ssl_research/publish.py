@@ -79,11 +79,17 @@ with tarfile.open(c['archive_remote']) as tar:
  tar.extractall(release)
 env=dict(os.environ,PYTHONPATH=str(release),CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2')
 subprocess.run([rt['python'],'-m','compileall','-q',str(release)],cwd=release,env=env,check=True)
+replacement=None
+if rt.get('replaces_queued_runtime'):
+ result=subprocess.run([rt['python'],'-m','experiments.pamf_ssl_research.queued_replacement','--runtime',rt['runtime_file']],
+  cwd=release,env=env,check=True,text=True,capture_output=True)
+ replacement=json.loads(result.stdout)
 command=[rt['python'],'-u','-m','experiments.pamf_ssl_research.control','--config',rt['runtime_file']]
 log=release/'controller.log'
 with log.open('x') as stream:
  child=subprocess.Popen(command,cwd=release,env=env,stdin=subprocess.DEVNULL,stdout=stream,stderr=subprocess.STDOUT,start_new_session=True)
 receipt=dict(status='SUBMITTED_NOT_YET_VERIFIED',pid=child.pid,cwd=str(release),argv=command,log=str(log),commit=rt['code_commit'])
+if replacement is not None:receipt['queued_replacement']=replacement
 (release/'submit.json').write_text(json.dumps(receipt,indent=2)+'\n')
 print(json.dumps(receipt))
 '''
@@ -104,9 +110,10 @@ def publish(repo, context_path, output, ssh_config, *, prepare_run=prepare, run_
     release = project + '/releases/' + run_id
     rt, configurations = prepare_run(context, project, release, commit)
     connection = ['-F', str(ssh_config), '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10']
+    devices = ','.join(map(str, rt['allowed_gpus']))
     preflight = ssh("from pathlib import Path\nimport json,subprocess\npaths=" + repr([release, rt['run_root']]) +
         "\nprint(json.dumps(dict(paths={p:Path(p).exists() for p in paths},user=subprocess.check_output(['whoami'],text=True).strip()," +
-        "gpu=subprocess.check_output(['nvidia-smi','-i','0,1,2','--query-gpu=index,uuid,memory.free,utilization.gpu','--format=csv,noheader,nounits'],text=True)," +
+        "gpu=subprocess.check_output(['nvidia-smi','-i'," + repr(devices) + ",'--query-gpu=index,uuid,memory.free,utilization.gpu','--format=csv,noheader,nounits'],text=True)," +
         "apps=subprocess.check_output(['nvidia-smi','--query-compute-apps=pid,gpu_uuid,used_memory','--format=csv,noheader,nounits'],text=True))))\n", connection)
     (output / 'preflight.json').write_text(json.dumps(preflight, indent=2) + '\n', encoding='utf-8')
     if any(preflight['paths'].values()):
