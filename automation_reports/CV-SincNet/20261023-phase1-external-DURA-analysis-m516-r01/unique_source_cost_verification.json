@@ -1,0 +1,19 @@
+{
+  "status": "VERIFIED",
+  "unique_F_sources": 768,
+  "unique_PAMF_F_sources": 252,
+  "unique_external_F_sources": 516,
+  "F_shared_worker_hours": 468.40296579987927,
+  "G_complete_lineages": 35,
+  "G_source_stages": 280,
+  "G_lineage_shared_worker_hours": 181.73013256762326,
+  "G_incremental_students": 21,
+  "no_overlap_sum_of_core_Lonly_fine_main": true,
+  "scope": "Selected final scientific source models. Shared-worker elapsed is not isolated GPU-hours or calendar completion time.",
+  "exclusions": [
+    "Historical original F0 G/teacher ancestors not recharged as new35 chains; unavailable historical cost is not invented.",
+    "Invalid-input/failed/stopped historical work is preserved separately, not included as valid-model cost.",
+    "Prediction, source diagnostics, frozen IQ caches, timing and CPU scoring are separate from training.",
+    "This is not total laboratory energy/capacity accounting."
+  ]
+}

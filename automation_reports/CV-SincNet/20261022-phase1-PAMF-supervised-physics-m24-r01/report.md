@@ -23,3 +23,5 @@ F0固定5源RX、3源日、6TX，L_s6300、V27000；U_s IQ使用0。目标7RX四
 IEEE实验章节已补严格监督／物理控制设置，9页PDF编译并目检无溢出；当前只公布设置，不填造新结果。完整源几何与11条件物理敏感性诊断、逐RX/TX/day、Accuracy/MacroF1、净纠错、三Fseed配对与成本在冻结评分后汇入。后续完成全部新旧科学矩阵和导出包后才结束automation1-6。
 
 WRONG_REFERENCE seed2026092701在首段构建发生CPU/CUDA混用，已由 20261023-phase1-PAMF-physics-device-recovery-r01 技术替代；原其余行和8×3逻辑结构矩阵不变。正式汇总须按新control的physics_device_recovery映射取值。
+
+2026-10-23 最终闭合：本run全部有效行、预测、独立评分及既定聚合/时延已ANALYZED。按明确技术替代映射，历史失败保留；完整22页IEEE与不可覆盖r12包见[最终交付](../20261023-phase1-external-DURA-analysis-m516-r01/final_delivery.json)。无新模型训练或重测。

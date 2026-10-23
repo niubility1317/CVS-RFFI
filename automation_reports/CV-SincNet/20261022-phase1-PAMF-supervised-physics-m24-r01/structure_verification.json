@@ -1,0 +1,28 @@
+{
+  "status": "ANALYZED_STRICT_STRUCTURE24",
+  "new_F": 24,
+  "reused_X3_CE_F": 3,
+  "actual_F_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "serialized_CM_recomputed": 18144,
+  "net_correction_strata": 9072,
+  "new_source_stages": 72,
+  "new_model_epochs": 1200,
+  "new_updates": 266400,
+  "all_L_only": true,
+  "U_IQ_exposures": 0,
+  "source_physics_panels": 27,
+  "source_L_samples_per_panel": 720,
+  "source_groups": 90,
+  "source_interventions": 11,
+  "source_fitted_probe_updates": 0,
+  "conditional_on_one_G_L": true,
+  "target_truth_reads_by_analysis": 0,
+  "target_feedback_used": false,
+  "new_F_shared_worker_seconds": 64126.05691247457,
+  "reused_X3_CE_shared_worker_seconds": 7733.526473795297,
+  "WRONG_REFERENCE_seed01_technical_recovery_used": true
+}

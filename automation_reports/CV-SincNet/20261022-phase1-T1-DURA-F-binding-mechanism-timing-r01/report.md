@@ -70,3 +70,5 @@ Confirmed source IQ/ID ordering defect repair; original scientific matrix and bu
 当前25条原健康worker已按原PID接管或自然完成，延时回读24条同PID日志增长。新69条修复训练已登记且处于QUEUED，等待现有任务自然释放合法槽位；尚不能宣称已开跑/已训练完成。旧208关联job从有效闭合中排除，原769历史保留，总977；有效计数为{"COMPLETE": 351, "RUNNING": 12, "QUEUED": 405, "FAILED": 1}。原已知timing导入失败由完成的r02替代，无新增失败。
 
 小时监控新owner及替代映射已更新并独立读回ACTIVE。预计修复新增3450模型epoch/765900更新，约105至140共享worker小时（不是独占GPU时）；结合其余队列、预测评分、机制独占时延及论文导出，暂自2026-10-22 20:33 香港时间估18至30小时，首批实际吞吐回来再校准。新结果未返回前，旧错误分数只保留历史，既有正常T1/G和其他源契约结果继续复用。
+
+2026-10-23 最终闭合：本run全部有效行、预测、独立评分及既定聚合/时延已ANALYZED。按明确技术替代映射，历史失败保留；完整22页IEEE与不可覆盖r12包见[最终交付](../20261023-phase1-external-DURA-analysis-m516-r01/final_delivery.json)。无新模型训练或重测。

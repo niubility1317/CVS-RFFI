@@ -1,0 +1,53 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261022-phase1-T1-DURA-F-binding-mechanism-timing-r01",
+  "cases": 36,
+  "case_rounds": 900,
+  "GPU_wall_calls": 252000,
+  "CPU_return_calls": 18000,
+  "precision": "FP32",
+  "TF32": false,
+  "exclusive_GPU": true,
+  "source_IQ_only": true,
+  "F_parameters": 232993,
+  "G_parameters": 266951,
+  "mechanism_parameters": {
+    "F06": 196001,
+    "F07": 232993,
+    "F08": 177025,
+    "F09": 221953,
+    "F10": 220193,
+    "coarse_only": 106138,
+    "prior_no_CG": 266951,
+    "no_image_action": 266951,
+    "no_innovation_input": 266951,
+    "copy_no_KD": 266951,
+    "random_with_KD": 266951,
+    "random_no_KD": 266951
+  },
+  "scheduler_reservation_bytes": 0,
+  "operator_profiles": {
+    "T1_F": {
+      "conv_linear_MACs": 8855712,
+      "FFT_IFFT_calls": 4,
+      "parameters": 232993,
+      "FP32_parameter_bytes": 931972,
+      "note": "Conv/Linear real MAC convention only; functional cosine head, FFT complex arithmetic, CG reductions, normalization and elementwise work excluded. FFT counts are call counts at B1, not FLOPs."
+    },
+    "DURA_G": {
+      "conv_linear_MACs": 25068072,
+      "FFT_IFFT_calls": 43,
+      "parameters": 266951,
+      "FP32_parameter_bytes": 1067804,
+      "note": "Conv/Linear real MAC convention only; functional cosine head, FFT complex arithmetic, CG reductions, normalization and elementwise work excluded. FFT counts are call counts at B1, not FLOPs."
+    }
+  },
+  "limitations": [
+    "Five timing rounds of fixed seed01 weights, not five model seeds.",
+    "Absolute resident VRAM includes all models and graph pools, not a single-model measurement.",
+    "F-only mechanism calls are eager; F-mechanism GF uses graphs and residual reuse.",
+    "G-mechanism variants are eager; no optimized-route speedup is inferred from their values.",
+    "First call follows loading/profiling, not a fresh process; CPU return includes transfer and output conversion.",
+    "The delivered uniform latency-r02 remains the official default result; it is not remeasured here."
+  ]
+}

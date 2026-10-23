@@ -1,0 +1,27 @@
+{
+  "status": "ALL_EFFECTIVE_SCIENTIFIC_PANELS_ANALYZED",
+  "effective_complete": 2078,
+  "queued": 0,
+  "running": 0,
+  "historical_failed": 1,
+  "historical_failed_run": "20261021-phase1-T1-DURA-latency-r01",
+  "replacement": "20261021-phase1-T1-DURA-latency-r02",
+  "excluded_historical_phases": 217,
+  "all_current_F_and_G_training_complete": true,
+  "all_current_predictions_and_scores_complete": true,
+  "dedicated_timing_case_rounds": 1350,
+  "external_models": 516,
+  "ordinary_PL_G_permission_cells": 204,
+  "strict_new_structures": 24,
+  "paper_pages": 22,
+  "old_verified_panels_recomputed": false,
+  "deferred": "Unpublished15 fine-control trainings and proposed150 extra timing rounds are deferred by user scope.",
+  "checkpoint_weights_IQ_individual_truth_private_runtime_in_export": false,
+  "known_limitations": [
+    "Conditional three-F variation under fixed G except preregistered m3 crossed panel.",
+    "Negative clean/Full-CE/core effects retained; SD is not a significance test.",
+    "Physical intervention sensitivity is not complete hardware disentanglement.",
+    "Complete native SSL acceptance counters are absent in compact fine-F metadata and remain missing.",
+    "Dedicated G-variant timings use eager execution; resident VRAM is not per-model."
+  ]
+}

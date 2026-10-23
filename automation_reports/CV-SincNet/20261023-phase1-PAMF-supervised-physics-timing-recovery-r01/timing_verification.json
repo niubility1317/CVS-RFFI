@@ -1,0 +1,50 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261023-phase1-PAMF-supervised-physics-timing-recovery-r01",
+  "cases": 18,
+  "case_rounds": 450,
+  "GPU_wall_calls": 126000,
+  "CPU_return_calls": 9000,
+  "precision": "FP32",
+  "TF32": false,
+  "exclusive_GPU": true,
+  "source_IQ_only": true,
+  "F_parameters": 232993,
+  "G_parameters": 266951,
+  "mechanism_parameters": {
+    "X3_CE": 232993,
+    "SIG_TIME": 196001,
+    "NO_TIME": 232993,
+    "NO_SIGNATURE": 177025,
+    "NO_PA": 221953,
+    "NO_REFERENCE": 220193,
+    "COV_X3": 232993,
+    "SHUFFLE_TIME": 232993,
+    "WRONG_REFERENCE": 232993
+  },
+  "scheduler_reservation_bytes": 0,
+  "operator_profiles": {
+    "Lonly_X3_CE_F": {
+      "conv_linear_MACs": 8855712,
+      "FFT_IFFT_calls": 4,
+      "parameters": 232993,
+      "FP32_parameter_bytes": 931972,
+      "note": "Conv/Linear real MAC convention only; functional cosine head, FFT complex arithmetic, CG reductions, normalization and elementwise work excluded. FFT counts are call counts at B1, not FLOPs."
+    },
+    "DURA_G": {
+      "conv_linear_MACs": 25068072,
+      "FFT_IFFT_calls": 43,
+      "parameters": 266951,
+      "FP32_parameter_bytes": 1067804,
+      "note": "Conv/Linear real MAC convention only; functional cosine head, FFT complex arithmetic, CG reductions, normalization and elementwise work excluded. FFT counts are call counts at B1, not FLOPs."
+    }
+  },
+  "limitations": [
+    "Five timing rounds of fixed seed01 weights, not five model seeds.",
+    "Absolute resident VRAM includes all models and graph pools, not a single-model measurement.",
+    "F-only mechanism calls are eager; F-mechanism GF uses graphs and residual reuse.",
+    "G-mechanism variants are eager; no optimized-route speedup is inferred from their values.",
+    "First call follows loading/profiling, not a fresh process; CPU return includes transfer and output conversion.",
+    "The delivered uniform latency-r02 remains the official default result; it is not remeasured here."
+  ]
+}

@@ -11,3 +11,5 @@ r01控制器因未打包planner依赖在接管前退出，失败release与日志
 全部新row任务和七景决定冻结后独立truth-last；CPU聚合在51新评分及全部旧四格输入齐备后执行，报告每景/RX/TX/day、Accuracy/Macro-F1、净纠错、PL−Sup、LU−L和交互，保留负值。缓存分类耗时不是在线G+F时延，G祖先及共享缓存成本单列。
 
 [固定方案](../../../docs/PAMF_PL_GFACTOR_READOUTS_20261023.md)，实际逐行源和预算见experiment.json，发布证据见launch_verification.json。IEEE设置已更新并编译目检13页；r06作为此前三核心完成时的不可覆盖快照保留，下次结果交付用新包。原整体ETA仍锚定香港10月23日01:20的18至30小时初估窗口，不按本次发布或小时检查重置。
+
+2026-10-23 最终闭合：本run全部有效行、预测、独立评分及既定聚合/时延已ANALYZED。按明确技术替代映射，历史失败保留；完整22页IEEE与不可覆盖r12包见[最终交付](../20261023-phase1-external-DURA-analysis-m516-r01/final_delivery.json)。无新模型训练或重测。

@@ -1,0 +1,242 @@
+{
+  "status": "VERIFIED",
+  "tolerance": 1e-10,
+  "files": {
+    "structure": {
+      "structure_F_cost.csv": {
+        "rows": 27,
+        "numeric_cells": 162,
+        "maximum_absolute_difference": 0.0
+      },
+      "structure_net_corrections.csv": {
+        "rows": 9072,
+        "numeric_cells": 47250,
+        "maximum_absolute_difference": 0.0
+      },
+      "structure_paired.csv": {
+        "rows": 19200,
+        "numeric_cells": 100000,
+        "maximum_absolute_difference": 4.618527782440651e-14
+      },
+      "structure_paired_overall.csv": {
+        "rows": 400,
+        "numeric_cells": 2000,
+        "maximum_absolute_difference": 4.440892098500626e-14
+      },
+      "structure_per_seed.csv": {
+        "rows": 41472,
+        "numeric_cells": 91584,
+        "maximum_absolute_difference": 4.263256414560601e-14
+      },
+      "structure_source_geometry.csv": {
+        "rows": 27,
+        "numeric_cells": 135,
+        "maximum_absolute_difference": 1.734723475976807e-18
+      },
+      "structure_source_sensitivity.csv": {
+        "rows": 286,
+        "numeric_cells": 1430,
+        "maximum_absolute_difference": 1.3877787807814457e-17
+      },
+      "structure_summary.csv": {
+        "rows": 13824,
+        "numeric_cells": 72000,
+        "maximum_absolute_difference": 4.263256414560601e-14
+      },
+      "structure_summary_overall.csv": {
+        "rows": 288,
+        "numeric_cells": 1440,
+        "maximum_absolute_difference": 2.842170943040401e-14
+      }
+    },
+    "timing": {
+      "fine_timing_rounds.csv": {
+        "rows": 900,
+        "numeric_cells": 3600,
+        "maximum_absolute_difference": 0.0
+      },
+      "fine_timing_summary.csv": {
+        "rows": 180,
+        "numeric_cells": 2520,
+        "maximum_absolute_difference": 8.881784197001252e-16
+      },
+      "structure_timing_rounds.csv": {
+        "rows": 450,
+        "numeric_cells": 1800,
+        "maximum_absolute_difference": 0.0
+      },
+      "structure_timing_summary.csv": {
+        "rows": 90,
+        "numeric_cells": 1260,
+        "maximum_absolute_difference": 5.551115123125783e-17
+      }
+    },
+    "external-final": {
+      "external_final_cache_cost.csv": {
+        "rows": 34,
+        "numeric_cells": 34,
+        "maximum_absolute_difference": 0.0
+      },
+      "external_final_net_overall.csv": {
+        "rows": 7560,
+        "numeric_cells": 37800,
+        "maximum_absolute_difference": 0.0
+      },
+      "external_final_paired.csv": {
+        "rows": 99780,
+        "numeric_cells": 518052,
+        "maximum_absolute_difference": 5.684341886080802e-14
+      },
+      "external_final_paired_overall.csv": {
+        "rows": 15264,
+        "numeric_cells": 76320,
+        "maximum_absolute_difference": 5.684341886080802e-14
+      },
+      "external_final_per_seed.csv": {
+        "rows": 170280,
+        "numeric_cells": 373104,
+        "maximum_absolute_difference": 4.263256414560601e-14
+      },
+      "external_final_source_cost.csv": {
+        "rows": 516,
+        "numeric_cells": 6708,
+        "maximum_absolute_difference": 0.0
+      },
+      "external_final_summary.csv": {
+        "rows": 56760,
+        "numeric_cells": 294648,
+        "maximum_absolute_difference": 4.263256414560601e-14
+      },
+      "external_final_summary_overall.csv": {
+        "rows": 8640,
+        "numeric_cells": 43200,
+        "maximum_absolute_difference": 4.263256414560601e-14
+      }
+    },
+    "remote_reproduction_py313": {
+      "external": {
+        "status": "REPRODUCED",
+        "files": {
+          "external_DURA_Full_minus_CE.csv": {
+            "rows": 86100,
+            "numeric_cells": 449484,
+            "maximum_absolute_difference": 1.1102230246251565e-16
+          },
+          "external_DURA_LU_minus_L.csv": {
+            "rows": 57400,
+            "numeric_cells": 299656,
+            "maximum_absolute_difference": 2.7755575615628914e-17
+          },
+          "external_DURA_PL_minus_Sup.csv": {
+            "rows": 44184,
+            "numeric_cells": 231000,
+            "maximum_absolute_difference": 1.1102230246251565e-16
+          },
+          "external_DURA_summary.csv": {
+            "rows": 172200,
+            "numeric_cells": 898968,
+            "maximum_absolute_difference": 1.1102230246251565e-16
+          },
+          "external_DURA_vs_raw.csv": {
+            "rows": 114800,
+            "numeric_cells": 828912,
+            "maximum_absolute_difference": 1.1102230246251565e-16
+          }
+        },
+        "numeric_cells": 2708020,
+        "maximum_absolute_difference": 1.1102230246251565e-16
+      },
+      "gfactor": {
+        "status": "REPRODUCED",
+        "files": {
+          "gfactor_net_corrections.csv": {
+            "rows": 70056,
+            "numeric_cells": 365484,
+            "maximum_absolute_difference": 0.0
+          },
+          "gfactor_paired_effects.csv": {
+            "rows": 66720,
+            "numeric_cells": 214640,
+            "maximum_absolute_difference": 5.873079800267078e-14
+          },
+          "gfactor_per_seed.csv": {
+            "rows": 160128,
+            "numeric_cells": 355008,
+            "maximum_absolute_difference": 2.842170943040401e-14
+          },
+          "gfactor_summary.csv": {
+            "rows": 53376,
+            "numeric_cells": 171712,
+            "maximum_absolute_difference": 2.983724378680108e-14
+          }
+        },
+        "numeric_cells": 1106844,
+        "maximum_absolute_difference": 5.873079800267078e-14
+      }
+    },
+    "remote_reproduction_py310": {
+      "external": {
+        "status": "REPRODUCED",
+        "files": {
+          "external_DURA_Full_minus_CE.csv": {
+            "rows": 86100,
+            "numeric_cells": 449484,
+            "maximum_absolute_difference": 0.0
+          },
+          "external_DURA_LU_minus_L.csv": {
+            "rows": 57400,
+            "numeric_cells": 299656,
+            "maximum_absolute_difference": 0.0
+          },
+          "external_DURA_PL_minus_Sup.csv": {
+            "rows": 44184,
+            "numeric_cells": 231000,
+            "maximum_absolute_difference": 0.0
+          },
+          "external_DURA_summary.csv": {
+            "rows": 172200,
+            "numeric_cells": 898968,
+            "maximum_absolute_difference": 0.0
+          },
+          "external_DURA_vs_raw.csv": {
+            "rows": 114800,
+            "numeric_cells": 828912,
+            "maximum_absolute_difference": 0.0
+          }
+        },
+        "numeric_cells": 2708020,
+        "maximum_absolute_difference": 0.0
+      },
+      "gfactor": {
+        "status": "REPRODUCED",
+        "files": {
+          "gfactor_net_corrections.csv": {
+            "rows": 70056,
+            "numeric_cells": 365484,
+            "maximum_absolute_difference": 0.0
+          },
+          "gfactor_paired_effects.csv": {
+            "rows": 66720,
+            "numeric_cells": 214640,
+            "maximum_absolute_difference": 0.0
+          },
+          "gfactor_per_seed.csv": {
+            "rows": 160128,
+            "numeric_cells": 355008,
+            "maximum_absolute_difference": 0.0
+          },
+          "gfactor_summary.csv": {
+            "rows": 53376,
+            "numeric_cells": 171712,
+            "maximum_absolute_difference": 0.0
+          }
+        },
+        "numeric_cells": 1106844,
+        "maximum_absolute_difference": 0.0
+      }
+    }
+  },
+  "numeric_cells_new": 1675047,
+  "maximum_absolute_difference_new": 5.684341886080802e-14,
+  "statistics_stdlib_only": true
+}
