@@ -460,5 +460,14 @@
     "reference": "complete_method_reporting_plan.json",
     "all_three_seeds_and_both_seven_views_required": true,
     "whole_run_complete": false
+  },
+  "parallel_execution_diagnostic": {
+    "status": "VERIFIED_BOUNDED_SIX_WORKER_RESOURCE_SAMPLE",
+    "reference": "parallel_resource_sample.json",
+    "sampled_seconds": 55.72135615348816,
+    "source_updates": 568,
+    "aggregate_source_updates_per_second": 10.193578175581486,
+    "scientific_recipe_changed": false,
+    "target_scores_read": false
   }
 }

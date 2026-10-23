@@ -1,0 +1,117 @@
+{
+  "status": "VERIFIED_BOUNDED_SIX_WORKER_RESOURCE_SAMPLE",
+  "run_id": "20261024-phase1-PAMF-HardPL-GradientGuard-m6-r01",
+  "execution_commit": "03d563e7cc772f003270597584c587e3952397d4",
+  "before_observed_unix": 1792791867.0077062,
+  "after_observed_unix": 1792791922.7290623,
+  "elapsed_seconds": 55.72135615348816,
+  "rows": [
+    {
+      "row_id": "HPL_E20_LS6G-s2026092701",
+      "method": "HPL_E20_LS6G",
+      "gpu": 5,
+      "source_updates": 107,
+      "updates_per_second": 1.9202691281465123,
+      "U_input_packets": 27392,
+      "student_U_packet_views": 27392,
+      "L_forward_packet_views": 82176,
+      "RSS_MiB": 2038.55859375,
+      "peak_RSS_MiB": 2213.984375,
+      "process_identity_verified": true
+    },
+    {
+      "row_id": "HPL_E20_NAMS6G-s2026092701",
+      "method": "HPL_E20_NAMS6G",
+      "gpu": 5,
+      "source_updates": 101,
+      "updates_per_second": 1.8125904854467079,
+      "U_input_packets": 25856,
+      "student_U_packet_views": 155136,
+      "L_forward_packet_views": 77568,
+      "RSS_MiB": 2064.79296875,
+      "peak_RSS_MiB": 2064.79296875,
+      "process_identity_verified": true
+    },
+    {
+      "row_id": "HPL_E20_LS6G-s2026092702",
+      "method": "HPL_E20_LS6G",
+      "gpu": 6,
+      "source_updates": 123,
+      "updates_per_second": 2.2074121753459908,
+      "U_input_packets": 31488,
+      "student_U_packet_views": 31488,
+      "L_forward_packet_views": 94464,
+      "RSS_MiB": 2034.296875,
+      "peak_RSS_MiB": 2219.203125,
+      "process_identity_verified": true
+    },
+    {
+      "row_id": "HPL_E20_NAMS6G-s2026092702",
+      "method": "HPL_E20_NAMS6G",
+      "gpu": 6,
+      "source_updates": 57,
+      "updates_per_second": 1.022947105648142,
+      "U_input_packets": 14592,
+      "student_U_packet_views": 87552,
+      "L_forward_packet_views": 43776,
+      "RSS_MiB": 2050.4921875,
+      "peak_RSS_MiB": 2256.234375,
+      "process_identity_verified": true
+    },
+    {
+      "row_id": "HPL_E20_LS6G-s2026092703",
+      "method": "HPL_E20_LS6G",
+      "gpu": 7,
+      "source_updates": 108,
+      "updates_per_second": 1.9382155685964797,
+      "U_input_packets": 27648,
+      "student_U_packet_views": 27648,
+      "L_forward_packet_views": 82944,
+      "RSS_MiB": 2032.4765625,
+      "peak_RSS_MiB": 2210.2578125,
+      "process_identity_verified": true
+    },
+    {
+      "row_id": "HPL_E20_NAMS6G-s2026092703",
+      "method": "HPL_E20_NAMS6G",
+      "gpu": 7,
+      "source_updates": 72,
+      "updates_per_second": 1.2921437123976531,
+      "U_input_packets": 18432,
+      "student_U_packet_views": 110592,
+      "L_forward_packet_views": 55296,
+      "RSS_MiB": 2065.1875,
+      "peak_RSS_MiB": 2065.1875,
+      "process_identity_verified": true
+    }
+  ],
+  "GPU": [
+    {
+      "gpu": 5,
+      "whole_GPU_used_MiB": 8644,
+      "whole_GPU_free_MiB": 15481,
+      "utilization_percent": 83
+    },
+    {
+      "gpu": 6,
+      "whole_GPU_used_MiB": 7883,
+      "whole_GPU_free_MiB": 16242,
+      "utilization_percent": 91
+    },
+    {
+      "gpu": 7,
+      "whole_GPU_used_MiB": 9010,
+      "whole_GPU_free_MiB": 15115,
+      "utilization_percent": 98
+    }
+  ],
+  "source_updates_total": 568,
+  "aggregate_source_updates_per_second": 10.193578175581486,
+  "sampled_worker_RSS_MiB": 12285.8046875,
+  "extra_GPU_workers": 0,
+  "source_or_target_model_updates": 0,
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "healthy_tasks_changed": false,
+  "interpretation": "Observed source counter throughput on shared GPUs over this sample window only;RSS sums may double-count shared pages.Whole-GPU memory includes foreign processes.This is not exclusive GPU-hours,a serial speedup benchmark,final training cost or target success."
+}
