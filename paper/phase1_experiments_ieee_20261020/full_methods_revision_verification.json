@@ -1,0 +1,47 @@
+{
+  "status": "VERIFIED",
+  "scope": "Paper presentation only",
+  "pages": 5,
+  "tables": 10,
+  "figures": 2,
+  "external_versions": [
+    "Full RIEI",
+    "Full DRIFT-v2",
+    "Full IB-RFF",
+    "Full SDG"
+  ],
+  "proposed_supervised": "PAMF-Sup + G-L",
+  "proposed_semisupervised": "PAMF-T1 native selective SSL + G-LU",
+  "selected_aggregate_rows": {
+    "comparisons": 3850,
+    "core": 16,
+    "structure": 36,
+    "restoration": 15,
+    "latency": 11
+  },
+  "new_training": 0,
+  "new_predictions": 0,
+  "new_scoring": 0,
+  "overfull_boxes": 0,
+  "undefined_or_duplicate_references": 0,
+  "visual_QA_pages": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "snapshot_replay": {
+    "status": "VERIFIED",
+    "identical_files": [
+      "full_method_comparison.tex",
+      "pamf_focused_mechanisms.tex",
+      "pamf_focused_efficiency.tex",
+      "tables/full_methods_data.csv"
+    ],
+    "requires_only_stdlib": true
+  },
+  "prior_evidence_archive": "20261023-final-T1-DURA-experiments-complete-r12.zip",
+  "prior_evidence_preserved": true,
+  "delivery_archive": "20261023-PAMF-IEEE-full-methods-r13.zip"
+}

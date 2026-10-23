@@ -1,0 +1,36 @@
+\subsection{Computational Efficiency}
+
+All inference measurements use frozen seed01 weights, FP32 with TF32 disabled, two CPU threads and exclusive RTX3090 access. Five measurement rounds describe timing variation, not five model seeds. Table~\ref{tab:paper-latency} includes complete external identifiers F, the proposed identifier and the restoration components. The external F-only measurements do not establish their online G+F latency; cached classification time is not substituted for it. The default PAMF F+G route has GPU-wall median $4.541$ms and P95 $4.725$ms; CPU class return has median $4.611$ms. The same weights take $37.190$ms on the native execution path, giving an $8.189\times$ execution-route improvement. This is not a claim that every external model received identical implementation optimization.
+
+\begin{table*}[!t]\centering\footnotesize
+\caption{Inference on RTX3090 (ms, five rounds). (a) Batch-one GPU wall and CPU-return latency; external F is eager, online external G+F is unmeasured. (b) PAMF F+G throughput in 256-sample IQ windows/s.}
+\label{tab:paper-latency}
+\begin{minipage}[t]{.71\textwidth}\centering
+\textit{(a) Batch-one latency}\\[4pt]
+\setlength{\tabcolsep}{3pt}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}llrrr@{}}\toprule
+Model & Execution & Median & P95 & CPU return \\ \midrule
+RIEI F & Eager & 2.352 & 2.734 & 2.456 \\
+DRIFT-v2 F & Eager & 2.408 & 2.605 & 2.476 \\
+IB-RFF F & Eager & 1.456 & 2.168 & 1.506 \\
+SDG F & Eager & 3.054 & 5.008 & 3.105 \\
+PAMF-T1 F & CUDA Graph & 0.757 & 0.858 & 0.796 \\
+DURA G & Graph + residual reuse & 3.843 & 3.984 & 3.874 \\
+PAMF-T1 F+G & Graph + residual reuse & 4.541 & 4.725 & 4.611 \\
+\bottomrule\end{tabular*}\end{minipage}\hfill
+\begin{minipage}[t]{.27\textwidth}\centering
+\textit{(b) Batch throughput}\\[4pt]
+\setlength{\tabcolsep}{3pt}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}rrr@{}}\toprule
+Batch & Median & IQ/s \\ \midrule
+1 & 4.541 & 220.2 \\
+8 & 13.747 & 581.9 \\
+32 & 28.374 & 1127.8 \\
+64 & 15.295 & 4184.5 \\
+128 & 17.111 & 7480.5 \\
+\bottomrule\end{tabular*}\end{minipage}
+\end{table*}
+
+F and G contain 232993 and 266951 registered learned parameters (499944 total). Separate eager Conv/Linear profiles give 8.856M and 25.068M real MACs; these omit functional-head arithmetic, FFT complex operations, CG reductions and elementwise work, so they are not total FLOPs. Eager G uses 43 FFT/IFFT calls; the residual-reuse route uses 27. The larger training wrapper, optimizer and EMA are not counted as deployment parameters. Multi-model/Graph resident allocation is not reported as single-model VRAM.
+
+Table~\ref{tab:paper-latency}(b) preserves the nonmonotonic batch latency. Amortized throughput does not establish continuous full-rate radio operation. Training-only CRIC, stochastic forwards, EMA and U gates add no deployment passes. Source-stage cost, G ancestry, cached inference and scoring costs are reported separately in the evidence archive.

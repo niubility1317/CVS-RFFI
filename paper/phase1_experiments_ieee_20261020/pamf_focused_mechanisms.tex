@@ -1,0 +1,73 @@
+\subsection{PAMF Mechanism Analysis}
+
+\subsubsection{Three Core Training Mechanisms}
+
+We group the identification objectives by function rather than observed gain. A is CRIC: shallow/intermediate same-TX, cross-physical-RX contrast. B is stochastic prediction consistency: ordinary128, ordinary64 and raw128 symmetric-KL terms switch together. C is native selective self-training: own EMA, confidence and adjacent/strong-view gates, pseudo-label CE and U entropy switch together. Table~\ref{tab:paper-core} reports the complete model and one removal per group. Each removal retains the supervised CE dose and update schedule; C-off performs no U loading or EMA work.
+
+\begin{table*}[!t]
+\centering\footnotesize
+\caption{PAMF core-group ablation on F0 (accuracy, \%). All restored rows use fixed G-LU; C-off removes U from F only.}
+\label{tab:paper-core}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrrrr@{}}
+\toprule
+F training setting & Raw clean & Raw S6 & DURA clean & DURA S6 \\
+\midrule
+Full PAMF-T1 & \pmv{84.39}{0.92} & \pmv{70.60}{1.06} & \pmv{84.48}{0.97} & \pmv{77.65}{0.85} \\
+Without A: CRIC & \pmv{84.73}{0.51} & \pmv{70.99}{1.24} & \pmv{84.78}{0.58} & \pmv{78.06}{0.48} \\
+Without B: consistency & \pmv{83.14}{0.76} & \pmv{70.50}{0.61} & \pmv{83.13}{0.82} & \pmv{76.63}{0.48} \\
+Without C: selective SSL & \pmv{84.79}{0.82} & \pmv{70.60}{0.95} & \pmv{84.86}{0.87} & \pmv{77.85}{0.40} \\
+\bottomrule
+\end{tabular*}
+\end{table*}
+
+B increases raw clean accuracy by $1.25\pm1.09$ pp and restored S6 by $1.01\pm0.80$ pp in the complete combination. A and C have negative mean conditional restored-S6 differences ($-0.41\pm0.38$ and $-0.21\pm0.58$ pp for full minus removal). The data therefore do not support a claim that all three groups yield stable positive gains in this fixed F0 setting. These results retain the designated default and are not used to regroup objectives or select reruns. The complete eight-combination diagnostic is retained in the experiment archive rather than expanded into the main comparison.
+
+\subsubsection{Physical Structure and Inductive Bias}
+
+Table~\ref{tab:paper-structure} isolates architecture under a common labeled-only objective. The single SIG\_TIME variant changes the number of learned views; branch deletions change capacity and computation. No-time, covariance, shuffled-time and scrambled-reference controls retain parameter count but change representation or input structure. They distinguish useful response/statistical features from a claim that a specific coordinate ordering is indispensable.
+
+\begin{table*}[!t]
+\centering\footnotesize
+\caption{Physical-structure ablation under matched labeled-only CE plus satellite augmentation: no CRIC/KL/EMA/U, 11100 updates (accuracy, \%). The full PAMF-Sup recipe is evaluated separately.}
+\label{tab:paper-structure}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrrrr@{}}
+\toprule
+PAMF backbone & Raw clean & Raw S6 & G-L S6 & G-L S6 F1 \\
+\midrule
+Full X3 backbone & \pmv{81.55}{1.34} & \pmv{46.35}{1.74} & \pmv{74.49}{1.14} & \pmv{73.91}{1.29} \\
+Single SIG\_TIME & \pmv{81.82}{1.26} & \pmv{43.61}{6.18} & \pmv{74.20}{1.16} & \pmv{73.72}{1.33} \\
+Without time coordinate & \pmv{80.95}{1.54} & \pmv{45.46}{5.89} & \pmv{73.99}{1.03} & \pmv{73.39}{1.27} \\
+Without signature branch & \pmv{79.48}{1.72} & \pmv{41.84}{5.75} & \pmv{72.32}{1.09} & \pmv{71.92}{1.09} \\
+Without PA branch & \pmv{78.94}{2.29} & \pmv{39.39}{5.78} & \pmv{71.70}{0.44} & \pmv{71.13}{0.49} \\
+Without reference response & \pmv{78.64}{1.49} & \pmv{44.80}{2.93} & \pmv{73.01}{1.15} & \pmv{72.32}{1.16} \\
+Covariance X3 & \pmv{81.69}{0.61} & \pmv{49.36}{4.72} & \pmv{74.56}{0.84} & \pmv{73.89}{0.89} \\
+Shuffled time & \pmv{82.20}{1.72} & \pmv{48.54}{6.44} & \pmv{75.62}{1.11} & \pmv{75.10}{1.24} \\
+Scrambled reference & \pmv{81.02}{1.20} & \pmv{46.59}{2.91} & \pmv{74.24}{1.09} & \pmv{73.64}{1.24} \\
+\bottomrule
+\end{tabular*}
+\end{table*}
+
+Removing PA, signature or reference-response features reduces G-L S6 accuracy relative to the full backbone by $2.79\pm0.86$, $2.17\pm0.11$ and $1.48\pm0.01$ pp. However, shuffled time exceeds the original ordering after restoration, and covariance X3 is slightly higher on average. These counterexamples are retained: physical structure supplies an inductive bias, not a guarantee that every chosen coordinate or prior is optimal.
+
+The frozen source diagnostics use the same 720 labeled packets from 90 TX/RX/day strata and 11 fixed interventions. They access neither U nor target data and fit no probe. For full T1, same-TX cross-RX feature distance is $0.0618\pm0.0105$, compared with $0.0685\pm0.0118$ without A, while the separation margin does not increase. Lower within-identity distance alone does not establish complete receiver/channel disentanglement. Simulated PA interventions test sensitivity and are not assumed to preserve unknown hardware identity.
+
+\subsubsection{Restoration Mechanisms}
+
+Table~\ref{tab:paper-G} retains the coarse restoration, conjugate-gradient solver, conjugate-image action and residual-input controls that directly describe DURA. All use frozen T1 default heads, identical seven-view observations and source-only G training. Coarse restoration alone is insufficient; removing CG, image action or residual input also reduces the restored S6 mean. Initialization and distillation diagnostics remain in the archive and do not occupy a separate external-comparator analysis.
+
+\begin{table*}[!t]
+\centering\footnotesize
+\caption{DURA functional ablation (accuracy, \%). Default: three F seeds with one G; other rows: same-index F/G students. SD describes the respective seed design.}
+\label{tab:paper-G}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrrrr@{}}
+\toprule
+Restorer & Parameters (K) & Clean & S6 & Low urban \\
+\midrule
+Default DURA & 267.0 & \pmv{84.48}{0.97} & \pmv{77.65}{0.85} & \pmv{67.66}{0.71} \\
+Coarse only & 106.1 & \pmv{83.26}{1.02} & \pmv{72.11}{0.77} & \pmv{55.95}{1.24} \\
+Without CG & 267.0 & \pmv{84.41}{1.08} & \pmv{76.94}{1.08} & \pmv{66.45}{1.31} \\
+Without image action & 267.0 & \pmv{84.49}{0.96} & \pmv{77.32}{1.10} & \pmv{67.09}{1.38} \\
+Without residual input & 267.0 & \pmv{84.38}{0.94} & \pmv{76.78}{1.21} & \pmv{66.65}{1.53} \\
+\bottomrule
+\end{tabular*}
+\end{table*}
