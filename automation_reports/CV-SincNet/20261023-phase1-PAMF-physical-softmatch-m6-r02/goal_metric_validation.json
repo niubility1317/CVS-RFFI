@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "scope": "Analysis acceptance arithmetic only; no current training or prediction changes",
+  "analysis_commit": "2ed4993eb3eff19d0a1c5d03987a657f979b02f3",
+  "regression_tests": 4,
+  "regressions_before_fix": {
+    "exact_clean_1pp": "incorrectly failed at0.9999999999999952",
+    "exact_six_1_5pp": "incorrectly passed at1.5000000000000047"
+  },
+  "regressions_after_fix": "Both boundary cases, confusion/accuracy mismatch rejection and wrong-seed rejection PASS",
+  "exact_denominators": {
+    "clean_three_seeds": 504000,
+    "six_views_three_seeds": 3024000
+  },
+  "exact_minimum_correct": {
+    "clean": 433348,
+    "six_views": 2180190
+  },
+  "training_execution_commit": "4633ff7dddb9abe0afce4c0e76b0c0424db38c9c",
+  "training_release_changed": false,
+  "future_analysis_instruction": "Use analyze.py from this analysis_commit, not the float-gating copy inside the immutable training release",
+  "additional_target_scope_test": {
+    "status": "PASS",
+    "tests": 1,
+    "test": "test_perfect_source_validation_scores_cannot_replace_target_test",
+    "scope": "Synthetic perfect source V scores with 27000 observations are rejected; not an experimental result"
+  }
+}

@@ -132,7 +132,8 @@
       "receiver_date"
     ],
     "prediction_ref": "ROW/predictions/main/predictions.npz and complete.json",
-    "scorer_ref": "experiments.cric_dura_comparison.evaluation.score: all views validated before truth IO; analyze.py consumes scores only after ALL_SCORED"
+    "scorer_ref": "experiments.cric_dura_comparison.evaluation.score: all views validated before truth IO; analyze.py consumes scores only after ALL_SCORED",
+    "goal_population": "Fixed F0 main target test: 168000 physical samples per view, seven unseen target receivers, raw default-head inference; source V excluded."
   },
   "rows": [
     {
@@ -376,5 +377,11 @@
       ]
     }
   },
-  "registered_at": "2026-10-23T08:15:03+00:00"
+  "registered_at": "2026-10-23T08:15:03+00:00",
+  "analysis_code": {
+    "commit": "2ed4993eb3eff19d0a1c5d03987a657f979b02f3",
+    "entry": "experiments.pamf_ssl_research.analyze",
+    "goal_comparison": "exact confusion correct-count arithmetic",
+    "training_execution_unchanged": true
+  }
 }

@@ -95,6 +95,21 @@ class GoalCountBoundaryTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'model seed'):
                 summarize(rt, root / 'analysis.json')
 
+    def test_perfect_source_validation_scores_cannot_replace_target_test(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            rt = fixture(root, clean_added=(1700, 1700, 1700), six_extra=1)
+            config = json.loads(Path(rt['rows'][0]['score_config']).read_text())
+            path = Path(config['output_root']) / 'scores.json'
+            value = json.loads(path.read_text())
+            for row in value['results']:
+                row['count'] = 27000
+                row['accuracy'] = 1.
+                row['confusion'] = [[4500 if i == j else 0 for j in range(6)] for i in range(6)]
+            save(path, value)
+            with self.assertRaisesRegex(ValueError, 'seven-view coverage'):
+                summarize(rt, root / 'analysis.json')
+
 
 if __name__ == '__main__':
     unittest.main()
