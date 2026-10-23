@@ -1,0 +1,285 @@
+{
+  "status": "VERIFIED_SOURCE_FINAL_EVALUATION_PENDING",
+  "run_id": "20261023-phase1-PAMF-paired-U-m3-r01",
+  "execution_commit": "de92f461949dbb0163745c0cde009a433e6fc854",
+  "observed_unix": 1792762036.5029528,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "total_new_step_records": 13320,
+  "records_per_seed": 4440,
+  "cumulative_updates_per_seed": 11100,
+  "reused_parent_steps_per_seed": 6660,
+  "parent_full_log_reference": "20261023-phase1-PAMF-physical-softmatch-m6-r02/training_completion.json:RXPSM same-seed E20/E30",
+  "rows": [
+    {
+      "row_id": "PAIREDU-s2026092701",
+      "source_epoch": 50,
+      "source_updates": 11100,
+      "new_step_records": 4440,
+      "all_complete_step_records_checked": true,
+      "gzip_closed": true,
+      "actual_adapter_SSL": {
+        "method": "pamf_pairedu_v1",
+        "native_U_loop": false,
+        "own_EMA": true,
+        "cumulative_EMA_updates": 11100,
+        "U_seen": 2097900,
+        "physical_U_seen": 1615950,
+        "effective_U_weight": 1995083.537864685,
+        "effective_U_per_class": [
+          336629.875,
+          331174.4375,
+          344031.375,
+          309807.28125,
+          327082.25,
+          346404.21875
+        ],
+        "U_truth_read": false,
+        "labeled_only_prototype_updates": true,
+        "paired_calls": 4440,
+        "paired_clean_seen": 1134000,
+        "paired_physical_seen": 1134000,
+        "student_U_views": 3231900
+      },
+      "final_logged_losses_and_counters": {
+        "SSL_loss": 0.2028600424528122,
+        "SSL_seen": 2097900,
+        "SSL_physical_seen": 1615950,
+        "SSL_paired_calls": 4440,
+        "SSL_paired_clean_seen": 1134000,
+        "SSL_paired_physical_seen": 1134000,
+        "SSL_student_U_views": 3231900,
+        "SSL_proto_coverage": 1.0,
+        "SSL_pair_clean_CE": 0.021146781742572784,
+        "SSL_pair_physical_CE": 0.15270499885082245,
+        "SSL_pair_clean_prototype": 0.002552452264353633,
+        "SSL_pair_physical_prototype": 0.002927058609202504,
+        "SSL_pair_physical_feature": 0.023528743535280228
+      },
+      "incremental_training_seconds": 4393.458001221996,
+      "parent_training_seconds": 4417.8696232249495,
+      "cumulative_training_seconds": 8811.327624446945,
+      "source_graph_native_IQ_check": "PASS",
+      "completed_prediction_views": [
+        {
+          "test": "main",
+          "view": "clean",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_low_suburban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high_urban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid_urban",
+          "count": 168000
+        }
+      ],
+      "prediction_complete": false
+    },
+    {
+      "row_id": "PAIREDU-s2026092702",
+      "source_epoch": 50,
+      "source_updates": 11100,
+      "new_step_records": 4440,
+      "all_complete_step_records_checked": true,
+      "gzip_closed": true,
+      "actual_adapter_SSL": {
+        "method": "pamf_pairedu_v1",
+        "native_U_loop": false,
+        "own_EMA": true,
+        "cumulative_EMA_updates": 11100,
+        "U_seen": 2097900,
+        "physical_U_seen": 1615950,
+        "effective_U_weight": 1989868.7552108765,
+        "effective_U_per_class": [
+          336433.375,
+          329933.875,
+          344794.875,
+          310317.53125,
+          321757.375,
+          346669.96875
+        ],
+        "U_truth_read": false,
+        "labeled_only_prototype_updates": true,
+        "paired_calls": 4440,
+        "paired_clean_seen": 1134000,
+        "paired_physical_seen": 1134000,
+        "student_U_views": 3231900
+      },
+      "final_logged_losses_and_counters": {
+        "SSL_loss": 0.17671933770179749,
+        "SSL_seen": 2097900,
+        "SSL_physical_seen": 1615950,
+        "SSL_paired_calls": 4440,
+        "SSL_paired_clean_seen": 1134000,
+        "SSL_paired_physical_seen": 1134000,
+        "SSL_student_U_views": 3231900,
+        "SSL_proto_coverage": 1.0,
+        "SSL_pair_clean_CE": 0.016166353598237038,
+        "SSL_pair_physical_CE": 0.13738100230693817,
+        "SSL_pair_clean_prototype": 0.002106431871652603,
+        "SSL_pair_physical_prototype": 0.0022781805600970984,
+        "SSL_pair_physical_feature": 0.018787365406751633
+      },
+      "incremental_training_seconds": 4302.747716062004,
+      "parent_training_seconds": 5064.55442506494,
+      "cumulative_training_seconds": 9367.302141126944,
+      "source_graph_native_IQ_check": "PASS",
+      "completed_prediction_views": [
+        {
+          "test": "main",
+          "view": "clean",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_low_suburban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high_urban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid_urban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_low_urban",
+          "count": 168000
+        }
+      ],
+      "prediction_complete": true
+    },
+    {
+      "row_id": "PAIREDU-s2026092703",
+      "source_epoch": 50,
+      "source_updates": 11100,
+      "new_step_records": 4440,
+      "all_complete_step_records_checked": true,
+      "gzip_closed": true,
+      "actual_adapter_SSL": {
+        "method": "pamf_pairedu_v1",
+        "native_U_loop": false,
+        "own_EMA": true,
+        "cumulative_EMA_updates": 11100,
+        "U_seen": 2097900,
+        "physical_U_seen": 1615950,
+        "effective_U_weight": 2003853.9806594849,
+        "effective_U_per_class": [
+          338220.03125,
+          325148.8125,
+          343612.71875,
+          317101.25,
+          333730.59375,
+          346081.875
+        ],
+        "U_truth_read": false,
+        "labeled_only_prototype_updates": true,
+        "paired_calls": 4440,
+        "paired_clean_seen": 1134000,
+        "paired_physical_seen": 1134000,
+        "student_U_views": 3231900
+      },
+      "final_logged_losses_and_counters": {
+        "SSL_loss": 0.1791410595178604,
+        "SSL_seen": 2097900,
+        "SSL_physical_seen": 1615950,
+        "SSL_paired_calls": 4440,
+        "SSL_paired_clean_seen": 1134000,
+        "SSL_paired_physical_seen": 1134000,
+        "SSL_student_U_views": 3231900,
+        "SSL_proto_coverage": 1.0,
+        "SSL_pair_clean_CE": 0.02067621424794197,
+        "SSL_pair_physical_CE": 0.13699635863304138,
+        "SSL_pair_clean_prototype": 0.002098280005156994,
+        "SSL_pair_physical_prototype": 0.0021357566583901644,
+        "SSL_pair_physical_feature": 0.017234455794095993
+      },
+      "incremental_training_seconds": 4306.219406224089,
+      "parent_training_seconds": 4894.10919757816,
+      "cumulative_training_seconds": 9200.328603802249,
+      "source_graph_native_IQ_check": "PASS",
+      "completed_prediction_views": [
+        {
+          "test": "main",
+          "view": "clean",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_low_suburban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high_urban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid_urban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_low_urban",
+          "count": 168000
+        }
+      ],
+      "prediction_complete": true
+    }
+  ],
+  "U_exposure_is_repeated": true,
+  "unique_U_records": 56700,
+  "source_U_TX_truth_read": false,
+  "source_V_not_target_acceptance": true,
+  "no_new_head_fit": true,
+  "shared_GPU_walltime_not_exclusive_GPU_hours": true,
+  "target_accuracy_not_read": true,
+  "goal_complete": false
+}

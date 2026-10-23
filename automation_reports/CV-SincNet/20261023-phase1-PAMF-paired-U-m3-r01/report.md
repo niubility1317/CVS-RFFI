@@ -40,3 +40,10 @@ VERIFIED_QUEUED：执行commit `de92f461949dbb0163745c0cde009a433e6fc854`，一�
 VERIFIED_RUNNING：首个真实E30学生/自身EMA的source-only smoke PASS，768条L前向、256条唯一U/512条student视图，teacher无梯度，默认头有限反向；smoke后EMA6661，U964156、物理U482206、student视图964412，均符合固定父状态续接。smoke不写回父模型，正式三seed重新加载原E30。
 
 独立核实三个worker的PID/CWD/完整命令与GPU5/6/7实际归属，日志跨观测均增长，三seed均已完成首个新增epoch，即累计E31/6882更新；另完整读取当时已刷新的111/111/112条连续step前缀，真实clean/physical CE、双原型项和物理特征项均有限、正值，唯一U和两student视图的连续计数逐条匹配，源U TX仍隐藏。该前缀不是最终4440步完成证明，完整训练和目标指标仍待后续验证。source_activation.json保留实际时刻及分阶段范围，避免把source运行健康当作测试成功。
+
+
+## 三seed源训练完整，正式评测继续
+
+VERIFIED_SOURCE_FINAL：三行各新增20轮/4440步，累计E50/11100；逐条读取全部13320条新增闭合step记录，源U曝光2097900、物理U曝光1615950、学生U视图3231900和自身EMA11100次均符合预定，父前6660步复用原完整核验记录。无U真值/目标训练或另训头。完整源证据及已发生父阶段/增量/累计时间见source_training_complete.json；程序经过时间来自共享GPU，不能等同独占GPU小时。
+
+模型已按固定最终学生冻结，并已自动进入raw与固定DURA各七景预测；这是源训练完成，正式预测/独立评分尚未全部齐，不宣称整体实验完成或目标达成。部分目标成绩仍不读取，三seed全矩阵完成后统一分析。
