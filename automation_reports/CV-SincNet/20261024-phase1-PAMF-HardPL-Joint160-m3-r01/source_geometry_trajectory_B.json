@@ -1,0 +1,1921 @@
+{
+  "status": "VERIFIED_SOURCE_GEOMETRY_TRAJECTORY_PHASE_B",
+  "analysis_code_commit": "46bea0302aed2b4fdd8dd8db3e89a1fe143a937a",
+  "run_context": "20261024-phase1-PAMF-HardPL-Joint160-m3-r01",
+  "phase": "B",
+  "profiles": [
+    "JOINT_E30"
+  ],
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "rows": [
+    {
+      "profile": "JOINT_E30",
+      "model_seed": 2026092701,
+      "role": "U_s",
+      "source_epoch": 30,
+      "source_run_id": "20261024-phase1-PAMF-HardPL-Joint160-m3-r01",
+      "source_row_id": "HPL_E20_NAMS_JOINT6G-s2026092701",
+      "source_code_commit": "77498c5a8b003f3afc71fab7ee96ca39662593fa",
+      "samples": 960,
+      "common_reference_selected": 898,
+      "own_acceptance": 910,
+      "common_selected_prediction_agreement_or_V_correct": 898,
+      "mean_common_reference_label_CE": 0.0043755886144936085,
+      "labels": "Fixed originalE20 raw pseudo TX;U truth hidden",
+      "geometry": {
+        "unit_only": {
+          "time_down": {
+            "samples_total": 960,
+            "samples_selected": 898,
+            "descriptor_dimension": 96,
+            "normalization": "unit_only",
+            "class_counts": [
+              150,
+              154,
+              167,
+              145,
+              129,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 14.27757031417214,
+            "class_between_scatter": 9.165209020452863,
+            "class_within_scatter": 5.112361293719276,
+            "conditional_RX_between_scatter": 2.3439660316621436,
+            "class_fraction_of_total": 0.6419305819390946,
+            "conditional_RX_fraction_of_class_residual": 0.4584899026095421,
+            "conditional_RX_fraction_of_total": 0.16417121261419992,
+            "covered_class_RX_cells": 30
+          },
+          "t2.pool": {
+            "samples_total": 960,
+            "samples_selected": 898,
+            "descriptor_dimension": 192,
+            "normalization": "unit_only",
+            "class_counts": [
+              150,
+              154,
+              167,
+              145,
+              129,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 34.290846996745,
+            "class_between_scatter": 25.08672022662054,
+            "class_within_scatter": 9.20412677012446,
+            "conditional_RX_between_scatter": 3.729870709906516,
+            "class_fraction_of_total": 0.7315864851341191,
+            "conditional_RX_fraction_of_class_residual": 0.40523895455386905,
+            "conditional_RX_fraction_of_total": 0.10877161215237895,
+            "covered_class_RX_cells": 30
+          },
+          "joint160": {
+            "samples_total": 960,
+            "samples_selected": 898,
+            "descriptor_dimension": 160,
+            "normalization": "unit_only",
+            "class_counts": [
+              150,
+              154,
+              167,
+              145,
+              129,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 154.6265012281364,
+            "class_between_scatter": 137.49172926014322,
+            "class_within_scatter": 17.134771967993185,
+            "conditional_RX_between_scatter": 6.566410178604214,
+            "class_fraction_of_total": 0.8891860591043673,
+            "conditional_RX_fraction_of_class_residual": 0.3832213344227696,
+            "conditional_RX_fraction_of_total": 0.04246626630267029,
+            "covered_class_RX_cells": 30
+          },
+          "core160": {
+            "samples_total": 960,
+            "samples_selected": 898,
+            "descriptor_dimension": 160,
+            "normalization": "unit_only",
+            "class_counts": [
+              150,
+              154,
+              167,
+              145,
+              129,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 97.47564553696803,
+            "class_between_scatter": 87.07070538817769,
+            "class_within_scatter": 10.404940148790363,
+            "conditional_RX_between_scatter": 4.711994398395245,
+            "class_fraction_of_total": 0.893256001625101,
+            "conditional_RX_fraction_of_class_residual": 0.45286126887938344,
+            "conditional_RX_fraction_of_total": 0.048340222549315685,
+            "covered_class_RX_cells": 30
+          },
+          "signature160": {
+            "samples_total": 960,
+            "samples_selected": 898,
+            "descriptor_dimension": 160,
+            "normalization": "unit_only",
+            "class_counts": [
+              150,
+              154,
+              167,
+              145,
+              129,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 848.1223500238442,
+            "class_between_scatter": 720.0150449033958,
+            "class_within_scatter": 128.10730512044844,
+            "conditional_RX_between_scatter": 50.08430817769482,
+            "class_fraction_of_total": 0.8489518580463694,
+            "conditional_RX_fraction_of_class_residual": 0.390955910988876,
+            "conditional_RX_fraction_of_total": 0.05905316394065874,
+            "covered_class_RX_cells": 30
+          },
+          "reference160": {
+            "samples_total": 960,
+            "samples_selected": 898,
+            "descriptor_dimension": 160,
+            "normalization": "unit_only",
+            "class_counts": [
+              150,
+              154,
+              167,
+              145,
+              129,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 771.6268272289615,
+            "class_between_scatter": 149.48912561586184,
+            "class_within_scatter": 622.1377016130996,
+            "conditional_RX_between_scatter": 376.000000999478,
+            "class_fraction_of_total": 0.1937324109799316,
+            "conditional_RX_fraction_of_class_residual": 0.6043678112169903,
+            "conditional_RX_fraction_of_total": 0.48728217803125856,
+            "covered_class_RX_cells": 30
+          }
+        },
+        "cohort_native_cric": {
+          "time_down": {
+            "samples_total": 960,
+            "samples_selected": 898,
+            "descriptor_dimension": 96,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              150,
+              154,
+              167,
+              145,
+              129,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 886.050502059225,
+            "class_between_scatter": 508.3044826331615,
+            "class_within_scatter": 377.74601942606347,
+            "conditional_RX_between_scatter": 142.76158680104015,
+            "class_fraction_of_total": 0.5736743915294183,
+            "conditional_RX_fraction_of_class_residual": 0.3779300891587105,
+            "conditional_RX_fraction_of_total": 0.16112127521992844,
+            "covered_class_RX_cells": 30
+          },
+          "t2.pool": {
+            "samples_total": 960,
+            "samples_selected": 898,
+            "descriptor_dimension": 192,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              150,
+              154,
+              167,
+              145,
+              129,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 891.0945192328543,
+            "class_between_scatter": 602.6952387427878,
+            "class_within_scatter": 288.3992804900665,
+            "conditional_RX_between_scatter": 109.72413775462351,
+            "class_fraction_of_total": 0.6763538836055795,
+            "conditional_RX_fraction_of_class_residual": 0.3804591244755301,
+            "conditional_RX_fraction_of_total": 0.1231341180833267,
+            "covered_class_RX_cells": 30
+          },
+          "joint160": {
+            "samples_total": 960,
+            "samples_selected": 898,
+            "descriptor_dimension": 160,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              150,
+              154,
+              167,
+              145,
+              129,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 894.0300051974856,
+            "class_between_scatter": 781.0092361717336,
+            "class_within_scatter": 113.02076902575182,
+            "conditional_RX_between_scatter": 37.59417167690148,
+            "class_fraction_of_total": 0.8735828010595836,
+            "conditional_RX_fraction_of_class_residual": 0.33263064833982536,
+            "conditional_RX_fraction_of_total": 0.04205023484485531,
+            "covered_class_RX_cells": 30
+          },
+          "core160": {
+            "samples_total": 960,
+            "samples_selected": 898,
+            "descriptor_dimension": 160,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              150,
+              154,
+              167,
+              145,
+              129,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 870.87352362912,
+            "class_between_scatter": 642.5344367884118,
+            "class_within_scatter": 228.3390868407082,
+            "conditional_RX_between_scatter": 103.9432786003134,
+            "class_fraction_of_total": 0.7378045368870908,
+            "conditional_RX_fraction_of_class_residual": 0.4552145672406291,
+            "conditional_RX_fraction_of_total": 0.1193551942733993,
+            "covered_class_RX_cells": 30
+          },
+          "signature160": {
+            "samples_total": 960,
+            "samples_selected": 898,
+            "descriptor_dimension": 160,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              150,
+              154,
+              167,
+              145,
+              129,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 896.823140125473,
+            "class_between_scatter": 733.1433157954766,
+            "class_within_scatter": 163.6798243299963,
+            "conditional_RX_between_scatter": 68.3017238765356,
+            "class_fraction_of_total": 0.8174892941465626,
+            "conditional_RX_fraction_of_class_residual": 0.417288594706895,
+            "conditional_RX_fraction_of_total": 0.07615963596454439,
+            "covered_class_RX_cells": 30
+          },
+          "reference160": {
+            "samples_total": 960,
+            "samples_selected": 898,
+            "descriptor_dimension": 160,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              150,
+              154,
+              167,
+              145,
+              129,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 897.4035505708238,
+            "class_between_scatter": 182.5748312176597,
+            "class_within_scatter": 714.828719353164,
+            "conditional_RX_between_scatter": 258.1741206910574,
+            "class_fraction_of_total": 0.20344785921732406,
+            "conditional_RX_fraction_of_class_residual": 0.3611692055751126,
+            "conditional_RX_fraction_of_total": 0.2876901038856343,
+            "covered_class_RX_cells": 30
+          }
+        }
+      },
+      "branch_contributions": {
+        "core160": {
+          "mean_norm": 9.532171249389648,
+          "mean_norm_relative_to_joint": 0.9996842741966248,
+          "selected_mean_norm_relative_to_joint": 0.9980266094207764
+        },
+        "signature160": {
+          "mean_norm": 1.485082745552063,
+          "mean_norm_relative_to_joint": 0.15661033987998962,
+          "selected_mean_norm_relative_to_joint": 0.1564817577600479
+        },
+        "reference160": {
+          "mean_norm": 1.2395880222320557,
+          "mean_norm_relative_to_joint": 0.13371552526950836,
+          "selected_mean_norm_relative_to_joint": 0.13274431228637695
+        }
+      },
+      "interpretation": "Descriptive source geometry on the same fixed cohort and fixed reference acceptance/classes;unit-only and cohort-normalized summaries are not causal RX nuisance isolation or target gains. A zero-spread/collapsed branch is not evidence of useful invariance. U classes remain reference pseudo labels;no probe/projection fitted."
+    },
+    {
+      "profile": "JOINT_E30",
+      "model_seed": 2026092701,
+      "role": "V",
+      "source_epoch": 30,
+      "source_run_id": "20261024-phase1-PAMF-HardPL-Joint160-m3-r01",
+      "source_row_id": "HPL_E20_NAMS_JOINT6G-s2026092701",
+      "source_code_commit": "77498c5a8b003f3afc71fab7ee96ca39662593fa",
+      "samples": 720,
+      "common_reference_selected": 720,
+      "own_acceptance": 666,
+      "common_selected_prediction_agreement_or_V_correct": 701,
+      "mean_common_reference_label_CE": 0.08733750134706497,
+      "labels": "Fixed sourceV true TX,diagnostic only,all720",
+      "geometry": {
+        "unit_only": {
+          "time_down": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 96,
+            "normalization": "unit_only",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 12.39343965114466,
+            "class_between_scatter": 7.2830197660374125,
+            "class_within_scatter": 5.11041988510725,
+            "conditional_RX_between_scatter": 1.8349088175065549,
+            "class_fraction_of_total": 0.5876512066902065,
+            "conditional_RX_fraction_of_class_residual": 0.35905245728513097,
+            "conditional_RX_fraction_of_total": 0.14805484749643996,
+            "covered_class_RX_cells": 30
+          },
+          "t2.pool": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 192,
+            "normalization": "unit_only",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 28.159300451698947,
+            "class_between_scatter": 19.076461410955577,
+            "class_within_scatter": 9.082839040743375,
+            "conditional_RX_between_scatter": 3.132242030411049,
+            "class_fraction_of_total": 0.6774479871642063,
+            "conditional_RX_fraction_of_class_residual": 0.3448527510352858,
+            "conditional_RX_fraction_of_total": 0.11123294897839232,
+            "covered_class_RX_cells": 30
+          },
+          "joint160": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 160,
+            "normalization": "unit_only",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 125.86785444314302,
+            "class_between_scatter": 106.99302872709691,
+            "class_within_scatter": 18.8748257160461,
+            "conditional_RX_between_scatter": 6.154667458304749,
+            "class_fraction_of_total": 0.8500425243637387,
+            "conditional_RX_fraction_of_class_residual": 0.3260781079992949,
+            "conditional_RX_fraction_of_total": 0.04889784993582244,
+            "covered_class_RX_cells": 30
+          },
+          "core160": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 160,
+            "normalization": "unit_only",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 81.44945476787092,
+            "class_between_scatter": 69.35552599085848,
+            "class_within_scatter": 12.093928777012433,
+            "conditional_RX_between_scatter": 4.850787383391615,
+            "class_fraction_of_total": 0.8515161481254865,
+            "conditional_RX_fraction_of_class_residual": 0.4010927691761971,
+            "conditional_RX_fraction_of_total": 0.05955579932629688,
+            "covered_class_RX_cells": 30
+          },
+          "signature160": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 160,
+            "normalization": "unit_only",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 678.5824745309503,
+            "class_between_scatter": 535.6841669628182,
+            "class_within_scatter": 142.8983075681322,
+            "conditional_RX_between_scatter": 41.32642410510699,
+            "class_fraction_of_total": 0.7894164483589025,
+            "conditional_RX_fraction_of_class_residual": 0.289201634423858,
+            "conditional_RX_fraction_of_total": 0.060901107317386335,
+            "covered_class_RX_cells": 30
+          },
+          "reference160": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 160,
+            "normalization": "unit_only",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 628.5729718442665,
+            "class_between_scatter": 108.83871151983162,
+            "class_within_scatter": 519.7342603244349,
+            "conditional_RX_between_scatter": 301.13808411597483,
+            "class_fraction_of_total": 0.17315207047559342,
+            "conditional_RX_fraction_of_class_residual": 0.5794077995320045,
+            "conditional_RX_fraction_of_total": 0.47908213939333044,
+            "covered_class_RX_cells": 30
+          }
+        },
+        "cohort_native_cric": {
+          "time_down": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 96,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 710.033864794369,
+            "class_between_scatter": 389.88896559799656,
+            "class_within_scatter": 320.1448991963726,
+            "conditional_RX_between_scatter": 108.29402224825421,
+            "class_fraction_of_total": 0.5491131971725197,
+            "conditional_RX_fraction_of_class_residual": 0.3382656494608965,
+            "conditional_RX_fraction_of_total": 0.15251951719178486,
+            "covered_class_RX_cells": 30
+          },
+          "t2.pool": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 192,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 715.1648469308852,
+            "class_between_scatter": 448.86102412500986,
+            "class_within_scatter": 266.30382280587537,
+            "conditional_RX_between_scatter": 87.44762917943044,
+            "class_fraction_of_total": 0.627632952110674,
+            "conditional_RX_fraction_of_class_residual": 0.32837541818983274,
+            "conditional_RX_fraction_of_total": 0.12227618507077086,
+            "covered_class_RX_cells": 30
+          },
+          "joint160": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 160,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 717.5106275518772,
+            "class_between_scatter": 584.0302195871127,
+            "class_within_scatter": 133.48040796476462,
+            "conditional_RX_between_scatter": 35.39057451144374,
+            "class_fraction_of_total": 0.8139673437030539,
+            "conditional_RX_fraction_of_class_residual": 0.2651368470553816,
+            "conditional_RX_fraction_of_total": 0.04932411193990983,
+            "covered_class_RX_cells": 30
+          },
+          "core160": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 160,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 699.8928155945366,
+            "class_between_scatter": 482.85683242119734,
+            "class_within_scatter": 217.0359831733393,
+            "conditional_RX_between_scatter": 87.95135299828033,
+            "class_fraction_of_total": 0.6899011129454528,
+            "conditional_RX_fraction_of_class_residual": 0.40523857708901917,
+            "conditional_RX_fraction_of_total": 0.1256640317468732,
+            "covered_class_RX_cells": 30
+          },
+          "signature160": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 160,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 719.299181678089,
+            "class_between_scatter": 548.7191688953801,
+            "class_within_scatter": 170.58001278270865,
+            "conditional_RX_between_scatter": 53.55348227789394,
+            "class_fraction_of_total": 0.7628524859645269,
+            "conditional_RX_fraction_of_class_residual": 0.3139493391064076,
+            "conditional_RX_fraction_of_total": 0.07445230530216418,
+            "covered_class_RX_cells": 30
+          },
+          "reference160": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 160,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 719.5148964174859,
+            "class_between_scatter": 130.795133549232,
+            "class_within_scatter": 588.7197628682538,
+            "conditional_RX_between_scatter": 209.45252207806035,
+            "class_fraction_of_total": 0.18178238449331618,
+            "conditional_RX_fraction_of_class_residual": 0.35577627130708794,
+            "conditional_RX_fraction_of_total": 0.2911024123627445,
+            "covered_class_RX_cells": 30
+          }
+        }
+      },
+      "branch_contributions": {
+        "core160": {
+          "mean_norm": 9.567357063293457,
+          "mean_norm_relative_to_joint": 0.994986891746521,
+          "selected_mean_norm_relative_to_joint": 0.994986891746521
+        },
+        "signature160": {
+          "mean_norm": 1.4796416759490967,
+          "mean_norm_relative_to_joint": 0.15482135117053986,
+          "selected_mean_norm_relative_to_joint": 0.15482135117053986
+        },
+        "reference160": {
+          "mean_norm": 1.236022710800171,
+          "mean_norm_relative_to_joint": 0.13235296308994293,
+          "selected_mean_norm_relative_to_joint": 0.13235296308994293
+        }
+      },
+      "interpretation": "Descriptive source geometry on the same fixed cohort and fixed reference acceptance/classes;unit-only and cohort-normalized summaries are not causal RX nuisance isolation or target gains. A zero-spread/collapsed branch is not evidence of useful invariance. U classes remain reference pseudo labels;no probe/projection fitted."
+    },
+    {
+      "profile": "JOINT_E30",
+      "model_seed": 2026092702,
+      "role": "U_s",
+      "source_epoch": 30,
+      "source_run_id": "20261024-phase1-PAMF-HardPL-Joint160-m3-r01",
+      "source_row_id": "HPL_E20_NAMS_JOINT6G-s2026092702",
+      "source_code_commit": "77498c5a8b003f3afc71fab7ee96ca39662593fa",
+      "samples": 960,
+      "common_reference_selected": 902,
+      "own_acceptance": 919,
+      "common_selected_prediction_agreement_or_V_correct": 902,
+      "mean_common_reference_label_CE": 0.004154067486524582,
+      "labels": "Fixed originalE20 raw pseudo TX;U truth hidden",
+      "geometry": {
+        "unit_only": {
+          "time_down": {
+            "samples_total": 960,
+            "samples_selected": 902,
+            "descriptor_dimension": 96,
+            "normalization": "unit_only",
+            "class_counts": [
+              150,
+              153,
+              168,
+              149,
+              129,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 13.999049870021903,
+            "class_between_scatter": 7.99082190012366,
+            "class_within_scatter": 6.008227969898243,
+            "conditional_RX_between_scatter": 2.833397871117601,
+            "class_fraction_of_total": 0.5708117318187078,
+            "conditional_RX_fraction_of_class_residual": 0.47158627890172883,
+            "conditional_RX_fraction_of_total": 0.2023992983398928,
+            "covered_class_RX_cells": 30
+          },
+          "t2.pool": {
+            "samples_total": 960,
+            "samples_selected": 902,
+            "descriptor_dimension": 192,
+            "normalization": "unit_only",
+            "class_counts": [
+              150,
+              153,
+              168,
+              149,
+              129,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 22.212820882925957,
+            "class_between_scatter": 15.517816064702735,
+            "class_within_scatter": 6.695004818223224,
+            "conditional_RX_between_scatter": 2.580779449182119,
+            "class_fraction_of_total": 0.6985972716608279,
+            "conditional_RX_fraction_of_class_residual": 0.38547835576719236,
+            "conditional_RX_fraction_of_total": 0.11618422814392987,
+            "covered_class_RX_cells": 30
+          },
+          "joint160": {
+            "samples_total": 960,
+            "samples_selected": 902,
+            "descriptor_dimension": 160,
+            "normalization": "unit_only",
+            "class_counts": [
+              150,
+              153,
+              168,
+              149,
+              129,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 98.24361313749456,
+            "class_between_scatter": 83.16527630735158,
+            "class_within_scatter": 15.078336830142991,
+            "conditional_RX_between_scatter": 5.655539626941435,
+            "class_fraction_of_total": 0.8465209457530797,
+            "conditional_RX_fraction_of_class_residual": 0.37507715145582154,
+            "conditional_RX_fraction_of_total": 0.05756648647506842,
+            "covered_class_RX_cells": 30
+          },
+          "core160": {
+            "samples_total": 960,
+            "samples_selected": 902,
+            "descriptor_dimension": 160,
+            "normalization": "unit_only",
+            "class_counts": [
+              150,
+              153,
+              168,
+              149,
+              129,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 41.213697851002834,
+            "class_between_scatter": 32.64242325758708,
+            "class_within_scatter": 8.571274593415762,
+            "conditional_RX_between_scatter": 4.585787039985744,
+            "class_fraction_of_total": 0.7920284992527747,
+            "conditional_RX_fraction_of_class_residual": 0.5350180991177708,
+            "conditional_RX_fraction_of_total": 0.11126851700045062,
+            "covered_class_RX_cells": 30
+          },
+          "signature160": {
+            "samples_total": 960,
+            "samples_selected": 902,
+            "descriptor_dimension": 160,
+            "normalization": "unit_only",
+            "class_counts": [
+              150,
+              153,
+              168,
+              149,
+              129,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 855.7513996759213,
+            "class_between_scatter": 727.9561751655802,
+            "class_within_scatter": 127.79522451034099,
+            "conditional_RX_between_scatter": 45.09453337268528,
+            "class_fraction_of_total": 0.8506631428721729,
+            "conditional_RX_fraction_of_class_residual": 0.3528655592998023,
+            "conditional_RX_fraction_of_total": 0.05269583361448532,
+            "covered_class_RX_cells": 30
+          },
+          "reference160": {
+            "samples_total": 960,
+            "samples_selected": 902,
+            "descriptor_dimension": 160,
+            "normalization": "unit_only",
+            "class_counts": [
+              150,
+              153,
+              168,
+              149,
+              129,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 838.1321004015283,
+            "class_between_scatter": 180.33515955028474,
+            "class_within_scatter": 657.7969408512436,
+            "conditional_RX_between_scatter": 410.99987530896317,
+            "class_fraction_of_total": 0.21516316993930987,
+            "conditional_RX_fraction_of_class_residual": 0.6248126888171529,
+            "conditional_RX_fraction_of_total": 0.4903760100729507,
+            "covered_class_RX_cells": 30
+          }
+        },
+        "cohort_native_cric": {
+          "time_down": {
+            "samples_total": 960,
+            "samples_selected": 902,
+            "descriptor_dimension": 96,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              150,
+              153,
+              168,
+              149,
+              129,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 891.937094373802,
+            "class_between_scatter": 472.40230912173166,
+            "class_within_scatter": 419.53478525207026,
+            "conditional_RX_between_scatter": 173.48154083943922,
+            "class_fraction_of_total": 0.5296363522736869,
+            "conditional_RX_fraction_of_class_residual": 0.4135093130244392,
+            "conditional_RX_fraction_of_total": 0.19449974884297708,
+            "covered_class_RX_cells": 30
+          },
+          "t2.pool": {
+            "samples_total": 960,
+            "samples_selected": 902,
+            "descriptor_dimension": 192,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              150,
+              153,
+              168,
+              149,
+              129,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 894.0112987916565,
+            "class_between_scatter": 569.5483041560586,
+            "class_within_scatter": 324.4629946355977,
+            "conditional_RX_between_scatter": 120.22428583054077,
+            "class_fraction_of_total": 0.637070588398445,
+            "conditional_RX_fraction_of_class_residual": 0.37053312031951097,
+            "conditional_RX_fraction_of_total": 0.13447736733644822,
+            "covered_class_RX_cells": 30
+          },
+          "joint160": {
+            "samples_total": 960,
+            "samples_selected": 902,
+            "descriptor_dimension": 160,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              150,
+              153,
+              168,
+              149,
+              129,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 899.9060422515854,
+            "class_between_scatter": 763.3849869139037,
+            "class_within_scatter": 136.52105533768173,
+            "conditional_RX_between_scatter": 51.333378780633765,
+            "class_fraction_of_total": 0.8482941007973422,
+            "conditional_RX_fraction_of_class_residual": 0.37601070877793774,
+            "conditional_RX_fraction_of_total": 0.05704304268498574,
+            "covered_class_RX_cells": 30
+          },
+          "core160": {
+            "samples_total": 960,
+            "samples_selected": 902,
+            "descriptor_dimension": 160,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              150,
+              153,
+              168,
+              149,
+              129,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 884.2426576540511,
+            "class_between_scatter": 619.9604327470341,
+            "class_within_scatter": 264.28222490701694,
+            "conditional_RX_between_scatter": 124.57649322418659,
+            "class_fraction_of_total": 0.7011202494933081,
+            "conditional_RX_fraction_of_class_residual": 0.4713767385151107,
+            "conditional_RX_fraction_of_total": 0.14088496200205441,
+            "covered_class_RX_cells": 30
+          },
+          "signature160": {
+            "samples_total": 960,
+            "samples_selected": 902,
+            "descriptor_dimension": 160,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              150,
+              153,
+              168,
+              149,
+              129,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 900.4180946327867,
+            "class_between_scatter": 731.9178531094864,
+            "class_within_scatter": 168.5002415233004,
+            "conditional_RX_between_scatter": 67.2044974528677,
+            "class_fraction_of_total": 0.8128644431651287,
+            "conditional_RX_fraction_of_class_residual": 0.39883917580957645,
+            "conditional_RX_fraction_of_total": 0.07463699125268622,
+            "covered_class_RX_cells": 30
+          },
+          "reference160": {
+            "samples_total": 960,
+            "samples_selected": 902,
+            "descriptor_dimension": 160,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              150,
+              153,
+              168,
+              149,
+              129,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 901.1172356125378,
+            "class_between_scatter": 188.82251069059166,
+            "class_within_scatter": 712.2947249219461,
+            "conditional_RX_between_scatter": 240.50272251418326,
+            "class_fraction_of_total": 0.2095426690648513,
+            "conditional_RX_fraction_of_class_residual": 0.3376449580481419,
+            "conditional_RX_fraction_of_total": 0.26689393234244446,
+            "covered_class_RX_cells": 30
+          }
+        }
+      },
+      "branch_contributions": {
+        "core160": {
+          "mean_norm": 9.168096542358398,
+          "mean_norm_relative_to_joint": 0.9986501336097717,
+          "selected_mean_norm_relative_to_joint": 0.9969106912612915
+        },
+        "signature160": {
+          "mean_norm": 1.482466220855713,
+          "mean_norm_relative_to_joint": 0.16214124858379364,
+          "selected_mean_norm_relative_to_joint": 0.16191814839839935
+        },
+        "reference160": {
+          "mean_norm": 1.2686588764190674,
+          "mean_norm_relative_to_joint": 0.14171133935451508,
+          "selected_mean_norm_relative_to_joint": 0.1407948136329651
+        }
+      },
+      "interpretation": "Descriptive source geometry on the same fixed cohort and fixed reference acceptance/classes;unit-only and cohort-normalized summaries are not causal RX nuisance isolation or target gains. A zero-spread/collapsed branch is not evidence of useful invariance. U classes remain reference pseudo labels;no probe/projection fitted."
+    },
+    {
+      "profile": "JOINT_E30",
+      "model_seed": 2026092702,
+      "role": "V",
+      "source_epoch": 30,
+      "source_run_id": "20261024-phase1-PAMF-HardPL-Joint160-m3-r01",
+      "source_row_id": "HPL_E20_NAMS_JOINT6G-s2026092702",
+      "source_code_commit": "77498c5a8b003f3afc71fab7ee96ca39662593fa",
+      "samples": 720,
+      "common_reference_selected": 720,
+      "own_acceptance": 671,
+      "common_selected_prediction_agreement_or_V_correct": 699,
+      "mean_common_reference_label_CE": 0.09768352657556534,
+      "labels": "Fixed sourceV true TX,diagnostic only,all720",
+      "geometry": {
+        "unit_only": {
+          "time_down": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 96,
+            "normalization": "unit_only",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 11.994407540280035,
+            "class_between_scatter": 6.276656001109567,
+            "class_within_scatter": 5.71775153917047,
+            "conditional_RX_between_scatter": 2.2075039050247303,
+            "class_fraction_of_total": 0.5232985439281668,
+            "conditional_RX_fraction_of_class_residual": 0.3860790189818207,
+            "conditional_RX_fraction_of_total": 0.18404443050741892,
+            "covered_class_RX_cells": 30
+          },
+          "t2.pool": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 192,
+            "normalization": "unit_only",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 18.157567382555914,
+            "class_between_scatter": 11.8897791365037,
+            "class_within_scatter": 6.2677882460522145,
+            "conditional_RX_between_scatter": 2.123628894924569,
+            "class_fraction_of_total": 0.6548112357785484,
+            "conditional_RX_fraction_of_class_residual": 0.33881631152139563,
+            "conditional_RX_fraction_of_total": 0.11695558387214096,
+            "covered_class_RX_cells": 30
+          },
+          "joint160": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 160,
+            "normalization": "unit_only",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 76.2311469579491,
+            "class_between_scatter": 60.741474795799604,
+            "class_within_scatter": 15.489672162149478,
+            "conditional_RX_between_scatter": 5.021043366761399,
+            "class_fraction_of_total": 0.7968065183291292,
+            "conditional_RX_fraction_of_class_residual": 0.3241542696449578,
+            "conditional_RX_fraction_of_total": 0.06586603464763721,
+            "covered_class_RX_cells": 30
+          },
+          "core160": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 160,
+            "normalization": "unit_only",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 32.49088174042067,
+            "class_between_scatter": 23.86727215491817,
+            "class_within_scatter": 8.623609585502502,
+            "conditional_RX_between_scatter": 4.019930340417157,
+            "class_fraction_of_total": 0.7345837009164884,
+            "conditional_RX_fraction_of_class_residual": 0.4661540275634955,
+            "conditional_RX_fraction_of_total": 0.12372487679877628,
+            "covered_class_RX_cells": 30
+          },
+          "signature160": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 160,
+            "normalization": "unit_only",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 684.6660552206713,
+            "class_between_scatter": 538.7051215287138,
+            "class_within_scatter": 145.96093369195736,
+            "conditional_RX_between_scatter": 40.48749823137939,
+            "class_fraction_of_total": 0.7868144147369573,
+            "conditional_RX_fraction_of_class_residual": 0.27738585392188614,
+            "conditional_RX_fraction_of_total": 0.05913466561202609,
+            "covered_class_RX_cells": 30
+          },
+          "reference160": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 160,
+            "normalization": "unit_only",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 674.7060783073807,
+            "class_between_scatter": 124.07868854332344,
+            "class_within_scatter": 550.6273897640574,
+            "conditional_RX_between_scatter": 330.0390905547292,
+            "class_fraction_of_total": 0.18390035681106762,
+            "conditional_RX_fraction_of_class_residual": 0.599387347396849,
+            "conditional_RX_fraction_of_total": 0.4891598003425292,
+            "covered_class_RX_cells": 30
+          }
+        },
+        "cohort_native_cric": {
+          "time_down": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 96,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 712.1157879793393,
+            "class_between_scatter": 358.7758767253496,
+            "class_within_scatter": 353.3399112539897,
+            "conditional_RX_between_scatter": 132.49376669363707,
+            "class_fraction_of_total": 0.5038167707858189,
+            "conditional_RX_fraction_of_class_residual": 0.37497537774156847,
+            "conditional_RX_fraction_of_total": 0.1860564938036188,
+            "covered_class_RX_cells": 30
+          },
+          "t2.pool": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 192,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 714.4417224337926,
+            "class_between_scatter": 426.7099796325939,
+            "class_within_scatter": 287.7317428011987,
+            "conditional_RX_between_scatter": 95.85120670338883,
+            "class_fraction_of_total": 0.597263522319187,
+            "conditional_RX_fraction_of_class_residual": 0.3331269806043433,
+            "conditional_RX_fraction_of_total": 0.13416238678903775,
+            "covered_class_RX_cells": 30
+          },
+          "joint160": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 160,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 718.6490905004944,
+            "class_between_scatter": 567.0119107402749,
+            "class_within_scatter": 151.6371797602195,
+            "conditional_RX_between_scatter": 45.198808626017566,
+            "class_fraction_of_total": 0.7889969085543354,
+            "conditional_RX_fraction_of_class_residual": 0.2980720737321113,
+            "conditional_RX_fraction_of_total": 0.06289412903109556,
+            "covered_class_RX_cells": 30
+          },
+          "core160": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 160,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 707.6392392601574,
+            "class_between_scatter": 457.64090035708307,
+            "class_within_scatter": 249.99833890307448,
+            "conditional_RX_between_scatter": 106.51787864350513,
+            "class_fraction_of_total": 0.6467149854996034,
+            "conditional_RX_fraction_of_class_residual": 0.42607434557716245,
+            "conditional_RX_fraction_of_total": 0.15052568135547492,
+            "covered_class_RX_cells": 30
+          },
+          "signature160": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 160,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 719.0795951844243,
+            "class_between_scatter": 540.0256314512827,
+            "class_within_scatter": 179.05396373314136,
+            "conditional_RX_between_scatter": 56.91539921022651,
+            "class_fraction_of_total": 0.7509956270039632,
+            "conditional_RX_fraction_of_class_residual": 0.3178672955548314,
+            "conditional_RX_fraction_of_total": 0.07915034662557663,
+            "covered_class_RX_cells": 30
+          },
+          "reference160": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 160,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 719.4049353673408,
+            "class_between_scatter": 134.77442796192057,
+            "class_within_scatter": 584.6305074054203,
+            "conditional_RX_between_scatter": 195.61479864321177,
+            "class_fraction_of_total": 0.18734153928635805,
+            "conditional_RX_fraction_of_class_residual": 0.33459560554126183,
+            "conditional_RX_fraction_of_total": 0.27191194976071076,
+            "covered_class_RX_cells": 30
+          }
+        }
+      },
+      "branch_contributions": {
+        "core160": {
+          "mean_norm": 9.177865982055664,
+          "mean_norm_relative_to_joint": 0.9938433170318604,
+          "selected_mean_norm_relative_to_joint": 0.9938433170318604
+        },
+        "signature160": {
+          "mean_norm": 1.4774293899536133,
+          "mean_norm_relative_to_joint": 0.16063633561134338,
+          "selected_mean_norm_relative_to_joint": 0.16063633561134338
+        },
+        "reference160": {
+          "mean_norm": 1.263702392578125,
+          "mean_norm_relative_to_joint": 0.14045372605323792,
+          "selected_mean_norm_relative_to_joint": 0.14045372605323792
+        }
+      },
+      "interpretation": "Descriptive source geometry on the same fixed cohort and fixed reference acceptance/classes;unit-only and cohort-normalized summaries are not causal RX nuisance isolation or target gains. A zero-spread/collapsed branch is not evidence of useful invariance. U classes remain reference pseudo labels;no probe/projection fitted."
+    },
+    {
+      "profile": "JOINT_E30",
+      "model_seed": 2026092703,
+      "role": "U_s",
+      "source_epoch": 30,
+      "source_run_id": "20261024-phase1-PAMF-HardPL-Joint160-m3-r01",
+      "source_row_id": "HPL_E20_NAMS_JOINT6G-s2026092703",
+      "source_code_commit": "77498c5a8b003f3afc71fab7ee96ca39662593fa",
+      "samples": 960,
+      "common_reference_selected": 903,
+      "own_acceptance": 918,
+      "common_selected_prediction_agreement_or_V_correct": 903,
+      "mean_common_reference_label_CE": 0.004049806389957666,
+      "labels": "Fixed originalE20 raw pseudo TX;U truth hidden",
+      "geometry": {
+        "unit_only": {
+          "time_down": {
+            "samples_total": 960,
+            "samples_selected": 903,
+            "descriptor_dimension": 96,
+            "normalization": "unit_only",
+            "class_counts": [
+              149,
+              147,
+              166,
+              158,
+              130,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 10.947583888723344,
+            "class_between_scatter": 6.5288164154971176,
+            "class_within_scatter": 4.418767473226227,
+            "conditional_RX_between_scatter": 1.9028285756088117,
+            "class_fraction_of_total": 0.5963705308732261,
+            "conditional_RX_fraction_of_class_residual": 0.4306242831600098,
+            "conditional_RX_fraction_of_total": 0.17381265080497235,
+            "covered_class_RX_cells": 30
+          },
+          "t2.pool": {
+            "samples_total": 960,
+            "samples_selected": 903,
+            "descriptor_dimension": 192,
+            "normalization": "unit_only",
+            "class_counts": [
+              149,
+              147,
+              166,
+              158,
+              130,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 30.12271488340452,
+            "class_between_scatter": 21.445592100544168,
+            "class_within_scatter": 8.677122782860355,
+            "conditional_RX_between_scatter": 3.4148911404698716,
+            "class_fraction_of_total": 0.7119408786211089,
+            "conditional_RX_fraction_of_class_residual": 0.39355109129205795,
+            "conditional_RX_fraction_of_total": 0.11336598157529401,
+            "covered_class_RX_cells": 30
+          },
+          "joint160": {
+            "samples_total": 960,
+            "samples_selected": 903,
+            "descriptor_dimension": 160,
+            "normalization": "unit_only",
+            "class_counts": [
+              149,
+              147,
+              166,
+              158,
+              130,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 86.8507125880088,
+            "class_between_scatter": 70.91654098361006,
+            "class_within_scatter": 15.934171604398742,
+            "conditional_RX_between_scatter": 7.097495447765796,
+            "class_fraction_of_total": 0.8165337838966825,
+            "conditional_RX_fraction_of_class_residual": 0.4454260707099754,
+            "conditional_RX_fraction_of_total": 0.08172063574692794,
+            "covered_class_RX_cells": 30
+          },
+          "core160": {
+            "samples_total": 960,
+            "samples_selected": 903,
+            "descriptor_dimension": 160,
+            "normalization": "unit_only",
+            "class_counts": [
+              149,
+              147,
+              166,
+              158,
+              130,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 30.605462285194722,
+            "class_between_scatter": 24.315318900187265,
+            "class_within_scatter": 6.290143385007454,
+            "conditional_RX_between_scatter": 2.963824376097027,
+            "class_fraction_of_total": 0.7944764458581536,
+            "conditional_RX_fraction_of_class_residual": 0.4711855032051094,
+            "conditional_RX_fraction_of_total": 0.09683971927882841,
+            "covered_class_RX_cells": 30
+          },
+          "signature160": {
+            "samples_total": 960,
+            "samples_selected": 903,
+            "descriptor_dimension": 160,
+            "normalization": "unit_only",
+            "class_counts": [
+              149,
+              147,
+              166,
+              158,
+              130,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 835.5931827565207,
+            "class_between_scatter": 717.9503869426528,
+            "class_within_scatter": 117.64279581386796,
+            "conditional_RX_between_scatter": 41.92655283472628,
+            "class_fraction_of_total": 0.8592104408681525,
+            "conditional_RX_fraction_of_class_residual": 0.3563886130440288,
+            "conditional_RX_fraction_of_total": 0.05017579571007947,
+            "covered_class_RX_cells": 30
+          },
+          "reference160": {
+            "samples_total": 960,
+            "samples_selected": 903,
+            "descriptor_dimension": 160,
+            "normalization": "unit_only",
+            "class_counts": [
+              149,
+              147,
+              166,
+              158,
+              130,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 820.0922056163834,
+            "class_between_scatter": 150.7497275611274,
+            "class_within_scatter": 669.342478055256,
+            "conditional_RX_between_scatter": 412.4679670948359,
+            "class_fraction_of_total": 0.1838204613197409,
+            "conditional_RX_fraction_of_class_residual": 0.6162285834498995,
+            "conditional_RX_fraction_of_total": 0.5029531609617286,
+            "covered_class_RX_cells": 30
+          }
+        },
+        "cohort_native_cric": {
+          "time_down": {
+            "samples_total": 960,
+            "samples_selected": 903,
+            "descriptor_dimension": 96,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              149,
+              147,
+              166,
+              158,
+              130,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 894.1442352347135,
+            "class_between_scatter": 486.467687003287,
+            "class_within_scatter": 407.6765482314265,
+            "conditional_RX_between_scatter": 161.43772926160284,
+            "class_fraction_of_total": 0.5440595239934515,
+            "conditional_RX_fraction_of_class_residual": 0.395994643209055,
+            "conditional_RX_fraction_of_total": 0.18054998612077985,
+            "covered_class_RX_cells": 30
+          },
+          "t2.pool": {
+            "samples_total": 960,
+            "samples_selected": 903,
+            "descriptor_dimension": 192,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              149,
+              147,
+              166,
+              158,
+              130,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 898.7121791704992,
+            "class_between_scatter": 596.7778065092651,
+            "class_within_scatter": 301.934372661234,
+            "conditional_RX_between_scatter": 108.59090242426538,
+            "class_fraction_of_total": 0.664036629680577,
+            "conditional_RX_fraction_of_class_residual": 0.359650679937997,
+            "conditional_RX_fraction_of_total": 0.12082945456964153,
+            "covered_class_RX_cells": 30
+          },
+          "joint160": {
+            "samples_total": 960,
+            "samples_selected": 903,
+            "descriptor_dimension": 160,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              149,
+              147,
+              166,
+              158,
+              130,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 901.9624151829547,
+            "class_between_scatter": 771.5050375011565,
+            "class_within_scatter": 130.45737768179816,
+            "conditional_RX_between_scatter": 46.35742636526055,
+            "class_fraction_of_total": 0.8553627340942626,
+            "conditional_RX_fraction_of_class_residual": 0.3553453793800156,
+            "conditional_RX_fraction_of_total": 0.05139618412576247,
+            "covered_class_RX_cells": 30
+          },
+          "core160": {
+            "samples_total": 960,
+            "samples_selected": 903,
+            "descriptor_dimension": 160,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              149,
+              147,
+              166,
+              158,
+              130,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 890.7076189623795,
+            "class_between_scatter": 600.670513470291,
+            "class_within_scatter": 290.03710549208853,
+            "conditional_RX_between_scatter": 129.51801872775238,
+            "class_fraction_of_total": 0.6743745093031043,
+            "conditional_RX_fraction_of_class_residual": 0.4465567207616658,
+            "conditional_RX_fraction_of_total": 0.1454102513220141,
+            "covered_class_RX_cells": 30
+          },
+          "signature160": {
+            "samples_total": 960,
+            "samples_selected": 903,
+            "descriptor_dimension": 160,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              149,
+              147,
+              166,
+              158,
+              130,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 901.8442533174925,
+            "class_between_scatter": 746.5160397674722,
+            "class_within_scatter": 155.3282135500205,
+            "conditional_RX_between_scatter": 59.49158977886084,
+            "class_fraction_of_total": 0.8277660327948696,
+            "conditional_RX_fraction_of_class_residual": 0.3830056911051945,
+            "conditional_RX_fraction_of_total": 0.06596658964119045,
+            "covered_class_RX_cells": 30
+          },
+          "reference160": {
+            "samples_total": 960,
+            "samples_selected": 903,
+            "descriptor_dimension": 160,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              149,
+              147,
+              166,
+              158,
+              130,
+              153
+            ],
+            "status": "OK",
+            "total_scatter": 902.1823753386457,
+            "class_between_scatter": 185.68588511253088,
+            "class_within_scatter": 716.4964902261147,
+            "conditional_RX_between_scatter": 245.68624959807937,
+            "class_fraction_of_total": 0.2058185686046364,
+            "conditional_RX_fraction_of_class_residual": 0.34289944605387357,
+            "conditional_RX_fraction_of_total": 0.27232437289174255,
+            "covered_class_RX_cells": 30
+          }
+        }
+      },
+      "branch_contributions": {
+        "core160": {
+          "mean_norm": 8.987313270568848,
+          "mean_norm_relative_to_joint": 0.9956023693084717,
+          "selected_mean_norm_relative_to_joint": 0.9944395422935486
+        },
+        "signature160": {
+          "mean_norm": 1.4556936025619507,
+          "mean_norm_relative_to_joint": 0.16176925599575043,
+          "selected_mean_norm_relative_to_joint": 0.16171279549598694
+        },
+        "reference160": {
+          "mean_norm": 1.2678277492523193,
+          "mean_norm_relative_to_joint": 0.14477084577083588,
+          "selected_mean_norm_relative_to_joint": 0.1445891261100769
+        }
+      },
+      "interpretation": "Descriptive source geometry on the same fixed cohort and fixed reference acceptance/classes;unit-only and cohort-normalized summaries are not causal RX nuisance isolation or target gains. A zero-spread/collapsed branch is not evidence of useful invariance. U classes remain reference pseudo labels;no probe/projection fitted."
+    },
+    {
+      "profile": "JOINT_E30",
+      "model_seed": 2026092703,
+      "role": "V",
+      "source_epoch": 30,
+      "source_run_id": "20261024-phase1-PAMF-HardPL-Joint160-m3-r01",
+      "source_row_id": "HPL_E20_NAMS_JOINT6G-s2026092703",
+      "source_code_commit": "77498c5a8b003f3afc71fab7ee96ca39662593fa",
+      "samples": 720,
+      "common_reference_selected": 720,
+      "own_acceptance": 670,
+      "common_selected_prediction_agreement_or_V_correct": 699,
+      "mean_common_reference_label_CE": 0.08957493305206299,
+      "labels": "Fixed sourceV true TX,diagnostic only,all720",
+      "geometry": {
+        "unit_only": {
+          "time_down": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 96,
+            "normalization": "unit_only",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 9.37588477219893,
+            "class_between_scatter": 5.111472455894286,
+            "class_within_scatter": 4.264412316304644,
+            "conditional_RX_between_scatter": 1.466208912517537,
+            "class_fraction_of_total": 0.5451722776127389,
+            "conditional_RX_fraction_of_class_residual": 0.34382437807704547,
+            "conditional_RX_fraction_of_total": 0.15638085878199914,
+            "covered_class_RX_cells": 30
+          },
+          "t2.pool": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 192,
+            "normalization": "unit_only",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 24.71697790456183,
+            "class_between_scatter": 16.676307440431966,
+            "class_within_scatter": 8.040670464129866,
+            "conditional_RX_between_scatter": 2.7443405595344488,
+            "class_fraction_of_total": 0.6746903891253689,
+            "conditional_RX_fraction_of_class_residual": 0.3413074285007938,
+            "conditional_RX_fraction_of_total": 0.11103058675421425,
+            "covered_class_RX_cells": 30
+          },
+          "joint160": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 160,
+            "normalization": "unit_only",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 68.0024261284663,
+            "class_between_scatter": 52.03935413329274,
+            "class_within_scatter": 15.963071995173559,
+            "conditional_RX_between_scatter": 5.711960437063791,
+            "class_fraction_of_total": 0.7652573164813703,
+            "conditional_RX_fraction_of_class_residual": 0.35782338379422235,
+            "conditional_RX_fraction_of_total": 0.0839964213375723,
+            "covered_class_RX_cells": 30
+          },
+          "core160": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 160,
+            "normalization": "unit_only",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 24.46161463473907,
+            "class_between_scatter": 17.95040059973028,
+            "class_within_scatter": 6.511214035008791,
+            "conditional_RX_between_scatter": 2.4929085290008666,
+            "class_fraction_of_total": 0.7338191230532299,
+            "conditional_RX_fraction_of_class_residual": 0.38286385850584326,
+            "conditional_RX_fraction_of_total": 0.10191103760830945,
+            "covered_class_RX_cells": 30
+          },
+          "signature160": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 160,
+            "normalization": "unit_only",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 663.770547092769,
+            "class_between_scatter": 528.694400722734,
+            "class_within_scatter": 135.07614637003485,
+            "conditional_RX_between_scatter": 34.447498265784354,
+            "class_fraction_of_total": 0.7965017475366278,
+            "conditional_RX_fraction_of_class_residual": 0.255022808923028,
+            "conditional_RX_fraction_of_total": 0.05189669595413662,
+            "covered_class_RX_cells": 30
+          },
+          "reference160": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 160,
+            "normalization": "unit_only",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 660.8660225757844,
+            "class_between_scatter": 105.05814727820876,
+            "class_within_scatter": 555.8078752975756,
+            "conditional_RX_between_scatter": 325.7019911619711,
+            "class_fraction_of_total": 0.15897041713346866,
+            "conditional_RX_fraction_of_class_residual": 0.5859974383910853,
+            "conditional_RX_fraction_of_total": 0.4928411811709103,
+            "covered_class_RX_cells": 30
+          }
+        },
+        "cohort_native_cric": {
+          "time_down": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 96,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 713.2090084185086,
+            "class_between_scatter": 374.94595613046346,
+            "class_within_scatter": 338.26305228804495,
+            "conditional_RX_between_scatter": 119.42112842843648,
+            "class_fraction_of_total": 0.5257167978877328,
+            "conditional_RX_fraction_of_class_residual": 0.3530421889729312,
+            "conditional_RX_fraction_of_total": 0.16744197986680584,
+            "covered_class_RX_cells": 30
+          },
+          "t2.pool": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 192,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 716.8008612242897,
+            "class_between_scatter": 450.54182138081404,
+            "class_within_scatter": 266.25903984347576,
+            "conditional_RX_between_scatter": 84.23950537682109,
+            "class_fraction_of_total": 0.628545312586947,
+            "conditional_RX_fraction_of_class_residual": 0.3163817665170824,
+            "conditional_RX_fraction_of_total": 0.11752149018479237,
+            "covered_class_RX_cells": 30
+          },
+          "joint160": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 160,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 719.3882845046144,
+            "class_between_scatter": 571.7458689509483,
+            "class_within_scatter": 147.6424155536662,
+            "conditional_RX_between_scatter": 40.24028569760141,
+            "class_fraction_of_total": 0.7947667223197336,
+            "conditional_RX_fraction_of_class_residual": 0.27255233901923365,
+            "conditional_RX_fraction_of_total": 0.05593680987634056,
+            "covered_class_RX_cells": 30
+          },
+          "core160": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 160,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 711.3449076367326,
+            "class_between_scatter": 443.49214725168434,
+            "class_within_scatter": 267.85276038504827,
+            "conditional_RX_between_scatter": 105.85725256975002,
+            "class_fraction_of_total": 0.6234558545236195,
+            "conditional_RX_fraction_of_class_residual": 0.39520687566398904,
+            "conditional_RX_fraction_of_total": 0.1488128352832869,
+            "covered_class_RX_cells": 30
+          },
+          "signature160": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 160,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 719.109075508459,
+            "class_between_scatter": 551.6450894533766,
+            "class_within_scatter": 167.46398605508244,
+            "conditional_RX_between_scatter": 47.04515400306992,
+            "class_fraction_of_total": 0.7671229695763832,
+            "conditional_RX_fraction_of_class_residual": 0.280926992789935,
+            "conditional_RX_fraction_of_total": 0.0654214438467569,
+            "covered_class_RX_cells": 30
+          },
+          "reference160": {
+            "samples_total": 720,
+            "samples_selected": 720,
+            "descriptor_dimension": 160,
+            "normalization": "cohort_native_cric",
+            "class_counts": [
+              120,
+              120,
+              120,
+              120,
+              120,
+              120
+            ],
+            "status": "OK",
+            "total_scatter": 719.4110768693815,
+            "class_between_scatter": 129.81697367974309,
+            "class_within_scatter": 589.5941031896384,
+            "conditional_RX_between_scatter": 200.26364144148485,
+            "class_fraction_of_total": 0.18044895033401473,
+            "conditional_RX_fraction_of_class_residual": 0.33966357593822744,
+            "conditional_RX_fraction_of_total": 0.2783716401934764,
+            "covered_class_RX_cells": 30
+          }
+        }
+      },
+      "branch_contributions": {
+        "core160": {
+          "mean_norm": 8.98427963256836,
+          "mean_norm_relative_to_joint": 0.9932112097740173,
+          "selected_mean_norm_relative_to_joint": 0.9932112097740173
+        },
+        "signature160": {
+          "mean_norm": 1.4513497352600098,
+          "mean_norm_relative_to_joint": 0.16097530722618103,
+          "selected_mean_norm_relative_to_joint": 0.16097530722618103
+        },
+        "reference160": {
+          "mean_norm": 1.2575323581695557,
+          "mean_norm_relative_to_joint": 0.1435588002204895,
+          "selected_mean_norm_relative_to_joint": 0.1435588002204895
+        }
+      },
+      "interpretation": "Descriptive source geometry on the same fixed cohort and fixed reference acceptance/classes;unit-only and cohort-normalized summaries are not causal RX nuisance isolation or target gains. A zero-spread/collapsed branch is not evidence of useful invariance. U classes remain reference pseudo labels;no probe/projection fitted."
+    }
+  ],
+  "seconds": 10.253899925854057,
+  "U_samples_per_seed": 960,
+  "V_samples_per_seed": 720,
+  "U_reference": "Same-seed originalF21E20 raw eval argmax/confidence.95,fixed for every comparator",
+  "GPU_workers": 0,
+  "model_updates": 0,
+  "normalization_updates": 0,
+  "EMA_updates": 0,
+  "prototype_updates": 0,
+  "head_fit_updates": 0,
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "live_jobs_changed": false,
+  "source_V_role_changed": false,
+  "interpretation": "Raw deployed eval features,without run-time style perturbation;fixed source cohort and U reference mask/classes across profiles.Two descriptive normalizations and actual additive branch norms;not fitted nuisance identification,U actual accuracy,statistical significance,target success or a selection rule."
+}

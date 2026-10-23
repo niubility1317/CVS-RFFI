@@ -299,12 +299,20 @@
     "target_matrix_complete": false
   },
   "frozen_source_geometry_trajectory": {
-    "status": "PHASE_A_SOURCE_COMPLETE_B_PENDING_C_REGISTERED",
+    "status": "VERIFIED_ALL_REGISTERED_SOURCE_DIAGNOSTICS",
     "plan": "source_geometry_trajectory_plan.json",
     "primary_training_or_evaluation_changed": false,
     "source_V_updates": 0,
     "new_GPU_workers": 0,
     "phase_A_result": "source_geometry_trajectory_A.md",
-    "phase_C_registered": true
+    "phase_C_registered": true,
+    "phase_B_result": "source_geometry_trajectory_B_C.md",
+    "phase_C_complete": true,
+    "target_reads": 0
+  },
+  "source_supported_followup_design": {
+    "reference": "complementary_U_followup_design.json",
+    "status": "FIXED_SOURCE_SUPPORTED_DESIGN_NOT_IMPLEMENTED_OR_LAUNCHED",
+    "not_launched": true
   }
 }

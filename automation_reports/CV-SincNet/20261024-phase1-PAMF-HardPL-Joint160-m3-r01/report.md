@@ -37,3 +37,8 @@ VERIFIED：发布commit `77498c5a8b003f3afc71fab7ee96ca39662593fa` 的真实原E
 ## 固定源轨迹 A 阶段完成及冻结头干预
 
 A阶段24角色行完成，只读CPU24.025秒，完整源统计见source_geometry_trajectory_A.md/json。U共用原E20接受/伪类、V720全保留，浅中层TX分离提高而joint没有同步改善；参考响应强RX关联可能同时起补偿作用，不能由此删除。预定C阶段仅原E20与GuardNAMS E30各三seed、12角色行，冻结同一默认头，检查零分支及同伪类跨RX分支交换；不另拟合头、不新增骨干前向/训练/GPUworker、不读U真值/target、不作晋级或正式性能替代。八项相关源/冻结头检查通过。当前GPU训练及七景truth-last不变，B阶段固定Joint E30诊断在对应原生阶段冻结后继续。
+
+
+## 源轨迹 B／C 完成与后续互补监督设计
+
+B阶段Joint固定E30六角色行、C阶段12角色行冻结头检查均完成，详见source_geometry_trajectory_B_C.md/json。源Joint融合TX类间比例约0.771→0.804、条件RX/总散度约0.0859→0.0663，非target准确率；无签名的既有头视图产生约0.17至0.22的源伪标签CE，完整视图仅约0.003至0.004。保留签名部署，研究将ordinary U CE的0.25系数转给无签名视图、总CE剂量1.25不变，其他joint/浅中层/RDrop/style/guard保持；现阶段仅固定设计，未实现／审查／启动新模型。完整公式、三seed、E20+30预算、双七景及卡位安排见complementary_U_followup_design.json。当前GuardNAMS／Joint target分数未读取，原健康任务不变，goal ACTIVE。

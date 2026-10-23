@@ -1,0 +1,977 @@
+{
+  "status": "VERIFIED_SOURCE_B_C",
+  "source_geometry_comparison": [
+    {
+      "profile": "GUARD_NAMS_E30",
+      "role": "V",
+      "level": "core160",
+      "mean_TX_fraction_of_total": 0.7491504443806519,
+      "mean_RX_fraction_of_total": 0.1111747784855748
+    },
+    {
+      "profile": "GUARD_NAMS_E30",
+      "role": "V",
+      "level": "signature160",
+      "mean_TX_fraction_of_total": 0.7515789273210729,
+      "mean_RX_fraction_of_total": 0.07777434035604
+    },
+    {
+      "profile": "GUARD_NAMS_E30",
+      "role": "V",
+      "level": "reference160",
+      "mean_TX_fraction_of_total": 0.18070040831443815,
+      "mean_RX_fraction_of_total": 0.4436245050074734
+    },
+    {
+      "profile": "GUARD_NAMS_E30",
+      "role": "V",
+      "level": "joint160",
+      "mean_TX_fraction_of_total": 0.7713301862728931,
+      "mean_RX_fraction_of_total": 0.0859001277839267
+    },
+    {
+      "profile": "JOINT_E30",
+      "role": "V",
+      "level": "core160",
+      "mean_TX_fraction_of_total": 0.7733063240317349,
+      "mean_RX_fraction_of_total": 0.0950639045777942
+    },
+    {
+      "profile": "JOINT_E30",
+      "role": "V",
+      "level": "signature160",
+      "mean_TX_fraction_of_total": 0.7909108702108292,
+      "mean_RX_fraction_of_total": 0.05731082296118301
+    },
+    {
+      "profile": "JOINT_E30",
+      "role": "V",
+      "level": "reference160",
+      "mean_TX_fraction_of_total": 0.1720076148067099,
+      "mean_RX_fraction_of_total": 0.48702770696892334
+    },
+    {
+      "profile": "JOINT_E30",
+      "role": "V",
+      "level": "joint160",
+      "mean_TX_fraction_of_total": 0.8040354530580794,
+      "mean_RX_fraction_of_total": 0.06625343530701065
+    }
+  ],
+  "source_interventions": [
+    {
+      "profile": "F21_E20",
+      "model_seed": 2026092701,
+      "role": "U_s",
+      "source_pair_diagnostic": {
+        "eligible": 898,
+        "reference_accepted": 898,
+        "true_TX_pair_agreements": null,
+        "U_TX_truth_read": false,
+        "partner_chosen_without_V_truth": true
+      },
+      "fixed_head_interventions": {
+        "rows": [
+          {
+            "intervention": "joint",
+            "samples_selected": 898,
+            "label_agreements": 898,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.003869393141940236,
+            "mean_relative_feature_displacement": 0.0
+          },
+          {
+            "intervention": "without_reference",
+            "samples_selected": 898,
+            "label_agreements": 898,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.012597190216183662,
+            "mean_relative_feature_displacement": 0.17932702600955963
+          },
+          {
+            "intervention": "without_signature",
+            "samples_selected": 898,
+            "label_agreements": 862,
+            "label_agreement_percent": 95.99109131403118,
+            "mean_label_CE": 0.16873858869075775,
+            "mean_relative_feature_displacement": 0.13213986158370972
+          },
+          {
+            "intervention": "core_only",
+            "samples_selected": 898,
+            "label_agreements": 846,
+            "label_agreement_percent": 94.20935412026726,
+            "mean_label_CE": 0.2875818908214569,
+            "mean_relative_feature_displacement": 0.24066294729709625
+          },
+          {
+            "intervention": "reference_swap",
+            "samples_selected": 898,
+            "label_agreements": 898,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.005071443505585194,
+            "mean_relative_feature_displacement": 0.1516382247209549
+          },
+          {
+            "intervention": "signature_swap",
+            "samples_selected": 898,
+            "label_agreements": 898,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.004533551633358002,
+            "mean_relative_feature_displacement": 0.07982030510902405
+          },
+          {
+            "intervention": "late_swap",
+            "samples_selected": 898,
+            "label_agreements": 898,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.005340040195733309,
+            "mean_relative_feature_displacement": 0.1711682230234146
+          }
+        ],
+        "extra_backbone_forwards": 0,
+        "existing_head_forward_calls": 7,
+        "head_fit_updates": 0,
+        "interpretation": "Frozen existing-head source interventions only;partners chosen by reference pseudo labels and RX,never sourceV truth.No fitted or replacement head,no model update.These synthetic latent combinations do not prove physical realizability or target gains."
+      }
+    },
+    {
+      "profile": "F21_E20",
+      "model_seed": 2026092701,
+      "role": "V",
+      "source_pair_diagnostic": {
+        "eligible": 661,
+        "reference_accepted": 661,
+        "true_TX_pair_agreements": 661,
+        "U_TX_truth_read": false,
+        "partner_chosen_without_V_truth": true
+      },
+      "fixed_head_interventions": {
+        "rows": [
+          {
+            "intervention": "joint",
+            "samples_selected": 661,
+            "label_agreements": 661,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.0035313779953867197,
+            "mean_relative_feature_displacement": 0.0
+          },
+          {
+            "intervention": "without_reference",
+            "samples_selected": 661,
+            "label_agreements": 661,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.011528045870363712,
+            "mean_relative_feature_displacement": 0.1763940304517746
+          },
+          {
+            "intervention": "without_signature",
+            "samples_selected": 661,
+            "label_agreements": 636,
+            "label_agreement_percent": 96.2178517397882,
+            "mean_label_CE": 0.1522635966539383,
+            "mean_relative_feature_displacement": 0.13078813254833221
+          },
+          {
+            "intervention": "core_only",
+            "samples_selected": 661,
+            "label_agreements": 621,
+            "label_agreement_percent": 93.94856278366112,
+            "mean_label_CE": 0.2667009234428406,
+            "mean_relative_feature_displacement": 0.2377174347639084
+          },
+          {
+            "intervention": "reference_swap",
+            "samples_selected": 661,
+            "label_agreements": 661,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.004282935988157988,
+            "mean_relative_feature_displacement": 0.15536801517009735
+          },
+          {
+            "intervention": "signature_swap",
+            "samples_selected": 661,
+            "label_agreements": 661,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.005861256737262011,
+            "mean_relative_feature_displacement": 0.08109648525714874
+          },
+          {
+            "intervention": "late_swap",
+            "samples_selected": 661,
+            "label_agreements": 660,
+            "label_agreement_percent": 99.84871406959152,
+            "mean_label_CE": 0.006260619964450598,
+            "mean_relative_feature_displacement": 0.1752580851316452
+          }
+        ],
+        "extra_backbone_forwards": 0,
+        "existing_head_forward_calls": 7,
+        "head_fit_updates": 0,
+        "interpretation": "Frozen existing-head source interventions only;partners chosen by reference pseudo labels and RX,never sourceV truth.No fitted or replacement head,no model update.These synthetic latent combinations do not prove physical realizability or target gains."
+      }
+    },
+    {
+      "profile": "GUARD_NAMS_E30",
+      "model_seed": 2026092701,
+      "role": "U_s",
+      "source_pair_diagnostic": {
+        "eligible": 898,
+        "reference_accepted": 898,
+        "true_TX_pair_agreements": null,
+        "U_TX_truth_read": false,
+        "partner_chosen_without_V_truth": true
+      },
+      "fixed_head_interventions": {
+        "rows": [
+          {
+            "intervention": "joint",
+            "samples_selected": 898,
+            "label_agreements": 898,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.00431630527600646,
+            "mean_relative_feature_displacement": 0.0
+          },
+          {
+            "intervention": "without_reference",
+            "samples_selected": 898,
+            "label_agreements": 896,
+            "label_agreement_percent": 99.77728285077951,
+            "mean_label_CE": 0.013853083364665508,
+            "mean_relative_feature_displacement": 0.13281774520874023
+          },
+          {
+            "intervention": "without_signature",
+            "samples_selected": 898,
+            "label_agreements": 857,
+            "label_agreement_percent": 95.43429844097996,
+            "mean_label_CE": 0.2129226177930832,
+            "mean_relative_feature_displacement": 0.14413289725780487
+          },
+          {
+            "intervention": "core_only",
+            "samples_selected": 898,
+            "label_agreements": 818,
+            "label_agreement_percent": 91.0913140311804,
+            "mean_label_CE": 0.3730814456939697,
+            "mean_relative_feature_displacement": 0.2122061550617218
+          },
+          {
+            "intervention": "reference_swap",
+            "samples_selected": 898,
+            "label_agreements": 897,
+            "label_agreement_percent": 99.88864142538975,
+            "mean_label_CE": 0.006969877053052187,
+            "mean_relative_feature_displacement": 0.15977537631988525
+          },
+          {
+            "intervention": "signature_swap",
+            "samples_selected": 898,
+            "label_agreements": 898,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.006441191770136356,
+            "mean_relative_feature_displacement": 0.08570941537618637
+          },
+          {
+            "intervention": "late_swap",
+            "samples_selected": 898,
+            "label_agreements": 898,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.006793254055082798,
+            "mean_relative_feature_displacement": 0.18440668284893036
+          }
+        ],
+        "extra_backbone_forwards": 0,
+        "existing_head_forward_calls": 7,
+        "head_fit_updates": 0,
+        "interpretation": "Frozen existing-head source interventions only;partners chosen by reference pseudo labels and RX,never sourceV truth.No fitted or replacement head,no model update.These synthetic latent combinations do not prove physical realizability or target gains."
+      }
+    },
+    {
+      "profile": "GUARD_NAMS_E30",
+      "model_seed": 2026092701,
+      "role": "V",
+      "source_pair_diagnostic": {
+        "eligible": 661,
+        "reference_accepted": 661,
+        "true_TX_pair_agreements": 661,
+        "U_TX_truth_read": false,
+        "partner_chosen_without_V_truth": true
+      },
+      "fixed_head_interventions": {
+        "rows": [
+          {
+            "intervention": "joint",
+            "samples_selected": 661,
+            "label_agreements": 661,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.003689478849992156,
+            "mean_relative_feature_displacement": 0.0
+          },
+          {
+            "intervention": "without_reference",
+            "samples_selected": 661,
+            "label_agreements": 660,
+            "label_agreement_percent": 99.84871406959152,
+            "mean_label_CE": 0.011978148482739925,
+            "mean_relative_feature_displacement": 0.13061684370040894
+          },
+          {
+            "intervention": "without_signature",
+            "samples_selected": 661,
+            "label_agreements": 643,
+            "label_agreement_percent": 97.2768532526475,
+            "mean_label_CE": 0.1864306777715683,
+            "mean_relative_feature_displacement": 0.14184872806072235
+          },
+          {
+            "intervention": "core_only",
+            "samples_selected": 661,
+            "label_agreements": 605,
+            "label_agreement_percent": 91.52798789712556,
+            "mean_label_CE": 0.3379664123058319,
+            "mean_relative_feature_displacement": 0.2093302309513092
+          },
+          {
+            "intervention": "reference_swap",
+            "samples_selected": 661,
+            "label_agreements": 661,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.00557107524946332,
+            "mean_relative_feature_displacement": 0.1625053733587265
+          },
+          {
+            "intervention": "signature_swap",
+            "samples_selected": 661,
+            "label_agreements": 661,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.007184638176113367,
+            "mean_relative_feature_displacement": 0.08470290899276733
+          },
+          {
+            "intervention": "late_swap",
+            "samples_selected": 661,
+            "label_agreements": 661,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.007596560753881931,
+            "mean_relative_feature_displacement": 0.1858319640159607
+          }
+        ],
+        "extra_backbone_forwards": 0,
+        "existing_head_forward_calls": 7,
+        "head_fit_updates": 0,
+        "interpretation": "Frozen existing-head source interventions only;partners chosen by reference pseudo labels and RX,never sourceV truth.No fitted or replacement head,no model update.These synthetic latent combinations do not prove physical realizability or target gains."
+      }
+    },
+    {
+      "profile": "F21_E20",
+      "model_seed": 2026092702,
+      "role": "U_s",
+      "source_pair_diagnostic": {
+        "eligible": 902,
+        "reference_accepted": 902,
+        "true_TX_pair_agreements": null,
+        "U_TX_truth_read": false,
+        "partner_chosen_without_V_truth": true
+      },
+      "fixed_head_interventions": {
+        "rows": [
+          {
+            "intervention": "joint",
+            "samples_selected": 902,
+            "label_agreements": 902,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.0033745907712727785,
+            "mean_relative_feature_displacement": 0.0
+          },
+          {
+            "intervention": "without_reference",
+            "samples_selected": 902,
+            "label_agreements": 902,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.013312152586877346,
+            "mean_relative_feature_displacement": 0.2223687618970871
+          },
+          {
+            "intervention": "without_signature",
+            "samples_selected": 902,
+            "label_agreements": 864,
+            "label_agreement_percent": 95.78713968957871,
+            "mean_label_CE": 0.16934461891651154,
+            "mean_relative_feature_displacement": 0.14263878762722015
+          },
+          {
+            "intervention": "core_only",
+            "samples_selected": 902,
+            "label_agreements": 835,
+            "label_agreement_percent": 92.57206208425721,
+            "mean_label_CE": 0.2956392467021942,
+            "mean_relative_feature_displacement": 0.2823750078678131
+          },
+          {
+            "intervention": "reference_swap",
+            "samples_selected": 902,
+            "label_agreements": 902,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.005182650871574879,
+            "mean_relative_feature_displacement": 0.16613556444644928
+          },
+          {
+            "intervention": "signature_swap",
+            "samples_selected": 902,
+            "label_agreements": 902,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.005093410611152649,
+            "mean_relative_feature_displacement": 0.08763954788446426
+          },
+          {
+            "intervention": "late_swap",
+            "samples_selected": 902,
+            "label_agreements": 901,
+            "label_agreement_percent": 99.88913525498891,
+            "mean_label_CE": 0.007702046073973179,
+            "mean_relative_feature_displacement": 0.1894199401140213
+          }
+        ],
+        "extra_backbone_forwards": 0,
+        "existing_head_forward_calls": 7,
+        "head_fit_updates": 0,
+        "interpretation": "Frozen existing-head source interventions only;partners chosen by reference pseudo labels and RX,never sourceV truth.No fitted or replacement head,no model update.These synthetic latent combinations do not prove physical realizability or target gains."
+      }
+    },
+    {
+      "profile": "F21_E20",
+      "model_seed": 2026092702,
+      "role": "V",
+      "source_pair_diagnostic": {
+        "eligible": 665,
+        "reference_accepted": 665,
+        "true_TX_pair_agreements": 661,
+        "U_TX_truth_read": false,
+        "partner_chosen_without_V_truth": true
+      },
+      "fixed_head_interventions": {
+        "rows": [
+          {
+            "intervention": "joint",
+            "samples_selected": 665,
+            "label_agreements": 663,
+            "label_agreement_percent": 99.69924812030075,
+            "mean_label_CE": 0.020753707736730576,
+            "mean_relative_feature_displacement": 0.0
+          },
+          {
+            "intervention": "without_reference",
+            "samples_selected": 665,
+            "label_agreements": 663,
+            "label_agreement_percent": 99.69924812030075,
+            "mean_label_CE": 0.029075568541884422,
+            "mean_relative_feature_displacement": 0.21798646450042725
+          },
+          {
+            "intervention": "without_signature",
+            "samples_selected": 665,
+            "label_agreements": 637,
+            "label_agreement_percent": 95.78947368421052,
+            "mean_label_CE": 0.16438037157058716,
+            "mean_relative_feature_displacement": 0.14123494923114777
+          },
+          {
+            "intervention": "core_only",
+            "samples_selected": 665,
+            "label_agreements": 619,
+            "label_agreement_percent": 93.08270676691728,
+            "mean_label_CE": 0.2931325435638428,
+            "mean_relative_feature_displacement": 0.2771192491054535
+          },
+          {
+            "intervention": "reference_swap",
+            "samples_selected": 665,
+            "label_agreements": 663,
+            "label_agreement_percent": 99.69924812030075,
+            "mean_label_CE": 0.023984894156455994,
+            "mean_relative_feature_displacement": 0.16406910121440887
+          },
+          {
+            "intervention": "signature_swap",
+            "samples_selected": 665,
+            "label_agreements": 663,
+            "label_agreement_percent": 99.69924812030075,
+            "mean_label_CE": 0.026399916037917137,
+            "mean_relative_feature_displacement": 0.08634208887815475
+          },
+          {
+            "intervention": "late_swap",
+            "samples_selected": 665,
+            "label_agreements": 663,
+            "label_agreement_percent": 99.69924812030075,
+            "mean_label_CE": 0.02842666208744049,
+            "mean_relative_feature_displacement": 0.18777422606945038
+          }
+        ],
+        "extra_backbone_forwards": 0,
+        "existing_head_forward_calls": 7,
+        "head_fit_updates": 0,
+        "interpretation": "Frozen existing-head source interventions only;partners chosen by reference pseudo labels and RX,never sourceV truth.No fitted or replacement head,no model update.These synthetic latent combinations do not prove physical realizability or target gains."
+      }
+    },
+    {
+      "profile": "GUARD_NAMS_E30",
+      "model_seed": 2026092702,
+      "role": "U_s",
+      "source_pair_diagnostic": {
+        "eligible": 902,
+        "reference_accepted": 902,
+        "true_TX_pair_agreements": null,
+        "U_TX_truth_read": false,
+        "partner_chosen_without_V_truth": true
+      },
+      "fixed_head_interventions": {
+        "rows": [
+          {
+            "intervention": "joint",
+            "samples_selected": 902,
+            "label_agreements": 902,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.00370018626563251,
+            "mean_relative_feature_displacement": 0.0
+          },
+          {
+            "intervention": "without_reference",
+            "samples_selected": 902,
+            "label_agreements": 902,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.010997944511473179,
+            "mean_relative_feature_displacement": 0.14978961646556854
+          },
+          {
+            "intervention": "without_signature",
+            "samples_selected": 902,
+            "label_agreements": 864,
+            "label_agreement_percent": 95.78713968957871,
+            "mean_label_CE": 0.21806682646274567,
+            "mean_relative_feature_displacement": 0.15446887910366058
+          },
+          {
+            "intervention": "core_only",
+            "samples_selected": 902,
+            "label_agreements": 820,
+            "label_agreement_percent": 90.9090909090909,
+            "mean_label_CE": 0.3697015941143036,
+            "mean_relative_feature_displacement": 0.2279333621263504
+          },
+          {
+            "intervention": "reference_swap",
+            "samples_selected": 902,
+            "label_agreements": 902,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.006157057359814644,
+            "mean_relative_feature_displacement": 0.1887609213590622
+          },
+          {
+            "intervention": "signature_swap",
+            "samples_selected": 902,
+            "label_agreements": 902,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.006488699931651354,
+            "mean_relative_feature_displacement": 0.09177558869123459
+          },
+          {
+            "intervention": "late_swap",
+            "samples_selected": 902,
+            "label_agreements": 901,
+            "label_agreement_percent": 99.88913525498891,
+            "mean_label_CE": 0.009252163581550121,
+            "mean_relative_feature_displacement": 0.2054443359375
+          }
+        ],
+        "extra_backbone_forwards": 0,
+        "existing_head_forward_calls": 7,
+        "head_fit_updates": 0,
+        "interpretation": "Frozen existing-head source interventions only;partners chosen by reference pseudo labels and RX,never sourceV truth.No fitted or replacement head,no model update.These synthetic latent combinations do not prove physical realizability or target gains."
+      }
+    },
+    {
+      "profile": "GUARD_NAMS_E30",
+      "model_seed": 2026092702,
+      "role": "V",
+      "source_pair_diagnostic": {
+        "eligible": 665,
+        "reference_accepted": 665,
+        "true_TX_pair_agreements": 661,
+        "U_TX_truth_read": false,
+        "partner_chosen_without_V_truth": true
+      },
+      "fixed_head_interventions": {
+        "rows": [
+          {
+            "intervention": "joint",
+            "samples_selected": 665,
+            "label_agreements": 663,
+            "label_agreement_percent": 99.69924812030075,
+            "mean_label_CE": 0.023270584642887115,
+            "mean_relative_feature_displacement": 0.0
+          },
+          {
+            "intervention": "without_reference",
+            "samples_selected": 665,
+            "label_agreements": 661,
+            "label_agreement_percent": 99.3984962406015,
+            "mean_label_CE": 0.030328650027513504,
+            "mean_relative_feature_displacement": 0.14726154506206512
+          },
+          {
+            "intervention": "without_signature",
+            "samples_selected": 665,
+            "label_agreements": 638,
+            "label_agreement_percent": 95.93984962406014,
+            "mean_label_CE": 0.21447902917861938,
+            "mean_relative_feature_displacement": 0.15272681415081024
+          },
+          {
+            "intervention": "core_only",
+            "samples_selected": 665,
+            "label_agreements": 611,
+            "label_agreement_percent": 91.8796992481203,
+            "mean_label_CE": 0.3645459711551666,
+            "mean_relative_feature_displacement": 0.22471904754638672
+          },
+          {
+            "intervention": "reference_swap",
+            "samples_selected": 665,
+            "label_agreements": 663,
+            "label_agreement_percent": 99.69924812030075,
+            "mean_label_CE": 0.027062615379691124,
+            "mean_relative_feature_displacement": 0.18450835347175598
+          },
+          {
+            "intervention": "signature_swap",
+            "samples_selected": 665,
+            "label_agreements": 663,
+            "label_agreement_percent": 99.69924812030075,
+            "mean_label_CE": 0.0275106243789196,
+            "mean_relative_feature_displacement": 0.09054052829742432
+          },
+          {
+            "intervention": "late_swap",
+            "samples_selected": 665,
+            "label_agreements": 663,
+            "label_agreement_percent": 99.69924812030075,
+            "mean_label_CE": 0.029963815584778786,
+            "mean_relative_feature_displacement": 0.20314867794513702
+          }
+        ],
+        "extra_backbone_forwards": 0,
+        "existing_head_forward_calls": 7,
+        "head_fit_updates": 0,
+        "interpretation": "Frozen existing-head source interventions only;partners chosen by reference pseudo labels and RX,never sourceV truth.No fitted or replacement head,no model update.These synthetic latent combinations do not prove physical realizability or target gains."
+      }
+    },
+    {
+      "profile": "F21_E20",
+      "model_seed": 2026092703,
+      "role": "U_s",
+      "source_pair_diagnostic": {
+        "eligible": 903,
+        "reference_accepted": 903,
+        "true_TX_pair_agreements": null,
+        "U_TX_truth_read": false,
+        "partner_chosen_without_V_truth": true
+      },
+      "fixed_head_interventions": {
+        "rows": [
+          {
+            "intervention": "joint",
+            "samples_selected": 903,
+            "label_agreements": 903,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.004145416896790266,
+            "mean_relative_feature_displacement": 0.0
+          },
+          {
+            "intervention": "without_reference",
+            "samples_selected": 903,
+            "label_agreements": 903,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.014116942882537842,
+            "mean_relative_feature_displacement": 0.1930197924375534
+          },
+          {
+            "intervention": "without_signature",
+            "samples_selected": 903,
+            "label_agreements": 853,
+            "label_agreement_percent": 94.46290143964563,
+            "mean_label_CE": 0.21841269731521606,
+            "mean_relative_feature_displacement": 0.14349327981472015
+          },
+          {
+            "intervention": "core_only",
+            "samples_selected": 903,
+            "label_agreements": 830,
+            "label_agreement_percent": 91.9158361018826,
+            "mean_label_CE": 0.3692689836025238,
+            "mean_relative_feature_displacement": 0.26058369874954224
+          },
+          {
+            "intervention": "reference_swap",
+            "samples_selected": 903,
+            "label_agreements": 903,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.005200294312089682,
+            "mean_relative_feature_displacement": 0.17109611630439758
+          },
+          {
+            "intervention": "signature_swap",
+            "samples_selected": 903,
+            "label_agreements": 903,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.005924091208726168,
+            "mean_relative_feature_displacement": 0.08296740800142288
+          },
+          {
+            "intervention": "late_swap",
+            "samples_selected": 903,
+            "label_agreements": 903,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.0071622589603066444,
+            "mean_relative_feature_displacement": 0.19087374210357666
+          }
+        ],
+        "extra_backbone_forwards": 0,
+        "existing_head_forward_calls": 7,
+        "head_fit_updates": 0,
+        "interpretation": "Frozen existing-head source interventions only;partners chosen by reference pseudo labels and RX,never sourceV truth.No fitted or replacement head,no model update.These synthetic latent combinations do not prove physical realizability or target gains."
+      }
+    },
+    {
+      "profile": "F21_E20",
+      "model_seed": 2026092703,
+      "role": "V",
+      "source_pair_diagnostic": {
+        "eligible": 665,
+        "reference_accepted": 665,
+        "true_TX_pair_agreements": 664,
+        "U_TX_truth_read": false,
+        "partner_chosen_without_V_truth": true
+      },
+      "fixed_head_interventions": {
+        "rows": [
+          {
+            "intervention": "joint",
+            "samples_selected": 665,
+            "label_agreements": 664,
+            "label_agreement_percent": 99.84962406015038,
+            "mean_label_CE": 0.00910085067152977,
+            "mean_relative_feature_displacement": 0.0
+          },
+          {
+            "intervention": "without_reference",
+            "samples_selected": 665,
+            "label_agreements": 664,
+            "label_agreement_percent": 99.84962406015038,
+            "mean_label_CE": 0.020121727138757706,
+            "mean_relative_feature_displacement": 0.18946728110313416
+          },
+          {
+            "intervention": "without_signature",
+            "samples_selected": 665,
+            "label_agreements": 632,
+            "label_agreement_percent": 95.03759398496241,
+            "mean_label_CE": 0.2031080424785614,
+            "mean_relative_feature_displacement": 0.14254215359687805
+          },
+          {
+            "intervention": "core_only",
+            "samples_selected": 665,
+            "label_agreements": 613,
+            "label_agreement_percent": 92.18045112781955,
+            "mean_label_CE": 0.3538035452365875,
+            "mean_relative_feature_displacement": 0.2578904628753662
+          },
+          {
+            "intervention": "reference_swap",
+            "samples_selected": 665,
+            "label_agreements": 664,
+            "label_agreement_percent": 99.84962406015038,
+            "mean_label_CE": 0.012459348887205124,
+            "mean_relative_feature_displacement": 0.16360430419445038
+          },
+          {
+            "intervention": "signature_swap",
+            "samples_selected": 665,
+            "label_agreements": 664,
+            "label_agreement_percent": 99.84962406015038,
+            "mean_label_CE": 0.01133408397436142,
+            "mean_relative_feature_displacement": 0.08200880140066147
+          },
+          {
+            "intervention": "late_swap",
+            "samples_selected": 665,
+            "label_agreements": 664,
+            "label_agreement_percent": 99.84962406015038,
+            "mean_label_CE": 0.015121130272746086,
+            "mean_relative_feature_displacement": 0.18584834039211273
+          }
+        ],
+        "extra_backbone_forwards": 0,
+        "existing_head_forward_calls": 7,
+        "head_fit_updates": 0,
+        "interpretation": "Frozen existing-head source interventions only;partners chosen by reference pseudo labels and RX,never sourceV truth.No fitted or replacement head,no model update.These synthetic latent combinations do not prove physical realizability or target gains."
+      }
+    },
+    {
+      "profile": "GUARD_NAMS_E30",
+      "model_seed": 2026092703,
+      "role": "U_s",
+      "source_pair_diagnostic": {
+        "eligible": 903,
+        "reference_accepted": 903,
+        "true_TX_pair_agreements": null,
+        "U_TX_truth_read": false,
+        "partner_chosen_without_V_truth": true
+      },
+      "fixed_head_interventions": {
+        "rows": [
+          {
+            "intervention": "joint",
+            "samples_selected": 903,
+            "label_agreements": 903,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.0038356592413038015,
+            "mean_relative_feature_displacement": 0.0
+          },
+          {
+            "intervention": "without_reference",
+            "samples_selected": 903,
+            "label_agreements": 903,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.01029267255216837,
+            "mean_relative_feature_displacement": 0.14482367038726807
+          },
+          {
+            "intervention": "without_signature",
+            "samples_selected": 903,
+            "label_agreements": 865,
+            "label_agreement_percent": 95.79180509413068,
+            "mean_label_CE": 0.232626274228096,
+            "mean_relative_feature_displacement": 0.15113310515880585
+          },
+          {
+            "intervention": "core_only",
+            "samples_selected": 903,
+            "label_agreements": 819,
+            "label_agreement_percent": 90.69767441860465,
+            "mean_label_CE": 0.39512917399406433,
+            "mean_relative_feature_displacement": 0.2197934240102768
+          },
+          {
+            "intervention": "reference_swap",
+            "samples_selected": 903,
+            "label_agreements": 903,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.005984046030789614,
+            "mean_relative_feature_displacement": 0.1902805119752884
+          },
+          {
+            "intervention": "signature_swap",
+            "samples_selected": 903,
+            "label_agreements": 903,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.006863896269351244,
+            "mean_relative_feature_displacement": 0.08424167335033417
+          },
+          {
+            "intervention": "late_swap",
+            "samples_selected": 903,
+            "label_agreements": 903,
+            "label_agreement_percent": 100.0,
+            "mean_label_CE": 0.008146493695676327,
+            "mean_relative_feature_displacement": 0.20934751629829407
+          }
+        ],
+        "extra_backbone_forwards": 0,
+        "existing_head_forward_calls": 7,
+        "head_fit_updates": 0,
+        "interpretation": "Frozen existing-head source interventions only;partners chosen by reference pseudo labels and RX,never sourceV truth.No fitted or replacement head,no model update.These synthetic latent combinations do not prove physical realizability or target gains."
+      }
+    },
+    {
+      "profile": "GUARD_NAMS_E30",
+      "model_seed": 2026092703,
+      "role": "V",
+      "source_pair_diagnostic": {
+        "eligible": 665,
+        "reference_accepted": 665,
+        "true_TX_pair_agreements": 664,
+        "U_TX_truth_read": false,
+        "partner_chosen_without_V_truth": true
+      },
+      "fixed_head_interventions": {
+        "rows": [
+          {
+            "intervention": "joint",
+            "samples_selected": 665,
+            "label_agreements": 664,
+            "label_agreement_percent": 99.84962406015038,
+            "mean_label_CE": 0.01244367565959692,
+            "mean_relative_feature_displacement": 0.0
+          },
+          {
+            "intervention": "without_reference",
+            "samples_selected": 665,
+            "label_agreements": 664,
+            "label_agreement_percent": 99.84962406015038,
+            "mean_label_CE": 0.021608004346489906,
+            "mean_relative_feature_displacement": 0.14368836581707
+          },
+          {
+            "intervention": "without_signature",
+            "samples_selected": 665,
+            "label_agreements": 643,
+            "label_agreement_percent": 96.69172932330827,
+            "mean_label_CE": 0.22536616027355194,
+            "mean_relative_feature_displacement": 0.1498987376689911
+          },
+          {
+            "intervention": "core_only",
+            "samples_selected": 665,
+            "label_agreements": 606,
+            "label_agreement_percent": 91.12781954887218,
+            "mean_label_CE": 0.37915581464767456,
+            "mean_relative_feature_displacement": 0.21910150349140167
+          },
+          {
+            "intervention": "reference_swap",
+            "samples_selected": 665,
+            "label_agreements": 664,
+            "label_agreement_percent": 99.84962406015038,
+            "mean_label_CE": 0.018394900485873222,
+            "mean_relative_feature_displacement": 0.18372566998004913
+          },
+          {
+            "intervention": "signature_swap",
+            "samples_selected": 665,
+            "label_agreements": 664,
+            "label_agreement_percent": 99.84962406015038,
+            "mean_label_CE": 0.015422031283378601,
+            "mean_relative_feature_displacement": 0.08377054333686829
+          },
+          {
+            "intervention": "late_swap",
+            "samples_selected": 665,
+            "label_agreements": 663,
+            "label_agreement_percent": 99.69924812030075,
+            "mean_label_CE": 0.021782804280519485,
+            "mean_relative_feature_displacement": 0.2043510228395462
+          }
+        ],
+        "extra_backbone_forwards": 0,
+        "existing_head_forward_calls": 7,
+        "head_fit_updates": 0,
+        "interpretation": "Frozen existing-head source interventions only;partners chosen by reference pseudo labels and RX,never sourceV truth.No fitted or replacement head,no model update.These synthetic latent combinations do not prove physical realizability or target gains."
+      }
+    }
+  ],
+  "main_target_goal_unchanged": true,
+  "no_target_reads": true
+}
