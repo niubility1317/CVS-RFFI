@@ -314,5 +314,11 @@
     "reference": "complementary_U_followup_design.json",
     "status": "FIXED_SOURCE_SUPPORTED_DESIGN_NOT_IMPLEMENTED_OR_LAUNCHED",
     "not_launched": true
+  },
+  "native_view_reliability_diagnostic": {
+    "status": "FIXED_SOURCE_ONLY_NO_UPDATE_DIAGNOSTIC",
+    "reference": "source_view_reliability_plan.json",
+    "target_reads": 0,
+    "source_updates": 0
   }
 }

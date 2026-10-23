@@ -42,3 +42,8 @@ A阶段24角色行完成，只读CPU24.025秒，完整源统计见source_geometr
 ## 源轨迹 B／C 完成与后续互补监督设计
 
 B阶段Joint固定E30六角色行、C阶段12角色行冻结头检查均完成，详见source_geometry_trajectory_B_C.md/json。源Joint融合TX类间比例约0.771→0.804、条件RX/总散度约0.0859→0.0663，非target准确率；无签名的既有头视图产生约0.17至0.22的源伪标签CE，完整视图仅约0.003至0.004。保留签名部署，研究将ordinary U CE的0.25系数转给无签名视图、总CE剂量1.25不变，其他joint/浅中层/RDrop/style/guard保持；现阶段仅固定设计，未实现／审查／启动新模型。完整公式、三seed、E20+30预算、双七景及卡位安排见complementary_U_followup_design.json。当前GuardNAMS／Joint target分数未读取，原健康任务不变，goal ACTIVE。
+
+
+## 固定原E20的源域信道学习难度诊断
+
+追加只读CPU2诊断，原三seed F21E20、同一既有U960/V720、raw gate0.95及原生Practical三景训练混合，在固定epoch21/step4441与epoch41/step8881模拟。固定aug gate网格0.8／0.9／0.95，各含仅置信与置信＋raw预测一致两种统计，共18条源role/view行。完整源权限、路径入口和停止规则见source_view_reliability_plan.json；6项相关检查通过。源V真值只统计，模型/归一化/EMA/原型/头更新与Utruth/target/G训练均0，不改现有健康任务、配方、父来源或冻结矩阵。raw伪标签是否正确与扰动后是否易于学习分别报告，后者不能当作U真实正确率或target表现。当前Joint/Complement目标分数未读取，历史目标暴露保留。

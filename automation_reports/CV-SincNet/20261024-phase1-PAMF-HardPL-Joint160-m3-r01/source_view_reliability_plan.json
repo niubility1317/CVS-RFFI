@@ -1,0 +1,52 @@
+{
+  "status": "FIXED_SOURCE_ONLY_NO_UPDATE_DIAGNOSTIC",
+  "run_id": "20261024-phase1-PAMF-HardPL-Joint160-m3-r01",
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "profiles": [
+    "ORIGINAL_F21_E20"
+  ],
+  "source_phases": [
+    [
+      21,
+      4441
+    ],
+    [
+      41,
+      8881
+    ]
+  ],
+  "roles": [
+    "U_s",
+    "V"
+  ],
+  "cohorts": {
+    "U_s": 960,
+    "V": 720,
+    "selection": "Reuse source_geometry fixed_indices;U64perRXday,V8perTXRXday"
+  },
+  "raw_gate": 0.95,
+  "augmented_gate_grid": [
+    0.8,
+    0.9,
+    0.95
+  ],
+  "source_updates": 0,
+  "raw_head": "Existing frozen default head",
+  "views": "raw and actual native Practical source As mix at two fixed training namespaces;source physical metadata only",
+  "expected_source_rows": 18,
+  "source_V_role": "truth diagnostics only,no parameter/norm/EMA/prototype/head updates",
+  "U_true_accuracy": "UNKNOWN;hidden labels never opened",
+  "stop_rule": "Missing/mismatched originalE20 source lineage,nonfinite IQ/probability,wrong source roles or native As coverage fails diagnosis only.No healthy GPU task changed or restarted.",
+  "execution": "Committed source_view_reliability plus source_geometry via read-only UTF8 stdin on N607 existing Joint dependencies;CPU2/CUDAhidden,no remote writes",
+  "target_reads": 0,
+  "G_training_reads": 0,
+  "permission_contract_changed": false,
+  "selection_or_current_candidate_recipe_changed": false,
+  "historical_target_exposure": true,
+  "new_Joint_or_Complement_target_scores_read": false,
+  "interpretation": "Raw pseudo-label truth purity and corrupted-view learnability are different quantities.No U truth,target benefit or waveform-identity-recovery claim."
+}
