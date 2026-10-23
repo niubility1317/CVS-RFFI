@@ -44,3 +44,7 @@
 首次release在控制器导入plan前尚未接入历史Full方法namespace，ModuleNotFoundError退出；PID1906598已独立核实结束，0数据准备、0科学worker、0GPU训练、未建立run root。旧release、归档和日志保留。修复仅将bootstrap提前到导入plan/cache之前，并增加该有界导入回归测试；11项聚焦检查PASS。新不可覆盖control-r02使用同一登记600F/4G科学矩阵，保留GPU5/6/7，不重新创建第二份模型矩阵。
 
 control-r02已完成11源合同、三种泛化句柄和ManyRx源RX/D0的31279条×六景观测，后在历史G描述外层合同字段兼容处退出。0模型worker、0GPU训练，旧数据/日志/4个未启动G配置保留。control-r03仅修复合同路径解析并复用已准备句柄，使用新输出根。新增整队列回归验证1880个配置的stage、72个PAMF的ablation字段及两种G描述格式，12项聚焦检查PASS；不重复模型全审查。
+
+## 旧Torch执行API兼容恢复
+
+r03真实checkpoint、同合同G-L/G-LU和四Full源侧梯度smoke已PASS；G和缓存已GPU运行。两个F在Torch1.11.0/NumPy1.24.4的精度设置API处、创建模型/输出前失败，2同指纹正确停止新派发。新r04保留健康科学worker和CPU producer原PID/CWD/config；仅替代2个失败F及各预测/评分6阶段，598未启动F只切换执行release。旧失败及阻塞记录保留排除，有效600F/4G不变。通过TF32关闭flags保持原FP32，老Torch缺少的新API仅做功能存在判断，不降精度、不改训练。复用源smoke与全部数据；新增两环境精度与输入复制检查。

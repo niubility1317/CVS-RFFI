@@ -1,6 +1,6 @@
 """Training readers: original L IQ in the auxiliary slot, with matched CE dose."""
 from .cache import Reader
-from experiments.cric_dura_comparison.io import tensor
+from .compat import tensor
 
 class BatchAugment:
     def __init__(self,c):

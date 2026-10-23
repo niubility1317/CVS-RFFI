@@ -35,6 +35,21 @@ class Scope(unittest.TestCase):
         self.assertTrue(np.array_equal(a,b));self.assertEqual(s,t);self.assertEqual(np.float32,a.dtype)
 
 class Permissions(unittest.TestCase):
+    def test_legacy_precision_policy_is_equivalent(self):
+        import torch
+        from experiments.practical_full_2x2.compat import numerical_policy,tensor
+        saved=torch.set_float32_matmul_precision
+        try:
+            del torch.set_float32_matmul_precision
+            numerical_policy()
+            self.assertFalse(torch.backends.cuda.matmul.allow_tf32);self.assertFalse(torch.backends.cudnn.allow_tf32)
+            self.assertEqual([0.,1.,2.],tensor(np.arange(3,dtype=np.float32)).tolist())
+        finally:torch.set_float32_matmul_precision=saved
+    def test_only_exact_owned_controller_may_handoff(self):
+        from experiments.practical_full_2x2.recovery import check_identity
+        check_identity(['python','dispatch'],'release',['python','dispatch'],'release')
+        for argv,cwd in ((['python','other'],'release'),(['python','dispatch'],'other')):
+            with self.assertRaises(ValueError):check_identity(argv,cwd,['python','dispatch'],'release')
     def test_runner_bootstrap_precedes_legacy_plan_import(self):
         import ast
         source=Path(__file__).resolve().parents[1]/'experiments/practical_full_2x2/runner.py'

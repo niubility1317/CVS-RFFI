@@ -25,6 +25,8 @@ env=dict(os.environ,PYTHONPATH=str(release),CUDA_VISIBLE_DEVICES='',OMP_NUM_THRE
 subprocess.run([rt['python'],'-m','compileall','-q',str(release/'experiments/practical_full_2x2')],cwd=release,env=env,check=True)
 probe="import json; from experiments.practical_full_2x2.runner import activate; c=json.load(open("+repr(rt['runtime_file'])+")); activate(c); from experiments.practical_full_2x2.plan import make_plan; from experiments.practical_full_2x2 import source,prepare,evaluation,pamf_train; assert len(make_plan()['rows'])==600; print('BOOTSTRAP_IMPORT_PASS')"
 subprocess.run([rt['python'],'-c',probe],cwd=release,env=env,check=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+legacy="import json,numpy as np,torch; from experiments.practical_full_2x2.runner import activate; c=json.load(open("+repr(rt['runtime_file'])+")); activate(c); from experiments.practical_full_2x2.compat import tensor; x=tensor(np.arange(8,dtype=np.float32)); assert x.tolist()==list(range(8)); assert not torch.backends.cuda.matmul.allow_tf32 and not torch.backends.cudnn.allow_tf32; print('LEGACY_FP32_PASS')"
+subprocess.run([rt['external_python'],'-c',legacy],cwd=release,env=env,check=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
 cmd=[rt['python'],'-u','-m','experiments.practical_full_2x2.runner','dispatch','--config',rt['runtime_file']]
 log=release/'controller.log'
 with log.open('x') as stream:
@@ -33,7 +35,7 @@ r=dict(status='SUBMITTED_NOT_YET_VERIFIED',pid=child.pid,cwd=str(release),argv=c
 (release/'submit.json').write_text(json.dumps(r,indent=2)+'\n');print(json.dumps(r))
 '''
 
-def publish(repo,output,release_id=RUN,prepared_data_handles=None):
+def publish(repo,output,release_id=RUN,prepared_data_handles=None,recover_runtime=None):
     repo=Path(repo);out=Path(output);out.mkdir(parents=True,exist_ok=True)
     def git(*a):return subprocess.check_output(['git','-C',str(repo),*a])
     commit=git('rev-parse','HEAD').decode().strip();branch=git('branch','--show-current').decode().strip()
@@ -42,7 +44,7 @@ def publish(repo,output,release_id=RUN,prepared_data_handles=None):
     native=json.loads((ROOT/'local_artifacts/phase1_dg_sourcecount6_20261021/runtime.json').read_text())
     source=json.loads((ROOT/'local_artifacts/cric_dura_comparison_20261021/runtime.json').read_text())
     templates=json.loads((ROOT/'local_artifacts/external_DURA_readouts_20261023/preflight.json').read_text())['G_templates']
-    project=old['project'];release=project+'/releases/'+release_id;run=project+'/runs/'+(release_id if prepared_data_handles else RUN)
+    project=old['project'];release=project+'/releases/'+release_id;run=project+'/runs/'+(release_id if prepared_data_handles or recover_runtime else RUN)
     rt=dict(run_id=RUN,project=project,release_root=release,run_root=run,code_commit=commit,
         matrix=release+'/experiment.json',runtime_file=release+'/runtime.json',python=old['python'],external_python=native['python'],
         frozen_sources=old['frozen_sources'],external_releases=[project+'/releases/20261019-phase1-external-dg-concat-pl-m219-r03',native['release_root']],
@@ -55,6 +57,10 @@ def publish(repo,output,release_id=RUN,prepared_data_handles=None):
         launch_owner='codex-practical-Full2x2-20261023',max_own_per_gpu=3,max_total_compute=15,
         allowed_gpus=[0,1,2,3,4],reserved_gpus=[5,6,7])
     if prepared_data_handles:rt['prepared_data_handles']=prepared_data_handles
+    if recover_runtime:
+        previous=json.loads((out/'runtime.json').read_text())
+        if previous['runtime_file']!=recover_runtime:raise ValueError('Reconcile current recovery owner before publishing')
+        rt.update(recover_previous_runtime=recover_runtime,augmentation_cache=previous['augmentation_cache'])
     archive=out/(release_id+'.tar.gz')
     if archive.exists():raise FileExistsError('Reconcile archive/remote post-state before retry')
     paths=git('ls-files','-z','--','experiments','code','baselines').decode().split('\0')
@@ -79,5 +85,5 @@ def publish(repo,output,release_id=RUN,prepared_data_handles=None):
     print(json.dumps(dict(result,archive_bytes=archive.stat().st_size)),flush=True)
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--repo',required=True);p.add_argument('--output',required=True);p.add_argument('--release-id',default=RUN);p.add_argument('--prepared-data-handles')
-    a=p.parse_args();publish(a.repo,a.output,a.release_id,a.prepared_data_handles)
+    p=argparse.ArgumentParser();p.add_argument('--repo',required=True);p.add_argument('--output',required=True);p.add_argument('--release-id',default=RUN);p.add_argument('--prepared-data-handles');p.add_argument('--recover-runtime')
+    a=p.parse_args();publish(a.repo,a.output,a.release_id,a.prepared_data_handles,a.recover_runtime)

@@ -29,7 +29,7 @@ from experiments.phase1_external_dg_aug.data import read, write
 from experiments.phase1_external_dg_aug.models import build, identity as forward
 from .objectives import step
 from .plan import make_plan
-from experiments.cric_dura_comparison.io import tensor
+from .compat import tensor
 
 _PLAN = make_plan()
 _ROWS = {r['row_id']: r for r in _PLAN['rows']}

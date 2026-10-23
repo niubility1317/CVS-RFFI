@@ -6,7 +6,8 @@ from pathlib import Path
 from experiments.cric_dura_comparison.io import read,write
 
 def activate(c):
-    from experiments.cric_dura_comparison.bootstrap import activate as base,numerical_policy
+    from experiments.cric_dura_comparison.bootstrap import activate as base
+    from .compat import numerical_policy
     base(c)
     from experiments.cric_dura_comparison.external_dura import activate_external
     activate_external(c)
@@ -34,10 +35,11 @@ def command(rt,mode,config,python=None):
 
 def launch(rt,job,gpu):
     log=Path(rt['run_root'])/'logs'/(job['log_name']+'.log');log.parent.mkdir(exist_ok=True)
-    env=dict(os.environ,PYTHONPATH=rt['release_root'],CUDA_VISIBLE_DEVICES='' if gpu is None else str(gpu),
+    cwd=job.get('worker_release',rt['release_root'])
+    env=dict(os.environ,PYTHONPATH=cwd,CUDA_VISIBLE_DEVICES='' if gpu is None else str(gpu),
         OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',PYTHONUNBUFFERED='1')
     with log.open('x') as stream:
-        child=subprocess.Popen(command(rt,'worker',job['config'],job['python']),cwd=rt['release_root'],env=env,
+        child=subprocess.Popen(command(rt,'worker',job['config'],job['python']),cwd=cwd,env=env,
             stdin=subprocess.DEVNULL,stdout=stream,stderr=subprocess.STDOUT,start_new_session=True)
     return child,dict(status='RUNNING',pid=child.pid,gpu=gpu,log=str(log),started_at=time.time())
 
@@ -45,6 +47,9 @@ def dispatch(rt):
     # Historical Full packages are supplied by the immutable external releases.
     # Activate those namespace paths BEFORE importing plan/cache dependencies.
     activate(rt)
+    if rt.get('recover_previous_runtime'):
+        from .recovery import recover
+        return recover(rt)
     from .plan import validate
     from .prepare import prepare
     from .smoke import run as smoke
@@ -70,7 +75,15 @@ def dispatch(rt):
     first=next(read(j['config']) for j in jobs if j['kind']=='F' and read(j['config']).get('cell')=='C')
     Reader(first).request(1,1,.3)
     state.update(status='RUNNING',jobs={j['id']:dict(status='QUEUED') for j in jobs})
-    active={};children={};failures=Counter();policy=LoadPolicy(dict(boost_gpus=[0,6],max_gpu_workers=26))
+    return schedule(rt,jobs,state,{},producer.pid)
+
+def schedule(rt,jobs,state,active,producer_pid):
+    from .cache import atomic
+    from experiments.cric_dura_comparison.pipeline import alive,done,ready,block_failed_dependencies
+    from experiments.cric_dura_comparison.resource_balance import LoadPolicy
+    from experiments.cric_dura_comparison.source_queue import capacity
+    root=Path(rt['run_root']);by={j['id']:j for j in jobs}
+    children={};failures=Counter(state.get('failures',{}));policy=LoadPolicy(dict(boost_gpus=[0,6],max_gpu_workers=26))
     turn=0
     while True:
         for k,item in list(active.items()):
@@ -79,10 +92,13 @@ def dispatch(rt):
             if not ok:
                 tail=Path(item['log']).read_text(errors='replace')[-5000:].splitlines()
                 reason=tail[-1] if tail else 'missing_completion_without_log';failures[reason]+=1;state['jobs'][k]['failure']=reason
-            children.pop(k).poll();del active[k]
+            child=children.pop(k,None)
+            if child is not None:child.poll()
+            del active[k]
         block_failed_dependencies(jobs,state,[])
         systemic=bool(failures and max(failures.values())>=2)
-        pending=[j for j in jobs if state['jobs'][j['id']]['status']=='QUEUED']
+        excluded=set(state.get('excluded_job_ids',[]))
+        pending=[j for j in jobs if j['id'] not in excluded and state['jobs'][j['id']]['status']=='QUEUED']
         candidates=[j for j in pending if ready(j)] if not systemic else []
         score=next((j for j in candidates if j['kind']=='score'),None)
         if score and not any(by[k]['kind']=='score' for k in active):
@@ -102,12 +118,13 @@ def dispatch(rt):
             if not policy.admits(gpu,admission[job['id']],active,admission,apps,free,False):continue
             child,item=launch(rt,job,gpu);active[job['id']]=item;children[job['id']]=child;state['jobs'][job['id']]=item;candidates.remove(job)
         state.update(updated_at=time.time(),counts=dict(Counter(v['status'] for v in state['jobs'].values())),
-            failures=dict(failures),systemic_stop_new_launches=systemic,augmentation_producer_alive=alive(producer.pid),
-            gpu_workers=sum(v['gpu'] is not None for v in active.values()),host=policy.host,telemetry_error=policy.last_error)
+            failures=dict(failures),systemic_stop_new_launches=systemic,augmentation_producer_alive=alive(producer_pid),
+            gpu_workers=sum(v['gpu'] is not None for v in active.values()),host=policy.host,telemetry_error=policy.last_error,
+            effective_counts=dict(Counter(v['status'] for k,v in state['jobs'].items() if k not in excluded)))
         atomic(root/'pipeline_state.json',state)
         if not active and (not pending or systemic):break
         time.sleep(15)
-    state['status']='ARTIFACTS_COMPLETE' if all(v['status']=='COMPLETE' for v in state['jobs'].values()) else 'PARTIAL_TECHNICAL_FAILURE'
+    state['status']='ARTIFACTS_COMPLETE' if all(v['status']=='COMPLETE' for k,v in state['jobs'].items() if k not in state.get('excluded_job_ids',[])) else 'PARTIAL_TECHNICAL_FAILURE'
     (Path(rt['augmentation_cache'])/'stop').touch()
     atomic(root/'pipeline_state.json',state)
 
