@@ -1,5 +1,5 @@
 {
-  "status": "CORE_AND_RELEASE_INTERFACES_VERIFIED_NOT_RELEASED",
+  "status": "RELEASED_QUEUE_WAITING_SOURCE_SMOKE",
   "hypothesis_commit": "5e52e4ebd383ba6990e9afd38a563798368f1603",
   "focused_tests": {
     "status": "PASS",
@@ -13,10 +13,17 @@
     "findings": 0,
     "scope": "Core objective, fixed source prefix, state continuity and frozen load_F ancestry"
   },
-  "real_E30_no_query_smoke": "PENDING_AS_FIRST_RELEASE_STEP",
+  "real_E30_no_query_smoke": "PENDING_GPU_CAPACITY",
   "release_interfaces": "Three genuine VIEWANCHOR rows, fixed E30 student/own EMA source smoke, same automatic seven-view truth-last runner; not submitted",
-  "candidate_launched": false,
+  "candidate_launched": true,
   "candidate_target_reads": 0,
   "current_r02_release_changed": false,
-  "scope": "Preparation only. No effectiveness claim; original target-test success criteria unchanged."
+  "scope": "Preparation only. No effectiveness claim; original target-test success criteria unchanged.",
+  "candidate_training_started": false,
+  "own_GPU_workers": 0,
+  "source_smoke_is_first_GPU_step": true,
+  "integer_goal_and_reporting_tests": {
+    "status": "PASS",
+    "total": 9
+  }
 }

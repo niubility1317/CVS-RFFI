@@ -18,3 +18,10 @@ F0 每视图168000条、三个seed的准确率验收使用整数计数：clean�
 
 - Chen et al., SoftMatch: Addressing the Quantity-Quality Trade-off in Semi-supervised Learning, ICLR 2023, https://arxiv.org/abs/2301.10921 。本研究仅借鉴单边高斯置信加权，不声称完整复现或原创该加权函数。
 - Zheng et al., SimMatch: Semi-Supervised Learning With Similarity Matching, CVPR 2022, https://openaccess.thecvf.com/content/CVPR2022/html/Zheng_SimMatch_Semi-Supervised_Learning_With_Similarity_Matching_CVPR_2022_paper.html 。本研究使用标签来源受限、排除自身 RX 的类别原型，不声称其等于论文的实例记忆匹配。
+
+
+## 首轮目标测试与继续研发
+
+首轮 `20261023-phase1-PAMF-physical-softmatch-m6-r02` 的六行、42 个 raw 目标视图均完成独立 truth-last 评分。PSM 的 clean／六景三种子均值为 84.222619%／71.897288%，RXPSM 为 84.272421%／71.853571%，两者均未达到完整目标。完整逐种子、景、RX/TX/day 和实际训练成本见该 run 的 target_results.md 及配套汇总文件。该 run 为 ANALYZED，整体 goal 继续 ACTIVE，原 PAMF/DURA 默认版本不变。
+
+后续 `20261023-phase1-PAMF-viewanchor-m3-r01` 已在首轮目标分数读取前固定 RXPSM E30 父来源、0.10 物理特征一致性和三个 seed，独立续训 20 轮，累计仍为 50。新调度器已独立核实，当前 QUEUED 等待 GPU 容量，尚未 smoke 或训练。不会因本轮目标分数改动这套配方、挑 seed 或选择性重跑。原目标仍为同一方法相对两个对照 clean 至少 +1 pp、六景平均严格超过 +1.5 pp，验收只看目标测试。

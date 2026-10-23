@@ -1,0 +1,36 @@
+{
+  "status": "VERIFIED_CONTROLLER_QUEUED",
+  "code_commit": "9299146ed52567abd62ca9701d14652f0df73c1d",
+  "observed_at": "2026-10-23T10:53:13.169554+00:00",
+  "controller_identity": {
+    "alive": true,
+    "PID_CWD_argv_matches_immutable_release": true
+  },
+  "controller_state": "WAITING_FOR_SMOKE_GPU",
+  "heartbeat_updated_unix": 1792752786.7948008,
+  "release_archive_transfer": "One local/remote archive SHA comparison passed in release path",
+  "remote_compile": "PASS before controller submission",
+  "own_GPU_workers": 0,
+  "source_smoke": "PENDING_GPU_CAPACITY",
+  "training_started": false,
+  "target_reads": 0,
+  "rows": [
+    {
+      "row_id": "VIEWANCHOR-s2026092701",
+      "status": "QUEUED",
+      "gpu": 0
+    },
+    {
+      "row_id": "VIEWANCHOR-s2026092702",
+      "status": "QUEUED",
+      "gpu": 1
+    },
+    {
+      "row_id": "VIEWANCHOR-s2026092703",
+      "status": "QUEUED",
+      "gpu": 2
+    }
+  ],
+  "other_workloads_untouched": true,
+  "default_models_unchanged": true
+}

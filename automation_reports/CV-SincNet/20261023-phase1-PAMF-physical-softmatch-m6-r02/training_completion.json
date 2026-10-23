@@ -1,0 +1,1485 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261023-phase1-PAMF-physical-softmatch-m6-r02",
+  "full_step_logs": {
+    "status": "FULL_TRAINING_RECORDS_VERIFIED",
+    "rows": [
+      {
+        "row_id": "PSM-s2026092701",
+        "complete_records": 11100,
+        "U_records": 8214,
+        "last": {
+          "SSL_loss": 0.13565076887607574,
+          "SSL_weight_mean": 0.9889686703681946,
+          "SSL_proto_coverage": 0.0,
+          "SSL_seen": 2097900,
+          "SSL_effective": 2011068.6958694458,
+          "SSL_physical_seen": 1048950,
+          "SSL_ramp": 1.0,
+          "SSL_confidence": 0.995355486869812
+        },
+        "mean_U_loss": 0.14487303044993474,
+        "mean_weight": 0.9586020188883676,
+        "mean_other_RX_prototype_coverage": 0.0,
+        "files": [
+          {
+            "segment": 20,
+            "complete_records": 4440,
+            "closed_gzip": true
+          },
+          {
+            "segment": 30,
+            "complete_records": 2220,
+            "closed_gzip": true
+          },
+          {
+            "segment": 50,
+            "complete_records": 4440,
+            "closed_gzip": true
+          }
+        ],
+        "scope": "All11100 final step records across closed20+10+20 segments"
+      },
+      {
+        "row_id": "RXPSM-s2026092701",
+        "complete_records": 11100,
+        "U_records": 8214,
+        "last": {
+          "SSL_loss": 0.1570052057504654,
+          "SSL_weight_mean": 0.9801551699638367,
+          "SSL_proto_coverage": 1.0,
+          "SSL_seen": 2097900,
+          "SSL_effective": 1995099.360321045,
+          "SSL_physical_seen": 1048950,
+          "SSL_ramp": 1.0,
+          "SSL_confidence": 0.9937863945960999
+        },
+        "mean_U_loss": 0.16005671715138456,
+        "mean_weight": 0.9509889815435347,
+        "mean_other_RX_prototype_coverage": 1.0,
+        "files": [
+          {
+            "segment": 20,
+            "complete_records": 4440,
+            "closed_gzip": true
+          },
+          {
+            "segment": 30,
+            "complete_records": 2220,
+            "closed_gzip": true
+          },
+          {
+            "segment": 50,
+            "complete_records": 4440,
+            "closed_gzip": true
+          }
+        ],
+        "scope": "All11100 final step records across closed20+10+20 segments"
+      },
+      {
+        "row_id": "PSM-s2026092702",
+        "complete_records": 11100,
+        "U_records": 8214,
+        "last": {
+          "SSL_loss": 0.10148581862449646,
+          "SSL_weight_mean": 0.9890322685241699,
+          "SSL_proto_coverage": 0.0,
+          "SSL_seen": 2097900,
+          "SSL_effective": 2012478.5499649048,
+          "SSL_physical_seen": 1048950,
+          "SSL_ramp": 1.0,
+          "SSL_confidence": 0.99615079164505
+        },
+        "mean_U_loss": 0.14754021573028978,
+        "mean_weight": 0.9592901075411691,
+        "mean_other_RX_prototype_coverage": 0.0,
+        "files": [
+          {
+            "segment": 20,
+            "complete_records": 4440,
+            "closed_gzip": true
+          },
+          {
+            "segment": 30,
+            "complete_records": 2220,
+            "closed_gzip": true
+          },
+          {
+            "segment": 50,
+            "complete_records": 4440,
+            "closed_gzip": true
+          }
+        ],
+        "scope": "All11100 final step records across closed20+10+20 segments"
+      },
+      {
+        "row_id": "RXPSM-s2026092702",
+        "complete_records": 11100,
+        "U_records": 8214,
+        "last": {
+          "SSL_loss": 0.11883947253227234,
+          "SSL_weight_mean": 0.9759069681167603,
+          "SSL_proto_coverage": 1.0,
+          "SSL_seen": 2097900,
+          "SSL_effective": 1990886.3247909546,
+          "SSL_physical_seen": 1048950,
+          "SSL_ramp": 1.0,
+          "SSL_confidence": 0.9948885440826416
+        },
+        "mean_U_loss": 0.16137625615692774,
+        "mean_weight": 0.9490036138920473,
+        "mean_other_RX_prototype_coverage": 1.0,
+        "files": [
+          {
+            "segment": 20,
+            "complete_records": 4440,
+            "closed_gzip": true
+          },
+          {
+            "segment": 30,
+            "complete_records": 2220,
+            "closed_gzip": true
+          },
+          {
+            "segment": 50,
+            "complete_records": 4440,
+            "closed_gzip": true
+          }
+        ],
+        "scope": "All11100 final step records across closed20+10+20 segments"
+      },
+      {
+        "row_id": "PSM-s2026092703",
+        "complete_records": 11100,
+        "U_records": 8214,
+        "last": {
+          "SSL_loss": 0.1556282639503479,
+          "SSL_weight_mean": 0.9711828827857971,
+          "SSL_proto_coverage": 0.0,
+          "SSL_seen": 2097900,
+          "SSL_effective": 2012703.404724121,
+          "SSL_physical_seen": 1048950,
+          "SSL_ramp": 1.0,
+          "SSL_confidence": 0.9884402751922607
+        },
+        "mean_U_loss": 0.14456646333829326,
+        "mean_weight": 0.959396521083508,
+        "mean_other_RX_prototype_coverage": 0.0,
+        "files": [
+          {
+            "segment": 20,
+            "complete_records": 4440,
+            "closed_gzip": true
+          },
+          {
+            "segment": 30,
+            "complete_records": 2220,
+            "closed_gzip": true
+          },
+          {
+            "segment": 50,
+            "complete_records": 4440,
+            "closed_gzip": true
+          }
+        ],
+        "scope": "All11100 final step records across closed20+10+20 segments"
+      },
+      {
+        "row_id": "RXPSM-s2026092703",
+        "complete_records": 11100,
+        "U_records": 8214,
+        "last": {
+          "SSL_loss": 0.18032149970531464,
+          "SSL_weight_mean": 0.9640464782714844,
+          "SSL_proto_coverage": 1.0,
+          "SSL_seen": 2097900,
+          "SSL_effective": 2005277.9652786255,
+          "SSL_physical_seen": 1048950,
+          "SSL_ramp": 1.0,
+          "SSL_confidence": 0.9859979152679443
+        },
+        "mean_U_loss": 0.16203767050099374,
+        "mean_weight": 0.955855915472111,
+        "mean_other_RX_prototype_coverage": 1.0,
+        "files": [
+          {
+            "segment": 20,
+            "complete_records": 4440,
+            "closed_gzip": true
+          },
+          {
+            "segment": 30,
+            "complete_records": 2220,
+            "closed_gzip": true
+          },
+          {
+            "segment": 50,
+            "complete_records": 4440,
+            "closed_gzip": true
+          }
+        ],
+        "scope": "All11100 final step records across closed20+10+20 segments"
+      }
+    ],
+    "U_truth_reads": 0,
+    "target_reads": 0,
+    "total_step_records": 66600,
+    "U_exposure_is_repeated_samples": true
+  },
+  "final_state_evidence": {
+    "status": "READ_ONLY_SEGMENT_INHERITANCE_CHECK",
+    "rows": [
+      {
+        "row_id": "PSM-s2026092701",
+        "status": "FINAL_STATE_SAVED",
+        "parent_epochs": 50,
+        "parent_updates": 11100,
+        "teacher_EMA_updates": 11100,
+        "parent_U_seen": 2097900,
+        "parent_physical_views": 1048950,
+        "parent_gaussian_mean": 0.9853159189224243,
+        "parent_gaussian_variance": 0.004927522968500853,
+        "prototype_L_label_count": 0,
+        "positive_prototype_RX_class_cells": 0,
+        "classes_with_positive_U_weight": 6,
+        "child_complete_step_prefix": null,
+        "child_cumulative_U_seen": null,
+        "source_data_contract": true,
+        "U_truth_read": false,
+        "target_access": false
+      },
+      {
+        "row_id": "RXPSM-s2026092701",
+        "status": "FINAL_STATE_SAVED",
+        "parent_epochs": 50,
+        "parent_updates": 11100,
+        "teacher_EMA_updates": 11100,
+        "parent_U_seen": 2097900,
+        "parent_physical_views": 1048950,
+        "parent_gaussian_mean": 0.98316490650177,
+        "parent_gaussian_variance": 0.005321040749549866,
+        "prototype_L_label_count": 1051392,
+        "positive_prototype_RX_class_cells": 30,
+        "classes_with_positive_U_weight": 6,
+        "child_complete_step_prefix": null,
+        "child_cumulative_U_seen": null,
+        "source_data_contract": true,
+        "U_truth_read": false,
+        "target_access": false
+      },
+      {
+        "row_id": "PSM-s2026092702",
+        "status": "FINAL_STATE_SAVED",
+        "parent_epochs": 50,
+        "parent_updates": 11100,
+        "teacher_EMA_updates": 11100,
+        "parent_U_seen": 2097900,
+        "parent_physical_views": 1048950,
+        "parent_gaussian_mean": 0.9855585694313049,
+        "parent_gaussian_variance": 0.004877365194261074,
+        "prototype_L_label_count": 0,
+        "positive_prototype_RX_class_cells": 0,
+        "classes_with_positive_U_weight": 6,
+        "child_complete_step_prefix": null,
+        "child_cumulative_U_seen": null,
+        "source_data_contract": true,
+        "U_truth_read": false,
+        "target_access": false
+      },
+      {
+        "row_id": "RXPSM-s2026092702",
+        "status": "FINAL_STATE_SAVED",
+        "parent_epochs": 50,
+        "parent_updates": 11100,
+        "teacher_EMA_updates": 11100,
+        "parent_U_seen": 2097900,
+        "parent_physical_views": 1048950,
+        "parent_gaussian_mean": 0.9837332367897034,
+        "parent_gaussian_variance": 0.005210584960877895,
+        "prototype_L_label_count": 1051392,
+        "positive_prototype_RX_class_cells": 30,
+        "classes_with_positive_U_weight": 6,
+        "child_complete_step_prefix": null,
+        "child_cumulative_U_seen": null,
+        "source_data_contract": true,
+        "U_truth_read": false,
+        "target_access": false
+      },
+      {
+        "row_id": "PSM-s2026092703",
+        "status": "FINAL_STATE_SAVED",
+        "parent_epochs": 50,
+        "parent_updates": 11100,
+        "teacher_EMA_updates": 11100,
+        "parent_U_seen": 2097900,
+        "parent_physical_views": 1048950,
+        "parent_gaussian_mean": 0.985464870929718,
+        "parent_gaussian_variance": 0.004675370175391436,
+        "prototype_L_label_count": 0,
+        "positive_prototype_RX_class_cells": 0,
+        "classes_with_positive_U_weight": 6,
+        "child_complete_step_prefix": null,
+        "child_cumulative_U_seen": null,
+        "source_data_contract": true,
+        "U_truth_read": false,
+        "target_access": false
+      },
+      {
+        "row_id": "RXPSM-s2026092703",
+        "status": "FINAL_STATE_SAVED",
+        "parent_epochs": 50,
+        "parent_updates": 11100,
+        "teacher_EMA_updates": 11100,
+        "parent_U_seen": 2097900,
+        "parent_physical_views": 1048950,
+        "parent_gaussian_mean": 0.9834792613983154,
+        "parent_gaussian_variance": 0.0050187488086521626,
+        "prototype_L_label_count": 1051392,
+        "positive_prototype_RX_class_cells": 30,
+        "classes_with_positive_U_weight": 6,
+        "child_complete_step_prefix": null,
+        "child_cumulative_U_seen": null,
+        "source_data_contract": true,
+        "U_truth_read": false,
+        "target_access": false
+      }
+    ],
+    "target_scope": {
+      "test": "main",
+      "protocol": "F0",
+      "handle_status": "VALIDATED_ONCE",
+      "target_count": 168000,
+      "source_target_disjoint": true,
+      "source_rxs": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "num_classes": 6,
+      "scenes": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "target_receiver_metadata": null,
+      "target_days_metadata": null,
+      "target_IQ_read": false,
+      "target_truth_read": false
+    }
+  },
+  "actual_training_costs": [
+    {
+      "row_id": "PSM-s2026092701",
+      "training": {
+        "status": "SOURCE_FROZEN",
+        "epoch": 50,
+        "updates": 11100,
+        "seconds": 8075.792797807138,
+        "actual_adapter_SSL": {
+          "method": "pamf_psm_v1",
+          "native_U_loop": false,
+          "own_EMA": true,
+          "cumulative_EMA_updates": 11100,
+          "U_seen": 2097900,
+          "physical_U_seen": 1048950,
+          "effective_U_weight": 2011068.6958694458,
+          "effective_U_per_class": [
+            337495.6875,
+            332807.0,
+            344776.40625,
+            312918.3125,
+            336425.5625,
+            346678.28125
+          ],
+          "U_truth_read": false,
+          "labeled_only_prototype_updates": false
+        },
+        "head_fit_updates": 0,
+        "U_truth_read": false,
+        "target_access": false
+      },
+      "segments": [
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 2189.368248746032,
+          "actual_adapter_SSL": {
+            "method": "pamf_psm_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 4440,
+            "U_seen": 396900,
+            "physical_U_seen": 198450,
+            "effective_U_weight": 377715.21283721924,
+            "effective_U_per_class": [
+              63644.62109375,
+              62262.6171875,
+              65106.68359375,
+              57759.4921875,
+              63347.8984375,
+              65594.5625
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": false
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        },
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 10,
+          "updates": 2220,
+          "seconds": 2012.9792089059483,
+          "actual_adapter_SSL": {
+            "method": "pamf_psm_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 6660,
+            "U_seen": 963900,
+            "physical_U_seen": 481950,
+            "effective_U_weight": 919089.4317932129,
+            "effective_U_per_class": [
+              154696.828125,
+              151780.546875,
+              158175.859375,
+              141222.578125,
+              153914.84375,
+              159305.765625
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": false
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        },
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 3871.400359530002,
+          "actual_adapter_SSL": {
+            "method": "pamf_psm_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 11100,
+            "U_seen": 2097900,
+            "physical_U_seen": 1048950,
+            "effective_U_weight": 2011068.6958694458,
+            "effective_U_per_class": [
+              337495.6875,
+              332807.0,
+              344776.40625,
+              312918.3125,
+              336425.5625,
+              346678.28125
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": false
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        }
+      ],
+      "source_V_diagnostics": [
+        {
+          "name": "source_V_F20",
+          "metrics": {
+            "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+            "samples": 720,
+            "clean_accuracy": 0.9805555555555555,
+            "fixed_practical_mixture_accuracy": 0.7444444444444445,
+            "model_state_updates": 0,
+            "prototype_updates": 0,
+            "teacher_updates": 0,
+            "target_reads": 0,
+            "U_truth_reads": 0,
+            "head_fit_updates": 0,
+            "simulator_scene_coverage": {
+              "practical_low_suburban": 232,
+              "practical_mid_urban": 231,
+              "practical_low_urban": 257
+            }
+          }
+        },
+        {
+          "name": "source_V_F21",
+          "metrics": {
+            "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+            "samples": 720,
+            "clean_accuracy": 0.9791666666666666,
+            "fixed_practical_mixture_accuracy": 0.7444444444444445,
+            "model_state_updates": 0,
+            "prototype_updates": 0,
+            "teacher_updates": 0,
+            "target_reads": 0,
+            "U_truth_reads": 0,
+            "head_fit_updates": 0,
+            "simulator_scene_coverage": {
+              "practical_low_suburban": 232,
+              "practical_mid_urban": 231,
+              "practical_low_urban": 257
+            }
+          }
+        },
+        {
+          "name": "source_V_diagnostic",
+          "metrics": {
+            "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+            "samples": 720,
+            "clean_accuracy": 0.9819444444444444,
+            "fixed_practical_mixture_accuracy": 0.7527777777777778,
+            "model_state_updates": 0,
+            "prototype_updates": 0,
+            "teacher_updates": 0,
+            "target_reads": 0,
+            "U_truth_reads": 0,
+            "head_fit_updates": 0,
+            "simulator_scene_coverage": {
+              "practical_low_suburban": 232,
+              "practical_mid_urban": 231,
+              "practical_low_urban": 257
+            }
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "RXPSM-s2026092701",
+      "training": {
+        "status": "SOURCE_FROZEN",
+        "epoch": 50,
+        "updates": 11100,
+        "seconds": 8499.52728221193,
+        "actual_adapter_SSL": {
+          "method": "pamf_rxpsm_v1",
+          "native_U_loop": false,
+          "own_EMA": true,
+          "cumulative_EMA_updates": 11100,
+          "U_seen": 2097900,
+          "physical_U_seen": 1048950,
+          "effective_U_weight": 1995099.360321045,
+          "effective_U_per_class": [
+            336801.03125,
+            331102.875,
+            344162.6875,
+            309833.625,
+            326745.03125,
+            346493.59375
+          ],
+          "U_truth_read": false,
+          "labeled_only_prototype_updates": true
+        },
+        "head_fit_updates": 0,
+        "U_truth_read": false,
+        "target_access": false
+      },
+      "segments": [
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 2227.829735412961,
+          "actual_adapter_SSL": {
+            "method": "pamf_rxpsm_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 4440,
+            "U_seen": 396900,
+            "physical_U_seen": 198450,
+            "effective_U_weight": 374680.31732940674,
+            "effective_U_per_class": [
+              63498.94921875,
+              61906.82421875,
+              65061.47265625,
+              57205.70703125,
+              61428.36328125,
+              65579.65625
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": true
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        },
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 10,
+          "updates": 2220,
+          "seconds": 2188.5338997729123,
+          "actual_adapter_SSL": {
+            "method": "pamf_rxpsm_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 6660,
+            "U_seen": 963900,
+            "physical_U_seen": 481950,
+            "effective_U_weight": 911637.6735458374,
+            "effective_U_per_class": [
+              154386.6875,
+              150957.890625,
+              157993.703125,
+              139769.390625,
+              149277.265625,
+              159258.890625
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": true
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        },
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 4081.116644883994,
+          "actual_adapter_SSL": {
+            "method": "pamf_rxpsm_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 11100,
+            "U_seen": 2097900,
+            "physical_U_seen": 1048950,
+            "effective_U_weight": 1995099.360321045,
+            "effective_U_per_class": [
+              336801.03125,
+              331102.875,
+              344162.6875,
+              309833.625,
+              326745.03125,
+              346493.59375
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": true
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        }
+      ],
+      "source_V_diagnostics": [
+        {
+          "name": "source_V_diagnostic",
+          "metrics": {
+            "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+            "samples": 720,
+            "clean_accuracy": 0.9819444444444444,
+            "fixed_practical_mixture_accuracy": 0.7541666666666667,
+            "model_state_updates": 0,
+            "prototype_updates": 0,
+            "teacher_updates": 0,
+            "target_reads": 0,
+            "U_truth_reads": 0,
+            "head_fit_updates": 0,
+            "simulator_scene_coverage": {
+              "practical_low_suburban": 232,
+              "practical_mid_urban": 231,
+              "practical_low_urban": 257
+            }
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "PSM-s2026092702",
+      "training": {
+        "status": "SOURCE_FROZEN",
+        "epoch": 50,
+        "updates": 11100,
+        "seconds": 8337.30482252012,
+        "actual_adapter_SSL": {
+          "method": "pamf_psm_v1",
+          "native_U_loop": false,
+          "own_EMA": true,
+          "cumulative_EMA_updates": 11100,
+          "U_seen": 2097900,
+          "physical_U_seen": 1048950,
+          "effective_U_weight": 2012478.5499649048,
+          "effective_U_per_class": [
+            337101.6875,
+            331185.625,
+            345280.53125,
+            315434.125,
+            336690.15625,
+            346814.25
+          ],
+          "U_truth_read": false,
+          "labeled_only_prototype_updates": false
+        },
+        "head_fit_updates": 0,
+        "U_truth_read": false,
+        "target_access": false
+      },
+      "segments": [
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 2083.5132456209976,
+          "actual_adapter_SSL": {
+            "method": "pamf_psm_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 4440,
+            "U_seen": 396900,
+            "physical_U_seen": 198450,
+            "effective_U_weight": 378277.2366409302,
+            "effective_U_per_class": [
+              63722.36328125,
+              61996.0234375,
+              65178.31640625,
+              58307.60546875,
+              63407.61328125,
+              65665.8203125
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": false
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        },
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 10,
+          "updates": 2220,
+          "seconds": 2483.97174021299,
+          "actual_adapter_SSL": {
+            "method": "pamf_psm_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 6660,
+            "U_seen": 963900,
+            "physical_U_seen": 481950,
+            "effective_U_weight": 920337.9433441162,
+            "effective_U_per_class": [
+              154640.484375,
+              150807.765625,
+              158451.640625,
+              142830.640625,
+              154165.734375,
+              159447.0625
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": false
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        },
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 3767.6637260080315,
+          "actual_adapter_SSL": {
+            "method": "pamf_psm_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 11100,
+            "U_seen": 2097900,
+            "physical_U_seen": 1048950,
+            "effective_U_weight": 2012478.5499649048,
+            "effective_U_per_class": [
+              337101.6875,
+              331185.625,
+              345280.53125,
+              315434.125,
+              336690.15625,
+              346814.25
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": false
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        }
+      ],
+      "source_V_diagnostics": [
+        {
+          "name": "source_V_F20",
+          "metrics": {
+            "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+            "samples": 720,
+            "clean_accuracy": 0.9805555555555555,
+            "fixed_practical_mixture_accuracy": 0.7597222222222222,
+            "model_state_updates": 0,
+            "prototype_updates": 0,
+            "teacher_updates": 0,
+            "target_reads": 0,
+            "U_truth_reads": 0,
+            "head_fit_updates": 0,
+            "simulator_scene_coverage": {
+              "practical_low_suburban": 232,
+              "practical_mid_urban": 231,
+              "practical_low_urban": 257
+            }
+          }
+        },
+        {
+          "name": "source_V_F21",
+          "metrics": {
+            "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+            "samples": 720,
+            "clean_accuracy": 0.9805555555555555,
+            "fixed_practical_mixture_accuracy": 0.7486111111111111,
+            "model_state_updates": 0,
+            "prototype_updates": 0,
+            "teacher_updates": 0,
+            "target_reads": 0,
+            "U_truth_reads": 0,
+            "head_fit_updates": 0,
+            "simulator_scene_coverage": {
+              "practical_low_suburban": 232,
+              "practical_mid_urban": 231,
+              "practical_low_urban": 257
+            }
+          }
+        },
+        {
+          "name": "source_V_diagnostic",
+          "metrics": {
+            "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+            "samples": 720,
+            "clean_accuracy": 0.9791666666666666,
+            "fixed_practical_mixture_accuracy": 0.7652777777777777,
+            "model_state_updates": 0,
+            "prototype_updates": 0,
+            "teacher_updates": 0,
+            "target_reads": 0,
+            "U_truth_reads": 0,
+            "head_fit_updates": 0,
+            "simulator_scene_coverage": {
+              "practical_low_suburban": 232,
+              "practical_mid_urban": 231,
+              "practical_low_urban": 257
+            }
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "RXPSM-s2026092702",
+      "training": {
+        "status": "SOURCE_FROZEN",
+        "epoch": 50,
+        "updates": 11100,
+        "seconds": 9009.058669978986,
+        "actual_adapter_SSL": {
+          "method": "pamf_rxpsm_v1",
+          "native_U_loop": false,
+          "own_EMA": true,
+          "cumulative_EMA_updates": 11100,
+          "U_seen": 2097900,
+          "physical_U_seen": 1048950,
+          "effective_U_weight": 1990886.3247909546,
+          "effective_U_per_class": [
+            336559.84375,
+            329871.59375,
+            345007.03125,
+            310797.40625,
+            321945.625,
+            346739.8125
+          ],
+          "U_truth_read": false,
+          "labeled_only_prototype_updates": true
+        },
+        "head_fit_updates": 0,
+        "U_truth_read": false,
+        "target_access": false
+      },
+      "segments": [
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 2243.238823018968,
+          "actual_adapter_SSL": {
+            "method": "pamf_rxpsm_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 4440,
+            "U_seen": 396900,
+            "physical_U_seen": 198450,
+            "effective_U_weight": 374091.7329483032,
+            "effective_U_per_class": [
+              63695.84765625,
+              61807.1484375,
+              65193.234375,
+              57718.7734375,
+              60020.5859375,
+              65656.6796875
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": true
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        },
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 10,
+          "updates": 2220,
+          "seconds": 2819.4727157091256,
+          "actual_adapter_SSL": {
+            "method": "pamf_rxpsm_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 6660,
+            "U_seen": 963900,
+            "physical_U_seen": 481950,
+            "effective_U_weight": 910399.1828994751,
+            "effective_U_per_class": [
+              154437.40625,
+              150220.828125,
+              158400.796875,
+              141100.4375,
+              146820.90625,
+              159424.734375
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": true
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        },
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 3943.983749679057,
+          "actual_adapter_SSL": {
+            "method": "pamf_rxpsm_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 11100,
+            "U_seen": 2097900,
+            "physical_U_seen": 1048950,
+            "effective_U_weight": 1990886.3247909546,
+            "effective_U_per_class": [
+              336559.84375,
+              329871.59375,
+              345007.03125,
+              310797.40625,
+              321945.625,
+              346739.8125
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": true
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        }
+      ],
+      "source_V_diagnostics": [
+        {
+          "name": "source_V_diagnostic",
+          "metrics": {
+            "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+            "samples": 720,
+            "clean_accuracy": 0.9805555555555555,
+            "fixed_practical_mixture_accuracy": 0.7722222222222223,
+            "model_state_updates": 0,
+            "prototype_updates": 0,
+            "teacher_updates": 0,
+            "target_reads": 0,
+            "U_truth_reads": 0,
+            "head_fit_updates": 0,
+            "simulator_scene_coverage": {
+              "practical_low_suburban": 232,
+              "practical_mid_urban": 231,
+              "practical_low_urban": 257
+            }
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "PSM-s2026092703",
+      "training": {
+        "status": "SOURCE_FROZEN",
+        "epoch": 50,
+        "updates": 11100,
+        "seconds": 7973.624504683074,
+        "actual_adapter_SSL": {
+          "method": "pamf_psm_v1",
+          "native_U_loop": false,
+          "own_EMA": true,
+          "cumulative_EMA_updates": 11100,
+          "U_seen": 2097900,
+          "physical_U_seen": 1048950,
+          "effective_U_weight": 2012703.404724121,
+          "effective_U_per_class": [
+            338547.125,
+            326421.46875,
+            344235.5625,
+            319467.65625,
+            337850.375,
+            346209.03125
+          ],
+          "U_truth_read": false,
+          "labeled_only_prototype_updates": false
+        },
+        "head_fit_updates": 0,
+        "U_truth_read": false,
+        "target_access": false
+      },
+      "segments": [
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 2065.6866679019295,
+          "actual_adapter_SSL": {
+            "method": "pamf_psm_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 4440,
+            "U_seen": 396900,
+            "physical_U_seen": 198450,
+            "effective_U_weight": 378488.6976928711,
+            "effective_U_per_class": [
+              63835.33203125,
+              60640.265625,
+              64947.171875,
+              59923.21484375,
+              63580.56640625,
+              65562.84375
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": false
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        },
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 10,
+          "updates": 2220,
+          "seconds": 2354.7426240679342,
+          "actual_adapter_SSL": {
+            "method": "pamf_psm_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 6660,
+            "U_seen": 963900,
+            "physical_U_seen": 481950,
+            "effective_U_weight": 920814.2361602783,
+            "effective_U_per_class": [
+              155247.453125,
+              148325.046875,
+              157934.578125,
+              145598.703125,
+              154551.359375,
+              159161.921875
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": false
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        },
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 3550.7018710849807,
+          "actual_adapter_SSL": {
+            "method": "pamf_psm_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 11100,
+            "U_seen": 2097900,
+            "physical_U_seen": 1048950,
+            "effective_U_weight": 2012703.404724121,
+            "effective_U_per_class": [
+              338547.125,
+              326421.46875,
+              344235.5625,
+              319467.65625,
+              337850.375,
+              346209.03125
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": false
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        }
+      ],
+      "source_V_diagnostics": [
+        {
+          "name": "source_V_F20",
+          "metrics": {
+            "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+            "samples": 720,
+            "clean_accuracy": 0.975,
+            "fixed_practical_mixture_accuracy": 0.7472222222222222,
+            "model_state_updates": 0,
+            "prototype_updates": 0,
+            "teacher_updates": 0,
+            "target_reads": 0,
+            "U_truth_reads": 0,
+            "head_fit_updates": 0,
+            "simulator_scene_coverage": {
+              "practical_low_suburban": 232,
+              "practical_mid_urban": 231,
+              "practical_low_urban": 257
+            }
+          }
+        },
+        {
+          "name": "source_V_F21",
+          "metrics": {
+            "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+            "samples": 720,
+            "clean_accuracy": 0.975,
+            "fixed_practical_mixture_accuracy": 0.7541666666666667,
+            "model_state_updates": 0,
+            "prototype_updates": 0,
+            "teacher_updates": 0,
+            "target_reads": 0,
+            "U_truth_reads": 0,
+            "head_fit_updates": 0,
+            "simulator_scene_coverage": {
+              "practical_low_suburban": 232,
+              "practical_mid_urban": 231,
+              "practical_low_urban": 257
+            }
+          }
+        },
+        {
+          "name": "source_V_diagnostic",
+          "metrics": {
+            "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+            "samples": 720,
+            "clean_accuracy": 0.9722222222222222,
+            "fixed_practical_mixture_accuracy": 0.7611111111111111,
+            "model_state_updates": 0,
+            "prototype_updates": 0,
+            "teacher_updates": 0,
+            "target_reads": 0,
+            "U_truth_reads": 0,
+            "head_fit_updates": 0,
+            "simulator_scene_coverage": {
+              "practical_low_suburban": 232,
+              "practical_mid_urban": 231,
+              "practical_low_urban": 257
+            }
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "RXPSM-s2026092703",
+      "training": {
+        "status": "SOURCE_FROZEN",
+        "epoch": 50,
+        "updates": 11100,
+        "seconds": 8493.630997480126,
+        "actual_adapter_SSL": {
+          "method": "pamf_rxpsm_v1",
+          "native_U_loop": false,
+          "own_EMA": true,
+          "cumulative_EMA_updates": 11100,
+          "U_seen": 2097900,
+          "physical_U_seen": 1048950,
+          "effective_U_weight": 2005277.9652786255,
+          "effective_U_per_class": [
+            338292.875,
+            325142.0625,
+            343832.0,
+            317792.84375,
+            334136.03125,
+            346118.03125
+          ],
+          "U_truth_read": false,
+          "labeled_only_prototype_updates": true
+        },
+        "head_fit_updates": 0,
+        "U_truth_read": false,
+        "target_access": false
+      },
+      "segments": [
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 2212.282018410042,
+          "actual_adapter_SSL": {
+            "method": "pamf_rxpsm_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 4440,
+            "U_seen": 396900,
+            "physical_U_seen": 198450,
+            "effective_U_weight": 377773.1004257202,
+            "effective_U_per_class": [
+              63837.16015625,
+              60539.609375,
+              64981.765625,
+              59776.734375,
+              63092.703125,
+              65545.7890625
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": true
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        },
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 10,
+          "updates": 2220,
+          "seconds": 2679.65437050513,
+          "actual_adapter_SSL": {
+            "method": "pamf_rxpsm_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 6660,
+            "U_seen": 963900,
+            "physical_U_seen": 481950,
+            "effective_U_weight": 918263.2018585205,
+            "effective_U_per_class": [
+              155183.890625,
+              147856.203125,
+              157889.234375,
+              144982.078125,
+              153235.515625,
+              159123.140625
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": true
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        },
+        {
+          "status": "SOURCE_FROZEN",
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 3598.970859051915,
+          "actual_adapter_SSL": {
+            "method": "pamf_rxpsm_v1",
+            "native_U_loop": false,
+            "own_EMA": true,
+            "cumulative_EMA_updates": 11100,
+            "U_seen": 2097900,
+            "physical_U_seen": 1048950,
+            "effective_U_weight": 2005277.9652786255,
+            "effective_U_per_class": [
+              338292.875,
+              325142.0625,
+              343832.0,
+              317792.84375,
+              334136.03125,
+              346118.03125
+            ],
+            "U_truth_read": false,
+            "labeled_only_prototype_updates": true
+          },
+          "head_fit_updates": 0,
+          "U_truth_read": false,
+          "target_access": false
+        }
+      ],
+      "source_V_diagnostics": [
+        {
+          "name": "source_V_diagnostic",
+          "metrics": {
+            "status": "FROZEN_SOURCE_V_DIAGNOSTIC",
+            "samples": 720,
+            "clean_accuracy": 0.975,
+            "fixed_practical_mixture_accuracy": 0.7625,
+            "model_state_updates": 0,
+            "prototype_updates": 0,
+            "teacher_updates": 0,
+            "target_reads": 0,
+            "U_truth_reads": 0,
+            "head_fit_updates": 0,
+            "simulator_scene_coverage": {
+              "practical_low_suburban": 232,
+              "practical_mid_urban": 231,
+              "practical_low_urban": 257
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "baseline_training_costs": [
+    {
+      "method": "F20",
+      "model_seed": 2026092701,
+      "epochs": 50,
+      "updates": 11100,
+      "seconds": 5859.2507663581055,
+      "segments": [
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 2468.37131254212
+        },
+        {
+          "epoch": 10,
+          "updates": 2220,
+          "seconds": 1150.9676670429762
+        },
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 2239.911786773009
+        }
+      ]
+    },
+    {
+      "method": "F21",
+      "model_seed": 2026092701,
+      "epochs": 50,
+      "updates": 11100,
+      "seconds": 6064.280181294773,
+      "segments": [
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 2428.72068757494
+        },
+        {
+          "epoch": 10,
+          "updates": 2220,
+          "seconds": 1238.4968289479148
+        },
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 2397.062664771918
+        }
+      ]
+    },
+    {
+      "method": "F20",
+      "model_seed": 2026092702,
+      "epochs": 50,
+      "updates": 11100,
+      "seconds": 5679.993145135231,
+      "segments": [
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 2229.063239263138
+        },
+        {
+          "epoch": 10,
+          "updates": 2220,
+          "seconds": 1169.7174370349385
+        },
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 2281.212468837155
+        }
+      ]
+    },
+    {
+      "method": "F21",
+      "model_seed": 2026092702,
+      "epochs": 50,
+      "updates": 11100,
+      "seconds": 6310.290091911098,
+      "segments": [
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 2596.1054225179832
+        },
+        {
+          "epoch": 10,
+          "updates": 2220,
+          "seconds": 1409.090709490003
+        },
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 2305.0939599031117
+        }
+      ]
+    },
+    {
+      "method": "F20",
+      "model_seed": 2026092703,
+      "epochs": 50,
+      "updates": 11100,
+      "seconds": 5337.616240176139,
+      "segments": [
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 2149.4560114799533
+        },
+        {
+          "epoch": 10,
+          "updates": 2220,
+          "seconds": 1039.792971641058
+        },
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 2148.367257055128
+        }
+      ]
+    },
+    {
+      "method": "F21",
+      "model_seed": 2026092703,
+      "epochs": 50,
+      "updates": 11100,
+      "seconds": 6044.307537698653,
+      "segments": [
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 2394.8106896989048
+        },
+        {
+          "epoch": 10,
+          "updates": 2220,
+          "seconds": 1461.8989668178838
+        },
+        {
+          "epoch": 20,
+          "updates": 4440,
+          "seconds": 2187.597881181864
+        }
+      ]
+    }
+  ],
+  "target_success_from_source_V": false,
+  "walltime_comparison_confounded_by_shared_GPU_load": true
+}

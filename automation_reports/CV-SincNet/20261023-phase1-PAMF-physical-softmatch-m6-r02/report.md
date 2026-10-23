@@ -114,3 +114,10 @@ r01在正式派发前的设备放置错误已保留，r02为同科学矩阵的�
 目标测试汇总已补齐逐receiver、TX、date及receiver×date的三个配对种子结果，保留各seed正确计数、配对均值和样本SD、净正确数及正收益seed数，不按目标成绩删选。分析器仍以全七景、每景168000条和精确整数门槛验收。新增分组汇总的三项合成检查PASS：均值为零时保留相反seed差异、拒绝单seed缺失分组、ALL_SCORED之前不打开任何score文件。汇总代码commit为19f970081a06597c67e8cde18459ecb54f1f52bb，已push并独立核对upstream OID；不改变4633ff7d训练release。
 
 最终数据收集器仅在六行ALL_SCORED后读取固定的独立truth-last scores，在本地不可覆盖分析目录生成七景与分组报告，并保存各行实际训练耗时和源V诊断。当前没有新目标测试分数，goal仍未完成。原默认PAMF/DURA不因本次研究自动替换。
+
+
+## 首轮完整目标测试结论
+
+六行均完成训练、七景预测及独立 truth-last 评分，状态 ANALYZED。PSM 的 clean／六景均值为 84.222619%／71.897288%，RXPSM 为 84.272421%／71.853571%；两者均未达标。相对 F20，PSM 为 -0.562698／+1.301091 pp，RXPSM 为 -0.512897／+1.257374 pp；相对 F21，分别为 -0.759127／+1.537930 pp 和 -0.709325／+1.494213 pp。clean 三种子全部下降，不能以星地部分改善宣布成功。
+
+最终表格、逐 seed／景 Macro-F1、实际训练成本及证据边界见 target_results.md、target_summary.json、target_per_seed.csv、target_strata.csv 和 training_completion.json。完整 66600 条 step 已核对闭合与预算，最终自身状态未重置。此前各阶段“无目标分数”均为当时快照；本节为完成后的最终结论。目标继续 ACTIVE。后续 VIEWANCHOR 的系数、父方法和 E30 轮次在读取本轮目标分数前已固定，不以本轮结果改变配方或选择性重跑。

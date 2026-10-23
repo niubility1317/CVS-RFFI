@@ -379,11 +379,21 @@
   },
   "registered_at": "2026-10-23T08:15:03+00:00",
   "analysis_code": {
-    "commit": "2ed4993eb3eff19d0a1c5d03987a657f979b02f3",
-    "entry": "experiments.pamf_ssl_research.analyze",
-    "goal_comparison": "exact confusion correct-count arithmetic",
-    "training_execution_unchanged": true,
-    "reporting_commit": "19f970081a06597c67e8cde18459ecb54f1f52bb",
-    "reporting_entry": "experiments.pamf_ssl_research.report"
+    "commit": "0d790d467123f5432f7dcba491d1f9111e803e59",
+    "reporting_commit": "0d790d467123f5432f7dcba491d1f9111e803e59",
+    "entry": "experiments.pamf_ssl_research.report",
+    "training_release_unchanged": true
+  },
+  "result_summary": {
+    "status": "ANALYZED",
+    "goal_met": false,
+    "raw_only": true,
+    "completed_rows": 6,
+    "completed_target_views": 42,
+    "selected_final_epochs": 50,
+    "source_V_excluded": true,
+    "summary_ref": "target_summary.json",
+    "details_ref": "target_results.md; target_per_seed.csv; target_strata.csv",
+    "training_ref": "training_completion.json"
   }
 }

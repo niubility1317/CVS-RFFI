@@ -1,6 +1,6 @@
 # PAMF 物理视图特征一致性：固定后续假设
 
-状态：设计固定，未发布、未训练、未访问本版目标测试。方案在首轮 PSM/RXPSM 目标分数读取前固定；是否需要启动后续研究取决于用户原目标是否尚未完成，不能据目标分数改变以下配方或挑选父模型。
+状态：调度器已发布并独立核实，正等待 GPU 容量；尚未执行真实父权重 smoke 或训练，未访问本版目标测试。方案在首轮 PSM/RXPSM 目标分数读取前固定；是否需要启动后续研究取决于用户原目标是否尚未完成，不能据目标分数改变以下配方或挑选父模型。
 
 当前源域证据确认，PSM/RXPSM 的物理强视图损失实际非零，跨 RX 标签原型覆盖完整，E30 的自身 EMA、原型和 U 计数均连续保存。它们尚未显式对齐同一物理 IQ 的弱视图与物理强视图特征。本版检验该额外约束，不能把当前日志当作特征漂移或目标收益的证明。
 
@@ -23,6 +23,13 @@
 
 ## 发布预登记
 
-当前状态为 LOCAL_VERIFIED，未提交到 N607。真实执行配置由已提交的 `experiments.pamf_ssl_research.view_anchor_publish` 生成；精确发布命令、代码 commit、环境和 CWD、独占输入／输出／日志路径及三行 GPU 矩阵以 `experiment.json` 的 `code`、`execution`、`rows` 为唯一维护位置。原环境 FP32/TF32off，源域数据权限、默认分类头和上述科学停止规则保持。
+当前状态为 QUEUED，已提交到 N607，当前真实代码 commit 为 `9299146ed52567abd62ca9701d14652f0df73c1d`。真实执行配置由已提交的 `experiments.pamf_ssl_research.view_anchor_publish` 生成；精确发布命令、代码 commit、环境和 CWD、独占输入／输出／日志路径及三行 GPU 矩阵以 `experiment.json` 的 `code`、`execution`、`rows` 为唯一维护位置。原环境 FP32/TF32off，源域数据权限、默认分类头和上述科学停止规则保持。
 
 验收和逐 RX/TX/day 报告已支持真实 VIEWANCHOR 名称，不冒充 PSM/RXPSM；5 项整数边界及数据排除检查、4 项完整分层报告检查共 9 项 PASS。包括 clean 精确 +1 pp、六景精确 +1.5 pp 不通过、源 V 不可替代目标测试、缺失 seed／分层不静默求均值。准备记录没有新训练或效果声明。
+
+
+## 发布后独立读回
+
+不可覆盖 release 已完成一次归档传输校验和远端编译。独立读回确认控制器存活，PID/CWD/命令与本 run 匹配，state.json 心跳继续推进；三行均为 QUEUED，自身 GPU worker 为 0。当前 GPU0 计算任务数不满足已登记的 smoke 启动容量，状态 WAITING_FOR_SMOKE_GPU；这不是训练成功或 smoke PASS。具体状态见 launch_verification.json，完整进程证据仅保存在本地私有读回。
+
+控制器在容量满足后自动执行真实 E30 学生／自身 EMA 的 source-only smoke，PASS 后立即派发三种子续训、冻结、七景预测和独立评分。没有停止、重启或修改其他 owner 的健康任务。系数、父来源和预算保持原预声明；尚无本版目标结果。

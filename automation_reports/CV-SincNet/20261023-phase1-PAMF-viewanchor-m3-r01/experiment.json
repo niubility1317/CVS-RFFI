@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-23 /goal要求设计迭代PAMF半监督方法，使clean相对监督与普通PL均至少高1个百分点、六景平均均严格高1.5个百分点；并分配3GPU，每GPU固定1seed、最多并发2worker。",
   "code": {
-    "commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+    "commit": "9299146ed52567abd62ca9701d14652f0df73c1d",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 ordinary account CVS-RFFI Py3.10/Torch2.1 FP32/TF32off, CPU2 per worker",
     "cwd": "PROJECT/releases/20261023-phase1-PAMF-viewanchor-m3-r01",
@@ -246,9 +246,16 @@
   "notes": [
     "Prepared only, not submitted. No effectiveness claim. Existing r02 immutable release unchanged.",
     "Hypothesis fixed in5e52e4ebd383ba6990e9afd38a563798368f1603 before any new PSM/RXPSM score read.",
-    "One completed independent P0/P1 core review, no findings. Sixteen SSL/launch tests and nine integer goal/report tests PASS.",
+    "One completed independent P0/P1 core review, no findings. Seventeen SSL/launch tests and nine integer goal/report tests PASS.",
     "Physical view coefficient0.10, E31 start, RXPSM E30 parents and all three seeds are fixed; no target-feedback changes.",
     "Goal remains raw unseen-receiver target clean>=+1pp and six-practical mean>+1.5pp relative to BOTH F20/F21."
   ],
-  "registered_at": "2026-10-23T10:41:16+00:00"
+  "registered_at": "2026-10-23T10:41:16+00:00",
+  "launch_status": {
+    "status": "VERIFIED_CONTROLLER_QUEUED",
+    "evidence": "launch_verification.json",
+    "source_smoke_pending": true,
+    "own_training_workers": 0,
+    "target_reads": 0
+  }
 }
