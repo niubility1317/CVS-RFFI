@@ -1,0 +1,124 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261023-phase1-PAMF-cpu-balance-control-r01",
+  "group_id": "phase1-cric-dura-complete-system",
+  "display_name": "剩余CPU评分四路并行与快速调度",
+  "description": "Resource-only handover of the unchanged frozen-prediction score queue; no new scientific experiment, training, inference or target prediction.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261023-phase1-PAMF-physics-device-control-r01"
+  ],
+  "replaces_run_id": "20261023-phase1-PAMF-physics-device-control-r01",
+  "authorization": "User requested uniform task distribution and faster completion on 2026-10-23 in task 01a09085-1de1-7f02-a089-94fc3dc3f851.",
+  "code": {
+    "commit": "Resource release commit resolved from the committed current HEAD by publisher and recorded in runtime/submit evidence",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 ordinary account; unchanged CVS-RFFI Python; each scorer2 CPU threads and CUDA disabled",
+    "cwd": "PROJECT/releases/20261023-phase1-PAMF-cpu-balance-control-r01",
+    "entry": "experiments.cric_dura_comparison.publish_cpu_balance"
+  },
+  "data": {
+    "dataset": "Existing registered WiSig ManySig/ManyRx frozen prediction artifacts only",
+    "version": null,
+    "representation": null,
+    "contract_ref": "docs/PROJECT_PROTOCOL.md",
+    "physical_ids_ref": null,
+    "label_map_ref": null,
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": null,
+      "U_s": null,
+      "V": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Reuse existing validated predictions and row contracts; no data or checkpoint loading by controller",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "independent_truth_last_scoring",
+    "query_use": "Existing authorized score jobs only after all registered prediction dependencies complete; no feedback to predictors",
+    "external_method_exception": null,
+    "claim_scope": "No new performance claim or scientific matrix change"
+  },
+  "checkpoint": {
+    "initialization": "No checkpoint loaded by dispatcher",
+    "sources": [],
+    "contract_check_ref": "Existing immutable per-job worker configs are reused verbatim",
+    "provenance_verdict": "Unchanged scientific workers and prediction dependencies",
+    "selection_rule": "No model selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex-CPU-score-balance-20261023",
+    "gpu_policy": "No GPU jobs remain; four CPU scoring processes maximum,2threads each;CPU<75%,RAM>=64GiB,IOwait<5%",
+    "remote_run_root": "PROJECT/runs/20261023-phase1-PAMF-cpu-balance-control-r01",
+    "remote_log_root": "PROJECT/runs/20261023-phase1-PAMF-cpu-balance-control-r01/logs",
+    "local_artifact_root": "local_artifacts/cpu_score_balance_20261023",
+    "launch_command": "python -m experiments.cric_dura_comparison.publish_cpu_balance --repo <registered worktree> --output <fresh artifact folder> --previous <current continuation_runtime.json> --ssh-config <project config>",
+    "stop_rule": "Existing two identical unresolved technical failures stop new admission; host pressure blocks extra CPU admissions only; preserve healthy PIDs and all outputs"
+  },
+  "expected_artifacts": [
+    "adoption.json",
+    "pipeline_state.json with CPU score policy",
+    "exclusive new submit/runtime",
+    "independent PID/CWD/argv and completion/log-growth readback"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "remaining stage count",
+      "completed stages per minute",
+      "CPU busy",
+      "available RAM",
+      "I/O wait"
+    ],
+    "dimensions": [
+      "time",
+      "stage kind"
+    ],
+    "prediction_ref": "Existing complete frozen outputs; no repeat inference",
+    "scorer_ref": "Unchanged existing per-row truth-last worker releases"
+  },
+  "rows": [
+    {
+      "row_id": "resource-only-handover",
+      "method": "four independent CPU scorers;1s scheduling poll",
+      "purpose": "resource-only acceleration",
+      "config_ref": "Published runtime.json; prior complete resolved_jobs.json reused unchanged",
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No new RNG or scientific row; all existing scientific seeds remain in the immutable resolved list",
+      "budget_ref": "No new training/predictions; existing remaining score/analysis stages only",
+      "output_root": "PROJECT/runs/20261023-phase1-PAMF-cpu-balance-control-r01",
+      "log_path": "PROJECT/releases/20261023-phase1-PAMF-cpu-balance-control-r01/continuation.log",
+      "command": "python -u -m experiments.cric_dura_comparison.multiprocess_control --config <new resource runtime>",
+      "expected_artifacts": [
+        "adoption.json",
+        "pipeline_state.json with CPU score policy",
+        "exclusive new submit/runtime",
+        "independent PID/CWD/argv and completion/log-growth readback"
+      ]
+    }
+  ],
+  "notes": [
+    "Scope and focused validation: docs/PAMF_CPU_SCORE_BALANCE_20261023.md",
+    "Existing known replaced historical failure is preserved, not reset; old seven user-stopped invalid F rows remain stopped."
+  ],
+  "registered_at": "2026-10-23T02:34:23+00:00"
+}

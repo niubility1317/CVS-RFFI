@@ -1,6 +1,7 @@
 """Resource-only handover; run immutable scientific workers with more GPU slots."""
 import argparse
 from collections import Counter
+import math
 import os
 from pathlib import Path
 import signal
@@ -14,6 +15,22 @@ from .resource_balance import LoadPolicy
 
 
 HEAVY={'G','G_student'}
+
+
+def cpu_score_settings(rt):
+    workers=rt.get('max_cpu_score_workers',1)
+    poll=rt.get('poll_seconds',30)
+    if type(workers) is not int or not 1<=workers<=8:
+        raise ValueError('CPU scoring concurrency must be an integer in 1..8')
+    if isinstance(poll,bool) or not isinstance(poll,(int,float)) or not math.isfinite(poll) or not 1<=poll<=30:
+        raise ValueError('Poll seconds must be finite and in 1..30')
+    return workers,float(poll)
+
+
+def cpu_score_candidates(eligible,active,jobs,limit,host_ok):
+    if not host_ok:return []
+    slots=max(0,limit-sum(jobs[key]['kind']=='score' for key in active))
+    return [j for j in eligible if j['kind']=='score' and j['id'] not in active and ready(j)][:slots]
 
 
 def completion_status(state):
@@ -100,6 +117,7 @@ def failure(job,item):
 
 
 def run(rt):
+    score_limit,poll_seconds=cpu_score_settings(rt)
     own_limit=rt.get('max_own_per_gpu',3);total_limit=rt.get('max_compute_per_gpu',3)
     balance=LoadPolicy(rt['load_balance']) if rt.get('load_balance') else None
     if own_limit not in (2,3) or total_limit!=3:raise ValueError('Unsupported baseline resource capacity')
@@ -191,7 +209,7 @@ def run(rt):
         if old.get('status')=='RUNNING':
             reason=failure(job,old);failures[reason]+=1;state['jobs'][key]=dict(old,status='FAILED',failure=reason)
         elif not old:state['jobs'][key]=dict(status='QUEUED')
-    if sum(by_id[k]['kind']=='score' for k in active)>1:raise ValueError('More than one existing scorer')
+    if sum(by_id[k]['kind']=='score' for k in active)>score_limit:raise ValueError('Existing scorers exceed requested CPU capacity')
     write(root/'adoption.json',dict(status='VERIFIED_OWNED_CONTROLLER_HANDOVER',previous_owner_pid=previous['pid'],healthy_workers=active,scientific_worker_release=rt['worker_release']))
     write(Path(rt['previous_control_root'])/'multiprocess_handoff.json',dict(new_owner_pid=os.getpid(),new_control_root=str(root),new_runtime=rt['runtime_file']))
     turn=fturn=0
@@ -230,13 +248,15 @@ def run(rt):
                     pids=subprocess.check_output(['nvidia-smi','-i',str(gpu),'--query-compute-apps=pid','--format=csv,noheader,nounits'],text=True).split()
                     if str(child.pid) in pids:break
                     time.sleep(.5)
-        if not any(by_id[key]['kind']=='score' for key in active):
-            job=next((j for j in eligible if j['kind']=='score'),None)
-            if job:launch(job,None)
-        reserve=external_pending(rt)
         if balance:balance.poll(by_id)
+        # Additional scorers are independent truth-side jobs with distinct existing
+        # outputs and completed prediction dependencies; they never consume a GPU.
+        host_ok=score_limit==1 or (balance is not None and balance.host_ok())
+        for job in cpu_score_candidates(eligible,active,by_id,score_limit,host_ok):
+            launch(job,None)
+        reserve=external_pending(rt)
         gpu_order=balance.order(rt['allowed_gpus']) if balance else rt['allowed_gpus']
-        for gpu in gpu_order:
+        for gpu in (gpu_order if any(j['kind']!='score' for j in eligible) else []):
             apps,free=capacity(gpu)
             candidates=[j for j in eligible if j['kind']!='score' and
                 (balance.admits(gpu,j,active,by_id,apps,free,reserve) if balance else
@@ -257,11 +277,13 @@ def run(rt):
         state.update(counts=dict(Counter(v['status'] for v in state['jobs'].values())),failures=dict(failures),cache_failures=cache_failures,
             systemic_stop_new_launches=systemic,reserve_external_GPUs_2_3=reserve,active_own_per_gpu=dict(Counter(v['gpu'] for v in active.values() if v['gpu'] is not None)))
         state['effective_counts']=dict(Counter(v['status'] for k,v in state['jobs'].items() if k not in state.get('excluded_job_ids',[])))
+        state['cpu_score_policy']=dict(max_workers=score_limit,poll_seconds=poll_seconds,
+            active=sum(by_id[key]['kind']=='score' for key in active))
         if balance:
             state.update(load_balance=balance.snapshot(),resource_policy=balance.snapshot()['policy'])
         write(root/'pipeline_state.json',state,exclusive=False)
         if not active and (not pending or systemic):break
-        time.sleep(30)
+        time.sleep(poll_seconds)
     state['status']=completion_status(state)
     write(root/'pipeline_state.json',state,exclusive=False)
 
