@@ -53,7 +53,7 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
                 or state['physical_student_views']!=(256 if physical_enabled else 0)
                 or state['raw_As_seen']!=(128 if no_uas else 0) or state['EMA_updates']!=0 or obj.capture_active
                 or state['label_smoothing']!=smoothing or metrics['HPL_label_smoothing']!=smoothing
-                or not torch.allclose(metrics['HPL_loss'],2*metrics['HPL_base_loss'])):
+                or not torch.allclose(metrics['HPL_loss'],c['hard_pl']['weight']*metrics['HPL_base_loss'])):
                 raise ValueError('Actual hard-PL weight/default-head/L/U execution failed')
             if mechanisms and (any(v<=0 for v in state['contrast_anchors'].values())
                 or not all(h.grad is not None and bool(torch.isfinite(h.grad).all()) and float(h.grad.norm())>0
@@ -73,19 +73,35 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
                     or not all(h.grad is not None and bool(torch.isfinite(h.grad).all())
                                and float(h.grad.norm())>0 for h in obj.style_smoke_maps.values())):
                     raise ValueError('Actual accepted-only shallow/middle U style or finite gradient absent')
+            if c.get('hard_pl_gradient_guard'):
+                guard=state['U_gradient_guard'];details=obj.smoke_guard_details
+                if guard['calls']!=1 or guard['pending_U_loss']:
+                    raise ValueError('Exactly one consumed real supervised-anchored U gradient required')
+                for name,p in model.named_parameters():
+                    expected=obj.smoke_guard_expected.get(name)
+                    if (expected is None and p.grad is not None) or (expected is not None and
+                        (p.grad is None or not torch.allclose(p.grad,expected,rtol=2e-5,atol=2e-6))):
+                        raise ValueError('Actual backward differs from protected parameter gradients')
+                if any(d['applied_U_norm']>d['L_norm']*(1+1e-6)+1e-8 or
+                    d['dot_after'] < -1e-5*(d['L_norm']*d['applied_U_norm']+1e-12) for d in details.values()):
+                    raise ValueError('Real gradient projection or norm cap differs')
             checked.append(dict(method=row['method'],model_seed=c['model_seed'],parent_epoch=parent_epoch,parent_updates=parent_epoch*222,L_forward_packets=768,
                 U_seen=256,U_accepted=state['accepted'],student_U_views=state['student_views'],
                 physical_U_generated=state['physical_seen'],physical_student_views=state['physical_student_views'],
                 raw_U_As_seen=state['raw_As_seen'],U_As_raw_input_matches=bool(no_uas and obj.smoke_U_As_input_raw),
                 source_Practical_generated=sum(model._cd_practical.coverage.values()),
                 contrast_anchors=state['contrast_anchors'],shallow_middle_gradient=mechanisms,
-                ordinary_raw_RDrop=mechanisms,As_KL_weight=0,weight=2.,threshold=.95,
+                ordinary_raw_RDrop=mechanisms,As_KL_weight=0,weight=c['hard_pl']['weight'],threshold=.95,
                 EMA_updates=0,finite_backward=True,default_head_gradient=True,feature_hooks_removed=True))
             checked[-1]['U_label_smoothing']=smoothing
             if c.get('hard_pl_mixstyle'):checked[-1]['U_style']=state['U_style']
+            if c.get('hard_pl_gradient_guard'):
+                checked[-1].update(U_gradient_guard=state['U_gradient_guard'],gradient_guard_details=obj.smoke_guard_details,
+                    explicit_backward_matches=True,complete_L_anchor=True)
         del model,obj,holder,payload,ctx;gc.collect();torch.cuda.empty_cache()
     write(Path(rt['run_root'])/'smoke.json',dict(status='PASS',methods=checked,target_reads=0,U_truth_reads=0,
-        probe_updates_discarded=True,formal_reload_original_F21_E30=True,immediate_continuation=True))
+        probe_updates_discarded=True,formal_reload_original_parent_epoch=parent_epoch,
+        formal_reload_original_F21_E30=parent_epoch==30,immediate_continuation=True))
 
 
 def row(c):

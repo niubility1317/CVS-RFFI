@@ -1,0 +1,56 @@
+{
+  "methods": [
+    "HPL_E20_LS6G",
+    "HPL_E20_NAMS6G"
+  ],
+  "parent": "Original same-seed F21 E20 only",
+  "native_schedule": [
+    20,
+    10,
+    20
+  ],
+  "new_epochs": 30,
+  "new_updates": 6660,
+  "total_epochs": 50,
+  "total_updates": 11100,
+  "gate": 0.95,
+  "weight": 6.0,
+  "U_label_smoothing": 0.01,
+  "guard": {
+    "weight": 6.0,
+    "projection": "one_sided_per_group",
+    "groups": [
+      "t2",
+      "cls_head",
+      "other"
+    ],
+    "U_to_L_norm_cap": 1.0,
+    "tiny_L_squared_norm": 1e-12,
+    "anchor": "complete_current_L_objective",
+    "optimizer": "unchanged_native_Adam",
+    "extra_teacher_or_student_forward": false
+  },
+  "source_weight2_U_to_complete_L_norm_medians": {
+    "2026092701": 0.3178010678703084,
+    "2026092702": 0.30382275221525656,
+    "2026092703": 0.3564574781037353
+  },
+  "source_conflicting_batches": 14,
+  "source_probe_batches": 24,
+  "source_basis": "At .95 raw pseudo precision>=99.86% all3 source V;weight2 raw-U gradients have median about0.3 of full L but14/24 conflicts.Strengthen to6 while projecting conflicts and capping per-group U norm by L.",
+  "reference": "Same E20 LS2 and NAMS2 arms;new independent forks,not continuation of target-selected candidate weights",
+  "projected_first_order_property": "Per-group appliedU dot completeL >=0 and appliedU norm<=Lnorm within floating tolerance;not an Adam,loss or target-performance guarantee",
+  "extra_forward_passes": 0,
+  "extra_autograd_passes_per_update": 2,
+  "default_head_joint": true,
+  "no_new_inference_parameters": true,
+  "EMA": false,
+  "prototype": false,
+  "U_truth": false,
+  "V_state_updates": false,
+  "target_training": false,
+  "G_training": false,
+  "raw_goal": "Same fixed F20/F21:clean >=+1pp both,six strict>+1.5pp both;DURA reference separate",
+  "new_NAMS_or_early_target_scores_read_before_freeze": false,
+  "goal_complete": false
+}

@@ -32,7 +32,7 @@ def source_parents(c,*,validate_config=validate):
     return [dict(folder=str(path),**done)],contract
 
 
-def aggregate(states,parents):
+def aggregate(states,parents,*,weight=2.):
     mechanisms=states[0]['method']=='HPLT1U';factor=6 if mechanisms else 1
     keys=('calls','seen','accepted','student_views','physical_seen','physical_student_views','raw_As_seen')
     total={key:sum(s[key] for s in states) for key in keys}
@@ -50,7 +50,7 @@ def aggregate(states,parents):
         teacher_eval_U_views=prior['PL_seen']+total['seen'],U_truth_read=False,prototype_updates=0,
         hard_PL_calls=total['calls'],hard_PL_tail=dict(total,method=states[0]['method'],contrast_anchors=anchors,
             label_smoothing=.01,EMA_updates=0,U_truth_read=False),
-        threshold=.95,weight=2.,default_head_joint=True,new_inference_parameters=0,
+        threshold=.95,weight=weight,default_head_joint=True,new_inference_parameters=0,
         new_mechanism_epochs=total['calls']//222,source_parent_epoch=20)
     if mechanisms:
         style=dict(states[0]['U_style'])
@@ -62,11 +62,18 @@ def aggregate(states,parents):
             or not style['shared_six_forward_plan'] or not style['contrast_captures_after_style']):
             raise ValueError('Earlier supervised-U shared style execution differs')
         actual['U_style']=style;actual['hard_PL_tail']['U_style']=style
+    if 'U_gradient_guard' in states[0]:
+        guards=[s['U_gradient_guard'] for s in states];guard=dict(guards[0])
+        if any(g['recipe']!=guards[0]['recipe'] or g['pending_U_loss'] or g['calls']!=s['calls'] for s,g in zip(states,guards)):
+            raise ValueError('Every earlier-U loss must consume exactly one fixed gradient guard')
+        guard['calls']=sum(g['calls'] for g in guards)
+        for key in ('conflicts','caps'):guard[key]={group:sum(g[key][group] for g in guards) for group in guard[key]}
+        actual['U_gradient_guard']=guard;actual['hard_PL_tail']['U_gradient_guard']=guard
     return actual
 
 
-def train(c,device='cuda:0'):
-    parents,contract=source_parents(c)
+def train(c,device='cuda:0',*,validate_config=validate,objective_cls=objective):
+    parents,contract=source_parents(c,validate_config=validate_config)
     from .hard_pl_train import installed
     from experiments.cric_dura_comparison.f_train import train as segment
     root=Path(c['output_root']);root.mkdir(parents=True,exist_ok=False);write(root/'resolved_config.json',c)
@@ -75,16 +82,16 @@ def train(c,device='cuda:0'):
         folder=root/('segment'+str(end));cfg=dict(c,output_root=str(folder),segment_epochs=epochs,
             epoch_offset=offset,step_offset=offset*222,parent_source=previous)
         holder={}
-        with installed(cfg,holder,objective_cls=objective):segment(cfg,device=device)
+        with installed(cfg,holder,objective_cls=objective_cls):segment(cfg,device=device)
         obj=holder['objective'];state=obj.state_dict()
         if state['calls']!=epochs*222 or state['seen']!=epochs*56700 or obj.capture_active:
             raise ValueError('Complete fixed native segment required')
-        states.append(state);write(folder/'hard_pl_state.json',state);actual=aggregate(states,parents);actual['method']=c['algorithm_id']
+        states.append(state);write(folder/'hard_pl_state.json',state);actual=aggregate(states,parents,weight=c['hard_pl']['weight']);actual['method']=c['algorithm_id']
         done=read(folder/'complete.json');done['actual_adapter_SSL']=actual
         write(folder/'complete.json',done,exclusive=False);segments.append(dict(folder=str(folder),**done));previous=str(folder)
         write(root/'progress.json',dict(status='SOURCE_TRAINING',epoch=end,updates=end*222,
             incremental_epochs=end-20,incremental_updates=(end-20)*222,actual_adapter_SSL=actual),exclusive=False)
-    actual=aggregate(states,parents);actual['method']=c['algorithm_id'];seconds=time.perf_counter()-start;parent_seconds=parents[0]['seconds']
+    actual=aggregate(states,parents,weight=c['hard_pl']['weight']);actual['method']=c['algorithm_id'];seconds=time.perf_counter()-start;parent_seconds=parents[0]['seconds']
     if (actual['hard_PL_calls']!=6660 or actual['U_seen']!=2097900
         or actual['student_U_views']!=(10602900 if c['hard_pl']['method']=='HPLT1U' else 2097900)):
         raise ValueError('Fixed cumulative E50 earlier-U exposure differs')

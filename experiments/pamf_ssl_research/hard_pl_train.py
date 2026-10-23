@@ -43,6 +43,8 @@ def installed(c,holder,*,objective_cls=HardPLObjective):
         old_hook=model._source_labeled_feature_hook
         def hook(self,**kwargs):
             value,metrics=old_hook(**kwargs)
+            if hasattr(objective,'guide'):
+                value=objective.guide(kwargs['identity_loss']+value,self)-kwargs['identity_loss']
             return value,dict(metrics,**objective.metrics)
         hook._accepts_labeled_inputs=True
         model._source_labeled_feature_hook=MethodType(hook,model)

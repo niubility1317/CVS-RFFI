@@ -211,3 +211,8 @@ HPL2 三seed双读出七景42cell已全部独立评分。为符合逐row自动�
 ## HPL_MS2 完整双读出结果
 
 `20261024-phase1-PAMF-HardPL-MixStyle-m3-r02` 各方法三seed、共3模型，每景168000条，raw／同一DURA七景预测与独立truth-last全部42cell完成；全部新增13320条闭合训练记录已核对。HPL_MS2 / raw clean=84.996429%；HPL_MS2 / DURA-LU clean=85.043254%；HPL_MS2 / raw six_mean=70.328340%；HPL_MS2 / DURA-LU six_mean=78.075860%；原数值目标仍未满足，维持ACTIVE。全部结果、匹配基线、逐seed／场景／分层及成本均保存，不从本结果热改其他已固定方法、父权重或矩阵。
+
+
+## 高纯度 PL 的更高权重与完整 L 梯度保护
+
+`20261024-phase1-PAMF-HardPL-GradientGuard-m6-r01` 固定原E20各续训native10+20到E50，.95门控／权重6，LS与NAMS各三seed。原E20完整V .95精度99.87至99.92%；新阈值诊断显示放宽至.8的新增样本仅约91%正确，故不放宽。24个原E20 source L/U 梯度探针weight2 U/L中位数.318/.304/.356，14个冲突，因而固定完整L anchor的单侧分组投影／U范数帽1；不声称Adam或目标保证。无新前向／EMA／Utruth／头或G训练，有额外autograd成本。49相关检查与一次P0P1PASS，原E20真实两臂smoke首卡通过即自动固定六行raw+DURA七景。接替旧E20两臂释放卡位、唯一CPUscorer串接旧E20终态；不变更健康任务。本矩阵在新NAMS/E20目标分数读取前固定；原raw双门槛不变，ACTIVE。
