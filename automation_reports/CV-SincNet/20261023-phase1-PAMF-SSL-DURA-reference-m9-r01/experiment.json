@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "用户2026-10-23明确要求测试结果不仅有单独PAMF，还有参考DURA+PAMF；沿用三张卡、每张一个种子、每卡最多两个本任务worker授权。",
   "code": {
-    "commit": "72524bc3c5ff024047621e6013777d0a5ee3d276",
+    "commit": "0897d2220f6ce311cdce9991e920ec4071bc66b3",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 ordinary account CVS-RFFI Py3.10/Torch2.1 FP32/TF32off, CPU2 per worker",
     "cwd": "PROJECT/releases/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01",
@@ -459,5 +459,12 @@
     "Previously exposed engineering benchmark, no new independent blind-test claim. New combined scores never feed back to model training or candidate ranking.",
     "Seventeen focused data/identity/truth/readout/integer/report/GPU reservation tests PASS. One independent P0/P1 review found one CUDA-registration reservation issue, fixed; one targeted re-review PASS. Real F/G source-only smoke remains first GPU step."
   ],
-  "registered_at": "2026-10-23T11:30:09+00:00"
+  "registered_at": "2026-10-23T11:30:09+00:00",
+  "launch_status": {
+    "status": "VERIFIED_RUNNING",
+    "evidence": "launch_verification.json",
+    "source_smoke": "PASS",
+    "own_GPU_prediction_workers": 1,
+    "metrics": "PENDING"
+  }
 }

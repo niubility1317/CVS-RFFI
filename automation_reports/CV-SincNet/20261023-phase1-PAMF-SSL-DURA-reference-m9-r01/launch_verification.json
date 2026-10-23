@@ -1,0 +1,51 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "execution_commit": "0897d2220f6ce311cdce9991e920ec4071bc66b3",
+  "observed_unix": 1792755161.4347649,
+  "controller_PID_CWD_argv_verified": true,
+  "source_smoke": {
+    "status": "PASS",
+    "source_run_id": "20261023-phase1-PAMF-physical-softmatch-m6-r02",
+    "source_row_id": "PSM-s2026092702",
+    "model_seed": 2026092702,
+    "target_reads": 0,
+    "truth_reads": 0,
+    "source_samples": 2,
+    "parameters_G": 266951,
+    "graph_native_IQ_tolerance": 1e-05,
+    "backend": {
+      "reuse": true,
+      "graph": true,
+      "native": false
+    },
+    "precision": "FP32",
+    "TF32": false,
+    "immediate_continuation": true
+  },
+  "live_workers": [
+    {
+      "row_id": "PSM-s2026092702",
+      "gpu": 6,
+      "PID_CWD_argv_verified": true,
+      "actual_GPU_verified": true,
+      "log_bytes": 113,
+      "source_execution_check": {
+        "status": "PASS",
+        "source_samples": 2,
+        "target_reads": 0,
+        "graph_native_tolerance": 1e-05
+      },
+      "view_markers": 2
+    }
+  ],
+  "queued_rows": 8,
+  "baseline_rows_reused": 6,
+  "new_training_updates": 0,
+  "existing_train_or_raw_owners_modified": false,
+  "publication": {
+    "archive_SHA_comparison": "PASS local/remote one archive",
+    "remote_compile": "PASS"
+  },
+  "target_scores_read": false,
+  "metric_completion": "PENDING"
+}

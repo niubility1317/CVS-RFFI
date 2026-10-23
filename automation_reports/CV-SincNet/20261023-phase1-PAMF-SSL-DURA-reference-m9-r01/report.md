@@ -11,3 +11,9 @@ G 始终是用户固定的 R69 stage2 E20/4940、266951 参数 DURA v1.0，来�
 报告同时给出两张七景均值±SD 表、逐 seed 准确率与 Macro-F1、逐 RX/TX/day/RX×day、对各自监督/普通 PL 对照的配对差，以及 DURA 对同一 F 的纠错、损伤与净纠错。原研发目标仍按 PAMF 单模型判断：clean 相对两个对照均至少 +1 pp，六景均值均严格超过 +1.5 pp；组合结果另列，不能替代单模型验收。该测试基准此前已暴露，不宣称新独立盲测，结果不回流训练、调参或候选排序。
 
 本地 17 项聚焦检查 PASS。一次独立 P0/P1 审查指出新进程尚未注册 CUDA 时的名额预留问题，已修复；唯一一次定点复审确认修复，无新增 P0/P1。卡上已注册 PID 与本控制器启动中 PID 取并集后判定容量，避免超派发和重复计数。真实 F/G source-only smoke 和目标预测均尚未开始。
+
+## 发布与实际运行
+
+VERIFIED：执行 commit `0897d2220f6ce311cdce9991e920ec4071bc66b3`，一次发布包本地/远端 SHA 对照和远端编译均 PASS。独立读回控制器及预测 worker 的 PID/CWD/命令与实际 GPU，确认首条 PSM seed2026092702 的 DURA 预测已在 GPU6 运行；其他行按固定种子卡排队。真实 F/G 的两条合法 L_s IQ no-query smoke PASS，source graph/native IQ 容限1e-5，target/truth读取均为0，固定266951参数G、Graph-RR、FP32/TF32off。每行预测前同样执行 source 检查。健康 VIEWANCHOR 训练保持原流程，未修改其发布。
+
+目标预测、评分与双 readout 汇总尚在进行，不把启动或 smoke 当作性能完成。实际运行证据见 launch_verification.json；私有路径、账号、原始运行日志和训练权重不进入 Git。
