@@ -1,6 +1,6 @@
 # PAMF 完整监督与 raw 身份双锚保护
 
-状态：102 项聚焦检查及一次独立 P0/P1 审查 PASS／无发现。实现与源域固定配方一致，尚未发布、真实 smoke、训练或访问本版目标。现有 UGP／CMR 不变。源 raw-gradient 证据见九模型 reference 的 source_raw_gradient_diagnostic.md／JSON；在读取 UGP／CMR 任何目标成绩前确定此方案。
+状态：VERIFIED_RUNNING。102 项聚焦检查、一次独立 P0/P1 审查及真实原E30 source-only smoke均PASS；三seed已按固定配方续训，原目标ACTIVE。原CMR健康任务保持。源 raw-gradient 证据见九模型 reference 的 source_raw_gradient_diagnostic.md／JSON；在读取 UGP／CMR 任何目标成绩前确定此方案。
 
 从原 RXPSM 同 seed E30／6660 学生及自身 EMA、原型和统计独立追加20轮／4440步，累计E50／11100、13L＋37LU。保留原 T1 六次 L 前向、全部有标签 scalar loss 与梯度、默认分类头联合训练；原 U 半普通噪声／半Practical、软CE、原型损失、EMA及置信规则不变。不叠加 CMR、MixStyle、UCRIC、PAIR 或恢复器训练。
 
@@ -14,3 +14,10 @@ raw CE 直接使用原 T1 最后两次 raw L 真实标签前向已有计算图�
 
 
 102 项检查覆盖双半空间解析投影、顺序投影反例、非正交／共线／反向边界、切向梯度保留、单边界／双边界／零梯度、分组／非有限拒绝、真实T1 raw pair CE观察者而非As／RDrop项、native原CE消除与上游缩放、隐藏U拒绝、ownEMA状态／无新增网络参数、原E30父来源／固定配方、三个seed GPU交接、独立CPU评分及raw＋同一DURA完整矩阵，以及原有SSL机制回归。一次独立P0/P1审查PASS，无发现，未读目标成绩或启动实验。真实原E30 smoke作为发布第一步，检查真实raw CE非零和各组raw梯度、双内积／范数、全部参数实际梯度与显式组合一致、默认头／教师／L768／U256／单次EMA；probe丢弃，正式三seed重新载原E30。
+
+
+## 已核实实际双锚训练
+
+实际执行commit `51e4ccfc45a77d7e39c387e1157f43faf05365e8`；一次发布包SHA本地／远端对照和远端编译PASS。独立核实CPU控制器、三个worker的PID／CWD／完整命令、实际GPU和原生step日志增长；均已重新加载原同seed E30正式续训。真实E30 probe raw CE=0.171661，t2选择双边界、默认头选择raw边界、其余参数选择full-L边界；全部实际参数梯度与显式组合一致，双内积／范数符合固定规则，L768／U256、默认头／无教师梯度与单次EMA正确。probe丢弃，未用其更新正式学生。
+
+逐条检查全部已刷盘完整step前缀，原U／physical曝光、raw锚和引导调用数、各组双内积／范数／激活集合和fallback累计计数准确；gzip尚未闭合，不能称完整训练或收益。详见source_activation.json。GPU5／6／7每卡双锚＋原CMR各一条本任务worker，含其他owner总进程最多三个，未停止或热改任何健康任务。固定最终E50学生继续自动raw／同一DURA各七景、全部决策固定后独立truth-last，CPU评分在CMR之后。
