@@ -464,5 +464,17 @@
       "full_experiment_complete": false,
       "goal_complete": false
     }
+  },
+  "early_completed_methods": {
+    "HPL2": {
+      "status": "ANALYZED_COMPLETE_METHOD",
+      "models": 3,
+      "completed_readout_view_cells": 42,
+      "raw_method_goal_met": false,
+      "result_ref": "HPL2_target_results.md",
+      "summary_ref": "HPL2_target_summary.json",
+      "source_ref": "HPL2_source_training_complete.json",
+      "whole_run_complete": false
+    }
   }
 }

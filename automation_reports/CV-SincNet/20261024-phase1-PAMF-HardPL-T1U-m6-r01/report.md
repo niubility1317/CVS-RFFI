@@ -64,3 +64,15 @@ VERIFIED_HPL2_SCORED_HPLT1U_RUNNING：HPL2 三种子已完成固定双七景预�
 原本地 collector 要求整个六模型 ALL_SCORED 后才汇总已完成方法。这项报告等待不是 PROJECT_PROTOCOL 第310行逐row全部预登记视图冻结后独立truth-last的要求；按 Exclusive Minimal Workflow 记为 REJECTED_EXTRA_GATE，报告时序改为先汇总已完整 SCORED 的 HPL2 三种子、双读出七景42cell。未完成方法的目标成绩仍不读，原六模型总报告保留，不能把完整单方法报告称为整个六模型实验完成。
 
 本调整在任何 HPL2／HPLT1U 目标成绩值读取前登记。HPL_NO_UAS、HPL_LS2 等后续方法此前已独立冻结并发布，所有训练／父来源／参数／排序／测试范围保持，不根据本次成绩改变；每行所有预测固定及独立评分要求保持。29项针对性报告检查PASS；无新训练、重预测或重评分。详见HPL2_reporting_plan.json。
+
+
+## HPL2 完整三种子目标结果，六模型实验继续
+
+VERIFIED_COMPLETE_METHOD_ONLY：HPL2三种子、双读出七景42cell已完整独立truth-last评分，匹配F20/F21六模型复用；整个六模型矩阵尚未齐。逐景／seed／SD／Macro-F1／TX／RX／day、修复损伤和成本见 HPL2_target_results.md 与附表。
+
+HPL2 / raw clean=85.075595238% ± 0.075693599%（三个F seed样本SD）。
+HPL2 / DURA-LU clean=85.103769841% ± 0.060010904%（三个F seed样本SD）。
+HPL2 / raw six_mean=70.187533069% ± 0.946805077%（三个F seed样本SD）。
+HPL2 / DURA-LU six_mean=78.078670635% ± 0.198240426%（三个F seed样本SD）。
+
+本方法原raw目标未同时满足，goal ACTIVE；其他已冻结方法保持，无目标反馈调整。

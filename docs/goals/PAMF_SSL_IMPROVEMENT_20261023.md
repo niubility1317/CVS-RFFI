@@ -166,3 +166,8 @@ PAIREDU三seed已在各自GPU5/6/7实际续训，真实E30 no-query smoke和配�
 ## 完整 HPL2 方法先行汇总（成绩读取前登记）
 
 HPL2 三seed双读出七景42cell已全部独立评分。为符合逐row自动测试及快速研发要求，在任何 HPL2／HPLT1U 目标成绩值读取前，解除本地collector额外的“等另一方法全部完成”报告等待（REJECTED_EXTRA_GATE）；先列完整 HPL2 方法，原六模型报告和后续全部健康实验保持。所有后续候选已在本次读分前冻结，不依据新成绩改权重／门控／父源／候选排序或选择性重跑。范围仅报告时序，非数据或模型协议变更，原raw双目标不缩减。
+
+
+## HPL2 完整方法目标结果
+
+原注册三seed E50默认头、raw／固定DURA七景42cell全部独立评分。HPL2 / raw clean=85.075595%；HPL2 / DURA-LU clean=85.103770%；HPL2 / raw six_mean=70.187533%；HPL2 / DURA-LU six_mean=78.078671%；raw相对F21 clean+0.093849pp、六景−0.171825pp；原双目标未达到，goal ACTIVE。报告时序调整先于HPL2读分登记；原六模型总报告与全部健康训练／后续已冻结noUAs和LS保持，不依据本结果改配方或父源。完整证据见该run的HPL2_target_results.md，不能把单方法完成称为整个六模型实验完成。
