@@ -1,0 +1,270 @@
+{
+  "status": "VERIFIED_SOURCE_FINAL_EVALUATION_PENDING",
+  "run_id": "20261023-phase1-PAMF-U-MixStyle-m3-r01",
+  "execution_commit": "68ed7530a3c3caf96f7a54e1cfe4fc3c2a00d2f7",
+  "observed_unix": 1792765664.0562575,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "total_new_step_records": 13320,
+  "records_per_seed": 4440,
+  "cumulative_updates_per_seed": 11100,
+  "reused_parent_steps_per_seed": 6660,
+  "parent_full_log_reference": "20261023-phase1-PAMF-physical-softmatch-m6-r02/training_completion.json:RXPSM same-seed E20/E30",
+  "rows": [
+    {
+      "row_id": "UMIX-s2026092701",
+      "source_epoch": 50,
+      "source_updates": 11100,
+      "new_step_records": 4440,
+      "all_complete_step_records_checked": true,
+      "gzip_closed": true,
+      "actual_adapter_SSL": {
+        "method": "pamf_u_mixstyle_v1",
+        "native_U_loop": false,
+        "own_EMA": true,
+        "cumulative_EMA_updates": 11100,
+        "U_seen": 2097900,
+        "physical_U_seen": 1048950,
+        "student_U_views": 2097900,
+        "effective_U_weight": 1995365.1251678467,
+        "effective_U_per_class": [
+          336918.15625,
+          331275.25,
+          344225.53125,
+          309591.5,
+          326974.5,
+          346416.75
+        ],
+        "U_truth_read": false,
+        "labeled_only_prototype_updates": true,
+        "u_mixstyle_calls": 4440,
+        "u_mixstyle_seen": 1134000,
+        "u_mixstyle_eligible": 1084002,
+        "u_mixstyle_applied": {
+          "time_down": 546625,
+          "t2.pool": 555028
+        },
+        "extra_student_forwards": 0,
+        "G_training_reads": 0
+      },
+      "final_logged_losses_and_counters": {
+        "SSL_loss": 0.16321741044521332,
+        "SSL_seen": 2097900,
+        "SSL_physical_seen": 1048950,
+        "SSL_U_MIX_calls": 4440,
+        "SSL_U_MIX_seen": 1134000,
+        "SSL_U_MIX_eligible": 1084002,
+        "SSL_U_MIX_last_eligible": 123,
+        "SSL_U_MIX_applied_time_down": 546625,
+        "SSL_U_MIX_applied_t2.pool": 555028,
+        "SSL_U_MIX_last_applied_time_down": 0,
+        "SSL_U_MIX_last_applied_t2.pool": 0,
+        "SSL_proto_coverage": 1.0
+      },
+      "incremental_training_seconds": 3449.068712546956,
+      "parent_training_seconds": 4417.8696232249495,
+      "cumulative_training_seconds": 7866.938335771905,
+      "source_graph_native_IQ_check": "PASS",
+      "completed_prediction_views": [
+        {
+          "test": "main",
+          "view": "clean",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high",
+          "count": 168000
+        }
+      ],
+      "prediction_complete": false
+    },
+    {
+      "row_id": "UMIX-s2026092702",
+      "source_epoch": 50,
+      "source_updates": 11100,
+      "new_step_records": 4440,
+      "all_complete_step_records_checked": true,
+      "gzip_closed": true,
+      "actual_adapter_SSL": {
+        "method": "pamf_u_mixstyle_v1",
+        "native_U_loop": false,
+        "own_EMA": true,
+        "cumulative_EMA_updates": 11100,
+        "U_seen": 2097900,
+        "physical_U_seen": 1048950,
+        "student_U_views": 2097900,
+        "effective_U_weight": 1990816.3231964111,
+        "effective_U_per_class": [
+          336802.09375,
+          329804.3125,
+          345028.375,
+          310405.25,
+          322096.65625,
+          346713.125
+        ],
+        "U_truth_read": false,
+        "labeled_only_prototype_updates": true,
+        "u_mixstyle_calls": 4440,
+        "u_mixstyle_seen": 1134000,
+        "u_mixstyle_eligible": 1079161,
+        "u_mixstyle_applied": {
+          "time_down": 532678,
+          "t2.pool": 538631
+        },
+        "extra_student_forwards": 0,
+        "G_training_reads": 0
+      },
+      "final_logged_losses_and_counters": {
+        "SSL_loss": 0.12917377054691315,
+        "SSL_seen": 2097900,
+        "SSL_physical_seen": 1048950,
+        "SSL_U_MIX_calls": 4440,
+        "SSL_U_MIX_seen": 1134000,
+        "SSL_U_MIX_eligible": 1079161,
+        "SSL_U_MIX_last_eligible": 121,
+        "SSL_U_MIX_applied_time_down": 532678,
+        "SSL_U_MIX_applied_t2.pool": 538631,
+        "SSL_U_MIX_last_applied_time_down": 0,
+        "SSL_U_MIX_last_applied_t2.pool": 0,
+        "SSL_proto_coverage": 1.0
+      },
+      "incremental_training_seconds": 3206.4309592158534,
+      "parent_training_seconds": 5064.55442506494,
+      "cumulative_training_seconds": 8270.985384280793,
+      "source_graph_native_IQ_check": "PASS",
+      "completed_prediction_views": [
+        {
+          "test": "main",
+          "view": "clean",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_low_suburban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high_urban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid_urban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_low_urban",
+          "count": 168000
+        }
+      ],
+      "prediction_complete": true
+    },
+    {
+      "row_id": "UMIX-s2026092703",
+      "source_epoch": 50,
+      "source_updates": 11100,
+      "new_step_records": 4440,
+      "all_complete_step_records_checked": true,
+      "gzip_closed": true,
+      "actual_adapter_SSL": {
+        "method": "pamf_u_mixstyle_v1",
+        "native_U_loop": false,
+        "own_EMA": true,
+        "cumulative_EMA_updates": 11100,
+        "U_seen": 2097900,
+        "physical_U_seen": 1048950,
+        "student_U_views": 2097900,
+        "effective_U_weight": 2003462.4086914062,
+        "effective_U_per_class": [
+          338378.5625,
+          324883.84375,
+          343929.09375,
+          317767.875,
+          332400.0,
+          346135.875
+        ],
+        "U_truth_read": false,
+        "labeled_only_prototype_updates": true,
+        "u_mixstyle_calls": 4440,
+        "u_mixstyle_seen": 1134000,
+        "u_mixstyle_eligible": 1086106,
+        "u_mixstyle_applied": {
+          "time_down": 547974,
+          "t2.pool": 543107
+        },
+        "extra_student_forwards": 0,
+        "G_training_reads": 0
+      },
+      "final_logged_losses_and_counters": {
+        "SSL_loss": 0.16912896931171417,
+        "SSL_seen": 2097900,
+        "SSL_physical_seen": 1048950,
+        "SSL_U_MIX_calls": 4440,
+        "SSL_U_MIX_seen": 1134000,
+        "SSL_U_MIX_eligible": 1086106,
+        "SSL_U_MIX_last_eligible": 119,
+        "SSL_U_MIX_applied_time_down": 547974,
+        "SSL_U_MIX_applied_t2.pool": 543107,
+        "SSL_U_MIX_last_applied_time_down": 0,
+        "SSL_U_MIX_last_applied_t2.pool": 0,
+        "SSL_proto_coverage": 1.0
+      },
+      "incremental_training_seconds": 3353.41040999908,
+      "parent_training_seconds": 4894.10919757816,
+      "cumulative_training_seconds": 8247.51960757724,
+      "source_graph_native_IQ_check": "PASS",
+      "completed_prediction_views": [
+        {
+          "test": "main",
+          "view": "clean",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_low_suburban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high_urban",
+          "count": 168000
+        }
+      ],
+      "prediction_complete": false
+    }
+  ],
+  "U_exposure_is_repeated": true,
+  "unique_U_records": 56700,
+  "source_U_TX_truth_read": false,
+  "source_V_not_target_acceptance": true,
+  "no_new_head_fit": true,
+  "shared_GPU_walltime_not_exclusive_GPU_hours": true,
+  "target_accuracy_not_read": true,
+  "goal_complete": false
+}
