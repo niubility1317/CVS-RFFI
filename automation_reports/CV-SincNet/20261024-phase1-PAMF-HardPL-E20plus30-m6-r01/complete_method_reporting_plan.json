@@ -1,0 +1,19 @@
+{
+  "status": "FIXED_BEFORE_ANY_METHOD_TARGET_SCORE_READ",
+  "run_id": "20261024-phase1-PAMF-HardPL-E20plus30-m6-r01",
+  "methods": [
+    "HPL_E20_LS2",
+    "HPL_E20_NAMS2"
+  ],
+  "scope": "A fully registered method,all3seeds,raw+sameDURA7views,42cells;other method scores unopened until independently complete",
+  "unchanged_full_matrix": true,
+  "whole_run_completion_still_requires_all_six": true,
+  "scientific_rule": "Every selected row all14 predictions fixed before independent truth-last.All3 selected rows SCORED plus full frozen-source/prediction/scoring metadata verified before any selected scores opened.",
+  "no_target_feedback_changes": true,
+  "no_current_model_recipe_or_parent_or_seed_or_order_or_prediction_changes": true,
+  "extra_blocker": "REJECTED_EXTRA_GATE:waiting for unrelated unfinished methods before reporting a complete registered 3seed method",
+  "focused_tests": 18,
+  "report_only_review": "Not required;nonblocking report maintenance,not another candidate review",
+  "new_target_scores_read": 0,
+  "goal_complete": false
+}

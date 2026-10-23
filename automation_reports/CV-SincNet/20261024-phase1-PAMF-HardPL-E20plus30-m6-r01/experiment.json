@@ -466,5 +466,11 @@
       "full_experiment_complete": false,
       "goal_complete": false
     }
+  },
+  "complete_method_reporting": {
+    "status": "FIXED_BEFORE_ANY_METHOD_TARGET_SCORE_READ",
+    "reference": "complete_method_reporting_plan.json",
+    "all_three_seeds_and_both_seven_views_required": true,
+    "whole_run_complete": false
   }
 }

@@ -77,27 +77,38 @@ def report(rt, output):
 
 def report_complete_hpl2(rt, output):
     """Full HPL2 three-seed method; the original six-model experiment continues."""
-    from .hard_pl import RUN, METHODS as HARD_METHODS, RESOURCE_GPU_BY_SEED
+    from .hard_pl import RUN
+    if rt['run_id']!=RUN:raise ValueError('Original fixed six-model hard-PL experiment required')
+    return report_complete_method(rt,output,'HPL2')
+
+
+def report_complete_method(rt, output, method):
+    """All three fixed seeds of one declared method; do not open pending-arm scores."""
+    from .hard_pl import RUN as HARD_RUN,METHODS as HARD_METHODS,RESOURCE_GPU_BY_SEED
+    from .hard_pl_early import RUN as EARLY_RUN
+    from .hard_pl_guard import RUN as GUARD_RUN
     from .control import validate_rows as validate_followup
-    if rt['run_id']!=RUN or tuple(rt['methods'])!=HARD_METHODS:
-        raise ValueError('Original fixed six-model hard-PL experiment required')
-    validate_followup(rt['rows'],HARD_METHODS,RESOURCE_GPU_BY_SEED)
+    registered={HARD_RUN:HARD_METHODS,EARLY_RUN:EARLY_METHODS,GUARD_RUN:GUARD_METHODS}
+    methods=registered.get(rt['run_id'])
+    if methods is None or tuple(rt['methods'])!=methods or method not in methods:
+        raise ValueError('Fixed registered six-model method declaration required')
+    validate_followup(rt['rows'],methods,RESOURCE_GPU_BY_SEED)
     state=read(Path(rt['run_root'])/'state.json')
-    selected=[row for row in rt['rows'] if row['method']=='HPL2']
+    selected=[row for row in rt['rows'] if row['method']==method]
     if (set(state.get('jobs',{}))!={row['row_id'] for row in rt['rows']}
         or any(state['jobs'][row['row_id']]['status']!='SCORED' for row in selected)):
-        raise ValueError('All three registered HPL2 rows must be scored before any score read')
-    done=_write_report(dict(rt,rows=selected),output,('HPL2',))
-    out=Path(output);scope=dict(kind='COMPLETE_REGISTERED_METHOD',method='HPL2',models=3,
+        raise ValueError('All three registered method rows must be scored before any score read')
+    done=_write_report(dict(rt,rows=selected),output,(method,))
+    out=Path(output);scope=dict(kind='COMPLETE_REGISTERED_METHOD',method=method,models=3,
         registered_full_models=6,report_is_full_run=False,
-        full_registered_matrix_scored=state['status']=='ALL_SCORED',
-        other_methods_pending=[method for method in HARD_METHODS if method!='HPL2' and
-            any(state['jobs'][r['row_id']]['status']!='SCORED' for r in rt['rows'] if r['method']==method)])
+        full_registered_matrix_scored=state['status']=='ALL_SCORED' and all(v['status']=='SCORED' for v in state['jobs'].values()),
+        other_methods_pending=[other for other in methods if other!=method and
+            any(state['jobs'][r['row_id']]['status']!='SCORED' for r in rt['rows'] if r['method']==other)])
     analysis=read(out/'analysis.json');analysis['report_scope']=scope;write(out/'analysis.json',analysis,exclusive=False)
     text=(out/'report.md').read_text(encoding='utf-8')
     text=text.replace('# PAMF 与固定 DURA v1.0＋PAMF 目标测试结果',
-        '# HPL2 完整三种子目标测试结果',1)
-    text+='\n报告范围仅为原注册 HPL2 方法的三个种子及全部双读出七场景；原六模型训练与测试矩阵继续，其他方法未完成部分未读取。本报告不代表整个六模型实验完成，也不改变其他已冻结配方、父来源、候选顺序或测试范围。\n'
+        '# '+method+' 完整三种子目标测试结果',1)
+    text+='\n报告范围仅为原注册 '+method+' 方法的三个种子及全部双读出七场景；原六模型训练与测试矩阵继续，其他方法未完成部分未读取。本报告不代表整个六模型实验完成，也不改变其他已冻结配方、父来源、候选顺序或测试范围。\n'
     (out/'report.md').write_text(text,encoding='utf-8')
     done.update(status='ANALYZED_COMPLETE_METHOD',report_scope=scope);write(out/'complete.json',done,exclusive=False)
     return done

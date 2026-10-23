@@ -25,3 +25,8 @@ VERIFIED：执行 commit `80fe494716b538b504a32efa9245d2e58925fc6f`，一次 arc
 ## 两机制六条真实训练均已启动
 
 VERIFIED：旧NAMS逐seed全部GPU预测完成后，三个E20 NAMS新worker已按约定接替，各卡LS/NAMS两条真实训练健康，PID/CWD/命令/GPU与原生step、日志增长逐条确认。LS自己的native10段2220步已闭合并进入自己的20段；不是继承原E30。逐行实际曝光、RDrop／跨RX／六前向共享style计数见source_six_worker_activation.json；目前仅源训练前缀，无本候选目标成绩。
+
+
+## 完整方法可先行报告，原六行矩阵保持
+
+在本版任何目标成绩值读取前固定：任一原登记方法的三个seed完成全部raw／同一DURA七景42cell、源冻结和独立评分元数据均核实后，可单独报告该完整方法。未完成另一方法的分数不读取，其他训练／父权重／参数／种子／顺序／测试不变；完整六模型总报告仍在全部完成后产生。不把单方法完成称为整个实验或goal完成。整组等待无关方法仅为报告时序限制，依原逐row独立truth-last约定记REJECTED_EXTRA_GATE并移除；18项聚焦计数／缺seed／未完成分数隔离检查通过，不新增报告审查或发布审批。
