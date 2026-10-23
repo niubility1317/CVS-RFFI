@@ -81,3 +81,8 @@ PAIREDU三seed已在各自GPU5/6/7实际续训，真实E30 no-query smoke和配�
 ## 源域梯度冲突与下一条固定假设
 
 原 E30 同 seed 的24个 CPU 源 L/U 受控批次中整体13个负梯度内积，中层与默认头各14个；无 optimizer／EMA／保存参数更新、U 真值或目标。具体输入、局限和数值见九模型reference源梯度附录。下一条 `20261023-phase1-PAMF-U-GradProtect-m3-r01` 固定原 RXPSM E30+20，现有教师/输入/损失保持，仅对 t2／默认头／其余参数分别单侧投影负内积 U 梯度，再限制 U 范数<=L；近零 L 组 U 置零。三 seed、固定最终E50、raw＋同一DURA七景及普通PL／监督对照登记完整，当前只是 PLANNED。等同 seed UCRIC GPU 完成后与 UMIX 各占每卡一个名额，CPU评分在UMIX之后。此假设在UCRIC／UMIX目标成绩读取前固定，不由刚完成PAIR或后续测试分数修改规则或父来源；原goal保持ACTIVE。
+
+
+## UCRIC 完整双读出结果
+
+`20261023-phase1-PAMF-U-CRIC-m3-r01` 已完成三 seed、每景 168000 条的 raw／同一 DURA 七景预测及独立 truth-last，42 项读出／场景完整，全部新增 13320 条闭合训练记录已核对。raw clean=84.290675%；DURA-LU clean=84.400198%；raw six_mean=71.866171%；DURA-LU six_mean=77.185979%；原数值目标仍未满足，维持 ACTIVE。完整负结果、两种匹配基线、逐 seed／场景／分层及成本均已保存，不从本结果修改已固定 UCRIC／UMIX 的方法、父权重或矩阵。
