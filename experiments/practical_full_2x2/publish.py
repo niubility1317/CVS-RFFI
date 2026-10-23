@@ -33,7 +33,7 @@ r=dict(status='SUBMITTED_NOT_YET_VERIFIED',pid=child.pid,cwd=str(release),argv=c
 (release/'submit.json').write_text(json.dumps(r,indent=2)+'\n');print(json.dumps(r))
 '''
 
-def publish(repo,output,release_id=RUN):
+def publish(repo,output,release_id=RUN,prepared_data_handles=None):
     repo=Path(repo);out=Path(output);out.mkdir(parents=True,exist_ok=True)
     def git(*a):return subprocess.check_output(['git','-C',str(repo),*a])
     commit=git('rev-parse','HEAD').decode().strip();branch=git('branch','--show-current').decode().strip()
@@ -42,7 +42,7 @@ def publish(repo,output,release_id=RUN):
     native=json.loads((ROOT/'local_artifacts/phase1_dg_sourcecount6_20261021/runtime.json').read_text())
     source=json.loads((ROOT/'local_artifacts/cric_dura_comparison_20261021/runtime.json').read_text())
     templates=json.loads((ROOT/'local_artifacts/external_DURA_readouts_20261023/preflight.json').read_text())['G_templates']
-    project=old['project'];release=project+'/releases/'+release_id;run=project+'/runs/'+RUN
+    project=old['project'];release=project+'/releases/'+release_id;run=project+'/runs/'+(release_id if prepared_data_handles else RUN)
     rt=dict(run_id=RUN,project=project,release_root=release,run_root=run,code_commit=commit,
         matrix=release+'/experiment.json',runtime_file=release+'/runtime.json',python=old['python'],external_python=native['python'],
         frozen_sources=old['frozen_sources'],external_releases=[project+'/releases/20261019-phase1-external-dg-concat-pl-m219-r03',native['release_root']],
@@ -54,6 +54,7 @@ def publish(repo,output,release_id=RUN):
         augmentation_cache=run+'/augmentation_cache',augmentation_cpu_workers=8,
         launch_owner='codex-practical-Full2x2-20261023',max_own_per_gpu=3,max_total_compute=15,
         allowed_gpus=[0,1,2,3,4],reserved_gpus=[5,6,7])
+    if prepared_data_handles:rt['prepared_data_handles']=prepared_data_handles
     archive=out/(release_id+'.tar.gz')
     if archive.exists():raise FileExistsError('Reconcile archive/remote post-state before retry')
     paths=git('ls-files','-z','--','experiments','code','baselines').decode().split('\0')
@@ -78,5 +79,5 @@ def publish(repo,output,release_id=RUN):
     print(json.dumps(dict(result,archive_bytes=archive.stat().st_size)),flush=True)
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--repo',required=True);p.add_argument('--output',required=True);p.add_argument('--release-id',default=RUN)
-    a=p.parse_args();publish(a.repo,a.output,a.release_id)
+    p=argparse.ArgumentParser();p.add_argument('--repo',required=True);p.add_argument('--output',required=True);p.add_argument('--release-id',default=RUN);p.add_argument('--prepared-data-handles')
+    a=p.parse_args();publish(a.repo,a.output,a.release_id,a.prepared_data_handles)

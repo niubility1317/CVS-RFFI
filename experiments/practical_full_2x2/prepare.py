@@ -33,7 +33,7 @@ def prepare(rt,p):
         if pid in NEW_RX:continue
         for role in ('L','LU'):
             spec=deepcopy(rt['G_templates'][pid]['readouts']['DURA-'+role])
-            actual=read(spec['source_contract']);expected=read(handles[pid]['source_contract'])
+            actual=read(spec.get('source_contract',rt['G_templates'][pid]['source_contract']));expected=read(handles[pid]['source_contract'])
             if any(actual[k]!=expected[k] for k in ('role_ids','counts','source_rxs','source_days','classes')):raise ValueError('Historical G contract mismatch')
             spec['source_contract']=handles[pid]['source_contract'];G[pid,role]=spec
     for row in p['rows']:

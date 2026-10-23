@@ -89,4 +89,38 @@ class SharedCache(unittest.TestCase):
             self.assertTrue(np.array_equal(out,expected));self.assertEqual(4,read(root/'cache/test'/key(1,1,.8)/'complete.json')['count'])
             reader.arrays.clear()
 
+class ResolvedQueue(unittest.TestCase):
+    def test_all_stage_configs_and_legacy_G_descriptor(self):
+        from unittest.mock import patch
+        from experiments.practical_full_2x2.prepare import prepare
+        from experiments.practical_full_2x2 import data
+        from experiments.cric_dura_comparison.io import read,write
+        p=make_plan()
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);handles={};templates={};oldjobs=[]
+            for pid,q in p['protocols'].items():
+                contract=root/(pid+'.json');classes=[str(i) for i in range(10 if pid=='ManyRx' else 6)]
+                write(contract,dict(role_ids={'L_s':['L'],'U_s':['U'],'V':['V']},counts=q['expected_counts'],
+                    source_rxs=q['source_rxs'],source_days=q['source_days'],classes=classes))
+                h=dict(source_cache=str(root/pid),source_contract=str(contract),classes=classes,counts=q['expected_counts'],
+                    tests={t:dict(views_root='blind-'+t,truth='independent-'+t) for t in ('cross_date','cross_rx','cross_both')})
+                h['external']={r:dict(source_cache=h['source_cache'],source_contract=str(contract)) for r in ('supervised','pl')};handles[pid]=h
+                # Historic descriptors really omit source_contract inside G.
+                templates[pid]=dict(source_contract=str(contract),readouts={f'DURA-{role}':dict(kind='contract_matched',roles=role,checkpoint='frozen.pt') for role in ('L','LU')})
+            for i,r in enumerate(p['reused_rows']):
+                src=root/f'old{i}';src.mkdir();write(src/'complete.json',dict(status='SOURCE_FROZEN',config=dict(source_contract=handles[r['protocol_id']]['source_contract'])))
+                c=root/f'old-config{i}.json';write(c,dict(run_id='20261021-phase1-T1-DURA-comparison-m153-r01',row_id=f"{r['protocol_id']}-native_cric-s{r['model_seed']}",source_output=str(src)))
+                oldjobs.append(dict(kind='predict',config=str(c)))
+            write(root/'oldjobs.json',oldjobs)
+            run=root/'new';run.mkdir();rt=dict(run_root=str(run),old_jobs=str(root/'oldjobs.json'),G_templates=templates,
+                code_commit='test',frozen_sources={},external_releases=[],python='cpu',external_python='cpu',
+                ibrff_model_root='author-IB',sdg_model_root='author-SDG',augmentation_cache=str(run/'cache'))
+            with patch.object(data,'prepare',return_value=handles),patch.object(data,'old_G_selector',return_value={}):jobs=prepare(rt,p)
+            self.assertEqual(1880,len(jobs))
+            for job in jobs:
+                c=read(job['config']);self.assertEqual(job['kind'],c['stage'])
+                if job['kind']=='F':
+                    self.assertNotIn('tests',c);self.assertNotIn('truth',c)
+                    if c['kind']=='pamf':self.assertIn('ablation',c);self.assertIsNone(c['ablation'])
+
 if __name__=='__main__':unittest.main()

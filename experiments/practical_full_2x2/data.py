@@ -85,6 +85,15 @@ def old_G_selector(rt,h,pid,role,out):
 
 def prepare(rt,plan):
     root=Path(rt['run_root'])/'data';root.mkdir(parents=True,exist_ok=False)
+    if rt.get('prepared_data_handles'):
+        handles=read(rt['prepared_data_handles'])
+        if set(handles)!=set(plan['protocols']):raise ValueError('Recovery scope differs from prepared data')
+        for pid,p in plan['protocols'].items():
+            c=read(handles[pid]['source_contract'])
+            if c['source_rxs']!=p['source_rxs'] or c['source_days']!=p['source_days'] or c['counts']!=p['expected_counts']:
+                raise ValueError('Recovery source contract mismatch')
+        write(root/'handles.json',handles)
+        return handles
     original=read(rt['reused_source_handles']);handles={};datasets={}
     for dataset in ('ManySig','ManyRx'):
         with Path(rt['datasets'][dataset]).open('rb') as stream:datasets[dataset]=pickle.load(stream)
