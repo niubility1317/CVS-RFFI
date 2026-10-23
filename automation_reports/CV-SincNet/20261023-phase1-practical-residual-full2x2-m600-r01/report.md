@@ -57,3 +57,13 @@ r03真实checkpoint、同合同G-L/G-LU和四Full源侧梯度smoke已PASS；G和
 
 有效阶段状态：`{"RUNNING": 9, "QUEUED": 1870, "COMPLETE": 1}`。600新F+4完整G保持，27既有T1只补读出；1880逻辑阶段、627行冻结预测/独立评分。14项聚焦检查和限定P0/P1/直接修复复核通过。尚无正式新性能或整链加速倍数；加速仅按后续真实吞吐校准。
 私有逐进程证据保存在 local_artifacts/external_practical_residual_2x2_design_20261023/verification_1792746688.json；公开摘要为 launch_verification.json。
+
+## IB-RFF 第二阶段作者导入恢复 r05
+
+一次小时检查发现两条 F0-ibrff-A（seed2026092701/02）在 stage2 首个 HSIC 损失计算前失败，指纹均为 `ModuleNotFoundError: No module named 'utils.hsic'`，已按规则停止新派发。源侧复现确认 G 的常规 `utils` 包遮蔽 IB 作者无 `__init__` 的同名目录；不是数据或数值机制变更。
+
+修复只按已登记作者路径独立加载原 `hsic.py`，不替换全局 G utils、不改 HSIC 实现或0.04权重。Torch1.11真实同seed第一阶段 checkpoint与12条合法L样本检查 loss/gradient 与直接作者函数逐元素一致，target/Utruth/optimizer update均0。16项聚焦测试PASS，限定独立P0/P1恢复审查PASS，无未解决P0/P1。
+
+新不可覆盖 control-r05只替代2失败F和4阻塞预测/评分，共6阶段；2条失败F保持同scratch配方/seed/最大预算从零恢复，旧24/28轮stage1、2600更新及约250.31共享worker秒作为技术失败部分成本保留，不混入正式模型成本/评分。130条未启动IB F只换执行release，其它健康、已完成或未启动非IB均不改。原6个完整F、2恢复IQ缓存、4条健康G和producer原PID/CWD/config保持。
+
+科学矩阵仍600新F+4完整G、627读出、1880有效阶段；历史1892阶段、12技术排除。新旧映射由current jobs.json/technical_recovery.json及previous_recovery指针确定。GPU0–4且每卡总compute<=3，5/6/7继续保留，不占其它owner。发布前不能称已恢复GPU训练；实际结果需独立PID/CWD/argv/GPU/log增长核实。

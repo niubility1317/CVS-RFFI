@@ -35,6 +35,29 @@ class Scope(unittest.TestCase):
         self.assertTrue(np.array_equal(a,b));self.assertEqual(s,t);self.assertEqual(np.float32,a.dtype)
 
 class Permissions(unittest.TestCase):
+    def test_IB_stage2_uses_author_hsic_with_G_utils_already_imported(self):
+        import sys,types,torch
+        from unittest.mock import patch
+        from experiments.practical_full_2x2.objectives import step
+        class Net(torch.nn.Module):
+            def __init__(self):
+                super().__init__();self.encoder=torch.nn.Linear(4,3);self.head=torch.nn.Linear(3,2)
+            def forward(self,x):
+                z=self.encoder(x.flatten(1));return z,self.head(z)
+        with tempfile.TemporaryDirectory() as d:
+            author=Path(d)/'author';(author/'utils').mkdir(parents=True)
+            (author/'utils/hsic.py').write_text('def hsic_normalized_cca(x,y):\n    return x.square().mean()+y.mean()*0\n')
+            other=types.ModuleType('utils');other.__path__=[str(Path(d)/'G-utils')]
+            c=dict(family='ibrff',variant='full',U_s_use=False,lambda_sat_cls=.68,pl_weight=1.,ibrff_model_root=str(author))
+            torch.manual_seed(9);net=Net();x=torch.randn(6,2,2);y=torch.arange(6)%2
+            expected=.04*net(x)[0].square().mean().item()
+            augment=lambda x,*args:(x,dict(applied_count=0,scenario='unchanged_L',probability=0.))
+            with patch.dict(sys.modules,{'utils':other}):
+                rec=step(net,c,x,y,y,torch.optim.SGD(net.parameters(),lr=0.),augment,0.,0,stage=2)
+                self.assertIs(other,sys.modules['utils'])
+            self.assertAlmostEqual(expected,rec['native_penalty'],places=6)
+            self.assertTrue(all(p.grad is not None and torch.isfinite(p.grad).all() for p in net.parameters()))
+
     def test_legacy_precision_policy_is_equivalent(self):
         import torch
         from experiments.practical_full_2x2.compat import numerical_policy,tensor
@@ -105,6 +128,30 @@ class SharedCache(unittest.TestCase):
             reader.arrays.clear()
 
 class ResolvedQueue(unittest.TestCase):
+    def test_IB_recovery_replaces_six_and_only_switches_pending_IB(self):
+        from experiments.practical_full_2x2.recovery import replacements,FINGERPRINT
+        from experiments.cric_dura_comparison.io import read,write
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);new=root/'new';new.mkdir();jobs=[];state=dict(jobs={})
+            for row,family,status in [('IB1','ibrff','FAILED'),('IB2','ibrff','FAILED'),('IB3','ibrff','QUEUED'),('SDG','sdg','QUEUED'),('G','G','RUNNING')]:
+                kinds=['F','predict','score'] if status=='FAILED' else ['G' if family=='G' else 'F']
+                for kind in kinds:
+                    folder='source' if kind in ['F','G'] else 'predictions' if kind=='predict' else 'scores'
+                    c=dict(row_id=row,family=family,output_root=(root/row/folder).as_posix(),source_output=(root/row/'source').as_posix())
+                    path=root/(row+'-'+kind+'.json');write(path,c);key=kind+'__'+row
+                    jobs.append(dict(id=key,kind=kind,config=str(path),completion=c['output_root']+'/freeze.json',
+                        dependencies=[] if kind in ['F','G'] else [(root/row/('source/freeze.json' if kind=='predict' else 'predictions/complete.json')).as_posix()]))
+                    state['jobs'][key]=dict(status=status if kind in ['F','G'] else 'BLOCKED_TECHNICAL_DEPENDENCY',failure=FINGERPRINT if status=='FAILED' and kind=='F' else None)
+            resolved,mapping=replacements(dict(run_root=str(new),release_root='new-release',code_commit='new-code'),dict(release_root='old-release'),jobs,state)
+            by={j['id']:j for j in resolved};self.assertEqual(len(jobs)+6,len(resolved));self.assertEqual(6,len(mapping))
+            self.assertEqual('new-release',by['F__IB3']['worker_release'])
+            self.assertEqual(next(j['config'] for j in jobs if j['id']=='F__SDG'),by['F__SDG']['config'])
+            self.assertEqual('old-release',by['G__G']['worker_release'])
+            for m in mapping:
+                j=by[m['new_job']];self.assertEqual('new-release',j['worker_release'])
+                self.assertTrue(read(j['config'])['output_root'].startswith(str(new/'technical_replacements')))
+                if j['kind']=='predict':self.assertTrue(j['dependencies'][0].startswith(str(new/'technical_replacements')))
+
     def test_all_stage_configs_and_legacy_G_descriptor(self):
         from unittest.mock import patch
         from experiments.practical_full_2x2.prepare import prepare

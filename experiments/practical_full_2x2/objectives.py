@@ -75,7 +75,8 @@ def step(net, c, x, y, rx, optimizer, augment, progress, batch_index, *,
         native_loss = native_total - ce
         objective = objective + native_loss
     elif c['family'] == 'ibrff' and full and stage == 2:
-        from utils.hsic import hsic_normalized_cca
+        from .author_imports import author_hsic
+        hsic_normalized_cca=author_hsic(c)
         native_loss = .04 * hsic_normalized_cca(z[:b].flatten(1), x.flatten(1))
         objective = objective + native_loss
     elif sdg_full:

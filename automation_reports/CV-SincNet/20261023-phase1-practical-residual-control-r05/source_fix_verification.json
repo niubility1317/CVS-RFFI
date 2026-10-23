@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "torch": "1.11.0+cu113",
+  "real_checkpoint_stage": 1,
+  "source_L_samples": 12,
+  "author_function_loss_exact": true,
+  "author_function_gradient_exact": true,
+  "finite": true,
+  "existing_G_utils_preserved": true,
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "optimizer_updates": 0,
+  "local_focused_tests": 16,
+  "independent_P0_P1": "PASS",
+  "root_cause": "G utils package shadows IB author namespace; explicit source-file import retains exact author function",
+  "failed_rows": [
+    "F0-ibrff-A-s2026092701",
+    "F0-ibrff-A-s2026092702"
+  ],
+  "stage2_updates_before_failure": 0,
+  "failed_partial_stage1_epochs": [
+    24,
+    28
+  ],
+  "failed_partial_stage1_updates": 2600,
+  "new_scientific_models": 0
+}
