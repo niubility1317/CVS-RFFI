@@ -16,3 +16,8 @@
 
 
 本版为 `20261024-phase1-PAMF-HardPL-MixStyle-m3-r01` 的同配方技术恢复，仅将冻结源诊断的 Torch 索引改为 Python int 列表，原 52 项检查、8 项恢复检查和唯一 P1 定向复查通过；旧 root 保留，未训练或读取目标成绩。新不可覆盖发布／运行 root 均使用 `20261024-phase1-PAMF-HardPL-MixStyle-m3-r02`，矩阵、参数和父模型不变。
+
+
+## 实际源诊断与三卡训练
+
+VERIFIED_MIXSTYLE_RUNNING：执行 commit `87f4fe7f152eaece3a2ac40568990724b5eee4e2`，单次 archive 对照及远端 compile PASS。真实 F21 E30 检查通过，两层实际 U 混合／有限梯度、权重2／门控0.95／LS0.01、一次U学生前向、原L768／信道64及临时hook移除均核实。固定源 V720 三seed接受后伪标签精度100%／99.5595%／99.8525%，同真实 TX 配对100%／99.2658%／99.7050%，满足原先≥99%源规则；不替代完整 V27000 的99.84至99.90%纯度，也不代表U或目标正确率。两个层位强制启用的源诊断预测类别均未变，保留实际数值；不能据此保证目标收益。探针丢弃，正式重载原父权重，三GPU实际PID／CWD／命令／GPU与每条已刷盘step增长均独立确认，源训练继续。详细源检查见 source_style_identity.json、source_activation.json。

@@ -191,3 +191,8 @@ HPL2 三seed双读出七景42cell已全部独立评分。为符合逐row自动�
 ## 特征统计混合的同配方技术恢复
 
 原 r01 真实 F21 checkpoint smoke PASS，随后冻结源诊断的 NumPy→Torch 索引类型不兼容，正式三行仍无 PID、无训练／目标访问。保留原产物，`20261024-phase1-PAMF-HardPL-MixStyle-m3-r02` 仅换 Python int 列表索引；配方、父模型、资源和矩阵不变，8 项定向检查及唯一 P1 定向复查关闭。新真实 smoke／源身份配对诊断通过后自动继续。
+
+
+## HPL_LS2 完整双读出结果
+
+`20261024-phase1-PAMF-HardPL-LS-m3-r01` 各方法三seed、共3模型，每景168000条，raw／同一DURA七景预测与独立truth-last全部42cell完成；全部新增13320条闭合训练记录已核对。HPL_LS2 / raw clean=85.070040%；HPL_LS2 / DURA-LU clean=85.100397%；HPL_LS2 / raw six_mean=70.300331%；HPL_LS2 / DURA-LU six_mean=78.131581%；原数值目标仍未满足，维持ACTIVE。全部结果、匹配基线、逐seed／场景／分层及成本均保存，不从本结果热改其他已固定方法、父权重或矩阵。
