@@ -1,0 +1,160 @@
+{
+  "status": "LIVE_COMPLETE_RECORD_PREFIX",
+  "rows": [
+    {
+      "row_id": "PSM-s2026092701",
+      "complete_records": 2933,
+      "U_records": 47,
+      "last": {
+        "SSL_loss": 0.04112892225384712,
+        "SSL_weight_mean": 0.9434385299682617,
+        "SSL_proto_coverage": 0.0,
+        "SSL_seen": 12032,
+        "SSL_effective": 11490.469284057617,
+        "SSL_physical_seen": 6016,
+        "SSL_ramp": 0.2,
+        "SSL_confidence": 0.9724013805389404
+      },
+      "mean_U_loss": 0.036019576118981586,
+      "mean_weight": 0.9549924604436184,
+      "mean_other_RX_prototype_coverage": 0.0,
+      "files": [
+        {
+          "segment": 20,
+          "complete_records": 2933,
+          "closed_gzip": false
+        }
+      ]
+    },
+    {
+      "row_id": "RXPSM-s2026092701",
+      "complete_records": 2932,
+      "U_records": 46,
+      "last": {
+        "SSL_loss": 0.03877400979399681,
+        "SSL_weight_mean": 0.9471330046653748,
+        "SSL_proto_coverage": 1.0,
+        "SSL_seen": 11776,
+        "SSL_effective": 11145.65542602539,
+        "SSL_physical_seen": 5888,
+        "SSL_ramp": 0.2,
+        "SSL_confidence": 0.9768490791320801
+      },
+      "mean_U_loss": 0.039040743089888405,
+      "mean_weight": 0.9464720979980801,
+      "mean_other_RX_prototype_coverage": 1.0,
+      "files": [
+        {
+          "segment": 20,
+          "complete_records": 2932,
+          "closed_gzip": false
+        }
+      ]
+    },
+    {
+      "row_id": "PSM-s2026092702",
+      "complete_records": 2948,
+      "U_records": 62,
+      "last": {
+        "SSL_loss": 0.033928241580724716,
+        "SSL_weight_mean": 0.948562502861023,
+        "SSL_proto_coverage": 0.0,
+        "SSL_seen": 15872,
+        "SSL_effective": 15180.50325012207,
+        "SSL_physical_seen": 7936,
+        "SSL_ramp": 0.2,
+        "SSL_confidence": 0.9725165367126465
+      },
+      "mean_U_loss": 0.037710429199280276,
+      "mean_weight": 0.9564329164643441,
+      "mean_other_RX_prototype_coverage": 0.0,
+      "files": [
+        {
+          "segment": 20,
+          "complete_records": 2948,
+          "closed_gzip": false
+        }
+      ]
+    },
+    {
+      "row_id": "RXPSM-s2026092702",
+      "complete_records": 2956,
+      "U_records": 70,
+      "last": {
+        "SSL_loss": 0.043475400656461716,
+        "SSL_weight_mean": 0.9563077688217163,
+        "SSL_proto_coverage": 1.0,
+        "SSL_seen": 17920,
+        "SSL_effective": 16940.762161254883,
+        "SSL_physical_seen": 8960,
+        "SSL_ramp": 0.2,
+        "SSL_confidence": 0.9791250824928284
+      },
+      "mean_U_loss": 0.04096645430794784,
+      "mean_weight": 0.945355031320027,
+      "mean_other_RX_prototype_coverage": 1.0,
+      "files": [
+        {
+          "segment": 20,
+          "complete_records": 2956,
+          "closed_gzip": false
+        }
+      ]
+    },
+    {
+      "row_id": "PSM-s2026092703",
+      "complete_records": 3014,
+      "U_records": 128,
+      "last": {
+        "SSL_loss": 0.03210015222430229,
+        "SSL_weight_mean": 0.9482754468917847,
+        "SSL_proto_coverage": 0.0,
+        "SSL_seen": 32768,
+        "SSL_effective": 31343.418243408203,
+        "SSL_physical_seen": 16384,
+        "SSL_ramp": 0.2,
+        "SSL_confidence": 0.9784520864486694
+      },
+      "mean_U_loss": 0.036044464926817454,
+      "mean_weight": 0.9565252149477601,
+      "mean_other_RX_prototype_coverage": 0.0,
+      "files": [
+        {
+          "segment": 20,
+          "complete_records": 3014,
+          "closed_gzip": false
+        }
+      ]
+    },
+    {
+      "row_id": "RXPSM-s2026092703",
+      "complete_records": 2996,
+      "U_records": 110,
+      "last": {
+        "SSL_loss": 0.04271215945482254,
+        "SSL_weight_mean": 0.9639723300933838,
+        "SSL_proto_coverage": 1.0,
+        "SSL_seen": 28160,
+        "SSL_effective": 26897.986755371094,
+        "SSL_physical_seen": 14080,
+        "SSL_ramp": 0.2,
+        "SSL_confidence": 0.9790639877319336
+      },
+      "mean_U_loss": 0.03988476925614205,
+      "mean_weight": 0.9551841887560758,
+      "mean_other_RX_prototype_coverage": 1.0,
+      "files": [
+        {
+          "segment": 20,
+          "complete_records": 2996,
+          "closed_gzip": false
+        }
+      ]
+    }
+  ],
+  "U_truth_reads": 0,
+  "target_reads": 0,
+  "scope": "Ongoing E14: every complete flushed JSON record, not a complete E50 result or target evaluation",
+  "same_gate_as_old_acceptance": false,
+  "weight_note": "Continuous U weights; not the original hard acceptance rate or measured pseudo-label precision"
+}
