@@ -1,0 +1,71 @@
+{
+  "status": "VERIFIED",
+  "observed_at": "2026-10-23T10:43:42.703437+00:00",
+  "execution_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+  "owner_pid": 1984936,
+  "PID_CWD_argv_physical_GPU_verified": true,
+  "previous_owner_retired": true,
+  "healthy_G_PID_CWD_config_preserved": true,
+  "producer_same_PID": true,
+  "observation_gap_seconds": 169.21635103225708,
+  "same_PID_workers": 13,
+  "same_PID_logs_growing": 12,
+  "recovered_SDG_training": {
+    "F__F0-sdg-A-s2026092701--sdg-array-recovery-r06": {
+      "epoch": 9,
+      "updates": 1773,
+      "native_penalty": 4.6509097070258285,
+      "seconds": 184.4927190770395
+    },
+    "F__F0-sdg-A-s2026092702--sdg-array-recovery-r06": {
+      "epoch": 8,
+      "updates": 1576,
+      "native_penalty": 4.6905804648617195,
+      "seconds": 184.26387147814967
+    }
+  },
+  "effective_counts": {
+    "RUNNING": 13,
+    "COMPLETE": 11,
+    "QUEUED": 1856
+  },
+  "remaining_by_kind": {
+    "G": 4,
+    "F": 591,
+    "cache": 20,
+    "predict": 627,
+    "score": 627
+  },
+  "unresolved_failures": {},
+  "allowed_gpus": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "reserved_gpus": [
+    5,
+    6,
+    7
+  ],
+  "gpu_own_counts": {
+    "2": 3,
+    "1": 2,
+    "0": 3,
+    "3": 3,
+    "4": 2
+  },
+  "max_total_per_card": 3,
+  "max_own_total": 15,
+  "logical_new_F": 600,
+  "logical_new_G": 4,
+  "readout_rows": 627,
+  "effective_stages": 1880,
+  "historical_stages": 1898,
+  "excluded_technical_stages": 18,
+  "scientific_recipe_seed_budget_changed": false,
+  "tests_passed": 17,
+  "independent_P0_P1": "PASS",
+  "formal_performance_available": false
+}
