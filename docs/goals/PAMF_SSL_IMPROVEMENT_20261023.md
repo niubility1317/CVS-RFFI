@@ -86,3 +86,8 @@ PAIREDU三seed已在各自GPU5/6/7实际续训，真实E30 no-query smoke和配�
 ## UCRIC 完整双读出结果
 
 `20261023-phase1-PAMF-U-CRIC-m3-r01` 已完成三 seed、每景 168000 条的 raw／同一 DURA 七景预测及独立 truth-last，42 项读出／场景完整，全部新增 13320 条闭合训练记录已核对。raw clean=84.290675%；DURA-LU clean=84.400198%；raw six_mean=71.866171%；DURA-LU six_mean=77.185979%；原数值目标仍未满足，维持 ACTIVE。完整负结果、两种匹配基线、逐 seed／场景／分层及成本均已保存，不从本结果修改已固定 UCRIC／UMIX 的方法、父权重或矩阵。
+
+
+## 梯度保护三 seed 已实际启动
+
+`20261023-phase1-PAMF-U-GradProtect-m3-r01` 已以 commit `0aba8a89c8b74e3058a1bec727fef86805d75f6c` 发布，80项检查／一次P0/P1审查／真实E30 source-only smoke全部PASS。真实反向 .grad 逐参数符合显式保护梯度，三个组的冲突均被处理，默认头／教师／单次EMA权限正确；正式三seed已重新载原E30续训，每卡UGP＋UMIX两个本任务worker，含外部最多三个。实际step前缀约束与曝光计数逐条核对，新目标未访问。后续固定E50＋raw／同一DURA七景及独立评分不变，原goal保持ACTIVE。

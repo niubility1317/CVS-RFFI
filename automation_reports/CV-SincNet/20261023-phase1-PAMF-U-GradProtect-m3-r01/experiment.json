@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "用户 /goal 授权持续设计迭代 PAMF 半监督机制，使目标测试 clean 相对监督/普通PL均至少高1pp、六景均值均严格高1.5pp；三GPU每卡固定一个模型种子、最多两个本任务worker；追加要求同时报告单PAMF与固定DURA+PAMF。",
   "code": {
-    "commit": "df440fec51a4a36e1457d679abd4502431c67206",
+    "commit": "0aba8a89c8b74e3058a1bec727fef86805d75f6c",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 ordinary account CVS-RFFI Py3.10/Torch2.1 FP32/TF32off, CPU2 per worker",
     "cwd": "PROJECT/releases/20261023-phase1-PAMF-U-GradProtect-m3-r01",
@@ -269,5 +269,18 @@
     "Euclidean gradient inner product constraint does not guarantee Adam momentum/preconditioned update or target gain.Implemented gradients must pass analytic and real-checkpoint checks.",
     "Recipe/parent fixed before any UCRIC/UMIX target result access. Earlier engineering benchmark exposure disclosed,no fresh blind test claim."
   ],
-  "registered_at": "2026-10-23T13:47:24+00:00"
+  "registered_at": "2026-10-23T13:47:24+00:00",
+  "launch_status": {
+    "status": "VERIFIED_RUNNING",
+    "evidence": "source_activation.json",
+    "source_smoke": "PASS",
+    "own_GPU_workers": 3,
+    "with_UMIX_workers": 6,
+    "actual_GPUs": [
+      5,
+      6,
+      7
+    ],
+    "new_method_target_reads": 0
+  }
 }
