@@ -35,6 +35,27 @@ class Scope(unittest.TestCase):
         self.assertTrue(np.array_equal(a,b));self.assertEqual(s,t);self.assertEqual(np.float32,a.dtype)
 
 class Permissions(unittest.TestCase):
+    def test_SDG_dataset_ragged_permutation_keeps_legacy_samples_and_RNG(self):
+        import torch,types
+        from experiments.practical_full_2x2.source import SDGDataset
+        def permutation(x):
+            splits=np.array_split(np.arange(x.shape[-1]),3)
+            return x[:,np.concatenate(np.random.permutation(splits)).ravel()]
+        author=types.SimpleNamespace(augmentations=[permutation],transforms=types.SimpleNamespace(ToTensor=lambda:None))
+        class AugDataset:
+            def __init__(self,x,y,*args):self.x=x;self.y=y
+            def __getitem__(self,index):return [author.augmentations[0](self.x[index])],self.y[index]
+        author.AugDataset=AugDataset
+        x=torch.arange(512,dtype=torch.float32).reshape(1,2,256)
+        loader=torch.utils.data.DataLoader(torch.utils.data.TensorDataset(x,torch.tensor([0]),torch.tensor([1]),torch.tensor([0])))
+        np.random.seed(41);pieces=np.empty(3,dtype=object);pieces[:]=np.array_split(np.arange(256),3)
+        expected=x[0].numpy()[:,np.concatenate(np.random.permutation(pieces)).ravel()];expected_state=np.random.get_state()
+        np.random.seed(41);dataset=SDGDataset(loader,author);raw,label,rx,views,index=dataset[0]
+        self.assertTrue(np.array_equal(expected,views[0]));self.assertTrue(torch.equal(x[0],raw));self.assertEqual(0,int(label))
+        actual=dataset.random_state[1]
+        self.assertTrue(np.array_equal(expected_state[1],actual[1]));self.assertEqual(expected_state[2:],actual[2:])
+        self.assertIs(permutation.__code__,author.augmentations[0].__code__)
+
     def test_IB_stage2_uses_author_hsic_with_G_utils_already_imported(self):
         import sys,types,torch
         from unittest.mock import patch
@@ -128,12 +149,12 @@ class SharedCache(unittest.TestCase):
             reader.arrays.clear()
 
 class ResolvedQueue(unittest.TestCase):
-    def test_IB_recovery_replaces_six_and_only_switches_pending_IB(self):
+    def test_SDG_recovery_replaces_six_and_only_switches_pending_SDG(self):
         from experiments.practical_full_2x2.recovery import replacements,FINGERPRINT
         from experiments.cric_dura_comparison.io import read,write
         with tempfile.TemporaryDirectory() as d:
             root=Path(d);new=root/'new';new.mkdir();jobs=[];state=dict(jobs={})
-            for row,family,status in [('IB1','ibrff','FAILED'),('IB2','ibrff','FAILED'),('IB3','ibrff','QUEUED'),('SDG','sdg','QUEUED'),('G','G','RUNNING')]:
+            for row,family,status in [('SDG1','sdg','FAILED'),('SDG2','sdg','FAILED'),('SDG3','sdg','QUEUED'),('IB','ibrff','QUEUED'),('G','G','RUNNING')]:
                 kinds=['F','predict','score'] if status=='FAILED' else ['G' if family=='G' else 'F']
                 for kind in kinds:
                     folder='source' if kind in ['F','G'] else 'predictions' if kind=='predict' else 'scores'
@@ -144,8 +165,8 @@ class ResolvedQueue(unittest.TestCase):
                     state['jobs'][key]=dict(status=status if kind in ['F','G'] else 'BLOCKED_TECHNICAL_DEPENDENCY',failure=FINGERPRINT if status=='FAILED' and kind=='F' else None)
             resolved,mapping=replacements(dict(run_root=str(new),release_root='new-release',code_commit='new-code'),dict(release_root='old-release'),jobs,state)
             by={j['id']:j for j in resolved};self.assertEqual(len(jobs)+6,len(resolved));self.assertEqual(6,len(mapping))
-            self.assertEqual('new-release',by['F__IB3']['worker_release'])
-            self.assertEqual(next(j['config'] for j in jobs if j['id']=='F__SDG'),by['F__SDG']['config'])
+            self.assertEqual('new-release',by['F__SDG3']['worker_release'])
+            self.assertEqual(next(j['config'] for j in jobs if j['id']=='F__IB'),by['F__IB']['config'])
             self.assertEqual('old-release',by['G__G']['worker_release'])
             for m in mapping:
                 j=by[m['new_job']];self.assertEqual('new-release',j['worker_release'])

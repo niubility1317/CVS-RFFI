@@ -1,11 +1,11 @@
-"""Bounded IB author-import recovery; preserve healthy scientific PIDs."""
+"""Bounded SDG array-compatibility recovery; preserve healthy scientific PIDs."""
 from copy import deepcopy
 import os,shutil,signal,subprocess,time
 from pathlib import Path
 from experiments.cric_dura_comparison.io import read,write
 from .cache import atomic
 
-FINGERPRINT="ModuleNotFoundError: No module named 'utils.hsic'"
+FINGERPRINT='ValueError: setting an array element with a sequence. The requested array has an inhomogeneous shape after 1 dimensions. The detected shape was (3,) + inhomogeneous part.'
 
 def check_identity(actual,cwd,expected_argv,expected_cwd):
     if actual!=expected_argv or cwd!=expected_cwd:raise ValueError('Owned PID/CWD/argv mismatch; no stop/adoption')
@@ -18,8 +18,8 @@ def replacements(rt,previous,jobs,state):
     """Pure config resolution: no PID, IQ, model, prediction or truth access."""
     root=Path(rt['run_root']);folder=root/'recovery_configs';folder.mkdir()
     failed=[j for j in jobs if j['kind']=='F' and state['jobs'][j['id']].get('failure')==FINGERPRINT]
-    if len(failed)!=2 or any(read(j['config'])['family']!='ibrff' for j in failed):
-        raise ValueError('Expected exactly the two diagnosed IB stage2 import failures')
+    if len(failed)!=2 or any(read(j['config'])['family']!='sdg' for j in failed):
+        raise ValueError('Expected exactly the two diagnosed SDG array compatibility failures')
     row_ids={read(j['config'])['row_id'] for j in failed};selected=[];paths={}
     for j in jobs:
         c=read(j['config'])
@@ -42,12 +42,12 @@ def replacements(rt,previous,jobs,state):
         j=dict(job,worker_release=job.get('worker_release',previous['release_root']))
         resolved.append(j)
         if j['id'] in selected_ids:
-            c=remap(read(j['config']));c['code_commit']=rt['code_commit'];new_id=j['id']+'--hsic-import-recovery-r05'
+            c=remap(read(j['config']));c['code_commit']=rt['code_commit'];new_id=j['id']+'--sdg-array-recovery-r06'
             path=folder/(new_id+'.json');write(path,c)
             replacement=remap(j);replacement.update(id=new_id,config=str(path),worker_release=rt['release_root'],log_name=new_id)
             resolved.append(replacement);mapping.append(dict(old_job=j['id'],new_job=new_id,logical_row=c['row_id'],new_output=c['output_root'],
                 preserved_failed_output=read(j['config'])['output_root'],restart_policy='same_registered_scratch_budget'))
-        elif j['kind']=='F' and state['jobs'][j['id']]['status']=='QUEUED' and read(j['config']).get('family')=='ibrff':
+        elif j['kind']=='F' and state['jobs'][j['id']]['status']=='QUEUED' and read(j['config']).get('family')=='sdg':
             c=read(j['config']);c['code_commit']=rt['code_commit'];path=folder/(j['id']+'.json');write(path,c)
             j.update(config=str(path),worker_release=rt['release_root'])
     return resolved,mapping
@@ -59,7 +59,7 @@ def recover(rt):
     previous=read(rt['recover_previous_runtime']);oldroot=Path(previous['run_root'])
     state=read(oldroot/'pipeline_state.json');jobs=read(oldroot/'jobs.json')
     if previous['allowed_gpus']!=rt['allowed_gpus'] or set(rt['allowed_gpus'])&{5,6,7}:raise ValueError('Reserved GPU policy changed')
-    if state.get('failures',{}).get(FINGERPRINT)!=2:raise ValueError('Only the reproduced IB stage2 import fingerprint is resolved')
+    if state.get('failures',{}).get(FINGERPRINT)!=2:raise ValueError('Only the reproduced SDG array compatibility fingerprint is resolved')
     resolved,mapping=replacements(rt,previous,jobs,state)
     # Stop exactly the owned admission controller. Its detached healthy
     # science workers and cache producer keep their original PID/CWD/config.
@@ -93,9 +93,9 @@ def recover(rt):
     write(root/'augmentation_producer.json',producer)
     (root/'data').mkdir();write(root/'data/handles.json',read(oldroot/'data/handles.json'))
     for name in ('source_smoke.json','preparation_complete.json'):shutil.copyfile(oldroot/name,root/name)
-    write(root/'jobs.json',resolved);write(root/'technical_recovery.json',dict(status='RESOLVED_IB_STAGE2_AUTHOR_IMPORT',fingerprint=FINGERPRINT,
+    write(root/'jobs.json',resolved);write(root/'technical_recovery.json',dict(status='RESOLVED_SDG_AUTHOR_ARRAY_COERCION',fingerprint=FINGERPRINT,
         previous_recovery=str(oldroot/'technical_recovery.json'),replacements=mapping,healthy_workers=active,producer=producer,
-        new_scientific_models=0,source_IQ_regenerated=0,partial_stage1_artifacts_preserved=True))
+        new_scientific_models=0,source_IQ_regenerated=0,all_failed_artifacts_preserved=True))
     atomic(oldroot/'handoff.json',dict(new_owner_pid=os.getpid(),new_runtime=rt['runtime_file'],new_root=str(root)))
     atomic(root/'pipeline_state.json',latest)
     return schedule(rt,resolved,latest,active,producer_pid)

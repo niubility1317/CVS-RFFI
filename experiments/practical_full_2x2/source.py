@@ -97,6 +97,8 @@ def array_loader(c, role, batch_size=None):
 
 class SDGDataset(torch.utils.data.Dataset):
     def __init__(self, loader, author):
+        from .author_imports import compatible_sdg_author
+        compatible_sdg_author(author)
         self.x, self.y, self.rx, self.indices = loader.dataset.tensors
         self.random_state=(random.getstate(),np.random.get_state(),torch.get_rng_state())
         self.augmented = author.AugDataset(np.asarray(self.x.tolist(),np.float32), np.asarray(self.y.tolist(),np.int64), author.transforms.ToTensor(), [2], [1])

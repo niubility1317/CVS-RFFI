@@ -37,3 +37,7 @@
 新不可覆盖 control-r05只替代2失败F和4阻塞预测/评分，共6阶段；2条失败F保持同scratch配方/seed/最大预算从零恢复，旧24/28轮stage1、2600更新及约250.31共享worker秒作为技术失败部分成本保留，不混入正式模型成本/评分。130条未启动IB F只换执行release，其它健康、已完成或未启动非IB均不改。原6个完整F、2恢复IQ缓存、4条健康G和producer原PID/CWD/config保持。
 
 科学矩阵仍600新F+4完整G、627读出、1880有效阶段；历史1892阶段、12技术排除。新旧映射由current jobs.json/technical_recovery.json及previous_recovery指针确定。GPU0–4且每卡总compute<=3，5/6/7继续保留，不占其它owner。发布前不能称已恢复GPU训练；实际结果需独立PID/CWD/argv/GPU/log增长核实。
+
+## IB实际恢复及后续独立故障
+
+两条恢复IB已实际越过stage2故障点，分别完成2700/1850个stage2更新，HSIC项有限，证据runtime_fix_verification.json。随后新启动的两个SDG在作者片段permutation取样触发NumPy1.24 ragged转换异常，两次同指纹再次停派；四条G和健康IB未停止。本控制器将由r06只针对SDG兼容问题正常接管，不能误报IB修复失败。

@@ -67,3 +67,11 @@ r03真实checkpoint、同合同G-L/G-LU和四Full源侧梯度smoke已PASS；G和
 新不可覆盖 control-r05只替代2失败F和4阻塞预测/评分，共6阶段；2条失败F保持同scratch配方/seed/最大预算从零恢复，旧24/28轮stage1、2600更新及约250.31共享worker秒作为技术失败部分成本保留，不混入正式模型成本/评分。130条未启动IB F只换执行release，其它健康、已完成或未启动非IB均不改。原6个完整F、2恢复IQ缓存、4条健康G和producer原PID/CWD/config保持。
 
 科学矩阵仍600新F+4完整G、627读出、1880有效阶段；历史1892阶段、12技术排除。新旧映射由current jobs.json/technical_recovery.json及previous_recovery指针确定。GPU0–4且每卡总compute<=3，5/6/7继续保留，不占其它owner。发布前不能称已恢复GPU训练；实际结果需独立PID/CWD/argv/GPU/log增长核实。
+
+## SDG 原作者片段打乱 NumPy 兼容恢复 r06
+
+两条 F0-sdg-A（seed2026092701/02）在原作者 `permutation` 的 `np.random.permutation(splits)` 处失败。256点分为3段时长度不等，NumPy1.24不再自动将该list转换为object array；源侧与局部回归均复现，2同指纹触发停新派发。没有完整训练轮日志，旧模型/输出/失败日志全部保留，不能当正式负结果。
+
+兼容修复保留作者permutation的函数code和其余6个算子，仅该函数的局部NumPy代理对不等长list显式构造原object array，再调用原RandomState.permutation。全局NumPy不改。equal/random两模式×40seed共80例，与按片段索引排列的参考实现逐元素输出及完整RNG状态一致。实际Torch1.11/NumPy1.24、12条合法源L、作者AugDataset两原生视图及Full默认头联合更新一次（disposable smoke）PASS，正式训练更新0、target/Utruth读取0。17项聚焦测试及一次限定直接问题P0/P1审查PASS。
+
+新不可覆盖control-r06只替代2失败SDG F+4阻塞消费者6阶段，130未启动SDG F只换执行release。原G、健康IB、producer保留原PID/CWD/config，已完成F和恢复缓存不重跑；此前HSIC已在真实stage2验证修复。三次技术替代链各6阶段保留排除，历史1898、有效1880，原600新F/4完整G和627读出不变，预算/数据/seed/增强概率不变。只用GPU0–4，每卡总compute<=3并计入其他owner，5/6/7保留。必须独立核实真实SDG轮次/日志增长后才称本次恢复完成。

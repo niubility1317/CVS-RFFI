@@ -1,0 +1,23 @@
+{
+  "status": "IB_RUNTIME_FIX_VERIFIED",
+  "execution_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+  "recovered_rows": {
+    "F__F0-ibrff-A-s2026092701--hsic-import-recovery-r05": {
+      "stage": 2,
+      "epoch": 54,
+      "updates": 2700,
+      "native_penalty": 0.2451455581188202,
+      "seconds": 84.16584810195491
+    },
+    "F__F0-ibrff-A-s2026092702--hsic-import-recovery-r05": {
+      "stage": 2,
+      "epoch": 37,
+      "updates": 1850,
+      "native_penalty": 0.26691128581762313,
+      "seconds": 68.0376006399747
+    }
+  },
+  "IB_unresolved_failures": 0,
+  "other_SDG_technical_failure_under_recovery": true,
+  "source_metrics_not_target": true
+}

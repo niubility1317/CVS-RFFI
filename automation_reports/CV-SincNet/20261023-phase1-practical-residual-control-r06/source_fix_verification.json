@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "torch": "1.11.0+cu113",
+  "numpy": "1.24.4",
+  "source_L_samples": 12,
+  "permutation_output_and_RNG_exact_cases": 80,
+  "author_function_code_unchanged": true,
+  "other_six_ops_unchanged": true,
+  "global_numpy_unchanged": true,
+  "native_SDG_views": 2,
+  "default_head_joint": true,
+  "native_penalty_finite": true,
+  "disposable_smoke_optimizer_steps": 1,
+  "formal_training_updates": 0,
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "local_focused_tests": 17,
+  "independent_P0_P1": "PASS",
+  "root_cause": "NumPy1.24 refuses implicit ragged list coercion in author segment permutation",
+  "scientific_models_added": 0
+}
