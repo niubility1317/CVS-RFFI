@@ -57,3 +57,10 @@ VERIFIED_HPL2_RUNNING_HPLT1U_QUEUED：原F21 E30真实source-only检查同时覆
 ## 监督机制扩展三种子已实际训练
 
 VERIFIED_HPL2_SCORED_HPLT1U_RUNNING：HPL2 三种子已完成固定双七景预测及独立评分，尚未读取部分目标成绩；HPLT1U 三种子已接续 GPU5／6／7，真实 PID／CWD／完整命令／实际 GPU 与全部已刷盘源 step 前缀增长均核实。实际六次 U 前向、物理半批、RDrop、As KL0、浅中层锚点与计数符合预定；每卡与对应 noUAs 健康 worker 并行，最多两条本任务、含其他 owner 总数不超过三条。源训练未全部结束，全六模型矩阵仍未齐；不把局部完成冒称目标达成。完整前缀证据见 supervised_U_activation.json。
+
+
+## HPL2 完整方法报告时序调整（成绩读取前登记）
+
+原本地 collector 要求整个六模型 ALL_SCORED 后才汇总已完成方法。这项报告等待不是 PROJECT_PROTOCOL 第310行逐row全部预登记视图冻结后独立truth-last的要求；按 Exclusive Minimal Workflow 记为 REJECTED_EXTRA_GATE，报告时序改为先汇总已完整 SCORED 的 HPL2 三种子、双读出七景42cell。未完成方法的目标成绩仍不读，原六模型总报告保留，不能把完整单方法报告称为整个六模型实验完成。
+
+本调整在任何 HPL2／HPLT1U 目标成绩值读取前登记。HPL_NO_UAS、HPL_LS2 等后续方法此前已独立冻结并发布，所有训练／父来源／参数／排序／测试范围保持，不根据本次成绩改变；每行所有预测固定及独立评分要求保持。29项针对性报告检查PASS；无新训练、重预测或重评分。详见HPL2_reporting_plan.json。

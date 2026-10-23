@@ -161,3 +161,8 @@ PAIREDU三seed已在各自GPU5/6/7实际续训，真实E30 no-query smoke和配�
 ## UVB 完整双读出结果
 
 `20261023-phase1-PAMF-U-ViewBalance-m3-r01` 各方法三seed、共3模型，每景168000条，raw／同一DURA七景预测与独立truth-last全部42cell完成；全部新增13320条闭合训练记录已核对。UVB / raw clean=84.611706%；UVB / DURA-LU clean=84.636905%；UVB / raw six_mean=71.675430%；UVB / DURA-LU six_mean=77.545337%；原数值目标仍未满足，维持ACTIVE。全部结果、匹配基线、逐seed／场景／分层及成本均保存，不从本结果热改其他已固定方法、父权重或矩阵。
+
+
+## 完整 HPL2 方法先行汇总（成绩读取前登记）
+
+HPL2 三seed双读出七景42cell已全部独立评分。为符合逐row自动测试及快速研发要求，在任何 HPL2／HPLT1U 目标成绩值读取前，解除本地collector额外的“等另一方法全部完成”报告等待（REJECTED_EXTRA_GATE）；先列完整 HPL2 方法，原六模型报告和后续全部健康实验保持。所有后续候选已在本次读分前冻结，不依据新成绩改权重／门控／父源／候选排序或选择性重跑。范围仅报告时序，非数据或模型协议变更，原raw双目标不缩减。

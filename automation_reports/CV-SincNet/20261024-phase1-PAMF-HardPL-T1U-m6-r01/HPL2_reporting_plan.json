@@ -1,0 +1,53 @@
+{
+  "status": "REGISTERED_BEFORE_HPL2_TARGET_SCORE_READ",
+  "run_id": "20261024-phase1-PAMF-HardPL-T1U-m6-r01",
+  "method": "HPL2",
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "change": "Report this complete registered three-seed method before unrelated HPLT1U rows finish;retain original full-six-model report",
+  "required_before_score_read": "All3 HPL2 jobs SCORED;all source E50/11100,all14 decisions per row frozen,no query fitting,independent truth-last score completion",
+  "complete_method_models": 3,
+  "readouts": [
+    "raw",
+    "DURA-LU"
+  ],
+  "views_per_readout": 7,
+  "count_per_view": 168000,
+  "complete_method_cells": 42,
+  "HPL2_target_values_read_before_amendment": false,
+  "HPLT1U_target_values_read_before_amendment": false,
+  "protocol_reference": "docs/PROJECT_PROTOCOL.md:310 permits fixed-row automatic tests and independent truth-last after all registered row views;no feedback to other training",
+  "REJECTED_EXTRA_GATE": "Waiting for healthy unrelated HPLT1U rows before reporting a complete predeclared HPL2 three-seed method;full-matrix reporting completeness is NONBLOCKING under Exclusive Minimal Workflow",
+  "preserved": [
+    "full six-model matrix",
+    "all3seeds",
+    "bothreadouts7views",
+    "default jointlytrained head",
+    "F21E30+20 parents",
+    "weight2/gate.95 and all frozen recipes",
+    "one immutable training root",
+    "single prediction/scoring owner",
+    "F20/F21 primary raw goal",
+    "no target-feedback selection,tuning,reorder or selective rerun"
+  ],
+  "later_frozen_methods_before_this_readout": [
+    {
+      "run_id": "20261024-phase1-PAMF-HardPL-noUAs-m3-r01",
+      "execution_commit": "5b2578b2d8f01258c491d0064a13ef614c7e0c21"
+    },
+    {
+      "run_id": "20261024-phase1-PAMF-HardPL-LS-m3-r01",
+      "execution_commit": "b981bad253b144791579421ad18e3f4cfa480408"
+    }
+  ],
+  "validation": {
+    "status": "PASS",
+    "focused_tests": 29,
+    "scope": "cohort score-read guard,original full-report guard,bothreadouts,exact goal counts and existing registered report paths"
+  },
+  "full_experiment_complete": false,
+  "goal_complete": false
+}
