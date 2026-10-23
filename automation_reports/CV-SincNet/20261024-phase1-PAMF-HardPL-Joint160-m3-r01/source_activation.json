@@ -1,0 +1,265 @@
+{
+  "status": "VERIFIED_REAL_E20_JOINT_SMOKE_AND_ALL3_SOURCE_RUNNING",
+  "run_id": "20261024-phase1-PAMF-HardPL-Joint160-m3-r01",
+  "execution_commit": "77498c5a8b003f3afc71fab7ee96ca39662593fa",
+  "observed_unix": 1792792885.8245962,
+  "source_prefix_observed_unix": 1792792912.1831286,
+  "actual_GPU_workers": 3,
+  "queued_rows": 0,
+  "actual_original_E20_smoke": {
+    "status": "PASS",
+    "methods": [
+      {
+        "method": "HPL_E20_NAMS_JOINT6G",
+        "model_seed": 2026092701,
+        "parent_epoch": 20,
+        "parent_updates": 4440,
+        "L_forward_packets": 768,
+        "U_seen": 256,
+        "U_accepted": 235,
+        "student_U_views": 1536,
+        "physical_U_generated": 0,
+        "physical_student_views": 0,
+        "raw_U_As_seen": 128,
+        "U_As_raw_input_matches": true,
+        "source_Practical_generated": 64,
+        "contrast_anchors": {
+          "time_down": 470,
+          "t2.pool": 470
+        },
+        "shallow_middle_gradient": true,
+        "ordinary_raw_RDrop": true,
+        "As_KL_weight": 0,
+        "weight": 6.0,
+        "threshold": 0.95,
+        "EMA_updates": 0,
+        "finite_backward": true,
+        "default_head_gradient": true,
+        "feature_hooks_removed": true,
+        "U_label_smoothing": 0.01,
+        "U_style": {
+          "recipe": {
+            "levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "alpha": 0.1,
+            "probability_per_level": 0.5,
+            "eps": 1e-06,
+            "accepted_only": true,
+            "same_hard_pseudo": true,
+            "different_source_RX": true,
+            "detached_moments": true
+          },
+          "calls": 6,
+          "seen": 1536,
+          "eligible": 1410,
+          "applied": {
+            "time_down": 1410,
+            "t2.pool": 1410
+          },
+          "persistent_hooks": false,
+          "teacher_or_L_style_calls": 0,
+          "partner_TX_truth_reads": 0,
+          "shared_six_forward_plan": true,
+          "plan_calls": 1,
+          "contrast_captures_after_style": true
+        },
+        "U_gradient_guard": {
+          "recipe": {
+            "weight": 6.0,
+            "projection": "one_sided_per_group",
+            "groups": [
+              "t2",
+              "cls_head",
+              "other"
+            ],
+            "U_to_L_norm_cap": 1.0,
+            "tiny_L_squared_norm": 1e-12,
+            "anchor": "complete_current_L_objective",
+            "optimizer": "unchanged_native_Adam",
+            "extra_teacher_or_student_forward": false
+          },
+          "calls": 1,
+          "conflicts": {
+            "t2": 1,
+            "cls_head": 1,
+            "other": 1
+          },
+          "caps": {
+            "t2": 1,
+            "cls_head": 0,
+            "other": 1
+          },
+          "pending_U_loss": false
+        },
+        "gradient_guard_details": {
+          "t2": {
+            "L_norm": 0.18974337059096819,
+            "U_norm": 0.44847059758347463,
+            "applied_U_norm": 0.18974337059096819,
+            "dot_before": -0.033712842968043485,
+            "dot_after": -2.064483394248484e-10,
+            "conflict": true,
+            "capped": true,
+            "tiny_L": false
+          },
+          "cls_head": {
+            "L_norm": 0.6488158852848492,
+            "U_norm": 0.5881522798538433,
+            "applied_U_norm": 0.5820038319348395,
+            "dot_before": -0.05503339473512492,
+            "dot_after": -2.0845308769043558e-09,
+            "conflict": true,
+            "capped": false,
+            "tiny_L": false
+          },
+          "other": {
+            "L_norm": 0.9529536866373768,
+            "U_norm": 2.0694876126405304,
+            "applied_U_norm": 0.9529536866373768,
+            "dot_before": -0.679958625544694,
+            "dot_after": -3.883725884644405e-09,
+            "conflict": true,
+            "capped": true,
+            "tiny_L": false
+          }
+        },
+        "explicit_backward_matches": true,
+        "complete_L_anchor": true,
+        "U_joint_contrast": {
+          "recipe": {
+            "feature": "actual_CompositeReference_features_joint160",
+            "weight": 0.05,
+            "CE_normalizer": 1.25,
+            "student_views": "first_two_ordinary_U_passes",
+            "accepted_only": true,
+            "positive": "same_pseudo_different_source_RX",
+            "contrast": "same_native_CROSS_RX_temperature0.2",
+            "extra_forward": false,
+            "new_head": false
+          },
+          "calls": 1,
+          "captures": 2,
+          "captured_packets": 512,
+          "anchors": 470,
+          "extra_forward_calls": 0,
+          "teacher_or_L_captures": 0,
+          "persistent_feature_wrapper": false
+        },
+        "U_joint_signature_gradient_norm": 0.43525848233207093,
+        "joint160_gradient": true,
+        "joint_feature_wrapper_removed": true
+      }
+    ],
+    "target_reads": 0,
+    "U_truth_reads": 0,
+    "probe_updates_discarded": true,
+    "formal_reload_original_parent_epoch": 20,
+    "formal_reload_original_F21_E30": false,
+    "immediate_continuation": true
+  },
+  "rows": [
+    {
+      "row_id": "HPL_E20_NAMS_JOINT6G-s2026092701",
+      "method": "HPL_E20_NAMS_JOINT6G",
+      "model_seed": 2026092701,
+      "gpu": 5,
+      "process_identity_verified": true,
+      "log_bytes": 6714,
+      "log_growth_bytes": 6714,
+      "step_metrics_bytes": 157620,
+      "step_metrics_growth_bytes": 157620,
+      "checked_source_step_records": 68,
+      "joint_calls": 68,
+      "joint_captures": 136,
+      "captured_existing_U_packets": 34816,
+      "joint_crossRX_anchors": 32014,
+      "guard_calls": 68,
+      "style_eligible": 96042,
+      "style_applied": {
+        "time_down": 50832,
+        "t2.pool": 43812
+      },
+      "source_complete": false,
+      "target_scores_read": false
+    },
+    {
+      "row_id": "HPL_E20_NAMS_JOINT6G-s2026092702",
+      "method": "HPL_E20_NAMS_JOINT6G",
+      "model_seed": 2026092702,
+      "gpu": 6,
+      "process_identity_verified": true,
+      "log_bytes": 6714,
+      "log_growth_bytes": 6714,
+      "step_metrics_bytes": 157307,
+      "step_metrics_growth_bytes": 157307,
+      "checked_source_step_records": 68,
+      "joint_calls": 68,
+      "joint_captures": 136,
+      "captured_existing_U_packets": 34816,
+      "joint_crossRX_anchors": 32370,
+      "guard_calls": 68,
+      "style_eligible": 97110,
+      "style_applied": {
+        "time_down": 52776,
+        "t2.pool": 62952
+      },
+      "source_complete": false,
+      "target_scores_read": false
+    },
+    {
+      "row_id": "HPL_E20_NAMS_JOINT6G-s2026092703",
+      "method": "HPL_E20_NAMS_JOINT6G",
+      "model_seed": 2026092703,
+      "gpu": 7,
+      "process_identity_verified": true,
+      "log_bytes": 6714,
+      "log_growth_bytes": 6714,
+      "step_metrics_bytes": 189176,
+      "step_metrics_growth_bytes": 189176,
+      "checked_source_step_records": 81,
+      "joint_calls": 81,
+      "joint_captures": 162,
+      "captured_existing_U_packets": 41472,
+      "joint_crossRX_anchors": 38386,
+      "guard_calls": 81,
+      "style_eligible": 115158,
+      "style_applied": {
+        "time_down": 55602,
+        "t2.pool": 61182
+      },
+      "source_complete": false,
+      "target_scores_read": false
+    }
+  ],
+  "GPU": [
+    {
+      "gpu": 5,
+      "new_joint_GPU_workers": 1,
+      "total_compute_processes": 3,
+      "used_MiB": 8672,
+      "free_MiB": 15453
+    },
+    {
+      "gpu": 6,
+      "new_joint_GPU_workers": 1,
+      "total_compute_processes": 2,
+      "used_MiB": 7903,
+      "free_MiB": 16222
+    },
+    {
+      "gpu": 7,
+      "new_joint_GPU_workers": 1,
+      "total_compute_processes": 3,
+      "used_MiB": 9030,
+      "free_MiB": 15095
+    }
+  ],
+  "source_complete": false,
+  "target_matrix_complete": false,
+  "new_U_truth_reads": 0,
+  "new_target_reads": 0,
+  "old_healthy_tasks_changed": false,
+  "goal_complete": false
+}

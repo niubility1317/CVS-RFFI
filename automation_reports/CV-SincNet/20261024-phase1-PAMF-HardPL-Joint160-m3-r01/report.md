@@ -20,3 +20,10 @@ GPU5/6/7一seed一卡；每seed只接替 GuardLS 全部GPU预测完成的卡位�
 ## 已发布并核实排队
 
 VERIFIED_CONTROLLER_QUEUED：执行 commit `77498c5a8b003f3afc71fab7ee96ca39662593fa`；单包传输对照及远端编译通过，独立核实控制器存活、CWD／完整命令／PID匹配发布目录，状态心跳继续增长。三模型仍排队，新GPU worker为0，实际原E20 joint／签名梯度 smoke尚待首卡位，不能标成训练或smoke成功。只接替同seed GuardLS全部GPU预测完成后的卡位并保留已派发GuardNAMS；原健康任务未改动。
+
+
+## 真实原 E20 检查通过并实际启动三种子
+
+VERIFIED：发布commit `77498c5a8b003f3afc71fab7ee96ca39662593fa` 的真实原E20 GPU source smoke PASS。实际joint160两次捕获512条已有Upacket，跨RX有效anchors=470；实际签名sequence_pool辅助梯度范数=0.435258482且有限非零，原L768／U1536／rawAs128／Uphysical0／LPractical64、共享style计划、完整L guard参数梯度与显式期望相同及临时wrapper退出均符合。探针丢弃，正式行重新加载原E20。
+
+三个seed已按GPU5/6/7启动并实际产生原生joint／guard源步骤；独立核实进程／CWD／完整命令／GPU及日志增长，逐行现有U复用计数见source_activation.json。只按原矩阵接替释放卡位；当前是训练前缀，不代表全部源训练结束或目标收益。训练、raw＋固定DURA七景及truth-last继续自动执行，goal ACTIVE。

@@ -393,12 +393,16 @@
   ],
   "registered_at": "2026-10-23T20:16:12.123696+00:00",
   "launch_status": {
-    "status": "VERIFIED_BOTH_ARMS_ALL3_SEEDS_SOURCE_RUNNING",
-    "evidence": "both_arms_source_activation.json",
+    "status": "VERIFIED_LS6G_COMPLETE_NAMS6G_TRAINING",
     "source_smoke": "PASS",
-    "actual_GPU_workers": 6,
-    "queued_rows": 0,
-    "target_matrix_complete": false
+    "source_rows_complete": 3,
+    "target_rows_complete": 3,
+    "whole_run_complete": false,
+    "remaining_rows": 3,
+    "remaining_method": "HPL_E20_NAMS6G",
+    "remaining_live_GPU_workers_at_observation": 3,
+    "observed_unix": 1792792885.8323548,
+    "evidence": "HPL_E20_LS6G_evaluation_completion.json"
   },
   "reporting_plan": {
     "complete_HPL2_early_readout": {
@@ -469,5 +473,42 @@
     "aggregate_source_updates_per_second": 10.193578175581486,
     "scientific_recipe_changed": false,
     "target_scores_read": false
+  },
+  "source_quality_diagnostics": {
+    "HPL_E20_LS6G": {
+      "status": "VERIFIED_FULL_SOURCE_V",
+      "source_epoch": 50,
+      "samples_per_seed": 27000,
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "reference": "source_pseudo_quality_E50_HPL_E20_LS6G.json",
+      "model_or_threshold_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0,
+      "selection_changed": false
+    }
+  },
+  "early_completed_methods": {
+    "HPL_E20_LS6G": {
+      "status": "ANALYZED_COMPLETE_METHOD",
+      "models": 3,
+      "completed_readout_view_cells": 42,
+      "raw_method_goal_met": false,
+      "result_ref": "HPL_E20_LS6G_target_results.md",
+      "summary_ref": "HPL_E20_LS6G_target_summary.json",
+      "source_ref": "HPL_E20_LS6G_source_training_complete.json",
+      "whole_run_complete": false
+    }
+  },
+  "matched_method_reports": {
+    "HPL_E20_LS6G": {
+      "status": "VERIFIED_COMPLETE_MATCHED_METHODS",
+      "reference_run": "20261024-phase1-PAMF-HardPL-E20plus30-m6-r01",
+      "reference_method": "HPL_E20_LS2",
+      "reference": "HPL_E20_LS6G_matched_comparison.md"
+    }
   }
 }

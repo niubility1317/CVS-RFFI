@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "status": "VERIFIED_REAL_E20_JOINT_SMOKE_AND_ALL3_SOURCE_RUNNING",
   "focused_tests": 48,
   "independent_review": {
     "status": "PASS",
@@ -9,6 +9,6 @@
     "unresolved_P0_P1_findings": [],
     "finding": "Actual joint160 interface and wrapper restoration are correct;new loss enters completeL gradient guard,no extra forward/inference parameters;starting PID reservation and scorer predecessor chain match the resource scope."
   },
-  "real_checkpoint_smoke": "PENDING first available originalE20 GPU step,actualjoint/signaturegradient/fullLguard",
+  "real_checkpoint_smoke": "PASS;actualjoint160/sequence_poolauxiliarygradient/fullLguard/forwardbudget;source_activation.json",
   "new_NAMS_or_Guard_target_scores_read": 0
 }

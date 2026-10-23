@@ -291,10 +291,11 @@
   ],
   "registered_at": "2026-10-23T21:30:27.368766+00:00",
   "launch_status": {
-    "status": "VERIFIED_CONTROLLER_QUEUED_FIRST_SOURCE_SMOKE_PENDING",
-    "evidence": "queue_activation.json",
-    "source_smoke": "PENDING",
-    "actual_GPU_workers": 0,
-    "queued_rows": 3
+    "status": "VERIFIED_REAL_E20_JOINT_SMOKE_AND_ALL3_SOURCE_RUNNING",
+    "evidence": "source_activation.json",
+    "source_smoke": "PASS",
+    "actual_GPU_workers": 3,
+    "queued_rows": 0,
+    "target_matrix_complete": false
   }
 }
