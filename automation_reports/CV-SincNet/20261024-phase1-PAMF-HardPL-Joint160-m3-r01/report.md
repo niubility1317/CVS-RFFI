@@ -85,3 +85,8 @@ HPL_E20_NAMS_JOINT6G / DURA-LU six_mean：78.080753968% ± 0.979306516%（三个
 
 
 HPL_E20_NAMS_JOINT6G 固定匹配比较完成，见 HPL_E20_NAMS_JOINT6G_matched_comparison.md；比较不替代原主目标或全六行完成状态，无目标反馈改配方。
+
+
+## 源域互补分支诊断 D 预登记
+
+固定比较 Joint／Complement／Path 三个方法各三 seed 的既有 own E30 默认头，复用原 E20 硬伪类、接受掩码、U960／V720 与七种既有头特征干预；合计 18 个 source role 行。检查互补 CE 是否改善无签名／主干识别裕量及完整融合，不据此选择目标 checkpoint、门槛或重排当前矩阵。已知 Joint 及此前完整目标结果，尚未读取 Complement／Path 目标分数；只作源域机制解释。源 V 不更新模型或归一化，U 真值隐藏；CPU2、GPU0，无 G、额外训练或新头。命令、固定模型和输出见 source_geometry_trajectory_plan.json 的 phase_D_registration，检查数 8。

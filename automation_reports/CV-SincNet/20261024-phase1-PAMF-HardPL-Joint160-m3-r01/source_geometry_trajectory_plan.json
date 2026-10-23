@@ -19,17 +19,24 @@
     "C": [
       "F21_E20",
       "GUARD_NAMS_E30"
+    ],
+    "D": [
+      "JOINT_E30",
+      "COMPLEMENT_E30",
+      "PATH_E30"
     ]
   },
   "expected_source_models_by_phase": {
     "A": 12,
     "B": 3,
-    "C": 6
+    "C": 6,
+    "D": 9
   },
   "expected_role_rows_by_phase": {
     "A": 24,
     "B": 6,
-    "C": 12
+    "C": 12,
+    "D": 18
   },
   "parent_reference": "Fixed original same-seed F21 E20;original F21E30 and own10 continuation checkpoints,never target-selected models",
   "U_s": {
@@ -122,5 +129,53 @@
     "source_hypothesis": "Same-pseudo crossRX reference-response recomposition is a possible independent U augmentation because reference160 has lower sourceTX separation and stronger sourceRX association than signature160;first diagnose compensation,do not delete it or launch training from this observation alone",
     "candidate_launch_authorized_by_this_diagnostic": false,
     "focused_source_suite_checks": 8
+  },
+  "phase_D_registration": {
+    "status": "REGISTERED_BEFORE_COMPLEMENT_OR_PATH_TARGET_READ",
+    "registered_utc": "2026-10-23T23:56:50.370993+00:00",
+    "question": "Do the fixed complementary U CE terms improve source deployed core/no-signature identity margins while preserving full fusion?",
+    "profiles": [
+      "JOINT_E30",
+      "COMPLEMENT_E30",
+      "PATH_E30"
+    ],
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "source_epochs": 30,
+    "reference": "Same originalF21E20 pseudo class/mask and pseudo-only protected crossRX partners as phaseC;sourceV truth only reports quality",
+    "models": "All9 fixed ownE30 students plus3same-seed originalE20 reference readers;18role rows",
+    "interventions": [
+      "joint",
+      "without_reference",
+      "without_signature",
+      "core_only",
+      "reference_swap",
+      "signature_swap",
+      "late_swap"
+    ],
+    "checkpoint_provenance": "Existing strict ownE20+10 source_parents,matching contract/config/payload/noupdate frozen defaulthead",
+    "target_exposure": "Joint and earlier full target matrices already observed;no Complement or Path target scores read;not blind research",
+    "selection_or_training_authority": false,
+    "performance_threshold": null,
+    "new_candidates": 0,
+    "model_updates": 0,
+    "normalization_updates": 0,
+    "EMA_updates": 0,
+    "prototype_updates": 0,
+    "head_fit_updates": 0,
+    "U_truth_reads": 0,
+    "target_reads": 0,
+    "G_reads": 0,
+    "GPU_workers": 0,
+    "CPU_threads": 2,
+    "execution": "Use existing ReliableAs release dependencies;actual committed analysis source over UTF8 SSH stdin,ordinary N607 account,CPU2/read-only",
+    "command": "python local_artifacts/pamf_ssl_research_20261023/collect_source_geometry_trajectory.py --phase D",
+    "output": "local_artifacts/pamf_ssl_research_20261023/source_geometry_trajectory_D.json;public full diagnostic and bounded prose in same run",
+    "stop_rule": "Wait if any fixed sourceE30 metadata missing;stop only technical/nonfinite/permission mismatch,no mutation of running jobs",
+    "focused_checks": 8,
+    "goal_complete": false
   }
 }

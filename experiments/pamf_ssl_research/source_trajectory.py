@@ -24,17 +24,25 @@ def collect(contexts,plan,phase,analysis_commit):
         if len(rows)!=1:raise ValueError('Exactly one registered same-seed source row required')
         return read(rows[0]['train_config'])
     profiles=plan['profiles_by_phase'][phase];seeds=plan['model_seeds']
+    validators=dict(old=old_validate,early=early_validate,guard=guard_validate,joint=joint_validate)
+    if any(p in ('COMPLEMENT_E30','PATH_E30') for p in profiles):
+        from experiments.pamf_ssl_research.hard_pl_complement import validate as complement_validate
+        from experiments.pamf_ssl_research.hard_pl_path import validate as path_validate
+        validators.update(complement=complement_validate,path=path_validate)
+    definitions={'F21_E20':('joint','HPL_E20_NAMS_JOINT6G'), 'F21_E30':('old','HPL2'),
+        'EARLY_NAMS_E30':('early','HPL_E20_NAMS2'),'GUARD_NAMS_E30':('guard','HPL_E20_NAMS6G'),
+        'JOINT_E30':('joint','HPL_E20_NAMS_JOINT6G'),
+        'COMPLEMENT_E30':('complement','HPL_E20_JOINT_COMP6G'),'PATH_E30':('path','HPL_E20_JOINT_PATH6G')}
     # Metadata readiness precedes checkpoint loads;waiting does not restart or alter live jobs.
     for seed in seeds:
         for profile in profiles:
             if profile in ('F21_E20','F21_E30'):continue
-            key,method={'EARLY_NAMS_E30':('early','HPL_E20_NAMS2'),'GUARD_NAMS_E30':('guard','HPL_E20_NAMS6G'),
-                        'JOINT_E30':('joint','HPL_E20_NAMS_JOINT6G')}[profile]
+            key,method=definitions[profile]
             c=config(key,method,seed);path=Path(c['output_root'])/'segment30/complete.json'
             if not path.is_file() or not read(path).get('actual_adapter_SSL'):
                 return dict(status='WAIT_FIXED_SOURCE_STAGE',profile=profile,model_seed=seed,target_reads=0,U_truth_reads=0)
     def load(profile,seed,expected):
-        key,method,validator=('old','HPL2',old_validate) if profile=='F21_E30' else ('joint','HPL_E20_NAMS_JOINT6G',joint_validate) if profile in ('F21_E20','JOINT_E30') else ('early','HPL_E20_NAMS2',early_validate) if profile=='EARLY_NAMS_E30' else ('guard','HPL_E20_NAMS6G',guard_validate)
+        key,method=definitions[profile];validator=validators[key]
         c=config(key,method,seed)
         parents,contract=(old_parents(c,validate_config=validator) if profile=='F21_E30' else source_parents(c,validate_config=validator))
         if contract!=expected:raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH')
@@ -72,7 +80,7 @@ def collect(contexts,plan,phase,analysis_commit):
             q=torch.cat(q);accepted=q.max(1).values>=.95 if role=='U_s' else torch.ones(len(x),dtype=torch.bool)
             labels=q.argmax(1) if role=='U_s' else torch.tensor(data.metadata['y'][ix].tolist(),dtype=torch.long)
             cohorts[role]=dict(x=x,rx=rx,labels=labels,accepted=accepted,reference_q=q)
-            if phase=='C':
+            if phase in ('C','D'):
                 from experiments.pamf_ssl_research.u_mixstyle_objective import protected_partners
                 reference_accepted=q.max(1).values>=.95;torch.manual_seed(seed+2026102501)
                 partner,valid=protected_partners(q,reference_accepted.float(),rx,list((1,3,4,6,8)),1.)
@@ -91,7 +99,7 @@ def collect(contexts,plan,phase,analysis_commit):
                 features={name:torch.cat(parts) for name,parts in values.items()};q=torch.cat(probabilities)
                 y=cohort['labels'];accepted=cohort['accepted'];pred=q.argmax(1);confidence=q.max(1).values
                 extra={}
-                if phase=='C':
+                if phase in ('C','D'):
                     extra['fixed_head_interventions']=fixed_head_interventions(reader,features,y,cohort['partner'],cohort['valid'])
                     valid=cohort['valid'];partner=cohort['partner']
                     extra['source_pair_diagnostic']=dict(eligible=int(valid.sum()),reference_accepted=int(cohort['reference_accepted'].sum()),
