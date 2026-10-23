@@ -1,6 +1,6 @@
 # 高置信硬伪标签监督扩展：移除 U 信道增强的匹配对照
 
-状态：LOCAL_VERIFIED_NOT_LAUNCHED。160 项相关检查通过；一次独立 P0/P1 审查发现前序已启动未注册 CUDA 的 PID 漏计，已修复并经唯一定向复查关闭。真实 F21 E30 source-only smoke 待首卡位。本方法尚未训练，未读取新版目标结果。
+状态：VERIFIED_QUEUED。160 项相关检查通过；一次独立 P0/P1 审查发现前序已启动未注册 CUDA 的 PID 漏计，已修复并经唯一定向复查关闭。真实 F21 E30 source-only smoke 待首卡位。本方法尚未训练，未读取新版目标结果。
 
 用户要求从普通 PL 的高纯度伪标签出发，提高权重并叠加监督机制。已发布 HPL2 与 HPLT1U，当前健康训练保持。本独立匹配对照只检验 U 信道强视图的影响，来自冻结源域诊断，未使用新 HPL 或 UVB 目标成绩。
 
@@ -27,3 +27,8 @@ HPL_NO_UAS 从原 F21 同 seed E30 独立追加 20 轮至 E50/11100，累计 13L
 主目标仍是 raw clean 同时超过 F20/F21 至少 1 个百分点，六景均值同时严格超过 1.5 个百分点；DURA 不能替代主目标。当前 goal ACTIVE，尚无达标方法。历史目标暴露如实披露，不宣称全新独立盲测。
 
 预期产物：state/smoke、source E50 checkpoint 和 hard_pl_state.json、完整训练记录、source V 诊断、source_execution_check、14 项预测、独立 scores 与完整汇总。启动后独立核实 PID/CWD/命令/实际 GPU/日志增长；排队或本地通过不等于训练成功或目标提升。
+
+
+## 发布后实际排队证据
+
+执行 commit `5b2578b2d8f01258c491d0064a13ef614c7e0c21`；一次发布 archive 本地／远端 SHA 比较与远端 compile PASS。独立读回实际 CPU 控制器 PID／CWD／完整命令、存活和同版本 state，三 row 均 QUEUED、实际 GPU 子进程 0。首 GPU5 的真实原 F21 E30 source smoke 待同 seed HPL2／UVB 全部 GPU 预测完成、HPLT1U 已派发后执行，PASS 立即继续；前序启动中 PID 计入容量。现有健康训练和其他 owner 未修改。排队不视为训练成功或目标收益，详见 queue_verification.json。
