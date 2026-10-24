@@ -1,0 +1,262 @@
+{
+  "status": "VERIFIED_ALL3_INITIAL_SOURCE_EPOCH_ACTUAL_PARAMETER_UPDATES",
+  "run_id": "20261024-phase1-PAMF-HardPL-StepGuard-m3-r01",
+  "execution_commit": "6459bc989343622564e232bbe0f67cd7479946d4",
+  "registered_utc": "2026-10-24T07:22:59.585374+00:00",
+  "observations_unix": {
+    "process": 1792826491.2038255,
+    "source": 1792826492.635548,
+    "parameters": 1792826491.230719
+  },
+  "rows": [
+    {
+      "row_id": "HPL_E20_AS_SG2-s2026092701",
+      "model_seed": 2026092701,
+      "gpu": 5,
+      "process_identity_verified": true,
+      "cumulative_epoch": 21,
+      "complete_native_loss_records": 341,
+      "complete_parameter_update_records": 344,
+      "raw_accepted": 80513,
+      "U_seen": 87164,
+      "native_As_generated": 43582,
+      "native_As_accepted_student_views": 80648,
+      "branch_gradient_calls": 1364,
+      "branch_extra_autograd_calls": 682,
+      "fallback_groups": 6,
+      "group_totals": {
+        "t2": {
+          "steps": 344,
+          "fallback_groups": 3,
+          "tiny_L_steps": 0,
+          "passthrough_steps": 250,
+          "zero_raw_increment_steps": 0,
+          "zero_applied_increment_steps": 3,
+          "minimum_norm_retention": 0.0,
+          "before_material_conflicts": {
+            "L_full": 26,
+            "L_clean": 70,
+            "L_As": 38
+          },
+          "after_material_conflicts": {
+            "L_full": 0,
+            "L_clean": 0,
+            "L_As": 0
+          },
+          "mean_norm_retention": 0.9907063476621727
+        },
+        "cls_head": {
+          "steps": 344,
+          "fallback_groups": 3,
+          "tiny_L_steps": 0,
+          "passthrough_steps": 185,
+          "zero_raw_increment_steps": 0,
+          "zero_applied_increment_steps": 3,
+          "minimum_norm_retention": 0.0,
+          "before_material_conflicts": {
+            "L_full": 69,
+            "L_clean": 104,
+            "L_As": 89
+          },
+          "after_material_conflicts": {
+            "L_full": 0,
+            "L_clean": 0,
+            "L_As": 0
+          },
+          "mean_norm_retention": 0.990651913446369
+        },
+        "other": {
+          "steps": 344,
+          "fallback_groups": 0,
+          "tiny_L_steps": 0,
+          "passthrough_steps": 247,
+          "zero_raw_increment_steps": 0,
+          "zero_applied_increment_steps": 0,
+          "minimum_norm_retention": 0.9999414006280123,
+          "before_material_conflicts": {
+            "L_full": 44,
+            "L_clean": 70,
+            "L_As": 41
+          },
+          "after_material_conflicts": {
+            "L_full": 0,
+            "L_clean": 0,
+            "L_As": 0
+          },
+          "mean_norm_retention": 0.99999884671407
+        }
+      },
+      "minimum_whole_increment_retention": 0.9999025156733864,
+      "optimizer_and_projection_window_seconds": 80.8047032225877
+    },
+    {
+      "row_id": "HPL_E20_AS_SG2-s2026092702",
+      "model_seed": 2026092702,
+      "gpu": 6,
+      "process_identity_verified": true,
+      "cumulative_epoch": 21,
+      "complete_native_loss_records": 320,
+      "complete_parameter_update_records": 325,
+      "raw_accepted": 75763,
+      "U_seen": 81788,
+      "native_As_generated": 40894,
+      "native_As_accepted_student_views": 75778,
+      "branch_gradient_calls": 1280,
+      "branch_extra_autograd_calls": 640,
+      "fallback_groups": 8,
+      "group_totals": {
+        "t2": {
+          "steps": 325,
+          "fallback_groups": 4,
+          "tiny_L_steps": 0,
+          "passthrough_steps": 230,
+          "zero_raw_increment_steps": 0,
+          "zero_applied_increment_steps": 4,
+          "minimum_norm_retention": 0.0,
+          "before_material_conflicts": {
+            "L_full": 32,
+            "L_clean": 69,
+            "L_As": 44
+          },
+          "after_material_conflicts": {
+            "L_full": 0,
+            "L_clean": 0,
+            "L_As": 0
+          },
+          "mean_norm_retention": 0.9870839839659135
+        },
+        "cls_head": {
+          "steps": 325,
+          "fallback_groups": 4,
+          "tiny_L_steps": 0,
+          "passthrough_steps": 195,
+          "zero_raw_increment_steps": 0,
+          "zero_applied_increment_steps": 4,
+          "minimum_norm_retention": 0.0,
+          "before_material_conflicts": {
+            "L_full": 55,
+            "L_clean": 81,
+            "L_As": 71
+          },
+          "after_material_conflicts": {
+            "L_full": 0,
+            "L_clean": 0,
+            "L_As": 0
+          },
+          "mean_norm_retention": 0.9867917066021606
+        },
+        "other": {
+          "steps": 325,
+          "fallback_groups": 0,
+          "tiny_L_steps": 0,
+          "passthrough_steps": 239,
+          "zero_raw_increment_steps": 0,
+          "zero_applied_increment_steps": 0,
+          "minimum_norm_retention": 0.9997811192368733,
+          "before_material_conflicts": {
+            "L_full": 32,
+            "L_clean": 58,
+            "L_As": 36
+          },
+          "after_material_conflicts": {
+            "L_full": 0,
+            "L_clean": 0,
+            "L_As": 0
+          },
+          "mean_norm_retention": 0.9999980199652716
+        }
+      },
+      "minimum_whole_increment_retention": 0.9997700021695507,
+      "optimizer_and_projection_window_seconds": 91.05604542745277
+    },
+    {
+      "row_id": "HPL_E20_AS_SG2-s2026092703",
+      "model_seed": 2026092703,
+      "gpu": 7,
+      "process_identity_verified": true,
+      "cumulative_epoch": 21,
+      "complete_native_loss_records": 396,
+      "complete_parameter_update_records": 399,
+      "raw_accepted": 93734,
+      "U_seen": 101244,
+      "native_As_generated": 50622,
+      "native_As_accepted_student_views": 93826,
+      "branch_gradient_calls": 1584,
+      "branch_extra_autograd_calls": 792,
+      "fallback_groups": 4,
+      "group_totals": {
+        "t2": {
+          "steps": 399,
+          "fallback_groups": 1,
+          "tiny_L_steps": 0,
+          "passthrough_steps": 307,
+          "zero_raw_increment_steps": 0,
+          "zero_applied_increment_steps": 1,
+          "minimum_norm_retention": 0.0,
+          "before_material_conflicts": {
+            "L_full": 33,
+            "L_clean": 67,
+            "L_As": 47
+          },
+          "after_material_conflicts": {
+            "L_full": 0,
+            "L_clean": 0,
+            "L_As": 0
+          },
+          "mean_norm_retention": 0.9964542887506919
+        },
+        "cls_head": {
+          "steps": 399,
+          "fallback_groups": 3,
+          "tiny_L_steps": 0,
+          "passthrough_steps": 267,
+          "zero_raw_increment_steps": 0,
+          "zero_applied_increment_steps": 3,
+          "minimum_norm_retention": 0.0,
+          "before_material_conflicts": {
+            "L_full": 56,
+            "L_clean": 75,
+            "L_As": 84
+          },
+          "after_material_conflicts": {
+            "L_full": 0,
+            "L_clean": 0,
+            "L_As": 0
+          },
+          "mean_norm_retention": 0.9917803483792472
+        },
+        "other": {
+          "steps": 399,
+          "fallback_groups": 0,
+          "tiny_L_steps": 0,
+          "passthrough_steps": 289,
+          "zero_raw_increment_steps": 0,
+          "zero_applied_increment_steps": 0,
+          "minimum_norm_retention": 0.9998512892794691,
+          "before_material_conflicts": {
+            "L_full": 46,
+            "L_clean": 73,
+            "L_As": 51
+          },
+          "after_material_conflicts": {
+            "L_full": 0,
+            "L_clean": 0,
+            "L_As": 0
+          },
+          "mean_norm_retention": 0.9999982669985743
+        }
+      },
+      "minimum_whole_increment_retention": 0.9998493900101233,
+      "optimizer_and_projection_window_seconds": 62.869029469555244
+    }
+  ],
+  "all_three_source_first_epoch_complete": true,
+  "source_training_complete": false,
+  "target_matrix_complete": false,
+  "interpretation": "Every complete flushed record in each observed source prefix checked,not a sample.No new model/IQ/V/Utruth/target/G reads.This is an early prefix,not a whole trajectory or performance result.",
+  "norm_units": "Retentions use native FP32 parameter coordinates.Per-group values and zero/fallback counts are retained;the whole-vector ratio is not an importance-weighted or physical-unit measure.",
+  "timing": "The optimizer/projection window includes the disposable L reference plus real joint physical clip/AdamW and the projection,ending before log serialization.It excludes forward/backward and is not pure extra overhead or total training cost.The earlier source_activation field reference_and_projection_seconds has this same window meaning.",
+  "actual_whole_training_cost": "Only completed matched source runs can provide full elapsed comparisons;shared-GPU wallclock is not exclusive GPU-hours.",
+  "training_or_recipe_changed": false,
+  "goal_complete": false
+}

@@ -299,5 +299,10 @@
     "source_smoke": "PASS",
     "actual_GPU_workers": 3,
     "target_matrix_complete": false
+  },
+  "source_first_epoch_observation": {
+    "reference": "source_first_epoch_observation.json",
+    "status": "VERIFIED_ALL3_INITIAL_SOURCE_EPOCH_ACTUAL_PARAMETER_UPDATES",
+    "target_matrix_complete": false
   }
 }
