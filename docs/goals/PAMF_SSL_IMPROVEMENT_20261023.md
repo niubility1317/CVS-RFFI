@@ -327,3 +327,8 @@ PathReliableAs 发布后 VERIFIED：控制器存活及 CWD/完整命令匹配，
 ## 类别与接收机 CE 贡献均衡
 
 `20261024-phase1-PAMF-HardPL-BalancedCE-m3-r01` 按 e7c9eb60 固定源设计实现，只在 NativeAs 完整配方中重分配当前已接受伪类/sourceRX 的 CE；接受集合、原 raw0.95/U权重6、六 logits/监督损失/完整Lguard/defaulthead保持。每批权重0.5至1.5、接受均值1；39960新增CE算术，无额外教师/骨干/头。原同seed E20独立own10+20/E50/11100，物理As预算与NativeAs相同。23新增及119受影响流程检查、一次P0P1均PASS；真实E20检查待匹配释放RXE卡位，唯一CPU scorer接NativeAs。三seed raw+DURA七景42cell、NativeAs匹配比较和原双控制raw目标固定，goal ACTIVE。
+
+
+## HPL_E20_JOINT_RAS6G 完整双读出结果
+
+`20261024-phase1-PAMF-HardPL-ReliableAs-m3-r01` 各方法三seed、共3模型，每景168000条，raw／同一DURA七景预测与独立truth-last全部42cell完成；全部新增19980条闭合训练记录已核对。HPL_E20_JOINT_RAS6G / raw clean=85.448810%；HPL_E20_JOINT_RAS6G / DURA-LU clean=85.518651%；HPL_E20_JOINT_RAS6G / raw six_mean=70.701488%；HPL_E20_JOINT_RAS6G / DURA-LU six_mean=77.864220%；原数值目标仍未满足，维持ACTIVE。全部结果、匹配基线、逐seed／场景／分层及成本均保存，不从本结果热改其他已固定方法、父权重或矩阵。
