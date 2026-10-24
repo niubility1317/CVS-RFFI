@@ -31,3 +31,6 @@ REGISTERED，尚未启动。源域规则已经通过，生产路径87项检查�
 
 
 去幅度帽固定源验证已完成：SOURCE_COUNTERFACTUAL_PASSED，详见source_uncapped_step.md及JSON。全部3seed/9组保留，源规则保持，不作为目标结果，不修改当前健康训练或自动启动新候选。
+
+
+源支持的独立StepNoCap训练对照已固定，尚未实现/启动：只将原StepGuard的raw U/L幅度帽2改为None，保留三个原梯度方向约束及当前动量/实际FP32参数更新保护，全部损失/接受集合/原E20+own30预算不变。三seed与raw+DURA42cells及完整报告固定；主匹配StepGuard，次匹配BranchGuard同时含实际步保护变化。等待同seed BranchGuard GPU预测完成且StepGuard派发，保留健康任务。源单步PASS不是训练或目标收益，生产实现/一次P0P1/真实E20检查待完成，详见step_no_cap_followup_design.json。
