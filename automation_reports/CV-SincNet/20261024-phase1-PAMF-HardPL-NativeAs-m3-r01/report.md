@@ -18,3 +18,6 @@ GPU5/6/7固定对应三个seed，每卡最多两个本任务、计外部compute�
 ## 发布后独立核实
 
 VERIFIED：执行commit `f605efc3fc35617bb007ae25ec6b4822360b95c1` 的控制器存活，CWD及完整命令匹配。三行实际QUEUED，GPU训练worker为0，真实原E20检查PENDING，等待对应seed组合版全部GPU预测完成且RXE已派发。独立核实组合版三个健康worker的PID/CWD/命令/GPU及日志增长，RXE控制器存活且仍三行排队。每卡本任务最多两个，保留全部现有任务；排队不代表训练或目标成功。
+
+
+真实原 E20 检查及首批启动已独立核实：VERIFIED，执行 commit `f605efc3fc35617bb007ae25ec6b4822360b95c1`，检查 seed 2026092702，L768/U1536/rawteacher256/As128/物理学生256/Practical192，完整 L 显式梯度、joint 签名梯度和临时 hook 清除通过。探针丢弃，正式重新加载原 E20。目前实际 1 个正式 GPU worker 已有正源步骤，并核实 PID/CWD/命令/GPU/日志增长；其余仍排队。完整事实见 first_source_start.json；首个启动不能当作三种子全部启动或测试成功。
