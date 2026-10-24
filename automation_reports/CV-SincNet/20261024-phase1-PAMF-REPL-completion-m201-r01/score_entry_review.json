@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "reviewer": "/root/practical_release_review",
+  "scope": "Direct CPU entry failure recovery; exact blocked-controller handoff only",
+  "resolved_P1": "Only full exact dispatch argv and matching CWD can receive controller SIGTERM; same-runtime smoke/worker rejected; exited owner not signalled",
+  "unchanged": "All scientific models/configs/data/checkpoints/healthy workers; two bad CPU scores only replaced",
+  "tests": "4 focused tests PASS",
+  "duplicate_full_review": false
+}

@@ -16,6 +16,10 @@ def activate(c):
     activate(c);numerical_policy()
 
 def worker(c,kind):
+    # Independent CPU scoring intentionally has no model/source release handles.
+    if kind=='score':
+        from .evaluation import score
+        return score(c)
     activate(c)
     if kind in ('prefix','F'):
         from .source import train
@@ -23,9 +27,6 @@ def worker(c,kind):
     if kind=='predict':
         from .evaluation import predict
         return predict(c)
-    if kind=='score':
-        from .evaluation import score
-        return score(c)
     if kind=='timing':
         from .timing import run
         return run(c)
@@ -83,10 +84,11 @@ def foreign_CPU_score(owned):
 def launch(rt,job,gpu):
     path=Path(rt['run_root'])/'logs'/(job['id']+'.log');path.parent.mkdir(exist_ok=True)
     cmd=[rt['python'],'-u','-m','experiments.pamf_repl_completion.runner','worker','--kind',job['kind'],'--config',job['config']]
-    env=dict(os.environ,PYTHONPATH=rt['release_root'],CUDA_VISIBLE_DEVICES='' if gpu is None else str(gpu),
+    release=job.get('execution_release',rt['release_root'])
+    env=dict(os.environ,PYTHONPATH=release,CUDA_VISIBLE_DEVICES='' if gpu is None else str(gpu),
         OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',PYTHONUNBUFFERED='1')
-    with path.open('x') as log:child=subprocess.Popen(cmd,cwd=rt['release_root'],env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
-    return child,dict(status='RUNNING',pid=child.pid,gpu=gpu,cwd=rt['release_root'],argv=cmd,log=str(path),started_at=time.time())
+    with path.open('x') as log:child=subprocess.Popen(cmd,cwd=release,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
+    return child,dict(status='RUNNING',pid=child.pid,gpu=gpu,cwd=release,argv=cmd,log=str(path),started_at=time.time())
 
 def dispatch(rt):
     from .prepare import prepare
@@ -97,21 +99,34 @@ def dispatch(rt):
     state=dict(status='PREPARING',pid=os.getpid(),cwd=os.getcwd(),argv=sys.argv,code_commit=rt['code_commit'],
         owner='codex-pamf-repl-completion-20261024',started_at=time.time(),jobs={})
     atomic(root/'pipeline_state.json',state)
-    jobs=prepare(rt);by={j['id']:j for j in jobs}
+    if rt.get('recover_previous_runtime'):
+        from .recovery import prepare as recovery_prepare
+        jobs,oldstate=recovery_prepare(rt)
+    else:jobs=prepare(rt);oldstate=None
+    by={j['id']:j for j in jobs}
     # No F or target prediction is launched before the one actual-checkpoint smoke.
     gpu=None
-    while gpu is None:
+    if oldstate is not None:
+        from .recovery import attach
+        active,children,failures=attach(jobs,oldstate)
+        state.update(status='RUNNING',jobs=oldstate['jobs'],recovered_from=rt['recover_previous_runtime'],
+            resolved_technical_failures=oldstate['resolved_technical_failures'])
+        atomic(root/'pipeline_state.json',state)
+    else:
+        active={};children={};failures=Counter()
+    while oldstate is None and gpu is None:
         pending=processes()
         for g in rt['allowed_gpus']:
             pids,free=capacity(g);count=len(pids|{p for p,v in pending.items() if v==g})
             if count<3 and free>=12000:gpu=g;break
         if gpu is None:time.sleep(20)
-    cmd=[rt['python'],'-u','-m','experiments.pamf_repl_completion.runner','smoke','--config',rt['runtime_file']]
-    env=dict(os.environ,PYTHONPATH=rt['release_root'],CUDA_VISIBLE_DEVICES=str(gpu),OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2')
-    with (root/'smoke.log').open('x') as log:subprocess.run(cmd,cwd=rt['release_root'],env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,check=True)
-    if read(root/'smoke.json')['status']!='PASS':raise ValueError('Source smoke did not pass')
-    state.update(status='RUNNING',jobs={j['id']:dict(status='QUEUED') for j in jobs});atomic(root/'pipeline_state.json',state)
-    active={};children={};failures=Counter();turn=0
+    if oldstate is None:
+        cmd=[rt['python'],'-u','-m','experiments.pamf_repl_completion.runner','smoke','--config',rt['runtime_file']]
+        env=dict(os.environ,PYTHONPATH=rt['release_root'],CUDA_VISIBLE_DEVICES=str(gpu),OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2')
+        with (root/'smoke.log').open('x') as log:subprocess.run(cmd,cwd=rt['release_root'],env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,check=True)
+        if read(root/'smoke.json')['status']!='PASS':raise ValueError('Source smoke did not pass')
+        state.update(status='RUNNING',jobs={j['id']:dict(status='QUEUED') for j in jobs});atomic(root/'pipeline_state.json',state)
+    turn=0
     # Reuse the established host telemetry. This owner never uses its fourth-slot pilot.
     policy=LoadPolicy(dict(boost_gpus=[0,6],max_gpu_workers=26))
     while True:

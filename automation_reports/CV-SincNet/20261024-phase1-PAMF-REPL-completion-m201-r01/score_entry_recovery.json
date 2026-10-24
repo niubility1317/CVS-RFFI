@@ -1,0 +1,19 @@
+{
+  "status": "LOCAL_REPRODUCED_FIXED_AWAITING_RELEASE",
+  "technical_run": "20261025-phase1-PAMF-REPL-score-entry-recovery-m2-r01",
+  "fingerprint": "KeyError: 'frozen_sources'",
+  "scope": "CPU worker entry only; no F/G/recipe change",
+  "failed_score_rows": [
+    "F0-supervised-s2026092701",
+    "F0-supervised-s2026092702"
+  ],
+  "frozen_predictions_reused": true,
+  "new_F": 0,
+  "new_G": 0,
+  "new_predictions": 0,
+  "new_IQ_cache": 0,
+  "history_stages": 735,
+  "effective_stages": 733,
+  "tests": "4 focused recovery tests PASS",
+  "plan": "docs/PAMF_REPL_SCORE_ENTRY_RECOVERY_20261025.md"
+}
