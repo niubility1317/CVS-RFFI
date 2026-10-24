@@ -43,10 +43,13 @@ class OptimizerStepGuard:
         if self.optimizer is not None and self.optimizer is not optimizer:
             raise ValueError('One native segment optimizer per objective required')
         self.started=time.perf_counter()
-        self.reference,self.reference_meta=labeled_step(model,named,optimizer,anchors[0],clip_impl=clip_impl)
+        self.reference,self.reference_meta=self._reference_step(model,named,optimizer,anchors[0],clip_impl=clip_impl)
         if self.hook is None:
             self.optimizer=optimizer
             self.hook=optimizer.register_step_post_hook(self.after_step)
+
+    def _reference_step(self,model,named,optimizer,gradients,*,clip_impl):
+        return labeled_step(model,named,optimizer,gradients,clip_impl=clip_impl)
 
     @torch.no_grad()
     def after_step(self,optimizer,args,kwargs):
