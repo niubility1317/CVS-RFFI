@@ -13,3 +13,6 @@ N607普通账户、CPU2/FP32TF32off，物理GPU5/6/7固定seed2701/02/03，每�
 每row固定最终E50默认学生/默认头后自动预测raw和固定DURA v1.0各clean＋六practical，168000/view，共14项决策固定后才独立truth-last。全三seed42cells保留逐view/seed、均值/SD/MacroF1/RX/TX/day/RXday/修复损伤/时间/缺项；匹配StepNoCap是唯一单因素参考，F20/F21双主控制固定。raw clean相对两者均至少+1pp，六景均值相对两者均严格>+1.5pp，整数门槛433348/504000、2180190/3024000；DURA单列参考，固定R69/266951/FP32TF32off/reuse=True graph=True native=False及原sourceLU/TXhidden/F-free语义，不套用旧F50时延，也不更改已指定部署版本。
 
 历史目标暴露如实保留，包含已完成BranchGuard；设计固定时StepGuard和StepNoCap目标分数未读。不是新的独立盲测；不按目标调参、选父/seed/checkpoint、重排或选择性重跑。当前无本版GPU训练/目标结果，goal ACTIVE。源通过没有自动推出目标成功。
+
+
+独立发布后核验：VERIFIED_RELEASED_CONTROLLER_SOURCE_SMOKE_PENDING，执行commit `e74a1e49ae39521e5c0cf87761a1a3f8c9705035`，实际正式GPU worker 0。源检查 PENDING；详见 queue_observation.json。验证以实际PID/CWD/完整命令/GPU/日志及参数更新记录为据，排队、探针或源前缀均不代表目标达成。保留健康任务，自动训练、raw与固定DURA七景、独立truth-last继续按原矩阵执行。

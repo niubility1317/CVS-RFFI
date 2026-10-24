@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "status": "VERIFIED_RELEASED_CONTROLLER_SOURCE_SMOKE_PENDING",
   "total_checks": 55,
   "check_evidence": "Focused AllURDrop,previous NoCap,source recipe and integer goal counts;55 checks passed.",
   "independent_review": {
@@ -12,5 +12,5 @@
     "summary": "Extra KL added once to pending_gradient_loss and consumed by original four derivatives and actual parameter guard;two-segment counts,parent provenance,pending PID capacity,smoke/reload and dual-readout scoring consistent."
   },
   "source_rule_pass": true,
-  "real_checkpoint_smoke": "PENDING_FIRST_AVAILABLE_GPU_ACTION"
+  "real_checkpoint_smoke": "PENDING"
 }
