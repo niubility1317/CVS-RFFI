@@ -31,3 +31,46 @@ N607普通账户、CPU2/FP32TF32off，物理GPU5/6/7固定seed2701/02/03，每�
 
 
 独立发布后核验：VERIFIED_REAL_E20_ALL_U_RDROP_SMOKE_AND_ALL3_SOURCE_RUNNING，执行commit `e74a1e49ae39521e5c0cf87761a1a3f8c9705035`，实际正式GPU worker 3。源检查 PASS；详见 source_activation.json。验证以实际PID/CWD/完整命令/GPU/日志及参数更新记录为据，排队、探针或源前缀均不代表目标达成。保留健康任务，自动训练、raw与固定DURA七景、独立truth-last继续按原矩阵执行。
+
+
+## 完整源训练
+
+VERIFIED_SOURCE_FINAL：每个模型严格从原同 seed E20 开始，原生10＋20段各2220／4440步，总计新增30轮／6660步，累计E50／11100；全部19980条闭合记录逐条核对。门控0.95、权重6、U LS0.01、原L／默认头联合训练保持，新增U原生As生成850500／物理学生1701000，无EMA、原型、U真值或G训练。NAMS累计学生U10602900，每model仅在已有U中joint捕获13320批／3402000条、6660次对比。新增原生As850500／物理学生1701000／rawAs0、style39960次／6660共享计划、RDrop／AsKL0／浅中层跨RX及CE归一化1.25均符合预登记。每模型实际6660次完整L anchor的U投影／范数帽1及逐组冲突／帽计数全部核实。父E20／新增30轮／累计经过时间分别保存，不把共享GPU墙钟视为独占小时。
+
+固定最终学生自动完成raw与固定DURA各七景、独立truth-last，源证据不替代目标收益；已经完成的整组三seed先行报告不改变冻结的其余训练，本次源检查不读取目标分数。
+
+原生As版实际有效物理CE学生视图为2×rawacceptedhalf，完整三seed计数在actual_adapter_SSL/U_native_As，生成和学生成本仍包含原raw拒绝样本；无增强视图门控/回退/额外As教师或新增损失，CE1.25、原raw接受集合保持。
+
+分支保护版逐条核实四个原Lpair/四导数及每步额外两导数，累计每模型26640完整导数/13320额外导数，完整L与非物理/物理L锚点实际余弦均在固定容差内。原始U/L幅度上限已取消，保留原始U范数不扩张；L/接受集合/原生As及前向预算不变。非负点积不保证AdamW或目标单调。
+
+全U非物理RDrop逐条核实6660次目标／19980次额外KL求值、原拒绝集合及mixed非物理角色，所有CE／伪类对比仍按原0.95接受mask；新增一致性对数／重复使用预测视图见actual_adapter_SSL/U_all_RDrop。无新模型／头前向，As独立KL0、全部原L与默认头保持。
+
+
+## HPL_E20_AS_ALLRD 冻结 E50 的伪标签源域健康检查
+
+三个固定最终学生各覆盖完整源 V27000 条，原默认头 eval 硬 argmax；无 GPU worker、参数／教师／原型／归一化更新、U 真值或目标读取，不改变健康训练或门控。此项只报告该方法的源域健康，不把源精度当作 U 实测正确率、完整本批测试成绩或目标达成。
+
+父模型诊断复用原始固定 E20 的完整记录：`automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-E20plus30-m6-r01/source_pseudo_quality.json`。本次没有重新计算父模型诊断。
+
+| seed | E20 接受精度（%） | E50 接受精度（%） | E20 覆盖（%） | E50 覆盖（%） | E50 接受错误数 |
+|---|---:|---:|---:|---:|---:|
+| 2026092701 | 99.900216 | 99.945523 | 92.792593 | 95.181481 | 14 |
+| 2026092702 | 99.868683 | 99.933346 | 93.074074 | 94.462963 | 17 |
+| 2026092703 | 99.916428 | 99.953105 | 93.066667 | 94.774074 | 12 |
+
+上表门控均为 0.95；0.98 对照及完整 TX／RX／day 分层保留在 source_pseudo_quality_E50_HPL_E20_AS_ALLRD.json。不依据微小源域变化选 checkpoint 或修改当前配方，完整预登记 raw／DURA 目标矩阵继续。
+
+
+## 完整目标测试结果
+
+ANALYZED：各方法三个seed，共3模型、42项raw／固定DURA七景决策均完成独立truth-last评分，六个匹配监督／普通PL对照模型完整复用。逐景／seed／SD／Macro-F1／RX／TX／day、修复损伤及曝光／成本见target_results.md和附属完整表。原raw双门槛尚未满足，研发目标仍ACTIVE。
+
+HPL_E20_AS_ALLRD / raw clean：84.929166667% ± 0.489677676%（三个模型 seed 样本 SD）。
+HPL_E20_AS_ALLRD / DURA-LU clean：85.045436508% ± 0.485486033%（三个模型 seed 样本 SD）。
+HPL_E20_AS_ALLRD / raw six_mean：72.712400794% ± 0.212755666%（三个模型 seed 样本 SD）。
+HPL_E20_AS_ALLRD / DURA-LU six_mean：77.317923280% ± 0.900048034%（三个模型 seed 样本 SD）。
+
+不依据本结果热改健康旧任务或替换父来源。
+
+
+HPL_E20_AS_ALLRD 固定匹配比较完成，见 HPL_E20_AS_ALLRD_matched_comparison.md；比较不替代原主目标或全六行完成状态，无目标反馈改配方。

@@ -1,0 +1,898 @@
+{
+  "status": "SOURCE_V_FROZEN_E50_PSEUDO_QUALITY",
+  "observed_unix": 1792847684.588383,
+  "seconds": 51.726586299948394,
+  "run_id": "20261024-phase1-PAMF-HardPL-AllURDrop-m3-r01",
+  "execution_commit": "e74a1e49ae39521e5c0cf87761a1a3f8c9705035",
+  "method": "HPL_E20_AS_ALLRD",
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "rows": [
+    {
+      "row_id": "HPL_E20_AS_ALLRD-s2026092701",
+      "model_seed": 2026092701,
+      "method": "HPL_E20_AS_ALLRD",
+      "source_epoch": 50,
+      "source_updates": 11100,
+      "samples": 27000,
+      "all_prediction_correct": 26561,
+      "all_prediction_accuracy_percent": 98.37407407407407,
+      "teacher": "actual frozen final student eval hard argmax;no EMA,U truth or target",
+      "gates": [
+        {
+          "threshold": 0.95,
+          "accepted": 25699,
+          "correct": 25685,
+          "wrong": 14,
+          "acceptance_percent": 95.18148148148148,
+          "accepted_accuracy_percent": 99.94552317210787,
+          "rejected": 1301,
+          "rejected_correct": 876,
+          "strata": [
+            {
+              "dimension": "TX",
+              "value": 0,
+              "samples": 4500,
+              "accepted": 4360,
+              "correct": 4360,
+              "acceptance_percent": 96.88888888888889,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "TX",
+              "value": 1,
+              "samples": 4500,
+              "accepted": 4221,
+              "correct": 4217,
+              "acceptance_percent": 93.8,
+              "accepted_accuracy_percent": 99.90523572613125
+            },
+            {
+              "dimension": "TX",
+              "value": 2,
+              "samples": 4500,
+              "accepted": 4409,
+              "correct": 4408,
+              "acceptance_percent": 97.97777777777777,
+              "accepted_accuracy_percent": 99.97731911998186
+            },
+            {
+              "dimension": "TX",
+              "value": 3,
+              "samples": 4500,
+              "accepted": 3921,
+              "correct": 3914,
+              "acceptance_percent": 87.13333333333334,
+              "accepted_accuracy_percent": 99.82147411374649
+            },
+            {
+              "dimension": "TX",
+              "value": 4,
+              "samples": 4500,
+              "accepted": 4352,
+              "correct": 4352,
+              "acceptance_percent": 96.71111111111111,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "TX",
+              "value": 5,
+              "samples": 4500,
+              "accepted": 4436,
+              "correct": 4434,
+              "acceptance_percent": 98.57777777777778,
+              "accepted_accuracy_percent": 99.95491433724075
+            },
+            {
+              "dimension": "RX",
+              "value": 1,
+              "samples": 5400,
+              "accepted": 5266,
+              "correct": 5266,
+              "acceptance_percent": 97.51851851851852,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "RX",
+              "value": 3,
+              "samples": 5400,
+              "accepted": 4765,
+              "correct": 4753,
+              "acceptance_percent": 88.24074074074075,
+              "accepted_accuracy_percent": 99.74816369359917
+            },
+            {
+              "dimension": "RX",
+              "value": 4,
+              "samples": 5400,
+              "accepted": 5242,
+              "correct": 5242,
+              "acceptance_percent": 97.07407407407408,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "RX",
+              "value": 6,
+              "samples": 5400,
+              "accepted": 5324,
+              "correct": 5324,
+              "acceptance_percent": 98.5925925925926,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "RX",
+              "value": 8,
+              "samples": 5400,
+              "accepted": 5102,
+              "correct": 5100,
+              "acceptance_percent": 94.48148148148148,
+              "accepted_accuracy_percent": 99.9607996863975
+            },
+            {
+              "dimension": "day",
+              "value": 1,
+              "samples": 9000,
+              "accepted": 8607,
+              "correct": 8606,
+              "acceptance_percent": 95.63333333333334,
+              "accepted_accuracy_percent": 99.98838154990125
+            },
+            {
+              "dimension": "day",
+              "value": 2,
+              "samples": 9000,
+              "accepted": 8610,
+              "correct": 8599,
+              "acceptance_percent": 95.66666666666667,
+              "accepted_accuracy_percent": 99.87224157955865
+            },
+            {
+              "dimension": "day",
+              "value": 3,
+              "samples": 9000,
+              "accepted": 8482,
+              "correct": 8480,
+              "acceptance_percent": 94.24444444444444,
+              "accepted_accuracy_percent": 99.97642065550578
+            }
+          ]
+        },
+        {
+          "threshold": 0.98,
+          "accepted": 25029,
+          "correct": 25025,
+          "wrong": 4,
+          "acceptance_percent": 92.7,
+          "accepted_accuracy_percent": 99.98401853849535,
+          "rejected": 1971,
+          "rejected_correct": 1536,
+          "strata": [
+            {
+              "dimension": "TX",
+              "value": 0,
+              "samples": 4500,
+              "accepted": 4271,
+              "correct": 4271,
+              "acceptance_percent": 94.91111111111111,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "TX",
+              "value": 1,
+              "samples": 4500,
+              "accepted": 4048,
+              "correct": 4048,
+              "acceptance_percent": 89.95555555555555,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "TX",
+              "value": 2,
+              "samples": 4500,
+              "accepted": 4348,
+              "correct": 4348,
+              "acceptance_percent": 96.62222222222222,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "TX",
+              "value": 3,
+              "samples": 4500,
+              "accepted": 3664,
+              "correct": 3660,
+              "acceptance_percent": 81.42222222222222,
+              "accepted_accuracy_percent": 99.89082969432314
+            },
+            {
+              "dimension": "TX",
+              "value": 4,
+              "samples": 4500,
+              "accepted": 4300,
+              "correct": 4300,
+              "acceptance_percent": 95.55555555555556,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "TX",
+              "value": 5,
+              "samples": 4500,
+              "accepted": 4398,
+              "correct": 4398,
+              "acceptance_percent": 97.73333333333333,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "RX",
+              "value": 1,
+              "samples": 5400,
+              "accepted": 5198,
+              "correct": 5198,
+              "acceptance_percent": 96.25925925925925,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "RX",
+              "value": 3,
+              "samples": 5400,
+              "accepted": 4455,
+              "correct": 4451,
+              "acceptance_percent": 82.5,
+              "accepted_accuracy_percent": 99.91021324354658
+            },
+            {
+              "dimension": "RX",
+              "value": 4,
+              "samples": 5400,
+              "accepted": 5185,
+              "correct": 5185,
+              "acceptance_percent": 96.01851851851852,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "RX",
+              "value": 6,
+              "samples": 5400,
+              "accepted": 5265,
+              "correct": 5265,
+              "acceptance_percent": 97.5,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "RX",
+              "value": 8,
+              "samples": 5400,
+              "accepted": 4926,
+              "correct": 4926,
+              "acceptance_percent": 91.22222222222223,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "day",
+              "value": 1,
+              "samples": 9000,
+              "accepted": 8378,
+              "correct": 8378,
+              "acceptance_percent": 93.08888888888889,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "day",
+              "value": 2,
+              "samples": 9000,
+              "accepted": 8429,
+              "correct": 8426,
+              "acceptance_percent": 93.65555555555555,
+              "accepted_accuracy_percent": 99.96440858939376
+            },
+            {
+              "dimension": "day",
+              "value": 3,
+              "samples": 9000,
+              "accepted": 8222,
+              "correct": 8221,
+              "acceptance_percent": 91.35555555555555,
+              "accepted_accuracy_percent": 99.98783750912187
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "row_id": "HPL_E20_AS_ALLRD-s2026092702",
+      "model_seed": 2026092702,
+      "method": "HPL_E20_AS_ALLRD",
+      "source_epoch": 50,
+      "source_updates": 11100,
+      "samples": 27000,
+      "all_prediction_correct": 26559,
+      "all_prediction_accuracy_percent": 98.36666666666667,
+      "teacher": "actual frozen final student eval hard argmax;no EMA,U truth or target",
+      "gates": [
+        {
+          "threshold": 0.95,
+          "accepted": 25505,
+          "correct": 25488,
+          "wrong": 17,
+          "acceptance_percent": 94.46296296296296,
+          "accepted_accuracy_percent": 99.93334640266615,
+          "rejected": 1495,
+          "rejected_correct": 1071,
+          "strata": [
+            {
+              "dimension": "TX",
+              "value": 0,
+              "samples": 4500,
+              "accepted": 4348,
+              "correct": 4348,
+              "acceptance_percent": 96.62222222222222,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "TX",
+              "value": 1,
+              "samples": 4500,
+              "accepted": 4072,
+              "correct": 4070,
+              "acceptance_percent": 90.4888888888889,
+              "accepted_accuracy_percent": 99.950884086444
+            },
+            {
+              "dimension": "TX",
+              "value": 2,
+              "samples": 4500,
+              "accepted": 4414,
+              "correct": 4413,
+              "acceptance_percent": 98.08888888888889,
+              "accepted_accuracy_percent": 99.97734481196194
+            },
+            {
+              "dimension": "TX",
+              "value": 3,
+              "samples": 4500,
+              "accepted": 3899,
+              "correct": 3889,
+              "acceptance_percent": 86.64444444444445,
+              "accepted_accuracy_percent": 99.74352398050782
+            },
+            {
+              "dimension": "TX",
+              "value": 4,
+              "samples": 4500,
+              "accepted": 4339,
+              "correct": 4337,
+              "acceptance_percent": 96.42222222222222,
+              "accepted_accuracy_percent": 99.95390643005301
+            },
+            {
+              "dimension": "TX",
+              "value": 5,
+              "samples": 4500,
+              "accepted": 4433,
+              "correct": 4431,
+              "acceptance_percent": 98.5111111111111,
+              "accepted_accuracy_percent": 99.95488382585157
+            },
+            {
+              "dimension": "RX",
+              "value": 1,
+              "samples": 5400,
+              "accepted": 5221,
+              "correct": 5220,
+              "acceptance_percent": 96.68518518518519,
+              "accepted_accuracy_percent": 99.98084658111473
+            },
+            {
+              "dimension": "RX",
+              "value": 3,
+              "samples": 5400,
+              "accepted": 4680,
+              "correct": 4666,
+              "acceptance_percent": 86.66666666666667,
+              "accepted_accuracy_percent": 99.7008547008547
+            },
+            {
+              "dimension": "RX",
+              "value": 4,
+              "samples": 5400,
+              "accepted": 5246,
+              "correct": 5245,
+              "acceptance_percent": 97.14814814814815,
+              "accepted_accuracy_percent": 99.98093785741517
+            },
+            {
+              "dimension": "RX",
+              "value": 6,
+              "samples": 5400,
+              "accepted": 5289,
+              "correct": 5289,
+              "acceptance_percent": 97.94444444444444,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "RX",
+              "value": 8,
+              "samples": 5400,
+              "accepted": 5069,
+              "correct": 5068,
+              "acceptance_percent": 93.87037037037037,
+              "accepted_accuracy_percent": 99.98027224304596
+            },
+            {
+              "dimension": "day",
+              "value": 1,
+              "samples": 9000,
+              "accepted": 8549,
+              "correct": 8547,
+              "acceptance_percent": 94.9888888888889,
+              "accepted_accuracy_percent": 99.97660545092994
+            },
+            {
+              "dimension": "day",
+              "value": 2,
+              "samples": 9000,
+              "accepted": 8584,
+              "correct": 8570,
+              "acceptance_percent": 95.37777777777778,
+              "accepted_accuracy_percent": 99.83690587138862
+            },
+            {
+              "dimension": "day",
+              "value": 3,
+              "samples": 9000,
+              "accepted": 8372,
+              "correct": 8371,
+              "acceptance_percent": 93.02222222222223,
+              "accepted_accuracy_percent": 99.98805542283803
+            }
+          ]
+        },
+        {
+          "threshold": 0.98,
+          "accepted": 24802,
+          "correct": 24796,
+          "wrong": 6,
+          "acceptance_percent": 91.85925925925926,
+          "accepted_accuracy_percent": 99.97580840254818,
+          "rejected": 2198,
+          "rejected_correct": 1763,
+          "strata": [
+            {
+              "dimension": "TX",
+              "value": 0,
+              "samples": 4500,
+              "accepted": 4209,
+              "correct": 4209,
+              "acceptance_percent": 93.53333333333333,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "TX",
+              "value": 1,
+              "samples": 4500,
+              "accepted": 3935,
+              "correct": 3933,
+              "acceptance_percent": 87.44444444444444,
+              "accepted_accuracy_percent": 99.94917407878017
+            },
+            {
+              "dimension": "TX",
+              "value": 2,
+              "samples": 4500,
+              "accepted": 4365,
+              "correct": 4365,
+              "acceptance_percent": 97.0,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "TX",
+              "value": 3,
+              "samples": 4500,
+              "accepted": 3655,
+              "correct": 3652,
+              "acceptance_percent": 81.22222222222223,
+              "accepted_accuracy_percent": 99.91792065663475
+            },
+            {
+              "dimension": "TX",
+              "value": 4,
+              "samples": 4500,
+              "accepted": 4241,
+              "correct": 4240,
+              "acceptance_percent": 94.24444444444444,
+              "accepted_accuracy_percent": 99.97642065550578
+            },
+            {
+              "dimension": "TX",
+              "value": 5,
+              "samples": 4500,
+              "accepted": 4397,
+              "correct": 4397,
+              "acceptance_percent": 97.71111111111111,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "RX",
+              "value": 1,
+              "samples": 5400,
+              "accepted": 5171,
+              "correct": 5170,
+              "acceptance_percent": 95.75925925925925,
+              "accepted_accuracy_percent": 99.9806613807774
+            },
+            {
+              "dimension": "RX",
+              "value": 3,
+              "samples": 5400,
+              "accepted": 4381,
+              "correct": 4376,
+              "acceptance_percent": 81.12962962962963,
+              "accepted_accuracy_percent": 99.8858708057521
+            },
+            {
+              "dimension": "RX",
+              "value": 4,
+              "samples": 5400,
+              "accepted": 5168,
+              "correct": 5168,
+              "acceptance_percent": 95.70370370370371,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "RX",
+              "value": 6,
+              "samples": 5400,
+              "accepted": 5209,
+              "correct": 5209,
+              "acceptance_percent": 96.46296296296296,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "RX",
+              "value": 8,
+              "samples": 5400,
+              "accepted": 4873,
+              "correct": 4873,
+              "acceptance_percent": 90.24074074074075,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "day",
+              "value": 1,
+              "samples": 9000,
+              "accepted": 8316,
+              "correct": 8315,
+              "acceptance_percent": 92.4,
+              "accepted_accuracy_percent": 99.987974987975
+            },
+            {
+              "dimension": "day",
+              "value": 2,
+              "samples": 9000,
+              "accepted": 8355,
+              "correct": 8350,
+              "acceptance_percent": 92.83333333333333,
+              "accepted_accuracy_percent": 99.94015559545183
+            },
+            {
+              "dimension": "day",
+              "value": 3,
+              "samples": 9000,
+              "accepted": 8131,
+              "correct": 8131,
+              "acceptance_percent": 90.34444444444445,
+              "accepted_accuracy_percent": 100.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "row_id": "HPL_E20_AS_ALLRD-s2026092703",
+      "model_seed": 2026092703,
+      "method": "HPL_E20_AS_ALLRD",
+      "source_epoch": 50,
+      "source_updates": 11100,
+      "samples": 27000,
+      "all_prediction_correct": 26564,
+      "all_prediction_accuracy_percent": 98.3851851851852,
+      "teacher": "actual frozen final student eval hard argmax;no EMA,U truth or target",
+      "gates": [
+        {
+          "threshold": 0.95,
+          "accepted": 25589,
+          "correct": 25577,
+          "wrong": 12,
+          "acceptance_percent": 94.77407407407408,
+          "accepted_accuracy_percent": 99.95310484974013,
+          "rejected": 1411,
+          "rejected_correct": 987,
+          "strata": [
+            {
+              "dimension": "TX",
+              "value": 0,
+              "samples": 4500,
+              "accepted": 4357,
+              "correct": 4357,
+              "acceptance_percent": 96.82222222222222,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "TX",
+              "value": 1,
+              "samples": 4500,
+              "accepted": 4093,
+              "correct": 4090,
+              "acceptance_percent": 90.95555555555555,
+              "accepted_accuracy_percent": 99.92670412900074
+            },
+            {
+              "dimension": "TX",
+              "value": 2,
+              "samples": 4500,
+              "accepted": 4413,
+              "correct": 4410,
+              "acceptance_percent": 98.06666666666666,
+              "accepted_accuracy_percent": 99.93201903467029
+            },
+            {
+              "dimension": "TX",
+              "value": 3,
+              "samples": 4500,
+              "accepted": 3937,
+              "correct": 3932,
+              "acceptance_percent": 87.4888888888889,
+              "accepted_accuracy_percent": 99.8729997459995
+            },
+            {
+              "dimension": "TX",
+              "value": 4,
+              "samples": 4500,
+              "accepted": 4354,
+              "correct": 4353,
+              "acceptance_percent": 96.75555555555556,
+              "accepted_accuracy_percent": 99.97703261368856
+            },
+            {
+              "dimension": "TX",
+              "value": 5,
+              "samples": 4500,
+              "accepted": 4435,
+              "correct": 4435,
+              "acceptance_percent": 98.55555555555556,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "RX",
+              "value": 1,
+              "samples": 5400,
+              "accepted": 5211,
+              "correct": 5210,
+              "acceptance_percent": 96.5,
+              "accepted_accuracy_percent": 99.9808098253694
+            },
+            {
+              "dimension": "RX",
+              "value": 3,
+              "samples": 5400,
+              "accepted": 4770,
+              "correct": 4762,
+              "acceptance_percent": 88.33333333333333,
+              "accepted_accuracy_percent": 99.83228511530399
+            },
+            {
+              "dimension": "RX",
+              "value": 4,
+              "samples": 5400,
+              "accepted": 5254,
+              "correct": 5252,
+              "acceptance_percent": 97.29629629629629,
+              "accepted_accuracy_percent": 99.96193376475067
+            },
+            {
+              "dimension": "RX",
+              "value": 6,
+              "samples": 5400,
+              "accepted": 5290,
+              "correct": 5290,
+              "acceptance_percent": 97.96296296296296,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "RX",
+              "value": 8,
+              "samples": 5400,
+              "accepted": 5064,
+              "correct": 5063,
+              "acceptance_percent": 93.77777777777777,
+              "accepted_accuracy_percent": 99.98025276461296
+            },
+            {
+              "dimension": "day",
+              "value": 1,
+              "samples": 9000,
+              "accepted": 8570,
+              "correct": 8568,
+              "acceptance_percent": 95.22222222222223,
+              "accepted_accuracy_percent": 99.97666277712952
+            },
+            {
+              "dimension": "day",
+              "value": 2,
+              "samples": 9000,
+              "accepted": 8621,
+              "correct": 8614,
+              "acceptance_percent": 95.78888888888889,
+              "accepted_accuracy_percent": 99.91880292309477
+            },
+            {
+              "dimension": "day",
+              "value": 3,
+              "samples": 9000,
+              "accepted": 8398,
+              "correct": 8395,
+              "acceptance_percent": 93.31111111111112,
+              "accepted_accuracy_percent": 99.96427720885926
+            }
+          ]
+        },
+        {
+          "threshold": 0.98,
+          "accepted": 24903,
+          "correct": 24902,
+          "wrong": 1,
+          "acceptance_percent": 92.23333333333333,
+          "accepted_accuracy_percent": 99.99598441954785,
+          "rejected": 2097,
+          "rejected_correct": 1662,
+          "strata": [
+            {
+              "dimension": "TX",
+              "value": 0,
+              "samples": 4500,
+              "accepted": 4244,
+              "correct": 4244,
+              "acceptance_percent": 94.31111111111112,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "TX",
+              "value": 1,
+              "samples": 4500,
+              "accepted": 3933,
+              "correct": 3933,
+              "acceptance_percent": 87.4,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "TX",
+              "value": 2,
+              "samples": 4500,
+              "accepted": 4352,
+              "correct": 4352,
+              "acceptance_percent": 96.71111111111111,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "TX",
+              "value": 3,
+              "samples": 4500,
+              "accepted": 3728,
+              "correct": 3727,
+              "acceptance_percent": 82.84444444444445,
+              "accepted_accuracy_percent": 99.97317596566523
+            },
+            {
+              "dimension": "TX",
+              "value": 4,
+              "samples": 4500,
+              "accepted": 4241,
+              "correct": 4241,
+              "acceptance_percent": 94.24444444444444,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "TX",
+              "value": 5,
+              "samples": 4500,
+              "accepted": 4405,
+              "correct": 4405,
+              "acceptance_percent": 97.88888888888889,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "RX",
+              "value": 1,
+              "samples": 5400,
+              "accepted": 5167,
+              "correct": 5167,
+              "acceptance_percent": 95.68518518518519,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "RX",
+              "value": 3,
+              "samples": 5400,
+              "accepted": 4433,
+              "correct": 4433,
+              "acceptance_percent": 82.0925925925926,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "RX",
+              "value": 4,
+              "samples": 5400,
+              "accepted": 5188,
+              "correct": 5188,
+              "acceptance_percent": 96.07407407407408,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "RX",
+              "value": 6,
+              "samples": 5400,
+              "accepted": 5236,
+              "correct": 5236,
+              "acceptance_percent": 96.96296296296296,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "RX",
+              "value": 8,
+              "samples": 5400,
+              "accepted": 4879,
+              "correct": 4878,
+              "acceptance_percent": 90.35185185185185,
+              "accepted_accuracy_percent": 99.97950399672064
+            },
+            {
+              "dimension": "day",
+              "value": 1,
+              "samples": 9000,
+              "accepted": 8324,
+              "correct": 8323,
+              "acceptance_percent": 92.4888888888889,
+              "accepted_accuracy_percent": 99.98798654493032
+            },
+            {
+              "dimension": "day",
+              "value": 2,
+              "samples": 9000,
+              "accepted": 8398,
+              "correct": 8398,
+              "acceptance_percent": 93.31111111111112,
+              "accepted_accuracy_percent": 100.0
+            },
+            {
+              "dimension": "day",
+              "value": 3,
+              "samples": 9000,
+              "accepted": 8181,
+              "correct": 8181,
+              "acceptance_percent": 90.9,
+              "accepted_accuracy_percent": 100.0
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "thresholds": [
+    0.95,
+    0.98
+  ],
+  "scope": "Full existing source V27000/seed,fixed final student default joint head,health only",
+  "GPU_workers": 0,
+  "model_updates": 0,
+  "teacher_updates": 0,
+  "prototype_updates": 0,
+  "normalization_updates": 0,
+  "head_fit_updates": 0,
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "U_actual_pseudo_accuracy": "UNKNOWN;TX truth remains hidden",
+  "current_healthy_training_or_thresholds_changed": false,
+  "interpretation": "Post-training source health estimate,not actual every-step U correctness,target accuracy,or checkpoint/method selection."
+}

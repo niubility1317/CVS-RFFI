@@ -296,11 +296,10 @@
   ],
   "registered_at": "2026-10-24T08:43:45.237936+00:00",
   "launch_status": {
-    "status": "VERIFIED_REAL_E20_ALL_U_RDROP_SMOKE_AND_ALL3_SOURCE_RUNNING",
-    "evidence": "source_activation.json",
-    "source_smoke": "PASS",
-    "actual_GPU_workers": 3,
-    "target_matrix_complete": false
+    "status": "VERIFIED_ALL_SCORED",
+    "source_rows_complete": 3,
+    "target_matrix_complete": true,
+    "evidence": "evaluation_completion.json"
   },
   "matched_source_prefix_observation": {
     "status": "VERIFIED_MATCHED_COMPLETE_E21_E30_SOURCE_PREFIX",
@@ -315,5 +314,43 @@
     "scientific_status": "SOURCE_HISTORY_LIMITATION_SUPPORTED",
     "source_rule_pass": true,
     "result": "source_moment_history_summary.json"
+  },
+  "source_quality_diagnostics": {
+    "HPL_E20_AS_ALLRD": {
+      "status": "VERIFIED_FULL_SOURCE_V",
+      "source_epoch": 50,
+      "samples_per_seed": 27000,
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "reference": "source_pseudo_quality_E50_HPL_E20_AS_ALLRD.json",
+      "parent_diagnostic_reference": "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-E20plus30-m6-r01/source_pseudo_quality.json",
+      "model_or_threshold_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0,
+      "selection_changed": false
+    }
+  },
+  "result_summary": {
+    "status": "ANALYZED",
+    "goal_met": false,
+    "completed_F_models": 3,
+    "completed_readout_view_cells": 42,
+    "independent_truth_last": true,
+    "all_seed_and_scene_results_preserved": true,
+    "both_readouts_complete": true,
+    "summary_ref": "target_summary.json",
+    "details_ref": "target_results.md",
+    "cost_ref": "evaluation_completion.json"
+  },
+  "matched_method_reports": {
+    "HPL_E20_AS_ALLRD": {
+      "status": "VERIFIED_COMPLETE_MATCHED_METHODS",
+      "reference_run": "20261024-phase1-PAMF-HardPL-StepNoCap-m3-r01",
+      "reference_method": "HPL_E20_AS_SGNC",
+      "reference": "HPL_E20_AS_ALLRD_matched_comparison.md"
+    }
   }
 }
