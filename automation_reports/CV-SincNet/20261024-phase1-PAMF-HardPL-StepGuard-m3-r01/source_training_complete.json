@@ -1,0 +1,1891 @@
+{
+  "status": "VERIFIED_SOURCE_FINAL_EVALUATION_PENDING",
+  "run_id": "20261024-phase1-PAMF-HardPL-StepGuard-m3-r01",
+  "execution_commit": "6459bc989343622564e232bbe0f67cd7479946d4",
+  "observed_unix": 1792836534.4020796,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "methods": [
+    "HPL_E20_AS_SG2"
+  ],
+  "total_new_step_records": 19980,
+  "records_per_model": 6660,
+  "cumulative_updates_per_model": 11100,
+  "reused_parent_steps_per_model": 4440,
+  "parent_reference": "Original fixed same-contract F21 E20 only;own native10+20,never original E30;automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-E20plus30-m6-r01/source_pseudo_quality.json",
+  "rows": [
+    {
+      "row_id": "HPL_E20_AS_SG2-s2026092701",
+      "method": "HPL_E20_AS_SG2",
+      "source_epoch": 50,
+      "source_updates": 11100,
+      "new_step_records": 6660,
+      "native_segment_records": [
+        2220,
+        4440
+      ],
+      "all_complete_step_records_checked": true,
+      "gzip_closed": true,
+      "actual_adapter_SSL": {
+        "method": "pamf_hard_pl_parameter_step_guard_v1",
+        "native_U_loop": false,
+        "own_EMA": false,
+        "cumulative_EMA_updates": 0,
+        "U_seen": 2097900,
+        "U_accepted": 1975854,
+        "physical_U_seen": 850500,
+        "physical_student_U_views": 1701000,
+        "raw_U_As_seen": 0,
+        "pseudo_label_smoothing": 0.01,
+        "student_U_views": 10602900,
+        "teacher_eval_U_views": 2097900,
+        "U_truth_read": false,
+        "prototype_updates": 0,
+        "hard_PL_calls": 6660,
+        "hard_PL_tail": {
+          "calls": 6660,
+          "seen": 1701000,
+          "accepted": 1609118,
+          "student_views": 10206000,
+          "physical_seen": 850500,
+          "physical_student_views": 1701000,
+          "raw_As_seen": 0,
+          "method": "HPLT1U",
+          "contrast_anchors": {
+            "time_down": 3218236,
+            "t2.pool": 3218236
+          },
+          "label_smoothing": 0.01,
+          "EMA_updates": 0,
+          "U_truth_read": false,
+          "U_style": {
+            "recipe": {
+              "levels": [
+                "time_down",
+                "t2.pool"
+              ],
+              "alpha": 0.1,
+              "probability_per_level": 0.5,
+              "eps": 1e-06,
+              "accepted_only": true,
+              "same_hard_pseudo": true,
+              "different_source_RX": true,
+              "detached_moments": true
+            },
+            "calls": 39960,
+            "seen": 10206000,
+            "eligible": 9654708,
+            "applied": {
+              "time_down": 4996452,
+              "t2.pool": 4878732
+            },
+            "persistent_hooks": false,
+            "teacher_or_L_style_calls": 0,
+            "partner_TX_truth_reads": 0,
+            "shared_six_forward_plan": true,
+            "plan_calls": 6660,
+            "contrast_captures_after_style": true
+          },
+          "U_gradient_guard": {
+            "recipe": {
+              "weight": 6.0,
+              "projection": "simultaneous_three_L_anchors_per_group",
+              "groups": [
+                "t2",
+                "cls_head",
+                "other"
+              ],
+              "U_to_L_norm_cap": 2.0,
+              "tiny_L_squared_norm": 1e-12,
+              "anchor": "complete_L_nonphysical_L_physical_L",
+              "optimizer": "unchanged_native_Adam",
+              "extra_teacher_or_student_forward": false
+            },
+            "calls": 6660,
+            "conflicts": {
+              "t2": 3269,
+              "cls_head": 3007,
+              "other": 2706
+            },
+            "caps": {
+              "t2": 4520,
+              "cls_head": 3735,
+              "other": 3540
+            },
+            "pending_U_loss": false
+          },
+          "U_joint_contrast": {
+            "recipe": {
+              "feature": "actual_CompositeReference_features_joint160",
+              "weight": 0.05,
+              "CE_normalizer": 1.25,
+              "student_views": "first_two_ordinary_U_passes",
+              "accepted_only": true,
+              "positive": "same_pseudo_different_source_RX",
+              "contrast": "same_native_CROSS_RX_temperature0.2",
+              "extra_forward": false,
+              "new_head": false
+            },
+            "calls": 6660,
+            "captures": 13320,
+            "captured_packets": 3402000,
+            "anchors": 3218236,
+            "extra_forward_calls": 0,
+            "teacher_or_L_captures": 0,
+            "persistent_feature_wrapper": false
+          },
+          "U_branch_guard": {
+            "recipe": {
+              "anchors": [
+                "L_full",
+                "L_clean",
+                "L_As"
+              ],
+              "projection": "simultaneous_three_L_anchors_per_group",
+              "U_to_L_norm_cap": 2.0,
+              "components": "same_four_original_L_pair_results",
+              "nonphysical_coefficients": [
+                0.5,
+                0.25,
+                0.25
+              ],
+              "physical_coefficient": 0.25,
+              "full_L_unchanged": true,
+              "solver": "thin_QR_and_active_set_SVD",
+              "gradient_calls": 4,
+              "extra_autograd_passes": 2,
+              "extra_teacher_or_student_forward": 0,
+              "raw_gate": 0.95,
+              "U_weight": 6.0,
+              "tiny_L_squared_norm": 1e-12,
+              "pinv_rtol": 1e-10,
+              "KKT_relative_tolerance": 1e-08,
+              "actual_cast_constraint_cosine_tolerance": 1e-06,
+              "new_head": false
+            },
+            "calls": 6660,
+            "gradient_calls": 26640,
+            "extra_autograd_calls": 13320,
+            "L_pair_captures": 26640,
+            "pending_capture": false,
+            "pending_U_loss": false,
+            "anchor_conflicts": {
+              "t2": {
+                "L_full": 3269,
+                "L_clean": 3283,
+                "L_As": 3206
+              },
+              "cls_head": {
+                "L_full": 3007,
+                "L_clean": 2993,
+                "L_As": 3082
+              },
+              "other": {
+                "L_full": 2706,
+                "L_clean": 2807,
+                "L_As": 2829
+              }
+            },
+            "extra_teacher_or_student_forward": 0,
+            "new_head": false,
+            "U_truth_reads": 0,
+            "target_reads": 0
+          },
+          "U_parameter_step_guard": {
+            "calls": 6660,
+            "anchor_captures": 6660,
+            "reference_optimizer_steps": 6660,
+            "reference_physical_clip_calls": 6660,
+            "pending_anchors": false,
+            "copied_existing_moments": true,
+            "live_joint_optimizer_state_retained": true,
+            "reference_has_no_model_forward": true,
+            "extra_autograd_calls": 0,
+            "extra_model_forwards": 0,
+            "fallback_groups": 715,
+            "removed_material_conflicts": 10336,
+            "minimum_whole_increment_retention": 0.0,
+            "seconds": 1816.351025091717,
+            "U_truth_reads": 0,
+            "target_reads": 0,
+            "new_head": false,
+            "new_inference_parameters": 0,
+            "recipe": {
+              "reference": "same_current_parameters_and_live_AdamW_moments_L_only",
+              "raw_step": "original_joint_branch_guard_CENTER_UNITS_AdamW",
+              "anchors": [
+                "L_full",
+                "L_clean",
+                "L_As"
+              ],
+              "projection": "actual_FP32_extra_descent_three_anchor_halfspaces",
+              "groups": [
+                "t2",
+                "cls_head",
+                "other"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "tiny_L_squared_norm": 1e-12,
+              "component_omit_squared_norm": 1e-12,
+              "pinv_rtol": 1e-10,
+              "KKT_relative_tolerance": 1e-08,
+              "actual_cast_constraint_cosine_tolerance": 1e-06,
+              "norm_nonexpansion_relative": 1e-06,
+              "norm_nonexpansion_absolute": 1e-12,
+              "quantization_attempts": 4,
+              "repair_margin": "2_sum_abs_unit_anchor_times_rounding_error_plus_1e-12_max_rawnorm_1e-12",
+              "failed_quantization": "exact_L_reference_group_with_explicit_counts",
+              "real_joint_moments_retained": true,
+              "reference_optimizer_steps_per_step": 1,
+              "extra_autograd_calls": 0,
+              "extra_model_forwards": 0,
+              "new_head": false,
+              "new_inference_parameters": 0
+            }
+          },
+          "U_native_As": {
+            "recipe": {
+              "generator": "same_native_source_Practical_as_supervised_L",
+              "physical_half": "same_original_alternating_half",
+              "pseudo_labels": "original_raw_argmax",
+              "raw_gate": 0.95,
+              "augmented_view_gate": null,
+              "raw_fallback": false,
+              "CE_and_KL_coefficients_unchanged": true,
+              "CE_normalizer": 1.25,
+              "student_U_passes": 6,
+              "extra_As_teacher": 0,
+              "extra_student_forwards": 0,
+              "new_head": false
+            },
+            "calls": 6660,
+            "generated": 850500,
+            "student_physical_views": 1701000,
+            "raw_accepted_half": 804627,
+            "accepted_student_views": 1609254,
+            "raw_fallback": 0,
+            "extra_As_teacher": 0,
+            "all_raw_accepted_retained": true,
+            "extra_student_forwards": 0,
+            "new_head": false,
+            "EMA_updates": 0,
+            "U_truth_read": false,
+            "CE_dose_normalizer": 1.25
+          }
+        },
+        "threshold": 0.95,
+        "weight": 6.0,
+        "default_head_joint": true,
+        "new_inference_parameters": 0,
+        "new_mechanism_epochs": 30,
+        "source_parent_epoch": 20,
+        "U_style": {
+          "recipe": {
+            "levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "alpha": 0.1,
+            "probability_per_level": 0.5,
+            "eps": 1e-06,
+            "accepted_only": true,
+            "same_hard_pseudo": true,
+            "different_source_RX": true,
+            "detached_moments": true
+          },
+          "calls": 39960,
+          "seen": 10206000,
+          "eligible": 9654708,
+          "applied": {
+            "time_down": 4996452,
+            "t2.pool": 4878732
+          },
+          "persistent_hooks": false,
+          "teacher_or_L_style_calls": 0,
+          "partner_TX_truth_reads": 0,
+          "shared_six_forward_plan": true,
+          "plan_calls": 6660,
+          "contrast_captures_after_style": true
+        },
+        "U_gradient_guard": {
+          "recipe": {
+            "weight": 6.0,
+            "projection": "simultaneous_three_L_anchors_per_group",
+            "groups": [
+              "t2",
+              "cls_head",
+              "other"
+            ],
+            "U_to_L_norm_cap": 2.0,
+            "tiny_L_squared_norm": 1e-12,
+            "anchor": "complete_L_nonphysical_L_physical_L",
+            "optimizer": "unchanged_native_Adam",
+            "extra_teacher_or_student_forward": false
+          },
+          "calls": 6660,
+          "conflicts": {
+            "t2": 3269,
+            "cls_head": 3007,
+            "other": 2706
+          },
+          "caps": {
+            "t2": 4520,
+            "cls_head": 3735,
+            "other": 3540
+          },
+          "pending_U_loss": false
+        },
+        "U_joint_contrast": {
+          "recipe": {
+            "feature": "actual_CompositeReference_features_joint160",
+            "weight": 0.05,
+            "CE_normalizer": 1.25,
+            "student_views": "first_two_ordinary_U_passes",
+            "accepted_only": true,
+            "positive": "same_pseudo_different_source_RX",
+            "contrast": "same_native_CROSS_RX_temperature0.2",
+            "extra_forward": false,
+            "new_head": false
+          },
+          "calls": 6660,
+          "captures": 13320,
+          "captured_packets": 3402000,
+          "anchors": 3218236,
+          "extra_forward_calls": 0,
+          "teacher_or_L_captures": 0,
+          "persistent_feature_wrapper": false
+        },
+        "U_branch_guard": {
+          "recipe": {
+            "anchors": [
+              "L_full",
+              "L_clean",
+              "L_As"
+            ],
+            "projection": "simultaneous_three_L_anchors_per_group",
+            "U_to_L_norm_cap": 2.0,
+            "components": "same_four_original_L_pair_results",
+            "nonphysical_coefficients": [
+              0.5,
+              0.25,
+              0.25
+            ],
+            "physical_coefficient": 0.25,
+            "full_L_unchanged": true,
+            "solver": "thin_QR_and_active_set_SVD",
+            "gradient_calls": 4,
+            "extra_autograd_passes": 2,
+            "extra_teacher_or_student_forward": 0,
+            "raw_gate": 0.95,
+            "U_weight": 6.0,
+            "tiny_L_squared_norm": 1e-12,
+            "pinv_rtol": 1e-10,
+            "KKT_relative_tolerance": 1e-08,
+            "actual_cast_constraint_cosine_tolerance": 1e-06,
+            "new_head": false
+          },
+          "calls": 6660,
+          "gradient_calls": 26640,
+          "extra_autograd_calls": 13320,
+          "L_pair_captures": 26640,
+          "pending_capture": false,
+          "pending_U_loss": false,
+          "anchor_conflicts": {
+            "t2": {
+              "L_full": 3269,
+              "L_clean": 3283,
+              "L_As": 3206
+            },
+            "cls_head": {
+              "L_full": 3007,
+              "L_clean": 2993,
+              "L_As": 3082
+            },
+            "other": {
+              "L_full": 2706,
+              "L_clean": 2807,
+              "L_As": 2829
+            }
+          },
+          "extra_teacher_or_student_forward": 0,
+          "new_head": false,
+          "U_truth_reads": 0,
+          "target_reads": 0
+        },
+        "U_parameter_step_guard": {
+          "calls": 6660,
+          "anchor_captures": 6660,
+          "reference_optimizer_steps": 6660,
+          "reference_physical_clip_calls": 6660,
+          "pending_anchors": false,
+          "copied_existing_moments": true,
+          "live_joint_optimizer_state_retained": true,
+          "reference_has_no_model_forward": true,
+          "extra_autograd_calls": 0,
+          "extra_model_forwards": 0,
+          "fallback_groups": 715,
+          "removed_material_conflicts": 10336,
+          "minimum_whole_increment_retention": 0.0,
+          "seconds": 1816.351025091717,
+          "U_truth_reads": 0,
+          "target_reads": 0,
+          "new_head": false,
+          "new_inference_parameters": 0,
+          "recipe": {
+            "reference": "same_current_parameters_and_live_AdamW_moments_L_only",
+            "raw_step": "original_joint_branch_guard_CENTER_UNITS_AdamW",
+            "anchors": [
+              "L_full",
+              "L_clean",
+              "L_As"
+            ],
+            "projection": "actual_FP32_extra_descent_three_anchor_halfspaces",
+            "groups": [
+              "t2",
+              "cls_head",
+              "other"
+            ],
+            "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+            "tiny_L_squared_norm": 1e-12,
+            "component_omit_squared_norm": 1e-12,
+            "pinv_rtol": 1e-10,
+            "KKT_relative_tolerance": 1e-08,
+            "actual_cast_constraint_cosine_tolerance": 1e-06,
+            "norm_nonexpansion_relative": 1e-06,
+            "norm_nonexpansion_absolute": 1e-12,
+            "quantization_attempts": 4,
+            "repair_margin": "2_sum_abs_unit_anchor_times_rounding_error_plus_1e-12_max_rawnorm_1e-12",
+            "failed_quantization": "exact_L_reference_group_with_explicit_counts",
+            "real_joint_moments_retained": true,
+            "reference_optimizer_steps_per_step": 1,
+            "extra_autograd_calls": 0,
+            "extra_model_forwards": 0,
+            "new_head": false,
+            "new_inference_parameters": 0
+          }
+        },
+        "U_native_As": {
+          "recipe": {
+            "generator": "same_native_source_Practical_as_supervised_L",
+            "physical_half": "same_original_alternating_half",
+            "pseudo_labels": "original_raw_argmax",
+            "raw_gate": 0.95,
+            "augmented_view_gate": null,
+            "raw_fallback": false,
+            "CE_and_KL_coefficients_unchanged": true,
+            "CE_normalizer": 1.25,
+            "student_U_passes": 6,
+            "extra_As_teacher": 0,
+            "extra_student_forwards": 0,
+            "new_head": false
+          },
+          "calls": 6660,
+          "generated": 850500,
+          "student_physical_views": 1701000,
+          "raw_accepted_half": 804627,
+          "accepted_student_views": 1609254,
+          "raw_fallback": 0,
+          "extra_As_teacher": 0,
+          "all_raw_accepted_retained": true,
+          "extra_student_forwards": 0,
+          "new_head": false,
+          "EMA_updates": 0,
+          "U_truth_read": false,
+          "CE_dose_normalizer": 1.25
+        }
+      },
+      "final_logged_losses_and_counters": {
+        "HPL_loss": 1.294350266456604,
+        "HPL_base_loss": 0.21572504937648773,
+        "HPL_weight": 6.0,
+        "HPL_calls": 4440,
+        "HPL_seen": 1134000,
+        "HPL_accepted": 1079646,
+        "HPL_confidence": 0.9925726056098938,
+        "HPL_student_views": 6804000,
+        "HPL_physical_seen": 567000,
+        "HPL_physical_student_views": 1134000,
+        "HPL_EMA_updates": 0.0,
+        "HPL_anchors_time_down": 2159292,
+        "HPL_anchors_t2.pool": 2159292,
+        "T1_L_packets": 768,
+        "HPL_ordinary_KL": 0.009171782992780209,
+        "HPL_raw_KL": 0.004363436251878738,
+        "HPL_As_KL": 0.0755091980099678,
+        "HPL_As_KL_weight": 0.0,
+        "HPL_contrast": 0.6114833950996399,
+        "HPL_CE_normalizer": 1.25,
+        "HPL_MS_calls": 26640,
+        "HPL_MS_seen": 6804000,
+        "HPL_MS_eligible": 6477876,
+        "HPL_MS_applied_time_down": 3349020,
+        "HPL_MS_applied_t2.pool": 3253056,
+        "HPL_MS_plan_calls": 4440,
+        "HPL_GP_U_to_L_norm_cap": 2.0,
+        "HPL_BG_calls": 4440,
+        "HPL_BG_gradient_calls": 17760,
+        "HPL_BG_extra_autograd_calls": 8880,
+        "HPL_BG_L_pair_captures": 17760,
+        "HPL_BG_t2_L_full_cosine_after": 0.03732657687315129,
+        "HPL_BG_t2_L_clean_cosine_after": 0.1599512879628246,
+        "HPL_BG_t2_L_As_cosine_after": -4.992307973756047e-10,
+        "HPL_BG_cls_head_L_full_cosine_after": 0.1521179820094646,
+        "HPL_BG_cls_head_L_clean_cosine_after": -4.302663187649251e-10,
+        "HPL_BG_cls_head_L_As_cosine_after": 0.20537655462966944,
+        "HPL_BG_other_L_full_cosine_after": 0.10413931237415172,
+        "HPL_BG_other_L_clean_cosine_after": -5.854033105876354e-10,
+        "HPL_BG_other_L_As_cosine_after": 0.1555891567789624,
+        "HPL_GP_calls": 4440,
+        "HPL_GP_t2_L_norm": 0.20060815930537973,
+        "HPL_GP_t2_U_norm": 1.1845949427657982,
+        "HPL_GP_t2_applied_U_norm": 0.40121631859597656,
+        "HPL_GP_t2_dot_before": -0.09339639403116093,
+        "HPL_GP_t2_dot_after": 0.0030043141648388935,
+        "HPL_GP_t2_conflict": 1.0,
+        "HPL_GP_t2_capped": 1.0,
+        "HPL_GP_t2_tiny_L": 0.0,
+        "HPL_GP_t2_conflicts": 2109,
+        "HPL_GP_t2_caps": 3193,
+        "HPL_GP_cls_head_L_norm": 0.3888828202361384,
+        "HPL_GP_cls_head_U_norm": 1.6806050648257067,
+        "HPL_GP_cls_head_applied_U_norm": 0.7777656414844818,
+        "HPL_GP_cls_head_dot_before": -0.00188529286967812,
+        "HPL_GP_cls_head_dot_after": 0.04600955861650774,
+        "HPL_GP_cls_head_conflict": 1.0,
+        "HPL_GP_cls_head_capped": 1.0,
+        "HPL_GP_cls_head_tiny_L": 0.0,
+        "HPL_GP_cls_head_conflicts": 1948,
+        "HPL_GP_cls_head_caps": 2546,
+        "HPL_GP_other_L_norm": 0.9807856889097841,
+        "HPL_GP_other_U_norm": 4.7738363065503515,
+        "HPL_GP_other_applied_U_norm": 1.961571378795439,
+        "HPL_GP_other_dot_before": -0.3453161591714748,
+        "HPL_GP_other_dot_after": 0.20035165860280585,
+        "HPL_GP_other_conflict": 1.0,
+        "HPL_GP_other_capped": 1.0,
+        "HPL_GP_other_tiny_L": 0.0,
+        "HPL_GP_other_conflicts": 1737,
+        "HPL_GP_other_caps": 2446,
+        "HPL_joint_loss": 0.16942064464092255,
+        "HPL_joint_weight": 0.05,
+        "HPL_joint_calls": 4440,
+        "HPL_joint_captures": 8880,
+        "HPL_joint_packets": 2268000,
+        "HPL_joint_anchors": 2159292,
+        "HPL_raw_As_seen": 0,
+        "HPL_NAS_calls": 4440,
+        "HPL_NAS_generated": 567000,
+        "HPL_NAS_raw_accepted_half": 539867,
+        "HPL_NAS_accepted_student_views": 1079734,
+        "HPL_NAS_extra_As_teacher": 0,
+        "HPL_NAS_raw_fallback": 0,
+        "HPL_NAS_CE_normalizer": 1.25
+      },
+      "source_mechanism_counters": {
+        "accepted": 1609118,
+        "contrast_anchors": {
+          "time_down": 3218236,
+          "t2.pool": 3218236
+        },
+        "steps_with_both_RDrop_positive": 6660,
+        "steps_with_contrast": 6660
+      },
+      "incremental_training_seconds": 9942.860982137965,
+      "parent_training_seconds": 2428.72068757494,
+      "cumulative_training_seconds": 12371.581669712905,
+      "source_graph_native_IQ_check": "PASS",
+      "completed_prediction_views": [
+        {
+          "test": "main",
+          "view": "clean",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_low_suburban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high_urban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid_urban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_low_urban",
+          "count": 168000
+        }
+      ],
+      "prediction_complete": true
+    },
+    {
+      "row_id": "HPL_E20_AS_SG2-s2026092702",
+      "method": "HPL_E20_AS_SG2",
+      "source_epoch": 50,
+      "source_updates": 11100,
+      "new_step_records": 6660,
+      "native_segment_records": [
+        2220,
+        4440
+      ],
+      "all_complete_step_records_checked": true,
+      "gzip_closed": true,
+      "actual_adapter_SSL": {
+        "method": "pamf_hard_pl_parameter_step_guard_v1",
+        "native_U_loop": false,
+        "own_EMA": false,
+        "cumulative_EMA_updates": 0,
+        "U_seen": 2097900,
+        "U_accepted": 1976578,
+        "physical_U_seen": 850500,
+        "physical_student_U_views": 1701000,
+        "raw_U_As_seen": 0,
+        "pseudo_label_smoothing": 0.01,
+        "student_U_views": 10602900,
+        "teacher_eval_U_views": 2097900,
+        "U_truth_read": false,
+        "prototype_updates": 0,
+        "hard_PL_calls": 6660,
+        "hard_PL_tail": {
+          "calls": 6660,
+          "seen": 1701000,
+          "accepted": 1608069,
+          "student_views": 10206000,
+          "physical_seen": 850500,
+          "physical_student_views": 1701000,
+          "raw_As_seen": 0,
+          "method": "HPLT1U",
+          "contrast_anchors": {
+            "time_down": 3216138,
+            "t2.pool": 3216138
+          },
+          "label_smoothing": 0.01,
+          "EMA_updates": 0,
+          "U_truth_read": false,
+          "U_style": {
+            "recipe": {
+              "levels": [
+                "time_down",
+                "t2.pool"
+              ],
+              "alpha": 0.1,
+              "probability_per_level": 0.5,
+              "eps": 1e-06,
+              "accepted_only": true,
+              "same_hard_pseudo": true,
+              "different_source_RX": true,
+              "detached_moments": true
+            },
+            "calls": 39960,
+            "seen": 10206000,
+            "eligible": 9648414,
+            "applied": {
+              "time_down": 4951806,
+              "t2.pool": 4841994
+            },
+            "persistent_hooks": false,
+            "teacher_or_L_style_calls": 0,
+            "partner_TX_truth_reads": 0,
+            "shared_six_forward_plan": true,
+            "plan_calls": 6660,
+            "contrast_captures_after_style": true
+          },
+          "U_gradient_guard": {
+            "recipe": {
+              "weight": 6.0,
+              "projection": "simultaneous_three_L_anchors_per_group",
+              "groups": [
+                "t2",
+                "cls_head",
+                "other"
+              ],
+              "U_to_L_norm_cap": 2.0,
+              "tiny_L_squared_norm": 1e-12,
+              "anchor": "complete_L_nonphysical_L_physical_L",
+              "optimizer": "unchanged_native_Adam",
+              "extra_teacher_or_student_forward": false
+            },
+            "calls": 6660,
+            "conflicts": {
+              "t2": 3057,
+              "cls_head": 2847,
+              "other": 2542
+            },
+            "caps": {
+              "t2": 4675,
+              "cls_head": 3684,
+              "other": 3547
+            },
+            "pending_U_loss": false
+          },
+          "U_joint_contrast": {
+            "recipe": {
+              "feature": "actual_CompositeReference_features_joint160",
+              "weight": 0.05,
+              "CE_normalizer": 1.25,
+              "student_views": "first_two_ordinary_U_passes",
+              "accepted_only": true,
+              "positive": "same_pseudo_different_source_RX",
+              "contrast": "same_native_CROSS_RX_temperature0.2",
+              "extra_forward": false,
+              "new_head": false
+            },
+            "calls": 6660,
+            "captures": 13320,
+            "captured_packets": 3402000,
+            "anchors": 3216138,
+            "extra_forward_calls": 0,
+            "teacher_or_L_captures": 0,
+            "persistent_feature_wrapper": false
+          },
+          "U_branch_guard": {
+            "recipe": {
+              "anchors": [
+                "L_full",
+                "L_clean",
+                "L_As"
+              ],
+              "projection": "simultaneous_three_L_anchors_per_group",
+              "U_to_L_norm_cap": 2.0,
+              "components": "same_four_original_L_pair_results",
+              "nonphysical_coefficients": [
+                0.5,
+                0.25,
+                0.25
+              ],
+              "physical_coefficient": 0.25,
+              "full_L_unchanged": true,
+              "solver": "thin_QR_and_active_set_SVD",
+              "gradient_calls": 4,
+              "extra_autograd_passes": 2,
+              "extra_teacher_or_student_forward": 0,
+              "raw_gate": 0.95,
+              "U_weight": 6.0,
+              "tiny_L_squared_norm": 1e-12,
+              "pinv_rtol": 1e-10,
+              "KKT_relative_tolerance": 1e-08,
+              "actual_cast_constraint_cosine_tolerance": 1e-06,
+              "new_head": false
+            },
+            "calls": 6660,
+            "gradient_calls": 26640,
+            "extra_autograd_calls": 13320,
+            "L_pair_captures": 26640,
+            "pending_capture": false,
+            "pending_U_loss": false,
+            "anchor_conflicts": {
+              "t2": {
+                "L_full": 3057,
+                "L_clean": 3200,
+                "L_As": 3105
+              },
+              "cls_head": {
+                "L_full": 2847,
+                "L_clean": 2952,
+                "L_As": 2917
+              },
+              "other": {
+                "L_full": 2542,
+                "L_clean": 2728,
+                "L_As": 2631
+              }
+            },
+            "extra_teacher_or_student_forward": 0,
+            "new_head": false,
+            "U_truth_reads": 0,
+            "target_reads": 0
+          },
+          "U_parameter_step_guard": {
+            "calls": 6660,
+            "anchor_captures": 6660,
+            "reference_optimizer_steps": 6660,
+            "reference_physical_clip_calls": 6660,
+            "pending_anchors": false,
+            "copied_existing_moments": true,
+            "live_joint_optimizer_state_retained": true,
+            "reference_has_no_model_forward": true,
+            "extra_autograd_calls": 0,
+            "extra_model_forwards": 0,
+            "fallback_groups": 685,
+            "removed_material_conflicts": 9791,
+            "minimum_whole_increment_retention": 0.0,
+            "seconds": 1245.1741301205475,
+            "U_truth_reads": 0,
+            "target_reads": 0,
+            "new_head": false,
+            "new_inference_parameters": 0,
+            "recipe": {
+              "reference": "same_current_parameters_and_live_AdamW_moments_L_only",
+              "raw_step": "original_joint_branch_guard_CENTER_UNITS_AdamW",
+              "anchors": [
+                "L_full",
+                "L_clean",
+                "L_As"
+              ],
+              "projection": "actual_FP32_extra_descent_three_anchor_halfspaces",
+              "groups": [
+                "t2",
+                "cls_head",
+                "other"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "tiny_L_squared_norm": 1e-12,
+              "component_omit_squared_norm": 1e-12,
+              "pinv_rtol": 1e-10,
+              "KKT_relative_tolerance": 1e-08,
+              "actual_cast_constraint_cosine_tolerance": 1e-06,
+              "norm_nonexpansion_relative": 1e-06,
+              "norm_nonexpansion_absolute": 1e-12,
+              "quantization_attempts": 4,
+              "repair_margin": "2_sum_abs_unit_anchor_times_rounding_error_plus_1e-12_max_rawnorm_1e-12",
+              "failed_quantization": "exact_L_reference_group_with_explicit_counts",
+              "real_joint_moments_retained": true,
+              "reference_optimizer_steps_per_step": 1,
+              "extra_autograd_calls": 0,
+              "extra_model_forwards": 0,
+              "new_head": false,
+              "new_inference_parameters": 0
+            }
+          },
+          "U_native_As": {
+            "recipe": {
+              "generator": "same_native_source_Practical_as_supervised_L",
+              "physical_half": "same_original_alternating_half",
+              "pseudo_labels": "original_raw_argmax",
+              "raw_gate": 0.95,
+              "augmented_view_gate": null,
+              "raw_fallback": false,
+              "CE_and_KL_coefficients_unchanged": true,
+              "CE_normalizer": 1.25,
+              "student_U_passes": 6,
+              "extra_As_teacher": 0,
+              "extra_student_forwards": 0,
+              "new_head": false
+            },
+            "calls": 6660,
+            "generated": 850500,
+            "student_physical_views": 1701000,
+            "raw_accepted_half": 804129,
+            "accepted_student_views": 1608258,
+            "raw_fallback": 0,
+            "extra_As_teacher": 0,
+            "all_raw_accepted_retained": true,
+            "extra_student_forwards": 0,
+            "new_head": false,
+            "EMA_updates": 0,
+            "U_truth_read": false,
+            "CE_dose_normalizer": 1.25
+          }
+        },
+        "threshold": 0.95,
+        "weight": 6.0,
+        "default_head_joint": true,
+        "new_inference_parameters": 0,
+        "new_mechanism_epochs": 30,
+        "source_parent_epoch": 20,
+        "U_style": {
+          "recipe": {
+            "levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "alpha": 0.1,
+            "probability_per_level": 0.5,
+            "eps": 1e-06,
+            "accepted_only": true,
+            "same_hard_pseudo": true,
+            "different_source_RX": true,
+            "detached_moments": true
+          },
+          "calls": 39960,
+          "seen": 10206000,
+          "eligible": 9648414,
+          "applied": {
+            "time_down": 4951806,
+            "t2.pool": 4841994
+          },
+          "persistent_hooks": false,
+          "teacher_or_L_style_calls": 0,
+          "partner_TX_truth_reads": 0,
+          "shared_six_forward_plan": true,
+          "plan_calls": 6660,
+          "contrast_captures_after_style": true
+        },
+        "U_gradient_guard": {
+          "recipe": {
+            "weight": 6.0,
+            "projection": "simultaneous_three_L_anchors_per_group",
+            "groups": [
+              "t2",
+              "cls_head",
+              "other"
+            ],
+            "U_to_L_norm_cap": 2.0,
+            "tiny_L_squared_norm": 1e-12,
+            "anchor": "complete_L_nonphysical_L_physical_L",
+            "optimizer": "unchanged_native_Adam",
+            "extra_teacher_or_student_forward": false
+          },
+          "calls": 6660,
+          "conflicts": {
+            "t2": 3057,
+            "cls_head": 2847,
+            "other": 2542
+          },
+          "caps": {
+            "t2": 4675,
+            "cls_head": 3684,
+            "other": 3547
+          },
+          "pending_U_loss": false
+        },
+        "U_joint_contrast": {
+          "recipe": {
+            "feature": "actual_CompositeReference_features_joint160",
+            "weight": 0.05,
+            "CE_normalizer": 1.25,
+            "student_views": "first_two_ordinary_U_passes",
+            "accepted_only": true,
+            "positive": "same_pseudo_different_source_RX",
+            "contrast": "same_native_CROSS_RX_temperature0.2",
+            "extra_forward": false,
+            "new_head": false
+          },
+          "calls": 6660,
+          "captures": 13320,
+          "captured_packets": 3402000,
+          "anchors": 3216138,
+          "extra_forward_calls": 0,
+          "teacher_or_L_captures": 0,
+          "persistent_feature_wrapper": false
+        },
+        "U_branch_guard": {
+          "recipe": {
+            "anchors": [
+              "L_full",
+              "L_clean",
+              "L_As"
+            ],
+            "projection": "simultaneous_three_L_anchors_per_group",
+            "U_to_L_norm_cap": 2.0,
+            "components": "same_four_original_L_pair_results",
+            "nonphysical_coefficients": [
+              0.5,
+              0.25,
+              0.25
+            ],
+            "physical_coefficient": 0.25,
+            "full_L_unchanged": true,
+            "solver": "thin_QR_and_active_set_SVD",
+            "gradient_calls": 4,
+            "extra_autograd_passes": 2,
+            "extra_teacher_or_student_forward": 0,
+            "raw_gate": 0.95,
+            "U_weight": 6.0,
+            "tiny_L_squared_norm": 1e-12,
+            "pinv_rtol": 1e-10,
+            "KKT_relative_tolerance": 1e-08,
+            "actual_cast_constraint_cosine_tolerance": 1e-06,
+            "new_head": false
+          },
+          "calls": 6660,
+          "gradient_calls": 26640,
+          "extra_autograd_calls": 13320,
+          "L_pair_captures": 26640,
+          "pending_capture": false,
+          "pending_U_loss": false,
+          "anchor_conflicts": {
+            "t2": {
+              "L_full": 3057,
+              "L_clean": 3200,
+              "L_As": 3105
+            },
+            "cls_head": {
+              "L_full": 2847,
+              "L_clean": 2952,
+              "L_As": 2917
+            },
+            "other": {
+              "L_full": 2542,
+              "L_clean": 2728,
+              "L_As": 2631
+            }
+          },
+          "extra_teacher_or_student_forward": 0,
+          "new_head": false,
+          "U_truth_reads": 0,
+          "target_reads": 0
+        },
+        "U_parameter_step_guard": {
+          "calls": 6660,
+          "anchor_captures": 6660,
+          "reference_optimizer_steps": 6660,
+          "reference_physical_clip_calls": 6660,
+          "pending_anchors": false,
+          "copied_existing_moments": true,
+          "live_joint_optimizer_state_retained": true,
+          "reference_has_no_model_forward": true,
+          "extra_autograd_calls": 0,
+          "extra_model_forwards": 0,
+          "fallback_groups": 685,
+          "removed_material_conflicts": 9791,
+          "minimum_whole_increment_retention": 0.0,
+          "seconds": 1245.1741301205475,
+          "U_truth_reads": 0,
+          "target_reads": 0,
+          "new_head": false,
+          "new_inference_parameters": 0,
+          "recipe": {
+            "reference": "same_current_parameters_and_live_AdamW_moments_L_only",
+            "raw_step": "original_joint_branch_guard_CENTER_UNITS_AdamW",
+            "anchors": [
+              "L_full",
+              "L_clean",
+              "L_As"
+            ],
+            "projection": "actual_FP32_extra_descent_three_anchor_halfspaces",
+            "groups": [
+              "t2",
+              "cls_head",
+              "other"
+            ],
+            "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+            "tiny_L_squared_norm": 1e-12,
+            "component_omit_squared_norm": 1e-12,
+            "pinv_rtol": 1e-10,
+            "KKT_relative_tolerance": 1e-08,
+            "actual_cast_constraint_cosine_tolerance": 1e-06,
+            "norm_nonexpansion_relative": 1e-06,
+            "norm_nonexpansion_absolute": 1e-12,
+            "quantization_attempts": 4,
+            "repair_margin": "2_sum_abs_unit_anchor_times_rounding_error_plus_1e-12_max_rawnorm_1e-12",
+            "failed_quantization": "exact_L_reference_group_with_explicit_counts",
+            "real_joint_moments_retained": true,
+            "reference_optimizer_steps_per_step": 1,
+            "extra_autograd_calls": 0,
+            "extra_model_forwards": 0,
+            "new_head": false,
+            "new_inference_parameters": 0
+          }
+        },
+        "U_native_As": {
+          "recipe": {
+            "generator": "same_native_source_Practical_as_supervised_L",
+            "physical_half": "same_original_alternating_half",
+            "pseudo_labels": "original_raw_argmax",
+            "raw_gate": 0.95,
+            "augmented_view_gate": null,
+            "raw_fallback": false,
+            "CE_and_KL_coefficients_unchanged": true,
+            "CE_normalizer": 1.25,
+            "student_U_passes": 6,
+            "extra_As_teacher": 0,
+            "extra_student_forwards": 0,
+            "new_head": false
+          },
+          "calls": 6660,
+          "generated": 850500,
+          "student_physical_views": 1701000,
+          "raw_accepted_half": 804129,
+          "accepted_student_views": 1608258,
+          "raw_fallback": 0,
+          "extra_As_teacher": 0,
+          "all_raw_accepted_retained": true,
+          "extra_student_forwards": 0,
+          "new_head": false,
+          "EMA_updates": 0,
+          "U_truth_read": false,
+          "CE_dose_normalizer": 1.25
+        }
+      },
+      "final_logged_losses_and_counters": {
+        "HPL_loss": 1.1347746849060059,
+        "HPL_base_loss": 0.18912911415100098,
+        "HPL_weight": 6.0,
+        "HPL_calls": 4440,
+        "HPL_seen": 1134000,
+        "HPL_accepted": 1077695,
+        "HPL_confidence": 0.9957355260848999,
+        "HPL_student_views": 6804000,
+        "HPL_physical_seen": 567000,
+        "HPL_physical_student_views": 1134000,
+        "HPL_EMA_updates": 0.0,
+        "HPL_anchors_time_down": 2155390,
+        "HPL_anchors_t2.pool": 2155390,
+        "T1_L_packets": 768,
+        "HPL_ordinary_KL": 0.005075826309621334,
+        "HPL_raw_KL": 0.0041612242348492146,
+        "HPL_As_KL": 0.060205645859241486,
+        "HPL_As_KL_weight": 0.0,
+        "HPL_contrast": 0.6209506988525391,
+        "HPL_CE_normalizer": 1.25,
+        "HPL_MS_calls": 26640,
+        "HPL_MS_seen": 6804000,
+        "HPL_MS_eligible": 6466170,
+        "HPL_MS_applied_time_down": 3287310,
+        "HPL_MS_applied_t2.pool": 3236010,
+        "HPL_MS_plan_calls": 4440,
+        "HPL_GP_U_to_L_norm_cap": 2.0,
+        "HPL_BG_calls": 4440,
+        "HPL_BG_gradient_calls": 17760,
+        "HPL_BG_extra_autograd_calls": 8880,
+        "HPL_BG_L_pair_captures": 17760,
+        "HPL_BG_t2_L_full_cosine_after": 0.06277534373447893,
+        "HPL_BG_t2_L_clean_cosine_after": 0.11633413130496861,
+        "HPL_BG_t2_L_As_cosine_after": -1.3697436057997952e-10,
+        "HPL_BG_cls_head_L_full_cosine_after": 1.541018249011026e-09,
+        "HPL_BG_cls_head_L_clean_cosine_after": 2.5517421391008042e-08,
+        "HPL_BG_cls_head_L_As_cosine_after": 2.6427037191155433e-09,
+        "HPL_BG_other_L_full_cosine_after": 2.1222518885119402e-10,
+        "HPL_BG_other_L_clean_cosine_after": 0.0004438147588706057,
+        "HPL_BG_other_L_As_cosine_after": 1.6362561983554531e-10,
+        "HPL_GP_calls": 4440,
+        "HPL_GP_t2_L_norm": 0.14818937109527883,
+        "HPL_GP_t2_U_norm": 0.5790049460245482,
+        "HPL_GP_t2_applied_U_norm": 0.29637874196246017,
+        "HPL_GP_t2_dot_before": -0.01583820877267608,
+        "HPL_GP_t2_dot_after": 0.0027571043572979467,
+        "HPL_GP_t2_conflict": 1.0,
+        "HPL_GP_t2_capped": 1.0,
+        "HPL_GP_t2_tiny_L": 0.0,
+        "HPL_GP_t2_conflicts": 2045,
+        "HPL_GP_t2_caps": 3284,
+        "HPL_GP_cls_head_L_norm": 0.5816332136883295,
+        "HPL_GP_cls_head_U_norm": 1.462104106647839,
+        "HPL_GP_cls_head_applied_U_norm": 1.1632664240439277,
+        "HPL_GP_cls_head_dot_before": -0.3732823430604731,
+        "HPL_GP_cls_head_dot_after": 1.042644299999347e-09,
+        "HPL_GP_cls_head_conflict": 1.0,
+        "HPL_GP_cls_head_capped": 1.0,
+        "HPL_GP_cls_head_tiny_L": 0.0,
+        "HPL_GP_cls_head_conflicts": 1883,
+        "HPL_GP_cls_head_caps": 2442,
+        "HPL_GP_other_L_norm": 0.9405238117211141,
+        "HPL_GP_other_U_norm": 4.008505504672886,
+        "HPL_GP_other_applied_U_norm": 1.881047623828561,
+        "HPL_GP_other_dot_before": -1.4879148227757744,
+        "HPL_GP_other_dot_after": 3.7546245459089316e-10,
+        "HPL_GP_other_conflict": 1.0,
+        "HPL_GP_other_capped": 1.0,
+        "HPL_GP_other_tiny_L": 0.0,
+        "HPL_GP_other_conflicts": 1664,
+        "HPL_GP_other_caps": 2421,
+        "HPL_joint_loss": 0.14853250980377197,
+        "HPL_joint_weight": 0.05,
+        "HPL_joint_calls": 4440,
+        "HPL_joint_captures": 8880,
+        "HPL_joint_packets": 2268000,
+        "HPL_joint_anchors": 2155390,
+        "HPL_raw_As_seen": 0,
+        "HPL_NAS_calls": 4440,
+        "HPL_NAS_generated": 567000,
+        "HPL_NAS_raw_accepted_half": 538861,
+        "HPL_NAS_accepted_student_views": 1077722,
+        "HPL_NAS_extra_As_teacher": 0,
+        "HPL_NAS_raw_fallback": 0,
+        "HPL_NAS_CE_normalizer": 1.25
+      },
+      "source_mechanism_counters": {
+        "accepted": 1608069,
+        "contrast_anchors": {
+          "time_down": 3216138,
+          "t2.pool": 3216138
+        },
+        "steps_with_both_RDrop_positive": 6660,
+        "steps_with_contrast": 6660
+      },
+      "incremental_training_seconds": 8279.368608369026,
+      "parent_training_seconds": 2596.1054225179832,
+      "cumulative_training_seconds": 10875.47403088701,
+      "source_graph_native_IQ_check": "PASS",
+      "completed_prediction_views": [
+        {
+          "test": "main",
+          "view": "clean",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_low_suburban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high_urban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid_urban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_low_urban",
+          "count": 168000
+        }
+      ],
+      "prediction_complete": true
+    },
+    {
+      "row_id": "HPL_E20_AS_SG2-s2026092703",
+      "method": "HPL_E20_AS_SG2",
+      "source_epoch": 50,
+      "source_updates": 11100,
+      "new_step_records": 6660,
+      "native_segment_records": [
+        2220,
+        4440
+      ],
+      "all_complete_step_records_checked": true,
+      "gzip_closed": true,
+      "actual_adapter_SSL": {
+        "method": "pamf_hard_pl_parameter_step_guard_v1",
+        "native_U_loop": false,
+        "own_EMA": false,
+        "cumulative_EMA_updates": 0,
+        "U_seen": 2097900,
+        "U_accepted": 1977080,
+        "physical_U_seen": 850500,
+        "physical_student_U_views": 1701000,
+        "raw_U_As_seen": 0,
+        "pseudo_label_smoothing": 0.01,
+        "student_U_views": 10602900,
+        "teacher_eval_U_views": 2097900,
+        "U_truth_read": false,
+        "prototype_updates": 0,
+        "hard_PL_calls": 6660,
+        "hard_PL_tail": {
+          "calls": 6660,
+          "seen": 1701000,
+          "accepted": 1608663,
+          "student_views": 10206000,
+          "physical_seen": 850500,
+          "physical_student_views": 1701000,
+          "raw_As_seen": 0,
+          "method": "HPLT1U",
+          "contrast_anchors": {
+            "time_down": 3217326,
+            "t2.pool": 3217326
+          },
+          "label_smoothing": 0.01,
+          "EMA_updates": 0,
+          "U_truth_read": false,
+          "U_style": {
+            "recipe": {
+              "levels": [
+                "time_down",
+                "t2.pool"
+              ],
+              "alpha": 0.1,
+              "probability_per_level": 0.5,
+              "eps": 1e-06,
+              "accepted_only": true,
+              "same_hard_pseudo": true,
+              "different_source_RX": true,
+              "detached_moments": true
+            },
+            "calls": 39960,
+            "seen": 10206000,
+            "eligible": 9651978,
+            "applied": {
+              "time_down": 4788318,
+              "t2.pool": 4832244
+            },
+            "persistent_hooks": false,
+            "teacher_or_L_style_calls": 0,
+            "partner_TX_truth_reads": 0,
+            "shared_six_forward_plan": true,
+            "plan_calls": 6660,
+            "contrast_captures_after_style": true
+          },
+          "U_gradient_guard": {
+            "recipe": {
+              "weight": 6.0,
+              "projection": "simultaneous_three_L_anchors_per_group",
+              "groups": [
+                "t2",
+                "cls_head",
+                "other"
+              ],
+              "U_to_L_norm_cap": 2.0,
+              "tiny_L_squared_norm": 1e-12,
+              "anchor": "complete_L_nonphysical_L_physical_L",
+              "optimizer": "unchanged_native_Adam",
+              "extra_teacher_or_student_forward": false
+            },
+            "calls": 6660,
+            "conflicts": {
+              "t2": 2967,
+              "cls_head": 2942,
+              "other": 2498
+            },
+            "caps": {
+              "t2": 5010,
+              "cls_head": 3788,
+              "other": 3647
+            },
+            "pending_U_loss": false
+          },
+          "U_joint_contrast": {
+            "recipe": {
+              "feature": "actual_CompositeReference_features_joint160",
+              "weight": 0.05,
+              "CE_normalizer": 1.25,
+              "student_views": "first_two_ordinary_U_passes",
+              "accepted_only": true,
+              "positive": "same_pseudo_different_source_RX",
+              "contrast": "same_native_CROSS_RX_temperature0.2",
+              "extra_forward": false,
+              "new_head": false
+            },
+            "calls": 6660,
+            "captures": 13320,
+            "captured_packets": 3402000,
+            "anchors": 3217326,
+            "extra_forward_calls": 0,
+            "teacher_or_L_captures": 0,
+            "persistent_feature_wrapper": false
+          },
+          "U_branch_guard": {
+            "recipe": {
+              "anchors": [
+                "L_full",
+                "L_clean",
+                "L_As"
+              ],
+              "projection": "simultaneous_three_L_anchors_per_group",
+              "U_to_L_norm_cap": 2.0,
+              "components": "same_four_original_L_pair_results",
+              "nonphysical_coefficients": [
+                0.5,
+                0.25,
+                0.25
+              ],
+              "physical_coefficient": 0.25,
+              "full_L_unchanged": true,
+              "solver": "thin_QR_and_active_set_SVD",
+              "gradient_calls": 4,
+              "extra_autograd_passes": 2,
+              "extra_teacher_or_student_forward": 0,
+              "raw_gate": 0.95,
+              "U_weight": 6.0,
+              "tiny_L_squared_norm": 1e-12,
+              "pinv_rtol": 1e-10,
+              "KKT_relative_tolerance": 1e-08,
+              "actual_cast_constraint_cosine_tolerance": 1e-06,
+              "new_head": false
+            },
+            "calls": 6660,
+            "gradient_calls": 26640,
+            "extra_autograd_calls": 13320,
+            "L_pair_captures": 26640,
+            "pending_capture": false,
+            "pending_U_loss": false,
+            "anchor_conflicts": {
+              "t2": {
+                "L_full": 2967,
+                "L_clean": 3053,
+                "L_As": 3077
+              },
+              "cls_head": {
+                "L_full": 2942,
+                "L_clean": 2980,
+                "L_As": 3054
+              },
+              "other": {
+                "L_full": 2498,
+                "L_clean": 2623,
+                "L_As": 2765
+              }
+            },
+            "extra_teacher_or_student_forward": 0,
+            "new_head": false,
+            "U_truth_reads": 0,
+            "target_reads": 0
+          },
+          "U_parameter_step_guard": {
+            "calls": 6660,
+            "anchor_captures": 6660,
+            "reference_optimizer_steps": 6660,
+            "reference_physical_clip_calls": 6660,
+            "pending_anchors": false,
+            "copied_existing_moments": true,
+            "live_joint_optimizer_state_retained": true,
+            "reference_has_no_model_forward": true,
+            "extra_autograd_calls": 0,
+            "extra_model_forwards": 0,
+            "fallback_groups": 704,
+            "removed_material_conflicts": 10034,
+            "minimum_whole_increment_retention": 0.0,
+            "seconds": 1287.5951923953835,
+            "U_truth_reads": 0,
+            "target_reads": 0,
+            "new_head": false,
+            "new_inference_parameters": 0,
+            "recipe": {
+              "reference": "same_current_parameters_and_live_AdamW_moments_L_only",
+              "raw_step": "original_joint_branch_guard_CENTER_UNITS_AdamW",
+              "anchors": [
+                "L_full",
+                "L_clean",
+                "L_As"
+              ],
+              "projection": "actual_FP32_extra_descent_three_anchor_halfspaces",
+              "groups": [
+                "t2",
+                "cls_head",
+                "other"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "tiny_L_squared_norm": 1e-12,
+              "component_omit_squared_norm": 1e-12,
+              "pinv_rtol": 1e-10,
+              "KKT_relative_tolerance": 1e-08,
+              "actual_cast_constraint_cosine_tolerance": 1e-06,
+              "norm_nonexpansion_relative": 1e-06,
+              "norm_nonexpansion_absolute": 1e-12,
+              "quantization_attempts": 4,
+              "repair_margin": "2_sum_abs_unit_anchor_times_rounding_error_plus_1e-12_max_rawnorm_1e-12",
+              "failed_quantization": "exact_L_reference_group_with_explicit_counts",
+              "real_joint_moments_retained": true,
+              "reference_optimizer_steps_per_step": 1,
+              "extra_autograd_calls": 0,
+              "extra_model_forwards": 0,
+              "new_head": false,
+              "new_inference_parameters": 0
+            }
+          },
+          "U_native_As": {
+            "recipe": {
+              "generator": "same_native_source_Practical_as_supervised_L",
+              "physical_half": "same_original_alternating_half",
+              "pseudo_labels": "original_raw_argmax",
+              "raw_gate": 0.95,
+              "augmented_view_gate": null,
+              "raw_fallback": false,
+              "CE_and_KL_coefficients_unchanged": true,
+              "CE_normalizer": 1.25,
+              "student_U_passes": 6,
+              "extra_As_teacher": 0,
+              "extra_student_forwards": 0,
+              "new_head": false
+            },
+            "calls": 6660,
+            "generated": 850500,
+            "student_physical_views": 1701000,
+            "raw_accepted_half": 804446,
+            "accepted_student_views": 1608892,
+            "raw_fallback": 0,
+            "extra_As_teacher": 0,
+            "all_raw_accepted_retained": true,
+            "extra_student_forwards": 0,
+            "new_head": false,
+            "EMA_updates": 0,
+            "U_truth_read": false,
+            "CE_dose_normalizer": 1.25
+          }
+        },
+        "threshold": 0.95,
+        "weight": 6.0,
+        "default_head_joint": true,
+        "new_inference_parameters": 0,
+        "new_mechanism_epochs": 30,
+        "source_parent_epoch": 20,
+        "U_style": {
+          "recipe": {
+            "levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "alpha": 0.1,
+            "probability_per_level": 0.5,
+            "eps": 1e-06,
+            "accepted_only": true,
+            "same_hard_pseudo": true,
+            "different_source_RX": true,
+            "detached_moments": true
+          },
+          "calls": 39960,
+          "seen": 10206000,
+          "eligible": 9651978,
+          "applied": {
+            "time_down": 4788318,
+            "t2.pool": 4832244
+          },
+          "persistent_hooks": false,
+          "teacher_or_L_style_calls": 0,
+          "partner_TX_truth_reads": 0,
+          "shared_six_forward_plan": true,
+          "plan_calls": 6660,
+          "contrast_captures_after_style": true
+        },
+        "U_gradient_guard": {
+          "recipe": {
+            "weight": 6.0,
+            "projection": "simultaneous_three_L_anchors_per_group",
+            "groups": [
+              "t2",
+              "cls_head",
+              "other"
+            ],
+            "U_to_L_norm_cap": 2.0,
+            "tiny_L_squared_norm": 1e-12,
+            "anchor": "complete_L_nonphysical_L_physical_L",
+            "optimizer": "unchanged_native_Adam",
+            "extra_teacher_or_student_forward": false
+          },
+          "calls": 6660,
+          "conflicts": {
+            "t2": 2967,
+            "cls_head": 2942,
+            "other": 2498
+          },
+          "caps": {
+            "t2": 5010,
+            "cls_head": 3788,
+            "other": 3647
+          },
+          "pending_U_loss": false
+        },
+        "U_joint_contrast": {
+          "recipe": {
+            "feature": "actual_CompositeReference_features_joint160",
+            "weight": 0.05,
+            "CE_normalizer": 1.25,
+            "student_views": "first_two_ordinary_U_passes",
+            "accepted_only": true,
+            "positive": "same_pseudo_different_source_RX",
+            "contrast": "same_native_CROSS_RX_temperature0.2",
+            "extra_forward": false,
+            "new_head": false
+          },
+          "calls": 6660,
+          "captures": 13320,
+          "captured_packets": 3402000,
+          "anchors": 3217326,
+          "extra_forward_calls": 0,
+          "teacher_or_L_captures": 0,
+          "persistent_feature_wrapper": false
+        },
+        "U_branch_guard": {
+          "recipe": {
+            "anchors": [
+              "L_full",
+              "L_clean",
+              "L_As"
+            ],
+            "projection": "simultaneous_three_L_anchors_per_group",
+            "U_to_L_norm_cap": 2.0,
+            "components": "same_four_original_L_pair_results",
+            "nonphysical_coefficients": [
+              0.5,
+              0.25,
+              0.25
+            ],
+            "physical_coefficient": 0.25,
+            "full_L_unchanged": true,
+            "solver": "thin_QR_and_active_set_SVD",
+            "gradient_calls": 4,
+            "extra_autograd_passes": 2,
+            "extra_teacher_or_student_forward": 0,
+            "raw_gate": 0.95,
+            "U_weight": 6.0,
+            "tiny_L_squared_norm": 1e-12,
+            "pinv_rtol": 1e-10,
+            "KKT_relative_tolerance": 1e-08,
+            "actual_cast_constraint_cosine_tolerance": 1e-06,
+            "new_head": false
+          },
+          "calls": 6660,
+          "gradient_calls": 26640,
+          "extra_autograd_calls": 13320,
+          "L_pair_captures": 26640,
+          "pending_capture": false,
+          "pending_U_loss": false,
+          "anchor_conflicts": {
+            "t2": {
+              "L_full": 2967,
+              "L_clean": 3053,
+              "L_As": 3077
+            },
+            "cls_head": {
+              "L_full": 2942,
+              "L_clean": 2980,
+              "L_As": 3054
+            },
+            "other": {
+              "L_full": 2498,
+              "L_clean": 2623,
+              "L_As": 2765
+            }
+          },
+          "extra_teacher_or_student_forward": 0,
+          "new_head": false,
+          "U_truth_reads": 0,
+          "target_reads": 0
+        },
+        "U_parameter_step_guard": {
+          "calls": 6660,
+          "anchor_captures": 6660,
+          "reference_optimizer_steps": 6660,
+          "reference_physical_clip_calls": 6660,
+          "pending_anchors": false,
+          "copied_existing_moments": true,
+          "live_joint_optimizer_state_retained": true,
+          "reference_has_no_model_forward": true,
+          "extra_autograd_calls": 0,
+          "extra_model_forwards": 0,
+          "fallback_groups": 704,
+          "removed_material_conflicts": 10034,
+          "minimum_whole_increment_retention": 0.0,
+          "seconds": 1287.5951923953835,
+          "U_truth_reads": 0,
+          "target_reads": 0,
+          "new_head": false,
+          "new_inference_parameters": 0,
+          "recipe": {
+            "reference": "same_current_parameters_and_live_AdamW_moments_L_only",
+            "raw_step": "original_joint_branch_guard_CENTER_UNITS_AdamW",
+            "anchors": [
+              "L_full",
+              "L_clean",
+              "L_As"
+            ],
+            "projection": "actual_FP32_extra_descent_three_anchor_halfspaces",
+            "groups": [
+              "t2",
+              "cls_head",
+              "other"
+            ],
+            "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+            "tiny_L_squared_norm": 1e-12,
+            "component_omit_squared_norm": 1e-12,
+            "pinv_rtol": 1e-10,
+            "KKT_relative_tolerance": 1e-08,
+            "actual_cast_constraint_cosine_tolerance": 1e-06,
+            "norm_nonexpansion_relative": 1e-06,
+            "norm_nonexpansion_absolute": 1e-12,
+            "quantization_attempts": 4,
+            "repair_margin": "2_sum_abs_unit_anchor_times_rounding_error_plus_1e-12_max_rawnorm_1e-12",
+            "failed_quantization": "exact_L_reference_group_with_explicit_counts",
+            "real_joint_moments_retained": true,
+            "reference_optimizer_steps_per_step": 1,
+            "extra_autograd_calls": 0,
+            "extra_model_forwards": 0,
+            "new_head": false,
+            "new_inference_parameters": 0
+          }
+        },
+        "U_native_As": {
+          "recipe": {
+            "generator": "same_native_source_Practical_as_supervised_L",
+            "physical_half": "same_original_alternating_half",
+            "pseudo_labels": "original_raw_argmax",
+            "raw_gate": 0.95,
+            "augmented_view_gate": null,
+            "raw_fallback": false,
+            "CE_and_KL_coefficients_unchanged": true,
+            "CE_normalizer": 1.25,
+            "student_U_passes": 6,
+            "extra_As_teacher": 0,
+            "extra_student_forwards": 0,
+            "new_head": false
+          },
+          "calls": 6660,
+          "generated": 850500,
+          "student_physical_views": 1701000,
+          "raw_accepted_half": 804446,
+          "accepted_student_views": 1608892,
+          "raw_fallback": 0,
+          "extra_As_teacher": 0,
+          "all_raw_accepted_retained": true,
+          "extra_student_forwards": 0,
+          "new_head": false,
+          "EMA_updates": 0,
+          "U_truth_read": false,
+          "CE_dose_normalizer": 1.25
+        }
+      },
+      "final_logged_losses_and_counters": {
+        "HPL_loss": 1.3258581161499023,
+        "HPL_base_loss": 0.2209763526916504,
+        "HPL_weight": 6.0,
+        "HPL_calls": 4440,
+        "HPL_seen": 1134000,
+        "HPL_accepted": 1078464,
+        "HPL_confidence": 0.9868107438087463,
+        "HPL_student_views": 6804000,
+        "HPL_physical_seen": 567000,
+        "HPL_physical_student_views": 1134000,
+        "HPL_EMA_updates": 0.0,
+        "HPL_anchors_time_down": 2156928,
+        "HPL_anchors_t2.pool": 2156928,
+        "T1_L_packets": 768,
+        "HPL_ordinary_KL": 0.01503218524158001,
+        "HPL_raw_KL": 0.0053386930376291275,
+        "HPL_As_KL": 0.06422733515501022,
+        "HPL_As_KL_weight": 0.0,
+        "HPL_contrast": 0.6412022113800049,
+        "HPL_CE_normalizer": 1.25,
+        "HPL_MS_calls": 26640,
+        "HPL_MS_seen": 6804000,
+        "HPL_MS_eligible": 6470784,
+        "HPL_MS_applied_time_down": 3243744,
+        "HPL_MS_applied_t2.pool": 3256122,
+        "HPL_MS_plan_calls": 4440,
+        "HPL_GP_U_to_L_norm_cap": 2.0,
+        "HPL_BG_calls": 4440,
+        "HPL_BG_gradient_calls": 17760,
+        "HPL_BG_extra_autograd_calls": 8880,
+        "HPL_BG_L_pair_captures": 17760,
+        "HPL_BG_t2_L_full_cosine_after": 0.13628465949980545,
+        "HPL_BG_t2_L_clean_cosine_after": -2.6148994253929795e-10,
+        "HPL_BG_t2_L_As_cosine_after": 0.349305903170974,
+        "HPL_BG_cls_head_L_full_cosine_after": 0.2792607891466004,
+        "HPL_BG_cls_head_L_clean_cosine_after": 0.2930285702198965,
+        "HPL_BG_cls_head_L_As_cosine_after": 0.13590019050281277,
+        "HPL_BG_other_L_full_cosine_after": 0.20822391492226555,
+        "HPL_BG_other_L_clean_cosine_after": 0.18281245533198062,
+        "HPL_BG_other_L_As_cosine_after": 0.17631643646370032,
+        "HPL_GP_calls": 4440,
+        "HPL_GP_t2_L_norm": 0.1700599074483432,
+        "HPL_GP_t2_U_norm": 1.1884277975025592,
+        "HPL_GP_t2_applied_U_norm": 0.34011981501036037,
+        "HPL_GP_t2_dot_before": 0.015500019447461426,
+        "HPL_GP_t2_dot_after": 0.00788280613696329,
+        "HPL_GP_t2_conflict": 0.0,
+        "HPL_GP_t2_capped": 1.0,
+        "HPL_GP_t2_tiny_L": 0.0,
+        "HPL_GP_t2_conflicts": 1982,
+        "HPL_GP_t2_caps": 3455,
+        "HPL_GP_cls_head_L_norm": 1.0029574897019427,
+        "HPL_GP_cls_head_U_norm": 0.841757278281342,
+        "HPL_GP_cls_head_applied_U_norm": 0.841757278281342,
+        "HPL_GP_cls_head_dot_before": 0.2357650183208114,
+        "HPL_GP_cls_head_dot_after": 0.2357650183208114,
+        "HPL_GP_cls_head_conflict": 0.0,
+        "HPL_GP_cls_head_capped": 0.0,
+        "HPL_GP_cls_head_tiny_L": 0.0,
+        "HPL_GP_cls_head_conflicts": 1958,
+        "HPL_GP_cls_head_caps": 2561,
+        "HPL_GP_other_L_norm": 2.3868084380235657,
+        "HPL_GP_other_U_norm": 4.231170522722285,
+        "HPL_GP_other_applied_U_norm": 4.231170522722285,
+        "HPL_GP_other_dot_before": 2.102851964666762,
+        "HPL_GP_other_dot_after": 2.102851964666762,
+        "HPL_GP_other_conflict": 0.0,
+        "HPL_GP_other_capped": 0.0,
+        "HPL_GP_other_tiny_L": 0.0,
+        "HPL_GP_other_conflicts": 1648,
+        "HPL_GP_other_caps": 2534,
+        "HPL_joint_loss": 0.14938606321811676,
+        "HPL_joint_weight": 0.05,
+        "HPL_joint_calls": 4440,
+        "HPL_joint_captures": 8880,
+        "HPL_joint_packets": 2268000,
+        "HPL_joint_anchors": 2156928,
+        "HPL_raw_As_seen": 0,
+        "HPL_NAS_calls": 4440,
+        "HPL_NAS_generated": 567000,
+        "HPL_NAS_raw_accepted_half": 539306,
+        "HPL_NAS_accepted_student_views": 1078612,
+        "HPL_NAS_extra_As_teacher": 0,
+        "HPL_NAS_raw_fallback": 0,
+        "HPL_NAS_CE_normalizer": 1.25
+      },
+      "source_mechanism_counters": {
+        "accepted": 1608663,
+        "contrast_anchors": {
+          "time_down": 3217326,
+          "t2.pool": 3217326
+        },
+        "steps_with_both_RDrop_positive": 6660,
+        "steps_with_contrast": 6660
+      },
+      "incremental_training_seconds": 8572.849330668803,
+      "parent_training_seconds": 2394.8106896989048,
+      "cumulative_training_seconds": 10967.660020367708,
+      "source_graph_native_IQ_check": "PASS",
+      "completed_prediction_views": [
+        {
+          "test": "main",
+          "view": "clean",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_low_suburban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high_urban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid_urban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_low_urban",
+          "count": 168000
+        }
+      ],
+      "prediction_complete": true
+    }
+  ],
+  "U_exposure_is_repeated": true,
+  "unique_U_records": 56700,
+  "source_U_TX_truth_read": false,
+  "no_new_head_fit": true,
+  "no_EMA": true,
+  "no_prototypes": true,
+  "new_G_training_reads": 0,
+  "shared_GPU_walltime_not_exclusive_GPU_hours": true,
+  "target_accuracy_read_by_this_source_check": false,
+  "earlier_complete_method_reports": [],
+  "source_recipe_remained_frozen": true,
+  "goal_complete": false,
+  "parent_diagnostic_reference": "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-E20plus30-m6-r01/source_pseudo_quality.json"
+}

@@ -1,0 +1,533 @@
+{
+  "status": "VERIFIED_REAL_E20_ALL_U_RDROP_SMOKE_AND_ALL3_SOURCE_RUNNING",
+  "execution_commit": "e74a1e49ae39521e5c0cf87761a1a3f8c9705035",
+  "observed_unix": 1792836643.3631444,
+  "source_smoke": "PASS",
+  "actual_original_E20_smoke": {
+    "status": "PASS",
+    "methods": [
+      {
+        "method": "HPL_E20_AS_ALLRD",
+        "model_seed": 2026092702,
+        "parent_epoch": 20,
+        "parent_updates": 4440,
+        "L_forward_packets": 768,
+        "U_seen": 256,
+        "U_accepted": 239,
+        "student_U_views": 1536,
+        "physical_U_generated": 128,
+        "physical_student_views": 256,
+        "raw_U_As_seen": 0,
+        "U_As_raw_input_matches": false,
+        "source_Practical_generated": 192,
+        "contrast_anchors": {
+          "time_down": 478,
+          "t2.pool": 478
+        },
+        "shallow_middle_gradient": true,
+        "ordinary_raw_RDrop": true,
+        "As_KL_weight": 0,
+        "weight": 6.0,
+        "threshold": 0.95,
+        "EMA_updates": 0,
+        "finite_backward": true,
+        "default_head_gradient": true,
+        "feature_hooks_removed": true,
+        "U_label_smoothing": 0.01,
+        "U_parameter_step_guard": {
+          "calls": 1,
+          "anchor_captures": 1,
+          "reference_optimizer_steps": 1,
+          "reference_physical_clip_calls": 1,
+          "pending_anchors": false,
+          "copied_existing_moments": true,
+          "live_joint_optimizer_state_retained": true,
+          "reference_has_no_model_forward": true,
+          "extra_autograd_calls": 0,
+          "extra_model_forwards": 0,
+          "fallback_groups": 0,
+          "removed_material_conflicts": 9,
+          "minimum_whole_increment_retention": 0.9997932988260206,
+          "seconds": 0.2733468310907483,
+          "U_truth_reads": 0,
+          "target_reads": 0,
+          "new_head": false,
+          "new_inference_parameters": 0,
+          "details": {
+            "t2": {
+              "raw_increment_norm": 0.02148016055612847,
+              "applied_increment_norm": 0.019515138094213198,
+              "retention": 0.9085191911494053,
+              "quantization_fallback": false,
+              "fallback_reason": null,
+              "tiny_L": false,
+              "passthrough": false,
+              "quantization_attempts_used": 1,
+              "actual_parameter_check": true,
+              "norm_nonexpansion": true,
+              "active_set": [
+                "L_full",
+                "L_clean",
+                "L_As"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "anchor_cosines_before": {
+                "L_full": -0.3998602464140178,
+                "L_clean": -0.22916153249083474,
+                "L_As": -0.38171164149301245
+              },
+              "anchor_cosines_after": {
+                "L_full": -1.974099990130109e-07,
+                "L_clean": 6.986903654994893e-07,
+                "L_As": -5.320455479998727e-07
+              },
+              "constraint_dots_after": {
+                "L_full": -4.609995771071742e-10,
+                "L_clean": 8.383584465071437e-10,
+                "L_As": -9.170175729098613e-10
+              },
+              "near_zero_component_anchors_omitted": []
+            },
+            "cls_head": {
+              "raw_increment_norm": 0.010612892203880314,
+              "applied_increment_norm": 0.010285802429024802,
+              "retention": 0.9691799588112352,
+              "quantization_fallback": false,
+              "fallback_reason": null,
+              "tiny_L": false,
+              "passthrough": false,
+              "quantization_attempts_used": 1,
+              "actual_parameter_check": true,
+              "norm_nonexpansion": true,
+              "active_set": [
+                "L_full",
+                "L_clean"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "anchor_cosines_before": {
+                "L_full": -0.24531296899036087,
+                "L_clean": -0.19484725921891188,
+                "L_As": -0.2267173692121068
+              },
+              "anchor_cosines_after": {
+                "L_full": 6.7245684584476585e-09,
+                "L_clean": 7.148951997872415e-08,
+                "L_As": -2.3427764429066496e-08
+              },
+              "constraint_dots_after": {
+                "L_full": 3.09998039879026e-11,
+                "L_clean": 1.151618981925194e-10,
+                "L_As": -8.442424347500713e-11
+              },
+              "near_zero_component_anchors_omitted": []
+            },
+            "other": {
+              "raw_increment_norm": 1.5530037451043086,
+              "applied_increment_norm": 1.5527108031415753,
+              "retention": 0.9998113707300084,
+              "quantization_fallback": false,
+              "fallback_reason": null,
+              "tiny_L": false,
+              "passthrough": false,
+              "quantization_attempts_used": 1,
+              "actual_parameter_check": true,
+              "norm_nonexpansion": true,
+              "active_set": [
+                "L_full",
+                "L_clean"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "anchor_cosines_before": {
+                "L_full": -0.019426910282302378,
+                "L_clean": -0.016130042868814917,
+                "L_As": -0.017319350043526225
+              },
+              "anchor_cosines_after": {
+                "L_full": -3.0097178518703434e-09,
+                "L_clean": -1.137930599745493e-09,
+                "L_As": 0.00025947678114947016
+              },
+              "constraint_dots_after": {
+                "L_full": -3.857565597601429e-09,
+                "L_clean": -6.978971534926876e-10,
+                "L_As": 0.00021467916545521768
+              },
+              "near_zero_component_anchors_omitted": []
+            }
+          },
+          "probe_updates_discarded": true,
+          "formal_original_parent_reloaded": true
+        },
+        "U_style": {
+          "recipe": {
+            "levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "alpha": 0.1,
+            "probability_per_level": 0.5,
+            "eps": 1e-06,
+            "accepted_only": true,
+            "same_hard_pseudo": true,
+            "different_source_RX": true,
+            "detached_moments": true
+          },
+          "calls": 6,
+          "seen": 1536,
+          "eligible": 1434,
+          "applied": {
+            "time_down": 1434,
+            "t2.pool": 1434
+          },
+          "persistent_hooks": false,
+          "teacher_or_L_style_calls": 0,
+          "partner_TX_truth_reads": 0,
+          "shared_six_forward_plan": true,
+          "plan_calls": 1,
+          "contrast_captures_after_style": true
+        },
+        "U_gradient_guard": {
+          "recipe": {
+            "weight": 6.0,
+            "projection": "simultaneous_three_L_anchors_per_group",
+            "groups": [
+              "t2",
+              "cls_head",
+              "other"
+            ],
+            "U_to_L_norm_cap": null,
+            "tiny_L_squared_norm": 1e-12,
+            "anchor": "complete_L_nonphysical_L_physical_L",
+            "optimizer": "unchanged_native_Adam",
+            "extra_teacher_or_student_forward": false
+          },
+          "calls": 1,
+          "conflicts": {
+            "t2": 1,
+            "cls_head": 1,
+            "other": 1
+          },
+          "caps": {
+            "t2": 0,
+            "cls_head": 0,
+            "other": 0
+          },
+          "pending_U_loss": false
+        },
+        "gradient_guard_details": {
+          "t2": {
+            "L_norm": 0.11966296287593667,
+            "U_norm": 0.6622242480900882,
+            "applied_U_norm": 0.6207994036919453,
+            "dot_before": -0.018907960364931732,
+            "dot_after": 0.0033047554819436438,
+            "conflict": true,
+            "capped": false,
+            "tiny_L": false,
+            "anchor_cosines_before": {
+              "L_full": -0.23860517163095357,
+              "L_clean": -0.3349810716759577,
+              "L_As": -0.14761413115406996
+            },
+            "anchor_cosines_after": {
+              "L_full": 0.04448650512145035,
+              "L_clean": 1.329404739415697e-10,
+              "L_As": -6.587408687509962e-11
+            },
+            "constraint_dots_after": {
+              "L_full": 0.0033047554819436438,
+              "L_clean": 5.074367006229971e-12,
+              "L_As": -3.6117951891009165e-12
+            },
+            "active_set": [
+              "L_clean",
+              "L_As"
+            ],
+            "cone_correction_norm": 0.23054078650809812,
+            "solver": "thin_QR_and_active_set_SVD",
+            "numerical_zero_projection": false,
+            "near_zero_component_anchors_omitted": []
+          },
+          "cls_head": {
+            "L_norm": 0.44818400224173227,
+            "U_norm": 1.4409362887433816,
+            "applied_U_norm": 1.3335336453522968,
+            "dot_before": -0.2445531195101896,
+            "dot_after": -1.643851025245023e-09,
+            "conflict": true,
+            "capped": false,
+            "tiny_L": false,
+            "anchor_cosines_before": {
+              "L_full": -0.3786797464934642,
+              "L_clean": -0.28435789326334227,
+              "L_As": -0.3573145767040998
+            },
+            "anchor_cosines_after": {
+              "L_full": -2.750439705203032e-09,
+              "L_clean": -4.8693450602057325e-09,
+              "L_As": -1.2155089780835723e-09
+            },
+            "constraint_dots_after": {
+              "L_full": -1.643851025245023e-09,
+              "L_clean": -1.0169574553666773e-09,
+              "L_As": -5.678848720208542e-10
+            },
+            "active_set": [
+              "L_clean",
+              "L_As"
+            ],
+            "cone_correction_norm": 0.545880418029637,
+            "solver": "thin_QR_and_active_set_SVD",
+            "numerical_zero_projection": false,
+            "near_zero_component_anchors_omitted": []
+          },
+          "other": {
+            "L_norm": 0.8254617636155471,
+            "U_norm": 2.826174304691568,
+            "applied_U_norm": 2.5401614462891615,
+            "dot_before": -0.9839067020879604,
+            "dot_after": 0.029184436363451208,
+            "conflict": true,
+            "capped": false,
+            "tiny_L": false,
+            "anchor_cosines_before": {
+              "L_full": -0.4217528386536544,
+              "L_clean": -0.3658427007871076,
+              "L_As": -0.40148932967296647
+            },
+            "anchor_cosines_after": {
+              "L_full": 0.013918519077561857,
+              "L_clean": 4.488791056093542e-10,
+              "L_As": 6.924471452166135e-12
+            },
+            "constraint_dots_after": {
+              "L_full": 0.029184436363451208,
+              "L_clean": 4.503765676275042e-10,
+              "L_As": 9.37235588481999e-12
+            },
+            "active_set": [
+              "L_clean",
+              "L_As"
+            ],
+            "cone_correction_norm": 1.238887018537954,
+            "solver": "thin_QR_and_active_set_SVD",
+            "numerical_zero_projection": false,
+            "near_zero_component_anchors_omitted": []
+          }
+        },
+        "explicit_backward_matches": true,
+        "complete_L_anchor": true,
+        "U_joint_contrast": {
+          "recipe": {
+            "feature": "actual_CompositeReference_features_joint160",
+            "weight": 0.05,
+            "CE_normalizer": 1.25,
+            "student_views": "first_two_ordinary_U_passes",
+            "accepted_only": true,
+            "positive": "same_pseudo_different_source_RX",
+            "contrast": "same_native_CROSS_RX_temperature0.2",
+            "extra_forward": false,
+            "new_head": false
+          },
+          "calls": 1,
+          "captures": 2,
+          "captured_packets": 512,
+          "anchors": 478,
+          "extra_forward_calls": 0,
+          "teacher_or_L_captures": 0,
+          "persistent_feature_wrapper": false
+        },
+        "U_joint_signature_gradient_norm": 0.3706862358862019,
+        "joint160_gradient": true,
+        "joint_feature_wrapper_removed": true,
+        "U_native_As": {
+          "recipe": {
+            "generator": "same_native_source_Practical_as_supervised_L",
+            "physical_half": "same_original_alternating_half",
+            "pseudo_labels": "original_raw_argmax",
+            "raw_gate": 0.95,
+            "augmented_view_gate": null,
+            "raw_fallback": false,
+            "CE_and_KL_coefficients_unchanged": true,
+            "CE_normalizer": 1.25,
+            "student_U_passes": 6,
+            "extra_As_teacher": 0,
+            "extra_student_forwards": 0,
+            "new_head": false
+          },
+          "calls": 1,
+          "generated": 128,
+          "student_physical_views": 256,
+          "raw_accepted_half": 120,
+          "accepted_student_views": 240,
+          "raw_fallback": 0,
+          "extra_As_teacher": 0,
+          "all_raw_accepted_retained": true,
+          "extra_student_forwards": 0,
+          "new_head": false,
+          "EMA_updates": 0,
+          "U_truth_read": false,
+          "CE_dose_normalizer": 1.25
+        },
+        "native_As_input_matches": true,
+        "nonphysical_ordinary_input_matches": true,
+        "teacher_U_raw_views": 256,
+        "teacher_U_As_views": 0,
+        "teacher_U_total_views": 256,
+        "all_raw_accepted_retained": true,
+        "CE_and_KL_coefficients_unchanged": true,
+        "raw_U_to_L_norm_cap": null,
+        "raw_U_norm_nonexpansion": true,
+        "raw_U_relative_norm_cap_enabled": false,
+        "uncapped_effective_groups": [
+          "t2",
+          "cls_head",
+          "other"
+        ],
+        "U_all_RDrop": {
+          "recipe": {
+            "ordinary_pair_weight": 0.5,
+            "mixed_nonphysical_pair_weight": 0.25,
+            "raw_pair_weight": 0.25,
+            "CE_normalizer": 1.25,
+            "hard_label_gate": 0.95,
+            "physical_As_KL_weight": 0.0,
+            "hard_CE_or_contrast_on_rejected": false,
+            "extra_model_forwards": 0,
+            "new_head": false
+          },
+          "calls": 1,
+          "seen": 256,
+          "rejected": 17,
+          "nonphysical_rejected": 9,
+          "pairs": 43,
+          "reused_prediction_views": 86,
+          "extra_KL_evaluations": 3,
+          "hard_label_or_CE_on_rejected": false,
+          "raw_acceptance_changed": false,
+          "physical_As_KL_weight": 0.0,
+          "pending_logits": false,
+          "extra_teacher": 0,
+          "extra_student": 0,
+          "extra_head": 0,
+          "new_head": false,
+          "U_truth_reads": 0,
+          "target_reads": 0
+        },
+        "rejected_RDrop_actual_extra_base_loss": 0.006560792215168476,
+        "rejected_RDrop_label_free": true,
+        "rejected_RDrop_original_mask_unchanged": true,
+        "U_branch_guard": {
+          "recipe": {
+            "anchors": [
+              "L_full",
+              "L_clean",
+              "L_As"
+            ],
+            "projection": "simultaneous_three_L_anchors_per_group",
+            "U_to_L_norm_cap": null,
+            "components": "same_four_original_L_pair_results",
+            "nonphysical_coefficients": [
+              0.5,
+              0.25,
+              0.25
+            ],
+            "physical_coefficient": 0.25,
+            "full_L_unchanged": true,
+            "solver": "thin_QR_and_active_set_SVD",
+            "gradient_calls": 4,
+            "extra_autograd_passes": 2,
+            "extra_teacher_or_student_forward": 0,
+            "raw_gate": 0.95,
+            "U_weight": 6.0,
+            "tiny_L_squared_norm": 1e-12,
+            "pinv_rtol": 1e-10,
+            "KKT_relative_tolerance": 1e-08,
+            "actual_cast_constraint_cosine_tolerance": 1e-06,
+            "new_head": false
+          },
+          "calls": 1,
+          "gradient_calls": 4,
+          "extra_autograd_calls": 2,
+          "L_pair_captures": 4,
+          "pending_capture": false,
+          "pending_U_loss": false,
+          "anchor_conflicts": {
+            "t2": {
+              "L_full": 1,
+              "L_clean": 1,
+              "L_As": 1
+            },
+            "cls_head": {
+              "L_full": 1,
+              "L_clean": 1,
+              "L_As": 1
+            },
+            "other": {
+              "L_full": 1,
+              "L_clean": 1,
+              "L_As": 1
+            }
+          },
+          "extra_teacher_or_student_forward": 0,
+          "new_head": false,
+          "U_truth_reads": 0,
+          "target_reads": 0
+        },
+        "simultaneous_full_and_component_L_anchors": true,
+        "actual_gradient_calls_including_joint_smoke": 5,
+        "L_pair_capture_context_removed": true,
+        "complete_L_unchanged": true,
+        "additional_L_derivatives": 2
+      }
+    ],
+    "target_reads": 0,
+    "U_truth_reads": 0,
+    "probe_updates_discarded": true,
+    "formal_reload_original_parent_epoch": 20,
+    "formal_reload_original_F21_E30": false,
+    "immediate_continuation": true
+  },
+  "actual_GPU_workers": 3,
+  "training_started": true,
+  "rows": [
+    {
+      "row_id": "HPL_E20_AS_ALLRD-s2026092701",
+      "model_seed": 2026092701,
+      "gpu": 5,
+      "pid": 2952820,
+      "process_identity_verified": true,
+      "complete_loss_records": 270,
+      "complete_parameter_update_records": 272,
+      "fallback_groups": 3,
+      "optimizer_and_projection_window_seconds": 75.09344135364518
+    },
+    {
+      "row_id": "HPL_E20_AS_ALLRD-s2026092702",
+      "model_seed": 2026092702,
+      "gpu": 6,
+      "pid": 2935996,
+      "process_identity_verified": true,
+      "complete_loss_records": 1550,
+      "complete_parameter_update_records": 1554,
+      "fallback_groups": 49,
+      "optimizer_and_projection_window_seconds": 321.93009031168185
+    },
+    {
+      "row_id": "HPL_E20_AS_ALLRD-s2026092703",
+      "model_seed": 2026092703,
+      "gpu": 7,
+      "pid": 2939780,
+      "process_identity_verified": true,
+      "complete_loss_records": 1381,
+      "complete_parameter_update_records": 1382,
+      "fallback_groups": 43,
+      "optimizer_and_projection_window_seconds": 285.03501198766753
+    }
+  ],
+  "all_three_started": true,
+  "target_matrix_complete": false,
+  "target_scores_read": false,
+  "healthy_jobs_changed": false,
+  "goal_complete": false
+}

@@ -296,10 +296,10 @@
   ],
   "registered_at": "2026-10-24T08:43:45.237936+00:00",
   "launch_status": {
-    "status": "VERIFIED_REAL_E20_ALL_U_RDROP_SMOKE_AND_PARTIAL_SOURCE_RUNNING",
-    "evidence": "first_source_start.json",
+    "status": "VERIFIED_REAL_E20_ALL_U_RDROP_SMOKE_AND_ALL3_SOURCE_RUNNING",
+    "evidence": "source_activation.json",
     "source_smoke": "PASS",
-    "actual_GPU_workers": 1,
+    "actual_GPU_workers": 3,
     "target_matrix_complete": false
   },
   "matched_source_prefix_observation": {

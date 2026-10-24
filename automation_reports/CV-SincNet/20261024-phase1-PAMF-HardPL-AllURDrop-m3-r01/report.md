@@ -28,3 +28,6 @@ N607普通账户、CPU2/FP32TF32off，物理GPU5/6/7固定seed2701/02/03，每�
 
 
 原三E20动量历史对照已完成，固定源规则pass=True，科学状态SOURCE_HISTORY_LIMITATION_SUPPORTED，详见source_moment_history.md。27导数／7686源packet／15个丢弃参数副本步骤，原模型及持久状态更新0、V/U真值/target/G读取0。相同当前参数与固定梯度隔离出的历史差异不是实际训练轨迹、损失上升或目标性能证据；健康训练不变，未自动启动新GPU模型。
+
+
+独立发布后核验：VERIFIED_REAL_E20_ALL_U_RDROP_SMOKE_AND_ALL3_SOURCE_RUNNING，执行commit `e74a1e49ae39521e5c0cf87761a1a3f8c9705035`，实际正式GPU worker 3。源检查 PASS；详见 source_activation.json。验证以实际PID/CWD/完整命令/GPU/日志及参数更新记录为据，排队、探针或源前缀均不代表目标达成。保留健康任务，自动训练、raw与固定DURA七景、独立truth-last继续按原矩阵执行。
