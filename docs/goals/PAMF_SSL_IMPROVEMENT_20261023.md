@@ -382,3 +382,10 @@ PathReliableAs 发布后 VERIFIED：控制器存活及 CWD/完整命令匹配，
 ## HPL_E20_AS_ALLRD 完整双读出结果
 
 `20261024-phase1-PAMF-HardPL-AllURDrop-m3-r01` 各方法三seed、共3模型，每景168000条，raw／同一DURA七景预测与独立truth-last全部42cell完成；全部新增19980条闭合训练记录已核对。HPL_E20_AS_ALLRD / raw clean=84.929167%；HPL_E20_AS_ALLRD / DURA-LU clean=85.045437%；HPL_E20_AS_ALLRD / raw six_mean=72.712401%；HPL_E20_AS_ALLRD / DURA-LU six_mean=77.317923%；原数值目标仍未满足，维持ACTIVE。全部结果、匹配基线、逐seed／场景／分层及成本均保存，不从本结果热改其他已固定方法、父权重或矩阵。
+
+
+## 2026-10-24 用户选定半监督方法：PAMF-REPL
+
+用户最新要求按clean最强方案选定并命名。核对30份汇总、去重33个同口径完整三seed方案后，选定`HPL_E20_JOINT_RXE6G`，统一名称**PAMF-REPL：接收机外推伪标签学习**，固定标识`pamf_repl`。定义见[方法文档](../PAMF_REPL.md)与`configs/pamf_ssl_repl.json`。
+
+raw clean85.726786%，相对PAMF监督版+0.941468pp、普通PL+0.745040pp；raw六景70.085516%。固定DURA组合clean85.790675%、六景77.897718%。本次明确按已公开目标clean选择既有方法，保留原三seed、既有权重和原始内部标识；原+1pp／>1.5pp双目标仍未达成。此次命名不启动新实验，独立监督动量参考算子仍是单独研发产物，不并入本方法。

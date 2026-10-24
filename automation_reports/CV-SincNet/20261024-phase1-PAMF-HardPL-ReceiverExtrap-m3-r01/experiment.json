@@ -2,11 +2,15 @@
   "schema": "experiment_record_v1",
   "run_id": "20261024-phase1-PAMF-HardPL-ReceiverExtrap-m3-r01",
   "group_id": "phase1-pamf-source-only-ssl-improvement",
-  "display_name": "PAMF 完整特征接收机外推",
+  "display_name": "PAMF-REPL：接收机外推伪标签学习（三种子）",
   "description": "Small same-pseudo cross-RX complete-feature extrapolation produces harder source-preserving U views while keeping signature and response paths in training and deployment.",
   "kind": "cvs",
   "stage": "Phase1",
-  "aliases": [],
+  "aliases": [
+    "PAMF-REPL",
+    "pamf_repl",
+    "接收机外推伪标签学习"
+  ],
   "tags": [
     "PAMF",
     "SSL",
@@ -330,5 +334,16 @@
       "reference_method": "HPL_E20_NAMS_JOINT6G",
       "reference": "HPL_E20_JOINT_RXE6G_matched_comparison.md"
     }
+  },
+  "selected_semisupervised_method": {
+    "name": "PAMF-REPL",
+    "method_id": "pamf_repl",
+    "selected_date": "2026-10-24",
+    "criterion": "Highest completed matched three-seed raw clean mean",
+    "complete_candidates": 33,
+    "reference": "clean_method_selection.json",
+    "definition": "configs/pamf_ssl_repl.json",
+    "target_clean_based_selection": true,
+    "original_dual_goal_complete": false
   }
 }

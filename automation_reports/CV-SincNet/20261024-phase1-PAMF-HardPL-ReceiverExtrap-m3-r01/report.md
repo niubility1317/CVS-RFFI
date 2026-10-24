@@ -65,3 +65,6 @@ HPL_E20_JOINT_RXE6G / DURA-LU six_mean：77.897718254% ± 0.942587591%（三个�
 
 
 HPL_E20_JOINT_RXE6G 固定匹配比较完成，见 HPL_E20_JOINT_RXE6G_matched_comparison.md；比较不替代原主目标或全六行完成状态，无目标反馈改配方。
+
+
+2026-10-24 用户按 clean 优先选定本版半监督方法，统一名称为 **PAMF-REPL（接收机外推伪标签学习，Receiver-Extrapolated Pseudo-Labeling）**，标识 `pamf_repl`。纳入最新完整结果后，33个同口径三seed方案中本版raw clean均值85.726786%最高；raw六景70.085516%，DURA组合clean85.790675%、六景77.897718%。详见clean_method_selection.json、docs/PAMF_REPL.md与configs/pamf_ssl_repl.json。原run／内部方法ID／三seed权重及配方保留；这是已公开目标clean结果可见后的方法选择，不称为独立盲选，也不将原双指标目标记为完成。命名未产生新训练或预测。

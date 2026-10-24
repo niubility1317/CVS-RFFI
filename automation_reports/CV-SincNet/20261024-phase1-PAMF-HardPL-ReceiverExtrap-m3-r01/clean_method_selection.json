@@ -1,0 +1,702 @@
+{
+  "status": "SELECTED_SEMISUPERVISED_METHOD_BY_USER_CLEAN_CRITERION",
+  "selected_date": "2026-10-24",
+  "recorded_utc": "2026-10-24T13:22:47.542637+00:00",
+  "name": "PAMF-REPL",
+  "chinese_name": "接收机外推伪标签学习",
+  "english_name": "Receiver-Extrapolated Pseudo-Labeling",
+  "method_id": "pamf_repl",
+  "historical_method_id": "HPL_E20_JOINT_RXE6G",
+  "run_id": "20261024-phase1-PAMF-HardPL-ReceiverExtrap-m3-r01",
+  "selection_criterion": "Largest raw clean correct total over all three fixed model seeds,denominator504000;no per-seed checkpoint or DURA-based selection",
+  "selection_uses_disclosed_target_clean": true,
+  "eligible_complete_methods": 33,
+  "source_summary_files_inspected": 30,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "metrics": {
+    "raw": {
+      "clean": {
+        "correct_total": 432063,
+        "mean_accuracy_percent": 85.72678571428571,
+        "sample_sd_percent": 0.6414603984220448,
+        "correct_by_seed": {
+          "2026092701": 144042,
+          "2026092702": 145088,
+          "2026092703": 142933
+        }
+      },
+      "six_mean": {
+        "correct_total": 2119386,
+        "mean_accuracy_percent": 70.08551587301588,
+        "sample_sd_percent": 0.46888648596658966,
+        "correct_by_seed": {
+          "2026092701": 707608,
+          "2026092702": 701268,
+          "2026092703": 710510
+        }
+      }
+    },
+    "DURA-LU": {
+      "clean": {
+        "correct_total": 432385,
+        "mean_accuracy_percent": 85.79067460317461,
+        "sample_sd_percent": 0.6609733333157205,
+        "correct_by_seed": {
+          "2026092701": 144204,
+          "2026092702": 145199,
+          "2026092703": 142982
+        }
+      },
+      "six_mean": {
+        "correct_total": 2355627,
+        "mean_accuracy_percent": 77.89771825396825,
+        "sample_sd_percent": 0.9425875906126385,
+        "correct_by_seed": {
+          "2026092701": 790881,
+          "2026092702": 790506,
+          "2026092703": 774240
+        }
+      }
+    }
+  },
+  "ranking": [
+    {
+      "rank": 1,
+      "method": "HPL_E20_JOINT_RXE6G",
+      "run_id": "20261024-phase1-PAMF-HardPL-ReceiverExtrap-m3-r01",
+      "raw_clean_mean_percent": 85.72678571428571,
+      "raw_clean_sd_percent": 0.6414603984220448,
+      "raw_clean_correct_total": 432063,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 144042,
+        "2026092702": 145088,
+        "2026092703": 142933
+      },
+      "raw_six_mean_percent": 70.08551587301588,
+      "DURA_clean_mean_percent": 85.79067460317461,
+      "DURA_six_mean_percent": 77.89771825396825,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-ReceiverExtrap-m3-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 2,
+      "method": "HPL_E20_NAMS_JOINT6G",
+      "run_id": "20261024-phase1-PAMF-HardPL-Joint160-m3-r01",
+      "raw_clean_mean_percent": 85.64166666666667,
+      "raw_clean_sd_percent": 0.7135668505660552,
+      "raw_clean_correct_total": 431634,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 143697,
+        "2026092702": 145157,
+        "2026092703": 142780
+      },
+      "raw_six_mean_percent": 70.17123015873015,
+      "DURA_clean_mean_percent": 85.68551587301587,
+      "DURA_six_mean_percent": 78.08075396825397,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-Joint160-m3-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 3,
+      "method": "HPL_E20_NAMS6G",
+      "run_id": "20261024-phase1-PAMF-HardPL-GradientGuard-m6-r01",
+      "raw_clean_mean_percent": 85.50079365079365,
+      "raw_clean_sd_percent": 0.5031678746232812,
+      "raw_clean_correct_total": 430924,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 144012,
+        "2026092702": 144238,
+        "2026092703": 142674
+      },
+      "raw_six_mean_percent": 70.28343253968254,
+      "DURA_clean_mean_percent": 85.54345238095237,
+      "DURA_six_mean_percent": 77.91464947089948,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-GradientGuard-m6-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 4,
+      "method": "HPL_E20_JOINT_RAS6G",
+      "run_id": "20261024-phase1-PAMF-HardPL-ReliableAs-m3-r01",
+      "raw_clean_mean_percent": 85.44880952380953,
+      "raw_clean_sd_percent": 0.6239790413982739,
+      "raw_clean_correct_total": 430662,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 143719,
+        "2026092702": 144510,
+        "2026092703": 142433
+      },
+      "raw_six_mean_percent": 70.70148809523809,
+      "DURA_clean_mean_percent": 85.51865079365079,
+      "DURA_six_mean_percent": 77.86421957671958,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-ReliableAs-m3-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 5,
+      "method": "HPL_NO_UAS",
+      "run_id": "20261024-phase1-PAMF-HardPL-noUAs-m3-r01",
+      "raw_clean_mean_percent": 85.42301587301587,
+      "raw_clean_sd_percent": 0.31239869862242226,
+      "raw_clean_correct_total": 430532,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 143183,
+        "2026092702": 143233,
+        "2026092703": 144116
+      },
+      "raw_six_mean_percent": 70.65724206349206,
+      "DURA_clean_mean_percent": 85.49384920634921,
+      "DURA_six_mean_percent": 77.98564814814814,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-noUAs-m3-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 6,
+      "method": "HPL_NAMS2",
+      "run_id": "20261024-phase1-PAMF-HardPL-NoAsMixStyle-m3-r01",
+      "raw_clean_mean_percent": 85.31111111111112,
+      "raw_clean_sd_percent": 0.11992878256439256,
+      "raw_clean_correct_total": 429968,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 143196,
+        "2026092702": 143217,
+        "2026092703": 143555
+      },
+      "raw_six_mean_percent": 70.57298280423281,
+      "DURA_clean_mean_percent": 85.4,
+      "DURA_six_mean_percent": 77.825,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-NoAsMixStyle-m3-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 7,
+      "method": "HPL_E20_NAMS2",
+      "run_id": "20261024-phase1-PAMF-HardPL-E20plus30-m6-r01",
+      "raw_clean_mean_percent": 85.24623015873016,
+      "raw_clean_sd_percent": 0.4201134364772103,
+      "raw_clean_correct_total": 429641,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 143398,
+        "2026092702": 143809,
+        "2026092703": 142434
+      },
+      "raw_six_mean_percent": 70.73022486772487,
+      "DURA_clean_mean_percent": 85.33194444444445,
+      "DURA_six_mean_percent": 77.70591931216931,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-E20plus30-m6-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 8,
+      "method": "HPL_E20_LS6G",
+      "run_id": "20261024-phase1-PAMF-HardPL-GradientGuard-m6-r01",
+      "raw_clean_mean_percent": 85.1015873015873,
+      "raw_clean_sd_percent": 0.08683610573522707,
+      "raw_clean_correct_total": 428912,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 142812,
+        "2026092702": 143099,
+        "2026092703": 143001
+      },
+      "raw_six_mean_percent": 69.93604497354498,
+      "DURA_clean_mean_percent": 85.09662698412698,
+      "DURA_six_mean_percent": 78.23799603174604,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-GradientGuard-m6-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 9,
+      "method": "HPL2",
+      "run_id": "20261024-phase1-PAMF-HardPL-T1U-m6-r01",
+      "raw_clean_mean_percent": 85.07559523809523,
+      "raw_clean_sd_percent": 0.07569359930044615,
+      "raw_clean_correct_total": 428781,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 142793,
+        "2026092702": 142942,
+        "2026092703": 143046
+      },
+      "raw_six_mean_percent": 70.18753306878307,
+      "DURA_clean_mean_percent": 85.10376984126984,
+      "DURA_six_mean_percent": 78.07867063492064,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-T1U-m6-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 10,
+      "method": "HPL_LS2",
+      "run_id": "20261024-phase1-PAMF-HardPL-LS-m3-r01",
+      "raw_clean_mean_percent": 85.07003968253969,
+      "raw_clean_sd_percent": 0.17862135545431843,
+      "raw_clean_correct_total": 428753,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 142592,
+        "2026092702": 142978,
+        "2026092703": 143183
+      },
+      "raw_six_mean_percent": 70.3003306878307,
+      "DURA_clean_mean_percent": 85.10039682539683,
+      "DURA_six_mean_percent": 78.13158068783069,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-LS-m3-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 11,
+      "method": "HPL_E20_LS2",
+      "run_id": "20261024-phase1-PAMF-HardPL-E20plus30-m6-r01",
+      "raw_clean_mean_percent": 85.05277777777778,
+      "raw_clean_sd_percent": 0.1317942814209663,
+      "raw_clean_correct_total": 428666,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 142633,
+        "2026092702": 143017,
+        "2026092703": 143016
+      },
+      "raw_six_mean_percent": 70.24295634920635,
+      "DURA_clean_mean_percent": 85.08392857142857,
+      "DURA_six_mean_percent": 78.08978174603175,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-E20plus30-m6-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 12,
+      "method": "HPL_MS2",
+      "run_id": "20261024-phase1-PAMF-HardPL-MixStyle-m3-r02",
+      "raw_clean_mean_percent": 84.99642857142857,
+      "raw_clean_sd_percent": 0.24968730444297968,
+      "raw_clean_correct_total": 428382,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 142341,
+        "2026092702": 142872,
+        "2026092703": 143169
+      },
+      "raw_six_mean_percent": 70.32833994708994,
+      "DURA_clean_mean_percent": 85.04325396825396,
+      "DURA_six_mean_percent": 78.0758597883598,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-MixStyle-m3-r02/target_summary.json"
+      ]
+    },
+    {
+      "rank": 13,
+      "method": "HPL_E20_JOINT_COMP6G",
+      "run_id": "20261024-phase1-PAMF-HardPL-Complement-m3-r01",
+      "raw_clean_mean_percent": 84.95892857142857,
+      "raw_clean_sd_percent": 0.05032842815221097,
+      "raw_clean_correct_total": 428193,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 142636,
+        "2026092702": 142798,
+        "2026092703": 142759
+      },
+      "raw_six_mean_percent": 70.25277777777778,
+      "DURA_clean_mean_percent": 85.04007936507936,
+      "DURA_six_mean_percent": 76.44636243386243,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-Complement-m3-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 14,
+      "method": "HPL_E20_AS_ALLRD",
+      "run_id": "20261024-phase1-PAMF-HardPL-AllURDrop-m3-r01",
+      "raw_clean_mean_percent": 84.92916666666666,
+      "raw_clean_sd_percent": 0.48967767581387384,
+      "raw_clean_correct_total": 428043,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 142098,
+        "2026092702": 143622,
+        "2026092703": 142323
+      },
+      "raw_six_mean_percent": 72.71240079365079,
+      "DURA_clean_mean_percent": 85.04543650793651,
+      "DURA_six_mean_percent": 77.31792328042329,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-AllURDrop-m3-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 15,
+      "method": "HPL_E20_AS_BCE6G",
+      "run_id": "20261024-phase1-PAMF-HardPL-BalancedCE-m3-r01",
+      "raw_clean_mean_percent": 84.87857142857143,
+      "raw_clean_sd_percent": 0.11993272159736662,
+      "raw_clean_correct_total": 427788,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 142573,
+        "2026092702": 142808,
+        "2026092703": 142407
+      },
+      "raw_six_mean_percent": 72.32301587301588,
+      "DURA_clean_mean_percent": 84.98611111111111,
+      "DURA_six_mean_percent": 77.44060846560846,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-BalancedCE-m3-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 16,
+      "method": "HPLT1U",
+      "run_id": "20261024-phase1-PAMF-HardPL-T1U-m6-r01",
+      "raw_clean_mean_percent": 84.8670634920635,
+      "raw_clean_sd_percent": 0.1337953482012852,
+      "raw_clean_correct_total": 427730,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 142536,
+        "2026092702": 142375,
+        "2026092703": 142819
+      },
+      "raw_six_mean_percent": 71.97470238095238,
+      "DURA_clean_mean_percent": 84.94940476190476,
+      "DURA_six_mean_percent": 77.50892857142857,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-T1U-m6-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 17,
+      "method": "HPL_E20_JOINT_AS6G",
+      "run_id": "20261024-phase1-PAMF-HardPL-NativeAs-m3-r01",
+      "raw_clean_mean_percent": 84.83194444444445,
+      "raw_clean_sd_percent": 0.09562853993072384,
+      "raw_clean_correct_total": 427553,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 142418,
+        "2026092702": 142703,
+        "2026092703": 142432
+      },
+      "raw_six_mean_percent": 72.26438492063492,
+      "DURA_clean_mean_percent": 84.94444444444444,
+      "DURA_six_mean_percent": 77.42843915343916,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-NativeAs-m3-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 18,
+      "method": "HPL_E20_PATH_RAS6G",
+      "run_id": "20261024-phase1-PAMF-HardPL-PathReliableAs-m3-r01",
+      "raw_clean_mean_percent": 84.82103174603175,
+      "raw_clean_sd_percent": 0.24088715277152092,
+      "raw_clean_correct_total": 427498,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 142777,
+        "2026092702": 142686,
+        "2026092703": 142035
+      },
+      "raw_six_mean_percent": 70.75839947089948,
+      "DURA_clean_mean_percent": 84.93214285714286,
+      "DURA_six_mean_percent": 76.3863425925926,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-PathReliableAs-m3-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 19,
+      "method": "HPL_E20_JOINT_PATH6G",
+      "run_id": "20261024-phase1-PAMF-HardPL-PathComplement-m3-r01",
+      "raw_clean_mean_percent": 84.81865079365079,
+      "raw_clean_sd_percent": 0.17119106949584303,
+      "raw_clean_correct_total": 427486,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 142697,
+        "2026092702": 142623,
+        "2026092703": 142166
+      },
+      "raw_six_mean_percent": 70.30198412698412,
+      "DURA_clean_mean_percent": 84.90277777777777,
+      "DURA_six_mean_percent": 76.29699074074074,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-PathComplement-m3-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 20,
+      "method": "UVB",
+      "run_id": "20261023-phase1-PAMF-U-ViewBalance-m3-r01",
+      "raw_clean_mean_percent": 84.61170634920634,
+      "raw_clean_sd_percent": 0.2264928534427023,
+      "raw_clean_correct_total": 426443,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 141710,
+        "2026092702": 142400,
+        "2026092703": 142333
+      },
+      "raw_six_mean_percent": 71.6754298941799,
+      "DURA_clean_mean_percent": 84.63690476190476,
+      "DURA_six_mean_percent": 77.5453373015873,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261023-phase1-PAMF-U-ViewBalance-m3-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 21,
+      "method": "PAIREDU",
+      "run_id": "20261023-phase1-PAMF-paired-U-m3-r01",
+      "raw_clean_mean_percent": 84.54384920634921,
+      "raw_clean_sd_percent": 0.29137031429593,
+      "raw_clean_correct_total": 426101,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 141842,
+        "2026092702": 141669,
+        "2026092703": 142590
+      },
+      "raw_six_mean_percent": 71.97830687830688,
+      "DURA_clean_mean_percent": 84.6204365079365,
+      "DURA_six_mean_percent": 77.50760582010582,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261023-phase1-PAMF-paired-U-m3-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 22,
+      "method": "HPL_E20_AS_BG2",
+      "run_id": "20261024-phase1-PAMF-HardPL-BranchGuard-m3-r01",
+      "raw_clean_mean_percent": 84.52698412698413,
+      "raw_clean_sd_percent": 0.16498335024449304,
+      "raw_clean_correct_total": 426016,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 141961,
+        "2026092702": 142302,
+        "2026092703": 141753
+      },
+      "raw_six_mean_percent": 72.48174603174603,
+      "DURA_clean_mean_percent": 84.6297619047619,
+      "DURA_six_mean_percent": 77.03293650793651,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-BranchGuard-m3-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 23,
+      "method": "HPL_E20_AS_SG2",
+      "run_id": "20261024-phase1-PAMF-HardPL-StepGuard-m3-r01",
+      "raw_clean_mean_percent": 84.48571428571428,
+      "raw_clean_sd_percent": 0.24270171847281974,
+      "raw_clean_correct_total": 425808,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 141817,
+        "2026092702": 142390,
+        "2026092703": 141601
+      },
+      "raw_six_mean_percent": 72.4150462962963,
+      "DURA_clean_mean_percent": 84.56448412698413,
+      "DURA_six_mean_percent": 77.01385582010582,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-StepGuard-m3-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 24,
+      "method": "HPL_E20_AS_CAP2",
+      "run_id": "20261024-phase1-PAMF-HardPL-NativeAsCap2-m3-r01",
+      "raw_clean_mean_percent": 84.46111111111111,
+      "raw_clean_sd_percent": 0.20745762665092107,
+      "raw_clean_correct_total": 425684,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 141830,
+        "2026092702": 142271,
+        "2026092703": 141583
+      },
+      "raw_six_mean_percent": 72.4163029100529,
+      "DURA_clean_mean_percent": 84.55119047619047,
+      "DURA_six_mean_percent": 77.06431878306879,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-NativeAsCap2-m3-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 25,
+      "method": "VIEWANCHOR",
+      "run_id": "20261023-phase1-PAMF-SSL-DURA-reference-m9-r01",
+      "raw_clean_mean_percent": 84.3795634920635,
+      "raw_clean_sd_percent": 0.2666376560892061,
+      "raw_clean_correct_total": 425273,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 141548,
+        "2026092702": 141453,
+        "2026092703": 142272
+      },
+      "raw_six_mean_percent": 71.94695767195768,
+      "DURA_clean_mean_percent": 84.44821428571429,
+      "DURA_six_mean_percent": 77.52175925925926,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 26,
+      "method": "UMIX",
+      "run_id": "20261023-phase1-PAMF-U-MixStyle-m3-r01",
+      "raw_clean_mean_percent": 84.36289682539683,
+      "raw_clean_sd_percent": 0.39712969483535865,
+      "raw_clean_correct_total": 425189,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 141431,
+        "2026092702": 141264,
+        "2026092703": 142494
+      },
+      "raw_six_mean_percent": 72.00089285714286,
+      "DURA_clean_mean_percent": 84.43313492063493,
+      "DURA_six_mean_percent": 77.55413359788359,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261023-phase1-PAMF-U-MixStyle-m3-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 27,
+      "method": "HPL_E20_AS_SGNC",
+      "run_id": "20261024-phase1-PAMF-HardPL-StepNoCap-m3-r01",
+      "raw_clean_mean_percent": 84.34781746031746,
+      "raw_clean_sd_percent": 0.22741237421052293,
+      "raw_clean_correct_total": 425113,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 141466,
+        "2026092702": 142145,
+        "2026092703": 141502
+      },
+      "raw_six_mean_percent": 72.48862433862433,
+      "DURA_clean_mean_percent": 84.4515873015873,
+      "DURA_six_mean_percent": 76.8796626984127,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-StepNoCap-m3-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 28,
+      "method": "UCMR",
+      "run_id": "20261023-phase1-PAMF-U-CMR-m3-r01",
+      "raw_clean_mean_percent": 84.33650793650794,
+      "raw_clean_sd_percent": 0.04107717926154377,
+      "raw_clean_correct_total": 425056,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 141657,
+        "2026092702": 141635,
+        "2026092703": 141764
+      },
+      "raw_six_mean_percent": 71.94414682539683,
+      "DURA_clean_mean_percent": 84.45515873015873,
+      "DURA_six_mean_percent": 77.1751984126984,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261023-phase1-PAMF-U-CMR-m3-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 29,
+      "method": "UGP",
+      "run_id": "20261023-phase1-PAMF-U-GradProtect-m3-r01",
+      "raw_clean_mean_percent": 84.29543650793651,
+      "raw_clean_sd_percent": 0.3608833552650108,
+      "raw_clean_correct_total": 424849,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 141670,
+        "2026092702": 140985,
+        "2026092703": 142194
+      },
+      "raw_six_mean_percent": 71.81825396825397,
+      "DURA_clean_mean_percent": 84.36646825396825,
+      "DURA_six_mean_percent": 77.42000661375661,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261023-phase1-PAMF-U-GradProtect-m3-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 30,
+      "method": "UCRIC",
+      "run_id": "20261023-phase1-PAMF-U-CRIC-m3-r01",
+      "raw_clean_mean_percent": 84.29067460317461,
+      "raw_clean_sd_percent": 0.5712764347740868,
+      "raw_clean_correct_total": 424825,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 142395,
+        "2026092702": 140539,
+        "2026092703": 141891
+      },
+      "raw_six_mean_percent": 71.86617063492064,
+      "DURA_clean_mean_percent": 84.40019841269842,
+      "DURA_six_mean_percent": 77.18597883597883,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261023-phase1-PAMF-U-CRIC-m3-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 31,
+      "method": "RXPSM",
+      "run_id": "20261023-phase1-PAMF-SSL-DURA-reference-m9-r01",
+      "raw_clean_mean_percent": 84.27242063492064,
+      "raw_clean_sd_percent": 0.35966487167480543,
+      "raw_clean_correct_total": 424733,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 141644,
+        "2026092702": 140943,
+        "2026092703": 142146
+      },
+      "raw_six_mean_percent": 71.85357142857143,
+      "DURA_clean_mean_percent": 84.34861111111111,
+      "DURA_six_mean_percent": 77.42020502645502,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 32,
+      "method": "UDAP",
+      "run_id": "20261023-phase1-PAMF-U-DualAnchor-m3-r01",
+      "raw_clean_mean_percent": 84.2547619047619,
+      "raw_clean_sd_percent": 0.3764093885356427,
+      "raw_clean_correct_total": 424644,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 141596,
+        "2026092702": 140893,
+        "2026092703": 142155
+      },
+      "raw_six_mean_percent": 71.80532407407408,
+      "DURA_clean_mean_percent": 84.33630952380952,
+      "DURA_six_mean_percent": 77.42972883597884,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261023-phase1-PAMF-U-DualAnchor-m3-r01/target_summary.json"
+      ]
+    },
+    {
+      "rank": 33,
+      "method": "PSM",
+      "run_id": "20261023-phase1-PAMF-SSL-DURA-reference-m9-r01",
+      "raw_clean_mean_percent": 84.22261904761905,
+      "raw_clean_sd_percent": 0.34091453218360246,
+      "raw_clean_correct_total": 424482,
+      "raw_clean_correct_by_seed": {
+        "2026092701": 141888,
+        "2026092702": 140837,
+        "2026092703": 141757
+      },
+      "raw_six_mean_percent": 71.89728835978836,
+      "DURA_clean_mean_percent": 84.29107142857143,
+      "DURA_six_mean_percent": 77.35277777777777,
+      "source_reports": [
+        "automation_reports/CV-SincNet/20261023-phase1-PAMF-SSL-DURA-reference-m9-r01/target_summary.json"
+      ]
+    }
+  ],
+  "required_full_cells_per_method": 42,
+  "training_execution_commit": "02979123053aa2b2d8d6f044ba3a497a3d484cd0",
+  "original_dual_goal_complete": false,
+  "new_training_or_prediction": false,
+  "checkpoint_or_recipe_changed": false,
+  "all_original_seeds_preserved": true,
+  "method_selection_does_not_select_a_best_seed": true
+}

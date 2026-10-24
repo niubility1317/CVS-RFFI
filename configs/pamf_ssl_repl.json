@@ -1,0 +1,185 @@
+{
+  "schema": "pamf_ssl_method_v1",
+  "method_id": "pamf_repl",
+  "name": "PAMF-REPL",
+  "chinese_name": "接收机外推伪标签学习",
+  "english_name": "Receiver-Extrapolated Pseudo-Labeling",
+  "selection_scope": "User-selected semi-supervised method for this PAMF study",
+  "selected_date": "2026-10-24",
+  "status": "SELECTED_SEMISUPERVISED_METHOD_BY_USER_CLEAN_CRITERION",
+  "selection_reference": "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-ReceiverExtrap-m3-r01/clean_method_selection.json",
+  "documentation": "docs/PAMF_REPL.md",
+  "historical_run_id": "20261024-phase1-PAMF-HardPL-ReceiverExtrap-m3-r01",
+  "historical_method_id": "HPL_E20_JOINT_RXE6G",
+  "training_execution_commit": "02979123053aa2b2d8d6f044ba3a497a3d484cd0",
+  "configuration_builder": "experiments.pamf_ssl_research.hard_pl_receiver_extrapolation.configuration",
+  "final_checkpoint": "final_ssdg.pth",
+  "checkpoint_rows": [
+    {
+      "model_seed": 2026092701,
+      "row_id": "HPL_E20_JOINT_RXE6G-s2026092701",
+      "run_relative_checkpoint": "20261024-phase1-PAMF-HardPL-ReceiverExtrap-m3-r01/HPL_E20_JOINT_RXE6G-s2026092701/source/final_ssdg.pth"
+    },
+    {
+      "model_seed": 2026092702,
+      "row_id": "HPL_E20_JOINT_RXE6G-s2026092702",
+      "run_relative_checkpoint": "20261024-phase1-PAMF-HardPL-ReceiverExtrap-m3-r01/HPL_E20_JOINT_RXE6G-s2026092702/source/final_ssdg.pth"
+    },
+    {
+      "model_seed": 2026092703,
+      "row_id": "HPL_E20_JOINT_RXE6G-s2026092703",
+      "run_relative_checkpoint": "20261024-phase1-PAMF-HardPL-ReceiverExtrap-m3-r01/HPL_E20_JOINT_RXE6G-s2026092703/source/final_ssdg.pth"
+    }
+  ],
+  "training_budget": {
+    "total_epochs": 50,
+    "total_steps_per_seed": 11100,
+    "labeled_only_epochs": 13,
+    "joint_LU_epochs": 37,
+    "source_parent": "Matching original F21 E20/4440 for each fixed seed",
+    "own_continuation_epochs": [
+      10,
+      20
+    ],
+    "new_steps_per_seed": 6660
+  },
+  "core_settings": {
+    "raw_pseudo_gate": 0.95,
+    "U_loss_weight": 6.0,
+    "pseudo_label_smoothing": 0.01,
+    "U_student_passes": 6,
+    "default_head_joint": true,
+    "EMA_teacher": false,
+    "U_TX_truth_hidden": true,
+    "source_V_diagnostic_only": true,
+    "additional_inference_parameters": 0,
+    "additional_backbone_forwards_for_extrapolation": 0
+  },
+  "mechanism_blocks": {
+    "U_style": {
+      "levels": [
+        "time_down",
+        "t2.pool"
+      ],
+      "alpha": 0.1,
+      "probability_per_level": 0.5,
+      "eps": 1e-06,
+      "accepted_only": true,
+      "same_hard_pseudo": true,
+      "different_source_RX": true,
+      "detached_moments": true
+    },
+    "U_gradient_guard": {
+      "weight": 6.0,
+      "projection": "one_sided_per_group",
+      "groups": [
+        "t2",
+        "cls_head",
+        "other"
+      ],
+      "U_to_L_norm_cap": 1.0,
+      "tiny_L_squared_norm": 1e-12,
+      "anchor": "complete_current_L_objective",
+      "optimizer": "unchanged_native_Adam",
+      "extra_teacher_or_student_forward": false
+    },
+    "U_joint_contrast": {
+      "feature": "actual_CompositeReference_features_joint160",
+      "weight": 0.05,
+      "CE_normalizer": 1.25,
+      "student_views": "first_two_ordinary_U_passes",
+      "accepted_only": true,
+      "positive": "same_pseudo_different_source_RX",
+      "contrast": "same_native_CROSS_RX_temperature0.2",
+      "extra_forward": false,
+      "new_head": false
+    },
+    "U_receiver_extrapolation": {
+      "feature": "actual_CompositeReference_features_joint160",
+      "alpha": 0.25,
+      "ordinary_CE_coefficient_before": 0.5,
+      "ordinary_CE_coefficient": 0.25,
+      "extrapolated_CE_coefficient": 0.25,
+      "CE_normalizer": 1.25,
+      "label_smoothing": 0.01,
+      "student_views": "first_two_ordinary_U_passes",
+      "partner": "reuse_same_shared_six_U_style_partner_and_valid",
+      "invalid_partner": "original_CE_no_delta_no_sample_drop",
+      "extra_existing_head_calls": 2,
+      "extra_backbone_forwards": 0,
+      "new_head": false
+    }
+  },
+  "metrics": {
+    "raw": {
+      "clean": {
+        "correct_total": 432063,
+        "mean_accuracy_percent": 85.72678571428571,
+        "sample_sd_percent": 0.6414603984220448,
+        "correct_by_seed": {
+          "2026092701": 144042,
+          "2026092702": 145088,
+          "2026092703": 142933
+        }
+      },
+      "six_mean": {
+        "correct_total": 2119386,
+        "mean_accuracy_percent": 70.08551587301588,
+        "sample_sd_percent": 0.46888648596658966,
+        "correct_by_seed": {
+          "2026092701": 707608,
+          "2026092702": 701268,
+          "2026092703": 710510
+        }
+      }
+    },
+    "DURA-LU": {
+      "clean": {
+        "correct_total": 432385,
+        "mean_accuracy_percent": 85.79067460317461,
+        "sample_sd_percent": 0.6609733333157205,
+        "correct_by_seed": {
+          "2026092701": 144204,
+          "2026092702": 145199,
+          "2026092703": 142982
+        }
+      },
+      "six_mean": {
+        "correct_total": 2355627,
+        "mean_accuracy_percent": 77.89771825396825,
+        "sample_sd_percent": 0.9425875906126385,
+        "correct_by_seed": {
+          "2026092701": 790881,
+          "2026092702": 790506,
+          "2026092703": 774240
+        }
+      }
+    }
+  },
+  "evaluation": {
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "physical_samples_per_seed_view": 168000,
+    "readouts": [
+      "raw",
+      "DURA-LU"
+    ],
+    "views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "full_cells": 42,
+    "independent_truth_last": true,
+    "DURA_reference": "dura_v1 fixed R69 G;one G seed2026092701 shared across F seeds"
+  },
+  "original_dual_goal_complete": false,
+  "posthoc_clean_based_method_selection": true
+}
