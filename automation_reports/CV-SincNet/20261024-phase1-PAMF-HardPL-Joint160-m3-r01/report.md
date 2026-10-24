@@ -130,3 +130,6 @@ HPL_E20_NAMS_JOINT6G 固定匹配比较完成，见 HPL_E20_NAMS_JOINT6G_matched
 
 
 固定 cap1/cap2 源反事实已 VERIFIED：完整19980源记录，CPU1、模型/IQ/U真值/目标读取均为0；三seed固定规则全部通过，后续NativeAsCap2实现/审查/真实权重检查仍PENDING，未启动新训练。数学效果、逐seed数值及边界见 source_cap_counterfactual.md，不能把同一梯度反事实当成新轨迹或目标增益。
+
+
+完整源梯度诊断B已VERIFIED：9模型/59940条完整记录，权重6、曝光和实际guard冲突/范数帽计数均匹配final adapter。组及完整参数U/L、保留比例和分布见source_gradient_trajectory_B.md；量测在clip5/AdamW之前，不是实际优化步或目标因果解释。无模型/IQ/Utruth/target读取、无新增训练或当前任务改动，goal ACTIVE。

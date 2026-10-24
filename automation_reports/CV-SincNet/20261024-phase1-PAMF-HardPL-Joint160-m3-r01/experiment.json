@@ -411,6 +411,16 @@
       "scientific_rule_pass": true,
       "new_training": false,
       "target_reads": 0
+    },
+    "complete_gradient_phaseB": {
+      "status": "VERIFIED_COMPLETE_FIXED_SOURCE_GRADIENT_TRAJECTORY",
+      "reference": "source_gradient_trajectory_B_summary.json",
+      "source_models": 9,
+      "records": 59940,
+      "model_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0,
+      "NONBLOCKING": true
     }
   }
 }
