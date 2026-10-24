@@ -1,0 +1,120 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "run_id": "20261024-phase1-PAMF-HardPL-BalancedCE-m3-r01",
+  "method": "HPL_E20_AS_BCE6G",
+  "registered_utc": "2026-10-24T02:21:18.732357+00:00",
+  "source_design_commit": "e7c9eb60e6f046b3af10b912d59def3528336ce8",
+  "source_math_commit": "126c86002e189ce3c4c4adac8ae682efe1916878",
+  "hypothesis": "Keep every high-confidence raw pseudo label and all NativeAs supervision;redistribute only CE contributions across currently underrepresented pseudo classes/sourceRX at unchanged accepted mass.",
+  "source_recipe": {
+    "counts": "current_raw_accepted_pseudo_class_and_actual_source_RX",
+    "inverse_frequency": "sqrt(A/(C*n_class)*A/(R*n_RX))",
+    "normalize": "mean_accepted_one",
+    "mixing": "min(0.5,0.5/(max(normalized_ratio)-1))",
+    "minimum": 0.5,
+    "maximum": 1.5,
+    "scope": "CE_only_same_weights_on_all_six_existing_student_logits",
+    "raw_gate": 0.95,
+    "ordinary_pair_coefficient": 0.5,
+    "mixed_pair_coefficient": 0.5,
+    "raw_pair_coefficient": 0.25,
+    "CE_normalizer": 1.25,
+    "label_smoothing": 0.01,
+    "extra_CE_kernels_per_step": 6,
+    "extra_teacher": 0,
+    "extra_backbone": 0,
+    "extra_head": 0,
+    "persistent_statistics": false,
+    "new_head": false
+  },
+  "source_formula": {
+    "group_inputs": "rawaccepted bool,pseudoargmax,actualsourceRX only;no trueUclass/prior/target information",
+    "counts": "Within each current Ubatch count accepted samples per present pseudo class n_c and presentsourceRX n_r;A totalaccepted,C/R numbers of present groups",
+    "raw_ratio": "r_i=sqrt((A/(C*n_c(i)))*(A/(R*n_r(i)))) for accepted i",
+    "normalized_ratio": "rbar_i=r_i/mean_accepted(r)",
+    "mixing": "lambda=min(0.5,0.5/(max_accepted(rbar)-1)) when max>1;else0.5",
+    "weight": "w_i=1+lambda*(rbar_i-1);neutral1 for rejected positions or emptyacceptedbatch",
+    "constraints": "All accepted remain positive,0.5<=w<=1.5,mean_accepted(w)=1 per batch;no sampledrop/newlabels/gatechange/history/EMA/prototype/newhead",
+    "objective": "Reweight CE only on all6existing Ustudent logits;retain original RDrop/KL/contrast/L/defaulthead/fullLguard/nativeAdamW.Bothmixedhalves preserve originalCEdose1.25.No extra teacher/student/head forward.",
+    "no_history_or_calibration_parameters": true
+  },
+  "source_rule": "Every seed:all6pseudoclasses and all5sourceRX have>=1000 accepted fullU samples;both marginal acceptedmass CVs reduce>=10% using fixed minibatchrule;allbatchbounds/mean1 hold;existing sourceV worstcase weightedprecisionbound>=99.5%.If anyfail:NO_SOURCE_CANDIDATE,no gate/scale/order retuning or new model from this result.",
+  "source_rule_pass": true,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "original_parent_epoch": 20,
+  "native_incremental_epochs": [
+    10,
+    20
+  ],
+  "final_epoch": 50,
+  "final_updates": 11100,
+  "raw_gate": 0.95,
+  "U_weight": 6,
+  "all_accepted_positive": true,
+  "accepted_mean_weight": 1,
+  "weight_bounds": [
+    0.5,
+    1.5
+  ],
+  "CE_dose_normalizer": 1.25,
+  "new_student_U_views": 10206000,
+  "cumulative_student_U_views": 10602900,
+  "cumulative_teacher": 2097900,
+  "native_As_generated": 850500,
+  "student_physical_views": 1701000,
+  "raw_fallback": 0,
+  "extra_As_teacher": 0,
+  "extra_student_backbone": 0,
+  "extra_head_forward": 0,
+  "extra_CE_kernels": 39960,
+  "new_head": false,
+  "new_inference_parameters": 0,
+  "source_calibration": {
+    "source_U_forward_packets": 170100,
+    "CPU_threads": 2,
+    "seconds": 118.4097085329704,
+    "GPU_workers": 0,
+    "extra_V_forwards": 0
+  },
+  "fixed_reference": {
+    "run": "20261024-phase1-PAMF-HardPL-NativeAs-m3-r01",
+    "method": "HPL_E20_JOINT_AS6G"
+  },
+  "primary_controls": [
+    "F20",
+    "F21"
+  ],
+  "readouts": [
+    "raw",
+    "DURA-LU"
+  ],
+  "views": 7,
+  "samples_per_view": 168000,
+  "target_cells": 42,
+  "historical_exposure": "Earlier complete target results includingJoint/Complement/Path known.RAS/Combo/RXE/NativeAs target scores NOT READ.No target-feedback parent/seed/checkpoint selection or blind-study claim.",
+  "U_actual_accuracy": "UNKNOWN",
+  "V_precision_bound_not_new_accuracy": true,
+  "source_V_state_updates": 0,
+  "U_truth_reads": 0,
+  "target_training_reads": 0,
+  "G_training_reads": 0,
+  "focused_checks": [
+    {
+      "evidence": "hard_pl_balanced_ce_focused_tests.xml",
+      "tests": 23
+    },
+    {
+      "evidence": "hard_pl_balanced_ce_related_tests.xml",
+      "tests": 119
+    }
+  ],
+  "total_focused_checks": 142,
+  "one_independent_P0P1_review": "PASS",
+  "real_E20_smoke": "PENDING_FIRST_MATCHING_RELEASED_RXE_CARD",
+  "training_launched": false,
+  "goal_complete": false
+}

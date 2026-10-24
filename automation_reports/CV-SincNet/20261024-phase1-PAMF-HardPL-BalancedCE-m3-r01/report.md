@@ -1,0 +1,17 @@
+# 高置信伪标签的类别与接收机 CE 贡献均衡
+
+LOCAL_VERIFIED_NOT_LAUNCHED：23 项目标函数及数学检查、119 项受影响流程检查、一次独立 P0/P1 检查全部通过；首个匹配释放卡位上的真实原 E20 检查 PENDING，通过即丢弃探针、重新加载原父权重继续。
+
+三个 seed 为 2026092701/02/03，各从原同 seed F21 E20/4440 独立执行 native10/2220＋20/4440，累计 E50/11100＝13L＋37LU。仅复用已核实契约的原 E20，不加载候选权重。L6300/U56700/V27000 与 F0 未见 RX 测试契约不变；U TX 真值隐藏，V 仅诊断，无梯度或模型、归一化、EMA、原型、头更新。N607 普通账户、CVS-RFFI、FP32/TF32off、每 worker CPU2。命令、CWD、不可覆盖路径、GPU、停止规则见 experiment.json，执行 commit 在发布后核实。
+
+源设计 e7c9eb60 已冻结，完整原 E20 U56700×3 的贡献 CV 下降约 22% 至 24%，权重边界和接受质量检查全部通过。已有完整 V 的最坏加权精度下界在 99.80% 以上，它是数学界，不能当作新实测加权精度或实际 U 正确率。完整源依据及固定公式见 source_balanced_pseudo_ce_summary.json 和 balanced_ce_followup_design.json。此前完整目标曝光保留；本设计在 RAS、组合、RXE、NativeAs 新目标分数读取前固定，不依据测试结果挑父权重、seed、checkpoint 或改变顺序。
+
+在完整 NativeAs 配方上只改变接受样本的 CE 贡献：按当前 raw 接受集合的伪类与实际源 RX 计数，计算逆频数几何均值，接受样本平均归一化，再作有界凸混合。每批权重为 0.5 至 1.5，接受样本平均权重为 1，全部原接受样本保留；没有新标签、门控、历史计数或可训练权重。原 raw argmax/0.95、U 权重 6、六学生、原生 As 半批、LS0.01、ordinary/raw RDrop1、As KL0、浅中层跨 RX0.1、joint160 跨 RX0.05、共享 style、总 CE 分母 1.25、原 L/defaulthead 联合、完整 L guard 一次及 nativeAdamW/clip5/decay 均保持。
+
+重用六个现有 logits，CE 配对系数为 ordinary0.5、mixed0.5、raw0.25，再除以 1.25；mixed 的两半分别沿用原 0.25×半批均值。仅把加权 CE 与原 CE 的差额加入完整 U 目标，KL/对比项不加权。每个接受样本在三组视图中的总 CE 系数为 1/N，接受平均权重 1 因而保持总贡献质量，但不保持损失数值或梯度方向。完整新 U 梯度只进入一次 L guard。临时 logits、权重上下文每次退出清除。
+
+每模型新增 6660 步、U 曝光 1701000、学生 U 10206000，累计教师 2097900、学生 U10602900；As 生成 850500、物理学生视图 1701000，实际有效 As CE 为 2×rawacceptedhalf。无 raw 回退、额外 As 教师、骨干、既有头前向、新头或推理参数；增加六次 CE 算术/步，共 39960 次 CE 求值。单列源校准 170100 次 CPU 前向/118.410 s，新增 V 前向为 0，不称等 FLOP 或独占 GPU 小时。
+
+GPU5/6/7 固定对应三个 seed，每卡最多两个本任务、计外部 compute 进程小于 3 且可用显存至少 10000 MiB。等待同 seed RXE 全部 GPU 预测结束且 NativeAs 已派发，预留两侧 pending CUDA PID。真实原 E20 检查核对原 NativeAs 的 L768/U1536、rawteacher256、As128/物理学生256/Practical192，以及权重边界、接受质量、原 mask、六 logits 重用、完整 L 显式参数梯度和临时 hook 清除；通过后丢弃探针并重载原权重。唯一 CPU scorer 接 NativeAs 终态。两个同类系统性技术错误只停止新派发，保留健康任务和全部产物；不按目标分数停止、调参或选择性重跑。
+
+每 row 最终默认学生冻结后自动预测 raw 及固定 DURA 各 clean＋六 practical，168000/view，三 seed 共 42 cell；整 row 所有预测固定后独立 truth-last。报告逐 seed/景、SD、MacroF1、TX/RX/day/RX×day、净纠错及实际时间，保留 NativeAs 匹配比较和 F20/F21 两个控制。原 raw clean 对两个控制均至少高 1 个百分点、六景均严格高于 1.5 个百分点才达到目标，DURA 单列。DURA 固定 v1.0 R69、266951 参数、FP32/TF32off、reuse=True/graph=True/native=False，不用于新 F 训练，不套用旧 F50 时延或替换默认部署。目标保持 ACTIVE。

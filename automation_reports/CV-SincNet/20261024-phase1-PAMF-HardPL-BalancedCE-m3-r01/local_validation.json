@@ -1,0 +1,23 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "focused_checks": [
+    {
+      "evidence": "hard_pl_balanced_ce_focused_tests.xml",
+      "tests": 23
+    },
+    {
+      "evidence": "hard_pl_balanced_ce_related_tests.xml",
+      "tests": 119
+    }
+  ],
+  "total_focused_checks": 142,
+  "independent_review": {
+    "status": "PASS",
+    "review_count": 1,
+    "reviewer": "/root/ssl_p0p1_review",
+    "unresolved_P0_P1_findings": [],
+    "scope": "Direct wrong/unauthorized/destructive/unlaunchable/illegal-prediction defects in the next BalancedCE run only",
+    "actual_reviewer_response": "PASS，未发现本次范围内的 P0/P1。六视图 CE 差额的系数与原配方一致，权重仅由当前 raw 接受集合生成；原 KL、接受集合和完整 L guard 保留。计数、PID 预留及评分串接符合约定。"
+  },
+  "real_checkpoint_smoke": "PENDING_FIRST_MATCHING_RELEASED_RXE_CARD"
+}

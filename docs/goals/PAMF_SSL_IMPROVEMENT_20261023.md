@@ -322,3 +322,8 @@ PathReliableAs 发布后 VERIFIED：控制器存活及 CWD/完整命令匹配，
 ## 完整原生As监督对照
 
 `20261024-phase1-PAMF-HardPL-NativeAs-m3-r01` 在源设计7d88684基础上实现，仅恢复Joint6G的U mixed半批原生As，原raw.95/权重6/接受集合/六U/损失/完整Lguard/defaulthead保持；无额外As教师、骨干、头或推理参数。原同seedE20独立own10+20到E50/11100，As生成850500/物理学生1701000，有效CE为2×rawacceptedhalf；累计teacher2097900/studentU10602900。119检查/一次P0P1PASS；真实E20smoke待匹配释放Combo卡位，GPU5/6/7每卡最多2任务，CPUscorer接RXE。固定Joint及RAS两个比较、三seed raw+DURA七景42cell和原双控制raw目标不变；RAS/组合/RXE目标分数尚未读取，当前健康任务保持，goal ACTIVE。
+
+
+## 类别与接收机 CE 贡献均衡
+
+`20261024-phase1-PAMF-HardPL-BalancedCE-m3-r01` 按 e7c9eb60 固定源设计实现，只在 NativeAs 完整配方中重分配当前已接受伪类/sourceRX 的 CE；接受集合、原 raw0.95/U权重6、六 logits/监督损失/完整Lguard/defaulthead保持。每批权重0.5至1.5、接受均值1；39960新增CE算术，无额外教师/骨干/头。原同seed E20独立own10+20/E50/11100，物理As预算与NativeAs相同。23新增及119受影响流程检查、一次P0P1均PASS；真实E20检查待匹配释放RXE卡位，唯一CPU scorer接NativeAs。三seed raw+DURA七景42cell、NativeAs匹配比较和原双控制raw目标固定，goal ACTIVE。

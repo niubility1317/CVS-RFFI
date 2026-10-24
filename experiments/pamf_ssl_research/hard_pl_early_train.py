@@ -39,6 +39,9 @@ def aggregate(states,parents,*,weight=2.):
     native_as='U_native_As' in states[0]
     if (native_as and (reliable or weight!=6.) or any(('U_native_As' in s)!=native_as for s in states)):
         raise ValueError('Matching native As policy and fixed weight6 across native segments required')
+    balanced='U_balanced_CE' in states[0]
+    if (balanced and not native_as or any(('U_balanced_CE' in s)!=balanced for s in states)):
+        raise ValueError('Matching nativeAs bounded CE policy across native segments required')
     keys=('calls','seen','accepted','student_views','physical_seen','physical_student_views','raw_As_seen')
     total={key:sum(s[key] for s in states) for key in keys}
     anchors={name:sum(s['contrast_anchors'][name] for s in states) for name in ('time_down','t2.pool')}
@@ -124,6 +127,23 @@ def aggregate(states,parents,*,weight=2.):
         for key in ('calls','generated','student_physical_views','raw_accepted_half','accepted_student_views'):
             nas[key]=sum(v[key] for v in values)
         actual['U_native_As']=nas;actual['hard_PL_tail']['U_native_As']=nas
+    if balanced:
+        from .hard_pl_balanced_ce import BALANCED_CE
+        values=[s['U_balanced_CE'] for s in states];bce=dict(values[0])
+        if any(v['recipe']!=BALANCED_CE or v['calls']!=s['calls'] or v['captures']!=6*s['calls']
+            or v['captured_packet_views']!=6*s['seen'] or v['extra_CE_kernels']!=6*s['calls'] or v['accepted']!=s['accepted']
+            or abs(v['accepted_weight_mass']-s['accepted'])>1e-7*max(1,s['accepted'])
+            or not .5-1e-12<=v['minimum_weight']<=v['maximum_weight']<=1.5+1e-12
+            or not 0<=v['max_batch_dose_error']<=1e-6 or not v['all_raw_accepted_retained'] or v['raw_acceptance_changed']
+            or v['extra_teacher'] or v['extra_backbone'] or v['extra_head'] or v['new_head'] or v['persistent_context']
+            or v['EMA_updates'] or v['prototype_updates'] or v['U_truth_reads'] or v['target_reads'] or v['CE_dose_normalizer']!=1.25
+            for s,v in zip(states,values)):
+            raise ValueError('Bounded CE contribution must preserve accepted mass,masks and original nativeAs forward cost')
+        for key in ('calls','captures','captured_packet_views','extra_CE_kernels','accepted','accepted_weight_mass'):
+            bce[key]=sum(v[key] for v in values)
+        bce['minimum_weight']=min(v['minimum_weight'] for v in values);bce['maximum_weight']=max(v['maximum_weight'] for v in values)
+        bce['max_batch_dose_error']=max(v['max_batch_dose_error'] for v in values)
+        actual['U_balanced_CE']=bce;actual['hard_PL_tail']['U_balanced_CE']=bce
     if reliable:
         values=[s['U_reliable_As'] for s in states];ras=dict(values[0])
         if any(v['recipe']!=ras['recipe'] or v['calls']!=s['calls'] or v['generated']!=s['seen']//2

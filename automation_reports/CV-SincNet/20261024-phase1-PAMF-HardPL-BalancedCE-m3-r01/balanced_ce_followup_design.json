@@ -1,0 +1,83 @@
+{
+  "status": "SOURCE_SUPPORTED_NOT_IMPLEMENTED_NOT_LAUNCHED",
+  "intended_run_id": "20261024-phase1-PAMF-HardPL-BalancedCE-m3-r01",
+  "intended_method": "HPL_E20_AS_BCE6G",
+  "source_evidence": "source_balanced_pseudo_ce_summary.json",
+  "source_analysis_commit": "126c86002e189ce3c4c4adac8ae682efe1916878",
+  "source_formula": {
+    "group_inputs": "rawaccepted bool,pseudoargmax,actualsourceRX only;no trueUclass/prior/target information",
+    "counts": "Within each current Ubatch count accepted samples per present pseudo class n_c and presentsourceRX n_r;A totalaccepted,C/R numbers of present groups",
+    "raw_ratio": "r_i=sqrt((A/(C*n_c(i)))*(A/(R*n_r(i)))) for accepted i",
+    "normalized_ratio": "rbar_i=r_i/mean_accepted(r)",
+    "mixing": "lambda=min(0.5,0.5/(max_accepted(rbar)-1)) when max>1;else0.5",
+    "weight": "w_i=1+lambda*(rbar_i-1);neutral1 for rejected positions or emptyacceptedbatch",
+    "constraints": "All accepted remain positive,0.5<=w<=1.5,mean_accepted(w)=1 per batch;no sampledrop/newlabels/gatechange/history/EMA/prototype/newhead",
+    "objective": "Reweight CE only on all6existing Ustudent logits;retain original RDrop/KL/contrast/L/defaulthead/fullLguard/nativeAdamW.Bothmixedhalves preserve originalCEdose1.25.No extra teacher/student/head forward.",
+    "no_history_or_calibration_parameters": true
+  },
+  "source_rule": "Every seed:all6pseudoclasses and all5sourceRX have>=1000 accepted fullU samples;both marginal acceptedmass CVs reduce>=10% using fixed minibatchrule;allbatchbounds/mean1 hold;existing sourceV worstcase weightedprecisionbound>=99.5%.If anyfail:NO_SOURCE_CANDIDATE,no gate/scale/order retuning or new model from this result.",
+  "base": "Fixed NativeAs recipe,no candidate checkpoint;eachoriginalF21E20+own10+20,E50/11100=13L37LU",
+  "changed": "Only reallocate current accepted U CE contributions across pseudo-class/sourceRX with the fixed bounded mean1 weights;all six existing logits reused.",
+  "loss_scope": "ordinarypair coefficient.5,mixedordinaryhalf.25,nativeAshalf.25,rawpair.25 at CE denominator1.25;only CE multiplied by same perpacketweights.RDrop/KL/contrast/L/defaulthead/fullLguard unchanged.",
+  "implementation": "Capture6existing Ustudent logits;deltaU=6/1.25*(weightedCE-originalCE) with originalbranchcoefficients,add to oldUloss.One completeUgradient enters guard once.Clear transient logits/weights after every call.No extra model/head/teacher forward or trainable parameter.",
+  "accepted_mask": "Original rawcurrentstudent evalargmax/confidence.95;never trueUclass,augmentedviewconfidence or target information.All accepted samples have positive CEweight;no new labels/gates/history/EMA/prototypes.",
+  "mean_dose_proof": "Every accepted packet has combined CE coefficient(.5+.5+.25)/1.25=1/N across original ordinary/mixed/raw views;meanacceptedw=1 preserves total accepted CE mass,not CEvalue or gradient direction.",
+  "budget": {
+    "parent_epoch": 20,
+    "new_native_epochs": [
+      10,
+      20
+    ],
+    "final_epoch": 50,
+    "final_updates": 11100,
+    "new_updates": 6660,
+    "seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "cumulative_raw_teacher": 2097900,
+    "cumulative_total_teacher": 2097900,
+    "new_student_U_views": 10206000,
+    "cumulative_student_U_views": 10602900,
+    "As_generated": 850500,
+    "student_physical_views": 1701000,
+    "raw_fallback": 0,
+    "extra_As_teacher": 0,
+    "extra_student_backbone": 0,
+    "extra_head_forward": 0,
+    "extra_CE_arithmetic": "Six reused-logit CE correction kernels/step,39960 newCE evaluations/model;not extra head or student forwards",
+    "source_calibration": "170100 originalE20 sourceU forwards/CPU2 sharedresearchcost,118.4097085329704s;no extraVforwards.Bound is not newlymeasured weightedVaccuracy or Uaccuracy."
+  },
+  "fixed_reference": {
+    "run": "20261024-phase1-PAMF-HardPL-NativeAs-m3-r01",
+    "method": "HPL_E20_JOINT_AS6G"
+  },
+  "primary_controls": [
+    "F20",
+    "F21"
+  ],
+  "readouts": [
+    "raw",
+    "DURA-LU"
+  ],
+  "views": 7,
+  "physical_samples_per_view": 168000,
+  "target_cells": 42,
+  "queue": "If and only if source rule passes and implementation/oneP0P1 review ready:GPU5/6/7 fixedseeds,max2own/card,wait matchingRXE allGPU predictionscomplete and NativeAsdispatched,reservebothpreCUDA PIDs;soleCPU scorer afterNativeAs terminal.",
+  "real_E20_smoke": "PENDING after sourcefalsification and implementation,firstmatchingreleasedcard realoriginalE20:weightbounds/mean dose/allaccepted/6students/NativeAsbudget/fullLexplicitgradient;discardprobe/reloadoriginal.",
+  "target_matrix": "All3seeds raw+fixedDURAclean+6practical,168000/view,42cells,finaldefaulthead/fullrowpredictions before independenttruth-last,allseed/scene/strata/corrections/costs.",
+  "stop_rule": "Firstmatching releasedcard realE20 smoke andimmediatecontinueonPASS.Twoidentical systemictechnicalfailures stopnewdispatch only,preserve allhealthyjobs/artifacts.No targetfeedback/tuning/reordering/selective repeats.",
+  "goal": "Rawclean>=1pp andsixstrict>1.5pp versusbothF20/F21,DURAseparate;no defaultdeploymentchange",
+  "historical_exposure": "Earlier complete target results includingJoint/Complement/Path known.RAS/Combo/RXE/NativeAs target scores NOT READ.No target-feedback parent/seed/checkpoint selection or blind-study claim.",
+  "source_V_updates": 0,
+  "U_truth_reads": 0,
+  "target_training_reads": 0,
+  "G_training_reads": 0,
+  "training_implementation_complete": false,
+  "independent_training_review": "PENDING",
+  "real_checkpoint_smoke": "PENDING",
+  "training_launched": false,
+  "active_jobs_changed": false,
+  "goal_complete": false
+}

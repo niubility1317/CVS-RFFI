@@ -132,6 +132,20 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
                     or not obj.smoke_native_As_matches or not obj.smoke_native_nonphysical_ordinary_matches
                     or sum(model._cd_practical.coverage.values())!=192):
                     raise ValueError('Native source As half/accepted views/unchanged CE or original forward cost differs')
+            if c.get('hard_pl_balanced_ce'):
+                from .source_balanced_pseudo_ce import contribution_weights
+                bce=state['U_balanced_CE'];w=obj.smoke_bce_weights;a=obj.smoke_bce_accepted
+                expected=contribution_weights(obj.smoke_bce_pseudo,a,obj.smoke_bce_rx)
+                if (bce['calls']!=1 or bce['captures']!=6 or bce['captured_packet_views']!=1536 or bce['extra_CE_kernels']!=6
+                    or bce['accepted']!=state['accepted'] or abs(bce['accepted_weight_mass']-state['accepted'])>1e-6
+                    or bce['minimum_weight']<.5-1e-12 or bce['maximum_weight']>1.5+1e-12 or bce['max_batch_dose_error']>1e-6
+                    or not torch.equal(w,expected) or w.requires_grad or not bool((w[a]>0).all())
+                    or not bce['all_raw_accepted_retained'] or bce['raw_acceptance_changed'] or bce['extra_teacher']
+                    or bce['extra_backbone'] or bce['extra_head'] or bce['new_head'] or bce['persistent_context']
+                    or bce['EMA_updates'] or bce['prototype_updates'] or bce['U_truth_reads'] or bce['target_reads']
+                    or obj._bce_logits is not None or obj._bce_current is not None
+                    or not torch.allclose(obj.smoke_bce_after-obj.smoke_bce_before,obj.smoke_bce_delta,rtol=1e-4,atol=1e-6)):
+                    raise ValueError('Real bounded CE reallocation,mass,original mask or forward cost differs')
             if reliable:
                 from .hard_pl_reliable_as_objective import view_mask
                 expected=view_mask(obj.smoke_ras_q,obj.smoke_ras_pseudo,obj.smoke_ras_raw_accepted,.95)
@@ -173,6 +187,10 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
                 checked[-1].update(U_native_As=state['U_native_As'],native_As_input_matches=True,nonphysical_ordinary_input_matches=True,
                     teacher_U_raw_views=256,teacher_U_As_views=0,teacher_U_total_views=256,all_raw_accepted_retained=True,
                     CE_and_KL_coefficients_unchanged=True)
+            if c.get('hard_pl_balanced_ce'):
+                checked[-1].update(U_balanced_CE=state['U_balanced_CE'],current_accepted_weights_match=True,
+                    accepted_CE_mass_preserved=True,all_six_logits_reused=True,CE_delta=float(obj.smoke_bce_delta),
+                    extra_teacher_backbone_head_forwards=0)
             if reliable:
                 checked[-1].update(U_reliable_As=ras,teacher_U_raw_views=256,teacher_U_As_views=128,teacher_U_total_views=384,
                     all_raw_accepted_retained=True,As_gate_matches_frozen_predicate=True,exactraw_fallback=True,
