@@ -43,6 +43,9 @@ def aggregate(states,parents,*,weight=2.):
         raise ValueError('Matching source branch policy across both native segments required')
     if any(('U_parameter_step_guard' in s)!=('U_parameter_step_guard' in states[0]) for s in states):
         raise ValueError('Matching actual parameter step policy across native segments required')
+    allrd='U_all_RDrop' in states[0]
+    if (allrd and not native_as or any(('U_all_RDrop' in s)!=allrd for s in states)):
+        raise ValueError('Matching rejected-U RDrop policy across both native segments required')
     balanced='U_balanced_CE' in states[0]
     if (balanced and not native_as or any(('U_balanced_CE' in s)!=balanced for s in states)):
         raise ValueError('Matching nativeAs bounded CE policy across native segments required')
@@ -116,6 +119,19 @@ def aggregate(states,parents,*,weight=2.):
             step[key]=sum(v[key] for v in values)
         step['minimum_whole_increment_retention']=min(v['minimum_whole_increment_retention'] for v in values)
         actual['U_parameter_step_guard']=step;actual['hard_PL_tail']['U_parameter_step_guard']=step
+    if allrd:
+        from .rejected_rdrop import RECIPE as ALLRD
+        values=[s['U_all_RDrop'] for s in states];rd=dict(values[0])
+        if any(v['recipe']!=ALLRD or v['calls']!=s['calls'] or v['seen']!=s['seen'] or v['rejected']!=s['seen']-s['accepted']
+            or not 0<=v['nonphysical_rejected']<=min(v['rejected'],v['seen']//2)
+            or v['pairs']!=2*v['rejected']+v['nonphysical_rejected'] or v['reused_prediction_views']!=2*v['pairs']
+            or v['extra_KL_evaluations']!=3*v['calls'] or v['hard_label_or_CE_on_rejected'] or v['raw_acceptance_changed']
+            or v['physical_As_KL_weight'] or v['pending_logits'] or v['extra_teacher'] or v['extra_student'] or v['extra_head']
+            or v['new_head'] or v['U_truth_reads'] or v['target_reads'] for s,v in zip(states,values)):
+            raise ValueError('Rejected U may only reuse the fixed nonphysical RDrop logits without changing hard acceptance or any source permission')
+        for key in ('calls','seen','rejected','nonphysical_rejected','pairs','reused_prediction_views','extra_KL_evaluations'):
+            rd[key]=sum(v[key] for v in values)
+        actual['U_all_RDrop']=rd;actual['hard_PL_tail']['U_all_RDrop']=rd
     if 'U_complement' in states[0]:
         values=[s['U_complement'] for s in states];complement=dict(values[0])
         if any(v['recipe']!=complement['recipe'] or v['calls']!=s['calls'] or v['extra_head_calls']!=2*s['calls']

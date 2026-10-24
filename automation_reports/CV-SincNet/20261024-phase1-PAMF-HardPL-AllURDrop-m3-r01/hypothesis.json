@@ -1,0 +1,102 @@
+{
+  "kind": "fixed_rejected_rdrop_followup_v1",
+  "new_run_id": "20261024-phase1-PAMF-HardPL-AllURDrop-m3-r01",
+  "method": "HPL_E20_AS_ALLRD",
+  "source_basis": [
+    "source_pseudo_coverage.json",
+    "source_rejected_rdrop_plan.json"
+  ],
+  "conditional_on_fixed_source_rule_pass": true,
+  "automatic_GPU_launch": false,
+  "matched_reference_run": "20261024-phase1-PAMF-HardPL-StepNoCap-m3-r01",
+  "matched_reference_method": "HPL_E20_AS_SGNC",
+  "single_factor": "Only add rejected ordinary/mixed-nonphysical/raw symmetric KL at inherited .5/.25/.25/1.25 and U weight6",
+  "recipe": {
+    "ordinary_pair_weight": 0.5,
+    "mixed_nonphysical_pair_weight": 0.25,
+    "raw_pair_weight": 0.25,
+    "CE_normalizer": 1.25,
+    "hard_label_gate": 0.95,
+    "physical_As_KL_weight": 0.0,
+    "hard_CE_or_contrast_on_rejected": false,
+    "extra_model_forwards": 0,
+    "new_head": false
+  },
+  "raw_threshold": 0.95,
+  "U_weight": 6,
+  "all_original_accepted_retained": true,
+  "no_rejected_hard_label_or_CE": true,
+  "physical_As_independent_KL": 0,
+  "raw_U_L_norm_cap": null,
+  "raw_three_L_direction_constraints": true,
+  "actual_parameter_step_guard": "unchanged_StepNoCap",
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "epochs": 50,
+  "cumulative_steps": 11100,
+  "new_steps_per_model": 6660,
+  "parents": "Original fixed same-seed F21 E20 only;own native10+20,never original E30 or a candidate checkpoint",
+  "train_permissions": "L_s true labels;U_s TX hidden;source V diagnostic no updates;no target/G/EMA/prototype/new head",
+  "GPU_by_seed": {
+    "2026092701": 5,
+    "2026092702": 6,
+    "2026092703": 7
+  },
+  "maximum_own_workers_per_GPU": 2,
+  "maximum_total_apps_at_launch": 3,
+  "GPU_start_dependency": "Matching StepGuard GPU predictions complete and StepNoCap already dispatched;reserve both predecessor pending CUDA PIDs;capacity applies to foreign workers too",
+  "scoring_dependency": "StepNoCap terminal,sole CPU truth-side scorer;perrow all fourteen readout/view predictions fixed first",
+  "readouts": [
+    "raw",
+    "DURA-LU"
+  ],
+  "views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "full_view_cells": 42,
+  "count_per_seed_view": 168000,
+  "default_head_joint": true,
+  "DURA_version": "dura_v1 fixed R69 G,reference only",
+  "raw_goal": {
+    "clean_minimum_correct_total": 433348,
+    "six_minimum_correct_total": 2180190,
+    "clean_denominator": 504000,
+    "six_denominator": 3024000,
+    "clean_delta_at_least_pp": 1,
+    "six_delta_strictly_greater_pp": 1.5
+  },
+  "existing_target_exposure": "All historical completed methods including BranchGuard are known;this is not a new independent blind benchmark.StepGuard and StepNoCap target results have not been read;no target-based parent/seed/epoch/threshold selection.",
+  "no_new_model_or_head_forwards": true,
+  "extra_symmetric_KL_evaluations_per_step": 3,
+  "formal_gradient_calls_per_step": 4,
+  "parameter_only_L_reference_steps_per_model": 6660,
+  "no_healthy_job_changes": true,
+  "goal_complete": false,
+  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "run_id": "20261024-phase1-PAMF-HardPL-AllURDrop-m3-r01",
+  "registered_utc": "2026-10-24T08:43:45.237936+00:00",
+  "source_design_commit": "3904aac383819c5880c2fb440f755cf34a5b15fa",
+  "source_result_commit": "248b3e0fbb3865a2d7dc08ad220c13ec86d0ab75",
+  "source_evidence": "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-StepNoCap-m3-r01/source_rejected_rdrop_summary.json",
+  "focused_checks": 55,
+  "independent_review": {
+    "status": "PASS",
+    "reviewer": "ssl_p0p1_review",
+    "review_count": 1,
+    "targeted_rereviews": 0,
+    "unresolved_P0_P1_findings": [],
+    "scope": "One independent review of the next actual AllURDrop production release;source probe was a separate completed CPU-only diagnostic",
+    "summary": "Extra KL added once to pending_gradient_loss and consumed by original four derivatives and actual parameter guard;two-segment counts,parent provenance,pending PID capacity,smoke/reload and dual-readout scoring consistent."
+  },
+  "real_checkpoint_smoke": "PENDING_FIRST_AVAILABLE_GPU_ACTION",
+  "training_launched": false
+}

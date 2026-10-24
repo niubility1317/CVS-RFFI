@@ -147,6 +147,14 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
                     or obj.metrics['HPL_GP_U_to_L_norm_cap']!=0 or obj.metrics['HPL_GP_relative_norm_cap_enabled']
                     or any(v['capped'] for v in obj.smoke_guard_details.values())):
                     raise ValueError('Actual raw U magnitude must remain explicitly uncapped')
+            if c.get('hard_pl_all_u_rdrop'):
+                rd=state['U_all_RDrop'];detail=obj.smoke_allrd_counts
+                if (rd['calls']!=1 or rd['seen']!=256 or rd['rejected']!=256-state['accepted'] or rd['rejected']<=0
+                    or rd['nonphysical_rejected']!=detail['rejected_nonphysical_half'] or rd['pairs']!=detail['rejected_RDrop_pairs']
+                    or rd['reused_prediction_views']!=2*rd['pairs'] or rd['extra_KL_evaluations']!=3
+                    or rd['hard_label_or_CE_on_rejected'] or rd['raw_acceptance_changed'] or rd['physical_As_KL_weight']
+                    or obj.allrd_current is not None or not obj.smoke_allrd_extra_requires_grad or float(obj.smoke_allrd_extra)<=0):
+                    raise ValueError('Actual rejected-U RDrop must reuse the three nonphysical logit pairs,keep the original mask and contribute differentiably')
             if c.get('hard_pl_branch_guard'):
                 from .labeled_branch_capture import labeled_context_active
                 branch=state['U_branch_guard']
@@ -225,6 +233,9 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
                 checked[-1].update(raw_U_to_L_norm_cap=None,raw_U_norm_nonexpansion=True,
                     raw_U_relative_norm_cap_enabled=False,
                     uncapped_effective_groups=[name for name,v in obj.smoke_guard_details.items() if v['applied_U_norm']>2*v['L_norm']*(1+1e-4)+1e-8])
+            if c.get('hard_pl_all_u_rdrop'):
+                checked[-1].update(U_all_RDrop=state['U_all_RDrop'],rejected_RDrop_actual_extra_base_loss=float(obj.smoke_allrd_extra),
+                    rejected_RDrop_label_free=True,rejected_RDrop_original_mask_unchanged=True)
             if c.get('hard_pl_branch_guard'):
                 checked[-1].update(U_branch_guard=state['U_branch_guard'],simultaneous_full_and_component_L_anchors=True,
                     actual_gradient_calls_including_joint_smoke=len(branch_grad_calls),L_pair_capture_context_removed=True,
