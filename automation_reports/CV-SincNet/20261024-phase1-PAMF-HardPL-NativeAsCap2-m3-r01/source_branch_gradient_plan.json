@@ -1,0 +1,99 @@
+{
+  "status": "REGISTERED_NONBLOCKING_SOURCE_BRANCH_GRADIENT_DIAGNOSTIC",
+  "registered_utc": "2026-10-24T04:06:37.729842+00:00",
+  "question": "Does existing protection against the complete L objective also protect each nonphysical and physical L component,and which U components supply the source gradients?",
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "source_epoch": 20,
+  "steps_per_seed": 1,
+  "L_batch": 128,
+  "U_batch": 256,
+  "reference_revision": "hard-pl-native-as-r01",
+  "reference_method": "HPL_E20_JOINT_AS6G",
+  "reference_U_to_L_norm_cap": 1.0,
+  "original_parent": "Original same-seed F21 E20/4440 only;matching role/physicalID/data contract and complete scratch ancestry checked with the existing source_parents helper before model load.No candidate or originalE30 parent.",
+  "diagnostic_recipe": "One shadow E21/step4441 NativeAs cap1 step,raw.95/Uweight6/sixstudents/nativeAs/LS.01/RDrop1/AsKL0/shallow.1/joint.05/sharedstyle/CE1.25/fullLguard/defaulthead unchanged.No optimizer or backward.",
+  "roles": [
+    "L_s",
+    "U_s"
+  ],
+  "V_reads": 0,
+  "V_gradients": 0,
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "G_training_reads": 0,
+  "components": {
+    "L_clean": "0.5ordinary pair+0.25nonphysical mixed pair+0.25raw pair,including existing RDrop;nonphysical source branch,not clean test performance",
+    "L_As": "0.25 original physical mixed pair,AsKL0",
+    "L_aux": "Complete original L minus the two preceding branches",
+    "U_clean": "6/1.25*(0.5ordinary+0.25nonphysical mixed+0.25raw),original accepted masks and RDrop",
+    "U_As": "6/1.25*0.25physical mixed,original rawpseudo/acceptedhalf/AsKL0",
+    "U_aux": "Complete original weighted U minus the two preceding branches;existing shallow/joint/style context retained"
+  },
+  "measures": [
+    "Per-group component and full gradient norms",
+    "Pairwise nonphysical/physical component cosines",
+    "Actual full-L cap1-protected U dot/cosine with each L component before/after protection",
+    "Per-parameter equality of component-summed protected gradients and original full-L/U guard",
+    "Unchanged parameter values and empty parameter .grad;discarded train-mode buffer changes"
+  ],
+  "parameter_groups": [
+    "t2",
+    "cls_head",
+    "other"
+  ],
+  "budget": {
+    "source_models": 3,
+    "L_examples": 384,
+    "U_examples": 768,
+    "L_packet_views": 2304,
+    "U_student_packet_views": 4608,
+    "U_teacher_raw_packet_views": 768,
+    "real_checkpoint_smoke_L_packet_views": 6,
+    "total_source_packet_views": 7686,
+    "source_Practical_generated": 576,
+    "component_autograd_calls": 18,
+    "original_guard_autograd_calls": 6,
+    "original_joint_smoke_autograd_calls": 3,
+    "total_autograd_calls": 27,
+    "extra_model_forward_calls": 0,
+    "parameter_updates": 0,
+    "optimizer_steps": 0,
+    "parameter_grad_writes": 0,
+    "persisted_buffer_updates": 0
+  },
+  "interpretation": "A one-step source diagnostic per seed,not a whole trajectory or target explanation.Norms of overlapping component gradients are not additive shares.Full-L nonnegative dot does not imply every component has nonnegative dot.No scientific promotion threshold,automatic new candidate or changes to existing runs.",
+  "environment": "N607 ordinary account,existing CVS-RFFI Python,CPU2,CUDA_VISIBLE_DEVICES empty,FP32/TF32off;original NativeAs release provides the fixed model/objective dependencies.Committed analysis is executed over UTF8stdin,without remote file writes.",
+  "CWD": "Existing NativeAs release root;no chdir into a target dataset",
+  "command": "python local_artifacts/pamf_ssl_research_20261023/collect_source_branch_gradients.py",
+  "output": "local_artifacts/pamf_ssl_research_20261023/source_branch_gradients.json;exclusive new output,all stdout/stderr attempts preserved privately",
+  "expected_artifacts": [
+    "source_branch_gradients.json",
+    "source_branch_gradients_summary.json",
+    "source_branch_gradients.md"
+  ],
+  "stop_rule": "Any real input/provenance/role/count/nonfinite/gradient-closure mismatch stops this diagnostic only;preserve healthyjobs/weights/output.An observation timeout is UNKNOWN,reconcile the same PID before retry.No source threshold/grid/parent/seed/order tuning or target feedback.",
+  "historical_exposure": "Complete earlier target results including RXE are known;this is a fixed source gradient decomposition,not a target-selected checkpoint or new method.NativeAs/BalancedCE/Cap2 target scores not read.",
+  "local_validation": {
+    "focused_checks": 10,
+    "independent_P0P1_review": {
+      "status": "PASS",
+      "reviewer": "/root/ssl_p0p1_review",
+      "review_count": 1,
+      "unresolved_P0_P1_findings": [],
+      "scope": "Only direct wrong/unauthorized/destructive/unlaunchable/false-evidence defects in the next fixed source CPU diagnostic",
+      "actual_reviewer_response": "PASS，未发现本次范围内的 P0/P1。诊断仅打开 L/U，复用原前向并执行每 seed 9 次 autograd；组件和与原 guard 逐参数核对，未调用 backward、optimizer 或写入原权重，影子模型缓冲变化会记录后丢弃。"
+    },
+    "real_checkpoint_no_query_smoke": "PENDING_FIRST_STEP_OF_EACH_SOURCE_MODEL"
+  },
+  "GPU_workers": 0,
+  "CPU_threads": 2,
+  "new_training": false,
+  "active_jobs_changed": false,
+  "NONBLOCKING": true,
+  "goal_complete": false,
+  "analysis_base_commit": "c083eed69089131f96e0aec2781a5f256ad89e91"
+}

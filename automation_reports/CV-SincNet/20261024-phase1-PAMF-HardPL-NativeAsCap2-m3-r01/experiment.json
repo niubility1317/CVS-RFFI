@@ -312,6 +312,17 @@
       "model_updates": 0,
       "target_reads": 0,
       "U_truth_reads": 0
+    },
+    "original_E20_branch_gradients": {
+      "status": "REGISTERED_NONBLOCKING_SOURCE_BRANCH_GRADIENT_DIAGNOSTIC",
+      "reference": "source_branch_gradient_plan.json",
+      "source_models": 3,
+      "steps_per_seed": 1,
+      "source_collection": "PENDING",
+      "parameter_updates": 0,
+      "U_truth_reads": 0,
+      "target_reads": 0,
+      "NONBLOCKING": true
     }
   }
 }
