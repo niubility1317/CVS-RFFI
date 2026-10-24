@@ -1,0 +1,121 @@
+{
+  "status": "REGISTERED_NONBLOCKING_SOURCE_BRANCH_ANCHOR_COUNTERFACTUAL",
+  "registered_utc": "2026-10-24T04:32:21.468157+00:00",
+  "question": "Can the closest U vector satisfy completeL/nonphysicalL/physicalL nonnegative-dot constraints simultaneously while retaining at least half the native cap2 applied-U norm?",
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "source_epoch": 20,
+  "steps_per_seed": 1,
+  "L_batch": 128,
+  "U_batch": 256,
+  "reference_revision": "hard-pl-native-as-r01",
+  "reference_method": "HPL_E20_JOINT_AS6G",
+  "reference_U_to_L_norm_cap": 1.0,
+  "original_parent": "Original same-seed F21 E20/4440 only;matching role/physicalID/data contract and complete scratch ancestry checked with the existing source_parents helper before model load.No candidate or originalE30 parent.",
+  "diagnostic_recipe": "One shadow E21/step4441 NativeAs cap1 step,raw.95/Uweight6/sixstudents/nativeAs/LS.01/RDrop1/AsKL0/shallow.1/joint.05/sharedstyle/CE1.25/fullLguard/defaulthead unchanged.No optimizer or backward.",
+  "roles": [
+    "L_s",
+    "U_s"
+  ],
+  "V_reads": 0,
+  "V_gradients": 0,
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "G_training_reads": 0,
+  "components": {
+    "L_clean": "0.5ordinary pair+0.25nonphysical mixed pair+0.25raw pair,including existing RDrop;nonphysical source branch,not clean test performance",
+    "L_As": "0.25 original physical mixed pair,AsKL0",
+    "L_aux": "Complete original L minus the two preceding branches",
+    "U_clean": "6/1.25*(0.5ordinary+0.25nonphysical mixed+0.25raw),original accepted masks and RDrop",
+    "U_As": "6/1.25*0.25physical mixed,original rawpseudo/acceptedhalf/AsKL0",
+    "U_aux": "Complete original weighted U minus the two preceding branches;existing shallow/joint/style context retained"
+  },
+  "measures": [
+    "Whole applied-U norm retention versus native cap2,minimum over all3fixed seeds",
+    "Per-group exact L anchor dots/cosines before and after native cap2 and three-anchor cap2",
+    "Number of material nonphysical/physical conflicts removed",
+    "Exact native cap1 gradient bridge,component closure,actual9autograd/seed and unchanged parameters"
+  ],
+  "parameter_groups": [
+    "t2",
+    "cls_head",
+    "other"
+  ],
+  "budget": {
+    "source_models": 3,
+    "L_examples": 384,
+    "U_examples": 768,
+    "L_packet_views": 2304,
+    "U_student_packet_views": 4608,
+    "U_teacher_raw_packet_views": 768,
+    "real_checkpoint_smoke_L_packet_views": 6,
+    "total_source_packet_views": 7686,
+    "source_Practical_generated": 576,
+    "component_autograd_calls": 18,
+    "original_guard_autograd_calls": 6,
+    "original_joint_smoke_autograd_calls": 3,
+    "total_autograd_calls": 27,
+    "extra_model_forward_calls": 0,
+    "parameter_updates": 0,
+    "optimizer_steps": 0,
+    "parameter_grad_writes": 0,
+    "persisted_buffer_updates": 0
+  },
+  "interpretation": "One source step/seed only.No model/optimizer/parametergrad/V/Utruth/target/Gtrain writes or reads.NativeAs/BalancedCE/Cap2 continue unchanged.Not a training trajectory or performance claim.",
+  "environment": "N607 ordinary account,existing CVS-RFFI Python,CPU2,CUDA_VISIBLE_DEVICES empty,FP32/TF32off;original NativeAs release provides the fixed model/objective dependencies.Committed analysis is executed over UTF8stdin,without remote file writes.",
+  "CWD": "Existing NativeAs release root;no chdir into a target dataset",
+  "command": "python local_artifacts/pamf_ssl_research_20261023/collect_source_branch_anchor_counterfactual.py",
+  "output": "local_artifacts/pamf_ssl_research_20261023/source_branch_anchor_counterfactual.json;exclusive,all stdout/stderr retained",
+  "expected_artifacts": [
+    "source_branch_anchor_counterfactual_plan.json",
+    "source_branch_anchor_counterfactual.json",
+    "source_branch_anchor_counterfactual_summary.json",
+    "source_branch_anchor_counterfactual.md"
+  ],
+  "stop_rule": "Any real input/provenance/role/count/nonfinite/gradient-closure mismatch stops this diagnostic only;preserve healthyjobs/weights/output.An observation timeout is UNKNOWN,reconcile the same PID before retry.No source threshold/grid/parent/seed/order tuning or target feedback.",
+  "historical_exposure": "Earlier completed targets known,including RXE.No NativeAs/BalancedCE/Cap2 target scores read.New operator motivated by fixed originalE20 source branch gradient observation1874d009,not any candidate target outcome.",
+  "local_validation": {
+    "focused_checks": 32,
+    "independent_P0P1_review": {
+      "status": "PASS",
+      "reviewer": "/root/ssl_p0p1_review",
+      "review_count": 1,
+      "targeted_re_review_count": 1,
+      "unresolved_P0_P1_findings": [],
+      "scope": "Only defects directly invalidating or preventing the next fixed CPU source branch-anchor comparison",
+      "initial_P1": "Frozen NativeAs release projected_gradients does not accept max_u_ratio;the new comparison must load an isolated compatible pure reference without replacing the old cap1 bridge.",
+      "resolution": "Added isolated source_cap2_projection_reference containing the native pure cap2 math;collector injects it before the counterfactual module.Frozen NativeAs u_gradprotect_objective and cap1 bridge are unchanged.32 focused checks pass including the exact old function signature and bitwise cap2 reference comparison.",
+      "actual_targeted_reviewer_response": "Targeted PASS。该接口 P1 已消除：cap2 比较改用独立纯函数，collector 在反事实模块前注入该函数；旧 NativeAs 的 `u_gradprotect_objective` 与 cap1 桥未被替换。"
+    },
+    "real_checkpoint_no_query_smoke": "FIRST_STEP_EACH_ORIGINAL_E20_SOURCE_MODEL"
+  },
+  "GPU_workers": 0,
+  "CPU_threads": 2,
+  "new_training": false,
+  "active_jobs_changed": false,
+  "NONBLOCKING": true,
+  "goal_complete": false,
+  "analysis_base_commit": "1874d009c604a506479b6f21f7fa6696769da76d",
+  "kind": "fixed_original_E20_source_branch_anchor_counterfactual_v1",
+  "source_rules": {
+    "minimum_whole_applied_U_norm_retention_vs_native_cap2": 0.5,
+    "minimum_removed_material_component_conflicts": 1,
+    "material_cosine_threshold": -1e-06,
+    "require_all_three_exact_source_seed_steps": true,
+    "parameter_updates": 0,
+    "U_truth_reads": 0,
+    "V_reads": 0,
+    "target_reads": 0
+  },
+  "operator": "Per t2/head/other:unit-normalize non-tiny anchors fullL/nonphysicalL/physicalL;enumerate all <=8 active sets of the float64 3x3 Gram dual;select feasible nonnegative KKT multipliers with minimum correction norm;project only U;apply radial cap2 relative to original fullL.No threshold/loss/forward change.",
+  "numerical_policy": "Original fullL tiny squarednorm<=1e-12 disablesU;component anchors <=1e-12 squarednorm omitted.Gram pinv rtol1e-10,KKT residual tolerance1e-8*max(abs normalized dots,1e-12).Projectednorm<=1e-12*max(rawU/fullLnorm,1e-12) becomes exactzero.Actualcast constraints require dot>=-1e-6*max(anchorNorm*appliedUnorm,1e-12);normcap2 within1e-6 relative.",
+  "comparisons": [
+    "Native complete-L cap2 algebraic U on exact original native fullL/U derivatives",
+    "Simultaneous fullL+nonphysicalL+physicalL cap2 algebraic U on same derivatives"
+  ],
+  "actual_native_recipe": "Cap1 NativeAs original-E20 one-step shadows for the exact native bridge;both cap2 alternatives are arithmetic counterfactuals,not applied optimizer gradients or trained cap2 weights.",
+  "decision": "Only if all legal/numeric checks pass,min whole norm retention>=0.5,and at least1 material component conflict is removed,may a separately preregistered candidate be implemented/reviewed/released.No automatic launch or current-run changes.No operator/threshold/grid changes after source failure."
+}

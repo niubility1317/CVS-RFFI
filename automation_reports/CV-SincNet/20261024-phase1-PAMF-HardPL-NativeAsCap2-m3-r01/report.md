@@ -31,3 +31,6 @@ GPU5/6/7 固定对应三个 seed，每卡最多两个本任务，计外部 compu
 
 
 真实原 E20 检查及首批启动已独立核实：VERIFIED，执行 commit `a2a03f6ccf166b8abba34ca1f7862caa03277ba0`，检查 seed 2026092702，L768/U1536/rawteacher256/As128/物理学生256/Practical192，完整 L 显式梯度、joint 签名梯度和临时 hook 清除通过。探针丢弃，正式重新加载原 E20。目前实际 1 个正式 GPU worker 已有正源步骤，并核实 PID/CWD/命令/GPU/日志增长；其余仍排队。完整事实见 first_source_start.json；首个启动不能当作三种子全部启动或测试成功。
+
+
+固定源域分支约束比较已登记：同原 E20 三 seed、每 seed 一个 L128/U256 影子步骤，复用现有 6 个分支导数，在完全相同原完整梯度上比较完整 L cap2 和完整 L／非物理 L／物理 L 同时约束 cap2。完整 L 不变，只约束 U 方向；源规则固定为所有 seed 的整体 U 范数至少保留原 cap2 的 50%，且至少移除 1 个实质分支冲突。若失败则否决，不在结果后改规则。32 项检查及一次独立 P0/P1 检查和一次定向修复复查 PASS；初查发现旧 release 不支持 cap2 形参，现单独加载已提交的纯 cap2 投影函数，原 cap1 桥及其冻结依赖保持。真实源矩阵尚未执行，无自动训练或健康进程修改。详见 source_branch_anchor_counterfactual_plan.json。

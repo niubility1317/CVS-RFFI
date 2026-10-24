@@ -331,6 +331,18 @@
       "actual_autograd_calls": 27,
       "seconds": 42.97548688412644,
       "final_fixed_source_rerun": "VERIFIED"
+    },
+    "original_E20_branch_anchor_counterfactual": {
+      "status": "REGISTERED_NONBLOCKING_SOURCE_BRANCH_ANCHOR_COUNTERFACTUAL",
+      "reference": "source_branch_anchor_counterfactual_plan.json",
+      "source_models": 3,
+      "steps_per_seed": 1,
+      "source_collection": "PENDING_FIXED_SOURCE_MATRIX",
+      "parameter_updates": 0,
+      "U_truth_reads": 0,
+      "V_reads": 0,
+      "target_reads": 0,
+      "NONBLOCKING": true
     }
   }
 }
