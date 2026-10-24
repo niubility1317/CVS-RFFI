@@ -72,8 +72,8 @@ def basis_candidates(basis,coordinates):
 @torch.no_grad()
 def branch_projected_gradients(named,labeled,unlabeled,clean,physical,*,max_u_ratio=2.):
     """Keep complete L unchanged; project only U onto all three source constraints."""
-    if not isinstance(max_u_ratio,(int,float)) or not math.isfinite(max_u_ratio) or max_u_ratio<=0:
-        raise ValueError('Finite positive U/L norm cap required')
+    if max_u_ratio is not None and (not isinstance(max_u_ratio,(int,float)) or not math.isfinite(max_u_ratio) or max_u_ratio<=0):
+        raise ValueError('Finite positive U/L norm cap or explicit None required')
     if not len(named)==len(labeled)==len(unlabeled)==len(clean)==len(physical) or not named:
         raise ValueError('Matching complete and component source gradient vectors required')
     for values in (labeled,unlabeled,clean,physical):
@@ -121,14 +121,15 @@ def branch_projected_gradients(named,labeled,unlabeled,clean,physical,*,max_u_ra
                     projected.append(projected_flat[offset:offset+value.numel()].view_as(value));offset+=value.numel()
             pnorm=math.sqrt(dot(projected,projected));numerical_zero=pnorm<=1e-12*max(unorm,lnorm,1e-12)
             if numerical_zero:projected=[torch.zeros_like(v) for v in gu];pnorm=0.
-            scale=min(1.,max_u_ratio*lnorm/pnorm) if pnorm else 1.
+            scale=min(1.,max_u_ratio*lnorm/pnorm) if pnorm and max_u_ratio is not None else 1.
             applied=[(value*scale).to(named[i][1].dtype) for i,value in zip(indices,projected)]
             actual=[value.double() for value in applied];anorm=math.sqrt(dot(actual,actual))
             after=[dot(a,actual) for a in anchor_vectors]
             # A coarse Gram residual is insufficient near a zero projection.
             # Choose the closest active set that passes the actual cast constraints.
             if any(after[i]<-1e-6*max(norms[i]*anorm,1e-12) for i in valid):continue
-            if anorm>max_u_ratio*lnorm*(1+1e-6)+1e-12:continue
+            if max_u_ratio is not None and anorm>max_u_ratio*lnorm*(1+1e-6)+1e-12:continue
+            if max_u_ratio is None and anorm>unorm*(1+1e-6)+1e-12:continue
             chosen=candidate;break
         if chosen is None:raise ValueError('No source active set passes the actual cast L constraints and norm cap')
         solution=chosen
