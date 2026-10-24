@@ -1,0 +1,7 @@
+protocol,family,cell,test,readout,view,dimension,stratum,metric,mean,sd,minimum,maximum,positive_seeds
+F0,riei,D,cross_both,raw,six_practical_mean,overall,ALL,accuracy,51.10846560846561,1.4549997171665447,49.980555555555554,52.750793650793646,3
+F0,drift,D,cross_both,raw,six_practical_mean,overall,ALL,accuracy,56.99708994708994,2.1117299163697387,54.84523809523809,59.066269841269836,3
+F0,ibrff,D,cross_both,raw,six_practical_mean,overall,ALL,accuracy,56.35145502645502,1.3295471525002132,55.30277777777778,57.846825396825395,3
+F0,sdg,D,cross_both,raw,six_practical_mean,overall,ALL,accuracy,63.59232804232805,1.6250436712028795,61.71785714285715,64.60396825396826,3
+F0,pamf,C,cross_both,raw,six_practical_mean,overall,ALL,accuracy,69.33015873015873,0.7871755691516203,68.45079365079366,69.96904761904761,3
+F0,pamf,native_T1,cross_both,raw,six_practical_mean,overall,ALL,accuracy,67.8160052910053,1.2016717179394172,66.75,69.11825396825397,3

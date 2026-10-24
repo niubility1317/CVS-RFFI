@@ -1,0 +1,7 @@
+protocol,family,cell,test,readout,view,dimension,stratum,metric,mean,sd,minimum,maximum,positive_seeds
+ManyRx,riei,D,cross_rx,DURA-LU,six_practical_mean,overall,ALL,accuracy,28.69861394597617,5.428344246815128,23.621355623472322,34.42048158507655,3
+ManyRx,drift,D,cross_rx,DURA-LU,six_practical_mean,overall,ALL,accuracy,43.343796835270645,3.639249715478118,39.18143496369573,45.92517396171942,3
+ManyRx,ibrff,D,cross_rx,DURA-LU,six_practical_mean,overall,ALL,accuracy,64.98848654804031,0.7662830434049037,64.40111450694947,65.85526528937223,3
+ManyRx,sdg,D,cross_rx,DURA-LU,six_practical_mean,overall,ALL,accuracy,66.0705950396761,0.746865818579274,65.20837608129852,66.51727377776817,3
+ManyRx,pamf,C,cross_rx,DURA-L,six_practical_mean,overall,ALL,accuracy,71.40272123046942,0.5005821694561683,70.98484112156261,71.95751482229446,3
+ManyRx,pamf,native_T1,cross_rx,DURA-LU,six_practical_mean,overall,ALL,accuracy,72.58664487570393,0.22302923764611512,72.37923474842599,72.82255364644644,3

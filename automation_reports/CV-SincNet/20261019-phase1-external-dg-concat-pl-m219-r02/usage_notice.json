@@ -1,0 +1,9 @@
+{
+  "old_run": "20261019-phase1-external-dg-concat-pl-m219-r02",
+  "usage_status": "HISTORICAL_ONLY_WRONG_CHANNEL_FOR_CURRENT_COMPARISON",
+  "current_run": "20261023-phase1-practical-residual-full2x2-m600-r01",
+  "reason": "Original external training augmentation differs from the user-selected practical ResidualChannel residual/post_sync/noEQ; use the new 2x2 Full matrix for current paper comparisons.",
+  "scope": "Old external recognition performance and its paper projections only. Existing experiment statuses/events remain historical facts; G IQ caches, native PAMF, architecture timing and valid mechanism evidence are not invalidated.",
+  "replacement": "automation_reports/CV-SincNet/20261023-phase1-practical-residual-full2x2-m600-r01/full_results_20261024",
+  "quarantine_manifest": "docs/project_governance/20261024_comparison_retirement/cleanup_manifest.json"
+}

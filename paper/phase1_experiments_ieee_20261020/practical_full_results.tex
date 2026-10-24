@@ -58,7 +58,7 @@ PAMF & Native T1 & \pmv{85.48}{0.87} & \pmv{71.53}{1.02} & \pmv{85.58}{0.92} & \
 
 \bottomrule\end{tabular*}\end{table*}
 
-\begin{figure*}[!t]\centering\includegraphics[width=\textwidth]{images/practical_full/F0_seven_views.pdf}\caption{F0 cross-RX accuracy on every frozen observation. External D uses the common residual-channel/ordinary-PL recipe; PAMF-Sup C uses its supervised residual-channel recipe and native T1 retains its fixed training method. Raw and restored routes can have different response patterns; error bars are three-F-seed SD.}\label{fig:residual-scenes}\end{figure*}
+\begin{figure*}[!t]\centering\includegraphics[width=.70\textwidth]{images/practical_full/F0_seven_views.pdf}\caption{F0 cross-RX accuracy on every frozen observation. External D uses the common residual-channel/ordinary-PL recipe; PAMF-Sup C uses its supervised residual-channel recipe and native T1 retains its fixed training method. This plot shows the matching DURA route; the accompanying independent direct-F figure is included in the reproducible figure kit. Error bars are three-F-seed SD.}\label{fig:residual-scenes}\end{figure*}
 
 \subsubsection{Receiver and Date Generalization}
 
@@ -122,7 +122,7 @@ PAMF-T1 & \pmv{71.53}{1.02} & \pmv{78.21}{0.84} & \pmv{70.59}{0.12} & \pmv{74.04
 
 \bottomrule\end{tabular*}\end{table*}
 
-\begin{figure*}[!t]\centering\includegraphics[width=.98\textwidth]{images/practical_full/source_count.pdf}\caption{Natural-budget source-count curves, with fixed six-target populations and the same preregistered recipes as Table~\ref{tab:residual-data}. Scenes average within seed before the three-seed SD. Decreases and method-rank changes are retained.}\label{fig:residual-source}\end{figure*}
+\begin{figure*}[!t]\centering\includegraphics[width=.70\textwidth]{images/practical_full/source_count.pdf}\caption{Matching-DURA cross-RX natural-budget source-count curves, with fixed six-target populations and the same preregistered recipes as Table~\ref{tab:residual-data}. Scenes average within seed before the three-seed SD. Decreases and method-rank changes are retained.}\label{fig:residual-source}\end{figure*}
 
 The 600 new F models sum to 246.37 shared-worker elapsed hours; 27 reused F sources contribute 46.26 historical hours. Four new complete G lineages sum to 18.42 hours; the 17 other fully timed G lineages sum to 89.26 historical hours. Original fixed-F0 G-LU ancestor timings remain incomplete. The 3811 unique CPU augmentation-cache productions sum to 1.52 elapsed hours, the 22 restored-IQ caches to 1.17 hours and cached F predictions to 21.67 shared-worker hours. These are not exclusive GPU hours, CPU core-hours, online G+F latency or an end-to-end speedup. We retain all external augmentation/PL counts, including 61 zero-acceptance training rows. Complete native-PAMF gate acceptance and per-F realized channel counts are not recoverable from the compact telemetry and are left missing.
 

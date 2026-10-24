@@ -1,0 +1,405 @@
+{
+  "status": "VERIFIED_AGGREGATE_DERIVATION",
+  "source_run": "20261023-phase1-practical-residual-full2x2-m600-r01",
+  "source_rows": 627,
+  "statistics": "mean and sample SD across three F seeds, scenes within seed first",
+  "figures": [
+    {
+      "number": 1,
+      "stem": "Fig01_cross_date_raw",
+      "description_zh": "跨日：源 RX、未见 D0，直接识别",
+      "caption_en": "F0, unseen date, direct F. External methods use fixed cell D; PAMF supervised uses C and native PAMF uses T1. Three F seeds; mean ± sample SD, conditional on one fixed G per contract and role. Six scenes are averaged within each seed. ",
+      "role": "main",
+      "font": "Times New Roman",
+      "dpi": 4800,
+      "pixels": [
+        16800,
+        12480
+      ],
+      "one_chart": true,
+      "no_inside_title": true,
+      "no_footnotes": true,
+      "width_inches": 3.5,
+      "height_inches": 2.6
+    },
+    {
+      "number": 2,
+      "stem": "Fig02_cross_date_restored",
+      "description_zh": "跨日：源 RX、未见 D0，对应 DURA 恢复后",
+      "caption_en": "F0, unseen date, matching DURA + F. External methods use fixed cell D; PAMF supervised uses C and native PAMF uses T1. Three F seeds; mean ± sample SD, conditional on one fixed G per contract and role. Six scenes are averaged within each seed. ",
+      "role": "main",
+      "font": "Times New Roman",
+      "dpi": 4800,
+      "pixels": [
+        16800,
+        12480
+      ],
+      "one_chart": true,
+      "no_inside_title": true,
+      "no_footnotes": true,
+      "width_inches": 3.5,
+      "height_inches": 2.6
+    },
+    {
+      "number": 3,
+      "stem": "Fig03_cross_rx_raw",
+      "description_zh": "跨接收机：目标 RX、D1–D3，直接识别",
+      "caption_en": "F0, unseen receivers, direct F. External methods use fixed cell D; PAMF supervised uses C and native PAMF uses T1. Three F seeds; mean ± sample SD, conditional on one fixed G per contract and role. Six scenes are averaged within each seed. ",
+      "role": "main",
+      "font": "Times New Roman",
+      "dpi": 4800,
+      "pixels": [
+        16800,
+        12480
+      ],
+      "one_chart": true,
+      "no_inside_title": true,
+      "no_footnotes": true,
+      "width_inches": 3.5,
+      "height_inches": 2.6
+    },
+    {
+      "number": 4,
+      "stem": "Fig04_cross_rx_restored",
+      "description_zh": "跨接收机：目标 RX、D1–D3，对应 DURA 恢复后",
+      "caption_en": "F0, unseen receivers, matching DURA + F. External methods use fixed cell D; PAMF supervised uses C and native PAMF uses T1. Three F seeds; mean ± sample SD, conditional on one fixed G per contract and role. Six scenes are averaged within each seed. ",
+      "role": "main",
+      "font": "Times New Roman",
+      "dpi": 4800,
+      "pixels": [
+        16800,
+        12480
+      ],
+      "one_chart": true,
+      "no_inside_title": true,
+      "no_footnotes": true,
+      "width_inches": 3.5,
+      "height_inches": 2.6
+    },
+    {
+      "number": 5,
+      "stem": "Fig05_cross_both_raw",
+      "description_zh": "跨日且跨接收机：目标 RX、D0，直接识别",
+      "caption_en": "F0, unseen date and receivers, direct F. External methods use fixed cell D; PAMF supervised uses C and native PAMF uses T1. Three F seeds; mean ± sample SD, conditional on one fixed G per contract and role. Six scenes are averaged within each seed. ",
+      "role": "main",
+      "font": "Times New Roman",
+      "dpi": 4800,
+      "pixels": [
+        16800,
+        12480
+      ],
+      "one_chart": true,
+      "no_inside_title": true,
+      "no_footnotes": true,
+      "width_inches": 3.5,
+      "height_inches": 2.6
+    },
+    {
+      "number": 6,
+      "stem": "Fig06_cross_both_restored",
+      "description_zh": "跨日且跨接收机：目标 RX、D0，对应 DURA 恢复后",
+      "caption_en": "F0, unseen date and receivers, matching DURA + F. External methods use fixed cell D; PAMF supervised uses C and native PAMF uses T1. Three F seeds; mean ± sample SD, conditional on one fixed G per contract and role. Six scenes are averaged within each seed. ",
+      "role": "main",
+      "font": "Times New Roman",
+      "dpi": 4800,
+      "pixels": [
+        16800,
+        12480
+      ],
+      "one_chart": true,
+      "no_inside_title": true,
+      "no_footnotes": true,
+      "width_inches": 3.5,
+      "height_inches": 2.6
+    },
+    {
+      "number": 7,
+      "stem": "Fig07_source_cross_rx_raw",
+      "description_zh": "跨接收机：目标 RX、D1–D3的自然预算源数量曲线（直接识别）",
+      "caption_en": "Natural source budgets, same six target RX, m=1,2,3,4,6. m=5 was not tested; F0 is not inserted. Three F seeds; mean ± sample SD, conditional on one fixed G per contract and role. Six scenes are averaged within each seed. ",
+      "role": "main",
+      "font": "Times New Roman",
+      "dpi": 4800,
+      "pixels": [
+        16800,
+        14400
+      ],
+      "one_chart": true,
+      "no_inside_title": true,
+      "no_footnotes": true,
+      "width_inches": 3.5,
+      "height_inches": 3.0
+    },
+    {
+      "number": 8,
+      "stem": "Fig08_source_cross_rx_restored",
+      "description_zh": "跨接收机：目标 RX、D1–D3的自然预算源数量曲线（恢复后）",
+      "caption_en": "Natural source budgets, same six target RX, m=1,2,3,4,6. m=5 was not tested; F0 is not inserted. Three F seeds; mean ± sample SD, conditional on one fixed G per contract and role. Six scenes are averaged within each seed. ",
+      "role": "main",
+      "font": "Times New Roman",
+      "dpi": 4800,
+      "pixels": [
+        16800,
+        14400
+      ],
+      "one_chart": true,
+      "no_inside_title": true,
+      "no_footnotes": true,
+      "width_inches": 3.5,
+      "height_inches": 3.0
+    },
+    {
+      "number": 9,
+      "stem": "Fig09_source_cross_both_raw",
+      "description_zh": "跨日且跨接收机：目标 RX、D0的自然预算源数量曲线（直接识别）",
+      "caption_en": "Natural source budgets, same six target RX, m=1,2,3,4,6. m=5 was not tested; F0 is not inserted. Three F seeds; mean ± sample SD, conditional on one fixed G per contract and role. Six scenes are averaged within each seed. ",
+      "role": "main",
+      "font": "Times New Roman",
+      "dpi": 4800,
+      "pixels": [
+        16800,
+        14400
+      ],
+      "one_chart": true,
+      "no_inside_title": true,
+      "no_footnotes": true,
+      "width_inches": 3.5,
+      "height_inches": 3.0
+    },
+    {
+      "number": 10,
+      "stem": "Fig10_source_cross_both_restored",
+      "description_zh": "跨日且跨接收机：目标 RX、D0的自然预算源数量曲线（恢复后）",
+      "caption_en": "Natural source budgets, same six target RX, m=1,2,3,4,6. m=5 was not tested; F0 is not inserted. Three F seeds; mean ± sample SD, conditional on one fixed G per contract and role. Six scenes are averaged within each seed. ",
+      "role": "main",
+      "font": "Times New Roman",
+      "dpi": 4800,
+      "pixels": [
+        16800,
+        14400
+      ],
+      "one_chart": true,
+      "no_inside_title": true,
+      "no_footnotes": true,
+      "width_inches": 3.5,
+      "height_inches": 3.0
+    },
+    {
+      "number": 11,
+      "stem": "Fig11_labels_raw",
+      "description_zh": "标注比例的跨接收机结果（直接识别）",
+      "caption_en": "Cross-RX, label availability. Each condition is reported separately, without target-based cell selection. Three F seeds; mean ± sample SD, conditional on one fixed G per contract and role. Six scenes are averaged within each seed. ",
+      "role": "main",
+      "font": "Times New Roman",
+      "dpi": 4800,
+      "pixels": [
+        16800,
+        14400
+      ],
+      "one_chart": true,
+      "no_inside_title": true,
+      "no_footnotes": true,
+      "width_inches": 3.5,
+      "height_inches": 3.0
+    },
+    {
+      "number": 12,
+      "stem": "Fig12_labels_restored",
+      "description_zh": "标注比例的跨接收机结果（恢复后）",
+      "caption_en": "Cross-RX, label availability. Each condition is reported separately, without target-based cell selection. Three F seeds; mean ± sample SD, conditional on one fixed G per contract and role. Six scenes are averaged within each seed. ",
+      "role": "main",
+      "font": "Times New Roman",
+      "dpi": 4800,
+      "pixels": [
+        16800,
+        14400
+      ],
+      "one_chart": true,
+      "no_inside_title": true,
+      "no_footnotes": true,
+      "width_inches": 3.5,
+      "height_inches": 3.0
+    },
+    {
+      "number": 13,
+      "stem": "Fig13_receivers_raw",
+      "description_zh": "接收机划分的跨接收机结果（直接识别）",
+      "caption_en": "Cross-RX, receiver partition. Each condition is reported separately, without target-based cell selection. Three F seeds; mean ± sample SD, conditional on one fixed G per contract and role. Six scenes are averaged within each seed. ",
+      "role": "main",
+      "font": "Times New Roman",
+      "dpi": 4800,
+      "pixels": [
+        16800,
+        14400
+      ],
+      "one_chart": true,
+      "no_inside_title": true,
+      "no_footnotes": true,
+      "width_inches": 3.5,
+      "height_inches": 3.0
+    },
+    {
+      "number": 14,
+      "stem": "Fig14_receivers_restored",
+      "description_zh": "接收机划分的跨接收机结果（恢复后）",
+      "caption_en": "Cross-RX, receiver partition. Each condition is reported separately, without target-based cell selection. Three F seeds; mean ± sample SD, conditional on one fixed G per contract and role. Six scenes are averaged within each seed. ",
+      "role": "main",
+      "font": "Times New Roman",
+      "dpi": 4800,
+      "pixels": [
+        16800,
+        14400
+      ],
+      "one_chart": true,
+      "no_inside_title": true,
+      "no_footnotes": true,
+      "width_inches": 3.5,
+      "height_inches": 3.0
+    },
+    {
+      "number": 15,
+      "stem": "Fig15_ManyRx_raw",
+      "description_zh": "ManyRx 十类跨接收机比较（直接识别）",
+      "caption_en": "ManyRx ten-class cross-RX evaluation; class set and physical population differ from ManySig. Three F seeds; mean ± sample SD, conditional on one fixed G per contract and role. Six scenes are averaged within each seed. ",
+      "role": "main",
+      "font": "Times New Roman",
+      "dpi": 4800,
+      "pixels": [
+        16800,
+        12480
+      ],
+      "one_chart": true,
+      "no_inside_title": true,
+      "no_footnotes": true,
+      "width_inches": 3.5,
+      "height_inches": 2.6
+    },
+    {
+      "number": 16,
+      "stem": "Fig16_ManyRx_restored",
+      "description_zh": "ManyRx 十类跨接收机比较（恢复后）",
+      "caption_en": "ManyRx ten-class cross-RX evaluation; class set and physical population differ from ManySig. Three F seeds; mean ± sample SD, conditional on one fixed G per contract and role. Six scenes are averaged within each seed. ",
+      "role": "main",
+      "font": "Times New Roman",
+      "dpi": 4800,
+      "pixels": [
+        16800,
+        12480
+      ],
+      "one_chart": true,
+      "no_inside_title": true,
+      "no_footnotes": true,
+      "width_inches": 3.5,
+      "height_inches": 2.6
+    },
+    {
+      "number": 17,
+      "stem": "Fig17_four_cells_riei",
+      "description_zh": "RIEI 的四组合及恢复前后实际准确率",
+      "caption_en": "RIEI, F0 cross-RX: A/B/C/D are channel off/PL off, off/on, on/off and on/on. A/C use G-L; B/D use G-LU. Restored PL contrasts also change G source permissions. Three F seeds; mean ± sample SD, conditional on one fixed G per contract and role. Six scenes are averaged within each seed. ",
+      "role": "supplementary",
+      "font": "Times New Roman",
+      "dpi": 4800,
+      "pixels": [
+        16800,
+        12960
+      ],
+      "one_chart": true,
+      "no_inside_title": true,
+      "no_footnotes": true,
+      "width_inches": 3.5,
+      "height_inches": 2.7
+    },
+    {
+      "number": 18,
+      "stem": "Fig18_four_cells_drift",
+      "description_zh": "DRIFT-v2 的四组合及恢复前后实际准确率",
+      "caption_en": "DRIFT-v2, F0 cross-RX: A/B/C/D are channel off/PL off, off/on, on/off and on/on. A/C use G-L; B/D use G-LU. Restored PL contrasts also change G source permissions. Three F seeds; mean ± sample SD, conditional on one fixed G per contract and role. Six scenes are averaged within each seed. ",
+      "role": "supplementary",
+      "font": "Times New Roman",
+      "dpi": 4800,
+      "pixels": [
+        16800,
+        12960
+      ],
+      "one_chart": true,
+      "no_inside_title": true,
+      "no_footnotes": true,
+      "width_inches": 3.5,
+      "height_inches": 2.7
+    },
+    {
+      "number": 19,
+      "stem": "Fig19_four_cells_ibrff",
+      "description_zh": "IB-RFF 的四组合及恢复前后实际准确率",
+      "caption_en": "IB-RFF, F0 cross-RX: A/B/C/D are channel off/PL off, off/on, on/off and on/on. A/C use G-L; B/D use G-LU. Restored PL contrasts also change G source permissions. Three F seeds; mean ± sample SD, conditional on one fixed G per contract and role. Six scenes are averaged within each seed. ",
+      "role": "supplementary",
+      "font": "Times New Roman",
+      "dpi": 4800,
+      "pixels": [
+        16800,
+        12960
+      ],
+      "one_chart": true,
+      "no_inside_title": true,
+      "no_footnotes": true,
+      "width_inches": 3.5,
+      "height_inches": 2.7
+    },
+    {
+      "number": 20,
+      "stem": "Fig20_four_cells_sdg",
+      "description_zh": "SDG 的四组合及恢复前后实际准确率",
+      "caption_en": "SDG, F0 cross-RX: A/B/C/D are channel off/PL off, off/on, on/off and on/on. A/C use G-L; B/D use G-LU. Restored PL contrasts also change G source permissions. Three F seeds; mean ± sample SD, conditional on one fixed G per contract and role. Six scenes are averaged within each seed. ",
+      "role": "supplementary",
+      "font": "Times New Roman",
+      "dpi": 4800,
+      "pixels": [
+        16800,
+        12960
+      ],
+      "one_chart": true,
+      "no_inside_title": true,
+      "no_footnotes": true,
+      "width_inches": 3.5,
+      "height_inches": 2.7
+    },
+    {
+      "number": 21,
+      "stem": "Fig21_F0_seven_views_raw",
+      "description_zh": "F0 跨接收机的 clean 与六种 practical 场景（直接识别）",
+      "caption_en": "F0 cross-RX, clean and all six practical conditions, including those not used for training augmentation. Fixed D external recipes, PAMF supervised C and native T1. Three F seeds; mean ± sample SD, conditional on one fixed G per contract and role. Six scenes are averaged within each seed. ",
+      "role": "main",
+      "font": "Times New Roman",
+      "dpi": 4800,
+      "pixels": [
+        16800,
+        14640
+      ],
+      "one_chart": true,
+      "no_inside_title": true,
+      "no_footnotes": true,
+      "width_inches": 3.5,
+      "height_inches": 3.05
+    },
+    {
+      "number": 22,
+      "stem": "Fig22_F0_seven_views_restored",
+      "description_zh": "F0 跨接收机的 clean 与六种 practical 场景（恢复后）",
+      "caption_en": "F0 cross-RX, clean and all six practical conditions, including those not used for training augmentation. Fixed D external recipes, PAMF supervised C and native T1. Three F seeds; mean ± sample SD, conditional on one fixed G per contract and role. Six scenes are averaged within each seed. ",
+      "role": "main",
+      "font": "Times New Roman",
+      "dpi": 4800,
+      "pixels": [
+        16800,
+        14640
+      ],
+      "one_chart": true,
+      "no_inside_title": true,
+      "no_footnotes": true,
+      "width_inches": 3.5,
+      "height_inches": 3.05
+    }
+  ],
+  "retained_historical_figures": 9
+}
