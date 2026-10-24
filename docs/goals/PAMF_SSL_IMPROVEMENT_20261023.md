@@ -302,3 +302,8 @@ ReliableAs 发布后 VERIFIED：控制器存活及 CWD/完整命令匹配，执�
 
 
 PathReliableAs 发布后 VERIFIED：控制器存活及 CWD/完整命令匹配，执行 commit `2ffbfcb8d04c2abd94ffc24f7f00fac0bebee529`；三 seed QUEUED、GPU worker 0、真实 E20 source smoke PENDING。等待对应 Path GPU 预测完成并保留 ReliableAs 分发优先级，当前 6 个前序 worker 健康。见该 run 的 queue_observation.json，原 raw 双门槛尚未达到，目标继续 ACTIVE。
+
+
+## HPL_E20_JOINT_COMP6G 完整双读出结果
+
+`20261024-phase1-PAMF-HardPL-Complement-m3-r01` 各方法三seed、共3模型，每景168000条，raw／同一DURA七景预测与独立truth-last全部42cell完成；全部新增19980条闭合训练记录已核对。HPL_E20_JOINT_COMP6G / raw clean=84.958929%；HPL_E20_JOINT_COMP6G / DURA-LU clean=85.040079%；HPL_E20_JOINT_COMP6G / raw six_mean=70.252778%；HPL_E20_JOINT_COMP6G / DURA-LU six_mean=76.446362%；原数值目标仍未满足，维持ACTIVE。全部结果、匹配基线、逐seed／场景／分层及成本均保存，不从本结果热改其他已固定方法、父权重或矩阵。

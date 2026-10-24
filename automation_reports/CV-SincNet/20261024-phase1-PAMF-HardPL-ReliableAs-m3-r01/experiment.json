@@ -298,11 +298,11 @@
   ],
   "registered_at": "2026-10-23T23:43:35.247582+00:00",
   "launch_status": {
-    "status": "VERIFIED_REAL_E20_SMOKE_PASS_FIRST_SOURCE_WORKER",
+    "status": "VERIFIED_REAL_E20_RELIABLE_AS_SMOKE_AND_ALL3_SOURCE_RUNNING",
+    "evidence": "source_activation.json",
     "source_smoke": "PASS",
-    "actual_GPU_workers": 1,
-    "queued_rows": 2,
-    "evidence": "first_source_smoke_activation.json",
+    "actual_GPU_workers": 3,
+    "queued_rows": 0,
     "target_matrix_complete": false
   }
 }

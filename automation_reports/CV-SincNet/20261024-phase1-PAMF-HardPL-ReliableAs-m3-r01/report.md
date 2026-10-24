@@ -27,3 +27,10 @@ VERIFIED：执行 commit `0ffe0ba43a6b2ead84db96ff5b98494f29550594` 的控制器
 ## 首个真实权重检查及正式源训练
 
 VERIFIED：首释放 seed 2026092702／GPU6 原E20检查PASS、探针丢弃且正式重载，完整L显式梯度、As谓词与精确raw回退、原raw接受集合、eval归一化与模式恢复全部核实。检查128条As实际采用45、回退83；额外teacher128、真实源Practical192、原学生U1536/L768。正式worker已产生53条原生As/joint/style/guard记录，PID/CWD/命令/GPU与日志独立核实。当前实际1worker、其余2row仍QUEUED；本记录是训练前缀和单批检查，不是完整采用率、完整训练或目标收益。源完整和目标测试均继续自动完成，goal ACTIVE。
+
+
+## 真实 E20 权重检查与三 seed 实际启动
+
+VERIFIED：执行 commit `0ffe0ba43a6b2ead84db96ff5b98494f29550594`，首释放 seed 2026092702／GPU6 原 E20 source smoke PASS。原 raw 接受集合保持；128 条实际 As 生成及额外 eval 中 used=45、精确 raw 回退=83；实际学生物理视图为2×used。教师 raw256＋As128，学生 U1536、L768、实际源 Practical192；门控谓词、eval 归一化状态及训练模式恢复、完整 L anchor 显式梯度、六次学生前向、CE/KL 剂量和临时 wrapper/hook 退出均核实。探针更新丢弃，正式重新加载原 E20。
+
+三个 seed 已在 GPU5/6/7 实际产生原生 ReliableAs、joint、style 和 guard 步骤，PID/CWD/完整命令/GPU/日志增长独立核实。这里只确认源训练启动，完整 E50、raw／DURA 七景与独立 truth-last 尚未完成；目标仍 ACTIVE。

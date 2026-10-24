@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "status": "VERIFIED_REAL_E20_RELIABLE_AS_SMOKE_AND_ALL3_SOURCE_RUNNING",
   "focused_tests": 77,
   "independent_review": {
     "status": "PASS",
@@ -9,6 +9,6 @@
     "scope": "Only P0/P1 defects directly making the next ReliableAs run wrong,unauthorized,destructive,unlaunchable or unable to predict legally",
     "finding": "Raw acceptance retained,unreliable As replaced by exactraw;teacher eval restoration,exposure counters,fullL guard and GPU/scorer handoff correct."
   },
-  "real_checkpoint_smoke": "PASS;actual originalE20/firstsourceworker;first_source_smoke_activation.json",
+  "real_checkpoint_smoke": "PASS;originalE20 actual As predicate/exactraw fallback/eval norm/mode/fullLguard/budget;source_activation.json",
   "current_Complement_or_Path_target_scores_read": false
 }
