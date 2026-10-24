@@ -24,10 +24,10 @@
   "replaces_run_id": null,
   "authorization": "2026-10-24 用户要求重新完成所有 PAMF 相关实验、优化发布与加速，全部显卡可用，DURA 不重跑除非补实验。",
   "code": {
-    "commit": "PENDING_RELEASE_COMMIT_RECORDED_IN_RUNTIME",
+    "commit": "dacafc8bfd7d3ef16e6f648cdc4491b65133ae8f",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 CVS-RFFI Python/Torch2.1, FP32/TF32off",
-    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01"
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-control-r02"
   },
   "data": {
     "dataset": "ManySig/ManyRx; 11 existing VALIDATED_ONCE contracts",
@@ -86,8 +86,9 @@
     "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01",
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs",
     "local_artifact_root": "local_artifacts/pamf_repl_completion_20261024",
-    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
-    "stop_rule": "Two identical unresolved technical fingerprints stop new dispatch; preserve all healthy/foreign workers and immutable artifacts; no target-result stopping or selection."
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-control-r02/runtime.json",
+    "stop_rule": "Two identical unresolved technical fingerprints stop new dispatch; preserve all healthy/foreign workers and immutable artifacts; no target-result stopping or selection.",
+    "execution_release": "20261024-phase1-PAMF-REPL-control-r02"
   },
   "expected_artifacts": [
     "source smoke PASS",
@@ -6767,7 +6768,8 @@
     "Full111 main REPL and110 matched supervision reused in full eight-cell analysis. 000 is exposure-matched768 L packet forwards, distinct from384 strict CE.",
     "Four timing panels450+450+100+175; G combinations GF only, pure G not rerun. F eager/GF existing graph execution are stated separately.",
     "Four correct practical-residual Full external results reused; no new external CE/fixed-L/m5/chrono/fine15/150 timing expansion.",
-    "Existing historical T1 experiments retain T1 labels; no relabeling as REPL. Old F11-14 native EMA/gates not current mechanism and replaced by actual REPL inner ablations."
+    "Existing historical T1 experiments retain T1 labels; no relabeling as REPL. Old F11-14 native EMA/gates not current mechanism and replaced by actual REPL inner ablations.",
+    "发布前可选旧规划依赖缺失被导入检查拦截；无controller/model启动。新control-r02保持原201科学矩阵并成功启动，旧包保留。"
   ],
   "matrix": {
     "run_id": "20261024-phase1-PAMF-REPL-completion-m201-r01",

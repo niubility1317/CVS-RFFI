@@ -27,3 +27,13 @@
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+## 发布实际状态（2026-10-24）
+
+VERIFIED：实际执行版本 `dacafc8bfd7d3ef16e6f648cdc4491b65133ae8f`，修复发布 `20261024-phase1-PAMF-REPL-control-r02`。源码已push并独立核对remoteOID；单发布包传输SHA一致、远端编译和隔离导入PASS。
+
+真实同契约E20 checkpoint源侧smoke PASS：768 L前向、256隐藏标签U、6学生视图、全部REPL机制有效梯度；target读取0/U真值读取0，无正式更新。
+
+独立核查八卡共24个GPU worker，各卡不超过3，计入全机其他进程；16个同PID日志跨137.1秒增长。实际快照见launch_verification.json，不把快照当固定当前数。
+
+所有当前F/读出/统计/时延及论文图表交付仍在执行；不能把发布或smoke当性能完成。DURA新增训练0，IQ恢复缓存新增0。189新F通过84唯一E20前段共享减少重复，目标分数不回流训练、参数、队列或选模。
