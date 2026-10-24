@@ -339,5 +339,15 @@
       "reference_method": "HPL_E20_NAMS_JOINT6G",
       "reference": "HPL_E20_JOINT_RAS6G_matched_comparison.md"
     }
+  },
+  "source_diagnostics": {
+    "actual_U_utilization": {
+      "status": "VERIFIED_COMPLETE_SOURCE_UTILIZATION",
+      "reference": "actual_source_utilization.json",
+      "complete_native_step_records": 19980,
+      "extra_model_forwards": 0,
+      "U_truth_reads": 0,
+      "recipe_changed": false
+    }
   }
 }
