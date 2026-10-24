@@ -1,7 +1,11 @@
 """One result-independent matrix, consumed by registration and execution."""
 from copy import deepcopy
-from experiments.phase1_external_dg.plan import native_row, SEEDS, VIEWS
-from experiments.cric_dura_comparison.plan import make_plan as previous_plan
+
+# Runtime consumers need only these immutable constants. The historical matrix
+# builders are optional planning dependencies, absent from compact releases.
+SEEDS=(2026092701,2026092702,2026092703)
+VIEWS=('clean','practical_high','practical_mid','practical_low_suburban',
+       'practical_high_urban','practical_mid_urban','practical_low_urban')
 
 RUN='20261023-phase1-practical-residual-full2x2-m600-r01'
 FAMILIES=('riei','drift','ibrff','sdg')
@@ -12,6 +16,8 @@ TASKS=('cross_date','cross_rx','cross_both')
 NEW_RX={'F1_rx_repartition_r01':[0,1,2,5,7], 'F2_rx_repartition_r01':[0,3,9,10,11]}
 
 def make_plan():
+    from experiments.phase1_external_dg.plan import native_row
+    from experiments.cric_dura_comparison.plan import make_plan as previous_plan
     old=previous_plan();protocols={}
     for pid in ('F0',*NEW_RX,'ManyRx','label01','label05',*[f'm{m}-natural' for m in (1,2,3,4,6)]):
         p=deepcopy(old['protocols']['F0' if pid in NEW_RX else pid])

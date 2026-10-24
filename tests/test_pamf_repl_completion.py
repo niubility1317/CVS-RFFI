@@ -21,6 +21,11 @@ def fixture_context():
     return ctx
 
 class MatrixTest(unittest.TestCase):
+    def test_runtime_import_without_historical_matrix_builders(self):
+        import subprocess,sys
+        code="import sys;sys.modules['experiments.phase1_external_dg']=None;from experiments.practical_full_2x2 import cache,pamf_model,augmentation;from experiments.pamf_repl_completion import evaluation,prepare,source,timing;from experiments.cric_dura_comparison import pipeline;from experiments.pamf_ssl_research import hard_pl_worker;assert len(cache.SCENES)==3;print('PASS')"
+        p=subprocess.run([sys.executable,'-c',code],capture_output=True,text=True)
+        self.assertEqual(0,p.returncode,p.stderr)
     def test_exact_authorized_scope_and_reuse(self):
         p=make_plan();self.assertEqual(201,len(p['rows']));self.assertEqual(189,sum(not r['reuse'] for r in p['rows']))
         self.assertEqual(84,p['shared_E20_prefixes']);self.assertEqual(1924740,p['new_unique_updates'])

@@ -1,0 +1,10 @@
+{
+  "status": "RESOLVED_PACKAGING_FAILURE",
+  "failed_release": "20261024-phase1-PAMF-REPL-completion-m201-r01",
+  "failed_commit": "e6924859ae159cd18a2f89a9793f5990fb89b9a1",
+  "controller_started": false,
+  "model_workers_started": 0,
+  "issue": "runtime constants eagerly imported optional historical matrix builder",
+  "fix": "defer historical matrix imports until make_plan; retain all constant values and scientific matrix",
+  "replacement_release": "20261024-phase1-PAMF-REPL-control-r02"
+}

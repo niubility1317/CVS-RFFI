@@ -31,7 +31,9 @@ for pair in ctx['caches'].values():
 env=dict(os.environ,PYTHONPATH=str(release),CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2')
 subprocess.run([rt['python'],'-m','compileall','-q',str(release/'experiments/pamf_repl_completion')],cwd=release,env=env,check=True)
 probe="import json;from experiments.pamf_repl_completion.runner import activate;c=json.load(open("+repr(rt['runtime_file'])+"));activate(c);from experiments.pamf_repl_completion.plan import make_plan;from experiments.pamf_repl_completion import source,prepare,evaluation,objectives,timing;assert len(make_plan()['rows'])==201;print('BOOTSTRAP_IMPORT_PASS')"
-subprocess.run([rt['python'],'-c',probe],cwd=release,env=env,check=True,capture_output=True)
+probe+=';from experiments.practical_full_2x2 import cache,pamf_model,augmentation;from experiments.cric_dura_comparison import pipeline;from experiments.pamf_ssl_research import hard_pl_worker;print("RUNTIME_DEPENDENCIES_PASS")'
+check=subprocess.run([rt['python'],'-c',probe],cwd=release,env=env,capture_output=True,text=True)
+if check.returncode:raise RuntimeError(check.stderr)
 cmd=[rt['python'],'-u','-m','experiments.pamf_repl_completion.runner','dispatch','--config',rt['runtime_file']]
 log=release/'controller.log'
 with log.open('x') as stream:child=subprocess.Popen(cmd,cwd=release,env=env,stdin=subprocess.DEVNULL,stdout=stream,stderr=subprocess.STDOUT,start_new_session=True)
@@ -39,18 +41,18 @@ r=dict(status='SUBMITTED_NOT_YET_VERIFIED',pid=child.pid,cwd=str(release),argv=c
 (release/'submit.json').write_text(json.dumps(r,indent=2)+'\n');print(json.dumps(r))
 '''
 
-def publish(repo,output):
+def publish(repo,output,release_id):
     repo=Path(repo);out=Path(output);out.mkdir(parents=True,exist_ok=True)
     def git(*a):return subprocess.check_output(['git','-C',str(repo),*a])
     commit=git('rev-parse','HEAD').decode().strip();branch=git('branch','--show-current').decode().strip()
     if git('ls-remote','origin','refs/heads/'+branch).decode().split()[0]!=commit:raise ValueError('Remote OID not verified')
     context=json.loads((out/'context.json').read_text(encoding='utf-8'));prior=context['runtime'];project=prior['project']
-    release=project+'/releases/'+RUN;run=project+'/runs/'+RUN
+    release=project+'/releases/'+release_id;run=project+'/runs/'+RUN
     rt=dict(run_id=RUN,project=project,release_root=release,run_root=run,code_commit=commit,python=prior['python'],
         frozen_sources=prior['frozen_sources'],context=release+'/context.json',matrix=release+'/experiment.json',runtime_file=release+'/runtime.json',
         allowed_gpus=list(range(8)),max_per_GPU=3,max_total_GPU_compute=24,new_G=0,new_restored_IQ_cache=0,
         launch_owner='codex-pamf-repl-completion-20261024')
-    archive=out/(RUN+'.tar.gz')
+    archive=out/(release_id+'.tar.gz')
     if archive.exists():raise FileExistsError('Reconcile prior publication before retry')
     paths=git('ls-files','-z','--','experiments','code','baselines').decode().split('\0')
     paths={p for p in paths if p and Path(p).suffix in ('.py','.json','.txt','.yaml','.yml','.toml')}
@@ -73,4 +75,4 @@ def publish(repo,output):
     (out/'submit.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8');print(json.dumps(result),flush=True)
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--repo',required=True);p.add_argument('--output',required=True);a=p.parse_args();publish(a.repo,a.output)
+    p=argparse.ArgumentParser();p.add_argument('--repo',required=True);p.add_argument('--output',required=True);p.add_argument('--release-id',required=True);a=p.parse_args();publish(a.repo,a.output,a.release_id)
