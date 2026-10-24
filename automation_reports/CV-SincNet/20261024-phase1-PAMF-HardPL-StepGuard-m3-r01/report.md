@@ -14,3 +14,6 @@ REGISTERED，尚未启动。源域规则已经通过，生产路径87项检查�
 
 
 生产实现 87 项相关检查 PASS，唯一一次独立训练 P0/P1审查 PASS。真实原E20 GPU检查仍是launcher第一步，通过后立即丢弃探针并重载原父训练；当前尚未发布或启动。
+
+
+独立发布后核验：VERIFIED_REAL_E20_STEP_GUARD_SMOKE_AND_ALL3_SOURCE_RUNNING，执行commit `6459bc989343622564e232bbe0f67cd7479946d4`，实际正式GPU worker 3。源检查 PASS；详见 source_activation.json。验证以实际PID/CWD/完整命令/GPU/日志及参数更新记录为据，排队、探针或源前缀均不代表目标达成。保留健康任务，自动训练、raw与固定DURA七景、独立truth-last继续按原矩阵执行。

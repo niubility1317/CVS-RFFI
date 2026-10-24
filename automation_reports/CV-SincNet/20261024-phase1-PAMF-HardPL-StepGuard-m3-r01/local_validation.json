@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "status": "VERIFIED_REAL_E20_STEP_GUARD_SMOKE_AND_ALL3_SOURCE_RUNNING",
   "checks": [
     {
       "evidence": "hard_pl_step_guard_focused_tests.xml",
@@ -11,7 +11,7 @@
     }
   ],
   "total_checks": 87,
-  "real_checkpoint_smoke": "PENDING_FIRST_GPU_ACTION",
+  "real_checkpoint_smoke": "PASS",
   "independent_review": {
     "status": "PASS",
     "reviewer": "/root/ssl_p0p1_review",

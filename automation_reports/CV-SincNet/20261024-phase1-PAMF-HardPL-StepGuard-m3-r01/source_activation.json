@@ -1,0 +1,498 @@
+{
+  "status": "VERIFIED_REAL_E20_STEP_GUARD_SMOKE_AND_ALL3_SOURCE_RUNNING",
+  "execution_commit": "6459bc989343622564e232bbe0f67cd7479946d4",
+  "observed_unix": 1792826118.4199016,
+  "source_smoke": "PASS",
+  "actual_original_E20_smoke": {
+    "status": "PASS",
+    "methods": [
+      {
+        "method": "HPL_E20_AS_SG2",
+        "model_seed": 2026092701,
+        "parent_epoch": 20,
+        "parent_updates": 4440,
+        "L_forward_packets": 768,
+        "U_seen": 256,
+        "U_accepted": 235,
+        "student_U_views": 1536,
+        "physical_U_generated": 128,
+        "physical_student_views": 256,
+        "raw_U_As_seen": 0,
+        "U_As_raw_input_matches": false,
+        "source_Practical_generated": 192,
+        "contrast_anchors": {
+          "time_down": 470,
+          "t2.pool": 470
+        },
+        "shallow_middle_gradient": true,
+        "ordinary_raw_RDrop": true,
+        "As_KL_weight": 0,
+        "weight": 6.0,
+        "threshold": 0.95,
+        "EMA_updates": 0,
+        "finite_backward": true,
+        "default_head_gradient": true,
+        "feature_hooks_removed": true,
+        "U_label_smoothing": 0.01,
+        "U_parameter_step_guard": {
+          "calls": 1,
+          "anchor_captures": 1,
+          "reference_optimizer_steps": 1,
+          "reference_physical_clip_calls": 1,
+          "pending_anchors": false,
+          "copied_existing_moments": true,
+          "live_joint_optimizer_state_retained": true,
+          "reference_has_no_model_forward": true,
+          "extra_autograd_calls": 0,
+          "extra_model_forwards": 0,
+          "fallback_groups": 0,
+          "removed_material_conflicts": 9,
+          "minimum_whole_increment_retention": 0.9999078763937822,
+          "seconds": 0.3039642309304327,
+          "U_truth_reads": 0,
+          "target_reads": 0,
+          "new_head": false,
+          "new_inference_parameters": 0,
+          "details": {
+            "t2": {
+              "raw_increment_norm": 0.01981822285091636,
+              "applied_increment_norm": 0.018759531981948012,
+              "retention": 0.9465799291423652,
+              "quantization_fallback": false,
+              "fallback_reason": null,
+              "tiny_L": false,
+              "passthrough": false,
+              "quantization_attempts_used": 1,
+              "actual_parameter_check": true,
+              "norm_nonexpansion": true,
+              "active_set": [
+                "L_clean",
+                "L_As"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "anchor_cosines_before": {
+                "L_full": -0.3150913323129708,
+                "L_clean": -0.28475943286012373,
+                "L_As": -0.1343227635866982
+              },
+              "anchor_cosines_after": {
+                "L_full": 0.0029330089259350296,
+                "L_clean": 5.2787354895611195e-08,
+                "L_As": 2.6136921685239613e-07
+              },
+              "constraint_dots_after": {
+                "L_full": 1.0440035960459967e-05,
+                "L_clean": 1.7046097127278387e-10,
+                "L_As": 4.126436917009158e-10
+              },
+              "near_zero_component_anchors_omitted": []
+            },
+            "cls_head": {
+              "raw_increment_norm": 0.010784135338388226,
+              "applied_increment_norm": 0.010599277762997478,
+              "retention": 0.9828583776454742,
+              "quantization_fallback": false,
+              "fallback_reason": null,
+              "tiny_L": false,
+              "passthrough": false,
+              "quantization_attempts_used": 1,
+              "actual_parameter_check": true,
+              "norm_nonexpansion": true,
+              "active_set": [
+                "L_full",
+                "L_clean"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "anchor_cosines_before": {
+                "L_full": -0.1673318210878193,
+                "L_clean": -0.18419500704495598,
+                "L_As": -0.012153861976367126
+              },
+              "anchor_cosines_after": {
+                "L_full": 1.745695728990289e-07,
+                "L_clean": 1.9867161347402208e-07,
+                "L_As": 8.769377247001276e-09
+              },
+              "constraint_dots_after": {
+                "L_full": 1.200511423933993e-09,
+                "L_clean": 1.1998486997385387e-09,
+                "L_As": 2.7647762138244877e-11
+              },
+              "near_zero_component_anchors_omitted": []
+            },
+            "other": {
+              "raw_increment_norm": 1.92100708985325,
+              "applied_increment_norm": 1.9208417555756259,
+              "retention": 0.9999139335411631,
+              "quantization_fallback": false,
+              "fallback_reason": null,
+              "tiny_L": false,
+              "passthrough": false,
+              "quantization_attempts_used": 1,
+              "actual_parameter_check": true,
+              "norm_nonexpansion": true,
+              "active_set": [
+                "L_full",
+                "L_As"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "anchor_cosines_before": {
+                "L_full": -0.0129767271713811,
+                "L_clean": -0.010136066726131435,
+                "L_As": -0.006145799061244899
+              },
+              "anchor_cosines_after": {
+                "L_full": -3.663886709940331e-09,
+                "L_clean": 0.000258779050050064,
+                "L_As": -3.407916478603986e-10
+              },
+              "constraint_dots_after": {
+                "L_full": -6.706646537549179e-09,
+                "L_clean": 0.00044131118635978666,
+                "L_As": -2.977862136293707e-10
+              },
+              "near_zero_component_anchors_omitted": []
+            }
+          },
+          "probe_updates_discarded": true,
+          "formal_original_parent_reloaded": true
+        },
+        "U_style": {
+          "recipe": {
+            "levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "alpha": 0.1,
+            "probability_per_level": 0.5,
+            "eps": 1e-06,
+            "accepted_only": true,
+            "same_hard_pseudo": true,
+            "different_source_RX": true,
+            "detached_moments": true
+          },
+          "calls": 6,
+          "seen": 1536,
+          "eligible": 1410,
+          "applied": {
+            "time_down": 1410,
+            "t2.pool": 1410
+          },
+          "persistent_hooks": false,
+          "teacher_or_L_style_calls": 0,
+          "partner_TX_truth_reads": 0,
+          "shared_six_forward_plan": true,
+          "plan_calls": 1,
+          "contrast_captures_after_style": true
+        },
+        "U_gradient_guard": {
+          "recipe": {
+            "weight": 6.0,
+            "projection": "simultaneous_three_L_anchors_per_group",
+            "groups": [
+              "t2",
+              "cls_head",
+              "other"
+            ],
+            "U_to_L_norm_cap": 2.0,
+            "tiny_L_squared_norm": 1e-12,
+            "anchor": "complete_L_nonphysical_L_physical_L",
+            "optimizer": "unchanged_native_Adam",
+            "extra_teacher_or_student_forward": false
+          },
+          "calls": 1,
+          "conflicts": {
+            "t2": 1,
+            "cls_head": 1,
+            "other": 1
+          },
+          "caps": {
+            "t2": 1,
+            "cls_head": 0,
+            "other": 1
+          },
+          "pending_U_loss": false
+        },
+        "gradient_guard_details": {
+          "t2": {
+            "L_norm": 0.18974337039598155,
+            "U_norm": 0.6349391652740406,
+            "applied_U_norm": 0.3794867405234203,
+            "dot_before": -0.043357832804355484,
+            "dot_after": 0.0011280060596160443,
+            "conflict": true,
+            "capped": true,
+            "tiny_L": false,
+            "anchor_cosines_before": {
+              "L_full": -0.3598892206835769,
+              "L_clean": -0.3983096582057799,
+              "L_As": -0.026357474854883354
+            },
+            "anchor_cosines_after": {
+              "L_full": 0.015665642664916265,
+              "L_clean": 4.0132467463386066e-10,
+              "L_As": 2.1469470868225566e-10
+            },
+            "constraint_dots_after": {
+              "L_full": 0.0011280060596160443,
+              "L_clean": 2.6215945592763384e-11,
+              "L_As": 6.856724836892293e-12
+            },
+            "active_set": [
+              "L_clean",
+              "L_As"
+            ],
+            "cone_correction_norm": 0.25487635611835496,
+            "solver": "thin_QR_and_active_set_SVD",
+            "numerical_zero_projection": false,
+            "near_zero_component_anchors_omitted": []
+          },
+          "cls_head": {
+            "L_norm": 0.6488158852848492,
+            "U_norm": 0.9056617150062138,
+            "applied_U_norm": 0.8760316788433443,
+            "dot_before": -0.11259118689451232,
+            "dot_after": 0.019903810742408906,
+            "conflict": true,
+            "capped": false,
+            "tiny_L": false,
+            "anchor_cosines_before": {
+              "L_full": -0.19160944534670182,
+              "L_clean": -0.2536977152942217,
+              "L_As": 0.06802817083979157
+            },
+            "anchor_cosines_after": {
+              "L_full": 0.0350182910359089,
+              "L_clean": -1.7057117793623357e-09,
+              "L_As": 0.07638384790872463
+            },
+            "constraint_dots_after": {
+              "L_full": 0.019903810742408906,
+              "L_clean": -8.514121686321874e-10,
+              "L_As": 0.019903813869782374
+            },
+            "active_set": [
+              "L_clean"
+            ],
+            "cone_correction_norm": 0.22976430792652308,
+            "solver": "thin_QR_and_active_set_SVD",
+            "numerical_zero_projection": false,
+            "near_zero_component_anchors_omitted": []
+          },
+          "other": {
+            "L_norm": 0.952953684985392,
+            "U_norm": 2.58206487762876,
+            "applied_U_norm": 1.9059073680937269,
+            "dot_before": -0.9013918519790451,
+            "dot_after": 0.01025382675812647,
+            "conflict": true,
+            "capped": true,
+            "tiny_L": false,
+            "anchor_cosines_before": {
+              "L_full": -0.3663318540351274,
+              "L_clean": -0.4260616251686508,
+              "L_As": 0.07311131573803042
+            },
+            "anchor_cosines_after": {
+              "L_full": 0.00564562974818885,
+              "L_clean": 3.880569233193707e-11,
+              "L_As": 0.007614245522092219
+            },
+            "constraint_dots_after": {
+              "L_full": 0.01025382675812647,
+              "L_clean": 6.566311160576639e-11,
+              "L_As": 0.006601653454453577
+            },
+            "active_set": [
+              "L_clean"
+            ],
+            "cone_correction_norm": 1.1001187580534033,
+            "solver": "thin_QR_and_active_set_SVD",
+            "numerical_zero_projection": false,
+            "near_zero_component_anchors_omitted": []
+          }
+        },
+        "explicit_backward_matches": true,
+        "complete_L_anchor": true,
+        "U_joint_contrast": {
+          "recipe": {
+            "feature": "actual_CompositeReference_features_joint160",
+            "weight": 0.05,
+            "CE_normalizer": 1.25,
+            "student_views": "first_two_ordinary_U_passes",
+            "accepted_only": true,
+            "positive": "same_pseudo_different_source_RX",
+            "contrast": "same_native_CROSS_RX_temperature0.2",
+            "extra_forward": false,
+            "new_head": false
+          },
+          "calls": 1,
+          "captures": 2,
+          "captured_packets": 512,
+          "anchors": 470,
+          "extra_forward_calls": 0,
+          "teacher_or_L_captures": 0,
+          "persistent_feature_wrapper": false
+        },
+        "U_joint_signature_gradient_norm": 0.43525848207789264,
+        "joint160_gradient": true,
+        "joint_feature_wrapper_removed": true,
+        "U_native_As": {
+          "recipe": {
+            "generator": "same_native_source_Practical_as_supervised_L",
+            "physical_half": "same_original_alternating_half",
+            "pseudo_labels": "original_raw_argmax",
+            "raw_gate": 0.95,
+            "augmented_view_gate": null,
+            "raw_fallback": false,
+            "CE_and_KL_coefficients_unchanged": true,
+            "CE_normalizer": 1.25,
+            "student_U_passes": 6,
+            "extra_As_teacher": 0,
+            "extra_student_forwards": 0,
+            "new_head": false
+          },
+          "calls": 1,
+          "generated": 128,
+          "student_physical_views": 256,
+          "raw_accepted_half": 117,
+          "accepted_student_views": 234,
+          "raw_fallback": 0,
+          "extra_As_teacher": 0,
+          "all_raw_accepted_retained": true,
+          "extra_student_forwards": 0,
+          "new_head": false,
+          "EMA_updates": 0,
+          "U_truth_read": false,
+          "CE_dose_normalizer": 1.25
+        },
+        "native_As_input_matches": true,
+        "nonphysical_ordinary_input_matches": true,
+        "teacher_U_raw_views": 256,
+        "teacher_U_As_views": 0,
+        "teacher_U_total_views": 256,
+        "all_raw_accepted_retained": true,
+        "CE_and_KL_coefficients_unchanged": true,
+        "U_to_L_norm_cap": 2.0,
+        "cap2_effective_groups": [
+          "t2",
+          "cls_head",
+          "other"
+        ],
+        "cap2_effective_on_real_checkpoint": true,
+        "negative_dot_projection_unchanged": false,
+        "extra_autograd_passes": 2,
+        "U_branch_guard": {
+          "recipe": {
+            "anchors": [
+              "L_full",
+              "L_clean",
+              "L_As"
+            ],
+            "projection": "simultaneous_three_L_anchors_per_group",
+            "U_to_L_norm_cap": 2.0,
+            "components": "same_four_original_L_pair_results",
+            "nonphysical_coefficients": [
+              0.5,
+              0.25,
+              0.25
+            ],
+            "physical_coefficient": 0.25,
+            "full_L_unchanged": true,
+            "solver": "thin_QR_and_active_set_SVD",
+            "gradient_calls": 4,
+            "extra_autograd_passes": 2,
+            "extra_teacher_or_student_forward": 0,
+            "raw_gate": 0.95,
+            "U_weight": 6.0,
+            "tiny_L_squared_norm": 1e-12,
+            "pinv_rtol": 1e-10,
+            "KKT_relative_tolerance": 1e-08,
+            "actual_cast_constraint_cosine_tolerance": 1e-06,
+            "new_head": false
+          },
+          "calls": 1,
+          "gradient_calls": 4,
+          "extra_autograd_calls": 2,
+          "L_pair_captures": 4,
+          "pending_capture": false,
+          "pending_U_loss": false,
+          "anchor_conflicts": {
+            "t2": {
+              "L_full": 1,
+              "L_clean": 1,
+              "L_As": 1
+            },
+            "cls_head": {
+              "L_full": 1,
+              "L_clean": 1,
+              "L_As": 0
+            },
+            "other": {
+              "L_full": 1,
+              "L_clean": 1,
+              "L_As": 0
+            }
+          },
+          "extra_teacher_or_student_forward": 0,
+          "new_head": false,
+          "U_truth_reads": 0,
+          "target_reads": 0
+        },
+        "simultaneous_full_and_component_L_anchors": true,
+        "actual_gradient_calls_including_joint_smoke": 5,
+        "L_pair_capture_context_removed": true,
+        "complete_L_unchanged": true,
+        "additional_L_derivatives": 2
+      }
+    ],
+    "target_reads": 0,
+    "U_truth_reads": 0,
+    "probe_updates_discarded": true,
+    "formal_reload_original_parent_epoch": 20,
+    "formal_reload_original_F21_E30": false,
+    "immediate_continuation": true
+  },
+  "actual_GPU_workers": 3,
+  "training_started": true,
+  "rows": [
+    {
+      "row_id": "HPL_E20_AS_SG2-s2026092701",
+      "model_seed": 2026092701,
+      "gpu": 5,
+      "pid": 2864032,
+      "process_identity_verified": true,
+      "complete_loss_records": 70,
+      "complete_parameter_update_records": 25,
+      "fallback_groups": 0,
+      "reference_and_projection_seconds": 6.163601828739047
+    },
+    {
+      "row_id": "HPL_E20_AS_SG2-s2026092702",
+      "model_seed": 2026092702,
+      "gpu": 6,
+      "pid": 2864037,
+      "process_identity_verified": true,
+      "complete_loss_records": 70,
+      "complete_parameter_update_records": 30,
+      "fallback_groups": 0,
+      "reference_and_projection_seconds": 5.049658364150673
+    },
+    {
+      "row_id": "HPL_E20_AS_SG2-s2026092703",
+      "model_seed": 2026092703,
+      "gpu": 7,
+      "pid": 2864042,
+      "process_identity_verified": true,
+      "complete_loss_records": 81,
+      "complete_parameter_update_records": 30,
+      "fallback_groups": 0,
+      "reference_and_projection_seconds": 4.273703604005277
+    }
+  ],
+  "all_three_started": true,
+  "target_matrix_complete": false,
+  "target_scores_read": false,
+  "healthy_jobs_changed": false,
+  "goal_complete": false
+}
