@@ -1,0 +1,1741 @@
+{
+  "status": "VERIFIED_FIXED_SOURCE_CAP_COUNTERFACTUAL",
+  "analysis_code_commit": "44d38cc9a72021d5e6395a213729555873354165",
+  "source_records": 19980,
+  "source_models": 3,
+  "seconds": 65.67604167200625,
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "row_id": "HPL_E20_NAMS_JOINT6G-s2026092701",
+      "source_execution_commit": "77498c5a8b003f3afc71fab7ee96ca39662593fa",
+      "source_epoch": 50,
+      "source_updates": 11100,
+      "source_records": 6660,
+      "original_E20_source_V_precision": {
+        "model_seed": 2026092701,
+        "samples": 27000,
+        "threshold": 0.95,
+        "accepted": 25054,
+        "correct": 25029,
+        "wrong": 25,
+        "accepted_accuracy_percent": 99.90021553444559
+      },
+      "summary": {
+        "records": 6660,
+        "seen": 1701000,
+        "accepted": 1615077,
+        "groups": {
+          "t2": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.1683689923533656
+            },
+            "cap1_applied_U_norm": {
+              "count": 6660,
+              "mean": 0.13731719426189737
+            },
+            "cap2_applied_U_norm": {
+              "count": 6660,
+              "mean": 0.17772073515490702
+            },
+            "cap1_applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.8811028872498639
+            },
+            "cap2_applied_U_to_L": {
+              "count": 6660,
+              "mean": 1.1884139900065915
+            },
+            "cap1_capped": {
+              "count": 6660,
+              "mean": 0.5903903903903904
+            },
+            "cap2_capped": {
+              "count": 6660,
+              "mean": 0.12327327327327327
+            },
+            "cap1_dot_after": {
+              "count": 6660,
+              "mean": 0.0017648984693650557
+            },
+            "cap2_dot_after": {
+              "count": 6660,
+              "mean": 0.0022609569893107286
+            },
+            "cap1_combined_gradient_norm_squared": {
+              "count": 6660,
+              "mean": 0.06501831519620384
+            },
+            "cap2_combined_gradient_norm_squared": {
+              "count": 6660,
+              "mean": 0.08147720847450216
+            },
+            "relative_applied_U_to_L_increase": 0.34878004283463454
+          },
+          "cls_head": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.5670802878658325
+            },
+            "cap1_applied_U_norm": {
+              "count": 6660,
+              "mean": 0.26362876899107324
+            },
+            "cap2_applied_U_norm": {
+              "count": 6660,
+              "mean": 0.2762649059215922
+            },
+            "cap1_applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.5621885800745104
+            },
+            "cap2_applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.5988267140556729
+            },
+            "cap1_capped": {
+              "count": 6660,
+              "mean": 0.12387387387387387
+            },
+            "cap2_capped": {
+              "count": 6660,
+              "mean": 0.004354354354354354
+            },
+            "cap1_dot_after": {
+              "count": 6660,
+              "mean": 0.030409249112302493
+            },
+            "cap2_dot_after": {
+              "count": 6660,
+              "mean": 0.03132640431797141
+            },
+            "cap1_combined_gradient_norm_squared": {
+              "count": 6660,
+              "mean": 0.6281859775967645
+            },
+            "cap2_combined_gradient_norm_squared": {
+              "count": 6660,
+              "mean": 0.6415154874892849
+            },
+            "relative_applied_U_to_L_increase": 0.06517054113106772
+          },
+          "other": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 1.2812447582715472
+            },
+            "cap1_applied_U_norm": {
+              "count": 6660,
+              "mean": 0.8684138380272793
+            },
+            "cap2_applied_U_norm": {
+              "count": 6660,
+              "mean": 1.0673753401760477
+            },
+            "cap1_applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.8285719389426325
+            },
+            "cap2_applied_U_to_L": {
+              "count": 6660,
+              "mean": 1.0801898420117468
+            },
+            "cap1_capped": {
+              "count": 6660,
+              "mean": 0.5244744744744745
+            },
+            "cap2_capped": {
+              "count": 6660,
+              "mean": 0.08753753753753754
+            },
+            "cap1_dot_after": {
+              "count": 6660,
+              "mean": 0.20045683265429234
+            },
+            "cap2_dot_after": {
+              "count": 6660,
+              "mean": 0.23209280505994329
+            },
+            "cap1_combined_gradient_norm_squared": {
+              "count": 6660,
+              "mean": 3.8894513598173748
+            },
+            "cap2_combined_gradient_norm_squared": {
+              "count": 6660,
+              "mean": 4.402927727523749
+            },
+            "relative_applied_U_to_L_increase": 0.30367659251194545
+          }
+        },
+        "whole_parameter_gradient": {
+          "cap1_applied_U_to_L": {
+            "count": 6660,
+            "mean": 0.785240560859557
+          },
+          "cap2_applied_U_to_L": {
+            "count": 6660,
+            "mean": 1.003780171097768
+          },
+          "cap1_combined_gradient_norm": {
+            "count": 6660,
+            "mean": 1.8316633272732585
+          },
+          "cap2_combined_gradient_norm": {
+            "count": 6660,
+            "mean": 1.991319783358806
+          },
+          "cap1_combined_norm_gt5": {
+            "count": 6660,
+            "mean": 0.025375375375375375
+          },
+          "cap2_combined_norm_gt5": {
+            "count": 6660,
+            "mean": 0.025375375375375375
+          },
+          "relative_applied_U_to_L_increase": 0.2783091209641394
+        },
+        "scientific_rule_pass": true
+      },
+      "segments": [
+        {
+          "records": 2220,
+          "seen": 567000,
+          "accepted": 530974,
+          "groups": {
+            "t2": {
+              "L_norm": {
+                "count": 2220,
+                "mean": 0.1938431437271158
+              },
+              "cap1_applied_U_norm": {
+                "count": 2220,
+                "mean": 0.16143483174714215
+              },
+              "cap2_applied_U_norm": {
+                "count": 2220,
+                "mean": 0.212517703466973
+              },
+              "cap1_applied_U_to_L": {
+                "count": 2220,
+                "mean": 0.9131725173669089
+              },
+              "cap2_applied_U_to_L": {
+                "count": 2220,
+                "mean": 1.2595627998517618
+              },
+              "cap1_capped": {
+                "count": 2220,
+                "mean": 0.6725225225225225
+              },
+              "cap2_capped": {
+                "count": 2220,
+                "mean": 0.12117117117117117
+              },
+              "cap1_dot_after": {
+                "count": 2220,
+                "mean": 0.002351065056606435
+              },
+              "cap2_dot_after": {
+                "count": 2220,
+                "mean": 0.0030767986746302323
+              },
+              "cap1_combined_gradient_norm_squared": {
+                "count": 2220,
+                "mean": 0.09140660238160896
+              },
+              "cap2_combined_gradient_norm_squared": {
+                "count": 2220,
+                "mean": 0.11434669172251094
+              }
+            },
+            "cls_head": {
+              "L_norm": {
+                "count": 2220,
+                "mean": 0.604814347840394
+              },
+              "cap1_applied_U_norm": {
+                "count": 2220,
+                "mean": 0.3176920983860385
+              },
+              "cap2_applied_U_norm": {
+                "count": 2220,
+                "mean": 0.33697958993383414
+              },
+              "cap1_applied_U_to_L": {
+                "count": 2220,
+                "mean": 0.6356494386626195
+              },
+              "cap2_applied_U_to_L": {
+                "count": 2220,
+                "mean": 0.6886143125448712
+              },
+              "cap1_capped": {
+                "count": 2220,
+                "mean": 0.1725225225225225
+              },
+              "cap2_capped": {
+                "count": 2220,
+                "mean": 0.008108108108108109
+              },
+              "cap1_dot_after": {
+                "count": 2220,
+                "mean": 0.03348484328657683
+              },
+              "cap2_dot_after": {
+                "count": 2220,
+                "mean": 0.034800793921216745
+              },
+              "cap1_combined_gradient_norm_squared": {
+                "count": 2220,
+                "mean": 0.736374877657293
+              },
+              "cap2_combined_gradient_norm_squared": {
+                "count": 2220,
+                "mean": 0.7575735768025826
+              }
+            },
+            "other": {
+              "L_norm": {
+                "count": 2220,
+                "mean": 1.353996390354897
+              },
+              "cap1_applied_U_norm": {
+                "count": 2220,
+                "mean": 0.9463325046996215
+              },
+              "cap2_applied_U_norm": {
+                "count": 2220,
+                "mean": 1.1902388242272062
+              },
+              "cap1_applied_U_to_L": {
+                "count": 2220,
+                "mean": 0.8494149634808394
+              },
+              "cap2_applied_U_to_L": {
+                "count": 2220,
+                "mean": 1.1368038577011015
+              },
+              "cap1_capped": {
+                "count": 2220,
+                "mean": 0.5797297297297297
+              },
+              "cap2_capped": {
+                "count": 2220,
+                "mean": 0.10495495495495495
+              },
+              "cap1_dot_after": {
+                "count": 2220,
+                "mean": 0.21821428046682945
+              },
+              "cap2_dot_after": {
+                "count": 2220,
+                "mean": 0.25889595346915967
+              },
+              "cap1_combined_gradient_norm_squared": {
+                "count": 2220,
+                "mean": 4.401568550880111
+              },
+              "cap2_combined_gradient_norm_squared": {
+                "count": 2220,
+                "mean": 5.072137377777201
+              }
+            }
+          },
+          "whole_parameter_gradient": {
+            "cap1_applied_U_to_L": {
+              "count": 2220,
+              "mean": 0.8128915530098989
+            },
+            "cap2_applied_U_to_L": {
+              "count": 2220,
+              "mean": 1.0632359110054161
+            },
+            "cap1_combined_gradient_norm": {
+              "count": 2220,
+              "mean": 1.961622828031882
+            },
+            "cap2_combined_gradient_norm": {
+              "count": 2220,
+              "mean": 2.1585656222518343
+            },
+            "cap1_combined_norm_gt5": {
+              "count": 2220,
+              "mean": 0.02972972972972973
+            },
+            "cap2_combined_norm_gt5": {
+              "count": 2220,
+              "mean": 0.02972972972972973
+            }
+          },
+          "final_guard_counters": {
+            "calls": 2220,
+            "conflicts": {
+              "t2": 1130.0,
+              "cls_head": 1009.0,
+              "other": 957.0
+            },
+            "caps": {
+              "t2": 1493.0,
+              "cls_head": 383.0,
+              "other": 1287.0
+            }
+          },
+          "measured_stage": "Same logged gradients;fixed cap2 arithmetic before commonclip5/AdamW,not new trajectory or optimizer steps",
+          "U_truth_reads": 0,
+          "target_reads": 0,
+          "model_updates": 0
+        },
+        {
+          "records": 4440,
+          "seen": 1134000,
+          "accepted": 1084103,
+          "groups": {
+            "t2": {
+              "L_norm": {
+                "count": 4440,
+                "mean": 0.15563191666649048
+              },
+              "cap1_applied_U_norm": {
+                "count": 4440,
+                "mean": 0.12525837551927496
+              },
+              "cap2_applied_U_norm": {
+                "count": 4440,
+                "mean": 0.16032225099887404
+              },
+              "cap1_applied_U_to_L": {
+                "count": 4440,
+                "mean": 0.8650680721913413
+              },
+              "cap2_applied_U_to_L": {
+                "count": 4440,
+                "mean": 1.1528395850840063
+              },
+              "cap1_capped": {
+                "count": 4440,
+                "mean": 0.5493243243243243
+              },
+              "cap2_capped": {
+                "count": 4440,
+                "mean": 0.12432432432432433
+              },
+              "cap1_dot_after": {
+                "count": 4440,
+                "mean": 0.001471815175744366
+              },
+              "cap2_dot_after": {
+                "count": 4440,
+                "mean": 0.0018530361466509767
+              },
+              "cap1_combined_gradient_norm_squared": {
+                "count": 4440,
+                "mean": 0.05182417160350128
+              },
+              "cap2_combined_gradient_norm_squared": {
+                "count": 4440,
+                "mean": 0.06504246685049778
+              }
+            },
+            "cls_head": {
+              "L_norm": {
+                "count": 4440,
+                "mean": 0.5482132578785517
+              },
+              "cap1_applied_U_norm": {
+                "count": 4440,
+                "mean": 0.23659710429359065
+              },
+              "cap2_applied_U_norm": {
+                "count": 4440,
+                "mean": 0.24590756391547122
+              },
+              "cap1_applied_U_to_L": {
+                "count": 4440,
+                "mean": 0.525458150780456
+              },
+              "cap2_applied_U_to_L": {
+                "count": 4440,
+                "mean": 0.5539329148110738
+              },
+              "cap1_capped": {
+                "count": 4440,
+                "mean": 0.09954954954954955
+              },
+              "cap2_capped": {
+                "count": 4440,
+                "mean": 0.0024774774774774773
+              },
+              "cap1_dot_after": {
+                "count": 4440,
+                "mean": 0.028871452025165327
+              },
+              "cap2_dot_after": {
+                "count": 4440,
+                "mean": 0.029589209516348743
+              },
+              "cap1_combined_gradient_norm_squared": {
+                "count": 4440,
+                "mean": 0.5740915275665003
+              },
+              "cap2_combined_gradient_norm_squared": {
+                "count": 4440,
+                "mean": 0.5834864428326361
+              }
+            },
+            "other": {
+              "L_norm": {
+                "count": 4440,
+                "mean": 1.2448689422298724
+              },
+              "cap1_applied_U_norm": {
+                "count": 4440,
+                "mean": 0.8294545046911082
+              },
+              "cap2_applied_U_norm": {
+                "count": 4440,
+                "mean": 1.0059435981504685
+              },
+              "cap1_applied_U_to_L": {
+                "count": 4440,
+                "mean": 0.8181504266735291
+              },
+              "cap2_applied_U_to_L": {
+                "count": 4440,
+                "mean": 1.0518828341670696
+              },
+              "cap1_capped": {
+                "count": 4440,
+                "mean": 0.4968468468468468
+              },
+              "cap2_capped": {
+                "count": 4440,
+                "mean": 0.07882882882882883
+              },
+              "cap1_dot_after": {
+                "count": 4440,
+                "mean": 0.19157810874802375
+              },
+              "cap2_dot_after": {
+                "count": 4440,
+                "mean": 0.21869123085533504
+              },
+              "cap1_combined_gradient_norm_squared": {
+                "count": 4440,
+                "mean": 3.6333927642860067
+              },
+              "cap2_combined_gradient_norm_squared": {
+                "count": 4440,
+                "mean": 4.068322902397022
+              }
+            }
+          },
+          "whole_parameter_gradient": {
+            "cap1_applied_U_to_L": {
+              "count": 4440,
+              "mean": 0.771415064784386
+            },
+            "cap2_applied_U_to_L": {
+              "count": 4440,
+              "mean": 0.974052301143944
+            },
+            "cap1_combined_gradient_norm": {
+              "count": 4440,
+              "mean": 1.7666835768939466
+            },
+            "cap2_combined_gradient_norm": {
+              "count": 4440,
+              "mean": 1.9076968639122918
+            },
+            "cap1_combined_norm_gt5": {
+              "count": 4440,
+              "mean": 0.023198198198198197
+            },
+            "cap2_combined_norm_gt5": {
+              "count": 4440,
+              "mean": 0.023198198198198197
+            }
+          },
+          "final_guard_counters": {
+            "calls": 4440,
+            "conflicts": {
+              "t2": 2197.0,
+              "cls_head": 1784.0,
+              "other": 1791.0
+            },
+            "caps": {
+              "t2": 2439.0,
+              "cls_head": 442.0,
+              "other": 2206.0
+            }
+          },
+          "measured_stage": "Same logged gradients;fixed cap2 arithmetic before commonclip5/AdamW,not new trajectory or optimizer steps",
+          "U_truth_reads": 0,
+          "target_reads": 0,
+          "model_updates": 0
+        }
+      ],
+      "scientific_rule_pass": true
+    },
+    {
+      "model_seed": 2026092702,
+      "row_id": "HPL_E20_NAMS_JOINT6G-s2026092702",
+      "source_execution_commit": "77498c5a8b003f3afc71fab7ee96ca39662593fa",
+      "source_epoch": 50,
+      "source_updates": 11100,
+      "source_records": 6660,
+      "original_E20_source_V_precision": {
+        "model_seed": 2026092702,
+        "samples": 27000,
+        "threshold": 0.95,
+        "accepted": 25130,
+        "correct": 25097,
+        "wrong": 33,
+        "accepted_accuracy_percent": 99.86868284918424
+      },
+      "summary": {
+        "records": 6660,
+        "seen": 1701000,
+        "accepted": 1613495,
+        "groups": {
+          "t2": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.17108608095554342
+            },
+            "cap1_applied_U_norm": {
+              "count": 6660,
+              "mean": 0.15230729544710056
+            },
+            "cap2_applied_U_norm": {
+              "count": 6660,
+              "mean": 0.2121576783990899
+            },
+            "cap1_applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.9286170029664212
+            },
+            "cap2_applied_U_to_L": {
+              "count": 6660,
+              "mean": 1.3522642923797754
+            },
+            "cap1_capped": {
+              "count": 6660,
+              "mean": 0.7138138138138138
+            },
+            "cap2_capped": {
+              "count": 6660,
+              "mean": 0.2066066066066066
+            },
+            "cap1_dot_after": {
+              "count": 6660,
+              "mean": 0.0020831255705088658
+            },
+            "cap2_dot_after": {
+              "count": 6660,
+              "mean": 0.0028571477334715886
+            },
+            "cap1_combined_gradient_norm_squared": {
+              "count": 6660,
+              "mean": 0.06565955444002189
+            },
+            "cap2_combined_gradient_norm_squared": {
+              "count": 6660,
+              "mean": 0.09240952766816898
+            },
+            "relative_applied_U_to_L_increase": 0.4562131514499883
+          },
+          "cls_head": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.5745083146274623
+            },
+            "cap1_applied_U_norm": {
+              "count": 6660,
+              "mean": 0.27633517691899007
+            },
+            "cap2_applied_U_norm": {
+              "count": 6660,
+              "mean": 0.28957622123469845
+            },
+            "cap1_applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.5782808676570179
+            },
+            "cap2_applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.6167152197346895
+            },
+            "cap1_capped": {
+              "count": 6660,
+              "mean": 0.13093093093093094
+            },
+            "cap2_capped": {
+              "count": 6660,
+              "mean": 0.005105105105105105
+            },
+            "cap1_dot_after": {
+              "count": 6660,
+              "mean": 0.03331643429167186
+            },
+            "cap2_dot_after": {
+              "count": 6660,
+              "mean": 0.03425463360153186
+            },
+            "cap1_combined_gradient_norm_squared": {
+              "count": 6660,
+              "mean": 0.6379810476309407
+            },
+            "cap2_combined_gradient_norm_squared": {
+              "count": 6660,
+              "mean": 0.6519754804230107
+            },
+            "relative_applied_U_to_L_increase": 0.06646312238098667
+          },
+          "other": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 1.3391616063981366
+            },
+            "cap1_applied_U_norm": {
+              "count": 6660,
+              "mean": 0.9494652131761968
+            },
+            "cap2_applied_U_norm": {
+              "count": 6660,
+              "mean": 1.1739712143528438
+            },
+            "cap1_applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.8348707101802804
+            },
+            "cap2_applied_U_to_L": {
+              "count": 6660,
+              "mean": 1.0962843153888084
+            },
+            "cap1_capped": {
+              "count": 6660,
+              "mean": 0.5307807807807807
+            },
+            "cap2_capped": {
+              "count": 6660,
+              "mean": 0.0957957957957958
+            },
+            "cap1_dot_after": {
+              "count": 6660,
+              "mean": 0.2452526845531022
+            },
+            "cap2_dot_after": {
+              "count": 6660,
+              "mean": 0.2886523872498502
+            },
+            "cap1_combined_gradient_norm_squared": {
+              "count": 6660,
+              "mean": 4.161092930882328
+            },
+            "cap2_combined_gradient_norm_squared": {
+              "count": 6660,
+              "mean": 4.8068347110497225
+            },
+            "relative_applied_U_to_L_increase": 0.3131186685805266
+          }
+        },
+        "whole_parameter_gradient": {
+          "cap1_applied_U_to_L": {
+            "count": 6660,
+            "mean": 0.7970114775315726
+          },
+          "cap2_applied_U_to_L": {
+            "count": 6660,
+            "mean": 1.0294334283313178
+          },
+          "cap1_combined_gradient_norm": {
+            "count": 6660,
+            "mean": 1.9364708932485397
+          },
+          "cap2_combined_gradient_norm": {
+            "count": 6660,
+            "mean": 2.1202391888305727
+          },
+          "cap1_combined_norm_gt5": {
+            "count": 6660,
+            "mean": 0.024174174174174175
+          },
+          "cap2_combined_norm_gt5": {
+            "count": 6660,
+            "mean": 0.025525525525525526
+          },
+          "relative_applied_U_to_L_increase": 0.291616817764758
+        },
+        "scientific_rule_pass": true
+      },
+      "segments": [
+        {
+          "records": 2220,
+          "seen": 567000,
+          "accepted": 532931,
+          "groups": {
+            "t2": {
+              "L_norm": {
+                "count": 2220,
+                "mean": 0.194029835727102
+              },
+              "cap1_applied_U_norm": {
+                "count": 2220,
+                "mean": 0.17783620357244642
+              },
+              "cap2_applied_U_norm": {
+                "count": 2220,
+                "mean": 0.2549919930450039
+              },
+              "cap1_applied_U_to_L": {
+                "count": 2220,
+                "mean": 0.9549314644630381
+              },
+              "cap2_applied_U_to_L": {
+                "count": 2220,
+                "mean": 1.4375430773620146
+              },
+              "cap1_capped": {
+                "count": 2220,
+                "mean": 0.7923423423423424
+              },
+              "cap2_capped": {
+                "count": 2220,
+                "mean": 0.21936936936936938
+              },
+              "cap1_dot_after": {
+                "count": 2220,
+                "mean": 0.0027960262337233272
+              },
+              "cap2_dot_after": {
+                "count": 2220,
+                "mean": 0.003994585662886762
+              },
+              "cap1_combined_gradient_norm_squared": {
+                "count": 2220,
+                "mean": 0.08595994882634594
+              },
+              "cap2_combined_gradient_norm_squared": {
+                "count": 2220,
+                "mean": 0.12450817837407982
+              }
+            },
+            "cls_head": {
+              "L_norm": {
+                "count": 2220,
+                "mean": 0.6065452321045498
+              },
+              "cap1_applied_U_norm": {
+                "count": 2220,
+                "mean": 0.34249812743793573
+              },
+              "cap2_applied_U_norm": {
+                "count": 2220,
+                "mean": 0.3656135792868216
+              },
+              "cap1_applied_U_to_L": {
+                "count": 2220,
+                "mean": 0.6732906328199517
+              },
+              "cap2_applied_U_to_L": {
+                "count": 2220,
+                "mean": 0.736221386742282
+              },
+              "cap1_capped": {
+                "count": 2220,
+                "mean": 0.20540540540540542
+              },
+              "cap2_capped": {
+                "count": 2220,
+                "mean": 0.0076576576576576575
+              },
+              "cap1_dot_after": {
+                "count": 2220,
+                "mean": 0.038742336700250325
+              },
+              "cap2_dot_after": {
+                "count": 2220,
+                "mean": 0.04042000827264843
+              },
+              "cap1_combined_gradient_norm_squared": {
+                "count": 2220,
+                "mean": 0.7376168721627998
+              },
+              "cap2_combined_gradient_norm_squared": {
+                "count": 2220,
+                "mean": 0.763516230935628
+              }
+            },
+            "other": {
+              "L_norm": {
+                "count": 2220,
+                "mean": 1.418047016025006
+              },
+              "cap1_applied_U_norm": {
+                "count": 2220,
+                "mean": 1.0660601045823759
+              },
+              "cap2_applied_U_norm": {
+                "count": 2220,
+                "mean": 1.3677823964422018
+              },
+              "cap1_applied_U_to_L": {
+                "count": 2220,
+                "mean": 0.8730031360259684
+              },
+              "cap2_applied_U_to_L": {
+                "count": 2220,
+                "mean": 1.2026360939183156
+              },
+              "cap1_capped": {
+                "count": 2220,
+                "mean": 0.622072072072072
+              },
+              "cap2_capped": {
+                "count": 2220,
+                "mean": 0.131981981981982
+              },
+              "cap1_dot_after": {
+                "count": 2220,
+                "mean": 0.28997172769913776
+              },
+              "cap2_dot_after": {
+                "count": 2220,
+                "mean": 0.3542565345154085
+              },
+              "cap1_combined_gradient_norm_squared": {
+                "count": 2220,
+                "mean": 4.8223846722882024
+              },
+              "cap2_combined_gradient_norm_squared": {
+                "count": 2220,
+                "mean": 5.753287799544008
+              }
+            }
+          },
+          "whole_parameter_gradient": {
+            "cap1_applied_U_to_L": {
+              "count": 2220,
+              "mean": 0.842972023103606
+            },
+            "cap2_applied_U_to_L": {
+              "count": 2220,
+              "mean": 1.1359882324764445
+            },
+            "cap1_combined_gradient_norm": {
+              "count": 2220,
+              "mean": 2.0976631932885565
+            },
+            "cap2_combined_gradient_norm": {
+              "count": 2220,
+              "mean": 2.346408766356687
+            },
+            "cap1_combined_norm_gt5": {
+              "count": 2220,
+              "mean": 0.032432432432432434
+            },
+            "cap2_combined_norm_gt5": {
+              "count": 2220,
+              "mean": 0.034684684684684684
+            }
+          },
+          "final_guard_counters": {
+            "calls": 2220,
+            "conflicts": {
+              "t2": 1054.0,
+              "cls_head": 973.0,
+              "other": 899.0
+            },
+            "caps": {
+              "t2": 1759.0,
+              "cls_head": 456.0,
+              "other": 1381.0
+            }
+          },
+          "measured_stage": "Same logged gradients;fixed cap2 arithmetic before commonclip5/AdamW,not new trajectory or optimizer steps",
+          "U_truth_reads": 0,
+          "target_reads": 0,
+          "model_updates": 0
+        },
+        {
+          "records": 4440,
+          "seen": 1134000,
+          "accepted": 1080564,
+          "groups": {
+            "t2": {
+              "L_norm": {
+                "count": 4440,
+                "mean": 0.1596142035697641
+              },
+              "cap1_applied_U_norm": {
+                "count": 4440,
+                "mean": 0.13954284138442763
+              },
+              "cap2_applied_U_norm": {
+                "count": 4440,
+                "mean": 0.19074052107613285
+              },
+              "cap1_applied_U_to_L": {
+                "count": 4440,
+                "mean": 0.9154597722181128
+              },
+              "cap2_applied_U_to_L": {
+                "count": 4440,
+                "mean": 1.309624899888656
+              },
+              "cap1_capped": {
+                "count": 4440,
+                "mean": 0.6745495495495496
+              },
+              "cap2_capped": {
+                "count": 4440,
+                "mean": 0.20022522522522523
+              },
+              "cap1_dot_after": {
+                "count": 4440,
+                "mean": 0.001726675238901635
+              },
+              "cap2_dot_after": {
+                "count": 4440,
+                "mean": 0.0022884287687640016
+              },
+              "cap1_combined_gradient_norm_squared": {
+                "count": 4440,
+                "mean": 0.05550935724685986
+              },
+              "cap2_combined_gradient_norm_squared": {
+                "count": 4440,
+                "mean": 0.07636020231521355
+              }
+            },
+            "cls_head": {
+              "L_norm": {
+                "count": 4440,
+                "mean": 0.5584898558889186
+              },
+              "cap1_applied_U_norm": {
+                "count": 4440,
+                "mean": 0.2432537016595172
+              },
+              "cap2_applied_U_norm": {
+                "count": 4440,
+                "mean": 0.25155754220863685
+              },
+              "cap1_applied_U_to_L": {
+                "count": 4440,
+                "mean": 0.5307759850755511
+              },
+              "cap2_applied_U_to_L": {
+                "count": 4440,
+                "mean": 0.5569621362308933
+              },
+              "cap1_capped": {
+                "count": 4440,
+                "mean": 0.0936936936936937
+              },
+              "cap2_capped": {
+                "count": 4440,
+                "mean": 0.0038288288288288288
+              },
+              "cap1_dot_after": {
+                "count": 4440,
+                "mean": 0.03060348308738263
+              },
+              "cap2_dot_after": {
+                "count": 4440,
+                "mean": 0.031171946265973565
+              },
+              "cap1_combined_gradient_norm_squared": {
+                "count": 4440,
+                "mean": 0.588163135365011
+              },
+              "cap2_combined_gradient_norm_squared": {
+                "count": 4440,
+                "mean": 0.5962051051667021
+              }
+            },
+            "other": {
+              "L_norm": {
+                "count": 4440,
+                "mean": 1.2997189015847015
+              },
+              "cap1_applied_U_norm": {
+                "count": 4440,
+                "mean": 0.8911677674731072
+              },
+              "cap2_applied_U_norm": {
+                "count": 4440,
+                "mean": 1.0770656233081648
+              },
+              "cap1_applied_U_to_L": {
+                "count": 4440,
+                "mean": 0.8158044972574364
+              },
+              "cap2_applied_U_to_L": {
+                "count": 4440,
+                "mean": 1.043108426124055
+              },
+              "cap1_capped": {
+                "count": 4440,
+                "mean": 0.4851351351351351
+              },
+              "cap2_capped": {
+                "count": 4440,
+                "mean": 0.0777027027027027
+              },
+              "cap1_dot_after": {
+                "count": 4440,
+                "mean": 0.2228931629800844
+              },
+              "cap2_dot_after": {
+                "count": 4440,
+                "mean": 0.25585031361707106
+              },
+              "cap1_combined_gradient_norm_squared": {
+                "count": 4440,
+                "mean": 3.8304470601793903
+              },
+              "cap2_combined_gradient_norm_squared": {
+                "count": 4440,
+                "mean": 4.33360816680258
+              }
+            }
+          },
+          "whole_parameter_gradient": {
+            "cap1_applied_U_to_L": {
+              "count": 4440,
+              "mean": 0.774031204745556
+            },
+            "cap2_applied_U_to_L": {
+              "count": 4440,
+              "mean": 0.9761560262587544
+            },
+            "cap1_combined_gradient_norm": {
+              "count": 4440,
+              "mean": 1.8558747432285312
+            },
+            "cap2_combined_gradient_norm": {
+              "count": 4440,
+              "mean": 2.0071544000675154
+            },
+            "cap1_combined_norm_gt5": {
+              "count": 4440,
+              "mean": 0.020045045045045045
+            },
+            "cap2_combined_norm_gt5": {
+              "count": 4440,
+              "mean": 0.020945945945945947
+            }
+          },
+          "final_guard_counters": {
+            "calls": 4440,
+            "conflicts": {
+              "t2": 2058.0,
+              "cls_head": 1716.0,
+              "other": 1769.0
+            },
+            "caps": {
+              "t2": 2995.0,
+              "cls_head": 416.0,
+              "other": 2154.0
+            }
+          },
+          "measured_stage": "Same logged gradients;fixed cap2 arithmetic before commonclip5/AdamW,not new trajectory or optimizer steps",
+          "U_truth_reads": 0,
+          "target_reads": 0,
+          "model_updates": 0
+        }
+      ],
+      "scientific_rule_pass": true
+    },
+    {
+      "model_seed": 2026092703,
+      "row_id": "HPL_E20_NAMS_JOINT6G-s2026092703",
+      "source_execution_commit": "77498c5a8b003f3afc71fab7ee96ca39662593fa",
+      "source_epoch": 50,
+      "source_updates": 11100,
+      "source_records": 6660,
+      "original_E20_source_V_precision": {
+        "model_seed": 2026092703,
+        "samples": 27000,
+        "threshold": 0.95,
+        "accepted": 25128,
+        "correct": 25107,
+        "wrong": 21,
+        "accepted_accuracy_percent": 99.91642788920726
+      },
+      "summary": {
+        "records": 6660,
+        "seen": 1701000,
+        "accepted": 1613473,
+        "groups": {
+          "t2": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.16610403373054475
+            },
+            "cap1_applied_U_norm": {
+              "count": 6660,
+              "mean": 0.15011194723205565
+            },
+            "cap2_applied_U_norm": {
+              "count": 6660,
+              "mean": 0.21767183995090358
+            },
+            "cap1_applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.9413717619987391
+            },
+            "cap2_applied_U_to_L": {
+              "count": 6660,
+              "mean": 1.4273329343795875
+            },
+            "cap1_capped": {
+              "count": 6660,
+              "mean": 0.7686186186186186
+            },
+            "cap2_capped": {
+              "count": 6660,
+              "mean": 0.25585585585585585
+            },
+            "cap1_dot_after": {
+              "count": 6660,
+              "mean": 0.0017524791117476191
+            },
+            "cap2_dot_after": {
+              "count": 6660,
+              "mean": 0.0024761512097043453
+            },
+            "cap1_combined_gradient_norm_squared": {
+              "count": 6660,
+              "mean": 0.06286769952985446
+            },
+            "cap2_combined_gradient_norm_squared": {
+              "count": 6660,
+              "mean": 0.09237099756929444
+            },
+            "relative_applied_U_to_L_increase": 0.516226630113746
+          },
+          "cls_head": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.5495972532093991
+            },
+            "cap1_applied_U_norm": {
+              "count": 6660,
+              "mean": 0.26683731302475094
+            },
+            "cap2_applied_U_norm": {
+              "count": 6660,
+              "mean": 0.2805685942858854
+            },
+            "cap1_applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.5839431572434794
+            },
+            "cap2_applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.6249391109781818
+            },
+            "cap1_capped": {
+              "count": 6660,
+              "mean": 0.1394894894894895
+            },
+            "cap2_capped": {
+              "count": 6660,
+              "mean": 0.005855855855855856
+            },
+            "cap1_dot_after": {
+              "count": 6660,
+              "mean": 0.03146779672897883
+            },
+            "cap2_dot_after": {
+              "count": 6660,
+              "mean": 0.03257280629536653
+            },
+            "cap1_combined_gradient_norm_squared": {
+              "count": 6660,
+              "mean": 0.591378563799281
+            },
+            "cap2_combined_gradient_norm_squared": {
+              "count": 6660,
+              "mean": 0.6057395609360683
+            },
+            "relative_applied_U_to_L_increase": 0.07020538425045499
+          },
+          "other": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 1.3553862769734746
+            },
+            "cap1_applied_U_norm": {
+              "count": 6660,
+              "mean": 0.9394340586723575
+            },
+            "cap2_applied_U_norm": {
+              "count": 6660,
+              "mean": 1.1620248209158828
+            },
+            "cap1_applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.8304724746742495
+            },
+            "cap2_applied_U_to_L": {
+              "count": 6660,
+              "mean": 1.089187098694366
+            },
+            "cap1_capped": {
+              "count": 6660,
+              "mean": 0.5273273273273273
+            },
+            "cap2_capped": {
+              "count": 6660,
+              "mean": 0.0918918918918919
+            },
+            "cap1_dot_after": {
+              "count": 6660,
+              "mean": 0.24519170825211764
+            },
+            "cap2_dot_after": {
+              "count": 6660,
+              "mean": 0.28690757651693827
+            },
+            "cap1_combined_gradient_norm_squared": {
+              "count": 6660,
+              "mean": 4.379949778390221
+            },
+            "cap2_combined_gradient_norm_squared": {
+              "count": 6660,
+              "mean": 5.016944319271389
+            },
+            "relative_applied_U_to_L_increase": 0.3115270305877345
+          }
+        },
+        "whole_parameter_gradient": {
+          "cap1_applied_U_to_L": {
+            "count": 6660,
+            "mean": 0.7965921516250041
+          },
+          "cap2_applied_U_to_L": {
+            "count": 6660,
+            "mean": 1.030466450846066
+          },
+          "cap1_combined_gradient_norm": {
+            "count": 6660,
+            "mean": 1.9363548105583472
+          },
+          "cap2_combined_gradient_norm": {
+            "count": 6660,
+            "mean": 2.1199954056659136
+          },
+          "cap1_combined_norm_gt5": {
+            "count": 6660,
+            "mean": 0.024624624624624624
+          },
+          "cap2_combined_norm_gt5": {
+            "count": 6660,
+            "mean": 0.025525525525525526
+          },
+          "relative_applied_U_to_L_increase": 0.29359352680536854
+        },
+        "scientific_rule_pass": true
+      },
+      "segments": [
+        {
+          "records": 2220,
+          "seen": 567000,
+          "accepted": 532025,
+          "groups": {
+            "t2": {
+              "L_norm": {
+                "count": 2220,
+                "mean": 0.18362333708642262
+              },
+              "cap1_applied_U_norm": {
+                "count": 2220,
+                "mean": 0.1692530102290086
+              },
+              "cap2_applied_U_norm": {
+                "count": 2220,
+                "mean": 0.2503219885951088
+              },
+              "cap1_applied_U_to_L": {
+                "count": 2220,
+                "mean": 0.9660304687192435
+              },
+              "cap2_applied_U_to_L": {
+                "count": 2220,
+                "mean": 1.5009235246957158
+              },
+              "cap1_capped": {
+                "count": 2220,
+                "mean": 0.8427927927927928
+              },
+              "cap2_capped": {
+                "count": 2220,
+                "mean": 0.26306306306306304
+              },
+              "cap1_dot_after": {
+                "count": 2220,
+                "mean": 0.0021230078021382826
+              },
+              "cap2_dot_after": {
+                "count": 2220,
+                "mean": 0.003062895244745384
+              },
+              "cap1_combined_gradient_norm_squared": {
+                "count": 2220,
+                "mean": 0.07998457859153468
+              },
+              "cap2_combined_gradient_norm_squared": {
+                "count": 2220,
+                "mean": 0.11786165701978094
+              }
+            },
+            "cls_head": {
+              "L_norm": {
+                "count": 2220,
+                "mean": 0.5879548048509816
+              },
+              "cap1_applied_U_norm": {
+                "count": 2220,
+                "mean": 0.3195663177856858
+              },
+              "cap2_applied_U_norm": {
+                "count": 2220,
+                "mean": 0.3419385482329911
+              },
+              "cap1_applied_U_to_L": {
+                "count": 2220,
+                "mean": 0.6530490227553909
+              },
+              "cap2_applied_U_to_L": {
+                "count": 2220,
+                "mean": 0.7166716465309915
+              },
+              "cap1_capped": {
+                "count": 2220,
+                "mean": 0.2072072072072072
+              },
+              "cap2_capped": {
+                "count": 2220,
+                "mean": 0.0076576576576576575
+              },
+              "cap1_dot_after": {
+                "count": 2220,
+                "mean": 0.036478474796131435
+              },
+              "cap2_dot_after": {
+                "count": 2220,
+                "mean": 0.03835319464211096
+              },
+              "cap1_combined_gradient_norm_squared": {
+                "count": 2220,
+                "mean": 0.6943656825203733
+              },
+              "cap2_combined_gradient_norm_squared": {
+                "count": 2220,
+                "mean": 0.7188178182293613
+              }
+            },
+            "other": {
+              "L_norm": {
+                "count": 2220,
+                "mean": 1.4374215769472447
+              },
+              "cap1_applied_U_norm": {
+                "count": 2220,
+                "mean": 1.0297412772815062
+              },
+              "cap2_applied_U_norm": {
+                "count": 2220,
+                "mean": 1.306655399035162
+              },
+              "cap1_applied_U_to_L": {
+                "count": 2220,
+                "mean": 0.8551666300952107
+              },
+              "cap2_applied_U_to_L": {
+                "count": 2220,
+                "mean": 1.1604031179930856
+              },
+              "cap1_capped": {
+                "count": 2220,
+                "mean": 0.5941441441441442
+              },
+              "cap2_capped": {
+                "count": 2220,
+                "mean": 0.10945945945945947
+              },
+              "cap1_dot_after": {
+                "count": 2220,
+                "mean": 0.2813342680619166
+              },
+              "cap2_dot_after": {
+                "count": 2220,
+                "mean": 0.3380612564455613
+              },
+              "cap1_combined_gradient_norm_squared": {
+                "count": 2220,
+                "mean": 5.000543634699841
+              },
+              "cap2_combined_gradient_norm_squared": {
+                "count": 2220,
+                "mean": 5.839250723460495
+              }
+            }
+          },
+          "whole_parameter_gradient": {
+            "cap1_applied_U_to_L": {
+              "count": 2220,
+              "mean": 0.825162792906337
+            },
+            "cap2_applied_U_to_L": {
+              "count": 2220,
+              "mean": 1.1004361874759927
+            },
+            "cap1_combined_gradient_norm": {
+              "count": 2220,
+              "mean": 2.082999517654183
+            },
+            "cap2_combined_gradient_norm": {
+              "count": 2220,
+              "mean": 2.312503536588642
+            },
+            "cap1_combined_norm_gt5": {
+              "count": 2220,
+              "mean": 0.03063063063063063
+            },
+            "cap2_combined_norm_gt5": {
+              "count": 2220,
+              "mean": 0.032432432432432434
+            }
+          },
+          "final_guard_counters": {
+            "calls": 2220,
+            "conflicts": {
+              "t2": 1025.0,
+              "cls_head": 934.0,
+              "other": 852.0
+            },
+            "caps": {
+              "t2": 1871.0,
+              "cls_head": 460.0,
+              "other": 1319.0
+            }
+          },
+          "measured_stage": "Same logged gradients;fixed cap2 arithmetic before commonclip5/AdamW,not new trajectory or optimizer steps",
+          "U_truth_reads": 0,
+          "target_reads": 0,
+          "model_updates": 0
+        },
+        {
+          "records": 4440,
+          "seen": 1134000,
+          "accepted": 1081448,
+          "groups": {
+            "t2": {
+              "L_norm": {
+                "count": 4440,
+                "mean": 0.1573443820526058
+              },
+              "cap1_applied_U_norm": {
+                "count": 4440,
+                "mean": 0.1405414157335792
+              },
+              "cap2_applied_U_norm": {
+                "count": 4440,
+                "mean": 0.201346765628801
+              },
+              "cap1_applied_U_to_L": {
+                "count": 4440,
+                "mean": 0.929042408638487
+              },
+              "cap2_applied_U_to_L": {
+                "count": 4440,
+                "mean": 1.3905376392215236
+              },
+              "cap1_capped": {
+                "count": 4440,
+                "mean": 0.7315315315315315
+              },
+              "cap2_capped": {
+                "count": 4440,
+                "mean": 0.25225225225225223
+              },
+              "cap1_dot_after": {
+                "count": 4440,
+                "mean": 0.0015672147665522877
+              },
+              "cap2_dot_after": {
+                "count": 4440,
+                "mean": 0.002182779192183826
+              },
+              "cap1_combined_gradient_norm_squared": {
+                "count": 4440,
+                "mean": 0.05430925999901436
+              },
+              "cap2_combined_gradient_norm_squared": {
+                "count": 4440,
+                "mean": 0.07962566784405119
+              }
+            },
+            "cls_head": {
+              "L_norm": {
+                "count": 4440,
+                "mean": 0.5304184773886079
+              },
+              "cap1_applied_U_norm": {
+                "count": 4440,
+                "mean": 0.24047281064428358
+              },
+              "cap2_applied_U_norm": {
+                "count": 4440,
+                "mean": 0.24988361731233252
+              },
+              "cap1_applied_U_to_L": {
+                "count": 4440,
+                "mean": 0.5493902244875237
+              },
+              "cap2_applied_U_to_L": {
+                "count": 4440,
+                "mean": 0.5790728432017769
+              },
+              "cap1_capped": {
+                "count": 4440,
+                "mean": 0.10563063063063063
+              },
+              "cap2_capped": {
+                "count": 4440,
+                "mean": 0.004954954954954955
+              },
+              "cap1_dot_after": {
+                "count": 4440,
+                "mean": 0.028962457695402524
+              },
+              "cap2_dot_after": {
+                "count": 4440,
+                "mean": 0.02968261212199432
+              },
+              "cap1_combined_gradient_norm_squared": {
+                "count": 4440,
+                "mean": 0.5398850044387348
+              },
+              "cap2_combined_gradient_norm_squared": {
+                "count": 4440,
+                "mean": 0.5492004322894217
+              }
+            },
+            "other": {
+              "L_norm": {
+                "count": 4440,
+                "mean": 1.3143686269865895
+              },
+              "cap1_applied_U_norm": {
+                "count": 4440,
+                "mean": 0.8942804493677832
+              },
+              "cap2_applied_U_norm": {
+                "count": 4440,
+                "mean": 1.0897095318562433
+              },
+              "cap1_applied_U_to_L": {
+                "count": 4440,
+                "mean": 0.8181253969637688
+              },
+              "cap2_applied_U_to_L": {
+                "count": 4440,
+                "mean": 1.0535790890450059
+              },
+              "cap1_capped": {
+                "count": 4440,
+                "mean": 0.4939189189189189
+              },
+              "cap2_capped": {
+                "count": 4440,
+                "mean": 0.0831081081081081
+              },
+              "cap1_dot_after": {
+                "count": 4440,
+                "mean": 0.2271204283472182
+              },
+              "cap2_dot_after": {
+                "count": 4440,
+                "mean": 0.2613307365526268
+              },
+              "cap1_combined_gradient_norm_squared": {
+                "count": 4440,
+                "mean": 4.0696528502354115
+              },
+              "cap2_combined_gradient_norm_squared": {
+                "count": 4440,
+                "mean": 4.605791117176838
+              }
+            }
+          },
+          "whole_parameter_gradient": {
+            "cap1_applied_U_to_L": {
+              "count": 4440,
+              "mean": 0.7823068309843376
+            },
+            "cap2_applied_U_to_L": {
+              "count": 4440,
+              "mean": 0.9954815825311026
+            },
+            "cap1_combined_gradient_norm": {
+              "count": 4440,
+              "mean": 1.863032457010429
+            },
+            "cap2_combined_gradient_norm": {
+              "count": 4440,
+              "mean": 2.0237413402045488
+            },
+            "cap1_combined_norm_gt5": {
+              "count": 4440,
+              "mean": 0.021621621621621623
+            },
+            "cap2_combined_norm_gt5": {
+              "count": 4440,
+              "mean": 0.022072072072072072
+            }
+          },
+          "final_guard_counters": {
+            "calls": 4440,
+            "conflicts": {
+              "t2": 2086.0,
+              "cls_head": 1684.0,
+              "other": 1663.0
+            },
+            "caps": {
+              "t2": 3248.0,
+              "cls_head": 469.0,
+              "other": 2193.0
+            }
+          },
+          "measured_stage": "Same logged gradients;fixed cap2 arithmetic before commonclip5/AdamW,not new trajectory or optimizer steps",
+          "U_truth_reads": 0,
+          "target_reads": 0,
+          "model_updates": 0
+        }
+      ],
+      "scientific_rule_pass": true
+    }
+  ],
+  "scientific_rule_pass": true,
+  "caps": [
+    1.0,
+    2.0
+  ],
+  "GPU_workers": 0,
+  "CPU_threads": 1,
+  "model_updates": 0,
+  "checkpoint_reads": 0,
+  "IQ_reads": 0,
+  "V_gradients": 0,
+  "U_truth_reads": 0,
+  "target_reads": 0,
+  "new_training_launched": false,
+  "active_jobs_changed": false,
+  "goal_complete": false
+}

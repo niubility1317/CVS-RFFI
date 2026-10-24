@@ -403,6 +403,14 @@
       "new_training": false,
       "target_reads": 0,
       "U_truth_reads": 0
+    },
+    "cap1_cap2_counterfactual": {
+      "status": "VERIFIED_FIXED_SOURCE_CAP_COUNTERFACTUAL",
+      "reference": "source_cap_counterfactual_summary.json",
+      "source_records": 19980,
+      "scientific_rule_pass": true,
+      "new_training": false,
+      "target_reads": 0
     }
   }
 }

@@ -127,3 +127,6 @@ HPL_E20_NAMS_JOINT6G 固定匹配比较完成，见 HPL_E20_NAMS_JOINT6G_matched
 
 
 固定源范数帽反事实已登记：完整 Joint 三 seed 共19980条源记录，仅比较同一当前梯度的 cap1/cap2，不重放模型或读取IQ/U真值/目标。当前t2约69.09%步骤触发cap1；新计算先验证原cap1，再保持冲突投影方向并计算cap2生效U及合成范数。预先规定三seed均须满足t2有效U/L增加至少15%、全参数增加至少10%、合成范数>5频率增加不超过5个百分点及原V精度至少99.5%，完整规则/局限/潜在NativeAsCap2匹配消融见 source_cap_counterfactual_plan.json。10项数学及负例检查通过，未计算新完整源结果或启动新训练；当前健康队列不变。
+
+
+固定 cap1/cap2 源反事实已 VERIFIED：完整19980源记录，CPU1、模型/IQ/U真值/目标读取均为0；三seed固定规则全部通过，后续NativeAsCap2实现/审查/真实权重检查仍PENDING，未启动新训练。数学效果、逐seed数值及边界见 source_cap_counterfactual.md，不能把同一梯度反事实当成新轨迹或目标增益。
