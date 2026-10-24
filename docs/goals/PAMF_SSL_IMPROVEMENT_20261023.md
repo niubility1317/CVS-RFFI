@@ -347,3 +347,8 @@ PathReliableAs 发布后 VERIFIED：控制器存活及 CWD/完整命令匹配，
 ## HPL_E20_JOINT_RXE6G 完整双读出结果
 
 `20261024-phase1-PAMF-HardPL-ReceiverExtrap-m3-r01` 各方法三seed、共3模型，每景168000条，raw／同一DURA七景预测与独立truth-last全部42cell完成；全部新增19980条闭合训练记录已核对。HPL_E20_JOINT_RXE6G / raw clean=85.726786%；HPL_E20_JOINT_RXE6G / DURA-LU clean=85.790675%；HPL_E20_JOINT_RXE6G / raw six_mean=70.085516%；HPL_E20_JOINT_RXE6G / DURA-LU six_mean=77.897718%；原数值目标仍未满足，维持ACTIVE。全部结果、匹配基线、逐seed／场景／分层及成本均保存，不从本结果热改其他已固定方法、父权重或矩阵。
+
+
+## HPL_E20_JOINT_AS6G 完整双读出结果
+
+`20261024-phase1-PAMF-HardPL-NativeAs-m3-r01` 各方法三seed、共3模型，每景168000条，raw／同一DURA七景预测与独立truth-last全部42cell完成；全部新增19980条闭合训练记录已核对。HPL_E20_JOINT_AS6G / raw clean=84.831944%；HPL_E20_JOINT_AS6G / DURA-LU clean=84.944444%；HPL_E20_JOINT_AS6G / raw six_mean=72.264385%；HPL_E20_JOINT_AS6G / DURA-LU six_mean=77.428439%；原数值目标仍未满足，维持ACTIVE。全部结果、匹配基线、逐seed／场景／分层及成本均保存，不从本结果热改其他已固定方法、父权重或矩阵。

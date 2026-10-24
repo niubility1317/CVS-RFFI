@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_REAL_E20_SMOKE_AND_FIRST_SOURCE_START",
+  "status": "VERIFIED_REAL_E20_NATIVE_CAP2_SMOKE_AND_ALL3_SOURCE_RUNNING",
   "focused_checks": [
     {
       "evidence": "hard_pl_native_cap2_focused_tests.xml",
@@ -19,7 +19,7 @@
     "scope": "Direct wrong/unauthorized/destructive/unlaunchable/illegal-prediction defects in the next NativeAsCap2 run only",
     "actual_reviewer_response": "PASS，未发现本次范围内的 P0/P1。cap2 缩放公式正确，负点积投影、tiny-L 处理及一次完整 L 梯度桥接保留；配置验证、两段状态、smoke 检查和队列衔接符合约定。"
   },
-  "real_checkpoint_smoke": "PASS;first matching originalE20 nativeAs/fullLguard/forwardbudget",
+  "real_checkpoint_smoke": "PASS;actualnativeAs half/acceptedmask/noextra teacher/physicalbudget/jointsignature/fullLguard/originalE20reload;source_activation.json",
   "actual_started_source_rows": 1,
   "all_three_started": false
 }

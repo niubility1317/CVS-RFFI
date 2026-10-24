@@ -40,3 +40,13 @@ GPU5/6/7 固定对应三个 seed，每卡最多两个本任务，计外部 compu
 
 
 源支持的下一训练对照已固定，尚未实现或启动：`20261024-phase1-PAMF-HardPL-BranchGuard-m3-r01 / HPL_E20_AS_BG2`。只将原 NativeAs cap2 的 U 方向改为完整 L／非物理 L／物理 L 同时约束，仍从原同 seed E20 独立 own10+20/E50/11100，原接收集合、0.95/权重6/六学生/所有原损失/defaulthead/优化器与 As 预算保持。每步多2次L分支导数，每模型13320次，无额外前向，实测时间单列；不能称相同计算成本。固定 NativeAs cap2 主匹配、cap1 次匹配、F20/F21 raw 双目标及 DURA 参考42cells。生产实现、独立训练 P0/P1 和首释放卡位真实原 E20 检查待完成；source PASS 不冒充训练验证。方案在三组待收目标数值读取前冻结，现有健康任务不变。详见 native_as_branchguard_followup_design.json。
+
+
+原生As cap2真实检查：逐组U范数≤2L、负点积投影、一次完整L显式梯度均符合，至少一组真实U>L，无额外autograd或前向。固定半批生成128，两个原mixed学生实际使用256条物理视图，rawAs回退0；原rawteacher256，无增强视图evalteacher或额外学生前向，原接受mask和CE1.25保持。原生As输入及非物理ordinary输入匹配，生成成本与有效As CE视图2×rawacceptedhalf分别记录；没有用排队或预期计数代替实际训练证据。
+
+
+## 真实原 E20 检查通过并实际启动三种子
+
+VERIFIED：发布commit `a2a03f6ccf166b8abba34ca1f7862caa03277ba0` 的真实原E20 GPU source smoke PASS。实际joint160两次捕获512条已有Upacket，跨RX有效anchors=478；实际签名sequence_pool辅助梯度范数=0.370686237且有限非零，原L768／U1536／rawAs0／U As生成128／物理学生256／LPractical64＋U128、共享style计划、完整L guard参数梯度与显式期望相同及临时wrapper退出均符合。探针丢弃，正式行重新加载原E20。
+
+三个seed已按GPU5/6/7启动并实际产生原生joint／guard源步骤；独立核实进程／CWD／完整命令／GPU及日志增长，逐行现有U复用计数见source_activation.json。只按原矩阵接替释放卡位；当前是训练前缀，不代表全部源训练结束或目标收益。训练、raw＋固定DURA七景及truth-last继续自动执行，goal ACTIVE。
