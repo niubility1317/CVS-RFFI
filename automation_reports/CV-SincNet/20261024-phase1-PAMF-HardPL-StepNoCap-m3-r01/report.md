@@ -16,3 +16,6 @@ N607普通账户/CPU2/FP32TF32off，GPU5/6/7固定seed2701/02/03，每卡最多2
 
 
 生产实现75项相关检查PASS，唯一一次生产P0/P1审查PASS。None贯通实际原U投影、有限日志指标、smoke和两段累计，保留旧cap2默认。发布后首GPU真实原E20检查通过即丢弃探针并重载原父继续；当前尚未启动。
+
+
+独立发布后核验：VERIFIED_REAL_E20_STEP_NO_CAP_SMOKE_AND_ALL3_SOURCE_RUNNING，执行commit `147875ade725c293c1415001f13c15ae3fd929fc`，实际正式GPU worker 3。源检查 PASS；详见 source_activation.json。验证以实际PID/CWD/完整命令/GPU/日志及参数更新记录为据，排队、探针或源前缀均不代表目标达成。保留健康任务，自动训练、raw与固定DURA七景、独立truth-last继续按原矩阵执行。
