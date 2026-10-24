@@ -294,3 +294,8 @@ Path run `20261024-phase1-PAMF-HardPL-PathComplement-m3-r01` 执行commit `cf679
 
 
 ReliableAs 发布后 VERIFIED：控制器存活及 CWD/完整命令匹配，执行 commit `0ffe0ba43a6b2ead84db96ff5b98494f29550594`；三 seed QUEUED、GPU worker 0、真实 E20 source smoke PENDING。等待对应 Complement GPU 预测完成并保留 Path 分发优先级，当前 6 个前序 worker 健康。见该 run 的 queue_observation.json，原 raw 双门槛尚未达到，目标继续 ACTIVE。
+
+
+## Path＋ReliableAs 固定组合
+
+`20261024-phase1-PAMF-HardPL-PathReliableAs-m3-r01` 从同seed原E20独立own10＋20/E50/11100，组合原Path CE(full.25/noSig.125/core.125，总1.25)和原ReliableAs(.95同类/原接受集合/否则exactraw)，其余权重6/六U/style/joint/完整Lguard/defaulthead保持。源D主干V子集90.51→97.59/98.54、full99.85；原生As视图诊断为另一源依据。Complement/Path/ReliableAs目标分数未读，配方和三个邻近比较预先固定，不加载候选权重。86检查/一次P0P1PASS，首释放匹配Path卡位真实E20smoke PENDING；保留活跃ReliableAs，每卡最多2任务，CPU单scorer接ReliableAs。累计teacher2948400、studentU10602900、额外既有头26640/6804000条，实际As使用/回退和成本另计；三seed raw+DURA七景42cell及原双raw目标保持，goal ACTIVE。

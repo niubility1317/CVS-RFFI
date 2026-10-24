@@ -1,0 +1,305 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261024-phase1-PAMF-HardPL-PathReliableAs-m3-r01",
+  "group_id": "phase1-pamf-source-only-ssl-improvement",
+  "display_name": "PAMF 主干互补与可靠信道视图",
+  "description": "OriginalE20+own10+20,E50/11100.Fixed Path CE plus fixed ReliableAs input gate/rawfallback;one fullLguard,sixU passes,one defaulthead.All3seeds raw+fixedDURA7views.No candidate parent or target-feedback choices.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "PAMF",
+    "SSL",
+    "hard-PL",
+    "path-complement",
+    "reliable-As",
+    "exactraw-fallback",
+    "source-E20",
+    "factorial",
+    "raw-and-DURA"
+  ],
+  "comparison_group_id": "ManySig-F0-T1-E50-defaulthead-raw-and-DURA-v1",
+  "parent_run_ids": [
+    "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01",
+    "20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户 /goal 授权持续设计迭代 PAMF 半监督机制，使目标测试 clean 相对监督/普通PL均至少高1pp、六景均值均严格高1.5pp；三GPU每卡固定一个模型种子、最多两个本任务worker；追加要求同时报告单PAMF与固定DURA+PAMF。 用户2026-10-24进一步要求先核实普通PL正确率；高则加权并叠加监督机制，低则适度提高门控。",
+  "code": {
+    "commit": "3ef0c4abc4a6f346864dc955aded4911ac028e1d",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 ordinary account CVS-RFFI Py3.10/Torch2.1 FP32/TF32off, CPU2 per worker",
+    "cwd": "PROJECT/releases/20261024-phase1-PAMF-HardPL-PathReliableAs-m3-r01",
+    "entry": "experiments.pamf_ssl_research.control"
+  },
+  "data": {
+    "dataset": "WiSig ManySig",
+    "version": "Existing validated F0 roles and physical-ID IQ binding",
+    "representation": "equalized1 center256 float32 unitRMS",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md; docs/goals/PAMF_SSL_IMPROVEMENT_20261023.md",
+    "physical_ids_ref": "Existing F0 source_contract.json role_ids; corrected physical-ID-aligned cache reader",
+    "label_map_ref": "Existing F0 six-TX class order, unchanged",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Existing six registered TX shared with corrected F20/F21",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3,
+      "labeled_share_of_training": 0.1
+    },
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Reuse existing Phase1 VALIDATED_ONCE handles. p2_min_v1/capsule_id/split_id not applicable to Phase1.",
+    "support_query_ref": "Phase1 frozen zero-adaptation evaluation; no support/query fitting",
+    "leo_config_ref": "Same fixed F0 clean+six practical168000/view;original L As preserved;U raw/noise only,no U channel;G fixed DURA reference."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Same fixed F0 Phase1 unseen-RX target test; source-only L/U training, hidden U TX; raw primary SSL goal and fixed common DURA v1.0 reference. No fitted head/adaptation/Phase2/orbital claim. DURA original LU source permission retained; G never used for new F training."
+  },
+  "checkpoint": {
+    "initialization": "Original fixed same-seed F21 E20 only + own native10 + own20;E50/11100 total",
+    "sources": [
+      "PROJECT/runs/20261022-phase1-T1-DURA-F-ablation-binding-m63-r01/F21-sSEED/source/segment20/final_ssdg.pth",
+      "Frozen reference only:PROJECT/runs/20261021-phase1-restoration-R65-four-route-s2026092701-m4-r69/stage2/native_map_prior/final.pt"
+    ],
+    "contract_check_ref": "Source parents actual metadata/checkpoint ancestry/default-head/seed/data roles checked by source_parents; original prefix target_access=false, U_truth_read=false, no fitted head. G source roles checked before frozen prediction. Existing VALIDATED_ONCE handles reused.",
+    "provenance_verdict": "Original F21 fixed E20 config/payload/scratch ancestry/source contract/default head verified;no EMA/external teacher,no original E30 initialization",
+    "selection_rule": "Original same-seed F21 fixed scratch E20 only,actual original payload/contract/permissions checked;no originalE30 state loaded.Fixed native10+20 own continuation,final cumulative E50/11100.No target selection."
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex-pamf-path-reliable-as-factorial-20261024",
+    "gpu_policy": "GPU5/6/7 seeds2701/02/03,max2own/card including ReliableAs;wait matchingPath allGPU predictions done AND ReliableAs dispatched.Reserve both pendingCUDA PIDs;first matchingeligible freecard realE20 smoke;totalapps<3/free>=10000MiB.CPU sole scorer follows ReliableAs terminal.",
+    "remote_run_root": "PROJECT/runs/20261024-phase1-PAMF-HardPL-PathReliableAs-m3-r01",
+    "remote_log_root": "PROJECT/runs/20261024-phase1-PAMF-HardPL-PathReliableAs-m3-r01/logs",
+    "local_artifact_root": "local_artifacts/pamf_ssl_research_20261023/release-hard-pl-path-reliable-as-r01",
+    "launch_command": "python -m experiments.pamf_ssl_research.hard_pl_path_reliable_as_publish --repo code/worktrees/standard_ce_baselines_20261010 --context local_artifacts/pamf_ssl_research_20261023/viewanchor_context.json --output local_artifacts/pamf_ssl_research_20261023/release-hard-pl-path-reliable-as-r01 --ssh-config tools/n607_ssh_config",
+    "stop_rule": "First released matching seed/card originalE20 source smoke:combinedPath core-gradient and ReliableAs predicate/rawfallback/evalmode+normalization,one fullLguard explicit parameter gradients,L768/U1536/Practical192,teacher256raw+128As,4existing-head calls1024packets.PASS discards probe,reloads originalE20,continues.Two identical systemic technical failures stop new dispatch only;preserve healthy tasks/artifacts.No performance stop,target feedback,selective rerun or reschedule."
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "state.json",
+    "ROW/source/segment50/final_ssdg.pth",
+    "ROW/source/segment50/hard_pl_state.json",
+    "ROW/source/complete.json",
+    "ROW/source/source_V_diagnostic.json",
+    "ROW/predictions/source_execution_check.json",
+    "ROW/predictions/main/predictions.npz",
+    "ROW/predictions/complete.json",
+    "ROW/scores/scores.json",
+    "ROW/scores/complete.json",
+    "target-report/analysis.json",
+    "target-report/strata.csv",
+    "target-report/paired_raw.csv",
+    "target-report/per_seed.csv",
+    "smoke_runtime.json",
+    "ROW/source/segment30/hard_pl_state.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "paired_seed_delta_pp",
+      "repairs",
+      "damage",
+      "net_correct",
+      "source_E20_pseudo_precision_and_coverage",
+      "source_style_identity",
+      "U_acceptance",
+      "U_exposure",
+      "student_U_views",
+      "style_calls_and_applied",
+      "new_mechanism_epochs",
+      "parent_new_and_total_training_cost",
+      "two_early_arms_matched_delta",
+      "U_gradient_guard_calls",
+      "complete_L_and_U_gradient_norms",
+      "U_projection_conflicts",
+      "U_norm_caps",
+      "explicit_backward_equality",
+      "U_joint_calls",
+      "existing_U_joint_captures_and_packets",
+      "U_joint_crossRX_anchors",
+      "actual_signature_auxiliary_gradient",
+      "U_As_generated_and_teacher_eval",
+      "actual_U_As_used_and_exactraw_fallback",
+      "retained_raw_acceptance",
+      "teacher_eval_raw_As_and_total_cost",
+      "teacher_eval_normalization_unchanged"
+    ],
+    "dimensions": [
+      "readout",
+      "model_seed",
+      "view",
+      "receiver",
+      "transmitter",
+      "date",
+      "receiver_date"
+    ],
+    "prediction_ref": "Each fixed final E50 default head raw + fixed DURA-LU, each clean plus six practical,168000 per view. Full two-readout seven-view predictions fixed before truth.",
+    "scorer_ref": "Canonical independent CPU truth-last preflight and scorer; frozen source V diagnostic only. Exact raw integer clean>=+1pp and six>+1.5pp against BOTH F20/F21. DURA shown with matched same-G controls, never substitutes for raw goal."
+  },
+  "rows": [
+    {
+      "row_id": "HPL_E20_PATH_RAS6G-s2026092701",
+      "method": "HPL_E20_PATH_RAS6G",
+      "purpose": "primary_predeclared",
+      "config_ref": "experiments/pamf_ssl_research/hard_pl_path_reliable_as.py",
+      "resolved_config_ref": "PROJECT/runs/20261024-phase1-PAMF-HardPL-PathReliableAs-m3-r01/HPL_E20_PATH_RAS6G-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "data: deterministic reuse of validated IQ/IDs; support: not applicable; source Practical hardware20261016423, ordinary RNG=model seed. No split sweep.",
+      "k": null,
+      "scenario": "raw and fixed DURA-LU each clean plus six practical",
+      "optimizer": "AdamW CENTER_UNITS physical clip5; reset at20/30",
+      "lr": "2e-4 cosine to1e-6 per20/10/20 segment",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "OriginalE20/4440+own10/2220+own20/4440=E50/11100;new6660Usteps,6students,850500Asgeneration/extrateacher,26640existingheadcalls/6804000packets;teacher total2948400,studentU10602900.Actualused/fallback/time reported.",
+      "output_root": "PROJECT/runs/20261024-phase1-PAMF-HardPL-PathReliableAs-m3-r01/HPL_E20_PATH_RAS6G-s2026092701",
+      "log_path": "PROJECT/runs/20261024-phase1-PAMF-HardPL-PathReliableAs-m3-r01/logs/HPL_E20_PATH_RAS6G-s2026092701-row.log",
+      "command": "CUDA_VISIBLE_DEVICES=5 python -u -m experiments.pamf_ssl_research.hard_pl_path_reliable_as_worker row --config RELEASE/configs/HPL_E20_PATH_RAS6G-s2026092701-row.json",
+      "expected_artifacts": [
+        "source/segment50/final_ssdg.pth",
+        "source/segment50/hard_pl_state.json",
+        "source/complete.json",
+        "source/source_V_diagnostic.json",
+        "predictions/source_execution_check.json",
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "HPL_E20_PATH_RAS6G-s2026092702",
+      "method": "HPL_E20_PATH_RAS6G",
+      "purpose": "primary_predeclared",
+      "config_ref": "experiments/pamf_ssl_research/hard_pl_path_reliable_as.py",
+      "resolved_config_ref": "PROJECT/runs/20261024-phase1-PAMF-HardPL-PathReliableAs-m3-r01/HPL_E20_PATH_RAS6G-s2026092702/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "data: deterministic reuse of validated IQ/IDs; support: not applicable; source Practical hardware20261016423, ordinary RNG=model seed. No split sweep.",
+      "k": null,
+      "scenario": "raw and fixed DURA-LU each clean plus six practical",
+      "optimizer": "AdamW CENTER_UNITS physical clip5; reset at20/30",
+      "lr": "2e-4 cosine to1e-6 per20/10/20 segment",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "OriginalE20/4440+own10/2220+own20/4440=E50/11100;new6660Usteps,6students,850500Asgeneration/extrateacher,26640existingheadcalls/6804000packets;teacher total2948400,studentU10602900.Actualused/fallback/time reported.",
+      "output_root": "PROJECT/runs/20261024-phase1-PAMF-HardPL-PathReliableAs-m3-r01/HPL_E20_PATH_RAS6G-s2026092702",
+      "log_path": "PROJECT/runs/20261024-phase1-PAMF-HardPL-PathReliableAs-m3-r01/logs/HPL_E20_PATH_RAS6G-s2026092702-row.log",
+      "command": "CUDA_VISIBLE_DEVICES=6 python -u -m experiments.pamf_ssl_research.hard_pl_path_reliable_as_worker row --config RELEASE/configs/HPL_E20_PATH_RAS6G-s2026092702-row.json",
+      "expected_artifacts": [
+        "source/segment50/final_ssdg.pth",
+        "source/segment50/hard_pl_state.json",
+        "source/complete.json",
+        "source/source_V_diagnostic.json",
+        "predictions/source_execution_check.json",
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    },
+    {
+      "row_id": "HPL_E20_PATH_RAS6G-s2026092703",
+      "method": "HPL_E20_PATH_RAS6G",
+      "purpose": "primary_predeclared",
+      "config_ref": "experiments/pamf_ssl_research/hard_pl_path_reliable_as.py",
+      "resolved_config_ref": "PROJECT/runs/20261024-phase1-PAMF-HardPL-PathReliableAs-m3-r01/HPL_E20_PATH_RAS6G-s2026092703/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": 2027
+      },
+      "seed_notes": "data: deterministic reuse of validated IQ/IDs; support: not applicable; source Practical hardware20261016423, ordinary RNG=model seed. No split sweep.",
+      "k": null,
+      "scenario": "raw and fixed DURA-LU each clean plus six practical",
+      "optimizer": "AdamW CENTER_UNITS physical clip5; reset at20/30",
+      "lr": "2e-4 cosine to1e-6 per20/10/20 segment",
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "OriginalE20/4440+own10/2220+own20/4440=E50/11100;new6660Usteps,6students,850500Asgeneration/extrateacher,26640existingheadcalls/6804000packets;teacher total2948400,studentU10602900.Actualused/fallback/time reported.",
+      "output_root": "PROJECT/runs/20261024-phase1-PAMF-HardPL-PathReliableAs-m3-r01/HPL_E20_PATH_RAS6G-s2026092703",
+      "log_path": "PROJECT/runs/20261024-phase1-PAMF-HardPL-PathReliableAs-m3-r01/logs/HPL_E20_PATH_RAS6G-s2026092703-row.log",
+      "command": "CUDA_VISIBLE_DEVICES=7 python -u -m experiments.pamf_ssl_research.hard_pl_path_reliable_as_worker row --config RELEASE/configs/HPL_E20_PATH_RAS6G-s2026092703-row.json",
+      "expected_artifacts": [
+        "source/segment50/final_ssdg.pth",
+        "source/segment50/hard_pl_state.json",
+        "source/complete.json",
+        "source/source_V_diagnostic.json",
+        "predictions/source_execution_check.json",
+        "predictions/complete.json",
+        "scores/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "86focused checks PASS;one actual independentP0/P1 PASS.Real originalE20 combined smoke PENDING first eligible releasedPath slot;not training success.",
+    "Fixed sourceD improves core-only sourceV intervention90.5073->97.5892/98.5434,fulljoint99.8493;nativeAs sourceview diagnosis separately fixed.Source association/intervention not target proof or actualUtruth.",
+    "Current Complement/Path/ReliableAs target scores not read.Historical Joint/earlier targets disclosed;this factorial recipe fixed from two source questions before these new target outcomes.No parent/threshold/candidate/checkpoint selection.",
+    "Original same-seed F21E20 only,own native10+20/E50/11100=13L37LU;strict matching role/physical IDs/inheritance/config/payload.Default head joint,no candidate weight parent/new head/inferparams.",
+    "Use PathComplement,ReliableAs cooperative inheritance once;current-student As eval occurs before student-only joint/style/path hooks.One completeLguard consumes full combined Uloss once;6students unchanged.",
+    "Fixed .95rawgate/6weight/LS.01/CE1.25,Path ordinaryfull.25/noSig.125/core.125;RDrop1/AsKL0/shallow-middle.1/joint.05/shared accepted samepseudo crossRXstyle,nativeAdamW/clip5/decay/fullL retained.",
+    "As uses same original alternating half and native source simulator:rawaccepted AND sameargmax AND Asconf>=.95;else exactraw fallback.Pseudo labels and rawacceptance unchanged.All rawaccepted remain used.Eval/noGrad,no norm/EMA/proto updates.",
+    "Eachnew6660steps Asgeneration850500/extramodel eval850500,headcalls26640/existing headpackets6804000,studentU10206000.Cumulative teacher2948400(raw2097900+As850500),studentU10602900;actualused/fallback/2used physicalviews/costs separately reported,not sameFLOP.",
+    "N607 ordinary user,existing validated data reused;Utruth hidden,V diagnostic only without any state update,G not used in newFtraining.Fixed DURA69 deployment path unchanged.",
+    "Same-card queue follows finishedPath GPU work and active/dispatchedReliableAs.Reserve bothpreCUDA PIDs,keep all healthy tasks,max2own/card.CPU scorer afterReliableAs terminal.",
+    "Frozen E50 defaultstudent,3seeds42cells raw+DURA all7views168000 each;fullrow decisions before independenttruth-last.Complete perseed/scene/TX/RX/day/corrections/costs andF20/F21same-readout comparisons.Rawclean>=1pp andsixstrict>1.5pp bothcontrols,DURA separate.GoalACTIVE."
+  ],
+  "registered_at": "2026-10-24T00:06:58.722200+00:00",
+  "launch_status": {
+    "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+    "source_smoke": "PENDING_FIRST_RELEASED_MATCHING_SEED_CARD",
+    "training_started": false
+  }
+}

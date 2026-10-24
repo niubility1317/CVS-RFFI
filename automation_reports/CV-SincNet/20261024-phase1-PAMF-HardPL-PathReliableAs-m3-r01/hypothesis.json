@@ -1,0 +1,117 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "run_id": "20261024-phase1-PAMF-HardPL-PathReliableAs-m3-r01",
+  "method": "HPL_E20_PATH_RAS6G",
+  "registered_utc": "2026-10-24T00:06:58.722200+00:00",
+  "source_basis": {
+    "core_intervention": "Fixed ownE30 sourceD,source_geometry_trajectory_D_summary.json",
+    "sourceD_commit": "3ef0c4abc4a6f346864dc955aded4911ac028e1d",
+    "sourceD_analysis_commit": "3e7a7293bb1d16134bcbba718dca21c0d5d908cc",
+    "As_reliability": "Fixed originalE20 sourceU960/V720 nativeAs diagnosis,source_view_reliability_summary.json",
+    "V_core_only_percent": [
+      90.50728277247615,
+      97.5891511803114,
+      98.54344550477147
+    ],
+    "V_full_joint_percent": 99.84932194876946
+  },
+  "hypothesis": "High-purity raw pseudo labels train weaker existing paths;reliable nativeAs adds physical robustness without forcing ambiguous augmented views or losing accepted raw samples.",
+  "changed_from_Path": "Only fixed ReliableAs mixed-half input policy plus actual native generation/eval cost;Path losses/dose unchanged",
+  "changed_from_ReliableAs": "Only fixed Path full.25/noSig.125/core.125 ordinary CE reallocation at total CE1.25 plus4existing-head calls;As gate/acceptance unchanged",
+  "Path_recipe": {
+    "features": [
+      "actual_joint160",
+      "joint_minus_same_pass_sequence",
+      "joint_minus_same_pass_sequence_and_scaled_response"
+    ],
+    "ordinary_CE_coefficient": 0.25,
+    "no_signature_CE_coefficient": 0.125,
+    "core_CE_coefficient": 0.125,
+    "ordinary_CE_coefficient_before": 0.5,
+    "CE_normalizer": 1.25,
+    "label_smoothing": 0.01,
+    "student_views": "first_two_ordinary_U_passes",
+    "extra_existing_head_calls": 4,
+    "extra_backbone_forwards": 0,
+    "new_head": false
+  },
+  "ReliableAs_recipe": {
+    "raw_pseudo_gate": 0.95,
+    "augmented_view_gate": 0.95,
+    "require_same_raw_pseudo": true,
+    "require_raw_accepted": true,
+    "fallback": "exact_raw_same_packet",
+    "teacher": "current_student_eval_no_grad",
+    "physical_half": "same_original_alternating_half",
+    "student_U_passes": 6,
+    "extra_teacher_As_passes": 1,
+    "new_pseudo_labels": false,
+    "CE_and_KL_coefficients_unchanged": true,
+    "CE_normalizer": 1.25,
+    "new_head": false
+  },
+  "original_parent_epoch": 20,
+  "native_incremental_epochs": [
+    10,
+    20
+  ],
+  "final_epoch": 50,
+  "final_updates": 11100,
+  "raw_pseudo_gate": 0.95,
+  "U_weight": 6,
+  "accepted_raw_samples_retained": true,
+  "students_per_U_packet": 6,
+  "new_source_As_generated": 850500,
+  "extra_As_eval_teacher": 850500,
+  "cumulative_raw_teacher": 2097900,
+  "cumulative_total_teacher": 2948400,
+  "new_existing_head_calls": 26640,
+  "new_existing_feature_head_packets": 6804000,
+  "new_student_U_views": 10206000,
+  "cumulative_student_U_views": 10602900,
+  "actual_physical_student_views": "2*used",
+  "actual_raw_fallback": "850500-used",
+  "all_generation_and_eval_cost_counted": true,
+  "fixed_factorial_comparators": [
+    {
+      "run": "20261024-phase1-PAMF-HardPL-Joint160-m3-r01",
+      "method": "HPL_E20_NAMS_JOINT6G"
+    },
+    {
+      "run": "20261024-phase1-PAMF-HardPL-PathComplement-m3-r01",
+      "method": "HPL_E20_JOINT_PATH6G"
+    },
+    {
+      "run": "20261024-phase1-PAMF-HardPL-ReliableAs-m3-r01",
+      "method": "HPL_E20_JOINT_RAS6G"
+    }
+  ],
+  "primary_controls": [
+    "F20",
+    "F21"
+  ],
+  "readouts": [
+    "raw",
+    "DURA-LU"
+  ],
+  "views_per_readout": 7,
+  "samples_per_view": 168000,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "target_cells": 42,
+  "Complement_Path_ReliableAs_target_scores_read": false,
+  "historical_Joint_and_earlier_target_exposure": true,
+  "source_V_state_updates": 0,
+  "U_truth_reads": 0,
+  "target_training_or_selection": false,
+  "new_head": false,
+  "new_inference_parameters": 0,
+  "new_G_training_reads": 0,
+  "focused_tests": 86,
+  "one_independent_P0P1_review": "PASS",
+  "real_E20_smoke": "PENDING first same-seed releasedPath GPUslot",
+  "goal_complete": false
+}
