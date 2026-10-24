@@ -298,8 +298,11 @@
   ],
   "registered_at": "2026-10-24T00:06:58.722200+00:00",
   "launch_status": {
-    "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+    "status": "VERIFIED_QUEUED_FOR_RELEASED_PATH_GPU_SLOT",
+    "evidence": "queue_observation.json",
     "source_smoke": "PENDING_FIRST_RELEASED_MATCHING_SEED_CARD",
-    "training_started": false
+    "actual_GPU_workers": 0,
+    "queued_rows": 3,
+    "target_matrix_complete": false
   }
 }

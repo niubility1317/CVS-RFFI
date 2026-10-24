@@ -1,0 +1,88 @@
+{
+  "status": "VERIFIED_QUEUED_FOR_RELEASED_PATH_GPU_SLOT",
+  "run_id": "20261024-phase1-PAMF-HardPL-PathReliableAs-m3-r01",
+  "execution_commit": "2ffbfcb8d04c2abd94ffc24f7f00fac0bebee529",
+  "observed_unix": 1792800454.9481373,
+  "controller_identity_verified": true,
+  "controller_live": true,
+  "source_smoke": "PENDING_FIRST_RELEASED_MATCHING_SEED_CARD",
+  "actual_new_GPU_workers": 0,
+  "queued_rows": 3,
+  "rows": [
+    {
+      "row_id": "HPL_E20_PATH_RAS6G-s2026092701",
+      "status": "QUEUED",
+      "training_started": false
+    },
+    {
+      "row_id": "HPL_E20_PATH_RAS6G-s2026092702",
+      "status": "QUEUED",
+      "training_started": false
+    },
+    {
+      "row_id": "HPL_E20_PATH_RAS6G-s2026092703",
+      "status": "QUEUED",
+      "training_started": false
+    }
+  ],
+  "healthy_preceding_GPU_workers": [
+    {
+      "run_id": "20261024-phase1-PAMF-HardPL-Complement-m3-r01",
+      "row_id": "HPL_E20_JOINT_COMP6G-s2026092701",
+      "gpu": 5,
+      "process_identity_verified": true,
+      "log_growth_bytes": 39919,
+      "cumulative_source_epoch": 46
+    },
+    {
+      "run_id": "20261024-phase1-PAMF-HardPL-Complement-m3-r01",
+      "row_id": "HPL_E20_JOINT_COMP6G-s2026092702",
+      "gpu": 6,
+      "process_identity_verified": true,
+      "log_growth_bytes": 39947,
+      "cumulative_source_epoch": 49
+    },
+    {
+      "run_id": "20261024-phase1-PAMF-HardPL-Complement-m3-r01",
+      "row_id": "HPL_E20_JOINT_COMP6G-s2026092703",
+      "gpu": 7,
+      "process_identity_verified": true,
+      "log_growth_bytes": 39929,
+      "cumulative_source_epoch": 47
+    },
+    {
+      "run_id": "20261024-phase1-PAMF-HardPL-PathComplement-m3-r01",
+      "row_id": "HPL_E20_JOINT_PATH6G-s2026092701",
+      "gpu": 5,
+      "process_identity_verified": true,
+      "log_growth_bytes": 46855,
+      "cumulative_source_epoch": 35
+    },
+    {
+      "run_id": "20261024-phase1-PAMF-HardPL-PathComplement-m3-r01",
+      "row_id": "HPL_E20_JOINT_PATH6G-s2026092702",
+      "gpu": 6,
+      "process_identity_verified": true,
+      "log_growth_bytes": 44969,
+      "cumulative_source_epoch": 39
+    },
+    {
+      "run_id": "20261024-phase1-PAMF-HardPL-PathComplement-m3-r01",
+      "row_id": "HPL_E20_JOINT_PATH6G-s2026092703",
+      "gpu": 7,
+      "process_identity_verified": true,
+      "log_growth_bytes": 41858,
+      "cumulative_source_epoch": 35
+    }
+  ],
+  "reliable_As_predecessor_controller": {
+    "run_id": "20261024-phase1-PAMF-HardPL-ReliableAs-m3-r01",
+    "controller_identity_verified": true,
+    "status": "WAITING_FOR_SMOKE_GPU",
+    "source_smoke": "PENDING"
+  },
+  "old_healthy_tasks_changed": false,
+  "target_scores_read": false,
+  "target_matrix_complete": false,
+  "goal_complete": false
+}
