@@ -13,3 +13,8 @@ LOCAL_VERIFIED_NOT_LAUNCHED：110 项相关检查和一次独立 P0/P1 PASS；�
 GPU5/6/7固定对应三seed，每卡本任务最多2条、计外部compute进程<3且free≥10000MiB。等待同seed ReliableAs全部GPU预测结束且PathReliableAs已派发，预留两侧pendingCUDA PID；CPU唯一scorer接组合终态。首可用匹配卡真实E20 smoke验证新CE对签名/参考/主干/头梯度均非零、2头512条、L768/U1536/rawteacher256/physicalU0/rawAs128/LPractical64、CE1.25/有效上限/完整L显式梯度；探针丢弃，正式重载原E20。两个同类系统性技术错误只停止新派发并保留健康任务；不按目标结果调参、重排或选择性重跑。
 
 每row冻结最终E50学生后自动完成raw和固定DURA各clean＋六practical，168000/view、三seed42cell；整row预测固定后独立truth-last。报告全部逐seed/景/SD/MacroF1/TX/RX/day/RX×day/净纠错/成本，F20/F21同读出及预先固定Joint对照。raw clean相对两个控制均≥+1个百分点、六景均严格>+1.5个百分点才满足原目标，DURA单列。恢复器固定DURA v1.0 R69/266951、FP32/TF32off/reuse=True/graph=True/native=False，不用于新F训练，不沿用旧F50时延或替换默认部署。目标保持 ACTIVE。
+
+
+## 发布后独立核实
+
+VERIFIED：执行 commit `02979123053aa2b2d8d6f044ba3a497a3d484cd0` 的控制器存活，CWD及完整命令匹配。三行实际QUEUED，GPU训练worker为0，真实原E20检查仍PENDING，等待同seed ReliableAs全部GPU预测完成且组合已派发。独立核实当前六个ReliableAs/组合健康worker的PID/CWD/命令/GPU及日志增长。每卡最多两个本任务，现有任务保持；排队不代表训练或目标成功。

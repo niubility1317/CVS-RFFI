@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "status": "VERIFIED_REAL_E20_PATH_RELIABLE_AS_SMOKE_AND_ALL3_SOURCE_RUNNING",
   "focused_tests": 86,
   "independent_review": {
     "status": "PASS",
@@ -9,6 +9,6 @@
     "scope": "Only direct wrong/unauthorized/destructive/unlaunchable/illegal prediction defects in the next PathReliableAs run",
     "actual_reviewer_response": "PASS，未发现本次范围内的 P0/P1。组合继承只执行一次 Joint/六前向 U loss 和完整 L guard；As teacher 先于临时 hook，Path CE 与曝光计数保持正确。卡位 PID 预留及评分顺序符合约定。"
   },
-  "real_checkpoint_smoke": "PENDING first releasedPath matchingseed/card;combined Path/ReliableAs/one fullLguard",
+  "real_checkpoint_smoke": "PASS;originalE20 actual As predicate/exactraw fallback/eval norm/mode/fullLguard/budget;source_activation.json",
   "current_Comparator_target_scores_read": false
 }

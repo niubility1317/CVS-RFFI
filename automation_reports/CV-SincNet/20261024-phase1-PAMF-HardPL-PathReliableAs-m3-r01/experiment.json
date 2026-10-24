@@ -298,11 +298,11 @@
   ],
   "registered_at": "2026-10-24T00:06:58.722200+00:00",
   "launch_status": {
-    "status": "VERIFIED_QUEUED_FOR_RELEASED_PATH_GPU_SLOT",
-    "evidence": "queue_observation.json",
-    "source_smoke": "PENDING_FIRST_RELEASED_MATCHING_SEED_CARD",
-    "actual_GPU_workers": 0,
-    "queued_rows": 3,
+    "status": "VERIFIED_REAL_E20_PATH_RELIABLE_AS_SMOKE_AND_ALL3_SOURCE_RUNNING",
+    "evidence": "source_activation.json",
+    "source_smoke": "PASS",
+    "actual_GPU_workers": 3,
+    "queued_rows": 0,
     "target_matrix_complete": false
   },
   "factorial_reporting_plan": {

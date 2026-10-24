@@ -29,3 +29,40 @@ VERIFIED：执行commit `cf6794650506c4bca08425539efa3c3ae8d0b444` 的控制器�
 VERIFIED：执行commit `cf6794650506c4bca08425539efa3c3ae8d0b444`。首释放seed2026092702／GPU6原E20source smoke PASS；正式三seed/card映射保持。主干CE实际梯度范数：exclusive签名0、exclusive参考0、既有头1.25794596、主干2.29631474；完整joint签名辅助梯度0.370686237。普通CE0.5分为full0.25＋noSig0.125＋core0.125，CE总分母1.25保持；4既有头调用1024条既有特征、U骨干1536／原L768／rawAs128／Uphysical0／LPractical64保持，完整L guard与显式梯度一致，临时hook／wrapper退出。探针丢弃，正式行重新加载原E20。
 
 三个seed已在GPU5/6/7实际产生主干互补CE／joint／style／guard原生步骤，进程／CWD／完整命令／GPU／日志增长独立核实，当前为源训练前缀；并非完整训练或目标收益。健康Complement及前序任务保持，固定raw＋DURA七景及truth-last自动继续，goal ACTIVE。
+
+
+## 完整源训练
+
+VERIFIED_SOURCE_FINAL：每个模型严格从原同 seed E20 开始，原生10＋20段各2220／4440步，总计新增30轮／6660步，累计E50／11100；全部19980条闭合记录逐条核对。门控0.95、权重6、U LS0.01、原L／默认头联合训练保持，无U物理生成、EMA、原型、U真值或G训练。NAMS累计学生U10602900，每model仅在已有U中joint捕获13320批／3402000条、6660次对比。新增rawAs850500、style39960次／6660共享计划、RDrop／AsKL0／浅中层跨RX及CE归一化1.25均符合预登记。每模型实际6660次完整L anchor的U投影／范数帽1及逐组冲突／帽计数全部核实。父E20／新增30轮／累计经过时间分别保存，不把共享GPU墙钟视为独占小时。
+
+固定最终学生自动完成raw与固定DURA各七景、独立truth-last，源证据不替代目标收益；已经完成的整组三seed先行报告不改变冻结的其余训练，本次源检查不读取目标分数。
+
+主干互补CE每模型26640次既有头调用／6804000条已有特征，普通0.5分为full0.25＋noSig0.125＋core0.125，CE分母1.25不变；完整签名／参考部署保持，无额外骨干／新头／推理参数。
+
+
+## HPL_E20_JOINT_PATH6G 冻结 E50 的伪标签源域健康检查
+
+三个固定最终学生各覆盖完整源 V27000 条，原默认头 eval 硬 argmax；无 GPU worker、参数／教师／原型／归一化更新、U 真值或目标读取，不改变健康训练或门控。此项只报告该方法的源域健康，不把源精度当作 U 实测正确率、完整本批测试成绩或目标达成。
+
+| seed | E20 接受精度（%） | E50 接受精度（%） | E20 覆盖（%） | E50 覆盖（%） | E50 接受错误数 |
+|---|---:|---:|---:|---:|---:|
+| 2026092701 | 99.900216 | 99.869301 | 92.792593 | 96.348148 | 34 |
+| 2026092702 | 99.868683 | 99.861863 | 93.074074 | 96.522222 | 36 |
+| 2026092703 | 99.916428 | 99.915365 | 93.066667 | 96.274074 | 22 |
+
+上表门控均为 0.95；0.98 对照及完整 TX／RX／day 分层保留在 source_pseudo_quality_E50_HPL_E20_JOINT_PATH6G.json。不依据微小源域变化选 checkpoint 或修改当前配方，完整预登记 raw／DURA 目标矩阵继续。
+
+
+## 完整目标测试结果
+
+ANALYZED：各方法三个seed，共3模型、42项raw／固定DURA七景决策均完成独立truth-last评分，六个匹配监督／普通PL对照模型完整复用。逐景／seed／SD／Macro-F1／RX／TX／day、修复损伤及曝光／成本见target_results.md和附属完整表。原raw双门槛尚未满足，研发目标仍ACTIVE。
+
+HPL_E20_JOINT_PATH6G / raw clean：84.818650794% ± 0.171191069%（三个模型 seed 样本 SD）。
+HPL_E20_JOINT_PATH6G / DURA-LU clean：84.902777778% ± 0.144864778%（三个模型 seed 样本 SD）。
+HPL_E20_JOINT_PATH6G / raw six_mean：70.301984127% ± 0.583498224%（三个模型 seed 样本 SD）。
+HPL_E20_JOINT_PATH6G / DURA-LU six_mean：76.296990741% ± 0.661266589%（三个模型 seed 样本 SD）。
+
+不依据本结果热改健康旧任务或替换父来源。
+
+
+HPL_E20_JOINT_PATH6G 固定匹配比较完成，见 HPL_E20_JOINT_PATH6G_matched_comparison.md；比较不替代原主目标或全六行完成状态，无目标反馈改配方。

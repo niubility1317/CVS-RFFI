@@ -25,3 +25,12 @@ VERIFIED：执行 commit `2ffbfcb8d04c2abd94ffc24f7f00fac0bebee529` 的控制器
 
 
 固定四项配方报告工具已通过6项整数差、交互量、完整矩阵前置检查与覆盖保护测试。只有Joint/Path/As/组合全部完成三seed raw+DURA七景且元数据/物理契约一致后才读取四份summary，输出三个邻近配对差及combined−Path−As＋Joint的实际配方交互量；不代替主目标。比较固定因素、命令和产物见factorial_reporting_plan.json；未完成时只WAIT，不阻塞主目标报告或读取部分新结果。
+
+
+## 真实 E20 权重检查与三 seed 实际启动
+
+VERIFIED：执行 commit `2ffbfcb8d04c2abd94ffc24f7f00fac0bebee529`，首释放 seed 2026092702／GPU6 原 E20 source smoke PASS。原 raw 接受集合保持；128 条实际 As 生成及额外 eval 中 used=45、精确 raw 回退=83；实际学生物理视图为2×used。教师 raw256＋As128，学生 U1536、L768、实际源 Practical192；门控谓词、eval 归一化状态及训练模式恢复、完整 L anchor 显式梯度、六次学生前向、CE/KL 剂量和临时 wrapper/hook 退出均核实。探针更新丢弃，正式重新加载原 E20。
+
+三个 seed 已在 GPU5/6/7 实际产生原生 Path CE、ReliableAs、joint、style 和 guard 步骤，PID/CWD/完整命令/GPU/日志增长独立核实。这里只确认源训练启动，完整 E50、raw／DURA 七景与独立 truth-last 尚未完成；目标仍 ACTIVE。
+
+同时核实 Path core/head 梯度及 exclusive 签名/参考旁路，四次既有头调用/1024条特征、CE分母1.25保持；源训练逐步Path和As计数共存。
