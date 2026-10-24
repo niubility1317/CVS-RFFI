@@ -1,0 +1,91 @@
+{
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "source_epoch": 20,
+  "steps_per_seed": 1,
+  "L_batch": 128,
+  "U_batch": 256,
+  "reference_revision": "hard-pl-native-as-r01",
+  "reference_method": "HPL_E20_JOINT_AS6G",
+  "original_parent": "Original same-seed F21 E20/4440 only;matching role/physicalID/data contract and complete scratch ancestry checked with the existing source_parents helper before model load.No candidate or originalE30 parent.",
+  "roles": [
+    "L_s",
+    "U_s"
+  ],
+  "V_reads": 0,
+  "V_gradients": 0,
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "G_training_reads": 0,
+  "environment": "N607 ordinary account,existing CVS-RFFI Python,CPU2,CUDA_VISIBLE_DEVICES empty,FP32/TF32off;original NativeAs release provides the fixed model/objective dependencies.Committed analysis is executed over UTF8stdin,without remote file writes.",
+  "CWD": "Existing NativeAs release root;no chdir into a target dataset",
+  "GPU_workers": 0,
+  "CPU_threads": 2,
+  "stop_rule": "Any real input/provenance/role/count/nonfinite/gradient-closure mismatch stops this diagnostic only;preserve healthyjobs/weights/output.An observation timeout is UNKNOWN,reconcile the same PID before retry.No source threshold/grid/parent/seed/order tuning or target feedback.",
+  "status": "REGISTERED_NONBLOCKING_SOURCE_STEP_PROJECTION",
+  "kind": "fixed_original_E20_source_step_projection_v1",
+  "registered_utc": "2026-10-24T06:35:41.544090+00:00",
+  "question": "Can a quantized parameter-step projection remove component conflicts while retaining at least half the original BG incremental optimizer-step norm on each fixed source seed?",
+  "reference": "Raw current three-anchor BG gradient operator plus actual fresh CENTER_UNITS/clip5/AdamW first step;original E20 weights only.",
+  "baseline": "Actual same-source-parameters L-only optimizer first step with identical native options;retain its exact FP32 parameter values.",
+  "candidate": "Project only deltaU=theta_Lonly.double()-theta_BG.double() onto fullL/nonphysicalL/physicalL gradient halfspaces per t2/head/other;compose theta_new=theta_Lonly-projected_deltaU and check exact FP64 difference between actual FP32 parameter values.",
+  "comparisons": [
+    "RAW_BG_ACTUAL_STEP",
+    "PROTECTED_BG_ACTUAL_STEP"
+  ],
+  "solver": "Thin float64 QR plus <=8 active-set small-SVD affine projections;minimum correction to raw deltaU.Original raw gradient BG and all losses,raw.95/weight6/acceptance/views/defaulthead stay fixed.",
+  "numerical_policy": {
+    "tiny_full_L_squared_norm": 1e-12,
+    "component_anchor_omit_squared_norm": 1e-12,
+    "pinv_rtol": 1e-10,
+    "KKT_relative_tolerance": 1e-08,
+    "actual_parameter_increment_cosine_tolerance": 1e-06,
+    "norm_nonexpansion_relative_tolerance": 1e-06,
+    "norm_absolute_tolerance": 1e-12,
+    "quantization_attempts": 4,
+    "initial_affine_margin": 0.0,
+    "repair_margin": "2*sum(abs(unit_anchor*(actual_increment-continuous_projection)))+1e-12*max(raw_increment_norm,1e-12)",
+    "numerical_fallback": "Only if all fixed attempts fail actual FP32 parameter constraints/norm nonexpansion,return exact L-only baseline for that group;count every fallback and lost increment norm.No silent fallback or threshold tuning."
+  },
+  "source_rules": {
+    "minimum_whole_increment_norm_retention_per_seed": 0.5,
+    "minimum_removed_material_conflicts": 1,
+    "material_cosine_threshold": -1e-06,
+    "all_actual_parameter_constraints_and_nonexpansion_required": true,
+    "all_three_fixed_seeds_required": true
+  },
+  "budget": {
+    "source_models": 3,
+    "source_packet_views": 7686,
+    "total_autograd_calls": 27,
+    "disposable_optimizer_steps": 12,
+    "extra_forward_or_autograd_calls": 0,
+    "original_model_updates": 0,
+    "new_formal_training_updates": 0,
+    "GPU_workers": 0,
+    "CPU_threads": 2
+  },
+  "diagnostics": "Count actual increment conflicts,retained norms,quantization attempts/fallbacks;parameter-group norms are coordinate-specific,not additive contribution shares or independent samples.",
+  "interpretation": "One fixed fresh-moment source step/seed only.No measured post-step loss or target gain.No actual candidate automatically starts;subsequent training needs its own frozen implementation/review/real-checkpoint smoke and original E20 parents.",
+  "historical_exposure": "NativeAs/BalancedCE targets and source optimizer counterfactuals known;Cap2/BranchGuard target scores not read.Only source optimizer evidence motivates this fixed operator.No current healthy recipe or test matrix change.",
+  "local_validation": {
+    "status": "IMPLEMENTATION_PENDING",
+    "independent_P0P1_review": "PENDING",
+    "real_checkpoint_smoke": "First source model then immediate continuation"
+  },
+  "command": "python local_artifacts/pamf_ssl_research_20261023/collect_source_step_projection.py",
+  "output": "local_artifacts/pamf_ssl_research_20261023/source_step_projection.json;exclusive;all stdout/stderr preserved",
+  "expected_artifacts": [
+    "source_step_projection_plan.json",
+    "source_step_projection.json",
+    "source_step_projection_summary.json",
+    "source_step_projection.md"
+  ],
+  "new_training": false,
+  "active_jobs_changed": false,
+  "NONBLOCKING": true,
+  "goal_complete": false
+}

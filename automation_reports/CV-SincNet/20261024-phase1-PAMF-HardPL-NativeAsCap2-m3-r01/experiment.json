@@ -394,5 +394,20 @@
       "NATIVE_CAP2": 18,
       "BRANCH_CAP2_QR": 27
     }
+  },
+  "source_step_projection": {
+    "status": "REGISTERED_NONBLOCKING_SOURCE_STEP_PROJECTION",
+    "reference": "source_step_projection_plan.json",
+    "source_models": 3,
+    "source_rules": {
+      "minimum_whole_increment_norm_retention_per_seed": 0.5,
+      "minimum_removed_material_conflicts": 1,
+      "material_cosine_threshold": -1e-06,
+      "all_actual_parameter_constraints_and_nonexpansion_required": true,
+      "all_three_fixed_seeds_required": true
+    },
+    "new_formal_training_updates": 0,
+    "target_reads": 0,
+    "healthy_jobs_changed": false
   }
 }
