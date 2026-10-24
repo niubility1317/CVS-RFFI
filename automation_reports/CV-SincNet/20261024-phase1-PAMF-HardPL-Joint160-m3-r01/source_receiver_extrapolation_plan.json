@@ -1,0 +1,68 @@
+{
+  "status": "REGISTERED_SOURCE_ONLY_FALSIFICATION",
+  "registered_utc": "2026-10-24T00:36:44.631490+00:00",
+  "run_context": "20261024-phase1-PAMF-HardPL-Joint160-m3-r01",
+  "hypothesis": "Same-pseudo different-sourceRX full-feature difference may span receiver variation while retaining the class-common component;test extrapolation without dropping any additive branch.",
+  "additive_assumption": "If h_i=mu_c+nu_i and h_j=mu_c+nu_j,then h_i+a(h_i-h_j)=mu_c+(1+a)nu_i-a*nu_j;this is an explicit hypothesis,not causal proof or a verified received waveform.",
+  "feature": "Actual deployed joint160,all signature/reference/core contributions retained,existing frozen defaulthead",
+  "formula": "h_i+alpha*(h_i-h_j) for eligible endpoints;exact originalh for ineligible endpoints",
+  "alphas": [
+    0.0,
+    0.25,
+    0.5,
+    1.0
+  ],
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "source_epoch": 20,
+  "parent": "Fixed original same-seed F21E20 only,strict existing source_parents/config/payload;not Joint/Complement/Path/ReliableAs/combined weights",
+  "U_s": {
+    "samples": 960,
+    "sampling": "Existing fixed64perRXday,seed2026102307/order2026102401",
+    "raw_gate": 0.95,
+    "labels": "own originalE20 rawargmax",
+    "TX_truth": "HIDDEN"
+  },
+  "V": {
+    "samples": 720,
+    "sampling": "Existing fixed8perTX/RX/day,order2026102401",
+    "truth": "Only report/calibrate frozen head,trueclasses never select partner or change model state"
+  },
+  "partners": "Both rawaccepted.95,same originalpseudo,different sourceRX,seed model_seed+2026102601;fixed across whole grid and no V truth",
+  "selection": "Largest nonzero fixedalpha satisfying every seed:Vtrueaccuracy>=99% with eligible>=600,Urawpseudoagreement>=99% with eligible>=800,andUpseudohardCE>=1.25x alpha0.If none,NO_SOURCE_CANDIDATE;no new grid or training from this result.",
+  "source_U_actual_accuracy": "UNKNOWN;agreement with pseudo label only",
+  "execution": "N607 ordinaryaccount,existing ReliableAs release dependencies,committed analysis/module source over UTF8stdin;CPU2/noCUDA,no remote mutations or training workers",
+  "CWD": "PROJECT/releases/20261024-phase1-PAMF-HardPL-ReliableAs-m3-r01",
+  "command": "python local_artifacts/pamf_ssl_research_20261023/collect_source_receiver_extrapolation.py",
+  "output": "local_artifacts/pamf_ssl_research_20261023/source_receiver_extrapolation.json;public full source evidence and bounded interpretation in same Joint run",
+  "expected_artifacts": [
+    "source_receiver_extrapolation.json",
+    "source_receiver_extrapolation_summary.json",
+    "source_receiver_extrapolation.md"
+  ],
+  "GPU_workers": 0,
+  "CPU_threads": 2,
+  "source_role_rows": 6,
+  "source_head_cases": 24,
+  "extra_existing_head_calls": 18,
+  "source_backbone_packets": 5040,
+  "source_L_noquery_smoke_packets": 6,
+  "model_updates": 0,
+  "normalization_updates": 0,
+  "EMA_updates": 0,
+  "prototype_updates": 0,
+  "head_fit_updates": 0,
+  "V_gradients": 0,
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "G_reads": 0,
+  "stop_rule": "Stop read-only diagnostic on actual data/provenance/nonfinite/permission failure,preserve all old jobs/artifacts;scientific threshold failure means no candidate,not target or source selection of a parent.",
+  "historical_exposure": "Joint/Complement and earlier complete target matrices exposed;Path/ReliableAs/combined target scores not read.No target-feedback tuning,stopping,reordering or checkpoint selection;not a blind study.",
+  "active_jobs_changed": false,
+  "new_training_candidate_launched": false,
+  "focused_tests": 14,
+  "goal_complete": false
+}

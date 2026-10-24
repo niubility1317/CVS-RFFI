@@ -93,3 +93,8 @@ HPL_E20_NAMS_JOINT6G 固定匹配比较完成，见 HPL_E20_NAMS_JOINT6G_matched
 
 
 源域诊断 D 已 VERIFIED 完成，18行／三方法各三seed、20.490 s、无任何训练或目标读取。全部既有头干预、固定源角色和几何见 source_geometry_trajectory_D.md；不据此改变已发布方法或声称目标收益。
+
+
+## 完整特征跨接收机外推的源域检验
+
+预先固定原F21E20三seed、U960/V720及alpha0/0.25/0.5/1，只在高置信同伪类、不同源RX的两个完整joint160之间作h_i＋alpha(h_i−h_j)，保留签名/参考/主干及原默认头。类共同项在加性假设下保留，这只是待检验假设，不是实际信道或目标收益证明。选择最大非零alpha须每seed同时达到V真实正确率≥99%、U原伪类一致率≥99%、U hardCE较raw至少增加25%，并满足预登记有效样本数；无幅度通过就不启动候选。无V梯度/任何模型或状态更新、Utruth/target/G读取、新头或GPUworker。原父权重、伙伴、网格、规则、命令和产物见source_receiver_extrapolation_plan.json；14项focused检查通过。当前其余健康实验保持。
