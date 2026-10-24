@@ -98,3 +98,6 @@ HPL_E20_NAMS_JOINT6G 固定匹配比较完成，见 HPL_E20_NAMS_JOINT6G_matched
 ## 完整特征跨接收机外推的源域检验
 
 预先固定原F21E20三seed、U960/V720及alpha0/0.25/0.5/1，只在高置信同伪类、不同源RX的两个完整joint160之间作h_i＋alpha(h_i−h_j)，保留签名/参考/主干及原默认头。类共同项在加性假设下保留，这只是待检验假设，不是实际信道或目标收益证明。选择最大非零alpha须每seed同时达到V真实正确率≥99%、U原伪类一致率≥99%、U hardCE较raw至少增加25%，并满足预登记有效样本数；无幅度通过就不启动候选。无V梯度/任何模型或状态更新、Utruth/target/G读取、新头或GPUworker。原父权重、伙伴、网格、规则、命令和产物见source_receiver_extrapolation_plan.json；14项focused检查通过。当前其余健康实验保持。
+
+
+完整特征接收机外推源域检验已VERIFIED：6行/24case，CPU2 6.561s，无状态更新/V梯度/Utruth/target/GPU。仅alpha0.25通过预先固定的所有seed保真和hardening规则；完整结果及alpha0.5/1失败均见source_receiver_extrapolation.md。独立Joint6G后续RXE配方已固定在receiver_extrapolation_followup_design.json，实现/审查/真实smoke待完成，未启动新训练，不据目标调门槛或替换父。

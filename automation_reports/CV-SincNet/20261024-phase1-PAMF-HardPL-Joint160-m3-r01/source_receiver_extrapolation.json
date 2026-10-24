@@ -1,0 +1,524 @@
+{
+  "status": "VERIFIED_FIXED_SOURCE_EXTRAPOLATION",
+  "analysis_code_commit": "531cea74a0f4aa8da6be4f3ce76451927635a6a5",
+  "seconds": 6.561289508128539,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "source_epoch": 20,
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "role": "U_s",
+      "source_run_id": "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01",
+      "source_row_id": "F21-s2026092701",
+      "source_epoch": 20,
+      "samples": 960,
+      "raw_accepted": 898,
+      "partner_eligible": 898,
+      "true_TX_pair_agreement": null,
+      "U_TX_truth_read": false,
+      "partners_chosen_without_V_truth": true,
+      "cases": [
+        {
+          "alpha": 0.0,
+          "selected": 898,
+          "pseudo_agreements": 898,
+          "true_correct": null,
+          "pseudo_hard_CE": 0.003869393141940236,
+          "pseudo_LS01_CE": 0.08495281636714935,
+          "mean_relative_full_feature_displacement": 0.0
+        },
+        {
+          "alpha": 0.25,
+          "selected": 898,
+          "pseudo_agreements": 898,
+          "true_correct": null,
+          "pseudo_hard_CE": 0.009781277738511562,
+          "pseudo_LS01_CE": 0.08979271352291107,
+          "mean_relative_full_feature_displacement": 0.07378774136304855
+        },
+        {
+          "alpha": 0.5,
+          "selected": 898,
+          "pseudo_agreements": 894,
+          "true_correct": null,
+          "pseudo_hard_CE": 0.030088409781455994,
+          "pseudo_LS01_CE": 0.10863513499498367,
+          "mean_relative_full_feature_displacement": 0.1475754827260971
+        },
+        {
+          "alpha": 1.0,
+          "selected": 898,
+          "pseudo_agreements": 844,
+          "true_correct": null,
+          "pseudo_hard_CE": 0.1762102246284485,
+          "pseudo_LS01_CE": 0.2509244978427887,
+          "mean_relative_full_feature_displacement": 0.2951509654521942
+        }
+      ]
+    },
+    {
+      "model_seed": 2026092701,
+      "role": "V",
+      "source_run_id": "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01",
+      "source_row_id": "F21-s2026092701",
+      "source_epoch": 20,
+      "samples": 720,
+      "raw_accepted": 661,
+      "partner_eligible": 661,
+      "true_TX_pair_agreement": 661,
+      "U_TX_truth_read": false,
+      "partners_chosen_without_V_truth": true,
+      "cases": [
+        {
+          "alpha": 0.0,
+          "selected": 661,
+          "pseudo_agreements": 661,
+          "true_correct": 661,
+          "pseudo_hard_CE": 0.0035313779953867197,
+          "pseudo_LS01_CE": 0.08544453978538513,
+          "mean_relative_full_feature_displacement": 0.0
+        },
+        {
+          "alpha": 0.25,
+          "selected": 661,
+          "pseudo_agreements": 661,
+          "true_correct": 661,
+          "pseudo_hard_CE": 0.009096106514334679,
+          "pseudo_LS01_CE": 0.08979509770870209,
+          "mean_relative_full_feature_displacement": 0.07222584635019302
+        },
+        {
+          "alpha": 0.5,
+          "selected": 661,
+          "pseudo_agreements": 656,
+          "true_correct": 656,
+          "pseudo_hard_CE": 0.03152631223201752,
+          "pseudo_LS01_CE": 0.11064157634973526,
+          "mean_relative_full_feature_displacement": 0.14445169270038605
+        },
+        {
+          "alpha": 1.0,
+          "selected": 661,
+          "pseudo_agreements": 625,
+          "true_correct": 625,
+          "pseudo_hard_CE": 0.18991300463676453,
+          "pseudo_LS01_CE": 0.26504087448120117,
+          "mean_relative_full_feature_displacement": 0.2889033854007721
+        }
+      ]
+    },
+    {
+      "model_seed": 2026092702,
+      "role": "U_s",
+      "source_run_id": "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01",
+      "source_row_id": "F21-s2026092702",
+      "source_epoch": 20,
+      "samples": 960,
+      "raw_accepted": 902,
+      "partner_eligible": 902,
+      "true_TX_pair_agreement": null,
+      "U_TX_truth_read": false,
+      "partners_chosen_without_V_truth": true,
+      "cases": [
+        {
+          "alpha": 0.0,
+          "selected": 902,
+          "pseudo_agreements": 902,
+          "true_correct": null,
+          "pseudo_hard_CE": 0.0033745907712727785,
+          "pseudo_LS01_CE": 0.08724255114793777,
+          "mean_relative_full_feature_displacement": 0.0
+        },
+        {
+          "alpha": 0.25,
+          "selected": 902,
+          "pseudo_agreements": 902,
+          "true_correct": null,
+          "pseudo_hard_CE": 0.00962582416832447,
+          "pseudo_LS01_CE": 0.09238846600055695,
+          "mean_relative_full_feature_displacement": 0.0735083818435669
+        },
+        {
+          "alpha": 0.5,
+          "selected": 902,
+          "pseudo_agreements": 894,
+          "true_correct": null,
+          "pseudo_hard_CE": 0.03751271218061447,
+          "pseudo_LS01_CE": 0.11875271797180176,
+          "mean_relative_full_feature_displacement": 0.1470167636871338
+        },
+        {
+          "alpha": 1.0,
+          "selected": 902,
+          "pseudo_agreements": 823,
+          "true_correct": null,
+          "pseudo_hard_CE": 0.2630329132080078,
+          "pseudo_LS01_CE": 0.34022849798202515,
+          "mean_relative_full_feature_displacement": 0.2940335273742676
+        }
+      ]
+    },
+    {
+      "model_seed": 2026092702,
+      "role": "V",
+      "source_run_id": "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01",
+      "source_row_id": "F21-s2026092702",
+      "source_epoch": 20,
+      "samples": 720,
+      "raw_accepted": 665,
+      "partner_eligible": 665,
+      "true_TX_pair_agreement": 659,
+      "U_TX_truth_read": false,
+      "partners_chosen_without_V_truth": true,
+      "cases": [
+        {
+          "alpha": 0.0,
+          "selected": 665,
+          "pseudo_agreements": 665,
+          "true_correct": 663,
+          "pseudo_hard_CE": 0.0033832830376923084,
+          "pseudo_LS01_CE": 0.08747479319572449,
+          "mean_relative_full_feature_displacement": 0.0
+        },
+        {
+          "alpha": 0.25,
+          "selected": 665,
+          "pseudo_agreements": 665,
+          "true_correct": 663,
+          "pseudo_hard_CE": 0.009603415615856647,
+          "pseudo_LS01_CE": 0.09244593977928162,
+          "mean_relative_full_feature_displacement": 0.07253521680831909
+        },
+        {
+          "alpha": 0.5,
+          "selected": 665,
+          "pseudo_agreements": 659,
+          "true_correct": 657,
+          "pseudo_hard_CE": 0.036908239126205444,
+          "pseudo_LS01_CE": 0.11808106303215027,
+          "mean_relative_full_feature_displacement": 0.145070418715477
+        },
+        {
+          "alpha": 1.0,
+          "selected": 665,
+          "pseudo_agreements": 606,
+          "true_correct": 605,
+          "pseudo_hard_CE": 0.25921475887298584,
+          "pseudo_LS01_CE": 0.33606624603271484,
+          "mean_relative_full_feature_displacement": 0.290140837430954
+        }
+      ]
+    },
+    {
+      "model_seed": 2026092703,
+      "role": "U_s",
+      "source_run_id": "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01",
+      "source_row_id": "F21-s2026092703",
+      "source_epoch": 20,
+      "samples": 960,
+      "raw_accepted": 903,
+      "partner_eligible": 903,
+      "true_TX_pair_agreement": null,
+      "U_TX_truth_read": false,
+      "partners_chosen_without_V_truth": true,
+      "cases": [
+        {
+          "alpha": 0.0,
+          "selected": 903,
+          "pseudo_agreements": 903,
+          "true_correct": null,
+          "pseudo_hard_CE": 0.004145416896790266,
+          "pseudo_LS01_CE": 0.08237960934638977,
+          "mean_relative_full_feature_displacement": 0.0
+        },
+        {
+          "alpha": 0.25,
+          "selected": 903,
+          "pseudo_agreements": 903,
+          "true_correct": null,
+          "pseudo_hard_CE": 0.010293462313711643,
+          "pseudo_LS01_CE": 0.08778330683708191,
+          "mean_relative_full_feature_displacement": 0.07001779228448868
+        },
+        {
+          "alpha": 0.5,
+          "selected": 903,
+          "pseudo_agreements": 897,
+          "true_correct": null,
+          "pseudo_hard_CE": 0.03242332860827446,
+          "pseudo_LS01_CE": 0.10884906351566315,
+          "mean_relative_full_feature_displacement": 0.14003558456897736
+        },
+        {
+          "alpha": 1.0,
+          "selected": 903,
+          "pseudo_agreements": 839,
+          "true_correct": null,
+          "pseudo_hard_CE": 0.19499154388904572,
+          "pseudo_LS01_CE": 0.2684345841407776,
+          "mean_relative_full_feature_displacement": 0.2800711989402771
+        }
+      ]
+    },
+    {
+      "model_seed": 2026092703,
+      "role": "V",
+      "source_run_id": "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01",
+      "source_row_id": "F21-s2026092703",
+      "source_epoch": 20,
+      "samples": 720,
+      "raw_accepted": 665,
+      "partner_eligible": 665,
+      "true_TX_pair_agreement": 664,
+      "U_TX_truth_read": false,
+      "partners_chosen_without_V_truth": true,
+      "cases": [
+        {
+          "alpha": 0.0,
+          "selected": 665,
+          "pseudo_agreements": 665,
+          "true_correct": 664,
+          "pseudo_hard_CE": 0.003987042233347893,
+          "pseudo_LS01_CE": 0.08242231607437134,
+          "mean_relative_full_feature_displacement": 0.0
+        },
+        {
+          "alpha": 0.25,
+          "selected": 665,
+          "pseudo_agreements": 665,
+          "true_correct": 664,
+          "pseudo_hard_CE": 0.009594046510756016,
+          "pseudo_LS01_CE": 0.0870695561170578,
+          "mean_relative_full_feature_displacement": 0.0696423202753067
+        },
+        {
+          "alpha": 0.5,
+          "selected": 665,
+          "pseudo_agreements": 663,
+          "true_correct": 662,
+          "pseudo_hard_CE": 0.029205717146396637,
+          "pseudo_LS01_CE": 0.10541296750307083,
+          "mean_relative_full_feature_displacement": 0.1392846256494522
+        },
+        {
+          "alpha": 1.0,
+          "selected": 665,
+          "pseudo_agreements": 619,
+          "true_correct": 618,
+          "pseudo_hard_CE": 0.19307421147823334,
+          "pseudo_LS01_CE": 0.2659197449684143,
+          "mean_relative_full_feature_displacement": 0.2785692512989044
+        }
+      ]
+    }
+  ],
+  "selection": {
+    "status": "SOURCE_CANDIDATE_SUPPORTED",
+    "selected_alpha": 0.25,
+    "decisions": [
+      {
+        "alpha": 0.25,
+        "passes": true,
+        "checks": [
+          {
+            "model_seed": 2026092701,
+            "role": "U_s",
+            "selected": 898,
+            "fidelity_percent": 100.0,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 2.5278583435972393,
+            "pass_rule": true
+          },
+          {
+            "model_seed": 2026092701,
+            "role": "V",
+            "selected": 661,
+            "fidelity_percent": 100.0,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 2.5757952069185297,
+            "pass_rule": true
+          },
+          {
+            "model_seed": 2026092702,
+            "role": "U_s",
+            "selected": 902,
+            "fidelity_percent": 100.0,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 2.8524419168887682,
+            "pass_rule": true
+          },
+          {
+            "model_seed": 2026092702,
+            "role": "V",
+            "selected": 665,
+            "fidelity_percent": 99.69924812030075,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 2.838490161440057,
+            "pass_rule": true
+          },
+          {
+            "model_seed": 2026092703,
+            "role": "U_s",
+            "selected": 903,
+            "fidelity_percent": 100.0,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 2.483094600613443,
+            "pass_rule": true
+          },
+          {
+            "model_seed": 2026092703,
+            "role": "V",
+            "selected": 665,
+            "fidelity_percent": 99.84962406015038,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 2.4063067179250717,
+            "pass_rule": true
+          }
+        ]
+      },
+      {
+        "alpha": 0.5,
+        "passes": false,
+        "checks": [
+          {
+            "model_seed": 2026092701,
+            "role": "U_s",
+            "selected": 898,
+            "fidelity_percent": 99.55456570155901,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 7.776002250928866,
+            "pass_rule": true
+          },
+          {
+            "model_seed": 2026092701,
+            "role": "V",
+            "selected": 661,
+            "fidelity_percent": 99.24357034795764,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 8.92748164405014,
+            "pass_rule": true
+          },
+          {
+            "model_seed": 2026092702,
+            "role": "U_s",
+            "selected": 902,
+            "fidelity_percent": 99.1130820399113,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 11.116225558355918,
+            "pass_rule": true
+          },
+          {
+            "model_seed": 2026092702,
+            "role": "V",
+            "selected": 665,
+            "fidelity_percent": 98.796992481203,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 10.909001320616692,
+            "pass_rule": false
+          },
+          {
+            "model_seed": 2026092703,
+            "role": "U_s",
+            "selected": 903,
+            "fidelity_percent": 99.33554817275747,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 7.8214880229246315,
+            "pass_rule": true
+          },
+          {
+            "model_seed": 2026092703,
+            "role": "V",
+            "selected": 665,
+            "fidelity_percent": 99.54887218045113,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 7.325158710915583,
+            "pass_rule": true
+          }
+        ]
+      },
+      {
+        "alpha": 1.0,
+        "passes": false,
+        "checks": [
+          {
+            "model_seed": 2026092701,
+            "role": "U_s",
+            "selected": 898,
+            "fidelity_percent": 93.98663697104676,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 45.53949887348255,
+            "pass_rule": false
+          },
+          {
+            "model_seed": 2026092701,
+            "role": "V",
+            "selected": 661,
+            "fidelity_percent": 94.55370650529501,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 53.77872458990821,
+            "pass_rule": false
+          },
+          {
+            "model_seed": 2026092702,
+            "role": "U_s",
+            "selected": 902,
+            "fidelity_percent": 91.24168514412416,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 77.94512906487945,
+            "pass_rule": false
+          },
+          {
+            "model_seed": 2026092702,
+            "role": "V",
+            "selected": 665,
+            "fidelity_percent": 90.97744360902256,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 76.61633862291129,
+            "pass_rule": false
+          },
+          {
+            "model_seed": 2026092703,
+            "role": "U_s",
+            "selected": 903,
+            "fidelity_percent": 92.9125138427464,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 47.037861026722,
+            "pass_rule": false
+          },
+          {
+            "model_seed": 2026092703,
+            "role": "V",
+            "selected": 665,
+            "fidelity_percent": 92.93233082706767,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 48.42542420628191,
+            "pass_rule": false
+          }
+        ]
+      }
+    ],
+    "rule": "Largest fixed nonzero alpha;each seed V trueaccuracy>=99%/eligible>=600,U fixed-pseudoagreement>=99%/eligible>=800 and hardCE>=1.25x raw.No state update or target selection.",
+    "U_actual_accuracy": "UNKNOWN;original raw pseudo labels only",
+    "new_training_launched": false
+  },
+  "GPU_workers": 0,
+  "CPU_threads": 2,
+  "original_source_backbone_packets": 5040,
+  "real_checkpoint_L_smoke_packets": 6,
+  "extra_existing_head_calls": 18,
+  "extra_existing_head_packets": 15120,
+  "model_updates": 0,
+  "normalization_updates": 0,
+  "EMA_updates": 0,
+  "prototype_updates": 0,
+  "head_fit_updates": 0,
+  "V_gradients": 0,
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "live_jobs_changed": false,
+  "interpretation": "Fixed originalE20 source calibration only,fulljoint preserved;no branch deletion or fitted/replacement head.U fidelity means agreement with own raw pseudo label,not actualUaccuracy.Nonzeroalpha expands full same-pseudo crossRX differences,not a verified physical channel or target transfer guarantee."
+}

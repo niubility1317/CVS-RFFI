@@ -1,0 +1,66 @@
+{
+  "status": "SOURCE_FIXED_TRAINING_NOT_LAUNCHED",
+  "intended_run_id": "20261024-phase1-PAMF-HardPL-ReceiverExtrap-m3-r01",
+  "intended_method": "HPL_E20_JOINT_RXE6G",
+  "source_calibration_commit": "531cea74a0f4aa8da6be4f3ce76451927635a6a5",
+  "source_evidence": "source_receiver_extrapolation_summary.json",
+  "base": "Fixed Joint6G recipe,not candidate checkpoint;originalsame-seedF21E20+own10+20/E50/11100",
+  "objective": "On first2existingordinaryU joint160 features reuse current sharedstyle partner/valid plan;hprime=h+.25(h-hpartner) for samepseudo/rawaccepted/differentRX;all full branches preserved.",
+  "CE_reallocation": {
+    "ordinary_before": 0.5,
+    "ordinary_after": 0.25,
+    "extrapolated": 0.25,
+    "total_normalizer": 1.25,
+    "label_smoothing": 0.01,
+    "invalid_partner": "Keep original full CE exactly,no extra delta or dropped sample"
+  },
+  "unchanged": [
+    "rawgate.95",
+    "Uweight6",
+    "sixstudentU",
+    "allrawacceptedretained",
+    "sharedstyle",
+    "ordinary/rawRDrop1",
+    "AsKL0",
+    "shallow-middleCRIC.1",
+    "jointCRIC.05",
+    "originalL/defaultheadjoint",
+    "fullLguardprojection/cap1",
+    "nativeAdamW/clip5/decay",
+    "deploymentcompletefeature/head",
+    "hard_pl_no_uasTrue"
+  ],
+  "extra_cost": "2existingheadcalls/fullU feature views perstep;6660calls/13320headcalls/3402000headpackets.No extra backbone/teacher/newhead/inferparams;actual eligible views and gradients reported.",
+  "teacher_cumulative_U": 2097900,
+  "student_cumulative_U": 10602900,
+  "new_physical_U": 0,
+  "new_EMA_or_prototype_updates": 0,
+  "new_U_truth_reads": 0,
+  "new_G_training_reads": 0,
+  "same_source_parent_epoch": 20,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "GPU_by_seed": {
+    "2026092701": 5,
+    "2026092702": 6,
+    "2026092703": 7
+  },
+  "GPU_queue": "Wait matchingReliableAs allGPU predictions done and PathReliableAs dispatched,keep both healthy;reserve bothpendingCUDA PIDs,max2own/card,totalapps<3/free>=10000MiB.",
+  "CPU_scorer": "Sole scorer after PathReliableAs terminal,append existing chain",
+  "real_checkpoint_smoke": "PENDING:first matchingreleased originalE20;newCE full signature/response/core/head gradients all nonzero,fullLguard explicitgradient equality;6students/noaddedteacher,CE dose/eligibility/fallback/hooks;discardprobe/reloadoriginal.",
+  "fixed_matched_reference": {
+    "run": "20261024-phase1-PAMF-HardPL-Joint160-m3-r01",
+    "method": "HPL_E20_NAMS_JOINT6G"
+  },
+  "tests": "All3seeds raw+fixedDURAclean+6practical,168000/view,42cells;finaldefaulthead/fullrowpredictions before independenttruth-last;F20/F21same-readoutcontrols and perseed/scene/TX/RX/day/netcorrection/costs",
+  "raw_goal": "clean>=1pp andsixstrict>1.5pp versusbothF20/F21,DURA separate",
+  "stop_rule": "Two identical systemictechnicalfailures stopnewdispatch only,preserve healthyjobs/artifacts.No targetfeedback/tuning/reordering/selective rerun.",
+  "historical_exposure": "Joint/Complement and earlier target results already exposed;sourcecalibration fixed before calculation;newPath/ReliableAs/PathReliableAs target scores not read.",
+  "new_Path_ReliableAs_Combo_target_scores_read": false,
+  "training_implementation_complete": false,
+  "independent_training_review": "PENDING",
+  "goal_complete": false
+}

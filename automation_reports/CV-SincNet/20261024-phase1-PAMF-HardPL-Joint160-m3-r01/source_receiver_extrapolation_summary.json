@@ -1,0 +1,259 @@
+{
+  "status": "VERIFIED_SOURCE_FULL_FEATURE_EXTRAPOLATION",
+  "analysis_code_commit": "531cea74a0f4aa8da6be4f3ce76451927635a6a5",
+  "seconds": 6.561289508128539,
+  "selected_alpha": 0.25,
+  "selection": {
+    "status": "SOURCE_CANDIDATE_SUPPORTED",
+    "selected_alpha": 0.25,
+    "decisions": [
+      {
+        "alpha": 0.25,
+        "passes": true,
+        "checks": [
+          {
+            "model_seed": 2026092701,
+            "role": "U_s",
+            "selected": 898,
+            "fidelity_percent": 100.0,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 2.5278583435972393,
+            "pass_rule": true
+          },
+          {
+            "model_seed": 2026092701,
+            "role": "V",
+            "selected": 661,
+            "fidelity_percent": 100.0,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 2.5757952069185297,
+            "pass_rule": true
+          },
+          {
+            "model_seed": 2026092702,
+            "role": "U_s",
+            "selected": 902,
+            "fidelity_percent": 100.0,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 2.8524419168887682,
+            "pass_rule": true
+          },
+          {
+            "model_seed": 2026092702,
+            "role": "V",
+            "selected": 665,
+            "fidelity_percent": 99.69924812030075,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 2.838490161440057,
+            "pass_rule": true
+          },
+          {
+            "model_seed": 2026092703,
+            "role": "U_s",
+            "selected": 903,
+            "fidelity_percent": 100.0,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 2.483094600613443,
+            "pass_rule": true
+          },
+          {
+            "model_seed": 2026092703,
+            "role": "V",
+            "selected": 665,
+            "fidelity_percent": 99.84962406015038,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 2.4063067179250717,
+            "pass_rule": true
+          }
+        ]
+      },
+      {
+        "alpha": 0.5,
+        "passes": false,
+        "checks": [
+          {
+            "model_seed": 2026092701,
+            "role": "U_s",
+            "selected": 898,
+            "fidelity_percent": 99.55456570155901,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 7.776002250928866,
+            "pass_rule": true
+          },
+          {
+            "model_seed": 2026092701,
+            "role": "V",
+            "selected": 661,
+            "fidelity_percent": 99.24357034795764,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 8.92748164405014,
+            "pass_rule": true
+          },
+          {
+            "model_seed": 2026092702,
+            "role": "U_s",
+            "selected": 902,
+            "fidelity_percent": 99.1130820399113,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 11.116225558355918,
+            "pass_rule": true
+          },
+          {
+            "model_seed": 2026092702,
+            "role": "V",
+            "selected": 665,
+            "fidelity_percent": 98.796992481203,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 10.909001320616692,
+            "pass_rule": false
+          },
+          {
+            "model_seed": 2026092703,
+            "role": "U_s",
+            "selected": 903,
+            "fidelity_percent": 99.33554817275747,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 7.8214880229246315,
+            "pass_rule": true
+          },
+          {
+            "model_seed": 2026092703,
+            "role": "V",
+            "selected": 665,
+            "fidelity_percent": 99.54887218045113,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 7.325158710915583,
+            "pass_rule": true
+          }
+        ]
+      },
+      {
+        "alpha": 1.0,
+        "passes": false,
+        "checks": [
+          {
+            "model_seed": 2026092701,
+            "role": "U_s",
+            "selected": 898,
+            "fidelity_percent": 93.98663697104676,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 45.53949887348255,
+            "pass_rule": false
+          },
+          {
+            "model_seed": 2026092701,
+            "role": "V",
+            "selected": 661,
+            "fidelity_percent": 94.55370650529501,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 53.77872458990821,
+            "pass_rule": false
+          },
+          {
+            "model_seed": 2026092702,
+            "role": "U_s",
+            "selected": 902,
+            "fidelity_percent": 91.24168514412416,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 77.94512906487945,
+            "pass_rule": false
+          },
+          {
+            "model_seed": 2026092702,
+            "role": "V",
+            "selected": 665,
+            "fidelity_percent": 90.97744360902256,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 76.61633862291129,
+            "pass_rule": false
+          },
+          {
+            "model_seed": 2026092703,
+            "role": "U_s",
+            "selected": 903,
+            "fidelity_percent": 92.9125138427464,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 47.037861026722,
+            "pass_rule": false
+          },
+          {
+            "model_seed": 2026092703,
+            "role": "V",
+            "selected": 665,
+            "fidelity_percent": 92.93233082706767,
+            "fidelity_is_actual_U_accuracy": false,
+            "hard_CE_ratio": 48.42542420628191,
+            "pass_rule": false
+          }
+        ]
+      }
+    ],
+    "rule": "Largest fixed nonzero alpha;each seed V trueaccuracy>=99%/eligible>=600,U fixed-pseudoagreement>=99%/eligible>=800 and hardCE>=1.25x raw.No state update or target selection.",
+    "U_actual_accuracy": "UNKNOWN;original raw pseudo labels only",
+    "new_training_launched": false
+  },
+  "selected_alpha_source_checks": [
+    {
+      "model_seed": 2026092701,
+      "role": "U_s",
+      "selected": 898,
+      "fidelity_percent": 100.0,
+      "fidelity_is_actual_U_accuracy": false,
+      "hard_CE_ratio": 2.5278583435972393,
+      "pass_rule": true
+    },
+    {
+      "model_seed": 2026092701,
+      "role": "V",
+      "selected": 661,
+      "fidelity_percent": 100.0,
+      "fidelity_is_actual_U_accuracy": false,
+      "hard_CE_ratio": 2.5757952069185297,
+      "pass_rule": true
+    },
+    {
+      "model_seed": 2026092702,
+      "role": "U_s",
+      "selected": 902,
+      "fidelity_percent": 100.0,
+      "fidelity_is_actual_U_accuracy": false,
+      "hard_CE_ratio": 2.8524419168887682,
+      "pass_rule": true
+    },
+    {
+      "model_seed": 2026092702,
+      "role": "V",
+      "selected": 665,
+      "fidelity_percent": 99.69924812030075,
+      "fidelity_is_actual_U_accuracy": false,
+      "hard_CE_ratio": 2.838490161440057,
+      "pass_rule": true
+    },
+    {
+      "model_seed": 2026092703,
+      "role": "U_s",
+      "selected": 903,
+      "fidelity_percent": 100.0,
+      "fidelity_is_actual_U_accuracy": false,
+      "hard_CE_ratio": 2.483094600613443,
+      "pass_rule": true
+    },
+    {
+      "model_seed": 2026092703,
+      "role": "V",
+      "selected": 665,
+      "fidelity_percent": 99.84962406015038,
+      "fidelity_is_actual_U_accuracy": false,
+      "hard_CE_ratio": 2.4063067179250717,
+      "pass_rule": true
+    }
+  ],
+  "full_evidence": "source_receiver_extrapolation.json",
+  "model_updates": 0,
+  "V_gradients": 0,
+  "U_truth_reads": 0,
+  "target_reads": 0,
+  "GPU_workers": 0,
+  "new_training_launched": false,
+  "interpretation": "Source V true class preservation and U rawpseudo agreement on frozen originalE20 cohort;not actualUtruth,physical received-channel proof,target transfer or scientific goal success."
+}
