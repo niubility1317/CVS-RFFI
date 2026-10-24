@@ -370,6 +370,23 @@
       "analysis_code_commit": "3e7a7293bb1d16134bcbba718dca21c0d5d908cc",
       "target_reads": 0,
       "U_truth_reads": 0
+    },
+    "complete_gradient_phaseA": {
+      "status": "VERIFIED_COMPLETE_FIXED_SOURCE_GRADIENT_TRAJECTORY",
+      "reference": "source_gradient_trajectory_A_summary.json",
+      "source_models": 12,
+      "records": 79920,
+      "model_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0,
+      "NONBLOCKING": true
+    },
+    "native_As_counterpart_design": {
+      "status": "SOURCE_FIXED_NOT_IMPLEMENTED_NOT_LAUNCHED",
+      "reference": "native_as_followup_design.json",
+      "intended_run": "20261024-phase1-PAMF-HardPL-NativeAs-m3-r01",
+      "target_feedback": false,
+      "new_training_launched": false
     }
   }
 }

@@ -106,3 +106,11 @@ HPL_E20_NAMS_JOINT6G 固定匹配比较完成，见 HPL_E20_NAMS_JOINT6G_matched
 ## 完整源梯度记录诊断
 
 固定只读GuardNAMS、Joint、Complement、Path各三个seed的全部E21至E50原生记录，共79920步，核实权重6已包含的U梯度在完整L保护后的保留比例、各组冲突/范数帽和逐轮分布。后续RAS/组合/外推仅在各自三seed源E50完成后按同一规则补充，当前健康训练不等待本诊断。记录量、矩阵、命令和解释边界见source_gradient_trajectory_plan.json。12项计算/输入检查通过；不读IQ/模型权重/Utruth/target、不更新模型，不构成新候选或发布门槛。日志测量发生于共同clip5及AdamW/decay之前，不能当作实际优化步或独立改变权重的因果效果。
+
+
+完整源梯度诊断A已VERIFIED：12模型/79920条完整记录，权重6、曝光和实际guard冲突/范数帽计数均匹配final adapter。组及完整参数U/L、保留比例和分布见source_gradient_trajectory_A.md；量测在clip5/AdamW之前，不是实际优化步或目标因果解释。无模型/IQ/Utruth/target读取、无新增训练或当前任务改动，goal ACTIVE。
+
+
+## 原生 As 完整监督对照的后续源设计
+
+源日志显示Joint权重6后的U梯度平均保留83.24%，生效范数约为L的0.79倍（clip5/AdamW之前）。结合原raw PL高精度及固定源As视图诊断，预先固定一个缺失对照：在完全同Joint6G的原E20＋30配方中，仅恢复原mixed半批原生As，不增加增强视图置信门控或teacher，原raw接受mask/伪类/六前向/损失及完整Lguard不变。当前As分类错误不能单独证明原伪标签错误；仿真标签不变也不保证每个深衰落样本信息充足或目标有效。详细预算、原父、排队、smoke、Joint和RAS两项匹配比较、全部raw+DURA42cell矩阵见native_as_followup_design.json。当前实现/独立审查/真实权重检查均未完成、未启动训练；在RAS/组合/RXE新目标分数读取前固定，不改变其健康任务或门槛。
