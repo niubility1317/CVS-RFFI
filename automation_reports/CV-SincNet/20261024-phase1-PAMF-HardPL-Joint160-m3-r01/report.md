@@ -114,3 +114,8 @@ HPL_E20_NAMS_JOINT6G 固定匹配比较完成，见 HPL_E20_NAMS_JOINT6G_matched
 ## 原生 As 完整监督对照的后续源设计
 
 源日志显示Joint权重6后的U梯度平均保留83.24%，生效范数约为L的0.79倍（clip5/AdamW之前）。结合原raw PL高精度及固定源As视图诊断，预先固定一个缺失对照：在完全同Joint6G的原E20＋30配方中，仅恢复原mixed半批原生As，不增加增强视图置信门控或teacher，原raw接受mask/伪类/六前向/损失及完整Lguard不变。当前As分类错误不能单独证明原伪标签错误；仿真标签不变也不保证每个深衰落样本信息充足或目标有效。详细预算、原父、排队、smoke、Joint和RAS两项匹配比较、全部raw+DURA42cell矩阵见native_as_followup_design.json。当前实现/独立审查/真实权重检查均未完成、未启动训练；在RAS/组合/RXE新目标分数读取前固定，不改变其健康任务或门槛。
+
+
+## 源伪标签的类别及接收机覆盖差异
+
+完整既有V27000×3结果显示：原E20类别索引3接受精度99.6177%但覆盖81.3778%，RX3精度99.5845%但覆盖83.1975%，最高类别/RX覆盖98.4370%/97.8086%；Joint E50两者覆盖90.3630%/90.3395%。完整计数及所有类别/RX/day见existing_source_class_coverage.md，不把源V事实冒充U分布或目标原因。固定一个仅源域的falsification：原E20全U56700×3隐藏真值，在固定batch256顺序下检验伪类及RX边际贡献均衡；保持门控.95/原接受集合/每批CE平均剂量，权重限定0.5至1.5，无history/EMA/新头/额外前向。源V加权精度只用已有计数给出worstcase下界，不重跑V或称实际U精度。精确公式及全部seed通过规则见balanced_pseudo_ce_source_plan.json；尚未实现或运行源calibration，更未发布新训练，健康四个既有队列保持。

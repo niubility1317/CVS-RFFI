@@ -1,0 +1,1307 @@
+{
+  "status": "VERIFIED_COMPLETE_EXISTING_SOURCE_CLASS_COVERAGE",
+  "threshold": 0.95,
+  "profiles": [
+    "original_F21_E20",
+    "Joint_E50"
+  ],
+  "rows": [
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092701,
+      "dimension": "TX",
+      "value": 0,
+      "samples": 4500,
+      "accepted": 4248,
+      "correct": 4247
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092701,
+      "dimension": "TX",
+      "value": 1,
+      "samples": 4500,
+      "accepted": 4131,
+      "correct": 4130
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092701,
+      "dimension": "TX",
+      "value": 2,
+      "samples": 4500,
+      "accepted": 4404,
+      "correct": 4402
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092701,
+      "dimension": "TX",
+      "value": 3,
+      "samples": 4500,
+      "accepted": 3549,
+      "correct": 3531
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092701,
+      "dimension": "TX",
+      "value": 4,
+      "samples": 4500,
+      "accepted": 4293,
+      "correct": 4290
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092701,
+      "dimension": "TX",
+      "value": 5,
+      "samples": 4500,
+      "accepted": 4429,
+      "correct": 4429
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092701,
+      "dimension": "RX",
+      "value": 1,
+      "samples": 5400,
+      "accepted": 5191,
+      "correct": 5191
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092701,
+      "dimension": "RX",
+      "value": 3,
+      "samples": 5400,
+      "accepted": 4505,
+      "correct": 4487
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092701,
+      "dimension": "RX",
+      "value": 4,
+      "samples": 5400,
+      "accepted": 5176,
+      "correct": 5174
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092701,
+      "dimension": "RX",
+      "value": 6,
+      "samples": 5400,
+      "accepted": 5287,
+      "correct": 5286
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092701,
+      "dimension": "RX",
+      "value": 8,
+      "samples": 5400,
+      "accepted": 4895,
+      "correct": 4891
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092701,
+      "dimension": "day",
+      "value": 1,
+      "samples": 9000,
+      "accepted": 8383,
+      "correct": 8379
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092701,
+      "dimension": "day",
+      "value": 2,
+      "samples": 9000,
+      "accepted": 8461,
+      "correct": 8448
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092701,
+      "dimension": "day",
+      "value": 3,
+      "samples": 9000,
+      "accepted": 8210,
+      "correct": 8202
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092702,
+      "dimension": "TX",
+      "value": 0,
+      "samples": 4500,
+      "accepted": 4291,
+      "correct": 4289
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092702,
+      "dimension": "TX",
+      "value": 1,
+      "samples": 4500,
+      "accepted": 4090,
+      "correct": 4081
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092702,
+      "dimension": "TX",
+      "value": 2,
+      "samples": 4500,
+      "accepted": 4391,
+      "correct": 4390
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092702,
+      "dimension": "TX",
+      "value": 3,
+      "samples": 4500,
+      "accepted": 3640,
+      "correct": 3625
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092702,
+      "dimension": "TX",
+      "value": 4,
+      "samples": 4500,
+      "accepted": 4280,
+      "correct": 4276
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092702,
+      "dimension": "TX",
+      "value": 5,
+      "samples": 4500,
+      "accepted": 4438,
+      "correct": 4436
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092702,
+      "dimension": "RX",
+      "value": 1,
+      "samples": 5400,
+      "accepted": 5210,
+      "correct": 5208
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092702,
+      "dimension": "RX",
+      "value": 3,
+      "samples": 5400,
+      "accepted": 4475,
+      "correct": 4452
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092702,
+      "dimension": "RX",
+      "value": 4,
+      "samples": 5400,
+      "accepted": 5224,
+      "correct": 5223
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092702,
+      "dimension": "RX",
+      "value": 6,
+      "samples": 5400,
+      "accepted": 5288,
+      "correct": 5286
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092702,
+      "dimension": "RX",
+      "value": 8,
+      "samples": 5400,
+      "accepted": 4933,
+      "correct": 4928
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092702,
+      "dimension": "day",
+      "value": 1,
+      "samples": 9000,
+      "accepted": 8419,
+      "correct": 8409
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092702,
+      "dimension": "day",
+      "value": 2,
+      "samples": 9000,
+      "accepted": 8454,
+      "correct": 8438
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092702,
+      "dimension": "day",
+      "value": 3,
+      "samples": 9000,
+      "accepted": 8257,
+      "correct": 8250
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092703,
+      "dimension": "TX",
+      "value": 0,
+      "samples": 4500,
+      "accepted": 4265,
+      "correct": 4264
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092703,
+      "dimension": "TX",
+      "value": 1,
+      "samples": 4500,
+      "accepted": 4012,
+      "correct": 4004
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092703,
+      "dimension": "TX",
+      "value": 2,
+      "samples": 4500,
+      "accepted": 4362,
+      "correct": 4361
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092703,
+      "dimension": "TX",
+      "value": 3,
+      "samples": 4500,
+      "accepted": 3797,
+      "correct": 3788
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092703,
+      "dimension": "TX",
+      "value": 4,
+      "samples": 4500,
+      "accepted": 4270,
+      "correct": 4269
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092703,
+      "dimension": "TX",
+      "value": 5,
+      "samples": 4500,
+      "accepted": 4422,
+      "correct": 4421
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092703,
+      "dimension": "RX",
+      "value": 1,
+      "samples": 5400,
+      "accepted": 5193,
+      "correct": 5191
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092703,
+      "dimension": "RX",
+      "value": 3,
+      "samples": 5400,
+      "accepted": 4498,
+      "correct": 4483
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092703,
+      "dimension": "RX",
+      "value": 4,
+      "samples": 5400,
+      "accepted": 5203,
+      "correct": 5202
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092703,
+      "dimension": "RX",
+      "value": 6,
+      "samples": 5400,
+      "accepted": 5270,
+      "correct": 5269
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092703,
+      "dimension": "RX",
+      "value": 8,
+      "samples": 5400,
+      "accepted": 4964,
+      "correct": 4962
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092703,
+      "dimension": "day",
+      "value": 1,
+      "samples": 9000,
+      "accepted": 8421,
+      "correct": 8416
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092703,
+      "dimension": "day",
+      "value": 2,
+      "samples": 9000,
+      "accepted": 8481,
+      "correct": 8470
+    },
+    {
+      "profile": "original_F21_E20",
+      "source_epoch": 20,
+      "model_seed": 2026092703,
+      "dimension": "day",
+      "value": 3,
+      "samples": 9000,
+      "accepted": 8226,
+      "correct": 8221
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092701,
+      "dimension": "TX",
+      "value": 0,
+      "samples": 4500,
+      "accepted": 4358,
+      "correct": 4357
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092701,
+      "dimension": "TX",
+      "value": 1,
+      "samples": 4500,
+      "accepted": 4313,
+      "correct": 4310
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092701,
+      "dimension": "TX",
+      "value": 2,
+      "samples": 4500,
+      "accepted": 4409,
+      "correct": 4407
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092701,
+      "dimension": "TX",
+      "value": 3,
+      "samples": 4500,
+      "accepted": 4080,
+      "correct": 4070
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092701,
+      "dimension": "TX",
+      "value": 4,
+      "samples": 4500,
+      "accepted": 4373,
+      "correct": 4373
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092701,
+      "dimension": "TX",
+      "value": 5,
+      "samples": 4500,
+      "accepted": 4434,
+      "correct": 4434
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092701,
+      "dimension": "RX",
+      "value": 1,
+      "samples": 5400,
+      "accepted": 5309,
+      "correct": 5309
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092701,
+      "dimension": "RX",
+      "value": 3,
+      "samples": 5400,
+      "accepted": 4889,
+      "correct": 4878
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092701,
+      "dimension": "RX",
+      "value": 4,
+      "samples": 5400,
+      "accepted": 5244,
+      "correct": 5241
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092701,
+      "dimension": "RX",
+      "value": 6,
+      "samples": 5400,
+      "accepted": 5334,
+      "correct": 5334
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092701,
+      "dimension": "RX",
+      "value": 8,
+      "samples": 5400,
+      "accepted": 5191,
+      "correct": 5189
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092701,
+      "dimension": "day",
+      "value": 1,
+      "samples": 9000,
+      "accepted": 8686,
+      "correct": 8684
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092701,
+      "dimension": "day",
+      "value": 2,
+      "samples": 9000,
+      "accepted": 8701,
+      "correct": 8692
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092701,
+      "dimension": "day",
+      "value": 3,
+      "samples": 9000,
+      "accepted": 8580,
+      "correct": 8575
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092702,
+      "dimension": "TX",
+      "value": 0,
+      "samples": 4500,
+      "accepted": 4353,
+      "correct": 4353
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092702,
+      "dimension": "TX",
+      "value": 1,
+      "samples": 4500,
+      "accepted": 4214,
+      "correct": 4211
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092702,
+      "dimension": "TX",
+      "value": 2,
+      "samples": 4500,
+      "accepted": 4415,
+      "correct": 4414
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092702,
+      "dimension": "TX",
+      "value": 3,
+      "samples": 4500,
+      "accepted": 4002,
+      "correct": 3994
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092702,
+      "dimension": "TX",
+      "value": 4,
+      "samples": 4500,
+      "accepted": 4367,
+      "correct": 4366
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092702,
+      "dimension": "TX",
+      "value": 5,
+      "samples": 4500,
+      "accepted": 4437,
+      "correct": 4435
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092702,
+      "dimension": "RX",
+      "value": 1,
+      "samples": 5400,
+      "accepted": 5240,
+      "correct": 5240
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092702,
+      "dimension": "RX",
+      "value": 3,
+      "samples": 5400,
+      "accepted": 4850,
+      "correct": 4838
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092702,
+      "dimension": "RX",
+      "value": 4,
+      "samples": 5400,
+      "accepted": 5254,
+      "correct": 5252
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092702,
+      "dimension": "RX",
+      "value": 6,
+      "samples": 5400,
+      "accepted": 5311,
+      "correct": 5311
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092702,
+      "dimension": "RX",
+      "value": 8,
+      "samples": 5400,
+      "accepted": 5133,
+      "correct": 5132
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092702,
+      "dimension": "day",
+      "value": 1,
+      "samples": 9000,
+      "accepted": 8646,
+      "correct": 8645
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092702,
+      "dimension": "day",
+      "value": 2,
+      "samples": 9000,
+      "accepted": 8681,
+      "correct": 8669
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092702,
+      "dimension": "day",
+      "value": 3,
+      "samples": 9000,
+      "accepted": 8461,
+      "correct": 8459
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092703,
+      "dimension": "TX",
+      "value": 0,
+      "samples": 4500,
+      "accepted": 4357,
+      "correct": 4357
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092703,
+      "dimension": "TX",
+      "value": 1,
+      "samples": 4500,
+      "accepted": 4165,
+      "correct": 4161
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092703,
+      "dimension": "TX",
+      "value": 2,
+      "samples": 4500,
+      "accepted": 4413,
+      "correct": 4410
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092703,
+      "dimension": "TX",
+      "value": 3,
+      "samples": 4500,
+      "accepted": 4117,
+      "correct": 4113
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092703,
+      "dimension": "TX",
+      "value": 4,
+      "samples": 4500,
+      "accepted": 4360,
+      "correct": 4360
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092703,
+      "dimension": "TX",
+      "value": 5,
+      "samples": 4500,
+      "accepted": 4438,
+      "correct": 4438
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092703,
+      "dimension": "RX",
+      "value": 1,
+      "samples": 5400,
+      "accepted": 5226,
+      "correct": 5225
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092703,
+      "dimension": "RX",
+      "value": 3,
+      "samples": 5400,
+      "accepted": 4896,
+      "correct": 4890
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092703,
+      "dimension": "RX",
+      "value": 4,
+      "samples": 5400,
+      "accepted": 5254,
+      "correct": 5252
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092703,
+      "dimension": "RX",
+      "value": 6,
+      "samples": 5400,
+      "accepted": 5294,
+      "correct": 5294
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092703,
+      "dimension": "RX",
+      "value": 8,
+      "samples": 5400,
+      "accepted": 5180,
+      "correct": 5178
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092703,
+      "dimension": "day",
+      "value": 1,
+      "samples": 9000,
+      "accepted": 8655,
+      "correct": 8652
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092703,
+      "dimension": "day",
+      "value": 2,
+      "samples": 9000,
+      "accepted": 8685,
+      "correct": 8680
+    },
+    {
+      "profile": "Joint_E50",
+      "source_epoch": 50,
+      "model_seed": 2026092703,
+      "dimension": "day",
+      "value": 3,
+      "samples": 9000,
+      "accepted": 8510,
+      "correct": 8507
+    }
+  ],
+  "summary": [
+    {
+      "profile": "original_F21_E20",
+      "dimension": "TX",
+      "value": 0,
+      "samples": 13500,
+      "accepted": 12804,
+      "correct": 12800,
+      "wrong": 4,
+      "coverage_percent": 94.84444444444445,
+      "accepted_precision_percent": 99.9687597625742,
+      "coverage_by_seed": {
+        "2026092701": 94.4,
+        "2026092702": 95.35555555555555,
+        "2026092703": 94.77777777777777
+      }
+    },
+    {
+      "profile": "original_F21_E20",
+      "dimension": "TX",
+      "value": 1,
+      "samples": 13500,
+      "accepted": 12233,
+      "correct": 12215,
+      "wrong": 18,
+      "coverage_percent": 90.61481481481482,
+      "accepted_precision_percent": 99.852857026077,
+      "coverage_by_seed": {
+        "2026092701": 91.8,
+        "2026092702": 90.88888888888889,
+        "2026092703": 89.15555555555555
+      }
+    },
+    {
+      "profile": "original_F21_E20",
+      "dimension": "TX",
+      "value": 2,
+      "samples": 13500,
+      "accepted": 13157,
+      "correct": 13153,
+      "wrong": 4,
+      "coverage_percent": 97.45925925925926,
+      "accepted_precision_percent": 99.96959793265943,
+      "coverage_by_seed": {
+        "2026092701": 97.86666666666666,
+        "2026092702": 97.57777777777778,
+        "2026092703": 96.93333333333334
+      }
+    },
+    {
+      "profile": "original_F21_E20",
+      "dimension": "TX",
+      "value": 3,
+      "samples": 13500,
+      "accepted": 10986,
+      "correct": 10944,
+      "wrong": 42,
+      "coverage_percent": 81.37777777777778,
+      "accepted_precision_percent": 99.6176952484981,
+      "coverage_by_seed": {
+        "2026092701": 78.86666666666666,
+        "2026092702": 80.88888888888889,
+        "2026092703": 84.37777777777778
+      }
+    },
+    {
+      "profile": "original_F21_E20",
+      "dimension": "TX",
+      "value": 4,
+      "samples": 13500,
+      "accepted": 12843,
+      "correct": 12835,
+      "wrong": 8,
+      "coverage_percent": 95.13333333333334,
+      "accepted_precision_percent": 99.93770925796153,
+      "coverage_by_seed": {
+        "2026092701": 95.4,
+        "2026092702": 95.11111111111111,
+        "2026092703": 94.88888888888889
+      }
+    },
+    {
+      "profile": "original_F21_E20",
+      "dimension": "TX",
+      "value": 5,
+      "samples": 13500,
+      "accepted": 13289,
+      "correct": 13286,
+      "wrong": 3,
+      "coverage_percent": 98.43703703703704,
+      "accepted_precision_percent": 99.97742493791858,
+      "coverage_by_seed": {
+        "2026092701": 98.42222222222222,
+        "2026092702": 98.62222222222222,
+        "2026092703": 98.26666666666667
+      }
+    },
+    {
+      "profile": "original_F21_E20",
+      "dimension": "RX",
+      "value": 1,
+      "samples": 16200,
+      "accepted": 15594,
+      "correct": 15590,
+      "wrong": 4,
+      "coverage_percent": 96.25925925925925,
+      "accepted_precision_percent": 99.97434910863153,
+      "coverage_by_seed": {
+        "2026092701": 96.12962962962963,
+        "2026092702": 96.48148148148148,
+        "2026092703": 96.16666666666667
+      }
+    },
+    {
+      "profile": "original_F21_E20",
+      "dimension": "RX",
+      "value": 3,
+      "samples": 16200,
+      "accepted": 13478,
+      "correct": 13422,
+      "wrong": 56,
+      "coverage_percent": 83.19753086419753,
+      "accepted_precision_percent": 99.5845080872533,
+      "coverage_by_seed": {
+        "2026092701": 83.42592592592592,
+        "2026092702": 82.87037037037037,
+        "2026092703": 83.29629629629629
+      }
+    },
+    {
+      "profile": "original_F21_E20",
+      "dimension": "RX",
+      "value": 4,
+      "samples": 16200,
+      "accepted": 15603,
+      "correct": 15599,
+      "wrong": 4,
+      "coverage_percent": 96.31481481481481,
+      "accepted_precision_percent": 99.97436390437737,
+      "coverage_by_seed": {
+        "2026092701": 95.85185185185185,
+        "2026092702": 96.74074074074075,
+        "2026092703": 96.35185185185185
+      }
+    },
+    {
+      "profile": "original_F21_E20",
+      "dimension": "RX",
+      "value": 6,
+      "samples": 16200,
+      "accepted": 15845,
+      "correct": 15841,
+      "wrong": 4,
+      "coverage_percent": 97.80864197530865,
+      "accepted_precision_percent": 99.97475544335752,
+      "coverage_by_seed": {
+        "2026092701": 97.9074074074074,
+        "2026092702": 97.92592592592592,
+        "2026092703": 97.5925925925926
+      }
+    },
+    {
+      "profile": "original_F21_E20",
+      "dimension": "RX",
+      "value": 8,
+      "samples": 16200,
+      "accepted": 14792,
+      "correct": 14781,
+      "wrong": 11,
+      "coverage_percent": 91.30864197530865,
+      "accepted_precision_percent": 99.9256354786371,
+      "coverage_by_seed": {
+        "2026092701": 90.64814814814815,
+        "2026092702": 91.35185185185185,
+        "2026092703": 91.92592592592592
+      }
+    },
+    {
+      "profile": "original_F21_E20",
+      "dimension": "day",
+      "value": 1,
+      "samples": 27000,
+      "accepted": 25223,
+      "correct": 25204,
+      "wrong": 19,
+      "coverage_percent": 93.41851851851852,
+      "accepted_precision_percent": 99.92467192641637,
+      "coverage_by_seed": {
+        "2026092701": 93.14444444444445,
+        "2026092702": 93.54444444444445,
+        "2026092703": 93.56666666666666
+      }
+    },
+    {
+      "profile": "original_F21_E20",
+      "dimension": "day",
+      "value": 2,
+      "samples": 27000,
+      "accepted": 25396,
+      "correct": 25356,
+      "wrong": 40,
+      "coverage_percent": 94.05925925925926,
+      "accepted_precision_percent": 99.84249488108364,
+      "coverage_by_seed": {
+        "2026092701": 94.0111111111111,
+        "2026092702": 93.93333333333334,
+        "2026092703": 94.23333333333333
+      }
+    },
+    {
+      "profile": "original_F21_E20",
+      "dimension": "day",
+      "value": 3,
+      "samples": 27000,
+      "accepted": 24693,
+      "correct": 24673,
+      "wrong": 20,
+      "coverage_percent": 91.45555555555555,
+      "accepted_precision_percent": 99.91900538614182,
+      "coverage_by_seed": {
+        "2026092701": 91.22222222222223,
+        "2026092702": 91.74444444444444,
+        "2026092703": 91.4
+      }
+    },
+    {
+      "profile": "Joint_E50",
+      "dimension": "TX",
+      "value": 0,
+      "samples": 13500,
+      "accepted": 13068,
+      "correct": 13067,
+      "wrong": 1,
+      "coverage_percent": 96.8,
+      "accepted_precision_percent": 99.99234771962044,
+      "coverage_by_seed": {
+        "2026092701": 96.84444444444445,
+        "2026092702": 96.73333333333333,
+        "2026092703": 96.82222222222222
+      }
+    },
+    {
+      "profile": "Joint_E50",
+      "dimension": "TX",
+      "value": 1,
+      "samples": 13500,
+      "accepted": 12692,
+      "correct": 12682,
+      "wrong": 10,
+      "coverage_percent": 94.01481481481481,
+      "accepted_precision_percent": 99.92121021115663,
+      "coverage_by_seed": {
+        "2026092701": 95.84444444444445,
+        "2026092702": 93.64444444444445,
+        "2026092703": 92.55555555555556
+      }
+    },
+    {
+      "profile": "Joint_E50",
+      "dimension": "TX",
+      "value": 2,
+      "samples": 13500,
+      "accepted": 13237,
+      "correct": 13231,
+      "wrong": 6,
+      "coverage_percent": 98.05185185185185,
+      "accepted_precision_percent": 99.95467250887663,
+      "coverage_by_seed": {
+        "2026092701": 97.97777777777777,
+        "2026092702": 98.11111111111111,
+        "2026092703": 98.06666666666666
+      }
+    },
+    {
+      "profile": "Joint_E50",
+      "dimension": "TX",
+      "value": 3,
+      "samples": 13500,
+      "accepted": 12199,
+      "correct": 12177,
+      "wrong": 22,
+      "coverage_percent": 90.36296296296297,
+      "accepted_precision_percent": 99.81965734896303,
+      "coverage_by_seed": {
+        "2026092701": 90.66666666666667,
+        "2026092702": 88.93333333333334,
+        "2026092703": 91.4888888888889
+      }
+    },
+    {
+      "profile": "Joint_E50",
+      "dimension": "TX",
+      "value": 4,
+      "samples": 13500,
+      "accepted": 13100,
+      "correct": 13099,
+      "wrong": 1,
+      "coverage_percent": 97.03703703703704,
+      "accepted_precision_percent": 99.99236641221374,
+      "coverage_by_seed": {
+        "2026092701": 97.17777777777778,
+        "2026092702": 97.04444444444445,
+        "2026092703": 96.88888888888889
+      }
+    },
+    {
+      "profile": "Joint_E50",
+      "dimension": "TX",
+      "value": 5,
+      "samples": 13500,
+      "accepted": 13309,
+      "correct": 13307,
+      "wrong": 2,
+      "coverage_percent": 98.58518518518518,
+      "accepted_precision_percent": 99.98497257494928,
+      "coverage_by_seed": {
+        "2026092701": 98.53333333333333,
+        "2026092702": 98.6,
+        "2026092703": 98.62222222222222
+      }
+    },
+    {
+      "profile": "Joint_E50",
+      "dimension": "RX",
+      "value": 1,
+      "samples": 16200,
+      "accepted": 15775,
+      "correct": 15774,
+      "wrong": 1,
+      "coverage_percent": 97.37654320987654,
+      "accepted_precision_percent": 99.99366085578447,
+      "coverage_by_seed": {
+        "2026092701": 98.31481481481481,
+        "2026092702": 97.03703703703704,
+        "2026092703": 96.77777777777777
+      }
+    },
+    {
+      "profile": "Joint_E50",
+      "dimension": "RX",
+      "value": 3,
+      "samples": 16200,
+      "accepted": 14635,
+      "correct": 14606,
+      "wrong": 29,
+      "coverage_percent": 90.3395061728395,
+      "accepted_precision_percent": 99.80184489238128,
+      "coverage_by_seed": {
+        "2026092701": 90.53703703703704,
+        "2026092702": 89.81481481481481,
+        "2026092703": 90.66666666666667
+      }
+    },
+    {
+      "profile": "Joint_E50",
+      "dimension": "RX",
+      "value": 4,
+      "samples": 16200,
+      "accepted": 15752,
+      "correct": 15745,
+      "wrong": 7,
+      "coverage_percent": 97.23456790123457,
+      "accepted_precision_percent": 99.95556119857795,
+      "coverage_by_seed": {
+        "2026092701": 97.11111111111111,
+        "2026092702": 97.29629629629629,
+        "2026092703": 97.29629629629629
+      }
+    },
+    {
+      "profile": "Joint_E50",
+      "dimension": "RX",
+      "value": 6,
+      "samples": 16200,
+      "accepted": 15939,
+      "correct": 15939,
+      "wrong": 0,
+      "coverage_percent": 98.38888888888889,
+      "accepted_precision_percent": 100.0,
+      "coverage_by_seed": {
+        "2026092701": 98.77777777777777,
+        "2026092702": 98.35185185185185,
+        "2026092703": 98.03703703703704
+      }
+    },
+    {
+      "profile": "Joint_E50",
+      "dimension": "RX",
+      "value": 8,
+      "samples": 16200,
+      "accepted": 15504,
+      "correct": 15499,
+      "wrong": 5,
+      "coverage_percent": 95.70370370370371,
+      "accepted_precision_percent": 99.96775025799793,
+      "coverage_by_seed": {
+        "2026092701": 96.12962962962963,
+        "2026092702": 95.05555555555556,
+        "2026092703": 95.92592592592592
+      }
+    },
+    {
+      "profile": "Joint_E50",
+      "dimension": "day",
+      "value": 1,
+      "samples": 27000,
+      "accepted": 25987,
+      "correct": 25981,
+      "wrong": 6,
+      "coverage_percent": 96.24814814814815,
+      "accepted_precision_percent": 99.97691153268943,
+      "coverage_by_seed": {
+        "2026092701": 96.5111111111111,
+        "2026092702": 96.06666666666666,
+        "2026092703": 96.16666666666667
+      }
+    },
+    {
+      "profile": "Joint_E50",
+      "dimension": "day",
+      "value": 2,
+      "samples": 27000,
+      "accepted": 26067,
+      "correct": 26041,
+      "wrong": 26,
+      "coverage_percent": 96.54444444444445,
+      "accepted_precision_percent": 99.90025702996125,
+      "coverage_by_seed": {
+        "2026092701": 96.67777777777778,
+        "2026092702": 96.45555555555555,
+        "2026092703": 96.5
+      }
+    },
+    {
+      "profile": "Joint_E50",
+      "dimension": "day",
+      "value": 3,
+      "samples": 27000,
+      "accepted": 25551,
+      "correct": 25541,
+      "wrong": 10,
+      "coverage_percent": 94.63333333333334,
+      "accepted_precision_percent": 99.9608625885484,
+      "coverage_by_seed": {
+        "2026092701": 95.33333333333333,
+        "2026092702": 94.0111111111111,
+        "2026092703": 94.55555555555556
+      }
+    }
+  ],
+  "scope": "Existing full sourceV27000/model;sourceTX truth allowed,not Uprecision or Uclass distribution.E20 versus E50 descriptive,not isolated mechanism effect.",
+  "model_updates": 0,
+  "U_truth_reads": 0,
+  "target_reads": 0,
+  "GPU_workers": 0,
+  "new_training": false,
+  "goal_complete": false
+}

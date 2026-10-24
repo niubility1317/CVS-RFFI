@@ -387,6 +387,18 @@
       "intended_run": "20261024-phase1-PAMF-HardPL-NativeAs-m3-r01",
       "target_feedback": false,
       "new_training_launched": false
+    },
+    "class_RX_coverage": {
+      "status": "VERIFIED_COMPLETE_EXISTING_SOURCE_CLASS_COVERAGE",
+      "reference": "existing_source_class_coverage.md",
+      "U_truth_reads": 0,
+      "target_reads": 0,
+      "model_updates": 0
+    },
+    "balanced_pseudo_ce_source_falsification": {
+      "status": "SOURCE_FALSIFICATION_FIXED_NOT_IMPLEMENTED_NOT_LAUNCHED",
+      "reference": "balanced_pseudo_ce_source_plan.json",
+      "new_training": false
     }
   }
 }

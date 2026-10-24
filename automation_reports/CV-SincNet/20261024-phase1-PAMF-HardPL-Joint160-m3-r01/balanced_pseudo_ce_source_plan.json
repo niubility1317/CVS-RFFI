@@ -1,0 +1,105 @@
+{
+  "status": "SOURCE_FALSIFICATION_FIXED_NOT_IMPLEMENTED_NOT_LAUNCHED",
+  "registered_utc": "2026-10-24T01:54:21.093705+00:00",
+  "question": "Does bounded per-batch pseudo-class/sourceRX CE balancing reduce uneven accepted-source contribution while preserving gate,labels,all accepted samples and mean CE dose?",
+  "evidence": [
+    "existing_source_class_coverage.json",
+    "existing_source_class_coverage.md"
+  ],
+  "source_model": "Fixed original same-seed F21 E20 only,existing strict source_parents/config/payload;not candidate weights",
+  "source_U": {
+    "samples_per_seed": 56700,
+    "role": "U_s",
+    "TX_truth": "HIDDEN",
+    "observed": "OriginalE20 raw currentstudent evalargmax/confidence plus actualsourceRX metadata"
+  },
+  "source_V": "Reuse existing complete E20 V27000 counts for an algebraic worst-case weighted-precision bound;no new V model forward or gradient",
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "raw_gate": 0.95,
+  "proposed_weights": {
+    "group_inputs": "rawaccepted bool,pseudoargmax,actualsourceRX only;no trueUclass/prior/target information",
+    "counts": "Within each current Ubatch count accepted samples per present pseudo class n_c and presentsourceRX n_r;A totalaccepted,C/R numbers of present groups",
+    "raw_ratio": "r_i=sqrt((A/(C*n_c(i)))*(A/(R*n_r(i)))) for accepted i",
+    "normalized_ratio": "rbar_i=r_i/mean_accepted(r)",
+    "mixing": "lambda=min(0.5,0.5/(max_accepted(rbar)-1)) when max>1;else0.5",
+    "weight": "w_i=1+lambda*(rbar_i-1);neutral1 for rejected positions or emptyacceptedbatch",
+    "constraints": "All accepted remain positive,0.5<=w<=1.5,mean_accepted(w)=1 per batch;no sampledrop/newlabels/gatechange/history/EMA/prototype/newhead",
+    "objective": "Reweight CE only on all6existing Ustudent logits;retain original RDrop/KL/contrast/L/defaulthead/fullLguard/nativeAdamW.Bothmixedhalves preserve originalCEdose1.25.No extra teacher/student/head forward.",
+    "no_history_or_calibration_parameters": true
+  },
+  "source_collection": {
+    "order": "One fixed permutation perseed model_seed+2026102701 for fullU;batch256 including final124,do not retryorders",
+    "compute": "OriginalE20 rawhead eval/noGrad;existing source model/input contract,FP32/TF32off/CPU2/noCUDA",
+    "source_U_forward_packets_per_seed": 56700,
+    "total_source_U_forward_packets": 170100,
+    "extra_V_forward_packets": 0,
+    "outputs": "Pseudo-class/RX accepted counts and weightedmass,perbatch mass/bounds,macro marginal CV before/after;no Utruth or target",
+    "coefficient_of_variation": "Population std/mean over all6pseudoclasses or all5sourceRX acceptedmass;weightedmass has same totalA",
+    "direct_V_weighted_accuracy": "NOT MEASURED;bound only,explicitly labeled"
+  },
+  "source_precision_bounds": [
+    {
+      "model_seed": 2026092701,
+      "accepted": 25054,
+      "correct": 25029,
+      "wrong": 25,
+      "raw_precision_percent": 99.90021553444559,
+      "cap1p5_weighted_precision_lower_bound_percent": 99.8503233016684
+    },
+    {
+      "model_seed": 2026092702,
+      "accepted": 25130,
+      "correct": 25097,
+      "wrong": 33,
+      "raw_precision_percent": 99.86868284918424,
+      "cap1p5_weighted_precision_lower_bound_percent": 99.80302427377636
+    },
+    {
+      "model_seed": 2026092703,
+      "accepted": 25128,
+      "correct": 25107,
+      "wrong": 21,
+      "raw_precision_percent": 99.91642788920726,
+      "cap1p5_weighted_precision_lower_bound_percent": 99.87464183381088
+    }
+  ],
+  "bound_derivation": "Since every accepted weight<=1.5 and sumacceptedweights=A,the weighted sourceV error<=1.5*wrong/A.Bound is conditional on the already measured frozen sourceV counts;not an actual Uaccuracy guarantee.",
+  "scientific_rule": "Every seed:all6pseudoclasses and all5sourceRX have>=1000 accepted fullU samples;both marginal acceptedmass CVs reduce>=10% using fixed minibatchrule;allbatchbounds/mean1 hold;existing sourceV worstcase weightedprecisionbound>=99.5%.If anyfail:NO_SOURCE_CANDIDATE,no gate/scale/order retuning or new model from this result.",
+  "possible_followup": {
+    "intended_run_id": "20261024-phase1-PAMF-HardPL-BalancedCE-m3-r01",
+    "intended_method": "HPL_E20_AS_BCE6G",
+    "base": "Fixed NativeAs recipe,no candidate checkpoint;eachoriginalF21E20+own10+20,E50/11100=13L37LU",
+    "comparison": "Only bounded CE contribution weights added to fullnativeAs;fixed same-seed NativeAs reference plus F20/F21same-readoutcontrols",
+    "training_cost": "Same six student passes/rawteacher2097900/studentU10602900/Asgenerated850500/physicalstudent1701000;extra CE arithmetic only.Sourcecalibration170100 rawE20 forwards separately costed,not equalFLOP.",
+    "queue": "If and only if source rule passes and implementation/oneP0P1 review ready:GPU5/6/7 fixedseeds,max2own/card,wait matchingRXE allGPU predictionscomplete and NativeAsdispatched,reservebothpreCUDA PIDs;soleCPU scorer afterNativeAs terminal.",
+    "real_smoke": "PENDING after sourcefalsification and implementation,firstmatchingreleasedcard realoriginalE20:weightbounds/mean dose/allaccepted/6students/NativeAsbudget/fullLexplicitgradient;discardprobe/reloadoriginal.",
+    "target_matrix": "All3seeds raw+fixedDURAclean+6practical,168000/view,42cells,finaldefaulthead/fullrowpredictions before independenttruth-last,allseed/scene/strata/corrections/costs.",
+    "goal": "Rawclean>=1pp andsixstrict>1.5pp versusbothF20/F21,DURAseparate;no defaultdeploymentchange"
+  },
+  "historical_exposure": "Earlier complete target results includingJoint/Complement/Path known.RAS/Combo/RXE/NativeAs target scores NOT READ.No target-feedback parent/seed/checkpoint selection or blind-study claim.",
+  "CWD": "Existing released N607 source dependencies only",
+  "command": "python local_artifacts/pamf_ssl_research_20261023/collect_source_balanced_pseudo_ce.py",
+  "expected_artifacts": [
+    "source_balanced_pseudo_ce.json",
+    "source_balanced_pseudo_ce_summary.json",
+    "source_balanced_pseudo_ce.md"
+  ],
+  "stop_rule": "Technical/data/permission/nonfinite failure stops diagnostic only,preserve all jobs/artifacts;failed scientificrule means no candidate,no revisedgrid or selective repeats.",
+  "U_truth_reads": 0,
+  "target_reads": 0,
+  "model_updates": 0,
+  "V_gradients": 0,
+  "normalization_updates": 0,
+  "head_fit_updates": 0,
+  "GPU_workers": 0,
+  "G_training_reads": 0,
+  "new_training": false,
+  "training_implementation_complete": false,
+  "independent_training_review": "PENDING",
+  "active_jobs_changed": false,
+  "goal_complete": false
+}
