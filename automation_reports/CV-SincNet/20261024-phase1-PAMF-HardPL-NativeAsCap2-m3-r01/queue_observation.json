@@ -1,0 +1,98 @@
+{
+  "status": "VERIFIED_QUEUED_FOR_MATCHING_NATIVE_AS_GPU_SLOT",
+  "run_id": "20261024-phase1-PAMF-HardPL-NativeAsCap2-m3-r01",
+  "execution_commit": "a2a03f6ccf166b8abba34ca1f7862caa03277ba0",
+  "observed_unix": 1792812257.5903435,
+  "controller_identity_verified": true,
+  "controller_live": true,
+  "actual_new_GPU_workers": 0,
+  "queued_rows": 3,
+  "source_smoke": "PENDING_FIRST_MATCHING_RELEASED_NATIVE_AS_CARD",
+  "rows": [
+    {
+      "row_id": "HPL_E20_AS_CAP2-s2026092701",
+      "status": "QUEUED",
+      "training_started": false
+    },
+    {
+      "row_id": "HPL_E20_AS_CAP2-s2026092702",
+      "status": "QUEUED",
+      "training_started": false
+    },
+    {
+      "row_id": "HPL_E20_AS_CAP2-s2026092703",
+      "status": "QUEUED",
+      "training_started": false
+    }
+  ],
+  "preserved_predecessors": [
+    {
+      "run_id": "20261024-phase1-PAMF-HardPL-NativeAs-m3-r01",
+      "controller_live": true,
+      "controller_identity_verified": true,
+      "status": "RUNNING",
+      "rows": [
+        {
+          "row_id": "HPL_E20_JOINT_AS6G-s2026092701",
+          "gpu": 5,
+          "status": "RUNNING",
+          "live_worker_identity_verified": true,
+          "log_growth_bytes": 0,
+          "step_log_growth_bytes": 4406118
+        },
+        {
+          "row_id": "HPL_E20_JOINT_AS6G-s2026092702",
+          "gpu": 6,
+          "status": "RUNNING",
+          "live_worker_identity_verified": true,
+          "log_growth_bytes": 0,
+          "step_log_growth_bytes": 4415728
+        },
+        {
+          "row_id": "HPL_E20_JOINT_AS6G-s2026092703",
+          "gpu": 7,
+          "status": "RUNNING",
+          "live_worker_identity_verified": true,
+          "log_growth_bytes": 4981,
+          "step_log_growth_bytes": 4277532
+        }
+      ]
+    },
+    {
+      "run_id": "20261024-phase1-PAMF-HardPL-BalancedCE-m3-r01",
+      "controller_live": true,
+      "controller_identity_verified": true,
+      "status": "WAITING_FOR_SMOKE_GPU",
+      "rows": [
+        {
+          "row_id": "HPL_E20_AS_BCE6G-s2026092701",
+          "gpu": 5,
+          "status": "QUEUED",
+          "live_worker_identity_verified": false,
+          "log_growth_bytes": 0,
+          "step_log_growth_bytes": 0
+        },
+        {
+          "row_id": "HPL_E20_AS_BCE6G-s2026092702",
+          "gpu": 6,
+          "status": "QUEUED",
+          "live_worker_identity_verified": false,
+          "log_growth_bytes": 0,
+          "step_log_growth_bytes": 0
+        },
+        {
+          "row_id": "HPL_E20_AS_BCE6G-s2026092703",
+          "gpu": 7,
+          "status": "QUEUED",
+          "live_worker_identity_verified": false,
+          "log_growth_bytes": 0,
+          "step_log_growth_bytes": 0
+        }
+      ]
+    }
+  ],
+  "old_healthy_tasks_changed": false,
+  "target_scores_read": false,
+  "target_matrix_complete": false,
+  "goal_complete": false
+}
