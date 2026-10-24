@@ -362,5 +362,27 @@
     "section": "branch_norm_balance",
     "new_training_or_target_reads": 0,
     "recipe_changed": false
+  },
+  "source_optimizer_counterfactual": {
+    "status": "REGISTERED_NONBLOCKING",
+    "reference": "source_optimizer_counterfactual_plan.json",
+    "source_epoch": 20,
+    "samples_per_seed": {
+      "L": 128,
+      "U": 256
+    },
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "CPU_threads": 2,
+    "GPU_workers": 0,
+    "new_formal_training_updates": 0,
+    "disposable_optimizer_steps": 12,
+    "target_reads": 0,
+    "U_truth_reads": 0,
+    "current_training_or_selection_changed": false,
+    "goal_complete": false
   }
 }

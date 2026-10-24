@@ -50,3 +50,8 @@ GPU5/6/7 固定对应三个 seed，每卡最多两个本任务，计外部 compu
 VERIFIED：发布commit `a2a03f6ccf166b8abba34ca1f7862caa03277ba0` 的真实原E20 GPU source smoke PASS。实际joint160两次捕获512条已有Upacket，跨RX有效anchors=478；实际签名sequence_pool辅助梯度范数=0.370686237且有限非零，原L768／U1536／rawAs0／U As生成128／物理学生256／LPractical64＋U128、共享style计划、完整L guard参数梯度与显式期望相同及临时wrapper退出均符合。探针丢弃，正式行重新加载原E20。
 
 三个seed已按GPU5/6/7启动并实际产生原生joint／guard源步骤；独立核实进程／CWD／完整命令／GPU及日志增长，逐行现有U复用计数见source_activation.json。只按原矩阵接替释放卡位；当前是训练前缀，不代表全部源训练结束或目标收益。训练、raw＋固定DURA七景及truth-last继续自动执行，goal ACTIVE。
+
+
+## 固定源域优化器首步诊断
+
+已预登记 source_optimizer_counterfactual_plan.json：仅使用三个原同 seed F21 E20 的固定 L128/U256，各复用原9次导数；L-only、cap1、cap2 与当前 QR 三锚点分别在独立参数容器上执行一次真实 CENTER_UNITS／physical clip5／AdamW，累计12次额外可丢弃更新。原模型、梯度和健康训练不变，无 V、U 真值、目标或 G 训练读取。比较相对 L-only 的增量下降方向，负点积只表示局部一阶变化较差，不等于实测损失上升或目标准确率下降。只解释新 native10 首步的 fresh moments，不外推整条训练。19项检查与一次独立 P0/P1 审查通过；真实 E20 两包 no-query smoke 是每个源模型的第一步，通过立即继续诊断。无科学晋级门槛、自动新候选、父模型或测试矩阵调整；已暴露历史目标如实保留。

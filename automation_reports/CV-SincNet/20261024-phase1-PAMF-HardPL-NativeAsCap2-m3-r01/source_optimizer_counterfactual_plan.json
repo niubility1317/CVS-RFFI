@@ -1,0 +1,89 @@
+{
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "source_epoch": 20,
+  "steps_per_seed": 1,
+  "L_batch": 128,
+  "U_batch": 256,
+  "reference_revision": "hard-pl-native-as-r01",
+  "reference_method": "HPL_E20_JOINT_AS6G",
+  "original_parent": "Original same-seed F21 E20/4440 only;matching role/physicalID/data contract and complete scratch ancestry checked with the existing source_parents helper before model load.No candidate or originalE30 parent.",
+  "roles": [
+    "L_s",
+    "U_s"
+  ],
+  "V_reads": 0,
+  "V_gradients": 0,
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "G_training_reads": 0,
+  "environment": "N607 ordinary account,existing CVS-RFFI Python,CPU2,CUDA_VISIBLE_DEVICES empty,FP32/TF32off;original NativeAs release provides the fixed model/objective dependencies.Committed analysis is executed over UTF8stdin,without remote file writes.",
+  "CWD": "Existing NativeAs release root;no chdir into a target dataset",
+  "GPU_workers": 0,
+  "CPU_threads": 2,
+  "stop_rule": "Any real input/provenance/role/count/nonfinite/gradient-closure mismatch stops this diagnostic only;preserve healthyjobs/weights/output.An observation timeout is UNKNOWN,reconcile the same PID before retry.No source threshold/grid/parent/seed/order tuning or target feedback.",
+  "status": "REGISTERED_NONBLOCKING_SOURCE_OPTIMIZER_COUNTERFACTUAL",
+  "registered_utc": "2026-10-24T06:12:32.134167+00:00",
+  "kind": "fixed_original_E20_source_optimizer_counterfactual_v1",
+  "question": "Do the fixed gradient constraints remain nonnegative for the incremental actual physical-AdamW first-step descent versus an L-only first step?",
+  "comparisons": [
+    "L_ONLY",
+    "NATIVE_CAP1",
+    "NATIVE_CAP2",
+    "BRANCH_CAP2_QR"
+  ],
+  "optimizer_state": "fresh_moments_first_new_native10_step",
+  "optimizer": "Actual f_optimizer CENTER_UNITS physicalclip5 plus AdamW,including Sinc unit lr/eps/physical decay;native first-epoch cosine lr from original arguments;no inherited moments.",
+  "parameter_containers": "Independent detached FP32 CPU copies of actual trainable parameters and Sinc unit metadata;no shadow forward or model export.",
+  "source_objective": "Same original E20 one NativeAs source step/raw.95/Uweight6/sixstudents/nativeAs/LS.01/RDrop1/AsKL0/shallow.1/joint.05/sharedstyle/CE1.25/defaulthead/fullL unchanged.",
+  "measures": [
+    "Actual theta_before-theta_after per comparison",
+    "Incremental U descent versus same L-only actual optimizer step",
+    "Per fullL/nonphysicalL/physicalL anchor group cosine before versus after optimizer mapping",
+    "Original parameters/gradients unchanged;exact native cap1 bridge;27autograd and7686sourcepacket views"
+  ],
+  "sign_convention": "Negative anchor dot with incremental U descent is a worse first-order anchor change versus L-only;not an evaluated loss increase or target-performance result.",
+  "budget": {
+    "source_models": 3,
+    "source_packet_views": 7686,
+    "total_autograd_calls": 27,
+    "additional_forward_or_autograd_calls": 0,
+    "original_optimizer_or_parameter_updates": 0,
+    "disposable_parameter_only_optimizer_steps": 12,
+    "new_formal_training_updates": 0,
+    "shadow_model_forward_calls": 0,
+    "persisted_model_or_buffer_updates": 0
+  },
+  "local_validation": {
+    "focused_checks": 19,
+    "focused_command": "python -m pytest tests/test_pamf_source_optimizer_shadow.py tests/test_pamf_source_optimizer_counterfactual.py -q",
+    "status": "PASS",
+    "independent_P0P1_review": {
+      "status": "PASS",
+      "reviewer": "/root/ssl_p0p1_review",
+      "review_count": 1,
+      "targeted_re_review_count": 0,
+      "unresolved_P0_P1_findings": [],
+      "scope": "Only defects directly invalidating,preventing or making the next fixed CPU source optimizer diagnostic unauthorized or destructive.",
+      "actual_reviewer_response": "PASS，未发现本次范围内的 P0/P1。影子容器保留实际物理单位、clip5 和首步 AdamW 语义；四种更新复用同一组原梯度，原 cap1 桥和模型保持不变。依赖兼容、回调恢复及 12 次副本更新计数正确。"
+    },
+    "real_checkpoint_no_query_smoke": "FIRST_STEP_EACH_ORIGINAL_E20_SOURCE_MODEL"
+  },
+  "command": "python local_artifacts/pamf_ssl_research_20261023/collect_source_optimizer_counterfactual.py",
+  "output": "local_artifacts/pamf_ssl_research_20261023/source_optimizer_counterfactual.json;exclusive;all stdout/stderr retained",
+  "expected_artifacts": [
+    "source_optimizer_counterfactual_plan.json",
+    "source_optimizer_counterfactual.json",
+    "source_optimizer_counterfactual_summary.json",
+    "source_optimizer_counterfactual.md"
+  ],
+  "interpretation": "One fixed source step/seed with fresh optimizer moments only;three correlated groups per seed;not a trajectory,post-step loss measurement,scientific promotion threshold or automatic new candidate.",
+  "historical_exposure": "RXE/NativeAs/BalancedCE targets known;Cap2/BranchGuard targets not read.This diagnostic is motivated by actual optimizer structure and the preserved source branch observations;no changes to frozen candidates,thresholds,parents,seeds,matrix,order or healthyjobs.",
+  "new_training": false,
+  "active_jobs_changed": false,
+  "NONBLOCKING": true,
+  "goal_complete": false
+}
