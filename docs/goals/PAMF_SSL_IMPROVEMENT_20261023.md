@@ -342,3 +342,8 @@ PathReliableAs 发布后 VERIFIED：控制器存活及 CWD/完整命令匹配，
 ## 原生 As 的 U 梯度范数帽对照
 
 `20261024-phase1-PAMF-HardPL-NativeAsCap2-m3-r01` 按 28431a31 固定源设计实现，只将完整 NativeAs 配方三参数组 U/L 范数帽1改为2，保留负点积投影、tiny-L、一次完整 L 梯度桥接及原 raw0.95/U权重6/六学生/所有损失/defaulthead。原同seed E20独立own10+20/E50/11100，教师／学生／As预算不变，没有额外autograd或前向。源19980记录固定算术三seed均通过预定规则；它不等于新训练或目标收益。29新增及119受影响流程检查、一次P0P1均PASS；真实E20检查待匹配释放NativeAs卡位，唯一CPU scorer接BalancedCE。三seed raw+DURA七景42cell、NativeAs cap1匹配比较和原双控制raw目标固定，goal ACTIVE。
+
+
+## HPL_E20_JOINT_RXE6G 完整双读出结果
+
+`20261024-phase1-PAMF-HardPL-ReceiverExtrap-m3-r01` 各方法三seed、共3模型，每景168000条，raw／同一DURA七景预测与独立truth-last全部42cell完成；全部新增19980条闭合训练记录已核对。HPL_E20_JOINT_RXE6G / raw clean=85.726786%；HPL_E20_JOINT_RXE6G / DURA-LU clean=85.790675%；HPL_E20_JOINT_RXE6G / raw six_mean=70.085516%；HPL_E20_JOINT_RXE6G / DURA-LU six_mean=77.897718%；原数值目标仍未满足，维持ACTIVE。全部结果、匹配基线、逐seed／场景／分层及成本均保存，不从本结果热改其他已固定方法、父权重或矩阵。

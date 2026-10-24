@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_REAL_E20_SMOKE_AND_FIRST_SOURCE_START",
+  "status": "VERIFIED_REAL_E20_BALANCED_CE_SMOKE_AND_ALL3_SOURCE_RUNNING",
   "focused_checks": [
     {
       "evidence": "hard_pl_balanced_ce_focused_tests.xml",
@@ -19,7 +19,7 @@
     "scope": "Direct wrong/unauthorized/destructive/unlaunchable/illegal-prediction defects in the next BalancedCE run only",
     "actual_reviewer_response": "PASS，未发现本次范围内的 P0/P1。六视图 CE 差额的系数与原配方一致，权重仅由当前 raw 接受集合生成；原 KL、接受集合和完整 L guard 保留。计数、PID 预留及评分串接符合约定。"
   },
-  "real_checkpoint_smoke": "PASS;first matching originalE20 nativeAs/fullLguard/forwardbudget",
+  "real_checkpoint_smoke": "PASS;actualnativeAs half/acceptedmask/noextra teacher/physicalbudget/jointsignature/fullLguard/originalE20reload;source_activation.json",
   "actual_started_source_rows": 1,
   "all_three_started": false
 }
