@@ -1,7 +1,8 @@
 import pytest
 import torch
 from experiments.pamf_ssl_research.source_branch_gradients import (
-    GROUPS,labeled_components,unlabeled_components,gradient_facts,labeled_pairs,source_loaders)
+    GROUPS,labeled_components,unlabeled_components,gradient_facts,labeled_pairs,source_loaders,
+    component_closure,native_reference_gradients)
 from experiments.pamf_ssl_research.hard_pl_objective import mechanism_loss
 from experiments.pamf_ssl_research.u_gradprotect_objective import protected_loss
 
@@ -95,3 +96,39 @@ def test_diagnostic_loader_never_opens_validation_or_target(monkeypatch):
     assert roles==['L_s','U_s'] and set(loaders)=={'train_loader','unlabeled_loader'}
     assert loaders['train_loader']==dict(role='L_s',batch=128,drop_last=True)
     assert loaders['unlabeled_loader']==dict(role='U_s',batch=256,drop_last=False)
+
+
+def test_near_zero_FP32_roundoff_is_reported_without_changing_native_reference():
+    p=torch.nn.Parameter(torch.tensor([0.,0.],dtype=torch.float32));named=[('root.t2.weight',p)]
+    reference=(torch.tensor([0.00537,0.1]),)
+    reconstructed=(reference[0]+torch.tensor([2.7e-6,0.]),)
+    proof=component_closure(named,reconstructed,reference)
+    assert 2e-6<proof['max_absolute_error']<3e-6
+    assert proof['groups']['t2']['relative_L2_error']<1e-3
+    losses=dict(L_clean=.00537*p[0]+.1*p[1],L_As=p.sum()*0,L_aux=p.sum()*0,
+                U_clean=-.1*p[0]+.00537*p[1],U_As=p.sum()*0,U_aux=p.sum()*0)
+    full=(torch.autograd.grad(sum(losses[k] for k in ('L_clean','L_As','L_aux')),p,retain_graph=True),
+          torch.autograd.grad(sum(losses[k] for k in ('U_clean','U_As','U_aux')),p,retain_graph=True))
+    facts,expected=gradient_facts(named,losses,reference=full)
+    _,_,native=protected_loss(sum(losses[k] for k in ('L_clean','L_As','L_aux')),
+                              sum(losses[k] for k in ('U_clean','U_As','U_aux')),named)
+    assert torch.equal(expected[0],native[0]) and facts['component_sum_closure'] is not None
+
+
+def test_roundoff_check_rejects_material_group_or_connectivity_differences():
+    p=torch.nn.Parameter(torch.zeros(64));named=[('root.t2.weight',p)]
+    # Each entry is within dtype absolute tolerance, but its aggregate is too large.
+    with pytest.raises(ValueError,match='0.1%'):
+        component_closure(named,(torch.full_like(p,2e-6),),(torch.zeros_like(p),))
+    with pytest.raises(ValueError,match='connectivity'):
+        component_closure(named,(torch.zeros_like(p),),(None,))
+
+
+def test_original_guard_capture_adds_no_gradients_and_restores_global_helper():
+    p=torch.nn.Parameter(torch.tensor([1.,2.],dtype=torch.float64));named=[('root.t2.weight',p)]
+    original=torch.autograd.grad
+    with native_reference_gradients() as captured:protected_loss(p.square().sum(),p.sum(),named)
+    assert len(captured)==2 and torch.autograd.grad is original and p.grad is None
+    with pytest.raises(RuntimeError):
+        with native_reference_gradients():raise RuntimeError('probe')
+    assert torch.autograd.grad is original

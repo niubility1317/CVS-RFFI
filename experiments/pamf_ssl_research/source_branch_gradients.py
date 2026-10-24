@@ -66,7 +66,40 @@ def _relation(named,left,right,group):
                 cosine=dot/math.sqrt(ll*rr) if ll>0 and rr>0 else None)
 
 
-def gradient_facts(named,losses):
+def component_closure(named,reconstructed,reference):
+    """Allow dtype-level roundoff near zero, while bounding group direction error."""
+    errors=[];maximum=0.
+    for (name,_),value,actual in zip(named,reconstructed,reference):
+        if (value is None)!=(actual is None):raise ValueError('Source component gradient connectivity differs: '+name)
+        if value is None:
+            errors.append(None);continue
+        try:torch.testing.assert_close(value,actual)
+        except AssertionError as error:raise ValueError('Source component derivative values differ: '+name) from error
+        delta=value-actual;maximum=max(maximum,float(delta.abs().max()));errors.append(delta)
+    groups={}
+    for group in GROUPS:
+        error_norm=_relation(named,errors,errors,group)['left_norm']
+        reference_norm=_relation(named,reference,reference,group)['left_norm']
+        if error_norm>1e-3*reference_norm+1e-8:
+            raise ValueError('Source component group derivative error exceeds 0.1%: '+group)
+        groups[group]=dict(L2_error=error_norm,reference_L2_norm=reference_norm,
+                           relative_L2_error=error_norm/reference_norm if reference_norm else None)
+    return dict(max_absolute_error=maximum,groups=groups,
+                criterion='torch.testing.assert_close dtype defaults and group L2error<=0.001*referenceL2+1e-8')
+
+
+@contextmanager
+def native_reference_gradients():
+    """Observe the two original guard derivatives without requesting extra ones."""
+    original=torch.autograd.grad;captured=[]
+    def grad(*args,**kwargs):
+        value=original(*args,**kwargs);captured.append(tuple(None if v is None else v.detach() for v in value));return value
+    torch.autograd.grad=grad
+    try:yield captured
+    finally:torch.autograd.grad=original
+
+
+def gradient_facts(named,losses,*,reference=None):
     """Six component derivatives; no .backward(), optimizer, parameter or buffer writes."""
     if set(losses)!=set(BRANCHES) or not named:raise ValueError('Fixed six source loss components required')
     parameters=[p for _,p in named];gradients={}
@@ -78,8 +111,14 @@ def gradient_facts(named,losses):
         if any(v is not None and not bool(torch.isfinite(v).all()) for v in values):
             raise ValueError('Finite source component gradients required')
         gradients[name]=tuple(None if v is None else v.detach() for v in values)
-    gradients['L_full']=_sum(named,*(gradients[k] for k in BRANCHES[:3]))
-    gradients['U_full']=_sum(named,*(gradients[k] for k in BRANCHES[3:]))
+    reconstructed_L=_sum(named,*(gradients[k] for k in BRANCHES[:3]))
+    reconstructed_U=_sum(named,*(gradients[k] for k in BRANCHES[3:]))
+    closure=None
+    if reference is not None:
+        if len(reference)!=2 or any(len(v)!=len(named) for v in reference):raise ValueError('Two original complete-L/U derivative vectors required')
+        closure=dict(L=component_closure(named,reconstructed_L,reference[0]),
+                     U=component_closure(named,reconstructed_U,reference[1]))
+    gradients['L_full'],gradients['U_full']=reference if reference is not None else (reconstructed_L,reconstructed_U)
     expected,guard=projected_gradients(named,gradients['L_full'],gradients['U_full'])
     applied=[]
     for value,labeled in zip(expected,gradients['L_full']):
@@ -98,7 +137,7 @@ def gradient_facts(named,losses):
             U_clean_vs_U_As=_relation(named,gradients['U_clean'],gradients['U_As'],group),
             L_clean_vs_U_clean=_relation(named,gradients['L_clean'],gradients['U_clean'],group),
             L_As_vs_U_As=_relation(named,gradients['L_As'],gradients['U_As'],group))
-    return dict(groups=groups,losses={k:float(v.detach()) for k,v in losses.items()},
+    return dict(groups=groups,losses={k:float(v.detach()) for k,v in losses.items()},component_sum_closure=closure,
                 component_autograd_calls=6,projection='existing full-L cap1;diagnostic only',
                 measured_stage='Parameter gradients before native globalclip5/AdamW/decay'),expected
 
@@ -123,18 +162,22 @@ class BranchDiagnostic(GuardedNativeAs):
         losses=labeled_components(_PAIRS.get(),labeled)
         losses.update(unlabeled_components(logits,pseudo,accepted,physical,unlabeled))
         named=[(n,p) for n,p in student.named_parameters() if p.requires_grad]
-        facts,expected=gradient_facts(named,losses)
-        result=super().guide(labeled,student)
+        # Retain the exact original full derivatives as the numerical reference.
+        # Component residuals can lose FP32 precision at near-zero Sinc entries.
+        with native_reference_gradients() as reference:
+            result=super().guide(labeled,student)
+        if len(reference)!=2:raise ValueError('Exactly the two original guard derivatives required')
+        facts,expected=gradient_facts(named,losses,reference=reference)
         actual=self.smoke_guard_expected
         for (name,_),value in zip(named,expected):
             observed=actual[name]
             if ((value is None)!=(observed is None) or value is not None
-                    and not torch.allclose(value,observed,rtol=3e-4,atol=2e-6)):
+                    and not torch.equal(value,observed)):
                 diagnostic=dict(parameter=name,component_sum_is_none=value is None,original_is_none=observed is None)
                 if value is not None and observed is not None:
                     diagnostic.update(max_absolute_difference=float((value-observed).abs().max()),
                         component_sum_max_absolute=float(value.abs().max()),original_max_absolute=float(observed.abs().max()))
-                raise ValueError('Component gradient sum differs from original complete-L/U guard: '+repr(diagnostic))
+                raise ValueError('Exact native full-gradient reference differs from original guard: '+repr(diagnostic))
         facts.update(original_full_gradient_bridge_matches=True,all_six_U_logits_reused=True,
                      L_pair_calls=len(_PAIRS.get()),U_logits_captured=len(logits),raw_accepted=int(accepted.sum()))
         self.source_branch_facts=facts;self.branch_logits=[]

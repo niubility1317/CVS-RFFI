@@ -1,0 +1,29 @@
+{
+  "status": "TECHNICAL_NUMERICAL_CHECK_FIXED_REAL_SOURCE_RERUN_PENDING",
+  "failed_layer": "Offline source component-gradient closure;not a training worker or target prediction failure",
+  "failed_attempts": 2,
+  "failed_processes_independently_observed_exited": true,
+  "accepted_source_results": 0,
+  "first_offending_parameter": "id_backbone.encoder.core.id_backbone.sinc.low_coordinate",
+  "observed_max_absolute_difference": 2.6153572889597854e-06,
+  "observed_component_sum_max_absolute": 0.005370366387069225,
+  "observed_original_max_absolute": 0.005370362661778927,
+  "preserved_failure_evidence": "Both original stdout/stderr attempts retained privately;no failed gradient summary published",
+  "fix": "Observe the two original full-L/U guard derivatives first.Use them for full/reference/appliedU statistics.Reprojecting these exact original derivatives must equal the native guard result bitwise for each parameter.",
+  "component_closure": "Each component sum is checked independently using torch.testing.assert_close dtype defaults and group L2error<=0.001*referenceL2+1e-8;None/zero connectivity remains strict.Actual errors are reported.",
+  "invariant": "Original E20/one L128-U256 step per seed/NativeAs cap1/raw.95/weight6/forward counts/no parameter update/no V-Utruth-target reads unchanged.Only derivative observation order and numerical-check decomposition change;autograd remains9 per seed.",
+  "runner_CWD": "Runner explicitly selects the preregistered NativeAs release CWD for new attempts",
+  "focused_checks": 13,
+  "targeted_independent_P0P1_review": {
+    "status": "PASS",
+    "reviewer": "/root/ssl_p0p1_review",
+    "targeted_re_review_count": 1,
+    "scope": "Only the near-zero FP32 component-closure/reference-gradient fix",
+    "actual_reviewer_response": "PASS。该修复以原 guard 的完整 L/U 梯度作为统计基准，并要求重新投影结果逐参数完全一致；组件闭合误差另行检查和报告。原算法、9 次 autograd 预算及数据权限未改变，未发现 P0/P1。"
+  },
+  "real_source_rerun": "PENDING",
+  "healthy_training_changed": false,
+  "new_training": false,
+  "goal_complete": false,
+  "NONBLOCKING": true
+}
