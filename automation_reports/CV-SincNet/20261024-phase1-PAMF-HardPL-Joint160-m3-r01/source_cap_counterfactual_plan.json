@@ -1,0 +1,119 @@
+{
+  "status": "REGISTERED_FIXED_SOURCE_CAP1_CAP2_FALSIFICATION",
+  "registered_utc": "2026-10-24T03:03:57.673184+00:00",
+  "question": "Can cap2 increase effective weighted-U gradients on the fixed complete Joint source records,while retaining conflict projection and bounded combined norms?",
+  "source_basis": {
+    "reference": "source_gradient_trajectory_A_summary.json",
+    "analysis_commit": "3d7cdecb1b421c08a52b31f4f04fa77cd2c8b380",
+    "current_Joint_t2_cap_fraction": 0.6909409409409409,
+    "interpretation": "Weight6 U is already substantial,not zero;this tests relaxing the actual norm cap,not merely relabeling a larger scalar weight."
+  },
+  "source_profile": {
+    "revision": "hard-pl-joint-r01",
+    "run_id": "20261024-phase1-PAMF-HardPL-Joint160-m3-r01",
+    "method": "HPL_E20_NAMS_JOINT6G"
+  },
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "source_segments": [
+    {
+      "name": "segment30",
+      "start_epoch": 20,
+      "steps": 2220
+    },
+    {
+      "name": "segment50",
+      "start_epoch": 30,
+      "steps": 4440
+    }
+  ],
+  "source_records": 19980,
+  "records_per_model": 6660,
+  "caps": [
+    1.0,
+    2.0
+  ],
+  "no_grid_or_scale_retuning": true,
+  "raw_U_weight": 6.0,
+  "raw_gate": 0.95,
+  "source_V_precision": [
+    {
+      "model_seed": 2026092701,
+      "samples": 27000,
+      "threshold": 0.95,
+      "accepted": 25054,
+      "correct": 25029,
+      "wrong": 25,
+      "accepted_accuracy_percent": 99.90021553444559
+    },
+    {
+      "model_seed": 2026092702,
+      "samples": 27000,
+      "threshold": 0.95,
+      "accepted": 25130,
+      "correct": 25097,
+      "wrong": 33,
+      "accepted_accuracy_percent": 99.86868284918424
+    },
+    {
+      "model_seed": 2026092703,
+      "samples": 27000,
+      "threshold": 0.95,
+      "accepted": 25128,
+      "correct": 25107,
+      "wrong": 21,
+      "accepted_accuracy_percent": 99.91642788920726
+    }
+  ],
+  "source_V_precision_reference": "source_pseudo_quality.json",
+  "source_V_minimum_accepted_accuracy_percent": 99.5,
+  "calculation": "Keep each recorded L/U gradient and negative-dot projection direction fixed;reconstruct postprojection U norm from logged double norms/dot,check cap1 against actualappliednorm,and apply min(projectednorm,2*Lnorm).Measured old postdot scales with the same direction.TinyL retains zeroU.",
+  "combined_norm": "Sum disjoint group Lnorm^2+appliedUnorm^2+2postdot,then sqrt.Fraction above5 is a calculated gradient-norm proxy,not newlymeasured clipping events or an AdamW update.",
+  "scientific_rule": "Everyseed:old t2 capfraction>=0.50;mean appliedU/L in t2 increases>=15%;wholeparam mean appliedU/L increases>=10%;calculated combinednorm>5 frequency increases<=5percentagepoints;original completeV .95 acceptedaccuracy>=99.5%.All input/counter/projection checks must hold.If anyfail:no newcap2 training candidate,no alternate cap or rule tuning.",
+  "limitations": [
+    "Same-current-gradient arithmetic is not a new training trajectory,optimizerstep or target gain.",
+    "Joint source gradients use raw fallback,not fullnativeAs;transfer of the source rationale to NativeAs must be tested independently.",
+    "More U norm can change common clipping and AdamW behavior;nonnegative projected dot is not a monotonic supervisedloss or generalization guarantee.",
+    "High complete sourceV precision does not reveal actual U accuracy;U TX truth remains hidden."
+  ],
+  "possible_followup": {
+    "intended_run_id": "20261024-phase1-PAMF-HardPL-NativeAsCap2-m3-r01",
+    "intended_method": "HPL_E20_AS_CAP2",
+    "base": "Fixed completeNativeAs recipe;originalsame-seedF21E20+own10+20,E50/11100=13L37LU.No candidateweight/targetselectedparent.",
+    "changed": "Only U/L normcap1->2 per t2,cls_head,other group;keep completeL anchor,negative-dot projection,tinyL handling,raw.95/weight6,originalsixU/losses/nativeAs/defaulthead/nativeAdamW.",
+    "fixed_reference": {
+      "run": "20261024-phase1-PAMF-HardPL-NativeAs-m3-r01",
+      "method": "HPL_E20_JOINT_AS6G"
+    },
+    "training_ready": "Only if fixedsource rulepasses and subsequent trainingimplementation/oneP0P1review ready;firstreleasedmatchingcard realoriginalE20 smoke,discardprobe/reloadoriginal.",
+    "queue": "GPU5/6/7 fixedseeds/max2own/card,totalapps<3/free>=10000MiB;wait matchingNativeAs allGPU predictionsdone AND BalancedCEdispatched,reservebothpendingCUDA PIDs;soleCPU scorer afterBalancedCE terminal.",
+    "test_matrix": "All3seeds raw+fixedDURA clean+6practical,168000/view/42cells;whole-rowprediction frozen before independenttruth-last;F20/F21 and fixedNativeAs references.",
+    "goal": "Rawclean>=+1pp andsixstrict>+1.5pp vsbothF20/F21,DURAseparate;deployeddefaultsunchanged."
+  },
+  "execution": "N607 ordinaryaccount,CPU1/noCUDA,committed stdlibmath/read-only closedsourcemetrics;no IQ/model/target/truth access or remote mutation.",
+  "command": "python local_artifacts/pamf_ssl_research_20261023/collect_source_cap_counterfactual.py",
+  "CWD": "Existing fixedsource release and immutable source output roots",
+  "expected_artifacts": [
+    "source_cap_counterfactual.json",
+    "source_cap_counterfactual_summary.json",
+    "source_cap_counterfactual.md"
+  ],
+  "stop_rule": "Real input/counter/nonfinite mismatch stops this diagnostic only;preserve all healthyjobs.No new cap/threshold/parent/seed ordering or selective rerun.",
+  "historical_exposure": "Earlier complete targets through ReliableAs/PathReliableAs are known.This source plan uses existing fullsource gradient/precision facts,not target-based recipe/parent/seed/checkpoint selection.No independentblind claim.RXE/NativeAs/BalancedCE target scores not read.",
+  "GPU_workers": 0,
+  "CPU_threads": 1,
+  "model_updates": 0,
+  "checkpoint_reads": 0,
+  "IQ_reads": 0,
+  "V_gradients": 0,
+  "U_truth_reads": 0,
+  "target_reads": 0,
+  "new_training_launched": false,
+  "active_jobs_changed": false,
+  "NONBLOCKING": true,
+  "focused_tests": 10,
+  "goal_complete": false
+}
