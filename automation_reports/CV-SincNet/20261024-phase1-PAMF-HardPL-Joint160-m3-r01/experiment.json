@@ -396,9 +396,13 @@
       "model_updates": 0
     },
     "balanced_pseudo_ce_source_falsification": {
-      "status": "SOURCE_FALSIFICATION_FIXED_NOT_IMPLEMENTED_NOT_LAUNCHED",
-      "reference": "balanced_pseudo_ce_source_plan.json",
-      "new_training": false
+      "status": "VERIFIED_FIXED_SOURCE_BALANCED_PSEUDO_CE",
+      "reference": "source_balanced_pseudo_ce_summary.json",
+      "source_selection": "SOURCE_CANDIDATE_SUPPORTED",
+      "source_U_forwards": 170100,
+      "new_training": false,
+      "target_reads": 0,
+      "U_truth_reads": 0
     }
   }
 }

@@ -1,0 +1,5029 @@
+{
+  "status": "VERIFIED_SOURCE_BALANCED_PSEUDO_CE",
+  "analysis_code_commit": "126c86002e189ce3c4c4adac8ae682efe1916878",
+  "seconds": 118.4097085329704,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "source_epoch": 20,
+      "source_updates": 4440,
+      "samples": 56700,
+      "accepted": 52503,
+      "weighted_mass": 52503.0,
+      "batch_size": 256,
+      "batches": 222,
+      "final_batch_samples": 124,
+      "batch_weight_bounds": [
+        {
+          "samples": 256,
+          "accepted": 245,
+          "accepted_weight_sum": 245.0,
+          "accepted_weight_min": 0.9230308627381272,
+          "accepted_weight_max": 1.2565813490090831
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.92022886052887,
+          "accepted_weight_max": 1.261301286038448
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.00000000000006,
+          "accepted_weight_min": 0.92509573793832,
+          "accepted_weight_max": 1.1585554854315463
+        },
+        {
+          "samples": 256,
+          "accepted": 232,
+          "accepted_weight_sum": 231.99999999999997,
+          "accepted_weight_min": 0.9267412195837046,
+          "accepted_weight_max": 1.1436193177101437
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.954708329399249,
+          "accepted_weight_max": 1.071664135181512
+        },
+        {
+          "samples": 256,
+          "accepted": 233,
+          "accepted_weight_sum": 233.0,
+          "accepted_weight_min": 0.9116406033553719,
+          "accepted_weight_max": 1.1121280151030082
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9166492405138853,
+          "accepted_weight_max": 1.0973764561692374
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 233.99999999999997,
+          "accepted_weight_min": 0.9089871568743288,
+          "accepted_weight_max": 1.1851822958587965
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.9273264583117067,
+          "accepted_weight_max": 1.1180897611289224
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.9067559065300546,
+          "accepted_weight_max": 1.180973386958395
+        },
+        {
+          "samples": 256,
+          "accepted": 246,
+          "accepted_weight_sum": 246.0,
+          "accepted_weight_min": 0.900872662360038,
+          "accepted_weight_max": 1.1696145310081163
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9072946254487917,
+          "accepted_weight_max": 1.226402122445863
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 241.99999999999997,
+          "accepted_weight_min": 0.9114731936087472,
+          "accepted_weight_max": 1.1653008406269025
+        },
+        {
+          "samples": 256,
+          "accepted": 223,
+          "accepted_weight_sum": 223.0,
+          "accepted_weight_min": 0.9227722329495349,
+          "accepted_weight_max": 1.1223038770556237
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 235.99999999999997,
+          "accepted_weight_min": 0.9345022935656819,
+          "accepted_weight_max": 1.1358268658664585
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.00000000000003,
+          "accepted_weight_min": 0.9037955569262875,
+          "accepted_weight_max": 1.1289349895218659
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 238.99999999999994,
+          "accepted_weight_min": 0.933533826232402,
+          "accepted_weight_max": 1.0707738046243522
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.00000000000003,
+          "accepted_weight_min": 0.9123606267787021,
+          "accepted_weight_max": 1.1375774075204341
+        },
+        {
+          "samples": 256,
+          "accepted": 243,
+          "accepted_weight_sum": 243.0,
+          "accepted_weight_min": 0.9318487666980749,
+          "accepted_weight_max": 1.0907078586127477
+        },
+        {
+          "samples": 256,
+          "accepted": 247,
+          "accepted_weight_sum": 247.0,
+          "accepted_weight_min": 0.9367679782693301,
+          "accepted_weight_max": 1.1589528247798093
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.913280186207489,
+          "accepted_weight_max": 1.1987899690023232
+        },
+        {
+          "samples": 256,
+          "accepted": 232,
+          "accepted_weight_sum": 231.99999999999997,
+          "accepted_weight_min": 0.8817463698115908,
+          "accepted_weight_max": 1.164069923124747
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.00000000000003,
+          "accepted_weight_min": 0.9157906226109037,
+          "accepted_weight_max": 1.303500434786213
+        },
+        {
+          "samples": 256,
+          "accepted": 233,
+          "accepted_weight_sum": 232.99999999999997,
+          "accepted_weight_min": 0.893223364281774,
+          "accepted_weight_max": 1.094899398743209
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9191050933901792,
+          "accepted_weight_max": 1.1564444433442231
+        },
+        {
+          "samples": 256,
+          "accepted": 233,
+          "accepted_weight_sum": 233.0,
+          "accepted_weight_min": 0.8825835281738383,
+          "accepted_weight_max": 1.1401846896668477
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9068985809134025,
+          "accepted_weight_max": 1.1762239132777363
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.00000000000003,
+          "accepted_weight_min": 0.9357611393518712,
+          "accepted_weight_max": 1.1418497063106376
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.9299809049837697,
+          "accepted_weight_max": 1.1226268037244782
+        },
+        {
+          "samples": 256,
+          "accepted": 232,
+          "accepted_weight_sum": 232.0,
+          "accepted_weight_min": 0.9268579127543397,
+          "accepted_weight_max": 1.108101613139569
+        },
+        {
+          "samples": 256,
+          "accepted": 226,
+          "accepted_weight_sum": 226.0,
+          "accepted_weight_min": 0.896430444645531,
+          "accepted_weight_max": 1.1498920674811943
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.9325916146637243,
+          "accepted_weight_max": 1.130226595596269
+        },
+        {
+          "samples": 256,
+          "accepted": 230,
+          "accepted_weight_sum": 230.0,
+          "accepted_weight_min": 0.8957907095325903,
+          "accepted_weight_max": 1.1625850389007062
+        },
+        {
+          "samples": 256,
+          "accepted": 232,
+          "accepted_weight_sum": 232.0,
+          "accepted_weight_min": 0.9364899219671204,
+          "accepted_weight_max": 1.0813995866160702
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9417847853484941,
+          "accepted_weight_max": 1.146063461677301
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.8955609459747589,
+          "accepted_weight_max": 1.1187558225248504
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 237.99999999999994,
+          "accepted_weight_min": 0.9092228009413286,
+          "accepted_weight_max": 1.1677138831056877
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.00000000000003,
+          "accepted_weight_min": 0.9489598670022645,
+          "accepted_weight_max": 1.1456873422900067
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9281508425745197,
+          "accepted_weight_max": 1.1465420631901062
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.9339254905256872,
+          "accepted_weight_max": 1.1686105473712298
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9460918850107285,
+          "accepted_weight_max": 1.1519223934523795
+        },
+        {
+          "samples": 256,
+          "accepted": 231,
+          "accepted_weight_sum": 230.99999999999994,
+          "accepted_weight_min": 0.9351308299303813,
+          "accepted_weight_max": 1.091466896397548
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.00000000000006,
+          "accepted_weight_min": 0.9407754890404405,
+          "accepted_weight_max": 1.1125047268043837
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9375917939968899,
+          "accepted_weight_max": 1.0803692644406246
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.9233948943172003,
+          "accepted_weight_max": 1.1361978120103795
+        },
+        {
+          "samples": 256,
+          "accepted": 231,
+          "accepted_weight_sum": 231.0,
+          "accepted_weight_min": 0.9090701931003276,
+          "accepted_weight_max": 1.154105436565383
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 237.99999999999997,
+          "accepted_weight_min": 0.9050855803212521,
+          "accepted_weight_max": 1.2013881518130156
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.0,
+          "accepted_weight_min": 0.9092554556437533,
+          "accepted_weight_max": 1.1960697259466815
+        },
+        {
+          "samples": 256,
+          "accepted": 243,
+          "accepted_weight_sum": 243.0,
+          "accepted_weight_min": 0.9092758628443265,
+          "accepted_weight_max": 1.2225390285491275
+        },
+        {
+          "samples": 256,
+          "accepted": 229,
+          "accepted_weight_sum": 228.99999999999997,
+          "accepted_weight_min": 0.8759066677589807,
+          "accepted_weight_max": 1.074115361600333
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 234.99999999999997,
+          "accepted_weight_min": 0.906883238654219,
+          "accepted_weight_max": 1.0789379485681194
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 233.99999999999994,
+          "accepted_weight_min": 0.9065395594415657,
+          "accepted_weight_max": 1.193576375508758
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.903370789610745,
+          "accepted_weight_max": 1.1244645411467706
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.9394294404484542,
+          "accepted_weight_max": 1.0594368631319278
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.9004967217346822,
+          "accepted_weight_max": 1.2216236182041953
+        },
+        {
+          "samples": 256,
+          "accepted": 233,
+          "accepted_weight_sum": 233.00000000000006,
+          "accepted_weight_min": 0.8868619442068983,
+          "accepted_weight_max": 1.1613190951957022
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 235.99999999999997,
+          "accepted_weight_min": 0.8964863059240884,
+          "accepted_weight_max": 1.1885632829366921
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9008878429295547,
+          "accepted_weight_max": 1.1490274064946684
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9020469569644265,
+          "accepted_weight_max": 1.093661505426297
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.935848064216703,
+          "accepted_weight_max": 1.103641648980914
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.00000000000003,
+          "accepted_weight_min": 0.87458203704285,
+          "accepted_weight_max": 1.131023797548621
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9474307233725594,
+          "accepted_weight_max": 1.1233878182576156
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.00000000000003,
+          "accepted_weight_min": 0.9042332108492992,
+          "accepted_weight_max": 1.2256208203135424
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.912413427836802,
+          "accepted_weight_max": 1.1946812028742926
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.911074807935008,
+          "accepted_weight_max": 1.0936948658415329
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.0,
+          "accepted_weight_min": 0.9167772154294198,
+          "accepted_weight_max": 1.1457139281850253
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.8741420372272423,
+          "accepted_weight_max": 1.2527654963986579
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.00000000000003,
+          "accepted_weight_min": 0.9206099132762107,
+          "accepted_weight_max": 1.0924359130112484
+        },
+        {
+          "samples": 256,
+          "accepted": 225,
+          "accepted_weight_sum": 225.0,
+          "accepted_weight_min": 0.912910714027046,
+          "accepted_weight_max": 1.1200184769843302
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.9196735316244636,
+          "accepted_weight_max": 1.1279730294584576
+        },
+        {
+          "samples": 256,
+          "accepted": 244,
+          "accepted_weight_sum": 244.0,
+          "accepted_weight_min": 0.8967172699454801,
+          "accepted_weight_max": 1.1211651126595945
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 233.99999999999997,
+          "accepted_weight_min": 0.9210946580663801,
+          "accepted_weight_max": 1.0906480048283334
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9187399166799486,
+          "accepted_weight_max": 1.1231049356967455
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.00000000000003,
+          "accepted_weight_min": 0.9216425555754306,
+          "accepted_weight_max": 1.165047391609716
+        },
+        {
+          "samples": 256,
+          "accepted": 233,
+          "accepted_weight_sum": 232.99999999999997,
+          "accepted_weight_min": 0.8810403480802165,
+          "accepted_weight_max": 1.2699781163767758
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 238.99999999999997,
+          "accepted_weight_min": 0.8932403443974496,
+          "accepted_weight_max": 1.2196791420100022
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 237.99999999999994,
+          "accepted_weight_min": 0.9162323945009193,
+          "accepted_weight_max": 1.098764672687286
+        },
+        {
+          "samples": 256,
+          "accepted": 226,
+          "accepted_weight_sum": 226.0,
+          "accepted_weight_min": 0.877314088566565,
+          "accepted_weight_max": 1.1736403896447505
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9289123182869023,
+          "accepted_weight_max": 1.1009309496676027
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.00000000000006,
+          "accepted_weight_min": 0.9367625526631538,
+          "accepted_weight_max": 1.089924482113768
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 236.99999999999997,
+          "accepted_weight_min": 0.9322479462234874,
+          "accepted_weight_max": 1.1794276558958883
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 237.99999999999997,
+          "accepted_weight_min": 0.8862219538649796,
+          "accepted_weight_max": 1.2686666532715432
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.0,
+          "accepted_weight_min": 0.8994231321015882,
+          "accepted_weight_max": 1.1470227967929574
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9249153539337753,
+          "accepted_weight_max": 1.1011465850398152
+        },
+        {
+          "samples": 256,
+          "accepted": 232,
+          "accepted_weight_sum": 232.0,
+          "accepted_weight_min": 0.8971571707661814,
+          "accepted_weight_max": 1.2021719069085135
+        },
+        {
+          "samples": 256,
+          "accepted": 231,
+          "accepted_weight_sum": 231.00000000000003,
+          "accepted_weight_min": 0.900510913600993,
+          "accepted_weight_max": 1.1882643418371757
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.8986485827586097,
+          "accepted_weight_max": 1.135549704477101
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.00000000000003,
+          "accepted_weight_min": 0.9076892720690259,
+          "accepted_weight_max": 1.1389338152917172
+        },
+        {
+          "samples": 256,
+          "accepted": 243,
+          "accepted_weight_sum": 243.0,
+          "accepted_weight_min": 0.9458565211249446,
+          "accepted_weight_max": 1.0599260070023546
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.8996953894533471,
+          "accepted_weight_max": 1.1422320370500103
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 239.99999999999997,
+          "accepted_weight_min": 0.9128568980696627,
+          "accepted_weight_max": 1.181377694221259
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.0,
+          "accepted_weight_min": 0.9359086702110317,
+          "accepted_weight_max": 1.1623007102739793
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9110287240856272,
+          "accepted_weight_max": 1.177123672636709
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 238.99999999999997,
+          "accepted_weight_min": 0.9029735648766137,
+          "accepted_weight_max": 1.1598292007446127
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9327226053116284,
+          "accepted_weight_max": 1.0784489806680662
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9220919813878907,
+          "accepted_weight_max": 1.1135221746297623
+        },
+        {
+          "samples": 256,
+          "accepted": 228,
+          "accepted_weight_sum": 228.0,
+          "accepted_weight_min": 0.9105010690360473,
+          "accepted_weight_max": 1.1812588576066463
+        },
+        {
+          "samples": 256,
+          "accepted": 233,
+          "accepted_weight_sum": 233.0,
+          "accepted_weight_min": 0.923114068624012,
+          "accepted_weight_max": 1.1122149237205696
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.9138669843522916,
+          "accepted_weight_max": 1.1537749701950615
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9287350672925752,
+          "accepted_weight_max": 1.095470652505591
+        },
+        {
+          "samples": 256,
+          "accepted": 246,
+          "accepted_weight_sum": 246.0,
+          "accepted_weight_min": 0.9398290818485211,
+          "accepted_weight_max": 1.109584562125173
+        },
+        {
+          "samples": 256,
+          "accepted": 232,
+          "accepted_weight_sum": 232.0,
+          "accepted_weight_min": 0.9350979518112124,
+          "accepted_weight_max": 1.152374252991018
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.9021580487926352,
+          "accepted_weight_max": 1.1347589566626728
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.90037078207576,
+          "accepted_weight_max": 1.1958662265971933
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9254100648473602,
+          "accepted_weight_max": 1.1635823942477979
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 237.99999999999997,
+          "accepted_weight_min": 0.9398037324862092,
+          "accepted_weight_max": 1.0712926606772033
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.00000000000003,
+          "accepted_weight_min": 0.937825435821148,
+          "accepted_weight_max": 1.1841973244335806
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.00000000000003,
+          "accepted_weight_min": 0.9008623563514638,
+          "accepted_weight_max": 1.1494712468166517
+        },
+        {
+          "samples": 256,
+          "accepted": 233,
+          "accepted_weight_sum": 233.0,
+          "accepted_weight_min": 0.9071112618067292,
+          "accepted_weight_max": 1.0673636726563371
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9287629998797178,
+          "accepted_weight_max": 1.1558307660751006
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 234.99999999999997,
+          "accepted_weight_min": 0.8976620169517664,
+          "accepted_weight_max": 1.1060770978328383
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 236.99999999999997,
+          "accepted_weight_min": 0.9004751924615182,
+          "accepted_weight_max": 1.151157146191057
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.942589678502666,
+          "accepted_weight_max": 1.0599291391010073
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.9165096315197128,
+          "accepted_weight_max": 1.06517607433784
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9265441839013199,
+          "accepted_weight_max": 1.109128258845601
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.00000000000003,
+          "accepted_weight_min": 0.9080247094714793,
+          "accepted_weight_max": 1.1247573313938632
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 241.99999999999997,
+          "accepted_weight_min": 0.9622922584392506,
+          "accepted_weight_max": 1.0556061473509226
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 233.99999999999997,
+          "accepted_weight_min": 0.8964856923178948,
+          "accepted_weight_max": 1.183726939390977
+        },
+        {
+          "samples": 256,
+          "accepted": 220,
+          "accepted_weight_sum": 220.00000000000006,
+          "accepted_weight_min": 0.9329371564113931,
+          "accepted_weight_max": 1.051363014751784
+        },
+        {
+          "samples": 256,
+          "accepted": 233,
+          "accepted_weight_sum": 232.99999999999997,
+          "accepted_weight_min": 0.9282934381233577,
+          "accepted_weight_max": 1.1755771011844423
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9290841546173899,
+          "accepted_weight_max": 1.1519318375402556
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.8920392713018725,
+          "accepted_weight_max": 1.1588212750399278
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.9129510982586365,
+          "accepted_weight_max": 1.214732666532531
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9335301877249162,
+          "accepted_weight_max": 1.087647352925425
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.897123276936165,
+          "accepted_weight_max": 1.1684580827592215
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9215933931932485,
+          "accepted_weight_max": 1.1360141314347696
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9569994647161537,
+          "accepted_weight_max": 1.0669349933839558
+        },
+        {
+          "samples": 256,
+          "accepted": 246,
+          "accepted_weight_sum": 246.0,
+          "accepted_weight_min": 0.931364095994027,
+          "accepted_weight_max": 1.0807616459044094
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 239.99999999999997,
+          "accepted_weight_min": 0.9035457287607772,
+          "accepted_weight_max": 1.0525777465678474
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.00000000000003,
+          "accepted_weight_min": 0.9478649740571494,
+          "accepted_weight_max": 1.0451238866834818
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9235001723409677,
+          "accepted_weight_max": 1.2327101449138596
+        },
+        {
+          "samples": 256,
+          "accepted": 232,
+          "accepted_weight_sum": 231.99999999999997,
+          "accepted_weight_min": 0.9434040422915415,
+          "accepted_weight_max": 1.092109077928965
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 240.99999999999997,
+          "accepted_weight_min": 0.9204245198731908,
+          "accepted_weight_max": 1.1847141756163277
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.00000000000003,
+          "accepted_weight_min": 0.9075499740721714,
+          "accepted_weight_max": 1.1117734077084611
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9261185203993934,
+          "accepted_weight_max": 1.1938384708271372
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9464358610646464,
+          "accepted_weight_max": 1.0596369688710012
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.9365344260793083,
+          "accepted_weight_max": 1.1076770956421103
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9140949945580088,
+          "accepted_weight_max": 1.086143646609852
+        },
+        {
+          "samples": 256,
+          "accepted": 231,
+          "accepted_weight_sum": 231.0,
+          "accepted_weight_min": 0.9242463137552037,
+          "accepted_weight_max": 1.093712056634487
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9246404258066991,
+          "accepted_weight_max": 1.1565716885899424
+        },
+        {
+          "samples": 256,
+          "accepted": 231,
+          "accepted_weight_sum": 231.00000000000003,
+          "accepted_weight_min": 0.9327031675199268,
+          "accepted_weight_max": 1.1009797233622702
+        },
+        {
+          "samples": 256,
+          "accepted": 246,
+          "accepted_weight_sum": 246.0,
+          "accepted_weight_min": 0.9006928520218743,
+          "accepted_weight_max": 1.1570722158976656
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9181981799447798,
+          "accepted_weight_max": 1.1154572168001224
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9077134684472599,
+          "accepted_weight_max": 1.1952331104945209
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.9451900522677994,
+          "accepted_weight_max": 1.1660161081991536
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9538011950341532,
+          "accepted_weight_max": 1.0831819618944123
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9329225366892887,
+          "accepted_weight_max": 1.0819778251893195
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9116680416063718,
+          "accepted_weight_max": 1.2142797982899485
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9133795812202161,
+          "accepted_weight_max": 1.115608383166573
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9304063740217112,
+          "accepted_weight_max": 1.1248817461593426
+        },
+        {
+          "samples": 256,
+          "accepted": 230,
+          "accepted_weight_sum": 230.0,
+          "accepted_weight_min": 0.925926762859397,
+          "accepted_weight_max": 1.0840299838686915
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.9184902262157512,
+          "accepted_weight_max": 1.092506711209428
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9233128995579443,
+          "accepted_weight_max": 1.132740821306414
+        },
+        {
+          "samples": 256,
+          "accepted": 244,
+          "accepted_weight_sum": 244.0,
+          "accepted_weight_min": 0.9223845995605161,
+          "accepted_weight_max": 1.1369741188641553
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.9208780230028186,
+          "accepted_weight_max": 1.2089842815918985
+        },
+        {
+          "samples": 256,
+          "accepted": 231,
+          "accepted_weight_sum": 231.0,
+          "accepted_weight_min": 0.935080947093955,
+          "accepted_weight_max": 1.201282362427587
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.8770975726001575,
+          "accepted_weight_max": 1.1336506647767686
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 239.99999999999997,
+          "accepted_weight_min": 0.9359750515204979,
+          "accepted_weight_max": 1.1224620783648636
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.9125057366670684,
+          "accepted_weight_max": 1.081939619408435
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9522276325278874,
+          "accepted_weight_max": 1.114569265989148
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.00000000000003,
+          "accepted_weight_min": 0.921147901857166,
+          "accepted_weight_max": 1.1805919417493675
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.8961437473182106,
+          "accepted_weight_max": 1.0967609824428126
+        },
+        {
+          "samples": 256,
+          "accepted": 243,
+          "accepted_weight_sum": 242.99999999999997,
+          "accepted_weight_min": 0.8657590895841096,
+          "accepted_weight_max": 1.2049085555637
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 237.99999999999997,
+          "accepted_weight_min": 0.9293621097122126,
+          "accepted_weight_max": 1.15849187032349
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.00000000000003,
+          "accepted_weight_min": 0.9218136601621589,
+          "accepted_weight_max": 1.0849910618229803
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9153798910382727,
+          "accepted_weight_max": 1.1737314874100397
+        },
+        {
+          "samples": 256,
+          "accepted": 233,
+          "accepted_weight_sum": 233.00000000000003,
+          "accepted_weight_min": 0.9382852952473961,
+          "accepted_weight_max": 1.12834939484301
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.910069283810395,
+          "accepted_weight_max": 1.105712474588584
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.9109012019557903,
+          "accepted_weight_max": 1.2370772670887393
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9081035450822081,
+          "accepted_weight_max": 1.1123960866857678
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.00000000000003,
+          "accepted_weight_min": 0.8921041538645665,
+          "accepted_weight_max": 1.1597744098899772
+        },
+        {
+          "samples": 256,
+          "accepted": 232,
+          "accepted_weight_sum": 232.0,
+          "accepted_weight_min": 0.9309165119254428,
+          "accepted_weight_max": 1.1409426758526127
+        },
+        {
+          "samples": 256,
+          "accepted": 232,
+          "accepted_weight_sum": 232.0,
+          "accepted_weight_min": 0.9023585019592923,
+          "accepted_weight_max": 1.133147952811759
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 238.99999999999997,
+          "accepted_weight_min": 0.877858770087367,
+          "accepted_weight_max": 1.242783597934499
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.929193336008372,
+          "accepted_weight_max": 1.1099275618857318
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9262478975446233,
+          "accepted_weight_max": 1.0754266070578653
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 236.99999999999997,
+          "accepted_weight_min": 0.8956766164494943,
+          "accepted_weight_max": 1.089720593172324
+        },
+        {
+          "samples": 256,
+          "accepted": 225,
+          "accepted_weight_sum": 225.0,
+          "accepted_weight_min": 0.893941365340082,
+          "accepted_weight_max": 1.1808479610300122
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 237.99999999999997,
+          "accepted_weight_min": 0.9255235905218023,
+          "accepted_weight_max": 1.1552470810164013
+        },
+        {
+          "samples": 256,
+          "accepted": 230,
+          "accepted_weight_sum": 230.00000000000003,
+          "accepted_weight_min": 0.8943261508812423,
+          "accepted_weight_max": 1.166532848336002
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 240.99999999999997,
+          "accepted_weight_min": 0.9050680284810634,
+          "accepted_weight_max": 1.2869079098694125
+        },
+        {
+          "samples": 256,
+          "accepted": 230,
+          "accepted_weight_sum": 230.0,
+          "accepted_weight_min": 0.8992121267776771,
+          "accepted_weight_max": 1.1168026944985825
+        },
+        {
+          "samples": 256,
+          "accepted": 230,
+          "accepted_weight_sum": 230.0,
+          "accepted_weight_min": 0.9236319269356978,
+          "accepted_weight_max": 1.1772224498266435
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 241.99999999999997,
+          "accepted_weight_min": 0.9151410322836784,
+          "accepted_weight_max": 1.1196125903554863
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.00000000000006,
+          "accepted_weight_min": 0.8726074490906196,
+          "accepted_weight_max": 1.246460036724022
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9005434024003114,
+          "accepted_weight_max": 1.1923585665997238
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.00000000000003,
+          "accepted_weight_min": 0.9071567562011025,
+          "accepted_weight_max": 1.1632064665111117
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.9338601476088219,
+          "accepted_weight_max": 1.1369331211016385
+        },
+        {
+          "samples": 256,
+          "accepted": 232,
+          "accepted_weight_sum": 232.0,
+          "accepted_weight_min": 0.9263652639780787,
+          "accepted_weight_max": 1.1171315531456574
+        },
+        {
+          "samples": 256,
+          "accepted": 245,
+          "accepted_weight_sum": 245.00000000000003,
+          "accepted_weight_min": 0.9026688483439227,
+          "accepted_weight_max": 1.0937441984024985
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.8916797844050517,
+          "accepted_weight_max": 1.067091825820115
+        },
+        {
+          "samples": 256,
+          "accepted": 245,
+          "accepted_weight_sum": 245.00000000000003,
+          "accepted_weight_min": 0.9166933397685122,
+          "accepted_weight_max": 1.2173554267756392
+        },
+        {
+          "samples": 256,
+          "accepted": 232,
+          "accepted_weight_sum": 232.0,
+          "accepted_weight_min": 0.9386780081215371,
+          "accepted_weight_max": 1.1128674420271545
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 237.99999999999997,
+          "accepted_weight_min": 0.9216563575260339,
+          "accepted_weight_max": 1.084539175578115
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.00000000000006,
+          "accepted_weight_min": 0.916053135156236,
+          "accepted_weight_max": 1.0522901641767954
+        },
+        {
+          "samples": 256,
+          "accepted": 244,
+          "accepted_weight_sum": 244.0,
+          "accepted_weight_min": 0.8924990153807761,
+          "accepted_weight_max": 1.2261673774488133
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.911354524382219,
+          "accepted_weight_max": 1.1749609142837747
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.00000000000003,
+          "accepted_weight_min": 0.92485663842927,
+          "accepted_weight_max": 1.1021776829314658
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 241.99999999999997,
+          "accepted_weight_min": 0.9306614325094493,
+          "accepted_weight_max": 1.1000571181880927
+        },
+        {
+          "samples": 256,
+          "accepted": 244,
+          "accepted_weight_sum": 244.0,
+          "accepted_weight_min": 0.9398701390672484,
+          "accepted_weight_max": 1.1389791832981535
+        },
+        {
+          "samples": 256,
+          "accepted": 223,
+          "accepted_weight_sum": 223.0,
+          "accepted_weight_min": 0.9267279356225009,
+          "accepted_weight_max": 1.092609949900638
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9333840909654785,
+          "accepted_weight_max": 1.1114492971691523
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.00000000000003,
+          "accepted_weight_min": 0.9146874720227831,
+          "accepted_weight_max": 1.0781749423102602
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.8945888899424383,
+          "accepted_weight_max": 1.1591454962400918
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.0,
+          "accepted_weight_min": 0.9369196953544193,
+          "accepted_weight_max": 1.1781597888032038
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.8989198004210999,
+          "accepted_weight_max": 1.1177507727143166
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9345009721584827,
+          "accepted_weight_max": 1.0921250148510708
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9101264491749322,
+          "accepted_weight_max": 1.1396437646267046
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.00000000000006,
+          "accepted_weight_min": 0.933277713858046,
+          "accepted_weight_max": 1.0799756586716982
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9167595322609063,
+          "accepted_weight_max": 1.0864198953319297
+        },
+        {
+          "samples": 256,
+          "accepted": 232,
+          "accepted_weight_sum": 232.0,
+          "accepted_weight_min": 0.8992882596151144,
+          "accepted_weight_max": 1.1851540401059357
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 237.99999999999997,
+          "accepted_weight_min": 0.9129576349970178,
+          "accepted_weight_max": 1.1148309131272045
+        },
+        {
+          "samples": 256,
+          "accepted": 232,
+          "accepted_weight_sum": 232.0,
+          "accepted_weight_min": 0.8879909545936455,
+          "accepted_weight_max": 1.1403995304733079
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 241.99999999999994,
+          "accepted_weight_min": 0.9270774564325348,
+          "accepted_weight_max": 1.1011966861967775
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.9324547419009377,
+          "accepted_weight_max": 1.1526447771531567
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.00000000000006,
+          "accepted_weight_min": 0.9326411920890488,
+          "accepted_weight_max": 1.139672330775504
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9105163467773336,
+          "accepted_weight_max": 1.153350253223698
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.00000000000003,
+          "accepted_weight_min": 0.9150270421403712,
+          "accepted_weight_max": 1.1146189609330757
+        },
+        {
+          "samples": 256,
+          "accepted": 226,
+          "accepted_weight_sum": 225.99999999999997,
+          "accepted_weight_min": 0.9135253652809456,
+          "accepted_weight_max": 1.1213986809467131
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9210794256901469,
+          "accepted_weight_max": 1.2151728901476293
+        },
+        {
+          "samples": 256,
+          "accepted": 232,
+          "accepted_weight_sum": 232.0,
+          "accepted_weight_min": 0.9016857886343748,
+          "accepted_weight_max": 1.0946315043121304
+        },
+        {
+          "samples": 124,
+          "accepted": 112,
+          "accepted_weight_sum": 112.0,
+          "accepted_weight_min": 0.9144733686943372,
+          "accepted_weight_max": 1.1237384762221136
+        }
+      ],
+      "dimensions": {
+        "pseudo_class": {
+          "rows": [
+            {
+              "value": 0,
+              "seen": 9469,
+              "accepted": 8869,
+              "weighted_mass": 8837.571117071966
+            },
+            {
+              "value": 1,
+              "seen": 9668,
+              "accepted": 8622,
+              "weighted_mass": 8669.904606958928
+            },
+            {
+              "value": 2,
+              "seen": 9472,
+              "accepted": 9250,
+              "weighted_mass": 9136.627693881735
+            },
+            {
+              "value": 3,
+              "seen": 9098,
+              "accepted": 7506,
+              "weighted_mass": 7777.358038343042
+            },
+            {
+              "value": 4,
+              "seen": 9502,
+              "accepted": 8916,
+              "weighted_mass": 8878.361149271332
+            },
+            {
+              "value": 5,
+              "seen": 9491,
+              "accepted": 9340,
+              "weighted_mass": 9203.177394472998
+            }
+          ],
+          "accepted_mass_cv": 0.06925820627975422,
+          "weighted_mass_cv": 0.053833505294256186,
+          "relative_cv_reduction": 0.22271297242659074,
+          "minimum_accepted": 7506,
+          "passes": true
+        },
+        "source_RX": {
+          "rows": [
+            {
+              "value": 1,
+              "seen": 11340,
+              "accepted": 10977,
+              "weighted_mass": 10872.066849039174
+            },
+            {
+              "value": 3,
+              "seen": 11340,
+              "accepted": 9446,
+              "weighted_mass": 9683.475409617171
+            },
+            {
+              "value": 4,
+              "seen": 11340,
+              "accepted": 10934,
+              "weighted_mass": 10840.542093402915
+            },
+            {
+              "value": 6,
+              "seen": 11340,
+              "accepted": 11053,
+              "weighted_mass": 10931.86445808616
+            },
+            {
+              "value": 8,
+              "seen": 11340,
+              "accepted": 10093,
+              "weighted_mass": 10175.05118985458
+            }
+          ],
+          "accepted_mass_cv": 0.06020417034276731,
+          "weighted_mass_cv": 0.046910408414311766,
+          "relative_cv_reduction": 0.22081131344836485,
+          "minimum_accepted": 9446,
+          "passes": true
+        }
+      },
+      "passes": true,
+      "raw_labels_or_acceptance_changed": false,
+      "U_truth_reads": 0,
+      "target_reads": 0,
+      "model_updates": 0,
+      "source_V_precision_bound": {
+        "model_seed": 2026092701,
+        "accepted": 25054,
+        "correct": 25029,
+        "wrong": 25,
+        "raw_precision_percent": 99.90021553444559,
+        "cap1p5_weighted_precision_lower_bound_percent": 99.8503233016684
+      },
+      "scientific_rule_pass": true
+    },
+    {
+      "model_seed": 2026092702,
+      "source_epoch": 20,
+      "source_updates": 4440,
+      "samples": 56700,
+      "accepted": 52771,
+      "weighted_mass": 52771.0,
+      "batch_size": 256,
+      "batches": 222,
+      "final_batch_samples": 124,
+      "batch_weight_bounds": [
+        {
+          "samples": 256,
+          "accepted": 244,
+          "accepted_weight_sum": 243.99999999999997,
+          "accepted_weight_min": 0.9471581869458106,
+          "accepted_weight_max": 1.072779699382035
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.00000000000003,
+          "accepted_weight_min": 0.9404833938582637,
+          "accepted_weight_max": 1.1205601953226907
+        },
+        {
+          "samples": 256,
+          "accepted": 244,
+          "accepted_weight_sum": 244.0,
+          "accepted_weight_min": 0.9432286756130233,
+          "accepted_weight_max": 1.0823914515962694
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9534477586983425,
+          "accepted_weight_max": 1.0930304899729952
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.00000000000003,
+          "accepted_weight_min": 0.947602222467729,
+          "accepted_weight_max": 1.1339727148529986
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.8990375404556541,
+          "accepted_weight_max": 1.1897584324433903
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.8861729062255446,
+          "accepted_weight_max": 1.1127241982194584
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9242608263617131,
+          "accepted_weight_max": 1.0953604300877315
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9127477444026122,
+          "accepted_weight_max": 1.1778548122694863
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.00000000000003,
+          "accepted_weight_min": 0.8857025670559477,
+          "accepted_weight_max": 1.2364134087254088
+        },
+        {
+          "samples": 256,
+          "accepted": 232,
+          "accepted_weight_sum": 232.0,
+          "accepted_weight_min": 0.9275671959339075,
+          "accepted_weight_max": 1.1563868440746865
+        },
+        {
+          "samples": 256,
+          "accepted": 243,
+          "accepted_weight_sum": 243.0,
+          "accepted_weight_min": 0.924464722840657,
+          "accepted_weight_max": 1.1076086327391008
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9026568976219791,
+          "accepted_weight_max": 1.1827669188280496
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9051410067373682,
+          "accepted_weight_max": 1.1694628770013387
+        },
+        {
+          "samples": 256,
+          "accepted": 243,
+          "accepted_weight_sum": 243.00000000000003,
+          "accepted_weight_min": 0.9555501573583488,
+          "accepted_weight_max": 1.1165593676514631
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.00000000000006,
+          "accepted_weight_min": 0.8917124570647725,
+          "accepted_weight_max": 1.1228419644116554
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.8976027611558756,
+          "accepted_weight_max": 1.1084570103262683
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 235.99999999999997,
+          "accepted_weight_min": 0.9130162054947366,
+          "accepted_weight_max": 1.1444923368659674
+        },
+        {
+          "samples": 256,
+          "accepted": 244,
+          "accepted_weight_sum": 244.00000000000003,
+          "accepted_weight_min": 0.9402658870469744,
+          "accepted_weight_max": 1.1544136950556758
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.00000000000003,
+          "accepted_weight_min": 0.9213986088644839,
+          "accepted_weight_max": 1.121308442656689
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.8878277286747887,
+          "accepted_weight_max": 1.0977538357528411
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.0,
+          "accepted_weight_min": 0.9403125169789768,
+          "accepted_weight_max": 1.0580601520170607
+        },
+        {
+          "samples": 256,
+          "accepted": 233,
+          "accepted_weight_sum": 233.0,
+          "accepted_weight_min": 0.9033561451936662,
+          "accepted_weight_max": 1.2308886963312
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9053147375335195,
+          "accepted_weight_max": 1.1374770053110974
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.9376582559165751,
+          "accepted_weight_max": 1.0972826080002085
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.0,
+          "accepted_weight_min": 0.9250089173965621,
+          "accepted_weight_max": 1.1084643635757259
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 238.99999999999997,
+          "accepted_weight_min": 0.9463707976553056,
+          "accepted_weight_max": 1.0653736954502864
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9359625727310901,
+          "accepted_weight_max": 1.1170411957666044
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.8884536788777293,
+          "accepted_weight_max": 1.169375536721501
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9503316333744312,
+          "accepted_weight_max": 1.1322530271366684
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.00000000000003,
+          "accepted_weight_min": 0.9413653203726888,
+          "accepted_weight_max": 1.1184017161187518
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9334058465673796,
+          "accepted_weight_max": 1.0656251095271139
+        },
+        {
+          "samples": 256,
+          "accepted": 243,
+          "accepted_weight_sum": 243.0,
+          "accepted_weight_min": 0.9383904018271547,
+          "accepted_weight_max": 1.102237286672408
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 240.99999999999997,
+          "accepted_weight_min": 0.9152874894001362,
+          "accepted_weight_max": 1.169961067248194
+        },
+        {
+          "samples": 256,
+          "accepted": 227,
+          "accepted_weight_sum": 227.0,
+          "accepted_weight_min": 0.9260427338009941,
+          "accepted_weight_max": 1.1273139902232452
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.0,
+          "accepted_weight_min": 0.9125479909351089,
+          "accepted_weight_max": 1.1614022833830226
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9159702831034748,
+          "accepted_weight_max": 1.0970605972951448
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 233.99999999999997,
+          "accepted_weight_min": 0.9329347130692031,
+          "accepted_weight_max": 1.0973325458141918
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9225080929932757,
+          "accepted_weight_max": 1.0621310793928118
+        },
+        {
+          "samples": 256,
+          "accepted": 243,
+          "accepted_weight_sum": 243.0,
+          "accepted_weight_min": 0.9309626211400974,
+          "accepted_weight_max": 1.103619223583149
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.00000000000003,
+          "accepted_weight_min": 0.9211139732121751,
+          "accepted_weight_max": 1.099255689443123
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 233.99999999999997,
+          "accepted_weight_min": 0.9329602994183235,
+          "accepted_weight_max": 1.0845632152573295
+        },
+        {
+          "samples": 256,
+          "accepted": 228,
+          "accepted_weight_sum": 228.0,
+          "accepted_weight_min": 0.9355380137045017,
+          "accepted_weight_max": 1.0673657426924923
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.00000000000003,
+          "accepted_weight_min": 0.9174437487803271,
+          "accepted_weight_max": 1.1401900204954574
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.00000000000006,
+          "accepted_weight_min": 0.9225114509369194,
+          "accepted_weight_max": 1.107264909463396
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.932972409213001,
+          "accepted_weight_max": 1.0832961311886007
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9274908810828806,
+          "accepted_weight_max": 1.1077609638361738
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9412945890510351,
+          "accepted_weight_max": 1.059442999287732
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.00000000000003,
+          "accepted_weight_min": 0.9402199028697958,
+          "accepted_weight_max": 1.0691760116221412
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.9012623271768192,
+          "accepted_weight_max": 1.1216329242465013
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9380008923208571,
+          "accepted_weight_max": 1.1301141040663734
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.00000000000003,
+          "accepted_weight_min": 0.9264077569710261,
+          "accepted_weight_max": 1.0898579477748132
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 234.99999999999997,
+          "accepted_weight_min": 0.9343507126298674,
+          "accepted_weight_max": 1.077604514363808
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 235.99999999999997,
+          "accepted_weight_min": 0.9281838528184027,
+          "accepted_weight_max": 1.070115552598059
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9337489911544694,
+          "accepted_weight_max": 1.1350520362402103
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 240.99999999999997,
+          "accepted_weight_min": 0.9420193677639113,
+          "accepted_weight_max": 1.125360379956751
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.9180698766494092,
+          "accepted_weight_max": 1.144747030112217
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.0,
+          "accepted_weight_min": 0.9542026717765273,
+          "accepted_weight_max": 1.1435549808630938
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.9327785398002432,
+          "accepted_weight_max": 1.0883113941984557
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 238.99999999999997,
+          "accepted_weight_min": 0.8941834767668185,
+          "accepted_weight_max": 1.21158969851614
+        },
+        {
+          "samples": 256,
+          "accepted": 233,
+          "accepted_weight_sum": 233.00000000000003,
+          "accepted_weight_min": 0.895664711145605,
+          "accepted_weight_max": 1.1836909851042812
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 233.99999999999997,
+          "accepted_weight_min": 0.9132460476995079,
+          "accepted_weight_max": 1.0928211277520024
+        },
+        {
+          "samples": 256,
+          "accepted": 243,
+          "accepted_weight_sum": 243.0,
+          "accepted_weight_min": 0.9114339932210822,
+          "accepted_weight_max": 1.098004004024545
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9349582495921047,
+          "accepted_weight_max": 1.1145074371502437
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 238.99999999999997,
+          "accepted_weight_min": 0.9353054227061971,
+          "accepted_weight_max": 1.1680988943756194
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.9269112305943361,
+          "accepted_weight_max": 1.1066393218568829
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.905608116377068,
+          "accepted_weight_max": 1.1267603691465216
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.00000000000003,
+          "accepted_weight_min": 0.9103217420505185,
+          "accepted_weight_max": 1.1477681360735712
+        },
+        {
+          "samples": 256,
+          "accepted": 246,
+          "accepted_weight_sum": 246.0,
+          "accepted_weight_min": 0.9237168766893145,
+          "accepted_weight_max": 1.223338907770614
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.9299542920165613,
+          "accepted_weight_max": 1.1355474920832158
+        },
+        {
+          "samples": 256,
+          "accepted": 244,
+          "accepted_weight_sum": 243.99999999999997,
+          "accepted_weight_min": 0.9225811910550537,
+          "accepted_weight_max": 1.1305090478115392
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.00000000000003,
+          "accepted_weight_min": 0.913445872111974,
+          "accepted_weight_max": 1.1085044793428662
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.00000000000003,
+          "accepted_weight_min": 0.9153647125041404,
+          "accepted_weight_max": 1.1614149675380265
+        },
+        {
+          "samples": 256,
+          "accepted": 232,
+          "accepted_weight_sum": 231.99999999999997,
+          "accepted_weight_min": 0.9148324704423045,
+          "accepted_weight_max": 1.2010059298604534
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.947227923911512,
+          "accepted_weight_max": 1.0990932481271949
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.9123154884170206,
+          "accepted_weight_max": 1.1677547216616588
+        },
+        {
+          "samples": 256,
+          "accepted": 247,
+          "accepted_weight_sum": 247.0,
+          "accepted_weight_min": 0.9253690286401597,
+          "accepted_weight_max": 1.2028101843117363
+        },
+        {
+          "samples": 256,
+          "accepted": 233,
+          "accepted_weight_sum": 233.0,
+          "accepted_weight_min": 0.8924227865417533,
+          "accepted_weight_max": 1.27324026310915
+        },
+        {
+          "samples": 256,
+          "accepted": 246,
+          "accepted_weight_sum": 246.0,
+          "accepted_weight_min": 0.9257037767565452,
+          "accepted_weight_max": 1.274775530435817
+        },
+        {
+          "samples": 256,
+          "accepted": 246,
+          "accepted_weight_sum": 246.00000000000003,
+          "accepted_weight_min": 0.9566770837890259,
+          "accepted_weight_max": 1.0859616282891533
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.929841671871578,
+          "accepted_weight_max": 1.1043155820583468
+        },
+        {
+          "samples": 256,
+          "accepted": 232,
+          "accepted_weight_sum": 232.0,
+          "accepted_weight_min": 0.9346962680177677,
+          "accepted_weight_max": 1.0860884810177298
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.0,
+          "accepted_weight_min": 0.9097791646186065,
+          "accepted_weight_max": 1.2323437580303702
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9403326692190199,
+          "accepted_weight_max": 1.1266043733111286
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.00000000000003,
+          "accepted_weight_min": 0.9184512483878979,
+          "accepted_weight_max": 1.1622199944754814
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.9589289407574959,
+          "accepted_weight_max": 1.082749967753652
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9361772794714778,
+          "accepted_weight_max": 1.060251276514406
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 239.99999999999997,
+          "accepted_weight_min": 0.944400344691975,
+          "accepted_weight_max": 1.1017414292111587
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.00000000000003,
+          "accepted_weight_min": 0.8955613334717997,
+          "accepted_weight_max": 1.1166785647990074
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.9323107886922928,
+          "accepted_weight_max": 1.1299106320829697
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.9167110538122245,
+          "accepted_weight_max": 1.133102606126724
+        },
+        {
+          "samples": 256,
+          "accepted": 231,
+          "accepted_weight_sum": 231.0,
+          "accepted_weight_min": 0.8909645285725312,
+          "accepted_weight_max": 1.1441175568655249
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.9174750494865833,
+          "accepted_weight_max": 1.1619621477890127
+        },
+        {
+          "samples": 256,
+          "accepted": 243,
+          "accepted_weight_sum": 242.99999999999997,
+          "accepted_weight_min": 0.9097074644614036,
+          "accepted_weight_max": 1.132293728699676
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.898404002363814,
+          "accepted_weight_max": 1.1605706492494927
+        },
+        {
+          "samples": 256,
+          "accepted": 232,
+          "accepted_weight_sum": 231.99999999999997,
+          "accepted_weight_min": 0.9310127463086925,
+          "accepted_weight_max": 1.1964706028567809
+        },
+        {
+          "samples": 256,
+          "accepted": 246,
+          "accepted_weight_sum": 246.0,
+          "accepted_weight_min": 0.9146648638168229,
+          "accepted_weight_max": 1.1693034080912665
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.9287106425057026,
+          "accepted_weight_max": 1.109196279705316
+        },
+        {
+          "samples": 256,
+          "accepted": 244,
+          "accepted_weight_sum": 244.0,
+          "accepted_weight_min": 0.9171193884541026,
+          "accepted_weight_max": 1.2385646373297996
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 236.99999999999997,
+          "accepted_weight_min": 0.944794576351202,
+          "accepted_weight_max": 1.1216498636186598
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.00000000000003,
+          "accepted_weight_min": 0.9406465268337454,
+          "accepted_weight_max": 1.0653786011616768
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9207440999422942,
+          "accepted_weight_max": 1.1659881667081178
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.8987741483772407,
+          "accepted_weight_max": 1.1310296979051724
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9206275259194514,
+          "accepted_weight_max": 1.1341198545319595
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.00000000000006,
+          "accepted_weight_min": 0.9441519812396009,
+          "accepted_weight_max": 1.1660196128326141
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.0,
+          "accepted_weight_min": 0.9492744168470091,
+          "accepted_weight_max": 1.0994438380660885
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9145904653644985,
+          "accepted_weight_max": 1.111517728682963
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9196501299841024,
+          "accepted_weight_max": 1.1312389283151942
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.8693141079100604,
+          "accepted_weight_max": 1.1706123865524711
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9052696037335177,
+          "accepted_weight_max": 1.1709141902955578
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.9343381766452847,
+          "accepted_weight_max": 1.1150041792380465
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9395592409278936,
+          "accepted_weight_max": 1.09737535246243
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9341818492817462,
+          "accepted_weight_max": 1.1063741482977685
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 239.99999999999997,
+          "accepted_weight_min": 0.9368191375097978,
+          "accepted_weight_max": 1.0880278192618082
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.925412374568712,
+          "accepted_weight_max": 1.1140600451513882
+        },
+        {
+          "samples": 256,
+          "accepted": 233,
+          "accepted_weight_sum": 232.99999999999994,
+          "accepted_weight_min": 0.9236549026935452,
+          "accepted_weight_max": 1.1396445336276124
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.00000000000003,
+          "accepted_weight_min": 0.9298704295942095,
+          "accepted_weight_max": 1.1471894072136508
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.0,
+          "accepted_weight_min": 0.9239707390982774,
+          "accepted_weight_max": 1.178106643140576
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 240.99999999999997,
+          "accepted_weight_min": 0.9379554926256555,
+          "accepted_weight_max": 1.0926443810764899
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.8871346609036206,
+          "accepted_weight_max": 1.1651938933847497
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.00000000000003,
+          "accepted_weight_min": 0.9068687353050436,
+          "accepted_weight_max": 1.1734460105891313
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.8925933760603899,
+          "accepted_weight_max": 1.0961717138378733
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.8898915026658618,
+          "accepted_weight_max": 1.1360480091362324
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.9257196286327972,
+          "accepted_weight_max": 1.0888601241758282
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.9094019982459352,
+          "accepted_weight_max": 1.2353076954532636
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 238.99999999999997,
+          "accepted_weight_min": 0.9146650244602057,
+          "accepted_weight_max": 1.1594814906589872
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 235.99999999999997,
+          "accepted_weight_min": 0.9440865345284541,
+          "accepted_weight_max": 1.0771904801979204
+        },
+        {
+          "samples": 256,
+          "accepted": 231,
+          "accepted_weight_sum": 231.0,
+          "accepted_weight_min": 0.8968965446945476,
+          "accepted_weight_max": 1.2115731577473354
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.00000000000003,
+          "accepted_weight_min": 0.9367959099756696,
+          "accepted_weight_max": 1.1674750343786289
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.00000000000003,
+          "accepted_weight_min": 0.9112384325821326,
+          "accepted_weight_max": 1.0880100356560551
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.8787894285897726,
+          "accepted_weight_max": 1.1847458067424945
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.0,
+          "accepted_weight_min": 0.8952954880593879,
+          "accepted_weight_max": 1.1569506320430403
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.8914739267683709,
+          "accepted_weight_max": 1.084818982491111
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.9310150804390027,
+          "accepted_weight_max": 1.0761664190225417
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.00000000000003,
+          "accepted_weight_min": 0.9211633355082834,
+          "accepted_weight_max": 1.1131736252751054
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9300213013091564,
+          "accepted_weight_max": 1.1338131491632835
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.00000000000003,
+          "accepted_weight_min": 0.8968325861032678,
+          "accepted_weight_max": 1.159495257241968
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9015888827713348,
+          "accepted_weight_max": 1.1974247417383723
+        },
+        {
+          "samples": 256,
+          "accepted": 246,
+          "accepted_weight_sum": 246.0,
+          "accepted_weight_min": 0.9240661170001527,
+          "accepted_weight_max": 1.203604253901235
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.00000000000006,
+          "accepted_weight_min": 0.9066026171752181,
+          "accepted_weight_max": 1.1082231676910164
+        },
+        {
+          "samples": 256,
+          "accepted": 245,
+          "accepted_weight_sum": 244.99999999999997,
+          "accepted_weight_min": 0.9143592003550227,
+          "accepted_weight_max": 1.173732005078221
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9133569830139805,
+          "accepted_weight_max": 1.144433420362021
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9043147911071145,
+          "accepted_weight_max": 1.151580344176788
+        },
+        {
+          "samples": 256,
+          "accepted": 243,
+          "accepted_weight_sum": 242.99999999999997,
+          "accepted_weight_min": 0.9160054844271404,
+          "accepted_weight_max": 1.0579544955055336
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 237.99999999999997,
+          "accepted_weight_min": 0.9526696865083666,
+          "accepted_weight_max": 1.0585918719973353
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 233.99999999999997,
+          "accepted_weight_min": 0.9315699029840641,
+          "accepted_weight_max": 1.0824016590996919
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 241.99999999999997,
+          "accepted_weight_min": 0.9184629550968428,
+          "accepted_weight_max": 1.0937019365889906
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9063188472115585,
+          "accepted_weight_max": 1.105272549052716
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.8949807637725098,
+          "accepted_weight_max": 1.198494104192601
+        },
+        {
+          "samples": 256,
+          "accepted": 243,
+          "accepted_weight_sum": 243.00000000000006,
+          "accepted_weight_min": 0.8823144344597608,
+          "accepted_weight_max": 1.1514200223646849
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9228572289618686,
+          "accepted_weight_max": 1.1361194218720927
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.9485486259276027,
+          "accepted_weight_max": 1.0721783893687609
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.92784879800573,
+          "accepted_weight_max": 1.0983238818208132
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.9149890693189715,
+          "accepted_weight_max": 1.1238122791379626
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 233.99999999999997,
+          "accepted_weight_min": 0.9314103205618314,
+          "accepted_weight_max": 1.1424599133283315
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9283878407305146,
+          "accepted_weight_max": 1.208519006321798
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.9537769407619401,
+          "accepted_weight_max": 1.079488247100846
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.8974884882009548,
+          "accepted_weight_max": 1.10828213684121
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9248457106213369,
+          "accepted_weight_max": 1.1188607381870974
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 237.99999999999997,
+          "accepted_weight_min": 0.9253608854366222,
+          "accepted_weight_max": 1.1328627972738365
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 236.99999999999997,
+          "accepted_weight_min": 0.9030480590665865,
+          "accepted_weight_max": 1.1146131183928754
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9274036904911279,
+          "accepted_weight_max": 1.1001810543987078
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 240.99999999999997,
+          "accepted_weight_min": 0.9050448264392515,
+          "accepted_weight_max": 1.1524388406908006
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9415222023881286,
+          "accepted_weight_max": 1.0971099708726784
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.0,
+          "accepted_weight_min": 0.9436148561756629,
+          "accepted_weight_max": 1.07747645019793
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 234.99999999999994,
+          "accepted_weight_min": 0.9103166050500513,
+          "accepted_weight_max": 1.1466713320173167
+        },
+        {
+          "samples": 256,
+          "accepted": 233,
+          "accepted_weight_sum": 233.0,
+          "accepted_weight_min": 0.9260429854288212,
+          "accepted_weight_max": 1.1199836105799466
+        },
+        {
+          "samples": 256,
+          "accepted": 244,
+          "accepted_weight_sum": 244.0,
+          "accepted_weight_min": 0.9129971291316175,
+          "accepted_weight_max": 1.2345617533915216
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.00000000000003,
+          "accepted_weight_min": 0.8924880552977379,
+          "accepted_weight_max": 1.1115647791044494
+        },
+        {
+          "samples": 256,
+          "accepted": 248,
+          "accepted_weight_sum": 248.0,
+          "accepted_weight_min": 0.9451815413895163,
+          "accepted_weight_max": 1.0621630446102632
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.9050273950375622,
+          "accepted_weight_max": 1.198360841066528
+        },
+        {
+          "samples": 256,
+          "accepted": 247,
+          "accepted_weight_sum": 247.0,
+          "accepted_weight_min": 0.9236148839609898,
+          "accepted_weight_max": 1.0829420594589854
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.9365023883260888,
+          "accepted_weight_max": 1.1350051322825851
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9203819961795945,
+          "accepted_weight_max": 1.133216917790951
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.00000000000003,
+          "accepted_weight_min": 0.895554829423969,
+          "accepted_weight_max": 1.1668478736939916
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.00000000000006,
+          "accepted_weight_min": 0.9268544486658105,
+          "accepted_weight_max": 1.1663630030288847
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.00000000000006,
+          "accepted_weight_min": 0.8802999171527053,
+          "accepted_weight_max": 1.1288927792971704
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 238.99999999999994,
+          "accepted_weight_min": 0.9198588711696482,
+          "accepted_weight_max": 1.1110503343857276
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 236.99999999999994,
+          "accepted_weight_min": 0.9069750096499398,
+          "accepted_weight_max": 1.09507964798583
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 240.99999999999997,
+          "accepted_weight_min": 0.9217886718391409,
+          "accepted_weight_max": 1.0980267895860047
+        },
+        {
+          "samples": 256,
+          "accepted": 233,
+          "accepted_weight_sum": 233.0,
+          "accepted_weight_min": 0.9363349359997198,
+          "accepted_weight_max": 1.2043884768419244
+        },
+        {
+          "samples": 256,
+          "accepted": 244,
+          "accepted_weight_sum": 244.0,
+          "accepted_weight_min": 0.9374582869974986,
+          "accepted_weight_max": 1.113741004285014
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 233.99999999999994,
+          "accepted_weight_min": 0.9037688139530231,
+          "accepted_weight_max": 1.1165133940338423
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9262182609779093,
+          "accepted_weight_max": 1.138463518523249
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 240.99999999999997,
+          "accepted_weight_min": 0.9297950061286538,
+          "accepted_weight_max": 1.054021627679429
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9162017277892305,
+          "accepted_weight_max": 1.1083431612415167
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9436839700705477,
+          "accepted_weight_max": 1.167440354657422
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.00000000000003,
+          "accepted_weight_min": 0.9238175876121346,
+          "accepted_weight_max": 1.152957860705394
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.00000000000006,
+          "accepted_weight_min": 0.9438596998284169,
+          "accepted_weight_max": 1.1097413012855266
+        },
+        {
+          "samples": 256,
+          "accepted": 248,
+          "accepted_weight_sum": 248.00000000000003,
+          "accepted_weight_min": 0.9373656207692864,
+          "accepted_weight_max": 1.197864266969731
+        },
+        {
+          "samples": 256,
+          "accepted": 233,
+          "accepted_weight_sum": 232.99999999999997,
+          "accepted_weight_min": 0.9165409400503827,
+          "accepted_weight_max": 1.1204205516675656
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9112072914814351,
+          "accepted_weight_max": 1.1223527256378794
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9149221821693869,
+          "accepted_weight_max": 1.1263909339372615
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 240.99999999999997,
+          "accepted_weight_min": 0.9152648138108557,
+          "accepted_weight_max": 1.170866714931522
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9464948221369054,
+          "accepted_weight_max": 1.1192268452410024
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 235.99999999999997,
+          "accepted_weight_min": 0.9395346924599441,
+          "accepted_weight_max": 1.0852406943677202
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 241.99999999999997,
+          "accepted_weight_min": 0.931237689378673,
+          "accepted_weight_max": 1.1008266940318774
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.00000000000003,
+          "accepted_weight_min": 0.9254115264308278,
+          "accepted_weight_max": 1.106663364092046
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.00000000000003,
+          "accepted_weight_min": 0.9129265343515873,
+          "accepted_weight_max": 1.157232392451928
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.00000000000006,
+          "accepted_weight_min": 0.8879031994515256,
+          "accepted_weight_max": 1.137675831684875
+        },
+        {
+          "samples": 256,
+          "accepted": 244,
+          "accepted_weight_sum": 244.00000000000003,
+          "accepted_weight_min": 0.8794412783560599,
+          "accepted_weight_max": 1.2718372361437706
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.959200954772512,
+          "accepted_weight_max": 1.0528772636239356
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9017341731148397,
+          "accepted_weight_max": 1.141518029296974
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.0,
+          "accepted_weight_min": 0.9175753964448158,
+          "accepted_weight_max": 1.154214915780963
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.0,
+          "accepted_weight_min": 0.9482131094700816,
+          "accepted_weight_max": 1.1208188919057351
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9110185494123221,
+          "accepted_weight_max": 1.1392104466202722
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9109907150093088,
+          "accepted_weight_max": 1.0723823486170474
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 238.99999999999997,
+          "accepted_weight_min": 0.9405907375247482,
+          "accepted_weight_max": 1.069262447662124
+        },
+        {
+          "samples": 256,
+          "accepted": 233,
+          "accepted_weight_sum": 233.0,
+          "accepted_weight_min": 0.8942750576521059,
+          "accepted_weight_max": 1.2275453193506
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 237.99999999999997,
+          "accepted_weight_min": 0.8979907448526296,
+          "accepted_weight_max": 1.1199736393082007
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.935989803906818,
+          "accepted_weight_max": 1.1449969730154053
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 236.99999999999997,
+          "accepted_weight_min": 0.9491965449982551,
+          "accepted_weight_max": 1.103489090270443
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.8911324538160946,
+          "accepted_weight_max": 1.1341379496471533
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9040927927666822,
+          "accepted_weight_max": 1.1286426870366957
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.908249691812999,
+          "accepted_weight_max": 1.1471524503310548
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9482451085189372,
+          "accepted_weight_max": 1.0868906113376355
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.9173196913001183,
+          "accepted_weight_max": 1.1115872789229204
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9574611344366497,
+          "accepted_weight_max": 1.0819147422888489
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.931249076154383,
+          "accepted_weight_max": 1.1326961560480533
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9331373982420959,
+          "accepted_weight_max": 1.1488438460245436
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.9084829613717875,
+          "accepted_weight_max": 1.2090430032715962
+        },
+        {
+          "samples": 124,
+          "accepted": 118,
+          "accepted_weight_sum": 118.0,
+          "accepted_weight_min": 0.9051000837631369,
+          "accepted_weight_max": 1.2262808146361908
+        }
+      ],
+      "dimensions": {
+        "pseudo_class": {
+          "rows": [
+            {
+              "value": 0,
+              "seen": 9474,
+              "accepted": 8942,
+              "weighted_mass": 8908.833488855962
+            },
+            {
+              "value": 1,
+              "seen": 9603,
+              "accepted": 8546,
+              "weighted_mass": 8610.509053189886
+            },
+            {
+              "value": 2,
+              "seen": 9478,
+              "accepted": 9232,
+              "weighted_mass": 9127.905001306877
+            },
+            {
+              "value": 3,
+              "seen": 9184,
+              "accepted": 7770,
+              "weighted_mass": 8005.707568062049
+            },
+            {
+              "value": 4,
+              "seen": 9491,
+              "accepted": 8941,
+              "weighted_mass": 8905.93931844731
+            },
+            {
+              "value": 5,
+              "seen": 9470,
+              "accepted": 9340,
+              "weighted_mass": 9212.105570137912
+            }
+          ],
+          "accepted_mass_cv": 0.059507414168487205,
+          "weighted_mass_cv": 0.04564710361736164,
+          "relative_cv_reduction": 0.23291737247869593,
+          "minimum_accepted": 7770,
+          "passes": true
+        },
+        "source_RX": {
+          "rows": [
+            {
+              "value": 1,
+              "seen": 11340,
+              "accepted": 10997,
+              "weighted_mass": 10895.125572166082
+            },
+            {
+              "value": 3,
+              "seen": 11340,
+              "accepted": 9529,
+              "weighted_mass": 9773.44715109524
+            },
+            {
+              "value": 4,
+              "seen": 11340,
+              "accepted": 10993,
+              "weighted_mass": 10888.305269609591
+            },
+            {
+              "value": 6,
+              "seen": 11340,
+              "accepted": 11043,
+              "weighted_mass": 10929.730595831303
+            },
+            {
+              "value": 8,
+              "seen": 11340,
+              "accepted": 10209,
+              "weighted_mass": 10284.391411297782
+            }
+          ],
+          "accepted_mass_cv": 0.05681371856177366,
+          "weighted_mass_cv": 0.043445319008880726,
+          "relative_cv_reduction": 0.23530231590733583,
+          "minimum_accepted": 9529,
+          "passes": true
+        }
+      },
+      "passes": true,
+      "raw_labels_or_acceptance_changed": false,
+      "U_truth_reads": 0,
+      "target_reads": 0,
+      "model_updates": 0,
+      "source_V_precision_bound": {
+        "model_seed": 2026092702,
+        "accepted": 25130,
+        "correct": 25097,
+        "wrong": 33,
+        "raw_precision_percent": 99.86868284918424,
+        "cap1p5_weighted_precision_lower_bound_percent": 99.80302427377636
+      },
+      "scientific_rule_pass": true
+    },
+    {
+      "model_seed": 2026092703,
+      "source_epoch": 20,
+      "source_updates": 4440,
+      "samples": 56700,
+      "accepted": 52730,
+      "weighted_mass": 52730.0,
+      "batch_size": 256,
+      "batches": 222,
+      "final_batch_samples": 124,
+      "batch_weight_bounds": [
+        {
+          "samples": 256,
+          "accepted": 245,
+          "accepted_weight_sum": 245.0,
+          "accepted_weight_min": 0.9467213582033257,
+          "accepted_weight_max": 1.1330116531712853
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9306126263605574,
+          "accepted_weight_max": 1.1186274665490785
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9169877901603547,
+          "accepted_weight_max": 1.1451716084621628
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.944599289889956,
+          "accepted_weight_max": 1.0725678361350401
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.00000000000003,
+          "accepted_weight_min": 0.9281594058919203,
+          "accepted_weight_max": 1.0807563461601886
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9253453964015137,
+          "accepted_weight_max": 1.134158725102683
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.0,
+          "accepted_weight_min": 0.928789657559634,
+          "accepted_weight_max": 1.1164930111985716
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 236.99999999999997,
+          "accepted_weight_min": 0.9342526619049791,
+          "accepted_weight_max": 1.0944463535852933
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.8975672346935774,
+          "accepted_weight_max": 1.167948650201787
+        },
+        {
+          "samples": 256,
+          "accepted": 231,
+          "accepted_weight_sum": 231.00000000000003,
+          "accepted_weight_min": 0.908767813155985,
+          "accepted_weight_max": 1.1117876430282085
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.0,
+          "accepted_weight_min": 0.9197298420934605,
+          "accepted_weight_max": 1.0928451863563402
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9017286781402849,
+          "accepted_weight_max": 1.1611813599027885
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.9279867177604864,
+          "accepted_weight_max": 1.237948019918003
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.00000000000003,
+          "accepted_weight_min": 0.9249016785172789,
+          "accepted_weight_max": 1.1304758345368788
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.9366253848785846,
+          "accepted_weight_max": 1.1302765457728197
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.00000000000003,
+          "accepted_weight_min": 0.957809937236088,
+          "accepted_weight_max": 1.0611314202214808
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 239.99999999999997,
+          "accepted_weight_min": 0.9239754388939636,
+          "accepted_weight_max": 1.1816335693020208
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 241.99999999999997,
+          "accepted_weight_min": 0.9306702098742918,
+          "accepted_weight_max": 1.2317406817426892
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 235.99999999999997,
+          "accepted_weight_min": 0.9246519866643308,
+          "accepted_weight_max": 1.112578630152642
+        },
+        {
+          "samples": 256,
+          "accepted": 243,
+          "accepted_weight_sum": 242.99999999999997,
+          "accepted_weight_min": 0.9317519238169045,
+          "accepted_weight_max": 1.0684278210825335
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.00000000000003,
+          "accepted_weight_min": 0.8946258955022562,
+          "accepted_weight_max": 1.161517762726513
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.9193477491079356,
+          "accepted_weight_max": 1.1626680171030994
+        },
+        {
+          "samples": 256,
+          "accepted": 244,
+          "accepted_weight_sum": 244.0,
+          "accepted_weight_min": 0.9207536243770086,
+          "accepted_weight_max": 1.186441728487265
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.9371314654828192,
+          "accepted_weight_max": 1.0577336671237259
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9451150816721415,
+          "accepted_weight_max": 1.1572317011289541
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.9270768232560165,
+          "accepted_weight_max": 1.1953609025776337
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9151377652360427,
+          "accepted_weight_max": 1.2345217682906107
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.9158488679118841,
+          "accepted_weight_max": 1.0886262212288222
+        },
+        {
+          "samples": 256,
+          "accepted": 243,
+          "accepted_weight_sum": 242.99999999999997,
+          "accepted_weight_min": 0.898024415077924,
+          "accepted_weight_max": 1.1225966358303219
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.00000000000003,
+          "accepted_weight_min": 0.9494684463864567,
+          "accepted_weight_max": 1.0879115787471947
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.9237439600924882,
+          "accepted_weight_max": 1.1514691464532976
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.9381798077386634,
+          "accepted_weight_max": 1.0796574004032995
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.00000000000003,
+          "accepted_weight_min": 0.8986644463507207,
+          "accepted_weight_max": 1.1985834570097764
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9194054681103991,
+          "accepted_weight_max": 1.0775669493894178
+        },
+        {
+          "samples": 256,
+          "accepted": 233,
+          "accepted_weight_sum": 233.0,
+          "accepted_weight_min": 0.8731378779277732,
+          "accepted_weight_max": 1.0985854414791378
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9022157781057607,
+          "accepted_weight_max": 1.1628328376361456
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.9271371040763845,
+          "accepted_weight_max": 1.1981541197763783
+        },
+        {
+          "samples": 256,
+          "accepted": 232,
+          "accepted_weight_sum": 232.0,
+          "accepted_weight_min": 0.9395924493969237,
+          "accepted_weight_max": 1.1314684046650276
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.8993069070381867,
+          "accepted_weight_max": 1.132590377583578
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.926896806854135,
+          "accepted_weight_max": 1.0570476148613879
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9089548274664687,
+          "accepted_weight_max": 1.0719350380992632
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9022854465046237,
+          "accepted_weight_max": 1.2386544232665249
+        },
+        {
+          "samples": 256,
+          "accepted": 243,
+          "accepted_weight_sum": 242.99999999999997,
+          "accepted_weight_min": 0.9425237387025753,
+          "accepted_weight_max": 1.179177435291681
+        },
+        {
+          "samples": 256,
+          "accepted": 243,
+          "accepted_weight_sum": 243.0,
+          "accepted_weight_min": 0.917280714895324,
+          "accepted_weight_max": 1.1173083613697958
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9107704233209052,
+          "accepted_weight_max": 1.0662079540972096
+        },
+        {
+          "samples": 256,
+          "accepted": 231,
+          "accepted_weight_sum": 231.00000000000003,
+          "accepted_weight_min": 0.9548775945540575,
+          "accepted_weight_max": 1.0727293900282044
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.0,
+          "accepted_weight_min": 0.8951582937648632,
+          "accepted_weight_max": 1.1623498769977751
+        },
+        {
+          "samples": 256,
+          "accepted": 231,
+          "accepted_weight_sum": 230.99999999999997,
+          "accepted_weight_min": 0.9369963508606551,
+          "accepted_weight_max": 1.1613602079228644
+        },
+        {
+          "samples": 256,
+          "accepted": 245,
+          "accepted_weight_sum": 245.0,
+          "accepted_weight_min": 0.9179363550591308,
+          "accepted_weight_max": 1.1185107197451791
+        },
+        {
+          "samples": 256,
+          "accepted": 245,
+          "accepted_weight_sum": 245.0,
+          "accepted_weight_min": 0.9029440572172032,
+          "accepted_weight_max": 1.1575851101690993
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9265966510231899,
+          "accepted_weight_max": 1.1077386165852356
+        },
+        {
+          "samples": 256,
+          "accepted": 233,
+          "accepted_weight_sum": 232.99999999999997,
+          "accepted_weight_min": 0.9286909149852745,
+          "accepted_weight_max": 1.1693688148686945
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.00000000000006,
+          "accepted_weight_min": 0.8779165367329109,
+          "accepted_weight_max": 1.1880150829262308
+        },
+        {
+          "samples": 256,
+          "accepted": 230,
+          "accepted_weight_sum": 230.0,
+          "accepted_weight_min": 0.9038126099735602,
+          "accepted_weight_max": 1.1320667122507428
+        },
+        {
+          "samples": 256,
+          "accepted": 225,
+          "accepted_weight_sum": 225.0,
+          "accepted_weight_min": 0.8841032596867611,
+          "accepted_weight_max": 1.1721230634360376
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9151714763271743,
+          "accepted_weight_max": 1.1189010955910044
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.8813753459791502,
+          "accepted_weight_max": 1.1727511287299763
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.00000000000003,
+          "accepted_weight_min": 0.8991759546816883,
+          "accepted_weight_max": 1.0650824133425163
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 241.99999999999997,
+          "accepted_weight_min": 0.9151423114010497,
+          "accepted_weight_max": 1.130697299080417
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9249956416180054,
+          "accepted_weight_max": 1.124656709256438
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9426912925858124,
+          "accepted_weight_max": 1.0680021706901008
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9157721258266545,
+          "accepted_weight_max": 1.0939289178675684
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.00000000000003,
+          "accepted_weight_min": 0.9052746280926792,
+          "accepted_weight_max": 1.1191758570336519
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.9165633222824516,
+          "accepted_weight_max": 1.1294004142093899
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9313071608302498,
+          "accepted_weight_max": 1.2006886686119311
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.8970182334911235,
+          "accepted_weight_max": 1.163735449692826
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.0,
+          "accepted_weight_min": 0.866955524456676,
+          "accepted_weight_max": 1.1734829675286815
+        },
+        {
+          "samples": 256,
+          "accepted": 245,
+          "accepted_weight_sum": 245.00000000000003,
+          "accepted_weight_min": 0.9348396285420022,
+          "accepted_weight_max": 1.1251913665875781
+        },
+        {
+          "samples": 256,
+          "accepted": 229,
+          "accepted_weight_sum": 228.99999999999994,
+          "accepted_weight_min": 0.9335176546655127,
+          "accepted_weight_max": 1.1274249446455493
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 235.99999999999997,
+          "accepted_weight_min": 0.962856763296301,
+          "accepted_weight_max": 1.0604700052975076
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.0,
+          "accepted_weight_min": 0.8881729609972684,
+          "accepted_weight_max": 1.2003410457234271
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.0,
+          "accepted_weight_min": 0.8907800484941104,
+          "accepted_weight_max": 1.1464412127696435
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9204130651085114,
+          "accepted_weight_max": 1.1431565412687799
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.8981327594711273,
+          "accepted_weight_max": 1.194287033838221
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 236.99999999999997,
+          "accepted_weight_min": 0.9033415631041695,
+          "accepted_weight_max": 1.1155852429860016
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.00000000000003,
+          "accepted_weight_min": 0.8876919278626092,
+          "accepted_weight_max": 1.1124372397548354
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.00000000000006,
+          "accepted_weight_min": 0.9302191362297053,
+          "accepted_weight_max": 1.090375549097351
+        },
+        {
+          "samples": 256,
+          "accepted": 229,
+          "accepted_weight_sum": 229.00000000000003,
+          "accepted_weight_min": 0.93427014063611,
+          "accepted_weight_max": 1.1577605342406003
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9403960745784966,
+          "accepted_weight_max": 1.0662580837884534
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 236.99999999999997,
+          "accepted_weight_min": 0.9574148957445731,
+          "accepted_weight_max": 1.0820229562182904
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.9111148310173516,
+          "accepted_weight_max": 1.128140572449977
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 236.99999999999997,
+          "accepted_weight_min": 0.8566419034537264,
+          "accepted_weight_max": 1.2475471665004103
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.00000000000003,
+          "accepted_weight_min": 0.897213424183686,
+          "accepted_weight_max": 1.109591570509401
+        },
+        {
+          "samples": 256,
+          "accepted": 245,
+          "accepted_weight_sum": 245.0,
+          "accepted_weight_min": 0.9293998571294559,
+          "accepted_weight_max": 1.118205659403507
+        },
+        {
+          "samples": 256,
+          "accepted": 232,
+          "accepted_weight_sum": 232.0,
+          "accepted_weight_min": 0.9346685397568086,
+          "accepted_weight_max": 1.1061585566102392
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 240.99999999999997,
+          "accepted_weight_min": 0.9439304923050541,
+          "accepted_weight_max": 1.123668500632085
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9176451414453182,
+          "accepted_weight_max": 1.1109422050246882
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.8898675625947663,
+          "accepted_weight_max": 1.2242497413482152
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.89100230222048,
+          "accepted_weight_max": 1.129880553065973
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.0,
+          "accepted_weight_min": 0.9295493565624273,
+          "accepted_weight_max": 1.178733943243964
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 235.99999999999997,
+          "accepted_weight_min": 0.8873621639730931,
+          "accepted_weight_max": 1.252738526473229
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.00000000000003,
+          "accepted_weight_min": 0.89537243774067,
+          "accepted_weight_max": 1.1674654964088031
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.9487998794776074,
+          "accepted_weight_max": 1.0983998393034766
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9247056546679402,
+          "accepted_weight_max": 1.1058968309441652
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.906274545025672,
+          "accepted_weight_max": 1.1203443282671834
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.00000000000006,
+          "accepted_weight_min": 0.9562849940188236,
+          "accepted_weight_max": 1.0809100720538694
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9309301881442688,
+          "accepted_weight_max": 1.0921791243993648
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.00000000000003,
+          "accepted_weight_min": 0.9310347716398686,
+          "accepted_weight_max": 1.096202342182889
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 239.99999999999997,
+          "accepted_weight_min": 0.9319599215416571,
+          "accepted_weight_max": 1.1146897444906707
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9481640556967639,
+          "accepted_weight_max": 1.0993711106596489
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.9164430648783715,
+          "accepted_weight_max": 1.1076089808744962
+        },
+        {
+          "samples": 256,
+          "accepted": 231,
+          "accepted_weight_sum": 231.0,
+          "accepted_weight_min": 0.9052719609887623,
+          "accepted_weight_max": 1.1372019878081072
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 239.99999999999997,
+          "accepted_weight_min": 0.9219743479931705,
+          "accepted_weight_max": 1.2581735711560056
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9444061266964507,
+          "accepted_weight_max": 1.139619280925722
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 234.99999999999997,
+          "accepted_weight_min": 0.9456818236057642,
+          "accepted_weight_max": 1.1241633561632693
+        },
+        {
+          "samples": 256,
+          "accepted": 247,
+          "accepted_weight_sum": 247.0,
+          "accepted_weight_min": 0.9022695656099113,
+          "accepted_weight_max": 1.0909151143820144
+        },
+        {
+          "samples": 256,
+          "accepted": 231,
+          "accepted_weight_sum": 231.0,
+          "accepted_weight_min": 0.9331539567853016,
+          "accepted_weight_max": 1.153524866989898
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9443125906727716,
+          "accepted_weight_max": 1.208193090054845
+        },
+        {
+          "samples": 256,
+          "accepted": 245,
+          "accepted_weight_sum": 245.0,
+          "accepted_weight_min": 0.909365535891995,
+          "accepted_weight_max": 1.1384341405142937
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.9249346941190044,
+          "accepted_weight_max": 1.0907815616921255
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 238.99999999999997,
+          "accepted_weight_min": 0.9143841228091657,
+          "accepted_weight_max": 1.1590830902733862
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9075369684722956,
+          "accepted_weight_max": 1.1834170426501083
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.8995194929822865,
+          "accepted_weight_max": 1.145543741506938
+        },
+        {
+          "samples": 256,
+          "accepted": 228,
+          "accepted_weight_sum": 228.0,
+          "accepted_weight_min": 0.9057268398724865,
+          "accepted_weight_max": 1.1341840743154061
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.8880506991035708,
+          "accepted_weight_max": 1.148918768836574
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.923816797938759,
+          "accepted_weight_max": 1.1651356174551912
+        },
+        {
+          "samples": 256,
+          "accepted": 228,
+          "accepted_weight_sum": 228.0,
+          "accepted_weight_min": 0.8903948555565201,
+          "accepted_weight_max": 1.1229727174376165
+        },
+        {
+          "samples": 256,
+          "accepted": 233,
+          "accepted_weight_sum": 233.00000000000006,
+          "accepted_weight_min": 0.9036229738288308,
+          "accepted_weight_max": 1.1130212413759706
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9561416253419142,
+          "accepted_weight_max": 1.0472760860607413
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 235.99999999999997,
+          "accepted_weight_min": 0.904052503620687,
+          "accepted_weight_max": 1.1685438358561477
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9355192557817926,
+          "accepted_weight_max": 1.1079695860289271
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9505834062310582,
+          "accepted_weight_max": 1.094702814506011
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9176962773319846,
+          "accepted_weight_max": 1.120514011795668
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.8767654152723402,
+          "accepted_weight_max": 1.2656778015198364
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9300445708180907,
+          "accepted_weight_max": 1.0958000642559167
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9424356007868719,
+          "accepted_weight_max": 1.0670873578082838
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.8953405735121731,
+          "accepted_weight_max": 1.1822454988010782
+        },
+        {
+          "samples": 256,
+          "accepted": 226,
+          "accepted_weight_sum": 226.0,
+          "accepted_weight_min": 0.9159539372458241,
+          "accepted_weight_max": 1.139773703987212
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.897658227224347,
+          "accepted_weight_max": 1.1910114512628853
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9360852327911078,
+          "accepted_weight_max": 1.0741328874468197
+        },
+        {
+          "samples": 256,
+          "accepted": 232,
+          "accepted_weight_sum": 232.0,
+          "accepted_weight_min": 0.9354441475767794,
+          "accepted_weight_max": 1.1180175363615001
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.8935159608183266,
+          "accepted_weight_max": 1.1667604103947855
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.9475920524300105,
+          "accepted_weight_max": 1.0750806585449206
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.8427042144070156,
+          "accepted_weight_max": 1.1849895517787497
+        },
+        {
+          "samples": 256,
+          "accepted": 229,
+          "accepted_weight_sum": 229.0,
+          "accepted_weight_min": 0.9129264475068214,
+          "accepted_weight_max": 1.1361783410448834
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9618503834333088,
+          "accepted_weight_max": 1.0487311561448271
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9253361801293956,
+          "accepted_weight_max": 1.195838978963176
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.00000000000003,
+          "accepted_weight_min": 0.9477941339329595,
+          "accepted_weight_max": 1.1025329766750078
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9175735092740605,
+          "accepted_weight_max": 1.218685726045286
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.8663035625479686,
+          "accepted_weight_max": 1.2259333873664628
+        },
+        {
+          "samples": 256,
+          "accepted": 243,
+          "accepted_weight_sum": 243.0,
+          "accepted_weight_min": 0.9203668439882603,
+          "accepted_weight_max": 1.1303826333153362
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9375516691253243,
+          "accepted_weight_max": 1.0840819074920551
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9202500730902536,
+          "accepted_weight_max": 1.2778409047901174
+        },
+        {
+          "samples": 256,
+          "accepted": 244,
+          "accepted_weight_sum": 243.99999999999997,
+          "accepted_weight_min": 0.9443962171326727,
+          "accepted_weight_max": 1.1657096613069555
+        },
+        {
+          "samples": 256,
+          "accepted": 243,
+          "accepted_weight_sum": 243.0,
+          "accepted_weight_min": 0.8905299689737036,
+          "accepted_weight_max": 1.1804579543990008
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9499208081577442,
+          "accepted_weight_max": 1.0484079333565093
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.0,
+          "accepted_weight_min": 0.903496955473829,
+          "accepted_weight_max": 1.142751779407881
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 239.99999999999994,
+          "accepted_weight_min": 0.9236421384484745,
+          "accepted_weight_max": 1.1312686852151377
+        },
+        {
+          "samples": 256,
+          "accepted": 245,
+          "accepted_weight_sum": 245.0,
+          "accepted_weight_min": 0.9194387423081376,
+          "accepted_weight_max": 1.1214380896388418
+        },
+        {
+          "samples": 256,
+          "accepted": 226,
+          "accepted_weight_sum": 226.0,
+          "accepted_weight_min": 0.913139602589581,
+          "accepted_weight_max": 1.108931026821657
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 236.99999999999997,
+          "accepted_weight_min": 0.913758943218875,
+          "accepted_weight_max": 1.117292630805719
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9304778426972806,
+          "accepted_weight_max": 1.115666777766509
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.8707350233024441,
+          "accepted_weight_max": 1.1640930674962526
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.8989835567584266,
+          "accepted_weight_max": 1.0964815194846578
+        },
+        {
+          "samples": 256,
+          "accepted": 232,
+          "accepted_weight_sum": 231.99999999999997,
+          "accepted_weight_min": 0.9182247940144661,
+          "accepted_weight_max": 1.1612714615202342
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9219565349285819,
+          "accepted_weight_max": 1.1600625774093962
+        },
+        {
+          "samples": 256,
+          "accepted": 234,
+          "accepted_weight_sum": 234.00000000000003,
+          "accepted_weight_min": 0.9203036303440089,
+          "accepted_weight_max": 1.2165990302545326
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9437419901880614,
+          "accepted_weight_max": 1.1367537719814993
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 234.99999999999994,
+          "accepted_weight_min": 0.8893803282679649,
+          "accepted_weight_max": 1.205243268569696
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9313455468423597,
+          "accepted_weight_max": 1.0915756309393543
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.8845363351986828,
+          "accepted_weight_max": 1.10189456972603
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.907335102674166,
+          "accepted_weight_max": 1.1504619965608769
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 239.99999999999997,
+          "accepted_weight_min": 0.9553126872889601,
+          "accepted_weight_max": 1.051268619285759
+        },
+        {
+          "samples": 256,
+          "accepted": 231,
+          "accepted_weight_sum": 230.99999999999997,
+          "accepted_weight_min": 0.9427299757362388,
+          "accepted_weight_max": 1.1417309683201091
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9205819343061855,
+          "accepted_weight_max": 1.0804582154925744
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.00000000000003,
+          "accepted_weight_min": 0.9328224558101119,
+          "accepted_weight_max": 1.0871089438821668
+        },
+        {
+          "samples": 256,
+          "accepted": 243,
+          "accepted_weight_sum": 243.00000000000003,
+          "accepted_weight_min": 0.936868261375854,
+          "accepted_weight_max": 1.122273754468408
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.9070055685130061,
+          "accepted_weight_max": 1.0920691361825599
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.00000000000003,
+          "accepted_weight_min": 0.8947316478920534,
+          "accepted_weight_max": 1.119305961610528
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9017389289102647,
+          "accepted_weight_max": 1.1242735834008166
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9202237174727982,
+          "accepted_weight_max": 1.2440072648366365
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.8990095749697319,
+          "accepted_weight_max": 1.1311478292064971
+        },
+        {
+          "samples": 256,
+          "accepted": 247,
+          "accepted_weight_sum": 247.0,
+          "accepted_weight_min": 0.9309505354434685,
+          "accepted_weight_max": 1.0678271878627006
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.892848881198572,
+          "accepted_weight_max": 1.131459060364723
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.9105410753617829,
+          "accepted_weight_max": 1.1007682170115491
+        },
+        {
+          "samples": 256,
+          "accepted": 233,
+          "accepted_weight_sum": 233.00000000000003,
+          "accepted_weight_min": 0.9252817239071625,
+          "accepted_weight_max": 1.1802470898488293
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 236.99999999999997,
+          "accepted_weight_min": 0.9223410671449883,
+          "accepted_weight_max": 1.0864939713512434
+        },
+        {
+          "samples": 256,
+          "accepted": 228,
+          "accepted_weight_sum": 228.00000000000006,
+          "accepted_weight_min": 0.9177983259290264,
+          "accepted_weight_max": 1.089794957634187
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 236.99999999999994,
+          "accepted_weight_min": 0.9515545498841137,
+          "accepted_weight_max": 1.0649337943033528
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.9183593277633508,
+          "accepted_weight_max": 1.0857163105188365
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9395238048541332,
+          "accepted_weight_max": 1.0756212758644854
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.00000000000003,
+          "accepted_weight_min": 0.9163074561402323,
+          "accepted_weight_max": 1.118226062211135
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 241.99999999999994,
+          "accepted_weight_min": 0.9343554236828352,
+          "accepted_weight_max": 1.0620504821594356
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9143642518112852,
+          "accepted_weight_max": 1.1209091640306075
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9055216017720003,
+          "accepted_weight_max": 1.164346742507988
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9257864911549001,
+          "accepted_weight_max": 1.11024516305796
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.938930831602099,
+          "accepted_weight_max": 1.0741629882742374
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 238.99999999999997,
+          "accepted_weight_min": 0.8927666319758691,
+          "accepted_weight_max": 1.1122224510997725
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.8986867897062139,
+          "accepted_weight_max": 1.0888994165444186
+        },
+        {
+          "samples": 256,
+          "accepted": 245,
+          "accepted_weight_sum": 244.99999999999997,
+          "accepted_weight_min": 0.9388873953294168,
+          "accepted_weight_max": 1.0900512915420832
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.00000000000003,
+          "accepted_weight_min": 0.9444873691730012,
+          "accepted_weight_max": 1.0903830667577834
+        },
+        {
+          "samples": 256,
+          "accepted": 229,
+          "accepted_weight_sum": 229.0,
+          "accepted_weight_min": 0.8889818774918583,
+          "accepted_weight_max": 1.103598451461684
+        },
+        {
+          "samples": 256,
+          "accepted": 233,
+          "accepted_weight_sum": 233.0,
+          "accepted_weight_min": 0.9360644519799668,
+          "accepted_weight_max": 1.1272307054201889
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.0,
+          "accepted_weight_min": 0.8769526229430229,
+          "accepted_weight_max": 1.1237506979386658
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9328236283287326,
+          "accepted_weight_max": 1.1503577172157748
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.00000000000003,
+          "accepted_weight_min": 0.952864505791696,
+          "accepted_weight_max": 1.111852767455227
+        },
+        {
+          "samples": 256,
+          "accepted": 245,
+          "accepted_weight_sum": 244.99999999999994,
+          "accepted_weight_min": 0.909160264131868,
+          "accepted_weight_max": 1.1018354036372633
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 239.99999999999997,
+          "accepted_weight_min": 0.9030726205009643,
+          "accepted_weight_max": 1.1712426196277468
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 238.99999999999997,
+          "accepted_weight_min": 0.9109531887336682,
+          "accepted_weight_max": 1.1598810852274886
+        },
+        {
+          "samples": 256,
+          "accepted": 243,
+          "accepted_weight_sum": 243.0,
+          "accepted_weight_min": 0.8932756861888597,
+          "accepted_weight_max": 1.193352680261712
+        },
+        {
+          "samples": 256,
+          "accepted": 243,
+          "accepted_weight_sum": 243.0,
+          "accepted_weight_min": 0.9214246993363537,
+          "accepted_weight_max": 1.122515928981431
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 239.99999999999997,
+          "accepted_weight_min": 0.9397021688949359,
+          "accepted_weight_max": 1.090064223115688
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9120087666425285,
+          "accepted_weight_max": 1.144895726676979
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9077109194968369,
+          "accepted_weight_max": 1.1770427147977427
+        },
+        {
+          "samples": 256,
+          "accepted": 227,
+          "accepted_weight_sum": 226.99999999999997,
+          "accepted_weight_min": 0.9254904851846577,
+          "accepted_weight_max": 1.1212608864786477
+        },
+        {
+          "samples": 256,
+          "accepted": 236,
+          "accepted_weight_sum": 236.0,
+          "accepted_weight_min": 0.9247446483203452,
+          "accepted_weight_max": 1.1044222306967761
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9287905922783002,
+          "accepted_weight_max": 1.0950575479485685
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 240.99999999999997,
+          "accepted_weight_min": 0.9218497581854139,
+          "accepted_weight_max": 1.0889094598715658
+        },
+        {
+          "samples": 256,
+          "accepted": 244,
+          "accepted_weight_sum": 244.00000000000006,
+          "accepted_weight_min": 0.9493114299561587,
+          "accepted_weight_max": 1.0619886432360448
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 236.99999999999997,
+          "accepted_weight_min": 0.9480762392626372,
+          "accepted_weight_max": 1.0735822980036227
+        },
+        {
+          "samples": 256,
+          "accepted": 238,
+          "accepted_weight_sum": 238.0,
+          "accepted_weight_min": 0.9225407572883954,
+          "accepted_weight_max": 1.1276945653882944
+        },
+        {
+          "samples": 256,
+          "accepted": 242,
+          "accepted_weight_sum": 242.0,
+          "accepted_weight_min": 0.9534153774276346,
+          "accepted_weight_max": 1.0707845205556872
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9259517154700321,
+          "accepted_weight_max": 1.0956709123788424
+        },
+        {
+          "samples": 256,
+          "accepted": 240,
+          "accepted_weight_sum": 240.00000000000003,
+          "accepted_weight_min": 0.930614497602199,
+          "accepted_weight_max": 1.114899183093861
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.00000000000003,
+          "accepted_weight_min": 0.9216208099118873,
+          "accepted_weight_max": 1.1783177663504025
+        },
+        {
+          "samples": 256,
+          "accepted": 235,
+          "accepted_weight_sum": 235.0,
+          "accepted_weight_min": 0.9118658713041634,
+          "accepted_weight_max": 1.0993528791673348
+        },
+        {
+          "samples": 256,
+          "accepted": 237,
+          "accepted_weight_sum": 237.0,
+          "accepted_weight_min": 0.9232680311729404,
+          "accepted_weight_max": 1.1069507127028657
+        },
+        {
+          "samples": 256,
+          "accepted": 243,
+          "accepted_weight_sum": 243.0,
+          "accepted_weight_min": 0.8952882383995477,
+          "accepted_weight_max": 1.136784931468723
+        },
+        {
+          "samples": 256,
+          "accepted": 239,
+          "accepted_weight_sum": 239.0,
+          "accepted_weight_min": 0.9118145178220635,
+          "accepted_weight_max": 1.0817777124159353
+        },
+        {
+          "samples": 256,
+          "accepted": 246,
+          "accepted_weight_sum": 246.0,
+          "accepted_weight_min": 0.8989475832293198,
+          "accepted_weight_max": 1.0794260778117297
+        },
+        {
+          "samples": 256,
+          "accepted": 241,
+          "accepted_weight_sum": 241.0,
+          "accepted_weight_min": 0.9291709111566588,
+          "accepted_weight_max": 1.1051153090222465
+        },
+        {
+          "samples": 124,
+          "accepted": 114,
+          "accepted_weight_sum": 114.0,
+          "accepted_weight_min": 0.8956058021446673,
+          "accepted_weight_max": 1.1602842503114257
+        }
+      ],
+      "dimensions": {
+        "pseudo_class": {
+          "rows": [
+            {
+              "value": 0,
+              "seen": 9460,
+              "accepted": 8905,
+              "weighted_mass": 8878.47546910317
+            },
+            {
+              "value": 1,
+              "seen": 9433,
+              "accepted": 8326,
+              "weighted_mass": 8444.46611975545
+            },
+            {
+              "value": 2,
+              "seen": 9498,
+              "accepted": 9172,
+              "weighted_mass": 9083.479874739482
+            },
+            {
+              "value": 3,
+              "seen": 9350,
+              "accepted": 8094,
+              "weighted_mass": 8255.912716987927
+            },
+            {
+              "value": 4,
+              "seen": 9465,
+              "accepted": 8902,
+              "weighted_mass": 8871.051311225126
+            },
+            {
+              "value": 5,
+              "seen": 9494,
+              "accepted": 9331,
+              "weighted_mass": 9196.614508188844
+            }
+          ],
+          "accepted_mass_cv": 0.050119563263904585,
+          "weighted_mass_cv": 0.03803765721307175,
+          "relative_cv_reduction": 0.24106167859475455,
+          "minimum_accepted": 8094,
+          "passes": true
+        },
+        "source_RX": {
+          "rows": [
+            {
+              "value": 1,
+              "seen": 11340,
+              "accepted": 10973,
+              "weighted_mass": 10871.768388047016
+            },
+            {
+              "value": 3,
+              "seen": 11340,
+              "accepted": 9547,
+              "weighted_mass": 9786.96092671734
+            },
+            {
+              "value": 4,
+              "seen": 11340,
+              "accepted": 10973,
+              "weighted_mass": 10868.497798475095
+            },
+            {
+              "value": 6,
+              "seen": 11340,
+              "accepted": 10981,
+              "weighted_mass": 10885.941271415684
+            },
+            {
+              "value": 8,
+              "seen": 11340,
+              "accepted": 10256,
+              "weighted_mass": 10316.831615344865
+            }
+          ],
+          "accepted_mass_cv": 0.05423963480957326,
+          "weighted_mass_cv": 0.04142673503580366,
+          "relative_cv_reduction": 0.23622761876538542,
+          "minimum_accepted": 9547,
+          "passes": true
+        }
+      },
+      "passes": true,
+      "raw_labels_or_acceptance_changed": false,
+      "U_truth_reads": 0,
+      "target_reads": 0,
+      "model_updates": 0,
+      "source_V_precision_bound": {
+        "model_seed": 2026092703,
+        "accepted": 25128,
+        "correct": 25107,
+        "wrong": 21,
+        "raw_precision_percent": 99.91642788920726,
+        "cap1p5_weighted_precision_lower_bound_percent": 99.87464183381088
+      },
+      "scientific_rule_pass": true
+    }
+  ],
+  "source_U_forward_packets": 170100,
+  "extra_source_V_forward_packets": 0,
+  "source_selection": "SOURCE_CANDIDATE_SUPPORTED",
+  "scientific_rule_pass": true,
+  "source_V_weighted_precision": "Worstcase bound from existing sourceV counts,NOT newly measuredaccuracy",
+  "actual_U_accuracy": "UNKNOWN",
+  "GPU_workers": 0,
+  "model_updates": 0,
+  "normalization_updates": 0,
+  "V_gradients": 0,
+  "U_truth_reads": 0,
+  "target_reads": 0,
+  "G_training_reads": 0,
+  "active_jobs_changed": false,
+  "new_training_launched": false,
+  "goal_complete": false
+}
