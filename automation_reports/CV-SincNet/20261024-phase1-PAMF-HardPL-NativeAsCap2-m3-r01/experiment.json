@@ -364,7 +364,7 @@
     "recipe_changed": false
   },
   "source_optimizer_counterfactual": {
-    "status": "REGISTERED_NONBLOCKING",
+    "status": "TECHNICAL_INTERFACE_FIXED_RERUN_PENDING",
     "reference": "source_optimizer_counterfactual_plan.json",
     "source_epoch": 20,
     "samples_per_seed": {
@@ -383,6 +383,9 @@
     "target_reads": 0,
     "U_truth_reads": 0,
     "current_training_or_selection_changed": false,
-    "goal_complete": false
+    "goal_complete": false,
+    "failed_attempt": "source_optimizer_counterfactual_technical_failure.json",
+    "targeted_fix_check": "PASS",
+    "targeted_P0P1": "PASS"
   }
 }

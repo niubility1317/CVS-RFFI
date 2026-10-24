@@ -31,9 +31,11 @@ def _first_step_options(config):
     from experiments.cric_dura_comparison.f_train import arguments
     from experiments.cvs_phase1_repair.design import cosine_lr
     args = arguments(config, 'cpu')
+    # f_train.train selects native_scope(owner, 'CENTER_UNITS') directly.
+    # These current configs do not carry the historical combination field;
+    # shadow_step validates the actual model's centered physical Sinc metadata.
     if (args.epochs != 10 or args.max_grad_norm != 5.
-            or getattr(args, 'phase1_lr_schedule', None) != 'cosine'
-            or config['combination']['Sinc_optimizer'] != 'CENTER_UNITS'):
+            or getattr(args, 'phase1_lr_schedule', None) != 'cosine'):
         raise ValueError('The actual first native10 cosine/physical-clip path differs')
     return dict(base_lr=float(cosine_lr(float(args.lr), 1, args.epochs, float(args.phase1_lr_min))),
                 weight_decay=float(args.weight_decay))

@@ -55,3 +55,6 @@ VERIFIED：发布commit `a2a03f6ccf166b8abba34ca1f7862caa03277ba0` 的真实原E
 ## 固定源域优化器首步诊断
 
 已预登记 source_optimizer_counterfactual_plan.json：仅使用三个原同 seed F21 E20 的固定 L128/U256，各复用原9次导数；L-only、cap1、cap2 与当前 QR 三锚点分别在独立参数容器上执行一次真实 CENTER_UNITS／physical clip5／AdamW，累计12次额外可丢弃更新。原模型、梯度和健康训练不变，无 V、U 真值、目标或 G 训练读取。比较相对 L-only 的增量下降方向，负点积只表示局部一阶变化较差，不等于实测损失上升或目标准确率下降。只解释新 native10 首步的 fresh moments，不外推整条训练。19项检查与一次独立 P0/P1 审查通过；真实 E20 两包 no-query smoke 是每个源模型的第一步，通过立即继续诊断。无科学晋级门槛、自动新候选、父模型或测试矩阵调整；已暴露历史目标如实保留。
+
+
+首批源优化器诊断在读取旧 combination 字段时发生 KeyError，尚未执行任何副本 optimizer step，原模型与正式训练保持。失败执行 commit e31bd0fd、日志及终止进程证据保留；技术修复改用实际 f_train 的固定 CENTER_UNITS 路径，保留模型物理单位检查与原 cosine／clip5。新增1项针对性检查及唯一一次针对性 P0/P1 复核均 PASS，随后只重执行原固定三种子源诊断；不改变健康任务、数据、方法、种子或测试矩阵。

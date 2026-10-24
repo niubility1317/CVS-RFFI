@@ -1,4 +1,6 @@
 import copy
+import sys
+from types import SimpleNamespace
 import pytest
 from experiments.pamf_ssl_research import source_optimizer_counterfactual as subject
 
@@ -53,3 +55,14 @@ def test_disposable_steps_are_counted_separately_from_untouched_originals(monkey
     assert not any(result['original_model_update_counts'].values())
     assert result['new_formal_training_updates'] == 0
     assert len(result['nonnegative_gradient_but_negative_optimizer_extra_descent']) == 9
+
+
+def test_current_native_config_needs_no_historical_combination_field(monkeypatch):
+    args = SimpleNamespace(epochs=10, max_grad_norm=5., phase1_lr_schedule='cosine',
+                           lr=2e-4, phase1_lr_min=1e-6, weight_decay=1e-4)
+    monkeypatch.setitem(sys.modules, 'experiments.cric_dura_comparison.f_train',
+                        SimpleNamespace(arguments=lambda config, device: args))
+    monkeypatch.setitem(sys.modules, 'experiments.cvs_phase1_repair.design',
+                        SimpleNamespace(cosine_lr=lambda lr, epoch, epochs, minimum: lr if epoch == 1 and epochs == 10 else 0.))
+    observed = subject._first_step_options(dict(segment_epochs=10, epoch_offset=20))
+    assert observed == dict(base_lr=2e-4, weight_decay=1e-4)

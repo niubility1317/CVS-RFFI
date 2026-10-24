@@ -1,0 +1,15 @@
+{
+  "status": "FAILED_TECHNICAL_ATTEMPT_1",
+  "analysis_commit": "e31bd0fd4631a6e96b20417dad4a54d4ed05c121",
+  "exception": "KeyError: 'combination'",
+  "layer": "source_optimizer_counterfactual._first_step_options",
+  "reason": "Current train configs omit historical combination;actual f_train.train selects native_scope CENTER_UNITS directly.",
+  "checkpoint_smoke": "First original-E20 source model reached derivative observation;full three-seed diagnostic incomplete.",
+  "disposable_optimizer_steps_completed": 0,
+  "original_model_updates": 0,
+  "persisted_outputs_or_training_changed": false,
+  "target_or_U_truth_reads": 0,
+  "private_stdout_stderr_preserved": true,
+  "remote_process_independently_confirmed_terminal": true,
+  "recovery": "Use actual native argument schedule/clip checks;retain actual CoordinateSinc metadata validation and fixed CENTER_UNITS shadow adapter.No training recipe or numerical operator change."
+}
