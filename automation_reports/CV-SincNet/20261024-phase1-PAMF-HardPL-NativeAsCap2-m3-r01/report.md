@@ -37,3 +37,6 @@ GPU5/6/7 固定对应三个 seed，每卡最多两个本任务，计外部 compu
 
 
 分支同时约束源域反事实完成：原 E20 三种子各一个步骤，所有原桥／角色／预算／数值检查通过；相对完整 L cap2 的最低整体 U 范数保留率 99.744189%，移除 9 个实质分支冲突，冻结源规则 PASS。CPU2 42.328271 s、7686 源视图、27 autograd，无额外前向/导数、参数更新、V/U 真值/目标访问。这是原导数的几何计算，不是训练或目标收益；结果未改变现有模型和进程，也未自动启动新训练。详见 source_branch_anchor_counterfactual.md。
+
+
+源支持的下一训练对照已固定，尚未实现或启动：`20261024-phase1-PAMF-HardPL-BranchGuard-m3-r01 / HPL_E20_AS_BG2`。只将原 NativeAs cap2 的 U 方向改为完整 L／非物理 L／物理 L 同时约束，仍从原同 seed E20 独立 own10+20/E50/11100，原接收集合、0.95/权重6/六学生/所有原损失/defaulthead/优化器与 As 预算保持。每步多2次L分支导数，每模型13320次，无额外前向，实测时间单列；不能称相同计算成本。固定 NativeAs cap2 主匹配、cap1 次匹配、F20/F21 raw 双目标及 DURA 参考42cells。生产实现、独立训练 P0/P1 和首释放卡位真实原 E20 检查待完成；source PASS 不冒充训练验证。方案在三组待收目标数值读取前冻结，现有健康任务不变。详见 native_as_branchguard_followup_design.json。

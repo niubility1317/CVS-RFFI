@@ -349,5 +349,12 @@
       "scientific_status": "SOURCE_COUNTERFACTUAL_PASSED",
       "seconds": 42.32827057992108
     }
+  },
+  "source_supported_followup_design": {
+    "reference": "native_as_branchguard_followup_design.json",
+    "status": "SOURCE_SUPPORTED_FIXED_FOLLOWUP_NOT_IMPLEMENTED_NOT_LAUNCHED",
+    "intended_run_id": "20261024-phase1-PAMF-HardPL-BranchGuard-m3-r01",
+    "method": "HPL_E20_AS_BG2",
+    "training_launched": false
   }
 }

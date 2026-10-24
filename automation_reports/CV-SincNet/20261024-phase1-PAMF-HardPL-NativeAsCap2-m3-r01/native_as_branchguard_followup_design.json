@@ -1,0 +1,116 @@
+{
+  "status": "SOURCE_SUPPORTED_FIXED_FOLLOWUP_NOT_IMPLEMENTED_NOT_LAUNCHED",
+  "registered_utc": "2026-10-24T04:43:13.311979+00:00",
+  "intended_run_id": "20261024-phase1-PAMF-HardPL-BranchGuard-m3-r01",
+  "intended_method": "HPL_E20_AS_BG2",
+  "source_result_commit": "a3a9824ec2e56249a6780893345a1149f41d3dfd",
+  "source_operator_commit": "c45817b64588004c2b0abc735adde9bbdae387d9",
+  "source_summary": "source_branch_anchor_counterfactual_summary.json",
+  "source_rules": {
+    "minimum_whole_applied_U_norm_retention_vs_native_cap2": 0.5,
+    "minimum_removed_material_component_conflicts": 1,
+    "material_cosine_threshold": -1e-06,
+    "require_all_three_exact_source_seed_steps": true,
+    "parameter_updates": 0,
+    "U_truth_reads": 0,
+    "V_reads": 0,
+    "target_reads": 0
+  },
+  "source_rule_pass": true,
+  "source_observed": {
+    "models": 3,
+    "steps_each": 1,
+    "minimum_applied_U_norm_retention_vs_native_cap2": 0.997441885626718,
+    "removed_material_component_conflicts": 9,
+    "source_packet_views": 7686,
+    "autograd_calls": 27,
+    "CPU_threads": 2,
+    "seconds": 42.32827057992108,
+    "parameter_updates": 0,
+    "V_reads": 0,
+    "U_truth_reads": 0,
+    "target_reads": 0
+  },
+  "hypothesis": "Keep ordinary raw pseudo acceptance,high weight and native supervised mechanisms,but replace only the U gradient direction operator with simultaneous constraints against fullL/nonphysicalL/physicalL,retaining cap2.FullL remains unchanged.",
+  "one_fixed_operator": "Per t2/head/other:unit-normalize non-tiny anchors fullL/nonphysicalL/physicalL;enumerate all <=8 active sets of the float64 3x3 Gram dual;select feasible nonnegative KKT multipliers with minimum correction norm;project only U;apply radial cap2 relative to original fullL.No threshold/loss/forward change.",
+  "numerical_policy": "Original fullL tiny squarednorm<=1e-12 disablesU;component anchors <=1e-12 squarednorm omitted.Gram pinv rtol1e-10,KKT residual tolerance1e-8*max(abs normalized dots,1e-12).Projectednorm<=1e-12*max(rawU/fullLnorm,1e-12) becomes exactzero.Actualcast constraints require dot>=-1e-6*max(anchorNorm*appliedUnorm,1e-12);normcap2 within1e-6 relative.",
+  "additional_L_components": {
+    "nonphysical": ".5ordinary pair+.25nonphysical mixed pair+.25raw pair,existing RDrop included",
+    "physical": ".25physical mixed pair,AsKL0"
+  },
+  "implementation": "Capture the same four L pair results inside the existing L hook;derive exact fullL,U,nonphysicalL,physicalL parameter gradients (four total,additional two).Apply the existing explicit-parameter-gradient bridge with fullL plus projectedU;do not replace the backbone/head,loss coefficients,acceptance,inputs or optimizer.",
+  "current_implementation": "Pure simultaneous projection and source comparison verified;training objective,configuration,worker,queue,aggregation and source-execution/report adapters PENDING",
+  "training_review": "PENDING_ONE_INDEPENDENT_P0P1_FOR_NEXT_REAL_TRAINING;source review is not training review",
+  "original_parent": "Only original same-seed F21 E20/4440 with actual role/physicalID/config/payload/scratch ancestry verified beforeload;no candidate checkpoint or originalE30",
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "schedule": "OriginalE20/4440+ownnative10/2220+ownnative20/4440=E50/11100=13L+37LU",
+  "unchanged_recipe": "rawargmax/.95/Uweight6/6students/nativeAs/rawfallback0/LS.01/ordinary andrawRDrop1/AsKL0/shallow-middleCROSS_RX.1/joint160CROSS_RX.05/sharedstyle/CE1.25/originalL/defaultheadjoint/nativeAdamW/CENTER_UNITS/clip5/decay",
+  "additional_autograd_calls_per_update": 2,
+  "complete_gradient_calls_per_update": 4,
+  "additional_autograd_calls_per_model": 13320,
+  "additional_autograd_calls_all_models": 39960,
+  "extra_teacher_or_student_or_head_forward": 0,
+  "new_head": false,
+  "new_inference_parameters": 0,
+  "native_As_generated_per_model": 850500,
+  "physical_student_U_views_per_model": 1701000,
+  "cumulative_raw_teacher_views_per_model": 2097900,
+  "cumulative_student_U_views_per_model": 10602900,
+  "measured_time": "Report actual training/prediction/source diagnostic times;extra derivatives mean this is not equal compute despite equal epochs and forward budgets",
+  "data": "Same VALIDATED_ONCE L6300/U56700/V27000 and original F0 unseenRX168000/view physicalIDs;Utruthhidden,Vdiagnosticonly without any model/norm/optimizer/EMA/prototype/head update;no target or G for Ftraining",
+  "fixed_primary_reference": {
+    "run_id": "20261024-phase1-PAMF-HardPL-NativeAsCap2-m3-r01",
+    "method": "HPL_E20_AS_CAP2",
+    "difference": "Only the additional nonphysicalL/physicalL constraints;cap2 recipe identical"
+  },
+  "fixed_secondary_reference": {
+    "run_id": "20261024-phase1-PAMF-HardPL-NativeAs-m3-r01",
+    "method": "HPL_E20_JOINT_AS6G",
+    "difference": "Both cap1->2 and simultaneous component constraints;do not label singlefactor"
+  },
+  "primary_goal_controls": [
+    "F20",
+    "F21"
+  ],
+  "target_matrix": {
+    "readouts": [
+      "raw",
+      "DURA-LU"
+    ],
+    "views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "samples_per_view": 168000,
+    "model_seeds": 3,
+    "total_cells": 42,
+    "freeze": "Final E50 default student/defaulthead,whole-row predictioncomplete before independenttruth-last scorer",
+    "reports": "Perseed/view,mean/SD/MacroF1,TX/RX/day/RXday,netcorrections,all missingcells and actualcost"
+  },
+  "DURA": "Same fixed DURA v1 R69/266951/FP32TF32off/reuse=True graph=True native=False;G sourceLU/TXhidden/Ffree.Fseed variation only.No Gtraining,no oldF50 latency substitution,no deployeddefault change",
+  "goal": {
+    "raw_clean_at_least_plus1pp_vs_both": true,
+    "raw_six_strictly_above_plus1point5pp_vs_both": true,
+    "minimum_clean_correct_504000": 433348,
+    "minimum_six_correct_3024000": 2180190,
+    "DURA_separate": true
+  },
+  "resource": "N607 ordinaryaccount/CVS-RFFI/FP32TF32off/CPU2perworker;GPU5/6/7 fixed seeds2701/02/03,at most2 own train/predict/card,countforeignapps<3,free>=10000MiB.Reserve matching BalancedCE and Cap2 pendingCUDA PIDs;never touch GPU0-4.",
+  "queue": "Wait matching BalancedCE allGPU predictionscomplete AND Cap2 dispatched;first available matching card performs actualoriginalE20smoke,discardsprobe,reloadsoriginalparent,continues.No healthyjob changes.SoleCPUscorer after Cap2 terminal.",
+  "smoke": "L768/U1536/rawteacher256/As128/physicalstudent256/rawAs0/Practical192.Fourcompletegradientcalls,extra2,nonphysical/physicalLpaircapture exactly4,context/hookscleared,fullLparametergradientexplicitbridge correct,allthree actualnon-tinyLanchors nonnegativewithin fixednumerics,U<=2fullL and somegroupU>fullL.NativeAs/defaulthead/pairedRDrop/shallow/joint existing gates unchanged.Vhasnoupdates.No target query.",
+  "stop_rule": "Any current protocol/inputprovenance/numerical violation stops only affected dispatch.Two same systemictechnicalfailures stop new dispatch,preserve healthyjobs/output.No targetfeedback for tuning/parent orcheckpoint/seedorder/performance stop/partial selective rerun.No numerical/operatorgrid following sourcefailure.",
+  "scientific_boundary": "Three originalE20 one-step source batches support geometric plausibility only;not fulltrajectory,AdamW update,loss monotonicity or targetgain.No trained BG result exists.",
+  "historical_exposure": "All earlier completed target negatives including RXE known;current operator fixed from originalE20 source gradients before NativeAs/BalancedCE/Cap2 target values read.Not a new independent blind benchmark.",
+  "implementation_or_training_launched": false,
+  "existing_jobs_changed": false,
+  "goal_complete": false
+}
