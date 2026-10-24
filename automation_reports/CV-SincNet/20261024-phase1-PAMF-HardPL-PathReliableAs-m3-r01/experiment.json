@@ -304,5 +304,11 @@
     "actual_GPU_workers": 0,
     "queued_rows": 3,
     "target_matrix_complete": false
+  },
+  "factorial_reporting_plan": {
+    "status": "LOCAL_VERIFIED_WAIT_ALL4_COMPLETE_REPORTS",
+    "reference": "factorial_reporting_plan.json",
+    "code": "experiments/pamf_ssl_research/factorial_report.py",
+    "focused_checks": 6
   }
 }

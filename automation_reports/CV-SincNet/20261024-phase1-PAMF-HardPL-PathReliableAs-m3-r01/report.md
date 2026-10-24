@@ -22,3 +22,6 @@ GPU5/6/7固定对应三个seed，每卡最多两个本任务且计外部最多3 
 ## 发布后独立核实
 
 VERIFIED：执行 commit `2ffbfcb8d04c2abd94ffc24f7f00fac0bebee529` 的控制器存活，CWD 与完整命令匹配。三条 PathReliableAs 组合行实际 QUEUED、训练 worker 0，原 E20 真实权重检查尚 PENDING；等待对应 seed Path 全部 GPU 预测完成且 ReliableAs 已分发后释放第二卡位，固定 GPU5/6/7 对应三个 seed。已核实前序 Complement／Path 共 6 个健康进程的身份、GPU 和日志增长。排队不代表检查通过、训练启动或目标收益；全部 raw 与固定 DURA 七景测试和独立 truth-last 自动衔接。
+
+
+固定四项配方报告工具已通过6项整数差、交互量、完整矩阵前置检查与覆盖保护测试。只有Joint/Path/As/组合全部完成三seed raw+DURA七景且元数据/物理契约一致后才读取四份summary，输出三个邻近配对差及combined−Path−As＋Joint的实际配方交互量；不代替主目标。比较固定因素、命令和产物见factorial_reporting_plan.json；未完成时只WAIT，不阻塞主目标报告或读取部分新结果。
