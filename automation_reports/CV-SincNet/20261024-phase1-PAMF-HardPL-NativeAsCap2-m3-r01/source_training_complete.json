@@ -1,0 +1,1198 @@
+{
+  "status": "VERIFIED_SOURCE_FINAL_EVALUATION_PENDING",
+  "run_id": "20261024-phase1-PAMF-HardPL-NativeAsCap2-m3-r01",
+  "execution_commit": "a2a03f6ccf166b8abba34ca1f7862caa03277ba0",
+  "observed_unix": 1792824754.230505,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "methods": [
+    "HPL_E20_AS_CAP2"
+  ],
+  "total_new_step_records": 19980,
+  "records_per_model": 6660,
+  "cumulative_updates_per_model": 11100,
+  "reused_parent_steps_per_model": 4440,
+  "parent_reference": "Original fixed same-contract F21 E20 only;own native10+20,never original E30;automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-E20plus30-m6-r01/source_pseudo_quality.json",
+  "rows": [
+    {
+      "row_id": "HPL_E20_AS_CAP2-s2026092701",
+      "method": "HPL_E20_AS_CAP2",
+      "source_epoch": 50,
+      "source_updates": 11100,
+      "new_step_records": 6660,
+      "native_segment_records": [
+        2220,
+        4440
+      ],
+      "all_complete_step_records_checked": true,
+      "gzip_closed": true,
+      "actual_adapter_SSL": {
+        "method": "pamf_hard_pl_native_cap2_v1",
+        "native_U_loop": false,
+        "own_EMA": false,
+        "cumulative_EMA_updates": 0,
+        "U_seen": 2097900,
+        "U_accepted": 1975131,
+        "physical_U_seen": 850500,
+        "physical_student_U_views": 1701000,
+        "raw_U_As_seen": 0,
+        "pseudo_label_smoothing": 0.01,
+        "student_U_views": 10602900,
+        "teacher_eval_U_views": 2097900,
+        "U_truth_read": false,
+        "prototype_updates": 0,
+        "hard_PL_calls": 6660,
+        "hard_PL_tail": {
+          "calls": 6660,
+          "seen": 1701000,
+          "accepted": 1608395,
+          "student_views": 10206000,
+          "physical_seen": 850500,
+          "physical_student_views": 1701000,
+          "raw_As_seen": 0,
+          "method": "HPLT1U",
+          "contrast_anchors": {
+            "time_down": 3216790,
+            "t2.pool": 3216790
+          },
+          "label_smoothing": 0.01,
+          "EMA_updates": 0,
+          "U_truth_read": false,
+          "U_style": {
+            "recipe": {
+              "levels": [
+                "time_down",
+                "t2.pool"
+              ],
+              "alpha": 0.1,
+              "probability_per_level": 0.5,
+              "eps": 1e-06,
+              "accepted_only": true,
+              "same_hard_pseudo": true,
+              "different_source_RX": true,
+              "detached_moments": true
+            },
+            "calls": 39960,
+            "seen": 10206000,
+            "eligible": 9650370,
+            "applied": {
+              "time_down": 4994106,
+              "t2.pool": 4876728
+            },
+            "persistent_hooks": false,
+            "teacher_or_L_style_calls": 0,
+            "partner_TX_truth_reads": 0,
+            "shared_six_forward_plan": true,
+            "plan_calls": 6660,
+            "contrast_captures_after_style": true
+          },
+          "U_gradient_guard": {
+            "recipe": {
+              "weight": 6.0,
+              "projection": "one_sided_per_group",
+              "groups": [
+                "t2",
+                "cls_head",
+                "other"
+              ],
+              "U_to_L_norm_cap": 2.0,
+              "tiny_L_squared_norm": 1e-12,
+              "anchor": "complete_current_L_objective",
+              "optimizer": "unchanged_native_Adam",
+              "extra_teacher_or_student_forward": false
+            },
+            "calls": 6660,
+            "conflicts": {
+              "t2": 3312,
+              "cls_head": 2989,
+              "other": 2677
+            },
+            "caps": {
+              "t2": 4517,
+              "cls_head": 3815,
+              "other": 3489
+            },
+            "pending_U_loss": false
+          },
+          "U_joint_contrast": {
+            "recipe": {
+              "feature": "actual_CompositeReference_features_joint160",
+              "weight": 0.05,
+              "CE_normalizer": 1.25,
+              "student_views": "first_two_ordinary_U_passes",
+              "accepted_only": true,
+              "positive": "same_pseudo_different_source_RX",
+              "contrast": "same_native_CROSS_RX_temperature0.2",
+              "extra_forward": false,
+              "new_head": false
+            },
+            "calls": 6660,
+            "captures": 13320,
+            "captured_packets": 3402000,
+            "anchors": 3216790,
+            "extra_forward_calls": 0,
+            "teacher_or_L_captures": 0,
+            "persistent_feature_wrapper": false
+          },
+          "U_native_As": {
+            "recipe": {
+              "generator": "same_native_source_Practical_as_supervised_L",
+              "physical_half": "same_original_alternating_half",
+              "pseudo_labels": "original_raw_argmax",
+              "raw_gate": 0.95,
+              "augmented_view_gate": null,
+              "raw_fallback": false,
+              "CE_and_KL_coefficients_unchanged": true,
+              "CE_normalizer": 1.25,
+              "student_U_passes": 6,
+              "extra_As_teacher": 0,
+              "extra_student_forwards": 0,
+              "new_head": false
+            },
+            "calls": 6660,
+            "generated": 850500,
+            "student_physical_views": 1701000,
+            "raw_accepted_half": 804205,
+            "accepted_student_views": 1608410,
+            "raw_fallback": 0,
+            "extra_As_teacher": 0,
+            "all_raw_accepted_retained": true,
+            "extra_student_forwards": 0,
+            "new_head": false,
+            "EMA_updates": 0,
+            "U_truth_read": false,
+            "CE_dose_normalizer": 1.25
+          }
+        },
+        "threshold": 0.95,
+        "weight": 6.0,
+        "default_head_joint": true,
+        "new_inference_parameters": 0,
+        "new_mechanism_epochs": 30,
+        "source_parent_epoch": 20,
+        "U_style": {
+          "recipe": {
+            "levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "alpha": 0.1,
+            "probability_per_level": 0.5,
+            "eps": 1e-06,
+            "accepted_only": true,
+            "same_hard_pseudo": true,
+            "different_source_RX": true,
+            "detached_moments": true
+          },
+          "calls": 39960,
+          "seen": 10206000,
+          "eligible": 9650370,
+          "applied": {
+            "time_down": 4994106,
+            "t2.pool": 4876728
+          },
+          "persistent_hooks": false,
+          "teacher_or_L_style_calls": 0,
+          "partner_TX_truth_reads": 0,
+          "shared_six_forward_plan": true,
+          "plan_calls": 6660,
+          "contrast_captures_after_style": true
+        },
+        "U_gradient_guard": {
+          "recipe": {
+            "weight": 6.0,
+            "projection": "one_sided_per_group",
+            "groups": [
+              "t2",
+              "cls_head",
+              "other"
+            ],
+            "U_to_L_norm_cap": 2.0,
+            "tiny_L_squared_norm": 1e-12,
+            "anchor": "complete_current_L_objective",
+            "optimizer": "unchanged_native_Adam",
+            "extra_teacher_or_student_forward": false
+          },
+          "calls": 6660,
+          "conflicts": {
+            "t2": 3312,
+            "cls_head": 2989,
+            "other": 2677
+          },
+          "caps": {
+            "t2": 4517,
+            "cls_head": 3815,
+            "other": 3489
+          },
+          "pending_U_loss": false
+        },
+        "U_joint_contrast": {
+          "recipe": {
+            "feature": "actual_CompositeReference_features_joint160",
+            "weight": 0.05,
+            "CE_normalizer": 1.25,
+            "student_views": "first_two_ordinary_U_passes",
+            "accepted_only": true,
+            "positive": "same_pseudo_different_source_RX",
+            "contrast": "same_native_CROSS_RX_temperature0.2",
+            "extra_forward": false,
+            "new_head": false
+          },
+          "calls": 6660,
+          "captures": 13320,
+          "captured_packets": 3402000,
+          "anchors": 3216790,
+          "extra_forward_calls": 0,
+          "teacher_or_L_captures": 0,
+          "persistent_feature_wrapper": false
+        },
+        "U_native_As": {
+          "recipe": {
+            "generator": "same_native_source_Practical_as_supervised_L",
+            "physical_half": "same_original_alternating_half",
+            "pseudo_labels": "original_raw_argmax",
+            "raw_gate": 0.95,
+            "augmented_view_gate": null,
+            "raw_fallback": false,
+            "CE_and_KL_coefficients_unchanged": true,
+            "CE_normalizer": 1.25,
+            "student_U_passes": 6,
+            "extra_As_teacher": 0,
+            "extra_student_forwards": 0,
+            "new_head": false
+          },
+          "calls": 6660,
+          "generated": 850500,
+          "student_physical_views": 1701000,
+          "raw_accepted_half": 804205,
+          "accepted_student_views": 1608410,
+          "raw_fallback": 0,
+          "extra_As_teacher": 0,
+          "all_raw_accepted_retained": true,
+          "extra_student_forwards": 0,
+          "new_head": false,
+          "EMA_updates": 0,
+          "U_truth_read": false,
+          "CE_dose_normalizer": 1.25
+        }
+      },
+      "final_logged_losses_and_counters": {
+        "HPL_loss": 1.2875726222991943,
+        "HPL_base_loss": 0.21459543704986572,
+        "HPL_weight": 6.0,
+        "HPL_calls": 4440,
+        "HPL_seen": 1134000,
+        "HPL_accepted": 1079332,
+        "HPL_confidence": 0.9923639297485352,
+        "HPL_student_views": 6804000,
+        "HPL_physical_seen": 567000,
+        "HPL_physical_student_views": 1134000,
+        "HPL_EMA_updates": 0.0,
+        "HPL_anchors_time_down": 2158664,
+        "HPL_anchors_t2.pool": 2158664,
+        "T1_L_packets": 768,
+        "HPL_ordinary_KL": 0.009074835106730461,
+        "HPL_raw_KL": 0.004851348698139191,
+        "HPL_As_KL": 0.07308866083621979,
+        "HPL_As_KL_weight": 0.0,
+        "HPL_contrast": 0.6075063943862915,
+        "HPL_CE_normalizer": 1.25,
+        "HPL_MS_calls": 26640,
+        "HPL_MS_seen": 6804000,
+        "HPL_MS_eligible": 6475992,
+        "HPL_MS_applied_time_down": 3347976,
+        "HPL_MS_applied_t2.pool": 3252168,
+        "HPL_MS_plan_calls": 4440,
+        "HPL_GP_U_to_L_norm_cap": 2.0,
+        "HPL_GP_calls": 4440,
+        "HPL_GP_t2_L_norm": 0.20152673969139326,
+        "HPL_GP_t2_U_norm": 1.0008037962679237,
+        "HPL_GP_t2_applied_U_norm": 0.4030534793827865,
+        "HPL_GP_t2_dot_before": -0.07016169688709221,
+        "HPL_GP_t2_dot_after": 8.955907881622038e-10,
+        "HPL_GP_t2_conflict": 1.0,
+        "HPL_GP_t2_capped": 1.0,
+        "HPL_GP_t2_tiny_L": 0.0,
+        "HPL_GP_t2_conflicts": 2147,
+        "HPL_GP_t2_caps": 3194,
+        "HPL_GP_cls_head_L_norm": 0.3775559280149834,
+        "HPL_GP_cls_head_U_norm": 1.7184364103252507,
+        "HPL_GP_cls_head_applied_U_norm": 0.7551118560299668,
+        "HPL_GP_cls_head_dot_before": 0.0068461753034582025,
+        "HPL_GP_cls_head_dot_after": 0.0030083317809824956,
+        "HPL_GP_cls_head_conflict": 0.0,
+        "HPL_GP_cls_head_capped": 1.0,
+        "HPL_GP_cls_head_tiny_L": 0.0,
+        "HPL_GP_cls_head_conflicts": 1929,
+        "HPL_GP_cls_head_caps": 2616,
+        "HPL_GP_other_L_norm": 0.968533755603028,
+        "HPL_GP_other_U_norm": 4.7073883756288355,
+        "HPL_GP_other_applied_U_norm": 1.937067511206056,
+        "HPL_GP_other_dot_before": -0.1909422426238691,
+        "HPL_GP_other_dot_after": 7.351018905153923e-10,
+        "HPL_GP_other_conflict": 1.0,
+        "HPL_GP_other_capped": 1.0,
+        "HPL_GP_other_tiny_L": 0.0,
+        "HPL_GP_other_conflicts": 1716,
+        "HPL_GP_other_caps": 2393,
+        "HPL_joint_loss": 0.1708705574274063,
+        "HPL_joint_weight": 0.05,
+        "HPL_joint_calls": 4440,
+        "HPL_joint_captures": 8880,
+        "HPL_joint_packets": 2268000,
+        "HPL_joint_anchors": 2158664,
+        "HPL_raw_As_seen": 0,
+        "HPL_NAS_calls": 4440,
+        "HPL_NAS_generated": 567000,
+        "HPL_NAS_raw_accepted_half": 539650,
+        "HPL_NAS_accepted_student_views": 1079300,
+        "HPL_NAS_extra_As_teacher": 0,
+        "HPL_NAS_raw_fallback": 0,
+        "HPL_NAS_CE_normalizer": 1.25
+      },
+      "source_mechanism_counters": {
+        "accepted": 1608395,
+        "contrast_anchors": {
+          "time_down": 3216790,
+          "t2.pool": 3216790
+        },
+        "steps_with_both_RDrop_positive": 6660,
+        "steps_with_contrast": 6660
+      },
+      "incremental_training_seconds": 6613.825384102995,
+      "parent_training_seconds": 2428.72068757494,
+      "cumulative_training_seconds": 9042.546071677934,
+      "source_graph_native_IQ_check": "PASS",
+      "completed_prediction_views": [
+        {
+          "test": "main",
+          "view": "clean",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_low_suburban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high_urban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid_urban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_low_urban",
+          "count": 168000
+        }
+      ],
+      "prediction_complete": true
+    },
+    {
+      "row_id": "HPL_E20_AS_CAP2-s2026092702",
+      "method": "HPL_E20_AS_CAP2",
+      "source_epoch": 50,
+      "source_updates": 11100,
+      "new_step_records": 6660,
+      "native_segment_records": [
+        2220,
+        4440
+      ],
+      "all_complete_step_records_checked": true,
+      "gzip_closed": true,
+      "actual_adapter_SSL": {
+        "method": "pamf_hard_pl_native_cap2_v1",
+        "native_U_loop": false,
+        "own_EMA": false,
+        "cumulative_EMA_updates": 0,
+        "U_seen": 2097900,
+        "U_accepted": 1975915,
+        "physical_U_seen": 850500,
+        "physical_student_U_views": 1701000,
+        "raw_U_As_seen": 0,
+        "pseudo_label_smoothing": 0.01,
+        "student_U_views": 10602900,
+        "teacher_eval_U_views": 2097900,
+        "U_truth_read": false,
+        "prototype_updates": 0,
+        "hard_PL_calls": 6660,
+        "hard_PL_tail": {
+          "calls": 6660,
+          "seen": 1701000,
+          "accepted": 1607406,
+          "student_views": 10206000,
+          "physical_seen": 850500,
+          "physical_student_views": 1701000,
+          "raw_As_seen": 0,
+          "method": "HPLT1U",
+          "contrast_anchors": {
+            "time_down": 3214812,
+            "t2.pool": 3214812
+          },
+          "label_smoothing": 0.01,
+          "EMA_updates": 0,
+          "U_truth_read": false,
+          "U_style": {
+            "recipe": {
+              "levels": [
+                "time_down",
+                "t2.pool"
+              ],
+              "alpha": 0.1,
+              "probability_per_level": 0.5,
+              "eps": 1e-06,
+              "accepted_only": true,
+              "same_hard_pseudo": true,
+              "different_source_RX": true,
+              "detached_moments": true
+            },
+            "calls": 39960,
+            "seen": 10206000,
+            "eligible": 9644436,
+            "applied": {
+              "time_down": 4949676,
+              "t2.pool": 4840074
+            },
+            "persistent_hooks": false,
+            "teacher_or_L_style_calls": 0,
+            "partner_TX_truth_reads": 0,
+            "shared_six_forward_plan": true,
+            "plan_calls": 6660,
+            "contrast_captures_after_style": true
+          },
+          "U_gradient_guard": {
+            "recipe": {
+              "weight": 6.0,
+              "projection": "one_sided_per_group",
+              "groups": [
+                "t2",
+                "cls_head",
+                "other"
+              ],
+              "U_to_L_norm_cap": 2.0,
+              "tiny_L_squared_norm": 1e-12,
+              "anchor": "complete_current_L_objective",
+              "optimizer": "unchanged_native_Adam",
+              "extra_teacher_or_student_forward": false
+            },
+            "calls": 6660,
+            "conflicts": {
+              "t2": 3074,
+              "cls_head": 2872,
+              "other": 2562
+            },
+            "caps": {
+              "t2": 4716,
+              "cls_head": 3737,
+              "other": 3586
+            },
+            "pending_U_loss": false
+          },
+          "U_joint_contrast": {
+            "recipe": {
+              "feature": "actual_CompositeReference_features_joint160",
+              "weight": 0.05,
+              "CE_normalizer": 1.25,
+              "student_views": "first_two_ordinary_U_passes",
+              "accepted_only": true,
+              "positive": "same_pseudo_different_source_RX",
+              "contrast": "same_native_CROSS_RX_temperature0.2",
+              "extra_forward": false,
+              "new_head": false
+            },
+            "calls": 6660,
+            "captures": 13320,
+            "captured_packets": 3402000,
+            "anchors": 3214812,
+            "extra_forward_calls": 0,
+            "teacher_or_L_captures": 0,
+            "persistent_feature_wrapper": false
+          },
+          "U_native_As": {
+            "recipe": {
+              "generator": "same_native_source_Practical_as_supervised_L",
+              "physical_half": "same_original_alternating_half",
+              "pseudo_labels": "original_raw_argmax",
+              "raw_gate": 0.95,
+              "augmented_view_gate": null,
+              "raw_fallback": false,
+              "CE_and_KL_coefficients_unchanged": true,
+              "CE_normalizer": 1.25,
+              "student_U_passes": 6,
+              "extra_As_teacher": 0,
+              "extra_student_forwards": 0,
+              "new_head": false
+            },
+            "calls": 6660,
+            "generated": 850500,
+            "student_physical_views": 1701000,
+            "raw_accepted_half": 803827,
+            "accepted_student_views": 1607654,
+            "raw_fallback": 0,
+            "extra_As_teacher": 0,
+            "all_raw_accepted_retained": true,
+            "extra_student_forwards": 0,
+            "new_head": false,
+            "EMA_updates": 0,
+            "U_truth_read": false,
+            "CE_dose_normalizer": 1.25
+          }
+        },
+        "threshold": 0.95,
+        "weight": 6.0,
+        "default_head_joint": true,
+        "new_inference_parameters": 0,
+        "new_mechanism_epochs": 30,
+        "source_parent_epoch": 20,
+        "U_style": {
+          "recipe": {
+            "levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "alpha": 0.1,
+            "probability_per_level": 0.5,
+            "eps": 1e-06,
+            "accepted_only": true,
+            "same_hard_pseudo": true,
+            "different_source_RX": true,
+            "detached_moments": true
+          },
+          "calls": 39960,
+          "seen": 10206000,
+          "eligible": 9644436,
+          "applied": {
+            "time_down": 4949676,
+            "t2.pool": 4840074
+          },
+          "persistent_hooks": false,
+          "teacher_or_L_style_calls": 0,
+          "partner_TX_truth_reads": 0,
+          "shared_six_forward_plan": true,
+          "plan_calls": 6660,
+          "contrast_captures_after_style": true
+        },
+        "U_gradient_guard": {
+          "recipe": {
+            "weight": 6.0,
+            "projection": "one_sided_per_group",
+            "groups": [
+              "t2",
+              "cls_head",
+              "other"
+            ],
+            "U_to_L_norm_cap": 2.0,
+            "tiny_L_squared_norm": 1e-12,
+            "anchor": "complete_current_L_objective",
+            "optimizer": "unchanged_native_Adam",
+            "extra_teacher_or_student_forward": false
+          },
+          "calls": 6660,
+          "conflicts": {
+            "t2": 3074,
+            "cls_head": 2872,
+            "other": 2562
+          },
+          "caps": {
+            "t2": 4716,
+            "cls_head": 3737,
+            "other": 3586
+          },
+          "pending_U_loss": false
+        },
+        "U_joint_contrast": {
+          "recipe": {
+            "feature": "actual_CompositeReference_features_joint160",
+            "weight": 0.05,
+            "CE_normalizer": 1.25,
+            "student_views": "first_two_ordinary_U_passes",
+            "accepted_only": true,
+            "positive": "same_pseudo_different_source_RX",
+            "contrast": "same_native_CROSS_RX_temperature0.2",
+            "extra_forward": false,
+            "new_head": false
+          },
+          "calls": 6660,
+          "captures": 13320,
+          "captured_packets": 3402000,
+          "anchors": 3214812,
+          "extra_forward_calls": 0,
+          "teacher_or_L_captures": 0,
+          "persistent_feature_wrapper": false
+        },
+        "U_native_As": {
+          "recipe": {
+            "generator": "same_native_source_Practical_as_supervised_L",
+            "physical_half": "same_original_alternating_half",
+            "pseudo_labels": "original_raw_argmax",
+            "raw_gate": 0.95,
+            "augmented_view_gate": null,
+            "raw_fallback": false,
+            "CE_and_KL_coefficients_unchanged": true,
+            "CE_normalizer": 1.25,
+            "student_U_passes": 6,
+            "extra_As_teacher": 0,
+            "extra_student_forwards": 0,
+            "new_head": false
+          },
+          "calls": 6660,
+          "generated": 850500,
+          "student_physical_views": 1701000,
+          "raw_accepted_half": 803827,
+          "accepted_student_views": 1607654,
+          "raw_fallback": 0,
+          "extra_As_teacher": 0,
+          "all_raw_accepted_retained": true,
+          "extra_student_forwards": 0,
+          "new_head": false,
+          "EMA_updates": 0,
+          "U_truth_read": false,
+          "CE_dose_normalizer": 1.25
+        }
+      },
+      "final_logged_losses_and_counters": {
+        "HPL_loss": 1.0954843759536743,
+        "HPL_base_loss": 0.18258073925971985,
+        "HPL_weight": 6.0,
+        "HPL_calls": 4440,
+        "HPL_seen": 1134000,
+        "HPL_accepted": 1077342,
+        "HPL_confidence": 0.9956384897232056,
+        "HPL_student_views": 6804000,
+        "HPL_physical_seen": 567000,
+        "HPL_physical_student_views": 1134000,
+        "HPL_EMA_updates": 0.0,
+        "HPL_anchors_time_down": 2154684,
+        "HPL_anchors_t2.pool": 2154684,
+        "T1_L_packets": 768,
+        "HPL_ordinary_KL": 0.004400110803544521,
+        "HPL_raw_KL": 0.003373148385435343,
+        "HPL_As_KL": 0.055340882390737534,
+        "HPL_As_KL_weight": 0.0,
+        "HPL_contrast": 0.6005220413208008,
+        "HPL_CE_normalizer": 1.25,
+        "HPL_MS_calls": 26640,
+        "HPL_MS_seen": 6804000,
+        "HPL_MS_eligible": 6464052,
+        "HPL_MS_applied_time_down": 3286284,
+        "HPL_MS_applied_t2.pool": 3234972,
+        "HPL_MS_plan_calls": 4440,
+        "HPL_GP_U_to_L_norm_cap": 2.0,
+        "HPL_GP_calls": 4440,
+        "HPL_GP_t2_L_norm": 0.1484839047185972,
+        "HPL_GP_t2_U_norm": 0.5022661479727645,
+        "HPL_GP_t2_applied_U_norm": 0.2969678094371944,
+        "HPL_GP_t2_dot_before": -0.011611725271707401,
+        "HPL_GP_t2_dot_after": -3.1622573555886843e-10,
+        "HPL_GP_t2_conflict": 1.0,
+        "HPL_GP_t2_capped": 1.0,
+        "HPL_GP_t2_tiny_L": 0.0,
+        "HPL_GP_t2_conflicts": 2055,
+        "HPL_GP_t2_caps": 3304,
+        "HPL_GP_cls_head_L_norm": 0.5795014352477602,
+        "HPL_GP_cls_head_U_norm": 1.4987384845496474,
+        "HPL_GP_cls_head_applied_U_norm": 1.1590028704955204,
+        "HPL_GP_cls_head_dot_before": -0.3474458832679571,
+        "HPL_GP_cls_head_dot_after": -6.514453210161239e-09,
+        "HPL_GP_cls_head_conflict": 1.0,
+        "HPL_GP_cls_head_capped": 1.0,
+        "HPL_GP_cls_head_tiny_L": 0.0,
+        "HPL_GP_cls_head_conflicts": 1917,
+        "HPL_GP_cls_head_caps": 2486,
+        "HPL_GP_other_L_norm": 0.9226175799035341,
+        "HPL_GP_other_U_norm": 3.684056963031848,
+        "HPL_GP_other_applied_U_norm": 1.8452351598070682,
+        "HPL_GP_other_dot_before": -1.3399623777491962,
+        "HPL_GP_other_dot_after": 1.5760582361573242e-08,
+        "HPL_GP_other_conflict": 1.0,
+        "HPL_GP_other_capped": 1.0,
+        "HPL_GP_other_tiny_L": 0.0,
+        "HPL_GP_other_conflicts": 1677,
+        "HPL_GP_other_caps": 2459,
+        "HPL_joint_loss": 0.1357354372739792,
+        "HPL_joint_weight": 0.05,
+        "HPL_joint_calls": 4440,
+        "HPL_joint_captures": 8880,
+        "HPL_joint_packets": 2268000,
+        "HPL_joint_anchors": 2154684,
+        "HPL_raw_As_seen": 0,
+        "HPL_NAS_calls": 4440,
+        "HPL_NAS_generated": 567000,
+        "HPL_NAS_raw_accepted_half": 538686,
+        "HPL_NAS_accepted_student_views": 1077372,
+        "HPL_NAS_extra_As_teacher": 0,
+        "HPL_NAS_raw_fallback": 0,
+        "HPL_NAS_CE_normalizer": 1.25
+      },
+      "source_mechanism_counters": {
+        "accepted": 1607406,
+        "contrast_anchors": {
+          "time_down": 3214812,
+          "t2.pool": 3214812
+        },
+        "steps_with_both_RDrop_positive": 6660,
+        "steps_with_contrast": 6660
+      },
+      "incremental_training_seconds": 6354.898491947912,
+      "parent_training_seconds": 2596.1054225179832,
+      "cumulative_training_seconds": 8951.003914465895,
+      "source_graph_native_IQ_check": "PASS",
+      "completed_prediction_views": [
+        {
+          "test": "main",
+          "view": "clean",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_low_suburban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high_urban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid_urban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_low_urban",
+          "count": 168000
+        }
+      ],
+      "prediction_complete": true
+    },
+    {
+      "row_id": "HPL_E20_AS_CAP2-s2026092703",
+      "method": "HPL_E20_AS_CAP2",
+      "source_epoch": 50,
+      "source_updates": 11100,
+      "new_step_records": 6660,
+      "native_segment_records": [
+        2220,
+        4440
+      ],
+      "all_complete_step_records_checked": true,
+      "gzip_closed": true,
+      "actual_adapter_SSL": {
+        "method": "pamf_hard_pl_native_cap2_v1",
+        "native_U_loop": false,
+        "own_EMA": false,
+        "cumulative_EMA_updates": 0,
+        "U_seen": 2097900,
+        "U_accepted": 1976662,
+        "physical_U_seen": 850500,
+        "physical_student_U_views": 1701000,
+        "raw_U_As_seen": 0,
+        "pseudo_label_smoothing": 0.01,
+        "student_U_views": 10602900,
+        "teacher_eval_U_views": 2097900,
+        "U_truth_read": false,
+        "prototype_updates": 0,
+        "hard_PL_calls": 6660,
+        "hard_PL_tail": {
+          "calls": 6660,
+          "seen": 1701000,
+          "accepted": 1608245,
+          "student_views": 10206000,
+          "physical_seen": 850500,
+          "physical_student_views": 1701000,
+          "raw_As_seen": 0,
+          "method": "HPLT1U",
+          "contrast_anchors": {
+            "time_down": 3216490,
+            "t2.pool": 3216490
+          },
+          "label_smoothing": 0.01,
+          "EMA_updates": 0,
+          "U_truth_read": false,
+          "U_style": {
+            "recipe": {
+              "levels": [
+                "time_down",
+                "t2.pool"
+              ],
+              "alpha": 0.1,
+              "probability_per_level": 0.5,
+              "eps": 1e-06,
+              "accepted_only": true,
+              "same_hard_pseudo": true,
+              "different_source_RX": true,
+              "detached_moments": true
+            },
+            "calls": 39960,
+            "seen": 10206000,
+            "eligible": 9649470,
+            "applied": {
+              "time_down": 4787154,
+              "t2.pool": 4830810
+            },
+            "persistent_hooks": false,
+            "teacher_or_L_style_calls": 0,
+            "partner_TX_truth_reads": 0,
+            "shared_six_forward_plan": true,
+            "plan_calls": 6660,
+            "contrast_captures_after_style": true
+          },
+          "U_gradient_guard": {
+            "recipe": {
+              "weight": 6.0,
+              "projection": "one_sided_per_group",
+              "groups": [
+                "t2",
+                "cls_head",
+                "other"
+              ],
+              "U_to_L_norm_cap": 2.0,
+              "tiny_L_squared_norm": 1e-12,
+              "anchor": "complete_current_L_objective",
+              "optimizer": "unchanged_native_Adam",
+              "extra_teacher_or_student_forward": false
+            },
+            "calls": 6660,
+            "conflicts": {
+              "t2": 2910,
+              "cls_head": 2940,
+              "other": 2520
+            },
+            "caps": {
+              "t2": 5069,
+              "cls_head": 3866,
+              "other": 3690
+            },
+            "pending_U_loss": false
+          },
+          "U_joint_contrast": {
+            "recipe": {
+              "feature": "actual_CompositeReference_features_joint160",
+              "weight": 0.05,
+              "CE_normalizer": 1.25,
+              "student_views": "first_two_ordinary_U_passes",
+              "accepted_only": true,
+              "positive": "same_pseudo_different_source_RX",
+              "contrast": "same_native_CROSS_RX_temperature0.2",
+              "extra_forward": false,
+              "new_head": false
+            },
+            "calls": 6660,
+            "captures": 13320,
+            "captured_packets": 3402000,
+            "anchors": 3216490,
+            "extra_forward_calls": 0,
+            "teacher_or_L_captures": 0,
+            "persistent_feature_wrapper": false
+          },
+          "U_native_As": {
+            "recipe": {
+              "generator": "same_native_source_Practical_as_supervised_L",
+              "physical_half": "same_original_alternating_half",
+              "pseudo_labels": "original_raw_argmax",
+              "raw_gate": 0.95,
+              "augmented_view_gate": null,
+              "raw_fallback": false,
+              "CE_and_KL_coefficients_unchanged": true,
+              "CE_normalizer": 1.25,
+              "student_U_passes": 6,
+              "extra_As_teacher": 0,
+              "extra_student_forwards": 0,
+              "new_head": false
+            },
+            "calls": 6660,
+            "generated": 850500,
+            "student_physical_views": 1701000,
+            "raw_accepted_half": 804218,
+            "accepted_student_views": 1608436,
+            "raw_fallback": 0,
+            "extra_As_teacher": 0,
+            "all_raw_accepted_retained": true,
+            "extra_student_forwards": 0,
+            "new_head": false,
+            "EMA_updates": 0,
+            "U_truth_read": false,
+            "CE_dose_normalizer": 1.25
+          }
+        },
+        "threshold": 0.95,
+        "weight": 6.0,
+        "default_head_joint": true,
+        "new_inference_parameters": 0,
+        "new_mechanism_epochs": 30,
+        "source_parent_epoch": 20,
+        "U_style": {
+          "recipe": {
+            "levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "alpha": 0.1,
+            "probability_per_level": 0.5,
+            "eps": 1e-06,
+            "accepted_only": true,
+            "same_hard_pseudo": true,
+            "different_source_RX": true,
+            "detached_moments": true
+          },
+          "calls": 39960,
+          "seen": 10206000,
+          "eligible": 9649470,
+          "applied": {
+            "time_down": 4787154,
+            "t2.pool": 4830810
+          },
+          "persistent_hooks": false,
+          "teacher_or_L_style_calls": 0,
+          "partner_TX_truth_reads": 0,
+          "shared_six_forward_plan": true,
+          "plan_calls": 6660,
+          "contrast_captures_after_style": true
+        },
+        "U_gradient_guard": {
+          "recipe": {
+            "weight": 6.0,
+            "projection": "one_sided_per_group",
+            "groups": [
+              "t2",
+              "cls_head",
+              "other"
+            ],
+            "U_to_L_norm_cap": 2.0,
+            "tiny_L_squared_norm": 1e-12,
+            "anchor": "complete_current_L_objective",
+            "optimizer": "unchanged_native_Adam",
+            "extra_teacher_or_student_forward": false
+          },
+          "calls": 6660,
+          "conflicts": {
+            "t2": 2910,
+            "cls_head": 2940,
+            "other": 2520
+          },
+          "caps": {
+            "t2": 5069,
+            "cls_head": 3866,
+            "other": 3690
+          },
+          "pending_U_loss": false
+        },
+        "U_joint_contrast": {
+          "recipe": {
+            "feature": "actual_CompositeReference_features_joint160",
+            "weight": 0.05,
+            "CE_normalizer": 1.25,
+            "student_views": "first_two_ordinary_U_passes",
+            "accepted_only": true,
+            "positive": "same_pseudo_different_source_RX",
+            "contrast": "same_native_CROSS_RX_temperature0.2",
+            "extra_forward": false,
+            "new_head": false
+          },
+          "calls": 6660,
+          "captures": 13320,
+          "captured_packets": 3402000,
+          "anchors": 3216490,
+          "extra_forward_calls": 0,
+          "teacher_or_L_captures": 0,
+          "persistent_feature_wrapper": false
+        },
+        "U_native_As": {
+          "recipe": {
+            "generator": "same_native_source_Practical_as_supervised_L",
+            "physical_half": "same_original_alternating_half",
+            "pseudo_labels": "original_raw_argmax",
+            "raw_gate": 0.95,
+            "augmented_view_gate": null,
+            "raw_fallback": false,
+            "CE_and_KL_coefficients_unchanged": true,
+            "CE_normalizer": 1.25,
+            "student_U_passes": 6,
+            "extra_As_teacher": 0,
+            "extra_student_forwards": 0,
+            "new_head": false
+          },
+          "calls": 6660,
+          "generated": 850500,
+          "student_physical_views": 1701000,
+          "raw_accepted_half": 804218,
+          "accepted_student_views": 1608436,
+          "raw_fallback": 0,
+          "extra_As_teacher": 0,
+          "all_raw_accepted_retained": true,
+          "extra_student_forwards": 0,
+          "new_head": false,
+          "EMA_updates": 0,
+          "U_truth_read": false,
+          "CE_dose_normalizer": 1.25
+        }
+      },
+      "final_logged_losses_and_counters": {
+        "HPL_loss": 1.3155481815338135,
+        "HPL_base_loss": 0.21925804018974304,
+        "HPL_weight": 6.0,
+        "HPL_calls": 4440,
+        "HPL_seen": 1134000,
+        "HPL_accepted": 1078126,
+        "HPL_confidence": 0.9858357310295105,
+        "HPL_student_views": 6804000,
+        "HPL_physical_seen": 567000,
+        "HPL_physical_student_views": 1134000,
+        "HPL_EMA_updates": 0.0,
+        "HPL_anchors_time_down": 2156252,
+        "HPL_anchors_t2.pool": 2156252,
+        "T1_L_packets": 768,
+        "HPL_ordinary_KL": 0.015522951260209084,
+        "HPL_raw_KL": 0.004161443095654249,
+        "HPL_As_KL": 0.0651930496096611,
+        "HPL_As_KL_weight": 0.0,
+        "HPL_contrast": 0.6365402936935425,
+        "HPL_CE_normalizer": 1.25,
+        "HPL_MS_calls": 26640,
+        "HPL_MS_seen": 6804000,
+        "HPL_MS_eligible": 6468756,
+        "HPL_MS_applied_time_down": 3242868,
+        "HPL_MS_applied_t2.pool": 3255030,
+        "HPL_MS_plan_calls": 4440,
+        "HPL_GP_U_to_L_norm_cap": 2.0,
+        "HPL_GP_calls": 4440,
+        "HPL_GP_t2_L_norm": 0.1784178772384937,
+        "HPL_GP_t2_U_norm": 1.1707932706551911,
+        "HPL_GP_t2_applied_U_norm": 0.3568357544769874,
+        "HPL_GP_t2_dot_before": 0.0019846509626915087,
+        "HPL_GP_t2_dot_after": 0.0006048842373684642,
+        "HPL_GP_t2_conflict": 0.0,
+        "HPL_GP_t2_capped": 1.0,
+        "HPL_GP_t2_tiny_L": 0.0,
+        "HPL_GP_t2_conflicts": 1942,
+        "HPL_GP_t2_caps": 3490,
+        "HPL_GP_cls_head_L_norm": 1.023690214526439,
+        "HPL_GP_cls_head_U_norm": 0.8729850098927596,
+        "HPL_GP_cls_head_applied_U_norm": 0.8729850098927596,
+        "HPL_GP_cls_head_dot_before": 0.2740255113896907,
+        "HPL_GP_cls_head_dot_after": 0.2740255113896907,
+        "HPL_GP_cls_head_conflict": 0.0,
+        "HPL_GP_cls_head_capped": 0.0,
+        "HPL_GP_cls_head_tiny_L": 0.0,
+        "HPL_GP_cls_head_conflicts": 1948,
+        "HPL_GP_cls_head_caps": 2616,
+        "HPL_GP_other_L_norm": 2.3815196610044898,
+        "HPL_GP_other_U_norm": 4.1633099740010815,
+        "HPL_GP_other_applied_U_norm": 4.1633099740010815,
+        "HPL_GP_other_dot_before": 2.153535863252497,
+        "HPL_GP_other_dot_after": 2.153535863252497,
+        "HPL_GP_other_conflict": 0.0,
+        "HPL_GP_other_capped": 0.0,
+        "HPL_GP_other_tiny_L": 0.0,
+        "HPL_GP_other_conflicts": 1666,
+        "HPL_GP_other_caps": 2559,
+        "HPL_joint_loss": 0.14938800036907196,
+        "HPL_joint_weight": 0.05,
+        "HPL_joint_calls": 4440,
+        "HPL_joint_captures": 8880,
+        "HPL_joint_packets": 2268000,
+        "HPL_joint_anchors": 2156252,
+        "HPL_raw_As_seen": 0,
+        "HPL_NAS_calls": 4440,
+        "HPL_NAS_generated": 567000,
+        "HPL_NAS_raw_accepted_half": 539126,
+        "HPL_NAS_accepted_student_views": 1078252,
+        "HPL_NAS_extra_As_teacher": 0,
+        "HPL_NAS_raw_fallback": 0,
+        "HPL_NAS_CE_normalizer": 1.25
+      },
+      "source_mechanism_counters": {
+        "accepted": 1608245,
+        "contrast_anchors": {
+          "time_down": 3216490,
+          "t2.pool": 3216490
+        },
+        "steps_with_both_RDrop_positive": 6660,
+        "steps_with_contrast": 6660
+      },
+      "incremental_training_seconds": 6472.155384731013,
+      "parent_training_seconds": 2394.8106896989048,
+      "cumulative_training_seconds": 8866.966074429918,
+      "source_graph_native_IQ_check": "PASS",
+      "completed_prediction_views": [
+        {
+          "test": "main",
+          "view": "clean",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_low_suburban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_high_urban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_mid_urban",
+          "count": 168000
+        },
+        {
+          "test": "main",
+          "view": "practical_low_urban",
+          "count": 168000
+        }
+      ],
+      "prediction_complete": true
+    }
+  ],
+  "U_exposure_is_repeated": true,
+  "unique_U_records": 56700,
+  "source_U_TX_truth_read": false,
+  "no_new_head_fit": true,
+  "no_EMA": true,
+  "no_prototypes": true,
+  "new_G_training_reads": 0,
+  "shared_GPU_walltime_not_exclusive_GPU_hours": true,
+  "target_accuracy_read_by_this_source_check": false,
+  "earlier_complete_method_reports": [],
+  "source_recipe_remained_frozen": true,
+  "goal_complete": false,
+  "parent_diagnostic_reference": "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-E20plus30-m6-r01/source_pseudo_quality.json"
+}

@@ -293,12 +293,10 @@
   ],
   "registered_at": "2026-10-24T03:20:16.662965+00:00",
   "launch_status": {
-    "status": "VERIFIED_REAL_E20_NATIVE_CAP2_SMOKE_AND_ALL3_SOURCE_RUNNING",
-    "evidence": "source_activation.json",
-    "source_smoke": "PASS",
-    "actual_GPU_workers": 3,
-    "queued_rows": 0,
-    "target_matrix_complete": false
+    "status": "VERIFIED_ALL_SCORED",
+    "source_rows_complete": 3,
+    "target_matrix_complete": true,
+    "evidence": "evaluation_completion.json"
   },
   "source_diagnostics": {
     "fixed_native_gradient_phaseC": {
@@ -347,6 +345,16 @@
       "source_rule_pass": true,
       "scientific_status": "SOURCE_COUNTERFACTUAL_PASSED",
       "seconds": 42.32827057992108
+    },
+    "complete_gradient_phaseC": {
+      "status": "VERIFIED_COMPLETE_FIXED_SOURCE_GRADIENT_TRAJECTORY",
+      "reference": "source_gradient_trajectory_C_summary.json",
+      "source_models": 9,
+      "records": 59940,
+      "model_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0,
+      "NONBLOCKING": true
     }
   },
   "source_supported_followup_design": {
@@ -411,5 +419,43 @@
     "healthy_jobs_changed": false,
     "focused_checks": 21,
     "independent_P0P1": "PASS"
+  },
+  "source_quality_diagnostics": {
+    "HPL_E20_AS_CAP2": {
+      "status": "VERIFIED_FULL_SOURCE_V",
+      "source_epoch": 50,
+      "samples_per_seed": 27000,
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "reference": "source_pseudo_quality_E50_HPL_E20_AS_CAP2.json",
+      "parent_diagnostic_reference": "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-E20plus30-m6-r01/source_pseudo_quality.json",
+      "model_or_threshold_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0,
+      "selection_changed": false
+    }
+  },
+  "result_summary": {
+    "status": "ANALYZED",
+    "goal_met": false,
+    "completed_F_models": 3,
+    "completed_readout_view_cells": 42,
+    "independent_truth_last": true,
+    "all_seed_and_scene_results_preserved": true,
+    "both_readouts_complete": true,
+    "summary_ref": "target_summary.json",
+    "details_ref": "target_results.md",
+    "cost_ref": "evaluation_completion.json"
+  },
+  "matched_method_reports": {
+    "HPL_E20_AS_CAP2": {
+      "status": "VERIFIED_COMPLETE_MATCHED_METHODS",
+      "reference_run": "20261024-phase1-PAMF-HardPL-NativeAs-m3-r01",
+      "reference_method": "HPL_E20_JOINT_AS6G",
+      "reference": "HPL_E20_AS_CAP2_matched_comparison.md"
+    }
   }
 }
