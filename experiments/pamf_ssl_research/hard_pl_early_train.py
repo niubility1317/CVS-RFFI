@@ -36,13 +36,16 @@ def aggregate(states,parents,*,weight=2.):
     mechanisms=states[0]['method']=='HPLT1U';factor=6 if mechanisms else 1
     reliable='U_reliable_As' in states[0]
     if any(('U_reliable_As' in s)!=reliable for s in states):raise ValueError('Matching As policy across both native segments required')
+    native_as='U_native_As' in states[0]
+    if (native_as and (reliable or weight!=6.) or any(('U_native_As' in s)!=native_as for s in states)):
+        raise ValueError('Matching native As policy and fixed weight6 across native segments required')
     keys=('calls','seen','accepted','student_views','physical_seen','physical_student_views','raw_As_seen')
     total={key:sum(s[key] for s in states) for key in keys}
     anchors={name:sum(s['contrast_anchors'][name] for s in states) for name in ('time_down','t2.pool')}
     if (total['seen']!=sum(s['calls'] for s in states)*56700//222 or total['student_views']!=factor*total['seen']
-        or total['physical_seen']!=(total['seen']//2 if reliable else 0)
-        or total['physical_student_views']!=(2*sum(s['U_reliable_As']['used'] for s in states) if reliable else 0)
-        or total['raw_As_seen']!=(sum(s['U_reliable_As']['raw_fallback'] for s in states) if reliable else total['seen']//2 if mechanisms else 0)
+        or total['physical_seen']!=(total['seen']//2 if reliable or native_as else 0)
+        or total['physical_student_views']!=(2*sum(s['U_reliable_As']['used'] for s in states) if reliable else total['seen'] if native_as else 0)
+        or total['raw_As_seen']!=(sum(s['U_reliable_As']['raw_fallback'] for s in states) if reliable else 0 if native_as else total['seen']//2 if mechanisms else 0)
         or any(s['EMA_updates'] or s['U_truth_read'] or s['label_smoothing']!=.01 for s in states)):
         raise ValueError('Earlier-U segment calls,mask,view exposure or permissions differ')
     prior=read(Path(parents[0]['folder'])/'progress.json')
@@ -107,6 +110,20 @@ def aggregate(states,parents,*,weight=2.):
             raise ValueError('Full-feature receiver extrapolation must conserve CE dose,all rawaccepted samples and two existing-head views')
         for key in ('calls','extra_head_calls','extra_head_packet_views','eligible_packet_views'):rxe[key]=sum(v[key] for v in values)
         actual['U_receiver_extrapolation']=rxe;actual['hard_PL_tail']['U_receiver_extrapolation']=rxe
+    if native_as:
+        from .hard_pl_native_as import NATIVE_AS
+        values=[s['U_native_As'] for s in states];nas=dict(values[0])
+        if any(v['recipe']!=NATIVE_AS or v['calls']!=s['calls'] or v['generated']!=s['seen']//2
+            or v['student_physical_views']!=s['seen'] or s['physical_seen']!=v['generated']
+            or s['physical_student_views']!=v['student_physical_views'] or s['raw_As_seen']!=0
+            or not 0<=v['raw_accepted_half']<=min(s['accepted'],v['generated'])
+            or v['accepted_student_views']!=2*v['raw_accepted_half'] or v['raw_fallback'] or v['extra_As_teacher']
+            or not v['all_raw_accepted_retained'] or v['extra_student_forwards'] or v['new_head']
+            or v['EMA_updates'] or v['U_truth_read'] or v['CE_dose_normalizer']!=1.25 for s,v in zip(states,values)):
+            raise ValueError('Native As must retain raw acceptance/losses with original physical budget and no extra teacher')
+        for key in ('calls','generated','student_physical_views','raw_accepted_half','accepted_student_views'):
+            nas[key]=sum(v[key] for v in values)
+        actual['U_native_As']=nas;actual['hard_PL_tail']['U_native_As']=nas
     if reliable:
         values=[s['U_reliable_As'] for s in states];ras=dict(values[0])
         if any(v['recipe']!=ras['recipe'] or v['calls']!=s['calls'] or v['generated']!=s['seen']//2

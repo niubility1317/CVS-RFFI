@@ -1,0 +1,216 @@
+{
+  "status": "VERIFIED_FROZEN_SOURCE_VIEW_RELIABILITY",
+  "analysis_commit": "a7d299897387af9e335155c8b327a7e72a8873bb",
+  "seconds": 39.83698489586823,
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "role": "U_s",
+      "phase": [
+        21,
+        4441
+      ],
+      "samples": 960,
+      "raw_accepted": 898,
+      "augmented_agreement_percent": 74.05345211581292,
+      "raw_precision_percent": null,
+      "augmented_hard_CE": 0.6376039385795593,
+      "augmented_LS01_CE": 0.6804271340370178,
+      "jointly_accepted": 438,
+      "joint_coverage_percent": 45.625,
+      "joint_precision_percent": null
+    },
+    {
+      "model_seed": 2026092701,
+      "role": "U_s",
+      "phase": [
+        41,
+        8881
+      ],
+      "samples": 960,
+      "raw_accepted": 898,
+      "augmented_agreement_percent": 75.16703786191536,
+      "raw_precision_percent": null,
+      "augmented_hard_CE": 0.6208887100219727,
+      "augmented_LS01_CE": 0.6632322072982788,
+      "jointly_accepted": 425,
+      "joint_coverage_percent": 44.270833333333336,
+      "joint_precision_percent": null
+    },
+    {
+      "model_seed": 2026092701,
+      "role": "V",
+      "phase": [
+        21,
+        4441
+      ],
+      "samples": 720,
+      "raw_accepted": 661,
+      "augmented_agreement_percent": 74.28139183055976,
+      "raw_precision_percent": 100.0,
+      "augmented_hard_CE": 0.6589999198913574,
+      "augmented_LS01_CE": 0.700378954410553,
+      "jointly_accepted": 303,
+      "joint_coverage_percent": 42.083333333333336,
+      "joint_precision_percent": 100.0
+    },
+    {
+      "model_seed": 2026092701,
+      "role": "V",
+      "phase": [
+        41,
+        8881
+      ],
+      "samples": 720,
+      "raw_accepted": 661,
+      "augmented_agreement_percent": 76.85325264750378,
+      "raw_precision_percent": 100.0,
+      "augmented_hard_CE": 0.6077451705932617,
+      "augmented_LS01_CE": 0.6503393650054932,
+      "jointly_accepted": 323,
+      "joint_coverage_percent": 44.861111111111114,
+      "joint_precision_percent": 100.0
+    },
+    {
+      "model_seed": 2026092702,
+      "role": "U_s",
+      "phase": [
+        21,
+        4441
+      ],
+      "samples": 960,
+      "raw_accepted": 902,
+      "augmented_agreement_percent": 73.61419068736141,
+      "raw_precision_percent": null,
+      "augmented_hard_CE": 0.6521204113960266,
+      "augmented_LS01_CE": 0.694221556186676,
+      "jointly_accepted": 416,
+      "joint_coverage_percent": 43.333333333333336,
+      "joint_precision_percent": null
+    },
+    {
+      "model_seed": 2026092702,
+      "role": "U_s",
+      "phase": [
+        41,
+        8881
+      ],
+      "samples": 960,
+      "raw_accepted": 902,
+      "augmented_agreement_percent": 75.27716186252772,
+      "raw_precision_percent": null,
+      "augmented_hard_CE": 0.640105664730072,
+      "augmented_LS01_CE": 0.6815722584724426,
+      "jointly_accepted": 418,
+      "joint_coverage_percent": 43.541666666666664,
+      "joint_precision_percent": null
+    },
+    {
+      "model_seed": 2026092702,
+      "role": "V",
+      "phase": [
+        21,
+        4441
+      ],
+      "samples": 720,
+      "raw_accepted": 665,
+      "augmented_agreement_percent": 75.0375939849624,
+      "raw_precision_percent": 99.69924812030075,
+      "augmented_hard_CE": 0.6505385041236877,
+      "augmented_LS01_CE": 0.6912006735801697,
+      "jointly_accepted": 303,
+      "joint_coverage_percent": 42.083333333333336,
+      "joint_precision_percent": 99.33993399339934
+    },
+    {
+      "model_seed": 2026092702,
+      "role": "V",
+      "phase": [
+        41,
+        8881
+      ],
+      "samples": 720,
+      "raw_accepted": 665,
+      "augmented_agreement_percent": 75.6390977443609,
+      "raw_precision_percent": 99.69924812030075,
+      "augmented_hard_CE": 0.6347819566726685,
+      "augmented_LS01_CE": 0.6760761737823486,
+      "jointly_accepted": 302,
+      "joint_coverage_percent": 41.94444444444444,
+      "joint_precision_percent": 99.66887417218543
+    },
+    {
+      "model_seed": 2026092703,
+      "role": "U_s",
+      "phase": [
+        21,
+        4441
+      ],
+      "samples": 960,
+      "raw_accepted": 903,
+      "augmented_agreement_percent": 74.97231450719823,
+      "raw_precision_percent": null,
+      "augmented_hard_CE": 0.6121376156806946,
+      "augmented_LS01_CE": 0.6535417437553406,
+      "jointly_accepted": 436,
+      "joint_coverage_percent": 45.416666666666664,
+      "joint_precision_percent": null
+    },
+    {
+      "model_seed": 2026092703,
+      "role": "U_s",
+      "phase": [
+        41,
+        8881
+      ],
+      "samples": 960,
+      "raw_accepted": 903,
+      "augmented_agreement_percent": 74.86157253599114,
+      "raw_precision_percent": null,
+      "augmented_hard_CE": 0.6228628754615784,
+      "augmented_LS01_CE": 0.66372150182724,
+      "jointly_accepted": 422,
+      "joint_coverage_percent": 43.958333333333336,
+      "joint_precision_percent": null
+    },
+    {
+      "model_seed": 2026092703,
+      "role": "V",
+      "phase": [
+        21,
+        4441
+      ],
+      "samples": 720,
+      "raw_accepted": 665,
+      "augmented_agreement_percent": 74.58646616541354,
+      "raw_precision_percent": 99.84962406015038,
+      "augmented_hard_CE": 0.6527972221374512,
+      "augmented_LS01_CE": 0.6924804449081421,
+      "jointly_accepted": 307,
+      "joint_coverage_percent": 42.638888888888886,
+      "joint_precision_percent": 99.6742671009772
+    },
+    {
+      "model_seed": 2026092703,
+      "role": "V",
+      "phase": [
+        41,
+        8881
+      ],
+      "samples": 720,
+      "raw_accepted": 665,
+      "augmented_agreement_percent": 76.09022556390977,
+      "raw_precision_percent": 99.84962406015038,
+      "augmented_hard_CE": 0.6160590052604675,
+      "augmented_LS01_CE": 0.656550407409668,
+      "jointly_accepted": 302,
+      "joint_coverage_percent": 41.94444444444444,
+      "joint_precision_percent": 99.66887417218543
+    }
+  ],
+  "U_actual_pseudo_accuracy": "UNKNOWN",
+  "source_updates": 0,
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "goal_complete": false
+}

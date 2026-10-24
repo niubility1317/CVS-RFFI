@@ -1,0 +1,93 @@
+{
+  "status": "SOURCE_FIXED_NOT_IMPLEMENTED_NOT_LAUNCHED",
+  "registered_utc": "2026-10-24T01:13:53.240813+00:00",
+  "intended_run_id": "20261024-phase1-PAMF-HardPL-NativeAs-m3-r01",
+  "intended_method": "HPL_E20_JOINT_AS6G",
+  "source_basis": [
+    "source_pseudo_quality.json",
+    "source_view_reliability_summary.json",
+    "source_gradient_trajectory_A_summary.json"
+  ],
+  "gradient_analysis_commit": "3d7cdecb1b421c08a52b31f4f04fa77cd2c8b380",
+  "Joint_actual_source_gradient_ratios": [
+    {
+      "method": "HPL_E20_NAMS_JOINT6G",
+      "metric": "weighted_U_to_L",
+      "count": 19980,
+      "mean": 1.0863779105116935
+    },
+    {
+      "method": "HPL_E20_NAMS_JOINT6G",
+      "metric": "applied_U_to_L",
+      "count": 19980,
+      "mean": 0.7929480633387113
+    },
+    {
+      "method": "HPL_E20_NAMS_JOINT6G",
+      "metric": "retained_weighted_U_norm",
+      "count": 19980,
+      "mean": 0.8323787566263984
+    }
+  ],
+  "question": "High rawpseudo precision supports treating difficult nativeAs as strong supervision;low current As classifier accuracy does not itself establish wrong raw labels.The fullAs counterpart measures what augmented-view gating removes.",
+  "limits": "Simulator transforms preserve the declared TX label by construction,but this does not prove information survives each fading realization,actual Utruth accuracy,received target realism or target benefit.",
+  "base": "Fixed Joint6G recipe,not candidate checkpoint;each originalsame-seed F21E20+own10+20/E50/11100=13L37LU",
+  "change": "Only hard_pl_no_uasTrue->False:original alternating mixed-half uses the same native sourcePractical generator as supervisedL,without added Asconfidence/argmax gate or rawfallback in this half.",
+  "pseudo_labels": "Original raw currentstudent evalargmax and rawconfidence.95 acceptedmask.All accepted raw labels retained unchanged across original6student Upasses.Utruth HIDDEN.",
+  "objective": "All originalJoint6G CE/KL/RDrop1/AsKL0/LS.01/shallow-middleCRIC.1/joint160CRIC.05/sharedstyle/fullLguard/nativeAdamW/clip5/decay/defaulthead unchanged.CE denominator1.25,Uweight6;no added loss or new head.",
+  "accepted_As_samples": "Same raw accepted mask,not currentaugmentedview confidence.The native simulationhalf is generated for128 of256 aligned packets;its two originalmixedstudentpasses use it.",
+  "budget": {
+    "seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "final_epochs": 50,
+    "final_updates": 11100,
+    "new_source_updates": 6660,
+    "new_source_U_packets": 1701000,
+    "new_source_As_generated": 850500,
+    "new_student_physical_views": 1701000,
+    "new_student_U_views": 10206000,
+    "cumulative_student_U_views": 10602900,
+    "cumulative_raw_teacher": 2097900,
+    "cumulative_total_teacher": 2097900,
+    "extra_As_teacher": 0,
+    "extra_student_backbone": 0,
+    "extra_existing_head_calls": 0,
+    "new_head": false,
+    "new_inference_parameters": 0
+  },
+  "queue": "GPU5/6/7 fixed seeds2701/02/03;wait corresponding PathReliableAs allGPU predictions complete AND ReceiverExtrap dispatched;reserve both preCUDA PIDs,max2own/card,totalapps<3/free>=10000MiB;CPUsole scorer follows ReceiverExtrap terminal.",
+  "real_checkpoint_smoke": "PENDING:firsteligible matchingreleasedcard originalE20,actualsourceAs128/studentphysical256/rawAs0/LPractical64+U128,rawteacher256/studentU1536/fullL768;fullLguard explicitgradient match/joint signaturegradient/style plan;discardprobe/reloadoriginal.",
+  "fixed_comparisons": [
+    {
+      "run": "20261024-phase1-PAMF-HardPL-Joint160-m3-r01",
+      "method": "HPL_E20_NAMS_JOINT6G",
+      "factor": "Add native mixed-half sourceAs,no other loss/forward change"
+    },
+    {
+      "run": "20261024-phase1-PAMF-HardPL-ReliableAs-m3-r01",
+      "method": "HPL_E20_JOINT_RAS6G",
+      "factor": "NativeAs for every original mixedhalf versus reliableview gate/rawfallback.Includes removal of extra evalteacher cost,not equalFLOP."
+    }
+  ],
+  "primary_controls": [
+    "F20",
+    "F21"
+  ],
+  "target_matrix": "Three Fseeds raw+samefixedDURAv1.0,eachclean+6practical,168000/view,42cells.Finaldefaulthead;fullrow predictions fixed before independenttruth-last;allseed/scene/TX/RX/day/netcorrection/costs.",
+  "goal": "Rawclean>=1pp andsixstrict>1.5pp versusboth controls;DURAseparate/defaultdeploymentunchanged",
+  "stop_rule": "First realsource smoke thenimmediatecontinueonPASS;twoidentical systemictechnicalfailures stopnewdispatch only,preserve healthyjobs/artifacts.No targetfeedback/tuning/reordering/selective rerun.",
+  "target_exposure": "Joint/Complement/Path and earlier complete target results already exposed;RAS/PathReliableAs/RXE target scores NOT READ.No sourceor target parent/checkpoint selection and no claim of independent blind study.",
+  "RAS_Combo_RXE_target_scores_read": false,
+  "training_implementation_complete": false,
+  "independent_review": "PENDING",
+  "training_launched": false,
+  "source_V_updates": 0,
+  "U_truth_reads": 0,
+  "target_training_reads": 0,
+  "G_training_reads": 0,
+  "active_jobs_changed": false,
+  "goal_complete": false
+}

@@ -317,3 +317,8 @@ PathReliableAs 发布后 VERIFIED：控制器存活及 CWD/完整命令匹配，
 ## HPL_E20_JOINT_PATH6G 完整双读出结果
 
 `20261024-phase1-PAMF-HardPL-PathComplement-m3-r01` 各方法三seed、共3模型，每景168000条，raw／同一DURA七景预测与独立truth-last全部42cell完成；全部新增19980条闭合训练记录已核对。HPL_E20_JOINT_PATH6G / raw clean=84.818651%；HPL_E20_JOINT_PATH6G / DURA-LU clean=84.902778%；HPL_E20_JOINT_PATH6G / raw six_mean=70.301984%；HPL_E20_JOINT_PATH6G / DURA-LU six_mean=76.296991%；原数值目标仍未满足，维持ACTIVE。全部结果、匹配基线、逐seed／场景／分层及成本均保存，不从本结果热改其他已固定方法、父权重或矩阵。
+
+
+## 完整原生As监督对照
+
+`20261024-phase1-PAMF-HardPL-NativeAs-m3-r01` 在源设计7d88684基础上实现，仅恢复Joint6G的U mixed半批原生As，原raw.95/权重6/接受集合/六U/损失/完整Lguard/defaulthead保持；无额外As教师、骨干、头或推理参数。原同seedE20独立own10+20到E50/11100，As生成850500/物理学生1701000，有效CE为2×rawacceptedhalf；累计teacher2097900/studentU10602900。119检查/一次P0P1PASS；真实E20smoke待匹配释放Combo卡位，GPU5/6/7每卡最多2任务，CPUscorer接RXE。固定Joint及RAS两个比较、三seed raw+DURA七景42cell和原双控制raw目标不变；RAS/组合/RXE目标分数尚未读取，当前健康任务保持，goal ACTIVE。

@@ -122,6 +122,16 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
                     or rxe['new_head'] or not rxe['all_raw_accepted_retained'] or rxe['CE_dose_normalizer']!=1.25
                     or min(norms.values())<=0 or not all(math.isfinite(v) for v in norms.values())):
                     raise ValueError('Actual fullfeature receiver CE must retain all branch/head gradients and declared cost')
+            if c.get('hard_pl_native_as'):
+                nas=state['U_native_As']
+                if (nas['calls']!=1 or nas['generated']!=128 or nas['student_physical_views']!=256
+                    or not 0<=nas['raw_accepted_half']<=min(state['accepted'],128)
+                    or nas['accepted_student_views']!=2*nas['raw_accepted_half'] or nas['raw_fallback'] or nas['extra_As_teacher']
+                    or not nas['all_raw_accepted_retained'] or nas['extra_student_forwards'] or nas['new_head']
+                    or nas['EMA_updates'] or nas['U_truth_read'] or nas['CE_dose_normalizer']!=1.25
+                    or not obj.smoke_native_As_matches or not obj.smoke_native_nonphysical_ordinary_matches
+                    or sum(model._cd_practical.coverage.values())!=192):
+                    raise ValueError('Native source As half/accepted views/unchanged CE or original forward cost differs')
             if reliable:
                 from .hard_pl_reliable_as_objective import view_mask
                 expected=view_mask(obj.smoke_ras_q,obj.smoke_ras_pseudo,obj.smoke_ras_raw_accepted,.95)
@@ -159,6 +169,10 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
             if c.get('hard_pl_receiver_extrapolation'):
                 checked[-1].update(U_receiver_extrapolation=state['U_receiver_extrapolation'],receiver_extrapolation_gradient_norms=obj.smoke_rxe_gradients,
                     full_signature_response_core_head_gradient=True,CE_total_dose_unchanged=True,all_raw_accepted_retained=True)
+            if c.get('hard_pl_native_as'):
+                checked[-1].update(U_native_As=state['U_native_As'],native_As_input_matches=True,nonphysical_ordinary_input_matches=True,
+                    teacher_U_raw_views=256,teacher_U_As_views=0,teacher_U_total_views=256,all_raw_accepted_retained=True,
+                    CE_and_KL_coefficients_unchanged=True)
             if reliable:
                 checked[-1].update(U_reliable_As=ras,teacher_U_raw_views=256,teacher_U_As_views=128,teacher_U_total_views=384,
                     all_raw_accepted_retained=True,As_gate_matches_frozen_predicate=True,exactraw_fallback=True,

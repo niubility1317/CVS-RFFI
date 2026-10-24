@@ -1,0 +1,2436 @@
+{
+  "status": "VERIFIED_COMPLETE_FIXED_SOURCE_GRADIENT_TRAJECTORY",
+  "phase": "A",
+  "analysis_commit": "3d7cdecb1b421c08a52b31f4f04fa77cd2c8b380",
+  "source_models": 12,
+  "source_records": 79920,
+  "seconds": 267.65284745488316,
+  "summary": [
+    {
+      "method": "HPL_E20_NAMS6G",
+      "group": "t2",
+      "source_records": 19980,
+      "counts": {
+        "conflict": 9560,
+        "capped": 13420,
+        "tiny_L": 0
+      },
+      "fractions": {
+        "conflict": 0.47847847847847846,
+        "capped": 0.6716716716716716,
+        "tiny_L": 0.0
+      },
+      "means": {
+        "L_norm": {
+          "count": 19980,
+          "mean": 0.16799724681958017
+        },
+        "weighted_U_norm": {
+          "count": 19980,
+          "mean": 0.2131061697219298
+        },
+        "applied_U_norm": {
+          "count": 19980,
+          "mean": 0.14284699036697165
+        },
+        "U_to_L": {
+          "count": 19980,
+          "mean": 1.4446573099499485
+        },
+        "applied_U_to_L": {
+          "count": 19980,
+          "mean": 0.9080094326635758
+        },
+        "retained_U_norm": {
+          "count": 19980,
+          "mean": 0.7536647435813864
+        },
+        "cosine_before": {
+          "count": 19980,
+          "mean": 0.012434899386231619
+        },
+        "cosine_after": {
+          "count": 19980,
+          "mean": 0.06891276310158746
+        }
+      },
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "records": 6660,
+          "counts": {
+            "conflict": 3325,
+            "capped": 3749,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.49924924924924924,
+            "capped": 0.5629129129129129,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.1737581953971895
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 0.1824350441168644
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.13573948680193634
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 1.2287690259859465
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.8646391969727352
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.8123262923895334
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.0019502502665414995
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.071681497708512
+            }
+          }
+        },
+        {
+          "model_seed": 2026092702,
+          "records": 6660,
+          "counts": {
+            "conflict": 3124,
+            "capped": 4729,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.4690690690690691,
+            "capped": 0.7100600600600601,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.16969784175400038
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 0.22422305640883208
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.14941668177678358
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 1.481354074782328
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.9244337235973988
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.7410906888684547
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.01841906654588085
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.07093504566210403
+            }
+          }
+        },
+        {
+          "model_seed": 2026092703,
+          "records": 6660,
+          "counts": {
+            "conflict": 3111,
+            "capped": 4942,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.4671171171171171,
+            "capped": 0.742042042042042,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.16053570330755065
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 0.23266040864009285
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.14338480252219502
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 1.623848829081571
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.9349553774205935
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.7075772494861711
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.016935381346272513
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.06412174593414637
+            }
+          }
+        }
+      ]
+    },
+    {
+      "method": "HPL_E20_NAMS6G",
+      "group": "cls_head",
+      "source_records": 19980,
+      "counts": {
+        "conflict": 8075,
+        "capped": 2665,
+        "tiny_L": 0
+      },
+      "fractions": {
+        "conflict": 0.4041541541541542,
+        "capped": 0.13338338338338337,
+        "tiny_L": 0.0
+      },
+      "means": {
+        "L_norm": {
+          "count": 19980,
+          "mean": 0.5648001584778223
+        },
+        "weighted_U_norm": {
+          "count": 19980,
+          "mean": 0.297524383968829
+        },
+        "applied_U_norm": {
+          "count": 19980,
+          "mean": 0.27893771882736135
+        },
+        "U_to_L": {
+          "count": 19980,
+          "mean": 0.6417312483053159
+        },
+        "applied_U_to_L": {
+          "count": 19980,
+          "mean": 0.5920377620324309
+        },
+        "retained_U_norm": {
+          "count": 19980,
+          "mean": 0.958166322691524
+        },
+        "cosine_before": {
+          "count": 19980,
+          "mean": 0.07594134407059203
+        },
+        "cosine_after": {
+          "count": 19980,
+          "mean": 0.1634134128458659
+        }
+      },
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "records": 6660,
+          "counts": {
+            "conflict": 2849,
+            "capped": 792,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.42777777777777776,
+            "capped": 0.11891891891891893,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.5639839283862632
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 0.28804533067941235
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.2706252882992039
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 0.6210421700141531
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.575485948099634
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.9604900341646488
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.05438805065325401
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.14677359116060487
+            }
+          }
+        },
+        {
+          "model_seed": 2026092702,
+          "records": 6660,
+          "counts": {
+            "conflict": 2702,
+            "capped": 894,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.4057057057057057,
+            "capped": 0.13423423423423422,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.5722040807149489
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 0.30644978389077243
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.2875145147976441
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 0.6479641758700636
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.5986367890499437
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.9580578940028985
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.07785190012641666
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.1668410768480941
+            }
+          }
+        },
+        {
+          "model_seed": 2026092703,
+          "records": 6660,
+          "counts": {
+            "conflict": 2524,
+            "capped": 979,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.378978978978979,
+            "capped": 0.146996996996997,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.5582124663322545
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 0.29807803733630217
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.27867335338523613
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 0.6561873990317307
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.6019905489477149
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.9559510399070248
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.09558408143210544
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.17662557052889874
+            }
+          }
+        }
+      ]
+    },
+    {
+      "method": "HPL_E20_NAMS6G",
+      "group": "other",
+      "source_records": 19980,
+      "counts": {
+        "conflict": 7795,
+        "capped": 10246,
+        "tiny_L": 0
+      },
+      "fractions": {
+        "conflict": 0.39014014014014015,
+        "capped": 0.5128128128128128,
+        "tiny_L": 0.0
+      },
+      "means": {
+        "L_norm": {
+          "count": 19980,
+          "mean": 1.3402871994683832
+        },
+        "weighted_U_norm": {
+          "count": 19980,
+          "mean": 1.1660219864253085
+        },
+        "applied_U_norm": {
+          "count": 19980,
+          "mean": 0.9095422487527186
+        },
+        "U_to_L": {
+          "count": 19980,
+          "mean": 1.132051485553313
+        },
+        "applied_U_to_L": {
+          "count": 19980,
+          "mean": 0.8238771879605036
+        },
+        "retained_U_norm": {
+          "count": 19980,
+          "mean": 0.833598016129967
+        },
+        "cosine_before": {
+          "count": 19980,
+          "mean": 0.08200282993346335
+        },
+        "cosine_after": {
+          "count": 19980,
+          "mean": 0.15286010724039562
+        }
+      },
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "records": 6660,
+          "counts": {
+            "conflict": 2689,
+            "capped": 3284,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.4037537537537538,
+            "capped": 0.49309309309309307,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 1.305632119915586
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 1.0745678483690098
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.8489901715119202
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 1.0941737927697042
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.8100008231399156
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.8419185300929469
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.06904954114735558
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.1465707233279266
+            }
+          }
+        },
+        {
+          "model_seed": 2026092702,
+          "records": 6660,
+          "counts": {
+            "conflict": 2645,
+            "capped": 3508,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.39714714714714716,
+            "capped": 0.5267267267267267,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 1.3671380882387572
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 1.2255546512851097
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.9566504754742837
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 1.145197865788339
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.8333360899389853
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.8311235891192962
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.0834039303298556
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.1555185906354962
+            }
+          }
+        },
+        {
+          "model_seed": 2026092703,
+          "records": 6660,
+          "counts": {
+            "conflict": 2461,
+            "capped": 3454,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.3695195195195195,
+            "capped": 0.5186186186186186,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 1.3480913902508065
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 1.1979434596218064
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.9229860992719514
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 1.1567827981018957
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.8282946508026096
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.8277519291776577
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.09355501832317885
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.156491007757764
+            }
+          }
+        }
+      ]
+    },
+    {
+      "method": "HPL_E20_NAMS_JOINT6G",
+      "group": "t2",
+      "source_records": 19980,
+      "counts": {
+        "conflict": 9550,
+        "capped": 13805,
+        "tiny_L": 0
+      },
+      "fractions": {
+        "conflict": 0.477977977977978,
+        "capped": 0.6909409409409409,
+        "tiny_L": 0.0
+      },
+      "means": {
+        "L_norm": {
+          "count": 19980,
+          "mean": 0.16851970234648458
+        },
+        "weighted_U_norm": {
+          "count": 19980,
+          "mean": 0.22377243111438946
+        },
+        "applied_U_norm": {
+          "count": 19980,
+          "mean": 0.14657881231368453
+        },
+        "U_to_L": {
+          "count": 19980,
+          "mean": 1.494217329417822
+        },
+        "applied_U_to_L": {
+          "count": 19980,
+          "mean": 0.9170305507383413
+        },
+        "retained_U_norm": {
+          "count": 19980,
+          "mean": 0.7409759873334992
+        },
+        "cosine_before": {
+          "count": 19980,
+          "mean": 0.0115353585114273
+        },
+        "cosine_after": {
+          "count": 19980,
+          "mean": 0.06571966582460177
+        }
+      },
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "records": 6660,
+          "counts": {
+            "conflict": 3327,
+            "capped": 3932,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.49954954954954955,
+            "capped": 0.5903903903903904,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.1683689923533656
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 0.1898218711642722
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.13731719426189737
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 1.2862567613335452
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.8811028872498639
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.7997079971560086
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.0018614730418002631
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.06570315134065968
+            }
+          }
+        },
+        {
+          "model_seed": 2026092702,
+          "records": 6660,
+          "counts": {
+            "conflict": 3112,
+            "capped": 4754,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.46726726726726725,
+            "capped": 0.7138138138138138,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.17108608095554342
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 0.23428364564752355
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.15230729544710056
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 1.5293397606894523
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.9286170029664212
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.7306306905904058
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.01665544088607622
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.06841839881509909
+            }
+          }
+        },
+        {
+          "model_seed": 2026092703,
+          "records": 6660,
+          "counts": {
+            "conflict": 3111,
+            "capped": 5119,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.4671171171171171,
+            "capped": 0.7686186186186186,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.16610403373054475
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 0.24721177653137258
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.15011194723205565
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 1.6670554662304686
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.9413717619987391
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.6925892742540831
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.016089161606405413
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.06303744731804654
+            }
+          }
+        }
+      ]
+    },
+    {
+      "method": "HPL_E20_NAMS_JOINT6G",
+      "group": "cls_head",
+      "source_records": 19980,
+      "counts": {
+        "conflict": 8100,
+        "capped": 2626,
+        "tiny_L": 0
+      },
+      "fractions": {
+        "conflict": 0.40540540540540543,
+        "capped": 0.13143143143143143,
+        "tiny_L": 0.0
+      },
+      "means": {
+        "L_norm": {
+          "count": 19980,
+          "mean": 0.5637286185675646
+        },
+        "weighted_U_norm": {
+          "count": 19980,
+          "mean": 0.28788423788694756
+        },
+        "applied_U_norm": {
+          "count": 19980,
+          "mean": 0.2689337529782714
+        },
+        "U_to_L": {
+          "count": 19980,
+          "mean": 0.6261585030331173
+        },
+        "applied_U_to_L": {
+          "count": 19980,
+          "mean": 0.574804201658336
+        },
+        "retained_U_norm": {
+          "count": 19980,
+          "mean": 0.9554730211321704
+        },
+        "cosine_before": {
+          "count": 19980,
+          "mean": 0.07538776280513883
+        },
+        "cosine_after": {
+          "count": 19980,
+          "mean": 0.17100249581530852
+        }
+      },
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "records": 6660,
+          "counts": {
+            "conflict": 2793,
+            "capped": 825,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.41936936936936936,
+            "capped": 0.12387387387387387,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.5670802878658325
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 0.2825600663861784
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.26362876899107324
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 0.6123624847875123
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.5621885800745104
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.955010889022629
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.06118488746725439
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.16443560709598237
+            }
+          }
+        },
+        {
+          "model_seed": 2026092702,
+          "records": 6660,
+          "counts": {
+            "conflict": 2689,
+            "capped": 872,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.4037537537537538,
+            "capped": 0.13093093093093094,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.5745083146274623
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 0.2952836887135746
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.27633517691899007
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 0.6289456416897742
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.5782808676570179
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.9560016986377358
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.07735418220409694
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.17217800003528028
+            }
+          }
+        },
+        {
+          "model_seed": 2026092703,
+          "records": 6660,
+          "counts": {
+            "conflict": 2618,
+            "capped": 929,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.3930930930930931,
+            "capped": 0.1394894894894895,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.5495972532093991
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 0.2858089585610896
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.26683731302475094
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 0.6371673826220655
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.5839431572434794
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.9554064757361466
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.08762421874406516
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.17639388031466294
+            }
+          }
+        }
+      ]
+    },
+    {
+      "method": "HPL_E20_NAMS_JOINT6G",
+      "group": "other",
+      "source_records": 19980,
+      "counts": {
+        "conflict": 7931,
+        "capped": 10540,
+        "tiny_L": 0
+      },
+      "fractions": {
+        "conflict": 0.39694694694694693,
+        "capped": 0.5275275275275275,
+        "tiny_L": 0.0
+      },
+      "means": {
+        "L_norm": {
+          "count": 19980,
+          "mean": 1.3252642138810529
+        },
+        "weighted_U_norm": {
+          "count": 19980,
+          "mean": 1.1916273345077886
+        },
+        "applied_U_norm": {
+          "count": 19980,
+          "mean": 0.9191043699586113
+        },
+        "U_to_L": {
+          "count": 19980,
+          "mean": 1.158963398313331
+        },
+        "applied_U_to_L": {
+          "count": 19980,
+          "mean": 0.8313050412657207
+        },
+        "retained_U_norm": {
+          "count": 19980,
+          "mean": 0.828028830002824
+        },
+        "cosine_before": {
+          "count": 19980,
+          "mean": 0.07249145550198399
+        },
+        "cosine_after": {
+          "count": 19980,
+          "mean": 0.14150714567380007
+        }
+      },
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "records": 6660,
+          "counts": {
+            "conflict": 2748,
+            "capped": 3493,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.4126126126126126,
+            "capped": 0.5244744744744745,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 1.2812447582715472
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 1.1168559786895915
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.8684138380272793
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 1.14263537698968
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.8285719389426325
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.830266433938097
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.060056747530402924
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.13417640752250062
+            }
+          }
+        },
+        {
+          "model_seed": 2026092702,
+          "records": 6660,
+          "counts": {
+            "conflict": 2668,
+            "capped": 3535,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.4006006006006006,
+            "capped": 0.5307807807807807,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 1.3391616063981366
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 1.2391264070029362
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.9494652131761968
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 1.1749574552141526
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.8348707101802804
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.8252831675566372
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.072866834830211
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.14417423403738958
+            }
+          }
+        },
+        {
+          "model_seed": 2026092703,
+          "records": 6660,
+          "counts": {
+            "conflict": 2515,
+            "capped": 3512,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.37762762762762764,
+            "capped": 0.5273273273273273,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 1.3553862769734746
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 1.2188996178308384
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.9394340586723575
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 1.15929736273616
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.8304724746742495
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.828536888513738
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.08455078414533806
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.14617079546151004
+            }
+          }
+        }
+      ]
+    },
+    {
+      "method": "HPL_E20_JOINT_COMP6G",
+      "group": "t2",
+      "source_records": 19980,
+      "counts": {
+        "conflict": 9324,
+        "capped": 14685,
+        "tiny_L": 0
+      },
+      "fractions": {
+        "conflict": 0.4666666666666667,
+        "capped": 0.734984984984985,
+        "tiny_L": 0.0
+      },
+      "means": {
+        "L_norm": {
+          "count": 19980,
+          "mean": 0.21518845988448174
+        },
+        "weighted_U_norm": {
+          "count": 19980,
+          "mean": 0.2870079679568141
+        },
+        "applied_U_norm": {
+          "count": 19980,
+          "mean": 0.17508133566414963
+        },
+        "U_to_L": {
+          "count": 19980,
+          "mean": 1.6622753325971353
+        },
+        "applied_U_to_L": {
+          "count": 19980,
+          "mean": 0.9178700253008149
+        },
+        "retained_U_norm": {
+          "count": 19980,
+          "mean": 0.6875818176963105
+        },
+        "cosine_before": {
+          "count": 19980,
+          "mean": 0.026101906481474597
+        },
+        "cosine_after": {
+          "count": 19980,
+          "mean": 0.11407705485956406
+        }
+      },
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "records": 6660,
+          "counts": {
+            "conflict": 3298,
+            "capped": 4316,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.49519519519519517,
+            "capped": 0.648048048048048,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.22468307879752877
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 0.2573320618069784
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.17234199734361344
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 1.4519893538887196
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.8869410243962271
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.7437389743232836
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.006747024470776166
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.10373971763249827
+            }
+          }
+        },
+        {
+          "model_seed": 2026092702,
+          "records": 6660,
+          "counts": {
+            "conflict": 3111,
+            "capped": 5015,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.4671171171171171,
+            "capped": 0.753003003003003,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.2287329480407994
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 0.31339900467547527
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.18642689424509531
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 1.7233919484366358
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.921722557212626
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.6682171153158805
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.031201594110159846
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.1256056462608276
+            }
+          }
+        },
+        {
+          "model_seed": 2026092703,
+          "records": 6660,
+          "counts": {
+            "conflict": 2915,
+            "capped": 5354,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.4376876876876877,
+            "capped": 0.8039039039039039,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.192149352815117
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 0.29029283738798867
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.1664751154037402
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 1.8114446954660508
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.9449464942935918
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.6507893634497673
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.04035710086348778
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.11288580068536633
+            }
+          }
+        }
+      ]
+    },
+    {
+      "method": "HPL_E20_JOINT_COMP6G",
+      "group": "cls_head",
+      "source_records": 19980,
+      "counts": {
+        "conflict": 8117,
+        "capped": 7807,
+        "tiny_L": 0
+      },
+      "fractions": {
+        "conflict": 0.4062562562562563,
+        "capped": 0.3907407407407407,
+        "tiny_L": 0.0
+      },
+      "means": {
+        "L_norm": {
+          "count": 19980,
+          "mean": 0.583024079720136
+        },
+        "weighted_U_norm": {
+          "count": 19980,
+          "mean": 0.46236852101747916
+        },
+        "applied_U_norm": {
+          "count": 19980,
+          "mean": 0.3849986890999491
+        },
+        "U_to_L": {
+          "count": 19980,
+          "mean": 0.9758297568498635
+        },
+        "applied_U_to_L": {
+          "count": 19980,
+          "mean": 0.7771925568337402
+        },
+        "retained_U_norm": {
+          "count": 19980,
+          "mean": 0.88049503420181
+        },
+        "cosine_before": {
+          "count": 19980,
+          "mean": 0.08052526704084327
+        },
+        "cosine_after": {
+          "count": 19980,
+          "mean": 0.16575067095111767
+        }
+      },
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "records": 6660,
+          "counts": {
+            "conflict": 2901,
+            "capped": 2537,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.4355855855855856,
+            "capped": 0.38093093093093094,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.5891341402888747
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 0.46380511155106263
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.38691117543726744
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 0.9690202882683321
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.7746661150778451
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.8823467605340851
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.05566272788372146
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.1483325775553414
+            }
+          }
+        },
+        {
+          "model_seed": 2026092702,
+          "records": 6660,
+          "counts": {
+            "conflict": 2592,
+            "capped": 2631,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.3891891891891892,
+            "capped": 0.39504504504504506,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.5871593965918664
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 0.4716550317419351
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.3914261263929797
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 0.9853594528185261
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.7812875650181954
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.8784139432970517
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.09488979020334457
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.17808700516689085
+            }
+          }
+        },
+        {
+          "model_seed": 2026092703,
+          "records": 6660,
+          "counts": {
+            "conflict": 2624,
+            "capped": 2639,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.393993993993994,
+            "capped": 0.39624624624624627,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.5727787022796672
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 0.4516454197594397
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.3766587654696003
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 0.9731095294627321
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.7756239904051798
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.8807243987742933
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.09102328303546378
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.17083243013112082
+            }
+          }
+        }
+      ]
+    },
+    {
+      "method": "HPL_E20_JOINT_COMP6G",
+      "group": "other",
+      "source_records": 19980,
+      "counts": {
+        "conflict": 7277,
+        "capped": 14257,
+        "tiny_L": 0
+      },
+      "fractions": {
+        "conflict": 0.36421421421421424,
+        "capped": 0.7135635635635635,
+        "tiny_L": 0.0
+      },
+      "means": {
+        "L_norm": {
+          "count": 19980,
+          "mean": 1.5490216544915436
+        },
+        "weighted_U_norm": {
+          "count": 19980,
+          "mean": 1.8701444799773057
+        },
+        "applied_U_norm": {
+          "count": 19980,
+          "mean": 1.1923075036225859
+        },
+        "U_to_L": {
+          "count": 19980,
+          "mean": 1.5863843339859547
+        },
+        "applied_U_to_L": {
+          "count": 19980,
+          "mean": 0.8986152303142396
+        },
+        "retained_U_norm": {
+          "count": 19980,
+          "mean": 0.7002661026644098
+        },
+        "cosine_before": {
+          "count": 19980,
+          "mean": 0.11328075915041354
+        },
+        "cosine_after": {
+          "count": 19980,
+          "mean": 0.18951746790719098
+        }
+      },
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "records": 6660,
+          "counts": {
+            "conflict": 2550,
+            "capped": 4686,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.38288288288288286,
+            "capped": 0.7036036036036036,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 1.5102257760835036
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 1.774190231604109
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 1.140612110705668
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 1.564197820131048
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.8936383169044546
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.7048579605037621
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.09731769174872482
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.17881837563881486
+            }
+          }
+        },
+        {
+          "model_seed": 2026092702,
+          "records": 6660,
+          "counts": {
+            "conflict": 2395,
+            "capped": 4824,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.35960960960960964,
+            "capped": 0.7243243243243244,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 1.5889069982166455
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 1.9654272929530494
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 1.2380370597175108
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 1.6201242077148872
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.9020505718983898
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.6938947965158996
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.1199005568172667
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.19498049847220303
+            }
+          }
+        },
+        {
+          "model_seed": 2026092703,
+          "records": 6660,
+          "counts": {
+            "conflict": 2332,
+            "capped": 4747,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.35015015015015016,
+            "capped": 0.7127627627627627,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 1.5479321891744817
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 1.8708159153747594
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 1.198273340444579
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 1.574830974111929
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.9001568021398746
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.7020455509735677
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.12262402888524908
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.19475352961055506
+            }
+          }
+        }
+      ]
+    },
+    {
+      "method": "HPL_E20_JOINT_PATH6G",
+      "group": "t2",
+      "source_records": 19980,
+      "counts": {
+        "conflict": 9307,
+        "capped": 14487,
+        "tiny_L": 0
+      },
+      "fractions": {
+        "conflict": 0.4658158158158158,
+        "capped": 0.7250750750750751,
+        "tiny_L": 0.0
+      },
+      "means": {
+        "L_norm": {
+          "count": 19980,
+          "mean": 0.23087737942443592
+        },
+        "weighted_U_norm": {
+          "count": 19980,
+          "mean": 0.29761552075580705
+        },
+        "applied_U_norm": {
+          "count": 19980,
+          "mean": 0.1841962252144704
+        },
+        "U_to_L": {
+          "count": 19980,
+          "mean": 1.6310724933734932
+        },
+        "applied_U_to_L": {
+          "count": 19980,
+          "mean": 0.9130524265807539
+        },
+        "retained_U_norm": {
+          "count": 19980,
+          "mean": 0.693109123858658
+        },
+        "cosine_before": {
+          "count": 19980,
+          "mean": 0.027818613121765607
+        },
+        "cosine_after": {
+          "count": 19980,
+          "mean": 0.1203391492048799
+        }
+      },
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "records": 6660,
+          "counts": {
+            "conflict": 3221,
+            "capped": 4229,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.48363363363363365,
+            "capped": 0.634984984984985,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.24123685083068444
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 0.2636366942356599
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.18011009955201887
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 1.4076533207929225
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.879975634066032
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.7529663503350793
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.01577524034021661
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.11407722435527955
+            }
+          }
+        },
+        {
+          "model_seed": 2026092702,
+          "records": 6660,
+          "counts": {
+            "conflict": 3135,
+            "capped": 4959,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.47072072072072074,
+            "capped": 0.7445945945945946,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.24421833655034256
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 0.32193180907635993
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.19487548016766504
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 1.6769616584627958
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.9172930110766881
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.6763445159591404
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.025686848134810144
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.12492845908575573
+            }
+          }
+        },
+        {
+          "model_seed": 2026092703,
+          "records": 6660,
+          "counts": {
+            "conflict": 2951,
+            "capped": 5299,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.4430930930930931,
+            "capped": 0.7956456456456457,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.2071769508922808
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 0.30727805895540133
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.17760309592372736
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 1.8086025008647617
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.9418886345995414
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.6500165052817541
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.041993750890270055
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.12201176417360446
+            }
+          }
+        }
+      ]
+    },
+    {
+      "method": "HPL_E20_JOINT_PATH6G",
+      "group": "cls_head",
+      "source_records": 19980,
+      "counts": {
+        "conflict": 7963,
+        "capped": 7782,
+        "tiny_L": 0
+      },
+      "fractions": {
+        "conflict": 0.39854854854854854,
+        "capped": 0.38948948948948947,
+        "tiny_L": 0.0
+      },
+      "means": {
+        "L_norm": {
+          "count": 19980,
+          "mean": 0.5897254130090749
+        },
+        "weighted_U_norm": {
+          "count": 19980,
+          "mean": 0.4645523405031347
+        },
+        "applied_U_norm": {
+          "count": 19980,
+          "mean": 0.38605537987159866
+        },
+        "U_to_L": {
+          "count": 19980,
+          "mean": 0.9746651938396689
+        },
+        "applied_U_to_L": {
+          "count": 19980,
+          "mean": 0.7747353283647638
+        },
+        "retained_U_norm": {
+          "count": 19980,
+          "mean": 0.8796861957672838
+        },
+        "cosine_before": {
+          "count": 19980,
+          "mean": 0.0867503912534043
+        },
+        "cosine_after": {
+          "count": 19980,
+          "mean": 0.17179608407525476
+        }
+      },
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "records": 6660,
+          "counts": {
+            "conflict": 2844,
+            "capped": 2522,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.42702702702702705,
+            "capped": 0.37867867867867866,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.5933780234252402
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 0.4607201535631622
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.38534815740269235
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 0.9619615190216485
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.7718644858562818
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.8847397205928121
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.06001083524829254
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.14852291416901697
+            }
+          }
+        },
+        {
+          "model_seed": 2026092702,
+          "records": 6660,
+          "counts": {
+            "conflict": 2579,
+            "capped": 2609,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.38723723723723724,
+            "capped": 0.39174174174174176,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.5958827162880781
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 0.4762826276133273
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.39348245721222797
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 0.9866465386173218
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.777859919429894
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.8757297148872489
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.10225833515835078
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.18841235362228564
+            }
+          }
+        },
+        {
+          "model_seed": 2026092703,
+          "records": 6660,
+          "counts": {
+            "conflict": 2540,
+            "capped": 2651,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.3813813813813814,
+            "capped": 0.39804804804804805,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 0.5799154993139063
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 0.45665424033291474
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 0.37933552499987555
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 0.9753875238800358
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.7744815798081157
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.8785891518217902
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.09798200335356957
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.17845298443446164
+            }
+          }
+        }
+      ]
+    },
+    {
+      "method": "HPL_E20_JOINT_PATH6G",
+      "group": "other",
+      "source_records": 19980,
+      "counts": {
+        "conflict": 7415,
+        "capped": 13312,
+        "tiny_L": 0
+      },
+      "fractions": {
+        "conflict": 0.3711211211211211,
+        "capped": 0.6662662662662663,
+        "tiny_L": 0.0
+      },
+      "means": {
+        "L_norm": {
+          "count": 19980,
+          "mean": 1.5566835675964072
+        },
+        "weighted_U_norm": {
+          "count": 19980,
+          "mean": 1.7073926272665085
+        },
+        "applied_U_norm": {
+          "count": 19980,
+          "mean": 1.1779944127100632
+        },
+        "U_to_L": {
+          "count": 19980,
+          "mean": 1.4187411976038493
+        },
+        "applied_U_to_L": {
+          "count": 19980,
+          "mean": 0.8848232656178097
+        },
+        "retained_U_norm": {
+          "count": 19980,
+          "mean": 0.7441624732752772
+        },
+        "cosine_before": {
+          "count": 19980,
+          "mean": 0.10746502652782025
+        },
+        "cosine_after": {
+          "count": 19980,
+          "mean": 0.18385815567649513
+        }
+      },
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "records": 6660,
+          "counts": {
+            "conflict": 2566,
+            "capped": 4369,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.3852852852852853,
+            "capped": 0.656006006006006,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 1.5144585761480687
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 1.600628876734352
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 1.1158890216117903
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 1.3899907398955955
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.8774967810114416
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.7506918655235695
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.09243986273623002
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.17284787553630804
+            }
+          }
+        },
+        {
+          "model_seed": 2026092702,
+          "records": 6660,
+          "counts": {
+            "conflict": 2458,
+            "capped": 4464,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.36906906906906906,
+            "capped": 0.6702702702702703,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 1.6014504213717802
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 1.7880897850332107
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 1.227134494515101
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 1.4371745926363135
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.8887365129242578
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.7407130955185719
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.11147855378196538
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.18831296810125991
+            }
+          }
+        },
+        {
+          "model_seed": 2026092703,
+          "records": 6660,
+          "counts": {
+            "conflict": 2391,
+            "capped": 4479,
+            "tiny_L": 0
+          },
+          "fractions": {
+            "conflict": 0.359009009009009,
+            "capped": 0.6725225225225225,
+            "tiny_L": 0.0
+          },
+          "means": {
+            "L_norm": {
+              "count": 6660,
+              "mean": 1.554141705269373
+            },
+            "weighted_U_norm": {
+              "count": 6660,
+              "mean": 1.7334592200319634
+            },
+            "applied_U_norm": {
+              "count": 6660,
+              "mean": 1.1909597220032988
+            },
+            "U_to_L": {
+              "count": 6660,
+              "mean": 1.4290582602796387
+            },
+            "applied_U_to_L": {
+              "count": 6660,
+              "mean": 0.8882365029177296
+            },
+            "retained_U_norm": {
+              "count": 6660,
+              "mean": 0.7410824587836902
+            },
+            "cosine_before": {
+              "count": 6660,
+              "mean": 0.11847666306526536
+            },
+            "cosine_after": {
+              "count": 6660,
+              "mean": 0.19041362339191742
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "whole_parameter_gradient": [
+    {
+      "method": "HPL_E20_NAMS6G",
+      "metric": "weighted_U_to_L",
+      "count": 19980,
+      "mean": 1.0626571094104416
+    },
+    {
+      "method": "HPL_E20_NAMS6G",
+      "metric": "applied_U_to_L",
+      "count": 19980,
+      "mean": 0.7878937169833024
+    },
+    {
+      "method": "HPL_E20_NAMS6G",
+      "metric": "retained_weighted_U_norm",
+      "count": 19980,
+      "mean": 0.8387608902787257
+    },
+    {
+      "method": "HPL_E20_NAMS_JOINT6G",
+      "metric": "weighted_U_to_L",
+      "count": 19980,
+      "mean": 1.0863779105116935
+    },
+    {
+      "method": "HPL_E20_NAMS_JOINT6G",
+      "metric": "applied_U_to_L",
+      "count": 19980,
+      "mean": 0.7929480633387113
+    },
+    {
+      "method": "HPL_E20_NAMS_JOINT6G",
+      "metric": "retained_weighted_U_norm",
+      "count": 19980,
+      "mean": 0.8323787566263984
+    },
+    {
+      "method": "HPL_E20_JOINT_COMP6G",
+      "metric": "weighted_U_to_L",
+      "count": 19980,
+      "mean": 1.5046446345977664
+    },
+    {
+      "method": "HPL_E20_JOINT_COMP6G",
+      "metric": "applied_U_to_L",
+      "count": 19980,
+      "mean": 0.8810778243477039
+    },
+    {
+      "method": "HPL_E20_JOINT_COMP6G",
+      "metric": "retained_weighted_U_norm",
+      "count": 19980,
+      "mean": 0.711347338564295
+    },
+    {
+      "method": "HPL_E20_JOINT_PATH6G",
+      "metric": "weighted_U_to_L",
+      "count": 19980,
+      "mean": 1.3619433745006193
+    },
+    {
+      "method": "HPL_E20_JOINT_PATH6G",
+      "metric": "applied_U_to_L",
+      "count": 19980,
+      "mean": 0.8693475462288439
+    },
+    {
+      "method": "HPL_E20_JOINT_PATH6G",
+      "metric": "retained_weighted_U_norm",
+      "count": 19980,
+      "mean": 0.7518225650917136
+    }
+  ],
+  "full_evidence": "source_gradient_trajectory_A.json",
+  "measured_stage": "Logged parameter gradients with Uweight6 already included,before commonclip5/AdamW/decay;not actual optimizerstep or an isolated weight6 counterfactual",
+  "U_actual_accuracy": "UNKNOWN;this audit uses neither Utruth nor sourceVpredictions",
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "model_updates": 0,
+  "GPU_workers": 0,
+  "active_jobs_changed": false,
+  "new_training": false,
+  "NONBLOCKING": true,
+  "goal_complete": false,
+  "interpretation": "Logged source gradients quantify projection/cap and weighted-U norm retention before commonclip5/AdamW/decay. They are not optimizerstep magnitudes,an isolated weight counterfactual,or a causal target-performance explanation."
+}
