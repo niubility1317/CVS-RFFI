@@ -1,0 +1,238 @@
+{
+  "status": "VERIFIED_MATCHED_COMPLETE_E21_E30_SOURCE_PREFIX",
+  "registered_utc": "2026-10-24T09:34:50.010971+00:00",
+  "fixed_prefix": "Earliest complete native10 phase E21-E30 for all three fixed seeds of StepGuard and StepNoCap;no source-best epoch selection",
+  "references": [
+    {
+      "run_id": "20261024-phase1-PAMF-HardPL-StepGuard-m3-r01",
+      "execution_commit": "6459bc989343622564e232bbe0f67cd7479946d4",
+      "source_observed_unix": 1792833706.6176689,
+      "parameter_observed_unix": 1792834400.6835127
+    },
+    {
+      "run_id": "20261024-phase1-PAMF-HardPL-StepNoCap-m3-r01",
+      "execution_commit": "147875ade725c293c1415001f13c15ae3fd929fc",
+      "source_observed_unix": 1792833698.4333265,
+      "parameter_observed_unix": 1792834403.031371
+    }
+  ],
+  "rows": [
+    {
+      "run_id": "20261024-phase1-PAMF-HardPL-StepGuard-m3-r01",
+      "method": "HPL_E20_AS_SG2",
+      "row_id": "HPL_E20_AS_SG2-s2026092701",
+      "model_seed": 2026092701,
+      "execution_commit": "6459bc989343622564e232bbe0f67cd7479946d4",
+      "source_epoch_begin": 21,
+      "source_epoch_end": 30,
+      "records": 2220,
+      "source_loss_gzip_closed": true,
+      "parameter_log_gzip_closed": false,
+      "U_seen": 567000,
+      "U_accepted": 529472,
+      "U_acceptance_percent": 93.38130511463845,
+      "reused_U_student_packet_views": 3402000,
+      "generated_native_U_As": 283500,
+      "accepted_As_student_views": 529520,
+      "raw_gradient_norm_cap": 2.0,
+      "raw_cap_groups": {
+        "t2": 1327,
+        "cls_head": 1189,
+        "other": 1094
+      },
+      "actual_parameter_group_fallbacks": 282,
+      "parameter_group_update_slots": 6660,
+      "optimizer_and_projection_window_seconds": 572.1641944500152
+    },
+    {
+      "run_id": "20261024-phase1-PAMF-HardPL-StepGuard-m3-r01",
+      "method": "HPL_E20_AS_SG2",
+      "row_id": "HPL_E20_AS_SG2-s2026092702",
+      "model_seed": 2026092702,
+      "execution_commit": "6459bc989343622564e232bbe0f67cd7479946d4",
+      "source_epoch_begin": 21,
+      "source_epoch_end": 30,
+      "records": 2220,
+      "source_loss_gzip_closed": true,
+      "parameter_log_gzip_closed": true,
+      "U_seen": 567000,
+      "U_accepted": 530374,
+      "U_acceptance_percent": 93.54038800705467,
+      "reused_U_student_packet_views": 3402000,
+      "generated_native_U_As": 283500,
+      "accepted_As_student_views": 530536,
+      "raw_gradient_norm_cap": 2.0,
+      "raw_cap_groups": {
+        "t2": 1391,
+        "cls_head": 1242,
+        "other": 1126
+      },
+      "actual_parameter_group_fallbacks": 252,
+      "parameter_group_update_slots": 6660,
+      "optimizer_and_projection_window_seconds": 326.22455939580686
+    },
+    {
+      "run_id": "20261024-phase1-PAMF-HardPL-StepGuard-m3-r01",
+      "method": "HPL_E20_AS_SG2",
+      "row_id": "HPL_E20_AS_SG2-s2026092703",
+      "model_seed": 2026092703,
+      "execution_commit": "6459bc989343622564e232bbe0f67cd7479946d4",
+      "source_epoch_begin": 21,
+      "source_epoch_end": 30,
+      "records": 2220,
+      "source_loss_gzip_closed": true,
+      "parameter_log_gzip_closed": false,
+      "U_seen": 567000,
+      "U_accepted": 530199,
+      "U_acceptance_percent": 93.50952380952381,
+      "reused_U_student_packet_views": 3402000,
+      "generated_native_U_As": 283500,
+      "accepted_As_student_views": 530280,
+      "raw_gradient_norm_cap": 2.0,
+      "raw_cap_groups": {
+        "t2": 1555,
+        "cls_head": 1227,
+        "other": 1113
+      },
+      "actual_parameter_group_fallbacks": 254,
+      "parameter_group_update_slots": 6660,
+      "optimizer_and_projection_window_seconds": 389.26628253259696
+    },
+    {
+      "run_id": "20261024-phase1-PAMF-HardPL-StepNoCap-m3-r01",
+      "method": "HPL_E20_AS_SGNC",
+      "row_id": "HPL_E20_AS_SGNC-s2026092701",
+      "model_seed": 2026092701,
+      "execution_commit": "147875ade725c293c1415001f13c15ae3fd929fc",
+      "source_epoch_begin": 21,
+      "source_epoch_end": 30,
+      "records": 2220,
+      "source_loss_gzip_closed": true,
+      "parameter_log_gzip_closed": false,
+      "U_seen": 567000,
+      "U_accepted": 529331,
+      "U_acceptance_percent": 93.35643738977072,
+      "reused_U_student_packet_views": 3402000,
+      "generated_native_U_As": 283500,
+      "accepted_As_student_views": 529336,
+      "raw_gradient_norm_cap": null,
+      "raw_cap_groups": {
+        "t2": 0,
+        "cls_head": 0,
+        "other": 0
+      },
+      "actual_parameter_group_fallbacks": 253,
+      "parameter_group_update_slots": 6660,
+      "optimizer_and_projection_window_seconds": 618.5222248795908
+    },
+    {
+      "run_id": "20261024-phase1-PAMF-HardPL-StepNoCap-m3-r01",
+      "method": "HPL_E20_AS_SGNC",
+      "row_id": "HPL_E20_AS_SGNC-s2026092702",
+      "model_seed": 2026092702,
+      "execution_commit": "147875ade725c293c1415001f13c15ae3fd929fc",
+      "source_epoch_begin": 21,
+      "source_epoch_end": 30,
+      "records": 2220,
+      "source_loss_gzip_closed": true,
+      "parameter_log_gzip_closed": false,
+      "U_seen": 567000,
+      "U_accepted": 529802,
+      "U_acceptance_percent": 93.4395061728395,
+      "reused_U_student_packet_views": 3402000,
+      "generated_native_U_As": 283500,
+      "accepted_As_student_views": 529992,
+      "raw_gradient_norm_cap": null,
+      "raw_cap_groups": {
+        "t2": 0,
+        "cls_head": 0,
+        "other": 0
+      },
+      "actual_parameter_group_fallbacks": 258,
+      "parameter_group_update_slots": 6660,
+      "optimizer_and_projection_window_seconds": 464.73125278321095
+    },
+    {
+      "run_id": "20261024-phase1-PAMF-HardPL-StepNoCap-m3-r01",
+      "method": "HPL_E20_AS_SGNC",
+      "row_id": "HPL_E20_AS_SGNC-s2026092703",
+      "model_seed": 2026092703,
+      "execution_commit": "147875ade725c293c1415001f13c15ae3fd929fc",
+      "source_epoch_begin": 21,
+      "source_epoch_end": 30,
+      "records": 2220,
+      "source_loss_gzip_closed": true,
+      "parameter_log_gzip_closed": false,
+      "U_seen": 567000,
+      "U_accepted": 530179,
+      "U_acceptance_percent": 93.50599647266314,
+      "reused_U_student_packet_views": 3402000,
+      "generated_native_U_As": 283500,
+      "accepted_As_student_views": 530300,
+      "raw_gradient_norm_cap": null,
+      "raw_cap_groups": {
+        "t2": 0,
+        "cls_head": 0,
+        "other": 0
+      },
+      "actual_parameter_group_fallbacks": 251,
+      "parameter_group_update_slots": 6660,
+      "optimizer_and_projection_window_seconds": 458.2940877764486
+    }
+  ],
+  "summary": [
+    {
+      "method": "HPL_E20_AS_SG2",
+      "completed_seeds": 3,
+      "source_records": 6660,
+      "U_seen": 1701000,
+      "U_accepted": 1590045,
+      "exposure_weighted_U_acceptance_percent": 93.47707231040565,
+      "raw_gradient_norm_cap": 2.0,
+      "raw_cap_group_steps": {
+        "t2": 4273,
+        "cls_head": 3658,
+        "other": 3333
+      },
+      "raw_cap_group_step_percent": {
+        "t2": 64.15915915915916,
+        "cls_head": 54.92492492492492,
+        "other": 50.04504504504504
+      },
+      "actual_parameter_group_fallbacks": 788,
+      "parameter_group_update_slots": 19980,
+      "parameter_group_fallback_percent": 3.943943943943944
+    },
+    {
+      "method": "HPL_E20_AS_SGNC",
+      "completed_seeds": 3,
+      "source_records": 6660,
+      "U_seen": 1701000,
+      "U_accepted": 1589312,
+      "exposure_weighted_U_acceptance_percent": 93.4339800117578,
+      "raw_gradient_norm_cap": null,
+      "raw_cap_group_steps": {
+        "t2": 0,
+        "cls_head": 0,
+        "other": 0
+      },
+      "raw_cap_group_step_percent": {
+        "t2": 0.0,
+        "cls_head": 0.0,
+        "other": 0.0
+      },
+      "actual_parameter_group_fallbacks": 762,
+      "parameter_group_update_slots": 19980,
+      "parameter_group_fallback_percent": 3.813813813813814
+    }
+  ],
+  "total_source_records": 13320,
+  "new_model_IQ_V_Utruth_target_G_reads": 0,
+  "new_training_updates": 0,
+  "healthy_training_changed": false,
+  "target_scores_read": false,
+  "source_final_training_complete": false,
+  "target_matrix_complete": false,
+  "goal_complete": false,
+  "interpretation": "Posthoc execution observation only,no new scientific promotion gate or parameter change.The complete 2220 flushed parameter records per segment are checked;their gzip footer is closed by the outer installed scope after both native stages finish.Final source freeze still requires both gzip files closed.Exposure acceptance is not unique sample coverage or U correctness.Raw norm caps and per-group parameter fallbacks are not rejected sample counts.Different source trajectories and shared GPU schedules preclude speed or target claims."
+}

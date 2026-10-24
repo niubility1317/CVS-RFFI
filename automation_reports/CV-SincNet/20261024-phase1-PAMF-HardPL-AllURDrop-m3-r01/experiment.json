@@ -301,5 +301,10 @@
     "source_smoke": "PENDING",
     "actual_GPU_workers": 0,
     "target_matrix_complete": false
+  },
+  "matched_source_prefix_observation": {
+    "status": "VERIFIED_MATCHED_COMPLETE_E21_E30_SOURCE_PREFIX",
+    "reference": "source_matched_E21_E30_observation.json",
+    "new_training_or_target_reads": false
   }
 }
