@@ -1,0 +1,276 @@
+{
+  "status": "VERIFIED_REAL_E20_SMOKE_AND_FIRST_SOURCE_START",
+  "run_id": "20261024-phase1-PAMF-HardPL-BalancedCE-m3-r01",
+  "execution_commit": "0276faf2f9da7845be71e34cfce4a2d92e4e905c",
+  "observed_unix": 1792812486.9805846,
+  "controller_identity_verified": true,
+  "source_smoke": {
+    "status": "PASS",
+    "methods": [
+      {
+        "method": "HPL_E20_AS_BCE6G",
+        "model_seed": 2026092702,
+        "parent_epoch": 20,
+        "parent_updates": 4440,
+        "L_forward_packets": 768,
+        "U_seen": 256,
+        "U_accepted": 239,
+        "student_U_views": 1536,
+        "physical_U_generated": 128,
+        "physical_student_views": 256,
+        "raw_U_As_seen": 0,
+        "U_As_raw_input_matches": false,
+        "source_Practical_generated": 192,
+        "contrast_anchors": {
+          "time_down": 478,
+          "t2.pool": 478
+        },
+        "shallow_middle_gradient": true,
+        "ordinary_raw_RDrop": true,
+        "As_KL_weight": 0,
+        "weight": 6.0,
+        "threshold": 0.95,
+        "EMA_updates": 0,
+        "finite_backward": true,
+        "default_head_gradient": true,
+        "feature_hooks_removed": true,
+        "U_label_smoothing": 0.01,
+        "U_style": {
+          "recipe": {
+            "levels": [
+              "time_down",
+              "t2.pool"
+            ],
+            "alpha": 0.1,
+            "probability_per_level": 0.5,
+            "eps": 1e-06,
+            "accepted_only": true,
+            "same_hard_pseudo": true,
+            "different_source_RX": true,
+            "detached_moments": true
+          },
+          "calls": 6,
+          "seen": 1536,
+          "eligible": 1434,
+          "applied": {
+            "time_down": 1434,
+            "t2.pool": 1434
+          },
+          "persistent_hooks": false,
+          "teacher_or_L_style_calls": 0,
+          "partner_TX_truth_reads": 0,
+          "shared_six_forward_plan": true,
+          "plan_calls": 1,
+          "contrast_captures_after_style": true
+        },
+        "U_gradient_guard": {
+          "recipe": {
+            "weight": 6.0,
+            "projection": "one_sided_per_group",
+            "groups": [
+              "t2",
+              "cls_head",
+              "other"
+            ],
+            "U_to_L_norm_cap": 1.0,
+            "tiny_L_squared_norm": 1e-12,
+            "anchor": "complete_current_L_objective",
+            "optimizer": "unchanged_native_Adam",
+            "extra_teacher_or_student_forward": false
+          },
+          "calls": 1,
+          "conflicts": {
+            "t2": 1,
+            "cls_head": 1,
+            "other": 1
+          },
+          "caps": {
+            "t2": 1,
+            "cls_head": 1,
+            "other": 1
+          },
+          "pending_U_loss": false
+        },
+        "gradient_guard_details": {
+          "t2": {
+            "L_norm": 0.11966296282186965,
+            "U_norm": 0.6874117533589303,
+            "applied_U_norm": 0.11966296282186967,
+            "dot_before": -0.021397520017564783,
+            "dot_after": -7.228885462370058e-11,
+            "conflict": true,
+            "capped": true,
+            "tiny_L": false
+          },
+          "cls_head": {
+            "L_norm": 0.44818400224173227,
+            "U_norm": 1.3114179459135962,
+            "applied_U_norm": 0.4481840022417323,
+            "dot_before": -0.25463368167629896,
+            "dot_after": 2.374224061628275e-09,
+            "conflict": true,
+            "capped": true,
+            "tiny_L": false
+          },
+          "other": {
+            "L_norm": 0.8254617627191452,
+            "U_norm": 2.9885849324540144,
+            "applied_U_norm": 0.8254617627191452,
+            "dot_before": -1.1824111070451766,
+            "dot_after": 3.111170167988327e-09,
+            "conflict": true,
+            "capped": true,
+            "tiny_L": false
+          }
+        },
+        "explicit_backward_matches": true,
+        "complete_L_anchor": true,
+        "U_joint_contrast": {
+          "recipe": {
+            "feature": "actual_CompositeReference_features_joint160",
+            "weight": 0.05,
+            "CE_normalizer": 1.25,
+            "student_views": "first_two_ordinary_U_passes",
+            "accepted_only": true,
+            "positive": "same_pseudo_different_source_RX",
+            "contrast": "same_native_CROSS_RX_temperature0.2",
+            "extra_forward": false,
+            "new_head": false
+          },
+          "calls": 1,
+          "captures": 2,
+          "captured_packets": 512,
+          "anchors": 478,
+          "extra_forward_calls": 0,
+          "teacher_or_L_captures": 0,
+          "persistent_feature_wrapper": false
+        },
+        "U_joint_signature_gradient_norm": 0.3706862358662296,
+        "joint160_gradient": true,
+        "joint_feature_wrapper_removed": true,
+        "U_native_As": {
+          "recipe": {
+            "generator": "same_native_source_Practical_as_supervised_L",
+            "physical_half": "same_original_alternating_half",
+            "pseudo_labels": "original_raw_argmax",
+            "raw_gate": 0.95,
+            "augmented_view_gate": null,
+            "raw_fallback": false,
+            "CE_and_KL_coefficients_unchanged": true,
+            "CE_normalizer": 1.25,
+            "student_U_passes": 6,
+            "extra_As_teacher": 0,
+            "extra_student_forwards": 0,
+            "new_head": false
+          },
+          "calls": 1,
+          "generated": 128,
+          "student_physical_views": 256,
+          "raw_accepted_half": 120,
+          "accepted_student_views": 240,
+          "raw_fallback": 0,
+          "extra_As_teacher": 0,
+          "all_raw_accepted_retained": true,
+          "extra_student_forwards": 0,
+          "new_head": false,
+          "EMA_updates": 0,
+          "U_truth_read": false,
+          "CE_dose_normalizer": 1.25
+        },
+        "native_As_input_matches": true,
+        "nonphysical_ordinary_input_matches": true,
+        "teacher_U_raw_views": 256,
+        "teacher_U_As_views": 0,
+        "teacher_U_total_views": 256,
+        "all_raw_accepted_retained": true,
+        "CE_and_KL_coefficients_unchanged": true,
+        "U_balanced_CE": {
+          "recipe": {
+            "counts": "current_raw_accepted_pseudo_class_and_actual_source_RX",
+            "inverse_frequency": "sqrt(A/(C*n_class)*A/(R*n_RX))",
+            "normalize": "mean_accepted_one",
+            "mixing": "min(0.5,0.5/(max(normalized_ratio)-1))",
+            "minimum": 0.5,
+            "maximum": 1.5,
+            "scope": "CE_only_same_weights_on_all_six_existing_student_logits",
+            "raw_gate": 0.95,
+            "ordinary_pair_coefficient": 0.5,
+            "mixed_pair_coefficient": 0.5,
+            "raw_pair_coefficient": 0.25,
+            "CE_normalizer": 1.25,
+            "label_smoothing": 0.01,
+            "extra_CE_kernels_per_step": 6,
+            "extra_teacher": 0,
+            "extra_backbone": 0,
+            "extra_head": 0,
+            "persistent_statistics": false,
+            "new_head": false
+          },
+          "calls": 1,
+          "captures": 6,
+          "captured_packet_views": 1536,
+          "extra_CE_kernels": 6,
+          "accepted": 239,
+          "accepted_weight_mass": 239.0,
+          "minimum_weight": 0.9307778549239529,
+          "maximum_weight": 1.1706928622633073,
+          "max_batch_dose_error": 0.0,
+          "all_raw_accepted_retained": true,
+          "raw_acceptance_changed": false,
+          "extra_teacher": 0,
+          "extra_backbone": 0,
+          "extra_head": 0,
+          "new_head": false,
+          "persistent_context": false,
+          "EMA_updates": 0,
+          "prototype_updates": 0,
+          "U_truth_reads": 0,
+          "target_reads": 0,
+          "CE_dose_normalizer": 1.25
+        },
+        "current_accepted_weights_match": true,
+        "accepted_CE_mass_preserved": true,
+        "all_six_logits_reused": true,
+        "CE_delta": 0.0006500936578959227,
+        "extra_teacher_backbone_head_forwards": 0
+      }
+    ],
+    "target_reads": 0,
+    "U_truth_reads": 0,
+    "probe_updates_discarded": true,
+    "formal_reload_original_parent_epoch": 20,
+    "formal_reload_original_F21_E30": false,
+    "immediate_continuation": true
+  },
+  "actual_new_GPU_workers": 1,
+  "actual_formal_rows_with_checked_prefix": [
+    {
+      "row_id": "HPL_E20_AS_BCE6G-s2026092702",
+      "model_seed": 2026092702,
+      "gpu": 6,
+      "process_identity_verified": true,
+      "log_growth_bytes": 6698,
+      "checked_source_step_records": 75,
+      "cumulative_updates": 4515,
+      "raw_accepted": 17802,
+      "native_As_generated": 9600,
+      "native_As_accepted_student_views": 17786
+    }
+  ],
+  "remaining_rows": [
+    {
+      "row_id": "HPL_E20_AS_BCE6G-s2026092701",
+      "status": "QUEUED"
+    },
+    {
+      "row_id": "HPL_E20_AS_BCE6G-s2026092703",
+      "status": "QUEUED"
+    }
+  ],
+  "all_three_started": false,
+  "source_matrix_complete": false,
+  "target_matrix_complete": false,
+  "target_scores_read": false,
+  "healthy_processes_changed": false,
+  "goal_complete": false
+}
