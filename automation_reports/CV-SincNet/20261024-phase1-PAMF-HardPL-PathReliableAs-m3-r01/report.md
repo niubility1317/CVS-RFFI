@@ -56,3 +56,18 @@ VERIFIED_SOURCE_FINAL：每个模型严格从原同 seed E20 开始，原生10�
 | 2026092703 | 99.916428 | 99.919249 | 93.066667 | 96.318519 | 21 |
 
 上表门控均为 0.95；0.98 对照及完整 TX／RX／day 分层保留在 source_pseudo_quality_E50_HPL_E20_PATH_RAS6G.json。不依据微小源域变化选 checkpoint 或修改当前配方，完整预登记 raw／DURA 目标矩阵继续。
+
+
+## 完整目标测试结果
+
+ANALYZED：各方法三个seed，共3模型、42项raw／固定DURA七景决策均完成独立truth-last评分，六个匹配监督／普通PL对照模型完整复用。逐景／seed／SD／Macro-F1／RX／TX／day、修复损伤及曝光／成本见target_results.md和附属完整表。原raw双门槛尚未满足，研发目标仍ACTIVE。
+
+HPL_E20_PATH_RAS6G / raw clean：84.821031746% ± 0.240887153%（三个模型 seed 样本 SD）。
+HPL_E20_PATH_RAS6G / DURA-LU clean：84.932142857% ± 0.229893714%（三个模型 seed 样本 SD）。
+HPL_E20_PATH_RAS6G / raw six_mean：70.758399471% ± 0.657061538%（三个模型 seed 样本 SD）。
+HPL_E20_PATH_RAS6G / DURA-LU six_mean：76.386342593% ± 0.711450400%（三个模型 seed 样本 SD）。
+
+不依据本结果热改健康旧任务或替换父来源。
+
+
+HPL_E20_PATH_RAS6G 固定匹配比较完成，见 HPL_E20_PATH_RAS6G_matched_comparison.md；比较不替代原主目标或全六行完成状态，无目标反馈改配方。

@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_REAL_E20_SMOKE_AND_FIRST_SOURCE_START",
+  "status": "VERIFIED_REAL_E20_NATIVE_AS_SMOKE_AND_ALL3_SOURCE_RUNNING",
   "focused_tests": 119,
   "independent_review": {
     "status": "PASS",
@@ -9,7 +9,7 @@
     "scope": "Direct wrong/unauthorized/destructive/unlaunchable/illegal-prediction defects in the next NativeAs run only",
     "actual_reviewer_response": "PASS，未发现本次范围内的 P0/P1。U 半批直接使用原生 As，未增加门控、回退或 teacher/学生前向；两段聚合、物理曝光计数、smoke 梯度检查及 GPU/评分队列衔接符合约定。"
   },
-  "real_checkpoint_smoke": "PASS;first matching originalE20 nativeAs/fullLguard/forwardbudget",
+  "real_checkpoint_smoke": "PASS;actualnativeAs half/acceptedmask/noextra teacher/physicalbudget/jointsignature/fullLguard/originalE20reload;source_activation.json",
   "RAS_Combo_RXE_target_scores_read": false,
   "actual_started_source_rows": 1,
   "all_three_started": false
