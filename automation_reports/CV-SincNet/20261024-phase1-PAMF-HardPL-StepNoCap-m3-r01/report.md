@@ -19,3 +19,8 @@ N607普通账户/CPU2/FP32TF32off，GPU5/6/7固定seed2701/02/03，每卡最多2
 
 
 独立发布后核验：VERIFIED_REAL_E20_STEP_NO_CAP_SMOKE_AND_ALL3_SOURCE_RUNNING，执行commit `147875ade725c293c1415001f13c15ae3fd929fc`，实际正式GPU worker 3。源检查 PASS；详见 source_activation.json。验证以实际PID/CWD/完整命令/GPU/日志及参数更新记录为据，排队、探针或源前缀均不代表目标达成。保留健康任务，自动训练、raw与固定DURA七景、独立truth-last继续按原矩阵执行。
+
+
+首轮真实参数更新已核实：三个固定 seed 均至少完成新增阶段的首个完整源 epoch（累计≥E21）。逐条检查当前已刷出的完整 native 损失记录及实际FP32参数更新记录，三组非微小监督锚点约束和不扩张检查均通过。组级量化回退按固定规则记录，没有热改配方、门槛或接受mask。完整逐组回退／零增量／保留率见 source_first_epoch_observation.json；整体范数用原参数坐标，不能代表各组重要性或物理量保留。
+
+计时澄清：参数日志的seconds及source_activation的optimizer_and_projection_window_seconds，窗口包含L参考、真实joint物理裁剪/AdamW及投影，截止日志序列化之前，不是纯额外开销，也不包含模型前向/反向。完整训练实际耗时待三seed源训练结束后按匹配记录报告。当前只是源前缀，不代表训练结束、监督损失单调或目标达标。

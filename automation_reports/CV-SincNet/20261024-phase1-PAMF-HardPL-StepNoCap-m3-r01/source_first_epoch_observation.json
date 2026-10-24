@@ -1,0 +1,262 @@
+{
+  "status": "VERIFIED_ALL3_INITIAL_SOURCE_EPOCH_ACTUAL_PARAMETER_UPDATES",
+  "run_id": "20261024-phase1-PAMF-HardPL-StepNoCap-m3-r01",
+  "execution_commit": "147875ade725c293c1415001f13c15ae3fd929fc",
+  "registered_utc": "2026-10-24T08:09:04.423743+00:00",
+  "observations_unix": {
+    "process": 1792829275.0641642,
+    "source": 1792829262.4780564,
+    "parameters": 1792829260.7862751
+  },
+  "rows": [
+    {
+      "row_id": "HPL_E20_AS_SGNC-s2026092701",
+      "model_seed": 2026092701,
+      "gpu": 5,
+      "process_identity_verified": true,
+      "cumulative_epoch": 21,
+      "complete_native_loss_records": 373,
+      "complete_parameter_update_records": 379,
+      "raw_accepted": 88020,
+      "U_seen": 95356,
+      "native_As_generated": 47678,
+      "native_As_accepted_student_views": 88102,
+      "branch_gradient_calls": 1492,
+      "branch_extra_autograd_calls": 746,
+      "fallback_groups": 4,
+      "group_totals": {
+        "t2": {
+          "steps": 379,
+          "fallback_groups": 3,
+          "tiny_L_steps": 0,
+          "passthrough_steps": 285,
+          "zero_raw_increment_steps": 0,
+          "zero_applied_increment_steps": 3,
+          "minimum_norm_retention": 0.0,
+          "before_material_conflicts": {
+            "L_full": 28,
+            "L_clean": 71,
+            "L_As": 37
+          },
+          "after_material_conflicts": {
+            "L_full": 0,
+            "L_clean": 0,
+            "L_As": 0
+          },
+          "mean_norm_retention": 0.9915084984508973
+        },
+        "cls_head": {
+          "steps": 379,
+          "fallback_groups": 1,
+          "tiny_L_steps": 0,
+          "passthrough_steps": 224,
+          "zero_raw_increment_steps": 0,
+          "zero_applied_increment_steps": 1,
+          "minimum_norm_retention": 0.0,
+          "before_material_conflicts": {
+            "L_full": 70,
+            "L_clean": 106,
+            "L_As": 87
+          },
+          "after_material_conflicts": {
+            "L_full": 0,
+            "L_clean": 0,
+            "L_As": 0
+          },
+          "mean_norm_retention": 0.9968389867754722
+        },
+        "other": {
+          "steps": 379,
+          "fallback_groups": 0,
+          "tiny_L_steps": 0,
+          "passthrough_steps": 263,
+          "zero_raw_increment_steps": 0,
+          "zero_applied_increment_steps": 0,
+          "minimum_norm_retention": 0.999886868171989,
+          "before_material_conflicts": {
+            "L_full": 38,
+            "L_clean": 82,
+            "L_As": 40
+          },
+          "after_material_conflicts": {
+            "L_full": 0,
+            "L_clean": 0,
+            "L_As": 0
+          },
+          "mean_norm_retention": 0.9999985662890885
+        }
+      },
+      "minimum_whole_increment_retention": 0.9998778989690806,
+      "optimizer_and_projection_window_seconds": 104.37150884326547
+    },
+    {
+      "row_id": "HPL_E20_AS_SGNC-s2026092702",
+      "model_seed": 2026092702,
+      "gpu": 6,
+      "process_identity_verified": true,
+      "cumulative_epoch": 22,
+      "complete_native_loss_records": 450,
+      "complete_parameter_update_records": 452,
+      "raw_accepted": 106480,
+      "U_seen": 114936,
+      "native_As_generated": 57468,
+      "native_As_accepted_student_views": 106534,
+      "branch_gradient_calls": 1800,
+      "branch_extra_autograd_calls": 900,
+      "fallback_groups": 6,
+      "group_totals": {
+        "t2": {
+          "steps": 452,
+          "fallback_groups": 2,
+          "tiny_L_steps": 0,
+          "passthrough_steps": 334,
+          "zero_raw_increment_steps": 0,
+          "zero_applied_increment_steps": 2,
+          "minimum_norm_retention": 0.0,
+          "before_material_conflicts": {
+            "L_full": 36,
+            "L_clean": 85,
+            "L_As": 49
+          },
+          "after_material_conflicts": {
+            "L_full": 0,
+            "L_clean": 0,
+            "L_As": 0
+          },
+          "mean_norm_retention": 0.9951367664928344
+        },
+        "cls_head": {
+          "steps": 452,
+          "fallback_groups": 4,
+          "tiny_L_steps": 0,
+          "passthrough_steps": 278,
+          "zero_raw_increment_steps": 0,
+          "zero_applied_increment_steps": 4,
+          "minimum_norm_retention": 0.0,
+          "before_material_conflicts": {
+            "L_full": 72,
+            "L_clean": 114,
+            "L_As": 90
+          },
+          "after_material_conflicts": {
+            "L_full": 0,
+            "L_clean": 0,
+            "L_As": 0
+          },
+          "mean_norm_retention": 0.9902182880112541
+        },
+        "other": {
+          "steps": 452,
+          "fallback_groups": 0,
+          "tiny_L_steps": 0,
+          "passthrough_steps": 350,
+          "zero_raw_increment_steps": 0,
+          "zero_applied_increment_steps": 0,
+          "minimum_norm_retention": 0.9997599796284213,
+          "before_material_conflicts": {
+            "L_full": 41,
+            "L_clean": 73,
+            "L_As": 39
+          },
+          "after_material_conflicts": {
+            "L_full": 0,
+            "L_clean": 0,
+            "L_As": 0
+          },
+          "mean_norm_retention": 0.9999985205648328
+        }
+      },
+      "minimum_whole_increment_retention": 0.9997422502850426,
+      "optimizer_and_projection_window_seconds": 93.0361716162879
+    },
+    {
+      "row_id": "HPL_E20_AS_SGNC-s2026092703",
+      "model_seed": 2026092703,
+      "gpu": 7,
+      "process_identity_verified": true,
+      "cumulative_epoch": 22,
+      "complete_native_loss_records": 456,
+      "complete_parameter_update_records": 459,
+      "raw_accepted": 107875,
+      "U_seen": 116472,
+      "native_As_generated": 58236,
+      "native_As_accepted_student_views": 107946,
+      "branch_gradient_calls": 1824,
+      "branch_extra_autograd_calls": 912,
+      "fallback_groups": 5,
+      "group_totals": {
+        "t2": {
+          "steps": 459,
+          "fallback_groups": 3,
+          "tiny_L_steps": 0,
+          "passthrough_steps": 342,
+          "zero_raw_increment_steps": 0,
+          "zero_applied_increment_steps": 3,
+          "minimum_norm_retention": 0.0,
+          "before_material_conflicts": {
+            "L_full": 48,
+            "L_clean": 83,
+            "L_As": 58
+          },
+          "after_material_conflicts": {
+            "L_full": 0,
+            "L_clean": 0,
+            "L_As": 0
+          },
+          "mean_norm_retention": 0.9924894399111387
+        },
+        "cls_head": {
+          "steps": 459,
+          "fallback_groups": 1,
+          "tiny_L_steps": 0,
+          "passthrough_steps": 289,
+          "zero_raw_increment_steps": 0,
+          "zero_applied_increment_steps": 1,
+          "minimum_norm_retention": 0.0,
+          "before_material_conflicts": {
+            "L_full": 65,
+            "L_clean": 99,
+            "L_As": 104
+          },
+          "after_material_conflicts": {
+            "L_full": 0,
+            "L_clean": 0,
+            "L_As": 0
+          },
+          "mean_norm_retention": 0.9967707893394782
+        },
+        "other": {
+          "steps": 459,
+          "fallback_groups": 1,
+          "tiny_L_steps": 0,
+          "passthrough_steps": 333,
+          "zero_raw_increment_steps": 0,
+          "zero_applied_increment_steps": 1,
+          "minimum_norm_retention": 0.0,
+          "before_material_conflicts": {
+            "L_full": 57,
+            "L_clean": 88,
+            "L_As": 64
+          },
+          "after_material_conflicts": {
+            "L_full": 0,
+            "L_clean": 0,
+            "L_As": 0
+          },
+          "mean_norm_retention": 0.9978185604106586
+        }
+      },
+      "minimum_whole_increment_retention": 0.014775696450849168,
+      "optimizer_and_projection_window_seconds": 94.87098315125331
+    }
+  ],
+  "all_three_source_first_epoch_complete": true,
+  "source_training_complete": false,
+  "target_matrix_complete": false,
+  "interpretation": "Every complete flushed record in each observed source prefix checked,not a sample.No new model/IQ/V/Utruth/target/G reads.This is an early prefix,not a whole trajectory or performance result.",
+  "norm_units": "Retentions use native FP32 parameter coordinates.Per-group values and zero/fallback counts are retained;the whole-vector ratio is not an importance-weighted or physical-unit measure.",
+  "timing": "The optimizer/projection window includes the disposable L reference plus real joint physical clip/AdamW and the projection,ending before log serialization.It excludes forward/backward and is not pure extra overhead or total training cost.The NoCap source_activation uses the explicit optimizer_and_projection_window_seconds field.",
+  "actual_whole_training_cost": "Only completed matched source runs can provide full elapsed comparisons;shared-GPU wallclock is not exclusive GPU-hours.",
+  "training_or_recipe_changed": false,
+  "goal_complete": false
+}
