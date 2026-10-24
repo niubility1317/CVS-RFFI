@@ -130,7 +130,11 @@ class BranchDiagnostic(GuardedNativeAs):
             observed=actual[name]
             if ((value is None)!=(observed is None) or value is not None
                     and not torch.allclose(value,observed,rtol=3e-4,atol=2e-6)):
-                raise ValueError('Component gradient sum differs from original complete-L/U guard')
+                diagnostic=dict(parameter=name,component_sum_is_none=value is None,original_is_none=observed is None)
+                if value is not None and observed is not None:
+                    diagnostic.update(max_absolute_difference=float((value-observed).abs().max()),
+                        component_sum_max_absolute=float(value.abs().max()),original_max_absolute=float(observed.abs().max()))
+                raise ValueError('Component gradient sum differs from original complete-L/U guard: '+repr(diagnostic))
         facts.update(original_full_gradient_bridge_matches=True,all_six_U_logits_reused=True,
                      L_pair_calls=len(_PAIRS.get()),U_logits_captured=len(logits),raw_accepted=int(accepted.sum()))
         self.source_branch_facts=facts;self.branch_logits=[]
