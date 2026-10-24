@@ -21,3 +21,13 @@ NativeAs正式目标84.831944/72.264385与DURA84.944444/77.428439已知；本轮
 真实原 E20 检查及首批启动已独立核实：VERIFIED，执行 commit `61b942a4d922d41ff235707534169074293ec565`，检查 seed 2026092702，L768/U1536/rawteacher256/As128/物理学生256/Practical192，完整 L 显式梯度、joint 签名梯度和临时 hook 清除通过。探针丢弃，正式重新加载原 E20。目前实际 1 个正式 GPU worker 已有正源步骤，并核实 PID/CWD/命令/GPU/日志增长；其余仍排队。完整事实见 first_source_start.json；首个启动不能当作三种子全部启动或测试成功。
 
 真实分支保护检查同时核对完整L/非物理L/物理L锚点、四Lpair、四导数加joint检查1次及实际dtype约束；每步额外两次L导数，无额外前向，完整L只应用一次，临时context退出。
+
+
+分支同时保护真实检查：逐组U范数≤2L、负点积投影、一次完整L显式梯度均符合，至少一组真实U>L，每步额外两次L分支导数，无额外前向。固定半批生成128，两个原mixed学生实际使用256条物理视图，rawAs回退0；原rawteacher256，无增强视图evalteacher或额外学生前向，原接受mask和CE1.25保持。原生As输入及非物理ordinary输入匹配，生成成本与有效As CE视图2×rawacceptedhalf分别记录；没有用排队或预期计数代替实际训练证据。
+
+
+## 真实原 E20 检查通过并实际启动三种子
+
+VERIFIED：发布commit `61b942a4d922d41ff235707534169074293ec565` 的真实原E20 GPU source smoke PASS。实际joint160两次捕获512条已有Upacket，跨RX有效anchors=478；实际签名sequence_pool辅助梯度范数=0.370686237且有限非零，原L768／U1536／rawAs0／U As生成128／物理学生256／LPractical64＋U128、共享style计划、完整L guard参数梯度与显式期望相同及临时wrapper退出均符合。探针丢弃，正式行重新加载原E20。
+
+三个seed已按GPU5/6/7启动并实际产生原生joint／guard源步骤；独立核实进程／CWD／完整命令／GPU及日志增长，逐行现有U复用计数见source_activation.json。只按原矩阵接替释放卡位；当前是训练前缀，不代表全部源训练结束或目标收益。训练、raw＋固定DURA七景及truth-last继续自动执行，goal ACTIVE。

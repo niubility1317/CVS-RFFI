@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_REAL_E20_SMOKE_AND_FIRST_SOURCE_START",
+  "status": "VERIFIED_REAL_E20_BRANCH_GUARD_SMOKE_AND_ALL3_SOURCE_RUNNING",
   "focused_checks": [
     {
       "evidence": "hard_pl_branch_guard_focused_tests.xml",
@@ -19,7 +19,7 @@
     "scope": "Direct wrong/unauthorized/destructive/unlaunchable/illegal-prediction or false-evidence defects in the next fixed BranchGuard training run only",
     "actual_reviewer_response": "PASS，未发现本次范围内的 P0/P1。四个 L pair 捕获、四次导数和完整 L 单次桥接正确；QR/SVD 候选经过实际 cast 约束检查。两段汇总、PID 预留、评分串接及冻结预测接口符合约定。"
   },
-  "real_checkpoint_smoke": "PASS;first matching originalE20 nativeAs/fullLguard/forwardbudget",
+  "real_checkpoint_smoke": "PASS;actualnativeAs half/acceptedmask/noextra teacher/physicalbudget/jointsignature/fullLguard/originalE20reload;source_activation.json",
   "actual_started_source_rows": 1,
   "all_three_started": false
 }
