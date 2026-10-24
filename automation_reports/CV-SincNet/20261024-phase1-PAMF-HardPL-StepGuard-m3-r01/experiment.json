@@ -304,5 +304,18 @@
     "reference": "source_first_epoch_observation.json",
     "status": "VERIFIED_ALL3_INITIAL_SOURCE_EPOCH_ACTUAL_PARAMETER_UPDATES",
     "target_matrix_complete": false
+  },
+  "source_uncapped_step": {
+    "status": "REGISTERED_NONBLOCKING_SOURCE_UNCAPPED_STEP",
+    "reference": "source_uncapped_step_plan.json",
+    "source_rules": {
+      "minimum_actual_increment_norm_retention_per_nonzero_group": 0.5,
+      "minimum_uncapped_vs_capped_protected_increment_ratio_in_any_group_each_seed": 1.05,
+      "minimum_removed_material_conflicts": 1,
+      "material_cosine_threshold": -1e-06,
+      "all_actual_parameter_constraints_and_nonexpansion_required": true,
+      "all_three_fixed_seeds_required": true
+    },
+    "new_training": false
   }
 }

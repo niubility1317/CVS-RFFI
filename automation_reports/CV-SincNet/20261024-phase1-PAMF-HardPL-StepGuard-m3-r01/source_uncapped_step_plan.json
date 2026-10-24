@@ -1,0 +1,91 @@
+{
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "source_epoch": 20,
+  "steps_per_seed": 1,
+  "L_batch": 128,
+  "U_batch": 256,
+  "reference_revision": "hard-pl-native-as-r01",
+  "reference_method": "HPL_E20_JOINT_AS6G",
+  "original_parent": "Original same-seed F21 E20/4440 only;matching role/physicalID/data contract and complete scratch ancestry checked with the existing source_parents helper before model load.No candidate or originalE30 parent.",
+  "roles": [
+    "L_s",
+    "U_s"
+  ],
+  "V_reads": 0,
+  "V_gradients": 0,
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "G_training_reads": 0,
+  "environment": "N607 ordinary account,existing CVS-RFFI Python,CPU2,CUDA_VISIBLE_DEVICES empty,FP32/TF32off;original NativeAs release provides the fixed model/objective dependencies.Committed analysis is executed over UTF8stdin,without remote file writes.",
+  "CWD": "Existing NativeAs release root;no chdir into a target dataset",
+  "GPU_workers": 0,
+  "CPU_threads": 2,
+  "stop_rule": "Any real input/provenance/role/count/nonfinite/gradient-closure mismatch stops this diagnostic only;preserve healthyjobs/weights/output.An observation timeout is UNKNOWN,reconcile the same PID before retry.No source threshold/grid/parent/seed/order tuning or target feedback.",
+  "numerical_policy": {
+    "tiny_full_L_squared_norm": 1e-12,
+    "component_anchor_omit_squared_norm": 1e-12,
+    "pinv_rtol": 1e-10,
+    "KKT_relative_tolerance": 1e-08,
+    "actual_parameter_increment_cosine_tolerance": 1e-06,
+    "norm_nonexpansion_relative_tolerance": 1e-06,
+    "norm_absolute_tolerance": 1e-12,
+    "quantization_attempts": 4,
+    "initial_affine_margin": 0.0,
+    "repair_margin": "2*sum(abs(unit_anchor*(actual_increment-continuous_projection)))+1e-12*max(raw_increment_norm,1e-12)",
+    "numerical_fallback": "Only if all fixed attempts fail actual FP32 parameter constraints/norm nonexpansion,return exact L-only baseline for that group;count every fallback and lost increment norm.No silent fallback or threshold tuning."
+  },
+  "status": "REGISTERED_NONBLOCKING_SOURCE_UNCAPPED_STEP",
+  "kind": "fixed_original_E20_source_uncapped_step_v1",
+  "registered_utc": "2026-10-24T07:32:57.843033+00:00",
+  "question": "Does removing only the raw U/L magnitude cap,while retaining the three raw gradient constraints and actual FP32 parameter-step protection,increase retained useful U motion without cancelling most of any active parameter group?",
+  "evidence": "Complete fixed phaseC 59940source records/9models:NativeAscap2 t2 capped71.5815816%,mean rawU norm retention74.8258828%;head57.1471471%/82.6687328%;other53.8788789%/84.9663363%.This is source geometry,not a sample rejection rate or target-gain proof.",
+  "comparisons": [
+    "CAPPED_BRANCH_STEP_GUARD",
+    "UNCAPPED_BRANCH_STEP_GUARD"
+  ],
+  "operator": "Same ordinary rawargmax/.95/weight6/nativeAs/all six student losses/originalL/defaulthead.The nearest raw U cone keeps fullL/nonphysicalL/physicalL halfspaces and tinyL handling;only remove the relative U/L norm cap.Then use the already-fixed actual FP32 parameter-step projection relative to the exact same L-only native first step.",
+  "reference": "Original fixed E20 each seed,one source L128/U256 batch,fresh first native10 CENTER_UNITS/physicalclip5/cosine/AdamW.Five disposable optimizer copies perseed:the four original counterfactuals plus uncapped-branch joint update.",
+  "source_rules": {
+    "minimum_actual_increment_norm_retention_per_nonzero_group": 0.5,
+    "minimum_uncapped_vs_capped_protected_increment_ratio_in_any_group_each_seed": 1.05,
+    "minimum_removed_material_conflicts": 1,
+    "material_cosine_threshold": -1e-06,
+    "all_actual_parameter_constraints_and_nonexpansion_required": true,
+    "all_three_fixed_seeds_required": true
+  },
+  "budget": {
+    "source_models": 3,
+    "source_packet_views": 7686,
+    "total_autograd_calls": 27,
+    "disposable_optimizer_steps": 15,
+    "extra_forward_or_autograd_calls": 0,
+    "original_model_updates": 0,
+    "new_formal_training_updates": 0,
+    "GPU_workers": 0,
+    "CPU_threads": 2
+  },
+  "diagnostics": "Report all3groups/seed,raw-gradient cap removal,actual protected motion ratio vs cappedSG,retention,conflicts and quantization fallback.Zero raw increment groups exempt only from the retention ratio,not constraint checks.No fallback or threshold tuning after this fixed source matrix.",
+  "interpretation": "Fresh first-step source feasibility only,not current-moment trajectory,loss monotonicity,unseenRX performance or an automatic candidate launch.Any later GPU training requires a separate immutable candidate,one actual production review,real originalE20 smoke and the same fixed budgets/seeds/defaulthead/raw+DURA tests.",
+  "historical_exposure": "Earlier completed target matrices including Cap2 known;one BranchGuard row is SCORED but its metric values have not been read,the full BranchGuard matrix is incomplete;no StepGuard targets exist.This source question follows full-source norm-cap statistics and the user high-quality-PL utilization request,no target-based parameter choice.",
+  "local_validation": {
+    "status": "IMPLEMENTATION_PENDING",
+    "independent_P0P1_review": "PENDING_ONE_SOURCE_REVIEW",
+    "real_checkpoint_smoke": "First source model/no query then immediate continuation"
+  },
+  "command": "python local_artifacts/pamf_ssl_research_20261023/collect_source_uncapped_step.py",
+  "output": "local_artifacts/pamf_ssl_research_20261023/source_uncapped_step.json;exclusive;preserve all stdout/stderr",
+  "expected_artifacts": [
+    "source_uncapped_step_plan.json",
+    "source_uncapped_step.json",
+    "source_uncapped_step_summary.json",
+    "source_uncapped_step.md"
+  ],
+  "new_training": false,
+  "active_jobs_changed": false,
+  "NONBLOCKING": true,
+  "goal_complete": false
+}
