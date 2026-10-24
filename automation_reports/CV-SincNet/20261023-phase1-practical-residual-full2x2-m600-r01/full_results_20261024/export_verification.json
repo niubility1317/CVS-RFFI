@@ -1,0 +1,64 @@
+{
+  "status": "VERIFIED_UNPACKED_REPRODUCTION",
+  "package": "exports/phase1_external_dg/20261024-practical-residual-full2x2-complete-r14.zip",
+  "bytes": 391372322,
+  "statistics_code_commit": "6092e38dabece1c38c0ce4c900b7584e14fb2e9d",
+  "verified_remote_oid": "6092e38dabece1c38c0ce4c900b7584e14fb2e9d",
+  "paper_pages": 6,
+  "CSV_files": [
+    {
+      "file": "augmentation_producer_cost.csv",
+      "rows": 3811
+    },
+    {
+      "file": "F_cost.csv",
+      "rows": 627
+    },
+    {
+      "file": "F_stage_cost.csv",
+      "rows": 957
+    },
+    {
+      "file": "factorial_raw_overall.csv",
+      "rows": 10560
+    },
+    {
+      "file": "G_cost.csv",
+      "rows": 22
+    },
+    {
+      "file": "net_corrections.csv.gz",
+      "rows": 371469
+    },
+    {
+      "file": "per_seed.csv.gz",
+      "rows": 1698144
+    },
+    {
+      "file": "restoration_gain.csv.gz",
+      "rows": 283024
+    },
+    {
+      "file": "restoration_gain_overall.csv",
+      "rows": 10032
+    },
+    {
+      "file": "restored_cache_cost.csv",
+      "rows": 22
+    },
+    {
+      "file": "summary.csv.gz",
+      "rows": 566048
+    },
+    {
+      "file": "summary_overall.csv",
+      "rows": 20064
+    }
+  ],
+  "numeric_values": 10581218,
+  "maximum_absolute_difference": 0.0,
+  "tolerance": 1e-10,
+  "historical_packages_preserved": true,
+  "old_panels_recomputed": false,
+  "no_IQ_weights_raw_logs_or_sample_truth": true
+}

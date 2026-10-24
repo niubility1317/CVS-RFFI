@@ -1,0 +1,29 @@
+{
+  "status": "ANALYZED_AND_DELIVERED",
+  "effective_stages_complete": 1880,
+  "excluded_technical_history": 18,
+  "new_F": 600,
+  "reused_F": 27,
+  "new_G": 4,
+  "restored_IQ_caches": 22,
+  "predictions": 627,
+  "independent_scores": 627,
+  "protocols": 11,
+  "F_seeds": 3,
+  "populations": 3,
+  "views": 7,
+  "readouts_per_model": 2,
+  "logical_view_cells": 26334,
+  "controller_exit": "NORMAL_ARTIFACTS_COMPLETE",
+  "unresolved_failures": 0,
+  "full_statistics_verified": true,
+  "paper_visually_verified": true,
+  "export_unpacked_reproduced": true,
+  "known_missing_metadata": [
+    "Original fixed F0 G-LU full ancestral elapsed",
+    "Complete native PAMF gate acceptance",
+    "Per-F PAMF actual channel-application counts"
+  ],
+  "missing_metadata_not_imputed": true,
+  "automation_cleanup": "Authorized after this final delivery record"
+}

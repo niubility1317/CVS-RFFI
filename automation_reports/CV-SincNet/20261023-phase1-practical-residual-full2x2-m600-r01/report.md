@@ -3,7 +3,7 @@
 - run_id：`20261023-phase1-practical-residual-full2x2-m600-r01`
 - group_id：`phase1-full-practical-residual-factorial`；类别：`comparison`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：ARTIFACTS_COMPLETE；全 627 行已分析、6 页论文已核验，最终解包交付进行中（下方启动快照为历史）
+- 当前登记状态：ANALYZED / DELIVERED；全矩阵、6 页论文和 r14 解包复现已完成（下方启动快照为历史）
 
 ## 目的与对照
 
@@ -97,3 +97,9 @@ r03真实checkpoint、同合同G-L/G-LU和四Full源侧梯度smoke已PASS；G和
 新 F 累计 246.366169 共享 worker 小时、27 复用 F 的历史 46.256143 小时；4 新 G 18.423150 小时，17 个已知完整历史 G 89.264651 小时。原固定 F0 G-LU 完整祖先耗时、PAMF 原生完整门控接受率/逐 F 实际增强计数仍缺失，不填造。外部 61 条 PL 接受数为零完整保留。共享训练增强生产、恢复缓存和缓存分类时间单列，不冒称独占 GPU 时间或在线 G+F 延迟。
 
 当前 IEEE 实验部分为 6 页，已替换旧错误信道比较，包含完整四组合、对应 PAMF、三个泛化任务、自然源数量曲线及原 PAMF 核心/结构/恢复机制。已优化表距/浮动间距，编译无溢出/引用警告、6 页逐页目检通过。历史机制与时延保留原人口/权重语义。正在完成新 r14 不可覆盖包和解包复算；此前 r12/r13 不覆盖、不重算旧组。
+
+## 最终交付 r14
+
+不可覆盖包 [20261024-practical-residual-full2x2-complete-r14.zip](../../../exports/phase1_external_dg/20261024-practical-residual-full2x2-complete-r14.zip)，391372322 bytes。独立解包、仅使用包内代码/聚合输入复现全部 12 个 CSV，共 10581218 数值，最大差 0；跨 Python3.10/3.13 验证最大差 4.62e-14。旧 r12/r13 原样保留，本次不重算旧面板。
+
+[最终交付证据](full_results_20261024/export_verification.json)、[科学闭合](full_results_20261024/scientific_closure.json)、[全部结果](full_results_20261024/full_results.md)。论文为实验部分，不是完整论文；缺失的历史成本/原生计数如实保留。全部本任务科学阶段和交付闭合，允许删除 practical-residual 监控，不启动任何新实验或重新占卡。
