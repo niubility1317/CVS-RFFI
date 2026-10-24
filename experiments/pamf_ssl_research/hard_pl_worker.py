@@ -88,7 +88,8 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
                     if (expected is None and p.grad is not None) or (expected is not None and
                         (p.grad is None or not torch.allclose(p.grad,expected,rtol=2e-5,atol=2e-6))):
                         raise ValueError('Actual backward differs from protected parameter gradients')
-                if any(d['applied_U_norm']>c['hard_pl_gradient_guard']['U_to_L_norm_cap']*d['L_norm']*(1+1e-6)+1e-8 or
+                ratio=c['hard_pl_gradient_guard']['U_to_L_norm_cap']
+                if any(d['applied_U_norm']>(d['U_norm'] if ratio is None else ratio*d['L_norm'])*(1+1e-6)+1e-8 or
                     d['dot_after'] < -1e-5*(d['L_norm']*d['applied_U_norm']+1e-12) for d in details.values()):
                     raise ValueError('Real gradient projection or norm cap differs')
             if c.get('hard_pl_joint_contrast'):
@@ -141,6 +142,11 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
                 cap2_effective=[name for name,v in obj.smoke_guard_details.items() if v['applied_U_norm']>v['L_norm']*(1+1e-4)+1e-8]
                 if ratio!=2 or obj.metrics['HPL_GP_U_to_L_norm_cap']!=2 or not cap2_effective:
                     raise ValueError('Real cap2 must actually permit a U group above the old cap1,with unchanged fullL projection')
+            if c.get('hard_pl_step_no_cap'):
+                if (state['U_gradient_guard']['recipe']['U_to_L_norm_cap'] is not None
+                    or obj.metrics['HPL_GP_U_to_L_norm_cap']!=0 or obj.metrics['HPL_GP_relative_norm_cap_enabled']
+                    or any(v['capped'] for v in obj.smoke_guard_details.values())):
+                    raise ValueError('Actual raw U magnitude must remain explicitly uncapped')
             if c.get('hard_pl_branch_guard'):
                 from .labeled_branch_capture import labeled_context_active
                 branch=state['U_branch_guard']
@@ -215,6 +221,10 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
                 checked[-1].update(U_to_L_norm_cap=2.,cap2_effective_groups=cap2_effective,
                     cap2_effective_on_real_checkpoint=True,negative_dot_projection_unchanged=not bool(c.get('hard_pl_branch_guard')),
                     extra_autograd_passes=2 if c.get('hard_pl_branch_guard') else 0)
+            if c.get('hard_pl_step_no_cap'):
+                checked[-1].update(raw_U_to_L_norm_cap=None,raw_U_norm_nonexpansion=True,
+                    raw_U_relative_norm_cap_enabled=False,
+                    uncapped_effective_groups=[name for name,v in obj.smoke_guard_details.items() if v['applied_U_norm']>2*v['L_norm']*(1+1e-4)+1e-8])
             if c.get('hard_pl_branch_guard'):
                 checked[-1].update(U_branch_guard=state['U_branch_guard'],simultaneous_full_and_component_L_anchors=True,
                     actual_gradient_calls_including_joint_smoke=len(branch_grad_calls),L_pair_capture_context_removed=True,

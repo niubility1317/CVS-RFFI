@@ -93,7 +93,8 @@ def aggregate(states,parents,*,weight=2.):
         from .hard_pl_branch_guard import BRANCH_GUARD
         if any('U_branch_guard' not in s for s in states):raise ValueError('Matching branch policy across both native segments required')
         values=[s['U_branch_guard'] for s in states];branch=dict(values[0])
-        if any(v['recipe']!=BRANCH_GUARD or v['calls']!=s['calls'] or v['gradient_calls']!=4*s['calls']
+        expected_recipe=dict(BRANCH_GUARD,U_to_L_norm_cap=None) if states[0]['U_gradient_guard']['recipe']['U_to_L_norm_cap'] is None else BRANCH_GUARD
+        if any(v['recipe']!=expected_recipe or v['calls']!=s['calls'] or v['gradient_calls']!=4*s['calls']
             or v['extra_autograd_calls']!=2*s['calls'] or v['L_pair_captures']!=4*s['calls']
             or v['pending_capture'] or v['pending_U_loss'] or v['extra_teacher_or_student_forward']
             or v['new_head'] or v['U_truth_reads'] or v['target_reads'] for s,v in zip(states,values)):

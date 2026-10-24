@@ -1,0 +1,148 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "registered_utc": "2026-10-24T07:52:11.292439+00:00",
+  "intended_run_id": "20261024-phase1-PAMF-HardPL-StepNoCap-m3-r01",
+  "intended_method": "HPL_E20_AS_SGNC",
+  "source_plan_commit": "e9ddffd8e3a27ff3dd475cebf3db1f736c1c4c9c",
+  "source_operator_commit": "f41e699a4d2e341ecbb27985809ec5d114536dda",
+  "source_results_commit": "f52b8d22a2abc680800195ba03d9b3e407a7a564",
+  "source_summary": "source_uncapped_step_summary.json",
+  "source_rules": {
+    "minimum_actual_increment_norm_retention_per_nonzero_group": 0.5,
+    "minimum_uncapped_vs_capped_protected_increment_ratio_in_any_group_each_seed": 1.05,
+    "minimum_removed_material_conflicts": 1,
+    "material_cosine_threshold": -1e-06,
+    "all_actual_parameter_constraints_and_nonexpansion_required": true,
+    "all_three_fixed_seeds_required": true
+  },
+  "source_rule_pass": true,
+  "source_observed": {
+    "models": 3,
+    "steps_each": 1,
+    "minimum_nonzero_group_increment_norm_retention": 0.9094657464814648,
+    "each_seed_amplification_rule_pass": [
+      true,
+      true,
+      true
+    ],
+    "removed_material_conflicts": 27,
+    "quantization_fallback_groups": 0,
+    "source_packet_views": 7686,
+    "autograd_calls": 27,
+    "disposable_optimizer_steps": 15,
+    "CPU_threads": 2,
+    "seconds": 37.846288768108934,
+    "original_model_updates": 0,
+    "target_reads": 0
+  },
+  "hypothesis": "The fixed high-quality raw pseudo labels receive high weight but raw U gradients still frequently hit a relative-L norm cap.Remove only that magnitude cap,retaining the nearest three-anchor raw direction cone and the actual FP32 extra-AdamW-step protection.",
+  "one_change": "Raw U/L norm cap 2 -> None,independently named/configured.No original L change,no removal of raw direction constraints,no change to actual parameter-step protection.",
+  "implementation": "Extend the explicit-gradient bridge to pass an explicit optional cap;use the same fullL/U/nonphysicalL/physicalL four derivatives and fullL plus projectedU.The None branch already source-verified preserves all three raw constraints and raw U norm nonexpansion.Update configuration,smoke,aggregation and source/report checks to distinguish uncapped from cap2;never label the new variant as cap2.",
+  "actual_parameter_guard": "Same current-parameter/current-AdamW-moment L-only reference before physical decay/clip5.One real joint AdamW state update,retain joint moments,then same FP32 extra-motion three-anchor projection and explicit fixed quantization fallback.No change to numerical tolerances or repair attempts.",
+  "original_parent": "Only same-seed original F21 E20/4440,actual source roles/physicalIDs/config/payload/scratch ancestry verified;no candidate or originalE30 checkpoint.",
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "schedule": "Original20/4440 + own native10/2220 + own20/4440 = E50/11100 =13L+37LU",
+  "unchanged": "rawargmax/.95/Uweight6/sixstudents/nativeAs/rawfallback0/LS.01/ordinary+rawRDrop1/AsKL0/shallowCROSS_RX.1/joint160CROSS_RX.05/sharedstyle/CE1.25/originalL/defaultheadjoint/nativeAdamW/CENTER_UNITS/physicalclip5/decay/cosine/current-step guard",
+  "gradient_calls_per_step": 4,
+  "extra_autograd_vs_NativeAs_per_step": 2,
+  "extra_autograd_vs_StepGuard": 0,
+  "reference_optimizer_steps_per_model": 6660,
+  "reference_optimizer_steps_vs_StepGuard_extra": 0,
+  "extra_teacher_student_head_forwards": 0,
+  "new_head": false,
+  "new_inference_parameters": 0,
+  "cumulative_teacher_raw_views_per_model": 2097900,
+  "cumulative_student_U_views_per_model": 10602900,
+  "new_native_As_generated_per_model": 850500,
+  "physical_student_U_views_per_model": 1701000,
+  "cost": "Actual parent/new/total elapsed time and optimizer/projection windows reported;window includes real joint optimizer,not pure overhead.Shared-GPU wallclock not exclusive GPU-hours.",
+  "source_permissions": "Existing Phase1 VALIDATED_ONCE L6300/U56700/V27000 and same F0 roles/physicalIDs.Utruthhidden;V diagnostic without model/norm/EMA/prototype/head updates;no target or G for new F training.",
+  "primary_matching_reference": {
+    "run_id": "20261024-phase1-PAMF-HardPL-StepGuard-m3-r01",
+    "method": "HPL_E20_AS_SG2",
+    "difference": "Only raw U gradient relative-L magnitude cap 2 -> None;all raw constraints/actualstepguard/losses/forwards/defaulthead/sourceparent unchanged."
+  },
+  "secondary_matching_reference": {
+    "run_id": "20261024-phase1-PAMF-HardPL-BranchGuard-m3-r01",
+    "method": "HPL_E20_AS_BG2",
+    "difference": "Both raw cap removal and actual parameter-step guard;not a single-factor comparison."
+  },
+  "target_matrix": {
+    "readouts": [
+      "raw",
+      "DURA-LU"
+    ],
+    "views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "samples_per_view": 168000,
+    "model_seeds": 3,
+    "total_cells": 42,
+    "freeze": "Fixed final E50 student/defaulthead;all14 view/readout decisions before independent truth-last scorer.",
+    "reports": "Perseed/view,mean/SD/MacroF1,TX/RX/day/RXday,net corrections,all missing cells and actual cost."
+  },
+  "goal": {
+    "raw_clean_min_correct_504000": 433348,
+    "raw_six_min_correct_3024000": 2180190,
+    "DURA_separate": true
+  },
+  "DURA": "Same fixed v1 R69/266951/FP32TF32off/reuse=True graph=True native=False;G sourceLU/TXhidden/F-free,Fseed variation only.No G for Ftraining,no oldF50 latency substitution,no deployed-default change.",
+  "resource": "N607 ordinaryaccount/CVS-RFFI/CPU2/FP32TF32off,GPU5/6/7 fixedseeds2701/02/03,max2own train/predict/card,count foreign apps and pending CUDA PIDs<3/free>=10000MiB.Never GPU0-4.",
+  "queue": "For each seed wait matching BranchGuard all GPU predictionscomplete AND matching StepGuard dispatched;reserve both predecessor pendingCUDA PIDs.First matching available card does real originalE20 smoke,discard probe,reload original parent and continue.SoleCPU scorer after StepGuard terminal.No changes to any healthy old job.",
+  "smoke": "Same complete L/U/defaulthead/forward budgets and four source derivatives,all raw anchors/correct explicit fullL bridge,no finite raw U/L cap/metric clearly uncapped,raw U norm nonexpansion;actual FP32 three-anchor step constraints and normnonexpansion,one current-state L-only reference and each nonzero group retained>=.5.Probe discarded/original E20 reloaded,all3 parents verified.No query or V updates.",
+  "stop_rule": "Any protocol/provenance/numerical violation stops affected row.Two identical systemic technical failures stop only new dispatch and preserve healthyjobs/outputs.No target-driven recipe,parent,checkpoint/seed order,performance stop or selective rerun.No numerical grid after the fixed source test.",
+  "evidence_limit": "Three fixed fresh first source steps support feasibility only;no whole-trajectory,loss-monotonicity or target-gain claim.Production implementation/review and real GPU smoke still pending.",
+  "historical_exposure": "All previous complete negatives including Cap2 known;BranchGuard one row scored but no metric values read/fullmatrix incomplete;no StepGuard targets exist.Only source norm-cap statistics and the pre-fixed source comparison motivate this variant.Not an independent new blind benchmark.",
+  "training_review": "PENDING_ONE_ACTUAL_PRODUCTION_P0P1",
+  "implementation_or_training_launched": false,
+  "existing_jobs_changed": false,
+  "goal_complete": false,
+  "run_id": "20261024-phase1-PAMF-HardPL-StepNoCap-m3-r01",
+  "method": "HPL_E20_AS_SGNC",
+  "source_design_commit": "d1b15e5fcb309831c20b201cac06eaeaf9e6ef92",
+  "recipe": {
+    "raw_U_to_L_norm_cap": null,
+    "raw_direction_anchors": [
+      "L_full",
+      "L_clean",
+      "L_As"
+    ],
+    "raw_norm_nonexpansion": true,
+    "actual_parameter_guard": "unchanged_StepGuard",
+    "gradient_calls": 4,
+    "extra_teacher_student_head_forwards": 0,
+    "new_head": false
+  },
+  "checks": [
+    {
+      "evidence": "hard_pl_step_no_cap_focused_tests.xml",
+      "tests": 13
+    },
+    {
+      "evidence": "hard_pl_step_no_cap_related_tests.xml",
+      "tests": 62
+    }
+  ],
+  "total_checks": 75,
+  "independent_review": {
+    "status": "PASS",
+    "reviewer": "/root/ssl_p0p1_review",
+    "review_count": 1,
+    "targeted_re_review_count": 0,
+    "unresolved_P0_P1_findings": [],
+    "actual_reviewer_response": "PASS，未发现 P0/P1。None 已贯通实际投影、指标、smoke 和两段汇总，旧 cap2 默认保持；父来源、GPU/PID 占位、先 smoke 后重载及预测/评分串接一致。未修改文件或启动实验。",
+    "scope": "Only direct P0/P1 making the next real StepNoCap training wrong,unauthorized,destructive,unlaunchable or unable to legally predict."
+  },
+  "real_checkpoint_smoke": "PENDING_FIRST_GPU_ACTION",
+  "training_launched": false
+}
