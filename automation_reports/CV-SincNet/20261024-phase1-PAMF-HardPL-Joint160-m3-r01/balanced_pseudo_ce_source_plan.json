@@ -1,5 +1,5 @@
 {
-  "status": "SOURCE_FALSIFICATION_FIXED_NOT_IMPLEMENTED_NOT_LAUNCHED",
+  "status": "READY_COMMITTED_SOURCE_FALSIFICATION",
   "registered_utc": "2026-10-24T01:54:21.093705+00:00",
   "question": "Does bounded per-batch pseudo-class/sourceRX CE balancing reduce uneven accepted-source contribution while preserving gate,labels,all accepted samples and mean CE dose?",
   "evidence": [
@@ -101,5 +101,8 @@
   "training_implementation_complete": false,
   "independent_training_review": "PENDING",
   "active_jobs_changed": false,
-  "goal_complete": false
+  "goal_complete": false,
+  "source_math_module": "experiments/pamf_ssl_research/source_balanced_pseudo_ce.py",
+  "focused_math_tests": 9,
+  "source_calibration_executed": false
 }
