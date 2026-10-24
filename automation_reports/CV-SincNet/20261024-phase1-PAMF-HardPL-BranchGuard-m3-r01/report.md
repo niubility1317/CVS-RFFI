@@ -13,3 +13,6 @@ N607普通账户、CVS-RFFI、FP32/TF32off、每worker CPU2，CWD为PROJECT/rele
 每row最终E50默认学生/默认头冻结后，自动预测raw及同固定DURA v1.0各clean＋六practical、168000/view，三seed共42cells；整row的全部14项决策固定后独立truth-last。保留逐seed/view、均值/SD/MacroF1、TX/RX/day/RX×day、净纠错和实际时间。主匹配固定NativeAsCap2检验新增分支约束，次匹配NativeAs cap1同时含范数帽变化；不混作单因素。主控制F20/F21：raw clean对两者均至少+1pp，六景平均对两者均严格>+1.5pp，分别至少433348/504000和2180190/3024000正确才达目标；DURA参考单列。DURA固定R69/266951/FP32TF32off/reuse=True graph=True native=False，G原训练sourceLU/TXhidden/Ffree；不用于新F训练、不套用旧F50时延、不换部署默认。
 
 NativeAs正式目标84.831944/72.264385与DURA84.944444/77.428439已知；本轮按此前固定源路线实现，数值修复来自合成边界失败。BalancedCE/Cap2目标未读。早先目标暴露如实保留，不作新的独立盲测声明，不从目标挑父模型、参数、seed或checkpoint。当前没有本候选训练或目标结果，goal ACTIVE。
+
+
+发布后独立核实：VERIFIED，执行 commit `61b942a4d922d41ff235707534169074293ec565` 的控制器存活，CWD 和完整命令匹配；三行实际 QUEUED，新增 GPU worker 为 0，真实原 E20 检查 PENDING。等待对应 seed BalancedCE 全部 GPU 预测结束且 Cap2 已派发；独立核实两侧控制器及现有运行行的 PID/CWD/命令/GPU/日志增长。保留全部健康任务；排队不代表训练成功或达到目标。
