@@ -37,3 +37,15 @@ VERIFIED：实际执行版本 `dacafc8bfd7d3ef16e6f648cdc4491b65133ae8f`，修�
 独立核查八卡共24个GPU worker，各卡不超过3，计入全机其他进程；16个同PID日志跨137.1秒增长。实际快照见launch_verification.json，不把快照当固定当前数。
 
 所有当前F/读出/统计/时延及论文图表交付仍在执行；不能把发布或smoke当性能完成。DURA新增训练0，IQ恢复缓存新增0。189新F通过84唯一E20前段共享减少重复，目标分数不回流训练、参数、队列或选模。
+
+## CPU 评分入口恢复（2026-10-25）
+
+VERIFIED：恢复版本 `a79bdf385489cb3822b37434a07e3c43e5ce839a`、`20261025-phase1-PAMF-REPL-control-r03`。只有CPU入口和owner更换；GPU科学版本仍为 `dacafc8bfd7d3ef16e6f648cdc4491b65133ae8f`。
+
+两失败CPU score在连接预测/真值前误调用模型初始化；本地复现，4项聚焦测试和一次限定P0/P1问题复核PASS。仅严格匹配完整dispatch argv/CWD的停派owner被替换，所有子进程保持或自然结束。旧失败/日志/预测保留，两同预测新评分均SCORED_COMPLETE。
+
+初查13条健康训练中11条已自然完成、2条仍同PID。恢复后17个同PID日志跨244.6秒增长，本run每卡≤3，未解决故障0。
+
+资源补充：核查期间GPU4在本run三进程之后新增其他账号进程，形成暂时四进程共驻留；非本run第四槽。保持全部健康进程，不使用管理员或结束其他owner；既有每卡/全机容量guard阻止受影响卡新派发。实际分布见verification，不声称全机始终每卡≤3。
+
+历史735阶段含2个被替代评分；有效仍733，228预测/228评分，201逻辑F/189新F/12复用不变，DURA训练与新IQ缓存均0。当前计数是读回快照，不是全组完成声明。见score_entry_recovery_verification.json。

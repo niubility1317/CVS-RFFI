@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_REPRODUCED_FIXED_AWAITING_RELEASE",
+  "status": "VERIFIED",
   "technical_run": "20261025-phase1-PAMF-REPL-score-entry-recovery-m2-r01",
   "fingerprint": "KeyError: 'frozen_sources'",
   "scope": "CPU worker entry only; no F/G/recipe change",
@@ -15,5 +15,11 @@
   "history_stages": 735,
   "effective_stages": 733,
   "tests": "4 focused recovery tests PASS",
-  "plan": "docs/PAMF_REPL_SCORE_ENTRY_RECOVERY_20261025.md"
+  "plan": "docs/PAMF_REPL_SCORE_ENTRY_RECOVERY_20261025.md",
+  "execution_release": "20261025-phase1-PAMF-REPL-control-r03",
+  "control_and_CPU_commit": "a79bdf385489cb3822b37434a07e3c43e5ce839a",
+  "unchanged_GPU_scientific_commit": "dacafc8bfd7d3ef16e6f648cdc4491b65133ae8f",
+  "replacements_completed": 2,
+  "source_smoke_reused_unchanged": true,
+  "verification": "score_entry_recovery_verification.json"
 }

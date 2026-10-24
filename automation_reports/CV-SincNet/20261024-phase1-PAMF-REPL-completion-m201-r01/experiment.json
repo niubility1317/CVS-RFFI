@@ -27,7 +27,10 @@
     "commit": "dacafc8bfd7d3ef16e6f648cdc4491b65133ae8f",
     "checkout": "code/worktrees/standard_ce_baselines_20261010",
     "environment": "N607 CVS-RFFI Python/Torch2.1, FP32/TF32off",
-    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-control-r02"
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-control-r02",
+    "control_and_CPU_commit": "a79bdf385489cb3822b37434a07e3c43e5ce839a",
+    "scientific_GPU_commit": "dacafc8bfd7d3ef16e6f648cdc4491b65133ae8f",
+    "cwd_scope": "unchanged GPU scientific workers"
   },
   "data": {
     "dataset": "ManySig/ManyRx; 11 existing VALIDATED_ONCE contracts",
@@ -86,9 +89,10 @@
     "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01",
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs",
     "local_artifact_root": "local_artifacts/pamf_repl_completion_20261024",
-    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-control-r02/runtime.json",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
     "stop_rule": "Two identical unresolved technical fingerprints stop new dispatch; preserve all healthy/foreign workers and immutable artifacts; no target-result stopping or selection.",
-    "execution_release": "20261024-phase1-PAMF-REPL-control-r02"
+    "execution_release": "20261025-phase1-PAMF-REPL-control-r03",
+    "control_root": "PROJECT/runs/20261025-phase1-PAMF-REPL-control-r03"
   },
   "expected_artifacts": [
     "source smoke PASS",
@@ -153,7 +157,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-supervised-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-supervised-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -186,7 +190,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-supervised-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-supervised-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -219,7 +223,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-supervised-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-supervised-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -252,7 +256,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-ordinary_PL-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-ordinary_PL-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -285,7 +289,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-ordinary_PL-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-ordinary_PL-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -318,7 +322,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-ordinary_PL-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-ordinary_PL-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -351,7 +355,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -384,7 +388,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -417,7 +421,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -450,7 +454,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F1_rx_repartition_r01-supervised-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F1_rx_repartition_r01-supervised-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -483,7 +487,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F1_rx_repartition_r01-supervised-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F1_rx_repartition_r01-supervised-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -516,7 +520,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F1_rx_repartition_r01-supervised-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F1_rx_repartition_r01-supervised-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -549,7 +553,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F1_rx_repartition_r01-ordinary_PL-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F1_rx_repartition_r01-ordinary_PL-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -582,7 +586,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F1_rx_repartition_r01-ordinary_PL-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F1_rx_repartition_r01-ordinary_PL-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -615,7 +619,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F1_rx_repartition_r01-ordinary_PL-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F1_rx_repartition_r01-ordinary_PL-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -648,7 +652,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F1_rx_repartition_r01-REPL-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F1_rx_repartition_r01-REPL-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -681,7 +685,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F1_rx_repartition_r01-REPL-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F1_rx_repartition_r01-REPL-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -714,7 +718,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F1_rx_repartition_r01-REPL-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F1_rx_repartition_r01-REPL-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -747,7 +751,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F2_rx_repartition_r01-supervised-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F2_rx_repartition_r01-supervised-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -780,7 +784,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F2_rx_repartition_r01-supervised-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F2_rx_repartition_r01-supervised-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -813,7 +817,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F2_rx_repartition_r01-supervised-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F2_rx_repartition_r01-supervised-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -846,7 +850,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F2_rx_repartition_r01-ordinary_PL-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F2_rx_repartition_r01-ordinary_PL-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -879,7 +883,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F2_rx_repartition_r01-ordinary_PL-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F2_rx_repartition_r01-ordinary_PL-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -912,7 +916,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F2_rx_repartition_r01-ordinary_PL-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F2_rx_repartition_r01-ordinary_PL-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -945,7 +949,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F2_rx_repartition_r01-REPL-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F2_rx_repartition_r01-REPL-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -978,7 +982,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F2_rx_repartition_r01-REPL-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F2_rx_repartition_r01-REPL-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1011,7 +1015,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F2_rx_repartition_r01-REPL-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F2_rx_repartition_r01-REPL-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1044,7 +1048,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/ManyRx-supervised-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__ManyRx-supervised-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1077,7 +1081,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/ManyRx-supervised-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__ManyRx-supervised-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1110,7 +1114,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/ManyRx-supervised-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__ManyRx-supervised-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1143,7 +1147,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/ManyRx-ordinary_PL-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__ManyRx-ordinary_PL-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1176,7 +1180,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/ManyRx-ordinary_PL-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__ManyRx-ordinary_PL-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1209,7 +1213,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/ManyRx-ordinary_PL-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__ManyRx-ordinary_PL-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1242,7 +1246,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/ManyRx-REPL-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__ManyRx-REPL-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1275,7 +1279,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/ManyRx-REPL-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__ManyRx-REPL-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1308,7 +1312,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/ManyRx-REPL-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__ManyRx-REPL-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1341,7 +1345,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/label01-supervised-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__label01-supervised-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1374,7 +1378,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/label01-supervised-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__label01-supervised-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1407,7 +1411,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/label01-supervised-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__label01-supervised-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1440,7 +1444,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/label01-ordinary_PL-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__label01-ordinary_PL-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1473,7 +1477,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/label01-ordinary_PL-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__label01-ordinary_PL-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1506,7 +1510,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/label01-ordinary_PL-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__label01-ordinary_PL-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1539,7 +1543,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/label01-REPL-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__label01-REPL-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1572,7 +1576,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/label01-REPL-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__label01-REPL-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1605,7 +1609,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/label01-REPL-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__label01-REPL-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1638,7 +1642,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/label05-supervised-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__label05-supervised-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1671,7 +1675,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/label05-supervised-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__label05-supervised-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1704,7 +1708,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/label05-supervised-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__label05-supervised-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1737,7 +1741,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/label05-ordinary_PL-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__label05-ordinary_PL-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1770,7 +1774,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/label05-ordinary_PL-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__label05-ordinary_PL-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1803,7 +1807,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/label05-ordinary_PL-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__label05-ordinary_PL-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1836,7 +1840,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/label05-REPL-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__label05-REPL-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1869,7 +1873,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/label05-REPL-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__label05-REPL-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1902,7 +1906,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/label05-REPL-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__label05-REPL-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1935,7 +1939,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m1-natural-supervised-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m1-natural-supervised-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -1968,7 +1972,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m1-natural-supervised-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m1-natural-supervised-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2001,7 +2005,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m1-natural-supervised-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m1-natural-supervised-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2034,7 +2038,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m1-natural-ordinary_PL-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m1-natural-ordinary_PL-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2067,7 +2071,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m1-natural-ordinary_PL-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m1-natural-ordinary_PL-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2100,7 +2104,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m1-natural-ordinary_PL-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m1-natural-ordinary_PL-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2133,7 +2137,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m1-natural-REPL-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m1-natural-REPL-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2166,7 +2170,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m1-natural-REPL-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m1-natural-REPL-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2199,7 +2203,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m1-natural-REPL-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m1-natural-REPL-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2232,7 +2236,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m2-natural-supervised-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m2-natural-supervised-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2265,7 +2269,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m2-natural-supervised-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m2-natural-supervised-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2298,7 +2302,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m2-natural-supervised-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m2-natural-supervised-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2331,7 +2335,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m2-natural-ordinary_PL-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m2-natural-ordinary_PL-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2364,7 +2368,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m2-natural-ordinary_PL-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m2-natural-ordinary_PL-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2397,7 +2401,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m2-natural-ordinary_PL-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m2-natural-ordinary_PL-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2430,7 +2434,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m2-natural-REPL-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m2-natural-REPL-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2463,7 +2467,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m2-natural-REPL-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m2-natural-REPL-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2496,7 +2500,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m2-natural-REPL-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m2-natural-REPL-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2529,7 +2533,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m3-natural-supervised-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m3-natural-supervised-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2562,7 +2566,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m3-natural-supervised-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m3-natural-supervised-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2595,7 +2599,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m3-natural-supervised-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m3-natural-supervised-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2628,7 +2632,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m3-natural-ordinary_PL-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m3-natural-ordinary_PL-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2661,7 +2665,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m3-natural-ordinary_PL-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m3-natural-ordinary_PL-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2694,7 +2698,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m3-natural-ordinary_PL-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m3-natural-ordinary_PL-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2727,7 +2731,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m3-natural-REPL-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m3-natural-REPL-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2760,7 +2764,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m3-natural-REPL-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m3-natural-REPL-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2793,7 +2797,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m3-natural-REPL-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m3-natural-REPL-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2826,7 +2830,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m4-natural-supervised-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m4-natural-supervised-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2859,7 +2863,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m4-natural-supervised-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m4-natural-supervised-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2892,7 +2896,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m4-natural-supervised-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m4-natural-supervised-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2925,7 +2929,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m4-natural-ordinary_PL-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m4-natural-ordinary_PL-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2958,7 +2962,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m4-natural-ordinary_PL-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m4-natural-ordinary_PL-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -2991,7 +2995,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m4-natural-ordinary_PL-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m4-natural-ordinary_PL-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3024,7 +3028,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m4-natural-REPL-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m4-natural-REPL-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3057,7 +3061,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m4-natural-REPL-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m4-natural-REPL-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3090,7 +3094,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m4-natural-REPL-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m4-natural-REPL-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3123,7 +3127,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m6-natural-supervised-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m6-natural-supervised-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3156,7 +3160,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m6-natural-supervised-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m6-natural-supervised-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3189,7 +3193,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m6-natural-supervised-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m6-natural-supervised-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3222,7 +3226,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m6-natural-ordinary_PL-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m6-natural-ordinary_PL-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3255,7 +3259,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m6-natural-ordinary_PL-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m6-natural-ordinary_PL-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3288,7 +3292,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m6-natural-ordinary_PL-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m6-natural-ordinary_PL-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3321,7 +3325,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m6-natural-REPL-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m6-natural-REPL-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3354,7 +3358,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m6-natural-REPL-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m6-natural-REPL-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3387,7 +3391,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/m6-natural-REPL-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__m6-natural-REPL-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3420,7 +3424,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-without_style-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-without_style-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3453,7 +3457,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-without_style-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-without_style-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3486,7 +3490,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-without_style-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-without_style-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3519,7 +3523,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-without_guard-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-without_guard-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3552,7 +3556,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-without_guard-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-without_guard-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3585,7 +3589,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-without_guard-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-without_guard-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3618,7 +3622,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-without_joint-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-without_joint-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3651,7 +3655,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-without_joint-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-without_joint-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3684,7 +3688,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-without_joint-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-without_joint-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3717,7 +3721,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-without_extrapolation-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-without_extrapolation-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3750,7 +3754,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-without_extrapolation-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-without_extrapolation-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3783,7 +3787,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-without_extrapolation-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-without_extrapolation-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3816,7 +3820,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-ABC000-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-ABC000-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3849,7 +3853,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-ABC000-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-ABC000-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3882,7 +3886,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-ABC000-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-ABC000-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3915,7 +3919,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-ABC001-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-ABC001-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3948,7 +3952,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-ABC001-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-ABC001-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -3981,7 +3985,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-ABC001-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-ABC001-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4014,7 +4018,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-ABC010-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-ABC010-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4047,7 +4051,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-ABC010-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-ABC010-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4080,7 +4084,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-ABC010-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-ABC010-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4113,7 +4117,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-ABC011-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-ABC011-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4146,7 +4150,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-ABC011-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-ABC011-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4179,7 +4183,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-ABC011-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-ABC011-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4212,7 +4216,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-ABC100-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-ABC100-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4245,7 +4249,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-ABC100-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-ABC100-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4278,7 +4282,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-ABC100-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-ABC100-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4311,7 +4315,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-ABC101-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-ABC101-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4344,7 +4348,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-ABC101-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-ABC101-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4377,7 +4381,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-ABC101-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-ABC101-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4410,7 +4414,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-L_shallow_only-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-L_shallow_only-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4443,7 +4447,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-L_shallow_only-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-L_shallow_only-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4476,7 +4480,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-L_shallow_only-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-L_shallow_only-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4509,7 +4513,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-L_middle_only-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-L_middle_only-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4542,7 +4546,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-L_middle_only-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-L_middle_only-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4575,7 +4579,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-L_middle_only-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-L_middle_only-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4608,7 +4612,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-L_joint_only-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-L_joint_only-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4641,7 +4645,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-L_joint_only-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-L_joint_only-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4674,7 +4678,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-L_joint_only-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-L_joint_only-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4707,7 +4711,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-L_single_forward-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-L_single_forward-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4740,7 +4744,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-L_single_forward-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-L_single_forward-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4773,7 +4777,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-L_single_forward-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-L_single_forward-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4806,7 +4810,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-L_without_As-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-L_without_As-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4839,7 +4843,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-L_without_As-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-L_without_As-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4872,7 +4876,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-L_without_As-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-L_without_As-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4905,7 +4909,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-L_As_KL_on-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-L_As_KL_on-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4938,7 +4942,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-L_As_KL_on-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-L_As_KL_on-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -4971,7 +4975,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-L_As_KL_on-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-L_As_KL_on-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5004,7 +5008,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-L_without_raw_CE-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-L_without_raw_CE-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5037,7 +5041,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-L_without_raw_CE-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-L_without_raw_CE-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5070,7 +5074,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-L_without_raw_CE-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-L_without_raw_CE-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5103,7 +5107,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_full-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_full-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5136,7 +5140,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_full-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_full-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5169,7 +5173,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_full-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_full-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5202,7 +5206,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL_SIG_TIME-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL_SIG_TIME-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5235,7 +5239,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL_SIG_TIME-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL_SIG_TIME-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5268,7 +5272,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL_SIG_TIME-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL_SIG_TIME-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5301,7 +5305,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_SIG_TIME-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_SIG_TIME-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5334,7 +5338,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_SIG_TIME-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_SIG_TIME-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5367,7 +5371,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_SIG_TIME-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_SIG_TIME-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5400,7 +5404,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL_NO_TIME-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL_NO_TIME-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5433,7 +5437,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL_NO_TIME-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL_NO_TIME-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5466,7 +5470,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL_NO_TIME-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL_NO_TIME-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5499,7 +5503,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_NO_TIME-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_NO_TIME-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5532,7 +5536,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_NO_TIME-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_NO_TIME-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5565,7 +5569,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_NO_TIME-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_NO_TIME-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5598,7 +5602,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL_SHUFFLE_TIME-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL_SHUFFLE_TIME-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5631,7 +5635,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL_SHUFFLE_TIME-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL_SHUFFLE_TIME-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5664,7 +5668,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL_SHUFFLE_TIME-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL_SHUFFLE_TIME-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5697,7 +5701,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_SHUFFLE_TIME-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_SHUFFLE_TIME-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5730,7 +5734,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_SHUFFLE_TIME-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_SHUFFLE_TIME-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5763,7 +5767,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_SHUFFLE_TIME-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_SHUFFLE_TIME-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5796,7 +5800,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL_NO_SIGNATURE-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL_NO_SIGNATURE-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5829,7 +5833,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL_NO_SIGNATURE-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL_NO_SIGNATURE-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5862,7 +5866,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL_NO_SIGNATURE-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL_NO_SIGNATURE-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5895,7 +5899,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_NO_SIGNATURE-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_NO_SIGNATURE-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5928,7 +5932,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_NO_SIGNATURE-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_NO_SIGNATURE-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5961,7 +5965,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_NO_SIGNATURE-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_NO_SIGNATURE-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -5994,7 +5998,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL_NO_PA-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL_NO_PA-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -6027,7 +6031,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL_NO_PA-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL_NO_PA-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -6060,7 +6064,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL_NO_PA-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL_NO_PA-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -6093,7 +6097,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_NO_PA-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_NO_PA-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -6126,7 +6130,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_NO_PA-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_NO_PA-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -6159,7 +6163,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_NO_PA-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_NO_PA-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -6192,7 +6196,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL_NO_REFERENCE-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL_NO_REFERENCE-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -6225,7 +6229,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL_NO_REFERENCE-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL_NO_REFERENCE-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -6258,7 +6262,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL_NO_REFERENCE-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL_NO_REFERENCE-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -6291,7 +6295,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_NO_REFERENCE-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_NO_REFERENCE-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -6324,7 +6328,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_NO_REFERENCE-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_NO_REFERENCE-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -6357,7 +6361,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_NO_REFERENCE-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_NO_REFERENCE-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -6390,7 +6394,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL_WRONG_REFERENCE-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL_WRONG_REFERENCE-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -6423,7 +6427,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL_WRONG_REFERENCE-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL_WRONG_REFERENCE-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -6456,7 +6460,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL_WRONG_REFERENCE-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL_WRONG_REFERENCE-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -6489,7 +6493,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_WRONG_REFERENCE-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_WRONG_REFERENCE-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -6522,7 +6526,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_WRONG_REFERENCE-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_WRONG_REFERENCE-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -6555,7 +6559,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_WRONG_REFERENCE-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_WRONG_REFERENCE-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -6588,7 +6592,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL_COV_X3-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL_COV_X3-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -6621,7 +6625,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL_COV_X3-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL_COV_X3-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -6654,7 +6658,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-REPL_COV_X3-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-REPL_COV_X3-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -6687,7 +6691,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_COV_X3-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_COV_X3-s2026092701.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -6720,7 +6724,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_COV_X3-s2026092702",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_COV_X3-s2026092702.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -6753,7 +6757,7 @@
       "budget_ref": "matrix; 11100 cumulative updates; 20+10+20",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/readouts/F0-CE_COV_X3-s2026092703",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261024-phase1-PAMF-REPL-completion-m201-r01/logs/predict__F0-CE_COV_X3-s2026092703.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config /home/szu2070436088/2510044040/CV-SincNet/releases/20261024-phase1-PAMF-REPL-completion-m201-r01/runtime.json",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.pamf_repl_completion.runner dispatch --config PROJECT/releases/20261025-phase1-PAMF-REPL-control-r03/runtime.json",
       "expected_artifacts": [
         "SOURCE_FROZEN",
         "ALL_PREDICTIONS_COMPLETE",
@@ -6769,7 +6773,8 @@
     "Four timing panels450+450+100+175; G combinations GF only, pure G not rerun. F eager/GF existing graph execution are stated separately.",
     "Four correct practical-residual Full external results reused; no new external CE/fixed-L/m5/chrono/fine15/150 timing expansion.",
     "Existing historical T1 experiments retain T1 labels; no relabeling as REPL. Old F11-14 native EMA/gates not current mechanism and replaced by actual REPL inner ablations.",
-    "发布前可选旧规划依赖缺失被导入检查拦截；无controller/model启动。新control-r02保持原201科学矩阵并成功启动，旧包保留。"
+    "发布前可选旧规划依赖缺失被导入检查拦截；无controller/model启动。新control-r02保持原201科学矩阵并成功启动，旧包保留。",
+    "CPU评分入口 KeyError 已经2新输出评分替代闭合。原2失败保留排除；有效733、历史735。GPU健康/排队仍用原dacaf科学版本，owner/CPU用恢复版本，DURA新增0。"
   ],
   "matrix": {
     "run_id": "20261024-phase1-PAMF-REPL-completion-m201-r01",
