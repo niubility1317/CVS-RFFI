@@ -22,3 +22,8 @@ GPU5/6/7固定seed2701/02/03，每卡最多2本任务、计入外部最多3进�
 ## 发布后独立核实
 
 VERIFIED：执行 commit `0ffe0ba43a6b2ead84db96ff5b98494f29550594` 的控制器存活，CWD 与完整命令匹配。三条 ReliableAs 行实际 QUEUED、训练 worker 0，原 E20 真实权重检查尚 PENDING；等待对应 seed Complement 全部 GPU 预测完成且 Path 已分发后释放第二卡位，固定 GPU5/6/7 对应三个 seed。已核实前序 Complement／Path 共 6 个健康进程的身份、GPU 和日志增长。排队不代表检查通过、训练启动或目标收益；全部 raw 与固定 DURA 七景测试和独立 truth-last 自动衔接。
+
+
+## 首个真实权重检查及正式源训练
+
+VERIFIED：首释放 seed 2026092702／GPU6 原E20检查PASS、探针丢弃且正式重载，完整L显式梯度、As谓词与精确raw回退、原raw接受集合、eval归一化与模式恢复全部核实。检查128条As实际采用45、回退83；额外teacher128、真实源Practical192、原学生U1536/L768。正式worker已产生53条原生As/joint/style/guard记录，PID/CWD/命令/GPU与日志独立核实。当前实际1worker、其余2row仍QUEUED；本记录是训练前缀和单批检查，不是完整采用率、完整训练或目标收益。源完整和目标测试均继续自动完成，goal ACTIVE。
