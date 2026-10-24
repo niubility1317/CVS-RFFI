@@ -24,3 +24,6 @@ N607普通账户/CPU2/FP32TF32off，GPU5/6/7固定seed2701/02/03，每卡最多2
 首轮真实参数更新已核实：三个固定 seed 均至少完成新增阶段的首个完整源 epoch（累计≥E21）。逐条检查当前已刷出的完整 native 损失记录及实际FP32参数更新记录，三组非微小监督锚点约束和不扩张检查均通过。组级量化回退按固定规则记录，没有热改配方、门槛或接受mask。完整逐组回退／零增量／保留率见 source_first_epoch_observation.json；整体范数用原参数坐标，不能代表各组重要性或物理量保留。
 
 计时澄清：参数日志的seconds及source_activation的optimizer_and_projection_window_seconds，窗口包含L参考、真实joint物理裁剪/AdamW及投影，截止日志序列化之前，不是纯额外开销，也不包含模型前向/反向。完整训练实际耗时待三seed源训练结束后按匹配记录报告。当前只是源前缀，不代表训练结束、监督损失单调或目标达标。
+
+
+补充源覆盖诊断与固定反证矩阵已登记，见 source_pseudo_coverage.md 和 source_rejected_rdrop_plan.json。E20门控0.95仍保持，原拒绝集合只提出无硬标签RDrop候选；当前六条GPU训练不变。先用三原E20各一批L128/U256、CPU2、原模型零更新和9个丢弃参数影子核实实际FP32新增下降，固定规则不依据目标返回调整。条件后续配方和raw／DURA三seed42cell也先固定；本登记不是训练启动或目标成功。

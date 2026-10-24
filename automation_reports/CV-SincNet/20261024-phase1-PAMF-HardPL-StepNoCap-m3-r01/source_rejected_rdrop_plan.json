@@ -1,0 +1,56 @@
+{
+  "kind": "fixed_original_E20_source_rejected_rdrop_v1",
+  "source_rules": {
+    "minimum_rejected_U_per_seed": 1,
+    "minimum_nonzero_group_increment_norm_retention": 0.5,
+    "added_descent_aligns_with_rejected_RDrop_in_some_group_each_seed": true,
+    "all_actual_parameter_constraints_and_nonexpansion_required": true,
+    "all_three_fixed_seeds_required": true
+  },
+  "recipe": {
+    "ordinary_pair_weight": 0.5,
+    "mixed_nonphysical_pair_weight": 0.25,
+    "raw_pair_weight": 0.25,
+    "CE_normalizer": 1.25,
+    "hard_label_gate": 0.95,
+    "physical_As_KL_weight": 0.0,
+    "hard_CE_or_contrast_on_rejected": false,
+    "extra_model_forwards": 0,
+    "new_head": false
+  },
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "source_epoch": 20,
+  "steps_per_seed": 1,
+  "L_batch": 128,
+  "U_batch": 256,
+  "optimizer_state": "fresh_moments_first_new_native10_step",
+  "V_reads": 0,
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "G_training_reads": 0,
+  "reference_revision": "hard-pl-native-as-r01",
+  "reference_recipe": "Original fixed same-contract F21 E20/current NativeAs six-forward source batches;both matched shadows use StepNoCap raw/actual-step operators",
+  "candidate_factor": "Only add rejected ordinary/mixed-nonphysical/raw symmetric KL at inherited .5/.25/.25/1.25 and U weight6",
+  "original_model_updates": 0,
+  "expected_derivatives": 21,
+  "expected_source_packet_views": 7686,
+  "expected_disposable_optimizer_steps": 9,
+  "GPU_workers": 0,
+  "CPU_threads": 2,
+  "environment": "Existing validated N607 NativeAs release,ordinary account,CPU-only numerical policy",
+  "cwd": "reference_revision release root",
+  "code_identity": "Git commit containing this plan and source_rejected_rdrop.py",
+  "command": "collect_source_rejected_rdrop.py;committed modules in ordinary-account CPU-only stdin;real original checkpoint no-query smoke first",
+  "outputs": [
+    "source_rejected_rdrop.json",
+    "source_rejected_rdrop_summary.json",
+    "source_rejected_rdrop.md"
+  ],
+  "stop_rule": "Any invalid parent/data permission,nonfinite value,original model/gradient write,packet/derivative mismatch or actual constraint failure is technical failure.Preserve outputs,no automatic retry or target launch.Source-rule failure is a scientific negative.",
+  "automatic_GPU_launch": false,
+  "healthy_tasks_changed": false
+}

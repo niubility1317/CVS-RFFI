@@ -305,5 +305,11 @@
     "reference": "source_first_epoch_observation.json",
     "status": "VERIFIED_ALL3_INITIAL_SOURCE_EPOCH_ACTUAL_PARAMETER_UPDATES",
     "target_matrix_complete": false
+  },
+  "source_rejected_rdrop_probe": {
+    "status": "LOCAL_22_CHECKS_AND_SOURCE_REVIEW_PASS_NOT_EXECUTED",
+    "reference": "source_rejected_rdrop_plan.json",
+    "conditional_followup": "rejected_rdrop_followup_design.json",
+    "GPU_launch": false
   }
 }
