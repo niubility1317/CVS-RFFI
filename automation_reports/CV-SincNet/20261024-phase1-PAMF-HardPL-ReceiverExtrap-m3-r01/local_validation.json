@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "status": "VERIFIED_REAL_E20_RECEIVER_EXTRAPOLATION_SMOKE_AND_ALL3_SOURCE_RUNNING",
   "focused_tests": 110,
   "independent_review": {
     "status": "PASS",
@@ -9,6 +9,6 @@
     "scope": "Direct wrong/unauthorized/destructive/unlaunchable/illegal-prediction defects in the next ReceiverExtrap run only",
     "actual_reviewer_response": "PASS，未发现本次范围内的 P0/P1。外推复用同批合法配对，CE 差额仅作用于 valid 样本，完整组合 U 梯度只进入 guard 一次；计数、GPU PID 预留和评分顺序符合约定。"
   },
-  "real_checkpoint_smoke": "PENDING_FIRST_RELEASED_MATCHING_RELIABLE_AS_SLOT",
+  "real_checkpoint_smoke": "PASS;actual fullfeature RXE signature/response/core/head gradients positive;CE1.25/2existingheads/fullLguard/originalE20 reload;source_activation.json",
   "Path_ReliableAs_Combo_target_scores_read": false
 }

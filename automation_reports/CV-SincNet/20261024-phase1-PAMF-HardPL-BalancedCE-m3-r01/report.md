@@ -15,3 +15,6 @@ LOCAL_VERIFIED_NOT_LAUNCHED：23 项目标函数及数学检查、119 项受影�
 GPU5/6/7 固定对应三个 seed，每卡最多两个本任务、计外部 compute 进程小于 3 且可用显存至少 10000 MiB。等待同 seed RXE 全部 GPU 预测结束且 NativeAs 已派发，预留两侧 pending CUDA PID。真实原 E20 检查核对原 NativeAs 的 L768/U1536、rawteacher256、As128/物理学生256/Practical192，以及权重边界、接受质量、原 mask、六 logits 重用、完整 L 显式参数梯度和临时 hook 清除；通过后丢弃探针并重载原权重。唯一 CPU scorer 接 NativeAs 终态。两个同类系统性技术错误只停止新派发，保留健康任务和全部产物；不按目标分数停止、调参或选择性重跑。
 
 每 row 最终默认学生冻结后自动预测 raw 及固定 DURA 各 clean＋六 practical，168000/view，三 seed 共 42 cell；整 row 所有预测固定后独立 truth-last。报告逐 seed/景、SD、MacroF1、TX/RX/day/RX×day、净纠错及实际时间，保留 NativeAs 匹配比较和 F20/F21 两个控制。原 raw clean 对两个控制均至少高 1 个百分点、六景均严格高于 1.5 个百分点才达到目标，DURA 单列。DURA 固定 v1.0 R69、266951 参数、FP32/TF32off、reuse=True/graph=True/native=False，不用于新 F 训练，不套用旧 F50 时延或替换默认部署。目标保持 ACTIVE。
+
+
+发布后独立核实：VERIFIED，执行 commit `0276faf2f9da7845be71e34cfce4a2d92e4e905c` 的控制器存活，CWD 和完整命令匹配；三行实际 QUEUED，新增 GPU worker 为 0，真实原 E20 检查 PENDING。等待对应 seed RXE 全部 GPU 预测结束且 NativeAs 已派发；独立核实两侧控制器及现有运行行的 PID/CWD/命令/GPU/日志增长。保留全部健康任务；排队不代表训练成功或达到目标。

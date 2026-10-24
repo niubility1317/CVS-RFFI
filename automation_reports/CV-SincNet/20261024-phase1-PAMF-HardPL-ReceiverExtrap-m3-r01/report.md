@@ -18,3 +18,13 @@ GPU5/6/7固定对应三seed，每卡本任务最多2条、计外部compute进程
 ## 发布后独立核实
 
 VERIFIED：执行 commit `02979123053aa2b2d8d6f044ba3a497a3d484cd0` 的控制器存活，CWD及完整命令匹配。三行实际QUEUED，GPU训练worker为0，真实原E20检查仍PENDING，等待同seed ReliableAs全部GPU预测完成且组合已派发。独立核实当前六个ReliableAs/组合健康worker的PID/CWD/命令/GPU及日志增长。每卡最多两个本任务，现有任务保持；排队不代表训练或目标成功。
+
+
+完整特征外推真实检查：新CE对signature/response/core/head的梯度均有限非零，数值见source_activation.json；有效外推仅作用于原接受合法伙伴，实际2次既有头调用512条已有特征，CE分母1.25、alpha0.25、全部原接受样本保留。无额外骨干/teacher/物理U/新头。三seed均有实际RXE计数，不能把排队或预期计数当作已运行。
+
+
+## 真实原 E20 检查通过并实际启动三种子
+
+VERIFIED：发布commit `02979123053aa2b2d8d6f044ba3a497a3d484cd0` 的真实原E20 GPU source smoke PASS。实际joint160两次捕获512条已有Upacket，跨RX有效anchors=478；实际签名sequence_pool辅助梯度范数=0.370686235且有限非零，原L768／U1536／rawAs128／Uphysical0／LPractical64、共享style计划、完整L guard参数梯度与显式期望相同及临时wrapper退出均符合。探针丢弃，正式行重新加载原E20。
+
+三个seed已按GPU5/6/7启动并实际产生原生joint／guard源步骤；独立核实进程／CWD／完整命令／GPU及日志增长，逐行现有U复用计数见source_activation.json。只按原矩阵接替释放卡位；当前是训练前缀，不代表全部源训练结束或目标收益。训练、raw＋固定DURA七景及truth-last继续自动执行，goal ACTIVE。
