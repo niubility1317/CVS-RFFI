@@ -293,11 +293,29 @@
   ],
   "registered_at": "2026-10-24T02:21:18.732357+00:00",
   "launch_status": {
-    "status": "VERIFIED_REAL_E20_BALANCED_CE_SMOKE_AND_ALL3_SOURCE_RUNNING",
-    "evidence": "source_activation.json",
+    "status": "VERIFIED_SOURCE_FINAL_EVALUATION_RUNNING",
+    "evidence": "source_training_complete.json",
     "source_smoke": "PASS",
-    "actual_GPU_workers": 3,
-    "queued_rows": 0,
+    "source_rows_complete": 3,
+    "new_training_complete": true,
     "target_matrix_complete": false
+  },
+  "source_quality_diagnostics": {
+    "HPL_E20_AS_BCE6G": {
+      "status": "VERIFIED_FULL_SOURCE_V",
+      "source_epoch": 50,
+      "samples_per_seed": 27000,
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "reference": "source_pseudo_quality_E50_HPL_E20_AS_BCE6G.json",
+      "parent_diagnostic_reference": "automation_reports/CV-SincNet/20261024-phase1-PAMF-HardPL-E20plus30-m6-r01/source_pseudo_quality.json",
+      "model_or_threshold_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0,
+      "selection_changed": false
+    }
   }
 }
