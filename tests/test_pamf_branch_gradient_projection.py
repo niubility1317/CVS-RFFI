@@ -58,7 +58,7 @@ def test_cap_two_applies_after_cone_projection():
     result,detail=call([1.,1.],[-100.,100.],[1.,0.],[0.,1.],dtype=torch.float32)
     applied=result-torch.tensor([1.,1.])
     assert applied.norm()<=2*torch.tensor([1.,1.]).norm()*(1+1e-6)
-    assert detail['capped'] and min(detail['constraint_dots_after'].values())>=0.
+    assert detail['capped'] and min(detail['anchor_cosines_after'].values())>=-1e-6
 
 
 def test_unused_parameter_connectivity_stays_none_and_no_parameter_changes():
@@ -135,3 +135,12 @@ def test_isolated_cap2_reference_matches_the_actual_native_cap2_math():
     expected,detail=projected_gradients(named,labeled,unlabeled,max_u_ratio=2.)
     actual,observed=isolated(named,labeled,unlabeled,max_u_ratio=2.)
     assert torch.equal(actual[0],expected[0]) and actual[1] is None and observed==detail
+
+
+@pytest.mark.parametrize('epsilon',[1e-4,1e-6,1e-8])
+def test_nearly_redundant_full_L_anchor_still_produces_a_valid_projection(epsilon):
+    # Native head L_aux is zero:fullL can be almost a sum of its two components.
+    result,detail=call([1.,1.,epsilon],[-2.,-2.,-epsilon],[1.,0.,0.],[0.,1.,0.])
+    applied=result-torch.tensor([1.,1.,epsilon],dtype=torch.float64)
+    assert applied.norm()<1e-6
+    assert all(cosine is None or cosine>=-1.000001e-6 for cosine in detail['anchor_cosines_after'].values())

@@ -1,0 +1,139 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "run_id": "20261024-phase1-PAMF-HardPL-BranchGuard-m3-r01",
+  "method": "HPL_E20_AS_BG2",
+  "registered_utc": "2026-10-24T05:10:32.291585+00:00",
+  "hypothesis": "Keep ordinary raw pseudo acceptance,high weight and native supervised mechanisms,but replace only the U gradient direction operator with simultaneous constraints against fullL/nonphysicalL/physicalL,retaining cap2.FullL remains unchanged.",
+  "source_recipe": {
+    "anchors": [
+      "L_full",
+      "L_clean",
+      "L_As"
+    ],
+    "projection": "simultaneous_three_L_anchors_per_group",
+    "U_to_L_norm_cap": 2.0,
+    "components": "same_four_original_L_pair_results",
+    "nonphysical_coefficients": [
+      0.5,
+      0.25,
+      0.25
+    ],
+    "physical_coefficient": 0.25,
+    "full_L_unchanged": true,
+    "solver": "thin_QR_and_active_set_SVD",
+    "gradient_calls": 4,
+    "extra_autograd_passes": 2,
+    "extra_teacher_or_student_forward": 0,
+    "raw_gate": 0.95,
+    "U_weight": 6.0,
+    "tiny_L_squared_norm": 1e-12,
+    "pinv_rtol": 1e-10,
+    "KKT_relative_tolerance": 1e-08,
+    "actual_cast_constraint_cosine_tolerance": 1e-06,
+    "new_head": false
+  },
+  "source_design_commit": "2743f9aa689ef669e9cce2736e4768b1cc38982d",
+  "source_result_commit": "a3a9824ec2e56249a6780893345a1149f41d3dfd",
+  "source_operator_commit": "c45817b64588004c2b0abc735adde9bbdae387d9",
+  "source_rules": {
+    "minimum_whole_applied_U_norm_retention_vs_native_cap2": 0.5,
+    "minimum_removed_material_component_conflicts": 1,
+    "material_cosine_threshold": -1e-06,
+    "require_all_three_exact_source_seed_steps": true,
+    "parameter_updates": 0,
+    "U_truth_reads": 0,
+    "V_reads": 0,
+    "target_reads": 0
+  },
+  "source_rule_pass": true,
+  "source_geometry_reference": {
+    "models": 3,
+    "steps_each": 1,
+    "minimum_applied_U_norm_retention_vs_native_cap2": 0.997441885626718,
+    "removed_material_component_conflicts": 9,
+    "source_packet_views": 7686,
+    "autograd_calls": 27,
+    "CPU_threads": 2,
+    "seconds": 42.32827057992108,
+    "parameter_updates": 0,
+    "V_reads": 0,
+    "U_truth_reads": 0,
+    "target_reads": 0
+  },
+  "source_evidence_limit": "Legacy arithmetic fixed one-step source geometry,not new QR training,optimizer updates or target performance",
+  "numerical_refinement_reference": "numerical_implementation_note.json",
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "original_parent_epoch": 20,
+  "incremental_epochs": [
+    10,
+    20
+  ],
+  "final_epoch": 50,
+  "final_updates": 11100,
+  "raw_gate": 0.95,
+  "U_weight": 6.0,
+  "U_to_L_norm_cap": 2.0,
+  "CE_dose_normalizer": 1.25,
+  "gradient_calls_per_step": 4,
+  "extra_autograd_calls_per_step": 2,
+  "extra_autograd_calls_per_model": 13320,
+  "extra_teacher_student_head_forwards": 0,
+  "new_head": false,
+  "new_inference_parameters": 0,
+  "native_As_generated_per_model": 850500,
+  "physical_student_U_views_per_model": 1701000,
+  "cumulative_raw_teacher_per_model": 2097900,
+  "cumulative_student_U_per_model": 10602900,
+  "fixed_primary_reference": {
+    "run_id": "20261024-phase1-PAMF-HardPL-NativeAsCap2-m3-r01",
+    "method": "HPL_E20_AS_CAP2",
+    "difference": "Only the additional nonphysicalL/physicalL constraints;cap2 recipe identical"
+  },
+  "fixed_secondary_reference": {
+    "run_id": "20261024-phase1-PAMF-HardPL-NativeAs-m3-r01",
+    "method": "HPL_E20_JOINT_AS6G",
+    "difference": "Both cap1->2 and simultaneous component constraints;do not label singlefactor"
+  },
+  "primary_controls": [
+    "F20",
+    "F21"
+  ],
+  "readouts": [
+    "raw",
+    "DURA-LU"
+  ],
+  "views": 7,
+  "samples_per_view": 168000,
+  "target_cells": 42,
+  "U_actual_accuracy": "UNKNOWN",
+  "V_state_updates": 0,
+  "U_truth_reads": 0,
+  "target_training_reads": 0,
+  "G_training_reads": 0,
+  "focused_checks": [
+    {
+      "evidence": "hard_pl_branch_guard_focused_tests.xml",
+      "tests": 40
+    },
+    {
+      "evidence": "hard_pl_branch_guard_related_tests.xml",
+      "tests": 133
+    }
+  ],
+  "total_checks": 173,
+  "independent_P0P1_review": {
+    "status": "PASS",
+    "reviewer": "/root/ssl_p0p1_review",
+    "review_count": 1,
+    "unresolved_P0_P1_findings": [],
+    "scope": "Direct wrong/unauthorized/destructive/unlaunchable/illegal-prediction or false-evidence defects in the next fixed BranchGuard training run only",
+    "actual_reviewer_response": "PASS，未发现本次范围内的 P0/P1。四个 L pair 捕获、四次导数和完整 L 单次桥接正确；QR/SVD 候选经过实际 cast 约束检查。两段汇总、PID 预留、评分串接及冻结预测接口符合约定。"
+  },
+  "real_E20_smoke": "PENDING_FIRST_MATCHING_RELEASED_BALANCED_CE_CARD",
+  "training_launched": false,
+  "goal_complete": false
+}

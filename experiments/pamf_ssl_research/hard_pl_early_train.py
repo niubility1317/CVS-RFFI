@@ -39,6 +39,8 @@ def aggregate(states,parents,*,weight=2.):
     native_as='U_native_As' in states[0]
     if (native_as and (reliable or weight!=6.) or any(('U_native_As' in s)!=native_as for s in states)):
         raise ValueError('Matching native As policy and fixed weight6 across native segments required')
+    if any(('U_branch_guard' in s)!=('U_branch_guard' in states[0]) for s in states):
+        raise ValueError('Matching source branch policy across both native segments required')
     balanced='U_balanced_CE' in states[0]
     if (balanced and not native_as or any(('U_balanced_CE' in s)!=balanced for s in states)):
         raise ValueError('Matching nativeAs bounded CE policy across native segments required')
@@ -85,6 +87,19 @@ def aggregate(states,parents,*,weight=2.):
             raise ValueError('Current U joint objective must reuse exactly two existing ordinary student forwards')
         for key in ('calls','captures','captured_packets','anchors'):joint[key]=sum(v[key] for v in values)
         actual['U_joint_contrast']=joint;actual['hard_PL_tail']['U_joint_contrast']=joint
+    if 'U_branch_guard' in states[0]:
+        from .hard_pl_branch_guard import BRANCH_GUARD
+        if any('U_branch_guard' not in s for s in states):raise ValueError('Matching branch policy across both native segments required')
+        values=[s['U_branch_guard'] for s in states];branch=dict(values[0])
+        if any(v['recipe']!=BRANCH_GUARD or v['calls']!=s['calls'] or v['gradient_calls']!=4*s['calls']
+            or v['extra_autograd_calls']!=2*s['calls'] or v['L_pair_captures']!=4*s['calls']
+            or v['pending_capture'] or v['pending_U_loss'] or v['extra_teacher_or_student_forward']
+            or v['new_head'] or v['U_truth_reads'] or v['target_reads'] for s,v in zip(states,values)):
+            raise ValueError('Original source branch captures/four derivatives/closed contexts or budgets differ')
+        for key in ('calls','gradient_calls','extra_autograd_calls','L_pair_captures'):branch[key]=sum(v[key] for v in values)
+        branch['anchor_conflicts']={group:{anchor:sum(v['anchor_conflicts'][group][anchor] for v in values)
+            for anchor in branch['anchor_conflicts'][group]} for group in branch['anchor_conflicts']}
+        actual['U_branch_guard']=branch;actual['hard_PL_tail']['U_branch_guard']=branch
     if 'U_complement' in states[0]:
         values=[s['U_complement'] for s in states];complement=dict(values[0])
         if any(v['recipe']!=complement['recipe'] or v['calls']!=s['calls'] or v['extra_head_calls']!=2*s['calls']

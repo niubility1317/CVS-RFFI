@@ -19,6 +19,7 @@ from .hard_pl_receiver_extrapolation import METHODS as RXE_METHODS
 from .hard_pl_native_as import METHODS as NAS_METHODS
 from .hard_pl_balanced_ce import METHODS as BCE_METHODS
 from .hard_pl_native_cap2 import METHODS as CAP2_METHODS
+from .hard_pl_branch_guard import METHODS as BG_METHODS
 from .report import cells
 
 
@@ -44,7 +45,7 @@ def report(rt, output):
     methods=tuple(rt.get('methods',METHODS))
     if methods==METHODS:
         validate_rows(rt['rows'])
-    elif methods in (('PAIREDU',), ('UCRIC',), ('UMIX',), ('UGP',), ('UCMR',), ('UDAP',), ('UVB',), ('HPL2','HPLT1U'), EARLY_METHODS, GUARD_METHODS, JOINT_METHODS, COMP_METHODS, PATH_METHODS, RAS_METHODS, PATH_RAS_METHODS, RXE_METHODS, NAS_METHODS, BCE_METHODS, CAP2_METHODS, ('HPL_NO_UAS',), ('HPL_LS2',), ('HPL_MS2',), ('HPL_NAMS2',)):
+    elif methods in (('PAIREDU',), ('UCRIC',), ('UMIX',), ('UGP',), ('UCMR',), ('UDAP',), ('UVB',), ('HPL2','HPLT1U'), EARLY_METHODS, GUARD_METHODS, JOINT_METHODS, COMP_METHODS, PATH_METHODS, RAS_METHODS, PATH_RAS_METHODS, RXE_METHODS, NAS_METHODS, BCE_METHODS, CAP2_METHODS, BG_METHODS, ('HPL_NO_UAS',), ('HPL_LS2',), ('HPL_MS2',), ('HPL_NAMS2',)):
         if methods == ('PAIREDU',):
             from .paired_u import RUN, RESOURCE_GPU_BY_SEED
         elif methods == ('UCRIC',):
@@ -89,6 +90,8 @@ def report(rt, output):
             from .hard_pl_balanced_ce import RUN, RESOURCE_GPU_BY_SEED
         elif methods == CAP2_METHODS:
             from .hard_pl_native_cap2 import RUN, RESOURCE_GPU_BY_SEED
+        elif methods == BG_METHODS:
+            from .hard_pl_branch_guard import RUN, RESOURCE_GPU_BY_SEED
         else:
             from .hard_pl_early import RUN, RESOURCE_GPU_BY_SEED
         from .control import validate_rows as validate_followup

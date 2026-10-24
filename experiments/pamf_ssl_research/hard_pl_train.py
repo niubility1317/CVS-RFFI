@@ -1,5 +1,5 @@
 """Strict same-contract F21 E30+20; replace only the ordinary-PL extension."""
-from contextlib import contextmanager
+from contextlib import contextmanager,nullcontext
 from pathlib import Path
 from types import MethodType
 import shutil
@@ -42,9 +42,10 @@ def installed(c,holder,*,objective_cls=HardPLObjective):
         model=original_install(model,cfg);objective=objective_cls(cfg);holder.update(model=model,objective=objective)
         old_hook=model._source_labeled_feature_hook
         def hook(self,**kwargs):
-            value,metrics=old_hook(**kwargs)
-            if hasattr(objective,'guide'):
-                value=objective.guide(kwargs['identity_loss']+value,self)-kwargs['identity_loss']
+            with objective.labeled_context() if hasattr(objective,'labeled_context') else nullcontext():
+                value,metrics=old_hook(**kwargs)
+                if hasattr(objective,'guide'):
+                    value=objective.guide(kwargs['identity_loss']+value,self)-kwargs['identity_loss']
             return value,dict(metrics,**objective.metrics)
         hook._accepts_labeled_inputs=True
         model._source_labeled_feature_hook=MethodType(hook,model)

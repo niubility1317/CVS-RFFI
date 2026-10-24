@@ -1,0 +1,37 @@
+{
+  "status": "FOCUSED_NUMERICAL_IMPLEMENTATION_REPAIR",
+  "failed_synthetic_case": {
+    "fullL": [
+      1.0,
+      1.0,
+      0.0001
+    ],
+    "nonphysicalL": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "physicalL": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "U": [
+      -2.0,
+      -2.0,
+      -0.0001
+    ]
+  },
+  "failed_layer": "Normal-equation Gram coefficients can pass a coarse residual while violating actual small projected-vector anchor cosine;near-linear head components caused a focused check failure before training release.",
+  "repair": "Thin float64 QR retains an orthogonal complement and at most three source anchor coordinates;enumerate <=8 active sets using small SVD,then select the minimum-correction candidate passing actual dtype constraints and cap.No arbitrary zero fallback.",
+  "source_reference_solver": "Earlier committed c45817b6 source observation used Gram-dual arithmetic;its three-seed numbers remain historical and are not relabeled as a fresh QR observation.",
+  "production_solver": "thin_QR_and_active_set_SVD",
+  "pinv_rtol": 1e-10,
+  "rank_cutoff_clarification": "The pinv cutoff now applies to the small linear active-constraint matrix,not its squared-condition Gram matrix;this implements the same closest-vector cone without losing small independent directions.",
+  "invariants": "Same fullL/nonphysicalL/physicalL constraints,cap2,tinyL squarednorm1e-12,actualcosine1e-6,numerical-zero1e-12 relative,raw.95/weight6/losses/source roles/defaulthead.Native optimizer unchanged.Source acceptance thresholds not adjusted;no target-feedback parameter choice.",
+  "actual_repair_checks": "Synthetic near-dependent cases eps1e-4/1e-6/1e-8 plus explicit parameter bridge and actual U/L hook tests passed",
+  "source_geometry_recomputed_for_QR": false,
+  "real_original_E20_GPU_smoke": "PENDING_FIRST_MATCHING_RELEASED_BALANCED_CE_CARD",
+  "source_and_target_access_from_numerical_unit_tests": 0,
+  "healthy_jobs_changed": false
+}

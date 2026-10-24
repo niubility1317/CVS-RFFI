@@ -1,5 +1,6 @@
 """Real F21 parent smoke, two hard-PL forks, automatic dual-readout truth-last."""
 import argparse
+from contextlib import nullcontext
 import gc
 import math
 from pathlib import Path
@@ -41,8 +42,11 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
             meta={k:v.to(device) if torch.is_tensor(v) else v for k,v in batch[3].items()}
             with model._phase1_labeled_feature_context():output=model(x,return_aux=True,domain_labels=domain)
             ce=F.cross_entropy(output['tx_logits'],y,label_smoothing=.01)
-            correction,metrics=model._source_labeled_feature_hook(model=model,labeled_output=output,labels=y,
-                extra=(None,meta),domains=domain,optimizer_step=1,identity_loss=ce,labeled_count=128,labeled_inputs=x)
+            if c.get('hard_pl_branch_guard'):
+                from .labeled_branch_capture import count_autograd_calls
+            with count_autograd_calls() if c.get('hard_pl_branch_guard') else nullcontext() as branch_grad_calls:
+                correction,metrics=model._source_labeled_feature_hook(model=model,labeled_output=output,labels=y,
+                    extra=(None,meta),domains=domain,optimizer_step=1,identity_loss=ce,labeled_count=128,labeled_inputs=x)
             total=ce+correction;total.backward();obj=holder['objective'];state=obj.state_dict()
             head=model.id_backbone.encoder.core.id_backbone.cls_head.weight;mechanisms=c['hard_pl']['method']=='HPLT1U'
             no_uas=bool(c.get('hard_pl_no_uas'));physical_enabled=mechanisms and not no_uas
@@ -137,6 +141,19 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
                 cap2_effective=[name for name,v in obj.smoke_guard_details.items() if v['applied_U_norm']>v['L_norm']*(1+1e-4)+1e-8]
                 if ratio!=2 or obj.metrics['HPL_GP_U_to_L_norm_cap']!=2 or not cap2_effective:
                     raise ValueError('Real cap2 must actually permit a U group above the old cap1,with unchanged fullL projection')
+            if c.get('hard_pl_branch_guard'):
+                from .labeled_branch_capture import labeled_context_active
+                branch=state['U_branch_guard']
+                if (branch['calls']!=1 or branch['gradient_calls']!=4 or branch['extra_autograd_calls']!=2
+                    or branch['L_pair_captures']!=4 or len(branch_grad_calls)!=5
+                    or branch['pending_capture'] or branch['pending_U_loss'] or labeled_context_active()
+                    or branch['extra_teacher_or_student_forward'] or branch['new_head'] or branch['U_truth_reads'] or branch['target_reads']):
+                    raise ValueError('Actual four L pairs/four complete derivatives/joint smoke derivative or step context differs')
+                for detail in obj.smoke_guard_details.values():
+                    if any(cosine is not None and cosine<-1.000001e-6
+                        for anchor,cosine in detail['anchor_cosines_after'].items()
+                        if anchor not in detail['near_zero_component_anchors_omitted']):
+                        raise ValueError('Actual protected U conflicts with a non-tiny supervised branch')
             if c.get('hard_pl_balanced_ce'):
                 from .source_balanced_pseudo_ce import contribution_weights
                 bce=state['U_balanced_CE'];w=obj.smoke_bce_weights;a=obj.smoke_bce_accepted
@@ -194,7 +211,12 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
                     CE_and_KL_coefficients_unchanged=True)
             if c.get('hard_pl_native_cap2'):
                 checked[-1].update(U_to_L_norm_cap=2.,cap2_effective_groups=cap2_effective,
-                    cap2_effective_on_real_checkpoint=True,negative_dot_projection_unchanged=True,extra_autograd_passes=0)
+                    cap2_effective_on_real_checkpoint=True,negative_dot_projection_unchanged=not bool(c.get('hard_pl_branch_guard')),
+                    extra_autograd_passes=2 if c.get('hard_pl_branch_guard') else 0)
+            if c.get('hard_pl_branch_guard'):
+                checked[-1].update(U_branch_guard=state['U_branch_guard'],simultaneous_full_and_component_L_anchors=True,
+                    actual_gradient_calls_including_joint_smoke=len(branch_grad_calls),L_pair_capture_context_removed=True,
+                    complete_L_unchanged=True,additional_L_derivatives=2)
             if c.get('hard_pl_balanced_ce'):
                 checked[-1].update(U_balanced_CE=state['U_balanced_CE'],current_accepted_weights_match=True,
                     accepted_CE_mass_preserved=True,all_six_logits_reused=True,CE_delta=float(obj.smoke_bce_delta),
