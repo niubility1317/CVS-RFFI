@@ -1,0 +1,218 @@
+{
+  "status": "ANALYZED_FULL627",
+  "logical_models": 627,
+  "new_F": 600,
+  "reused_F": 27,
+  "new_G": 4,
+  "protocols": [
+    "F0",
+    "F1_rx_repartition_r01",
+    "F2_rx_repartition_r01",
+    "ManyRx",
+    "label01",
+    "label05",
+    "m1-natural",
+    "m2-natural",
+    "m3-natural",
+    "m4-natural",
+    "m6-natural"
+  ],
+  "F_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "all_predictions_frozen": true,
+  "independent_scores": 627,
+  "new_serialized_CM_recomputed": 738150,
+  "reused_verified_overall_CM": 4788,
+  "new_net_cells_recomputed": 369075,
+  "reused_verified_overall_nets": 2394,
+  "total_serialized_CM": 742938,
+  "total_net_cells": 371469,
+  "new_F_shared_worker_hours": 246.3661690453431,
+  "reused_F_historical_shared_worker_hours": 46.25614281599785,
+  "new_G_shared_worker_hours": 18.4231501118507,
+  "known_reused_G_shared_worker_hours": 89.26465099373088,
+  "G_historical_cost_missing": [
+    "F0/DURA-LU"
+  ],
+  "augmentation_cache_records": 3811,
+  "augmentation_production_elapsed_hours": 1.5186315131907921,
+  "restored_IQ_cache_elapsed_hours": 1.1663515294920783,
+  "cached_F_prediction_elapsed_hours": 21.674867856285417,
+  "external_zero_PL_acceptance_rows": 61,
+  "unknown_PAMF_selected_gate_acceptance": true,
+  "unknown_PAMF_per_F_realized_channel_counts": true,
+  "physical_populations": [
+    {
+      "protocol": "F0",
+      "test": "cross_date",
+      "count": 30000
+    },
+    {
+      "protocol": "F0",
+      "test": "cross_rx",
+      "count": 126000
+    },
+    {
+      "protocol": "F0",
+      "test": "cross_both",
+      "count": 42000
+    },
+    {
+      "protocol": "F1_rx_repartition_r01",
+      "test": "cross_date",
+      "count": 30000
+    },
+    {
+      "protocol": "F1_rx_repartition_r01",
+      "test": "cross_rx",
+      "count": 126000
+    },
+    {
+      "protocol": "F1_rx_repartition_r01",
+      "test": "cross_both",
+      "count": 42000
+    },
+    {
+      "protocol": "F2_rx_repartition_r01",
+      "test": "cross_date",
+      "count": 30000
+    },
+    {
+      "protocol": "F2_rx_repartition_r01",
+      "test": "cross_rx",
+      "count": 126000
+    },
+    {
+      "protocol": "F2_rx_repartition_r01",
+      "test": "cross_both",
+      "count": 42000
+    },
+    {
+      "protocol": "ManyRx",
+      "test": "cross_date",
+      "count": 31279
+    },
+    {
+      "protocol": "ManyRx",
+      "test": "cross_rx",
+      "count": 92597
+    },
+    {
+      "protocol": "ManyRx",
+      "test": "cross_both",
+      "count": 30424
+    },
+    {
+      "protocol": "label01",
+      "test": "cross_date",
+      "count": 30000
+    },
+    {
+      "protocol": "label01",
+      "test": "cross_rx",
+      "count": 126000
+    },
+    {
+      "protocol": "label01",
+      "test": "cross_both",
+      "count": 42000
+    },
+    {
+      "protocol": "label05",
+      "test": "cross_date",
+      "count": 30000
+    },
+    {
+      "protocol": "label05",
+      "test": "cross_rx",
+      "count": 126000
+    },
+    {
+      "protocol": "label05",
+      "test": "cross_both",
+      "count": 42000
+    },
+    {
+      "protocol": "m1-natural",
+      "test": "cross_date",
+      "count": 6000
+    },
+    {
+      "protocol": "m1-natural",
+      "test": "cross_rx",
+      "count": 108000
+    },
+    {
+      "protocol": "m1-natural",
+      "test": "cross_both",
+      "count": 36000
+    },
+    {
+      "protocol": "m2-natural",
+      "test": "cross_date",
+      "count": 12000
+    },
+    {
+      "protocol": "m2-natural",
+      "test": "cross_rx",
+      "count": 108000
+    },
+    {
+      "protocol": "m2-natural",
+      "test": "cross_both",
+      "count": 36000
+    },
+    {
+      "protocol": "m3-natural",
+      "test": "cross_date",
+      "count": 18000
+    },
+    {
+      "protocol": "m3-natural",
+      "test": "cross_rx",
+      "count": 108000
+    },
+    {
+      "protocol": "m3-natural",
+      "test": "cross_both",
+      "count": 36000
+    },
+    {
+      "protocol": "m4-natural",
+      "test": "cross_date",
+      "count": 24000
+    },
+    {
+      "protocol": "m4-natural",
+      "test": "cross_rx",
+      "count": 108000
+    },
+    {
+      "protocol": "m4-natural",
+      "test": "cross_both",
+      "count": 36000
+    },
+    {
+      "protocol": "m6-natural",
+      "test": "cross_date",
+      "count": 36000
+    },
+    {
+      "protocol": "m6-natural",
+      "test": "cross_rx",
+      "count": 108000
+    },
+    {
+      "protocol": "m6-natural",
+      "test": "cross_both",
+      "count": 36000
+    }
+  ],
+  "F_standard_deviation_conditional_on_fixed_G": true,
+  "not_significance_test": true,
+  "target_truth_reads": 0,
+  "target_feedback_used": false
+}

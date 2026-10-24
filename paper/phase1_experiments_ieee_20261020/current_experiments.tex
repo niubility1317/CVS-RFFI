@@ -9,23 +9,22 @@ We evaluate closed-set cross-receiver radio-frequency fingerprinting on the Many
 Table~\ref{tab:paper-data} lists the principal partitions. F0 has five source RX and seven target RX; its 15 source RX--date cells are not 15 physical receivers. F1/F2 change receiver membership while retaining the five/seven counts. For ManySig, packets ordered by stored physical indices within each source TX/RX/day cell are divided into 70 labeled training samples, 630 unlabeled samples and 300 validation samples. Thus L is 10\% of the training pool, while the additional source-validation labels are disclosed separately. U labels remain hidden. Validation updates no model or persistent state.
 
 \begin{table*}[!t]
-\centering\footnotesize
-\caption{Principal data conditions. Receiver indices are dataset-local. F0/F1/F2 test all four dates; the chronological result uses future D3 only. Source and target are physically disjoint.}
+\centering\footnotesize\setlength{\tabcolsep}{4pt}
+\caption{Principal contracts with unchanged D1--D3 training. The three disjoint test populations are source RX on D0 (date), target RX on D1--D3 (RX), and target RX on D0 (both). D0 is an earlier unseen date.}
 \label{tab:paper-data}
-\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}llccrr@{}}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}llcrrr@{}}
 \toprule
-Condition & Source RX indices & Source/target RX & TX & $|L|/|U|/|V|$ & Test packets\\
+Contract & Source RX indices & TX & Date packets & RX packets & Both packets\\
 \midrule
-F0 & 1,3,4,6,8 & 5/7 & 6 & 6300/56700/27000 & 168000\\
-F1 & 0,2,5,7,9 & 5/7 & 6 & 6300/56700/27000 & 168000\\
-F2 & 1,3,4,10,11 & 5/7 & 6 & 6300/56700/27000 & 168000\\
-Chronological & F0 source RX & 5/7 & 6 & 6300/56700/27000 & 42000 (D3)\\
-ManyRx & Even indices 0--30 & 16/16 & 10 & 6533/58828/28023 & 123021\\
+F0 & 1,3,4,6,8 & 6 & 30000 & 126000 & 42000\\
+F1 (new) & 0,1,2,5,7 & 6 & 30000 & 126000 & 42000\\
+F2 (new) & 0,3,9,10,11 & 6 & 30000 & 126000 & 42000\\
+ManyRx & Even indices 0--30 & 10 & 31279 & 92597 & 30424\\
 \bottomrule
 \end{tabular*}
 \end{table*}
 
-F0/F1/F2 train on D1--D3 and test on all four dates. D0 is an earlier unseen date, not a future endpoint. The chronological setting trains on D0--D2 and evaluates the 42000 D3 packets from target RX. We do not label its all-date aggregate as future generalization. ManyRx contains missing and non-full cells, which are retained; its source roles use $\lfloor0.07n\rfloor$, $\lfloor0.63n\rfloor$ and the remainder per cell. ManySig and ManyRx share the WiSig acquisition system and are not independent capture campaigns.
+The default ManySig source roles contain 6300 L, 56700 U and 27000 V packets; the one/five-percent training-label conditions reduce L while keeping its original physical source pool and V role. New F1/F2 replace four of five source receivers relative to F0 and have pairwise source-set intersection one. Every new F/G ancestor matches the new contract; historical F1/F2 receiver memberships are not relabeled. ManyRx retains missing and unequal cells, with 6533 L, 58828 U and 28023 V packets. Its source roles use per-cell floor fractions 0.07/0.63 and the remainder. The source-count study uses natural budgets and m=1,2,3,4,6; it does not fix L at 1080. ManySig and ManyRx share the WiSig acquisition system and are not independent capture campaigns.
 
 Every test uses the same fixed received-IQ observations: clean plus high/mid/low suburban and high/mid/low urban synthetic channel conditions. These are simulated stress tests, not measured satellite-link validation. DURA is applied to every declared observation, including clean, without scene-aware bypass or additional output renormalization. Each model freezes every view and task before independent truth-side scoring. Target observations, labels and scores never enter training, hyperparameter selection, checkpoint selection or rerun decisions.
 
@@ -50,7 +49,7 @@ PAMF-T1 & E50/11100 updates; L batch 128, U batch 256; AdamW and segment cosine 
 \end{tabular*}
 \end{table*}
 
-The complete external methods and PAMF-Sup use the registered clean-plus-satellite concatenation with satellite TX-CE weight 0.68 and no added satellite consistency loss. The augmentation probability is 0.30/0.60/0.80 over relative budget intervals $[0,.20)$, $[.20,.45)$ and $[.45,1)$. Weak clear, low-elevation and rain-named presets use the fixed simulator settings; the naming does not establish physical rain validation. Method-specific stopping can change realized augmentation exposure, especially for IB-RFF. Its two-stage early stopping and the corresponding source-only audit are retained.
+The four external Full methods use a preregistered 2-by-2 channel/ordinary-PL matrix. A/B disable the additional channel and C/D enable it; A/C disable PL and B/D enable it. The common auxiliary TX-CE slot has weight 0.68 in every cell; channel-off or unselected samples reuse the original L IQ, preserving its denominator and exposure. Native internal augmentation and Full losses remain active, including SDG two-view training. The channel-enabled input uses the actual practical ResidualChannel engine in residual/post-sync mode without equalization or output renormalization. Training draws only low suburban, mid urban and low urban with conditional probabilities 0.40/0.35/0.25. The application probability is 0.30/0.60/0.80 over maximum-budget intervals $[0,.20)$, $[.20,.45)$ and $[.45,1)$, resetting within each native IB stage. Source-only early stopping can change realized exposure. PAMF-Sup has corresponding channel-off/on recipes with no U/EMA; native T1 retains its fixed original internal views and self-training. A deterministic FP32 input cache is shared by physical ID, epoch, stage and channel draw; no student targets or gradients are cached.
 
 External semi-supervised variants use current-model hard pseudo-labels at confidence 0.95, PL weight 1 and U/L batch ratio 1, without EMA, neighbor gates or strong-view consistency. RIEI runs with zero pseudo-label acceptance at the fixed threshold remain in the reported matrix; U exposure and realized acceptance are retained in the training records. PAMF-T1 retains the fixed native schedule: ordinary/raw stochastic consistency, shallow/intermediate cross-RX CRIC, As cross entropy with As KL disabled, label smoothing 0.01, and native selective U/EMA training. Student and own EMA states are inherited, while optimizers and segment schedules reset. A logical PAMF epoch contains 222 updates and need not equal one pass over a changed source pool.
 
@@ -59,7 +58,7 @@ F denotes the identifier and G the DURA restorer. Supervised system comparisons 
 
 We report Accuracy and Macro-F1 over the full registered class set (six classes for ManySig and ten for ManyRx). S6 averages the six channel conditions within each seed before computing mean and sample SD across F seeds 2026092701/02/03. Three F seeds usually share one fixed G per contract: the reported SD is conditional F variation, not three independent complete-system replicas or a significance interval. A separate preregistered three-source F/G crossed-seed study checks joint-seed sensitivity. The evidence archive includes per-RX/TX/day results and confusion-derived repair/damage counts.
 
-\input{full_method_comparison}
+\input{practical_full_results}
 
 \input{pamf_focused_mechanisms}
 

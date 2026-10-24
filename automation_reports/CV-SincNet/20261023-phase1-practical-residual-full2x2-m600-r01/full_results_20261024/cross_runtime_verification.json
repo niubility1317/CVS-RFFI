@@ -1,0 +1,56 @@
+{
+  "status": "REPRODUCED",
+  "CSV_files": [
+    {
+      "file": "augmentation_producer_cost.csv",
+      "rows": 3811
+    },
+    {
+      "file": "F_cost.csv",
+      "rows": 627
+    },
+    {
+      "file": "F_stage_cost.csv",
+      "rows": 957
+    },
+    {
+      "file": "factorial_raw_overall.csv",
+      "rows": 10560
+    },
+    {
+      "file": "G_cost.csv",
+      "rows": 22
+    },
+    {
+      "file": "net_corrections.csv.gz",
+      "rows": 371469
+    },
+    {
+      "file": "per_seed.csv.gz",
+      "rows": 1698144
+    },
+    {
+      "file": "restoration_gain.csv.gz",
+      "rows": 283024
+    },
+    {
+      "file": "restoration_gain_overall.csv",
+      "rows": 10032
+    },
+    {
+      "file": "restored_cache_cost.csv",
+      "rows": 22
+    },
+    {
+      "file": "summary.csv.gz",
+      "rows": 566048
+    },
+    {
+      "file": "summary_overall.csv",
+      "rows": 20064
+    }
+  ],
+  "numeric_values": 10581218,
+  "maximum_absolute_difference": 4.618527782440651e-14,
+  "tolerance": 1e-10
+}

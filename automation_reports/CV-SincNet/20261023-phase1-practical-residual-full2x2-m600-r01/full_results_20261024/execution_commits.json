@@ -1,0 +1,3011 @@
+{
+  "status": "ARTIFACTS_COMPLETE",
+  "effective_counts": {
+    "COMPLETE": 1880
+  },
+  "historical_jobs": 1898,
+  "excluded_jobs": 18,
+  "unresolved_failures": {},
+  "F_execution": [
+    {
+      "row_id": "F0-riei-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-riei-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-riei-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-drift-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-drift-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-drift-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-ibrff-A-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F0-ibrff-A-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F0-ibrff-A-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F0-sdg-A-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F0-sdg-A-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F0-sdg-A-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F0-riei-B-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-riei-B-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-riei-B-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-drift-B-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-drift-B-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-drift-B-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-ibrff-B-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F0-ibrff-B-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F0-ibrff-B-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F0-sdg-B-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F0-sdg-B-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F0-sdg-B-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F0-riei-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-riei-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-riei-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-drift-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-drift-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-drift-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-ibrff-C-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F0-ibrff-C-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F0-ibrff-C-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F0-sdg-C-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F0-sdg-C-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F0-sdg-C-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F0-riei-D-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-riei-D-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-riei-D-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-drift-D-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-drift-D-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-drift-D-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-ibrff-D-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F0-ibrff-D-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F0-ibrff-D-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F0-sdg-D-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F0-sdg-D-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F0-sdg-D-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F0-PAMF-Sup-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-PAMF-Sup-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-PAMF-Sup-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-PAMF-Sup-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-PAMF-Sup-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F0-PAMF-Sup-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-riei-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-riei-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-riei-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-drift-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-drift-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-drift-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-ibrff-A-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-ibrff-A-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-ibrff-A-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-sdg-A-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-sdg-A-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-sdg-A-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-riei-B-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-riei-B-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-riei-B-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-drift-B-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-drift-B-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-drift-B-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-ibrff-B-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-ibrff-B-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-ibrff-B-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-sdg-B-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-sdg-B-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-sdg-B-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-riei-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-riei-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-riei-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-drift-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-drift-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-drift-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-ibrff-C-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-ibrff-C-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-ibrff-C-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-sdg-C-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-sdg-C-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-sdg-C-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-riei-D-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-riei-D-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-riei-D-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-drift-D-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-drift-D-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-drift-D-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-ibrff-D-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-ibrff-D-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-ibrff-D-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-sdg-D-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-sdg-D-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-sdg-D-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-PAMF-Sup-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-PAMF-Sup-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-PAMF-Sup-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-PAMF-Sup-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-PAMF-Sup-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-PAMF-Sup-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-PAMF-T1-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-PAMF-T1-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F1_rx_repartition_r01-PAMF-T1-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-riei-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-riei-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-riei-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-drift-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-drift-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-drift-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-ibrff-A-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-ibrff-A-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-ibrff-A-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-sdg-A-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-sdg-A-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-sdg-A-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-riei-B-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-riei-B-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-riei-B-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-drift-B-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-drift-B-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-drift-B-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-ibrff-B-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-ibrff-B-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-ibrff-B-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-sdg-B-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-sdg-B-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-sdg-B-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-riei-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-riei-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-riei-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-drift-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-drift-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-drift-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-ibrff-C-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-ibrff-C-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-ibrff-C-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-sdg-C-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-sdg-C-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-sdg-C-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-riei-D-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-riei-D-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-riei-D-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-drift-D-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-drift-D-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-drift-D-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-ibrff-D-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-ibrff-D-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-ibrff-D-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-sdg-D-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-sdg-D-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-sdg-D-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-PAMF-Sup-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-PAMF-Sup-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-PAMF-Sup-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-PAMF-Sup-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-PAMF-Sup-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-PAMF-Sup-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-PAMF-T1-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-PAMF-T1-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "F2_rx_repartition_r01-PAMF-T1-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-riei-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-riei-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-riei-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-drift-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-drift-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-drift-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-ibrff-A-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "ManyRx-ibrff-A-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "ManyRx-ibrff-A-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "ManyRx-sdg-A-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "ManyRx-sdg-A-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "ManyRx-sdg-A-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "ManyRx-riei-B-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-riei-B-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-riei-B-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-drift-B-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-drift-B-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-drift-B-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-ibrff-B-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "ManyRx-ibrff-B-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "ManyRx-ibrff-B-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "ManyRx-sdg-B-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "ManyRx-sdg-B-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "ManyRx-sdg-B-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "ManyRx-riei-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-riei-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-riei-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-drift-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-drift-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-drift-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-ibrff-C-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "ManyRx-ibrff-C-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "ManyRx-ibrff-C-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "ManyRx-sdg-C-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "ManyRx-sdg-C-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "ManyRx-sdg-C-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "ManyRx-riei-D-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-riei-D-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-riei-D-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-drift-D-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-drift-D-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-drift-D-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-ibrff-D-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "ManyRx-ibrff-D-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "ManyRx-ibrff-D-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "ManyRx-sdg-D-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "ManyRx-sdg-D-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "ManyRx-sdg-D-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "ManyRx-PAMF-Sup-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-PAMF-Sup-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-PAMF-Sup-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-PAMF-Sup-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-PAMF-Sup-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "ManyRx-PAMF-Sup-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-riei-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-riei-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-riei-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-drift-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-drift-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-drift-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-ibrff-A-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "label01-ibrff-A-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "label01-ibrff-A-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "label01-sdg-A-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "label01-sdg-A-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "label01-sdg-A-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "label01-riei-B-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-riei-B-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-riei-B-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-drift-B-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-drift-B-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-drift-B-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-ibrff-B-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "label01-ibrff-B-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "label01-ibrff-B-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "label01-sdg-B-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "label01-sdg-B-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "label01-sdg-B-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "label01-riei-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-riei-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-riei-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-drift-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-drift-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-drift-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-ibrff-C-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "label01-ibrff-C-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "label01-ibrff-C-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "label01-sdg-C-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "label01-sdg-C-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "label01-sdg-C-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "label01-riei-D-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-riei-D-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-riei-D-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-drift-D-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-drift-D-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-drift-D-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-ibrff-D-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "label01-ibrff-D-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "label01-ibrff-D-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "label01-sdg-D-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "label01-sdg-D-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "label01-sdg-D-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "label01-PAMF-Sup-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-PAMF-Sup-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-PAMF-Sup-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-PAMF-Sup-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-PAMF-Sup-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label01-PAMF-Sup-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-riei-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-riei-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-riei-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-drift-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-drift-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-drift-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-ibrff-A-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "label05-ibrff-A-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "label05-ibrff-A-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "label05-sdg-A-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "label05-sdg-A-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "label05-sdg-A-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "label05-riei-B-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-riei-B-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-riei-B-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-drift-B-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-drift-B-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-drift-B-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-ibrff-B-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "label05-ibrff-B-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "label05-ibrff-B-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "label05-sdg-B-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "label05-sdg-B-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "label05-sdg-B-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "label05-riei-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-riei-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-riei-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-drift-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-drift-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-drift-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-ibrff-C-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "label05-ibrff-C-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "label05-ibrff-C-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "label05-sdg-C-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "label05-sdg-C-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "label05-sdg-C-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "label05-riei-D-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-riei-D-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-riei-D-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-drift-D-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-drift-D-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-drift-D-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-ibrff-D-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "label05-ibrff-D-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "label05-ibrff-D-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "label05-sdg-D-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "label05-sdg-D-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "label05-sdg-D-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "label05-PAMF-Sup-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-PAMF-Sup-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-PAMF-Sup-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-PAMF-Sup-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-PAMF-Sup-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "label05-PAMF-Sup-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-riei-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-riei-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-riei-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-drift-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-drift-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-drift-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-ibrff-A-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m1-natural-ibrff-A-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m1-natural-ibrff-A-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m1-natural-sdg-A-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m1-natural-sdg-A-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m1-natural-sdg-A-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m1-natural-riei-B-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-riei-B-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-riei-B-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-drift-B-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-drift-B-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-drift-B-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-ibrff-B-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m1-natural-ibrff-B-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m1-natural-ibrff-B-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m1-natural-sdg-B-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m1-natural-sdg-B-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m1-natural-sdg-B-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m1-natural-riei-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-riei-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-riei-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-drift-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-drift-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-drift-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-ibrff-C-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m1-natural-ibrff-C-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m1-natural-ibrff-C-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m1-natural-sdg-C-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m1-natural-sdg-C-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m1-natural-sdg-C-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m1-natural-riei-D-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-riei-D-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-riei-D-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-drift-D-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-drift-D-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-drift-D-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-ibrff-D-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m1-natural-ibrff-D-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m1-natural-ibrff-D-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m1-natural-sdg-D-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m1-natural-sdg-D-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m1-natural-sdg-D-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m1-natural-PAMF-Sup-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-PAMF-Sup-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-PAMF-Sup-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-PAMF-Sup-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-PAMF-Sup-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m1-natural-PAMF-Sup-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-riei-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-riei-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-riei-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-drift-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-drift-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-drift-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-ibrff-A-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m2-natural-ibrff-A-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m2-natural-ibrff-A-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m2-natural-sdg-A-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m2-natural-sdg-A-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m2-natural-sdg-A-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m2-natural-riei-B-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-riei-B-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-riei-B-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-drift-B-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-drift-B-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-drift-B-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-ibrff-B-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m2-natural-ibrff-B-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m2-natural-ibrff-B-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m2-natural-sdg-B-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m2-natural-sdg-B-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m2-natural-sdg-B-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m2-natural-riei-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-riei-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-riei-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-drift-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-drift-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-drift-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-ibrff-C-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m2-natural-ibrff-C-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m2-natural-ibrff-C-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m2-natural-sdg-C-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m2-natural-sdg-C-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m2-natural-sdg-C-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m2-natural-riei-D-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-riei-D-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-riei-D-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-drift-D-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-drift-D-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-drift-D-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-ibrff-D-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m2-natural-ibrff-D-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m2-natural-ibrff-D-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m2-natural-sdg-D-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m2-natural-sdg-D-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m2-natural-sdg-D-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m2-natural-PAMF-Sup-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-PAMF-Sup-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-PAMF-Sup-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-PAMF-Sup-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-PAMF-Sup-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m2-natural-PAMF-Sup-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-riei-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-riei-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-riei-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-drift-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-drift-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-drift-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-ibrff-A-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m3-natural-ibrff-A-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m3-natural-ibrff-A-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m3-natural-sdg-A-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m3-natural-sdg-A-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m3-natural-sdg-A-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m3-natural-riei-B-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-riei-B-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-riei-B-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-drift-B-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-drift-B-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-drift-B-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-ibrff-B-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m3-natural-ibrff-B-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m3-natural-ibrff-B-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m3-natural-sdg-B-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m3-natural-sdg-B-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m3-natural-sdg-B-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m3-natural-riei-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-riei-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-riei-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-drift-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-drift-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-drift-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-ibrff-C-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m3-natural-ibrff-C-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m3-natural-ibrff-C-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m3-natural-sdg-C-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m3-natural-sdg-C-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m3-natural-sdg-C-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m3-natural-riei-D-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-riei-D-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-riei-D-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-drift-D-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-drift-D-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-drift-D-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-ibrff-D-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m3-natural-ibrff-D-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m3-natural-ibrff-D-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m3-natural-sdg-D-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m3-natural-sdg-D-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m3-natural-sdg-D-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m3-natural-PAMF-Sup-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-PAMF-Sup-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-PAMF-Sup-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-PAMF-Sup-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-PAMF-Sup-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m3-natural-PAMF-Sup-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-riei-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-riei-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-riei-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-drift-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-drift-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-drift-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-ibrff-A-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m4-natural-ibrff-A-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m4-natural-ibrff-A-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m4-natural-sdg-A-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m4-natural-sdg-A-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m4-natural-sdg-A-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m4-natural-riei-B-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-riei-B-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-riei-B-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-drift-B-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-drift-B-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-drift-B-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-ibrff-B-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m4-natural-ibrff-B-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m4-natural-ibrff-B-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m4-natural-sdg-B-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m4-natural-sdg-B-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m4-natural-sdg-B-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m4-natural-riei-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-riei-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-riei-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-drift-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-drift-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-drift-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-ibrff-C-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m4-natural-ibrff-C-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m4-natural-ibrff-C-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m4-natural-sdg-C-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m4-natural-sdg-C-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m4-natural-sdg-C-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m4-natural-riei-D-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-riei-D-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-riei-D-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-drift-D-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-drift-D-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-drift-D-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-ibrff-D-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m4-natural-ibrff-D-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m4-natural-ibrff-D-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m4-natural-sdg-D-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m4-natural-sdg-D-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m4-natural-sdg-D-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m4-natural-PAMF-Sup-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-PAMF-Sup-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-PAMF-Sup-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-PAMF-Sup-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-PAMF-Sup-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m4-natural-PAMF-Sup-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-riei-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-riei-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-riei-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-drift-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-drift-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-drift-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-ibrff-A-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m6-natural-ibrff-A-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m6-natural-ibrff-A-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m6-natural-sdg-A-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m6-natural-sdg-A-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m6-natural-sdg-A-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m6-natural-riei-B-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-riei-B-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-riei-B-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-drift-B-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-drift-B-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-drift-B-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-ibrff-B-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m6-natural-ibrff-B-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m6-natural-ibrff-B-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m6-natural-sdg-B-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m6-natural-sdg-B-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m6-natural-sdg-B-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m6-natural-riei-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-riei-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-riei-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-drift-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-drift-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-drift-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-ibrff-C-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m6-natural-ibrff-C-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m6-natural-ibrff-C-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m6-natural-sdg-C-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m6-natural-sdg-C-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m6-natural-sdg-C-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m6-natural-riei-D-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-riei-D-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-riei-D-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-drift-D-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-drift-D-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-drift-D-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-ibrff-D-s2026092701",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m6-natural-ibrff-D-s2026092702",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m6-natural-ibrff-D-s2026092703",
+      "code_commit": "e355e2351916736de51447e75f2b7b56fbaff3d7",
+      "release": "20261023-phase1-practical-residual-control-r05"
+    },
+    {
+      "row_id": "m6-natural-sdg-D-s2026092701",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m6-natural-sdg-D-s2026092702",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m6-natural-sdg-D-s2026092703",
+      "code_commit": "07ada6b251f049573c0c4013c66a6c91830919a3",
+      "release": "20261023-phase1-practical-residual-control-r06"
+    },
+    {
+      "row_id": "m6-natural-PAMF-Sup-A-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-PAMF-Sup-A-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-PAMF-Sup-A-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-PAMF-Sup-C-s2026092701",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-PAMF-Sup-C-s2026092702",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    },
+    {
+      "row_id": "m6-natural-PAMF-Sup-C-s2026092703",
+      "code_commit": "dd2f4bfb389a9ff684fcb0d071d194543699d895",
+      "release": "20261023-phase1-practical-residual-control-r04"
+    }
+  ]
+}
