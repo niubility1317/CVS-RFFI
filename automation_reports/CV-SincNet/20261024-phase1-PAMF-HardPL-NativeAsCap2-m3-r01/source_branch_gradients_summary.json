@@ -354,5 +354,111 @@
   "target_reads": 0,
   "G_training_reads": 0,
   "goal_complete": false,
-  "NONBLOCKING": true
+  "NONBLOCKING": true,
+  "branch_norm_balance": {
+    "status": "DESCRIPTIVE_POSTPROCESS_ONLY",
+    "input": "source_branch_gradients.json",
+    "input_analysis_commit": "cbab6921d35072b4eab9042d0b5863e98f9de45d",
+    "formula": "(||U_As||/||U_clean||)/(||L_As||/||L_clean||)",
+    "rows": [
+      {
+        "model_seed": 2026092701,
+        "parameter_group": "t2",
+        "L_physical_to_nonphysical_norm": 0.5220139038784605,
+        "U_physical_to_nonphysical_norm": 1.360547112911311,
+        "relative_physical_emphasis": 2.6063426717233273,
+        "nonphysical_L_U_cosine": -0.5211854468829087,
+        "physical_L_U_cosine": 0.02538207757653496
+      },
+      {
+        "model_seed": 2026092701,
+        "parameter_group": "cls_head",
+        "L_physical_to_nonphysical_norm": 0.7500159102793555,
+        "U_physical_to_nonphysical_norm": 0.8726139355717525,
+        "relative_physical_emphasis": 1.163460566118835,
+        "nonphysical_L_U_cosine": -0.561632425353605,
+        "physical_L_U_cosine": -0.4641574971266398
+      },
+      {
+        "model_seed": 2026092701,
+        "parameter_group": "other",
+        "L_physical_to_nonphysical_norm": 0.5608148674257369,
+        "U_physical_to_nonphysical_norm": 1.0142831874218916,
+        "relative_physical_emphasis": 1.8085882638555457,
+        "nonphysical_L_U_cosine": -0.5664571207847541,
+        "physical_L_U_cosine": 0.04174981466226751
+      },
+      {
+        "model_seed": 2026092702,
+        "parameter_group": "t2",
+        "L_physical_to_nonphysical_norm": 1.422525156249316,
+        "U_physical_to_nonphysical_norm": 1.3081225466754272,
+        "relative_physical_emphasis": 0.9195777951122305,
+        "nonphysical_L_U_cosine": -0.049925160358398446,
+        "physical_L_U_cosine": -0.1661395562293434
+      },
+      {
+        "model_seed": 2026092702,
+        "parameter_group": "cls_head",
+        "L_physical_to_nonphysical_norm": 2.4468005743280834,
+        "U_physical_to_nonphysical_norm": 2.919145790004752,
+        "relative_physical_emphasis": 1.1930460621239554,
+        "nonphysical_L_U_cosine": -0.07474110484287809,
+        "physical_L_U_cosine": -0.3533063277500995
+      },
+      {
+        "model_seed": 2026092702,
+        "parameter_group": "other",
+        "L_physical_to_nonphysical_norm": 1.5098221317800806,
+        "U_physical_to_nonphysical_norm": 1.1236317501226345,
+        "relative_physical_emphasis": 0.7442146505018259,
+        "nonphysical_L_U_cosine": 0.08603171700995506,
+        "physical_L_U_cosine": -0.5064951937845182
+      },
+      {
+        "model_seed": 2026092703,
+        "parameter_group": "t2",
+        "L_physical_to_nonphysical_norm": 0.6426354849580462,
+        "U_physical_to_nonphysical_norm": 0.6941130027778095,
+        "relative_physical_emphasis": 1.0801037587009747,
+        "nonphysical_L_U_cosine": 0.3467076216360059,
+        "physical_L_U_cosine": 0.0342744448366509
+      },
+      {
+        "model_seed": 2026092703,
+        "parameter_group": "cls_head",
+        "L_physical_to_nonphysical_norm": 1.2634075227952217,
+        "U_physical_to_nonphysical_norm": 2.2107302048870183,
+        "relative_physical_emphasis": 1.7498156097692814,
+        "nonphysical_L_U_cosine": 0.2262865816740766,
+        "physical_L_U_cosine": -0.17723539794503151
+      },
+      {
+        "model_seed": 2026092703,
+        "parameter_group": "other",
+        "L_physical_to_nonphysical_norm": 0.6568438382879319,
+        "U_physical_to_nonphysical_norm": 0.8618174810947827,
+        "relative_physical_emphasis": 1.3120584084964793,
+        "nonphysical_L_U_cosine": 0.3867588499220064,
+        "physical_L_U_cosine": 0.006472100378374789
+      }
+    ],
+    "counts": {
+      "relative_emphasis_above_one": 7,
+      "relative_emphasis_below_one": 2,
+      "nonphysical_negative_cosines": 5,
+      "physical_negative_cosines": 5
+    },
+    "relative_emphasis_range": [
+      0.7442146505018259,
+      2.6063426717233273
+    ],
+    "L_clean_means": "nonphysical source component,not target clean accuracy",
+    "additional_model_or_IQ_reads": 0,
+    "additional_forward_or_autograd_calls": 0,
+    "new_target_or_U_truth_reads": 0,
+    "current_training_or_selection_changes": 0,
+    "target_exposure_context": "Supplement written after NativeAs and BalancedCE target readouts;only preserved source scalars are inputs,no new candidate or target-feedback tuning.",
+    "limitations": "One L128/U256 source step per seed,three correlated parameter groups per seed;component norms are not additive contribution shares;before clip5/AdamW/decay;not an optimizer-step,trajectory or target-performance explanation."
+  }
 }

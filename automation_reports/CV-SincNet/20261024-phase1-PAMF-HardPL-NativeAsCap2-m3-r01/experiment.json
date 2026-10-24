@@ -355,5 +355,12 @@
     "intended_run_id": "20261024-phase1-PAMF-HardPL-BranchGuard-m3-r01",
     "method": "HPL_E20_AS_BG2",
     "training_launched": false
+  },
+  "source_branch_norm_balance": {
+    "status": "DESCRIPTIVE_POSTPROCESS_ONLY",
+    "reference": "source_branch_gradients_summary.json",
+    "section": "branch_norm_balance",
+    "new_training_or_target_reads": 0,
+    "recipe_changed": false
   }
 }
