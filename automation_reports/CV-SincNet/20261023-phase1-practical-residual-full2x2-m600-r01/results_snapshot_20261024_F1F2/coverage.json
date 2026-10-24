@@ -1,0 +1,22 @@
+{
+  "readback": "VERIFIED",
+  "observed_at": 1792824681.551731,
+  "source_controller": "20261023-phase1-practical-residual-control-r06",
+  "effective_counts": {
+    "COMPLETE": 1782,
+    "RUNNING": 1,
+    "QUEUED": 97
+  },
+  "all_F_and_G_training_complete": true,
+  "all_627_predictions_frozen": true,
+  "scored_rows_at_snapshot": 529,
+  "full_matrix_rows": 627,
+  "complete_protocols": [
+    "F1_rx_repartition_r01",
+    "F2_rx_repartition_r01"
+  ],
+  "included_rows": 114,
+  "data_scope": "Only aggregate overall confusion matrices; no target truth or sample predictions",
+  "frozen_input": "local_artifacts/external_practical_residual_2x2_design_20261023/results_snapshot_1792824681/inputs.json",
+  "remaining_full_delivery": "Other nine contracts, full strata/cost aggregation, IEEE update and immutable export"
+}

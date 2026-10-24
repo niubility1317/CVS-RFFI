@@ -1,0 +1,53 @@
+{
+  "status": "VERIFIED_COMPLETE_CONTRACT_SNAPSHOT",
+  "complete_protocols": [
+    "F1_rx_repartition_r01",
+    "F2_rx_repartition_r01"
+  ],
+  "logical_models": 114,
+  "actual_F_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "serialized_overall_CM_recomputed": 4788,
+  "net_cells_recomputed": 2394,
+  "population_counts": [
+    {
+      "protocol": "F1_rx_repartition_r01",
+      "test": "cross_date",
+      "packets": 30000
+    },
+    {
+      "protocol": "F1_rx_repartition_r01",
+      "test": "cross_rx",
+      "packets": 126000
+    },
+    {
+      "protocol": "F1_rx_repartition_r01",
+      "test": "cross_both",
+      "packets": 42000
+    },
+    {
+      "protocol": "F2_rx_repartition_r01",
+      "test": "cross_date",
+      "packets": 30000
+    },
+    {
+      "protocol": "F2_rx_repartition_r01",
+      "test": "cross_rx",
+      "packets": 126000
+    },
+    {
+      "protocol": "F2_rx_repartition_r01",
+      "test": "cross_both",
+      "packets": 42000
+    }
+  ],
+  "six_scene_mean_within_seed_first": true,
+  "sample_SD": true,
+  "conditional_on_one_fixed_G_per_contract_and_role": true,
+  "not_full_matrix_delivery": true,
+  "target_truth_reads": 0,
+  "score_feedback_used": false
+}

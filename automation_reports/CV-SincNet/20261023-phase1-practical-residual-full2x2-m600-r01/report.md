@@ -3,7 +3,7 @@
 - run_id：`20261023-phase1-practical-residual-full2x2-m600-r01`
 - group_id：`phase1-full-practical-residual-factorial`；类别：`comparison`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING；F1/F2 已完成结果快照，其他合同仍待评分/分析（下方启动快照为历史）
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+已公布 F1/F2 完整三种子结果快照，链接见文末；其他合同仍待完整独立评分，不标整组 ANALYZED。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 交接
@@ -81,3 +81,9 @@ r03真实checkpoint、同合同G-L/G-LU和四Full源侧梯度smoke已PASS；G和
 状态 **VERIFIED / RUNNING**，执行 `07ada6b251f049573c0c4013c66a6c91830919a3`，owner PID 1984936，旧r05 controller正常交接退出。原G和CPU producer的PID/CWD/argv保持。两条恢复SDG已产生完整轮日志和有限原生Full项，均越过原数据取样故障；169.2秒观测间隔内13条相同PID、12条日志增长。无未解决指纹。当前有效状态 `{"RUNNING": 13, "COMPLETE": 11, "QUEUED": 1856}`，本任务GPU分布 `{2: 3, 1: 2, 0: 3, 3: 3, 4: 2}`；仅0–4，5/6/7保留。
 
 原先IB的stage2真实恢复证据在control-r05/runtime_fix_verification.json，两个新技术故障均已明确替代，原失败历史/部分成本保留。600新F/4G、627读出和1880有效阶段不变。执行版本按current jobs.json逐任务解析，不能把07ada标成全部旧健康worker的版本。尚未全部训练或评分，不宣称新性能/整链加速倍数。
+
+## 2026-10-24 F1/F2 完整结果快照（当前状态）
+
+600 新 F、4 条 G 谱系及 627 行预测均已闭合。本次只读提取时 529/627 行已独立评分；完整合同为新 F1/F2，含 114 个逻辑模型读出。其余九合同不混入统计。该状态优先于前文历史发布快照，不重新训练或测试。
+
+[完整三种子结果](results_snapshot_20261024_F1F2/practical_results.md)覆盖三个互斥泛化群、四方法 Full 四组合、PAMF A/C 监督及原生 T1；[clean/S6 小表](results_snapshot_20261024_F1F2/practical_summary_clean_S6.csv)保留 Accuracy 和 Macro-F1。4788 份总体 CM 与 2394 个净纠错已复算；完整分层和成本留待最终全量交付。本次不新增科学实验、G 或时延，不修改健康进程或固定默认。
