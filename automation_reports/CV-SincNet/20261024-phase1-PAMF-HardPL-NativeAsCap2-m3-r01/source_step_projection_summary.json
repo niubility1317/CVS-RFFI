@@ -1,0 +1,592 @@
+{
+  "status": "VERIFIED_FIXED_SOURCE_STEP_PROJECTION",
+  "analysis_commit": "628aad4b0283f3bec994e167eff4033293b34062",
+  "source_rule_pass": true,
+  "scientific_status": "SOURCE_COUNTERFACTUAL_PASSED",
+  "source_rules": {
+    "minimum_whole_increment_norm_retention_per_seed": 0.5,
+    "minimum_removed_material_conflicts": 1,
+    "material_cosine_threshold": -1e-06,
+    "all_actual_parameter_constraints_and_nonexpansion_required": true,
+    "all_three_fixed_seeds_required": true
+  },
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "kind": "fixed_original_E20_source_step_projection_v1",
+      "groups": {
+        "t2": {
+          "raw_increment_norm": 0.019364792653286042,
+          "applied_increment_norm": 0.01833778001110884,
+          "retention": 0.9469649553927485,
+          "quantization_fallback": false,
+          "fallback_reason": null,
+          "tiny_L": false,
+          "passthrough": false,
+          "quantization_attempts_used": 1,
+          "actual_parameter_check": true,
+          "norm_nonexpansion": true,
+          "active_set": [
+            "L_clean",
+            "L_As"
+          ],
+          "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+          "anchor_cosines_before": {
+            "L_full": -0.315271390300016,
+            "L_clean": -0.28721292528037795,
+            "L_As": -0.15485983592475513
+          },
+          "anchor_cosines_after": {
+            "L_full": 0.0019769912833535776,
+            "L_clean": -1.9818929377517592e-07,
+            "L_As": 2.952082572712957e-07
+          },
+          "constraint_dots_after": {
+            "L_full": 6.732367811681177e-06,
+            "L_clean": -5.805495276745292e-10,
+            "L_As": 4.5140842202840174e-10
+          },
+          "near_zero_component_anchors_omitted": []
+        },
+        "cls_head": {
+          "raw_increment_norm": 0.00920850532298009,
+          "applied_increment_norm": 0.009110075515816593,
+          "retention": 0.9893109898174396,
+          "quantization_fallback": false,
+          "fallback_reason": null,
+          "tiny_L": false,
+          "passthrough": false,
+          "quantization_attempts_used": 1,
+          "actual_parameter_check": true,
+          "norm_nonexpansion": true,
+          "active_set": [
+            "L_clean",
+            "L_As"
+          ],
+          "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+          "anchor_cosines_before": {
+            "L_full": -0.12744275388141138,
+            "L_clean": -0.14580923391540648,
+            "L_As": -0.05068798610551093
+          },
+          "anchor_cosines_after": {
+            "L_full": 3.3576568259766174e-07,
+            "L_clean": 6.417159300046965e-07,
+            "L_As": -2.1609223106656685e-07
+          },
+          "constraint_dots_after": {
+            "L_full": 2.0731868971665852e-09,
+            "L_clean": 2.7469649319154885e-09,
+            "L_As": -6.937770422851862e-10
+          },
+          "near_zero_component_anchors_omitted": []
+        },
+        "other": {
+          "raw_increment_norm": 1.6998834896316546,
+          "applied_increment_norm": 1.699748756303753,
+          "retention": 0.9999207396690871,
+          "quantization_fallback": false,
+          "fallback_reason": null,
+          "tiny_L": false,
+          "passthrough": false,
+          "quantization_attempts_used": 1,
+          "actual_parameter_check": true,
+          "norm_nonexpansion": true,
+          "active_set": [
+            "L_full",
+            "L_As"
+          ],
+          "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+          "anchor_cosines_before": {
+            "L_full": -0.01219988087768477,
+            "L_clean": -0.008796002287959208,
+            "L_As": -0.00778911719022589
+          },
+          "anchor_cosines_after": {
+            "L_full": -3.938427361575309e-09,
+            "L_clean": 2.132801702566156e-05,
+            "L_As": -2.1340561851356108e-11
+          },
+          "constraint_dots_after": {
+            "L_full": -6.079101048451271e-09,
+            "L_clean": 2.9554563344005527e-05,
+            "L_As": -1.6584387482017002e-11
+          },
+          "near_zero_component_anchors_omitted": []
+        }
+      },
+      "raw_whole_increment_norm": 1.700018726393217,
+      "protected_whole_increment_norm": 1.699872084072289,
+      "whole_increment_norm_retention": 0.9999137407614097,
+      "removed_material_conflicts": [
+        {
+          "group": "t2",
+          "anchor": "L_full",
+          "before_cosine": -0.315271390300016,
+          "after_cosine": 0.0019769912833535776,
+          "zero_increment": false,
+          "quantization_fallback": false
+        },
+        {
+          "group": "t2",
+          "anchor": "L_clean",
+          "before_cosine": -0.28721292528037795,
+          "after_cosine": -1.9818929377517592e-07,
+          "zero_increment": false,
+          "quantization_fallback": false
+        },
+        {
+          "group": "t2",
+          "anchor": "L_As",
+          "before_cosine": -0.15485983592475513,
+          "after_cosine": 2.952082572712957e-07,
+          "zero_increment": false,
+          "quantization_fallback": false
+        },
+        {
+          "group": "cls_head",
+          "anchor": "L_full",
+          "before_cosine": -0.12744275388141138,
+          "after_cosine": 3.3576568259766174e-07,
+          "zero_increment": false,
+          "quantization_fallback": false
+        },
+        {
+          "group": "cls_head",
+          "anchor": "L_clean",
+          "before_cosine": -0.14580923391540648,
+          "after_cosine": 6.417159300046965e-07,
+          "zero_increment": false,
+          "quantization_fallback": false
+        },
+        {
+          "group": "cls_head",
+          "anchor": "L_As",
+          "before_cosine": -0.05068798610551093,
+          "after_cosine": -2.1609223106656685e-07,
+          "zero_increment": false,
+          "quantization_fallback": false
+        },
+        {
+          "group": "other",
+          "anchor": "L_full",
+          "before_cosine": -0.01219988087768477,
+          "after_cosine": -3.938427361575309e-09,
+          "zero_increment": false,
+          "quantization_fallback": false
+        },
+        {
+          "group": "other",
+          "anchor": "L_clean",
+          "before_cosine": -0.008796002287959208,
+          "after_cosine": 2.132801702566156e-05,
+          "zero_increment": false,
+          "quantization_fallback": false
+        },
+        {
+          "group": "other",
+          "anchor": "L_As",
+          "before_cosine": -0.00778911719022589,
+          "after_cosine": -2.1340561851356108e-11,
+          "zero_increment": false,
+          "quantization_fallback": false
+        }
+      ],
+      "quantization_fallback_groups": [],
+      "exact_parameter_values_observed": true,
+      "protected_values_applied_to_original_model": false,
+      "extra_optimizer_steps": 0,
+      "extra_autograd_calls": 0,
+      "extra_model_forward_calls": 0,
+      "interpretation": "Compare exact FP64 differences of actual FP32 baseline/raw/protected parameters;protected values are computed and discarded,not written to any original model.Three anchors/parameter groups are correlated."
+    },
+    {
+      "model_seed": 2026092702,
+      "kind": "fixed_original_E20_source_step_projection_v1",
+      "groups": {
+        "t2": {
+          "raw_increment_norm": 0.01976994653367645,
+          "applied_increment_norm": 0.018702097999607526,
+          "retention": 0.9459862710174793,
+          "quantization_fallback": false,
+          "fallback_reason": null,
+          "tiny_L": false,
+          "passthrough": false,
+          "quantization_attempts_used": 1,
+          "actual_parameter_check": true,
+          "norm_nonexpansion": true,
+          "active_set": [
+            "L_clean",
+            "L_As"
+          ],
+          "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+          "anchor_cosines_before": {
+            "L_full": -0.3031366335819575,
+            "L_clean": -0.21088728025835352,
+            "L_As": -0.28794382690799303
+          },
+          "anchor_cosines_after": {
+            "L_full": 0.01497472707292104,
+            "L_clean": -3.875320483204188e-07,
+            "L_As": -5.261556150055441e-07
+          },
+          "constraint_dots_after": {
+            "L_full": 4.582276361934169e-05,
+            "L_clean": -6.074713596986172e-10,
+            "L_As": -1.1732548227492024e-09
+          },
+          "near_zero_component_anchors_omitted": []
+        },
+        "cls_head": {
+          "raw_increment_norm": 0.009320535469278106,
+          "applied_increment_norm": 0.009141131406190363,
+          "retention": 0.9807517428929823,
+          "quantization_fallback": false,
+          "fallback_reason": null,
+          "tiny_L": false,
+          "passthrough": false,
+          "quantization_attempts_used": 1,
+          "actual_parameter_check": true,
+          "norm_nonexpansion": true,
+          "active_set": [
+            "L_clean",
+            "L_As"
+          ],
+          "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+          "anchor_cosines_before": {
+            "L_full": -0.19348783349761528,
+            "L_clean": -0.12461032653087542,
+            "L_As": -0.19319742879475557
+          },
+          "anchor_cosines_after": {
+            "L_full": -3.2869787223747234e-07,
+            "L_clean": -1.6366218730900288e-07,
+            "L_As": -3.602736072627729e-07
+          },
+          "constraint_dots_after": {
+            "L_full": -1.6147299221330865e-09,
+            "L_clean": -2.604315911281527e-10,
+            "L_As": -1.4027372660917756e-09
+          },
+          "near_zero_component_anchors_omitted": []
+        },
+        "other": {
+          "raw_increment_norm": 1.8357900856975864,
+          "applied_increment_norm": 1.8356789046914819,
+          "retention": 0.9999394369721404,
+          "quantization_fallback": false,
+          "fallback_reason": null,
+          "tiny_L": false,
+          "passthrough": false,
+          "quantization_attempts_used": 1,
+          "actual_parameter_check": true,
+          "norm_nonexpansion": true,
+          "active_set": [
+            "L_full",
+            "L_As"
+          ],
+          "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+          "anchor_cosines_before": {
+            "L_full": -0.010974882645866966,
+            "L_clean": -0.008374492522164613,
+            "L_As": -0.010361602583112816
+          },
+          "anchor_cosines_after": {
+            "L_full": -5.545236350812844e-09,
+            "L_clean": 1.9733193984423728e-06,
+            "L_As": -5.7537809084719105e-09
+          },
+          "constraint_dots_after": {
+            "L_full": -1.0713936827687885e-08,
+            "L_clean": 1.7284765366166934e-06,
+            "L_As": -7.609308843819335e-09
+          },
+          "near_zero_component_anchors_omitted": []
+        }
+      },
+      "raw_whole_increment_norm": 1.8359201948651438,
+      "protected_whole_increment_norm": 1.8357969304590775,
+      "whole_increment_norm_retention": 0.9999328596055477,
+      "removed_material_conflicts": [
+        {
+          "group": "t2",
+          "anchor": "L_full",
+          "before_cosine": -0.3031366335819575,
+          "after_cosine": 0.01497472707292104,
+          "zero_increment": false,
+          "quantization_fallback": false
+        },
+        {
+          "group": "t2",
+          "anchor": "L_clean",
+          "before_cosine": -0.21088728025835352,
+          "after_cosine": -3.875320483204188e-07,
+          "zero_increment": false,
+          "quantization_fallback": false
+        },
+        {
+          "group": "t2",
+          "anchor": "L_As",
+          "before_cosine": -0.28794382690799303,
+          "after_cosine": -5.261556150055441e-07,
+          "zero_increment": false,
+          "quantization_fallback": false
+        },
+        {
+          "group": "cls_head",
+          "anchor": "L_full",
+          "before_cosine": -0.19348783349761528,
+          "after_cosine": -3.2869787223747234e-07,
+          "zero_increment": false,
+          "quantization_fallback": false
+        },
+        {
+          "group": "cls_head",
+          "anchor": "L_clean",
+          "before_cosine": -0.12461032653087542,
+          "after_cosine": -1.6366218730900288e-07,
+          "zero_increment": false,
+          "quantization_fallback": false
+        },
+        {
+          "group": "cls_head",
+          "anchor": "L_As",
+          "before_cosine": -0.19319742879475557,
+          "after_cosine": -3.602736072627729e-07,
+          "zero_increment": false,
+          "quantization_fallback": false
+        },
+        {
+          "group": "other",
+          "anchor": "L_full",
+          "before_cosine": -0.010974882645866966,
+          "after_cosine": -5.545236350812844e-09,
+          "zero_increment": false,
+          "quantization_fallback": false
+        },
+        {
+          "group": "other",
+          "anchor": "L_clean",
+          "before_cosine": -0.008374492522164613,
+          "after_cosine": 1.9733193984423728e-06,
+          "zero_increment": false,
+          "quantization_fallback": false
+        },
+        {
+          "group": "other",
+          "anchor": "L_As",
+          "before_cosine": -0.010361602583112816,
+          "after_cosine": -5.7537809084719105e-09,
+          "zero_increment": false,
+          "quantization_fallback": false
+        }
+      ],
+      "quantization_fallback_groups": [],
+      "exact_parameter_values_observed": true,
+      "protected_values_applied_to_original_model": false,
+      "extra_optimizer_steps": 0,
+      "extra_autograd_calls": 0,
+      "extra_model_forward_calls": 0,
+      "interpretation": "Compare exact FP64 differences of actual FP32 baseline/raw/protected parameters;protected values are computed and discarded,not written to any original model.Three anchors/parameter groups are correlated."
+    },
+    {
+      "model_seed": 2026092703,
+      "kind": "fixed_original_E20_source_step_projection_v1",
+      "groups": {
+        "t2": {
+          "raw_increment_norm": 0.01790339144148433,
+          "applied_increment_norm": 0.01726867388808066,
+          "retention": 0.9645476358220626,
+          "quantization_fallback": false,
+          "fallback_reason": null,
+          "tiny_L": false,
+          "passthrough": false,
+          "quantization_attempts_used": 1,
+          "actual_parameter_check": true,
+          "norm_nonexpansion": true,
+          "active_set": [
+            "L_full",
+            "L_As"
+          ],
+          "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+          "anchor_cosines_before": {
+            "L_full": -0.23034693818757382,
+            "L_clean": -0.10892708565884553,
+            "L_As": -0.2336976588711617
+          },
+          "anchor_cosines_after": {
+            "L_full": -6.219057619443073e-07,
+            "L_clean": 0.01910021352822633,
+            "L_As": -1.1467447729332966e-07
+          },
+          "constraint_dots_after": {
+            "L_full": -1.4669534202653336e-09,
+            "L_clean": 3.577357025688945e-05,
+            "L_As": -1.3802429421528489e-10
+          },
+          "near_zero_component_anchors_omitted": []
+        },
+        "cls_head": {
+          "raw_increment_norm": 0.008763365421275668,
+          "applied_increment_norm": 0.008633523507895195,
+          "retention": 0.9851835559583945,
+          "quantization_fallback": false,
+          "fallback_reason": null,
+          "tiny_L": false,
+          "passthrough": false,
+          "quantization_attempts_used": 1,
+          "actual_parameter_check": true,
+          "norm_nonexpansion": true,
+          "active_set": [
+            "L_As"
+          ],
+          "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+          "anchor_cosines_before": {
+            "L_full": -0.15113351442951564,
+            "L_clean": -0.08213113364348944,
+            "L_As": -0.17149922403945975
+          },
+          "anchor_cosines_after": {
+            "L_full": 0.0035747105258865024,
+            "L_clean": 0.0070675507275187064,
+            "L_As": -1.5020928247141843e-08
+          },
+          "constraint_dots_after": {
+            "L_full": 1.8248782721141244e-05,
+            "L_clean": 1.824885202261584e-05,
+            "L_As": -4.900121462563488e-11
+          },
+          "near_zero_component_anchors_omitted": []
+        },
+        "other": {
+          "raw_increment_norm": 1.445257854861381,
+          "applied_increment_norm": 1.4451457942052586,
+          "retention": 0.9999224632090769,
+          "quantization_fallback": false,
+          "fallback_reason": null,
+          "tiny_L": false,
+          "passthrough": false,
+          "quantization_attempts_used": 1,
+          "actual_parameter_check": true,
+          "norm_nonexpansion": true,
+          "active_set": [
+            "L_full",
+            "L_As"
+          ],
+          "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+          "anchor_cosines_before": {
+            "L_full": -0.011726358008423674,
+            "L_clean": -0.008664884805128299,
+            "L_As": -0.011637398812828336
+          },
+          "anchor_cosines_after": {
+            "L_full": -3.9042675588379855e-09,
+            "L_clean": 0.0003416455296006307,
+            "L_As": -2.7277791033739403e-09
+          },
+          "constraint_dots_after": {
+            "L_full": -5.8987144633875985e-09,
+            "L_clean": 0.00036262379264629513,
+            "L_As": -1.901743242537727e-09
+          },
+          "near_zero_component_anchors_omitted": []
+        }
+      },
+      "raw_whole_increment_norm": 1.4453953075327017,
+      "protected_whole_increment_norm": 1.4452747528880323,
+      "whole_increment_norm_retention": 0.9999165939974752,
+      "removed_material_conflicts": [
+        {
+          "group": "t2",
+          "anchor": "L_full",
+          "before_cosine": -0.23034693818757382,
+          "after_cosine": -6.219057619443073e-07,
+          "zero_increment": false,
+          "quantization_fallback": false
+        },
+        {
+          "group": "t2",
+          "anchor": "L_clean",
+          "before_cosine": -0.10892708565884553,
+          "after_cosine": 0.01910021352822633,
+          "zero_increment": false,
+          "quantization_fallback": false
+        },
+        {
+          "group": "t2",
+          "anchor": "L_As",
+          "before_cosine": -0.2336976588711617,
+          "after_cosine": -1.1467447729332966e-07,
+          "zero_increment": false,
+          "quantization_fallback": false
+        },
+        {
+          "group": "cls_head",
+          "anchor": "L_full",
+          "before_cosine": -0.15113351442951564,
+          "after_cosine": 0.0035747105258865024,
+          "zero_increment": false,
+          "quantization_fallback": false
+        },
+        {
+          "group": "cls_head",
+          "anchor": "L_clean",
+          "before_cosine": -0.08213113364348944,
+          "after_cosine": 0.0070675507275187064,
+          "zero_increment": false,
+          "quantization_fallback": false
+        },
+        {
+          "group": "cls_head",
+          "anchor": "L_As",
+          "before_cosine": -0.17149922403945975,
+          "after_cosine": -1.5020928247141843e-08,
+          "zero_increment": false,
+          "quantization_fallback": false
+        },
+        {
+          "group": "other",
+          "anchor": "L_full",
+          "before_cosine": -0.011726358008423674,
+          "after_cosine": -3.9042675588379855e-09,
+          "zero_increment": false,
+          "quantization_fallback": false
+        },
+        {
+          "group": "other",
+          "anchor": "L_clean",
+          "before_cosine": -0.008664884805128299,
+          "after_cosine": 0.0003416455296006307,
+          "zero_increment": false,
+          "quantization_fallback": false
+        },
+        {
+          "group": "other",
+          "anchor": "L_As",
+          "before_cosine": -0.011637398812828336,
+          "after_cosine": -2.7277791033739403e-09,
+          "zero_increment": false,
+          "quantization_fallback": false
+        }
+      ],
+      "quantization_fallback_groups": [],
+      "exact_parameter_values_observed": true,
+      "protected_values_applied_to_original_model": false,
+      "extra_optimizer_steps": 0,
+      "extra_autograd_calls": 0,
+      "extra_model_forward_calls": 0,
+      "interpretation": "Compare exact FP64 differences of actual FP32 baseline/raw/protected parameters;protected values are computed and discarded,not written to any original model.Three anchors/parameter groups are correlated."
+    }
+  ],
+  "minimum_whole_increment_norm_retention": 0.9999137407614097,
+  "removed_material_conflicts": 27,
+  "quantization_fallback_groups": 0,
+  "seconds": 37.01420573494397,
+  "actual_autograd_calls": 27,
+  "source_packet_views": 7686,
+  "disposable_optimizer_steps": 12,
+  "original_model_updates": 0,
+  "new_target_or_U_truth_reads": 0,
+  "automatic_candidate_launch": false,
+  "goal_complete": false
+}

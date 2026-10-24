@@ -404,7 +404,7 @@
     }
   },
   "source_step_projection": {
-    "status": "READY_FOR_FIXED_SOURCE_EXECUTION",
+    "status": "SOURCE_COUNTERFACTUAL_PASSED",
     "reference": "source_step_projection_plan.json",
     "source_models": 3,
     "source_rules": {
@@ -418,7 +418,12 @@
     "target_reads": 0,
     "healthy_jobs_changed": false,
     "focused_checks": 21,
-    "independent_P0P1": "PASS"
+    "independent_P0P1": "PASS",
+    "result": "source_step_projection_summary.json",
+    "source_rule_pass": true,
+    "minimum_whole_increment_norm_retention": 0.9999137407614097,
+    "removed_material_conflicts": 27,
+    "quantization_fallback_groups": 0
   },
   "source_quality_diagnostics": {
     "HPL_E20_AS_CAP2": {
