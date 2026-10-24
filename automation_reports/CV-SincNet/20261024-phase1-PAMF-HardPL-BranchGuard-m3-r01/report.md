@@ -16,3 +16,8 @@ NativeAs正式目标84.831944/72.264385与DURA84.944444/77.428439已知；本轮
 
 
 发布后独立核实：VERIFIED，执行 commit `61b942a4d922d41ff235707534169074293ec565` 的控制器存活，CWD 和完整命令匹配；三行实际 QUEUED，新增 GPU worker 为 0，真实原 E20 检查 PENDING。等待对应 seed BalancedCE 全部 GPU 预测结束且 Cap2 已派发；独立核实两侧控制器及现有运行行的 PID/CWD/命令/GPU/日志增长。保留全部健康任务；排队不代表训练成功或达到目标。
+
+
+真实原 E20 检查及首批启动已独立核实：VERIFIED，执行 commit `61b942a4d922d41ff235707534169074293ec565`，检查 seed 2026092702，L768/U1536/rawteacher256/As128/物理学生256/Practical192，完整 L 显式梯度、joint 签名梯度和临时 hook 清除通过。探针丢弃，正式重新加载原 E20。目前实际 1 个正式 GPU worker 已有正源步骤，并核实 PID/CWD/命令/GPU/日志增长；其余仍排队。完整事实见 first_source_start.json；首个启动不能当作三种子全部启动或测试成功。
+
+真实分支保护检查同时核对完整L/非物理L/物理L锚点、四Lpair、四导数加joint检查1次及实际dtype约束；每步额外两次L导数，无额外前向，完整L只应用一次，临时context退出。
