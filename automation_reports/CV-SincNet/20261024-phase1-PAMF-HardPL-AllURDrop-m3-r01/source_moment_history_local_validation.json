@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_23_CHECKS_AND_SOURCE_P0P1_PASS_NOT_EXECUTED",
+  "status": "VERIFIED_FIXED_SOURCE_MOMENT_HISTORY",
   "focused_checks": 23,
   "pytest_command": "python -m pytest -q tests/test_pamf_source_moment_history.py tests/test_pamf_optimizer_reference.py",
   "review_count": 1,
@@ -7,6 +7,7 @@
   "review_verdict": "PASS",
   "findings_P0_P1": [],
   "review_scope": "Next one-shot source CPU diagnostic only;no production candidate launch",
-  "real_checkpoint_no_query_smoke": "First step of the source diagnostic,not yet executed",
-  "target_reads": 0
+  "real_checkpoint_no_query_smoke": "PASS",
+  "target_reads": 0,
+  "source_rule_pass": true
 }
