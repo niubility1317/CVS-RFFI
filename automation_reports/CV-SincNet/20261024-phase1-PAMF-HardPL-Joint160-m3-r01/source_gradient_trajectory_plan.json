@@ -1,0 +1,96 @@
+{
+  "status": "REGISTERED_NONBLOCKING_SOURCE_GRADIENT_AUDIT",
+  "registered_utc": "2026-10-24T01:06:14.823724+00:00",
+  "question": "Does nominal Uweight6 translate into increasing actual logged U gradient magnitude,or is it often projected/capped relative to completeL?",
+  "phaseA": [
+    {
+      "revision": "hard-pl-guard-r01",
+      "method": "HPL_E20_NAMS6G"
+    },
+    {
+      "revision": "hard-pl-joint-r01",
+      "method": "HPL_E20_NAMS_JOINT6G"
+    },
+    {
+      "revision": "hard-pl-complement-r01",
+      "method": "HPL_E20_JOINT_COMP6G"
+    },
+    {
+      "revision": "hard-pl-path-r01",
+      "method": "HPL_E20_JOINT_PATH6G"
+    }
+  ],
+  "phaseB": [
+    {
+      "revision": "hard-pl-reliable-as-r01",
+      "method": "HPL_E20_JOINT_RAS6G"
+    },
+    {
+      "revision": "hard-pl-path-reliable-as-r01",
+      "method": "HPL_E20_PATH_RAS6G"
+    },
+    {
+      "revision": "hard-pl-receiver-extrap-r01",
+      "method": "HPL_E20_JOINT_RXE6G"
+    }
+  ],
+  "phaseB_rule": "Only collect after allthree fixed seeds/sourceE50/11100 for each listedmethod;no partial-as-complete,no wait blocking healthyruns",
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "source_segments": [
+    {
+      "name": "segment30",
+      "start_epoch": 20,
+      "steps": 2220
+    },
+    {
+      "name": "segment50",
+      "start_epoch": 30,
+      "steps": 4440
+    }
+  ],
+  "phaseA_records": 79920,
+  "phaseB_records": 59940,
+  "parameter_groups": [
+    "t2",
+    "cls_head",
+    "other"
+  ],
+  "metrics": [
+    "Logged completeLnorm,weightedUnorm,appliedUnorm",
+    "U/L,appliedU/L,retainedUnorm",
+    "before/aftercosine",
+    "actualprojection/cap/tinyLcounts",
+    "pernativeepochandsegmentdistributionswithundefineddenominators",
+    "wholeparametergradientnormratios"
+  ],
+  "combined_summary": "Exact pooled counts/fractions and denominator-weighted means;quantiles remain persegment or perepoch,never average medians into a pooled median",
+  "measured_stage": "Logged parameter gradients with Uweight6 already included,before commonclip5/AdamW/decay;not actual optimizerstep or an isolated weight6 counterfactual",
+  "interpretation": "If a group is already capped,scaling the identical currentUgradient up is canceled by its cap.This algebra does not prove a future training trajectory or target improvement.",
+  "source_validation": "Reuse existing validated data and fullsourcefreeze evidence.Only sourceconfigs/complete metadata/closedstepmetrics,no IQ/checkpoint model load;crosscheck exact guard counters and native exposures.",
+  "execution": "N607 ordinaryaccount,CPU2/noCUDA,committed stdlibanalysis overUTF8stdin,read-only;no remote mutations or newworker",
+  "CWD": "Existing N607 source release roots only",
+  "command": "python local_artifacts/pamf_ssl_research_20261023/collect_source_gradient_trajectory.py --phase A|B",
+  "expected_artifacts": [
+    "source_gradient_trajectory_A.json",
+    "source_gradient_trajectory_A_summary.json",
+    "source_gradient_trajectory_A.md"
+  ],
+  "stop_rule": "On real missing/nonfinite/counter/permission failure stop this diagnostic only,preserve alljobs/artifacts.No scientific pass/fail gate,candidate selection,threshold change or training dispatch.",
+  "target_exposure": "Earlier complete targets including Path are known;this is source execution/cost diagnosis,not a target-based candidate/parent/seed/checkpoint decision.RAS/Combo/RXE target scores not read.",
+  "GPU_workers": 0,
+  "CPU_threads": 2,
+  "model_updates": 0,
+  "U_truth_reads": 0,
+  "target_reads": 0,
+  "V_gradients": 0,
+  "checkpoint_reads": 0,
+  "new_training": false,
+  "active_jobs_changed": false,
+  "focused_tests": 12,
+  "NONBLOCKING": true,
+  "goal_complete": false
+}

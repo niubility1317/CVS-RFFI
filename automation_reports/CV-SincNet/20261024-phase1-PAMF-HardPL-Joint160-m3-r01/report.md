@@ -101,3 +101,8 @@ HPL_E20_NAMS_JOINT6G 固定匹配比较完成，见 HPL_E20_NAMS_JOINT6G_matched
 
 
 完整特征接收机外推源域检验已VERIFIED：6行/24case，CPU2 6.561s，无状态更新/V梯度/Utruth/target/GPU。仅alpha0.25通过预先固定的所有seed保真和hardening规则；完整结果及alpha0.5/1失败均见source_receiver_extrapolation.md。独立Joint6G后续RXE配方已固定在receiver_extrapolation_followup_design.json，实现/审查/真实smoke待完成，未启动新训练，不据目标调门槛或替换父。
+
+
+## 完整源梯度记录诊断
+
+固定只读GuardNAMS、Joint、Complement、Path各三个seed的全部E21至E50原生记录，共79920步，核实权重6已包含的U梯度在完整L保护后的保留比例、各组冲突/范数帽和逐轮分布。后续RAS/组合/外推仅在各自三seed源E50完成后按同一规则补充，当前健康训练不等待本诊断。记录量、矩阵、命令和解释边界见source_gradient_trajectory_plan.json。12项计算/输入检查通过；不读IQ/模型权重/Utruth/target、不更新模型，不构成新候选或发布门槛。日志测量发生于共同clip5及AdamW/decay之前，不能当作实际优化步或独立改变权重的因果效果。
