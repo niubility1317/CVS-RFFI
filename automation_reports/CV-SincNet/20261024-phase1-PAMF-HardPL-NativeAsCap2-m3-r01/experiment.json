@@ -314,16 +314,22 @@
       "U_truth_reads": 0
     },
     "original_E20_branch_gradients": {
-      "status": "TECHNICAL_NUMERICAL_CHECK_FIXED_REAL_SOURCE_RERUN_PENDING",
+      "status": "VERIFIED_FIXED_SOURCE_BRANCH_GRADIENT_DIAGNOSTIC",
       "reference": "source_branch_gradient_plan.json",
       "source_models": 3,
       "steps_per_seed": 1,
-      "source_collection": "PENDING_SAME_FIXED_MATRIX",
+      "source_collection": "VERIFIED_COMPLETE_FIXED_MATRIX",
       "parameter_updates": 0,
       "U_truth_reads": 0,
       "target_reads": 0,
       "NONBLOCKING": true,
-      "technical_recovery_reference": "source_branch_gradient_numerical_fix.json"
+      "technical_recovery_reference": "source_branch_gradient_numerical_fix.json",
+      "result_reference": "source_branch_gradients.json",
+      "summary_reference": "source_branch_gradients_summary.json",
+      "successful_source_packet_views": 7686,
+      "actual_autograd_calls": 27,
+      "seconds": 42.97548688412644,
+      "final_fixed_source_rerun": "VERIFIED"
     }
   }
 }

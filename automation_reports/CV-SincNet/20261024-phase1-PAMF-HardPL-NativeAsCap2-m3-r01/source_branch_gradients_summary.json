@@ -1,0 +1,358 @@
+{
+  "status": "VERIFIED_FIXED_SOURCE_BRANCH_GRADIENT_DIAGNOSTIC",
+  "analysis_commit": "cbab6921d35072b4eab9042d0b5863e98f9de45d",
+  "reference_recipe_execution_commit": "f605efc3fc35617bb007ae25ec6b4822360b95c1",
+  "source_models": 3,
+  "steps_per_seed": 1,
+  "source_epoch": 20,
+  "rows": [
+    {
+      "seed": 2026092701,
+      "accepted": 235,
+      "U_seen": 256,
+      "groups": {
+        "t2": {
+          "weighted_U_to_L_norm": 5.392402801620604,
+          "applied_U_to_L_norm": 1.000000012929605,
+          "retained_U_norm": 0.1854460895668013,
+          "full_L_cosine_before": -0.2809828914874096,
+          "full_L_cosine_after": 5.72324575751172e-09,
+          "L_nonphysical_cosine_after": -0.11219841093877261,
+          "L_physical_cosine_after": 0.1755825108780189,
+          "L_aux_cosine_after": 0.10966779292748532,
+          "nonphysical_L_vs_U_cosine": -0.5211854468829087,
+          "physical_L_vs_U_cosine": 0.02538207757653496,
+          "raw_U_conflicts_with_full_L": true,
+          "native_cap_active": true
+        },
+        "cls_head": {
+          "weighted_U_to_L_norm": 1.3425776712034199,
+          "applied_U_to_L_norm": 1.0000000147107702,
+          "retained_U_norm": 0.744835875167222,
+          "full_L_cosine_before": -0.5891016839794458,
+          "full_L_cosine_after": -6.239134443357041e-10,
+          "L_nonphysical_cosine_after": -0.09460620582600199,
+          "L_physical_cosine_after": 0.12613892764169354,
+          "L_aux_cosine_after": null,
+          "nonphysical_L_vs_U_cosine": -0.561632425353605,
+          "physical_L_vs_U_cosine": -0.4641574971266398,
+          "raw_U_conflicts_with_full_L": true,
+          "native_cap_active": true
+        },
+        "other": {
+          "weighted_U_to_L_norm": 3.6114803215833144,
+          "applied_U_to_L_norm": 1.0000000455170075,
+          "retained_U_norm": 0.276894779002588,
+          "full_L_cosine_before": -0.30042574945548844,
+          "full_L_cosine_after": 1.0640873026596204e-10,
+          "L_nonphysical_cosine_after": -0.10765321087852572,
+          "L_physical_cosine_after": 0.1686290340528869,
+          "L_aux_cosine_after": 0.08923898075453951,
+          "nonphysical_L_vs_U_cosine": -0.5664571207847541,
+          "physical_L_vs_U_cosine": 0.04174981466226751,
+          "raw_U_conflicts_with_full_L": true,
+          "native_cap_active": true
+        }
+      },
+      "closure": {
+        "L": {
+          "max_absolute_error": 6.536996011163865e-07,
+          "groups": {
+            "t2": {
+              "L2_error": 3.717905552521384e-08,
+              "reference_L2_norm": 0.18570188921161726,
+              "relative_L2_error": 2.0020827834899578e-07
+            },
+            "cls_head": {
+              "L2_error": 8.395671814912126e-08,
+              "reference_L2_norm": 0.6777666137294573,
+              "relative_L2_error": 1.238726081344486e-07
+            },
+            "other": {
+              "L2_error": 1.0304805914101805e-06,
+              "reference_L2_norm": 0.908096057862928,
+              "relative_L2_error": 1.1347704711275442e-06
+            }
+          },
+          "criterion": "torch.testing.assert_close dtype defaults and group L2error<=0.001*referenceL2+1e-8"
+        },
+        "U": {
+          "max_absolute_error": 9.549694368615746e-06,
+          "groups": {
+            "t2": {
+              "L2_error": 2.1464987359865882e-07,
+              "reference_L2_norm": 1.001379387650964,
+              "relative_L2_error": 2.1435419606767077e-07
+            },
+            "cls_head": {
+              "L2_error": 2.1902169356089822e-07,
+              "reference_L2_norm": 0.9099543218803227,
+              "relative_L2_error": 2.406952616130373e-07
+            },
+            "other": {
+              "L2_error": 1.1715358921788231e-05,
+              "reference_L2_norm": 3.2795710430793474,
+              "relative_L2_error": 3.572222942543155e-06
+            }
+          },
+          "criterion": "torch.testing.assert_close dtype defaults and group L2error<=0.001*referenceL2+1e-8"
+        }
+      },
+      "discarded_changed_buffer_count": 0
+    },
+    {
+      "seed": 2026092702,
+      "accepted": 239,
+      "U_seen": 256,
+      "groups": {
+        "t2": {
+          "weighted_U_to_L_norm": 4.010770045276804,
+          "applied_U_to_L_norm": 0.9999999674315095,
+          "retained_U_norm": 0.24932867158742691,
+          "full_L_cosine_before": -0.18602314681785587,
+          "full_L_cosine_after": 2.9022752360166257e-09,
+          "L_nonphysical_cosine_after": -0.11688791740683413,
+          "L_physical_cosine_after": -0.0028617965862987507,
+          "L_aux_cosine_after": 0.311579056738881,
+          "nonphysical_L_vs_U_cosine": -0.049925160358398446,
+          "physical_L_vs_U_cosine": -0.1661395562293434,
+          "raw_U_conflicts_with_full_L": true,
+          "native_cap_active": true
+        },
+        "cls_head": {
+          "weighted_U_to_L_norm": 2.8082907220486573,
+          "applied_U_to_L_norm": 0.9999999609665933,
+          "retained_U_norm": 0.3560884751408821,
+          "full_L_cosine_before": -0.45614336773723657,
+          "full_L_cosine_after": 6.443564543154873e-09,
+          "L_nonphysical_cosine_after": 0.03559996041798944,
+          "L_physical_cosine_after": -0.014549602291941143,
+          "L_aux_cosine_after": null,
+          "nonphysical_L_vs_U_cosine": -0.07474110484287809,
+          "physical_L_vs_U_cosine": -0.3533063277500995,
+          "raw_U_conflicts_with_full_L": true,
+          "native_cap_active": true
+        },
+        "other": {
+          "weighted_U_to_L_norm": 2.864957402701719,
+          "applied_U_to_L_norm": 1.0000000226883665,
+          "retained_U_norm": 0.34904533719954933,
+          "full_L_cosine_before": -0.38769344744516204,
+          "full_L_cosine_after": -1.871089070259933e-08,
+          "L_nonphysical_cosine_after": 0.016257878270436617,
+          "L_physical_cosine_after": -0.03629041450514536,
+          "L_aux_cosine_after": 0.16330711767784978,
+          "nonphysical_L_vs_U_cosine": 0.08603171700995506,
+          "physical_L_vs_U_cosine": -0.5064951937845182,
+          "raw_U_conflicts_with_full_L": true,
+          "native_cap_active": true
+        }
+      },
+      "closure": {
+        "L": {
+          "max_absolute_error": 2.3661050363443792e-07,
+          "groups": {
+            "t2": {
+              "L2_error": 2.7339768797322328e-08,
+              "reference_L2_norm": 0.16361835962243967,
+              "relative_L2_error": 1.670947493937152e-07
+            },
+            "cls_head": {
+              "L2_error": 6.35670611871049e-08,
+              "reference_L2_norm": 0.5374066649684708,
+              "relative_L2_error": 1.1828483963970624e-07
+            },
+            "other": {
+              "L2_error": 4.505891983539832e-07,
+              "reference_L2_norm": 1.052524715316114,
+              "relative_L2_error": 4.2810319966562855e-07
+            }
+          },
+          "criterion": "torch.testing.assert_close dtype defaults and group L2error<=0.001*referenceL2+1e-8"
+        },
+        "U": {
+          "max_absolute_error": 2.6148109100176953e-07,
+          "groups": {
+            "t2": {
+              "L2_error": 1.667550348095263e-07,
+              "reference_L2_norm": 0.6562356156310087,
+              "relative_L2_error": 2.541084799994917e-07
+            },
+            "cls_head": {
+              "L2_error": 2.8663907374717184e-07,
+              "reference_L2_norm": 1.5091941511980678,
+              "relative_L2_error": 1.8992856122562134e-07
+            },
+            "other": {
+              "L2_error": 2.8938992040036584e-06,
+              "reference_L2_norm": 3.01543847467142,
+              "relative_L2_error": 9.596943291369906e-07
+            }
+          },
+          "criterion": "torch.testing.assert_close dtype defaults and group L2error<=0.001*referenceL2+1e-8"
+        }
+      },
+      "discarded_changed_buffer_count": 0
+    },
+    {
+      "seed": 2026092703,
+      "accepted": 238,
+      "U_seen": 256,
+      "groups": {
+        "t2": {
+          "weighted_U_to_L_norm": 4.747816236437504,
+          "applied_U_to_L_norm": 0.9999999881385299,
+          "retained_U_norm": 0.21062314511331506,
+          "full_L_cosine_before": 0.24887477362226923,
+          "full_L_cosine_after": 0.2488747736053111,
+          "L_nonphysical_cosine_after": 0.3491154682082929,
+          "L_physical_cosine_after": -0.0767214173790221,
+          "L_aux_cosine_after": 0.038093553942295126,
+          "nonphysical_L_vs_U_cosine": 0.3467076216360059,
+          "physical_L_vs_U_cosine": 0.0342744448366509,
+          "raw_U_conflicts_with_full_L": false,
+          "native_cap_active": true
+        },
+        "cls_head": {
+          "weighted_U_to_L_norm": 2.576904953520913,
+          "applied_U_to_L_norm": 1.0000000012977646,
+          "retained_U_norm": 0.38806243122449297,
+          "full_L_cosine_before": -0.17545772729995376,
+          "full_L_cosine_after": 6.846998387428084e-09,
+          "L_nonphysical_cosine_after": -0.055022810769967165,
+          "L_physical_cosine_after": 0.043551110815155204,
+          "L_aux_cosine_after": null,
+          "nonphysical_L_vs_U_cosine": 0.2262865816740766,
+          "physical_L_vs_U_cosine": -0.17723539794503151,
+          "raw_U_conflicts_with_full_L": true,
+          "native_cap_active": true
+        },
+        "other": {
+          "weighted_U_to_L_norm": 3.2976042752915964,
+          "applied_U_to_L_norm": 1.0000000196232084,
+          "retained_U_norm": 0.30325046189321236,
+          "full_L_cosine_before": 0.24801604254400408,
+          "full_L_cosine_after": 0.24801604249456727,
+          "L_nonphysical_cosine_after": 0.3374650348257883,
+          "L_physical_cosine_after": 0.007100977159638247,
+          "L_aux_cosine_after": 0.06496816023310112,
+          "nonphysical_L_vs_U_cosine": 0.3867588499220064,
+          "physical_L_vs_U_cosine": 0.006472100378374789,
+          "raw_U_conflicts_with_full_L": false,
+          "native_cap_active": true
+        }
+      },
+      "closure": {
+        "L": {
+          "max_absolute_error": 3.5390257835388184e-08,
+          "groups": {
+            "t2": {
+              "L2_error": 2.9212458961913588e-08,
+              "reference_L2_norm": 0.13659435614235788,
+              "relative_L2_error": 2.138628548566716e-07
+            },
+            "cls_head": {
+              "L2_error": 8.490157895014808e-08,
+              "reference_L2_norm": 0.5912960057370384,
+              "relative_L2_error": 1.4358557833368077e-07
+            },
+            "other": {
+              "L2_error": 5.811018364184987e-07,
+              "reference_L2_norm": 1.045456912553482,
+              "relative_L2_error": 5.558352806709014e-07
+            }
+          },
+          "criterion": "torch.testing.assert_close dtype defaults and group L2error<=0.001*referenceL2+1e-8"
+        },
+        "U": {
+          "max_absolute_error": 1.8189884940511547e-06,
+          "groups": {
+            "t2": {
+              "L2_error": 1.358970227424163e-07,
+              "reference_L2_norm": 0.6485249018984136,
+              "relative_L2_error": 2.0954788681916104e-07
+            },
+            "cls_head": {
+              "L2_error": 2.749625571834501e-07,
+              "reference_L2_norm": 1.5237136061809047,
+              "relative_L2_error": 1.804555370957322e-07
+            },
+            "other": {
+              "L2_error": 3.2695824403898277e-06,
+              "reference_L2_norm": 3.447503184469515,
+              "relative_L2_error": 9.483914199467042e-07
+            }
+          },
+          "criterion": "torch.testing.assert_close dtype defaults and group L2error<=0.001*referenceL2+1e-8"
+        }
+      },
+      "discarded_changed_buffer_count": 0
+    }
+  ],
+  "group_observations": [
+    {
+      "group": "t2",
+      "source_steps": 3,
+      "raw_full_L_conflict_steps": 2,
+      "cap_active_steps": 3,
+      "nonphysical_L_negative_dot_after_full_L_guard_steps": 2,
+      "physical_L_negative_dot_after_full_L_guard_steps": 2,
+      "retained_U_norm_min": 0.1854460895668013,
+      "retained_U_norm_max": 0.24932867158742691
+    },
+    {
+      "group": "cls_head",
+      "source_steps": 3,
+      "raw_full_L_conflict_steps": 3,
+      "cap_active_steps": 3,
+      "nonphysical_L_negative_dot_after_full_L_guard_steps": 2,
+      "physical_L_negative_dot_after_full_L_guard_steps": 1,
+      "retained_U_norm_min": 0.3560884751408821,
+      "retained_U_norm_max": 0.744835875167222
+    },
+    {
+      "group": "other",
+      "source_steps": 3,
+      "raw_full_L_conflict_steps": 2,
+      "cap_active_steps": 3,
+      "nonphysical_L_negative_dot_after_full_L_guard_steps": 1,
+      "physical_L_negative_dot_after_full_L_guard_steps": 1,
+      "retained_U_norm_min": 0.276894779002588,
+      "retained_U_norm_max": 0.34904533719954933
+    }
+  ],
+  "full_gradient_reference": "Exact two original native full-L/U derivative vectors;reprojection matches native guard bitwise per parameter.None/zero connectivity preserved.",
+  "component_closure": "Separate dtype-default elementwise checks and group L2error<=0.001*referenceL2+1e-8;actual errors included.",
+  "maximum_component_absolute_error": 9.549694368615746e-06,
+  "maximum_component_group_relative_L2_error": 3.572222942543155e-06,
+  "source_cost": {
+    "CPU_threads": 2,
+    "GPU_workers": 0,
+    "seconds": 42.97548688412644,
+    "source_packet_views": 7686,
+    "autograd_calls": 27,
+    "new_training_steps": 0,
+    "optimizer_steps": 0,
+    "parameter_updates": 0,
+    "persisted_buffer_updates": 0,
+    "cost_scope": "Successful final observation only;two failed attempts retained privately,not included in this elapsed time"
+  },
+  "technical_history": {
+    "failed_attempts": 2,
+    "failed_results_accepted": 0,
+    "fix_reference": "source_branch_gradient_numerical_fix.json",
+    "final_fixed_source_rerun": "VERIFIED",
+    "focused_checks": 13,
+    "targeted_re_review": "PASS",
+    "original_registration_measure_clarification": "The technical fix supersedes the original component-summed-projection equality measure:exact original full gradients provide the bitwise bridge;component-sum closure is separate."
+  },
+  "actual_PID_CWD_argv_independently_observed": true,
+  "interpretation": "One source L/U step per seed on disposable original-E20 models,before globalclip5/AdamW/decay;not a complete trajectory,optimizer step or causal target explanation.L_clean means nonphysical source component,not target clean accuracy.Overlapping component norms are not additive contribution shares.Shadow train-mode buffer changes were discarded.No automatic new candidate or change to healthy training.",
+  "U_truth_reads": 0,
+  "V_reads": 0,
+  "V_gradients": 0,
+  "target_reads": 0,
+  "G_training_reads": 0,
+  "goal_complete": false,
+  "NONBLOCKING": true
+}
