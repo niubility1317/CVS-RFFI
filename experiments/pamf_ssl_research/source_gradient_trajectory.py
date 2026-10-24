@@ -14,15 +14,22 @@ def metric(metrics, name):
     return found[0]
 
 
-def group_observation(values):
+def norm_cap_value(norm_cap):
+    if isinstance(norm_cap, bool) or not isinstance(norm_cap, (int, float)) or norm_cap not in (1., 2.):
+        raise ValueError('Only the fixed source cap1/cap2 recipes are supported')
+    return float(norm_cap)
+
+
+def group_observation(values, *, norm_cap=1.):
     """Ratios are of logged parameter gradients, not optimizer steps or sample accuracy."""
     v = values
+    norm_cap = norm_cap_value(norm_cap)
     if any(not math.isfinite(v[k]) for k in KEYS):
         raise ValueError('Finite source gradient metrics required')
     L, U, A = (v[k] for k in ('L_norm', 'U_norm', 'applied_U_norm'))
     if (min(L, U, A) < 0 or any(v[k] not in (0, 1) for k in ('conflict', 'capped', 'tiny_L'))
             or v['conflict'] != int(v['dot_before'] < 0)
-            or A > L*(1+1e-6)+1e-8
+            or A > norm_cap*L*(1+1e-6)+1e-8
             or v['dot_after'] < -1e-5*(L*A+1e-12)
             or abs(v['dot_before']) > L*U*(1+1e-5)+1e-10
             or abs(v['dot_after']) > L*A*(1+1e-5)+1e-10):
@@ -57,11 +64,13 @@ def summarize(observations):
                 distributions={k:distribution(v[k] for v in observations) for k in observations[0] if k not in flags})
 
 
-def analyze_segment(records, expected_steps, start_epoch):
+def analyze_segment(records, expected_steps, start_epoch, *, norm_cap=1.):
     """Require all native rows in order; validate real cumulative counters independently."""
     if expected_steps not in (2220,4440) or (start_epoch,expected_steps) not in ((20,2220),(30,4440)):
         raise ValueError('Fixed own E20+10+20 native source segments required')
+    norm_cap = norm_cap_value(norm_cap)
     observations={g:[] for g in GROUPS}; epochs={}; totals=[]
+    above_old_cap={g:0 for g in GROUPS}
     conflicts={g:0 for g in GROUPS}; caps=dict(conflicts); accepted=seen=0; count=0
     for count,record in enumerate(records,1):
         if count>expected_steps or record['step']!=count:
@@ -71,6 +80,9 @@ def analyze_segment(records, expected_steps, start_epoch):
             raise ValueError('Source U truth must remain hidden')
         if metric(m,'HPL_weight')!=6 or metric(m,'HPL_GP_calls')!=count or metric(m,'HPL_calls')!=count:
             raise ValueError('Actual weight6 and one complete-L guard per native U loss required')
+        cap_logged = any(k.endswith('HPL_GP_U_to_L_norm_cap') for k in m)
+        if (norm_cap == 2. or cap_logged) and metric(m,'HPL_GP_U_to_L_norm_cap') != norm_cap:
+            raise ValueError('Actual logged U/L norm cap must match the fixed source recipe')
         ep,rem=divmod(count,222);seen_expected=ep*56700+rem*256
         new_seen=seen_expected-seen;new_accepted=metric(m,'HPL_accepted')-accepted
         if (metric(m,'HPL_seen')!=seen_expected or int(new_accepted)!=new_accepted or not 0<=new_accepted<=new_seen
@@ -82,7 +94,8 @@ def analyze_segment(records, expected_steps, start_epoch):
         current={}
         for group in GROUPS:
             values={k:metric(m,'HPL_GP_'+group+'_'+k) for k in KEYS}
-            v=group_observation(values)
+            v=group_observation(values,norm_cap=norm_cap)
+            above_old_cap[group]+=int(values['applied_U_norm']>values['L_norm']*(1+1e-4)+1e-8)
             conflicts[group]+=v['conflict'];caps[group]+=v['capped']
             if values['conflicts']!=conflicts[group] or values['caps']!=caps[group]:
                 raise ValueError('Actual source conflict/cap counters differ')
@@ -96,6 +109,7 @@ def analyze_segment(records, expected_steps, start_epoch):
     if count!=expected_steps:
         raise ValueError('Only complete closed native source segments accepted')
     return dict(records=count,start_epoch=start_epoch,final_epoch=start_epoch+count//222,
+                U_to_L_norm_cap=norm_cap,applied_U_above_L_counts=above_old_cap,
                 seen=seen,accepted=accepted,groups={g:summarize(observations[g]) for g in GROUPS},
                 whole_parameter_gradient={k:distribution(v[k] for v in totals) for k in totals[0]},
                 epochs=[dict(epoch=e,records=222,groups={g:summarize(v[g]) for g in GROUPS}) for e,v in sorted(epochs.items())],

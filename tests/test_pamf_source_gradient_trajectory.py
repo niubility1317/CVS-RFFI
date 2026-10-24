@@ -61,3 +61,41 @@ def test_partial_segment_cannot_be_presented_as_complete():
 def test_U_truth_is_not_read_as_a_source_metric():
     record=next(native_records());record['metrics']['train/pseudo_truth_available']=1
     with pytest.raises(ValueError):analyze_segment([record],2220,20)
+
+
+def cap2_records():
+    for record in native_records():
+        metrics=record['metrics'];metrics['train/HPL_GP_U_to_L_norm_cap']=2.
+        for group in GROUPS:
+            metrics['train/HPL_GP_'+group+'_U_norm']=3.
+            metrics['train/HPL_GP_'+group+'_applied_U_norm']=2.
+        yield record
+
+
+def test_cap2_requires_declared_ratio_and_counts_actual_steps_above_old_cap():
+    result=analyze_segment(cap2_records(),2220,20,norm_cap=2.)
+    assert result['U_to_L_norm_cap']==2.
+    assert result['applied_U_above_L_counts']=={g:2220 for g in GROUPS}
+    assert result['groups']['t2']['distributions']['applied_U_to_L']['mean']==2.
+    assert result['whole_parameter_gradient']['retained_weighted_U_norm']['mean']==pytest.approx(2/3)
+
+
+def test_default_cap1_still_rejects_cap2_records():
+    with pytest.raises(ValueError,match='norm cap'):analyze_segment(cap2_records(),2220,20)
+    with pytest.raises(ValueError):group_observation(values(applied_U_norm=2.))
+
+
+def test_cap2_missing_scalar_metric_cannot_be_assumed_from_group_magnitude():
+    with pytest.raises(ValueError,match='HPL_GP_U_to_L_norm_cap'):
+        analyze_segment(native_records(),2220,20,norm_cap=2.)
+
+
+def test_cap2_bound_and_negative_projection_remain_checked():
+    with pytest.raises(ValueError):group_observation(values(U_norm=3.,applied_U_norm=2.1),norm_cap=2.)
+    with pytest.raises(ValueError):group_observation(values(U_norm=3.,applied_U_norm=2.,dot_after=-.1),norm_cap=2.)
+
+
+@pytest.mark.parametrize('ratio',[0.,1.5,math.inf,True])
+def test_source_analysis_does_not_add_unregistered_caps(ratio):
+    with pytest.raises(ValueError,match='fixed source cap1/cap2'):
+        group_observation(values(),norm_cap=ratio)

@@ -1,0 +1,81 @@
+{
+  "status": "REGISTERED_NONBLOCKING_COMPLETE_NATIVE_SOURCE_GRADIENT_ANALYSIS",
+  "registered_utc": "2026-10-24T03:37:17.605855+00:00",
+  "question": "Does the fixed cap2 actually increase applied U gradients along its complete training trajectory,and how do fixed NativeAs/cap1 and BalancedCE/cap1 compare in actual source dose?",
+  "phaseC": [
+    {
+      "revision": "hard-pl-native-as-r01",
+      "method": "HPL_E20_JOINT_AS6G",
+      "norm_cap": 1.0
+    },
+    {
+      "revision": "hard-pl-balanced-ce-r01",
+      "method": "HPL_E20_AS_BCE6G",
+      "norm_cap": 1.0
+    },
+    {
+      "revision": "hard-pl-native-cap2-r01",
+      "method": "HPL_E20_AS_CAP2",
+      "norm_cap": 2.0
+    }
+  ],
+  "phaseC_rule": "Only collect all3 fixed seeds/sourceE50/11100 for all3 listed methods;all59940 closed records.No partial-as-complete.No scientific promotion threshold or candidate/recipe change.",
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "source_segments": [
+    {
+      "name": "segment30",
+      "start_epoch": 20,
+      "steps": 2220
+    },
+    {
+      "name": "segment50",
+      "start_epoch": 30,
+      "steps": 4440
+    }
+  ],
+  "phaseC_records": 59940,
+  "parameter_groups": [
+    "t2",
+    "cls_head",
+    "other"
+  ],
+  "metrics": [
+    "Logged completeL/weightedU/appliedU norms",
+    "U/L,appliedU/L,retainedU norm",
+    "Projection/cap/tinyL counts and before/after cosine",
+    "Actual source steps with appliedU>L at the old cap1 tolerance",
+    "Per-native-epoch and per-segment distributions with explicit undefined denominators",
+    "Whole parameter gradient ratios;complete three-seed denominator-weighted means and per-seed values"
+  ],
+  "combined_summary": "Pool exact counters and denominator-weighted means;retain quantiles persegment/epoch.No averaged pooled medians.No optimizerstep or counterfactual target claim.",
+  "measured_stage": "Logged parameter gradients with Uweight6 included,after pergroup projection/cap and before native globalclip5/AdamW/decay;actual different trajectories,not identical-current-gradient arithmetic.",
+  "interpretation": "NativeAs cap1 versus NativeAs cap2 is the fixed single-change comparison;BalancedCE cap1 differs in accepted CE contribution weights.All use original same-seed F21E20+own10+20.Nonnegative group dot and greater appliedU norm imply neither monotonic supervisedloss nor targetgain.",
+  "source_validation": "Read only existing source configs/complete metadata/closed UTF8 step logs.Reuse validated handles,check sourceE50/11100/exact native counters and declared cap;cap2 requires its explicit actual scalar log metric.No IQ/checkpoint/Utruth/V/target reads.",
+  "execution": "N607 ordinaryaccount,CPU1/noCUDA,committed standard-library analysis over UTF8stdin,read-only;no remote writes or GPUworkers.",
+  "CWD": "Existing N607 source release roots only",
+  "command": "python local_artifacts/pamf_ssl_research_20261023/collect_source_gradient_trajectory.py --phase C",
+  "expected_artifacts": [
+    "source_gradient_trajectory_C.json",
+    "source_gradient_trajectory_C_summary.json",
+    "source_gradient_trajectory_C.md"
+  ],
+  "stop_rule": "Missing/nonfinite/counter/permission mismatch stops this diagnostic only,preserving alljobs/artifacts.No training gate,stop/restart,cap/threshold/parent/seed/order change or selective rerun.",
+  "target_exposure": "Earlier targets through RAS/PathReliableAs are known.RXE one row is scored but its values have not been read;NativeAs/BalancedCE/NativeAsCap2 target scores not read.This plan fixes source execution accounting,not a target-selected candidate.",
+  "GPU_workers": 0,
+  "CPU_threads": 1,
+  "model_updates": 0,
+  "U_truth_reads": 0,
+  "target_reads": 0,
+  "V_gradients": 0,
+  "checkpoint_reads": 0,
+  "new_training": false,
+  "active_jobs_changed": false,
+  "focused_tests": 30,
+  "NONBLOCKING": true,
+  "goal_complete": false,
+  "analysis_base_commit": "bf9331a4b52895601ee7ea884611a412fee3cbe6"
+}

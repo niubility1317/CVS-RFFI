@@ -299,5 +299,19 @@
     "actual_GPU_workers": 0,
     "queued_rows": 3,
     "target_matrix_complete": false
+  },
+  "source_diagnostics": {
+    "fixed_native_gradient_phaseC": {
+      "status": "REGISTERED_NONBLOCKING_COMPLETE_NATIVE_SOURCE_GRADIENT_ANALYSIS",
+      "reference": "source_native_gradient_trajectory_plan.json",
+      "methods": 3,
+      "source_models": 9,
+      "complete_source_records": 59940,
+      "source_collection": "PENDING_ALL3_METHODS_ALL3_SEEDS_E50",
+      "NONBLOCKING": true,
+      "model_updates": 0,
+      "target_reads": 0,
+      "U_truth_reads": 0
+    }
   }
 }

@@ -16,3 +16,6 @@ GPU5/6/7 固定对应三个 seed，每卡最多两个本任务，计外部 compu
 
 
 发布后独立核实：VERIFIED，执行 commit `a2a03f6ccf166b8abba34ca1f7862caa03277ba0` 的控制器存活，CWD 和完整命令匹配；三行实际 QUEUED，新增 GPU worker 为 0，真实原 E20 检查 PENDING。等待对应 seed NativeAs 全部 GPU 预测结束且 BalancedCE 已派发；独立核实两侧控制器及现有运行行的 PID/CWD/命令/GPU/日志增长。保留全部健康任务；排队不代表训练成功或达到目标。
+
+
+完整原生 As 梯度贡献分析已固定：NativeAs/cap1、BalancedCE/cap1、NativeAsCap2/cap2 各三个 seed，全部 E21 至 E50 共59940条闭合记录。只读源配置、完成元数据和日志，不读 IQ、权重、U 真值或目标；记录权重6后的实际 U/L、保护后 U/L、范数保留、投影/帽计数及实际超过旧上限的步骤数。30项计算检查通过；CPU1，待三方法全部源 E50 后执行，不阻塞训练或测试，不新增候选及晋级门槛。当前训练与固定矩阵保持，实际优化器更新及目标收益仍需独立判断。
