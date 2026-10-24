@@ -1,6 +1,7 @@
 """Real F21 parent smoke, two hard-PL forks, automatic dual-readout truth-last."""
 import argparse
 import gc
+import math
 from pathlib import Path
 from experiments.cric_dura_comparison.io import read,write
 
@@ -114,6 +115,13 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
                     or len(obj.smoke_path_features)!=4 or any(h.shape!=(256,160) or h.grad is None
                         or not bool(torch.isfinite(h.grad).all()) or float(h.grad.norm())<=0 for h in obj.smoke_path_features)):
                     raise ValueError('Existing-head full/masked/core CE dose,exclusive-branch bypass or actual view budget differs')
+            if c.get('hard_pl_receiver_extrapolation'):
+                rxe=state['U_receiver_extrapolation'];norms=obj.smoke_rxe_gradients
+                if (rxe['calls']!=1 or rxe['extra_head_calls']!=2 or rxe['extra_head_packet_views']!=512
+                    or not 0<rxe['eligible_packet_views']<=2*state['accepted'] or rxe['extra_backbone_forwards']
+                    or rxe['new_head'] or not rxe['all_raw_accepted_retained'] or rxe['CE_dose_normalizer']!=1.25
+                    or min(norms.values())<=0 or not all(math.isfinite(v) for v in norms.values())):
+                    raise ValueError('Actual fullfeature receiver CE must retain all branch/head gradients and declared cost')
             if reliable:
                 from .hard_pl_reliable_as_objective import view_mask
                 expected=view_mask(obj.smoke_ras_q,obj.smoke_ras_pseudo,obj.smoke_ras_raw_accepted,.95)
@@ -148,6 +156,9 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
             if c.get('hard_pl_path'):
                 checked[-1].update(U_path_complement=state['U_path_complement'],path_core_gradient_norms=obj.smoke_path_gradients,
                     core_CE_bypasses_exclusive_signature_and_response=True,existing_core_and_head_masked_gradient=True,CE_total_dose_unchanged=True)
+            if c.get('hard_pl_receiver_extrapolation'):
+                checked[-1].update(U_receiver_extrapolation=state['U_receiver_extrapolation'],receiver_extrapolation_gradient_norms=obj.smoke_rxe_gradients,
+                    full_signature_response_core_head_gradient=True,CE_total_dose_unchanged=True,all_raw_accepted_retained=True)
             if reliable:
                 checked[-1].update(U_reliable_As=ras,teacher_U_raw_views=256,teacher_U_As_views=128,teacher_U_total_views=384,
                     all_raw_accepted_retained=True,As_gate_matches_frozen_predicate=True,exactraw_fallback=True,

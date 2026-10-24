@@ -307,3 +307,8 @@ PathReliableAs 发布后 VERIFIED：控制器存活及 CWD/完整命令匹配，
 ## HPL_E20_JOINT_COMP6G 完整双读出结果
 
 `20261024-phase1-PAMF-HardPL-Complement-m3-r01` 各方法三seed、共3模型，每景168000条，raw／同一DURA七景预测与独立truth-last全部42cell完成；全部新增19980条闭合训练记录已核对。HPL_E20_JOINT_COMP6G / raw clean=84.958929%；HPL_E20_JOINT_COMP6G / DURA-LU clean=85.040079%；HPL_E20_JOINT_COMP6G / raw six_mean=70.252778%；HPL_E20_JOINT_COMP6G / DURA-LU six_mean=76.446362%；原数值目标仍未满足，维持ACTIVE。全部结果、匹配基线、逐seed／场景／分层及成本均保存，不从本结果热改其他已固定方法、父权重或矩阵。
+
+
+## 完整特征接收机外推
+
+`20261024-phase1-PAMF-HardPL-ReceiverExtrap-m3-r01` 固定源网格仅alpha.25通过，V准确率100/99.699248/99.849624%，U原伪类一致率100%但实际U准确率未知。原Joint6G配方从同seed原E20独立own10+20；前两已有joint160 U特征复用合法sharedstyle伙伴外推，普通CE0.5改full0.25+外推0.25，总1.25，无效伙伴差额0。保留完整特征/默认头/原接受集合/权重6/完整Lguard，额外2既有头调用，无额外骨干/teacher/As。110检查/一次P0P1PASS，真实E20smoke待释放RAS卡位；GPU5/6/7每卡最多2任务，CPUscorer接组合。源设计c0add33在Path/RAS/组合目标分数读取前固定，已知更早目标曝光如实保留。三seed42cell raw+DURA及原双控制raw目标不变，goal ACTIVE。

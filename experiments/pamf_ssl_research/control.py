@@ -16,6 +16,7 @@ from .hard_pl_complement import METHODS as COMP_METHODS
 from .hard_pl_path import METHODS as PATH_METHODS
 from .hard_pl_reliable_as import METHODS as RAS_METHODS
 from .hard_pl_path_reliable_as import METHODS as PATH_RAS_METHODS
+from .hard_pl_receiver_extrapolation import METHODS as RXE_METHODS
 
 
 def capacity(gpu, pending_pids=()):
@@ -63,6 +64,9 @@ def pending_gpu_pids(rt, methods, seed, active=()):
     elif methods == PATH_RAS_METHODS:
         from .hard_pl_path_reliable_as import reserved_predecessor_pids
         pending.update(reserved_predecessor_pids(rt, seed))
+    elif methods == RXE_METHODS:
+        from .hard_pl_receiver_extrapolation import reserved_predecessor_pids
+        pending.update(reserved_predecessor_pids(rt, seed))
     return pending
 
 
@@ -70,9 +74,9 @@ def validate_rows(rows, methods=METHODS, gpu_by_seed=None):
     methods = tuple(methods)
     gpu_by_seed = GPU_BY_SEED if gpu_by_seed is None else gpu_by_seed
     from .view_anchor import RESOURCE_GPU_BY_SEED
-    if methods not in (METHODS, ('VIEWANCHOR',), ('PAIREDU',), ('UCRIC',), ('UMIX',), ('UGP',), ('UCMR',), ('UDAP',), ('UVB',), HARD_METHODS, EARLY_METHODS, GUARD_METHODS, JOINT_METHODS, COMP_METHODS, PATH_METHODS, RAS_METHODS,PATH_RAS_METHODS, ('HPL_NO_UAS',), ('HPL_LS2',), ('HPL_MS2',), ('HPL_NAMS2',)):
+    if methods not in (METHODS, ('VIEWANCHOR',), ('PAIREDU',), ('UCRIC',), ('UMIX',), ('UGP',), ('UCMR',), ('UDAP',), ('UVB',), HARD_METHODS, EARLY_METHODS, GUARD_METHODS, JOINT_METHODS, COMP_METHODS, PATH_METHODS, RAS_METHODS,PATH_RAS_METHODS,RXE_METHODS, ('HPL_NO_UAS',), ('HPL_LS2',), ('HPL_MS2',), ('HPL_NAMS2',)):
         raise ValueError('A declared complete three-seed matrix is required')
-    if gpu_by_seed != GPU_BY_SEED and (methods not in (('VIEWANCHOR',),('PAIREDU',),('UCRIC',),('UMIX',),('UGP',),('UCMR',),('UDAP',),('UVB',),HARD_METHODS,EARLY_METHODS,GUARD_METHODS,JOINT_METHODS,COMP_METHODS,PATH_METHODS,RAS_METHODS,PATH_RAS_METHODS,('HPL_NO_UAS',),('HPL_LS2',),('HPL_MS2',),('HPL_NAMS2',)) or gpu_by_seed != RESOURCE_GPU_BY_SEED):
+    if gpu_by_seed != GPU_BY_SEED and (methods not in (('VIEWANCHOR',),('PAIREDU',),('UCRIC',),('UMIX',),('UGP',),('UCMR',),('UDAP',),('UVB',),HARD_METHODS,EARLY_METHODS,GUARD_METHODS,JOINT_METHODS,COMP_METHODS,PATH_METHODS,RAS_METHODS,PATH_RAS_METHODS,RXE_METHODS,('HPL_NO_UAS',),('HPL_LS2',),('HPL_MS2',),('HPL_NAMS2',)) or gpu_by_seed != RESOURCE_GPU_BY_SEED):
         raise ValueError('Only the declared three-card seed allocation is supported')
     expected = {(seed, method) for seed in SEEDS for method in methods}
     if (len(rows) != len(expected) or {(r['model_seed'], r['method']) for r in rows} != expected
@@ -91,8 +95,8 @@ def run(rt):
         ('UMIX',):'u_mixstyle_worker',('UGP',):'u_gradprotect_worker',('UCMR',):'u_cmr_worker',
         ('UDAP',):'u_dualanchor_worker',('UVB',):'u_viewbalance_worker',HARD_METHODS:'hard_pl_worker',
         ('HPL_NO_UAS',):'hard_pl_no_uas_worker',('HPL_LS2',):'hard_pl_ls_worker',('HPL_MS2',):'hard_pl_mixstyle_worker',
-        ('HPL_NAMS2',):'hard_pl_no_as_mixstyle_worker',EARLY_METHODS:'hard_pl_early_worker',GUARD_METHODS:'hard_pl_guard_worker',JOINT_METHODS:'hard_pl_joint_worker',COMP_METHODS:'hard_pl_complement_worker',PATH_METHODS:'hard_pl_path_worker',RAS_METHODS:'hard_pl_reliable_as_worker',PATH_RAS_METHODS:'hard_pl_path_reliable_as_worker'}.get(methods,'worker')
-    process_limit = 3 if methods in (('UCRIC',),('UMIX',),('UGP',),('UCMR',),('UDAP',),('UVB',),HARD_METHODS,EARLY_METHODS,GUARD_METHODS,JOINT_METHODS,COMP_METHODS,PATH_METHODS,RAS_METHODS,PATH_RAS_METHODS,('HPL_NO_UAS',),('HPL_LS2',),('HPL_MS2',),('HPL_NAMS2',)) else 2
+        ('HPL_NAMS2',):'hard_pl_no_as_mixstyle_worker',EARLY_METHODS:'hard_pl_early_worker',GUARD_METHODS:'hard_pl_guard_worker',JOINT_METHODS:'hard_pl_joint_worker',COMP_METHODS:'hard_pl_complement_worker',PATH_METHODS:'hard_pl_path_worker',RAS_METHODS:'hard_pl_reliable_as_worker',PATH_RAS_METHODS:'hard_pl_path_reliable_as_worker',RXE_METHODS:'hard_pl_receiver_extrapolation_worker'}.get(methods,'worker')
+    process_limit = 3 if methods in (('UCRIC',),('UMIX',),('UGP',),('UCMR',),('UDAP',),('UVB',),HARD_METHODS,EARLY_METHODS,GUARD_METHODS,JOINT_METHODS,COMP_METHODS,PATH_METHODS,RAS_METHODS,PATH_RAS_METHODS,RXE_METHODS,('HPL_NO_UAS',),('HPL_LS2',),('HPL_MS2',),('HPL_NAMS2',)) else 2
     root = Path(rt['run_root'])
     root.mkdir(parents=True, exist_ok=False)
     logs = root / 'logs'
@@ -165,17 +169,21 @@ def run(rt):
             from .hard_pl_path_reliable_as import smoke_slot,slot_ready as path_ras_slot_ready
             selected=smoke_slot(rt,capacity);predecessor_ready=selected is not None
             if selected:smoke_seed,smoke_gpu=selected
+        elif methods == RXE_METHODS:
+            from .hard_pl_receiver_extrapolation import smoke_slot,slot_ready as rxe_slot_ready
+            selected=smoke_slot(rt,capacity);predecessor_ready=selected is not None
+            if selected:smoke_seed,smoke_gpu=selected
         pending = pending_gpu_pids(rt,methods,smoke_seed)
         apps, free = capacity(smoke_gpu,pending) if pending else capacity(smoke_gpu)
         if predecessor_ready and apps < process_limit and free >= 10000:
             break
-        if methods not in (('VIEWANCHOR',),('PAIREDU',),('UCRIC',),('UMIX',),('UGP',),('UCMR',),('UDAP',),('UVB',),HARD_METHODS,EARLY_METHODS,GUARD_METHODS,JOINT_METHODS,COMP_METHODS,PATH_METHODS,RAS_METHODS,PATH_RAS_METHODS,('HPL_NO_UAS',),('HPL_LS2',),('HPL_MS2',),('HPL_NAMS2',)):
+        if methods not in (('VIEWANCHOR',),('PAIREDU',),('UCRIC',),('UMIX',),('UGP',),('UCMR',),('UDAP',),('UVB',),HARD_METHODS,EARLY_METHODS,GUARD_METHODS,JOINT_METHODS,COMP_METHODS,PATH_METHODS,RAS_METHODS,PATH_RAS_METHODS,RXE_METHODS,('HPL_NO_UAS',),('HPL_LS2',),('HPL_MS2',),('HPL_NAMS2',)):
             raise RuntimeError('Smoke GPU capacity changed; no workload modified')
         state.update(status='WAITING_FOR_SMOKE_GPU', predecessor_GPU_work_ready=predecessor_ready, observed_apps=apps,
                      observed_free_MiB=free, updated_unix=time.time())
         write(root / 'state.json', state, exclusive=False)
         time.sleep(20)
-    if methods in (COMP_METHODS,PATH_METHODS,RAS_METHODS,PATH_RAS_METHODS):
+    if methods in (COMP_METHODS,PATH_METHODS,RAS_METHODS,PATH_RAS_METHODS,RXE_METHODS):
         smoke_config=str(root/'smoke_runtime.json');selected=next(r for r in rt['rows'] if r['model_seed']==smoke_seed)
         write(smoke_config,dict(rt,rows=[selected]+[r for r in rt['rows'] if r is not selected],runtime_file=smoke_config))
         env['CUDA_VISIBLE_DEVICES']=str(smoke_gpu);state.update(smoke_model_seed=smoke_seed,smoke_gpu=smoke_gpu)
@@ -270,13 +278,15 @@ def run(rt):
                     continue
                 if methods == PATH_RAS_METHODS and not path_ras_slot_ready(rt,row['model_seed']):
                     continue
+                if methods == RXE_METHODS and not rxe_slot_ready(rt,row['model_seed']):
+                    continue
                 apps, free = capacity(gpu,pending_gpu_pids(rt,methods,row['model_seed'],active.values()))
                 if apps >= process_limit or free < 10000 or sum(v['gpu'] == gpu for v in active.values()) >= 2:
                     continue
                 item = launch('row', row['row_config'], row_id, gpu)
                 active[row_id] = item
                 state['jobs'][row_id] = dict(status='RUNNING', pid=item['child'].pid, gpu=gpu, log=item['log'])
-        prior_scorer_finished = (methods not in (('PAIREDU',),('UCRIC',),('UMIX',),('UGP',),('UCMR',),('UDAP',),('UVB',),HARD_METHODS,EARLY_METHODS,GUARD_METHODS,JOINT_METHODS,COMP_METHODS,PATH_METHODS,RAS_METHODS,PATH_RAS_METHODS,('HPL_NO_UAS',),('HPL_LS2',),('HPL_MS2',),('HPL_NAMS2',)) or read(rt['prior_score_owner_state'])['status']
+        prior_scorer_finished = (methods not in (('PAIREDU',),('UCRIC',),('UMIX',),('UGP',),('UCMR',),('UDAP',),('UVB',),HARD_METHODS,EARLY_METHODS,GUARD_METHODS,JOINT_METHODS,COMP_METHODS,PATH_METHODS,RAS_METHODS,PATH_RAS_METHODS,RXE_METHODS,('HPL_NO_UAS',),('HPL_LS2',),('HPL_MS2',),('HPL_NAMS2',)) or read(rt['prior_score_owner_state'])['status']
                                  in ('ALL_SCORED','INCOMPLETE_TECHNICAL_FAILURE'))
         if score is None and prior_scorer_finished:
             pending = next((r for r in rt['rows'] if state['jobs'][r['row_id']]['status'] == 'PREDICTIONS_COMPLETE'), None)

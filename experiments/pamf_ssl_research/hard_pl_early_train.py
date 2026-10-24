@@ -97,6 +97,16 @@ def aggregate(states,parents,*,weight=2.):
             raise ValueError('Path complementary CE must keep the same dose with four existing-head views')
         for key in ('calls','extra_head_calls','extra_head_packet_views'):paths[key]=sum(v[key] for v in values)
         actual['U_path_complement']=paths;actual['hard_PL_tail']['U_path_complement']=paths
+    if 'U_receiver_extrapolation' in states[0]:
+        values=[s['U_receiver_extrapolation'] for s in states];rxe=dict(values[0])
+        if any(v['recipe']!=rxe['recipe'] or v['calls']!=s['calls'] or v['extra_head_calls']!=2*s['calls']
+            or v['extra_head_packet_views']!=2*s['seen'] or not 0<=v['eligible_packet_views']<=2*s['accepted']
+            or v['extra_backbone_forwards'] or v['teacher_or_L_head_calls'] or v['new_head'] or v['persistent_hooks']
+            or not v['all_raw_accepted_retained'] or not v['full_deployment_signature_retained']
+            or not v['full_deployment_response_retained'] or v['CE_dose_normalizer']!=1.25 for s,v in zip(states,values)):
+            raise ValueError('Full-feature receiver extrapolation must conserve CE dose,all rawaccepted samples and two existing-head views')
+        for key in ('calls','extra_head_calls','extra_head_packet_views','eligible_packet_views'):rxe[key]=sum(v[key] for v in values)
+        actual['U_receiver_extrapolation']=rxe;actual['hard_PL_tail']['U_receiver_extrapolation']=rxe
     if reliable:
         values=[s['U_reliable_As'] for s in states];ras=dict(values[0])
         if any(v['recipe']!=ras['recipe'] or v['calls']!=s['calls'] or v['generated']!=s['seen']//2
