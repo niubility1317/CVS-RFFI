@@ -19,3 +19,6 @@ N607普通账户、CPU2/FP32TF32off，物理GPU5/6/7固定seed2701/02/03，每�
 
 
 两前任方法最早完整E21–E30的三seed源执行观察已保存，见source_matched_E21_E30_observation.md。共13320条完整真实更新记录及对应已刷出参数记录，参数gzip在全部E50训练结束时统一关闭；本观察不替代最终日志关闭检查。原始梯度帽None三组计数均0，固定门控/六学生/As/四导数/实际参数保护保持；曝光接受率和参数回退不冒充U正确率或目标性能。没有新训练、目标访问、选模门槛或健康任务变化。
+
+
+独立发布后核验：VERIFIED_REAL_E20_ALL_U_RDROP_SMOKE_AND_PARTIAL_SOURCE_RUNNING，执行commit `e74a1e49ae39521e5c0cf87761a1a3f8c9705035`，实际正式GPU worker 1。源检查 PASS；详见 first_source_start.json。验证以实际PID/CWD/完整命令/GPU/日志及参数更新记录为据，排队、探针或源前缀均不代表目标达成。保留健康任务，自动训练、raw与固定DURA七景、独立truth-last继续按原矩阵执行。
