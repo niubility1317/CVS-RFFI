@@ -1,0 +1,1912 @@
+{
+  "status": "VERIFIED_FIXED_SOURCE_BRANCH_ANCHOR_COUNTERFACTUAL",
+  "analysis_commit": "c45817b64588004c2b0abc735adde9bbdae387d9",
+  "reference_recipe_execution_commit": "f605efc3fc35617bb007ae25ec6b4822360b95c1",
+  "seconds": 42.32827057992108,
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "source_run_id": "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01",
+      "source_row_id": "F21-s2026092701",
+      "source_epoch": 20,
+      "L_samples": 128,
+      "U_samples": 256,
+      "L_packet_views": 768,
+      "U_student_packet_views": 1536,
+      "U_teacher_raw_packet_views": 256,
+      "source_Practical_generated": 192,
+      "real_checkpoint_smoke_L_packets": 2,
+      "actual_autograd_calls": 9,
+      "source_branch_facts": {
+        "groups": {
+          "t2": {
+            "norms": {
+              "L_clean": 0.15973950250815622,
+              "L_As": 0.08338624130788576,
+              "L_aux": 0.029920854794640964,
+              "U_clean": 0.5042422303146608,
+              "U_As": 0.686045310662572,
+              "U_aux": 0.14862962444127117,
+              "L_full": 0.18570188921161726,
+              "U_full": 1.001379387650964,
+              "applied_U": 0.1857018916126693
+            },
+            "anchors": {
+              "L_full": {
+                "before": {
+                  "left_norm": 0.18570188921161726,
+                  "right_norm": 1.001379387650964,
+                  "dot": -0.05225102892778532,
+                  "cosine": -0.2809828914874096
+                },
+                "after": {
+                  "left_norm": 0.18570188921161726,
+                  "right_norm": 0.1857018916126693,
+                  "dot": 1.9736722939843205e-10,
+                  "cosine": 5.72324575751172e-09
+                }
+              },
+              "L_clean": {
+                "before": {
+                  "left_norm": 0.15973950250815622,
+                  "right_norm": 1.001379387650964,
+                  "dot": -0.05684552604143373,
+                  "cosine": -0.3553737250025473
+                },
+                "after": {
+                  "left_norm": 0.15973950250815622,
+                  "right_norm": 0.1857018916126693,
+                  "dot": -0.0033282455592342276,
+                  "cosine": -0.11219841093877261
+                }
+              },
+              "L_As": {
+                "before": {
+                  "left_norm": 0.08338624130788576,
+                  "right_norm": 1.001379387650964,
+                  "dot": 0.002882671279474944,
+                  "cosine": 0.034522487049322814
+                },
+                "after": {
+                  "left_norm": 0.08338624130788576,
+                  "right_norm": 0.1857018916126693,
+                  "dot": 0.002718892151330454,
+                  "cosine": 0.1755825108780189
+                }
+              },
+              "L_aux": {
+                "before": {
+                  "left_norm": 0.029920854794640964,
+                  "right_norm": 1.001379387650964,
+                  "dot": 0.0017118265670210578,
+                  "cosine": 0.05713301170538392
+                },
+                "after": {
+                  "left_norm": 0.029920854794640964,
+                  "right_norm": 0.1857018916126693,
+                  "dot": 0.000609353664875413,
+                  "cosine": 0.10966779292748532
+                }
+              }
+            },
+            "original_cap1_guard": {
+              "L_norm": 0.18570188921161726,
+              "U_norm": 1.001379387650964,
+              "applied_U_norm": 0.18570188921161726,
+              "dot_before": -0.05225102892778532,
+              "dot_after": 1.6286022699971581e-10,
+              "conflict": true,
+              "capped": true,
+              "tiny_L": false
+            },
+            "L_clean_vs_L_As": {
+              "left_norm": 0.15973950250815622,
+              "right_norm": 0.08338624130788576,
+              "dot": 0.0005037454819511555,
+              "cosine": 0.037818512100222496
+            },
+            "U_clean_vs_U_As": {
+              "left_norm": 0.5042422303146608,
+              "right_norm": 0.686045310662572,
+              "dot": 0.09881657459019322,
+              "cosine": 0.2856523360833051
+            },
+            "L_clean_vs_U_clean": {
+              "left_norm": 0.15973950250815622,
+              "right_norm": 0.5042422303146608,
+              "dot": -0.04198013423514427,
+              "cosine": -0.5211854468829087
+            },
+            "L_As_vs_U_As": {
+              "left_norm": 0.08338624130788576,
+              "right_norm": 0.686045310662572,
+              "dot": 0.001452025908089375,
+              "cosine": 0.02538207757653496
+            }
+          },
+          "cls_head": {
+            "norms": {
+              "L_clean": 0.46988146902252564,
+              "L_As": 0.35241857771233037,
+              "L_aux": 0.0,
+              "U_clean": 0.7040977082580198,
+              "U_As": 0.6144054722300822,
+              "U_aux": 0.029649369120423243,
+              "L_full": 0.6777666137294573,
+              "U_full": 0.9099543218803227,
+              "applied_U": 0.6777666236999262
+            },
+            "anchors": {
+              "L_full": {
+                "before": {
+                  "left_norm": 0.6777666137294573,
+                  "right_norm": 0.9099543218803227,
+                  "dot": -0.363320604618101,
+                  "cosine": -0.5891016839794458
+                },
+                "after": {
+                  "left_norm": 0.6777666137294573,
+                  "right_norm": 0.6777666236999262,
+                  "dot": -2.8660561494616224e-10,
+                  "cosine": -6.239134443357041e-10
+                }
+              },
+              "L_clean": {
+                "before": {
+                  "left_norm": 0.46988146902252564,
+                  "right_norm": 0.9099543218803227,
+                  "dot": -0.2525440888840614,
+                  "cosine": -0.5906487617865769
+                },
+                "after": {
+                  "left_norm": 0.46988146902252564,
+                  "right_norm": 0.6777666236999262,
+                  "dot": -0.03012923617440652,
+                  "cosine": -0.09460620582600199
+                }
+              },
+              "L_As": {
+                "before": {
+                  "left_norm": 0.35241857771233037,
+                  "right_norm": 0.9099543218803227,
+                  "dot": -0.11077651354322259,
+                  "cosine": -0.34543736034317996
+                },
+                "after": {
+                  "left_norm": 0.35241857771233037,
+                  "right_norm": 0.6777666236999262,
+                  "dot": 0.03012923515875626,
+                  "cosine": 0.12613892764169354
+                }
+              },
+              "L_aux": {
+                "before": {
+                  "left_norm": 0.0,
+                  "right_norm": 0.9099543218803227,
+                  "dot": 0.0,
+                  "cosine": null
+                },
+                "after": {
+                  "left_norm": 0.0,
+                  "right_norm": 0.6777666236999262,
+                  "dot": 0.0,
+                  "cosine": null
+                }
+              }
+            },
+            "original_cap1_guard": {
+              "L_norm": 0.6777666137294573,
+              "U_norm": 0.9099543218803227,
+              "applied_U_norm": 0.6777666137294573,
+              "dot_before": -0.363320604618101,
+              "dot_after": 3.2430014482208794e-09,
+              "conflict": true,
+              "capped": true,
+              "tiny_L": false
+            },
+            "L_clean_vs_L_As": {
+              "left_norm": 0.46988146902252564,
+              "right_norm": 0.35241857771233037,
+              "dot": 0.05719006314938398,
+              "cosine": 0.3453611359462252
+            },
+            "U_clean_vs_U_As": {
+              "left_norm": 0.7040977082580198,
+              "right_norm": 0.6144054722300822,
+              "dot": -0.022750952967341788,
+              "cosine": -0.05259101912371398
+            },
+            "L_clean_vs_U_clean": {
+              "left_norm": 0.46988146902252564,
+              "right_norm": 0.7040977082580198,
+              "dot": -0.18581185630405414,
+              "cosine": -0.561632425353605
+            },
+            "L_As_vs_U_As": {
+              "left_norm": 0.35241857771233037,
+              "right_norm": 0.6144054722300822,
+              "dot": -0.10050304935767379,
+              "cosine": -0.4641574971266398
+            }
+          },
+          "other": {
+            "norms": {
+              "L_clean": 0.8152472384946136,
+              "L_As": 0.45720277197555487,
+              "L_aux": 0.1195253643366407,
+              "U_clean": 2.123361915631318,
+              "U_As": 2.153690291836787,
+              "U_aux": 0.6986656010459461,
+              "L_full": 0.908096057862928,
+              "U_full": 3.2795710430793474,
+              "applied_U": 0.9080960991967431
+            },
+            "anchors": {
+              "L_full": {
+                "before": {
+                  "left_norm": 0.908096057862928,
+                  "right_norm": 3.2795710430793474,
+                  "dot": -0.8947176130657094,
+                  "cosine": -0.30042574945548844
+                },
+                "after": {
+                  "left_norm": 0.908096057862928,
+                  "right_norm": 0.9080960991967431,
+                  "dot": 8.774873441963197e-11,
+                  "cosine": 1.0640873026596204e-10
+                }
+              },
+              "L_clean": {
+                "before": {
+                  "left_norm": 0.8152472384946136,
+                  "right_norm": 3.2795710430793474,
+                  "dot": -0.9600723944623158,
+                  "cosine": -0.35908528029703046
+                },
+                "after": {
+                  "left_norm": 0.8152472384946136,
+                  "right_norm": 0.9080960991967431,
+                  "dot": -0.07969813050674524,
+                  "cosine": -0.10765321087852572
+                }
+              },
+              "L_As": {
+                "before": {
+                  "left_norm": 0.45720277197555487,
+                  "right_norm": 3.2795710430793474,
+                  "dot": 0.061199148484535504,
+                  "cosine": 0.04081496998928457
+                },
+                "after": {
+                  "left_norm": 0.45720277197555487,
+                  "right_norm": 0.9080960991967431,
+                  "dot": 0.07001208594189262,
+                  "cosine": 0.1686290340528869
+                }
+              },
+              "L_aux": {
+                "before": {
+                  "left_norm": 0.1195253643366407,
+                  "right_norm": 3.2795710430793474,
+                  "dot": 0.0041556457422483395,
+                  "cosine": 0.010601355512757683
+                },
+                "after": {
+                  "left_norm": 0.1195253643366407,
+                  "right_norm": 0.9080960991967431,
+                  "dot": 0.009686045117393249,
+                  "cosine": 0.08923898075453951
+                }
+              }
+            },
+            "original_cap1_guard": {
+              "L_norm": 0.908096057862928,
+              "U_norm": 3.2795710430793474,
+              "applied_U_norm": 0.9080960578629279,
+              "dot_before": -0.8947176130657094,
+              "dot_after": -2.3325664498038623e-10,
+              "conflict": true,
+              "capped": true,
+              "tiny_L": false
+            },
+            "L_clean_vs_L_As": {
+              "left_norm": 0.8152472384946136,
+              "right_norm": 0.45720277197555487,
+              "dot": -0.04429038254137882,
+              "cosine": -0.11882593496200364
+            },
+            "U_clean_vs_U_As": {
+              "left_norm": 2.123361915631318,
+              "right_norm": 2.153690291836787,
+              "dot": 0.5713881365063699,
+              "cosine": 0.12494645680324322
+            },
+            "L_clean_vs_U_clean": {
+              "left_norm": 0.8152472384946136,
+              "right_norm": 2.123361915631318,
+              "dot": -0.9805740606953128,
+              "cosine": -0.5664571207847541
+            },
+            "L_As_vs_U_As": {
+              "left_norm": 0.45720277197555487,
+              "right_norm": 2.153690291836787,
+              "dot": 0.04110992240905008,
+              "cosine": 0.04174981466226751
+            }
+          }
+        },
+        "losses": {
+          "L_clean": 0.19392913579940796,
+          "L_As": 0.2134190797805786,
+          "L_aux": 0.15033692121505737,
+          "U_clean": 0.5143459439277649,
+          "U_As": 0.8016839623451233,
+          "U_aux": 0.6554524302482605
+        },
+        "component_sum_closure": {
+          "L": {
+            "max_absolute_error": 6.536996011163865e-07,
+            "groups": {
+              "t2": {
+                "L2_error": 3.717905552521384e-08,
+                "reference_L2_norm": 0.18570188921161726,
+                "relative_L2_error": 2.0020827834899578e-07
+              },
+              "cls_head": {
+                "L2_error": 8.395671814912126e-08,
+                "reference_L2_norm": 0.6777666137294573,
+                "relative_L2_error": 1.238726081344486e-07
+              },
+              "other": {
+                "L2_error": 1.0304805914101805e-06,
+                "reference_L2_norm": 0.908096057862928,
+                "relative_L2_error": 1.1347704711275442e-06
+              }
+            },
+            "criterion": "torch.testing.assert_close dtype defaults and group L2error<=0.001*referenceL2+1e-8"
+          },
+          "U": {
+            "max_absolute_error": 9.549694368615746e-06,
+            "groups": {
+              "t2": {
+                "L2_error": 2.1464987359865882e-07,
+                "reference_L2_norm": 1.001379387650964,
+                "relative_L2_error": 2.1435419606767077e-07
+              },
+              "cls_head": {
+                "L2_error": 2.1902169356089822e-07,
+                "reference_L2_norm": 0.9099543218803227,
+                "relative_L2_error": 2.406952616130373e-07
+              },
+              "other": {
+                "L2_error": 1.1715358921788231e-05,
+                "reference_L2_norm": 3.2795710430793474,
+                "relative_L2_error": 3.572222942543155e-06
+              }
+            },
+            "criterion": "torch.testing.assert_close dtype defaults and group L2error<=0.001*referenceL2+1e-8"
+          }
+        },
+        "component_autograd_calls": 6,
+        "projection": "existing full-L cap1;diagnostic only",
+        "measured_stage": "Parameter gradients before native globalclip5/AdamW/decay",
+        "branch_anchor_counterfactual": {
+          "kind": "fixed_original_E20_source_branch_anchor_counterfactual_v1",
+          "native_full_L_cap2_details": {
+            "t2": {
+              "L_norm": 0.18570188921161726,
+              "U_norm": 1.001379387650964,
+              "applied_U_norm": 0.3714037784232345,
+              "dot_before": -0.05225102892778532,
+              "dot_after": 3.2572045399943163e-10,
+              "conflict": true,
+              "capped": true,
+              "tiny_L": false
+            },
+            "cls_head": {
+              "L_norm": 0.6777666137294573,
+              "U_norm": 0.9099543218803227,
+              "applied_U_norm": 0.7352967028488137,
+              "dot_before": -0.363320604618101,
+              "dot_after": 3.730691532446723e-09,
+              "conflict": true,
+              "capped": false,
+              "tiny_L": false
+            },
+            "other": {
+              "L_norm": 0.908096057862928,
+              "U_norm": 3.2795710430793474,
+              "applied_U_norm": 1.8161921157258558,
+              "dot_before": -0.8947176130657094,
+              "dot_after": -4.665132899607725e-10,
+              "conflict": true,
+              "capped": true,
+              "tiny_L": false
+            }
+          },
+          "native_full_L_cap2_component_relations": {
+            "t2": {
+              "L_full": {
+                "left_norm": 0.18570188921161726,
+                "right_norm": 0.37140378317171613,
+                "dot": 2.796572575564874e-10,
+                "cosine": 4.054744087904108e-09
+              },
+              "L_clean": {
+                "left_norm": 0.15973950250815622,
+                "right_norm": 0.37140378317171613,
+                "dot": -0.0066564912184792395,
+                "cosine": -0.11219841264070222
+              },
+              "L_As": {
+                "left_norm": 0.08338624130788576,
+                "right_norm": 0.37140378317171613,
+                "dot": 0.005437784288400714,
+                "cosine": 0.17558251044291678
+              }
+            },
+            "cls_head": {
+              "L_full": {
+                "left_norm": 0.6777666137294573,
+                "right_norm": 0.7352967088707405,
+                "dot": 1.1019872731888626e-08,
+                "cosine": 2.211229322412722e-08
+              },
+              "L_clean": {
+                "left_norm": 0.46988146902252564,
+                "right_norm": 0.7352967088707405,
+                "dot": -0.032686652374748104,
+                "cosine": -0.0946061794360027
+              },
+              "L_As": {
+                "left_norm": 0.35241857771233037,
+                "right_norm": 0.7352967088707405,
+                "dot": 0.032686662603694364,
+                "cosine": 0.1261389361817408
+              }
+            },
+            "other": {
+              "L_full": {
+                "left_norm": 0.908096057862928,
+                "right_norm": 1.816192198487858,
+                "dot": -6.950740959614985e-10,
+                "cosine": -4.2144170213601326e-10
+              },
+              "L_clean": {
+                "left_norm": 0.8152472384946136,
+                "right_norm": 1.816192198487858,
+                "dot": -0.15939626241808674,
+                "cosine": -0.1076532118215696
+              },
+              "L_As": {
+                "left_norm": 0.45720277197555487,
+                "right_norm": 1.816192198487858,
+                "dot": 0.14002417224732053,
+                "cosine": 0.16862903448192487
+              }
+            }
+          },
+          "simultaneous_three_anchor_cap2_details": {
+            "t2": {
+              "L_norm": 0.18570188921161726,
+              "U_norm": 1.001379387650964,
+              "applied_U_norm": 0.3714037782351865,
+              "dot_before": -0.05225102892778532,
+              "dot_after": 0.002382614830134158,
+              "conflict": true,
+              "capped": true,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": -0.2809828914874096,
+                "L_clean": -0.35537372500254727,
+                "L_As": 0.034522487049322814
+              },
+              "anchor_cosines_after": {
+                "L_full": 0.03454547759303522,
+                "L_clean": -2.2400247738354992e-12,
+                "L_As": 0.05131159290713962
+              },
+              "constraint_dots_after": {
+                "L_full": 0.002382614830134158,
+                "L_clean": -1.328958644519762e-13,
+                "L_As": 0.0015891182402551682
+              },
+              "active_set": [
+                "L_clean"
+              ],
+              "cone_correction_norm": 0.3558639231302929,
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            },
+            "cls_head": {
+              "L_norm": 0.6777666137294573,
+              "U_norm": 0.9099543218803227,
+              "applied_U_norm": 0.7213454290388448,
+              "dot_before": -0.363320604618101,
+              "dot_after": 9.717670019365743e-10,
+              "conflict": true,
+              "capped": false,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": -0.5891016839794458,
+                "L_clean": -0.5906487617865769,
+                "L_As": -0.34543736034317996
+              },
+              "anchor_cosines_after": {
+                "L_full": 1.987644409802873e-09,
+                "L_clean": 1.2751685198314552e-09,
+                "L_As": -2.6183350412947173e-09
+              },
+              "constraint_dots_after": {
+                "L_full": 9.717670019365743e-10,
+                "L_clean": 4.322143528495692e-10,
+                "L_As": -6.656214306099137e-10
+              },
+              "active_set": [
+                "L_full",
+                "L_clean"
+              ],
+              "cone_correction_norm": 0.5546869723469168,
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            },
+            "other": {
+              "L_norm": 0.908096057862928,
+              "U_norm": 3.2795710430793474,
+              "applied_U_norm": 1.8161921159434014,
+              "dot_before": -0.8947176130657094,
+              "dot_after": 0.012344331361562157,
+              "conflict": true,
+              "capped": true,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": -0.30042574945548844,
+                "L_clean": -0.35908528029703035,
+                "L_As": 0.040814969989284564
+              },
+              "anchor_cosines_after": {
+                "L_full": 0.0074846930527554595,
+                "L_clean": 1.1965226225362148e-11,
+                "L_As": -1.0351393230762477e-10
+              },
+              "constraint_dots_after": {
+                "L_full": 0.012344331361562157,
+                "L_clean": 1.7716259648522793e-11,
+                "L_As": -8.595466417281122e-11
+              },
+              "active_set": [
+                "L_clean",
+                "L_As"
+              ],
+              "cone_correction_norm": 1.1776616030802904,
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            }
+          },
+          "whole_native_applied_U_norm": 1.9942807748840563,
+          "whole_three_anchor_applied_U_norm": 1.9891791765694653,
+          "whole_U_norm_retention_vs_native_cap2": 0.997441885626718,
+          "removed_material_component_conflicts": [
+            {
+              "group": "t2",
+              "anchor": "L_clean",
+              "before_cosine": -0.11219841264070222,
+              "after_cosine": -2.2400247738354992e-12
+            },
+            {
+              "group": "cls_head",
+              "anchor": "L_clean",
+              "before_cosine": -0.0946061794360027,
+              "after_cosine": 1.2751685198314552e-09
+            },
+            {
+              "group": "other",
+              "anchor": "L_clean",
+              "before_cosine": -0.1076532118215696,
+              "after_cosine": 1.1965226225362148e-11
+            }
+          ],
+          "extra_autograd_calls": 0,
+          "extra_model_forward_calls": 0,
+          "extra_teacher_forward_calls": 0,
+          "projection_interpretation": "Counterfactual parameter gradients only;complete original L unchanged,only U projected onto fullL/nonphysicalL/physicalL halfspaces then cap2.None of these gradients is applied to a model."
+        },
+        "original_full_gradient_bridge_matches": true,
+        "all_six_U_logits_reused": true,
+        "L_pair_calls": 4,
+        "U_logits_captured": 6,
+        "raw_accepted": 235
+      },
+      "parameter_updates": 0,
+      "parameter_grad_writes": 0,
+      "disposable_train_mode_changed_buffer_names": [],
+      "discarded_model_and_buffers": true,
+      "U_truth_reads": 0,
+      "V_reads": 0,
+      "target_reads": 0
+    },
+    {
+      "model_seed": 2026092702,
+      "source_run_id": "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01",
+      "source_row_id": "F21-s2026092702",
+      "source_epoch": 20,
+      "L_samples": 128,
+      "U_samples": 256,
+      "L_packet_views": 768,
+      "U_student_packet_views": 1536,
+      "U_teacher_raw_packet_views": 256,
+      "source_Practical_generated": 192,
+      "real_checkpoint_smoke_L_packets": 2,
+      "actual_autograd_calls": 9,
+      "source_branch_facts": {
+        "groups": {
+          "t2": {
+            "norms": {
+              "L_clean": 0.08381617833796366,
+              "L_As": 0.1192306221864323,
+              "L_aux": 0.03253849097871615,
+              "U_clean": 0.35850090376332333,
+              "U_As": 0.4689631152163207,
+              "U_aux": 0.23245534691889394,
+              "L_full": 0.16361835962243967,
+              "U_full": 0.6562356156310087,
+              "applied_U": 0.1636183542936367
+            },
+            "anchors": {
+              "L_full": {
+                "before": {
+                  "left_norm": 0.16361835962243967,
+                  "right_norm": 0.6562356156310087,
+                  "dot": -0.01997371358633777,
+                  "cosine": -0.18602314681785587
+                },
+                "after": {
+                  "left_norm": 0.16361835962243967,
+                  "right_norm": 0.1636183542936367,
+                  "dot": 7.769671379529147e-11,
+                  "cosine": 2.9022752360166257e-09
+                }
+              },
+              "L_clean": {
+                "before": {
+                  "left_norm": 0.08381617833796366,
+                  "right_norm": 0.6562356156310087,
+                  "dot": -0.013226973663038037,
+                  "cosine": -0.24047660767902024
+                },
+                "after": {
+                  "left_norm": 0.08381617833796366,
+                  "right_norm": 0.1636183542936367,
+                  "dot": -0.001602985138482452,
+                  "cosine": -0.11688791740683413
+                }
+              },
+              "L_As": {
+                "before": {
+                  "left_norm": 0.1192306221864323,
+                  "right_norm": 0.6562356156310087,
+                  "dot": -0.012530840344266755,
+                  "cosine": -0.16015208217921112
+                },
+                "after": {
+                  "left_norm": 0.1192306221864323,
+                  "right_norm": 0.1636183542936367,
+                  "dot": -5.582883838211443e-05,
+                  "cosine": -0.0028617965862987507
+                }
+              },
+              "L_aux": {
+                "before": {
+                  "left_norm": 0.03253849097871615,
+                  "right_norm": 0.6562356156310087,
+                  "dot": 0.0057841002642635975,
+                  "cosine": 0.2708810396537875
+                },
+                "after": {
+                  "left_norm": 0.03253849097871615,
+                  "right_norm": 0.1636183542936367,
+                  "dot": 0.0016588139782349,
+                  "cosine": 0.311579056738881
+                }
+              }
+            },
+            "original_cap1_guard": {
+              "L_norm": 0.16361835962243967,
+              "U_norm": 0.6562356156310087,
+              "applied_U_norm": 0.16361835962243967,
+              "dot_before": -0.01997371358633777,
+              "dot_after": 5.426927394340357e-11,
+              "conflict": true,
+              "capped": true,
+              "tiny_L": false
+            },
+            "L_clean_vs_L_As": {
+              "left_norm": 0.08381617833796366,
+              "right_norm": 0.1192306221864323,
+              "dot": 0.002285203071402749,
+              "cosine": 0.22866996951957086
+            },
+            "U_clean_vs_U_As": {
+              "left_norm": 0.35850090376332333,
+              "right_norm": 0.4689631152163207,
+              "dot": 0.01012704610355594,
+              "cosine": 0.06023568399460045
+            },
+            "L_clean_vs_U_clean": {
+              "left_norm": 0.08381617833796366,
+              "right_norm": 0.35850090376332333,
+              "dot": -0.0015001599895084106,
+              "cosine": -0.049925160358398446
+            },
+            "L_As_vs_U_As": {
+              "left_norm": 0.1192306221864323,
+              "right_norm": 0.4689631152163207,
+              "dot": -0.009289654079244912,
+              "cosine": -0.1661395562293434
+            }
+          },
+          "cls_head": {
+            "norms": {
+              "L_clean": 0.17407859030217548,
+              "L_As": 0.42593559472958614,
+              "L_aux": 0.0,
+              "U_clean": 0.47267586071021356,
+              "U_As": 1.3798097488290926,
+              "U_aux": 0.027447552408630036,
+              "L_full": 0.5374066649684708,
+              "U_full": 1.5091941511980678,
+              "applied_U": 0.5374066439916578
+            },
+            "anchors": {
+              "L_full": {
+                "before": {
+                  "left_norm": 0.5374066649684708,
+                  "right_norm": 1.5091941511980678,
+                  "dot": -0.3699555325329062,
+                  "cosine": -0.45614336773723657
+                },
+                "after": {
+                  "left_norm": 0.5374066649684708,
+                  "right_norm": 0.5374066439916578,
+                  "dot": 1.8609395362173932e-09,
+                  "cosine": 6.443564543154873e-09
+                }
+              },
+              "L_clean": {
+                "before": {
+                  "left_norm": 0.17407859030217548,
+                  "right_norm": 1.5091941511980678,
+                  "dot": -0.07986500478924834,
+                  "cosine": -0.3039947248765658
+                },
+                "after": {
+                  "left_norm": 0.17407859030217548,
+                  "right_norm": 0.5374066439916578,
+                  "dot": 0.003330411576844922,
+                  "cosine": 0.03559996041798944
+                }
+              },
+              "L_As": {
+                "before": {
+                  "left_norm": 0.42593559472958614,
+                  "right_norm": 1.5091941511980678,
+                  "dot": -0.29009051949518766,
+                  "cosine": -0.4512783382048567
+                },
+                "after": {
+                  "left_norm": 0.42593559472958614,
+                  "right_norm": 0.5374066439916578,
+                  "dot": -0.003330412963848506,
+                  "cosine": -0.014549602291941143
+                }
+              },
+              "L_aux": {
+                "before": {
+                  "left_norm": 0.0,
+                  "right_norm": 1.5091941511980678,
+                  "dot": 0.0,
+                  "cosine": null
+                },
+                "after": {
+                  "left_norm": 0.0,
+                  "right_norm": 0.5374066439916578,
+                  "dot": 0.0,
+                  "cosine": null
+                }
+              }
+            },
+            "original_cap1_guard": {
+              "L_norm": 0.5374066649684708,
+              "U_norm": 1.5091941511980678,
+              "applied_U_norm": 0.5374066649684707,
+              "dot_before": -0.3699555325329062,
+              "dot_after": 3.492198358991111e-09,
+              "conflict": true,
+              "capped": true,
+              "tiny_L": false
+            },
+            "L_clean_vs_L_As": {
+              "left_norm": 0.17407859030217548,
+              "right_norm": 0.42593559472958614,
+              "dot": 0.03854070577095029,
+              "cosine": 0.519792929134398
+            },
+            "U_clean_vs_U_As": {
+              "left_norm": 0.47267586071021356,
+              "right_norm": 1.3798097488290926,
+              "dot": 0.07221016999899864,
+              "cosine": 0.11071736330536493
+            },
+            "L_clean_vs_U_clean": {
+              "left_norm": 0.17407859030217548,
+              "right_norm": 0.47267586071021356,
+              "dot": -0.006149903457829576,
+              "cosine": -0.07474110484287809
+            },
+            "L_As_vs_U_As": {
+              "left_norm": 0.42593559472958614,
+              "right_norm": 1.3798097488290926,
+              "dot": -0.20764169225971318,
+              "cosine": -0.3533063277500995
+            }
+          },
+          "other": {
+            "norms": {
+              "L_clean": 0.47716588506184476,
+              "L_As": 0.7204356137968034,
+              "L_aux": 0.11259266933515956,
+              "U_clean": 2.096345918232539,
+              "U_As": 2.355520832966069,
+              "U_aux": 0.682553085897177,
+              "L_full": 1.052524715316114,
+              "U_full": 3.01543847467142,
+              "applied_U": 1.0525247391961805
+            },
+            "anchors": {
+              "L_full": {
+                "before": {
+                  "left_norm": 1.052524715316114,
+                  "right_norm": 3.01543847467142,
+                  "dot": -1.2304705828681293,
+                  "cosine": -0.38769344744516204
+                },
+                "after": {
+                  "left_norm": 1.052524715316114,
+                  "right_norm": 1.0525247391961805,
+                  "dot": -2.072808004852977e-08,
+                  "cosine": -1.871089070259933e-08
+                }
+              },
+              "L_clean": {
+                "before": {
+                  "left_norm": 0.47716588506184476,
+                  "right_norm": 3.01543847467142,
+                  "dot": -0.4253791580336675,
+                  "cosine": -0.2956353408367386
+                },
+                "after": {
+                  "left_norm": 0.47716588506184476,
+                  "right_norm": 1.0525247391961805,
+                  "dot": 0.008165176299415797,
+                  "cosine": 0.016257878270436617
+                }
+              },
+              "L_As": {
+                "before": {
+                  "left_norm": 0.7204356137968034,
+                  "right_norm": 3.01543847467142,
+                  "dot": -0.8447200651409559,
+                  "cosine": -0.3888366251740656
+                },
+                "after": {
+                  "left_norm": 0.7204356137968034,
+                  "right_norm": 1.0525247391961805,
+                  "dot": -0.02751816147300955,
+                  "cosine": -0.03629041450514536
+                }
+              },
+              "L_aux": {
+                "before": {
+                  "left_norm": 0.11259266933515956,
+                  "right_norm": 3.01543847467142,
+                  "dot": 0.03962864828328391,
+                  "cosine": 0.11672091185557232
+                },
+                "after": {
+                  "left_norm": 0.11259266933515956,
+                  "right_norm": 1.0525247391961805,
+                  "dot": 0.01935296636073071,
+                  "cosine": 0.16330711767784978
+                }
+              }
+            },
+            "original_cap1_guard": {
+              "L_norm": 1.052524715316114,
+              "U_norm": 3.01543847467142,
+              "applied_U_norm": 1.052524715316114,
+              "dot_before": -1.2304705828681293,
+              "dot_after": -2.0507512422281702e-08,
+              "conflict": true,
+              "capped": true,
+              "tiny_L": false
+            },
+            "L_clean_vs_L_As": {
+              "left_norm": 0.47716588506184476,
+              "right_norm": 0.7204356137968034,
+              "dot": 0.17654945457684387,
+              "cosine": 0.5135725706602925
+            },
+            "U_clean_vs_U_As": {
+              "left_norm": 2.096345918232539,
+              "right_norm": 2.355520832966069,
+              "dot": -0.8825045359726068,
+              "cosine": -0.1787174871623125
+            },
+            "L_clean_vs_U_clean": {
+              "left_norm": 0.47716588506184476,
+              "right_norm": 2.096345918232539,
+              "dot": 0.0860579356462398,
+              "cosine": 0.08603171700995506
+            },
+            "L_As_vs_U_As": {
+              "left_norm": 0.7204356137968034,
+              "right_norm": 2.355520832966069,
+              "dot": -0.8595228995327973,
+              "cosine": -0.5064951937845182
+            }
+          }
+        },
+        "losses": {
+          "L_clean": 0.10592719912528992,
+          "L_As": 0.1753794252872467,
+          "L_aux": 0.13685870170593262,
+          "U_clean": 0.4757140278816223,
+          "U_As": 0.9943084120750427,
+          "U_aux": 0.7218659520149231
+        },
+        "component_sum_closure": {
+          "L": {
+            "max_absolute_error": 2.3661050363443792e-07,
+            "groups": {
+              "t2": {
+                "L2_error": 2.7339768797322328e-08,
+                "reference_L2_norm": 0.16361835962243967,
+                "relative_L2_error": 1.670947493937152e-07
+              },
+              "cls_head": {
+                "L2_error": 6.35670611871049e-08,
+                "reference_L2_norm": 0.5374066649684708,
+                "relative_L2_error": 1.1828483963970624e-07
+              },
+              "other": {
+                "L2_error": 4.505891983539832e-07,
+                "reference_L2_norm": 1.052524715316114,
+                "relative_L2_error": 4.2810319966562855e-07
+              }
+            },
+            "criterion": "torch.testing.assert_close dtype defaults and group L2error<=0.001*referenceL2+1e-8"
+          },
+          "U": {
+            "max_absolute_error": 2.6148109100176953e-07,
+            "groups": {
+              "t2": {
+                "L2_error": 1.667550348095263e-07,
+                "reference_L2_norm": 0.6562356156310087,
+                "relative_L2_error": 2.541084799994917e-07
+              },
+              "cls_head": {
+                "L2_error": 2.8663907374717184e-07,
+                "reference_L2_norm": 1.5091941511980678,
+                "relative_L2_error": 1.8992856122562134e-07
+              },
+              "other": {
+                "L2_error": 2.8938992040036584e-06,
+                "reference_L2_norm": 3.01543847467142,
+                "relative_L2_error": 9.596943291369906e-07
+              }
+            },
+            "criterion": "torch.testing.assert_close dtype defaults and group L2error<=0.001*referenceL2+1e-8"
+          }
+        },
+        "component_autograd_calls": 6,
+        "projection": "existing full-L cap1;diagnostic only",
+        "measured_stage": "Parameter gradients before native globalclip5/AdamW/decay",
+        "branch_anchor_counterfactual": {
+          "kind": "fixed_original_E20_source_branch_anchor_counterfactual_v1",
+          "native_full_L_cap2_details": {
+            "t2": {
+              "L_norm": 0.16361835962243967,
+              "U_norm": 0.6562356156310087,
+              "applied_U_norm": 0.32723671924487935,
+              "dot_before": -0.01997371358633777,
+              "dot_after": 1.0853854788680714e-10,
+              "conflict": true,
+              "capped": true,
+              "tiny_L": false
+            },
+            "cls_head": {
+              "L_norm": 0.5374066649684708,
+              "U_norm": 1.5091941511980678,
+              "applied_U_norm": 1.0748133299369413,
+              "dot_before": -0.3699555325329062,
+              "dot_after": 6.984396717982222e-09,
+              "conflict": true,
+              "capped": true,
+              "tiny_L": false
+            },
+            "other": {
+              "L_norm": 1.052524715316114,
+              "U_norm": 3.01543847467142,
+              "applied_U_norm": 2.105049430632228,
+              "dot_before": -1.2304705828681293,
+              "dot_after": -4.1015024844563404e-08,
+              "conflict": true,
+              "capped": true,
+              "tiny_L": false
+            }
+          },
+          "native_full_L_cap2_component_relations": {
+            "t2": {
+              "L_full": {
+                "left_norm": 0.16361835962243967,
+                "right_norm": 0.32723670850297404,
+                "dot": 1.9200884174177917e-10,
+                "cosine": 3.5861394865115144e-09
+              },
+              "L_clean": {
+                "left_norm": 0.08381617833796366,
+                "right_norm": 0.32723670850297404,
+                "dot": -0.003205970302429653,
+                "cosine": -0.11688791836537636
+              },
+              "L_As": {
+                "left_norm": 0.1192306221864323,
+                "right_norm": 0.32723670850297404,
+                "dot": -0.00011165761531327405,
+                "cosine": -0.002861795012042319
+              }
+            },
+            "cls_head": {
+              "L_full": {
+                "left_norm": 0.5374066649684708,
+                "right_norm": 1.0748132870852223,
+                "dot": 7.4727521014921e-09,
+                "cosine": 1.2937325362829458e-08
+              },
+              "L_clean": {
+                "left_norm": 0.17407859030217548,
+                "right_norm": 1.0748132870852223,
+                "dot": 0.006660823829364485,
+                "cosine": 0.03559996405900003
+              },
+              "L_As": {
+                "left_norm": 0.42593559472958614,
+                "right_norm": 1.0748132870852223,
+                "dot": -0.006660822852498907,
+                "cosine": -0.014549595586776976
+              }
+            },
+            "other": {
+              "L_full": {
+                "left_norm": 1.052524715316114,
+                "right_norm": 2.105049482923098,
+                "dot": -4.039716010039324e-08,
+                "cosine": -1.8232919883011822e-08
+              },
+              "L_clean": {
+                "left_norm": 0.47716588506184476,
+                "right_norm": 2.105049482923098,
+                "dot": 0.01633035338064719,
+                "cosine": 0.01625787901379037
+              },
+              "L_As": {
+                "left_norm": 0.7204356137968034,
+                "right_norm": 2.105049482923098,
+                "dot": -0.05503632291293012,
+                "cosine": -0.03629041440521828
+              }
+            }
+          },
+          "simultaneous_three_anchor_cap2_details": {
+            "t2": {
+              "L_norm": 0.16361835962243967,
+              "U_norm": 0.6562356156310087,
+              "applied_U_norm": 0.3272367191865928,
+              "dot_before": -0.01997371358633777,
+              "dot_after": 0.0029472894764911634,
+              "conflict": true,
+              "capped": true,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": -0.1860231468178559,
+                "L_clean": -0.24047660767902024,
+                "L_As": -0.16015208217921112
+              },
+              "anchor_cosines_after": {
+                "L_full": 0.05504637561935627,
+                "L_clean": -3.6508586440522386e-10,
+                "L_As": -4.2607441020128717e-10
+              },
+              "constraint_dots_after": {
+                "L_full": 0.0029472894764911634,
+                "L_clean": -1.00134769589642e-11,
+                "L_As": -1.6623990866607846e-11
+              },
+              "active_set": [
+                "L_clean",
+                "L_As"
+              ],
+              "cone_correction_norm": 0.1730003075151738,
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            },
+            "cls_head": {
+              "L_norm": 0.5374066649684708,
+              "U_norm": 1.5091941511980678,
+              "applied_U_norm": 1.074813327647261,
+              "dot_before": -0.3699555325329062,
+              "dot_after": 8.293297131160642e-09,
+              "conflict": true,
+              "capped": true,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": -0.45614336773723657,
+                "L_clean": -0.3039947248765658,
+                "L_As": -0.4512783382048567
+              },
+              "anchor_cosines_after": {
+                "L_full": 1.4357906941128471e-08,
+                "L_clean": 3.6549579064640837e-09,
+                "L_As": 1.4915274379772366e-09
+              },
+              "constraint_dots_after": {
+                "L_full": 8.293297131160642e-09,
+                "L_clean": 6.838498936993965e-10,
+                "L_As": 6.828231313840217e-10
+              },
+              "active_set": [
+                "L_clean",
+                "L_As"
+              ],
+              "cone_correction_norm": 0.6920210937058562,
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            },
+            "other": {
+              "L_norm": 1.052524715316114,
+              "U_norm": 3.01543847467142,
+              "applied_U_norm": 2.1050494318673922,
+              "dot_before": -1.2304705828681293,
+              "dot_after": 0.02858222871883371,
+              "conflict": true,
+              "capped": true,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": -0.3876934474451621,
+                "L_clean": -0.2956353408367386,
+                "L_As": -0.3888366251740656
+              },
+              "anchor_cosines_after": {
+                "L_full": 0.012900349867489074,
+                "L_clean": -1.5587332413336528e-10,
+                "L_As": 3.290201274610742e-10
+              },
+              "constraint_dots_after": {
+                "L_full": 0.02858222871883371,
+                "L_clean": -1.5656817238074773e-10,
+                "L_As": 4.989763230150903e-10
+              },
+              "active_set": [
+                "L_clean",
+                "L_As"
+              ],
+              "cone_correction_norm": 1.220026266632284,
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            }
+          },
+          "whole_native_applied_U_norm": 2.3861141360038407,
+          "whole_three_anchor_applied_U_norm": 2.386114136054144,
+          "whole_U_norm_retention_vs_native_cap2": 1.0000000000210816,
+          "removed_material_component_conflicts": [
+            {
+              "group": "t2",
+              "anchor": "L_clean",
+              "before_cosine": -0.11688791836537636,
+              "after_cosine": -3.6508586440522386e-10
+            },
+            {
+              "group": "t2",
+              "anchor": "L_As",
+              "before_cosine": -0.002861795012042319,
+              "after_cosine": -4.2607441020128717e-10
+            },
+            {
+              "group": "cls_head",
+              "anchor": "L_As",
+              "before_cosine": -0.014549595586776976,
+              "after_cosine": 1.4915274379772366e-09
+            },
+            {
+              "group": "other",
+              "anchor": "L_As",
+              "before_cosine": -0.03629041440521828,
+              "after_cosine": 3.290201274610742e-10
+            }
+          ],
+          "extra_autograd_calls": 0,
+          "extra_model_forward_calls": 0,
+          "extra_teacher_forward_calls": 0,
+          "projection_interpretation": "Counterfactual parameter gradients only;complete original L unchanged,only U projected onto fullL/nonphysicalL/physicalL halfspaces then cap2.None of these gradients is applied to a model."
+        },
+        "original_full_gradient_bridge_matches": true,
+        "all_six_U_logits_reused": true,
+        "L_pair_calls": 4,
+        "U_logits_captured": 6,
+        "raw_accepted": 239
+      },
+      "parameter_updates": 0,
+      "parameter_grad_writes": 0,
+      "disposable_train_mode_changed_buffer_names": [],
+      "discarded_model_and_buffers": true,
+      "U_truth_reads": 0,
+      "V_reads": 0,
+      "target_reads": 0
+    },
+    {
+      "model_seed": 2026092703,
+      "source_run_id": "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01",
+      "source_row_id": "F21-s2026092703",
+      "source_epoch": 20,
+      "L_samples": 128,
+      "U_samples": 256,
+      "L_packet_views": 768,
+      "U_student_packet_views": 1536,
+      "U_teacher_raw_packet_views": 256,
+      "source_Practical_generated": 192,
+      "real_checkpoint_smoke_L_packets": 2,
+      "actual_autograd_calls": 9,
+      "source_branch_facts": {
+        "groups": {
+          "t2": {
+            "norms": {
+              "L_clean": 0.10845886992670715,
+              "L_As": 0.06969951847335111,
+              "L_aux": 0.038790443311669295,
+              "U_clean": 0.4824973939825195,
+              "U_As": 0.3349077149696744,
+              "U_aux": 0.174711268151113,
+              "L_full": 0.13659435614235788,
+              "U_full": 0.6485249018984136,
+              "applied_U": 0.136594354522148
+            },
+            "anchors": {
+              "L_full": {
+                "before": {
+                  "left_norm": 0.13659435614235788,
+                  "right_norm": 0.6485249018984136,
+                  "dot": 0.022046532354045287,
+                  "cosine": 0.24887477362226923
+                },
+                "after": {
+                  "left_norm": 0.13659435614235788,
+                  "right_norm": 0.136594354522148,
+                  "dot": 0.0046435099829350715,
+                  "cosine": 0.2488747736053111
+                }
+              },
+              "L_clean": {
+                "before": {
+                  "left_norm": 0.10845886992670715,
+                  "right_norm": 0.6485249018984136,
+                  "dot": 0.024556180822579373,
+                  "cosine": 0.3491154678229442
+                },
+                "after": {
+                  "left_norm": 0.10845886992670715,
+                  "right_norm": 0.136594354522148,
+                  "dot": 0.005172100042531831,
+                  "cosine": 0.3491154682082929
+                }
+              },
+              "L_As": {
+                "before": {
+                  "left_norm": 0.06969951847335111,
+                  "right_norm": 0.6485249018984136,
+                  "dot": -0.0034679517776640225,
+                  "cosine": -0.07672141701931513
+                },
+                "after": {
+                  "left_norm": 0.06969951847335111,
+                  "right_norm": 0.136594354522148,
+                  "dot": -0.0007304309139375204,
+                  "cosine": -0.0767214173790221
+                }
+              },
+              "L_aux": {
+                "before": {
+                  "left_norm": 0.038790443311669295,
+                  "right_norm": 0.6485249018984136,
+                  "dot": 0.0009583031093453095,
+                  "cosine": 0.03809355443312369
+                },
+                "after": {
+                  "left_norm": 0.038790443311669295,
+                  "right_norm": 0.136594354522148,
+                  "dot": 0.00020184081226149578,
+                  "cosine": 0.038093553942295126
+                }
+              }
+            },
+            "original_cap1_guard": {
+              "L_norm": 0.13659435614235788,
+              "U_norm": 0.6485249018984136,
+              "applied_U_norm": 0.13659435614235788,
+              "dot_before": 0.022046532354045287,
+              "dot_after": 0.00464350997280104,
+              "conflict": false,
+              "capped": true,
+              "tiny_L": false
+            },
+            "L_clean_vs_L_As": {
+              "left_norm": 0.10845886992670715,
+              "right_norm": 0.06969951847335111,
+              "dot": 0.0003931696381776988,
+              "cosine": 0.052009792374519505
+            },
+            "U_clean_vs_U_As": {
+              "left_norm": 0.4824973939825195,
+              "right_norm": 0.3349077149696744,
+              "dot": 0.021878871118898493,
+              "cosine": 0.1353956731786675
+            },
+            "L_clean_vs_U_clean": {
+              "left_norm": 0.10845886992670715,
+              "right_norm": 0.4824973939825195,
+              "dot": 0.018143598878728268,
+              "cosine": 0.3467076216360059
+            },
+            "L_As_vs_U_As": {
+              "left_norm": 0.06969951847335111,
+              "right_norm": 0.3349077149696744,
+              "dot": 0.000800065160009613,
+              "cosine": 0.0342744448366509
+            }
+          },
+          "cls_head": {
+            "norms": {
+              "L_clean": 0.29907391742003653,
+              "L_As": 0.3778522371403111,
+              "L_aux": 0.0,
+              "U_clean": 0.5786485674371554,
+              "U_As": 1.2792358660479222,
+              "U_aux": 0.03436726124109221,
+              "L_full": 0.5912960057370384,
+              "U_full": 1.5237136061809047,
+              "applied_U": 0.5912960065044015
+            },
+            "anchors": {
+              "L_full": {
+                "before": {
+                  "left_norm": 0.5912960057370384,
+                  "right_norm": 1.5237136061809047,
+                  "dot": -0.1580814062427376,
+                  "cosine": -0.17545772729995376
+                },
+                "after": {
+                  "left_norm": 0.5912960057370384,
+                  "right_norm": 0.5912960065044015,
+                  "dot": 2.3939226662464137e-09,
+                  "cosine": 6.846998387428084e-09
+                }
+              },
+              "L_clean": {
+                "before": {
+                  "left_norm": 0.29907391742003653,
+                  "right_norm": 1.5237136061809047,
+                  "dot": -0.09167019036799692,
+                  "cosine": -0.2011621405298474
+                },
+                "after": {
+                  "left_norm": 0.29907391742003653,
+                  "right_norm": 0.5912960065044015,
+                  "dot": -0.009730300600336129,
+                  "cosine": -0.055022810769967165
+                }
+              },
+              "L_As": {
+                "before": {
+                  "left_norm": 0.3778522371403111,
+                  "right_norm": 1.5237136061809047,
+                  "dot": -0.06641123273276515,
+                  "cosine": -0.11534962798404706
+                },
+                "after": {
+                  "left_norm": 0.3778522371403111,
+                  "right_norm": 0.5912960065044015,
+                  "dot": 0.009730298877900636,
+                  "cosine": 0.043551110815155204
+                }
+              },
+              "L_aux": {
+                "before": {
+                  "left_norm": 0.0,
+                  "right_norm": 1.5237136061809047,
+                  "dot": 0.0,
+                  "cosine": null
+                },
+                "after": {
+                  "left_norm": 0.0,
+                  "right_norm": 0.5912960065044015,
+                  "dot": 0.0,
+                  "cosine": null
+                }
+              }
+            },
+            "original_cap1_guard": {
+              "L_norm": 0.5912960057370384,
+              "U_norm": 1.5237136061809047,
+              "applied_U_norm": 0.5912960057370384,
+              "dot_before": -0.1580814062427376,
+              "dot_after": -8.046846185937777e-10,
+              "conflict": true,
+              "capped": true,
+              "tiny_L": false
+            },
+            "L_clean_vs_L_As": {
+              "left_norm": 0.29907391742003653,
+              "right_norm": 0.3778522371403111,
+              "dot": 0.05870673679224326,
+              "cosine": 0.5195022149982762
+            },
+            "U_clean_vs_U_As": {
+              "left_norm": 0.5786485674371554,
+              "right_norm": 1.2792358660479222,
+              "dot": 0.17269526283778738,
+              "cosine": 0.23330009474625418
+            },
+            "L_clean_vs_U_clean": {
+              "left_norm": 0.29907391742003653,
+              "right_norm": 0.5786485674371554,
+              "dot": 0.03916086026548404,
+              "cosine": 0.2262865816740766
+            },
+            "L_As_vs_U_As": {
+              "left_norm": 0.3778522371403111,
+              "right_norm": 1.2792358660479222,
+              "dot": -0.08566888013849694,
+              "cosine": -0.17723539794503151
+            }
+          },
+          "other": {
+            "norms": {
+              "L_clean": 0.7344612545278804,
+              "L_As": 0.48242634949786267,
+              "L_aux": 0.12328184449371582,
+              "U_clean": 2.1493180785446735,
+              "U_As": 1.852319892522849,
+              "U_aux": 0.6495591665292526,
+              "L_full": 1.045456912553482,
+              "U_full": 3.447503184469515,
+              "applied_U": 1.045456933068701
+            },
+            "anchors": {
+              "L_full": {
+                "before": {
+                  "left_norm": 1.045456912553482,
+                  "right_norm": 3.447503184469515,
+                  "dot": 0.8939033975372874,
+                  "cosine": 0.24801604254400408
+                },
+                "after": {
+                  "left_norm": 1.045456912553482,
+                  "right_norm": 1.045456933068701,
+                  "dot": 0.2710766181370608,
+                  "cosine": 0.24801604249456727
+                }
+              },
+              "L_clean": {
+                "before": {
+                  "left_norm": 0.7344612545278804,
+                  "right_norm": 3.447503184469515,
+                  "dot": 0.8544808783106131,
+                  "cosine": 0.3374650353063692
+                },
+                "after": {
+                  "left_norm": 0.7344612545278804,
+                  "right_norm": 1.045456933068701,
+                  "dot": 0.2591217206575983,
+                  "cosine": 0.3374650348257883
+                }
+              },
+              "L_As": {
+                "before": {
+                  "left_norm": 0.48242634949786267,
+                  "right_norm": 3.447503184469515,
+                  "dot": 0.011810105882452472,
+                  "cosine": 0.007100976818493911
+                },
+                "after": {
+                  "left_norm": 0.48242634949786267,
+                  "right_norm": 1.045456933068701,
+                  "dot": 0.0035814202359196394,
+                  "cosine": 0.007100977159638247
+                }
+              },
+              "L_aux": {
+                "before": {
+                  "left_norm": 0.12328184449371582,
+                  "right_norm": 3.447503184469515,
+                  "dot": 0.02761241301061375,
+                  "cosine": 0.06496815912420503
+                },
+                "after": {
+                  "left_norm": 0.12328184449371582,
+                  "right_norm": 1.045456933068701,
+                  "dot": 0.008373477142375789,
+                  "cosine": 0.06496816023310112
+                }
+              }
+            },
+            "original_cap1_guard": {
+              "L_norm": 1.045456912553482,
+              "U_norm": 3.447503184469515,
+              "applied_U_norm": 1.045456912553482,
+              "dot_before": 0.8939033975372874,
+              "dot_after": 0.27107661836068364,
+              "conflict": false,
+              "capped": true,
+              "tiny_L": false
+            },
+            "L_clean_vs_L_As": {
+              "left_norm": 0.7344612545278804,
+              "right_norm": 0.48242634949786267,
+              "dot": 0.15496000239461802,
+              "cosine": 0.4373405068267491
+            },
+            "U_clean_vs_U_As": {
+              "left_norm": 2.1493180785446735,
+              "right_norm": 1.852319892522849,
+              "dot": 1.443631118296429,
+              "cosine": 0.3626098127202486
+            },
+            "L_clean_vs_U_clean": {
+              "left_norm": 0.7344612545278804,
+              "right_norm": 2.1493180785446735,
+              "dot": 0.6105339825512701,
+              "cosine": 0.3867588499220064
+            },
+            "L_As_vs_U_As": {
+              "left_norm": 0.48242634949786267,
+              "right_norm": 1.852319892522849,
+              "dot": 0.0057835201820817,
+              "cosine": 0.006472100378374789
+            }
+          }
+        },
+        "losses": {
+          "L_clean": 0.1439451277256012,
+          "L_As": 0.20665216445922852,
+          "L_aux": 0.14478495717048645,
+          "U_clean": 0.46582433581352234,
+          "U_As": 0.7536916136741638,
+          "U_aux": 0.6635467410087585
+        },
+        "component_sum_closure": {
+          "L": {
+            "max_absolute_error": 3.5390257835388184e-08,
+            "groups": {
+              "t2": {
+                "L2_error": 2.9212458961913588e-08,
+                "reference_L2_norm": 0.13659435614235788,
+                "relative_L2_error": 2.138628548566716e-07
+              },
+              "cls_head": {
+                "L2_error": 8.490157895014808e-08,
+                "reference_L2_norm": 0.5912960057370384,
+                "relative_L2_error": 1.4358557833368077e-07
+              },
+              "other": {
+                "L2_error": 5.811018364184987e-07,
+                "reference_L2_norm": 1.045456912553482,
+                "relative_L2_error": 5.558352806709014e-07
+              }
+            },
+            "criterion": "torch.testing.assert_close dtype defaults and group L2error<=0.001*referenceL2+1e-8"
+          },
+          "U": {
+            "max_absolute_error": 1.8189884940511547e-06,
+            "groups": {
+              "t2": {
+                "L2_error": 1.358970227424163e-07,
+                "reference_L2_norm": 0.6485249018984136,
+                "relative_L2_error": 2.0954788681916104e-07
+              },
+              "cls_head": {
+                "L2_error": 2.749625571834501e-07,
+                "reference_L2_norm": 1.5237136061809047,
+                "relative_L2_error": 1.804555370957322e-07
+              },
+              "other": {
+                "L2_error": 3.2695824403898277e-06,
+                "reference_L2_norm": 3.447503184469515,
+                "relative_L2_error": 9.483914199467042e-07
+              }
+            },
+            "criterion": "torch.testing.assert_close dtype defaults and group L2error<=0.001*referenceL2+1e-8"
+          }
+        },
+        "component_autograd_calls": 6,
+        "projection": "existing full-L cap1;diagnostic only",
+        "measured_stage": "Parameter gradients before native globalclip5/AdamW/decay",
+        "branch_anchor_counterfactual": {
+          "kind": "fixed_original_E20_source_branch_anchor_counterfactual_v1",
+          "native_full_L_cap2_details": {
+            "t2": {
+              "L_norm": 0.13659435614235788,
+              "U_norm": 0.6485249018984136,
+              "applied_U_norm": 0.27318871228471575,
+              "dot_before": 0.022046532354045287,
+              "dot_after": 0.00928701994560208,
+              "conflict": false,
+              "capped": true,
+              "tiny_L": false
+            },
+            "cls_head": {
+              "L_norm": 0.5912960057370384,
+              "U_norm": 1.5237136061809047,
+              "applied_U_norm": 1.1825920114740769,
+              "dot_before": -0.1580814062427376,
+              "dot_after": -1.6093692371875554e-09,
+              "conflict": true,
+              "capped": true,
+              "tiny_L": false
+            },
+            "other": {
+              "L_norm": 1.045456912553482,
+              "U_norm": 3.447503184469515,
+              "applied_U_norm": 2.090913825106964,
+              "dot_before": 0.8939033975372874,
+              "dot_after": 0.5421532367213673,
+              "conflict": false,
+              "capped": true,
+              "tiny_L": false
+            }
+          },
+          "native_full_L_cap2_component_relations": {
+            "t2": {
+              "L_full": {
+                "left_norm": 0.13659435614235788,
+                "right_norm": 0.2731887093289852,
+                "dot": 0.009287019918069865,
+                "cosine": 0.2488747720650013
+              },
+              "L_clean": {
+                "left_norm": 0.10845886992670715,
+                "right_norm": 0.2731887093289852,
+                "dot": 0.010344200032947514,
+                "cosine": 0.34911546608556715
+              },
+              "L_As": {
+                "left_norm": 0.06969951847335111,
+                "right_norm": 0.2731887093289852,
+                "dot": -0.0014608618441127625,
+                "cosine": -0.0767214181518422
+              }
+            },
+            "cls_head": {
+              "L_full": {
+                "left_norm": 0.5912960057370384,
+                "right_norm": 1.1825920079268173,
+                "dot": -1.7768221610562403e-09,
+                "cosine": -2.54099656085698e-09
+              },
+              "L_clean": {
+                "left_norm": 0.29907391742003653,
+                "right_norm": 1.1825920079268173,
+                "dot": -0.019460602838667896,
+                "cosine": -0.055022815637679294
+              },
+              "L_As": {
+                "left_norm": 0.3778522371403111,
+                "right_norm": 1.1825920079268173,
+                "dot": 0.019460592829128553,
+                "cosine": 0.043551099976847155
+              }
+            },
+            "other": {
+              "L_full": {
+                "left_norm": 1.045456912553482,
+                "right_norm": 2.0909138679101433,
+                "dot": 0.5421532376275177,
+                "cosine": 0.24801604290342275
+              },
+              "L_clean": {
+                "left_norm": 0.7344612545278804,
+                "right_norm": 2.0909138679101433,
+                "dot": 0.5182434429526405,
+                "cosine": 0.3374650356059308
+              },
+              "L_As": {
+                "left_norm": 0.48242634949786267,
+                "right_norm": 2.0909138679101433,
+                "dot": 0.007162840335984588,
+                "cosine": 0.007100977018936466
+              }
+            }
+          },
+          "simultaneous_three_anchor_cap2_details": {
+            "t2": {
+              "L_norm": 0.13659435614235788,
+              "U_norm": 0.6485249018984136,
+              "applied_U_norm": 0.273188712150736,
+              "dot_before": 0.022046532354045287,
+              "dot_after": 0.010882795682229163,
+              "conflict": false,
+              "capped": true,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": 0.24887477362226923,
+                "L_clean": 0.3491154678229442,
+                "L_As": -0.07672141701931513
+              },
+              "anchor_cosines_after": {
+                "L_full": 0.2916385762885501,
+                "L_clean": 0.3541495643546096,
+                "L_As": 7.243864248974342e-11
+              },
+              "constraint_dots_after": {
+                "L_full": 0.010882795682229163,
+                "L_clean": 0.010493359157587142,
+                "L_As": 1.379313006652093e-12
+              },
+              "active_set": [
+                "L_As"
+              ],
+              "cone_correction_norm": 0.04975574944595861,
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            },
+            "cls_head": {
+              "L_norm": 0.5912960057370384,
+              "U_norm": 1.5237136061809047,
+              "applied_U_norm": 1.1825920100860061,
+              "dot_before": -0.1580814062427376,
+              "dot_after": 8.723302133835072e-09,
+              "conflict": true,
+              "capped": true,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": -0.17545772729995376,
+                "L_clean": -0.2011621405298474,
+                "L_As": -0.11534962798404706
+              },
+              "anchor_cosines_after": {
+                "L_full": 1.2475013632058689e-08,
+                "L_clean": -4.325799803717251e-09,
+                "L_As": 2.4662427547558634e-09
+              },
+              "constraint_dots_after": {
+                "L_full": 8.723302133835072e-09,
+                "L_clean": -1.5299593653615717e-09,
+                "L_As": 1.1020283341003152e-09
+              },
+              "active_set": [
+                "L_clean",
+                "L_As"
+              ],
+              "cone_correction_norm": 0.30712302459990193,
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            },
+            "other": {
+              "L_norm": 1.045456912553482,
+              "U_norm": 3.447503184469515,
+              "applied_U_norm": 2.09091382562811,
+              "dot_before": 0.8939033975372874,
+              "dot_after": 0.5421532259754026,
+              "conflict": false,
+              "capped": true,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": 0.2480160425440041,
+                "L_clean": 0.3374650353063692,
+                "L_As": 0.007100976818493911
+              },
+              "anchor_cosines_after": {
+                "L_full": 0.24801604258831958,
+                "L_clean": 0.33746503538670586,
+                "L_As": 0.007100976799331229
+              },
+              "constraint_dots_after": {
+                "L_full": 0.5421532259754026,
+                "L_clean": 0.5182434321361648,
+                "L_As": 0.0071628399696206735
+              },
+              "active_set": [],
+              "cone_correction_norm": 0.0,
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            }
+          },
+          "whole_native_applied_U_norm": 2.4176593147392627,
+          "whole_three_anchor_applied_U_norm": 2.417659314495865,
+          "whole_U_norm_retention_vs_native_cap2": 0.9999999998993251,
+          "removed_material_component_conflicts": [
+            {
+              "group": "t2",
+              "anchor": "L_As",
+              "before_cosine": -0.0767214181518422,
+              "after_cosine": 7.243864248974342e-11
+            },
+            {
+              "group": "cls_head",
+              "anchor": "L_clean",
+              "before_cosine": -0.055022815637679294,
+              "after_cosine": -4.325799803717251e-09
+            }
+          ],
+          "extra_autograd_calls": 0,
+          "extra_model_forward_calls": 0,
+          "extra_teacher_forward_calls": 0,
+          "projection_interpretation": "Counterfactual parameter gradients only;complete original L unchanged,only U projected onto fullL/nonphysicalL/physicalL halfspaces then cap2.None of these gradients is applied to a model."
+        },
+        "original_full_gradient_bridge_matches": true,
+        "all_six_U_logits_reused": true,
+        "L_pair_calls": 4,
+        "U_logits_captured": 6,
+        "raw_accepted": 238
+      },
+      "parameter_updates": 0,
+      "parameter_grad_writes": 0,
+      "disposable_train_mode_changed_buffer_names": [],
+      "discarded_model_and_buffers": true,
+      "U_truth_reads": 0,
+      "V_reads": 0,
+      "target_reads": 0
+    }
+  ],
+  "source_epoch": 20,
+  "steps_per_seed": 1,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "source_packet_views": 7686,
+  "GPU_workers": 0,
+  "CPU_threads": 2,
+  "actual_autograd_calls": 27,
+  "optimizer_steps": 0,
+  "parameter_updates": 0,
+  "parameter_grad_writes": 0,
+  "persisted_buffer_updates": 0,
+  "U_truth_reads": 0,
+  "V_reads": 0,
+  "V_gradients": 0,
+  "target_reads": 0,
+  "G_training_reads": 0,
+  "new_training": false,
+  "active_jobs_changed": false,
+  "NONBLOCKING": true,
+  "goal_complete": false,
+  "interpretation": "One original-E20 source L/U step per seed on disposable CPU train-mode copies;not a complete trajectory or optimizer update. Full-L protection need not protect each component. Norms of overlapping component gradients are not additive shares. No scientific promotion threshold or automatic new candidate.",
+  "kind": "fixed_original_E20_source_branch_anchor_counterfactual_v1",
+  "source_rules": {
+    "minimum_whole_applied_U_norm_retention_vs_native_cap2": 0.5,
+    "minimum_removed_material_component_conflicts": 1,
+    "material_cosine_threshold": -1e-06,
+    "require_all_three_exact_source_seed_steps": true,
+    "parameter_updates": 0,
+    "U_truth_reads": 0,
+    "V_reads": 0,
+    "target_reads": 0
+  },
+  "source_rule_pass": true,
+  "minimum_whole_U_norm_retention_vs_native_cap2": 0.997441885626718,
+  "removed_material_component_conflicts": 9,
+  "counterfactual_extra_autograd_calls": 0,
+  "scientific_status": "SOURCE_COUNTERFACTUAL_PASSED",
+  "actual_native_guard": "Existing cap1 recipe,bitwise bridge verified;cap2 and three-anchor cap2 are algebraic comparisons on these same derivatives",
+  "future_training": "No automatic launch.This source result can support a separately fixed candidate,independent review,real-checkpoint smoke and original-E20 training;not an optimizer or target result."
+}
