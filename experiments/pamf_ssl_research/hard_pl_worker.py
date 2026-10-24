@@ -7,7 +7,7 @@ from pathlib import Path
 from experiments.cric_dura_comparison.io import read,write
 
 
-def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents_fn=None,parent_epoch=30):
+def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents_fn=None,parent_epoch=30,optimizer_probe=None):
     from experiments.cric_dura_comparison.bootstrap import activate,numerical_policy
     activate(rt);numerical_policy()
     import torch
@@ -179,6 +179,7 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
                     or not obj.smoke_ras_eval_norm_unchanged or not obj.smoke_ras_training_restored
                     or sum(model._cd_practical.coverage.values())!=192):
                     raise ValueError('Actual As eligibility/exactraw fallback,teacher eval mode or added forward cost differs')
+            optimizer_evidence=optimizer_probe(model,obj,c) if optimizer_probe is not None else None
             checked.append(dict(method=row['method'],model_seed=c['model_seed'],parent_epoch=parent_epoch,parent_updates=parent_epoch*222,L_forward_packets=768,
                 U_seen=256,U_accepted=state['accepted'],student_U_views=state['student_views'],
                 physical_U_generated=state['physical_seen'],physical_student_views=state['physical_student_views'],
@@ -188,6 +189,7 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
                 ordinary_raw_RDrop=mechanisms,As_KL_weight=0,weight=c['hard_pl']['weight'],threshold=.95,
                 EMA_updates=0,finite_backward=True,default_head_gradient=True,feature_hooks_removed=True))
             checked[-1]['U_label_smoothing']=smoothing
+            if optimizer_evidence is not None:checked[-1]['U_parameter_step_guard']=optimizer_evidence
             if c.get('hard_pl_mixstyle'):checked[-1]['U_style']=state['U_style']
             if c.get('hard_pl_gradient_guard'):
                 checked[-1].update(U_gradient_guard=state['U_gradient_guard'],gradient_guard_details=obj.smoke_guard_details,

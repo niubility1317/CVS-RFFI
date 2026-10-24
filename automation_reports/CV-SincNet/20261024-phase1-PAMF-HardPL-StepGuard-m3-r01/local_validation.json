@@ -1,0 +1,24 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "checks": [
+    {
+      "evidence": "hard_pl_step_guard_focused_tests.xml",
+      "tests": 28
+    },
+    {
+      "evidence": "hard_pl_step_guard_related_tests.xml",
+      "tests": 59
+    }
+  ],
+  "total_checks": 87,
+  "real_checkpoint_smoke": "PENDING_FIRST_GPU_ACTION",
+  "independent_review": {
+    "status": "PASS",
+    "reviewer": "/root/ssl_p0p1_review",
+    "review_count": 1,
+    "targeted_re_review_count": 0,
+    "unresolved_P0_P1_findings": [],
+    "actual_reviewer_response": "PASS，未发现本次范围内的 P0/P1。已核对参考副本与物理衰减时序、单次真实更新、FP32 posthook 和恢复边界、两段累计、调度及独立评分串接。未修改文件或启动实验。",
+    "scope": "Only direct defects making the next real training wrong,unauthorized,destructive,unlaunchable or unable to produce legal predictions."
+  }
+}

@@ -33,7 +33,7 @@ def validate(c):
     method=c.get('hard_pl',{}).get('method');seed=c.get('model_seed')
     forbidden=('truth','target_truth','target_inputs','views_root','tests','dataset_path','checkpoint',
         'teacher_checkpoint','ssl','view_anchor','paired_u','u_cric','u_mixstyle','u_gradprotect',
-        'u_cmr','u_dualanchor','u_viewbalance','core_mechanisms','supervised_architecture','hard_pl_no_uas','hard_pl_label_smoothing','hard_pl_mixstyle','hard_pl_shared_style_plan','hard_pl_parent_epoch','hard_pl_continuation_epochs','hard_pl_gradient_guard','hard_pl_joint_contrast','hard_pl_complement','hard_pl_path','hard_pl_reliable_as','hard_pl_receiver_extrapolation','hard_pl_native_as','hard_pl_balanced_ce','hard_pl_native_cap2','hard_pl_branch_guard')
+        'u_cmr','u_dualanchor','u_viewbalance','core_mechanisms','supervised_architecture','hard_pl_no_uas','hard_pl_label_smoothing','hard_pl_mixstyle','hard_pl_shared_style_plan','hard_pl_parent_epoch','hard_pl_continuation_epochs','hard_pl_gradient_guard','hard_pl_joint_contrast','hard_pl_complement','hard_pl_path','hard_pl_reliable_as','hard_pl_receiver_extrapolation','hard_pl_native_as','hard_pl_balanced_ce','hard_pl_native_cap2','hard_pl_branch_guard','hard_pl_step_guard')
     if (any(c.get(k) for k in forbidden) or method not in METHODS or seed not in SEEDS
         or c.get('hard_pl')!=dict(RECIPE,method=method) or c.get('run_id')!=RUN
         or c.get('row_id')!=method+'-s'+str(seed) or c.get('algorithm_id')!='pamf_'+method.lower()+'_v1'

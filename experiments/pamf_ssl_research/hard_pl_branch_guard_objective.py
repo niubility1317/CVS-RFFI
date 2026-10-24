@@ -6,12 +6,13 @@ from .labeled_branch_capture import capture,components,labeled_context_active
 from .u_gradprotect_objective import _ExplicitGradient
 
 
-def protected_branch_loss(labeled,unlabeled,named,clean,physical):
+def protected_branch_loss(labeled,unlabeled,named,clean,physical,*,capture_anchors=None):
     parameters=tuple(p for _,p in named)
     gl=torch.autograd.grad(labeled,parameters,retain_graph=True,allow_unused=True)
     gu=torch.autograd.grad(unlabeled,parameters,retain_graph=True,allow_unused=True)
     gc=torch.autograd.grad(clean,parameters,retain_graph=True,allow_unused=True)
     ga=torch.autograd.grad(physical,parameters,retain_graph=True,allow_unused=True)
+    if capture_anchors is not None:capture_anchors(named,gl,gc,ga)
     gradients,details=branch_projected_gradients(named,gl,gu,gc,ga,max_u_ratio=2.)
     value=_ExplicitGradient.apply((labeled+unlabeled).detach(),gradients,*parameters)
     return value,details,gradients
@@ -29,7 +30,8 @@ class BranchGuardedNativeAs(GuardedNativeAs):
         if self.pending_gradient_loss is None:raise ValueError('Current hidden-label native U loss required')
         unlabeled,self.pending_gradient_loss=self.pending_gradient_loss,None
         named=[(n,p) for n,p in student.named_parameters() if p.requires_grad]
-        value,details,gradients=protected_branch_loss(labeled,unlabeled,named,clean,physical)
+        value,details,gradients=protected_branch_loss(labeled,unlabeled,named,clean,physical,
+            capture_anchors=getattr(self,'capture_step_anchors',None))
         self.branch_calls+=1;self.guard_calls+=1
         self.metrics.update(HPL_GP_calls=self.guard_calls,HPL_GP_U_to_L_norm_cap=2.,
             HPL_BG_calls=self.branch_calls,HPL_BG_gradient_calls=4*self.branch_calls,

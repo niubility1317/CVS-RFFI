@@ -41,6 +41,8 @@ def aggregate(states,parents,*,weight=2.):
         raise ValueError('Matching native As policy and fixed weight6 across native segments required')
     if any(('U_branch_guard' in s)!=('U_branch_guard' in states[0]) for s in states):
         raise ValueError('Matching source branch policy across both native segments required')
+    if any(('U_parameter_step_guard' in s)!=('U_parameter_step_guard' in states[0]) for s in states):
+        raise ValueError('Matching actual parameter step policy across native segments required')
     balanced='U_balanced_CE' in states[0]
     if (balanced and not native_as or any(('U_balanced_CE' in s)!=balanced for s in states)):
         raise ValueError('Matching nativeAs bounded CE policy across native segments required')
@@ -100,6 +102,19 @@ def aggregate(states,parents,*,weight=2.):
         branch['anchor_conflicts']={group:{anchor:sum(v['anchor_conflicts'][group][anchor] for v in values)
             for anchor in branch['anchor_conflicts'][group]} for group in branch['anchor_conflicts']}
         actual['U_branch_guard']=branch;actual['hard_PL_tail']['U_branch_guard']=branch
+    if 'U_parameter_step_guard' in states[0]:
+        from .hard_pl_step_guard import STEP_GUARD
+        values=[s['U_parameter_step_guard'] for s in states];step=dict(values[0])
+        if any(v['recipe']!=STEP_GUARD or v['calls']!=s['calls'] or v['anchor_captures']!=s['calls']
+            or v['reference_optimizer_steps']!=s['calls'] or v['reference_physical_clip_calls']!=s['calls']
+            or v['pending_anchors'] or not v['copied_existing_moments'] or not v['live_joint_optimizer_state_retained']
+            or not v['reference_has_no_model_forward'] or v['extra_autograd_calls'] or v['extra_model_forwards']
+            or v['U_truth_reads'] or v['target_reads'] or v['new_head'] or v['new_inference_parameters'] for s,v in zip(states,values)):
+            raise ValueError('Every real source step must consume one current-moment L reference and actual FP32 projection')
+        for key in ('calls','anchor_captures','reference_optimizer_steps','reference_physical_clip_calls','fallback_groups','removed_material_conflicts','seconds'):
+            step[key]=sum(v[key] for v in values)
+        step['minimum_whole_increment_retention']=min(v['minimum_whole_increment_retention'] for v in values)
+        actual['U_parameter_step_guard']=step;actual['hard_PL_tail']['U_parameter_step_guard']=step
     if 'U_complement' in states[0]:
         values=[s['U_complement'] for s in states];complement=dict(values[0])
         if any(v['recipe']!=complement['recipe'] or v['calls']!=s['calls'] or v['extra_head_calls']!=2*s['calls']
