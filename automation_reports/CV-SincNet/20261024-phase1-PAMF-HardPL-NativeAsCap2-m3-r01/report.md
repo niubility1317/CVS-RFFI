@@ -28,3 +28,6 @@ GPU5/6/7 固定对应三个 seed，每卡最多两个本任务，计外部 compu
 
 
 原 E20 分支诊断完成：三种子各 1 个 L128/U256 源步，原完整 L/U 梯度重新投影与原 guard 逐参数完全一致；分支求和误差另行核查并完整报告。最终成功尝试 CPU2 耗时 42.975487 s、7686 源视图、27 次 autograd，参数与 .grad 均无写入，影子缓冲变化已丢弃，无 V/U 真值/目标/G 训练访问。两次旧失败保持独立负技术记录；详见 source_branch_gradients.md 与 summary JSON。单步源域方向不能当作完整训练轨迹或目标性能因果解释，不修改当前候选及训练。
+
+
+真实原 E20 检查及首批启动已独立核实：VERIFIED，执行 commit `a2a03f6ccf166b8abba34ca1f7862caa03277ba0`，检查 seed 2026092702，L768/U1536/rawteacher256/As128/物理学生256/Practical192，完整 L 显式梯度、joint 签名梯度和临时 hook 清除通过。探针丢弃，正式重新加载原 E20。目前实际 1 个正式 GPU worker 已有正源步骤，并核实 PID/CWD/命令/GPU/日志增长；其余仍排队。完整事实见 first_source_start.json；首个启动不能当作三种子全部启动或测试成功。
