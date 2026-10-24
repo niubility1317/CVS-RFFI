@@ -1,0 +1,101 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "run_id": "20261024-phase1-PAMF-HardPL-NativeAsCap2-m3-r01",
+  "method": "HPL_E20_AS_CAP2",
+  "registered_utc": "2026-10-24T03:20:16.662965+00:00",
+  "source_design_commit": "28431a316ed7cc4691034cc2feb9e4e4abe200a2",
+  "source_math_commit": "44d38cc9a72021d5e6395a213729555873354165",
+  "hypothesis": "Keep the complete fixed NativeAs losses and raw accepted set; only raise the per-group applied U/L norm cap from one to two while preserving the full L anchor and negative-dot projection.",
+  "source_recipe": {
+    "U_to_L_norm_cap": 2.0,
+    "anchor": "complete_current_L_objective",
+    "projection": "one_sided_per_group",
+    "groups": [
+      "t2",
+      "cls_head",
+      "other"
+    ],
+    "tiny_L_squared_norm": 1e-12,
+    "raw_gate": 0.95,
+    "U_weight": 6.0,
+    "native_As_policy_unchanged": true,
+    "loss_coefficients_unchanged": true,
+    "extra_autograd_passes": 0,
+    "extra_teacher_or_student_forward": 0,
+    "new_head": false
+  },
+  "source_rule": "Everyseed:old t2 capfraction>=0.50;mean appliedU/L in t2 increases>=15%;wholeparam mean appliedU/L increases>=10%;calculated combinednorm>5 frequency increases<=5percentagepoints;original completeV .95 acceptedaccuracy>=99.5%.All input/counter/projection checks must hold.If anyfail:no newcap2 training candidate,no alternate cap or rule tuning.",
+  "source_rule_pass": true,
+  "source_arithmetic": {
+    "records": 19980,
+    "CPU_threads": 1,
+    "seconds": 65.67604167200625,
+    "new_model_or_IQ_forwards": 0
+  },
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "original_parent_epoch": 20,
+  "native_incremental_epochs": [
+    10,
+    20
+  ],
+  "final_epoch": 50,
+  "final_updates": 11100,
+  "raw_gate": 0.95,
+  "U_weight": 6,
+  "U_to_L_norm_cap": 2.0,
+  "CE_dose_normalizer": 1.25,
+  "new_student_U_views": 10206000,
+  "cumulative_student_U_views": 10602900,
+  "cumulative_teacher": 2097900,
+  "native_As_generated": 850500,
+  "student_physical_views": 1701000,
+  "raw_fallback": 0,
+  "extra_As_teacher": 0,
+  "extra_student_backbone": 0,
+  "extra_head_forward": 0,
+  "extra_autograd_passes": 0,
+  "new_head": false,
+  "new_inference_parameters": 0,
+  "fixed_reference": {
+    "run": "20261024-phase1-PAMF-HardPL-NativeAs-m3-r01",
+    "method": "HPL_E20_JOINT_AS6G"
+  },
+  "primary_controls": [
+    "F20",
+    "F21"
+  ],
+  "readouts": [
+    "raw",
+    "DURA-LU"
+  ],
+  "views": 7,
+  "samples_per_view": 168000,
+  "target_cells": 42,
+  "historical_exposure": "Earlier complete targets through ReliableAs/PathReliableAs are known.This source plan uses existing fullsource gradient/precision facts,not target-based recipe/parent/seed/checkpoint selection.No independentblind claim.RXE/NativeAs/BalancedCE target scores not read.",
+  "U_actual_accuracy": "UNKNOWN",
+  "current_gradient_arithmetic_not_new_training": true,
+  "calculated_gt5_frequency_not_measured_clipping": true,
+  "source_V_state_updates": 0,
+  "U_truth_reads": 0,
+  "target_training_reads": 0,
+  "G_training_reads": 0,
+  "focused_checks": [
+    {
+      "evidence": "hard_pl_native_cap2_focused_tests.xml",
+      "tests": 29
+    },
+    {
+      "evidence": "hard_pl_native_cap2_related_tests.xml",
+      "tests": 119
+    }
+  ],
+  "total_focused_checks": 148,
+  "one_independent_P0P1_review": "PASS",
+  "real_E20_smoke": "PENDING_FIRST_MATCHING_RELEASED_NATIVE_AS_CARD",
+  "training_launched": false,
+  "goal_complete": false
+}

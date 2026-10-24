@@ -1,0 +1,77 @@
+{
+  "status": "SOURCE_SUPPORTED_NOT_IMPLEMENTED_NOT_LAUNCHED",
+  "intended_run_id": "20261024-phase1-PAMF-HardPL-NativeAsCap2-m3-r01",
+  "intended_method": "HPL_E20_AS_CAP2",
+  "source_evidence": "source_cap_counterfactual_summary.json",
+  "source_plan": "source_cap_counterfactual_plan.json",
+  "source_analysis_commit": "44d38cc9a72021d5e6395a213729555873354165",
+  "source_rule": "Everyseed:old t2 capfraction>=0.50;mean appliedU/L in t2 increases>=15%;wholeparam mean appliedU/L increases>=10%;calculated combinednorm>5 frequency increases<=5percentagepoints;original completeV .95 acceptedaccuracy>=99.5%.All input/counter/projection checks must hold.If anyfail:no newcap2 training candidate,no alternate cap or rule tuning.",
+  "base": "Fixed completeNativeAs recipe;originalsame-seedF21E20+own10+20,E50/11100=13L37LU.No candidateweight/targetselectedparent.",
+  "changed": "Only U/L normcap1->2 per t2,cls_head,other group;keep completeL anchor,negative-dot projection,tinyL handling,raw.95/weight6,originalsixU/losses/nativeAs/defaulthead/nativeAdamW.",
+  "implementation": "Make projected_gradients/protected_loss normratio a keyword with default1;only newNativeAsCap2 passes2 through completeLguard once.Other current source/objective/inference code unchanged;released oldroots never edited.",
+  "original_parent": "Originalsame-seedF21E20;strictmatching sourcecontract/physicalID/payload/scratchancestry;no candidateweights or originalE30.",
+  "budget": {
+    "seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "parent_epoch": 20,
+    "new_native_epochs": [
+      10,
+      20
+    ],
+    "final_epoch": 50,
+    "final_updates": 11100,
+    "new_updates": 6660,
+    "new_student_U_views": 10206000,
+    "cumulative_student_U_views": 10602900,
+    "cumulative_raw_teacher": 2097900,
+    "cumulative_total_teacher": 2097900,
+    "As_generated": 850500,
+    "student_physical_views": 1701000,
+    "raw_fallback": 0,
+    "extra_As_teacher": 0,
+    "extra_student_backbone": 0,
+    "extra_head_forward": 0,
+    "new_inference_parameters": 0,
+    "extra_autograd_passes": 0,
+    "source_study": "19980 existing source records/CPU1,no new model or IQ forwards;wallseconds recorded separately."
+  },
+  "fixed_reference": {
+    "run": "20261024-phase1-PAMF-HardPL-NativeAs-m3-r01",
+    "method": "HPL_E20_JOINT_AS6G"
+  },
+  "primary_controls": [
+    "F20",
+    "F21"
+  ],
+  "readouts": [
+    "raw",
+    "DURA-LU"
+  ],
+  "views": 7,
+  "samples_per_view": 168000,
+  "target_cells": 42,
+  "queue": "GPU5/6/7 fixedseeds/max2own/card,totalapps<3/free>=10000MiB;wait matchingNativeAs allGPU predictionsdone AND BalancedCEdispatched,reservebothpendingCUDA PIDs;soleCPU scorer afterBalancedCE terminal.",
+  "real_E20_smoke": "PENDING implementation/review/firstmatchingreleasedcard:originalL768/U1536/rawteacher256/As128/physicalstudent256;cap2<=2L and projected-dot bound/fullL explicitparametergradient,onceguard/no extra forward/defaulthead/hookcleanup;discardprobe/reloadoriginal.",
+  "target_matrix": "All3seeds raw+fixedDURA clean+6practical,168000/view/42cells;whole-rowprediction frozen before independenttruth-last;F20/F21 and fixedNativeAs references.",
+  "goal": "Rawclean>=+1pp andsixstrict>+1.5pp vsbothF20/F21,DURAseparate;deployeddefaultsunchanged.",
+  "stop_rule": "Real input/counter/nonfinite mismatch stops this diagnostic only;preserve all healthyjobs.No new cap/threshold/parent/seed ordering or selective rerun.",
+  "interpretation": [
+    "Same-current-gradient arithmetic is not a new training trajectory,optimizerstep or target gain.",
+    "Joint source gradients use raw fallback,not fullnativeAs;transfer of the source rationale to NativeAs must be tested independently.",
+    "More U norm can change common clipping and AdamW behavior;nonnegative projected dot is not a monotonic supervisedloss or generalization guarantee.",
+    "High complete sourceV precision does not reveal actual U accuracy;U TX truth remains hidden."
+  ],
+  "historical_exposure": "Earlier complete targets through ReliableAs/PathReliableAs are known.This source plan uses existing fullsource gradient/precision facts,not target-based recipe/parent/seed/checkpoint selection.No independentblind claim.RXE/NativeAs/BalancedCE target scores not read.",
+  "training_implementation_complete": false,
+  "independent_training_review": "PENDING",
+  "real_checkpoint_smoke": "PENDING",
+  "new_training_launched": false,
+  "active_jobs_changed": false,
+  "U_truth_reads": 0,
+  "target_training_reads": 0,
+  "G_training_reads": 0,
+  "goal_complete": false
+}

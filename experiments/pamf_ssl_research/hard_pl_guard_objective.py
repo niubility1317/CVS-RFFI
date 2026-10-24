@@ -19,8 +19,10 @@ class Guarded:
         if self.pending_gradient_loss is None:raise ValueError('Current hidden-label U loss required')
         unlabeled,self.pending_gradient_loss=self.pending_gradient_loss,None
         named=[(n,p) for n,p in student.named_parameters() if p.requires_grad]
-        value,details,gradients=protected_loss(labeled,unlabeled,named);self.guard_calls+=1
+        ratio=self.c['hard_pl_gradient_guard']['U_to_L_norm_cap']
+        value,details,gradients=protected_loss(labeled,unlabeled,named,max_u_ratio=ratio);self.guard_calls+=1
         self.metrics['HPL_GP_calls']=self.guard_calls
+        self.metrics['HPL_GP_U_to_L_norm_cap']=ratio
         for group,items in details.items():
             self.guard_conflicts[group]+=int(items['conflict']);self.guard_caps[group]+=int(items['capped'])
             for name,number in items.items():self.metrics['HPL_GP_'+group+'_'+name]=float(number)

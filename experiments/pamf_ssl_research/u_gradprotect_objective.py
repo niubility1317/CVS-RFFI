@@ -1,4 +1,5 @@
 """One-sided, L-anchored U gradients; default network and scalar losses retained."""
+import math
 import torch
 from .objective import Objective
 
@@ -8,7 +9,9 @@ def parameter_group(name):
 
 
 @torch.no_grad()
-def projected_gradients(named, labeled, unlabeled):
+def projected_gradients(named, labeled, unlabeled, *, max_u_ratio=1.):
+    if not isinstance(max_u_ratio,(int,float)) or not math.isfinite(max_u_ratio) or max_u_ratio<=0:
+        raise ValueError('Finite positive U/L norm ratio required')
     if not len(named) == len(labeled) == len(unlabeled):
         raise ValueError('Gradient/parameter lengths differ')
     combined = [None] * len(named)
@@ -36,7 +39,7 @@ def projected_gradients(named, labeled, unlabeled):
             coefficient = dot.clamp_max(0.) / ll
             projected = [h - coefficient.to(g.dtype) * g for g, h in zip(gl, gu)]
         norm2 = sum(g.double().square().sum() for g in projected)
-        scale = torch.ones_like(ll) if bool(norm2 == 0.) else (ll / norm2).sqrt().clamp_max(1.)
+        scale = torch.ones_like(ll) if bool(norm2 == 0.) else (max_u_ratio*(ll / norm2).sqrt()).clamp_max(1.)
         applied = [g * scale.to(g.dtype) for g in projected]
         for i, g, h in zip(indices, gl, applied):
             combined[i] = g + h
@@ -58,11 +61,11 @@ class _ExplicitGradient(torch.autograd.Function):
         return (None, None, *(None if g is None else g * scale for g in ctx.gradients))
 
 
-def protected_loss(labeled, unlabeled, named):
+def protected_loss(labeled, unlabeled, named, *, max_u_ratio=1.):
     parameters = tuple(p for _, p in named)
     gl = torch.autograd.grad(labeled, parameters, retain_graph=True, allow_unused=True)
     gu = torch.autograd.grad(unlabeled, parameters, retain_graph=True, allow_unused=True)
-    gradients, details = projected_gradients(named, gl, gu)
+    gradients, details = projected_gradients(named, gl, gu, max_u_ratio=max_u_ratio)
     value = _ExplicitGradient.apply((labeled + unlabeled).detach(), gradients, *parameters)
     return value, details, gradients
 

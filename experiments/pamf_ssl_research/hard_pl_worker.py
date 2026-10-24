@@ -84,7 +84,7 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
                     if (expected is None and p.grad is not None) or (expected is not None and
                         (p.grad is None or not torch.allclose(p.grad,expected,rtol=2e-5,atol=2e-6))):
                         raise ValueError('Actual backward differs from protected parameter gradients')
-                if any(d['applied_U_norm']>d['L_norm']*(1+1e-6)+1e-8 or
+                if any(d['applied_U_norm']>c['hard_pl_gradient_guard']['U_to_L_norm_cap']*d['L_norm']*(1+1e-6)+1e-8 or
                     d['dot_after'] < -1e-5*(d['L_norm']*d['applied_U_norm']+1e-12) for d in details.values()):
                     raise ValueError('Real gradient projection or norm cap differs')
             if c.get('hard_pl_joint_contrast'):
@@ -132,6 +132,11 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
                     or not obj.smoke_native_As_matches or not obj.smoke_native_nonphysical_ordinary_matches
                     or sum(model._cd_practical.coverage.values())!=192):
                     raise ValueError('Native source As half/accepted views/unchanged CE or original forward cost differs')
+            if c.get('hard_pl_native_cap2'):
+                ratio=state['U_gradient_guard']['recipe']['U_to_L_norm_cap']
+                cap2_effective=[name for name,v in obj.smoke_guard_details.items() if v['applied_U_norm']>v['L_norm']*(1+1e-4)+1e-8]
+                if ratio!=2 or obj.metrics['HPL_GP_U_to_L_norm_cap']!=2 or not cap2_effective:
+                    raise ValueError('Real cap2 must actually permit a U group above the old cap1,with unchanged fullL projection')
             if c.get('hard_pl_balanced_ce'):
                 from .source_balanced_pseudo_ce import contribution_weights
                 bce=state['U_balanced_CE'];w=obj.smoke_bce_weights;a=obj.smoke_bce_accepted
@@ -187,6 +192,9 @@ def smoke(rt,*,validate_config=None,max_rows=2,objective_cls=None,source_parents
                 checked[-1].update(U_native_As=state['U_native_As'],native_As_input_matches=True,nonphysical_ordinary_input_matches=True,
                     teacher_U_raw_views=256,teacher_U_As_views=0,teacher_U_total_views=256,all_raw_accepted_retained=True,
                     CE_and_KL_coefficients_unchanged=True)
+            if c.get('hard_pl_native_cap2'):
+                checked[-1].update(U_to_L_norm_cap=2.,cap2_effective_groups=cap2_effective,
+                    cap2_effective_on_real_checkpoint=True,negative_dot_projection_unchanged=True,extra_autograd_passes=0)
             if c.get('hard_pl_balanced_ce'):
                 checked[-1].update(U_balanced_CE=state['U_balanced_CE'],current_accepted_weights_match=True,
                     accepted_CE_mass_preserved=True,all_six_logits_reused=True,CE_delta=float(obj.smoke_bce_delta),
