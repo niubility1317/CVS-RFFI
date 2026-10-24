@@ -22,3 +22,6 @@ N607普通账户、CPU2/FP32TF32off，物理GPU5/6/7固定seed2701/02/03，每�
 
 
 独立发布后核验：VERIFIED_REAL_E20_ALL_U_RDROP_SMOKE_AND_PARTIAL_SOURCE_RUNNING，执行commit `e74a1e49ae39521e5c0cf87761a1a3f8c9705035`，实际正式GPU worker 1。源检查 PASS；详见 first_source_start.json。验证以实际PID/CWD/完整命令/GPU/日志及参数更新记录为据，排队、探针或源前缀均不代表目标达成。保留健康任务，自动训练、raw与固定DURA七景、独立truth-last继续按原矩阵执行。
+
+
+新增一次源域动量历史反证，见source_moment_history_plan.json。只用原三E20各一批L128/U256，比较相同当前参数／固定L梯度下两种AdamW历史；当前U置零，检查复制joint动量的参考是否看不到历史U影响。15个参数副本步骤全部丢弃，原模型和持久状态零更新；不读V、U真值或目标。仅当固定三seed源规则支持时考虑已固定的独立监督动量参考；当前训练和raw／DURA矩阵保持。该对照不是完整训练轨迹或目标性能证据。

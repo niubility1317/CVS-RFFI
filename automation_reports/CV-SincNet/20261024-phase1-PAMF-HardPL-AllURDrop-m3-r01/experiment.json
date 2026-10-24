@@ -306,5 +306,11 @@
     "status": "VERIFIED_MATCHED_COMPLETE_E21_E30_SOURCE_PREFIX",
     "reference": "source_matched_E21_E30_observation.json",
     "new_training_or_target_reads": false
+  },
+  "source_moment_history_probe": {
+    "status": "LOCAL_23_AND_SOURCE_REVIEW_PASS_NOT_EXECUTED",
+    "reference": "source_moment_history_plan.json",
+    "conditional_followup": "independent_L_moment_followup_design.json",
+    "GPU_launch": false
   }
 }

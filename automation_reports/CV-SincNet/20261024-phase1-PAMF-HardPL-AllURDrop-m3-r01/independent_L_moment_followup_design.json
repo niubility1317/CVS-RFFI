@@ -1,0 +1,58 @@
+{
+  "kind": "fixed_independent_L_moment_followup_v1",
+  "conditional_on_fixed_source_rule_pass": true,
+  "automatic_GPU_launch": false,
+  "intended_run_id": "20261024-phase1-PAMF-HardPL-LMoment-m3-r01",
+  "method": "HPL_E20_AS_LM",
+  "matched_reference": "20261024-phase1-PAMF-HardPL-StepNoCap-m3-r01/HPL_E20_AS_SGNC",
+  "single_factor": "Replace copied real joint moments in the L-only parameter reference with independently carried L-only moments;reset reference coordinates to current live parameters before each step,not to a separate L-only training trajectory",
+  "reference_initialization": "Fresh L-only moment state at the first step of each original native10/native20 segment,matching real optimizer segment resets;native LR/options synchronized each step",
+  "one_L_reference_optimizer_step_per_step": true,
+  "real_joint_moments_retained": true,
+  "parameter_projection": "Same three original L anchors,actual FP32 norm-nonexpansion and counted exact-L-reference quantization fallback",
+  "inherited_recipe": "StepNoCap unchanged:raw .95 hard gate,weight6,six students,shallow/middle style,cross-RX contrast,native As half and As KL0,raw three-L guard with no magnitude cap,four derivatives,default head joint,no rejected-U extension",
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "source_parent": "Original same-seed F21 E20 only;own native10+20,cumulative E50/11100,13L+37LU",
+  "new_steps_per_model": 6660,
+  "train_permissions": "L_s labels;U_s TX hidden;source V diagnostic without updates;no target/G/EMA/new head",
+  "GPU_by_seed": {
+    "2026092701": 5,
+    "2026092702": 6,
+    "2026092703": 7
+  },
+  "maximum_own_workers_per_GPU": 2,
+  "maximum_total_apps_at_launch": 3,
+  "GPU_dependency": "Matching StepNoCap GPU predictions complete and AllURDrop already dispatched;reserve predecessor pending CUDA PIDs and all foreign apps",
+  "scoring_dependency": "AllURDrop terminal,sole CPU truth-side scorer,all fourteen perrow predictions fixed first",
+  "readouts": [
+    "raw",
+    "DURA-LU"
+  ],
+  "views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "full_view_cells": 42,
+  "count_per_seed_view": 168000,
+  "DURA_reference": "Fixed dura_v1 R69,reference only,never used for F training",
+  "raw_goal": {
+    "clean_minimum_correct_total": 433348,
+    "six_minimum_correct_total": 2180190,
+    "clean_denominator": 504000,
+    "six_denominator": 3024000
+  },
+  "target_exposure": "Historical completed methods known;StepGuard,StepNoCap and AllURDrop target score values not read at this design.No target-feedback choice of parent,epoch,seed,gate,weight or matrix.",
+  "no_extra_model_or_head_forward": true,
+  "no_extra_autograd": true,
+  "no_extra_reference_step_vs_StepNoCap": true,
+  "goal_complete": false
+}

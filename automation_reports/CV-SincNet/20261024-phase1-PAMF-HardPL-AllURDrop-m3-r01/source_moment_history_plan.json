@@ -1,0 +1,46 @@
+{
+  "kind": "fixed_original_E20_source_moment_history_v1",
+  "source_rules": {
+    "material_cosine_threshold": -1e-06,
+    "minimum_negative_history_drift_anchors_per_seed": 1,
+    "current_copied_reference_zero_increment_required": true,
+    "all_three_fixed_seeds_required": true
+  },
+  "seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "source_epoch": 20,
+  "steps_per_seed": 1,
+  "history_steps": 2,
+  "L_batch": 128,
+  "U_batch": 256,
+  "V_reads": 0,
+  "target_reads": 0,
+  "U_truth_reads": 0,
+  "G_training_reads": 0,
+  "reference_revision": "hard-pl-native-as-r01",
+  "reference_recipe": "Same-contract original F21 E20,original NativeAs six students,uncapped three-L raw guard and actual parameter projection",
+  "comparison": "First source gradients give separate L-only and protected-joint AdamW histories;recenter independent copies to common original parameters,then apply the identical fixed L gradient with U=0;compare copied-joint-moment reference against independently carried L moments",
+  "expected_derivatives": 27,
+  "expected_source_packet_views": 7686,
+  "expected_disposable_optimizer_steps": 15,
+  "original_model_updates": 0,
+  "common_parameter_resets_are_counterfactual": true,
+  "fixed_gradients_not_training_trajectory": true,
+  "GPU_workers": 0,
+  "CPU_threads": 2,
+  "environment": "Existing validated N607 NativeAs release,ordinary account,CPU FP32 numerical policy",
+  "cwd": "reference_revision release root",
+  "code_identity": "Git commit containing this plan and source_moment_history.py",
+  "command": "collect_source_moment_history.py;committed modules via ordinary-account CPU-only stdin;real original checkpoint no-query smoke first",
+  "outputs": [
+    "source_moment_history.json",
+    "source_moment_history_summary.json",
+    "source_moment_history.md"
+  ],
+  "stop_rule": "Any illegal parent/data access,nonfinite value,original model/gradient write,packet/derivative mismatch,reference equality or actual constraint failure is technical failure.Preserve outputs,no automatic retry or GPU launch.Source-rule failure is a scientific negative.",
+  "automatic_GPU_launch": false,
+  "healthy_tasks_changed": false
+}
