@@ -364,7 +364,7 @@
     "recipe_changed": false
   },
   "source_optimizer_counterfactual": {
-    "status": "TECHNICAL_INTERFACE_FIXED_RERUN_PENDING",
+    "status": "VERIFIED_FIXED_SOURCE_OPTIMIZER_COUNTERFACTUAL",
     "reference": "source_optimizer_counterfactual_plan.json",
     "source_epoch": 20,
     "samples_per_seed": {
@@ -386,6 +386,13 @@
     "goal_complete": false,
     "failed_attempt": "source_optimizer_counterfactual_technical_failure.json",
     "targeted_fix_check": "PASS",
-    "targeted_P0P1": "PASS"
+    "targeted_P0P1": "PASS",
+    "result": "source_optimizer_counterfactual_summary.json",
+    "analysis_commit": "e120380073a11d0fbcd68da67862891a3ba6e30a",
+    "counterexample_counts": {
+      "NATIVE_CAP1": 18,
+      "NATIVE_CAP2": 18,
+      "BRANCH_CAP2_QR": 27
+    }
   }
 }

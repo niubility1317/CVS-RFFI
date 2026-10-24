@@ -58,3 +58,6 @@ VERIFIED：发布commit `a2a03f6ccf166b8abba34ca1f7862caa03277ba0` 的真实原E
 
 
 首批源优化器诊断在读取旧 combination 字段时发生 KeyError，尚未执行任何副本 optimizer step，原模型与正式训练保持。失败执行 commit e31bd0fd、日志及终止进程证据保留；技术修复改用实际 f_train 的固定 CENTER_UNITS 路径，保留模型物理单位检查与原 cosine／clip5。新增1项针对性检查及唯一一次针对性 P0/P1 复核均 PASS，随后只重执行原固定三种子源诊断；不改变健康任务、数据、方法、种子或测试矩阵。
+
+
+固定源域优化器诊断已完成，详见 source_optimizer_counterfactual.md／JSON。81组原梯度与实际首步增量度量完整；12次副本更新另计，原模型、健康训练和测试计划不变。此项不是目标效果验证或新候选晋级。
