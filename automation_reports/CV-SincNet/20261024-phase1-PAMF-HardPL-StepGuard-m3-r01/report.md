@@ -28,3 +28,6 @@ REGISTERED，尚未启动。源域规则已经通过，生产路径87项检查�
 
 
 无幅度帽源算子43项检查及唯一一次源P0/P1审查PASS，八模块传输与15个可丢弃副本更新预算已核对。按e9ddffd8预登记规则执行原E20小源矩阵，真实checkpoint无query检查后立即继续；不改变现有GPU训练，不自动启动新候选。
+
+
+去幅度帽固定源验证已完成：SOURCE_COUNTERFACTUAL_PASSED，详见source_uncapped_step.md及JSON。全部3seed/9组保留，源规则保持，不作为目标结果，不修改当前健康训练或自动启动新候选。

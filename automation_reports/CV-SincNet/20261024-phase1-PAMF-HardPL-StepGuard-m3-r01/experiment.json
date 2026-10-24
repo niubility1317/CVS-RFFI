@@ -306,7 +306,7 @@
     "target_matrix_complete": false
   },
   "source_uncapped_step": {
-    "status": "READY_FOR_FIXED_SOURCE_EXECUTION",
+    "status": "SOURCE_COUNTERFACTUAL_PASSED",
     "reference": "source_uncapped_step_plan.json",
     "source_rules": {
       "minimum_actual_increment_norm_retention_per_nonzero_group": 0.5,
@@ -318,6 +318,14 @@
     },
     "new_training": false,
     "focused_checks": 43,
-    "independent_P0P1": "PASS"
+    "independent_P0P1": "PASS",
+    "result": "source_uncapped_step_summary.json",
+    "source_rule_pass": true,
+    "minimum_nonzero_group_increment_norm_retention": 0.9094657464814648,
+    "each_seed_amplification_rule_pass": [
+      true,
+      true,
+      true
+    ]
   }
 }
