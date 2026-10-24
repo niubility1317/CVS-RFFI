@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_CHECKS_AND_SOURCE_P0P1_PASS_NOT_EXECUTED",
+  "status": "VERIFIED_ACTUAL_ORIGINAL_E20_SOURCE_PROBE",
   "focused_checks": 22,
   "review_count": 1,
   "targeted_rereviews": 0,
@@ -8,7 +8,11 @@
   "review_verdict": "PASS",
   "findings_P0_P1": [],
   "review_summary": "Rejected mask,nonphysical KL dose,21 derivatives,nine discarded optimizer copies,actual FP32 projection and callback restoration consistent.Source L/U only,original parameters and gradients unchanged.",
-  "real_checkpoint_no_query_smoke": "First step of the planned source probe;not claimed complete before execution",
+  "real_checkpoint_no_query_smoke": "PASS;all three original E20/defaulthead source models,2 L packets each before the fixed diagnostic",
   "GPU_launch": false,
-  "target_reads": 0
+  "target_reads": 0,
+  "analysis_commit": "3904aac383819c5880c2fb440f755cf34a5b15fa",
+  "actual_source_derivatives": 21,
+  "actual_discarded_optimizer_steps": 9,
+  "source_rule_pass": true
 }

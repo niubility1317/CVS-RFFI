@@ -1,0 +1,1912 @@
+{
+  "status": "VERIFIED_FIXED_SOURCE_REJECTED_RDROP",
+  "kind": "fixed_original_E20_source_rejected_rdrop_v1",
+  "analysis_commit": "3904aac383819c5880c2fb440f755cf34a5b15fa",
+  "reference_recipe_execution_commit": "f605efc3fc35617bb007ae25ec6b4822360b95c1",
+  "source_rules": {
+    "minimum_rejected_U_per_seed": 1,
+    "minimum_nonzero_group_increment_norm_retention": 0.5,
+    "added_descent_aligns_with_rejected_RDrop_in_some_group_each_seed": true,
+    "all_actual_parameter_constraints_and_nonexpansion_required": true,
+    "all_three_fixed_seeds_required": true
+  },
+  "recipe": {
+    "ordinary_pair_weight": 0.5,
+    "mixed_nonphysical_pair_weight": 0.25,
+    "raw_pair_weight": 0.25,
+    "CE_normalizer": 1.25,
+    "hard_label_gate": 0.95,
+    "physical_As_KL_weight": 0.0,
+    "hard_CE_or_contrast_on_rejected": false,
+    "extra_model_forwards": 0,
+    "new_head": false
+  },
+  "source_rule_pass": true,
+  "scientific_status": "SOURCE_COUNTERFACTUAL_PASSED",
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "source_run_id": "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01",
+      "source_row_id": "F21-s2026092701",
+      "source_epoch": 20,
+      "L_samples": 128,
+      "U_samples": 256,
+      "L_packet_views": 768,
+      "U_student_packet_views": 1536,
+      "U_teacher_raw_packet_views": 256,
+      "source_Practical_generated": 192,
+      "real_checkpoint_smoke_L_packets": 2,
+      "actual_autograd_calls": 7,
+      "source_rejected_facts": {
+        "coverage": {
+          "rejected_U": 21,
+          "rejected_nonphysical_half": 10,
+          "rejected_RDrop_pairs": 52,
+          "reused_prediction_views": 104,
+          "ordinary_KL": 0.011236388236284256,
+          "mixed_nonphysical_KL": 0.02363775484263897,
+          "raw_KL": 0.007725130766630173,
+          "base_loss": 0.010767132975161076,
+          "physical_As_KL_weight": 0.0,
+          "hard_label_or_CE_on_rejected": false,
+          "extra_model_forwards": 0,
+          "new_head": false
+        },
+        "external_U_weight": 6.0,
+        "extra_loss": 0.0646027997136116,
+        "component_sum_closure": {
+          "max_absolute_error": 8.276401786133647e-06,
+          "groups": {
+            "t2": {
+              "L2_error": 1.5769000239897217e-07,
+              "reference_L2_norm": 0.9850675369543028,
+              "relative_L2_error": 1.6008039701168977e-07
+            },
+            "cls_head": {
+              "L2_error": 3.204226914166236e-07,
+              "reference_L2_norm": 0.7821124287740332,
+              "relative_L2_error": 4.096887859446096e-07
+            },
+            "other": {
+              "L2_error": 1.2130523036016412e-05,
+              "reference_L2_norm": 3.1100516905807942,
+              "relative_L2_error": 3.9004248941441445e-06
+            }
+          },
+          "criterion": "torch.testing.assert_close dtype defaults and group L2error<=0.001*referenceL2+1e-8"
+        },
+        "comparison": {
+          "raw_gradient_baseline": {
+            "t2": {
+              "L_norm": 0.18570188921161726,
+              "U_norm": 1.001379387650964,
+              "applied_U_norm": 0.9360136453114446,
+              "dot_before": -0.05225102892778532,
+              "dot_after": 0.006004677718055859,
+              "conflict": true,
+              "capped": false,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": -0.2809828914874096,
+                "L_clean": -0.35537372500254727,
+                "L_As": 0.034522487049322814
+              },
+              "anchor_cosines_after": {
+                "L_full": 0.0345454775782205,
+                "L_clean": 8.633102184424769e-11,
+                "L_As": 0.051311592719703404
+              },
+              "constraint_dots_after": {
+                "L_full": 0.006004677718055859,
+                "L_clean": 1.2908072288993211e-11,
+                "L_As": 0.004004903661795249
+              },
+              "active_set": [
+                "L_clean"
+              ],
+              "cone_correction_norm": 0.3558639231302928,
+              "solver": "thin_QR_and_active_set_SVD",
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            },
+            "cls_head": {
+              "L_norm": 0.6777666137294573,
+              "U_norm": 0.9099543218803227,
+              "applied_U_norm": 0.7213454290388448,
+              "dot_before": -0.363320604618101,
+              "dot_after": 9.717670019365743e-10,
+              "conflict": true,
+              "capped": false,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": -0.5891016839794458,
+                "L_clean": -0.5906487617865769,
+                "L_As": -0.34543736034317996
+              },
+              "anchor_cosines_after": {
+                "L_full": 1.987644409802873e-09,
+                "L_clean": 1.2751685198314552e-09,
+                "L_As": -2.6183350412947173e-09
+              },
+              "constraint_dots_after": {
+                "L_full": 9.717670019365743e-10,
+                "L_clean": 4.322143528495692e-10,
+                "L_As": -6.656214306099137e-10
+              },
+              "active_set": [
+                "L_full",
+                "L_clean"
+              ],
+              "cone_correction_norm": 0.5546869723469171,
+              "solver": "thin_QR_and_active_set_SVD",
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            },
+            "other": {
+              "L_norm": 0.908096057862928,
+              "U_norm": 3.2795710430793474,
+              "applied_U_norm": 3.0608331175932126,
+              "dot_before": -0.8947176130657094,
+              "dot_after": 0.020803932972057952,
+              "conflict": true,
+              "capped": false,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": -0.30042574945548844,
+                "L_clean": -0.35908528029703035,
+                "L_As": 0.040814969989284564
+              },
+              "anchor_cosines_after": {
+                "L_full": 0.007484693210922484,
+                "L_clean": 3.4146470291083377e-10,
+                "L_As": -3.678905768021541e-10
+              },
+              "constraint_dots_after": {
+                "L_full": 0.020803932972057952,
+                "L_clean": 8.52069079379215e-10,
+                "L_As": -5.148339408547151e-10
+              },
+              "active_set": [
+                "L_clean",
+                "L_As"
+              ],
+              "cone_correction_norm": 1.1776616030802904,
+              "solver": "thin_QR_and_active_set_SVD",
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            }
+          },
+          "raw_gradient_rejected_RDrop": {
+            "t2": {
+              "L_norm": 0.18570188921161726,
+              "U_norm": 0.9850675369543028,
+              "applied_U_norm": 0.9535995882668914,
+              "dot_before": -0.03448432461283692,
+              "dot_after": 0.005949084041003913,
+              "conflict": true,
+              "capped": false,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": -0.18851217123248454,
+                "L_clean": -0.2507378144332148,
+                "L_As": 0.034168581838103965
+              },
+              "anchor_cosines_after": {
+                "L_full": 0.033594464845976675,
+                "L_clean": -2.2835981385614883e-10,
+                "L_As": 0.04509156170384726
+              },
+              "constraint_dots_after": {
+                "L_full": 0.005949084041003913,
+                "L_clean": -3.4785484985099674e-11,
+                "L_As": 0.0035855495618467652
+              },
+              "active_set": [
+                "L_clean"
+              ],
+              "cone_correction_norm": 0.24699368128503196,
+              "solver": "thin_QR_and_active_set_SVD",
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            },
+            "cls_head": {
+              "L_norm": 0.6777666137294573,
+              "U_norm": 0.7821124287740332,
+              "applied_U_norm": 0.6954447939190752,
+              "dot_before": -0.24253712513006723,
+              "dot_after": 5.058279448654e-09,
+              "conflict": true,
+              "capped": false,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": -0.45753978733159895,
+                "L_clean": -0.3985979107903106,
+                "L_As": -0.34848169235589
+              },
+              "anchor_cosines_after": {
+                "L_full": 1.0731489037129008e-08,
+                "L_clean": 5.060287209863789e-09,
+                "L_As": -4.189854578390427e-10
+              },
+              "constraint_dots_after": {
+                "L_full": 5.058279448654e-09,
+                "L_clean": 1.6535835577061783e-09,
+                "L_As": -1.0268816759374452e-10
+              },
+              "active_set": [
+                "L_clean",
+                "L_As"
+              ],
+              "cone_correction_norm": 0.35784968087709434,
+              "solver": "thin_QR_and_active_set_SVD",
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            },
+            "other": {
+              "L_norm": 0.908096057862928,
+              "U_norm": 3.1100516905807942,
+              "applied_U_norm": 3.070319152244657,
+              "dot_before": -0.33768212997199837,
+              "dot_after": 0.04638018300368931,
+              "conflict": true,
+              "capped": false,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": -0.11956626992217607,
+                "L_clean": -0.159335596699608,
+                "L_As": 0.03463476685931318
+              },
+              "anchor_cosines_after": {
+                "L_full": 0.01663478322892397,
+                "L_clean": 1.2601380254201206e-10,
+                "L_As": 0.01590475713801567
+              },
+              "constraint_dots_after": {
+                "L_full": 0.04638018300368931,
+                "L_clean": 3.154212691986694e-10,
+                "L_As": 0.02232643686594781
+              },
+              "active_set": [
+                "L_clean"
+              ],
+              "cone_correction_norm": 0.49554194188531586,
+              "solver": "thin_QR_and_active_set_SVD",
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            }
+          },
+          "parameter_baseline": {
+            "t2": {
+              "raw_increment_norm": 0.021684634258621285,
+              "applied_increment_norm": 0.019721432083194552,
+              "retention": 0.9094657464814648,
+              "quantization_fallback": false,
+              "fallback_reason": null,
+              "tiny_L": false,
+              "passthrough": false,
+              "quantization_attempts_used": 1,
+              "actual_parameter_check": true,
+              "norm_nonexpansion": true,
+              "active_set": [
+                "L_full",
+                "L_clean",
+                "L_As"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "anchor_cosines_before": {
+                "L_full": -0.41162639600002343,
+                "L_clean": -0.370517901815188,
+                "L_As": -0.20233896598689102
+              },
+              "anchor_cosines_after": {
+                "L_full": -1.8352689271451772e-07,
+                "L_clean": -1.0480068309989747e-07,
+                "L_As": -3.033701017034677e-07
+              },
+              "constraint_dots_after": {
+                "L_full": -6.721318598126294e-10,
+                "L_clean": -3.3015272733440603e-10,
+                "L_As": -4.988909474777485e-10
+              },
+              "near_zero_component_anchors_omitted": []
+            },
+            "cls_head": {
+              "raw_increment_norm": 0.00920850532298009,
+              "applied_increment_norm": 0.009110075515816593,
+              "retention": 0.9893109898174396,
+              "quantization_fallback": false,
+              "fallback_reason": null,
+              "tiny_L": false,
+              "passthrough": false,
+              "quantization_attempts_used": 1,
+              "actual_parameter_check": true,
+              "norm_nonexpansion": true,
+              "active_set": [
+                "L_clean",
+                "L_As"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "anchor_cosines_before": {
+                "L_full": -0.12744275388141138,
+                "L_clean": -0.14580923391540648,
+                "L_As": -0.05068798610551093
+              },
+              "anchor_cosines_after": {
+                "L_full": 3.3576568259766174e-07,
+                "L_clean": 6.417159300046965e-07,
+                "L_As": -2.1609223106656685e-07
+              },
+              "constraint_dots_after": {
+                "L_full": 2.0731868971665852e-09,
+                "L_clean": 2.7469649319154885e-09,
+                "L_As": -6.937770422851862e-10
+              },
+              "near_zero_component_anchors_omitted": []
+            },
+            "other": {
+              "raw_increment_norm": 1.7919991267820512,
+              "applied_increment_norm": 1.7917620848790774,
+              "retention": 0.9998677220879011,
+              "quantization_fallback": false,
+              "fallback_reason": null,
+              "tiny_L": false,
+              "passthrough": false,
+              "quantization_attempts_used": 1,
+              "actual_parameter_check": true,
+              "norm_nonexpansion": true,
+              "active_set": [
+                "L_full",
+                "L_clean",
+                "L_As"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "anchor_cosines_before": {
+                "L_full": -0.015876362269819495,
+                "L_clean": -0.01188483457756971,
+                "L_As": -0.009559969929319907
+              },
+              "anchor_cosines_after": {
+                "L_full": 4.02000388284337e-10,
+                "L_clean": -1.8268398800418058e-10,
+                "L_As": 1.156242610831172e-09
+              },
+              "constraint_dots_after": {
+                "L_full": 6.540916503089758e-10,
+                "L_clean": -2.6685181587224674e-10,
+                "L_As": 9.471923187193837e-10
+              },
+              "near_zero_component_anchors_omitted": []
+            }
+          },
+          "parameter_rejected_RDrop": {
+            "t2": {
+              "raw_increment_norm": 0.0218315484363394,
+              "applied_increment_norm": 0.019789395185810778,
+              "retention": 0.9064586162322144,
+              "quantization_fallback": false,
+              "fallback_reason": null,
+              "tiny_L": false,
+              "passthrough": false,
+              "quantization_attempts_used": 1,
+              "actual_parameter_check": true,
+              "norm_nonexpansion": true,
+              "active_set": [
+                "L_full",
+                "L_clean",
+                "L_As"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "anchor_cosines_before": {
+                "L_full": -0.4178323377777763,
+                "L_clean": -0.37186152468324307,
+                "L_As": -0.2138948472408988
+              },
+              "anchor_cosines_after": {
+                "L_full": -3.828586132971307e-08,
+                "L_clean": 5.6598458850661195e-08,
+                "L_As": 7.829120451671115e-08
+              },
+              "constraint_dots_after": {
+                "L_full": -1.4069778657505787e-10,
+                "L_clean": 1.7891611303123053e-10,
+                "L_As": 1.2919327102060515e-10
+              },
+              "near_zero_component_anchors_omitted": []
+            },
+            "cls_head": {
+              "raw_increment_norm": 0.009041962389899804,
+              "applied_increment_norm": 0.00897329679440235,
+              "retention": 0.9924058968024291,
+              "quantization_fallback": false,
+              "fallback_reason": null,
+              "tiny_L": false,
+              "passthrough": false,
+              "quantization_attempts_used": 1,
+              "actual_parameter_check": true,
+              "norm_nonexpansion": true,
+              "active_set": [
+                "L_clean",
+                "L_As"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "anchor_cosines_before": {
+                "L_full": -0.1175716457187931,
+                "L_clean": -0.12027322413107329,
+                "L_As": -0.0657512993745158
+              },
+              "anchor_cosines_after": {
+                "L_full": 4.9518151761421824e-08,
+                "L_clean": 1.858958045987703e-07,
+                "L_As": -1.6182062917632188e-07
+              },
+              "constraint_dots_after": {
+                "L_full": 3.011595440258544e-10,
+                "L_clean": 7.838084456110971e-10,
+                "L_As": -5.117345174861362e-10
+              },
+              "near_zero_component_anchors_omitted": []
+            },
+            "other": {
+              "raw_increment_norm": 1.9213595076549403,
+              "applied_increment_norm": 1.9211325271436641,
+              "retention": 0.9998818646326354,
+              "quantization_fallback": false,
+              "fallback_reason": null,
+              "tiny_L": false,
+              "passthrough": false,
+              "quantization_attempts_used": 1,
+              "actual_parameter_check": true,
+              "norm_nonexpansion": true,
+              "active_set": [
+                "L_full",
+                "L_clean",
+                "L_As"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "anchor_cosines_before": {
+                "L_full": -0.01513946362340825,
+                "L_clean": -0.011634565867159257,
+                "L_As": -0.0084656869535428
+              },
+              "anchor_cosines_after": {
+                "L_full": -7.236558260194827e-10,
+                "L_clean": -1.239413142540525e-09,
+                "L_As": 8.448616792143385e-10
+              },
+              "constraint_dots_after": {
+                "L_full": -1.2624703245702265e-09,
+                "L_clean": -1.9411663695727277e-09,
+                "L_As": 7.420818199841382e-10
+              },
+              "near_zero_component_anchors_omitted": []
+            }
+          },
+          "added_descent": {
+            "t2": {
+              "added_descent_norm": 0.009510802394302777,
+              "rejected_RDrop_gradient_norm": 0.23645624449310526,
+              "dot": 0.0006406820634870623,
+              "cosine": 0.2848883038720159,
+              "source_rule_aligns": true
+            },
+            "cls_head": {
+              "added_descent_norm": 0.004903046627346853,
+              "rejected_RDrop_gradient_norm": 0.46775456511196106,
+              "dot": 0.00048234618186445235,
+              "cosine": 0.21031719793187822,
+              "source_rule_aligns": true
+            },
+            "other": {
+              "added_descent_norm": 1.0593878432970558,
+              "rejected_RDrop_gradient_norm": 1.0750524698382637,
+              "dot": 0.009352629697590523,
+              "cosine": 0.008212002883723387,
+              "source_rule_aligns": true
+            }
+          },
+          "actual_optimizer_copies": 3,
+          "optimizer_copies": [
+            {
+              "optimizer": "AdamW_with_actual_CENTER_UNITS_adapter",
+              "optimizer_steps": 1,
+              "physical_clip_calls": 1,
+              "fresh_moments": true,
+              "max_grad_norm": 5.0,
+              "physical_grad_norm_before_clip": 1.1482454538345337,
+              "base_lr": 0.0002,
+              "base_weight_decay": 0.0001,
+              "source_parameter_or_grad_writes": 0,
+              "shadow_parameter_gradient_tensors": 74,
+              "parameter_groups": [
+                {
+                  "lr": 0.0002,
+                  "eps": 1e-08,
+                  "weight_decay": 0.0001,
+                  "betas": [
+                    0.9,
+                    0.999
+                  ],
+                  "parameter_tensors": 188
+                },
+                {
+                  "lr": 0.2,
+                  "eps": 1.0000000000000001e-11,
+                  "weight_decay": 0.0,
+                  "betas": [
+                    0.9,
+                    0.999
+                  ],
+                  "parameter_tensors": 2
+                }
+              ],
+              "source_model_forward_calls": 0,
+              "shadow_model_forward_calls": 0,
+              "interpretation": "Actual CPU FP32 first-step displacement on independent parameter containers;fresh moments only;all shadows discarded."
+            },
+            {
+              "optimizer": "AdamW_with_actual_CENTER_UNITS_adapter",
+              "optimizer_steps": 1,
+              "physical_clip_calls": 1,
+              "fresh_moments": true,
+              "max_grad_norm": 5.0,
+              "physical_grad_norm_before_clip": 3.4837894439697266,
+              "base_lr": 0.0002,
+              "base_weight_decay": 0.0001,
+              "source_parameter_or_grad_writes": 0,
+              "shadow_parameter_gradient_tensors": 74,
+              "parameter_groups": [
+                {
+                  "lr": 0.0002,
+                  "eps": 1e-08,
+                  "weight_decay": 0.0001,
+                  "betas": [
+                    0.9,
+                    0.999
+                  ],
+                  "parameter_tensors": 188
+                },
+                {
+                  "lr": 0.2,
+                  "eps": 1.0000000000000001e-11,
+                  "weight_decay": 0.0,
+                  "betas": [
+                    0.9,
+                    0.999
+                  ],
+                  "parameter_tensors": 2
+                }
+              ],
+              "source_model_forward_calls": 0,
+              "shadow_model_forward_calls": 0,
+              "interpretation": "Actual CPU FP32 first-step displacement on independent parameter containers;fresh moments only;all shadows discarded."
+            },
+            {
+              "optimizer": "AdamW_with_actual_CENTER_UNITS_adapter",
+              "optimizer_steps": 1,
+              "physical_clip_calls": 1,
+              "fresh_moments": true,
+              "max_grad_norm": 5.0,
+              "physical_grad_norm_before_clip": 3.4989237785339355,
+              "base_lr": 0.0002,
+              "base_weight_decay": 0.0001,
+              "source_parameter_or_grad_writes": 0,
+              "shadow_parameter_gradient_tensors": 74,
+              "parameter_groups": [
+                {
+                  "lr": 0.0002,
+                  "eps": 1e-08,
+                  "weight_decay": 0.0001,
+                  "betas": [
+                    0.9,
+                    0.999
+                  ],
+                  "parameter_tensors": 188
+                },
+                {
+                  "lr": 0.2,
+                  "eps": 1.0000000000000001e-11,
+                  "weight_decay": 0.0,
+                  "betas": [
+                    0.9,
+                    0.999
+                  ],
+                  "parameter_tensors": 2
+                }
+              ],
+              "source_model_forward_calls": 0,
+              "shadow_model_forward_calls": 0,
+              "interpretation": "Actual CPU FP32 first-step displacement on independent parameter containers;fresh moments only;all shadows discarded."
+            }
+          ],
+          "original_parameter_updates": 0,
+          "shadow_parameter_updates_discarded": true,
+          "interpretation": "Only reject-mask RDrop is added to the otherwise identical uncapped gradient and actual-step operators.Independent fresh optimizer copies,one source batch,not live-moment trajectory or a measured loss reduction."
+        },
+        "L_pair_calls": 4,
+        "U_logits_reused": 6,
+        "actual_derivative_calls": 7,
+        "hard_pseudo_or_acceptance_changed": false,
+        "extra_model_forwards": 0,
+        "extra_classification_head_forwards": 0,
+        "physical_As_KL_weight": 0.0,
+        "U_truth_reads": 0,
+        "target_reads": 0
+      },
+      "parameter_updates": 0,
+      "parameter_grad_writes": 0,
+      "disposable_train_mode_changed_buffer_names": [],
+      "discarded_model_and_buffers": true,
+      "U_truth_reads": 0,
+      "V_reads": 0,
+      "target_reads": 0
+    },
+    {
+      "model_seed": 2026092702,
+      "source_run_id": "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01",
+      "source_row_id": "F21-s2026092702",
+      "source_epoch": 20,
+      "L_samples": 128,
+      "U_samples": 256,
+      "L_packet_views": 768,
+      "U_student_packet_views": 1536,
+      "U_teacher_raw_packet_views": 256,
+      "source_Practical_generated": 192,
+      "real_checkpoint_smoke_L_packets": 2,
+      "actual_autograd_calls": 7,
+      "source_rejected_facts": {
+        "coverage": {
+          "rejected_U": 17,
+          "rejected_nonphysical_half": 9,
+          "rejected_RDrop_pairs": 43,
+          "reused_prediction_views": 86,
+          "ordinary_KL": 0.011939125135540962,
+          "mixed_nonphysical_KL": 0.014418628998100758,
+          "raw_KL": 0.014168312773108482,
+          "base_loss": 0.010493038222193718,
+          "physical_As_KL_weight": 0.0,
+          "hard_label_or_CE_on_rejected": false,
+          "extra_model_forwards": 0,
+          "new_head": false
+        },
+        "external_U_weight": 6.0,
+        "extra_loss": 0.06295822560787201,
+        "component_sum_closure": {
+          "max_absolute_error": 2.2737299332220573e-07,
+          "groups": {
+            "t2": {
+              "L2_error": 1.2196277847919863e-07,
+              "reference_L2_norm": 0.6540026688377751,
+              "relative_L2_error": 1.864866678540289e-07
+            },
+            "cls_head": {
+              "L2_error": 2.6201337161173355e-07,
+              "reference_L2_norm": 1.5193117187444938,
+              "relative_L2_error": 1.7245530879486156e-07
+            },
+            "other": {
+              "L2_error": 2.302604797632145e-06,
+              "reference_L2_norm": 3.0844574237000257,
+              "relative_L2_error": 7.465185870097073e-07
+            }
+          },
+          "criterion": "torch.testing.assert_close dtype defaults and group L2error<=0.001*referenceL2+1e-8"
+        },
+        "comparison": {
+          "raw_gradient_baseline": {
+            "t2": {
+              "L_norm": 0.16361835962243967,
+              "U_norm": 0.6562356156310087,
+              "applied_U_norm": 0.6330213863625748,
+              "dot_before": -0.01997371358633777,
+              "dot_after": 0.005701369024583683,
+              "conflict": true,
+              "capped": false,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": -0.1860231468178559,
+                "L_clean": -0.24047660767902024,
+                "L_As": -0.16015208217921112
+              },
+              "anchor_cosines_after": {
+                "L_full": 0.05504637632913206,
+                "L_clean": -1.365183591584365e-10,
+                "L_As": 2.0918442461715637e-10
+              },
+              "constraint_dots_after": {
+                "L_full": 0.005701369024583683,
+                "L_clean": -7.24331375044282e-12,
+                "L_As": 1.5788306100862626e-11
+              },
+              "active_set": [
+                "L_clean",
+                "L_As"
+              ],
+              "cone_correction_norm": 0.17300030751517387,
+              "solver": "thin_QR_and_active_set_SVD",
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            },
+            "cls_head": {
+              "L_norm": 0.5374066649684708,
+              "U_norm": 1.5091941511980678,
+              "applied_U_norm": 1.341183723524084,
+              "dot_before": -0.3699555325329062,
+              "dot_after": 4.323396630623506e-09,
+              "conflict": true,
+              "capped": false,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": -0.45614336773723657,
+                "L_clean": -0.3039947248765658,
+                "L_As": -0.4512783382048567
+              },
+              "anchor_cosines_after": {
+                "L_full": 5.998376991715521e-09,
+                "L_clean": -5.3779747389917394e-09,
+                "L_As": -5.36403199657642e-09
+              },
+              "constraint_dots_after": {
+                "L_full": 4.323396630623506e-09,
+                "L_clean": -1.2556031405027389e-09,
+                "L_As": -3.064245583740189e-09
+              },
+              "active_set": [
+                "L_clean",
+                "L_As"
+              ],
+              "cone_correction_norm": 0.692021093705856,
+              "solver": "thin_QR_and_active_set_SVD",
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            },
+            "other": {
+              "L_norm": 1.052524715316114,
+              "U_norm": 3.01543847467142,
+              "applied_U_norm": 2.7576085833723707,
+              "dot_before": -1.2304705828681293,
+              "dot_after": 0.03744263552268027,
+              "conflict": true,
+              "capped": false,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": -0.3876934474451621,
+                "L_clean": -0.2956353408367386,
+                "L_As": -0.3888366251740656
+              },
+              "anchor_cosines_after": {
+                "L_full": 0.012900349767267815,
+                "L_clean": -1.0775082966152063e-10,
+                "L_As": 2.0720381132751733e-10
+              },
+              "constraint_dots_after": {
+                "L_full": 0.03744263552268027,
+                "L_clean": -1.4178250047064e-10,
+                "L_As": 4.1164755027371734e-10
+              },
+              "active_set": [
+                "L_clean",
+                "L_As"
+              ],
+              "cone_correction_norm": 1.2200262666322825,
+              "solver": "thin_QR_and_active_set_SVD",
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            }
+          },
+          "raw_gradient_rejected_RDrop": {
+            "t2": {
+              "L_norm": 0.16361835962243967,
+              "U_norm": 0.6540026688377751,
+              "applied_U_norm": 0.6433181439831368,
+              "dot_before": -0.012962981608240772,
+              "dot_after": 0.005451361903898278,
+              "conflict": true,
+              "capped": false,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": -0.12114161244419074,
+                "L_clean": -0.14975861349505512,
+                "L_As": -0.13149687274570845
+              },
+              "anchor_cosines_after": {
+                "L_full": 0.051790151358739184,
+                "L_clean": 4.401237160956413e-10,
+                "L_As": -3.403025372451489e-10
+              },
+              "constraint_dots_after": {
+                "L_full": 0.005451361903898278,
+                "L_clean": 2.373167687483215e-11,
+                "L_As": -2.610230125576693e-11
+              },
+              "active_set": [
+                "L_clean",
+                "L_As"
+              ],
+              "cone_correction_norm": 0.11773383152275484,
+              "solver": "thin_QR_and_active_set_SVD",
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            },
+            "cls_head": {
+              "L_norm": 0.5374066649684708,
+              "U_norm": 1.5193117187444938,
+              "applied_U_norm": 1.392996934236217,
+              "dot_before": -0.32148880878421815,
+              "dot_after": 5.801027835788193e-09,
+              "conflict": true,
+              "capped": false,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": -0.39374579024052964,
+                "L_clean": -0.24519730827158862,
+                "L_As": -0.396581095843534
+              },
+              "anchor_cosines_after": {
+                "L_full": 7.749108477508761e-09,
+                "L_clean": -4.1945771586017425e-09,
+                "L_As": -1.8219369656472702e-10
+              },
+              "constraint_dots_after": {
+                "L_full": 5.801027835788193e-09,
+                "L_clean": -1.017146969027518e-09,
+                "L_As": -1.0810043532788038e-10
+              },
+              "active_set": [
+                "L_clean",
+                "L_As"
+              ],
+              "cone_correction_norm": 0.6065209194377569,
+              "solver": "thin_QR_and_active_set_SVD",
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            },
+            "other": {
+              "L_norm": 1.052524715316114,
+              "U_norm": 3.0844574237000257,
+              "applied_U_norm": 2.9196044105608476,
+              "dot_before": -0.9764351833637074,
+              "dot_after": 0.03269753812302876,
+              "conflict": true,
+              "capped": false,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": -0.30076849119737975,
+                "L_clean": -0.2049332740018622,
+                "L_As": -0.318966295639022
+              },
+              "anchor_cosines_after": {
+                "L_full": 0.010640419270507198,
+                "L_clean": -6.872273457835534e-10,
+                "L_As": -3.011672736790644e-10
+              },
+              "constraint_dots_after": {
+                "L_full": 0.03269753812302876,
+                "L_clean": -9.574008962329834e-10,
+                "L_As": -6.334713269466884e-10
+              },
+              "active_set": [
+                "L_clean",
+                "L_As"
+              ],
+              "cone_correction_norm": 0.9948807311429722,
+              "solver": "thin_QR_and_active_set_SVD",
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            }
+          },
+          "parameter_baseline": {
+            "t2": {
+              "raw_increment_norm": 0.021616859386427618,
+              "applied_increment_norm": 0.01983350535084677,
+              "retention": 0.9175017053263276,
+              "quantization_fallback": false,
+              "fallback_reason": null,
+              "tiny_L": false,
+              "passthrough": false,
+              "quantization_attempts_used": 1,
+              "actual_parameter_check": true,
+              "norm_nonexpansion": true,
+              "active_set": [
+                "L_clean",
+                "L_As"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "anchor_cosines_before": {
+                "L_full": -0.378117149533151,
+                "L_clean": -0.26266977818068643,
+                "L_As": -0.3508067259038921
+              },
+              "anchor_cosines_after": {
+                "L_full": 0.012400848483139814,
+                "L_clean": -4.446005263521858e-07,
+                "L_As": -5.788951780669564e-07
+              },
+              "constraint_dots_after": {
+                "L_full": 4.0242311011616104e-05,
+                "L_clean": -7.390899641340572e-10,
+                "L_As": -1.368948846187728e-09
+              },
+              "near_zero_component_anchors_omitted": []
+            },
+            "cls_head": {
+              "raw_increment_norm": 0.009756716877992306,
+              "applied_increment_norm": 0.009526289105111638,
+              "retention": 0.9763826525088136,
+              "quantization_fallback": false,
+              "fallback_reason": null,
+              "tiny_L": false,
+              "passthrough": false,
+              "quantization_attempts_used": 1,
+              "actual_parameter_check": true,
+              "norm_nonexpansion": true,
+              "active_set": [
+                "L_clean",
+                "L_As"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "anchor_cosines_before": {
+                "L_full": -0.2151231404286446,
+                "L_clean": -0.1448290762822497,
+                "L_As": -0.21223154193762034
+              },
+              "anchor_cosines_after": {
+                "L_full": -3.7225643309482354e-07,
+                "L_clean": -3.6699346140374947e-07,
+                "L_As": -3.323782266193365e-07
+              },
+              "constraint_dots_after": {
+                "L_full": -1.9057635547783947e-09,
+                "L_clean": -6.085936899055645e-10,
+                "L_As": -1.3486531112532046e-09
+              },
+              "near_zero_component_anchors_omitted": []
+            },
+            "other": {
+              "raw_increment_norm": 1.9624274920464424,
+              "applied_increment_norm": 1.9622540786780052,
+              "retention": 0.9999116332352965,
+              "quantization_fallback": false,
+              "fallback_reason": null,
+              "tiny_L": false,
+              "passthrough": false,
+              "quantization_attempts_used": 1,
+              "actual_parameter_check": true,
+              "norm_nonexpansion": true,
+              "active_set": [
+                "L_full",
+                "L_As"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "anchor_cosines_before": {
+                "L_full": -0.013214064074592835,
+                "L_clean": -0.00965728789323545,
+                "L_As": -0.01271218204424455
+              },
+              "anchor_cosines_after": {
+                "L_full": -7.06490365073089e-09,
+                "L_clean": 0.00010116384776017403,
+                "L_As": -6.635290588014672e-09
+              },
+              "constraint_dots_after": {
+                "L_full": -1.4591293276118664e-08,
+                "L_clean": 9.472180517121299e-05,
+                "L_As": -9.380162480603213e-09
+              },
+              "near_zero_component_anchors_omitted": []
+            }
+          },
+          "parameter_rejected_RDrop": {
+            "t2": {
+              "raw_increment_norm": 0.021879144265453353,
+              "applied_increment_norm": 0.019994147700922702,
+              "retention": 0.9138450507176821,
+              "quantization_fallback": false,
+              "fallback_reason": null,
+              "tiny_L": false,
+              "passthrough": false,
+              "quantization_attempts_used": 1,
+              "actual_parameter_check": true,
+              "norm_nonexpansion": true,
+              "active_set": [
+                "L_clean",
+                "L_As"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "anchor_cosines_before": {
+                "L_full": -0.38793029019820013,
+                "L_clean": -0.27054136439670184,
+                "L_As": -0.3566524947251297
+              },
+              "anchor_cosines_after": {
+                "L_full": 0.010759908288745736,
+                "L_clean": -3.0397627276616886e-07,
+                "L_As": 1.968810886100526e-07
+              },
+              "constraint_dots_after": {
+                "L_full": 3.5200067796799426e-05,
+                "L_clean": -5.094134841398764e-10,
+                "L_As": 4.69347715475301e-10
+              },
+              "near_zero_component_anchors_omitted": []
+            },
+            "cls_head": {
+              "raw_increment_norm": 0.009748626641358745,
+              "applied_increment_norm": 0.009533045670811882,
+              "retention": 0.9778860163100045,
+              "quantization_fallback": false,
+              "fallback_reason": null,
+              "tiny_L": false,
+              "passthrough": false,
+              "quantization_attempts_used": 1,
+              "actual_parameter_check": true,
+              "norm_nonexpansion": true,
+              "active_set": [
+                "L_clean",
+                "L_As"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "anchor_cosines_before": {
+                "L_full": -0.20781827670386152,
+                "L_clean": -0.13707237001548553,
+                "L_As": -0.2061850737478339
+              },
+              "anchor_cosines_after": {
+                "L_full": 3.814937415239258e-07,
+                "L_clean": 5.018690930345247e-07,
+                "L_As": 2.640614411361784e-07
+              },
+              "constraint_dots_after": {
+                "L_full": 1.9544390872415843e-09,
+                "L_clean": 8.328513341357641e-10,
+                "L_As": 1.0722118375181954e-09
+              },
+              "near_zero_component_anchors_omitted": []
+            },
+            "other": {
+              "raw_increment_norm": 1.8361409405572147,
+              "applied_increment_norm": 1.8359398951194028,
+              "retention": 0.9998905065328205,
+              "quantization_fallback": false,
+              "fallback_reason": null,
+              "tiny_L": false,
+              "passthrough": false,
+              "quantization_attempts_used": 1,
+              "actual_parameter_check": true,
+              "norm_nonexpansion": true,
+              "active_set": [
+                "L_full",
+                "L_As"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "anchor_cosines_before": {
+                "L_full": -0.014758611372319952,
+                "L_clean": -0.011107303780699147,
+                "L_As": -0.014005847073658406
+              },
+              "anchor_cosines_after": {
+                "L_full": 2.7319977754099182e-09,
+                "L_clean": 5.7577330286674795e-05,
+                "L_As": 7.838648282547056e-10
+              },
+              "constraint_dots_after": {
+                "L_full": 5.27923632066829e-09,
+                "L_clean": 5.044049842014916e-05,
+                "L_As": 1.0367995759348082e-09
+              },
+              "near_zero_component_anchors_omitted": []
+            }
+          },
+          "added_descent": {
+            "t2": {
+              "added_descent_norm": 0.010232598246955825,
+              "rejected_RDrop_gradient_norm": 0.17861733073054858,
+              "dot": 0.0005799883168762725,
+              "cosine": 0.31732897376809843,
+              "source_rule_aligns": true
+            },
+            "cls_head": {
+              "added_descent_norm": 0.003729942148771431,
+              "rejected_RDrop_gradient_norm": 0.41067736713982317,
+              "dot": 0.00021425580892042305,
+              "cosine": 0.13987166360406592,
+              "source_rule_aligns": true
+            },
+            "other": {
+              "added_descent_norm": 0.694395386450229,
+              "rejected_RDrop_gradient_norm": 0.7413453085966177,
+              "dot": 0.0076946867550452165,
+              "cosine": 0.014947328335160211,
+              "source_rule_aligns": true
+            }
+          },
+          "actual_optimizer_copies": 3,
+          "optimizer_copies": [
+            {
+              "optimizer": "AdamW_with_actual_CENTER_UNITS_adapter",
+              "optimizer_steps": 1,
+              "physical_clip_calls": 1,
+              "fresh_moments": true,
+              "max_grad_norm": 5.0,
+              "physical_grad_norm_before_clip": 1.1930543184280396,
+              "base_lr": 0.0002,
+              "base_weight_decay": 0.0001,
+              "source_parameter_or_grad_writes": 0,
+              "shadow_parameter_gradient_tensors": 74,
+              "parameter_groups": [
+                {
+                  "lr": 0.0002,
+                  "eps": 1e-08,
+                  "weight_decay": 0.0001,
+                  "betas": [
+                    0.9,
+                    0.999
+                  ],
+                  "parameter_tensors": 188
+                },
+                {
+                  "lr": 0.2,
+                  "eps": 1.0000000000000001e-11,
+                  "weight_decay": 0.0,
+                  "betas": [
+                    0.9,
+                    0.999
+                  ],
+                  "parameter_tensors": 2
+                }
+              ],
+              "source_model_forward_calls": 0,
+              "shadow_model_forward_calls": 0,
+              "interpretation": "Actual CPU FP32 first-step displacement on independent parameter containers;fresh moments only;all shadows discarded."
+            },
+            {
+              "optimizer": "AdamW_with_actual_CENTER_UNITS_adapter",
+              "optimizer_steps": 1,
+              "physical_clip_calls": 1,
+              "fresh_moments": true,
+              "max_grad_norm": 5.0,
+              "physical_grad_norm_before_clip": 3.363529682159424,
+              "base_lr": 0.0002,
+              "base_weight_decay": 0.0001,
+              "source_parameter_or_grad_writes": 0,
+              "shadow_parameter_gradient_tensors": 74,
+              "parameter_groups": [
+                {
+                  "lr": 0.0002,
+                  "eps": 1e-08,
+                  "weight_decay": 0.0001,
+                  "betas": [
+                    0.9,
+                    0.999
+                  ],
+                  "parameter_tensors": 188
+                },
+                {
+                  "lr": 0.2,
+                  "eps": 1.0000000000000001e-11,
+                  "weight_decay": 0.0,
+                  "betas": [
+                    0.9,
+                    0.999
+                  ],
+                  "parameter_tensors": 2
+                }
+              ],
+              "source_model_forward_calls": 0,
+              "shadow_model_forward_calls": 0,
+              "interpretation": "Actual CPU FP32 first-step displacement on independent parameter containers;fresh moments only;all shadows discarded."
+            },
+            {
+              "optimizer": "AdamW_with_actual_CENTER_UNITS_adapter",
+              "optimizer_steps": 1,
+              "physical_clip_calls": 1,
+              "fresh_moments": true,
+              "max_grad_norm": 5.0,
+              "physical_grad_norm_before_clip": 3.5182044506073,
+              "base_lr": 0.0002,
+              "base_weight_decay": 0.0001,
+              "source_parameter_or_grad_writes": 0,
+              "shadow_parameter_gradient_tensors": 74,
+              "parameter_groups": [
+                {
+                  "lr": 0.0002,
+                  "eps": 1e-08,
+                  "weight_decay": 0.0001,
+                  "betas": [
+                    0.9,
+                    0.999
+                  ],
+                  "parameter_tensors": 188
+                },
+                {
+                  "lr": 0.2,
+                  "eps": 1.0000000000000001e-11,
+                  "weight_decay": 0.0,
+                  "betas": [
+                    0.9,
+                    0.999
+                  ],
+                  "parameter_tensors": 2
+                }
+              ],
+              "source_model_forward_calls": 0,
+              "shadow_model_forward_calls": 0,
+              "interpretation": "Actual CPU FP32 first-step displacement on independent parameter containers;fresh moments only;all shadows discarded."
+            }
+          ],
+          "original_parameter_updates": 0,
+          "shadow_parameter_updates_discarded": true,
+          "interpretation": "Only reject-mask RDrop is added to the otherwise identical uncapped gradient and actual-step operators.Independent fresh optimizer copies,one source batch,not live-moment trajectory or a measured loss reduction."
+        },
+        "L_pair_calls": 4,
+        "U_logits_reused": 6,
+        "actual_derivative_calls": 7,
+        "hard_pseudo_or_acceptance_changed": false,
+        "extra_model_forwards": 0,
+        "extra_classification_head_forwards": 0,
+        "physical_As_KL_weight": 0.0,
+        "U_truth_reads": 0,
+        "target_reads": 0
+      },
+      "parameter_updates": 0,
+      "parameter_grad_writes": 0,
+      "disposable_train_mode_changed_buffer_names": [],
+      "discarded_model_and_buffers": true,
+      "U_truth_reads": 0,
+      "V_reads": 0,
+      "target_reads": 0
+    },
+    {
+      "model_seed": 2026092703,
+      "source_run_id": "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01",
+      "source_row_id": "F21-s2026092703",
+      "source_epoch": 20,
+      "L_samples": 128,
+      "U_samples": 256,
+      "L_packet_views": 768,
+      "U_student_packet_views": 1536,
+      "U_teacher_raw_packet_views": 256,
+      "source_Practical_generated": 192,
+      "real_checkpoint_smoke_L_packets": 2,
+      "actual_autograd_calls": 7,
+      "source_rejected_facts": {
+        "coverage": {
+          "rejected_U": 18,
+          "rejected_nonphysical_half": 8,
+          "rejected_RDrop_pairs": 44,
+          "reused_prediction_views": 88,
+          "ordinary_KL": 0.010020297020673752,
+          "mixed_nonphysical_KL": 0.00552993593737483,
+          "raw_KL": 0.018054580315947533,
+          "base_loss": 0.008725021965801716,
+          "physical_As_KL_weight": 0.0,
+          "hard_label_or_CE_on_rejected": false,
+          "extra_model_forwards": 0,
+          "new_head": false
+        },
+        "external_U_weight": 6.0,
+        "extra_loss": 0.052350133657455444,
+        "component_sum_closure": {
+          "max_absolute_error": 1.5916157281026244e-06,
+          "groups": {
+            "t2": {
+              "L2_error": 1.1115199760612707e-07,
+              "reference_L2_norm": 0.6214454811321044,
+              "relative_L2_error": 1.788604165302456e-07
+            },
+            "cls_head": {
+              "L2_error": 3.2300983779017414e-07,
+              "reference_L2_norm": 1.4318258457907551,
+              "relative_L2_error": 2.2559296491242294e-07
+            },
+            "other": {
+              "L2_error": 2.7470379347762272e-06,
+              "reference_L2_norm": 3.262390724552362,
+              "relative_L2_error": 8.420321680362651e-07
+            }
+          },
+          "criterion": "torch.testing.assert_close dtype defaults and group L2error<=0.001*referenceL2+1e-8"
+        },
+        "comparison": {
+          "raw_gradient_baseline": {
+            "t2": {
+              "L_norm": 0.13659435614235788,
+              "U_norm": 0.6485249018984136,
+              "applied_U_norm": 0.6466134193591728,
+              "dot_before": 0.022046532354045287,
+              "dot_after": 0.02575861095208041,
+              "conflict": false,
+              "capped": false,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": 0.24887477362226923,
+                "L_clean": 0.3491154678229442,
+                "L_As": -0.07672141701931513
+              },
+              "anchor_cosines_after": {
+                "L_full": 0.29163857730463855,
+                "L_clean": 0.35414956472110604,
+                "L_As": 8.302568468530359e-10
+              },
+              "constraint_dots_after": {
+                "L_full": 0.02575861095208041,
+                "L_clean": 0.024836849220655963,
+                "L_As": 3.741855023259907e-11
+              },
+              "active_set": [
+                "L_As"
+              ],
+              "cone_correction_norm": 0.04975574944595853,
+              "solver": "thin_QR_and_active_set_SVD",
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            },
+            "cls_head": {
+              "L_norm": 0.5912960057370384,
+              "U_norm": 1.5237136061809047,
+              "applied_U_norm": 1.4924404932763367,
+              "dot_before": -0.1580814062427376,
+              "dot_after": 1.1061341966429059e-08,
+              "conflict": true,
+              "capped": false,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": -0.17545772729995376,
+                "L_clean": -0.2011621405298474,
+                "L_As": -0.11534962798404706
+              },
+              "anchor_cosines_after": {
+                "L_full": 1.2534466377440829e-08,
+                "L_clean": 1.164082936687082e-09,
+                "L_As": -1.7860194599267274e-09
+              },
+              "constraint_dots_after": {
+                "L_full": 1.1061341966429059e-08,
+                "L_clean": 5.19588447706618e-10,
+                "L_As": -1.007175628701685e-09
+              },
+              "active_set": [
+                "L_clean",
+                "L_As"
+              ],
+              "cone_correction_norm": 0.30712302459990204,
+              "solver": "thin_QR_and_active_set_SVD",
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            },
+            "other": {
+              "L_norm": 1.045456912553482,
+              "U_norm": 3.447503184469515,
+              "applied_U_norm": 3.447503184469515,
+              "dot_before": 0.8939033975372874,
+              "dot_after": 0.8939033975372874,
+              "conflict": false,
+              "capped": false,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": 0.2480160425440041,
+                "L_clean": 0.3374650353063692,
+                "L_As": 0.007100976818493911
+              },
+              "anchor_cosines_after": {
+                "L_full": 0.2480160425440041,
+                "L_clean": 0.3374650353063692,
+                "L_As": 0.007100976818493911
+              },
+              "constraint_dots_after": {
+                "L_full": 0.8939033975372874,
+                "L_clean": 0.8544808783106131,
+                "L_As": 0.011810105882452472
+              },
+              "active_set": [],
+              "cone_correction_norm": 0.0,
+              "solver": "thin_QR_and_active_set_SVD",
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            }
+          },
+          "raw_gradient_rejected_RDrop": {
+            "t2": {
+              "L_norm": 0.13659435614235788,
+              "U_norm": 0.6214454811321044,
+              "applied_U_norm": 0.620757432901032,
+              "dot_before": 0.018690165723213543,
+              "dot_after": 0.020871285280774685,
+              "conflict": false,
+              "capped": false,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": 0.22017974402154156,
+                "L_clean": 0.3019522649171303,
+                "L_As": -0.04704381748446364
+              },
+              "anchor_cosines_after": {
+                "L_full": 0.24614697927782445,
+                "L_clean": 0.30473640008019653,
+                "L_As": -1.3939095324328479e-11
+              },
+              "constraint_dots_after": {
+                "L_full": 0.020871285280774685,
+                "L_clean": 0.020516880850216225,
+                "L_As": -6.030957864729992e-13
+              },
+              "active_set": [
+                "L_As"
+              ],
+              "cone_correction_norm": 0.02923516779092333,
+              "solver": "thin_QR_and_active_set_SVD",
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            },
+            "cls_head": {
+              "L_norm": 0.5912960057370384,
+              "U_norm": 1.4318258457907551,
+              "applied_U_norm": 1.37461790159317,
+              "dot_before": -0.19913622812957263,
+              "dot_after": 1.5592302439210864e-08,
+              "conflict": true,
+              "capped": false,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": -0.23520964906981237,
+                "L_clean": -0.27984054272948733,
+                "L_As": -0.14657987437513653
+              },
+              "anchor_cosines_after": {
+                "L_full": 1.9183299591323243e-08,
+                "L_clean": -3.562186167211068e-10,
+                "L_As": 1.9655122887445043e-09
+              },
+              "constraint_dots_after": {
+                "L_full": 1.5592302439210864e-08,
+                "L_clean": -1.4644587647584528e-10,
+                "L_As": 1.0208918969623049e-09
+              },
+              "active_set": [
+                "L_clean",
+                "L_As"
+              ],
+              "cone_correction_norm": 0.40068798503669917,
+              "solver": "thin_QR_and_active_set_SVD",
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            },
+            "other": {
+              "L_norm": 1.045456912553482,
+              "U_norm": 3.262390724552362,
+              "applied_U_norm": 3.2623229251948294,
+              "dot_before": 0.6957201819844466,
+              "dot_after": 0.7124438856494713,
+              "conflict": false,
+              "capped": false,
+              "tiny_L": false,
+              "anchor_cosines_before": {
+                "L_full": 0.20398230250803454,
+                "L_clean": 0.28798929047329613,
+                "L_As": -0.006446970140740942
+              },
+              "anchor_cosines_after": {
+                "L_full": 0.2088899649717005,
+                "L_clean": 0.2908148555766437,
+                "L_As": 7.500971390450378e-13
+              },
+              "constraint_dots_after": {
+                "L_full": 0.7124438856494713,
+                "L_clean": 0.6968068731428845,
+                "L_As": 1.1805257851593741e-12
+              },
+              "active_set": [
+                "L_As"
+              ],
+              "cone_correction_norm": 0.021032535588618357,
+              "solver": "thin_QR_and_active_set_SVD",
+              "numerical_zero_projection": false,
+              "near_zero_component_anchors_omitted": []
+            }
+          },
+          "parameter_baseline": {
+            "t2": {
+              "raw_increment_norm": 0.01988098144279878,
+              "applied_increment_norm": 0.018778051492803226,
+              "retention": 0.9445233650477023,
+              "quantization_fallback": false,
+              "fallback_reason": null,
+              "tiny_L": false,
+              "passthrough": false,
+              "quantization_attempts_used": 1,
+              "actual_parameter_check": true,
+              "norm_nonexpansion": true,
+              "active_set": [
+                "L_full",
+                "L_As"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "anchor_cosines_before": {
+                "L_full": -0.30357852237122274,
+                "L_clean": -0.16953975202379717,
+                "L_As": -0.2708210606146565
+              },
+              "anchor_cosines_after": {
+                "L_full": 3.039962461484828e-07,
+                "L_clean": 0.020262136980484905,
+                "L_As": 2.975022915505353e-07
+              },
+              "constraint_dots_after": {
+                "L_full": 7.797430308548214e-10,
+                "L_clean": 4.126680518350501e-05,
+                "L_As": 3.893772904373625e-10
+              },
+              "near_zero_component_anchors_omitted": []
+            },
+            "cls_head": {
+              "raw_increment_norm": 0.009243256434291042,
+              "applied_increment_norm": 0.009036263394996072,
+              "retention": 0.9776060481750718,
+              "quantization_fallback": false,
+              "fallback_reason": null,
+              "tiny_L": false,
+              "passthrough": false,
+              "quantization_attempts_used": 1,
+              "actual_parameter_check": true,
+              "norm_nonexpansion": true,
+              "active_set": [
+                "L_full",
+                "L_As"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "anchor_cosines_before": {
+                "L_full": -0.19312876867141446,
+                "L_clean": -0.11614540223825935,
+                "L_As": -0.2102944024594049
+              },
+              "anchor_cosines_after": {
+                "L_full": -2.9778363736090256e-08,
+                "L_clean": -3.396201913931551e-08,
+                "L_As": -9.18989319620608e-09
+              },
+              "constraint_dots_after": {
+                "L_full": -1.5910896741572114e-10,
+                "L_clean": -9.178271985883996e-11,
+                "L_As": -3.1377717129221425e-11
+              },
+              "near_zero_component_anchors_omitted": []
+            },
+            "other": {
+              "raw_increment_norm": 1.5525144785097502,
+              "applied_increment_norm": 1.5523212519677998,
+              "retention": 0.9998755396200003,
+              "quantization_fallback": false,
+              "fallback_reason": null,
+              "tiny_L": false,
+              "passthrough": false,
+              "quantization_attempts_used": 1,
+              "actual_parameter_check": true,
+              "norm_nonexpansion": true,
+              "active_set": [
+                "L_full",
+                "L_As"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "anchor_cosines_before": {
+                "L_full": -0.015157979003927635,
+                "L_clean": -0.011760583953421605,
+                "L_As": -0.014381364981842181
+              },
+              "anchor_cosines_after": {
+                "L_full": -2.97971518836907e-09,
+                "L_clean": 0.0002777710120821028,
+                "L_As": -3.9416204007145455e-09
+              },
+              "constraint_dots_after": {
+                "L_full": -4.835735033933909e-09,
+                "L_clean": 0.00031669223467146475,
+                "L_As": -2.9518033456296623e-09
+              },
+              "near_zero_component_anchors_omitted": []
+            }
+          },
+          "parameter_rejected_RDrop": {
+            "t2": {
+              "raw_increment_norm": 0.020440432999721373,
+              "applied_increment_norm": 0.01926645369480359,
+              "retention": 0.9425658299443174,
+              "quantization_fallback": false,
+              "fallback_reason": null,
+              "tiny_L": false,
+              "passthrough": false,
+              "quantization_attempts_used": 1,
+              "actual_parameter_check": true,
+              "norm_nonexpansion": true,
+              "active_set": [
+                "L_full",
+                "L_As"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "anchor_cosines_before": {
+                "L_full": -0.3154650313975304,
+                "L_clean": -0.1854629440056349,
+                "L_As": -0.2642615654593711
+              },
+              "anchor_cosines_after": {
+                "L_full": -1.0961030449959465e-07,
+                "L_clean": 0.021456359964222578,
+                "L_As": 2.1045517916833197e-07
+              },
+              "constraint_dots_after": {
+                "L_full": -2.884602148362322e-10,
+                "L_clean": 4.483559160217792e-05,
+                "L_As": 2.826123775520706e-10
+              },
+              "near_zero_component_anchors_omitted": []
+            },
+            "cls_head": {
+              "raw_increment_norm": 0.009103713749099502,
+              "applied_increment_norm": 0.00890178049807322,
+              "retention": 0.9778185851849465,
+              "quantization_fallback": false,
+              "fallback_reason": null,
+              "tiny_L": false,
+              "passthrough": false,
+              "quantization_attempts_used": 1,
+              "actual_parameter_check": true,
+              "norm_nonexpansion": true,
+              "active_set": [
+                "L_full",
+                "L_As"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "anchor_cosines_before": {
+                "L_full": -0.1914358955089311,
+                "L_clean": -0.11397820101233741,
+                "L_As": -0.20936060956139396
+              },
+              "anchor_cosines_after": {
+                "L_full": -1.2511197392554065e-08,
+                "L_clean": 1.501468514525456e-07,
+                "L_As": -1.2809478057281977e-07
+              },
+              "constraint_dots_after": {
+                "L_full": -6.585377910844036e-11,
+                "L_clean": 3.997345160430886e-10,
+                "L_As": -4.3085418241652464e-10
+              },
+              "near_zero_component_anchors_omitted": []
+            },
+            "other": {
+              "raw_increment_norm": 1.445914789564466,
+              "applied_increment_norm": 1.4456854385839097,
+              "retention": 0.999841380016159,
+              "quantization_fallback": false,
+              "fallback_reason": null,
+              "tiny_L": false,
+              "passthrough": false,
+              "quantization_attempts_used": 1,
+              "actual_parameter_check": true,
+              "norm_nonexpansion": true,
+              "active_set": [
+                "L_full",
+                "L_As"
+              ],
+              "solver": "thin_QR_active_set_SVD_affine_quantization_repair",
+              "anchor_cosines_before": {
+                "L_full": -0.01728665975005676,
+                "L_clean": -0.013681327002161237,
+                "L_As": -0.015963805953206622
+              },
+              "anchor_cosines_after": {
+                "L_full": -2.370545849982924e-09,
+                "L_clean": 0.0003093723023751528,
+                "L_As": -3.306419505946406e-09
+              },
+              "constraint_dots_after": {
+                "L_full": -3.5828473479606986e-09,
+                "L_clean": 0.0003284914923703132,
+                "L_As": -2.3060184699275066e-09
+              },
+              "near_zero_component_anchors_omitted": []
+            }
+          },
+          "added_descent": {
+            "t2": {
+              "added_descent_norm": 0.01100879106534334,
+              "rejected_RDrop_gradient_norm": 0.21308273473055533,
+              "dot": 0.0007786318857389869,
+              "cosine": 0.3319283088315349,
+              "source_rule_aligns": true
+            },
+            "cls_head": {
+              "added_descent_norm": 0.002992800239940139,
+              "rejected_RDrop_gradient_norm": 0.27068348031791034,
+              "dot": 5.924529397943176e-05,
+              "cosine": 0.07313316636813351,
+              "source_rule_aligns": true
+            },
+            "other": {
+              "added_descent_norm": 0.9806175746149274,
+              "rejected_RDrop_gradient_norm": 0.8484328043333029,
+              "dot": 0.00679070763628166,
+              "cosine": 0.008162024772663945,
+              "source_rule_aligns": true
+            }
+          },
+          "actual_optimizer_copies": 3,
+          "optimizer_copies": [
+            {
+              "optimizer": "AdamW_with_actual_CENTER_UNITS_adapter",
+              "optimizer_steps": 1,
+              "physical_clip_calls": 1,
+              "fresh_moments": true,
+              "max_grad_norm": 5.0,
+              "physical_grad_norm_before_clip": 1.2088253498077393,
+              "base_lr": 0.0002,
+              "base_weight_decay": 0.0001,
+              "source_parameter_or_grad_writes": 0,
+              "shadow_parameter_gradient_tensors": 74,
+              "parameter_groups": [
+                {
+                  "lr": 0.0002,
+                  "eps": 1e-08,
+                  "weight_decay": 0.0001,
+                  "betas": [
+                    0.9,
+                    0.999
+                  ],
+                  "parameter_tensors": 188
+                },
+                {
+                  "lr": 0.2,
+                  "eps": 1.0000000000000001e-11,
+                  "weight_decay": 0.0,
+                  "betas": [
+                    0.9,
+                    0.999
+                  ],
+                  "parameter_tensors": 2
+                }
+              ],
+              "source_model_forward_calls": 0,
+              "shadow_model_forward_calls": 0,
+              "interpretation": "Actual CPU FP32 first-step displacement on independent parameter containers;fresh moments only;all shadows discarded."
+            },
+            {
+              "optimizer": "AdamW_with_actual_CENTER_UNITS_adapter",
+              "optimizer_steps": 1,
+              "physical_clip_calls": 1,
+              "fresh_moments": true,
+              "max_grad_norm": 5.0,
+              "physical_grad_norm_before_clip": 4.222662925720215,
+              "base_lr": 0.0002,
+              "base_weight_decay": 0.0001,
+              "source_parameter_or_grad_writes": 0,
+              "shadow_parameter_gradient_tensors": 74,
+              "parameter_groups": [
+                {
+                  "lr": 0.0002,
+                  "eps": 1e-08,
+                  "weight_decay": 0.0001,
+                  "betas": [
+                    0.9,
+                    0.999
+                  ],
+                  "parameter_tensors": 188
+                },
+                {
+                  "lr": 0.2,
+                  "eps": 1.0000000000000001e-11,
+                  "weight_decay": 0.0,
+                  "betas": [
+                    0.9,
+                    0.999
+                  ],
+                  "parameter_tensors": 2
+                }
+              ],
+              "source_model_forward_calls": 0,
+              "shadow_model_forward_calls": 0,
+              "interpretation": "Actual CPU FP32 first-step displacement on independent parameter containers;fresh moments only;all shadows discarded."
+            },
+            {
+              "optimizer": "AdamW_with_actual_CENTER_UNITS_adapter",
+              "optimizer_steps": 1,
+              "physical_clip_calls": 1,
+              "fresh_moments": true,
+              "max_grad_norm": 5.0,
+              "physical_grad_norm_before_clip": 3.9806060791015625,
+              "base_lr": 0.0002,
+              "base_weight_decay": 0.0001,
+              "source_parameter_or_grad_writes": 0,
+              "shadow_parameter_gradient_tensors": 74,
+              "parameter_groups": [
+                {
+                  "lr": 0.0002,
+                  "eps": 1e-08,
+                  "weight_decay": 0.0001,
+                  "betas": [
+                    0.9,
+                    0.999
+                  ],
+                  "parameter_tensors": 188
+                },
+                {
+                  "lr": 0.2,
+                  "eps": 1.0000000000000001e-11,
+                  "weight_decay": 0.0,
+                  "betas": [
+                    0.9,
+                    0.999
+                  ],
+                  "parameter_tensors": 2
+                }
+              ],
+              "source_model_forward_calls": 0,
+              "shadow_model_forward_calls": 0,
+              "interpretation": "Actual CPU FP32 first-step displacement on independent parameter containers;fresh moments only;all shadows discarded."
+            }
+          ],
+          "original_parameter_updates": 0,
+          "shadow_parameter_updates_discarded": true,
+          "interpretation": "Only reject-mask RDrop is added to the otherwise identical uncapped gradient and actual-step operators.Independent fresh optimizer copies,one source batch,not live-moment trajectory or a measured loss reduction."
+        },
+        "L_pair_calls": 4,
+        "U_logits_reused": 6,
+        "actual_derivative_calls": 7,
+        "hard_pseudo_or_acceptance_changed": false,
+        "extra_model_forwards": 0,
+        "extra_classification_head_forwards": 0,
+        "physical_As_KL_weight": 0.0,
+        "U_truth_reads": 0,
+        "target_reads": 0
+      },
+      "parameter_updates": 0,
+      "parameter_grad_writes": 0,
+      "disposable_train_mode_changed_buffer_names": [],
+      "discarded_model_and_buffers": true,
+      "U_truth_reads": 0,
+      "V_reads": 0,
+      "target_reads": 0
+    }
+  ],
+  "minimum_nonzero_group_increment_norm_retention": 0.9064586162322144,
+  "each_seed_added_descent_alignment_rule_pass": [
+    true,
+    true,
+    true
+  ],
+  "rejected_U_per_seed": [
+    21,
+    17,
+    18
+  ],
+  "source_epoch": 20,
+  "steps_per_seed": 1,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "source_packet_views": 7686,
+  "actual_autograd_calls": 21,
+  "optimizer_steps": 9,
+  "shadow_optimizer_steps": 9,
+  "parameter_updates": 9,
+  "parameter_grad_writes": 666,
+  "original_model_update_counts": {
+    "optimizer_steps": 0,
+    "parameter_updates": 0,
+    "parameter_grad_writes": 0,
+    "persisted_buffer_updates": 0
+  },
+  "GPU_workers": 0,
+  "CPU_threads": 2,
+  "persisted_buffer_updates": 0,
+  "U_truth_reads": 0,
+  "V_reads": 0,
+  "V_gradients": 0,
+  "target_reads": 0,
+  "G_training_reads": 0,
+  "shadow_parameter_updates_discarded": true,
+  "new_formal_training_updates": 0,
+  "automatic_candidate_launch": false,
+  "seconds": 33.38898626016453,
+  "goal_complete": false,
+  "interpretation": "Original fixed E20,one L128/U256 batch perseed,21derivatives/7686source packet views/nine discarded actual physical-AdamW copies.Fresh moments only;no original model/grad/buffer updates,V/Utruth/target/G reads or healthyjob changes.No target-performance or monotonic-loss claim."
+}

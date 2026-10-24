@@ -307,9 +307,18 @@
     "target_matrix_complete": false
   },
   "source_rejected_rdrop_probe": {
-    "status": "LOCAL_22_CHECKS_AND_SOURCE_REVIEW_PASS_NOT_EXECUTED",
+    "status": "SOURCE_COUNTERFACTUAL_PASSED",
     "reference": "source_rejected_rdrop_plan.json",
     "conditional_followup": "rejected_rdrop_followup_design.json",
-    "GPU_launch": false
+    "GPU_launch": false,
+    "result": "source_rejected_rdrop_summary.json",
+    "source_rule_pass": true,
+    "minimum_nonzero_group_increment_norm_retention": 0.9064586162322144,
+    "rejected_U_per_seed": [
+      21,
+      17,
+      18
+    ],
+    "production_GPU_candidate_started": false
   }
 }

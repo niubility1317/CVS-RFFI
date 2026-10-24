@@ -27,3 +27,6 @@ N607普通账户/CPU2/FP32TF32off，GPU5/6/7固定seed2701/02/03，每卡最多2
 
 
 补充源覆盖诊断与固定反证矩阵已登记，见 source_pseudo_coverage.md 和 source_rejected_rdrop_plan.json。E20门控0.95仍保持，原拒绝集合只提出无硬标签RDrop候选；当前六条GPU训练不变。先用三原E20各一批L128/U256、CPU2、原模型零更新和9个丢弃参数影子核实实际FP32新增下降，固定规则不依据目标返回调整。条件后续配方和raw／DURA三seed42cell也先固定；本登记不是训练启动或目标成功。
+
+
+被拒U的RDrop固定源反证已完成：SOURCE_COUNTERFACTUAL_PASSED。三原E20批次拒绝数21／17／18，全部实际FP32约束通过，每seed均至少一组新增下降与拒绝KL梯度正对齐，最小非零组增量保留90.645862%。21导数／7686源包视图／9个丢弃参数副本，CPU2共33.388986 s，原模型更新0，V/Utruth/target/G读取0。逐组全部结果和边界见 source_rejected_rdrop.md；源通过不冒充目标收益，不修改健康任务，也不自动启动新GPU候选。
