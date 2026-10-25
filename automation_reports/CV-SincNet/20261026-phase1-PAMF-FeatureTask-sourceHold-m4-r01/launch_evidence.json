@@ -1,0 +1,25 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "1f34b3ac51a355fb5da73591ae43f9c28f73130d",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "controller_PID_CWD_argv_env_verified": true,
+  "live_child_PID_CWD_argv_GPU_log_growth_verified": true,
+  "observed_live_jobs": [
+    {
+      "id": "source_calibration",
+      "gpu": 0,
+      "log_growth": true,
+      "step_log_growth": false
+    }
+  ],
+  "pipeline_counts": {
+    "RUNNING": 1,
+    "QUEUED": 5
+  },
+  "new_target_reads": 0,
+  "student_seed": 2026092701,
+  "independent_P0P1": "PASS",
+  "focused_tests": 7,
+  "local_compile": "PASS"
+}
