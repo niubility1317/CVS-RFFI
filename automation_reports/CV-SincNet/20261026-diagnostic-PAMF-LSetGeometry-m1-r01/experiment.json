@@ -1,0 +1,209 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261026-diagnostic-PAMF-LSetGeometry-m1-r01",
+  "group_id": "phase1-pamf-visible-L-set-geometry-20261026",
+  "display_name": "冻结可见源L的单中心与多样本跨接收机参照诊断",
+  "description": "仅原L6300建立三冻结E30各自特征坐标的样本参照；query仅seed01 E30，raw/Graw/三恢复场景比较Mean、Set05、Set10及可见真标签特征梯度。无训练、U/V/目标读取或新头拟合。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PAMF-LSetGeometry"
+  ],
+  "tags": [
+    "PAMF",
+    "DURA",
+    "visible-L-only",
+    "set-reference",
+    "frozen-default-head",
+    "no-optimizer"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261026-phase1-PAMF-TaskScaledRef-sourceHold-m3-r01",
+    "20261025-diagnostic-PAMF-RXReference-dose-m1-r01"
+  ],
+  "authorization": "继续原PAMF SSL目标；上轮源留出三变体全部FAIL，本轮仅用合法可见L检验单中心参照结构，不放宽源门槛、不读取U真值或目标。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
+    "cwd": "PROJECT/releases/20261026-diagnostic-PAMF-LSetGeometry-release-r01"
+  },
+  "data": {
+    "dataset": "same original F0 VALIDATED_ONCE roles and physical IDs",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "same F0 default-head six-class mapping;public TX indices are default-head class indices",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "all original6300 visibleL;three ownE30 raw banks;onlyseed01 frozen query5views",
+      "U_s": "not opened",
+      "V": "not opened"
+    },
+    "train_ratio": "original L6300/U56700/V27000 roles unchanged;no training or role reassignment",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "visible-L nonparametric relation geometry and default-head feature-gradient agreement only;not a replacement head,unseen-RX proof,target performance or trained SSL method"
+  },
+  "checkpoint": {
+    "initialization": "frozen original own E20+10 E30 three seeds;query disposable copy ofseed01 frozen",
+    "sources": [
+      "same original F0 ordinaryPL E30x3",
+      "same original F0 G-LU",
+      "old source visible-L mean refs only forcoordinate/count equivalence"
+    ],
+    "contract_check_ref": "existing E20/ownE30 chain checks and same source physical role contracts;old visibleL refs exactsourcecases/seeds/contract;actualL2 checkpoint smoke",
+    "provenance_verdict": "must match original F0 source-only ancestry;no target-trained/selected parents",
+    "selection_rule": "no checkpoint or target candidate selection;all predefined geometry comparisons reported"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pamf-restored-source-20261025",
+    "gpu_policy": "physicalGPU0 only;global CUDA+pending<2/free>=10000MiB;CPU2threads;preserve all otherowners",
+    "remote_run_root": "PROJECT/runs/20261026-diagnostic-PAMF-LSetGeometry-m1-r01",
+    "remote_log_root": "PROJECT/releases/20261026-diagnostic-PAMF-LSetGeometry-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_research_20261025/set_geometry_source",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.set_geometry_source dispatch --config PROJECT/releases/20261026-diagnostic-PAMF-LSetGeometry-release-r01/runtime.json",
+    "stop_rule": "any input/protocol/smoke/nonfinite/state-mutation or technical failure ends thisrun;preserveoutputs;no automaticretry/foreign process intervention"
+  },
+  "expected_artifacts": [
+    "actualE30/defaulthead/G L2 smoke",
+    "frozen three-seed visibleL bank and counts in privateoutput",
+    "all6300 records x5views x3relation variants",
+    "complete TX/RX/day/overall geometry andgradient summaries",
+    "source L packet arrays private only",
+    "allF/G parameters/registeredbuffers unchanged andparameter.grad None",
+    "PID/CWD/argv/GPU/loggrowth or explicit NOT_CAPTURED ifterminal beforeobservation",
+    "same-run complete source-only report"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "actual defaulthead accuracy",
+      "reference identity accuracy",
+      "reference/head disagreement counts",
+      "reference/head visible-label featuregradient cosine",
+      "perclass/RX normalized mean resultant length",
+      "oldmean coordinate/count equivalence"
+    ],
+    "dimensions": [
+      "studentseed2026092701/queryE30 only",
+      "Mean/Set05/Set10",
+      "raw/Graw/threeGH",
+      "TXclassindex/RX/day"
+    ],
+    "prediction_ref": "private source_L_geometry.npz and visible_L_bank.pt",
+    "scorer_ref": "same visibleL labels only;no targettruth or optimizer"
+  },
+  "rows": [
+    {
+      "row_id": "F0-LSetGeometry-s2026092701",
+      "method": "Frozen_L_relation_geometry",
+      "purpose": "source representation falsification,not newF performance",
+      "config_ref": "release/context.json plus fixed module constants",
+      "resolved_config_ref": "release/runtime.json",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "one queryseed01;three bankteacher seeds01/02/03 in separate coordinates,not three student performance seeds",
+      "k": null,
+      "scenario": "raw/Graw/G(lowSub)/G(midUrban)/G(lowUrban)",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "zero new training;three original E30 prefixes90uniqueFepochs shared;query reusesseed01;new Fpacketforwards50400 andG25200 plusL2smoke;500 featureautogradcalls",
+      "output_root": "PROJECT/runs/20261026-diagnostic-PAMF-LSetGeometry-m1-r01",
+      "log_path": "PROJECT/releases/20261026-diagnostic-PAMF-LSetGeometry-release-r01/controller.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.set_geometry_source dispatch --config PROJECT/releases/20261026-diagnostic-PAMF-LSetGeometry-release-r01/runtime.json",
+      "expected_artifacts": [
+        "actualE30/defaulthead/G L2 smoke",
+        "frozen three-seed visibleL bank and counts in privateoutput",
+        "all6300 records x5views x3relation variants",
+        "complete TX/RX/day/overall geometry andgradient summaries",
+        "source L packet arrays private only",
+        "allF/G parameters/registeredbuffers unchanged andparameter.grad None",
+        "PID/CWD/argv/GPU/loggrowth or explicit NOT_CAPTURED ifterminal beforeobservation",
+        "same-run complete source-only report"
+      ]
+    }
+  ],
+  "notes": [
+    "Allmodels frozen;L_s only;noU IQ,labels/cache,V,target,optimizer,newhead/referenceupdates.",
+    "Set score: normalized perpacket L supports;perclass/RX inner_tau*logmeanexp(cos/inner_tau);average overotherRX;outertemperature .1.",
+    "Mean control matches old visibleL mean reference coordinates/counts once;physical role validation is reused.",
+    "Set10 is primary relation form;Set05 is fixed sensitivity;all results preserved;no target feedback or current training launch.",
+    "Reference argmax and featuregradient agreement are geometric diagnostics,not defaulthead accuracy improvements or backbone/AdamW guarantees.",
+    "Future SSL still requires original sourceheldG>=+.3pp/clean>=-.1pp then actual three-seed rawclean/rawsix/sameG target goals."
+  ],
+  "matrix": {
+    "query_seed": 2026092701,
+    "query_epoch": 30,
+    "reference_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "L_records": 6300,
+    "source_rxs": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "methods": [
+      "Mean",
+      "Set05",
+      "Set10"
+    ],
+    "views": [
+      "raw",
+      "G_raw",
+      "G_practical_low_suburban",
+      "G_practical_mid_urban",
+      "G_practical_low_urban"
+    ],
+    "inner_temperature": [
+      0.05,
+      0.1
+    ],
+    "outer_temperature": 0.1,
+    "source_channel_namespace": "PAMF/set_reference/L/fixed",
+    "reference_role": "L_s",
+    "exclude_own_RX": true,
+    "RX_weighting": "equal",
+    "sample_count_normalization": "logmeanexp within each class/RX",
+    "U_reads": 0,
+    "V_reads": 0,
+    "target_reads": 0,
+    "optimizer_updates": 0,
+    "new_heads": false
+  },
+  "registered_at": "2026-10-25T19:28:31+00:00"
+}
