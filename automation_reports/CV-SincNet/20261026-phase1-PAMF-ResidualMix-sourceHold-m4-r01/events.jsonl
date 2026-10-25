@@ -1,1 +1,6 @@
 {"at": "2026-10-25T23:16:00+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-25T23:26:03+00:00", "status": "RUNNING", "note": "独立核实实际源GPU任务身份/路径/命令/日志增长；只有seed01四候选，无新目标结果。", "evidence": ["launch_evidence.json"], "row_id": null}
+{"at": "2026-10-25T23:26:08+00:00", "status": "RUNNING", "note": "实际训练GPU进程已独立核实，非仅队列预约。", "evidence": ["launch_evidence.json"], "row_id": "F0-MixBase-sourceHold-s2026092701"}
+{"at": "2026-10-25T23:26:13+00:00", "status": "RUNNING", "note": "实际训练GPU进程已独立核实，非仅队列预约。", "evidence": ["launch_evidence.json"], "row_id": "F0-MixDose-sourceHold-s2026092701"}
+{"at": "2026-10-25T23:26:18+00:00", "status": "RUNNING", "note": "实际训练GPU进程已独立核实，非仅队列预约。", "evidence": ["launch_evidence.json"], "row_id": "F0-PairBase-sourceHold-s2026092701"}
+{"at": "2026-10-25T23:26:23+00:00", "status": "RUNNING", "note": "实际训练GPU进程已独立核实，非仅队列预约。", "evidence": ["launch_evidence.json"], "row_id": "F0-PairDose-sourceHold-s2026092701"}
