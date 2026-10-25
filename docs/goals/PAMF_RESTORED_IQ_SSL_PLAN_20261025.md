@@ -100,3 +100,11 @@ raw 三模型 .95 同类共识接受25234/27000，正确25226，精度99.968297%
 这支持保留“raw 高质量标签→恢复域监督”的主假设：G 在这些源条件下大量纠错，且仍留下可供分类器学习的差距；不支持把历史训练退步直接解释为 G 普遍抹掉身份。第一候选继续不加后增强，不用恢复分支的自身高置信门控丢弃困难记录。是否存在不可恢复身份损失、梯度剂量是否合适和40 dB后扰动是否安全仍未证明，下一步先在合法源 L 上做不更新参数的梯度诊断和固定源 V 扰动稳定性分析，再冻结训练矩阵。
 
 完整源结果和逐 TX/RX/day 计数见 [源配对分析](../../automation_reports/CV-SincNet/20261025-diagnostic-PAMF-DURA-paired-source-m3-r01/source_analysis.md)。原目标 raw clean≥+1pp、raw 六景>+1.5pp、同 G-LU 六景超过两个对照继续同时验收。
+
+## 源诊断后的执行冻结
+
+12 个源 L/U 梯度批按预定物理单位范数规则给出新增权重 **0.12618073797689983**，cosine 中位数−0.130245，通过预定≥−0.25条件。40 dB后噪声准确率差较小，但9个单元中的6个urban单元预测变化率超过0.5%，故按既定源规则排除D；该稳定性负结果不能推成目标域增强必然无效。源诊断见 [剂量与噪声结果](../../automation_reports/CV-SincNet/20261025-diagnostic-PAMF-DURA-dose-noise-m1-r02/report.md)。
+
+正式发布 run 为 `20261025-phase1-PAMF-RestoredPL-m9-r01`：PLControl、RawSoft、DURASoft 各三个学生，均 own原ordinary-PL E30+20到E50。为明确匹配关系，A/B/C共同主项保持原完整L机制和原自身raw普通PL（.95、weight1）；三冻结E30教师的平均软目标和共识mask仅用于B/C新增分支，不替换或额外门控原raw PL。B/C两次前向平均、完整U batch归一、444步升温；C使用同物理G(H(U))，无G置信门控或后增强。
+
+共享源U缓存已完成56700条，52946条获raw三教师共识；这是93.3792%的接受率，不是实际U精度。真实E30恢复分支L/U backward smoke通过，八条学生已实际开始更新，第九条按全卡最多两worker的资源上限排队。训练和raw/同G-LU七景truth-last按行自动衔接；该运行状态不是目标达成。详细矩阵与成本见 [新run预登记](../../automation_reports/CV-SincNet/20261025-phase1-PAMF-RestoredPL-m9-r01/preregistration.md)。原默认权重和其他健康owner保留。

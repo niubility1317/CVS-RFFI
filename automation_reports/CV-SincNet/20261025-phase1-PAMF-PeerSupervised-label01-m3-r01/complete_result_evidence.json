@@ -1,0 +1,31 @@
+{
+  "status": "ANALYZED",
+  "protocol": "label01",
+  "student_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "independent_truth_last": true,
+  "physical_count_per_seed": 168000,
+  "original_F0_goal_applicable": false,
+  "completed_students": 3,
+  "new_source_records_read": 19980,
+  "complete_stdout_lines": 3624,
+  "source_U_exposures_per_student": 1704960,
+  "source_U_acceptance": {
+    "2026092701": 0.8751917933558558,
+    "2026092702": 0.8716368712462462,
+    "2026092703": 0.8768604542042042
+  },
+  "raw_clean_gain_vs_PL_pp": -0.8537698412698412,
+  "raw_six_gain_vs_PL_pp": 0.7853174603174603,
+  "paired_G_six_gain_vs_PL_pp": -0.3951719576719577,
+  "new_F0_goal_met": false,
+  "U_truth_read": false,
+  "target_training_reads": 0,
+  "G_training_reads": 0,
+  "new_head": false,
+  "nonfinite_skips": 0,
+  "scope": "fixed lowlabel extension,not a successful replacement forordinaryPL orproofF0goal"
+}

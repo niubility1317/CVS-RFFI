@@ -47,3 +47,18 @@
 ## 实际启动：VERIFIED／RUNNING
 
 真实 label01 E20 的 L/U 有限反传、原默认头、冻结 peer 检查 PASS；L 前向包 768、U_seen256、peer_eval512、full U student1536，零优化器更新和 query 读取，peer 参数/缓冲区保持。随后三个学生均已在 GPU5/6/7 启动，controller 和各 worker 的精确身份、实际 GPU、两次独立读回间日志增长均已核实。观察到每卡总 CUDA 进程不超过 2 个，原九学生也继续运行，合计 12 个新学生。未调用终止或接管，无 G 训练。单模型和同契约 G-LU、三人群七景在固定 E50 后自动测试；本轮尚无 target 结果，原 F0 目标仍未证明。证据见 [launch_evidence.json](launch_evidence.json)。
+
+## 1% 标注三学生完整结果
+
+ANALYZED。原L630/U62370/V27000、三学生各E50/11100，raw/同契约G-LU×三人群×七视图全部预测固定后独立truth-last。下表为原目标RX全部日期168000物理记录/seed的三学生均值±样本SD；差值为相对普通PL，单位百分点。该设置不能替代原F0目标。
+
+| 路线 | 指标 | PeerT1U2 | 普通PL | 配对差均值±SD（pp） |
+| --- | --- | ---: | ---: | ---: |
+| raw | clean | 81.533135±0.239668% | 82.386905±0.173959% | -0.853770±0.065779 |
+| raw | six_practical_mean | 70.832870±0.318088% | 70.047553±0.244578% | +0.785317±0.555801 |
+| DURA-LU | clean | 81.457341±0.242248% | 82.348413±0.185783% | -0.891071±0.078044 |
+| DURA-LU | six_practical_mean | 73.750463±0.564889% | 74.145635±0.521895% | -0.395172±0.423433 |
+
+原始六景较普通PL+0.785317pp，但clean−0.853770pp、G-LU六景−0.395172pp。因此不作为最终SSL成功方法；较REPL的部分提升不代表超过普通PL。完整读取新增19980条结构化训练记录和3624行stdout，零非有限跳步/EMA/peer更新/U真值/target训练；每学生新增U曝光1704960，实际接受率87.1637%至87.6860%，成本保留。
+
+明细：[完整三seed汇总](interim_PeerT1U2_three_seed.csv)、[逐seed](interim_PeerT1U2_per_seed.csv)、[训练执行](finished_source_training.csv)、[执行/结果证据](complete_result_evidence.json)。新RestoredPL矩阵已在本组完整结果读取前冻结发布，本结果不改变其权重、父模型、种子或行选择。

@@ -29,3 +29,11 @@ PLControl/RawSoft/DURASoft各3seed，原ordinaryPL E30+20到E50；源规则定�
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
 
 具体固定矩阵、源剂量、损失归一、数据/来源、成本、资源和自动七景测试验收见 [预登记](preregistration.md)。新的恢复域训练候选独立于默认模型；目标尚未达到。
+
+## 实际启动核实
+
+RUNNING，外部执行VERIFIED。科学release commit为c8a6efacfde29f8ced1c3bf684ea58d1aadffc28，一次archive传输比较/远端compile通过，独立PID/CWD/argv/GPU/loggrowth核实。共享源U56700缓存完成，52946条被三E30 raw教师接受（93.3792%，非U真值精度）；170100次F教师和170100次G前向，无V/U真值/target读取，全部注册buffers和参数不变。
+
+真实ownE30+缓存的L768/U256/恢复学生512前向backward smoke通过，原6类默认头梯度有限，无optimizer/query。随后8个学生已在GPU0/1/2/3/4实际训练至E32/7104，第9条DURASoft seed03按全卡2worker上限等待空位。未停止其他owner。详见 [启动与来源证据](launch_evidence.json)、[实际源训练进度](launch_source_progress.csv)。
+
+尚未产生本run目标测试结果，不能据缓存/源训练或smoke宣布目标达成。所有9条按固定配置到E50，再逐行raw/同G-LU全部视图预测与独立评分；原两对照和三项联合目标保持。
