@@ -1,0 +1,212 @@
+{
+  "decision": {
+    "selected_weight": 0.07145844915553692,
+    "median_primary_norm": 0.978037416934967,
+    "median_extra_norm": {
+      "RawReference": 1.3686798810958862,
+      "RestoredReference": 1.3482399582862854,
+      "PairedReference": 1.3053531646728516
+    },
+    "median_cosine": {
+      "RawReference": -0.03743097931146622,
+      "RestoredReference": -0.05752267315983772,
+      "PairedReference": -0.053731733933091164
+    },
+    "weighted_median_norm_ratio": {
+      "RawReference": 0.1,
+      "RestoredReference": 0.09850659580140575,
+      "PairedReference": 0.09537315355491821
+    },
+    "rule": "min(.25,.10*median(primary_norm)/max_v median(extra_v_norm));one shared B/C/D dose;no target feedback",
+    "scope": "Preclip CENTER_UNITS physical gradient proxy;not AdamW update guarantee;source transfer still untested"
+  },
+  "student_model_seed": 2026092701,
+  "held_extra_rx": 1,
+  "L_exposures": 1536,
+  "U_exposures": 3072,
+  "gradient_calls": 60,
+  "temporary_train_buffers_restored": true,
+  "student_parameters_and_registered_buffers_unchanged": true,
+  "native_U_EMA": false,
+  "optimizer_updates": 0,
+  "source_V_reads": 0,
+  "U_truth_read": false,
+  "target_reads": 0,
+  "source_holdout_scope": "Only extra branch excludes first sorted sourceRX;original raw/L parent already saw all sourceRX;not an unseen-base-RX claim",
+  "status": "SOURCE_RX_REFERENCE_DOSE_COMPLETE",
+  "code_commit": "95e0ae90eca7f764906a372230663a9004b483cd",
+  "reference_role": "L_s",
+  "source_L_references_seen": 6300,
+  "reference_counts": [
+    [
+      [
+        210,
+        210,
+        210,
+        210,
+        210
+      ],
+      [
+        210,
+        210,
+        210,
+        210,
+        210
+      ],
+      [
+        210,
+        210,
+        210,
+        210,
+        210
+      ],
+      [
+        210,
+        210,
+        210,
+        210,
+        210
+      ],
+      [
+        210,
+        210,
+        210,
+        210,
+        210
+      ],
+      [
+        210,
+        210,
+        210,
+        210,
+        210
+      ]
+    ],
+    [
+      [
+        210,
+        210,
+        210,
+        210,
+        210
+      ],
+      [
+        210,
+        210,
+        210,
+        210,
+        210
+      ],
+      [
+        210,
+        210,
+        210,
+        210,
+        210
+      ],
+      [
+        210,
+        210,
+        210,
+        210,
+        210
+      ],
+      [
+        210,
+        210,
+        210,
+        210,
+        210
+      ],
+      [
+        210,
+        210,
+        210,
+        210,
+        210
+      ]
+    ],
+    [
+      [
+        210,
+        210,
+        210,
+        210,
+        210
+      ],
+      [
+        210,
+        210,
+        210,
+        210,
+        210
+      ],
+      [
+        210,
+        210,
+        210,
+        210,
+        210
+      ],
+      [
+        210,
+        210,
+        210,
+        210,
+        210
+      ],
+      [
+        210,
+        210,
+        210,
+        210,
+        210
+      ],
+      [
+        210,
+        210,
+        210,
+        210,
+        210
+      ]
+    ]
+  ],
+  "reference_teacher_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "reference_teacher_epoch": 30,
+  "reference_F_packet_forwards": 18900,
+  "raw_teacher_F_packet_forwards": 9216,
+  "student_gradient_F_packet_forwards": 33792,
+  "G_packet_forwards": 6144,
+  "source_L_smoke_packets": 2,
+  "reference_updates": 0,
+  "head_fit_updates": 0,
+  "F_G_parameter_updates": 0,
+  "frozen_F_G_parameters_and_registered_buffers_unchanged": true,
+  "temperature": 0.1,
+  "seconds": 20.311715352814645,
+  "scope": "Source dose only;not new F training,not target benefit,not U truth accuracy or crossreceiver transfer proof",
+  "independent_readback": "VERIFIED",
+  "actual_checkpoint_smoke": {
+    "status": "PASS",
+    "source_role": "L_s",
+    "physical_packets": 2,
+    "teacher_F": 3,
+    "student_E30": 1,
+    "feature_shape": [
+      2,
+      160
+    ],
+    "own_seed_features_match": true,
+    "default_head": true,
+    "optimizer_updates": 0,
+    "target_reads": 0
+  },
+  "post_launch_identity_GPU_loggrowth": "VERIFIED",
+  "U_seen": 3072,
+  "raw_teacher_accepted": 2858,
+  "extra_accepted_after_holdout": 2261
+}
