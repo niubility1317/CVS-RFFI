@@ -1,0 +1,221 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261025-phase1-PAMF-PL-consensus-source-m6-r01",
+  "group_id": "phase1-pamf-source-pseudo-reliability-20261025",
+  "display_name": "普通PL冻结前缀的三模型一致性源域诊断",
+  "description": "F0及1%标注的六份同契约普通PL E20冻结前缀；CPU完整sourceV比较单模型、三者一致、平均概率及双peer一致，检验误差相关性与预测类别校准，不训练、不访问target。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "PL-consensus-source"
+  ],
+  "tags": [
+    "PAMF",
+    "source-only",
+    "CPU",
+    "frozen-default-head",
+    "no-target"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261025-phase1-PAMF-ChannelPL-source-m33-r01",
+    "20261024-phase1-PAMF-REPL-completion-m201-r01",
+    "20261022-phase1-T1-DURA-F-ablation-binding-m63-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "2026-10-25 用户要求深入分析和优化SSL。当前已观察源错误集中；本次CPU源诊断不改变六条健康GPU训练。",
+  "code": {
+    "commit": "RECORDED_AT_RELEASE:runtime.code_commit",
+    "checkout": "code/worktrees/standard_ce_baselines_20261010",
+    "environment": "N607 existing CVS-RFFI Python/Torch2.1; FP32/TF32off; no installs",
+    "cwd": "PROJECT/releases/20261025-phase1-PAMF-PL-consensus-source-release-r01"
+  },
+  "data": {
+    "dataset": "ManySig F0 and label01 only; unchanged VALIDATED_ONCE source roles",
+    "version": null,
+    "representation": "source received IQ FP32 [2,256]",
+    "contract_ref": "same-contract E20 complete.config.source_contract; private checked context",
+    "physical_ids_ref": "existing source contract.role_ids",
+    "label_map_ref": "existing default-head classes: six / ManyRx ten",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "source contract.classes",
+    "roles": {
+      "L_s": "two IQ per frozen model for no-query smoke only",
+      "U_s": "not opened; hidden TX truth never read",
+      "V": "all27000 per protocol; labels only for error/precision diagnostics; no model/head/buffer fitting"
+    },
+    "train_ratio": "no new training; F0/label01 retain their original L/U proportions",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE handles, unchanged; Phase1 capsule/split p2 handles not applicable",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "CPU frozen-prefix source-V diagnostics;not new SSL or three independent F-student target results."
+  },
+  "checkpoint": {
+    "initialization": "six frozen own-contract ordinary-PL E20 prefixes; E14-E20 already ordinaryPL",
+    "sources": [
+      "F0 and label01 x model seeds2026092701/02/03, fixed original E20"
+    ],
+    "contract_check_ref": "source_quality.validate_prefix_headers and exact same-contract/default-head model loading",
+    "provenance_verdict": "CHECK_ACTUAL_SOURCE_FLAGS_BEFORE_LOADING; no nativeEMA/U/teacher/foreign baseline",
+    "selection_rule": "all six fixed parents; no candidate ranking or threshold fitting; predefined0.95 for every policy"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex-pl-consensus-source-20261025",
+    "gpu_policy": "CPU only,one worker,two Torch/OMP/MKL threads,CUDA_VISIBLE_DEVICES empty,allowed_gpus empty;no GPU admission",
+    "remote_run_root": "PROJECT/runs/20261025-phase1-PAMF-PL-consensus-source-m6-r01",
+    "remote_log_root": "PROJECT/releases/20261025-phase1-PAMF-PL-consensus-source-release-r01/controller.log",
+    "local_artifact_root": "local_artifacts/pamf_ssl_research_20261025/consensus_source",
+    "launch_command": "PYTHON -u -m experiments.pamf_channel_pl.consensus_source dispatch --config PROJECT/releases/20261025-phase1-PAMF-PL-consensus-source-release-r01/runtime.json",
+    "stop_rule": "Any technical/protocol/data/checkpoint error terminates this one CPU diagnostic; preserve all partials. No automatic retry or intervention in healthy GPU workers."
+  },
+  "expected_artifacts": [
+    "six actual-checkpoint source-L noquery smokes",
+    "two full-sourceV consensus results",
+    "same physical sourceV logits/pseudo labels saved privately for reproducible analysis",
+    "source true-class and predicted-class precision/coverage",
+    "source RX/day breakdowns and pairwise/shared errors",
+    "zero new parameter/head/buffer updates;U/target/G reads zero",
+    "CPU PID/CWD/argv/log-growth and no CUDA process evidence",
+    "same-run report/registry and source-only claim"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source pseudo precision",
+      "acceptance coverage",
+      "shared errors",
+      "pairwise error overlap"
+    ],
+    "dimensions": [
+      "F0/label01",
+      "fixed policy",
+      "true class",
+      "predicted class",
+      "source RX",
+      "source day"
+    ],
+    "prediction_ref": "source-only private source_V_predictions.npz;no target predictions",
+    "scorer_ref": "consensus.summarize;source V labels never update models or policy thresholds"
+  },
+  "rows": [
+    {
+      "row_id": "F0-three-frozen-prefixes",
+      "method": "frozen default-head source consensus diagnostics",
+      "purpose": "source-only counterfactual",
+      "config_ref": "context.cases for F0",
+      "resolved_config_ref": "runtime/context immutable archive",
+      "data_overrides": {
+        "protocol_id": "F0"
+      },
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Exactly three fixed model seeds2026092701/02/03 form one joint diagnostic,not three independent student results. No new RNG/training/augmentation/support/evaluation seeds.",
+      "k": null,
+      "scenario": "complete clean sourceV only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "3x frozenE20 readers on27000 sourceV;zero updates and zero target queries",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-PL-consensus-source-m6-r01/F0",
+      "log_path": "PROJECT/releases/20261025-phase1-PAMF-PL-consensus-source-release-r01/controller.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.consensus_source dispatch --config PROJECT/releases/20261025-phase1-PAMF-PL-consensus-source-release-r01/runtime.json",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json",
+        "source_V_predictions.npz"
+      ]
+    },
+    {
+      "row_id": "label01-three-frozen-prefixes",
+      "method": "frozen default-head source consensus diagnostics",
+      "purpose": "source-only counterfactual",
+      "config_ref": "context.cases for label01",
+      "resolved_config_ref": "runtime/context immutable archive",
+      "data_overrides": {
+        "protocol_id": "label01"
+      },
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Exactly three fixed model seeds2026092701/02/03 form one joint diagnostic,not three independent student results. No new RNG/training/augmentation/support/evaluation seeds.",
+      "k": null,
+      "scenario": "complete clean sourceV only",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "3x frozenE20 readers on27000 sourceV;zero updates and zero target queries",
+      "output_root": "PROJECT/runs/20261025-phase1-PAMF-PL-consensus-source-m6-r01/label01",
+      "log_path": "PROJECT/releases/20261025-phase1-PAMF-PL-consensus-source-release-r01/controller.log",
+      "command": "PYTHON -u -m experiments.pamf_channel_pl.consensus_source dispatch --config PROJECT/releases/20261025-phase1-PAMF-PL-consensus-source-release-r01/runtime.json",
+      "expected_artifacts": [
+        "smoke.json",
+        "progress.json",
+        "complete.json",
+        "source_V_predictions.npz"
+      ]
+    }
+  ],
+  "notes": [
+    "Previous E20 sourceV raw/high-gated aggregate accuracy concealed label01 true-class3 errors;0.95 is fixed before this probe.",
+    "Three-way agreement can still be jointly wrong;report correlated errors,coverage and source class orientation explicitly.",
+    "No new classifier training,calibration fitting,prototypes,EMA,G evaluation or target prediction.",
+    "Current ChannelPL GPU release1fa92 remains running unchanged;this diagnostic uses no GPU."
+  ],
+  "matrix": {
+    "protocols": [
+      "F0",
+      "label01"
+    ],
+    "parent_model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "frozen_parents": 6,
+    "new_models": 0,
+    "model_updates": 0,
+    "CPU_threads": 2,
+    "allowed_gpus": [],
+    "threshold": 0.95,
+    "policies": [
+      "single_0",
+      "single_1",
+      "single_2",
+      "unanimous3",
+      "mean_probability3",
+      "peer_pair_for_0",
+      "peer_pair_for_1",
+      "peer_pair_for_2"
+    ],
+    "purpose": "Test whether independent fixed seeds separate concentrated pseudo-label mistakes;not select target-performance winner"
+  },
+  "registered_at": "2026-10-25T08:59:05+00:00"
+}

@@ -41,7 +41,8 @@ value=dict(status='SUBMITTED_NOT_YET_VERIFIED',pid=child.pid,cwd=str(release),ar
 
 
 def publish(repo,output,context_path,release_id,*,run_id=SOURCE_RUN,
-            entrypoint='experiments.pamf_channel_pl.source_runner',launch_owner='codex-channel-pl-source-20261025'):
+            entrypoint='experiments.pamf_channel_pl.source_runner',launch_owner='codex-channel-pl-source-20261025',
+            allowed_gpus=(5,6,7)):
     repo=Path(repo);out=Path(output);out.mkdir(parents=True,exist_ok=True)
     def git(*a):return subprocess.check_output(['git','-C',str(repo),*a])
     commit=git('rev-parse','HEAD').decode().strip();branch=git('branch','--show-current').decode().strip()
@@ -50,7 +51,7 @@ def publish(repo,output,context_path,release_id,*,run_id=SOURCE_RUN,
     project=context['project'];release=project+'/releases/'+release_id
     rt=dict(run_id=run_id,project=project,python=context['python'],release_root=release,
         run_root=project+'/runs/'+run_id,context=release+'/context.json',runtime_file=release+'/runtime.json',
-        code_commit=commit,frozen_sources=context['frozen_sources'],allowed_gpus=[5,6,7],
+        code_commit=commit,frozen_sources=context['frozen_sources'],allowed_gpus=list(allowed_gpus),
         launch_owner=launch_owner,entrypoint=entrypoint)
     paths=git('ls-files','-z','--','experiments','code','baselines').decode().split('\0')
     paths={p for p in paths if p and Path(p).suffix in ('.py','.json','.txt','.yaml','.yml','.toml')}
