@@ -3,7 +3,7 @@ window.COURSE_CHAPTERS.push(
   {
     id: 'd-coarse', group: 'DURA', kicker: 'DURA · 01 / 先找一个合理起点',
     title: '时频粗恢复：先看频谱，再回到波形',
-    lead: '粗恢复 c 给两阶段求解提供初值和共同参照。它融合当前观测的频域关系与时域局部结构，输出仍是完整的 256 点 IQ。',
+    lead: String.raw`粗恢复 \(c\) 给两阶段求解提供初值和共同参照。它融合当前观测的频域关系与时域局部结构，输出仍是完整的 256 点 IQ。`,
     html: String.raw`
 <h3>为什么先做粗恢复？</h3>
 <p>把接收 IQ 想成一段同时带有模糊、旋转和镜像干扰的录音。直接要求求解器从任意波形开始，有限的两次 CG 很难走到合适位置。粗恢复先给出一个较合理的草稿；后续阶段再检查草稿经接收作用后能否解释观测。草稿是网络对当前输入的判断，并不等于已经找到真实 clean。</p>
@@ -28,7 +28,7 @@ y_F=\operatorname{IFFT}(g\odot Y+b\odot\widetilde Y).
 <p>频域中，一个频点综合整个时间窗口；时域卷积则从邻近采样之间的关系开始建模。把两条路合起来，是让同一输入接受两种组织方式的分析。FFT 本身是可逆变换，不会自动去噪；真正改变波形的是网络预测的系数和时域修正。网络也没有凭空获得第二次独立观测。</p>
 <table class="mini-table"><thead><tr><th>编码层</th><th>特征长度</th><th>频谱 Core 通道</th><th>时域 Core 通道</th></tr></thead><tbody><tr><td>1</td><td>256</td><td>8</td><td>12</td></tr><tr><td>2</td><td>128</td><td>12</td><td>16</td></tr><tr><td>3</td><td>64</td><td>16</td><td>28</td></tr><tr><td>4</td><td>32</td><td>28</td><td>40</td></tr></tbody></table>
 <p>每层有两个残差 Block；第 2 层起先用长度为 2 的平均池化。解码器依次线性插值到 64、128、256 点，与对应编码特征拼接，再经两个 Block。最后的 \(1\times1\) 卷积产生输出。跳跃连接让细节不必全挤进最短的 32 点表示。</p>
-<p>例如时域第一段解码把最深的 40 通道插值到 64 点，再拼接编码器的 28 通道，得到 68 通道输入，解码成 28 通道。随后分别形成 44 通道、28 通道的拼接输入，输出 16 通道、12 通道。最终从 12 通道映射回 I、Q 两通道。</p>
+<p>例如时域第一段解码把最深的 40 通道插值到 64 点，再拼接编码器的 28 通道，得到 68 通道输入，解码成 28 通道。随后分别形成 44 通道、28 通道的拼接输入，输出 16 通道、12 通道。最终从 12 通道映射回 \(I,Q\) 两通道。</p>
 <details class="derivation" data-depth="deep"><summary>逐步推导：一个残差 Block 到底计算什么？</summary>
 <p>设 \(\phi(t)=t\sigma(t)\) 为 SiLU，\(\operatorname{GN}_4\) 为四组 GroupNorm。一个 Block 的主分支和输出为：</p>
 <div class="equation">\[
@@ -45,7 +45,7 @@ F(z)=\phi\!\left(\operatorname{GN}_4\!\left(C_3\!\left[\phi\!\left(\operatorname
   {
     id: 'd-action', group: 'DURA', kicker: 'DURA · 02 / 学会解释接收过程',
     title: '接收作用 A：实线性、边界与真正的伴随',
-    lead: '作用估计器根据当前 y 与 c 建立可计算的接收近似。伴随把观测误差送回波形空间；伴随不是逆运算。',
+    lead: String.raw`作用估计器根据当前 \(y\) 与 \(c\) 建立可计算的接收近似。伴随把观测误差送回波形空间；伴随不是逆运算。`,
     html: String.raw`
 <h3>为什么恢复器还要学“怎样接收到它”？</h3>
 <p>若只输出一段看起来干净的 IQ，网络可能删去微弱但重要的结构。DURA 还建立一个接收作用 \(A\)：把候选恢复 \(x\) 送入 \(A\)，检查能否重新解释当前观测 \(y\)。这类似修复照片后，再按估计的模糊过程生成一次模糊图，检查两者是否相容。这里的 \(A\) 是学得的近似，不是模拟器提供的真实参数。</p>
@@ -68,11 +68,11 @@ m=1+(c_0+\mathrm{i}c_1),\quad q=c_2+\mathrm{i}c_3.
 <p>若暂时只看一个点，令 \(m=a+\mathrm{i}b,q=c+\mathrm{i}d,z=u+\mathrm{i}w\)，展开乘法便能看清这种实矩阵：</p>
 <div class="equation">\[
 \begin{bmatrix}\Re(mz+q\overline z)\\\Im(mz+q\overline z)\end{bmatrix}
-=\begin{bmatrix}a+c&amp;-b+d\\b+d&amp;a-c\end{bmatrix}
+=\begin{bmatrix}a+c&-b+d\\b+d&a-c\end{bmatrix}
 \begin{bmatrix}u\\w\end{bmatrix}.
 \]</div>
-<p>例如 \(m=1,q=0.2\) 对应对角线为 1.2、0.8 的实矩阵，分别放大 I、缩小 Q。对这个矩阵转置才是相应实内积下的伴随规则；一般不能把复杂作用当作一个复数增益后直接相除。加上 FIR 后，各时间点还会相互耦合。</p>
-<details class="derivation" data-depth="deep"><summary>逐步推导：为什么伴随中是 q，而不是 q 的共轭？</summary>
+<p>例如 \(m=1,q=0.2\) 对应对角线为 1.2、0.8 的实矩阵，分别放大 \(I\)、缩小 \(Q\)。对这个矩阵转置才是相应实内积下的伴随规则；一般不能把复杂作用当作一个复数增益后直接相除。加上 FIR 后，各时间点还会相互耦合。</p>
+<details class="derivation" data-depth="deep"><summary>逐步推导：为什么伴随中是 \(q\)，而不是 \(q\) 的共轭？</summary>
 <p>定义 \(\langle u,r\rangle_{\mathbb R}=\Re\sum_n\overline{u_n}r_n\)。伴随必须满足 \(\langle Ax,r\rangle_{\mathbb R}=\langle x,A^*r\rangle_{\mathbb R}\)。暂记 \(z=H_hx\)。主项给出：</p>
 <div class="equation">\[\Re\sum\overline{mz}\,r=\Re\sum\overline z\,(\overline m r).\]</div>
 <p>镜像项利用“一个数与其共轭的实部相同”：</p>
@@ -86,7 +86,7 @@ m=1+(c_0+\mathrm{i}c_1),\quad q=c_2+\mathrm{i}c_3.
 <div class="equation">\[A^*r=H_h^*\bigl(\overline m\odot r+q\odot\overline r\bigr).\]</div>
 <p>若 \(H_h=C F_h E\)，其中 \(E\) 为反射扩展、\(F_h\) 为卷积、\(C\) 为裁剪，则 \(H_h^*=E^*F_h^*C^*\)。\(C^*\) 把残差放回零数组对应区间；\(F_h^*\) 用共轭频率响应相关；\(E^*\) 把反射产生的重复索引累加回去，代码使用 <code>scatter_add</code>。只把 FIR 共轭后再正向过滤并不等价。</p></details>
 <h3>手算边界的伴随</h3>
-<p>缩成三点、左边反射一点：\(E[x_0,x_1,x_2]=[x_1,x_0,x_1,x_2]\)。因此 \(E^*[r_0,r_1,r_2,r_3]=[r_1,r_0+r_2,r_3]\)。两份 \(x_1\) 的贡献必须相加，不能随意丢掉一份。再看无 FIR 的小例子：\(A(1+0.5\mathrm{i})=1.2+0.4\mathrm{i}\)，主分量与镜像对 I、Q 的作用并不相同。</p>
+<p>缩成三点、左边反射一点：\(E[x_0,x_1,x_2]=[x_1,x_0,x_1,x_2]\)。因此 \(E^*[r_0,r_1,r_2,r_3]=[r_1,r_0+r_2,r_3]\)。两份 \(x_1\) 的贡献必须相加，不能随意丢掉一份。再看无 FIR 的小例子：\(A(1+0.5\mathrm{i})=1.2+0.4\mathrm{i}\)，主分量与镜像对 \(I,Q\) 的作用并不相同。</p>
 <p>这个边界例子还能检查内积：左边 \(\langle Ex,r\rangle\) 中 \(x_1\) 出现两次，右边必须对应 \(r_0+r_2\)。反射是处理窗口外未知采样的一种固定计算约定，不意味着窗口外真实波形必然对称；作用模型的适用性仍要用合法证据检验。</p>
 <p>检查伴随时，比较的应是两侧内积是否相等，而不是观察输出波形是否更像输入。</p>
 <div class="lab" data-lab="action"></div>
@@ -96,7 +96,7 @@ m=1+(c_0+\mathrm{i}c_1),\quad q=c_2+\mathrm{i}c_3.
   {
     id: 'd-prior', group: 'DURA', kicker: 'DURA · 03 / 提出下一份候选波形',
     title: '九通道学习先验：读懂当前状态与反投影误差',
-    lead: '每阶段的 prior 网络依据当前窗口提出参考波形 p。它既看原观测，也看当前估计还解释不了的部分；两次 prior 之后各接两步 CG。',
+    lead: String.raw`每阶段的 prior 网络依据当前窗口提出参考波形 \(p\)。它既看原观测，也看当前估计还解释不了的部分；两次 prior 之后各接两步 CG。`,
     html: String.raw`
 <h3>为什么不能只靠观测一致性？</h3>
 <p>有噪声或不可逆失真时，许多候选波形都能近似解释同一观测。仅让 \(Ax\) 贴近 \(y\)，可能把噪声也拟合进去。学习先验利用合法源域配对 IQ 学到的结构，提出“在这些线索下，恢复波形大概应该是什么样”。它提供参考，而下一步的软一致性求解保留对当前观测的约束。</p>
@@ -131,11 +131,11 @@ p_k=c+\tau D_k\bigl([y,c,x_{k-1},\widehat e_k,\ell_v]\bigr),\quad
   {
     id: 'd-map', group: 'DURA', kicker: 'DURA · 04 / 把两种证据写进同一问题',
     title: '软一致性 MAP：从高斯直觉推到正规方程',
-    lead: '固定某阶段的 A、v 与 p 后，求解器平衡“能够解释观测”和“不要过度偏离 prior”。这个局部二次问题有唯一解，实际只做两步近似求解。',
+    lead: String.raw`固定某阶段的 \(A,v,p\) 后，求解器平衡“能够解释观测”和“不要过度偏离 prior”。这个局部二次问题有唯一解，实际只做两步近似求解。`,
     html: String.raw`
 <h3>为什么是软约束？</h3>
 <p>若强迫 \(Ax=y\)，就等于要求候选恢复连噪声与作用模型误差都解释掉。DURA 允许接收残差存在，同时对偏离 prior 的程度收费。这像两位提供线索的人：观测报告实际收到什么，prior 提供合理恢复的参考；两者的相对权重由方差尺度决定。</p>
-<p>本章先固定当前阶段网络算出的 \(A,v,p\)。把复数 256 点 IQ 展开成 512 个实数，考虑条件化的高斯解释：\(y=Ax+n\)，\(n\sim\mathcal N(0,vI)\)；参考恢复 \(x\) 围绕 \(p\) 波动，尺度为 \(\tau^2I\)。这里 \(v\) 指每个实数分量的方差；复数模平方恰好是 I、Q 平方和。</p>
+<p>本章先固定当前阶段网络算出的 \(A,v,p\)。把复数 256 点 IQ 展开成 512 个实数，考虑条件化的高斯解释：\(y=Ax+n\)，\(n\sim\mathcal N(0,vI)\)；参考恢复 \(x\) 围绕 \(p\) 波动，尺度为 \(\tau^2I\)。这里 \(v\) 指每个实数分量的方差；复数模平方恰好是 \(I,Q\) 平方和。</p>
 <p>“固定”指本次局部求解中的条件：CG 改变候选 \(x\) 时，不重新调用作用估计器，也不重新生成当前的 \(p\)。若边走 CG 边随意改变这些条件，下面的梯度与正定系统就不再对应同一个问题。训练时可以通过展开的运算反向传播，和部署时在一个局部问题内保持条件固定，是两个不同层次。</p>
 <details class="derivation" data-depth="deep"><summary>逐步推导：概率最大为什么变成误差最小？</summary>
 <ol class="steps"><li>观测的条件密度具有形式 \(P(y\mid x,A,v)\propto\exp[-\|y-Ax\|^2/(2v)]\)。</li><li>局部先验具有形式 \(P(x\mid p,\tau)\propto\exp[-\|x-p\|^2/(2\tau^2)]\)。</li><li>最大化两者乘积，等价于最小化负对数。固定的归一化项与 \(x\) 无关，可以去掉。</li><li>再乘以正数 2 不改变极小点，得到代码对应的目标。</li></ol>
@@ -158,7 +158,7 @@ J(x)=v^{-1}\|y-Ax\|_2^2+\tau^{-2}\|x-p\|_2^2.
 =\underbrace{v^{-1}A^*y+\tau^{-2}p}_{b}.
 \]</div>
 <p>因为本版 \(v\) 是每窗口实数常量，可与 \(A^*\) 交换；若以后改为逐点方差，必须保留 \(A^*V^{-1}A\) 的运算顺序。代码不会显式建立或求逆一个 \(512\times512\) 矩阵，只定义“给定向量 \(d\)，怎样计算 \(Md\)”这套运算。</p>
-<details class="derivation" data-depth="deep"><summary>逐步推导：A 不能求逆，为什么本问题仍有唯一解？</summary>
+<details class="derivation" data-depth="deep"><summary>逐步推导：\(A\) 不能求逆，为什么本问题仍有唯一解？</summary>
 <p>对任意非零实向量 \(d\)，伴随关系给出：</p>
 <div class="equation">\[\langle d,Md\rangle_{\mathbb R}=v^{-1}\|Ad\|^2+\tau^{-2}\|d\|^2\gt0.\]</div>
 <p>因此 \(M\) 在 512 维实空间中对称正定。即使某些方向被 \(A\) 完全抹去，第二项仍为正，固定阶段的问题具有唯一极小点。唯一的是给定 \(A,v,p\) 的正则化解，不是“真实原始信号已经可辨识”。把变量改成 \(x=p+\delta\)，还可得到 CG 使用的偏移方程：</p>
@@ -183,7 +183,7 @@ J(x)=v^{-1}\|y-Ax\|_2^2+\tau^{-2}\|x-p\|_2^2.
 <p>上一章得到 \(Mx=b\)，其中 \(M\) 对称正定。显式建立再求逆既耗存储，又忽略了 \(A\) 可以快速计算的结构。共轭梯度法（CG）只需要反复计算 \(Md=v^{-1}A^*(Ad)+\tau^{-2}d\)。它在一系列互不重复的曲率方向上修正答案，适合这种“知道算子怎样作用，却不建立完整矩阵”的问题。</p>
 <p>可以把二次型想成一个倾斜的碗。普通梯度每次只沿当前最陡方向走，狭长的碗中容易来回摆动；CG 利用已经走过方向的曲率信息安排下一方向。这是解释计算安排的直觉，不是说每一步都能恢复某一段频率，也不是把 CG 的方向等同于波形的物理传播方向。</p>
 <p>先在 512 维实空间中写二次型 \(Q(x)=\tfrac12\langle x,Mx\rangle-\langle b,x\rangle\)。梯度为 \(Mx-b\)，定义方程残差 \(r=b-Mx\)，因此 \(-\nabla Q=r\)。CG 的“残差”在本章始终指方程尚未满足的量。</p>
-<details class="derivation" data-depth="deep"><summary>逐步推导：步长 α 和共轭系数 β 从哪里来？</summary>
+<details class="derivation" data-depth="deep"><summary>逐步推导：步长 \(\alpha\) 和共轭系数 \(\beta\) 从哪里来？</summary>
 <p>沿搜索方向 \(d_j\) 更新 \(x_{j+1}=x_j+\alpha_jd_j\)。精确线搜索令 \(Q(x_j+\alpha d_j)\) 对 \(\alpha\) 的导数为零：</p>
 <div class="equation">\[
 0=-\langle r_j,d_j\rangle+\alpha_j\langle d_j,Md_j\rangle,
@@ -196,7 +196,7 @@ J(x)=v^{-1}\|y-Ax\|_2^2+\tau^{-2}\|x-p\|_2^2.
 =\frac{\|r_{j+1}\|^2}{\|r_j\|^2}.
 \]</div>
 <p>“共轭”不是复数共轭。这里指不同方向满足 \(\langle d_i,Md_j\rangle=0\)，让下一次修正避免重新破坏前面已处理的二次曲率方向。</p></details>
-<h3>热启动必须体现在 δ 的初值里</h3>
+<h3>热启动必须体现在 \(\delta\) 的初值里</h3>
 <p>DURA 实际求偏移量 \(\delta=x-p\)。本阶段已有当前波形 \(x_0=x_{k-1}\)，因此应设 \(\delta_0=x_0-p\)，而不是零。若设 \(\delta_0=0\)，对应的波形初值就是 \(p\)，不能同时声称从 \(x_{k-1}\) 热启动。</p>
 <div class="equation">\[
 t=v^{-1}A^*(y-Ap),\qquad
@@ -207,7 +207,7 @@ r_0=t-M\delta_0
 <p>把原式完整展开便能核对：\(y-Ap-A(x_0-p)=y-Ax_0\)，所以两次正向项合并；伴随再按实线性合并。这个整理只复用了同一 \(x_0\) 对应的误差。如果先更新了 \(x\)，再使用更新前的 \(e_k\) 冒充新误差，就不再等价。归一化 prior 输入也不能代替这里带原始幅度的反投影。</p>
 <ol class="steps"><li>令 \(d_0=r_0\)，计算 \(Md_0\)、\(\alpha_0\)，更新 \(\delta_1=\delta_0+\alpha_0d_0\)。</li><li>计算 \(r_1=r_0-\alpha_0Md_0\)、\(\beta_0=\|r_1\|^2/\|r_0\|^2\)、\(d_1=r_1+\beta_0d_0\)。</li><li>计算 \(Md_1\)、\(\alpha_1\)，更新 \(\delta_2\)，返回 \(x_k=p+\delta_2\)。最终答案已得到，无须再更新不会被读取的 \(r_2,d_2\)。</li></ol>
 <h3>手算二维正定系统</h3>
-<p>取 \(M=\begin{bmatrix}4&amp;1\\1&amp;3\end{bmatrix}\)、\(b=(1,2)^\mathsf T\)，从 \(x_0=(0,0)^\mathsf T\) 开始。这里直接演示 \(x\) 的 CG，等价于取 \(p=0\) 的偏移形式。</p>
+<p>取 \(M=\begin{bmatrix}4&1\\1&3\end{bmatrix}\)、\(b=(1,2)^\mathsf T\)，从 \(x_0=(0,0)^\mathsf T\) 开始。这里直接演示 \(x\) 的 CG，等价于取 \(p=0\) 的偏移形式。</p>
 <table class="mini-table"><thead><tr><th>量</th><th>第一步</th><th>第二步</th></tr></thead><tbody><tr><td>方向 \(d\)</td><td>\((1,2)\)</td><td>\((-7/16,3/8)\)</td></tr><tr><td>\(Md\)</td><td>\((6,7)\)</td><td>\((-11/8,11/16)\)</td></tr><tr><td>步长 \(\alpha\)</td><td>\(1/4\)</td><td>\(4/11\)</td></tr><tr><td>更新后 \(x\)</td><td>\((1/4,1/2)\)</td><td>\((1/11,7/11)\)</td></tr></tbody></table>
 <p>第一步残差为 \((-1/2,1/4)\)，于是 \(\beta_0=(5/16)/5=1/16\)。第二步得到精确解；代回可验 \(Mx=(1,2)^\mathsf T\)。二维正定系统在精确算术下最多两步即可求解，但实际 DURA 有 512 个实维度，每阶段也只给两步，不能把这个二维结论照搬过去。</p>
 <p>第一步的数字也可以逐项核对：\(\|r_0\|^2=1^2+2^2=5\)，\(d_0^\mathsf TMd_0=1\times6+2\times7=20\)，故 \(\alpha_0=5/20\)。注意如果把步长固定成 1，答案会直接跳到 \((1,2)\)，反而离解更远。CG 的步长由当前方向上的二次曲率决定，并非网络学出的常数。</p>

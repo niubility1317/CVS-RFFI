@@ -71,7 +71,7 @@ def bundle(export: Path | None) -> None:
     document = (ROOT / "index.template.html").read_text(encoding="utf-8")
     assets = {
         "KATEX_CSS": inline_fonts((VENDOR / "katex.min.css").read_text(encoding="utf-8")),
-        "COURSE_CSS": (ROOT / "style.css").read_text(encoding="utf-8"),
+        "COURSE_CSS": (ROOT / "style.css").read_text(encoding="utf-8") + "\n" + (ROOT / "visuals.css").read_text(encoding="utf-8"),
         "KATEX_JS": (VENDOR / "katex.min.js").read_text(encoding="utf-8"),
         "KATEX_AUTO_JS": (VENDOR / "auto-render.min.js").read_text(encoding="utf-8"),
         "FOUNDATION_CONTENT": (ROOT / "foundation-content.js").read_text(encoding="utf-8"),
@@ -79,6 +79,7 @@ def bundle(export: Path | None) -> None:
         "DURA_CONTENT": (ROOT / "dura-content.js").read_text(encoding="utf-8"),
         "REFERENCE_CONTENT": (ROOT / "reference-content.js").read_text(encoding="utf-8"),
         "LABS_JS": (ROOT / "labs.js").read_text(encoding="utf-8"),
+        "VISUALS_JS": (ROOT / "visuals.js").read_text(encoding="utf-8"),
         "APP_JS": (ROOT / "app.js").read_text(encoding="utf-8"),
     }
     for marker, content in assets.items():

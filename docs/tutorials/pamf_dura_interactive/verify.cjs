@@ -12,13 +12,15 @@ assert.equal(new Set(window.COURSE_CHAPTERS.map(c=>c.id)).size,20);
 const slots=window.COURSE_CHAPTERS.flatMap(c=>[...c.html.matchAll(/data-lab="([^"]+)"/g)].map(m=>m[1]));
 assert.equal(slots.length,20);assert.equal(new Set(slots).size,20);
 slots.forEach(name=>assert.ok(window.CourseLabs.names.includes(name),name));
-const katex=require('./vendor/katex/katex.min.js');let formulas=0;
-for(const c of window.COURSE_CHAPTERS){
- for(const match of c.html.matchAll(/\\\[([\s\S]*?)\\\]|\\\(([\s\S]*?)\\\)/g)){
-  katex.renderToString(match[1]||match[2],{throwOnError:true,strict:'ignore'});formulas++;
- }
-}
-assert.ok(formulas>300,'Formula matcher must actually check the tutorial');
+const {formulas,issues}=require('./math-source-check.cjs').checkMath(window.COURSE_CHAPTERS);
+assert.deepEqual(issues,[],'Raw mathematical notation must not bypass the renderer');
+assert.ok(formulas>690,'Regression: all inline mathematics must remain formatted');
+const sincChapter=window.COURSE_CHAPTERS.find(c=>c.id==='p-time');
+assert.ok(sincChapter.html.includes('\\int_{-f_c}^{f_c}'));
+assert.ok(sincChapter.html.includes('\\sin(2\\pi f_ct)'));
+assert.ok(sincChapter.html.includes('\\operatorname{sinc}'));
+assert.ok(sincChapter.html.includes('t_n='));
+assert.ok(sincChapter.html.includes('w[n]='));
 assert.deepEqual(math.conv([1,2,0,1],[1,.5]),[1,2.5,1,1]);
 assert.deepEqual(math.conv([1,2,0,1],[1,.5],true),[2,2.5,1,1]);
 const forward=[[0,0],[1,0],[1,1],[0,1],[0,0]],reverse=forward.slice().reverse();

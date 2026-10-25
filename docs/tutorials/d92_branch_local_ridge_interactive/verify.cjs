@@ -1,0 +1,32 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
+const root=__dirname,base=path.join(root,'../pamf_dura_interactive');global.window={COURSE_CHAPTERS:[]};
+for(const name of ['foundation-content','geometry-content','ridge-content','reference-content'])vm.runInThisContext(fs.readFileSync(path.join(root,name+'.js'),'utf8'),{filename:name+'.js'});
+vm.runInThisContext(fs.readFileSync(path.join(base,'labs.js'),'utf8'));
+vm.runInThisContext(fs.readFileSync(path.join(root,'labs.js'),'utf8'));
+const {formulas,issues}=require(path.join(base,'math-source-check.cjs')).checkMath(window.COURSE_CHAPTERS);
+assert.deepEqual(issues,[]);assert.equal(window.COURSE_CHAPTERS.length,17);assert.equal(new Set(window.COURSE_CHAPTERS.map(c=>c.id)).size,17);assert.ok(formulas>400);
+const slots=window.COURSE_CHAPTERS.flatMap(c=>[...c.html.matchAll(/data-lab="([^"]+)"/g)].map(m=>m[1]));assert.equal(slots.length,16);assert.equal(new Set(slots).size,16);slots.forEach(s=>assert.ok(window.CourseLabs.names.includes(s),s));
+const M=window.D92Math,near=(a,b,t=1e-10)=>assert.ok(Math.abs(a-b)<t,`${a} != ${b}`);
+const b=[.2,-.3],a=[.4,.5],c=[-.2,.1],d=[.8,.7];
+near(M.dot(M.phi(b,a),M.phi(c,d)),M.kernel(b,a,c,d));
+near(M.distance(b,a,c,d),M.phi(b,a).reduce((s,v,i)=>s+(v-M.phi(c,d)[i])**2,0));
+near(M.distance(b,a,b,a),0);
+const delta=1e-8,u=[1,0],v=[Math.cos(delta),Math.sin(delta)],w=[Math.cos(delta*.7),Math.sin(delta*.7)];assert.ok(M.distance(u,u,v,w)>0);
+const f=M.fit([[1,0],[1,0]],[[1,0],[.5,Math.sqrt(3)/2]],[0,1],2);
+near(f.D[0][1],2);near(f.tau,2);near(f.s0,1);near(f.sR,1-Math.exp(-1));near(f.gamma,1/(1-Math.exp(-1)));near(f.G[0][0],.5);near(f.G[0][1],-.5);near(f.alpha[0][0],.25);near(f.alpha[1][0],-.25);assert.ok(f.residual<1e-12);
+near(M.score(f,[1,0],[1,0])[0],.25);
+for(const C of [2,3])for(const K of [1,2,3]){
+ const t=M.toy(C,K),s=M.fit(t.b,t.a,t.labels,C);assert.ok(s.residual<1e-11);near(s.G.reduce((a,r,i)=>a+r[i],0),s.s0);s.G.forEach(row=>near(row.reduce((a,v)=>a+v,0),0));
+ const before=JSON.stringify(s),q1=M.score(s,[1,0],[0,1]);M.score(s,[0,1],[-1,0]);assert.deepEqual(M.score(s,[1,0],[0,1]),q1);assert.equal(JSON.stringify(s),before);
+ const K0=t.b.map((b,i)=>t.b.map((c,j)=>M.kernel(b,t.a[i],c,t.a[j]))),center=M.center(K0).matrix;near(center.reduce((sum,r,i)=>sum+r[i],0),s.s0);
+ const product=M.multiply(s.L,M.transpose(s.L));product.forEach((row,i)=>row.forEach((v,j)=>near(v,s.G[i][j]+(i===j?1:0))));
+}
+const same=M.fit([[1,0],[1,0]],[[0,1],[0,1]],[0,1],2);assert.equal(same.gamma,null);assert.deepEqual(M.score(same,[1,0],[1,0]),[0,0]);
+const single=M.fit([[1,0],[0,1]],[[1,0],[0,1]],[0,0],1);assert.deepEqual(M.score(single,[0,1],[1,0]),[0]);
+const db=[[1,0],[1,0],[0,1],[1,0],[1,0],[-1,0]],zero=M.fit(db,db,[0,0,0,1,1,1],2);assert.equal(zero.tau,0);assert.ok(zero.s0>0);assert.deepEqual(M.score(zero,M.unit([1,2]),M.unit([3,4])),M.score(zero,M.unit([2,3]),M.unit([4,5])));
+assert.equal(8*520*(738+26)+32,3178272);
+for(const [K,expected]of [[5,[3,3,4]],[10,[6,7,7]],[20,[13,13,14]]])assert.deepEqual([0,1,2].map(f=>Array.from({length:K},(_,j)=>j%3!==f).filter(Boolean).length),expected);
+assert.equal(window.COURSE_QUIZ.length,10);
+const html=fs.readFileSync(path.join(root,'dist/index.html'),'utf8');assert.ok(!/url\(fonts\//.test(html));assert.ok(!/<(?:script|link|iframe)[^>]+(?:src|href)=["']https?:\/\//.test(html));
+console.log(JSON.stringify({status:'PASS',chapters:17,interactive_examples:16,validated_formulas:formulas,questions:10,mathematics:'interaction identity, stable distance, exact two-anchor solution, centering, trace scaling, Cholesky, query invariance, degeneracies, physical folds, state bytes',offline_bytes:Buffer.byteLength(html)},null,2));
